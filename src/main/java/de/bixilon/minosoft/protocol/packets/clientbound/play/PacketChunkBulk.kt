@@ -14,7 +14,7 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play
 
 import de.bixilon.minosoft.data.mappings.tweaker.VersionTweaker
 import de.bixilon.minosoft.data.world.ChunkData
-import de.bixilon.minosoft.data.world.ChunkLocation
+import de.bixilon.minosoft.data.world.ChunkPosition
 import de.bixilon.minosoft.modding.event.events.ChunkDataChangeEvent
 import de.bixilon.minosoft.protocol.network.Connection
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket
@@ -26,7 +26,7 @@ import de.bixilon.minosoft.util.logging.Log
 import java.util.*
 
 class PacketChunkBulk : ClientboundPacket() {
-    val data = HashMap<ChunkLocation, ChunkData>()
+    val data = HashMap<ChunkPosition, ChunkData>()
 
     override fun read(buffer: InByteBuffer): Boolean {
         val dimension = buffer.connection.player.world.dimension!!
@@ -44,10 +44,10 @@ class PacketChunkBulk : ClientboundPacket() {
 
             // chunk meta data
             for (i in 0 until chunkCount) {
-                val chunkLocation = buffer.readChunkLocation()
+                val chunkPosition = buffer.readChunkLocation()
                 val sectionBitMask = longArrayOf(buffer.readUnsignedShort().toLong())
                 val addBitMask = buffer.readUnsignedShort()
-                data[chunkLocation] = ChunkUtil.readChunkPacket(decompressed, dimension, sectionBitMask, addBitMask, true, containsSkyLight)
+                data[chunkPosition] = ChunkUtil.readChunkPacket(decompressed, dimension, sectionBitMask, addBitMask, true, containsSkyLight)
             }
             return true
         }
@@ -64,7 +64,7 @@ class PacketChunkBulk : ClientboundPacket() {
             sectionBitMask[i] = longArrayOf(buffer.readUnsignedShort().toLong())
         }
         for (i in 0 until chunkCount) {
-            data[ChunkLocation(x[i], z[i])] = ChunkUtil.readChunkPacket(buffer, dimension, sectionBitMask[i], 0, true, containsSkyLight)
+            data[ChunkPosition(x[i], z[i])] = ChunkUtil.readChunkPacket(buffer, dimension, sectionBitMask[i], 0, true, containsSkyLight)
         }
         return true
     }

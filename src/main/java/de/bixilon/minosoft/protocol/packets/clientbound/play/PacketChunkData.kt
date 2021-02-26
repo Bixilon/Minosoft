@@ -16,7 +16,7 @@ import de.bixilon.minosoft.data.entities.block.BlockEntityMetaData
 import de.bixilon.minosoft.data.mappings.tweaker.VersionTweaker
 import de.bixilon.minosoft.data.world.BlockPosition
 import de.bixilon.minosoft.data.world.ChunkData
-import de.bixilon.minosoft.data.world.ChunkLocation
+import de.bixilon.minosoft.data.world.ChunkPosition
 import de.bixilon.minosoft.data.world.biome.NoiseBiomeAccessor
 import de.bixilon.minosoft.modding.event.events.BlockEntityMetaDataChangeEvent
 import de.bixilon.minosoft.modding.event.events.ChunkDataChangeEvent
@@ -32,14 +32,14 @@ import java.util.*
 
 class PacketChunkData : ClientboundPacket() {
     private val blockEntities = HashMap<BlockPosition, BlockEntityMetaData>()
-    lateinit var location: ChunkLocation
+    lateinit var position: ChunkPosition
     val chunkData: ChunkData = ChunkData()
     var heightMap: CompoundTag? = null
     private var shouldMerge = false
 
     override fun read(buffer: InByteBuffer): Boolean {
         val dimension = buffer.connection.player.world.dimension
-        location = ChunkLocation(buffer.readInt(), buffer.readInt())
+        position = ChunkPosition(buffer.readInt(), buffer.readInt())
         if (buffer.versionId < ProtocolVersions.V_20W45A) {
             shouldMerge = !buffer.readBoolean()
         }
@@ -105,13 +105,13 @@ class PacketChunkData : ClientboundPacket() {
             VersionTweaker.transformSections(it, connection.version.versionId)
         }
         connection.fireEvent(ChunkDataChangeEvent(connection, this))
-        val chunk = connection.player.world.getOrCreateChunk(location)
+        val chunk = connection.player.world.getOrCreateChunk(position)
         chunk.setData(chunkData)
         connection.player.world.setBlockEntityData(blockEntities)
-        connection.renderer.renderWindow.worldRenderer.prepareChunk(location, chunk)
+        connection.renderer.renderWindow.worldRenderer.prepareChunk(position, chunk)
     }
 
     override fun log() {
-        Log.protocol(String.format("[IN] Chunk packet received (chunk: %s)", location))
+        Log.protocol(String.format("[IN] Chunk packet received (chunk: %s)", position))
     }
 }

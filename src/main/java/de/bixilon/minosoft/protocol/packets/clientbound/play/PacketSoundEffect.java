@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.SoundCategories;
-import de.bixilon.minosoft.data.entities.Location;
+import de.bixilon.minosoft.data.entities.Position;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
@@ -23,11 +23,11 @@ import de.bixilon.minosoft.util.logging.Log;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
 
 public class PacketSoundEffect extends ClientboundPacket {
-    Location location;
-    SoundCategories category;
-    int soundId;
-    float volume;
-    float pitch;
+    private Position position;
+    private SoundCategories category;
+    private int soundId;
+    private float volume;
+    private float pitch;
 
     @Override
     public boolean read(InByteBuffer buffer) {
@@ -43,7 +43,7 @@ public class PacketSoundEffect extends ClientboundPacket {
         if (buffer.getVersionId() >= V_16W02A && (buffer.getVersionId() < V_17W15A || buffer.getVersionId() >= V_17W18A)) {
             this.category = SoundCategories.byId(buffer.readVarInt());
         }
-        this.location = new Location(buffer.readFixedPointNumberInt() * 4, buffer.readFixedPointNumberInt() * 4, buffer.readFixedPointNumberInt() * 4);
+        this.position = new Position(buffer.readFixedPointNumberInt() * 4, buffer.readFixedPointNumberInt() * 4, buffer.readFixedPointNumberInt() * 4);
         this.volume = buffer.readFloat();
         if (buffer.getVersionId() < V_16W20A) {
             this.pitch = (buffer.readByte() * ProtocolDefinition.PITCH_CALCULATION_CONSTANT) / 100F;
@@ -55,11 +55,11 @@ public class PacketSoundEffect extends ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Play sound effect (soundId=%d, category=%s, volume=%s, pitch=%s, location=%s)", this.soundId, this.category, this.volume, this.pitch, this.location));
+        Log.protocol(String.format("[IN] Play sound effect (soundId=%d, category=%s, volume=%s, pitch=%s, position=%s)", this.soundId, this.category, this.volume, this.pitch, this.position));
     }
 
-    public Location getLocation() {
-        return this.location;
+    public Position getPosition() {
+        return this.position;
     }
 
     /**

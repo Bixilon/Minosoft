@@ -35,28 +35,28 @@ import java.util.concurrent.ConcurrentHashMap
 class WorldRenderer(private val connection: Connection, private val world: World, val renderWindow: RenderWindow) : Renderer {
     private lateinit var minecraftTextures: TextureArray
     lateinit var chunkShader: Shader
-    private val chunkSectionsToDraw = ConcurrentHashMap<ChunkLocation, ConcurrentHashMap<Int, ChunkMesh>>()
-    private val visibleChunks: MutableSet<ChunkLocation> = mutableSetOf()
+    private val chunkSectionsToDraw = ConcurrentHashMap<ChunkPosition, ConcurrentHashMap<Int, ChunkMesh>>()
+    private val visibleChunks: MutableSet<ChunkPosition> = mutableSetOf()
     private lateinit var frustum: Frustum
     private var currentTick = 0 // for animation usage
     private var lastTickIncrementTime = 0L
 
-    private fun prepareChunk(chunkLocation: ChunkLocation, sectionHeight: Int, section: ChunkSection, chunk: Chunk): ChunkMesh {
-        if (frustum.containsChunk(chunkLocation, connection)) {
-            visibleChunks.add(chunkLocation)
+    private fun prepareChunk(chunkPosition: ChunkPosition, sectionHeight: Int, section: ChunkSection, chunk: Chunk): ChunkMesh {
+        if (frustum.containsChunk(chunkPosition, connection)) {
+            visibleChunks.add(chunkPosition)
         }
         val mesh = ChunkMesh()
 
-        val below = world.chunks[chunkLocation]?.sections?.get(sectionHeight - 1)
-        val above = world.chunks[chunkLocation]?.sections?.get(sectionHeight + 1)
+        val below = world.chunks[chunkPosition]?.sections?.get(sectionHeight - 1)
+        val above = world.chunks[chunkPosition]?.sections?.get(sectionHeight + 1)
         //val north = (world.allChunks[chunkLocation.getLocationByDirection(Directions.NORTH)]?: throw ChunkNotLoadedException("North not loaded")).sections?.get(sectionHeight)
         //val south = (world.allChunks[chunkLocation.getLocationByDirection(Directions.SOUTH)]?: throw ChunkNotLoadedException("South not loaded")).sections?.get(sectionHeight)
         //val west = (world.allChunks[chunkLocation.getLocationByDirection(Directions.WEST)]?: throw ChunkNotLoadedException("West not loaded")).sections?.get(sectionHeight)
         //val east = (world.allChunks[chunkLocation.getLocationByDirection(Directions.EAST)]?: throw ChunkNotLoadedException("North not loaded")).sections?.get(sectionHeight)
-        val north = world.chunks[chunkLocation.getLocationByDirection(Directions.NORTH)]?.sections?.get(sectionHeight)
-        val south = world.chunks[chunkLocation.getLocationByDirection(Directions.SOUTH)]?.sections?.get(sectionHeight)
-        val west = world.chunks[chunkLocation.getLocationByDirection(Directions.WEST)]?.sections?.get(sectionHeight)
-        val east = world.chunks[chunkLocation.getLocationByDirection(Directions.EAST)]?.sections?.get(sectionHeight)
+        val north = world.chunks[chunkPosition.getLocationByDirection(Directions.NORTH)]?.sections?.get(sectionHeight)
+        val south = world.chunks[chunkPosition.getLocationByDirection(Directions.SOUTH)]?.sections?.get(sectionHeight)
+        val west = world.chunks[chunkPosition.getLocationByDirection(Directions.WEST)]?.sections?.get(sectionHeight)
+        val east = world.chunks[chunkPosition.getLocationByDirection(Directions.EAST)]?.sections?.get(sectionHeight)
 
         for ((position, blockInfo) in section.blocks) {
             val blockBelow: BlockInfo? = if (position.y == 0 && below != null) {
@@ -89,7 +89,7 @@ class WorldRenderer(private val connection: Connection, private val world: World
             } else {
                 section.getBlockInfo(position.getLocationByDirection(Directions.EAST))
             }
-            val blockPosition = BlockPosition(chunkLocation, sectionHeight, position)
+            val blockPosition = BlockPosition(chunkPosition, sectionHeight, position)
             if (blockPosition == BlockPosition(-103, 3, 288)) {
                 Log.debug("")
             }
@@ -166,24 +166,24 @@ class WorldRenderer(private val connection: Connection, private val world: World
         return textures
     }
 
-    fun prepareChunk(chunkLocation: ChunkLocation, chunk: Chunk) {
-        chunkSectionsToDraw[chunkLocation] = ConcurrentHashMap()
+    fun prepareChunk(chunkPosition: ChunkPosition, chunk: Chunk) {
+        chunkSectionsToDraw[chunkPosition] = ConcurrentHashMap()
         if (!chunk.isFullyLoaded) {
             return
         }
         for ((sectionHeight, section) in chunk.sections!!) {
-            prepareChunkSection(chunkLocation, sectionHeight, section, chunk)
+            prepareChunkSection(chunkPosition, sectionHeight, section, chunk)
         }
     }
 
-    fun prepareChunkSection(chunkLocation: ChunkLocation, sectionHeight: Int, section: ChunkSection, chunk: Chunk) {
+    fun prepareChunkSection(chunkPosition: ChunkPosition, sectionHeight: Int, section: ChunkSection, chunk: Chunk) {
         renderWindow.rendering.executor.execute {
-            val mesh = prepareChunk(chunkLocation, sectionHeight, section, chunk)
+            val mesh = prepareChunk(chunkPosition, sectionHeight, section, chunk)
 
-            var sectionMap = chunkSectionsToDraw[chunkLocation]
+            var sectionMap = chunkSectionsToDraw[chunkPosition]
             if (sectionMap == null) {
                 sectionMap = ConcurrentHashMap()
-                chunkSectionsToDraw[chunkLocation] = sectionMap
+                chunkSectionsToDraw[chunkPosition] = sectionMap
             }
             renderWindow.renderQueue.add {
                 mesh.load()
@@ -205,13 +205,13 @@ class WorldRenderer(private val connection: Connection, private val world: World
         }
     }
 
-    fun unloadChunk(chunkLocation: ChunkLocation) {
+    fun unloadChunk(chunkPosition: ChunkPosition) {
         renderWindow.renderQueue.add {
-            chunkSectionsToDraw[chunkLocation]?.let {
+            chunkSectionsToDraw[chunkPosition]?.let {
                 for ((_, mesh) in it) {
                     mesh.unload()
                 }
-                chunkSectionsToDraw.remove(chunkLocation)
+                chunkSectionsToDraw.remove(chunkPosition)
             }
         }
     }

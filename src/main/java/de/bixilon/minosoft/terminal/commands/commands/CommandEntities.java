@@ -33,7 +33,7 @@ public class CommandEntities extends Command {
                             ArrayList<Object[]> tableData = new ArrayList<>();
 
                             for (var entry : connection.getPlayer().getWorld().getEntityIdMap().entrySet()) {
-                                tableData.add(new Object[]{entry.getKey(), entry.getValue().getUUID(), entry.getValue().getEntityInformation(), entry.getValue().getEquipment(), entry.getValue().getLocation(), entry.getValue().getRotation()});
+                                tableData.add(new Object[]{entry.getKey(), entry.getValue().getUUID(), entry.getValue().getEntityInformation(), entry.getValue().getEquipment(), entry.getValue().getPosition(), entry.getValue().getRotation()});
                             }
 
                             print(AsciiTable.getTable(new String[]{"ID", "UUID", "TYPE", "EQUIPMENT", "LOCATION", "ROTATION"}, tableData.toArray(new Object[0][0])));
@@ -52,7 +52,7 @@ public class CommandEntities extends Command {
                             tableData.add(new Object[]{"UUID", entity.getUUID()});
                             tableData.add(new Object[]{"Type", entity.getEntityInformation()});
                             tableData.add(new Object[]{"Class", entity.getClass().getName()});
-                            tableData.add(new Object[]{"Location", entity.getLocation()});
+                            tableData.add(new Object[]{"Location", entity.getPosition()});
                             tableData.add(new Object[]{"Rotation", entity.getRotation()});
                             tableData.add(new Object[]{"Equipment", entity.getEquipment()});
                             tableData.add(new Object[]{"Effects", entity.getEffectList()});

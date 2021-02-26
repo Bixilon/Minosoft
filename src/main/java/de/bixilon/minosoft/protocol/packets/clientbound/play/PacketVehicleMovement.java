@@ -13,19 +13,19 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.data.entities.Location;
+import de.bixilon.minosoft.data.entities.Position;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
 public class PacketVehicleMovement extends ClientboundPacket {
-    Location location;
+    Position position;
     float yaw;
     float pitch;
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        this.location = buffer.readLocation();
+        this.position = buffer.readLocation();
         this.yaw = buffer.readFloat();
         this.pitch = buffer.readFloat();
         return true;
@@ -33,11 +33,11 @@ public class PacketVehicleMovement extends ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Received vehicle movement (location=%s, yaw=%s, pitch=%s)", this.location, this.yaw, this.pitch));
+        Log.protocol(String.format("[IN] Received vehicle movement (position=%s, yaw=%s, pitch=%s)", this.position, this.yaw, this.pitch));
     }
 
-    public Location getLocation() {
-        return this.location;
+    public Position getPosition() {
+        return this.position;
     }
 
     public float getYaw() {

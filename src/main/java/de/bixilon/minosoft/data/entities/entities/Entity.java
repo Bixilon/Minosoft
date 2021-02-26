@@ -39,18 +39,18 @@ public abstract class Entity {
     protected final HashMap<InventorySlots.EntityInventorySlots, Slot> equipment = new HashMap<>();
     protected final HashSet<StatusEffect> effectList = new HashSet<>();
     protected final int versionId;
-    protected Location location;
+    protected Position position;
     protected EntityRotation rotation;
     protected int attachedTo = -1;
     protected EntityMetaData metaData;
 
-    public Entity(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
+    public Entity(Connection connection, int entityId, UUID uuid, Position position, EntityRotation rotation) {
         this.connection = connection;
         this.information = connection.getMapping().getEntityInformation(getClass());
         this.entityId = entityId;
         this.uuid = uuid;
         this.versionId = connection.getVersion().getVersionId();
-        this.location = location;
+        this.position = position;
         this.rotation = rotation;
     }
 
@@ -58,16 +58,16 @@ public abstract class Entity {
         return this.entityId;
     }
 
-    public Location getLocation() {
-        return this.location;
+    public Position getPosition() {
+        return this.position;
     }
 
-    public void setLocation(Location location) {
-        this.location = location;
+    public void setLocation(Position position) {
+        this.position = position;
     }
 
-    public void setLocation(RelativeLocation relativeLocation) {
-        this.location = new Location(this.location.getX() + relativeLocation.getX(), this.location.getY() + relativeLocation.getY(), this.location.getZ() + relativeLocation.getZ());
+    public void setLocation(RelativePosition relativePosition) {
+        this.position = new Position(this.position.getX() + relativePosition.getX(), this.position.getY() + relativePosition.getY(), this.position.getZ() + relativePosition.getZ());
     }
 
     public Slot getEquipment(InventorySlots.EntityInventorySlots slot) {

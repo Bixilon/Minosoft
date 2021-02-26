@@ -14,18 +14,18 @@
 package de.bixilon.minosoft.data.entities.entities;
 
 import de.bixilon.minosoft.data.entities.EntityRotation;
-import de.bixilon.minosoft.data.entities.Location;
+import de.bixilon.minosoft.data.entities.Position;
 import de.bixilon.minosoft.protocol.network.Connection;
 
 import java.util.UUID;
 
 public class LightningBolt extends Entity {
 
-    public LightningBolt(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
-        super(connection, entityId, uuid, location, rotation);
+    public LightningBolt(Connection connection, int entityId, UUID uuid, Position position, EntityRotation rotation) {
+        super(connection, entityId, uuid, position, rotation);
     }
 
-    public LightningBolt(Connection connection, int entityId, Location location) {
-        super(connection, entityId, UUID.randomUUID(), location, new EntityRotation(0, 0, 0));
+    public LightningBolt(Connection connection, int entityId, Position position) {
+        super(connection, entityId, UUID.randomUUID(), position, new EntityRotation(0, 0, 0));
     }
 }

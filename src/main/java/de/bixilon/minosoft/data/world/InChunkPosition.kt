@@ -12,20 +12,28 @@
  */
 package de.bixilon.minosoft.data.world
 
-import de.bixilon.minosoft.data.Directions
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
-data class ChunkLocation(val x: Int, val z: Int) {
-    override fun toString(): String {
-        return "($x $z)"
+data class InChunkPosition(val x: Int, val y: Int, val z: Int) {
+
+    fun getInChunkSectionLocation(): InChunkSectionPosition {
+        return InChunkSectionPosition(x,
+            if (y < 0) {
+                ((ProtocolDefinition.SECTION_HEIGHT_Y + (y % ProtocolDefinition.SECTION_HEIGHT_Y))) % ProtocolDefinition.SECTION_HEIGHT_Y
+            } else {
+                y % ProtocolDefinition.SECTION_HEIGHT_Y
+            }, z)
     }
 
-    fun getLocationByDirection(direction: Directions): ChunkLocation {
-        return when (direction) {
-            Directions.NORTH -> ChunkLocation(x, z - 1)
-            Directions.SOUTH -> ChunkLocation(x, z + 1)
-            Directions.WEST -> ChunkLocation(x - 1, z)
-            Directions.EAST -> ChunkLocation(x + 1, z)
-            else -> throw IllegalArgumentException("Chunk location is just 2d")
+    fun getSectionHeight(): Int {
+        return if (y < 0) {
+            (y + 1) / ProtocolDefinition.SECTION_HEIGHT_Y - 1
+        } else {
+            y / ProtocolDefinition.SECTION_HEIGHT_Y
         }
+    }
+
+    override fun toString(): String {
+        return "($x $y $z)"
     }
 }

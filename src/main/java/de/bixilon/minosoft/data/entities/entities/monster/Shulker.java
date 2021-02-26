@@ -16,7 +16,7 @@ package de.bixilon.minosoft.data.entities.entities.monster;
 import de.bixilon.minosoft.data.Directions;
 import de.bixilon.minosoft.data.entities.EntityMetaDataFields;
 import de.bixilon.minosoft.data.entities.EntityRotation;
-import de.bixilon.minosoft.data.entities.Location;
+import de.bixilon.minosoft.data.entities.Position;
 import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction;
 import de.bixilon.minosoft.data.entities.entities.animal.AbstractGolem;
 import de.bixilon.minosoft.data.text.ChatColors;
@@ -29,8 +29,8 @@ import java.util.UUID;
 
 public class Shulker extends AbstractGolem {
 
-    public Shulker(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
-        super(connection, entityId, uuid, location, rotation);
+    public Shulker(Connection connection, int entityId, UUID uuid, Position position, EntityRotation rotation) {
+        super(connection, entityId, uuid, position, rotation);
     }
 
     @EntityMetaDataFunction(name = "Attachment face")

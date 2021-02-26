@@ -175,7 +175,7 @@ public class Packets {
         PLAY_SET_PASSENGERS(PacketSetPassenger::new),
         PLAY_TEAMS(PacketTeams::new),
         PLAY_UPDATE_SCORE(PacketScoreboardUpdateScore::new),
-        PLAY_SPAWN_POSITION(PacketSpawnLocation::new),
+        PLAY_SPAWN_POSITION(PacketSpawnPosition::new),
         PLAY_TIME_UPDATE(PacketTimeUpdate::new),
         PLAY_ENTITY_SOUND_EFFECT(PacketEntitySoundEffect::new),
         PLAY_SOUND_EFFECT(PacketSoundEffect::new),

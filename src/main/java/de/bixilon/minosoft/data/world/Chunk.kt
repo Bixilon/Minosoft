@@ -31,15 +31,15 @@ class Chunk(
             return sections != null && biomeAccessor != null && lightAccessor != null
         }
 
-    fun getBlockInfo(location: InChunkLocation): BlockInfo? {
-        return sections?.get(location.getSectionHeight())?.getBlockInfo(location.getInChunkSectionLocation())
+    fun getBlockInfo(position: InChunkPosition): BlockInfo? {
+        return sections?.get(position.getSectionHeight())?.getBlockInfo(position.getInChunkSectionLocation())
     }
 
     fun getBlockInfo(x: Int, y: Int, z: Int): BlockInfo? {
-        return getBlockInfo(InChunkLocation(x, y, z))
+        return getBlockInfo(InChunkPosition(x, y, z))
     }
 
-    fun setBlocks(blocks: HashMap<InChunkLocation, BlockInfo?>) {
+    fun setBlocks(blocks: HashMap<InChunkPosition, BlockInfo?>) {
         for ((location, blockInfo) in blocks) {
             setBlock(location, blockInfo)
         }
@@ -68,19 +68,19 @@ class Chunk(
         }
     }
 
-    fun setRawBlocks(blocks: HashMap<InChunkLocation, BlockState?>) {
+    fun setRawBlocks(blocks: HashMap<InChunkPosition, BlockState?>) {
         for ((location, blockInfo) in blocks) {
             setRawBlock(location, blockInfo)
         }
     }
 
-    fun setBlock(location: InChunkLocation, block: BlockInfo?) {
-        getSectionOrCreate(location.getSectionHeight()).setBlockInfo(location.getInChunkSectionLocation(), block)
+    fun setBlock(position: InChunkPosition, block: BlockInfo?) {
+        getSectionOrCreate(position.getSectionHeight()).setBlockInfo(position.getInChunkSectionLocation(), block)
     }
 
-    fun setRawBlock(location: InChunkLocation, block: BlockState?) {
-        getSectionOrCreate(location.getSectionHeight()).let {
-            val inChunkSectionLocation = location.getInChunkSectionLocation()
+    fun setRawBlock(position: InChunkPosition, block: BlockState?) {
+        getSectionOrCreate(position.getSectionHeight()).let {
+            val inChunkSectionLocation = position.getInChunkSectionLocation()
             if (block == null) {
                 it.blocks.remove(inChunkSectionLocation)
                 return

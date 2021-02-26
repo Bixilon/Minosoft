@@ -13,21 +13,21 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.data.entities.Location;
+import de.bixilon.minosoft.data.entities.Position;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
 public class PacketFacePlayer extends ClientboundPacket {
     PlayerFaces face;
-    Location location;
+    Position position;
     int entityId = -1;
     PlayerFaces entityFace;
 
     @Override
     public boolean read(InByteBuffer buffer) {
         this.face = PlayerFaces.byId(buffer.readVarInt());
-        this.location = buffer.readLocation();
+        this.position = buffer.readLocation();
         if (buffer.readBoolean()) {
             // entity present
             this.entityId = buffer.readVarInt();
@@ -38,15 +38,15 @@ public class PacketFacePlayer extends ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Received face player packet (face=%s, location=%s, entityId=%d, entityFace=%s)", this.face, this.location, this.entityId, this.entityFace));
+        Log.protocol(String.format("[IN] Received face player packet (face=%s, position=%s, entityId=%d, entityFace=%s)", this.face, this.position, this.entityId, this.entityFace));
     }
 
     public PlayerFaces getFace() {
         return this.face;
     }
 
-    public Location getLocation() {
-        return this.location;
+    public Position getPosition() {
+        return this.position;
     }
 
     public int getEntityId() {

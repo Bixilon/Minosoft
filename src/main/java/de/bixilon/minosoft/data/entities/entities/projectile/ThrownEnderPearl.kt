@@ -13,13 +13,13 @@
 package de.bixilon.minosoft.data.entities.entities.projectile
 
 import de.bixilon.minosoft.data.entities.EntityRotation
-import de.bixilon.minosoft.data.entities.Location
+import de.bixilon.minosoft.data.entities.Position
 import de.bixilon.minosoft.data.inventory.Slot
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.protocol.network.Connection
 import java.util.*
 
-class ThrownEnderPearl(connection: Connection?, entityId: Int, uuid: UUID?, location: Location?, rotation: EntityRotation?) : ThrowableItemProjectile(connection, entityId, uuid, location, rotation) {
+class ThrownEnderPearl(connection: Connection?, entityId: Int, uuid: UUID?, location: Position?, rotation: EntityRotation?) : ThrowableItemProjectile(connection, entityId, uuid, location, rotation) {
 
     override fun getDefaultItem(): Slot {
         return Slot(connection.version, connection.mapping.itemRegistry.get(DEFAULT_ITEM))

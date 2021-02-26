@@ -15,11 +15,11 @@ package de.bixilon.minosoft.data.world.light
 
 import de.bixilon.minosoft.data.Directions
 import de.bixilon.minosoft.data.world.BlockPosition
-import de.bixilon.minosoft.data.world.InChunkLocation
+import de.bixilon.minosoft.data.world.InChunkPosition
 
 class ChunkLightAccessor(
-    val blockLightLevel: MutableMap<InChunkLocation, Byte> = mutableMapOf(),
-    val skyLightLevel: MutableMap<InChunkLocation, Byte> = mutableMapOf(),
+    val blockLightLevel: MutableMap<InChunkPosition, Byte> = mutableMapOf(),
+    val skyLightLevel: MutableMap<InChunkPosition, Byte> = mutableMapOf(),
 ) : LightAccessor {
     override fun getLightLevel(blockPosition: BlockPosition, direction: Directions): Int {
         val inChunkLocation = blockPosition.getInChunkLocation()

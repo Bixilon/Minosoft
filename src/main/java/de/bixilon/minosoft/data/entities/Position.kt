@@ -10,30 +10,32 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.data.world
+package de.bixilon.minosoft.data.entities
 
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.data.world.BlockPosition
+import glm_.vec3.Vec3
 
-data class InChunkLocation(val x: Int, val y: Int, val z: Int) {
 
-    fun getInChunkSectionLocation(): InChunkSectionLocation {
-        return InChunkSectionLocation(x,
-            if (y < 0) {
-                ((ProtocolDefinition.SECTION_HEIGHT_Y + (y % ProtocolDefinition.SECTION_HEIGHT_Y))) % ProtocolDefinition.SECTION_HEIGHT_Y
-            } else {
-                y % ProtocolDefinition.SECTION_HEIGHT_Y
-            }, z)
-    }
+data class Position(val x: Double, val y: Double, val z: Double) {
 
-    fun getSectionHeight(): Int {
-        return if (y < 0) {
-            (y + 1) / ProtocolDefinition.SECTION_HEIGHT_Y - 1
-        } else {
-            y / ProtocolDefinition.SECTION_HEIGHT_Y
-        }
-    }
+    constructor(position: Vec3) : this(position.x.toDouble(), position.y.toDouble(), position.z.toDouble())
 
     override fun toString(): String {
         return "($x $y $z)"
+    }
+
+    fun toVec3(): Vec3 {
+        return Vec3(x, y, z)
+    }
+
+    fun toBlockPosition(): BlockPosition {
+        return BlockPosition((x - 0.5).toInt(), y.toInt(), (z - 0.5).toInt()) // ToDo
+    }
+
+    companion object {
+        @JvmStatic
+        fun fromPosition(position: BlockPosition): Position {
+            return Position(position.x.toDouble(), position.y.toDouble(), position.z.toDouble())
+        }
     }
 }

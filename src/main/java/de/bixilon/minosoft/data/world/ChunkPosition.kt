@@ -10,32 +10,22 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.data.entities
+package de.bixilon.minosoft.data.world
 
-import de.bixilon.minosoft.data.world.BlockPosition
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.Directions
 
-
-data class Location(val x: Double, val y: Double, val z: Double) {
-
-    constructor(position: Vec3) : this(position.x.toDouble(), position.y.toDouble(), position.z.toDouble())
-
+data class ChunkPosition(val x: Int, val z: Int) {
     override fun toString(): String {
-        return "($x $y $z)"
+        return "($x $z)"
     }
 
-    fun toVec3(): Vec3 {
-        return Vec3(x, y, z)
-    }
-
-    fun toBlockPosition(): BlockPosition {
-        return BlockPosition((x - 0.5).toInt(), y.toInt(), (z - 0.5).toInt()) // ToDo
-    }
-
-    companion object {
-        @JvmStatic
-        fun fromPosition(position: BlockPosition): Location {
-            return Location(position.x.toDouble(), position.y.toDouble(), position.z.toDouble())
+    fun getLocationByDirection(direction: Directions): ChunkPosition {
+        return when (direction) {
+            Directions.NORTH -> ChunkPosition(x, z - 1)
+            Directions.SOUTH -> ChunkPosition(x, z + 1)
+            Directions.WEST -> ChunkPosition(x - 1, z)
+            Directions.EAST -> ChunkPosition(x + 1, z)
+            else -> throw IllegalArgumentException("Chunk location is just 2d")
         }
     }
 }

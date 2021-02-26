@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.protocol.protocol;
 
 import de.bixilon.minosoft.data.entities.EntityRotation;
-import de.bixilon.minosoft.data.entities.Location;
+import de.bixilon.minosoft.data.entities.Position;
 import de.bixilon.minosoft.data.mappings.ResourceLocation;
 import de.bixilon.minosoft.data.player.Hands;
 import de.bixilon.minosoft.modding.event.events.ChatMessageSendingEvent;
@@ -121,9 +121,9 @@ public class PacketSender {
         this.connection.sendPacket(new PacketLoginPluginResponse(messageId, toSend.toByteArray()));
     }
 
-    public void setLocation(Location location, EntityRotation rotation, boolean onGround) {
-        this.connection.sendPacket(new PacketPlayerPositionAndRotationSending(location, rotation, onGround));
-        this.connection.getPlayer().getEntity().setLocation(location);
+    public void setLocation(Position position, EntityRotation rotation, boolean onGround) {
+        this.connection.sendPacket(new PacketPlayerPositionAndRotationSending(position, rotation, onGround));
+        this.connection.getPlayer().getEntity().setLocation(position);
         this.connection.getPlayer().getEntity().setRotation(rotation);
     }
 }

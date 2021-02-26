@@ -153,7 +153,7 @@ class HUDDebugScreenElement(private val hudTextElement: HUDTextElement) : HUDTex
     }
 
     private fun getChunkLocation(): String {
-        return "${camera.inChunkSectionLocation.x} ${camera.inChunkSectionLocation.y} ${camera.inChunkSectionLocation.z} in ${camera.chunkLocation.x} ${camera.sectionHeight} ${camera.chunkLocation.z}"
+        return "${camera.inChunkSectionPosition.x} ${camera.inChunkSectionPosition.y} ${camera.inChunkSectionPosition.z} in ${camera.chunkPosition.x} ${camera.sectionHeight} ${camera.chunkPosition.z}"
     }
 
     private fun getFacing(): String {

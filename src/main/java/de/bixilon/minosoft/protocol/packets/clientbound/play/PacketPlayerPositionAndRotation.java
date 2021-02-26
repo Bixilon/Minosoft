@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.entities.EntityRotation;
-import de.bixilon.minosoft.data.entities.Location;
+import de.bixilon.minosoft.data.entities.Position;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketConfirmTeleport;
@@ -25,7 +25,7 @@ import de.bixilon.minosoft.util.logging.Log;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
 
 public class PacketPlayerPositionAndRotation extends ClientboundPacket {
-    private Location location;
+    private Position position;
     private EntityRotation rotation;
     private boolean onGround;
     private byte flags;
@@ -34,7 +34,7 @@ public class PacketPlayerPositionAndRotation extends ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        this.location = buffer.readLocation();
+        this.position = buffer.readLocation();
         this.rotation = new EntityRotation(buffer.readFloat(), buffer.readFloat(), 0);
         if (buffer.getVersionId() < V_14W03B) {
             this.onGround = buffer.readBoolean();
@@ -55,21 +55,21 @@ public class PacketPlayerPositionAndRotation extends ClientboundPacket {
     @Override
     public void handle(Connection connection) {
         // ToDo: GUI should do this
-        connection.getPlayer().getEntity().setLocation(getLocation());
+        connection.getPlayer().getEntity().setLocation(getPosition());
         if (connection.getVersion().getVersionId() >= V_15W42A) {
             connection.sendPacket(new PacketConfirmTeleport(getTeleportId()));
         } else {
-            connection.sendPacket(new PacketPlayerPositionAndRotationSending(getLocation(), getRotation(), isOnGround()));
+            connection.sendPacket(new PacketPlayerPositionAndRotationSending(getPosition(), getRotation(), isOnGround()));
         }
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Received player location: (location=%s, rotation=%s, onGround=%b)", this.location, this.rotation, this.onGround));
+        Log.protocol(String.format("[IN] Received player location: (position=%s, rotation=%s, onGround=%b)", this.position, this.rotation, this.onGround));
     }
 
-    public Location getLocation() {
-        return this.location;
+    public Position getPosition() {
+        return this.position;
     }
 
     public EntityRotation getRotation() {

@@ -13,33 +13,33 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.data.world.ChunkLocation;
+import de.bixilon.minosoft.data.world.ChunkPosition;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
 public class PacketUnloadChunk extends ClientboundPacket {
-    ChunkLocation location;
+    ChunkPosition chunkPosition;
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        this.location = new ChunkLocation(buffer.readInt(), buffer.readInt());
+        this.chunkPosition = new ChunkPosition(buffer.readInt(), buffer.readInt());
         return true;
     }
 
     @Override
     public void handle(Connection connection) {
-        connection.getPlayer().getWorld().unloadChunk(getLocation());
-        connection.getRenderer().getRenderWindow().getWorldRenderer().unloadChunk(this.location);
+        connection.getPlayer().getWorld().unloadChunk(getChunkPosition());
+        connection.getRenderer().getRenderWindow().getWorldRenderer().unloadChunk(this.chunkPosition);
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Received unload chunk packet (location=%s)", this.location));
+        Log.protocol(String.format("[IN] Received unload chunk packet (chunkPosition=%s)", this.chunkPosition));
     }
 
-    public ChunkLocation getLocation() {
-        return this.location;
+    public ChunkPosition getChunkPosition() {
+        return this.chunkPosition;
     }
 }

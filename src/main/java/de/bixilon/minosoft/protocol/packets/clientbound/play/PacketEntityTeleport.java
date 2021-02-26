@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.data.entities.Location;
+import de.bixilon.minosoft.data.entities.Position;
 import de.bixilon.minosoft.data.entities.entities.Entity;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
@@ -25,7 +25,7 @@ import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_16W06A;
 
 public class PacketEntityTeleport extends ClientboundPacket {
     int entityId;
-    Location location;
+    Position position;
     short yaw;
     short pitch;
     boolean onGround;
@@ -35,9 +35,9 @@ public class PacketEntityTeleport extends ClientboundPacket {
         this.entityId = buffer.readEntityId();
 
         if (buffer.getVersionId() < V_16W06A) {
-            this.location = new Location(buffer.readFixedPointNumberInt(), buffer.readFixedPointNumberInt(), buffer.readFixedPointNumberInt());
+            this.position = new Position(buffer.readFixedPointNumberInt(), buffer.readFixedPointNumberInt(), buffer.readFixedPointNumberInt());
         } else {
-            this.location = buffer.readLocation();
+            this.position = buffer.readLocation();
         }
         this.yaw = buffer.readAngle();
         this.pitch = buffer.readAngle();
@@ -55,21 +55,21 @@ public class PacketEntityTeleport extends ClientboundPacket {
             // thanks mojang
             return;
         }
-        entity.setLocation(getRelativeLocation());
+        entity.setLocation(getRelativePosition());
         entity.setRotation(getYaw(), getPitch());
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Entity %d moved to %s (yaw=%s, pitch=%s)", this.entityId, this.location, this.yaw, this.pitch));
+        Log.protocol(String.format("[IN] Entity %d moved to %s (yaw=%s, pitch=%s)", this.entityId, this.position, this.yaw, this.pitch));
     }
 
     public int getEntityId() {
         return this.entityId;
     }
 
-    public Location getRelativeLocation() {
-        return this.location;
+    public Position getRelativePosition() {
+        return this.position;
     }
 
     public short getYaw() {

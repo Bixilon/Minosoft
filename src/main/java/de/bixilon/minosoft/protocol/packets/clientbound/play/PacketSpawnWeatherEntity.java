@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.data.entities.Location;
+import de.bixilon.minosoft.data.entities.Position;
 import de.bixilon.minosoft.data.entities.entities.LightningBolt;
 import de.bixilon.minosoft.modding.event.events.EntitySpawnEvent;
 import de.bixilon.minosoft.modding.event.events.LightningBoltSpawnEvent;
@@ -31,13 +31,13 @@ public class PacketSpawnWeatherEntity extends ClientboundPacket {
     public boolean read(InByteBuffer buffer) {
         int entityId = buffer.readVarInt();
         byte type = buffer.readByte();
-        Location location;
+        Position position;
         if (buffer.getVersionId() < V_16W06A) {
-            location = new Location(buffer.readFixedPointNumberInt(), buffer.readFixedPointNumberInt(), buffer.readFixedPointNumberInt());
+            position = new Position(buffer.readFixedPointNumberInt(), buffer.readFixedPointNumberInt(), buffer.readFixedPointNumberInt());
         } else {
-            location = buffer.readLocation();
+            position = buffer.readLocation();
         }
-        this.entity = new LightningBolt(buffer.getConnection(), entityId, location);
+        this.entity = new LightningBolt(buffer.getConnection(), entityId, position);
         return true;
     }
 
@@ -49,7 +49,7 @@ public class PacketSpawnWeatherEntity extends ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Thunderbolt spawned at %s (entityId=%d)", this.entity.getLocation(), this.entity.getEntityId()));
+        Log.protocol(String.format("[IN] Thunderbolt spawned at %s (entityId=%d)", this.entity.getPosition(), this.entity.getEntityId()));
     }
 
     public LightningBolt getEntity() {

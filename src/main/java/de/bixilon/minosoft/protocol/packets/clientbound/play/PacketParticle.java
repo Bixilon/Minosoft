@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.data.entities.Location;
+import de.bixilon.minosoft.data.entities.Position;
 import de.bixilon.minosoft.data.mappings.particle.Particle;
 import de.bixilon.minosoft.data.mappings.particle.data.ParticleData;
 import de.bixilon.minosoft.modding.event.events.ParticleSpawnEvent;
@@ -28,7 +28,7 @@ public class PacketParticle extends ClientboundPacket {
     Particle particleType;
     ParticleData particleData;
     boolean longDistance;
-    Location location;
+    Position position;
     float offsetX;
     float offsetY;
     float offsetZ;
@@ -46,9 +46,9 @@ public class PacketParticle extends ClientboundPacket {
             this.longDistance = buffer.readBoolean();
         }
         if (buffer.getVersionId() < V_1_15_PRE4) {
-            this.location = buffer.readSmallLocation();
+            this.position = buffer.readSmallLocation();
         } else {
-            this.location = buffer.readLocation();
+            this.position = buffer.readLocation();
         }
 
         // offset
@@ -71,11 +71,11 @@ public class PacketParticle extends ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Received particle spawn packet (location=%s, offsetX=%s, offsetY=%s, offsetZ=%s, particleType=%s, dataFloat=%s, count=%d, particleData=%s)", this.location, this.offsetX, this.offsetY, this.offsetZ, this.particleType, this.particleDataFloat, this.count, this.particleData));
+        Log.protocol(String.format("[IN] Received particle spawn packet (position=%s, offsetX=%s, offsetY=%s, offsetZ=%s, particleType=%s, dataFloat=%s, count=%d, particleData=%s)", this.position, this.offsetX, this.offsetY, this.offsetZ, this.particleType, this.particleDataFloat, this.count, this.particleData));
     }
 
-    public Location getLocation() {
-        return this.location;
+    public Position getPosition() {
+        return this.position;
     }
 
     public float getOffsetX() {

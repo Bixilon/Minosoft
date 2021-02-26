@@ -14,8 +14,8 @@
 package de.bixilon.minosoft.modding.event.events;
 
 import de.bixilon.minosoft.data.mappings.blocks.BlockState;
-import de.bixilon.minosoft.data.world.ChunkLocation;
-import de.bixilon.minosoft.data.world.InChunkLocation;
+import de.bixilon.minosoft.data.world.ChunkPosition;
+import de.bixilon.minosoft.data.world.InChunkPosition;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketMultiBlockChange;
 
@@ -25,26 +25,26 @@ import java.util.HashMap;
  * Fired when at least block is changed
  */
 public class MultiBlockChangeEvent extends ConnectionEvent {
-    private final HashMap<InChunkLocation, BlockState> blocks;
-    private final ChunkLocation location;
+    private final HashMap<InChunkPosition, BlockState> blocks;
+    private final ChunkPosition position;
 
-    public MultiBlockChangeEvent(Connection connection, HashMap<InChunkLocation, BlockState> blocks, ChunkLocation location) {
+    public MultiBlockChangeEvent(Connection connection, HashMap<InChunkPosition, BlockState> blocks, ChunkPosition position) {
         super(connection);
         this.blocks = blocks;
-        this.location = location;
+        this.position = position;
     }
 
     public MultiBlockChangeEvent(Connection connection, PacketMultiBlockChange pkg) {
         super(connection);
         this.blocks = pkg.getBlocks();
-        this.location = pkg.getLocation();
+        this.position = pkg.getChunkPosition();
     }
 
-    public HashMap<InChunkLocation, BlockState> getBlocks() {
+    public HashMap<InChunkPosition, BlockState> getBlocks() {
         return this.blocks;
     }
 
-    public ChunkLocation getLocation() {
-        return this.location;
+    public ChunkPosition getPosition() {
+        return this.position;
     }
 }

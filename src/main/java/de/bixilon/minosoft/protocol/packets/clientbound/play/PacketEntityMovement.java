@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.data.entities.RelativeLocation;
+import de.bixilon.minosoft.data.entities.RelativePosition;
 import de.bixilon.minosoft.data.entities.entities.Entity;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
@@ -25,16 +25,16 @@ import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_16W06A;
 
 public class PacketEntityMovement extends ClientboundPacket {
     int entityId;
-    RelativeLocation location;
+    RelativePosition position;
     boolean onGround;
 
     @Override
     public boolean read(InByteBuffer buffer) {
         this.entityId = buffer.readEntityId();
         if (buffer.getVersionId() < V_16W06A) {
-            this.location = new RelativeLocation(buffer.readFixedPointNumberByte(), buffer.readFixedPointNumberByte(), buffer.readFixedPointNumberByte());
+            this.position = new RelativePosition(buffer.readFixedPointNumberByte(), buffer.readFixedPointNumberByte(), buffer.readFixedPointNumberByte());
         } else {
-            this.location = new RelativeLocation(buffer.readShort() / 4096F, buffer.readShort() / 4096F, buffer.readShort() / 4096F); // / 128 / 32
+            this.position = new RelativePosition(buffer.readShort() / 4096F, buffer.readShort() / 4096F, buffer.readShort() / 4096F); // / 128 / 32
         }
         if (buffer.getVersionId() >= V_14W25B) {
             this.onGround = buffer.readBoolean();
@@ -49,19 +49,19 @@ public class PacketEntityMovement extends ClientboundPacket {
             // thanks mojang
             return;
         }
-        entity.setLocation(getRelativeLocation());
+        entity.setLocation(getRelativePosition());
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Entity %d moved relative %s", this.entityId, this.location));
+        Log.protocol(String.format("[IN] Entity %d moved relative %s", this.entityId, this.position));
     }
 
     public int getEntityId() {
         return this.entityId;
     }
 
-    public RelativeLocation getRelativeLocation() {
-        return this.location;
+    public RelativePosition getRelativePosition() {
+        return this.position;
     }
 }

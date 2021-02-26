@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.SoundCategories;
-import de.bixilon.minosoft.data.entities.Location;
+import de.bixilon.minosoft.data.entities.Position;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
@@ -23,7 +23,7 @@ import de.bixilon.minosoft.util.logging.Log;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
 
 public class PacketNamedSoundEffect extends ClientboundPacket {
-    Location location;
+    Position position;
     String sound;
     float volume;
     float pitch;
@@ -41,14 +41,14 @@ public class PacketNamedSoundEffect extends ClientboundPacket {
             buffer.readString(); // parrot entity type
         }
         if (buffer.getVersionId() < V_16W02A) {
-            this.location = new Location(buffer.readInt() * 8, buffer.readInt() * 8, buffer.readInt() * 8); // ToDo: check if it is not * 4
+            this.position = new Position(buffer.readInt() * 8, buffer.readInt() * 8, buffer.readInt() * 8); // ToDo: check if it is not * 4
         }
 
         if (buffer.getVersionId() >= V_16W02A && (buffer.getVersionId() < V_17W15A || buffer.getVersionId() >= V_17W18A)) {
             this.category = SoundCategories.byId(buffer.readVarInt());
         }
         if (buffer.getVersionId() >= V_16W02A) {
-            this.location = new Location(buffer.readFixedPointNumberInt() * 4, buffer.readFixedPointNumberInt() * 4, buffer.readFixedPointNumberInt() * 4);
+            this.position = new Position(buffer.readFixedPointNumberInt() * 4, buffer.readFixedPointNumberInt() * 4, buffer.readFixedPointNumberInt() * 4);
         }
         this.volume = buffer.readFloat();
         if (buffer.getVersionId() < V_16W20A) {
@@ -62,11 +62,11 @@ public class PacketNamedSoundEffect extends ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Play sound effect (sound=%s, category=%s, volume=%s, pitch=%s, location=%s)", this.sound, this.category, this.volume, this.pitch, this.location));
+        Log.protocol(String.format("[IN] Play sound effect (sound=%s, category=%s, volume=%s, pitch=%s, position=%s)", this.sound, this.category, this.volume, this.pitch, this.position));
     }
 
-    public Location getLocation() {
-        return this.location;
+    public Position getPosition() {
+        return this.position;
     }
 
     /**

@@ -10,27 +10,11 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.data.entities
 
-package de.bixilon.minosoft.modding.event.events;
+data class RelativePosition(val x: Double, val y: Double, val z: Double) {
 
-import de.bixilon.minosoft.data.world.BlockPosition;
-import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketSpawnLocation;
-
-public class SpawnLocationChangeEvent extends ConnectionEvent {
-    private final BlockPosition location;
-
-    public SpawnLocationChangeEvent(Connection connection, BlockPosition location) {
-        super(connection);
-        this.location = location;
-    }
-
-    public SpawnLocationChangeEvent(Connection connection, PacketSpawnLocation pkg) {
-        super(connection);
-        this.location = pkg.getSpawnLocation();
-    }
-
-    public BlockPosition getSpawnLocation() {
-        return this.location;
+    override fun toString(): String {
+        return "($x $y $z)"
     }
 }

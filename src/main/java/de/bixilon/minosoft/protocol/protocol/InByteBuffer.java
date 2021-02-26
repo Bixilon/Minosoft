@@ -21,8 +21,8 @@ import de.bixilon.minosoft.data.commands.CommandLiteralNode;
 import de.bixilon.minosoft.data.commands.CommandNode;
 import de.bixilon.minosoft.data.commands.CommandRootNode;
 import de.bixilon.minosoft.data.entities.EntityMetaData;
-import de.bixilon.minosoft.data.entities.Location;
 import de.bixilon.minosoft.data.entities.Poses;
+import de.bixilon.minosoft.data.entities.Position;
 import de.bixilon.minosoft.data.inventory.Slot;
 import de.bixilon.minosoft.data.mappings.LegacyResourceLocation;
 import de.bixilon.minosoft.data.mappings.ResourceLocation;
@@ -35,7 +35,7 @@ import de.bixilon.minosoft.data.mappings.particle.data.ParticleData;
 import de.bixilon.minosoft.data.mappings.recipes.Ingredient;
 import de.bixilon.minosoft.data.text.ChatComponent;
 import de.bixilon.minosoft.data.world.BlockPosition;
-import de.bixilon.minosoft.data.world.ChunkLocation;
+import de.bixilon.minosoft.data.world.ChunkPosition;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.util.Util;
 import de.bixilon.minosoft.util.nbt.tag.*;
@@ -356,16 +356,16 @@ public class InByteBuffer {
         return (short) (readByte() * ProtocolDefinition.ANGLE_CALCULATION_CONSTANT);
     }
 
-    public Location readLocation() {
-        return new Location(readDouble(), readDouble(), readDouble());
+    public Position readLocation() {
+        return new Position(readDouble(), readDouble(), readDouble());
     }
 
     public double readDouble() {
         return Double.longBitsToDouble(readLong());
     }
 
-    public Location readSmallLocation() {
-        return new Location(readFloat(), readFloat(), readFloat());
+    public Position readSmallLocation() {
+        return new Position(readFloat(), readFloat(), readFloat());
     }
 
     public float readFloat() {
@@ -592,7 +592,7 @@ public class InByteBuffer {
         return new ResourceLocation(resourceLocation);
     }
 
-    public ChunkLocation readChunkLocation() {
-        return new ChunkLocation(readInt(), readInt());
+    public ChunkPosition readChunkLocation() {
+        return new ChunkPosition(readInt(), readInt());
     }
 }

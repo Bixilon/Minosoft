@@ -24,7 +24,7 @@ import java.util.concurrent.ConcurrentHashMap
  * Collection of chunks
  */
 class World {
-    val chunks = ConcurrentHashMap<ChunkLocation, Chunk>()
+    val chunks = ConcurrentHashMap<ChunkPosition, Chunk>()
     val entityIdMap = HashBiMap.create<Int, Entity>()
     val entityUUIDMap = HashBiMap.create<UUID, Entity>()
     var isHardcore = false
@@ -37,14 +37,14 @@ class World {
         return chunks[chunkLocation]?.getBlockInfo(blockPosition.getInChunkLocation())
     }
 
-    fun getChunk(loc: ChunkLocation): Chunk? {
+    fun getChunk(loc: ChunkPosition): Chunk? {
         return chunks[loc]
     }
 
-    fun getOrCreateChunk(chunkLocation: ChunkLocation): Chunk {
-        return chunks[chunkLocation] ?: run {
+    fun getOrCreateChunk(chunkPosition: ChunkPosition): Chunk {
+        return chunks[chunkPosition] ?: run {
             val chunk = Chunk()
-            chunks[chunkLocation] = chunk
+            chunks[chunkPosition] = chunk
             chunk
         }
     }
@@ -53,15 +53,15 @@ class World {
         chunks[blockPosition.getChunkLocation()]?.setRawBlock(blockPosition.getInChunkLocation(), block)
     }
 
-    fun unloadChunk(location: ChunkLocation) {
-        chunks.remove(location)
+    fun unloadChunk(position: ChunkPosition) {
+        chunks.remove(position)
     }
 
-    fun replaceChunk(location: ChunkLocation, chunk: Chunk) {
-        chunks[location] = chunk
+    fun replaceChunk(position: ChunkPosition, chunk: Chunk) {
+        chunks[position] = chunk
     }
 
-    fun replaceChunks(chunkMap: HashMap<ChunkLocation, Chunk>) {
+    fun replaceChunks(chunkMap: HashMap<ChunkPosition, Chunk>) {
         for ((chunkLocation, chunk) in chunkMap) {
             chunks[chunkLocation] = chunk
         }
