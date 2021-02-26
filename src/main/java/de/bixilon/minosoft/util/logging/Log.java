@@ -13,9 +13,12 @@
 
 package de.bixilon.minosoft.util.logging;
 
+import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.config.StaticConfiguration;
+import de.bixilon.minosoft.data.ChatTextPositions;
+import de.bixilon.minosoft.data.text.BaseComponent;
 import de.bixilon.minosoft.data.text.ChatColors;
-import de.bixilon.minosoft.data.text.PostChatFormattingCodes;
+import de.bixilon.minosoft.data.text.ChatComponent;
 import de.bixilon.minosoft.data.text.RGBColor;
 
 import java.io.PrintStream;
@@ -25,7 +28,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class Log {
     public static final long MINOSOFT_START_TIME = System.currentTimeMillis();
     private static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-    private static final LinkedBlockingQueue<String> LOG_QUEUE = new LinkedBlockingQueue<>();
+    private static final LinkedBlockingQueue<ChatComponent> LOG_QUEUE = new LinkedBlockingQueue<>();
     private static final PrintStream SYSTEM_ERR_STREAM = System.err;
     private static final PrintStream SYSTEM_OUT_STREAM = System.out;
     private static final PrintStream ERROR_PRINT_STREAM = new LogPrintStream(LogLevels.WARNING);
@@ -38,15 +41,20 @@ public class Log {
         new Thread(() -> {
             while (true) {
                 // something to print
-                String message;
+                ChatComponent message;
                 try {
                     message = LOG_QUEUE.take();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                     continue;
                 }
-                SYSTEM_OUT_STREAM.println(message);
+                SYSTEM_OUT_STREAM.println(message.getANSIColoredMessage());
 
+                if (StaticConfiguration.SHOW_LOG_MESSAGES_IN_CHAT) {
+                    for (var connection : Minosoft.CONNECTIONS.values()) {
+                        connection.getSender().sendFakeChatMessage(message, ChatTextPositions.CHAT_BOX);
+                    }
+                }
                 // ToDo: log to file
             }
         }, "Log").start();
@@ -98,15 +106,13 @@ public class Log {
         builder.append(level.name());
         builder.append("] ");
         builder.append(prefix);
+        var component = (BaseComponent) ChatComponent.valueOf(builder.toString());
+        var messageComponent = (BaseComponent) ChatComponent.valueOf(message);
         if (color != null && StaticConfiguration.COLORED_LOG) {
-            builder.append(ChatColors.getANSIColorByRGBColor(color));
-            builder.append(message);
-            builder.append(PostChatFormattingCodes.RESET.getANSI());
-        } else {
-            builder.append(message);
+            messageComponent.applyDefaultColor(color);
         }
-        builder.append(PostChatFormattingCodes.RESET.getANSI());
-        LOG_QUEUE.add(builder.toString());
+        component.append(messageComponent);
+        LOG_QUEUE.add(component);
     }
 
     /**

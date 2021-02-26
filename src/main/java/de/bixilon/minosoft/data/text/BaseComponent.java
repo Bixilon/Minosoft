@@ -49,7 +49,7 @@ public class BaseComponent extends ChatComponent {
     public BaseComponent(MinecraftLocaleManager localeManager, @Nullable ChatComponent parent, String text) {
         // legacy String
         StringBuilder currentText = new StringBuilder();
-        RGBColor color = ChatColors.WHITE;
+        RGBColor color = null;
         BetterHashSet<ChatFormattingCode> formattingCodes = new BetterHashSet<>();
         StringCharacterIterator iterator = new StringCharacterIterator(text);
         while (iterator.current() != CharacterIterator.DONE) {
@@ -180,7 +180,7 @@ public class BaseComponent extends ChatComponent {
 
     @Override
     public String toString() {
-        return PostChatFormattingCodes.RESET.getANSI() + getANSIColoredMessage();
+        return getLegacyText();
     }
 
     @Override
@@ -244,5 +244,17 @@ public class BaseComponent extends ChatComponent {
 
     public boolean isEmpty() {
         return this.parts.isEmpty();
+    }
+
+    public void applyDefaultColor(RGBColor color) {
+        for (var part : this.parts) {
+            if (part instanceof BaseComponent baseComponent) {
+                baseComponent.applyDefaultColor(color);
+            } else if (part instanceof TextComponent textComponent) {
+                if (textComponent.getColor() == null) {
+                    textComponent.setColor(color);
+                }
+            }
+        }
     }
 }

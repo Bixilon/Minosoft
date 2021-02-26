@@ -39,18 +39,17 @@ import java.util.function.Consumer
 
 open class TextComponent : ChatComponent {
     private val text: String
-    var color: RGBColor = ChatColors.WHITE
+    var color: RGBColor? = null
+        private set
     var formatting: BetterHashSet<ChatFormattingCode> = BetterHashSet()
 
     constructor(text: String, color: RGBColor?, formatting: BetterHashSet<ChatFormattingCode>) {
         this.text = text
-        if (color != null) {
-            this.color = color
-        }
+        this.color = color
         this.formatting = formatting
     }
 
-    constructor(text: String, color: RGBColor) {
+    constructor(text: String, color: RGBColor?) {
         this.text = text
         this.color = color
     }
@@ -89,7 +88,7 @@ open class TextComponent : ChatComponent {
         return this
     }
 
-    fun setColor(color: RGBColor): TextComponent {
+    fun setColor(color: RGBColor?): TextComponent {
         this.color = color
         return this
     }
@@ -115,12 +114,14 @@ open class TextComponent : ChatComponent {
     }
 
     override fun toString(): String {
-        return ansiColoredMessage
+        return legacyText
     }
 
     override fun getANSIColoredMessage(): String {
         val builder = StringBuilder()
-        builder.append(ChatColors.getANSIColorByRGBColor(this.color))
+        this.color?.let {
+            builder.append(ChatColors.getANSIColorByRGBColor(it))
+        }
 
         for (formattingCode in this.formatting) {
             if (formattingCode is PreChatFormattingCodes) {
@@ -139,9 +140,11 @@ open class TextComponent : ChatComponent {
 
     override fun getLegacyText(): String {
         val output = StringBuilder()
-        val colorChar = ChatColors.getColorId(color)
-        if (colorChar != null) {
-            output.append(ProtocolDefinition.TEXT_COMPONENT_SPECIAL_PREFIX_CHAR).append(Integer.toHexString(colorChar))
+        if (color != null) {
+            val colorChar = ChatColors.getColorId(color)
+            if (colorChar != null) {
+                output.append(ProtocolDefinition.TEXT_COMPONENT_SPECIAL_PREFIX_CHAR).append(Integer.toHexString(colorChar))
+            }
         }
         formatting.forEach(Consumer { chatFormattingCode: ChatFormattingCode -> output.append(ProtocolDefinition.TEXT_COMPONENT_SPECIAL_PREFIX_CHAR).append(chatFormattingCode.char) })
         output.append(text)
@@ -155,6 +158,7 @@ open class TextComponent : ChatComponent {
 
     override fun getJavaFXText(nodes: ObservableList<Node>): ObservableList<Node> {
         val text = Text(text)
+        val color = this.color ?: ProtocolDefinition.DEFAULT_COLOR
         text.fill = Color.WHITE
         if (Minosoft.getConfig().config.chat.colored) {
             text.fill = Color.rgb(color.red, color.green, color.blue)
@@ -204,6 +208,7 @@ open class TextComponent : ChatComponent {
     }
 
     override fun addVerticies(startPosition: Vec2, offset: Vec2, perspectiveMatrix: Mat4, binding: FontBindings, font: Font, hudScale: HUDScale, mesh: HUDFontMesh, maxSize: Vec2) {
+        val color = this.color ?: ProtocolDefinition.DEFAULT_COLOR
 
         fun drawLetterVertex(position: Vec3, uv: Vec2, atlasPage: Int) {
             val matrixPosition = perspectiveMatrix * Vec4(position.x, position.y, 0f, 1f)
