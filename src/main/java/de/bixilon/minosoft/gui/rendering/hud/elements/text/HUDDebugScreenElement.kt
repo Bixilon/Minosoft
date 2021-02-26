@@ -49,6 +49,7 @@ class HUDDebugScreenElement(private val hudTextElement: HUDTextElement) : HUDTex
         chatComponents[FontBindings.LEFT_UP]!!.addAll(listOf(
             "FPS: ${getFPS()}",
             "Timings: avg ${getAvgFrameTime()}ms, min ${getMinFrameTime()}ms, max ${getMaxFrameTime()}ms",
+            "Chunks: ${hudTextElement.renderWindow.worldRenderer.getChunkSize()} / ${hudTextElement.connection.player.world.chunks.size}",
             "Connected to ${hudTextElement.connection.address} with ${hudTextElement.connection.version}",
             "",
             "XYZ ${getLocation()}",

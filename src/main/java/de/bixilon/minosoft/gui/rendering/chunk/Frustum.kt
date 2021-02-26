@@ -43,8 +43,8 @@ class Frustum(val camera: Camera) {
     }
 
     fun containsChunk(chunkLocation: ChunkLocation, connection: Connection): Boolean {
-        val from = Vec3(chunkLocation.x * ProtocolDefinition.SECTION_WIDTH_X, connection.player.world.dimension.minY, chunkLocation.z * ProtocolDefinition.SECTION_WIDTH_Z)
-        val to = from + Vec3(ProtocolDefinition.SECTION_WIDTH_X, connection.player.world.dimension.logicalHeight, ProtocolDefinition.SECTION_WIDTH_Z)
+        val from = Vec3(chunkLocation.x * ProtocolDefinition.SECTION_WIDTH_X, connection.player.world.dimension!!.minY, chunkLocation.z * ProtocolDefinition.SECTION_WIDTH_Z)
+        val to = from + Vec3(ProtocolDefinition.SECTION_WIDTH_X, connection.player.world.dimension!!.logicalHeight, ProtocolDefinition.SECTION_WIDTH_Z)
         val frustum = Frustum(connection.renderer.renderWindow.camera)
         return frustum.containsRegion(from, to)
     }

@@ -17,12 +17,13 @@ import de.bixilon.minosoft.data.mappings.Dimension;
 import de.bixilon.minosoft.data.mappings.biomes.Biome;
 import de.bixilon.minosoft.data.mappings.blocks.BlockState;
 import de.bixilon.minosoft.data.world.BlockInfo;
-import de.bixilon.minosoft.data.world.Chunk;
+import de.bixilon.minosoft.data.world.ChunkData;
 import de.bixilon.minosoft.data.world.ChunkSection;
 import de.bixilon.minosoft.data.world.InChunkSectionLocation;
-import de.bixilon.minosoft.data.world.biome.BiomeAccessor;
 import de.bixilon.minosoft.data.world.biome.DummyBiomeAccessor;
 import de.bixilon.minosoft.data.world.biome.XZBiomeAccessor;
+import de.bixilon.minosoft.data.world.light.DummyLightAccessor;
+import de.bixilon.minosoft.data.world.light.LightAccessor;
 import de.bixilon.minosoft.data.world.palette.Palette;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
@@ -33,7 +34,7 @@ import java.util.HashMap;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
 
 public final class ChunkUtil {
-    public static Chunk readChunkPacket(InByteBuffer buffer, Dimension dimension, long[] sectionBitMasks, int addBitMask, boolean fullChunk, boolean containsSkyLight) {
+    public static ChunkData readChunkPacket(InByteBuffer buffer, Dimension dimension, long[] sectionBitMasks, int addBitMask, boolean fullChunk, boolean containsSkyLight) {
         if (buffer.getVersionId() < V_14W26A) {
             if (sectionBitMasks[0] == 0x00 && fullChunk) {
                 // unload chunk
@@ -97,7 +98,7 @@ public final class ChunkUtil {
                     sectionMap.put(dimension.getLowestSection() + c, new ChunkSection(blockMap)); // ToDo
                 }
             }
-            return new Chunk(sectionMap, new DummyBiomeAccessor(buffer.getConnection().getMapping().getBiomeRegistry().get(0)));
+            return new ChunkData(sectionMap, new DummyBiomeAccessor(buffer.getConnection().getMapping().getBiomeRegistry().get(0)), DummyLightAccessor.INSTANCE);
         }
         if (buffer.getVersionId() < V_15W35A) { // ToDo: was this really changed in 62?
             byte sections = BitByte.getBitCount(sectionBitMasks[0]);
@@ -143,7 +144,7 @@ public final class ChunkUtil {
                 }
                 sectionMap.put(dimension.getLowestSection() + c, new ChunkSection(blockMap));
             }
-            return new Chunk(sectionMap, new DummyBiomeAccessor(buffer.getConnection().getMapping().getBiomeRegistry().get(0))); // ToDo
+            return new ChunkData(sectionMap, new DummyBiomeAccessor(buffer.getConnection().getMapping().getBiomeRegistry().get(0)), DummyLightAccessor.INSTANCE); // ToDo
         }
         // really big thanks to: https://wiki.vg/index.php?title=Chunk_Format&oldid=13712
         HashMap<Integer, ChunkSection> sectionMap = new HashMap<>();
@@ -155,7 +156,7 @@ public final class ChunkUtil {
             if (buffer.getVersionId() >= V_18W43A) {
                 buffer.readShort(); // block count
             }
-            Palette palette = Palette.choosePalette(buffer.readUnsignedByte());
+            Palette palette = Palette.Companion.choosePalette(buffer.readUnsignedByte());
             palette.read(buffer);
             int individualValueMask = ((1 << palette.getBitsPerBlock()) - 1);
 
@@ -206,21 +207,23 @@ public final class ChunkUtil {
 
             sectionMap.put(dimension.getLowestSection() + c, new ChunkSection(blockMap));
         }
-        BiomeAccessor biomeAccessor = new DummyBiomeAccessor(buffer.getConnection().getMapping().getBiomeRegistry().get(0));
+        ChunkData chunkData = new ChunkData();
+        chunkData.setBlocks(sectionMap);
         if (buffer.getVersionId() < V_19W36A && fullChunk) {
             Biome[] biomes = new Biome[256];
             for (int i = 0; i < biomes.length; i++) {
                 biomes[i] = buffer.getConnection().getMapping().getBiomeRegistry().get(buffer.readInt());
             }
-            biomeAccessor = new XZBiomeAccessor(biomes);
+            chunkData.setBiomeAccessor(new XZBiomeAccessor(biomes));
         }
-        return new Chunk(sectionMap, biomeAccessor);
+        return chunkData;
     }
 
-    public static void readSkyLightPacket(InByteBuffer buffer, long[] skyLightMask, long[] blockLightMask, long[] emptyBlockLightMask, long[] emptySkyLightMask) {
+    public static LightAccessor readSkyLightPacket(InByteBuffer buffer, long[] skyLightMask, long[] blockLightMask, long[] emptyBlockLightMask, long[] emptySkyLightMask) {
         readLightArray(buffer, BitSet.valueOf(skyLightMask));
         readLightArray(buffer, BitSet.valueOf(blockLightMask));
         // ToDo
+        return DummyLightAccessor.INSTANCE;
     }
 
     private static void readLightArray(InByteBuffer buffer, BitSet lightMask) {

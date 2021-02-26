@@ -13,7 +13,10 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
+import de.bixilon.minosoft.data.world.Chunk;
 import de.bixilon.minosoft.data.world.ChunkLocation;
+import de.bixilon.minosoft.data.world.light.LightAccessor;
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.ChunkUtil;
@@ -23,7 +26,8 @@ import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_16_PRE3
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_20W49A;
 
 public class PacketUpdateLight extends ClientboundPacket {
-    ChunkLocation location;
+    private ChunkLocation location;
+    private LightAccessor lightAccessor;
 
     @Override
     public boolean read(InByteBuffer buffer) {
@@ -48,12 +52,19 @@ public class PacketUpdateLight extends ClientboundPacket {
             emptySkyLightMask = buffer.readLongArray();
             emptyBlockLightMask = buffer.readLongArray();
         }
-        ChunkUtil.readSkyLightPacket(buffer, skyLightMask, blockLightMask, emptyBlockLightMask, emptySkyLightMask);
+        this.lightAccessor = ChunkUtil.readSkyLightPacket(buffer, skyLightMask, blockLightMask, emptyBlockLightMask, emptySkyLightMask);
         return true;
     }
 
     @Override
     public void log() {
         Log.protocol(String.format("[IN] Received light update (location=%s)", this.location));
+    }
+
+    @Override
+    public void handle(Connection connection) {
+        Chunk chunk = connection.getPlayer().getWorld().getOrCreateChunk(this.location);
+        chunk.setLightAccessor(this.lightAccessor);
+        connection.getRenderer().getRenderWindow().getWorldRenderer().prepareChunk(this.location, chunk);
     }
 }

@@ -37,15 +37,18 @@ class ChunkSection constructor(
         return getBlockInfo(InChunkSectionLocation(x, y, z))
     }
 
-    fun updateStaticData() {
-
-    }
-
     fun setRawBlock(location: InChunkSectionLocation, block: BlockState?) {
         if (block == null) {
             setBlockInfo(location, null)
             return
         }
         setBlockInfo(location, BlockInfo(block))
+    }
+
+    fun setData(chunkSection: ChunkSection, merge: Boolean = false) {
+        if (!merge) {
+            this.blocks.clear()
+        }
+        this.blocks.putAll(chunkSection.blocks)
     }
 }

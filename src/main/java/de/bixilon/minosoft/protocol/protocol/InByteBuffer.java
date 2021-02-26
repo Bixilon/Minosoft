@@ -35,6 +35,7 @@ import de.bixilon.minosoft.data.mappings.particle.data.ParticleData;
 import de.bixilon.minosoft.data.mappings.recipes.Ingredient;
 import de.bixilon.minosoft.data.text.ChatComponent;
 import de.bixilon.minosoft.data.world.BlockPosition;
+import de.bixilon.minosoft.data.world.ChunkLocation;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.util.Util;
 import de.bixilon.minosoft.util.nbt.tag.*;
@@ -591,4 +592,7 @@ public class InByteBuffer {
         return new ResourceLocation(resourceLocation);
     }
 
+    public ChunkLocation readChunkLocation() {
+        return new ChunkLocation(readInt(), readInt());
+    }
 }

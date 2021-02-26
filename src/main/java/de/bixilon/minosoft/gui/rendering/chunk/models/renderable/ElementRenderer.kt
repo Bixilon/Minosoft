@@ -50,7 +50,7 @@ class ElementRenderer(element: BlockModelElement, rotation: Vec3, uvLock: Boolea
     }
 
 
-    fun render(tintColor: RGBColor?, textureMapping: MutableMap<String, Texture>, modelMatrix: Mat4, direction: Directions, mesh: ChunkMesh) {
+    fun render(tintColor: RGBColor?, lightLevel: Float, textureMapping: MutableMap<String, Texture>, modelMatrix: Mat4, direction: Directions, mesh: ChunkMesh) {
         val realDirection = directionMapping[direction]!!
         val positionTemplate = BlockModelElement.FACE_POSITION_MAP_TEMPLATE[realDirection.ordinal]
 
@@ -75,7 +75,8 @@ class ElementRenderer(element: BlockModelElement, rotation: Vec3, uvLock: Boolea
                         tintColor
                     } else {
                         null
-                    }
+                    },
+                    lightLevel = lightLevel,
                 )
             }
         }

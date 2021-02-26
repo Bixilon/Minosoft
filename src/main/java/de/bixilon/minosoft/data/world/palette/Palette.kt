@@ -10,26 +10,27 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.data.world.palette
 
-#version 330 core
+import de.bixilon.minosoft.data.mappings.blocks.BlockState
+import de.bixilon.minosoft.protocol.protocol.InByteBuffer
 
-out vec4 outColor;
+interface Palette {
 
-in vec3 passTextureCoordinates;
-in vec4 passTintColor;
-in float passLightLevel;
+    fun blockById(id: Int): BlockState?
 
-uniform sampler2DArray blockTextureArray;
+    val bitsPerBlock: Int
 
-void main() {
-    vec4 texelColor = texture(blockTextureArray, passTextureCoordinates);
-    if (texelColor.a == 0.0f) { // ToDo: This only works for alpha == 0. What about semi transparency? We would need to sort the faces, etc. See: https://learnopengl.com/Advanced-OpenGL/Blending
-        discard;
+    fun read(buffer: InByteBuffer)
+
+    companion object {
+        fun choosePalette(bitsPerBlock: Int): Palette {
+            if (bitsPerBlock <= 4) {
+                return IndirectPalette(4)
+            } else if (bitsPerBlock <= 8) {
+                return IndirectPalette(bitsPerBlock)
+            }
+            return DirectPalette()
+        }
     }
-    //vec3 mixedColor = mix(texelColor.rgb, passTintColor.rgb, passTintColor.a);
-    vec3 mixedColor = texelColor.rgb;
-    if (passTintColor.a > 0.0f){
-        mixedColor *= passTintColor.rgb;
-    }
-    outColor = vec4(mixedColor * passLightLevel, texelColor.a);
 }

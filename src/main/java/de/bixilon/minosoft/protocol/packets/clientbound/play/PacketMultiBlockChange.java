@@ -94,7 +94,7 @@ public class PacketMultiBlockChange extends ClientboundPacket {
         // tweak
         if (!connection.getVersion().isFlattened()) {
             for (Map.Entry<InChunkLocation, BlockState> entry : getBlocks().entrySet()) {
-                BlockState block = VersionTweaker.transformBlock(entry.getValue(), chunk, entry.getKey().getInChunkSectionLocation(), entry.getKey().getSectionHeight());
+                BlockState block = VersionTweaker.transformBlock(entry.getValue(), chunk.getSections(), entry.getKey().getInChunkSectionLocation(), entry.getKey().getSectionHeight());
                 if (block == entry.getValue()) {
                     continue;
                 }

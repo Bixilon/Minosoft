@@ -14,18 +14,25 @@ package de.bixilon.minosoft.data.world
 
 import de.bixilon.minosoft.data.mappings.blocks.BlockState
 import de.bixilon.minosoft.data.world.biome.BiomeAccessor
+import de.bixilon.minosoft.data.world.light.LightAccessor
 import java.util.*
 
 /**
  * Collection of chunks sections (allocated in y)
  */
 class Chunk(
-    val sections: MutableMap<Int, ChunkSection> = mutableMapOf(),
-    var biomeAccessor: BiomeAccessor,
+    var sections: MutableMap<Int, ChunkSection>? = null,
+    var biomeAccessor: BiomeAccessor? = null,
+    var lightAccessor: LightAccessor? = null,
 ) {
+    private val lock = Object()
+    val isFullyLoaded: Boolean
+        get() {
+            return sections != null && biomeAccessor != null && lightAccessor != null
+        }
 
     fun getBlockInfo(location: InChunkLocation): BlockInfo? {
-        return sections[location.getSectionHeight()]?.getBlockInfo(location.getInChunkSectionLocation())
+        return sections?.get(location.getSectionHeight())?.getBlockInfo(location.getInChunkSectionLocation())
     }
 
     fun getBlockInfo(x: Int, y: Int, z: Int): BlockInfo? {
@@ -35,6 +42,29 @@ class Chunk(
     fun setBlocks(blocks: HashMap<InChunkLocation, BlockInfo?>) {
         for ((location, blockInfo) in blocks) {
             setBlock(location, blockInfo)
+        }
+    }
+
+    fun setData(data: ChunkData, merge: Boolean = false) {
+        synchronized(lock) {
+            data.blocks?.let {
+                if (sections == null) {
+                    sections = mutableMapOf()
+                }
+                if (!merge) {
+                    sections?.clear()
+                }
+                // replace all chunk sections
+                for ((sectionHeight, chunkSection) in it) {
+                    getSectionOrCreate(sectionHeight).setData(chunkSection, merge)
+                }
+            }
+            data.biomeAccessor?.let {
+                this.biomeAccessor = it
+            }
+            data.lightAccessor?.let {
+                this.lightAccessor = it
+            }
         }
     }
 
@@ -61,11 +91,14 @@ class Chunk(
     }
 
     fun getSectionOrCreate(sectionHeight: Int): ChunkSection {
-        return sections[sectionHeight].let {
+        if (sections == null) {
+            throw IllegalStateException("Chunk not received/initialized yet!")
+        }
+        return sections!![sectionHeight].let {
             var section = it
             if (section == null) {
                 section = ChunkSection()
-                sections[sectionHeight] = section
+                sections!![sectionHeight] = section
             }
             section
         }

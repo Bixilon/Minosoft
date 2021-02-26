@@ -87,7 +87,7 @@ class PacketRespawn : ClientboundPacket() {
         }
 
         // clear all chunks
-        connection.player.world.allChunks.clear()
+        connection.player.world.chunks.clear()
         connection.player.world.dimension = dimension
         connection.player.isSpawnConfirmed = false
         connection.player.gameMode = gameMode

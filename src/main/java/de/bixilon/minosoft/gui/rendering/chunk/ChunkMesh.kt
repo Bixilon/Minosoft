@@ -29,7 +29,7 @@ class ChunkMesh {
     private var vbo: Int = 0
     private var trianglesCount: Int = 0
 
-    fun addVertex(position: Vec3, textureCoordinates: Vec2, texture: Texture, tintColor: RGBColor?) {
+    fun addVertex(position: Vec3, textureCoordinates: Vec2, texture: Texture, tintColor: RGBColor?, lightLevel: Float = 0.9f) {
         data.add(position.x)
         data.add(position.y)
         data.add(position.z)
@@ -47,6 +47,8 @@ class ChunkMesh {
         } else {
             data.add(Float.fromBits(tintColor.color))
         }
+
+        data.add(lightLevel)
     }
 
     fun load() {
@@ -74,6 +76,9 @@ class ChunkMesh {
         glVertexAttribPointer(index, 1, GL_FLOAT, false, FLOATS_PER_VERTEX * Float.BYTES, (9 * Float.BYTES).toLong())
         glEnableVertexAttribArray(index++)
 
+        glVertexAttribPointer(index, 1, GL_FLOAT, false, FLOATS_PER_VERTEX * Float.BYTES, (10 * Float.BYTES).toLong())
+        glEnableVertexAttribArray(index++)
+
         // don't remove the ++ above!
         index.let { }
 
@@ -92,6 +97,6 @@ class ChunkMesh {
     }
 
     companion object {
-        private const val FLOATS_PER_VERTEX = 10
+        private const val FLOATS_PER_VERTEX = 11
     }
 }

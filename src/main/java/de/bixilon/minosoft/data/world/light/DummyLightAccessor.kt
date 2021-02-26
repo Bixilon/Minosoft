@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2021 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,24 +11,21 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.world.palette;
+package de.bixilon.minosoft.data.world.light
 
-import de.bixilon.minosoft.data.mappings.blocks.BlockState;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.data.Directions
+import de.bixilon.minosoft.data.world.BlockPosition
 
-public interface Palette {
-    static Palette choosePalette(int bitsPerBlock) {
-        if (bitsPerBlock <= 4) {
-            return new IndirectPalette(4);
-        } else if (bitsPerBlock <= 8) {
-            return new IndirectPalette(bitsPerBlock);
+object DummyLightAccessor : LightAccessor {
+
+    override fun getLightLevel(blockPosition: BlockPosition, direction: Directions): Int {
+        return when (direction) {
+            Directions.NORTH -> 5
+            Directions.SOUTH -> 7
+            Directions.DOWN -> 3
+            Directions.UP -> 9
+            Directions.WEST -> 11
+            Directions.EAST -> 13
         }
-        return new DirectPalette();
     }
-
-    BlockState blockById(int id);
-
-    int getBitsPerBlock();
-
-    void read(InByteBuffer buffer);
 }

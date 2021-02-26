@@ -13,6 +13,7 @@
 package de.bixilon.minosoft.data.world
 
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import glm_.vec3.Vec3
 
 data class BlockPosition(val x: Int, val y: Int, val z: Int) {
     constructor(chunkLocation: ChunkLocation, sectionHeight: Int, inChunkSectionLocation: InChunkSectionLocation) : this(chunkLocation.x * ProtocolDefinition.SECTION_WIDTH_X + inChunkSectionLocation.x, sectionHeight * ProtocolDefinition.SECTION_HEIGHT_Y + inChunkSectionLocation.y, chunkLocation.z * ProtocolDefinition.SECTION_WIDTH_Z + inChunkSectionLocation.z) // ToDo
@@ -54,6 +55,10 @@ data class BlockPosition(val x: Int, val y: Int, val z: Int) {
         } else {
             y / ProtocolDefinition.SECTION_HEIGHT_Y
         }
+    }
+
+    fun toVec3(): Vec3 {
+        return Vec3(x, y, z)
     }
 
     override fun toString(): String {

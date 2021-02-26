@@ -17,11 +17,12 @@ import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.Directions
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.data.world.BlockInfo
+import de.bixilon.minosoft.data.world.BlockPosition
+import de.bixilon.minosoft.data.world.light.LightAccessor
 import de.bixilon.minosoft.gui.rendering.chunk.ChunkMesh
 import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModel
 import de.bixilon.minosoft.gui.rendering.textures.Texture
 import glm_.mat4x4.Mat4
-import glm_.vec3.Vec3
 
 class BlockRenderer(data: JsonObject, parent: BlockModel) {
     private val transparentFaces: MutableSet<Directions> = mutableSetOf()
@@ -70,8 +71,8 @@ class BlockRenderer(data: JsonObject, parent: BlockModel) {
         }
     }
 
-    fun render(blockInfo: BlockInfo, tintColor: RGBColor?, position: Vec3, mesh: ChunkMesh, neighbourBlocks: Array<BlockInfo?>) {
-        val modelMatrix = Mat4().translate(position)
+    fun render(blockInfo: BlockInfo, lightAccessor: LightAccessor, tintColor: RGBColor?, position: BlockPosition, mesh: ChunkMesh, neighbourBlocks: Array<BlockInfo?>) {
+        val modelMatrix = Mat4().translate(position.toVec3())
 
         for (direction in Directions.DIRECTIONS) {
             for (element in elements) {
@@ -91,7 +92,7 @@ class BlockRenderer(data: JsonObject, parent: BlockModel) {
                     continue
                 }
 
-                element.render(tintColor, textureMapping, modelMatrix, direction, mesh)
+                element.render(tintColor, lightAccessor.getLightLevel(position, direction) / 15f, textureMapping, modelMatrix, direction, mesh)
             }
         }
     }

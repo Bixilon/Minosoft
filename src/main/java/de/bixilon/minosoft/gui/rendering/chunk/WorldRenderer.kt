@@ -27,7 +27,6 @@ import de.bixilon.minosoft.gui.rendering.textures.TextureArray
 import de.bixilon.minosoft.protocol.network.Connection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.logging.Log
-import glm_.vec3.Vec3
 import org.lwjgl.opengl.GL11.GL_CULL_FACE
 import org.lwjgl.opengl.GL11.glEnable
 import org.lwjgl.opengl.GL13.glDisable
@@ -48,16 +47,16 @@ class WorldRenderer(private val connection: Connection, private val world: World
         }
         val mesh = ChunkMesh()
 
-        val below = world.allChunks[chunkLocation]?.sections?.get(sectionHeight - 1)
-        val above = world.allChunks[chunkLocation]?.sections?.get(sectionHeight + 1)
+        val below = world.chunks[chunkLocation]?.sections?.get(sectionHeight - 1)
+        val above = world.chunks[chunkLocation]?.sections?.get(sectionHeight + 1)
         //val north = (world.allChunks[chunkLocation.getLocationByDirection(Directions.NORTH)]?: throw ChunkNotLoadedException("North not loaded")).sections?.get(sectionHeight)
         //val south = (world.allChunks[chunkLocation.getLocationByDirection(Directions.SOUTH)]?: throw ChunkNotLoadedException("South not loaded")).sections?.get(sectionHeight)
         //val west = (world.allChunks[chunkLocation.getLocationByDirection(Directions.WEST)]?: throw ChunkNotLoadedException("West not loaded")).sections?.get(sectionHeight)
         //val east = (world.allChunks[chunkLocation.getLocationByDirection(Directions.EAST)]?: throw ChunkNotLoadedException("North not loaded")).sections?.get(sectionHeight)
-        val north = world.allChunks[chunkLocation.getLocationByDirection(Directions.NORTH)]?.sections?.get(sectionHeight)
-        val south = world.allChunks[chunkLocation.getLocationByDirection(Directions.SOUTH)]?.sections?.get(sectionHeight)
-        val west = world.allChunks[chunkLocation.getLocationByDirection(Directions.WEST)]?.sections?.get(sectionHeight)
-        val east = world.allChunks[chunkLocation.getLocationByDirection(Directions.EAST)]?.sections?.get(sectionHeight)
+        val north = world.chunks[chunkLocation.getLocationByDirection(Directions.NORTH)]?.sections?.get(sectionHeight)
+        val south = world.chunks[chunkLocation.getLocationByDirection(Directions.SOUTH)]?.sections?.get(sectionHeight)
+        val west = world.chunks[chunkLocation.getLocationByDirection(Directions.WEST)]?.sections?.get(sectionHeight)
+        val east = world.chunks[chunkLocation.getLocationByDirection(Directions.EAST)]?.sections?.get(sectionHeight)
 
         for ((position, blockInfo) in section.blocks) {
             val blockBelow: BlockInfo? = if (position.y == 0 && below != null) {
@@ -90,13 +89,11 @@ class WorldRenderer(private val connection: Connection, private val world: World
             } else {
                 section.getBlockInfo(position.getLocationByDirection(Directions.EAST))
             }
-            val worldPosition = Vec3(position.x + chunkLocation.x * ProtocolDefinition.SECTION_WIDTH_X, position.y + sectionHeight * ProtocolDefinition.SECTION_HEIGHT_Y, position.z + chunkLocation.z * ProtocolDefinition.SECTION_WIDTH_Z)
-
             val blockPosition = BlockPosition(chunkLocation, sectionHeight, position)
             if (blockPosition == BlockPosition(-103, 3, 288)) {
                 Log.debug("")
             }
-            val biome = chunk.biomeAccessor.getBiome(blockPosition)
+            val biome = chunk.biomeAccessor!!.getBiome(blockPosition)
 
             var tintColor: RGBColor? = null
             if (StaticConfiguration.BIOME_DEBUG_MODE) {
@@ -113,7 +110,7 @@ class WorldRenderer(private val connection: Connection, private val world: World
                 blockInfo.block.tintColor?.let { tintColor = it }
             }
 
-            blockInfo.block.getBlockRenderer(blockPosition).render(blockInfo, tintColor, worldPosition, mesh, arrayOf(blockBelow, blockAbove, blockNorth, blockSouth, blockWest, blockEast))
+            blockInfo.block.getBlockRenderer(blockPosition).render(blockInfo, chunk.lightAccessor!!, tintColor, blockPosition, mesh, arrayOf(blockBelow, blockAbove, blockNorth, blockSouth, blockWest, blockEast))
         }
         return mesh
     }
@@ -145,7 +142,7 @@ class WorldRenderer(private val connection: Connection, private val world: World
         }
 
         for ((chunkLocation, map) in chunkSectionsToDraw) {
-            if (! visibleChunks.contains(chunkLocation)) {
+            if (!visibleChunks.contains(chunkLocation)) {
                 continue
             }
             for ((_, mesh) in map) {
@@ -171,7 +168,10 @@ class WorldRenderer(private val connection: Connection, private val world: World
 
     fun prepareChunk(chunkLocation: ChunkLocation, chunk: Chunk) {
         chunkSectionsToDraw[chunkLocation] = ConcurrentHashMap()
-        for ((sectionHeight, section) in chunk.sections) {
+        if (!chunk.isFullyLoaded) {
+            return
+        }
+        for ((sectionHeight, section) in chunk.sections!!) {
             prepareChunkSection(chunkLocation, sectionHeight, section, chunk)
         }
     }
@@ -217,7 +217,7 @@ class WorldRenderer(private val connection: Connection, private val world: World
     }
 
     private fun prepareWorld(world: World) {
-        for ((chunkLocation, chunk) in world.allChunks) {
+        for ((chunkLocation, chunk) in world.chunks) {
             prepareChunk(chunkLocation, chunk)
         }
     }
@@ -235,5 +235,9 @@ class WorldRenderer(private val connection: Connection, private val world: World
                 visibleChunks.add(chunkLocation)
             }
         }
+    }
+
+    fun getChunkSize(): Int {
+        return chunkSectionsToDraw.size
     }
 }
