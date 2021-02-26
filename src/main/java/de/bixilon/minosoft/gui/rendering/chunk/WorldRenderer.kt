@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.chunk
 
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.StaticConfiguration
+import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames
 import de.bixilon.minosoft.data.Directions
 import de.bixilon.minosoft.data.mappings.blocks.BlockState
 import de.bixilon.minosoft.data.text.RGBColor
@@ -123,6 +124,12 @@ class WorldRenderer(private val connection: Connection, private val world: World
         chunkShader = Shader("chunk_vertex.glsl", "chunk_fragment.glsl")
         chunkShader.load()
 
+        // register keybindings
+        renderWindow.registerKeyCallback(KeyBindingsNames.DEBUG_CLEAR_CHUNK_CACHE) { _, _ ->
+            clearChunkCache()
+            connection.sender.sendFakeChatMessage("§f[§e§lDEBUG§f] §9Cleared chunk cache!")
+            prepareWorld(world)
+        }
     }
 
     override fun postInit() {

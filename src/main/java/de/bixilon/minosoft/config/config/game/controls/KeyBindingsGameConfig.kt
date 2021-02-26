@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.config.config.game.controls
 
+import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames.DEBUG_CLEAR_CHUNK_CACHE
 import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames.DEBUG_MOUSE_CATCH
 import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames.DEBUG_POLYGEN
 import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames.DEBUG_SCREEN
@@ -108,6 +109,13 @@ data class KeyBindingsGameConfig(
             ),
             mutableSetOf(mutableSetOf(WHEN_IN_GAME))
         ),
+        DEBUG_CLEAR_CHUNK_CACHE to KeyBinding(
+            mutableMapOf(
+                KeyAction.MODIFIER to mutableSetOf(KeyCodes.KEY_F3),
+                KeyAction.RELEASE to mutableSetOf(KeyCodes.KEY_A)
+            ),
+            mutableSetOf(mutableSetOf(WHEN_IN_GAME))
+        ),
     ),
 )
 
@@ -125,6 +133,7 @@ object KeyBindingsNames {
     val QUIT_RENDERING = ResourceLocation("minosoft:quit_rendering")
 
     val DEBUG_SCREEN = ResourceLocation("minosoft:debug_screen")
+    val DEBUG_CLEAR_CHUNK_CACHE = ResourceLocation("minosoft:debug_clear_chunk_cache")
     val DEBUG_POLYGEN = ResourceLocation("minosoft:debug_polygen")
     val DEBUG_MOUSE_CATCH = ResourceLocation("minosoft:debug_mouse_catch")
 
