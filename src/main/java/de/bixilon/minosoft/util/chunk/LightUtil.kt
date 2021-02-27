@@ -16,7 +16,6 @@ package de.bixilon.minosoft.util.chunk
 import de.bixilon.minosoft.data.mappings.Dimension
 import de.bixilon.minosoft.data.world.InChunkPosition
 import de.bixilon.minosoft.data.world.light.ChunkLightAccessor
-import de.bixilon.minosoft.data.world.light.DummyLightAccessor
 import de.bixilon.minosoft.data.world.light.LightAccessor
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
@@ -26,16 +25,16 @@ object LightUtil {
 
     fun readLightPacket(buffer: InByteBuffer, skyLightMask: LongArray, blockLightMask: LongArray, emptyBlockLightMask: LongArray, emptySkyLightMask: LongArray, dimension: Dimension): LightAccessor {
         // ToDo
-        val blockLight = readLightArray(buffer, BitSet.valueOf(blockLightMask), dimension)
-        if (!dimension.hasSkyLight) {
-            return ChunkLightAccessor(blockLight, world = buffer.connection.player.world)
+        val skyLight = if (dimension.hasSkyLight) {
+            readLightArray(buffer, BitSet.valueOf(skyLightMask), dimension)
+        } else {
+            mutableMapOf()
         }
-        val skyLight = readLightArray(buffer, BitSet.valueOf(skyLightMask), dimension)
-        return DummyLightAccessor
-        return ChunkLightAccessor(blockLight, skyLight, buffer.connection.player.world)
+        val blockLight = readLightArray(buffer, BitSet.valueOf(blockLightMask), dimension)
+        return ChunkLightAccessor(blockLight, skyLight)
     }
 
-    private fun readLightArray(buffer: InByteBuffer, lightMask: BitSet, dimension: Dimension): MutableMap<InChunkPosition, Byte> {
+    private fun readLightArray(buffer: InByteBuffer, lightMask: BitSet, dimension: Dimension): MutableMap<Int, MutableMap<InChunkPosition, Byte>> {
         var highestSectionIndex = dimension.highestSection + 1
         val lowesSectionIndex = dimension.lowestSection - 1
         if (buffer.versionId >= ProtocolVersions.V_20W49A) {
@@ -43,10 +42,11 @@ object LightUtil {
             highestSectionIndex = lightMask.length()
         }
 
-        val lightLevels: MutableMap<InChunkPosition, Byte> = mutableMapOf()
+        val lightLevels: MutableMap<Int, MutableMap<InChunkPosition, Byte>> = mutableMapOf()
 
 
-        for ((arrayIndex, c) in (lowesSectionIndex until highestSectionIndex).withIndex()) { // light sections
+        for ((arrayIndex, sectionHeight) in (lowesSectionIndex until highestSectionIndex).withIndex()) { // light sections
+            val currentSectionLightLevel: MutableMap<InChunkPosition, Byte> = mutableMapOf()
             if (!lightMask[arrayIndex]) {
                 continue
             }
@@ -55,12 +55,13 @@ object LightUtil {
             for (y in 0 until 16) {
                 for (z in 0 until 16) {
                     for (x in 0 until 16 step 2) {
-                        lightLevels[InChunkPosition(x, y + c * 16, z)] = (lightArray[index].toInt() and 0x0F).toByte()
-                        lightLevels[InChunkPosition(x + 1, y + c * 16, z)] = ((lightArray[index].toInt() ushr 4) and 0x0F).toByte()
+                        currentSectionLightLevel[InChunkPosition(x, y + sectionHeight * 16, z)] = (lightArray[index].toInt() and 0x0F).toByte()
+                        currentSectionLightLevel[InChunkPosition(x + 1, y + sectionHeight * 16, z)] = ((lightArray[index].toInt() ushr 4) and 0x0F).toByte()
                         index++
                     }
                 }
             }
+            lightLevels[sectionHeight] = currentSectionLightLevel
         }
         return lightLevels
     }

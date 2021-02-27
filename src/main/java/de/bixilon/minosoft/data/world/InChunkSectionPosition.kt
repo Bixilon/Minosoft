@@ -55,6 +55,11 @@ data class InChunkSectionPosition(val x: Int, val y: Int, val z: Int) {
         return InChunkSectionPosition(nextX, nextY, nextZ)
     }
 
+
+    fun isEdge(): Boolean {
+        return x == 0 || y == 0 || z == 0 || x == ProtocolDefinition.SECTION_MAX_X || y == ProtocolDefinition.SECTION_MAX_Y || z == ProtocolDefinition.SECTION_MAX_Z
+    }
+
     operator fun plus(directions: Directions): InChunkSectionPosition {
         return this + directions.directionVector
     }

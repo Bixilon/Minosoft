@@ -60,8 +60,8 @@ public final class ChunkUtil {
             // parse data
             int arrayPos = 0;
             HashMap<Integer, ChunkSection> sectionMap = new HashMap<>();
-            for (int c = 0; c < ProtocolDefinition.SECTIONS_PER_CHUNK; c++) { // max sections per chunks in chunk column
-                if (BitByte.isBitSet(sectionBitMasks[0], c)) {
+            for (int sectionHeight = dimension.getLowestSection(); sectionHeight < dimension.getHighestSection(); sectionHeight++) { // max sections per chunks in chunk column
+                if (BitByte.isBitSet(sectionBitMasks[0], sectionHeight)) {
                     HashMap<InChunkSectionPosition, BlockInfo> blockMap = new HashMap<>();
 
                     for (int nibbleY = 0; nibbleY < ProtocolDefinition.SECTION_HEIGHT_Y; nibbleY++) {
@@ -73,13 +73,13 @@ public final class ChunkUtil {
                                 if (arrayPos % 2 == 0) {
                                     // high bits
                                     singleMeta = (byte) (meta[arrayPos / 2] & 0xF);
-                                    if (BitByte.isBitSet(addBitMask, c)) {
+                                    if (BitByte.isBitSet(addBitMask, sectionHeight)) {
                                         singeBlockId = (short) ((singeBlockId << 4) | (addBlockTypes[arrayPos / 2] >>> 4));
                                     }
                                 } else {
                                     // low 4 bits
                                     singleMeta = (byte) ((meta[arrayPos / 2] >>> 4) & 0xF);
-                                    if (BitByte.isBitSet(addBitMask, c)) {
+                                    if (BitByte.isBitSet(addBitMask, sectionHeight)) {
                                         singeBlockId = (short) ((singeBlockId << 4) | (addBlockTypes[arrayPos / 2] & 0xF));
                                     }
                                 }
@@ -95,7 +95,7 @@ public final class ChunkUtil {
                             }
                         }
                     }
-                    sectionMap.put(dimension.getLowestSection() + c, new ChunkSection(blockMap)); // ToDo
+                    sectionMap.put(dimension.getLowestSection() + sectionHeight, new ChunkSection(blockMap)); // ToDo
                 }
             }
             return new ChunkData(sectionMap, new DummyBiomeAccessor(buffer.getConnection().getMapping().getBiomeRegistry().get(0)), DummyLightAccessor.INSTANCE);
@@ -122,8 +122,8 @@ public final class ChunkUtil {
 
             int arrayPos = 0;
             HashMap<Integer, ChunkSection> sectionMap = new HashMap<>();
-            for (int c = 0; c < ProtocolDefinition.SECTIONS_PER_CHUNK; c++) { // max sections per chunks in chunk column
-                if (!BitByte.isBitSet(sectionBitMasks[0], c)) {
+            for (int sectionHeight = dimension.getLowestSection(); sectionHeight < dimension.getHighestSection(); sectionHeight++) { // max sections per chunks in chunk column
+                if (!BitByte.isBitSet(sectionBitMasks[0], sectionHeight)) {
                     continue;
                 }
                 HashMap<InChunkSectionPosition, BlockInfo> blockMap = new HashMap<>();
@@ -142,15 +142,15 @@ public final class ChunkUtil {
                         }
                     }
                 }
-                sectionMap.put(dimension.getLowestSection() + c, new ChunkSection(blockMap));
+                sectionMap.put(dimension.getLowestSection() + sectionHeight, new ChunkSection(blockMap));
             }
             return new ChunkData(sectionMap, new DummyBiomeAccessor(buffer.getConnection().getMapping().getBiomeRegistry().get(0)), DummyLightAccessor.INSTANCE); // ToDo
         }
         // really big thanks to: https://wiki.vg/index.php?title=Chunk_Format&oldid=13712
         HashMap<Integer, ChunkSection> sectionMap = new HashMap<>();
         BitSet sectionBitSet = BitSet.valueOf(sectionBitMasks);
-        for (int c = 0; c < sectionBitSet.length(); c++) { // max sections per chunks in chunk column
-            if (!sectionBitSet.get(c)) {
+        for (int sectionHeight = dimension.getLowestSection(); sectionHeight < sectionBitSet.length(); sectionHeight++) { // max sections per chunks in chunk column
+            if (!sectionBitSet.get(sectionHeight)) {
                 continue;
             }
             if (buffer.getVersionId() >= V_18W43A) {
@@ -206,7 +206,7 @@ public final class ChunkUtil {
                 // ToDo
             }
 
-            sectionMap.put(dimension.getLowestSection() + c, new ChunkSection(blockMap));
+            sectionMap.put(dimension.getLowestSection() + sectionHeight, new ChunkSection(blockMap));
         }
         ChunkData chunkData = new ChunkData();
         chunkData.setBlocks(sectionMap);

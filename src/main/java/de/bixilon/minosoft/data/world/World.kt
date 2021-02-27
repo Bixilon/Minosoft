@@ -13,10 +13,12 @@
 package de.bixilon.minosoft.data.world
 
 import com.google.common.collect.HashBiMap
+import de.bixilon.minosoft.data.Difficulties
 import de.bixilon.minosoft.data.entities.block.BlockEntityMetaData
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.mappings.Dimension
 import de.bixilon.minosoft.data.mappings.blocks.BlockState
+import de.bixilon.minosoft.data.world.light.WorldLightAccessor
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
@@ -30,7 +32,9 @@ class World {
     var isHardcore = false
     var isRaining = false
     var dimension: Dimension? = null
-
+    var difficulty: Difficulties? = null
+    var difficultyLocked = false
+    val worldLightAccessor = WorldLightAccessor(this)
 
     fun getBlockInfo(blockPosition: BlockPosition): BlockInfo? {
         val chunkLocation = blockPosition.getChunkPosition()

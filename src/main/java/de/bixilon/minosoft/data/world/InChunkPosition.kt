@@ -12,6 +12,7 @@
  */
 package de.bixilon.minosoft.data.world
 
+import de.bixilon.minosoft.data.Directions
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import glm_.vec3.Vec3
 
@@ -34,8 +35,15 @@ data class InChunkPosition(val x: Int, val y: Int, val z: Int) {
         }
     }
 
-    operator fun plus(vec3: Vec3): InChunkPosition {
+    operator fun plus(vec3: Vec3?): InChunkPosition {
+        if (vec3 == null) {
+            return this
+        }
         return InChunkPosition((x + vec3.x).toInt(), (y + vec3.y).toInt(), (z + vec3.z).toInt())
+    }
+
+    operator fun plus(direction: Directions?): InChunkPosition {
+        return this + direction?.directionVector
     }
 
     override fun toString(): String {

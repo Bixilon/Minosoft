@@ -59,6 +59,15 @@ class HUDDebugScreenElement(private val hudTextElement: HUDTextElement) : HUDTex
             "Facing ${getFacing()}",
             "Dimension ${hudTextElement.connection.player.world.dimension}",
             "Biome ${camera.currentBiome}",
+            "",
+            "Difficulty ${hudTextElement.connection.player.world.difficulty?.name?.toLowerCase()}, ${
+                if (hudTextElement.connection.player.world.difficultyLocked) {
+                    "locked"
+                } else {
+                    "unlocked"
+                }
+            }",
+            "Client light: ${hudTextElement.connection.player.world.worldLightAccessor.getLightLevel(camera.blockPosition)} (sky=${hudTextElement.connection.player.world.worldLightAccessor.getSkyLight(camera.blockPosition)}, block=${hudTextElement.connection.player.world.worldLightAccessor.getBlockLight(camera.blockPosition)})"
         ))
         chatComponents[FontBindings.RIGHT_UP]!!.addAll(listOf(
             "Java: ${Runtime.version()} ${System.getProperty("sun.arch.data.model")}bit",
@@ -160,7 +169,8 @@ class HUDDebugScreenElement(private val hudTextElement: HUDTextElement) : HUDTex
     private fun getFacing(): String {
         val yaw = hudTextElement.renderWindow.camera.yaw
         val pitch = hudTextElement.renderWindow.camera.pitch
-        return "${Directions.byDirection(camera.cameraFront).name.toLowerCase()} (${formatRotation(yaw)} / ${formatRotation(pitch)})"
+        val direction = Directions.byDirection(camera.cameraFront)
+        return "${Directions.byDirection(camera.cameraFront).name.toLowerCase()} (${direction.directionVector} (${formatRotation(yaw)} / ${formatRotation(pitch)})"
     }
 
 

@@ -13,24 +13,28 @@
 
 package de.bixilon.minosoft.data.world.light
 
-import de.bixilon.minosoft.data.Directions
 import de.bixilon.minosoft.data.world.BlockPosition
 import de.bixilon.minosoft.data.world.InChunkPosition
-import de.bixilon.minosoft.data.world.World
 
 class ChunkLightAccessor(
-    val blockLightLevel: MutableMap<InChunkPosition, Byte> = mutableMapOf(),
-    val skyLightLevel: MutableMap<InChunkPosition, Byte> = mutableMapOf(),
-    val world: World,
+    private val blockLightLevel: MutableMap<Int, MutableMap<InChunkPosition, Byte>> = mutableMapOf(),
+    private val skyLightLevel: MutableMap<Int, MutableMap<InChunkPosition, Byte>> = mutableMapOf(),
 ) : LightAccessor {
-    override fun getLightLevel(blockPosition: BlockPosition, direction: Directions): Int {
-        val inChunkPosition = blockPosition.getInChunkPosition()
-        val lightLevel = blockLightLevel[inChunkPosition] ?: skyLightLevel[inChunkPosition]
+    override fun getSkyLight(blockPosition: BlockPosition): Byte {
+        return skyLightLevel[blockPosition.getSectionHeight()]?.get(blockPosition.getInChunkPosition()) ?: 0
+    }
 
-        if (lightLevel == null) {
-            return 1
+    override fun getBlockLight(blockPosition: BlockPosition): Byte {
+        return blockLightLevel[blockPosition.getSectionHeight()]?.get(blockPosition.getInChunkPosition()) ?: 0
+    }
+
+    fun merge(chunkLightAccessor: ChunkLightAccessor) {
+        for ((sectionHeight, section) in chunkLightAccessor.blockLightLevel) {
+            blockLightLevel[sectionHeight] = section
         }
 
-        return lightLevel.toInt()
+        for ((sectionHeight, section) in chunkLightAccessor.skyLightLevel) {
+            skyLightLevel[sectionHeight] = section
+        }
     }
 }

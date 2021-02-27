@@ -13,6 +13,7 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play
 
 import de.bixilon.minosoft.data.world.ChunkPosition
+import de.bixilon.minosoft.data.world.light.ChunkLightAccessor
 import de.bixilon.minosoft.data.world.light.LightAccessor
 import de.bixilon.minosoft.protocol.network.Connection
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket
@@ -27,7 +28,7 @@ class PacketUpdateLight : ClientboundPacket() {
     override fun read(buffer: InByteBuffer): Boolean {
         position = ChunkPosition(buffer.readVarInt(), buffer.readVarInt())
 
-        if (position == ChunkPosition(-1, 21)) {
+        if (position == ChunkPosition(-6, 20)) {
             Log.debug("")
         }
         if (buffer.versionId >= ProtocolVersions.V_1_16_PRE3) {
@@ -61,7 +62,11 @@ class PacketUpdateLight : ClientboundPacket() {
 
     override fun handle(connection: Connection) {
         val chunk = connection.player.world.getOrCreateChunk(position!!)
-        chunk.lightAccessor = lightAccessor
+        if (chunk.lightAccessor != null && chunk.lightAccessor is ChunkLightAccessor && lightAccessor is ChunkLightAccessor) {
+            (chunk.lightAccessor as ChunkLightAccessor).merge(lightAccessor as ChunkLightAccessor)
+        } else {
+            chunk.lightAccessor = lightAccessor
+        }
         connection.renderer.renderWindow.worldRenderer.prepareChunk(position!!, chunk)
     }
 }

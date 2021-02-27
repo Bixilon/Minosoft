@@ -14,20 +14,16 @@
 package de.bixilon.minosoft.data.world.light
 
 import de.bixilon.minosoft.data.world.BlockPosition
+import de.bixilon.minosoft.data.world.World
 
-interface LightAccessor {
-
-    fun getSkyLight(blockPosition: BlockPosition): Byte
-
-    fun getBlockLight(blockPosition: BlockPosition): Byte
-
-    fun getLightLevel(blockPosition: BlockPosition): Byte {
-        val blockLight = getBlockLight(blockPosition)
-        val skyLight = getSkyLight(blockPosition)
-        if (blockLight > skyLight) {
-            return blockLight
-        }
-        return skyLight
+class WorldLightAccessor(
+    private val world: World,
+) : LightAccessor {
+    override fun getSkyLight(blockPosition: BlockPosition): Byte {
+        return world.chunks[blockPosition.getChunkPosition()]?.lightAccessor?.getSkyLight(blockPosition) ?: 0
     }
 
+    override fun getBlockLight(blockPosition: BlockPosition): Byte {
+        return world.chunks[blockPosition.getChunkPosition()]?.lightAccessor?.getBlockLight(blockPosition) ?: 0
+    }
 }

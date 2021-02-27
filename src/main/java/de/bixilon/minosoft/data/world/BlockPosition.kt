@@ -45,12 +45,15 @@ data class BlockPosition(val x: Int, val y: Int, val z: Int) {
         return InChunkPosition(x, this.y, z)
     }
 
-    infix operator fun plus(vec3: Vec3): BlockPosition {
+    infix operator fun plus(vec3: Vec3?): BlockPosition {
+        if (vec3 == null) {
+            return this
+        }
         return BlockPosition((x + vec3.x).toInt(), (y + vec3.y).toInt(), (z + vec3.z).toInt())
     }
 
-    operator fun plus(directions: Directions): BlockPosition {
-        return this + directions.directionVector
+    infix operator fun plus(directions: Directions?): BlockPosition {
+        return this + directions?.directionVector
     }
 
     fun getInChunkSectionPosition(): InChunkSectionPosition {

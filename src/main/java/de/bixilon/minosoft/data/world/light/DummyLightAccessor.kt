@@ -13,19 +13,15 @@
 
 package de.bixilon.minosoft.data.world.light
 
-import de.bixilon.minosoft.data.Directions
 import de.bixilon.minosoft.data.world.BlockPosition
 
 object DummyLightAccessor : LightAccessor {
-
-    override fun getLightLevel(blockPosition: BlockPosition, direction: Directions): Int {
-        return when (direction) {
-            Directions.NORTH -> 5
-            Directions.SOUTH -> 7
-            Directions.DOWN -> 3
-            Directions.UP -> 9
-            Directions.WEST -> 11
-            Directions.EAST -> 13
-        }
+    override fun getSkyLight(blockPosition: BlockPosition): Byte {
+        return 15
     }
+
+    override fun getBlockLight(blockPosition: BlockPosition): Byte {
+        return 15
+    }
+
 }

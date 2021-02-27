@@ -77,7 +77,7 @@ class WorldRenderer(private val connection: Connection, private val world: World
                 blockInfo.block.tintColor?.let { tintColor = it }
             }
 
-            blockInfo.block.getBlockRenderer(blockPosition).render(blockInfo, chunk.lightAccessor!!, tintColor, blockPosition, mesh, neighborBlocks)
+            blockInfo.block.getBlockRenderer(blockPosition).render(blockInfo, world.worldLightAccessor, tintColor, blockPosition, mesh, neighborBlocks)
         }
         return mesh
     }
