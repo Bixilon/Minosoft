@@ -18,34 +18,37 @@ import de.bixilon.minosoft.data.mappings.blocks.BlockState
  * Collection of 16x16x16 blocks
  */
 class ChunkSection constructor(
-    val blocks: MutableMap<InChunkSectionLocation, BlockInfo> = mutableMapOf(),
+    val blocks: MutableMap<InChunkSectionPosition, BlockInfo> = mutableMapOf(),
 ) {
 
-    fun getBlockInfo(location: InChunkSectionLocation): BlockInfo? {
-        return blocks[location]
+    fun getBlockInfo(position: InChunkSectionPosition): BlockInfo? {
+        return blocks[position]
     }
 
-    fun setBlockInfo(location: InChunkSectionLocation, blockInfo: BlockInfo?) {
+    fun setBlockInfo(position: InChunkSectionPosition, blockInfo: BlockInfo?) {
         if (blockInfo == null) {
-            blocks.remove(location)
+            blocks.remove(position)
             return
         }
-        blocks[location] = blockInfo
+        blocks[position] = blockInfo
     }
 
     fun getBlockInfo(x: Int, y: Int, z: Int): BlockInfo? {
-        return getBlockInfo(InChunkSectionLocation(x, y, z))
+        return getBlockInfo(InChunkSectionPosition(x, y, z))
     }
 
-    fun updateStaticData() {
-
-    }
-
-    fun setRawBlock(location: InChunkSectionLocation, block: BlockState?) {
+    fun setRawBlock(position: InChunkSectionPosition, block: BlockState?) {
         if (block == null) {
-            setBlockInfo(location, null)
+            setBlockInfo(position, null)
             return
         }
-        setBlockInfo(location, BlockInfo(block))
+        setBlockInfo(position, BlockInfo(block))
+    }
+
+    fun setData(chunkSection: ChunkSection, merge: Boolean = false) {
+        if (!merge) {
+            this.blocks.clear()
+        }
+        this.blocks.putAll(chunkSection.blocks)
     }
 }

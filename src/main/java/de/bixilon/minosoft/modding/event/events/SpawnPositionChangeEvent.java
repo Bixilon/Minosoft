@@ -10,22 +10,27 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.data.world
 
-import de.bixilon.minosoft.data.Directions
+package de.bixilon.minosoft.modding.event.events;
 
-data class ChunkLocation(val x: Int, val z: Int) {
-    override fun toString(): String {
-        return "($x $z)"
+import de.bixilon.minosoft.data.world.BlockPosition;
+import de.bixilon.minosoft.protocol.network.Connection;
+import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketSpawnPosition;
+
+public class SpawnPositionChangeEvent extends ConnectionEvent {
+    private final BlockPosition position;
+
+    public SpawnPositionChangeEvent(Connection connection, BlockPosition position) {
+        super(connection);
+        this.position = position;
     }
 
-    fun getLocationByDirection(direction: Directions): ChunkLocation {
-        return when (direction) {
-            Directions.NORTH -> ChunkLocation(x, z - 1)
-            Directions.SOUTH -> ChunkLocation(x, z + 1)
-            Directions.WEST -> ChunkLocation(x - 1, z)
-            Directions.EAST -> ChunkLocation(x + 1, z)
-            else -> throw IllegalArgumentException("Chunk location is just 2d")
-        }
+    public SpawnPositionChangeEvent(Connection connection, PacketSpawnPosition pkg) {
+        super(connection);
+        this.position = pkg.getSpawnPosition();
+    }
+
+    public BlockPosition getSpawnPosition() {
+        return this.position;
     }
 }

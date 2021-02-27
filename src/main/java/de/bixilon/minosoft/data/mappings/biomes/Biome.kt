@@ -73,7 +73,7 @@ data class Biome(
                 descriptionId = data["water_fog_color"]?.asString,
                 grassColorModifier = data["grass_color_modifier"]?.asString?.toUpperCase()?.let { GrassColorModifiers.valueOf(it) } ?: when (resourceLocation) {
                     ResourceLocation("minecraft:swamp"), ResourceLocation("minecraft:swamp_hills") -> GrassColorModifiers.SWAMP
-                    ResourceLocation("minecraft:dark_forest"), ResourceLocation("minecraft:dark_forest_hills") -> GrassColorModifiers.DARK_FORREST
+                    ResourceLocation("minecraft:dark_forest"), ResourceLocation("minecraft:dark_forest_hills") -> GrassColorModifiers.DARK_FOREST
 
                     else -> GrassColorModifiers.NONE
                 }
@@ -87,7 +87,7 @@ data class Biome(
 
     enum class GrassColorModifiers(val modifier: (color: RGBColor) -> RGBColor) {
         NONE({ color: RGBColor -> color }),
-        DARK_FORREST({ color: RGBColor -> RGBColor(color.color + 2634762 shl 8) }),
+        DARK_FOREST({ color: RGBColor -> RGBColor(color.color + 2634762 shl 8) }),
         SWAMP({
             // ToDo: Minecraft uses PerlinSimplexNoise here
             RGBColor("#6A7039")

@@ -14,14 +14,14 @@
 package de.bixilon.minosoft.data.entities.entities.npc;
 
 import de.bixilon.minosoft.data.entities.EntityRotation;
-import de.bixilon.minosoft.data.entities.Location;
+import de.bixilon.minosoft.data.entities.Position;
 import de.bixilon.minosoft.protocol.network.Connection;
 
 import java.util.UUID;
 
 public class WanderingTrader extends AbstractVillager {
 
-    public WanderingTrader(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
-        super(connection, entityId, uuid, location, rotation);
+    public WanderingTrader(Connection connection, int entityId, UUID uuid, Position position, EntityRotation rotation) {
+        super(connection, entityId, uuid, position, rotation);
     }
 }

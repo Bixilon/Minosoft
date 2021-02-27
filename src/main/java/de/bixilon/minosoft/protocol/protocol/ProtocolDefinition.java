@@ -14,6 +14,8 @@
 package de.bixilon.minosoft.protocol.protocol;
 
 import de.bixilon.minosoft.data.mappings.ResourceLocation;
+import de.bixilon.minosoft.data.text.ChatColors;
+import de.bixilon.minosoft.data.text.RGBColor;
 
 import java.net.InetAddress;
 import java.util.regex.Pattern;
@@ -97,6 +99,8 @@ public final class ProtocolDefinition {
     public static final ResourceLocation NETHER_DIMENSION = new ResourceLocation("nether");
 
     public static final ResourceLocation AIR_RESOURCE_LOCATION = new ResourceLocation("air");
+
+    public static final RGBColor DEFAULT_COLOR = ChatColors.WHITE;
 
     static {
         // java does (why ever) not allow to directly assign a null

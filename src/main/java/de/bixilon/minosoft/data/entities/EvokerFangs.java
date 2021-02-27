@@ -20,7 +20,7 @@ import java.util.UUID;
 
 public class EvokerFangs extends Entity {
 
-    public EvokerFangs(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
-        super(connection, entityId, uuid, location, rotation);
+    public EvokerFangs(Connection connection, int entityId, UUID uuid, Position position, EntityRotation rotation) {
+        super(connection, entityId, uuid, position, rotation);
     }
 }

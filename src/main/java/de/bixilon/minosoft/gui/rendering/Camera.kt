@@ -18,11 +18,11 @@ import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames
 import de.bixilon.minosoft.config.key.KeyAction
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.entities.EntityRotation
-import de.bixilon.minosoft.data.entities.Location
+import de.bixilon.minosoft.data.entities.Position
 import de.bixilon.minosoft.data.mappings.biomes.Biome
 import de.bixilon.minosoft.data.world.BlockPosition
-import de.bixilon.minosoft.data.world.ChunkLocation
-import de.bixilon.minosoft.data.world.InChunkSectionLocation
+import de.bixilon.minosoft.data.world.ChunkPosition
+import de.bixilon.minosoft.data.world.InChunkSectionPosition
 import de.bixilon.minosoft.gui.rendering.chunk.Frustum
 import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.protocol.network.Connection
@@ -55,19 +55,19 @@ class Camera(
     var cameraRight = Vec3(0.0f, 0.0f, -1.0f)
     private var cameraUp = Vec3(0.0f, 1.0f, 0.0f)
 
-    var feetLocation: Location = Location(0.0, 0.0, 0.0)
+    var feetLocation: Position = Position(0.0, 0.0, 0.0)
         private set
-    var headLocation: Location = Location(0.0, 0.0, 0.0)
+    var headLocation: Position = Position(0.0, 0.0, 0.0)
         private set
     var blockPosition: BlockPosition = BlockPosition(0, 0, 0)
         private set
     var currentBiome: Biome? = null
         private set
-    var chunkLocation: ChunkLocation = ChunkLocation(0, 0)
+    var chunkPosition: ChunkPosition = ChunkPosition(0, 0)
         private set
     var sectionHeight: Int = 0
         private set
-    var inChunkSectionLocation: InChunkSectionLocation = InChunkSectionLocation(0, 0, 0)
+    var inChunkSectionPosition: InChunkSectionPosition = InChunkSectionPosition(0, 0, 0)
         private set
 
     private var screenHeight = 0
@@ -199,16 +199,16 @@ class Camera(
     }
 
     private fun positionChangeCallback() {
-        headLocation = Location(cameraPosition)
-        feetLocation = Location(headLocation.x, headLocation.y - PLAYER_HEIGHT, headLocation.z)
+        headLocation = Position(cameraPosition)
+        feetLocation = Position(headLocation.x, headLocation.y - PLAYER_HEIGHT, headLocation.z)
         blockPosition = feetLocation.toBlockPosition()
         currentBiome = connection.player.world.getChunk(blockPosition.getChunkLocation())?.biomeAccessor?.getBiome(blockPosition)
-        chunkLocation = blockPosition.getChunkLocation()
+        chunkPosition = blockPosition.getChunkLocation()
         sectionHeight = blockPosition.getSectionHeight()
-        inChunkSectionLocation = blockPosition.getInChunkSectionLocation()
+        inChunkSectionPosition = blockPosition.getInChunkSectionLocation()
 
         // recalculate sky color for current biome
-        val blockPosition = Location(cameraPosition).toBlockPosition()
+        val blockPosition = Position(cameraPosition).toBlockPosition()
         renderWindow.setSkyColor(connection.player.world.getChunk(blockPosition.getChunkLocation())?.biomeAccessor?.getBiome(blockPosition)?.skyColor ?: RenderConstants.DEFAULT_SKY_COLOR)
         connection.renderer.renderWindow.worldRenderer.recalculateFrustum(Frustum(this))
         connection.player.world.dimension?.hasSkyLight?.let {
@@ -262,9 +262,9 @@ class Camera(
         currentPositionSent = false
     }
 
-    fun setPosition(location: Location) {
+    fun setPosition(location: Position) {
         feetLocation = location
-        headLocation = Location(location.x, location.y + PLAYER_HEIGHT, location.z)
+        headLocation = Position(location.x, location.y + PLAYER_HEIGHT, location.z)
         cameraPosition = headLocation.toVec3()
     }
 

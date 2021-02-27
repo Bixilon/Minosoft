@@ -1,6 +1,6 @@
 package de.bixilon.minosoft.gui.rendering.chunk
 
-import de.bixilon.minosoft.data.world.ChunkLocation
+import de.bixilon.minosoft.data.world.ChunkPosition
 import de.bixilon.minosoft.gui.rendering.Camera
 import de.bixilon.minosoft.protocol.network.Connection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
@@ -42,9 +42,9 @@ class Frustum(val camera: Camera) {
         return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z
     }
 
-    fun containsChunk(chunkLocation: ChunkLocation, connection: Connection): Boolean {
-        val from = Vec3(chunkLocation.x * ProtocolDefinition.SECTION_WIDTH_X, connection.player.world.dimension.minY, chunkLocation.z * ProtocolDefinition.SECTION_WIDTH_Z)
-        val to = from + Vec3(ProtocolDefinition.SECTION_WIDTH_X, connection.player.world.dimension.logicalHeight, ProtocolDefinition.SECTION_WIDTH_Z)
+    fun containsChunk(chunkPosition: ChunkPosition, connection: Connection): Boolean {
+        val from = Vec3(chunkPosition.x * ProtocolDefinition.SECTION_WIDTH_X, connection.player.world.dimension!!.minY, chunkPosition.z * ProtocolDefinition.SECTION_WIDTH_Z)
+        val to = from + Vec3(ProtocolDefinition.SECTION_WIDTH_X, connection.player.world.dimension!!.logicalHeight, ProtocolDefinition.SECTION_WIDTH_Z)
         val frustum = Frustum(connection.renderer.renderWindow.camera)
         return frustum.containsRegion(from, to)
     }

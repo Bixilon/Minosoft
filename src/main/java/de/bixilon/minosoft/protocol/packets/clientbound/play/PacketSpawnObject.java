@@ -14,8 +14,8 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.entities.EntityRotation;
-import de.bixilon.minosoft.data.entities.Location;
 import de.bixilon.minosoft.data.entities.Objects;
+import de.bixilon.minosoft.data.entities.Position;
 import de.bixilon.minosoft.data.entities.Velocity;
 import de.bixilon.minosoft.data.entities.entities.Entity;
 import de.bixilon.minosoft.data.entities.entities.UnknownEntityException;
@@ -56,11 +56,11 @@ public class PacketSpawnObject extends ClientboundPacket {
             typeClass = buffer.getConnection().getMapping().getEntityClassById(type);
         }
 
-        Location location;
+        Position position;
         if (buffer.getVersionId() < V_16W06A) {
-            location = new Location(buffer.readFixedPointNumberInt(), buffer.readFixedPointNumberInt(), buffer.readFixedPointNumberInt());
+            position = new Position(buffer.readFixedPointNumberInt(), buffer.readFixedPointNumberInt(), buffer.readFixedPointNumberInt());
         } else {
-            location = buffer.readLocation();
+            position = buffer.readLocation();
         }
         EntityRotation rotation = new EntityRotation(buffer.readAngle(), buffer.readAngle(), 0);
         int data = buffer.readInt();
@@ -82,7 +82,7 @@ public class PacketSpawnObject extends ClientboundPacket {
         }
 
         try {
-            this.entity = typeClass.getConstructor(Connection.class, int.class, UUID.class, Location.class, EntityRotation.class).newInstance(buffer.getConnection(), entityId, uuid, location, rotation);
+            this.entity = typeClass.getConstructor(Connection.class, int.class, UUID.class, Position.class, EntityRotation.class).newInstance(buffer.getConnection(), entityId, uuid, position, rotation);
             return true;
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | NullPointerException e) {
             e.printStackTrace();
@@ -100,7 +100,7 @@ public class PacketSpawnObject extends ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Object spawned at %s (entityId=%d, type=%s)", this.entity.getLocation().toString(), this.entity.getEntityId(), this.entity));
+        Log.protocol(String.format("[IN] Object spawned at %s (entityId=%d, type=%s)", this.entity.getPosition().toString(), this.entity.getEntityId(), this.entity));
     }
 
     public Entity getEntity() {

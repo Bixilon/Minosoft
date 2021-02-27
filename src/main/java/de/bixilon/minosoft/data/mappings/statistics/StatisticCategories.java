@@ -27,6 +27,8 @@ public enum StatisticCategories {
     KILLED(new ChangeableResourceLocation("minecraft.killed"), 6),
     KILLED_BY(new ChangeableResourceLocation("minecraft.killed_by"), 7),
     CUSTOM(new ChangeableResourceLocation("minecraft.custom"), 8);
+
+
     private final ChangeableResourceLocation changeableResourceLocation;
     private final int id;
 

@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
 import de.bixilon.minosoft.data.entities.EntityRotation;
-import de.bixilon.minosoft.data.entities.Location;
+import de.bixilon.minosoft.data.entities.Position;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
@@ -24,12 +24,12 @@ import de.bixilon.minosoft.util.logging.Log;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W06B;
 
 public class PacketPlayerPositionAndRotationSending implements ServerboundPacket {
-    private final Location location;
+    private final Position position;
     private final EntityRotation rotation;
     private final boolean onGround;
 
-    public PacketPlayerPositionAndRotationSending(Location location, EntityRotation rotation, boolean onGround) {
-        this.location = location;
+    public PacketPlayerPositionAndRotationSending(Position position, EntityRotation rotation, boolean onGround) {
+        this.position = position;
         this.rotation = rotation;
         this.onGround = onGround;
     }
@@ -37,12 +37,12 @@ public class PacketPlayerPositionAndRotationSending implements ServerboundPacket
     @Override
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_PLAYER_POSITION_AND_ROTATION);
-        buffer.writeDouble(this.location.getX());
-        buffer.writeDouble(this.location.getY());
+        buffer.writeDouble(this.position.getX());
+        buffer.writeDouble(this.position.getY());
         if (buffer.getVersionId() < V_14W06B) {
-            buffer.writeDouble(this.location.getY() - 1.62);
+            buffer.writeDouble(this.position.getY() - 1.62);
         }
-        buffer.writeDouble(this.location.getZ());
+        buffer.writeDouble(this.position.getZ());
         buffer.writeFloat(this.rotation.getYaw());
         buffer.writeFloat(this.rotation.getPitch());
         buffer.writeBoolean(this.onGround);
@@ -51,6 +51,6 @@ public class PacketPlayerPositionAndRotationSending implements ServerboundPacket
 
     @Override
     public void log() {
-        Log.protocol(String.format("[OUT] Sending player position and rotation: (location=%s, rotation=%s, onGround=%b)", this.location, this.rotation, this.onGround));
+        Log.protocol(String.format("[OUT] Sending player position and rotation: (position=%s, rotation=%s, onGround=%b)", this.position, this.rotation, this.onGround));
     }
 }

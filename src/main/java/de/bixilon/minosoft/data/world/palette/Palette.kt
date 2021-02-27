@@ -10,32 +10,27 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.data.entities
+package de.bixilon.minosoft.data.world.palette
 
-import de.bixilon.minosoft.data.world.BlockPosition
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.data.mappings.blocks.BlockState
+import de.bixilon.minosoft.protocol.protocol.InByteBuffer
 
+interface Palette {
 
-data class Location(val x: Double, val y: Double, val z: Double) {
+    fun blockById(id: Int): BlockState?
 
-    constructor(position: Vec3) : this(position.x.toDouble(), position.y.toDouble(), position.z.toDouble())
+    val bitsPerBlock: Int
 
-    override fun toString(): String {
-        return "($x $y $z)"
-    }
-
-    fun toVec3(): Vec3 {
-        return Vec3(x, y, z)
-    }
-
-    fun toBlockPosition(): BlockPosition {
-        return BlockPosition((x - 0.5).toInt(), y.toInt(), (z - 0.5).toInt()) // ToDo
-    }
+    fun read(buffer: InByteBuffer)
 
     companion object {
-        @JvmStatic
-        fun fromPosition(position: BlockPosition): Location {
-            return Location(position.x.toDouble(), position.y.toDouble(), position.z.toDouble())
+        fun choosePalette(bitsPerBlock: Int): Palette {
+            if (bitsPerBlock <= 4) {
+                return IndirectPalette(4)
+            } else if (bitsPerBlock <= 8) {
+                return IndirectPalette(bitsPerBlock)
+            }
+            return DirectPalette()
         }
     }
 }

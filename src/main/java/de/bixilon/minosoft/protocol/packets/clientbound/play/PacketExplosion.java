@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.data.entities.Location;
+import de.bixilon.minosoft.data.entities.Position;
 import de.bixilon.minosoft.data.world.BlockPosition;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
@@ -21,16 +21,16 @@ import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
 public class PacketExplosion extends ClientboundPacket {
-    Location location;
-    float radius;
-    byte[][] records;
-    float motionX;
-    float motionY;
-    float motionZ;
+    private Position position;
+    private float radius;
+    private byte[][] records;
+    private float motionX;
+    private float motionY;
+    private float motionZ;
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        this.location = new Location(buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
+        this.position = new Position(buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
         this.radius = buffer.readFloat();
         if (this.radius > 100.0F) {
             // maybe somebody tries to make bullshit?
@@ -53,9 +53,9 @@ public class PacketExplosion extends ClientboundPacket {
     public void handle(Connection connection) {
         // remove all blocks set by explosion
         for (byte[] record : getRecords()) {
-            int x = ((int) getLocation().getX()) + record[0];
-            int y = ((int) getLocation().getY()) + record[1];
-            int z = ((int) getLocation().getZ()) + record[2];
+            int x = ((int) getPosition().getX()) + record[0];
+            int y = ((int) getPosition().getY()) + record[1];
+            int z = ((int) getPosition().getZ()) + record[2];
             BlockPosition blockPosition = new BlockPosition(x, (short) y, z);
             connection.getPlayer().getWorld().setBlock(blockPosition, null);
         }
@@ -64,11 +64,11 @@ public class PacketExplosion extends ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Explosion packet received at %s (recordCount=%d, radius=%s)", this.location, this.records.length, this.radius));
+        Log.protocol(String.format("[IN] Explosion packet received at %s (recordCount=%d, radius=%s)", this.position, this.records.length, this.radius));
     }
 
-    public Location getLocation() {
-        return this.location;
+    public Position getPosition() {
+        return this.position;
     }
 
     public float getMotionX() {

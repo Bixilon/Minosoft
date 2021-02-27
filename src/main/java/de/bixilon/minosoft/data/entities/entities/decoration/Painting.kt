@@ -14,7 +14,7 @@ package de.bixilon.minosoft.data.entities.entities.decoration
 
 import de.bixilon.minosoft.data.Directions
 import de.bixilon.minosoft.data.entities.EntityRotation
-import de.bixilon.minosoft.data.entities.Location.Companion.fromPosition
+import de.bixilon.minosoft.data.entities.Position.Companion.fromPosition
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
 import de.bixilon.minosoft.data.mappings.Motive

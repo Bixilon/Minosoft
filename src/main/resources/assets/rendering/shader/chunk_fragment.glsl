@@ -17,6 +17,7 @@ out vec4 outColor;
 
 in vec3 passTextureCoordinates;
 in vec4 passTintColor;
+in float passLightLevel;
 
 uniform sampler2DArray blockTextureArray;
 
@@ -30,5 +31,5 @@ void main() {
     if (passTintColor.a > 0.0f){
         mixedColor *= passTintColor.rgb;
     }
-    outColor = vec4(mixedColor, texelColor.a);
+    outColor = vec4(mixedColor * passLightLevel, texelColor.a);
 }

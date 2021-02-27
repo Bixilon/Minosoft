@@ -14,43 +14,73 @@ package de.bixilon.minosoft.data.world
 
 import de.bixilon.minosoft.data.mappings.blocks.BlockState
 import de.bixilon.minosoft.data.world.biome.BiomeAccessor
+import de.bixilon.minosoft.data.world.light.LightAccessor
 import java.util.*
 
 /**
  * Collection of chunks sections (allocated in y)
  */
 class Chunk(
-    val sections: MutableMap<Int, ChunkSection> = mutableMapOf(),
-    var biomeAccessor: BiomeAccessor,
+    var sections: MutableMap<Int, ChunkSection>? = null,
+    var biomeAccessor: BiomeAccessor? = null,
+    var lightAccessor: LightAccessor? = null,
 ) {
+    private val lock = Object()
+    val isFullyLoaded: Boolean
+        get() {
+            return sections != null && biomeAccessor != null && lightAccessor != null
+        }
 
-    fun getBlockInfo(location: InChunkLocation): BlockInfo? {
-        return sections[location.getSectionHeight()]?.getBlockInfo(location.getInChunkSectionLocation())
+    fun getBlockInfo(position: InChunkPosition): BlockInfo? {
+        return sections?.get(position.getSectionHeight())?.getBlockInfo(position.getInChunkSectionLocation())
     }
 
     fun getBlockInfo(x: Int, y: Int, z: Int): BlockInfo? {
-        return getBlockInfo(InChunkLocation(x, y, z))
+        return getBlockInfo(InChunkPosition(x, y, z))
     }
 
-    fun setBlocks(blocks: HashMap<InChunkLocation, BlockInfo?>) {
+    fun setBlocks(blocks: HashMap<InChunkPosition, BlockInfo?>) {
         for ((location, blockInfo) in blocks) {
             setBlock(location, blockInfo)
         }
     }
 
-    fun setRawBlocks(blocks: HashMap<InChunkLocation, BlockState?>) {
+    fun setData(data: ChunkData, merge: Boolean = false) {
+        synchronized(lock) {
+            data.blocks?.let {
+                if (sections == null) {
+                    sections = mutableMapOf()
+                }
+                if (!merge) {
+                    sections?.clear()
+                }
+                // replace all chunk sections
+                for ((sectionHeight, chunkSection) in it) {
+                    getSectionOrCreate(sectionHeight).setData(chunkSection, merge)
+                }
+            }
+            data.biomeAccessor?.let {
+                this.biomeAccessor = it
+            }
+            data.lightAccessor?.let {
+                this.lightAccessor = it
+            }
+        }
+    }
+
+    fun setRawBlocks(blocks: HashMap<InChunkPosition, BlockState?>) {
         for ((location, blockInfo) in blocks) {
             setRawBlock(location, blockInfo)
         }
     }
 
-    fun setBlock(location: InChunkLocation, block: BlockInfo?) {
-        getSectionOrCreate(location.getSectionHeight()).setBlockInfo(location.getInChunkSectionLocation(), block)
+    fun setBlock(position: InChunkPosition, block: BlockInfo?) {
+        getSectionOrCreate(position.getSectionHeight()).setBlockInfo(position.getInChunkSectionLocation(), block)
     }
 
-    fun setRawBlock(location: InChunkLocation, block: BlockState?) {
-        getSectionOrCreate(location.getSectionHeight()).let {
-            val inChunkSectionLocation = location.getInChunkSectionLocation()
+    fun setRawBlock(position: InChunkPosition, block: BlockState?) {
+        getSectionOrCreate(position.getSectionHeight()).let {
+            val inChunkSectionLocation = position.getInChunkSectionLocation()
             if (block == null) {
                 it.blocks.remove(inChunkSectionLocation)
                 return
@@ -61,11 +91,14 @@ class Chunk(
     }
 
     fun getSectionOrCreate(sectionHeight: Int): ChunkSection {
-        return sections[sectionHeight].let {
+        if (sections == null) {
+            throw IllegalStateException("Chunk not received/initialized yet!")
+        }
+        return sections!![sectionHeight].let {
             var section = it
             if (section == null) {
                 section = ChunkSection()
-                sections[sectionHeight] = section
+                sections!![sectionHeight] = section
             }
             section
         }

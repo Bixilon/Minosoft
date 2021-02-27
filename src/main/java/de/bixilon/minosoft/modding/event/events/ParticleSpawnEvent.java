@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.modding.event.events;
 
-import de.bixilon.minosoft.data.entities.Location;
+import de.bixilon.minosoft.data.entities.Position;
 import de.bixilon.minosoft.data.mappings.particle.Particle;
 import de.bixilon.minosoft.data.mappings.particle.data.ParticleData;
 import de.bixilon.minosoft.protocol.network.Connection;
@@ -22,30 +22,30 @@ import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketParticle;
 public class ParticleSpawnEvent extends CancelableEvent {
     private final Particle particleType;
     private final ParticleData particleData;
-    private final Location location;
+    private final Position position;
     private boolean longDistance;
     private float offsetX;
     private float offsetY;
     private float offsetZ;
     private int count;
 
-    public ParticleSpawnEvent(Connection connection, Particle particleType, ParticleData particleData, boolean longDistance, Location location, float offsetX, float offsetY, float offsetZ, int count) {
+    public ParticleSpawnEvent(Connection connection, Particle particleType, ParticleData particleData, boolean longDistance, Position position, float offsetX, float offsetY, float offsetZ, int count) {
         super(connection);
         this.particleType = particleType;
         this.particleData = particleData;
         this.longDistance = longDistance;
-        this.location = location;
+        this.position = position;
         this.offsetX = offsetX;
         this.offsetY = offsetY;
         this.offsetZ = offsetZ;
         this.count = count;
     }
 
-    public ParticleSpawnEvent(Connection connection, Particle particleType, ParticleData particleData, Location location) {
+    public ParticleSpawnEvent(Connection connection, Particle particleType, ParticleData particleData, Position position) {
         super(connection);
         this.particleType = particleType;
         this.particleData = particleData;
-        this.location = location;
+        this.position = position;
     }
 
     public ParticleSpawnEvent(Connection connection, PacketParticle pkg) {
@@ -53,7 +53,7 @@ public class ParticleSpawnEvent extends CancelableEvent {
         this.particleType = pkg.getParticleType();
         this.particleData = pkg.getParticleData();
         this.longDistance = pkg.isLongDistance();
-        this.location = pkg.getLocation();
+        this.position = pkg.getPosition();
         this.offsetX = pkg.getOffsetX();
         this.offsetY = pkg.getOffsetY();
         this.offsetZ = pkg.getOffsetZ();
@@ -76,8 +76,8 @@ public class ParticleSpawnEvent extends CancelableEvent {
         this.longDistance = longDistance;
     }
 
-    public Location getLocation() {
-        return this.location;
+    public Position getPosition() {
+        return this.position;
     }
 
     public float getOffsetX() {

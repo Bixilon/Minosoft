@@ -10,27 +10,32 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.data.entities
 
-package de.bixilon.minosoft.modding.event.events;
+import de.bixilon.minosoft.data.world.BlockPosition
+import glm_.vec3.Vec3
 
-import de.bixilon.minosoft.data.world.BlockPosition;
-import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketSpawnLocation;
 
-public class SpawnLocationChangeEvent extends ConnectionEvent {
-    private final BlockPosition location;
+data class Position(val x: Double, val y: Double, val z: Double) {
 
-    public SpawnLocationChangeEvent(Connection connection, BlockPosition location) {
-        super(connection);
-        this.location = location;
+    constructor(position: Vec3) : this(position.x.toDouble(), position.y.toDouble(), position.z.toDouble())
+
+    override fun toString(): String {
+        return "($x $y $z)"
     }
 
-    public SpawnLocationChangeEvent(Connection connection, PacketSpawnLocation pkg) {
-        super(connection);
-        this.location = pkg.getSpawnLocation();
+    fun toVec3(): Vec3 {
+        return Vec3(x, y, z)
     }
 
-    public BlockPosition getSpawnLocation() {
-        return this.location;
+    fun toBlockPosition(): BlockPosition {
+        return BlockPosition((x - 0.5).toInt(), y.toInt(), (z - 0.5).toInt()) // ToDo
+    }
+
+    companion object {
+        @JvmStatic
+        fun fromPosition(position: BlockPosition): Position {
+            return Position(position.x.toDouble(), position.y.toDouble(), position.z.toDouble())
+        }
     }
 }

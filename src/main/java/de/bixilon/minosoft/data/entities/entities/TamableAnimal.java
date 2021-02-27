@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.entities.entities;
 
 import de.bixilon.minosoft.data.entities.EntityMetaDataFields;
 import de.bixilon.minosoft.data.entities.EntityRotation;
-import de.bixilon.minosoft.data.entities.Location;
+import de.bixilon.minosoft.data.entities.Position;
 import de.bixilon.minosoft.data.entities.entities.animal.Animal;
 import de.bixilon.minosoft.protocol.network.Connection;
 
@@ -23,8 +23,8 @@ import javax.annotation.Nullable;
 import java.util.UUID;
 
 public abstract class TamableAnimal extends Animal {
-    public TamableAnimal(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
-        super(connection, entityId, uuid, location, rotation);
+    public TamableAnimal(Connection connection, int entityId, UUID uuid, Position position, EntityRotation rotation) {
+        super(connection, entityId, uuid, position, rotation);
     }
 
     private boolean getTameableFlag(int bitMask) {

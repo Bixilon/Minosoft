@@ -84,7 +84,7 @@ class RenderWindow(private val connection: Connection, val rendering: Rendering)
                 latch.countDown()
             }
             renderQueue.add {
-                camera.setPosition(packet.location)
+                camera.setPosition(packet.position)
                 camera.setRotation(packet.rotation.yaw.toDouble(), packet.rotation.pitch.toDouble())
             }
         })
@@ -266,6 +266,7 @@ class RenderWindow(private val connection: Connection, val rendering: Rendering)
             } else {
                 GL_FILL
             })
+            connection.sender.sendFakeChatMessage("§f[§e§lDEBUG§f] §9Toggled polygen mode!")
         }
         registerKeyCallback(KeyBindingsNames.DEBUG_MOUSE_CATCH) { _: KeyCodes, _: KeyAction ->
             mouseCatch = !mouseCatch
@@ -274,6 +275,7 @@ class RenderWindow(private val connection: Connection, val rendering: Rendering)
             } else {
                 glfwSetInputMode(windowId, GLFW_CURSOR, GLFW_CURSOR_NORMAL)
             }
+            connection.sender.sendFakeChatMessage("§f[§e§lDEBUG§f] §9Toggled mouse catch!")
         }
         registerKeyCallback(KeyBindingsNames.QUIT_RENDERING) { _: KeyCodes, _: KeyAction ->
             glfwSetWindowShouldClose(windowId, true)

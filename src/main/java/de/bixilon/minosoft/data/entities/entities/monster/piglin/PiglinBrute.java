@@ -14,14 +14,14 @@
 package de.bixilon.minosoft.data.entities.entities.monster.piglin;
 
 import de.bixilon.minosoft.data.entities.EntityRotation;
-import de.bixilon.minosoft.data.entities.Location;
+import de.bixilon.minosoft.data.entities.Position;
 import de.bixilon.minosoft.protocol.network.Connection;
 
 import java.util.UUID;
 
 public class PiglinBrute extends AbstractPiglin {
 
-    public PiglinBrute(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
-        super(connection, entityId, uuid, location, rotation);
+    public PiglinBrute(Connection connection, int entityId, UUID uuid, Position position, EntityRotation rotation) {
+        super(connection, entityId, uuid, position, rotation);
     }
 }

@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.world.BlockPosition;
-import de.bixilon.minosoft.modding.event.events.SpawnLocationChangeEvent;
+import de.bixilon.minosoft.modding.event.events.SpawnPositionChangeEvent;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
@@ -22,31 +22,31 @@ import de.bixilon.minosoft.util.logging.Log;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W03B;
 
-public class PacketSpawnLocation extends ClientboundPacket {
-    BlockPosition location;
+public class PacketSpawnPosition extends ClientboundPacket {
+    private BlockPosition position;
 
     @Override
     public boolean read(InByteBuffer buffer) {
         if (buffer.getVersionId() < V_14W03B) {
-            this.location = buffer.readBlockPositionInteger();
+            this.position = buffer.readBlockPositionInteger();
             return true;
         }
-        this.location = buffer.readPosition();
+        this.position = buffer.readPosition();
         return true;
     }
 
     @Override
     public void handle(Connection connection) {
-        connection.fireEvent(new SpawnLocationChangeEvent(connection, this));
-        connection.getPlayer().setSpawnLocation(getSpawnLocation());
+        connection.fireEvent(new SpawnPositionChangeEvent(connection, this));
+        connection.getPlayer().setSpawnPosition(getSpawnPosition());
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Received spawn location %s", this.location));
+        Log.protocol("[IN] Received spawn position %s", this.position);
     }
 
-    public BlockPosition getSpawnLocation() {
-        return this.location;
+    public BlockPosition getSpawnPosition() {
+        return this.position;
     }
 }

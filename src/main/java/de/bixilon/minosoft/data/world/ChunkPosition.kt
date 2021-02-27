@@ -10,25 +10,22 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.data.world
 
-package de.bixilon.minosoft.data.world.palette;
+import de.bixilon.minosoft.data.Directions
 
-import de.bixilon.minosoft.data.mappings.blocks.BlockState;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
-
-public interface Palette {
-    static Palette choosePalette(int bitsPerBlock) {
-        if (bitsPerBlock <= 4) {
-            return new IndirectPalette(4);
-        } else if (bitsPerBlock <= 8) {
-            return new IndirectPalette(bitsPerBlock);
-        }
-        return new DirectPalette();
+data class ChunkPosition(val x: Int, val z: Int) {
+    override fun toString(): String {
+        return "($x $z)"
     }
 
-    BlockState blockById(int id);
-
-    int getBitsPerBlock();
-
-    void read(InByteBuffer buffer);
+    fun getLocationByDirection(direction: Directions): ChunkPosition {
+        return when (direction) {
+            Directions.NORTH -> ChunkPosition(x, z - 1)
+            Directions.SOUTH -> ChunkPosition(x, z + 1)
+            Directions.WEST -> ChunkPosition(x - 1, z)
+            Directions.EAST -> ChunkPosition(x + 1, z)
+            else -> throw IllegalArgumentException("Chunk location is just 2d")
+        }
+    }
 }

@@ -39,7 +39,7 @@ public class Player {
     private float health;
     private int food;
     private float saturation;
-    private BlockPosition spawnLocation;
+    private BlockPosition spawnPosition;
     private GameModes gameMode;
     private byte selectedSlot;
     private int level;
@@ -105,12 +105,12 @@ public class Player {
         this.saturation = saturation;
     }
 
-    public BlockPosition getSpawnLocation() {
-        return this.spawnLocation;
+    public BlockPosition getSpawnPosition() {
+        return this.spawnPosition;
     }
 
-    public void setSpawnLocation(BlockPosition spawnLocation) {
-        this.spawnLocation = spawnLocation;
+    public void setSpawnPosition(BlockPosition spawnPosition) {
+        this.spawnPosition = spawnPosition;
     }
 
     public GameModes getGameMode() {

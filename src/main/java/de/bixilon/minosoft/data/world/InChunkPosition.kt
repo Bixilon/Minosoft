@@ -14,10 +14,10 @@ package de.bixilon.minosoft.data.world
 
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
-data class InChunkLocation(val x: Int, val y: Int, val z: Int) {
+data class InChunkPosition(val x: Int, val y: Int, val z: Int) {
 
-    fun getInChunkSectionLocation(): InChunkSectionLocation {
-        return InChunkSectionLocation(x,
+    fun getInChunkSectionLocation(): InChunkSectionPosition {
+        return InChunkSectionPosition(x,
             if (y < 0) {
                 ((ProtocolDefinition.SECTION_HEIGHT_Y + (y % ProtocolDefinition.SECTION_HEIGHT_Y))) % ProtocolDefinition.SECTION_HEIGHT_Y
             } else {

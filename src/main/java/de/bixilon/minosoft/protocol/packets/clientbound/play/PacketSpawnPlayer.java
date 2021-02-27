@@ -16,7 +16,7 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 import de.bixilon.minosoft.data.PlayerPropertyData;
 import de.bixilon.minosoft.data.entities.EntityMetaData;
 import de.bixilon.minosoft.data.entities.EntityRotation;
-import de.bixilon.minosoft.data.entities.Location;
+import de.bixilon.minosoft.data.entities.Position;
 import de.bixilon.minosoft.data.entities.Velocity;
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity;
 import de.bixilon.minosoft.data.mappings.Item;
@@ -52,11 +52,11 @@ public class PacketSpawnPlayer extends ClientboundPacket {
         } else {
             uuid = buffer.readUUID();
         }
-        Location location;
+        Position position;
         if (buffer.getVersionId() < V_16W06A) {
-            location = new Location(buffer.readFixedPointNumberInt(), buffer.readFixedPointNumberInt(), buffer.readFixedPointNumberInt());
+            position = new Position(buffer.readFixedPointNumberInt(), buffer.readFixedPointNumberInt(), buffer.readFixedPointNumberInt());
         } else {
-            location = buffer.readLocation();
+            position = buffer.readLocation();
         }
         short yaw = buffer.readAngle();
         short pitch = buffer.readAngle();
@@ -69,7 +69,7 @@ public class PacketSpawnPlayer extends ClientboundPacket {
         if (buffer.getVersionId() < V_19W34A) {
             metaData = buffer.readMetaData();
         }
-        this.entity = new PlayerEntity(buffer.getConnection(), entityId, uuid, location, new EntityRotation(yaw, pitch, 0), name, properties, currentItem);
+        this.entity = new PlayerEntity(buffer.getConnection(), entityId, uuid, position, new EntityRotation(yaw, pitch, 0), name, properties, currentItem);
         if (metaData != null) {
             this.entity.setMetaData(metaData);
         }
@@ -86,7 +86,7 @@ public class PacketSpawnPlayer extends ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Player spawned at %s (entityId=%d, name=%s, uuid=%s)", this.entity.getLocation(), this.entity.getEntityId(), this.entity.getName(), this.entity.getUUID()));
+        Log.protocol(String.format("[IN] Player spawned at %s (entityId=%d, name=%s, uuid=%s)", this.entity.getPosition(), this.entity.getEntityId(), this.entity.getName(), this.entity.getUUID()));
     }
 
     public PlayerEntity getEntity() {

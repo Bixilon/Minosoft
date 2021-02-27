@@ -13,11 +13,12 @@
 package de.bixilon.minosoft.data.world
 
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import glm_.vec3.Vec3
 
 data class BlockPosition(val x: Int, val y: Int, val z: Int) {
-    constructor(chunkLocation: ChunkLocation, sectionHeight: Int, inChunkSectionLocation: InChunkSectionLocation) : this(chunkLocation.x * ProtocolDefinition.SECTION_WIDTH_X + inChunkSectionLocation.x, sectionHeight * ProtocolDefinition.SECTION_HEIGHT_Y + inChunkSectionLocation.y, chunkLocation.z * ProtocolDefinition.SECTION_WIDTH_Z + inChunkSectionLocation.z) // ToDo
+    constructor(chunkPosition: ChunkPosition, sectionHeight: Int, inChunkSectionPosition: InChunkSectionPosition) : this(chunkPosition.x * ProtocolDefinition.SECTION_WIDTH_X + inChunkSectionPosition.x, sectionHeight * ProtocolDefinition.SECTION_HEIGHT_Y + inChunkSectionPosition.y, chunkPosition.z * ProtocolDefinition.SECTION_WIDTH_Z + inChunkSectionPosition.z) // ToDo
 
-    fun getChunkLocation(): ChunkLocation {
+    fun getChunkLocation(): ChunkPosition {
         val chunkX = if (this.x >= 0) {
             this.x / ProtocolDefinition.SECTION_WIDTH_X
         } else {
@@ -28,10 +29,10 @@ data class BlockPosition(val x: Int, val y: Int, val z: Int) {
         } else {
             ((this.z + 1) / ProtocolDefinition.SECTION_WIDTH_Z) - 1
         }
-        return ChunkLocation(chunkX, chunkY)
+        return ChunkPosition(chunkX, chunkY)
     }
 
-    fun getInChunkLocation(): InChunkLocation {
+    fun getInChunkLocation(): InChunkPosition {
         var x: Int = this.x % ProtocolDefinition.SECTION_WIDTH_X
         if (x < 0) {
             x += ProtocolDefinition.SECTION_WIDTH_X
@@ -40,12 +41,12 @@ data class BlockPosition(val x: Int, val y: Int, val z: Int) {
         if (z < 0) {
             z += ProtocolDefinition.SECTION_WIDTH_Z
         }
-        return InChunkLocation(x, this.y, z)
+        return InChunkPosition(x, this.y, z)
     }
 
-    fun getInChunkSectionLocation(): InChunkSectionLocation {
+    fun getInChunkSectionLocation(): InChunkSectionPosition {
         val location = getInChunkLocation()
-        return InChunkSectionLocation(location.x, getSectionHeight(), location.z)
+        return InChunkSectionPosition(location.x, getSectionHeight(), location.z)
     }
 
     fun getSectionHeight(): Int {
@@ -54,6 +55,10 @@ data class BlockPosition(val x: Int, val y: Int, val z: Int) {
         } else {
             y / ProtocolDefinition.SECTION_HEIGHT_Y
         }
+    }
+
+    fun toVec3(): Vec3 {
+        return Vec3(x, y, z)
     }
 
     override fun toString(): String {

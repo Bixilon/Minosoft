@@ -12,31 +12,30 @@
  */
 package de.bixilon.minosoft.data.world
 
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-
 import de.bixilon.minosoft.data.Directions
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
 /**
  * Chunk X, Y and Z location (max 16x16x16)
  */
-data class InChunkSectionLocation(val x: Int, val y: Int, val z: Int) {
+data class InChunkSectionPosition(val x: Int, val y: Int, val z: Int) {
 
     override fun toString(): String {
         return "($x $y $z)"
     }
 
-    fun getInChunkLocation(sectionHeight: Int): InChunkLocation {
-        return InChunkLocation(x, y + ProtocolDefinition.SECTION_HEIGHT_Y * sectionHeight, z)
+    fun getInChunkLocation(sectionHeight: Int): InChunkPosition {
+        return InChunkPosition(x, y + ProtocolDefinition.SECTION_HEIGHT_Y * sectionHeight, z)
     }
 
-    fun getLocationByDirection(direction: Directions): InChunkSectionLocation {
+    fun getLocationByDirection(direction: Directions): InChunkSectionPosition {
         return when (direction) {
-            Directions.DOWN -> InChunkSectionLocation(x, y - 1, z)
-            Directions.UP -> InChunkSectionLocation(x, y + 1, z)
-            Directions.NORTH -> InChunkSectionLocation(x, y, z - 1)
-            Directions.SOUTH -> InChunkSectionLocation(x, y, z + 1)
-            Directions.WEST -> InChunkSectionLocation(x - 1, y, z)
-            Directions.EAST -> InChunkSectionLocation(x + 1, y, z)
+            Directions.DOWN -> InChunkSectionPosition(x, y - 1, z)
+            Directions.UP -> InChunkSectionPosition(x, y + 1, z)
+            Directions.NORTH -> InChunkSectionPosition(x, y, z - 1)
+            Directions.SOUTH -> InChunkSectionPosition(x, y, z + 1)
+            Directions.WEST -> InChunkSectionPosition(x - 1, y, z)
+            Directions.EAST -> InChunkSectionPosition(x + 1, y, z)
         }
     }
 }

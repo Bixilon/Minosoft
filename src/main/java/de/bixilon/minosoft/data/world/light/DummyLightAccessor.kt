@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2021 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -10,11 +10,22 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.data.entities
 
-data class RelativeLocation(val x: Double, val y: Double, val z: Double) {
+package de.bixilon.minosoft.data.world.light
 
-    override fun toString(): String {
-        return "($x $y $z)"
+import de.bixilon.minosoft.data.Directions
+import de.bixilon.minosoft.data.world.BlockPosition
+
+object DummyLightAccessor : LightAccessor {
+
+    override fun getLightLevel(blockPosition: BlockPosition, direction: Directions): Int {
+        return when (direction) {
+            Directions.NORTH -> 5
+            Directions.SOUTH -> 7
+            Directions.DOWN -> 3
+            Directions.UP -> 9
+            Directions.WEST -> 11
+            Directions.EAST -> 13
+        }
     }
 }

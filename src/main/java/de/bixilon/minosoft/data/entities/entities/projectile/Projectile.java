@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.data.entities.entities.projectile;
 
 import de.bixilon.minosoft.data.entities.EntityRotation;
-import de.bixilon.minosoft.data.entities.Location;
+import de.bixilon.minosoft.data.entities.Position;
 import de.bixilon.minosoft.data.entities.entities.Entity;
 import de.bixilon.minosoft.protocol.network.Connection;
 
@@ -22,8 +22,8 @@ import java.util.UUID;
 
 public abstract class Projectile extends Entity {
 
-    public Projectile(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
-        super(connection, entityId, uuid, location, rotation);
+    public Projectile(Connection connection, int entityId, UUID uuid, Position position, EntityRotation rotation) {
+        super(connection, entityId, uuid, position, rotation);
     }
 }
 

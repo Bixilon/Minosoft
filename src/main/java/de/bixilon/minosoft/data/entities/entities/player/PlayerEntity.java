@@ -16,7 +16,7 @@ package de.bixilon.minosoft.data.entities.entities.player;
 import de.bixilon.minosoft.data.PlayerPropertyData;
 import de.bixilon.minosoft.data.entities.EntityMetaDataFields;
 import de.bixilon.minosoft.data.entities.EntityRotation;
-import de.bixilon.minosoft.data.entities.Location;
+import de.bixilon.minosoft.data.entities.Position;
 import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction;
 import de.bixilon.minosoft.data.entities.entities.LivingEntity;
 import de.bixilon.minosoft.data.mappings.Item;
@@ -33,14 +33,14 @@ public class PlayerEntity extends LivingEntity {
     private final HashSet<PlayerPropertyData> properties;
     private Item currentItem;
 
-    public PlayerEntity(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation) {
-        super(connection, entityId, uuid, location, rotation);
+    public PlayerEntity(Connection connection, int entityId, UUID uuid, Position position, EntityRotation rotation) {
+        super(connection, entityId, uuid, position, rotation);
         this.name = "Ghost Player";
         this.properties = null;
     }
 
-    public PlayerEntity(Connection connection, int entityId, UUID uuid, Location location, EntityRotation rotation, String name, @Nullable HashSet<PlayerPropertyData> properties, Item currentItem) {
-        super(connection, entityId, uuid, location, rotation);
+    public PlayerEntity(Connection connection, int entityId, UUID uuid, Position position, EntityRotation rotation, String name, @Nullable HashSet<PlayerPropertyData> properties, Item currentItem) {
+        super(connection, entityId, uuid, position, rotation);
         this.name = name;
         this.properties = properties;
         this.currentItem = currentItem;

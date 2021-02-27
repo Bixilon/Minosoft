@@ -57,7 +57,7 @@ public class PacketBlockChange extends ClientboundPacket {
 
         // tweak
         if (!connection.getVersion().isFlattened()) {
-            BlockState block = VersionTweaker.transformBlock(getBlock(), chunk, this.position.getInChunkSectionLocation(), this.position.getSectionHeight());
+            BlockState block = VersionTweaker.transformBlock(getBlock(), chunk.getSections(), this.position.getInChunkSectionLocation(), this.position.getSectionHeight());
             section.setRawBlock(getPosition().getInChunkLocation().getInChunkSectionLocation(), block);
         } else {
             section.setRawBlock(getPosition().getInChunkLocation().getInChunkSectionLocation(), getBlock());
