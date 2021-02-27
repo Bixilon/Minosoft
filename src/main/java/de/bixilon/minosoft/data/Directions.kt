@@ -17,8 +17,8 @@ import glm_.vec3.Vec3
 enum class Directions (direction: Vec3) {
     DOWN(Vec3(0, -1, 0)),
     UP(Vec3(0, 1, 0)),
-    NORTH(Vec3(0, 0, 1)),
-    SOUTH(Vec3(0, 0, -1)),
+    NORTH(Vec3(0, 0, -1)),
+    SOUTH(Vec3(0, 0, 1)),
     WEST(Vec3(-1, 0, 0)),
     EAST(Vec3(1, 0, 0));
 
