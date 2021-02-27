@@ -20,6 +20,7 @@ import de.bixilon.minosoft.data.text.BaseComponent;
 import de.bixilon.minosoft.data.text.ChatColors;
 import de.bixilon.minosoft.data.text.ChatComponent;
 import de.bixilon.minosoft.data.text.RGBColor;
+import de.bixilon.minosoft.util.Pair;
 
 import java.io.PrintStream;
 import java.text.SimpleDateFormat;
@@ -28,7 +29,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class Log {
     public static final long MINOSOFT_START_TIME = System.currentTimeMillis();
     private static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-    private static final LinkedBlockingQueue<ChatComponent> LOG_QUEUE = new LinkedBlockingQueue<>();
+    private static final LinkedBlockingQueue<Pair<ChatComponent, ChatComponent>> LOG_QUEUE = new LinkedBlockingQueue<>(); // prefix, message
     private static final PrintStream SYSTEM_ERR_STREAM = System.err;
     private static final PrintStream SYSTEM_OUT_STREAM = System.out;
     private static final PrintStream ERROR_PRINT_STREAM = new LogPrintStream(LogLevels.WARNING);
@@ -41,18 +42,18 @@ public class Log {
         new Thread(() -> {
             while (true) {
                 // something to print
-                ChatComponent message;
+                Pair<ChatComponent, ChatComponent> message;
                 try {
                     message = LOG_QUEUE.take();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                     continue;
                 }
-                SYSTEM_OUT_STREAM.println(message.getANSIColoredMessage());
+                SYSTEM_OUT_STREAM.println(message.getKey().getANSIColoredMessage() + message.getValue().getANSIColoredMessage());
 
                 if (StaticConfiguration.SHOW_LOG_MESSAGES_IN_CHAT) {
                     for (var connection : Minosoft.CONNECTIONS.values()) {
-                        connection.getSender().sendFakeChatMessage(message, ChatTextPositions.CHAT_BOX);
+                        connection.getSender().sendFakeChatMessage(message.getValue(), ChatTextPositions.CHAT_BOX);
                     }
                 }
                 // ToDo: log to file
@@ -111,8 +112,7 @@ public class Log {
         if (color != null && StaticConfiguration.COLORED_LOG) {
             messageComponent.applyDefaultColor(color);
         }
-        component.append(messageComponent);
-        LOG_QUEUE.add(component);
+        LOG_QUEUE.add(new Pair<>(component, messageComponent));
     }
 
     /**

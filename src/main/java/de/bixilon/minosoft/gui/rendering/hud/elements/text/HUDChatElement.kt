@@ -25,6 +25,9 @@ class HUDChatElement(hudTextElement: HUDTextElement) : HUDText {
 
     init {
         hudTextElement.connection.registerEvent(EventInvokerCallback<ChatMessageReceivingEvent> {
+            if (chatMessages.size > MAX_MESSAGES_IN_CHAT) {
+                chatMessages.remove(chatMessages.iterator().next())
+            }
             chatMessages.add(Pair(it.message, System.currentTimeMillis()))
         })
     }
@@ -39,5 +42,9 @@ class HUDChatElement(hudTextElement: HUDTextElement) : HUDText {
                 chatComponents[FontBindings.LEFT_DOWN]!!.add(entry.first)
             }
         }
+    }
+
+    companion object {
+        const val MAX_MESSAGES_IN_CHAT = 20
     }
 }

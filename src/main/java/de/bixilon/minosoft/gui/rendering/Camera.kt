@@ -27,6 +27,8 @@ import de.bixilon.minosoft.gui.rendering.chunk.Frustum
 import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.protocol.network.Connection
 import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketPlayerPositionAndRotationSending
+import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketPlayerPositionSending
+import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketPlayerRotationSending
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import glm_.glm
 import glm_.mat4x4.Mat4
@@ -48,8 +50,9 @@ class Camera(
     var pitch = 0.0
     private var zoom = 0f
 
-    private var lastPositionChange = 0L
+    private var lastMovementPacketSent = 0L
     private var currentPositionSent = false
+    private var currentRotationSent = false
 
     var cameraFront = Vec3(0.0f, 0.0f, -1.0f)
     var cameraRight = Vec3(0.0f, 0.0f, -1.0f)
@@ -164,6 +167,7 @@ class Camera(
         }
         if (lastPosition != cameraPosition) {
             recalculateViewProjectionMatrix()
+            currentPositionSent = false
             sendPositionToServer()
         }
 
@@ -242,24 +246,30 @@ class Camera(
         cameraRight = cameraFront.cross(CAMERA_UP_VEC3).normalize()
         cameraUp = cameraRight.cross(cameraFront).normalize()
         recalculateViewProjectionMatrix()
+        currentRotationSent = false
         sendPositionToServer()
     }
 
     fun draw() {
-        if (!currentPositionSent) {
+        if (!currentPositionSent || !currentRotationSent) {
             sendPositionToServer()
         }
     }
 
     private fun sendPositionToServer() {
-        if (System.currentTimeMillis() - lastPositionChange > ProtocolDefinition.TICK_TIME) {
-            // ToDo: Replace this with proper movement and only send it, when our position changed
-            connection.sendPacket(PacketPlayerPositionAndRotationSending(feetLocation, EntityRotation(yaw, pitch), false))
-            lastPositionChange = System.currentTimeMillis()
+        if (System.currentTimeMillis() - lastMovementPacketSent > ProtocolDefinition.TICK_TIME) {
+            if (!currentPositionSent && !currentPositionSent) {
+                connection.sendPacket(PacketPlayerPositionAndRotationSending(feetLocation, EntityRotation(yaw, pitch), false))
+            } else if (!currentPositionSent) {
+                connection.sendPacket(PacketPlayerPositionSending(feetLocation, false))
+            } else {
+                connection.sendPacket(PacketPlayerRotationSending(EntityRotation(yaw, pitch), false))
+            }
+            lastMovementPacketSent = System.currentTimeMillis()
             currentPositionSent = true
+            currentRotationSent = true
             return
         }
-        currentPositionSent = false
     }
 
     fun setPosition(location: Position) {

@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
+import de.bixilon.minosoft.data.entities.Position;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
@@ -22,43 +23,29 @@ import de.bixilon.minosoft.util.logging.Log;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W06B;
 
 public class PacketPlayerPositionSending implements ServerboundPacket {
-    private final double x;
-    private final double feetY;
-    private final double headY;
-    private final double z;
+    private final Position position;
     private final boolean onGround;
 
-    public PacketPlayerPositionSending(double x, double feetY, double headY, double z, boolean onGround) {
-        this.x = x;
-        this.feetY = feetY;
-        this.headY = headY;
-        this.z = z;
-        this.onGround = onGround;
-    }
-
-    public PacketPlayerPositionSending(double x, double feetY, double z, boolean onGround) {
-        this.x = x;
-        this.feetY = feetY;
-        this.headY = feetY - 1.62F;
-        this.z = z;
+    public PacketPlayerPositionSending(Position position, boolean onGround) {
+        this.position = position;
         this.onGround = onGround;
     }
 
     @Override
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_PLAYER_POSITION);
-        buffer.writeDouble(this.x);
-        buffer.writeDouble(this.feetY);
+        buffer.writeDouble(this.position.getX());
+        buffer.writeDouble(this.position.getY());
         if (buffer.getVersionId() < V_14W06B) {
-            buffer.writeDouble(this.headY);
+            buffer.writeDouble(0.0); // TODo
         }
-        buffer.writeDouble(this.z);
+        buffer.writeDouble(this.position.getZ());
         buffer.writeBoolean(this.onGround);
         return buffer;
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("[OUT] Sending player position: %s %s %s", this.x, this.headY, this.z));
+        Log.protocol(String.format("[OUT] Sending player position (position=%s)", this.position));
     }
 }

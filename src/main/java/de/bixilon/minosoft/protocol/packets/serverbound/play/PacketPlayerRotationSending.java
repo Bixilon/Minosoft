@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
+import de.bixilon.minosoft.data.entities.EntityRotation;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
@@ -20,27 +21,25 @@ import de.bixilon.minosoft.protocol.protocol.Packets;
 import de.bixilon.minosoft.util.logging.Log;
 
 public class PacketPlayerRotationSending implements ServerboundPacket {
-    private final float yaw;
-    private final float pitch;
+    private final EntityRotation rotation;
     private final boolean onGround;
 
-    public PacketPlayerRotationSending(float yaw, float pitch, boolean onGround) {
-        this.yaw = yaw;
-        this.pitch = pitch;
+    public PacketPlayerRotationSending(EntityRotation rotation, boolean onGround) {
+        this.rotation = rotation;
         this.onGround = onGround;
     }
 
     @Override
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_PLAYER_ROTATION);
-        buffer.writeFloat(this.yaw);
-        buffer.writeFloat(this.pitch);
+        buffer.writeFloat(this.rotation.getYaw());
+        buffer.writeFloat(this.rotation.getPitch());
         buffer.writeBoolean(this.onGround);
         return buffer;
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("[OUT] Sending player rotation (yaw=%s, pitch=%s)", this.yaw, this.pitch));
+        Log.protocol(String.format("[OUT] Sending player rotation (rotation=%s)", this.rotation));
     }
 }
