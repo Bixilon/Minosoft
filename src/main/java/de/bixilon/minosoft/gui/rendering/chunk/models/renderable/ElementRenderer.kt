@@ -58,10 +58,11 @@ class ElementRenderer(element: BlockModelElement, rotation: Vec3, uvLock: Boolea
 
         val face = faces[realDirection] ?: return // Not our face
         val texture = textureMapping[face.textureName] ?: TextureArray.DEBUG_TEXTURE
+
         // if (texture.isTransparent) {
         //     return // ToDo: force render transparent faces
         // }
-        val lightLevel = lightAccessor.getLightLevel(position + face.cullFace)
+        val lightLevel = lightAccessor.getLightLevel(position + face.cullFace) // ToDo: rotate cullface
 
         val drawPositions = arrayOf(positions[positionTemplate[0]], positions[positionTemplate[1]], positions[positionTemplate[2]], positions[positionTemplate[3]])
 

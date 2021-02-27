@@ -92,7 +92,6 @@ class BlockRenderer(data: JsonObject, parent: BlockModel) {
                     continue
                 }
 
-                // ToDo: Lightning is determined by cullface attribute
                 element.render(tintColor, position, lightAccessor, textureMapping, modelMatrix, direction, mesh)
             }
         }
