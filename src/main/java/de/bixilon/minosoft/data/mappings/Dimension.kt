@@ -40,6 +40,11 @@ data class Dimension(
     } else {
         minY / ProtocolDefinition.SECTION_HEIGHT_Y
     }
+    val highestSection = if (height < 0) {
+        (height + 1) / ProtocolDefinition.SECTION_HEIGHT_Y - 1
+    } else {
+        height / ProtocolDefinition.SECTION_HEIGHT_Y
+    }
 
     override fun toString(): String {
         return resourceLocation.toString()

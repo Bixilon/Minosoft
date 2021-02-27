@@ -20,8 +20,8 @@ import de.bixilon.minosoft.protocol.network.Connection
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
-import de.bixilon.minosoft.util.ChunkUtil
 import de.bixilon.minosoft.util.Util
+import de.bixilon.minosoft.util.chunk.ChunkUtil
 import de.bixilon.minosoft.util.logging.Log
 import java.util.*
 
@@ -44,7 +44,7 @@ class PacketChunkBulk : ClientboundPacket() {
 
             // chunk meta data
             for (i in 0 until chunkCount) {
-                val chunkPosition = buffer.readChunkLocation()
+                val chunkPosition = buffer.readChunkPosition()
                 val sectionBitMask = longArrayOf(buffer.readUnsignedShort().toLong())
                 val addBitMask = buffer.readUnsignedShort()
                 data[chunkPosition] = ChunkUtil.readChunkPacket(decompressed, dimension, sectionBitMask, addBitMask, true, containsSkyLight)

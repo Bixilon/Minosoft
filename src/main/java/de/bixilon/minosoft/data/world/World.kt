@@ -33,12 +33,12 @@ class World {
 
 
     fun getBlockInfo(blockPosition: BlockPosition): BlockInfo? {
-        val chunkLocation = blockPosition.getChunkLocation()
-        return chunks[chunkLocation]?.getBlockInfo(blockPosition.getInChunkLocation())
+        val chunkLocation = blockPosition.getChunkPosition()
+        return chunks[chunkLocation]?.getBlockInfo(blockPosition.getInChunkPosition())
     }
 
-    fun getChunk(loc: ChunkPosition): Chunk? {
-        return chunks[loc]
+    fun getChunk(chunkPosition: ChunkPosition): Chunk? {
+        return chunks[chunkPosition]
     }
 
     fun getOrCreateChunk(chunkPosition: ChunkPosition): Chunk {
@@ -50,7 +50,7 @@ class World {
     }
 
     fun setBlock(blockPosition: BlockPosition, block: BlockState?) {
-        chunks[blockPosition.getChunkLocation()]?.setRawBlock(blockPosition.getInChunkLocation(), block)
+        chunks[blockPosition.getChunkPosition()]?.setRawBlock(blockPosition.getInChunkPosition(), block)
     }
 
     fun unloadChunk(position: ChunkPosition) {
@@ -94,7 +94,7 @@ class World {
     }
 
     fun setBlockEntityData(position: BlockPosition, data: BlockEntityMetaData?) {
-        chunks[position.getChunkLocation()]?.sections?.get(position.getSectionHeight())?.getBlockInfo(position.getInChunkSectionLocation())?.metaData = data
+        chunks[position.getChunkPosition()]?.sections?.get(position.getSectionHeight())?.getBlockInfo(position.getInChunkSectionPosition())?.metaData = data
     }
 
     fun setBlockEntityData(blockEntities: HashMap<BlockPosition, BlockEntityMetaData>) {

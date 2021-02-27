@@ -56,8 +56,11 @@ public final class ProtocolDefinition {
     public static final Pattern SCOREBOARD_OBJECTIVE_PATTERN = Pattern.compile("[a-zA-z-.+]{1,16}");
 
     public static final int SECTION_WIDTH_X = 16;
+    public static final int SECTION_MAX_X = SECTION_WIDTH_X - 1;
     public static final int SECTION_WIDTH_Z = 16;
+    public static final int SECTION_MAX_Z = SECTION_WIDTH_Z - 1;
     public static final int SECTION_HEIGHT_Y = 16;
+    public static final int SECTION_MAX_Y = SECTION_HEIGHT_Y - 1;
     public static final int SECTIONS_PER_CHUNK = 16;
     public static final int BLOCKS_PER_SECTION = SECTION_WIDTH_X * SECTION_HEIGHT_Y * SECTION_WIDTH_X;
 

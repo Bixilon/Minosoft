@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk
 
+import com.google.common.collect.ConcurrentHashMultiset
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames
@@ -27,7 +28,6 @@ import de.bixilon.minosoft.gui.rendering.textures.Texture
 import de.bixilon.minosoft.gui.rendering.textures.TextureArray
 import de.bixilon.minosoft.protocol.network.Connection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import de.bixilon.minosoft.util.logging.Log
 import org.lwjgl.opengl.GL11.GL_CULL_FACE
 import org.lwjgl.opengl.GL11.glEnable
 import org.lwjgl.opengl.GL13.glDisable
@@ -36,64 +36,30 @@ import java.util.concurrent.ConcurrentHashMap
 class WorldRenderer(private val connection: Connection, private val world: World, val renderWindow: RenderWindow) : Renderer {
     private lateinit var minecraftTextures: TextureArray
     lateinit var chunkShader: Shader
-    private val chunkSectionsToDraw = ConcurrentHashMap<ChunkPosition, ConcurrentHashMap<Int, ChunkMesh>>()
-    private val visibleChunks: MutableSet<ChunkPosition> = mutableSetOf()
+    val chunkSectionsToDraw = ConcurrentHashMap<ChunkPosition, ConcurrentHashMap<Int, ChunkMesh>>()
+    val visibleChunks: MutableSet<ChunkPosition> = mutableSetOf()
     private lateinit var frustum: Frustum
     private var currentTick = 0 // for animation usage
     private var lastTickIncrementTime = 0L
+    val queuedChunks: ConcurrentHashMultiset<ChunkPosition> = ConcurrentHashMultiset.create()
 
-    private fun prepareChunk(chunkPosition: ChunkPosition, sectionHeight: Int, section: ChunkSection, chunk: Chunk): ChunkMesh {
+    private fun prepareChunk(chunkPosition: ChunkPosition, sectionHeight: Int, section: ChunkSection): ChunkMesh {
+        queuedChunks.remove(chunkPosition)
         if (frustum.containsChunk(chunkPosition, connection)) {
             visibleChunks.add(chunkPosition)
         }
+        val chunk = world.getChunk(chunkPosition)!!
+
         val mesh = ChunkMesh()
 
-        val below = world.chunks[chunkPosition]?.sections?.get(sectionHeight - 1)
-        val above = world.chunks[chunkPosition]?.sections?.get(sectionHeight + 1)
-        //val north = (world.allChunks[chunkLocation.getLocationByDirection(Directions.NORTH)]?: throw ChunkNotLoadedException("North not loaded")).sections?.get(sectionHeight)
-        //val south = (world.allChunks[chunkLocation.getLocationByDirection(Directions.SOUTH)]?: throw ChunkNotLoadedException("South not loaded")).sections?.get(sectionHeight)
-        //val west = (world.allChunks[chunkLocation.getLocationByDirection(Directions.WEST)]?: throw ChunkNotLoadedException("West not loaded")).sections?.get(sectionHeight)
-        //val east = (world.allChunks[chunkLocation.getLocationByDirection(Directions.EAST)]?: throw ChunkNotLoadedException("North not loaded")).sections?.get(sectionHeight)
-        val north = world.chunks[chunkPosition.getLocationByDirection(Directions.NORTH)]?.sections?.get(sectionHeight)
-        val south = world.chunks[chunkPosition.getLocationByDirection(Directions.SOUTH)]?.sections?.get(sectionHeight)
-        val west = world.chunks[chunkPosition.getLocationByDirection(Directions.WEST)]?.sections?.get(sectionHeight)
-        val east = world.chunks[chunkPosition.getLocationByDirection(Directions.EAST)]?.sections?.get(sectionHeight)
-
         for ((position, blockInfo) in section.blocks) {
-            val blockBelow: BlockInfo? = if (position.y == 0 && below != null) {
-                below.getBlockInfo(position.x, ProtocolDefinition.SECTION_HEIGHT_Y - 1, position.z)
-            } else {
-                section.getBlockInfo(position.getLocationByDirection(Directions.DOWN))
-            }
-            val blockAbove: BlockInfo? = if (position.y == ProtocolDefinition.SECTION_HEIGHT_Y - 1 && above != null) {
-                above.getBlockInfo(position.x, 0, position.z)
-            } else {
-                section.getBlockInfo(position.getLocationByDirection(Directions.UP))
-            }
-            val blockNorth: BlockInfo? = if (position.z == 0 && north != null) {
-                north.getBlockInfo(position.x, position.y, ProtocolDefinition.SECTION_WIDTH_Z - 1)
-            } else {
-                section.getBlockInfo(position.getLocationByDirection(Directions.NORTH))
-            }
-            val blockSouth: BlockInfo? = if (position.z == ProtocolDefinition.SECTION_WIDTH_Z - 1 && south != null) {
-                south.getBlockInfo(position.x, position.y, 0)
-            } else {
-                section.getBlockInfo(position.getLocationByDirection(Directions.SOUTH))
-            }
-            val blockWest: BlockInfo? = if (position.x == 0 && west != null) {
-                west.getBlockInfo(ProtocolDefinition.SECTION_WIDTH_X - 1, position.y, position.x)
-            } else {
-                section.getBlockInfo(position.getLocationByDirection(Directions.WEST))
-            }
-            val blockEast: BlockInfo? = if (position.x == ProtocolDefinition.SECTION_WIDTH_X - 1 && east != null) {
-                east.getBlockInfo(0, position.y, position.z)
-            } else {
-                section.getBlockInfo(position.getLocationByDirection(Directions.EAST))
-            }
             val blockPosition = BlockPosition(chunkPosition, sectionHeight, position)
-            if (blockPosition == BlockPosition(-103, 3, 288)) {
-                Log.debug("")
+
+            val neighborBlocks: Array<BlockInfo?> = arrayOfNulls(Directions.DIRECTIONS.size)
+            for (direction in Directions.DIRECTIONS) {
+                neighborBlocks[direction.ordinal] = world.getBlockInfo(blockPosition + direction)
             }
+
             val biome = chunk.biomeAccessor!!.getBiome(blockPosition)
 
             var tintColor: RGBColor? = null
@@ -111,7 +77,7 @@ class WorldRenderer(private val connection: Connection, private val world: World
                 blockInfo.block.tintColor?.let { tintColor = it }
             }
 
-            blockInfo.block.getBlockRenderer(blockPosition).render(blockInfo, chunk.lightAccessor!!, tintColor, blockPosition, mesh, arrayOf(blockBelow, blockAbove, blockNorth, blockSouth, blockWest, blockEast))
+            blockInfo.block.getBlockRenderer(blockPosition).render(blockInfo, chunk.lightAccessor!!, tintColor, blockPosition, mesh, neighborBlocks)
         }
         return mesh
     }
@@ -173,19 +139,54 @@ class WorldRenderer(private val connection: Connection, private val world: World
         return textures
     }
 
-    fun prepareChunk(chunkPosition: ChunkPosition, chunk: Chunk) {
-        chunkSectionsToDraw[chunkPosition] = ConcurrentHashMap()
-        if (!chunk.isFullyLoaded) {
+    fun prepareChunk(chunkPosition: ChunkPosition, chunk: Chunk? = world.getChunk(chunkPosition), checkQueued: Boolean = true) {
+        if (chunk == null || !chunk.isFullyLoaded) {
             return
         }
+
+        val neighborsChunkPositions: Array<ChunkPosition> = arrayOf(
+            chunkPosition + Directions.NORTH,
+            chunkPosition + Directions.SOUTH,
+            chunkPosition + Directions.WEST,
+            chunkPosition + Directions.EAST,
+        )
+
+        // ensure all neighbor chunks are loaded
+        for (direction in Directions.SIDES) {
+            val neighborChunk = world.chunks[chunkPosition + direction]
+            if (neighborChunk == null || !neighborChunk.isFullyLoaded) {
+                // neighbors not loaded, doing later
+                if (checkQueued) {
+                    checkQueuedChunks(neighborsChunkPositions)
+                }
+                queuedChunks.add(chunkPosition)
+                return
+            }
+        }
+        queuedChunks.remove(chunkPosition)
+        chunkSectionsToDraw[chunkPosition] = ConcurrentHashMap()
+
         for ((sectionHeight, section) in chunk.sections!!) {
-            prepareChunkSection(chunkPosition, sectionHeight, section, chunk)
+            prepareChunkSection(chunkPosition, sectionHeight, section)
+        }
+
+        if (checkQueued) {
+            checkQueuedChunks(neighborsChunkPositions)
+        }
+
+    }
+
+    private fun checkQueuedChunks(chunkPositions: Array<ChunkPosition>) {
+        for (position in chunkPositions) {
+            if (queuedChunks.contains(position)) {
+                prepareChunk(position, checkQueued = false)
+            }
         }
     }
 
-    fun prepareChunkSection(chunkPosition: ChunkPosition, sectionHeight: Int, section: ChunkSection, chunk: Chunk) {
+    fun prepareChunkSection(chunkPosition: ChunkPosition, sectionHeight: Int, section: ChunkSection) {
         renderWindow.rendering.executor.execute {
-            val mesh = prepareChunk(chunkPosition, sectionHeight, section, chunk)
+            val mesh = prepareChunk(chunkPosition, sectionHeight, section)
 
             var sectionMap = chunkSectionsToDraw[chunkPosition]
             if (sectionMap == null) {
@@ -201,6 +202,7 @@ class WorldRenderer(private val connection: Connection, private val world: World
     }
 
     fun clearChunkCache() {
+        queuedChunks.clear()
         renderWindow.renderQueue.add {
             for ((location, map) in chunkSectionsToDraw) {
                 for ((sectionHeight, mesh) in map) {
@@ -213,6 +215,7 @@ class WorldRenderer(private val connection: Connection, private val world: World
     }
 
     fun unloadChunk(chunkPosition: ChunkPosition) {
+        queuedChunks.remove(chunkPosition)
         renderWindow.renderQueue.add {
             chunkSectionsToDraw[chunkPosition]?.let {
                 for ((_, mesh) in it) {
@@ -243,8 +246,8 @@ class WorldRenderer(private val connection: Connection, private val world: World
             }
         }
     }
+}
 
-    fun getChunkSize(): Int {
-        return chunkSectionsToDraw.size
-    }
+private operator fun Int.plus(upOrDown: Directions): Int {
+    return this + upOrDown.directionVector.y.toInt()
 }

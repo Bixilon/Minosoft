@@ -592,7 +592,7 @@ public class InByteBuffer {
         return new ResourceLocation(resourceLocation);
     }
 
-    public ChunkPosition readChunkLocation() {
+    public ChunkPosition readChunkPosition() {
         return new ChunkPosition(readInt(), readInt());
     }
 }

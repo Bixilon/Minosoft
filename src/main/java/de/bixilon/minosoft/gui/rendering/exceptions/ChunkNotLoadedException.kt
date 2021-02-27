@@ -13,4 +13,4 @@
 
 package de.bixilon.minosoft.gui.rendering.exceptions
 
-class ChunkNotLoadedException(message: String) : Exception(message)
+class ChunkNotLoadedException(message: String = "Chunk is unloaded") : Exception(message)

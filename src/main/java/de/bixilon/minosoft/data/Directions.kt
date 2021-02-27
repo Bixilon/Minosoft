@@ -14,7 +14,7 @@ package de.bixilon.minosoft.data
 
 import glm_.vec3.Vec3
 
-enum class Directions (direction: Vec3) {
+enum class Directions(direction: Vec3) {
     DOWN(Vec3(0, -1, 0)),
     UP(Vec3(0, 1, 0)),
     NORTH(Vec3(0, 0, -1)),
@@ -35,6 +35,8 @@ enum class Directions (direction: Vec3) {
 
     companion object {
         val DIRECTIONS = values()
+        val SIDES = arrayOf(NORTH, SOUTH, WEST, EAST)
+        const val SIDES_OFFSET = 2
 
         @JvmStatic
         fun byId(id: Int): Directions {

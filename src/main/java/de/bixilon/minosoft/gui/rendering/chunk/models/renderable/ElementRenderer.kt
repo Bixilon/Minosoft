@@ -98,9 +98,11 @@ class ElementRenderer(element: BlockModelElement, rotation: Vec3, uvLock: Boolea
     }
 
     companion object {
+        val EMPTY_VECTOR = Vec3()
+
         fun createElements(state: JsonObject, parent: BlockModel): MutableList<ElementRenderer> {
             val rotation = glm.radians(vec3InJsonObject(state))
-            val uvlock = state["uvlock"]?.asBoolean ?: false
+            val uvLock = state["uvlock"]?.asBoolean ?: false
             val rescale = state["rescale"]?.asBoolean ?: false
             val parentElements = parent.elements
             val result: MutableList<ElementRenderer> = mutableListOf()
@@ -139,7 +141,7 @@ class ElementRenderer(element: BlockModelElement, rotation: Vec3, uvLock: Boolea
         }
 
         fun getRotatedDirection(rotation: Vec3, direction: Directions): Directions {
-            if (rotation == Vec3(0, 0, 0)) {
+            if (rotation == EMPTY_VECTOR) {
                 return direction
             }
             var rotatedDirectionVector = BlockModelElement.rotateVector(direction.directionVector, rotation.z.toDouble(), Axes.Z)
@@ -148,7 +150,7 @@ class ElementRenderer(element: BlockModelElement, rotation: Vec3, uvLock: Boolea
         }
 
         fun rotatePositionsAxes(positions: Array<Vec3>, angles: Vec3, rescale: Boolean) {
-            if (angles == Vec3()) {
+            if (angles == EMPTY_VECTOR) {
                 return
             }
             BlockModelElement.rotatePositions(positions, Axes.X, angles.x.toDouble(), Vec3(), rescale)

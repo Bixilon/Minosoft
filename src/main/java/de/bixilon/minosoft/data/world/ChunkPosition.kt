@@ -13,19 +13,18 @@
 package de.bixilon.minosoft.data.world
 
 import de.bixilon.minosoft.data.Directions
+import glm_.vec3.Vec3
 
 data class ChunkPosition(val x: Int, val z: Int) {
     override fun toString(): String {
         return "($x $z)"
     }
 
-    fun getLocationByDirection(direction: Directions): ChunkPosition {
-        return when (direction) {
-            Directions.NORTH -> ChunkPosition(x, z - 1)
-            Directions.SOUTH -> ChunkPosition(x, z + 1)
-            Directions.WEST -> ChunkPosition(x - 1, z)
-            Directions.EAST -> ChunkPosition(x + 1, z)
-            else -> throw IllegalArgumentException("Chunk location is just 2d")
-        }
+    operator fun plus(vec3: Vec3): ChunkPosition {
+        return ChunkPosition(x + vec3.x.toInt(), z + vec3.z.toInt())
+    }
+
+    operator fun plus(direction: Directions): ChunkPosition {
+        return this + direction.directionVector
     }
 }

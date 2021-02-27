@@ -14,6 +14,7 @@ package de.bixilon.minosoft.data.world
 
 import de.bixilon.minosoft.data.Directions
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import glm_.vec3.Vec3
 
 /**
  * Chunk X, Y and Z location (max 16x16x16)
@@ -28,14 +29,33 @@ data class InChunkSectionPosition(val x: Int, val y: Int, val z: Int) {
         return InChunkPosition(x, y + ProtocolDefinition.SECTION_HEIGHT_Y * sectionHeight, z)
     }
 
-    fun getLocationByDirection(direction: Directions): InChunkSectionPosition {
-        return when (direction) {
-            Directions.DOWN -> InChunkSectionPosition(x, y - 1, z)
-            Directions.UP -> InChunkSectionPosition(x, y + 1, z)
-            Directions.NORTH -> InChunkSectionPosition(x, y, z - 1)
-            Directions.SOUTH -> InChunkSectionPosition(x, y, z + 1)
-            Directions.WEST -> InChunkSectionPosition(x - 1, y, z)
-            Directions.EAST -> InChunkSectionPosition(x + 1, y, z)
+    operator fun plus(vec3: Vec3): InChunkSectionPosition {
+        var nextX = x + vec3.x.toInt()
+        var nextY = y + vec3.y.toInt()
+        var nextZ = z + vec3.z.toInt()
+
+        if (nextX < 0) {
+            nextX = ProtocolDefinition.SECTION_MAX_X
+        } else if (nextX > ProtocolDefinition.SECTION_MAX_X) {
+            nextX = 0
         }
+
+        if (nextY < 0) {
+            nextY = ProtocolDefinition.SECTION_MAX_Y
+        } else if (nextY > ProtocolDefinition.SECTION_MAX_Y) {
+            nextY = 0
+        }
+
+        if (nextZ < 0) {
+            nextZ = ProtocolDefinition.SECTION_MAX_Z
+        } else if (nextZ > ProtocolDefinition.SECTION_MAX_Z) {
+            nextZ = 0
+        }
+
+        return InChunkSectionPosition(nextX, nextY, nextZ)
+    }
+
+    operator fun plus(directions: Directions): InChunkSectionPosition {
+        return this + directions.directionVector
     }
 }

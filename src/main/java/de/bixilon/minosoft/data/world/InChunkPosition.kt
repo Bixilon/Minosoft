@@ -13,6 +13,7 @@
 package de.bixilon.minosoft.data.world
 
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import glm_.vec3.Vec3
 
 data class InChunkPosition(val x: Int, val y: Int, val z: Int) {
 
@@ -31,6 +32,10 @@ data class InChunkPosition(val x: Int, val y: Int, val z: Int) {
         } else {
             y / ProtocolDefinition.SECTION_HEIGHT_Y
         }
+    }
+
+    operator fun plus(vec3: Vec3): InChunkPosition {
+        return InChunkPosition((x + vec3.x).toInt(), (y + vec3.y).toInt(), (z + vec3.z).toInt())
     }
 
     override fun toString(): String {

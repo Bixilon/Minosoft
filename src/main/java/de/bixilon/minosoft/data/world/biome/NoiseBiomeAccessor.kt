@@ -22,7 +22,7 @@ class NoiseBiomeAccessor(
 ) : BiomeAccessor {
 
     override fun getBiome(position: BlockPosition): Biome? {
-        val inChunk = position.getInChunkSectionLocation()
+        val inChunk = position.getInChunkSectionPosition()
         val index = inChunk.y * ProtocolDefinition.SECTION_HEIGHT_Y + ((inChunk.z / 4) * 4 + (inChunk.x / 4))
         if (index < 0 || index > biomes.size) {
             return null

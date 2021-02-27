@@ -17,6 +17,7 @@ import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames
 import de.bixilon.minosoft.config.key.KeyAction
 import de.bixilon.minosoft.config.key.KeyCodes
+import de.bixilon.minosoft.data.Directions
 import de.bixilon.minosoft.gui.rendering.font.FontBindings
 import de.bixilon.minosoft.modding.loading.ModLoader
 import de.bixilon.minosoft.util.GitInfo
@@ -49,8 +50,8 @@ class HUDDebugScreenElement(private val hudTextElement: HUDTextElement) : HUDTex
         chatComponents[FontBindings.LEFT_UP]!!.addAll(listOf(
             "FPS: ${getFPS()}",
             "Timings: avg ${getAvgFrameTime()}ms, min ${getMinFrameTime()}ms, max ${getMaxFrameTime()}ms",
-            "Chunks: ${hudTextElement.renderWindow.worldRenderer.getChunkSize()} / ${hudTextElement.connection.player.world.chunks.size}",
-            "Connected to ${hudTextElement.connection.address} with ${hudTextElement.connection.version}",
+            "Chunks: q=${hudTextElement.renderWindow.worldRenderer.queuedChunks.size} v=${hudTextElement.renderWindow.worldRenderer.visibleChunks.size} p=${hudTextElement.renderWindow.worldRenderer.chunkSectionsToDraw.size} t=${hudTextElement.connection.player.world.chunks.size}",
+            "Connected to ${hudTextElement.connection.address} on ${hudTextElement.connection.version} with ${hudTextElement.connection.player.account.username}",
             "",
             "XYZ ${getLocation()}",
             "Block ${getBlockPosition()}",
@@ -159,7 +160,7 @@ class HUDDebugScreenElement(private val hudTextElement: HUDTextElement) : HUDTex
     private fun getFacing(): String {
         val yaw = hudTextElement.renderWindow.camera.yaw
         val pitch = hudTextElement.renderWindow.camera.pitch
-        return "todo (${formatRotation(yaw)} / ${formatRotation(pitch)})"
+        return "${Directions.byDirection(camera.cameraFront).name.toLowerCase()} (${formatRotation(yaw)} / ${formatRotation(pitch)})"
     }
 
 

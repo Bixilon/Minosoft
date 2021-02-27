@@ -24,8 +24,8 @@ import de.bixilon.minosoft.protocol.network.Connection
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
-import de.bixilon.minosoft.util.ChunkUtil
 import de.bixilon.minosoft.util.Util
+import de.bixilon.minosoft.util.chunk.ChunkUtil
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.nbt.tag.CompoundTag
 import java.util.*

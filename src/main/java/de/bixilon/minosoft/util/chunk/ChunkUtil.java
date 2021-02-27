@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2021 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.util;
+package de.bixilon.minosoft.util.chunk;
 
 import de.bixilon.minosoft.data.mappings.Dimension;
 import de.bixilon.minosoft.data.mappings.biomes.Biome;
@@ -23,10 +23,10 @@ import de.bixilon.minosoft.data.world.InChunkSectionPosition;
 import de.bixilon.minosoft.data.world.biome.DummyBiomeAccessor;
 import de.bixilon.minosoft.data.world.biome.XZBiomeAccessor;
 import de.bixilon.minosoft.data.world.light.DummyLightAccessor;
-import de.bixilon.minosoft.data.world.light.LightAccessor;
 import de.bixilon.minosoft.data.world.palette.Palette;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
+import de.bixilon.minosoft.util.BitByte;
 
 import java.util.BitSet;
 import java.util.HashMap;
@@ -203,6 +203,7 @@ public final class ChunkUtil {
                 if (containsSkyLight) {
                     byte[] skyLight = buffer.readBytes(ProtocolDefinition.BLOCKS_PER_SECTION >> 1);
                 }
+                // ToDo
             }
 
             sectionMap.put(dimension.getLowestSection() + c, new ChunkSection(blockMap));
@@ -219,24 +220,4 @@ public final class ChunkUtil {
         return chunkData;
     }
 
-    public static LightAccessor readSkyLightPacket(InByteBuffer buffer, long[] skyLightMask, long[] blockLightMask, long[] emptyBlockLightMask, long[] emptySkyLightMask) {
-        readLightArray(buffer, BitSet.valueOf(skyLightMask));
-        readLightArray(buffer, BitSet.valueOf(blockLightMask));
-        // ToDo
-        return DummyLightAccessor.INSTANCE;
-    }
-
-    private static void readLightArray(InByteBuffer buffer, BitSet lightMask) {
-        int highestSectionIndex = ProtocolDefinition.SECTIONS_PER_CHUNK + 2;
-        if (buffer.getVersionId() >= V_20W49A) {
-            buffer.readVarInt(); // section count
-            highestSectionIndex = lightMask.length();
-        }
-        for (int c = 0; c < highestSectionIndex; c++) { // light sections
-            if (!lightMask.get(c)) {
-                continue;
-            }
-            byte[] light = buffer.readBytes(buffer.readVarInt());
-        }
-    }
 }

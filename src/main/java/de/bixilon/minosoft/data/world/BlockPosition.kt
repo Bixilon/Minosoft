@@ -12,13 +12,14 @@
  */
 package de.bixilon.minosoft.data.world
 
+import de.bixilon.minosoft.data.Directions
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import glm_.vec3.Vec3
 
 data class BlockPosition(val x: Int, val y: Int, val z: Int) {
     constructor(chunkPosition: ChunkPosition, sectionHeight: Int, inChunkSectionPosition: InChunkSectionPosition) : this(chunkPosition.x * ProtocolDefinition.SECTION_WIDTH_X + inChunkSectionPosition.x, sectionHeight * ProtocolDefinition.SECTION_HEIGHT_Y + inChunkSectionPosition.y, chunkPosition.z * ProtocolDefinition.SECTION_WIDTH_Z + inChunkSectionPosition.z) // ToDo
 
-    fun getChunkLocation(): ChunkPosition {
+    fun getChunkPosition(): ChunkPosition {
         val chunkX = if (this.x >= 0) {
             this.x / ProtocolDefinition.SECTION_WIDTH_X
         } else {
@@ -32,7 +33,7 @@ data class BlockPosition(val x: Int, val y: Int, val z: Int) {
         return ChunkPosition(chunkX, chunkY)
     }
 
-    fun getInChunkLocation(): InChunkPosition {
+    fun getInChunkPosition(): InChunkPosition {
         var x: Int = this.x % ProtocolDefinition.SECTION_WIDTH_X
         if (x < 0) {
             x += ProtocolDefinition.SECTION_WIDTH_X
@@ -44,8 +45,16 @@ data class BlockPosition(val x: Int, val y: Int, val z: Int) {
         return InChunkPosition(x, this.y, z)
     }
 
-    fun getInChunkSectionLocation(): InChunkSectionPosition {
-        val location = getInChunkLocation()
+    infix operator fun plus(vec3: Vec3): BlockPosition {
+        return BlockPosition((x + vec3.x).toInt(), (y + vec3.y).toInt(), (z + vec3.z).toInt())
+    }
+
+    operator fun plus(directions: Directions): BlockPosition {
+        return this + directions.directionVector
+    }
+
+    fun getInChunkSectionPosition(): InChunkSectionPosition {
+        val location = getInChunkPosition()
         return InChunkSectionPosition(location.x, getSectionHeight(), location.z)
     }
 
