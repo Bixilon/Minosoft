@@ -17,6 +17,8 @@ import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.Directions
 import de.bixilon.minosoft.data.text.RGBColor
+import de.bixilon.minosoft.data.world.BlockPosition
+import de.bixilon.minosoft.data.world.light.LightAccessor
 import de.bixilon.minosoft.gui.rendering.chunk.ChunkMesh
 import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModel
 import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModelElement
@@ -50,7 +52,7 @@ class ElementRenderer(element: BlockModelElement, rotation: Vec3, uvLock: Boolea
     }
 
 
-    fun render(tintColor: RGBColor?, lightLevel: Byte, textureMapping: MutableMap<String, Texture>, modelMatrix: Mat4, direction: Directions, mesh: ChunkMesh) {
+    fun render(tintColor: RGBColor?, position: BlockPosition, lightAccessor: LightAccessor, textureMapping: MutableMap<String, Texture>, modelMatrix: Mat4, direction: Directions, mesh: ChunkMesh) {
         val realDirection = directionMapping[direction]!!
         val positionTemplate = BlockModelElement.FACE_POSITION_MAP_TEMPLATE[realDirection.ordinal]
 
@@ -59,6 +61,7 @@ class ElementRenderer(element: BlockModelElement, rotation: Vec3, uvLock: Boolea
         // if (texture.isTransparent) {
         //     return // ToDo: force render transparent faces
         // }
+        val lightLevel = lightAccessor.getLightLevel(position + face.cullFace)
 
         val drawPositions = arrayOf(positions[positionTemplate[0]], positions[positionTemplate[1]], positions[positionTemplate[2]], positions[positionTemplate[3]])
 
