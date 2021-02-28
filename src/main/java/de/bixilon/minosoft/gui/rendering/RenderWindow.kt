@@ -41,15 +41,18 @@ import org.lwjgl.system.MemoryStack
 import org.lwjgl.system.MemoryUtil
 import java.util.concurrent.ConcurrentLinkedQueue
 
-class RenderWindow(val connection: Connection, val rendering: Rendering) {
+class RenderWindow(
+    val connection: Connection,
+    val rendering: Rendering,
+) {
     private val keyBindingCallbacks: MutableMap<ResourceLocation, Pair<KeyBinding, MutableSet<((keyCode: KeyCodes, keyEvent: KeyAction) -> Unit)>>> = mutableMapOf()
     private val keysDown: MutableSet<KeyCodes> = mutableSetOf()
     private val keyBindingDown: MutableSet<KeyBinding> = mutableSetOf()
     val renderStats = RenderStats()
     var screenWidth = 900
     var screenHeight = 500
-    private var windowId: Long = 0
-    private var deltaTime = 0.0 // time between current frame and last frame
+    private var windowId = 0L
+    private var deltaFrameTime = 0.0 // time between current frame and last frame
 
     private var lastFrame = 0.0
     val camera: Camera = Camera(connection, Minosoft.getConfig().config.game.camera.fov, this)
@@ -317,7 +320,7 @@ class RenderWindow(val connection: Connection, val rendering: Rendering) {
             glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT) // clear the framebuffer
 
             val currentFrame = glfwGetTime()
-            deltaTime = currentFrame - lastFrame
+            deltaFrameTime = currentFrame - lastFrame
             lastFrame = currentFrame
 
 
@@ -331,7 +334,7 @@ class RenderWindow(val connection: Connection, val rendering: Rendering) {
             glfwSwapBuffers(windowId)
             glfwPollEvents()
             camera.draw()
-            camera.handleInput(deltaTime)
+            camera.handleInput(deltaFrameTime)
 
 
             // handle opengl context tasks, maximum 10 per frame

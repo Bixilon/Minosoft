@@ -32,8 +32,12 @@ import org.lwjgl.opengl.GL11.glEnable
 import org.lwjgl.opengl.GL13.glDisable
 import java.util.concurrent.ConcurrentHashMap
 
-class WorldRenderer(private val connection: Connection, private val world: World, val renderWindow: RenderWindow) : Renderer {
-    private lateinit var minecraftTextures: TextureArray
+class WorldRenderer(
+    private val connection: Connection,
+    private val world: World,
+    val renderWindow: RenderWindow,
+) : Renderer {
+    private lateinit var blockTextureArray: TextureArray
     lateinit var chunkShader: Shader
     val chunkSectionsToDraw = ConcurrentHashMap<ChunkPosition, ConcurrentHashMap<Int, ChunkMesh>>()
     val visibleChunks: MutableSet<ChunkPosition> = mutableSetOf()
@@ -84,8 +88,8 @@ class WorldRenderer(private val connection: Connection, private val world: World
     }
 
     override fun init() {
-        minecraftTextures = TextureArray.createTextureArray(connection.version.assetsManager, resolveBlockTextureIds(connection.version.mapping.blockStateIdMap.values))
-        minecraftTextures.load()
+        blockTextureArray = TextureArray.createTextureArray(connection.version.assetsManager, resolveBlockTextureIds(connection.version.mapping.blockStateIdMap.values))
+        blockTextureArray.load()
 
 
         chunkShader = Shader("chunk_vertex.glsl", "chunk_fragment.glsl")
@@ -94,13 +98,13 @@ class WorldRenderer(private val connection: Connection, private val world: World
         // register keybindings
         renderWindow.registerKeyCallback(KeyBindingsNames.DEBUG_CLEAR_CHUNK_CACHE) { _, _ ->
             clearChunkCache()
-            connection.sender.sendFakeChatMessage("§f[§e§lDEBUG§f] §9Cleared chunk cache!")
+            renderWindow.sendDebugMessage("Cleared chunk cache!")
             prepareWorld(world)
         }
     }
 
     override fun postInit() {
-        minecraftTextures.use(chunkShader, "blockTextureArray")
+        blockTextureArray.use(chunkShader, "blockTextureArray")
     }
 
     override fun draw() {

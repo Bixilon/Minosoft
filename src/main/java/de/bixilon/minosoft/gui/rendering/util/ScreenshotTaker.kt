@@ -32,7 +32,6 @@ class ScreenshotTaker(
     fun takeScreenshot() {
         try {
             val basePath = "${StaticConfiguration.HOME_DIRECTORY}/screenshots/${renderWindow.connection.address.hostname}/${DATE_FORMATTER.format(System.currentTimeMillis())}"
-            Util.createParentFolderIfNotExist(basePath)
             var path = "$basePath.png"
             var i = 1
             while (File(path).exists()) {
@@ -56,9 +55,12 @@ class ScreenshotTaker(
                 }
             }
 
-            ImageIO.write(bufferedImage, "png", File(path))
+            val file = File(path)
+            Util.createParentFolderIfNotExist(file)
 
-            renderWindow.sendDebugMessage("§aScreenshot saved to §f$path")
+            ImageIO.write(bufferedImage, "png", file)
+
+            renderWindow.sendDebugMessage("§aScreenshot saved to §f${file.name}")
         } catch (exception: Exception) {
             exception.printStackTrace()
             renderWindow.sendDebugMessage("§cFailed to make a screenshot!")

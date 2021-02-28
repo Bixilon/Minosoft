@@ -39,9 +39,9 @@ class ElementRenderer(element: BlockModelElement, rotation: Vec3, uvLock: Boolea
 
     init {
         rotatePositionsAxes(positions, rotation, rescale)
-        // TODO : uvlock
+        // TODO : uvLock
         for (direction in Directions.DIRECTIONS) {
-            if (positions.containsAllVectors(BlockModelElement.fullTestPositions[direction], 0.0001f)) { // TODO: check if texture is transparent ==> && ! texture.isTransparent
+            if (positions.containsAllVectors(BlockModelElement.FULL_TEST_POSITIONS[direction.ordinal], 0.0001f)) { // TODO: check if texture is transparent ==> && ! texture.isTransparent
                 fullFaceDirections.add(direction)
             }
             directionMapping[direction] = getRotatedDirection(rotation, direction)
@@ -68,7 +68,7 @@ class ElementRenderer(element: BlockModelElement, rotation: Vec3, uvLock: Boolea
 
 
         fun createQuad(drawPositions: Array<Vec3>, texturePositions: Array<Vec2?>) {
-            for (vertex in drawOrder) {
+            for (vertex in DRAW_ODER) {
                 val input = Vec4(drawPositions[vertex.first], 1.0f)
                 val output = modelMatrix * input
                 mesh.addVertex(
@@ -102,25 +102,9 @@ class ElementRenderer(element: BlockModelElement, rotation: Vec3, uvLock: Boolea
     }
 
     companion object {
-        val EMPTY_VECTOR = Vec3()
+        private val EMPTY_VECTOR = Vec3()
 
-        fun createElements(state: JsonObject, parent: BlockModel): MutableList<ElementRenderer> {
-            val rotation = glm.radians(vec3InJsonObject(state))
-            val uvLock = state["uvlock"]?.asBoolean ?: false
-            val rescale = state["rescale"]?.asBoolean ?: false
-            val parentElements = parent.elements
-            val result: MutableList<ElementRenderer> = mutableListOf()
-            for (parentElement in parentElements) {
-                result.add(ElementRenderer(parentElement, rotation, true, rescale)) // uvlock is not yet implemented in the data generator
-            }
-            return result
-        }
-
-        private fun vec3InJsonObject(json: JsonObject): Vec3 {
-            return Vec3(json["x"]?.asFloat ?: 0, json["y"]?.asFloat ?: 0, json["z"]?.asFloat ?: 0)
-        }
-
-        val drawOrder = arrayOf(
+        val DRAW_ODER = arrayOf(
             Pair(0, 1),
             Pair(3, 2),
             Pair(2, 3),
@@ -129,15 +113,29 @@ class ElementRenderer(element: BlockModelElement, rotation: Vec3, uvLock: Boolea
             Pair(0, 1),
         )
 
-        private fun Array<Vec3>.containsAllVectors(set: Set<Vec3>?, margin: Float): Boolean {
-            for (position in set!!) {
-                var isIn = false
-                for (testposition in this) {
-                    if ((position - testposition).length() < margin) {
-                        isIn = true
+        fun createElements(state: JsonObject, parent: BlockModel): MutableList<ElementRenderer> {
+            val rotation = glm.radians(state.asVec3())
+            val uvLock = state["uvlock"]?.asBoolean ?: false
+            val rescale = state["rescale"]?.asBoolean ?: false
+            val parentElements = parent.elements
+            val result: MutableList<ElementRenderer> = mutableListOf()
+            for (parentElement in parentElements) {
+                result.add(ElementRenderer(parentElement, rotation, uvLock, rescale))
+            }
+            return result
+        }
+
+
+        private fun Array<Vec3>.containsAllVectors(their: Set<Vec3>, margin: Float): Boolean {
+            for (theirPosition in their) {
+                var vec3WasIn = false
+                for (thisPosition in this) {
+                    if ((theirPosition - thisPosition).length() < margin) {
+                        vec3WasIn = true
+                        break
                     }
                 }
-                if (!isIn) {
+                if (!vec3WasIn) {
                     return false
                 }
             }
@@ -157,9 +155,13 @@ class ElementRenderer(element: BlockModelElement, rotation: Vec3, uvLock: Boolea
             if (angles == EMPTY_VECTOR) {
                 return
             }
-            BlockModelElement.rotatePositions(positions, Axes.X, angles.x.toDouble(), Vec3(), rescale)
-            BlockModelElement.rotatePositions(positions, Axes.Y, angles.y.toDouble(), Vec3(), rescale)
-            BlockModelElement.rotatePositions(positions, Axes.Z, angles.z.toDouble(), Vec3(), rescale)
+            BlockModelElement.rotatePositions(positions, Axes.X, angles.x.toDouble(), EMPTY_VECTOR, rescale)
+            BlockModelElement.rotatePositions(positions, Axes.Y, angles.y.toDouble(), EMPTY_VECTOR, rescale)
+            BlockModelElement.rotatePositions(positions, Axes.Z, angles.z.toDouble(), EMPTY_VECTOR, rescale)
         }
     }
+}
+
+private fun JsonObject.asVec3(): Vec3 {
+    return Vec3(this["x"]?.asFloat ?: 0, this["y"]?.asFloat ?: 0, this["z"]?.asFloat ?: 0)
 }

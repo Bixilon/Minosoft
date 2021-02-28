@@ -13,10 +13,10 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk.models.loading
 
-import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.Directions
+import de.bixilon.minosoft.gui.rendering.util.VecUtil
 import glm_.glm
 import glm_.vec2.Vec2
 import glm_.vec3.Vec3
@@ -26,16 +26,15 @@ open class BlockModelElement(data: JsonObject) {
     var positions: Array<Vec3>
 
     init {
-        var from = Vec3(0, 0, 0)
-        var to = Vec3(BLOCK_RESOLUTION, BLOCK_RESOLUTION, BLOCK_RESOLUTION)
-        data["from"]?.let {
-            val array = it.asJsonArray
-            from = Vec3(array[0].asFloat, array[1].asFloat, array[2].asFloat)
-        }
-        data["to"]?.let {
-            val array = it.asJsonArray
-            to = Vec3(array[0].asFloat, array[1].asFloat, array[2].asFloat)
-        }
+        val from = data["from"]?.asJsonArray?.let {
+            VecUtil.jsonToVec3(it)
+        } ?: Vec3()
+
+        val to = data["to"]?.asJsonArray?.let {
+            VecUtil.jsonToVec3(it)
+        } ?: Vec3(BLOCK_RESOLUTION)
+
+
         positions = arrayOf(
             Vec3(from),
             Vec3(to.x, from.y, from.z),
@@ -46,15 +45,15 @@ open class BlockModelElement(data: JsonObject) {
             Vec3(from.x, to.y, to.z),
             Vec3(to),
         )
-        data["rotation"]?.let {
-            val rotation = it.asJsonObject
-            val axis = Axes.valueOf(rotation["axis"].asString.toUpperCase())
-            val angle = glm.radians(rotation["angle"].asDouble)
-            val rescale = rotation["rescale"]?.asBoolean ?: false
-            rotatePositions(positions, axis, angle, jsonArrayToVec3(rotation["origin"].asJsonArray), rescale)
+
+        data["rotation"]?.asJsonObject?.let {
+            val axis = Axes.valueOf(it["axis"].asString.toUpperCase())
+            val angle = glm.radians(it["angle"].asDouble)
+            val rescale = it["rescale"]?.asBoolean ?: false
+            rotatePositions(positions, axis, angle, VecUtil.jsonToVec3(it["origin"].asJsonArray), rescale)
         }
-        data["faces"]?.let {
-            for ((directionName, json) in it.asJsonObject.entrySet()) {
+        data["faces"]?.asJsonObject?.let {
+            for ((directionName, json) in it.entrySet()) {
                 val direction = Directions.valueOf(directionName.toUpperCase())
                 faces[direction] = BlockModelFace(json.asJsonObject, from, to, direction)
             }
@@ -65,9 +64,7 @@ open class BlockModelElement(data: JsonObject) {
     }
 
     companion object {
-        fun jsonArrayToVec3(array: JsonArray): Vec3 {
-            return Vec3(array[0].asFloat, array[1].asFloat, array[2].asFloat)
-        }
+
         const val BLOCK_RESOLUTION = 16f
 
         val FACE_POSITION_MAP_TEMPLATE = arrayOf(
@@ -88,13 +85,13 @@ open class BlockModelElement(data: JsonObject) {
         private val POSITION_7 = Vec3(-0.5f, +0.5f, +0.5f)           // Vec3(0, BLOCK_RESOLUTION, BLOCK_RESOLUTION)
         private val POSITION_8 = Vec3(+0.5f, +0.5f, +0.5f)           // Vec3(BLOCK_RESOLUTION, BLOCK_RESOLUTION, BLOCK_RESOLUTION)
 
-        val fullTestPositions = mapOf(
-            Directions.EAST to setOf(POSITION_1, POSITION_3, POSITION_5, POSITION_7),
-            Directions.WEST to setOf(POSITION_2, POSITION_4, POSITION_6, POSITION_8),
-            Directions.DOWN to setOf(POSITION_1, POSITION_2, POSITION_3, POSITION_4),
-            Directions.UP to setOf(POSITION_5, POSITION_6, POSITION_7, POSITION_8),
-            Directions.SOUTH to setOf(POSITION_1, POSITION_2, POSITION_5, POSITION_6),
-            Directions.NORTH to setOf(POSITION_3, POSITION_4, POSITION_7, POSITION_8),
+        val FULL_TEST_POSITIONS = arrayOf(
+            setOf(POSITION_1, POSITION_2, POSITION_3, POSITION_4),
+            setOf(POSITION_5, POSITION_6, POSITION_7, POSITION_8),
+            setOf(POSITION_3, POSITION_4, POSITION_7, POSITION_8),
+            setOf(POSITION_1, POSITION_2, POSITION_5, POSITION_6),
+            setOf(POSITION_2, POSITION_4, POSITION_6, POSITION_8),
+            setOf(POSITION_1, POSITION_3, POSITION_5, POSITION_7)
         )
 
         fun getRotatedValues(x: Float, y: Float, sin: Double, cos: Double): Vec2 {
@@ -135,7 +132,7 @@ open class BlockModelElement(data: JsonObject) {
 
         fun transformPosition(position: Vec3): Vec3 {
             fun positionToFloat(uv: Float): Float {
-                return (uv - 8f) / BLOCK_RESOLUTION
+                return (uv - (BLOCK_RESOLUTION / 2)) / BLOCK_RESOLUTION
             }
             return Vec3(positionToFloat(position.x), positionToFloat(position.y), positionToFloat(position.z))
         }
