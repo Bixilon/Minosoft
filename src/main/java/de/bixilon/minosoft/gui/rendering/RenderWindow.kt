@@ -24,6 +24,7 @@ import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.chunk.WorldRenderer
 import de.bixilon.minosoft.gui.rendering.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.hud.elements.RenderStats
+import de.bixilon.minosoft.gui.rendering.util.ScreenshotTaker
 import de.bixilon.minosoft.modding.event.EventInvokerCallback
 import de.bixilon.minosoft.modding.event.events.ConnectionStateChangeEvent
 import de.bixilon.minosoft.modding.event.events.PacketReceiveEvent
@@ -40,7 +41,7 @@ import org.lwjgl.system.MemoryStack
 import org.lwjgl.system.MemoryUtil
 import java.util.concurrent.ConcurrentLinkedQueue
 
-class RenderWindow(private val connection: Connection, val rendering: Rendering) {
+class RenderWindow(val connection: Connection, val rendering: Rendering) {
     private val keyBindingCallbacks: MutableMap<ResourceLocation, Pair<KeyBinding, MutableSet<((keyCode: KeyCodes, keyEvent: KeyAction) -> Unit)>>> = mutableMapOf()
     private val keysDown: MutableSet<KeyCodes> = mutableSetOf()
     private val keyBindingDown: MutableSet<KeyBinding> = mutableSetOf()
@@ -59,6 +60,7 @@ class RenderWindow(private val connection: Connection, val rendering: Rendering)
     private var polygonEnabled = false
     private var mouseCatch = !StaticConfiguration.DEBUG_MODE
 
+    private val screenshotTaker = ScreenshotTaker(this)
     val tintColorCalculator = TintColorCalculator()
 
     // all renderers
@@ -259,27 +261,8 @@ class RenderWindow(private val connection: Connection, val rendering: Rendering)
             }
         })
 
-        registerKeyCallback(KeyBindingsNames.DEBUG_POLYGEN) { _: KeyCodes, _: KeyAction ->
-            polygonEnabled = !polygonEnabled
-            glPolygonMode(GL_FRONT_AND_BACK, if (polygonEnabled) {
-                GL_LINE
-            } else {
-                GL_FILL
-            })
-            connection.sender.sendFakeChatMessage("§f[§e§lDEBUG§f] §9Toggled polygen mode!")
-        }
-        registerKeyCallback(KeyBindingsNames.DEBUG_MOUSE_CATCH) { _: KeyCodes, _: KeyAction ->
-            mouseCatch = !mouseCatch
-            if (mouseCatch) {
-                glfwSetInputMode(windowId, GLFW_CURSOR, GLFW_CURSOR_DISABLED)
-            } else {
-                glfwSetInputMode(windowId, GLFW_CURSOR, GLFW_CURSOR_NORMAL)
-            }
-            connection.sender.sendFakeChatMessage("§f[§e§lDEBUG§f] §9Toggled mouse catch!")
-        }
-        registerKeyCallback(KeyBindingsNames.QUIT_RENDERING) { _: KeyCodes, _: KeyAction ->
-            glfwSetWindowShouldClose(windowId, true)
-        }
+
+        registerGlobalKeyCombinations()
 
         hudRenderer.screenChangeResizeCallback(screenWidth, screenHeight)
 
@@ -294,6 +277,33 @@ class RenderWindow(private val connection: Connection, val rendering: Rendering)
         latch.waitUntilZero()
         this.latch.waitUntilZero()
         glfwShowWindow(windowId)
+    }
+
+    private fun registerGlobalKeyCombinations() {
+        registerKeyCallback(KeyBindingsNames.DEBUG_POLYGEN) { _: KeyCodes, _: KeyAction ->
+            polygonEnabled = !polygonEnabled
+            glPolygonMode(GL_FRONT_AND_BACK, if (polygonEnabled) {
+                GL_LINE
+            } else {
+                GL_FILL
+            })
+            sendDebugMessage("Toggled polygen mode!")
+        }
+        registerKeyCallback(KeyBindingsNames.DEBUG_MOUSE_CATCH) { _: KeyCodes, _: KeyAction ->
+            mouseCatch = !mouseCatch
+            if (mouseCatch) {
+                glfwSetInputMode(windowId, GLFW_CURSOR, GLFW_CURSOR_DISABLED)
+            } else {
+                glfwSetInputMode(windowId, GLFW_CURSOR, GLFW_CURSOR_NORMAL)
+            }
+            sendDebugMessage("Toggled mouse catch!")
+        }
+        registerKeyCallback(KeyBindingsNames.QUIT_RENDERING) { _: KeyCodes, _: KeyAction ->
+            glfwSetWindowShouldClose(windowId, true)
+        }
+        registerKeyCallback(KeyBindingsNames.TAKE_SCREENSHOT) { _: KeyCodes, _: KeyAction ->
+            screenshotTaker.takeScreenshot()
+        }
     }
 
     fun startRenderLoop() {
@@ -381,5 +391,9 @@ class RenderWindow(private val connection: Connection, val rendering: Rendering)
 
     fun setSkyColor(color: RGBColor) {
         glClearColor(color.floatRed, color.floatGreen, color.floatBlue, 1.0f)
+    }
+
+    fun sendDebugMessage(message: String) {
+        connection.sender.sendFakeChatMessage(RenderConstants.DEBUG_MESSAGES_PREFIX + message)
     }
 }

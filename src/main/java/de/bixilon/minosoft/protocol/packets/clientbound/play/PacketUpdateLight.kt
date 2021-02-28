@@ -28,9 +28,6 @@ class PacketUpdateLight : ClientboundPacket() {
     override fun read(buffer: InByteBuffer): Boolean {
         position = ChunkPosition(buffer.readVarInt(), buffer.readVarInt())
 
-        if (position == ChunkPosition(-6, 20)) {
-            Log.debug("")
-        }
         if (buffer.versionId >= ProtocolVersions.V_1_16_PRE3) {
             val trustEdges = buffer.readBoolean()
         }

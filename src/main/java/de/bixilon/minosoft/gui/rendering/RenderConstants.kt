@@ -28,4 +28,6 @@ object RenderConstants {
     val LILY_PAD_BLOCK_COLOR = RGBColor("#208030")
 
     const val COLORMAP_SIZE = 255
+
+    const val DEBUG_MESSAGES_PREFIX = "§f[§e§lDEBUG§f] §9"
 }

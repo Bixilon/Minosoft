@@ -13,28 +13,49 @@
 
 package de.bixilon.minosoft.config.config.game.controls
 
-import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames.DEBUG_CLEAR_CHUNK_CACHE
-import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames.DEBUG_MOUSE_CATCH
-import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames.DEBUG_POLYGEN
-import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames.DEBUG_SCREEN
-import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames.MOVE_BACKWARDS
-import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames.MOVE_FLY_DOWN
-import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames.MOVE_FLY_UP
-import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames.MOVE_FORWARD
-import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames.MOVE_LEFT
-import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames.MOVE_RIGHT
-import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames.MOVE_SPRINT
-import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames.QUIT_RENDERING
-import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames.WHEN_IN_GAME
-import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames.WHEN_PLAYER_IS_FLYING
-import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames.ZOOM
+import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames.DEFAULT_KEY_BINDINGS
 import de.bixilon.minosoft.config.key.KeyAction
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 
 data class KeyBindingsGameConfig(
-    val entries: MutableMap<ResourceLocation, KeyBinding> = mutableMapOf(
+    val entries: MutableMap<ResourceLocation, KeyBinding> = mutableMapOf(),
+) {
+    init {
+        for ((resourceLocation, keyBinding) in DEFAULT_KEY_BINDINGS) {
+            if (!entries.containsKey(resourceLocation)) {
+                // add key binding
+                entries[resourceLocation] = KeyBinding(keyBinding)
+            }
+        }
+    }
+}
+
+object KeyBindingsNames {
+    val MOVE_FORWARD = ResourceLocation("minosoft:move_forward")
+    val MOVE_BACKWARDS = ResourceLocation("minosoft:move_backwards")
+    val MOVE_LEFT = ResourceLocation("minosoft:move_left")
+    val MOVE_RIGHT = ResourceLocation("minosoft:move_right")
+    val MOVE_SPRINT = ResourceLocation("minosoft:move_sprint")
+    val MOVE_FLY_UP = ResourceLocation("minosoft:move_fly_up")
+    val MOVE_FLY_DOWN = ResourceLocation("minosoft:move_fly_down")
+
+    val ZOOM = ResourceLocation("minosoft:zoom")
+
+    val QUIT_RENDERING = ResourceLocation("minosoft:quit_rendering")
+
+    val DEBUG_SCREEN = ResourceLocation("minosoft:debug_screen")
+    val DEBUG_CLEAR_CHUNK_CACHE = ResourceLocation("minosoft:debug_clear_chunk_cache")
+    val DEBUG_POLYGEN = ResourceLocation("minosoft:debug_polygen")
+    val DEBUG_MOUSE_CATCH = ResourceLocation("minosoft:debug_mouse_catch")
+
+    val WHEN_IN_GAME = ResourceLocation("minosoft:in_game")
+    val WHEN_PLAYER_IS_FLYING = ResourceLocation("minosoft:is_flying")
+
+    val TAKE_SCREENSHOT = ResourceLocation("minosoft:take_screenshot")
+
+    val DEFAULT_KEY_BINDINGS: Map<ResourceLocation, KeyBinding> = mapOf(
         MOVE_FORWARD to KeyBinding(
             mutableMapOf(
                 KeyAction.CHANGE to mutableSetOf(KeyCodes.KEY_W)
@@ -116,27 +137,11 @@ data class KeyBindingsGameConfig(
             ),
             mutableSetOf(mutableSetOf(WHEN_IN_GAME))
         ),
-    ),
-)
-
-object KeyBindingsNames {
-    val MOVE_FORWARD = ResourceLocation("minosoft:move_forward")
-    val MOVE_BACKWARDS = ResourceLocation("minosoft:move_backwards")
-    val MOVE_LEFT = ResourceLocation("minosoft:move_left")
-    val MOVE_RIGHT = ResourceLocation("minosoft:move_right")
-    val MOVE_SPRINT = ResourceLocation("minosoft:move_sprint")
-    val MOVE_FLY_UP = ResourceLocation("minosoft:move_fly_up")
-    val MOVE_FLY_DOWN = ResourceLocation("minosoft:move_fly_down")
-
-    val ZOOM = ResourceLocation("minosoft:zoom")
-
-    val QUIT_RENDERING = ResourceLocation("minosoft:quit_rendering")
-
-    val DEBUG_SCREEN = ResourceLocation("minosoft:debug_screen")
-    val DEBUG_CLEAR_CHUNK_CACHE = ResourceLocation("minosoft:debug_clear_chunk_cache")
-    val DEBUG_POLYGEN = ResourceLocation("minosoft:debug_polygen")
-    val DEBUG_MOUSE_CATCH = ResourceLocation("minosoft:debug_mouse_catch")
-
-    val WHEN_IN_GAME = ResourceLocation("minosoft:in_game")
-    val WHEN_PLAYER_IS_FLYING = ResourceLocation("minosoft:is_flying")
+        TAKE_SCREENSHOT to KeyBinding(
+            mutableMapOf(
+                KeyAction.RELEASE to mutableSetOf(KeyCodes.KEY_F2)
+            ),
+            mutableSetOf()
+        ),
+    )
 }

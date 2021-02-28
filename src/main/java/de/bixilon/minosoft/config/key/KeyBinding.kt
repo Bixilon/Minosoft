@@ -18,4 +18,6 @@ import de.bixilon.minosoft.data.mappings.ResourceLocation
 class KeyBinding(
     val action: MutableMap<KeyAction, MutableSet<KeyCodes>>,
     val `when`: MutableSet<MutableSet<ResourceLocation>>,
-)
+) {
+    constructor(keyBinding: KeyBinding) : this(keyBinding.action.toMutableMap(), keyBinding.`when`.toMutableSet()) // ToDo: Deep copy
+}
