@@ -34,7 +34,8 @@ class BlockRenderer(data: JsonObject, parent: BlockModel) {
 
     init {
         val newElements = ElementRenderer.createElements(data, parent)
-        this.elements.addAll(newElements)
+        // reverse drawing order (for e.g. grass block side overlays
+        this.elements.addAll(newElements.reversed())
         textures.putAll(parent.textures)
     }
 
