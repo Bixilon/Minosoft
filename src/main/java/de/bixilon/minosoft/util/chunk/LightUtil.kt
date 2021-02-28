@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.util.chunk
 
 import de.bixilon.minosoft.data.mappings.Dimension
-import de.bixilon.minosoft.data.world.InChunkPosition
 import de.bixilon.minosoft.data.world.light.ChunkLightAccessor
 import de.bixilon.minosoft.data.world.light.LightAccessor
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer
@@ -34,7 +33,7 @@ object LightUtil {
         return ChunkLightAccessor(blockLight, skyLight)
     }
 
-    private fun readLightArray(buffer: InByteBuffer, lightMask: BitSet, dimension: Dimension): MutableMap<Int, MutableMap<InChunkPosition, Byte>> {
+    private fun readLightArray(buffer: InByteBuffer, lightMask: BitSet, dimension: Dimension): MutableMap<Int, ByteArray> {
         var highestSectionIndex = dimension.highestSection + 1
         val lowesSectionIndex = dimension.lowestSection - 1
         if (buffer.versionId >= ProtocolVersions.V_20W49A) {
@@ -42,26 +41,14 @@ object LightUtil {
             highestSectionIndex = lightMask.length()
         }
 
-        val lightLevels: MutableMap<Int, MutableMap<InChunkPosition, Byte>> = mutableMapOf()
+        val lightLevels: MutableMap<Int, ByteArray> = mutableMapOf()
 
 
         for ((arrayIndex, sectionHeight) in (lowesSectionIndex until highestSectionIndex).withIndex()) { // light sections
-            val currentSectionLightLevel: MutableMap<InChunkPosition, Byte> = mutableMapOf()
             if (!lightMask[arrayIndex]) {
                 continue
             }
-            val lightArray = buffer.readBytes(buffer.readVarInt())
-            var index = 0
-            for (y in 0 until 16) {
-                for (z in 0 until 16) {
-                    for (x in 0 until 16 step 2) {
-                        currentSectionLightLevel[InChunkPosition(x, y + sectionHeight * 16, z)] = (lightArray[index].toInt() and 0x0F).toByte()
-                        currentSectionLightLevel[InChunkPosition(x + 1, y + sectionHeight * 16, z)] = ((lightArray[index].toInt() ushr 4) and 0x0F).toByte()
-                        index++
-                    }
-                }
-            }
-            lightLevels[sectionHeight] = currentSectionLightLevel
+            lightLevels[sectionHeight] = buffer.readBytes(buffer.readVarInt())
         }
         return lightLevels
     }

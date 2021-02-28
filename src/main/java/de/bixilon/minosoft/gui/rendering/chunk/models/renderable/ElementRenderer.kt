@@ -62,7 +62,7 @@ class ElementRenderer(element: BlockModelElement, rotation: Vec3, uvLock: Boolea
         // if (texture.isTransparent) {
         //     return // ToDo: force render transparent faces
         // }
-        val lightLevel = lightAccessor.getLightLevel(position + face.cullFace) // ToDo: rotate cullface
+        val lightLevel = lightAccessor.getLightLevel(position + directionMapping[face.cullFace]) // ToDo: rotate cullface
 
         val drawPositions = arrayOf(positions[positionTemplate[0]], positions[positionTemplate[1]], positions[positionTemplate[2]], positions[positionTemplate[3]])
 

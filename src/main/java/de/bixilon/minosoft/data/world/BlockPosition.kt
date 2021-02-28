@@ -57,8 +57,7 @@ data class BlockPosition(val x: Int, val y: Int, val z: Int) {
     }
 
     fun getInChunkSectionPosition(): InChunkSectionPosition {
-        val location = getInChunkPosition()
-        return InChunkSectionPosition(location.x, getSectionHeight(), location.z)
+        return getInChunkPosition().getInChunkSectionLocation()
     }
 
     fun getSectionHeight(): Int {

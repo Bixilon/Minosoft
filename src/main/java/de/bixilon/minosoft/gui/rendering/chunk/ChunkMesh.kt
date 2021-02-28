@@ -25,7 +25,7 @@ import org.lwjgl.opengl.GL20.glVertexAttribPointer
 
 class ChunkMesh : Mesh() {
 
-    fun addVertex(position: Vec3, textureCoordinates: Vec2, texture: Texture, tintColor: RGBColor?, lightLevel: Byte = 14) {
+    fun addVertex(position: Vec3, textureCoordinates: Vec2, texture: Texture, tintColor: RGBColor?, lightLevel: Int = 14) {
         data.add(position.x)
         data.add(position.y)
         data.add(position.z)
@@ -44,7 +44,12 @@ class ChunkMesh : Mesh() {
             data.add(Float.fromBits(tintColor.color))
         }
 
-        data.add(lightLevel / MAX_LIGHT_LEVEL)
+        val rightLightLevel = if (lightLevel == 0) {
+            1
+        } else {
+            lightLevel + 1
+        }
+        data.add(rightLightLevel / MAX_LIGHT_LEVEL)
     }
 
     override fun load() {
@@ -75,6 +80,6 @@ class ChunkMesh : Mesh() {
 
     companion object {
         private const val FLOATS_PER_VERTEX = 11
-        private const val MAX_LIGHT_LEVEL = 15f
+        private const val MAX_LIGHT_LEVEL = 17f // Level 0 and 15 kind of does not exist here.
     }
 }

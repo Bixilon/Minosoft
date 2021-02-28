@@ -16,11 +16,11 @@ package de.bixilon.minosoft.data.world.light
 import de.bixilon.minosoft.data.world.BlockPosition
 
 object DummyLightAccessor : LightAccessor {
-    override fun getSkyLight(blockPosition: BlockPosition): Byte {
+    override fun getSkyLight(blockPosition: BlockPosition): Int {
         return 15
     }
 
-    override fun getBlockLight(blockPosition: BlockPosition): Byte {
+    override fun getBlockLight(blockPosition: BlockPosition): Int {
         return 15
     }
 

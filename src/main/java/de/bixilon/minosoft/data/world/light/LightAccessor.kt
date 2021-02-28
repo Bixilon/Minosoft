@@ -17,11 +17,11 @@ import de.bixilon.minosoft.data.world.BlockPosition
 
 interface LightAccessor {
 
-    fun getSkyLight(blockPosition: BlockPosition): Byte
+    fun getSkyLight(blockPosition: BlockPosition): Int
 
-    fun getBlockLight(blockPosition: BlockPosition): Byte
+    fun getBlockLight(blockPosition: BlockPosition): Int
 
-    fun getLightLevel(blockPosition: BlockPosition): Byte {
+    fun getLightLevel(blockPosition: BlockPosition): Int {
         val blockLight = getBlockLight(blockPosition)
         val skyLight = getSkyLight(blockPosition)
         if (blockLight > skyLight) {

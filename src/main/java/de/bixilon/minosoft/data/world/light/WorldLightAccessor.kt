@@ -19,11 +19,11 @@ import de.bixilon.minosoft.data.world.World
 class WorldLightAccessor(
     private val world: World,
 ) : LightAccessor {
-    override fun getSkyLight(blockPosition: BlockPosition): Byte {
+    override fun getSkyLight(blockPosition: BlockPosition): Int {
         return world.chunks[blockPosition.getChunkPosition()]?.lightAccessor?.getSkyLight(blockPosition) ?: 0
     }
 
-    override fun getBlockLight(blockPosition: BlockPosition): Byte {
+    override fun getBlockLight(blockPosition: BlockPosition): Int {
         return world.chunks[blockPosition.getChunkPosition()]?.lightAccessor?.getBlockLight(blockPosition) ?: 0
     }
 }

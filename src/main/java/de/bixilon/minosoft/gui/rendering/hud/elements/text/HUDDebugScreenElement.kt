@@ -170,7 +170,7 @@ class HUDDebugScreenElement(private val hudTextElement: HUDTextElement) : HUDTex
         val yaw = hudTextElement.renderWindow.camera.yaw
         val pitch = hudTextElement.renderWindow.camera.pitch
         val direction = Directions.byDirection(camera.cameraFront)
-        return "${Directions.byDirection(camera.cameraFront).name.toLowerCase()} (${direction.directionVector} (${formatRotation(yaw)} / ${formatRotation(pitch)})"
+        return "${Directions.byDirection(camera.cameraFront).name.toLowerCase()} ${direction.directionVector} (${formatRotation(yaw)} / ${formatRotation(pitch)})"
     }
 
 

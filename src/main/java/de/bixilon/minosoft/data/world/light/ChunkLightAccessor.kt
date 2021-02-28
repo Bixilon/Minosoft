@@ -14,18 +14,33 @@
 package de.bixilon.minosoft.data.world.light
 
 import de.bixilon.minosoft.data.world.BlockPosition
-import de.bixilon.minosoft.data.world.InChunkPosition
+import de.bixilon.minosoft.data.world.InChunkSectionPosition
+import unsigned.toUInt
 
 class ChunkLightAccessor(
-    private val blockLightLevel: MutableMap<Int, MutableMap<InChunkPosition, Byte>> = mutableMapOf(),
-    private val skyLightLevel: MutableMap<Int, MutableMap<InChunkPosition, Byte>> = mutableMapOf(),
+    private val blockLightLevel: MutableMap<Int, ByteArray> = mutableMapOf(),
+    private val skyLightLevel: MutableMap<Int, ByteArray> = mutableMapOf(),
 ) : LightAccessor {
-    override fun getSkyLight(blockPosition: BlockPosition): Byte {
-        return skyLightLevel[blockPosition.getSectionHeight()]?.get(blockPosition.getInChunkPosition()) ?: 0
+    override fun getSkyLight(blockPosition: BlockPosition): Int {
+        return get(skyLightLevel, blockPosition)
     }
 
-    override fun getBlockLight(blockPosition: BlockPosition): Byte {
-        return blockLightLevel[blockPosition.getSectionHeight()]?.get(blockPosition.getInChunkPosition()) ?: 0
+    override fun getBlockLight(blockPosition: BlockPosition): Int {
+        return get(blockLightLevel, blockPosition)
+    }
+
+    private fun get(data: MutableMap<Int, ByteArray>, blockPosition: BlockPosition): Int {
+        val index = getIndex(blockPosition.getInChunkSectionPosition())
+        val byte = data[blockPosition.getSectionHeight()]?.get(index ushr 1)?.toUInt() ?: 0xFF
+        return if (index and 0x01 == 0) { // first nibble
+            byte and 0x0F
+        } else {
+            ((byte) shr 4) and 0x0F
+        }
+    }
+
+    private fun getIndex(inChunkSectionPosition: InChunkSectionPosition): Int {
+        return inChunkSectionPosition.y shl 8 or (inChunkSectionPosition.z shl 4) or inChunkSectionPosition.x
     }
 
     fun merge(chunkLightAccessor: ChunkLightAccessor) {
