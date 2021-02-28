@@ -216,14 +216,14 @@ open class TextComponent : ChatComponent {
         }
 
         fun drawLetter(position: Vec2, scaledWidth: Float, scaledHeight: Float, fontChar: FontChar) {
-            drawLetterVertex(Vec3(position.x, position.y, HUD_Z_COORDINATE), fontChar.texturePosition[texturePositionCoordinates[binding.ordinal][0]], fontChar.atlasTextureIndex)
-            drawLetterVertex(Vec3(position.x, position.y + scaledHeight, HUD_Z_COORDINATE), fontChar.texturePosition[texturePositionCoordinates[binding.ordinal][3]], fontChar.atlasTextureIndex)
-            drawLetterVertex(Vec3(position.x + scaledWidth, position.y, HUD_Z_COORDINATE), fontChar.texturePosition[texturePositionCoordinates[binding.ordinal][1]], fontChar.atlasTextureIndex)
-            drawLetterVertex(Vec3(position.x + scaledWidth, position.y, HUD_Z_COORDINATE), fontChar.texturePosition[texturePositionCoordinates[binding.ordinal][1]], fontChar.atlasTextureIndex)
-            drawLetterVertex(Vec3(position.x, position.y + scaledHeight, HUD_Z_COORDINATE), fontChar.texturePosition[texturePositionCoordinates[binding.ordinal][3]], fontChar.atlasTextureIndex)
-            drawLetterVertex(Vec3(position.x + scaledWidth, position.y + scaledHeight, HUD_Z_COORDINATE), fontChar.texturePosition[texturePositionCoordinates[binding.ordinal][2]], fontChar.atlasTextureIndex)
+            drawLetterVertex(Vec3(position.x, position.y, HUD_Z_COORDINATE), fontChar.texturePosition[TEXTURE_POSITION_COORDINATES[binding.ordinal][0]], fontChar.atlasTextureIndex)
+            drawLetterVertex(Vec3(position.x, position.y + scaledHeight, HUD_Z_COORDINATE), fontChar.texturePosition[TEXTURE_POSITION_COORDINATES[binding.ordinal][3]], fontChar.atlasTextureIndex)
+            drawLetterVertex(Vec3(position.x + scaledWidth, position.y, HUD_Z_COORDINATE), fontChar.texturePosition[TEXTURE_POSITION_COORDINATES[binding.ordinal][1]], fontChar.atlasTextureIndex)
+            drawLetterVertex(Vec3(position.x + scaledWidth, position.y, HUD_Z_COORDINATE), fontChar.texturePosition[TEXTURE_POSITION_COORDINATES[binding.ordinal][1]], fontChar.atlasTextureIndex)
+            drawLetterVertex(Vec3(position.x, position.y + scaledHeight, HUD_Z_COORDINATE), fontChar.texturePosition[TEXTURE_POSITION_COORDINATES[binding.ordinal][3]], fontChar.atlasTextureIndex)
+            drawLetterVertex(Vec3(position.x + scaledWidth, position.y + scaledHeight, HUD_Z_COORDINATE), fontChar.texturePosition[TEXTURE_POSITION_COORDINATES[binding.ordinal][2]], fontChar.atlasTextureIndex)
         }
-        // reverse text if right bound
+        // bring chars in right order and reverse them if right bound
         val charArray = when (binding) {
             FontBindings.RIGHT_UP, FontBindings.RIGHT_DOWN -> {
                 if (text.contains('\n')) {
@@ -251,6 +251,8 @@ open class TextComponent : ChatComponent {
                 text.toCharArray().toList()
             }
         }
+
+        // add all chars
         for (char in charArray) {
             val scaledHeight = font.charHeight * hudScale.scale
             if (char == '\n') {
@@ -263,9 +265,10 @@ open class TextComponent : ChatComponent {
             val fontChar = font.getChar(char)
             val scaledX = fontChar.width * (font.charHeight / fontChar.height.toFloat()) * hudScale.scale
             drawLetter(startPosition + offset, scaledX, scaledHeight, fontChar)
-            offset += Vec2(scaledX + (hudScale.scale / 2), 0f)
+            // ad spacer between chars
+            offset += Vec2(scaledX + (hudScale.scale), 0f)
             if (offset.x >= maxSize.x) {
-                maxSize.x += scaledX + (hudScale.scale / 2)
+                maxSize.x += scaledX + (hudScale.scale)
             }
             if (offset.y >= maxSize.y) {
                 if (maxSize.y < scaledHeight) {
@@ -276,11 +279,11 @@ open class TextComponent : ChatComponent {
     }
 
     companion object {
-        private val texturePositionCoordinates = listOf(
-            listOf(0, 1, 2, 3),
-            listOf(1, 0, 3, 2),
-            listOf(2, 3, 0, 1),
-            listOf(3, 2, 1, 0),
+        private val TEXTURE_POSITION_COORDINATES = arrayOf(
+            intArrayOf(0, 1, 2, 3),
+            intArrayOf(1, 0, 3, 2),
+            intArrayOf(2, 3, 0, 1),
+            intArrayOf(3, 2, 1, 0),
         ) // matches FontBindings::ordinal
 
         const val HUD_Z_COORDINATE = -0.997f
