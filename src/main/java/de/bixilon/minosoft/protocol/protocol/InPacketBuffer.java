@@ -23,7 +23,7 @@ public class InPacketBuffer extends InByteBuffer {
         this.command = readVarInt();
     }
 
-    public int getCommand() {
+    public int getPacketTypeId() {
         return this.command;
     }
 }

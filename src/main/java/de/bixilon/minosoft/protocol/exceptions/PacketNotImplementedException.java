@@ -20,6 +20,6 @@ import de.bixilon.minosoft.protocol.protocol.Packets;
 public class PacketNotImplementedException extends PacketParseException {
 
     public PacketNotImplementedException(InPacketBuffer buffer, Packets.Clientbound packetType, Connection connection) {
-        super(String.format("Packet not implemented yet (id=0x%x, name=%s, length=%d, dataLength=%d, version=%s, state=%s)", buffer.getCommand(), packetType, buffer.getLength(), buffer.getBytesLeft(), connection.getVersion(), connection.getConnectionState()));
+        super(String.format("Packet not implemented yet (id=0x%x, name=%s, length=%d, dataLength=%d, version=%s, state=%s)", buffer.getPacketTypeId(), packetType, buffer.getLength(), buffer.getBytesLeft(), connection.getVersion(), connection.getConnectionState()));
     }
 }

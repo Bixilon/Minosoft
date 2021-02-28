@@ -18,19 +18,19 @@ import de.bixilon.minosoft.protocol.network.Connection;
 public class OutPacketBuffer extends OutByteBuffer {
     private final int command;
 
-    public OutPacketBuffer(Connection connection, Packets.Serverbound command) {
+    public OutPacketBuffer(Connection connection, Packets.Serverbound packetType) {
         super(connection);
-        this.command = connection.getPacketCommand(command);
+        this.command = connection.getPacketCommand(packetType);
     }
 
     @Override
     public byte[] toByteArray() {
         OutByteBuffer ret = new OutByteBuffer(this);
-        ret.prefixVarInt(getCommand());
+        ret.prefixVarInt(getPacketTypeId());
         return ret.toByteArray();
     }
 
-    public int getCommand() {
+    public int getPacketTypeId() {
         return this.command;
     }
 }

@@ -65,9 +65,9 @@ public abstract class Network {
         Packets.Clientbound packetType = null;
 
         try {
-            packetType = this.connection.getPacketByCommand(this.connection.getConnectionState(), data.getCommand());
+            packetType = this.connection.getPacketByCommand(this.connection.getConnectionState(), data.getPacketTypeId());
             if (packetType == null) {
-                throw new UnknownPacketException(String.format("Server sent us an unknown packet (id=0x%x, length=%d, data=%s)", data.getCommand(), bytes.length, data.getBase64()));
+                throw new UnknownPacketException(String.format("Server sent us an unknown packet (id=0x%x, length=%d, data=%s)", data.getPacketTypeId(), bytes.length, data.getBase64()));
             }
 
             ClientboundPacket packet;
