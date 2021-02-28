@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.world.light
 
 import de.bixilon.minosoft.data.world.BlockPosition
+import glm_.glm
 
 interface LightAccessor {
 
@@ -24,10 +25,6 @@ interface LightAccessor {
     fun getLightLevel(blockPosition: BlockPosition): Int {
         val blockLight = getBlockLight(blockPosition)
         val skyLight = getSkyLight(blockPosition)
-        if (blockLight > skyLight) {
-            return blockLight
-        }
-        return skyLight
+        return glm.max(blockLight, skyLight)
     }
-
 }

@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk.models.renderable
 
+import com.google.common.collect.HashBiMap
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.Directions
@@ -31,11 +32,11 @@ import glm_.vec2.Vec2
 import glm_.vec3.Vec3
 import glm_.vec4.Vec4
 
-class ElementRenderer(element: BlockModelElement, rotation: Vec3, uvLock: Boolean, rescale: Boolean) {
+class ElementRenderer(element: BlockModelElement, val rotation: Vec3, uvLock: Boolean, rescale: Boolean) {
     private val fullFaceDirections: MutableSet<Directions> = mutableSetOf()
     private val faces: MutableMap<Directions, BlockModelFace> = element.faces.toMutableMap()
     private var positions: Array<Vec3> = element.positions.clone()
-    private val directionMapping: MutableMap<Directions, Directions> = mutableMapOf()
+    private val directionMapping: HashBiMap<Directions, Directions> = HashBiMap.create()
 
     init {
         rotatePositionsAxes(positions, rotation, rescale)
@@ -53,19 +54,17 @@ class ElementRenderer(element: BlockModelElement, rotation: Vec3, uvLock: Boolea
 
 
     fun render(tintColor: RGBColor?, position: BlockPosition, lightAccessor: LightAccessor, textureMapping: MutableMap<String, Texture>, modelMatrix: Mat4, direction: Directions, mesh: ChunkMesh) {
-        val realDirection = directionMapping[direction]!!
-        val positionTemplate = BlockModelElement.FACE_POSITION_MAP_TEMPLATE[realDirection.ordinal]
+        val realDirection = directionMapping.inverse()[direction]!!
 
         val face = faces[realDirection] ?: return // Not our face
+
+        val positionTemplate = BlockModelElement.FACE_POSITION_MAP_TEMPLATE[realDirection.ordinal]
+
         val texture = textureMapping[face.textureName] ?: TextureArray.DEBUG_TEXTURE
 
-        // if (texture.isTransparent) {
-        //     return // ToDo: force render transparent faces
-        // }
         val lightLevel = lightAccessor.getLightLevel(position + directionMapping[face.cullFace]) // ToDo: rotate cullface
 
         val drawPositions = arrayOf(positions[positionTemplate[0]], positions[positionTemplate[1]], positions[positionTemplate[2]], positions[positionTemplate[3]])
-
 
         fun createQuad(drawPositions: Array<Vec3>, texturePositions: Array<Vec2?>) {
             for (vertex in DRAW_ODER) {
@@ -84,7 +83,6 @@ class ElementRenderer(element: BlockModelElement, rotation: Vec3, uvLock: Boolea
                 )
             }
         }
-
         val texturePositions = face.getTexturePositionArray(realDirection)
         createQuad(drawPositions, texturePositions)
     }

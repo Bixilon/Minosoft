@@ -70,8 +70,8 @@ open class BlockModelElement(data: JsonObject) {
         val FACE_POSITION_MAP_TEMPLATE = arrayOf(
             intArrayOf(0, 2, 3, 1),
             intArrayOf(6, 4, 5, 7),
-            intArrayOf(2, 6, 7, 3),
             intArrayOf(1, 5, 4, 0),
+            intArrayOf(2, 6, 7, 3),
             intArrayOf(6, 2, 0, 4),
             intArrayOf(5, 1, 3, 7)
         )
@@ -99,6 +99,9 @@ open class BlockModelElement(data: JsonObject) {
         }
 
         fun rotateVector(original: Vec3, angle: Double, axis: Axes): Vec3 {
+            if (angle == 0.0) {
+                return original
+            }
             return when (axis) {
                 Axes.X -> {
                     val rotatedValues = getRotatedValues(original.y, original.z, glm.sin(angle), glm.cos(angle))

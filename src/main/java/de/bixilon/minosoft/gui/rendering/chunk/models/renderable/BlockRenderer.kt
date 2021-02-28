@@ -92,7 +92,6 @@ class BlockRenderer(data: JsonObject, parent: BlockModel) {
                 if (neighbourBlockFullFace && cullFace) {
                     continue
                 }
-
                 element.render(tintColor, position, lightAccessor, textureMapping, modelMatrix, direction, mesh)
             }
         }
