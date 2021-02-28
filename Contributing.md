@@ -24,11 +24,6 @@ Minosoft is an open source project, it helps if you recommend it and share it mo
 
 I started this project in mind, that I'll never earn money from it. Just doing it for fun, so I am not dependent on it. So: Currently not available and not planned.
 
-## Issue and MR rules
-- Do not spam, we will answer when we have time.
-- Use english whenever possible, we would even allow using german, but try to use english.
-- Don't hesitate against other developers.
-
 ## Contact us
 
 If you want to ask me, the team or whoever in this project a question, you can do the following things:
