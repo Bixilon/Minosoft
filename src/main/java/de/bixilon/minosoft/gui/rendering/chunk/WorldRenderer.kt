@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk
 
-import com.google.common.collect.ConcurrentHashMultiset
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames
@@ -41,10 +40,12 @@ class WorldRenderer(private val connection: Connection, private val world: World
     private lateinit var frustum: Frustum
     private var currentTick = 0 // for animation usage
     private var lastTickIncrementTime = 0L
-    val queuedChunks: ConcurrentHashMultiset<ChunkPosition> = ConcurrentHashMultiset.create()
+    val queuedChunks: MutableSet<ChunkPosition> = mutableSetOf()
 
     private fun prepareChunk(chunkPosition: ChunkPosition, sectionHeight: Int, section: ChunkSection): ChunkMesh {
-        queuedChunks.remove(chunkPosition)
+        synchronized(this.queuedChunks) {
+            queuedChunks.remove(chunkPosition)
+        }
         if (frustum.containsChunk(chunkPosition, connection)) {
             visibleChunks.add(chunkPosition)
         }
@@ -159,11 +160,15 @@ class WorldRenderer(private val connection: Connection, private val world: World
                 if (checkQueued) {
                     checkQueuedChunks(neighborsChunkPositions)
                 }
-                queuedChunks.add(chunkPosition)
+                synchronized(this.queuedChunks) {
+                    queuedChunks.add(chunkPosition)
+                }
                 return
             }
         }
-        queuedChunks.remove(chunkPosition)
+        synchronized(this.queuedChunks) {
+            queuedChunks.remove(chunkPosition)
+        }
         chunkSectionsToDraw[chunkPosition] = ConcurrentHashMap()
 
         for ((sectionHeight, section) in chunk.sections!!) {
@@ -202,7 +207,9 @@ class WorldRenderer(private val connection: Connection, private val world: World
     }
 
     fun clearChunkCache() {
-        queuedChunks.clear()
+        synchronized(this.queuedChunks) {
+            queuedChunks.clear()
+        }
         renderWindow.renderQueue.add {
             for ((location, map) in chunkSectionsToDraw) {
                 for ((sectionHeight, mesh) in map) {
@@ -215,7 +222,9 @@ class WorldRenderer(private val connection: Connection, private val world: World
     }
 
     fun unloadChunk(chunkPosition: ChunkPosition) {
-        queuedChunks.remove(chunkPosition)
+        synchronized(this.queuedChunks) {
+            queuedChunks.remove(chunkPosition)
+        }
         renderWindow.renderQueue.add {
             chunkSectionsToDraw[chunkPosition]?.let {
                 for ((_, mesh) in it) {
