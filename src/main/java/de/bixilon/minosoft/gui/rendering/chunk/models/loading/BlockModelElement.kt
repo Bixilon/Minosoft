@@ -46,7 +46,7 @@ open class BlockModelElement(data: JsonObject) {
 
         data["rotation"]?.asJsonObject?.let {
             val axis = Axes.valueOf(it["axis"].asString.toUpperCase())
-            val angle = glm.radians(it["angle"].asDouble)
+            val angle = glm.radians(it["angle"].asFloat)
             val rescale = it["rescale"]?.asBoolean ?: false
             rotatePositions(positions, axis, angle, VecUtil.jsonToVec3(it["origin"].asJsonArray), rescale)
         }
@@ -64,7 +64,6 @@ open class BlockModelElement(data: JsonObject) {
     }
 
     companion object {
-
         const val BLOCK_RESOLUTION = 16f
 
         val FACE_POSITION_MAP_TEMPLATE = arrayOf(
@@ -76,9 +75,9 @@ open class BlockModelElement(data: JsonObject) {
             intArrayOf(5, 1, 3, 7)
         )
 
-        fun rotatePositions(positions: Array<Vec3>, axis: Axes, angle: Double, origin: Vec3, rescale: Boolean) {
+        fun rotatePositions(positions: Array<Vec3>, axis: Axes, angle: Float, origin: Vec3, rescale: Boolean) {
             // TODO: optimize for 90deg, 180deg, 270deg rotations
-            if (angle == 0.0) {
+            if (angle == 0f) {
                 return
             }
             for ((i, position) in positions.withIndex()) {

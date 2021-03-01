@@ -41,7 +41,6 @@ class ElementRenderer(parent: BlockModelElement, val rotation: Vec3, uvLock: Boo
 
     init {
         rotatePositionsAxes(positions, rotation, rescale)
-        // TODO : uvLock
         for (direction in Directions.DIRECTIONS) {
             if (positions.containsAllVectors(FULL_TEST_POSITIONS[direction.ordinal], 0.0001f)) { // TODO: check if texture is transparent ==> && ! texture.isTransparent
                 fullFaceDirections.add(direction)
@@ -49,6 +48,17 @@ class ElementRenderer(parent: BlockModelElement, val rotation: Vec3, uvLock: Boo
             directionMapping[direction] = getRotatedDirection(rotation, direction)
             parent.faces[direction]?.let {
                 faces[direction] = BlockModelFace(it)
+            }
+        }
+        if (uvLock) {
+            for (direction in Directions.DIRECTIONS) {
+                val axes = Axes.byDirection(direction)
+                val angle = when (axes) {
+                    Axes.X -> rotation.x
+                    Axes.Y -> rotation.y
+                    Axes.Z -> rotation.z
+                }
+                faces[direction]?.rotate(angle)
             }
         }
     }
@@ -145,18 +155,18 @@ class ElementRenderer(parent: BlockModelElement, val rotation: Vec3, uvLock: Boo
             if (rotation == EMPTY_VECTOR) {
                 return direction
             }
-            var rotatedDirectionVector = VecUtil.rotateVector(direction.directionVector, rotation.x.toDouble(), Axes.X)
-            rotatedDirectionVector = VecUtil.rotateVector(rotatedDirectionVector, rotation.y.toDouble(), Axes.Y)
-            return Directions.byDirection(VecUtil.rotateVector(rotatedDirectionVector, rotation.z.toDouble(), Axes.Z))
+            var rotatedDirectionVector = VecUtil.rotateVector(direction.directionVector, rotation.x, Axes.X)
+            rotatedDirectionVector = VecUtil.rotateVector(rotatedDirectionVector, rotation.y, Axes.Y)
+            return Directions.byDirection(VecUtil.rotateVector(rotatedDirectionVector, rotation.z, Axes.Z))
         }
 
         fun rotatePositionsAxes(positions: Array<Vec3>, angles: Vec3, rescale: Boolean) {
             if (angles == EMPTY_VECTOR) {
                 return
             }
-            BlockModelElement.rotatePositions(positions, Axes.X, angles.x.toDouble(), EMPTY_VECTOR, rescale)
-            BlockModelElement.rotatePositions(positions, Axes.Y, angles.y.toDouble(), EMPTY_VECTOR, rescale)
-            BlockModelElement.rotatePositions(positions, Axes.Z, angles.z.toDouble(), EMPTY_VECTOR, rescale)
+            BlockModelElement.rotatePositions(positions, Axes.X, angles.x, EMPTY_VECTOR, rescale)
+            BlockModelElement.rotatePositions(positions, Axes.Y, angles.y, EMPTY_VECTOR, rescale)
+            BlockModelElement.rotatePositions(positions, Axes.Z, angles.z, EMPTY_VECTOR, rescale)
         }
 
         private val POSITION_1 = Vec3(-0.5f, -0.5f, -0.5f)

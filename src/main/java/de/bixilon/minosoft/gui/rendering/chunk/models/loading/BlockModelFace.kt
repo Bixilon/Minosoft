@@ -86,8 +86,8 @@ class BlockModelFace {
         return result
     }
 
-    fun rotate(angle: Double) {
-        if (angle == 0.0) {
+    fun rotate(angle: Float) {
+        if (angle == 0f) {
             return
         }
         val sin = glm.sin(angle)

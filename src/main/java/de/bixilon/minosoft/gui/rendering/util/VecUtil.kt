@@ -31,12 +31,12 @@ object VecUtil {
         }
     }
 
-    fun getRotatedValues(x: Float, y: Float, sin: Double, cos: Double): Vec2 {
-        return Vec2((x * cos - y * sin).toFloat(), (x * sin + y * cos).toFloat())
+    fun getRotatedValues(x: Float, y: Float, sin: Float, cos: Float): Vec2 {
+        return Vec2(x * cos - y * sin, x * sin + y * cos)
     }
 
-    fun rotateVector(original: Vec3, angle: Double, axis: Axes): Vec3 {
-        if (angle == 0.0) {
+    fun rotateVector(original: Vec3, angle: Float, axis: Axes): Vec3 {
+        if (angle == 0f) {
             return original
         }
         return when (axis) {
