@@ -25,6 +25,7 @@ import de.bixilon.minosoft.util.logging.Log;
 import de.bixilon.minosoft.util.microsoft.MicrosoftOAuthUtils;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
 import java.lang.reflect.Field;
@@ -382,5 +383,13 @@ public final class Util {
             output = output.replace("${" + entry.getKey() + "}", entry.getValue().toString());
         }
         return output;
+    }
+
+    @NotNull
+    public static JsonObject readJsonFromStream(@NotNull InputStream stream) throws IOException {
+        InputStreamReader reader = new InputStreamReader(stream);
+        JsonObject json = JsonParser.parseReader(reader).getAsJsonObject();
+        reader.close();
+        return json;
     }
 }

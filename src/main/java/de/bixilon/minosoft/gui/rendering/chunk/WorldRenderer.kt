@@ -134,7 +134,7 @@ class WorldRenderer(
         val textures: MutableList<Texture> = mutableListOf()
         textures.add(TextureArray.DEBUG_TEXTURE)
         val textureMap: MutableMap<String, Texture> = mutableMapOf()
-        textureMap[TextureArray.DEBUG_TEXTURE.name] = TextureArray.DEBUG_TEXTURE
+        textureMap[TextureArray.DEBUG_TEXTURE.resourceLocation.full] = TextureArray.DEBUG_TEXTURE
 
         for (block in blocks) {
             for (model in block.renders) {

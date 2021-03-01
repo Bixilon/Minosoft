@@ -13,16 +13,17 @@
 
 package de.bixilon.minosoft.gui.rendering.textures
 
-import de.bixilon.minosoft.data.assets.AssetsManager
+import de.bixilon.minosoft.data.assets.MinecraftAssetsManager
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.text.RGBColor
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.matthiasmann.twl.utils.PNGDecoder
 import org.lwjgl.BufferUtils
 import java.nio.ByteBuffer
 
 
 class Texture(
-    val name: String,
+    val resourceLocation: ResourceLocation,
     val id: Int,
 ) {
     var width: Int = 0
@@ -37,18 +38,12 @@ class Texture(
     var animations: Int = 0
     var animationFrameTime: Int = 0
 
-    fun load(assetsManager: AssetsManager) {
+    fun load(assetsManager: MinecraftAssetsManager) {
         if (loaded) {
             return
         }
-        val texturePath = if (name.endsWith(".png")) {
-            name
-        } else {
-            val resourceLocation = ResourceLocation(name)
-            "${resourceLocation.namespace}/textures/${resourceLocation.path}.png"
-        }
 
-        val decoder = PNGDecoder(assetsManager.readAssetAsStream(texturePath))
+        val decoder = PNGDecoder(assetsManager.readAssetAsStream(resourceLocation))
         buffer = BufferUtils.createByteBuffer(decoder.width * decoder.height * PNGDecoder.Format.RGBA.numComponents)
         decoder.decode(buffer, decoder.width * PNGDecoder.Format.RGBA.numComponents, PNGDecoder.Format.RGBA)
         width = decoder.width
@@ -64,11 +59,26 @@ class Texture(
 
         // load .mcmeta
         try {
-            val json = assetsManager.readJsonAsset("$texturePath.mcmeta").asJsonObject
+            val json = assetsManager.readJsonAsset(ResourceLocation("$resourceLocation.mcmeta"))
             animationFrameTime = json["animation"].asJsonObject["frametime"].asInt
         } catch (exception: Exception) {
         }
 
         loaded = true
+    }
+
+    companion object {
+        fun getResourceTextureIdentifier(namespace: String = ProtocolDefinition.DEFAULT_MOD, textureName: String): ResourceLocation {
+            var texturePath = textureName
+            texturePath = texturePath.removePrefix("/")
+
+            if (!texturePath.startsWith("textures/")) {
+                texturePath = "textures/$texturePath"
+            }
+            if (!texturePath.endsWith(".png")) {
+                texturePath = "$texturePath.png"
+            }
+            return ResourceLocation(namespace, texturePath)
+        }
     }
 }

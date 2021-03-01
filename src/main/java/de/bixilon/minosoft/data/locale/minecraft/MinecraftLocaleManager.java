@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.locale.minecraft;
 
+import de.bixilon.minosoft.data.mappings.ResourceLocation;
 import de.bixilon.minosoft.data.mappings.versions.Version;
 import de.bixilon.minosoft.util.logging.Log;
 
@@ -36,11 +37,11 @@ public class MinecraftLocaleManager {
         return this.language.translate(key, data);
     }
 
-    private MinecraftLanguage loadLanguage(Version version, String language) throws IOException {
+    private MinecraftLanguage loadLanguage(Version version, String language) {
         if (version.getVersionId() >= V_18W02A) {
-            return new MinecraftLanguage(language, this.version.getAssetsManager().readJsonAsset(String.format("minecraft/lang/%s.json", language.toLowerCase())).getAsJsonObject());
+            return new MinecraftLanguage(language, this.version.getAssetsManager().readJsonAsset(new ResourceLocation(String.format("lang/%s.json", language.toLowerCase()))).getAsJsonObject());
         }
-        return new MinecraftLanguage(language, this.version.getAssetsManager().readStringAsset(String.format("minecraft/lang/%s.lang", language.toLowerCase())));
+        return new MinecraftLanguage(language, this.version.getAssetsManager().readStringAsset(new ResourceLocation(String.format("lang/%s.lang", language.toLowerCase()))));
     }
 
     public void load(Version version, String language) throws IOException {

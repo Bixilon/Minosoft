@@ -15,7 +15,7 @@ package de.bixilon.minosoft.gui.rendering.font
 
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
-import de.bixilon.minosoft.data.assets.AssetsManager
+import de.bixilon.minosoft.data.assets.MinecraftAssetsManager
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.textures.Texture
@@ -23,6 +23,7 @@ import de.bixilon.minosoft.gui.rendering.textures.TextureArray
 import java.io.InputStream
 
 object FontLoader {
+    private val FONT_JSON_RESOURCE_LOCATION = ResourceLocation("font/default.json")
     private const val FONT_ATLAS_SIZE = 16
     private const val UNICODE_CHARS_PER_PAGE = FONT_ATLAS_SIZE * FONT_ATLAS_SIZE
     private const val UNICODE_SIZE = 16
@@ -36,14 +37,14 @@ object FontLoader {
         return ret
     }
 
-    private fun loadBitmapFontProvider(atlasPath: ResourceLocation, height: Int? = 8, ascent: Int, chars: List<Char>, assetsManager: AssetsManager, atlasOffset: Int): FontProvider {
+    private fun loadBitmapFontProvider(atlasPath: ResourceLocation, height: Int? = 8, ascent: Int, chars: List<Char>, assetsManager: MinecraftAssetsManager, atlasOffset: Int): FontProvider {
         val width = if (ascent == 7) { // ToDo: Why?
             8
         } else {
             9
         }
         val provider = FontProvider(width)
-        val atlasTexture = Texture((atlasPath.namespace + "/textures/" + atlasPath.path), atlasOffset)
+        val atlasTexture = Texture((Texture.getResourceTextureIdentifier(atlasPath.namespace, atlasPath.path)), atlasOffset)
         atlasTexture.load(assetsManager)
         val height = height ?: atlasTexture.width / FONT_ATLAS_SIZE
         provider.atlasTextures.add(atlasTexture)
@@ -88,7 +89,7 @@ object FontLoader {
     }
 
 
-    private fun loadUnicodeFontProvider(template: ResourceLocation, sizes: InputStream, assetsManager: AssetsManager, atlasOffset: Int): FontProvider {
+    private fun loadUnicodeFontProvider(template: ResourceLocation, sizes: InputStream, assetsManager: MinecraftAssetsManager, atlasOffset: Int): FontProvider {
         val provider = FontProvider(UNICODE_SIZE)
         var i = 0
         lateinit var currentAtlasTexture: Texture
@@ -96,10 +97,10 @@ object FontLoader {
             if (i % 256 == 0) {
                 currentAtlasTexture = if (MISSING_UNICODE_PAGES.contains(i / UNICODE_CHARS_PER_PAGE)) {
                     // ToDo: Why is this texture missing in minecraft?
-                    Texture(TextureArray.DEBUG_TEXTURE.name, i / UNICODE_CHARS_PER_PAGE)
+                    Texture(TextureArray.DEBUG_TEXTURE.resourceLocation, i / UNICODE_CHARS_PER_PAGE)
                 } else {
                     // new page (texture)
-                    Texture((template.namespace + "/textures/" + template.path).format("%02x".format(i / 256)), atlasOffset + (i / 256))
+                    Texture(Texture.getResourceTextureIdentifier(template.namespace, template.path.format("%02x".format(i / 256))), atlasOffset + (i / 256))
                 }
                 currentAtlasTexture.load(assetsManager)
                 provider.atlasTextures.add(currentAtlasTexture)
@@ -112,7 +113,7 @@ object FontLoader {
         return provider
     }
 
-    fun loadFontProvider(data: JsonObject, assetsManager: AssetsManager, atlasTextureOffset: Int): FontProvider {
+    fun loadFontProvider(data: JsonObject, assetsManager: MinecraftAssetsManager, atlasTextureOffset: Int): FontProvider {
         return when (data["type"].asString) {
             "bitmap" -> {
                 loadBitmapFontProvider(ResourceLocation(data["file"].asString), data["height"]?.asInt, data["ascent"].asInt, getCharArray(data["chars"].asJsonArray), assetsManager, atlasTextureOffset)
@@ -128,10 +129,10 @@ object FontLoader {
     }
 
 
-    fun loadFontProviders(assetsManager: AssetsManager): List<FontProvider> {
+    fun loadFontProviders(assetsManager: MinecraftAssetsManager): List<FontProvider> {
         val ret: MutableList<FontProvider> = mutableListOf()
         var atlasTextureOffset = 0
-        for (providerElement in assetsManager.readJsonAsset("minecraft/font/default.json").asJsonObject["providers"].asJsonArray) {
+        for (providerElement in assetsManager.readJsonAsset(FONT_JSON_RESOURCE_LOCATION).asJsonObject["providers"].asJsonArray) {
             val provider = loadFontProvider(providerElement.asJsonObject, assetsManager, atlasTextureOffset)
             atlasTextureOffset += provider.atlasTextures.size
             ret.add(provider)

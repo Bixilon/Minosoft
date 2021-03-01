@@ -13,19 +13,20 @@
 
 package de.bixilon.minosoft.gui.rendering
 
-import de.bixilon.minosoft.data.assets.AssetsManager
+import de.bixilon.minosoft.data.assets.MinecraftAssetsManager
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.biomes.Biome
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.data.world.BlockPosition
+import de.bixilon.minosoft.gui.rendering.textures.Texture
 
 class TintColorCalculator {
     private lateinit var grassColorMap: Array<RGBColor>
     private lateinit var foliageColorMap: Array<RGBColor>
 
-    fun init(assetsManager: AssetsManager) {
-        grassColorMap = assetsManager.readPixelArray("minecraft/textures/colormap/grass.png")
-        foliageColorMap = assetsManager.readPixelArray("minecraft/textures/colormap/foliage.png")
+    fun init(assetsManager: MinecraftAssetsManager) {
+        grassColorMap = assetsManager.readPixelArrayAsset(Texture.getResourceTextureIdentifier(textureName = "colormap/grass.png"))
+        foliageColorMap = assetsManager.readPixelArrayAsset(Texture.getResourceTextureIdentifier(textureName = "colormap/foliage.png"))
     }
 
     fun calculateTint(tint: ResourceLocation, biome: Biome, position: BlockPosition): RGBColor? {

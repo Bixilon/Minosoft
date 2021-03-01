@@ -105,6 +105,10 @@ public final class ProtocolDefinition {
 
     public static final RGBColor DEFAULT_COLOR = ChatColors.WHITE;
 
+
+    public static final String[] RELEVANT_MINECRAFT_ASSETS = {"minecraft/lang/", "minecraft/sounds.json", "minecraft/sounds/", "minecraft/textures/", "minecraft/font/"}; // whitelist for all assets we care (we have our own block models, etc)
+
+
     static {
         // java does (why ever) not allow to directly assign a null
         InetAddress tempInetAddress;

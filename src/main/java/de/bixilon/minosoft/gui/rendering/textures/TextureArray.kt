@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.textures
 
-import de.bixilon.minosoft.data.assets.AssetsManager
+import de.bixilon.minosoft.data.assets.MinecraftAssetsManager
 import de.bixilon.minosoft.gui.rendering.shader.Shader
 import org.lwjgl.opengl.GL12.glTexImage3D
 import org.lwjgl.opengl.GL12.glTexSubImage3D
@@ -57,9 +57,9 @@ class TextureArray(val textures: List<Texture>, val maxWidth: Int, val maxHeight
     }
 
     companion object {
-        val DEBUG_TEXTURE = Texture("block/debug", 0)
+        val DEBUG_TEXTURE = Texture(Texture.getResourceTextureIdentifier(textureName = "block/debug"), 0)
 
-        fun createTextureArray(assetsManager: AssetsManager? = null, textures: List<Texture>, maxWidth: Int = -1, maxHeight: Int = -1): TextureArray {
+        fun createTextureArray(assetsManager: MinecraftAssetsManager? = null, textures: List<Texture>, maxWidth: Int = -1, maxHeight: Int = -1): TextureArray {
             var calculatedMaxWidth = 0
             var calculatedMaxHeight = 0
             for (texture in textures) {

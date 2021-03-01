@@ -50,7 +50,7 @@ class BlockRenderer(data: JsonObject, parent: BlockModel) {
                 }
                 if (index == null || index == -1) {
                     index = textureMap.size
-                    texture = Texture(textureName, index)
+                    texture = Texture(Texture.getResourceTextureIdentifier(textureName = textureName), index)
                     textureMap[textureName] = texture!!
                     indexed.add(texture!!)
                 }

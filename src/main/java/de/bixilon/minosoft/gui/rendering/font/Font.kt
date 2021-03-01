@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.font
 
-import de.bixilon.minosoft.data.assets.AssetsManager
+import de.bixilon.minosoft.data.assets.MinecraftAssetsManager
 import de.bixilon.minosoft.gui.rendering.textures.Texture
 import de.bixilon.minosoft.gui.rendering.textures.TextureArray
 
@@ -21,7 +21,7 @@ class Font {
     lateinit var providers: List<FontProvider>
     val charHeight = 8
 
-    fun load(assetsManager: AssetsManager) {
+    fun load(assetsManager: MinecraftAssetsManager) {
         providers = FontLoader.loadFontProviders(assetsManager)
     }
 

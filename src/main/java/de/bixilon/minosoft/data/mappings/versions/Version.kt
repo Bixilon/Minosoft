@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.mappings.versions
 import com.google.common.collect.HashBiMap
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.Minosoft
-import de.bixilon.minosoft.data.assets.AssetsManager
+import de.bixilon.minosoft.data.assets.MinecraftAssetsManager
 import de.bixilon.minosoft.data.assets.Resources
 import de.bixilon.minosoft.data.locale.minecraft.MinecraftLocaleManager
 import de.bixilon.minosoft.protocol.protocol.ConnectionStates
@@ -23,6 +23,7 @@ import de.bixilon.minosoft.protocol.protocol.Packets.Clientbound
 import de.bixilon.minosoft.protocol.protocol.Packets.Serverbound
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.CountUpAndDownLatch
+import de.bixilon.minosoft.util.Util
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 
@@ -36,7 +37,7 @@ data class Version(
     var isLoaded = false
     var isGettingLoaded = false
     val mapping: VersionMapping = VersionMapping(this)
-    lateinit var assetsManager: AssetsManager
+    lateinit var assetsManager: MinecraftAssetsManager
     lateinit var localeManager: MinecraftLocaleManager
 
     fun getPacketByCommand(state: ConnectionStates, command: Int): Clientbound? {
@@ -61,7 +62,7 @@ data class Version(
             localeManager = Versions.PRE_FLATTENING_VERSION.localeManager
             return
         }
-        assetsManager = AssetsManager(Minosoft.getConfig().config.debug.verifyAssets, Resources.getAssetVersionByVersion(this), Resources.getPixLyzerDataHashByVersion(this))
+        assetsManager = MinecraftAssetsManager(Resources.getAssetVersionByVersion(this), Resources.getPixLyzerDataHashByVersion(this))
         assetsManager.downloadAllAssets(latch)
         localeManager = MinecraftLocaleManager(this)
         localeManager.load(this, Minosoft.getConfig().config.general.language)
@@ -96,7 +97,7 @@ data class Version(
             mapping.parentMapping = Versions.PRE_FLATTENING_MAPPING
         }
         val pixlyzerData = try {
-            AssetsManager.readJsonAssetByHash(Resources.getPixLyzerDataHashByVersion(this)).asJsonObject
+            Util.readJsonFromStream(assetsManager.readAssetAsStream(Resources.getPixLyzerDataHashByVersion(this)))
         } catch (e: Throwable) {
             // should not happen, but if this version is not flattened, we can fallback to the flatten mappings. Some things might not work...
             Log.printException(e, LogLevels.VERBOSE)

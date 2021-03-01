@@ -56,6 +56,14 @@ public class ResourceLocation implements Comparable<ResourceLocation> {
 
     }
 
+    public static ResourceLocation getPathResourceLocation(String resourceLocation) {
+        if (resourceLocation.contains(":")) {
+            return new ResourceLocation(resourceLocation);
+        }
+        String[] split = resourceLocation.split("/", 2);
+        return new ResourceLocation(split[0], split[1]);
+    }
+
     public String getNamespace() {
         return this.namespace;
     }
