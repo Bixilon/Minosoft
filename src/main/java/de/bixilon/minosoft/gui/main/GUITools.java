@@ -14,6 +14,8 @@
 package de.bixilon.minosoft.gui.main;
 
 import com.jfoenix.controls.JFXComboBox;
+import de.bixilon.minosoft.Minosoft;
+import de.bixilon.minosoft.data.mappings.ResourceLocation;
 import de.bixilon.minosoft.data.mappings.versions.Version;
 import de.bixilon.minosoft.data.mappings.versions.Versions;
 import de.bixilon.minosoft.util.logging.LogLevels;
@@ -33,7 +35,7 @@ import java.util.Arrays;
 import java.util.Base64;
 
 public class GUITools {
-    public static final Image MINOSOFT_LOGO = new Image(GUITools.class.getResourceAsStream("/icons/windowIcon.png"));
+    public static final Image MINOSOFT_LOGO = new Image(GUITools.class.getResourceAsStream("/assets/minosoft/textures/icons/windowIcon.png"));
     public static final ObservableList<Version> VERSIONS = FXCollections.observableArrayList();
     public static final JFXComboBox<Version> VERSION_COMBO_BOX = new JFXComboBox<>(VERSIONS);
     public static final ObservableList<LogLevels> LOG_LEVELS = FXCollections.observableList(Arrays.asList(LogLevels.values().clone()));
@@ -75,7 +77,7 @@ public class GUITools {
     }
 
     public static Scene initializeScene(Scene scene) {
-        scene.getStylesheets().add("/layout/style.css");
+        scene.getStylesheets().add("/assets/minosoft/layout/style.css"); // ToDo: Migrate to minosoft assets manager
         if (scene.getWindow() instanceof Stage stage) {
             stage.getIcons().add(MINOSOFT_LOGO);
         }
@@ -87,8 +89,8 @@ public class GUITools {
         return pane;
     }
 
-    public static <T> T showPane(String fxmlPath, Modality modality, String title) throws IOException {
-        FXMLLoader loader = new FXMLLoader(GUITools.class.getResource(fxmlPath));
+    public static <T> T showPane(ResourceLocation fxmlResourceLocation, Modality modality, String title) throws IOException {
+        FXMLLoader loader = new FXMLLoader(Minosoft.MINOSOFT_ASSETS_MANAGER.getAssetURL(fxmlResourceLocation));
         Parent root = loader.load();
         Stage stage = new Stage();
         stage.initModality(modality);

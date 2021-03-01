@@ -17,8 +17,10 @@ import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.ShutdownReasons;
 import de.bixilon.minosoft.data.locale.LocaleManager;
 import de.bixilon.minosoft.data.locale.Strings;
+import de.bixilon.minosoft.data.mappings.ResourceLocation;
 import de.bixilon.minosoft.data.mappings.versions.Version;
 import de.bixilon.minosoft.protocol.protocol.LANServerListener;
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import de.bixilon.minosoft.util.logging.Log;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -68,7 +70,7 @@ public class Launcher {
             ServerListCell.SERVER_LIST_VIEW.setItems(servers);
             LANServerListener.removeAll(); // remove all LAN Servers
 
-            FXMLLoader loader = new FXMLLoader(Launcher.class.getResource("/layout/main.fxml"));
+            FXMLLoader loader = new FXMLLoader(Minosoft.MINOSOFT_ASSETS_MANAGER.getAssetURL(new ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "layout/main.fxml")));
             VBox root;
             try {
                 root = loader.load();

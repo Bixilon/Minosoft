@@ -13,11 +13,14 @@
 
 package de.bixilon.minosoft.gui.main;
 
+import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.data.locale.LocaleManager;
 import de.bixilon.minosoft.data.locale.Strings;
+import de.bixilon.minosoft.data.mappings.ResourceLocation;
 import de.bixilon.minosoft.modding.event.EventInvokerCallback;
 import de.bixilon.minosoft.modding.event.events.ConnectionStateChangeEvent;
 import de.bixilon.minosoft.protocol.network.Connection;
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -43,7 +46,7 @@ public class SessionListCell extends ListCell<Connection> implements Initializab
     private Connection connection;
 
     public static SessionListCell newInstance() {
-        FXMLLoader loader = new FXMLLoader(SessionListCell.class.getResource("/layout/cells/session.fxml"));
+        FXMLLoader loader = new FXMLLoader(Minosoft.MINOSOFT_ASSETS_MANAGER.getAssetURL(new ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "layout/cells/session.fxml")));
         try {
             loader.load();
             return loader.getController();

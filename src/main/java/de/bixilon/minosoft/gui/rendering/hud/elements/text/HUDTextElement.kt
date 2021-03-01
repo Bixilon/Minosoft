@@ -24,6 +24,7 @@ import de.bixilon.minosoft.gui.rendering.hud.elements.HUDElement
 import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.gui.rendering.textures.TextureArray
 import de.bixilon.minosoft.protocol.network.Connection
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import glm_.glm
 import glm_.mat4x4.Mat4
 import glm_.vec2.Vec2
@@ -133,7 +134,7 @@ class HUDTextElement(val connection: Connection, val hudRenderer: HUDRenderer, v
         hudMeshHUD = HUDFontMesh()
         hudMeshHUD.load()
 
-        fontShader = Shader("font_vertex.glsl", "font_fragment.glsl")
+        fontShader = Shader(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "rendering/shader/font_vertex.glsl"), ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "rendering/shader/font_fragment.glsl"))
         fontShader.load()
 
 

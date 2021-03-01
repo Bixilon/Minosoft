@@ -23,9 +23,11 @@ import de.bixilon.minosoft.ShutdownReasons;
 import de.bixilon.minosoft.data.accounts.Account;
 import de.bixilon.minosoft.data.locale.LocaleManager;
 import de.bixilon.minosoft.data.locale.Strings;
+import de.bixilon.minosoft.data.mappings.ResourceLocation;
 import de.bixilon.minosoft.data.mappings.versions.Versions;
 import de.bixilon.minosoft.data.text.ChatComponent;
 import de.bixilon.minosoft.protocol.protocol.LANServerListener;
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import de.bixilon.minosoft.util.DNSUtil;
 import de.bixilon.minosoft.util.logging.Log;
 import javafx.application.Platform;
@@ -63,7 +65,7 @@ public class MainWindow implements Initializable {
 
     public static void manageAccounts() {
         try {
-            Parent parent = new FXMLLoader(MainWindow.class.getResource("/layout/accounts.fxml")).load();
+            Parent parent = new FXMLLoader(Minosoft.MINOSOFT_ASSETS_MANAGER.getAssetURL(new ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "layout/accounts.fxml"))).load();
             Stage stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setTitle(LocaleManager.translate(Strings.MANAGE_ACCOUNTS_NO_ACCOUNT_ERROR_TITLE));
@@ -284,7 +286,7 @@ public class MainWindow implements Initializable {
 
     public void openSettings() {
         try {
-            Parent parent = new FXMLLoader(MainWindow.class.getResource("/layout/settings.fxml")).load();
+            Parent parent = new FXMLLoader(Minosoft.MINOSOFT_ASSETS_MANAGER.getAssetURL(new ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "layout/settings.fxml"))).load();
             Stage stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setTitle(LocaleManager.translate(Strings.SETTINGS_TITLE));

@@ -13,6 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.shader
 
+import de.bixilon.minosoft.Minosoft
+import de.bixilon.minosoft.data.assets.AssetsManager
+import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.exceptions.ShaderLoadingException
 import de.bixilon.minosoft.gui.rendering.textures.TextureArray
 import de.bixilon.minosoft.gui.rendering.util.OpenGLUtil
@@ -28,12 +31,15 @@ import org.lwjgl.opengl.GL11.GL_FALSE
 import org.lwjgl.opengl.GL20.*
 import org.lwjgl.system.MemoryUtil
 
-class Shader(private val vertexPath: String, private val fragmentPath: String) {
+class Shader(
+    private val vertexPath: ResourceLocation,
+    private val fragmentPath: ResourceLocation,
+) {
     private var programId = 0
 
-    fun load(): Int {
-        val vertexShader = ShaderUtil.createShader(vertexPath, GL_VERTEX_SHADER_ARB)
-        val fragmentShader = ShaderUtil.createShader(fragmentPath, GL_FRAGMENT_SHADER_ARB)
+    fun load(assetsManager: AssetsManager = Minosoft.MINOSOFT_ASSETS_MANAGER): Int {
+        val vertexShader = ShaderUtil.createShader(assetsManager, vertexPath, GL_VERTEX_SHADER_ARB)
+        val fragmentShader = ShaderUtil.createShader(assetsManager, fragmentPath, GL_FRAGMENT_SHADER_ARB)
         programId = glCreateProgramObjectARB()
 
         if (programId.toLong() == MemoryUtil.NULL) {

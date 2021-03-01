@@ -1,6 +1,6 @@
 # Minecraft Versions
 
-Once mojang releases a new minecraft version, you need to add the version to the [versions.json](/src/main/resources/assets/mapping/versions.json).
+Once mojang releases a new minecraft version, you need to add the version to the [versions.json](/src/main/resources/assets/minosoft/mapping/versions.json).
 
 The file is a huge json object, see below:
 

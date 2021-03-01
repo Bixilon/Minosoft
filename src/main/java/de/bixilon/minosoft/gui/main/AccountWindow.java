@@ -18,7 +18,9 @@ import de.bixilon.minosoft.ShutdownReasons;
 import de.bixilon.minosoft.data.accounts.Account;
 import de.bixilon.minosoft.data.locale.LocaleManager;
 import de.bixilon.minosoft.data.locale.Strings;
+import de.bixilon.minosoft.data.mappings.ResourceLocation;
 import de.bixilon.minosoft.gui.main.cells.AccountListCell;
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.Initializable;
@@ -51,7 +53,7 @@ public class AccountWindow implements Initializable {
 
     public void addMicrosoftAccount() {
         try {
-            GUITools.showPane("/layout/dialogs/login/microsoft.fxml", Modality.APPLICATION_MODAL, LocaleManager.translate(Strings.LOGIN_MICROSOFT_DIALOG_TITLE));
+            GUITools.showPane(new ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "layout/dialogs/login/microsoft.fxml"), Modality.APPLICATION_MODAL, LocaleManager.translate(Strings.LOGIN_MICROSOFT_DIALOG_TITLE));
         } catch (IOException e) {
             e.printStackTrace();
             Minosoft.shutdown(e.getMessage(), ShutdownReasons.LAUNCHER_FXML_LOAD_ERROR);
@@ -60,7 +62,7 @@ public class AccountWindow implements Initializable {
 
     public void addMojangAccount() {
         try {
-            GUITools.showPane("/layout/dialogs/login/mojang.fxml", Modality.APPLICATION_MODAL, LocaleManager.translate(Strings.LOGIN_MOJANG_DIALOG_TITLE));
+            GUITools.showPane(new ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "layout/dialogs/login/mojang.fxml"), Modality.APPLICATION_MODAL, LocaleManager.translate(Strings.LOGIN_MOJANG_DIALOG_TITLE));
         } catch (IOException e) {
             e.printStackTrace();
             Minosoft.shutdown(e.getMessage(), ShutdownReasons.LAUNCHER_FXML_LOAD_ERROR);
@@ -69,7 +71,7 @@ public class AccountWindow implements Initializable {
 
     public void addOfflineAccount() {
         try {
-            GUITools.showPane("/layout/dialogs/login/offline.fxml", Modality.APPLICATION_MODAL, LocaleManager.translate(Strings.LOGIN_OFFLINE_DIALOG_TITLE));
+            GUITools.showPane(new ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "layout/dialogs/login/offline.fxml"), Modality.APPLICATION_MODAL, LocaleManager.translate(Strings.LOGIN_OFFLINE_DIALOG_TITLE));
         } catch (IOException e) {
             e.printStackTrace();
             Minosoft.shutdown(e.getMessage(), ShutdownReasons.LAUNCHER_FXML_LOAD_ERROR);

@@ -23,8 +23,6 @@ import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import de.bixilon.minosoft.util.logging.Log;
 import de.bixilon.minosoft.util.microsoft.MicrosoftOAuthUtils;
-import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
-import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
@@ -172,23 +170,6 @@ public final class Util {
         return result.toString();
     }
 
-    public static String sha1(String string) {
-        return sha1(string.getBytes(StandardCharsets.UTF_8));
-    }
-
-    public static HashMap<String, String> readTarGzFile(String fileName) throws IOException {
-        File inputFile = new File(fileName);
-        TarArchiveInputStream tarArchiveInputStream = new TarArchiveInputStream(new GZIPInputStream(new FileInputStream(inputFile)));
-        HashMap<String, String> ret = new HashMap<>();
-        TarArchiveEntry entry;
-        while ((entry = tarArchiveInputStream.getNextTarEntry()) != null) {
-            ret.put(entry.getName(), readReader(new BufferedReader(new InputStreamReader(tarArchiveInputStream)), false));
-        }
-        tarArchiveInputStream.close();
-
-        return ret;
-    }
-
     public static String readReader(BufferedReader reader, boolean closeStream) throws IOException {
         StringBuilder stringBuilder = new StringBuilder();
         String line;
@@ -203,33 +184,6 @@ public final class Util {
         return stringBuilder.toString();
     }
 
-    public static HashMap<String, JsonObject> readJsonTarStream(InputStream inputStream) throws IOException {
-        TarArchiveInputStream tarArchiveInputStream = new TarArchiveInputStream(inputStream);
-        HashMap<String, JsonObject> ret = new HashMap<>();
-        TarArchiveEntry entry;
-        while ((entry = tarArchiveInputStream.getNextTarEntry()) != null) {
-            ret.put(entry.getName(), JsonParser.parseReader(new InputStreamReader(tarArchiveInputStream)).getAsJsonObject());
-        }
-        tarArchiveInputStream.close();
-
-        return ret;
-    }
-
-    public static JsonObject readJsonAssetResource(String path) throws IOException {
-        return readJsonAssetResource(path, Util.class);
-    }
-
-    public static JsonObject readJsonAssetResource(String path, Class<?> clazz) throws IOException {
-        InputStreamReader reader = readAssetResource(path, clazz);
-        JsonObject json = JsonParser.parseReader(reader).getAsJsonObject();
-        reader.close();
-        return json;
-    }
-
-    public static InputStreamReader readAssetResource(String path, Class<?> clazz) {
-        return new InputStreamReader(clazz.getResourceAsStream("/assets/" + path));
-    }
-
     public static JsonObject readJsonFromZip(String fileName, ZipFile zipFile) throws IOException {
         InputStreamReader reader = getInputSteamFromZip(fileName, zipFile);
         JsonObject json = JsonParser.parseReader(reader).getAsJsonObject();
@@ -239,13 +193,6 @@ public final class Util {
 
     public static InputStreamReader getInputSteamFromZip(String fileName, ZipFile zipFile) throws IOException {
         return new InputStreamReader(zipFile.getInputStream(zipFile.getEntry(fileName)));
-    }
-
-    public static JsonObject readJsonFromFile(String fileName) throws IOException {
-        FileReader reader = new FileReader(fileName);
-        JsonObject json = JsonParser.parseReader(reader).getAsJsonObject();
-        reader.close();
-        return json;
     }
 
     public static String readFile(String fileName) throws IOException {
@@ -275,7 +222,6 @@ public final class Util {
 
     public static InputStream getInputStreamByURL(String url) throws IOException {
         return new URL(url).openConnection().getInputStream();
-        // return new BufferedInputStream(new URL(url).openStream());
     }
 
     public static ThreadFactory getThreadFactory(String threadName) {
@@ -309,10 +255,6 @@ public final class Util {
     public static String getStringBetween(String search, String first, String second) {
         String result = search.substring(search.indexOf(first) + first.length());
         return result.substring(0, result.indexOf(second));
-    }
-
-    public static String readAssetResource(String path) throws IOException {
-        return readReader(new BufferedReader(readAssetResource(path, Util.class)), true);
     }
 
     public static boolean doesStringContainsUppercaseLetters(String string) {

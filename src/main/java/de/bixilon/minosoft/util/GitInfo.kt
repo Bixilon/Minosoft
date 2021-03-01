@@ -13,6 +13,9 @@
 
 package de.bixilon.minosoft.util
 
+import de.bixilon.minosoft.Minosoft
+import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import java.text.DateFormat
@@ -68,7 +71,7 @@ object GitInfo {
     fun load() {
         try {
             val dateFormat: DateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZZZZZ")
-            val json = Util.readJsonAssetResource("git.json")
+            val json = Minosoft.MINOSOFT_ASSETS_MANAGER.readJsonAsset(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "git.json"))
             GIT_BRANCH = json["git.branch"].asString
             GIT_BUILD_HOST_BRANCH = json["git.build.host"].asString
             GIT_BUILD_TIME = dateFormat.parse(json["git.build.time"].asString).time

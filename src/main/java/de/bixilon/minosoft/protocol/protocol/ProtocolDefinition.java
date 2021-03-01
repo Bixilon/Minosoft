@@ -42,7 +42,8 @@ public final class ProtocolDefinition {
     public static final InetAddress LAN_SERVER_BROADCAST_INET_ADDRESS;
     public static final int LAN_SERVER_MAXIMUM_SERVERS = 100; // maximum number of lan servers, set because otherwise dos attacks would be easy
 
-    public static final String DEFAULT_MOD = "minecraft";
+    public static final String DEFAULT_NAMESPACE = "minecraft";
+    public static final String MINOSOFT_NAMESPACE = "minosoft";
     public static final char TEXT_COMPONENT_SPECIAL_PREFIX_CHAR = '§';
 
     public static final int DEFAULT_BUFFER_SIZE = 4096;

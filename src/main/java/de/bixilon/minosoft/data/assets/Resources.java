@@ -16,9 +16,11 @@ package de.bixilon.minosoft.data.assets;
 import com.google.common.collect.HashBiMap;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import de.bixilon.minosoft.Minosoft;
+import de.bixilon.minosoft.data.mappings.ResourceLocation;
 import de.bixilon.minosoft.data.mappings.versions.Version;
 import de.bixilon.minosoft.data.mappings.versions.Versions;
-import de.bixilon.minosoft.util.Util;
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -29,7 +31,7 @@ public class Resources {
     private static final HashMap<Version, String> PIXLYZER_VERSIONS = new HashMap<>();
 
     public static void load() throws IOException {
-        JsonObject json = Util.readJsonAssetResource("mapping/resources.json");
+        JsonObject json = Minosoft.MINOSOFT_ASSETS_MANAGER.readJsonAsset(new ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "mapping/resources.json"));
 
         JsonObject versions = json.getAsJsonObject("versions");
         for (Map.Entry<String, JsonElement> versionEntry : versions.entrySet()) {
@@ -42,7 +44,7 @@ public class Resources {
         }
 
         // PixLyzer
-        JsonObject pixlyzerIndex = Util.readJsonAssetResource("mapping/pixlyzer_index.json");
+        JsonObject pixlyzerIndex = Minosoft.MINOSOFT_ASSETS_MANAGER.readJsonAsset(new ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "mapping/pixlyzer_index.json"));
 
         for (Map.Entry<String, JsonElement> versionEntry : pixlyzerIndex.entrySet()) {
 

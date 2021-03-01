@@ -26,6 +26,7 @@ import java.io.File
 import java.io.FileInputStream
 import java.io.FileNotFoundException
 import java.io.InputStream
+import java.net.URL
 import java.util.*
 import java.util.zip.GZIPInputStream
 import java.util.zip.ZipEntry
@@ -181,6 +182,10 @@ class MinecraftAssetsManager(
 
     override fun getAssetSize(resourceLocation: ResourceLocation): Long {
         return getAssetSize(getAssetHash(resourceLocation))
+    }
+
+    override fun getAssetURL(resourceLocation: ResourceLocation): URL {
+        TODO()
     }
 
     override fun readAssetAsStream(resourceLocation: ResourceLocation): InputStream {

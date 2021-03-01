@@ -32,7 +32,7 @@ public class ResourceLocation implements Comparable<ResourceLocation> {
     public ResourceLocation(String full) {
         String[] split = full.split(":");
         if (split.length == 1) {
-            this.namespace = ProtocolDefinition.DEFAULT_MOD;
+            this.namespace = ProtocolDefinition.DEFAULT_NAMESPACE;
             this.path = full;
         } else {
             this.namespace = split[0];

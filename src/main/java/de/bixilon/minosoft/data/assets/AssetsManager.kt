@@ -23,8 +23,11 @@ import org.lwjgl.BufferUtils
 import java.io.BufferedReader
 import java.io.InputStream
 import java.io.InputStreamReader
+import java.net.URL
 
 interface AssetsManager {
+
+    fun getAssetURL(resourceLocation: ResourceLocation): URL
 
     fun getAssetSize(resourceLocation: ResourceLocation): Long
 

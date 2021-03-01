@@ -19,8 +19,10 @@ import com.jfoenix.controls.JFXDialogLayout;
 import de.bixilon.minosoft.config.Configuration;
 import de.bixilon.minosoft.config.StaticConfiguration;
 import de.bixilon.minosoft.data.accounts.Account;
+import de.bixilon.minosoft.data.assets.JarAssetsManager;
 import de.bixilon.minosoft.data.assets.Resources;
 import de.bixilon.minosoft.data.locale.LocaleManager;
+import de.bixilon.minosoft.data.mappings.ResourceLocation;
 import de.bixilon.minosoft.data.mappings.versions.Versions;
 import de.bixilon.minosoft.gui.main.GUITools;
 import de.bixilon.minosoft.gui.main.Launcher;
@@ -32,6 +34,7 @@ import de.bixilon.minosoft.modding.loading.ModLoader;
 import de.bixilon.minosoft.modding.loading.Priorities;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.protocol.LANServerListener;
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import de.bixilon.minosoft.terminal.CLI;
 import de.bixilon.minosoft.util.CountUpAndDownLatch;
 import de.bixilon.minosoft.util.GitInfo;
@@ -49,6 +52,7 @@ import javafx.stage.Stage;
 import java.util.HashSet;
 
 public final class Minosoft {
+    public static final JarAssetsManager MINOSOFT_ASSETS_MANAGER = new JarAssetsManager(Minosoft.class);
     public static final HashSet<EventManager> EVENT_MANAGERS = new HashSet<>();
     public static final HashBiMap<Integer, Connection> CONNECTIONS = HashBiMap.create();
     private static final CountUpAndDownLatch START_STATUS_LATCH = new CountUpAndDownLatch(1);
@@ -125,7 +129,7 @@ public final class Minosoft {
         taskWorker.addTask(new Task(progress -> {
             Log.info("Loading versions.json...");
             long mappingStartLoadingTime = System.currentTimeMillis();
-            Versions.loadAvailableVersions(Util.readJsonAssetResource("mapping/versions.json"));
+            Versions.loadAvailableVersions(MINOSOFT_ASSETS_MANAGER.readJsonAsset(new ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "mapping/versions.json")));
             Log.info(String.format("Loaded %d versions in %dms", Versions.getVersionIdMap().size(), (System.currentTimeMillis() - mappingStartLoadingTime)));
             Resources.load();
             Log.info("Loaded all resources!");

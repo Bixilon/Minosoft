@@ -15,11 +15,10 @@ package de.bixilon.minosoft.data.locale;
 
 import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.ShutdownReasons;
+import de.bixilon.minosoft.data.mappings.ResourceLocation;
 import de.bixilon.minosoft.data.mappings.versions.Versions;
-import de.bixilon.minosoft.util.Util;
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import de.bixilon.minosoft.util.logging.Log;
-
-import java.io.IOException;
 
 public class LocaleManager {
     private static Language fallbackLanguage; // en_US
@@ -47,8 +46,8 @@ public class LocaleManager {
         return fallbackLanguage.translate(key, data);
     }
 
-    private static Language loadLanguage(String language) throws IOException {
-        return new Language(language, Util.readJsonAssetResource(String.format("locale/%s.json", language)));
+    private static Language loadLanguage(String language) {
+        return new Language(language, Minosoft.MINOSOFT_ASSETS_MANAGER.readJsonAsset(new ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, String.format("locale/%s.json", language))));
     }
 
     public static void load(String language) {

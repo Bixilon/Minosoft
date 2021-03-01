@@ -68,7 +68,7 @@ class Texture(
     }
 
     companion object {
-        fun getResourceTextureIdentifier(namespace: String = ProtocolDefinition.DEFAULT_MOD, textureName: String): ResourceLocation {
+        fun getResourceTextureIdentifier(namespace: String = ProtocolDefinition.DEFAULT_NAMESPACE, textureName: String): ResourceLocation {
             var texturePath = textureName
             texturePath = texturePath.removePrefix("/")
 

@@ -20,6 +20,7 @@ import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.data.Player;
 import de.bixilon.minosoft.data.locale.LocaleManager;
 import de.bixilon.minosoft.data.locale.Strings;
+import de.bixilon.minosoft.data.mappings.ResourceLocation;
 import de.bixilon.minosoft.data.mappings.versions.Version;
 import de.bixilon.minosoft.data.mappings.versions.Versions;
 import de.bixilon.minosoft.data.player.PingBars;
@@ -80,7 +81,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
     private Server server;
 
     public static ServerListCell newInstance() {
-        FXMLLoader loader = new FXMLLoader(ServerListCell.class.getResource("/layout/cells/server.fxml"));
+        FXMLLoader loader = new FXMLLoader(Minosoft.MINOSOFT_ASSETS_MANAGER.getAssetURL(new ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "layout/cells/server.fxml")));
         try {
             loader.load();
             return loader.getController();
@@ -442,7 +443,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
 
     public void manageSessions() {
         try {
-            SessionsWindow sessionsWindow = GUITools.showPane("/layout/sessions.fxml", Modality.APPLICATION_MODAL, LocaleManager.translate(Strings.SESSIONS_DIALOG_TITLE, this.server.getName().getMessage()));
+            SessionsWindow sessionsWindow = GUITools.showPane(new ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "layout/sessions.fxml"), Modality.APPLICATION_MODAL, LocaleManager.translate(Strings.SESSIONS_DIALOG_TITLE, this.server.getName().getMessage()));
             sessionsWindow.setServer(this.server);
         } catch (IOException e) {
             e.printStackTrace();
