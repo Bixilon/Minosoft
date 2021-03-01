@@ -15,18 +15,21 @@ package de.bixilon.minosoft.gui.rendering.chunk.models.loading
 
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.Directions
+import de.bixilon.minosoft.gui.rendering.util.VecUtil
 import glm_.Java.Companion.glm
 import glm_.vec2.Vec2
 import glm_.vec3.Vec3
 import java.util.*
 
-class BlockModelFace(data: JsonObject, from: Vec3, to: Vec3, direction: Directions) {
-    val textureName: String = data.get("texture").asString.removePrefix("#")
+class BlockModelFace {
+    val textureName: String
     val cullFace: Directions?
-    val tint: Boolean = data.has("tintindex")
-    private var positions: MutableList<Vec2>
+    val tint: Boolean
+    private val positions: MutableList<Vec2>
 
-    init {
+    constructor(data: JsonObject, from: Vec3, to: Vec3, direction: Directions) {
+        tint = data.has("tintindex")
+        textureName = data.get("texture").asString.removePrefix("#")
         var textureStart = Vec2(0, 0)
         var textureEnd = Vec2(16, 16)
         when (direction) {
@@ -64,6 +67,16 @@ class BlockModelFace(data: JsonObject, from: Vec3, to: Vec3, direction: Directio
         Collections.rotate(positions, rotation)
     }
 
+    constructor(parent: BlockModelFace) {
+        textureName = parent.textureName
+        cullFace = parent.cullFace
+        tint = parent.tint
+        positions = mutableListOf()
+        for (position in parent.positions) {
+            positions.add(Vec2(position))
+        }
+    }
+
     fun getTexturePositionArray(direction: Directions): Array<Vec2?> {
         val template = textureTemplate[direction.ordinal]
         val result = arrayOfNulls<Vec2>(template.size)
@@ -79,9 +92,9 @@ class BlockModelFace(data: JsonObject, from: Vec3, to: Vec3, direction: Directio
         }
         val sin = glm.sin(angle)
         val cos = glm.cos(angle)
-        for (i in positions.indices) {
-            val offset = positions[i] - Vec2(0.5f, 0.5f)
-            positions[i] = BlockModelElement.getRotatedValues(offset.x, offset.y, sin, cos) + Vec2(0.5f, 0.5f)
+        for ((i, position) in positions.withIndex()) {
+            val offset = position - TEXTURE_MIDDLE
+            positions[i] = VecUtil.getRotatedValues(offset.x, offset.y, sin, cos) + TEXTURE_MIDDLE
         }
     }
 
@@ -102,5 +115,7 @@ class BlockModelFace(data: JsonObject, from: Vec3, to: Vec3, direction: Directio
             arrayOf(2, 3, 0, 1),
             arrayOf(1, 0, 3, 2),
         )
+
+        val TEXTURE_MIDDLE = Vec2(0.5, 0.5)
     }
 }

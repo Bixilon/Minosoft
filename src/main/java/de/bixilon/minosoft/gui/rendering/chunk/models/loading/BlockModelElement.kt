@@ -18,7 +18,6 @@ import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.Directions
 import de.bixilon.minosoft.gui.rendering.util.VecUtil
 import glm_.glm
-import glm_.vec2.Vec2
 import glm_.vec3.Vec3
 
 open class BlockModelElement(data: JsonObject) {
@@ -33,7 +32,6 @@ open class BlockModelElement(data: JsonObject) {
         val to = data["to"]?.asJsonArray?.let {
             VecUtil.jsonToVec3(it)
         } ?: Vec3(BLOCK_RESOLUTION)
-
 
         positions = arrayOf(
             Vec3(from),
@@ -52,12 +50,14 @@ open class BlockModelElement(data: JsonObject) {
             val rescale = it["rescale"]?.asBoolean ?: false
             rotatePositions(positions, axis, angle, VecUtil.jsonToVec3(it["origin"].asJsonArray), rescale)
         }
+
         data["faces"]?.asJsonObject?.let {
             for ((directionName, json) in it.entrySet()) {
                 val direction = Directions.valueOf(directionName.toUpperCase())
                 faces[direction] = BlockModelFace(json.asJsonObject, from, to, direction)
             }
         }
+
         for ((i, position) in positions.withIndex()) {
             positions[i] = transformPosition(position)
         }
@@ -76,48 +76,6 @@ open class BlockModelElement(data: JsonObject) {
             intArrayOf(5, 1, 3, 7)
         )
 
-        private val POSITION_1 = Vec3(-0.5f, -0.5f, -0.5f)           // Vec3(0, 0, 0)
-        private val POSITION_2 = Vec3(+0.5f, -0.5f, -0.5f)           // Vec3(BLOCK_RESOLUTION, 0, 0)
-        private val POSITION_3 = Vec3(-0.5f, -0.5f, +0.5f)           // Vec3(0, 0, BLOCK_RESOLUTION)
-        private val POSITION_4 = Vec3(+0.5f, -0.5f, +0.5f)           // Vec3(BLOCK_RESOLUTION, 0, BLOCK_RESOLUTION)
-        private val POSITION_5 = Vec3(-0.5f, +0.5f, -0.5f)           // Vec3(0, BLOCK_RESOLUTION, 0)
-        private val POSITION_6 = Vec3(+0.5f, +0.5f, +0.5f)           // Vec3(BLOCK_RESOLUTION, BLOCK_RESOLUTION, 0)
-        private val POSITION_7 = Vec3(-0.5f, +0.5f, +0.5f)           // Vec3(0, BLOCK_RESOLUTION, BLOCK_RESOLUTION)
-        private val POSITION_8 = Vec3(+0.5f, +0.5f, +0.5f)           // Vec3(BLOCK_RESOLUTION, BLOCK_RESOLUTION, BLOCK_RESOLUTION)
-
-        val FULL_TEST_POSITIONS = arrayOf(
-            setOf(POSITION_1, POSITION_2, POSITION_3, POSITION_4),
-            setOf(POSITION_5, POSITION_6, POSITION_7, POSITION_8),
-            setOf(POSITION_3, POSITION_4, POSITION_7, POSITION_8),
-            setOf(POSITION_1, POSITION_2, POSITION_5, POSITION_6),
-            setOf(POSITION_2, POSITION_4, POSITION_6, POSITION_8),
-            setOf(POSITION_1, POSITION_3, POSITION_5, POSITION_7)
-        )
-
-        fun getRotatedValues(x: Float, y: Float, sin: Double, cos: Double): Vec2 {
-            return Vec2((x * cos - y * sin).toFloat(), (x * sin + y * cos).toFloat())
-        }
-
-        fun rotateVector(original: Vec3, angle: Double, axis: Axes): Vec3 {
-            if (angle == 0.0) {
-                return original
-            }
-            return when (axis) {
-                Axes.X -> {
-                    val rotatedValues = getRotatedValues(original.y, original.z, glm.sin(angle), glm.cos(angle))
-                    Vec3(original.x, rotatedValues)
-                }
-                Axes.Y -> {
-                    val rotatedValues = getRotatedValues(original.x, original.z, glm.sin(angle), glm.cos(angle))
-                    Vec3(rotatedValues.x, original.y, rotatedValues.y)
-                }
-                Axes.Z -> {
-                    val rotatedValues = getRotatedValues(original.x, original.y, glm.sin(angle), glm.cos(angle))
-                    Vec3(rotatedValues.x, rotatedValues.y, original.z)
-                }
-            }
-        }
-
         fun rotatePositions(positions: Array<Vec3>, axis: Axes, angle: Double, origin: Vec3, rescale: Boolean) {
             // TODO: optimize for 90deg, 180deg, 270deg rotations
             if (angle == 0.0) {
@@ -125,7 +83,7 @@ open class BlockModelElement(data: JsonObject) {
             }
             for ((i, position) in positions.withIndex()) {
                 var transformedPosition = position - origin
-                transformedPosition = rotateVector(transformedPosition, angle, axis)
+                transformedPosition = VecUtil.rotateVector(transformedPosition, angle, axis)
                 if (rescale) {
                     transformedPosition = transformedPosition / glm.cos(angle)
                 }
