@@ -40,7 +40,7 @@ Biomes demo (picture not up to date, contains bugs)
 
 ## Starting, etc
 
-There is no "launcher" or anything familliar. Just start Minosoft and you are practically in the game. You will be greeted with a server list. Once you know what server you want to join, click on it. All data will then be loaded, and the rendering window starts, once everything is done.
+There is no "launcher" or anything familiar. Just start Minosoft, and you are practically in the game. You will be greeted with a server list. Once you know what server you want to join, click on it. All data will then be loaded, and the rendering window starts, once everything is done.
 
 ![Server list](doc/img/server_list.png)
 
