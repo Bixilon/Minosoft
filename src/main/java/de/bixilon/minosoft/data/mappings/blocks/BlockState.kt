@@ -114,42 +114,12 @@ data class BlockState(
 
 
     companion object {
-        private val ROTATION_PROPERTIES = setOf("facing", "rotation", "orientation", "axis")
+        val ROTATION_PROPERTIES = setOf("facing", "rotation", "orientation", "axis")
 
         fun deserialize(owner: Block, data: JsonObject, models: HashBiMap<ResourceLocation, BlockModel>): BlockState {
-            var rotation: BlockRotations = BlockRotations.NONE
-            val properties: MutableSet<BlockProperties> = mutableSetOf()
-
-            data["properties"]?.asJsonObject?.let {
-                for ((propertyName, propertyJsonValue) in it.entrySet()) {
-                    check(propertyJsonValue is JsonPrimitive) { "Not a json primitive!" }
-                    val propertyValue: Any = when {
-                        propertyJsonValue.isBoolean -> {
-                            propertyJsonValue.asBoolean
-                        }
-                        propertyJsonValue.isNumber -> {
-                            propertyJsonValue.asInt
-                        }
-                        else -> {
-                            // ToDo: Why is this needed?
-                            try {
-                                Integer.parseInt(propertyJsonValue.asString)
-                            } catch (exception: Exception) {
-                                propertyJsonValue.asString.toLowerCase()
-                            }
-                        }
-                    }
-                    try {
-                        if (propertyName in ROTATION_PROPERTIES) {
-                            rotation = BlockRotations.ROTATION_MAPPING[propertyValue]!!
-                        } else {
-                            properties.add(BlockProperties.PROPERTIES_MAPPING[propertyName]!![propertyValue]!!)
-                        }
-                    } catch (exception: NullPointerException) {
-                        throw NullPointerException("Invalid block property $propertyName or value $propertyValue")
-                    }
-                }
-            }
+            val (rotation, properties) = data["properties"]?.asJsonObject?.let {
+                getProperties(it)
+            } ?: Pair(BlockRotations.NONE, mutableSetOf())
             val renders: MutableSet<BlockRenderer> = mutableSetOf()
 
             data["render"]?.let {
@@ -157,19 +127,27 @@ data class BlockState(
                     is JsonArray -> {
                         for (model in it) {
                             check(model is JsonObject)
-
                             addBlockModel(model, renders, models)
                         }
                     }
                     is JsonObject -> {
-                        addBlockModel(it, renders, models)
+                        addBlockModel(it.asJsonObject, renders, models)
                     }
                     else -> error("Not a render json!")
                 }
             }
 
-            val tintColor: RGBColor? = data["tint_color"]?.asInt?.let { TintColorCalculator.getJsonColor(it) } ?: owner.tintColor
+            owner.multipartMapping?.let {
+                val elementRenderers: MutableList<JsonObject> = mutableListOf()
+                for ((condition, model) in it.entries) {
+                    if (condition.contains(properties, rotation)) {
+                        elementRenderers.addAll(model)
+                    }
+                }
+                renders.add(BlockRenderer(elementRenderers, models))
+            }
 
+            val tintColor: RGBColor? = data["tint_color"]?.asInt?.let { TintColorCalculator.getJsonColor(it) } ?: owner.tintColor
 
             return BlockState(
                 owner = owner,
@@ -180,9 +158,42 @@ data class BlockState(
             )
         }
 
+        private fun getProperties(json: JsonObject) : Pair<BlockRotations, MutableSet<BlockProperties>> {
+            var rotation = BlockRotations.NONE
+            val properties = mutableSetOf<BlockProperties>()
+            for ((propertyName, propertyJsonValue) in json.entrySet()) {
+                check(propertyJsonValue is JsonPrimitive) { "Not a json primitive!" }
+                val propertyValue: Any = when {
+                    propertyJsonValue.isBoolean -> {
+                        propertyJsonValue.asBoolean
+                    }
+                    propertyJsonValue.isNumber -> {
+                        propertyJsonValue.asInt
+                    }
+                    else -> {
+                        // ToDo: Why is this needed?
+                        try {
+                            Integer.parseInt(propertyJsonValue.asString)
+                        } catch (exception: Exception) {
+                            propertyJsonValue.asString.toLowerCase()
+                        }
+                    }
+                }
+                try {
+                    if (propertyName in ROTATION_PROPERTIES) {
+                        rotation = BlockRotations.ROTATION_MAPPING[propertyValue]!!
+                    } else {
+                        properties.add(BlockProperties.PROPERTIES_MAPPING[propertyName]!![propertyValue]!!)
+                    }
+                } catch (exception: NullPointerException) {
+                    throw NullPointerException("Invalid block property $propertyName or value $propertyValue")
+                }
+            }
+            return Pair(rotation, properties)
+        }
+
         private fun addBlockModel(data: JsonObject, renders: MutableSet<BlockRenderer>, models: HashBiMap<ResourceLocation, BlockModel>) {
             val model = models[ResourceLocation(data["model"].asString)] ?: error("Can not find block model ${data["model"]}")
-
             renders.add(BlockRenderer(data, model))
         }
     }

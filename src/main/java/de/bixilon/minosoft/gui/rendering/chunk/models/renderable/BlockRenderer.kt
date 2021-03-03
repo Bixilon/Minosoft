@@ -13,8 +13,10 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk.models.renderable
 
+import com.google.common.collect.HashBiMap
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.Directions
+import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.data.world.BlockInfo
 import de.bixilon.minosoft.data.world.BlockPosition
@@ -24,7 +26,7 @@ import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModel
 import de.bixilon.minosoft.gui.rendering.textures.Texture
 import glm_.mat4x4.Mat4
 
-class BlockRenderer(data: JsonObject, parent: BlockModel) {
+class BlockRenderer {
     private val transparentFaces: MutableSet<Directions> = mutableSetOf()
     private val cullFaces: MutableSet<Directions> = mutableSetOf()
     val textures: MutableMap<String, String> = mutableMapOf()
@@ -32,11 +34,20 @@ class BlockRenderer(data: JsonObject, parent: BlockModel) {
     private val elements: MutableSet<ElementRenderer> = mutableSetOf()
     private val textureMapping: MutableMap<String, Texture> = mutableMapOf()
 
-    init {
+    constructor(data: JsonObject, parent: BlockModel) {
         val newElements = ElementRenderer.createElements(data, parent)
         // reverse drawing order (for e.g. grass block side overlays
         this.elements.addAll(newElements.reversed())
         textures.putAll(parent.textures)
+    }
+
+    constructor(data: List<JsonObject>, models: HashBiMap<ResourceLocation, BlockModel>) {
+        for (state in data) {
+            val parent = models[ResourceLocation(state["model"].asString)]!!
+            val newElements = ElementRenderer.createElements(state, parent)
+            this.elements.addAll(newElements)
+            textures.putAll(parent.textures)
+        }
     }
 
 

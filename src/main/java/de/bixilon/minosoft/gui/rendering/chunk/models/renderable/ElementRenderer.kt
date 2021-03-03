@@ -17,6 +17,8 @@ import com.google.common.collect.HashBiMap
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.Directions
+import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.data.mappings.versions.VersionMapping
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.data.world.BlockPosition
 import de.bixilon.minosoft.data.world.light.LightAccessor
@@ -26,28 +28,39 @@ import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModelElement
 import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModelFace
 import de.bixilon.minosoft.gui.rendering.textures.Texture
 import de.bixilon.minosoft.gui.rendering.textures.TextureArray
+import de.bixilon.minosoft.gui.rendering.util.VecUtil
 import glm_.Java.Companion.glm
 import glm_.mat4x4.Mat4
 import glm_.vec2.Vec2
 import glm_.vec3.Vec3
 import glm_.vec4.Vec4
 
-class ElementRenderer(element: BlockModelElement, val rotation: Vec3, uvLock: Boolean, rescale: Boolean) {
+class ElementRenderer(parent: BlockModelElement, val rotation: Vec3, uvLock: Boolean, rescale: Boolean) {
     private val fullFaceDirections: MutableSet<Directions> = mutableSetOf()
-    private val faces: MutableMap<Directions, BlockModelFace> = element.faces.toMutableMap()
-    private var positions: Array<Vec3> = element.positions.clone()
+    private val faces: MutableMap<Directions, BlockModelFace> = mutableMapOf()
+    private var positions: Array<Vec3> = parent.positions.clone()
     private val directionMapping: HashBiMap<Directions, Directions> = HashBiMap.create()
 
     init {
         rotatePositionsAxes(positions, rotation, rescale)
-        // TODO : uvLock
         for (direction in Directions.DIRECTIONS) {
-            if (positions.containsAllVectors(BlockModelElement.FULL_TEST_POSITIONS[direction.ordinal], 0.0001f)) { // TODO: check if texture is transparent ==> && ! texture.isTransparent
+            if (positions.containsAllVectors(FULL_TEST_POSITIONS[direction.ordinal], 0.0001f)) { // TODO: check if texture is transparent ==> && ! texture.isTransparent
                 fullFaceDirections.add(direction)
             }
             directionMapping[direction] = getRotatedDirection(rotation, direction)
-            for (face in faces.values) {
-                face.rotate(rotation.y.toDouble())
+            parent.faces[direction]?.let {
+                faces[direction] = BlockModelFace(it)
+            }
+        }
+        if (uvLock) {
+            for (direction in Directions.DIRECTIONS) {
+                val axes = Axes.byDirection(direction)
+                val angle = when (axes) {
+                    Axes.X -> rotation.x
+                    Axes.Y -> rotation.y
+                    Axes.Z -> rotation.z
+                }
+                faces[direction]?.rotate(angle)
             }
         }
     }
@@ -144,20 +157,42 @@ class ElementRenderer(element: BlockModelElement, val rotation: Vec3, uvLock: Bo
             if (rotation == EMPTY_VECTOR) {
                 return direction
             }
-            var rotatedDirectionVector = BlockModelElement.rotateVector(direction.directionVector, rotation.z.toDouble(), Axes.Z)
-            rotatedDirectionVector = BlockModelElement.rotateVector(rotatedDirectionVector, rotation.y.toDouble(), Axes.Y)
-            return Directions.byDirection(BlockModelElement.rotateVector(rotatedDirectionVector, rotation.x.toDouble(), Axes.X))
+            var rotatedDirectionVector = VecUtil.rotateVector(direction.directionVector, rotation.x, Axes.X)
+            rotatedDirectionVector = VecUtil.rotateVector(rotatedDirectionVector, rotation.y, Axes.Y)
+            return Directions.byDirection(VecUtil.rotateVector(rotatedDirectionVector, rotation.z, Axes.Z))
         }
 
         fun rotatePositionsAxes(positions: Array<Vec3>, angles: Vec3, rescale: Boolean) {
             if (angles == EMPTY_VECTOR) {
                 return
             }
-            BlockModelElement.rotatePositions(positions, Axes.X, angles.x.toDouble(), EMPTY_VECTOR, rescale)
-            BlockModelElement.rotatePositions(positions, Axes.Y, angles.y.toDouble(), EMPTY_VECTOR, rescale)
-            BlockModelElement.rotatePositions(positions, Axes.Z, angles.z.toDouble(), EMPTY_VECTOR, rescale)
+            BlockModelElement.rotatePositions(positions, Axes.X, angles.x, EMPTY_VECTOR, rescale)
+            BlockModelElement.rotatePositions(positions, Axes.Y, angles.y, EMPTY_VECTOR, rescale)
+            BlockModelElement.rotatePositions(positions, Axes.Z, angles.z, EMPTY_VECTOR, rescale)
         }
+
+        private val POSITION_1 = Vec3(-0.5f, -0.5f, -0.5f)
+        private val POSITION_2 = Vec3(+0.5f, -0.5f, -0.5f)
+        private val POSITION_3 = Vec3(-0.5f, -0.5f, +0.5f)
+        private val POSITION_4 = Vec3(+0.5f, -0.5f, +0.5f)
+        private val POSITION_5 = Vec3(-0.5f, +0.5f, -0.5f)
+        private val POSITION_6 = Vec3(+0.5f, +0.5f, +0.5f)
+        private val POSITION_7 = Vec3(-0.5f, +0.5f, +0.5f)
+        private val POSITION_8 = Vec3(+0.5f, +0.5f, +0.5f)
+
+        val FULL_TEST_POSITIONS = arrayOf(
+            setOf(POSITION_1, POSITION_2, POSITION_3, POSITION_4),
+            setOf(POSITION_5, POSITION_6, POSITION_7, POSITION_8),
+            setOf(POSITION_3, POSITION_4, POSITION_7, POSITION_8),
+            setOf(POSITION_1, POSITION_2, POSITION_5, POSITION_6),
+            setOf(POSITION_2, POSITION_4, POSITION_6, POSITION_8),
+            setOf(POSITION_1, POSITION_3, POSITION_5, POSITION_7)
+                                         )
     }
+}
+
+private fun JsonObject.asVec3(): Vec3 {
+    return Vec3(this["x"]?.asFloat ?: 0, this["y"]?.asFloat ?: 0, this["z"]?.asFloat ?: 0)
 }
 
 private fun JsonObject.asVec3(): Vec3 {

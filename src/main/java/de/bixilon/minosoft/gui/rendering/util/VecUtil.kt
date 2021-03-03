@@ -16,6 +16,9 @@ package de.bixilon.minosoft.gui.rendering.util
 import com.google.gson.JsonArray
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
+import de.bixilon.minosoft.data.Axes
+import glm_.glm
+import glm_.vec2.Vec2
 import glm_.vec3.Vec3
 
 object VecUtil {
@@ -25,6 +28,30 @@ object VecUtil {
             is JsonArray -> return Vec3(json[0].asFloat, json[1].asFloat, json[2].asFloat)
             is JsonObject -> TODO()
             else -> throw IllegalArgumentException("Not a Vec3!")
+        }
+    }
+
+    fun getRotatedValues(x: Float, y: Float, sin: Float, cos: Float): Vec2 {
+        return Vec2(x * cos - y * sin, x * sin + y * cos)
+    }
+
+    fun rotateVector(original: Vec3, angle: Float, axis: Axes): Vec3 {
+        if (angle == 0f) {
+            return original
+        }
+        return when (axis) {
+            Axes.X -> {
+                val rotatedValues = getRotatedValues(original.y, original.z, glm.sin(angle), glm.cos(angle))
+                Vec3(original.x, rotatedValues)
+            }
+            Axes.Y -> {
+                val rotatedValues = getRotatedValues(original.x, original.z, glm.sin(angle), glm.cos(angle))
+                Vec3(rotatedValues.x, original.y, rotatedValues.y)
+            }
+            Axes.Z -> {
+                val rotatedValues = getRotatedValues(original.x, original.y, glm.sin(angle), glm.cos(angle))
+                Vec3(rotatedValues.x, rotatedValues.y, original.z)
+            }
         }
     }
 }

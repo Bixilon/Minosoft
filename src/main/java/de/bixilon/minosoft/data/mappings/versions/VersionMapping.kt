@@ -80,7 +80,6 @@ class VersionMapping(var version: Version?) {
             biomeCategoryRegistry.setParent(value?.biomeCategoryRegistry)
         }
 
-
     fun getBlockState(blockState: Int): BlockState? {
         if (blockState == ProtocolDefinition.NULL_BLOCK_ID) {
             return null
@@ -107,7 +106,6 @@ class VersionMapping(var version: Version?) {
     fun getEntityClassById(entityTypeId: Int): Class<out Entity?>? {
         return entityIdClassMap[entityTypeId] ?: _parentMapping?.getEntityClassById(entityTypeId)
     }
-
 
     fun load(pixlyzerData: JsonObject) {
         // pre init stuff
@@ -190,5 +188,4 @@ class VersionMapping(var version: Version?) {
             field.javaClass.getMethod("clear").invoke(this)
         }
     }
-
 }

@@ -18,6 +18,14 @@ enum class Axes {
     Z;
 
     companion object {
+        fun byDirection(direction: Directions): Axes {
+            return when (direction) {
+                Directions.EAST, Directions.WEST -> X
+                Directions.UP, Directions.DOWN -> Y
+                Directions.NORTH, Directions.SOUTH -> Z
+            }
+        }
+
         val AXES = values()
     }
 }
