@@ -55,6 +55,18 @@ object KeyBindingsNames {
 
     val TAKE_SCREENSHOT = ResourceLocation("minosoft:take_screenshot")
 
+
+    val SELECT_HOTBAR_SLOTS = arrayOf(ResourceLocation("minosoft:select_hotbar_slot_1"),
+        ResourceLocation("minosoft:select_hotbar_slot_2"),
+        ResourceLocation("minosoft:select_hotbar_slot_3"),
+        ResourceLocation("minosoft:select_hotbar_slot_4"),
+        ResourceLocation("minosoft:select_hotbar_slot_5"),
+        ResourceLocation("minosoft:select_hotbar_slot_6"),
+        ResourceLocation("minosoft:select_hotbar_slot_7"),
+        ResourceLocation("minosoft:select_hotbar_slot_8"),
+        ResourceLocation("minosoft:select_hotbar_slot_9")
+    )
+
     val DEFAULT_KEY_BINDINGS: Map<ResourceLocation, KeyBinding> = mapOf(
         MOVE_FORWARD to KeyBinding(
             mutableMapOf(
@@ -106,21 +118,21 @@ object KeyBindingsNames {
         ),
         DEBUG_SCREEN to KeyBinding(
             mutableMapOf(
-                KeyAction.RELEASE to mutableSetOf(KeyCodes.KEY_F3)
+                KeyAction.PRESS to mutableSetOf(KeyCodes.KEY_F3)
             ),
             mutableSetOf(mutableSetOf(WHEN_IN_GAME))
         ),
         DEBUG_POLYGEN to KeyBinding(
             mutableMapOf(
                 KeyAction.MODIFIER to mutableSetOf(KeyCodes.KEY_F4),
-                KeyAction.RELEASE to mutableSetOf(KeyCodes.KEY_P)
+                KeyAction.PRESS to mutableSetOf(KeyCodes.KEY_P)
             ),
             mutableSetOf(mutableSetOf(WHEN_IN_GAME))
         ),
         DEBUG_MOUSE_CATCH to KeyBinding(
             mutableMapOf(
                 KeyAction.MODIFIER to mutableSetOf(KeyCodes.KEY_F4),
-                KeyAction.RELEASE to mutableSetOf(KeyCodes.KEY_M)
+                KeyAction.PRESS to mutableSetOf(KeyCodes.KEY_M)
             ),
             mutableSetOf(mutableSetOf(WHEN_IN_GAME))
         ),
@@ -133,15 +145,69 @@ object KeyBindingsNames {
         DEBUG_CLEAR_CHUNK_CACHE to KeyBinding(
             mutableMapOf(
                 KeyAction.MODIFIER to mutableSetOf(KeyCodes.KEY_F3),
-                KeyAction.RELEASE to mutableSetOf(KeyCodes.KEY_A)
+                KeyAction.PRESS to mutableSetOf(KeyCodes.KEY_A)
             ),
             mutableSetOf(mutableSetOf(WHEN_IN_GAME))
         ),
         TAKE_SCREENSHOT to KeyBinding(
             mutableMapOf(
-                KeyAction.RELEASE to mutableSetOf(KeyCodes.KEY_F2)
+                KeyAction.PRESS to mutableSetOf(KeyCodes.KEY_F2)
             ),
             mutableSetOf()
+        ),
+        SELECT_HOTBAR_SLOTS[0] to KeyBinding(
+            mutableMapOf(
+                KeyAction.PRESS to mutableSetOf(KeyCodes.KEY_1)
+            ),
+            mutableSetOf(mutableSetOf(WHEN_IN_GAME))
+        ),
+        SELECT_HOTBAR_SLOTS[1] to KeyBinding(
+            mutableMapOf(
+                KeyAction.PRESS to mutableSetOf(KeyCodes.KEY_2)
+            ),
+            mutableSetOf(mutableSetOf(WHEN_IN_GAME))
+        ),
+        SELECT_HOTBAR_SLOTS[2] to KeyBinding(
+            mutableMapOf(
+                KeyAction.PRESS to mutableSetOf(KeyCodes.KEY_3)
+            ),
+            mutableSetOf(mutableSetOf(WHEN_IN_GAME))
+        ),
+        SELECT_HOTBAR_SLOTS[3] to KeyBinding(
+            mutableMapOf(
+                KeyAction.PRESS to mutableSetOf(KeyCodes.KEY_4)
+            ),
+            mutableSetOf(mutableSetOf(WHEN_IN_GAME))
+        ),
+        SELECT_HOTBAR_SLOTS[4] to KeyBinding(
+            mutableMapOf(
+                KeyAction.PRESS to mutableSetOf(KeyCodes.KEY_5)
+            ),
+            mutableSetOf(mutableSetOf(WHEN_IN_GAME))
+        ),
+        SELECT_HOTBAR_SLOTS[5] to KeyBinding(
+            mutableMapOf(
+                KeyAction.PRESS to mutableSetOf(KeyCodes.KEY_6)
+            ),
+            mutableSetOf(mutableSetOf(WHEN_IN_GAME))
+        ),
+        SELECT_HOTBAR_SLOTS[6] to KeyBinding(
+            mutableMapOf(
+                KeyAction.PRESS to mutableSetOf(KeyCodes.KEY_7)
+            ),
+            mutableSetOf(mutableSetOf(WHEN_IN_GAME))
+        ),
+        SELECT_HOTBAR_SLOTS[7] to KeyBinding(
+            mutableMapOf(
+                KeyAction.PRESS to mutableSetOf(KeyCodes.KEY_8)
+            ),
+            mutableSetOf(mutableSetOf(WHEN_IN_GAME))
+        ),
+        SELECT_HOTBAR_SLOTS[8] to KeyBinding(
+            mutableMapOf(
+                KeyAction.PRESS to mutableSetOf(KeyCodes.KEY_9)
+            ),
+            mutableSetOf(mutableSetOf(WHEN_IN_GAME))
         ),
     )
 }

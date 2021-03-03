@@ -35,7 +35,7 @@ import java.util.Arrays;
 import java.util.Base64;
 
 public class GUITools {
-    public static final Image MINOSOFT_LOGO = new Image(GUITools.class.getResourceAsStream("/assets/minosoft/textures/icons/windowIcon.png"));
+    public static final Image MINOSOFT_LOGO = new Image(GUITools.class.getResourceAsStream("/assets/minosoft/textures/icons/window_icon.png"));
     public static final ObservableList<Version> VERSIONS = FXCollections.observableArrayList();
     public static final JFXComboBox<Version> VERSION_COMBO_BOX = new JFXComboBox<>(VERSIONS);
     public static final ObservableList<LogLevels> LOG_LEVELS = FXCollections.observableList(Arrays.asList(LogLevels.values().clone()));

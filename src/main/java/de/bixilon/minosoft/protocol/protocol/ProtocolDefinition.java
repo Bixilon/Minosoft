@@ -53,7 +53,7 @@ public final class ProtocolDefinition {
     public static final String COMMAND_SEPARATOR = " ";
 
     public static final Pattern MINECRAFT_NAME_VALIDATOR = Pattern.compile("\\w{3,16}");
-    public static final Pattern RESOURCE_LOCATION_PATTERN = Pattern.compile("([a-z_]+:)?[a-z_]+");
+    public static final Pattern RESOURCE_LOCATION_PATTERN = Pattern.compile("([a-z_0-9]+:)?[a-z_0-9]+");
     public static final Pattern SCOREBOARD_OBJECTIVE_PATTERN = Pattern.compile("[a-zA-z-.+]{1,16}");
 
     public static final int SECTION_WIDTH_X = 16;

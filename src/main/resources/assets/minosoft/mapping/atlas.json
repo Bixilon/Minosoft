@@ -1,0 +1,58 @@
+{
+  "minecraft:hotbar_base": {
+    "texture": "minecraft:textures/gui/widgets.png",
+    "versions": {
+      "567": {
+        "start": [0, 0],
+        "end": [181, 21],
+        "slots": {
+          "0": {
+            "start": [4, 4],
+            "end": [18, 18]
+          },
+          "1": {
+            "start": [24, 4],
+            "end": [38, 18]
+          },
+          "2": {
+            "start": [44, 4],
+            "end": [56, 18]
+          },
+          "3": {
+            "start": [64, 4],
+            "end": [78, 18]
+          },
+          "4": {
+            "start": [84, 4],
+            "end": [98, 18]
+          },
+          "5": {
+            "start": [104, 4],
+            "end": [118, 18]
+          },
+          "6": {
+            "start": [124, 4],
+            "end": [138, 18]
+          },
+          "7": {
+            "start": [144, 4],
+            "end": [158, 18]
+          },
+          "8": {
+            "start": [164, 4],
+            "end": [178, 18]
+          }
+        }
+      }
+    }
+  },
+  "minecraft:hotbar_selected_slot_frame": {
+    "texture": "minecraft:textures/gui/widgets.png",
+    "versions": {
+      "567": {
+        "start": [0, 22],
+        "end": [23, 45]
+      }
+    }
+  }
+}

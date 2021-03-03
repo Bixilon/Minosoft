@@ -38,8 +38,8 @@ class ScreenshotTaker(
                 path = "${basePath}_${i++}.png"
             }
 
-            val width = renderWindow.screenWidth
-            val height = renderWindow.screenHeight
+            val width = renderWindow.screenDimensions.x.toInt()
+            val height = renderWindow.screenDimensions.y.toInt()
             val buffer: ByteBuffer = BufferUtils.createByteBuffer(width * height * PNGDecoder.Format.RGBA.numComponents)
             glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, buffer)
 

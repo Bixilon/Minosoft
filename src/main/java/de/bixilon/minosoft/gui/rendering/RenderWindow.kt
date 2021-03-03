@@ -23,7 +23,6 @@ import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.chunk.WorldRenderer
 import de.bixilon.minosoft.gui.rendering.hud.HUDRenderer
-import de.bixilon.minosoft.gui.rendering.hud.elements.RenderStats
 import de.bixilon.minosoft.gui.rendering.util.ScreenshotTaker
 import de.bixilon.minosoft.modding.event.EventInvokerCallback
 import de.bixilon.minosoft.modding.event.events.ConnectionStateChangeEvent
@@ -32,6 +31,7 @@ import de.bixilon.minosoft.protocol.network.Connection
 import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketPlayerPositionAndRotation
 import de.bixilon.minosoft.util.CountUpAndDownLatch
 import de.bixilon.minosoft.util.logging.Log
+import glm_.vec2.Vec2
 import org.lwjgl.*
 import org.lwjgl.glfw.*
 import org.lwjgl.glfw.GLFW.*
@@ -50,7 +50,12 @@ class RenderWindow(
     private val keyBindingDown: MutableSet<KeyBinding> = mutableSetOf()
     val renderStats = RenderStats()
     var screenWidth = 900
+        private set
     var screenHeight = 500
+        private set
+    var screenDimensions = Vec2(screenWidth, screenHeight)
+        private set
+
     private var windowId = 0L
     private var deltaFrameTime = 0.0 // time between current frame and last frame
 
@@ -239,6 +244,7 @@ class RenderWindow(
                 glViewport(0, 0, width, height)
                 screenWidth = width
                 screenHeight = height
+                screenDimensions = Vec2(width, height)
                 camera.screenChangeResizeCallback(screenWidth, screenHeight)
                 hudRenderer.screenChangeResizeCallback(width, height)
             }

@@ -151,7 +151,7 @@ class HUDDebugScreenElement(private val hudTextElement: HUDTextElement) : HUDTex
     }
 
     private fun getScreenDimensions(): String {
-        return "${hudTextElement.renderWindow.screenWidth}x${hudTextElement.renderWindow.screenHeight}"
+        return "${hudTextElement.renderWindow.screenDimensions.x}x${hudTextElement.renderWindow.screenDimensions.y}"
     }
 
     private fun getLocation(): String {

@@ -36,7 +36,7 @@ class Player(val account: Account) {
     var saturation = 0f
     var spawnPosition: BlockPosition? = null
     var gameMode: GameModes? = null
-    var selectedSlot: Byte = 0
+    var selectedSlot: Int = 0
     var level = 0
     var totalExperience = 0
     var entity: PlayerEntity? = null

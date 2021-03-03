@@ -19,6 +19,8 @@ import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.font.Font
 import de.bixilon.minosoft.gui.rendering.font.FontBindings
+import de.bixilon.minosoft.gui.rendering.hud.HUDElementProperties
+import de.bixilon.minosoft.gui.rendering.hud.HUDMesh
 import de.bixilon.minosoft.gui.rendering.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.hud.elements.HUDElement
 import de.bixilon.minosoft.gui.rendering.shader.Shader
@@ -31,7 +33,8 @@ import glm_.vec2.Vec2
 import glm_.vec3.Vec3
 import glm_.vec4.Vec4
 
-class HUDTextElement(val connection: Connection, val hudRenderer: HUDRenderer, val renderWindow: RenderWindow) : HUDElement {
+class HUDTextElement(val connection: Connection, hudRenderer: HUDRenderer, val renderWindow: RenderWindow) : HUDElement(hudRenderer) {
+    override val elementProperties: HUDElementProperties = HUDElementProperties(Vec2(), HUDElementProperties.PositionBindings.CENTER, HUDElementProperties.PositionBindings.CENTER, 0f, true)
     private val fontBindingPerspectiveMatrices = mutableListOf(Mat4(), Mat4(), Mat4(), Mat4()) // according to FontBindings::ordinal
     private lateinit var fontShader: Shader
     private lateinit var hudMeshHUD: HUDFontMesh
@@ -44,15 +47,13 @@ class HUDTextElement(val connection: Connection, val hudRenderer: HUDRenderer, v
         ResourceLocation("minosoft:chat") to HUDChatElement(this),
     )
 
-    override fun screenChangeResizeCallback(width: Int, height: Int) {
+    override fun screenChangeResizeCallback(screenWidth: Int, screenHeight: Int) {
         fontShader.use()
 
-        fontBindingPerspectiveMatrices[FontBindings.LEFT_UP.ordinal] = glm.ortho(0.0f, width.toFloat(), height.toFloat(), 0.0f)
-        fontBindingPerspectiveMatrices[FontBindings.RIGHT_UP.ordinal] = glm.ortho(width.toFloat(), 0.0f, height.toFloat(), 0.0f)
-        fontBindingPerspectiveMatrices[FontBindings.RIGHT_DOWN.ordinal] = glm.ortho(width.toFloat(), 0.0f, 0.0f, height.toFloat())
-        fontBindingPerspectiveMatrices[FontBindings.LEFT_DOWN.ordinal] = glm.ortho(0.0f, width.toFloat(), 0.0f, height.toFloat())
-
-        prepare()
+        fontBindingPerspectiveMatrices[FontBindings.LEFT_UP.ordinal] = glm.ortho(0.0f, screenWidth.toFloat(), screenHeight.toFloat(), 0.0f)
+        fontBindingPerspectiveMatrices[FontBindings.RIGHT_UP.ordinal] = glm.ortho(screenWidth.toFloat(), 0.0f, screenHeight.toFloat(), 0.0f)
+        fontBindingPerspectiveMatrices[FontBindings.RIGHT_DOWN.ordinal] = glm.ortho(screenWidth.toFloat(), 0.0f, 0.0f, screenHeight.toFloat())
+        fontBindingPerspectiveMatrices[FontBindings.LEFT_DOWN.ordinal] = glm.ortho(0.0f, screenWidth.toFloat(), 0.0f, screenHeight.toFloat())
     }
 
     private fun drawTextBackground(start: Vec2, end: Vec2, perspectiveMatrix: Mat4, mesh: HUDFontMesh) {
@@ -85,7 +86,7 @@ class HUDTextElement(val connection: Connection, val hudRenderer: HUDRenderer, v
         drawTextBackground(position - 1, (position + maxSize) + 1, fontBindingPerspectiveMatrices[binding.ordinal], mesh)
     }
 
-    override fun prepare() {
+    override fun prepare(hudMesh: HUDMesh) {
         componentsBindingMap = mapOf(
             FontBindings.LEFT_UP to mutableListOf(
                 "§eMinosoft (0.1-pre1)",

@@ -53,7 +53,6 @@ public class ResourceLocation implements Comparable<ResourceLocation> {
         }
 
         return new ResourceLocation(resourceLocation);
-
     }
 
     public static ResourceLocation getPathResourceLocation(String resourceLocation) {

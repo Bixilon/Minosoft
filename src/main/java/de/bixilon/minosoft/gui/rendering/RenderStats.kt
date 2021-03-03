@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.hud.elements
+package de.bixilon.minosoft.gui.rendering
 
 class RenderStats {
     var fpsLastSecond = -1

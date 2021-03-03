@@ -22,7 +22,7 @@ import org.lwjgl.opengl.GL30.GL_TEXTURE_2D_ARRAY
 import org.lwjgl.opengl.GL30.glGenerateMipmap
 import java.nio.ByteBuffer
 
-class TextureArray(val textures: List<Texture>, val maxWidth: Int, val maxHeight: Int) {
+class TextureArray(val textures: Collection<Texture>, val maxWidth: Int, val maxHeight: Int) {
     var textureId = 0
         private set
 
@@ -59,7 +59,7 @@ class TextureArray(val textures: List<Texture>, val maxWidth: Int, val maxHeight
     companion object {
         val DEBUG_TEXTURE = Texture(Texture.getResourceTextureIdentifier(textureName = "block/debug"), 0)
 
-        fun createTextureArray(assetsManager: MinecraftAssetsManager? = null, textures: List<Texture>, maxWidth: Int = -1, maxHeight: Int = -1): TextureArray {
+        fun createTextureArray(assetsManager: MinecraftAssetsManager? = null, textures: Collection<Texture>, maxWidth: Int = -1, maxHeight: Int = -1): TextureArray {
             var calculatedMaxWidth = 0
             var calculatedMaxHeight = 0
             for (texture in textures) {

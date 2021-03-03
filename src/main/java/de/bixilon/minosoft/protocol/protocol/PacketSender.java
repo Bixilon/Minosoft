@@ -27,6 +27,7 @@ import de.bixilon.minosoft.protocol.packets.serverbound.login.PacketLoginPluginR
 import de.bixilon.minosoft.protocol.packets.serverbound.play.*;
 import de.bixilon.minosoft.util.Util;
 import de.bixilon.minosoft.util.logging.Log;
+import org.checkerframework.common.value.qual.IntRange;
 
 import java.util.UUID;
 
@@ -136,5 +137,10 @@ public class PacketSender {
 
     public void sendFakeChatMessage(String message) {
         sendFakeChatMessage(ChatComponent.valueOf(message), ChatTextPositions.CHAT_BOX);
+    }
+
+    public void selectSlot(@IntRange(from = 0, to = 8) int slot) {
+        this.connection.getPlayer().setSelectedSlot(slot);
+        this.connection.sendPacket(new PacketHeldItemChangeSending(slot));
     }
 }
