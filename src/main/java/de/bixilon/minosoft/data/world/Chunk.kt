@@ -56,7 +56,7 @@ class Chunk(
                 }
                 // replace all chunk sections
                 for ((sectionHeight, chunkSection) in it) {
-                    getSectionOrCreate(sectionHeight).setData(chunkSection, merge)
+                    getSectionOrCreate(sectionHeight).setData(chunkSection)
                 }
             }
             data.biomeAccessor?.let {
@@ -82,7 +82,7 @@ class Chunk(
         getSectionOrCreate(position.getSectionHeight()).let {
             val inChunkSectionLocation = position.getInChunkSectionLocation()
             if (block == null) {
-                it.blocks.remove(inChunkSectionLocation)
+                it.blocks[ChunkSection.getIndex(inChunkSectionLocation)] = null
                 return
             }
             it.setBlockInfo(inChunkSectionLocation, BlockInfo(block))

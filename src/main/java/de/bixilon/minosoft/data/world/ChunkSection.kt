@@ -13,24 +13,21 @@
 package de.bixilon.minosoft.data.world
 
 import de.bixilon.minosoft.data.mappings.blocks.BlockState
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
 /**
  * Collection of 16x16x16 blocks
  */
-class ChunkSection constructor(
-    val blocks: MutableMap<InChunkSectionPosition, BlockInfo> = mutableMapOf(),
+class ChunkSection(
+    val blocks: Array<BlockInfo?> = arrayOfNulls(ProtocolDefinition.BLOCKS_PER_SECTION),
 ) {
 
     fun getBlockInfo(position: InChunkSectionPosition): BlockInfo? {
-        return blocks[position]
+        return blocks[getIndex(position)]
     }
 
     fun setBlockInfo(position: InChunkSectionPosition, blockInfo: BlockInfo?) {
-        if (blockInfo == null) {
-            blocks.remove(position)
-            return
-        }
-        blocks[position] = blockInfo
+        blocks[getIndex(position)] = blockInfo
     }
 
     fun getBlockInfo(x: Int, y: Int, z: Int): BlockInfo? {
@@ -45,10 +42,23 @@ class ChunkSection constructor(
         setBlockInfo(position, BlockInfo(block))
     }
 
-    fun setData(chunkSection: ChunkSection, merge: Boolean = false) {
-        if (!merge) {
-            this.blocks.clear()
+    fun setData(chunkSection: ChunkSection) {
+        for ((index, blockInfo) in chunkSection.blocks.withIndex()) {
+            blocks[index] = blockInfo
         }
-        this.blocks.putAll(chunkSection.blocks)
+    }
+
+    companion object {
+        fun getIndex(position: InChunkSectionPosition): Int {
+            return getIndex(position.x, position.y, position.z)
+        }
+
+        fun getIndex(x: Int, y: Int, z: Int): Int {
+            return y shl 8 or (z shl 4) or x
+        }
+
+        fun getPosition(index: Int): InChunkSectionPosition {
+            return InChunkSectionPosition(index and 0x0F, (index shr 8) and 0x0F, (index shr 4) and 0x0F)
+        }
     }
 }

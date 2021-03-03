@@ -58,8 +58,11 @@ class WorldRenderer(
 
         val mesh = ChunkMesh()
 
-        for ((position, blockInfo) in section.blocks) {
-            val blockPosition = BlockPosition(chunkPosition, sectionHeight, position)
+        for ((index, blockInfo) in section.blocks.withIndex()) {
+            if (blockInfo == null) {
+                continue
+            }
+            val blockPosition = BlockPosition(chunkPosition, sectionHeight, ChunkSection.getPosition(index))
 
             val neighborBlocks: Array<BlockInfo?> = arrayOfNulls(Directions.DIRECTIONS.size)
             for (direction in Directions.DIRECTIONS) {

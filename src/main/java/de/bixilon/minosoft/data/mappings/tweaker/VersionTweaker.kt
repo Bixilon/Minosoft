@@ -93,7 +93,11 @@ object VersionTweaker {
             return
         }
         for ((sectionHeight, section) in sections) {
-            for ((location, blockInfo) in section.blocks) {
+            for ((index, blockInfo) in section.blocks.withIndex()) {
+                if (blockInfo == null) {
+                    continue
+                }
+                val location = ChunkSection.getPosition(index)
                 val newBlock = transformBlock(blockInfo.block, sections, location, sectionHeight)
                 if (newBlock === blockInfo.block) {
                     continue
