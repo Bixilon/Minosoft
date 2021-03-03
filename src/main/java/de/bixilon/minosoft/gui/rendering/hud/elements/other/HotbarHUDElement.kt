@@ -20,6 +20,7 @@ import de.bixilon.minosoft.gui.rendering.hud.HUDMesh
 import de.bixilon.minosoft.gui.rendering.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.hud.atlas.HUDAtlasElement
 import de.bixilon.minosoft.gui.rendering.hud.elements.HUDElement
+import glm_.glm
 import glm_.vec2.Vec2
 
 class HotbarHUDElement(
@@ -59,19 +60,23 @@ class HotbarHUDElement(
         END
     }
 
-    override fun prepare(hudMesh: HUDMesh) {
+    private fun drawBaseBar(hudMesh: HUDMesh) {
         val hotbarStart = getRealPosition(hotbarBaseRealSize, elementProperties, RealTypes.START)
         drawImage(hotbarStart, getRealPosition(hotbarBaseRealSize, elementProperties, RealTypes.END), hudMesh, hotbarBaseAtlas, 1)
 
 
-        val selectedSlotBindings = hotbarBaseAtlas.slots[hudRenderer.connection.player.selectedSlot] ?: return
+        val selectedSlotBinding = hotbarBaseAtlas.slots[hudRenderer.connection.player.selectedSlot] ?: return
+        val selectedSlotFrameBinding = hotbarSelectedSlotFrame.slots[0] ?: return
 
-        val selectedSlotFrameSlotDelta = (hotbarSelectedSlotFrame.binding.size - selectedSlotBindings.size)
+        val slotSizeFactorDelta = glm.abs(Vec2(hotbarSelectedSlotFrame.binding.size - selectedSlotFrameBinding.size))
 
-        val selectedSlotStart = hotbarStart + selectedSlotBindings.start * hudRenderer.hudScale.scale * elementProperties.scale - selectedSlotFrameSlotDelta
-        val selectedSlotEnd = hotbarStart + selectedSlotBindings.end * hudRenderer.hudScale.scale * elementProperties.scale + selectedSlotFrameSlotDelta
+        val selectedSlotStart = hotbarStart + selectedSlotBinding.start * hudRenderer.hudScale.scale * elementProperties.scale - slotSizeFactorDelta
+        val selectedSlotEnd = hotbarStart + selectedSlotBinding.end * hudRenderer.hudScale.scale * elementProperties.scale + slotSizeFactorDelta
 
         drawImage(selectedSlotStart, selectedSlotEnd, hudMesh, hotbarSelectedSlotFrame, 2)
+    }
 
+    override fun prepare(hudMesh: HUDMesh) {
+        drawBaseBar(hudMesh)
     }
 }

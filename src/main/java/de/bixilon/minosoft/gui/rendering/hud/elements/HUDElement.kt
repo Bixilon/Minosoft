@@ -100,12 +100,12 @@ abstract class HUDElement(protected val hudRenderer: HUDRenderer) {
 
         val realZ = HUD_Z_COORDINATE + HUD_Z_COORDINATE_Z_FACTOR * z
 
-        hudMesh.addVertex(Vec3(modelStart.x, modelStart.y, realZ), Vec2(textureStart.x, textureStart.y), hudAtlasElement.texture.id)
-        hudMesh.addVertex(Vec3(modelEnd.x, modelStart.y, realZ), Vec2(textureEnd.x, textureStart.y), hudAtlasElement.texture.id)
-        hudMesh.addVertex(Vec3(modelStart.x, modelEnd.y, realZ), Vec2(textureStart.x, textureEnd.y), hudAtlasElement.texture.id)
-        hudMesh.addVertex(Vec3(modelStart.x, modelEnd.y, realZ), Vec2(textureStart.x, textureEnd.y), hudAtlasElement.texture.id)
-        hudMesh.addVertex(Vec3(modelEnd.x, modelStart.y, realZ), Vec2(textureEnd.x, textureStart.y), hudAtlasElement.texture.id)
-        hudMesh.addVertex(Vec3(modelEnd.x, modelEnd.y, realZ), Vec2(textureEnd.x, textureEnd.y), hudAtlasElement.texture.id)
+        hudMesh.addVertex(Vec3(modelStart.x, modelStart.y, realZ), Vec2(textureStart.x, textureEnd.y), hudAtlasElement.texture.id)
+        hudMesh.addVertex(Vec3(modelEnd.x, modelStart.y, realZ), Vec2(textureEnd.x, textureEnd.y), hudAtlasElement.texture.id)
+        hudMesh.addVertex(Vec3(modelStart.x, modelEnd.y, realZ), Vec2(textureStart.x, textureStart.y), hudAtlasElement.texture.id)
+        hudMesh.addVertex(Vec3(modelStart.x, modelEnd.y, realZ), Vec2(textureStart.x, textureStart.y), hudAtlasElement.texture.id)
+        hudMesh.addVertex(Vec3(modelEnd.x, modelStart.y, realZ), Vec2(textureEnd.x, textureEnd.y), hudAtlasElement.texture.id)
+        hudMesh.addVertex(Vec3(modelEnd.x, modelEnd.y, realZ), Vec2(textureEnd.x, textureStart.y), hudAtlasElement.texture.id)
     }
 
     companion object {

@@ -185,7 +185,7 @@ class ElementRenderer(parent: BlockModelElement, val rotation: Vec3, uvLock: Boo
             setOf(POSITION_1, POSITION_2, POSITION_5, POSITION_6),
             setOf(POSITION_2, POSITION_4, POSITION_6, POSITION_8),
             setOf(POSITION_1, POSITION_3, POSITION_5, POSITION_7)
-                                         )
+        )
     }
 }
 

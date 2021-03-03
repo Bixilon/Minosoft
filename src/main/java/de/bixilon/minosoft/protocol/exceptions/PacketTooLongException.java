@@ -18,6 +18,6 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 public class PacketTooLongException extends PacketParseException {
 
     public PacketTooLongException(int length) {
-        super(String.format("Server sent us a to big packet (%d bytes > %d bytes)", length, ProtocolDefinition.PROTOCOL_PACKET_MAX_SIZE));
+        super(String.format("Server sent us a too big packet (%d bytes > %d bytes)", length, ProtocolDefinition.PROTOCOL_PACKET_MAX_SIZE));
     }
 }
