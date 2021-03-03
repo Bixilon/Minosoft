@@ -20,6 +20,7 @@ import de.bixilon.minosoft.data.mappings.ResourceLocationDeserializer
 import de.bixilon.minosoft.data.mappings.versions.VersionMapping
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.TintColorCalculator
+import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockCondition
 
 data class Block(
     val resourceLocation: ResourceLocation,
@@ -32,6 +33,7 @@ data class Block(
 ) : RegistryItem {
     lateinit var item: Item
     val states: MutableSet<BlockState> = mutableSetOf()
+    var multipartMapping: MutableMap<BlockCondition, MutableList<JsonObject>>? = null
 
     override fun postInit(versionMapping: VersionMapping) {
         item = versionMapping.itemRegistry.get(itemId)
@@ -39,29 +41,47 @@ data class Block(
 
     companion object : ResourceLocationDeserializer<Block> {
         override fun deserialize(mappings: VersionMapping, resourceLocation: ResourceLocation, data: JsonObject): Block {
-
-            val block = Block(
-                resourceLocation = resourceLocation,
-                explosionResistance = data["explosion_resistance"]?.asFloat ?: 0.0f,
-                hasCollision = data["has_collision"]?.asBoolean ?: false,
-                hasDynamicShape = data["has_dynamic_shape"]?.asBoolean ?: false,
-                tintColor = data["tint_color"]?.asInt?.let { TintColorCalculator.getJsonColor(it) },
-                itemId = data["item"]?.asInt ?: 0,
-                tint = data["tint"]?.asString?.let { ResourceLocation(it) }
-            )
+            val block = Block(resourceLocation = resourceLocation, explosionResistance = data["explosion_resistance"]?.asFloat
+                ?: 0.0f, hasCollision = data["has_collision"]?.asBoolean
+                ?: false, hasDynamicShape = data["has_dynamic_shape"]?.asBoolean
+                ?: false, tintColor = data["tint_color"]?.asInt?.let { TintColorCalculator.getJsonColor(it) }, itemId = data["item"]?.asInt
+                ?: 0, tint = data["tint"]?.asString?.let { ResourceLocation(it) })
 
             // block states
 
-            for ((stateId, stateJson) in data["states"].asJsonObject.entrySet()) {
-                check(stateJson is JsonObject) { "Not a state element!" }
-
-                val state = BlockState.deserialize(block, stateJson, mappings.models)
-
-                mappings.blockStateIdMap[stateId.toInt()] = state
+            data["render"]?.asJsonObject?.get("multipart")?.asJsonArray?.let { multipart ->
+                block.multipartMapping = mutableMapOf()
+                for (item in multipart) {
+                    val part = item.asJsonObject
+                    val propertiesJson = part["properties"]
+                    val condition = propertiesJson?.let {
+                        BlockCondition(propertiesJson)
+                    } ?: BlockCondition.TRUE_CONDITION
+                    val apply = part["apply"]
+                    when {
+                        apply.isJsonObject -> {
+                            addMultiPart(block, condition, apply.asJsonObject!!)
+                        }
+                        apply.isJsonArray -> {
+                            for (model in apply.asJsonArray) {
+                                addMultiPart(block, condition, model.asJsonObject!!)
+                            }
+                        }
+                    }
+                }
             }
 
-
+            for ((stateId, stateJson) in data["states"].asJsonObject.entrySet()) {
+                check(stateJson is JsonObject) { "Not a state element!" }
+                val state = BlockState.deserialize(block, stateJson, mappings.models)
+                mappings.blockStateIdMap[stateId.toInt()] = state
+            }
             return block
+        }
+
+        private fun addMultiPart(block: Block, condition: BlockCondition, apply: JsonObject) {
+            block.multipartMapping!![condition]?.add(apply)
+                ?: run { block.multipartMapping!![condition] = mutableListOf(apply) }
         }
     }
 }

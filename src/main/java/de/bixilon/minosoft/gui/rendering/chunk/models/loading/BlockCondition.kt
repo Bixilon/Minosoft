@@ -13,44 +13,108 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk.models.loading
 
+import com.google.gson.JsonArray
+import com.google.gson.JsonElement
 import com.google.gson.JsonObject
+import com.google.gson.JsonPrimitive
 import de.bixilon.minosoft.data.mappings.blocks.BlockProperties
 import de.bixilon.minosoft.data.mappings.blocks.BlockRotations
 import de.bixilon.minosoft.data.mappings.blocks.BlockState
 
 open class BlockCondition {
-    private var properties: MutableSet<BlockProperties> = mutableSetOf()
+    private var blockProperties: MutableList<MutableList<MutableSet<BlockProperties>>> = mutableListOf() // in order of OR AND OR
     private var rotation: BlockRotations = BlockRotations.NONE
 
-    constructor(json: JsonObject) {
-        for ((key, value) in json.entrySet()) {
-            val value = value.asString
-            kotlin.run {
-                BlockRotations.ROTATION_MAPPING[value]?.let {
-                    rotation = it
-                    return@run
-                }
-
-                BlockProperties.PROPERTIES_MAPPING[key]?.get(value)?.let {
-                    properties.add(it)
+    constructor(data: JsonElement) {
+        when (data) {
+            null -> return
+            is JsonObject -> {
+                addToProperties(data.asJsonObject)
+            }
+            is JsonArray -> {
+                for (element in data.asJsonArray) {
+                    addToProperties(element.asJsonObject)
                 }
             }
         }
     }
 
+    private fun addToProperties(data: JsonObject) {
+        val current: MutableList<MutableSet<BlockProperties>> = mutableListOf()
+        for ((propertyName, propertyJsonValue) in data.entrySet()) {
+            check(propertyJsonValue is JsonPrimitive) { "Not a json primitive!" }
+            val propertyValue: Any = when {
+                propertyJsonValue.isBoolean -> {
+                    propertyJsonValue.asBoolean
+                }
+                propertyJsonValue.isNumber -> {
+                    propertyJsonValue.asInt
+                }
+                else -> {
+                    // ToDo: Why is this needed?
+                    try {
+                        Integer.parseInt(propertyJsonValue.asString)
+                    } catch (exception: Exception) {
+                        propertyJsonValue.asString.toLowerCase()
+                    }
+                }
+            }
+            try {
+                if (propertyName in BlockState.ROTATION_PROPERTIES) {
+                    rotation = BlockRotations.ROTATION_MAPPING[propertyValue]!!
+                } else {
+                    BlockProperties.PROPERTIES_MAPPING[propertyName]?.get(propertyValue)?.let {
+                        current.add(mutableSetOf(it))
+                    } ?: kotlin.run {
+                        if (propertyValue is String) {
+                            val propertyString: String = propertyValue
+                            if (propertyString.contains("|")) {
+                                val parts = propertyString.split("|")
+                                val properties = mutableSetOf<BlockProperties>()
+                                for (part in parts) {
+                                    properties.add(BlockProperties.PROPERTIES_MAPPING[propertyName]!![part]!!)
+                                }
+                                current.add(properties)
+                            }
+                        }
+                    }
+                }
+            } catch (exception: NullPointerException) {
+                throw NullPointerException("Invalid block property $propertyName with value $propertyValue")
+            }
+        }
+        blockProperties.add(current)
+    }
+
     constructor()
 
-    open operator fun contains(block: BlockState): Boolean {
-        return if (rotation != BlockRotations.NONE && rotation != block.rotation) {
-            false
-        } else {
-            block.properties.containsAll(properties)
+    open fun contains(testProperties: MutableSet<BlockProperties>, testRotation: BlockRotations): Boolean {
+        if (rotation != BlockRotations.NONE && rotation != testRotation) {
+            return false
         }
+        for (propertiesSubSet in blockProperties) {
+            var propertiesGood = true
+            for (properties in propertiesSubSet) {
+                for (property in properties) {
+                    if (! testProperties.contains(property)) {
+                        propertiesGood = false
+                        break
+                    }
+                }
+                if (! propertiesGood) {
+                    break
+                }
+            }
+            if (propertiesGood) {
+                return true
+            }
+        }
+        return false
     }
 
     companion object {
         val TRUE_CONDITION: BlockCondition = object : BlockCondition() {
-            override fun contains(block: BlockState): Boolean {
+            override fun contains(testProperties: MutableSet<BlockProperties>, testRotation: BlockRotations): Boolean {
                 return true
             }
         }
