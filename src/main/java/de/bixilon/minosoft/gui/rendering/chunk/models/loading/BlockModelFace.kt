@@ -30,25 +30,25 @@ class BlockModelFace {
     constructor(data: JsonObject, from: Vec3, to: Vec3, direction: Directions) {
         tint = data.has("tintindex")
         textureName = data.get("texture").asString.removePrefix("#")
-        var textureStart = Vec2(0, 0)
-        var textureEnd = Vec2(16, 16)
+        var textureTopLeft = Vec2(0, 16)
+        var textureBottomRight = Vec2(16, 0)
         when (direction) {
             Directions.EAST, Directions.WEST -> run {
-                textureStart = Vec2(from.z.toInt(), BlockModelElement.BLOCK_RESOLUTION - from.y.toInt())
-                textureEnd = Vec2(to.z.toInt(), BlockModelElement.BLOCK_RESOLUTION - to.y.toInt())
+                textureTopLeft = Vec2(from.z.toInt(), to.y.toInt())
+                textureBottomRight = Vec2(to.z.toInt(), from.y.toInt())
             }
             Directions.UP, Directions.DOWN -> {
-                textureStart = Vec2(from.x.toInt(), BlockModelElement.BLOCK_RESOLUTION - from.z.toInt())
-                textureEnd = Vec2(to.x.toInt(), BlockModelElement.BLOCK_RESOLUTION - to.z.toInt())
+                textureTopLeft = Vec2(from.x.toInt(), to.z.toInt())
+                textureBottomRight = Vec2(to.x.toInt(), from.z.toInt())
             }
             Directions.NORTH, Directions.SOUTH -> {
-                textureStart = Vec2(from.x.toInt(), BlockModelElement.BLOCK_RESOLUTION - from.y.toInt())
-                textureEnd = Vec2(to.x.toInt(), BlockModelElement.BLOCK_RESOLUTION - to.y.toInt())
+                textureTopLeft = Vec2(from.x.toInt(), to.y.toInt())
+                textureBottomRight = Vec2(to.x.toInt(), from.y.toInt())
             }
         }
         data["uv"]?.asJsonArray?.let {
-            textureStart = Vec2(it[0].asFloat, it[1].asFloat)
-            textureEnd = Vec2(it[2].asFloat, it[3].asFloat)
+            textureTopLeft = Vec2(it[0].asFloat, it[3].asFloat)
+            textureBottomRight = Vec2(it[2].asFloat, it[1].asFloat)
         }
         cullFace = data["cullface"]?.asString?.let {
             return@let if (it == "bottom") {
@@ -58,10 +58,10 @@ class BlockModelFace {
             }
         }
         positions = mutableListOf(
-            uvToFloat(Vec2(textureStart.x, textureStart.y)),
-            uvToFloat(Vec2(textureStart.x, textureEnd.y)),
-            uvToFloat(Vec2(textureEnd.x, textureEnd.y)),
-            uvToFloat(Vec2(textureEnd.x, textureStart.y)),
+            uvToFloat(Vec2(textureTopLeft.x, textureTopLeft.y)),
+            uvToFloat(Vec2(textureTopLeft.x, textureBottomRight.y)),
+            uvToFloat(Vec2(textureBottomRight.x, textureBottomRight.y)),
+            uvToFloat(Vec2(textureBottomRight.x, textureTopLeft.y)),
         )
         val rotation = data["rotation"]?.asInt?.div(90) ?: 0
         Collections.rotate(positions, rotation)
@@ -104,7 +104,7 @@ class BlockModelFace {
         }
 
         fun uvToFloat(vec2: Vec2): Vec2 {
-            return Vec2(uvToFloat(vec2.x), uvToFloat(vec2.y))
+            return Vec2(uvToFloat(vec2.x), uvToFloat(BlockModelElement.BLOCK_RESOLUTION - vec2.y))
         }
 
         val textureTemplate = arrayOf(
