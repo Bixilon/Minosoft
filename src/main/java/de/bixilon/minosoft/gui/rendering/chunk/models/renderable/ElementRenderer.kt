@@ -17,8 +17,6 @@ import com.google.common.collect.HashBiMap
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.Directions
-import de.bixilon.minosoft.data.mappings.ResourceLocation
-import de.bixilon.minosoft.data.mappings.versions.VersionMapping
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.data.world.BlockPosition
 import de.bixilon.minosoft.data.world.light.LightAccessor
@@ -189,10 +187,6 @@ class ElementRenderer(parent: BlockModelElement, val rotation: Vec3, uvLock: Boo
             setOf(POSITION_1, POSITION_3, POSITION_5, POSITION_7)
                                          )
     }
-}
-
-private fun JsonObject.asVec3(): Vec3 {
-    return Vec3(this["x"]?.asFloat ?: 0, this["y"]?.asFloat ?: 0, this["z"]?.asFloat ?: 0)
 }
 
 private fun JsonObject.asVec3(): Vec3 {
