@@ -16,7 +16,7 @@
           },
           "2": {
             "start": [43, 3],
-            "end": [56, 18]
+            "end": [58, 18]
           },
           "3": {
             "start": [63, 3],
@@ -58,6 +58,33 @@
             "end": [20, 20]
           }
         }
+      }
+    }
+  },
+  "minecraft:crosshair": {
+    "texture": "minecraft:textures/gui/icons.png",
+    "versions": {
+      "0": {
+        "start": [0, 0],
+        "end": [15, 15]
+      }
+    }
+  },
+  "minecraft:experience_bar_empty": {
+    "texture": "minecraft:textures/gui/icons.png",
+    "versions": {
+      "0": {
+        "start": [0, 64],
+        "end": [181, 68]
+      }
+    }
+  },
+  "minecraft:experience_bar_full": {
+    "texture": "minecraft:textures/gui/icons.png",
+    "versions": {
+      "0": {
+        "start": [0, 69],
+        "end": [181, 73]
       }
     }
   }

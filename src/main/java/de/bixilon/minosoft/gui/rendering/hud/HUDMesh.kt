@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.hud
 
+import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.util.Mesh
 import glm_.BYTES
 import glm_.vec2.Vec2
@@ -32,21 +33,28 @@ class HUDMesh : Mesh() {
         glEnableVertexAttribArray(index++)
         glVertexAttribPointer(index, 1, GL_FLOAT, false, FLOATS_PER_VERTEX * Float.BYTES, (5 * Float.BYTES).toLong())
         glEnableVertexAttribArray(index++)
+        glVertexAttribPointer(index, 1, GL_FLOAT, false, FLOATS_PER_VERTEX * Float.BYTES, (6 * Float.BYTES).toLong())
+        glEnableVertexAttribArray(index++)
         super.unbind()
     }
 
 
-    fun addVertex(position: Vec3, textureCoordinates: Vec2, atlasPage: Int) {
+    fun addVertex(position: Vec3, textureCoordinates: Vec2, atlasPage: Int, tintColor: RGBColor? = null) {
         data.add(position.x)
         data.add(position.y)
         data.add(position.z)
         data.add(textureCoordinates.x)
         data.add(textureCoordinates.y)
         data.add(Float.fromBits(atlasPage))
+        if (tintColor == null) {
+            data.add(0f)
+        } else {
+            data.add(Float.fromBits(tintColor.color))
+        }
     }
 
 
     companion object {
-        private const val FLOATS_PER_VERTEX = 6
+        private const val FLOATS_PER_VERTEX = 7
     }
 }

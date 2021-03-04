@@ -16,14 +16,17 @@
 out vec4 outColor;
 
 in vec3 passTextureCoordinates;
+in vec4 passTintColor;
 
 uniform sampler2DArray hudTextureArray;
 
-
 void main() {
     vec4 textureColor = texture(hudTextureArray, passTextureCoordinates);
-    if (textureColor.a == 0) {
+    if (passTintColor.a == 1.0f && textureColor.a == 0) {
         discard;
+    }
+    if (passTintColor.a != 0.0f){
+        textureColor *= passTintColor;
     }
     outColor = textureColor;
 }

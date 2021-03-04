@@ -14,12 +14,14 @@
 package de.bixilon.minosoft.gui.rendering.hud.elements.other
 
 import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames
+import de.bixilon.minosoft.data.GameModes
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.hud.HUDElementProperties
 import de.bixilon.minosoft.gui.rendering.hud.HUDMesh
 import de.bixilon.minosoft.gui.rendering.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.hud.atlas.HUDAtlasElement
 import de.bixilon.minosoft.gui.rendering.hud.elements.HUDElement
+import de.bixilon.minosoft.gui.rendering.hud.elements.ProgressBar
 import glm_.glm
 import glm_.vec2.Vec2
 
@@ -34,18 +36,29 @@ class HotbarHUDElement(
         enabled = true,
     )
 
-    lateinit var hotbarBaseAtlas: HUDAtlasElement
-    lateinit var hotbarSelectedSlotFrame: HUDAtlasElement
+    private val realScale = elementProperties.scale * hudRenderer.hudScale.scale
+    private val elementPadding = 2 * realScale
 
+    private lateinit var hotbarBaseAtlasElement: HUDAtlasElement
     private lateinit var hotbarBaseRealSize: Vec2
+    private lateinit var hotbarSelectedSlotFrameAtlasElement: HUDAtlasElement
     private lateinit var hotbarSelectedSlotFrameRealSize: Vec2
 
 
+    private lateinit var experienceBar: ProgressBar
+
+
     override fun init() {
-        hotbarBaseAtlas = hudRenderer.hudImages[ResourceLocation("minecraft:hotbar_base")]!!
-        hotbarBaseRealSize = hotbarBaseAtlas.binding.size * hudRenderer.hudScale.scale * elementProperties.scale
-        hotbarSelectedSlotFrame = hudRenderer.hudImages[ResourceLocation("minecraft:hotbar_selected_slot_frame")]!!
-        hotbarSelectedSlotFrameRealSize = hotbarSelectedSlotFrame.binding.size * hudRenderer.hudScale.scale * elementProperties.scale
+        hotbarBaseAtlasElement = hudRenderer.hudAtlasElements[ResourceLocation("minecraft:hotbar_base")]!!
+        hotbarBaseRealSize = hotbarBaseAtlasElement.binding.size * hudRenderer.hudScale.scale * elementProperties.scale
+        hotbarSelectedSlotFrameAtlasElement = hudRenderer.hudAtlasElements[ResourceLocation("minecraft:hotbar_selected_slot_frame")]!!
+        hotbarSelectedSlotFrameRealSize = hotbarSelectedSlotFrameAtlasElement.binding.size * hudRenderer.hudScale.scale * elementProperties.scale
+
+        experienceBar = ProgressBar(
+            hudRenderer.hudAtlasElements[ResourceLocation("minecraft:experience_bar_empty")]!!,
+            hudRenderer.hudAtlasElements[ResourceLocation("minecraft:experience_bar_full")]!!,
+            this
+        )
 
         for ((slotIndex, resourceLocation) in KeyBindingsNames.SELECT_HOTBAR_SLOTS.withIndex()) {
             hudRenderer.renderWindow.registerKeyCallback(resourceLocation) { _, _ ->
@@ -55,28 +68,35 @@ class HotbarHUDElement(
     }
 
 
-    enum class RealTypes {
-        START,
-        END
-    }
-
-    private fun drawBaseBar(hudMesh: HUDMesh) {
-        val hotbarStart = getRealPosition(hotbarBaseRealSize, elementProperties, RealTypes.START)
-        drawImage(hotbarStart, getRealPosition(hotbarBaseRealSize, elementProperties, RealTypes.END), hudMesh, hotbarBaseAtlas, 1)
-
-
-        val selectedSlotBinding = hotbarBaseAtlas.slots[hudRenderer.connection.player.selectedSlot] ?: return
-        val selectedSlotFrameBinding = hotbarSelectedSlotFrame.slots[0] ?: return
-
-        val slotSizeFactorDelta = glm.abs(Vec2(hotbarSelectedSlotFrame.binding.size - selectedSlotFrameBinding.size))
-
-        val selectedSlotStart = hotbarStart + selectedSlotBinding.start * hudRenderer.hudScale.scale * elementProperties.scale - slotSizeFactorDelta
-        val selectedSlotEnd = hotbarStart + selectedSlotBinding.end * hudRenderer.hudScale.scale * elementProperties.scale + slotSizeFactorDelta
-
-        drawImage(selectedSlotStart, selectedSlotEnd, hudMesh, hotbarSelectedSlotFrame, 2)
-    }
-
     override fun prepare(hudMesh: HUDMesh) {
-        drawBaseBar(hudMesh)
+        if (hudRenderer.connection.player.gameMode == GameModes.SPECTATOR) {
+            return
+        }
+        // hotbar
+        val hotbarStart = getRealPosition(hotbarBaseRealSize, elementProperties, RealTypes.START)
+        val hotbarEnd = getRealPosition(hotbarBaseRealSize, elementProperties, RealTypes.END)
+        drawImage(hotbarStart, hotbarEnd, hudMesh, hotbarBaseAtlasElement, 1)
+
+        // selectedFrame
+        val selectedSlotBinding = hotbarBaseAtlasElement.slots[hudRenderer.connection.player.selectedSlot] ?: return
+        val selectedSlotFrameBinding = hotbarSelectedSlotFrameAtlasElement.slots[0] ?: return
+
+        val slotSizeFactorDelta = glm.abs(Vec2(hotbarSelectedSlotFrameAtlasElement.binding.size - selectedSlotFrameBinding.size))
+
+        val selectedSlotStart = hotbarStart + selectedSlotBinding.start * realScale - slotSizeFactorDelta + Vec2(0, realScale)
+        val selectedSlotEnd = hotbarStart + selectedSlotBinding.end * realScale + slotSizeFactorDelta + Vec2(realScale, realScale)
+
+        drawImage(selectedSlotStart, selectedSlotEnd, hudMesh, hotbarSelectedSlotFrameAtlasElement, 2)
+
+
+        if (hudRenderer.connection.player.gameMode == GameModes.CREATIVE) {
+            return
+        }
+
+        // experience bar
+        val experienceBarStart = Vec2(hotbarStart.x, (hotbarEnd.y + (experienceBar.size.y * realScale) + elementPadding))
+        val experienceBarEnd = Vec2(hotbarEnd.x, (hotbarEnd.y + elementPadding))
+
+        experienceBar.draw(hudMesh, experienceBarStart, experienceBarEnd, hudRenderer.connection.player.experienceBarProgress, 3)
     }
 }

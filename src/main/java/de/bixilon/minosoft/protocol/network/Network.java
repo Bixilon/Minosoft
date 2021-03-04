@@ -83,13 +83,13 @@ public abstract class Network {
             boolean success;
             try {
                 success = packet.read(data);
+                if (data.getBytesLeft() > 0 || !success) {
+                    throw new PacketParseException(String.format("Could not parse packet %s (used=%d, available=%d, total=%d, success=%s)", packetType, data.getPosition(), data.getBytesLeft(), data.getLength(), success));
+                }
+                packet.check(this.connection);
             } catch (Throwable exception) {
                 packet.onError(this.connection);
                 throw exception;
-            }
-            if (data.getBytesLeft() > 0 || !success) {
-                packet.onError(this.connection);
-                throw new PacketParseException(String.format("Could not parse packet %s (used=%d, available=%d, total=%d, success=%s)", packetType, data.getPosition(), data.getBytesLeft(), data.getLength(), success));
             }
             return packet;
         } catch (Throwable e) {

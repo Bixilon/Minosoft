@@ -39,6 +39,7 @@ class TextureArray(val textures: Collection<Texture>, val maxWidth: Int, val max
 
         for (texture in textures) {
             glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, texture.id, texture.width, texture.height, 1, GL_RGBA, GL_UNSIGNED_BYTE, texture.buffer)
+            texture.buffer.clear()
         }
         glGenerateMipmap(GL_TEXTURE_2D_ARRAY)
         return textureId

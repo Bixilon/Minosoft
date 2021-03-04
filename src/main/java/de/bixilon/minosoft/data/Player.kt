@@ -39,6 +39,7 @@ class Player(val account: Account) {
     var selectedSlot: Int = 0
     var level = 0
     var totalExperience = 0
+    var experienceBarProgress = 0f
     var entity: PlayerEntity? = null
     var isSpawnConfirmed = false
     var playerUUID: UUID = account.uuid

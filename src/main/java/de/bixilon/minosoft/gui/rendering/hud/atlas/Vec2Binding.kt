@@ -22,14 +22,14 @@ data class Vec2Binding(
     val start: Vec2,
     val end: Vec2,
 ) {
-    val size: Vec2 = glm.abs(Vec2(start - end))
+    val size: Vec2 = glm.abs(Vec2(start - end)) + 1
 
     companion object {
 
         fun deserialize(json: JsonElement): Vec2Binding {
             check(json is JsonObject)
 
-            return Vec2Binding(json["start"].asJsonArray.let { Vec2(it[0].asInt, it[1].asInt) }, json["end"].asJsonArray.let { Vec2(it[0].asInt, it[1].asInt) + 1 })
+            return Vec2Binding(json["start"].asJsonArray.let { Vec2(it[0].asInt, it[1].asInt) }, json["end"].asJsonArray.let { Vec2(it[0].asInt, it[1].asInt) })
         }
     }
 }

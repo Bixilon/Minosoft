@@ -23,4 +23,6 @@ abstract class ClientboundPacket : Packet {
     open fun handle(connection: Connection) {}
 
     open fun onError(connection: Connection) {}
+
+    open fun check(connection: Connection) {}
 }
