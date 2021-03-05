@@ -19,9 +19,8 @@ import de.bixilon.minosoft.protocol.exceptions.UnknownPacketException;
 import de.bixilon.minosoft.protocol.network.socket.BlockingSocketNetwork;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
-import de.bixilon.minosoft.protocol.packets.clientbound.interfaces.CompressionThresholdChange;
-import de.bixilon.minosoft.protocol.packets.clientbound.login.PacketLoginSuccess;
 import de.bixilon.minosoft.protocol.protocol.*;
+import de.bixilon.minosoft.util.Pair;
 import de.bixilon.minosoft.util.ServerAddress;
 import de.bixilon.minosoft.util.Util;
 import de.bixilon.minosoft.util.logging.Log;
@@ -49,7 +48,7 @@ public abstract class Network {
         return this.lastException;
     }
 
-    protected ClientboundPacket receiveClientboundPacket(byte[] bytes) throws PacketParseException {
+    protected Pair<Packets.Clientbound, ClientboundPacket> receiveClientboundPacket(byte[] bytes) throws PacketParseException {
         if (this.compressionThreshold >= 0) {
             // compression is enabled
             InByteBuffer rawData = new InByteBuffer(bytes, this.connection);
@@ -91,7 +90,7 @@ public abstract class Network {
                 packet.onError(this.connection);
                 throw exception;
             }
-            return packet;
+            return new Pair<>(packetType, packet);
         } catch (Throwable e) {
             Log.protocol(String.format("An error occurred while parsing a packet (%s): %s", packetType, e));
             if (this.connection.getConnectionState() == ConnectionStates.PLAY) {
@@ -131,14 +130,11 @@ public abstract class Network {
         return data;
     }
 
-    protected void handlePacket(ClientboundPacket packet) {
-        // set special settings to avoid miss timing issues
-        if (packet instanceof PacketLoginSuccess) {
-            this.connection.setConnectionState(ConnectionStates.PLAY);
-        } else if (packet instanceof CompressionThresholdChange compressionPacket) {
-            this.compressionThreshold = compressionPacket.getThreshold();
-        }
-        this.connection.handle(packet);
+    protected void handlePacket(Packets.Clientbound packetType, ClientboundPacket packet) {
+        this.connection.handle(packetType, packet);
     }
 
+    public void setCompressionThreshold(int threshold) {
+        this.compressionThreshold = threshold;
+    }
 }

@@ -13,15 +13,13 @@
 
 package de.bixilon.minosoft.util.task;
 
+import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.util.CountUpAndDownLatch;
-import de.bixilon.minosoft.util.Util;
 import de.bixilon.minosoft.util.logging.Log;
 
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class AsyncTaskWorker {
@@ -65,7 +63,6 @@ public class AsyncTaskWorker {
         });
         ConcurrentLinkedQueue<Task> doing = new ConcurrentLinkedQueue<>(this.tasks);
         CountUpAndDownLatch latch = new CountUpAndDownLatch(doing.size());
-        ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors(), Util.getThreadFactory(this.name));
         while (!doing.isEmpty()) {
             doing.forEach((task -> {
                 AtomicBoolean canStart = new AtomicBoolean(false);
@@ -79,7 +76,7 @@ public class AsyncTaskWorker {
                     if (!canStart.get()) {
                         return;
                     }
-                    executor.execute(() -> {
+                    Minosoft.THREAD_POOL.execute(() -> {
                         try {
                             task.getTask().work(progress);
                         } catch (Exception e) {

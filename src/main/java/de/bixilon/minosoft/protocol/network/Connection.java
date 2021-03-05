@@ -44,14 +44,12 @@ import org.xbill.DNS.TextParseException;
 
 import javax.annotation.Nullable;
 import java.util.LinkedList;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Connection {
     public static int lastConnectionId;
     private final Network network = Network.getNetworkInstance(this);
     private final PacketSender sender = new PacketSender(this);
-    private final LinkedBlockingQueue<ClientboundPacket> handlingQueue = new LinkedBlockingQueue<>();
     private final VelocityHandler velocityHandler = new VelocityHandler(this);
     private final LinkedList<EventInvoker> eventListeners = new LinkedList<>();
     private final int connectionId;
@@ -177,8 +175,29 @@ public class Connection {
         this.version = version;
     }
 
-    public void handle(ClientboundPacket p) {
-        this.handlingQueue.add(p);
+    public void handle(Packets.Clientbound packetType, ClientboundPacket packet) {
+        if (!packetType.isThreadSafe()) {
+            handlePacket(packet);
+            return;
+        }
+        Minosoft.THREAD_POOL.execute(() -> {
+            handlePacket(packet);
+        });
+    }
+
+    private void handlePacket(ClientboundPacket packet) {
+        try {
+            if (Log.getLevel().ordinal() >= LogLevels.PROTOCOL.ordinal()) {
+                packet.log();
+            }
+            PacketReceiveEvent event = new PacketReceiveEvent(this, packet);
+            if (fireEvent(event)) {
+                return;
+            }
+            packet.handle(this);
+        } catch (Throwable exception) {
+            Log.printException(exception, LogLevels.PROTOCOL);
+        }
     }
 
     public void disconnect() {
@@ -213,32 +232,6 @@ public class Connection {
             return cancelableEvent.isCancelled();
         }
         return false;
-    }
-
-    private void startHandlingThread() {
-        this.handleThread = new Thread(() -> {
-            while (isConnected()) {
-                ClientboundPacket packet;
-                try {
-                    packet = this.handlingQueue.take();
-                } catch (InterruptedException e) {
-                    continue;
-                }
-                try {
-                    if (Log.getLevel().ordinal() >= LogLevels.PROTOCOL.ordinal()) {
-                        packet.log();
-                    }
-                    PacketReceiveEvent event = new PacketReceiveEvent(this, packet);
-                    if (fireEvent(event)) {
-                        continue;
-                    }
-                    packet.handle(this);
-                } catch (Throwable e) {
-                    Log.printException(e, LogLevels.PROTOCOL);
-                }
-            }
-        }, String.format("%d/Handling", this.connectionId));
-        this.handleThread.start();
     }
 
     public boolean isConnected() {
@@ -332,8 +325,7 @@ public class Connection {
                     }
                     return -(b.getPriority().ordinal() - a.getPriority().ordinal());
                 });
-                // connection established, starting threads and logging in
-                startHandlingThread();
+
                 ConnectionStates next = ((this.reason == ConnectionReasons.CONNECT) ? ConnectionStates.LOGIN : ConnectionStates.STATUS);
                 if (this.reason == ConnectionReasons.DNS) {
                     // valid hostname found
@@ -471,5 +463,9 @@ public class Connection {
 
     public int getEventListenerSize() {
         return this.eventListeners.size();
+    }
+
+    public Network getNetwork() {
+        return this.network;
     }
 }

@@ -198,17 +198,17 @@ class WorldRenderer(
     }
 
     fun prepareChunkSection(chunkPosition: ChunkPosition, sectionHeight: Int, section: ChunkSection) {
-        renderWindow.rendering.executor.execute {
-            val mesh = prepareChunk(chunkPosition, sectionHeight, section)
+       Minosoft.THREAD_POOL.execute {
+           val mesh = prepareChunk(chunkPosition, sectionHeight, section)
 
-            var sectionMap = chunkSectionsToDraw[chunkPosition]
-            if (sectionMap == null) {
-                sectionMap = ConcurrentHashMap()
-                chunkSectionsToDraw[chunkPosition] = sectionMap
-            }
-            renderWindow.renderQueue.add {
-                mesh.load()
-                sectionMap[sectionHeight]?.unload()
+           var sectionMap = chunkSectionsToDraw[chunkPosition]
+           if (sectionMap == null) {
+               sectionMap = ConcurrentHashMap()
+               chunkSectionsToDraw[chunkPosition] = sectionMap
+           }
+           renderWindow.renderQueue.add {
+               mesh.load()
+               sectionMap[sectionHeight]?.unload()
                 sectionMap[sectionHeight] = mesh
             }
         }

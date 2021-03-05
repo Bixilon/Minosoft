@@ -23,7 +23,9 @@ import de.bixilon.minosoft.protocol.packets.clientbound.login.PacketEncryptionRe
 import de.bixilon.minosoft.protocol.packets.serverbound.login.PacketEncryptionResponse;
 import de.bixilon.minosoft.protocol.protocol.ConnectionStates;
 import de.bixilon.minosoft.protocol.protocol.CryptManager;
+import de.bixilon.minosoft.protocol.protocol.Packets;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
+import de.bixilon.minosoft.util.Pair;
 import de.bixilon.minosoft.util.ServerAddress;
 import de.bixilon.minosoft.util.logging.Log;
 import de.bixilon.minosoft.util.logging.LogLevels;
@@ -102,7 +104,8 @@ public class BlockingSocketNetwork extends Network {
                         break;
                     }
                     try {
-                        handlePacket(receiveClientboundPacket(this.inputStream));
+                        var typeAndPacket = receiveClientboundPacket(this.inputStream);
+                        handlePacket(typeAndPacket.getKey(), typeAndPacket.getValue());
                     } catch (PacketParseException e) {
                         Log.printException(e, LogLevels.PROTOCOL);
                     }
@@ -150,8 +153,8 @@ public class BlockingSocketNetwork extends Network {
     }
 
     @Override
-    protected void handlePacket(ClientboundPacket packet) {
-        super.handlePacket(packet);
+    protected void handlePacket(Packets.Clientbound packetType, ClientboundPacket packet) {
+        super.handlePacket(packetType, packet);
         if (packet instanceof PacketEncryptionRequest) {
             try {
                 Thread.sleep(Integer.MAX_VALUE);
@@ -191,7 +194,7 @@ public class BlockingSocketNetwork extends Network {
         this.socketSendThread.start();
     }
 
-    private ClientboundPacket receiveClientboundPacket(InputStream inputStream) throws IOException, PacketParseException {
+    private Pair<Packets.Clientbound, ClientboundPacket> receiveClientboundPacket(InputStream inputStream) throws IOException, PacketParseException {
         int packetLength = readStreamVarInt(inputStream);
 
         if (packetLength > ProtocolDefinition.PROTOCOL_PACKET_MAX_SIZE) {

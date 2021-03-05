@@ -13,8 +13,15 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.interfaces;
 
+import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class CompressionThresholdChange extends ClientboundPacket {
     public abstract int getThreshold();
+
+    @Override
+    public void handle(@NotNull Connection connection) {
+        connection.getNetwork().setCompressionThreshold(getThreshold());
+    }
 }

@@ -93,18 +93,18 @@ public class Packets {
     }
 
     public enum Clientbound {
-        STATUS_RESPONSE(PacketStatusResponse::new),
-        STATUS_PONG(PacketStatusPong::new),
-        LOGIN_DISCONNECT(PacketLoginDisconnect::new),
-        LOGIN_ENCRYPTION_REQUEST(PacketEncryptionRequest::new),
-        LOGIN_LOGIN_SUCCESS(PacketLoginSuccess::new),
-        LOGIN_SET_COMPRESSION(PacketLoginSetCompression::new),
+        STATUS_RESPONSE(PacketStatusResponse::new, false),
+        STATUS_PONG(PacketStatusPong::new, false),
+        LOGIN_DISCONNECT(PacketLoginDisconnect::new, false),
+        LOGIN_ENCRYPTION_REQUEST(PacketEncryptionRequest::new, false),
+        LOGIN_LOGIN_SUCCESS(PacketLoginSuccess::new, false),
+        LOGIN_SET_COMPRESSION(PacketLoginSetCompression::new, false),
         LOGIN_PLUGIN_REQUEST(PacketLoginPluginRequest::new),
-        PLAY_SPAWN_MOB(PacketSpawnMob::new),
-        PLAY_SPAWN_EXPERIENCE_ORB(PacketSpawnExperienceOrb::new),
-        PLAY_SPAWN_WEATHER_ENTITY(PacketSpawnWeatherEntity::new),
-        PLAY_SPAWN_PAINTING(PacketSpawnPainting::new),
-        PLAY_SPAWN_PLAYER(PacketSpawnPlayer::new),
+        PLAY_SPAWN_MOB(PacketSpawnMob::new, false),
+        PLAY_SPAWN_EXPERIENCE_ORB(PacketSpawnExperienceOrb::new, false),
+        PLAY_SPAWN_WEATHER_ENTITY(PacketSpawnWeatherEntity::new, false),
+        PLAY_SPAWN_PAINTING(PacketSpawnPainting::new, false),
+        PLAY_SPAWN_PLAYER(PacketSpawnPlayer::new, false),
         PLAY_ENTITY_ANIMATION(PacketEntityAnimation::new),
         PLAY_STATS_RESPONSE(PacketStatistics::new),
         PLAY_ACKNOWLEDGE_PLAYER_DIGGING(PacketAcknowledgePlayerDigging::new),
@@ -126,7 +126,7 @@ public class Packets {
         PLAY_SET_COOLDOWN(PacketSetCooldown::new),
         PLAY_PLUGIN_MESSAGE(PacketPluginMessageReceiving::new),
         PLAY_NAMED_SOUND_EFFECT(PacketNamedSoundEffect::new),
-        PLAY_DISCONNECT(PacketDisconnect::new),
+        PLAY_DISCONNECT(PacketDisconnect::new, false),
         PLAY_ENTITY_EVENT(PacketEntityEvent::new),
         PLAY_EXPLOSION(PacketExplosion::new),
         PLAY_UNLOAD_CHUNK(PacketUnloadChunk::new),
@@ -137,7 +137,7 @@ public class Packets {
         PLAY_EFFECT(PacketEffect::new),
         PLAY_PARTICLE(PacketParticle::new),
         PLAY_UPDATE_LIGHT(PacketUpdateLight::new),
-        PLAY_JOIN_GAME(PacketJoinGame::new),
+        PLAY_JOIN_GAME(PacketJoinGame::new, false),
         PLAY_MAP_DATA(PacketMapData::new),
         PLAY_TRADE_LIST(PacketTradeList::new),
         PLAY_ENTITY_MOVEMENT_AND_ROTATION(PacketEntityMovementAndRotation::new),
@@ -157,7 +157,7 @@ public class Packets {
         PLAY_DESTROY_ENTITIES(PacketDestroyEntity::new),
         PLAY_REMOVE_ENTITY_EFFECT(PacketRemoveEntityEffect::new),
         PLAY_RESOURCE_PACK_SEND(PacketResourcePackSend::new),
-        PLAY_RESPAWN(PacketRespawn::new),
+        PLAY_RESPAWN(PacketRespawn::new, false),
         PLAY_ENTITY_HEAD_ROTATION(PacketEntityHeadRotation::new),
         PLAY_SELECT_ADVANCEMENT_TAB(PacketSelectAdvancementTab::new),
         PLAY_WORLD_BORDER(PacketWorldBorder::new),
@@ -183,7 +183,7 @@ public class Packets {
         PLAY_PLAYER_LIST_HEADER_AND_FOOTER(PacketTabHeaderAndFooter::new),
         PLAY_NBT_QUERY_RESPONSE(PacketNBTQueryResponse::new),
         PLAY_COLLECT_ITEM(PacketCollectItem::new),
-        PLAY_ENTITY_TELEPORT(PacketEntityTeleport::new),
+        PLAY_ENTITY_TELEPORT(PacketEntityTeleport::new, false),
         PLAY_ADVANCEMENTS(PacketAdvancements::new),
         PLAY_ENTITY_PROPERTIES(PacketEntityProperties::new),
         PLAY_ENTITY_EFFECT(PacketEntityEffect::new),
@@ -194,19 +194,27 @@ public class Packets {
         PLAY_CHUNK_BULK(PacketChunkBulk::new),
         PLAY_UPDATE_SIGN(PacketUpdateSignReceiving::new),
         PLAY_STATISTICS(PacketStatistics::new),
-        PLAY_SPAWN_ENTITY(PacketSpawnObject::new),
+        PLAY_SPAWN_ENTITY(PacketSpawnObject::new, false),
         PLAY_TITLE(PacketTitle::new),
-        PLAY_ENTITY_INITIALISATION(PacketEntityInitialisation::new),
-        PLAY_SET_COMPRESSION(PacketSetCompression::new),
+        PLAY_ENTITY_INITIALISATION(PacketEntityInitialisation::new, false),
+        PLAY_SET_COMPRESSION(PacketSetCompression::new, false),
         PLAY_ADVANCEMENT_PROGRESS(null),
         PLAY_SCULK_VIBRATION_SIGNAL(PacketSculkVibrationSignal::new);
 
         private final ConnectionStates state;
+        private final boolean isThreadSafe;
         private final PacketInstanceCreator creator;
 
         Clientbound(PacketInstanceCreator creator) {
             this.state = ConnectionStates.valueOf(name().split("_")[0]);
             this.creator = creator;
+            this.isThreadSafe = true;
+        }
+
+        Clientbound(PacketInstanceCreator creator, boolean isThreadSafe) {
+            this.state = ConnectionStates.valueOf(name().split("_")[0]);
+            this.creator = creator;
+            this.isThreadSafe = isThreadSafe;
         }
 
         public ConnectionStates getState() {
@@ -215,6 +223,10 @@ public class Packets {
 
         public ClientboundPacket createNewInstance() {
             return this.creator.createNewInstance();
+        }
+
+        public boolean isThreadSafe() {
+            return this.isThreadSafe;
         }
     }
 

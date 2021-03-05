@@ -137,7 +137,8 @@ public class NonBlockingSocketNetwork extends Network {
                         if (!currentPacketBuffer.hasRemaining()) {
                             currentPacketBuffer.flip();
                             try {
-                                handlePacket(receiveClientboundPacket(decryptData(currentPacketBuffer.array())));
+                                var typeAndPacket = receiveClientboundPacket(decryptData(currentPacketBuffer.array()));
+                                handlePacket(typeAndPacket.getKey(), typeAndPacket.getValue());
                             } catch (PacketParseException e) {
                                 Log.printException(e, LogLevels.PROTOCOL);
                             }

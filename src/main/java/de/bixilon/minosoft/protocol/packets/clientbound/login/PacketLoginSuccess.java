@@ -15,6 +15,7 @@ package de.bixilon.minosoft.protocol.packets.clientbound.login;
 
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
+import de.bixilon.minosoft.protocol.protocol.ConnectionStates;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.Util;
 import de.bixilon.minosoft.util.logging.Log;
@@ -24,8 +25,8 @@ import java.util.UUID;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_20W12A;
 
 public class PacketLoginSuccess extends ClientboundPacket {
-    UUID uuid;
-    String playerName;
+    private UUID uuid;
+    private String playerName;
 
     @Override
     public boolean read(InByteBuffer buffer) {
@@ -40,6 +41,8 @@ public class PacketLoginSuccess extends ClientboundPacket {
 
     @Override
     public void handle(Connection connection) {
+        connection.setConnectionState(ConnectionStates.PLAY);
+
         connection.getPlayer().setPlayerUUID(getUUID());
         connection.getPlayer().setPlayerName(getPlayerName());
     }

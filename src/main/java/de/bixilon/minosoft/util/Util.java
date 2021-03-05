@@ -225,7 +225,7 @@ public final class Util {
     }
 
     public static ThreadFactory getThreadFactory(String threadName) {
-        return new ThreadFactoryBuilder().setNameFormat(threadName + "#%d").build();
+        return new ThreadFactoryBuilder().setNameFormat(threadName + "/%d").build();
     }
 
     public static boolean createParentFolderIfNotExist(String file) {
