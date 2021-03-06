@@ -27,7 +27,6 @@ open class BlockCondition {
 
     constructor(data: JsonElement) {
         when (data) {
-            null -> return
             is JsonObject -> {
                 addToProperties(data.asJsonObject)
             }
@@ -38,6 +37,8 @@ open class BlockCondition {
             }
         }
     }
+
+    constructor()
 
     private fun addToProperties(data: JsonObject) {
         val current: MutableList<MutableSet<BlockProperties>> = mutableListOf()
@@ -86,28 +87,17 @@ open class BlockCondition {
         blockProperties.add(current)
     }
 
-    constructor()
-
     open fun contains(testProperties: MutableSet<BlockProperties>, testRotation: BlockRotations): Boolean {
         if (rotation != BlockRotations.NONE && rotation != testRotation) {
             return false
         }
-        for (propertiesSubSet in blockProperties) {
-            var propertiesGood = true
+        outerLoop@ for (propertiesSubSet in blockProperties) {
             for (properties in propertiesSubSet) {
-                for (property in properties) {
-                    if (! testProperties.contains(property)) {
-                        propertiesGood = false
-                        break
-                    }
-                }
-                if (! propertiesGood) {
-                    break
+                if (testProperties.intersect(properties).isEmpty()) {
+                    continue@outerLoop
                 }
             }
-            if (propertiesGood) {
-                return true
-            }
+            return true
         }
         return false
     }
