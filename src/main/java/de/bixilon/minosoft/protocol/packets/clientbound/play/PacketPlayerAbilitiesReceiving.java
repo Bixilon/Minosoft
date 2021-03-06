@@ -21,7 +21,7 @@ import de.bixilon.minosoft.util.logging.Log;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W03B;
 
 public class PacketPlayerAbilitiesReceiving extends ClientboundPacket {
-    boolean creative; // is this needed? receiving the gameMode in change Game state
+    boolean creative; // is this needed? receiving the gamemode in change Game state
     boolean flying;
     boolean canFly;
     boolean godMode;

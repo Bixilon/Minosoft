@@ -15,7 +15,7 @@ package de.bixilon.minosoft.modding.event.events;
 
 import com.google.common.collect.HashBiMap;
 import de.bixilon.minosoft.data.Difficulties;
-import de.bixilon.minosoft.data.GameModes;
+import de.bixilon.minosoft.data.Gamemodes;
 import de.bixilon.minosoft.data.LevelTypes;
 import de.bixilon.minosoft.data.mappings.Dimension;
 import de.bixilon.minosoft.data.mappings.ResourceLocation;
@@ -25,7 +25,7 @@ import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketJoinGame;
 public class JoinGameEvent extends CancelableEvent {
     private final int entityId;
     private final boolean hardcore;
-    private final GameModes gameMode;
+    private final Gamemodes gamemode;
     private final Dimension dimension;
     private final Difficulties difficulty;
     private final int viewDistance;
@@ -36,11 +36,11 @@ public class JoinGameEvent extends CancelableEvent {
     private final long hashedSeed;
     private final HashBiMap<ResourceLocation, Dimension> dimensions;
 
-    public JoinGameEvent(Connection connection, int entityId, boolean hardcore, GameModes gameMode, Dimension dimension, Difficulties difficulty, int viewDistance, int maxPlayers, LevelTypes levelType, boolean reducedDebugScreen, boolean enableRespawnScreen, long hashedSeed, HashBiMap<ResourceLocation, Dimension> dimensions) {
+    public JoinGameEvent(Connection connection, int entityId, boolean hardcore, Gamemodes gamemode, Dimension dimension, Difficulties difficulty, int viewDistance, int maxPlayers, LevelTypes levelType, boolean reducedDebugScreen, boolean enableRespawnScreen, long hashedSeed, HashBiMap<ResourceLocation, Dimension> dimensions) {
         super(connection);
         this.entityId = entityId;
         this.hardcore = hardcore;
-        this.gameMode = gameMode;
+        this.gamemode = gamemode;
         this.dimension = dimension;
         this.difficulty = difficulty;
         this.viewDistance = viewDistance;
@@ -56,7 +56,7 @@ public class JoinGameEvent extends CancelableEvent {
         super(connection);
         this.entityId = pkg.getEntityId();
         this.hardcore = pkg.isHardcore();
-        this.gameMode = pkg.getGameMode();
+        this.gamemode = pkg.getGamemode();
         this.dimension = pkg.getDimension();
         this.difficulty = pkg.getDifficulty();
         this.viewDistance = pkg.getViewDistance();
@@ -76,8 +76,8 @@ public class JoinGameEvent extends CancelableEvent {
         return this.hardcore;
     }
 
-    public GameModes getGameMode() {
-        return this.gameMode;
+    public Gamemodes getGamemode() {
+        return this.gamemode;
     }
 
     public Dimension getDimension() {

@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.player;
 
-import de.bixilon.minosoft.data.GameModes;
+import de.bixilon.minosoft.data.Gamemodes;
 import de.bixilon.minosoft.data.text.ChatComponent;
 import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketPlayerListItem;
 
@@ -28,7 +28,7 @@ public class PlayerListItemBulk {
     private final boolean legacy;
     private final int ping;
     // optional fields
-    private final GameModes gameMode;
+    private final Gamemodes gamemode;
     private final ChatComponent displayName;
     private final HashMap<PlayerProperties, PlayerProperty> properties;
     private final PacketPlayerListItem.PlayerListItemActions action;
@@ -38,17 +38,17 @@ public class PlayerListItemBulk {
         this.uuid = UUID.randomUUID();
         this.name = name;
         this.ping = ping;
-        this.gameMode = null;
+        this.gamemode = null;
         this.displayName = null;
         this.properties = null;
         this.legacy = true;
     }
 
-    public PlayerListItemBulk(UUID uuid, String name, int ping, GameModes gameMode, ChatComponent displayName, HashMap<PlayerProperties, PlayerProperty> properties, PacketPlayerListItem.PlayerListItemActions action) {
+    public PlayerListItemBulk(UUID uuid, String name, int ping, Gamemodes gamemode, ChatComponent displayName, HashMap<PlayerProperties, PlayerProperty> properties, PacketPlayerListItem.PlayerListItemActions action) {
         this.uuid = uuid;
         this.name = name;
         this.ping = ping;
-        this.gameMode = gameMode;
+        this.gamemode = gamemode;
         this.displayName = displayName;
         this.properties = properties;
         this.action = action;
@@ -67,8 +67,8 @@ public class PlayerListItemBulk {
         return this.ping;
     }
 
-    public GameModes getGameMode() {
-        return this.gameMode;
+    public Gamemodes getGamemode() {
+        return this.gamemode;
     }
 
     public ChatComponent getDisplayName() {
@@ -97,6 +97,6 @@ public class PlayerListItemBulk {
 
     @Override
     public String toString() {
-        return String.format("uuid=%s, action=%s, name=%s, gameMode=%s, ping=%d, displayName=%s", getUUID(), getAction(), getName(), getGameMode(), getPing(), getDisplayName());
+        return String.format("uuid=%s, action=%s, name=%s, gamemode=%s, ping=%d, displayName=%s", getUUID(), getAction(), getName(), getGamemode(), getPing(), getDisplayName());
     }
 }

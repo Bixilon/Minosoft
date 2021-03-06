@@ -14,7 +14,7 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play
 
 import com.google.common.collect.HashBiMap
 import de.bixilon.minosoft.data.Difficulties
-import de.bixilon.minosoft.data.GameModes
+import de.bixilon.minosoft.data.Gamemodes
 import de.bixilon.minosoft.data.LevelTypes
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.data.mappings.Dimension
@@ -36,7 +36,7 @@ import kotlin.experimental.and
 class PacketJoinGame : ClientboundPacket() {
     var entityId: Int = 0
     var isHardcore: Boolean = false
-    var gameMode: GameModes = GameModes.SPECTATOR
+    var gamemode: Gamemodes = Gamemodes.SPECTATOR
     var dimension: Dimension? = null
     var difficulty: Difficulties = Difficulties.NORMAL
     var viewDistance = -1
@@ -51,13 +51,13 @@ class PacketJoinGame : ClientboundPacket() {
         entityId = buffer.readInt()
 
         if (buffer.versionId < V_20W27A) {
-            val gameModeRaw = buffer.readByte()
-            isHardcore = BitByte.isBitSet(gameModeRaw.toLong(), 3)
+            val gamemodeRaw = buffer.readByte()
+            isHardcore = BitByte.isBitSet(gamemodeRaw.toLong(), 3)
             // remove hardcore bit and get gamemode
-            gameMode = GameModes.byId((gameModeRaw and (0x8.inv())).toInt())
+            gamemode = Gamemodes.byId((gamemodeRaw and (0x8.inv())).toInt())
         } else {
             isHardcore = buffer.readBoolean()
-            gameMode = GameModes.byId(buffer.readUnsignedByte().toInt())
+            gamemode = Gamemodes.byId(buffer.readUnsignedByte().toInt())
         }
 
         if (buffer.versionId < ProtocolVersions.V_1_9_1) {
@@ -135,7 +135,7 @@ class PacketJoinGame : ClientboundPacket() {
         if (connection.fireEvent(JoinGameEvent(connection, this))) {
             return
         }
-        connection.player.gameMode = gameMode
+        connection.player.gamemode = gamemode
         connection.player.world.isHardcore = isHardcore
         connection.mapping.dimensionRegistry.setData(dimensions)
         connection.player.world.dimension = dimension
@@ -174,7 +174,7 @@ class PacketJoinGame : ClientboundPacket() {
     }
 
     override fun log() {
-        Log.protocol(String.format("[IN] Receiving join game packet (entityId=%s, gameMode=%s, dimension=%s, difficulty=%s, hardcore=%s, viewDistance=%d)", entityId, gameMode, dimension, difficulty, isHardcore, viewDistance))
+        Log.protocol(String.format("[IN] Receiving join game packet (entityId=%s, gamemode=%s, dimension=%s, difficulty=%s, hardcore=%s, viewDistance=%d)", entityId, gamemode, dimension, difficulty, isHardcore, viewDistance))
     }
 
     override fun onError(connection: Connection) {

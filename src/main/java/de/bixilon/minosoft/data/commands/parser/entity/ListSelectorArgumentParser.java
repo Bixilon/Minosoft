@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.commands.parser.entity;
 
-import de.bixilon.minosoft.data.GameModes;
+import de.bixilon.minosoft.data.Gamemodes;
 import de.bixilon.minosoft.data.commands.CommandStringReader;
 import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException;
 import de.bixilon.minosoft.data.commands.parser.exceptions.entity.UnknownEnumValueCommandParseException;
@@ -23,7 +23,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 
 public class ListSelectorArgumentParser extends EntitySelectorArgumentParser {
-    public static final ListSelectorArgumentParser GAMEMODE_SELECTOR_ARGUMENT_PARSER = new ListSelectorArgumentParser(GameModes.values());
+    public static final ListSelectorArgumentParser GAMEMODE_SELECTOR_ARGUMENT_PARSER = new ListSelectorArgumentParser(Gamemodes.values());
     public static final ListSelectorArgumentParser SORT_SELECTOR_ARGUMENT_PARSER = new ListSelectorArgumentParser("arbitrary", "furthest", "nearest", "random");
 
     private final HashSet<String> values;

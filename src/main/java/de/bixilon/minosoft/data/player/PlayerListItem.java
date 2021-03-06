@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.player;
 
-import de.bixilon.minosoft.data.GameModes;
+import de.bixilon.minosoft.data.Gamemodes;
 import de.bixilon.minosoft.data.text.ChatComponent;
 
 import java.util.HashMap;
@@ -27,7 +27,7 @@ public class PlayerListItem {
     private final boolean legacy;
     int ping;
     // optional fields
-    GameModes gameMode;
+    Gamemodes gamemode;
     ChatComponent displayName;
     HashMap<PlayerProperties, PlayerProperty> properties;
 
@@ -44,11 +44,11 @@ public class PlayerListItem {
         this.legacy = true;
     }
 
-    public PlayerListItem(UUID uuid, String name, int ping, GameModes gameMode, ChatComponent displayName, HashMap<PlayerProperties, PlayerProperty> properties) {
+    public PlayerListItem(UUID uuid, String name, int ping, Gamemodes gamemode, ChatComponent displayName, HashMap<PlayerProperties, PlayerProperty> properties) {
         this.uuid = uuid;
         this.name = name;
         this.ping = ping;
-        this.gameMode = gameMode;
+        this.gamemode = gamemode;
         this.displayName = displayName;
         this.properties = properties;
         this.legacy = false;
@@ -70,12 +70,12 @@ public class PlayerListItem {
         this.ping = ping;
     }
 
-    public GameModes getGameMode() {
-        return this.gameMode;
+    public Gamemodes getGamemode() {
+        return this.gamemode;
     }
 
-    public void setGameMode(GameModes gameMode) {
-        this.gameMode = gameMode;
+    public void setGamemode(Gamemodes gamemode) {
+        this.gamemode = gamemode;
     }
 
     public ChatComponent getDisplayName() {

@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.data.GameModes;
+import de.bixilon.minosoft.data.Gamemodes;
 import de.bixilon.minosoft.data.player.PlayerListItem;
 import de.bixilon.minosoft.data.player.PlayerListItemBulk;
 import de.bixilon.minosoft.data.player.PlayerProperties;
@@ -54,7 +54,7 @@ public class PacketPlayerListItem extends ClientboundPacket {
         for (int i = 0; i < count; i++) {
             UUID uuid = buffer.readUUID();
             PlayerListItemBulk listItemBulk;
-            // UUID uuid, String name, int ping, GameMode gameMode, TextComponent displayName, HashMap< PlayerProperties, PlayerProperty > properties, PacketPlayerInfo.PlayerInfoAction action) {
+            // UUID uuid, String name, int ping, GameMode gamemode, TextComponent displayName, HashMap< PlayerProperties, PlayerProperty > properties, PacketPlayerInfo.PlayerInfoAction action) {
             switch (action) {
                 case ADD -> {
                     String name = buffer.readString();
@@ -64,12 +64,12 @@ public class PacketPlayerListItem extends ClientboundPacket {
                         PlayerProperty property = new PlayerProperty(PlayerProperties.byName(buffer.readString()), buffer.readString(), (buffer.readBoolean() ? buffer.readString() : null));
                         playerProperties.put(property.getProperty(), property);
                     }
-                    GameModes gameMode = GameModes.byId(buffer.readVarInt());
+                    Gamemodes gamemode = Gamemodes.byId(buffer.readVarInt());
                     int ping = buffer.readVarInt();
                     ChatComponent displayName = (buffer.readBoolean() ? buffer.readChatComponent() : null);
-                    listItemBulk = new PlayerListItemBulk(uuid, name, ping, gameMode, displayName, playerProperties, action);
+                    listItemBulk = new PlayerListItemBulk(uuid, name, ping, gamemode, displayName, playerProperties, action);
                 }
-                case UPDATE_GAMEMODE -> listItemBulk = new PlayerListItemBulk(uuid, null, 0, GameModes.byId(buffer.readVarInt()), null, null, action);
+                case UPDATE_GAMEMODE -> listItemBulk = new PlayerListItemBulk(uuid, null, 0, Gamemodes.byId(buffer.readVarInt()), null, null, action);
                 case UPDATE_LATENCY -> listItemBulk = new PlayerListItemBulk(uuid, null, buffer.readVarInt(), null, null, null, action);
                 case UPDATE_DISPLAY_NAME -> listItemBulk = new PlayerListItemBulk(uuid, null, 0, null, (buffer.readBoolean() ? buffer.readChatComponent() : null), null, action);
                 case REMOVE_PLAYER -> listItemBulk = new PlayerListItemBulk(uuid, null, 0, null, null, null, action);
@@ -92,7 +92,7 @@ public class PacketPlayerListItem extends ClientboundPacket {
                 continue;
             }
             switch (bulk.getAction()) {
-                case ADD -> connection.getPlayer().getPlayerList().put(bulk.getUUID(), new PlayerListItem(bulk.getUUID(), bulk.getName(), bulk.getPing(), bulk.getGameMode(), bulk.getDisplayName(), bulk.getProperties()));
+                case ADD -> connection.getPlayer().getPlayerList().put(bulk.getUUID(), new PlayerListItem(bulk.getUUID(), bulk.getName(), bulk.getPing(), bulk.getGamemode(), bulk.getDisplayName(), bulk.getProperties()));
                 case UPDATE_LATENCY -> {
                     if (bulk.isLegacy()) {
                         // add or update
@@ -119,7 +119,7 @@ public class PacketPlayerListItem extends ClientboundPacket {
                     }
                     connection.getPlayer().getPlayerList().remove(bulk.getUUID());
                 }
-                case UPDATE_GAMEMODE -> item.setGameMode(bulk.getGameMode());
+                case UPDATE_GAMEMODE -> item.setGamemode(bulk.getGamemode());
                 case UPDATE_DISPLAY_NAME -> item.setDisplayName(bulk.getDisplayName());
             }
         }

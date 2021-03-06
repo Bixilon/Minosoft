@@ -13,7 +13,7 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play
 
 import de.bixilon.minosoft.data.Difficulties
-import de.bixilon.minosoft.data.GameModes
+import de.bixilon.minosoft.data.Gamemodes
 import de.bixilon.minosoft.data.LevelTypes
 import de.bixilon.minosoft.data.mappings.Dimension
 import de.bixilon.minosoft.data.mappings.ResourceLocation
@@ -29,7 +29,7 @@ import de.bixilon.minosoft.util.nbt.tag.CompoundTag
 class PacketRespawn : ClientboundPacket() {
     var dimension: Dimension? = null
     var difficulty: Difficulties? = null
-    var gameMode: GameModes? = null
+    var gamemode: Gamemodes? = null
     var levelType: LevelTypes? = null
     var hashedSeed: Long = 0
     var isDebug = false
@@ -64,7 +64,7 @@ class PacketRespawn : ClientboundPacket() {
         if (buffer.versionId >= ProtocolVersions.V_19W36A) {
             hashedSeed = buffer.readLong()
         }
-        gameMode = GameModes.byId(buffer.readUnsignedByte().toInt())
+        gamemode = Gamemodes.byId(buffer.readUnsignedByte().toInt())
         if (buffer.versionId >= ProtocolVersions.V_1_16_PRE6) {
             buffer.readByte() // previous game mode
         }
@@ -90,11 +90,11 @@ class PacketRespawn : ClientboundPacket() {
         connection.player.world.chunks.clear()
         connection.player.world.dimension = dimension
         connection.player.isSpawnConfirmed = false
-        connection.player.gameMode = gameMode
+        connection.player.gamemode = gamemode
         connection.renderer.renderWindow.worldRenderer.clearChunkCache()
     }
 
     override fun log() {
-        Log.protocol(String.format("[IN] Respawn packet received (dimension=%s, difficulty=%s, gameMode=%s, levelType=%s)", dimension, difficulty, gameMode, levelType))
+        Log.protocol(String.format("[IN] Respawn packet received (dimension=%s, difficulty=%s, gamemode=%s, levelType=%s)", dimension, difficulty, gamemode, levelType))
     }
 }

@@ -14,21 +14,21 @@
 package de.bixilon.minosoft.modding.event.events;
 
 import de.bixilon.minosoft.data.Difficulties;
-import de.bixilon.minosoft.data.GameModes;
+import de.bixilon.minosoft.data.Gamemodes;
 import de.bixilon.minosoft.data.LevelTypes;
 import de.bixilon.minosoft.data.mappings.Dimension;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketRespawn;
 
 public class RespawnEvent extends CancelableEvent {
-    private final GameModes gameMode;
+    private final Gamemodes gamemode;
     private final Dimension dimension;
     private final Difficulties difficulty;
     private final LevelTypes levelType;
 
-    public RespawnEvent(Connection connection, GameModes gameMode, Dimension dimension, Difficulties difficulty, LevelTypes levelType) {
+    public RespawnEvent(Connection connection, Gamemodes gamemode, Dimension dimension, Difficulties difficulty, LevelTypes levelType) {
         super(connection);
-        this.gameMode = gameMode;
+        this.gamemode = gamemode;
         this.dimension = dimension;
         this.difficulty = difficulty;
         this.levelType = levelType;
@@ -36,14 +36,14 @@ public class RespawnEvent extends CancelableEvent {
 
     public RespawnEvent(Connection connection, PacketRespawn pkg) {
         super(connection);
-        this.gameMode = pkg.getGameMode();
+        this.gamemode = pkg.getGamemode();
         this.dimension = pkg.getDimension();
         this.difficulty = pkg.getDifficulty();
         this.levelType = pkg.getLevelType();
     }
 
-    public GameModes getGameMode() {
-        return this.gameMode;
+    public Gamemodes getGamemode() {
+        return this.gamemode;
     }
 
     public Dimension getDimension() {

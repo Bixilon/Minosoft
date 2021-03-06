@@ -13,8 +13,10 @@
 
 package de.bixilon.minosoft.gui.rendering.hud.elements
 
-import de.bixilon.minosoft.gui.rendering.hud.HUDMesh
+import de.bixilon.minosoft.gui.rendering.hud.ElementMesh
 import de.bixilon.minosoft.gui.rendering.hud.atlas.HUDAtlasElement
+import de.bixilon.minosoft.gui.rendering.hud.atlas.TextureLike
+import de.bixilon.minosoft.gui.rendering.textures.Texture
 import glm_.vec2.Vec2
 import kotlin.math.abs
 
@@ -25,8 +27,8 @@ class ProgressBar(
 ) {
     val size: Vec2 = emptyAtlasElement.binding.size
 
-    fun draw(hudMesh: HUDMesh, start: Vec2, end: Vec2, progress: Float, z: Int = 1) {
-        //hudElement.drawImage(start, end, hudMesh, emptyAtlasElement, z)
+    fun draw(elementMesh: ElementMesh, start: Vec2, end: Vec2, progress: Float, z: Int = 1) {
+        elementMesh.addElement(start, end, emptyAtlasElement, z)
 
         if (progress == 0.0f) {
             return
@@ -41,6 +43,14 @@ class ProgressBar(
 
         textureEnd = Vec2((textureEnd.x - textureStart.x) * progress, textureEnd.y)
 
-        //   hudElement.drawImage(start, Vec2(start.x + ourXDiff, end.y), hudMesh, fullAtlasElement, textureStart, textureEnd, z + 1)
+        elementMesh.addElement(start, Vec2(start.x + ourXDiff, end.y), object : TextureLike {
+            override val texture: Texture
+                get() = fullAtlasElement.texture
+            override val uvStart: Vec2
+                get() = textureStart
+            override val uvEnd: Vec2
+                get() = textureEnd
+
+        }, z + 1)
     }
 }

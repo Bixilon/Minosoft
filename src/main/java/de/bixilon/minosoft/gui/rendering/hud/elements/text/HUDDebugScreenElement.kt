@@ -56,11 +56,12 @@ class HUDDebugScreenElement(private val hudTextElement: HUDTextElement) : HUDTex
             "XYZ ${getLocation()}",
             "Block ${getBlockPosition()}",
             "Chunk ${getChunkLocation()}",
-            "Facing ${getFacing()}",
-            "Dimension ${hudTextElement.connection.player.world.dimension}",
-            "Biome ${camera.currentBiome}",
+            "Facing: ${getFacing()}",
+            "Gamemode: ${hudTextElement.connection.player.gamemode?.name?.toLowerCase()}",
+            "Dimension: ${hudTextElement.connection.player.world.dimension}",
+            "Biome: ${camera.currentBiome}",
             "",
-            "Difficulty ${hudTextElement.connection.player.world.difficulty?.name?.toLowerCase()}, ${
+            "Difficulty: ${hudTextElement.connection.player.world.difficulty?.name?.toLowerCase()}, ${
                 if (hudTextElement.connection.player.world.difficultyLocked) {
                     "locked"
                 } else {
@@ -82,7 +83,9 @@ class HUDDebugScreenElement(private val hudTextElement: HUDTextElement) : HUDTex
             "GPU: $gpuText",
             "Version: $gpuVersionText",
             "",
-            "Commit: ${GitInfo.GIT_COMMIT_ID_DESCRIBE}: ${GitInfo.GIT_COMMIT_MESSAGE_SHORT}",
+            GitInfo.IS_INITIALIZED.takeUnless { true }?.let {
+                "Commit: ${GitInfo.GIT_COMMIT_ID_DESCRIBE}: ${GitInfo.GIT_COMMIT_MESSAGE_SHORT}"
+            } ?: "GitInfo uninitialized",
             "",
             "Mods: ${ModLoader.MOD_MAP.size} active, ${hudTextElement.connection.eventListenerSize} listeners",
         ))

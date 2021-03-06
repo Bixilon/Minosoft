@@ -23,6 +23,8 @@ import java.text.SimpleDateFormat
 
 
 object GitInfo {
+    var IS_INITIALIZED: Boolean = false
+        private set
     var GIT_BRANCH: String = "master"
         private set
     var GIT_BUILD_HOST_BRANCH: String = ""
@@ -98,6 +100,8 @@ object GitInfo {
                 json["git.tags"].asInt
             }
             GIT_TOTAL_COMMIT_COUNT = json["git.total.commit.count"].asInt
+
+            IS_INITIALIZED = true
         } catch (exception: Throwable) {
             Log.printException(exception, LogLevels.DEBUG)
             Log.warn("Can not load git information.")

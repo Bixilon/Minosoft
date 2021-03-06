@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.data.GameModes;
+import de.bixilon.minosoft.data.Gamemodes;
 import de.bixilon.minosoft.data.VersionValueMap;
 import de.bixilon.minosoft.modding.event.events.ChangeGameStateEvent;
 import de.bixilon.minosoft.protocol.network.Connection;
@@ -46,14 +46,14 @@ public class PacketChangeGameState extends ClientboundPacket {
         Log.game(switch (getReason()) {
             case START_RAINING -> "Received weather packet: Starting rain...";
             case STOP_RAINING -> "Received weather packet: Stopping rain...";
-            case CHANGE_GAMEMODE -> String.format("Received game mode change: Now in %s", GameModes.byId(getIntValue()));
+            case CHANGE_GAMEMODE -> String.format("Received game mode change: Now in %s", Gamemodes.byId(getIntValue()));
             default -> "";
         });
 
         switch (getReason()) {
             case STOP_RAINING -> connection.getPlayer().getWorld().setRaining(false);
             case START_RAINING -> connection.getPlayer().getWorld().setRaining(true);
-            case CHANGE_GAMEMODE -> connection.getPlayer().setGameMode(GameModes.byId(getIntValue()));
+            case CHANGE_GAMEMODE -> connection.getPlayer().setGamemode(Gamemodes.byId(getIntValue()));
         }
     }
 

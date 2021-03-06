@@ -13,15 +13,15 @@
 
 package de.bixilon.minosoft.data;
 
-public enum GameModes {
+public enum Gamemodes {
     SURVIVAL,
     CREATIVE,
     ADVENTURE,
     SPECTATOR;
 
-    private static final GameModes[] GAME_MODES = values();
+    private static final Gamemodes[] GAME_MODES = values();
 
-    public static GameModes byId(int id) {
+    public static Gamemodes byId(int id) {
         return GAME_MODES[id];
     }
 }
