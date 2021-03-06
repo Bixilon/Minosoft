@@ -13,8 +13,8 @@
 package de.bixilon.minosoft.protocol.protocol
 
 import com.google.common.collect.HashBiMap
-import de.bixilon.minosoft.protocol.protocol.Packets.Clientbound
-import de.bixilon.minosoft.protocol.protocol.Packets.Serverbound
+import de.bixilon.minosoft.protocol.protocol.PacketTypes.Clientbound
+import de.bixilon.minosoft.protocol.protocol.PacketTypes.Serverbound
 import java.util.*
 
 object Protocol {

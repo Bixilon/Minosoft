@@ -48,7 +48,7 @@ public abstract class Network {
         return this.lastException;
     }
 
-    protected Pair<Packets.Clientbound, ClientboundPacket> receiveClientboundPacket(byte[] bytes) throws PacketParseException {
+    protected Pair<PacketTypes.Clientbound, ClientboundPacket> receiveClientboundPacket(byte[] bytes) throws PacketParseException {
         if (this.compressionThreshold >= 0) {
             // compression is enabled
             InByteBuffer rawData = new InByteBuffer(bytes, this.connection);
@@ -61,7 +61,7 @@ public abstract class Network {
         }
         InPacketBuffer data = new InPacketBuffer(bytes, this.connection);
 
-        Packets.Clientbound packetType = null;
+        PacketTypes.Clientbound packetType = null;
 
         try {
             packetType = this.connection.getPacketByCommand(this.connection.getConnectionState(), data.getPacketTypeId());
@@ -130,7 +130,7 @@ public abstract class Network {
         return data;
     }
 
-    protected void handlePacket(Packets.Clientbound packetType, ClientboundPacket packet) {
+    protected void handlePacket(PacketTypes.Clientbound packetType, ClientboundPacket packet) {
         this.connection.handle(packetType, packet);
     }
 

@@ -17,14 +17,14 @@ import de.bixilon.minosoft.data.player.Hands
 import de.bixilon.minosoft.protocol.network.Connection
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer
-import de.bixilon.minosoft.protocol.protocol.Packets
+import de.bixilon.minosoft.protocol.protocol.PacketTypes
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.util.logging.Log
 
 class PacketClientSettings(private val locale: String = "en_US", private val renderDistance: Int = 10, private val mainHand: Hands = Hands.MAIN_HAND, private val disableTextFiltering: Boolean = true) : ServerboundPacket {
 
     override fun write(connection: Connection): OutPacketBuffer {
-        val buffer = OutPacketBuffer(connection, Packets.Serverbound.PLAY_CLIENT_SETTINGS)
+        val buffer = OutPacketBuffer(connection, PacketTypes.Serverbound.PLAY_CLIENT_SETTINGS)
         buffer.writeString(locale) // locale
         buffer.writeByte(renderDistance) // render Distance
         buffer.writeByte(0x00.toByte()) // chat settings (nobody uses them)

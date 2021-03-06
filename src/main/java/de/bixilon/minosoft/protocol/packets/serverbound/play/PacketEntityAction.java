@@ -17,7 +17,7 @@ import de.bixilon.minosoft.data.VersionValueMap;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
-import de.bixilon.minosoft.protocol.protocol.Packets;
+import de.bixilon.minosoft.protocol.protocol.PacketTypes;
 import de.bixilon.minosoft.util.logging.Log;
 
 import java.util.Map;
@@ -43,7 +43,7 @@ public class PacketEntityAction implements ServerboundPacket {
 
     @Override
     public OutPacketBuffer write(Connection connection) {
-        OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_ENTITY_ACTION);
+        OutPacketBuffer buffer = new OutPacketBuffer(connection, PacketTypes.Serverbound.PLAY_ENTITY_ACTION);
         buffer.writeEntityId(this.entityId);
         if (buffer.getVersionId() < V_14W04A) {
             buffer.writeByte((byte) this.action.getId(buffer.getVersionId()));

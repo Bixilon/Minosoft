@@ -17,7 +17,7 @@ import com.google.common.collect.HashBiMap;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import de.bixilon.minosoft.protocol.protocol.ConnectionStates;
-import de.bixilon.minosoft.protocol.protocol.Packets;
+import de.bixilon.minosoft.protocol.protocol.PacketTypes;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 
 import java.util.HashMap;
@@ -58,8 +58,8 @@ public class Versions {
             return VERSION_ID_MAP.get(versionId);
         }
 
-        Map<ConnectionStates, HashBiMap<Packets.Serverbound, Integer>> serverboundPacketMapping;
-        Map<ConnectionStates, HashBiMap<Packets.Clientbound, Integer>> clientboundPacketMapping;
+        Map<ConnectionStates, HashBiMap<PacketTypes.Serverbound, Integer>> serverboundPacketMapping;
+        Map<ConnectionStates, HashBiMap<PacketTypes.Clientbound, Integer>> clientboundPacketMapping;
         if (versionJson.get("mapping").isJsonPrimitive()) {
             // inherits or copies mapping from an other version
             Version parent = VERSION_ID_MAP.get(versionJson.get("mapping").getAsInt());
@@ -73,7 +73,7 @@ public class Versions {
             serverboundPacketMapping = new HashMap<>();
 
             for (JsonElement packetElement : mappingJson.getAsJsonArray("serverbound")) {
-                Packets.Serverbound packet = Packets.Serverbound.valueOf(packetElement.getAsString());
+                PacketTypes.Serverbound packet = PacketTypes.Serverbound.valueOf(packetElement.getAsString());
                 if (!serverboundPacketMapping.containsKey(packet.getState())) {
                     serverboundPacketMapping.put(packet.getState(), HashBiMap.create(30));
                 }
@@ -81,7 +81,7 @@ public class Versions {
             }
             clientboundPacketMapping = new HashMap<>();
             for (JsonElement packetElement : mappingJson.getAsJsonArray("clientbound")) {
-                Packets.Clientbound packet = Packets.Clientbound.valueOf(packetElement.getAsString());
+                PacketTypes.Clientbound packet = PacketTypes.Clientbound.valueOf(packetElement.getAsString());
                 if (!clientboundPacketMapping.containsKey(packet.getState())) {
                     clientboundPacketMapping.put(packet.getState(), HashBiMap.create(100));
                 }

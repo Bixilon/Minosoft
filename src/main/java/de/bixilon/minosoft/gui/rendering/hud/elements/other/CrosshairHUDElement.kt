@@ -14,8 +14,8 @@
 package de.bixilon.minosoft.gui.rendering.hud.elements.other
 
 import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.gui.rendering.hud.ElementMesh
 import de.bixilon.minosoft.gui.rendering.hud.HUDElementProperties
-import de.bixilon.minosoft.gui.rendering.hud.HUDMesh
 import de.bixilon.minosoft.gui.rendering.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.hud.atlas.HUDAtlasElement
 import de.bixilon.minosoft.gui.rendering.hud.elements.HUDElement
@@ -28,7 +28,7 @@ class CrosshairHUDElement(
         position = Vec2(0f, 0f),
         xBinding = HUDElementProperties.PositionBindings.CENTER,
         yBinding = HUDElementProperties.PositionBindings.CENTER,
-        scale = 1f,
+        scale = 1.0f,
         enabled = true,
     )
 
@@ -43,7 +43,7 @@ class CrosshairHUDElement(
     }
 
 
-    override fun prepare(hudMesh: HUDMesh) {
-        drawImage(getRealPosition(crosshairRealSize, elementProperties, RealTypes.START), getRealPosition(crosshairRealSize, elementProperties, RealTypes.END), hudMesh, crosshairAtlasElement, 1)
+    override fun prepare(elementMesh: ElementMesh) {
+        elementMesh.addElement(end = crosshairAtlasElement.binding.size, textureLike = crosshairAtlasElement)
     }
 }

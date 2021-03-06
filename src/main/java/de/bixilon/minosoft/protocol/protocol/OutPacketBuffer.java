@@ -18,7 +18,7 @@ import de.bixilon.minosoft.protocol.network.Connection;
 public class OutPacketBuffer extends OutByteBuffer {
     private final int command;
 
-    public OutPacketBuffer(Connection connection, Packets.Serverbound packetType) {
+    public OutPacketBuffer(Connection connection, PacketTypes.Serverbound packetType) {
         super(connection);
         this.command = connection.getPacketCommand(packetType);
     }

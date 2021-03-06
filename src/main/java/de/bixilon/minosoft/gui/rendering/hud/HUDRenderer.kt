@@ -101,7 +101,11 @@ class HUDRenderer(val connection: Connection, val renderWindow: RenderWindow) : 
             if (!element.elementProperties.enabled) {
                 continue
             }
-            element.prepare(currentMesh)
+            val elementMesh = ElementMesh()
+
+            element.prepare(elementMesh)
+
+            elementMesh.addToMesh(element.elementProperties, orthographicMatrix, currentMesh, hudScale, renderWindow.screenDimensions)
         }
         currentMesh.load()
     }

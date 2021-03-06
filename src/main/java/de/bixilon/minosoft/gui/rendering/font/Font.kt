@@ -45,8 +45,8 @@ class Font {
         val textureArray = TextureArray.createTextureArray(textures = textures)
 
 
-        val atlasWidthSinglePixel = 1f / textureArray.maxWidth
-        val atlasHeightSinglePixel = 1f / textureArray.maxHeight
+        val atlasWidthSinglePixel = 1.0f / textureArray.maxWidth
+        val atlasHeightSinglePixel = 1.0f / textureArray.maxHeight
 
         for (provider in providers) {
             for (char in provider.chars.values) {

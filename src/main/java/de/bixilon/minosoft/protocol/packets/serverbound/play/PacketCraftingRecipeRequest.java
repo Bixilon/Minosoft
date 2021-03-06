@@ -16,7 +16,7 @@ package de.bixilon.minosoft.protocol.packets.serverbound.play;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
-import de.bixilon.minosoft.protocol.protocol.Packets;
+import de.bixilon.minosoft.protocol.protocol.PacketTypes;
 import de.bixilon.minosoft.util.logging.Log;
 
 public class PacketCraftingRecipeRequest implements ServerboundPacket {
@@ -30,7 +30,7 @@ public class PacketCraftingRecipeRequest implements ServerboundPacket {
 
     @Override
     public OutPacketBuffer write(Connection connection) {
-        OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_CRAFT_RECIPE_REQUEST);
+        OutPacketBuffer buffer = new OutPacketBuffer(connection, PacketTypes.Serverbound.PLAY_CRAFT_RECIPE_REQUEST);
         buffer.writeByte(this.windowId);
         buffer.writeVarInt(this.recipeId);
         return buffer;

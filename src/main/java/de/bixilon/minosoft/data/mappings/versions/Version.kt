@@ -19,8 +19,8 @@ import de.bixilon.minosoft.data.assets.MinecraftAssetsManager
 import de.bixilon.minosoft.data.assets.Resources
 import de.bixilon.minosoft.data.locale.minecraft.MinecraftLocaleManager
 import de.bixilon.minosoft.protocol.protocol.ConnectionStates
-import de.bixilon.minosoft.protocol.protocol.Packets.Clientbound
-import de.bixilon.minosoft.protocol.protocol.Packets.Serverbound
+import de.bixilon.minosoft.protocol.protocol.PacketTypes.Clientbound
+import de.bixilon.minosoft.protocol.protocol.PacketTypes.Serverbound
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.CountUpAndDownLatch
 import de.bixilon.minosoft.util.Util

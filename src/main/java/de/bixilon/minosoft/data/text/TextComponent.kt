@@ -211,7 +211,7 @@ open class TextComponent : ChatComponent {
         val color = this.color ?: ProtocolDefinition.DEFAULT_COLOR
 
         fun drawLetterVertex(position: Vec3, uv: Vec2, atlasPage: Int) {
-            val matrixPosition = perspectiveMatrix * Vec4(position.x, position.y, 0f, 1f)
+            val matrixPosition = perspectiveMatrix * Vec4(position.x, position.y, 0f, 1.0f)
             mesh.addVertex(Vec3(matrixPosition.x, matrixPosition.y, position.z), uv, atlasPage, color)
         }
 

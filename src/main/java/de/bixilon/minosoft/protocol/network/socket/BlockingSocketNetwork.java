@@ -23,7 +23,7 @@ import de.bixilon.minosoft.protocol.packets.clientbound.login.PacketEncryptionRe
 import de.bixilon.minosoft.protocol.packets.serverbound.login.PacketEncryptionResponse;
 import de.bixilon.minosoft.protocol.protocol.ConnectionStates;
 import de.bixilon.minosoft.protocol.protocol.CryptManager;
-import de.bixilon.minosoft.protocol.protocol.Packets;
+import de.bixilon.minosoft.protocol.protocol.PacketTypes;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import de.bixilon.minosoft.util.Pair;
 import de.bixilon.minosoft.util.ServerAddress;
@@ -153,7 +153,7 @@ public class BlockingSocketNetwork extends Network {
     }
 
     @Override
-    protected void handlePacket(Packets.Clientbound packetType, ClientboundPacket packet) {
+    protected void handlePacket(PacketTypes.Clientbound packetType, ClientboundPacket packet) {
         super.handlePacket(packetType, packet);
         if (packet instanceof PacketEncryptionRequest) {
             try {
@@ -194,7 +194,7 @@ public class BlockingSocketNetwork extends Network {
         this.socketSendThread.start();
     }
 
-    private Pair<Packets.Clientbound, ClientboundPacket> receiveClientboundPacket(InputStream inputStream) throws IOException, PacketParseException {
+    private Pair<PacketTypes.Clientbound, ClientboundPacket> receiveClientboundPacket(InputStream inputStream) throws IOException, PacketParseException {
         int packetLength = readStreamVarInt(inputStream);
 
         if (packetLength > ProtocolDefinition.PROTOCOL_PACKET_MAX_SIZE) {

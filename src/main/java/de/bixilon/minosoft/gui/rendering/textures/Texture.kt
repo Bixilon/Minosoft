@@ -32,8 +32,8 @@ class Texture(
     lateinit var buffer: ByteBuffer
     var loaded = false
 
-    var widthFactor = 1f
-    var heightFactor = 1f
+    var widthFactor = 1.0f
+    var heightFactor = 1.0f
 
     var animations: Int = 0
     var animationFrameTime: Int = 0

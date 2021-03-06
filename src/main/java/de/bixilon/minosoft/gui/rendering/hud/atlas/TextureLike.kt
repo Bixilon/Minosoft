@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2021 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,20 +11,13 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.hud.elements
+package de.bixilon.minosoft.gui.rendering.hud.atlas
 
-import de.bixilon.minosoft.gui.rendering.hud.ElementMesh
-import de.bixilon.minosoft.gui.rendering.hud.HUDElementProperties
-import de.bixilon.minosoft.gui.rendering.hud.HUDRenderer
+import de.bixilon.minosoft.gui.rendering.textures.Texture
+import glm_.vec2.Vec2
 
-abstract class HUDElement(protected val hudRenderer: HUDRenderer) {
-    abstract val elementProperties: HUDElementProperties
-
-    abstract fun init()
-    open fun postInit() {}
-    abstract fun prepare(elementMesh: ElementMesh)
-    open fun update() {}
-    open fun draw() {}
-    open fun screenChangeResizeCallback(screenWidth: Int, screenHeight: Int) {}
-
+interface TextureLike {
+    val texture: Texture
+    val uvStart: Vec2
+    val uvEnd: Vec2
 }

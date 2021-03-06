@@ -175,7 +175,7 @@ public class Connection {
         this.version = version;
     }
 
-    public void handle(Packets.Clientbound packetType, ClientboundPacket packet) {
+    public void handle(PacketTypes.Clientbound packetType, ClientboundPacket packet) {
         if (!packetType.isThreadSafe()) {
             handlePacket(packet);
             return;
@@ -254,7 +254,7 @@ public class Connection {
         return this.customMapping;
     }
 
-    public int getPacketCommand(Packets.Serverbound packet) {
+    public int getPacketCommand(PacketTypes.Serverbound packet) {
         Integer command = null;
         if (getReason() == ConnectionReasons.CONNECT) {
             command = this.version.getCommandByPacket(packet);
@@ -273,8 +273,8 @@ public class Connection {
         this.reason = reason;
     }
 
-    public Packets.Clientbound getPacketByCommand(ConnectionStates state, int command) {
-        Packets.Clientbound packet = null;
+    public PacketTypes.Clientbound getPacketByCommand(ConnectionStates state, int command) {
+        PacketTypes.Clientbound packet = null;
         if (getReason() == ConnectionReasons.CONNECT) {
             packet = this.version.getPacketByCommand(state, command);
         }

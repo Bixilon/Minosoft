@@ -17,7 +17,7 @@ import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.ConnectionStates;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
-import de.bixilon.minosoft.protocol.protocol.Packets;
+import de.bixilon.minosoft.protocol.protocol.PacketTypes;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import de.bixilon.minosoft.util.ServerAddress;
 import de.bixilon.minosoft.util.logging.Log;
@@ -41,7 +41,7 @@ public class PacketHandshake implements ServerboundPacket {
 
     @Override
     public OutPacketBuffer write(Connection connection) {
-        OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.HANDSHAKING_HANDSHAKE);
+        OutPacketBuffer buffer = new OutPacketBuffer(connection, PacketTypes.Serverbound.HANDSHAKING_HANDSHAKE);
         buffer.writeVarInt((this.nextState == ConnectionStates.STATUS ? ProtocolDefinition.QUERY_PROTOCOL_VERSION_ID : connection.getVersion().getProtocolId())); // get best protocol version
         buffer.writeString(this.address.getHostname());
         buffer.writeShort((short) this.address.getPort());

@@ -19,8 +19,8 @@ import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.font.Font
 import de.bixilon.minosoft.gui.rendering.font.FontBindings
+import de.bixilon.minosoft.gui.rendering.hud.ElementMesh
 import de.bixilon.minosoft.gui.rendering.hud.HUDElementProperties
-import de.bixilon.minosoft.gui.rendering.hud.HUDMesh
 import de.bixilon.minosoft.gui.rendering.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.hud.elements.HUDElement
 import de.bixilon.minosoft.gui.rendering.shader.Shader
@@ -33,6 +33,7 @@ import glm_.vec2.Vec2
 import glm_.vec3.Vec3
 import glm_.vec4.Vec4
 
+@Deprecated(message = "Will be refactored soon")
 class HUDTextElement(val connection: Connection, hudRenderer: HUDRenderer, val renderWindow: RenderWindow) : HUDElement(hudRenderer) {
     override val elementProperties: HUDElementProperties = HUDElementProperties(Vec2(), HUDElementProperties.PositionBindings.CENTER, HUDElementProperties.PositionBindings.CENTER, 0f, true)
     private val fontBindingPerspectiveMatrices = mutableListOf(Mat4(), Mat4(), Mat4(), Mat4()) // according to FontBindings::ordinal
@@ -58,7 +59,7 @@ class HUDTextElement(val connection: Connection, hudRenderer: HUDRenderer, val r
 
     private fun drawTextBackground(start: Vec2, end: Vec2, perspectiveMatrix: Mat4, mesh: HUDFontMesh) {
         fun drawLetterVertex(position: Vec2) {
-            val matrixPosition = perspectiveMatrix * Vec4(position.x, position.y, 0f, 1f)
+            val matrixPosition = perspectiveMatrix * Vec4(position.x, position.y, 0f, 1.0f)
             mesh.addVertex(
                 position = Vec3(matrixPosition.x, matrixPosition.y, TEXT_BACKGROUND_Z),
                 textureCoordinates = TEXT_BACKGROUND_ATLAS_COORDINATES,
@@ -86,7 +87,7 @@ class HUDTextElement(val connection: Connection, hudRenderer: HUDRenderer, val r
         drawTextBackground(position - 1, (position + maxSize) + 1, fontBindingPerspectiveMatrices[binding.ordinal], mesh)
     }
 
-    override fun prepare(hudMesh: HUDMesh) {
+    override fun prepare(elementMesh: ElementMesh) {
         componentsBindingMap = mapOf(
             FontBindings.LEFT_UP to mutableListOf(
                 "§eMinosoft (0.1-pre1)",

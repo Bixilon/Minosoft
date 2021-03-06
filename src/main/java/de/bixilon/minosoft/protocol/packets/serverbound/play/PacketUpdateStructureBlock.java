@@ -17,7 +17,7 @@ import de.bixilon.minosoft.data.world.BlockPosition;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
-import de.bixilon.minosoft.protocol.protocol.Packets;
+import de.bixilon.minosoft.protocol.protocol.PacketTypes;
 import de.bixilon.minosoft.util.logging.Log;
 
 public class PacketUpdateStructureBlock implements ServerboundPacket {
@@ -59,7 +59,7 @@ public class PacketUpdateStructureBlock implements ServerboundPacket {
 
     @Override
     public OutPacketBuffer write(Connection connection) {
-        OutPacketBuffer buffer = new OutPacketBuffer(connection, Packets.Serverbound.PLAY_UPDATE_STRUCTURE_BLOCK);
+        OutPacketBuffer buffer = new OutPacketBuffer(connection, PacketTypes.Serverbound.PLAY_UPDATE_STRUCTURE_BLOCK);
         buffer.writePosition(this.position);
         buffer.writeVarInt(this.action.ordinal());
         buffer.writeVarInt(this.mode.ordinal());

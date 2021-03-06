@@ -19,7 +19,7 @@ import de.bixilon.minosoft.protocol.packets.clientbound.play.*;
 import de.bixilon.minosoft.protocol.packets.clientbound.status.PacketStatusPong;
 import de.bixilon.minosoft.protocol.packets.clientbound.status.PacketStatusResponse;
 
-public class Packets {
+public class PacketTypes {
 
     public enum Serverbound {
         HANDSHAKING_HANDSHAKE,

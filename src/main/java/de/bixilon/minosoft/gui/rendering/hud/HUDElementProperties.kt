@@ -28,6 +28,6 @@ data class HUDElementProperties(
 ) {
     enum class PositionBindings {
         CENTER,
-        FAHRTEST_POINT_AWAY
+        FURTHEST_POINT_AWAY
     }
 }

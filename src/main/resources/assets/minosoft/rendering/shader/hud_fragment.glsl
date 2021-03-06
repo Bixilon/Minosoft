@@ -19,6 +19,7 @@ in vec3 passTextureCoordinates;
 in vec4 passTintColor;
 
 uniform sampler2DArray hudTextureArray;
+// #define DEBUG
 
 void main() {
     vec4 textureColor = texture(hudTextureArray, passTextureCoordinates);
@@ -29,4 +30,7 @@ void main() {
         textureColor *= passTintColor;
     }
     outColor = textureColor;
+    #ifdef DEBUG
+    outColor = vec4(1.0f, 0.0f, 0.5f, 1.0f);
+    #endif
 }
