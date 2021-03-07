@@ -36,33 +36,6 @@ class ProgressBar(
         size = atlasElement.emptyAtlasElement.binding.size
     }
 
-    // fun draw(elementMesh: ElementMesh, start: Vec2, end: Vec2, progress: Float, z: Int = 1) {
-    //   elementMesh.addElement(start, end, emptyAtlasElement, z)
-
-    //   if (progress == 0.0f) {
-    //       return
-    //   }
-
-    //   val xDiff = abs(end.x - start.x)
-
-    //   val ourXDiff = xDiff * progress
-
-    //   val textureStart = Vec2((fullAtlasElement.binding.start.x * fullAtlasElement.texture.widthFactor) / fullAtlasElement.texture.width.toFloat(), (fullAtlasElement.binding.start.y * fullAtlasElement.texture.heightFactor) / fullAtlasElement.texture.height.toFloat())
-    //   var textureEnd = Vec2(((fullAtlasElement.binding.end.x + 1) * fullAtlasElement.texture.widthFactor) / (fullAtlasElement.texture.width + 1.0f), ((fullAtlasElement.binding.end.y + 1) * fullAtlasElement.texture.heightFactor) / (fullAtlasElement.texture.height + 1.0f))
-
-    //   textureEnd = Vec2((textureEnd.x - textureStart.x) * progress, textureEnd.y)
-
-    //   elementMesh.addElement(start, Vec2(start.x + ourXDiff, end.y), object : TextureLike {
-    //       override val texture: Texture
-    //           get() = fullAtlasElement.texture
-    //       override val uvStart: Vec2
-    //           get() = textureStart
-    //       override val uvEnd: Vec2
-    //           get() = textureEnd
-
-    //   }, z + 1)
-//    }
-
     override fun prepareVertices(start: Vec2, scaleFactor: Float, hudMesh: HUDMesh, matrix: Mat4, z: Int) {
         val emptyImageElement = ImageElement(this.start, end, atlasElement.emptyAtlasElement, z)
 
@@ -84,6 +57,5 @@ class ProgressBar(
         }, z + 1)
 
         fullImageElement.prepareVertices(start, scaleFactor, hudMesh, matrix, z)
-
     }
 }

@@ -16,6 +16,8 @@ package de.bixilon.minosoft.gui.rendering.hud.elements.other
 import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames
 import de.bixilon.minosoft.data.Gamemodes
 import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.data.text.TextComponent
+import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.hud.HUDElementProperties
 import de.bixilon.minosoft.gui.rendering.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.hud.atlas.HUDAtlasElement
@@ -24,6 +26,7 @@ import de.bixilon.minosoft.gui.rendering.hud.elements.HUDElement
 import de.bixilon.minosoft.gui.rendering.hud.elements.primitive.ElementListElement
 import de.bixilon.minosoft.gui.rendering.hud.elements.primitive.ImageElement
 import de.bixilon.minosoft.gui.rendering.hud.elements.primitive.ProgressBar
+import de.bixilon.minosoft.gui.rendering.hud.elements.primitive.TextElement
 import glm_.vec2.Vec2
 
 class HotbarHUDElement(
@@ -71,10 +74,15 @@ class HotbarHUDElement(
 
 
         if (hudRenderer.connection.player.gamemode != Gamemodes.CREATIVE) {
-            // experience bar
-            val experienceBarEnd = Vec2(hotbarBaseAtlasElement.binding.size.x, experienceBarAtlasElement.emptyAtlasElement.binding.size.y)
+            // experience
+            val levelText = TextElement(TextComponent(hudRenderer.connection.player.level.toString()).setColor(RenderConstants.EXPERIENCE_BAR_LEVEL_COLOR), hudRenderer.renderWindow.font, Vec2(0, elementList.size.y), 3, false)
+            levelText.start.x = (hotbarBaseAtlasElement.binding.size.x - levelText.size.x) / 2
+            elementList.addChild(levelText)
 
-            val experienceBar = ProgressBar(Vec2(), experienceBarEnd, experienceBarAtlasElement, hudRenderer.connection.player.experienceBarProgress, 1)
+            // experience bar
+            val experienceBarEnd = Vec2(hotbarBaseAtlasElement.binding.size.x, experienceBarAtlasElement.emptyAtlasElement.binding.size.y + elementList.size.y - ELEMENT_PADDING)
+
+            val experienceBar = ProgressBar(Vec2(0, elementList.size.y - ELEMENT_PADDING), experienceBarEnd, experienceBarAtlasElement, hudRenderer.connection.player.experienceBarProgress, 1)
             elementList.addChild(experienceBar)
         }
 

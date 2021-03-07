@@ -10,7 +10,7 @@ Minosoft is an open source minecraft client, written from scratch in java. It ai
 - Multi protocol support (1.7 - latest)
 - Stable modding API
 - Unsafe modding API
-- Fast performance (incredible start time of 3 - 5 seconds on modern hardware)
+- Bleeding edge performance (incredible start time of 3 - 5 seconds on modern hardware)
 - Free (as far as we consider original minecraft as free) and open source
 - Multi accounting (also multiple account vendors: Offline, Mojang, Microsoft)
 - Multi "sessions" (Connections to a server)
