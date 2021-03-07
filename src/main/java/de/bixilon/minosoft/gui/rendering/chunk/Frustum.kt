@@ -2,25 +2,38 @@ package de.bixilon.minosoft.gui.rendering.chunk
 
 import de.bixilon.minosoft.data.world.ChunkPosition
 import de.bixilon.minosoft.gui.rendering.Camera
+import de.bixilon.minosoft.gui.rendering.util.VecUtil
 import de.bixilon.minosoft.protocol.network.Connection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import glm_.glm
 import glm_.vec3.Vec3
 
 class Frustum(private val camera: Camera) {
-    private val normals: Array<Vec3>
+    private val normals: MutableList<Vec3> = mutableListOf(
+        camera.cameraFront.normalize(),
+    )
 
     init {
-        val realFront = Vec3(camera.cameraFront)
-        // realFront.y = 0f
-        realFront.normalize()
-        // val left = BlockModelElement.rotateVector(realFront, -glm.radians(camera.fov.toDouble() - 90), Axes.Y).normalize()
-        // val right = BlockModelElement.rotateVector(realFront, glm.radians(camera.fov.toDouble() - 90), Axes.Y).normalize()
-        // TODO: up, down, left, right, not working correctly
-        normals = arrayOf(
-            camera.cameraFront.normalize(),
-            // left.normalize(),
-            // right.normalize(),
-        )
+        calculateSideNormals()
+        calculateVerticalNormals()
+    }
+
+    private fun calculateSideNormals() {
+        val cameraRealUp = (camera.cameraRight cross camera.cameraFront).normalize()
+        val angle = glm.radians(camera.fov - 90f)
+        val sin = glm.sin(angle)
+        val cos = glm.cos(angle)
+        normals.add(VecUtil.rotateVector(camera.cameraFront, cameraRealUp, sin, cos).normalize())
+        normals.add(VecUtil.rotateVector(camera.cameraFront, cameraRealUp, -sin, cos).normalize()) // negate angle -> negate sin
+    }
+
+    private fun calculateVerticalNormals() {
+        val aspect = camera.connection.renderer.renderWindow.screenHeight.toFloat() / camera.connection.renderer.renderWindow.screenWidth.toFloat()
+        val angle = glm.radians(camera.fov * aspect - 90f)
+        val sin = glm.sin(angle)
+        val cos = glm.cos(angle)
+        normals.add(VecUtil.rotateVector(camera.cameraFront, camera.cameraRight, sin, cos).normalize())
+        normals.add(VecUtil.rotateVector(camera.cameraFront, camera.cameraRight, -sin, cos).normalize()) // negate angle -> negate sin
     }
 
     private fun containsRegion(from: Vec3, to: Vec3): Boolean {

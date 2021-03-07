@@ -54,4 +54,8 @@ object VecUtil {
             }
         }
     }
+
+    fun rotateVector(original: Vec3, axis: Vec3, sin: Float, cos: Float): Vec3 {
+        return original * cos + (axis cross original) * sin + axis * (axis dot original) * (1 - cos)
+    }
 }

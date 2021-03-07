@@ -37,7 +37,7 @@ import kotlin.math.cos
 import kotlin.math.sin
 
 class Camera(
-    private val connection: Connection,
+    val connection: Connection,
     var fov: Float,
     private val renderWindow: RenderWindow,
 ) {
