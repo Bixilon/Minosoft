@@ -19,10 +19,11 @@ import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.hud.HUDElementProperties
 import de.bixilon.minosoft.gui.rendering.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.hud.atlas.HUDAtlasElement
+import de.bixilon.minosoft.gui.rendering.hud.atlas.ProgressBarAtlasElement
 import de.bixilon.minosoft.gui.rendering.hud.elements.HUDElement
-import de.bixilon.minosoft.gui.rendering.hud.elements.ProgressBar
 import de.bixilon.minosoft.gui.rendering.hud.elements.primitive.ElementListElement
 import de.bixilon.minosoft.gui.rendering.hud.elements.primitive.ImageElement
+import de.bixilon.minosoft.gui.rendering.hud.elements.primitive.ProgressBar
 import glm_.vec2.Vec2
 
 class HotbarHUDElement(
@@ -40,17 +41,16 @@ class HotbarHUDElement(
     private lateinit var hotbarBaseAtlasElement: HUDAtlasElement
     private lateinit var hotbarSelectedSlotFrameAtlasElement: HUDAtlasElement
 
-    private lateinit var experienceBar: ProgressBar
+    private lateinit var experienceBarAtlasElement: ProgressBarAtlasElement
 
 
     override fun init() {
         hotbarBaseAtlasElement = hudRenderer.hudAtlasElements[ResourceLocation("minecraft:hotbar_base")]!!
         hotbarSelectedSlotFrameAtlasElement = hudRenderer.hudAtlasElements[ResourceLocation("minecraft:hotbar_selected_slot_frame")]!!
 
-        experienceBar = ProgressBar(
+        experienceBarAtlasElement = ProgressBarAtlasElement(
             hudRenderer.hudAtlasElements[ResourceLocation("minecraft:experience_bar_empty")]!!,
             hudRenderer.hudAtlasElements[ResourceLocation("minecraft:experience_bar_full")]!!,
-            this
         )
 
         for ((slotIndex, resourceLocation) in KeyBindingsNames.SELECT_HOTBAR_SLOTS.withIndex()) {
@@ -70,12 +70,13 @@ class HotbarHUDElement(
         elementList.forceX = hotbarBaseAtlasElement.binding.size.x.toInt()
 
 
-        //  if (hudRenderer.connection.player.gamemode != Gamemodes.CREATIVE) {
-        //      // experience bar
-        //      val experienceBarEnd = Vec2(hotbarBaseAtlasElement.binding.size.x, experienceBar.size.y)
+        if (hudRenderer.connection.player.gamemode != Gamemodes.CREATIVE) {
+            // experience bar
+            val experienceBarEnd = Vec2(hotbarBaseAtlasElement.binding.size.x, experienceBarAtlasElement.emptyAtlasElement.binding.size.y)
 
-        //      experienceBar.draw(elementList, Vec2(), experienceBarEnd, hudRenderer.connection.player.experienceBarProgress, 3)
-        //  }
+            val experienceBar = ProgressBar(Vec2(), experienceBarEnd, experienceBarAtlasElement, hudRenderer.connection.player.experienceBarProgress, 1)
+            elementList.addChild(experienceBar)
+        }
 
 
         val hotbarStart = Vec2(0, elementList.size.y + ELEMENT_PADDING)
