@@ -17,10 +17,12 @@ import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames
 import de.bixilon.minosoft.config.key.KeyAction
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.gui.rendering.hud.ElementMesh
+import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.hud.HUDElementProperties
 import de.bixilon.minosoft.gui.rendering.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.hud.elements.HUDElement
+import de.bixilon.minosoft.gui.rendering.hud.elements.primitive.ElementListElement
+import de.bixilon.minosoft.gui.rendering.hud.elements.primitive.TextElement
 import de.bixilon.minosoft.modding.loading.ModLoader
 import de.bixilon.minosoft.util.GitInfo
 import glm_.vec2.Vec2
@@ -59,8 +61,7 @@ class HUDSystemDebugElement(hudRenderer: HUDRenderer) : HUDElement(hudRenderer) 
         }
     }
 
-    override fun prepare(elementMesh: ElementMesh) {
-        val offset = Vec2(1)
+    override fun prepare(elementList: ElementListElement) {
         for (text in listOf(
             "Java: ${Runtime.version()} ${System.getProperty("sun.arch.data.model")}bit",
             "Memory: ${getUsedMemoryPercent()}% ${getFormattedUsedMemory()}/$maxMemoryText",
@@ -74,14 +75,18 @@ class HUDSystemDebugElement(hudRenderer: HUDRenderer) : HUDElement(hudRenderer) 
             "GPU: $gpuText",
             "Version: $gpuVersionText",
             "",
-            GitInfo.IS_INITIALIZED.takeUnless { true }?.let {
+            if (GitInfo.IS_INITIALIZED) {
                 "Commit: ${GitInfo.GIT_COMMIT_ID_DESCRIBE}: ${GitInfo.GIT_COMMIT_MESSAGE_SHORT}"
-            } ?: "GitInfo uninitialized",
+            } else {
+                "GitInfo uninitialized :("
+            },
             "",
             "Mods: ${ModLoader.MOD_MAP.size} active, ${hudRenderer.connection.eventListenerSize} listeners",
         )) {
-            offset.y += elementMesh.addText(ChatComponent.valueOf(text), Vec2(2, offset.y + 2), hudRenderer.renderWindow.font, z = 1).y
+            val textElement = TextElement(ChatComponent.valueOf(text), hudRenderer.renderWindow.font, Vec2(2, elementList.size.y + RenderConstants.TEXT_LINE_PADDING))
+            elementList.addChild(textElement)
         }
+        elementList.pushChildrenToRight(1.0f)
     }
 
     private fun getUsedMemory(): Long {

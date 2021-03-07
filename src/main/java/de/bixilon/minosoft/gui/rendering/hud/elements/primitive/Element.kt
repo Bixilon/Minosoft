@@ -11,21 +11,19 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.hud
+package de.bixilon.minosoft.gui.rendering.hud.elements.primitive
 
-import com.google.gson.JsonObject
+import de.bixilon.minosoft.gui.rendering.hud.HUDMesh
+import glm_.mat4x4.Mat4
 import glm_.vec2.Vec2
 
-data class HUDElementProperties(
-    val position: Vec2,
-    val xBinding: PositionBindings,
-    val yBinding: PositionBindings,
-    val scale: Float,
-    var enabled: Boolean,
-    val properties: JsonObject = JsonObject(),
+abstract class Element(
+    val start: Vec2,
 ) {
-    enum class PositionBindings {
-        CENTER,
-        FURTHEST_POINT_AWAY
-    }
+    open var parent: Element? = null
+    var size: Vec2 = Vec2()
+
+    abstract fun recalculateSize()
+
+    abstract fun prepareVertices(start: Vec2, scaleFactor: Float, hudMesh: HUDMesh, matrix: Mat4, z: Int = 1)
 }

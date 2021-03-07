@@ -33,4 +33,12 @@ object RenderConstants {
     const val COLORMAP_SIZE = 255
 
     const val DEBUG_MESSAGES_PREFIX = "§f[§e§lDEBUG§f] §9"
+
+
+    const val HUD_Z_COORDINATE = -0.9996f
+    const val HUD_Z_COORDINATE_Z_FACTOR = -0.000001f
+
+    val TEXT_BACKGROUND_COLOR = RGBColor(0, 0, 0, 80)
+
+    const val TEXT_LINE_PADDING = 0
 }

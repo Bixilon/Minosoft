@@ -13,8 +13,10 @@
 package de.bixilon.minosoft.data.text
 
 import de.bixilon.minosoft.Minosoft
+import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.font.Font
-import de.bixilon.minosoft.gui.rendering.hud.ElementMesh
+import de.bixilon.minosoft.gui.rendering.hud.elements.primitive.ImageElement
+import de.bixilon.minosoft.gui.rendering.hud.elements.primitive.TextElement
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.Util
 import de.bixilon.minosoft.util.hash.BetterHashSet
@@ -201,7 +203,7 @@ open class TextComponent : ChatComponent {
         return nodes
     }
 
-    override fun prepareRender(startPosition: Vec2, offset: Vec2, font: Font, elementMesh: ElementMesh, z: Int, retMaxSize: Vec2) {
+    override fun prepareRender(startPosition: Vec2, offset: Vec2, font: Font, textElement: TextElement, z: Int, retMaxSize: Vec2) {
         val color = this.color ?: ProtocolDefinition.DEFAULT_COLOR
 
 
@@ -214,15 +216,16 @@ open class TextComponent : ChatComponent {
             if (char == '\n') {
                 val yOffset = offset.y
                 offset *= 0
-                offset += Vec2(0, yOffset + Font.CHAR_HEIGHT)
-                retMaxSize += Vec2(0, yOffset + Font.CHAR_HEIGHT)
+                offset += Vec2(0, yOffset + Font.CHAR_HEIGHT + RenderConstants.TEXT_LINE_PADDING)
+                retMaxSize += Vec2(0, yOffset + Font.CHAR_HEIGHT + RenderConstants.TEXT_LINE_PADDING)
                 continue
             }
             val fontChar = font.getChar(char)
             val scaledWidth = fontChar.width * (Font.CHAR_HEIGHT / fontChar.height.toFloat())
 
             val charStart = startPosition + offset
-            elementMesh.addElement(charStart, charStart + Vec2(scaledWidth, Font.CHAR_HEIGHT), fontChar, z, color)
+            textElement.addChild(ImageElement(charStart, charStart + Vec2(scaledWidth, Font.CHAR_HEIGHT), fontChar, z, color))
+
             // ad spacer between chars
             offset += Vec2(scaledWidth + Font.SPACE_BETWEEN_CHARS, 0f)
             if (offset.x > retMaxSize.x) {

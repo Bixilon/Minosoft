@@ -18,10 +18,12 @@ import de.bixilon.minosoft.config.key.KeyAction
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.Directions
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.gui.rendering.hud.ElementMesh
+import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.hud.HUDElementProperties
 import de.bixilon.minosoft.gui.rendering.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.hud.elements.HUDElement
+import de.bixilon.minosoft.gui.rendering.hud.elements.primitive.ElementListElement
+import de.bixilon.minosoft.gui.rendering.hud.elements.primitive.TextElement
 import glm_.vec2.Vec2
 
 
@@ -44,8 +46,7 @@ class HUDWorldDebugElement(hudRenderer: HUDRenderer) : HUDElement(hudRenderer) {
         }
     }
 
-    override fun prepare(elementMesh: ElementMesh) {
-        val offset = Vec2(1)
+    override fun prepare(elementList: ElementListElement) {
         for (text in listOf(
             "FPS: ${getFPS()}",
             "Timings: avg ${getAvgFrameTime()}ms, min ${getMinFrameTime()}ms, max ${getMaxFrameTime()}ms",
@@ -69,7 +70,8 @@ class HUDWorldDebugElement(hudRenderer: HUDRenderer) : HUDElement(hudRenderer) {
             }",
             "Client light: ${hudRenderer.connection.player.world.worldLightAccessor.getLightLevel(camera.blockPosition)} (sky=${hudRenderer.connection.player.world.worldLightAccessor.getSkyLight(camera.blockPosition)}, block=${hudRenderer.connection.player.world.worldLightAccessor.getBlockLight(camera.blockPosition)})"
         )) {
-            offset.y += elementMesh.addText(ChatComponent.valueOf(text), Vec2(2, offset.y + 2), hudRenderer.renderWindow.font, z = 1).y
+            val textElement = TextElement(ChatComponent.valueOf(text), hudRenderer.renderWindow.font, Vec2(2, elementList.size.y + RenderConstants.TEXT_LINE_PADDING))
+            elementList.addChild(textElement)
         }
     }
 

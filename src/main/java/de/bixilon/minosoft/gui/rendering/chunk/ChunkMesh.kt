@@ -39,7 +39,7 @@ class ChunkMesh : Mesh() {
         data.add(texture.heightFactor)
 
         if (tintColor == null) {
-            data.add(0f)
+            data.add(0.0f)
         } else {
             data.add(Float.fromBits(tintColor.color))
         }

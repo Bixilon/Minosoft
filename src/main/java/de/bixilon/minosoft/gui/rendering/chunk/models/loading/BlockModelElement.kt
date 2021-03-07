@@ -77,7 +77,7 @@ open class BlockModelElement(data: JsonObject) {
 
         fun rotatePositions(positions: Array<Vec3>, axis: Axes, angle: Float, origin: Vec3, rescale: Boolean) {
             // TODO: optimize for 90deg, 180deg, 270deg rotations
-            if (angle == 0f) {
+            if (angle == 0.0f) {
                 return
             }
             for ((i, position) in positions.withIndex()) {

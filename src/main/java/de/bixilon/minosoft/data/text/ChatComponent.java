@@ -19,7 +19,7 @@ import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
 import de.bixilon.minosoft.data.locale.minecraft.MinecraftLocaleManager;
 import de.bixilon.minosoft.gui.rendering.font.Font;
-import de.bixilon.minosoft.gui.rendering.hud.ElementMesh;
+import de.bixilon.minosoft.gui.rendering.hud.elements.primitive.TextElement;
 import glm_.vec2.Vec2;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -93,5 +93,5 @@ public abstract class ChatComponent {
     /**
      * Prepares the chat component for rendering (used in opengl)
      */
-    public abstract void prepareRender(Vec2 startPosition, Vec2 offset, Font font, ElementMesh elementMesh, int z, Vec2 retMaxSize);
+    public abstract void prepareRender(Vec2 startPosition, Vec2 offset, Font font, TextElement textElement, int z, Vec2 retMaxSize);
 }

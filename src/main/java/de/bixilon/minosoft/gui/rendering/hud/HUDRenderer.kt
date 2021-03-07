@@ -23,12 +23,14 @@ import de.bixilon.minosoft.gui.rendering.hud.elements.debug.HUDSystemDebugElemen
 import de.bixilon.minosoft.gui.rendering.hud.elements.debug.HUDWorldDebugElement
 import de.bixilon.minosoft.gui.rendering.hud.elements.other.CrosshairHUDElement
 import de.bixilon.minosoft.gui.rendering.hud.elements.other.HotbarHUDElement
+import de.bixilon.minosoft.gui.rendering.hud.elements.primitive.ElementListElement
 import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.protocol.network.Connection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.json.ResourceLocationJsonMap
 import glm_.glm
 import glm_.mat4x4.Mat4
+import glm_.vec2.Vec2
 
 class HUDRenderer(val connection: Connection, val renderWindow: RenderWindow) : Renderer {
     val hudScale: HUDScale
@@ -46,7 +48,7 @@ class HUDRenderer(val connection: Connection, val renderWindow: RenderWindow) : 
     var lastTickTime = 0L
     var orthographicMatrix: Mat4 = Mat4()
         private set
-    var currentMesh: HUDMesh = HUDMesh()
+    var currentHUDMesh: HUDMesh = HUDMesh()
 
 
     override fun init() {
@@ -91,23 +93,29 @@ class HUDRenderer(val connection: Connection, val renderWindow: RenderWindow) : 
             element.draw()
         }
         hudShader.use()
-        currentMesh.draw()
+        currentHUDMesh.draw()
     }
 
     fun prepare() {
-        currentMesh.unload()
-        currentMesh = HUDMesh()
+        currentHUDMesh.unload()
+        currentHUDMesh = HUDMesh()
         for (element in hudElements.values) {
             if (!element.elementProperties.enabled) {
                 continue
             }
-            val elementMesh = ElementMesh()
+            val elementListElement = ElementListElement(Vec2(0, 0), 0)
 
-            element.prepare(elementMesh)
+            element.prepare(elementListElement)
 
-            elementMesh.addToMesh(element.elementProperties, orthographicMatrix, currentMesh, hudScale, renderWindow.screenDimensions)
+
+            val realScaleFactor = element.elementProperties.scale * hudScale.scale
+            val realSize = Vec2(elementListElement.forceX ?: elementListElement.size.x, elementListElement.forceY ?: elementListElement.size.y) * realScaleFactor
+
+            val elementStart = getRealPosition(realSize, element.elementProperties, renderWindow.screenDimensions)
+
+            elementListElement.prepareVertices(elementStart, realScaleFactor, currentHUDMesh, orthographicMatrix, 0)
         }
-        currentMesh.load()
+        currentHUDMesh.load()
     }
 
     fun update() {
@@ -117,5 +125,31 @@ class HUDRenderer(val connection: Connection, val renderWindow: RenderWindow) : 
             }
             element.update()
         }
+    }
+
+
+    private fun getRealPosition(elementSize: Vec2, elementProperties: HUDElementProperties, screenDimensions: Vec2): Vec2 {
+        val halfScreenDimensions = screenDimensions / 2
+        val halfElementSize = elementSize / 2
+        val realPosition = elementProperties.position * halfScreenDimensions
+
+        var x = realPosition.x
+        var y = realPosition.y
+        if (elementProperties.xBinding == HUDElementProperties.PositionBindings.FURTHEST_POINT_AWAY) {
+            if (elementProperties.position.x >= 0) {
+                x -= elementSize.x
+            }
+        } else {
+            x -= halfElementSize.x
+        }
+
+        if (elementProperties.yBinding == HUDElementProperties.PositionBindings.FURTHEST_POINT_AWAY) {
+            if (elementProperties.position.y < 0) {
+                y += elementSize.y
+            }
+        } else {
+            y += halfElementSize.y
+        }
+        return Vec2(x, y)
     }
 }

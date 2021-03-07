@@ -42,9 +42,9 @@ open class BlockModel(val parent: BlockModel? = null, json: JsonObject) {
                 elements.add(blockModelElement)
             }
         }
-        var rotateX = parent?.rotation?.x ?: 0f
-        var rotateY = parent?.rotation?.y ?: 0f
-        var rotateZ = parent?.rotation?.z ?: 0f
+        var rotateX = parent?.rotation?.x ?: 0.0f
+        var rotateY = parent?.rotation?.y ?: 0.0f
+        var rotateZ = parent?.rotation?.z ?: 0.0f
         json["x"]?.let {
             rotateX = it.asFloat
         }

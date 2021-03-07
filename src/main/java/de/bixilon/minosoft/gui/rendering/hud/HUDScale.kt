@@ -14,8 +14,8 @@
 package de.bixilon.minosoft.gui.rendering.hud
 
 enum class HUDScale(val scale: Float) {
-    TINY(1f),
-    MEDIUM(2f),
-    LARGE(3f),
-    SENIOR(4f),
+    TINY(1.0f),
+    MEDIUM(2.0f),
+    LARGE(3.0f),
+    SENIOR(4.0f),
 }

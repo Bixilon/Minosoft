@@ -13,12 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.hud.elements
 
-import de.bixilon.minosoft.gui.rendering.hud.ElementMesh
 import de.bixilon.minosoft.gui.rendering.hud.atlas.HUDAtlasElement
-import de.bixilon.minosoft.gui.rendering.hud.atlas.TextureLike
-import de.bixilon.minosoft.gui.rendering.textures.Texture
 import glm_.vec2.Vec2
-import kotlin.math.abs
 
 class ProgressBar(
     private val emptyAtlasElement: HUDAtlasElement,
@@ -27,30 +23,30 @@ class ProgressBar(
 ) {
     val size: Vec2 = emptyAtlasElement.binding.size
 
-    fun draw(elementMesh: ElementMesh, start: Vec2, end: Vec2, progress: Float, z: Int = 1) {
-        elementMesh.addElement(start, end, emptyAtlasElement, z)
+//  fun draw(elementMesh: ElementMesh, start: Vec2, end: Vec2, progress: Float, z: Int = 1) {
+////      elementMesh.addElement(start, end, emptyAtlasElement, z)
 
-        if (progress == 0.0f) {
-            return
-        }
+//      if (progress == 0.0f) {
+//          return
+//      }
 
-        val xDiff = abs(end.x - start.x)
+//      val xDiff = abs(end.x - start.x)
 
-        val ourXDiff = xDiff * progress
+//      val ourXDiff = xDiff * progress
 
-        val textureStart = Vec2((fullAtlasElement.binding.start.x * fullAtlasElement.texture.widthFactor) / fullAtlasElement.texture.width.toFloat(), (fullAtlasElement.binding.start.y * fullAtlasElement.texture.heightFactor) / fullAtlasElement.texture.height.toFloat())
-        var textureEnd = Vec2(((fullAtlasElement.binding.end.x + 1) * fullAtlasElement.texture.widthFactor) / (fullAtlasElement.texture.width + 1.0f), ((fullAtlasElement.binding.end.y + 1) * fullAtlasElement.texture.heightFactor) / (fullAtlasElement.texture.height + 1.0f))
+//      val textureStart = Vec2((fullAtlasElement.binding.start.x * fullAtlasElement.texture.widthFactor) / fullAtlasElement.texture.width.toFloat(), (fullAtlasElement.binding.start.y * fullAtlasElement.texture.heightFactor) / fullAtlasElement.texture.height.toFloat())
+//      var textureEnd = Vec2(((fullAtlasElement.binding.end.x + 1) * fullAtlasElement.texture.widthFactor) / (fullAtlasElement.texture.width + 1.0f), ((fullAtlasElement.binding.end.y + 1) * fullAtlasElement.texture.heightFactor) / (fullAtlasElement.texture.height + 1.0f))
 
-        textureEnd = Vec2((textureEnd.x - textureStart.x) * progress, textureEnd.y)
+//      textureEnd = Vec2((textureEnd.x - textureStart.x) * progress, textureEnd.y)
 
-        elementMesh.addElement(start, Vec2(start.x + ourXDiff, end.y), object : TextureLike {
-            override val texture: Texture
-                get() = fullAtlasElement.texture
-            override val uvStart: Vec2
-                get() = textureStart
-            override val uvEnd: Vec2
-                get() = textureEnd
+//     elementMesh.addElement(start, Vec2(start.x + ourXDiff, end.y), object : TextureLike {
+//         override val texture: Texture
+//             get() = fullAtlasElement.texture
+//         override val uvStart: Vec2
+//             get() = textureStart
+//         override val uvEnd: Vec2
+//             get() = textureEnd
 
-        }, z + 1)
-    }
+//     }, z + 1)
+    //   }
 }

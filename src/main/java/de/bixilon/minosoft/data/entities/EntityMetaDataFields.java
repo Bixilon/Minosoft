@@ -70,7 +70,7 @@ public enum EntityMetaDataFields {
 
     BOAT_HURT(0),
     BOAT_HURT_DIRECTION(1),
-    BOAT_DAMAGE_TAKEN(0f),
+    BOAT_DAMAGE_TAKEN(0.0f),
     BOAT_MATERIAL(Boat.BoatMaterials.OAK.ordinal()),
     BOAT_PADDLE_LEFT(false),
     BOAT_PADDLE_RIGHT(false),
@@ -92,7 +92,7 @@ public enum EntityMetaDataFields {
 
     ITEM_ITEM,
 
-    PLAYER_ABSORPTION_HEARTS(0f),
+    PLAYER_ABSORPTION_HEARTS(0.0f),
     PLAYER_SCORE(0),
     PLAYER_SKIN_PARTS_FLAGS((byte) 0),
     PLAYER_SKIN_MAIN_HAND((byte) 1),

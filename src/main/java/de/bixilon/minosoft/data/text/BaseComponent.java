@@ -19,7 +19,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import de.bixilon.minosoft.data.locale.minecraft.MinecraftLocaleManager;
 import de.bixilon.minosoft.gui.rendering.font.Font;
-import de.bixilon.minosoft.gui.rendering.hud.ElementMesh;
+import de.bixilon.minosoft.gui.rendering.hud.elements.primitive.TextElement;
 import de.bixilon.minosoft.modding.event.events.annotations.Unsafe;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import de.bixilon.minosoft.util.hash.BetterHashSet;
@@ -212,9 +212,9 @@ public class BaseComponent extends ChatComponent {
     }
 
     @Override
-    public void prepareRender(Vec2 startPosition, Vec2 offset, Font font, ElementMesh elementMesh, int z, Vec2 retMaxSize) {
+    public void prepareRender(Vec2 startPosition, Vec2 offset, Font font, TextElement textElement, int z, Vec2 retMaxSize) {
         for (var chatPart : this.parts) {
-            chatPart.prepareRender(startPosition, offset, font, elementMesh, z, retMaxSize);
+            chatPart.prepareRender(startPosition, offset, font, textElement, z, retMaxSize);
         }
     }
 

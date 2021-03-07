@@ -14,11 +14,12 @@
 package de.bixilon.minosoft.gui.rendering.hud.elements.other
 
 import de.bixilon.minosoft.data.mappings.ResourceLocation
-import de.bixilon.minosoft.gui.rendering.hud.ElementMesh
 import de.bixilon.minosoft.gui.rendering.hud.HUDElementProperties
 import de.bixilon.minosoft.gui.rendering.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.hud.atlas.HUDAtlasElement
 import de.bixilon.minosoft.gui.rendering.hud.elements.HUDElement
+import de.bixilon.minosoft.gui.rendering.hud.elements.primitive.ElementListElement
+import de.bixilon.minosoft.gui.rendering.hud.elements.primitive.ImageElement
 import glm_.vec2.Vec2
 
 class CrosshairHUDElement(
@@ -43,7 +44,7 @@ class CrosshairHUDElement(
     }
 
 
-    override fun prepare(elementMesh: ElementMesh) {
-        elementMesh.addElement(end = crosshairAtlasElement.binding.size, textureLike = crosshairAtlasElement)
+    override fun prepare(elementList: ElementListElement) {
+        elementList.addChild(ImageElement(end = crosshairAtlasElement.binding.size, textureLike = crosshairAtlasElement))
     }
 }
