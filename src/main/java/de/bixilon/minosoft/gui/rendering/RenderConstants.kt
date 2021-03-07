@@ -27,6 +27,9 @@ object RenderConstants {
     val LILY_PAD_INVENTORY_COLOR = RGBColor("#71C35C")
     val LILY_PAD_BLOCK_COLOR = RGBColor("#208030")
 
+
+    val EXPERIENCE_BAR_LEVEL_COLOR = RGBColor("#80ff20")
+
     const val COLORMAP_SIZE = 255
 
     const val DEBUG_MESSAGES_PREFIX = "§f[§e§lDEBUG§f] §9"

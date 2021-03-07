@@ -13,7 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.hud
 
+import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.RGBColor
+import de.bixilon.minosoft.gui.rendering.font.Font
 import de.bixilon.minosoft.gui.rendering.hud.atlas.TextureLike
 import glm_.mat4x4.Mat4
 import glm_.vec2.Vec2
@@ -26,12 +28,31 @@ class ElementMesh {
     var forceX: Int? = null
     var forceY: Int? = null
 
-    fun addElement(start: Vec2 = Vec2(), end: Vec2, textureLike: TextureLike, z: Int = 1, tintColor: RGBColor? = null) {
+    fun addElement(start: Vec2 = Vec2(), end: Vec2, textureLike: TextureLike?, z: Int = 1, tintColor: RGBColor? = null) {
         elements.add(ElementElement(start, end, textureLike, z, tintColor))
 
         checkSize(start)
         checkSize(end)
     }
+
+
+    fun addText(chatComponent: ChatComponent, position: Vec2, font: Font, background: Boolean = true, z: Int = 1): Vec2 {
+        if (chatComponent.message.isBlank()) {
+            return Vec2(0, Font.CHAR_HEIGHT)
+        }
+        val retMaxSize = Vec2()
+        chatComponent.prepareRender(position, Vec2(), font, this, z + 1, retMaxSize)
+
+        if (background) {
+            drawBackground(position - 1, (position + retMaxSize) + 1, z)
+        }
+        return retMaxSize
+    }
+
+    private fun drawBackground(start: Vec2, end: Vec2, z: Int, tintColor: RGBColor = TEXT_BACKGROUND_COLOR) {
+        addElement(start, end, null, z, tintColor)
+    }
+
 
     private fun checkSize(vec2: Vec2) {
         if (vec2.x > size.x) {
@@ -44,10 +65,6 @@ class ElementMesh {
 
 
     fun addToMesh(hudElementProperties: HUDElementProperties, hudMatrix: Mat4, hudMesh: HUDMesh, hudScale: HUDScale, screenDimensions: Vec2) {
-        if (!hudElementProperties.enabled) {
-            return
-        }
-
         val realScaleFactor = hudElementProperties.scale * hudScale.scale
         val realSize = Vec2(forceX ?: size.x, forceY ?: size.y) * realScaleFactor
 
@@ -95,27 +112,33 @@ class ElementMesh {
         return Vec2(x, y)
     }
 
-    private fun drawImage(start: Vec2, end: Vec2, hudMesh: HUDMesh, texture: TextureLike, matrix: Mat4, z: Int = 1, tintColor: RGBColor? = null) {
+    private fun drawImage(start: Vec2, end: Vec2, hudMesh: HUDMesh, texture: TextureLike?, matrix: Mat4, z: Int = 1, tintColor: RGBColor? = null) {
         val modelStart = matrix * Vec4(start, 1.0f, 1.0f)
         val modelEnd = matrix * Vec4(end, 1.0f, 1.0f)
 
+        val uvStart = texture?.uvStart ?: Vec2()
+        val uvEnd = texture?.uvEnd ?: Vec2()
+        val textureLayer = texture?.texture?.layer ?: 0
 
         val realZ = HUD_Z_COORDINATE + HUD_Z_COORDINATE_Z_FACTOR * z
 
+        fun addVertex(position: Vec3, textureUV: Vec2) {
+            hudMesh.addVertex(position, textureUV, textureLayer, tintColor)
+        }
 
-        hudMesh.addVertex(Vec3(modelStart.x, modelStart.y, realZ), Vec2(texture.uvStart.x, texture.uvStart.y), texture.texture.id, tintColor)
-        hudMesh.addVertex(Vec3(modelEnd.x, modelStart.y, realZ), Vec2(texture.uvEnd.x, texture.uvStart.y), texture.texture.id, tintColor)
-        hudMesh.addVertex(Vec3(modelStart.x, modelEnd.y, realZ), Vec2(texture.uvStart.x, texture.uvEnd.y), texture.texture.id, tintColor)
-        hudMesh.addVertex(Vec3(modelStart.x, modelEnd.y, realZ), Vec2(texture.uvStart.x, texture.uvEnd.y), texture.texture.id, tintColor)
-        hudMesh.addVertex(Vec3(modelEnd.x, modelStart.y, realZ), Vec2(texture.uvEnd.x, texture.uvStart.y), texture.texture.id, tintColor)
-        hudMesh.addVertex(Vec3(modelEnd.x, modelEnd.y, realZ), Vec2(texture.uvEnd.x, texture.uvEnd.y), texture.texture.id, tintColor)
+        addVertex(Vec3(modelStart.x, modelStart.y, realZ), Vec2(uvStart.x, uvStart.y))
+        addVertex(Vec3(modelEnd.x, modelStart.y, realZ), Vec2(uvEnd.x, uvStart.y))
+        addVertex(Vec3(modelStart.x, modelEnd.y, realZ), Vec2(uvStart.x, uvEnd.y))
+        addVertex(Vec3(modelStart.x, modelEnd.y, realZ), Vec2(uvStart.x, uvEnd.y))
+        addVertex(Vec3(modelEnd.x, modelStart.y, realZ), Vec2(uvEnd.x, uvStart.y))
+        addVertex(Vec3(modelEnd.x, modelEnd.y, realZ), Vec2(uvEnd.x, uvEnd.y))
     }
 
 
     data class ElementElement(
         val start: Vec2,
         val end: Vec2,
-        val textureLike: TextureLike,
+        val textureLike: TextureLike?,
         val z: Int,
         val tintColor: RGBColor?,
     )
@@ -123,5 +146,9 @@ class ElementMesh {
     companion object {
         private const val HUD_Z_COORDINATE = -0.9996f
         private const val HUD_Z_COORDINATE_Z_FACTOR = -0.000001f
+
+        private val TEXT_BACKGROUND_ATLAS_COORDINATES = Vec2()
+        private const val TEXT_BACKGROUND_ATLAS_INDEX = 0
+        private val TEXT_BACKGROUND_COLOR = RGBColor(0, 0, 0, 80)
     }
 }

@@ -19,13 +19,10 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import de.bixilon.minosoft.data.locale.minecraft.MinecraftLocaleManager;
 import de.bixilon.minosoft.gui.rendering.font.Font;
-import de.bixilon.minosoft.gui.rendering.font.FontBindings;
-import de.bixilon.minosoft.gui.rendering.hud.HUDScale;
-import de.bixilon.minosoft.gui.rendering.hud.elements.text.HUDFontMesh;
+import de.bixilon.minosoft.gui.rendering.hud.ElementMesh;
 import de.bixilon.minosoft.modding.event.events.annotations.Unsafe;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import de.bixilon.minosoft.util.hash.BetterHashSet;
-import glm_.mat4x4.Mat4;
 import glm_.vec2.Vec2;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
@@ -215,15 +212,9 @@ public class BaseComponent extends ChatComponent {
     }
 
     @Override
-    public void addVerticies(Vec2 startPosition, Vec2 offset, Mat4 perspectiveMatrix, FontBindings binding, Font font, HUDScale hudScale, HUDFontMesh mesh, Vec2 maxSize) {
-        if (binding == FontBindings.RIGHT_DOWN || binding == FontBindings.RIGHT_UP) {
-            for (int i = this.parts.size() - 1; i >= 0; i--) {
-                this.parts.get(i).addVerticies(startPosition, offset, perspectiveMatrix, binding, font, hudScale, mesh, maxSize);
-            }
-        } else {
-            for (var chatPart : this.parts) {
-                chatPart.addVerticies(startPosition, offset, perspectiveMatrix, binding, font, hudScale, mesh, maxSize);
-            }
+    public void prepareRender(Vec2 startPosition, Vec2 offset, Font font, ElementMesh elementMesh, int z, Vec2 retMaxSize) {
+        for (var chatPart : this.parts) {
+            chatPart.prepareRender(startPosition, offset, font, elementMesh, z, retMaxSize);
         }
     }
 

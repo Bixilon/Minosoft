@@ -18,19 +18,29 @@ out vec4 outColor;
 in vec3 passTextureCoordinates;
 in vec4 passTintColor;
 
-uniform sampler2DArray hudTextureArray;
+
+uniform sampler2DArray textureArray;
 // #define DEBUG
 
+
 void main() {
-    vec4 textureColor = texture(hudTextureArray, passTextureCoordinates);
-    if (passTintColor.a == 1.0f && textureColor.a == 0) {
+    vec4 texelColor = texture(textureArray, passTextureCoordinates);
+
+    if (passTintColor.a == 1.0f && texelColor.a == 0) {
         discard;
     }
     if (passTintColor.a != 0.0f){
-        textureColor *= passTintColor;
+        texelColor *= passTintColor;
     }
-    outColor = textureColor;
-    #ifdef DEBUG
+
+    // ToDo
+    if (passTintColor.r == 0.0f && passTintColor.g == 0.0f && passTintColor.b == 0.0f && passTintColor.a != 0.0f){
+        outColor= vec4(passTintColor.rgb * (vec3(1.0f) / texelColor.rgb), passTintColor.a);
+    } else {
+        outColor = texelColor;
+    }
+
+        #ifdef DEBUG
     outColor = vec4(1.0f, 0.0f, 0.5f, 1.0f);
     #endif
 }

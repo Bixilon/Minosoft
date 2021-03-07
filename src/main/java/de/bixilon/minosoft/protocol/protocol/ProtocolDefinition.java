@@ -99,9 +99,6 @@ public final class ProtocolDefinition {
     public static final float HEIGHT_SEA_LEVEL_MODIFIER = 0.00166667f;
 
 
-    public static final ResourceLocation DEFAULT_DIMENSION = new ResourceLocation("overworld");
-    public static final ResourceLocation NETHER_DIMENSION = new ResourceLocation("nether");
-
     public static final ResourceLocation AIR_RESOURCE_LOCATION = new ResourceLocation("air");
 
     public static final RGBColor DEFAULT_COLOR = ChatColors.WHITE;

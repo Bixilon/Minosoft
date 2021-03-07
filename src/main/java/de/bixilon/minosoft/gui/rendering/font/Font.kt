@@ -19,7 +19,8 @@ import de.bixilon.minosoft.gui.rendering.textures.TextureArray
 
 class Font {
     lateinit var providers: List<FontProvider>
-    val charHeight = 8
+    private var preLoaded = false
+    private var loaded = false
 
     fun load(assetsManager: MinecraftAssetsManager) {
         providers = FontLoader.loadFontProviders(assetsManager)
@@ -34,15 +35,22 @@ class Font {
         throw IllegalStateException("$char can not be rendered!")
     }
 
-    fun createAtlasTexture(): TextureArray {
+    fun preLoadAtlas(textureArray: TextureArray) {
+        check(!preLoaded) { "Font has already been preloaded!" }
+
         val textures: MutableList<Texture> = mutableListOf()
         for (provider in providers) {
             for (atlasPage in provider.atlasTextures) {
                 textures.add(atlasPage)
             }
         }
+        textureArray.textures.addAll(textures)
+        preLoaded = true
+    }
 
-        val textureArray = TextureArray.createTextureArray(textures = textures)
+    fun loadAtlas(textureArray: TextureArray) {
+        check(!loaded) { "Font has already a atlas texture!" }
+        check(preLoaded) { "Font hasn't been preloaded!" }
 
 
         val atlasWidthSinglePixel = 1.0f / textureArray.maxWidth
@@ -53,6 +61,11 @@ class Font {
                 char.calculateUV(provider.width, atlasWidthSinglePixel, atlasHeightSinglePixel) // ToDo: Unicode: With should pe plus 1
             }
         }
-        return textureArray
+        loaded = true
+    }
+
+    companion object {
+        const val CHAR_HEIGHT = 8
+        const val SPACE_BETWEEN_CHARS = 1
     }
 }

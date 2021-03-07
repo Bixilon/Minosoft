@@ -22,7 +22,7 @@ data class HUDElementProperties(
     val xBinding: PositionBindings,
     val yBinding: PositionBindings,
     val scale: Float,
-    val enabled: Boolean,
+    var enabled: Boolean,
     val color: RGBColor? = null,
     val properties: JsonObject = JsonObject(),
 ) {

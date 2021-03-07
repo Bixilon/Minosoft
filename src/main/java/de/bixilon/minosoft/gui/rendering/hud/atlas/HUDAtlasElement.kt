@@ -52,7 +52,7 @@ data class HUDAtlasElement(
 
 
             val texture = textures[textureResourceLocation] ?: let {
-                val createdTexture = Texture(textureResourceLocation!!, textures.size)
+                val createdTexture = Texture(textureResourceLocation!!)
                 textures[textureResourceLocation!!] = createdTexture
                 createdTexture
             }

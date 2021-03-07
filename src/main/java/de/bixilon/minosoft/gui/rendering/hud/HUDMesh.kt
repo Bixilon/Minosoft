@@ -39,13 +39,13 @@ class HUDMesh : Mesh() {
     }
 
 
-    fun addVertex(position: Vec3, textureCoordinates: Vec2, atlasPage: Int, tintColor: RGBColor? = null) {
+    fun addVertex(position: Vec3, textureCoordinates: Vec2, textureLayer: Int, tintColor: RGBColor? = null) {
         data.add(position.x)
         data.add(position.y)
         data.add(position.z)
         data.add(textureCoordinates.x)
         data.add(textureCoordinates.y)
-        data.add(Float.fromBits(atlasPage))
+        data.add(Float.fromBits(textureLayer))
         if (tintColor == null) {
             data.add(0f)
         } else {

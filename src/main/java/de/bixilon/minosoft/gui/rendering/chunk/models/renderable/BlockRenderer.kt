@@ -55,13 +55,12 @@ class BlockRenderer {
         for ((key, textureName) in textures) {
             if (!textureName.startsWith("#")) {
                 var texture: Texture? = null
-                var index: Int? = textureMap[textureName]?.let {
+                val index: Int? = textureMap[textureName]?.let {
                     texture = it
                     indexed.indexOf(it)
                 }
-                if (index == null || index == -1) {
-                    index = textureMap.size
-                    texture = Texture(Texture.getResourceTextureIdentifier(textureName = textureName), index)
+                if (index == null) {
+                    texture = Texture(Texture.getResourceTextureIdentifier(textureName = textureName))
                     textureMap[textureName] = texture!!
                     indexed.add(texture!!)
                 }

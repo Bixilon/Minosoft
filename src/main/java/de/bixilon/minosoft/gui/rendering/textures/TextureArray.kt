@@ -22,9 +22,36 @@ import org.lwjgl.opengl.GL30.GL_TEXTURE_2D_ARRAY
 import org.lwjgl.opengl.GL30.glGenerateMipmap
 import java.nio.ByteBuffer
 
-class TextureArray(val textures: Collection<Texture>, val maxWidth: Int, val maxHeight: Int) {
+class TextureArray(val textures: MutableList<Texture>) {
     var textureId = 0
         private set
+    var maxWidth: Int = 0
+        private set
+    var maxHeight: Int = 0
+        private set
+
+
+    fun preLoad(assetsManager: MinecraftAssetsManager?) {
+        for (texture in textures) {
+            if (!texture.loaded) {
+                texture.load(assetsManager!!)
+            }
+            if (texture.width > maxWidth) {
+                maxWidth = texture.width
+            }
+            if (texture.height > maxHeight) {
+                maxHeight = texture.height
+            }
+        }
+
+        // calculate width and height factor for every texture
+        for ((index, texture) in textures.withIndex()) {
+            texture.widthFactor = texture.width.toFloat() / maxWidth
+            texture.animations = (texture.height / texture.width)
+            texture.heightFactor = texture.height.toFloat() / maxHeight * (texture.width.toFloat() / texture.height)
+            texture.layer = index
+        }
+    }
 
     fun load(): Int {
         textureId = glGenTextures()
@@ -38,7 +65,7 @@ class TextureArray(val textures: Collection<Texture>, val maxWidth: Int, val max
         glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, GL_RGBA, maxWidth, maxHeight, textures.size, 0, GL_RGBA, GL_UNSIGNED_BYTE, null as ByteBuffer?)
 
         for (texture in textures) {
-            glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, texture.id, texture.width, texture.height, 1, GL_RGBA, GL_UNSIGNED_BYTE, texture.buffer)
+            glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, texture.layer, texture.width, texture.height, 1, GL_RGBA, GL_UNSIGNED_BYTE, texture.buffer)
             texture.buffer.clear()
         }
         glGenerateMipmap(GL_TEXTURE_2D_ARRAY)
@@ -58,36 +85,6 @@ class TextureArray(val textures: Collection<Texture>, val maxWidth: Int, val max
     }
 
     companion object {
-        val DEBUG_TEXTURE = Texture(Texture.getResourceTextureIdentifier(textureName = "block/debug"), 0)
-
-        fun createTextureArray(assetsManager: MinecraftAssetsManager? = null, textures: Collection<Texture>, maxWidth: Int = -1, maxHeight: Int = -1): TextureArray {
-            var calculatedMaxWidth = 0
-            var calculatedMaxHeight = 0
-            for (texture in textures) {
-                if (!texture.loaded) {
-                    texture.load(assetsManager!!)
-                }
-                if (texture.width > calculatedMaxWidth) {
-                    calculatedMaxWidth = texture.width
-                }
-                if (texture.height > calculatedMaxHeight) {
-                    calculatedMaxHeight = texture.height
-                }
-            }
-            if (maxWidth != -1) {
-                calculatedMaxWidth = maxWidth
-            }
-            if (maxHeight != -1) {
-                calculatedMaxHeight = maxWidth
-            }
-            // calculate width and height factor for every texture
-            for (texture in textures) {
-                texture.widthFactor = texture.width.toFloat() / calculatedMaxWidth
-                texture.animations = (texture.height / texture.width)
-                texture.heightFactor = texture.height.toFloat() / calculatedMaxHeight * (texture.width.toFloat() / texture.height)
-            }
-
-            return TextureArray(textures, calculatedMaxWidth, calculatedMaxHeight)
-        }
+        val DEBUG_TEXTURE = Texture.getResourceTextureIdentifier(textureName = "block/debug")
     }
 }

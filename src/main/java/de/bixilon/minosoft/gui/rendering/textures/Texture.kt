@@ -24,8 +24,8 @@ import java.nio.ByteBuffer
 
 class Texture(
     val resourceLocation: ResourceLocation,
-    val id: Int,
 ) {
+    var layer = -1
     var width: Int = 0
     var height: Int = 0
     var isTransparent: Boolean = false

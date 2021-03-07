@@ -25,7 +25,6 @@ import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.Renderer
 import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.gui.rendering.textures.Texture
-import de.bixilon.minosoft.gui.rendering.textures.TextureArray
 import de.bixilon.minosoft.protocol.network.Connection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import org.lwjgl.opengl.GL11.GL_CULL_FACE
@@ -38,7 +37,6 @@ class WorldRenderer(
     private val world: World,
     val renderWindow: RenderWindow,
 ) : Renderer {
-    private lateinit var blockTextureArray: TextureArray
     lateinit var chunkShader: Shader
     val chunkSectionsToDraw = ConcurrentHashMap<ChunkPosition, ConcurrentHashMap<Int, ChunkMesh>>()
     val visibleChunks: MutableSet<ChunkPosition> = mutableSetOf()
@@ -92,8 +90,7 @@ class WorldRenderer(
     }
 
     override fun init() {
-        blockTextureArray = TextureArray.createTextureArray(connection.version.assetsManager, resolveBlockTextureIds(connection.version.mapping.blockStateIdMap.values))
-        blockTextureArray.load()
+        renderWindow.textures.textures.addAll(resolveBlockTextureIds(connection.version.mapping.blockStateIdMap.values))
 
 
         chunkShader = Shader(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "rendering/shader/chunk_vertex.glsl"), ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "rendering/shader/chunk_fragment.glsl"))
@@ -108,7 +105,7 @@ class WorldRenderer(
     }
 
     override fun postInit() {
-        blockTextureArray.use(chunkShader, "blockTextureArray")
+        renderWindow.textures.use(chunkShader, "textureArray")
     }
 
     override fun draw() {
@@ -136,9 +133,7 @@ class WorldRenderer(
 
     private fun resolveBlockTextureIds(blocks: Set<BlockState>): List<Texture> {
         val textures: MutableList<Texture> = mutableListOf()
-        textures.add(TextureArray.DEBUG_TEXTURE)
         val textureMap: MutableMap<String, Texture> = mutableMapOf()
-        textureMap[TextureArray.DEBUG_TEXTURE.resourceLocation.full] = TextureArray.DEBUG_TEXTURE
 
         for (block in blocks) {
             for (model in block.renders) {

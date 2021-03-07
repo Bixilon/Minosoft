@@ -22,7 +22,10 @@ import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.chunk.WorldRenderer
+import de.bixilon.minosoft.gui.rendering.font.Font
 import de.bixilon.minosoft.gui.rendering.hud.HUDRenderer
+import de.bixilon.minosoft.gui.rendering.textures.Texture
+import de.bixilon.minosoft.gui.rendering.textures.TextureArray
 import de.bixilon.minosoft.gui.rendering.util.ScreenshotTaker
 import de.bixilon.minosoft.modding.event.EventInvokerCallback
 import de.bixilon.minosoft.modding.event.events.ConnectionStateChangeEvent
@@ -70,6 +73,8 @@ class RenderWindow(
 
     private val screenshotTaker = ScreenshotTaker(this)
     val tintColorCalculator = TintColorCalculator()
+    val font = Font()
+    val textures = TextureArray(mutableListOf())
 
     // all renderers
     val worldRenderer: WorldRenderer = WorldRenderer(connection, connection.player.world, this)
@@ -232,8 +237,22 @@ class RenderWindow(
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
 
 
+        textures.textures.add(Texture(TextureArray.DEBUG_TEXTURE))
+
+        font.load(connection.version.assetsManager)
+
+        font.preLoadAtlas(textures)
+
         worldRenderer.init()
         hudRenderer.init()
+
+
+        textures.preLoad(connection.version.assetsManager)
+
+        font.loadAtlas(textures)
+        textures.load()
+
+
 
         worldRenderer.postInit()
         hudRenderer.postInit()

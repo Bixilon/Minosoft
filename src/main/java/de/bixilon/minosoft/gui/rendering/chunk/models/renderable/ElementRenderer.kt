@@ -27,7 +27,6 @@ import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModel
 import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModelElement
 import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModelFace
 import de.bixilon.minosoft.gui.rendering.textures.Texture
-import de.bixilon.minosoft.gui.rendering.textures.TextureArray
 import de.bixilon.minosoft.gui.rendering.util.VecUtil
 import glm_.Java.Companion.glm
 import glm_.mat4x4.Mat4
@@ -73,7 +72,7 @@ class ElementRenderer(parent: BlockModelElement, val rotation: Vec3, uvLock: Boo
 
         val positionTemplate = BlockModelElement.FACE_POSITION_MAP_TEMPLATE[realDirection.ordinal]
 
-        val texture = textureMapping[face.textureName] ?: TextureArray.DEBUG_TEXTURE
+        val texture = textureMapping[face.textureName] ?: TODO()
 
         val lightLevel = lightAccessor.getLightLevel(position + directionMapping[face.cullFace]) // ToDo: rotate cullface
 

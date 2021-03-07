@@ -19,11 +19,11 @@ import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.Renderer
 import de.bixilon.minosoft.gui.rendering.hud.atlas.HUDAtlasElement
 import de.bixilon.minosoft.gui.rendering.hud.elements.HUDElement
+import de.bixilon.minosoft.gui.rendering.hud.elements.debug.HUDSystemDebugElement
+import de.bixilon.minosoft.gui.rendering.hud.elements.debug.HUDWorldDebugElement
 import de.bixilon.minosoft.gui.rendering.hud.elements.other.CrosshairHUDElement
 import de.bixilon.minosoft.gui.rendering.hud.elements.other.HotbarHUDElement
-import de.bixilon.minosoft.gui.rendering.hud.elements.text.HUDTextElement
 import de.bixilon.minosoft.gui.rendering.shader.Shader
-import de.bixilon.minosoft.gui.rendering.textures.TextureArray
 import de.bixilon.minosoft.protocol.network.Connection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.json.ResourceLocationJsonMap
@@ -36,12 +36,12 @@ class HUDRenderer(val connection: Connection, val renderWindow: RenderWindow) : 
             return Minosoft.getConfig().config.game.hud.scale
         }
     val hudElements: MutableMap<ResourceLocation, HUDElement> = mutableMapOf(
-        ResourceLocation("minosoft:hud_text_renderer") to HUDTextElement(connection, this, renderWindow),
+        ResourceLocation("minosoft:world_debug_screen") to HUDWorldDebugElement(this),
+        ResourceLocation("minosoft:system_debug_screen") to HUDSystemDebugElement(this),
         ResourceLocation("minosoft:hotbar") to HotbarHUDElement(this),
         ResourceLocation("minosoft:crosshair") to CrosshairHUDElement(this),
     )
     val hudShader = Shader(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "rendering/shader/hud_vertex.glsl"), ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "rendering/shader/hud_fragment.glsl"))
-    lateinit var hudAtlasTextures: TextureArray
     lateinit var hudAtlasElements: Map<ResourceLocation, HUDAtlasElement>
     var lastTickTime = 0L
     var orthographicMatrix: Mat4 = Mat4()
@@ -55,8 +55,7 @@ class HUDRenderer(val connection: Connection, val renderWindow: RenderWindow) : 
         val hudImages = HUDAtlasElement.deserialize(ResourceLocationJsonMap.create(Minosoft.MINOSOFT_ASSETS_MANAGER.readJsonAsset(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "mapping/atlas.json"))), connection.version.versionId)
         this.hudAtlasElements = hudImages.second
 
-        hudAtlasTextures = TextureArray.createTextureArray(connection.version.assetsManager, hudImages.first.toSet())
-        hudAtlasTextures.load()
+        renderWindow.textures.textures.addAll(hudImages.first.toList())
 
         for (element in hudElements.values) {
             element.init()
@@ -64,7 +63,8 @@ class HUDRenderer(val connection: Connection, val renderWindow: RenderWindow) : 
     }
 
     override fun postInit() {
-        hudAtlasTextures.use(hudShader, "hudTextureArray")
+        renderWindow.textures.use(hudShader, "textureArray")
+
         for (element in hudElements.values) {
             element.postInit()
         }

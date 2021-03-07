@@ -31,7 +31,7 @@ class ChunkMesh : Mesh() {
         data.add(position.z)
         data.add(textureCoordinates.x * texture.widthFactor)
         data.add(textureCoordinates.y * texture.heightFactor)
-        data.add(Float.fromBits(texture.id)) // ToDo: Compact this
+        data.add(Float.fromBits(texture.layer)) // ToDo: Compact this
 
         // ToDo: Send this only once per texture
         data.add(texture.animationFrameTime.toFloat())

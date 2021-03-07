@@ -14,17 +14,11 @@ package de.bixilon.minosoft.data.text
 
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.gui.rendering.font.Font
-import de.bixilon.minosoft.gui.rendering.font.FontBindings
-import de.bixilon.minosoft.gui.rendering.font.FontChar
-import de.bixilon.minosoft.gui.rendering.hud.HUDScale
-import de.bixilon.minosoft.gui.rendering.hud.elements.text.HUDFontMesh
+import de.bixilon.minosoft.gui.rendering.hud.ElementMesh
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.Util
 import de.bixilon.minosoft.util.hash.BetterHashSet
-import glm_.mat4x4.Mat4
 import glm_.vec2.Vec2
-import glm_.vec3.Vec3
-import glm_.vec4.Vec4
 import javafx.animation.Animation
 import javafx.animation.KeyFrame
 import javafx.animation.Timeline
@@ -207,85 +201,38 @@ open class TextComponent : ChatComponent {
         return nodes
     }
 
-    override fun addVerticies(startPosition: Vec2, offset: Vec2, perspectiveMatrix: Mat4, binding: FontBindings, font: Font, hudScale: HUDScale, mesh: HUDFontMesh, maxSize: Vec2) {
+    override fun prepareRender(startPosition: Vec2, offset: Vec2, font: Font, elementMesh: ElementMesh, z: Int, retMaxSize: Vec2) {
         val color = this.color ?: ProtocolDefinition.DEFAULT_COLOR
 
-        fun drawLetterVertex(position: Vec3, uv: Vec2, atlasPage: Int) {
-            val matrixPosition = perspectiveMatrix * Vec4(position.x, position.y, 0f, 1.0f)
-            mesh.addVertex(Vec3(matrixPosition.x, matrixPosition.y, position.z), uv, atlasPage, color)
-        }
 
-        fun drawLetter(position: Vec2, scaledWidth: Float, scaledHeight: Float, fontChar: FontChar) {
-            drawLetterVertex(Vec3(position.x, position.y, HUD_Z_COORDINATE), fontChar.texturePosition[TEXTURE_POSITION_COORDINATES[binding.ordinal][0]], fontChar.atlasTextureIndex)
-            drawLetterVertex(Vec3(position.x, position.y + scaledHeight, HUD_Z_COORDINATE), fontChar.texturePosition[TEXTURE_POSITION_COORDINATES[binding.ordinal][3]], fontChar.atlasTextureIndex)
-            drawLetterVertex(Vec3(position.x + scaledWidth, position.y, HUD_Z_COORDINATE), fontChar.texturePosition[TEXTURE_POSITION_COORDINATES[binding.ordinal][1]], fontChar.atlasTextureIndex)
-            drawLetterVertex(Vec3(position.x + scaledWidth, position.y, HUD_Z_COORDINATE), fontChar.texturePosition[TEXTURE_POSITION_COORDINATES[binding.ordinal][1]], fontChar.atlasTextureIndex)
-            drawLetterVertex(Vec3(position.x, position.y + scaledHeight, HUD_Z_COORDINATE), fontChar.texturePosition[TEXTURE_POSITION_COORDINATES[binding.ordinal][3]], fontChar.atlasTextureIndex)
-            drawLetterVertex(Vec3(position.x + scaledWidth, position.y + scaledHeight, HUD_Z_COORDINATE), fontChar.texturePosition[TEXTURE_POSITION_COORDINATES[binding.ordinal][2]], fontChar.atlasTextureIndex)
-        }
         // bring chars in right order and reverse them if right bound
-        val charArray = when (binding) {
-            FontBindings.RIGHT_UP, FontBindings.RIGHT_DOWN -> {
-                if (text.contains('\n')) {
-                    // ToDo: This needs to be improved
-                    val arrays: MutableList<List<Char>> = mutableListOf()
-                    for (split in text.split('\n')) {
-                        arrays.add(split.toCharArray().reversed())
-                        arrays.add(listOf('\n'))
-                    }
-                    val outList: MutableList<Char> = mutableListOf()
-                    for (list in arrays) {
-                        for (char in list) {
-                            outList.add(char)
-                        }
-                    }
-                    if (outList.last() == '\n') {
-                        outList.removeLast()
-                    }
-                    outList
-                } else {
-                    text.toCharArray().toList().reversed()
-                }
-            }
-            FontBindings.LEFT_UP, FontBindings.LEFT_DOWN -> {
-                text.toCharArray().toList()
-            }
-        }
+        val charArray = text.toCharArray().toList()
+
 
         // add all chars
         for (char in charArray) {
-            val scaledHeight = font.charHeight * hudScale.scale
             if (char == '\n') {
                 val yOffset = offset.y
                 offset *= 0
-                offset += Vec2(0, yOffset + scaledHeight)
-                maxSize += Vec2(0, yOffset + scaledHeight)
+                offset += Vec2(0, yOffset + Font.CHAR_HEIGHT)
+                retMaxSize += Vec2(0, yOffset + Font.CHAR_HEIGHT)
                 continue
             }
             val fontChar = font.getChar(char)
-            val scaledX = fontChar.width * (font.charHeight / fontChar.height.toFloat()) * hudScale.scale
-            drawLetter(startPosition + offset, scaledX, scaledHeight, fontChar)
+            val scaledWidth = fontChar.width * (Font.CHAR_HEIGHT / fontChar.height.toFloat())
+
+            val charStart = startPosition + offset
+            elementMesh.addElement(charStart, charStart + Vec2(scaledWidth, Font.CHAR_HEIGHT), fontChar, z, color)
             // ad spacer between chars
-            offset += Vec2(scaledX + (hudScale.scale), 0f)
-            if (offset.x >= maxSize.x) {
-                maxSize.x += scaledX + (hudScale.scale)
+            offset += Vec2(scaledWidth + Font.SPACE_BETWEEN_CHARS, 0f)
+            if (offset.x > retMaxSize.x) {
+                retMaxSize.x += scaledWidth + Font.SPACE_BETWEEN_CHARS
             }
-            if (offset.y >= maxSize.y) {
-                if (maxSize.y < scaledHeight) {
-                    maxSize.y = scaledHeight
+            if (offset.y >= retMaxSize.y) {
+                if (retMaxSize.y < fontChar.height) {
+                    retMaxSize.y = fontChar.height.toFloat()
                 }
             }
         }
-    }
-
-    companion object {
-        private val TEXTURE_POSITION_COORDINATES = arrayOf(
-            intArrayOf(0, 1, 2, 3),
-            intArrayOf(1, 0, 3, 2),
-            intArrayOf(2, 3, 0, 1),
-            intArrayOf(3, 2, 1, 0),
-        ) // matches FontBindings::ordinal
-
-        const val HUD_Z_COORDINATE = -0.997f
     }
 }
