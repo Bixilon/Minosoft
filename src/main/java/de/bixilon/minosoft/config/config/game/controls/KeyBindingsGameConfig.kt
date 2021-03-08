@@ -45,7 +45,7 @@ object KeyBindingsNames {
 
     val QUIT_RENDERING = ResourceLocation("minosoft:quit_rendering")
 
-    val DEBUG_SCREEN = ResourceLocation("minosoft:debug_screen")
+    val DEBUG_SCREEN = ResourceLocation("minosoft:toggle_debug_screen")
     val DEBUG_CLEAR_CHUNK_CACHE = ResourceLocation("minosoft:debug_clear_chunk_cache")
     val DEBUG_POLYGEN = ResourceLocation("minosoft:debug_polygen")
     val DEBUG_MOUSE_CATCH = ResourceLocation("minosoft:debug_mouse_catch")

@@ -13,17 +13,20 @@
 
 package de.bixilon.minosoft.gui.rendering.hud
 
-import com.google.gson.JsonObject
+import de.bixilon.minosoft.data.mappings.ResourceLocation
 import glm_.vec2.Vec2
 
 data class HUDElementProperties(
     val position: Vec2,
     val xBinding: PositionBindings,
     val yBinding: PositionBindings,
-    val scale: Float,
-    var enabled: Boolean,
-    val properties: JsonObject = JsonObject(),
+    var toggleKeyBinding: ResourceLocation? = null,
+    val scale: Float = 1.0f,
+    var enabled: Boolean = true,
+    val properties: MutableMap<String, Any> = mutableMapOf(),
 ) {
+    constructor(properties: HUDElementProperties) : this(properties.position, properties.xBinding, properties.yBinding, properties.toggleKeyBinding, properties.scale, properties.enabled, properties.properties)
+
     enum class PositionBindings {
         CENTER,
         FURTHEST_POINT_AWAY

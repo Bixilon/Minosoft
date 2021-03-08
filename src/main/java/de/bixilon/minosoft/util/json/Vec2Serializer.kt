@@ -11,10 +11,20 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.config.config.game.controls
+package de.bixilon.minosoft.util.json
 
-import com.squareup.moshi.Json
+import com.squareup.moshi.FromJson
+import com.squareup.moshi.ToJson
+import glm_.vec2.Vec2
 
-data class ControlsGameConfig(
-    @Json(name = "key_bindings") var keyBindings: KeyBindingsGameConfig = KeyBindingsGameConfig(),
-)
+class Vec2Serializer {
+    @FromJson
+    fun fromJson(json: List<Float>): Vec2 {
+        return Vec2(json[0], json[1])
+    }
+
+    @ToJson
+    fun toJson(vec2: Vec2): List<Float> {
+        return listOf(vec2.x, vec2.y)
+    }
+}

@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.hud
 
 import de.bixilon.minosoft.Minosoft
+import de.bixilon.minosoft.config.config.game.elements.ElementsNames
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.Renderer
@@ -37,12 +38,13 @@ class HUDRenderer(val connection: Connection, val renderWindow: RenderWindow) : 
         get() {
             return Minosoft.getConfig().config.game.hud.scale
         }
-    val hudElements: MutableMap<ResourceLocation, HUDElement> = mutableMapOf(
-        ResourceLocation("minosoft:world_debug_screen") to HUDWorldDebugElement(this),
-        ResourceLocation("minosoft:system_debug_screen") to HUDSystemDebugElement(this),
-        ResourceLocation("minosoft:hotbar") to HotbarHUDElement(this),
-        ResourceLocation("minosoft:crosshair") to CrosshairHUDElement(this),
+    private val defaultHUDElements: MutableMap<ResourceLocation, HUDElement> = mutableMapOf(
+        ElementsNames.HOTBAR_RESOURCE_LOCATION to HotbarHUDElement(this),
+        ElementsNames.CROSSHAIR_RESOURCE_LOCATION to CrosshairHUDElement(this),
+        ElementsNames.WORLD_DEBUG_SCREEN_RESOURCE_LOCATION to HUDWorldDebugElement(this),
+        ElementsNames.SYSTEM_DEBUG_SCREEN_RESOURCE_LOCATION to HUDSystemDebugElement(this),
     )
+    val hudElements: MutableMap<HUDElementProperties, HUDElement> = mutableMapOf()
     val hudShader = Shader(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "rendering/shader/hud_vertex.glsl"), ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "rendering/shader/hud_fragment.glsl"))
     lateinit var hudAtlasElements: Map<ResourceLocation, HUDAtlasElement>
     var lastTickTime = 0L
@@ -52,6 +54,10 @@ class HUDRenderer(val connection: Connection, val renderWindow: RenderWindow) : 
 
 
     override fun init() {
+        for ((resourceLocation, hudElement) in defaultHUDElements) {
+            hudElements[Minosoft.getConfig().config.game.elements.entries[resourceLocation]!!] = hudElement
+        }
+
         hudShader.load(Minosoft.MINOSOFT_ASSETS_MANAGER)
 
         val hudImages = HUDAtlasElement.deserialize(ResourceLocationJsonMap.create(Minosoft.MINOSOFT_ASSETS_MANAGER.readJsonAsset(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "mapping/atlas.json"))), connection.version.versionId)
@@ -82,15 +88,14 @@ class HUDRenderer(val connection: Connection, val renderWindow: RenderWindow) : 
     override fun draw() {
         if (System.currentTimeMillis() - lastTickTime > ProtocolDefinition.TICK_TIME) {
             prepare()
-            update()
             lastTickTime = System.currentTimeMillis()
         }
 
-        for (element in hudElements.values) {
-            if (!element.elementProperties.enabled) {
+        for ((elementProperties, hudElement) in hudElements) {
+            if (!elementProperties.enabled) {
                 continue
             }
-            element.draw()
+            hudElement.draw()
         }
         hudShader.use()
         currentHUDMesh.draw()
@@ -99,32 +104,23 @@ class HUDRenderer(val connection: Connection, val renderWindow: RenderWindow) : 
     fun prepare() {
         currentHUDMesh.unload()
         currentHUDMesh = HUDMesh()
-        for (element in hudElements.values) {
-            if (!element.elementProperties.enabled) {
+        for ((elementProperties, hudElement) in hudElements) {
+            if (!elementProperties.enabled) {
                 continue
             }
             val elementListElement = ElementListElement(Vec2(0, 0), 0)
 
-            element.prepare(elementListElement)
+            hudElement.prepare(elementListElement)
 
 
-            val realScaleFactor = element.elementProperties.scale * hudScale.scale
+            val realScaleFactor = elementProperties.scale * hudScale.scale
             val realSize = Vec2(elementListElement.forceX ?: elementListElement.size.x, elementListElement.forceY ?: elementListElement.size.y) * realScaleFactor
 
-            val elementStart = getRealPosition(realSize, element.elementProperties, renderWindow.screenDimensions)
+            val elementStart = getRealPosition(realSize, elementProperties, renderWindow.screenDimensions)
 
             elementListElement.prepareVertices(elementStart, realScaleFactor, currentHUDMesh, orthographicMatrix, 0)
         }
         currentHUDMesh.load()
-    }
-
-    fun update() {
-        for (element in hudElements.values) {
-            if (!element.elementProperties.enabled) {
-                continue
-            }
-            element.update()
-        }
     }
 
 

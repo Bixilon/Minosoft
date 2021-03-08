@@ -14,11 +14,13 @@
 package de.bixilon.minosoft.config.config.game
 
 import de.bixilon.minosoft.config.config.game.controls.ControlsGameConfig
+import de.bixilon.minosoft.config.config.game.elements.ElementsGameConfig
 
 data class GameConfig(
     var animations: AnimationsGameConfig = AnimationsGameConfig(),
     var other: OtherGameConfig = OtherGameConfig(),
     var hud: HUDGameConfig = HUDGameConfig(),
     var controls: ControlsGameConfig = ControlsGameConfig(),
+    var elements: ElementsGameConfig = ElementsGameConfig(),
     var camera: CameraGameConfig = CameraGameConfig(),
 )

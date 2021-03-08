@@ -13,12 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.hud.elements.debug
 
-import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames
-import de.bixilon.minosoft.config.key.KeyAction
-import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.gui.rendering.RenderConstants
-import de.bixilon.minosoft.gui.rendering.hud.HUDElementProperties
 import de.bixilon.minosoft.gui.rendering.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.hud.elements.HUDElement
 import de.bixilon.minosoft.gui.rendering.hud.elements.primitive.ElementListElement
@@ -31,14 +27,6 @@ import oshi.SystemInfo
 
 
 class HUDSystemDebugElement(hudRenderer: HUDRenderer) : HUDElement(hudRenderer) {
-    override val elementProperties = HUDElementProperties(
-        Vec2(1, 1),
-        HUDElementProperties.PositionBindings.FURTHEST_POINT_AWAY,
-        HUDElementProperties.PositionBindings.FURTHEST_POINT_AWAY,
-        1.0f,
-        true,
-    )
-
     private val runtime = Runtime.getRuntime()
     private val systemInfo = SystemInfo()
     private val systemInfoHardwareAbstractionLayer = systemInfo.hardware
@@ -55,10 +43,6 @@ class HUDSystemDebugElement(hudRenderer: HUDRenderer) : HUDElement(hudRenderer) 
     override fun init() {
         gpuText = glGetString(GL_RENDERER) ?: "unknown"
         gpuVersionText = glGetString(GL_VERSION) ?: "unknown"
-
-        hudRenderer.renderWindow.registerKeyCallback(KeyBindingsNames.DEBUG_SCREEN) { _: KeyCodes, _: KeyAction ->
-            elementProperties.enabled = !elementProperties.enabled
-        }
     }
 
     override fun prepare(elementList: ElementListElement) {

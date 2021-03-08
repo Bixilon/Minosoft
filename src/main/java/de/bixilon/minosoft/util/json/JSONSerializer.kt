@@ -19,10 +19,11 @@ import de.bixilon.minosoft.config.config.Config
 
 object JSONSerializer {
     private val MOSHI = Moshi.Builder()
-        .add(KotlinJsonAdapterFactory())
+        .add(Vec2Serializer())
         .add(AccountSerializer())
         .add(ServerSerializer())
         .add(ResourceLocationSerializer())
+        .add(KotlinJsonAdapterFactory())
         .build()!!
 
     val CONFIG_ADAPTER = MOSHI.adapter(Config::class.java)!!

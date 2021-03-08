@@ -14,33 +14,19 @@
 package de.bixilon.minosoft.gui.rendering.hud.elements.other
 
 import de.bixilon.minosoft.data.mappings.ResourceLocation
-import de.bixilon.minosoft.gui.rendering.hud.HUDElementProperties
 import de.bixilon.minosoft.gui.rendering.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.hud.atlas.HUDAtlasElement
 import de.bixilon.minosoft.gui.rendering.hud.elements.HUDElement
 import de.bixilon.minosoft.gui.rendering.hud.elements.primitive.ElementListElement
 import de.bixilon.minosoft.gui.rendering.hud.elements.primitive.ImageElement
-import glm_.vec2.Vec2
 
 class CrosshairHUDElement(
     hudRender: HUDRenderer,
 ) : HUDElement(hudRender) {
-    override val elementProperties = HUDElementProperties(
-        position = Vec2(0f, 0f),
-        xBinding = HUDElementProperties.PositionBindings.CENTER,
-        yBinding = HUDElementProperties.PositionBindings.CENTER,
-        scale = 1.0f,
-        enabled = true,
-    )
-
     private lateinit var crosshairAtlasElement: HUDAtlasElement
-
-    private lateinit var crosshairRealSize: Vec2
-
 
     override fun init() {
         crosshairAtlasElement = hudRenderer.hudAtlasElements[ResourceLocation("minecraft:crosshair")]!!
-        crosshairRealSize = crosshairAtlasElement.binding.size * hudRenderer.hudScale.scale * elementProperties.scale
     }
 
 

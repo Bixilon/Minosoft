@@ -18,7 +18,6 @@ import de.bixilon.minosoft.data.Gamemodes
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.gui.rendering.RenderConstants
-import de.bixilon.minosoft.gui.rendering.hud.HUDElementProperties
 import de.bixilon.minosoft.gui.rendering.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.hud.atlas.HUDAtlasElement
 import de.bixilon.minosoft.gui.rendering.hud.atlas.ProgressBarAtlasElement
@@ -32,15 +31,6 @@ import glm_.vec2.Vec2
 class HotbarHUDElement(
     hudRender: HUDRenderer,
 ) : HUDElement(hudRender) {
-    override val elementProperties = HUDElementProperties(
-        position = Vec2(0f, -1.0f),
-        xBinding = HUDElementProperties.PositionBindings.CENTER,
-        yBinding = HUDElementProperties.PositionBindings.FURTHEST_POINT_AWAY,
-        scale = 1.0f,
-        enabled = true,
-    )
-
-
     private lateinit var hotbarBaseAtlasElement: HUDAtlasElement
     private lateinit var hotbarSelectedSlotFrameAtlasElement: HUDAtlasElement
 

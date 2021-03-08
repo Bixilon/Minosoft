@@ -13,17 +13,13 @@
 
 package de.bixilon.minosoft.gui.rendering.hud.elements
 
-import de.bixilon.minosoft.gui.rendering.hud.HUDElementProperties
 import de.bixilon.minosoft.gui.rendering.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.hud.elements.primitive.ElementListElement
 
 abstract class HUDElement(protected val hudRenderer: HUDRenderer) {
-    abstract val elementProperties: HUDElementProperties
-
-    abstract fun init()
+    open fun init() {}
     open fun postInit() {}
     abstract fun prepare(elementList: ElementListElement)
-    open fun update() {}
     open fun draw() {}
     open fun screenChangeResizeCallback(screenWidth: Int, screenHeight: Int) {}
 
