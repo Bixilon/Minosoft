@@ -45,7 +45,7 @@ object KeyBindingsNames {
 
     val QUIT_RENDERING = ResourceLocation("minosoft:quit_rendering")
 
-    val DEBUG_SCREEN = ResourceLocation("minosoft:toggle_debug_screen")
+    val TOGGLE_DEBUG_SCREEN = ResourceLocation("minosoft:toggle_debug_screen")
     val DEBUG_CLEAR_CHUNK_CACHE = ResourceLocation("minosoft:debug_clear_chunk_cache")
     val DEBUG_POLYGEN = ResourceLocation("minosoft:debug_polygen")
     val DEBUG_MOUSE_CATCH = ResourceLocation("minosoft:debug_mouse_catch")
@@ -116,7 +116,7 @@ object KeyBindingsNames {
             ),
             mutableSetOf(mutableSetOf(WHEN_IN_GAME))
         ),
-        DEBUG_SCREEN to KeyBinding(
+        TOGGLE_DEBUG_SCREEN to KeyBinding(
             mutableMapOf(
                 KeyAction.PRESS to mutableSetOf(KeyCodes.KEY_F3)
             ),

@@ -424,4 +424,8 @@ class RenderWindow(
     fun sendDebugMessage(message: String) {
         connection.sender.sendFakeChatMessage(RenderConstants.DEBUG_MESSAGES_PREFIX + message)
     }
+
+    fun unregisterKeyBinding(it: ResourceLocation) {
+        keyBindingCallbacks.remove(it)
+    }
 }

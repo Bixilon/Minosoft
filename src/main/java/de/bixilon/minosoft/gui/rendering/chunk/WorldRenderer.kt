@@ -210,6 +210,7 @@ class WorldRenderer(
     }
 
     fun clearChunkCache() {
+        // ToDo: Stop all preparations
         synchronized(this.queuedChunks) {
             queuedChunks.clear()
         }

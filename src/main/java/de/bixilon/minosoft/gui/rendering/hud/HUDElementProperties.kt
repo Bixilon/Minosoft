@@ -13,14 +13,15 @@
 
 package de.bixilon.minosoft.gui.rendering.hud
 
+import com.squareup.moshi.Json
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import glm_.vec2.Vec2
 
 data class HUDElementProperties(
     val position: Vec2,
-    val xBinding: PositionBindings,
-    val yBinding: PositionBindings,
-    var toggleKeyBinding: ResourceLocation? = null,
+    @Json(name = "x_binding") val xBinding: PositionBindings,
+    @Json(name = "y_binding") val yBinding: PositionBindings,
+    @Json(name = "toggle_key_binding") var toggleKeyBinding: ResourceLocation? = null,
     val scale: Float = 1.0f,
     var enabled: Boolean = true,
     val properties: MutableMap<String, Any> = mutableMapOf(),

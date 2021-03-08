@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.hud
 
 import de.bixilon.minosoft.Minosoft
+import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames
 import de.bixilon.minosoft.config.config.game.elements.ElementsNames
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderWindow
@@ -38,14 +39,9 @@ class HUDRenderer(val connection: Connection, val renderWindow: RenderWindow) : 
         get() {
             return Minosoft.getConfig().config.game.hud.scale
         }
-    private val defaultHUDElements: MutableMap<ResourceLocation, HUDElement> = mutableMapOf(
-        ElementsNames.HOTBAR_RESOURCE_LOCATION to HotbarHUDElement(this),
-        ElementsNames.CROSSHAIR_RESOURCE_LOCATION to CrosshairHUDElement(this),
-        ElementsNames.WORLD_DEBUG_SCREEN_RESOURCE_LOCATION to HUDWorldDebugElement(this),
-        ElementsNames.SYSTEM_DEBUG_SCREEN_RESOURCE_LOCATION to HUDSystemDebugElement(this),
-    )
-    val hudElements: MutableMap<HUDElementProperties, HUDElement> = mutableMapOf()
-    val hudShader = Shader(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "rendering/shader/hud_vertex.glsl"), ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "rendering/shader/hud_fragment.glsl"))
+    private val temporaryToggledElements: MutableSet<HUDElement> = mutableSetOf()
+    private val hudElements: MutableMap<ResourceLocation, Pair<HUDElementProperties, HUDElement>> = mutableMapOf()
+    private val hudShader = Shader(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "rendering/shader/hud_vertex.glsl"), ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "rendering/shader/hud_fragment.glsl"))
     lateinit var hudAtlasElements: Map<ResourceLocation, HUDAtlasElement>
     var lastTickTime = 0L
     var orthographicMatrix: Mat4 = Mat4()
@@ -54,10 +50,6 @@ class HUDRenderer(val connection: Connection, val renderWindow: RenderWindow) : 
 
 
     override fun init() {
-        for ((resourceLocation, hudElement) in defaultHUDElements) {
-            hudElements[Minosoft.getConfig().config.game.elements.entries[resourceLocation]!!] = hudElement
-        }
-
         hudShader.load(Minosoft.MINOSOFT_ASSETS_MANAGER)
 
         val hudImages = HUDAtlasElement.deserialize(ResourceLocationJsonMap.create(Minosoft.MINOSOFT_ASSETS_MANAGER.readJsonAsset(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "mapping/atlas.json"))), connection.version.versionId)
@@ -65,23 +57,85 @@ class HUDRenderer(val connection: Connection, val renderWindow: RenderWindow) : 
 
         renderWindow.textures.textures.addAll(hudImages.first.toList())
 
-        for (element in hudElements.values) {
+        registerDefaultElements()
+
+        for ((_, element) in hudElements.values) {
             element.init()
         }
+    }
+
+    private fun registerDefaultElements() {
+        addElement(ElementsNames.HOTBAR_RESOURCE_LOCATION, HotbarHUDElement(this), HUDElementProperties(
+            position = Vec2(0f, -1.0f),
+            xBinding = HUDElementProperties.PositionBindings.CENTER,
+            yBinding = HUDElementProperties.PositionBindings.FURTHEST_POINT_AWAY,
+        ))
+
+        addElement(ElementsNames.CROSSHAIR_RESOURCE_LOCATION, CrosshairHUDElement(this), HUDElementProperties(
+            position = Vec2(0f, 0f),
+            xBinding = HUDElementProperties.PositionBindings.CENTER,
+            yBinding = HUDElementProperties.PositionBindings.CENTER,
+        ))
+        addElement(ElementsNames.WORLD_DEBUG_SCREEN_RESOURCE_LOCATION, HUDWorldDebugElement(this), HUDElementProperties(
+            position = Vec2(-1.0f, 1.0f),
+            xBinding = HUDElementProperties.PositionBindings.FURTHEST_POINT_AWAY,
+            yBinding = HUDElementProperties.PositionBindings.FURTHEST_POINT_AWAY,
+            toggleKeyBinding = KeyBindingsNames.TOGGLE_DEBUG_SCREEN,
+            enabled = false,
+        ))
+        addElement(ElementsNames.SYSTEM_DEBUG_SCREEN_RESOURCE_LOCATION, HUDSystemDebugElement(this), HUDElementProperties(
+            position = Vec2(1.0f, 1.0f),
+            xBinding = HUDElementProperties.PositionBindings.FURTHEST_POINT_AWAY,
+            yBinding = HUDElementProperties.PositionBindings.FURTHEST_POINT_AWAY,
+            toggleKeyBinding = KeyBindingsNames.TOGGLE_DEBUG_SCREEN,
+            enabled = false,
+        ))
+    }
+
+    fun addElement(resourceLocation: ResourceLocation, hudElement: HUDElement, defaultProperties: HUDElementProperties) {
+        var needToSafeConfig = false
+        val properties = Minosoft.getConfig().config.game.elements.entries.getOrPut(resourceLocation, {
+            needToSafeConfig = true
+            defaultProperties
+        })
+        if (needToSafeConfig) {
+            Minosoft.getConfig().saveToFile()
+        }
+        hudElements[resourceLocation] = Pair(properties, hudElement)
+
+
+        properties.toggleKeyBinding?.let {
+            // register key binding
+            renderWindow.registerKeyCallback(it) { _, _ ->
+                if (temporaryToggledElements.contains(hudElement)) {
+                    temporaryToggledElements.remove(hudElement)
+                } else {
+                    temporaryToggledElements.add(hudElement)
+                }
+            }
+        }
+    }
+
+    fun removeElement(resourceLocation: ResourceLocation) {
+        hudElements[resourceLocation]?.first?.toggleKeyBinding?.let {
+            renderWindow.unregisterKeyBinding(it)
+        }
+
+        hudElements.remove(resourceLocation)
     }
 
     override fun postInit() {
         renderWindow.textures.use(hudShader, "textureArray")
 
         for (element in hudElements.values) {
-            element.postInit()
+            element.second.postInit()
         }
     }
 
     override fun screenChangeResizeCallback(width: Int, height: Int) {
         orthographicMatrix = glm.ortho(-width / 2f, width / 2f, -height / 2f, height / 2f)
         for (element in hudElements.values) {
-            element.screenChangeResizeCallback(width, height)
+            element.second.screenChangeResizeCallback(width, height)
         }
     }
 
@@ -91,8 +145,9 @@ class HUDRenderer(val connection: Connection, val renderWindow: RenderWindow) : 
             lastTickTime = System.currentTimeMillis()
         }
 
-        for ((elementProperties, hudElement) in hudElements) {
-            if (!elementProperties.enabled) {
+        for ((elementProperties, hudElement) in hudElements.values) {
+            val toggled = temporaryToggledElements.contains(hudElement)
+            if (toggled && elementProperties.enabled || !toggled && !elementProperties.enabled) {
                 continue
             }
             hudElement.draw()
@@ -104,8 +159,9 @@ class HUDRenderer(val connection: Connection, val renderWindow: RenderWindow) : 
     fun prepare() {
         currentHUDMesh.unload()
         currentHUDMesh = HUDMesh()
-        for ((elementProperties, hudElement) in hudElements) {
-            if (!elementProperties.enabled) {
+        for ((elementProperties, hudElement) in hudElements.values) {
+            val toggled = temporaryToggledElements.contains(hudElement)
+            if (toggled && elementProperties.enabled || !toggled && !elementProperties.enabled) {
                 continue
             }
             val elementListElement = ElementListElement(Vec2(0, 0), 0)
