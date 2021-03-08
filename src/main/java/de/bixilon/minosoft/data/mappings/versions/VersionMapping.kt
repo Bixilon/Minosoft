@@ -172,6 +172,11 @@ class VersionMapping(var version: Version?) {
         var parent: BlockModel? = null
         modelData["parent"]?.asString?.let {
             val parentResourceLocation = ResourceLocation(it)
+            if (parentResourceLocation.path.startsWith("builtin/")) {
+                // ToDo
+                return@let
+            }
+
             parent = loadBlockModel(parentResourceLocation, fullModelData[parentResourceLocation]!!, fullModelData)
         }
         model = BlockModel(parent, modelData)
