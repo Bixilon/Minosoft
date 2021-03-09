@@ -48,6 +48,8 @@ class HUDRenderer(val connection: Connection, val renderWindow: RenderWindow) : 
         private set
     var currentHUDMesh: HUDMesh = HUDMesh()
 
+    private var hudEnabled = true
+
 
     override fun init() {
         hudShader.load(Minosoft.MINOSOFT_ASSETS_MANAGER)
@@ -58,6 +60,10 @@ class HUDRenderer(val connection: Connection, val renderWindow: RenderWindow) : 
         renderWindow.textures.textures.addAll(hudImages.first.toList())
 
         registerDefaultElements()
+
+        renderWindow.registerKeyCallback(KeyBindingsNames.TOGGLE_HUD) { _, _ ->
+            hudEnabled = !hudEnabled
+        }
 
         for ((_, element) in hudElements.values) {
             element.init()
@@ -140,6 +146,9 @@ class HUDRenderer(val connection: Connection, val renderWindow: RenderWindow) : 
     }
 
     override fun draw() {
+        if (!hudEnabled) {
+            return
+        }
         if (System.currentTimeMillis() - lastTickTime > ProtocolDefinition.TICK_TIME) {
             prepare()
             lastTickTime = System.currentTimeMillis()
@@ -157,6 +166,9 @@ class HUDRenderer(val connection: Connection, val renderWindow: RenderWindow) : 
     }
 
     fun prepare() {
+        if (!hudEnabled) {
+            return
+        }
         currentHUDMesh.unload()
         currentHUDMesh = HUDMesh()
         for ((elementProperties, hudElement) in hudElements.values) {

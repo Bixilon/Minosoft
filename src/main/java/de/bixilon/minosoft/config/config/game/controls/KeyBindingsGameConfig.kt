@@ -55,6 +55,8 @@ object KeyBindingsNames {
 
     val TAKE_SCREENSHOT = ResourceLocation("minosoft:take_screenshot")
 
+    val TOGGLE_HUD = ResourceLocation("minosoft:toggle_hud")
+
 
     val SELECT_HOTBAR_SLOTS = arrayOf(ResourceLocation("minosoft:select_hotbar_slot_1"),
         ResourceLocation("minosoft:select_hotbar_slot_2"),
@@ -206,6 +208,12 @@ object KeyBindingsNames {
         SELECT_HOTBAR_SLOTS[8] to KeyBinding(
             mutableMapOf(
                 KeyAction.PRESS to mutableSetOf(KeyCodes.KEY_9)
+            ),
+            mutableSetOf(mutableSetOf(WHEN_IN_GAME))
+        ),
+        TOGGLE_HUD to KeyBinding(
+            mutableMapOf(
+                KeyAction.PRESS to mutableSetOf(KeyCodes.KEY_F1)
             ),
             mutableSetOf(mutableSetOf(WHEN_IN_GAME))
         ),

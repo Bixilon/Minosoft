@@ -25,6 +25,4 @@ object ElementsNames {
     val CROSSHAIR_RESOURCE_LOCATION = ResourceLocation("minosoft:crosshair")
     val WORLD_DEBUG_SCREEN_RESOURCE_LOCATION = ResourceLocation("minosoft:world_debug_screen")
     val SYSTEM_DEBUG_SCREEN_RESOURCE_LOCATION = ResourceLocation("minosoft:system_debug_screen")
-
-
 }
