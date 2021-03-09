@@ -13,7 +13,6 @@
 package de.bixilon.minosoft.data.commands.parser
 
 import de.bixilon.minosoft.data.commands.CommandStringReader
-import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException
 import de.bixilon.minosoft.data.commands.parser.exceptions.resourcelocation.ParticleNotFoundCommandParseException
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties
 import de.bixilon.minosoft.data.mappings.particle.data.BlockParticleData
@@ -22,9 +21,8 @@ import de.bixilon.minosoft.data.mappings.particle.data.ItemParticleData
 import de.bixilon.minosoft.data.mappings.particle.data.ParticleData
 import de.bixilon.minosoft.protocol.network.Connection
 
-class ParticleParser : CommandParser() {
+object ParticleParser : CommandParser() {
 
-    @Throws(CommandParseException::class)
     override fun parse(connection: Connection, properties: ParserProperties?, stringReader: CommandStringReader): ParticleData {
         val resourceLocation = stringReader.readResourceLocation()
 
@@ -50,9 +48,5 @@ class ParticleParser : CommandParser() {
             }
             else -> ParticleData(particle)
         }
-    }
-
-    companion object {
-        val PARTICLE_PARSER = ParticleParser()
     }
 }

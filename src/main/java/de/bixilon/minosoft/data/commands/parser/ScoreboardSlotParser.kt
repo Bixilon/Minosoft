@@ -14,15 +14,14 @@ package de.bixilon.minosoft.data.commands.parser
 
 import de.bixilon.minosoft.data.commands.CommandStringReader
 import de.bixilon.minosoft.data.commands.parser.exceptions.ColorNotFoundCommandParseException
-import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException
 import de.bixilon.minosoft.data.commands.parser.exceptions.UnknownOperationCommandParseException
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties
 import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.protocol.network.Connection
 
-class ScoreboardSlotParser : CommandParser() {
+object ScoreboardSlotParser : CommandParser() {
+    private val SCOREBOARD_SLOTS = setOf("list", "sidebar", "belowName")
 
-    @Throws(CommandParseException::class)
     override fun parse(connection: Connection, properties: ParserProperties?, stringReader: CommandStringReader): Any? {
         val slot = stringReader.readUnquotedString()
 
@@ -40,10 +39,5 @@ class ScoreboardSlotParser : CommandParser() {
         }
         return slot
 
-    }
-
-    companion object {
-        private val SCOREBOARD_SLOTS = setOf("list", "sidebar", "belowName")
-        val SCOREBOARD_SLOT_PARSER = ScoreboardSlotParser()
     }
 }

@@ -13,7 +13,6 @@
 package de.bixilon.minosoft.data.commands.parser
 
 import de.bixilon.minosoft.data.commands.CommandStringReader
-import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException
 import de.bixilon.minosoft.data.commands.parser.properties.EntityParserProperties
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties
 import de.bixilon.minosoft.protocol.network.Connection
@@ -25,7 +24,6 @@ class GameProfileParser(val properties: EntityParserProperties) : EntityParser()
         return null
     }
 
-    @Throws(CommandParseException::class)
     override fun parse(connection: Connection, properties: ParserProperties?, stringReader: CommandStringReader): Any? {
         return super.parse(connection, properties, stringReader)
     }

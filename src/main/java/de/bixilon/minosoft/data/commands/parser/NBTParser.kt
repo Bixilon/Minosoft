@@ -13,7 +13,6 @@
 package de.bixilon.minosoft.data.commands.parser
 
 import de.bixilon.minosoft.data.commands.CommandStringReader
-import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException
 import de.bixilon.minosoft.data.commands.parser.exceptions.nbt.ExpectedPrimitiveTagCommandParseException
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties
 import de.bixilon.minosoft.protocol.network.Connection
@@ -21,7 +20,6 @@ import de.bixilon.minosoft.util.nbt.tag.CompoundTag
 
 class NBTParser : CommandParser() {
 
-    @Throws(CommandParseException::class)
     override fun parse(connection: Connection, properties: ParserProperties?, stringReader: CommandStringReader): Any? {
         return when (this) {
             NBT_PARSER -> {

@@ -14,14 +14,12 @@ package de.bixilon.minosoft.data.commands.parser
 
 import de.bixilon.minosoft.data.commands.CommandStringReader
 import de.bixilon.minosoft.data.commands.parser.exceptions.ColorNotFoundCommandParseException
-import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties
 import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.protocol.network.Connection
 
-class ColorParser : CommandParser() {
+object ColorParser : CommandParser() {
 
-    @Throws(CommandParseException::class)
     override fun parse(connection: Connection, properties: ParserProperties?, stringReader: CommandStringReader): Any? {
         val color = stringReader.readUnquotedString()
         try {
@@ -29,9 +27,5 @@ class ColorParser : CommandParser() {
         } catch (exception: IllegalArgumentException) {
             throw ColorNotFoundCommandParseException(stringReader, color, exception)
         }
-    }
-
-    companion object {
-        val COLOR_PARSER = ColorParser()
     }
 }

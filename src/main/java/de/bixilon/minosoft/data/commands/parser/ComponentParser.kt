@@ -13,15 +13,13 @@
 package de.bixilon.minosoft.data.commands.parser
 
 import de.bixilon.minosoft.data.commands.CommandStringReader
-import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException
 import de.bixilon.minosoft.data.commands.parser.exceptions.InvalidComponentCommandParseException
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties
 import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.protocol.network.Connection
 
-class ComponentParser : CommandParser() {
+object ComponentParser : CommandParser() {
 
-    @Throws(CommandParseException::class)
     override fun parse(connection: Connection, properties: ParserProperties?, stringReader: CommandStringReader): Any? {
         try {
             return BaseComponent(connection.version.localeManager, stringReader.readJson().asJsonObject)
@@ -29,9 +27,5 @@ class ComponentParser : CommandParser() {
             stringReader.skip(-1)
             throw InvalidComponentCommandParseException(stringReader, stringReader.read().toString(), exception)
         }
-    }
-
-    companion object {
-        val COMPONENT_PARSER = ComponentParser()
     }
 }

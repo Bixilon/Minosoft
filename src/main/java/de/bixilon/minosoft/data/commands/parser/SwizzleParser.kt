@@ -14,14 +14,12 @@ package de.bixilon.minosoft.data.commands.parser
 
 import de.bixilon.minosoft.data.commands.CommandStringReader
 import de.bixilon.minosoft.data.commands.parser.exceptions.BadSwizzleCombinationCommandParseException
-import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties
 import de.bixilon.minosoft.protocol.network.Connection
 
-class SwizzleParser : CommandParser() {
+object SwizzleParser : CommandParser() {
 
-    @Throws(CommandParseException::class)
-    override fun parse(connection: Connection, properties: ParserProperties?, stringReader: CommandStringReader): Any? {
+    override fun parse(connection: Connection, properties: ParserProperties?, stringReader: CommandStringReader): Any {
         val swizzle = stringReader.readUnquotedString()
 
         val containing: HashSet<Char> = HashSet()
@@ -39,9 +37,5 @@ class SwizzleParser : CommandParser() {
         }
         return swizzle
 
-    }
-
-    companion object {
-        val SWIZZLE_PARSER = SwizzleParser()
     }
 }

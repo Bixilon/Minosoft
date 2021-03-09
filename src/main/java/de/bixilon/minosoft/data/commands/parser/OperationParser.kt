@@ -13,15 +13,14 @@
 package de.bixilon.minosoft.data.commands.parser
 
 import de.bixilon.minosoft.data.commands.CommandStringReader
-import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException
 import de.bixilon.minosoft.data.commands.parser.exceptions.UnknownOperationCommandParseException
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties
 import de.bixilon.minosoft.protocol.network.Connection
 
-class OperationParser : CommandParser() {
+object OperationParser : CommandParser() {
+    private val OPERATIONS = setOf("=", "+=", "-=", "*=", "/=", "%=", "<", ">", "><")
 
-    @Throws(CommandParseException::class)
-    override fun parse(connection: Connection, properties: ParserProperties?, stringReader: CommandStringReader): Any? {
+    override fun parse(connection: Connection, properties: ParserProperties?, stringReader: CommandStringReader): Any {
         val operation = stringReader.readUnquotedString()
 
         if (!OPERATIONS.contains(operation)) {
@@ -29,10 +28,5 @@ class OperationParser : CommandParser() {
         }
         return operation
 
-    }
-
-    companion object {
-        private val OPERATIONS = setOf("=", "+=", "-=", "*=", "/=", "%=", "<", ">", "><")
-        val OPERATION_PARSER = OperationParser()
     }
 }
