@@ -15,7 +15,6 @@ package de.bixilon.minosoft.data.world.biome
 
 import de.bixilon.minosoft.data.mappings.biomes.Biome
 import de.bixilon.minosoft.data.world.BlockPosition
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
 class NoiseBiomeAccessor(
     private val biomes: Array<Biome>,
@@ -23,7 +22,7 @@ class NoiseBiomeAccessor(
 
     override fun getBiome(position: BlockPosition): Biome? {
         val inChunk = position.getInChunkSectionPosition()
-        val index = inChunk.y * ProtocolDefinition.SECTION_HEIGHT_Y + ((inChunk.z / 4) * 4 + (inChunk.x / 4))
+        val index = (inChunk.y / 4 * 16 + ((inChunk.z / 4 * 4) + (inChunk.x / 4)))
         if (index < 0 || index > biomes.size) {
             return null
         }
