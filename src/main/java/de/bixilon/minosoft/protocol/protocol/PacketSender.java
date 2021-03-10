@@ -22,6 +22,7 @@ import de.bixilon.minosoft.data.text.ChatComponent;
 import de.bixilon.minosoft.modding.event.events.ChatMessageReceivingEvent;
 import de.bixilon.minosoft.modding.event.events.ChatMessageSendingEvent;
 import de.bixilon.minosoft.modding.event.events.CloseWindowEvent;
+import de.bixilon.minosoft.modding.event.events.HeldItemChangeEvent;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.serverbound.login.PacketLoginPluginResponse;
 import de.bixilon.minosoft.protocol.packets.serverbound.play.*;
@@ -59,10 +60,6 @@ public class PacketSender {
 
     public void spectateEntity(UUID entityUUID) {
         this.connection.sendPacket(new PacketSpectate(entityUUID));
-    }
-
-    public void setSlot(int slotId) {
-        this.connection.sendPacket(new PacketHeldItemChangeSending(slotId));
     }
 
     public void swingArm(Hands hand) {
@@ -140,6 +137,7 @@ public class PacketSender {
     }
 
     public void selectSlot(@IntRange(from = 0, to = 8) int slot) {
+        this.connection.fireEvent(new HeldItemChangeEvent(this.connection, slot));
         this.connection.getPlayer().setSelectedSlot(slot);
         this.connection.sendPacket(new PacketHeldItemChangeSending(slot));
     }

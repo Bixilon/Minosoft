@@ -15,21 +15,17 @@ package de.bixilon.minosoft.gui.rendering.hud.elements.other
 
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.hud.HUDRenderer
-import de.bixilon.minosoft.gui.rendering.hud.atlas.HUDAtlasElement
 import de.bixilon.minosoft.gui.rendering.hud.elements.HUDElement
 import de.bixilon.minosoft.gui.rendering.hud.elements.primitive.ImageElement
 
 class CrosshairHUDElement(
     hudRender: HUDRenderer,
 ) : HUDElement(hudRender) {
-    private lateinit var crosshairAtlasElement: HUDAtlasElement
+    private lateinit var crosshairImage: ImageElement
 
     override fun init() {
-        crosshairAtlasElement = hudRenderer.hudAtlasElements[ResourceLocation("minecraft:crosshair")]!!
-    }
-
-
-    override fun prepare() {
-        elementList.addChild(ImageElement(end = crosshairAtlasElement.binding.size, textureLike = crosshairAtlasElement))
+        val atlasElement = hudRenderer.hudAtlasElements[ResourceLocation("minecraft:crosshair")]!!
+        crosshairImage = ImageElement(end = atlasElement.binding.size, textureLike = atlasElement)
+        elementList.addChild(crosshairImage)
     }
 }

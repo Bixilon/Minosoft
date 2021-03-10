@@ -18,8 +18,18 @@ import glm_.mat4x4.Mat4
 import glm_.vec2.Vec2
 
 abstract class Element(
-    val start: Vec2,
+    private var _start: Vec2,
 ) {
+    var start: Vec2
+        get() {
+            return _start
+        }
+        set(value) {
+            _start = value
+            parent?.recalculateSize()
+            clearCache()
+        }
+
     val cache = HUDCacheMesh()
     open var parent: Element? = null
     var size: Vec2 = Vec2()

@@ -37,7 +37,7 @@ class HUDSystemDebugElement(hudRenderer: HUDRenderer) : HUDElement(hudRenderer) 
         gpuVersionText = glGetString(GL_VERSION) ?: "unknown"
     }
 
-    override fun prepare() {
+    override fun draw() {
         elementList.clear()
 
         for (text in listOf(

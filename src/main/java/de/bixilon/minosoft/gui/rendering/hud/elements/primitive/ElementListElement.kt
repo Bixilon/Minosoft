@@ -26,8 +26,8 @@ open class ElementListElement(
 
 
     fun clear() {
+        clearCache()
         children.clear()
-        cache.clear()
         recalculateSize()
     }
 
@@ -56,11 +56,18 @@ open class ElementListElement(
     }
 
     private fun checkSize(vec2: Vec2) {
+        var changed = false
         if (vec2.x > size.x) {
             size.x = vec2.x
+            changed = true
         }
         if (vec2.y > size.y) {
             size.y = vec2.y
+            changed = true
+        }
+        if (changed) {
+            clearCache()
+
         }
     }
 

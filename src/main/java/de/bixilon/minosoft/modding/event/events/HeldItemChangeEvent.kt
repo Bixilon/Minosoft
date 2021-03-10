@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -10,25 +10,24 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.modding.event.events
 
-package de.bixilon.minosoft.gui.rendering.hud
+import de.bixilon.minosoft.protocol.network.Connection
+import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketHeldItemChangeReceiving
+import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketHeldItemChangeSending
 
-import com.squareup.moshi.Json
-import de.bixilon.minosoft.data.mappings.ResourceLocation
-import glm_.vec2.Vec2
+class HeldItemChangeEvent : ConnectionEvent {
+    val slot: Int
 
-data class HUDElementProperties(
-    val position: Vec2,
-    @Json(name = "x_binding") val xBinding: PositionBindings,
-    @Json(name = "y_binding") val yBinding: PositionBindings,
-    @Json(name = "toggle_key_binding") var toggleKeyBinding: ResourceLocation? = null,
-    val scale: Float = 1.0f,
-    var enabled: Boolean = true,
-    val properties: MutableMap<String, Any> = mutableMapOf(),
-) {
+    constructor(connection: Connection, slot: Int) : super(connection) {
+        this.slot = slot
+    }
 
-    enum class PositionBindings {
-        CENTER,
-        FURTHEST_POINT_AWAY
+    constructor(connection: Connection, pkg: PacketHeldItemChangeSending) : super(connection) {
+        slot = pkg.slot
+    }
+
+    constructor(connection: Connection, pkg: PacketHeldItemChangeReceiving) : super(connection) {
+        slot = pkg.slot
     }
 }

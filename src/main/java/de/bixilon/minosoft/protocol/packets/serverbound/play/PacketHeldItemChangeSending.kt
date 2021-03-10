@@ -10,18 +10,23 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.protocol.packets.serverbound.play
 
-package de.bixilon.minosoft.gui.rendering.hud.elements
+import de.bixilon.minosoft.protocol.network.Connection
+import de.bixilon.minosoft.protocol.packets.ServerboundPacket
+import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer
+import de.bixilon.minosoft.protocol.protocol.PacketTypes
+import de.bixilon.minosoft.util.logging.Log
 
-import de.bixilon.minosoft.gui.rendering.hud.HUDRenderer
-import de.bixilon.minosoft.gui.rendering.hud.elements.primitive.ElementListElement
-import glm_.vec2.Vec2
+class PacketHeldItemChangeSending(val slot: Int) : ServerboundPacket {
 
-abstract class HUDElement(protected val hudRenderer: HUDRenderer) {
-    val elementList = ElementListElement(Vec2(), 0)
+    override fun write(connection: Connection): OutPacketBuffer {
+        val buffer = OutPacketBuffer(connection, PacketTypes.Serverbound.PLAY_HELD_ITEM_CHANGE)
+        buffer.writeShort(slot.toShort())
+        return buffer
+    }
 
-    open fun init() {}
-    open fun postInit() {}
-    open fun draw() {}
-    open fun screenChangeResizeCallback(screenWidth: Int, screenHeight: Int) {}
+    override fun log() {
+        Log.protocol("[OUT] Sending slot selection: ($slot)")
+    }
 }

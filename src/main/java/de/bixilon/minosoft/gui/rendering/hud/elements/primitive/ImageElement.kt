@@ -23,11 +23,11 @@ import glm_.vec4.Vec4
 
 class ImageElement(
     start: Vec2 = Vec2(),
-    val end: Vec2,
+    end: Vec2 = Vec2(),
     val textureLike: TextureLike?,
     val z: Int = 0,
     val tintColor: RGBColor? = null,
-) : Element(start) {
+) : EndElement(start, end) {
     init {
         recalculateSize()
     }

@@ -25,7 +25,7 @@ import glm_.vec2.Vec2
 class HUDWorldDebugElement(hudRenderer: HUDRenderer) : HUDElement(hudRenderer) {
     private val camera = hudRenderer.renderWindow.camera
 
-    override fun prepare() {
+    override fun draw() {
         elementList.clear()
 
         for (text in listOf(

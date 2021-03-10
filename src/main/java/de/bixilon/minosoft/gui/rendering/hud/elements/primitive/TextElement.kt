@@ -20,14 +20,31 @@ import de.bixilon.minosoft.gui.rendering.font.Font
 import glm_.vec2.Vec2
 
 class TextElement(
-    text: ChatComponent,
-    font: Font,
+    private var _text: ChatComponent = ChatComponent.valueOf(""),
+    private val font: Font,
     start: Vec2,
     z: Int = 1,
-    background: Boolean = true,
+    var background: Boolean = true,
 ) : ElementListElement(start, z) {
+    var text: ChatComponent
+        get() = _text
+        set(value) {
+            size = Vec2(0, 0)
+            _text = value
+            prepare()
+        }
+    var sText: String
+        get() = text.message
+        set(value) {
+            text = ChatComponent.valueOf(sText)
+        }
 
     init {
+        prepare()
+    }
+
+    private fun prepare() {
+        clear()
         size = if (text.message.isBlank()) {
             Vec2(0, Font.CHAR_HEIGHT)
         } else {
@@ -40,7 +57,6 @@ class TextElement(
             Vec2(textSize + 1)
         }
     }
-
 
     private fun drawBackground(end: Vec2, z: Int, tintColor: RGBColor = RenderConstants.TEXT_BACKGROUND_COLOR) {
         addChild(ImageElement(Vec2(0, 0), end, null, z, tintColor))

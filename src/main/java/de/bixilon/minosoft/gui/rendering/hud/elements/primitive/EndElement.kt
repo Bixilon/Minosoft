@@ -11,9 +11,22 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.hud.atlas
+package de.bixilon.minosoft.gui.rendering.hud.elements.primitive
 
-data class ProgressBarAtlasElement(
-    val emptyAtlasElement: HUDAtlasElement,
-    val fullAtlasElement: HUDAtlasElement,
-)
+import glm_.vec2.Vec2
+
+abstract class EndElement(
+    start: Vec2,
+    private var _end: Vec2,
+) : Element(start) {
+    var end: Vec2
+        get() {
+            return _end
+        }
+        set(value) {
+            _end = value
+            parent?.recalculateSize()
+            clearCache()
+        }
+
+}

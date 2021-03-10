@@ -148,23 +148,6 @@ class HUDRenderer(val connection: Connection, val renderWindow: RenderWindow) : 
         if (!hudEnabled) {
             return
         }
-        prepare()
-
-        for ((elementProperties, hudElement) in hudElements.values) {
-            val toggled = temporaryToggledElements.contains(hudElement)
-            if (toggled && elementProperties.enabled || !toggled && !elementProperties.enabled) {
-                continue
-            }
-            hudElement.draw()
-        }
-        hudShader.use()
-        currentHUDMesh.draw()
-    }
-
-    fun prepare() {
-        if (!hudEnabled) {
-            return
-        }
         currentHUDMesh.unload()
         currentHUDMesh = HUDMesh()
         for ((elementProperties, hudElement) in hudElements.values) {
@@ -173,7 +156,7 @@ class HUDRenderer(val connection: Connection, val renderWindow: RenderWindow) : 
                 continue
             }
 
-            hudElement.prepare()
+            hudElement.draw()
 
 
             val realScaleFactor = elementProperties.scale * hudScale.scale
@@ -184,7 +167,9 @@ class HUDRenderer(val connection: Connection, val renderWindow: RenderWindow) : 
             hudElement.elementList.checkCache(elementStart, realScaleFactor, orthographicMatrix, 0)
             currentHUDMesh.addCacheMesh(hudElement.elementList.cache)
         }
+        hudShader.use()
         currentHUDMesh.load()
+        currentHUDMesh.draw()
     }
 
 

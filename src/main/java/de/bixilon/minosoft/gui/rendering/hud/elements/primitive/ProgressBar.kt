@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.hud.elements.primitive
 
-import de.bixilon.minosoft.gui.rendering.hud.atlas.ProgressBarAtlasElement
+import de.bixilon.minosoft.gui.rendering.hud.atlas.HUDAtlasElement
 import de.bixilon.minosoft.gui.rendering.hud.atlas.TextureLike
 import de.bixilon.minosoft.gui.rendering.textures.Texture
 import glm_.mat4x4.Mat4
@@ -21,22 +21,31 @@ import glm_.vec2.Vec2
 
 class ProgressBar(
     start: Vec2,
-    val end: Vec2,
-    private val atlasElement: ProgressBarAtlasElement,
-    val progress: Float = 0.0f,
+    end: Vec2,
+    val emptyAtlasElement: HUDAtlasElement,
+    val fullAtlasElement: HUDAtlasElement,
     val z: Int = 1,
-) : Element(start) {
+) : EndElement(start, end) {
+    private var _progress = 0.0f
+    var progress: Float
+        get() = _progress
+        set(value) {
+            check(value >= 0.0f) { "Value is smaller than 0" }
+            check(value <= 1.0f) { "Value is greater than 1" }
+            cache.clear()
+            _progress = value
+        }
 
     init {
         recalculateSize()
     }
 
     override fun recalculateSize() {
-        size = atlasElement.emptyAtlasElement.binding.size
+        size = emptyAtlasElement.binding.size
     }
 
     override fun prepareCache(start: Vec2, scaleFactor: Float, matrix: Mat4, z: Int) {
-        val emptyImageElement = ImageElement(this.start, end, atlasElement.emptyAtlasElement, z)
+        val emptyImageElement = ImageElement(this.start, end, emptyAtlasElement, z)
 
         emptyImageElement.checkCache(start, scaleFactor, matrix, z)
         cache.addCache(emptyImageElement.cache)
@@ -48,11 +57,11 @@ class ProgressBar(
 
         val fullImageElement = ImageElement(this.start, Vec2(end.x * progress, end.y), object : TextureLike {
             override val texture: Texture
-                get() = atlasElement.fullAtlasElement.texture
+                get() = fullAtlasElement.texture
             override val uvStart: Vec2
-                get() = atlasElement.fullAtlasElement.uvStart
+                get() = fullAtlasElement.uvStart
             override val uvEnd: Vec2
-                get() = Vec2((atlasElement.fullAtlasElement.uvEnd.x - atlasElement.fullAtlasElement.uvStart.x) * progress + atlasElement.fullAtlasElement.uvStart.x, atlasElement.fullAtlasElement.uvEnd.y)
+                get() = Vec2((fullAtlasElement.uvEnd.x - fullAtlasElement.uvStart.x) * progress + fullAtlasElement.uvStart.x, fullAtlasElement.uvEnd.y)
 
         }, z + 1)
 
