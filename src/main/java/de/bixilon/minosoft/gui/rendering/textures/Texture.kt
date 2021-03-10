@@ -28,7 +28,8 @@ class Texture(
     var layer = -1
     var width: Int = 0
     var height: Int = 0
-    var isTransparent: Boolean = false
+    lateinit var transparency: TextureTransparencies
+        private set
     lateinit var buffer: ByteBuffer
     var loaded = false
 
@@ -49,10 +50,13 @@ class Texture(
         width = decoder.width
         height = decoder.height
         buffer.rewind()
+        transparency = TextureTransparencies.OPAQUE
         for (i in 0 until buffer.limit() step 4) {
             val color = RGBColor(buffer.get(), buffer.get(), buffer.get(), buffer.get())
-            if (color.alpha < 0xFF) {
-                isTransparent = true
+            if (color.alpha == 0x00 && transparency != TextureTransparencies.SEMI_TRANSPARENT) {
+                transparency = TextureTransparencies.TRANSPARENT
+            } else if (color.alpha < 0xFF) {
+                transparency = TextureTransparencies.SEMI_TRANSPARENT
             }
         }
         buffer.flip()

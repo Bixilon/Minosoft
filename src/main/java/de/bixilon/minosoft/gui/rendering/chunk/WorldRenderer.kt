@@ -53,7 +53,7 @@ class WorldRenderer(
             visibleChunks.add(chunkPosition)
         }
         val chunk = world.getChunk(chunkPosition)!!
-
+        val dimensionSupports3dBiomes = connection.player.world.dimension?.supports3DBiomes ?: false
         val mesh = ChunkMesh()
 
         for ((index, blockInfo) in section.blocks.withIndex()) {
@@ -67,7 +67,7 @@ class WorldRenderer(
                 neighborBlocks[direction.ordinal] = world.getBlockInfo(blockPosition + direction)
             }
 
-            val biome = chunk.biomeAccessor!!.getBiome(blockPosition)
+            val biome = chunk.biomeAccessor!!.getBiome(blockPosition, dimensionSupports3dBiomes)
 
             var tintColor: RGBColor? = null
             if (StaticConfiguration.BIOME_DEBUG_MODE) {
@@ -106,6 +106,12 @@ class WorldRenderer(
 
     override fun postInit() {
         renderWindow.textures.use(chunkShader, "textureArray")
+
+        for (block in connection.version.mapping.blockStateIdMap.values) {
+            for (model in block.renders) {
+                model.postInit()
+            }
+        }
     }
 
     override fun draw() {
@@ -142,6 +148,7 @@ class WorldRenderer(
         }
         return textures
     }
+
 
     fun prepareChunk(chunkPosition: ChunkPosition, chunk: Chunk? = world.getChunk(chunkPosition), checkQueued: Boolean = true) {
         if (chunk == null || !chunk.isFullyLoaded) {
@@ -193,17 +200,17 @@ class WorldRenderer(
     }
 
     fun prepareChunkSection(chunkPosition: ChunkPosition, sectionHeight: Int, section: ChunkSection) {
-       Minosoft.THREAD_POOL.execute {
-           val mesh = prepareChunk(chunkPosition, sectionHeight, section)
+        Minosoft.THREAD_POOL.execute {
+            val mesh = prepareChunk(chunkPosition, sectionHeight, section)
 
-           var sectionMap = chunkSectionsToDraw[chunkPosition]
-           if (sectionMap == null) {
-               sectionMap = ConcurrentHashMap()
-               chunkSectionsToDraw[chunkPosition] = sectionMap
-           }
-           renderWindow.renderQueue.add {
-               mesh.load()
-               sectionMap[sectionHeight]?.unload()
+            var sectionMap = chunkSectionsToDraw[chunkPosition]
+            if (sectionMap == null) {
+                sectionMap = ConcurrentHashMap()
+                chunkSectionsToDraw[chunkPosition] = sectionMap
+            }
+            renderWindow.renderQueue.add {
+                mesh.load()
+                sectionMap[sectionHeight]?.unload()
                 sectionMap[sectionHeight] = mesh
             }
         }

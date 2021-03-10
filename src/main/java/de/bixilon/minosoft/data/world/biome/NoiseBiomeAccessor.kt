@@ -20,9 +20,14 @@ class NoiseBiomeAccessor(
     private val biomes: Array<Biome>,
 ) : BiomeAccessor {
 
-    override fun getBiome(position: BlockPosition): Biome? {
+    override fun getBiome(position: BlockPosition, is3d: Boolean): Biome? {
         val inChunk = position.getInChunkSectionPosition()
-        val index = (inChunk.y / 4 * 16 + ((inChunk.z / 4 * 4) + (inChunk.x / 4)))
+        val y = if (is3d) {
+            inChunk.y / 4 * 16
+        } else {
+            0
+        }
+        val index = (y + ((inChunk.z / 4 * 4) + (inChunk.x / 4)))
         if (index < 0 || index > biomes.size) {
             return null
         }

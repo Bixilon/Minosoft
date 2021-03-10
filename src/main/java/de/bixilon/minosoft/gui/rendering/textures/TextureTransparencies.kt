@@ -11,12 +11,10 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.world.biome
+package de.bixilon.minosoft.gui.rendering.textures
 
-import de.bixilon.minosoft.data.mappings.biomes.Biome
-import de.bixilon.minosoft.data.world.BlockPosition
-
-interface BiomeAccessor {
-
-    fun getBiome(position: BlockPosition, is3d: Boolean = true): Biome?
+enum class TextureTransparencies {
+    OPAQUE,
+    TRANSPARENT,
+    SEMI_TRANSPARENT,
 }

@@ -17,7 +17,8 @@ import de.bixilon.minosoft.data.mappings.biomes.Biome
 import de.bixilon.minosoft.data.world.BlockPosition
 
 class DummyBiomeAccessor(private val biome: Biome) : BiomeAccessor {
-    override fun getBiome(position: BlockPosition): Biome {
+
+    override fun getBiome(position: BlockPosition, is3d: Boolean): Biome {
         return biome
     }
 }

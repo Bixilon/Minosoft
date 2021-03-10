@@ -20,7 +20,7 @@ class XZBiomeAccessor(
     private val biomes: Array<Biome>,
 ) : BiomeAccessor {
 
-    override fun getBiome(position: BlockPosition): Biome {
+    override fun getBiome(position: BlockPosition, is3d: Boolean): Biome {
         return biomes[(position.x and 0x0F) or ((position.z and 0x0F) shl 4)]
     }
 }

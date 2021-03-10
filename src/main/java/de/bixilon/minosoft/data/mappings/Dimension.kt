@@ -46,6 +46,8 @@ data class Dimension(
         height / ProtocolDefinition.SECTION_HEIGHT_Y
     }
 
+    val supports3DBiomes = resourceLocation.full != "minecraft:overworld" // ToDo
+
     override fun toString(): String {
         return resourceLocation.toString()
     }

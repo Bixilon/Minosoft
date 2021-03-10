@@ -206,14 +206,14 @@ class Camera(
         headLocation = Position(cameraPosition)
         feetLocation = Position(headLocation.x, headLocation.y - PLAYER_HEIGHT, headLocation.z)
         blockPosition = feetLocation.toBlockPosition()
-        currentBiome = connection.player.world.getChunk(blockPosition.getChunkPosition())?.biomeAccessor?.getBiome(blockPosition)
+        currentBiome = connection.player.world.getChunk(blockPosition.getChunkPosition())?.biomeAccessor?.getBiome(blockPosition, connection.player.world.dimension?.supports3DBiomes ?: false)
         chunkPosition = blockPosition.getChunkPosition()
         sectionHeight = blockPosition.getSectionHeight()
         inChunkSectionPosition = blockPosition.getInChunkSectionPosition()
 
         // recalculate sky color for current biome
         val blockPosition = Position(cameraPosition).toBlockPosition()
-        renderWindow.setSkyColor(connection.player.world.getChunk(blockPosition.getChunkPosition())?.biomeAccessor?.getBiome(blockPosition)?.skyColor ?: RenderConstants.DEFAULT_SKY_COLOR)
+        renderWindow.setSkyColor(connection.player.world.getChunk(blockPosition.getChunkPosition())?.biomeAccessor?.getBiome(blockPosition, connection.player.world.dimension?.supports3DBiomes ?: false)?.skyColor ?: RenderConstants.DEFAULT_SKY_COLOR)
         connection.renderer.renderWindow.worldRenderer.recalculateFrustum(Frustum(this))
         connection.player.world.dimension?.hasSkyLight?.let {
             if (it) {

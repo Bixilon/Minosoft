@@ -24,6 +24,7 @@ import de.bixilon.minosoft.data.world.light.LightAccessor
 import de.bixilon.minosoft.gui.rendering.chunk.ChunkMesh
 import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModel
 import de.bixilon.minosoft.gui.rendering.textures.Texture
+import de.bixilon.minosoft.gui.rendering.textures.TextureTransparencies
 import glm_.mat4x4.Mat4
 
 class BlockRenderer {
@@ -67,17 +68,37 @@ class BlockRenderer {
                 textureMapping[key] = texture!!
             }
         }
+    }
+
+    fun postInit() {
         for (direction in Directions.DIRECTIONS) {
+            var directionIsCullface: Boolean? = null
+            var directionIsNotTransparent: Boolean? = null
+            var directionIsFull: Boolean? = null
             for (element in elements) {
                 if (element.isCullFace(direction)) {
-                    cullFaces.add(direction)
+                    directionIsCullface = true
                 }
-                if (textureMapping[element.getTexture(direction)]?.isTransparent == true) { // THIS IS BROKEN!
-                    transparentFaces.add(direction)
+                if (textureMapping[element.getTexture(direction)]?.transparency != TextureTransparencies.OPAQUE) {
+                    if (directionIsNotTransparent == null) {
+                        directionIsNotTransparent = false
+                    }
+                } else {
+                    directionIsNotTransparent = true
                 }
                 if (element.isFullTowards(direction)) {
-                    fullFaceDirections.add(direction)
+                    directionIsFull = true
                 }
+            }
+
+            if (directionIsCullface == true) {
+                cullFaces.add(direction)
+            }
+            if (directionIsNotTransparent == false) {
+                transparentFaces.add(direction)
+            }
+            if (directionIsFull == true) {
+                fullFaceDirections.add(direction)
             }
         }
     }
