@@ -17,7 +17,6 @@ import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.hud.elements.HUDElement
-import de.bixilon.minosoft.gui.rendering.hud.elements.primitive.ElementListElement
 import de.bixilon.minosoft.gui.rendering.hud.elements.primitive.TextElement
 import de.bixilon.minosoft.modding.loading.ModLoader
 import de.bixilon.minosoft.util.GitInfo
@@ -27,17 +26,10 @@ import oshi.SystemInfo
 
 
 class HUDSystemDebugElement(hudRenderer: HUDRenderer) : HUDElement(hudRenderer) {
-    private val runtime = Runtime.getRuntime()
-    private val systemInfo = SystemInfo()
-    private val systemInfoHardwareAbstractionLayer = systemInfo.hardware
 
-
-    private val processorText = " ${runtime.availableProcessors()}x ${systemInfoHardwareAbstractionLayer.processor.processorIdentifier.name.replace("\\s{2,}".toRegex(), "")}"
     private lateinit var gpuText: String
     private lateinit var gpuVersionText: String
     private val maxMemoryText: String = getFormattedMaxMemory()
-    private val systemMemoryText: String = formatBytes(systemInfoHardwareAbstractionLayer.memory.total)
-    private val osText: String = "${System.getProperty("os.name")}: ${systemInfo.operatingSystem.family} ${systemInfo.operatingSystem.bitness}bit"
 
 
     override fun init() {
@@ -45,7 +37,9 @@ class HUDSystemDebugElement(hudRenderer: HUDRenderer) : HUDElement(hudRenderer) 
         gpuVersionText = glGetString(GL_VERSION) ?: "unknown"
     }
 
-    override fun prepare(elementList: ElementListElement) {
+    override fun prepare() {
+        elementList.clear()
+
         for (text in listOf(
             "Java: ${Runtime.version()} ${System.getProperty("sun.arch.data.model")}bit",
             "Memory: ${getUsedMemoryPercent()}% ${getFormattedUsedMemory()}/$maxMemoryText",
@@ -111,6 +105,7 @@ class HUDSystemDebugElement(hudRenderer: HUDRenderer) : HUDElement(hudRenderer) 
 
     companion object {
         private val UNITS = listOf("B", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB", "ZiB", "YiB")
+
         fun formatBytes(bytes: Long): String {
             var lastFactor = 1L
             var currentFactor = 1024L
@@ -127,12 +122,15 @@ class HUDSystemDebugElement(hudRenderer: HUDRenderer) : HUDElement(hudRenderer) 
             throw IllegalArgumentException()
         }
 
-        fun formatCoordinate(coordinate: Double): String {
-            return "%.3f".format(coordinate)
-        }
+        private val runtime = Runtime.getRuntime()
+        private val systemInfo = SystemInfo()
+        private val systemInfoHardwareAbstractionLayer = systemInfo.hardware
 
-        fun formatRotation(rotation: Double): String {
-            return "%.1f".format(rotation)
-        }
+        private val systemMemoryText: String = formatBytes(systemInfoHardwareAbstractionLayer.memory.total)
+        private val osText: String = "${System.getProperty("os.name")}: ${systemInfo.operatingSystem.family} ${systemInfo.operatingSystem.bitness}bit"
+
+        private val processorText = " ${runtime.availableProcessors()}x ${systemInfoHardwareAbstractionLayer.processor.processorIdentifier.name.replace("\\s{2,}".toRegex(), "")}"
+
+
     }
 }

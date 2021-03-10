@@ -53,8 +53,8 @@ class HotbarHUDElement(
         }
     }
 
-
-    override fun prepare(elementList: ElementListElement) {
+    override fun prepare() {
+        elementList.clear() // ToDo
         if (hudRenderer.connection.player.gamemode == Gamemodes.SPECTATOR) {
             return
         }

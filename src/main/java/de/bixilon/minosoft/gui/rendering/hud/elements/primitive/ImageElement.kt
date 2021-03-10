@@ -15,7 +15,6 @@ package de.bixilon.minosoft.gui.rendering.hud.elements.primitive
 
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderConstants
-import de.bixilon.minosoft.gui.rendering.hud.HUDMesh
 import de.bixilon.minosoft.gui.rendering.hud.atlas.TextureLike
 import glm_.mat4x4.Mat4
 import glm_.vec2.Vec2
@@ -47,7 +46,7 @@ class ImageElement(
         return Vec2(start.x + elementPosition.x, start.y - elementPosition.y)
     }
 
-    override fun prepareVertices(start: Vec2, scaleFactor: Float, hudMesh: HUDMesh, matrix: Mat4, z: Int) {
+    override fun prepareCache(start: Vec2, scaleFactor: Float, matrix: Mat4, z: Int) {
         val ourStart = addToStart(start, this.start * scaleFactor)
         val modelStart = matrix * Vec4(ourStart, 1.0f, 1.0f)
         val ourEnd = addToEnd(start, this.end * scaleFactor)
@@ -60,7 +59,7 @@ class ImageElement(
         val realZ = RenderConstants.HUD_Z_COORDINATE + RenderConstants.HUD_Z_COORDINATE_Z_FACTOR * (this.z + z)
 
         fun addVertex(position: Vec3, textureUV: Vec2) {
-            hudMesh.addVertex(position, textureUV, textureLayer, tintColor)
+            cache.addVertex(position, textureUV, textureLayer, tintColor)
         }
 
         addVertex(Vec3(modelStart.x, modelStart.y, realZ), Vec2(uvStart.x, uvStart.y))

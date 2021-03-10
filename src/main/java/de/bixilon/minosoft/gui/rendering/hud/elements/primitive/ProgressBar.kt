@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.hud.elements.primitive
 
-import de.bixilon.minosoft.gui.rendering.hud.HUDMesh
 import de.bixilon.minosoft.gui.rendering.hud.atlas.ProgressBarAtlasElement
 import de.bixilon.minosoft.gui.rendering.hud.atlas.TextureLike
 import de.bixilon.minosoft.gui.rendering.textures.Texture
@@ -36,10 +35,11 @@ class ProgressBar(
         size = atlasElement.emptyAtlasElement.binding.size
     }
 
-    override fun prepareVertices(start: Vec2, scaleFactor: Float, hudMesh: HUDMesh, matrix: Mat4, z: Int) {
+    override fun prepareCache(start: Vec2, scaleFactor: Float, matrix: Mat4, z: Int) {
         val emptyImageElement = ImageElement(this.start, end, atlasElement.emptyAtlasElement, z)
 
-        emptyImageElement.prepareVertices(start, scaleFactor, hudMesh, matrix, z)
+        emptyImageElement.checkCache(start, scaleFactor, matrix, z)
+        cache.addCache(emptyImageElement.cache)
 
         if (progress == 0.0f) {
             return
@@ -56,6 +56,7 @@ class ProgressBar(
 
         }, z + 1)
 
-        fullImageElement.prepareVertices(start, scaleFactor, hudMesh, matrix, z)
+        fullImageElement.checkCache(start, scaleFactor, matrix, z)
+        cache.addCache(fullImageElement.cache)
     }
 }

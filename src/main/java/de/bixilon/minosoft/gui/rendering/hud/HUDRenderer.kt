@@ -25,7 +25,6 @@ import de.bixilon.minosoft.gui.rendering.hud.elements.debug.HUDSystemDebugElemen
 import de.bixilon.minosoft.gui.rendering.hud.elements.debug.HUDWorldDebugElement
 import de.bixilon.minosoft.gui.rendering.hud.elements.other.CrosshairHUDElement
 import de.bixilon.minosoft.gui.rendering.hud.elements.other.HotbarHUDElement
-import de.bixilon.minosoft.gui.rendering.hud.elements.primitive.ElementListElement
 import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.protocol.network.Connection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
@@ -43,7 +42,6 @@ class HUDRenderer(val connection: Connection, val renderWindow: RenderWindow) : 
     private val hudElements: MutableMap<ResourceLocation, Pair<HUDElementProperties, HUDElement>> = mutableMapOf()
     private val hudShader = Shader(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "rendering/shader/hud_vertex.glsl"), ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "rendering/shader/hud_fragment.glsl"))
     lateinit var hudAtlasElements: Map<ResourceLocation, HUDAtlasElement>
-    var lastTickTime = 0L
     var orthographicMatrix: Mat4 = Mat4()
         private set
     var currentHUDMesh: HUDMesh = HUDMesh()
@@ -140,8 +138,9 @@ class HUDRenderer(val connection: Connection, val renderWindow: RenderWindow) : 
 
     override fun screenChangeResizeCallback(width: Int, height: Int) {
         orthographicMatrix = glm.ortho(-width / 2f, width / 2f, -height / 2f, height / 2f)
-        for (element in hudElements.values) {
-            element.second.screenChangeResizeCallback(width, height)
+        for ((_, hudElement) in hudElements.values) {
+            hudElement.elementList.clearCache()
+            hudElement.screenChangeResizeCallback(width, height)
         }
     }
 
@@ -149,10 +148,7 @@ class HUDRenderer(val connection: Connection, val renderWindow: RenderWindow) : 
         if (!hudEnabled) {
             return
         }
-        if (System.currentTimeMillis() - lastTickTime > ProtocolDefinition.TICK_TIME) {
-            prepare()
-            lastTickTime = System.currentTimeMillis()
-        }
+        prepare()
 
         for ((elementProperties, hudElement) in hudElements.values) {
             val toggled = temporaryToggledElements.contains(hudElement)
@@ -176,17 +172,17 @@ class HUDRenderer(val connection: Connection, val renderWindow: RenderWindow) : 
             if (toggled && elementProperties.enabled || !toggled && !elementProperties.enabled) {
                 continue
             }
-            val elementListElement = ElementListElement(Vec2(0, 0), 0)
 
-            hudElement.prepare(elementListElement)
+            hudElement.prepare()
 
 
             val realScaleFactor = elementProperties.scale * hudScale.scale
-            val realSize = Vec2(elementListElement.forceX ?: elementListElement.size.x, elementListElement.forceY ?: elementListElement.size.y) * realScaleFactor
+            val realSize = Vec2(hudElement.elementList.forceX ?: hudElement.elementList.size.x, hudElement.elementList.forceY ?: hudElement.elementList.size.y) * realScaleFactor
 
             val elementStart = getRealPosition(realSize, elementProperties, renderWindow.screenDimensions)
 
-            elementListElement.prepareVertices(elementStart, realScaleFactor, currentHUDMesh, orthographicMatrix, 0)
+            hudElement.elementList.checkCache(elementStart, realScaleFactor, orthographicMatrix, 0)
+            currentHUDMesh.addCacheMesh(hudElement.elementList.cache)
         }
         currentHUDMesh.load()
     }

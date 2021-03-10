@@ -17,7 +17,6 @@ import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.hud.atlas.HUDAtlasElement
 import de.bixilon.minosoft.gui.rendering.hud.elements.HUDElement
-import de.bixilon.minosoft.gui.rendering.hud.elements.primitive.ElementListElement
 import de.bixilon.minosoft.gui.rendering.hud.elements.primitive.ImageElement
 
 class CrosshairHUDElement(
@@ -30,7 +29,7 @@ class CrosshairHUDElement(
     }
 
 
-    override fun prepare(elementList: ElementListElement) {
+    override fun prepare() {
         elementList.addChild(ImageElement(end = crosshairAtlasElement.binding.size, textureLike = crosshairAtlasElement))
     }
 }

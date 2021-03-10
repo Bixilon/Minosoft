@@ -13,17 +13,29 @@
 
 package de.bixilon.minosoft.gui.rendering.hud.elements.primitive
 
-import de.bixilon.minosoft.gui.rendering.hud.HUDMesh
+import de.bixilon.minosoft.gui.rendering.hud.HUDCacheMesh
 import glm_.mat4x4.Mat4
 import glm_.vec2.Vec2
 
 abstract class Element(
     val start: Vec2,
 ) {
+    val cache = HUDCacheMesh()
     open var parent: Element? = null
     var size: Vec2 = Vec2()
 
     abstract fun recalculateSize()
 
-    abstract fun prepareVertices(start: Vec2, scaleFactor: Float, hudMesh: HUDMesh, matrix: Mat4, z: Int = 1)
+    fun checkCache(start: Vec2, scaleFactor: Float, matrix: Mat4, z: Int = 1) {
+        if (cache.isNotEmpty()) {
+            return
+        }
+        prepareCache(start, scaleFactor, matrix, z)
+    }
+
+    open fun clearCache() {
+        cache.clear()
+    }
+
+    abstract fun prepareCache(start: Vec2, scaleFactor: Float, matrix: Mat4, z: Int = 1)
 }

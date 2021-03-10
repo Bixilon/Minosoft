@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.hud.elements.primitive
 
-import de.bixilon.minosoft.gui.rendering.hud.HUDMesh
 import glm_.mat4x4.Mat4
 import glm_.vec2.Vec2
 
@@ -25,9 +24,17 @@ open class ElementListElement(
     var forceX: Int? = null
     var forceY: Int? = null
 
+
+    fun clear() {
+        children.clear()
+        cache.clear()
+        recalculateSize()
+    }
+
     fun addChild(child: Element) {
         child.parent = this
         children.add(child)
+        cache.clear()
         recalculateSize()
     }
 
@@ -35,7 +42,17 @@ open class ElementListElement(
         for (child in children) {
             checkSize(child.start + child.size)
         }
+        if (children.isEmpty()) {
+            size = Vec2(0, 0)
+        }
         parent?.recalculateSize()
+    }
+
+    override fun clearCache() {
+        cache.clear()
+        for (child in children) {
+            child.clearCache()
+        }
     }
 
     private fun checkSize(vec2: Vec2) {
@@ -57,11 +74,12 @@ open class ElementListElement(
         return Vec2(start.x + elementPosition.x, start.y - elementPosition.y)
     }
 
-    override fun prepareVertices(start: Vec2, scaleFactor: Float, hudMesh: HUDMesh, matrix: Mat4, z: Int) {
+    override fun prepareCache(start: Vec2, scaleFactor: Float, matrix: Mat4, z: Int) {
         val normalStart = addToStart(start, this.start * scaleFactor)
 
         for (child in children) {
-            child.prepareVertices(normalStart, scaleFactor, hudMesh, matrix, this.z + z)
+            child.checkCache(normalStart, scaleFactor, matrix, this.z + z)
+            cache.addCache(child.cache)
         }
     }
 }

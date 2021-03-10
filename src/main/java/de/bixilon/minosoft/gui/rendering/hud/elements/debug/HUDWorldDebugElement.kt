@@ -18,7 +18,6 @@ import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.hud.elements.HUDElement
-import de.bixilon.minosoft.gui.rendering.hud.elements.primitive.ElementListElement
 import de.bixilon.minosoft.gui.rendering.hud.elements.primitive.TextElement
 import glm_.vec2.Vec2
 
@@ -26,7 +25,9 @@ import glm_.vec2.Vec2
 class HUDWorldDebugElement(hudRenderer: HUDRenderer) : HUDElement(hudRenderer) {
     private val camera = hudRenderer.renderWindow.camera
 
-    override fun prepare(elementList: ElementListElement) {
+    override fun prepare() {
+        elementList.clear()
+
         for (text in listOf(
             "FPS: ${getFPS()}",
             "Timings: avg ${getAvgFrameTime()}ms, min ${getMinFrameTime()}ms, max ${getMaxFrameTime()}ms",
