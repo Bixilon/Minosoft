@@ -19,7 +19,7 @@ import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketChangeGameSta
 /**
  * Fired when the player should spectate an entity
  */
-public class ChangeGameStateEvent extends CancelableEvent {
+public class ChangeGameStateEvent extends ConnectionEvent {
     private final PacketChangeGameState.Reason reason;
     private final float value;
 

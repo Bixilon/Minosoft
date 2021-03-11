@@ -36,7 +36,7 @@ class TextElement(
     var sText: String
         get() = text.message
         set(value) {
-            text = ChatComponent.valueOf(sText)
+            text = ChatComponent.valueOf(value)
         }
 
     init {

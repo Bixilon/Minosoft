@@ -27,13 +27,17 @@ open class ElementListElement(
 
     fun clear() {
         clearCache()
-        children.clear()
+        synchronized(children) {
+            children.clear()
+        }
         recalculateSize()
     }
 
     fun addChild(child: Element) {
         child.parent = this
-        children.add(child)
+        synchronized(children) {
+            children.add(child)
+        }
         cache.clear()
         recalculateSize()
     }
@@ -50,8 +54,10 @@ open class ElementListElement(
 
     override fun clearCache() {
         cache.clear()
-        for (child in children) {
-            child.clearCache()
+        synchronized(children) {
+            for (child in children) {
+                child.clearCache()
+            }
         }
     }
 
@@ -84,9 +90,12 @@ open class ElementListElement(
     override fun prepareCache(start: Vec2, scaleFactor: Float, matrix: Mat4, z: Int) {
         val normalStart = addToStart(start, this.start * scaleFactor)
 
-        for (child in children) {
-            child.checkCache(normalStart, scaleFactor, matrix, this.z + z)
-            cache.addCache(child.cache)
+
+        synchronized(children) {
+            for (child in children) {
+                child.checkCache(normalStart, scaleFactor, matrix, this.z + z)
+                cache.addCache(child.cache)
+            }
         }
     }
 }

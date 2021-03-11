@@ -21,6 +21,7 @@ import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.hud.atlas.HUDAtlasElement
 import de.bixilon.minosoft.gui.rendering.hud.elements.HUDElement
+import de.bixilon.minosoft.gui.rendering.hud.elements.primitive.HealthBar
 import de.bixilon.minosoft.gui.rendering.hud.elements.primitive.ImageElement
 import de.bixilon.minosoft.gui.rendering.hud.elements.primitive.ProgressBar
 import de.bixilon.minosoft.gui.rendering.hud.elements.primitive.TextElement
@@ -28,6 +29,7 @@ import de.bixilon.minosoft.modding.event.EventInvokerCallback
 import de.bixilon.minosoft.modding.event.events.ChangeGameStateEvent
 import de.bixilon.minosoft.modding.event.events.ExperienceChangeEvent
 import de.bixilon.minosoft.modding.event.events.HeldItemChangeEvent
+import de.bixilon.minosoft.modding.event.events.UpdateHealthEvent
 import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketChangeGameState
 import glm_.vec2.Vec2
 
@@ -39,6 +41,8 @@ class HotbarHUDElement(
 
     private lateinit var experienceBar: ProgressBar
     private lateinit var levelText: TextElement
+
+    private lateinit var healthBar: HealthBar
 
 
     override fun init() {
@@ -54,6 +58,19 @@ class HotbarHUDElement(
 
 
         levelText = TextElement(start = Vec2(), font = hudRenderer.renderWindow.font, background = false)
+
+        healthBar = HealthBar(
+            Vec2(0, 0),
+            hudRenderer.hudAtlasElements[ResourceLocation("minecraft:black_heart_container")]!!,
+            hudRenderer.hudAtlasElements[ResourceLocation("minecraft:white_heart_container")]!!,
+            hudRenderer.hudAtlasElements[ResourceLocation("minecraft:half_red_heart")]!!,
+            hudRenderer.hudAtlasElements[ResourceLocation("minecraft:full_red_heart")]!!,
+            20.0f,
+            40.0f,
+            RenderConstants.HP_TEXT_COLOR,
+            hudRenderer.renderWindow.font,
+            5
+        )
 
         registerEvents()
 
@@ -83,6 +100,10 @@ class HotbarHUDElement(
             }
             prepare()
         })
+        hudRenderer.connection.registerEvent(EventInvokerCallback<UpdateHealthEvent> {
+            healthBar.value = it.health
+            prepare()
+        })
 
     }
 
@@ -97,9 +118,15 @@ class HotbarHUDElement(
 
 
         if (hudRenderer.connection.player.gamemode != Gamemodes.CREATIVE) {
-            // experience
-            levelText.start = Vec2((hotbarBaseAtlasElement.binding.size.x - levelText.size.x) / 2, elementList.size.y)
-            elementList.addChild(levelText)
+            healthBar.prepare()
+            elementList.addChild(healthBar)
+
+
+            if (hudRenderer.connection.player.level != 0) {
+                // experience
+                levelText.start = Vec2((hotbarBaseAtlasElement.binding.size.x - levelText.size.x) / 2, elementList.size.y - 3 * ELEMENT_PADDING)
+                elementList.addChild(levelText)
+            }
 
             // experience bar
             experienceBar.start.y = elementList.size.y - ELEMENT_PADDING

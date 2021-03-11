@@ -33,4 +33,25 @@ object MMath {
         }
         return value
     }
+
+    fun divideUp(value: Int, divider: Int): Int {
+        return (value + divider - 1) / divider
+    }
+
+    fun divideUp(value: Float, divider: Float): Float {
+        return (value + divider - 1.0f) / divider
+    }
+
+    fun round10(value: Float): Int {
+        return ((value * 10).toInt() + 5) / 10
+    }
+
+    fun round10Up(value: Float): Int {
+        val intValue = value.toInt()
+        val rest = value / intValue
+        if (rest > 0) {
+            return intValue + 1
+        }
+        return intValue
+    }
 }

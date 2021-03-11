@@ -22,7 +22,7 @@ import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketCollectItem;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_16W32A;
 
 public class CollectItemAnimationEvent extends CancelableEvent {
-    private final ItemEntity item;
+    private final Entity item;
     private final Entity collector;
     private final int count;
 
@@ -35,12 +35,12 @@ public class CollectItemAnimationEvent extends CancelableEvent {
 
     public CollectItemAnimationEvent(Connection connection, PacketCollectItem pkg) {
         super(connection);
-        this.item = (ItemEntity) connection.getPlayer().getWorld().getEntity(pkg.getItemEntityId());
+        this.item = connection.getPlayer().getWorld().getEntity(pkg.getItemEntityId());
         this.collector = connection.getPlayer().getWorld().getEntity(pkg.getCollectorEntityId());
         this.count = pkg.getCount();
     }
 
-    public ItemEntity getItem() {
+    public Entity getItem() {
         return this.item;
     }
 
