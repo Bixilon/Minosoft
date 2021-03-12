@@ -139,7 +139,7 @@ class HUDRenderer(val connection: Connection, val renderWindow: RenderWindow) : 
     override fun screenChangeResizeCallback(width: Int, height: Int) {
         orthographicMatrix = glm.ortho(-width / 2f, width / 2f, -height / 2f, height / 2f)
         for ((_, hudElement) in hudElements.values) {
-            hudElement.elementList.clearCache()
+            hudElement.layout.clearCache()
             hudElement.screenChangeResizeCallback(width, height)
         }
     }
@@ -160,12 +160,12 @@ class HUDRenderer(val connection: Connection, val renderWindow: RenderWindow) : 
 
 
             val realScaleFactor = elementProperties.scale * hudScale.scale
-            val realSize = Vec2(hudElement.elementList.forceX ?: hudElement.elementList.size.x, hudElement.elementList.forceY ?: hudElement.elementList.size.y) * realScaleFactor
+            val realSize = Vec2(hudElement.layout.fakeX ?: hudElement.layout.size.x, hudElement.layout.fakeY ?: hudElement.layout.size.y) * realScaleFactor
 
             val elementStart = getRealPosition(realSize, elementProperties, renderWindow.screenDimensions)
 
-            hudElement.elementList.checkCache(elementStart, realScaleFactor, orthographicMatrix, 0)
-            currentHUDMesh.addCacheMesh(hudElement.elementList.cache)
+            hudElement.layout.checkCache(elementStart, realScaleFactor, orthographicMatrix, 0)
+            currentHUDMesh.addCacheMesh(hudElement.layout.cache)
         }
         hudShader.use()
         currentHUDMesh.load()

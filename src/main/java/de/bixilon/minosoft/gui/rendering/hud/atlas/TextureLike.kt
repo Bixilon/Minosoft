@@ -20,4 +20,5 @@ interface TextureLike {
     val texture: Texture
     val uvStart: Vec2
     val uvEnd: Vec2
+    val size: Vec2
 }

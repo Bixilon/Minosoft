@@ -27,6 +27,8 @@ data class HUDAtlasElement(
         get() = Vec2((binding.start.x * texture.widthFactor) / texture.width.toFloat(), (binding.start.y * texture.heightFactor) / texture.height.toFloat())
     override val uvEnd: Vec2
         get() = Vec2(((binding.end.x + 1) * texture.widthFactor) / texture.width, ((binding.end.y + 1) * texture.heightFactor) / (texture.height + 1.0f))
+    override val size: Vec2
+        get() = binding.size
 
 
     companion object {

@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.util
 import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.util.Util
+import de.bixilon.minosoft.util.logging.Log
 import de.matthiasmann.twl.utils.PNGDecoder
 import org.lwjgl.BufferUtils
 import org.lwjgl.opengl.GL11.*
@@ -60,7 +61,9 @@ class ScreenshotTaker(
 
             ImageIO.write(bufferedImage, "png", file)
 
-            renderWindow.sendDebugMessage("§aScreenshot saved to §f${file.name}")
+            val message = "§aScreenshot saved to §f${file.name}"
+            renderWindow.sendDebugMessage(message)
+            Log.game(message)
         } catch (exception: Exception) {
             exception.printStackTrace()
             renderWindow.sendDebugMessage("§cFailed to make a screenshot!")

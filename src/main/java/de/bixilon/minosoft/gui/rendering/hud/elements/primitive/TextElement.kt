@@ -22,10 +22,10 @@ import glm_.vec2.Vec2
 class TextElement(
     private var _text: ChatComponent = ChatComponent.valueOf(""),
     private val font: Font,
-    start: Vec2,
+    start: Vec2 = Vec2(0, 0),
     z: Int = 1,
     var background: Boolean = true,
-) : ElementListElement(start, z) {
+) : Layout(start, z) {
     var text: ChatComponent
         get() = _text
         set(value) {
@@ -49,7 +49,7 @@ class TextElement(
             Vec2(0, Font.CHAR_HEIGHT)
         } else {
             val textSize = Vec2()
-            text.prepareRender(Vec2(0, 1), Vec2(), font, this, z + 1, textSize)
+            text.prepareRender(Vec2(0, 1), Vec2(), font, this, this.z + z + 1, textSize)
 
             if (background) {
                 drawBackground(textSize + 1, z)
@@ -59,6 +59,6 @@ class TextElement(
     }
 
     private fun drawBackground(end: Vec2, z: Int, tintColor: RGBColor = RenderConstants.TEXT_BACKGROUND_COLOR) {
-        addChild(ImageElement(Vec2(0, 0), end, null, z, tintColor))
+        addChild(ImageElement(Vec2(0, 0), null, end, this.z + z, tintColor))
     }
 }

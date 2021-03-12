@@ -14,11 +14,11 @@
 package de.bixilon.minosoft.gui.rendering.hud.elements
 
 import de.bixilon.minosoft.gui.rendering.hud.HUDRenderer
-import de.bixilon.minosoft.gui.rendering.hud.elements.primitive.ElementListElement
+import de.bixilon.minosoft.gui.rendering.hud.elements.primitive.Layout
 import glm_.vec2.Vec2
 
 abstract class HUDElement(protected val hudRenderer: HUDRenderer) {
-    val elementList = ElementListElement(Vec2(), 0)
+    val layout = Layout(Vec2(), 0)
 
     open fun init() {}
     open fun postInit() {}

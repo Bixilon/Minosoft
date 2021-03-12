@@ -22,7 +22,7 @@ import glm_.mat4x4.Mat4
 import glm_.vec2.Vec2
 
 class HealthBar(
-    start: Vec2,
+    start: Vec2 = Vec2(0, 0),
     var blackHeartContainerAtlasElement: HUDAtlasElement,
     var whiteHeartContainerAtlasElement: HUDAtlasElement,
     var halfHartAtlasElement: HUDAtlasElement,
@@ -32,7 +32,7 @@ class HealthBar(
     var textColor: RGBColor,
     var font: Font,
     z: Int = 1,
-) : ElementListElement(start, z) {
+) : Layout(start, z) {
     private val singleHeartSize = blackHeartContainerAtlasElement.binding.size
     private val width = singleHeartSize.x * MAX_HEARTS_IN_ROW
 
@@ -126,7 +126,7 @@ class HealthBar(
 
 
     private fun drawHeart(elementStart: Vec2, element: HUDAtlasElement, z: Int) {
-        addChild(ImageElement(elementStart, elementStart + singleHeartSize, element, z))
+        addChild(ImageElement(elementStart, element, elementStart + singleHeartSize, this.z + z))
     }
 
     companion object {

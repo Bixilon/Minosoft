@@ -16,13 +16,13 @@ package de.bixilon.minosoft.gui.rendering.hud.elements.primitive
 import glm_.mat4x4.Mat4
 import glm_.vec2.Vec2
 
-open class ElementListElement(
+open class Layout(
     start: Vec2,
     val z: Int,
 ) : Element(start) {
     private val children: MutableList<Element> = mutableListOf()
-    var forceX: Int? = null
-    var forceY: Int? = null
+    var fakeX: Int? = null
+    var fakeY: Int? = null
 
 
     fun clear() {
@@ -79,7 +79,7 @@ open class ElementListElement(
 
     fun pushChildrenToRight(offset: Float = 0.0f) {
         for (child in children) {
-            child.start.x = (size.x - child.size.x) - offset
+            child.start = Vec2((size.x - child.size.x) - offset, child.start.y)
         }
     }
 

@@ -26,7 +26,7 @@ class HUDWorldDebugElement(hudRenderer: HUDRenderer) : HUDElement(hudRenderer) {
     private val camera = hudRenderer.renderWindow.camera
 
     override fun draw() {
-        elementList.clear()
+        layout.clear()
 
         for (text in listOf(
             "FPS: ${getFPS()}",
@@ -51,8 +51,8 @@ class HUDWorldDebugElement(hudRenderer: HUDRenderer) : HUDElement(hudRenderer) {
             }",
             "Client light: ${hudRenderer.connection.player.world.worldLightAccessor.getLightLevel(camera.blockPosition)} (sky=${hudRenderer.connection.player.world.worldLightAccessor.getSkyLight(camera.blockPosition)}, block=${hudRenderer.connection.player.world.worldLightAccessor.getBlockLight(camera.blockPosition)})"
         )) {
-            val textElement = TextElement(ChatComponent.valueOf(text), hudRenderer.renderWindow.font, Vec2(2, elementList.size.y + RenderConstants.TEXT_LINE_PADDING))
-            elementList.addChild(textElement)
+            val textElement = TextElement(ChatComponent.valueOf(text), hudRenderer.renderWindow.font, Vec2(2, layout.size.y + RenderConstants.TEXT_LINE_PADDING))
+            layout.addChild(textElement)
         }
     }
 

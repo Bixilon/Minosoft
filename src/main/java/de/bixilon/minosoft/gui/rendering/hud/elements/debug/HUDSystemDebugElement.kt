@@ -38,7 +38,7 @@ class HUDSystemDebugElement(hudRenderer: HUDRenderer) : HUDElement(hudRenderer) 
     }
 
     override fun draw() {
-        elementList.clear()
+        layout.clear()
 
         for (text in listOf(
             "Java: ${Runtime.version()} ${System.getProperty("sun.arch.data.model")}bit",
@@ -61,10 +61,10 @@ class HUDSystemDebugElement(hudRenderer: HUDRenderer) : HUDElement(hudRenderer) 
             "",
             "Mods: ${ModLoader.MOD_MAP.size} active, ${hudRenderer.connection.eventListenerSize} listeners",
         )) {
-            val textElement = TextElement(ChatComponent.valueOf(text), hudRenderer.renderWindow.font, Vec2(2, elementList.size.y + RenderConstants.TEXT_LINE_PADDING))
-            elementList.addChild(textElement)
+            val textElement = TextElement(ChatComponent.valueOf(text), hudRenderer.renderWindow.font, Vec2(2, layout.size.y + RenderConstants.TEXT_LINE_PADDING))
+            layout.addChild(textElement)
         }
-        elementList.pushChildrenToRight(1.0f)
+        layout.pushChildrenToRight(1.0f)
     }
 
     private fun getUsedMemory(): Long {

@@ -22,9 +22,9 @@ import glm_.vec3.Vec3
 import glm_.vec4.Vec4
 
 class ImageElement(
-    start: Vec2 = Vec2(),
-    end: Vec2 = Vec2(),
-    val textureLike: TextureLike?,
+    start: Vec2 = Vec2(0, 0),
+    var textureLike: TextureLike?,
+    end: Vec2 = textureLike?.size ?: Vec2(0, 0),
     val z: Int = 0,
     val tintColor: RGBColor? = null,
 ) : EndElement(start, end) {

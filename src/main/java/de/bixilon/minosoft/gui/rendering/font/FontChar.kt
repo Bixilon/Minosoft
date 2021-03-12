@@ -25,11 +25,11 @@ data class FontChar(
     var endPixel: Int,
     val height: Int,
 ) : TextureLike {
-
     override var uvStart = Vec2()
         private set
     override var uvEnd = Vec2()
         private set
+    override val size = Vec2(endPixel - startPixel, height)
 
     var width = endPixel - startPixel
 

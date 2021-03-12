@@ -26,6 +26,6 @@ class CrosshairHUDElement(
     override fun init() {
         val atlasElement = hudRenderer.hudAtlasElements[ResourceLocation("minecraft:crosshair")]!!
         crosshairImage = ImageElement(end = atlasElement.binding.size, textureLike = atlasElement)
-        elementList.addChild(crosshairImage)
+        layout.addChild(crosshairImage)
     }
 }
