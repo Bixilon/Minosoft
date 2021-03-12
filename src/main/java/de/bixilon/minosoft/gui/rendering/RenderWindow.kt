@@ -362,10 +362,10 @@ class RenderWindow(
             camera.handleInput(deltaFrameTime)
 
 
-            // handle opengl context tasks, maximum 10 per frame
+            // handle opengl context tasks, but limit it per frame
             var actionsDone = 0
             for (renderQueueElement in renderQueue) {
-                if (actionsDone == 10) {
+                if (actionsDone == RenderConstants.MAXIMUM_CALLS_PER_FRAME) {
                     break
                 }
                 renderQueueElement.run()

@@ -21,7 +21,8 @@ abstract class Mesh {
     protected val data: MutableList<Float> = mutableListOf()
     private var vao: Int = 0
     private var vbo: Int = 0
-    private var trianglesCount: Int = 0
+    var trianglesCount: Int = 0
+        private set
 
     abstract fun load()
 

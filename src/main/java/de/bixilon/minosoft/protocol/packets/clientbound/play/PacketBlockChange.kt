@@ -54,7 +54,7 @@ class PacketBlockChange : ClientboundPacket() {
             section.setRawBlock(inChunkSectionPosition, block)
         }
 
-        connection.renderer.renderWindow.worldRenderer.prepareChunkSection(position.getChunkPosition(), sectionHeight, section)
+        connection.renderer.renderWindow.worldRenderer.prepareChunkSection(position.getChunkPosition(), sectionHeight)
     }
 
     override fun log() {

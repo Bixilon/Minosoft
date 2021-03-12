@@ -14,20 +14,33 @@
 package de.bixilon.minosoft.util
 
 object UnitFormatter {
-    private val UNITS = listOf("B", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB", "ZiB", "YiB")
+    private val BYTE_UNITS = listOf("B", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB", "ZiB", "YiB")
+    private val UNITS = listOf("", "k", "M", "G", "T", "P", "E", "Z", "Y")
 
     fun formatBytes(bytes: Long): String {
+        return formatUnit(bytes, BYTE_UNITS, 1024L)
+    }
+
+    fun formatNumber(number: Int): String {
+        return formatNumber(number.toLong())
+    }
+
+    fun formatNumber(number: Long): String {
+        return formatUnit(number, UNITS, 1000L)
+    }
+
+    private fun formatUnit(number: Long, units: List<String>, factor: Long): String {
         var lastFactor = 1L
-        var currentFactor = 1024L
-        for (unit in UNITS) {
-            if (bytes < currentFactor) {
-                if (bytes < (lastFactor * 10)) {
-                    return "${"%.1f".format(bytes / lastFactor.toFloat())}${unit}"
+        var currentFactor = factor
+        for (unit in units) {
+            if (number < currentFactor) {
+                if (number < (lastFactor * 10)) {
+                    return "${"%.1f".format(number / lastFactor.toFloat())}${unit}"
                 }
-                return "${bytes / lastFactor}${unit}"
+                return "${number / lastFactor}${unit}"
             }
             lastFactor = currentFactor
-            currentFactor *= 1024L
+            currentFactor *= factor
         }
         throw IllegalArgumentException()
     }

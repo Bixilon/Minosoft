@@ -42,4 +42,8 @@ object RenderConstants {
     val TEXT_BACKGROUND_COLOR = RGBColor(0, 0, 0, 80)
 
     const val TEXT_LINE_PADDING = 0
+
+    const val CHUNK_SECTIONS_PER_MESH = 8
+
+    const val MAXIMUM_CALLS_PER_FRAME = 20
 }

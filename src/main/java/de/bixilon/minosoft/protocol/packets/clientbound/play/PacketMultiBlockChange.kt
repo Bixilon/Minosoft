@@ -26,7 +26,7 @@ import java.util.*
 
 class PacketMultiBlockChange : ClientboundPacket() {
     val blocks = HashMap<InChunkPosition, BlockState?>()
-    var chunkPosition: ChunkPosition? = null
+    lateinit var chunkPosition: ChunkPosition
         private set
 
     override fun read(buffer: InByteBuffer): Boolean {
@@ -75,7 +75,7 @@ class PacketMultiBlockChange : ClientboundPacket() {
     }
 
     override fun handle(connection: Connection) {
-        val chunk = connection.player.world.getChunk(chunkPosition!!) ?: return // thanks mojang
+        val chunk = connection.player.world.getChunk(chunkPosition) ?: return // thanks mojang
         if (!chunk.isFullyLoaded) {
             return
         }
@@ -98,7 +98,7 @@ class PacketMultiBlockChange : ClientboundPacket() {
         }
         for (sectionHeight in sectionHeights) {
             val section = chunk.getSectionOrCreate(sectionHeight)
-            connection.renderer.renderWindow.worldRenderer.prepareChunkSection(chunkPosition!!, sectionHeight, section)
+            connection.renderer.renderWindow.worldRenderer.prepareChunkSection(chunkPosition, sectionHeight)
         }
     }
 

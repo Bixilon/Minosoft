@@ -21,12 +21,14 @@ import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.blocks.BlockState
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.data.world.*
+import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.Renderer
 import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.gui.rendering.textures.Texture
 import de.bixilon.minosoft.protocol.network.Connection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.util.logging.Log
 import org.lwjgl.opengl.GL11.GL_CULL_FACE
 import org.lwjgl.opengl.GL11.glEnable
 import org.lwjgl.opengl.GL13.glDisable
@@ -38,14 +40,20 @@ class WorldRenderer(
     val renderWindow: RenderWindow,
 ) : Renderer {
     lateinit var chunkShader: Shader
-    val chunkSectionsToDraw = ConcurrentHashMap<ChunkPosition, ConcurrentHashMap<Int, ChunkMesh>>()
+    val chunkSectionsToDraw = ConcurrentHashMap<ChunkPosition, ConcurrentHashMap<Int, SectionArrayMesh>>()
     val visibleChunks: MutableSet<ChunkPosition> = mutableSetOf()
     private lateinit var frustum: Frustum
     private var currentTick = 0 // for animation usage
     private var lastTickIncrementTime = 0L
     val queuedChunks: MutableSet<ChunkPosition> = mutableSetOf()
 
-    private fun prepareChunk(chunkPosition: ChunkPosition, sectionHeight: Int, section: ChunkSection): ChunkMesh {
+    var meshes = 0
+        private set
+    var triangles = 0
+        private set
+
+    private fun prepareSections(chunkPosition: ChunkPosition, sections: Map<Int, ChunkSection>): SectionArrayMesh {
+        check(sections.isNotEmpty()) { "Illegal argument!" }
         synchronized(this.queuedChunks) {
             queuedChunks.remove(chunkPosition)
         }
@@ -53,38 +61,41 @@ class WorldRenderer(
             visibleChunks.add(chunkPosition)
         }
         val chunk = world.getChunk(chunkPosition)!!
+
         val dimensionSupports3dBiomes = connection.player.world.dimension?.supports3DBiomes ?: false
-        val mesh = ChunkMesh()
+        val mesh = SectionArrayMesh()
 
-        for ((index, blockInfo) in section.blocks.withIndex()) {
-            if (blockInfo == null) {
-                continue
-            }
-            val blockPosition = BlockPosition(chunkPosition, sectionHeight, ChunkSection.getPosition(index))
+        for ((sectionHeight, section) in sections) {
+            for ((index, blockInfo) in section.blocks.withIndex()) {
+                if (blockInfo == null) {
+                    continue
+                }
+                val blockPosition = BlockPosition(chunkPosition, sectionHeight, ChunkSection.getPosition(index))
 
-            val neighborBlocks: Array<BlockInfo?> = arrayOfNulls(Directions.DIRECTIONS.size)
-            for (direction in Directions.DIRECTIONS) {
-                neighborBlocks[direction.ordinal] = world.getBlockInfo(blockPosition + direction)
-            }
-
-            val biome = chunk.biomeAccessor!!.getBiome(blockPosition, dimensionSupports3dBiomes)
-
-            var tintColor: RGBColor? = null
-            if (StaticConfiguration.BIOME_DEBUG_MODE) {
-                tintColor = RGBColor(biome.hashCode())
-            } else {
-                biome?.let {
-                    biome.foliageColor?.let { tintColor = it }
-
-                    blockInfo.block.owner.tint?.let { tint ->
-                        tintColor = renderWindow.tintColorCalculator.calculateTint(tint, biome, blockPosition)
-                    }
+                val neighborBlocks: Array<BlockInfo?> = arrayOfNulls(Directions.DIRECTIONS.size)
+                for (direction in Directions.DIRECTIONS) {
+                    neighborBlocks[direction.ordinal] = world.getBlockInfo(blockPosition + direction)
                 }
 
-                blockInfo.block.tintColor?.let { tintColor = it }
-            }
+                val biome = chunk.biomeAccessor!!.getBiome(blockPosition, dimensionSupports3dBiomes)
 
-            blockInfo.block.getBlockRenderer(blockPosition).render(blockInfo, world.worldLightAccessor, tintColor, blockPosition, mesh, neighborBlocks)
+                var tintColor: RGBColor? = null
+                if (StaticConfiguration.BIOME_DEBUG_MODE) {
+                    tintColor = RGBColor(biome.hashCode())
+                } else {
+                    biome?.let {
+                        biome.foliageColor?.let { tintColor = it }
+
+                        blockInfo.block.owner.tint?.let { tint ->
+                            tintColor = renderWindow.tintColorCalculator.calculateTint(tint, biome, blockPosition)
+                        }
+                    }
+
+                    blockInfo.block.tintColor?.let { tintColor = it }
+                }
+
+                blockInfo.block.getBlockRenderer(blockPosition).render(blockInfo, world.worldLightAccessor, tintColor, blockPosition, mesh, neighborBlocks)
+            }
         }
         return mesh
     }
@@ -151,7 +162,12 @@ class WorldRenderer(
 
 
     fun prepareChunk(chunkPosition: ChunkPosition, chunk: Chunk? = world.getChunk(chunkPosition), checkQueued: Boolean = true) {
-        if (chunk == null || !chunk.isFullyLoaded) {
+        if (chunk == null) {
+            Log.warn("Can not prepare null chunk: $chunkPosition")
+            return
+        }
+        if (!chunk.isFullyLoaded) {
+            // chunk not fully received
             return
         }
 
@@ -181,8 +197,18 @@ class WorldRenderer(
         }
         chunkSectionsToDraw[chunkPosition] = ConcurrentHashMap()
 
+        var currentChunks: MutableMap<Int, ChunkSection> = mutableMapOf()
+        var currentHeight = 0
         for ((sectionHeight, section) in chunk.sections!!) {
-            prepareChunkSection(chunkPosition, sectionHeight, section)
+            if (sectionHeight / RenderConstants.CHUNK_SECTIONS_PER_MESH != currentHeight) {
+                prepareChunkSections(chunkPosition, currentChunks)
+                currentChunks = mutableMapOf()
+                currentHeight = sectionHeight / RenderConstants.CHUNK_SECTIONS_PER_MESH
+            }
+            currentChunks[sectionHeight] = section
+        }
+        if (currentChunks.isNotEmpty()) {
+            prepareChunkSections(chunkPosition, currentChunks)
         }
 
         if (checkQueued) {
@@ -199,9 +225,12 @@ class WorldRenderer(
         }
     }
 
-    fun prepareChunkSection(chunkPosition: ChunkPosition, sectionHeight: Int, section: ChunkSection) {
+    private fun prepareChunkSections(chunkPosition: ChunkPosition, sections: Map<Int, ChunkSection>) {
+        if (sections.isEmpty()) {
+            return
+        }
         Minosoft.THREAD_POOL.execute {
-            val mesh = prepareChunk(chunkPosition, sectionHeight, section)
+            val mesh = prepareSections(chunkPosition, sections)
 
             var sectionMap = chunkSectionsToDraw[chunkPosition]
             if (sectionMap == null) {
@@ -210,10 +239,21 @@ class WorldRenderer(
             }
             renderWindow.renderQueue.add {
                 mesh.load()
-                sectionMap[sectionHeight]?.unload()
-                sectionMap[sectionHeight] = mesh
+                meshes++
+                triangles += mesh.trianglesCount
+                val index = sections.iterator().next().key / RenderConstants.CHUNK_SECTIONS_PER_MESH // ToDo: Negative chunk locations
+                sectionMap[index]?.let {
+                    it.unload()
+                    meshes--
+                    triangles -= it.trianglesCount
+                }
+                sectionMap[index] = mesh
             }
         }
+    }
+
+    fun prepareChunkSection(chunkPosition: ChunkPosition, sectionHeight: Int) {
+        TODO()
     }
 
     fun clearChunkCache() {

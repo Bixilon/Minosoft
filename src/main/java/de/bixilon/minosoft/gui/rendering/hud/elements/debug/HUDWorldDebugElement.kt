@@ -19,6 +19,7 @@ import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.hud.elements.HUDElement
 import de.bixilon.minosoft.gui.rendering.hud.elements.primitive.TextElement
+import de.bixilon.minosoft.util.UnitFormatter
 import glm_.vec2.Vec2
 
 
@@ -32,6 +33,7 @@ class HUDWorldDebugElement(hudRenderer: HUDRenderer) : HUDElement(hudRenderer) {
             "FPS: ${getFPS()}",
             "Timings: avg ${getAvgFrameTime()}ms, min ${getMinFrameTime()}ms, max ${getMaxFrameTime()}ms",
             "Chunks: q=${hudRenderer.renderWindow.worldRenderer.queuedChunks.size} v=${hudRenderer.renderWindow.worldRenderer.visibleChunks.size} p=${hudRenderer.renderWindow.worldRenderer.chunkSectionsToDraw.size} t=${hudRenderer.connection.player.world.chunks.size}",
+            "GL: m=${UnitFormatter.formatNumber(hudRenderer.renderWindow.worldRenderer.meshes)} t=${UnitFormatter.formatNumber(hudRenderer.renderWindow.worldRenderer.triangles)}",
             "Connected to ${hudRenderer.connection.address} on ${hudRenderer.connection.version} with ${hudRenderer.connection.player.account.username}",
             "",
             "XYZ ${getLocation()}",

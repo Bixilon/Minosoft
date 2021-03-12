@@ -21,7 +21,7 @@ import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.data.world.BlockInfo
 import de.bixilon.minosoft.data.world.BlockPosition
 import de.bixilon.minosoft.data.world.light.LightAccessor
-import de.bixilon.minosoft.gui.rendering.chunk.ChunkMesh
+import de.bixilon.minosoft.gui.rendering.chunk.SectionArrayMesh
 import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModel
 import de.bixilon.minosoft.gui.rendering.textures.Texture
 import de.bixilon.minosoft.gui.rendering.textures.TextureTransparencies
@@ -103,7 +103,7 @@ class BlockRenderer {
         }
     }
 
-    fun render(blockInfo: BlockInfo, lightAccessor: LightAccessor, tintColor: RGBColor?, position: BlockPosition, mesh: ChunkMesh, neighbourBlocks: Array<BlockInfo?>) {
+    fun render(blockInfo: BlockInfo, lightAccessor: LightAccessor, tintColor: RGBColor?, position: BlockPosition, mesh: SectionArrayMesh, neighbourBlocks: Array<BlockInfo?>) {
         val modelMatrix = Mat4().translate(position.toVec3())
 
         for (direction in Directions.DIRECTIONS) {
