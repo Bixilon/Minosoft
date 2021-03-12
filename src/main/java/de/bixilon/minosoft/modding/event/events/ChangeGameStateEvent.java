@@ -16,9 +16,6 @@ package de.bixilon.minosoft.modding.event.events;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketChangeGameState;
 
-/**
- * Fired when the player should spectate an entity
- */
 public class ChangeGameStateEvent extends ConnectionEvent {
     private final PacketChangeGameState.Reason reason;
     private final float value;
