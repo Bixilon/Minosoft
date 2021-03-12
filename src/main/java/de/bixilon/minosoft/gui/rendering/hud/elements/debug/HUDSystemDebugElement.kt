@@ -20,16 +20,15 @@ import de.bixilon.minosoft.gui.rendering.hud.elements.HUDElement
 import de.bixilon.minosoft.gui.rendering.hud.elements.primitive.TextElement
 import de.bixilon.minosoft.modding.loading.ModLoader
 import de.bixilon.minosoft.util.GitInfo
+import de.bixilon.minosoft.util.SystemInformation
+import de.bixilon.minosoft.util.UnitFormatter
 import glm_.vec2.Vec2
 import org.lwjgl.opengl.GL11.*
-import oshi.SystemInfo
 
 
 class HUDSystemDebugElement(hudRenderer: HUDRenderer) : HUDElement(hudRenderer) {
-
     private lateinit var gpuText: String
     private lateinit var gpuVersionText: String
-    private val maxMemoryText: String = getFormattedMaxMemory()
 
 
     override fun init() {
@@ -42,12 +41,12 @@ class HUDSystemDebugElement(hudRenderer: HUDRenderer) : HUDElement(hudRenderer) 
 
         for (text in listOf(
             "Java: ${Runtime.version()} ${System.getProperty("sun.arch.data.model")}bit",
-            "Memory: ${getUsedMemoryPercent()}% ${getFormattedUsedMemory()}/$maxMemoryText",
+            "Memory: ${getUsedMemoryPercent()}% ${getFormattedUsedMemory()}/${SystemInformation.MAX_MEMORY_TEXT}",
             "Allocated: ${getAllocatedMemoryPercent()}% ${getFormattedAllocatedMemory()}",
-            "System: $systemMemoryText",
+            "System: ${SystemInformation.SYSTEM_MEMORY_TEXT}",
             "",
-            "OS: $osText",
-            "CPU: $processorText",
+            "OS: ${SystemInformation.OS_TEXT}",
+            "CPU: ${SystemInformation.PROCESSOR_TEXT}",
             "",
             "Display: ${getScreenDimensions()}",
             "GPU: $gpuText",
@@ -68,69 +67,30 @@ class HUDSystemDebugElement(hudRenderer: HUDRenderer) : HUDElement(hudRenderer) 
     }
 
     private fun getUsedMemory(): Long {
-        return runtime.totalMemory() - runtime.freeMemory()
+        return SystemInformation.RUNTIME.totalMemory() - SystemInformation.RUNTIME.freeMemory()
     }
 
     private fun getFormattedUsedMemory(): String {
-        return formatBytes(getUsedMemory())
+        return UnitFormatter.formatBytes(getUsedMemory())
     }
 
     private fun getAllocatedMemory(): Long {
-        return runtime.totalMemory()
+        return SystemInformation.RUNTIME.totalMemory()
     }
 
     private fun getFormattedAllocatedMemory(): String {
-        return formatBytes(getAllocatedMemory())
-    }
-
-    private fun getMaxMemory(): Long {
-        return runtime.maxMemory()
-    }
-
-    private fun getFormattedMaxMemory(): String {
-        return formatBytes(getMaxMemory())
+        return UnitFormatter.formatBytes(getAllocatedMemory())
     }
 
     private fun getUsedMemoryPercent(): Long {
-        return getUsedMemory() * 100 / runtime.maxMemory()
+        return getUsedMemory() * 100 / SystemInformation.RUNTIME.maxMemory()
     }
 
     private fun getAllocatedMemoryPercent(): Long {
-        return getAllocatedMemory() * 100 / runtime.maxMemory()
+        return getAllocatedMemory() * 100 / SystemInformation.RUNTIME.maxMemory()
     }
 
     private fun getScreenDimensions(): String {
         return "${hudRenderer.renderWindow.screenWidth}x${hudRenderer.renderWindow.screenHeight}"
-    }
-
-    companion object {
-        private val UNITS = listOf("B", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB", "ZiB", "YiB")
-
-        fun formatBytes(bytes: Long): String {
-            var lastFactor = 1L
-            var currentFactor = 1024L
-            for (unit in UNITS) {
-                if (bytes < currentFactor) {
-                    if (bytes < (lastFactor * 10)) {
-                        return "${"%.1f".format(bytes / lastFactor.toFloat())}${unit}"
-                    }
-                    return "${bytes / lastFactor}${unit}"
-                }
-                lastFactor = currentFactor
-                currentFactor *= 1024L
-            }
-            throw IllegalArgumentException()
-        }
-
-        private val runtime = Runtime.getRuntime()
-        private val systemInfo = SystemInfo()
-        private val systemInfoHardwareAbstractionLayer = systemInfo.hardware
-
-        private val systemMemoryText: String = formatBytes(systemInfoHardwareAbstractionLayer.memory.total)
-        private val osText: String = "${System.getProperty("os.name")}: ${systemInfo.operatingSystem.family} ${systemInfo.operatingSystem.bitness}bit"
-
-        private val processorText = " ${runtime.availableProcessors()}x ${systemInfoHardwareAbstractionLayer.processor.processorIdentifier.name.replace("\\s{2,}".toRegex(), "")}"
-
-
     }
 }

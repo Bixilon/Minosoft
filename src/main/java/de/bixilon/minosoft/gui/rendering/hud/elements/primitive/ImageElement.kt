@@ -58,15 +58,15 @@ class ImageElement(
 
         val realZ = RenderConstants.HUD_Z_COORDINATE + RenderConstants.HUD_Z_COORDINATE_Z_FACTOR * (this.z + z)
 
-        fun addVertex(position: Vec3, textureUV: Vec2) {
-            cache.addVertex(position, textureUV, textureLayer, tintColor)
+        fun addVertex(position: Vec2, textureUV: Vec2) {
+            cache.addVertex(Vec3(position, realZ), textureUV, textureLayer, tintColor)
         }
 
-        addVertex(Vec3(modelStart.x, modelStart.y, realZ), Vec2(uvStart.x, uvStart.y))
-        addVertex(Vec3(modelEnd.x, modelStart.y, realZ), Vec2(uvEnd.x, uvStart.y))
-        addVertex(Vec3(modelStart.x, modelEnd.y, realZ), Vec2(uvStart.x, uvEnd.y))
-        addVertex(Vec3(modelStart.x, modelEnd.y, realZ), Vec2(uvStart.x, uvEnd.y))
-        addVertex(Vec3(modelEnd.x, modelStart.y, realZ), Vec2(uvEnd.x, uvStart.y))
-        addVertex(Vec3(modelEnd.x, modelEnd.y, realZ), Vec2(uvEnd.x, uvEnd.y))
+        addVertex(Vec2(modelStart.x, modelStart.y), Vec2(uvStart.x, uvStart.y))
+        addVertex(Vec2(modelEnd.x, modelStart.y), Vec2(uvEnd.x, uvStart.y))
+        addVertex(Vec2(modelStart.x, modelEnd.y), Vec2(uvStart.x, uvEnd.y))
+        addVertex(Vec2(modelStart.x, modelEnd.y), Vec2(uvStart.x, uvEnd.y))
+        addVertex(Vec2(modelEnd.x, modelStart.y), Vec2(uvEnd.x, uvStart.y))
+        addVertex(Vec2(modelEnd.x, modelEnd.y), Vec2(uvEnd.x, uvEnd.y))
     }
 }
