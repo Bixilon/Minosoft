@@ -248,7 +248,13 @@ class WorldRenderer(
     }
 
     fun prepareChunkSection(chunkPosition: ChunkPosition, sectionHeight: Int) {
-        // TODO()
+        val sections: MutableMap<Int, ChunkSection> = mutableMapOf()
+        val chunk = world.getChunk(chunkPosition)!!
+        val lowestSectionHeight = getSectionIndex(sectionHeight) * RenderConstants.CHUNK_SECTIONS_PER_MESH
+        for (i in lowestSectionHeight until lowestSectionHeight + (RenderConstants.CHUNK_SECTIONS_PER_MESH - 1)) {
+            sections[i] = chunk.sections?.get(i) ?: continue
+        }
+        prepareChunkSections(chunkPosition, sections)
     }
 
     fun clearChunkCache() {
@@ -308,7 +314,11 @@ class WorldRenderer(
 
     companion object {
         fun getSectionIndex(sectionHeight: Int): Int {
-            return sectionHeight / RenderConstants.CHUNK_SECTIONS_PER_MESH // ToDo: Negative chunk locations
+            val divided = sectionHeight / RenderConstants.CHUNK_SECTIONS_PER_MESH
+            if (sectionHeight < 0) {
+                return divided - 1
+            }
+            return divided
         }
     }
 }

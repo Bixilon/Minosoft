@@ -43,7 +43,7 @@ object RenderConstants {
 
     const val TEXT_LINE_PADDING = 0
 
-    const val CHUNK_SECTIONS_PER_MESH = 16
+    const val CHUNK_SECTIONS_PER_MESH = 8
 
     const val MAXIMUM_CALLS_PER_FRAME = 10
 }

@@ -116,10 +116,9 @@ class HUDRenderer(val connection: Connection, val renderWindow: RenderWindow) : 
             }
         }
 
-        if (!properties.enabled) {
-            return
+        if (properties.enabled) {
+            enabledHUDElement[resourceLocation] = pair
         }
-        enabledHUDElement[resourceLocation] = pair
     }
 
     fun removeElement(resourceLocation: ResourceLocation) {
@@ -127,6 +126,7 @@ class HUDRenderer(val connection: Connection, val renderWindow: RenderWindow) : 
             renderWindow.unregisterKeyBinding(it)
         }
 
+        enabledHUDElement.remove(resourceLocation)
         hudElements.remove(resourceLocation)
     }
 
@@ -154,15 +154,16 @@ class HUDRenderer(val connection: Connection, val renderWindow: RenderWindow) : 
         val tempMesh = HUDMesh()
 
         for ((_, hudElement) in enabledHUDElement.values) {
+            hudElement.draw()
+
             if (hudElement.layout.needsCacheUpdate()) {
                 needsUpdate = true
-                break
+                // break
             }
         }
+
         if (needsUpdate) {
             for ((elementProperties, hudElement) in enabledHUDElement.values) {
-
-                hudElement.draw()
 
 
                 val realScaleFactor = elementProperties.scale * Minosoft.getConfig().config.game.hud.scale.scale
