@@ -39,7 +39,6 @@ class WorldRenderer(
     lateinit var chunkShader: Shader
     val allChunkSections = ConcurrentHashMap<ChunkPosition, ConcurrentHashMap<Int, SectionArrayMesh>>()
     val visibleChunks = ConcurrentHashMap<ChunkPosition, ConcurrentHashMap<Int, SectionArrayMesh>>()
-    private lateinit var frustum: Frustum
     private var currentTick = 0 // for animation usage
     private var lastTickIncrementTime = 0L
     val queuedChunks: MutableSet<ChunkPosition> = mutableSetOf()
@@ -220,13 +219,33 @@ class WorldRenderer(
         Minosoft.THREAD_POOL.execute {
             val mesh = prepareSections(chunkPosition, sections)
 
-            var sectionMap = allChunkSections[chunkPosition]
-            if (sectionMap == null) {
-                sectionMap = ConcurrentHashMap()
-                allChunkSections[chunkPosition] = sectionMap
+            var lowestBlockHeight = 0
+            var highestBlockHeight = 0
+            for ((sectionHeight, _) in sections) {
+                if (sectionHeight < lowestBlockHeight) {
+                    lowestBlockHeight = sectionHeight
+                }
+                if (sectionHeight > highestBlockHeight) {
+                    highestBlockHeight = sectionHeight
+                }
+            }
+            val index = getSectionIndex(lowestBlockHeight)
+
+            lowestBlockHeight *= ProtocolDefinition.SECTION_HEIGHT_Y
+            highestBlockHeight = highestBlockHeight * ProtocolDefinition.SECTION_HEIGHT_Y + ProtocolDefinition.SECTION_MAX_Y
+
+            mesh.lowestBlockHeight = lowestBlockHeight
+            mesh.highestBlockHeight = highestBlockHeight
+
+
+            val sectionMap = allChunkSections[chunkPosition] ?: let {
+                val map: ConcurrentHashMap<Int, SectionArrayMesh> = ConcurrentHashMap()
+                allChunkSections[chunkPosition] = map
+                map
             }
 
-            if (frustum.containsChunk(chunkPosition, connection)) {
+
+            if (renderWindow.camera.frustum.containsChunk(chunkPosition, lowestBlockHeight, highestBlockHeight)) {
                 visibleChunks[chunkPosition] = sectionMap
             }
 
@@ -302,12 +321,17 @@ class WorldRenderer(
         prepareWorld(connection.player.world)
     }
 
-    fun recalculateFrustum(frustum: Frustum) {
+    fun recalculateVisibleChunks() {
         visibleChunks.clear()
-        this.frustum = frustum
-        for ((chunkLocation, sectionMap) in allChunkSections.entries) {
-            if (frustum.containsChunk(chunkLocation, connection)) {
-                visibleChunks[chunkLocation] = sectionMap
+        for ((chunkLocation, indexMap) in allChunkSections) {
+            val visibleIndexMap: ConcurrentHashMap<Int, SectionArrayMesh> = ConcurrentHashMap()
+            for ((index, mesh) in indexMap) {
+                if (renderWindow.camera.frustum.containsChunk(chunkLocation, mesh.lowestBlockHeight, mesh.highestBlockHeight)) {
+                    visibleIndexMap[index] = mesh
+                }
+            }
+            if (visibleIndexMap.isNotEmpty()) {
+                visibleChunks[chunkLocation] = visibleIndexMap
             }
         }
     }

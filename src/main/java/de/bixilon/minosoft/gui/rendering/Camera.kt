@@ -39,7 +39,7 @@ import kotlin.math.sin
 class Camera(
     val connection: Connection,
     var fov: Float,
-    private val renderWindow: RenderWindow,
+    val renderWindow: RenderWindow,
 ) {
     private var mouseSensitivity = Minosoft.getConfig().config.game.camera.moseSensitivity
     private var movementSpeed = 7
@@ -73,8 +73,12 @@ class Camera(
     var inChunkSectionPosition: InChunkSectionPosition = InChunkSectionPosition(0, 0, 0)
         private set
 
-    private var screenHeight = 0
-    private var screenWidth = 0
+    val frustum: Frustum = Frustum(this)
+
+    var screenHeight = 0
+        private set
+    var screenWidth = 0
+        private set
     private val shaders: MutableSet<Shader> = mutableSetOf()
 
     private var keyForwardDown = false
@@ -214,7 +218,10 @@ class Camera(
         // recalculate sky color for current biome
         val blockPosition = Position(cameraPosition).toBlockPosition()
         renderWindow.setSkyColor(connection.player.world.getChunk(blockPosition.getChunkPosition())?.biomeAccessor?.getBiome(blockPosition, connection.player.world.dimension?.supports3DBiomes ?: false)?.skyColor ?: RenderConstants.DEFAULT_SKY_COLOR)
-        connection.renderer.renderWindow.worldRenderer.recalculateFrustum(Frustum(this))
+
+        frustum.recalculate()
+        renderWindow.worldRenderer.recalculateVisibleChunks()
+
         connection.player.world.dimension?.hasSkyLight?.let {
             if (it) {
                 renderWindow.setSkyColor(currentBiome?.skyColor ?: RenderConstants.DEFAULT_SKY_COLOR)

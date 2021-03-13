@@ -224,7 +224,7 @@ class RenderWindow(
         // Make the OpenGL context current
         glfwMakeContextCurrent(windowId)
         // Enable v-sync
-        glfwSwapInterval(0)
+        glfwSwapInterval(1)
 
 
         // Make the window visible
@@ -309,14 +309,14 @@ class RenderWindow(
     }
 
     private fun registerGlobalKeyCombinations() {
-        registerKeyCallback(KeyBindingsNames.DEBUG_POLYGEN) { _: KeyCodes, _: KeyAction ->
+        registerKeyCallback(KeyBindingsNames.DEBUG_POLYGON) { _: KeyCodes, _: KeyAction ->
             polygonEnabled = !polygonEnabled
             glPolygonMode(GL_FRONT_AND_BACK, if (polygonEnabled) {
                 GL_LINE
             } else {
                 GL_FILL
             })
-            sendDebugMessage("Toggled polygen mode!")
+            sendDebugMessage("Toggled polygon mode!")
         }
         registerKeyCallback(KeyBindingsNames.DEBUG_MOUSE_CATCH) { _: KeyCodes, _: KeyAction ->
             mouseCatch = !mouseCatch

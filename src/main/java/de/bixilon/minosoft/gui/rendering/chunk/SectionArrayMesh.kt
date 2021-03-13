@@ -24,6 +24,8 @@ import org.lwjgl.opengl.GL20.glEnableVertexAttribArray
 import org.lwjgl.opengl.GL20.glVertexAttribPointer
 
 class SectionArrayMesh : Mesh() {
+    var lowestBlockHeight = 0
+    var highestBlockHeight = 0
 
     fun addVertex(position: Vec3, textureCoordinates: Vec2, texture: Texture, tintColor: RGBColor?, lightLevel: Int = 14) {
         data.add(position.x)

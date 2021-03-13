@@ -3,7 +3,6 @@ package de.bixilon.minosoft.gui.rendering.chunk
 import de.bixilon.minosoft.data.world.ChunkPosition
 import de.bixilon.minosoft.gui.rendering.Camera
 import de.bixilon.minosoft.gui.rendering.util.VecUtil
-import de.bixilon.minosoft.protocol.network.Connection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import glm_.glm
 import glm_.vec3.Vec3
@@ -13,7 +12,15 @@ class Frustum(private val camera: Camera) {
         camera.cameraFront.normalize(),
     )
 
+
     init {
+        recalculate()
+    }
+
+    fun recalculate() {
+        normals.clear()
+        normals.add(camera.cameraFront.normalize())
+
         calculateSideNormals()
         calculateVerticalNormals()
     }
@@ -28,7 +35,7 @@ class Frustum(private val camera: Camera) {
     }
 
     private fun calculateVerticalNormals() {
-        val aspect = camera.connection.renderer.renderWindow.screenHeight.toFloat() / camera.connection.renderer.renderWindow.screenWidth.toFloat()
+        val aspect = camera.screenHeight.toFloat() / camera.screenWidth.toFloat()
         val angle = glm.radians(camera.fov * aspect - 90f)
         val sin = glm.sin(angle)
         val cos = glm.cos(angle)
@@ -63,12 +70,10 @@ class Frustum(private val camera: Camera) {
         return true
     }
 
-    fun containsChunk(chunkPosition: ChunkPosition, connection: Connection): Boolean {
-        val dimension = connection.player.world.dimension!!
-        val from = Vec3(chunkPosition.x * ProtocolDefinition.SECTION_WIDTH_X, dimension.minY, chunkPosition.z * ProtocolDefinition.SECTION_WIDTH_Z)
-        val to = from + Vec3(ProtocolDefinition.SECTION_WIDTH_X, dimension.logicalHeight, ProtocolDefinition.SECTION_WIDTH_Z)
-        val frustum = Frustum(connection.renderer.renderWindow.camera)
-        return frustum.containsRegion(from, to)
+    fun containsChunk(chunkPosition: ChunkPosition, lowestBlockHeight: Int, highestBlockHeight: Int): Boolean {
+        val from = Vec3(chunkPosition.x * ProtocolDefinition.SECTION_WIDTH_X, lowestBlockHeight, chunkPosition.z * ProtocolDefinition.SECTION_WIDTH_Z)
+        val to = from + Vec3(ProtocolDefinition.SECTION_WIDTH_X, highestBlockHeight, ProtocolDefinition.SECTION_WIDTH_Z)
+        return containsRegion(from, to)
     }
 }
 
