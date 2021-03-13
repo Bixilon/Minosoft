@@ -36,10 +36,7 @@ import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.protocol.LANServerListener;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import de.bixilon.minosoft.terminal.CLI;
-import de.bixilon.minosoft.util.CountUpAndDownLatch;
-import de.bixilon.minosoft.util.GitInfo;
-import de.bixilon.minosoft.util.MinosoftCommandLineArguments;
-import de.bixilon.minosoft.util.Util;
+import de.bixilon.minosoft.util.*;
 import de.bixilon.minosoft.util.logging.Log;
 import de.bixilon.minosoft.util.task.AsyncTaskWorker;
 import de.bixilon.minosoft.util.task.Task;
@@ -54,7 +51,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public final class Minosoft {
-    public static final ExecutorService THREAD_POOL = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors(), Util.getThreadFactory("Worker"));
+    public static final ExecutorService THREAD_POOL = Executors.newFixedThreadPool(MMath.INSTANCE.minClamp(Runtime.getRuntime().availableProcessors() - 1, 1), Util.getThreadFactory("Worker"));
     public static final JarAssetsManager MINOSOFT_ASSETS_MANAGER = new JarAssetsManager(Minosoft.class);
     public static final HashSet<EventManager> EVENT_MANAGERS = new HashSet<>();
     public static final HashBiMap<Integer, Connection> CONNECTIONS = HashBiMap.create();

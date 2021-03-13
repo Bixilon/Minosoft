@@ -14,6 +14,14 @@
 package de.bixilon.minosoft.util
 
 object MMath {
+
+    fun minClamp(value: Int, min: Int): Int {
+        if (value < min) {
+            return min
+        }
+        return value
+    }
+
     fun clamp(value: Int, min: Int, max: Int): Int {
         if (value < min) {
             return min

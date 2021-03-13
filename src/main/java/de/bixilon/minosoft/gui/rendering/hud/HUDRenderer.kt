@@ -44,6 +44,8 @@ class HUDRenderer(val connection: Connection, val renderWindow: RenderWindow) : 
 
     private var hudEnabled = true
 
+    private var forcePrepare = true
+
 
     override fun init() {
         hudShader.load(Minosoft.MINOSOFT_ASSETS_MANAGER)
@@ -113,11 +115,13 @@ class HUDRenderer(val connection: Connection, val renderWindow: RenderWindow) : 
                 } else {
                     enabledHUDElement[resourceLocation] = pair
                 }
+                forcePrepare = true
             }
         }
 
         if (properties.enabled) {
             enabledHUDElement[resourceLocation] = pair
+            forcePrepare = true
         }
     }
 
@@ -128,6 +132,7 @@ class HUDRenderer(val connection: Connection, val renderWindow: RenderWindow) : 
 
         enabledHUDElement.remove(resourceLocation)
         hudElements.remove(resourceLocation)
+        forcePrepare = true
     }
 
     override fun postInit() {
@@ -162,7 +167,7 @@ class HUDRenderer(val connection: Connection, val renderWindow: RenderWindow) : 
             }
         }
 
-        if (needsUpdate) {
+        if (forcePrepare || needsUpdate) {
             for ((elementProperties, hudElement) in enabledHUDElement.values) {
 
 
