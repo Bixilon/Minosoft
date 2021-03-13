@@ -229,39 +229,39 @@ class WorldRenderer(
                     highestBlockHeight = sectionHeight
                 }
             }
-            val index = getSectionIndex(lowestBlockHeight)
 
             lowestBlockHeight *= ProtocolDefinition.SECTION_HEIGHT_Y
             highestBlockHeight = highestBlockHeight * ProtocolDefinition.SECTION_HEIGHT_Y + ProtocolDefinition.SECTION_MAX_Y
+
+
+            val index = getSectionIndex(highestBlockHeight)
 
             mesh.lowestBlockHeight = lowestBlockHeight
             mesh.highestBlockHeight = highestBlockHeight
 
 
-            val sectionMap = allChunkSections[chunkPosition] ?: let {
-                val map: ConcurrentHashMap<Int, SectionArrayMesh> = ConcurrentHashMap()
-                allChunkSections[chunkPosition] = map
-                map
-            }
-
-
-            if (renderWindow.camera.frustum.containsChunk(chunkPosition, lowestBlockHeight, highestBlockHeight)) {
-                visibleChunks[chunkPosition] = sectionMap
-            }
-
             mesh.preLoad()
 
             renderWindow.renderQueue.add {
-                mesh.load()
-                meshes++
-                triangles += mesh.trianglesCount
-                val index = getSectionIndex(sections.iterator().next().key)
+                val sectionMap = allChunkSections.getOrPut(chunkPosition, { ConcurrentHashMap() })
+
                 sectionMap[index]?.let {
                     it.unload()
                     meshes--
                     triangles -= it.trianglesCount
                 }
+
+                mesh.load()
+                meshes++
+                triangles += mesh.trianglesCount
+
                 sectionMap[index] = mesh
+
+                if (renderWindow.camera.frustum.containsChunk(chunkPosition, lowestBlockHeight, highestBlockHeight)) {
+                    visibleChunks.getOrPut(chunkPosition, { ConcurrentHashMap() })[index] = mesh
+                } else {
+                    visibleChunks[chunkPosition]?.remove(index)
+                }
             }
         }
     }
@@ -282,14 +282,9 @@ class WorldRenderer(
             queuedChunks.clear()
         }
         renderWindow.renderQueue.add {
-            for ((location, map) in allChunkSections) {
-                for ((sectionHeight, mesh) in map) {
-                    mesh.unload()
-                    meshes--
-                    triangles -= mesh.trianglesCount
-                    map.remove(sectionHeight)
-                }
-                allChunkSections.remove(location)
+            visibleChunks.clear()
+            for ((location, _) in allChunkSections) {
+                unloadChunk(location)
             }
         }
     }
@@ -301,11 +296,12 @@ class WorldRenderer(
         renderWindow.renderQueue.add {
             allChunkSections[chunkPosition]?.let {
                 for ((_, mesh) in it) {
+                    mesh.unload()
                     meshes--
                     triangles -= mesh.trianglesCount
-                    mesh.unload()
                 }
                 allChunkSections.remove(chunkPosition)
+                visibleChunks.remove(chunkPosition)
             }
         }
     }

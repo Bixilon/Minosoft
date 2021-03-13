@@ -19,21 +19,26 @@ import org.lwjgl.opengl.GL30.*
 
 abstract class Mesh {
     protected val data: MutableList<Float> = mutableListOf()
-    private var vao: Int = 0
-    private var vbo: Int = 0
-    var trianglesCount: Int = 0
+    private var vao: Int = -1
+    private var vbo: Int = -1
+    var trianglesCount: Int = -1
         private set
     private var rawData: FloatArray? = null
 
+    var state = MeshStates.PREPARING
+        private set
+
     open fun preLoad() {
+        check(state == MeshStates.PREPARING) { "Mesh already loaded: $state" }
         rawData = data.toFloatArray()
         data.clear()
+        state = MeshStates.PRE_LOADED
     }
 
     abstract fun load()
 
     protected fun initializeBuffers(floatsPerVertex: Int) {
-        check(rawData != null) { "Mesh was not pre initialized!" }
+        check(state == MeshStates.PRE_LOADED) { "Mesh not pre loaded: $state" }
 
         trianglesCount = rawData!!.size / floatsPerVertex
         vao = glGenVertexArrays()
@@ -43,6 +48,8 @@ abstract class Mesh {
 
         glBufferData(GL_ARRAY_BUFFER, rawData!!, GL_STATIC_DRAW)
 
+        state = MeshStates.LOADED
+
         rawData = null
     }
 
@@ -51,12 +58,28 @@ abstract class Mesh {
     }
 
     fun draw() {
+        // check(state == MeshStates.LOADED) { "Mesh not loaded: $state" }
         glBindVertexArray(vao)
         glDrawArrays(GL_TRIANGLES, 0, trianglesCount)
     }
 
-    fun unload() {
+    fun unload(checkLoaded: Boolean = true) {
+        if (checkLoaded) {
+            check(state == MeshStates.LOADED) { "Mesh not loaded: $state" }
+        } else {
+            if (state != MeshStates.LOADED) {
+                return
+            }
+        }
         glDeleteVertexArrays(vao)
         glDeleteBuffers(vbo)
+        state = MeshStates.UNLOADED
+    }
+
+    enum class MeshStates {
+        PREPARING,
+        PRE_LOADED,
+        LOADED,
+        UNLOADED,
     }
 }
