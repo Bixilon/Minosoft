@@ -22,7 +22,9 @@ import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.data.world.BlockPosition
 import de.bixilon.minosoft.gui.rendering.TintColorCalculator
 import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModel
+import de.bixilon.minosoft.gui.rendering.chunk.models.renderable.BlockRenderInterface
 import de.bixilon.minosoft.gui.rendering.chunk.models.renderable.BlockRenderer
+import de.bixilon.minosoft.gui.rendering.chunk.models.renderable.FluidRenderer
 import java.util.*
 import kotlin.random.Random
 
@@ -30,7 +32,7 @@ data class BlockState(
     val owner: Block,
     val properties: Set<BlockProperties> = setOf(),
     val rotation: BlockRotations = BlockRotations.NONE,
-    val renders: Set<BlockRenderer> = setOf(),
+    val renders: Set<BlockRenderInterface> = setOf(),
     val tintColor: RGBColor? = null,
 ) {
 
@@ -104,7 +106,7 @@ data class BlockState(
         return String.format("%s%s", owner.resourceLocation, out)
     }
 
-    fun getBlockRenderer(position: BlockPosition): BlockRenderer {
+    fun getBlockRenderer(position: BlockPosition): BlockRenderInterface {
         if (Minosoft.getConfig().config.game.other.antiMoirePattern) {
             // ToDo: Support weight attribute
             return renders.random(Random(position.hashCode()))
@@ -116,11 +118,16 @@ data class BlockState(
     companion object {
         val ROTATION_PROPERTIES = setOf("facing", "rotation", "orientation", "axis")
 
+        val SPECIAL_RENDERERS = mutableMapOf(
+            Pair("water", FluidRenderer("block/water_still", "block/water_flow", "water")),
+            Pair("lava", FluidRenderer("block/lava_still", "block/lava_flow", "lava")),
+        )
+
         fun deserialize(owner: Block, data: JsonObject, models: HashBiMap<ResourceLocation, BlockModel>): BlockState {
             val (rotation, properties) = data["properties"]?.asJsonObject?.let {
                 getProperties(it)
             } ?: Pair(BlockRotations.NONE, mutableSetOf())
-            val renders: MutableSet<BlockRenderer> = mutableSetOf()
+            val renders: MutableSet<BlockRenderInterface> = mutableSetOf()
 
             data["render"]?.let {
                 when (it) {
@@ -148,6 +155,13 @@ data class BlockState(
             }
 
             val tintColor: RGBColor? = data["tint_color"]?.asInt?.let { TintColorCalculator.getJsonColor(it) } ?: owner.tintColor
+
+            for ((regex, renderer) in SPECIAL_RENDERERS) {
+                if (owner.resourceLocation.full.contains(regex)) {
+                    renders.clear()
+                    renders.add(renderer)
+                }
+            }
 
             return BlockState(
                 owner = owner,
@@ -192,7 +206,7 @@ data class BlockState(
             return Pair(rotation, properties)
         }
 
-        private fun addBlockModel(data: JsonObject, renders: MutableSet<BlockRenderer>, models: HashBiMap<ResourceLocation, BlockModel>) {
+        private fun addBlockModel(data: JsonObject, renders: MutableSet<BlockRenderInterface>, models: HashBiMap<ResourceLocation, BlockModel>) {
             val model = models[ResourceLocation(data["model"].asString)] ?: error("Can not find block model ${data["model"]}")
             renders.add(BlockRenderer(data, model))
         }

@@ -154,7 +154,6 @@ class VersionMapping(var version: Version?) {
         }
     }
 
-
     private fun loadBlockModels(data: Map<ResourceLocation, JsonObject>) {
         for ((resourceLocation, model) in data) {
             if (models.containsKey(resourceLocation)) {

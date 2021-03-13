@@ -17,6 +17,8 @@ import com.google.common.collect.HashBiMap
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.Directions
+import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.data.mappings.versions.VersionMapping
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.data.world.BlockPosition
 import de.bixilon.minosoft.data.world.light.LightAccessor
@@ -67,7 +69,6 @@ class ElementRenderer(parent: BlockModelElement, val rotation: Vec3, uvLock: Boo
         val realDirection = directionMapping.inverse()[direction]!!
 
         val face = faces[realDirection] ?: return // Not our face
-
         val positionTemplate = BlockModelElement.FACE_POSITION_MAP_TEMPLATE[realDirection.ordinal]
 
         val texture = textureMapping[face.textureName] ?: TODO()
@@ -110,8 +111,6 @@ class ElementRenderer(parent: BlockModelElement, val rotation: Vec3, uvLock: Boo
     }
 
     companion object {
-        private val EMPTY_VECTOR = Vec3()
-
         val DRAW_ODER = arrayOf(
             Pair(0, 1),
             Pair(3, 2),
@@ -151,7 +150,7 @@ class ElementRenderer(parent: BlockModelElement, val rotation: Vec3, uvLock: Boo
         }
 
         fun getRotatedDirection(rotation: Vec3, direction: Directions): Directions {
-            if (rotation == EMPTY_VECTOR) {
+            if (rotation == VecUtil.EMPTY_VECTOR) {
                 return direction
             }
             var rotatedDirectionVector = VecUtil.rotateVector(direction.directionVector, rotation.x, Axes.X)
@@ -160,18 +159,18 @@ class ElementRenderer(parent: BlockModelElement, val rotation: Vec3, uvLock: Boo
         }
 
         fun rotatePositionsAxes(positions: Array<Vec3>, angles: Vec3, rescale: Boolean) {
-            if (angles == EMPTY_VECTOR) {
+            if (angles == VecUtil.EMPTY_VECTOR) {
                 return
             }
-            BlockModelElement.rotatePositions(positions, Axes.X, angles.x, EMPTY_VECTOR, rescale)
-            BlockModelElement.rotatePositions(positions, Axes.Y, angles.y, EMPTY_VECTOR, rescale)
-            BlockModelElement.rotatePositions(positions, Axes.Z, angles.z, EMPTY_VECTOR, rescale)
+            BlockModelElement.rotatePositions(positions, Axes.X, angles.x, VecUtil.EMPTY_VECTOR, rescale)
+            BlockModelElement.rotatePositions(positions, Axes.Y, angles.y, VecUtil.EMPTY_VECTOR, rescale)
+            BlockModelElement.rotatePositions(positions, Axes.Z, angles.z, VecUtil.EMPTY_VECTOR, rescale)
         }
 
-        private val POSITION_1 = Vec3(-0.5f, -0.5f, -0.5f)
-        private val POSITION_2 = Vec3(+0.5f, -0.5f, -0.5f)
-        private val POSITION_3 = Vec3(-0.5f, -0.5f, +0.5f)
-        private val POSITION_4 = Vec3(+0.5f, -0.5f, +0.5f)
+        val POSITION_1 = Vec3(-0.5f, -0.5f, -0.5f)
+        val POSITION_2 = Vec3(+0.5f, -0.5f, -0.5f)
+        val POSITION_3 = Vec3(-0.5f, -0.5f, +0.5f)
+        val POSITION_4 = Vec3(+0.5f, -0.5f, +0.5f)
         private val POSITION_5 = Vec3(-0.5f, +0.5f, -0.5f)
         private val POSITION_6 = Vec3(+0.5f, +0.5f, +0.5f)
         private val POSITION_7 = Vec3(-0.5f, +0.5f, +0.5f)

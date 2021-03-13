@@ -31,6 +31,14 @@ enum class Directions(direction: Vec3) {
         }
     }
 
+    fun sidesNextTo(direction: Directions): Set<Directions> {
+        return when (direction) {
+            NORTH, SOUTH -> setOf(EAST, WEST)
+            EAST, WEST -> setOf(NORTH, SOUTH)
+            else -> emptySet()
+        }
+    }
+
     val directionVector: Vec3 = direction
 
     companion object {

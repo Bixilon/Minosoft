@@ -87,7 +87,7 @@ class WorldRenderer(
                     blockInfo.block.tintColor?.let { tintColor = it }
                 }
 
-                blockInfo.block.getBlockRenderer(blockPosition).render(blockInfo, world.worldLightAccessor, tintColor, blockPosition, mesh, neighborBlocks)
+                blockInfo.block.getBlockRenderer(blockPosition).render(blockInfo, world.worldLightAccessor, tintColor, blockPosition, mesh, neighborBlocks, world)
             }
         }
         return mesh

@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk.models.loading
 
+import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.Directions
 import de.bixilon.minosoft.gui.rendering.util.VecUtil
@@ -22,7 +23,7 @@ import glm_.vec3.Vec3
 import java.util.*
 
 class BlockModelFace {
-    val textureName: String
+    val textureName: String?
     val cullFace: Directions?
     val tint: Boolean
     private val positions: MutableList<Vec2>
@@ -30,26 +31,6 @@ class BlockModelFace {
     constructor(data: JsonObject, from: Vec3, to: Vec3, direction: Directions) {
         tint = data.has("tintindex")
         textureName = data.get("texture").asString.removePrefix("#")
-        var textureTopLeft = Vec2(0, 16)
-        var textureBottomRight = Vec2(16, 0)
-        when (direction) {
-            Directions.EAST, Directions.WEST -> run {
-                textureTopLeft = Vec2(from.z.toInt(), to.y.toInt())
-                textureBottomRight = Vec2(to.z.toInt(), from.y.toInt())
-            }
-            Directions.UP, Directions.DOWN -> {
-                textureTopLeft = Vec2(from.x.toInt(), to.z.toInt())
-                textureBottomRight = Vec2(to.x.toInt(), from.z.toInt())
-            }
-            Directions.NORTH, Directions.SOUTH -> {
-                textureTopLeft = Vec2(from.x.toInt(), to.y.toInt())
-                textureBottomRight = Vec2(to.x.toInt(), from.y.toInt())
-            }
-        }
-        data["uv"]?.asJsonArray?.let {
-            textureTopLeft = Vec2(it[0].asFloat, it[3].asFloat)
-            textureBottomRight = Vec2(it[2].asFloat, it[1].asFloat)
-        }
         cullFace = data["cullface"]?.asString?.let {
             return@let if (it == "bottom") {
                 Directions.DOWN
@@ -57,14 +38,33 @@ class BlockModelFace {
                 Directions.valueOf(it.toUpperCase())
             }
         }
-        positions = mutableListOf(
+        positions = calculateTexturePositions(data, from, to, direction)
+        val rotation = data["rotation"]?.asInt?.div(90) ?: 0
+        Collections.rotate(positions, rotation)
+    }
+
+    private fun calculateTexturePositions(data: JsonObject?, from: Vec3, to: Vec3, direction: Directions): MutableList<Vec2> {
+        val (textureTopLeft: Vec2, textureBottomRight: Vec2) = data?.get("uv")?.asJsonArray?.let {
+            readUV(it)
+        } ?: getTexturePositionsFromRegion(from, to, direction)
+        return mutableListOf(
             uvToFloat(Vec2(textureTopLeft.x, textureTopLeft.y)),
             uvToFloat(Vec2(textureTopLeft.x, textureBottomRight.y)),
             uvToFloat(Vec2(textureBottomRight.x, textureBottomRight.y)),
             uvToFloat(Vec2(textureBottomRight.x, textureTopLeft.y)),
         )
-        val rotation = data["rotation"]?.asInt?.div(90) ?: 0
-        Collections.rotate(positions, rotation)
+    }
+
+    private fun readUV(data: JsonArray): Pair<Vec2, Vec2> {
+        return Pair(Vec2(data[0].asFloat, data[3].asFloat), Vec2(data[2].asFloat, data[1].asFloat))
+    }
+
+    private fun getTexturePositionsFromRegion(from: Vec3, to: Vec3, direction: Directions): Pair<Vec2, Vec2> {
+        return when (direction) {
+            Directions.EAST, Directions.WEST ->   Pair(Vec2(from.z.toInt(), to.y.toInt()), Vec2(to.z.toInt(), from.y.toInt()))
+            Directions.UP, Directions.DOWN ->     Pair(Vec2(from.x.toInt(), to.z.toInt()), Vec2(to.x.toInt(), from.z.toInt()))
+            Directions.NORTH, Directions.SOUTH -> Pair(Vec2(from.x.toInt(), to.y.toInt()), Vec2(to.x.toInt(), from.y.toInt()))
+        }
     }
 
     constructor(parent: BlockModelFace) {
@@ -75,6 +75,20 @@ class BlockModelFace {
         for (position in parent.positions) {
             positions.add(Vec2(position))
         }
+    }
+
+    constructor() {
+        textureName = null
+        cullFace = null
+        tint = false
+        positions = calculateTexturePositions(null, VecUtil.EMPTY_VECTOR, VecUtil.BLOCK_SIZE_VECTOR, Directions.EAST)
+    }
+
+    constructor(from: Vec3, to: Vec3, direction: Directions) {
+        textureName = null
+        cullFace = null
+        tint = false
+        positions = calculateTexturePositions(null, from, to, direction)
     }
 
     fun getTexturePositionArray(direction: Directions): Array<Vec2?> {

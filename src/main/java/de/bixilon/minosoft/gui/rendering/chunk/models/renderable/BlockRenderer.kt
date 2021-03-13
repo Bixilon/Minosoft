@@ -20,6 +20,7 @@ import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.data.world.BlockInfo
 import de.bixilon.minosoft.data.world.BlockPosition
+import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.light.LightAccessor
 import de.bixilon.minosoft.gui.rendering.chunk.SectionArrayMesh
 import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModel
@@ -27,13 +28,13 @@ import de.bixilon.minosoft.gui.rendering.textures.Texture
 import de.bixilon.minosoft.gui.rendering.textures.TextureTransparencies
 import glm_.mat4x4.Mat4
 
-class BlockRenderer {
-    private val transparentFaces: MutableSet<Directions> = mutableSetOf()
+class BlockRenderer: BlockRenderInterface {
     private val cullFaces: MutableSet<Directions> = mutableSetOf()
     val textures: MutableMap<String, String> = mutableMapOf()
-    private val fullFaceDirections: MutableSet<Directions> = mutableSetOf()
     private val elements: MutableSet<ElementRenderer> = mutableSetOf()
     private val textureMapping: MutableMap<String, Texture> = mutableMapOf()
+    override val fullFaceDirections: MutableSet<Directions> = mutableSetOf()
+    override val transparentFaces: MutableSet<Directions> = mutableSetOf()
 
     constructor(data: JsonObject, parent: BlockModel) {
         val newElements = ElementRenderer.createElements(data, parent)
@@ -51,26 +52,15 @@ class BlockRenderer {
         }
     }
 
-
-    fun resolveTextures(indexed: MutableList<Texture>, textureMap: MutableMap<String, Texture>) {
+    override fun resolveTextures(indexed: MutableList<Texture>, textureMap: MutableMap<String, Texture>) {
         for ((key, textureName) in textures) {
             if (!textureName.startsWith("#")) {
-                var texture: Texture? = null
-                val index: Int? = textureMap[textureName]?.let {
-                    texture = it
-                    indexed.indexOf(it)
-                }
-                if (index == null) {
-                    texture = Texture(Texture.getResourceTextureIdentifier(textureName = textureName))
-                    textureMap[textureName] = texture!!
-                    indexed.add(texture!!)
-                }
-                textureMapping[key] = texture!!
+                textureMapping[key] = BlockRenderInterface.resolveTexture(indexed, textureMap, textureName = textureName)!!
             }
         }
     }
 
-    fun postInit() {
+    override fun postInit() {
         for (direction in Directions.DIRECTIONS) {
             var directionIsCullface: Boolean? = null
             var directionIsNotTransparent: Boolean? = null
@@ -103,7 +93,7 @@ class BlockRenderer {
         }
     }
 
-    fun render(blockInfo: BlockInfo, lightAccessor: LightAccessor, tintColor: RGBColor?, position: BlockPosition, mesh: SectionArrayMesh, neighbourBlocks: Array<BlockInfo?>) {
+    override fun render(blockInfo: BlockInfo, lightAccessor: LightAccessor, tintColor: RGBColor?, position: BlockPosition, mesh: SectionArrayMesh, neighbourBlocks: Array<BlockInfo?>, world: World) {
         val modelMatrix = Mat4().translate(position.toVec3())
 
         for (direction in Directions.DIRECTIONS) {

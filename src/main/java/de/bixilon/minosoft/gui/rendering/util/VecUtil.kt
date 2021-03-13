@@ -17,11 +17,15 @@ import com.google.gson.JsonArray
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.Axes
+import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModelElement
 import glm_.glm
 import glm_.vec2.Vec2
 import glm_.vec3.Vec3
 
 object VecUtil {
+    val EMPTY_VECTOR = Vec3()
+
+    val BLOCK_SIZE_VECTOR = Vec3(BlockModelElement.BLOCK_RESOLUTION, BlockModelElement.BLOCK_RESOLUTION, BlockModelElement.BLOCK_RESOLUTION)
 
     fun jsonToVec3(json: JsonElement): Vec3 {
         when (json) {

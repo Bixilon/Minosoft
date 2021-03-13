@@ -1,0 +1,220 @@
+package de.bixilon.minosoft.gui.rendering.chunk.models.renderable
+
+import de.bixilon.minosoft.data.Directions
+import de.bixilon.minosoft.data.mappings.blocks.BlockProperties
+import de.bixilon.minosoft.data.text.RGBColor
+import de.bixilon.minosoft.data.world.BlockInfo
+import de.bixilon.minosoft.data.world.BlockPosition
+import de.bixilon.minosoft.data.world.World
+import de.bixilon.minosoft.data.world.light.LightAccessor
+import de.bixilon.minosoft.gui.rendering.chunk.SectionArrayMesh
+import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModelElement
+import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModelFace
+import de.bixilon.minosoft.gui.rendering.textures.Texture
+import de.bixilon.minosoft.gui.rendering.util.VecUtil
+import glm_.glm
+import glm_.mat4x4.Mat4
+import glm_.toInt
+import glm_.vec2.Vec2
+import glm_.vec3.Vec3
+import glm_.vec4.Vec4
+
+class FluidRenderer(private val stillTextureName: String, private val flowingTextureName: String, val regex: String): BlockRenderInterface  {
+    override val fullFaceDirections: MutableSet<Directions> = mutableSetOf()
+    override val transparentFaces: MutableSet<Directions> = Directions.DIRECTIONS.toMutableSet()
+    private var still: Texture? = null
+    private var flowing: Texture? = null
+
+    override fun render(blockInfo: BlockInfo, lightAccessor: LightAccessor, tintColor: RGBColor?, position: BlockPosition, mesh: SectionArrayMesh, neighbourBlocks: Array<BlockInfo?>, world: World) {
+        val modelMatrix = Mat4().translate(position.toVec3())
+        val lightLevel = lightAccessor.getLightLevel(position)
+        val heights = calculateHeights(neighbourBlocks, blockInfo, world, position)
+        val (texture, angle) = if (isLiquidFlowing(heights)) {
+            Pair(flowing, getRotationAngle(heights))
+        } else {
+            Pair(still, 0f)
+        }
+        val positions = calculatePositions(heights)
+        for (direction in Directions.DIRECTIONS) {
+            if (isBlockSameFluid(neighbourBlocks[direction.ordinal]) || neighbourBlocks[direction.ordinal]?.block?.getBlockRenderer(position + direction)?.fullFaceDirections?.contains(direction.inverse()) == true && direction != Directions.UP) {
+                continue
+            }
+            val face = BlockModelFace(VecUtil.EMPTY_VECTOR, Vec3(VecUtil.BLOCK_SIZE_VECTOR.x, positions[7].y * 8, VecUtil.BLOCK_SIZE_VECTOR.z), direction)
+            face.rotate(angle)
+            val positionTemplate = BlockModelElement.FACE_POSITION_MAP_TEMPLATE[direction.ordinal]
+            val drawPositions = arrayOf(positions[positionTemplate[0]], positions[positionTemplate[1]], positions[positionTemplate[2]], positions[positionTemplate[3]])
+            createQuad(drawPositions, face.getTexturePositionArray(direction), texture!!, modelMatrix, mesh, tintColor, lightLevel)
+        }
+    }
+
+    private fun getRotationAngle(heights: FloatArray): Float {
+        val maxHeight = heights.maxOrNull()
+        for (direction in Directions.SIDES) {
+            val positions = getPositionsForDirection(direction)
+            val currentHeights = mutableListOf<Float>()
+            for (position in positions) {
+                currentHeights.add(heights[position])
+            }
+            val allCurrentHeightsAreEqual = currentHeights.toSet().size == 1
+            if (allCurrentHeightsAreEqual) {
+                if (maxHeight == currentHeights[0]) {
+                    return getRotationAngle(direction)
+                }
+            }
+        }
+        val minHeight = heights.minOrNull()
+        val position = heights.indexOfFirst { it == minHeight }
+        val directions = HEIGHT_POSITIONS_REVERSED[position]
+        var angle = 0f
+        for (direction in directions!!) {
+            angle += getRotationAngle(direction)
+        }
+        return angle / directions.size
+    }
+
+    private fun getRotationAngle(direction: Directions): Float {
+        return when (direction) {
+            Directions.SOUTH -> glm.PI.toFloat()
+            Directions.NORTH -> 0f
+            Directions.WEST -> glm.PI.toFloat() * 0.5f
+            Directions.EAST -> glm.PI.toFloat() * 1.5f
+            else -> error("Unexpected value: $direction")
+        }
+    }
+
+    private fun isLiquidFlowing(heights: FloatArray): Boolean {
+        return heights.toSet().size != 1 // liquid is flowing, if not all of the heights are the same
+    }
+
+    private fun createQuad(drawPositions: Array<Vec3>, texturePositions: Array<Vec2?>, texture: Texture, modelMatrix: Mat4, mesh: SectionArrayMesh, tintColor: RGBColor?, lightLevel: Int) {
+        for (vertex in ElementRenderer.DRAW_ODER) {
+            val input = Vec4(drawPositions[vertex.first], 1.0f)
+            val output = modelMatrix * input
+            mesh.addVertex(
+                position = output.toVec3(),
+                textureCoordinates = texturePositions[vertex.second]!!,
+                texture = texture,
+                tintColor = tintColor,
+                lightLevel = lightLevel,
+            )
+        }
+    }
+
+    private fun calculatePositions(heights: FloatArray): List<Vec3> {
+        val positions = mutableListOf<Vec3>()
+        positions.addAll(DEFAULT_POSITIONS)
+        for ((i, defaultPosition) in DEFAULT_POSITIONS.withIndex()) {
+            val position = Vec3(defaultPosition)
+            position.y += heights[i]
+            positions.add(position)
+        }
+        return positions
+    }
+
+    private fun calculateHeights(neighbourBlocks: Array<BlockInfo?>, blockInfo: BlockInfo, world: World, position: BlockPosition): FloatArray {
+        val height = getLevel(blockInfo)
+        val heights = floatArrayOf(height, height, height, height)
+        for (direction in Directions.SIDES) {
+            val positions = getPositionsForDirection(direction)
+            handleUpperBlocks(world, position, direction, positions, heights)
+            handleDirectNeighbours(neighbourBlocks, direction, world, position, positions, heights)
+        }
+        return heights
+    }
+
+    private fun handleDirectNeighbours(neighbourBlocks: Array<BlockInfo?>, direction: Directions, world: World, position: BlockPosition, positions: MutableSet<Int>, heights: FloatArray) {
+        if (isBlockSameFluid(neighbourBlocks[direction.ordinal])) {
+            val neighbourLevel = getLevel(neighbourBlocks[direction.ordinal]!!)
+            for (heightPosition in positions) {
+                heights[heightPosition] = glm.max(heights[heightPosition], neighbourLevel)
+            }
+        }
+        for (altDirection in direction.sidesNextTo(direction)) {
+            val bothDirections = setOf(direction, altDirection)
+            if (isBlockSameFluid(world.getBlockInfo(position + direction + altDirection))) {
+                val neighbourLevel = getLevel(world.getBlockInfo(position + direction + altDirection)!!)
+                for (heightPosition in HEIGHT_POSITIONS) {
+                    if (heightPosition.key.containsAll(bothDirections)) {
+                        heights[heightPosition.value] = glm.max(heights[heightPosition.value], neighbourLevel)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun handleUpperBlocks(world: World, position: BlockPosition, direction: Directions, positions: MutableSet<Int>, heights: FloatArray) {
+        if (isBlockSameFluid(world.getBlockInfo(position + Directions.UP + direction))) {
+            for (heightPosition in positions) {
+                heights[heightPosition] = 1.0f
+            }
+        }
+        for (altDirection in direction.sidesNextTo(direction)) {
+            val bothDirections = setOf(direction, altDirection)
+            if (isBlockSameFluid(world.getBlockInfo(position + Directions.UP + direction + altDirection))) {
+                for (heightPosition in HEIGHT_POSITIONS) {
+                    if (heightPosition.key.containsAll(bothDirections)) {
+                        heights[heightPosition.value] = 1.0f
+                    }
+                }
+            }
+        }
+    }
+
+    private fun getPositionsForDirection(direction: Directions): MutableSet<Int> {
+        val positions = mutableSetOf<Int>()
+        for (heightPosition in HEIGHT_POSITIONS) {
+            if (heightPosition.key.contains(direction)) {
+                positions.add(heightPosition.value)
+            }
+        }
+        return positions
+    }
+
+    private fun getLevel(blockInfo: BlockInfo): Float {
+        for (property in blockInfo.block.properties) {
+            if (property.group == "level") {
+                return (8 - property.value!!.toInt) * (1f / 8f) - 0.125f
+            }
+        }
+        return 0.8125f
+    }
+
+    private fun isBlockSameFluid(blockInfo: BlockInfo?): Boolean {
+        if (blockInfo == null) {
+            return false
+        }
+        if (blockInfo.block.owner.resourceLocation.full!!.contains(regex)) {
+            return true
+        }
+        if (blockInfo.block.properties.contains(BlockProperties.GENERAL_WATERLOGGED_YES)) {
+            return true
+        }
+        return false
+    }
+
+    override fun resolveTextures(indexed: MutableList<Texture>, textureMap: MutableMap<String, Texture>) {
+        if (still != null) {
+            return
+        }
+        still = BlockRenderInterface.resolveTexture(indexed, textureMap, stillTextureName)
+        flowing = BlockRenderInterface.resolveTexture(indexed, textureMap, flowingTextureName)
+    }
+
+    companion object {
+        val DEFAULT_POSITIONS = arrayOf(
+            ElementRenderer.POSITION_1,
+            ElementRenderer.POSITION_2,
+            ElementRenderer.POSITION_3,
+            ElementRenderer.POSITION_4
+            )
+
+        val HEIGHT_POSITIONS = mapOf(
+            Pair(setOf(Directions.NORTH, Directions.WEST), 0),
+            Pair(setOf(Directions.NORTH, Directions.EAST), 1),
+            Pair(setOf(Directions.SOUTH, Directions.WEST), 2),
+            Pair(setOf(Directions.SOUTH, Directions.EAST), 3),
+        )
+
+        val HEIGHT_POSITIONS_REVERSED = HEIGHT_POSITIONS.entries.associate{(k,v)-> v to k}
+    }
+}
