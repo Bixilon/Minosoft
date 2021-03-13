@@ -19,6 +19,7 @@ import de.bixilon.minosoft.gui.rendering.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.hud.elements.HUDElement
 import de.bixilon.minosoft.gui.rendering.hud.elements.primitive.TextElement
 import de.bixilon.minosoft.modding.loading.ModLoader
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.GitInfo
 import de.bixilon.minosoft.util.SystemInformation
 import de.bixilon.minosoft.util.UnitFormatter
@@ -36,7 +37,12 @@ class HUDSystemDebugElement(hudRenderer: HUDRenderer) : HUDElement(hudRenderer) 
         gpuVersionText = glGetString(GL_VERSION) ?: "unknown"
     }
 
+    private var lastPrepareTime = 0L
+
     override fun draw() {
+        if (System.currentTimeMillis() - lastPrepareTime < ProtocolDefinition.TICK_TIME) {
+            return
+        }
         layout.clear()
 
         for (text in listOf(
@@ -64,6 +70,7 @@ class HUDSystemDebugElement(hudRenderer: HUDRenderer) : HUDElement(hudRenderer) 
             layout.addChild(textElement)
         }
         layout.pushChildrenToRight(1.0f)
+        lastPrepareTime = System.currentTimeMillis()
     }
 
     private fun getUsedMemory(): Long {

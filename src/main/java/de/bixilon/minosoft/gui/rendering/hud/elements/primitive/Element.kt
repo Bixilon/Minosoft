@@ -36,8 +36,12 @@ abstract class Element(
 
     abstract fun recalculateSize()
 
+    fun needsCacheUpdate(): Boolean {
+        return cache.isEmpty()
+    }
+
     fun checkCache(start: Vec2, scaleFactor: Float, matrix: Mat4, z: Int = 1) {
-        if (cache.isNotEmpty()) {
+        if (!needsCacheUpdate()) {
             return
         }
         prepareCache(start, scaleFactor, matrix, z)

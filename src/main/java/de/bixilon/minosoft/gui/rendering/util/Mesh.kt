@@ -23,18 +23,27 @@ abstract class Mesh {
     private var vbo: Int = 0
     var trianglesCount: Int = 0
         private set
+    private var rawData: FloatArray? = null
+
+    open fun preLoad() {
+        rawData = data.toFloatArray()
+        data.clear()
+    }
 
     abstract fun load()
 
     protected fun initializeBuffers(floatsPerVertex: Int) {
-        trianglesCount = data.size / floatsPerVertex
+        check(rawData != null) { "Mesh was not pre initialized!" }
+
+        trianglesCount = rawData!!.size / floatsPerVertex
         vao = glGenVertexArrays()
         vbo = glGenBuffers()
         glBindVertexArray(vao)
         glBindBuffer(GL_ARRAY_BUFFER, vbo)
 
-        glBufferData(GL_ARRAY_BUFFER, data.toFloatArray(), GL_STATIC_DRAW)
-        data.clear() // clear data ((do not store in memory)
+        glBufferData(GL_ARRAY_BUFFER, rawData!!, GL_STATIC_DRAW)
+
+        rawData = null
     }
 
     protected fun unbind() {

@@ -29,9 +29,6 @@ import de.bixilon.minosoft.gui.rendering.textures.Texture
 import de.bixilon.minosoft.protocol.network.Connection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.logging.Log
-import org.lwjgl.opengl.GL11.GL_CULL_FACE
-import org.lwjgl.opengl.GL11.glEnable
-import org.lwjgl.opengl.GL13.glDisable
 import java.util.concurrent.ConcurrentHashMap
 
 class WorldRenderer(
@@ -40,8 +37,8 @@ class WorldRenderer(
     val renderWindow: RenderWindow,
 ) : Renderer {
     lateinit var chunkShader: Shader
-    val chunkSectionsToDraw = ConcurrentHashMap<ChunkPosition, ConcurrentHashMap<Int, SectionArrayMesh>>()
-    val visibleChunks: MutableSet<ChunkPosition> = mutableSetOf()
+    val allChunkSections = ConcurrentHashMap<ChunkPosition, ConcurrentHashMap<Int, SectionArrayMesh>>()
+    val visibleChunks = ConcurrentHashMap<ChunkPosition, ConcurrentHashMap<Int, SectionArrayMesh>>()
     private lateinit var frustum: Frustum
     private var currentTick = 0 // for animation usage
     private var lastTickIncrementTime = 0L
@@ -56,9 +53,6 @@ class WorldRenderer(
         check(sections.isNotEmpty()) { "Illegal argument!" }
         synchronized(this.queuedChunks) {
             queuedChunks.remove(chunkPosition)
-        }
-        if (frustum.containsChunk(chunkPosition, connection)) {
-            visibleChunks.add(chunkPosition)
         }
         val chunk = world.getChunk(chunkPosition)!!
 
@@ -126,8 +120,6 @@ class WorldRenderer(
     }
 
     override fun draw() {
-        glEnable(GL_CULL_FACE)
-
         chunkShader.use()
         if (Minosoft.getConfig().config.game.animations.textures) {
             val currentTime = System.currentTimeMillis()
@@ -137,15 +129,11 @@ class WorldRenderer(
             }
         }
 
-        for ((chunkLocation, map) in chunkSectionsToDraw) {
-            if (!visibleChunks.contains(chunkLocation)) {
-                continue
-            }
+        for ((_, map) in visibleChunks) {
             for ((_, mesh) in map) {
                 mesh.draw()
             }
         }
-        glDisable(GL_CULL_FACE)
     }
 
     private fun resolveBlockTextureIds(blocks: Set<BlockState>): List<Texture> {
@@ -195,15 +183,15 @@ class WorldRenderer(
         synchronized(this.queuedChunks) {
             queuedChunks.remove(chunkPosition)
         }
-        chunkSectionsToDraw[chunkPosition] = ConcurrentHashMap()
+        allChunkSections[chunkPosition] = ConcurrentHashMap()
 
         var currentChunks: MutableMap<Int, ChunkSection> = mutableMapOf()
-        var currentHeight = 0
+        var currentIndex = 0
         for ((sectionHeight, section) in chunk.sections!!) {
-            if (sectionHeight / RenderConstants.CHUNK_SECTIONS_PER_MESH != currentHeight) {
+            if (getSectionIndex(sectionHeight) != currentIndex) {
                 prepareChunkSections(chunkPosition, currentChunks)
                 currentChunks = mutableMapOf()
-                currentHeight = sectionHeight / RenderConstants.CHUNK_SECTIONS_PER_MESH
+                currentIndex = getSectionIndex(sectionHeight)
             }
             currentChunks[sectionHeight] = section
         }
@@ -232,16 +220,23 @@ class WorldRenderer(
         Minosoft.THREAD_POOL.execute {
             val mesh = prepareSections(chunkPosition, sections)
 
-            var sectionMap = chunkSectionsToDraw[chunkPosition]
+            var sectionMap = allChunkSections[chunkPosition]
             if (sectionMap == null) {
                 sectionMap = ConcurrentHashMap()
-                chunkSectionsToDraw[chunkPosition] = sectionMap
+                allChunkSections[chunkPosition] = sectionMap
             }
+
+            if (frustum.containsChunk(chunkPosition, connection)) {
+                visibleChunks[chunkPosition] = sectionMap
+            }
+
+            mesh.preLoad()
+
             renderWindow.renderQueue.add {
                 mesh.load()
                 meshes++
                 triangles += mesh.trianglesCount
-                val index = sections.iterator().next().key / RenderConstants.CHUNK_SECTIONS_PER_MESH // ToDo: Negative chunk locations
+                val index = getSectionIndex(sections.iterator().next().key)
                 sectionMap[index]?.let {
                     it.unload()
                     meshes--
@@ -253,7 +248,7 @@ class WorldRenderer(
     }
 
     fun prepareChunkSection(chunkPosition: ChunkPosition, sectionHeight: Int) {
-        TODO()
+        // TODO()
     }
 
     fun clearChunkCache() {
@@ -262,12 +257,14 @@ class WorldRenderer(
             queuedChunks.clear()
         }
         renderWindow.renderQueue.add {
-            for ((location, map) in chunkSectionsToDraw) {
+            for ((location, map) in allChunkSections) {
                 for ((sectionHeight, mesh) in map) {
                     mesh.unload()
+                    meshes--
+                    triangles -= mesh.trianglesCount
                     map.remove(sectionHeight)
                 }
-                chunkSectionsToDraw.remove(location)
+                allChunkSections.remove(location)
             }
         }
     }
@@ -277,11 +274,13 @@ class WorldRenderer(
             queuedChunks.remove(chunkPosition)
         }
         renderWindow.renderQueue.add {
-            chunkSectionsToDraw[chunkPosition]?.let {
+            allChunkSections[chunkPosition]?.let {
                 for ((_, mesh) in it) {
+                    meshes--
+                    triangles -= mesh.trianglesCount
                     mesh.unload()
                 }
-                chunkSectionsToDraw.remove(chunkPosition)
+                allChunkSections.remove(chunkPosition)
             }
         }
     }
@@ -300,10 +299,16 @@ class WorldRenderer(
     fun recalculateFrustum(frustum: Frustum) {
         visibleChunks.clear()
         this.frustum = frustum
-        for ((chunkLocation, _) in chunkSectionsToDraw.entries) {
+        for ((chunkLocation, sectionMap) in allChunkSections.entries) {
             if (frustum.containsChunk(chunkLocation, connection)) {
-                visibleChunks.add(chunkLocation)
+                visibleChunks[chunkLocation] = sectionMap
             }
+        }
+    }
+
+    companion object {
+        fun getSectionIndex(sectionHeight: Int): Int {
+            return sectionHeight / RenderConstants.CHUNK_SECTIONS_PER_MESH // ToDo: Negative chunk locations
         }
     }
 }

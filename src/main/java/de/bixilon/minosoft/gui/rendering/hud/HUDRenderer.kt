@@ -34,12 +34,8 @@ import glm_.mat4x4.Mat4
 import glm_.vec2.Vec2
 
 class HUDRenderer(val connection: Connection, val renderWindow: RenderWindow) : Renderer {
-    val hudScale: HUDScale
-        get() {
-            return Minosoft.getConfig().config.game.hud.scale
-        }
-    private val temporaryToggledElements: MutableSet<HUDElement> = mutableSetOf()
     private val hudElements: MutableMap<ResourceLocation, Pair<HUDElementProperties, HUDElement>> = mutableMapOf()
+    private val enabledHUDElement: MutableMap<ResourceLocation, Pair<HUDElementProperties, HUDElement>> = mutableMapOf()
     private val hudShader = Shader(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "rendering/shader/hud_vertex.glsl"), ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "rendering/shader/hud_fragment.glsl"))
     lateinit var hudAtlasElements: Map<ResourceLocation, HUDAtlasElement>
     var orthographicMatrix: Mat4 = Mat4()
@@ -105,19 +101,25 @@ class HUDRenderer(val connection: Connection, val renderWindow: RenderWindow) : 
         if (needToSafeConfig) {
             Minosoft.getConfig().saveToFile()
         }
-        hudElements[resourceLocation] = Pair(properties, hudElement)
+        val pair = Pair(properties, hudElement)
+        hudElements[resourceLocation] = pair
 
 
         properties.toggleKeyBinding?.let {
             // register key binding
             renderWindow.registerKeyCallback(it) { _, _ ->
-                if (temporaryToggledElements.contains(hudElement)) {
-                    temporaryToggledElements.remove(hudElement)
+                if (enabledHUDElement.contains(resourceLocation)) {
+                    enabledHUDElement.remove(resourceLocation)
                 } else {
-                    temporaryToggledElements.add(hudElement)
+                    enabledHUDElement[resourceLocation] = pair
                 }
             }
         }
+
+        if (!properties.enabled) {
+            return
+        }
+        enabledHUDElement[resourceLocation] = pair
     }
 
     fun removeElement(resourceLocation: ResourceLocation) {
@@ -148,27 +150,35 @@ class HUDRenderer(val connection: Connection, val renderWindow: RenderWindow) : 
         if (!hudEnabled) {
             return
         }
-        currentHUDMesh.unload()
-        currentHUDMesh = HUDMesh()
-        for ((elementProperties, hudElement) in hudElements.values) {
-            val toggled = temporaryToggledElements.contains(hudElement)
-            if (toggled && elementProperties.enabled || !toggled && !elementProperties.enabled) {
-                continue
+        var needsUpdate = false
+        val tempMesh = HUDMesh()
+
+        for ((_, hudElement) in enabledHUDElement.values) {
+            if (hudElement.layout.needsCacheUpdate()) {
+                needsUpdate = true
+                break
             }
+        }
+        if (needsUpdate) {
+            for ((elementProperties, hudElement) in enabledHUDElement.values) {
 
-            hudElement.draw()
+                hudElement.draw()
 
 
-            val realScaleFactor = elementProperties.scale * hudScale.scale
-            val realSize = Vec2(hudElement.layout.fakeX ?: hudElement.layout.size.x, hudElement.layout.fakeY ?: hudElement.layout.size.y) * realScaleFactor
+                val realScaleFactor = elementProperties.scale * Minosoft.getConfig().config.game.hud.scale.scale
+                val realSize = Vec2(hudElement.layout.fakeX ?: hudElement.layout.size.x, hudElement.layout.fakeY ?: hudElement.layout.size.y) * realScaleFactor
 
-            val elementStart = getRealPosition(realSize, elementProperties, renderWindow.screenDimensions)
+                val elementStart = getRealPosition(realSize, elementProperties, renderWindow.screenDimensions)
 
-            hudElement.layout.checkCache(elementStart, realScaleFactor, orthographicMatrix, 0)
-            currentHUDMesh.addCacheMesh(hudElement.layout.cache)
+                hudElement.layout.checkCache(elementStart, realScaleFactor, orthographicMatrix, 0)
+                tempMesh.addCacheMesh(hudElement.layout.cache)
+            }
+            currentHUDMesh.unload()
+            tempMesh.preLoad()
+            tempMesh.load()
+            currentHUDMesh = tempMesh
         }
         hudShader.use()
-        currentHUDMesh.load()
         currentHUDMesh.draw()
     }
 

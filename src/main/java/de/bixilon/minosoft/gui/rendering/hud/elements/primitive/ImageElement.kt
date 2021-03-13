@@ -63,10 +63,10 @@ class ImageElement(
         }
 
         addVertex(Vec2(modelStart.x, modelStart.y), Vec2(uvStart.x, uvStart.y))
-        addVertex(Vec2(modelEnd.x, modelStart.y), Vec2(uvEnd.x, uvStart.y))
-        addVertex(Vec2(modelStart.x, modelEnd.y), Vec2(uvStart.x, uvEnd.y))
         addVertex(Vec2(modelStart.x, modelEnd.y), Vec2(uvStart.x, uvEnd.y))
         addVertex(Vec2(modelEnd.x, modelStart.y), Vec2(uvEnd.x, uvStart.y))
+        addVertex(Vec2(modelStart.x, modelEnd.y), Vec2(uvStart.x, uvEnd.y))
         addVertex(Vec2(modelEnd.x, modelEnd.y), Vec2(uvEnd.x, uvEnd.y))
+        addVertex(Vec2(modelEnd.x, modelStart.y), Vec2(uvEnd.x, uvStart.y))
     }
 }

@@ -41,6 +41,6 @@ void main() {
         return;
     }
 
-    // passTextureCoordinates = vec3(0,0,0);
+    // passTextureCoordinates = vec3(textureIndex, textureLayer);
     passTextureCoordinates = vec3(textureIndex.x, textureIndex.y + (animatedTextureData.z * ((animationTick / int(animatedTextureData.x)) % int(animatedTextureData.y))), textureLayer);
 }

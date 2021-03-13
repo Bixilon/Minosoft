@@ -19,6 +19,7 @@ import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.hud.elements.HUDElement
 import de.bixilon.minosoft.gui.rendering.hud.elements.primitive.TextElement
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.UnitFormatter
 import glm_.vec2.Vec2
 
@@ -26,13 +27,19 @@ import glm_.vec2.Vec2
 class HUDWorldDebugElement(hudRenderer: HUDRenderer) : HUDElement(hudRenderer) {
     private val camera = hudRenderer.renderWindow.camera
 
+    private var lastPrepareTime = 0L
+
     override fun draw() {
+        if (System.currentTimeMillis() - lastPrepareTime < ProtocolDefinition.TICK_TIME) {
+            return
+        }
+
         layout.clear()
 
         for (text in listOf(
             "FPS: ${getFPS()}",
             "Timings: avg ${getAvgFrameTime()}ms, min ${getMinFrameTime()}ms, max ${getMaxFrameTime()}ms",
-            "Chunks: q=${hudRenderer.renderWindow.worldRenderer.queuedChunks.size} v=${hudRenderer.renderWindow.worldRenderer.visibleChunks.size} p=${hudRenderer.renderWindow.worldRenderer.chunkSectionsToDraw.size} t=${hudRenderer.connection.player.world.chunks.size}",
+            "Chunks: q=${hudRenderer.renderWindow.worldRenderer.queuedChunks.size} v=${hudRenderer.renderWindow.worldRenderer.visibleChunks.size} p=${hudRenderer.renderWindow.worldRenderer.allChunkSections.size} t=${hudRenderer.connection.player.world.chunks.size}",
             "GL: m=${UnitFormatter.formatNumber(hudRenderer.renderWindow.worldRenderer.meshes)} t=${UnitFormatter.formatNumber(hudRenderer.renderWindow.worldRenderer.triangles)}",
             "Connected to ${hudRenderer.connection.address} on ${hudRenderer.connection.version} with ${hudRenderer.connection.player.account.username}",
             "",
@@ -56,6 +63,7 @@ class HUDWorldDebugElement(hudRenderer: HUDRenderer) : HUDElement(hudRenderer) {
             val textElement = TextElement(ChatComponent.valueOf(text), hudRenderer.renderWindow.font, Vec2(2, layout.size.y + RenderConstants.TEXT_LINE_PADDING))
             layout.addChild(textElement)
         }
+        lastPrepareTime = System.currentTimeMillis()
     }
 
     private fun nanoToMillis1d(nanos: Long): String {

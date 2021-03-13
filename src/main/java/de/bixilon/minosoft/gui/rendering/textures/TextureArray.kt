@@ -19,7 +19,6 @@ import org.lwjgl.opengl.GL12.glTexImage3D
 import org.lwjgl.opengl.GL12.glTexSubImage3D
 import org.lwjgl.opengl.GL13.*
 import org.lwjgl.opengl.GL30.GL_TEXTURE_2D_ARRAY
-import org.lwjgl.opengl.GL30.glGenerateMipmap
 import java.nio.ByteBuffer
 
 class TextureArray(val textures: MutableList<Texture>) {
@@ -68,7 +67,7 @@ class TextureArray(val textures: MutableList<Texture>) {
             glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, texture.layer, texture.width, texture.height, 1, GL_RGBA, GL_UNSIGNED_BYTE, texture.buffer)
             texture.buffer.clear()
         }
-        glGenerateMipmap(GL_TEXTURE_2D_ARRAY)
+      //  glGenerateMipmap(GL_TEXTURE_2D_ARRAY)
         return textureId
     }
 

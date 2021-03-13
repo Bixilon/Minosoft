@@ -20,8 +20,6 @@ in vec4 passTintColor;
 
 
 uniform sampler2DArray textureArray;
-// #define DEBUG
-
 
 void main() {
     vec4 texelColor = texture(textureArray, passTextureCoordinates);
@@ -40,7 +38,7 @@ void main() {
         outColor = texelColor;
     }
 
-        #ifdef DEBUG
-    outColor = vec4(1.0f, 0.0f, 0.5f, 1.0f);
-    #endif
+    //
+    //  outColor = vec4(1.0f, 0.0f, 0.5f, 1.0f);
+    //
 }

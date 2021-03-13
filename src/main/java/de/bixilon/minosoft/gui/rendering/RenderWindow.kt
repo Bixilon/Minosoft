@@ -224,7 +224,7 @@ class RenderWindow(
         // Make the OpenGL context current
         glfwMakeContextCurrent(windowId)
         // Enable v-sync
-        glfwSwapInterval(1)
+        glfwSwapInterval(0)
 
 
         // Make the window visible
@@ -235,6 +235,8 @@ class RenderWindow(
         glEnable(GL_DEPTH_TEST)
         glEnable(GL_BLEND)
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
+
+        glEnable(GL_CULL_FACE)
 
 
         textures.textures.add(Texture(TextureArray.DEBUG_TEXTURE))
@@ -251,7 +253,6 @@ class RenderWindow(
 
         font.loadAtlas(textures)
         textures.load()
-
 
 
         worldRenderer.postInit()
@@ -360,7 +361,6 @@ class RenderWindow(
             glfwPollEvents()
             camera.draw()
             camera.handleInput(deltaFrameTime)
-
 
             // handle opengl context tasks, but limit it per frame
             var actionsDone = 0
