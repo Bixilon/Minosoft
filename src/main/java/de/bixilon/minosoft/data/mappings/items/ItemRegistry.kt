@@ -22,8 +22,7 @@ import de.bixilon.minosoft.data.mappings.versions.VersionMapping
 
 class ItemRegistry(
     parentRegistry: Registry<Item>? = null,
-    initialSize: Int = 50,
-) : Registry<Item>(parentRegistry = parentRegistry, initialSize = initialSize) {
+) : Registry<Item>(parentRegistry = parentRegistry) {
     private var flattened = false
 
     override fun get(id: Int): Item {

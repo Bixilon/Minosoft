@@ -66,7 +66,7 @@ data class Biome(
                 waterColor = TintColorCalculator.getJsonColor(data["water_color"]?.asInt ?: 0),
                 waterFogColor = TintColorCalculator.getJsonColor(data["water_fog_color"]?.asInt ?: 0),
                 category = mappings.biomeCategoryRegistry.get(data["category"]?.asInt ?: -1) ?: DEFAULT_CATEGORY,
-                precipation = mappings.biomePrecipationRegistry.get(data["precipitation"]?.asInt ?: -1) ?: DEFAULT_PRECIPATION,
+                precipation = mappings.biomePrecipitationRegistry.get(data["precipitation"]?.asInt ?: -1) ?: DEFAULT_PRECIPATION,
                 skyColor = data["sky_color"]?.asInt?.let { RGBColor.noAlpha(it) } ?: RenderConstants.GRASS_FAILOVER_COLOR,
                 foliageColor = TintColorCalculator.getJsonColor(data["foliage_color_override"]?.asInt ?: data["foliage_color"]?.asInt ?: 0),
                 grassColor = TintColorCalculator.getJsonColor(data["grass_color_override"]?.asInt ?: 0),

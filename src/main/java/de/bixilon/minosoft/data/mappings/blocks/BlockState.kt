@@ -12,7 +12,6 @@
  */
 package de.bixilon.minosoft.data.mappings.blocks
 
-import com.google.common.collect.HashBiMap
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.google.gson.JsonPrimitive
@@ -123,7 +122,7 @@ data class BlockState(
             Pair("lava", FluidRenderer("block/lava_still", "block/lava_flow", "lava")),
         )
 
-        fun deserialize(owner: Block, data: JsonObject, models: HashBiMap<ResourceLocation, BlockModel>): BlockState {
+        fun deserialize(owner: Block, data: JsonObject, models: Map<ResourceLocation, BlockModel>): BlockState {
             val (rotation, properties) = data["properties"]?.asJsonObject?.let {
                 getProperties(it)
             } ?: Pair(BlockRotations.NONE, mutableSetOf())
@@ -206,7 +205,7 @@ data class BlockState(
             return Pair(rotation, properties)
         }
 
-        private fun addBlockModel(data: JsonObject, renders: MutableSet<BlockRenderInterface>, models: HashBiMap<ResourceLocation, BlockModel>) {
+        private fun addBlockModel(data: JsonObject, renders: MutableSet<BlockRenderInterface>, models: Map<ResourceLocation, BlockModel>) {
             val model = models[ResourceLocation(data["model"].asString)] ?: error("Can not find block model ${data["model"]}")
             renders.add(BlockRenderer(data, model))
         }

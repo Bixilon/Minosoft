@@ -13,29 +13,27 @@
 
 package de.bixilon.minosoft.data.mappings
 
-import com.google.common.collect.HashBiMap
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.mappings.versions.VersionMapping
 
 class EnumRegistry<T : RegistryEnumable>(
     private var parentRegistry: EnumRegistry<T>? = null,
-    initialSize: Int = 50,
 ) {
     private var initialized = false
-    private val idMap = HashBiMap.create<Int, T>(initialSize)
-    private val nameMap = HashBiMap.create<String, T>(initialSize)
-
+    private val idValueMap: MutableMap<Int, T> = mutableMapOf()
+    private val valueIdMap: MutableMap<T, Int> = mutableMapOf()
+    private val nameValueMap: MutableMap<String, T> = mutableMapOf()
 
     fun get(name: String): T? {
-        return nameMap[name] ?: parentRegistry?.get(name)
+        return nameValueMap[name] ?: parentRegistry?.get(name)
     }
 
     fun get(id: Int): T? {
-        return idMap[id] ?: parentRegistry?.get(id)
+        return idValueMap[id] ?: parentRegistry?.get(id)
     }
 
     fun getId(value: T): Int {
-        return idMap.inverse()[value] ?: parentRegistry?.getId(value)!!
+        return valueIdMap[value] ?: parentRegistry?.getId(value)!!
     }
 
     fun setParent(registry: EnumRegistry<T>?) {
@@ -57,14 +55,16 @@ class EnumRegistry<T : RegistryEnumable>(
             value["id"]?.asInt?.let { providedItemId ->
                 itemId = providedItemId
             }
-            idMap[itemId] = item
-            nameMap[item.name] = item
+            idValueMap[itemId] = item
+            valueIdMap[item] = itemId
+            nameValueMap[item.name] = item
         }
         initialized = true
     }
 
     fun unload() {
-        nameMap.clear()
-        idMap.clear()
+        idValueMap.clear()
+        valueIdMap.clear()
+        nameValueMap.clear()
     }
 }

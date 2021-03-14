@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk.models.renderable
 
-import com.google.common.collect.HashBiMap
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.Directions
 import de.bixilon.minosoft.data.mappings.ResourceLocation
@@ -43,7 +42,7 @@ class BlockRenderer: BlockRenderInterface {
         textures.putAll(parent.textures)
     }
 
-    constructor(data: List<JsonObject>, models: HashBiMap<ResourceLocation, BlockModel>) {
+    constructor(data: List<JsonObject>, models: Map<ResourceLocation, BlockModel>) {
         for (state in data) {
             val parent = models[ResourceLocation(state["model"].asString)]!!
             val newElements = ElementRenderer.createElements(state, parent)

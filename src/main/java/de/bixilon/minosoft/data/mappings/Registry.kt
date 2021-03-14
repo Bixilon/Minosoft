@@ -13,18 +13,17 @@
 
 package de.bixilon.minosoft.data.mappings
 
-import com.google.common.collect.HashBiMap
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.mappings.versions.VersionMapping
 import de.bixilon.minosoft.util.json.ResourceLocationJsonMap
 
 open class Registry<T : RegistryItem>(
     private var parentRegistry: Registry<T>? = null,
-    initialSize: Int = 50,
 ) : Iterable<T> {
     private var initialized = false
-    private val idMap = HashBiMap.create<Int, T>(initialSize)
-    private val resourceLocationMap = HashBiMap.create<ResourceLocation, T>(initialSize)
+    private val idValueMap: MutableMap<Int, T> = mutableMapOf()
+    private val valueIdMap: MutableMap<T, Int> = mutableMapOf()
+    private val resourceLocationMap: MutableMap<ResourceLocation, T> = mutableMapOf()
 
 
     open fun get(resourceLocation: ResourceLocation): T? {
@@ -32,11 +31,11 @@ open class Registry<T : RegistryItem>(
     }
 
     open fun get(id: Int): T {
-        return idMap[id] ?: parentRegistry?.get(id)!!
+        return idValueMap[id] ?: parentRegistry?.get(id)!!
     }
 
     open fun getId(value: T): Int {
-        return idMap.inverse()[value] ?: parentRegistry?.getId(value)!!
+        return valueIdMap[value] ?: parentRegistry?.getId(value)!!
     }
 
     fun setParent(registry: Registry<T>?) {
@@ -69,7 +68,8 @@ open class Registry<T : RegistryItem>(
                         itemId = itemId or meta
                     }
                 }
-                idMap[id] = item
+                idValueMap[id] = item
+                valueIdMap[item] = id
             }
             resourceLocationMap[resourceLocation] = item
         }
@@ -87,11 +87,13 @@ open class Registry<T : RegistryItem>(
         }
     }
 
-    fun setData(resourceLocationMap: HashBiMap<ResourceLocation, T> = HashBiMap.create(), idMap: HashBiMap<Int, T> = HashBiMap.create()) {
+    fun setData(resourceLocationMap: Map<ResourceLocation, T> = mapOf(), idValueMap: Map<Int, T> = mapOf(), valueIdMap: Map<T, Int> = mapOf()) {
         this.resourceLocationMap.clear()
         this.resourceLocationMap.putAll(resourceLocationMap)
-        this.idMap.clear()
-        this.idMap.putAll(idMap)
+        this.idValueMap.clear()
+        this.idValueMap.putAll(idValueMap)
+        this.valueIdMap.clear()
+        this.valueIdMap.putAll(valueIdMap)
     }
 
     override fun toString(): String {
@@ -100,7 +102,8 @@ open class Registry<T : RegistryItem>(
 
     fun unload() {
         resourceLocationMap.clear()
-        idMap.clear()
+        idValueMap.clear()
+        valueIdMap.clear()
     }
 
     enum class MetaTypes {

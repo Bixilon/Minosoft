@@ -35,27 +35,27 @@ import java.util.*
 
 class VersionMapping(var version: Version?) {
 
-    val motiveRegistry: Registry<Motive> = Registry(initialSize = 30)
-    val blockRegistry: Registry<Block> = Registry(initialSize = 1000)
-    val itemRegistry: ItemRegistry = ItemRegistry(initialSize = 1200)
-    val enchantmentRegistry: Registry<Enchantment> = Registry(initialSize = 50)
-    val particleRegistry: Registry<Particle> = Registry(initialSize = 70)
-    val mobEffectRegistry: Registry<MobEffect> = Registry(initialSize = 40)
-    val statisticRegistry: Registry<Statistic> = Registry(initialSize = 80)
-    val biomeRegistry: Registry<Biome> = Registry(initialSize = 30)
-    val dimensionRegistry: Registry<Dimension> = Registry(initialSize = 5)
+    val motiveRegistry: Registry<Motive> = Registry()
+    val blockRegistry: Registry<Block> = Registry()
+    val itemRegistry: ItemRegistry = ItemRegistry()
+    val enchantmentRegistry: Registry<Enchantment> = Registry()
+    val particleRegistry: Registry<Particle> = Registry()
+    val mobEffectRegistry: Registry<MobEffect> = Registry()
+    val statisticRegistry: Registry<Statistic> = Registry()
+    val biomeRegistry: Registry<Biome> = Registry()
+    val dimensionRegistry: Registry<Dimension> = Registry()
 
-    val biomePrecipationRegistry: EnumRegistry<BiomePrecipation> = EnumRegistry(initialSize = 5)
-    val biomeCategoryRegistry: EnumRegistry<BiomeCategory> = EnumRegistry(initialSize = 5)
+    val biomePrecipitationRegistry: EnumRegistry<BiomePrecipation> = EnumRegistry()
+    val biomeCategoryRegistry: EnumRegistry<BiomeCategory> = EnumRegistry()
 
 
-    internal val blockStateIdMap: HashBiMap<Int, BlockState> = HashBiMap.create(20000)
+    internal val blockStateIdMap: MutableMap<Int, BlockState> = mutableMapOf()
 
     private val entityInformationMap = HashBiMap.create<Class<out Entity>, EntityInformation>(120)
     private val entityMetaIndexMap = HashMap<EntityMetaDataFields, Int>(180)
     private val entityIdClassMap = HashBiMap.create<Int, Class<out Entity?>>(120)
 
-    internal val models = HashBiMap.create<ResourceLocation, BlockModel>(500)
+    internal val models: MutableMap<ResourceLocation, BlockModel> = mutableMapOf()
 
 
     var isFullyLoaded = false
@@ -76,7 +76,7 @@ class VersionMapping(var version: Version?) {
             statisticRegistry.setParent(value?.statisticRegistry)
             biomeRegistry.setParent(value?.biomeRegistry)
             dimensionRegistry.setParent(value?.dimensionRegistry)
-            biomePrecipationRegistry.setParent(value?.biomePrecipationRegistry)
+            biomePrecipitationRegistry.setParent(value?.biomePrecipitationRegistry)
             biomeCategoryRegistry.setParent(value?.biomeCategoryRegistry)
         }
 
@@ -86,14 +86,6 @@ class VersionMapping(var version: Version?) {
         }
         return blockStateIdMap[blockState] ?: _parentMapping?.getBlockState(blockState)
     }
-
-    fun getBlockId(blockState: BlockState): Int {
-        if (blockState.owner.resourceLocation == ProtocolDefinition.AIR_RESOURCE_LOCATION) {
-            return ProtocolDefinition.NULL_BLOCK_ID
-        }
-        return blockStateIdMap.inverse()[blockState] ?: _parentMapping?.getBlockId(blockState)!!
-    }
-
 
     fun getEntityInformation(clazz: Class<out Entity?>): EntityInformation? {
         return entityInformationMap[clazz] ?: _parentMapping?.getEntityInformation(clazz)
@@ -113,7 +105,7 @@ class VersionMapping(var version: Version?) {
 
         // id stuff
         biomeCategoryRegistry.initialize(pixlyzerData["biome_categories"]?.asJsonObject, this, BiomeCategory.Companion)
-        biomePrecipationRegistry.initialize(pixlyzerData["biome_precipations"]?.asJsonObject, this, BiomePrecipation.Companion)
+        biomePrecipitationRegistry.initialize(pixlyzerData["biome_precipations"]?.asJsonObject, this, BiomePrecipation.Companion)
 
         // id resource location stuff
         motiveRegistry.initialize(pixlyzerData["motives"]?.asJsonObject, this, Motive.Companion, version!!.isFlattened())

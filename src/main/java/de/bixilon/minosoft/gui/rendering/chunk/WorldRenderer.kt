@@ -135,7 +135,7 @@ class WorldRenderer(
         }
     }
 
-    private fun resolveBlockTextureIds(blocks: Set<BlockState>): List<Texture> {
+    private fun resolveBlockTextureIds(blocks: Collection<BlockState>): List<Texture> {
         val textures: MutableList<Texture> = mutableListOf()
         val textureMap: MutableMap<String, Texture> = mutableMapOf()
 
