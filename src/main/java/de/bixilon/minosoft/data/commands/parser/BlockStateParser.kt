@@ -15,9 +15,9 @@ package de.bixilon.minosoft.data.commands.parser
 import de.bixilon.minosoft.data.commands.CommandStringReader
 import de.bixilon.minosoft.data.commands.parser.exceptions.*
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties
-import de.bixilon.minosoft.data.mappings.blocks.BlockProperties
 import de.bixilon.minosoft.data.mappings.blocks.BlockRotations
 import de.bixilon.minosoft.data.mappings.blocks.BlockState
+import de.bixilon.minosoft.data.mappings.blocks.properties.BlockProperties
 import de.bixilon.minosoft.protocol.network.Connection
 
 class BlockStateParser : CommandParser() {
@@ -38,22 +38,25 @@ class BlockStateParser : CommandParser() {
             val propertyMap = stringReader.readProperties()
 
             var rotation: BlockRotations? = null
-            val allProperties = HashSet<BlockProperties>()
-            for (pair in propertyMap) {
+            val allProperties: MutableMap<BlockProperties, Any> = mutableMapOf()
+            for ((groupName, value) in propertyMap) {
 
-                if (pair.key == "facing" || pair.key == "rotation" || pair.key == "orientation" || pair.key == "axis") {
+                if (BlockState.ROTATION_PROPERTIES.contains(groupName)) {
                     if (rotation != null) {
-                        throw BlockPropertyDuplicatedCommandParseException(stringReader, pair.key)
+                        throw BlockPropertyDuplicatedCommandParseException(stringReader, groupName)
                     }
-                    rotation = BlockRotations.ROTATION_MAPPING[pair.value]
+                    rotation = BlockRotations.ROTATION_MAPPING[value]
                     if (rotation == null) {
-                        throw UnknownBlockPropertyCommandParseException(stringReader, pair.value)
+                        throw UnknownBlockPropertyCommandParseException(stringReader, value)
                     }
                     continue
                 }
-                val blockPropertyKey = BlockProperties.PROPERTIES_MAPPING[pair.key] ?: throw UnknownBlockPropertyCommandParseException(stringReader, pair.key)
-                val blockProperty = blockPropertyKey[pair.value] ?: throw UnknownBlockPropertyCommandParseException(stringReader, pair.value)
-                allProperties.add(blockProperty)
+                val (parsedGroup, parsedValue) = try {
+                    BlockProperties.parseProperty(groupName, value)
+                } catch (exception: Throwable) {
+                    throw UnknownBlockPropertyCommandParseException(stringReader, value)
+                }
+                allProperties[parsedGroup] = parsedValue
             }
             for (state in block.states) {
                 if (state.bareEquals(BlockState(block, allProperties, rotation ?: BlockRotations.NONE))) {

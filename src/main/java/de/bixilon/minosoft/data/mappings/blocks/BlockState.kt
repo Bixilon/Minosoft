@@ -17,6 +17,7 @@ import com.google.gson.JsonObject
 import com.google.gson.JsonPrimitive
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.data.mappings.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.data.world.BlockPosition
 import de.bixilon.minosoft.gui.rendering.TintColorCalculator
@@ -29,7 +30,7 @@ import kotlin.random.Random
 
 data class BlockState(
     val owner: Block,
-    val properties: Set<BlockProperties> = setOf(),
+    val properties: Map<BlockProperties, Any> = mapOf(),
     val rotation: BlockRotations = BlockRotations.NONE,
     val renders: Set<BlockRenderInterface> = setOf(),
     val tintColor: RGBColor? = null,
@@ -71,16 +72,21 @@ data class BlockState(
                     return false
                 }
             }
-            for (property in obj.properties) {
-                if (!properties.contains(property)) {
-                    return false
-                }
+            for ((property, value) in obj.properties) {
+                properties[property]?.let {
+                    if (it != value) {
+                        return false
+                    }
+                } ?: return false
+
+                return true
             }
-            return true
         }
         return if (obj is ResourceLocation) {
             super.equals(obj)
-        } else false
+        } else {
+            false
+        }
     }
 
     override fun toString(): String {
@@ -125,7 +131,7 @@ data class BlockState(
         fun deserialize(owner: Block, data: JsonObject, models: Map<ResourceLocation, BlockModel>): BlockState {
             val (rotation, properties) = data["properties"]?.asJsonObject?.let {
                 getProperties(it)
-            } ?: Pair(BlockRotations.NONE, mutableSetOf())
+            } ?: Pair(BlockRotations.NONE, mutableMapOf())
             val renders: MutableSet<BlockRenderInterface> = mutableSetOf()
 
             data["render"]?.let {
@@ -164,17 +170,17 @@ data class BlockState(
 
             return BlockState(
                 owner = owner,
-                properties = properties.toSet(),
+                properties = properties.toMap(),
                 rotation = rotation,
                 renders = renders.toSet(),
                 tintColor = tintColor
             )
         }
 
-        private fun getProperties(json: JsonObject) : Pair<BlockRotations, MutableSet<BlockProperties>> {
+        private fun getProperties(json: JsonObject): Pair<BlockRotations, MutableMap<BlockProperties, Any>> {
             var rotation = BlockRotations.NONE
-            val properties = mutableSetOf<BlockProperties>()
-            for ((propertyName, propertyJsonValue) in json.entrySet()) {
+            val properties: MutableMap<BlockProperties, Any> = mutableMapOf()
+            for ((propertyGroup, propertyJsonValue) in json.entrySet()) {
                 check(propertyJsonValue is JsonPrimitive) { "Not a json primitive!" }
                 val propertyValue: Any = when {
                     propertyJsonValue.isBoolean -> {
@@ -193,13 +199,14 @@ data class BlockState(
                     }
                 }
                 try {
-                    if (propertyName in ROTATION_PROPERTIES) {
+                    if (propertyGroup in ROTATION_PROPERTIES) {
                         rotation = BlockRotations.ROTATION_MAPPING[propertyValue]!!
                     } else {
-                        properties.add(BlockProperties.PROPERTIES_MAPPING[propertyName]!![propertyValue]!!)
+                        val (blockProperty, value) = BlockProperties.parseProperty(propertyGroup, propertyValue)
+                        properties[blockProperty] = value
                     }
                 } catch (exception: NullPointerException) {
-                    throw NullPointerException("Invalid block property $propertyName or value $propertyValue")
+                    throw NullPointerException("Invalid block property $propertyGroup or value $propertyValue")
                 }
             }
             return Pair(rotation, properties)
@@ -210,4 +217,11 @@ data class BlockState(
             renders.add(BlockRenderer(data, model))
         }
     }
+
+    // properties
+
+    fun isPowered(): Boolean? {
+        return properties[BlockProperties.POWERED] as Boolean?
+    }
+    // ToDo
 }

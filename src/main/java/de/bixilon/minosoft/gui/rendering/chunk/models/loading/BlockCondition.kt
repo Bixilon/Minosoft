@@ -17,12 +17,12 @@ import com.google.gson.JsonArray
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.google.gson.JsonPrimitive
-import de.bixilon.minosoft.data.mappings.blocks.BlockProperties
 import de.bixilon.minosoft.data.mappings.blocks.BlockRotations
 import de.bixilon.minosoft.data.mappings.blocks.BlockState
+import de.bixilon.minosoft.data.mappings.blocks.properties.BlockProperties
 
 open class BlockCondition {
-    private var blockProperties: MutableList<MutableList<MutableSet<BlockProperties>>> = mutableListOf() // in order of OR AND OR
+    private var blockProperties: MutableList<MutableList<MutableMap<BlockProperties, Any>>> = mutableListOf() // in order of OR AND OR
     private var rotation: BlockRotations = BlockRotations.NONE
 
     constructor(data: JsonElement) {
@@ -41,8 +41,8 @@ open class BlockCondition {
     constructor()
 
     private fun addToProperties(data: JsonObject) {
-        val current: MutableList<MutableSet<BlockProperties>> = mutableListOf()
-        for ((propertyName, propertyJsonValue) in data.entrySet()) {
+        val current: MutableList<MutableMap<BlockProperties, Any>> = mutableListOf()
+        for ((groupName, propertyJsonValue) in data.entrySet()) {
             check(propertyJsonValue is JsonPrimitive) { "Not a json primitive!" }
             val propertyValue: Any = when {
                 propertyJsonValue.isBoolean -> {
@@ -61,19 +61,20 @@ open class BlockCondition {
                 }
             }
             try {
-                if (propertyName in BlockState.ROTATION_PROPERTIES) {
+                if (groupName in BlockState.ROTATION_PROPERTIES) {
                     rotation = BlockRotations.ROTATION_MAPPING[propertyValue]!!
                 } else {
-                    BlockProperties.PROPERTIES_MAPPING[propertyName]?.get(propertyValue)?.let {
-                        current.add(mutableSetOf(it))
-                    } ?: kotlin.run {
+                    try {
+                        current.add(mutableMapOf(BlockProperties.parseProperty(groupName, propertyValue)))
+                    } catch (exception: Throwable) {
                         if (propertyValue is String) {
                             val propertyString: String = propertyValue
                             if (propertyString.contains("|")) {
                                 val parts = propertyString.split("|")
-                                val properties = mutableSetOf<BlockProperties>()
+                                val properties: MutableMap<BlockProperties, Any> = mutableMapOf()
                                 for (part in parts) {
-                                    properties.add(BlockProperties.PROPERTIES_MAPPING[propertyName]!![part]!!)
+                                    val (property, value) = BlockProperties.parseProperty(groupName, part)
+                                    properties[property] = value
                                 }
                                 current.add(properties)
                             }
@@ -81,19 +82,19 @@ open class BlockCondition {
                     }
                 }
             } catch (exception: NullPointerException) {
-                throw NullPointerException("Invalid block property $propertyName with value $propertyValue")
+                throw NullPointerException("Invalid block property $groupName with value $propertyValue")
             }
         }
         blockProperties.add(current)
     }
 
-    open fun contains(testProperties: MutableSet<BlockProperties>, testRotation: BlockRotations): Boolean {
+    open fun contains(testProperties: Map<BlockProperties, Any>, testRotation: BlockRotations): Boolean {
         if (rotation != BlockRotations.NONE && rotation != testRotation) {
             return false
         }
         outerLoop@ for (propertiesSubSet in blockProperties) {
             for (properties in propertiesSubSet) {
-                if (testProperties.intersect(properties).isEmpty()) {
+                if (testProperties.keys.intersect(properties.keys).isEmpty()) { // ToDo: Just keys or also values???
                     continue@outerLoop
                 }
             }
@@ -104,7 +105,7 @@ open class BlockCondition {
 
     companion object {
         val TRUE_CONDITION: BlockCondition = object : BlockCondition() {
-            override fun contains(testProperties: MutableSet<BlockProperties>, testRotation: BlockRotations): Boolean {
+            override fun contains(testProperties: Map<BlockProperties, Any>, testRotation: BlockRotations): Boolean {
                 return true
             }
         }

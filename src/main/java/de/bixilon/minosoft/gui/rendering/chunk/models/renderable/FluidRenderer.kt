@@ -1,8 +1,8 @@
 package de.bixilon.minosoft.gui.rendering.chunk.models.renderable
 
 import de.bixilon.minosoft.data.Directions
-import de.bixilon.minosoft.data.mappings.blocks.BlockProperties
 import de.bixilon.minosoft.data.mappings.blocks.BlockState
+import de.bixilon.minosoft.data.mappings.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.data.world.BlockPosition
 import de.bixilon.minosoft.data.world.World
@@ -14,7 +14,6 @@ import de.bixilon.minosoft.gui.rendering.textures.Texture
 import de.bixilon.minosoft.gui.rendering.util.VecUtil
 import glm_.glm
 import glm_.mat4x4.Mat4
-import glm_.toInt
 import glm_.vec2.Vec2
 import glm_.vec3.Vec3
 import glm_.vec4.Vec4
@@ -171,10 +170,8 @@ class FluidRenderer(private val stillTextureName: String, private val flowingTex
     }
 
     private fun getLevel(blockState: BlockState): Float {
-        for (property in blockState.properties) {
-            if (property.group == "level") {
-                return (8 - property.value.toInt) * (1f / 8f) - 0.125f
-            }
+        blockState.properties[BlockProperties.FLUID_LEVEL]?.let {
+            return (8 - it as Int) * (1f / 8f) - 0.125f
         }
         return 0.8125f
     }
@@ -186,7 +183,7 @@ class FluidRenderer(private val stillTextureName: String, private val flowingTex
         if (blockState.owner.resourceLocation.full.contains(regex)) {
             return true
         }
-        if (blockState.properties.contains(BlockProperties.GENERAL_WATERLOGGED_YES)) {
+        if (blockState.properties[BlockProperties.WATERLOGGED] == true) {
             return true
         }
         return false
