@@ -346,5 +346,10 @@
             <artifactId>moshi-kotlin</artifactId>
             <version>1.11.0</version>
         </dependency>
+        <dependency>
+            <groupId>commons-primitives</groupId>
+            <artifactId>commons-primitives</artifactId>
+            <version>1.0</version>
+        </dependency>
     </dependencies>
 </project>

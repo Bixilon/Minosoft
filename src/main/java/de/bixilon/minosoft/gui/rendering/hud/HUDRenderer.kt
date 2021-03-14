@@ -180,7 +180,6 @@ class HUDRenderer(val connection: Connection, val renderWindow: RenderWindow) : 
                 tempMesh.addCacheMesh(hudElement.layout.cache)
             }
             currentHUDMesh.unload(false)
-            tempMesh.preLoad()
             tempMesh.load()
             currentHUDMesh = tempMesh
         }

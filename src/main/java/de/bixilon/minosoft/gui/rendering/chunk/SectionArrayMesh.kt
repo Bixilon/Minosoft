@@ -28,6 +28,7 @@ class SectionArrayMesh : Mesh() {
     var highestBlockHeight = 0
 
     fun addVertex(position: Vec3, textureCoordinates: Vec2, texture: Texture, tintColor: RGBColor?, lightLevel: Int = 14) {
+        val data = data!!
         data.add(position.x)
         data.add(position.y)
         data.add(position.z)

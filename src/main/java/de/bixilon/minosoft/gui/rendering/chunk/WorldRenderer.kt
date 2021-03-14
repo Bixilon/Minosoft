@@ -235,12 +235,9 @@ class WorldRenderer(
 
 
             val index = getSectionIndex(highestBlockHeight)
-
             mesh.lowestBlockHeight = lowestBlockHeight
             mesh.highestBlockHeight = highestBlockHeight
 
-
-            mesh.preLoad()
 
             renderWindow.renderQueue.add {
                 val sectionMap = allChunkSections.getOrPut(chunkPosition, { ConcurrentHashMap() })

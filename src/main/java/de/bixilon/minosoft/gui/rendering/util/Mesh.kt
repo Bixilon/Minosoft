@@ -13,44 +13,37 @@
 
 package de.bixilon.minosoft.gui.rendering.util
 
+import org.apache.commons.collections.primitives.ArrayFloatList
 import org.lwjgl.opengl.GL11.GL_TRIANGLES
 import org.lwjgl.opengl.GL11.glDrawArrays
 import org.lwjgl.opengl.GL30.*
 
 abstract class Mesh {
-    protected val data: MutableList<Float> = mutableListOf()
+    protected var data: ArrayFloatList? = ArrayFloatList()
     private var vao: Int = -1
     private var vbo: Int = -1
     var trianglesCount: Int = -1
         private set
-    private var rawData: FloatArray? = null
 
     var state = MeshStates.PREPARING
         private set
 
-    open fun preLoad() {
-        check(state == MeshStates.PREPARING) { "Mesh already loaded: $state" }
-        rawData = data.toFloatArray()
-        data.clear()
-        state = MeshStates.PRE_LOADED
-    }
 
     abstract fun load()
 
     protected fun initializeBuffers(floatsPerVertex: Int) {
-        check(state == MeshStates.PRE_LOADED) { "Mesh not pre loaded: $state" }
+        check(state == MeshStates.PREPARING) { "Mesh already loaded: $state" }
 
-        trianglesCount = rawData!!.size / floatsPerVertex
+        trianglesCount = data!!.size() / floatsPerVertex
         vao = glGenVertexArrays()
         vbo = glGenBuffers()
         glBindVertexArray(vao)
         glBindBuffer(GL_ARRAY_BUFFER, vbo)
 
-        glBufferData(GL_ARRAY_BUFFER, rawData!!, GL_STATIC_DRAW)
+        glBufferData(GL_ARRAY_BUFFER, data!!.toArray(), GL_STATIC_DRAW)
 
         state = MeshStates.LOADED
-
-        rawData = null
+        data = null
     }
 
     protected fun unbind() {
@@ -78,7 +71,6 @@ abstract class Mesh {
 
     enum class MeshStates {
         PREPARING,
-        PRE_LOADED,
         LOADED,
         UNLOADED,
     }

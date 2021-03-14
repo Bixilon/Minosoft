@@ -36,7 +36,7 @@ class HUDMesh : Mesh() {
     }
 
     fun addCacheMesh(cacheMesh: HUDCacheMesh) {
-        data.addAll(cacheMesh.cache)
+        data!!.addAll(cacheMesh.cache)
     }
 
 

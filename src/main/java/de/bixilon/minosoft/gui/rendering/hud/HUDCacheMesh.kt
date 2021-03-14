@@ -16,11 +16,12 @@ package de.bixilon.minosoft.gui.rendering.hud
 import de.bixilon.minosoft.data.text.RGBColor
 import glm_.vec2.Vec2
 import glm_.vec3.Vec3
+import org.apache.commons.collections.primitives.ArrayFloatList
 
 class HUDCacheMesh {
-    private val data: MutableList<Float> = mutableListOf()
+    private val data = ArrayFloatList()
 
-    val cache: List<Float>
+    val cache: ArrayFloatList
         get() = data
 
     fun addVertex(position: Vec3, textureCoordinates: Vec2, textureLayer: Int, tintColor: RGBColor? = null) {
@@ -38,14 +39,10 @@ class HUDCacheMesh {
     }
 
     val size: Int
-        get() = data.size
+        get() = data.size()
 
     fun isEmpty(): Boolean {
-        return data.isEmpty()
-    }
-
-    fun isNotEmpty(): Boolean {
-        return data.isNotEmpty()
+        return data.isEmpty
     }
 
     fun clear() {
