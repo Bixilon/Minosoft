@@ -31,17 +31,17 @@ class Chunk(
             return sections != null && biomeAccessor != null && lightAccessor != null
         }
 
-    fun getBlockInfo(position: InChunkPosition): BlockInfo? {
-        return sections?.get(position.getSectionHeight())?.getBlockInfo(position.getInChunkSectionLocation())
+    fun getBlockState(position: InChunkPosition): BlockState? {
+        return sections?.get(position.getSectionHeight())?.getBlockState(position.getInChunkSectionLocation())
     }
 
-    fun getBlockInfo(x: Int, y: Int, z: Int): BlockInfo? {
-        return getBlockInfo(InChunkPosition(x, y, z))
+    fun getBlockState(x: Int, y: Int, z: Int): BlockState? {
+        return getBlockState(InChunkPosition(x, y, z))
     }
 
-    fun setBlocks(blocks: HashMap<InChunkPosition, BlockInfo?>) {
+    fun setBlocks(blocks: HashMap<InChunkPosition, BlockState?>) {
         for ((location, blockInfo) in blocks) {
-            setBlock(location, blockInfo)
+            setBlockState(location, blockInfo)
         }
     }
 
@@ -69,25 +69,13 @@ class Chunk(
     }
 
     fun setRawBlocks(blocks: HashMap<InChunkPosition, BlockState?>) {
-        for ((location, blockInfo) in blocks) {
-            setRawBlock(location, blockInfo)
+        for ((location, blockState) in blocks) {
+            setBlockState(location, blockState)
         }
     }
 
-    fun setBlock(position: InChunkPosition, block: BlockInfo?) {
-        getSectionOrCreate(position.getSectionHeight()).setBlockInfo(position.getInChunkSectionLocation(), block)
-    }
-
-    fun setRawBlock(position: InChunkPosition, block: BlockState?) {
-        getSectionOrCreate(position.getSectionHeight()).let {
-            val inChunkSectionLocation = position.getInChunkSectionLocation()
-            if (block == null) {
-                it.blocks[ChunkSection.getIndex(inChunkSectionLocation)] = null
-                return
-            }
-            it.setBlockInfo(inChunkSectionLocation, BlockInfo(block))
-        }
-
+    fun setBlockState(position: InChunkPosition, blockState: BlockState?) {
+        getSectionOrCreate(position.getSectionHeight()).setBlockState(position.getInChunkSectionLocation(), blockState)
     }
 
     fun getSectionOrCreate(sectionHeight: Int): ChunkSection {

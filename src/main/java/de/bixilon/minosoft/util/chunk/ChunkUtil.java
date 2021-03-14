@@ -16,7 +16,6 @@ package de.bixilon.minosoft.util.chunk;
 import de.bixilon.minosoft.data.mappings.Dimension;
 import de.bixilon.minosoft.data.mappings.biomes.Biome;
 import de.bixilon.minosoft.data.mappings.blocks.BlockState;
-import de.bixilon.minosoft.data.world.BlockInfo;
 import de.bixilon.minosoft.data.world.ChunkData;
 import de.bixilon.minosoft.data.world.ChunkSection;
 import de.bixilon.minosoft.data.world.biome.DummyBiomeAccessor;
@@ -61,7 +60,7 @@ public final class ChunkUtil {
             HashMap<Integer, ChunkSection> sectionMap = new HashMap<>();
             for (int sectionHeight = dimension.getLowestSection(); sectionHeight < dimension.getHighestSection(); sectionHeight++) { // max sections per chunks in chunk column
                 if (BitByte.isBitSet(sectionBitMasks[0], sectionHeight)) {
-                    BlockInfo[] blocks = new BlockInfo[ProtocolDefinition.BLOCKS_PER_SECTION];
+                    BlockState[] blocks = new BlockState[ProtocolDefinition.BLOCKS_PER_SECTION];
 
                     for (int nibbleY = 0; nibbleY < ProtocolDefinition.SECTION_HEIGHT_Y; nibbleY++) {
                         for (int nibbleZ = 0; nibbleZ < ProtocolDefinition.SECTION_WIDTH_Z; nibbleZ++) {
@@ -92,7 +91,7 @@ public final class ChunkUtil {
                                 if (block == null) {
                                     continue;
                                 }
-                                blocks[ChunkSection.Companion.getIndex(nibbleX, nibbleY, nibbleZ)] = new BlockInfo(block);
+                                blocks[ChunkSection.Companion.getIndex(nibbleX, nibbleY, nibbleZ)] = block;
                                 arrayPos++;
                             }
                         }
@@ -128,7 +127,7 @@ public final class ChunkUtil {
                 if (!BitByte.isBitSet(sectionBitMasks[0], sectionHeight)) {
                     continue;
                 }
-                BlockInfo[] blocks = new BlockInfo[ProtocolDefinition.BLOCKS_PER_SECTION];
+                BlockState[] blocks = new BlockState[ProtocolDefinition.BLOCKS_PER_SECTION];
 
                 for (int nibbleY = 0; nibbleY < ProtocolDefinition.SECTION_HEIGHT_Y; nibbleY++) {
                     for (int nibbleZ = 0; nibbleZ < ProtocolDefinition.SECTION_WIDTH_Z; nibbleZ++) {
@@ -139,7 +138,7 @@ public final class ChunkUtil {
                                 arrayPos++;
                                 continue;
                             }
-                            blocks[ChunkSection.Companion.getIndex(nibbleX, nibbleY, nibbleZ)] = new BlockInfo(block);
+                            blocks[ChunkSection.Companion.getIndex(nibbleX, nibbleY, nibbleZ)] = block;
                             arrayPos++;
                         }
                     }
@@ -164,7 +163,7 @@ public final class ChunkUtil {
 
             long[] data = buffer.readLongArray();
 
-            BlockInfo[] blocks = new BlockInfo[ProtocolDefinition.BLOCKS_PER_SECTION];
+            BlockState[] blocks = new BlockState[ProtocolDefinition.BLOCKS_PER_SECTION];
             for (int nibbleY = 0; nibbleY < ProtocolDefinition.SECTION_HEIGHT_Y; nibbleY++) {
                 for (int nibbleZ = 0; nibbleZ < ProtocolDefinition.SECTION_WIDTH_Z; nibbleZ++) {
                     for (int nibbleX = 0; nibbleX < ProtocolDefinition.SECTION_WIDTH_X; nibbleX++) {
@@ -195,7 +194,7 @@ public final class ChunkUtil {
                         if (block == null) {
                             continue;
                         }
-                        blocks[ChunkSection.Companion.getIndex(nibbleX, nibbleY, nibbleZ)] = new BlockInfo(block);
+                        blocks[ChunkSection.Companion.getIndex(nibbleX, nibbleY, nibbleZ)] = block;
                     }
                 }
             }

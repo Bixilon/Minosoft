@@ -89,7 +89,7 @@ class PacketMultiBlockChange : ClientboundPacket() {
                 if (block === value) {
                     continue
                 }
-                chunk.setRawBlock(key, block)
+                chunk.setBlockState(key, block)
             }
         }
         val sectionHeights = HashSet<Int>()
@@ -97,7 +97,6 @@ class PacketMultiBlockChange : ClientboundPacket() {
             sectionHeights.add(key.getSectionHeight())
         }
         for (sectionHeight in sectionHeights) {
-            val section = chunk.getSectionOrCreate(sectionHeight)
             connection.renderer.renderWindow.worldRenderer.prepareChunkSection(chunkPosition, sectionHeight)
         }
     }

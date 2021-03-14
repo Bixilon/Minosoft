@@ -20,7 +20,6 @@ import de.bixilon.minosoft.data.entities.entities.monster.*
 import de.bixilon.minosoft.data.entities.entities.vehicle.*
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.blocks.BlockState
-import de.bixilon.minosoft.data.world.BlockInfo
 import de.bixilon.minosoft.data.world.ChunkSection
 import de.bixilon.minosoft.data.world.InChunkSectionPosition
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
@@ -93,20 +92,20 @@ object VersionTweaker {
             return
         }
         for ((sectionHeight, section) in sections) {
-            for ((index, blockInfo) in section.blocks.withIndex()) {
-                if (blockInfo == null) {
+            for ((index, blockState) in section.blocks.withIndex()) {
+                if (blockState == null) {
                     continue
                 }
                 val location = ChunkSection.getPosition(index)
-                val newBlock = transformBlock(blockInfo.block, sections, location, sectionHeight)
-                if (newBlock === blockInfo.block) {
+                val newBlock = transformBlock(blockState, sections, location, sectionHeight)
+                if (newBlock === blockState) {
                     continue
                 }
                 if (newBlock == null) {
-                    section.setBlockInfo(location, null)
+                    section.setBlockState(location, null)
                     continue
                 }
-                section.setBlockInfo(location, BlockInfo(newBlock, blockInfo.metaData))
+                section.setBlockState(location, newBlock)
             }
         }
     }
@@ -129,6 +128,6 @@ object VersionTweaker {
     }
 
     private fun getBlockAbove(sections: Map<Int, ChunkSection>, position: InChunkSectionPosition, sectionHeight: Int): BlockState? {
-        return sections[sectionHeight]?.getBlockInfo(position)?.block
+        return sections[sectionHeight]?.getBlockState(position)
     }
 }

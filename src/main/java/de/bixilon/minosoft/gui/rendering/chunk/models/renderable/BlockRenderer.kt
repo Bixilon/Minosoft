@@ -17,8 +17,8 @@ import com.google.common.collect.HashBiMap
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.Directions
 import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.data.mappings.blocks.BlockState
 import de.bixilon.minosoft.data.text.RGBColor
-import de.bixilon.minosoft.data.world.BlockInfo
 import de.bixilon.minosoft.data.world.BlockPosition
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.light.LightAccessor
@@ -93,7 +93,7 @@ class BlockRenderer: BlockRenderInterface {
         }
     }
 
-    override fun render(blockInfo: BlockInfo, lightAccessor: LightAccessor, tintColor: RGBColor?, position: BlockPosition, mesh: SectionArrayMesh, neighbourBlocks: Array<BlockInfo?>, world: World) {
+    override fun render(blockState: BlockState, lightAccessor: LightAccessor, tintColor: RGBColor?, position: BlockPosition, mesh: SectionArrayMesh, neighbourBlocks: Array<BlockState?>, world: World) {
         val modelMatrix = Mat4().translate(position.toVec3())
 
         for (direction in Directions.DIRECTIONS) {
@@ -101,7 +101,7 @@ class BlockRenderer: BlockRenderInterface {
                 val cullFace = cullFaces.contains(direction)
 
                 var neighbourBlockFullFace = false
-                neighbourBlocks[direction.ordinal]?.block?.renders?.let { // ToDo: Improve this
+                neighbourBlocks[direction.ordinal]?.renders?.let { // ToDo: Improve this
                     val testDirection = direction.inverse()
                     for (model in it) {
                         if (model.fullFaceDirections.contains(testDirection) && !model.transparentFaces.contains(testDirection)) {

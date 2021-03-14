@@ -19,27 +19,20 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
  * Collection of 16x16x16 blocks
  */
 class ChunkSection(
-    val blocks: Array<BlockInfo?> = arrayOfNulls(ProtocolDefinition.BLOCKS_PER_SECTION),
+    val blocks: Array<BlockState?> = arrayOfNulls(ProtocolDefinition.BLOCKS_PER_SECTION),
+    // ToDo: BlockEntityMeta
 ) {
 
-    fun getBlockInfo(position: InChunkSectionPosition): BlockInfo? {
+    fun getBlockState(position: InChunkSectionPosition): BlockState? {
         return blocks[getIndex(position)]
     }
 
-    fun setBlockInfo(position: InChunkSectionPosition, blockInfo: BlockInfo?) {
-        blocks[getIndex(position)] = blockInfo
+    fun setBlockState(position: InChunkSectionPosition, blockState: BlockState?) {
+        blocks[getIndex(position)] = blockState
     }
 
-    fun getBlockInfo(x: Int, y: Int, z: Int): BlockInfo? {
-        return getBlockInfo(InChunkSectionPosition(x, y, z))
-    }
-
-    fun setRawBlock(position: InChunkSectionPosition, block: BlockState?) {
-        if (block == null) {
-            setBlockInfo(position, null)
-            return
-        }
-        setBlockInfo(position, BlockInfo(block))
+    fun getBlockState(x: Int, y: Int, z: Int): BlockState? {
+        return getBlockState(InChunkSectionPosition(x, y, z))
     }
 
     fun setData(chunkSection: ChunkSection) {

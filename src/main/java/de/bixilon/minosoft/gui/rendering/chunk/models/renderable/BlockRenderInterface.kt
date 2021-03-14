@@ -1,8 +1,8 @@
 package de.bixilon.minosoft.gui.rendering.chunk.models.renderable
 
 import de.bixilon.minosoft.data.Directions
+import de.bixilon.minosoft.data.mappings.blocks.BlockState
 import de.bixilon.minosoft.data.text.RGBColor
-import de.bixilon.minosoft.data.world.BlockInfo
 import de.bixilon.minosoft.data.world.BlockPosition
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.light.LightAccessor
@@ -13,7 +13,7 @@ interface BlockRenderInterface {
     val fullFaceDirections: MutableSet<Directions>
     val transparentFaces: MutableSet<Directions>
 
-    fun render(blockInfo: BlockInfo, lightAccessor: LightAccessor, tintColor: RGBColor?, position: BlockPosition, mesh: SectionArrayMesh, neighbourBlocks: Array<BlockInfo?>, world: World)
+    fun render(blockState: BlockState, lightAccessor: LightAccessor, tintColor: RGBColor?, position: BlockPosition, mesh: SectionArrayMesh, neighbourBlocks: Array<BlockState?>, world: World)
 
     fun resolveTextures(indexed: MutableList<Texture>, textureMap: MutableMap<String, Texture>)
 

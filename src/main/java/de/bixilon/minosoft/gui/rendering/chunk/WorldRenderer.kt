@@ -65,9 +65,9 @@ class WorldRenderer(
                 }
                 val blockPosition = BlockPosition(chunkPosition, sectionHeight, ChunkSection.getPosition(index))
 
-                val neighborBlocks: Array<BlockInfo?> = arrayOfNulls(Directions.DIRECTIONS.size)
+                val neighborBlocks: Array<BlockState?> = arrayOfNulls(Directions.DIRECTIONS.size)
                 for (direction in Directions.DIRECTIONS) {
-                    neighborBlocks[direction.ordinal] = world.getBlockInfo(blockPosition + direction)
+                    neighborBlocks[direction.ordinal] = world.getBlockState(blockPosition + direction)
                 }
 
                 val biome = chunk.biomeAccessor!!.getBiome(blockPosition, dimensionSupports3dBiomes)
@@ -79,15 +79,15 @@ class WorldRenderer(
                     biome?.let {
                         biome.foliageColor?.let { tintColor = it }
 
-                        blockInfo.block.owner.tint?.let { tint ->
+                        blockInfo.owner.tint?.let { tint ->
                             tintColor = renderWindow.tintColorCalculator.calculateTint(tint, biome, blockPosition)
                         }
                     }
 
-                    blockInfo.block.tintColor?.let { tintColor = it }
+                    blockInfo.tintColor?.let { tintColor = it }
                 }
 
-                blockInfo.block.getBlockRenderer(blockPosition).render(blockInfo, world.worldLightAccessor, tintColor, blockPosition, mesh, neighborBlocks, world)
+                blockInfo.getBlockRenderer(blockPosition).render(blockInfo, world.worldLightAccessor, tintColor, blockPosition, mesh, neighborBlocks, world)
             }
         }
         return mesh

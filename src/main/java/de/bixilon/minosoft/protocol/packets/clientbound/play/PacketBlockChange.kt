@@ -49,9 +49,9 @@ class PacketBlockChange : ClientboundPacket() {
         // tweak
         if (!connection.version.isFlattened()) {
             val block = VersionTweaker.transformBlock(block!!, chunk.sections!!, inChunkSectionPosition, sectionHeight)
-            section.setRawBlock(inChunkSectionPosition, block)
+            section.setBlockState(inChunkSectionPosition, block)
         } else {
-            section.setRawBlock(inChunkSectionPosition, block)
+            section.setBlockState(inChunkSectionPosition, block)
         }
 
         connection.renderer.renderWindow.worldRenderer.prepareChunkSection(position.getChunkPosition(), sectionHeight)

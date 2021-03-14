@@ -36,9 +36,9 @@ class World {
     var difficultyLocked = false
     val worldLightAccessor = WorldLightAccessor(this)
 
-    fun getBlockInfo(blockPosition: BlockPosition): BlockInfo? {
+    fun getBlockState(blockPosition: BlockPosition): BlockState? {
         val chunkLocation = blockPosition.getChunkPosition()
-        return chunks[chunkLocation]?.getBlockInfo(blockPosition.getInChunkPosition())
+        return chunks[chunkLocation]?.getBlockState(blockPosition.getInChunkPosition())
     }
 
     fun getChunk(chunkPosition: ChunkPosition): Chunk? {
@@ -53,8 +53,8 @@ class World {
         }
     }
 
-    fun setBlock(blockPosition: BlockPosition, block: BlockState?) {
-        chunks[blockPosition.getChunkPosition()]?.setRawBlock(blockPosition.getInChunkPosition(), block)
+    fun setBlock(blockPosition: BlockPosition, blockState: BlockState?) {
+        chunks[blockPosition.getChunkPosition()]?.setBlockState(blockPosition.getInChunkPosition(), blockState)
     }
 
     fun unloadChunk(position: ChunkPosition) {
@@ -98,7 +98,8 @@ class World {
     }
 
     fun setBlockEntityData(position: BlockPosition, data: BlockEntityMetaData?) {
-        chunks[position.getChunkPosition()]?.sections?.get(position.getSectionHeight())?.getBlockInfo(position.getInChunkSectionPosition())?.metaData = data
+        // ToDo
+        // chunks[position.getChunkPosition()]?.sections?.get(position.getSectionHeight())?.getBlockState(position.getInChunkSectionPosition())?.metaData = data
     }
 
     fun setBlockEntityData(blockEntities: HashMap<BlockPosition, BlockEntityMetaData>) {
