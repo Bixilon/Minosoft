@@ -18,7 +18,6 @@ import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.entities.animal.horse.*
 import de.bixilon.minosoft.data.entities.entities.monster.*
 import de.bixilon.minosoft.data.entities.entities.vehicle.*
-import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.blocks.BlockState
 import de.bixilon.minosoft.data.world.ChunkSection
 import de.bixilon.minosoft.data.world.InChunkSectionPosition
@@ -111,19 +110,9 @@ object VersionTweaker {
     }
 
 
-    // ToDo: Broken
     @JvmStatic
     fun transformBlock(originalBlock: BlockState, sections: Map<Int, ChunkSection>, position: InChunkSectionPosition, sectionHeight: Int): BlockState? {
-        when (originalBlock.owner.resourceLocation) {
-            ResourceLocation("minecraft:grass") -> {
-                getBlockAbove(sections, position, sectionHeight)?.let {
-                    if (it.owner.resourceLocation == TweakBlocks.SNOW_RESOURCE_LOCATION || it.owner.resourceLocation == TweakBlocks.SNOW_LAYER_RESOURCE_LOCAION) {
-                        return TweakBlocks.GRASS_BLOCK_SNOWY_YES
-                    }
-                }
-                return TweakBlocks.GRASS_BLOCK_SNOWY_NO
-            }
-        }
+        // ToDo: Broken
         return originalBlock
     }
 

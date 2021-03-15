@@ -25,6 +25,7 @@ import de.bixilon.minosoft.data.mappings.biomes.BiomePrecipation
 import de.bixilon.minosoft.data.mappings.blocks.Block
 import de.bixilon.minosoft.data.mappings.blocks.BlockState
 import de.bixilon.minosoft.data.mappings.items.ItemRegistry
+import de.bixilon.minosoft.data.mappings.materials.Material
 import de.bixilon.minosoft.data.mappings.particle.Particle
 import de.bixilon.minosoft.data.mappings.statistics.Statistic
 import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModel
@@ -44,6 +45,7 @@ class VersionMapping(var version: Version?) {
     val statisticRegistry: Registry<Statistic> = Registry()
     val biomeRegistry: Registry<Biome> = Registry()
     val dimensionRegistry: Registry<Dimension> = Registry()
+    val materialRegistry: Registry<Material> = Registry()
 
     val biomePrecipitationRegistry: EnumRegistry<BiomePrecipation> = EnumRegistry()
     val biomeCategoryRegistry: EnumRegistry<BiomeCategory> = EnumRegistry()
@@ -78,6 +80,7 @@ class VersionMapping(var version: Version?) {
             dimensionRegistry.setParent(value?.dimensionRegistry)
             biomePrecipitationRegistry.setParent(value?.biomePrecipitationRegistry)
             biomeCategoryRegistry.setParent(value?.biomeCategoryRegistry)
+            materialRegistry.setParent(value?.materialRegistry)
         }
 
     fun getBlockState(blockState: Int): BlockState? {
@@ -108,6 +111,7 @@ class VersionMapping(var version: Version?) {
         biomePrecipitationRegistry.initialize(pixlyzerData["biome_precipations"]?.asJsonObject, this, BiomePrecipation.Companion)
 
         // id resource location stuff
+        materialRegistry.initialize(pixlyzerData["materials"]?.asJsonObject, this, Material.Companion)
         motiveRegistry.initialize(pixlyzerData["motives"]?.asJsonObject, this, Motive.Companion, version!!.isFlattened())
         blockRegistry.initialize(pixlyzerData["blocks"]?.asJsonObject, this, Block.Companion, version!!.isFlattened(), Registry.MetaTypes.BITS_4)
         itemRegistry.initialize(pixlyzerData["items"]?.asJsonObject, this, Item.Companion, version!!.isFlattened(), Registry.MetaTypes.BITS_16)

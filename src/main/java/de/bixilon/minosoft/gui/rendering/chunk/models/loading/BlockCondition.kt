@@ -94,8 +94,14 @@ open class BlockCondition {
         }
         outerLoop@ for (propertiesSubSet in blockProperties) {
             for (properties in propertiesSubSet) {
-                if (testProperties.keys.intersect(properties.keys).isEmpty()) { // ToDo: Just keys or also values???
+                val intersects = testProperties.keys.intersect(properties.keys)
+                if (intersects.isEmpty()) { // ToDo: Improve this
                     continue@outerLoop
+                }
+                for (intersect in intersects) {
+                    if (testProperties[intersect] != properties[intersect]) {
+                        continue@outerLoop
+                    }
                 }
             }
             return true

@@ -73,7 +73,7 @@ data class Block(
 
             for ((stateId, stateJson) in data["states"].asJsonObject.entrySet()) {
                 check(stateJson is JsonObject) { "Not a state element!" }
-                val state = BlockState.deserialize(block, stateJson, mappings.models)
+                val state = BlockState.deserialize(block, mappings, stateJson, mappings.models)
                 mappings.blockStateIdMap[stateId.toInt()] = state
             }
             return block

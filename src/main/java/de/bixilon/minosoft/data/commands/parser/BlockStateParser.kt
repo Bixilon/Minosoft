@@ -17,6 +17,7 @@ import de.bixilon.minosoft.data.commands.parser.exceptions.*
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties
 import de.bixilon.minosoft.data.mappings.blocks.BlockRotations
 import de.bixilon.minosoft.data.mappings.blocks.BlockState
+import de.bixilon.minosoft.data.mappings.blocks.WannabeBlockState
 import de.bixilon.minosoft.data.mappings.blocks.properties.BlockProperties
 import de.bixilon.minosoft.protocol.network.Connection
 
@@ -59,13 +60,13 @@ class BlockStateParser : CommandParser() {
                 allProperties[parsedGroup] = parsedValue
             }
             for (state in block.states) {
-                if (state.bareEquals(BlockState(block, allProperties, rotation ?: BlockRotations.NONE))) {
+                if (state.equals(WannabeBlockState(block.resourceLocation, allProperties, rotation))) {
                     blockState = state
                     break
                 }
             }
         } else {
-            blockState = BlockState(block)
+            blockState = block.states.iterator().next()
         }
         check(blockState != null) {
             throw BlockNotFoundCommandParseException(stringReader, resourceLocation.key)

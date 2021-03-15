@@ -18,6 +18,8 @@ import com.google.gson.JsonPrimitive
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.blocks.properties.BlockProperties
+import de.bixilon.minosoft.data.mappings.materials.Material
+import de.bixilon.minosoft.data.mappings.versions.VersionMapping
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.data.world.BlockPosition
 import de.bixilon.minosoft.gui.rendering.TintColorCalculator
@@ -34,6 +36,7 @@ data class BlockState(
     val rotation: BlockRotations = BlockRotations.NONE,
     val renders: Set<BlockRenderInterface> = setOf(),
     val tintColor: RGBColor? = null,
+    val material: Material,
 ) {
 
     override fun hashCode(): Int {
@@ -47,6 +50,27 @@ data class BlockState(
         if (other == null) {
             return false
         }
+        if (other is WannabeBlockState) {
+            if (owner.resourceLocation != other.resourceLocation) {
+                return false
+            }
+
+            other.rotation?.let {
+                if (rotation != it) {
+                    return false
+                }
+            }
+            other.properties?.let {
+                for ((state, value) in it) {
+                    if (properties[state] != value) {
+                        return false
+                    }
+                }
+            }
+
+            return true
+        }
+
         if (hashCode() != other.hashCode()) {
             return false
         }
@@ -57,36 +81,6 @@ data class BlockState(
             return super.equals(other)
         }
         return false
-    }
-
-    fun bareEquals(obj: Any): Boolean {
-        if (this === obj) {
-            return true
-        }
-        if (obj is BlockState) {
-            if (owner.resourceLocation.namespace != obj.owner.resourceLocation.namespace || owner.resourceLocation.path != obj.owner.resourceLocation.path) {
-                return false
-            }
-            if (obj.rotation != BlockRotations.NONE) {
-                if (obj.rotation != rotation) {
-                    return false
-                }
-            }
-            for ((property, value) in obj.properties) {
-                properties[property]?.let {
-                    if (it != value) {
-                        return false
-                    }
-                } ?: return false
-
-                return true
-            }
-        }
-        return if (obj is ResourceLocation) {
-            super.equals(obj)
-        } else {
-            false
-        }
     }
 
     override fun toString(): String {
@@ -123,12 +117,12 @@ data class BlockState(
     companion object {
         val ROTATION_PROPERTIES = setOf("facing", "rotation", "orientation", "axis")
 
-        val SPECIAL_RENDERERS = mutableMapOf(
-            Pair("water", FluidRenderer("block/water_still", "block/water_flow", "water")),
-            Pair("lava", FluidRenderer("block/lava_still", "block/lava_flow", "lava")),
-        )
+        private val SPECIAL_RENDERERS = mutableMapOf(
+            "water" to FluidRenderer("block/water_still", "block/water_flow", "water"),
+            "lava" to FluidRenderer("block/lava_still", "block/lava_flow", "lava"),
+        ) // ToDo: Don't like this
 
-        fun deserialize(owner: Block, data: JsonObject, models: Map<ResourceLocation, BlockModel>): BlockState {
+        fun deserialize(owner: Block, versionMapping: VersionMapping, data: JsonObject, models: Map<ResourceLocation, BlockModel>): BlockState {
             val (rotation, properties) = data["properties"]?.asJsonObject?.let {
                 getProperties(it)
             } ?: Pair(BlockRotations.NONE, mutableMapOf())
@@ -168,12 +162,14 @@ data class BlockState(
                 }
             }
 
+            val material = versionMapping.materialRegistry.get(ResourceLocation(data["material"].asString))!!
             return BlockState(
                 owner = owner,
                 properties = properties.toMap(),
                 rotation = rotation,
                 renders = renders.toSet(),
-                tintColor = tintColor
+                tintColor = tintColor,
+                material = material,
             )
         }
 
