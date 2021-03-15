@@ -32,14 +32,13 @@ data class Biome(
     val waterColor: RGBColor?,
     val waterFogColor: RGBColor?,
     val category: BiomeCategory,
-    val precipation: BiomePrecipation,
+    val precipitation: BiomePrecipitation,
     val skyColor: RGBColor,
     val foliageColor: RGBColor?,
     val grassColor: RGBColor?,
     val descriptionId: String?,
     val grassColorModifier: GrassColorModifiers = GrassColorModifiers.NONE,
 ) : RegistryItem {
-
     val temperatureColorMapCoordinate = getColorMapCoordinate(temperature)
     val downfallColorMapCoordinate = getColorMapCoordinate(downfall * temperature)
 
@@ -66,7 +65,7 @@ data class Biome(
                 waterColor = TintColorCalculator.getJsonColor(data["water_color"]?.asInt ?: 0),
                 waterFogColor = TintColorCalculator.getJsonColor(data["water_fog_color"]?.asInt ?: 0),
                 category = mappings.biomeCategoryRegistry.get(data["category"]?.asInt ?: -1) ?: DEFAULT_CATEGORY,
-                precipation = mappings.biomePrecipitationRegistry.get(data["precipitation"]?.asInt ?: -1) ?: DEFAULT_PRECIPATION,
+                precipitation = mappings.biomePrecipitationRegistry.get(data["precipitation"]?.asInt ?: -1) ?: DEFAULT_PRECIPITATION,
                 skyColor = data["sky_color"]?.asInt?.let { RGBColor.noAlpha(it) } ?: RenderConstants.GRASS_FAILOVER_COLOR,
                 foliageColor = TintColorCalculator.getJsonColor(data["foliage_color_override"]?.asInt ?: data["foliage_color"]?.asInt ?: 0),
                 grassColor = TintColorCalculator.getJsonColor(data["grass_color_override"]?.asInt ?: 0),
@@ -80,14 +79,14 @@ data class Biome(
             )
         }
 
-        private val DEFAULT_PRECIPATION = BiomePrecipation("NONE")
+        private val DEFAULT_PRECIPITATION = BiomePrecipitation("NONE")
         private val DEFAULT_CATEGORY = BiomeCategory("NONE")
 
     }
 
     enum class GrassColorModifiers(val modifier: (color: RGBColor) -> RGBColor) {
         NONE({ color: RGBColor -> color }),
-        DARK_FOREST({ color: RGBColor -> RGBColor(color.color + 2634762 shl 8) }),
+        DARK_FOREST({ color: RGBColor -> color }), // ToDo: This rgb 2634762 should be added to this?
         SWAMP({
             // ToDo: Minecraft uses PerlinSimplexNoise here
             RGBColor("#6A7039")

@@ -21,7 +21,7 @@ import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.mappings.*
 import de.bixilon.minosoft.data.mappings.biomes.Biome
 import de.bixilon.minosoft.data.mappings.biomes.BiomeCategory
-import de.bixilon.minosoft.data.mappings.biomes.BiomePrecipation
+import de.bixilon.minosoft.data.mappings.biomes.BiomePrecipitation
 import de.bixilon.minosoft.data.mappings.blocks.Block
 import de.bixilon.minosoft.data.mappings.blocks.BlockState
 import de.bixilon.minosoft.data.mappings.items.ItemRegistry
@@ -47,7 +47,7 @@ class VersionMapping(var version: Version?) {
     val dimensionRegistry: Registry<Dimension> = Registry()
     val materialRegistry: Registry<Material> = Registry()
 
-    val biomePrecipitationRegistry: EnumRegistry<BiomePrecipation> = EnumRegistry()
+    val biomePrecipitationRegistry: EnumRegistry<BiomePrecipitation> = EnumRegistry()
     val biomeCategoryRegistry: EnumRegistry<BiomeCategory> = EnumRegistry()
 
 
@@ -108,7 +108,7 @@ class VersionMapping(var version: Version?) {
 
         // id stuff
         biomeCategoryRegistry.initialize(pixlyzerData["biome_categories"]?.asJsonObject, this, BiomeCategory.Companion)
-        biomePrecipitationRegistry.initialize(pixlyzerData["biome_precipations"]?.asJsonObject, this, BiomePrecipation.Companion)
+        biomePrecipitationRegistry.initialize(pixlyzerData["biome_precipations"]?.asJsonObject, this, BiomePrecipitation.Companion)
 
         // id resource location stuff
         materialRegistry.initialize(pixlyzerData["materials"]?.asJsonObject, this, Material.Companion)

@@ -18,13 +18,13 @@ import de.bixilon.minosoft.data.mappings.IdDeserializer
 import de.bixilon.minosoft.data.mappings.RegistryEnumable
 import de.bixilon.minosoft.data.mappings.versions.VersionMapping
 
-data class BiomePrecipation(
+data class BiomePrecipitation(
     override val name: String,
 ) : RegistryEnumable {
 
-    companion object : IdDeserializer<BiomePrecipation> {
-        override fun deserialize(mappings: VersionMapping, data: JsonObject): BiomePrecipation {
-            return BiomePrecipation(
+    companion object : IdDeserializer<BiomePrecipitation> {
+        override fun deserialize(mappings: VersionMapping, data: JsonObject): BiomePrecipitation {
+            return BiomePrecipitation(
                 name = data["name"].asString
             )
         }
