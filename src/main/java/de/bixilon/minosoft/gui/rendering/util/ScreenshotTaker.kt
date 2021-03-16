@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.util
 
+import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.util.Util
@@ -44,30 +45,40 @@ class ScreenshotTaker(
             val buffer: ByteBuffer = BufferUtils.createByteBuffer(width * height * PNGDecoder.Format.RGBA.numComponents)
             glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, buffer)
 
-            val bufferedImage = BufferedImage(width, height, BufferedImage.TYPE_INT_RGB)
+            Minosoft.THREAD_POOL.execute {
+                try {
+                    val bufferedImage = BufferedImage(width, height, BufferedImage.TYPE_INT_RGB)
 
-            for (x in 0 until width) {
-                for (y in 0 until height) {
-                    val index: Int = (x + width * y) * 4
-                    val red: Int = buffer[index].toInt() and 0xFF
-                    val green: Int = buffer[index + 1].toInt() and 0xFF
-                    val blue: Int = buffer[index + 2].toInt() and 0xFF
-                    bufferedImage.setRGB(x, height - (y + 1), 0xFF shl 24 or (red shl 16) or (green shl 8) or blue)
+                    for (x in 0 until width) {
+                        for (y in 0 until height) {
+                            val index: Int = (x + width * y) * 4
+                            val red: Int = buffer[index].toInt() and 0xFF
+                            val green: Int = buffer[index + 1].toInt() and 0xFF
+                            val blue: Int = buffer[index + 2].toInt() and 0xFF
+                            bufferedImage.setRGB(x, height - (y + 1), 0xFF shl 24 or (red shl 16) or (green shl 8) or blue)
+                        }
+                    }
+
+                    val file = File(path)
+                    Util.createParentFolderIfNotExist(file)
+
+                    ImageIO.write(bufferedImage, "png", file)
+
+                    val message = "§aScreenshot saved to §f${file.name}"
+                    renderWindow.sendDebugMessage(message)
+                    Log.game(message)
+                } catch (exception: Exception) {
+                    screenshotFail(exception)
                 }
             }
-
-            val file = File(path)
-            Util.createParentFolderIfNotExist(file)
-
-            ImageIO.write(bufferedImage, "png", file)
-
-            val message = "§aScreenshot saved to §f${file.name}"
-            renderWindow.sendDebugMessage(message)
-            Log.game(message)
         } catch (exception: Exception) {
-            exception.printStackTrace()
-            renderWindow.sendDebugMessage("§cFailed to make a screenshot!")
+            screenshotFail(exception)
         }
+    }
+
+    private fun screenshotFail(exception: Exception?) {
+        exception?.printStackTrace()
+        renderWindow.sendDebugMessage("§cFailed to make a screenshot!")
     }
 
     companion object {
