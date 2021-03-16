@@ -37,11 +37,14 @@ class SectionArrayMesh : Mesh() {
         data.add(textureCoordinates.y * texture.uvEnd.y)
         data.add(Float.fromBits((texture.arrayId shl 24) or texture.arrayLayer))
 
+        data.add(Float.fromBits(texture.properties.animation?.frameCount ?: 1))
+
         val color = tintColor ?: ChatColors.WHITE
 
         val lightFactor = MAX_LIGHT_LEVEL / (lightLevel + 1)
 
         val lightColor = RGBColor(color.red / lightFactor, color.green / lightFactor, color.blue / lightFactor)
+
 
         data.add(Float.fromBits(lightColor.color ushr 8))
     }
@@ -61,12 +64,15 @@ class SectionArrayMesh : Mesh() {
         glVertexAttribPointer(index, 1, GL_FLOAT, false, FLOATS_PER_VERTEX * Float.BYTES, (6 * Float.BYTES).toLong())
         glEnableVertexAttribArray(index++)
 
+        glVertexAttribPointer(index, 1, GL_FLOAT, false, FLOATS_PER_VERTEX * Float.BYTES, (7 * Float.BYTES).toLong())
+        glEnableVertexAttribArray(index++)
+
         super.unbind()
     }
 
 
     companion object {
-        private const val FLOATS_PER_VERTEX = 7
+        private const val FLOATS_PER_VERTEX = 8
         private const val MAX_LIGHT_LEVEL = 17
         private const val MAX_LIGHT_LEVEL_FLOAT = 17f // Level 0 and 15 kind of does not exist here.
     }

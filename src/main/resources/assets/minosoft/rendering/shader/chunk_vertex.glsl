@@ -17,7 +17,8 @@ layout (location = 0) in vec3 inPosition;
 layout (location = 1) in vec2 textureIndex;
 layout (location = 2) in uint textureLayer;
 
-layout (location = 3) in uint tintColor;
+layout (location = 3) in uint animationLayers;
+layout (location = 4) in uint tintColor;
 
 flat out uint passTextureIdIndex;
 out vec3 passTextureCoordinates;
@@ -33,6 +34,6 @@ void main() {
 
     passTextureIdIndex = textureLayer >> 24u;
 
-    passTextureCoordinates = vec3(textureIndex, textureLayer & 0xFFFFFFu);
+    passTextureCoordinates = vec3(textureIndex, (textureLayer & 0xFFFFFFu) + (uint(animationTick) % animationLayers));
     return;
 }

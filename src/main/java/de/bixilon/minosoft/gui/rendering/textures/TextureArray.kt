@@ -14,8 +14,12 @@
 package de.bixilon.minosoft.gui.rendering.textures
 
 import de.bixilon.minosoft.data.assets.MinecraftAssetsManager
+import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.shader.Shader
+import de.matthiasmann.twl.utils.PNGDecoder
 import glm_.vec2.Vec2
+import glm_.vec2.Vec2i
+import org.lwjgl.BufferUtils
 import org.lwjgl.opengl.GL12.glTexImage3D
 import org.lwjgl.opengl.GL12.glTexSubImage3D
 import org.lwjgl.opengl.GL13.*
@@ -36,9 +40,16 @@ class TextureArray(val allTextures: MutableList<Texture>) {
             check(texture.size.x <= TEXTURE_MAX_RESOLUTION) { "Texture's width exceeds $TEXTURE_MAX_RESOLUTION (${texture.size.x}" }
             check(texture.size.y <= TEXTURE_MAX_RESOLUTION) { "Texture's height exceeds $TEXTURE_MAX_RESOLUTION (${texture.size.y}" }
 
+            texture.properties.postInit(texture)
+
+            texture.properties.animation?.let {
+                texture.size = Vec2i(it.width, it.height)
+            }
+            val size = texture.size
+
             for (i in TEXTURE_RESOLUTION_ID_MAP.indices) {
                 val currentResolution = TEXTURE_RESOLUTION_ID_MAP[i]
-                if (texture.size.x <= currentResolution && texture.size.y <= currentResolution) {
+                if (size.x <= currentResolution && size.y <= currentResolution) {
                     texture.arrayId = i
                     break
                 }
@@ -47,16 +58,36 @@ class TextureArray(val allTextures: MutableList<Texture>) {
             texturesByResolution[texture.arrayId].let {
                 val arrayResolution = TEXTURE_RESOLUTION_ID_MAP[texture.arrayId]
 
-                texture.arrayLayer = it.size
 
                 texture.uvEnd = Vec2(
-                    x = texture.size.x.toFloat() / arrayResolution,
-                    y = texture.size.y.toFloat() / arrayResolution
+                    x = size.x.toFloat() / arrayResolution,
+                    y = size.y.toFloat() / arrayResolution
                 )
-                texture.animationData?.determinateData(texture.size)
 
                 texture.arraySinglePixelSize = 1.0f / arrayResolution
+                texture.arrayLayer = it.size
+
+
                 it.add(texture)
+                texture.properties.animation?.let { properties ->
+                    val bytesPerTexture = size.x * size.y * PNGDecoder.Format.RGBA.numComponents
+                    val fullBuffer = texture.buffer!!
+                    texture.buffer = BufferUtils.createByteBuffer(bytesPerTexture)
+                    texture.buffer!!.copyFrom(fullBuffer, 0, 0, bytesPerTexture)
+                    texture.buffer!!.flip()
+
+                    for (i in 0 until properties.frameCount) {
+                        val splitTexture = Texture(resourceLocation = ResourceLocation(texture.resourceLocation.full + "_animated_$i"))
+
+                        splitTexture.inherit(texture)
+                        splitTexture.arrayLayer = it.size
+                        splitTexture.buffer = BufferUtils.createByteBuffer(bytesPerTexture)
+                        splitTexture.buffer!!.copyFrom(fullBuffer, bytesPerTexture * i, 0, bytesPerTexture)
+                        splitTexture.buffer!!.flip()
+
+                        it.add(splitTexture)
+                    }
+                }
             }
         }
     }
@@ -106,4 +137,15 @@ class TextureArray(val allTextures: MutableList<Texture>) {
 
         val DEBUG_TEXTURE = Texture.getResourceTextureIdentifier(textureName = "block/debug")
     }
+}
+
+private fun ByteBuffer.copyFrom(origin: ByteBuffer, sourceOffset: Int, destinationOffset: Int, length: Int) {
+    origin.rewind()
+    origin.position(sourceOffset)
+    val bytes = ByteArray(length)
+
+    origin.get(bytes, 0, length)
+
+    this.put(bytes, destinationOffset, length)
+
 }

@@ -11,23 +11,28 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.textures
+package de.bixilon.minosoft.gui.rendering.textures.properties
 
-import com.google.gson.JsonObject
-import glm_.vec2.Vec2i
+import com.squareup.moshi.Json
+import de.bixilon.minosoft.gui.rendering.textures.Texture
 
-data class TextureAnimationData(
-    val animationTime: Int = 1,
+data class AnimationProperties(
+    val interpolate: Boolean = false,
+    var width: Int = -1,
+    var height: Int = -1,
+    @Json(name = "frametime") val frameTime: Int = 1,
+    val frames: Any = Any(),// ToDo,
 ) {
+    var frameCount = -1
 
-    fun determinateData(size: Vec2i) {
-
-    }
-
-    companion object {
-
-        fun load(json: JsonObject): TextureAnimationData {
-            return TextureAnimationData(0)
+    fun postInit(texture: Texture) {
+        if (width == -1) {
+            width = texture.size.x
         }
+        if (height == -1) {
+            height = texture.size.x // That's correct!
+        }
+
+        frameCount = texture.size.y / height
     }
 }

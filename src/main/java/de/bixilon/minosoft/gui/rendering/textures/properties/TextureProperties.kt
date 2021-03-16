@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2021 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,23 +11,9 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.util.json
+package de.bixilon.minosoft.gui.rendering.textures.properties
 
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import de.bixilon.minosoft.config.config.Config
-import de.bixilon.minosoft.gui.rendering.textures.properties.ImageProperties
-
-object JSONSerializer {
-    private val MOSHI = Moshi.Builder()
-        .add(Vec2Serializer())
-        .add(AccountSerializer())
-        .add(ServerSerializer())
-        .add(ResourceLocationSerializer())
-        .add(KotlinJsonAdapterFactory())
-        .build()!!
-
-    val CONFIG_ADAPTER = MOSHI.adapter(Config::class.java)!!
-
-    val IMAGE_PROPERTIES_ADAPTER = MOSHI.adapter(ImageProperties::class.java)!!
-}
+data class TextureProperties(
+    val blur: Boolean = false,
+    val clamp: Boolean = false,
+)

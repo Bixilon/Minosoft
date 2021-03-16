@@ -16,7 +16,9 @@ package de.bixilon.minosoft.gui.rendering.textures
 import de.bixilon.minosoft.data.assets.MinecraftAssetsManager
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.text.RGBColor
+import de.bixilon.minosoft.gui.rendering.textures.properties.ImageProperties
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.util.json.JSONSerializer
 import de.matthiasmann.twl.utils.PNGDecoder
 import glm_.vec2.Vec2
 import glm_.vec2.Vec2i
@@ -35,8 +37,7 @@ class Texture(
         private set
     lateinit var uvEnd: Vec2
 
-    var animationData: TextureAnimationData? = null
-        private set
+    lateinit var properties: ImageProperties
 
     var arraySinglePixelSize = 1.0f
 
@@ -44,6 +45,15 @@ class Texture(
 
     var isLoaded = false
         private set
+
+    fun inherit(texture: Texture) {
+        size = texture.size
+        transparency = texture.transparency
+        uvEnd = texture.uvEnd
+        properties = ImageProperties()
+        arraySinglePixelSize = texture.arraySinglePixelSize
+        isLoaded = true
+    }
 
     fun load(assetsManager: MinecraftAssetsManager) {
         if (isLoaded) {
@@ -68,9 +78,10 @@ class Texture(
         buffer.flip()
 
         // load .mcmeta
-        try {
-            animationData = TextureAnimationData.load(assetsManager.readJsonAsset(ResourceLocation("$resourceLocation.mcmeta")))
+        properties = try {
+            JSONSerializer.IMAGE_PROPERTIES_ADAPTER.fromJson(assetsManager.readStringAsset(ResourceLocation("$resourceLocation.mcmeta")))!!
         } catch (exception: FileNotFoundException) {
+            ImageProperties()
         }
         this.buffer = buffer
 
