@@ -136,6 +136,10 @@ class HUDRenderer(val connection: Connection, val renderWindow: RenderWindow) : 
     }
 
     override fun postInit() {
+        for ((_, element) in hudAtlasElements) {
+            element.postInit()
+        }
+
         renderWindow.textures.use(hudShader, "textureArray")
 
         for (element in hudElements.values) {

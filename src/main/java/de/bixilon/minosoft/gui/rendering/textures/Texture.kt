@@ -18,7 +18,10 @@ import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.matthiasmann.twl.utils.PNGDecoder
+import glm_.vec2.Vec2
+import glm_.vec2.Vec2i
 import org.lwjgl.BufferUtils
+import java.io.FileNotFoundException
 import java.nio.ByteBuffer
 
 
@@ -27,32 +30,31 @@ class Texture(
 ) {
     var arrayId = -1
     var arrayLayer = -1
-    var width: Int = 0
-    var height: Int = 0
+    lateinit var size: Vec2i
     lateinit var transparency: TextureTransparencies
         private set
-    var buffer: ByteBuffer? = null
-    var loaded = false
-        private set
+    lateinit var uvEnd: Vec2
 
-    var widthFactor = 1.0f
-    var heightFactor = 1.0f
+    var animationData: TextureAnimationData? = null
+        private set
 
     var arraySinglePixelSize = 1.0f
 
-    var animations: Int = 0
-    var animationFrameTime: Int = 0
+    var buffer: ByteBuffer? = null
+
+    var isLoaded = false
+        private set
 
     fun load(assetsManager: MinecraftAssetsManager) {
-        if (loaded) {
+        if (isLoaded) {
             return
         }
 
         val decoder = PNGDecoder(assetsManager.readAssetAsStream(resourceLocation))
         val buffer = BufferUtils.createByteBuffer(decoder.width * decoder.height * PNGDecoder.Format.RGBA.numComponents)
         decoder.decode(buffer, decoder.width * PNGDecoder.Format.RGBA.numComponents, PNGDecoder.Format.RGBA)
-        width = decoder.width
-        height = decoder.height
+
+        size = Vec2i(decoder.width, decoder.height)
         buffer.rewind()
         transparency = TextureTransparencies.OPAQUE
         for (i in 0 until buffer.limit() step 4) {
@@ -67,13 +69,12 @@ class Texture(
 
         // load .mcmeta
         try {
-            val json = assetsManager.readJsonAsset(ResourceLocation("$resourceLocation.mcmeta"))
-            animationFrameTime = json["animation"].asJsonObject["frametime"].asInt
-        } catch (exception: Exception) {
+            animationData = TextureAnimationData.load(assetsManager.readJsonAsset(ResourceLocation("$resourceLocation.mcmeta")))
+        } catch (exception: FileNotFoundException) {
         }
         this.buffer = buffer
 
-        loaded = true
+        isLoaded = true
     }
 
     companion object {

@@ -23,13 +23,21 @@ data class HUDAtlasElement(
     val binding: Vec2Binding,
     val slots: Map<Int, Vec2Binding> = mapOf(),
 ) : TextureLike {
+    private var _uvStart = Vec2()
+    private var _uvEnd = Vec2()
+
     override val uvStart: Vec2
-        get() = Vec2((binding.start.x * texture.widthFactor) / texture.width.toFloat(), (binding.start.y * texture.heightFactor) / texture.height.toFloat())
+        get() = _uvStart
     override val uvEnd: Vec2
-        get() = Vec2(((binding.end.x + 1) * texture.widthFactor) / texture.width, ((binding.end.y + 1) * texture.heightFactor) / (texture.height + 1.0f))
+        get() = _uvEnd
     override val size: Vec2
         get() = binding.size
 
+
+    fun postInit() {
+        _uvStart = binding.start * texture.arraySinglePixelSize
+        _uvEnd = (binding.end - Vec2(0, 1)) * texture.arraySinglePixelSize
+    }
 
     companion object {
         fun deserialize(json: Map<ResourceLocation, JsonObject>, versionId: Int): Pair<Collection<Texture>, Map<ResourceLocation, HUDAtlasElement>> {
@@ -53,11 +61,7 @@ data class HUDAtlasElement(
             imageJson["texture"]?.asString?.let { textureResourceLocation = ResourceLocation(it) }
 
 
-            val texture = textures[textureResourceLocation] ?: let {
-                val createdTexture = Texture(textureResourceLocation!!)
-                textures[textureResourceLocation!!] = createdTexture
-                createdTexture
-            }
+            val texture = textures.getOrPut(textureResourceLocation!!) { Texture(textureResourceLocation!!) }
 
             val slots: MutableMap<Int, Vec2Binding> = mutableMapOf()
 

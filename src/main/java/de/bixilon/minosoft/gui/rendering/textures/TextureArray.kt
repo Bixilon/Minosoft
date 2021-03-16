@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.textures
 
 import de.bixilon.minosoft.data.assets.MinecraftAssetsManager
 import de.bixilon.minosoft.gui.rendering.shader.Shader
+import glm_.vec2.Vec2
 import org.lwjgl.opengl.GL12.glTexImage3D
 import org.lwjgl.opengl.GL12.glTexSubImage3D
 import org.lwjgl.opengl.GL13.*
@@ -29,15 +30,15 @@ class TextureArray(val allTextures: MutableList<Texture>) {
 
     fun preLoad(assetsManager: MinecraftAssetsManager?) {
         for (texture in allTextures) {
-            if (!texture.loaded) {
+            if (!texture.isLoaded) {
                 texture.load(assetsManager!!)
             }
-            check(texture.width <= TEXTURE_MAX_RESOLUTION) { "Texture's width exceeds $TEXTURE_MAX_RESOLUTION (${texture.width}" }
-            check(texture.height <= TEXTURE_MAX_RESOLUTION) { "Texture's height exceeds $TEXTURE_MAX_RESOLUTION (${texture.height}" }
+            check(texture.size.x <= TEXTURE_MAX_RESOLUTION) { "Texture's width exceeds $TEXTURE_MAX_RESOLUTION (${texture.size.x}" }
+            check(texture.size.y <= TEXTURE_MAX_RESOLUTION) { "Texture's height exceeds $TEXTURE_MAX_RESOLUTION (${texture.size.y}" }
 
             for (i in TEXTURE_RESOLUTION_ID_MAP.indices) {
                 val currentResolution = TEXTURE_RESOLUTION_ID_MAP[i]
-                if (texture.width <= currentResolution && texture.height <= currentResolution) {
+                if (texture.size.x <= currentResolution && texture.size.y <= currentResolution) {
                     texture.arrayId = i
                     break
                 }
@@ -48,9 +49,11 @@ class TextureArray(val allTextures: MutableList<Texture>) {
 
                 texture.arrayLayer = it.size
 
-                texture.widthFactor = texture.width.toFloat() / arrayResolution
-                texture.animations = (texture.height / texture.width)
-                texture.heightFactor = texture.height.toFloat() / arrayResolution * (texture.width.toFloat() / texture.height)
+                texture.uvEnd = Vec2(
+                    x = texture.size.x.toFloat() / arrayResolution,
+                    y = texture.size.y.toFloat() / arrayResolution
+                )
+                texture.animationData?.determinateData(texture.size)
 
                 texture.arraySinglePixelSize = 1.0f / arrayResolution
                 it.add(texture)
@@ -80,7 +83,7 @@ class TextureArray(val allTextures: MutableList<Texture>) {
         glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, GL_RGBA, resolution, resolution, textures.size, 0, GL_RGBA, GL_UNSIGNED_BYTE, null as ByteBuffer?)
 
         for (texture in textures) {
-            glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, texture.arrayLayer, texture.width, texture.height, 1, GL_RGBA, GL_UNSIGNED_BYTE, texture.buffer!!)
+            glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, texture.arrayLayer, texture.size.x, texture.size.y, 1, GL_RGBA, GL_UNSIGNED_BYTE, texture.buffer!!)
             texture.buffer = null
         }
         //  glGenerateMipmap(GL_TEXTURE_2D_ARRAY)

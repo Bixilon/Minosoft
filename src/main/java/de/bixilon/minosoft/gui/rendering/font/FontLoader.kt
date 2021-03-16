@@ -46,7 +46,7 @@ object FontLoader {
         val provider = FontProvider(width)
         val atlasTexture = Texture((Texture.getResourceTextureIdentifier(atlasPath.namespace, atlasPath.path)))
         atlasTexture.load(assetsManager)
-        val height = height ?: atlasTexture.width / FONT_ATLAS_SIZE
+        val height = height ?: atlasTexture.size.x / FONT_ATLAS_SIZE
         provider.atlasTextures.add(atlasTexture)
         val charsCoordinates: MutableList<MutableList<FontChar>> = mutableListOf() // ToDo: Remove this
         for ((i, char) in chars.withIndex()) {
@@ -59,8 +59,8 @@ object FontLoader {
         }
         atlasTexture.buffer!!.rewind()
         // calculate start and endpixel for every char
-        for (y in 0 until atlasTexture.height) {
-            for (x in 0 until atlasTexture.width) {
+        for (y in 0 until atlasTexture.size.y) {
+            for (x in 0 until atlasTexture.size.x) {
                 val color = RGBColor(atlasTexture.buffer!!.get(), atlasTexture.buffer!!.get(), atlasTexture.buffer!!.get(), atlasTexture.buffer!!.get())
                 if (color.alpha == 0) {
                     continue
