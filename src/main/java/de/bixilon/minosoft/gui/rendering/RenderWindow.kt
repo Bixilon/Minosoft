@@ -224,7 +224,7 @@ class RenderWindow(
         // Make the OpenGL context current
         glfwMakeContextCurrent(windowId)
         // Enable v-sync
-        glfwSwapInterval(1)
+        glfwSwapInterval(0)
 
 
         // Make the window visible
@@ -239,7 +239,7 @@ class RenderWindow(
         glEnable(GL_CULL_FACE)
 
 
-        textures.textures.add(Texture(TextureArray.DEBUG_TEXTURE))
+        textures.allTextures.add(Texture(TextureArray.DEBUG_TEXTURE))
 
         font.load(connection.version.assetsManager)
 
@@ -380,6 +380,8 @@ class RenderWindow(
                 RenderingStates.STOPPED -> glfwSetWindowShouldClose(windowId, true)
             }
             renderStats.endFrame()
+
+            glfwSetWindowTitle(windowId, "FPS: ${renderStats.fpsLastSecond}")
         }
     }
 

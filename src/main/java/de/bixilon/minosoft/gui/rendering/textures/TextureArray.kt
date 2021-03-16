@@ -21,39 +21,55 @@ import org.lwjgl.opengl.GL13.*
 import org.lwjgl.opengl.GL30.GL_TEXTURE_2D_ARRAY
 import java.nio.ByteBuffer
 
-class TextureArray(val textures: MutableList<Texture>) {
-    var textureId = 0
-        private set
-    var maxWidth: Int = 0
-        private set
-    var maxHeight: Int = 0
-        private set
+class TextureArray(val allTextures: MutableList<Texture>) {
+    private var textureIds = Array(TEXTURE_RESOLUTION_ID_MAP.size) { -1 }
+
+    private val texturesByResolution = Array<MutableList<Texture>>(TEXTURE_RESOLUTION_ID_MAP.size) { mutableListOf() }
 
 
     fun preLoad(assetsManager: MinecraftAssetsManager?) {
-        for (texture in textures) {
+        for (texture in allTextures) {
             if (!texture.loaded) {
                 texture.load(assetsManager!!)
             }
-            if (texture.width > maxWidth) {
-                maxWidth = texture.width
-            }
-            if (texture.height > maxHeight) {
-                maxHeight = texture.height
-            }
-        }
+            check(texture.width <= TEXTURE_MAX_RESOLUTION) { "Texture's width exceeds $TEXTURE_MAX_RESOLUTION (${texture.width}" }
+            check(texture.height <= TEXTURE_MAX_RESOLUTION) { "Texture's height exceeds $TEXTURE_MAX_RESOLUTION (${texture.height}" }
 
-        // calculate width and height factor for every texture
-        for ((index, texture) in textures.withIndex()) {
-            texture.widthFactor = texture.width.toFloat() / maxWidth
-            texture.animations = (texture.height / texture.width)
-            texture.heightFactor = texture.height.toFloat() / maxHeight * (texture.width.toFloat() / texture.height)
-            texture.layer = index
+            for (i in TEXTURE_RESOLUTION_ID_MAP.indices) {
+                val currentResolution = TEXTURE_RESOLUTION_ID_MAP[i]
+                if (texture.width <= currentResolution && texture.height <= currentResolution) {
+                    texture.arrayId = i
+                    break
+                }
+            }
+
+            texturesByResolution[texture.arrayId].let {
+                val arrayResolution = TEXTURE_RESOLUTION_ID_MAP[texture.arrayId]
+
+                texture.arrayLayer = it.size
+
+                texture.widthFactor = texture.width.toFloat() / arrayResolution
+                texture.animations = (texture.height / texture.width)
+                texture.heightFactor = texture.height.toFloat() / arrayResolution * (texture.width.toFloat() / texture.height)
+
+                texture.arraySinglePixelSize = 1.0f / arrayResolution
+                it.add(texture)
+            }
         }
     }
 
-    fun load(): Int {
-        textureId = glGenTextures()
+    fun load() {
+        for (index in texturesByResolution.indices) {
+            loadResolution(index)
+        }
+    }
+
+    private fun loadResolution(resolutionId: Int) {
+        val resolution = TEXTURE_RESOLUTION_ID_MAP[resolutionId]
+        val textures = texturesByResolution[resolutionId]
+
+        val textureId = glGenTextures()
+        textureIds[resolutionId] = textureId
         glBindTexture(GL_TEXTURE_2D_ARRAY, textureId)
         glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, GL_REPEAT)
         glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, GL_REPEAT)
@@ -61,29 +77,30 @@ class TextureArray(val textures: MutableList<Texture>) {
         // glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR) // ToDo: This breaks transparency again
         glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
 
-        glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, GL_RGBA, maxWidth, maxHeight, textures.size, 0, GL_RGBA, GL_UNSIGNED_BYTE, null as ByteBuffer?)
+        glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, GL_RGBA, resolution, resolution, textures.size, 0, GL_RGBA, GL_UNSIGNED_BYTE, null as ByteBuffer?)
 
         for (texture in textures) {
-            glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, texture.layer, texture.width, texture.height, 1, GL_RGBA, GL_UNSIGNED_BYTE, texture.buffer)
-            texture.buffer.clear()
+            glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, texture.arrayLayer, texture.width, texture.height, 1, GL_RGBA, GL_UNSIGNED_BYTE, texture.buffer!!)
+            texture.buffer = null
         }
-      //  glGenerateMipmap(GL_TEXTURE_2D_ARRAY)
-        return textureId
+        //  glGenerateMipmap(GL_TEXTURE_2D_ARRAY)
     }
 
-
-    fun use(textureMode: Int) {
-        glActiveTexture(textureMode)
-        glBindTexture(GL_TEXTURE_2D_ARRAY, textureId)
-    }
 
     fun use(shader: Shader, arrayName: String) {
-        glActiveTexture(GL_TEXTURE0 + textureId - 1)
-        glBindTexture(GL_TEXTURE_2D_ARRAY, textureId)
-        shader.use().setTexture(arrayName, this)
+        shader.use()
+
+        for ((index, textureId) in textureIds.withIndex()) {
+            glActiveTexture(GL_TEXTURE0 + index)
+            glBindTexture(GL_TEXTURE_2D_ARRAY, textureId)
+            shader.setTexture("$arrayName[$index]", index)
+        }
     }
 
     companion object {
+        val TEXTURE_RESOLUTION_ID_MAP = arrayOf(16, 32, 64, 128, 256, 512, 1024) // A 12x12 texture will be saved in texture id 0 (in 0 are only 16x16 textures). Animated textures get split
+        const val TEXTURE_MAX_RESOLUTION = 1024
+
         val DEBUG_TEXTURE = Texture.getResourceTextureIdentifier(textureName = "block/debug")
     }
 }

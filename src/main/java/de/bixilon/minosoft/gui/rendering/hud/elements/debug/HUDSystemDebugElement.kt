@@ -13,63 +13,66 @@
 
 package de.bixilon.minosoft.gui.rendering.hud.elements.debug
 
-import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.hud.HUDRenderer
-import de.bixilon.minosoft.gui.rendering.hud.elements.HUDElement
-import de.bixilon.minosoft.gui.rendering.hud.elements.primitive.TextElement
 import de.bixilon.minosoft.modding.loading.ModLoader
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.GitInfo
 import de.bixilon.minosoft.util.SystemInformation
 import de.bixilon.minosoft.util.UnitFormatter
-import glm_.vec2.Vec2
 import org.lwjgl.opengl.GL11.*
 
 
-class HUDSystemDebugElement(hudRenderer: HUDRenderer) : HUDElement(hudRenderer) {
-    private lateinit var gpuText: String
-    private lateinit var gpuVersionText: String
+class HUDSystemDebugElement(hudRenderer: HUDRenderer) : DebugScreen(hudRenderer) {
 
-
-    override fun init() {
-        gpuText = glGetString(GL_RENDERER) ?: "unknown"
-        gpuVersionText = glGetString(GL_VERSION) ?: "unknown"
+    init {
+        text("Java: ${Runtime.version()} ${System.getProperty("sun.arch.data.model")}bit")
     }
 
-    private var lastPrepareTime = 0L
+    private val memoryText = text("TBA")
+    private val allocatedMemoryText = text("TBA")
+
+    init {
+        text("System: ${SystemInformation.SYSTEM_MEMORY_TEXT}")
+        text()
+        text("OS: ${SystemInformation.OS_TEXT}")
+        text("CPU: ${SystemInformation.PROCESSOR_TEXT}")
+        text()
+    }
+
+    private val displayText = text("TBA")
+    private val gpuText = text("TBA")
+    private val gpuVersionText = text("TBA")
+
+
+    init {
+        text(
+            if (GitInfo.IS_INITIALIZED) {
+                "Commit: ${GitInfo.GIT_COMMIT_ID_DESCRIBE}: ${GitInfo.GIT_COMMIT_MESSAGE_SHORT}"
+            } else {
+                "GitInfo uninitialized :("
+            })
+        text()
+        text("Mods: ${ModLoader.MOD_MAP.size} active, ${hudRenderer.connection.eventListenerSize} listeners")
+    }
+
+    override fun screenChangeResizeCallback(screenWidth: Int, screenHeight: Int) {
+        displayText.sText = "Display: ${getScreenDimensions()}"
+        layout.pushChildrenToRight(1.0f)
+    }
+
+    override fun init() {
+        gpuText.sText = "GPU: " + (glGetString(GL_RENDERER) ?: "unknown")
+        gpuVersionText.sText = "Version: " + (glGetString(GL_VERSION) ?: "unknown")
+    }
 
     override fun draw() {
         if (System.currentTimeMillis() - lastPrepareTime < ProtocolDefinition.TICK_TIME) {
             return
         }
-        layout.clear()
-
-        for (text in listOf(
-            "Java: ${Runtime.version()} ${System.getProperty("sun.arch.data.model")}bit",
-            "Memory: ${getUsedMemoryPercent()}% ${getFormattedUsedMemory()}/${SystemInformation.MAX_MEMORY_TEXT}",
-            "Allocated: ${getAllocatedMemoryPercent()}% ${getFormattedAllocatedMemory()}",
-            "System: ${SystemInformation.SYSTEM_MEMORY_TEXT}",
-            "",
-            "OS: ${SystemInformation.OS_TEXT}",
-            "CPU: ${SystemInformation.PROCESSOR_TEXT}",
-            "",
-            "Display: ${getScreenDimensions()}",
-            "GPU: $gpuText",
-            "Version: $gpuVersionText",
-            "",
-            if (GitInfo.IS_INITIALIZED) {
-                "Commit: ${GitInfo.GIT_COMMIT_ID_DESCRIBE}: ${GitInfo.GIT_COMMIT_MESSAGE_SHORT}"
-            } else {
-                "GitInfo uninitialized :("
-            },
-            "",
-            "Mods: ${ModLoader.MOD_MAP.size} active, ${hudRenderer.connection.eventListenerSize} listeners",
-        )) {
-            val textElement = TextElement(ChatComponent.valueOf(text), hudRenderer.renderWindow.font, Vec2(2, layout.size.y + RenderConstants.TEXT_LINE_PADDING))
-            layout.addChild(textElement)
-        }
+        memoryText.sText = "Memory: ${getUsedMemoryPercent()}% ${getFormattedUsedMemory()}/${SystemInformation.MAX_MEMORY_TEXT}"
+        allocatedMemoryText.sText = "Allocated: ${getAllocatedMemoryPercent()}% ${getFormattedAllocatedMemory()}"
         layout.pushChildrenToRight(1.0f)
+
         lastPrepareTime = System.currentTimeMillis()
     }
 

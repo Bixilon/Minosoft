@@ -54,12 +54,11 @@ class ImageElement(
 
         val uvStart = textureLike?.uvStart ?: Vec2()
         val uvEnd = textureLike?.uvEnd ?: Vec2()
-        val textureLayer = textureLike?.texture?.layer ?: 0
 
         val realZ = RenderConstants.HUD_Z_COORDINATE + RenderConstants.HUD_Z_COORDINATE_Z_FACTOR * (this.z + z)
 
         fun addVertex(position: Vec2, textureUV: Vec2) {
-            cache.addVertex(Vec3(position, realZ), textureUV, textureLayer, tintColor)
+            cache.addVertex(Vec3(position, realZ), textureUV, textureLike?.texture, tintColor)
         }
 
         addVertex(Vec2(modelStart.x, modelStart.y), Vec2(uvStart.x, uvStart.y))

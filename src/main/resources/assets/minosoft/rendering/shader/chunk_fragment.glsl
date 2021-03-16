@@ -15,21 +15,18 @@
 
 out vec4 outColor;
 
+flat in uint passTextureIdIndex;
 in vec3 passTextureCoordinates;
 in vec4 passTintColor;
-in float passLightLevel;
 
-uniform sampler2DArray textureArray;
+uniform sampler2DArray textureArray[7];
 
 void main() {
-    vec4 texelColor = texture(textureArray, passTextureCoordinates);
+    vec4 texelColor = texture(textureArray[passTextureIdIndex], passTextureCoordinates);
     if (texelColor.a == 0.0f) { // ToDo: This only works for alpha == 0. What about semi transparency? We would need to sort the faces, etc. See: https://learnopengl.com/Advanced-OpenGL/Blending
         discard;
     }
     //vec3 mixedColor = mix(texelColor.rgb, passTintColor.rgb, passTintColor.a);
-    vec3 mixedColor = texelColor.rgb;
-    if (passTintColor.a > 0.0f){
-        mixedColor *= passTintColor.rgb;
-    }
-    outColor = vec4(mixedColor * passLightLevel, texelColor.a);
+    vec3 mixedColor = texelColor.rgb * passTintColor.rgb;
+    outColor = vec4(mixedColor, texelColor.a);
 }

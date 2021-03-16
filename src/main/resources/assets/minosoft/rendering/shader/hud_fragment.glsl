@@ -15,14 +15,15 @@
 
 out vec4 outColor;
 
+flat in uint passTextureIdIndex;
 in vec3 passTextureCoordinates;
 in vec4 passTintColor;
 
 
-uniform sampler2DArray textureArray;
+uniform sampler2DArray textureArray[7];
 
 void main() {
-    vec4 texelColor = texture(textureArray, passTextureCoordinates);
+    vec4 texelColor = texture(textureArray[passTextureIdIndex], passTextureCoordinates);
 
     if (passTintColor.a == 1.0f && texelColor.a == 0) {
         discard;

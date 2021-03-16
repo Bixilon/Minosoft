@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk
 
+import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.textures.Texture
 import de.bixilon.minosoft.gui.rendering.util.Mesh
@@ -34,25 +35,20 @@ class SectionArrayMesh : Mesh() {
         data.add(position.z)
         data.add(textureCoordinates.x * texture.widthFactor)
         data.add(textureCoordinates.y * texture.heightFactor)
-        data.add(Float.fromBits(texture.layer)) // ToDo: Compact this
+        data.add(Float.fromBits((texture.arrayId shl 24) or texture.arrayLayer))
 
         // ToDo: Send this only once per texture
         data.add(texture.animationFrameTime.toFloat())
         data.add(texture.animations.toFloat())
         data.add(texture.heightFactor)
 
-        if (tintColor == null) {
-            data.add(0.0f)
-        } else {
-            data.add(Float.fromBits(tintColor.color))
-        }
+        val color = tintColor ?: ChatColors.WHITE
 
-        val rightLightLevel = if (lightLevel == 0) {
-            1
-        } else {
-            lightLevel + 1
-        }
-        data.add(rightLightLevel / MAX_LIGHT_LEVEL)
+        val lightFactor = MAX_LIGHT_LEVEL / (lightLevel + 1)
+
+        val lightColor = RGBColor(color.red / lightFactor, color.green / lightFactor, color.blue / lightFactor)
+
+        data.add(Float.fromBits(lightColor.color ushr 8))
     }
 
     override fun load() {
@@ -73,16 +69,13 @@ class SectionArrayMesh : Mesh() {
         glVertexAttribPointer(index, 1, GL_FLOAT, false, FLOATS_PER_VERTEX * Float.BYTES, (9 * Float.BYTES).toLong())
         glEnableVertexAttribArray(index++)
 
-        glVertexAttribPointer(index, 1, GL_FLOAT, false, FLOATS_PER_VERTEX * Float.BYTES, (10 * Float.BYTES).toLong())
-        glEnableVertexAttribArray(index++)
-
-
         super.unbind()
     }
 
 
     companion object {
-        private const val FLOATS_PER_VERTEX = 11
-        private const val MAX_LIGHT_LEVEL = 17f // Level 0 and 15 kind of does not exist here.
+        private const val FLOATS_PER_VERTEX = 10
+        private const val MAX_LIGHT_LEVEL = 17
+        private const val MAX_LIGHT_LEVEL_FLOAT = 17f // Level 0 and 15 kind of does not exist here.
     }
 }

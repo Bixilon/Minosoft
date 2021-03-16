@@ -44,7 +44,7 @@ class Font {
                 textures.add(atlasPage)
             }
         }
-        textureArray.textures.addAll(textures)
+        textureArray.allTextures.addAll(textures)
         preLoaded = true
     }
 
@@ -53,12 +53,10 @@ class Font {
         check(preLoaded) { "Font hasn't been preloaded!" }
 
 
-        val atlasWidthSinglePixel = 1.0f / textureArray.maxWidth
-        val atlasHeightSinglePixel = 1.0f / textureArray.maxHeight
 
         for (provider in providers) {
             for (char in provider.chars.values) {
-                char.calculateUV(provider.width, atlasWidthSinglePixel, atlasHeightSinglePixel) // ToDo: Unicode: With should pe plus 1
+                char.calculateUV(provider.width, char.texture.arraySinglePixelSize, char.texture.arraySinglePixelSize) // ToDo: Unicode: With should pe plus 1
             }
         }
         loaded = true

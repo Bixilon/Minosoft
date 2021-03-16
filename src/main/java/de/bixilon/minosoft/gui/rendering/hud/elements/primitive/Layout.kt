@@ -26,10 +26,10 @@ open class Layout(
 
 
     fun clear() {
-        clearCache()
         synchronized(children) {
             children.clear()
         }
+        clearCache()
         recalculateSize()
     }
 
@@ -43,22 +43,19 @@ open class Layout(
     }
 
     override fun recalculateSize() {
-        for (child in children) {
-            checkSize(child.start + child.size)
-        }
         if (children.isEmpty()) {
             size = Vec2(0, 0)
+        } else {
+            for (child in children) {
+                checkSize(child.start + child.size)
+            }
         }
         parent?.recalculateSize()
     }
 
     override fun clearCache() {
         cache.clear()
-        synchronized(children) {
-            for (child in children) {
-                child.clearCache()
-            }
-        }
+        parent?.clearCache()
     }
 
     private fun checkSize(vec2: Vec2) {
@@ -80,6 +77,7 @@ open class Layout(
     fun pushChildrenToRight(offset: Float = 0.0f) {
         for (child in children) {
             child.start = Vec2((size.x - child.size.x) - offset, child.start.y)
+            child.clearCache()
         }
     }
 
@@ -97,5 +95,17 @@ open class Layout(
                 cache.addCache(child.cache)
             }
         }
+    }
+
+    fun clearChildrenCache() {
+        synchronized(children) {
+            for (child in children) {
+                if (child is Layout) {
+                    child.clearChildrenCache()
+                }
+                child.clearCache()
+            }
+        }
+        clearCache()
     }
 }

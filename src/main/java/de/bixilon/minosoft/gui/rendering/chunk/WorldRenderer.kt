@@ -53,7 +53,7 @@ class WorldRenderer(
         synchronized(this.queuedChunks) {
             queuedChunks.remove(chunkPosition)
         }
-        val chunk = world.getChunk(chunkPosition)!!
+        val chunk = world.getChunk(chunkPosition) ?: error("Chunk in world is null at $chunkPosition?")
 
         val dimensionSupports3dBiomes = connection.player.world.dimension?.supports3DBiomes ?: false
         val mesh = SectionArrayMesh()
@@ -94,7 +94,7 @@ class WorldRenderer(
     }
 
     override fun init() {
-        renderWindow.textures.textures.addAll(resolveBlockTextureIds(connection.version.mapping.blockStateIdMap.values))
+        renderWindow.textures.allTextures.addAll(resolveBlockTextureIds(connection.version.mapping.blockStateIdMap.values))
 
 
         chunkShader = Shader(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "rendering/shader/chunk_vertex.glsl"), ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "rendering/shader/chunk_fragment.glsl"))

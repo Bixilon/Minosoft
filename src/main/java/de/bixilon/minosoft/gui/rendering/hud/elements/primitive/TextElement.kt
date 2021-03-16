@@ -26,6 +26,7 @@ class TextElement(
     z: Int = 1,
     var background: Boolean = true,
 ) : Layout(start, z) {
+
     var text: ChatComponent
         get() = _text
         set(value) {

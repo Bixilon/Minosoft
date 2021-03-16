@@ -14,55 +14,72 @@
 package de.bixilon.minosoft.gui.rendering.hud.elements.debug
 
 import de.bixilon.minosoft.data.Directions
-import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.hud.HUDRenderer
-import de.bixilon.minosoft.gui.rendering.hud.elements.HUDElement
-import de.bixilon.minosoft.gui.rendering.hud.elements.primitive.TextElement
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.UnitFormatter
-import glm_.vec2.Vec2
 
 
-class HUDWorldDebugElement(hudRenderer: HUDRenderer) : HUDElement(hudRenderer) {
+class HUDWorldDebugElement(hudRenderer: HUDRenderer) : DebugScreen(hudRenderer) {
     private val camera = hudRenderer.renderWindow.camera
 
-    private var lastPrepareTime = 0L
+    private val fpsText = text("TBA")
+    private val timingsText = text("TBA")
+    private val chunksText = text("TBA")
+    private val openGLText = text("TBA")
+
+    init {
+        text("Connected to ${hudRenderer.connection.address} on ${hudRenderer.connection.version} with ${hudRenderer.connection.player.account.username}")
+        text("")
+    }
+
+    private val positionText = text("TBA")
+    private val blockPositionText = text("TBA")
+    private val chunkPositionText = text("TBA")
+    private val facingText = text("TBA")
+    private val gamemodeText = text("TBA")
+    private val dimensionText = text("TBA")
+    private val biomeText = text("TBA")
+
+    init {
+        text()
+    }
+
+    private val difficultyText = text("TBA")
+    private val lightText = text("TBA")
+
 
     override fun draw() {
         if (System.currentTimeMillis() - lastPrepareTime < ProtocolDefinition.TICK_TIME) {
             return
         }
 
-        layout.clear()
+        fpsText.sText = "FPS: ${getFPS()}"
+        chunksText.sText = "Chunks: q=${hudRenderer.renderWindow.worldRenderer.queuedChunks.size} v=${hudRenderer.renderWindow.worldRenderer.visibleChunks.size} p=${hudRenderer.renderWindow.worldRenderer.allChunkSections.size} t=${hudRenderer.connection.player.world.chunks.size}"
+        timingsText.sText = "Timings: avg ${getAvgFrameTime()}ms, min ${getMinFrameTime()}ms, max ${getMaxFrameTime()}ms"
+        openGLText.sText = "GL: m=${UnitFormatter.formatNumber(hudRenderer.renderWindow.worldRenderer.meshes)} t=${UnitFormatter.formatNumber(hudRenderer.renderWindow.worldRenderer.triangles)}"
 
-        for (text in listOf(
-            "FPS: ${getFPS()}",
-            "Timings: avg ${getAvgFrameTime()}ms, min ${getMinFrameTime()}ms, max ${getMaxFrameTime()}ms",
-            "Chunks: q=${hudRenderer.renderWindow.worldRenderer.queuedChunks.size} v=${hudRenderer.renderWindow.worldRenderer.visibleChunks.size} p=${hudRenderer.renderWindow.worldRenderer.allChunkSections.size} t=${hudRenderer.connection.player.world.chunks.size}",
-            "GL: m=${UnitFormatter.formatNumber(hudRenderer.renderWindow.worldRenderer.meshes)} t=${UnitFormatter.formatNumber(hudRenderer.renderWindow.worldRenderer.triangles)}",
-            "Connected to ${hudRenderer.connection.address} on ${hudRenderer.connection.version} with ${hudRenderer.connection.player.account.username}",
-            "",
-            "XYZ ${getLocation()}",
-            "Block ${getBlockPosition()}",
-            "Chunk ${getChunkLocation()}",
-            "Facing: ${getFacing()}",
-            "Gamemode: ${hudRenderer.connection.player.gamemode?.name?.toLowerCase()}",
-            "Dimension: ${hudRenderer.connection.player.world.dimension}",
-            "Biome: ${camera.currentBiome}",
-            "",
-            "Difficulty: ${hudRenderer.connection.player.world.difficulty?.name?.toLowerCase()}, ${
-                if (hudRenderer.connection.player.world.difficultyLocked) {
-                    "locked"
-                } else {
-                    "unlocked"
-                }
-            }",
-            "Client light: ${hudRenderer.connection.player.world.worldLightAccessor.getLightLevel(camera.blockPosition)} (sky=${hudRenderer.connection.player.world.worldLightAccessor.getSkyLight(camera.blockPosition)}, block=${hudRenderer.connection.player.world.worldLightAccessor.getBlockLight(camera.blockPosition)})"
-        )) {
-            val textElement = TextElement(ChatComponent.valueOf(text), hudRenderer.renderWindow.font, Vec2(2, layout.size.y + RenderConstants.TEXT_LINE_PADDING))
-            layout.addChild(textElement)
-        }
+
+        // ToDo: Prepare on change
+        gamemodeText.sText = "Gamemode: ${hudRenderer.connection.player.gamemode?.name?.toLowerCase()}"
+        positionText.sText = "XYZ ${getPosition()}"
+        blockPositionText.sText = "Block ${getBlockPosition()}"
+        chunkPositionText.sText = "Chunk ${getChunkLocation()}"
+        facingText.sText = "Facing: ${getFacing()}"
+
+        biomeText.sText = "Biome: ${camera.currentBiome}"
+        dimensionText.sText = "Dimension: ${hudRenderer.connection.player.world.dimension}"
+
+        difficultyText.sText = "Difficulty: ${hudRenderer.connection.player.world.difficulty?.name?.toLowerCase()}, ${
+            if (hudRenderer.connection.player.world.difficultyLocked) {
+                "locked"
+            } else {
+                "unlocked"
+            }
+        }"
+
+        lightText.sText = "Client light: ${hudRenderer.connection.player.world.worldLightAccessor.getLightLevel(camera.blockPosition)} (sky=${hudRenderer.connection.player.world.worldLightAccessor.getSkyLight(camera.blockPosition)}, block=${hudRenderer.connection.player.world.worldLightAccessor.getBlockLight(camera.blockPosition)})"
+
+
         lastPrepareTime = System.currentTimeMillis()
     }
 
@@ -88,7 +105,7 @@ class HUDWorldDebugElement(hudRenderer: HUDRenderer) : HUDElement(hudRenderer) {
     }
 
 
-    private fun getLocation(): String {
+    private fun getPosition(): String {
         return "${formatCoordinate(camera.feetLocation.x)} / ${formatCoordinate(camera.feetLocation.y)} / ${formatCoordinate(camera.feetLocation.z)}"
     }
 

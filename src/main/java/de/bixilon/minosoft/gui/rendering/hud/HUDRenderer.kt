@@ -53,7 +53,7 @@ class HUDRenderer(val connection: Connection, val renderWindow: RenderWindow) : 
         val hudImages = HUDAtlasElement.deserialize(ResourceLocationJsonMap.create(Minosoft.MINOSOFT_ASSETS_MANAGER.readJsonAsset(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "mapping/atlas.json"))), connection.version.versionId)
         this.hudAtlasElements = hudImages.second
 
-        renderWindow.textures.textures.addAll(hudImages.first.toList())
+        renderWindow.textures.allTextures.addAll(hudImages.first.toList())
 
         registerDefaultElements()
 
@@ -146,7 +146,7 @@ class HUDRenderer(val connection: Connection, val renderWindow: RenderWindow) : 
     override fun screenChangeResizeCallback(width: Int, height: Int) {
         orthographicMatrix = glm.ortho(-width / 2f, width / 2f, -height / 2f, height / 2f)
         for ((_, hudElement) in hudElements.values) {
-            hudElement.layout.clearCache()
+            hudElement.layout.clearChildrenCache()
             hudElement.screenChangeResizeCallback(width, height)
         }
     }

@@ -15,16 +15,15 @@
 
 layout (location = 0) in vec3 inPosition;
 layout (location = 1) in vec2 textureIndex;
-layout (location = 2) in int textureLayer;
+layout (location = 2) in uint textureLayer;
 
 layout (location = 3) in vec3 animatedTextureData;
 
 layout (location = 4) in uint tintColor;
-layout (location = 5) in float lightLevel;
 
+flat out uint passTextureIdIndex;
 out vec3 passTextureCoordinates;
 out vec4 passTintColor;
-out float passLightLevel;
 
 uniform mat4 viewProjectionMatrix;
 uniform int animationTick;
@@ -32,15 +31,15 @@ uniform int animationTick;
 
 void main() {
     gl_Position = viewProjectionMatrix * vec4(inPosition, 1.0f);
-    passTintColor = vec4(((tintColor >> 24u) & 0xFFu) / 255.0f, ((tintColor >> 16u) & 0xFFu) / 255.0f, ((tintColor >> 8u) & 0xFFu) / 255.0f, (tintColor & 0xFFu) / 255.0f);
+    passTintColor = vec4(((tintColor >> 16u) & 0xFFu) / 255.0f, ((tintColor >> 8u) & 0xFFu) / 255.0f, (tintColor & 0xFFu) / 255.0f, 1.0f);
 
-    passLightLevel = lightLevel;
+    passTextureIdIndex = textureLayer >> 24u;
 
     if (animatedTextureData.y == 1.0f) {
-        passTextureCoordinates = vec3(textureIndex, textureLayer);
+        passTextureCoordinates = vec3(textureIndex, textureLayer & 0xFFFFFFu);
         return;
     }
 
     // passTextureCoordinates = vec3(textureIndex, textureLayer);
-    passTextureCoordinates = vec3(textureIndex.x, textureIndex.y + (animatedTextureData.z * ((animationTick / int(animatedTextureData.x)) % int(animatedTextureData.y))), textureLayer);
+    passTextureCoordinates = vec3(textureIndex.x, textureIndex.y + (animatedTextureData.z * ((animationTick / int(animatedTextureData.x)) % int(animatedTextureData.y))), textureLayer & 0xFFFFFFu);
 }

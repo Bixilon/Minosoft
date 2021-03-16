@@ -17,7 +17,6 @@ import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.assets.AssetsManager
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.exceptions.ShaderLoadingException
-import de.bixilon.minosoft.gui.rendering.textures.TextureArray
 import de.bixilon.minosoft.gui.rendering.util.OpenGLUtil
 import glm_.mat4x4.Mat4
 import glm_.vec2.Vec2
@@ -120,13 +119,11 @@ class Shader(
             is Vec4 -> setVec4(uniformName, data)
             is Vec3 -> setVec3(uniformName, data)
             is Vec2 -> setVec2(uniformName, data)
-            is TextureArray -> setTexture(uniformName, data)
         }
-
     }
 
-    fun setTexture(uniformName: String, textureArray: TextureArray) {
-        glUniform1i(getUniformLocation(uniformName), textureArray.textureId - 1)
+    fun setTexture(uniformName: String, textureId: Int) {
+        glUniform1i(getUniformLocation(uniformName), textureId)
     }
 
 

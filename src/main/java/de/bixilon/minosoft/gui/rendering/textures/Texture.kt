@@ -25,16 +25,20 @@ import java.nio.ByteBuffer
 class Texture(
     val resourceLocation: ResourceLocation,
 ) {
-    var layer = -1
+    var arrayId = -1
+    var arrayLayer = -1
     var width: Int = 0
     var height: Int = 0
     lateinit var transparency: TextureTransparencies
         private set
-    lateinit var buffer: ByteBuffer
+    var buffer: ByteBuffer? = null
     var loaded = false
+        private set
 
     var widthFactor = 1.0f
     var heightFactor = 1.0f
+
+    var arraySinglePixelSize = 1.0f
 
     var animations: Int = 0
     var animationFrameTime: Int = 0
@@ -45,7 +49,7 @@ class Texture(
         }
 
         val decoder = PNGDecoder(assetsManager.readAssetAsStream(resourceLocation))
-        buffer = BufferUtils.createByteBuffer(decoder.width * decoder.height * PNGDecoder.Format.RGBA.numComponents)
+        val buffer = BufferUtils.createByteBuffer(decoder.width * decoder.height * PNGDecoder.Format.RGBA.numComponents)
         decoder.decode(buffer, decoder.width * PNGDecoder.Format.RGBA.numComponents, PNGDecoder.Format.RGBA)
         width = decoder.width
         height = decoder.height
@@ -67,6 +71,7 @@ class Texture(
             animationFrameTime = json["animation"].asJsonObject["frametime"].asInt
         } catch (exception: Exception) {
         }
+        this.buffer = buffer
 
         loaded = true
     }

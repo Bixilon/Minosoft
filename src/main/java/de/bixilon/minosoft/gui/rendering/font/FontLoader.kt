@@ -57,11 +57,11 @@ object FontLoader {
             provider.chars[char] = fontChar
             charsCoordinates[i / FONT_ATLAS_SIZE].add(fontChar)
         }
-        atlasTexture.buffer.rewind()
+        atlasTexture.buffer!!.rewind()
         // calculate start and endpixel for every char
         for (y in 0 until atlasTexture.height) {
             for (x in 0 until atlasTexture.width) {
-                val color = RGBColor(atlasTexture.buffer.get(), atlasTexture.buffer.get(), atlasTexture.buffer.get(), atlasTexture.buffer.get())
+                val color = RGBColor(atlasTexture.buffer!!.get(), atlasTexture.buffer!!.get(), atlasTexture.buffer!!.get(), atlasTexture.buffer!!.get())
                 if (color.alpha == 0) {
                     continue
                 }
@@ -84,7 +84,7 @@ object FontLoader {
             fontChar.width = fontChar.endPixel - fontChar.startPixel
 
         }
-        atlasTexture.buffer.flip()
+        atlasTexture.buffer!!.flip()
         return provider
     }
 
