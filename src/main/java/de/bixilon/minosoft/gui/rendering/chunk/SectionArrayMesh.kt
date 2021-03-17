@@ -37,7 +37,7 @@ class SectionArrayMesh : Mesh() {
         data.add(textureCoordinates.y * texture.uvEnd.y)
         data.add(Float.fromBits((texture.arrayId shl 24) or texture.arrayLayer))
 
-        data.add(Float.fromBits(texture.properties.animation?.frameCount ?: 1))
+        data.add(Float.fromBits(texture.properties.animation?.animationId ?: -1))
 
         val color = tintColor ?: ChatColors.WHITE
 

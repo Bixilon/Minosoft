@@ -17,23 +17,51 @@ layout (location = 0) in vec3 inPosition;
 layout (location = 1) in vec2 textureIndex;
 layout (location = 2) in uint textureLayer;
 
-layout (location = 3) in uint animationLayers;
+layout (location = 3) in int animationIndex;
 layout (location = 4) in uint tintColor;
 
-flat out uint passTextureIdIndex;
-out vec3 passTextureCoordinates;
+flat out uint passFirstTextureIdIndex;
+out vec3 passFirstTextureCoordinates;
+flat out uint passSecondTextureIdIndex;
+out vec3 passSecondTextureCoordinates;
+out float passInterpolateBetweenTextures;
+
 out vec4 passTintColor;
 
 uniform mat4 viewProjectionMatrix;
-uniform int animationTick;
+
+
+layout(std140) uniform AnimatedDataBuffer
+{
+    uvec4 globalAnimationData[32];// ToDo: WTF. Why 4 values??
+};
 
 
 void main() {
     gl_Position = viewProjectionMatrix * vec4(inPosition, 1.0f);
     passTintColor = vec4(((tintColor >> 16u) & 0xFFu) / 255.0f, ((tintColor >> 8u) & 0xFFu) / 255.0f, (tintColor & 0xFFu) / 255.0f, 1.0f);
 
-    passTextureIdIndex = textureLayer >> 24u;
 
-    passTextureCoordinates = vec3(textureIndex, (textureLayer & 0xFFFFFFu) + (uint(animationTick) % animationLayers));
-    return;
+    if (animationIndex == -1) {
+        passFirstTextureIdIndex = textureLayer >> 24u;
+
+        passFirstTextureCoordinates = vec3(textureIndex, (textureLayer & 0xFFFFFFu));
+
+        passInterpolateBetweenTextures = 0.0f;
+        return;
+    }
+
+    uvec4 data = globalAnimationData[animationIndex];
+    uint firstTexture = data.x;
+    uint secondTexture = data.y;
+    uint interpolation = data.z;
+
+    passFirstTextureIdIndex = firstTexture >> 24u;
+    passFirstTextureCoordinates = vec3(textureIndex, firstTexture & 0xFFFFFFu);
+
+    passSecondTextureIdIndex = secondTexture >> 24u;
+    passSecondTextureCoordinates = vec3(textureIndex, secondTexture & 0xFFFFFFu);
+
+    passInterpolateBetweenTextures = interpolation / 100.0f;
+
 }

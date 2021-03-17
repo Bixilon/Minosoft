@@ -350,6 +350,8 @@ class RenderWindow(
             lastFrame = currentFrame
 
 
+            textures.animator.draw()
+
 
             worldRenderer.draw()
             hudRenderer.draw()

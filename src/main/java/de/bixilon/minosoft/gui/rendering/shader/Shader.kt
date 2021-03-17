@@ -27,7 +27,7 @@ import org.lwjgl.opengl.ARBFragmentShader.GL_FRAGMENT_SHADER_ARB
 import org.lwjgl.opengl.ARBShaderObjects.*
 import org.lwjgl.opengl.ARBVertexShader.GL_VERTEX_SHADER_ARB
 import org.lwjgl.opengl.GL11.GL_FALSE
-import org.lwjgl.opengl.GL20.*
+import org.lwjgl.opengl.GL43.*
 import org.lwjgl.system.MemoryUtil
 
 class Shader(
@@ -124,6 +124,10 @@ class Shader(
 
     fun setTexture(uniformName: String, textureId: Int) {
         glUniform1i(getUniformLocation(uniformName), textureId)
+    }
+
+    fun setUniformBuffer(uniformName: String, bindingIndex: Int) {
+        glUniformBlockBinding(programId, glGetUniformBlockIndex(programId, uniformName), bindingIndex)
     }
 
 

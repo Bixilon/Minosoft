@@ -13,24 +13,27 @@
 
 package de.bixilon.minosoft.gui.rendering.textures
 
+import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.assets.MinecraftAssetsManager
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.shader.Shader
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.util.logging.Log
 import de.matthiasmann.twl.utils.PNGDecoder
 import glm_.vec2.Vec2
 import glm_.vec2.Vec2i
 import org.lwjgl.BufferUtils
 import org.lwjgl.opengl.GL12.glTexImage3D
 import org.lwjgl.opengl.GL12.glTexSubImage3D
-import org.lwjgl.opengl.GL13.*
-import org.lwjgl.opengl.GL30.GL_TEXTURE_2D_ARRAY
+import org.lwjgl.opengl.GL30.*
+import org.lwjgl.opengl.GL31.GL_UNIFORM_BUFFER
 import java.nio.ByteBuffer
 
 class TextureArray(val allTextures: MutableList<Texture>) {
+    val animator = Animator()
     private var textureIds = Array(TEXTURE_RESOLUTION_ID_MAP.size) { -1 }
 
     private val texturesByResolution = Array<MutableList<Texture>>(TEXTURE_RESOLUTION_ID_MAP.size) { mutableListOf() }
-
 
     fun preLoad(assetsManager: MinecraftAssetsManager?) {
         for (texture in allTextures) {
@@ -70,6 +73,9 @@ class TextureArray(val allTextures: MutableList<Texture>) {
 
                 it.add(texture)
                 texture.properties.animation?.let { properties ->
+                    properties.animationId = animator.animatedTextures.size
+                    animator.animatedTextures.add(texture)
+
                     val bytesPerTexture = size.x * size.y * PNGDecoder.Format.RGBA.numComponents
                     val fullBuffer = texture.buffer!!
                     texture.buffer = BufferUtils.createByteBuffer(bytesPerTexture)
@@ -93,9 +99,14 @@ class TextureArray(val allTextures: MutableList<Texture>) {
     }
 
     fun load() {
-        for (index in texturesByResolution.indices) {
+        var totalLayers = 0
+        for ((index, textures) in texturesByResolution.withIndex()) {
             loadResolution(index)
+            totalLayers += textures.size
         }
+        Log.game("Loaded ${allTextures.size} textures containing ${animator.animatedTextures.size} animated ones, split into $totalLayers layers!")
+
+        animator.initBuffer()
     }
 
     private fun loadResolution(resolutionId: Int) {
@@ -136,6 +147,76 @@ class TextureArray(val allTextures: MutableList<Texture>) {
         const val TEXTURE_MAX_RESOLUTION = 1024
 
         val DEBUG_TEXTURE = Texture.getResourceTextureIdentifier(textureName = "block/debug")
+    }
+
+    inner class Animator {
+        val animatedTextures: MutableList<Texture> = mutableListOf()
+        private var animatedBufferDataId = -1
+
+
+        private var currentTick = 0
+        private var lastTickIncrementTime = 0L
+
+
+        lateinit var animatedData: IntArray
+
+        var initialized = false
+            private set
+
+        fun initBuffer() {
+            animatedData = IntArray(32 * 4) // 4 data ints per entry
+
+
+            animatedBufferDataId = glGenBuffers()
+            glBindBuffer(GL_UNIFORM_BUFFER, animatedBufferDataId)
+            glBufferData(GL_UNIFORM_BUFFER, animatedData, GL_DYNAMIC_DRAW)
+            glBindBuffer(GL_UNIFORM_BUFFER, 0)
+            glBindBufferRange(GL_UNIFORM_BUFFER, 0, animatedBufferDataId, 0, animatedData.size.toLong())
+
+
+            initialized = true
+        }
+
+        fun draw() {
+            if (!initialized) {
+                return
+            }
+            if (!Minosoft.getConfig().config.game.animations.textures) {
+                return
+            }
+            val currentTime = System.currentTimeMillis()
+            if (currentTime - lastTickIncrementTime >= ProtocolDefinition.TICK_TIME) {
+                currentTick++
+                lastTickIncrementTime = currentTime
+            }
+
+
+            for (texture in animatedTextures) {
+                val animationProperties = texture.properties.animation!!
+
+                val arrayOffset = animationProperties.animationId * 4
+
+                animatedData[arrayOffset] = (texture.arrayId shl 24) or (texture.arrayLayer + (currentTick % animationProperties.frameCount))
+                animatedData[arrayOffset + 1] = (texture.arrayId shl 24) or (texture.arrayLayer + 1) + (currentTick % animationProperties.frameCount)
+                animatedData[arrayOffset + 2] = 0
+            }
+
+
+            uploadAnimatedStorageBuffer()
+        }
+
+
+        fun use(shader: Shader, bufferName: String) {
+            shader.use()
+
+            shader.setUniformBuffer(bufferName, 0)
+        }
+
+        private fun uploadAnimatedStorageBuffer() {
+            glBindBuffer(GL_UNIFORM_BUFFER, animatedBufferDataId)
+            glBufferSubData(GL_UNIFORM_BUFFER, 0, animatedData)
+            glBindBuffer(GL_UNIFORM_BUFFER, 0)
+        }
     }
 }
 

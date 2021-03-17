@@ -15,18 +15,32 @@
 
 out vec4 outColor;
 
-flat in uint passTextureIdIndex;
-in vec3 passTextureCoordinates;
+flat in uint passFirstTextureIdIndex;
+in vec3 passFirstTextureCoordinates;
+flat in uint passSecondTextureIdIndex;
+in vec3 passSecondTextureCoordinates;
+in float passInterpolateBetweenTextures;
+
 in vec4 passTintColor;
 
 uniform sampler2DArray textureArray[7];
 
 void main() {
-    vec4 texelColor = texture(textureArray[passTextureIdIndex], passTextureCoordinates);
-    if (texelColor.a == 0.0f) { // ToDo: This only works for alpha == 0. What about semi transparency? We would need to sort the faces, etc. See: https://learnopengl.com/Advanced-OpenGL/Blending
+    vec4 firstTexelColor = texture(textureArray[passFirstTextureIdIndex], passFirstTextureCoordinates);
+    if (firstTexelColor.a == 0.0f) { // ToDo: This only works for alpha == 0. What about semi transparency? We would need to sort the faces, etc. See: https://learnopengl.com/Advanced-OpenGL/Blending
         discard;
     }
-    //vec3 mixedColor = mix(texelColor.rgb, passTintColor.rgb, passTintColor.a);
-    vec3 mixedColor = texelColor.rgb * passTintColor.rgb;
-    outColor = vec4(mixedColor, texelColor.a);
+
+    if (passInterpolateBetweenTextures == 0.0f) {
+        outColor = firstTexelColor * passTintColor;
+        return;
+    }
+
+    vec4 secondTexelColor = texture(textureArray[passSecondTextureIdIndex], passSecondTextureCoordinates);
+
+    if (secondTexelColor.a == 0.0f) {
+        discard;
+    }
+
+    outColor = mix(firstTexelColor, secondTexelColor, passInterpolateBetweenTextures) * passTintColor;
 }

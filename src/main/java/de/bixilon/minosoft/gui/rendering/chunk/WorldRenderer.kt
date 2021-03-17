@@ -39,8 +39,6 @@ class WorldRenderer(
     lateinit var chunkShader: Shader
     val allChunkSections = ConcurrentHashMap<ChunkPosition, ConcurrentHashMap<Int, SectionArrayMesh>>()
     val visibleChunks = ConcurrentHashMap<ChunkPosition, ConcurrentHashMap<Int, SectionArrayMesh>>()
-    private var currentTick = 0 // for animation usage
-    private var lastTickIncrementTime = 0L
     val queuedChunks: MutableSet<ChunkPosition> = mutableSetOf()
 
     var meshes = 0
@@ -110,6 +108,7 @@ class WorldRenderer(
 
     override fun postInit() {
         renderWindow.textures.use(chunkShader, "textureArray")
+        renderWindow.textures.animator.use(chunkShader, "AnimatedDataBuffer")
 
         for (block in connection.version.mapping.blockStateIdMap.values) {
             for (model in block.renders) {
@@ -120,13 +119,6 @@ class WorldRenderer(
 
     override fun draw() {
         chunkShader.use()
-        if (Minosoft.getConfig().config.game.animations.textures) {
-            val currentTime = System.currentTimeMillis()
-            if (currentTime - lastTickIncrementTime >= ProtocolDefinition.TICK_TIME) {
-                chunkShader.setInt("animationTick", currentTick++)
-                lastTickIncrementTime = currentTime
-            }
-        }
 
         for ((_, map) in visibleChunks) {
             for ((_, mesh) in map) {

@@ -23,6 +23,8 @@ data class AnimationProperties(
     @Json(name = "frametime") val frameTime: Int = 1,
     val frames: Any = Any(),// ToDo,
 ) {
+    var animationId = -1
+
     var frameCount = -1
 
     fun postInit(texture: Texture) {
