@@ -20,12 +20,17 @@ data class AnimationProperties(
     val interpolate: Boolean = false,
     var width: Int = -1,
     var height: Int = -1,
-    @Json(name = "frametime") val frameTime: Int = 1,
-    val frames: Any = Any(),// ToDo,
+    @Json(name = "frametime") private val frameTime: Int = 1,
+    @Json(name = "frames") private val _frames: List<Any> = listOf(),
 ) {
+    @Transient
+    lateinit var frames: Array<AnimationFrame>
+        private set
+
     var animationId = -1
 
     var frameCount = -1
+        private set
 
     fun postInit(texture: Texture) {
         if (width == -1) {
@@ -36,5 +41,26 @@ data class AnimationProperties(
         }
 
         frameCount = texture.size.y / height
+
+        val frames: MutableList<AnimationFrame> = mutableListOf()
+
+        if (_frames.isEmpty()) {
+            for (i in 0 until frameCount) {
+                frames.add(AnimationFrame(i, frameTime))
+            }
+        } else {
+            for (frame in _frames) {
+                if (frame is Number) {
+                    frames.add(AnimationFrame(frame.toInt(), frameTime))
+                    continue
+                }
+                check(frame is Map<*, *>) { "Invalid frame: $frame" }
+
+                frames.add(AnimationFrame((frame["index"] as Number).toInt(), (frame["time"] as Number?)?.toInt() ?: frameTime))
+            }
+        }
+
+        this.frames = frames.toTypedArray()
+
     }
 }

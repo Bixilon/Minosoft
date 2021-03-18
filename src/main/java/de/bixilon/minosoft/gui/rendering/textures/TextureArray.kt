@@ -17,7 +17,6 @@ import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.assets.MinecraftAssetsManager
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.shader.Shader
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.logging.Log
 import de.matthiasmann.twl.utils.PNGDecoder
 import glm_.vec2.Vec2
@@ -74,7 +73,7 @@ class TextureArray(val allTextures: MutableList<Texture>) {
                 it.add(texture)
                 texture.properties.animation?.let { properties ->
                     properties.animationId = animator.animatedTextures.size
-                    animator.animatedTextures.add(texture)
+                    animator.animatedTextures.add(TextureAnimation(texture))
 
                     val bytesPerTexture = size.x * size.y * PNGDecoder.Format.RGBA.numComponents
                     val fullBuffer = texture.buffer!!
@@ -147,24 +146,22 @@ class TextureArray(val allTextures: MutableList<Texture>) {
         const val TEXTURE_MAX_RESOLUTION = 1024
 
         val DEBUG_TEXTURE = Texture.getResourceTextureIdentifier(textureName = "block/debug")
+
+        private const val INTS_PER_ANIMATED_TEXTURE = 4
     }
 
     inner class Animator {
-        val animatedTextures: MutableList<Texture> = mutableListOf()
+        val animatedTextures: MutableList<TextureAnimation> = mutableListOf()
         private var animatedBufferDataId = -1
 
-
-        private var currentTick = 0
-        private var lastTickIncrementTime = 0L
-
-
-        lateinit var animatedData: IntArray
+        var lastRun = 0L
+        private lateinit var animatedData: IntArray
 
         var initialized = false
             private set
 
         fun initBuffer() {
-            animatedData = IntArray(32 * 4) // 4 data ints per entry
+            animatedData = IntArray(32 * INTS_PER_ANIMATED_TEXTURE) // 4 data ints per entry
 
 
             animatedBufferDataId = glGenBuffers()
@@ -184,21 +181,36 @@ class TextureArray(val allTextures: MutableList<Texture>) {
             if (!Minosoft.getConfig().config.game.animations.textures) {
                 return
             }
+
             val currentTime = System.currentTimeMillis()
-            if (currentTime - lastTickIncrementTime >= ProtocolDefinition.TICK_TIME) {
-                currentTick++
-                lastTickIncrementTime = currentTime
-            }
+            val deltaLastDraw = currentTime - lastRun
+            lastRun = currentTime
+
+            for (textureAnimation in animatedTextures) {
+                var currentFrame = textureAnimation.getCurrentFrame()
+                textureAnimation.currentTime += deltaLastDraw
+
+                if (textureAnimation.currentTime >= currentFrame.animationTime) {
+                    currentFrame = textureAnimation.getAndSetNextFrame()
+                    textureAnimation.currentTime = 0L
+                }
+
+                val nextFrame = textureAnimation.getNextFrame()
+
+                val interpolation = if (textureAnimation.animationProperties.interpolate) {
+                    (textureAnimation.currentTime * 100) / currentFrame.animationTime
+                } else {
+                    0L
+                }
 
 
-            for (texture in animatedTextures) {
-                val animationProperties = texture.properties.animation!!
+                val baseAnimatedData = (textureAnimation.texture.arrayId shl 24) or textureAnimation.texture.arrayLayer
 
-                val arrayOffset = animationProperties.animationId * 4
+                val arrayOffset = textureAnimation.animationProperties.animationId * INTS_PER_ANIMATED_TEXTURE
 
-                animatedData[arrayOffset] = (texture.arrayId shl 24) or (texture.arrayLayer + (currentTick % animationProperties.frameCount))
-                animatedData[arrayOffset + 1] = (texture.arrayId shl 24) or (texture.arrayLayer + 1) + (currentTick % animationProperties.frameCount)
-                animatedData[arrayOffset + 2] = 0
+                animatedData[arrayOffset] = baseAnimatedData or currentFrame.index
+                animatedData[arrayOffset + 1] = baseAnimatedData or nextFrame.index
+                animatedData[arrayOffset + 2] = interpolation.toInt()
             }
 
 

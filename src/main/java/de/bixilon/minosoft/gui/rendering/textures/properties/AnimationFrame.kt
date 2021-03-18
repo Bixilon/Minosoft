@@ -13,8 +13,11 @@
 
 package de.bixilon.minosoft.gui.rendering.textures.properties
 
-data class TextureProperties(
-    val blur: Boolean = false,
-    val clamp: Boolean = false,
-    // ToDo: mipmaps
-)
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+
+data class AnimationFrame(
+    val index: Int,
+    val time: Int,
+) {
+    val animationTime = time * ProtocolDefinition.TICK_TIME
+}
