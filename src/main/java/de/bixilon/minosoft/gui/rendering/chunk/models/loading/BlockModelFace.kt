@@ -112,6 +112,12 @@ class BlockModelFace {
         }
     }
 
+    fun scale(scaleFactor: Double) {
+        for ((i, position) in positions.withIndex()) {
+            positions[i] = position * scaleFactor
+        }
+    }
+
     companion object {
         private fun uvToFloat(uv: Float): Float {
             return (uv) / BlockModelElement.BLOCK_RESOLUTION

@@ -28,7 +28,8 @@ class FluidRenderer(private val stillTextureName: String, private val flowingTex
         val modelMatrix = Mat4().translate(position.toVec3())
         val lightLevel = lightAccessor.getLightLevel(position)
         val heights = calculateHeights(neighbourBlocks, blockState, world, position)
-        val (texture, angle) = if (isLiquidFlowing(heights)) {
+        val isFlowing = isLiquidFlowing(heights)
+        val (texture, angle) = if (isFlowing) {
             Pair(flowing, getRotationAngle(heights))
         } else {
             Pair(still, 0f)
@@ -39,6 +40,9 @@ class FluidRenderer(private val stillTextureName: String, private val flowingTex
                 continue
             }
             val face = BlockModelFace(VecUtil.EMPTY_VECTOR, Vec3(VecUtil.BLOCK_SIZE_VECTOR.x, positions[7].y * 8, VecUtil.BLOCK_SIZE_VECTOR.z), direction)
+            if (isFlowing) {
+                face.scale(0.5)
+            }
             face.rotate(angle)
             val positionTemplate = BlockModelElement.FACE_POSITION_MAP_TEMPLATE[direction.ordinal]
             val drawPositions = arrayOf(positions[positionTemplate[0]], positions[positionTemplate[1]], positions[positionTemplate[2]], positions[positionTemplate[3]])
@@ -68,7 +72,7 @@ class FluidRenderer(private val stillTextureName: String, private val flowingTex
         for (direction in directions!!) {
             angle += getRotationAngle(direction)
         }
-        return angle / directions.size
+        return if (position == 1) { angle / directions.size } else { angle / directions.size + glm.PI.toFloat() }
     }
 
     private fun getRotationAngle(direction: Directions): Float {
