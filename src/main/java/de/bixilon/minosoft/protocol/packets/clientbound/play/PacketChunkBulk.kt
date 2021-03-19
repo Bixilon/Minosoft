@@ -26,7 +26,7 @@ import de.bixilon.minosoft.util.logging.Log
 import java.util.*
 
 class PacketChunkBulk : ClientboundPacket() {
-    val data = HashMap<ChunkPosition, ChunkData>()
+    val data: MutableMap<ChunkPosition, ChunkData?> = mutableMapOf()
 
     override fun read(buffer: InByteBuffer): Boolean {
         val dimension = buffer.connection.player.world.dimension!!
@@ -45,40 +45,43 @@ class PacketChunkBulk : ClientboundPacket() {
             // chunk meta data
             for (i in 0 until chunkCount) {
                 val chunkPosition = buffer.readChunkPosition()
-                val sectionBitMask = longArrayOf(buffer.readUnsignedShort().toLong())
-                val addBitMask = buffer.readUnsignedShort()
-                data[chunkPosition] = ChunkUtil.readChunkPacket(decompressed, dimension, sectionBitMask, addBitMask, true, containsSkyLight)
+                val sectionBitMask = BitSet.valueOf(buffer.readBytes(2)) // ToDo: Test
+                val addBitMask = BitSet.valueOf(buffer.readBytes(2)) // ToDo: Test
+                data[chunkPosition] = ChunkUtil.readLegacyChunk(decompressed, dimension, sectionBitMask, addBitMask, true, containsSkyLight)
             }
             return true
         }
         val containsSkyLight = buffer.readBoolean()
         val chunkCount = buffer.readVarInt()
-        val x = IntArray(chunkCount)
-        val z = IntArray(chunkCount)
-        val sectionBitMask = arrayOfNulls<LongArray>(chunkCount)
+        val chunkData: MutableMap<ChunkPosition, BitSet> = mutableMapOf()
 
         // ToDo: this was still compressed in 14w28a
         for (i in 0 until chunkCount) {
-            x[i] = buffer.readInt()
-            z[i] = buffer.readInt()
-            sectionBitMask[i] = longArrayOf(buffer.readUnsignedShort().toLong())
+            chunkData[buffer.readChunkPosition()] = BitSet.valueOf(buffer.readBytes(2))
         }
-        for (i in 0 until chunkCount) {
-            data[ChunkPosition(x[i], z[i])] = ChunkUtil.readChunkPacket(buffer, dimension, sectionBitMask[i], 0, true, containsSkyLight)
+        for ((chunkPosition, sectionBitMask) in chunkData) {
+            data[chunkPosition] = ChunkUtil.readChunkPacket(buffer, dimension, sectionBitMask, null, true, containsSkyLight)
         }
         return true
     }
 
     override fun handle(connection: Connection) {
         // transform data
-        for ((chunkLocation, data) in data) {
-            data.blocks?.let {
+        for ((chunkPosition, data) in data) {
+            data?.blocks?.let {
                 VersionTweaker.transformSections(it, connection.version.versionId)
             }
-            connection.fireEvent(ChunkDataChangeEvent(connection, chunkLocation, data))
-            val chunk = connection.player.world.getOrCreateChunk(chunkLocation)
-            chunk.setData(data)
-            connection.renderer.renderWindow.worldRenderer.prepareChunk(chunkLocation, chunk)
+
+            data?.let {
+                connection.fireEvent(ChunkDataChangeEvent(connection, chunkPosition, data))
+                val chunk = connection.player.world.getOrCreateChunk(chunkPosition)
+                chunk.setData(data)
+                connection.renderer.renderWindow.worldRenderer.prepareChunk(chunkPosition, chunk)
+            } ?: let {
+                // unload chunk
+                connection.player.world.unloadChunk(chunkPosition)
+                connection.renderer.renderWindow.worldRenderer.unloadChunk(chunkPosition)
+            }
         }
     }
 

@@ -32,20 +32,21 @@ import java.util.*
 
 class PacketChunkData : ClientboundPacket() {
     private val blockEntities = HashMap<BlockPosition, BlockEntityMetaData>()
-    lateinit var position: ChunkPosition
-    val chunkData: ChunkData = ChunkData()
+    lateinit var chunkPosition: ChunkPosition
+    var chunkData: ChunkData? = ChunkData()
+        private set
     var heightMap: CompoundTag? = null
-    private var shouldMerge = false
+    private var isFullChunk = false
 
     override fun read(buffer: InByteBuffer): Boolean {
-        val dimension = buffer.connection.player.world.dimension
-        position = ChunkPosition(buffer.readInt(), buffer.readInt())
+        val dimension = buffer.connection.player.world.dimension!!
+        chunkPosition = ChunkPosition(buffer.readInt(), buffer.readInt())
         if (buffer.versionId < ProtocolVersions.V_20W45A) {
-            shouldMerge = !buffer.readBoolean()
+            isFullChunk = !buffer.readBoolean()
         }
         if (buffer.versionId < ProtocolVersions.V_14W26A) {
-            val sectionBitMasks = longArrayOf(buffer.readUnsignedShort().toLong())
-            val addBitMask = buffer.readUnsignedShort()
+            val sectionBitMask = BitSet.valueOf(buffer.readBytes(2))
+            val addBitMask = BitSet.valueOf(buffer.readBytes(2))
 
             // decompress chunk data
             val decompressed: InByteBuffer = if (buffer.versionId < ProtocolVersions.V_14W28A) {
@@ -53,36 +54,45 @@ class PacketChunkData : ClientboundPacket() {
             } else {
                 buffer
             }
-            chunkData.replace(ChunkUtil.readChunkPacket(decompressed, dimension, sectionBitMasks, addBitMask, !shouldMerge, dimension!!.hasSkyLight))
+            ChunkUtil.readChunkPacket(decompressed, dimension, sectionBitMask, addBitMask, !isFullChunk, dimension.hasSkyLight)?.let {
+                chunkData!!.replace(it)
+            } ?: let {
+                // unload chunk
+                chunkData = null
+            }
             return true
         }
-        val sectionBitMasks: LongArray = when {
+        val sectionBitMask: BitSet = when {
             buffer.versionId < ProtocolVersions.V_15W34C -> {
-                longArrayOf(buffer.readUnsignedShort().toLong())
+                BitSet.valueOf(buffer.readBytes(2))
             }
             buffer.versionId < ProtocolVersions.V_15W36D -> {
-                longArrayOf(buffer.readInt().toLong())
+                BitSet.valueOf(buffer.readBytes(4))
             }
             buffer.versionId < ProtocolVersions.V_21W03A -> {
-                longArrayOf(buffer.readVarInt().toLong())
+                BitSet.valueOf(longArrayOf(buffer.readVarInt().toLong()))
             }
             else -> {
-                buffer.readLongArray()
+                BitSet.valueOf(buffer.readLongArray())
             }
         }
         if (buffer.versionId >= ProtocolVersions.V_1_16_PRE7 && buffer.versionId < ProtocolVersions.V_1_16_2_PRE2) {
-            shouldMerge = buffer.readBoolean()
+            isFullChunk = buffer.readBoolean()
         }
         if (buffer.versionId >= ProtocolVersions.V_18W44A) {
             heightMap = buffer.readNBT() as CompoundTag
         }
-        if (!shouldMerge) {
-            chunkData.biomeAccessor = NoiseBiomeAccessor(buffer.readBiomeArray())
+        if (!isFullChunk) {
+            chunkData!!.biomeAccessor = NoiseBiomeAccessor(buffer.readBiomeArray())
         }
         val size = buffer.readVarInt()
         val lastPos = buffer.position
         if (size > 0) {
-            chunkData.replace(ChunkUtil.readChunkPacket(buffer, dimension, sectionBitMasks, 0, !shouldMerge, dimension!!.hasSkyLight))
+            ChunkUtil.readChunkPacket(buffer, dimension, sectionBitMask, null, !isFullChunk, dimension.hasSkyLight)?.let {
+                chunkData!!.replace(it)
+            } ?: let {
+                chunkData = null
+            }
             // set position of the byte buffer, because of some reasons HyPixel makes some weird stuff and sends way to much 0 bytes. (~ 190k), thanks @pokechu22
             buffer.position = size + lastPos
         }
@@ -101,17 +111,24 @@ class PacketChunkData : ClientboundPacket() {
         for ((position, blockEntityMetaData) in blockEntities) {
             connection.fireEvent(BlockEntityMetaDataChangeEvent(connection, position, null, blockEntityMetaData))
         }
-        chunkData.blocks?.let {
+
+
+        chunkData?.blocks?.let {
             VersionTweaker.transformSections(it, connection.version.versionId)
         }
-        connection.fireEvent(ChunkDataChangeEvent(connection, this))
-        val chunk = connection.player.world.getOrCreateChunk(position)
-        chunk.setData(chunkData)
-        connection.player.world.setBlockEntityData(blockEntities)
-        connection.renderer.renderWindow.worldRenderer.prepareChunk(position, chunk)
+        chunkData?.let {
+            connection.fireEvent(ChunkDataChangeEvent(connection, this))
+            val chunk = connection.player.world.getOrCreateChunk(chunkPosition)
+            chunk.setData(chunkData!!)
+            connection.player.world.setBlockEntityData(blockEntities)
+            connection.renderer.renderWindow.worldRenderer.prepareChunk(chunkPosition, chunk)
+        } ?: let {
+            connection.player.world.unloadChunk(chunkPosition)
+            connection.renderer.renderWindow.worldRenderer.unloadChunk(chunkPosition)
+        }
     }
 
     override fun log() {
-        Log.protocol(String.format("[IN] Chunk packet received (chunk: %s)", position))
+        Log.protocol(String.format("[IN] Chunk packet received (position=%s)", chunkPosition))
     }
 }

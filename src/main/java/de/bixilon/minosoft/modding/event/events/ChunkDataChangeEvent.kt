@@ -23,7 +23,7 @@ import de.bixilon.minosoft.util.nbt.tag.CompoundTag
  */
 class ChunkDataChangeEvent : ConnectionEvent {
     val position: ChunkPosition
-    val chunkData: ChunkData
+    val chunkData: ChunkData?
     val heightMap: CompoundTag?
 
     constructor(connection: Connection?, position: ChunkPosition, chunkData: ChunkData, heightMap: CompoundTag?) : super(connection) {
@@ -39,7 +39,7 @@ class ChunkDataChangeEvent : ConnectionEvent {
     }
 
     constructor(connection: Connection, pkg: PacketChunkData) : super(connection) {
-        position = pkg.position
+        position = pkg.chunkPosition
         chunkData = pkg.chunkData
         heightMap = pkg.heightMap
     }
