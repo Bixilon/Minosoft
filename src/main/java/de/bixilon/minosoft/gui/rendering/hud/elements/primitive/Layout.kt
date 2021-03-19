@@ -14,10 +14,10 @@
 package de.bixilon.minosoft.gui.rendering.hud.elements.primitive
 
 import glm_.mat4x4.Mat4
-import glm_.vec2.Vec2
+import glm_.vec2.Vec2i
 
 open class Layout(
-    start: Vec2,
+    start: Vec2i,
     val z: Int,
 ) : Element(start) {
     private val children: MutableList<Element> = mutableListOf()
@@ -44,7 +44,7 @@ open class Layout(
 
     override fun recalculateSize() {
         if (children.isEmpty()) {
-            size = Vec2(0, 0)
+            size = Vec2i(0, 0)
         } else {
             for (child in children) {
                 checkSize(child.start + child.size)
@@ -58,7 +58,7 @@ open class Layout(
         parent?.clearCache()
     }
 
-    private fun checkSize(vec2: Vec2) {
+    private fun checkSize(vec2: Vec2i) {
         var changed = false
         if (vec2.x > size.x) {
             size.x = vec2.x
@@ -76,16 +76,16 @@ open class Layout(
 
     fun pushChildrenToRight(offset: Float = 0.0f) {
         for (child in children) {
-            child.start = Vec2((size.x - child.size.x) - offset, child.start.y)
+            child.start = Vec2i((size.x - child.size.x) - offset, child.start.y)
             child.clearCache()
         }
     }
 
-    private fun addToStart(start: Vec2, elementPosition: Vec2): Vec2 {
-        return Vec2(start.x + elementPosition.x, start.y - elementPosition.y)
+    private fun addToStart(start: Vec2i, elementPosition: Vec2i): Vec2i {
+        return Vec2i(start.x + elementPosition.x, start.y - elementPosition.y)
     }
 
-    override fun prepareCache(start: Vec2, scaleFactor: Float, matrix: Mat4, z: Int) {
+    override fun prepareCache(start: Vec2i, scaleFactor: Float, matrix: Mat4, z: Int) {
         val normalStart = addToStart(start, this.start * scaleFactor)
 
 

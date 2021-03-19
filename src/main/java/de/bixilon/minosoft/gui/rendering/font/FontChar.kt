@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.font
 import de.bixilon.minosoft.gui.rendering.hud.atlas.TextureLike
 import de.bixilon.minosoft.gui.rendering.textures.Texture
 import glm_.vec2.Vec2
+import glm_.vec2.Vec2i
 
 data class FontChar(
     override val texture: Texture,
@@ -29,9 +30,8 @@ data class FontChar(
         private set
     override var uvEnd = Vec2()
         private set
-    override val size = Vec2(endPixel - startPixel, height)
+    override val size = Vec2i(endPixel - startPixel, height)
 
-    var width = endPixel - startPixel
 
     fun calculateUV(letterWidth: Int, atlasWidthSinglePixel: Float, atlasHeightSinglePixel: Float) {
         uvStart = Vec2(atlasWidthSinglePixel * (letterWidth * column + startPixel), atlasHeightSinglePixel * (height * row))

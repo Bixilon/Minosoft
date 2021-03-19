@@ -21,6 +21,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.Util
 import de.bixilon.minosoft.util.hash.BetterHashSet
 import glm_.vec2.Vec2
+import glm_.vec2.Vec2i
 import javafx.animation.Animation
 import javafx.animation.KeyFrame
 import javafx.animation.Timeline
@@ -203,7 +204,7 @@ open class TextComponent : ChatComponent {
         return nodes
     }
 
-    override fun prepareRender(startPosition: Vec2, offset: Vec2, font: Font, textElement: TextElement, z: Int, retMaxSize: Vec2) {
+    override fun prepareRender(startPosition: Vec2i, offset: Vec2i, font: Font, textElement: TextElement, z: Int, retMaxSize: Vec2i) {
         val color = this.color ?: ProtocolDefinition.DEFAULT_COLOR
 
 
@@ -221,19 +222,19 @@ open class TextComponent : ChatComponent {
                 continue
             }
             val fontChar = font.getChar(char)
-            val scaledWidth = fontChar.width * (Font.CHAR_HEIGHT / fontChar.height.toFloat())
+            val scaledWidth = (fontChar.size.x * (Font.CHAR_HEIGHT / fontChar.height.toFloat())).toInt()
 
             val charStart = startPosition + offset
             textElement.addChild(ImageElement(charStart, fontChar, charStart + Vec2(scaledWidth, Font.CHAR_HEIGHT), z, color))
 
             // ad spacer between chars
-            offset += Vec2(scaledWidth + Font.SPACE_BETWEEN_CHARS, 0f)
+            offset += Vec2i(scaledWidth + Font.SPACE_BETWEEN_CHARS, 0f)
             if (offset.x > retMaxSize.x) {
                 retMaxSize.x += scaledWidth + Font.SPACE_BETWEEN_CHARS
             }
             if (offset.y >= retMaxSize.y) {
                 if (retMaxSize.y < fontChar.height) {
-                    retMaxSize.y = fontChar.height.toFloat()
+                    retMaxSize.y = fontChar.height
                 }
             }
         }

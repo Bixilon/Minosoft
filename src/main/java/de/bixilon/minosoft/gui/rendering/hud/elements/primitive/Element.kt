@@ -15,12 +15,12 @@ package de.bixilon.minosoft.gui.rendering.hud.elements.primitive
 
 import de.bixilon.minosoft.gui.rendering.hud.HUDCacheMesh
 import glm_.mat4x4.Mat4
-import glm_.vec2.Vec2
+import glm_.vec2.Vec2i
 
 abstract class Element(
-    private var _start: Vec2,
+    private var _start: Vec2i,
 ) {
-    var start: Vec2
+    var start: Vec2i
         get() {
             return _start
         }
@@ -32,7 +32,7 @@ abstract class Element(
 
     val cache = HUDCacheMesh()
     open var parent: Element? = null
-    var size: Vec2 = Vec2()
+    var size: Vec2i = Vec2i()
 
     abstract fun recalculateSize()
 
@@ -40,7 +40,7 @@ abstract class Element(
         return cache.isEmpty()
     }
 
-    fun checkCache(start: Vec2, scaleFactor: Float, matrix: Mat4, z: Int = 1) {
+    fun checkCache(start: Vec2i, scaleFactor: Float, matrix: Mat4, z: Int = 1) {
         if (!needsCacheUpdate()) {
             return
         }
@@ -51,5 +51,5 @@ abstract class Element(
         cache.clear()
     }
 
-    abstract fun prepareCache(start: Vec2, scaleFactor: Float, matrix: Mat4, z: Int = 1)
+    abstract fun prepareCache(start: Vec2i, scaleFactor: Float, matrix: Mat4, z: Int = 1)
 }

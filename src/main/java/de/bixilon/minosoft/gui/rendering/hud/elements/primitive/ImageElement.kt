@@ -18,13 +18,14 @@ import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.hud.atlas.TextureLike
 import glm_.mat4x4.Mat4
 import glm_.vec2.Vec2
+import glm_.vec2.Vec2i
 import glm_.vec3.Vec3
 import glm_.vec4.Vec4
 
 class ImageElement(
-    start: Vec2 = Vec2(0, 0),
+    start: Vec2i = Vec2i(0, 0),
     var textureLike: TextureLike?,
-    end: Vec2 = textureLike?.size ?: Vec2(0, 0),
+    end: Vec2i = textureLike?.size ?: Vec2i(0, 0),
     val z: Int = 0,
     val tintColor: RGBColor? = null,
 ) : EndElement(start, end) {
@@ -38,15 +39,15 @@ class ImageElement(
     }
 
 
-    private fun addToStart(start: Vec2, elementPosition: Vec2): Vec2 {
-        return Vec2(start.x + elementPosition.x, start.y - elementPosition.y)
+    private fun addToStart(start: Vec2i, elementPosition: Vec2i): Vec2i {
+        return Vec2i(start.x + elementPosition.x, start.y - elementPosition.y)
     }
 
-    private fun addToEnd(start: Vec2, elementPosition: Vec2): Vec2 {
-        return Vec2(start.x + elementPosition.x, start.y - elementPosition.y)
+    private fun addToEnd(start: Vec2i, elementPosition: Vec2i): Vec2i {
+        return Vec2i(start.x + elementPosition.x, start.y - elementPosition.y)
     }
 
-    override fun prepareCache(start: Vec2, scaleFactor: Float, matrix: Mat4, z: Int) {
+    override fun prepareCache(start: Vec2i, scaleFactor: Float, matrix: Mat4, z: Int) {
         val ourStart = addToStart(start, this.start * scaleFactor)
         val modelStart = matrix * Vec4(ourStart, 1.0f, 1.0f)
         val ourEnd = addToEnd(start, this.end * scaleFactor)

@@ -16,20 +16,20 @@ package de.bixilon.minosoft.gui.rendering.hud.atlas
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import glm_.glm
-import glm_.vec2.Vec2
+import glm_.vec2.Vec2i
 
 data class Vec2Binding(
-    val start: Vec2,
-    val end: Vec2,
+    val start: Vec2i,
+    val end: Vec2i,
 ) {
-    val size: Vec2 = glm.abs(Vec2(start - end)) + 1
+    val size: Vec2i = glm.abs(Vec2i(start - end)) + 1
 
     companion object {
 
         fun deserialize(json: JsonElement): Vec2Binding {
             check(json is JsonObject)
 
-            return Vec2Binding(json["start"].asJsonArray.let { Vec2(it[0].asInt, it[1].asInt) }, json["end"].asJsonArray.let { Vec2(it[0].asInt, it[1].asInt) })
+            return Vec2Binding(json["start"].asJsonArray.let { Vec2i(it[0].asInt, it[1].asInt) }, json["end"].asJsonArray.let { Vec2i(it[0].asInt, it[1].asInt) })
         }
     }
 }

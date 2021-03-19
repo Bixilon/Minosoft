@@ -17,6 +17,7 @@ import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.textures.Texture
 import glm_.vec2.Vec2
+import glm_.vec2.Vec2i
 
 data class HUDAtlasElement(
     override val texture: Texture,
@@ -30,13 +31,13 @@ data class HUDAtlasElement(
         get() = _uvStart
     override val uvEnd: Vec2
         get() = _uvEnd
-    override val size: Vec2
+    override val size: Vec2i
         get() = binding.size
 
 
     fun postInit() {
-        _uvStart = binding.start * texture.arraySinglePixelSize
-        _uvEnd = (binding.end - Vec2(0, 1)) * texture.arraySinglePixelSize
+        _uvStart = Vec2(binding.start) * texture.arraySinglePixelSize
+        _uvEnd = (Vec2(binding.end) - Vec2(0, 1)) * texture.arraySinglePixelSize
     }
 
     companion object {

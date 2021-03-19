@@ -19,10 +19,10 @@ import de.bixilon.minosoft.gui.rendering.font.Font
 import de.bixilon.minosoft.gui.rendering.hud.atlas.HUDAtlasElement
 import de.bixilon.minosoft.util.MMath
 import glm_.mat4x4.Mat4
-import glm_.vec2.Vec2
+import glm_.vec2.Vec2i
 
 class HealthBar(
-    start: Vec2 = Vec2(0, 0),
+    start: Vec2i = Vec2i(0, 0),
     var blackHeartContainerAtlasElement: HUDAtlasElement,
     var whiteHeartContainerAtlasElement: HUDAtlasElement,
     var halfHartAtlasElement: HUDAtlasElement,
@@ -36,7 +36,7 @@ class HealthBar(
     private val singleHeartSize = blackHeartContainerAtlasElement.binding.size
     private val width = singleHeartSize.x * MAX_HEARTS_IN_ROW
 
-    private val alternativeText = TextElement(font = font, start = Vec2(), background = false)
+    private val alternativeText = TextElement(font = font, start = Vec2i(), background = false)
     private var _value = 0.0f
     var value: Float
         get() = _value
@@ -54,13 +54,13 @@ class HealthBar(
 
         if (value >= textReplaceValue) {
             alternativeText.text = TextComponent(value.toString()).setColor(textColor)
-            alternativeText.start = Vec2((width - alternativeText.size.x) / 2, 0)
+            alternativeText.start = Vec2i((width - alternativeText.size.x) / 2, 0)
 
             addChild(alternativeText)
             return
         }
 
-        val offset = Vec2(0, 0)
+        val offset = Vec2i(0, 0)
         val containerCount = (maxValue + 1.0f).toInt() / 2
 
         // heart container
@@ -77,12 +77,12 @@ class HealthBar(
                 offset.x += singleHeartSize.x - 1
             }
             offset.y += singleHeartSize.y
-            offset.x = 0.0f
+            offset.x = 0
         }
 
 
-        offset.x = 0.0f
-        offset.y = 0.0f
+        offset.x = 0
+        offset.y = 0
         val halfHeartCount = MMath.round10Up(value)
         val fullHeartCount = halfHeartCount / 2
 
@@ -115,17 +115,17 @@ class HealthBar(
                 offset.x += singleHeartSize.x - 1
             }
             offset.y += singleHeartSize.y
-            offset.x = 0.0f
+            offset.x = 0
         }
     }
 
-    override fun prepareCache(start: Vec2, scaleFactor: Float, matrix: Mat4, z: Int) {
+    override fun prepareCache(start: Vec2i, scaleFactor: Float, matrix: Mat4, z: Int) {
         prepare()
         super.prepareCache(start, scaleFactor, matrix, z)
     }
 
 
-    private fun drawHeart(elementStart: Vec2, element: HUDAtlasElement, z: Int) {
+    private fun drawHeart(elementStart: Vec2i, element: HUDAtlasElement, z: Int) {
         addChild(ImageElement(elementStart, element, elementStart + singleHeartSize, this.z + z))
     }
 

@@ -32,6 +32,7 @@ import de.bixilon.minosoft.util.json.ResourceLocationJsonMap
 import glm_.glm
 import glm_.mat4x4.Mat4
 import glm_.vec2.Vec2
+import glm_.vec2.Vec2i
 
 class HUDRenderer(val connection: Connection, val renderWindow: RenderWindow) : Renderer {
     private val hudElements: MutableMap<ResourceLocation, Pair<HUDElementProperties, HUDElement>> = mutableMapOf()
@@ -173,10 +174,8 @@ class HUDRenderer(val connection: Connection, val renderWindow: RenderWindow) : 
 
         if (forcePrepare || needsUpdate) {
             for ((elementProperties, hudElement) in enabledHUDElement.values) {
-
-
                 val realScaleFactor = elementProperties.scale * Minosoft.getConfig().config.game.hud.scale.scale
-                val realSize = Vec2(hudElement.layout.fakeX ?: hudElement.layout.size.x, hudElement.layout.fakeY ?: hudElement.layout.size.y) * realScaleFactor
+                val realSize = Vec2i(hudElement.layout.fakeX ?: hudElement.layout.size.x, hudElement.layout.fakeY ?: hudElement.layout.size.y) * realScaleFactor
 
                 val elementStart = getRealPosition(realSize, elementProperties, renderWindow.screenDimensions)
 
@@ -192,7 +191,7 @@ class HUDRenderer(val connection: Connection, val renderWindow: RenderWindow) : 
     }
 
 
-    private fun getRealPosition(elementSize: Vec2, elementProperties: HUDElementProperties, screenDimensions: Vec2): Vec2 {
+    private fun getRealPosition(elementSize: Vec2i, elementProperties: HUDElementProperties, screenDimensions: Vec2i): Vec2i {
         val halfScreenDimensions = screenDimensions / 2
         val halfElementSize = elementSize / 2
         val realPosition = elementProperties.position * halfScreenDimensions
@@ -214,6 +213,6 @@ class HUDRenderer(val connection: Connection, val renderWindow: RenderWindow) : 
         } else {
             y += halfElementSize.y
         }
-        return Vec2(x, y)
+        return Vec2i(x, y)
     }
 }

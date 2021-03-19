@@ -17,12 +17,12 @@ import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.font.Font
-import glm_.vec2.Vec2
+import glm_.vec2.Vec2i
 
 class TextElement(
     private var _text: ChatComponent = ChatComponent.valueOf(""),
     private val font: Font,
-    start: Vec2 = Vec2(0, 0),
+    start: Vec2i = Vec2i(0, 0),
     z: Int = 1,
     var background: Boolean = true,
 ) : Layout(start, z) {
@@ -30,7 +30,7 @@ class TextElement(
     var text: ChatComponent
         get() = _text
         set(value) {
-            size = Vec2(0, 0)
+            size = Vec2i(0, 0)
             _text = value
             prepare()
         }
@@ -47,19 +47,19 @@ class TextElement(
     private fun prepare() {
         clear()
         size = if (text.message.isBlank()) {
-            Vec2(0, Font.CHAR_HEIGHT)
+            Vec2i(0, Font.CHAR_HEIGHT)
         } else {
-            val textSize = Vec2()
-            text.prepareRender(Vec2(0, 1), Vec2(), font, this, this.z + z + 1, textSize)
+            val textSize = Vec2i()
+            text.prepareRender(Vec2i(0, 1), Vec2i(), font, this, this.z + z + 1, textSize)
 
             if (background) {
                 drawBackground(textSize + 1, z)
             }
-            Vec2(textSize + 1)
+            Vec2i(textSize + 1)
         }
     }
 
-    private fun drawBackground(end: Vec2, z: Int, tintColor: RGBColor = RenderConstants.TEXT_BACKGROUND_COLOR) {
-        addChild(ImageElement(Vec2(0, 0), null, end, this.z + z, tintColor))
+    private fun drawBackground(end: Vec2i, z: Int, tintColor: RGBColor = RenderConstants.TEXT_BACKGROUND_COLOR) {
+        addChild(ImageElement(Vec2i(0, 0), null, end, this.z + z, tintColor))
     }
 }

@@ -15,10 +15,11 @@ package de.bixilon.minosoft.gui.rendering.hud.atlas
 
 import de.bixilon.minosoft.gui.rendering.textures.Texture
 import glm_.vec2.Vec2
+import glm_.vec2.Vec2i
 
 interface TextureLike {
     val texture: Texture
     val uvStart: Vec2
     val uvEnd: Vec2
-    val size: Vec2
+    val size: Vec2i
 }

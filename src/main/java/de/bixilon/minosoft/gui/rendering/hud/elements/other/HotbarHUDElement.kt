@@ -29,6 +29,7 @@ import de.bixilon.minosoft.modding.event.events.HeldItemChangeEvent
 import de.bixilon.minosoft.modding.event.events.UpdateHealthEvent
 import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketChangeGameState
 import glm_.vec2.Vec2
+import glm_.vec2.Vec2i
 
 class HotbarHUDElement(
     hudRender: HUDRenderer,
@@ -127,17 +128,17 @@ class HotbarHUDElement(
 
             // if (hudRenderer.connection.player.level != 0) {
             // experience
-            levelText.start = Vec2((hotbarBase.size.x - levelText.size.x) / 2, layout.size.y - (levelText.size.y - ELEMENT_PADDING) + ELEMENT_PADDING)
+            levelText.start = Vec2i((hotbarBase.size.x - levelText.size.x) / 2, layout.size.y - (levelText.size.y - ELEMENT_PADDING) + ELEMENT_PADDING)
             layout.addChild(levelText)
             // }
 
             // experience bar
-            experienceBar.start = Vec2(0, levelText.start.y + levelText.size.y - ELEMENT_PADDING)
+            experienceBar.start = Vec2i(0, levelText.start.y + levelText.size.y - ELEMENT_PADDING)
             layout.addChild(experienceBar)
         }
 
 
-        hotbarBase.start = Vec2(0, layout.size.y + ELEMENT_PADDING)
+        hotbarBase.start = Vec2i(0, layout.size.y + ELEMENT_PADDING)
 
         layout.addChild(hotbarBase)
     }
@@ -147,7 +148,7 @@ class HotbarHUDElement(
     }
 
     class HotbarBaseElement(
-        start: Vec2 = Vec2(0, 0),
+        start: Vec2i = Vec2i(0, 0),
         val baseHUDAtlasElement: HUDAtlasElement,
         val frameHUDAtlasElement: HUDAtlasElement,
         z: Int = 1,

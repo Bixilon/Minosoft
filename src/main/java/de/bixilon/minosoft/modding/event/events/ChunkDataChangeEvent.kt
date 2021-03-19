@@ -26,13 +26,13 @@ class ChunkDataChangeEvent : ConnectionEvent {
     val chunkData: ChunkData?
     val heightMap: CompoundTag?
 
-    constructor(connection: Connection?, position: ChunkPosition, chunkData: ChunkData, heightMap: CompoundTag?) : super(connection) {
+    constructor(connection: Connection, position: ChunkPosition, chunkData: ChunkData, heightMap: CompoundTag?) : super(connection) {
         this.position = position
         this.chunkData = chunkData
         this.heightMap = heightMap
     }
 
-    constructor(connection: Connection?, position: ChunkPosition, chunkData: ChunkData) : super(connection) {
+    constructor(connection: Connection, position: ChunkPosition, chunkData: ChunkData) : super(connection) {
         this.position = position
         this.chunkData = chunkData
         heightMap = CompoundTag()

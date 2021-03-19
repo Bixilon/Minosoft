@@ -81,7 +81,7 @@ object FontLoader {
                 fontChar.startPixel = 0
                 fontChar.endPixel = width / 2 // <- Divide by 2, else spaces look really big...
             }
-            fontChar.width = fontChar.endPixel - fontChar.startPixel
+            fontChar.size.x = fontChar.endPixel - fontChar.startPixel
 
         }
         atlasTexture.buffer!!.flip()

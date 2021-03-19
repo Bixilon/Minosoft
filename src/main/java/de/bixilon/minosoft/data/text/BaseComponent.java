@@ -23,7 +23,7 @@ import de.bixilon.minosoft.gui.rendering.hud.elements.primitive.TextElement;
 import de.bixilon.minosoft.modding.event.events.annotations.Unsafe;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import de.bixilon.minosoft.util.hash.BetterHashSet;
-import glm_.vec2.Vec2;
+import glm_.vec2.Vec2i;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 
@@ -212,7 +212,7 @@ public class BaseComponent extends ChatComponent {
     }
 
     @Override
-    public void prepareRender(Vec2 startPosition, Vec2 offset, Font font, TextElement textElement, int z, Vec2 retMaxSize) {
+    public void prepareRender(Vec2i startPosition, Vec2i offset, Font font, TextElement textElement, int z, Vec2i retMaxSize) {
         for (var chatPart : this.parts) {
             chatPart.prepareRender(startPosition, offset, font, textElement, z, retMaxSize);
         }

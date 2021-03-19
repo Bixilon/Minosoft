@@ -17,11 +17,12 @@ import de.bixilon.minosoft.gui.rendering.hud.atlas.HUDAtlasElement
 import de.bixilon.minosoft.gui.rendering.hud.atlas.TextureLike
 import de.bixilon.minosoft.gui.rendering.textures.Texture
 import glm_.vec2.Vec2
+import glm_.vec2.Vec2i
 
 class ProgressBar(
-    start: Vec2 = Vec2(0, 0),
+    start: Vec2i = Vec2i(0, 0),
     val emptyAtlasElement: HUDAtlasElement,
-    end: Vec2 = emptyAtlasElement.size,
+    end: Vec2i = emptyAtlasElement.size,
     val fullAtlasElement: HUDAtlasElement,
     z: Int = 1,
 ) : Layout(start, z) {
@@ -56,7 +57,7 @@ class ProgressBar(
                 get() = fullAtlasElement.uvStart
             override val uvEnd: Vec2
                 get() = Vec2((fullAtlasElement.uvEnd.x - fullAtlasElement.uvStart.x) * progress + fullAtlasElement.uvStart.x, fullAtlasElement.uvEnd.y)
-            override val size: Vec2
+            override val size: Vec2i
                 get() = this@ProgressBar.size
         }
 

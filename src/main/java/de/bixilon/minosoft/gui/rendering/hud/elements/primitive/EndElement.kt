@@ -13,13 +13,13 @@
 
 package de.bixilon.minosoft.gui.rendering.hud.elements.primitive
 
-import glm_.vec2.Vec2
+import glm_.vec2.Vec2i
 
 abstract class EndElement(
-    start: Vec2,
-    private var _end: Vec2,
+    start: Vec2i,
+    private var _end: Vec2i,
 ) : Element(start) {
-    var end: Vec2
+    var end: Vec2i
         get() {
             return _end
         }
