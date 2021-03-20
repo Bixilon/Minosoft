@@ -33,7 +33,7 @@ uniform mat4 viewProjectionMatrix;
 
 layout(std140) uniform AnimatedDataBuffer
 {
-    uvec4 globalAnimationData[32];// ToDo: WTF. Why 4 values??
+    uvec4 globalAnimationData[128];// ToDo: WTF. Why 4 values??
 };
 
 

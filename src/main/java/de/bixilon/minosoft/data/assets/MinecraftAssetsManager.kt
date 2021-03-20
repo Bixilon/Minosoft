@@ -169,7 +169,6 @@ class MinecraftAssetsManager(
         return ret.toMap()
     }
 
-
     override fun getAssetSize(hash: String): Long {
         val file = File(FileAssetsManager.getAssetDiskPath(hash))
         return if (file.exists()) {
@@ -178,7 +177,6 @@ class MinecraftAssetsManager(
             -1
         }
     }
-
 
     override fun getAssetSize(resourceLocation: ResourceLocation): Long {
         return getAssetSize(getAssetHash(resourceLocation))

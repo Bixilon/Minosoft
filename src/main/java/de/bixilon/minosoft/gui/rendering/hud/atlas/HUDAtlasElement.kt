@@ -24,20 +24,17 @@ data class HUDAtlasElement(
     val binding: Vec2Binding,
     val slots: Map<Int, Vec2Binding> = mapOf(),
 ) : TextureLike {
-    private var _uvStart = Vec2()
-    private var _uvEnd = Vec2()
-
-    override val uvStart: Vec2
-        get() = _uvStart
-    override val uvEnd: Vec2
-        get() = _uvEnd
+    override var uvStart: Vec2 = Vec2()
+        private set
+    override var uvEnd: Vec2 = Vec2()
+        private set
     override val size: Vec2i
         get() = binding.size
 
 
     fun postInit() {
-        _uvStart = Vec2(binding.start) * texture.arraySinglePixelSize
-        _uvEnd = (Vec2(binding.end) - Vec2(0, 1)) * texture.arraySinglePixelSize
+        uvStart = Vec2(binding.start) * texture.arraySinglePixelSize
+        uvEnd = (Vec2(binding.end) - Vec2(0, 1)) * texture.arraySinglePixelSize
     }
 
     companion object {

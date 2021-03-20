@@ -90,7 +90,15 @@ class Texture(
 
     companion object {
         fun getResourceTextureIdentifier(namespace: String = ProtocolDefinition.DEFAULT_NAMESPACE, textureName: String): ResourceLocation {
+            var namespace = namespace
             var texturePath = textureName
+
+            if (texturePath.contains(":")) {
+                val split = texturePath.split(":")
+                namespace = split[0]
+                texturePath = split[1]
+            }
+
             texturePath = texturePath.removePrefix("/")
 
             if (!texturePath.startsWith("textures/")) {
