@@ -18,7 +18,8 @@ import glm_.vec2.Vec2i
 abstract class EndElement(
     start: Vec2i,
     private var _end: Vec2i,
-) : Element(start) {
+    initialCacheSize: Int = 10000,
+) : Element(start, initialCacheSize = initialCacheSize) {
     var end: Vec2i
         get() {
             return _end

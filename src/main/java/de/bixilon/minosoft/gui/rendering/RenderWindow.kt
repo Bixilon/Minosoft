@@ -383,7 +383,9 @@ class RenderWindow(
             }
             renderStats.endFrame()
 
-            glfwSetWindowTitle(windowId, "FPS: ${renderStats.fpsLastSecond}")
+            if (RenderConstants.SHOW_FPS_IN_WINDOW_TITLE) {
+                glfwSetWindowTitle(windowId, "Minosoft | FPS: ${renderStats.fpsLastSecond}")
+            }
         }
     }
 

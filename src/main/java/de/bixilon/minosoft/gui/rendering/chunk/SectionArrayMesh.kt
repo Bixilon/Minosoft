@@ -24,20 +24,12 @@ import org.lwjgl.opengl.GL11.GL_FLOAT
 import org.lwjgl.opengl.GL20.glEnableVertexAttribArray
 import org.lwjgl.opengl.GL20.glVertexAttribPointer
 
-class SectionArrayMesh : Mesh() {
+class SectionArrayMesh : Mesh(initialCacheSize = 100000) {
     var lowestBlockHeight = 0
     var highestBlockHeight = 0
 
     fun addVertex(position: Vec3, textureCoordinates: Vec2, texture: Texture, tintColor: RGBColor?, lightLevel: Int = 14) {
         val data = data!!
-        data.add(position.x)
-        data.add(position.y)
-        data.add(position.z)
-        data.add(textureCoordinates.x * texture.uvEnd.x)
-        data.add(textureCoordinates.y * texture.uvEnd.y)
-        data.add(Float.fromBits((texture.arrayId shl 24) or texture.arrayLayer))
-
-        data.add(Float.fromBits(texture.properties.animation?.animationId ?: -1))
 
         val color = tintColor ?: ChatColors.WHITE
 
@@ -45,8 +37,17 @@ class SectionArrayMesh : Mesh() {
 
         val lightColor = RGBColor(color.red / lightFactor, color.green / lightFactor, color.blue / lightFactor)
 
-
-        data.add(Float.fromBits(lightColor.color ushr 8))
+        data.addAll(floatArrayOf(
+            position.x,
+            position.y,
+            position.z,
+            textureCoordinates.x * texture.uvEnd.x,
+            textureCoordinates.y * texture.uvEnd.y,
+            Float.fromBits((texture.arrayId shl 24) or texture.arrayLayer),
+            Float.fromBits(texture.properties.animation?.animationId ?: -1),
+            Float.fromBits(lightColor.color ushr 8),
+        )
+        )
     }
 
     override fun load() {

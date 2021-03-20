@@ -28,7 +28,8 @@ class ImageElement(
     end: Vec2i = textureLike?.size ?: Vec2i(0, 0),
     val z: Int = 0,
     val tintColor: RGBColor? = null,
-) : EndElement(start, end) {
+) : EndElement(start, end, initialCacheSize = 42) {
+
     init {
         recalculateSize()
     }

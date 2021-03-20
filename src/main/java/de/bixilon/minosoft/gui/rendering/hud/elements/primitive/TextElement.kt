@@ -49,7 +49,7 @@ class TextElement(
         size = if (text.message.isBlank()) {
             Vec2i(0, Font.CHAR_HEIGHT)
         } else {
-            val textSize = Vec2i()
+            val textSize = Vec2i(0, 0)
             text.prepareRender(Vec2i(0, 1), Vec2i(), font, this, this.z + z + 1, textSize)
 
             if (background) {

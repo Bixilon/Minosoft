@@ -19,6 +19,7 @@ import glm_.vec2.Vec2i
 
 abstract class Element(
     private var _start: Vec2i,
+    initialCacheSize: Int = 1000,
 ) {
     var start: Vec2i
         get() {
@@ -30,7 +31,7 @@ abstract class Element(
             clearCache()
         }
 
-    val cache = HUDCacheMesh()
+    val cache = HUDCacheMesh(initialCacheSize)
     open var parent: Element? = null
     var size: Vec2i = Vec2i()
 

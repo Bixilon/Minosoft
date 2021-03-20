@@ -36,7 +36,7 @@ class HealthBar(
     private val singleHeartSize = blackHeartContainerAtlasElement.binding.size
     private val width = singleHeartSize.x * MAX_HEARTS_IN_ROW
 
-    private val alternativeText = TextElement(font = font, start = Vec2i(), background = false)
+    private val alternativeText = TextElement(font = font, start = Vec2i(0, 0), background = false)
     private var _value = 0.0f
     var value: Float
         get() = _value

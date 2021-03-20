@@ -13,13 +13,15 @@
 
 package de.bixilon.minosoft.gui.rendering.util
 
-import org.apache.commons.collections.primitives.ArrayFloatList
+import de.bixilon.minosoft.util.collections.ArrayFloatList
 import org.lwjgl.opengl.GL11.GL_TRIANGLES
 import org.lwjgl.opengl.GL11.glDrawArrays
 import org.lwjgl.opengl.GL30.*
 
-abstract class Mesh {
-    protected var data: ArrayFloatList? = ArrayFloatList()
+abstract class Mesh(
+    initialCacheSize: Int = 10000,
+) {
+    protected var data: ArrayFloatList? = ArrayFloatList(initialCacheSize)
     private var vao: Int = -1
     private var vbo: Int = -1
     var trianglesCount: Int = -1
@@ -34,7 +36,7 @@ abstract class Mesh {
     protected fun initializeBuffers(floatsPerVertex: Int) {
         check(state == MeshStates.PREPARING) { "Mesh already loaded: $state" }
 
-        trianglesCount = data!!.size() / floatsPerVertex
+        trianglesCount = data!!.size / floatsPerVertex
         vao = glGenVertexArrays()
         vbo = glGenBuffers()
         glBindVertexArray(vao)

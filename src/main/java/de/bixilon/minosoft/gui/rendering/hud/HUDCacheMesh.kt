@@ -15,33 +15,37 @@ package de.bixilon.minosoft.gui.rendering.hud
 
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.textures.Texture
+import de.bixilon.minosoft.util.collections.ArrayFloatList
 import glm_.vec2.Vec2
 import glm_.vec3.Vec3
-import org.apache.commons.collections.primitives.ArrayFloatList
 
-class HUDCacheMesh {
-    private val data = ArrayFloatList()
+class HUDCacheMesh(
+    initialCacheSize: Int = 1000,
+) {
+    private val data = ArrayFloatList(initialCacheSize)
 
     val cache: ArrayFloatList
         get() = data
 
     fun addVertex(position: Vec3, textureCoordinates: Vec2, texture: Texture?, tintColor: RGBColor? = null) {
-        data.add(position.x)
-        data.add(position.y)
-        data.add(position.z)
-        data.add(textureCoordinates.x)
-        data.add(textureCoordinates.y)
-        data.add(Float.fromBits((texture?.arrayLayer ?: 0) or ((texture?.arrayId ?: 0) shl 24)))
+        data.addAll(floatArrayOf(
+            position.x,
+            position.y,
+            position.z,
+            textureCoordinates.x,
+            textureCoordinates.y,
+            Float.fromBits((texture?.arrayLayer ?: 0) or ((texture?.arrayId ?: 0) shl 24)),
+            if (tintColor == null) {
+                0f
+            } else {
+                Float.fromBits(tintColor.color)
+            },
+        ))
 
-        if (tintColor == null) {
-            data.add(0f)
-        } else {
-            data.add(Float.fromBits(tintColor.color))
-        }
     }
 
     val size: Int
-        get() = data.size()
+        get() = data.size
 
     fun isEmpty(): Boolean {
         return data.isEmpty

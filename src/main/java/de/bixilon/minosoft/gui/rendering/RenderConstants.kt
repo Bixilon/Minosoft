@@ -46,6 +46,7 @@ object RenderConstants {
     const val CHUNK_SECTIONS_PER_MESH = 1
 
     const val FRUSTUM_CULLING_ENABLED = true
+    const val SHOW_FPS_IN_WINDOW_TITLE = true
 
     const val MAXIMUM_CALLS_PER_FRAME = 10
 }

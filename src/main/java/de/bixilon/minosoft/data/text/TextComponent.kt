@@ -215,10 +215,11 @@ open class TextComponent : ChatComponent {
         // add all chars
         for (char in charArray) {
             if (char == '\n') {
-                val yOffset = offset.y
-                offset *= 0
-                offset += Vec2(0, yOffset + Font.CHAR_HEIGHT + RenderConstants.TEXT_LINE_PADDING)
-                retMaxSize += Vec2(0, yOffset + Font.CHAR_HEIGHT + RenderConstants.TEXT_LINE_PADDING)
+                offset.x = 0
+                offset.y = 0
+                val yOffset = offset.y + Font.CHAR_HEIGHT + RenderConstants.TEXT_LINE_PADDING
+                offset.y += yOffset
+                retMaxSize.y += yOffset
                 continue
             }
             val fontChar = font.getChar(char)
@@ -228,7 +229,7 @@ open class TextComponent : ChatComponent {
             textElement.addChild(ImageElement(charStart, fontChar, charStart + Vec2(scaledWidth, Font.CHAR_HEIGHT), z, color))
 
             // ad spacer between chars
-            offset += Vec2i(scaledWidth + Font.SPACE_BETWEEN_CHARS, 0f)
+            offset.x += scaledWidth + Font.SPACE_BETWEEN_CHARS
             if (offset.x > retMaxSize.x) {
                 retMaxSize.x += scaledWidth + Font.SPACE_BETWEEN_CHARS
             }
