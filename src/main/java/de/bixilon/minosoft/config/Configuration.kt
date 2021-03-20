@@ -13,6 +13,7 @@
 package de.bixilon.minosoft.config
 
 import com.squareup.moshi.JsonWriter
+import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.config.Config
 import de.bixilon.minosoft.util.Util
 import de.bixilon.minosoft.util.json.JSONSerializer
@@ -23,11 +24,10 @@ import java.io.FileWriter
 import java.io.IOException
 
 class Configuration(private val configName: String = StaticConfiguration.CONFIG_FILENAME) {
-    private val lock = Object()
+    private val file = File(StaticConfiguration.HOME_DIRECTORY + "config/minosoft/" + configName)
     val config: Config
 
     init {
-        val file = File(StaticConfiguration.HOME_DIRECTORY + "config/minosoft/" + configName)
         if (file.exists()) {
             config = JSONSerializer.CONFIG_ADAPTER.fromJson(Util.readFile(file.absolutePath))!!
 
@@ -42,53 +42,44 @@ class Configuration(private val configName: String = StaticConfiguration.CONFIG_
             config = Config()
             Log.debug("Created new config file")
         }
-        Thread({
-            while (true) {
-                // wait for interrupt
-                synchronized(lock) {
-                    try {
-                        lock.wait()
-                    } catch (ignored: InterruptedException) {
-                    }
-                }
-                // write config to temp file, delete original config, rename temp file to original file to avoid conflicts if minosoft gets closed while saving the config
-                val tempFile = File(StaticConfiguration.HOME_DIRECTORY + "config/minosoft/" + configName + ".tmp")
-                Util.createParentFolderIfNotExist(tempFile)
-                val buffer = Buffer()
-                val jsonWriter: JsonWriter = JsonWriter.of(buffer)
-                jsonWriter.indent = "  "
-
-                synchronized(this.config) {
-                    JSONSerializer.CONFIG_ADAPTER.toJson(jsonWriter, config)
-                }
-                val writer: FileWriter = try {
-                    FileWriter(tempFile)
-                } catch (e: IOException) {
-                    e.printStackTrace()
-                    return@Thread
-                }
-                writer.write(buffer.readUtf8())
-                try {
-                    writer.close()
-                } catch (e: IOException) {
-                    e.printStackTrace()
-                }
-                if (file.exists()) {
-                    if (!file.delete()) {
-                        throw RuntimeException("Could not save config!")
-                    }
-                }
-                if (!tempFile.renameTo(file)) {
-                    Log.fatal("An error occurred while saving the config file")
-                } else {
-                    Log.verbose("Configuration saved to file %s", configName)
-                }
-            }
-        }, "IO").start()
     }
 
+
     fun saveToFile() {
-        synchronized(lock) { lock.notifyAll() }
+        Minosoft.THREAD_POOL.execute {
+            // write config to temp file, delete original config, rename temp file to original file to avoid conflicts if minosoft gets closed while saving the config
+            val tempFile = File(StaticConfiguration.HOME_DIRECTORY + "config/minosoft/" + configName + ".tmp")
+            Util.createParentFolderIfNotExist(tempFile)
+            val buffer = Buffer()
+            val jsonWriter: JsonWriter = JsonWriter.of(buffer)
+            jsonWriter.indent = "  "
+
+            synchronized(this.config) {
+                JSONSerializer.CONFIG_ADAPTER.toJson(jsonWriter, config)
+            }
+            val writer: FileWriter = try {
+                FileWriter(tempFile)
+            } catch (e: IOException) {
+                e.printStackTrace()
+                return@execute
+            }
+            writer.write(buffer.readUtf8())
+            try {
+                writer.close()
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
+            if (file.exists()) {
+                if (!file.delete()) {
+                    throw RuntimeException("Could not save config!")
+                }
+            }
+            if (!tempFile.renameTo(file)) {
+                Log.fatal("An error occurred while saving the config file")
+            } else {
+                Log.verbose("Configuration saved to file %s", configName)
+            }
+        }
     }
 
     private fun migrateConfiguration() {
