@@ -29,8 +29,6 @@ import java.util.TreeMap;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.zip.ZipFile;
 
 public class ModLoader {
@@ -40,7 +38,6 @@ public class ModLoader {
     public static void loadMods(CountUpAndDownLatch progress) throws Exception {
         final long startTime = System.currentTimeMillis();
         Log.info("Start loading mods...");
-        ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors(), Util.getThreadFactory("ModLoader"));
 
         // load all jars, parse the mod.json
         // sort the list and prioritize
@@ -55,7 +52,7 @@ public class ModLoader {
             if (modFile.isDirectory()) {
                 continue;
             }
-            executor.execute(() -> {
+            Minosoft.THREAD_POOL.execute(() -> {
                 MinosoftMod mod = loadMod(progress, modFile);
                 if (mod != null) {
                     MOD_MAP.put(mod.getInfo().getModVersionIdentifier().getUUID(), mod);
@@ -126,7 +123,7 @@ public class ModLoader {
             Log.verbose(String.format("Mod loading phase changed: %s", phase));
             CountDownLatch modLatch = new CountDownLatch(sortedModMap.size());
             for (Map.Entry<UUID, MinosoftMod> entry : sortedModMap.entrySet()) {
-                executor.execute(() -> {
+                Minosoft.THREAD_POOL.execute(() -> {
                     if (!entry.getValue().isEnabled()) {
                         modLatch.countDown();
                         progress.countDown();

@@ -291,7 +291,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
             return;
         }
         this.root.getStyleClass().add("list-cell-connecting");
-        new Thread(() -> {
+        Minosoft.THREAD_POOL.execute(() -> {
             Connection connection = new Connection(Connection.lastConnectionId++, this.server.getAddress(), new Player(Minosoft.getConfig().getConfig().getAccount().getEntries().get(Minosoft.getConfig().getConfig().getAccount().getSelected())));
             this.server.addConnection(connection);
             Platform.runLater(() -> {
@@ -307,8 +307,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
 
             connection.registerEvent(new EventInvokerCallback<>(this::handleConnectionCallback));
             connection.connect(this.server.getLastPing().getAddress(), version, new CountUpAndDownLatch(1));
-        }, "ConnectThread").start();
-
+        });
     }
 
     public void editServer() {

@@ -82,7 +82,7 @@ public class Connection {
         this.lastException = null;
         this.desiredVersionNumber = versionId;
 
-        Thread resolveThread = new Thread(() -> {
+        Minosoft.THREAD_POOL.execute(() -> {
             if (this.desiredVersionNumber != -1) {
                 setVersion(Versions.getVersionById(this.desiredVersionNumber));
             }
@@ -103,8 +103,7 @@ public class Connection {
                 setVersion(Versions.getVersionById(versionId));
             }
             resolve(this.address);
-        }, String.format("%d/Resolving", this.connectionId));
-        resolveThread.start();
+        });
     }
 
     public void resolve(ConnectionReasons reason) {
