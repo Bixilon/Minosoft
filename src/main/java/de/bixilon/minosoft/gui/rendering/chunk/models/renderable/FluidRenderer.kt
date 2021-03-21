@@ -19,8 +19,8 @@ import glm_.vec3.Vec3
 import glm_.vec4.Vec4
 
 class FluidRenderer(private val stillTextureName: String, private val flowingTextureName: String, val regex: String): BlockRenderInterface  {
-    override val fullFaceDirections: MutableSet<Directions> = mutableSetOf()
-    override val transparentFaces: MutableSet<Directions> = Directions.DIRECTIONS.toMutableSet()
+    override val fullFaceDirections: Array<Directions?> = arrayOfNulls(Directions.DIRECTIONS.size)
+    override val transparentFaces: Array<Directions?> = arrayOfNulls(Directions.DIRECTIONS.size)
     private var still: Texture? = null
     private var flowing: Texture? = null
 
@@ -36,7 +36,7 @@ class FluidRenderer(private val stillTextureName: String, private val flowingTex
         }
         val positions = calculatePositions(heights)
         for (direction in Directions.DIRECTIONS) {
-            if (isBlockSameFluid(neighbourBlocks[direction.ordinal]) || neighbourBlocks[direction.ordinal]?.getBlockRenderer(position + direction)?.fullFaceDirections?.contains(direction.inverse()) == true && direction != Directions.UP) {
+            if (isBlockSameFluid(neighbourBlocks[direction.ordinal]) || neighbourBlocks[direction.ordinal]?.getBlockRenderer(position + direction)?.fullFaceDirections?.let { it[direction.inverse.ordinal] != null } == true && direction != Directions.UP) {
                 continue
             }
             val face = BlockModelFace(VecUtil.EMPTY_VECTOR, Vec3(VecUtil.BLOCK_SIZE_VECTOR.x, positions[7].y * 8, VecUtil.BLOCK_SIZE_VECTOR.z), direction)

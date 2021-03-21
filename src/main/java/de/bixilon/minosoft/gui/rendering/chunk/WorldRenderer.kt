@@ -47,6 +47,8 @@ class WorldRenderer(
         private set
 
     private fun prepareSections(chunkPosition: ChunkPosition, sections: Map<Int, ChunkSection>): SectionArrayMesh {
+        //  val stopwatch = Stopwatch()
+
         check(sections.isNotEmpty()) { "Illegal argument!" }
         synchronized(this.queuedChunks) {
             queuedChunks.remove(chunkPosition)
@@ -71,6 +73,7 @@ class WorldRenderer(
                 val biome = chunk.biomeAccessor!!.getBiome(blockPosition, dimensionSupports3dBiomes)
 
                 var tintColor: RGBColor? = null
+
                 if (StaticConfiguration.BIOME_DEBUG_MODE) {
                     tintColor = RGBColor(biome.hashCode())
                 } else {
@@ -88,6 +91,8 @@ class WorldRenderer(
                 blockInfo.getBlockRenderer(blockPosition).render(blockInfo, world.worldLightAccessor, tintColor, blockPosition, mesh, neighborBlocks, world)
             }
         }
+
+        // stopwatch.labPrint()
         return mesh
     }
 

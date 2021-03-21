@@ -22,7 +22,9 @@ enum class Directions(direction: Vec3) {
     WEST(Vec3(-1, 0, 0)),
     EAST(Vec3(1, 0, 0));
 
-    fun inverse(): Directions {
+    val inverse: Directions = inverse()
+
+    private fun inverse(): Directions {
         val ordinal = ordinal
         return if (ordinal % 2 == 0) {
             byId(ordinal + 1)

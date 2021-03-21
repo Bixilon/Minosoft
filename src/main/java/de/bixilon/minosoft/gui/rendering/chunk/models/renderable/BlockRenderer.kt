@@ -28,12 +28,12 @@ import de.bixilon.minosoft.gui.rendering.textures.TextureTransparencies
 import glm_.mat4x4.Mat4
 
 class BlockRenderer: BlockRenderInterface {
-    private val cullFaces: MutableSet<Directions> = mutableSetOf()
+    private val cullFaces: Array<Directions?> = arrayOfNulls(Directions.DIRECTIONS.size)
     val textures: MutableMap<String, String> = mutableMapOf()
     private val elements: MutableSet<ElementRenderer> = mutableSetOf()
     private val textureMapping: MutableMap<String, Texture> = mutableMapOf()
-    override val fullFaceDirections: MutableSet<Directions> = mutableSetOf()
-    override val transparentFaces: MutableSet<Directions> = mutableSetOf()
+    override val fullFaceDirections: Array<Directions?> = arrayOfNulls(Directions.DIRECTIONS.size)
+    override val transparentFaces: Array<Directions?> = arrayOfNulls(Directions.DIRECTIONS.size)
 
     constructor(data: JsonObject, parent: BlockModel) {
         val newElements = ElementRenderer.createElements(data, parent)
@@ -81,13 +81,13 @@ class BlockRenderer: BlockRenderInterface {
             }
 
             if (directionIsCullface == true) {
-                cullFaces.add(direction)
+                cullFaces[direction.ordinal] = direction
             }
             if (directionIsNotTransparent == false) {
-                transparentFaces.add(direction)
+                transparentFaces[direction.ordinal] = direction
             }
             if (directionIsFull == true) {
-                fullFaceDirections.add(direction)
+                fullFaceDirections[direction.ordinal] = direction
             }
         }
     }
@@ -97,13 +97,13 @@ class BlockRenderer: BlockRenderInterface {
 
         for (direction in Directions.DIRECTIONS) {
             for (element in elements) {
-                val cullFace = cullFaces.contains(direction)
+                val cullFace = cullFaces[direction.ordinal] != null
 
                 var neighbourBlockFullFace = false
                 neighbourBlocks[direction.ordinal]?.renders?.let { // ToDo: Improve this
-                    val testDirection = direction.inverse()
+                    val testDirection = direction.inverse
                     for (model in it) {
-                        if (model.fullFaceDirections.contains(testDirection) && !model.transparentFaces.contains(testDirection)) {
+                        if (model.fullFaceDirections[testDirection.ordinal] != null && model.transparentFaces[testDirection.ordinal] == null) {
                             neighbourBlockFullFace = true
                             break
                         }

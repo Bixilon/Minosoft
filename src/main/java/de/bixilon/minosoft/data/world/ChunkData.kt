@@ -21,6 +21,7 @@ data class ChunkData(
     var biomeAccessor: BiomeAccessor? = null,
     var lightAccessor: LightAccessor? = null,
 ) {
+
     fun replace(data: ChunkData) {
         data.blocks?.let {
             this.blocks = it

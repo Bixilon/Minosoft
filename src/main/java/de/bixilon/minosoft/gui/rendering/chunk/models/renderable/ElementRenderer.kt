@@ -17,8 +17,6 @@ import com.google.common.collect.HashBiMap
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.Directions
-import de.bixilon.minosoft.data.mappings.ResourceLocation
-import de.bixilon.minosoft.data.mappings.versions.VersionMapping
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.data.world.BlockPosition
 import de.bixilon.minosoft.data.world.light.LightAccessor
@@ -35,7 +33,7 @@ import glm_.vec3.Vec3
 import glm_.vec4.Vec4
 
 class ElementRenderer(parent: BlockModelElement, val rotation: Vec3, uvLock: Boolean, rescale: Boolean) {
-    private val fullFaceDirections: MutableSet<Directions> = mutableSetOf()
+    private val fullFaceDirections: Array<Directions?> = arrayOfNulls(Directions.DIRECTIONS.size)
     private val faces: MutableMap<Directions, BlockModelFace> = mutableMapOf()
     private var positions: Array<Vec3> = parent.positions.clone()
     private val directionMapping: HashBiMap<Directions, Directions> = HashBiMap.create()
@@ -44,7 +42,7 @@ class ElementRenderer(parent: BlockModelElement, val rotation: Vec3, uvLock: Boo
         rotatePositionsAxes(positions, rotation, rescale)
         for (direction in Directions.DIRECTIONS) {
             if (positions.containsAllVectors(FULL_TEST_POSITIONS[direction.ordinal], 0.0001f)) { // TODO: check if texture is transparent ==> && ! texture.isTransparent
-                fullFaceDirections.add(direction)
+                fullFaceDirections[direction.ordinal] = direction
             }
             directionMapping[direction] = getRotatedDirection(rotation, direction)
             parent.faces[direction]?.let {
@@ -53,8 +51,7 @@ class ElementRenderer(parent: BlockModelElement, val rotation: Vec3, uvLock: Boo
         }
         if (uvLock) {
             for (direction in Directions.DIRECTIONS) {
-                val axes = Axes.byDirection(direction)
-                val angle = when (axes) {
+                val angle = when (Axes.byDirection(direction)) {
                     Axes.X -> rotation.x
                     Axes.Y -> rotation.y
                     Axes.Z -> rotation.z
@@ -107,7 +104,7 @@ class ElementRenderer(parent: BlockModelElement, val rotation: Vec3, uvLock: Boo
     }
 
     fun isFullTowards(direction: Directions): Boolean {
-        return fullFaceDirections.contains(direction)
+        return fullFaceDirections[direction.ordinal] != null
     }
 
     companion object {

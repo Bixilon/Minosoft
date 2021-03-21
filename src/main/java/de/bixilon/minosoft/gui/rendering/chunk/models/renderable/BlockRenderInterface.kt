@@ -10,8 +10,8 @@ import de.bixilon.minosoft.gui.rendering.chunk.SectionArrayMesh
 import de.bixilon.minosoft.gui.rendering.textures.Texture
 
 interface BlockRenderInterface {
-    val fullFaceDirections: MutableSet<Directions>
-    val transparentFaces: MutableSet<Directions>
+    val fullFaceDirections: Array<Directions?>
+    val transparentFaces: Array<Directions?>
 
     fun render(blockState: BlockState, lightAccessor: LightAccessor, tintColor: RGBColor?, position: BlockPosition, mesh: SectionArrayMesh, neighbourBlocks: Array<BlockState?>, world: World)
 
