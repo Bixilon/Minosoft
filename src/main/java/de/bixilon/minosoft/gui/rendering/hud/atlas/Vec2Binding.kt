@@ -22,7 +22,7 @@ data class Vec2Binding(
     val start: Vec2i,
     val end: Vec2i,
 ) {
-    val size: Vec2i = glm.abs(Vec2i(start - end)) + 1
+    val size: Vec2i = glm.abs(start - end)
 
     companion object {
 

@@ -39,7 +39,7 @@ class Texture(
 
     lateinit var properties: ImageProperties
 
-    var arraySinglePixelSize = 1.0f
+    var arraySinglePixelFactor = Vec2(1.0f, 1.0f)
 
     var buffer: ByteBuffer? = null
 
@@ -51,7 +51,7 @@ class Texture(
         transparency = texture.transparency
         uvEnd = texture.uvEnd
         properties = ImageProperties()
-        arraySinglePixelSize = texture.arraySinglePixelSize
+        arraySinglePixelFactor = texture.arraySinglePixelFactor
         isLoaded = true
     }
 

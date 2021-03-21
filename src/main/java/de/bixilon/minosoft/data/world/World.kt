@@ -23,7 +23,7 @@ import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
 /**
- * Collection of chunks
+ * Collection of chunks and more
  */
 class World {
     val chunks = ConcurrentHashMap<ChunkPosition, Chunk>()

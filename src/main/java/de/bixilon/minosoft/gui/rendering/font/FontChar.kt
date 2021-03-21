@@ -33,8 +33,8 @@ data class FontChar(
     override val size = Vec2i(endPixel - startPixel, height)
 
 
-    fun calculateUV(letterWidth: Int, atlasWidthSinglePixel: Float, atlasHeightSinglePixel: Float) {
-        uvStart = Vec2(atlasWidthSinglePixel * (letterWidth * column + startPixel), atlasHeightSinglePixel * (height * row))
-        uvEnd = Vec2(atlasWidthSinglePixel * (letterWidth * column + endPixel), atlasHeightSinglePixel * (height * (row + 1)))
+    fun calculateUV(letterWidth: Int, arraySinglePixelFactor: Vec2) {
+        uvStart = Vec2(letterWidth * column + startPixel, height * row) * arraySinglePixelFactor
+        uvEnd = Vec2(letterWidth * column + endPixel, height * (row + 1)) * arraySinglePixelFactor
     }
 }

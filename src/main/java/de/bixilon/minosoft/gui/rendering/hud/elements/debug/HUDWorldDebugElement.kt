@@ -22,6 +22,7 @@ import de.bixilon.minosoft.util.UnitFormatter
 class HUDWorldDebugElement(hudRenderer: HUDRenderer) : DebugScreen(hudRenderer) {
     private val camera = hudRenderer.renderWindow.camera
 
+    private val brandText = text("§cMinosoft 0.1-pre1")
     private val fpsText = text("TBA")
     private val timingsText = text("TBA")
     private val chunksText = text("TBA")

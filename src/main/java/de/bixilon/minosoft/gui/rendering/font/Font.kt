@@ -56,7 +56,7 @@ class Font {
 
         for (provider in providers) {
             for (char in provider.chars.values) {
-                char.calculateUV(provider.width, char.texture.arraySinglePixelSize, char.texture.arraySinglePixelSize) // ToDo: Unicode: With should pe plus 1
+                char.calculateUV(provider.width, char.texture.arraySinglePixelFactor) // ToDo: Unicode: With should pe plus 1
             }
         }
         loaded = true

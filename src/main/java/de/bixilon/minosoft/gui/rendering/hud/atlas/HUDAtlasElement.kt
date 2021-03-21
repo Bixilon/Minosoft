@@ -33,8 +33,8 @@ data class HUDAtlasElement(
 
 
     fun postInit() {
-        uvStart = Vec2(binding.start) * texture.arraySinglePixelSize
-        uvEnd = (Vec2(binding.end) - Vec2(0, 1)) * texture.arraySinglePixelSize
+        uvStart = Vec2(binding.start) * texture.arraySinglePixelFactor
+        uvEnd = Vec2(binding.end) * texture.arraySinglePixelFactor
     }
 
     companion object {
