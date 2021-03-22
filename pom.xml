@@ -192,7 +192,7 @@
         <exec.mainClass>de.bixilon.minosoft.Minosoft</exec.mainClass>
         <maven.compiler.source>15</maven.compiler.source>
         <maven.compiler.target>15</maven.compiler.target>
-        <javafx.version>17-ea+2</javafx.version>
+        <javafx.version>17-ea+3</javafx.version>
         <kotlin.version>1.4.31</kotlin.version>
         <lwjgl.version>3.2.3</lwjgl.version>
     </properties>
@@ -215,7 +215,7 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>30.1-jre</version>
+            <version>30.1.1-jre</version>
         </dependency>
         <dependency>
             <groupId>dnsjava</groupId>
