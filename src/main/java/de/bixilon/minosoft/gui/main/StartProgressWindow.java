@@ -88,7 +88,7 @@ public class StartProgressWindow extends Application {
                 });
             }
             hideDialog();
-        }).start();
+        }, "JavaFX Launch Thread").start();
     }
 
     public static void start() throws InterruptedException {

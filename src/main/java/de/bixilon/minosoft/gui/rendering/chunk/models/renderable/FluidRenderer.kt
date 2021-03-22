@@ -18,7 +18,11 @@ import glm_.vec2.Vec2
 import glm_.vec3.Vec3
 import glm_.vec4.Vec4
 
-class FluidRenderer(private val stillTextureName: String, private val flowingTextureName: String, val regex: String): BlockRenderInterface  {
+class FluidRenderer(
+    private val stillTextureName: String,
+    private val flowingTextureName: String,
+    private val regex: String,
+) : BlockRenderInterface {
     override val fullFaceDirections: Array<Directions?> = arrayOfNulls(Directions.DIRECTIONS.size)
     override val transparentFaces: Array<Directions?> = arrayOfNulls(Directions.DIRECTIONS.size)
     private var still: Texture? = null
@@ -29,11 +33,17 @@ class FluidRenderer(private val stillTextureName: String, private val flowingTex
         val lightLevel = lightAccessor.getLightLevel(position)
         val heights = calculateHeights(neighbourBlocks, blockState, world, position)
         val isFlowing = isLiquidFlowing(heights)
-        val (texture, angle) = if (isFlowing) {
-            Pair(flowing, getRotationAngle(heights))
+
+        val texture: Texture
+        val angle: Float
+        if (isFlowing) {
+            texture = flowing!!
+            angle = getRotationAngle(heights)
         } else {
-            Pair(still, 0f)
+            texture = still!!
+            angle = 0f
         }
+
         val positions = calculatePositions(heights)
         for (direction in Directions.DIRECTIONS) {
             if (isBlockSameFluid(neighbourBlocks[direction.ordinal]) || neighbourBlocks[direction.ordinal]?.getBlockRenderer(position + direction)?.fullFaceDirections?.let { it[direction.inverse.ordinal] != null } == true && direction != Directions.UP) {
@@ -46,7 +56,7 @@ class FluidRenderer(private val stillTextureName: String, private val flowingTex
             face.rotate(angle)
             val positionTemplate = BlockModelElement.FACE_POSITION_MAP_TEMPLATE[direction.ordinal]
             val drawPositions = arrayOf(positions[positionTemplate[0]], positions[positionTemplate[1]], positions[positionTemplate[2]], positions[positionTemplate[3]])
-            createQuad(drawPositions, face.getTexturePositionArray(direction), texture!!, modelMatrix, mesh, tintColor, lightLevel)
+            createQuad(drawPositions, face.getTexturePositionArray(direction), texture, modelMatrix, mesh, tintColor, lightLevel)
         }
     }
 
@@ -67,20 +77,24 @@ class FluidRenderer(private val stillTextureName: String, private val flowingTex
         }
         val minHeight = heights.minOrNull()
         val position = heights.indexOfFirst { it == minHeight }
-        val directions = HEIGHT_POSITIONS_REVERSED[position]
+        val directions = HEIGHT_POSITIONS_REVERSED[position]!!
         var angle = 0f
-        for (direction in directions!!) {
+        for (direction in directions) {
             angle += getRotationAngle(direction)
         }
-        return if (position == 1) { angle / directions.size } else { angle / directions.size + glm.PI.toFloat() }
+        return if (position == 1) {
+            angle / directions.size
+        } else {
+            angle / directions.size + glm.PIf
+        }
     }
 
     private fun getRotationAngle(direction: Directions): Float {
         return when (direction) {
-            Directions.SOUTH -> glm.PI.toFloat()
+            Directions.SOUTH -> glm.PIf
             Directions.NORTH -> 0f
-            Directions.WEST -> glm.PI.toFloat() * 0.5f
-            Directions.EAST -> glm.PI.toFloat() * 1.5f
+            Directions.WEST -> glm.PIf * 0.5f
+            Directions.EAST -> glm.PIf * 1.5f
             else -> error("Unexpected value: $direction")
         }
     }
@@ -207,15 +221,15 @@ class FluidRenderer(private val stillTextureName: String, private val flowingTex
             ElementRenderer.POSITION_2,
             ElementRenderer.POSITION_3,
             ElementRenderer.POSITION_4
-            )
-
-        val HEIGHT_POSITIONS = mapOf(
-            Pair(setOf(Directions.NORTH, Directions.WEST), 0),
-            Pair(setOf(Directions.NORTH, Directions.EAST), 1),
-            Pair(setOf(Directions.SOUTH, Directions.WEST), 2),
-            Pair(setOf(Directions.SOUTH, Directions.EAST), 3),
         )
 
-        val HEIGHT_POSITIONS_REVERSED = HEIGHT_POSITIONS.entries.associate{(k,v)-> v to k}
+        val HEIGHT_POSITIONS = mapOf(
+            setOf(Directions.NORTH, Directions.WEST) to 0,
+            setOf(Directions.NORTH, Directions.EAST) to 1,
+            setOf(Directions.SOUTH, Directions.WEST) to 2,
+            setOf(Directions.SOUTH, Directions.EAST) to 3,
+        )
+
+        val HEIGHT_POSITIONS_REVERSED = HEIGHT_POSITIONS.entries.associate { (k, v) -> v to k }
     }
 }

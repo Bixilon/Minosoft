@@ -22,7 +22,8 @@ enum class Directions(direction: Vec3) {
     WEST(Vec3(-1, 0, 0)),
     EAST(Vec3(1, 0, 0));
 
-    val inverse: Directions = inverse()
+    lateinit var inverse: Directions
+        private set
 
     private fun inverse(): Directions {
         val ordinal = ordinal
@@ -68,6 +69,12 @@ enum class Directions(direction: Vec3) {
                 }
             }
             return minDirection
+        }
+
+        init {
+            for (direction in DIRECTIONS) {
+                direction.inverse = direction.inverse()
+            }
         }
     }
 }
