@@ -14,8 +14,9 @@
 package de.bixilon.minosoft.util
 
 object UnitFormatter {
-    private val BYTE_UNITS = listOf("B", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB", "ZiB", "YiB")
-    private val UNITS = listOf("", "k", "M", "G", "T", "P", "E", "Z", "Y")
+    private val BYTE_UNITS = arrayOf("B", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB", "ZiB", "YiB")
+    private val UNITS = arrayOf("", "k", "M", "G", "T", "P", "E", "Z", "Y")
+    private val TIME_UNITS = arrayOf("ns", "μs", "ms", "s", "m", "h", "d", "w", "M", "Y")
 
     fun formatBytes(bytes: Long): String {
         return formatUnit(bytes, BYTE_UNITS, 1024L)
@@ -29,7 +30,7 @@ object UnitFormatter {
         return formatUnit(number, UNITS, 1000L)
     }
 
-    private fun formatUnit(number: Long, units: List<String>, factor: Long): String {
+    private fun formatUnit(number: Long, units: Array<String>, factor: Long): String {
         var lastFactor = 1L
         var currentFactor = factor
         for (unit in units) {
@@ -43,5 +44,15 @@ object UnitFormatter {
             currentFactor *= factor
         }
         throw IllegalArgumentException()
+    }
+
+    fun formatNanos(nanos: Long): String {
+        return "${nanos / 1000000}ms"
+
+        // ToDo
+    }
+
+    fun formatMillis(millis: Long): String {
+        return formatNanos(millis * 1000)
     }
 }
