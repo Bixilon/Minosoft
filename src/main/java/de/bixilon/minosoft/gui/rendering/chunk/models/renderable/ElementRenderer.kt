@@ -29,10 +29,8 @@ import de.bixilon.minosoft.gui.rendering.textures.Texture
 import de.bixilon.minosoft.gui.rendering.textures.TextureTransparencies
 import de.bixilon.minosoft.gui.rendering.util.VecUtil
 import glm_.Java.Companion.glm
-import glm_.mat4x4.Mat4
 import glm_.vec2.Vec2
 import glm_.vec3.Vec3
-import glm_.vec4.Vec4
 
 class ElementRenderer(parent: BlockModelElement, val rotation: Vec3, uvLock: Boolean, rescale: Boolean) {
     private val fullFaceDirections: Array<Directions?> = arrayOfNulls(Directions.DIRECTIONS.size)
@@ -64,7 +62,7 @@ class ElementRenderer(parent: BlockModelElement, val rotation: Vec3, uvLock: Boo
     }
 
 
-    fun render(tintColor: RGBColor?, position: BlockPosition, lightAccessor: LightAccessor, textureMapping: MutableMap<String, Texture>, modelMatrix: Mat4, direction: Directions, meshCollection: ChunkMeshCollection) {
+    fun render(tintColor: RGBColor?, position: BlockPosition, lightAccessor: LightAccessor, textureMapping: MutableMap<String, Texture>, direction: Directions, meshCollection: ChunkMeshCollection) {
         val realDirection = directionMapping.inverse()[direction]!!
 
         val face = faces[realDirection] ?: return // Not our face
@@ -80,10 +78,10 @@ class ElementRenderer(parent: BlockModelElement, val rotation: Vec3, uvLock: Boo
 
         fun createQuad(drawPositions: Array<Vec3>, texturePositions: Array<Vec2?>) {
             for (vertex in DRAW_ODER) {
-                val input = Vec4(drawPositions[vertex.first], 1.0f)
-                val output = modelMatrix * input
+                val input = drawPositions[vertex.first]
+                val output = position add input
                 mesh.addVertex(
-                    position = output.toVec3(),
+                    position = output,
                     textureCoordinates = texturePositions[vertex.second]!!,
                     texture = texture,
                     tintColor = if (face.tint) {
@@ -155,7 +153,7 @@ class ElementRenderer(parent: BlockModelElement, val rotation: Vec3, uvLock: Boo
             if (rotation == VecUtil.EMPTY_VECTOR) {
                 return direction
             }
-            var rotatedDirectionVector = VecUtil.rotateVector(direction.directionVector, rotation.x, Axes.X)
+            var rotatedDirectionVector = VecUtil.rotateVector(direction.floatDirectionVector, rotation.x, Axes.X)
             rotatedDirectionVector = VecUtil.rotateVector(rotatedDirectionVector, rotation.y, Axes.Y)
             return Directions.byDirection(VecUtil.rotateVector(rotatedDirectionVector, rotation.z, Axes.Z))
         }

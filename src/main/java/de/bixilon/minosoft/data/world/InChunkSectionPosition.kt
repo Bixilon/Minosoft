@@ -14,7 +14,7 @@ package de.bixilon.minosoft.data.world
 
 import de.bixilon.minosoft.data.Directions
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import glm_.vec3.Vec3
+import glm_.vec3.Vec3i
 
 /**
  * Chunk X, Y and Z location (max 16x16x16)
@@ -29,10 +29,10 @@ data class InChunkSectionPosition(val x: Int, val y: Int, val z: Int) {
         return InChunkPosition(x, y + ProtocolDefinition.SECTION_HEIGHT_Y * sectionHeight, z)
     }
 
-    operator fun plus(vec3: Vec3): InChunkSectionPosition {
-        var nextX = x + vec3.x.toInt()
-        var nextY = y + vec3.y.toInt()
-        var nextZ = z + vec3.z.toInt()
+    operator fun plus(vec3: Vec3i): InChunkSectionPosition {
+        var nextX = x + vec3.x
+        var nextY = y + vec3.y
+        var nextZ = z + vec3.z
 
         if (nextX < 0) {
             nextX = ProtocolDefinition.SECTION_MAX_X

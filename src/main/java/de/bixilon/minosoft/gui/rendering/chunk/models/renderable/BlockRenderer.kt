@@ -25,9 +25,8 @@ import de.bixilon.minosoft.gui.rendering.chunk.ChunkMeshCollection
 import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModel
 import de.bixilon.minosoft.gui.rendering.textures.Texture
 import de.bixilon.minosoft.gui.rendering.textures.TextureTransparencies
-import glm_.mat4x4.Mat4
 
-class BlockRenderer: BlockRenderInterface {
+class BlockRenderer : BlockRenderInterface {
     private val cullFaces: Array<Directions?> = arrayOfNulls(Directions.DIRECTIONS.size)
     val textures: MutableMap<String, String> = mutableMapOf()
     private val elements: MutableSet<ElementRenderer> = mutableSetOf()
@@ -93,8 +92,6 @@ class BlockRenderer: BlockRenderInterface {
     }
 
     override fun render(blockState: BlockState, lightAccessor: LightAccessor, tintColor: RGBColor?, position: BlockPosition, meshCollection: ChunkMeshCollection, neighbourBlocks: Array<BlockState?>, world: World) {
-        val modelMatrix = Mat4().translate(position.toVec3())
-
         for (direction in Directions.DIRECTIONS) {
             for (element in elements) {
                 val cullFace = cullFaces[direction.ordinal] != null
@@ -112,7 +109,7 @@ class BlockRenderer: BlockRenderInterface {
                 if (neighbourBlockFullFace && cullFace) {
                     continue
                 }
-                element.render(tintColor, position, lightAccessor, textureMapping, modelMatrix, direction, meshCollection)
+                element.render(tintColor, position, lightAccessor, textureMapping, direction, meshCollection)
             }
         }
     }

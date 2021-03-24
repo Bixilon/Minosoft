@@ -13,14 +13,17 @@
 package de.bixilon.minosoft.data
 
 import glm_.vec3.Vec3
+import glm_.vec3.Vec3i
 
-enum class Directions(direction: Vec3) {
-    DOWN(Vec3(0, -1, 0)),
-    UP(Vec3(0, 1, 0)),
-    NORTH(Vec3(0, 0, -1)),
-    SOUTH(Vec3(0, 0, 1)),
-    WEST(Vec3(-1, 0, 0)),
-    EAST(Vec3(1, 0, 0));
+enum class Directions(val directionVector: Vec3i) {
+    DOWN(Vec3i(0, -1, 0)),
+    UP(Vec3i(0, 1, 0)),
+    NORTH(Vec3i(0, 0, -1)),
+    SOUTH(Vec3i(0, 0, 1)),
+    WEST(Vec3i(-1, 0, 0)),
+    EAST(Vec3i(1, 0, 0));
+
+    val floatDirectionVector = Vec3(directionVector)
 
     lateinit var inverse: Directions
         private set
@@ -42,8 +45,6 @@ enum class Directions(direction: Vec3) {
         }
     }
 
-    val directionVector: Vec3 = direction
-
     companion object {
         val DIRECTIONS = values()
         val SIDES = arrayOf(NORTH, SOUTH, WEST, EAST)
@@ -60,7 +61,7 @@ enum class Directions(direction: Vec3) {
             var minDirection = DIRECTIONS[0]
             var minError = 2f
             for (testDirection in DIRECTIONS) {
-                val error = (testDirection.directionVector - direction).length()
+                val error = (testDirection.floatDirectionVector - direction).length()
                 if (error < MIN_ERROR) {
                     return testDirection
                 } else if (error < minError) {

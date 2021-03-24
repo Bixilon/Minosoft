@@ -15,6 +15,7 @@ package de.bixilon.minosoft.data.world
 import de.bixilon.minosoft.data.Directions
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import glm_.vec3.Vec3
+import glm_.vec3.Vec3i
 
 data class BlockPosition(val x: Int, val y: Int, val z: Int) {
     constructor(chunkPosition: ChunkPosition, sectionHeight: Int, inChunkSectionPosition: InChunkSectionPosition) : this(chunkPosition.x * ProtocolDefinition.SECTION_WIDTH_X + inChunkSectionPosition.x, sectionHeight * ProtocolDefinition.SECTION_HEIGHT_Y + inChunkSectionPosition.y, chunkPosition.z * ProtocolDefinition.SECTION_WIDTH_Z + inChunkSectionPosition.z) // ToDo
@@ -45,11 +46,11 @@ data class BlockPosition(val x: Int, val y: Int, val z: Int) {
         return InChunkPosition(x, this.y, z)
     }
 
-    infix operator fun plus(vec3: Vec3?): BlockPosition {
+    infix operator fun plus(vec3: Vec3i?): BlockPosition {
         if (vec3 == null) {
             return this
         }
-        return BlockPosition((x + vec3.x).toInt(), (y + vec3.y).toInt(), (z + vec3.z).toInt())
+        return BlockPosition((x + vec3.x), (y + vec3.y), (z + vec3.z))
     }
 
     infix operator fun plus(directions: Directions?): BlockPosition {
@@ -74,5 +75,9 @@ data class BlockPosition(val x: Int, val y: Int, val z: Int) {
 
     override fun toString(): String {
         return "($x $y $z)"
+    }
+
+    infix fun add(input: Vec3): Vec3 {
+        return Vec3(input.x + x, input.y + y, input.z + z)
     }
 }

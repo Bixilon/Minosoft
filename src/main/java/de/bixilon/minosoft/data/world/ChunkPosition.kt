@@ -13,15 +13,15 @@
 package de.bixilon.minosoft.data.world
 
 import de.bixilon.minosoft.data.Directions
-import glm_.vec3.Vec3
+import glm_.vec3.Vec3i
 
 data class ChunkPosition(val x: Int, val z: Int) {
     override fun toString(): String {
         return "($x $z)"
     }
 
-    operator fun plus(vec3: Vec3): ChunkPosition {
-        return ChunkPosition(x + vec3.x.toInt(), z + vec3.z.toInt())
+    operator fun plus(vec3: Vec3i): ChunkPosition {
+        return ChunkPosition(x + vec3.x, z + vec3.z)
     }
 
     operator fun plus(direction: Directions): ChunkPosition {
