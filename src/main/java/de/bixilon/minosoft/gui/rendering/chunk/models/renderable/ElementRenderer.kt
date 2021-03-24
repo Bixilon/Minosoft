@@ -20,11 +20,13 @@ import de.bixilon.minosoft.data.Directions
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.data.world.BlockPosition
 import de.bixilon.minosoft.data.world.light.LightAccessor
+import de.bixilon.minosoft.gui.rendering.chunk.ChunkMeshCollection
 import de.bixilon.minosoft.gui.rendering.chunk.SectionArrayMesh
 import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModel
 import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModelElement
 import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModelFace
 import de.bixilon.minosoft.gui.rendering.textures.Texture
+import de.bixilon.minosoft.gui.rendering.textures.TextureTransparencies
 import de.bixilon.minosoft.gui.rendering.util.VecUtil
 import glm_.Java.Companion.glm
 import glm_.mat4x4.Mat4
@@ -62,7 +64,7 @@ class ElementRenderer(parent: BlockModelElement, val rotation: Vec3, uvLock: Boo
     }
 
 
-    fun render(tintColor: RGBColor?, position: BlockPosition, lightAccessor: LightAccessor, textureMapping: MutableMap<String, Texture>, modelMatrix: Mat4, direction: Directions, mesh: SectionArrayMesh) {
+    fun render(tintColor: RGBColor?, position: BlockPosition, lightAccessor: LightAccessor, textureMapping: MutableMap<String, Texture>, modelMatrix: Mat4, direction: Directions, meshCollection: ChunkMeshCollection) {
         val realDirection = directionMapping.inverse()[direction]!!
 
         val face = faces[realDirection] ?: return // Not our face
@@ -73,6 +75,8 @@ class ElementRenderer(parent: BlockModelElement, val rotation: Vec3, uvLock: Boo
         val lightLevel = lightAccessor.getLightLevel(position + directionMapping[face.cullFace]) // ToDo: rotate cullface
 
         val drawPositions = arrayOf(positions[positionTemplate[0]], positions[positionTemplate[1]], positions[positionTemplate[2]], positions[positionTemplate[3]])
+
+        val mesh = getMesh(meshCollection, texture.transparency)
 
         fun createQuad(drawPositions: Array<Vec3>, texturePositions: Array<Vec2?>) {
             for (vertex in DRAW_ODER) {
@@ -91,6 +95,7 @@ class ElementRenderer(parent: BlockModelElement, val rotation: Vec3, uvLock: Boo
                 )
             }
         }
+
         val texturePositions = face.getTexturePositionArray(realDirection)
         createQuad(drawPositions, texturePositions)
     }
@@ -181,6 +186,14 @@ class ElementRenderer(parent: BlockModelElement, val rotation: Vec3, uvLock: Boo
             setOf(POSITION_2, POSITION_4, POSITION_6, POSITION_8),
             setOf(POSITION_1, POSITION_3, POSITION_5, POSITION_7)
         )
+
+        fun getMesh(meshCollection: ChunkMeshCollection, textureTransparencies: TextureTransparencies): SectionArrayMesh {
+            return if (textureTransparencies == TextureTransparencies.SEMI_TRANSPARENT) {
+                meshCollection.transparentSectionArrayMesh!!
+            } else {
+                meshCollection.opaqueSectionArrayMesh
+            }
+        }
     }
 }
 

@@ -21,7 +21,7 @@ import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.data.world.BlockPosition
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.light.LightAccessor
-import de.bixilon.minosoft.gui.rendering.chunk.SectionArrayMesh
+import de.bixilon.minosoft.gui.rendering.chunk.ChunkMeshCollection
 import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModel
 import de.bixilon.minosoft.gui.rendering.textures.Texture
 import de.bixilon.minosoft.gui.rendering.textures.TextureTransparencies
@@ -92,7 +92,7 @@ class BlockRenderer: BlockRenderInterface {
         }
     }
 
-    override fun render(blockState: BlockState, lightAccessor: LightAccessor, tintColor: RGBColor?, position: BlockPosition, mesh: SectionArrayMesh, neighbourBlocks: Array<BlockState?>, world: World) {
+    override fun render(blockState: BlockState, lightAccessor: LightAccessor, tintColor: RGBColor?, position: BlockPosition, meshCollection: ChunkMeshCollection, neighbourBlocks: Array<BlockState?>, world: World) {
         val modelMatrix = Mat4().translate(position.toVec3())
 
         for (direction in Directions.DIRECTIONS) {
@@ -112,7 +112,7 @@ class BlockRenderer: BlockRenderInterface {
                 if (neighbourBlockFullFace && cullFace) {
                     continue
                 }
-                element.render(tintColor, position, lightAccessor, textureMapping, modelMatrix, direction, mesh)
+                element.render(tintColor, position, lightAccessor, textureMapping, modelMatrix, direction, meshCollection)
             }
         }
     }

@@ -37,8 +37,8 @@ class WorldRenderer(
     val renderWindow: RenderWindow,
 ) : Renderer {
     lateinit var chunkShader: Shader
-    val allChunkSections = ConcurrentHashMap<ChunkPosition, ConcurrentHashMap<Int, SectionArrayMesh>>()
-    val visibleChunks = ConcurrentHashMap<ChunkPosition, ConcurrentHashMap<Int, SectionArrayMesh>>()
+    val allChunkSections = ConcurrentHashMap<ChunkPosition, ConcurrentHashMap<Int, ChunkMeshCollection>>()
+    val visibleChunks = ConcurrentHashMap<ChunkPosition, ConcurrentHashMap<Int, ChunkMeshCollection>>()
     val queuedChunks: MutableSet<ChunkPosition> = mutableSetOf()
 
     var meshes = 0
@@ -46,7 +46,7 @@ class WorldRenderer(
     var triangles = 0
         private set
 
-    private fun prepareSections(chunkPosition: ChunkPosition, sections: Map<Int, ChunkSection>): SectionArrayMesh {
+    private fun prepareSections(chunkPosition: ChunkPosition, sections: Map<Int, ChunkSection>): ChunkMeshCollection {
         //  val stopwatch = Stopwatch()
 
         check(sections.isNotEmpty()) { "Illegal argument!" }
@@ -56,7 +56,7 @@ class WorldRenderer(
         val chunk = world.getChunk(chunkPosition) ?: error("Chunk in world is null at $chunkPosition?")
 
         val dimensionSupports3dBiomes = connection.player.world.dimension?.supports3DBiomes ?: false
-        val mesh = SectionArrayMesh()
+        val meshCollection = ChunkMeshCollection()
 
         for ((sectionHeight, section) in sections) {
             for ((index, blockInfo) in section.blocks.withIndex()) {
@@ -88,12 +88,16 @@ class WorldRenderer(
                     blockInfo.tintColor?.let { tintColor = it }
                 }
 
-                blockInfo.getBlockRenderer(blockPosition).render(blockInfo, world.worldLightAccessor, tintColor, blockPosition, mesh, neighborBlocks, world)
+                blockInfo.getBlockRenderer(blockPosition).render(blockInfo, world.worldLightAccessor, tintColor, blockPosition, meshCollection, neighborBlocks, world)
             }
         }
 
+        if (meshCollection.transparentSectionArrayMesh!!.trianglesCount == 0) {
+            meshCollection.transparentSectionArrayMesh = null
+        }
+
         // stopwatch.labPrint()
-        return mesh
+        return meshCollection
     }
 
     override fun init() {
@@ -127,7 +131,13 @@ class WorldRenderer(
 
         for ((_, map) in visibleChunks) {
             for ((_, mesh) in map) {
-                mesh.draw()
+                mesh.opaqueSectionArrayMesh.draw()
+            }
+        }
+
+        for ((_, map) in visibleChunks) {
+            for ((_, mesh) in map) {
+                mesh.transparentSectionArrayMesh?.draw()
             }
         }
     }
@@ -214,7 +224,7 @@ class WorldRenderer(
             return
         }
         Minosoft.THREAD_POOL.execute {
-            val mesh = prepareSections(chunkPosition, sections)
+            val meshCollection = prepareSections(chunkPosition, sections)
 
             var lowestBlockHeight = 0
             var highestBlockHeight = 0
@@ -232,27 +242,41 @@ class WorldRenderer(
 
 
             val index = getSectionIndex(highestBlockHeight)
-            mesh.lowestBlockHeight = lowestBlockHeight
-            mesh.highestBlockHeight = highestBlockHeight
+            meshCollection.lowestBlockHeight = lowestBlockHeight
+            meshCollection.highestBlockHeight = highestBlockHeight
 
 
             renderWindow.renderQueue.add {
                 val sectionMap = allChunkSections.getOrPut(chunkPosition, { ConcurrentHashMap() })
 
                 sectionMap[index]?.let {
-                    it.unload()
+                    it.opaqueSectionArrayMesh.unload()
                     meshes--
-                    triangles -= it.trianglesCount
+                    triangles -= it.opaqueSectionArrayMesh.trianglesCount
+
+                    it.transparentSectionArrayMesh?.let {
+                        it.unload()
+                        meshes--
+                        triangles -= it.trianglesCount
+                    }
                 }
 
-                mesh.load()
-                meshes++
-                triangles += mesh.trianglesCount
+                meshCollection.opaqueSectionArrayMesh.let {
+                    it.load()
+                    meshes++
+                    triangles += it.trianglesCount
+                }
+                meshCollection.transparentSectionArrayMesh?.let {
+                    it.load()
+                    meshes++
+                    triangles += it.trianglesCount
+                }
 
-                sectionMap[index] = mesh
+
+                sectionMap[index] = meshCollection
 
                 if (renderWindow.camera.frustum.containsChunk(chunkPosition, lowestBlockHeight, highestBlockHeight)) {
-                    visibleChunks.getOrPut(chunkPosition, { ConcurrentHashMap() })[index] = mesh
+                    visibleChunks.getOrPut(chunkPosition, { ConcurrentHashMap() })[index] = meshCollection
                 } else {
                     visibleChunks[chunkPosition]?.remove(index)
                 }
@@ -289,10 +313,17 @@ class WorldRenderer(
         }
         renderWindow.renderQueue.add {
             allChunkSections[chunkPosition]?.let {
-                for ((_, mesh) in it) {
-                    mesh.unload()
-                    meshes--
-                    triangles -= mesh.trianglesCount
+                for ((_, meshCollection) in it) {
+                    meshCollection.opaqueSectionArrayMesh.let {
+                        it.unload()
+                        meshes--
+                        triangles -= it.trianglesCount
+                    }
+                    meshCollection.transparentSectionArrayMesh?.let {
+                        it.unload()
+                        meshes--
+                        triangles -= it.trianglesCount
+                    }
                 }
                 allChunkSections.remove(chunkPosition)
                 visibleChunks.remove(chunkPosition)
@@ -314,7 +345,7 @@ class WorldRenderer(
     fun recalculateVisibleChunks() {
         visibleChunks.clear()
         for ((chunkLocation, indexMap) in allChunkSections) {
-            val visibleIndexMap: ConcurrentHashMap<Int, SectionArrayMesh> = ConcurrentHashMap()
+            val visibleIndexMap: ConcurrentHashMap<Int, ChunkMeshCollection> = ConcurrentHashMap()
             for ((index, mesh) in indexMap) {
                 if (renderWindow.camera.frustum.containsChunk(chunkLocation, mesh.lowestBlockHeight, mesh.highestBlockHeight)) {
                     visibleIndexMap[index] = mesh

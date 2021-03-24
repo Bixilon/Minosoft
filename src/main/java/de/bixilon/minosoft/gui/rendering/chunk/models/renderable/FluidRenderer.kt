@@ -7,7 +7,7 @@ import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.data.world.BlockPosition
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.light.LightAccessor
-import de.bixilon.minosoft.gui.rendering.chunk.SectionArrayMesh
+import de.bixilon.minosoft.gui.rendering.chunk.ChunkMeshCollection
 import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModelElement
 import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModelFace
 import de.bixilon.minosoft.gui.rendering.textures.Texture
@@ -28,7 +28,7 @@ class FluidRenderer(
     private var still: Texture? = null
     private var flowing: Texture? = null
 
-    override fun render(blockState: BlockState, lightAccessor: LightAccessor, tintColor: RGBColor?, position: BlockPosition, mesh: SectionArrayMesh, neighbourBlocks: Array<BlockState?>, world: World) {
+    override fun render(blockState: BlockState, lightAccessor: LightAccessor, tintColor: RGBColor?, position: BlockPosition, meshCollection: ChunkMeshCollection, neighbourBlocks: Array<BlockState?>, world: World) {
         val modelMatrix = Mat4().translate(position.toVec3())
         val lightLevel = lightAccessor.getLightLevel(position)
         val heights = calculateHeights(neighbourBlocks, blockState, world, position)
@@ -56,7 +56,7 @@ class FluidRenderer(
             face.rotate(angle)
             val positionTemplate = BlockModelElement.FACE_POSITION_MAP_TEMPLATE[direction.ordinal]
             val drawPositions = arrayOf(positions[positionTemplate[0]], positions[positionTemplate[1]], positions[positionTemplate[2]], positions[positionTemplate[3]])
-            createQuad(drawPositions, face.getTexturePositionArray(direction), texture, modelMatrix, mesh, tintColor, lightLevel)
+            createQuad(drawPositions, face.getTexturePositionArray(direction), texture, modelMatrix, meshCollection, tintColor, lightLevel)
         }
     }
 
@@ -103,7 +103,8 @@ class FluidRenderer(
         return heights.toSet().size != 1 // liquid is flowing, if not all of the heights are the same
     }
 
-    private fun createQuad(drawPositions: Array<Vec3>, texturePositions: Array<Vec2?>, texture: Texture, modelMatrix: Mat4, mesh: SectionArrayMesh, tintColor: RGBColor?, lightLevel: Int) {
+    private fun createQuad(drawPositions: Array<Vec3>, texturePositions: Array<Vec2?>, texture: Texture, modelMatrix: Mat4, meshCollection: ChunkMeshCollection, tintColor: RGBColor?, lightLevel: Int) {
+        val mesh = ElementRenderer.getMesh(meshCollection, texture.transparency)
         for (vertex in ElementRenderer.DRAW_ODER) {
             val input = Vec4(drawPositions[vertex.first], 1.0f)
             val output = modelMatrix * input
