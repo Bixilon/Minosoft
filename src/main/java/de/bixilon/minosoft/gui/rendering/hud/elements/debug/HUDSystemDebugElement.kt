@@ -45,6 +45,7 @@ class HUDSystemDebugElement(hudRenderer: HUDRenderer) : DebugScreen(hudRenderer)
 
 
     init {
+        text()
         text(
             if (GitInfo.IS_INITIALIZED) {
                 "Commit: ${GitInfo.GIT_COMMIT_ID_DESCRIBE}: ${GitInfo.GIT_COMMIT_MESSAGE_SHORT}"

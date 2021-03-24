@@ -34,6 +34,7 @@ data class Dimension(
     val hasCeiling: Boolean = false,
     val ultrawarm: Boolean = false,
     val height: Int = 256,
+    val supports3DBiomes: Boolean = true,
 ) : RegistryItem {
     val lowestSection = if (minY < 0) {
         (minY + 1) / ProtocolDefinition.SECTION_HEIGHT_Y - 1
@@ -45,8 +46,6 @@ data class Dimension(
     } else {
         height / ProtocolDefinition.SECTION_HEIGHT_Y
     }
-
-    val supports3DBiomes = resourceLocation.full != "minecraft:overworld" // ToDo
 
     override fun toString(): String {
         return resourceLocation.toString()
@@ -110,6 +109,7 @@ data class Dimension(
                 hasCeiling = data.get("has_ceiling")?.asBoolean == true,
                 ultrawarm = data.get("ultrawarm")?.asBoolean == true,
                 height = data.get("height")?.asInt ?: 256,
+                supports3DBiomes = data.get("supports_3d_biomes")?.asBoolean ?: !resourceLocation.full.contains("overworld")
             )
         }
     }
