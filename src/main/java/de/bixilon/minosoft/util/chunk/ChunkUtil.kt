@@ -210,11 +210,11 @@ object ChunkUtil {
     private fun readLegacyBiomeArray(buffer: InByteBuffer): XZBiomeAccessor {
         val biomes: MutableList<Biome> = mutableListOf()
         for (i in 0 until ProtocolDefinition.SECTION_WIDTH_X * ProtocolDefinition.SECTION_WIDTH_Z) {
-            biomes[i] = buffer.connection.mapping.biomeRegistry.get(if (buffer.versionId < V_15W35A) {
+            biomes.add(i, buffer.connection.mapping.biomeRegistry.get(if (buffer.versionId < V_15W35A) {
                 buffer.readUnsignedByte().toInt()
             } else {
                 buffer.readInt()
-            })
+            }))
         }
         return XZBiomeAccessor(biomes.toTypedArray())
     }

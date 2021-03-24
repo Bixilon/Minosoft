@@ -35,7 +35,6 @@ import java.util.*
 
 
 class VersionMapping(var version: Version?) {
-
     val motiveRegistry: Registry<Motive> = Registry()
     val blockRegistry: Registry<Block> = Registry()
     val itemRegistry: ItemRegistry = ItemRegistry()
