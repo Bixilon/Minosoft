@@ -25,8 +25,21 @@ in vec4 passTintColor;
 
 uniform sampler2DArray textureArray[7];
 
+vec4 getTexture(uint textureId, vec3 textureCoordinates){
+    switch (textureId){
+        case 0u : return texture(textureArray[0], textureCoordinates);
+        case 1u: return texture(textureArray[1], textureCoordinates);
+        case 2u: return texture(textureArray[2], textureCoordinates);
+        case 3u: return texture(textureArray[3], textureCoordinates);
+        case 4u: return texture(textureArray[4], textureCoordinates);
+        case 5u: return texture(textureArray[5], textureCoordinates);
+        case 6u: return texture(textureArray[6], textureCoordinates);
+    }
+    return texture(textureArray[0], textureCoordinates);
+}
+
 void main() {
-    vec4 firstTexelColor = texture(textureArray[passFirstTextureIdIndex], passFirstTextureCoordinates);
+    vec4 firstTexelColor = getTexture(passFirstTextureIdIndex, passFirstTextureCoordinates);
     if (firstTexelColor.a == 0.0f) { // ToDo: This only works for alpha == 0. What about semi transparency? We would need to sort the faces, etc. See: https://learnopengl.com/Advanced-OpenGL/Blending
         discard;
     }
@@ -36,7 +49,7 @@ void main() {
         return;
     }
 
-    vec4 secondTexelColor = texture(textureArray[passSecondTextureIdIndex], passSecondTextureCoordinates);
+    vec4 secondTexelColor =  getTexture(passSecondTextureIdIndex, passSecondTextureCoordinates);
 
     if (secondTexelColor.a == 0.0f) {
         discard;
