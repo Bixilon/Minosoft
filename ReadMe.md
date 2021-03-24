@@ -1,7 +1,8 @@
 # Minosoft
+
 Minosoft is an open source minecraft client, written from scratch in java. It aims to bring more functionality and stability.
 
-[![pipeline status](https://gitlab.bixilon.de/bixilon/minosoft/badges/master/pipeline.svg)](https://gitlab.bixilon.de/bixilon/minosoft/-/commits/master) 
+[![pipeline status](https://gitlab.bixilon.de/bixilon/minosoft/badges/master/pipeline.svg)](https://gitlab.bixilon.de/bixilon/minosoft/-/commits/master)
 [![](https://jitpack.io/v/de.bixilon.gitlab.bixilon/minosoft.svg)](https://jitpack.io/#de.bixilon.gitlab.bixilon/minosoft)
 
 ## Feature overview
@@ -26,7 +27,6 @@ Minosoft is an open source minecraft client, written from scratch in java. It ai
 - Disk space: Minosoft itself is pretty small (2-3 Mib), the libraries are a bit bigger. You also need to have the "normal" minecraft assets (~ 300 MB for one version).
 - GPU: OpenGL 3.3+. Every moden GPU works and is recommended.
 - Java 15 (This is really important, we use experimental features that are only available in this version. Java 8 is currently **not** supported).
-
 
 ## Rendering
 
@@ -54,7 +54,7 @@ Almost all versions (and snapshots!) between 1.7 and the latest one (21w07a as o
 
 ### Unsupported versions
 
-Minosoft uses [PixLyzer](https://gitlab.bixilon.de/bixilon/pixlyzer) as data source for all kind of data (like block ids, item ids, ...). PixLyzer currently works for 1.14.4+. We will backport it for <1.13 soon.
+Minosoft uses [PixLyzer](https://gitlab.bixilon.de/bixilon/pixlyzer) as data source for all kind of data (like block ids, item ids, ...). PixLyzer currently works for 19w12a+ (1.14 snapshot). We will backport it for 1.13 and 17w46a (only version needed for <1.12) soon.
 
 ## Modding
 
@@ -62,6 +62,7 @@ Minosoft is modding friendly. A decent and stable API was introduced with !17. I
 completely different).
 
 ## Botting
+
 On the ToDo List
 
 ## Contribution or helping out
@@ -69,6 +70,7 @@ On the ToDo List
 You're welcome, but feel free to take a look at [Contributing.md](/Contributing.md).
 
 ## Tools and generators
+
 We wrote some tools to help out, see [Utility](util/ReadMe.md).
 
 ## Credits
