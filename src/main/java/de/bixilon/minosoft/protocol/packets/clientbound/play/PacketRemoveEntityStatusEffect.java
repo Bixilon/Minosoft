@@ -14,21 +14,21 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.entities.entities.Entity;
-import de.bixilon.minosoft.data.mappings.MobEffect;
+import de.bixilon.minosoft.data.mappings.StatusEffect;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
-public class PacketRemoveEntityEffect extends ClientboundPacket {
-    int entityId;
-    MobEffect effect;
+public class PacketRemoveEntityStatusEffect extends ClientboundPacket {
+    private int entityId;
+    private StatusEffect effect;
 
     @Override
     public boolean read(InByteBuffer buffer) {
         this.entityId = buffer.readEntityId();
 
-        this.effect = buffer.getConnection().getMapping().getMobEffectRegistry().get(buffer.readByte());
+        this.effect = buffer.getConnection().getMapping().getStatusEffectRegistry().get(buffer.readByte());
         return true;
     }
 
@@ -51,7 +51,7 @@ public class PacketRemoveEntityEffect extends ClientboundPacket {
         return this.entityId;
     }
 
-    public MobEffect getEffect() {
+    public StatusEffect getEffect() {
         return this.effect;
     }
 }

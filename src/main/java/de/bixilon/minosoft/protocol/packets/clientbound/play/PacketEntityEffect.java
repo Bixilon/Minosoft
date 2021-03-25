@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.data.entities.StatusEffect;
+import de.bixilon.minosoft.data.entities.StatusEffectInstance;
 import de.bixilon.minosoft.data.entities.entities.Entity;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
@@ -25,7 +25,7 @@ import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
 
 public class PacketEntityEffect extends ClientboundPacket {
     int entityId;
-    StatusEffect effect;
+    StatusEffectInstance effect;
     boolean isAmbient;
     boolean hideParticles;
     boolean showIcon = true;
@@ -34,10 +34,10 @@ public class PacketEntityEffect extends ClientboundPacket {
     public boolean read(InByteBuffer buffer) {
         this.entityId = buffer.readEntityId();
         if (buffer.getVersionId() < V_14W04A) {
-            this.effect = new StatusEffect(buffer.getConnection().getMapping().getMobEffectRegistry().get(buffer.readByte()), buffer.readByte() + 1, buffer.readShort());
+            this.effect = new StatusEffectInstance(buffer.getConnection().getMapping().getStatusEffectRegistry().get(buffer.readByte()), buffer.readByte() + 1, buffer.readShort());
             return true;
         }
-        this.effect = new StatusEffect(buffer.getConnection().getMapping().getMobEffectRegistry().get(buffer.readByte()), buffer.readByte() + 1, buffer.readVarInt());
+        this.effect = new StatusEffectInstance(buffer.getConnection().getMapping().getStatusEffectRegistry().get(buffer.readByte()), buffer.readByte() + 1, buffer.readVarInt());
         if (buffer.getVersionId() < V_1_9_4) { // ToDo
             if (buffer.getVersionId() >= V_14W06B) {
                 this.hideParticles = buffer.readBoolean();
@@ -72,7 +72,7 @@ public class PacketEntityEffect extends ClientboundPacket {
         return this.entityId;
     }
 
-    public StatusEffect getEffect() {
+    public StatusEffectInstance getEffect() {
         return this.effect;
     }
 

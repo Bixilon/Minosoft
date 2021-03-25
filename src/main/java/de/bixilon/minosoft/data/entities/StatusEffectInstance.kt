@@ -10,23 +10,17 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.data.mappings
+package de.bixilon.minosoft.data.entities
 
-import com.google.gson.JsonObject
-import de.bixilon.minosoft.data.mappings.versions.VersionMapping
+import de.bixilon.minosoft.data.mappings.StatusEffect
 
-data class MobEffect(
-    val resourceLocation: ResourceLocation,
-    // ToDo
-) : RegistryItem {
+data class StatusEffectInstance(
+    val statusEffect: StatusEffect,
+    val amplifier: Int,
+    val duration: Int,
+) {
+
     override fun toString(): String {
-        return resourceLocation.toString()
-    }
-
-    companion object : ResourceLocationDeserializer<MobEffect> {
-        override fun deserialize(mappings: VersionMapping, resourceLocation: ResourceLocation, data: JsonObject): MobEffect {
-            return MobEffect(resourceLocation)
-        }
-
+        return "$statusEffect (amplifier: $amplifier, duration: $duration)"
     }
 }

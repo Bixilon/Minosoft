@@ -155,7 +155,7 @@ public class PacketTypes {
         PLAY_PLAYER_POSITION_AND_ROTATION(PacketPlayerPositionAndRotation::new),
         PLAY_UNLOCK_RECIPES(PacketUnlockRecipes::new),
         PLAY_DESTROY_ENTITIES(PacketDestroyEntity::new),
-        PLAY_REMOVE_ENTITY_EFFECT(PacketRemoveEntityEffect::new),
+        PLAY_REMOVE_ENTITY_EFFECT(PacketRemoveEntityStatusEffect::new),
         PLAY_RESOURCE_PACK_SEND(PacketResourcePackSend::new),
         PLAY_RESPAWN(PacketRespawn::new, false),
         PLAY_ENTITY_HEAD_ROTATION(PacketEntityHeadRotation::new),

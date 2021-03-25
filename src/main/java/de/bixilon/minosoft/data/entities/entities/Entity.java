@@ -17,7 +17,7 @@ import de.bixilon.minosoft.config.StaticConfiguration;
 import de.bixilon.minosoft.data.entities.*;
 import de.bixilon.minosoft.data.inventory.InventorySlots;
 import de.bixilon.minosoft.data.inventory.Slot;
-import de.bixilon.minosoft.data.mappings.MobEffect;
+import de.bixilon.minosoft.data.mappings.StatusEffect;
 import de.bixilon.minosoft.data.text.ChatComponent;
 import de.bixilon.minosoft.modding.event.events.annotations.Unsafe;
 import de.bixilon.minosoft.protocol.network.Connection;
@@ -37,7 +37,7 @@ public abstract class Entity {
     protected final int entityId;
     protected final UUID uuid;
     protected final HashMap<InventorySlots.EntityInventorySlots, Slot> equipment = new HashMap<>();
-    protected final HashSet<StatusEffect> effectList = new HashSet<>();
+    protected final HashSet<StatusEffectInstance> effectList = new HashSet<>();
     protected final int versionId;
     protected Position position;
     protected EntityRotation rotation;
@@ -86,18 +86,18 @@ public abstract class Entity {
         return this.uuid;
     }
 
-    public HashSet<StatusEffect> getEffectList() {
+    public HashSet<StatusEffectInstance> getEffectList() {
         return this.effectList;
     }
 
-    public void addEffect(StatusEffect effect) {
+    public void addEffect(StatusEffectInstance effect) {
         // effect already applied, maybe the duration or the amplifier changed?
-        this.effectList.removeIf(listEffect -> listEffect.getEffect() == effect.getEffect());
+        this.effectList.removeIf(listEffect -> listEffect.getStatusEffect() == effect.getStatusEffect());
         this.effectList.add(effect);
     }
 
-    public void removeEffect(MobEffect effect) {
-        this.effectList.removeIf(listEffect -> listEffect.getEffect() == effect);
+    public void removeEffect(StatusEffect effect) {
+        this.effectList.removeIf(listEffect -> listEffect.getStatusEffect() == effect);
     }
 
     public void attachTo(int vehicleId) {
