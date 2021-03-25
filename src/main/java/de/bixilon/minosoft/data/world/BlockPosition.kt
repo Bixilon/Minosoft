@@ -77,7 +77,7 @@ data class BlockPosition(val x: Int, val y: Int, val z: Int) {
         return "($x $y $z)"
     }
 
-    infix fun add(input: Vec3): Vec3 {
+    infix operator fun plus(input: Vec3): Vec3 {
         return Vec3(input.x + x, input.y + y, input.z + z)
     }
 }

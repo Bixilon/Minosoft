@@ -79,7 +79,7 @@ class ElementRenderer(parent: BlockModelElement, val rotation: Vec3, uvLock: Boo
         fun createQuad(drawPositions: Array<Vec3>, texturePositions: Array<Vec2?>) {
             for (vertex in DRAW_ODER) {
                 val input = drawPositions[vertex.first]
-                val output = position add input
+                val output = position + input
                 mesh.addVertex(
                     position = output,
                     textureCoordinates = texturePositions[vertex.second]!!,

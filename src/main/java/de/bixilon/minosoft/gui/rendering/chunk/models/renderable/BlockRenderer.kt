@@ -93,22 +93,25 @@ class BlockRenderer : BlockRenderInterface {
 
     override fun render(blockState: BlockState, lightAccessor: LightAccessor, tintColor: RGBColor?, position: BlockPosition, meshCollection: ChunkMeshCollection, neighbourBlocks: Array<BlockState?>, world: World) {
         for (direction in Directions.DIRECTIONS) {
-            for (element in elements) {
-                val cullFace = cullFaces[direction.ordinal] != null
+            val cullFace = cullFaces[direction.ordinal] != null
 
-                var neighbourBlockFullFace = false
-                neighbourBlocks[direction.ordinal]?.renders?.let { // ToDo: Improve this
-                    val testDirection = direction.inverse
-                    for (model in it) {
-                        if (model.fullFaceDirections[testDirection.ordinal] != null && model.transparentFaces[testDirection.ordinal] == null) {
-                            neighbourBlockFullFace = true
-                            break
-                        }
+            var neighbourBlockFullFace = false
+            neighbourBlocks[direction.ordinal]?.renders?.let { // ToDo: Improve this
+                val testDirection = direction.inverse
+                for (model in it) {
+                    if (model.fullFaceDirections[testDirection.ordinal] != null && model.transparentFaces[testDirection.ordinal] == null) {
+                        neighbourBlockFullFace = true
+                        break
+
                     }
                 }
-                if (neighbourBlockFullFace && cullFace) {
-                    continue
-                }
+            }
+
+            if (neighbourBlockFullFace && cullFace) {
+                continue
+            }
+
+            for (element in elements) {
                 element.render(tintColor, position, lightAccessor, textureMapping, direction, meshCollection)
             }
         }
