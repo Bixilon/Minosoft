@@ -34,6 +34,7 @@ import de.bixilon.minosoft.protocol.network.Connection
 import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketPlayerPositionAndRotation
 import de.bixilon.minosoft.util.CountUpAndDownLatch
 import de.bixilon.minosoft.util.logging.Log
+import glm_.vec2.Vec2
 import glm_.vec2.Vec2i
 import org.lwjgl.*
 import org.lwjgl.glfw.*
@@ -52,11 +53,9 @@ class RenderWindow(
     private val keysDown: MutableSet<KeyCodes> = mutableSetOf()
     private val keyBindingDown: MutableSet<KeyBinding> = mutableSetOf()
     val renderStats = RenderStats()
-    var screenWidth = 900
+    var screenDimensions = Vec2i(900, 500)
         private set
-    var screenHeight = 500
-        private set
-    var screenDimensions = Vec2i(screenWidth, screenHeight)
+    var screenDimensionsF = Vec2(screenDimensions)
         private set
 
     private var windowId = 0L
@@ -123,7 +122,7 @@ class RenderWindow(
         glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE) // the window will be resizable
 
         // Create the window
-        windowId = glfwCreateWindow(screenWidth, screenHeight, "Minosoft", MemoryUtil.NULL, MemoryUtil.NULL)
+        windowId = glfwCreateWindow(screenDimensions.x, screenDimensions.y, "Minosoft", MemoryUtil.NULL, MemoryUtil.NULL)
         if (windowId == MemoryUtil.NULL) {
             glfwTerminate()
             throw RuntimeException("Failed to create the GLFW window")
@@ -262,11 +261,10 @@ class RenderWindow(
         glfwSetWindowSizeCallback(windowId, object : GLFWWindowSizeCallback() {
             override fun invoke(window: Long, width: Int, height: Int) {
                 glViewport(0, 0, width, height)
-                screenWidth = width
-                screenHeight = height
                 screenDimensions = Vec2i(width, height)
-                camera.screenChangeResizeCallback(screenWidth, screenHeight)
-                hudRenderer.screenChangeResizeCallback(width, height)
+                screenDimensionsF = Vec2(screenDimensions)
+                camera.screenChangeResizeCallback()
+                hudRenderer.screenChangeResizeCallback(screenDimensions)
             }
         })
 
@@ -293,11 +291,11 @@ class RenderWindow(
 
         registerGlobalKeyCombinations()
 
-        hudRenderer.screenChangeResizeCallback(screenWidth, screenHeight)
+        hudRenderer.screenChangeResizeCallback(screenDimensions)
 
         camera.addShaders(worldRenderer.chunkShader)
 
-        camera.screenChangeResizeCallback(screenWidth, screenHeight)
+        camera.screenChangeResizeCallback()
 
         glEnable(GL_DEPTH_TEST)
 

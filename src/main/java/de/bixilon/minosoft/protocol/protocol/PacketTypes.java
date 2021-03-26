@@ -83,9 +83,9 @@ public class PacketTypes {
 
         private final ConnectionStates state;
 
-        Serverbound() {
-            this.state = ConnectionStates.valueOf(name().split("_")[0]);
-        }
+       Serverbound() {
+           this.state = ConnectionStates.valueOf(name().split("_")[0]);
+       }
 
         public ConnectionStates getState() {
             return this.state;

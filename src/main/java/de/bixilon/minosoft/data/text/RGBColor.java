@@ -16,6 +16,7 @@ package de.bixilon.minosoft.data.text;
 import org.checkerframework.common.value.qual.IntRange;
 
 public final class RGBColor implements ChatCode {
+    private static final float COLOR_FLOAT_DIVIDER = 255.0f;
     private final int color;
 
     public RGBColor(int red, int green, int blue, int alpha) {
@@ -61,7 +62,7 @@ public final class RGBColor implements ChatCode {
 
     @IntRange(from = 0, to = 1)
     public float getFloatRed() {
-        return getRed() / 255f;
+        return getRed() / COLOR_FLOAT_DIVIDER;
     }
 
     @IntRange(from = 0, to = 255)
@@ -71,7 +72,7 @@ public final class RGBColor implements ChatCode {
 
     @IntRange(from = 0, to = 1)
     public float getFloatGreen() {
-        return getGreen() / 255f;
+        return getGreen() / COLOR_FLOAT_DIVIDER;
     }
 
     @IntRange(from = 0, to = 255)
@@ -81,7 +82,7 @@ public final class RGBColor implements ChatCode {
 
     @IntRange(from = 0, to = 1)
     public float getFloatBlue() {
-        return getBlue() / 255f;
+        return getBlue() / COLOR_FLOAT_DIVIDER;
     }
 
     @Override

@@ -1,17 +1,17 @@
 package de.bixilon.minosoft.gui.rendering.chunk.models.renderable
 
-import de.bixilon.minosoft.data.Directions
 import de.bixilon.minosoft.data.mappings.blocks.BlockState
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.data.world.BlockPosition
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.light.LightAccessor
 import de.bixilon.minosoft.gui.rendering.chunk.ChunkMeshCollection
+import de.bixilon.minosoft.gui.rendering.chunk.models.FaceBorderSize
 import de.bixilon.minosoft.gui.rendering.textures.Texture
 
 interface BlockRenderInterface {
-    val fullFaceDirections: Array<Directions?>
-    val transparentFaces: Array<Directions?>
+    val faceBorderSizes: Array<Array<FaceBorderSize>?> // direction indexed
+    val transparentFaces: BooleanArray
 
     fun render(blockState: BlockState, lightAccessor: LightAccessor, tintColor: RGBColor?, position: BlockPosition, meshCollection: ChunkMeshCollection, neighbourBlocks: Array<BlockState?>, world: World)
 

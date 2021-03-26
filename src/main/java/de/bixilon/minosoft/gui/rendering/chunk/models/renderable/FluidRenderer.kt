@@ -8,6 +8,7 @@ import de.bixilon.minosoft.data.world.BlockPosition
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.light.LightAccessor
 import de.bixilon.minosoft.gui.rendering.chunk.ChunkMeshCollection
+import de.bixilon.minosoft.gui.rendering.chunk.models.FaceBorderSize
 import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModelElement
 import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModelFace
 import de.bixilon.minosoft.gui.rendering.textures.Texture
@@ -23,10 +24,10 @@ class FluidRenderer(
     private val flowingTextureName: String,
     private val regex: String,
 ) : BlockRenderInterface {
-    override val fullFaceDirections: Array<Directions?> = arrayOfNulls(Directions.DIRECTIONS.size)
-    override val transparentFaces: Array<Directions?> = arrayOfNulls(Directions.DIRECTIONS.size)
-    private var still: Texture? = null
-    private var flowing: Texture? = null
+    override val faceBorderSizes: Array<Array<FaceBorderSize>?> = arrayOfNulls(Directions.DIRECTIONS.size)
+    override val transparentFaces: BooleanArray = BooleanArray(Directions.DIRECTIONS.size)
+    private lateinit var stillTexture: Texture
+    private lateinit var flowingTexture: Texture
 
     override fun render(blockState: BlockState, lightAccessor: LightAccessor, tintColor: RGBColor?, position: BlockPosition, meshCollection: ChunkMeshCollection, neighbourBlocks: Array<BlockState?>, world: World) {
         val modelMatrix = Mat4().translate(position.toVec3())
@@ -37,16 +38,16 @@ class FluidRenderer(
         val texture: Texture
         val angle: Float
         if (isFlowing) {
-            texture = flowing!!
+            texture = flowingTexture
             angle = getRotationAngle(heights)
         } else {
-            texture = still!!
-            angle = 0f
+            texture = stillTexture
+            angle = 0.0f
         }
 
         val positions = calculatePositions(heights)
         for (direction in Directions.DIRECTIONS) {
-            if (isBlockSameFluid(neighbourBlocks[direction.ordinal]) || neighbourBlocks[direction.ordinal]?.getBlockRenderer(position + direction)?.fullFaceDirections?.let { it[direction.inverse.ordinal] != null } == true && direction != Directions.UP) {
+            if (isBlockSameFluid(neighbourBlocks[direction.ordinal]) || neighbourBlocks[direction.ordinal]?.getBlockRenderer(position + direction)?.faceBorderSizes?.let { it[direction.inverse.ordinal] != null } == true && direction != Directions.UP) {
                 continue
             }
             val face = BlockModelFace(VecUtil.EMPTY_VECTOR, Vec3(VecUtil.BLOCK_SIZE_VECTOR.x, positions[7].y * 8, VecUtil.BLOCK_SIZE_VECTOR.z), direction)
@@ -78,7 +79,7 @@ class FluidRenderer(
         val minHeight = heights.minOrNull()
         val position = heights.indexOfFirst { it == minHeight }
         val directions = HEIGHT_POSITIONS_REVERSED[position]!!
-        var angle = 0f
+        var angle = 0.0f
         for (direction in directions) {
             angle += getRotationAngle(direction)
         }
@@ -92,7 +93,7 @@ class FluidRenderer(
     private fun getRotationAngle(direction: Directions): Float {
         return when (direction) {
             Directions.SOUTH -> glm.PIf
-            Directions.NORTH -> 0f
+            Directions.NORTH -> 0.0f
             Directions.WEST -> glm.PIf * 0.5f
             Directions.EAST -> glm.PIf * 1.5f
             else -> error("Unexpected value: $direction")
@@ -209,11 +210,8 @@ class FluidRenderer(
     }
 
     override fun resolveTextures(indexed: MutableList<Texture>, textureMap: MutableMap<String, Texture>) {
-        if (still != null) {
-            return
-        }
-        still = BlockRenderInterface.resolveTexture(indexed, textureMap, stillTextureName)
-        flowing = BlockRenderInterface.resolveTexture(indexed, textureMap, flowingTextureName)
+        stillTexture = BlockRenderInterface.resolveTexture(indexed, textureMap, stillTextureName)!!
+        flowingTexture = BlockRenderInterface.resolveTexture(indexed, textureMap, flowingTextureName)!!
     }
 
     companion object {

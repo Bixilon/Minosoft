@@ -107,6 +107,9 @@ data class BlockState(
 
     fun getBlockRenderer(position: BlockPosition): BlockRenderInterface {
         if (Minosoft.getConfig().config.game.other.antiMoirePattern) {
+            if (renders.size == 1) {
+                return renders.iterator().next()
+            }
             // ToDo: Support weight attribute
             return renders.random(Random(position.hashCode()))
         }

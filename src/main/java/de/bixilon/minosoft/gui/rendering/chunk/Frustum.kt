@@ -3,7 +3,7 @@ package de.bixilon.minosoft.gui.rendering.chunk
 import de.bixilon.minosoft.data.world.ChunkPosition
 import de.bixilon.minosoft.gui.rendering.Camera
 import de.bixilon.minosoft.gui.rendering.RenderConstants
-import de.bixilon.minosoft.gui.rendering.util.VecUtil
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.rotate
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import glm_.glm
 import glm_.vec3.Vec3
@@ -31,17 +31,17 @@ class Frustum(private val camera: Camera) {
         val angle = glm.radians(camera.fov - 90f)
         val sin = glm.sin(angle)
         val cos = glm.cos(angle)
-        normals.add(VecUtil.rotateVector(camera.cameraFront, cameraRealUp, sin, cos).normalize())
-        normals.add(VecUtil.rotateVector(camera.cameraFront, cameraRealUp, -sin, cos).normalize()) // negate angle -> negate sin
+        normals.add(camera.cameraFront.rotate(cameraRealUp, sin, cos).normalize())
+        normals.add(camera.cameraFront.rotate(cameraRealUp, -sin, cos).normalize()) // negate angle -> negate sin
     }
 
     private fun calculateVerticalNormals() {
-        val aspect = camera.screenHeight.toFloat() / camera.screenWidth.toFloat()
+        val aspect = camera.renderWindow.screenDimensions.x / camera.renderWindow.screenDimensions.y // ToDo: x/y or y/x
         val angle = glm.radians(camera.fov * aspect - 90f)
         val sin = glm.sin(angle)
         val cos = glm.cos(angle)
-        normals.add(VecUtil.rotateVector(camera.cameraFront, camera.cameraRight, sin, cos).normalize())
-        normals.add(VecUtil.rotateVector(camera.cameraFront, camera.cameraRight, -sin, cos).normalize()) // negate angle -> negate sin
+        normals.add(camera.cameraFront.rotate(camera.cameraRight, sin, cos).normalize())
+        normals.add(camera.cameraFront.rotate(camera.cameraRight, -sin, cos).normalize()) // negate angle -> negate sin
     }
 
     private fun containsRegion(from: Vec3, to: Vec3): Boolean {
@@ -64,7 +64,7 @@ class Frustum(private val camera: Camera) {
                 to.z
             }
 
-            if (normal.dotProduct(min - camera.cameraPosition) < 0f) {
+            if (normal.dotProduct(min - camera.cameraPosition) < 0.0f) {
                 return false // region is outside of frustum
             }
         }

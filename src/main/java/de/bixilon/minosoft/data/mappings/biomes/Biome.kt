@@ -51,17 +51,17 @@ data class Biome(
     }
 
     fun getClampedTemperature(height: Int): Int {
-        return getColorMapCoordinate(MMath.clamp(temperature + (MMath.clamp(height - ProtocolDefinition.SEA_LEVEL_HEIGHT, 1, Int.MAX_VALUE) * ProtocolDefinition.HEIGHT_SEA_LEVEL_MODIFIER), 0f, 1.0f))
+        return getColorMapCoordinate(MMath.clamp(temperature + (MMath.clamp(height - ProtocolDefinition.SEA_LEVEL_HEIGHT, 1, Int.MAX_VALUE) * ProtocolDefinition.HEIGHT_SEA_LEVEL_MODIFIER), 0.0f, 1.0f))
     }
 
     companion object : ResourceLocationDeserializer<Biome> {
         override fun deserialize(mappings: VersionMapping, resourceLocation: ResourceLocation, data: JsonObject): Biome {
             return Biome(
                 resourceLocation = resourceLocation,
-                depth = data["depth"]?.asFloat ?: 0f,
-                scale = data["scale"]?.asFloat ?: 0f,
-                temperature = data["temperature"]?.asFloat ?: 0f,
-                downfall = data["downfall"]?.asFloat ?: 0f,
+                depth = data["depth"]?.asFloat ?: 0.0f,
+                scale = data["scale"]?.asFloat ?: 0.0f,
+                temperature = data["temperature"]?.asFloat ?: 0.0f,
+                downfall = data["downfall"]?.asFloat ?: 0.0f,
                 waterColor = TintColorCalculator.getJsonColor(data["water_color"]?.asInt ?: 0),
                 waterFogColor = TintColorCalculator.getJsonColor(data["water_fog_color"]?.asInt ?: 0),
                 category = mappings.biomeCategoryRegistry.get(data["category"]?.asInt ?: -1) ?: DEFAULT_CATEGORY,

@@ -32,7 +32,7 @@ class BlockModelFace {
         tint = data.has("tintindex")
         textureName = data.get("texture").asString.removePrefix("#")
         cullFace = data["cullface"]?.asString?.let {
-            return@let if (it == "bottom") {
+            if (it == "bottom") {
                 Directions.DOWN
             } else {
                 Directions.valueOf(it.toUpperCase())
@@ -101,7 +101,7 @@ class BlockModelFace {
     }
 
     fun rotate(angle: Float) {
-        if (angle == 0f) {
+        if (angle == 0.0f) {
             return
         }
         val sin = glm.sin(angle)

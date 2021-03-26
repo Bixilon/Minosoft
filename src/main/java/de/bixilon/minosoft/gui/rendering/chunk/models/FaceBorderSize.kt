@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2021 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,13 +11,11 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering
+package de.bixilon.minosoft.gui.rendering.chunk.models
 
 import glm_.vec2.Vec2i
 
-interface Renderer {
-    fun init()
-    fun postInit()
-    fun draw()
-    fun screenChangeResizeCallback(screenDimensions: Vec2i) {}
-}
+data class FaceBorderSize(
+    val start: Vec2i = Vec2i(0, 0),
+    val end: Vec2i = Vec2i(16, 16),
+)

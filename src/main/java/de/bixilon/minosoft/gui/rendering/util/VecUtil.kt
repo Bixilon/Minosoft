@@ -24,12 +24,11 @@ import glm_.vec3.Vec3
 
 object VecUtil {
     val EMPTY_VECTOR = Vec3()
+    val BLOCK_SIZE_VECTOR = Vec3(BlockModelElement.BLOCK_RESOLUTION)
 
-    val BLOCK_SIZE_VECTOR = Vec3(BlockModelElement.BLOCK_RESOLUTION, BlockModelElement.BLOCK_RESOLUTION, BlockModelElement.BLOCK_RESOLUTION)
-
-    fun jsonToVec3(json: JsonElement): Vec3 {
-        when (json) {
-            is JsonArray -> return Vec3(json[0].asFloat, json[1].asFloat, json[2].asFloat)
+    fun JsonElement.toVec3(): Vec3 {
+        when (this) {
+            is JsonArray -> return Vec3(this[0].asFloat, this[1].asFloat, this[2].asFloat)
             is JsonObject -> TODO()
             else -> throw IllegalArgumentException("Not a Vec3!")
         }
@@ -39,27 +38,41 @@ object VecUtil {
         return Vec2(x * cos - y * sin, x * sin + y * cos)
     }
 
-    fun rotateVector(original: Vec3, angle: Float, axis: Axes): Vec3 {
-        if (angle == 0f) {
-            return original
+    fun Vec3.rotate(angle: Float, axis: Axes): Vec3 {
+        if (angle == 0.0f) {
+            return this
         }
         return when (axis) {
             Axes.X -> {
-                val rotatedValues = getRotatedValues(original.y, original.z, glm.sin(angle), glm.cos(angle))
-                Vec3(original.x, rotatedValues)
+                val rotatedValues = getRotatedValues(this.y, this.z, glm.sin(angle), glm.cos(angle))
+                Vec3(this.x, rotatedValues)
             }
             Axes.Y -> {
-                val rotatedValues = getRotatedValues(original.x, original.z, glm.sin(angle), glm.cos(angle))
-                Vec3(rotatedValues.x, original.y, rotatedValues.y)
+                val rotatedValues = getRotatedValues(this.x, this.z, glm.sin(angle), glm.cos(angle))
+                Vec3(rotatedValues.x, this.y, rotatedValues.y)
             }
             Axes.Z -> {
-                val rotatedValues = getRotatedValues(original.x, original.y, glm.sin(angle), glm.cos(angle))
-                Vec3(rotatedValues.x, rotatedValues.y, original.z)
+                val rotatedValues = getRotatedValues(this.x, this.y, glm.sin(angle), glm.cos(angle))
+                Vec3(rotatedValues.x, rotatedValues.y, this.z)
             }
         }
     }
 
-    fun rotateVector(original: Vec3, axis: Vec3, sin: Float, cos: Float): Vec3 {
-        return original * cos + (axis cross original) * sin + axis * (axis dot original) * (1 - cos)
+    fun Vec3.rotate(axis: Vec3, sin: Float, cos: Float): Vec3 {
+        return this * cos + (axis cross this) * sin + axis * (axis dot this) * (1 - cos)
     }
+
+    fun Vec3.oneContainsIgnoreZero(vec3: Vec3): Boolean {
+        if (x == vec3.x) {
+            return true
+        }
+        if (y == vec3.y) {
+            return true
+        }
+        if (z == vec3.z) {
+            return true
+        }
+        return false
+    }
+
 }

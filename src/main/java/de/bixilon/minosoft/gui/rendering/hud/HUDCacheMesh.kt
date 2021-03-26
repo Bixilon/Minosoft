@@ -36,7 +36,7 @@ class HUDCacheMesh(
             textureCoordinates.y,
             Float.fromBits((texture?.arrayLayer ?: 0) or ((texture?.arrayId ?: 0) shl 24)),
             if (tintColor == null) {
-                0f
+                0.0f
             } else {
                 Float.fromBits(tintColor.color)
             },

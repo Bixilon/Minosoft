@@ -16,24 +16,22 @@ package de.bixilon.minosoft.gui.rendering.chunk.models.loading
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.Directions
-import de.bixilon.minosoft.gui.rendering.util.VecUtil
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.rotate
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3
 import glm_.glm
 import glm_.vec3.Vec3
 
 open class BlockModelElement(data: JsonObject) {
     val faces: MutableMap<Directions, BlockModelFace> = mutableMapOf()
-    var positions: Array<Vec3>
+    var transformedPositions: Array<Vec3>
+    val untransformedPositions: Array<Vec3>
 
     init {
-        val from = data["from"]?.asJsonArray?.let {
-            VecUtil.jsonToVec3(it)
-        } ?: Vec3()
+        val from = data["from"]?.asJsonArray?.toVec3() ?: Vec3()
 
-        val to = data["to"]?.asJsonArray?.let {
-            VecUtil.jsonToVec3(it)
-        } ?: Vec3(BLOCK_RESOLUTION)
+        val to = data["to"]?.asJsonArray?.toVec3() ?: Vec3(BLOCK_RESOLUTION)
 
-        positions = arrayOf(
+        untransformedPositions = arrayOf(
             Vec3(from),
             Vec3(to.x, from.y, from.z),
             Vec3(from.x, from.y, to.z),
@@ -48,7 +46,7 @@ open class BlockModelElement(data: JsonObject) {
             val axis = Axes.valueOf(it["axis"].asString.toUpperCase())
             val angle = glm.radians(it["angle"].asFloat)
             val rescale = it["rescale"]?.asBoolean ?: false
-            rotatePositions(positions, axis, angle, VecUtil.jsonToVec3(it["origin"].asJsonArray), rescale)
+            rotatePositions(untransformedPositions, axis, angle, it["origin"].asJsonArray.toVec3(), rescale)
         }
 
         data["faces"]?.asJsonObject?.let {
@@ -58,13 +56,17 @@ open class BlockModelElement(data: JsonObject) {
             }
         }
 
-        for ((i, position) in positions.withIndex()) {
-            positions[i] = transformPosition(position)
+        // transformed positions
+        val transformedPositions: MutableList<Vec3> = mutableListOf()
+        for (position in untransformedPositions) {
+            transformedPositions.add(transformPosition(position))
         }
+        this.transformedPositions = transformedPositions.toTypedArray()
     }
 
     companion object {
-        const val BLOCK_RESOLUTION = 16f
+        const val BLOCK_RESOLUTION = 16
+        const val BLOCK_RESOLUTION_FLOAT = 16f
 
         val FACE_POSITION_MAP_TEMPLATE = arrayOf(
             intArrayOf(0, 2, 3, 1),
@@ -82,7 +84,7 @@ open class BlockModelElement(data: JsonObject) {
             }
             for ((i, position) in positions.withIndex()) {
                 var transformedPosition = position - origin
-                transformedPosition = VecUtil.rotateVector(transformedPosition, angle, axis)
+                transformedPosition = transformedPosition.rotate(angle, axis)
                 if (rescale) {
                     transformedPosition = transformedPosition / glm.cos(angle)
                 }

@@ -12,6 +12,9 @@
  */
 package de.bixilon.minosoft.data
 
+import de.bixilon.minosoft.gui.rendering.chunk.models.FaceBorderSize
+import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModelElement
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.oneContainsIgnoreZero
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3i
 
@@ -24,6 +27,8 @@ enum class Directions(val directionVector: Vec3i) {
     EAST(Vec3i(1, 0, 0));
 
     val floatDirectionVector = Vec3(directionVector)
+    val blockResolutionVector = directionVector * BlockModelElement.BLOCK_RESOLUTION
+    val blockResolutionVectorFloat = Vec3(blockResolutionVector)
 
     lateinit var inverse: Directions
         private set
@@ -45,6 +50,20 @@ enum class Directions(val directionVector: Vec3i) {
         }
     }
 
+    /**
+     * @return the size of the face in this direction. null if the face is not touching the border (determinated by the block resolution)
+     */
+    fun getFaceBorderSizes(start: Vec3, end: Vec3): FaceBorderSize? {
+        // check if face is touching the border of a block
+        if (!start.oneContainsIgnoreZero(blockResolutionVectorFloat) && !end.oneContainsIgnoreZero(blockResolutionVectorFloat)) {
+            // not touching the edge face of our direction
+            return null
+        }
+
+        return FaceBorderSize() // ToDo
+    }
+
+
     companion object {
         val DIRECTIONS = values()
         val SIDES = arrayOf(NORTH, SOUTH, WEST, EAST)
@@ -59,7 +78,7 @@ enum class Directions(val directionVector: Vec3i) {
 
         fun byDirection(direction: Vec3): Directions {
             var minDirection = DIRECTIONS[0]
-            var minError = 2f
+            var minError = 2.0f
             for (testDirection in DIRECTIONS) {
                 val error = (testDirection.floatDirectionVector - direction).length()
                 if (error < MIN_ERROR) {
@@ -71,6 +90,7 @@ enum class Directions(val directionVector: Vec3i) {
             }
             return minDirection
         }
+
 
         init {
             for (direction in DIRECTIONS) {

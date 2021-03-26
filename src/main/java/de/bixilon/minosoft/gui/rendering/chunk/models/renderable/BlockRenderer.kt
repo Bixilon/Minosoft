@@ -22,6 +22,7 @@ import de.bixilon.minosoft.data.world.BlockPosition
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.light.LightAccessor
 import de.bixilon.minosoft.gui.rendering.chunk.ChunkMeshCollection
+import de.bixilon.minosoft.gui.rendering.chunk.models.FaceBorderSize
 import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModel
 import de.bixilon.minosoft.gui.rendering.textures.Texture
 import de.bixilon.minosoft.gui.rendering.textures.TextureTransparencies
@@ -31,8 +32,8 @@ class BlockRenderer : BlockRenderInterface {
     val textures: MutableMap<String, String> = mutableMapOf()
     private val elements: MutableSet<ElementRenderer> = mutableSetOf()
     private val textureMapping: MutableMap<String, Texture> = mutableMapOf()
-    override val fullFaceDirections: Array<Directions?> = arrayOfNulls(Directions.DIRECTIONS.size)
-    override val transparentFaces: Array<Directions?> = arrayOfNulls(Directions.DIRECTIONS.size)
+    override val faceBorderSizes: Array<Array<FaceBorderSize>?> = arrayOfNulls(Directions.DIRECTIONS.size)
+    override val transparentFaces: BooleanArray = BooleanArray(Directions.DIRECTIONS.size)
 
     constructor(data: JsonObject, parent: BlockModel) {
         val newElements = ElementRenderer.createElements(data, parent)
@@ -60,12 +61,12 @@ class BlockRenderer : BlockRenderInterface {
 
     override fun postInit() {
         for (direction in Directions.DIRECTIONS) {
-            var directionIsCullface: Boolean? = null
+            var directionIsCullFace: Boolean? = null
             var directionIsNotTransparent: Boolean? = null
-            var directionIsFull: Boolean? = null
+            var faceBorderSites: MutableList<FaceBorderSize> = mutableListOf()
             for (element in elements) {
                 if (element.isCullFace(direction)) {
-                    directionIsCullface = true
+                    directionIsCullFace = true
                 }
                 if (textureMapping[element.getTexture(direction)]?.transparency != TextureTransparencies.OPAQUE) {
                     if (directionIsNotTransparent == null) {
@@ -74,19 +75,19 @@ class BlockRenderer : BlockRenderInterface {
                 } else {
                     directionIsNotTransparent = true
                 }
-                if (element.isFullTowards(direction)) {
-                    directionIsFull = true
+                element.faceBorderSize[direction.ordinal]?.let {
+                    faceBorderSites.add(it)
                 }
             }
 
-            if (directionIsCullface == true) {
+            if (directionIsCullFace == true) {
                 cullFaces[direction.ordinal] = direction
             }
             if (directionIsNotTransparent == false) {
-                transparentFaces[direction.ordinal] = direction
+                transparentFaces[direction.ordinal] = true
             }
-            if (directionIsFull == true) {
-                fullFaceDirections[direction.ordinal] = direction
+            if (faceBorderSites.isNotEmpty()) {
+                faceBorderSizes[direction.ordinal] = faceBorderSites.toTypedArray()
             }
         }
     }
@@ -95,23 +96,43 @@ class BlockRenderer : BlockRenderInterface {
         for (direction in Directions.DIRECTIONS) {
             val cullFace = cullFaces[direction.ordinal] != null
 
-            var neighbourBlockFullFace = false
-            neighbourBlocks[direction.ordinal]?.renders?.let { // ToDo: Improve this
-                val testDirection = direction.inverse
-                for (model in it) {
-                    if (model.fullFaceDirections[testDirection.ordinal] != null && model.transparentFaces[testDirection.ordinal] == null) {
-                        neighbourBlockFullFace = true
-                        break
-
-                    }
+            val invertedDirection = direction.inverse
+            var isNeighbourTransparent = false
+            var neighbourFaceSize: Array<FaceBorderSize>? = null
+            neighbourBlocks[direction.ordinal]?.getBlockRenderer(position + direction)?.let {
+                if (it.transparentFaces[invertedDirection.ordinal]) {
+                    isNeighbourTransparent = true
                 }
-            }
-
-            if (neighbourBlockFullFace && cullFace) {
-                continue
+                neighbourFaceSize = it.faceBorderSizes[invertedDirection.ordinal]
             }
 
             for (element in elements) {
+                var drawElementFace = true
+
+
+                neighbourFaceSize?.let {
+                    // force draw transparent faces
+                    if (transparentFaces[direction.ordinal] || isNeighbourTransparent) {
+                        return@let
+                    }
+
+                    val elementFaceBorderSize = element.faceBorderSize[direction.ordinal] ?: return@let
+                    for (size in it) {
+                        if (elementFaceBorderSize.start.x < size.start.x || elementFaceBorderSize.start.y < size.start.y) {
+                            return@let
+                        }
+                        if (elementFaceBorderSize.end.x > size.end.x || elementFaceBorderSize.end.y > size.end.y) {
+                            return@let
+                        }
+                        drawElementFace = false
+                        break
+                    }
+                }
+
+                if (!drawElementFace) {
+                    continue
+                }
+
                 element.render(tintColor, position, lightAccessor, textureMapping, direction, meshCollection)
             }
         }

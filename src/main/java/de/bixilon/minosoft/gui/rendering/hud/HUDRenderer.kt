@@ -69,13 +69,13 @@ class HUDRenderer(val connection: Connection, val renderWindow: RenderWindow) : 
 
     private fun registerDefaultElements() {
         addElement(ElementsNames.HOTBAR_RESOURCE_LOCATION, HotbarHUDElement(this), HUDElementProperties(
-            position = Vec2(0f, -1.0f),
+            position = Vec2(0.0f, -1.0f),
             xBinding = HUDElementProperties.PositionBindings.CENTER,
             yBinding = HUDElementProperties.PositionBindings.FURTHEST_POINT_AWAY,
         ))
 
         addElement(ElementsNames.CROSSHAIR_RESOURCE_LOCATION, CrosshairHUDElement(this), HUDElementProperties(
-            position = Vec2(0f, 0f),
+            position = Vec2(0.0f, 0.0f),
             xBinding = HUDElementProperties.PositionBindings.CENTER,
             yBinding = HUDElementProperties.PositionBindings.CENTER,
         ))
@@ -148,11 +148,11 @@ class HUDRenderer(val connection: Connection, val renderWindow: RenderWindow) : 
         }
     }
 
-    override fun screenChangeResizeCallback(width: Int, height: Int) {
-        orthographicMatrix = glm.ortho(-width / 2f, width / 2f, -height / 2f, height / 2f)
+    override fun screenChangeResizeCallback(screenDimensions: Vec2i) {
+        orthographicMatrix = glm.ortho(-screenDimensions.x / 2f, screenDimensions.x / 2f, -screenDimensions.y / 2f, screenDimensions.y / 2f)
         for ((_, hudElement) in hudElements.values) {
             hudElement.layout.clearChildrenCache()
-            hudElement.screenChangeResizeCallback(width, height)
+            hudElement.screenChangeResizeCallback(screenDimensions)
         }
     }
 

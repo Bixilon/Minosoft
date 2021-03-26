@@ -20,7 +20,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.util.logging.Log
 
 class PacketSetExperience : ClientboundPacket() {
-    var bar = 0f
+    var bar = 0.0f
         private set
     var level = 0
         private set

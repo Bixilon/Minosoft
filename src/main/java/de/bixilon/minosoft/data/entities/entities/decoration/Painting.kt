@@ -29,4 +29,4 @@ class Painting(
     position: BlockPosition,
     @get:EntityMetaDataFunction(name = "Direction") val direction: Directions,
     @get:EntityMetaDataFunction(name = "Motive") val motive: Motive,
-) : Entity(connection, entityId, uuid, fromPosition(position), EntityRotation(0f, 0f, 0f))
+) : Entity(connection, entityId, uuid, fromPosition(position), EntityRotation(0.0f, 0.0f, 0.0f))

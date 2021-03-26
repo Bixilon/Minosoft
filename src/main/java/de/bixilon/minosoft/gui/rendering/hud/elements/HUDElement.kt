@@ -23,5 +23,5 @@ abstract class HUDElement(protected val hudRenderer: HUDRenderer) {
     open fun init() {}
     open fun postInit() {}
     open fun draw() {}
-    open fun screenChangeResizeCallback(screenWidth: Int, screenHeight: Int) {}
+    open fun screenChangeResizeCallback(screenDimensions: Vec2i) {}
 }

@@ -22,28 +22,32 @@ import de.bixilon.minosoft.data.world.BlockPosition
 import de.bixilon.minosoft.data.world.light.LightAccessor
 import de.bixilon.minosoft.gui.rendering.chunk.ChunkMeshCollection
 import de.bixilon.minosoft.gui.rendering.chunk.SectionArrayMesh
+import de.bixilon.minosoft.gui.rendering.chunk.models.FaceBorderSize
 import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModel
 import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModelElement
 import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModelFace
 import de.bixilon.minosoft.gui.rendering.textures.Texture
 import de.bixilon.minosoft.gui.rendering.textures.TextureTransparencies
 import de.bixilon.minosoft.gui.rendering.util.VecUtil
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.rotate
 import glm_.Java.Companion.glm
 import glm_.vec2.Vec2
 import glm_.vec3.Vec3
 
 class ElementRenderer(parent: BlockModelElement, val rotation: Vec3, uvLock: Boolean, rescale: Boolean) {
-    private val fullFaceDirections: Array<Directions?> = arrayOfNulls(Directions.DIRECTIONS.size)
+    val faceBorderSize: Array<FaceBorderSize?> = arrayOfNulls(Directions.DIRECTIONS.size)
     private val faces: MutableMap<Directions, BlockModelFace> = mutableMapOf()
-    private var positions: Array<Vec3> = parent.positions.clone()
+    private var transformedPositions: Array<Vec3> = parent.transformedPositions.clone()
+    private var untransformedPositions: Array<Vec3> = parent.untransformedPositions.clone()
     private val directionMapping: HashBiMap<Directions, Directions> = HashBiMap.create()
 
     init {
-        rotatePositionsAxes(positions, rotation, rescale)
+        rotatePositionsAxes(transformedPositions, rotation, rescale)
         for (direction in Directions.DIRECTIONS) {
-            if (positions.containsAllVectors(FULL_TEST_POSITIONS[direction.ordinal], 0.0001f)) { // TODO: check if texture is transparent ==> && ! texture.isTransparent
-                fullFaceDirections[direction.ordinal] = direction
+            direction.getFaceBorderSizes(untransformedPositions.first(), untransformedPositions.last())?.let {
+                faceBorderSize[direction.ordinal] = it
             }
+
             directionMapping[direction] = getRotatedDirection(rotation, direction)
             parent.faces[direction]?.let {
                 faces[direction] = BlockModelFace(it)
@@ -72,7 +76,7 @@ class ElementRenderer(parent: BlockModelElement, val rotation: Vec3, uvLock: Boo
 
         val lightLevel = lightAccessor.getLightLevel(position + directionMapping[face.cullFace]) // ToDo: rotate cullface
 
-        val drawPositions = arrayOf(positions[positionTemplate[0]], positions[positionTemplate[1]], positions[positionTemplate[2]], positions[positionTemplate[3]])
+        val drawPositions = arrayOf(transformedPositions[positionTemplate[0]], transformedPositions[positionTemplate[1]], transformedPositions[positionTemplate[2]], transformedPositions[positionTemplate[3]])
 
         val mesh = getMesh(meshCollection, texture.transparency)
 
@@ -106,18 +110,14 @@ class ElementRenderer(parent: BlockModelElement, val rotation: Vec3, uvLock: Boo
         return faces[direction]?.cullFace == direction
     }
 
-    fun isFullTowards(direction: Directions): Boolean {
-        return fullFaceDirections[direction.ordinal] != null
-    }
-
     companion object {
         val DRAW_ODER = arrayOf(
-            Pair(0, 1),
-            Pair(3, 2),
-            Pair(2, 3),
-            Pair(2, 3),
-            Pair(1, 0),
-            Pair(0, 1),
+            0 to 1,
+            3 to 2,
+            2 to 3,
+            2 to 3,
+            1 to 0,
+            0 to 1,
         )
 
         fun createElements(state: JsonObject, parent: BlockModel): MutableList<ElementRenderer> {
@@ -132,30 +132,13 @@ class ElementRenderer(parent: BlockModelElement, val rotation: Vec3, uvLock: Boo
             return result
         }
 
-
-        private fun Array<Vec3>.containsAllVectors(their: Set<Vec3>, margin: Float): Boolean {
-            for (theirPosition in their) {
-                var vec3WasIn = false
-                for (thisPosition in this) {
-                    if ((theirPosition - thisPosition).length() < margin) {
-                        vec3WasIn = true
-                        break
-                    }
-                }
-                if (!vec3WasIn) {
-                    return false
-                }
-            }
-            return true
-        }
-
         fun getRotatedDirection(rotation: Vec3, direction: Directions): Directions {
             if (rotation == VecUtil.EMPTY_VECTOR) {
                 return direction
             }
-            var rotatedDirectionVector = VecUtil.rotateVector(direction.floatDirectionVector, rotation.x, Axes.X)
-            rotatedDirectionVector = VecUtil.rotateVector(rotatedDirectionVector, rotation.y, Axes.Y)
-            return Directions.byDirection(VecUtil.rotateVector(rotatedDirectionVector, rotation.z, Axes.Z))
+            var rotatedDirectionVector = direction.floatDirectionVector.rotate(rotation.x, Axes.X)
+            rotatedDirectionVector = rotatedDirectionVector.rotate(rotation.y, Axes.Y)
+            return Directions.byDirection(rotatedDirectionVector.rotate(rotation.z, Axes.Z))
         }
 
         fun rotatePositionsAxes(positions: Array<Vec3>, angles: Vec3, rescale: Boolean) {
@@ -171,19 +154,6 @@ class ElementRenderer(parent: BlockModelElement, val rotation: Vec3, uvLock: Boo
         val POSITION_2 = Vec3(+0.5f, -0.5f, -0.5f)
         val POSITION_3 = Vec3(-0.5f, -0.5f, +0.5f)
         val POSITION_4 = Vec3(+0.5f, -0.5f, +0.5f)
-        private val POSITION_5 = Vec3(-0.5f, +0.5f, -0.5f)
-        private val POSITION_6 = Vec3(+0.5f, +0.5f, +0.5f)
-        private val POSITION_7 = Vec3(-0.5f, +0.5f, +0.5f)
-        private val POSITION_8 = Vec3(+0.5f, +0.5f, +0.5f)
-
-        val FULL_TEST_POSITIONS = arrayOf(
-            setOf(POSITION_1, POSITION_2, POSITION_3, POSITION_4),
-            setOf(POSITION_5, POSITION_6, POSITION_7, POSITION_8),
-            setOf(POSITION_3, POSITION_4, POSITION_7, POSITION_8),
-            setOf(POSITION_1, POSITION_2, POSITION_5, POSITION_6),
-            setOf(POSITION_2, POSITION_4, POSITION_6, POSITION_8),
-            setOf(POSITION_1, POSITION_3, POSITION_5, POSITION_7)
-        )
 
         fun getMesh(meshCollection: ChunkMeshCollection, textureTransparencies: TextureTransparencies): SectionArrayMesh {
             return if (textureTransparencies == TextureTransparencies.SEMI_TRANSPARENT) {

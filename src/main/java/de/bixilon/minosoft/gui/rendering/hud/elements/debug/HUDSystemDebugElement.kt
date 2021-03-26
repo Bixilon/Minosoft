@@ -19,6 +19,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.GitInfo
 import de.bixilon.minosoft.util.SystemInformation
 import de.bixilon.minosoft.util.UnitFormatter
+import glm_.vec2.Vec2i
 import org.lwjgl.opengl.GL11.*
 
 
@@ -56,7 +57,7 @@ class HUDSystemDebugElement(hudRenderer: HUDRenderer) : DebugScreen(hudRenderer)
         text("Mods: ${ModLoader.MOD_MAP.size} active, ${hudRenderer.connection.eventListenerSize} listeners")
     }
 
-    override fun screenChangeResizeCallback(screenWidth: Int, screenHeight: Int) {
+    override fun screenChangeResizeCallback(screenDimensions: Vec2i) {
         displayText.sText = "Display: ${getScreenDimensions()}"
         layout.pushChildrenToRight(1.0f)
     }
@@ -102,6 +103,6 @@ class HUDSystemDebugElement(hudRenderer: HUDRenderer) : DebugScreen(hudRenderer)
     }
 
     private fun getScreenDimensions(): String {
-        return "${hudRenderer.renderWindow.screenWidth}x${hudRenderer.renderWindow.screenHeight}"
+        return "${hudRenderer.renderWindow.screenDimensions.x}x${hudRenderer.renderWindow.screenDimensions.y}"
     }
 }

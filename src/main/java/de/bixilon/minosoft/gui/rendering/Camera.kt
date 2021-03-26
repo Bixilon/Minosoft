@@ -32,6 +32,7 @@ import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketPlayerRotatio
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import glm_.glm
 import glm_.mat4x4.Mat4
+import glm_.vec2.Vec2
 import glm_.vec3.Vec3
 import kotlin.math.cos
 import kotlin.math.sin
@@ -48,7 +49,7 @@ class Camera(
     private var lastMouseY = 0.0
     var yaw = 0.0
     var pitch = 0.0
-    private var zoom = 0f
+    private var zoom = 0.0f
 
     private var lastMovementPacketSent = 0L
     private var currentPositionSent = false
@@ -75,10 +76,6 @@ class Camera(
 
     val frustum: Frustum = Frustum(this)
 
-    var screenHeight = 0
-        private set
-    var screenWidth = 0
-        private set
     private val shaders: MutableSet<Shader> = mutableSetOf()
 
     private var keyForwardDown = false
@@ -145,7 +142,7 @@ class Camera(
     fun handleInput(deltaTime: Double) {
         var cameraSpeed = movementSpeed * deltaTime
         val movementFront = Vec3(cameraFront)
-        movementFront.y = 0f
+        movementFront.y = 0.0f
         movementFront.normalizeAssign() // when moving forwards, do not move down
         if (keySprintDown) {
             cameraSpeed *= 5
@@ -179,7 +176,7 @@ class Camera(
         zoom = if (keyZoomDown) {
             2f
         } else {
-            0f
+            0.0f
         }
         if (lastZoom != zoom) {
             recalculateViewProjectionMatrix()
@@ -191,14 +188,12 @@ class Camera(
         this.shaders.addAll(shaders)
     }
 
-    fun screenChangeResizeCallback(screenWidth: Int, screenHeight: Int) {
-        this.screenWidth = screenWidth
-        this.screenHeight = screenHeight
+    fun screenChangeResizeCallback() {
         recalculateViewProjectionMatrix()
     }
 
     private fun recalculateViewProjectionMatrix() {
-        val matrix = calculateProjectionMatrix(screenWidth, screenHeight) * calculateViewMatrix()
+        val matrix = calculateProjectionMatrix(renderWindow.screenDimensionsF) * calculateViewMatrix()
         for (shader in shaders) {
             shader.use().setMat4("viewProjectionMatrix", matrix)
         }
@@ -231,8 +226,8 @@ class Camera(
         } ?: renderWindow.setSkyColor(RenderConstants.DEFAULT_SKY_COLOR)
     }
 
-    private fun calculateProjectionMatrix(screenWidth: Int, screenHeight: Int): Mat4 {
-        return glm.perspective(glm.radians(fov / (zoom + 1.0f)), screenWidth.toFloat() / screenHeight.toFloat(), 0.2f, 1000f)
+    private fun calculateProjectionMatrix(screenDimensions: Vec2): Mat4 {
+        return glm.perspective(glm.radians(fov / (zoom + 1.0f)), screenDimensions.x / screenDimensions.y, 0.1f, 1000f)
     }
 
     private fun calculateViewMatrix(): Mat4 {
@@ -250,8 +245,8 @@ class Camera(
             (sin(glm.radians(yaw + 90)) * cos(glm.radians(-pitch))).toFloat())
             .normalize()
 
-        cameraRight = cameraFront.cross(CAMERA_UP_VEC3).normalize()
-        cameraUp = cameraRight.cross(cameraFront).normalize()
+        cameraRight = (cameraFront cross CAMERA_UP_VEC3).normalize()
+        cameraUp = (cameraRight cross cameraFront).normalize()
         recalculateViewProjectionMatrix()
         currentRotationSent = false
         sendPositionToServer()
