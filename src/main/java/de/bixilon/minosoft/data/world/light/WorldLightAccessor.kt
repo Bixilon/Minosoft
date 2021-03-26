@@ -15,11 +15,15 @@ package de.bixilon.minosoft.data.world.light
 
 import de.bixilon.minosoft.data.world.BlockPosition
 import de.bixilon.minosoft.data.world.World
+import de.bixilon.minosoft.gui.rendering.RenderConstants
 
 class WorldLightAccessor(
     private val world: World,
 ) : LightAccessor {
     override fun getSkyLight(blockPosition: BlockPosition): Int {
+        if (RenderConstants.DISABLE_LIGHTING) {
+            return 15
+        }
         return world.chunks[blockPosition.getChunkPosition()]?.lightAccessor?.getSkyLight(blockPosition) ?: 0
     }
 

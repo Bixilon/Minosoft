@@ -38,13 +38,14 @@ class ElementRenderer(parent: BlockModelElement, val rotation: Vec3, uvLock: Boo
     val faceBorderSize: Array<FaceBorderSize?> = arrayOfNulls(Directions.DIRECTIONS.size)
     private val faces: MutableMap<Directions, BlockModelFace> = mutableMapOf()
     private var transformedPositions: Array<Vec3> = parent.transformedPositions.clone()
-    private var untransformedPositions: Array<Vec3> = parent.untransformedPositions.clone()
     private val directionMapping: HashBiMap<Directions, Directions> = HashBiMap.create()
+    private val from = parent.from
+    private val to = parent.to
 
     init {
         rotatePositionsAxes(transformedPositions, rotation, rescale)
         for (direction in Directions.DIRECTIONS) {
-            direction.getFaceBorderSizes(untransformedPositions.first(), untransformedPositions.last())?.let {
+            direction.getFaceBorderSizes(from, to)?.let {
                 faceBorderSize[direction.ordinal] = it
             }
 

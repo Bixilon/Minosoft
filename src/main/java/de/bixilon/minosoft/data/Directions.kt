@@ -14,7 +14,7 @@ package de.bixilon.minosoft.data
 
 import de.bixilon.minosoft.gui.rendering.chunk.models.FaceBorderSize
 import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModelElement
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.oneContainsIgnoreZero
+import glm_.vec2.Vec2i
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3i
 
@@ -55,12 +55,50 @@ enum class Directions(val directionVector: Vec3i) {
      */
     fun getFaceBorderSizes(start: Vec3, end: Vec3): FaceBorderSize? {
         // check if face is touching the border of a block
-        if (!start.oneContainsIgnoreZero(blockResolutionVectorFloat) && !end.oneContainsIgnoreZero(blockResolutionVectorFloat)) {
-            // not touching the edge face of our direction
-            return null
+        return when (this) {
+            DOWN -> {
+                if (start.y != 0.0f && end.y != 0.0f) {
+                    null
+                } else {
+                    FaceBorderSize(Vec2i(start.x, start.z), Vec2i(end.x, end.z))
+                }
+            }
+            UP -> {
+                if (start.y != BlockModelElement.BLOCK_RESOLUTION_FLOAT && end.y != BlockModelElement.BLOCK_RESOLUTION_FLOAT) {
+                    null
+                } else {
+                    FaceBorderSize(Vec2i(start.x, start.z), Vec2i(end.x, end.z))
+                }
+            }
+            NORTH -> {
+                if (start.z != 0.0f && end.z != 0.0f) {
+                    null
+                } else {
+                    FaceBorderSize(Vec2i(start.x, start.y), Vec2i(end.x, end.y))
+                }
+            }
+            SOUTH -> {
+                if (start.z != BlockModelElement.BLOCK_RESOLUTION_FLOAT && end.z != BlockModelElement.BLOCK_RESOLUTION_FLOAT) {
+                    null
+                } else {
+                    FaceBorderSize(Vec2i(start.x, start.y), Vec2i(end.x, end.y))
+                }
+            }
+            WEST -> {
+                if (start.x != 0.0f && end.x != 0.0f) {
+                    null
+                } else {
+                    FaceBorderSize(Vec2i(start.y, start.z), Vec2i(end.y, end.z))
+                }
+            }
+            EAST -> {
+                if (start.x != BlockModelElement.BLOCK_RESOLUTION_FLOAT && end.x != BlockModelElement.BLOCK_RESOLUTION_FLOAT) {
+                    null
+                } else {
+                    FaceBorderSize(Vec2i(start.y, start.z), Vec2i(end.y, end.z))
+                }
+            }
         }
-
-        return FaceBorderSize() // ToDo
     }
 
 
