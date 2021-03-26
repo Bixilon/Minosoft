@@ -28,7 +28,7 @@ class Frustum(private val camera: Camera) {
 
     private fun calculateSideNormals() {
         val cameraRealUp = (camera.cameraRight cross camera.cameraFront).normalize()
-        val angle = glm.radians(camera.fov - 90f)
+        val angle = glm.radians(camera.fov - 90.0f)
         val sin = glm.sin(angle)
         val cos = glm.cos(angle)
         normals.add(camera.cameraFront.rotate(cameraRealUp, sin, cos).normalize())
@@ -37,7 +37,7 @@ class Frustum(private val camera: Camera) {
 
     private fun calculateVerticalNormals() {
         val aspect = camera.renderWindow.screenDimensions.x / camera.renderWindow.screenDimensions.y // ToDo: x/y or y/x
-        val angle = glm.radians(camera.fov * aspect - 90f)
+        val angle = glm.radians(camera.fov * aspect - 90.0f)
         val sin = glm.sin(angle)
         val cos = glm.cos(angle)
         normals.add(camera.cameraFront.rotate(camera.cameraRight, sin, cos).normalize())
@@ -64,7 +64,7 @@ class Frustum(private val camera: Camera) {
                 to.z
             }
 
-            if (normal.dotProduct(min - camera.cameraPosition) < 0.0f) {
+            if (normal dot (min - camera.cameraPosition) < 0.0f) {
                 return false // region is outside of frustum
             }
         }
@@ -79,8 +79,4 @@ class Frustum(private val camera: Camera) {
         val to = from + Vec3(ProtocolDefinition.SECTION_WIDTH_X, highestBlockHeight, ProtocolDefinition.SECTION_WIDTH_Z)
         return containsRegion(from, to)
     }
-}
-
-private fun Vec3.dotProduct(vec3: Vec3): Float {
-    return this.x * vec3.x + this.y * vec3.y + this.z * vec3.z
 }

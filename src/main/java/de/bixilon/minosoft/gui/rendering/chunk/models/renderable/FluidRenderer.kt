@@ -7,6 +7,7 @@ import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.data.world.BlockPosition
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.light.LightAccessor
+import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.chunk.ChunkMeshCollection
 import de.bixilon.minosoft.gui.rendering.chunk.models.FaceBorderSize
 import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModelElement
@@ -30,6 +31,10 @@ class FluidRenderer(
     private lateinit var flowingTexture: Texture
 
     override fun render(blockState: BlockState, lightAccessor: LightAccessor, tintColor: RGBColor?, position: BlockPosition, meshCollection: ChunkMeshCollection, neighbourBlocks: Array<BlockState?>, world: World) {
+        if (!RenderConstants.RENDER_FLUIDS) {
+            return
+        }
+
         val modelMatrix = Mat4().translate(position.toVec3())
         val lightLevel = lightAccessor.getLightLevel(position)
         val heights = calculateHeights(neighbourBlocks, blockState, world, position)

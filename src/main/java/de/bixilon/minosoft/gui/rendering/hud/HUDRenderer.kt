@@ -17,6 +17,7 @@ import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames
 import de.bixilon.minosoft.config.config.game.elements.ElementsNames
 import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.Renderer
 import de.bixilon.minosoft.gui.rendering.hud.atlas.HUDAtlasElement
@@ -157,6 +158,10 @@ class HUDRenderer(val connection: Connection, val renderWindow: RenderWindow) : 
     }
 
     override fun draw() {
+        if (!RenderConstants.RENDER_HUD) {
+            return
+        }
+
         if (!hudEnabled) {
             return
         }
