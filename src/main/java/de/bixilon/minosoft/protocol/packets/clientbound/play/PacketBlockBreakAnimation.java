@@ -13,19 +13,19 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.data.world.BlockPosition;
 import de.bixilon.minosoft.modding.event.events.BlockBreakAnimationEvent;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
+import glm_.vec3.Vec3i;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W03B;
 
 public class PacketBlockBreakAnimation extends ClientboundPacket {
-    int entityId;
-    BlockPosition position;
-    byte stage;
+    private int entityId;
+    private Vec3i position;
+    private byte stage;
 
     @Override
     public boolean read(InByteBuffer buffer) {
@@ -33,7 +33,7 @@ public class PacketBlockBreakAnimation extends ClientboundPacket {
         if (buffer.getVersionId() < V_14W03B) {
             this.position = buffer.readBlockPositionInteger();
         } else {
-            this.position = buffer.readPosition();
+            this.position = buffer.readBlockPosition();
         }
         this.stage = buffer.readByte();
 
@@ -53,7 +53,7 @@ public class PacketBlockBreakAnimation extends ClientboundPacket {
         Log.protocol(String.format("[IN] Receiving block break packet (entityId=%d, stage=%d) at %s", this.entityId, this.stage, this.position));
     }
 
-    public BlockPosition getPosition() {
+    public Vec3i getPosition() {
         return this.position;
     }
 

@@ -14,6 +14,7 @@ package de.bixilon.minosoft.data.world
 
 import de.bixilon.minosoft.data.mappings.blocks.BlockState
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import glm_.vec3.Vec3i
 
 /**
  * Collection of 16x16x16 blocks
@@ -23,16 +24,16 @@ class ChunkSection(
     // ToDo: BlockEntityMeta
 ) {
 
-    fun getBlockState(position: InChunkSectionPosition): BlockState? {
-        return blocks[getIndex(position)]
+    fun getBlockState(inChunkSectionPositions: Vec3i): BlockState? {
+        return blocks[inChunkSectionPositions.index]
     }
 
-    fun setBlockState(position: InChunkSectionPosition, blockState: BlockState?) {
-        blocks[getIndex(position)] = blockState
+    fun setBlockState(inChunkSectionPositions: Vec3i, blockState: BlockState?) {
+        blocks[inChunkSectionPositions.index] = blockState
     }
 
     fun getBlockState(x: Int, y: Int, z: Int): BlockState? {
-        return getBlockState(InChunkSectionPosition(x, y, z))
+        return getBlockState(Vec3i(x, y, z))
     }
 
     fun setData(chunkSection: ChunkSection) {
@@ -42,16 +43,16 @@ class ChunkSection(
     }
 
     companion object {
-        fun getIndex(position: InChunkSectionPosition): Int {
-            return getIndex(position.x, position.y, position.z)
-        }
+        val Vec3i.index: Int
+            get() = getIndex(x, y, z)
+
+        val Int.indexPosition: Vec3i
+            get() {
+                return Vec3i(this and 0x0F, (this shr 8) and 0x0F, (this shr 4) and 0x0F)
+            }
 
         fun getIndex(x: Int, y: Int, z: Int): Int {
             return y shl 8 or (z shl 4) or x
-        }
-
-        fun getPosition(index: Int): InChunkSectionPosition {
-            return InChunkSectionPosition(index and 0x0F, (index shr 8) and 0x0F, (index shr 4) and 0x0F)
         }
     }
 }

@@ -17,11 +17,15 @@ import com.google.gson.JsonArray
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.Axes
+import de.bixilon.minosoft.data.Directions
 import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModelElement
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import glm_.func.cos
 import glm_.func.sin
 import glm_.vec2.Vec2
+import glm_.vec2.Vec2i
 import glm_.vec3.Vec3
+import glm_.vec3.Vec3i
 
 object VecUtil {
     val EMPTY_VECTOR = Vec3()
@@ -65,5 +69,97 @@ object VecUtil {
 
     fun JsonArray.readUV(): Pair<Vec2, Vec2> {
         return Pair(Vec2(this[0].asFloat, this[3].asFloat), Vec2(this[2].asFloat, this[1].asFloat))
+    }
+
+    val Vec3i.chunkPosition: Vec2i
+        get() {
+            val chunkX = if (this.x >= 0) {
+                this.x / ProtocolDefinition.SECTION_WIDTH_X
+            } else {
+                ((this.x + 1) / ProtocolDefinition.SECTION_WIDTH_X) - 1
+            }
+            val chunkY = if (this.z >= 0) {
+                this.z / ProtocolDefinition.SECTION_WIDTH_Z
+            } else {
+                ((this.z + 1) / ProtocolDefinition.SECTION_WIDTH_Z) - 1
+            }
+            return Vec2i(chunkX, chunkY)
+        }
+
+    val Vec3i.inChunkPosition: Vec3i
+        get() {
+            var x: Int = this.x % ProtocolDefinition.SECTION_WIDTH_X
+            if (x < 0) {
+                x += ProtocolDefinition.SECTION_WIDTH_X
+            }
+            var z: Int = this.z % ProtocolDefinition.SECTION_WIDTH_Z
+            if (z < 0) {
+                z += ProtocolDefinition.SECTION_WIDTH_Z
+            }
+            return Vec3i(x, y, z)
+        }
+
+    val Vec3i.inChunkSectionPosition: Vec3i
+        get() {
+            val inVec2i = inChunkPosition
+            val y = if (y < 0) {
+                ((ProtocolDefinition.SECTION_HEIGHT_Y + (y % ProtocolDefinition.SECTION_HEIGHT_Y))) % ProtocolDefinition.SECTION_HEIGHT_Y
+            } else {
+                y % ProtocolDefinition.SECTION_HEIGHT_Y
+            }
+            return Vec3i(inVec2i.x, y, inVec2i.z)
+        }
+
+    val Vec3i.sectionHeight: Int
+        get() {
+            return if (y < 0) {
+                (y + 1) / ProtocolDefinition.SECTION_HEIGHT_Y - 1
+            } else {
+                y / ProtocolDefinition.SECTION_HEIGHT_Y
+            }
+        }
+
+    val Vec3i.entityPosition: Vec3
+        get() {
+            return Vec3(x - 0.5f, y, z - 0.5f) // ToDo
+        }
+
+    val Vec3.blockPosition: Vec3i
+        get() {
+            return Vec3i((x - 0.5f).toInt(), y.toInt(), (z - 0.5f).toInt()) // ToDo
+        }
+
+    fun Vec3i.Companion.of(chunkPosition: Vec2i, sectionHeight: Int, inChunkSectionPosition: Vec3i): Vec3i {
+        return Vec3i(chunkPosition.x * ProtocolDefinition.SECTION_WIDTH_X + inChunkSectionPosition.x, sectionHeight * ProtocolDefinition.SECTION_HEIGHT_Y + inChunkSectionPosition.y, chunkPosition.y * ProtocolDefinition.SECTION_WIDTH_Z + inChunkSectionPosition.z) // ToDo
+    }
+
+    infix operator fun Vec3i.plus(vec3: Vec3i?): Vec3i {
+        if (vec3 == null) {
+            return this
+        }
+        return Vec3i((x + vec3.x), (y + vec3.y), (z + vec3.z))
+    }
+
+    infix operator fun Vec3i.plus(vec3: Vec2i?): Vec3i {
+        if (vec3 == null) {
+            return this
+        }
+        return Vec3i((x + vec3.x), y, (z + vec3.y))
+    }
+
+    infix operator fun Vec3i.plus(direction: Directions?): Vec3i {
+        return this + direction?.directionVector
+    }
+
+    infix fun Vec3i.plus(input: Vec3): Vec3 {
+        return Vec3(input.x + x, input.y + y, input.z + z)
+    }
+
+    operator fun Vec2i.plus(vec3: Vec3i): Vec2i {
+        return Vec2i(x + vec3.x, y + vec3.z)
+    }
+
+    operator fun Vec2i.plus(direction: Directions): Vec2i {
+        return this + direction.directionVector
     }
 }

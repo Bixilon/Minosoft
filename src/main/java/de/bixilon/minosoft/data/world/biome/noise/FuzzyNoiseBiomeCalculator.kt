@@ -1,9 +1,10 @@
 package de.bixilon.minosoft.data.world.biome.noise
 
 import de.bixilon.minosoft.data.mappings.biomes.Biome
-import de.bixilon.minosoft.data.world.ChunkPosition
+
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.util.MMath.square
+import glm_.vec2.Vec2i
 import glm_.vec3.Vec3i
 
 object FuzzyNoiseBiomeCalculator {
@@ -58,7 +59,7 @@ object FuzzyNoiseBiomeCalculator {
         val biomeY = checkMask(0x02, q)
         val biomeZ = checkMask(0x01, r)
 
-        return world.getChunk(ChunkPosition(biomeX shr 2, biomeZ shr 2))?.biomeSource?.getBiome(Vec3i(biomeX, biomeY, biomeZ))
+        return world.getChunk(Vec2i(biomeX shr 2, biomeZ shr 2))?.biomeSource?.getBiome(Vec3i(biomeX, biomeY, biomeZ))
     }
 
     private fun calculateFiddle(seed: Long, x: Int, y: Int, z: Int, xFraction: Double, yFraction: Double, zFraction: Double): Double {

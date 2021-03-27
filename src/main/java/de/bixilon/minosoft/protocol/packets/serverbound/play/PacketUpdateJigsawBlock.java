@@ -13,17 +13,17 @@
 
 package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
-import de.bixilon.minosoft.data.world.BlockPosition;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketTypes;
 import de.bixilon.minosoft.util.logging.Log;
+import glm_.vec3.Vec3i;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_20W13A;
 
 public class PacketUpdateJigsawBlock implements ServerboundPacket {
-    private final BlockPosition position;
+    private final Vec3i position;
     private final String targetPool;
     private final String finalState;
     String attachmentType;
@@ -31,14 +31,14 @@ public class PacketUpdateJigsawBlock implements ServerboundPacket {
     String target;
     String jointType;
 
-    public PacketUpdateJigsawBlock(BlockPosition position, String attachmentType, String targetPool, String finalState) {
+    public PacketUpdateJigsawBlock(Vec3i position, String attachmentType, String targetPool, String finalState) {
         this.position = position;
         this.attachmentType = attachmentType;
         this.targetPool = targetPool;
         this.finalState = finalState;
     }
 
-    public PacketUpdateJigsawBlock(BlockPosition position, String name, String target, String targetPool, String finalState, String jointType) {
+    public PacketUpdateJigsawBlock(Vec3i position, String name, String target, String targetPool, String finalState, String jointType) {
         this.position = position;
         this.name = name;
         this.target = target;

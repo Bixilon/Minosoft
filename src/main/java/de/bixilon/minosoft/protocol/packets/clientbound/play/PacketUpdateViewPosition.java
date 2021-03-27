@@ -13,17 +13,17 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.data.world.ChunkPosition;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
+import glm_.vec2.Vec2i;
 
 public class PacketUpdateViewPosition extends ClientboundPacket {
-    ChunkPosition position;
+    private Vec2i position;
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        this.position = new ChunkPosition(buffer.readVarInt(), buffer.readVarInt());
+        this.position = new Vec2i(buffer.readVarInt(), buffer.readVarInt());
         return true;
     }
 

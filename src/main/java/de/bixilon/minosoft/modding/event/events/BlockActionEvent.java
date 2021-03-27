@@ -14,18 +14,18 @@
 package de.bixilon.minosoft.modding.event.events;
 
 import de.bixilon.minosoft.data.mappings.blocks.actions.BlockAction;
-import de.bixilon.minosoft.data.world.BlockPosition;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketBlockAction;
+import glm_.vec3.Vec3i;
 
 /**
  * Fired when a block actions happens (like opening a chest, changing instrument/note/etc on a note block, etc)
  */
 public class BlockActionEvent extends CancelableEvent {
-    private final BlockPosition position;
+    private final Vec3i position;
     private final BlockAction data;
 
-    public BlockActionEvent(Connection connection, BlockPosition position, BlockAction data) {
+    public BlockActionEvent(Connection connection, Vec3i position, BlockAction data) {
         super(connection);
         this.position = position;
         this.data = data;
@@ -37,7 +37,7 @@ public class BlockActionEvent extends CancelableEvent {
         this.data = pkg.getData();
     }
 
-    public BlockPosition getPosition() {
+    public Vec3i getPosition() {
         return this.position;
     }
 

@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.util.nbt.tag;
 
-import de.bixilon.minosoft.data.world.BlockPosition;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.OutByteBuffer;
+import glm_.vec3.Vec3i;
 import org.checkerframework.common.value.qual.IntRange;
 
 import javax.annotation.Nullable;
@@ -166,13 +166,13 @@ public class CompoundTag extends NBTTag {
 
     // abstract functions
 
-    public void writeBlockPosition(BlockPosition position) {
+    public void writeVec3i(Vec3i position) {
         if (this.isFinal) {
             throw new IllegalArgumentException("This tag is marked as final!");
         }
-        this.data.put("x", new IntTag(position.getX()));
-        this.data.put("y", new IntTag(position.getY()));
-        this.data.put("z", new IntTag(position.getZ()));
+        this.data.put("x", new IntTag(position.x));
+        this.data.put("y", new IntTag(position.y));
+        this.data.put("z", new IntTag(position.z));
     }
 
     @Override

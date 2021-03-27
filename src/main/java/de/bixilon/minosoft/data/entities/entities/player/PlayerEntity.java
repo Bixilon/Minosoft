@@ -16,13 +16,13 @@ package de.bixilon.minosoft.data.entities.entities.player;
 import de.bixilon.minosoft.data.PlayerPropertyData;
 import de.bixilon.minosoft.data.entities.EntityMetaDataFields;
 import de.bixilon.minosoft.data.entities.EntityRotation;
-import de.bixilon.minosoft.data.entities.Position;
 import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction;
 import de.bixilon.minosoft.data.entities.entities.LivingEntity;
 import de.bixilon.minosoft.data.mappings.Item;
 import de.bixilon.minosoft.data.player.Hands;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.util.nbt.tag.CompoundTag;
+import glm_.vec3.Vec3;
 
 import javax.annotation.Nullable;
 import java.util.HashSet;
@@ -33,13 +33,13 @@ public class PlayerEntity extends LivingEntity {
     private final HashSet<PlayerPropertyData> properties;
     private Item currentItem;
 
-    public PlayerEntity(Connection connection, int entityId, UUID uuid, Position position, EntityRotation rotation) {
+    public PlayerEntity(Connection connection, int entityId, UUID uuid, Vec3 position, EntityRotation rotation) {
         super(connection, entityId, uuid, position, rotation);
         this.name = "Ghost Player";
         this.properties = null;
     }
 
-    public PlayerEntity(Connection connection, int entityId, UUID uuid, Position position, EntityRotation rotation, String name, @Nullable HashSet<PlayerPropertyData> properties, Item currentItem) {
+    public PlayerEntity(Connection connection, int entityId, UUID uuid, Vec3 position, EntityRotation rotation, String name, @Nullable HashSet<PlayerPropertyData> properties, Item currentItem) {
         super(connection, entityId, uuid, position, rotation);
         this.name = name;
         this.properties = properties;

@@ -14,12 +14,12 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.VersionValueMap;
-import de.bixilon.minosoft.data.world.BlockPosition;
 import de.bixilon.minosoft.modding.event.events.EffectEvent;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
+import glm_.vec3.Vec3i;
 
 import java.util.Map;
 
@@ -27,7 +27,7 @@ import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
 
 public class PacketEffect extends ClientboundPacket {
     EffectEffects effect;
-    BlockPosition position;
+    Vec3i position;
     int data;
     boolean disableRelativeVolume;
 
@@ -37,7 +37,7 @@ public class PacketEffect extends ClientboundPacket {
         if (buffer.getVersionId() < V_14W03B) {
             this.position = buffer.readBlockPositionByte();
         } else {
-            this.position = buffer.readPosition();
+            this.position = buffer.readBlockPosition();
         }
         this.data = buffer.readInt();
         this.disableRelativeVolume = buffer.readBoolean();
@@ -56,7 +56,7 @@ public class PacketEffect extends ClientboundPacket {
         Log.protocol(String.format("[IN] Received effect packet at %s (effect=%s, data=%d, disableRelativeVolume=%s)", this.position, this.effect, this.data, this.disableRelativeVolume));
     }
 
-    public BlockPosition getPosition() {
+    public Vec3i getPosition() {
         return this.position;
     }
 

@@ -13,15 +13,15 @@
 
 package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
-import de.bixilon.minosoft.data.world.BlockPosition;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketTypes;
 import de.bixilon.minosoft.util.logging.Log;
+import glm_.vec3.Vec3i;
 
 public class PacketUpdateStructureBlock implements ServerboundPacket {
-    private final BlockPosition position;
+    private final Vec3i position;
     private final StructureBlockActions action;
     private final StructureBlockModes mode;
     private final String name;
@@ -38,7 +38,7 @@ public class PacketUpdateStructureBlock implements ServerboundPacket {
     private final long seed;
     private final byte flags;
 
-    public PacketUpdateStructureBlock(BlockPosition position, StructureBlockActions action, StructureBlockModes mode, String name, byte offsetX, byte offsetY, byte offsetZ, byte sizeX, byte sizeY, byte sizeZ, StructureBlockMirrors mirror, StructureBlockRotations rotation, String metaData, float integrity, long seed, byte flags) {
+    public PacketUpdateStructureBlock(Vec3i position, StructureBlockActions action, StructureBlockModes mode, String name, byte offsetX, byte offsetY, byte offsetZ, byte sizeX, byte sizeY, byte sizeZ, StructureBlockMirrors mirror, StructureBlockRotations rotation, String metaData, float integrity, long seed, byte flags) {
         this.position = position;
         this.action = action;
         this.mode = mode;

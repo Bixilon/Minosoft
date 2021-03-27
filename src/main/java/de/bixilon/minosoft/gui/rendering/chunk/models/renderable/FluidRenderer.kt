@@ -4,7 +4,6 @@ import de.bixilon.minosoft.data.Directions
 import de.bixilon.minosoft.data.mappings.blocks.BlockState
 import de.bixilon.minosoft.data.mappings.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.text.RGBColor
-import de.bixilon.minosoft.data.world.BlockPosition
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.light.LightAccessor
 import de.bixilon.minosoft.gui.rendering.RenderConstants
@@ -14,10 +13,12 @@ import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModelElement
 import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModelFace
 import de.bixilon.minosoft.gui.rendering.textures.Texture
 import de.bixilon.minosoft.gui.rendering.util.VecUtil
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import glm_.glm
 import glm_.mat4x4.Mat4
 import glm_.vec2.Vec2
 import glm_.vec3.Vec3
+import glm_.vec3.Vec3i
 import glm_.vec4.Vec4
 
 class FluidRenderer(
@@ -30,14 +31,14 @@ class FluidRenderer(
     private lateinit var stillTexture: Texture
     private lateinit var flowingTexture: Texture
 
-    override fun render(blockState: BlockState, lightAccessor: LightAccessor, tintColor: RGBColor?, position: BlockPosition, meshCollection: ChunkMeshCollection, neighbourBlocks: Array<BlockState?>, world: World) {
+    override fun render(blockState: BlockState, lightAccessor: LightAccessor, tintColor: RGBColor?, blockPosition: Vec3i, meshCollection: ChunkMeshCollection, neighbourBlocks: Array<BlockState?>, world: World) {
         if (!RenderConstants.RENDER_FLUIDS) {
             return
         }
 
-        val modelMatrix = Mat4().translate(position.toVec3())
-        val lightLevel = lightAccessor.getLightLevel(position)
-        val heights = calculateHeights(neighbourBlocks, blockState, world, position)
+        val modelMatrix = Mat4().translate(Vec3(blockPosition))
+        val lightLevel = lightAccessor.getLightLevel(blockPosition)
+        val heights = calculateHeights(neighbourBlocks, blockState, world, blockPosition)
         val isFlowing = isLiquidFlowing(heights)
 
         val texture: Texture
@@ -52,7 +53,7 @@ class FluidRenderer(
 
         val positions = calculatePositions(heights)
         for (direction in Directions.DIRECTIONS) {
-            if (isBlockSameFluid(neighbourBlocks[direction.ordinal]) || neighbourBlocks[direction.ordinal]?.getBlockRenderer(position + direction)?.faceBorderSizes?.let { it[direction.inverse.ordinal] != null } == true && direction != Directions.UP) {
+            if (isBlockSameFluid(neighbourBlocks[direction.ordinal]) || neighbourBlocks[direction.ordinal]?.getBlockRenderer(blockPosition + direction)?.faceBorderSizes?.let { it[direction.inverse.ordinal] != null } == true && direction != Directions.UP) {
                 continue
             }
             val face = BlockModelFace(VecUtil.EMPTY_VECTOR, Vec3(VecUtil.BLOCK_SIZE_VECTOR.x, positions[7].y * 8, VecUtil.BLOCK_SIZE_VECTOR.z), direction)
@@ -135,7 +136,7 @@ class FluidRenderer(
         return positions
     }
 
-    private fun calculateHeights(neighbourBlocks: Array<BlockState?>, blockState: BlockState, world: World, position: BlockPosition): FloatArray {
+    private fun calculateHeights(neighbourBlocks: Array<BlockState?>, blockState: BlockState, world: World, position: Vec3i): FloatArray {
         val height = getLevel(blockState)
         val heights = floatArrayOf(height, height, height, height)
         for (direction in Directions.SIDES) {
@@ -146,7 +147,7 @@ class FluidRenderer(
         return heights
     }
 
-    private fun handleDirectNeighbours(neighbourBlocks: Array<BlockState?>, direction: Directions, world: World, position: BlockPosition, positions: MutableSet<Int>, heights: FloatArray) {
+    private fun handleDirectNeighbours(neighbourBlocks: Array<BlockState?>, direction: Directions, world: World, position: Vec3i, positions: MutableSet<Int>, heights: FloatArray) {
         if (isBlockSameFluid(neighbourBlocks[direction.ordinal])) {
             val neighbourLevel = getLevel(neighbourBlocks[direction.ordinal]!!)
             for (heightPosition in positions) {
@@ -166,7 +167,7 @@ class FluidRenderer(
         }
     }
 
-    private fun handleUpperBlocks(world: World, position: BlockPosition, direction: Directions, positions: MutableSet<Int>, heights: FloatArray) {
+    private fun handleUpperBlocks(world: World, position: Vec3i, direction: Directions, positions: MutableSet<Int>, heights: FloatArray) {
         if (isBlockSameFluid(world.getBlockState(position + Directions.UP + direction))) {
             for (heightPosition in positions) {
                 heights[heightPosition] = 1.0f

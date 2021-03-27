@@ -14,14 +14,14 @@
 package de.bixilon.minosoft.data.entities.entities.vehicle;
 
 import de.bixilon.minosoft.data.entities.EntityRotation;
-import de.bixilon.minosoft.data.entities.Position;
 import de.bixilon.minosoft.protocol.network.Connection;
+import glm_.vec3.Vec3;
 
 import java.util.UUID;
 
 public abstract class AbstractMinecartContainer extends AbstractMinecart {
 
-    public AbstractMinecartContainer(Connection connection, int entityId, UUID uuid, Position position, EntityRotation rotation) {
+    public AbstractMinecartContainer(Connection connection, int entityId, UUID uuid, Vec3 position, EntityRotation rotation) {
         super(connection, entityId, uuid, position, rotation);
     }
 }

@@ -17,8 +17,9 @@ import de.bixilon.minosoft.data.assets.MinecraftAssetsManager
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.biomes.Biome
 import de.bixilon.minosoft.data.text.RGBColor
-import de.bixilon.minosoft.data.world.BlockPosition
+
 import de.bixilon.minosoft.gui.rendering.textures.Texture
+import glm_.vec3.Vec3i
 
 class TintColorCalculator {
     private lateinit var grassColorMap: Array<RGBColor>
@@ -29,7 +30,7 @@ class TintColorCalculator {
         foliageColorMap = assetsManager.readPixelArrayAsset(Texture.getResourceTextureIdentifier(textureName = "colormap/foliage.png"))
     }
 
-    fun calculateTint(tint: ResourceLocation, biome: Biome, position: BlockPosition): RGBColor? {
+    fun calculateTint(tint: ResourceLocation, biome: Biome, blockPosition: Vec3i): RGBColor? {
         return when (tint) {
             ResourceLocation("water_tint") -> biome.waterColor
             ResourceLocation("grass_tint"), ResourceLocation("sugar_cane_tint"), ResourceLocation("shearing_double_plant_tint") -> {
@@ -45,7 +46,7 @@ class TintColorCalculator {
                 biome.grassColorModifier.modifier.invoke(color)
             }
             ResourceLocation("foliage_tint") -> {
-                foliageColorMap[biome.downfallColorMapCoordinate shl 8 or biome.getClampedTemperature(position.y)] // ToDo: hardcoded color values
+                foliageColorMap[biome.downfallColorMapCoordinate shl 8 or biome.getClampedTemperature(blockPosition.y)] // ToDo: hardcoded color values
             }
             ResourceLocation("lily_pad_tint") -> RenderConstants.LILY_PAD_BLOCK_COLOR
             else -> null

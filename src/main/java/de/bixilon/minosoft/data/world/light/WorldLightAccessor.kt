@@ -13,21 +13,23 @@
 
 package de.bixilon.minosoft.data.world.light
 
-import de.bixilon.minosoft.data.world.BlockPosition
+
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.gui.rendering.RenderConstants
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.chunkPosition
+import glm_.vec3.Vec3i
 
 class WorldLightAccessor(
     private val world: World,
 ) : LightAccessor {
-    override fun getSkyLight(blockPosition: BlockPosition): Int {
+    override fun getSkyLight(blockPosition: Vec3i): Int {
         if (RenderConstants.DISABLE_LIGHTING) {
             return 15
         }
-        return world.chunks[blockPosition.getChunkPosition()]?.lightAccessor?.getSkyLight(blockPosition) ?: 0
+        return world.chunks[blockPosition.chunkPosition]?.lightAccessor?.getSkyLight(blockPosition) ?: 0
     }
 
-    override fun getBlockLight(blockPosition: BlockPosition): Int {
-        return world.chunks[blockPosition.getChunkPosition()]?.lightAccessor?.getBlockLight(blockPosition) ?: 0
+    override fun getBlockLight(blockPosition: Vec3i): Int {
+        return world.chunks[blockPosition.chunkPosition]?.lightAccessor?.getBlockLight(blockPosition) ?: 0
     }
 }

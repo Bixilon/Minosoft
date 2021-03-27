@@ -13,29 +13,29 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.data.entities.Position;
 import de.bixilon.minosoft.data.entities.entities.Entity;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
+import glm_.vec3.Vec3;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W25B;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_16W06A;
 
 public class PacketEntityTeleport extends ClientboundPacket {
-    int entityId;
-    Position position;
-    short yaw;
-    short pitch;
-    boolean onGround;
+    private int entityId;
+    private Vec3 position;
+    private short yaw;
+    private short pitch;
+    private boolean onGround;
 
     @Override
     public boolean read(InByteBuffer buffer) {
         this.entityId = buffer.readEntityId();
 
         if (buffer.getVersionId() < V_16W06A) {
-            this.position = new Position(buffer.readFixedPointNumberInt(), buffer.readFixedPointNumberInt(), buffer.readFixedPointNumberInt());
+            this.position = new Vec3(buffer.readFixedPointNumberInt(), buffer.readFixedPointNumberInt(), buffer.readFixedPointNumberInt());
         } else {
             this.position = buffer.readLocation();
         }
@@ -68,7 +68,7 @@ public class PacketEntityTeleport extends ClientboundPacket {
         return this.entityId;
     }
 
-    public Position getRelativePosition() {
+    public Vec3 getRelativePosition() {
         return this.position;
     }
 

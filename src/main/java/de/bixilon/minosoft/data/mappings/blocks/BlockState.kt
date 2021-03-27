@@ -21,12 +21,13 @@ import de.bixilon.minosoft.data.mappings.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.mappings.materials.Material
 import de.bixilon.minosoft.data.mappings.versions.VersionMapping
 import de.bixilon.minosoft.data.text.RGBColor
-import de.bixilon.minosoft.data.world.BlockPosition
+
 import de.bixilon.minosoft.gui.rendering.TintColorCalculator
 import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModel
 import de.bixilon.minosoft.gui.rendering.chunk.models.renderable.BlockRenderInterface
 import de.bixilon.minosoft.gui.rendering.chunk.models.renderable.BlockRenderer
 import de.bixilon.minosoft.gui.rendering.chunk.models.renderable.FluidRenderer
+import glm_.vec3.Vec3i
 import java.util.*
 import kotlin.random.Random
 
@@ -105,13 +106,13 @@ data class BlockState(
         return String.format("%s%s", owner.resourceLocation, out)
     }
 
-    fun getBlockRenderer(position: BlockPosition): BlockRenderInterface {
+    fun getBlockRenderer(blockPosition: Vec3i): BlockRenderInterface {
         if (Minosoft.getConfig().config.game.other.antiMoirePattern) {
             if (renders.size == 1) {
                 return renders.iterator().next()
             }
             // ToDo: Support weight attribute
-            return renders.random(Random(position.hashCode()))
+            return renders.random(Random(blockPosition.hashCode()))
         }
         return renders.iterator().next()
     }

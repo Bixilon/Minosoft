@@ -14,21 +14,21 @@
 package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
 import de.bixilon.minosoft.data.text.ChatComponent;
-import de.bixilon.minosoft.data.world.BlockPosition;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketTypes;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import de.bixilon.minosoft.util.logging.Log;
+import glm_.vec3.Vec3i;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
 
 public class PacketUpdateSignSending implements ServerboundPacket {
-    private final BlockPosition position;
+    private final Vec3i position;
     private final ChatComponent[] lines;
 
-    public PacketUpdateSignSending(BlockPosition position, ChatComponent[] lines) {
+    public PacketUpdateSignSending(Vec3i position, ChatComponent[] lines) {
         this.position = position;
         this.lines = lines;
     }
@@ -37,7 +37,7 @@ public class PacketUpdateSignSending implements ServerboundPacket {
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, PacketTypes.Serverbound.PLAY_UPDATE_SIGN);
         if (buffer.getVersionId() < V_14W04A) {
-            buffer.writeBlockPositionByte(this.position);
+            buffer.writeVec3iByte(this.position);
         } else {
             buffer.writePosition(this.position);
         }

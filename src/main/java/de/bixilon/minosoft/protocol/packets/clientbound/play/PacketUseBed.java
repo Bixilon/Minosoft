@@ -13,38 +13,38 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.data.world.BlockPosition;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
+import glm_.vec3.Vec3i;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W04A;
 
 public class PacketUseBed extends ClientboundPacket {
-    int entityId;
-    BlockPosition position;
+    private int entityId;
+    private Vec3i blockPosition;
 
     @Override
     public boolean read(InByteBuffer buffer) {
         this.entityId = buffer.readInt();
         if (buffer.getVersionId() < V_14W04A) {
-            this.position = buffer.readBlockPositionByte();
+            this.blockPosition = buffer.readBlockPositionByte();
         } else {
-            this.position = buffer.readPosition();
+            this.blockPosition = buffer.readBlockPosition();
         }
         return true;
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Entity used bed at %s (entityId=%d)", this.position, this.entityId));
+        Log.protocol(String.format("[IN] Entity used bed at %s (entityId=%d)", this.blockPosition, this.entityId));
     }
 
     public int getEntityId() {
         return this.entityId;
     }
 
-    public BlockPosition getPosition() {
-        return this.position;
+    public Vec3i getBlockPosition() {
+        return this.blockPosition;
     }
 }

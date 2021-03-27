@@ -13,14 +13,14 @@
 
 package de.bixilon.minosoft.modding.event.events;
 
-import de.bixilon.minosoft.data.world.BlockPosition;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketSpawnPosition;
+import glm_.vec3.Vec3i;
 
 public class SpawnPositionChangeEvent extends ConnectionEvent {
-    private final BlockPosition position;
+    private final Vec3i position;
 
-    public SpawnPositionChangeEvent(Connection connection, BlockPosition position) {
+    public SpawnPositionChangeEvent(Connection connection, Vec3i position) {
         super(connection);
         this.position = position;
     }
@@ -30,7 +30,7 @@ public class SpawnPositionChangeEvent extends ConnectionEvent {
         this.position = pkg.getSpawnPosition();
     }
 
-    public BlockPosition getSpawnPosition() {
+    public Vec3i getSpawnPosition() {
         return this.position;
     }
 }

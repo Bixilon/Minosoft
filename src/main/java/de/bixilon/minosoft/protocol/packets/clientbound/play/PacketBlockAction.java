@@ -15,17 +15,17 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.mappings.blocks.Block;
 import de.bixilon.minosoft.data.mappings.blocks.actions.*;
-import de.bixilon.minosoft.data.world.BlockPosition;
 import de.bixilon.minosoft.modding.event.events.BlockActionEvent;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
+import glm_.vec3.Vec3i;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W03B;
 
 public class PacketBlockAction extends ClientboundPacket {
-    BlockPosition position;
+    Vec3i position;
     BlockAction data;
 
     @Override
@@ -34,7 +34,7 @@ public class PacketBlockAction extends ClientboundPacket {
         if (buffer.getVersionId() < V_14W03B) {
             this.position = buffer.readBlockPositionShort();
         } else {
-            this.position = buffer.readPosition();
+            this.position = buffer.readBlockPosition();
         }
         short byte1 = buffer.readUnsignedByte();
         short byte2 = buffer.readUnsignedByte();
@@ -63,7 +63,7 @@ public class PacketBlockAction extends ClientboundPacket {
         }
     }
 
-    public BlockPosition getPosition() {
+    public Vec3i getPosition() {
         return this.position;
     }
 

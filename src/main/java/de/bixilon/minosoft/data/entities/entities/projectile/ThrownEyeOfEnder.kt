@@ -14,15 +14,15 @@ package de.bixilon.minosoft.data.entities.entities.projectile
 
 import de.bixilon.minosoft.data.entities.EntityMetaDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
-import de.bixilon.minosoft.data.entities.Position
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
 import de.bixilon.minosoft.data.inventory.Slot
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.protocol.network.Connection
+import glm_.vec3.Vec3
 import java.util.*
 
-class ThrownEyeOfEnder(connection: Connection?, entityId: Int, uuid: UUID?, location: Position?, rotation: EntityRotation?) : Entity(connection, entityId, uuid, location, rotation) {
+class ThrownEyeOfEnder(connection: Connection?, entityId: Int, uuid: UUID?, location: Vec3?, rotation: EntityRotation?) : Entity(connection, entityId, uuid, location, rotation) {
 
     @get:EntityMetaDataFunction(name = "Item")
     val item: Slot

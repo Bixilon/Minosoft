@@ -63,7 +63,7 @@ class HUDWorldDebugElement(hudRenderer: HUDRenderer) : DebugScreen(hudRenderer) 
         // ToDo: Prepare on change
         gamemodeText.sText = "Gamemode: ${hudRenderer.connection.player.gamemode?.name?.toLowerCase()}"
         positionText.sText = "XYZ ${getPosition()}"
-        blockPositionText.sText = "Block ${getBlockPosition()}"
+        blockPositionText.sText = "Block ${getVec3i()}"
         chunkPositionText.sText = "Chunk ${getChunkLocation()}"
         facingText.sText = "Facing: ${getFacing()}"
 
@@ -107,15 +107,15 @@ class HUDWorldDebugElement(hudRenderer: HUDRenderer) : DebugScreen(hudRenderer) 
 
 
     private fun getPosition(): String {
-        return "${formatCoordinate(camera.feetLocation.x)} / ${formatCoordinate(camera.feetLocation.y)} / ${formatCoordinate(camera.feetLocation.z)}"
+        return "${formatCoordinate(camera.cameraPosition.x)} / ${formatCoordinate(camera.cameraPosition.y)} / ${formatCoordinate(camera.cameraPosition.z)}"
     }
 
-    private fun getBlockPosition(): String {
+    private fun getVec3i(): String {
         return "${camera.blockPosition.x} / ${camera.blockPosition.y} / ${camera.blockPosition.z}"
     }
 
     private fun getChunkLocation(): String {
-        return "${camera.inChunkSectionPosition.x} ${camera.inChunkSectionPosition.y} ${camera.inChunkSectionPosition.z} in ${camera.chunkPosition.x} ${camera.sectionHeight} ${camera.chunkPosition.z}"
+        return "${camera.inChunkSectionPosition.x} ${camera.inChunkSectionPosition.y} ${camera.inChunkSectionPosition.z} in ${camera.chunkPosition.x} ${camera.sectionHeight} ${camera.chunkPosition.y}"
     }
 
     private fun getFacing(): String {
@@ -126,7 +126,7 @@ class HUDWorldDebugElement(hudRenderer: HUDRenderer) : DebugScreen(hudRenderer) 
     }
 
     companion object {
-        fun formatCoordinate(coordinate: Double): String {
+        fun formatCoordinate(coordinate: Float): String {
             return "%.3f".format(coordinate)
         }
 

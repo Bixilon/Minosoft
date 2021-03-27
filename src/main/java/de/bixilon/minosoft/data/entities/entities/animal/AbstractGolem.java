@@ -14,15 +14,15 @@
 package de.bixilon.minosoft.data.entities.entities.animal;
 
 import de.bixilon.minosoft.data.entities.EntityRotation;
-import de.bixilon.minosoft.data.entities.Position;
 import de.bixilon.minosoft.data.entities.entities.PathfinderMob;
 import de.bixilon.minosoft.protocol.network.Connection;
+import glm_.vec3.Vec3;
 
 import java.util.UUID;
 
 public abstract class AbstractGolem extends PathfinderMob {
 
-    public AbstractGolem(Connection connection, int entityId, UUID uuid, Position position, EntityRotation rotation) {
+    public AbstractGolem(Connection connection, int entityId, UUID uuid, Vec3 position, EntityRotation rotation) {
         super(connection, entityId, uuid, position, rotation);
     }
 }

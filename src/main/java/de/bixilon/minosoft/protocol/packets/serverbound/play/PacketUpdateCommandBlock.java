@@ -13,22 +13,22 @@
 
 package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
-import de.bixilon.minosoft.data.world.BlockPosition;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketTypes;
 import de.bixilon.minosoft.util.logging.Log;
+import glm_.vec3.Vec3i;
 
 public class PacketUpdateCommandBlock implements ServerboundPacket {
-    private final BlockPosition position;
+    private final Vec3i position;
     private final String command;
     private final CommandBlockType type;
     private final boolean trackOutput;
     private final boolean isConditional;
     private final boolean isAutomatic;
 
-    public PacketUpdateCommandBlock(BlockPosition position, String command, CommandBlockType type, boolean trackOutput, boolean isConditional, boolean isAutomatic) {
+    public PacketUpdateCommandBlock(Vec3i position, String command, CommandBlockType type, boolean trackOutput, boolean isConditional, boolean isAutomatic) {
         this.position = position;
         this.command = command;
         this.type = type;

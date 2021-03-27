@@ -14,21 +14,21 @@
 package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
 import de.bixilon.minosoft.data.entities.EntityRotation;
-import de.bixilon.minosoft.data.entities.Position;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketTypes;
 import de.bixilon.minosoft.util.logging.Log;
+import glm_.vec3.Vec3;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W06B;
 
 public class PacketPlayerPositionAndRotationSending implements ServerboundPacket {
-    private final Position position;
+    private final Vec3 position;
     private final EntityRotation rotation;
     private final boolean onGround;
 
-    public PacketPlayerPositionAndRotationSending(Position position, EntityRotation rotation, boolean onGround) {
+    public PacketPlayerPositionAndRotationSending(Vec3 position, EntityRotation rotation, boolean onGround) {
         this.position = position;
         this.rotation = rotation;
         this.onGround = onGround;
@@ -37,12 +37,12 @@ public class PacketPlayerPositionAndRotationSending implements ServerboundPacket
     @Override
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, PacketTypes.Serverbound.PLAY_PLAYER_POSITION_AND_ROTATION);
-        buffer.writeDouble(this.position.getX());
-        buffer.writeDouble(this.position.getY());
+        buffer.writeDouble(this.position.x);
+        buffer.writeDouble(this.position.y);
         if (buffer.getVersionId() < V_14W06B) {
-            buffer.writeDouble(this.position.getY() - 1.62);
+            buffer.writeDouble(this.position.y - 1.62);
         }
-        buffer.writeDouble(this.position.getZ());
+        buffer.writeDouble(this.position.z);
         buffer.writeFloat(this.rotation.getYaw());
         buffer.writeFloat(this.rotation.getPitch());
         buffer.writeBoolean(this.onGround);

@@ -13,25 +13,28 @@
 
 package de.bixilon.minosoft.data.world.light
 
-import de.bixilon.minosoft.data.world.BlockPosition
-import de.bixilon.minosoft.data.world.InChunkSectionPosition
+
+import de.bixilon.minosoft.data.world.ChunkSection.Companion.index
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.inChunkSectionPosition
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
+import glm_.vec3.Vec3i
 import unsigned.toUInt
 
 class ChunkLightAccessor(
     private val blockLightLevel: MutableMap<Int, ByteArray> = mutableMapOf(),
     private val skyLightLevel: MutableMap<Int, ByteArray> = mutableMapOf(),
 ) : LightAccessor {
-    override fun getSkyLight(blockPosition: BlockPosition): Int {
+    override fun getSkyLight(blockPosition: Vec3i): Int {
         return get(skyLightLevel, blockPosition)
     }
 
-    override fun getBlockLight(blockPosition: BlockPosition): Int {
+    override fun getBlockLight(blockPosition: Vec3i): Int {
         return get(blockLightLevel, blockPosition)
     }
 
-    private fun get(data: MutableMap<Int, ByteArray>, blockPosition: BlockPosition): Int {
-        val index = getIndex(blockPosition.getInChunkSectionPosition())
-        val byte = data[blockPosition.getSectionHeight()]?.get(index ushr 1)?.toUInt() ?: 0xFF
+    private fun get(data: MutableMap<Int, ByteArray>, blockPosition: Vec3i): Int {
+        val index = blockPosition.inChunkSectionPosition.index
+        val byte = data[blockPosition.sectionHeight]?.get(index ushr 1)?.toUInt() ?: 0xFF
         return if (index and 0x01 == 0) { // first nibble
             byte and 0x0F
         } else {
@@ -39,7 +42,7 @@ class ChunkLightAccessor(
         }
     }
 
-    private fun getIndex(inChunkSectionPosition: InChunkSectionPosition): Int {
+    private fun getIndex(inChunkSectionPosition: Vec3i): Int {
         return inChunkSectionPosition.y shl 8 or (inChunkSectionPosition.z shl 4) or inChunkSectionPosition.x
     }
 

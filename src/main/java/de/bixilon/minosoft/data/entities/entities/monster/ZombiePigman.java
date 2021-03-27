@@ -14,8 +14,8 @@
 package de.bixilon.minosoft.data.entities.entities.monster;
 
 import de.bixilon.minosoft.data.entities.EntityRotation;
-import de.bixilon.minosoft.data.entities.Position;
 import de.bixilon.minosoft.protocol.network.Connection;
+import glm_.vec3.Vec3;
 
 import java.util.UUID;
 
@@ -25,7 +25,7 @@ import java.util.UUID;
 @Deprecated
 public class ZombiePigman extends ZombifiedPiglin {
 
-    public ZombiePigman(Connection connection, int entityId, UUID uuid, Position position, EntityRotation rotation) {
+    public ZombiePigman(Connection connection, int entityId, UUID uuid, Vec3 position, EntityRotation rotation) {
         super(connection, entityId, uuid, position, rotation);
     }
 }

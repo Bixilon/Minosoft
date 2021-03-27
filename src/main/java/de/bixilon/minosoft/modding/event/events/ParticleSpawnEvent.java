@@ -13,23 +13,23 @@
 
 package de.bixilon.minosoft.modding.event.events;
 
-import de.bixilon.minosoft.data.entities.Position;
 import de.bixilon.minosoft.data.mappings.particle.Particle;
 import de.bixilon.minosoft.data.mappings.particle.data.ParticleData;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketParticle;
+import glm_.vec3.Vec3;
 
 public class ParticleSpawnEvent extends CancelableEvent {
     private final Particle particleType;
     private final ParticleData particleData;
-    private final Position position;
+    private final Vec3 position;
     private boolean longDistance;
     private float offsetX;
     private float offsetY;
     private float offsetZ;
     private int count;
 
-    public ParticleSpawnEvent(Connection connection, Particle particleType, ParticleData particleData, boolean longDistance, Position position, float offsetX, float offsetY, float offsetZ, int count) {
+    public ParticleSpawnEvent(Connection connection, Particle particleType, ParticleData particleData, boolean longDistance, Vec3 position, float offsetX, float offsetY, float offsetZ, int count) {
         super(connection);
         this.particleType = particleType;
         this.particleData = particleData;
@@ -41,7 +41,7 @@ public class ParticleSpawnEvent extends CancelableEvent {
         this.count = count;
     }
 
-    public ParticleSpawnEvent(Connection connection, Particle particleType, ParticleData particleData, Position position) {
+    public ParticleSpawnEvent(Connection connection, Particle particleType, ParticleData particleData, Vec3 position) {
         super(connection);
         this.particleType = particleType;
         this.particleData = particleData;
@@ -76,7 +76,7 @@ public class ParticleSpawnEvent extends CancelableEvent {
         this.longDistance = longDistance;
     }
 
-    public Position getPosition() {
+    public Vec3 getPosition() {
         return this.position;
     }
 

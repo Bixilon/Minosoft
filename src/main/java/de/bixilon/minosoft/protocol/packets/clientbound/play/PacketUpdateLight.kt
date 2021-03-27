@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.protocol.packets.clientbound.play
 
-import de.bixilon.minosoft.data.world.ChunkPosition
+
 import de.bixilon.minosoft.data.world.light.ChunkLightAccessor
 import de.bixilon.minosoft.data.world.light.LightAccessor
 import de.bixilon.minosoft.protocol.network.Connection
@@ -21,12 +21,13 @@ import de.bixilon.minosoft.protocol.protocol.InByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.util.chunk.LightUtil.readLightPacket
 import de.bixilon.minosoft.util.logging.Log
+import glm_.vec2.Vec2i
 
 class PacketUpdateLight : ClientboundPacket() {
-    private var position: ChunkPosition? = null
+    private var position: Vec2i? = null
     private var lightAccessor: LightAccessor? = null
     override fun read(buffer: InByteBuffer): Boolean {
-        position = ChunkPosition(buffer.readVarInt(), buffer.readVarInt())
+        position = Vec2i(buffer.readVarInt(), buffer.readVarInt())
 
         if (buffer.versionId >= ProtocolVersions.V_1_16_PRE3) {
             val trustEdges = buffer.readBoolean()

@@ -18,7 +18,6 @@ import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.Directions
 import de.bixilon.minosoft.data.text.RGBColor
-import de.bixilon.minosoft.data.world.BlockPosition
 import de.bixilon.minosoft.data.world.light.LightAccessor
 import de.bixilon.minosoft.gui.rendering.chunk.ChunkMeshCollection
 import de.bixilon.minosoft.gui.rendering.chunk.SectionArrayMesh
@@ -29,10 +28,12 @@ import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModelFace
 import de.bixilon.minosoft.gui.rendering.textures.Texture
 import de.bixilon.minosoft.gui.rendering.textures.TextureTransparencies
 import de.bixilon.minosoft.gui.rendering.util.VecUtil
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.rotate
 import glm_.Java.Companion.glm
 import glm_.vec2.Vec2
 import glm_.vec3.Vec3
+import glm_.vec3.Vec3i
 
 class ElementRenderer(parent: BlockModelElement, val rotation: Vec3, uvLock: Boolean, rescale: Boolean) {
     val faceBorderSize: Array<FaceSize?> = arrayOfNulls(Directions.DIRECTIONS.size)
@@ -67,7 +68,7 @@ class ElementRenderer(parent: BlockModelElement, val rotation: Vec3, uvLock: Boo
     }
 
 
-    fun render(tintColor: RGBColor?, position: BlockPosition, lightAccessor: LightAccessor, textureMapping: MutableMap<String, Texture>, direction: Directions, meshCollection: ChunkMeshCollection) {
+    fun render(tintColor: RGBColor?, blockPosition: Vec3i, lightAccessor: LightAccessor, textureMapping: MutableMap<String, Texture>, direction: Directions, meshCollection: ChunkMeshCollection) {
         val realDirection = directionMapping.inverse()[direction]!!
 
         val face = faces[realDirection] ?: return // Not our face
@@ -75,7 +76,7 @@ class ElementRenderer(parent: BlockModelElement, val rotation: Vec3, uvLock: Boo
 
         val texture = textureMapping[face.textureName] ?: TODO()
 
-        val lightLevel = lightAccessor.getLightLevel(position + directionMapping[face.cullFace]) // ToDo: rotate cullface
+        val lightLevel = lightAccessor.getLightLevel(blockPosition + directionMapping[face.cullFace]) // ToDo: rotate cullface
 
         val drawPositions = arrayOf(transformedPositions[positionTemplate[0]], transformedPositions[positionTemplate[1]], transformedPositions[positionTemplate[2]], transformedPositions[positionTemplate[3]])
 
@@ -84,7 +85,7 @@ class ElementRenderer(parent: BlockModelElement, val rotation: Vec3, uvLock: Boo
         fun createQuad(drawPositions: Array<Vec3>, texturePositions: Array<Vec2?>) {
             for (vertex in DRAW_ODER) {
                 val input = drawPositions[vertex.first]
-                val output = position + input
+                val output = blockPosition plus input
                 mesh.addVertex(
                     position = output,
                     textureCoordinates = texturePositions[vertex.second]!!,

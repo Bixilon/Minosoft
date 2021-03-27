@@ -14,14 +14,14 @@
 package de.bixilon.minosoft.data.entities.entities.monster.raid;
 
 import de.bixilon.minosoft.data.entities.EntityRotation;
-import de.bixilon.minosoft.data.entities.Position;
 import de.bixilon.minosoft.protocol.network.Connection;
+import glm_.vec3.Vec3;
 
 import java.util.UUID;
 
 public class Ravenger extends Raider {
 
-    public Ravenger(Connection connection, int entityId, UUID uuid, Position position, EntityRotation rotation) {
+    public Ravenger(Connection connection, int entityId, UUID uuid, Vec3 position, EntityRotation rotation) {
         super(connection, entityId, uuid, position, rotation);
     }
 }

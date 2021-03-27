@@ -13,13 +13,13 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.data.entities.Position;
 import de.bixilon.minosoft.data.entities.entities.ExperienceOrb;
 import de.bixilon.minosoft.modding.event.events.EntitySpawnEvent;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
+import glm_.vec3.Vec3;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_16W06A;
 
@@ -29,9 +29,9 @@ public class PacketSpawnExperienceOrb extends ClientboundPacket {
     @Override
     public boolean read(InByteBuffer buffer) {
         int entityId = buffer.readEntityId();
-        Position position;
+        Vec3 position;
         if (buffer.getVersionId() < V_16W06A) {
-            position = new Position(buffer.readFixedPointNumberInt(), buffer.readFixedPointNumberInt(), buffer.readFixedPointNumberInt());
+            position = new Vec3(buffer.readFixedPointNumberInt(), buffer.readFixedPointNumberInt(), buffer.readFixedPointNumberInt());
         } else {
             position = buffer.readLocation();
         }

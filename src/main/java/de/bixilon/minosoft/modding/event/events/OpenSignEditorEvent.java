@@ -13,14 +13,14 @@
 
 package de.bixilon.minosoft.modding.event.events;
 
-import de.bixilon.minosoft.data.world.BlockPosition;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketOpenSignEditor;
+import glm_.vec3.Vec3i;
 
 public class OpenSignEditorEvent extends CancelableEvent {
-    private final BlockPosition position;
+    private final Vec3i position;
 
-    public OpenSignEditorEvent(Connection connection, BlockPosition position) {
+    public OpenSignEditorEvent(Connection connection, Vec3i position) {
         super(connection);
         this.position = position;
     }
@@ -30,7 +30,7 @@ public class OpenSignEditorEvent extends CancelableEvent {
         this.position = pkg.getPosition();
     }
 
-    public BlockPosition getPosition() {
+    public Vec3i getPosition() {
         return this.position;
     }
 }

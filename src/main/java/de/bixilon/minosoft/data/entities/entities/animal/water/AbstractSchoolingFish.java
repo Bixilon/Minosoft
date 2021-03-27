@@ -14,14 +14,14 @@
 package de.bixilon.minosoft.data.entities.entities.animal.water;
 
 import de.bixilon.minosoft.data.entities.EntityRotation;
-import de.bixilon.minosoft.data.entities.Position;
 import de.bixilon.minosoft.protocol.network.Connection;
+import glm_.vec3.Vec3;
 
 import java.util.UUID;
 
 public abstract class AbstractSchoolingFish extends AbstractFish {
 
-    public AbstractSchoolingFish(Connection connection, int entityId, UUID uuid, Position position, EntityRotation rotation) {
+    public AbstractSchoolingFish(Connection connection, int entityId, UUID uuid, Vec3 position, EntityRotation rotation) {
         super(connection, entityId, uuid, position, rotation);
     }
 }

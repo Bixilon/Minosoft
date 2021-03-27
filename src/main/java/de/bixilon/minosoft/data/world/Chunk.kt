@@ -15,6 +15,9 @@ package de.bixilon.minosoft.data.world
 import de.bixilon.minosoft.data.mappings.blocks.BlockState
 import de.bixilon.minosoft.data.world.biome.source.BiomeSource
 import de.bixilon.minosoft.data.world.light.LightAccessor
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.inChunkSectionPosition
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
+import glm_.vec3.Vec3i
 import java.util.*
 
 /**
@@ -31,15 +34,15 @@ class Chunk(
             return sections != null && biomeSource != null && lightAccessor != null
         }
 
-    fun getBlockState(position: InChunkPosition): BlockState? {
-        return sections?.get(position.getSectionHeight())?.getBlockState(position.getInChunkSectionLocation())
+    fun getBlockState(inChunkPosition: Vec3i): BlockState? {
+        return sections?.get(inChunkPosition.sectionHeight)?.getBlockState(inChunkPosition.inChunkSectionPosition)
     }
 
     fun getBlockState(x: Int, y: Int, z: Int): BlockState? {
-        return getBlockState(InChunkPosition(x, y, z))
+        return getBlockState(Vec3i(x, y, z))
     }
 
-    fun setBlocks(blocks: HashMap<InChunkPosition, BlockState?>) {
+    fun setBlocks(blocks: HashMap<Vec3i, BlockState?>) {
         for ((location, blockInfo) in blocks) {
             setBlockState(location, blockInfo)
         }
@@ -68,14 +71,14 @@ class Chunk(
         }
     }
 
-    fun setRawBlocks(blocks: HashMap<InChunkPosition, BlockState?>) {
+    fun setRawBlocks(blocks: HashMap<Vec3i, BlockState?>) {
         for ((location, blockState) in blocks) {
             setBlockState(location, blockState)
         }
     }
 
-    fun setBlockState(position: InChunkPosition, blockState: BlockState?) {
-        getSectionOrCreate(position.getSectionHeight()).setBlockState(position.getInChunkSectionLocation(), blockState)
+    fun setBlockState(inChunkPosition: Vec3i, blockState: BlockState?) {
+        getSectionOrCreate(inChunkPosition.sectionHeight).setBlockState(inChunkPosition.inChunkSectionPosition, blockState)
     }
 
     fun getSectionOrCreate(sectionHeight: Int): ChunkSection {

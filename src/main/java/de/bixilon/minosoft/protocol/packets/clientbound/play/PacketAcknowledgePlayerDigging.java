@@ -14,21 +14,21 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.mappings.blocks.BlockState;
-import de.bixilon.minosoft.data.world.BlockPosition;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketPlayerDigging;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
+import glm_.vec3.Vec3i;
 
 public class PacketAcknowledgePlayerDigging extends ClientboundPacket {
-    BlockPosition position;
-    BlockState block;
-    PacketPlayerDigging.DiggingStatus status;
-    boolean successful;
+    private Vec3i blockPosition;
+    private BlockState block;
+    private PacketPlayerDigging.DiggingStatus status;
+    private boolean successful;
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        this.position = buffer.readPosition();
+        this.blockPosition = buffer.readBlockPosition();
         this.block = buffer.getConnection().getMapping().getBlockState(buffer.readVarInt());
         this.status = PacketPlayerDigging.DiggingStatus.byId(buffer.readVarInt());
         this.successful = buffer.readBoolean();
@@ -37,11 +37,11 @@ public class PacketAcknowledgePlayerDigging extends ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Received acknowledge digging packet (position=%s, block=%s, status=%s, successful=%s)", this.position, this.block, this.status, this.successful));
+        Log.protocol(String.format("[IN] Received acknowledge digging packet (position=%s, block=%s, status=%s, successful=%s)", this.blockPosition, this.block, this.status, this.successful));
     }
 
-    public BlockPosition getPosition() {
-        return this.position;
+    public Vec3i getBlockPosition() {
+        return this.blockPosition;
     }
 
     public BlockState getBlock() {

@@ -19,13 +19,13 @@ import de.bixilon.minosoft.data.inventory.Slot;
 import de.bixilon.minosoft.data.mappings.blocks.BlockState;
 import de.bixilon.minosoft.data.mappings.particle.data.ParticleData;
 import de.bixilon.minosoft.data.text.ChatComponent;
-import de.bixilon.minosoft.data.world.BlockPosition;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.BitByte;
 import de.bixilon.minosoft.util.logging.Log;
 import de.bixilon.minosoft.util.logging.LogLevels;
 import de.bixilon.minosoft.util.nbt.tag.CompoundTag;
+import glm_.vec3.Vec3i;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -55,7 +55,7 @@ public class EntityMetaData {
             case VECTOR -> new Vector(buffer.readInt(), buffer.readInt(), buffer.readInt());
             case SLOT -> buffer.readSlot();
             case ROTATION -> new EntityRotation(buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
-            case POSITION -> buffer.readPosition();
+            case POSITION -> buffer.readBlockPosition();
             case OPT_CHAT -> {
                 if (buffer.readBoolean()) {
                     yield buffer.readChatComponent();
@@ -64,7 +64,7 @@ public class EntityMetaData {
             }
             case OPT_POSITION -> {
                 if (buffer.readBoolean()) {
-                    yield buffer.readPosition();
+                    yield buffer.readBlockPosition();
                 }
                 yield null;
             }
@@ -182,7 +182,7 @@ public class EntityMetaData {
             return get(field);
         }
 
-        public BlockPosition getPosition(EntityMetaDataFields field) {
+        public Vec3i getPosition(EntityMetaDataFields field) {
             return get(field);
         }
 

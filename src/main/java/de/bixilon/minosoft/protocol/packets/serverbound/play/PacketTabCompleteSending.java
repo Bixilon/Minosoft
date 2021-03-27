@@ -13,19 +13,19 @@
 
 package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
-import de.bixilon.minosoft.data.world.BlockPosition;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketTypes;
 import de.bixilon.minosoft.util.logging.Log;
+import glm_.vec3.Vec3i;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W33A;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_15W31A;
 
 public class PacketTabCompleteSending implements ServerboundPacket {
     private final String text;
-    private final BlockPosition position;
+    private final Vec3i position;
     private final boolean assumeCommand;
 
     public PacketTabCompleteSending(String text) {
@@ -34,13 +34,13 @@ public class PacketTabCompleteSending implements ServerboundPacket {
         this.assumeCommand = false;
     }
 
-    public PacketTabCompleteSending(String text, BlockPosition position) {
+    public PacketTabCompleteSending(String text, Vec3i position) {
         this.text = text;
         this.position = position;
         this.assumeCommand = false;
     }
 
-    public PacketTabCompleteSending(String text, boolean assumeCommand, BlockPosition position) {
+    public PacketTabCompleteSending(String text, boolean assumeCommand, Vec3i position) {
         this.text = text;
         this.position = position;
         this.assumeCommand = assumeCommand;

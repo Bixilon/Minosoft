@@ -13,15 +13,15 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.data.entities.Position;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
+import glm_.vec3.Vec3;
 
 public class PacketVehicleMovement extends ClientboundPacket {
-    Position position;
-    float yaw;
-    float pitch;
+    private Vec3 position;
+    private float yaw;
+    private float pitch;
 
     @Override
     public boolean read(InByteBuffer buffer) {
@@ -36,7 +36,7 @@ public class PacketVehicleMovement extends ClientboundPacket {
         Log.protocol(String.format("[IN] Received vehicle movement (position=%s, yaw=%s, pitch=%s)", this.position, this.yaw, this.pitch));
     }
 
-    public Position getPosition() {
+    public Vec3 getPosition() {
         return this.position;
     }
 

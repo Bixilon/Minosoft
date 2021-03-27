@@ -1,6 +1,6 @@
 package de.bixilon.minosoft.gui.rendering.chunk
 
-import de.bixilon.minosoft.data.world.ChunkPosition
+
 import de.bixilon.minosoft.gui.rendering.Camera
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.rotate
@@ -8,6 +8,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import glm_.func.cos
 import glm_.func.rad
 import glm_.func.sin
+import glm_.vec2.Vec2i
 import glm_.vec3.Vec3
 
 class Frustum(private val camera: Camera) {
@@ -73,11 +74,11 @@ class Frustum(private val camera: Camera) {
         return true
     }
 
-    fun containsChunk(chunkPosition: ChunkPosition, lowestBlockHeight: Int, highestBlockHeight: Int): Boolean {
+    fun containsChunk(chunkPosition: Vec2i, lowestBlockHeight: Int, highestBlockHeight: Int): Boolean {
         if (!RenderConstants.FRUSTUM_CULLING_ENABLED) {
             return true
         }
-        val from = Vec3(chunkPosition.x * ProtocolDefinition.SECTION_WIDTH_X, lowestBlockHeight, chunkPosition.z * ProtocolDefinition.SECTION_WIDTH_Z)
+        val from = Vec3(chunkPosition.x * ProtocolDefinition.SECTION_WIDTH_X, lowestBlockHeight, chunkPosition.y * ProtocolDefinition.SECTION_WIDTH_Z)
         val to = from + Vec3(ProtocolDefinition.SECTION_WIDTH_X, highestBlockHeight, ProtocolDefinition.SECTION_WIDTH_Z)
         return containsRegion(from, to)
     }

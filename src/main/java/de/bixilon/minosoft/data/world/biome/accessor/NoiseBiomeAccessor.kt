@@ -14,14 +14,15 @@
 package de.bixilon.minosoft.data.world.biome.accessor
 
 import de.bixilon.minosoft.data.mappings.biomes.Biome
-import de.bixilon.minosoft.data.world.BlockPosition
+
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.biome.noise.FuzzyNoiseBiomeCalculator
+import glm_.vec3.Vec3i
 
 class NoiseBiomeAccessor(private val world: World) : BiomeAccessor {
     private val blockBiomeAccessor = BlockBiomeAccessor(world)
 
-    override fun getBiome(blockPosition: BlockPosition): Biome? {
+    override fun getBiome(blockPosition: Vec3i): Biome? {
         val y = if (world.dimension?.supports3DBiomes == true) {
             blockPosition.y
         } else {

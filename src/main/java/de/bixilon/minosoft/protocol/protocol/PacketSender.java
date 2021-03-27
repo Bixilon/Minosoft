@@ -15,7 +15,6 @@ package de.bixilon.minosoft.protocol.protocol;
 
 import de.bixilon.minosoft.data.ChatTextPositions;
 import de.bixilon.minosoft.data.entities.EntityRotation;
-import de.bixilon.minosoft.data.entities.Position;
 import de.bixilon.minosoft.data.mappings.ResourceLocation;
 import de.bixilon.minosoft.data.player.Hands;
 import de.bixilon.minosoft.data.text.ChatComponent;
@@ -28,6 +27,7 @@ import de.bixilon.minosoft.protocol.packets.serverbound.login.PacketLoginPluginR
 import de.bixilon.minosoft.protocol.packets.serverbound.play.*;
 import de.bixilon.minosoft.util.Util;
 import de.bixilon.minosoft.util.logging.Log;
+import glm_.vec3.Vec3;
 import org.checkerframework.common.value.qual.IntRange;
 
 import java.util.UUID;
@@ -122,7 +122,7 @@ public class PacketSender {
         this.connection.sendPacket(new PacketLoginPluginResponse(messageId, toSend.toByteArray()));
     }
 
-    public void setLocation(Position position, EntityRotation rotation, boolean onGround) {
+    public void setLocation(Vec3 position, EntityRotation rotation, boolean onGround) {
         this.connection.sendPacket(new PacketPlayerPositionAndRotationSending(position, rotation, onGround));
         this.connection.getPlayer().getEntity().setLocation(position);
         this.connection.getPlayer().getEntity().setRotation(rotation);

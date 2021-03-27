@@ -13,22 +13,22 @@
 
 package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
-import de.bixilon.minosoft.data.world.BlockPosition;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketTypes;
 import de.bixilon.minosoft.util.logging.Log;
+import glm_.vec3.Vec3i;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W04A;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_15W31A;
 
 public class PacketPlayerDigging implements ServerboundPacket {
     private final DiggingStatus status;
-    private final BlockPosition position;
+    private final Vec3i position;
     private final DiggingFaces face;
 
-    public PacketPlayerDigging(DiggingStatus status, BlockPosition position, DiggingFaces face) {
+    public PacketPlayerDigging(DiggingStatus status, Vec3i position, DiggingFaces face) {
         this.status = status;
         this.position = position;
         this.face = face;
@@ -49,7 +49,7 @@ public class PacketPlayerDigging implements ServerboundPacket {
                 buffer.writeByte((byte) 0);
                 buffer.writeInt(0);
             } else {
-                buffer.writeBlockPositionByte(this.position);
+                buffer.writeVec3iByte(this.position);
             }
         } else {
             buffer.writePosition(this.position);

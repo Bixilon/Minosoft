@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
-import de.bixilon.minosoft.data.entities.Position;
 import de.bixilon.minosoft.data.entities.entities.Entity;
 import de.bixilon.minosoft.data.player.Hands;
 import de.bixilon.minosoft.protocol.network.Connection;
@@ -21,12 +20,13 @@ import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketTypes;
 import de.bixilon.minosoft.util.logging.Log;
+import glm_.vec3.Vec3;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
 
 public class PacketInteractEntity implements ServerboundPacket {
     private final int entityId;
-    private Position position;
+    private Vec3 position;
     private Hands hand;
     private EntityInteractionClicks click;
     private boolean sneaking;
@@ -41,20 +41,20 @@ public class PacketInteractEntity implements ServerboundPacket {
         this.click = click;
     }
 
-    public PacketInteractEntity(int entityId, EntityInteractionClicks click, Position position) {
+    public PacketInteractEntity(int entityId, EntityInteractionClicks click, Vec3 position) {
         this.entityId = entityId;
         this.click = click;
         this.position = position;
     }
 
-    public PacketInteractEntity(int entityId, EntityInteractionClicks click, Position position, Hands hand) {
+    public PacketInteractEntity(int entityId, EntityInteractionClicks click, Vec3 position, Hands hand) {
         this.entityId = entityId;
         this.click = click;
         this.position = position;
         this.hand = hand;
     }
 
-    public PacketInteractEntity(int entityId, EntityInteractionClicks click, Position position, Hands hand, boolean sneaking) {
+    public PacketInteractEntity(int entityId, EntityInteractionClicks click, Vec3 position, Hands hand, boolean sneaking) {
         this.entityId = entityId;
         this.click = click;
         this.position = position;
@@ -75,9 +75,9 @@ public class PacketInteractEntity implements ServerboundPacket {
         if (buffer.getVersionId() >= V_14W32A) {
             if (this.click == EntityInteractionClicks.INTERACT_AT) {
                 // position
-                buffer.writeFloat((float) this.position.getX());
-                buffer.writeFloat((float) this.position.getY());
-                buffer.writeFloat((float) this.position.getZ());
+                buffer.writeFloat(this.position.x);
+                buffer.writeFloat(this.position.y);
+                buffer.writeFloat(this.position.z);
             }
 
             if (this.click == EntityInteractionClicks.INTERACT_AT || this.click == EntityInteractionClicks.INTERACT) {

@@ -14,18 +14,18 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.entities.EntityRotation;
-import de.bixilon.minosoft.data.entities.Position;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketConfirmTeleport;
 import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketPlayerPositionAndRotationSending;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
+import glm_.vec3.Vec3;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
 
 public class PacketPlayerPositionAndRotation extends ClientboundPacket {
-    private Position position;
+    private Vec3 position;
     private EntityRotation rotation;
     private boolean onGround;
     private byte flags;
@@ -68,7 +68,7 @@ public class PacketPlayerPositionAndRotation extends ClientboundPacket {
         Log.protocol(String.format("[IN] Received player location: (position=%s, rotation=%s, onGround=%b)", this.position, this.rotation, this.onGround));
     }
 
-    public Position getPosition() {
+    public Vec3 getPosition() {
         return this.position;
     }
 

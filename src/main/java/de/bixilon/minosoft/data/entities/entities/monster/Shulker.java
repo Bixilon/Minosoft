@@ -16,20 +16,20 @@ package de.bixilon.minosoft.data.entities.entities.monster;
 import de.bixilon.minosoft.data.Directions;
 import de.bixilon.minosoft.data.entities.EntityMetaDataFields;
 import de.bixilon.minosoft.data.entities.EntityRotation;
-import de.bixilon.minosoft.data.entities.Position;
 import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction;
 import de.bixilon.minosoft.data.entities.entities.animal.AbstractGolem;
 import de.bixilon.minosoft.data.text.ChatColors;
 import de.bixilon.minosoft.data.text.RGBColor;
-import de.bixilon.minosoft.data.world.BlockPosition;
 import de.bixilon.minosoft.protocol.network.Connection;
+import glm_.vec3.Vec3;
+import glm_.vec3.Vec3i;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
 
 public class Shulker extends AbstractGolem {
 
-    public Shulker(Connection connection, int entityId, UUID uuid, Position position, EntityRotation rotation) {
+    public Shulker(Connection connection, int entityId, UUID uuid, Vec3 position, EntityRotation rotation) {
         super(connection, entityId, uuid, position, rotation);
     }
 
@@ -40,7 +40,7 @@ public class Shulker extends AbstractGolem {
 
     @EntityMetaDataFunction(name = "Attachment position")
     @Nullable
-    public BlockPosition getAttachmentPosition() {
+    public Vec3i getAttachmentPosition() {
         return this.metaData.getSets().getPosition(EntityMetaDataFields.SHULKER_ATTACHMENT_POSITION);
     }
 

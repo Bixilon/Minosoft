@@ -14,16 +14,16 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.SoundCategories;
-import de.bixilon.minosoft.data.entities.Position;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import de.bixilon.minosoft.util.logging.Log;
+import glm_.vec3.Vec3i;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
 
 public class PacketSoundEffect extends ClientboundPacket {
-    private Position position;
+    private Vec3i position;
     private SoundCategories category;
     private int soundId;
     private float volume;
@@ -43,7 +43,7 @@ public class PacketSoundEffect extends ClientboundPacket {
         if (buffer.getVersionId() >= V_16W02A && (buffer.getVersionId() < V_17W15A || buffer.getVersionId() >= V_17W18A)) {
             this.category = SoundCategories.byId(buffer.readVarInt());
         }
-        this.position = new Position(buffer.readFixedPointNumberInt() * 4, buffer.readFixedPointNumberInt() * 4, buffer.readFixedPointNumberInt() * 4);
+        this.position = new Vec3i(buffer.readFixedPointNumberInt() * 4, buffer.readFixedPointNumberInt() * 4, buffer.readFixedPointNumberInt() * 4);
         this.volume = buffer.readFloat();
         if (buffer.getVersionId() < V_16W20A) {
             this.pitch = (buffer.readByte() * ProtocolDefinition.PITCH_CALCULATION_CONSTANT) / 100F;
@@ -58,7 +58,7 @@ public class PacketSoundEffect extends ClientboundPacket {
         Log.protocol(String.format("[IN] Play sound effect (soundId=%d, category=%s, volume=%s, pitch=%s, position=%s)", this.soundId, this.category, this.volume, this.pitch, this.position));
     }
 
-    public Position getPosition() {
+    public Vec3i getPosition() {
         return this.position;
     }
 

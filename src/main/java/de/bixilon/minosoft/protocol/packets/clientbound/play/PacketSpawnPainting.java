@@ -16,12 +16,12 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 import de.bixilon.minosoft.data.Directions;
 import de.bixilon.minosoft.data.entities.entities.decoration.Painting;
 import de.bixilon.minosoft.data.mappings.Motive;
-import de.bixilon.minosoft.data.world.BlockPosition;
 import de.bixilon.minosoft.modding.event.events.EntitySpawnEvent;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
+import glm_.vec3.Vec3i;
 
 import java.util.UUID;
 
@@ -43,13 +43,13 @@ public class PacketSpawnPainting extends ClientboundPacket {
         } else {
             motive = buffer.getConnection().getMapping().getMotiveRegistry().get(buffer.readVarInt());
         }
-        BlockPosition position;
+        Vec3i position;
         Directions direction;
         if (buffer.getVersionId() < V_14W04B) {
             position = buffer.readBlockPositionInteger();
             direction = Directions.byId(buffer.readInt());
         } else {
-            position = buffer.readPosition();
+            position = buffer.readBlockPosition();
             direction = Directions.byId(buffer.readUnsignedByte());
         }
         this.entity = new Painting(buffer.getConnection(), entityId, uuid, position, direction, motive);

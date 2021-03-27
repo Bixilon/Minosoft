@@ -22,6 +22,7 @@ import de.bixilon.minosoft.data.text.ChatComponent;
 import de.bixilon.minosoft.modding.event.events.annotations.Unsafe;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.util.logging.Log;
+import glm_.vec3.Vec3;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.InvocationTargetException;
@@ -39,12 +40,12 @@ public abstract class Entity {
     protected final HashMap<InventorySlots.EntityInventorySlots, Slot> equipment = new HashMap<>();
     protected final HashSet<StatusEffectInstance> effectList = new HashSet<>();
     protected final int versionId;
-    protected Position position;
+    protected Vec3 position;
     protected EntityRotation rotation;
     protected int attachedTo = -1;
     protected EntityMetaData metaData;
 
-    public Entity(Connection connection, int entityId, UUID uuid, Position position, EntityRotation rotation) {
+    public Entity(Connection connection, int entityId, UUID uuid, Vec3 position, EntityRotation rotation) {
         this.connection = connection;
         this.information = connection.getMapping().getEntityInformation(getClass());
         this.entityId = entityId;
@@ -58,16 +59,16 @@ public abstract class Entity {
         return this.entityId;
     }
 
-    public Position getPosition() {
+    public Vec3 getPosition() {
         return this.position;
     }
 
-    public void setLocation(Position position) {
+    public void setLocation(Vec3 position) {
         this.position = position;
     }
 
-    public void setLocation(RelativePosition relativePosition) {
-        this.position = new Position(this.position.getX() + relativePosition.getX(), this.position.getY() + relativePosition.getY(), this.position.getZ() + relativePosition.getZ());
+    public void addLocation(Vec3 relativePosition) {
+        this.position = new Vec3(this.position.x + relativePosition.x, this.position.y + relativePosition.y, this.position.z + relativePosition.z);
     }
 
     public Slot getEquipment(InventorySlots.EntityInventorySlots slot) {

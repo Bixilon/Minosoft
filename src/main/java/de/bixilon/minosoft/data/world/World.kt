@@ -22,6 +22,11 @@ import de.bixilon.minosoft.data.mappings.blocks.BlockState
 import de.bixilon.minosoft.data.world.biome.accessor.BiomeAccessor
 import de.bixilon.minosoft.data.world.biome.accessor.NullBiomeAccessor
 import de.bixilon.minosoft.data.world.light.WorldLightAccessor
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.chunkPosition
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.inChunkPosition
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.inChunkSectionPosition
+import glm_.vec2.Vec2i
+import glm_.vec3.Vec3i
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
@@ -29,7 +34,7 @@ import java.util.concurrent.ConcurrentHashMap
  * Collection of chunks and more
  */
 class World : BiomeAccessor {
-    val chunks = ConcurrentHashMap<ChunkPosition, Chunk>()
+    val chunks = ConcurrentHashMap<Vec2i, Chunk>()
     val entityIdMap = HashBiMap.create<Int, Entity>()
     val entityUUIDMap = HashBiMap.create<UUID, Entity>()
     var isHardcore = false
@@ -41,16 +46,16 @@ class World : BiomeAccessor {
     var hashedSeed = 0L
     var biomeAccessor: BiomeAccessor = NullBiomeAccessor
 
-    fun getBlockState(blockPosition: BlockPosition): BlockState? {
-        val chunkLocation = blockPosition.getChunkPosition()
-        return chunks[chunkLocation]?.getBlockState(blockPosition.getInChunkPosition())
+    fun getBlockState(blockPosition: Vec3i): BlockState? {
+        val chunkLocation = blockPosition.chunkPosition
+        return chunks[chunkLocation]?.getBlockState(blockPosition.inChunkSectionPosition)
     }
 
-    fun getChunk(chunkPosition: ChunkPosition): Chunk? {
+    fun getChunk(chunkPosition: Vec2i): Chunk? {
         return chunks[chunkPosition]
     }
 
-    fun getOrCreateChunk(chunkPosition: ChunkPosition): Chunk {
+    fun getOrCreateChunk(chunkPosition: Vec2i): Chunk {
         return chunks[chunkPosition] ?: run {
             val chunk = Chunk()
             chunks[chunkPosition] = chunk
@@ -58,19 +63,19 @@ class World : BiomeAccessor {
         }
     }
 
-    fun setBlock(blockPosition: BlockPosition, blockState: BlockState?) {
-        chunks[blockPosition.getChunkPosition()]?.setBlockState(blockPosition.getInChunkPosition(), blockState)
+    fun setBlock(blockPosition: Vec3i, blockState: BlockState?) {
+        chunks[blockPosition.chunkPosition]?.setBlockState(blockPosition.inChunkPosition, blockState)
     }
 
-    fun unloadChunk(position: ChunkPosition) {
+    fun unloadChunk(position: Vec2i) {
         chunks.remove(position)
     }
 
-    fun replaceChunk(position: ChunkPosition, chunk: Chunk) {
+    fun replaceChunk(position: Vec2i, chunk: Chunk) {
         chunks[position] = chunk
     }
 
-    fun replaceChunks(chunkMap: HashMap<ChunkPosition, Chunk>) {
+    fun replaceChunks(chunkMap: HashMap<Vec2i, Chunk>) {
         for ((chunkLocation, chunk) in chunkMap) {
             chunks[chunkLocation] = chunk
         }
@@ -102,18 +107,18 @@ class World : BiomeAccessor {
         entityUUIDMap[entityUUID]?.let { removeEntity(it) }
     }
 
-    fun setBlockEntityData(position: BlockPosition, data: BlockEntityMetaData?) {
+    fun setBlockEntityData(position: Vec3i, data: BlockEntityMetaData?) {
         // ToDo
-        // chunks[position.getChunkPosition()]?.sections?.get(position.getSectionHeight())?.getBlockState(position.getInChunkSectionPosition())?.metaData = data
+        // chunks[position.getVec2i()]?.sections?.get(position.getSectionHeight())?.getBlockState(position.getInChunkSectionPosition())?.metaData = data
     }
 
-    fun setBlockEntityData(blockEntities: HashMap<BlockPosition, BlockEntityMetaData>) {
+    fun setBlockEntityData(blockEntities: HashMap<Vec3i, BlockEntityMetaData>) {
         for ((blockPosition, entityMetaData) in blockEntities) {
             setBlockEntityData(blockPosition, entityMetaData)
         }
     }
 
-    override fun getBiome(blockPosition: BlockPosition): Biome? {
+    override fun getBiome(blockPosition: Vec3i): Biome? {
         return biomeAccessor.getBiome(blockPosition)
     }
 }

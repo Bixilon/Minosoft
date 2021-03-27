@@ -28,7 +28,7 @@ object CommandParsers {
             ResourceLocation("angle") to AngleParser,
             ResourceLocation("entity") to EntityParser.ENTITY_PARSER,
             ResourceLocation("game_profile") to GameProfileParser.GAME_PROFILE_PARSER,
-            ResourceLocation("block_pos") to BlockPositionParser,
+            ResourceLocation("block_pos") to Vec3iParser,
             ResourceLocation("column_pos") to ColumnPositionParser,
             ResourceLocation("vec3") to Vec3Parser,
             ResourceLocation("vec2") to Vec2Parser,

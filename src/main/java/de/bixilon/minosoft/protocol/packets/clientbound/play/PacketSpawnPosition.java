@@ -13,17 +13,17 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.data.world.BlockPosition;
 import de.bixilon.minosoft.modding.event.events.SpawnPositionChangeEvent;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
+import glm_.vec3.Vec3i;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W03B;
 
 public class PacketSpawnPosition extends ClientboundPacket {
-    private BlockPosition position;
+    private Vec3i position;
 
     @Override
     public boolean read(InByteBuffer buffer) {
@@ -31,7 +31,7 @@ public class PacketSpawnPosition extends ClientboundPacket {
             this.position = buffer.readBlockPositionInteger();
             return true;
         }
-        this.position = buffer.readPosition();
+        this.position = buffer.readBlockPosition();
         return true;
     }
 
@@ -46,7 +46,7 @@ public class PacketSpawnPosition extends ClientboundPacket {
         Log.protocol("[IN] Received spawn position %s", this.position);
     }
 
-    public BlockPosition getSpawnPosition() {
+    public Vec3i getSpawnPosition() {
         return this.position;
     }
 }

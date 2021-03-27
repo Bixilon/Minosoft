@@ -20,9 +20,10 @@ import de.bixilon.minosoft.data.entities.entities.monster.*
 import de.bixilon.minosoft.data.entities.entities.vehicle.*
 import de.bixilon.minosoft.data.mappings.blocks.BlockState
 import de.bixilon.minosoft.data.world.ChunkSection
-import de.bixilon.minosoft.data.world.InChunkSectionPosition
+import de.bixilon.minosoft.data.world.ChunkSection.Companion.indexPosition
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
+import glm_.vec3.Vec3i
 
 object VersionTweaker {
     // some data was packed in mata data in early versions (1.8). This function converts it to the real resource location
@@ -95,7 +96,7 @@ object VersionTweaker {
                 if (blockState == null) {
                     continue
                 }
-                val location = ChunkSection.getPosition(index)
+                val location = index.indexPosition
                 val newBlock = transformBlock(blockState, sections, location, sectionHeight)
                 if (newBlock === blockState) {
                     continue
@@ -111,12 +112,12 @@ object VersionTweaker {
 
 
     @JvmStatic
-    fun transformBlock(originalBlock: BlockState, sections: Map<Int, ChunkSection>, position: InChunkSectionPosition, sectionHeight: Int): BlockState? {
+    fun transformBlock(originalBlock: BlockState, sections: Map<Int, ChunkSection>, inChunkSectionPositions: Vec3i, sectionHeight: Int): BlockState? {
         // ToDo: Broken
         return originalBlock
     }
 
-    private fun getBlockAbove(sections: Map<Int, ChunkSection>, position: InChunkSectionPosition, sectionHeight: Int): BlockState? {
-        return sections[sectionHeight]?.getBlockState(position)
+    private fun getBlockAbove(sections: Map<Int, ChunkSection>, inChunkSectionPositions: Vec3i, sectionHeight: Int): BlockState? {
+        return sections[sectionHeight]?.getBlockState(inChunkSectionPositions)
     }
 }

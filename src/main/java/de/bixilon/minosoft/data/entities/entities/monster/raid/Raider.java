@@ -15,16 +15,16 @@ package de.bixilon.minosoft.data.entities.entities.monster.raid;
 
 import de.bixilon.minosoft.data.entities.EntityMetaDataFields;
 import de.bixilon.minosoft.data.entities.EntityRotation;
-import de.bixilon.minosoft.data.entities.Position;
 import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction;
 import de.bixilon.minosoft.data.entities.entities.monster.PatrollingMonster;
 import de.bixilon.minosoft.protocol.network.Connection;
+import glm_.vec3.Vec3;
 
 import java.util.UUID;
 
 public abstract class Raider extends PatrollingMonster {
 
-    public Raider(Connection connection, int entityId, UUID uuid, Position position, EntityRotation rotation) {
+    public Raider(Connection connection, int entityId, UUID uuid, Vec3 position, EntityRotation rotation) {
         super(connection, entityId, uuid, position, rotation);
     }
 

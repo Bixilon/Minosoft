@@ -15,10 +15,10 @@ package de.bixilon.minosoft.data.entities.entities.projectile;
 
 import de.bixilon.minosoft.data.entities.EntityMetaDataFields;
 import de.bixilon.minosoft.data.entities.EntityRotation;
-import de.bixilon.minosoft.data.entities.Position;
 import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction;
 import de.bixilon.minosoft.data.inventory.Slot;
 import de.bixilon.minosoft.protocol.network.Connection;
+import glm_.vec3.Vec3;
 
 import java.util.UUID;
 
@@ -27,7 +27,7 @@ import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_20W09A;
 public class ThrownPotion extends ThrowableItemProjectile {
     private static final Slot DEFAULT_ITEM = null;
 
-    public ThrownPotion(Connection connection, int entityId, UUID uuid, Position position, EntityRotation rotation) {
+    public ThrownPotion(Connection connection, int entityId, UUID uuid, Vec3 position, EntityRotation rotation) {
         super(connection, entityId, uuid, position, rotation);
     }
 

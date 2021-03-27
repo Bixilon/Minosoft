@@ -15,17 +15,17 @@ package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
 import de.bixilon.minosoft.data.inventory.Slot;
 import de.bixilon.minosoft.data.player.Hands;
-import de.bixilon.minosoft.data.world.BlockPosition;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketTypes;
 import de.bixilon.minosoft.util.logging.Log;
+import glm_.vec3.Vec3i;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
 
 public class PacketPlayerBlockPlacement implements ServerboundPacket {
-    private final BlockPosition position;
+    private final Vec3i position;
     private final byte direction;
     private final float cursorX;
     private final float cursorY;
@@ -34,7 +34,7 @@ public class PacketPlayerBlockPlacement implements ServerboundPacket {
     Hands hand;
     boolean insideBlock;
 
-    public PacketPlayerBlockPlacement(BlockPosition position, byte direction, Slot item, float cursorX, float cursorY, float cursorZ) {
+    public PacketPlayerBlockPlacement(Vec3i position, byte direction, Slot item, float cursorX, float cursorY, float cursorZ) {
         this.position = position;
         this.direction = direction;
         this.item = item;
@@ -44,7 +44,7 @@ public class PacketPlayerBlockPlacement implements ServerboundPacket {
     }
 
     // >= 1.9
-    public PacketPlayerBlockPlacement(BlockPosition position, byte direction, Hands hand, float cursorX, float cursorY, float cursorZ) {
+    public PacketPlayerBlockPlacement(Vec3i position, byte direction, Hands hand, float cursorX, float cursorY, float cursorZ) {
         this.position = position;
         this.direction = direction;
         this.cursorX = cursorX;
@@ -53,7 +53,7 @@ public class PacketPlayerBlockPlacement implements ServerboundPacket {
     }
 
     // >= 1.14
-    public PacketPlayerBlockPlacement(BlockPosition position, byte direction, Hands hand, float cursorX, float cursorY, float cursorZ, boolean insideBlock) {
+    public PacketPlayerBlockPlacement(Vec3i position, byte direction, Hands hand, float cursorX, float cursorY, float cursorZ, boolean insideBlock) {
         this.position = position;
         this.direction = direction;
         this.hand = hand;
@@ -70,7 +70,7 @@ public class PacketPlayerBlockPlacement implements ServerboundPacket {
             buffer.writeVarInt(this.hand.ordinal());
         }
         if (buffer.getVersionId() < V_14W04A) {
-            buffer.writeBlockPositionByte(this.position);
+            buffer.writeVec3iByte(this.position);
         } else {
             buffer.writePosition(this.position);
         }

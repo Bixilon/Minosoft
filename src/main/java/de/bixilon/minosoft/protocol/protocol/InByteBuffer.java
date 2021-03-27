@@ -22,7 +22,6 @@ import de.bixilon.minosoft.data.commands.CommandNode;
 import de.bixilon.minosoft.data.commands.CommandRootNode;
 import de.bixilon.minosoft.data.entities.EntityMetaData;
 import de.bixilon.minosoft.data.entities.Poses;
-import de.bixilon.minosoft.data.entities.Position;
 import de.bixilon.minosoft.data.inventory.Slot;
 import de.bixilon.minosoft.data.mappings.LegacyResourceLocation;
 import de.bixilon.minosoft.data.mappings.ResourceLocation;
@@ -34,11 +33,12 @@ import de.bixilon.minosoft.data.mappings.particle.data.ItemParticleData;
 import de.bixilon.minosoft.data.mappings.particle.data.ParticleData;
 import de.bixilon.minosoft.data.mappings.recipes.Ingredient;
 import de.bixilon.minosoft.data.text.ChatComponent;
-import de.bixilon.minosoft.data.world.BlockPosition;
-import de.bixilon.minosoft.data.world.ChunkPosition;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.util.Util;
 import de.bixilon.minosoft.util.nbt.tag.*;
+import glm_.vec2.Vec2i;
+import glm_.vec3.Vec3;
+import glm_.vec3.Vec3i;
 import org.checkerframework.common.value.qual.IntRange;
 
 import java.io.IOException;
@@ -202,18 +202,18 @@ public class InByteBuffer {
         return (short) (this.bytes[this.position++] & 0xFF);
     }
 
-    public BlockPosition readPosition() {
+    public Vec3i readBlockPosition() {
         // ToDo: protocol id 7
         long raw = readLong();
         int x = (int) (raw >> 38);
         if (this.versionId < V_18W43A) {
             int y = (int) ((raw >> 26) & 0xFFF);
             int z = (int) (raw & 0x3FFFFFF);
-            return new BlockPosition(x, y, z);
+            return new Vec3i(x, y, z);
         }
         int y = (int) (raw << 52 >> 52);
         int z = (int) (raw << 26 >> 38);
-        return new BlockPosition(x, y, z);
+        return new Vec3i(x, y, z);
     }
 
     public ChatComponent readChatComponent() {
@@ -356,32 +356,32 @@ public class InByteBuffer {
         return (short) (readByte() * ProtocolDefinition.ANGLE_CALCULATION_CONSTANT);
     }
 
-    public Position readLocation() {
-        return new Position(readDouble(), readDouble(), readDouble());
+    public Vec3 readLocation() {
+        return new Vec3(readDouble(), readDouble(), readDouble());
     }
 
     public double readDouble() {
         return Double.longBitsToDouble(readLong());
     }
 
-    public Position readSmallLocation() {
-        return new Position(readFloat(), readFloat(), readFloat());
+    public Vec3 readFloatPosition() {
+        return new Vec3(readFloat(), readFloat(), readFloat());
     }
 
     public float readFloat() {
         return Float.intBitsToFloat(readInt());
     }
 
-    public BlockPosition readBlockPositionByte() {
-        return new BlockPosition(readInt(), readUnsignedByte(), readInt());
+    public Vec3i readBlockPositionByte() {
+        return new Vec3i(readInt(), readUnsignedByte(), readInt());
     }
 
-    public BlockPosition readBlockPositionShort() {
-        return new BlockPosition(readInt(), readShort(), readInt());
+    public Vec3i readBlockPositionShort() {
+        return new Vec3i(readInt(), readShort(), readInt());
     }
 
-    public BlockPosition readBlockPositionInteger() {
-        return new BlockPosition(readInt(), readInt(), readInt());
+    public Vec3i readBlockPositionInteger() {
+        return new Vec3i(readInt(), readInt(), readInt());
     }
 
     public byte[] readBytesLeft() {
@@ -592,7 +592,7 @@ public class InByteBuffer {
         return new ResourceLocation(resourceLocation);
     }
 
-    public ChunkPosition readChunkPosition() {
-        return new ChunkPosition(readInt(), readInt());
+    public Vec2i readChunkPosition() {
+        return new Vec2i(readInt(), readInt());
     }
 }

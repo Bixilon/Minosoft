@@ -21,9 +21,10 @@ import de.bixilon.minosoft.data.inventory.Slot
 import de.bixilon.minosoft.data.player.PlayerListItem
 import de.bixilon.minosoft.data.scoreboard.ScoreboardManager
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.data.world.BlockPosition
+
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import glm_.vec3.Vec3i
 import java.util.*
 
 class Player(val account: Account) {
@@ -34,7 +35,7 @@ class Player(val account: Account) {
     var health = 0.0f
     var food = 0
     var saturation = 0.0f
-    var spawnPosition: BlockPosition? = null
+    var spawnPosition: Vec3i = Vec3i(0, 0, 0)
     var gamemode: Gamemodes? = null
     var selectedSlot: Int = 0
     var level = 0

@@ -14,7 +14,7 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play
 
 import de.bixilon.minosoft.data.mappings.tweaker.VersionTweaker
 import de.bixilon.minosoft.data.world.ChunkData
-import de.bixilon.minosoft.data.world.ChunkPosition
+
 import de.bixilon.minosoft.modding.event.events.ChunkDataChangeEvent
 import de.bixilon.minosoft.protocol.network.Connection
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket
@@ -23,10 +23,11 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.util.Util
 import de.bixilon.minosoft.util.chunk.ChunkUtil
 import de.bixilon.minosoft.util.logging.Log
+import glm_.vec2.Vec2i
 import java.util.*
 
 class PacketChunkBulk : ClientboundPacket() {
-    val data: MutableMap<ChunkPosition, ChunkData?> = mutableMapOf()
+    val data: MutableMap<Vec2i, ChunkData?> = mutableMapOf()
 
     override fun read(buffer: InByteBuffer): Boolean {
         val dimension = buffer.connection.player.world.dimension!!
@@ -53,7 +54,7 @@ class PacketChunkBulk : ClientboundPacket() {
         }
         val containsSkyLight = buffer.readBoolean()
         val chunkCount = buffer.readVarInt()
-        val chunkData: MutableMap<ChunkPosition, BitSet> = mutableMapOf()
+        val chunkData: MutableMap<Vec2i, BitSet> = mutableMapOf()
 
         // ToDo: this was still compressed in 14w28a
         for (i in 0 until chunkCount) {

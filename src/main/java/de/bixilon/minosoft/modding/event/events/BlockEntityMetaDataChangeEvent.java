@@ -14,18 +14,18 @@
 package de.bixilon.minosoft.modding.event.events;
 
 import de.bixilon.minosoft.data.entities.block.BlockEntityMetaData;
-import de.bixilon.minosoft.data.world.BlockPosition;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketBlockEntityMetadata;
+import glm_.vec3.Vec3i;
 
 import javax.annotation.Nullable;
 
 public class BlockEntityMetaDataChangeEvent extends ConnectionEvent {
-    private final BlockPosition position;
+    private final Vec3i position;
     private final PacketBlockEntityMetadata.BlockEntityActions action;
     private final BlockEntityMetaData data;
 
-    public BlockEntityMetaDataChangeEvent(Connection connection, BlockPosition position, PacketBlockEntityMetadata.BlockEntityActions action, BlockEntityMetaData data) {
+    public BlockEntityMetaDataChangeEvent(Connection connection, Vec3i position, PacketBlockEntityMetadata.BlockEntityActions action, BlockEntityMetaData data) {
         super(connection);
         this.position = position;
         this.action = action;
@@ -39,7 +39,7 @@ public class BlockEntityMetaDataChangeEvent extends ConnectionEvent {
         this.data = pkg.getData();
     }
 
-    public BlockPosition getPosition() {
+    public Vec3i getPosition() {
         return this.position;
     }
 

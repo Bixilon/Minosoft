@@ -13,20 +13,20 @@
 
 package de.bixilon.minosoft.modding.event.events;
 
-import de.bixilon.minosoft.data.world.BlockPosition;
 import de.bixilon.minosoft.modding.event.events.annotations.MinimumProtocolVersion;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketBlockBreakAnimation;
+import glm_.vec3.Vec3i;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W31A;
 
 @MinimumProtocolVersion(versionId = V_14W31A)
 public class BlockBreakAnimationEvent extends CancelableEvent {
     private final int entityId;
-    private final BlockPosition position;
+    private final Vec3i position;
     private final byte stage;
 
-    public BlockBreakAnimationEvent(Connection connection, int entityId, BlockPosition position, byte stage) {
+    public BlockBreakAnimationEvent(Connection connection, int entityId, Vec3i position, byte stage) {
         super(connection);
         this.entityId = entityId;
         this.position = position;
@@ -44,7 +44,7 @@ public class BlockBreakAnimationEvent extends CancelableEvent {
         return this.entityId;
     }
 
-    public BlockPosition getPosition() {
+    public Vec3i getPosition() {
         return this.position;
     }
 

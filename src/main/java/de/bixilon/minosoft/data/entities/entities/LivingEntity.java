@@ -15,17 +15,17 @@ package de.bixilon.minosoft.data.entities.entities;
 
 import de.bixilon.minosoft.data.entities.EntityMetaDataFields;
 import de.bixilon.minosoft.data.entities.EntityRotation;
-import de.bixilon.minosoft.data.entities.Position;
 import de.bixilon.minosoft.data.player.Hands;
-import de.bixilon.minosoft.data.world.BlockPosition;
 import de.bixilon.minosoft.protocol.network.Connection;
+import glm_.vec3.Vec3;
+import glm_.vec3.Vec3i;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
 
 public abstract class LivingEntity extends Entity {
 
-    public LivingEntity(Connection connection, int entityId, UUID uuid, Position position, EntityRotation rotation) {
+    public LivingEntity(Connection connection, int entityId, UUID uuid, Vec3 position, EntityRotation rotation) {
         super(connection, entityId, uuid, position, rotation);
     }
 
@@ -76,7 +76,7 @@ public abstract class LivingEntity extends Entity {
 
     @EntityMetaDataFunction(name = "Bed location")
     @Nullable
-    public BlockPosition getBedPosition() {
+    public Vec3i getBedPosition() {
         return this.metaData.getSets().getPosition(EntityMetaDataFields.LIVING_ENTITY_BED_POSITION);
     }
 

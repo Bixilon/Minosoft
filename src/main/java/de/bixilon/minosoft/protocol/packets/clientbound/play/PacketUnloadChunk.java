@@ -13,24 +13,24 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.data.world.ChunkPosition;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
+import glm_.vec2.Vec2i;
 
 public class PacketUnloadChunk extends ClientboundPacket {
-    ChunkPosition chunkPosition;
+    private Vec2i chunkPosition;
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        this.chunkPosition = new ChunkPosition(buffer.readInt(), buffer.readInt());
+        this.chunkPosition = new Vec2i(buffer.readInt(), buffer.readInt());
         return true;
     }
 
     @Override
     public void handle(Connection connection) {
-        connection.getPlayer().getWorld().unloadChunk(getChunkPosition());
+        connection.getPlayer().getWorld().unloadChunk(getVec2i());
         connection.getRenderer().getRenderWindow().getWorldRenderer().unloadChunk(this.chunkPosition);
     }
 
@@ -39,7 +39,7 @@ public class PacketUnloadChunk extends ClientboundPacket {
         Log.protocol(String.format("[IN] Received unload chunk packet (chunkPosition=%s)", this.chunkPosition));
     }
 
-    public ChunkPosition getChunkPosition() {
+    public Vec2i getVec2i() {
         return this.chunkPosition;
     }
 }

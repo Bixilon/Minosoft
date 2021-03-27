@@ -15,13 +15,13 @@ package de.bixilon.minosoft.data.entities.entities;
 
 import de.bixilon.minosoft.data.entities.EntityMetaDataFields;
 import de.bixilon.minosoft.data.entities.EntityRotation;
-import de.bixilon.minosoft.data.entities.Position;
 import de.bixilon.minosoft.protocol.network.Connection;
+import glm_.vec3.Vec3;
 
 import java.util.UUID;
 
 public abstract class Mob extends LivingEntity {
-    public Mob(Connection connection, int entityId, UUID uuid, Position position, EntityRotation rotation) {
+    public Mob(Connection connection, int entityId, UUID uuid, Vec3 position, EntityRotation rotation) {
         super(connection, entityId, uuid, position, rotation);
     }
 

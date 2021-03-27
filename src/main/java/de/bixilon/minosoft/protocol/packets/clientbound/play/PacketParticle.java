@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.data.entities.Position;
 import de.bixilon.minosoft.data.mappings.particle.Particle;
 import de.bixilon.minosoft.data.mappings.particle.data.ParticleData;
 import de.bixilon.minosoft.modding.event.events.ParticleSpawnEvent;
@@ -21,19 +20,20 @@ import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
+import glm_.vec3.Vec3;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
 
 public class PacketParticle extends ClientboundPacket {
-    Particle particleType;
-    ParticleData particleData;
-    boolean longDistance;
-    Position position;
-    float offsetX;
-    float offsetY;
-    float offsetZ;
-    float particleDataFloat;
-    int count;
+    private Particle particleType;
+    private ParticleData particleData;
+    private boolean longDistance;
+    private Vec3 position;
+    private float offsetX;
+    private float offsetY;
+    private float offsetZ;
+    private float particleDataFloat;
+    private int count;
 
     @Override
     public boolean read(InByteBuffer buffer) {
@@ -46,7 +46,7 @@ public class PacketParticle extends ClientboundPacket {
             this.longDistance = buffer.readBoolean();
         }
         if (buffer.getVersionId() < V_1_15_PRE4) {
-            this.position = buffer.readSmallLocation();
+            this.position = buffer.readFloatPosition();
         } else {
             this.position = buffer.readLocation();
         }
@@ -74,7 +74,7 @@ public class PacketParticle extends ClientboundPacket {
         Log.protocol(String.format("[IN] Received particle spawn packet (position=%s, offsetX=%s, offsetY=%s, offsetZ=%s, particleType=%s, dataFloat=%s, count=%d, particleData=%s)", this.position, this.offsetX, this.offsetY, this.offsetZ, this.particleType, this.particleDataFloat, this.count, this.particleData));
     }
 
-    public Position getPosition() {
+    public Vec3 getPosition() {
         return this.position;
     }
 

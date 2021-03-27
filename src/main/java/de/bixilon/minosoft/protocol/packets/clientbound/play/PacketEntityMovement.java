@@ -13,28 +13,28 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.data.entities.RelativePosition;
 import de.bixilon.minosoft.data.entities.entities.Entity;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
+import glm_.vec3.Vec3;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W25B;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_16W06A;
 
 public class PacketEntityMovement extends ClientboundPacket {
-    int entityId;
-    RelativePosition position;
-    boolean onGround;
+    private int entityId;
+    private Vec3 position;
+    private boolean onGround;
 
     @Override
     public boolean read(InByteBuffer buffer) {
         this.entityId = buffer.readEntityId();
         if (buffer.getVersionId() < V_16W06A) {
-            this.position = new RelativePosition(buffer.readFixedPointNumberByte(), buffer.readFixedPointNumberByte(), buffer.readFixedPointNumberByte());
+            this.position = new Vec3(buffer.readFixedPointNumberByte(), buffer.readFixedPointNumberByte(), buffer.readFixedPointNumberByte());
         } else {
-            this.position = new RelativePosition(buffer.readShort() / 4096F, buffer.readShort() / 4096F, buffer.readShort() / 4096F); // / 128 / 32
+            this.position = new Vec3(buffer.readShort() / 4096F, buffer.readShort() / 4096F, buffer.readShort() / 4096F); // / 128 / 32
         }
         if (buffer.getVersionId() >= V_14W25B) {
             this.onGround = buffer.readBoolean();
@@ -61,7 +61,7 @@ public class PacketEntityMovement extends ClientboundPacket {
         return this.entityId;
     }
 
-    public RelativePosition getRelativePosition() {
+    public Vec3 getRelativePosition() {
         return this.position;
     }
 }

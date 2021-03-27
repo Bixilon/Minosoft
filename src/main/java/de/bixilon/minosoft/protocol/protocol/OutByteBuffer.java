@@ -16,10 +16,10 @@ package de.bixilon.minosoft.protocol.protocol;
 import com.google.gson.JsonObject;
 import de.bixilon.minosoft.data.inventory.Slot;
 import de.bixilon.minosoft.data.text.ChatComponent;
-import de.bixilon.minosoft.data.world.BlockPosition;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.util.Util;
 import de.bixilon.minosoft.util.nbt.tag.CompoundTag;
+import glm_.vec3.Vec3i;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
@@ -144,16 +144,16 @@ public class OutByteBuffer {
         return this.bytes;
     }
 
-    public void writePosition(BlockPosition position) {
+    public void writePosition(Vec3i position) {
         if (position == null) {
             writeLong(0L);
             return;
         }
         if (this.versionId < V_18W43A) {
-            writeLong((((long) position.getX() & 0x3FFFFFF) << 38) | (((long) position.getZ() & 0x3FFFFFF)) | ((long) position.getY() & 0xFFF) << 26);
+            writeLong((((long) position.x & 0x3FFFFFF) << 38) | (((long) position.z & 0x3FFFFFF)) | ((long) position.y & 0xFFF) << 26);
             return;
         }
-        writeLong((((long) (position.getX() & 0x3FFFFFF) << 38) | ((long) (position.getZ() & 0x3FFFFFF) << 12) | (long) (position.getY() & 0xFFF)));
+        writeLong((((long) (position.x & 0x3FFFFFF) << 38) | ((long) (position.z & 0x3FFFFFF) << 12) | (long) (position.y & 0xFFF)));
     }
 
     public void writeVarInt(int value) {
@@ -214,10 +214,10 @@ public class OutByteBuffer {
         writeBytes(string.getBytes(StandardCharsets.UTF_8));
     }
 
-    public void writeBlockPositionByte(BlockPosition pos) {
-        writeInt(pos.getX());
-        writeByte((byte) pos.getY());
-        writeInt(pos.getZ());
+    public void writeVec3iByte(Vec3i position) {
+        writeInt(position.x);
+        writeByte((byte) (int) position.y);
+        writeInt(position.z);
     }
 
     public byte[] toByteArray() {

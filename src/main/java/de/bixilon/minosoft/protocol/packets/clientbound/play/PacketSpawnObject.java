@@ -15,7 +15,6 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.entities.EntityRotation;
 import de.bixilon.minosoft.data.entities.Objects;
-import de.bixilon.minosoft.data.entities.Position;
 import de.bixilon.minosoft.data.entities.Velocity;
 import de.bixilon.minosoft.data.entities.entities.Entity;
 import de.bixilon.minosoft.data.entities.entities.UnknownEntityException;
@@ -25,6 +24,7 @@ import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
+import glm_.vec3.Vec3;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.UUID;
@@ -56,9 +56,9 @@ public class PacketSpawnObject extends ClientboundPacket {
             typeClass = buffer.getConnection().getMapping().getEntityClassById(type);
         }
 
-        Position position;
+        Vec3 position;
         if (buffer.getVersionId() < V_16W06A) {
-            position = new Position(buffer.readFixedPointNumberInt(), buffer.readFixedPointNumberInt(), buffer.readFixedPointNumberInt());
+            position = new Vec3(buffer.readFixedPointNumberInt(), buffer.readFixedPointNumberInt(), buffer.readFixedPointNumberInt());
         } else {
             position = buffer.readLocation();
         }
@@ -82,7 +82,7 @@ public class PacketSpawnObject extends ClientboundPacket {
         }
 
         try {
-            this.entity = typeClass.getConstructor(Connection.class, int.class, UUID.class, Position.class, EntityRotation.class).newInstance(buffer.getConnection(), entityId, uuid, position, rotation);
+            this.entity = typeClass.getConstructor(Connection.class, int.class, UUID.class, Vec3.class, EntityRotation.class).newInstance(buffer.getConnection(), entityId, uuid, position, rotation);
             return true;
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | NullPointerException e) {
             e.printStackTrace();

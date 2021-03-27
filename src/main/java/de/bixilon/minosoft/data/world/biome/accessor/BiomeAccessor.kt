@@ -14,9 +14,10 @@
 package de.bixilon.minosoft.data.world.biome.accessor
 
 import de.bixilon.minosoft.data.mappings.biomes.Biome
-import de.bixilon.minosoft.data.world.BlockPosition
+import glm_.vec3.Vec3i
+
 
 interface BiomeAccessor {
 
-    fun getBiome(blockPosition: BlockPosition): Biome?
+    fun getBiome(blockPosition: Vec3i): Biome?
 }

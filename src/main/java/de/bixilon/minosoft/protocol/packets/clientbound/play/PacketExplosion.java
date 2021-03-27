@@ -13,15 +13,14 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.data.entities.Position;
-import de.bixilon.minosoft.data.world.BlockPosition;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
+import glm_.vec3.Vec3i;
 
 public class PacketExplosion extends ClientboundPacket {
-    private Position position;
+    private Vec3i position;
     private float radius;
     private byte[][] records;
     private float motionX;
@@ -30,7 +29,7 @@ public class PacketExplosion extends ClientboundPacket {
 
     @Override
     public boolean read(InByteBuffer buffer) {
-        this.position = new Position(buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
+        this.position = new Vec3i(buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
         this.radius = buffer.readFloat();
         if (this.radius > 100.0F) {
             // maybe somebody tries to make bullshit?
@@ -53,10 +52,10 @@ public class PacketExplosion extends ClientboundPacket {
     public void handle(Connection connection) {
         // remove all blocks set by explosion
         for (byte[] record : getRecords()) {
-            int x = ((int) getPosition().getX()) + record[0];
-            int y = ((int) getPosition().getY()) + record[1];
-            int z = ((int) getPosition().getZ()) + record[2];
-            BlockPosition blockPosition = new BlockPosition(x, (short) y, z);
+            int x = getPosition().x + record[0];
+            int y = getPosition().y + record[1];
+            int z = getPosition().z + record[2];
+            Vec3i blockPosition = new Vec3i(x, (short) y, z);
             connection.getPlayer().getWorld().setBlock(blockPosition, null);
         }
         // ToDo: motion support
@@ -67,7 +66,7 @@ public class PacketExplosion extends ClientboundPacket {
         Log.protocol(String.format("[IN] Explosion packet received at %s (recordCount=%d, radius=%s)", this.position, this.records.length, this.radius));
     }
 
-    public Position getPosition() {
+    public Vec3i getPosition() {
         return this.position;
     }
 

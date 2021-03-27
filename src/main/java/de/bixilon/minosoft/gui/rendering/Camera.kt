@@ -18,13 +18,14 @@ import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames
 import de.bixilon.minosoft.config.key.KeyAction
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.entities.EntityRotation
-import de.bixilon.minosoft.data.entities.Position
 import de.bixilon.minosoft.data.mappings.biomes.Biome
-import de.bixilon.minosoft.data.world.BlockPosition
-import de.bixilon.minosoft.data.world.ChunkPosition
-import de.bixilon.minosoft.data.world.InChunkSectionPosition
+
 import de.bixilon.minosoft.gui.rendering.chunk.Frustum
 import de.bixilon.minosoft.gui.rendering.shader.Shader
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.blockPosition
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.chunkPosition
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.inChunkSectionPosition
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
 import de.bixilon.minosoft.protocol.network.Connection
 import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketPlayerPositionAndRotationSending
 import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketPlayerPositionSending
@@ -36,7 +37,9 @@ import glm_.func.sin
 import glm_.glm
 import glm_.mat4x4.Mat4
 import glm_.vec2.Vec2
+import glm_.vec2.Vec2i
 import glm_.vec3.Vec3
+import glm_.vec3.Vec3i
 
 class Camera(
     val connection: Connection,
@@ -60,19 +63,15 @@ class Camera(
     var cameraRight = Vec3(0.0f, 0.0f, -1.0f)
     private var cameraUp = Vec3(0.0f, 1.0f, 0.0f)
 
-    var feetLocation: Position = Position(0.0, 0.0, 0.0)
-        private set
-    var headLocation: Position = Position(0.0, 0.0, 0.0)
-        private set
-    var blockPosition: BlockPosition = BlockPosition(0, 0, 0)
+    var blockPosition: Vec3i = Vec3i(0, 0, 0)
         private set
     var currentBiome: Biome? = null
         private set
-    var chunkPosition: ChunkPosition = ChunkPosition(0, 0)
+    var chunkPosition: Vec2i = Vec2i(0, 0)
         private set
     var sectionHeight: Int = 0
         private set
-    var inChunkSectionPosition: InChunkSectionPosition = InChunkSectionPosition(0, 0, 0)
+    var inChunkSectionPosition: Vec3i = Vec3i(0, 0, 0)
         private set
 
     val frustum: Frustum = Frustum(this)
@@ -203,16 +202,13 @@ class Camera(
     }
 
     private fun positionChangeCallback() {
-        headLocation = Position(cameraPosition)
-        feetLocation = Position(headLocation.x, headLocation.y - PLAYER_HEIGHT, headLocation.z)
-        blockPosition = feetLocation.toBlockPosition()
+        blockPosition = (cameraPosition - Vec3(0, PLAYER_HEIGHT, 0)).blockPosition
         currentBiome = connection.player.world.getBiome(blockPosition)
-        chunkPosition = blockPosition.getChunkPosition()
-        sectionHeight = blockPosition.getSectionHeight()
-        inChunkSectionPosition = blockPosition.getInChunkSectionPosition()
+        chunkPosition = blockPosition.chunkPosition
+        sectionHeight = blockPosition.sectionHeight
+        inChunkSectionPosition = blockPosition.inChunkSectionPosition
 
         // recalculate sky color for current biome
-        val blockPosition = Position(cameraPosition).toBlockPosition()
         renderWindow.setSkyColor(connection.player.world.getBiome(blockPosition)?.skyColor ?: RenderConstants.DEFAULT_SKY_COLOR)
 
         frustum.recalculate()
@@ -262,9 +258,9 @@ class Camera(
     private fun sendPositionToServer() {
         if (System.currentTimeMillis() - lastMovementPacketSent > ProtocolDefinition.TICK_TIME) {
             if (!currentPositionSent && !currentPositionSent) {
-                connection.sendPacket(PacketPlayerPositionAndRotationSending(feetLocation, EntityRotation(yaw, pitch), false))
+                connection.sendPacket(PacketPlayerPositionAndRotationSending(cameraPosition - Vec3(0, PLAYER_HEIGHT, 0), EntityRotation(yaw, pitch), false))
             } else if (!currentPositionSent) {
-                connection.sendPacket(PacketPlayerPositionSending(feetLocation, false))
+                connection.sendPacket(PacketPlayerPositionSending(cameraPosition - Vec3(0, PLAYER_HEIGHT, 0), false))
             } else {
                 connection.sendPacket(PacketPlayerRotationSending(EntityRotation(yaw, pitch), false))
             }
@@ -275,10 +271,8 @@ class Camera(
         }
     }
 
-    fun setPosition(location: Position) {
-        feetLocation = location
-        headLocation = Position(location.x, location.y + PLAYER_HEIGHT, location.z)
-        cameraPosition = headLocation.toVec3()
+    fun setPosition(position: Vec3) {
+        cameraPosition = (position + Vec3(0, PLAYER_HEIGHT, 0))
     }
 
     companion object {

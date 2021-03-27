@@ -14,20 +14,20 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.SoundCategories;
-import de.bixilon.minosoft.data.entities.Position;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import de.bixilon.minosoft.util.logging.Log;
+import glm_.vec3.Vec3;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
 
 public class PacketNamedSoundEffect extends ClientboundPacket {
-    Position position;
-    String sound;
-    float volume;
-    float pitch;
-    SoundCategories category;
+    private Vec3 position;
+    private String sound;
+    private float volume;
+    private float pitch;
+    private SoundCategories category;
 
     @Override
     public boolean read(InByteBuffer buffer) {
@@ -41,14 +41,14 @@ public class PacketNamedSoundEffect extends ClientboundPacket {
             buffer.readString(); // parrot entity type
         }
         if (buffer.getVersionId() < V_16W02A) {
-            this.position = new Position(buffer.readInt() * 8, buffer.readInt() * 8, buffer.readInt() * 8); // ToDo: check if it is not * 4
+            this.position = new Vec3(buffer.readInt() * 8, buffer.readInt() * 8, buffer.readInt() * 8); // ToDo: check if it is not * 4
         }
 
         if (buffer.getVersionId() >= V_16W02A && (buffer.getVersionId() < V_17W15A || buffer.getVersionId() >= V_17W18A)) {
             this.category = SoundCategories.byId(buffer.readVarInt());
         }
         if (buffer.getVersionId() >= V_16W02A) {
-            this.position = new Position(buffer.readFixedPointNumberInt() * 4, buffer.readFixedPointNumberInt() * 4, buffer.readFixedPointNumberInt() * 4);
+            this.position = new Vec3(buffer.readFixedPointNumberInt() * 4, buffer.readFixedPointNumberInt() * 4, buffer.readFixedPointNumberInt() * 4);
         }
         this.volume = buffer.readFloat();
         if (buffer.getVersionId() < V_16W20A) {
@@ -65,7 +65,7 @@ public class PacketNamedSoundEffect extends ClientboundPacket {
         Log.protocol(String.format("[IN] Play sound effect (sound=%s, category=%s, volume=%s, pitch=%s, position=%s)", this.sound, this.category, this.volume, this.pitch, this.position));
     }
 
-    public Position getPosition() {
+    public Vec3 getPosition() {
         return this.position;
     }
 

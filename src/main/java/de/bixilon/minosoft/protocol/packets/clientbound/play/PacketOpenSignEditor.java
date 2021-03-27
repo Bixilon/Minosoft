@@ -13,17 +13,17 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.data.world.BlockPosition;
 import de.bixilon.minosoft.modding.event.events.OpenSignEditorEvent;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
+import glm_.vec3.Vec3i;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W03B;
 
 public class PacketOpenSignEditor extends ClientboundPacket {
-    BlockPosition position;
+    Vec3i position;
 
     @Override
     public boolean read(InByteBuffer buffer) {
@@ -31,7 +31,7 @@ public class PacketOpenSignEditor extends ClientboundPacket {
             this.position = buffer.readBlockPositionInteger();
             return true;
         }
-        this.position = buffer.readPosition();
+        this.position = buffer.readBlockPosition();
         return true;
     }
 
@@ -48,7 +48,7 @@ public class PacketOpenSignEditor extends ClientboundPacket {
         Log.protocol(String.format("[IN] Opening sign editor: %s", this.position));
     }
 
-    public BlockPosition getPosition() {
+    public Vec3i getPosition() {
         return this.position;
     }
 }

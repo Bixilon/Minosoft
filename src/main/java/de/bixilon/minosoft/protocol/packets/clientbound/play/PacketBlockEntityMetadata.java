@@ -15,20 +15,20 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.VersionValueMap;
 import de.bixilon.minosoft.data.entities.block.BlockEntityMetaData;
-import de.bixilon.minosoft.data.world.BlockPosition;
 import de.bixilon.minosoft.modding.event.events.BlockEntityMetaDataChangeEvent;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 import de.bixilon.minosoft.util.nbt.tag.CompoundTag;
+import glm_.vec3.Vec3i;
 
 import java.util.Map;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
 
 public class PacketBlockEntityMetadata extends ClientboundPacket {
-    BlockPosition position;
+    Vec3i position;
     BlockEntityActions action;
     BlockEntityMetaData data;
 
@@ -40,7 +40,7 @@ public class PacketBlockEntityMetadata extends ClientboundPacket {
             this.data = BlockEntityMetaData.getData(buffer.getConnection(), this.action, (CompoundTag) buffer.readNBT(true));
             return true;
         }
-        this.position = buffer.readPosition();
+        this.position = buffer.readBlockPosition();
         this.action = BlockEntityActions.byId(buffer.readUnsignedByte(), buffer.getVersionId());
         this.data = BlockEntityMetaData.getData(buffer.getConnection(), this.action, (CompoundTag) buffer.readNBT());
         return true;
@@ -57,7 +57,7 @@ public class PacketBlockEntityMetadata extends ClientboundPacket {
         Log.protocol(String.format("[IN] Receiving blockEntityMeta (position=%s, action=%s)", this.position, this.action));
     }
 
-    public BlockPosition getPosition() {
+    public Vec3i getPosition() {
         return this.position;
     }
 

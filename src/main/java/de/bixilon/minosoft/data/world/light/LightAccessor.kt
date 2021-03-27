@@ -13,16 +13,17 @@
 
 package de.bixilon.minosoft.data.world.light
 
-import de.bixilon.minosoft.data.world.BlockPosition
+
 import glm_.glm
+import glm_.vec3.Vec3i
 
 interface LightAccessor {
 
-    fun getSkyLight(blockPosition: BlockPosition): Int
+    fun getSkyLight(blockPosition: Vec3i): Int
 
-    fun getBlockLight(blockPosition: BlockPosition): Int
+    fun getBlockLight(blockPosition: Vec3i): Int
 
-    fun getLightLevel(blockPosition: BlockPosition): Int {
+    fun getLightLevel(blockPosition: Vec3i): Int {
         val blockLight = getBlockLight(blockPosition)
         val skyLight = getSkyLight(blockPosition)
         return glm.max(blockLight, skyLight)

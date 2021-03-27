@@ -15,10 +15,10 @@ package de.bixilon.minosoft.data.entities.entities.monster;
 
 import de.bixilon.minosoft.data.entities.EntityMetaDataFields;
 import de.bixilon.minosoft.data.entities.EntityRotation;
-import de.bixilon.minosoft.data.entities.Position;
 import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction;
 import de.bixilon.minosoft.data.mappings.blocks.BlockState;
 import de.bixilon.minosoft.protocol.network.Connection;
+import glm_.vec3.Vec3;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
@@ -27,7 +27,7 @@ import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_8_9;
 
 public class Enderman extends AbstractSkeleton {
 
-    public Enderman(Connection connection, int entityId, UUID uuid, Position position, EntityRotation rotation) {
+    public Enderman(Connection connection, int entityId, UUID uuid, Vec3 position, EntityRotation rotation) {
         super(connection, entityId, uuid, position, rotation);
     }
 

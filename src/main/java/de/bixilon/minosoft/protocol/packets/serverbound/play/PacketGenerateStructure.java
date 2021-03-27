@@ -13,21 +13,21 @@
 
 package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
-import de.bixilon.minosoft.data.world.BlockPosition;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketTypes;
 import de.bixilon.minosoft.util.logging.Log;
+import glm_.vec3.Vec3i;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_20W22A;
 
 public class PacketGenerateStructure implements ServerboundPacket {
-    private final BlockPosition position;
+    private final Vec3i position;
     private final int levels;
     private final boolean keepJigsaw;
 
-    public PacketGenerateStructure(BlockPosition position, int levels, boolean keepJigsaw) {
+    public PacketGenerateStructure(Vec3i position, int levels, boolean keepJigsaw) {
         this.position = position;
         this.levels = levels;
         this.keepJigsaw = keepJigsaw;

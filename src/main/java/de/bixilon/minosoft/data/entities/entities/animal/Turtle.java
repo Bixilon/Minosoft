@@ -15,23 +15,23 @@ package de.bixilon.minosoft.data.entities.entities.animal;
 
 import de.bixilon.minosoft.data.entities.EntityMetaDataFields;
 import de.bixilon.minosoft.data.entities.EntityRotation;
-import de.bixilon.minosoft.data.entities.Position;
 import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction;
-import de.bixilon.minosoft.data.world.BlockPosition;
 import de.bixilon.minosoft.protocol.network.Connection;
+import glm_.vec3.Vec3;
+import glm_.vec3.Vec3i;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
 
 public class Turtle extends Animal {
 
-    public Turtle(Connection connection, int entityId, UUID uuid, Position position, EntityRotation rotation) {
+    public Turtle(Connection connection, int entityId, UUID uuid, Vec3 position, EntityRotation rotation) {
         super(connection, entityId, uuid, position, rotation);
     }
 
     @EntityMetaDataFunction(name = "Home Position")
     @Nullable
-    public BlockPosition getHomePosition() {
+    public Vec3i getHomePosition() {
         return this.metaData.getSets().getPosition(EntityMetaDataFields.TURTLE_HOME_POSITION);
     }
 
@@ -47,7 +47,7 @@ public class Turtle extends Animal {
 
     @EntityMetaDataFunction(name = "Travel position")
     @Nullable
-    public BlockPosition getTravelPosition() {
+    public Vec3i getTravelPosition() {
         return this.metaData.getSets().getPosition(EntityMetaDataFields.TURTLE_TRAVEL_POSITION);
     }
 

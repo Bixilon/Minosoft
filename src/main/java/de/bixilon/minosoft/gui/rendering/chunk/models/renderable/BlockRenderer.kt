@@ -18,7 +18,6 @@ import de.bixilon.minosoft.data.Directions
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.blocks.BlockState
 import de.bixilon.minosoft.data.text.RGBColor
-import de.bixilon.minosoft.data.world.BlockPosition
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.light.LightAccessor
 import de.bixilon.minosoft.gui.rendering.RenderConstants
@@ -27,6 +26,8 @@ import de.bixilon.minosoft.gui.rendering.chunk.models.FaceSize
 import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModel
 import de.bixilon.minosoft.gui.rendering.textures.Texture
 import de.bixilon.minosoft.gui.rendering.textures.TextureTransparencies
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
+import glm_.vec3.Vec3i
 
 class BlockRenderer : BlockRenderInterface {
     private val cullFaces: Array<Directions?> = arrayOfNulls(Directions.DIRECTIONS.size)
@@ -93,7 +94,7 @@ class BlockRenderer : BlockRenderInterface {
         }
     }
 
-    override fun render(blockState: BlockState, lightAccessor: LightAccessor, tintColor: RGBColor?, position: BlockPosition, meshCollection: ChunkMeshCollection, neighbourBlocks: Array<BlockState?>, world: World) {
+    override fun render(blockState: BlockState, lightAccessor: LightAccessor, tintColor: RGBColor?, blockPosition: Vec3i, meshCollection: ChunkMeshCollection, neighbourBlocks: Array<BlockState?>, world: World) {
         if (!RenderConstants.RENDER_BLOCKS) {
             return
         }
@@ -101,7 +102,7 @@ class BlockRenderer : BlockRenderInterface {
             val invertedDirection = direction.inverse
             var isNeighbourTransparent = false
             var neighbourFaceSize: Array<FaceSize>? = null
-            neighbourBlocks[direction.ordinal]?.getBlockRenderer(position + direction)?.let {
+            neighbourBlocks[direction.ordinal]?.getBlockRenderer(blockPosition + direction)?.let {
                 if (it.transparentFaces[invertedDirection.ordinal]) {
                     isNeighbourTransparent = true
                 }
@@ -137,7 +138,7 @@ class BlockRenderer : BlockRenderInterface {
                     continue
                 }
 
-                element.render(tintColor, position, lightAccessor, textureMapping, direction, meshCollection)
+                element.render(tintColor, blockPosition, lightAccessor, textureMapping, direction, meshCollection)
             }
         }
     }

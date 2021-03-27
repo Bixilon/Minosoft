@@ -13,14 +13,15 @@
 
 package de.bixilon.minosoft.data.world.light
 
-import de.bixilon.minosoft.data.world.BlockPosition
+import glm_.vec3.Vec3i
+
 
 object DummyLightAccessor : LightAccessor {
-    override fun getSkyLight(blockPosition: BlockPosition): Int {
+    override fun getSkyLight(blockPosition: Vec3i): Int {
         return 15
     }
 
-    override fun getBlockLight(blockPosition: BlockPosition): Int {
+    override fun getBlockLight(blockPosition: Vec3i): Int {
         return 15
     }
 

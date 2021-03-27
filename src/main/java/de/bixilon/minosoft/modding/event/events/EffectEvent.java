@@ -13,17 +13,17 @@
 
 package de.bixilon.minosoft.modding.event.events;
 
-import de.bixilon.minosoft.data.world.BlockPosition;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketEffect;
+import glm_.vec3.Vec3i;
 
 public class EffectEvent extends CancelableEvent {
     private final PacketEffect.EffectEffects effect;
-    private final BlockPosition position;
+    private final Vec3i position;
     private final int data;
     private final boolean disableRelativeVolume;
 
-    public EffectEvent(Connection connection, PacketEffect.EffectEffects effect, BlockPosition position, int data, boolean disableRelativeVolume) {
+    public EffectEvent(Connection connection, PacketEffect.EffectEffects effect, Vec3i position, int data, boolean disableRelativeVolume) {
         super(connection);
         this.effect = effect;
         this.position = position;
@@ -43,7 +43,7 @@ public class EffectEvent extends CancelableEvent {
         return this.effect;
     }
 
-    public BlockPosition getPosition() {
+    public Vec3i getPosition() {
         return this.position;
     }
 

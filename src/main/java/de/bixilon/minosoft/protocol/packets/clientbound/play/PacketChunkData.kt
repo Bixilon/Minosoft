@@ -14,9 +14,9 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play
 
 import de.bixilon.minosoft.data.entities.block.BlockEntityMetaData
 import de.bixilon.minosoft.data.mappings.tweaker.VersionTweaker
-import de.bixilon.minosoft.data.world.BlockPosition
+
 import de.bixilon.minosoft.data.world.ChunkData
-import de.bixilon.minosoft.data.world.ChunkPosition
+
 import de.bixilon.minosoft.data.world.biome.source.SpatialBiomeArray
 import de.bixilon.minosoft.modding.event.events.BlockEntityMetaDataChangeEvent
 import de.bixilon.minosoft.modding.event.events.ChunkDataChangeEvent
@@ -28,11 +28,13 @@ import de.bixilon.minosoft.util.Util
 import de.bixilon.minosoft.util.chunk.ChunkUtil
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.nbt.tag.CompoundTag
+import glm_.vec2.Vec2i
+import glm_.vec3.Vec3i
 import java.util.*
 
 class PacketChunkData : ClientboundPacket() {
-    private val blockEntities = HashMap<BlockPosition, BlockEntityMetaData>()
-    lateinit var chunkPosition: ChunkPosition
+    private val blockEntities = HashMap<Vec3i, BlockEntityMetaData>()
+    lateinit var chunkPosition: Vec2i
     var chunkData: ChunkData? = ChunkData()
         private set
     var heightMap: CompoundTag? = null
@@ -40,7 +42,7 @@ class PacketChunkData : ClientboundPacket() {
 
     override fun read(buffer: InByteBuffer): Boolean {
         val dimension = buffer.connection.player.world.dimension!!
-        chunkPosition = ChunkPosition(buffer.readInt(), buffer.readInt())
+        chunkPosition = Vec2i(buffer.readInt(), buffer.readInt())
         if (buffer.versionId < ProtocolVersions.V_20W45A) {
             isFullChunk = !buffer.readBoolean()
         }
@@ -101,7 +103,7 @@ class PacketChunkData : ClientboundPacket() {
             for (i in 0 until blockEntitiesCount) {
                 val tag = buffer.readNBT() as CompoundTag
                 val data = BlockEntityMetaData.getData(buffer.connection, null, tag) ?: continue
-                blockEntities[BlockPosition(tag.getNumberTag("x").asInt, tag.getNumberTag("y").asInt, tag.getNumberTag("z").asInt)] = data
+                blockEntities[Vec3i(tag.getNumberTag("x").asInt, tag.getNumberTag("y").asInt, tag.getNumberTag("z").asInt)] = data
             }
         }
         return true
