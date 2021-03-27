@@ -75,4 +75,7 @@ object VecUtil {
         return false
     }
 
+    fun JsonArray.readUV(): Pair<Vec2, Vec2> {
+        return Pair(Vec2(this[0].asFloat, this[3].asFloat), Vec2(this[2].asFloat, this[1].asFloat))
+    }
 }

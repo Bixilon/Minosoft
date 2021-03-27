@@ -23,7 +23,7 @@ import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.light.LightAccessor
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.chunk.ChunkMeshCollection
-import de.bixilon.minosoft.gui.rendering.chunk.models.FaceBorderSize
+import de.bixilon.minosoft.gui.rendering.chunk.models.FaceSize
 import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModel
 import de.bixilon.minosoft.gui.rendering.textures.Texture
 import de.bixilon.minosoft.gui.rendering.textures.TextureTransparencies
@@ -33,7 +33,7 @@ class BlockRenderer : BlockRenderInterface {
     val textures: MutableMap<String, String> = mutableMapOf()
     private val elements: MutableSet<ElementRenderer> = mutableSetOf()
     private val textureMapping: MutableMap<String, Texture> = mutableMapOf()
-    override val faceBorderSizes: Array<Array<FaceBorderSize>?> = arrayOfNulls(Directions.DIRECTIONS.size)
+    override val faceBorderSizes: Array<Array<FaceSize>?> = arrayOfNulls(Directions.DIRECTIONS.size)
     override val transparentFaces: BooleanArray = BooleanArray(Directions.DIRECTIONS.size)
 
     constructor(data: JsonObject, parent: BlockModel) {
@@ -64,7 +64,7 @@ class BlockRenderer : BlockRenderInterface {
         for (direction in Directions.DIRECTIONS) {
             var directionIsCullFace: Boolean? = null
             var directionIsNotTransparent: Boolean? = null
-            var faceBorderSites: MutableList<FaceBorderSize> = mutableListOf()
+            var faceBorderSites: MutableList<FaceSize> = mutableListOf()
             for (element in elements) {
                 if (element.isCullFace(direction)) {
                     directionIsCullFace = true
@@ -98,17 +98,17 @@ class BlockRenderer : BlockRenderInterface {
             return
         }
         for (direction in Directions.DIRECTIONS) {
-            val cullFace = cullFaces[direction.ordinal] != null
-
             val invertedDirection = direction.inverse
             var isNeighbourTransparent = false
-            var neighbourFaceSize: Array<FaceBorderSize>? = null
+            var neighbourFaceSize: Array<FaceSize>? = null
             neighbourBlocks[direction.ordinal]?.getBlockRenderer(position + direction)?.let {
                 if (it.transparentFaces[invertedDirection.ordinal]) {
                     isNeighbourTransparent = true
                 }
                 neighbourFaceSize = it.faceBorderSizes[invertedDirection.ordinal]
             }
+
+            // ToDo: Should we preserve the cullface attribute? It seems to has no point here.
 
             for (element in elements) {
                 var drawElementFace = true

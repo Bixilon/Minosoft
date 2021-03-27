@@ -9,7 +9,7 @@ import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.light.LightAccessor
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.chunk.ChunkMeshCollection
-import de.bixilon.minosoft.gui.rendering.chunk.models.FaceBorderSize
+import de.bixilon.minosoft.gui.rendering.chunk.models.FaceSize
 import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModelElement
 import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModelFace
 import de.bixilon.minosoft.gui.rendering.textures.Texture
@@ -25,7 +25,7 @@ class FluidRenderer(
     private val flowingTextureName: String,
     private val regex: String,
 ) : BlockRenderInterface {
-    override val faceBorderSizes: Array<Array<FaceBorderSize>?> = arrayOfNulls(Directions.DIRECTIONS.size)
+    override val faceBorderSizes: Array<Array<FaceSize>?> = arrayOfNulls(Directions.DIRECTIONS.size)
     override val transparentFaces: BooleanArray = BooleanArray(Directions.DIRECTIONS.size)
     private lateinit var stillTexture: Texture
     private lateinit var flowingTexture: Texture

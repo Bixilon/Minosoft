@@ -15,7 +15,7 @@ package de.bixilon.minosoft.gui.rendering.chunk.models
 
 import glm_.vec2.Vec2i
 
-data class FaceBorderSize(
+data class FaceSize(
     val start: Vec2i = Vec2i(0, 0),
     val end: Vec2i = Vec2i(16, 16),
 )

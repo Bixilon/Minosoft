@@ -22,7 +22,7 @@ import de.bixilon.minosoft.data.world.BlockPosition
 import de.bixilon.minosoft.data.world.light.LightAccessor
 import de.bixilon.minosoft.gui.rendering.chunk.ChunkMeshCollection
 import de.bixilon.minosoft.gui.rendering.chunk.SectionArrayMesh
-import de.bixilon.minosoft.gui.rendering.chunk.models.FaceBorderSize
+import de.bixilon.minosoft.gui.rendering.chunk.models.FaceSize
 import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModel
 import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModelElement
 import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModelFace
@@ -35,7 +35,7 @@ import glm_.vec2.Vec2
 import glm_.vec3.Vec3
 
 class ElementRenderer(parent: BlockModelElement, val rotation: Vec3, uvLock: Boolean, rescale: Boolean) {
-    val faceBorderSize: Array<FaceBorderSize?> = arrayOfNulls(Directions.DIRECTIONS.size)
+    val faceBorderSize: Array<FaceSize?> = arrayOfNulls(Directions.DIRECTIONS.size)
     private val faces: MutableMap<Directions, BlockModelFace> = mutableMapOf()
     private var transformedPositions: Array<Vec3> = parent.transformedPositions.clone()
     private val directionMapping: HashBiMap<Directions, Directions> = HashBiMap.create()
