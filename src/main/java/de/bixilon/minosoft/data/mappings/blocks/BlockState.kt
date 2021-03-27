@@ -21,7 +21,6 @@ import de.bixilon.minosoft.data.mappings.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.mappings.materials.Material
 import de.bixilon.minosoft.data.mappings.versions.VersionMapping
 import de.bixilon.minosoft.data.text.RGBColor
-
 import de.bixilon.minosoft.gui.rendering.TintColorCalculator
 import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModel
 import de.bixilon.minosoft.gui.rendering.chunk.models.renderable.BlockRenderInterface
@@ -35,7 +34,7 @@ data class BlockState(
     val owner: Block,
     val properties: Map<BlockProperties, Any> = mapOf(),
     val rotation: BlockRotations = BlockRotations.NONE,
-    val renders: Set<BlockRenderInterface> = setOf(),
+    val renders: MutableList<BlockRenderInterface> = mutableListOf(),
     val tintColor: RGBColor? = null,
     val material: Material,
 ) {
@@ -107,14 +106,11 @@ data class BlockState(
     }
 
     fun getBlockRenderer(blockPosition: Vec3i): BlockRenderInterface {
-        if (Minosoft.getConfig().config.game.other.antiMoirePattern) {
-            if (renders.size == 1) {
-                return renders.iterator().next()
-            }
+        if (Minosoft.getConfig().config.game.other.antiMoirePattern && renders.size > 1) {
             // ToDo: Support weight attribute
             return renders.random(Random(blockPosition.hashCode()))
         }
-        return renders.iterator().next()
+        return renders[0]
     }
 
 
@@ -130,7 +126,7 @@ data class BlockState(
             val (rotation, properties) = data["properties"]?.asJsonObject?.let {
                 getProperties(it)
             } ?: Pair(BlockRotations.NONE, mutableMapOf())
-            val renders: MutableSet<BlockRenderInterface> = mutableSetOf()
+            val renders: MutableList<BlockRenderInterface> = mutableListOf()
 
             data["render"]?.let {
                 when (it) {
@@ -171,7 +167,7 @@ data class BlockState(
                 owner = owner,
                 properties = properties.toMap(),
                 rotation = rotation,
-                renders = renders.toSet(),
+                renders = renders,
                 tintColor = tintColor,
                 material = material,
             )
@@ -212,7 +208,7 @@ data class BlockState(
             return Pair(rotation, properties)
         }
 
-        private fun addBlockModel(data: JsonObject, renders: MutableSet<BlockRenderInterface>, models: Map<ResourceLocation, BlockModel>) {
+        private fun addBlockModel(data: JsonObject, renders: MutableList<BlockRenderInterface>, models: Map<ResourceLocation, BlockModel>) {
             val model = models[ResourceLocation(data["model"].asString)] ?: error("Can not find block model ${data["model"]}")
             renders.add(BlockRenderer(data, model))
         }
