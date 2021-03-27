@@ -11,29 +11,14 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.world.biome
+package de.bixilon.minosoft.data.world.biome.source
 
 import de.bixilon.minosoft.data.mappings.biomes.Biome
-import de.bixilon.minosoft.data.world.BlockPosition
+import glm_.vec3.Vec3i
 
-class NoiseBiomeAccessor(
-    private val biomes: Array<Biome>,
-) : BiomeAccessor {
+class DummyBiomeSource(private val biome: Biome) : BiomeSource {
 
-    override fun getBiome(position: BlockPosition, is3d: Boolean): Biome? {
-        val inChunk = position.getInChunkSectionPosition()
-        val y = if (is3d) {
-            inChunk.y / 4 * 16
-        } else {
-            0
-        }
-        val index = (y + ((inChunk.z / 4 * 4) + (inChunk.x / 4)))
-        if (index < 0 || index > biomes.size) {
-            return null
-        }
-
-        return biomes[index]
-
-        // ToDo: This value is pseudo randomly generated. It depends on the seed of the world (received in join game).
+    override fun getBiome(position: Vec3i): Biome {
+        return biome
     }
 }

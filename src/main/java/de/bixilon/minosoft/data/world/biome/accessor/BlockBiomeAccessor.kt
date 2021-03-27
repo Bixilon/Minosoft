@@ -11,14 +11,16 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.world.biome
+package de.bixilon.minosoft.data.world.biome.accessor
 
 import de.bixilon.minosoft.data.mappings.biomes.Biome
 import de.bixilon.minosoft.data.world.BlockPosition
+import de.bixilon.minosoft.data.world.World
 
-class DummyBiomeAccessor(private val biome: Biome) : BiomeAccessor {
+class BlockBiomeAccessor(private val world: World) : BiomeAccessor {
 
-    override fun getBiome(position: BlockPosition, is3d: Boolean): Biome {
-        return biome
+    override fun getBiome(blockPosition: BlockPosition): Biome? {
+        val biomePosition = blockPosition.getInChunkPosition().toVec3i()
+        return world.getChunk(blockPosition.getChunkPosition())?.biomeSource?.getBiome(biomePosition)
     }
 }

@@ -46,6 +46,10 @@ data class InChunkPosition(val x: Int, val y: Int, val z: Int) {
         return this + direction?.directionVector
     }
 
+    fun toVec3i(): Vec3i {
+        return Vec3i(x, y, z)
+    }
+
     override fun toString(): String {
         return "($x $y $z)"
     }

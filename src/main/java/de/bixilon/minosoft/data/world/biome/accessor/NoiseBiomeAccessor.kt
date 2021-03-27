@@ -11,16 +11,22 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.world.biome
+package de.bixilon.minosoft.data.world.biome.accessor
 
 import de.bixilon.minosoft.data.mappings.biomes.Biome
 import de.bixilon.minosoft.data.world.BlockPosition
+import de.bixilon.minosoft.data.world.World
+import de.bixilon.minosoft.data.world.biome.noise.FuzzyNoiseBiomeCalculator
 
-class XZBiomeAccessor(
-    private val biomes: Array<Biome>,
-) : BiomeAccessor {
+class NoiseBiomeAccessor(private val world: World) : BiomeAccessor {
+    private val blockBiomeAccessor = BlockBiomeAccessor(world)
 
-    override fun getBiome(position: BlockPosition, is3d: Boolean): Biome {
-        return biomes[(position.x and 0x0F) or ((position.z and 0x0F) shl 4)]
+    override fun getBiome(blockPosition: BlockPosition): Biome? {
+        val y = if (world.dimension?.supports3DBiomes == true) {
+            blockPosition.y
+        } else {
+            0
+        }
+        return FuzzyNoiseBiomeCalculator.getBiome(world.hashedSeed, blockPosition.x, y, blockPosition.z, world)
     }
 }

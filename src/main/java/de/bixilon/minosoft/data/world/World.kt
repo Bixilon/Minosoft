@@ -17,7 +17,10 @@ import de.bixilon.minosoft.data.Difficulties
 import de.bixilon.minosoft.data.entities.block.BlockEntityMetaData
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.mappings.Dimension
+import de.bixilon.minosoft.data.mappings.biomes.Biome
 import de.bixilon.minosoft.data.mappings.blocks.BlockState
+import de.bixilon.minosoft.data.world.biome.accessor.BiomeAccessor
+import de.bixilon.minosoft.data.world.biome.accessor.NullBiomeAccessor
 import de.bixilon.minosoft.data.world.light.WorldLightAccessor
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
@@ -25,7 +28,7 @@ import java.util.concurrent.ConcurrentHashMap
 /**
  * Collection of chunks and more
  */
-class World {
+class World : BiomeAccessor {
     val chunks = ConcurrentHashMap<ChunkPosition, Chunk>()
     val entityIdMap = HashBiMap.create<Int, Entity>()
     val entityUUIDMap = HashBiMap.create<UUID, Entity>()
@@ -35,6 +38,8 @@ class World {
     var difficulty: Difficulties? = null
     var difficultyLocked = false
     val worldLightAccessor = WorldLightAccessor(this)
+    var hashedSeed = 0L
+    var biomeAccessor: BiomeAccessor = NullBiomeAccessor
 
     fun getBlockState(blockPosition: BlockPosition): BlockState? {
         val chunkLocation = blockPosition.getChunkPosition()
@@ -106,5 +111,9 @@ class World {
         for ((blockPosition, entityMetaData) in blockEntities) {
             setBlockEntityData(blockPosition, entityMetaData)
         }
+    }
+
+    override fun getBiome(blockPosition: BlockPosition): Biome? {
+        return biomeAccessor.getBiome(blockPosition)
     }
 }

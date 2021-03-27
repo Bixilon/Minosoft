@@ -13,7 +13,7 @@
 package de.bixilon.minosoft.data.world
 
 import de.bixilon.minosoft.data.mappings.blocks.BlockState
-import de.bixilon.minosoft.data.world.biome.BiomeAccessor
+import de.bixilon.minosoft.data.world.biome.source.BiomeSource
 import de.bixilon.minosoft.data.world.light.LightAccessor
 import java.util.*
 
@@ -22,13 +22,13 @@ import java.util.*
  */
 class Chunk(
     var sections: MutableMap<Int, ChunkSection>? = null,
-    var biomeAccessor: BiomeAccessor? = null,
+    var biomeSource: BiomeSource? = null,
     var lightAccessor: LightAccessor? = null,
 ) {
     private val lock = Object()
     val isFullyLoaded: Boolean
         get() {
-            return sections != null && biomeAccessor != null && lightAccessor != null
+            return sections != null && biomeSource != null && lightAccessor != null
         }
 
     fun getBlockState(position: InChunkPosition): BlockState? {
@@ -59,8 +59,8 @@ class Chunk(
                     getSectionOrCreate(sectionHeight).setData(chunkSection)
                 }
             }
-            data.biomeAccessor?.let {
-                this.biomeAccessor = it
+            data.biomeSource?.let {
+                this.biomeSource = it
             }
             data.lightAccessor?.let {
                 this.lightAccessor = it

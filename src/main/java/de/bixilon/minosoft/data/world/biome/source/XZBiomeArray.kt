@@ -11,26 +11,18 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.world
+package de.bixilon.minosoft.data.world.biome.source
 
-import de.bixilon.minosoft.data.world.biome.source.BiomeSource
-import de.bixilon.minosoft.data.world.light.LightAccessor
+import de.bixilon.minosoft.data.mappings.biomes.Biome
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import glm_.vec3.Vec3i
 
-data class ChunkData(
-    var blocks: Map<Int, ChunkSection>? = null,
-    var biomeSource: BiomeSource? = null,
-    var lightAccessor: LightAccessor? = null,
-) {
+class XZBiomeArray(private val biomes: Array<Biome>) : BiomeSource {
+    init {
+        check(biomes.size == ProtocolDefinition.SECTION_WIDTH_X * ProtocolDefinition.SECTION_WIDTH_Z) { "Biome array size does not match the xz block count!" }
+    }
 
-    fun replace(data: ChunkData) {
-        data.blocks?.let {
-            this.blocks = it
-        }
-        data.biomeSource?.let {
-            this.biomeSource = it
-        }
-        data.lightAccessor?.let {
-            this.lightAccessor = it
-        }
+    override fun getBiome(position: Vec3i): Biome {
+        return biomes[(position.x and 0x0F) or ((position.z and 0x0F) shl 4)]
     }
 }

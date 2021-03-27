@@ -11,12 +11,12 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.world.biome
+package de.bixilon.minosoft.data.world.biome.accessor
 
 import de.bixilon.minosoft.data.mappings.biomes.Biome
 import de.bixilon.minosoft.data.world.BlockPosition
 
 interface BiomeAccessor {
 
-    fun getBiome(position: BlockPosition, is3d: Boolean = true): Biome?
+    fun getBiome(blockPosition: BlockPosition): Biome?
 }

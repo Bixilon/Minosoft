@@ -18,7 +18,7 @@ import de.bixilon.minosoft.data.mappings.biomes.Biome
 import de.bixilon.minosoft.data.mappings.blocks.BlockState
 import de.bixilon.minosoft.data.world.ChunkData
 import de.bixilon.minosoft.data.world.ChunkSection
-import de.bixilon.minosoft.data.world.biome.XZBiomeAccessor
+import de.bixilon.minosoft.data.world.biome.source.XZBiomeArray
 import de.bixilon.minosoft.data.world.light.DummyLightAccessor
 import de.bixilon.minosoft.data.world.palette.Palette.Companion.choosePalette
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer
@@ -53,7 +53,7 @@ object ChunkUtil {
         }
         val addBlockData = buffer.readBytes(addBitMask.cardinality() * (ProtocolDefinition.BLOCKS_PER_SECTION / 2))
         if (isFullChunk) {
-            chunkData.biomeAccessor = readLegacyBiomeArray(buffer)
+            chunkData.biomeSource = readLegacyBiomeArray(buffer)
         }
 
         // parse data
@@ -123,7 +123,7 @@ object ChunkUtil {
             skyLight = buffer.readBytes(totalHalfEntries)
         }
         if (isFullChunk) {
-            chunkData.biomeAccessor = readLegacyBiomeArray(buffer)
+            chunkData.biomeSource = readLegacyBiomeArray(buffer)
         }
 
         var arrayPos = 0
@@ -200,14 +200,14 @@ object ChunkUtil {
 
         chunkData.blocks = sectionMap
         if (buffer.versionId < V_19W36A && isFullChunk) {
-            chunkData.biomeAccessor = readLegacyBiomeArray(buffer)
+            chunkData.biomeSource = readLegacyBiomeArray(buffer)
         }
 
         return chunkData
     }
 
 
-    private fun readLegacyBiomeArray(buffer: InByteBuffer): XZBiomeAccessor {
+    private fun readLegacyBiomeArray(buffer: InByteBuffer): XZBiomeArray {
         val biomes: MutableList<Biome> = mutableListOf()
         for (i in 0 until ProtocolDefinition.SECTION_WIDTH_X * ProtocolDefinition.SECTION_WIDTH_Z) {
             biomes.add(i, buffer.connection.mapping.biomeRegistry.get(if (buffer.versionId < V_15W35A) {
@@ -216,6 +216,6 @@ object ChunkUtil {
                 buffer.readInt()
             }))
         }
-        return XZBiomeAccessor(biomes.toTypedArray())
+        return XZBiomeArray(biomes.toTypedArray())
     }
 }

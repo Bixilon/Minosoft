@@ -11,26 +11,14 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.world
+package de.bixilon.minosoft.data.world.biome.accessor
 
-import de.bixilon.minosoft.data.world.biome.source.BiomeSource
-import de.bixilon.minosoft.data.world.light.LightAccessor
+import de.bixilon.minosoft.data.mappings.biomes.Biome
+import de.bixilon.minosoft.data.world.BlockPosition
 
-data class ChunkData(
-    var blocks: Map<Int, ChunkSection>? = null,
-    var biomeSource: BiomeSource? = null,
-    var lightAccessor: LightAccessor? = null,
-) {
+object NullBiomeAccessor : BiomeAccessor {
 
-    fun replace(data: ChunkData) {
-        data.blocks?.let {
-            this.blocks = it
-        }
-        data.biomeSource?.let {
-            this.biomeSource = it
-        }
-        data.lightAccessor?.let {
-            this.lightAccessor = it
-        }
+    override fun getBiome(blockPosition: BlockPosition): Biome? {
+        return null
     }
 }

@@ -17,7 +17,7 @@ import de.bixilon.minosoft.data.mappings.tweaker.VersionTweaker
 import de.bixilon.minosoft.data.world.BlockPosition
 import de.bixilon.minosoft.data.world.ChunkData
 import de.bixilon.minosoft.data.world.ChunkPosition
-import de.bixilon.minosoft.data.world.biome.NoiseBiomeAccessor
+import de.bixilon.minosoft.data.world.biome.source.SpatialBiomeArray
 import de.bixilon.minosoft.modding.event.events.BlockEntityMetaDataChangeEvent
 import de.bixilon.minosoft.modding.event.events.ChunkDataChangeEvent
 import de.bixilon.minosoft.protocol.network.Connection
@@ -83,7 +83,7 @@ class PacketChunkData : ClientboundPacket() {
             heightMap = buffer.readNBT() as CompoundTag
         }
         if (!isFullChunk) {
-            chunkData!!.biomeAccessor = NoiseBiomeAccessor(buffer.readBiomeArray())
+            chunkData!!.biomeSource = SpatialBiomeArray(buffer.readBiomeArray())
         }
         val size = buffer.readVarInt()
         val lastPos = buffer.position

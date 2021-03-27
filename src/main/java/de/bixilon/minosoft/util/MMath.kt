@@ -62,4 +62,8 @@ object MMath {
         }
         return intValue
     }
+
+    fun square(d: Double): Double {
+        return d * d
+    }
 }

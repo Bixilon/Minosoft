@@ -54,8 +54,6 @@ class WorldRenderer(
             queuedChunks.remove(chunkPosition)
         }
         val chunk = world.getChunk(chunkPosition) ?: error("Chunk in world is null at $chunkPosition?")
-
-        val dimensionSupports3dBiomes = connection.player.world.dimension?.supports3DBiomes ?: false
         val meshCollection = ChunkMeshCollection()
 
         for ((sectionHeight, section) in sections) {
@@ -70,7 +68,8 @@ class WorldRenderer(
                     neighborBlocks[direction.ordinal] = world.getBlockState(blockPosition + direction)
                 }
 
-                val biome = chunk.biomeAccessor!!.getBiome(blockPosition, dimensionSupports3dBiomes)
+
+                val biome = world.getBiome(blockPosition)
 
                 var tintColor: RGBColor? = null
 
