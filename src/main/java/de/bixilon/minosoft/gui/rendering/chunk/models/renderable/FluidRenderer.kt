@@ -56,7 +56,7 @@ class FluidRenderer(
             if (isBlockSameFluid(neighbourBlocks[direction.ordinal]) || neighbourBlocks[direction.ordinal]?.getBlockRenderer(blockPosition + direction)?.faceBorderSizes?.let { it[direction.inverse.ordinal] != null } == true && direction != Directions.UP) {
                 continue
             }
-            val face = BlockModelFace(VecUtil.EMPTY_VECTOR, Vec3(VecUtil.BLOCK_SIZE_VECTOR.x, positions[7].y * 8, VecUtil.BLOCK_SIZE_VECTOR.z), direction)
+            val face = BlockModelFace(VecUtil.EMPTY_VEC3, Vec3(VecUtil.BLOCK_SIZE_VEC3.x, positions[7].y * 8, VecUtil.BLOCK_SIZE_VEC3.z), direction)
             if (isFlowing) {
                 face.scale(0.5)
             }

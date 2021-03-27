@@ -28,8 +28,8 @@ import glm_.vec3.Vec3
 import glm_.vec3.Vec3i
 
 object VecUtil {
-    val EMPTY_VECTOR = Vec3()
-    val BLOCK_SIZE_VECTOR = Vec3(BlockModelElement.BLOCK_RESOLUTION)
+    val EMPTY_VEC3 = Vec3(0, 0, 0)
+    val BLOCK_SIZE_VEC3 = Vec3(BlockModelElement.BLOCK_RESOLUTION)
 
     fun JsonElement.toVec3(): Vec3 {
         when (this) {
@@ -121,7 +121,7 @@ object VecUtil {
 
     val Vec3i.entityPosition: Vec3
         get() {
-            return Vec3(x - 0.5f, y, z - 0.5f) // ToDo
+            return Vec3(x + 0.5f, y, z + 0.5f) // ToDo
         }
 
     val Vec3.blockPosition: Vec3i
@@ -140,11 +140,11 @@ object VecUtil {
         return Vec3i((x + vec3.x), (y + vec3.y), (z + vec3.z))
     }
 
-    infix operator fun Vec3i.plus(vec3: Vec2i?): Vec3i {
-        if (vec3 == null) {
+    infix operator fun Vec3i.plus(vec2: Vec2i?): Vec3i {
+        if (vec2 == null) {
             return this
         }
-        return Vec3i((x + vec3.x), y, (z + vec3.y))
+        return Vec3i((x + vec2.x), y, (z + vec2.y))
     }
 
     infix operator fun Vec3i.plus(direction: Directions?): Vec3i {

@@ -77,7 +77,7 @@ class BlockModelFace {
         textureName = null
         cullFace = null
         tint = false
-        positions = calculateTexturePositions(null, VecUtil.EMPTY_VECTOR, VecUtil.BLOCK_SIZE_VECTOR, Directions.EAST)
+        positions = calculateTexturePositions(null, VecUtil.EMPTY_VEC3, VecUtil.BLOCK_SIZE_VEC3, Directions.EAST)
     }
 
     constructor(from: Vec3, to: Vec3, direction: Directions) {

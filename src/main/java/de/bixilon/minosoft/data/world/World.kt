@@ -24,7 +24,6 @@ import de.bixilon.minosoft.data.world.biome.accessor.NullBiomeAccessor
 import de.bixilon.minosoft.data.world.light.WorldLightAccessor
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.inChunkPosition
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.inChunkSectionPosition
 import glm_.vec2.Vec2i
 import glm_.vec3.Vec3i
 import java.util.*
@@ -48,7 +47,7 @@ class World : BiomeAccessor {
 
     fun getBlockState(blockPosition: Vec3i): BlockState? {
         val chunkLocation = blockPosition.chunkPosition
-        return chunks[chunkLocation]?.getBlockState(blockPosition.inChunkSectionPosition)
+        return chunks[chunkLocation]?.getBlockState(blockPosition.inChunkPosition)
     }
 
     fun getChunk(chunkPosition: Vec2i): Chunk? {

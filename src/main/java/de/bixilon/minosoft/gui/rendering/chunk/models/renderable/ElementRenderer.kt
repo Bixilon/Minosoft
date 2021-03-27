@@ -135,7 +135,7 @@ class ElementRenderer(parent: BlockModelElement, val rotation: Vec3, uvLock: Boo
         }
 
         fun getRotatedDirection(rotation: Vec3, direction: Directions): Directions {
-            if (rotation == VecUtil.EMPTY_VECTOR) {
+            if (rotation == VecUtil.EMPTY_VEC3) {
                 return direction
             }
             var rotatedDirectionVector = direction.floatDirectionVector.rotate(rotation.x, Axes.X)
@@ -144,12 +144,12 @@ class ElementRenderer(parent: BlockModelElement, val rotation: Vec3, uvLock: Boo
         }
 
         fun rotatePositionsAxes(positions: Array<Vec3>, angles: Vec3, rescale: Boolean) {
-            if (angles == VecUtil.EMPTY_VECTOR) {
+            if (angles == VecUtil.EMPTY_VEC3) {
                 return
             }
-            BlockModelElement.rotatePositions(positions, Axes.X, angles.x, VecUtil.EMPTY_VECTOR, rescale)
-            BlockModelElement.rotatePositions(positions, Axes.Y, angles.y, VecUtil.EMPTY_VECTOR, rescale)
-            BlockModelElement.rotatePositions(positions, Axes.Z, angles.z, VecUtil.EMPTY_VECTOR, rescale)
+            BlockModelElement.rotatePositions(positions, Axes.X, angles.x, VecUtil.EMPTY_VEC3, rescale)
+            BlockModelElement.rotatePositions(positions, Axes.Y, angles.y, VecUtil.EMPTY_VEC3, rescale)
+            BlockModelElement.rotatePositions(positions, Axes.Z, angles.z, VecUtil.EMPTY_VEC3, rescale)
         }
 
         val POSITION_1 = Vec3(-0.5f, -0.5f, -0.5f)
