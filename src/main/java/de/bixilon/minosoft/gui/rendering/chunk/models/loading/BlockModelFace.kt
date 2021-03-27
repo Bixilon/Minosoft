@@ -17,7 +17,8 @@ import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.Directions
 import de.bixilon.minosoft.gui.rendering.util.VecUtil
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.readUV
-import glm_.Java.Companion.glm
+import glm_.func.cos
+import glm_.func.sin
 import glm_.vec2.Vec2
 import glm_.vec3.Vec3
 import java.util.*
@@ -99,8 +100,8 @@ class BlockModelFace {
         if (angle == 0.0f) {
             return
         }
-        val sin = glm.sin(angle)
-        val cos = glm.cos(angle)
+        val sin = angle.sin
+        val cos = angle.cos
         for ((i, position) in positions.withIndex()) {
             val offset = position - TEXTURE_MIDDLE
             positions[i] = VecUtil.getRotatedValues(offset.x, offset.y, sin, cos) + TEXTURE_MIDDLE

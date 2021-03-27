@@ -62,15 +62,9 @@ enum class Directions(val directionVector: Vec3i) {
 
     fun getFaceSize(start: Vec3, end: Vec3): FaceSize {
         return when (this) {
-            DOWN, UP -> {
-                FaceSize(Vec2i(start.x, start.z), Vec2i(end.x, end.z))
-            }
-            NORTH, SOUTH -> {
-                FaceSize(Vec2i(start.x, start.y), Vec2i(end.x, end.y))
-            }
-            EAST, WEST -> {
-                FaceSize(Vec2i(start.y, start.z), Vec2i(end.y, end.z))
-            }
+            DOWN, UP -> FaceSize(Vec2i(start.x, start.z), Vec2i(end.x, end.z))
+            NORTH, SOUTH -> FaceSize(Vec2i(start.x, start.y), Vec2i(end.x, end.y))
+            EAST, WEST -> FaceSize(Vec2i(start.y, start.z), Vec2i(end.y, end.z))
         }
     }
 

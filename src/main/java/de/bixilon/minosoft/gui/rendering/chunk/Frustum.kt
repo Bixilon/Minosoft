@@ -5,7 +5,9 @@ import de.bixilon.minosoft.gui.rendering.Camera
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.rotate
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import glm_.glm
+import glm_.func.cos
+import glm_.func.rad
+import glm_.func.sin
 import glm_.vec3.Vec3
 
 class Frustum(private val camera: Camera) {
@@ -28,18 +30,18 @@ class Frustum(private val camera: Camera) {
 
     private fun calculateSideNormals() {
         val cameraRealUp = (camera.cameraRight cross camera.cameraFront).normalize()
-        val angle = glm.radians(camera.fov - 90.0f)
-        val sin = glm.sin(angle)
-        val cos = glm.cos(angle)
+        val angle = (camera.fov - 90.0f).rad
+        val sin = angle.sin
+        val cos = angle.cos
         normals.add(camera.cameraFront.rotate(cameraRealUp, sin, cos).normalize())
         normals.add(camera.cameraFront.rotate(cameraRealUp, -sin, cos).normalize()) // negate angle -> negate sin
     }
 
     private fun calculateVerticalNormals() {
         val aspect = camera.renderWindow.screenDimensions.x / camera.renderWindow.screenDimensions.y // ToDo: x/y or y/x
-        val angle = glm.radians(camera.fov * aspect - 90.0f)
-        val sin = glm.sin(angle)
-        val cos = glm.cos(angle)
+        val angle = (camera.fov * aspect - 90.0f).rad
+        val sin = angle.sin
+        val cos = angle.cos
         normals.add(camera.cameraFront.rotate(camera.cameraRight, sin, cos).normalize())
         normals.add(camera.cameraFront.rotate(camera.cameraRight, -sin, cos).normalize()) // negate angle -> negate sin
     }

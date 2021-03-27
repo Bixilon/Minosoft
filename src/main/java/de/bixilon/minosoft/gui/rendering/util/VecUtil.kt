@@ -18,7 +18,8 @@ import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModelElement
-import glm_.glm
+import glm_.func.cos
+import glm_.func.sin
 import glm_.vec2.Vec2
 import glm_.vec3.Vec3
 
@@ -44,15 +45,15 @@ object VecUtil {
         }
         return when (axis) {
             Axes.X -> {
-                val rotatedValues = getRotatedValues(this.y, this.z, glm.sin(angle), glm.cos(angle))
+                val rotatedValues = getRotatedValues(this.y, this.z, angle.sin, angle.cos)
                 Vec3(this.x, rotatedValues)
             }
             Axes.Y -> {
-                val rotatedValues = getRotatedValues(this.x, this.z, glm.sin(angle), glm.cos(angle))
+                val rotatedValues = getRotatedValues(this.x, this.z, angle.sin, angle.cos)
                 Vec3(rotatedValues.x, this.y, rotatedValues.y)
             }
             Axes.Z -> {
-                val rotatedValues = getRotatedValues(this.x, this.y, glm.sin(angle), glm.cos(angle))
+                val rotatedValues = getRotatedValues(this.x, this.y, angle.sin, angle.cos)
                 Vec3(rotatedValues.x, rotatedValues.y, this.z)
             }
         }
@@ -60,19 +61,6 @@ object VecUtil {
 
     fun Vec3.rotate(axis: Vec3, sin: Float, cos: Float): Vec3 {
         return this * cos + (axis cross this) * sin + axis * (axis dot this) * (1 - cos)
-    }
-
-    fun Vec3.oneContainsIgnoreZero(vec3: Vec3): Boolean {
-        if (x == vec3.x) {
-            return true
-        }
-        if (y == vec3.y) {
-            return true
-        }
-        if (z == vec3.z) {
-            return true
-        }
-        return false
     }
 
     fun JsonArray.readUV(): Pair<Vec2, Vec2> {

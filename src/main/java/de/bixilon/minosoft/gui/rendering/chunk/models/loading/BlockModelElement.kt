@@ -18,7 +18,8 @@ import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.Directions
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.rotate
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3
-import glm_.glm
+import glm_.func.cos
+import glm_.func.rad
 import glm_.vec3.Vec3
 
 open class BlockModelElement(data: JsonObject) {
@@ -41,7 +42,7 @@ open class BlockModelElement(data: JsonObject) {
 
         data["rotation"]?.asJsonObject?.let {
             val axis = Axes.valueOf(it["axis"].asString.toUpperCase())
-            val angle = glm.radians(it["angle"].asFloat)
+            val angle = it["angle"].asFloat.rad
             val rescale = it["rescale"]?.asBoolean ?: false
             rotatePositions(transformedPositions, axis, angle, it["origin"].asJsonArray.toVec3(), rescale)
         }
@@ -81,7 +82,7 @@ open class BlockModelElement(data: JsonObject) {
                 var transformedPosition = position - origin
                 transformedPosition = transformedPosition.rotate(angle, axis)
                 if (rescale) {
-                    transformedPosition = transformedPosition / glm.cos(angle)
+                    transformedPosition = transformedPosition / angle.cos
                 }
                 positions[i] = transformedPosition + origin
             }

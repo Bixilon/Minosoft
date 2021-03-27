@@ -30,12 +30,13 @@ import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketPlayerPositio
 import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketPlayerPositionSending
 import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketPlayerRotationSending
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import glm_.func.cos
+import glm_.func.rad
+import glm_.func.sin
 import glm_.glm
 import glm_.mat4x4.Mat4
 import glm_.vec2.Vec2
 import glm_.vec3.Vec3
-import kotlin.math.cos
-import kotlin.math.sin
 
 class Camera(
     val connection: Connection,
@@ -227,7 +228,7 @@ class Camera(
     }
 
     private fun calculateProjectionMatrix(screenDimensions: Vec2): Mat4 {
-        return glm.perspective(glm.radians(fov / (zoom + 1.0f)), screenDimensions.x / screenDimensions.y, 0.1f, 1000f)
+        return glm.perspective((fov / (zoom + 1.0f)).rad, screenDimensions.x / screenDimensions.y, 0.1f, 1000f)
     }
 
     private fun calculateViewMatrix(): Mat4 {
@@ -240,10 +241,10 @@ class Camera(
 
     fun setRotation(yaw: Double, pitch: Double) {
         cameraFront = Vec3(
-            (cos(glm.radians(yaw + 90)) * cos(glm.radians(-pitch))).toFloat(),
-            sin(glm.radians(-pitch)).toFloat(),
-            (sin(glm.radians(yaw + 90)) * cos(glm.radians(-pitch))).toFloat())
-            .normalize()
+            (yaw + 90).rad.cos * (-pitch).rad.cos,
+            (-pitch).rad.sin,
+            (yaw + 90).rad.sin * (-pitch).rad.cos
+        ).normalize()
 
         cameraRight = (cameraFront cross CAMERA_UP_VEC3).normalize()
         cameraUp = (cameraRight cross cameraFront).normalize()
