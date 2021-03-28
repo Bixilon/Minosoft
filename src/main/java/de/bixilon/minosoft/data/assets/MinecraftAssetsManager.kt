@@ -130,17 +130,22 @@ class MinecraftAssetsManager(
     }
 
     private fun verifyAssets(source: AssetsSource, latch: CountUpAndDownLatch, assets: Map<ResourceLocation, String>): Map<ResourceLocation, String> {
+        val assetsLatch = CountUpAndDownLatch(assets.size)
         latch.addCount(assets.size)
-        assets.values.parallelStream().forEach { hash: String ->
-            val compressed = source == AssetsSource.MOJANG
-            if (StaticConfiguration.DEBUG_SLOW_LOADING) {
-                Thread.sleep(100L)
+        for (hash in assets.values) {
+            Minosoft.THREAD_POOL.execute {
+                val compressed = source == AssetsSource.MOJANG
+                if (StaticConfiguration.DEBUG_SLOW_LOADING) {
+                    Thread.sleep(100L)
+                }
+                if (!verifyAssetHash(hash, compressed)) {
+                    downloadAsset(source, hash)
+                }
+                latch.countDown()
+                assetsLatch.countDown()
             }
-            if (!verifyAssetHash(hash, compressed)) {
-                downloadAsset(source, hash)
-            }
-            latch.countDown()
         }
+        assetsLatch.waitUntilZero()
         return assets
     }
 

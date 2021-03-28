@@ -41,6 +41,6 @@ class HUDMesh : Mesh() {
 
 
     companion object {
-        private const val FLOATS_PER_VERTEX = 7
+        const val FLOATS_PER_VERTEX = 7
     }
 }

@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.main.dialogs.login;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
+import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.data.accounts.Account;
 import de.bixilon.minosoft.data.accounts.MojangAccount;
 import de.bixilon.minosoft.data.locale.LocaleManager;
@@ -80,7 +81,7 @@ public class MojangLoginController implements Initializable {
         this.errorMessage.setVisible(false);
 
 
-        new Thread(() -> { // ToDo: recycle thread
+        Minosoft.THREAD_POOL.execute(() -> {
             try {
                 MojangAccount account = MojangAuthentication.login(this.email.getText(), this.password.getText());
                 Account.addAccount(account);
@@ -97,8 +98,7 @@ public class MojangLoginController implements Initializable {
                     this.loginButton.setDisable(true);
                 });
             }
-        }, "AccountLoginThread").start();
-
+        });
     }
 
     private void checkData(ObservableValue<? extends String> observableValue, String oldValue, String newValue) {

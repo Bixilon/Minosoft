@@ -223,10 +223,22 @@ public class Connection {
      * @return if the event has been cancelled or not
      */
     public boolean fireEvent(ConnectionEvent connectionEvent) {
-        Minosoft.EVENT_MANAGERS.forEach((eventManager -> eventManager.getGlobalEventListeners().forEach((method) -> method.invoke(connectionEvent))));
-        synchronized (this.eventListeners) {
-            this.eventListeners.forEach((method -> method.invoke(connectionEvent)));
+        synchronized (Minosoft.EVENT_MANAGERS) {
+            for (var eventManager : Minosoft.EVENT_MANAGERS) {
+                final var globalListeners = eventManager.getGlobalEventListeners();
+                synchronized (globalListeners) {
+                    for (var eventListener : globalListeners) {
+                        eventListener.invoke(connectionEvent);
+                    }
+                }
+            }
         }
+        synchronized (this.eventListeners) {
+            for (var eventListener : this.eventListeners) {
+                eventListener.invoke(connectionEvent);
+            }
+        }
+
         if (connectionEvent instanceof CancelableEvent cancelableEvent) {
             return cancelableEvent.isCancelled();
         }

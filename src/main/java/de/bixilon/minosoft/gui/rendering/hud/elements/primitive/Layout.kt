@@ -82,7 +82,7 @@ open class Layout(
         }
     }
 
-    fun pushChildrenToRight(offset: Float = 0.0f) {
+    fun pushChildrenToRight(offset: Int = 0) {
         for (child in children) {
             child.start = Vec2i((size.x - child.size.x) - offset, child.start.y)
             child.clearCache()

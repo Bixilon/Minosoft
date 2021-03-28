@@ -59,7 +59,7 @@ class HUDSystemDebugElement(hudRenderer: HUDRenderer) : DebugScreen(hudRenderer)
 
     override fun screenChangeResizeCallback(screenDimensions: Vec2i) {
         displayText.sText = "Display: ${getScreenDimensions()}"
-        layout.pushChildrenToRight(1.0f)
+        layout.pushChildrenToRight(1)
     }
 
     override fun init() {
@@ -73,7 +73,7 @@ class HUDSystemDebugElement(hudRenderer: HUDRenderer) : DebugScreen(hudRenderer)
         }
         memoryText.sText = "Memory: ${getUsedMemoryPercent()}% ${getFormattedUsedMemory()}/${SystemInformation.MAX_MEMORY_TEXT}"
         allocatedMemoryText.sText = "Allocated: ${getAllocatedMemoryPercent()}% ${getFormattedAllocatedMemory()}"
-        layout.pushChildrenToRight(1.0f)
+        layout.pushChildrenToRight(1)
 
         lastPrepareTime = System.currentTimeMillis()
     }

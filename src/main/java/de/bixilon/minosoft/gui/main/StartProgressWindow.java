@@ -94,7 +94,7 @@ public class StartProgressWindow extends Application {
     public static void start() throws InterruptedException {
         Log.debug("Initializing JavaFX Toolkit...");
         TOOLKIT_LATCH.countDown();
-        new Thread(Application::launch).start();
+        new Thread(Application::launch, "JavaFX Application Launch Thread").start();
         TOOLKIT_LATCH.await();
         Log.debug("Initialized JavaFX Toolkit!");
     }

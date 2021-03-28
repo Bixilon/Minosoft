@@ -51,7 +51,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public final class Minosoft {
-    public static final ExecutorService THREAD_POOL = Executors.newFixedThreadPool(MMath.INSTANCE.minClamp(Runtime.getRuntime().availableProcessors() - 1, 1), Util.getThreadFactory("Worker"));
+    public static final ExecutorService THREAD_POOL = Executors.newFixedThreadPool(MMath.INSTANCE.clamp(Runtime.getRuntime().availableProcessors() - 1, 2, 16), Util.getThreadFactory("Worker"));
     public static final JarAssetsManager MINOSOFT_ASSETS_MANAGER = new JarAssetsManager(Minosoft.class);
     public static final HashSet<EventManager> EVENT_MANAGERS = new HashSet<>();
     public static final HashBiMap<Integer, Connection> CONNECTIONS = HashBiMap.create();
@@ -217,13 +217,19 @@ public final class Minosoft {
             message = "";
         }
         if (reason != ShutdownReasons.CLI_HELP && reason != ShutdownReasons.CLI_WRONG_PARAMETER) {
-            Log.info("Exiting (reason=%s): %s", reason, message);
-
-            // disconnect from all servers
-            for (Object connection : CONNECTIONS.values().toArray()) {
-                ((Connection) connection).disconnect();
+            String logMessage = String.format("Exiting: %s", reason);
+            if (!message.isBlank()) {
+                logMessage += String.format(": %s", message);
             }
-            Log.info("Disconnected from all connections!");
+            Log.info(logMessage);
+
+            if (!CONNECTIONS.isEmpty()) {
+                // disconnect from all servers
+                for (Object connection : CONNECTIONS.values().toArray()) {
+                    ((Connection) connection).disconnect();
+                }
+                Log.info("Disconnected from all connections!");
+            }
             if (Thread.currentThread().getName().equals("ShutdownHook")) {
                 return;
             }

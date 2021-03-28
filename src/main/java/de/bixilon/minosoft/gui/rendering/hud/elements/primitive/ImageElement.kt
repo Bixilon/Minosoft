@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.hud.elements.primitive
 
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderConstants
+import de.bixilon.minosoft.gui.rendering.hud.HUDMesh
 import de.bixilon.minosoft.gui.rendering.hud.atlas.TextureLike
 import glm_.mat4x4.Mat4
 import glm_.vec2.Vec2
@@ -28,7 +29,7 @@ class ImageElement(
     end: Vec2i = textureLike?.size ?: Vec2i(0, 0),
     val z: Int = 0,
     val tintColor: RGBColor? = null,
-) : EndElement(start, end, initialCacheSize = 42) {
+) : EndElement(start, end, initialCacheSize = HUDMesh.FLOATS_PER_VERTEX * 6) {
 
     init {
         recalculateSize()

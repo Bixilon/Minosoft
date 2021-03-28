@@ -183,14 +183,18 @@ public class BaseComponent extends ChatComponent {
     @Override
     public String getANSIColoredMessage() {
         StringBuilder builder = new StringBuilder();
-        this.parts.forEach((chatPart -> builder.append(chatPart.getANSIColoredMessage())));
+        for (var part : this.parts) {
+            builder.append(part.getANSIColoredMessage());
+        }
         return builder.toString();
     }
 
     @Override
     public String getLegacyText() {
         StringBuilder builder = new StringBuilder();
-        this.parts.forEach((chatPart -> builder.append(chatPart.getLegacyText())));
+        for (var part : this.parts) {
+            builder.append(part.getLegacyText());
+        }
         String string = builder.toString();
         if (string.endsWith(LEGACY_RESET_SUFFIX)) {
             string = string.substring(0, string.length() - LEGACY_RESET_SUFFIX.length());
@@ -201,13 +205,17 @@ public class BaseComponent extends ChatComponent {
     @Override
     public String getMessage() {
         StringBuilder builder = new StringBuilder();
-        this.parts.forEach((chatPart -> builder.append(chatPart.getMessage())));
+        for (var part : this.parts) {
+            builder.append(part.getMessage());
+        }
         return builder.toString();
     }
 
     @Override
     public ObservableList<Node> getJavaFXText(ObservableList<Node> nodes) {
-        this.parts.forEach((chatPart) -> chatPart.getJavaFXText(nodes));
+        for (var part : this.parts) {
+            part.getJavaFXText(nodes);
+        }
         return nodes;
     }
 

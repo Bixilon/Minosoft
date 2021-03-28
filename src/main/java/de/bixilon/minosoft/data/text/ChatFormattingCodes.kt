@@ -10,23 +10,25 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.data.text
 
-package de.bixilon.minosoft.data.text;
+import com.google.common.collect.HashBiMap
 
-import com.google.common.collect.HashBiMap;
+object ChatFormattingCodes {
+    private val FORMATTING_CODES = HashBiMap.create<Char, ChatFormattingCode>()
 
-import java.util.Arrays;
-
-public final class ChatFormattingCodes {
-
-    private static final HashBiMap<Character, ChatFormattingCode> FORMATTING_CODES = HashBiMap.create();
-
-    static {
-        Arrays.stream(PreChatFormattingCodes.values()).forEach(chatFormattingCodes -> FORMATTING_CODES.put(chatFormattingCodes.getChar(), chatFormattingCodes));
-        Arrays.stream(PostChatFormattingCodes.values()).forEach(chatFormattingCodes -> FORMATTING_CODES.put(chatFormattingCodes.getChar(), chatFormattingCodes));
+    @JvmStatic
+    fun getChatFormattingCodeByChar(nextFormattingChar: Char): ChatFormattingCode? {
+        return FORMATTING_CODES[nextFormattingChar]
     }
 
-    public static ChatFormattingCode getChatFormattingCodeByChar(char nextFormattingChar) {
-        return FORMATTING_CODES.get(nextFormattingChar);
+    init {
+        for (code in PreChatFormattingCodes.values()) {
+            FORMATTING_CODES[code.char] = code
+        }
+
+        for (code in PostChatFormattingCodes.values()) {
+            FORMATTING_CODES[code.char] = code
+        }
     }
 }
