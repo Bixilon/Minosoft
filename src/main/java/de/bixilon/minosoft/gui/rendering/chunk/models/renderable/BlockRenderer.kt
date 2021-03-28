@@ -65,7 +65,7 @@ class BlockRenderer : BlockRenderInterface {
         for (direction in Directions.DIRECTIONS) {
             var directionIsCullFace: Boolean? = null
             var directionIsNotTransparent: Boolean? = null
-            var faceBorderSites: MutableList<FaceSize> = mutableListOf()
+            val faceBorderSites: MutableList<FaceSize> = mutableListOf()
             for (element in elements) {
                 if (element.isCullFace(direction)) {
                     directionIsCullFace = true
@@ -102,7 +102,9 @@ class BlockRenderer : BlockRenderInterface {
             val invertedDirection = direction.inverse
             var isNeighbourTransparent = false
             var neighbourFaceSize: Array<FaceSize>? = null
-            neighbourBlocks[direction.ordinal]?.getBlockRenderer(blockPosition + direction)?.let {
+            val neighbourBlock = neighbourBlocks[direction.ordinal]
+            // ToDo: We need to rotate the direction first and then rotate it
+            neighbourBlock?.getBlockRenderer(blockPosition + direction)?.let {
                 if (it.transparentFaces[invertedDirection.ordinal]) {
                     isNeighbourTransparent = true
                 }
@@ -113,7 +115,6 @@ class BlockRenderer : BlockRenderInterface {
 
             for (element in elements) {
                 var drawElementFace = true
-
 
                 neighbourFaceSize?.let {
                     // force draw transparent faces
@@ -129,9 +130,8 @@ class BlockRenderer : BlockRenderInterface {
                         if (elementFaceBorderSize.end.x > size.end.x || elementFaceBorderSize.end.y > size.end.y) {
                             return@let
                         }
-                        drawElementFace = false
-                        break
                     }
+                    drawElementFace = false
                 }
 
                 if (!drawElementFace) {

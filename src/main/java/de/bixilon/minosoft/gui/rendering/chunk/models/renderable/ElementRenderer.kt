@@ -74,7 +74,7 @@ class ElementRenderer(parent: BlockModelElement, val rotation: Vec3, uvLock: Boo
         val face = faces[realDirection] ?: return // Not our face
         val positionTemplate = BlockModelElement.FACE_POSITION_MAP_TEMPLATE[realDirection.ordinal]
 
-        val texture = textureMapping[face.textureName] ?: TODO()
+        val texture = textureMapping[face.textureName] ?: TODO("Unknown texture used ${face.textureName}")
 
         val lightLevel = lightAccessor.getLightLevel(blockPosition + directionMapping[face.cullFace]) // ToDo: rotate cullface
 

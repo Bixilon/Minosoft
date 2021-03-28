@@ -15,11 +15,9 @@ import de.bixilon.minosoft.gui.rendering.textures.Texture
 import de.bixilon.minosoft.gui.rendering.util.VecUtil
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import glm_.glm
-import glm_.mat4x4.Mat4
 import glm_.vec2.Vec2
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3i
-import glm_.vec4.Vec4
 
 class FluidRenderer(
     private val stillTextureName: String,
@@ -35,8 +33,6 @@ class FluidRenderer(
         if (!RenderConstants.RENDER_FLUIDS) {
             return
         }
-
-        val modelMatrix = Mat4().translate(Vec3(blockPosition))
         val lightLevel = lightAccessor.getLightLevel(blockPosition)
         val heights = calculateHeights(neighbourBlocks, blockState, world, blockPosition)
         val isFlowing = isLiquidFlowing(heights)
@@ -63,7 +59,7 @@ class FluidRenderer(
             face.rotate(angle)
             val positionTemplate = BlockModelElement.FACE_POSITION_MAP_TEMPLATE[direction.ordinal]
             val drawPositions = arrayOf(positions[positionTemplate[0]], positions[positionTemplate[1]], positions[positionTemplate[2]], positions[positionTemplate[3]])
-            createQuad(drawPositions, face.getTexturePositionArray(direction), texture, modelMatrix, meshCollection, tintColor, lightLevel)
+            createQuad(drawPositions, face.getTexturePositionArray(direction), texture, blockPosition, meshCollection, tintColor, lightLevel)
         }
     }
 
@@ -110,13 +106,11 @@ class FluidRenderer(
         return heights.toSet().size != 1 // liquid is flowing, if not all of the heights are the same
     }
 
-    private fun createQuad(drawPositions: Array<Vec3>, texturePositions: Array<Vec2?>, texture: Texture, modelMatrix: Mat4, meshCollection: ChunkMeshCollection, tintColor: RGBColor?, lightLevel: Int) {
+    private fun createQuad(drawPositions: Array<Vec3>, texturePositions: Array<Vec2?>, texture: Texture, blockPosition: Vec3i, meshCollection: ChunkMeshCollection, tintColor: RGBColor?, lightLevel: Int) {
         val mesh = ElementRenderer.getMesh(meshCollection, texture.transparency)
         for (vertex in ElementRenderer.DRAW_ODER) {
-            val input = Vec4(drawPositions[vertex.first], 1.0f)
-            val output = modelMatrix * input
             mesh.addVertex(
-                position = output.toVec3(),
+                position = blockPosition plus drawPositions[vertex.first],
                 textureCoordinates = texturePositions[vertex.second]!!,
                 texture = texture,
                 tintColor = tintColor,

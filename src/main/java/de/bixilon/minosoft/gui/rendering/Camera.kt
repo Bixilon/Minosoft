@@ -256,19 +256,21 @@ class Camera(
     }
 
     private fun sendPositionToServer() {
-        if (System.currentTimeMillis() - lastMovementPacketSent > ProtocolDefinition.TICK_TIME) {
-            if (!currentPositionSent && !currentPositionSent) {
-                connection.sendPacket(PacketPlayerPositionAndRotationSending(cameraPosition - Vec3(0, PLAYER_HEIGHT, 0), EntityRotation(yaw, pitch), false))
-            } else if (!currentPositionSent) {
-                connection.sendPacket(PacketPlayerPositionSending(cameraPosition - Vec3(0, PLAYER_HEIGHT, 0), false))
-            } else {
-                connection.sendPacket(PacketPlayerRotationSending(EntityRotation(yaw, pitch), false))
-            }
-            lastMovementPacketSent = System.currentTimeMillis()
-            currentPositionSent = true
-            currentRotationSent = true
+        if (System.currentTimeMillis() - lastMovementPacketSent < ProtocolDefinition.TICK_TIME) {
             return
         }
+
+        if (!currentPositionSent && !currentPositionSent) {
+            connection.sendPacket(PacketPlayerPositionAndRotationSending(cameraPosition - Vec3(0, PLAYER_HEIGHT, 0), EntityRotation(yaw, pitch), false))
+        } else if (!currentPositionSent) {
+            connection.sendPacket(PacketPlayerPositionSending(cameraPosition - Vec3(0, PLAYER_HEIGHT, 0), false))
+        } else {
+            connection.sendPacket(PacketPlayerRotationSending(EntityRotation(yaw, pitch), false))
+        }
+        lastMovementPacketSent = System.currentTimeMillis()
+        currentPositionSent = true
+        currentRotationSent = true
+        return
     }
 
     fun setPosition(position: Vec3) {
