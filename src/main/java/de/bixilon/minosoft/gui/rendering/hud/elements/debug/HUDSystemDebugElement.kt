@@ -68,7 +68,7 @@ class HUDSystemDebugElement(hudRenderer: HUDRenderer) : DebugScreen(hudRenderer)
     }
 
     override fun draw() {
-        if (System.currentTimeMillis() - lastPrepareTime < ProtocolDefinition.TICK_TIME) {
+        if (System.currentTimeMillis() - lastPrepareTime < ProtocolDefinition.TICK_TIME * 2) {
             return
         }
         memoryText.sText = "Memory: ${getUsedMemoryPercent()}% ${getFormattedUsedMemory()}/${SystemInformation.MAX_MEMORY_TEXT}"

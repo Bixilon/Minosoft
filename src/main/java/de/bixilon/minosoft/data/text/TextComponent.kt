@@ -226,7 +226,7 @@ open class TextComponent : ChatComponent {
             val scaledWidth = (fontChar.size.x * (Font.CHAR_HEIGHT / fontChar.height.toFloat())).toInt()
 
             val charStart = startPosition + offset
-            textElement.addChild(ImageElement(charStart, fontChar, charStart + Vec2(scaledWidth, Font.CHAR_HEIGHT), z, color))
+            textElement.batchAdd(ImageElement(charStart, fontChar, charStart + Vec2(scaledWidth, Font.CHAR_HEIGHT), z, color))
 
             // ad spacer between chars
             offset.x += scaledWidth + Font.SPACE_BETWEEN_CHARS

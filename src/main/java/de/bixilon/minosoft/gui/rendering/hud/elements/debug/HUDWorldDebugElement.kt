@@ -50,7 +50,7 @@ class HUDWorldDebugElement(hudRenderer: HUDRenderer) : DebugScreen(hudRenderer) 
 
 
     override fun draw() {
-        if (System.currentTimeMillis() - lastPrepareTime < ProtocolDefinition.TICK_TIME) {
+        if (System.currentTimeMillis() - lastPrepareTime < ProtocolDefinition.TICK_TIME * 2) {
             return
         }
 

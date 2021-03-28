@@ -51,6 +51,7 @@ class TextElement(
         } else {
             val textSize = Vec2i(0, 0)
             text.prepareRender(Vec2i(1, 1), Vec2i(), font, this, this.z + z + 1, textSize)
+            finishBatchAdd()
 
             if (background) {
                 drawBackground(textSize + 1, z)

@@ -33,13 +33,21 @@ open class Layout(
         recalculateSize()
     }
 
-    fun addChild(child: Element) {
+    fun finishBatchAdd() {
+        cache.clear()
+        recalculateSize()
+    }
+
+    fun batchAdd(child: Element) {
         child.parent = this
         synchronized(children) {
             children.add(child)
         }
-        cache.clear()
-        recalculateSize()
+    }
+
+    fun addChild(child: Element) {
+        batchAdd(child)
+        finishBatchAdd()
     }
 
     override fun recalculateSize() {
