@@ -17,7 +17,7 @@ import com.squareup.moshi.FromJson
 import com.squareup.moshi.ToJson
 import de.bixilon.minosoft.gui.main.Server
 
-class ServerSerializer {
+object ServerSerializer {
     @FromJson
     fun fromJson(json: Map<String, Any>): Server {
         return Server.deserialize(json)

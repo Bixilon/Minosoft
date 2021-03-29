@@ -30,7 +30,11 @@ data class Material(
     val solidBlocking: Boolean,
     val replaceable: Boolean,
     val solid: Boolean,
-) : RegistryItem() {
+) : RegistryItem {
+
+    override fun toString(): String {
+        return resourceLocation.full
+    }
 
     companion object : ResourceLocationDeserializer<Material> {
         override fun deserialize(mappings: VersionMapping, resourceLocation: ResourceLocation, data: JsonObject): Material {

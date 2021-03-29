@@ -18,7 +18,11 @@ import de.bixilon.minosoft.data.mappings.versions.VersionMapping
 data class Enchantment(
     override val resourceLocation: ResourceLocation,
     // ToDo
-) : RegistryItem() {
+) : RegistryItem {
+
+    override fun toString(): String {
+        return resourceLocation.full
+    }
 
     companion object : ResourceLocationDeserializer<Enchantment> {
         override fun deserialize(mappings: VersionMapping, resourceLocation: ResourceLocation, data: JsonObject): Enchantment {

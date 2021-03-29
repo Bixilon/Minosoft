@@ -10,26 +10,34 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.data.mappings.particle
 
-import com.google.gson.JsonObject
-import de.bixilon.minosoft.data.mappings.RegistryItem
-import de.bixilon.minosoft.data.mappings.ResourceLocation
-import de.bixilon.minosoft.data.mappings.ResourceLocationDeserializer
-import de.bixilon.minosoft.data.mappings.versions.VersionMapping
+package de.bixilon.minosoft.util.json
 
-data class Particle(
-    override val resourceLocation: ResourceLocation,
-    // ToDo
-) : RegistryItem {
+import com.squareup.moshi.*
+import de.bixilon.minosoft.data.text.RGBColor
 
-    override fun toString(): String {
-        return resourceLocation.full
+object RGBColorSerializer : JsonAdapter<RGBColor>() {
+    @FromJson
+    override fun fromJson(jsonReader: JsonReader): RGBColor? {
+        if (jsonReader.peek() == JsonReader.Token.NULL) {
+            return null
+        }
+        val rgb = jsonReader.nextInt()
+        if (rgb == 0) {
+            return null
+        }
+        return RGBColor.noAlpha(rgb)
     }
 
-    companion object : ResourceLocationDeserializer<Particle> {
-        override fun deserialize(mappings: VersionMapping, resourceLocation: ResourceLocation, data: JsonObject): Particle {
-            return Particle(resourceLocation)
+    @ToJson
+    override fun toJson(jsonWriter: JsonWriter, color: RGBColor?) {
+        if (color == null) {
+            jsonWriter.nullValue()
+            return
         }
+        if (color.color == 0) {
+            jsonWriter.nullValue()
+        }
+        jsonWriter.value(color.color)
     }
 }

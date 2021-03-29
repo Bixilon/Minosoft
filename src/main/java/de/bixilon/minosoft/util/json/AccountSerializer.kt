@@ -20,7 +20,7 @@ import de.bixilon.minosoft.data.accounts.MicrosoftAccount
 import de.bixilon.minosoft.data.accounts.MojangAccount
 import de.bixilon.minosoft.data.accounts.OfflineAccount
 
-class AccountSerializer {
+object AccountSerializer {
     @FromJson
     fun fromJson(json: Map<String, Any>): Account {
         return when (json["type"]!!) {

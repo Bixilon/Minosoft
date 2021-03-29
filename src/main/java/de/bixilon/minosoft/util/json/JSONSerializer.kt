@@ -20,10 +20,11 @@ import de.bixilon.minosoft.gui.rendering.textures.properties.ImageProperties
 
 object JSONSerializer {
     private val MOSHI = Moshi.Builder()
-        .add(Vec2Serializer())
-        .add(AccountSerializer())
-        .add(ServerSerializer())
-        .add(ResourceLocationSerializer())
+        .add(RGBColorSerializer)
+        .add(Vec2Serializer)
+        .add(AccountSerializer)
+        .add(ServerSerializer)
+        .add(ResourceLocationSerializer)
         .add(KotlinJsonAdapterFactory())
         .build()!!
 

@@ -30,13 +30,17 @@ data class Block(
     val tintColor: RGBColor? = null,
     private val itemId: Int = 0,
     val tint: ResourceLocation? = null,
-) : RegistryItem() {
+) : RegistryItem {
     lateinit var item: Item
     val states: MutableSet<BlockState> = mutableSetOf()
     var multipartMapping: MutableMap<BlockCondition, MutableList<JsonObject>>? = null
 
     override fun postInit(versionMapping: VersionMapping) {
         item = versionMapping.itemRegistry.get(itemId)
+    }
+
+    override fun toString(): String {
+        return resourceLocation.full
     }
 
     companion object : ResourceLocationDeserializer<Block> {

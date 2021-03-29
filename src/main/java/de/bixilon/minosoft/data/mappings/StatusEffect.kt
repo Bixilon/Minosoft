@@ -18,7 +18,11 @@ import de.bixilon.minosoft.data.mappings.versions.VersionMapping
 data class StatusEffect(
     override val resourceLocation: ResourceLocation,
     // ToDo
-) : RegistryItem() {
+) : RegistryItem {
+
+    override fun toString(): String {
+        return resourceLocation.full
+    }
 
     companion object : ResourceLocationDeserializer<StatusEffect> {
         override fun deserialize(mappings: VersionMapping, resourceLocation: ResourceLocation, data: JsonObject): StatusEffect {

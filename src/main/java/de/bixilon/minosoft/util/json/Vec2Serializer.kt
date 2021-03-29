@@ -17,7 +17,7 @@ import com.squareup.moshi.FromJson
 import com.squareup.moshi.ToJson
 import glm_.vec2.Vec2
 
-class Vec2Serializer {
+object Vec2Serializer {
     @FromJson
     fun fromJson(json: List<Float>): Vec2 {
         return Vec2(json[0], json[1])

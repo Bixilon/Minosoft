@@ -35,7 +35,7 @@ data class Dimension(
     val ultrawarm: Boolean = false,
     val height: Int = 256,
     val supports3DBiomes: Boolean = true,
-) : RegistryItem() {
+) : RegistryItem {
     val lowestSection = if (minY < 0) {
         (minY + 1) / ProtocolDefinition.SECTION_HEIGHT_Y - 1
     } else {
@@ -47,22 +47,8 @@ data class Dimension(
         height / ProtocolDefinition.SECTION_HEIGHT_Y
     }
 
-    fun bareEquals(dimension: Dimension): Boolean {
-        return this.piglinSafe == dimension.piglinSafe &&
-                this.natural == dimension.natural &&
-                this.ambientLight == dimension.ambientLight &&
-                this.infiniBurn == dimension.infiniBurn &&
-                this.respawnAnchorWorks == dimension.respawnAnchorWorks &&
-                this.hasSkyLight == dimension.hasSkyLight &&
-                this.bedWorks == dimension.bedWorks &&
-                this.effects == dimension.effects &&
-                this.hasRaids == dimension.hasRaids &&
-                this.logicalHeight == dimension.logicalHeight &&
-                this.coordinateScale == dimension.coordinateScale &&
-                this.minY == dimension.minY &&
-                this.hasCeiling == dimension.hasCeiling &&
-                this.ultrawarm == dimension.ultrawarm &&
-                this.height == dimension.height
+    override fun toString(): String {
+        return resourceLocation.full
     }
 
     companion object : ResourceLocationDeserializer<Dimension> {

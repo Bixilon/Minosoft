@@ -15,12 +15,8 @@ package de.bixilon.minosoft.data.mappings
 
 import de.bixilon.minosoft.data.mappings.versions.VersionMapping
 
-abstract class RegistryItem {
-    abstract val resourceLocation: ResourceLocation
+interface RegistryItem {
+    val resourceLocation: ResourceLocation
 
-    open fun postInit(versionMapping: VersionMapping) {}
-
-    override fun toString(): String {
-        return resourceLocation.full
-    }
+    fun postInit(versionMapping: VersionMapping) {}
 }

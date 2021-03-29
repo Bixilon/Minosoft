@@ -38,7 +38,7 @@ data class Biome(
     val grassColor: RGBColor?,
     val descriptionId: String?,
     val grassColorModifier: GrassColorModifiers = GrassColorModifiers.NONE,
-) : RegistryItem() {
+) : RegistryItem {
     val temperatureColorMapCoordinate = getColorMapCoordinate(temperature)
     val downfallColorMapCoordinate = getColorMapCoordinate(downfall * temperature)
 
@@ -48,6 +48,10 @@ data class Biome(
 
     fun getClampedTemperature(height: Int): Int {
         return getColorMapCoordinate(MMath.clamp(temperature + (MMath.clamp(height - ProtocolDefinition.SEA_LEVEL_HEIGHT, 1, Int.MAX_VALUE) * ProtocolDefinition.HEIGHT_SEA_LEVEL_MODIFIER), 0.0f, 1.0f))
+    }
+
+    override fun toString(): String {
+        return resourceLocation.full
     }
 
     companion object : ResourceLocationDeserializer<Biome> {
@@ -69,7 +73,6 @@ data class Biome(
                 grassColorModifier = data["grass_color_modifier"]?.asString?.toUpperCase()?.let { GrassColorModifiers.valueOf(it) } ?: when (resourceLocation) {
                     ResourceLocation("minecraft:swamp"), ResourceLocation("minecraft:swamp_hills") -> GrassColorModifiers.SWAMP
                     ResourceLocation("minecraft:dark_forest"), ResourceLocation("minecraft:dark_forest_hills") -> GrassColorModifiers.DARK_FOREST
-
                     else -> GrassColorModifiers.NONE
                 }
             )

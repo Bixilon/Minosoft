@@ -30,7 +30,6 @@ import de.bixilon.minosoft.protocol.protocol.InByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_20W27A
 import de.bixilon.minosoft.util.BitByte
-import de.bixilon.minosoft.util.Util
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.nbt.tag.CompoundTag
 import de.bixilon.minosoft.util.nbt.tag.ListTag
@@ -81,7 +80,7 @@ class PacketJoinGame : ClientboundPacket() {
             buffer.readByte() // previous game mode
         }
         if (buffer.versionId >= ProtocolVersions.V_20W22A) {
-            buffer.readStringArray() // world
+            buffer.readStringArray() // dimensions
         }
         if (buffer.versionId < ProtocolVersions.V_20W21A) {
             dimension = buffer.connection.mapping.dimensionRegistry.get(buffer.readInt())
@@ -91,19 +90,12 @@ class PacketJoinGame : ClientboundPacket() {
             if (buffer.versionId < ProtocolVersions.V_1_16_2_PRE3) {
                 dimension = dimensions[buffer.readResourceLocation()]!!
             } else {
-                val tag = buffer.readNBT() as CompoundTag
-                val parsedDimension = Dimension.deserialize(ResourceLocation(Util.generateRandomString(10)), tag) // ToDo: Why no resource Location?
-                for ((_, entry) in dimensions) {
-                    if (parsedDimension.bareEquals(entry)) {
-                        dimension = entry
-                        break
-                    }
-                }
-                check(dimension != null) { "Can not find dimension!" }
+                buffer.readNBT() as CompoundTag // dimension tag
             }
         }
+
         if (buffer.versionId >= ProtocolVersions.V_20W22A) {
-            buffer.readString() // world
+            dimension = buffer.connection.mapping.dimensionRegistry.get(buffer.readResourceLocation())
         }
         if (buffer.versionId >= ProtocolVersions.V_19W36A) {
             hashedSeed = buffer.readLong()

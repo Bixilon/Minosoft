@@ -23,7 +23,7 @@ data class Item(
     val maxDamage: Int = 0,
     val isFireResistant: Boolean = false,
     val descriptionId: String?,
-) : RegistryItem() {
+) : RegistryItem {
 
     companion object : ResourceLocationDeserializer<Item> {
         override fun deserialize(mappings: VersionMapping, resourceLocation: ResourceLocation, data: JsonObject): Item {

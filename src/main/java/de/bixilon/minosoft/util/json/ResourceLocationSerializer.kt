@@ -16,7 +16,7 @@ package de.bixilon.minosoft.util.json
 import com.squareup.moshi.*
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 
-class ResourceLocationSerializer : JsonAdapter<ResourceLocation>() {
+object ResourceLocationSerializer : JsonAdapter<ResourceLocation>() {
     @FromJson
     override fun fromJson(jsonReader: JsonReader): ResourceLocation? {
         if (jsonReader.peek() == JsonReader.Token.NULL) {

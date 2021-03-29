@@ -17,4 +17,9 @@ import de.bixilon.minosoft.data.mappings.ResourceLocation
 
 data class Statistic(
     override val resourceLocation: ResourceLocation,
-) : RegistryItem()
+) : RegistryItem {
+
+    override fun toString(): String {
+        return resourceLocation.full
+    }
+}

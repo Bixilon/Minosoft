@@ -16,13 +16,11 @@ import de.bixilon.minosoft.data.Difficulties
 import de.bixilon.minosoft.data.Gamemodes
 import de.bixilon.minosoft.data.LevelTypes
 import de.bixilon.minosoft.data.mappings.Dimension
-import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.modding.event.events.RespawnEvent
 import de.bixilon.minosoft.protocol.network.Connection
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
-import de.bixilon.minosoft.util.Util
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.nbt.tag.CompoundTag
 
@@ -36,30 +34,26 @@ class PacketRespawn : ClientboundPacket() {
     var isFlat = false
     var copyMetaData = false
     override fun read(buffer: InByteBuffer): Boolean {
-        if (buffer.versionId < ProtocolVersions.V_20W21A) {
-            dimension = if (buffer.versionId < ProtocolVersions.V_1_8_9) { // ToDo: this should be 108 but wiki.vg is wrong. In 1.8 it is an int.
-                buffer.connection.mapping.dimensionRegistry.get(buffer.readByte().toInt())
-            } else {
-                buffer.connection.mapping.dimensionRegistry.get(buffer.readInt())
+        when {
+            buffer.versionId < ProtocolVersions.V_20W21A -> {
+                dimension = buffer.connection.mapping.dimensionRegistry.get(if (buffer.versionId < ProtocolVersions.V_1_8_9) { // ToDo: this should be 108 but wiki.vg is wrong. In 1.8 it is an int.
+                    buffer.readByte().toInt()
+                } else {
+                    buffer.readInt()
+                })
             }
-        } else if (buffer.versionId < ProtocolVersions.V_1_16_2_PRE3) {
-            dimension = buffer.connection.mapping.dimensionRegistry.get(buffer.readResourceLocation())
-        } else {
-            val tag = buffer.readNBT() as CompoundTag
-            val parsedDimension = Dimension.deserialize(ResourceLocation(Util.generateRandomString(10)), tag) // ToDo: Why no resource Location?
-            for (entry in buffer.connection.mapping.dimensionRegistry) {
-                if (parsedDimension.bareEquals(entry)) {
-                    dimension = entry
-                    break
-                }
+            buffer.versionId < ProtocolVersions.V_1_16_2_PRE3 -> {
+                dimension = buffer.connection.mapping.dimensionRegistry.get(buffer.readResourceLocation())
             }
-            check(dimension != null) { "Can not find dimension!" }
+            else -> {
+                buffer.readNBT() as CompoundTag // current dimension data
+            }
         }
         if (buffer.versionId < ProtocolVersions.V_19W11A) {
             difficulty = Difficulties.byId(buffer.readUnsignedByte().toInt())
         }
         if (buffer.versionId >= ProtocolVersions.V_20W22A) {
-            buffer.readString() // world
+            dimension = buffer.connection.mapping.dimensionRegistry.get(buffer.readResourceLocation())
         }
         if (buffer.versionId >= ProtocolVersions.V_19W36A) {
             hashedSeed = buffer.readLong()
