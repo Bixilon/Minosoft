@@ -15,6 +15,7 @@ package de.bixilon.minosoft.data.mappings.items
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.Rarities
 import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.data.mappings.inventory.CreativeModeTab
 import de.bixilon.minosoft.data.mappings.items.armor.ArmorItem
 import de.bixilon.minosoft.data.mappings.registry.RegistryItem
 import de.bixilon.minosoft.data.mappings.registry.ResourceLocationDeserializer
@@ -23,20 +24,22 @@ import de.bixilon.minosoft.data.mappings.versions.VersionMapping
 open class Item(
     override val resourceLocation: ResourceLocation,
     data: JsonObject,
+    versionMapping: VersionMapping,
 ) : RegistryItem {
     val rarity: Rarities = data["rarity"]?.asInt?.let { Rarities.VALUES[it] } ?: Rarities.COMMON
     val maxStackSize: Int = data["max_stack_size"]?.asInt ?: 64
     val maxDamage: Int = data["max_damage"]?.asInt ?: 64
     val isFireResistant: Boolean = data["is_fire_resistant"]?.asBoolean ?: false
     val translationKey: String? = data["description_id"]?.asString
+    val creativeModeTab: CreativeModeTab? = data["category"]?.asInt?.let { versionMapping.creativeModeTabRegistry.get(it) }
 
     companion object : ResourceLocationDeserializer<Item> {
         override fun deserialize(mappings: VersionMapping, resourceLocation: ResourceLocation, data: JsonObject): Item {
             return when (data["class"].asString) {
-                "ArmorItem" -> ArmorItem(resourceLocation, data)
+                "ArmorItem" -> ArmorItem(resourceLocation, data, mappings)
                 //   "Item" -> Item(resourceLocation, data)
                 // else -> TODO("Can not find item class: ${data["class"].asString}")
-                else -> Item(resourceLocation, data)
+                else -> Item(resourceLocation, data, mappings)
             }
         }
     }

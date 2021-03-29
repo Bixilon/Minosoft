@@ -54,8 +54,10 @@ open class Layout(
         if (children.isEmpty()) {
             size = Vec2i(0, 0)
         } else {
-            for (child in children) {
-                checkSize(child.start + child.size)
+            synchronized(children) {
+                for (child in children) {
+                    checkSize(child.start + child.size)
+                }
             }
         }
         parent?.recalculateSize()

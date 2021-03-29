@@ -27,6 +27,7 @@ import de.bixilon.minosoft.data.mappings.biomes.BiomeCategory
 import de.bixilon.minosoft.data.mappings.biomes.BiomePrecipitation
 import de.bixilon.minosoft.data.mappings.blocks.Block
 import de.bixilon.minosoft.data.mappings.blocks.BlockState
+import de.bixilon.minosoft.data.mappings.inventory.CreativeModeTab
 import de.bixilon.minosoft.data.mappings.items.Item
 import de.bixilon.minosoft.data.mappings.items.ItemRegistry
 import de.bixilon.minosoft.data.mappings.materials.Material
@@ -61,6 +62,8 @@ class VersionMapping(var version: Version?) {
     val handEquipmentSlotRegistry: EnumRegistry<InventorySlots.EquipmentSlots> = EnumRegistry(values = InventorySlots.EquipmentSlots)
     val armorEquipmentSlotRegistry: EnumRegistry<InventorySlots.EquipmentSlots> = EnumRegistry(values = InventorySlots.EquipmentSlots)
     val armorStandEquipmentSlotRegistry: EnumRegistry<InventorySlots.EquipmentSlots> = EnumRegistry(values = InventorySlots.EquipmentSlots)
+
+    val creativeModeTabRegistry: FakeEnumRegistry<CreativeModeTab> = FakeEnumRegistry()
 
     val biomePrecipitationRegistry: FakeEnumRegistry<BiomePrecipitation> = FakeEnumRegistry()
     val biomeCategoryRegistry: FakeEnumRegistry<BiomeCategory> = FakeEnumRegistry()
@@ -141,6 +144,7 @@ class VersionMapping(var version: Version?) {
         // id stuff
         biomeCategoryRegistry.initialize(pixlyzerData["biome_categories"]?.asJsonObject, this, BiomeCategory.Companion)
         biomePrecipitationRegistry.initialize(pixlyzerData["biome_precipations"]?.asJsonObject, this, BiomePrecipitation.Companion)
+        creativeModeTabRegistry.initialize(pixlyzerData["creative_inventory_tab"]?.asJsonObject, this, CreativeModeTab.Companion)
 
         // id resource location stuff
         materialRegistry.initialize(pixlyzerData["materials"]?.asJsonObject, this, Material.Companion)
