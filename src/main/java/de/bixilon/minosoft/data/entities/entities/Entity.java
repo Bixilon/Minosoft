@@ -14,25 +14,32 @@
 package de.bixilon.minosoft.data.entities.entities;
 
 import de.bixilon.minosoft.config.StaticConfiguration;
+import de.bixilon.minosoft.data.Axes;
 import de.bixilon.minosoft.data.entities.*;
 import de.bixilon.minosoft.data.inventory.InventorySlots;
 import de.bixilon.minosoft.data.inventory.Slot;
 import de.bixilon.minosoft.data.mappings.StatusEffect;
+import de.bixilon.minosoft.data.mappings.blocks.BlockState;
 import de.bixilon.minosoft.data.text.ChatComponent;
+import de.bixilon.minosoft.gui.rendering.Camera;
+import de.bixilon.minosoft.gui.rendering.chunk.VoxelShape;
+import de.bixilon.minosoft.gui.rendering.chunk.models.AABB;
 import de.bixilon.minosoft.modding.event.events.annotations.Unsafe;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.util.logging.Log;
 import glm_.vec3.Vec3;
+import glm_.vec3.Vec3i;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.TreeMap;
-import java.util.UUID;
+import java.util.*;
 
 public abstract class Entity {
+    private static final AABB DEFAULT_PLAYER_AABB = new AABB(
+            new Vec3(-Camera.PLAYER_WIDTH / 2, 0, -Camera.PLAYER_WIDTH / 2),
+            new Vec3(Camera.PLAYER_WIDTH / 2, 1.8, Camera.PLAYER_WIDTH / 2)
+    );
     protected final Connection connection;
     protected final EntityInformation information;
     protected final int entityId;
@@ -44,6 +51,7 @@ public abstract class Entity {
     protected EntityRotation rotation;
     protected int attachedTo = -1;
     protected EntityMetaData metaData;
+    protected boolean hasCollisions = true;
 
     public Entity(Connection connection, int entityId, UUID uuid, Vec3 position, EntityRotation rotation) {
         this.connection = connection;
@@ -280,5 +288,60 @@ public abstract class Entity {
             clazz = clazz.getSuperclass();
         }
         return values;
+    }
+
+    public void move(Vec3 deltaPosition) {
+        if (! hasCollisions) {
+            this.position = new Vec3(position.plus(deltaPosition));
+            Log.debug(String.format("new Position: %s", position));
+            return;
+        }
+        AABB aabb = getAABB();
+        VoxelShape collisionsToCheck = getCollisionsToCheck(deltaPosition, aabb);
+        Vec3 realMovement = collide(deltaPosition, collisionsToCheck, aabb);
+        this.position = new Vec3(position.plus(realMovement));
+    }
+
+    private VoxelShape getCollisionsToCheck(Vec3 deltaPosition, AABB originalAABB) {
+        List<Vec3i> blockPositions = originalAABB.extend(deltaPosition).getBlockPositions();
+        VoxelShape result = new VoxelShape();
+        for (Vec3i blockPosition : blockPositions) {
+            BlockState blockState = connection.getPlayer().getWorld().getBlockState(blockPosition);
+            if (blockState == null) {
+                continue;
+            }
+            VoxelShape blockShape = blockState.getCollision();
+            result.add(blockShape.plus(blockPosition));
+        }
+        return result;
+    }
+
+    private Vec3 collide(Vec3 deltaPosition, VoxelShape collisionsToCheck, AABB aabb) {
+        Vec3 delta = new Vec3(deltaPosition);
+        if (deltaPosition.y != 0) {
+            delta.y = collisionsToCheck.computeOffset(aabb, deltaPosition.y, Axes.Y);
+            aabb.offsetAssign(new Vec3(0f, (float) delta.y, 0f));
+        }
+        if (deltaPosition.x != 0) {
+            delta.x = collisionsToCheck.computeOffset(aabb, deltaPosition.x, Axes.X);
+            aabb.offsetAssign(new Vec3((float) delta.x, 0f, 0f));
+        }
+        return delta;
+    }
+
+    private AABB getAABB() {
+        return DEFAULT_PLAYER_AABB.plus(position);
+    }
+
+    public boolean hasCollisions() {
+        return hasCollisions;
+    }
+
+    public void setHasCollisions(boolean hasCollisions) {
+        this.hasCollisions = hasCollisions;
+    }
+
+    public void setPosition(Vec3 position) {
+        this.position = position;
     }
 }

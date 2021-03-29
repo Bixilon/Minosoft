@@ -22,6 +22,7 @@ import de.bixilon.minosoft.data.mappings.materials.Material
 import de.bixilon.minosoft.data.mappings.versions.VersionMapping
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.TintColorCalculator
+import de.bixilon.minosoft.gui.rendering.chunk.VoxelShape
 import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModel
 import de.bixilon.minosoft.gui.rendering.chunk.models.renderable.BlockRenderInterface
 import de.bixilon.minosoft.gui.rendering.chunk.models.renderable.BlockRenderer
@@ -37,6 +38,7 @@ data class BlockState(
     val renders: MutableList<BlockRenderInterface> = mutableListOf(),
     val tintColor: RGBColor? = null,
     val material: Material,
+    val collision: VoxelShape,
 ) {
 
     override fun hashCode(): Int {
@@ -163,6 +165,15 @@ data class BlockState(
             }
 
             val material = versionMapping.materialRegistry.get(ResourceLocation(data["material"].asString))!!
+
+            val collision = data["collision_shapes"]?.let {
+                versionMapping.shapes[it.asInt]
+            } ?: if (data["is_collision_shape_full_block"]?.asBoolean == true) {
+                VoxelShape.FULL
+            } else {
+                VoxelShape.EMPTY
+            }
+
             return BlockState(
                 owner = owner,
                 properties = properties.toMap(),
@@ -170,6 +181,7 @@ data class BlockState(
                 renders = renders,
                 tintColor = tintColor,
                 material = material,
+                collision = collision
             )
         }
 

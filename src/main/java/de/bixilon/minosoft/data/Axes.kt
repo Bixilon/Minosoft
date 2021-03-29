@@ -12,6 +12,8 @@
  */
 package de.bixilon.minosoft.data
 
+import glm_.vec3.Vec3
+
 enum class Axes {
     X,
     Y,
@@ -23,6 +25,18 @@ enum class Axes {
                 Directions.EAST, Directions.WEST -> X
                 Directions.UP, Directions.DOWN -> Y
                 Directions.NORTH, Directions.SOUTH -> Z
+            }
+        }
+
+        fun choose(axis: Axes, vec3: Vec3): Float {
+            return choose(axis, vec3.x, vec3.y, vec3.z);
+        }
+
+        private fun choose(axis: Axes, x: Float, y: Float, z: Float): Float {
+            return when (axis) {
+                X -> x
+                Y -> y
+                Z -> z
             }
         }
 

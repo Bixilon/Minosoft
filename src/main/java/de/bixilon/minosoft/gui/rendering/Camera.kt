@@ -18,10 +18,11 @@ import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames
 import de.bixilon.minosoft.config.key.KeyAction
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.entities.EntityRotation
+import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.data.mappings.biomes.Biome
-
 import de.bixilon.minosoft.gui.rendering.chunk.Frustum
 import de.bixilon.minosoft.gui.rendering.shader.Shader
+import de.bixilon.minosoft.gui.rendering.util.VecUtil
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.blockPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.inChunkSectionPosition
@@ -51,6 +52,7 @@ class Camera(
     var cameraPosition = Vec3(0.0f, 0.0f, 0.0f)
     private var lastMouseX = 0.0
     private var lastMouseY = 0.0
+    lateinit var playerEntity: PlayerEntity
     var yaw = 0.0
     var pitch = 0.0
     private var zoom = 0.0f
@@ -89,26 +91,26 @@ class Camera(
 
     fun mouseCallback(xPos: Double, yPos: Double) {
         var xOffset = xPos - this.lastMouseX
-        var yOffset = this.lastMouseY - yPos // reversed since y-coordinates go from bottom to top
+        var yOffset = yPos - this.lastMouseY
         lastMouseX = xPos
         lastMouseY = yPos
         xOffset *= mouseSensitivity
         yOffset *= mouseSensitivity
-        yaw += xOffset
-        pitch -= yOffset
+        var yaw =   xOffset.toFloat() + (playerEntity.rotation?.headYaw ?: 0f)
+        var pitch = yOffset.toFloat() + (playerEntity.rotation?.pitch ?: 0f)
 
         // make sure that when pitch is out of bounds, screen doesn't get flipped
-        if (this.pitch > 89.9) {
-            this.pitch = 89.9
-        } else if (this.pitch < -89.9) {
-            this.pitch = -89.9
+        if (pitch > 89.9) {
+            pitch = 89.9f
+        } else if (pitch < -89.9) {
+            pitch = -89.9f
         }
-        if (this.yaw > 180) {
-            this.yaw -= 360
-        } else if (this.yaw < -180) {
-            this.yaw += 360
+        if (yaw > 180) {
+            yaw -= 360
+        } else if (yaw < -180) {
+            yaw += 360
         }
-        this.yaw %= 180
+        yaw %= 180
         setRotation(yaw, pitch)
     }
 
@@ -147,26 +149,27 @@ class Camera(
         if (keySprintDown) {
             cameraSpeed *= 5
         }
-        val lastPosition = cameraPosition
+        var deltaMovement = Vec3()
         if (keyForwardDown) {
-            cameraPosition = cameraPosition + movementFront * cameraSpeed
+            deltaMovement = deltaMovement + movementFront * cameraSpeed
         }
         if (keyBackDown) {
-            cameraPosition = cameraPosition - movementFront * cameraSpeed
+            deltaMovement = deltaMovement - movementFront * cameraSpeed
         }
         if (keyLeftDown) {
-            cameraPosition = cameraPosition - cameraRight * cameraSpeed
+            deltaMovement = deltaMovement - cameraRight * cameraSpeed
         }
         if (keyRightDown) {
-            cameraPosition = cameraPosition + cameraRight * cameraSpeed
+            deltaMovement = deltaMovement + cameraRight * cameraSpeed
         }
         if (keyFlyDown) {
-            cameraPosition = cameraPosition - CAMERA_UP_VEC3 * cameraSpeed
+            deltaMovement = deltaMovement - CAMERA_UP_VEC3 * cameraSpeed
         }
         if (keyFlyUp) {
-            cameraPosition = cameraPosition + CAMERA_UP_VEC3 * cameraSpeed
+            deltaMovement = deltaMovement + CAMERA_UP_VEC3 * cameraSpeed
         }
-        if (lastPosition != cameraPosition) {
+        if (deltaMovement != VecUtil.EMPTY_VEC3) {
+            playerEntity.move(deltaMovement)
             recalculateViewProjectionMatrix()
             currentPositionSent = false
             sendPositionToServer()
@@ -181,7 +184,6 @@ class Camera(
         if (lastZoom != zoom) {
             recalculateViewProjectionMatrix()
         }
-
     }
 
     fun addShaders(vararg shaders: Shader) {
@@ -202,12 +204,14 @@ class Camera(
     }
 
     private fun positionChangeCallback() {
+        if (! this::playerEntity.isInitialized) {
+            return
+        }
         blockPosition = (cameraPosition - Vec3(0, PLAYER_HEIGHT, 0)).blockPosition
         currentBiome = connection.player.world.getBiome(blockPosition)
         chunkPosition = blockPosition.chunkPosition
         sectionHeight = blockPosition.sectionHeight
         inChunkSectionPosition = blockPosition.inChunkSectionPosition
-
         // recalculate sky color for current biome
         renderWindow.setSkyColor(connection.player.world.getBiome(blockPosition)?.skyColor ?: RenderConstants.DEFAULT_SKY_COLOR)
 
@@ -228,6 +232,11 @@ class Camera(
     }
 
     private fun calculateViewMatrix(): Mat4 {
+        cameraPosition = if (this::playerEntity.isInitialized) {
+            playerEntity.position + Vec3(0, PLAYER_HEIGHT, 0)
+        } else {
+            VecUtil.EMPTY_VEC3
+        }
         return glm.lookAt(cameraPosition, cameraPosition + cameraFront, CAMERA_UP_VEC3)
     }
 
@@ -235,7 +244,9 @@ class Camera(
         this.fov = fov
     }
 
-    fun setRotation(yaw: Double, pitch: Double) {
+    fun setRotation(yaw: Float, pitch: Float) {
+        playerEntity.rotation = EntityRotation(yaw.toDouble(), pitch.toDouble())
+
         cameraFront = Vec3(
             (yaw + 90).rad.cos * (-pitch).rad.cos,
             (-pitch).rad.sin,
@@ -256,6 +267,19 @@ class Camera(
     }
 
     private fun sendPositionToServer() {
+        if (System.currentTimeMillis() - lastMovementPacketSent > ProtocolDefinition.TICK_TIME) {
+            if (!currentPositionSent && !currentPositionSent) {
+                connection.sendPacket(PacketPlayerPositionAndRotationSending(playerEntity.position, playerEntity.rotation, false))
+            } else if (!currentPositionSent) {
+                connection.sendPacket(PacketPlayerPositionSending(playerEntity.position, false))
+            } else {
+                connection.sendPacket(PacketPlayerRotationSending(playerEntity.rotation, false))
+            }
+            lastMovementPacketSent = System.currentTimeMillis()
+            currentPositionSent = true
+            currentRotationSent = true
+            return
+        }
         if (System.currentTimeMillis() - lastMovementPacketSent < ProtocolDefinition.TICK_TIME) {
             return
         }
@@ -275,10 +299,12 @@ class Camera(
 
     fun setPosition(position: Vec3) {
         cameraPosition = (position + Vec3(0, PLAYER_HEIGHT, 0))
+        playerEntity.position = position
     }
 
     companion object {
         private val CAMERA_UP_VEC3 = Vec3(0.0f, 1.0f, 0.0f)
         private const val PLAYER_HEIGHT = 1.3 // player is 1.8 blocks high, the camera is normally at 0.5. 1.8 - 0.5 = 1.13
+        const val PLAYER_WIDTH = 0.6
     }
 }

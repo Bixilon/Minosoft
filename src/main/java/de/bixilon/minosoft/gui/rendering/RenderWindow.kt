@@ -99,7 +99,7 @@ class RenderWindow(
             }
             renderQueue.add {
                 camera.setPosition(packet.position)
-                camera.setRotation(packet.rotation.yaw.toDouble(), packet.rotation.pitch.toDouble())
+                camera.setRotation(packet.rotation.yaw, packet.rotation.pitch)
             }
         })
     }

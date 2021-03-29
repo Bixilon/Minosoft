@@ -69,7 +69,7 @@ public class PacketSpawnPlayer extends ClientboundPacket {
         if (buffer.getVersionId() < V_19W34A) {
             metaData = buffer.readMetaData();
         }
-        this.entity = new PlayerEntity(buffer.getConnection(), entityId, uuid, position, new EntityRotation(yaw, pitch, 0), name, properties, currentItem);
+        this.entity = new PlayerEntity(buffer.getConnection(), entityId, uuid, position, new EntityRotation(yaw, pitch, 0), name, properties, currentItem, this.entity.getGamemode());
         if (metaData != null) {
             this.entity.setMetaData(metaData);
         }

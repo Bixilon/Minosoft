@@ -13,6 +13,7 @@
 package de.bixilon.minosoft.data.mappings.versions
 
 import com.google.common.collect.HashBiMap
+import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.EntityClassMappings
 import de.bixilon.minosoft.data.entities.EntityInformation
@@ -28,6 +29,8 @@ import de.bixilon.minosoft.data.mappings.items.ItemRegistry
 import de.bixilon.minosoft.data.mappings.materials.Material
 import de.bixilon.minosoft.data.mappings.particle.Particle
 import de.bixilon.minosoft.data.mappings.statistics.Statistic
+import de.bixilon.minosoft.gui.rendering.chunk.VoxelShape
+import de.bixilon.minosoft.gui.rendering.chunk.models.AABB
 import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModel
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.json.ResourceLocationJsonMap
@@ -35,6 +38,7 @@ import java.util.*
 
 
 class VersionMapping(var version: Version?) {
+    var shapes: MutableList<VoxelShape> = mutableListOf()
     val motiveRegistry: Registry<Motive> = Registry()
     val blockRegistry: Registry<Block> = Registry()
     val itemRegistry: ItemRegistry = ItemRegistry()
@@ -103,6 +107,8 @@ class VersionMapping(var version: Version?) {
 
     fun load(pixlyzerData: JsonObject) {
         // pre init stuff
+        loadShapes(pixlyzerData["shapes"]?.asJsonObject)
+
         loadBlockModels(ResourceLocationJsonMap.create(pixlyzerData["models"].asJsonObject))
 
         // id stuff
@@ -124,6 +130,26 @@ class VersionMapping(var version: Version?) {
         // post init
         biomeRegistry.postInit(this)
         isFullyLoaded = true
+    }
+
+    private fun loadShapes(pixlyzerData: JsonObject?) {
+        pixlyzerData ?: return
+        val aabbs = loadAABBs(pixlyzerData["aabbs"]?.asJsonArray!!)
+        loadVoxelShapes(pixlyzerData["shapes"].asJsonArray!!, aabbs)
+    }
+
+    private fun loadVoxelShapes(pixlyzerData: JsonArray, aabbs: List<AABB>) {
+        for (shape in pixlyzerData) {
+            shapes.add(VoxelShape(shape.asJsonObject, aabbs))
+        }
+    }
+
+    private fun loadAABBs(pixlyzerData: JsonArray): List<AABB> {
+        val aabbs = mutableListOf<AABB>()
+        for (data in pixlyzerData) {
+            aabbs.add(AABB(data.asJsonObject))
+        }
+        return aabbs
     }
 
     private fun loadEntities(data: JsonObject?) {

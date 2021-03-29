@@ -31,7 +31,6 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.rotate
 import glm_.Java.Companion.glm
-import glm_.vec2.Vec2
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3i
 
@@ -67,7 +66,6 @@ class ElementRenderer(parent: BlockModelElement, val rotation: Vec3, uvLock: Boo
         }
     }
 
-
     fun render(tintColor: RGBColor?, blockPosition: Vec3i, lightAccessor: LightAccessor, textureMapping: MutableMap<String, Texture>, direction: Directions, meshCollection: ChunkMeshCollection) {
         val realDirection = directionMapping.inverse()[direction]!!
 
@@ -81,27 +79,23 @@ class ElementRenderer(parent: BlockModelElement, val rotation: Vec3, uvLock: Boo
         val drawPositions = arrayOf(transformedPositions[positionTemplate[0]], transformedPositions[positionTemplate[1]], transformedPositions[positionTemplate[2]], transformedPositions[positionTemplate[3]])
 
         val mesh = getMesh(meshCollection, texture.transparency)
-
-        fun createQuad(drawPositions: Array<Vec3>, texturePositions: Array<Vec2?>) {
-            for (vertex in DRAW_ODER) {
-                val input = drawPositions[vertex.first]
-                val output = blockPosition plus input
-                mesh.addVertex(
-                    position = output,
-                    textureCoordinates = texturePositions[vertex.second]!!,
-                    texture = texture,
-                    tintColor = if (face.tint) {
-                        tintColor
-                    } else {
-                        null
-                    },
-                    lightLevel = lightLevel,
-                )
-            }
-        }
-
         val texturePositions = face.getTexturePositionArray(realDirection)
-        createQuad(drawPositions, texturePositions)
+
+        for (vertex in DRAW_ODER) {
+            val input = drawPositions[vertex.first]
+            val output = blockPosition plus input + DRAW_OFFSET
+            mesh.addVertex(
+                position = output,
+                textureCoordinates = texturePositions[vertex.second]!!,
+                texture = texture,
+                tintColor = if (face.tint) {
+                    tintColor
+                } else {
+                    null
+                },
+                lightLevel = lightLevel,
+            )
+        }
     }
 
     fun getTexture(direction: Directions): String? {
@@ -156,6 +150,8 @@ class ElementRenderer(parent: BlockModelElement, val rotation: Vec3, uvLock: Boo
         val POSITION_2 = Vec3(+0.5f, -0.5f, -0.5f)
         val POSITION_3 = Vec3(-0.5f, -0.5f, +0.5f)
         val POSITION_4 = Vec3(+0.5f, -0.5f, +0.5f)
+
+        val DRAW_OFFSET = Vec3(+0.5f, +0.5f, +0.5f)
 
         fun getMesh(meshCollection: ChunkMeshCollection, textureTransparencies: TextureTransparencies): SectionArrayMesh {
             return if (textureTransparencies == TextureTransparencies.SEMI_TRANSPARENT) {

@@ -16,7 +16,6 @@ class Frustum(private val camera: Camera) {
         camera.cameraFront.normalize(),
     )
 
-
     init {
         recalculate()
     }

@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.entities.entities.player;
 
+import de.bixilon.minosoft.data.Gamemodes;
 import de.bixilon.minosoft.data.PlayerPropertyData;
 import de.bixilon.minosoft.data.entities.EntityMetaDataFields;
 import de.bixilon.minosoft.data.entities.EntityRotation;
@@ -32,6 +33,7 @@ public class PlayerEntity extends LivingEntity {
     private final String name;
     private final HashSet<PlayerPropertyData> properties;
     private Item currentItem;
+    private Gamemodes gamemode;
 
     public PlayerEntity(Connection connection, int entityId, UUID uuid, Vec3 position, EntityRotation rotation) {
         super(connection, entityId, uuid, position, rotation);
@@ -39,11 +41,13 @@ public class PlayerEntity extends LivingEntity {
         this.properties = null;
     }
 
-    public PlayerEntity(Connection connection, int entityId, UUID uuid, Vec3 position, EntityRotation rotation, String name, @Nullable HashSet<PlayerPropertyData> properties, Item currentItem) {
+    public PlayerEntity(Connection connection, int entityId, UUID uuid, Vec3 position, EntityRotation rotation, String name, @Nullable HashSet<PlayerPropertyData> properties, Item currentItem, Gamemodes gamemode) {
         super(connection, entityId, uuid, position, rotation);
         this.name = name;
         this.properties = properties;
         this.currentItem = currentItem;
+        this.gamemode = gamemode;
+        this.hasCollisions = gamemode != Gamemodes.SPECTATOR;
     }
 
     @EntityMetaDataFunction(name = "Absorption hearts")
@@ -91,6 +95,15 @@ public class PlayerEntity extends LivingEntity {
     @Deprecated
     public Item getCurrentItem() {
         return this.currentItem;
+    }
+
+    public Gamemodes getGamemode() {
+        return gamemode;
+    }
+
+    public void setGamemode(Gamemodes gamemode) {
+        this.gamemode = gamemode;
+        this.hasCollisions = gamemode == Gamemodes.SPECTATOR;
     }
 }
 

@@ -63,7 +63,7 @@ class HUDWorldDebugElement(hudRenderer: HUDRenderer) : DebugScreen(hudRenderer) 
         // ToDo: Prepare on change
         gamemodeText.sText = "Gamemode: ${hudRenderer.connection.player.gamemode?.name?.toLowerCase()}"
         positionText.sText = "XYZ ${getPosition()}"
-        blockPositionText.sText = "Block ${getVec3i()}"
+        blockPositionText.sText = "Block ${getBlockPosition()}"
         chunkPositionText.sText = "Chunk ${getChunkLocation()}"
         facingText.sText = "Facing: ${getFacing()}"
 
@@ -108,9 +108,10 @@ class HUDWorldDebugElement(hudRenderer: HUDRenderer) : DebugScreen(hudRenderer) 
 
     private fun getPosition(): String {
         return "${formatCoordinate(camera.cameraPosition.x)} / ${formatCoordinate(camera.cameraPosition.y)} / ${formatCoordinate(camera.cameraPosition.z)}"
+        return "${formatCoordinate(camera.playerEntity?.position?.x!!)} / ${formatCoordinate(camera.playerEntity?.position?.y!!)} / ${formatCoordinate(camera.playerEntity?.position?.z!!)}"
     }
 
-    private fun getVec3i(): String {
+    private fun getBlockPosition(): String {
         return "${camera.blockPosition.x} / ${camera.blockPosition.y} / ${camera.blockPosition.z}"
     }
 
@@ -119,10 +120,10 @@ class HUDWorldDebugElement(hudRenderer: HUDRenderer) : DebugScreen(hudRenderer) 
     }
 
     private fun getFacing(): String {
-        val yaw = hudRenderer.renderWindow.camera.yaw
-        val pitch = hudRenderer.renderWindow.camera.pitch
+        val yaw = hudRenderer.renderWindow.camera.playerEntity?.rotation?.yaw!!
+        val pitch = hudRenderer.renderWindow.camera.playerEntity?.rotation?.pitch!!
         val direction = Directions.byDirection(camera.cameraFront)
-        return "${Directions.byDirection(camera.cameraFront).name.toLowerCase()} ${direction.directionVector} (${formatRotation(yaw)} / ${formatRotation(pitch)})"
+        return "${Directions.byDirection(camera.cameraFront).name.toLowerCase()} ${direction.directionVector} (${formatRotation(yaw.toDouble())} / ${formatRotation(pitch.toDouble())})"
     }
 
     companion object {

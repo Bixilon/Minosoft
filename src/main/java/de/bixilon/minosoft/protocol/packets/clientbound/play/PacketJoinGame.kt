@@ -16,11 +16,13 @@ import com.google.common.collect.HashBiMap
 import de.bixilon.minosoft.data.Difficulties
 import de.bixilon.minosoft.data.Gamemodes
 import de.bixilon.minosoft.data.LevelTypes
+import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.data.mappings.Dimension
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.world.biome.accessor.BlockBiomeAccessor
 import de.bixilon.minosoft.data.world.biome.accessor.NoiseBiomeAccessor
+import de.bixilon.minosoft.gui.rendering.util.VecUtil
 import de.bixilon.minosoft.modding.event.events.JoinGameEvent
 import de.bixilon.minosoft.protocol.network.Connection
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket
@@ -141,8 +143,9 @@ class PacketJoinGame : ClientboundPacket() {
         connection.player.world.isHardcore = isHardcore
         connection.mapping.dimensionRegistry.setData(dimensions)
         connection.player.world.dimension = dimension
-        val entity = PlayerEntity(connection, entityId, connection.player.playerUUID, null, null, connection.player.playerName, null, null)
+        val entity = PlayerEntity(connection, entityId, connection.player.playerUUID, VecUtil.EMPTY_VEC3, EntityRotation(0.0, 0.0), connection.player.playerName, null, null, gamemode)
         connection.player.entity = entity
+        connection.renderer.renderWindow.camera.playerEntity = entity
         connection.player.world.addEntity(entity)
         connection.player.world.hashedSeed = hashedSeed
         connection.player.world.biomeAccessor = if (connection.version.versionId < ProtocolVersions.V_19W36A) {

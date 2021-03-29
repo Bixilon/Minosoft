@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.data.entities
 
-data class EntityRotation(val yaw: Float, val pitch: Float, val headYaw: Float) {
+data class EntityRotation(var yaw: Float, var pitch: Float, var headYaw: Float) {
 
     constructor(yaw: Double, pitch: Double) : this(yaw.toFloat(), pitch.toFloat(), yaw.toFloat())
 
