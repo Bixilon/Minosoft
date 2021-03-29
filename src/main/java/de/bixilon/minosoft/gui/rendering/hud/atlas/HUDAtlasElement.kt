@@ -24,20 +24,23 @@ data class HUDAtlasElement(
     val binding: Vec2Binding,
     val slots: Map<Int, Vec2Binding> = mapOf(),
 ) : TextureLike {
-    override var uvStart: Vec2 = Vec2()
+    override lateinit var uvStart: Vec2
         private set
-    override var uvEnd: Vec2 = Vec2()
+    override lateinit var uvEnd: Vec2
         private set
     override val size: Vec2i
         get() = binding.size
 
 
     fun postInit() {
-        uvStart = Vec2(binding.start) * texture.arraySinglePixelFactor
+        uvStart = Vec2(binding.start) * texture.arraySinglePixelFactor + UV_START_ADD
         uvEnd = Vec2(binding.end) * texture.arraySinglePixelFactor
     }
 
     companion object {
+        private val UV_START_ADD = Vec2(0, 0.000015f) // ToDo: This fixes the "half pixel bug"
+
+
         fun deserialize(json: Map<ResourceLocation, JsonObject>, versionId: Int): Pair<Collection<Texture>, Map<ResourceLocation, HUDAtlasElement>> {
             val textures: MutableMap<ResourceLocation, Texture> = mutableMapOf()
             val ret: MutableMap<ResourceLocation, HUDAtlasElement> = mutableMapOf()

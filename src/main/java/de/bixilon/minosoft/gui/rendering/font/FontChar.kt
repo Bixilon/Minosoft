@@ -26,15 +26,21 @@ data class FontChar(
     var endPixel: Int,
     val height: Int,
 ) : TextureLike {
-    override var uvStart = Vec2()
+    override lateinit var uvStart: Vec2
         private set
-    override var uvEnd = Vec2()
+    override lateinit var uvEnd: Vec2
         private set
+
     override val size = Vec2i(endPixel - startPixel, height)
 
 
     fun calculateUV(letterWidth: Int, arraySinglePixelFactor: Vec2) {
-        uvStart = Vec2(letterWidth * column + startPixel, height * row) * arraySinglePixelFactor
+        uvStart = Vec2(letterWidth * column + startPixel, height * row) * arraySinglePixelFactor + UV_START_ADD
         uvEnd = Vec2(letterWidth * column + endPixel, height * (row + 1)) * arraySinglePixelFactor
+    }
+
+
+    companion object {
+        private val UV_START_ADD = Vec2(0, 0.0015f) // ToDo: This fixes the "half pixel bug"
     }
 }
