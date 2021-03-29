@@ -13,6 +13,6 @@
 
 package de.bixilon.minosoft.data.mappings
 
-interface RegistryEnumable {
+interface RegistryFakeEnumerable {
     val name: String
 }

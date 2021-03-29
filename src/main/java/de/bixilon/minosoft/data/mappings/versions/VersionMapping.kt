@@ -51,8 +51,8 @@ class VersionMapping(var version: Version?) {
     val dimensionRegistry: Registry<Dimension> = Registry()
     val materialRegistry: Registry<Material> = Registry()
 
-    val biomePrecipitationRegistry: EnumRegistry<BiomePrecipitation> = EnumRegistry()
-    val biomeCategoryRegistry: EnumRegistry<BiomeCategory> = EnumRegistry()
+    val biomePrecipitationRegistry: FakeEnumRegistry<BiomePrecipitation> = FakeEnumRegistry()
+    val biomeCategoryRegistry: FakeEnumRegistry<BiomeCategory> = FakeEnumRegistry()
 
 
     internal val blockStateIdMap: MutableMap<Int, BlockState> = mutableMapOf()
@@ -208,7 +208,7 @@ class VersionMapping(var version: Version?) {
 
     fun unload() {
         for (field in this::class.java.fields) {
-            if (!field.type.isAssignableFrom(Registry::class.java) && field.type.isAssignableFrom(EnumRegistry::class.java)) {
+            if (!field.type.isAssignableFrom(Registry::class.java) && field.type.isAssignableFrom(FakeEnumRegistry::class.java)) {
                 continue
             }
             field.javaClass.getMethod("clear").invoke(this)

@@ -16,8 +16,8 @@ package de.bixilon.minosoft.data.mappings
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.mappings.versions.VersionMapping
 
-class EnumRegistry<T : RegistryEnumable>(
-    private var parentRegistry: EnumRegistry<T>? = null,
+class FakeEnumRegistry<T : RegistryFakeEnumerable>(
+    private var parentRegistry: FakeEnumRegistry<T>? = null,
 ) {
     private var initialized = false
     private val idValueMap: MutableMap<Int, T> = mutableMapOf()
@@ -36,7 +36,7 @@ class EnumRegistry<T : RegistryEnumable>(
         return valueIdMap[value] ?: parentRegistry?.getId(value)!!
     }
 
-    fun setParent(registry: EnumRegistry<T>?) {
+    fun setParent(registry: FakeEnumRegistry<T>?) {
         this.parentRegistry = registry
     }
 

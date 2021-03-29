@@ -15,12 +15,12 @@ package de.bixilon.minosoft.data.mappings.biomes
 
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.mappings.IdDeserializer
-import de.bixilon.minosoft.data.mappings.RegistryEnumable
+import de.bixilon.minosoft.data.mappings.RegistryFakeEnumerable
 import de.bixilon.minosoft.data.mappings.versions.VersionMapping
 
 data class BiomeCategory(
     override val name: String,
-) : RegistryEnumable {
+) : RegistryFakeEnumerable {
 
     companion object : IdDeserializer<BiomeCategory> {
         override fun deserialize(mappings: VersionMapping, data: JsonObject): BiomeCategory {
