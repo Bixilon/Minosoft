@@ -11,14 +11,15 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.mappings
+package de.bixilon.minosoft.data.mappings.registry
 
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.mappings.versions.VersionMapping
+import de.bixilon.minosoft.util.collections.Clearable
 
 class FakeEnumRegistry<T : RegistryFakeEnumerable>(
     private var parentRegistry: FakeEnumRegistry<T>? = null,
-) {
+) : Clearable {
     private var initialized = false
     private val idValueMap: MutableMap<Int, T> = mutableMapOf()
     private val valueIdMap: MutableMap<T, Int> = mutableMapOf()
@@ -62,7 +63,7 @@ class FakeEnumRegistry<T : RegistryFakeEnumerable>(
         initialized = true
     }
 
-    fun unload() {
+    override fun clear() {
         idValueMap.clear()
         valueIdMap.clear()
         nameValueMap.clear()

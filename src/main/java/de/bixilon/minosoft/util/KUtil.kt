@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.util
 
+import de.bixilon.minosoft.util.enum.AliasableEnum
+
 object KUtil {
 
     fun <T : Enum<*>> getEnumValues(values: Array<T>): Map<String, T> {
@@ -20,6 +22,12 @@ object KUtil {
 
         for (value in values) {
             ret[value.name.toLowerCase()] = value
+
+            if (value is AliasableEnum) {
+                for (name in value.names) {
+                    ret[name] = value
+                }
+            }
         }
 
         return ret.toMap()

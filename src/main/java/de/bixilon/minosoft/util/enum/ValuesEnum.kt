@@ -11,16 +11,9 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.mappings.items.armor
+package de.bixilon.minosoft.util.enum
 
-import com.google.gson.JsonObject
-import de.bixilon.minosoft.data.inventory.InventorySlots
-import de.bixilon.minosoft.data.mappings.ResourceLocation
-import de.bixilon.minosoft.data.mappings.items.Item
-
-open class ArmorItem(resourceLocation: ResourceLocation, data: JsonObject) : Item(resourceLocation, data) {
-    val protection = data["defense"].asFloat
-    val toughness = data["toughness"].asFloat
-    val equipmentSlot = data["equipment_slot"].asString.let { InventorySlots.EquipmentSlots.NAME_MAP[it] }
-    val knockbackResistance = data["knockback_resistance"]?.asFloat ?: 0.0f
+interface ValuesEnum<T> {
+    val VALUES: Array<T>
+    val NAME_MAP: Map<String, T>
 }

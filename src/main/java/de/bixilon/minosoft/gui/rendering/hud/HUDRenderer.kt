@@ -29,7 +29,7 @@ import de.bixilon.minosoft.gui.rendering.hud.elements.other.HotbarHUDElement
 import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.protocol.network.Connection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import de.bixilon.minosoft.util.json.ResourceLocationJsonMap
+import de.bixilon.minosoft.util.json.ResourceLocationJsonMap.toResourceLocationMap
 import glm_.glm
 import glm_.mat4x4.Mat4
 import glm_.vec2.Vec2
@@ -52,7 +52,7 @@ class HUDRenderer(val connection: Connection, val renderWindow: RenderWindow) : 
     override fun init() {
         hudShader.load(Minosoft.MINOSOFT_ASSETS_MANAGER)
 
-        val hudImages = HUDAtlasElement.deserialize(ResourceLocationJsonMap.create(Minosoft.MINOSOFT_ASSETS_MANAGER.readJsonAsset(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "mapping/atlas.json"))), connection.version.versionId)
+        val hudImages = HUDAtlasElement.deserialize(Minosoft.MINOSOFT_ASSETS_MANAGER.readJsonAsset(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "mapping/atlas.json")).toResourceLocationMap(), connection.version.versionId)
         this.hudAtlasElements = hudImages.second
 
         renderWindow.textures.allTextures.addAll(hudImages.first.toList())

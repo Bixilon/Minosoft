@@ -23,6 +23,7 @@ import java.util.TreeMap;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.LOWEST_VERSION_SUPPORTED;
 
+@Deprecated
 public class ChangeableResourceLocation extends VersionValueMap<ResourceLocation> {
 
     public ChangeableResourceLocation(ResourceLocation legacy, ResourceLocation water) {

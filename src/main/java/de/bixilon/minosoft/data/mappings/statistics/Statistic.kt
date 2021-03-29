@@ -12,8 +12,8 @@
  */
 package de.bixilon.minosoft.data.mappings.statistics
 
-import de.bixilon.minosoft.data.mappings.RegistryItem
 import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.data.mappings.registry.RegistryItem
 
 data class Statistic(
     override val resourceLocation: ResourceLocation,

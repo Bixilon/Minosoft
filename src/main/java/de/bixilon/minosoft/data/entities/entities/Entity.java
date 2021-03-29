@@ -44,7 +44,7 @@ public abstract class Entity {
     protected final EntityInformation information;
     protected final int entityId;
     protected final UUID uuid;
-    protected final HashMap<InventorySlots.EntityInventorySlots, Slot> equipment = new HashMap<>();
+    protected final HashMap<Integer, Slot> equipment = new HashMap<>();
     protected final HashSet<StatusEffectInstance> effectList = new HashSet<>();
     protected final int versionId;
     protected Vec3 position;
@@ -79,15 +79,15 @@ public abstract class Entity {
         this.position = new Vec3(this.position.x + relativePosition.x, this.position.y + relativePosition.y, this.position.z + relativePosition.z);
     }
 
-    public Slot getEquipment(InventorySlots.EntityInventorySlots slot) {
+    public Slot getEquipment(InventorySlots.EquipmentSlots slot) {
         return this.equipment.get(slot);
     }
 
-    public HashMap<InventorySlots.EntityInventorySlots, Slot> getEquipment() {
+    public HashMap<Integer, Slot> getEquipment() {
         return this.equipment;
     }
 
-    public void setEquipment(HashMap<InventorySlots.EntityInventorySlots, Slot> slots) {
+    public void setEquipment(HashMap<Integer, Slot> slots) {
         this.equipment.putAll(slots);
     }
 
@@ -291,22 +291,22 @@ public abstract class Entity {
     }
 
     public void move(Vec3 deltaPosition) {
-        if (! hasCollisions) {
-            this.position = new Vec3(position.plus(deltaPosition));
-            Log.debug(String.format("new Position: %s", position));
+        if (!this.hasCollisions) {
+            this.position = new Vec3(this.position.plus(deltaPosition));
+            Log.debug(String.format("new Position: %s", this.position));
             return;
         }
         AABB aabb = getAABB();
         VoxelShape collisionsToCheck = getCollisionsToCheck(deltaPosition, aabb);
         Vec3 realMovement = collide(deltaPosition, collisionsToCheck, aabb);
-        this.position = new Vec3(position.plus(realMovement));
+        this.position = new Vec3(this.position.plus(realMovement));
     }
 
     private VoxelShape getCollisionsToCheck(Vec3 deltaPosition, AABB originalAABB) {
         List<Vec3i> blockPositions = originalAABB.extend(deltaPosition).getBlockPositions();
         VoxelShape result = new VoxelShape();
         for (Vec3i blockPosition : blockPositions) {
-            BlockState blockState = connection.getPlayer().getWorld().getBlockState(blockPosition);
+            BlockState blockState = this.connection.getPlayer().getWorld().getBlockState(blockPosition);
             if (blockState == null) {
                 continue;
             }
@@ -330,11 +330,11 @@ public abstract class Entity {
     }
 
     private AABB getAABB() {
-        return DEFAULT_PLAYER_AABB.plus(position);
+        return DEFAULT_PLAYER_AABB.plus(this.position);
     }
 
     public boolean hasCollisions() {
-        return hasCollisions;
+        return this.hasCollisions;
     }
 
     public void setHasCollisions(boolean hasCollisions) {

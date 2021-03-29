@@ -18,13 +18,10 @@ import de.bixilon.minosoft.data.mappings.ResourceLocation
 
 object ResourceLocationJsonMap {
 
-    fun create(jsonData: JsonObject?): Map<ResourceLocation, JsonObject> {
-        if (jsonData == null) {
-            return mutableMapOf()
-        }
+    fun JsonObject.toResourceLocationMap(): Map<ResourceLocation, JsonObject> {
         val ret: MutableMap<ResourceLocation, JsonObject> = mutableMapOf()
 
-        for ((key, value) in jsonData.entrySet()) {
+        for ((key, value) in entrySet()) {
             check(value is JsonObject)
 
             ret[ResourceLocation(key)] = value

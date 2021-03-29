@@ -22,6 +22,7 @@ import de.bixilon.minosoft.data.accounts.Account;
 import de.bixilon.minosoft.data.assets.JarAssetsManager;
 import de.bixilon.minosoft.data.assets.Resources;
 import de.bixilon.minosoft.data.locale.LocaleManager;
+import de.bixilon.minosoft.data.mappings.DefaultRegistries;
 import de.bixilon.minosoft.data.mappings.ResourceLocation;
 import de.bixilon.minosoft.data.mappings.versions.Versions;
 import de.bixilon.minosoft.gui.main.GUITools;
@@ -131,8 +132,12 @@ public final class Minosoft {
             long mappingStartLoadingTime = System.currentTimeMillis();
             Versions.loadAvailableVersions(MINOSOFT_ASSETS_MANAGER.readJsonAsset(new ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "mapping/versions.json")));
             Log.info(String.format("Loaded %d versions in %dms", Versions.getVersionIdMap().size(), (System.currentTimeMillis() - mappingStartLoadingTime)));
+            Log.info("Loading resources...");
             Resources.load();
-            Log.info("Loaded all resources!");
+            Log.info("Loaded resources!");
+            Log.info("Loading default registries...");
+            DefaultRegistries.INSTANCE.load();
+            Log.info("Loaded default registries!");
         }, "Version mappings", "Load available minecraft versions inclusive mappings", Priorities.NORMAL, TaskImportance.REQUIRED, "Configuration"));
 
         taskWorker.addTask(new Task(progress -> {

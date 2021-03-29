@@ -13,6 +13,8 @@
 package de.bixilon.minosoft.data.mappings
 
 import com.google.gson.JsonObject
+import de.bixilon.minosoft.data.mappings.registry.RegistryItem
+import de.bixilon.minosoft.data.mappings.registry.ResourceLocationDeserializer
 import de.bixilon.minosoft.data.mappings.versions.VersionMapping
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.nbt.tag.CompoundTag

@@ -16,5 +16,5 @@ package de.bixilon.minosoft.gui.rendering.textures
 enum class TextureTransparencies {
     OPAQUE,
     TRANSPARENT,
-    SEMI_TRANSPARENT,
+    TRANSLUCENT,
 }

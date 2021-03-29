@@ -154,7 +154,7 @@ class ElementRenderer(parent: BlockModelElement, val rotation: Vec3, uvLock: Boo
         val DRAW_OFFSET = Vec3(+0.5f, +0.5f, +0.5f)
 
         fun getMesh(meshCollection: ChunkMeshCollection, textureTransparencies: TextureTransparencies): SectionArrayMesh {
-            return if (textureTransparencies == TextureTransparencies.SEMI_TRANSPARENT) {
+            return if (textureTransparencies == TextureTransparencies.TRANSLUCENT) {
                 meshCollection.transparentSectionArrayMesh!!
             } else {
                 meshCollection.opaqueSectionArrayMesh

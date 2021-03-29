@@ -124,7 +124,7 @@ data class Version(
     }
 
     fun unload() {
-        mapping.unload()
+        mapping.clear()
         if (mapping.parentMapping == mapping) {
             mapping.parentMapping = null
         }

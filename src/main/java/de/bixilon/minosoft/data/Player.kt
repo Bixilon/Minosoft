@@ -16,7 +16,6 @@ import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.data.inventory.Inventory
 import de.bixilon.minosoft.data.inventory.InventoryProperties
-import de.bixilon.minosoft.data.inventory.InventorySlots.InventoryInterface
 import de.bixilon.minosoft.data.inventory.Slot
 import de.bixilon.minosoft.data.player.PlayerListItem
 import de.bixilon.minosoft.data.scoreboard.ScoreboardManager
@@ -31,7 +30,7 @@ class Player(val account: Account) {
     val playerList = HashMap<UUID, PlayerListItem>()
     val scoreboardManager = ScoreboardManager()
     val world = World()
-    private val inventories = HashMap<Int, Inventory>()
+    private val inventories: MutableMap<Int, Inventory> = mutableMapOf()
     var health = 0.0f
     var food = 0
     var saturation = 0.0f
@@ -69,16 +68,16 @@ class Player(val account: Account) {
         return inventories[id]
     }
 
-    fun getSlot(windowId: Int, slot: InventoryInterface, versionId: Int): Slot {
-        return getSlot(windowId, slot.getId(versionId))
+    fun getSlot(windowId: Int, slotId: Int, versionId: Int): Slot {
+        return getSlot(windowId, slotId)
     }
 
     fun getSlot(windowId: Int, slot: Int): Slot {
         return inventories[windowId]!!.getSlot(slot)
     }
 
-    fun setSlot(windowId: Int, slot: InventoryInterface, versionId: Int, data: Slot?) {
-        setSlot(windowId, slot.getId(versionId), data)
+    fun setSlot(windowId: Int, slotId: Int, versionId: Int, data: Slot?) {
+        setSlot(windowId, slotId, data)
     }
 
     fun createInventory(properties: InventoryProperties) {

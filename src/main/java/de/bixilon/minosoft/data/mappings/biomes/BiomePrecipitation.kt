@@ -14,8 +14,8 @@
 package de.bixilon.minosoft.data.mappings.biomes
 
 import com.google.gson.JsonObject
-import de.bixilon.minosoft.data.mappings.IdDeserializer
-import de.bixilon.minosoft.data.mappings.RegistryFakeEnumerable
+import de.bixilon.minosoft.data.mappings.registry.IdDeserializer
+import de.bixilon.minosoft.data.mappings.registry.RegistryFakeEnumerable
 import de.bixilon.minosoft.data.mappings.versions.VersionMapping
 
 data class BiomePrecipitation(
@@ -28,6 +28,5 @@ data class BiomePrecipitation(
                 name = data["name"].asString
             )
         }
-
     }
 }

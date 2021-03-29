@@ -11,15 +11,17 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.mappings
+package de.bixilon.minosoft.data.mappings.registry
 
 import com.google.gson.JsonObject
+import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.versions.VersionMapping
-import de.bixilon.minosoft.util.json.ResourceLocationJsonMap
+import de.bixilon.minosoft.util.collections.Clearable
+import de.bixilon.minosoft.util.json.ResourceLocationJsonMap.toResourceLocationMap
 
 open class Registry<T : RegistryItem>(
     private var parentRegistry: Registry<T>? = null,
-) : Iterable<T> {
+) : Iterable<T>, Clearable {
     private var initialized = false
     private val idValueMap: MutableMap<Int, T> = mutableMapOf()
     private val valueIdMap: MutableMap<T, Int> = mutableMapOf()
@@ -77,7 +79,7 @@ open class Registry<T : RegistryItem>(
     }
 
     open fun initialize(data: JsonObject?, mappings: VersionMapping, deserializer: ResourceLocationDeserializer<T>, flattened: Boolean = true, metaType: MetaTypes = MetaTypes.NONE) {
-        initialize(ResourceLocationJsonMap.create(data), mappings, deserializer, flattened, metaType)
+        initialize(data?.toResourceLocationMap(), mappings, deserializer, flattened, metaType)
     }
 
 
@@ -100,7 +102,7 @@ open class Registry<T : RegistryItem>(
         return super.toString() + ": ${resourceLocationMap.size}x"
     }
 
-    fun unload() {
+    override fun clear() {
         resourceLocationMap.clear()
         idValueMap.clear()
         valueIdMap.clear()

@@ -69,10 +69,10 @@ class Texture(
         transparency = TextureTransparencies.OPAQUE
         for (i in 0 until buffer.limit() step 4) {
             val color = RGBColor(buffer.get(), buffer.get(), buffer.get(), buffer.get())
-            if (color.alpha == 0x00 && transparency != TextureTransparencies.SEMI_TRANSPARENT) {
+            if (color.alpha == 0x00 && transparency != TextureTransparencies.TRANSLUCENT) {
                 transparency = TextureTransparencies.TRANSPARENT
             } else if (color.alpha < 0xFF) {
-                transparency = TextureTransparencies.SEMI_TRANSPARENT
+                transparency = TextureTransparencies.TRANSLUCENT
             }
         }
         buffer.flip()

@@ -13,9 +13,9 @@
 package de.bixilon.minosoft.data.mappings.biomes
 
 import com.google.gson.JsonObject
-import de.bixilon.minosoft.data.mappings.RegistryItem
 import de.bixilon.minosoft.data.mappings.ResourceLocation
-import de.bixilon.minosoft.data.mappings.ResourceLocationDeserializer
+import de.bixilon.minosoft.data.mappings.registry.RegistryItem
+import de.bixilon.minosoft.data.mappings.registry.ResourceLocationDeserializer
 import de.bixilon.minosoft.data.mappings.versions.VersionMapping
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderConstants

@@ -14,11 +14,13 @@ package de.bixilon.minosoft.data.mappings.versions
 
 import com.google.common.collect.HashBiMap
 import com.google.gson.JsonArray
+import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.EntityClassMappings
 import de.bixilon.minosoft.data.entities.EntityInformation
 import de.bixilon.minosoft.data.entities.EntityMetaDataFields
 import de.bixilon.minosoft.data.entities.entities.Entity
+import de.bixilon.minosoft.data.inventory.InventorySlots
 import de.bixilon.minosoft.data.mappings.*
 import de.bixilon.minosoft.data.mappings.biomes.Biome
 import de.bixilon.minosoft.data.mappings.biomes.BiomeCategory
@@ -29,12 +31,16 @@ import de.bixilon.minosoft.data.mappings.items.Item
 import de.bixilon.minosoft.data.mappings.items.ItemRegistry
 import de.bixilon.minosoft.data.mappings.materials.Material
 import de.bixilon.minosoft.data.mappings.particle.Particle
+import de.bixilon.minosoft.data.mappings.registry.EnumRegistry
+import de.bixilon.minosoft.data.mappings.registry.FakeEnumRegistry
+import de.bixilon.minosoft.data.mappings.registry.Registry
 import de.bixilon.minosoft.data.mappings.statistics.Statistic
 import de.bixilon.minosoft.gui.rendering.chunk.VoxelShape
 import de.bixilon.minosoft.gui.rendering.chunk.models.AABB
 import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModel
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import de.bixilon.minosoft.util.json.ResourceLocationJsonMap
+import de.bixilon.minosoft.util.collections.Clearable
+import de.bixilon.minosoft.util.json.ResourceLocationJsonMap.toResourceLocationMap
 import java.util.*
 
 
@@ -50,6 +56,11 @@ class VersionMapping(var version: Version?) {
     val biomeRegistry: Registry<Biome> = Registry()
     val dimensionRegistry: Registry<Dimension> = Registry()
     val materialRegistry: Registry<Material> = Registry()
+
+    val equipmentSlotRegistry: EnumRegistry<InventorySlots.EquipmentSlots> = EnumRegistry(values = InventorySlots.EquipmentSlots)
+    val handEquipmentSlotRegistry: EnumRegistry<InventorySlots.EquipmentSlots> = EnumRegistry(values = InventorySlots.EquipmentSlots)
+    val armorEquipmentSlotRegistry: EnumRegistry<InventorySlots.EquipmentSlots> = EnumRegistry(values = InventorySlots.EquipmentSlots)
+    val armorStandEquipmentSlotRegistry: EnumRegistry<InventorySlots.EquipmentSlots> = EnumRegistry(values = InventorySlots.EquipmentSlots)
 
     val biomePrecipitationRegistry: FakeEnumRegistry<BiomePrecipitation> = FakeEnumRegistry()
     val biomeCategoryRegistry: FakeEnumRegistry<BiomeCategory> = FakeEnumRegistry()
@@ -106,11 +117,26 @@ class VersionMapping(var version: Version?) {
         return entityIdClassMap[entityTypeId] ?: _parentMapping?.getEntityClassById(entityTypeId)
     }
 
+    private fun <T : Enum<*>> loadEnumRegistry(data: JsonElement?, registry: EnumRegistry<T>, alternative: PerVersionRegistry<T>) {
+        data?.let {
+            registry.initialize(it)
+        } ?: let {
+            registry.setParent(alternative.forVersion(version!!))
+        }
+    }
+
     fun load(pixlyzerData: JsonObject) {
+        val version = version!!
         // pre init stuff
         loadShapes(pixlyzerData["shapes"]?.asJsonObject)
 
-        loadBlockModels(ResourceLocationJsonMap.create(pixlyzerData["models"].asJsonObject))
+        loadBlockModels(pixlyzerData["models"].asJsonObject.toResourceLocationMap())
+
+        // enums
+        loadEnumRegistry(pixlyzerData["equipment_slots"], equipmentSlotRegistry, DefaultRegistries.EQUIPMENT_SLOTS_REGISTRY)
+        loadEnumRegistry(pixlyzerData["hand_equipment_slots"], handEquipmentSlotRegistry, DefaultRegistries.HAND_EQUIPMENT_SLOTS_REGISTRY)
+        loadEnumRegistry(pixlyzerData["armor_equipment_slots"], armorEquipmentSlotRegistry, DefaultRegistries.ARMOR_EQUIPMENT_SLOTS_REGISTRY)
+        loadEnumRegistry(pixlyzerData["armor_stand_equipment_slots"], armorStandEquipmentSlotRegistry, DefaultRegistries.ARMOR_STAND_EQUIPMENT_SLOTS_REGISTRY)
 
         // id stuff
         biomeCategoryRegistry.initialize(pixlyzerData["biome_categories"]?.asJsonObject, this, BiomeCategory.Companion)
@@ -118,9 +144,9 @@ class VersionMapping(var version: Version?) {
 
         // id resource location stuff
         materialRegistry.initialize(pixlyzerData["materials"]?.asJsonObject, this, Material.Companion)
-        motiveRegistry.initialize(pixlyzerData["motives"]?.asJsonObject, this, Motive.Companion, version!!.isFlattened())
-        blockRegistry.initialize(pixlyzerData["blocks"]?.asJsonObject, this, Block.Companion, version!!.isFlattened(), Registry.MetaTypes.BITS_4)
-        itemRegistry.initialize(pixlyzerData["items"]?.asJsonObject, this, Item.Companion, version!!.isFlattened(), Registry.MetaTypes.BITS_16)
+        motiveRegistry.initialize(pixlyzerData["motives"]?.asJsonObject, this, Motive.Companion, version.isFlattened())
+        blockRegistry.initialize(pixlyzerData["blocks"]?.asJsonObject, this, Block.Companion, version.isFlattened(), Registry.MetaTypes.BITS_4)
+        itemRegistry.initialize(pixlyzerData["items"]?.asJsonObject, this, Item.Companion, version.isFlattened(), Registry.MetaTypes.BITS_16)
         enchantmentRegistry.initialize(pixlyzerData["enchantments"]?.asJsonObject, this, Enchantment.Companion)
         particleRegistry.initialize(pixlyzerData["particles"]?.asJsonObject, this, Particle.Companion)
         statusEffectRegistry.initialize(pixlyzerData["mob_effect"]?.asJsonObject, this, StatusEffect.Companion)
@@ -206,9 +232,9 @@ class VersionMapping(var version: Version?) {
         return model
     }
 
-    fun unload() {
+    fun clear() {
         for (field in this::class.java.fields) {
-            if (!field.type.isAssignableFrom(Registry::class.java) && field.type.isAssignableFrom(FakeEnumRegistry::class.java)) {
+            if (!field.type.isAssignableFrom(Clearable::class.java)) {
                 continue
             }
             field.javaClass.getMethod("clear").invoke(this)

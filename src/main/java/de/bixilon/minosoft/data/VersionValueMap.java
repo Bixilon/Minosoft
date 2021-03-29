@@ -16,6 +16,7 @@ package de.bixilon.minosoft.data;
 import java.util.Map;
 import java.util.TreeMap;
 
+@Deprecated
 public class VersionValueMap<V> {
     protected final TreeMap<Integer, V> values;
 

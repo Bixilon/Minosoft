@@ -1,0 +1,43 @@
+{
+  "minecraft:equipment_slots": {
+    "0": [
+      "MAIN_HAND",
+      "FEET",
+      "LEGS",
+      "CHEST",
+      "HEAD"
+    ],
+    "49": [
+      "MAIN_HAND",
+      "OFF_HAND",
+      "FEET",
+      "LEGS",
+      "CHEST",
+      "HEAD"
+    ]
+  },
+  "minecraft:hand_equipment_slots": {
+    "0": [
+      "MAIN_HAND",
+      "OFF_HAND"
+    ]
+  },
+  "minecraft:armor_equipment_slots": {
+    "0": [
+      "FEET",
+      "LEGS",
+      "CHEST",
+      "HEAD"
+    ]
+  },
+  "minecraft:armor_stand_equipment_slots": {
+    "0": [
+      "MAIN_HAND",
+      "FEET",
+      "LEGS",
+      "CHEST",
+      "HEAD",
+      "OFF_HAND"
+    ]
+  }
+}

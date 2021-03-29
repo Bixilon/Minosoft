@@ -11,11 +11,8 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.mappings
+package de.bixilon.minosoft.data.mappings.registry
 
-import com.google.gson.JsonObject
-import de.bixilon.minosoft.data.mappings.versions.VersionMapping
-
-interface IdDeserializer<T> {
-    fun deserialize(mappings: VersionMapping, data: JsonObject): T
+interface RegistryFakeEnumerable {
+    val name: String
 }
