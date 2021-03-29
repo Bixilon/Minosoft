@@ -14,8 +14,8 @@
 package de.bixilon.minosoft.data.inventory;
 
 import de.bixilon.minosoft.data.mappings.Enchantment;
-import de.bixilon.minosoft.data.mappings.Item;
 import de.bixilon.minosoft.data.mappings.ResourceLocation;
+import de.bixilon.minosoft.data.mappings.items.Item;
 import de.bixilon.minosoft.data.mappings.versions.Version;
 import de.bixilon.minosoft.data.mappings.versions.VersionMapping;
 import de.bixilon.minosoft.data.text.ChatComponent;

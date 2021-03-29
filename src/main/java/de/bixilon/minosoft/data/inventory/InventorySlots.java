@@ -122,10 +122,21 @@ public class InventorySlots {
             }
             return value;
         }
+
+        public static EntityInventorySlots get(String name) {
+            return switch (name) {
+                case "mainhand" -> MAIN_HAND;
+                case "offhand" -> OFF_HAND;
+                case "feet" -> BOOTS;
+                case "legs" -> LEGGINGS;
+                case "chest" -> CHESTPLATE;
+                case "head" -> HELMET;
+                default -> throw new IllegalArgumentException("Invalid equipment slot " + name);
+            };
+        }
     }
 
     public interface InventoryInterface {
         int getId(int versionId);
     }
-
 }

@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.data.mappings.items
 
 import com.google.gson.JsonObject
-import de.bixilon.minosoft.data.mappings.Item
 import de.bixilon.minosoft.data.mappings.Registry
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.ResourceLocationDeserializer

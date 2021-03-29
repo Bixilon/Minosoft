@@ -19,7 +19,7 @@ import de.bixilon.minosoft.data.entities.EntityMetaDataFields;
 import de.bixilon.minosoft.data.entities.EntityRotation;
 import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction;
 import de.bixilon.minosoft.data.entities.entities.LivingEntity;
-import de.bixilon.minosoft.data.mappings.Item;
+import de.bixilon.minosoft.data.mappings.items.Item;
 import de.bixilon.minosoft.data.player.Hands;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.util.nbt.tag.CompoundTag;
@@ -98,7 +98,7 @@ public class PlayerEntity extends LivingEntity {
     }
 
     public Gamemodes getGamemode() {
-        return gamemode;
+        return this.gamemode;
     }
 
     public void setGamemode(Gamemodes gamemode) {
