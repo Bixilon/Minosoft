@@ -24,7 +24,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.MMath
 
 data class Biome(
-    val resourceLocation: ResourceLocation,
+    override val resourceLocation: ResourceLocation,
     val depth: Float,
     val scale: Float,
     val temperature: Float,
@@ -38,13 +38,9 @@ data class Biome(
     val grassColor: RGBColor?,
     val descriptionId: String?,
     val grassColorModifier: GrassColorModifiers = GrassColorModifiers.NONE,
-) : RegistryItem {
+) : RegistryItem() {
     val temperatureColorMapCoordinate = getColorMapCoordinate(temperature)
     val downfallColorMapCoordinate = getColorMapCoordinate(downfall * temperature)
-
-    override fun toString(): String {
-        return resourceLocation.toString()
-    }
 
     private fun getColorMapCoordinate(value: Float): Int {
         return ((1.0 - MMath.clamp(value, 0.0f, 1.0f)) * RenderConstants.COLORMAP_SIZE).toInt()
@@ -91,6 +87,5 @@ data class Biome(
             // ToDo: Minecraft uses PerlinSimplexNoise here
             RGBColor("#6A7039")
         }),
-
     }
 }

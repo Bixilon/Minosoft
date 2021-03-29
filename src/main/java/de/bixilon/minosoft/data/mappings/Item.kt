@@ -17,16 +17,13 @@ import de.bixilon.minosoft.data.Rarities
 import de.bixilon.minosoft.data.mappings.versions.VersionMapping
 
 data class Item(
-    val resourceLocation: ResourceLocation,
+    override val resourceLocation: ResourceLocation,
     val rarity: Rarities = Rarities.COMMON,
     val maxStackSize: Int = 64,
     val maxDamage: Int = 0,
     val isFireResistant: Boolean = false,
     val descriptionId: String?,
-) : RegistryItem {
-    override fun toString(): String {
-        return resourceLocation.toString()
-    }
+) : RegistryItem() {
 
     companion object : ResourceLocationDeserializer<Item> {
         override fun deserialize(mappings: VersionMapping, resourceLocation: ResourceLocation, data: JsonObject): Item {

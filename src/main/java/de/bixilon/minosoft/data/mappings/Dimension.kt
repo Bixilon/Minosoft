@@ -18,7 +18,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.nbt.tag.CompoundTag
 
 data class Dimension(
-    val resourceLocation: ResourceLocation,
+    override val resourceLocation: ResourceLocation,
     val piglinSafe: Boolean = false,
     val natural: Boolean = true,
     val ambientLight: Float = 0.0f,
@@ -35,7 +35,7 @@ data class Dimension(
     val ultrawarm: Boolean = false,
     val height: Int = 256,
     val supports3DBiomes: Boolean = true,
-) : RegistryItem {
+) : RegistryItem() {
     val lowestSection = if (minY < 0) {
         (minY + 1) / ProtocolDefinition.SECTION_HEIGHT_Y - 1
     } else {
@@ -45,10 +45,6 @@ data class Dimension(
         (height + 1) / ProtocolDefinition.SECTION_HEIGHT_Y - 1
     } else {
         height / ProtocolDefinition.SECTION_HEIGHT_Y
-    }
-
-    override fun toString(): String {
-        return resourceLocation.toString()
     }
 
     fun bareEquals(dimension: Dimension): Boolean {

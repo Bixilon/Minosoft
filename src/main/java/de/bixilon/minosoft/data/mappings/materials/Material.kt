@@ -21,7 +21,7 @@ import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.TintColorCalculator
 
 data class Material(
-    val resourceLocation: ResourceLocation,
+    override val resourceLocation: ResourceLocation,
     val color: RGBColor?,
     val pushReaction: PushReactions,
     val blockMotion: Boolean,
@@ -30,11 +30,7 @@ data class Material(
     val solidBlocking: Boolean,
     val replaceable: Boolean,
     val solid: Boolean,
-) : RegistryItem {
-
-    override fun toString(): String {
-        return resourceLocation.toString()
-    }
+) : RegistryItem() {
 
     companion object : ResourceLocationDeserializer<Material> {
         override fun deserialize(mappings: VersionMapping, resourceLocation: ResourceLocation, data: JsonObject): Material {

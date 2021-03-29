@@ -23,14 +23,14 @@ import de.bixilon.minosoft.gui.rendering.TintColorCalculator
 import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockCondition
 
 data class Block(
-    val resourceLocation: ResourceLocation,
+    override val resourceLocation: ResourceLocation,
     val explosionResistance: Float = 0.0f,
     val hasCollision: Boolean = false,
     val hasDynamicShape: Boolean = false,
     val tintColor: RGBColor? = null,
     private val itemId: Int = 0,
     val tint: ResourceLocation? = null,
-) : RegistryItem {
+) : RegistryItem() {
     lateinit var item: Item
     val states: MutableSet<BlockState> = mutableSetOf()
     var multipartMapping: MutableMap<BlockCondition, MutableList<JsonObject>>? = null
@@ -41,11 +41,13 @@ data class Block(
 
     companion object : ResourceLocationDeserializer<Block> {
         override fun deserialize(mappings: VersionMapping, resourceLocation: ResourceLocation, data: JsonObject): Block {
-            val block = Block(resourceLocation = resourceLocation, explosionResistance = data["explosion_resistance"]?.asFloat
-                ?: 0.0f, hasCollision = data["has_collision"]?.asBoolean
-                ?: false, hasDynamicShape = data["has_dynamic_shape"]?.asBoolean
-                ?: false, tintColor = data["tint_color"]?.asInt?.let { TintColorCalculator.getJsonColor(it) }, itemId = data["item"]?.asInt
-                ?: 0, tint = data["tint"]?.asString?.let { ResourceLocation(it) })
+            val block = Block(
+                resourceLocation = resourceLocation, explosionResistance = data["explosion_resistance"]?.asFloat ?: 0.0f,
+                hasCollision = data["has_collision"]?.asBoolean ?: false,
+                hasDynamicShape = data["has_dynamic_shape"]?.asBoolean ?: false,
+                tintColor = data["tint_color"]?.asInt?.let { TintColorCalculator.getJsonColor(it) },
+                itemId = data["item"]?.asInt ?: 0,
+                tint = data["tint"]?.asString?.let { ResourceLocation(it) })
 
             // block states
 

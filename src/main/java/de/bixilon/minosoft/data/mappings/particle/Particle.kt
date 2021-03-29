@@ -19,17 +19,13 @@ import de.bixilon.minosoft.data.mappings.ResourceLocationDeserializer
 import de.bixilon.minosoft.data.mappings.versions.VersionMapping
 
 data class Particle(
-    val resourceLocation: ResourceLocation,
+    override val resourceLocation: ResourceLocation,
     // ToDo
-) : RegistryItem {
-    override fun toString(): String {
-        return resourceLocation.toString()
-    }
+) : RegistryItem() {
 
     companion object : ResourceLocationDeserializer<Particle> {
         override fun deserialize(mappings: VersionMapping, resourceLocation: ResourceLocation, data: JsonObject): Particle {
             return Particle(resourceLocation)
         }
-
     }
 }
