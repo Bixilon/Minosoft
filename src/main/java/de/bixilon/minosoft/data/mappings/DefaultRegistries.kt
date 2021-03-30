@@ -16,7 +16,7 @@ package de.bixilon.minosoft.data.mappings
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.entities.meta.EntityMetaData
 import de.bixilon.minosoft.data.inventory.InventorySlots
-import de.bixilon.minosoft.protocol.packets.clientbound.play.title.PacketTitle
+import de.bixilon.minosoft.protocol.packets.clientbound.play.title.TitlePacketFactory
 import de.bixilon.minosoft.util.json.ResourceLocationJsonMap.toResourceLocationMap
 
 object DefaultRegistries {
@@ -30,7 +30,7 @@ object DefaultRegistries {
 
     val ENTITY_META_DATA_DATA_TYPES_REGISTRY = PerVersionRegistry(EntityMetaData.EntityMetaDataDataTypes)
 
-    val TITLE_ACTIONS_REGISTRY = PerVersionRegistry(PacketTitle.TitleActions)
+    val TITLE_ACTIONS_REGISTRY = PerVersionRegistry(TitlePacketFactory.TitleActions)
 
 
     fun load() {

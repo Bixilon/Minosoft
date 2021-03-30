@@ -21,7 +21,7 @@ import de.bixilon.minosoft.protocol.ErrorHandler
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket
 import de.bixilon.minosoft.protocol.packets.clientbound.login.*
 import de.bixilon.minosoft.protocol.packets.clientbound.play.*
-import de.bixilon.minosoft.protocol.packets.clientbound.play.title.PacketTitle
+import de.bixilon.minosoft.protocol.packets.clientbound.play.title.TitlePacketFactory
 import de.bixilon.minosoft.protocol.packets.clientbound.status.PacketStatusPong
 import de.bixilon.minosoft.protocol.packets.clientbound.status.PacketStatusResponse
 
@@ -198,7 +198,7 @@ class PacketTypes {
         PLAY_UPDATE_SIGN({ PacketUpdateSignReceiving(it) }),
         PLAY_STATISTICS({ PacketStatistics(it) }),
         PLAY_SPAWN_ENTITY({ PacketSpawnObject(it) }, false),
-        PLAY_TITLE({ PacketTitle(it) }),
+        PLAY_TITLE({ TitlePacketFactory.createPacket(it) }),
         PLAY_ENTITY_INITIALISATION({ PacketEntityInitialisation(it) }, false),
         PLAY_SET_COMPRESSION({ PacketSetCompression(it) }, false),
         PLAY_ADVANCEMENT_PROGRESS({ TODO() }),
