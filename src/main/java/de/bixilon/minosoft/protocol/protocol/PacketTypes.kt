@@ -21,6 +21,7 @@ import de.bixilon.minosoft.protocol.ErrorHandler
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket
 import de.bixilon.minosoft.protocol.packets.clientbound.login.*
 import de.bixilon.minosoft.protocol.packets.clientbound.play.*
+import de.bixilon.minosoft.protocol.packets.clientbound.play.combat.CombatEventPacketFactory
 import de.bixilon.minosoft.protocol.packets.clientbound.play.title.TitlePacketFactory
 import de.bixilon.minosoft.protocol.packets.clientbound.status.PacketStatusPong
 import de.bixilon.minosoft.protocol.packets.clientbound.status.PacketStatusResponse
@@ -152,7 +153,7 @@ class PacketTypes {
         PLAY_OPEN_SIGN_EDITOR({ PacketOpenSignEditor(it) }),
         PLAY_CRAFT_RECIPE_RESPONSE({ PacketCraftRecipeResponse(it) }),
         PLAY_PLAYER_ABILITIES({ PacketPlayerAbilitiesReceiving(it) }),
-        PLAY_COMBAT_EVENT({ PacketCombatEvent(it) }),
+        PLAY_COMBAT_EVENT({ CombatEventPacketFactory.createPacket(it) }),
         PLAY_PLAYER_LIST_ITEM({ PacketPlayerListItem(it) }),
         PLAY_FACE_PLAYER({ PacketFacePlayer(it) }),
         PLAY_PLAYER_POSITION_AND_ROTATION({ PacketPlayerPositionAndRotation(it) }),
