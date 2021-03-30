@@ -24,6 +24,7 @@ import de.bixilon.minosoft.data.world.biome.accessor.BlockBiomeAccessor
 import de.bixilon.minosoft.data.world.biome.accessor.NoiseBiomeAccessor
 import de.bixilon.minosoft.gui.rendering.util.VecUtil
 import de.bixilon.minosoft.modding.event.events.JoinGameEvent
+import de.bixilon.minosoft.protocol.ErrorHandler
 import de.bixilon.minosoft.protocol.network.Connection
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer
@@ -36,8 +37,8 @@ import de.bixilon.minosoft.util.nbt.tag.ListTag
 import de.bixilon.minosoft.util.nbt.tag.NBTTag
 import kotlin.experimental.and
 
-class PacketJoinGame() : ClientboundPacket() {
-    var entityId: Int = 0
+class PacketJoinGame(buffer: InByteBuffer) : ClientboundPacket() {
+    val entityId: Int
     var isHardcore: Boolean = false
     var gamemode: Gamemodes = Gamemodes.SPECTATOR
     var dimension: Dimension? = null
@@ -50,7 +51,7 @@ class PacketJoinGame() : ClientboundPacket() {
     var hashedSeed: Long = 0L
     var dimensions: HashBiMap<ResourceLocation, Dimension> = HashBiMap.create()
 
-    constructor(buffer: InByteBuffer) : this() {
+    init {
         entityId = buffer.readInt()
 
         if (buffer.versionId < V_20W27A) {
@@ -70,10 +71,9 @@ class PacketJoinGame() : ClientboundPacket() {
             if (buffer.versionId >= ProtocolVersions.V_13W42B) {
                 levelType = LevelTypes.byType(buffer.readString())
             }
-            if (buffer.versionId < ProtocolVersions.V_14W29A) {
-                return
+            if (buffer.versionId >= ProtocolVersions.V_14W29A) {
+                isReducedDebugScreen = buffer.readBoolean()
             }
-            isReducedDebugScreen = buffer.readBoolean()
         }
 
         if (buffer.versionId >= ProtocolVersions.V_1_16_PRE6) {
@@ -124,7 +124,6 @@ class PacketJoinGame() : ClientboundPacket() {
         if (buffer.versionId >= ProtocolVersions.V_19W36A) {
             isEnableRespawnScreen = buffer.readBoolean()
         }
-        return
     }
 
     override fun handle(connection: Connection) {
@@ -180,7 +179,10 @@ class PacketJoinGame() : ClientboundPacket() {
         Log.protocol(String.format("[IN] Receiving join game packet (entityId=%s, gamemode=%s, dimension=%s, difficulty=%s, hardcore=%s, viewDistance=%d)", entityId, gamemode, dimension, difficulty, isHardcore, viewDistance))
     }
 
-    override fun onError(connection: Connection) {
-        connection.disconnect()
+    companion object : ErrorHandler {
+
+        override fun onError(connection: Connection) {
+            connection.disconnect()
+        }
     }
 }

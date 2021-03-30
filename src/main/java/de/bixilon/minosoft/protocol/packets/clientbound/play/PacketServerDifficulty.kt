@@ -19,11 +19,12 @@ import de.bixilon.minosoft.protocol.protocol.InByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.util.logging.Log
 
-class PacketServerDifficulty() : ClientboundPacket() {
-    lateinit var difficulty: Difficulties
+class PacketServerDifficulty(buffer: InByteBuffer) : ClientboundPacket() {
+    val difficulty: Difficulties
     var locked = false
+        private set
 
-    constructor(buffer: InByteBuffer) : this() {
+    init {
         difficulty = Difficulties.byId(buffer.readUnsignedByte().toInt())
         if (buffer.versionId > ProtocolVersions.V_19W11A) {
             locked = buffer.readBoolean()

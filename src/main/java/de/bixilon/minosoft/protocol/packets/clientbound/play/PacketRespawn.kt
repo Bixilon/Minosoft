@@ -24,17 +24,24 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.nbt.tag.CompoundTag
 
-class PacketRespawn() : ClientboundPacket() {
-    var dimension: Dimension? = null
-    var difficulty: Difficulties? = null
-    var gamemode: Gamemodes? = null
-    var levelType: LevelTypes? = null
-    var hashedSeed: Long = 0
+class PacketRespawn(buffer: InByteBuffer) : ClientboundPacket() {
+    lateinit var dimension: Dimension
+        private set
+    var difficulty: Difficulties = Difficulties.NORMAL
+        private set
+    val gamemode: Gamemodes
+    var levelType: LevelTypes = LevelTypes.UNKNOWN
+        private set
+    var hashedSeed = 0L
+        private set
     var isDebug = false
+        private set
     var isFlat = false
+        private set
     var copyMetaData = false
+        private set
 
-    constructor(buffer: InByteBuffer) : this() {
+    init {
         when {
             buffer.versionId < ProtocolVersions.V_20W21A -> {
                 dimension = buffer.connection.mapping.dimensionRegistry.get(if (buffer.versionId < ProtocolVersions.V_1_8_9) { // ToDo: this should be 108 but wiki.vg is wrong. In 1.8 it is an int.
@@ -44,7 +51,7 @@ class PacketRespawn() : ClientboundPacket() {
                 })
             }
             buffer.versionId < ProtocolVersions.V_1_16_2_PRE3 -> {
-                dimension = buffer.connection.mapping.dimensionRegistry.get(buffer.readResourceLocation())
+                dimension = buffer.connection.mapping.dimensionRegistry.get(buffer.readResourceLocation())!!
             }
             else -> {
                 buffer.readNBT() as CompoundTag // current dimension data
@@ -54,7 +61,7 @@ class PacketRespawn() : ClientboundPacket() {
             difficulty = Difficulties.byId(buffer.readUnsignedByte().toInt())
         }
         if (buffer.versionId >= ProtocolVersions.V_20W22A) {
-            dimension = buffer.connection.mapping.dimensionRegistry.get(buffer.readResourceLocation())
+            dimension = buffer.connection.mapping.dimensionRegistry.get(buffer.readResourceLocation())!!
         }
         if (buffer.versionId >= ProtocolVersions.V_19W36A) {
             hashedSeed = buffer.readLong()

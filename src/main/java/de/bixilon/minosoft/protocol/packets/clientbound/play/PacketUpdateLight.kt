@@ -19,37 +19,41 @@ import de.bixilon.minosoft.protocol.network.Connection
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
+import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.chunk.LightUtil.readLightPacket
 import de.bixilon.minosoft.util.logging.Log
 import glm_.vec2.Vec2i
+import java.util.*
 
-class PacketUpdateLight() : ClientboundPacket() {
-    private var position: Vec2i? = null
-    private var lightAccessor: LightAccessor? = null
+class PacketUpdateLight(buffer: InByteBuffer) : ClientboundPacket() {
+    val position: Vec2i
+    var trustEdges: Boolean = false
+        private set
+    val lightAccessor: LightAccessor
 
-    constructor(buffer: InByteBuffer) : this() {
+    init {
         position = Vec2i(buffer.readVarInt(), buffer.readVarInt())
 
         if (buffer.versionId >= ProtocolVersions.V_1_16_PRE3) {
-            val trustEdges = buffer.readBoolean()
-        }
-        val skyLightMask: LongArray
-        val blockLightMask: LongArray
-        val emptySkyLightMask: LongArray
-        val emptyBlockLightMask: LongArray
-        if (buffer.versionId < ProtocolVersions.V_20W49A) {
-            // was a varInt before 20w45a, should we change this?
-            skyLightMask = longArrayOf(buffer.readVarLong())
-            blockLightMask = longArrayOf(buffer.readVarLong())
-            emptyBlockLightMask = longArrayOf(buffer.readVarLong())
-            emptySkyLightMask = longArrayOf(buffer.readVarLong())
-        } else {
-            skyLightMask = buffer.readLongArray()
-            blockLightMask = buffer.readLongArray()
-            emptySkyLightMask = buffer.readLongArray()
-            emptyBlockLightMask = buffer.readLongArray()
+            trustEdges = buffer.readBoolean()
         }
 
+        val skyLightMask: BitSet
+        val blockLightMask: BitSet
+        val emptySkyLightMask: BitSet
+        val emptyBlockLightMask: BitSet
+
+        if (buffer.versionId < ProtocolVersions.V_20W49A) {
+            skyLightMask = KUtil.bitSetOf(buffer.readVarLong())
+            blockLightMask = KUtil.bitSetOf(buffer.readVarLong())
+            emptyBlockLightMask = KUtil.bitSetOf(buffer.readVarLong())
+            emptySkyLightMask = KUtil.bitSetOf(buffer.readVarLong())
+        } else {
+            skyLightMask = BitSet.valueOf(buffer.readLongArray())
+            blockLightMask = BitSet.valueOf(buffer.readLongArray())
+            emptySkyLightMask = BitSet.valueOf(buffer.readLongArray())
+            emptyBlockLightMask = BitSet.valueOf(buffer.readLongArray())
+        }
 
         lightAccessor = readLightPacket(buffer, skyLightMask, blockLightMask, emptyBlockLightMask, emptySkyLightMask, buffer.connection.player.world.dimension!!)
     }
@@ -59,12 +63,12 @@ class PacketUpdateLight() : ClientboundPacket() {
     }
 
     override fun handle(connection: Connection) {
-        val chunk = connection.player.world.getOrCreateChunk(position!!)
+        val chunk = connection.player.world.getOrCreateChunk(position)
         if (chunk.lightAccessor != null && chunk.lightAccessor is ChunkLightAccessor && lightAccessor is ChunkLightAccessor) {
-            (chunk.lightAccessor as ChunkLightAccessor).merge(lightAccessor as ChunkLightAccessor)
+            (chunk.lightAccessor as ChunkLightAccessor).merge(lightAccessor)
         } else {
             chunk.lightAccessor = lightAccessor
         }
-        connection.renderer.renderWindow.worldRenderer.prepareChunk(position!!, chunk)
+        connection.renderer.renderWindow.worldRenderer.prepareChunk(position, chunk)
     }
 }

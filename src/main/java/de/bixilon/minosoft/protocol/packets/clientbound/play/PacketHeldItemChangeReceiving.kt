@@ -18,11 +18,10 @@ import de.bixilon.minosoft.protocol.packets.ClientboundPacket
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer
 import de.bixilon.minosoft.util.logging.Log
 
-class PacketHeldItemChangeReceiving() : ClientboundPacket() {
-    var slot = 0
-        private set
+class PacketHeldItemChangeReceiving(buffer: InByteBuffer) : ClientboundPacket() {
+    val slot: Int
 
-    constructor(buffer: InByteBuffer) : this() {
+    init {
         slot = buffer.readByte().toInt()
     }
 

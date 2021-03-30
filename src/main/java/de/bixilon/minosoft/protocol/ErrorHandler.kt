@@ -11,30 +11,11 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.util
+package de.bixilon.minosoft.protocol
 
-import de.bixilon.minosoft.util.enum.AliasableEnum
-import java.util.*
+import de.bixilon.minosoft.protocol.network.Connection
 
-object KUtil {
+interface ErrorHandler {
 
-    fun <T : Enum<*>> getEnumValues(values: Array<T>): Map<String, T> {
-        val ret: MutableMap<String, T> = mutableMapOf()
-
-        for (value in values) {
-            ret[value.name.toLowerCase()] = value
-
-            if (value is AliasableEnum) {
-                for (name in value.names) {
-                    ret[name] = value
-                }
-            }
-        }
-
-        return ret.toMap()
-    }
-
-    fun bitSetOf(long: Long): BitSet {
-        return BitSet.valueOf(longArrayOf(long))
-    }
+    fun onError(connection: Connection) {}
 }

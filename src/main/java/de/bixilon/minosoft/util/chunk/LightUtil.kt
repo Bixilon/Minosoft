@@ -22,14 +22,14 @@ import java.util.*
 
 object LightUtil {
 
-    fun readLightPacket(buffer: InByteBuffer, skyLightMask: LongArray, blockLightMask: LongArray, emptyBlockLightMask: LongArray, emptySkyLightMask: LongArray, dimension: Dimension): LightAccessor {
+    fun readLightPacket(buffer: InByteBuffer, skyLightMask: BitSet, blockLightMask: BitSet, emptyBlockLightMask: BitSet, emptySkyLightMask: BitSet, dimension: Dimension): LightAccessor {
         // ToDo
         val skyLight = if (dimension.hasSkyLight) {
-            readLightArray(buffer, BitSet.valueOf(skyLightMask), dimension)
+            readLightArray(buffer, skyLightMask, dimension)
         } else {
             mutableMapOf()
         }
-        val blockLight = readLightArray(buffer, BitSet.valueOf(blockLightMask), dimension)
+        val blockLight = readLightArray(buffer, blockLightMask, dimension)
         return ChunkLightAccessor(blockLight, skyLight)
     }
 

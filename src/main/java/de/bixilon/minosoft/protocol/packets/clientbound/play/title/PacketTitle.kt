@@ -21,8 +21,8 @@ import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.enum.ValuesEnum
 import de.bixilon.minosoft.util.logging.Log
 
-class PacketTitle() : ClientboundPacket() {
-    lateinit var action: TitleActions
+class PacketTitle(buffer: InByteBuffer) : ClientboundPacket() {
+    val action: TitleActions
 
     // fields depend on action
     var text: ChatComponent? = null
@@ -31,7 +31,7 @@ class PacketTitle() : ClientboundPacket() {
     var stayTime = 0
     var fadeOutTime = 0
 
-    constructor(buffer: InByteBuffer) : this() {
+    init {
         action = buffer.connection.mapping.titleActionsRegistry.get(buffer.readVarInt())!!
         when (action) {
             TitleActions.SET_TITLE -> this.text = buffer.readChatComponent()
