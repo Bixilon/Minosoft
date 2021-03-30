@@ -20,8 +20,8 @@ import de.bixilon.minosoft.data.commands.CommandArgumentNode;
 import de.bixilon.minosoft.data.commands.CommandLiteralNode;
 import de.bixilon.minosoft.data.commands.CommandNode;
 import de.bixilon.minosoft.data.commands.CommandRootNode;
-import de.bixilon.minosoft.data.entities.EntityMetaData;
 import de.bixilon.minosoft.data.entities.Poses;
+import de.bixilon.minosoft.data.entities.meta.EntityMetaData;
 import de.bixilon.minosoft.data.inventory.ItemStack;
 import de.bixilon.minosoft.data.mappings.LegacyResourceLocation;
 import de.bixilon.minosoft.data.mappings.ResourceLocation;
@@ -451,8 +451,8 @@ public class InByteBuffer {
             short item = readUnsignedByte();
             while (item != 0x7F) {
                 byte index = (byte) (item & 0x1F);
-                EntityMetaData.EntityMetaDataValueTypes type = EntityMetaData.EntityMetaDataValueTypes.byId((item & 0xFF) >> 5, this.versionId);
-                sets.put((int) index, EntityMetaData.getData(type, this));
+                EntityMetaData.EntityMetaDataDataTypes type = this.connection.getMapping().getEntityMetaDataDataDataTypesRegistry().get((item & 0xFF) >> 5);
+                sets.put((int) index, metaData.getData(type, this));
                 item = readByte();
             }
         } else {
@@ -464,8 +464,11 @@ public class InByteBuffer {
                 } else {
                     id = readVarInt();
                 }
-                EntityMetaData.EntityMetaDataValueTypes type = EntityMetaData.EntityMetaDataValueTypes.byId(id, this.versionId);
-                sets.put(index, EntityMetaData.getData(type, this));
+                EntityMetaData.EntityMetaDataDataTypes type = this.connection.getMapping().getEntityMetaDataDataDataTypesRegistry().get(id);
+                if (type == null) {
+                    throw new IllegalStateException("Can not get meta data index for id " + id);
+                }
+                sets.put(index, metaData.getData(type, this));
                 index = readUnsignedByte();
             }
         }

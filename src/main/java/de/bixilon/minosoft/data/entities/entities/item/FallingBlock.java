@@ -33,7 +33,7 @@ public class FallingBlock extends Entity {
     @EntityMetaDataFunction(name = "Spawn position")
     @Nullable
     public Vec3i getSpawnPosition() {
-        return getMetaData().getSets().getPosition(EntityMetaDataFields.FALLING_BLOCK_SPAWN_POSITION);
+        return getMetaData().getSets().getBlockPosition(EntityMetaDataFields.FALLING_BLOCK_SPAWN_POSITION);
     }
 }
 

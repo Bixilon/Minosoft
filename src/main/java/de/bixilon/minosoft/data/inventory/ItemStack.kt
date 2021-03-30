@@ -145,7 +145,7 @@ class ItemStack(
             val enchantmentList = ListTag(TagTypes.COMPOUND, arrayListOf())
             for ((id, level) in enchantments) {
                 val enchantmentTag = CompoundTag()
-                enchantmentTag.writeTag("id", StringTag(id.toString()))
+                enchantmentTag.writeTag(ENCHANTMENT_ID_TAG, StringTag(id.toString()))
 
                 enchantmentTag.writeTag(ENCHANTMENT_LEVEL_TAG, if (mapping.version!!.isFlattened()) {
                     IntTag(level)
@@ -166,10 +166,15 @@ class ItemStack(
         if (super.equals(other)) {
             return true
         }
-        val their = other as ItemStack?
+        if (other !is ItemStack?) {
+            return false
+        }
+        if (other == null) {
+            return false
+        }
 
         // ToDo: check nbt
-        return their!!.item == item && their.itemCount == itemCount && their.itemMetadata == itemMetadata
+        return other.item == item && other.itemCount == itemCount && other.itemMetadata == itemMetadata
     }
 
     override fun toString(): String {

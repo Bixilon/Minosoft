@@ -20,6 +20,7 @@ import de.bixilon.minosoft.data.EntityClassMappings
 import de.bixilon.minosoft.data.entities.EntityInformation
 import de.bixilon.minosoft.data.entities.EntityMetaDataFields
 import de.bixilon.minosoft.data.entities.entities.Entity
+import de.bixilon.minosoft.data.entities.meta.EntityMetaData
 import de.bixilon.minosoft.data.inventory.InventorySlots
 import de.bixilon.minosoft.data.mappings.*
 import de.bixilon.minosoft.data.mappings.biomes.Biome
@@ -63,6 +64,8 @@ class VersionMapping(var version: Version?) {
     val armorEquipmentSlotRegistry: EnumRegistry<InventorySlots.EquipmentSlots> = EnumRegistry(values = InventorySlots.EquipmentSlots)
     val armorStandEquipmentSlotRegistry: EnumRegistry<InventorySlots.EquipmentSlots> = EnumRegistry(values = InventorySlots.EquipmentSlots)
 
+    val entityMetaDataDataDataTypesRegistry: EnumRegistry<EntityMetaData.EntityMetaDataDataTypes> = EnumRegistry(values = EntityMetaData.EntityMetaDataDataTypes)
+
     val creativeModeTabRegistry: FakeEnumRegistry<CreativeModeTab> = FakeEnumRegistry()
 
     val biomePrecipitationRegistry: FakeEnumRegistry<BiomePrecipitation> = FakeEnumRegistry()
@@ -87,6 +90,7 @@ class VersionMapping(var version: Version?) {
         get() = _parentMapping
         set(value) {
             _parentMapping = value
+
             motiveRegistry.setParent(value?.motiveRegistry)
             itemRegistry.setParent(value?.itemRegistry)
             enchantmentRegistry.setParent(value?.enchantmentRegistry)
@@ -99,6 +103,13 @@ class VersionMapping(var version: Version?) {
             biomePrecipitationRegistry.setParent(value?.biomePrecipitationRegistry)
             biomeCategoryRegistry.setParent(value?.biomeCategoryRegistry)
             materialRegistry.setParent(value?.materialRegistry)
+
+            equipmentSlotRegistry.setParent(value?.equipmentSlotRegistry)
+            handEquipmentSlotRegistry.setParent(value?.handEquipmentSlotRegistry)
+            armorEquipmentSlotRegistry.setParent(value?.armorEquipmentSlotRegistry)
+            armorStandEquipmentSlotRegistry.setParent(value?.armorStandEquipmentSlotRegistry)
+            entityMetaDataDataDataTypesRegistry.setParent(value?.entityMetaDataDataDataTypesRegistry)
+            creativeModeTabRegistry.setParent(value?.creativeModeTabRegistry)
         }
 
     fun getBlockState(blockState: Int): BlockState? {
@@ -140,6 +151,8 @@ class VersionMapping(var version: Version?) {
         loadEnumRegistry(pixlyzerData["hand_equipment_slots"], handEquipmentSlotRegistry, DefaultRegistries.HAND_EQUIPMENT_SLOTS_REGISTRY)
         loadEnumRegistry(pixlyzerData["armor_equipment_slots"], armorEquipmentSlotRegistry, DefaultRegistries.ARMOR_EQUIPMENT_SLOTS_REGISTRY)
         loadEnumRegistry(pixlyzerData["armor_stand_equipment_slots"], armorStandEquipmentSlotRegistry, DefaultRegistries.ARMOR_STAND_EQUIPMENT_SLOTS_REGISTRY)
+
+        loadEnumRegistry(pixlyzerData["entity_meta_data_data_types"], entityMetaDataDataDataTypesRegistry, DefaultRegistries.ENTITY_META_DATA_DATA_TYPES_REGISTRY)
 
         // id stuff
         biomeCategoryRegistry.initialize(pixlyzerData["biome_categories"]?.asJsonObject, this, BiomeCategory.Companion)

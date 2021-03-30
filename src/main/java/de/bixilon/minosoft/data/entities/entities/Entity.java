@@ -16,6 +16,7 @@ package de.bixilon.minosoft.data.entities.entities;
 import de.bixilon.minosoft.config.StaticConfiguration;
 import de.bixilon.minosoft.data.Axes;
 import de.bixilon.minosoft.data.entities.*;
+import de.bixilon.minosoft.data.entities.meta.EntityMetaData;
 import de.bixilon.minosoft.data.inventory.InventorySlots;
 import de.bixilon.minosoft.data.inventory.ItemStack;
 import de.bixilon.minosoft.data.mappings.StatusEffect;

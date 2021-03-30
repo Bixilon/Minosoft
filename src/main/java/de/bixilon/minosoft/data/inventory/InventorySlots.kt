@@ -31,7 +31,7 @@ class InventorySlots {
 
         companion object : ValuesEnum<EquipmentSlots> {
             override val VALUES = values()
-            override val NAME_MAP: Map<String, EquipmentSlots> = KUtil.getEnumValues(values())
+            override val NAME_MAP: Map<String, EquipmentSlots> = KUtil.getEnumValues(VALUES)
         }
     }
 }

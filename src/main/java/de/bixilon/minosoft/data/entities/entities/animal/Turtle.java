@@ -32,7 +32,7 @@ public class Turtle extends Animal {
     @EntityMetaDataFunction(name = "Home Position")
     @Nullable
     public Vec3i getHomePosition() {
-        return this.metaData.getSets().getPosition(EntityMetaDataFields.TURTLE_HOME_POSITION);
+        return this.metaData.getSets().getBlockPosition(EntityMetaDataFields.TURTLE_HOME_POSITION);
     }
 
     @EntityMetaDataFunction(name = "Has egg")
@@ -48,7 +48,7 @@ public class Turtle extends Animal {
     @EntityMetaDataFunction(name = "Travel position")
     @Nullable
     public Vec3i getTravelPosition() {
-        return this.metaData.getSets().getPosition(EntityMetaDataFields.TURTLE_TRAVEL_POSITION);
+        return this.metaData.getSets().getBlockPosition(EntityMetaDataFields.TURTLE_TRAVEL_POSITION);
     }
 
     @EntityMetaDataFunction(name = "Is going home")

@@ -41,7 +41,7 @@ public class Shulker extends AbstractGolem {
     @EntityMetaDataFunction(name = "Attachment position")
     @Nullable
     public Vec3i getAttachmentPosition() {
-        return this.metaData.getSets().getPosition(EntityMetaDataFields.SHULKER_ATTACHMENT_POSITION);
+        return this.metaData.getSets().getBlockPosition(EntityMetaDataFields.SHULKER_ATTACHMENT_POSITION);
     }
 
     @EntityMetaDataFunction(name = "Peek")

@@ -77,7 +77,7 @@ public abstract class LivingEntity extends Entity {
     @EntityMetaDataFunction(name = "Bed location")
     @Nullable
     public Vec3i getBedPosition() {
-        return this.metaData.getSets().getPosition(EntityMetaDataFields.LIVING_ENTITY_BED_POSITION);
+        return this.metaData.getSets().getBlockPosition(EntityMetaDataFields.LIVING_ENTITY_BED_POSITION);
     }
 
 }

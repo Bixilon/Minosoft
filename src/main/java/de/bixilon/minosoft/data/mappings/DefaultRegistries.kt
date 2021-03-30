@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.mappings
 
 import de.bixilon.minosoft.Minosoft
+import de.bixilon.minosoft.data.entities.meta.EntityMetaData
 import de.bixilon.minosoft.data.inventory.InventorySlots
 import de.bixilon.minosoft.util.json.ResourceLocationJsonMap.toResourceLocationMap
 
@@ -25,6 +26,7 @@ object DefaultRegistries {
     val HAND_EQUIPMENT_SLOTS_REGISTRY = PerVersionRegistry(InventorySlots.EquipmentSlots)
     val ARMOR_EQUIPMENT_SLOTS_REGISTRY = PerVersionRegistry(InventorySlots.EquipmentSlots)
     val ARMOR_STAND_EQUIPMENT_SLOTS_REGISTRY = PerVersionRegistry(InventorySlots.EquipmentSlots)
+    val ENTITY_META_DATA_DATA_TYPES_REGISTRY = PerVersionRegistry(EntityMetaData.EntityMetaDataDataTypes)
 
 
     fun load() {
@@ -36,6 +38,7 @@ object DefaultRegistries {
         HAND_EQUIPMENT_SLOTS_REGISTRY.initialize(enumJson[ResourceLocation("hand_equipment_slots")]!!)
         ARMOR_EQUIPMENT_SLOTS_REGISTRY.initialize(enumJson[ResourceLocation("armor_equipment_slots")]!!)
         ARMOR_STAND_EQUIPMENT_SLOTS_REGISTRY.initialize(enumJson[ResourceLocation("armor_stand_equipment_slots")]!!)
+        ENTITY_META_DATA_DATA_TYPES_REGISTRY.initialize(enumJson[ResourceLocation("entity_meta_data_data_types")]!!)
 
         initialized = true
     }

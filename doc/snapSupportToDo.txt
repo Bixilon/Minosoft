@@ -33,3 +33,8 @@ pre 18w02a:     Added support for feet/eyes and restructured Face Entity
 19w02a:         Menu IDs are no longer sent as strings, but instead numeric IDs specified by the minecraft:menu registry.
 19w03a:         Declare Recipes:
 19w11a:         Added new fields to Trade List: XP, Special Price, Price Multiplier (in the trades array), villager level, experience, is regular villager (only one for the packet)
+
+
+
+Unknown versions:
+- Entity meta data types `OPT_CHAT` replacement (somewhere in 1.13, possible 346)

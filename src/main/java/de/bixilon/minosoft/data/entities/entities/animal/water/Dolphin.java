@@ -32,7 +32,7 @@ public class Dolphin extends WaterAnimal {
     @EntityMetaDataFunction(name = "Treasure position")
     @Nullable
     public Vec3i getTreasurePosition() {
-        return this.metaData.getSets().getPosition(EntityMetaDataFields.DOLPHIN_TREASURE_POSITION);
+        return this.metaData.getSets().getBlockPosition(EntityMetaDataFields.DOLPHIN_TREASURE_POSITION);
     }
 
     @EntityMetaDataFunction(name = "Has fish")

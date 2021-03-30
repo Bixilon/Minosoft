@@ -38,6 +38,7 @@ class FakeEnumRegistry<T : RegistryFakeEnumerable>(
     }
 
     fun setParent(registry: FakeEnumRegistry<T>?) {
+        check(registry !== this) { "Can not set our self as parent!" }
         this.parentRegistry = registry
     }
 

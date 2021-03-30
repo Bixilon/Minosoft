@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.protocol.packets.clientbound.play
 
-import de.bixilon.minosoft.data.entities.EntityMetaData
+import de.bixilon.minosoft.data.entities.meta.EntityMetaData
 import de.bixilon.minosoft.modding.event.events.EntityMetaDataChangeEvent
 import de.bixilon.minosoft.modding.event.events.OwnEntityMetaDataChangeEvent
 import de.bixilon.minosoft.protocol.network.Connection

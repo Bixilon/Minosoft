@@ -30,7 +30,7 @@ public class PacketUnloadChunk extends ClientboundPacket {
 
     @Override
     public void handle(Connection connection) {
-        connection.getPlayer().getWorld().unloadChunk(getVec2i());
+        connection.getPlayer().getWorld().unloadChunk(getChunkPosition());
         connection.getRenderer().getRenderWindow().getWorldRenderer().unloadChunk(this.chunkPosition);
     }
 
@@ -39,7 +39,7 @@ public class PacketUnloadChunk extends ClientboundPacket {
         Log.protocol(String.format("[IN] Received unload chunk packet (chunkPosition=%s)", this.chunkPosition));
     }
 
-    public Vec2i getVec2i() {
+    public Vec2i getChunkPosition() {
         return this.chunkPosition;
     }
 }
