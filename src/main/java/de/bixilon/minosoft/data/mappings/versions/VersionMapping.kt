@@ -40,6 +40,7 @@ import de.bixilon.minosoft.data.mappings.statistics.Statistic
 import de.bixilon.minosoft.gui.rendering.chunk.VoxelShape
 import de.bixilon.minosoft.gui.rendering.chunk.models.AABB
 import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModel
+import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketTitle
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.collections.Clearable
 import de.bixilon.minosoft.util.json.ResourceLocationJsonMap.toResourceLocationMap
@@ -65,6 +66,8 @@ class VersionMapping(var version: Version?) {
     val armorStandEquipmentSlotRegistry: EnumRegistry<InventorySlots.EquipmentSlots> = EnumRegistry(values = InventorySlots.EquipmentSlots)
 
     val entityMetaDataDataDataTypesRegistry: EnumRegistry<EntityMetaData.EntityMetaDataDataTypes> = EnumRegistry(values = EntityMetaData.EntityMetaDataDataTypes)
+
+    val titleActionsRegistry: EnumRegistry<PacketTitle.TitleActions> = EnumRegistry(values = PacketTitle.TitleActions)
 
     val creativeModeTabRegistry: FakeEnumRegistry<CreativeModeTab> = FakeEnumRegistry()
 
@@ -110,6 +113,8 @@ class VersionMapping(var version: Version?) {
             armorStandEquipmentSlotRegistry.setParent(value?.armorStandEquipmentSlotRegistry)
             entityMetaDataDataDataTypesRegistry.setParent(value?.entityMetaDataDataDataTypesRegistry)
             creativeModeTabRegistry.setParent(value?.creativeModeTabRegistry)
+
+            titleActionsRegistry.setParent(value?.titleActionsRegistry)
         }
 
     fun getBlockState(blockState: Int): BlockState? {
@@ -153,6 +158,8 @@ class VersionMapping(var version: Version?) {
         loadEnumRegistry(pixlyzerData["armor_stand_equipment_slots"], armorStandEquipmentSlotRegistry, DefaultRegistries.ARMOR_STAND_EQUIPMENT_SLOTS_REGISTRY)
 
         loadEnumRegistry(pixlyzerData["entity_meta_data_data_types"], entityMetaDataDataDataTypesRegistry, DefaultRegistries.ENTITY_META_DATA_DATA_TYPES_REGISTRY)
+
+        loadEnumRegistry(pixlyzerData["title_actions"], titleActionsRegistry, DefaultRegistries.TITLE_ACTIONS_REGISTRY)
 
         // id stuff
         biomeCategoryRegistry.initialize(pixlyzerData["biome_categories"]?.asJsonObject, this, BiomeCategory.Companion)

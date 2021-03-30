@@ -197,5 +197,22 @@
       "OPT_VAR_INT",
       "POSE"
     ]
+  },
+  "minecraft:title_actions": {
+    "18": [
+      "SET_TITLE",
+      "SET_SUBTITLE",
+      "SET_TIMES_AND_DISPLAY",
+      "HIDE",
+      "RESET"
+    ],
+    "302": [
+      "SET_TITLE",
+      "SET_SUBTITLE",
+      "SET_ACTION_BAR",
+      "SET_TIMES_AND_DISPLAY",
+      "HIDE",
+      "RESET"
+    ]
   }
 }
