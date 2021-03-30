@@ -15,6 +15,10 @@ package de.bixilon.minosoft.data.entities;
 
 import de.bixilon.minosoft.data.Directions;
 import de.bixilon.minosoft.data.entities.entities.animal.Axolotl;
+import de.bixilon.minosoft.data.entities.entities.npc.villager.data.VillagerData;
+import de.bixilon.minosoft.data.entities.entities.npc.villager.data.VillagerLevels;
+import de.bixilon.minosoft.data.entities.entities.npc.villager.data.VillagerProfessions;
+import de.bixilon.minosoft.data.entities.entities.npc.villager.data.VillagerTypes;
 import de.bixilon.minosoft.data.entities.entities.vehicle.Boat;
 import de.bixilon.minosoft.data.mappings.ResourceLocation;
 import de.bixilon.minosoft.data.mappings.particle.Particle;
@@ -190,7 +194,7 @@ public enum EntityMetaDataFields {
 
     ABSTRACT_VILLAGER_UNHAPPY_TIMER(0),
 
-    VILLAGER_VILLAGER_DATA(new VillagerData(VillagerData.VillagerTypes.PLAINS, VillagerData.VillagerProfessions.NONE, VillagerData.VillagerLevels.APPRENTICE)),
+    VILLAGER_VILLAGER_DATA(new VillagerData(VillagerTypes.PLAINS, VillagerProfessions.NONE, VillagerLevels.APPRENTICE)),
 
     IRON_GOLEM_FLAGS((byte) 0),
 
@@ -235,7 +239,7 @@ public enum EntityMetaDataFields {
     ZOGLIN_IS_BABY(false),
 
     ZOMBIE_VILLAGER_IS_CONVERTING(false),
-    ZOMBIE_VILLAGER_DATA(new VillagerData(VillagerData.VillagerTypes.PLAINS, VillagerData.VillagerProfessions.NONE, VillagerData.VillagerLevels.APPRENTICE)),
+    ZOMBIE_VILLAGER_DATA(new VillagerData(VillagerTypes.PLAINS, VillagerProfessions.NONE, VillagerLevels.APPRENTICE)),
 
     ENDERMAN_CARRIED_BLOCK,
     ENDERMAN_IS_SCREAMING(false),

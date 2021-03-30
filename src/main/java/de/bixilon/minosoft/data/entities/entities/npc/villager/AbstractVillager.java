@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2021 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,17 +11,25 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.entities.entities.npc;
+package de.bixilon.minosoft.data.entities.entities.npc.villager;
 
+import de.bixilon.minosoft.data.entities.EntityMetaDataFields;
 import de.bixilon.minosoft.data.entities.EntityRotation;
+import de.bixilon.minosoft.data.entities.entities.AgeableMob;
+import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction;
 import de.bixilon.minosoft.protocol.network.Connection;
 import glm_.vec3.Vec3;
 
 import java.util.UUID;
 
-public class WanderingTrader extends AbstractVillager {
+public abstract class AbstractVillager extends AgeableMob {
 
-    public WanderingTrader(Connection connection, int entityId, UUID uuid, Vec3 position, EntityRotation rotation) {
+    public AbstractVillager(Connection connection, int entityId, UUID uuid, Vec3 position, EntityRotation rotation) {
         super(connection, entityId, uuid, position, rotation);
+    }
+
+    @EntityMetaDataFunction(name = "Unhappy timer")
+    public int getUnhappyTimer() {
+        return this.metaData.getSets().getInt(EntityMetaDataFields.ABSTRACT_VILLAGER_UNHAPPY_TIMER);
     }
 }

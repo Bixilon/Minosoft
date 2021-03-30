@@ -37,8 +37,8 @@ import de.bixilon.minosoft.data.entities.entities.monster.*
 import de.bixilon.minosoft.data.entities.entities.monster.piglin.Piglin
 import de.bixilon.minosoft.data.entities.entities.monster.piglin.PiglinBrute
 import de.bixilon.minosoft.data.entities.entities.monster.raid.*
-import de.bixilon.minosoft.data.entities.entities.npc.Villager
-import de.bixilon.minosoft.data.entities.entities.npc.WanderingTrader
+import de.bixilon.minosoft.data.entities.entities.npc.villager.Villager
+import de.bixilon.minosoft.data.entities.entities.npc.villager.WanderingTrader
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.data.entities.entities.projectile.*
 import de.bixilon.minosoft.data.entities.entities.vehicle.*

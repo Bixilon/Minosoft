@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.Trade;
-import de.bixilon.minosoft.data.entities.VillagerData;
+import de.bixilon.minosoft.data.entities.entities.npc.villager.data.VillagerLevels;
 import de.bixilon.minosoft.data.inventory.ItemStack;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
@@ -26,7 +26,7 @@ import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_14_4_PR
 public class PacketTradeList extends ClientboundPacket {
     int windowId;
     Trade[] trades;
-    VillagerData.VillagerLevels level;
+    VillagerLevels level;
     int experience;
     boolean isRegularVillager;
     boolean canRestock;
@@ -54,7 +54,7 @@ public class PacketTradeList extends ClientboundPacket {
             }
             this.trades[i] = new Trade(input1, input2, enabled, usages, maxUsages, xp, specialPrice, priceMultiplier, demand);
         }
-        this.level = VillagerData.VillagerLevels.byId(buffer.readVarInt());
+        this.level = VillagerLevels.Companion.getVALUES()[buffer.readVarInt()];
         this.experience = buffer.readVarInt();
         this.isRegularVillager = buffer.readBoolean();
         if (buffer.getVersionId() >= V_1_14_3_PRE1) {
@@ -76,7 +76,7 @@ public class PacketTradeList extends ClientboundPacket {
         return this.trades;
     }
 
-    public VillagerData.VillagerLevels getLevel() {
+    public VillagerLevels getLevel() {
         return this.level;
     }
 
