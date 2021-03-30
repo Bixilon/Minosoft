@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.data.inventory.Slot;
+import de.bixilon.minosoft.data.inventory.ItemStack;
 import de.bixilon.minosoft.data.player.advancements.Advancement;
 import de.bixilon.minosoft.data.player.advancements.AdvancementDisplay;
 import de.bixilon.minosoft.data.player.advancements.AdvancementProgress;
@@ -48,7 +48,7 @@ public class PacketAdvancements extends ClientboundPacket {
             if (buffer.readBoolean()) {
                 ChatComponent title = buffer.readChatComponent();
                 ChatComponent description = buffer.readChatComponent();
-                Slot icon = buffer.readSlot();
+                ItemStack icon = buffer.readItemStack();
                 AdvancementDisplay.AdvancementFrameTypes frameType = AdvancementDisplay.AdvancementFrameTypes.byId(buffer.readVarInt());
                 int flags = buffer.readInt();
                 String backgroundTexture = null;

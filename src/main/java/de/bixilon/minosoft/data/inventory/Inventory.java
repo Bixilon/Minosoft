@@ -17,9 +17,9 @@ import java.util.HashMap;
 
 public class Inventory {
     private final InventoryProperties properties;
-    private final HashMap<Integer, Slot> slots;
+    private final HashMap<Integer, ItemStack> slots;
 
-    public Inventory(InventoryProperties properties, HashMap<Integer, Slot> slots) {
+    public Inventory(InventoryProperties properties, HashMap<Integer, ItemStack> slots) {
         this.properties = properties;
         this.slots = slots;
     }
@@ -29,27 +29,27 @@ public class Inventory {
         this.slots = new HashMap<>();
     }
 
-    public Inventory(InventoryProperties properties, Slot[] slots) {
+    public Inventory(InventoryProperties properties, ItemStack[] itemStacks) {
         this.properties = properties;
         this.slots = new HashMap<>();
-        for (int i = 0; i < slots.length; i++) {
-            this.slots.put(i, slots[i]);
+        for (int i = 0; i < itemStacks.length; i++) {
+            this.slots.put(i, itemStacks[i]);
         }
     }
 
-    public Slot getSlot(int slotId, int versionId) {
+    public ItemStack getSlot(int slotId, int versionId) {
         return getSlot(slotId);
     }
 
-    public Slot getSlot(int slot) {
+    public ItemStack getSlot(int slot) {
         return this.slots.get(slot);
     }
 
-    public void setSlot(int slot, Slot data) {
+    public void setSlot(int slot, ItemStack data) {
         this.slots.put(slot, data);
     }
 
-    public void setSlot(int slotId, int versionId, Slot data) {
+    public void setSlot(int slotId, int versionId, ItemStack data) {
         this.slots.put(slotId, data);
     }
 
@@ -57,7 +57,7 @@ public class Inventory {
         this.slots.clear();
     }
 
-    public HashMap<Integer, Slot> getSlots() {
+    public HashMap<Integer, ItemStack> getSlots() {
         return this.slots;
     }
 

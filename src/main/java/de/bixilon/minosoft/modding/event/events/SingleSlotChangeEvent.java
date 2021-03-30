@@ -13,27 +13,27 @@
 
 package de.bixilon.minosoft.modding.event.events;
 
-import de.bixilon.minosoft.data.inventory.Slot;
+import de.bixilon.minosoft.data.inventory.ItemStack;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketSetSlot;
 
 public class SingleSlotChangeEvent extends ConnectionEvent {
     private final byte windowId;
     private final short slotId;
-    private final Slot slot;
+    private final ItemStack itemStack;
 
-    public SingleSlotChangeEvent(Connection connection, byte windowId, short slotId, Slot slot) {
+    public SingleSlotChangeEvent(Connection connection, byte windowId, short slotId, ItemStack itemStack) {
         super(connection);
         this.windowId = windowId;
         this.slotId = slotId;
-        this.slot = slot;
+        this.itemStack = itemStack;
     }
 
     public SingleSlotChangeEvent(Connection connection, PacketSetSlot pkg) {
         super(connection);
         this.windowId = pkg.getWindowId();
         this.slotId = pkg.getSlotId();
-        this.slot = pkg.getSlot();
+        this.itemStack = pkg.getSlot();
     }
 
     public byte getWindowId() {
@@ -44,7 +44,7 @@ public class SingleSlotChangeEvent extends ConnectionEvent {
         return this.slotId;
     }
 
-    public Slot getSlot() {
-        return this.slot;
+    public ItemStack getSlot() {
+        return this.itemStack;
     }
 }

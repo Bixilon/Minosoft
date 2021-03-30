@@ -17,7 +17,7 @@ import de.bixilon.minosoft.config.StaticConfiguration;
 import de.bixilon.minosoft.data.Axes;
 import de.bixilon.minosoft.data.entities.*;
 import de.bixilon.minosoft.data.inventory.InventorySlots;
-import de.bixilon.minosoft.data.inventory.Slot;
+import de.bixilon.minosoft.data.inventory.ItemStack;
 import de.bixilon.minosoft.data.mappings.StatusEffect;
 import de.bixilon.minosoft.data.mappings.blocks.BlockState;
 import de.bixilon.minosoft.data.text.ChatComponent;
@@ -44,7 +44,7 @@ public abstract class Entity {
     protected final EntityInformation information;
     protected final int entityId;
     protected final UUID uuid;
-    protected final HashMap<Integer, Slot> equipment = new HashMap<>();
+    protected final HashMap<Integer, ItemStack> equipment = new HashMap<>();
     protected final HashSet<StatusEffectInstance> effectList = new HashSet<>();
     protected final int versionId;
     protected Vec3 position;
@@ -79,15 +79,15 @@ public abstract class Entity {
         this.position = new Vec3(this.position.x + relativePosition.x, this.position.y + relativePosition.y, this.position.z + relativePosition.z);
     }
 
-    public Slot getEquipment(InventorySlots.EquipmentSlots slot) {
+    public ItemStack getEquipment(InventorySlots.EquipmentSlots slot) {
         return this.equipment.get(slot);
     }
 
-    public HashMap<Integer, Slot> getEquipment() {
+    public HashMap<Integer, ItemStack> getEquipment() {
         return this.equipment;
     }
 
-    public void setEquipment(HashMap<Integer, Slot> slots) {
+    public void setEquipment(HashMap<Integer, ItemStack> slots) {
         this.equipment.putAll(slots);
     }
 

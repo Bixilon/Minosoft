@@ -13,12 +13,12 @@
 
 package de.bixilon.minosoft.data;
 
-import de.bixilon.minosoft.data.inventory.Slot;
+import de.bixilon.minosoft.data.inventory.ItemStack;
 import org.checkerframework.common.value.qual.IntRange;
 
 public class Trade {
-    private final Slot input1;
-    private final Slot input2;
+    private final ItemStack input1;
+    private final ItemStack input2;
     private final boolean enabled;
     private final int usages;
     private final int maxUsages;
@@ -27,7 +27,7 @@ public class Trade {
     private final float priceMultiplier;
     private final int demand;
 
-    public Trade(Slot input1, Slot input2, boolean enabled, int usages, int maxUsages, int xp, int specialPrice, float priceMultiplier, int demand) {
+    public Trade(ItemStack input1, ItemStack input2, boolean enabled, int usages, int maxUsages, int xp, int specialPrice, float priceMultiplier, int demand) {
         this.input1 = input1;
         this.input2 = input2;
         this.enabled = enabled;
@@ -39,11 +39,11 @@ public class Trade {
         this.demand = demand;
     }
 
-    public Slot getInput1() {
+    public ItemStack getInput1() {
         return this.input1;
     }
 
-    public Slot getInput2() {
+    public ItemStack getInput2() {
         return this.input2;
     }
 

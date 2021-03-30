@@ -45,7 +45,7 @@ public class PacketUpdateSignReceiving extends ClientboundPacket {
     @Override
     public void handle(Connection connection) {
         CompoundTag nbt = new CompoundTag();
-        nbt.writeVec3i(getPosition());
+        nbt.writeBlockPosition(getPosition());
         nbt.writeTag("id", new StringTag("minecraft:sign"));
         for (int i = 0; i < ProtocolDefinition.SIGN_LINES; i++) {
             nbt.writeTag(String.format("Text%d", (i + 1)), new StringTag(getLines()[i].getLegacyText()));

@@ -15,7 +15,7 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.Trade;
 import de.bixilon.minosoft.data.entities.VillagerData;
-import de.bixilon.minosoft.data.inventory.Slot;
+import de.bixilon.minosoft.data.inventory.ItemStack;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
@@ -36,11 +36,11 @@ public class PacketTradeList extends ClientboundPacket {
         this.windowId = buffer.readVarInt();
         this.trades = new Trade[buffer.readByte()];
         for (int i = 0; i < this.trades.length; i++) {
-            Slot input1 = buffer.readSlot();
-            Slot input2 = null;
+            ItemStack input1 = buffer.readItemStack();
+            ItemStack input2 = null;
             if (buffer.readBoolean()) {
                 // second input available
-                input2 = buffer.readSlot();
+                input2 = buffer.readItemStack();
             }
             boolean enabled = !buffer.readBoolean();
             int usages = buffer.readInt();

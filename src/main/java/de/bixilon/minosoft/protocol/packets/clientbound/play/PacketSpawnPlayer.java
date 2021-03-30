@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
+import de.bixilon.minosoft.data.Gamemodes;
 import de.bixilon.minosoft.data.PlayerPropertyData;
 import de.bixilon.minosoft.data.entities.EntityMetaData;
 import de.bixilon.minosoft.data.entities.EntityRotation;
@@ -69,7 +70,7 @@ public class PacketSpawnPlayer extends ClientboundPacket {
         if (buffer.getVersionId() < V_19W34A) {
             metaData = buffer.readMetaData();
         }
-        this.entity = new PlayerEntity(buffer.getConnection(), entityId, uuid, position, new EntityRotation(yaw, pitch, 0), name, properties, currentItem, this.entity.getGamemode());
+        this.entity = new PlayerEntity(buffer.getConnection(), entityId, uuid, position, new EntityRotation(yaw, pitch, 0), name, properties, currentItem, Gamemodes.CREATIVE); // ToDo
         if (metaData != null) {
             this.entity.setMetaData(metaData);
         }

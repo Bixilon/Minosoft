@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.protocol.protocol;
 
 import com.google.gson.JsonObject;
-import de.bixilon.minosoft.data.inventory.Slot;
+import de.bixilon.minosoft.data.inventory.ItemStack;
 import de.bixilon.minosoft.data.text.ChatComponent;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.util.Util;
@@ -181,24 +181,24 @@ public class OutByteBuffer {
         } while (value != 0);
     }
 
-    public void writeSlot(Slot slot) {
+    public void writeItemStack(ItemStack itemStack) {
         if (this.versionId < V_1_13_2_PRE1) {
-            if (slot == null) {
+            if (itemStack == null) {
                 writeShort((short) -1);
                 return;
             }
-            writeShort((short) this.connection.getMapping().getItemRegistry().getId(slot.getItem()));
-            writeByte((byte) slot.getItemCount());
-            writeShort(slot.getItemMetadata());
-            writeNBT(slot.getNbt(this.connection.getMapping()));
+            writeShort((short) this.connection.getMapping().getItemRegistry().getId(itemStack.getItem()));
+            writeByte((byte) itemStack.getItemCount());
+            writeShort((short) itemStack.getItemMetadata());
+            writeNBT(itemStack.getNbt(this.connection.getMapping()));
         }
-        if (slot == null) {
+        if (itemStack == null) {
             writeBoolean(false);
             return;
         }
-        writeVarInt(this.connection.getMapping().getItemRegistry().getId(slot.getItem()));
-        writeByte((byte) slot.getItemCount());
-        writeNBT(slot.getNbt(this.connection.getMapping()));
+        writeVarInt(this.connection.getMapping().getItemRegistry().getId(itemStack.getItem()));
+        writeByte((byte) itemStack.getItemCount());
+        writeNBT(itemStack.getNbt(this.connection.getMapping()));
     }
 
     void writeNBT(CompoundTag nbt) {

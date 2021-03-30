@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
-import de.bixilon.minosoft.data.inventory.Slot;
+import de.bixilon.minosoft.data.inventory.ItemStack;
 import de.bixilon.minosoft.data.player.Hands;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
@@ -30,11 +30,11 @@ public class PacketPlayerBlockPlacement implements ServerboundPacket {
     private final float cursorX;
     private final float cursorY;
     private final float cursorZ;
-    Slot item;
+    ItemStack item;
     Hands hand;
     boolean insideBlock;
 
-    public PacketPlayerBlockPlacement(Vec3i position, byte direction, Slot item, float cursorX, float cursorY, float cursorZ) {
+    public PacketPlayerBlockPlacement(Vec3i position, byte direction, ItemStack item, float cursorX, float cursorY, float cursorZ) {
         this.position = position;
         this.direction = direction;
         this.item = item;
@@ -76,7 +76,7 @@ public class PacketPlayerBlockPlacement implements ServerboundPacket {
         }
         if (buffer.getVersionId() < V_15W31A) {
             buffer.writeByte(this.direction);
-            buffer.writeSlot(this.item);
+            buffer.writeItemStack(this.item);
         } else {
             buffer.writeVarInt(this.direction);
             if (buffer.getVersionId() < V_19W03A) {

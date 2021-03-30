@@ -16,7 +16,7 @@ package de.bixilon.minosoft.data.entities.entities.projectile;
 import de.bixilon.minosoft.data.entities.EntityMetaDataFields;
 import de.bixilon.minosoft.data.entities.EntityRotation;
 import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction;
-import de.bixilon.minosoft.data.inventory.Slot;
+import de.bixilon.minosoft.data.inventory.ItemStack;
 import de.bixilon.minosoft.protocol.network.Connection;
 import glm_.vec3.Vec3;
 
@@ -25,7 +25,7 @@ import java.util.UUID;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_20W09A;
 
 public class ThrownPotion extends ThrowableItemProjectile {
-    private static final Slot DEFAULT_ITEM = null;
+    private static final ItemStack DEFAULT_ITEM = null;
 
     public ThrownPotion(Connection connection, int entityId, UUID uuid, Vec3 position, EntityRotation rotation) {
         super(connection, entityId, uuid, position, rotation);
@@ -33,20 +33,20 @@ public class ThrownPotion extends ThrowableItemProjectile {
 
     @EntityMetaDataFunction(name = "Item")
     @Override
-    public Slot getItem() {
+    public ItemStack getItem() {
         if (this.versionId > V_20W09A) {
             return super.getItem();
         }
-        Slot slot = this.metaData.getSets().getSlot(EntityMetaDataFields.THROWN_POTION_ITEM);
-        if (slot == null) {
+        ItemStack itemStack = this.metaData.getSets().getItemStack(EntityMetaDataFields.THROWN_POTION_ITEM);
+        if (itemStack == null) {
             return getDefaultItem();
         }
-        return slot;
+        return itemStack;
 
     }
 
     @Override
-    protected Slot getDefaultItem() {
+    protected ItemStack getDefaultItem() {
         return DEFAULT_ITEM;
     }
 }

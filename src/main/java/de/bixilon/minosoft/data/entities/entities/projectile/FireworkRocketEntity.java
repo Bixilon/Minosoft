@@ -16,7 +16,7 @@ package de.bixilon.minosoft.data.entities.entities.projectile;
 import de.bixilon.minosoft.data.entities.EntityMetaDataFields;
 import de.bixilon.minosoft.data.entities.EntityRotation;
 import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction;
-import de.bixilon.minosoft.data.inventory.Slot;
+import de.bixilon.minosoft.data.inventory.ItemStack;
 import de.bixilon.minosoft.protocol.network.Connection;
 import glm_.vec3.Vec3;
 
@@ -30,8 +30,8 @@ public class FireworkRocketEntity extends Projectile {
 
     @EntityMetaDataFunction(name = "Item")
     @Nullable
-    public Slot getFireworkItem() {
-        return getMetaData().getSets().getSlot(EntityMetaDataFields.FIREWORK_ROCKET_ENTITY_ITEM);
+    public ItemStack getFireworkItem() {
+        return getMetaData().getSets().getItemStack(EntityMetaDataFields.FIREWORK_ROCKET_ENTITY_ITEM);
     }
 
     @EntityMetaDataFunction(name = "Attached entity id")

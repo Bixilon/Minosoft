@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.data.inventory.Slot;
+import de.bixilon.minosoft.data.inventory.ItemStack;
 import de.bixilon.minosoft.modding.event.events.MultiSlotChangeEvent;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
@@ -22,14 +22,14 @@ import de.bixilon.minosoft.util.logging.Log;
 
 public class PacketWindowItems extends ClientboundPacket {
     byte windowId;
-    Slot[] data;
+    ItemStack[] data;
 
     @Override
     public boolean read(InByteBuffer buffer) {
         this.windowId = buffer.readByte();
-        this.data = new Slot[buffer.readUnsignedShort()];
+        this.data = new ItemStack[buffer.readUnsignedShort()];
         for (int i = 0; i < this.data.length; i++) {
-            this.data[i] = buffer.readSlot();
+            this.data[i] = buffer.readItemStack();
         }
         return true;
     }
@@ -50,7 +50,7 @@ public class PacketWindowItems extends ClientboundPacket {
         return this.windowId;
     }
 
-    public Slot[] getData() {
+    public ItemStack[] getData() {
         return this.data;
     }
 }

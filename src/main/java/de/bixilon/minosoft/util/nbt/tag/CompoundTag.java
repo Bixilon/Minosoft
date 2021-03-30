@@ -166,13 +166,53 @@ public class CompoundTag extends NBTTag {
 
     // abstract functions
 
-    public void writeVec3i(Vec3i position) {
+    public void writeBlockPosition(Vec3i position) {
         if (this.isFinal) {
             throw new IllegalArgumentException("This tag is marked as final!");
         }
         this.data.put("x", new IntTag(position.x));
         this.data.put("y", new IntTag(position.y));
         this.data.put("z", new IntTag(position.z));
+    }
+
+    public CompoundTag removeKey(String key) {
+        this.data.remove(key);
+        return this;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public HashMap<String, NBTTag> getData() {
+        return this.data;
+    }
+
+    @Nullable
+    public NBTTag getAndRemoveTag(String[] names) {
+        for (var name : names) {
+            var tag = getData().get(name);
+            if (tag == null) {
+                continue;
+            }
+            getData().remove(name);
+            return tag;
+        }
+        return null;
+    }
+
+    @Nullable
+    public NBTTag getAndRemoveTag(String name) {
+        var tag = getData().get(name);
+        if (tag == null) {
+            return null;
+        }
+        getData().remove(name);
+        return tag;
+    }
+
+    public CompoundTag clone() {
+        return new CompoundTag(this.name, (HashMap<String, NBTTag>) this.data.clone());
     }
 
     @Override

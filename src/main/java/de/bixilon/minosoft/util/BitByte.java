@@ -19,6 +19,11 @@ public final class BitByte {
         return ((in & mask) == mask);
     }
 
+    public static boolean isBitSet(int in, int pos) {
+        int mask = 1 << pos;
+        return ((in & mask) == mask);
+    }
+
     public static boolean isBitMask(int in, int mask) {
         return ((in & mask) == mask);
     }

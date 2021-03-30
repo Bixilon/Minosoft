@@ -13,15 +13,15 @@
 
 package de.bixilon.minosoft.modding.event.events;
 
-import de.bixilon.minosoft.data.inventory.Slot;
+import de.bixilon.minosoft.data.inventory.ItemStack;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketWindowItems;
 
 public class MultiSlotChangeEvent extends ConnectionEvent {
     private final byte windowId;
-    private final Slot[] data;
+    private final ItemStack[] data;
 
-    public MultiSlotChangeEvent(Connection connection, byte windowId, Slot[] data) {
+    public MultiSlotChangeEvent(Connection connection, byte windowId, ItemStack[] data) {
         super(connection);
         this.windowId = windowId;
         this.data = data;
@@ -40,7 +40,7 @@ public class MultiSlotChangeEvent extends ConnectionEvent {
     /**
      * @return Data array. Array position equals the slot id
      */
-    public Slot[] getData() {
+    public ItemStack[] getData() {
         return this.data;
     }
 }

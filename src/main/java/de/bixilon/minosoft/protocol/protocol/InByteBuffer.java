@@ -22,7 +22,7 @@ import de.bixilon.minosoft.data.commands.CommandNode;
 import de.bixilon.minosoft.data.commands.CommandRootNode;
 import de.bixilon.minosoft.data.entities.EntityMetaData;
 import de.bixilon.minosoft.data.entities.Poses;
-import de.bixilon.minosoft.data.inventory.Slot;
+import de.bixilon.minosoft.data.inventory.ItemStack;
 import de.bixilon.minosoft.data.mappings.LegacyResourceLocation;
 import de.bixilon.minosoft.data.mappings.ResourceLocation;
 import de.bixilon.minosoft.data.mappings.biomes.Biome;
@@ -242,7 +242,7 @@ public class InByteBuffer {
         if (this.versionId < V_17W45A) {
             // old particle format
             return switch (type.getResourceLocation().getFull()) {
-                case "minecraft:iconcrack" -> new ItemParticleData(new Slot(this.connection.getVersion(), this.connection.getMapping().getItemRegistry().get((readVarInt() << 16) | readVarInt())), type);
+                case "minecraft:iconcrack" -> new ItemParticleData(new ItemStack(this.connection.getMapping().getItemRegistry().get((readVarInt() << 16) | readVarInt()), this.connection.getVersion()), type);
                 case "minecraft:blockcrack", "minecraft:blockdust", "minecraft:falling_dust" -> new BlockParticleData(this.connection.getMapping().getBlockState(readVarInt() << 4), type);
                 default -> new ParticleData(type);
             };
@@ -250,7 +250,7 @@ public class InByteBuffer {
         return switch (type.getResourceLocation().getFull()) {
             case "minecraft:block", "minecraft:falling_dust" -> new BlockParticleData(this.connection.getMapping().getBlockState(readVarInt()), type);
             case "minecraft:dust" -> new DustParticleData(readFloat(), readFloat(), readFloat(), readFloat(), type);
-            case "minecraft:item" -> new ItemParticleData(readSlot(), type);
+            case "minecraft:item" -> new ItemParticleData(readItemStack(), type);
             default -> new ParticleData(type);
         };
     }
@@ -300,7 +300,7 @@ public class InByteBuffer {
         return readNBT(false);
     }
 
-    public Slot readSlot() {
+    public ItemStack readItemStack() {
         if (this.versionId < V_1_13_2_PRE1) {
             short id = readShort();
             if (id == -1) {
@@ -313,10 +313,10 @@ public class InByteBuffer {
                 metaData = readShort();
             }
             CompoundTag nbt = (CompoundTag) readNBT(this.versionId < V_14W28B);
-            return new Slot(this.connection.getVersion(), this.connection.getMapping().getItemRegistry().get((id << 16) | metaData), count, metaData, nbt);
+            return new ItemStack(this.connection.getVersion(), this.connection.getMapping().getItemRegistry().get((id << 16) | metaData), count, metaData, nbt);
         }
         if (readBoolean()) {
-            return new Slot(this.connection.getVersion(), this.connection.getMapping().getItemRegistry().get(readVarInt()), readByte(), (CompoundTag) readNBT());
+            return new ItemStack(this.connection.getVersion(), this.connection.getMapping().getItemRegistry().get(readVarInt()), readByte(), (CompoundTag) readNBT());
         }
         return null;
     }
@@ -497,7 +497,7 @@ public class InByteBuffer {
     }
 
     public Ingredient readIngredient() {
-        return new Ingredient(readSlotArray());
+        return new Ingredient(readItemStackArray());
     }
 
     public Ingredient[] readIngredientArray(int length) {
@@ -515,19 +515,19 @@ public class InByteBuffer {
         return readIngredientArray(readVarInt());
     }
 
-    public Slot[] readSlotArray(int length) {
+    public ItemStack[] readItemStackArray(int length) {
         if (length > ProtocolDefinition.PROTOCOL_PACKET_MAX_SIZE) {
             throw new IllegalArgumentException("Trying to allocate to much memory");
         }
-        Slot[] res = new Slot[length];
+        ItemStack[] res = new ItemStack[length];
         for (int i = 0; i < length; i++) {
-            res[i] = readSlot();
+            res[i] = readItemStack();
         }
         return res;
     }
 
-    public Slot[] readSlotArray() {
-        return readSlotArray(readVarInt());
+    public ItemStack[] readItemStackArray() {
+        return readItemStackArray(readVarInt());
     }
 
     public Connection getConnection() {

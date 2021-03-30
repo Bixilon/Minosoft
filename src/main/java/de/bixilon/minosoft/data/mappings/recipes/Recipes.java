@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.data.mappings.recipes;
 
 import com.google.common.collect.HashBiMap;
-import de.bixilon.minosoft.data.inventory.Slot;
+import de.bixilon.minosoft.data.inventory.ItemStack;
 import de.bixilon.minosoft.data.mappings.ResourceLocation;
 
 import java.util.Arrays;
@@ -51,7 +51,7 @@ public class Recipes {
         return this.recipeNameMap.get(resourceLocation);
     }
 
-    public Recipe getRecipe(RecipeTypes property, Slot result, String group, Ingredient[] ingredients) {
+    public Recipe getRecipe(RecipeTypes property, ItemStack result, String group, Ingredient[] ingredients) {
         for (Recipe recipe : this.recipeList) {
             if (recipe.getType() == property && recipe.getResult().equals(result) && recipe.getGroup().equals(group) && ingredientsEquals(recipe.getIngredients(), ingredients)) {
                 return recipe;

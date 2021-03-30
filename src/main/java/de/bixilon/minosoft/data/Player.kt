@@ -16,7 +16,7 @@ import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.data.inventory.Inventory
 import de.bixilon.minosoft.data.inventory.InventoryProperties
-import de.bixilon.minosoft.data.inventory.Slot
+import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.player.PlayerListItem
 import de.bixilon.minosoft.data.scoreboard.ScoreboardManager
 import de.bixilon.minosoft.data.text.ChatComponent
@@ -50,17 +50,17 @@ class Player(val account: Account) {
     val playerInventory: Inventory?
         get() = getInventory(ProtocolDefinition.PLAYER_INVENTORY_ID)
 
-    fun setPlayerInventory(data: Array<Slot?>) {
+    fun setPlayerInventory(data: Array<ItemStack?>) {
         setInventory(ProtocolDefinition.PLAYER_INVENTORY_ID, data)
     }
 
-    fun setInventory(windowId: Int, data: Array<Slot?>) {
+    fun setInventory(windowId: Int, data: Array<ItemStack?>) {
         for (i in data.indices) {
             setSlot(windowId, i, data[i])
         }
     }
 
-    fun setSlot(windowId: Int, slot: Int, data: Slot?) {
+    fun setSlot(windowId: Int, slot: Int, data: ItemStack?) {
         inventories[windowId]!!.setSlot(slot, data)
     }
 
@@ -68,15 +68,15 @@ class Player(val account: Account) {
         return inventories[id]
     }
 
-    fun getSlot(windowId: Int, slotId: Int, versionId: Int): Slot {
+    fun getSlot(windowId: Int, slotId: Int, versionId: Int): ItemStack {
         return getSlot(windowId, slotId)
     }
 
-    fun getSlot(windowId: Int, slot: Int): Slot {
+    fun getSlot(windowId: Int, slot: Int): ItemStack {
         return inventories[windowId]!!.getSlot(slot)
     }
 
-    fun setSlot(windowId: Int, slotId: Int, versionId: Int, data: Slot?) {
+    fun setSlot(windowId: Int, slotId: Int, versionId: Int, data: ItemStack?) {
         setSlot(windowId, slotId, data)
     }
 

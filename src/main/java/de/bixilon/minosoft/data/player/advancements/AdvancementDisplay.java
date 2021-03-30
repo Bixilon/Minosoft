@@ -13,21 +13,21 @@
 
 package de.bixilon.minosoft.data.player.advancements;
 
-import de.bixilon.minosoft.data.inventory.Slot;
+import de.bixilon.minosoft.data.inventory.ItemStack;
 import de.bixilon.minosoft.data.text.ChatComponent;
 import de.bixilon.minosoft.util.BitByte;
 
 public class AdvancementDisplay {
     private final ChatComponent title;
     private final ChatComponent description;
-    private final Slot icon;
+    private final ItemStack icon;
     private final AdvancementFrameTypes frameType;
     private final int flags;
     private final String backgroundTexture;
     private final float x;
     private final float y;
 
-    public AdvancementDisplay(ChatComponent title, ChatComponent description, Slot icon, AdvancementFrameTypes frameType, int flags, String backgroundTexture, float x, float y) {
+    public AdvancementDisplay(ChatComponent title, ChatComponent description, ItemStack icon, AdvancementFrameTypes frameType, int flags, String backgroundTexture, float x, float y) {
         this.title = title;
         this.description = description;
         this.icon = icon;
@@ -38,7 +38,7 @@ public class AdvancementDisplay {
         this.y = y;
     }
 
-    public AdvancementDisplay(ChatComponent title, ChatComponent description, Slot icon, AdvancementFrameTypes frameType, int flags, float x, float y) {
+    public AdvancementDisplay(ChatComponent title, ChatComponent description, ItemStack icon, AdvancementFrameTypes frameType, int flags, float x, float y) {
         this.title = title;
         this.description = description;
         this.icon = icon;
@@ -57,7 +57,7 @@ public class AdvancementDisplay {
         return this.description;
     }
 
-    public Slot getIcon() {
+    public ItemStack getIcon() {
         return this.icon;
     }
 

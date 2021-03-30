@@ -16,7 +16,7 @@ package de.bixilon.minosoft.data.entities.entities.projectile;
 import de.bixilon.minosoft.data.entities.EntityMetaDataFields;
 import de.bixilon.minosoft.data.entities.EntityRotation;
 import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction;
-import de.bixilon.minosoft.data.inventory.Slot;
+import de.bixilon.minosoft.data.inventory.ItemStack;
 import de.bixilon.minosoft.protocol.network.Connection;
 import glm_.vec3.Vec3;
 
@@ -29,14 +29,14 @@ public abstract class ThrowableItemProjectile extends ThrowableProjectile {
     }
 
     @EntityMetaDataFunction(name = "Item")
-    public Slot getItem() {
-        Slot slot = this.metaData.getSets().getSlot(EntityMetaDataFields.THROWABLE_ITEM_PROJECTILE_ITEM);
-        if (slot == null) {
+    public ItemStack getItem() {
+        ItemStack itemStack = this.metaData.getSets().getItemStack(EntityMetaDataFields.THROWABLE_ITEM_PROJECTILE_ITEM);
+        if (itemStack == null) {
             return getDefaultItem();
         }
-        return slot;
+        return itemStack;
     }
 
-    protected abstract Slot getDefaultItem();
+    protected abstract ItemStack getDefaultItem();
 }
 

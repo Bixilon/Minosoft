@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.entities;
 import de.bixilon.minosoft.data.Directions;
 import de.bixilon.minosoft.data.Vector;
 import de.bixilon.minosoft.data.VersionValueMap;
-import de.bixilon.minosoft.data.inventory.Slot;
+import de.bixilon.minosoft.data.inventory.ItemStack;
 import de.bixilon.minosoft.data.mappings.blocks.BlockState;
 import de.bixilon.minosoft.data.mappings.particle.data.ParticleData;
 import de.bixilon.minosoft.data.text.ChatComponent;
@@ -53,7 +53,7 @@ public class EntityMetaData {
             case CHAT -> buffer.readChatComponent();
             case BOOLEAN -> buffer.readBoolean();
             case VECTOR -> new Vector(buffer.readInt(), buffer.readInt(), buffer.readInt());
-            case SLOT -> buffer.readSlot();
+            case ITEM_STACK -> buffer.readItemStack();
             case ROTATION -> new EntityRotation(buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
             case POSITION -> buffer.readBlockPosition();
             case OPT_CHAT -> {
@@ -104,7 +104,7 @@ public class EntityMetaData {
         STRING(Map.of(LOWEST_VERSION_SUPPORTED, 4, V_15W33C, 3)),
         CHAT(Map.of(V_15W33C, 4)),
         OPT_CHAT(Map.of(V_17W47A, 5)), // ToDo: when where the 1.13 changes? in 346?
-        SLOT(Map.of(LOWEST_VERSION_SUPPORTED, 5, V_17W47A, 6)),
+        ITEM_STACK(Map.of(LOWEST_VERSION_SUPPORTED, 5, V_17W47A, 6)),
         BOOLEAN(Map.of(V_15W33C, 6, V_17W47A, 7)),
         VECTOR(Map.of(LOWEST_VERSION_SUPPORTED, 6, V_15W33C, -1)),
         ROTATION(Map.of(V_1_8_PRE1, 7, V_17W47A, 8)),
@@ -224,7 +224,7 @@ public class EntityMetaData {
             return field.getDefaultValue();
         }
 
-        public Slot getSlot(EntityMetaDataFields field) {
+        public ItemStack getItemStack(EntityMetaDataFields field) {
             return get(field);
         }
 

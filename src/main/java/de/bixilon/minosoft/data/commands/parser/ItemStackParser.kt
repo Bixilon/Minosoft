@@ -17,14 +17,14 @@ import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException
 import de.bixilon.minosoft.data.commands.parser.exceptions.InvalidItemPredicateCommandParseException
 import de.bixilon.minosoft.data.commands.parser.exceptions.resourcelocation.ItemNotFoundCommandParseException
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties
-import de.bixilon.minosoft.data.inventory.Slot
+import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.protocol.network.Connection
 import de.bixilon.minosoft.util.nbt.tag.CompoundTag
 
 class ItemStackParser : CommandParser() {
 
     @Throws(CommandParseException::class)
-    override fun parse(connection: Connection, properties: ParserProperties?, stringReader: CommandStringReader): Slot {
+    override fun parse(connection: Connection, properties: ParserProperties?, stringReader: CommandStringReader): ItemStack {
         if (this == ITEM_PREDICATE_PARSER) {
             if (stringReader.peek() != '#') {
                 throw InvalidItemPredicateCommandParseException(stringReader, stringReader.read().toString())
@@ -40,7 +40,7 @@ class ItemStackParser : CommandParser() {
         if (stringReader.peek() == '{') {
             nbt = stringReader.readNBTCompoundTag()
         }
-        return Slot(connection.version, item, 1, nbt)
+        return ItemStack(connection.version, item, 1, nbt)
     }
 
     companion object {

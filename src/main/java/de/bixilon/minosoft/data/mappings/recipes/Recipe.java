@@ -13,11 +13,11 @@
 
 package de.bixilon.minosoft.data.mappings.recipes;
 
-import de.bixilon.minosoft.data.inventory.Slot;
+import de.bixilon.minosoft.data.inventory.ItemStack;
 
 public class Recipe {
     private final RecipeTypes type;
-    private Slot result;
+    private ItemStack result;
     private String group;
     private Ingredient[] ingredients;
     private int height;
@@ -25,14 +25,14 @@ public class Recipe {
     private float experience;
     private int cookingTime;
 
-    public Recipe(RecipeTypes type, String group, Ingredient[] ingredients, Slot result) {
+    public Recipe(RecipeTypes type, String group, Ingredient[] ingredients, ItemStack result) {
         this.type = type;
         this.group = group;
         this.ingredients = ingredients;
         this.result = result;
     }
 
-    public Recipe(int width, int height, RecipeTypes type, String group, Ingredient[] ingredients, Slot result) {
+    public Recipe(int width, int height, RecipeTypes type, String group, Ingredient[] ingredients, ItemStack result) {
         this.width = width;
         this.height = height;
         this.type = type;
@@ -41,20 +41,20 @@ public class Recipe {
         this.result = result;
     }
 
-    public Recipe(RecipeTypes type, String group, Ingredient ingredient, Slot result) {
+    public Recipe(RecipeTypes type, String group, Ingredient ingredient, ItemStack result) {
         this.type = type;
         this.group = group;
         this.ingredients = new Ingredient[]{ingredient};
         this.result = result;
     }
 
-    public Recipe(RecipeTypes type, Ingredient base, Ingredient addition, Slot result) {
+    public Recipe(RecipeTypes type, Ingredient base, Ingredient addition, ItemStack result) {
         this.type = type;
         this.ingredients = new Ingredient[]{base, addition};
         this.result = result;
     }
 
-    public Recipe(RecipeTypes type, String group, Ingredient ingredient, Slot result, float experience, int cookingTime) {
+    public Recipe(RecipeTypes type, String group, Ingredient ingredient, ItemStack result, float experience, int cookingTime) {
         this.type = type;
         this.group = group;
         this.ingredients = new Ingredient[]{ingredient};
@@ -71,7 +71,7 @@ public class Recipe {
         return this.type;
     }
 
-    public Slot getResult() {
+    public ItemStack getResult() {
         return this.result;
     }
 

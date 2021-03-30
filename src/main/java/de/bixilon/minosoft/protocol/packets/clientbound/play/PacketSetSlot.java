@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.data.inventory.Slot;
+import de.bixilon.minosoft.data.inventory.ItemStack;
 import de.bixilon.minosoft.modding.event.events.SingleSlotChangeEvent;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
@@ -23,13 +23,13 @@ import de.bixilon.minosoft.util.logging.Log;
 public class PacketSetSlot extends ClientboundPacket {
     byte windowId;
     short slotId;
-    Slot slot; // ToDo use enum Slots
+    ItemStack itemStack; // ToDo use enum Slots
 
     @Override
     public boolean read(InByteBuffer buffer) {
         this.windowId = buffer.readByte();
         this.slotId = buffer.readShort();
-        this.slot = buffer.readSlot();
+        this.itemStack = buffer.readItemStack();
         return true;
     }
 
@@ -47,7 +47,7 @@ public class PacketSetSlot extends ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Received slot data (windowId=%d, slotId=%d, item=%s)", this.windowId, this.slotId, ((this.slot == null) ? "AIR" : this.slot.getDisplayName())));
+        Log.protocol(String.format("[IN] Received slot data (windowId=%d, slotId=%d, item=%s)", this.windowId, this.slotId, ((this.itemStack == null) ? "AIR" : this.itemStack.getDisplayName())));
     }
 
     public byte getWindowId() {
@@ -58,7 +58,7 @@ public class PacketSetSlot extends ClientboundPacket {
         return this.slotId;
     }
 
-    public Slot getSlot() {
-        return this.slot;
+    public ItemStack getSlot() {
+        return this.itemStack;
     }
 }

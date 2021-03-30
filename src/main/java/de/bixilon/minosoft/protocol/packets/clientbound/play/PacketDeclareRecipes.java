@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import com.google.common.collect.HashBiMap;
-import de.bixilon.minosoft.data.inventory.Slot;
+import de.bixilon.minosoft.data.inventory.ItemStack;
 import de.bixilon.minosoft.data.mappings.ResourceLocation;
 import de.bixilon.minosoft.data.mappings.recipes.Ingredient;
 import de.bixilon.minosoft.data.mappings.recipes.Recipe;
@@ -48,7 +48,7 @@ public class PacketDeclareRecipes extends ClientboundPacket {
                 case SHAPELESS -> {
                     String group = buffer.readString();
                     Ingredient[] ingredients = buffer.readIngredientArray();
-                    Slot result = buffer.readSlot();
+                    ItemStack result = buffer.readItemStack();
                     recipe = new Recipe(type, group, ingredients, result);
                 }
                 case SHAPED -> {
@@ -56,13 +56,13 @@ public class PacketDeclareRecipes extends ClientboundPacket {
                     int height = buffer.readVarInt();
                     String group = buffer.readString();
                     Ingredient[] ingredients = buffer.readIngredientArray(width * height);
-                    Slot result = buffer.readSlot();
+                    ItemStack result = buffer.readItemStack();
                     recipe = new Recipe(width, height, type, group, ingredients, result);
                 }
                 case SMELTING, BLASTING, SMOKING, CAMPFIRE -> {
                     String group = buffer.readString();
                     Ingredient ingredient = buffer.readIngredient();
-                    Slot result = buffer.readSlot();
+                    ItemStack result = buffer.readItemStack();
                     float experience = buffer.readFloat();
                     int cookingTime = buffer.readVarInt();
                     recipe = new Recipe(type, group, ingredient, result, experience, cookingTime);
@@ -70,13 +70,13 @@ public class PacketDeclareRecipes extends ClientboundPacket {
                 case STONE_CUTTING -> {
                     String group = buffer.readString();
                     Ingredient ingredient = buffer.readIngredient();
-                    Slot result = buffer.readSlot();
+                    ItemStack result = buffer.readItemStack();
                     recipe = new Recipe(type, group, ingredient, result);
                 }
                 case SMITHING -> {
                     Ingredient base = buffer.readIngredient();
                     Ingredient addition = buffer.readIngredient();
-                    Slot result = buffer.readSlot();
+                    ItemStack result = buffer.readItemStack();
                     recipe = new Recipe(type, base, addition, result);
                 }
                 default -> recipe = new Recipe(type);

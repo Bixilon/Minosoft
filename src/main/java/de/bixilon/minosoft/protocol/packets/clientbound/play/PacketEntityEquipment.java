@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.entities.entities.Entity;
-import de.bixilon.minosoft.data.inventory.Slot;
+import de.bixilon.minosoft.data.inventory.ItemStack;
 import de.bixilon.minosoft.modding.event.events.EntityEquipmentChangeEvent;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
@@ -28,18 +28,18 @@ import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_15W31A;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_16_PRE7;
 
 public class PacketEntityEquipment extends ClientboundPacket {
-    private final HashMap<Integer, Slot> slots = new HashMap<>();
+    private final HashMap<Integer, ItemStack> slots = new HashMap<>();
     int entityId;
 
     @Override
     public boolean read(InByteBuffer buffer) {
         this.entityId = buffer.readEntityId();
         if (buffer.getVersionId() < V_15W31A) {
-            this.slots.put((int) buffer.readShort(), buffer.readSlot());
+            this.slots.put((int) buffer.readShort(), buffer.readItemStack());
             return true;
         }
         if (buffer.getVersionId() < V_1_16_PRE7) {
-            this.slots.put(buffer.readVarInt(), buffer.readSlot());
+            this.slots.put(buffer.readVarInt(), buffer.readItemStack());
             return true;
         }
         boolean slotAvailable = true;
@@ -49,7 +49,7 @@ public class PacketEntityEquipment extends ClientboundPacket {
                 slotAvailable = false;
             }
             slotId &= 0x7F;
-            this.slots.put(slotId, buffer.readSlot());
+            this.slots.put(slotId, buffer.readItemStack());
         }
         return true;
     }
@@ -69,7 +69,7 @@ public class PacketEntityEquipment extends ClientboundPacket {
     @Override
     public void log() {
         if (this.slots.size() == 1) {
-            Map.Entry<Integer, Slot> set = this.slots.entrySet().iterator().next();
+            Map.Entry<Integer, ItemStack> set = this.slots.entrySet().iterator().next();
             if (set.getValue() == null) {
                 Log.protocol(String.format("[IN] Entity equipment changed (entityId=%d, slot=%s): AIR", this.entityId, set.getKey()));
                 return;
@@ -84,7 +84,7 @@ public class PacketEntityEquipment extends ClientboundPacket {
         return this.entityId;
     }
 
-    public HashMap<Integer, Slot> getSlots() {
+    public HashMap<Integer, ItemStack> getSlots() {
         return this.slots;
     }
 }

@@ -13,23 +13,23 @@
 
 package de.bixilon.minosoft.data.mappings.particle.data;
 
-import de.bixilon.minosoft.data.inventory.Slot;
+import de.bixilon.minosoft.data.inventory.ItemStack;
 import de.bixilon.minosoft.data.mappings.particle.Particle;
 
 public class ItemParticleData extends ParticleData {
-    private final Slot slot;
+    private final ItemStack itemStack;
 
-    public ItemParticleData(Slot slot, Particle type) {
+    public ItemParticleData(ItemStack itemStack, Particle type) {
         super(type);
-        this.slot = slot;
+        this.itemStack = itemStack;
     }
 
-    public Slot getSlot() {
-        return this.slot;
+    public ItemStack getItemStack() {
+        return this.itemStack;
     }
 
     @Override
     public String toString() {
-        return this.slot.toString();
+        return this.itemStack.toString();
     }
 }

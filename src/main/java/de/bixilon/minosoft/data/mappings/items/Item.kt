@@ -33,6 +33,10 @@ open class Item(
     val translationKey: String? = data["description_id"]?.asString
     val creativeModeTab: CreativeModeTab? = data["category"]?.asInt?.let { versionMapping.creativeModeTabRegistry.get(it) }
 
+    override fun toString(): String {
+        return resourceLocation.toString()
+    }
+
     companion object : ResourceLocationDeserializer<Item> {
         override fun deserialize(mappings: VersionMapping, resourceLocation: ResourceLocation, data: JsonObject): Item {
             return when (data["class"].asString) {

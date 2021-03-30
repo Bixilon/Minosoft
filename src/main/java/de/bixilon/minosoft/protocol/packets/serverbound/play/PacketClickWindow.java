@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
 import de.bixilon.minosoft.data.inventory.InventoryActions;
-import de.bixilon.minosoft.data.inventory.Slot;
+import de.bixilon.minosoft.data.inventory.ItemStack;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
@@ -26,9 +26,9 @@ public class PacketClickWindow implements ServerboundPacket {
     private final short slot;
     private final InventoryActions action;
     private final short actionNumber;
-    private final Slot clickedItem;
+    private final ItemStack clickedItem;
 
-    public PacketClickWindow(byte windowId, short slot, InventoryActions action, short actionNumber, Slot clickedItem) {
+    public PacketClickWindow(byte windowId, short slot, InventoryActions action, short actionNumber, ItemStack clickedItem) {
         this.windowId = windowId;
         this.slot = slot;
         this.action = action;
@@ -44,7 +44,7 @@ public class PacketClickWindow implements ServerboundPacket {
         buffer.writeByte(this.action.getButton());
         buffer.writeShort(this.actionNumber);
         buffer.writeByte(this.action.getMode());
-        buffer.writeSlot(this.clickedItem);
+        buffer.writeItemStack(this.clickedItem);
         return buffer;
     }
 

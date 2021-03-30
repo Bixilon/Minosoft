@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
-import de.bixilon.minosoft.data.inventory.Slot;
+import de.bixilon.minosoft.data.inventory.ItemStack;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
@@ -22,9 +22,9 @@ import de.bixilon.minosoft.util.logging.Log;
 
 public class PacketCreativeInventoryAction implements ServerboundPacket {
     private final short slot;
-    private final Slot clickedItem;
+    private final ItemStack clickedItem;
 
-    public PacketCreativeInventoryAction(short slot, Slot clickedItem) {
+    public PacketCreativeInventoryAction(short slot, ItemStack clickedItem) {
         this.slot = slot;
         this.clickedItem = clickedItem;
     }
@@ -33,7 +33,7 @@ public class PacketCreativeInventoryAction implements ServerboundPacket {
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, PacketTypes.Serverbound.PLAY_CREATIVE_INVENTORY_ACTION);
         buffer.writeShort(this.slot);
-        buffer.writeSlot(this.clickedItem);
+        buffer.writeItemStack(this.clickedItem);
         return buffer;
     }
 
