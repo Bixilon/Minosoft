@@ -28,12 +28,12 @@ import glm_.vec2.Vec2i
 import glm_.vec3.Vec3i
 import java.util.*
 
-class PacketMultiBlockChange : ClientboundPacket() {
+class PacketMultiBlockChange() : ClientboundPacket() {
     val blocks = HashMap<Vec3i, BlockState?>()
     lateinit var chunkPosition: Vec2i
         private set
 
-    override fun read(buffer: InByteBuffer): Boolean {
+    constructor(buffer: InByteBuffer) : this() {
         if (buffer.versionId < ProtocolVersions.V_14W26C) {
             chunkPosition = if (buffer.versionId < ProtocolVersions.V_1_7_5) {
                 Vec2i(buffer.readVarInt(), buffer.readVarInt())
@@ -51,7 +51,7 @@ class PacketMultiBlockChange : ClientboundPacket() {
                 val x = (raw and -0x10000000 ushr 28)
                 blocks[Vec3i(x, y, z)] = buffer.connection.mapping.getBlockState((blockId shl 4) or meta)
             }
-            return true
+            return
         }
         if (buffer.versionId < ProtocolVersions.V_20W28A) {
             chunkPosition = Vec2i(buffer.readInt(), buffer.readInt())
@@ -62,7 +62,7 @@ class PacketMultiBlockChange : ClientboundPacket() {
                 val blockId = buffer.readVarInt()
                 blocks[Vec3i(position and 0xF0 ushr 4 and 0xF, y.toInt(), position and 0xF)] = buffer.connection.mapping.getBlockState(blockId)
             }
-            return true
+            return
         }
         val rawPos = buffer.readLong()
         chunkPosition = Vec2i((rawPos shr 42).toInt(), (rawPos shl 22 shr 42).toInt())
@@ -75,7 +75,7 @@ class PacketMultiBlockChange : ClientboundPacket() {
             val data = buffer.readVarLong()
             blocks[Vec3i((data shr 8 and 0xF).toInt(), yOffset + (data shr 4 and 0xF).toInt(), (data and 0xF).toInt())] = buffer.connection.mapping.getBlockState((data ushr 12).toInt())
         }
-        return true
+        return
     }
 
     override fun handle(connection: Connection) {

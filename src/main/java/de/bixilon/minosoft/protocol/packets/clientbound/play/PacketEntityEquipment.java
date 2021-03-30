@@ -29,18 +29,17 @@ import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_16_PRE7
 
 public class PacketEntityEquipment extends ClientboundPacket {
     private final HashMap<Integer, ItemStack> slots = new HashMap<>();
-    int entityId;
+    private final int entityId;
 
-    @Override
-    public boolean read(InByteBuffer buffer) {
+    public PacketEntityEquipment(InByteBuffer buffer) {
         this.entityId = buffer.readEntityId();
         if (buffer.getVersionId() < V_15W31A) {
             this.slots.put((int) buffer.readShort(), buffer.readItemStack());
-            return true;
+            return;
         }
         if (buffer.getVersionId() < V_1_16_PRE7) {
             this.slots.put(buffer.readVarInt(), buffer.readItemStack());
-            return true;
+            return;
         }
         boolean slotAvailable = true;
         while (slotAvailable) {
@@ -51,7 +50,6 @@ public class PacketEntityEquipment extends ClientboundPacket {
             slotId &= 0x7F;
             this.slots.put(slotId, buffer.readItemStack());
         }
-        return true;
     }
 
     @Override

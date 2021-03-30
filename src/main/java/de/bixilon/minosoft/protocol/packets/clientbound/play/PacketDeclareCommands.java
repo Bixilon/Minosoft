@@ -21,13 +21,11 @@ import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
 public class PacketDeclareCommands extends ClientboundPacket {
-    private CommandRootNode rootNode;
+    private final CommandRootNode rootNode;
 
-    @Override
-    public boolean read(InByteBuffer buffer) throws Exception {
+    public PacketDeclareCommands(InByteBuffer buffer) {
         CommandNode[] nodes = buffer.readCommandNodesArray();
         this.rootNode = (CommandRootNode) nodes[buffer.readVarInt()];
-        return true;
     }
 
     @Override

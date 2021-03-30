@@ -18,14 +18,12 @@ import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
 public class PacketScoreboardDisplayScoreboard extends ClientboundPacket {
-    ScoreboardAnimations action;
-    String scoreName;
+    private final ScoreboardAnimations action;
+    private final String scoreName;
 
-    @Override
-    public boolean read(InByteBuffer buffer) {
+    public PacketScoreboardDisplayScoreboard(InByteBuffer buffer) {
         this.action = ScoreboardAnimations.byId(buffer.readUnsignedByte());
         this.scoreName = buffer.readString();
-        return true;
     }
 
     @Override

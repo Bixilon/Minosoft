@@ -21,14 +21,12 @@ import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
 public class PacketTabHeaderAndFooter extends ClientboundPacket {
-    ChatComponent header;
-    ChatComponent footer;
+    private final ChatComponent header;
+    private final ChatComponent footer;
 
-    @Override
-    public boolean read(InByteBuffer buffer) {
+    public PacketTabHeaderAndFooter(InByteBuffer buffer) {
         this.header = buffer.readChatComponent();
         this.footer = buffer.readChatComponent();
-        return true;
     }
 
     @Override

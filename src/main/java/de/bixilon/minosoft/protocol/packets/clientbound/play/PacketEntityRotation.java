@@ -22,13 +22,12 @@ import de.bixilon.minosoft.util.logging.Log;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W25B;
 
 public class PacketEntityRotation extends ClientboundPacket {
-    int entityId;
-    short yaw;
-    short pitch;
-    boolean onGround;
+    private final int entityId;
+    private final short yaw;
+    private final short pitch;
+    private boolean onGround;
 
-    @Override
-    public boolean read(InByteBuffer buffer) {
+    public PacketEntityRotation(InByteBuffer buffer) {
         this.entityId = buffer.readEntityId();
 
         this.yaw = buffer.readAngle();
@@ -37,7 +36,6 @@ public class PacketEntityRotation extends ClientboundPacket {
         if (buffer.getVersionId() >= V_14W25B) {
             this.onGround = buffer.readBoolean();
         }
-        return true;
     }
 
     @Override

@@ -21,15 +21,14 @@ import de.bixilon.minosoft.util.logging.Log;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W03B;
 
 public class PacketPlayerAbilitiesReceiving extends ClientboundPacket {
-    boolean creative; // is this needed? receiving the gamemode in change Game state
-    boolean flying;
-    boolean canFly;
-    boolean godMode;
-    float flyingSpeed;
-    float walkingSpeed;
+    private final boolean creative; // is this needed? receiving the gamemode in change Game state
+    private final boolean flying;
+    private final boolean canFly;
+    private final boolean godMode;
+    private final float flyingSpeed;
+    private final float walkingSpeed;
 
-    @Override
-    public boolean read(InByteBuffer buffer) {
+    public PacketPlayerAbilitiesReceiving(InByteBuffer buffer) {
         byte flags = buffer.readByte();
         if (buffer.getVersionId() < V_14W03B) { // ToDo
             this.creative = BitByte.isBitSet(flags, 0);
@@ -44,7 +43,6 @@ public class PacketPlayerAbilitiesReceiving extends ClientboundPacket {
         }
         this.flyingSpeed = buffer.readFloat();
         this.walkingSpeed = buffer.readFloat();
-        return true;
     }
 
     @Override

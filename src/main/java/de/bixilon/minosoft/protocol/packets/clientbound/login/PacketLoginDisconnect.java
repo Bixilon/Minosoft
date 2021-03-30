@@ -21,12 +21,10 @@ import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
 public class PacketLoginDisconnect extends ClientboundPacket {
-    ChatComponent reason;
+   private final ChatComponent reason;
 
-    @Override
-    public boolean read(InByteBuffer buffer) {
+    public PacketLoginDisconnect(InByteBuffer buffer) {
         this.reason = buffer.readChatComponent();
-        return true;
     }
 
     @Override

@@ -69,25 +69,21 @@ public abstract class Network {
                 throw new UnknownPacketException(String.format("Server sent us an unknown packet (id=0x%x, length=%d, data=%s)", data.getPacketTypeId(), bytes.length, data.getBase64()));
             }
 
-            ClientboundPacket packet;
-            try {
-                packet = packetType.createNewInstance();
-            } catch (NullPointerException exception) {
+            PacketTypes.PacketInstanceCreator instanceCreator = packetType.getCreator();
+
+            if (instanceCreator == null) {
                 throw new PacketNotImplementedException(data, packetType, this.connection);
             }
 
-            if (packet == null) {
-                throw new PacketNotImplementedException(data, packetType, this.connection);
-            }
-            boolean success;
+            ClientboundPacket packet;
             try {
-                success = packet.read(data);
-                if (data.getBytesLeft() > 0 || !success) {
-                    throw new PacketParseException(String.format("Could not parse packet %s (used=%d, available=%d, total=%d, success=%s)", packetType, data.getPosition(), data.getBytesLeft(), data.getLength(), success));
+                packet = instanceCreator.createNewInstance(data);
+                if (data.getBytesLeft() > 0) {
+                    throw new PacketParseException(String.format("Could not parse packet %s (used=%d, available=%d, total=%d)", packetType, data.getPosition(), data.getBytesLeft(), data.getLength()));
                 }
                 packet.check(this.connection);
             } catch (Throwable exception) {
-                packet.onError(this.connection);
+                // ToDo: packet.onError(this.connection);
                 throw exception;
             }
             return new Pair<>(packetType, packet);

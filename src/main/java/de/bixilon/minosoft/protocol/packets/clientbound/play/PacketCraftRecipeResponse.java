@@ -20,19 +20,18 @@ import de.bixilon.minosoft.util.logging.Log;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_17W47A;
 
 public class PacketCraftRecipeResponse extends ClientboundPacket {
-    byte windowId;
-    int recipeId;
-    String recipeName;
+    private final byte windowId;
+    private int recipeId;
+    private String recipeName;
 
-    @Override
-    public boolean read(InByteBuffer buffer) {
+    public PacketCraftRecipeResponse(InByteBuffer buffer) {
         this.windowId = buffer.readByte();
         if (buffer.getVersionId() < V_17W47A) { // ToDo: was this really in 346?
             this.recipeId = buffer.readVarInt();
         } else {
             this.recipeName = buffer.readString();
         }
-        return true;
+        return;
     }
 
     @Override

@@ -23,32 +23,30 @@ import de.bixilon.minosoft.util.logging.Log;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W04A;
 
 public class PacketScoreboardUpdateScore extends ClientboundPacket {
-    String itemName;
-    ScoreboardUpdateScoreActions action;
-    String scoreName;
-    int scoreValue;
+    private final String itemName;
+    private final ScoreboardUpdateScoreActions action;
+    private String scoreName;
+    private int scoreValue;
 
-    @Override
-    public boolean read(InByteBuffer buffer) {
+    public PacketScoreboardUpdateScore(InByteBuffer buffer) {
         this.itemName = buffer.readString();
         this.action = ScoreboardUpdateScoreActions.byId(buffer.readUnsignedByte());
         if (buffer.getVersionId() < V_14W04A) { // ToDo
             if (this.action == ScoreboardUpdateScoreActions.REMOVE) {
-                return true;
+                return;
             }
             // not present id action == REMOVE
             this.scoreName = buffer.readString();
             this.scoreValue = buffer.readInt();
-            return true;
+            return;
         }
         this.scoreName = buffer.readString();
 
         if (this.action == ScoreboardUpdateScoreActions.REMOVE) {
-            return true;
+            return;
         }
         // not present id action == REMOVE
         this.scoreValue = buffer.readVarInt();
-        return true;
     }
 
     @Override

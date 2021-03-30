@@ -18,12 +18,10 @@ import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
 public class PacketLoginSetCompression extends CompressionThresholdChange {
-    int threshold;
+   private final int threshold;
 
-    @Override
-    public boolean read(InByteBuffer buffer) {
+    public PacketLoginSetCompression(InByteBuffer buffer) {
         this.threshold = buffer.readVarInt();
-        return true;
     }
 
     @Override

@@ -19,20 +19,18 @@ import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
 public class PacketEntitySoundEffect extends ClientboundPacket {
-    int soundId;
-    SoundCategories category;
-    int entityId;
-    float volume;
-    float pitch;
+    private final int soundId;
+    private final SoundCategories category;
+    private final int entityId;
+    private final float volume;
+    private final float pitch;
 
-    @Override
-    public boolean read(InByteBuffer buffer) {
+    public PacketEntitySoundEffect(InByteBuffer buffer) {
         this.soundId = buffer.readVarInt();
         this.category = SoundCategories.byId(buffer.readVarInt());
         this.entityId = buffer.readVarInt();
         this.volume = buffer.readFloat();
         this.pitch = buffer.readFloat();
-        return true;
     }
 
     @Override

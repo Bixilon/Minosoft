@@ -21,20 +21,19 @@ import de.bixilon.minosoft.util.logging.Log;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
 
 public class PacketUnlockRecipes extends ClientboundPacket {
-    private UnlockRecipeActions action;
-    private boolean isCraftingBookOpen;
+    private final UnlockRecipeActions action;
+    private final boolean isCraftingBookOpen;
     private boolean isSmeltingBookOpen;
     private boolean isBlastFurnaceBookOpen;
     private boolean isSmokerBookOpen;
-    private boolean isCraftingFilteringActive;
+    private final boolean isCraftingFilteringActive;
     private boolean isSmeltingFilteringActive;
     private boolean isBlastFurnaceFilteringActive;
     private boolean isSmokerFilteringActive;
-    private Recipe[] listed;
+    private final Recipe[] listed;
     private Recipe[] tagged;
 
-    @Override
-    public boolean read(InByteBuffer buffer) {
+    public PacketUnlockRecipes(InByteBuffer buffer) {
         if (buffer.getVersionId() < V_1_12) {
             this.action = UnlockRecipeActions.byId(buffer.readInt());
         } else {
@@ -70,7 +69,6 @@ public class PacketUnlockRecipes extends ClientboundPacket {
                 }
             }
         }
-        return true;
     }
 
     @Override

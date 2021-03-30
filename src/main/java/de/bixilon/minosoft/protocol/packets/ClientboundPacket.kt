@@ -13,12 +13,8 @@
 package de.bixilon.minosoft.protocol.packets
 
 import de.bixilon.minosoft.protocol.network.Connection
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer
 
 abstract class ClientboundPacket : Packet {
-
-    @Throws(Exception::class)
-    abstract fun read(buffer: InByteBuffer): Boolean
 
     open fun handle(connection: Connection) {}
 

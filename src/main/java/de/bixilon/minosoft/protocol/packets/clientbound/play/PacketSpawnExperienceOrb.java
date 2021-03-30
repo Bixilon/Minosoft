@@ -24,10 +24,9 @@ import glm_.vec3.Vec3;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_16W06A;
 
 public class PacketSpawnExperienceOrb extends ClientboundPacket {
-    ExperienceOrb entity;
+    private final ExperienceOrb entity;
 
-    @Override
-    public boolean read(InByteBuffer buffer) {
+    public PacketSpawnExperienceOrb(InByteBuffer buffer) {
         int entityId = buffer.readEntityId();
         Vec3 position;
         if (buffer.getVersionId() < V_16W06A) {
@@ -37,7 +36,6 @@ public class PacketSpawnExperienceOrb extends ClientboundPacket {
         }
         int count = buffer.readUnsignedShort();
         this.entity = new ExperienceOrb(buffer.getConnection(), entityId, position, count);
-        return true;
     }
 
     @Override

@@ -24,18 +24,18 @@ import de.bixilon.minosoft.util.logging.Log;
 import java.util.UUID;
 
 public class PacketBossBar extends ClientboundPacket {
-    UUID uuid;
-    BossBarActions action;
+    private final UUID uuid;
+    private final BossBarActions action;
 
     // fields depend on action
-    ChatComponent title;
-    float health;
-    BossBarColors color;
-    BossBarDivisions divisions;
-    byte flags;
+    private ChatComponent title;
+    private float health;
+    private BossBarColors color;
+    private BossBarDivisions divisions;
+    private byte flags;
 
-    @Override
-    public boolean read(InByteBuffer buffer) {
+
+    public PacketBossBar(InByteBuffer buffer) {
         this.uuid = buffer.readUUID();
         this.action = BossBarActions.byId(buffer.readVarInt());
         switch (this.action) {
@@ -54,7 +54,6 @@ public class PacketBossBar extends ClientboundPacket {
             }
             case UPDATE_FLAGS -> this.flags = buffer.readByte();
         }
-        return true;
     }
 
     @Override

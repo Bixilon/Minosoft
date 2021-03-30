@@ -23,13 +23,12 @@ import de.bixilon.minosoft.util.logging.Log;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
 
 public class PacketScoreboardObjective extends ClientboundPacket {
-    String name;
-    ChatComponent value;
-    ScoreboardObjectiveActions action;
-    ScoreboardObjectiveTypes type;
+    private final String name;
+    private final ScoreboardObjectiveActions action;
+    private ChatComponent value;
+    private ScoreboardObjectiveTypes type;
 
-    @Override
-    public boolean read(InByteBuffer buffer) {
+    public PacketScoreboardObjective(InByteBuffer buffer) {
         this.name = buffer.readString();
         if (buffer.getVersionId() < V_14W04A) { // ToDo
             this.value = buffer.readChatComponent();
@@ -42,7 +41,7 @@ public class PacketScoreboardObjective extends ClientboundPacket {
             if (buffer.getVersionId() >= V_14W08A) {
                 if (buffer.getVersionId() >= V_17W47A && buffer.getVersionId() < V_17W49A) {
                     // got removed in these 3 versions
-                    return true;
+                    return;
                 }
                 if (buffer.getVersionId() < V_17W49A) {
                     this.type = ScoreboardObjectiveTypes.byName(buffer.readString());
@@ -51,7 +50,7 @@ public class PacketScoreboardObjective extends ClientboundPacket {
                 }
             }
         }
-        return true;
+        return;
     }
 
     @Override

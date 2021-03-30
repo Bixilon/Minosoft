@@ -23,12 +23,11 @@ import glm_.vec3.Vec3i;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W03B;
 
 public class PacketBlockBreakAnimation extends ClientboundPacket {
-    private int entityId;
-    private Vec3i position;
-    private byte stage;
+    private final int entityId;
+    private final Vec3i position;
+    private final byte stage;
 
-    @Override
-    public boolean read(InByteBuffer buffer) {
+    public PacketBlockBreakAnimation(InByteBuffer buffer) {
         this.entityId = buffer.readVarInt();
         if (buffer.getVersionId() < V_14W03B) {
             this.position = buffer.readBlockPositionInteger();
@@ -36,8 +35,6 @@ public class PacketBlockBreakAnimation extends ClientboundPacket {
             this.position = buffer.readBlockPosition();
         }
         this.stage = buffer.readByte();
-
-        return true;
     }
 
     @Override

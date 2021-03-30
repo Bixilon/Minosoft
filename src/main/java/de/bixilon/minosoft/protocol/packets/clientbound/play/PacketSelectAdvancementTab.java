@@ -20,14 +20,12 @@ import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
 public class PacketSelectAdvancementTab extends ClientboundPacket {
-    AdvancementTabs tab;
+    private AdvancementTabs tab;
 
-    @Override
-    public boolean read(InByteBuffer buffer) {
+    public PacketSelectAdvancementTab(InByteBuffer buffer) {
         if (buffer.readBoolean()) {
             this.tab = AdvancementTabs.byResourceLocation(buffer.readResourceLocation(), buffer.getVersionId());
         }
-        return true;
     }
 
     @Override

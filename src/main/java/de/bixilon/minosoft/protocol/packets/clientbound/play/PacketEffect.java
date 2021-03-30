@@ -26,13 +26,12 @@ import java.util.Map;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
 
 public class PacketEffect extends ClientboundPacket {
-    EffectEffects effect;
-    Vec3i position;
-    int data;
-    boolean disableRelativeVolume;
+    private final EffectEffects effect;
+    private final Vec3i position;
+    private final int data;
+    private final boolean disableRelativeVolume;
 
-    @Override
-    public boolean read(InByteBuffer buffer) {
+    public PacketEffect(InByteBuffer buffer) {
         this.effect = EffectEffects.byId(buffer.readInt(), buffer.getVersionId());
         if (buffer.getVersionId() < V_14W03B) {
             this.position = buffer.readBlockPositionByte();
@@ -41,7 +40,6 @@ public class PacketEffect extends ClientboundPacket {
         }
         this.data = buffer.readInt();
         this.disableRelativeVolume = buffer.readBoolean();
-        return true;
     }
 
     @Override
@@ -153,7 +151,7 @@ public class PacketEffect extends ClientboundPacket {
         END_GATEWAY_SPAWN(Map.of(V_1_9_4, 3000)),
         MOB_ENDER_DRAGON_GROWL(Map.of(V_1_9_4, 3001));
 
-   private final VersionValueMap<Integer> valueMap;
+        private final VersionValueMap<Integer> valueMap;
 
         EffectEffects(Map<Integer, Integer> values) {
             this.valueMap = new VersionValueMap<>(values);

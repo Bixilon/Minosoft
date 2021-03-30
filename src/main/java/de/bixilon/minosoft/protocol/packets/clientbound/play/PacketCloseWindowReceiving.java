@@ -20,12 +20,10 @@ import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
 public class PacketCloseWindowReceiving extends ClientboundPacket {
-    byte windowId;
+    private final byte windowId;
 
-    @Override
-    public boolean read(InByteBuffer buffer) {
+    public PacketCloseWindowReceiving(InByteBuffer buffer) {
         this.windowId = buffer.readByte();
-        return true;
     }
 
     @Override

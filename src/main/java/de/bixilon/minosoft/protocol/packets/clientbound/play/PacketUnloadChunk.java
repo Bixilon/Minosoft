@@ -20,12 +20,10 @@ import de.bixilon.minosoft.util.logging.Log;
 import glm_.vec2.Vec2i;
 
 public class PacketUnloadChunk extends ClientboundPacket {
-    private Vec2i chunkPosition;
+    private final Vec2i chunkPosition;
 
-    @Override
-    public boolean read(InByteBuffer buffer) {
-        this.chunkPosition = new Vec2i(buffer.readInt(), buffer.readInt());
-        return true;
+    public PacketUnloadChunk(InByteBuffer buffer) {
+        this.chunkPosition = buffer.readChunkPosition();
     }
 
     @Override

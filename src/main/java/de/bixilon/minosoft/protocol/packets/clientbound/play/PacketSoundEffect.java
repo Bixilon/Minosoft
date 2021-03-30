@@ -23,14 +23,13 @@ import glm_.vec3.Vec3i;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
 
 public class PacketSoundEffect extends ClientboundPacket {
-    private Vec3i position;
+    private final Vec3i position;
+    private final int soundId;
+    private final float volume;
+    private final float pitch;
     private SoundCategories category;
-    private int soundId;
-    private float volume;
-    private float pitch;
 
-    @Override
-    public boolean read(InByteBuffer buffer) {
+    public PacketSoundEffect(InByteBuffer buffer) {
         if (buffer.getVersionId() >= V_17W15A && buffer.getVersionId() < V_17W18A) {
             // category was moved to the top
             this.category = SoundCategories.byId(buffer.readVarInt());
@@ -50,7 +49,6 @@ public class PacketSoundEffect extends ClientboundPacket {
         } else {
             this.pitch = buffer.readFloat();
         }
-        return true;
     }
 
     @Override

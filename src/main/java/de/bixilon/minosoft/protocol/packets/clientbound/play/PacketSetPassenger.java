@@ -18,17 +18,16 @@ import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
 public class PacketSetPassenger extends ClientboundPacket {
-    int vehicleId;
-    int[] entityIds;
+    private final int vehicleId;
+    private final int[] entityIds;
 
-    @Override
-    public boolean read(InByteBuffer buffer) {
+
+    public PacketSetPassenger(InByteBuffer buffer) {
         this.vehicleId = buffer.readVarInt();
         this.entityIds = new int[buffer.readVarInt()];
         for (int i = 0; i < this.entityIds.length; i++) {
             this.entityIds[i] = buffer.readVarInt();
         }
-        return true;
     }
 
     @Override

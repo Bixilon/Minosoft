@@ -24,10 +24,9 @@ import java.util.Arrays;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W04A;
 
 public class PacketDestroyEntity extends ClientboundPacket {
-    int[] entityIds;
+    private final int[] entityIds;
 
-    @Override
-    public boolean read(InByteBuffer buffer) {
+    public PacketDestroyEntity(InByteBuffer buffer) {
         if (buffer.getVersionId() < V_14W04A) {
             this.entityIds = new int[buffer.readByte()];
         } else {
@@ -37,7 +36,6 @@ public class PacketDestroyEntity extends ClientboundPacket {
         for (int i = 0; i < this.entityIds.length; i++) {
             this.entityIds[i] = buffer.readEntityId();
         }
-        return true;
     }
 
     @Override

@@ -21,15 +21,14 @@ import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W33A;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_17W45A;
 
 public class PacketTabCompleteReceiving extends ClientboundPacket {
-    int count;
-    String[] match;
+    private final int count;
+    private final String[] match;
 
-    @Override
-    public boolean read(InByteBuffer buffer) {
+    public PacketTabCompleteReceiving(InByteBuffer buffer) {
         if (buffer.getVersionId() < V_14W33A) {
             this.count = buffer.readVarInt();
             this.match = new String[]{buffer.readString()};
-            return true;
+            return;
         }
         if (buffer.getVersionId() < V_17W45A) {
             this.count = buffer.readVarInt();
@@ -37,10 +36,10 @@ public class PacketTabCompleteReceiving extends ClientboundPacket {
             for (int i = 0; i < this.count; i++) {
                 this.match[i] = buffer.readString();
             }
-            return true;
+            return;
         }
         // ToDo
-        return false;
+        throw new IllegalStateException("TODO");
     }
 
     @Override

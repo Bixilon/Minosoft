@@ -32,7 +32,7 @@ import glm_.vec2.Vec2i
 import glm_.vec3.Vec3i
 import java.util.*
 
-class PacketChunkData : ClientboundPacket() {
+class PacketChunkData() : ClientboundPacket() {
     private val blockEntities = HashMap<Vec3i, BlockEntityMetaData>()
     lateinit var chunkPosition: Vec2i
     var chunkData: ChunkData? = ChunkData()
@@ -40,7 +40,7 @@ class PacketChunkData : ClientboundPacket() {
     var heightMap: CompoundTag? = null
     private var isFullChunk = false
 
-    override fun read(buffer: InByteBuffer): Boolean {
+    constructor(buffer: InByteBuffer) : this() {
         val dimension = buffer.connection.player.world.dimension!!
         chunkPosition = Vec2i(buffer.readInt(), buffer.readInt())
         if (buffer.versionId < ProtocolVersions.V_20W45A) {
@@ -62,7 +62,7 @@ class PacketChunkData : ClientboundPacket() {
                 // unload chunk
                 chunkData = null
             }
-            return true
+            return
         }
         val sectionBitMask: BitSet = when {
             buffer.versionId < ProtocolVersions.V_15W34C -> {
@@ -106,7 +106,7 @@ class PacketChunkData : ClientboundPacket() {
                 blockEntities[Vec3i(tag.getNumberTag("x").asInt, tag.getNumberTag("y").asInt, tag.getNumberTag("z").asInt)] = data
             }
         }
-        return true
+        return
     }
 
     override fun handle(connection: Connection) {

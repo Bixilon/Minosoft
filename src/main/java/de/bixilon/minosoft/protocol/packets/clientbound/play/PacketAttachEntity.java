@@ -22,20 +22,18 @@ import de.bixilon.minosoft.util.logging.Log;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_15W41A;
 
 public class PacketAttachEntity extends ClientboundPacket {
-    int entityId;
-    int vehicleId;
-    boolean leash;
+    private final int entityId;
+    private final int vehicleId;
+    private final boolean leash;
 
-    @Override
-    public boolean read(InByteBuffer buffer) {
+    public PacketAttachEntity(InByteBuffer buffer) {
         this.entityId = buffer.readInt();
         this.vehicleId = buffer.readInt();
         if (buffer.getVersionId() < V_15W41A) {
             this.leash = buffer.readBoolean();
-            return true;
+            return;
         }
         this.leash = true;
-        return true;
     }
 
     @Override

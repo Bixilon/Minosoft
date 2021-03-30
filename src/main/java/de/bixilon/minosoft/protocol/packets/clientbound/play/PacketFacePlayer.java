@@ -19,13 +19,12 @@ import de.bixilon.minosoft.util.logging.Log;
 import glm_.vec3.Vec3;
 
 public class PacketFacePlayer extends ClientboundPacket {
-    private PlayerFaces face;
-    private Vec3 position;
+    private final PlayerFaces face;
+    private final Vec3 position;
     private int entityId = -1;
     private PlayerFaces entityFace;
 
-    @Override
-    public boolean read(InByteBuffer buffer) {
+    public PacketFacePlayer(InByteBuffer buffer) {
         this.face = PlayerFaces.byId(buffer.readVarInt());
         this.position = buffer.readLocation();
         if (buffer.readBoolean()) {
@@ -33,7 +32,6 @@ public class PacketFacePlayer extends ClientboundPacket {
             this.entityId = buffer.readVarInt();
             this.entityFace = PlayerFaces.byId(buffer.readVarInt());
         }
-        return true;
     }
 
     @Override

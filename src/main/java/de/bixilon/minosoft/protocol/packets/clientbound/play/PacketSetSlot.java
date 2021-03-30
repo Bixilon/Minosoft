@@ -21,16 +21,14 @@ import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
 public class PacketSetSlot extends ClientboundPacket {
-    byte windowId;
-    short slotId;
-    ItemStack itemStack; // ToDo use enum Slots
+    private final byte windowId;
+    private final short slotId;
+    private final ItemStack itemStack; // ToDo use enum Slots
 
-    @Override
-    public boolean read(InByteBuffer buffer) {
+    public PacketSetSlot(InByteBuffer buffer) {
         this.windowId = buffer.readByte();
         this.slotId = buffer.readShort();
         this.itemStack = buffer.readItemStack();
-        return true;
     }
 
     @Override

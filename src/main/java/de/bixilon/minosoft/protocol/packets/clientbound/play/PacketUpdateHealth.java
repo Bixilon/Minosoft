@@ -22,12 +22,11 @@ import de.bixilon.minosoft.util.logging.Log;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W04A;
 
 public class PacketUpdateHealth extends ClientboundPacket {
-    float health;
-    int food;
-    float saturation;
+    private final int food;
+    private final float saturation;
+    private float health;
 
-    @Override
-    public boolean read(InByteBuffer buffer) {
+    public PacketUpdateHealth(InByteBuffer buffer) {
         this.health = buffer.readFloat();
         if (this.health < 0.0F) {
             this.health = 0.0F;
@@ -38,7 +37,6 @@ public class PacketUpdateHealth extends ClientboundPacket {
             this.food = buffer.readVarInt();
         }
         this.saturation = buffer.readFloat();
-        return true;
     }
 
     @Override

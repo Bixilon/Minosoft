@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2021 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -10,19 +10,18 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.protocol.packets.clientbound.play
+package de.bixilon.minosoft.protocol.packets.clientbound.play.title
 
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.modding.event.events.TitleChangeEvent
 import de.bixilon.minosoft.protocol.network.Connection
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket
-import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketTitle.TitleActions
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer
 import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.enum.ValuesEnum
 import de.bixilon.minosoft.util.logging.Log
 
-class PacketTitle : ClientboundPacket() {
+class PacketTitle() : ClientboundPacket() {
     lateinit var action: TitleActions
 
     // fields depend on action
@@ -31,7 +30,8 @@ class PacketTitle : ClientboundPacket() {
     var fadeInTime = 0
     var stayTime = 0
     var fadeOutTime = 0
-    override fun read(buffer: InByteBuffer): Boolean {
+
+    constructor(buffer: InByteBuffer) : this() {
         action = buffer.connection.mapping.titleActionsRegistry.get(buffer.readVarInt())!!
         when (action) {
             TitleActions.SET_TITLE -> this.text = buffer.readChatComponent()
@@ -44,7 +44,6 @@ class PacketTitle : ClientboundPacket() {
             else -> {
             }
         }
-        return true
     }
 
     override fun handle(connection: Connection) {

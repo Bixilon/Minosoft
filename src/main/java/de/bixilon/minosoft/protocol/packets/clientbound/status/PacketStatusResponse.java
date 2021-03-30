@@ -26,12 +26,10 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import de.bixilon.minosoft.util.logging.Log;
 
 public class PacketStatusResponse extends ClientboundPacket {
-    ServerListPing response;
+    private final ServerListPing response;
 
-    @Override
-    public boolean read(InByteBuffer buffer) {
+    public PacketStatusResponse(InByteBuffer buffer) {
         this.response = new ServerListPing(null, buffer.readJSON());
-        return true;
     }
 
     @Override

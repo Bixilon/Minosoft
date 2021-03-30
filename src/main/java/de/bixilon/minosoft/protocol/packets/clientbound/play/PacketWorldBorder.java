@@ -18,24 +18,23 @@ import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
 public class PacketWorldBorder extends ClientboundPacket {
-    WorldBorderActions action;
+    private final WorldBorderActions action;
 
     // fields depend on action
-    double radius;
+    private double radius;
 
-    double oldRadius;
-    double newRadius;
-    long speed;
+    private double oldRadius;
+    private double newRadius;
+    private long speed;
 
-    double x;
-    double z;
+    private double x;
+    private double z;
 
-    int portalBound;
-    int warningTime;
-    int warningBlocks;
+    private int portalBound;
+    private int warningTime;
+    private int warningBlocks;
 
-    @Override
-    public boolean read(InByteBuffer buffer) {
+    public PacketWorldBorder(InByteBuffer buffer) {
         this.action = WorldBorderActions.byId(buffer.readVarInt());
         switch (this.action) {
             case SET_SIZE -> this.radius = buffer.readDouble();
@@ -61,7 +60,6 @@ public class PacketWorldBorder extends ClientboundPacket {
             case SET_WARNING_TIME -> this.warningTime = buffer.readVarInt();
             case SET_WARNING_BLOCKS -> this.warningBlocks = buffer.readVarInt();
         }
-        return true;
     }
 
     @Override

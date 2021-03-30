@@ -23,26 +23,25 @@ import java.util.ArrayList;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
 
 public class PacketMapData extends ClientboundPacket {
-    int mapId;
-    PacketMapDataDataActions dataData;
+    private final int mapId;
+    private PacketMapDataDataActions dataData;
 
     // depends on data
     // start
-    byte xStart;
-    byte yStart;
-    byte[] colors;
+    private byte xStart;
+    private byte yStart;
+    private byte[] colors;
 
     // players
-    ArrayList<MapPinSet> pins;
+    private ArrayList<MapPinSet> pins;
 
-    boolean locked;
+    private boolean locked;
     // scale
-    byte scale;
+    private byte scale;
 
-    byte[] data;
+    private byte[] data;
 
-    @Override
-    public boolean read(InByteBuffer buffer) {
+    public PacketMapData(InByteBuffer buffer) {
         this.mapId = buffer.readVarInt(); // mapId
         if (buffer.getVersionId() < V_14W28A) {
             int length = buffer.readUnsignedShort();
@@ -66,7 +65,7 @@ public class PacketMapData extends ClientboundPacket {
                 }
                 case SCALE -> this.scale = buffer.readByte();
             }
-            return true;
+            return;
         }
         this.scale = buffer.readByte();
         if (buffer.getVersionId() >= V_15W34A && buffer.getVersionId() < V_20W46A) {
@@ -117,7 +116,7 @@ public class PacketMapData extends ClientboundPacket {
             int dataLength = buffer.readVarInt();
             this.data = buffer.readBytes(dataLength);
         }
-        return true;
+        return;
     }
 
     @Override

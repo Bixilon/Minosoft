@@ -23,10 +23,11 @@ import de.bixilon.minosoft.util.chunk.LightUtil.readLightPacket
 import de.bixilon.minosoft.util.logging.Log
 import glm_.vec2.Vec2i
 
-class PacketUpdateLight : ClientboundPacket() {
+class PacketUpdateLight() : ClientboundPacket() {
     private var position: Vec2i? = null
     private var lightAccessor: LightAccessor? = null
-    override fun read(buffer: InByteBuffer): Boolean {
+
+    constructor(buffer: InByteBuffer) : this() {
         position = Vec2i(buffer.readVarInt(), buffer.readVarInt())
 
         if (buffer.versionId >= ProtocolVersions.V_1_16_PRE3) {
@@ -51,7 +52,6 @@ class PacketUpdateLight : ClientboundPacket() {
 
 
         lightAccessor = readLightPacket(buffer, skyLightMask, blockLightMask, emptyBlockLightMask, emptySkyLightMask, buffer.connection.player.world.dimension!!)
-        return true
     }
 
     override fun log() {

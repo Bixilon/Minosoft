@@ -23,22 +23,20 @@ import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W04A;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_16W32A;
 
 public class PacketCollectItem extends ClientboundPacket {
-    int itemEntityId;
-    int collectorEntityId;
-    int count;
+    private final int itemEntityId;
+    private final int collectorEntityId;
+    private int count;
 
-    @Override
-    public boolean read(InByteBuffer buffer) {
+    public PacketCollectItem(InByteBuffer buffer) {
         this.itemEntityId = buffer.readEntityId();
         if (buffer.getVersionId() < V_14W04A) {
             this.collectorEntityId = buffer.readInt();
-            return true;
+            return;
         }
         this.collectorEntityId = buffer.readVarInt();
         if (buffer.getVersionId() >= V_16W32A) {
             this.count = buffer.readVarInt();
         }
-        return true;
     }
 
     @Override

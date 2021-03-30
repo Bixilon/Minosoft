@@ -21,15 +21,13 @@ import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
 public class PacketEntityVelocity extends ClientboundPacket {
-    int entityId;
-    Velocity velocity;
+    private final int entityId;
+    private final Velocity velocity;
 
-    @Override
-    public boolean read(InByteBuffer buffer) {
+    public PacketEntityVelocity(InByteBuffer buffer) {
         this.entityId = buffer.readEntityId();
 
         this.velocity = new Velocity(buffer.readShort(), buffer.readShort(), buffer.readShort());
-        return true;
     }
 
     @Override

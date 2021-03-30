@@ -40,8 +40,7 @@ public class PacketTeams extends ClientboundPacket {
     ChatCode formattingCode;
     String[] playerNames;
 
-    @Override
-    public boolean read(InByteBuffer buffer) {
+    public PacketTeams(InByteBuffer buffer) {
         this.name = buffer.readString();
         this.action = TeamActions.byId(buffer.readUnsignedByte());
         if (this.action == TeamActions.CREATE || this.action == TeamActions.INFORMATION_UPDATE) {
@@ -85,7 +84,6 @@ public class PacketTeams extends ClientboundPacket {
                 this.playerNames[i] = buffer.readString();
             }
         }
-        return true;
     }
 
     @Override

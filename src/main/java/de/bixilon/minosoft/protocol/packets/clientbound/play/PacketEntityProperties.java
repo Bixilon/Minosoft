@@ -26,10 +26,9 @@ import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W04A;
 
 public class PacketEntityProperties extends ClientboundPacket {
     private final HashMap<EntityPropertyKeys, EntityProperty> properties = new HashMap<>();
-    int entityId;
+    private final int entityId;
 
-    @Override
-    public boolean read(InByteBuffer buffer) {
+    public PacketEntityProperties(InByteBuffer buffer) {
         this.entityId = buffer.readEntityId();
         if (buffer.getVersionId() < V_14W04A) {
             int count = buffer.readInt();
@@ -45,7 +44,7 @@ public class PacketEntityProperties extends ClientboundPacket {
                 }
                 this.properties.put(key, new EntityProperty(value));
             }
-            return true;
+            return;
         }
         int count = buffer.readInt();
         for (int i = 0; i < count; i++) {
@@ -60,7 +59,6 @@ public class PacketEntityProperties extends ClientboundPacket {
             }
             this.properties.put(key, new EntityProperty(value));
         }
-        return true;
     }
 
     @Override

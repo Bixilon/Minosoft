@@ -27,22 +27,20 @@ import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W04A;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_20W21A;
 
 public class PacketChatMessageReceiving extends ClientboundPacket {
-    ChatComponent message;
-    ChatTextPositions position;
-    UUID sender;
+    private final ChatComponent message;
+    private final ChatTextPositions position;
+    private UUID sender;
 
-    @Override
-    public boolean read(InByteBuffer buffer) {
+    public PacketChatMessageReceiving(InByteBuffer buffer) {
         this.message = buffer.readChatComponent();
         if (buffer.getVersionId() < V_14W04A) {
             this.position = ChatTextPositions.CHAT_BOX;
-            return true;
+            return;
         }
         this.position = ChatTextPositions.byId(buffer.readUnsignedByte());
         if (buffer.getVersionId() >= V_20W21A) {
             this.sender = buffer.readUUID();
         }
-        return true;
     }
 
     @Override

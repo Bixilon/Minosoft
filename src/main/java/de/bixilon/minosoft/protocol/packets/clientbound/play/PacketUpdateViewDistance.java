@@ -18,12 +18,10 @@ import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
 public class PacketUpdateViewDistance extends ClientboundPacket {
-    int viewDistance;
+    private final int viewDistance;
 
-    @Override
-    public boolean read(InByteBuffer buffer) {
+    public PacketUpdateViewDistance(InByteBuffer buffer) {
         this.viewDistance = buffer.readVarInt();
-        return true;
     }
 
     @Override

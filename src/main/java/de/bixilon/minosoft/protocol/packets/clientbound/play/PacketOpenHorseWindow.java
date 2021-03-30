@@ -18,16 +18,14 @@ import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
 public class PacketOpenHorseWindow extends ClientboundPacket {
-    byte windowId;
-    int slotCount;
-    int entityId;
+    private final byte windowId;
+    private final int slotCount;
+    private final int entityId;
 
-    @Override
-    public boolean read(InByteBuffer buffer) {
+    public PacketOpenHorseWindow(InByteBuffer buffer) {
         this.windowId = buffer.readByte();
         this.slotCount = buffer.readVarInt();
         this.entityId = buffer.readInt();
-        return true;
     }
 
     @Override

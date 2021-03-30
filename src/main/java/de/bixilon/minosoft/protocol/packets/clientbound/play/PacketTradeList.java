@@ -31,8 +31,7 @@ public class PacketTradeList extends ClientboundPacket {
     boolean isRegularVillager;
     boolean canRestock;
 
-    @Override
-    public boolean read(InByteBuffer buffer) {
+    public PacketTradeList(InByteBuffer buffer) {
         this.windowId = buffer.readVarInt();
         this.trades = new Trade[buffer.readByte()];
         for (int i = 0; i < this.trades.length; i++) {
@@ -60,7 +59,6 @@ public class PacketTradeList extends ClientboundPacket {
         if (buffer.getVersionId() >= V_1_14_3_PRE1) {
             this.canRestock = buffer.readBoolean();
         }
-        return true;
     }
 
     @Override

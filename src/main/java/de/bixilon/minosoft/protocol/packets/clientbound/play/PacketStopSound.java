@@ -23,15 +23,14 @@ import de.bixilon.minosoft.util.logging.Log;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_17W45A;
 
 public class PacketStopSound extends ClientboundPacket {
-    SoundCategories category;
-    ResourceLocation soundResourceLocation;
+    private SoundCategories category;
+    private ResourceLocation soundResourceLocation;
 
-    @Override
-    public boolean read(InByteBuffer buffer) {
+    public PacketStopSound(InByteBuffer buffer) {
         if (buffer.getVersionId() < V_17W45A) { // ToDo: these 2 values need to be switched in before 1.12.2
             this.category = SoundCategories.valueOf(buffer.readString().toUpperCase());
             this.soundResourceLocation = buffer.readResourceLocation();
-            return true;
+            return;
         }
         byte flags = buffer.readByte();
         if (BitByte.isBitMask(flags, 0x01)) {
@@ -40,7 +39,6 @@ public class PacketStopSound extends ClientboundPacket {
         if (BitByte.isBitMask(flags, 0x02)) {
             this.soundResourceLocation = buffer.readResourceLocation();
         }
-        return true;
     }
 
     @Override

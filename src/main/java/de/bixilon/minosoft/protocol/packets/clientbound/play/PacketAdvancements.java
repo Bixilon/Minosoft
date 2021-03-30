@@ -30,11 +30,10 @@ import java.util.HashMap;
 public class PacketAdvancements extends ClientboundPacket {
     private final HashMap<String, Advancement> advancements = new HashMap<>();
     private final HashMap<String, AdvancementProgress> progresses = new HashMap<>();
-    boolean reset;
-    String[] toRemove;
+    private final boolean reset;
+    private final String[] toRemove;
 
-    @Override
-    public boolean read(InByteBuffer buffer) {
+    public PacketAdvancements(InByteBuffer buffer) {
         this.reset = buffer.readBoolean();
         int length = buffer.readVarInt();
         for (int i = 0; i < length; i++) {
@@ -96,8 +95,6 @@ public class PacketAdvancements extends ClientboundPacket {
             }
             this.progresses.put(progressName, new AdvancementProgress(progress));
         }
-
-        return true;
     }
 
     @Override

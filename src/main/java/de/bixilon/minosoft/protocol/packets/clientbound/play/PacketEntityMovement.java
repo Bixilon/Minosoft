@@ -24,12 +24,11 @@ import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W25B;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_16W06A;
 
 public class PacketEntityMovement extends ClientboundPacket {
-    private int entityId;
-    private Vec3 position;
+    private final int entityId;
+    private final Vec3 position;
     private boolean onGround;
 
-    @Override
-    public boolean read(InByteBuffer buffer) {
+    public PacketEntityMovement(InByteBuffer buffer) {
         this.entityId = buffer.readEntityId();
         if (buffer.getVersionId() < V_16W06A) {
             this.position = new Vec3(buffer.readFixedPointNumberByte(), buffer.readFixedPointNumberByte(), buffer.readFixedPointNumberByte());
@@ -39,7 +38,6 @@ public class PacketEntityMovement extends ClientboundPacket {
         if (buffer.getVersionId() >= V_14W25B) {
             this.onGround = buffer.readBoolean();
         }
-        return true;
     }
 
     @Override

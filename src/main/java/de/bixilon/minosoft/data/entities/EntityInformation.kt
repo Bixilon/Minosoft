@@ -20,7 +20,7 @@ data class EntityInformation(
     val descriptionId: String?,
     val width: Float,
     val height: Float,
-    val size_fixed: Boolean,
+    val sizeFixed: Boolean,
     val fireImmune: Boolean,
 ) {
 
@@ -32,7 +32,7 @@ data class EntityInformation(
                 width = data["width"].asFloat,
                 height = data["height"].asFloat,
                 fireImmune = data["fire_immune"]?.asBoolean ?: false,
-                size_fixed = data["site_fixed"]?.asBoolean ?: false
+                sizeFixed = data["size_fixed"]?.asBoolean ?: false
             )
         }
     }

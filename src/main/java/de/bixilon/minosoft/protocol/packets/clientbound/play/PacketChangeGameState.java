@@ -26,14 +26,12 @@ import java.util.Map;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
 
 public class PacketChangeGameState extends ClientboundPacket {
-    Reason reason;
-    float value;
+    private final Reason reason;
+    private final float value;
 
-    @Override
-    public boolean read(InByteBuffer buffer) {
+    public PacketChangeGameState(InByteBuffer buffer) {
         this.reason = Reason.byId(buffer.readByte(), buffer.getVersionId());
         this.value = buffer.readFloat();
-        return true;
     }
 
     @Override
@@ -88,7 +86,7 @@ public class PacketChangeGameState extends ClientboundPacket {
         GUARDIAN_ELDER_EFFECT(Map.of(LOWEST_VERSION_SUPPORTED, 10)),
         IMMEDIATE_RESPAWN(Map.of(V_19W36A, 11));
 
-   private final VersionValueMap<Integer> valueMap;
+        private final VersionValueMap<Integer> valueMap;
 
         Reason(Map<Integer, Integer> values) {
             this.valueMap = new VersionValueMap<>(values);

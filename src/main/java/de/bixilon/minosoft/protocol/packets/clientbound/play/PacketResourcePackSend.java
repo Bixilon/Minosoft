@@ -23,19 +23,17 @@ import de.bixilon.minosoft.util.logging.Log;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_20W45A;
 
 public class PacketResourcePackSend extends ClientboundPacket {
-    private String url;
-    private String hash;
+    private final String url;
+    private final String hash;
     private boolean forced;
 
-    @Override
-    public boolean read(InByteBuffer buffer) {
+    public PacketResourcePackSend(InByteBuffer buffer) {
         this.url = buffer.readString();
         Util.checkURL(this.url);
         this.hash = buffer.readString();
         if (buffer.getVersionId() >= V_20W45A) {
             this.forced = buffer.readBoolean();
         }
-        return true;
     }
 
     @Override

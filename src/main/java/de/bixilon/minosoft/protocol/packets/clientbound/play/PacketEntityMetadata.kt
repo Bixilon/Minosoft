@@ -20,16 +20,15 @@ import de.bixilon.minosoft.protocol.packets.ClientboundPacket
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer
 import de.bixilon.minosoft.util.logging.Log
 
-class PacketEntityMetadata : ClientboundPacket() {
+class PacketEntityMetadata() : ClientboundPacket() {
     var entityId = 0
         private set
     lateinit var entityData: EntityMetaData
         private set
 
-    override fun read(buffer: InByteBuffer): Boolean {
+    constructor(buffer: InByteBuffer) : this() {
         entityId = buffer.readEntityId()
         entityData = buffer.readMetaData()
-        return true
     }
 
     override fun handle(connection: Connection) {

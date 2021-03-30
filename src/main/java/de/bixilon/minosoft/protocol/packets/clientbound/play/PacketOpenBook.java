@@ -19,16 +19,14 @@ import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
 public class PacketOpenBook extends ClientboundPacket {
-    Hands hand;
+    private final Hands hand;
 
-    @Override
-    public boolean read(InByteBuffer buffer) {
+    public PacketOpenBook(InByteBuffer buffer) {
         if (buffer.readVarInt() == 0) {
             this.hand = Hands.MAIN_HAND;
-            return true;
+            return;
         }
         this.hand = Hands.OFF_HAND;
-        return true;
     }
 
     @Override

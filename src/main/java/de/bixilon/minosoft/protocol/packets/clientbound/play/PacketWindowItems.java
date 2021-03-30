@@ -21,17 +21,15 @@ import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
 public class PacketWindowItems extends ClientboundPacket {
-    byte windowId;
-    ItemStack[] data;
+    private final byte windowId;
+    private final ItemStack[] data;
 
-    @Override
-    public boolean read(InByteBuffer buffer) {
+    public PacketWindowItems(InByteBuffer buffer) {
         this.windowId = buffer.readByte();
         this.data = new ItemStack[buffer.readUnsignedShort()];
         for (int i = 0; i < this.data.length; i++) {
             this.data[i] = buffer.readItemStack();
         }
-        return true;
     }
 
     @Override

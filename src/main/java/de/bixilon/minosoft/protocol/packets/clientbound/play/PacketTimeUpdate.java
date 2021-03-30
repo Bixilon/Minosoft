@@ -20,14 +20,12 @@ import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
 public class PacketTimeUpdate extends ClientboundPacket {
-    long worldAge;
-    long timeOfDay;
+    private final long worldAge;
+    private final long timeOfDay;
 
-    @Override
-    public boolean read(InByteBuffer buffer) {
+    public PacketTimeUpdate(InByteBuffer buffer) {
         this.worldAge = buffer.readLong();
         this.timeOfDay = buffer.readLong();
-        return true;
     }
 
     @Override

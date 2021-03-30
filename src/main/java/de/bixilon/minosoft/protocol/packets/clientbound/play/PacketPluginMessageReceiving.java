@@ -27,12 +27,11 @@ import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W29A;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W31A;
 
 public class PacketPluginMessageReceiving extends ClientboundPacket {
-    ResourceLocation channel;
-    byte[] data;
-    Connection connection;
+    private final ResourceLocation channel;
+    private final byte[] data;
+    private final Connection connection;
 
-    @Override
-    public boolean read(InByteBuffer buffer) {
+    public PacketPluginMessageReceiving(InByteBuffer buffer) {
         this.connection = buffer.getConnection();
         this.channel = buffer.readResourceLocation();
         // "read" length prefix
@@ -42,7 +41,6 @@ public class PacketPluginMessageReceiving extends ClientboundPacket {
             buffer.readVarInt();
         }
         this.data = buffer.readBytesLeft();
-        return true;
     }
 
     @Override
@@ -71,8 +69,7 @@ public class PacketPluginMessageReceiving extends ClientboundPacket {
         // MC|StopSound
         if (getChannel().equals(DefaultPluginChannels.MC_BRAND.getChangeableResourceLocation().get(connection.getVersion().getVersionId()))) {
             // it is basically a packet, handle it like a packet:
-            PacketStopSound packet = new PacketStopSound();
-            packet.read(getDataAsBuffer());
+            PacketStopSound packet = new PacketStopSound(getDataAsBuffer());
             packet.handle(connection);
             return;
         }

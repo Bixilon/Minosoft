@@ -23,20 +23,18 @@ import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W31A;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_12_2_PRE2;
 
 public class PacketKeepAlive extends ClientboundPacket {
-    private long id;
+    private final long id;
 
-    @Override
-    public boolean read(InByteBuffer buffer) {
+    public PacketKeepAlive(InByteBuffer buffer) {
         if (buffer.getVersionId() < V_14W31A) {
             this.id = buffer.readInt();
-            return true;
+            return;
         }
         if (buffer.getVersionId() < V_1_12_2_PRE2) {
             this.id = buffer.readVarInt();
-            return true;
+            return;
         }
         this.id = buffer.readLong();
-        return true;
     }
 
     @Override

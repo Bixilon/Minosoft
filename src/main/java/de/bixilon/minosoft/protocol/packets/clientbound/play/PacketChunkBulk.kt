@@ -26,10 +26,10 @@ import de.bixilon.minosoft.util.logging.Log
 import glm_.vec2.Vec2i
 import java.util.*
 
-class PacketChunkBulk : ClientboundPacket() {
+class PacketChunkBulk() : ClientboundPacket() {
     val data: MutableMap<Vec2i, ChunkData?> = mutableMapOf()
 
-    override fun read(buffer: InByteBuffer): Boolean {
+    constructor(buffer: InByteBuffer) : this() {
         val dimension = buffer.connection.player.world.dimension!!
         if (buffer.versionId < ProtocolVersions.V_14W26A) {
             val chunkCount = buffer.readUnsignedShort()
@@ -50,7 +50,7 @@ class PacketChunkBulk : ClientboundPacket() {
                 val addBitMask = BitSet.valueOf(buffer.readBytes(2)) // ToDo: Test
                 data[chunkPosition] = ChunkUtil.readLegacyChunk(decompressed, dimension, sectionBitMask, addBitMask, true, containsSkyLight)
             }
-            return true
+            return
         }
         val containsSkyLight = buffer.readBoolean()
         val chunkCount = buffer.readVarInt()
@@ -63,7 +63,6 @@ class PacketChunkBulk : ClientboundPacket() {
         for ((chunkPosition, sectionBitMask) in chunkData) {
             data[chunkPosition] = ChunkUtil.readChunkPacket(buffer, dimension, sectionBitMask, null, true, containsSkyLight)
         }
-        return true
     }
 
     override fun handle(connection: Connection) {

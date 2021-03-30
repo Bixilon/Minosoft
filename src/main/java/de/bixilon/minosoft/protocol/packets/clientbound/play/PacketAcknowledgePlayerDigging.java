@@ -21,18 +21,16 @@ import de.bixilon.minosoft.util.logging.Log;
 import glm_.vec3.Vec3i;
 
 public class PacketAcknowledgePlayerDigging extends ClientboundPacket {
-    private Vec3i blockPosition;
-    private BlockState block;
-    private PacketPlayerDigging.DiggingStatus status;
-    private boolean successful;
+    private final Vec3i blockPosition;
+    private final BlockState block;
+    private final PacketPlayerDigging.DiggingStatus status;
+    private final boolean successful;
 
-    @Override
-    public boolean read(InByteBuffer buffer) {
+    public PacketAcknowledgePlayerDigging(InByteBuffer buffer) {
         this.blockPosition = buffer.readBlockPosition();
         this.block = buffer.getConnection().getMapping().getBlockState(buffer.readVarInt());
         this.status = PacketPlayerDigging.DiggingStatus.byId(buffer.readVarInt());
         this.successful = buffer.readBoolean();
-        return true;
     }
 
     @Override

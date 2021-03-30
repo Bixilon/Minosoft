@@ -35,8 +35,8 @@ import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W19A;
 public class PacketPlayerListItem extends ClientboundPacket {
     private final ArrayList<PlayerListItemBulk> playerList = new ArrayList<>();
 
-    @Override
-    public boolean read(InByteBuffer buffer) {
+
+    public PacketPlayerListItem(InByteBuffer buffer) {
         if (buffer.getVersionId() < V_14W19A) { // ToDo: 19?
             String name = buffer.readString();
             int ping;
@@ -47,7 +47,7 @@ public class PacketPlayerListItem extends ClientboundPacket {
             }
             PlayerListItemActions action = (buffer.readBoolean() ? PlayerListItemActions.UPDATE_LATENCY : PlayerListItemActions.REMOVE_PLAYER);
             this.playerList.add(new PlayerListItemBulk(name, ping, action));
-            return true;
+            return;
         }
         PlayerListItemActions action = PlayerListItemActions.byId(buffer.readVarInt());
         int count = buffer.readVarInt();
@@ -77,7 +77,6 @@ public class PacketPlayerListItem extends ClientboundPacket {
             }
             this.playerList.add(listItemBulk);
         }
-        return true;
     }
 
     @Override

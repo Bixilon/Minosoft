@@ -25,11 +25,10 @@ import glm_.vec3.Vec3i;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W03B;
 
 public class PacketBlockAction extends ClientboundPacket {
-    Vec3i position;
-    BlockAction data;
+    private final Vec3i position;
+    private final BlockAction data;
 
-    @Override
-    public boolean read(InByteBuffer buffer) {
+    public PacketBlockAction(InByteBuffer buffer) {
         // that's the only difference here
         if (buffer.getVersionId() < V_14W03B) {
             this.position = buffer.readBlockPositionShort();
@@ -40,7 +39,8 @@ public class PacketBlockAction extends ClientboundPacket {
         short byte2 = buffer.readUnsignedByte();
         Block blockId = buffer.getConnection().getMapping().getBlockRegistry().get(buffer.readVarInt());
         if (blockId == null) {
-            return true;
+            this.data = null;
+            return;
         }
 
         this.data = switch (blockId.getResourceLocation().getFull()) {
@@ -52,7 +52,6 @@ public class PacketBlockAction extends ClientboundPacket {
             case "minecraft:end_gateway" -> new EndGatewayAction(byte1, byte2);
             default -> null;
         };
-        return true;
     }
 
     @Override

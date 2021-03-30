@@ -28,22 +28,20 @@ import java.util.Map;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
 
 public class PacketBlockEntityMetadata extends ClientboundPacket {
-    Vec3i position;
-    BlockEntityActions action;
-    BlockEntityMetaData data;
+    private final Vec3i position;
+    private final BlockEntityActions action;
+    private final BlockEntityMetaData data;
 
-    @Override
-    public boolean read(InByteBuffer buffer) {
+    public PacketBlockEntityMetadata(InByteBuffer buffer) {
         if (buffer.getVersionId() < V_14W03B) {
             this.position = buffer.readBlockPositionShort();
             this.action = BlockEntityActions.byId(buffer.readUnsignedByte(), buffer.getVersionId());
             this.data = BlockEntityMetaData.getData(buffer.getConnection(), this.action, (CompoundTag) buffer.readNBT(true));
-            return true;
+            return;
         }
         this.position = buffer.readBlockPosition();
         this.action = BlockEntityActions.byId(buffer.readUnsignedByte(), buffer.getVersionId());
         this.data = BlockEntityMetaData.getData(buffer.getConnection(), this.action, (CompoundTag) buffer.readNBT());
-        return true;
     }
 
     @Override

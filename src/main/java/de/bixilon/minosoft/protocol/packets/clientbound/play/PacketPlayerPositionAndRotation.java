@@ -25,20 +25,19 @@ import glm_.vec3.Vec3;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
 
 public class PacketPlayerPositionAndRotation extends ClientboundPacket {
-    private Vec3 position;
-    private EntityRotation rotation;
+    private final Vec3 position;
+    private final EntityRotation rotation;
     private boolean onGround;
     private byte flags;
     private int teleportId;
     private boolean dismountVehicle = true;
 
-    @Override
-    public boolean read(InByteBuffer buffer) {
+    public PacketPlayerPositionAndRotation(InByteBuffer buffer) {
         this.position = buffer.readLocation();
         this.rotation = new EntityRotation(buffer.readFloat(), buffer.readFloat(), 0);
         if (buffer.getVersionId() < V_14W03B) {
             this.onGround = buffer.readBoolean();
-            return true;
+            return;
         } else {
             this.flags = buffer.readByte();
         }
@@ -46,10 +45,9 @@ public class PacketPlayerPositionAndRotation extends ClientboundPacket {
             this.teleportId = buffer.readVarInt();
         }
         if (buffer.getVersionId() < V_21W05A) {
-            return true;
+            return;
         }
         this.dismountVehicle = buffer.readBoolean();
-        return true;
     }
 
     @Override

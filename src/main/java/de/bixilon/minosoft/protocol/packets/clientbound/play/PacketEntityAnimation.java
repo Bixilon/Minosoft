@@ -23,14 +23,12 @@ import java.util.Map;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
 
 public class PacketEntityAnimation extends ClientboundPacket {
-    int entityId;
-    EntityAnimations animation;
+    private final int entityId;
+    private final EntityAnimations animation;
 
-    @Override
-    public boolean read(InByteBuffer buffer) {
+    public PacketEntityAnimation(InByteBuffer buffer) {
         this.entityId = buffer.readVarInt();
         this.animation = EntityAnimations.byId(buffer.readUnsignedByte(), buffer.getVersionId());
-        return true;
     }
 
     @Override

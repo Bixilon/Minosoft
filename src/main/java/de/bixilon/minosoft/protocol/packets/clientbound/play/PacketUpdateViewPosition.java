@@ -19,12 +19,10 @@ import de.bixilon.minosoft.util.logging.Log;
 import glm_.vec2.Vec2i;
 
 public class PacketUpdateViewPosition extends ClientboundPacket {
-    private Vec2i position;
+    private final Vec2i position;
 
-    @Override
-    public boolean read(InByteBuffer buffer) {
+    public PacketUpdateViewPosition(InByteBuffer buffer) {
         this.position = new Vec2i(buffer.readVarInt(), buffer.readVarInt());
-        return true;
     }
 
     @Override

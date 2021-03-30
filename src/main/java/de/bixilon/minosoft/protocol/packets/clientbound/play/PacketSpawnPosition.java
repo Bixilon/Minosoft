@@ -23,16 +23,14 @@ import glm_.vec3.Vec3i;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W03B;
 
 public class PacketSpawnPosition extends ClientboundPacket {
-    private Vec3i position;
+    private final Vec3i position;
 
-    @Override
-    public boolean read(InByteBuffer buffer) {
+    public PacketSpawnPosition(InByteBuffer buffer) {
         if (buffer.getVersionId() < V_14W03B) {
             this.position = buffer.readBlockPositionInteger();
-            return true;
+            return;
         }
         this.position = buffer.readBlockPosition();
-        return true;
     }
 
     @Override

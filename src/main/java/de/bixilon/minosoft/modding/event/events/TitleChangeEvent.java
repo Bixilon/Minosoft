@@ -15,7 +15,7 @@ package de.bixilon.minosoft.modding.event.events;
 
 import de.bixilon.minosoft.data.text.ChatComponent;
 import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketTitle;
+import de.bixilon.minosoft.protocol.packets.clientbound.play.title.PacketTitle;
 
 public class TitleChangeEvent extends CancelableEvent {
     private final PacketTitle.TitleActions action;

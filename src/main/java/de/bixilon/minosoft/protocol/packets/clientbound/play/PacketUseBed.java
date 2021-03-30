@@ -21,18 +21,16 @@ import glm_.vec3.Vec3i;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W04A;
 
 public class PacketUseBed extends ClientboundPacket {
-    private int entityId;
-    private Vec3i blockPosition;
+    private final int entityId;
+    private final Vec3i blockPosition;
 
-    @Override
-    public boolean read(InByteBuffer buffer) {
+    public PacketUseBed(InByteBuffer buffer) {
         this.entityId = buffer.readInt();
         if (buffer.getVersionId() < V_14W04A) {
             this.blockPosition = buffer.readBlockPositionByte();
         } else {
             this.blockPosition = buffer.readBlockPosition();
         }
-        return true;
     }
 
     @Override

@@ -18,12 +18,12 @@ import de.bixilon.minosoft.protocol.packets.ClientboundPacket
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer
 import de.bixilon.minosoft.util.logging.Log
 
-class PacketHeldItemChangeReceiving : ClientboundPacket() {
+class PacketHeldItemChangeReceiving() : ClientboundPacket() {
     var slot = 0
+        private set
 
-    override fun read(buffer: InByteBuffer): Boolean {
+    constructor(buffer: InByteBuffer) : this() {
         slot = buffer.readByte().toInt()
-        return true
     }
 
     override fun handle(connection: Connection) {

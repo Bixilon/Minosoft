@@ -19,15 +19,14 @@ import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
 public class PacketCombatEvent extends ClientboundPacket {
-    CombatEvents action;
+    private final CombatEvents action;
 
-    int duration;
-    int playerId;
-    int entityId;
-    ChatComponent message;
+    private int duration;
+    private int playerId;
+    private int entityId;
+    private ChatComponent message;
 
-    @Override
-    public boolean read(InByteBuffer buffer) {
+    public PacketCombatEvent(InByteBuffer buffer) {
         this.action = CombatEvents.byId(buffer.readVarInt());
         switch (this.action) {
             case END_COMBAT -> {
@@ -40,7 +39,6 @@ public class PacketCombatEvent extends ClientboundPacket {
                 this.message = buffer.readChatComponent();
             }
         }
-        return true;
     }
 
     @Override

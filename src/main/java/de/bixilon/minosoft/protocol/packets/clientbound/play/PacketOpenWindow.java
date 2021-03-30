@@ -24,14 +24,13 @@ import de.bixilon.minosoft.util.logging.Log;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
 
 public class PacketOpenWindow extends ClientboundPacket {
-    byte windowId;
-    InventoryTypes type;
-    ChatComponent title;
-    byte slotCount;
-    int entityId;
+    private final byte windowId;
+    private final InventoryTypes type;
+    private ChatComponent title;
+    private byte slotCount;
+    private int entityId;
 
-    @Override
-    public boolean read(InByteBuffer buffer) {
+    public PacketOpenWindow(InByteBuffer buffer) {
         if (buffer.getVersionId() < V_14W03B) {
             this.windowId = buffer.readByte();
             this.type = InventoryTypes.byId(buffer.readUnsignedByte());
@@ -42,7 +41,7 @@ public class PacketOpenWindow extends ClientboundPacket {
                 this.title = null;
             }
             this.entityId = buffer.readInt();
-            return true;
+            return;
         }
         this.windowId = buffer.readByte();
         this.type = InventoryTypes.byResourceLocation(buffer.readResourceLocation());
@@ -53,7 +52,6 @@ public class PacketOpenWindow extends ClientboundPacket {
         if (this.type == InventoryTypes.HORSE) {
             this.entityId = buffer.readInt();
         }
-        return true;
     }
 
     @Override

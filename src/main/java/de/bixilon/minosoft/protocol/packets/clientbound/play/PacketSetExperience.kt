@@ -19,7 +19,7 @@ import de.bixilon.minosoft.protocol.protocol.InByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.util.logging.Log
 
-class PacketSetExperience : ClientboundPacket() {
+class PacketSetExperience() : ClientboundPacket() {
     var bar = 0.0f
         private set
     var level = 0
@@ -27,16 +27,15 @@ class PacketSetExperience : ClientboundPacket() {
     var total = 0
         private set
 
-    override fun read(buffer: InByteBuffer): Boolean {
+    constructor(buffer: InByteBuffer) : this() {
         bar = buffer.readFloat()
         if (buffer.versionId < ProtocolVersions.V_14W04A) {
             level = buffer.readUnsignedShort()
             total = buffer.readUnsignedShort()
-            return true
+            return
         }
         level = buffer.readVarInt()
         total = buffer.readVarInt()
-        return true
     }
 
     override fun check(connection: Connection) {

@@ -16,8 +16,11 @@ package de.bixilon.minosoft.protocol.protocol;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.packets.clientbound.login.*;
 import de.bixilon.minosoft.protocol.packets.clientbound.play.*;
+import de.bixilon.minosoft.protocol.packets.clientbound.play.title.PacketTitle;
 import de.bixilon.minosoft.protocol.packets.clientbound.status.PacketStatusPong;
 import de.bixilon.minosoft.protocol.packets.clientbound.status.PacketStatusResponse;
+
+import javax.annotation.Nullable;
 
 public class PacketTypes {
 
@@ -83,9 +86,9 @@ public class PacketTypes {
 
         private final ConnectionStates state;
 
-       Serverbound() {
-           this.state = ConnectionStates.valueOf(name().split("_")[0]);
-       }
+        Serverbound() {
+            this.state = ConnectionStates.valueOf(name().split("_")[0]);
+        }
 
         public ConnectionStates getState() {
             return this.state;
@@ -221,8 +224,9 @@ public class PacketTypes {
             return this.state;
         }
 
-        public ClientboundPacket createNewInstance() {
-            return this.creator.createNewInstance();
+        @Nullable
+        public PacketInstanceCreator getCreator() {
+            return this.creator;
         }
 
         public boolean isThreadSafe() {
@@ -230,7 +234,7 @@ public class PacketTypes {
         }
     }
 
-    private interface PacketInstanceCreator {
-        ClientboundPacket createNewInstance();
+    public interface PacketInstanceCreator {
+        ClientboundPacket createNewInstance(InByteBuffer buffer) throws Exception;
     }
 }

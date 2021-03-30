@@ -18,15 +18,12 @@ import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
 public class PacketSetCooldown extends ClientboundPacket {
+    private final int item;
+    private final int cooldownTicks;
 
-    int item;
-    int cooldownTicks;
-
-    @Override
-    public boolean read(InByteBuffer buffer) {
+    public PacketSetCooldown(InByteBuffer buffer) {
         this.item = buffer.readVarInt();
         this.cooldownTicks = buffer.readVarInt();
-        return true;
     }
 
     @Override

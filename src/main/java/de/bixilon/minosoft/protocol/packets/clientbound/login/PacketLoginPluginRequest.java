@@ -20,18 +20,16 @@ import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
 public class PacketLoginPluginRequest extends ClientboundPacket {
-    int messageId;
-    String channel;
-    byte[] data;
-    Connection connection;
+    private final int messageId;
+    private final String channel;
+    private final byte[] data;
+    private final Connection connection;
 
-    @Override
-    public boolean read(InByteBuffer buffer) {
+    public PacketLoginPluginRequest(InByteBuffer buffer) {
         this.connection = buffer.getConnection();
         this.messageId = buffer.readVarInt();
         this.channel = buffer.readString();
         this.data = buffer.readBytesLeft();
-        return true;
     }
 
     @Override

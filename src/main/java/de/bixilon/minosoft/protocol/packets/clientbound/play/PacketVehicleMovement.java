@@ -19,16 +19,14 @@ import de.bixilon.minosoft.util.logging.Log;
 import glm_.vec3.Vec3;
 
 public class PacketVehicleMovement extends ClientboundPacket {
-    private Vec3 position;
-    private float yaw;
-    private float pitch;
+    private final Vec3 position;
+    private final float yaw;
+    private final float pitch;
 
-    @Override
-    public boolean read(InByteBuffer buffer) {
+    public PacketVehicleMovement(InByteBuffer buffer) {
         this.position = buffer.readLocation();
         this.yaw = buffer.readFloat();
         this.pitch = buffer.readFloat();
-        return true;
     }
 
     @Override

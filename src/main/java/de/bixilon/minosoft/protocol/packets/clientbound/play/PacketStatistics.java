@@ -26,8 +26,7 @@ import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_17W47A;
 public class PacketStatistics extends ClientboundPacket {
     private final HashMap<Statistic, Integer> statistics = new HashMap<>();
 
-    @Override
-    public boolean read(InByteBuffer buffer) {
+    public PacketStatistics(InByteBuffer buffer) {
         int length = buffer.readVarInt();
         for (int i = 0; i < length; i++) {
             if (buffer.getVersionId() < V_17W47A) { // ToDo
@@ -37,7 +36,6 @@ public class PacketStatistics extends ClientboundPacket {
                 this.statistics.put(buffer.getConnection().getMapping().getStatisticRegistry().get(buffer.readVarInt()), buffer.readVarInt());
             }
         }
-        return true;
     }
 
     @Override

@@ -21,15 +21,13 @@ import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
 public class PacketRemoveEntityStatusEffect extends ClientboundPacket {
-    private int entityId;
-    private StatusEffect effect;
+    private final int entityId;
+    private final StatusEffect effect;
 
-    @Override
-    public boolean read(InByteBuffer buffer) {
+    public PacketRemoveEntityStatusEffect(InByteBuffer buffer) {
         this.entityId = buffer.readEntityId();
 
         this.effect = buffer.getConnection().getMapping().getStatusEffectRegistry().get(buffer.readByte());
-        return true;
     }
 
     @Override

@@ -29,8 +29,7 @@ import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_19W03A;
 public class PacketDeclareRecipes extends ClientboundPacket {
     private final HashBiMap<ResourceLocation, Recipe> recipes = HashBiMap.create();
 
-    @Override
-    public boolean read(InByteBuffer buffer) {
+    public PacketDeclareRecipes(InByteBuffer buffer) {
         int length = buffer.readVarInt();
         for (int i = 0; i < length; i++) {
             Recipe recipe;
@@ -83,7 +82,6 @@ public class PacketDeclareRecipes extends ClientboundPacket {
             }
             this.recipes.put(resourceLocation, recipe);
         }
-        return true;
     }
 
     @Override

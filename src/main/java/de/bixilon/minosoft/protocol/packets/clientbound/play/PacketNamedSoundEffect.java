@@ -24,13 +24,12 @@ import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
 
 public class PacketNamedSoundEffect extends ClientboundPacket {
     private Vec3 position;
-    private String sound;
-    private float volume;
-    private float pitch;
+    private final String sound;
+    private final float volume;
+    private final float pitch;
     private SoundCategories category;
 
-    @Override
-    public boolean read(InByteBuffer buffer) {
+    public PacketNamedSoundEffect(InByteBuffer buffer) {
         if (buffer.getVersionId() >= V_17W15A && buffer.getVersionId() < V_17W18A) {
             // category was moved to the top
             this.category = SoundCategories.byId(buffer.readVarInt());
@@ -56,7 +55,6 @@ public class PacketNamedSoundEffect extends ClientboundPacket {
         } else {
             this.pitch = buffer.readFloat();
         }
-        return true;
     }
 
 

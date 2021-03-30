@@ -26,17 +26,15 @@ import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 import glm_.vec3.Vec3;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.UUID;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
 
 public class PacketSpawnObject extends ClientboundPacket {
-    Entity entity;
-    Velocity velocity;
+    private final Entity entity;
+    private Velocity velocity;
 
-    @Override
-    public boolean read(InByteBuffer buffer) throws Exception {
+    public PacketSpawnObject(InByteBuffer buffer) throws Exception {
         int entityId = buffer.readEntityId();
         UUID uuid = null;
         if (buffer.getVersionId() >= V_15W31A) {
@@ -81,13 +79,7 @@ public class PacketSpawnObject extends ClientboundPacket {
             throw new UnknownEntityException(String.format("Unknown entity (typeId=%d)", type));
         }
 
-        try {
-            this.entity = typeClass.getConstructor(Connection.class, int.class, UUID.class, Vec3.class, EntityRotation.class).newInstance(buffer.getConnection(), entityId, uuid, position, rotation);
-            return true;
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | NullPointerException e) {
-            e.printStackTrace();
-        }
-        return false;
+        this.entity = typeClass.getConstructor(Connection.class, int.class, UUID.class, Vec3.class, EntityRotation.class).newInstance(buffer.getConnection(), entityId, uuid, position, rotation);
     }
 
     @Override

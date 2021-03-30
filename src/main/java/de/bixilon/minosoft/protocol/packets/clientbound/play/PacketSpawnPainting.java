@@ -28,10 +28,9 @@ import java.util.UUID;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
 
 public class PacketSpawnPainting extends ClientboundPacket {
-    Painting entity;
+    private final Painting entity;
 
-    @Override
-    public boolean read(InByteBuffer buffer) {
+    public PacketSpawnPainting(InByteBuffer buffer) {
         int entityId = buffer.readVarInt();
         UUID uuid = null;
         if (buffer.getVersionId() >= V_16W02A) {
@@ -53,7 +52,6 @@ public class PacketSpawnPainting extends ClientboundPacket {
             direction = Directions.byId(buffer.readUnsignedByte());
         }
         this.entity = new Painting(buffer.getConnection(), entityId, uuid, position, direction, motive);
-        return true;
     }
 
     @Override

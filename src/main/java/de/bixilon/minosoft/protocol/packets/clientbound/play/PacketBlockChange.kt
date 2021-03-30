@@ -26,18 +26,18 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.util.logging.Log
 import glm_.vec3.Vec3i
 
-class PacketBlockChange : ClientboundPacket() {
-    lateinit var blockPosition: Vec3i
-    var block: BlockState? = null
-    override fun read(buffer: InByteBuffer): Boolean {
+class PacketBlockChange(buffer: InByteBuffer) : ClientboundPacket() {
+    val blockPosition: Vec3i
+    val block: BlockState?
+
+    init {
         if (buffer.versionId < ProtocolVersions.V_14W03B) {
             blockPosition = buffer.readBlockPositionByte()
             block = buffer.connection.mapping.getBlockState(buffer.readVarInt() shl 4 or buffer.readByte().toInt()) // ToDo: When was the meta data "compacted"? (between 1.7.10 - 1.8)
-            return true
+        } else {
+            blockPosition = buffer.readBlockPosition()
+            block = buffer.connection.mapping.getBlockState(buffer.readVarInt())
         }
-        blockPosition = buffer.readBlockPosition()
-        block = buffer.connection.mapping.getBlockState(buffer.readVarInt())
-        return true
     }
 
     override fun handle(connection: Connection) {

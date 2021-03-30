@@ -18,16 +18,14 @@ import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
 public class PacketConfirmTransactionReceiving extends ClientboundPacket {
-    byte windowId;
-    short actionNumber;
-    boolean accepted;
+    private final byte windowId;
+    private final short actionNumber;
+    private final boolean accepted;
 
-    @Override
-    public boolean read(InByteBuffer buffer) {
+    public PacketConfirmTransactionReceiving(InByteBuffer buffer) {
         this.windowId = buffer.readByte();
         this.actionNumber = buffer.readShort();
         this.accepted = buffer.readBoolean();
-        return true;
     }
 
     @Override

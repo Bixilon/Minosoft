@@ -25,18 +25,17 @@ import glm_.vec3.Vec3;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
 
 public class PacketParticle extends ClientboundPacket {
-    private Particle particleType;
-    private ParticleData particleData;
+    private final Particle particleType;
+    private final ParticleData particleData;
     private boolean longDistance;
-    private Vec3 position;
-    private float offsetX;
-    private float offsetY;
-    private float offsetZ;
-    private float particleDataFloat;
-    private int count;
+    private final Vec3 position;
+    private final float offsetX;
+    private final float offsetY;
+    private final float offsetZ;
+    private final float particleDataFloat;
+    private final int count;
 
-    @Override
-    public boolean read(InByteBuffer buffer) {
+    public PacketParticle(InByteBuffer buffer) {
         if (buffer.getVersionId() < V_14W19A) {
             this.particleType = buffer.getConnection().getMapping().getParticleRegistry().get(buffer.readResourceLocation());
         } else {
@@ -59,7 +58,6 @@ public class PacketParticle extends ClientboundPacket {
         this.particleDataFloat = buffer.readFloat();
         this.count = buffer.readInt();
         this.particleData = buffer.readParticleData(this.particleType);
-        return true;
     }
 
     @Override

@@ -22,14 +22,13 @@ import de.bixilon.minosoft.util.logging.Log;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
 
 public class PacketTags extends ClientboundPacket {
-    Tag[] blockTags = {};
-    Tag[] itemTags = {};
-    Tag[] fluidTags = {};
-    Tag[] entityTags = {};
-    Tag[] gameEventTags = {};
+    private Tag[] blockTags = {};
+    private Tag[] itemTags = {};
+    private Tag[] fluidTags = {};
+    private Tag[] entityTags = {};
+    private Tag[] gameEventTags = {};
 
-    @Override
-    public boolean read(InByteBuffer buffer) {
+    public PacketTags(InByteBuffer buffer) {
         if (buffer.getVersionId() < V_20W51A) {
             this.blockTags = readTags(buffer);
             this.itemTags = readTags(buffer);
@@ -40,7 +39,7 @@ public class PacketTags extends ClientboundPacket {
             if (buffer.getVersionId() >= V_20W49A) {
                 this.gameEventTags = readTags(buffer);
             }
-            return true;
+            return;
         }
         int length = buffer.readVarInt();
         for (int i = 0; i < length; i++) {
@@ -53,7 +52,6 @@ public class PacketTags extends ClientboundPacket {
                 case "minecraft:game_event" -> this.gameEventTags = readTags(buffer);
             }
         }
-        return true;
     }
 
     private Tag[] readTags(InByteBuffer buffer) {

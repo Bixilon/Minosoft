@@ -27,10 +27,9 @@ import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W04A;
 
 public class PacketUpdateSignReceiving extends ClientboundPacket {
     private final ChatComponent[] lines = new ChatComponent[ProtocolDefinition.SIGN_LINES];
-    Vec3i position;
+    private final Vec3i position;
 
-    @Override
-    public boolean read(InByteBuffer buffer) {
+    public PacketUpdateSignReceiving(InByteBuffer buffer) {
         if (buffer.getVersionId() < V_14W04A) {
             this.position = buffer.readBlockPositionShort();
         } else {
@@ -39,7 +38,6 @@ public class PacketUpdateSignReceiving extends ClientboundPacket {
         for (byte i = 0; i < ProtocolDefinition.SIGN_LINES; i++) {
             this.lines[i] = buffer.readChatComponent();
         }
-        return true;
     }
 
     @Override

@@ -27,16 +27,14 @@ import java.math.BigInteger;
 import java.security.PublicKey;
 
 public class PacketEncryptionRequest extends ClientboundPacket {
-    String serverId; // normally empty
-    byte[] publicKey;
-    byte[] verifyToken;
+    private final String serverId; // normally empty
+    private final byte[] publicKey;
+    private final byte[] verifyToken;
 
-    @Override
-    public boolean read(InByteBuffer buffer) {
+    public PacketEncryptionRequest(InByteBuffer buffer) {
         this.serverId = buffer.readString();
         this.publicKey = buffer.readByteArray();
         this.verifyToken = buffer.readByteArray();
-        return true;
     }
 
     @Override

@@ -18,16 +18,14 @@ import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
 public class PacketWindowProperty extends ClientboundPacket {
-    byte windowId;
-    short property;
-    short value;
+    private final byte windowId;
+    private final short property;
+    private final short value;
 
-    @Override
-    public boolean read(InByteBuffer buffer) {
+    public PacketWindowProperty(InByteBuffer buffer) {
         this.windowId = buffer.readByte();
         this.property = buffer.readShort();
         this.value = buffer.readShort();
-        return true;
     }
 
     @Override

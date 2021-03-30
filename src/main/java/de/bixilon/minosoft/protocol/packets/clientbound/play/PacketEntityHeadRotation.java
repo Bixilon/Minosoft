@@ -20,15 +20,13 @@ import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
 public class PacketEntityHeadRotation extends ClientboundPacket {
-    int entityId;
-    short headYaw;
+    private final int entityId;
+    private final short headYaw;
 
-    @Override
-    public boolean read(InByteBuffer buffer) {
+    public PacketEntityHeadRotation(InByteBuffer buffer) {
         this.entityId = buffer.readEntityId();
 
         this.headYaw = buffer.readAngle();
-        return true;
     }
 
     @Override

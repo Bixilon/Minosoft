@@ -23,12 +23,10 @@ import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
 public class PacketStatusPong extends ClientboundPacket {
-    long pingId;
+    private final long pingId;
 
-    @Override
-    public boolean read(InByteBuffer buffer) {
+    public PacketStatusPong(InByteBuffer buffer) {
         this.pingId = buffer.readLong();
-        return true;
     }
 
     @Override

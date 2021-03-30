@@ -25,10 +25,9 @@ import glm_.vec3.Vec3;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_16W06A;
 
 public class PacketSpawnWeatherEntity extends ClientboundPacket {
-    LightningBolt entity;
+    private final LightningBolt entity;
 
-    @Override
-    public boolean read(InByteBuffer buffer) {
+    public PacketSpawnWeatherEntity(InByteBuffer buffer) {
         int entityId = buffer.readVarInt();
         byte type = buffer.readByte();
         Vec3 position;
@@ -38,7 +37,6 @@ public class PacketSpawnWeatherEntity extends ClientboundPacket {
             position = buffer.readLocation();
         }
         this.entity = new LightningBolt(buffer.getConnection(), entityId, position);
-        return true;
     }
 
     @Override

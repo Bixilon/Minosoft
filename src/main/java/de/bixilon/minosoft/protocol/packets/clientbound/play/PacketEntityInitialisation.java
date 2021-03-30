@@ -18,12 +18,10 @@ import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
 public class PacketEntityInitialisation extends ClientboundPacket {
-    int entityId;
+    private final int entityId;
 
-    @Override
-    public boolean read(InByteBuffer buffer) {
+    public PacketEntityInitialisation(InByteBuffer buffer) {
         this.entityId = buffer.readEntityId();
-        return true;
     }
 
     @Override

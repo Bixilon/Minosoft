@@ -24,7 +24,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.nbt.tag.CompoundTag
 
-class PacketRespawn : ClientboundPacket() {
+class PacketRespawn() : ClientboundPacket() {
     var dimension: Dimension? = null
     var difficulty: Difficulties? = null
     var gamemode: Gamemodes? = null
@@ -33,7 +33,8 @@ class PacketRespawn : ClientboundPacket() {
     var isDebug = false
     var isFlat = false
     var copyMetaData = false
-    override fun read(buffer: InByteBuffer): Boolean {
+
+    constructor(buffer: InByteBuffer) : this() {
         when {
             buffer.versionId < ProtocolVersions.V_20W21A -> {
                 dimension = buffer.connection.mapping.dimensionRegistry.get(if (buffer.versionId < ProtocolVersions.V_1_8_9) { // ToDo: this should be 108 but wiki.vg is wrong. In 1.8 it is an int.
@@ -72,7 +73,6 @@ class PacketRespawn : ClientboundPacket() {
         if (buffer.versionId >= ProtocolVersions.V_20W18A) {
             copyMetaData = buffer.readBoolean()
         }
-        return true
     }
 
     override fun handle(connection: Connection) {

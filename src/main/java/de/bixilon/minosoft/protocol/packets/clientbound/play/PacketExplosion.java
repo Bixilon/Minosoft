@@ -18,24 +18,19 @@ import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 import glm_.vec3.Vec3i;
+import org.jetbrains.annotations.NotNull;
 
 public class PacketExplosion extends ClientboundPacket {
-    private Vec3i position;
-    private float radius;
-    private byte[][] records;
-    private float motionX;
-    private float motionY;
-    private float motionZ;
+    private final Vec3i position;
+    private final float radius;
+    private final byte[][] records;
+    private final float motionX;
+    private final float motionY;
+    private final float motionZ;
 
-    @Override
-    public boolean read(InByteBuffer buffer) {
+    public PacketExplosion(InByteBuffer buffer) {
         this.position = new Vec3i(buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
         this.radius = buffer.readFloat();
-        if (this.radius > 100.0F) {
-            // maybe somebody tries to make bullshit?
-            // Sorry, Maximilian Rosenmüller
-            throw new IllegalArgumentException(String.format("Explosion to big %s > 100.0F", this.radius));
-        }
         int recordCount = buffer.readInt();
         this.records = new byte[recordCount][3];
         for (int i = 0; i < recordCount; i++) {
@@ -45,7 +40,15 @@ public class PacketExplosion extends ClientboundPacket {
         this.motionX = buffer.readFloat();
         this.motionY = buffer.readFloat();
         this.motionZ = buffer.readFloat();
-        return true;
+    }
+
+    @Override
+    public void check(@NotNull Connection connection) {
+        if (this.radius > 100.0F) {
+            // maybe somebody tries to make bullshit?
+            // Sorry, Maximilian Rosenmüller
+            throw new IllegalArgumentException(String.format("Explosion to big %s > 100.0F", this.radius));
+        }
     }
 
     @Override

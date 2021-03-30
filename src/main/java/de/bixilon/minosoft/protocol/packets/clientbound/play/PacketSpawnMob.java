@@ -32,11 +32,10 @@ import java.util.UUID;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
 
 public class PacketSpawnMob extends ClientboundPacket {
-    Entity entity;
-    Velocity velocity;
+    private final Velocity velocity;
+    private Entity entity;
 
-    @Override
-    public boolean read(InByteBuffer buffer) throws Exception {
+    public PacketSpawnMob(InByteBuffer buffer) throws Exception {
         int entityId = buffer.readEntityId();
         UUID uuid = null;
         if (buffer.getVersionId() >= V_15W31A) {
@@ -74,11 +73,10 @@ public class PacketSpawnMob extends ClientboundPacket {
             if (metaData != null) {
                 this.entity.setMetaData(metaData);
             }
-            return true;
+            return;
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | NullPointerException e) {
             e.printStackTrace();
         }
-        return false;
     }
 
     @Override

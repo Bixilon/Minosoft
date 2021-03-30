@@ -16,7 +16,6 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 import de.bixilon.minosoft.data.Gamemodes;
 import de.bixilon.minosoft.data.PlayerPropertyData;
 import de.bixilon.minosoft.data.entities.EntityRotation;
-import de.bixilon.minosoft.data.entities.Velocity;
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity;
 import de.bixilon.minosoft.data.entities.meta.EntityMetaData;
 import de.bixilon.minosoft.data.mappings.items.Item;
@@ -33,11 +32,9 @@ import java.util.UUID;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
 
 public class PacketSpawnPlayer extends ClientboundPacket {
-    PlayerEntity entity;
-    Velocity velocity;
+    private final PlayerEntity entity;
 
-    @Override
-    public boolean read(InByteBuffer buffer) {
+    public PacketSpawnPlayer(InByteBuffer buffer) {
         int entityId = buffer.readVarInt();
         String name = null;
         UUID uuid;
@@ -74,7 +71,6 @@ public class PacketSpawnPlayer extends ClientboundPacket {
         if (metaData != null) {
             this.entity.setMetaData(metaData);
         }
-        return true;
     }
 
     @Override
@@ -82,7 +78,6 @@ public class PacketSpawnPlayer extends ClientboundPacket {
         connection.fireEvent(new EntitySpawnEvent(connection, this));
 
         connection.getPlayer().getWorld().addEntity(getEntity());
-        connection.getVelocityHandler().handleVelocity(getEntity(), getVelocity());
     }
 
     @Override
@@ -92,10 +87,6 @@ public class PacketSpawnPlayer extends ClientboundPacket {
 
     public PlayerEntity getEntity() {
         return this.entity;
-    }
-
-    public Velocity getVelocity() {
-        return this.velocity;
     }
 
 }

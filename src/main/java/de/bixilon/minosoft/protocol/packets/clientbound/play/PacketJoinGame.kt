@@ -36,7 +36,7 @@ import de.bixilon.minosoft.util.nbt.tag.ListTag
 import de.bixilon.minosoft.util.nbt.tag.NBTTag
 import kotlin.experimental.and
 
-class PacketJoinGame : ClientboundPacket() {
+class PacketJoinGame() : ClientboundPacket() {
     var entityId: Int = 0
     var isHardcore: Boolean = false
     var gamemode: Gamemodes = Gamemodes.SPECTATOR
@@ -50,7 +50,7 @@ class PacketJoinGame : ClientboundPacket() {
     var hashedSeed: Long = 0L
     var dimensions: HashBiMap<ResourceLocation, Dimension> = HashBiMap.create()
 
-    override fun read(buffer: InByteBuffer): Boolean {
+    constructor(buffer: InByteBuffer) : this() {
         entityId = buffer.readInt()
 
         if (buffer.versionId < V_20W27A) {
@@ -71,7 +71,7 @@ class PacketJoinGame : ClientboundPacket() {
                 levelType = LevelTypes.byType(buffer.readString())
             }
             if (buffer.versionId < ProtocolVersions.V_14W29A) {
-                return true
+                return
             }
             isReducedDebugScreen = buffer.readBoolean()
         }
@@ -124,7 +124,7 @@ class PacketJoinGame : ClientboundPacket() {
         if (buffer.versionId >= ProtocolVersions.V_19W36A) {
             isEnableRespawnScreen = buffer.readBoolean()
         }
-        return true
+        return
     }
 
     override fun handle(connection: Connection) {

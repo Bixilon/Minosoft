@@ -20,13 +20,12 @@ import de.bixilon.minosoft.util.logging.Log;
 import glm_.vec3.Vec3i;
 
 public class PacketSculkVibrationSignal extends ClientboundPacket {
-    private Vec3i vibrationSourcePosition;
-    private ResourceLocation vibrationTargetType;
-    private Object vibrationTargetData;
-    private int arrivalTicks;
+    private final Vec3i vibrationSourcePosition;
+    private final ResourceLocation vibrationTargetType;
+    private final Object vibrationTargetData;
+    private final int arrivalTicks;
 
-    @Override
-    public boolean read(InByteBuffer buffer) {
+    public PacketSculkVibrationSignal(InByteBuffer buffer) {
         this.vibrationSourcePosition = buffer.readBlockPosition();
         this.vibrationTargetType = buffer.readResourceLocation();
         this.vibrationTargetData = switch (this.vibrationTargetType.getFull()) {
@@ -35,7 +34,6 @@ public class PacketSculkVibrationSignal extends ClientboundPacket {
             default -> throw new IllegalArgumentException("Unexpected value: " + this.vibrationTargetType.getFull());
         };
         this.arrivalTicks = buffer.readVarInt();
-        return true;
     }
 
     public Vec3i getVibrationSourcePosition() {

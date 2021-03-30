@@ -19,14 +19,12 @@ import de.bixilon.minosoft.util.logging.Log;
 import de.bixilon.minosoft.util.nbt.tag.CompoundTag;
 
 public class PacketNBTQueryResponse extends ClientboundPacket {
-    int transactionId;
-    CompoundTag tag;
+    private final int transactionId;
+    private final CompoundTag tag;
 
-    @Override
-    public boolean read(InByteBuffer buffer) {
+    public PacketNBTQueryResponse(InByteBuffer buffer) {
         this.transactionId = buffer.readVarInt();
         this.tag = (CompoundTag) buffer.readNBT();
-        return true;
     }
 
     @Override
