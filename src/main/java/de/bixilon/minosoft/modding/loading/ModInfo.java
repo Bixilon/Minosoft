@@ -34,18 +34,18 @@ public class ModInfo {
 
     public ModInfo(JsonObject json) throws ModLoadingException {
         this.modVersionIdentifier = ModVersionIdentifier.serialize(json);
-        this.versionName = json.get("versionName").getAsString();
+        this.versionName = json.get("version_name").getAsString();
         this.name = json.get("name").getAsString();
         JsonArray authors = json.get("authors").getAsJsonArray();
         this.authors = new String[authors.size()];
         AtomicInteger i = new AtomicInteger();
         authors.forEach((authorElement) -> this.authors[i.getAndIncrement()] = authorElement.getAsString());
-        this.moddingAPIVersion = json.get("moddingAPIVersion").getAsInt();
+        this.moddingAPIVersion = json.get("modding_api_version").getAsInt();
         if (this.moddingAPIVersion > ModLoader.CURRENT_MODDING_API_VERSION) {
             throw new ModLoadingException(String.format("Mod was written with for a newer version of minosoft (moddingAPIVersion=%d, expected=%d)", this.moddingAPIVersion, ModLoader.CURRENT_MODDING_API_VERSION));
         }
-        this.resourceNamespace = json.get("resourceNamespace").getAsString();
-        this.mainClass = json.get("mainClass").getAsString();
+        this.resourceNamespace = json.get("resource_namespace").getAsString();
+        this.mainClass = json.get("main_class").getAsString();
         if (json.has("loading")) {
             JsonObject loading = json.getAsJsonObject("loading");
             this.loadingInfo = new LoadingInfo();
