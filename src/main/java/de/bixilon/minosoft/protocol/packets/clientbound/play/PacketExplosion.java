@@ -55,9 +55,9 @@ public class PacketExplosion extends ClientboundPacket {
     public void handle(Connection connection) {
         // remove all blocks set by explosion
         for (byte[] record : getRecords()) {
-            int x = getPosition().x + record[0];
-            int y = getPosition().y + record[1];
-            int z = getPosition().z + record[2];
+            int x = getPosition().getX() + record[0];
+            int y = getPosition().getY() + record[1];
+            int z = getPosition().getZ() + record[2];
             Vec3i blockPosition = new Vec3i(x, (short) y, z);
             connection.getWorld().setBlock(blockPosition, null);
         }

@@ -153,15 +153,15 @@ object VecUtil {
         return this + direction?.directionVector
     }
 
-    infix fun Vec3i.plus(input: Vec3): Vec3 {
+    infix operator fun Vec3i.plus(input: Vec3): Vec3 {
         return Vec3(input.x + x, input.y + y, input.z + z)
     }
 
-    operator fun Vec2i.plus(vec3: Vec3i): Vec2i {
+    infix operator fun Vec2i.plus(vec3: Vec3i): Vec2i {
         return Vec2i(x + vec3.x, y + vec3.z)
     }
 
-    operator fun Vec2i.plus(direction: Directions): Vec2i {
+    infix operator fun Vec2i.plus(direction: Directions): Vec2i {
         return this + direction.directionVector
     }
 }

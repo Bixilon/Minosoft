@@ -34,12 +34,12 @@ public class PacketPlayerPositionSending implements ServerboundPacket {
     @Override
     public OutPacketBuffer write(Connection connection) {
         OutPacketBuffer buffer = new OutPacketBuffer(connection, PacketTypes.Serverbound.PLAY_PLAYER_POSITION);
-        buffer.writeDouble(this.position.x);
-        buffer.writeDouble(this.position.y);
+        buffer.writeDouble(this.position.getX());
+        buffer.writeDouble(this.position.getY());
         if (buffer.getVersionId() < V_14W06B) {
             buffer.writeDouble(0.0); // ToDo
         }
-        buffer.writeDouble(this.position.z);
+        buffer.writeDouble(this.position.getZ());
         buffer.writeBoolean(this.onGround);
         return buffer;
     }

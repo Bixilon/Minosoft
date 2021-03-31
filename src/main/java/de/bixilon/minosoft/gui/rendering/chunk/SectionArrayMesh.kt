@@ -17,7 +17,6 @@ import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.textures.Texture
 import de.bixilon.minosoft.gui.rendering.util.Mesh
-import glm_.BYTES
 import glm_.vec2.Vec2
 import glm_.vec3.Vec3
 import org.lwjgl.opengl.GL11.GL_FLOAT
@@ -51,19 +50,19 @@ class SectionArrayMesh : Mesh(initialCacheSize = 100000) {
     override fun load() {
         super.initializeBuffers(FLOATS_PER_VERTEX)
         var index = 0
-        glVertexAttribPointer(index, 3, GL_FLOAT, false, FLOATS_PER_VERTEX * Float.BYTES, 0L)
+        glVertexAttribPointer(index, 3, GL_FLOAT, false, FLOATS_PER_VERTEX * Float.SIZE_BYTES, 0L)
         glEnableVertexAttribArray(index++)
 
-        glVertexAttribPointer(index, 2, GL_FLOAT, false, FLOATS_PER_VERTEX * Float.BYTES, (3 * Float.BYTES).toLong())
+        glVertexAttribPointer(index, 2, GL_FLOAT, false, FLOATS_PER_VERTEX * Float.SIZE_BYTES, (3 * Float.SIZE_BYTES).toLong())
         glEnableVertexAttribArray(index++)
 
-        glVertexAttribPointer(index, 1, GL_FLOAT, false, FLOATS_PER_VERTEX * Float.BYTES, (5 * Float.BYTES).toLong())
+        glVertexAttribPointer(index, 1, GL_FLOAT, false, FLOATS_PER_VERTEX * Float.SIZE_BYTES, (5 * Float.SIZE_BYTES).toLong())
         glEnableVertexAttribArray(index++)
 
-        glVertexAttribPointer(index, 1, GL_FLOAT, false, FLOATS_PER_VERTEX * Float.BYTES, (6 * Float.BYTES).toLong())
+        glVertexAttribPointer(index, 1, GL_FLOAT, false, FLOATS_PER_VERTEX * Float.SIZE_BYTES, (6 * Float.SIZE_BYTES).toLong())
         glEnableVertexAttribArray(index++)
 
-        glVertexAttribPointer(index, 1, GL_FLOAT, false, FLOATS_PER_VERTEX * Float.BYTES, (7 * Float.BYTES).toLong())
+        glVertexAttribPointer(index, 1, GL_FLOAT, false, FLOATS_PER_VERTEX * Float.SIZE_BYTES, (7 * Float.SIZE_BYTES).toLong())
         glEnableVertexAttribArray(index++)
 
         super.unbind()

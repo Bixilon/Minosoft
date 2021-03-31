@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.rendering.hud
 
 import de.bixilon.minosoft.gui.rendering.util.Mesh
-import glm_.BYTES
 import org.lwjgl.opengl.GL11.GL_FLOAT
 import org.lwjgl.opengl.GL20.glEnableVertexAttribArray
 import org.lwjgl.opengl.GL20.glVertexAttribPointer
@@ -24,13 +23,13 @@ class HUDMesh : Mesh() {
     override fun load() {
         super.initializeBuffers(FLOATS_PER_VERTEX)
         var index = 0
-        glVertexAttribPointer(index, 3, GL_FLOAT, false, FLOATS_PER_VERTEX * Float.BYTES, 0L)
+        glVertexAttribPointer(index, 3, GL_FLOAT, false, FLOATS_PER_VERTEX * Float.SIZE_BYTES, 0L)
         glEnableVertexAttribArray(index++)
-        glVertexAttribPointer(index, 2, GL_FLOAT, false, FLOATS_PER_VERTEX * Float.BYTES, (3 * Float.BYTES).toLong())
+        glVertexAttribPointer(index, 2, GL_FLOAT, false, FLOATS_PER_VERTEX * Float.SIZE_BYTES, (3 * Float.SIZE_BYTES).toLong())
         glEnableVertexAttribArray(index++)
-        glVertexAttribPointer(index, 1, GL_FLOAT, false, FLOATS_PER_VERTEX * Float.BYTES, (5 * Float.BYTES).toLong())
+        glVertexAttribPointer(index, 1, GL_FLOAT, false, FLOATS_PER_VERTEX * Float.SIZE_BYTES, (5 * Float.SIZE_BYTES).toLong())
         glEnableVertexAttribArray(index++)
-        glVertexAttribPointer(index, 1, GL_FLOAT, false, FLOATS_PER_VERTEX * Float.BYTES, (6 * Float.BYTES).toLong())
+        glVertexAttribPointer(index, 1, GL_FLOAT, false, FLOATS_PER_VERTEX * Float.SIZE_BYTES, (6 * Float.SIZE_BYTES).toLong())
         glEnableVertexAttribArray(index++)
         super.unbind()
     }

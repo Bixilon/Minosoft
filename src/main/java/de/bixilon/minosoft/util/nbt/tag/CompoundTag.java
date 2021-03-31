@@ -170,9 +170,9 @@ public class CompoundTag extends NBTTag {
         if (this.isFinal) {
             throw new IllegalArgumentException("This tag is marked as final!");
         }
-        this.data.put("x", new IntTag(position.x));
-        this.data.put("y", new IntTag(position.y));
-        this.data.put("z", new IntTag(position.z));
+        this.data.put("x", new IntTag(position.getX()));
+        this.data.put("y", new IntTag(position.getY()));
+        this.data.put("z", new IntTag(position.getZ()));
     }
 
     public CompoundTag removeKey(String key) {

@@ -5,6 +5,7 @@ import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.gui.rendering.util.VecUtil
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3
 import glm_.Java.Companion.glm
 import glm_.vec3.Vec3
@@ -32,7 +33,7 @@ class AABB {
     }
 
     fun intersect(other: AABB): Boolean {
-        return  (min.x <= other.max.x && max.x >= other.min.x) &&
+        return (min.x <= other.max.x && max.x >= other.min.x) &&
                 (min.y <= other.max.y && max.y >= other.min.y) &&
                 (min.z <= other.max.z && max.z >= other.min.z)
     }
@@ -42,7 +43,7 @@ class AABB {
     }
 
     operator fun plus(vec3i: Vec3i): AABB {
-        return AABB(min + vec3i, max + vec3i)
+        return AABB(vec3i plus min, vec3i plus max)
     }
 
     operator fun plus(other: AABB): AABB {
