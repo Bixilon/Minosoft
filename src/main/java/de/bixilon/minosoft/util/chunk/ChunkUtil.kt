@@ -114,7 +114,7 @@ object ChunkUtil {
         val totalEntries: Int = ProtocolDefinition.BLOCKS_PER_SECTION * sectionBitMask.cardinality()
         val totalHalfEntries = totalEntries / 2
 
-        val blockData = buffer.readUnsignedLEShorts(totalEntries) // blocks >>> 4, data & 0xF
+        val blockData = buffer.readUnsignedShortsLE(totalEntries) // blocks >>> 4, data & 0xF
 
 
         val light = buffer.readBytes(totalHalfEntries)

@@ -24,7 +24,7 @@ public class PacketVehicleMovement extends ClientboundPacket {
     private final float pitch;
 
     public PacketVehicleMovement(InByteBuffer buffer) {
-        this.position = buffer.readLocation();
+        this.position = buffer.readEntityPosition();
         this.yaw = buffer.readFloat();
         this.pitch = buffer.readFloat();
     }

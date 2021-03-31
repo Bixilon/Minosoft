@@ -135,11 +135,11 @@ public class InByteBuffer {
         return readByte() == 1;
     }
 
-    public int[] readUnsignedLEShorts(int num) {
-        if (num > ProtocolDefinition.PROTOCOL_PACKET_MAX_SIZE) {
+    public int[] readUnsignedShortsLE(int count) {
+        if (count > ProtocolDefinition.PROTOCOL_PACKET_MAX_SIZE) {
             throw new IllegalArgumentException("Trying to allocate to much memory");
         }
-        int[] ret = new int[num];
+        int[] ret = new int[count];
         for (int i = 0; i < ret.length; i++) {
             ret[i] = ((readUnsignedByte()) | (readUnsignedByte() << 8));
         }
@@ -198,8 +198,8 @@ public class InByteBuffer {
     }
 
     @IntRange(from = 0, to = ((int) Byte.MAX_VALUE) * 2 + 1)
-    public short readUnsignedByte() {
-        return (short) (this.bytes[this.position++] & 0xFF);
+    public int readUnsignedByte() {
+        return (this.bytes[this.position++] & 0xFF);
     }
 
     public Vec3i readBlockPosition() {
@@ -356,7 +356,7 @@ public class InByteBuffer {
         return (short) (readByte() * ProtocolDefinition.ANGLE_CALCULATION_CONSTANT);
     }
 
-    public Vec3 readLocation() {
+    public Vec3 readEntityPosition() {
         return new Vec3(readDouble(), readDouble(), readDouble());
     }
 
@@ -448,7 +448,7 @@ public class InByteBuffer {
         EntityMetaData.MetaDataHashMap sets = metaData.getSets();
 
         if (this.versionId < V_15W31A) { // ToDo: This version was 48, but this one does not exist!
-            short item = readUnsignedByte();
+            int item = readUnsignedByte();
             while (item != 0x7F) {
                 byte index = (byte) (item & 0x1F);
                 EntityMetaData.EntityMetaDataDataTypes type = this.connection.getMapping().getEntityMetaDataDataDataTypesRegistry().get((item & 0xFF) >> 5);

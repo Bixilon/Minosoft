@@ -19,7 +19,7 @@ public class PistonAction implements BlockAction {
     private final PistonStates status;
     private final Directions direction;
 
-    public PistonAction(short status, short direction) {
+    public PistonAction(int status, int direction) {
         this.status = PistonStates.byId(status);
         this.direction = Directions.byId(direction);
     }

@@ -35,7 +35,7 @@ public class PacketSpawnWeatherEntity extends ClientboundPacket {
         if (buffer.getVersionId() < V_16W06A) {
             position = new Vec3(buffer.readFixedPointNumberInt(), buffer.readFixedPointNumberInt(), buffer.readFixedPointNumberInt());
         } else {
-            position = buffer.readLocation();
+            position = buffer.readEntityPosition();
         }
         this.entity = new LightningBolt(buffer.getConnection(), this.entityId, position);
     }

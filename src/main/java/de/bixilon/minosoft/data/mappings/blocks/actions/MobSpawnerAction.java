@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.mappings.blocks.actions;
 
 public class MobSpawnerAction implements BlockAction {
 
-    public MobSpawnerAction(short status, short ignored) {
+    public MobSpawnerAction(int status, int ignored) {
         // only 1 action (id 1)
     }
 

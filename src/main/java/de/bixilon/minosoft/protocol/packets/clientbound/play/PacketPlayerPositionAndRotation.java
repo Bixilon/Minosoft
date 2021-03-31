@@ -33,7 +33,7 @@ public class PacketPlayerPositionAndRotation extends ClientboundPacket {
     private boolean dismountVehicle = true;
 
     public PacketPlayerPositionAndRotation(InByteBuffer buffer) {
-        this.position = buffer.readLocation();
+        this.position = buffer.readEntityPosition();
         this.rotation = new EntityRotation(buffer.readFloat(), buffer.readFloat(), 0);
         if (buffer.getVersionId() < V_14W03B) {
             this.onGround = buffer.readBoolean();

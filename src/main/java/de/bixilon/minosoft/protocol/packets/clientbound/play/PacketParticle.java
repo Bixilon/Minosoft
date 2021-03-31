@@ -47,7 +47,7 @@ public class PacketParticle extends ClientboundPacket {
         if (buffer.getVersionId() < V_1_15_PRE4) {
             this.position = buffer.readFloatPosition();
         } else {
-            this.position = buffer.readLocation();
+            this.position = buffer.readEntityPosition();
         }
 
         // offset

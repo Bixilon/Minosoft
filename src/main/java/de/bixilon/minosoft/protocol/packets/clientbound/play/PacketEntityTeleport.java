@@ -36,7 +36,7 @@ public class PacketEntityTeleport extends ClientboundPacket {
         if (buffer.getVersionId() < V_16W06A) {
             this.position = new Vec3(buffer.readFixedPointNumberInt(), buffer.readFixedPointNumberInt(), buffer.readFixedPointNumberInt());
         } else {
-            this.position = buffer.readLocation();
+            this.position = buffer.readEntityPosition();
         }
         this.yaw = buffer.readAngle();
         this.pitch = buffer.readAngle();

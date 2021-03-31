@@ -35,8 +35,8 @@ public class PacketBlockAction extends ClientboundPacket {
         } else {
             this.position = buffer.readBlockPosition();
         }
-        short byte1 = buffer.readUnsignedByte();
-        short byte2 = buffer.readUnsignedByte();
+        int byte1 = buffer.readUnsignedByte();
+        int byte2 = buffer.readUnsignedByte();
         Block blockId = buffer.getConnection().getMapping().getBlockRegistry().get(buffer.readVarInt());
         if (blockId == null) {
             this.data = null;

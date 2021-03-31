@@ -26,7 +26,7 @@ public class PacketFacePlayer extends ClientboundPacket {
 
     public PacketFacePlayer(InByteBuffer buffer) {
         this.face = PlayerFaces.byId(buffer.readVarInt());
-        this.position = buffer.readLocation();
+        this.position = buffer.readEntityPosition();
         if (buffer.readBoolean()) {
             // entity present
             this.entityId = buffer.readVarInt();

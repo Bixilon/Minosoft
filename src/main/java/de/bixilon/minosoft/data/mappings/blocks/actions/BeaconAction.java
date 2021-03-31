@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.mappings.blocks.actions;
 
 public class BeaconAction implements BlockAction {
 
-    public BeaconAction(short status, short ignored) {
+    public BeaconAction(int status, int ignored) {
         // only 1 action (id 1)
     }
 

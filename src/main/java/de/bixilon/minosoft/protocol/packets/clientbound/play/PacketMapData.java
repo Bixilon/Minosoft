@@ -107,16 +107,15 @@ public class PacketMapData extends ClientboundPacket {
             this.pins.add(new MapPinSet(type, direction, x, z, displayName));
         }
 
-        short columns = buffer.readUnsignedByte();
+        int columns = buffer.readUnsignedByte();
         if (columns > 0) {
-            short rows = buffer.readUnsignedByte();
-            short xOffset = buffer.readUnsignedByte();
-            short zOffset = buffer.readUnsignedByte();
+            int rows = buffer.readUnsignedByte();
+            int xOffset = buffer.readUnsignedByte();
+            int zOffset = buffer.readUnsignedByte();
 
             int dataLength = buffer.readVarInt();
             this.data = buffer.readBytes(dataLength);
         }
-        return;
     }
 
     @Override

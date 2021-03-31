@@ -59,7 +59,7 @@ public class PacketSpawnObject extends ClientboundPacket {
         if (buffer.getVersionId() < V_16W06A) {
             position = new Vec3(buffer.readFixedPointNumberInt(), buffer.readFixedPointNumberInt(), buffer.readFixedPointNumberInt());
         } else {
-            position = buffer.readLocation();
+            position = buffer.readEntityPosition();
         }
         EntityRotation rotation = new EntityRotation(buffer.readAngle(), buffer.readAngle(), 0);
         int data = buffer.readInt();
