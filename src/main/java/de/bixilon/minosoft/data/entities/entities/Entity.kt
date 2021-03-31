@@ -33,12 +33,12 @@ abstract class Entity(
     var position: Vec3,
     var rotation: EntityRotation,
 ) {
-    val entityInformation: EntityInformation?
+    val entityInformation: EntityInformation? = connection.mapping.getEntityInformation(javaClass)
     val equipment: MutableMap<EquipmentSlots, ItemStack> = mutableMapOf()
     val effectList: MutableSet<StatusEffectInstance> = mutableSetOf()
 
     @JvmField
-    protected val versionId: Int
+    protected val versionId: Int = connection.version.versionId
     open var attachedEntity: Int? = null
 
     var entityMetaData: EntityMetaData = EntityMetaData(connection)
@@ -98,9 +98,8 @@ abstract class Entity(
         get() = getEntityFlag(0x20)
 
     @EntityMetaDataFunction(name = "Has glowing effect")
-    fun hasGlowingEffect(): Boolean {
-        return getEntityFlag(0x20)
-    }
+    val hasGLowingEffect: Boolean
+        get() =  getEntityFlag(0x20)
 
     val isFlyingWithElytra: Boolean
         get() = getEntityFlag(0x80)
@@ -229,8 +228,4 @@ abstract class Entity(
         )
     }
 
-    init {
-        entityInformation = connection.mapping.getEntityInformation(javaClass)
-        versionId = connection.version.versionId
-    }
 }
