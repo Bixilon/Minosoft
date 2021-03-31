@@ -14,10 +14,10 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.Gamemodes;
-import de.bixilon.minosoft.data.player.PlayerListItem;
-import de.bixilon.minosoft.data.player.PlayerListItemBulk;
 import de.bixilon.minosoft.data.player.PlayerProperties;
 import de.bixilon.minosoft.data.player.PlayerProperty;
+import de.bixilon.minosoft.data.player.tab.PlayerListItem;
+import de.bixilon.minosoft.data.player.tab.PlayerListItemBulk;
 import de.bixilon.minosoft.data.text.ChatComponent;
 import de.bixilon.minosoft.modding.event.events.PlayerListItemChangeEvent;
 import de.bixilon.minosoft.protocol.network.Connection;
@@ -85,27 +85,27 @@ public class PacketPlayerListItem extends ClientboundPacket {
             return;
         }
         for (PlayerListItemBulk bulk : getPlayerList()) {
-            PlayerListItem item = connection.getPlayer().getPlayerList().get(bulk.getUUID());
+            PlayerListItem item = connection.getTabList().getPlayerList().get(bulk.getUUID());
             if (bulk.getAction() != PlayerListItemActions.ADD && item == null && !bulk.isLegacy()) {
                 // Aaaaah. Fuck this shit. The server sends us bullshit!
                 continue;
             }
             switch (bulk.getAction()) {
-                case ADD -> connection.getPlayer().getPlayerList().put(bulk.getUUID(), new PlayerListItem(bulk.getUUID(), bulk.getName(), bulk.getPing(), bulk.getGamemode(), bulk.getDisplayName(), bulk.getProperties()));
+                case ADD -> connection.getTabList().getPlayerList().put(bulk.getUUID(), new PlayerListItem(bulk.getUUID(), bulk.getName(), bulk.getPing(), bulk.getGamemode(), bulk.getDisplayName(), bulk.getProperties()));
                 case UPDATE_LATENCY -> {
                     if (bulk.isLegacy()) {
                         // add or update
                         if (item == null) {
                             // create
                             UUID uuid = UUID.randomUUID();
-                            connection.getPlayer().getPlayerList().put(uuid, new PlayerListItem(uuid, bulk.getName(), bulk.getPing()));
+                            connection.getTabList().getPlayerList().put(uuid, new PlayerListItem(uuid, bulk.getName(), bulk.getPing()));
                         } else {
                             // update ping
                             item.setPing(bulk.getPing());
                         }
                         continue;
                     }
-                    connection.getPlayer().getPlayerList().get(bulk.getUUID()).setPing(bulk.getPing());
+                    connection.getTabList().getPlayerList().get(bulk.getUUID()).setPing(bulk.getPing());
                 }
                 case REMOVE_PLAYER -> {
                     if (bulk.isLegacy()) {
@@ -113,10 +113,10 @@ public class PacketPlayerListItem extends ClientboundPacket {
                             // not initialized yet
                             continue;
                         }
-                        connection.getPlayer().getPlayerList().remove(connection.getPlayer().getPlayerListItem(bulk.getName()).getUUID());
+                        // ToDo: connection.getTabList().getPlayerList().remove(connection.getTabList().getPlayerList(bulk.getName()).getUUID());
                         continue;
                     }
-                    connection.getPlayer().getPlayerList().remove(bulk.getUUID());
+                    connection.getTabList().getPlayerList().remove(bulk.getUUID());
                 }
                 case UPDATE_GAMEMODE -> item.setGamemode(bulk.getGamemode());
                 case UPDATE_DISPLAY_NAME -> item.setDisplayName(bulk.getDisplayName());

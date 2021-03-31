@@ -33,7 +33,7 @@ public class PacketCloseWindowReceiving extends ClientboundPacket {
             return;
         }
 
-        connection.getPlayer().deleteInventory(getWindowId());
+        connection.getPlayer().getInventoryManager().getInventories().remove((int) getWindowId());
     }
 
     @Override

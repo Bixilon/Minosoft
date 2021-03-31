@@ -88,10 +88,10 @@ class PacketRespawn(buffer: InByteBuffer) : ClientboundPacket() {
         }
 
         // clear all chunks
-        connection.player.world.chunks.clear()
-        connection.player.world.dimension = dimension
+        connection.world.chunks.clear()
+        connection.world.dimension = dimension
         connection.player.isSpawnConfirmed = false
-        connection.player.gamemode = gamemode
+        connection.player.entity.gamemode = gamemode
         connection.renderer.renderWindow.worldRenderer.clearChunkCache()
     }
 

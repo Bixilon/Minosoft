@@ -31,7 +31,7 @@ public class PacketEntityHeadRotation extends ClientboundPacket {
 
     @Override
     public void handle(Connection connection) {
-        Entity entity = connection.getPlayer().getWorld().getEntity(getEntityId());
+        Entity entity = connection.getWorld().getEntity(getEntityId());
         if (entity == null) {
             // thanks mojang
             return;

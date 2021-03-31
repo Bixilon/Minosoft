@@ -138,7 +138,7 @@ public class PacketSender {
 
     public void selectSlot(@IntRange(from = 0, to = 8) int slot) {
         this.connection.fireEvent(new HeldItemChangeEvent(this.connection, slot));
-        this.connection.getPlayer().setSelectedSlot(slot);
+        this.connection.getPlayer().getInventoryManager().setSelectedHotbarSlot(slot);
         this.connection.sendPacket(new PacketHeldItemChangeSending(slot));
     }
 }

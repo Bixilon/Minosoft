@@ -115,13 +115,13 @@ class HotbarHUDElement(
 
     private fun prepare() {
         layout.clear()
-        if (hudRenderer.connection.player.gamemode == Gamemodes.SPECTATOR) {
+        if (hudRenderer.connection.player.entity.gamemode == Gamemodes.SPECTATOR) {
             // ToDo: Spectator hotbar
             return
         }
 
 
-        if (hudRenderer.connection.player.gamemode != Gamemodes.CREATIVE) {
+        if (hudRenderer.connection.player.entity.gamemode != Gamemodes.CREATIVE) {
             // add health bar, hunger, armor, experience and more
             layout.addChild(healthBar)
 

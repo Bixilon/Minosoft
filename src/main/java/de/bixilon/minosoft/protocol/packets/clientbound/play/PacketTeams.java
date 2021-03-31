@@ -89,11 +89,11 @@ public class PacketTeams extends ClientboundPacket {
     @Override
     public void handle(Connection connection) {
         switch (getAction()) {
-            case CREATE -> connection.getPlayer().getScoreboardManager().addTeam(new Team(getName(), getDisplayName(), getPrefix(), getSuffix(), isFriendlyFireEnabled(), isSeeingFriendlyInvisibles(), getPlayerNames()));
-            case INFORMATION_UPDATE -> connection.getPlayer().getScoreboardManager().getTeam(getName()).updateInformation(getDisplayName(), getPrefix(), getSuffix(), isFriendlyFireEnabled(), isSeeingFriendlyInvisibles());
-            case REMOVE -> connection.getPlayer().getScoreboardManager().removeTeam(getName());
-            case PLAYER_ADD -> connection.getPlayer().getScoreboardManager().getTeam(getName()).addPlayers(Arrays.asList(getPlayerNames()));
-            case PLAYER_REMOVE -> connection.getPlayer().getScoreboardManager().getTeam(getName()).removePlayers(Arrays.asList(getPlayerNames()));
+            case CREATE -> connection.getScoreboardManager().addTeam(new Team(getName(), getDisplayName(), getPrefix(), getSuffix(), isFriendlyFireEnabled(), isSeeingFriendlyInvisibles(), getPlayerNames()));
+            case INFORMATION_UPDATE -> connection.getScoreboardManager().getTeam(getName()).updateInformation(getDisplayName(), getPrefix(), getSuffix(), isFriendlyFireEnabled(), isSeeingFriendlyInvisibles());
+            case REMOVE -> connection.getScoreboardManager().removeTeam(getName());
+            case PLAYER_ADD -> connection.getScoreboardManager().getTeam(getName()).addPlayers(Arrays.asList(getPlayerNames()));
+            case PLAYER_REMOVE -> connection.getScoreboardManager().getTeam(getName()).removePlayers(Arrays.asList(getPlayerNames()));
         }
     }
 

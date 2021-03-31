@@ -33,7 +33,7 @@ public class EntityDespawnEvent extends ConnectionEvent {
     public Entity[] getEntities() {
         Entity[] ret = new Entity[this.entityIds.length];
         for (int i = 0; i < this.entityIds.length; i++) {
-            ret[i] = getConnection().getPlayer().getWorld().getEntity(this.entityIds[i]);
+            ret[i] = getConnection().getWorld().getEntity(this.entityIds[i]);
         }
         return ret;
     }

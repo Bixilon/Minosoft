@@ -59,7 +59,7 @@ public class PacketExplosion extends ClientboundPacket {
             int y = getPosition().y + record[1];
             int z = getPosition().z + record[2];
             Vec3i blockPosition = new Vec3i(x, (short) y, z);
-            connection.getPlayer().getWorld().setBlock(blockPosition, null);
+            connection.getWorld().setBlock(blockPosition, null);
         }
         // ToDo: motion support
     }

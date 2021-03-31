@@ -62,7 +62,7 @@ public abstract class Entity {
 
     @Deprecated
     public int getEntityId() {
-        return this.connection.getPlayer().getWorld().getEntityIdMap().inverse().get(this);
+        return this.connection.getWorld().getEntityIdMap().inverse().get(this);
     }
 
     public Vec3 getPosition() {
@@ -90,7 +90,7 @@ public abstract class Entity {
     }
 
     public UUID getUUID() {
-        return this.connection.getPlayer().getWorld().getEntityUUIDMap().inverse().get(this);
+        return this.connection.getWorld().getEntityUUIDMap().inverse().get(this);
     }
 
     public HashSet<StatusEffectInstance> getEffectList() {
@@ -304,7 +304,7 @@ public abstract class Entity {
         List<Vec3i> blockPositions = originalAABB.extend(deltaPosition).getBlockPositions();
         VoxelShape result = new VoxelShape();
         for (Vec3i blockPosition : blockPositions) {
-            BlockState blockState = this.connection.getPlayer().getWorld().getBlockState(blockPosition);
+            BlockState blockState = this.connection.getWorld().getBlockState(blockPosition);
             if (blockState == null) {
                 continue;
             }

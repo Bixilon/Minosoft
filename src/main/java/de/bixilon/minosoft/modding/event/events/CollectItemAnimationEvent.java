@@ -35,8 +35,8 @@ public class CollectItemAnimationEvent extends CancelableEvent {
 
     public CollectItemAnimationEvent(Connection connection, PacketCollectItem pkg) {
         super(connection);
-        this.item = connection.getPlayer().getWorld().getEntity(pkg.getItemEntityId());
-        this.collector = connection.getPlayer().getWorld().getEntity(pkg.getCollectorEntityId());
+        this.item = connection.getWorld().getEntity(pkg.getItemEntityId());
+        this.collector = connection.getWorld().getEntity(pkg.getCollectorEntityId());
         this.count = pkg.getCount();
     }
 

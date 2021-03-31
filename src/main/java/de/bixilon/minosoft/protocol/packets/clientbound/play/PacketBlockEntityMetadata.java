@@ -47,7 +47,7 @@ public class PacketBlockEntityMetadata extends ClientboundPacket {
     @Override
     public void handle(Connection connection) {
         connection.fireEvent(new BlockEntityMetaDataChangeEvent(connection, this));
-        connection.getPlayer().getWorld().setBlockEntityData(getPosition(), getData());
+        connection.getWorld().setBlockEntityData(getPosition(), getData());
     }
 
     @Override

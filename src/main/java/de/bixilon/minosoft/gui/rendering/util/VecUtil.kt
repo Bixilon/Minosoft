@@ -29,6 +29,7 @@ import glm_.vec3.Vec3i
 
 object VecUtil {
     val EMPTY_VEC3 = Vec3(0, 0, 0)
+    val EMPTY_VEC3I = Vec3i(0, 0, 0)
     val BLOCK_SIZE_VEC3 = Vec3(BlockModelElement.BLOCK_RESOLUTION)
     val ONES_VEC3 = Vec3(1)
 

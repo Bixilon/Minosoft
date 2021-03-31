@@ -44,7 +44,7 @@ public class PacketSpawnWeatherEntity extends ClientboundPacket {
     public void handle(Connection connection) {
         connection.fireEvent(new EntitySpawnEvent(connection, this));
         connection.fireEvent(new LightningBoltSpawnEvent(connection, this));
-        connection.getPlayer().getWorld().addEntity(this.entityId, null, this.entity);
+        connection.getWorld().addEntity(this.entityId, null, this.entity);
     }
 
     @Override

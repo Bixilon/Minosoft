@@ -20,20 +20,19 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.util.logging.Log
 
 class PacketServerDifficulty(buffer: InByteBuffer) : ClientboundPacket() {
-    val difficulty: Difficulties
+    val difficulty: Difficulties = Difficulties.byId(buffer.readUnsignedByte().toInt())
     var locked = false
         private set
 
     init {
-        difficulty = Difficulties.byId(buffer.readUnsignedByte().toInt())
         if (buffer.versionId > ProtocolVersions.V_19W11A) {
             locked = buffer.readBoolean()
         }
     }
 
     override fun handle(connection: Connection) {
-        connection.player.world.difficulty = difficulty
-        connection.player.world.difficultyLocked = locked
+        connection.world.difficulty = difficulty
+        connection.world.difficultyLocked = locked
     }
 
     override fun log() {

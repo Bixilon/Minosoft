@@ -48,9 +48,9 @@ class PacketSetExperience() : ClientboundPacket() {
         if (connection.fireEvent(ExperienceChangeEvent(connection, this))) {
             return
         }
-        connection.player.level = level
-        connection.player.experienceBarProgress = bar
-        connection.player.totalExperience = total
+        connection.player.experienceCondition.level = level
+        connection.player.experienceCondition.experienceBarProgress = bar
+        connection.player.experienceCondition.totalExperience = total
     }
 
     override fun log() {

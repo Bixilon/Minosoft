@@ -76,7 +76,7 @@ class RenderWindow(
     val textures = TextureArray(mutableListOf())
 
     // all renderers
-    val worldRenderer: WorldRenderer = WorldRenderer(connection, connection.player.world, this)
+    val worldRenderer: WorldRenderer = WorldRenderer(connection, connection.world, this)
     val hudRenderer: HUDRenderer = HUDRenderer(connection, this)
 
     val renderQueue = ConcurrentLinkedQueue<Runnable>()

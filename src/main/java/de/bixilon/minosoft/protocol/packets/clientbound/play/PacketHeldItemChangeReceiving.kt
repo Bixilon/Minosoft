@@ -19,16 +19,12 @@ import de.bixilon.minosoft.protocol.protocol.InByteBuffer
 import de.bixilon.minosoft.util.logging.Log
 
 class PacketHeldItemChangeReceiving(buffer: InByteBuffer) : ClientboundPacket() {
-    val slot: Int
-
-    init {
-        slot = buffer.readByte().toInt()
-    }
+    val slot: Int = buffer.readByte().toInt()
 
     override fun handle(connection: Connection) {
         connection.fireEvent(HeldItemChangeEvent(connection, slot))
 
-        connection.player.selectedSlot = slot
+        connection.player.inventoryManager.selectedHotbarSlot = slot
     }
 
     override fun log() {

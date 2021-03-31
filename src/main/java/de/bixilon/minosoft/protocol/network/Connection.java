@@ -15,14 +15,18 @@ package de.bixilon.minosoft.protocol.network;
 
 import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.config.StaticConfiguration;
-import de.bixilon.minosoft.data.Player;
 import de.bixilon.minosoft.data.VelocityHandler;
+import de.bixilon.minosoft.data.accounts.Account;
 import de.bixilon.minosoft.data.commands.CommandRootNode;
 import de.bixilon.minosoft.data.mappings.MappingsLoadingException;
 import de.bixilon.minosoft.data.mappings.recipes.Recipes;
 import de.bixilon.minosoft.data.mappings.versions.Version;
 import de.bixilon.minosoft.data.mappings.versions.VersionMapping;
 import de.bixilon.minosoft.data.mappings.versions.Versions;
+import de.bixilon.minosoft.data.player.Player;
+import de.bixilon.minosoft.data.player.tab.TabList;
+import de.bixilon.minosoft.data.scoreboard.ScoreboardManager;
+import de.bixilon.minosoft.data.world.World;
 import de.bixilon.minosoft.gui.rendering.Rendering;
 import de.bixilon.minosoft.modding.event.EventInvoker;
 import de.bixilon.minosoft.modding.event.events.*;
@@ -56,11 +60,13 @@ public class Connection {
     private final Player player;
     private final String hostname;
     private final Recipes recipes = new Recipes();
+    private final World world = new World();
+    private final TabList tabList = new TabList();
+    private final ScoreboardManager scoreboardManager = new ScoreboardManager();
     private Rendering rendering;
     private LinkedList<ServerAddress> addresses;
     private int desiredVersionNumber = -1;
     private ServerAddress address;
-    private Thread handleThread;
     private Version version = Versions.LOWEST_VERSION_SUPPORTED; // default
     private final VersionMapping customMapping = new VersionMapping(this.version);
     private ConnectionStates state = ConnectionStates.DISCONNECTED;
@@ -72,9 +78,13 @@ public class Connection {
     private ConnectionPing connectionStatusPing;
     private ServerListPongEvent pong;
 
-    public Connection(int connectionId, String hostname, Player player) {
+    public Connection(int connectionId, String hostname, Account account) {
         this.connectionId = connectionId;
-        this.player = player;
+        if (account == null) {
+            this.player = null;
+        } else {
+            this.player = new Player(account, this);
+        }
         this.hostname = hostname;
     }
 
@@ -201,9 +211,6 @@ public class Connection {
 
     public void disconnect() {
         this.network.disconnect();
-        if (this.handleThread != null) {
-            this.handleThread.interrupt();
-        }
     }
 
     public Player getPlayer() {
@@ -478,5 +485,17 @@ public class Connection {
 
     public Network getNetwork() {
         return this.network;
+    }
+
+    public World getWorld() {
+        return this.world;
+    }
+
+    public TabList getTabList() {
+        return this.tabList;
+    }
+
+    public ScoreboardManager getScoreboardManager() {
+        return this.scoreboardManager;
     }
 }

@@ -56,9 +56,9 @@ public class PacketScoreboardObjective extends ClientboundPacket {
     @Override
     public void handle(Connection connection) {
         switch (getAction()) {
-            case CREATE -> connection.getPlayer().getScoreboardManager().addObjective(new ScoreboardObjective(getName(), getValue()));
-            case UPDATE -> connection.getPlayer().getScoreboardManager().getObjective(getName()).setValue(getValue());
-            case REMOVE -> connection.getPlayer().getScoreboardManager().removeObjective(getName());
+            case CREATE -> connection.getScoreboardManager().addObjective(new ScoreboardObjective(getName(), getValue()));
+            case UPDATE -> connection.getScoreboardManager().getObjective(getName()).setValue(getValue());
+            case REMOVE -> connection.getScoreboardManager().removeObjective(getName());
         }
     }
 

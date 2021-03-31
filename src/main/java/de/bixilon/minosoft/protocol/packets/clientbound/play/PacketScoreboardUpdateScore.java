@@ -52,9 +52,9 @@ public class PacketScoreboardUpdateScore extends ClientboundPacket {
     @Override
     public void handle(Connection connection) {
         switch (getAction()) {
-            case CREATE_UPDATE -> connection.getPlayer().getScoreboardManager().getObjective(getScoreName()).addScore(new ScoreboardScore(getItemName(), getScoreName(), getScoreValue()));
+            case CREATE_UPDATE -> connection.getScoreboardManager().getObjective(getScoreName()).addScore(new ScoreboardScore(getItemName(), getScoreName(), getScoreValue()));
             case REMOVE -> {
-                ScoreboardObjective objective = connection.getPlayer().getScoreboardManager().getObjective(getScoreName());
+                ScoreboardObjective objective = connection.getScoreboardManager().getObjective(getScoreName());
                 if (objective != null) {
                     // thanks mojang
                     objective.removeScore(getItemName());

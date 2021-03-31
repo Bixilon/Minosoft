@@ -56,7 +56,7 @@ public class PacketEntityEquipment extends ClientboundPacket {
     public void handle(Connection connection) {
         connection.fireEvent(new EntityEquipmentChangeEvent(connection, this));
 
-        Entity entity = connection.getPlayer().getWorld().getEntity(getEntityId());
+        Entity entity = connection.getWorld().getEntity(getEntityId());
         if (entity == null) {
             // thanks mojang
             return;

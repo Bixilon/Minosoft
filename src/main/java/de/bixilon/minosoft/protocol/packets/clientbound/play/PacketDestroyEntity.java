@@ -43,7 +43,7 @@ public class PacketDestroyEntity extends ClientboundPacket {
         connection.fireEvent(new EntityDespawnEvent(connection, this));
 
         for (int entityId : getEntityIds()) {
-            connection.getPlayer().getWorld().removeEntity(entityId);
+            connection.getWorld().removeEntity(entityId);
         }
     }
 

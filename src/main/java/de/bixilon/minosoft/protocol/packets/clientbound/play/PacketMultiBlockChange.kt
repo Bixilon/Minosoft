@@ -79,7 +79,7 @@ class PacketMultiBlockChange() : ClientboundPacket() {
     }
 
     override fun handle(connection: Connection) {
-        val chunk = connection.player.world.getChunk(chunkPosition) ?: return // thanks mojang
+        val chunk = connection.world.getChunk(chunkPosition) ?: return // thanks mojang
         if (!chunk.isFullyLoaded) {
             return
         }

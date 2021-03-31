@@ -41,7 +41,7 @@ class PacketChunkData() : ClientboundPacket() {
     private var isFullChunk = false
 
     constructor(buffer: InByteBuffer) : this() {
-        val dimension = buffer.connection.player.world.dimension!!
+        val dimension = buffer.connection.world.dimension!!
         chunkPosition = Vec2i(buffer.readInt(), buffer.readInt())
         if (buffer.versionId < ProtocolVersions.V_20W45A) {
             isFullChunk = !buffer.readBoolean()
@@ -120,12 +120,12 @@ class PacketChunkData() : ClientboundPacket() {
         }
         chunkData?.let {
             connection.fireEvent(ChunkDataChangeEvent(connection, this))
-            val chunk = connection.player.world.getOrCreateChunk(chunkPosition)
+            val chunk = connection.world.getOrCreateChunk(chunkPosition)
             chunk.setData(chunkData!!)
-            connection.player.world.setBlockEntityData(blockEntities)
+            connection.world.setBlockEntityData(blockEntities)
             connection.renderer.renderWindow.worldRenderer.prepareChunk(chunkPosition, chunk)
         } ?: let {
-            connection.player.world.unloadChunk(chunkPosition)
+            connection.world.unloadChunk(chunkPosition)
             connection.renderer.renderWindow.worldRenderer.unloadChunk(chunkPosition)
         }
     }

@@ -17,13 +17,12 @@ import com.jfoenix.controls.JFXAlert;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXDialogLayout;
 import de.bixilon.minosoft.Minosoft;
-import de.bixilon.minosoft.data.Player;
 import de.bixilon.minosoft.data.locale.LocaleManager;
 import de.bixilon.minosoft.data.locale.Strings;
 import de.bixilon.minosoft.data.mappings.ResourceLocation;
 import de.bixilon.minosoft.data.mappings.versions.Version;
 import de.bixilon.minosoft.data.mappings.versions.Versions;
-import de.bixilon.minosoft.data.player.PingBars;
+import de.bixilon.minosoft.data.player.tab.PingBars;
 import de.bixilon.minosoft.data.text.ChatComponent;
 import de.bixilon.minosoft.modding.event.EventInvokerCallback;
 import de.bixilon.minosoft.modding.event.events.ConnectionStateChangeEvent;
@@ -292,7 +291,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
         }
         this.root.getStyleClass().add("list-cell-connecting");
         Minosoft.THREAD_POOL.execute(() -> {
-            Connection connection = new Connection(Connection.lastConnectionId++, this.server.getAddress(), new Player(Minosoft.getConfig().getConfig().getAccount().getEntries().get(Minosoft.getConfig().getConfig().getAccount().getSelected())));
+            Connection connection = new Connection(Connection.lastConnectionId++, this.server.getAddress(), Minosoft.getConfig().getConfig().getAccount().getEntries().get(Minosoft.getConfig().getConfig().getAccount().getSelected()));
             this.server.addConnection(connection);
             Platform.runLater(() -> {
                 this.optionsConnect.setDisable(true);

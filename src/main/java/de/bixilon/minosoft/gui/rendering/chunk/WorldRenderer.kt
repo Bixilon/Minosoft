@@ -345,7 +345,7 @@ class WorldRenderer(
 
     fun refreshChunkCache() {
         clearChunkCache()
-        prepareWorld(connection.player.world)
+        prepareWorld(connection.world)
     }
 
     fun recalculateVisibleChunks() {

@@ -41,7 +41,7 @@ class PacketBlockChange(buffer: InByteBuffer) : ClientboundPacket() {
     }
 
     override fun handle(connection: Connection) {
-        val chunk = connection.player.world.getChunk(blockPosition.chunkPosition) ?: return // thanks mojang
+        val chunk = connection.world.getChunk(blockPosition.chunkPosition) ?: return // thanks mojang
         if (!chunk.isFullyLoaded) {
             return
         }

@@ -19,7 +19,6 @@ import de.bixilon.minosoft.data.entities.EntityMetaDataFields;
 import de.bixilon.minosoft.data.entities.EntityRotation;
 import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction;
 import de.bixilon.minosoft.data.entities.entities.LivingEntity;
-import de.bixilon.minosoft.data.mappings.items.Item;
 import de.bixilon.minosoft.data.player.Hands;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.util.nbt.tag.CompoundTag;
@@ -29,9 +28,8 @@ import javax.annotation.Nullable;
 import java.util.HashSet;
 
 public class PlayerEntity extends LivingEntity {
-    private final String name;
+    private String name;
     private final HashSet<PlayerPropertyData> properties;
-    private Item currentItem;
     private Gamemodes gamemode;
 
     public PlayerEntity(Connection connection, Vec3 position, EntityRotation rotation) {
@@ -40,11 +38,10 @@ public class PlayerEntity extends LivingEntity {
         this.properties = null;
     }
 
-    public PlayerEntity(Connection connection, Vec3 position, EntityRotation rotation, String name, @Nullable HashSet<PlayerPropertyData> properties, Item currentItem, Gamemodes gamemode) {
+    public PlayerEntity(Connection connection, Vec3 position, EntityRotation rotation, String name, @Nullable HashSet<PlayerPropertyData> properties, Gamemodes gamemode) {
         super(connection, position, rotation);
         this.name = name;
         this.properties = properties;
-        this.currentItem = currentItem;
         this.gamemode = gamemode;
         this.hasCollisions = gamemode != Gamemodes.SPECTATOR;
     }
@@ -91,11 +88,6 @@ public class PlayerEntity extends LivingEntity {
         return this.properties;
     }
 
-    @Deprecated
-    public Item getCurrentItem() {
-        return this.currentItem;
-    }
-
     public Gamemodes getGamemode() {
         return this.gamemode;
     }
@@ -103,6 +95,10 @@ public class PlayerEntity extends LivingEntity {
     public void setGamemode(Gamemodes gamemode) {
         this.gamemode = gamemode;
         this.hasCollisions = gamemode == Gamemodes.SPECTATOR;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }
 

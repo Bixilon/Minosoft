@@ -43,9 +43,9 @@ public class PacketUpdateHealth extends ClientboundPacket {
     public void handle(Connection connection) {
         connection.fireEvent(new UpdateHealthEvent(connection, this));
 
-        connection.getPlayer().setFood(getFood());
-        connection.getPlayer().setHealth(getHealth());
-        connection.getPlayer().setSaturation(getSaturation());
+        connection.getPlayer().getHealthCondition().setFood(getFood());
+        connection.getPlayer().getHealthCondition().setHealth(getHealth());
+        connection.getPlayer().getHealthCondition().setSaturation(getSaturation());
         if (getHealth() <= 0.0F) {
             // do respawn
             connection.getSender().respawn();

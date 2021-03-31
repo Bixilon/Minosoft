@@ -30,7 +30,7 @@ class PacketChunkBulk() : ClientboundPacket() {
     val data: MutableMap<Vec2i, ChunkData?> = mutableMapOf()
 
     constructor(buffer: InByteBuffer) : this() {
-        val dimension = buffer.connection.player.world.dimension!!
+        val dimension = buffer.connection.world.dimension!!
         if (buffer.versionId < ProtocolVersions.V_14W26A) {
             val chunkCount = buffer.readUnsignedShort()
             val dataLength = buffer.readInt()
@@ -74,12 +74,12 @@ class PacketChunkBulk() : ClientboundPacket() {
 
             data?.let {
                 connection.fireEvent(ChunkDataChangeEvent(connection, chunkPosition, data))
-                val chunk = connection.player.world.getOrCreateChunk(chunkPosition)
+                val chunk = connection.world.getOrCreateChunk(chunkPosition)
                 chunk.setData(data)
                 connection.renderer.renderWindow.worldRenderer.prepareChunk(chunkPosition, chunk)
             } ?: let {
                 // unload chunk
-                connection.player.world.unloadChunk(chunkPosition)
+                connection.world.unloadChunk(chunkPosition)
                 connection.renderer.renderWindow.worldRenderer.unloadChunk(chunkPosition)
             }
         }

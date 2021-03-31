@@ -55,7 +55,7 @@ class PacketUpdateLight(buffer: InByteBuffer) : ClientboundPacket() {
             emptyBlockLightMask = BitSet.valueOf(buffer.readLongArray())
         }
 
-        lightAccessor = readLightPacket(buffer, skyLightMask, blockLightMask, emptyBlockLightMask, emptySkyLightMask, buffer.connection.player.world.dimension!!)
+        lightAccessor = readLightPacket(buffer, skyLightMask, blockLightMask, emptyBlockLightMask, emptySkyLightMask, buffer.connection.world.dimension!!)
     }
 
     override fun log() {
@@ -63,7 +63,7 @@ class PacketUpdateLight(buffer: InByteBuffer) : ClientboundPacket() {
     }
 
     override fun handle(connection: Connection) {
-        val chunk = connection.player.world.getOrCreateChunk(position)
+        val chunk = connection.world.getOrCreateChunk(position)
         if (chunk.lightAccessor != null && chunk.lightAccessor is ChunkLightAccessor && lightAccessor is ChunkLightAccessor) {
             (chunk.lightAccessor as ChunkLightAccessor).merge(lightAccessor)
         } else {

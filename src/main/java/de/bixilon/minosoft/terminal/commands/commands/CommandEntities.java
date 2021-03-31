@@ -32,7 +32,7 @@ public class CommandEntities extends Command {
                         new CommandLiteralNode("list", (connection, stack) -> {
                             ArrayList<Object[]> tableData = new ArrayList<>();
 
-                            for (var entry : connection.getPlayer().getWorld().getEntityIdMap().entrySet()) {
+                            for (var entry : connection.getWorld().getEntityIdMap().entrySet()) {
                                 tableData.add(new Object[]{entry.getKey(), entry.getValue().getUUID(), entry.getValue().getEntityInformation(), entry.getValue().getEquipment(), entry.getValue().getPosition(), entry.getValue().getRotation()});
                             }
 
@@ -41,7 +41,7 @@ public class CommandEntities extends Command {
                         new CommandLiteralNode("info", new CommandArgumentNode("entityId", IntegerParser.INTEGER_PARSER, new IntegerParserProperties(0, Integer.MAX_VALUE), (connection, stack) -> {
                             // ToDo: entity uuids
 
-                            Entity entity = connection.getPlayer().getWorld().getEntity(stack.getInt(0));
+                            Entity entity = connection.getWorld().getEntity(stack.getInt(0));
                             if (entity == null) {
                                 printError("Entity %d not found!", stack.getInt(0));
                                 return;

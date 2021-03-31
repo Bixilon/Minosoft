@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.status;
 
-import de.bixilon.minosoft.data.player.PingBars;
+import de.bixilon.minosoft.data.player.tab.PingBars;
 import de.bixilon.minosoft.modding.event.events.ServerListPongEvent;
 import de.bixilon.minosoft.modding.event.events.StatusPongEvent;
 import de.bixilon.minosoft.protocol.network.Connection;

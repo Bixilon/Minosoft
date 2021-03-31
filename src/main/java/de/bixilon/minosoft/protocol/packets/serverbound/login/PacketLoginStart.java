@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.serverbound.login;
 
-import de.bixilon.minosoft.data.Player;
+import de.bixilon.minosoft.data.player.Player;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
@@ -21,10 +21,10 @@ import de.bixilon.minosoft.protocol.protocol.PacketTypes;
 import de.bixilon.minosoft.util.logging.Log;
 
 public class PacketLoginStart implements ServerboundPacket {
-private final String username;
+    private final String username;
 
-    public PacketLoginStart(Player p) {
-        this.username = p.getPlayerName();
+    public PacketLoginStart(Player player) {
+        this.username = player.getEntity().getName();
     }
 
     public PacketLoginStart(String username) {

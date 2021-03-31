@@ -56,7 +56,7 @@ public class PacketOpenWindow extends ClientboundPacket {
 
     @Override
     public void handle(Connection connection) {
-        connection.getPlayer().createInventory(getInventoryProperties());
+        // ToDo: connection.getPlayer().createInventory(getInventoryProperties());
     }
 
     @Override

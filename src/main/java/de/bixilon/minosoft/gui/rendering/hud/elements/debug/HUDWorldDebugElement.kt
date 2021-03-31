@@ -55,30 +55,30 @@ class HUDWorldDebugElement(hudRenderer: HUDRenderer) : DebugScreen(hudRenderer) 
         }
 
         fpsText.sText = "FPS: ${getFPS()}"
-        chunksText.sText = "Chunks: q=${hudRenderer.renderWindow.worldRenderer.queuedChunks.size} v=${hudRenderer.renderWindow.worldRenderer.visibleChunks.size} p=${hudRenderer.renderWindow.worldRenderer.allChunkSections.size} t=${hudRenderer.connection.player.world.chunks.size}"
+        chunksText.sText = "Chunks: q=${hudRenderer.renderWindow.worldRenderer.queuedChunks.size} v=${hudRenderer.renderWindow.worldRenderer.visibleChunks.size} p=${hudRenderer.renderWindow.worldRenderer.allChunkSections.size} t=${hudRenderer.connection.world.chunks.size}"
         timingsText.sText = "Timings: avg ${getAvgFrameTime()}ms, min ${getMinFrameTime()}ms, max ${getMaxFrameTime()}ms"
         openGLText.sText = "GL: m=${UnitFormatter.formatNumber(hudRenderer.renderWindow.worldRenderer.meshes)} t=${UnitFormatter.formatNumber(hudRenderer.renderWindow.worldRenderer.triangles)}"
 
 
         // ToDo: Prepare on change
-        gamemodeText.sText = "Gamemode: ${hudRenderer.connection.player.gamemode?.name?.toLowerCase()}"
+        gamemodeText.sText = "Gamemode: ${hudRenderer.connection.player.entity.gamemode?.name?.toLowerCase()}"
         positionText.sText = "XYZ ${getPosition()}"
         blockPositionText.sText = "Block ${getBlockPosition()}"
         chunkPositionText.sText = "Chunk ${getChunkLocation()}"
         facingText.sText = "Facing: ${getFacing()}"
 
         biomeText.sText = "Biome: ${camera.currentBiome}"
-        dimensionText.sText = "Dimension: ${hudRenderer.connection.player.world.dimension}"
+        dimensionText.sText = "Dimension: ${hudRenderer.connection.world.dimension}"
 
-        difficultyText.sText = "Difficulty: ${hudRenderer.connection.player.world.difficulty?.name?.toLowerCase()}, ${
-            if (hudRenderer.connection.player.world.difficultyLocked) {
+        difficultyText.sText = "Difficulty: ${hudRenderer.connection.world.difficulty?.name?.toLowerCase()}, ${
+            if (hudRenderer.connection.world.difficultyLocked) {
                 "locked"
             } else {
                 "unlocked"
             }
         }"
 
-        lightText.sText = "Client light: ${hudRenderer.connection.player.world.worldLightAccessor.getLightLevel(camera.blockPosition)} (sky=${hudRenderer.connection.player.world.worldLightAccessor.getSkyLight(camera.blockPosition)}, block=${hudRenderer.connection.player.world.worldLightAccessor.getBlockLight(camera.blockPosition)})"
+        lightText.sText = "Client light: ${hudRenderer.connection.world.worldLightAccessor.getLightLevel(camera.blockPosition)} (sky=${hudRenderer.connection.world.worldLightAccessor.getSkyLight(camera.blockPosition)}, block=${hudRenderer.connection.world.worldLightAccessor.getBlockLight(camera.blockPosition)})"
 
 
         lastPrepareTime = System.currentTimeMillis()
@@ -108,7 +108,7 @@ class HUDWorldDebugElement(hudRenderer: HUDRenderer) : DebugScreen(hudRenderer) 
 
     private fun getPosition(): String {
         return "${formatCoordinate(camera.cameraPosition.x)} / ${formatCoordinate(camera.cameraPosition.y)} / ${formatCoordinate(camera.cameraPosition.z)}"
-        return "${formatCoordinate(camera.playerEntity?.position?.x!!)} / ${formatCoordinate(camera.playerEntity?.position?.y!!)} / ${formatCoordinate(camera.playerEntity?.position?.z!!)}"
+        return "${formatCoordinate(camera.playerEntity.position?.x!!)} / ${formatCoordinate(camera.playerEntity.position?.y!!)} / ${formatCoordinate(camera.playerEntity.position?.z!!)}"
     }
 
     private fun getBlockPosition(): String {
@@ -120,8 +120,8 @@ class HUDWorldDebugElement(hudRenderer: HUDRenderer) : DebugScreen(hudRenderer) 
     }
 
     private fun getFacing(): String {
-        val yaw = hudRenderer.renderWindow.camera.playerEntity?.rotation?.yaw!!
-        val pitch = hudRenderer.renderWindow.camera.playerEntity?.rotation?.pitch!!
+        val yaw = hudRenderer.renderWindow.camera.playerEntity.rotation?.yaw!!
+        val pitch = hudRenderer.renderWindow.camera.playerEntity.rotation?.pitch!!
         val direction = Directions.byDirection(camera.cameraFront)
         return "${Directions.byDirection(camera.cameraFront).name.toLowerCase()} ${direction.directionVector} (${formatRotation(yaw.toDouble())} / ${formatRotation(pitch.toDouble())})"
     }

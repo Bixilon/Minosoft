@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2021 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -10,20 +10,11 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.modding.event.events
 
-import de.bixilon.minosoft.data.entities.entities.Entity
-import de.bixilon.minosoft.protocol.network.Connection
-import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketEntityMetadata
+package de.bixilon.minosoft.data.player
 
-class EntityMetaDataChangeEvent : ConnectionEvent {
-    val entity: Entity
-
-    constructor(connection: Connection?, entity: Entity) : super(connection) {
-        this.entity = entity
-    }
-
-    constructor(connection: Connection, pkg: PacketEntityMetadata) : super(connection) {
-        entity = connection.world.getEntity(pkg.entityId)!!
-    }
+class PlayerHealthCondition {
+    var health = 0.0f
+    var food = 0
+    var saturation = 0.0f
 }

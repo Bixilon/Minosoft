@@ -36,7 +36,7 @@ public class PacketWindowItems extends ClientboundPacket {
     public void handle(Connection connection) {
         connection.fireEvent(new MultiSlotChangeEvent(connection, this));
 
-        connection.getPlayer().setInventory(getWindowId(), getData());
+    // ToDo:    connection.getPlayer().getInventoryManager().getInventories().put(getWindowId(), getData());
     }
 
     @Override

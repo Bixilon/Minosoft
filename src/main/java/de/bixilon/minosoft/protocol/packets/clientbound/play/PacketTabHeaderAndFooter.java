@@ -35,8 +35,8 @@ public class PacketTabHeaderAndFooter extends ClientboundPacket {
             return;
         }
 
-        connection.getPlayer().setTabHeader(getHeader());
-        connection.getPlayer().setTabFooter(getFooter());
+        connection.getTabList().setHeader(getHeader());
+        connection.getTabList().setFooter(getFooter());
     }
 
     @Override

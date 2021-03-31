@@ -40,7 +40,8 @@ public class PacketSetSlot extends ClientboundPacket {
             // ToDo: what is windowId -1
             return;
         }
-        connection.getPlayer().setSlot(getWindowId(), getSlotId(), getSlot());
+        // ToDo
+        //  connection.getPlayer().setSlot(getWindowId(), getSlotId(), getSlot());
     }
 
     @Override

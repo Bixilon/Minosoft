@@ -52,7 +52,7 @@ class Camera(
     var cameraPosition = Vec3(0.0f, 0.0f, 0.0f)
     private var lastMouseX = 0.0
     private var lastMouseY = 0.0
-    lateinit var playerEntity: PlayerEntity
+    val playerEntity: PlayerEntity = connection.player.entity
     var yaw = 0.0
     var pitch = 0.0
     private var zoom = 0.0f
@@ -96,7 +96,7 @@ class Camera(
         lastMouseY = yPos
         xOffset *= mouseSensitivity
         yOffset *= mouseSensitivity
-        var yaw =   xOffset.toFloat() + (playerEntity.rotation?.headYaw ?: 0f)
+        var yaw = xOffset.toFloat() + (playerEntity.rotation?.headYaw ?: 0f)
         var pitch = yOffset.toFloat() + (playerEntity.rotation?.pitch ?: 0f)
 
         // make sure that when pitch is out of bounds, screen doesn't get flipped
@@ -204,21 +204,18 @@ class Camera(
     }
 
     private fun positionChangeCallback() {
-        if (! this::playerEntity.isInitialized) {
-            return
-        }
         blockPosition = (cameraPosition - Vec3(0, PLAYER_HEIGHT, 0)).blockPosition
-        currentBiome = connection.player.world.getBiome(blockPosition)
+        currentBiome = connection.world.getBiome(blockPosition)
         chunkPosition = blockPosition.chunkPosition
         sectionHeight = blockPosition.sectionHeight
         inChunkSectionPosition = blockPosition.inChunkSectionPosition
         // recalculate sky color for current biome
-        renderWindow.setSkyColor(connection.player.world.getBiome(blockPosition)?.skyColor ?: RenderConstants.DEFAULT_SKY_COLOR)
+        renderWindow.setSkyColor(connection.world.getBiome(blockPosition)?.skyColor ?: RenderConstants.DEFAULT_SKY_COLOR)
 
         frustum.recalculate()
         renderWindow.worldRenderer.recalculateVisibleChunks()
 
-        connection.player.world.dimension?.hasSkyLight?.let {
+        connection.world.dimension?.hasSkyLight?.let {
             if (it) {
                 renderWindow.setSkyColor(currentBiome?.skyColor ?: RenderConstants.DEFAULT_SKY_COLOR)
             } else {
@@ -232,11 +229,7 @@ class Camera(
     }
 
     private fun calculateViewMatrix(): Mat4 {
-        cameraPosition = if (this::playerEntity.isInitialized) {
-            playerEntity.position + Vec3(0, PLAYER_HEIGHT, 0)
-        } else {
-            VecUtil.EMPTY_VEC3
-        }
+        cameraPosition = playerEntity.position + Vec3(0, PLAYER_HEIGHT, 0)
         return glm.lookAt(cameraPosition, cameraPosition + cameraFront, CAMERA_UP_VEC3)
     }
 

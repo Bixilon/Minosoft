@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2021 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,32 +11,17 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.player;
+package de.bixilon.minosoft.data.player
 
-public enum PingBars {
-    NO_CONNECTION,
-    BARS_5,
-    BARS_4,
-    BARS_3,
-    BARS_2,
-    BARS_1;
+import de.bixilon.minosoft.data.inventory.Inventory
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
-    public static PingBars byPing(long ping) {
-        if (ping < 0) {
-            return NO_CONNECTION;
-        }
-        if (ping < 150) {
-            return BARS_5;
-        }
-        if (ping < 300) {
-            return BARS_4;
-        }
-        if (ping < 600) {
-            return BARS_3;
-        }
-        if (ping < 1000) {
-            return BARS_2;
-        }
-        return BARS_1;
+class PlayerInventoryManager {
+    val inventories: MutableMap<Int, Inventory> = mutableMapOf()
+    var selectedHotbarSlot: Int = 0
+
+    init {
+        // create our own inventory without any properties
+        inventories[ProtocolDefinition.PLAYER_INVENTORY_ID] = Inventory(null)
     }
 }

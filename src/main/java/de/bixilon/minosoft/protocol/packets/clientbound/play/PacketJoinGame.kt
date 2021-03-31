@@ -16,13 +16,10 @@ import com.google.common.collect.HashBiMap
 import de.bixilon.minosoft.data.Difficulties
 import de.bixilon.minosoft.data.Gamemodes
 import de.bixilon.minosoft.data.LevelTypes
-import de.bixilon.minosoft.data.entities.EntityRotation
-import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.data.mappings.Dimension
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.world.biome.accessor.BlockBiomeAccessor
 import de.bixilon.minosoft.data.world.biome.accessor.NoiseBiomeAccessor
-import de.bixilon.minosoft.gui.rendering.util.VecUtil
 import de.bixilon.minosoft.modding.event.events.JoinGameEvent
 import de.bixilon.minosoft.protocol.ErrorHandler
 import de.bixilon.minosoft.protocol.network.Connection
@@ -39,17 +36,26 @@ import kotlin.experimental.and
 
 class PacketJoinGame(buffer: InByteBuffer) : ClientboundPacket() {
     val entityId: Int
-    var isHardcore: Boolean = false
-    var gamemode: Gamemodes = Gamemodes.SPECTATOR
-    var dimension: Dimension? = null
+    val isHardcore: Boolean
+    val gamemode: Gamemodes
+    lateinit var dimension: Dimension
+        private set
     var difficulty: Difficulties = Difficulties.NORMAL
-    var viewDistance = -1
+        private set
+    var viewDistance = 0
+        private set
     var maxPlayers = 0
-    var levelType: LevelTypes = LevelTypes.DEFAULT
+        private set
+    var levelType: LevelTypes = LevelTypes.UNKNOWN
+        private set
     var isReducedDebugScreen = false
+        private set
     var isEnableRespawnScreen = true
+        private set
     var hashedSeed: Long = 0L
+        private set
     var dimensions: HashBiMap<ResourceLocation, Dimension> = HashBiMap.create()
+        private set
 
     init {
         entityId = buffer.readInt()
@@ -95,7 +101,7 @@ class PacketJoinGame(buffer: InByteBuffer) : ClientboundPacket() {
         }
 
         if (buffer.versionId >= ProtocolVersions.V_20W22A) {
-            dimension = buffer.connection.mapping.dimensionRegistry.get(buffer.readResourceLocation())
+            dimension = buffer.connection.mapping.dimensionRegistry.get(buffer.readResourceLocation())!!
         }
         if (buffer.versionId >= ProtocolVersions.V_19W36A) {
             hashedSeed = buffer.readLong()
@@ -130,19 +136,19 @@ class PacketJoinGame(buffer: InByteBuffer) : ClientboundPacket() {
         if (connection.fireEvent(JoinGameEvent(connection, this))) {
             return
         }
-        connection.player.gamemode = gamemode
-        connection.player.world.isHardcore = isHardcore
+        val playerEntity = connection.player.entity
+        playerEntity.gamemode = gamemode
+
+        connection.world.isHardcore = isHardcore
         connection.mapping.dimensionRegistry.setData(dimensions)
-        connection.player.world.dimension = dimension
-        val entity = PlayerEntity(connection, VecUtil.EMPTY_VEC3, EntityRotation(0.0, 0.0), connection.player.playerName, null, null, gamemode)
-        connection.player.entity = entity
-        connection.renderer.renderWindow.camera.playerEntity = entity
-        connection.player.world.addEntity(entityId, connection.player.playerUUID, entity)
-        connection.player.world.hashedSeed = hashedSeed
-        connection.player.world.biomeAccessor = if (connection.version.versionId < ProtocolVersions.V_19W36A) {
-            BlockBiomeAccessor(connection.player.world)
+        connection.world.dimension = dimension
+
+        connection.world.addEntity(entityId, connection.player.playerUUID, playerEntity)
+        connection.world.hashedSeed = hashedSeed
+        connection.world.biomeAccessor = if (connection.version.versionId < ProtocolVersions.V_19W36A) {
+            BlockBiomeAccessor(connection.world)
         } else {
-            NoiseBiomeAccessor(connection.player.world)
+            NoiseBiomeAccessor(connection.world)
         }
         connection.sender.sendChatMessage("I am alive! ~ Minosoft")
     }
@@ -176,7 +182,7 @@ class PacketJoinGame(buffer: InByteBuffer) : ClientboundPacket() {
     }
 
     override fun log() {
-        Log.protocol(String.format("[IN] Receiving join game packet (entityId=%s, gamemode=%s, dimension=%s, difficulty=%s, hardcore=%s, viewDistance=%d)", entityId, gamemode, dimension, difficulty, isHardcore, viewDistance))
+        Log.protocol("[IN] Receiving join game packet (entityId=$entityId, gamemode=$gamemode, dimension=$dimensions, difficulty=$difficulty, hardcore=$isHardcore, viewDistance=$viewDistance)")
     }
 
     companion object : ErrorHandler {

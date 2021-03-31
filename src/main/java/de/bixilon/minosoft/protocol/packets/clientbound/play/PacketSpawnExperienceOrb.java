@@ -43,7 +43,7 @@ public class PacketSpawnExperienceOrb extends ClientboundPacket {
     public void handle(Connection connection) {
         connection.fireEvent(new EntitySpawnEvent(connection, this));
 
-        connection.getPlayer().getWorld().addEntity(this.entityId, null, getEntity());
+        connection.getWorld().addEntity(this.entityId, null, getEntity());
     }
 
     @Override

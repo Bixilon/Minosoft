@@ -18,7 +18,6 @@ import de.bixilon.minosoft.data.PlayerPropertyData;
 import de.bixilon.minosoft.data.entities.EntityRotation;
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity;
 import de.bixilon.minosoft.data.entities.meta.EntityMetaData;
-import de.bixilon.minosoft.data.mappings.items.Item;
 import de.bixilon.minosoft.modding.event.events.EntitySpawnEvent;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
@@ -60,15 +59,14 @@ public class PacketSpawnPlayer extends ClientboundPacket {
         short yaw = buffer.readAngle();
         short pitch = buffer.readAngle();
 
-        Item currentItem = null;
         if (buffer.getVersionId() < V_15W31A) {
-            currentItem = buffer.getConnection().getMapping().getItemRegistry().get(buffer.readUnsignedShort());
+            buffer.getConnection().getMapping().getItemRegistry().get(buffer.readUnsignedShort()); // current item
         }
         EntityMetaData metaData = null;
         if (buffer.getVersionId() < V_19W34A) {
             metaData = buffer.readMetaData();
         }
-        this.entity = new PlayerEntity(buffer.getConnection(), position, new EntityRotation(yaw, pitch, 0), name, properties, currentItem, Gamemodes.CREATIVE); // ToDo
+        this.entity = new PlayerEntity(buffer.getConnection(), position, new EntityRotation(yaw, pitch, 0), name, properties, Gamemodes.CREATIVE); // ToDo
         if (metaData != null) {
             this.entity.setMetaData(metaData);
         }
@@ -78,7 +76,7 @@ public class PacketSpawnPlayer extends ClientboundPacket {
     public void handle(Connection connection) {
         connection.fireEvent(new EntitySpawnEvent(connection, this));
 
-        connection.getPlayer().getWorld().addEntity(this.entityId, this.entityUUID, this.entity);
+        connection.getWorld().addEntity(this.entityId, this.entityUUID, this.entity);
     }
 
     @Override
