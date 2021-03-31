@@ -20,12 +20,10 @@ import de.bixilon.minosoft.data.entities.entities.npc.villager.data.VillagerData
 import de.bixilon.minosoft.protocol.network.Connection;
 import glm_.vec3.Vec3;
 
-import java.util.UUID;
-
 public class ZombieVillager extends Zombie {
 
-    public ZombieVillager(Connection connection, int entityId, UUID uuid, Vec3 position, EntityRotation rotation) {
-        super(connection, entityId, uuid, position, rotation);
+    public ZombieVillager(Connection connection, Vec3 position, EntityRotation rotation) {
+        super(connection, position, rotation);
     }
 
     @EntityMetaDataFunction(name = "Is converting")

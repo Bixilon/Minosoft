@@ -17,9 +17,8 @@ import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.protocol.network.Connection
 import glm_.vec3.Vec3
-import java.util.*
 
-class ThrownEnderPearl(connection: Connection?, entityId: Int, uuid: UUID?, location: Vec3?, rotation: EntityRotation?) : ThrowableItemProjectile(connection, entityId, uuid, location, rotation) {
+class ThrownEnderPearl(connection: Connection, location: Vec3, rotation: EntityRotation) : ThrowableItemProjectile(connection, location, rotation) {
 
     override fun getDefaultItem(): ItemStack {
         return ItemStack(connection.mapping.itemRegistry.get(DEFAULT_ITEM)!!, connection.version)

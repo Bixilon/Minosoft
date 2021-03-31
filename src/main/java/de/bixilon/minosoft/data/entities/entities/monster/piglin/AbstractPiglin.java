@@ -20,12 +20,10 @@ import de.bixilon.minosoft.data.entities.entities.monster.Monster;
 import de.bixilon.minosoft.protocol.network.Connection;
 import glm_.vec3.Vec3;
 
-import java.util.UUID;
-
 public abstract class AbstractPiglin extends Monster {
 
-    public AbstractPiglin(Connection connection, int entityId, UUID uuid, Vec3 position, EntityRotation rotation) {
-        super(connection, entityId, uuid, position, rotation);
+    public AbstractPiglin(Connection connection, Vec3 position, EntityRotation rotation) {
+        super(connection, position, rotation);
     }
 
     @EntityMetaDataFunction(name = "Is immune to zombification")

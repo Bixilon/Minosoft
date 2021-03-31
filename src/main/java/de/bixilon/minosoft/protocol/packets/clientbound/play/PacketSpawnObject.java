@@ -31,14 +31,15 @@ import java.util.UUID;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
 
 public class PacketSpawnObject extends ClientboundPacket {
+    private final int entityId;
+    private UUID entityUUID;
     private final Entity entity;
     private Velocity velocity;
 
     public PacketSpawnObject(InByteBuffer buffer) throws Exception {
-        int entityId = buffer.readEntityId();
-        UUID uuid = null;
+        this.entityId = buffer.readEntityId();
         if (buffer.getVersionId() >= V_15W31A) {
-            uuid = buffer.readUUID();
+            this.entityUUID = buffer.readUUID();
         }
 
         int type;
@@ -79,20 +80,20 @@ public class PacketSpawnObject extends ClientboundPacket {
             throw new UnknownEntityException(String.format("Unknown entity (typeId=%d)", type));
         }
 
-        this.entity = typeClass.getConstructor(Connection.class, int.class, UUID.class, Vec3.class, EntityRotation.class).newInstance(buffer.getConnection(), entityId, uuid, position, rotation);
+        this.entity = typeClass.getConstructor(Connection.class, Vec3.class, EntityRotation.class).newInstance(buffer.getConnection(), position, rotation);
     }
 
     @Override
     public void handle(Connection connection) {
         connection.fireEvent(new EntitySpawnEvent(connection, this));
 
-        connection.getPlayer().getWorld().addEntity(getEntity());
+        connection.getPlayer().getWorld().addEntity(this.entityId, this.entityUUID, getEntity());
         connection.getVelocityHandler().handleVelocity(getEntity(), getVelocity());
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Object spawned at %s (entityId=%d, type=%s)", this.entity.getPosition().toString(), this.entity.getEntityId(), this.entity));
+        Log.protocol(String.format("[IN] Object spawned at %s (entityId=%d, type=%s)", this.entity.getPosition().toString(), this.entityId, this.entity));
     }
 
     public Entity getEntity() {

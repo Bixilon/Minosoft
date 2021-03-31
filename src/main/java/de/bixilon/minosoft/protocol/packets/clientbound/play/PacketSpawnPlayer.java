@@ -32,23 +32,24 @@ import java.util.UUID;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
 
 public class PacketSpawnPlayer extends ClientboundPacket {
+    private final int entityId;
+    private final UUID entityUUID;
     private final PlayerEntity entity;
 
     public PacketSpawnPlayer(InByteBuffer buffer) {
-        int entityId = buffer.readVarInt();
+        this.entityId = buffer.readVarInt();
         String name = null;
-        UUID uuid;
         HashSet<PlayerPropertyData> properties = null;
         if (buffer.getVersionId() < V_14W21A) {
             name = buffer.readString();
-            uuid = UUID.fromString(buffer.readString());
+            this.entityUUID = UUID.fromString(buffer.readString());
             properties = new HashSet<>();
             int length = buffer.readVarInt();
             for (int i = 0; i < length; i++) {
                 properties.add(new PlayerPropertyData(buffer.readString(), buffer.readString(), buffer.readString()));
             }
         } else {
-            uuid = buffer.readUUID();
+            this.entityUUID = buffer.readUUID();
         }
         Vec3 position;
         if (buffer.getVersionId() < V_16W06A) {
@@ -67,7 +68,7 @@ public class PacketSpawnPlayer extends ClientboundPacket {
         if (buffer.getVersionId() < V_19W34A) {
             metaData = buffer.readMetaData();
         }
-        this.entity = new PlayerEntity(buffer.getConnection(), entityId, uuid, position, new EntityRotation(yaw, pitch, 0), name, properties, currentItem, Gamemodes.CREATIVE); // ToDo
+        this.entity = new PlayerEntity(buffer.getConnection(), position, new EntityRotation(yaw, pitch, 0), name, properties, currentItem, Gamemodes.CREATIVE); // ToDo
         if (metaData != null) {
             this.entity.setMetaData(metaData);
         }
@@ -77,12 +78,12 @@ public class PacketSpawnPlayer extends ClientboundPacket {
     public void handle(Connection connection) {
         connection.fireEvent(new EntitySpawnEvent(connection, this));
 
-        connection.getPlayer().getWorld().addEntity(getEntity());
+        connection.getPlayer().getWorld().addEntity(this.entityId, this.entityUUID, this.entity);
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Player spawned at %s (entityId=%d, name=%s, uuid=%s)", this.entity.getPosition(), this.entity.getEntityId(), this.entity.getName(), this.entity.getUUID()));
+        Log.protocol(String.format("[IN] Player spawned at %s (entityId=%d, name=%s, uuid=%s)", this.entity.getPosition(), this.entityId, this.entity.getName(), this.entity.getUUID()));
     }
 
     public PlayerEntity getEntity() {

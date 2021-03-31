@@ -17,11 +17,9 @@ import de.bixilon.minosoft.data.entities.EntityRotation;
 import de.bixilon.minosoft.protocol.network.Connection;
 import glm_.vec3.Vec3;
 
-import java.util.UUID;
-
 public abstract class AbstractSkeleton extends Monster {
 
-    public AbstractSkeleton(Connection connection, int entityId, UUID uuid, Vec3 position, EntityRotation rotation) {
-        super(connection, entityId, uuid, position, rotation);
+    public AbstractSkeleton(Connection connection, Vec3 position, EntityRotation rotation) {
+        super(connection, position, rotation);
     }
 }

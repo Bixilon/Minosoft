@@ -21,12 +21,10 @@ import de.bixilon.minosoft.data.text.RGBColor;
 import de.bixilon.minosoft.protocol.network.Connection;
 import glm_.vec3.Vec3;
 
-import java.util.UUID;
-
 public class Sheep extends Animal {
 
-    public Sheep(Connection connection, int entityId, UUID uuid, Vec3 position, EntityRotation rotation) {
-        super(connection, entityId, uuid, position, rotation);
+    public Sheep(Connection connection, Vec3 position, EntityRotation rotation) {
+        super(connection, position, rotation);
     }
 
     @EntityMetaDataFunction(name = "Color")

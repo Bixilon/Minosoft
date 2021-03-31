@@ -43,8 +43,6 @@ public abstract class Entity {
     );
     protected final Connection connection;
     protected final EntityInformation information;
-    protected final int entityId;
-    protected final UUID uuid;
     protected final HashMap<Integer, ItemStack> equipment = new HashMap<>();
     protected final HashSet<StatusEffectInstance> effectList = new HashSet<>();
     protected final int versionId;
@@ -54,18 +52,17 @@ public abstract class Entity {
     protected EntityMetaData metaData;
     protected boolean hasCollisions = true;
 
-    public Entity(Connection connection, int entityId, UUID uuid, Vec3 position, EntityRotation rotation) {
+    public Entity(Connection connection, Vec3 position, EntityRotation rotation) {
         this.connection = connection;
         this.information = connection.getMapping().getEntityInformation(getClass());
-        this.entityId = entityId;
-        this.uuid = uuid;
         this.versionId = connection.getVersion().getVersionId();
         this.position = position;
         this.rotation = rotation;
     }
 
+    @Deprecated
     public int getEntityId() {
-        return this.entityId;
+        return this.connection.getPlayer().getWorld().getEntityIdMap().inverse().get(this);
     }
 
     public Vec3 getPosition() {
@@ -93,7 +90,7 @@ public abstract class Entity {
     }
 
     public UUID getUUID() {
-        return this.uuid;
+        return this.connection.getPlayer().getWorld().getEntityUUIDMap().inverse().get(this);
     }
 
     public HashSet<StatusEffectInstance> getEffectList() {

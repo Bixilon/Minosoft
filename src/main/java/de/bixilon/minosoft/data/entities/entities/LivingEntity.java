@@ -21,12 +21,11 @@ import glm_.vec3.Vec3;
 import glm_.vec3.Vec3i;
 
 import javax.annotation.Nullable;
-import java.util.UUID;
 
 public abstract class LivingEntity extends Entity {
 
-    public LivingEntity(Connection connection, int entityId, UUID uuid, Vec3 position, EntityRotation rotation) {
-        super(connection, entityId, uuid, position, rotation);
+    public LivingEntity(Connection connection, Vec3 position, EntityRotation rotation) {
+        super(connection, position, rotation);
     }
 
     private boolean getLivingEntityFlag(int bitMask) {

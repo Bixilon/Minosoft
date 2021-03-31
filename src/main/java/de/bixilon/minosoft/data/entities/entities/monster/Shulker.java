@@ -25,12 +25,11 @@ import glm_.vec3.Vec3;
 import glm_.vec3.Vec3i;
 
 import javax.annotation.Nullable;
-import java.util.UUID;
 
 public class Shulker extends AbstractGolem {
 
-    public Shulker(Connection connection, int entityId, UUID uuid, Vec3 position, EntityRotation rotation) {
-        super(connection, entityId, uuid, position, rotation);
+    public Shulker(Connection connection, Vec3 position, EntityRotation rotation) {
+        super(connection, position, rotation);
     }
 
     @EntityMetaDataFunction(name = "Attachment face")

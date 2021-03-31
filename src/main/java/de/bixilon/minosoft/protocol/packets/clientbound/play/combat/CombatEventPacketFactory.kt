@@ -20,7 +20,6 @@ import de.bixilon.minosoft.util.enum.ValuesEnum
 
 object CombatEventPacketFactory {
 
-
     fun createPacket(buffer: InByteBuffer): ClientboundPacket {
         return when (CombatEvents.VALUES[buffer.readVarInt()]) {
             CombatEvents.ENTER_COMBAT -> EnterCombatEventPacket(buffer)

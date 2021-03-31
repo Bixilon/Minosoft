@@ -23,8 +23,8 @@ import javax.annotation.Nullable;
 import java.util.UUID;
 
 public abstract class TamableAnimal extends Animal {
-    public TamableAnimal(Connection connection, int entityId, UUID uuid, Vec3 position, EntityRotation rotation) {
-        super(connection, entityId, uuid, position, rotation);
+    public TamableAnimal(Connection connection, Vec3 position, EntityRotation rotation) {
+        super(connection, position, rotation);
     }
 
     private boolean getTameableFlag(int bitMask) {

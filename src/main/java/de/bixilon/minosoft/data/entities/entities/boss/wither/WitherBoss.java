@@ -20,12 +20,10 @@ import de.bixilon.minosoft.data.entities.entities.monster.Monster;
 import de.bixilon.minosoft.protocol.network.Connection;
 import glm_.vec3.Vec3;
 
-import java.util.UUID;
-
 public class WitherBoss extends Monster {
 
-    public WitherBoss(Connection connection, int entityId, UUID uuid, Vec3 position, EntityRotation rotation) {
-        super(connection, entityId, uuid, position, rotation);
+    public WitherBoss(Connection connection, Vec3 position, EntityRotation rotation) {
+        super(connection, position, rotation);
     }
 
     @EntityMetaDataFunction(name = "Center head target entity id")

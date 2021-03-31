@@ -24,10 +24,11 @@ import glm_.vec3.Vec3;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_16W06A;
 
 public class PacketSpawnExperienceOrb extends ClientboundPacket {
+    private final int entityId;
     private final ExperienceOrb entity;
 
     public PacketSpawnExperienceOrb(InByteBuffer buffer) {
-        int entityId = buffer.readEntityId();
+        this.entityId = buffer.readEntityId();
         Vec3 position;
         if (buffer.getVersionId() < V_16W06A) {
             position = new Vec3(buffer.readFixedPointNumberInt(), buffer.readFixedPointNumberInt(), buffer.readFixedPointNumberInt());
@@ -35,19 +36,19 @@ public class PacketSpawnExperienceOrb extends ClientboundPacket {
             position = buffer.readLocation();
         }
         int count = buffer.readUnsignedShort();
-        this.entity = new ExperienceOrb(buffer.getConnection(), entityId, position, count);
+        this.entity = new ExperienceOrb(buffer.getConnection(), position, count);
     }
 
     @Override
     public void handle(Connection connection) {
         connection.fireEvent(new EntitySpawnEvent(connection, this));
 
-        connection.getPlayer().getWorld().addEntity(getEntity());
+        connection.getPlayer().getWorld().addEntity(this.entityId, null, getEntity());
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Experience orb spawned at %s(entityId=%d, count=%d)", this.entity.getPosition().toString(), this.entity.getEntityId(), this.entity.getCount()));
+        Log.protocol(String.format("[IN] Experience orb spawned at %s(entityId=%d, count=%d)", this.entity.getPosition().toString(), this.entityId, this.entity.getCount()));
     }
 
     public ExperienceOrb getEntity() {

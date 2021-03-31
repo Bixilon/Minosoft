@@ -21,12 +21,10 @@ import de.bixilon.minosoft.protocol.network.Connection;
 import glm_.vec3.Vec3;
 import org.checkerframework.common.value.qual.IntRange;
 
-import java.util.UUID;
-
 public class Slime extends Mob {
 
-    public Slime(Connection connection, int entityId, UUID uuid, Vec3 position, EntityRotation rotation) {
-        super(connection, entityId, uuid, position, rotation);
+    public Slime(Connection connection, Vec3 position, EntityRotation rotation) {
+        super(connection, position, rotation);
     }
 
     @IntRange(from = 0)

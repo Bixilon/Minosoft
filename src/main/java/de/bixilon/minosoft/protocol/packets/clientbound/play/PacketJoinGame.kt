@@ -134,10 +134,10 @@ class PacketJoinGame(buffer: InByteBuffer) : ClientboundPacket() {
         connection.player.world.isHardcore = isHardcore
         connection.mapping.dimensionRegistry.setData(dimensions)
         connection.player.world.dimension = dimension
-        val entity = PlayerEntity(connection, entityId, connection.player.playerUUID, VecUtil.EMPTY_VEC3, EntityRotation(0.0, 0.0), connection.player.playerName, null, null, gamemode)
+        val entity = PlayerEntity(connection, VecUtil.EMPTY_VEC3, EntityRotation(0.0, 0.0), connection.player.playerName, null, null, gamemode)
         connection.player.entity = entity
         connection.renderer.renderWindow.camera.playerEntity = entity
-        connection.player.world.addEntity(entity)
+        connection.player.world.addEntity(entityId, connection.player.playerUUID, entity)
         connection.player.world.hashedSeed = hashedSeed
         connection.player.world.biomeAccessor = if (connection.version.versionId < ProtocolVersions.V_19W36A) {
             BlockBiomeAccessor(connection.player.world)

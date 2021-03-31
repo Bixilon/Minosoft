@@ -21,12 +21,11 @@ import de.bixilon.minosoft.protocol.network.Connection;
 import glm_.vec3.Vec3;
 
 import javax.annotation.Nullable;
-import java.util.UUID;
 
 public class ItemFrame extends HangingEntity {
 
-    public ItemFrame(Connection connection, int entityId, UUID uuid, Vec3 position, EntityRotation rotation) {
-        super(connection, entityId, uuid, position, rotation);
+    public ItemFrame(Connection connection, Vec3 position, EntityRotation rotation) {
+        super(connection, position, rotation);
     }
 
     @EntityMetaDataFunction(name = "Item")

@@ -21,14 +21,13 @@ import de.bixilon.minosoft.protocol.network.Connection;
 import glm_.vec3.Vec3;
 
 import javax.annotation.Nullable;
-import java.util.UUID;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_8_9;
 
 public class Enderman extends AbstractSkeleton {
 
-    public Enderman(Connection connection, int entityId, UUID uuid, Vec3 position, EntityRotation rotation) {
-        super(connection, entityId, uuid, position, rotation);
+    public Enderman(Connection connection, Vec3 position, EntityRotation rotation) {
+        super(connection, position, rotation);
     }
 
     @EntityMetaDataFunction(name = "Carried block")

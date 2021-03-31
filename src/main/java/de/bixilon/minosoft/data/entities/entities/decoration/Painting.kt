@@ -18,16 +18,12 @@ import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
 import de.bixilon.minosoft.data.mappings.Motive
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.entityPosition
-
 import de.bixilon.minosoft.protocol.network.Connection
 import glm_.vec3.Vec3i
-import java.util.*
 
 class Painting(
     connection: Connection,
-    entityId: Int,
-    uuid: UUID,
     position: Vec3i,
     @get:EntityMetaDataFunction(name = "Direction") val direction: Directions,
     @get:EntityMetaDataFunction(name = "Motive") val motive: Motive,
-) : Entity(connection, entityId, uuid, position.entityPosition, EntityRotation(0.0f, 0.0f, 0.0f))
+) : Entity(connection, position.entityPosition, EntityRotation(0.0f, 0.0f, 0.0f))

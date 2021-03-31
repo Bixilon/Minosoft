@@ -27,7 +27,6 @@ import glm_.vec3.Vec3;
 
 import javax.annotation.Nullable;
 import java.util.HashSet;
-import java.util.UUID;
 
 public class PlayerEntity extends LivingEntity {
     private final String name;
@@ -35,14 +34,14 @@ public class PlayerEntity extends LivingEntity {
     private Item currentItem;
     private Gamemodes gamemode;
 
-    public PlayerEntity(Connection connection, int entityId, UUID uuid, Vec3 position, EntityRotation rotation) {
-        super(connection, entityId, uuid, position, rotation);
+    public PlayerEntity(Connection connection, Vec3 position, EntityRotation rotation) {
+        super(connection, position, rotation);
         this.name = "Ghost Player";
         this.properties = null;
     }
 
-    public PlayerEntity(Connection connection, int entityId, UUID uuid, Vec3 position, EntityRotation rotation, String name, @Nullable HashSet<PlayerPropertyData> properties, Item currentItem, Gamemodes gamemode) {
-        super(connection, entityId, uuid, position, rotation);
+    public PlayerEntity(Connection connection, Vec3 position, EntityRotation rotation, String name, @Nullable HashSet<PlayerPropertyData> properties, Item currentItem, Gamemodes gamemode) {
+        super(connection, position, rotation);
         this.name = name;
         this.properties = properties;
         this.currentItem = currentItem;

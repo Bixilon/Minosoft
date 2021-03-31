@@ -19,12 +19,10 @@ import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction;
 import de.bixilon.minosoft.protocol.network.Connection;
 import glm_.vec3.Vec3;
 
-import java.util.UUID;
-
 public class Bee extends Animal {
 
-    public Bee(Connection connection, int entityId, UUID uuid, Vec3 position, EntityRotation rotation) {
-        super(connection, entityId, uuid, position, rotation);
+    public Bee(Connection connection, Vec3 position, EntityRotation rotation) {
+        super(connection, position, rotation);
     }
 
     private boolean getBeeFlag(int bitMask) {

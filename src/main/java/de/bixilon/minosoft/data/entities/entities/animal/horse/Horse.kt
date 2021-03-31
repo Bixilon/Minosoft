@@ -20,9 +20,8 @@ import de.bixilon.minosoft.data.mappings.items.Item
 import de.bixilon.minosoft.protocol.network.Connection
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import glm_.vec3.Vec3
-import java.util.*
 
-class Horse(connection: Connection?, entityId: Int, uuid: UUID?, location: Vec3?, rotation: EntityRotation?) : AbstractHorse(connection, entityId, uuid, location, rotation) {
+class Horse(connection: Connection, location: Vec3, rotation: EntityRotation) : AbstractHorse(connection, location, rotation) {
 
     private fun getAbstractHorseFlag(bitMask: Int): Boolean {
         return metaData.sets.getBitMask(EntityMetaDataFields.ABSTRACT_HORSE_FLAGS, bitMask)

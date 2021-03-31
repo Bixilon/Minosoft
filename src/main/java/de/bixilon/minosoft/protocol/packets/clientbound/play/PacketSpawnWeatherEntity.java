@@ -25,10 +25,11 @@ import glm_.vec3.Vec3;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_16W06A;
 
 public class PacketSpawnWeatherEntity extends ClientboundPacket {
+    private final int entityId;
     private final LightningBolt entity;
 
     public PacketSpawnWeatherEntity(InByteBuffer buffer) {
-        int entityId = buffer.readVarInt();
+        this.entityId = buffer.readVarInt();
         byte type = buffer.readByte();
         Vec3 position;
         if (buffer.getVersionId() < V_16W06A) {
@@ -36,18 +37,19 @@ public class PacketSpawnWeatherEntity extends ClientboundPacket {
         } else {
             position = buffer.readLocation();
         }
-        this.entity = new LightningBolt(buffer.getConnection(), entityId, position);
+        this.entity = new LightningBolt(buffer.getConnection(), this.entityId, position);
     }
 
     @Override
     public void handle(Connection connection) {
         connection.fireEvent(new EntitySpawnEvent(connection, this));
         connection.fireEvent(new LightningBoltSpawnEvent(connection, this));
+        connection.getPlayer().getWorld().addEntity(this.entityId, null, this.entity);
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Thunderbolt spawned at %s (entityId=%d)", this.entity.getPosition(), this.entity.getEntityId()));
+        Log.protocol(String.format("[IN] Thunderbolt spawned at %s (entityId=%d)", this.entity.getPosition(), this.entityId));
     }
 
     public LightningBolt getEntity() {

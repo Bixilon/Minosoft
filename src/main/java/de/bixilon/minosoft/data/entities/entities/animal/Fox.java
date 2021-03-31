@@ -24,8 +24,8 @@ import java.util.UUID;
 
 public class Fox extends Animal {
 
-    public Fox(Connection connection, int entityId, UUID uuid, Vec3 position, EntityRotation rotation) {
-        super(connection, entityId, uuid, position, rotation);
+    public Fox(Connection connection, Vec3 position, EntityRotation rotation) {
+        super(connection, position, rotation);
     }
 
     @EntityMetaDataFunction(name = "Variant")

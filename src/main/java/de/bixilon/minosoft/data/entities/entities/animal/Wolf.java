@@ -22,15 +22,13 @@ import de.bixilon.minosoft.data.text.RGBColor;
 import de.bixilon.minosoft.protocol.network.Connection;
 import glm_.vec3.Vec3;
 
-import java.util.UUID;
-
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_19W45B;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_8_9;
 
 public class Wolf extends TamableAnimal {
 
-    public Wolf(Connection connection, int entityId, UUID uuid, Vec3 position, EntityRotation rotation) {
-        super(connection, entityId, uuid, position, rotation);
+    public Wolf(Connection connection, Vec3 position, EntityRotation rotation) {
+        super(connection, position, rotation);
     }
 
     @EntityMetaDataFunction(name = "Is beging")

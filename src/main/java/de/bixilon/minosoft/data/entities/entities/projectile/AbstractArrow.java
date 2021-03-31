@@ -23,8 +23,8 @@ import java.util.UUID;
 
 public abstract class AbstractArrow extends Projectile {
 
-    public AbstractArrow(Connection connection, int entityId, UUID uuid, Vec3 position, EntityRotation rotation) {
-        super(connection, entityId, uuid, position, rotation);
+    public AbstractArrow(Connection connection, Vec3 position, EntityRotation rotation) {
+        super(connection, position, rotation);
     }
 
     private boolean getAbstractArrowFlag(int bitMask) {

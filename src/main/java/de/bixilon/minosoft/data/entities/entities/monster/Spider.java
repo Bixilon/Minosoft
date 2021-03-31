@@ -19,12 +19,10 @@ import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction;
 import de.bixilon.minosoft.protocol.network.Connection;
 import glm_.vec3.Vec3;
 
-import java.util.UUID;
-
 public class Spider extends Monster {
 
-    public Spider(Connection connection, int entityId, UUID uuid, Vec3 position, EntityRotation rotation) {
-        super(connection, entityId, uuid, position, rotation);
+    public Spider(Connection connection, Vec3 position, EntityRotation rotation) {
+        super(connection, position, rotation);
     }
 
     private boolean getSpiderFlag(int bitMask) {

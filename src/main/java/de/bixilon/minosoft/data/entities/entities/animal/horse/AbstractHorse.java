@@ -25,8 +25,8 @@ import java.util.UUID;
 
 public abstract class AbstractHorse extends Animal {
 
-    public AbstractHorse(Connection connection, int entityId, UUID uuid, Vec3 position, EntityRotation rotation) {
-        super(connection, entityId, uuid, position, rotation);
+    public AbstractHorse(Connection connection, Vec3 position, EntityRotation rotation) {
+        super(connection, position, rotation);
     }
 
     private boolean getAbstractHorseFlag(int bitMask) {

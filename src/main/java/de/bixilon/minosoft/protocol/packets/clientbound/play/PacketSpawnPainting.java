@@ -28,13 +28,15 @@ import java.util.UUID;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
 
 public class PacketSpawnPainting extends ClientboundPacket {
+    private final int entityId;
+    private UUID entityUUID;
     private final Painting entity;
 
     public PacketSpawnPainting(InByteBuffer buffer) {
-        int entityId = buffer.readVarInt();
-        UUID uuid = null;
+        this.entityId = buffer.readVarInt();
+
         if (buffer.getVersionId() >= V_16W02A) {
-            uuid = buffer.readUUID();
+            this.entityUUID = buffer.readUUID();
         }
         Motive motive;
         if (buffer.getVersionId() < V_18W02A) {
@@ -51,19 +53,19 @@ public class PacketSpawnPainting extends ClientboundPacket {
             position = buffer.readBlockPosition();
             direction = Directions.byId(buffer.readUnsignedByte());
         }
-        this.entity = new Painting(buffer.getConnection(), entityId, uuid, position, direction, motive);
+        this.entity = new Painting(buffer.getConnection(), position, direction, motive);
     }
 
     @Override
     public void handle(Connection connection) {
         connection.fireEvent(new EntitySpawnEvent(connection, this));
 
-        connection.getPlayer().getWorld().addEntity(getEntity());
+        connection.getPlayer().getWorld().addEntity(this.entityId, this.entityUUID, getEntity());
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Spawning painting at %s (entityId=%d, motive=%s, direction=%s)", this.entity.getPosition(), this.entity.getEntityId(), this.entity.getMotive(), this.entity.getDirection()));
+        Log.protocol(String.format("[IN] Spawning painting at %s (entityId=%d, motive=%s, direction=%s)", this.entity.getPosition(), this.entityId, this.entity.getMotive(), this.entity.getDirection()));
     }
 
     public Painting getEntity() {

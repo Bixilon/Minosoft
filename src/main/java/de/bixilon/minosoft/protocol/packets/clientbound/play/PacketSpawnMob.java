@@ -26,20 +26,20 @@ import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 import glm_.vec3.Vec3;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.UUID;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
 
 public class PacketSpawnMob extends ClientboundPacket {
+    private final int entityId;
     private final Velocity velocity;
-    private Entity entity;
+    private final Entity entity;
+    private UUID entityUUID;
 
     public PacketSpawnMob(InByteBuffer buffer) throws Exception {
-        int entityId = buffer.readEntityId();
-        UUID uuid = null;
+        this.entityId = buffer.readEntityId();
         if (buffer.getVersionId() >= V_15W31A) {
-            uuid = buffer.readUUID();
+            this.entityUUID = buffer.readUUID();
         }
         int type;
         if (buffer.getVersionId() < V_16W32A) {
@@ -68,14 +68,9 @@ public class PacketSpawnMob extends ClientboundPacket {
             throw new UnknownEntityException(String.format("Unknown entity (typeId=%d)", type));
         }
 
-        try {
-            this.entity = typeClass.getConstructor(Connection.class, int.class, UUID.class, Vec3.class, EntityRotation.class).newInstance(buffer.getConnection(), entityId, uuid, position, rotation);
-            if (metaData != null) {
-                this.entity.setMetaData(metaData);
-            }
-            return;
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException | NullPointerException e) {
-            e.printStackTrace();
+        this.entity = typeClass.getConstructor(Connection.class, Vec3.class, EntityRotation.class).newInstance(buffer.getConnection(), position, rotation);
+        if (metaData != null) {
+            this.entity.setMetaData(metaData);
         }
     }
 
@@ -83,13 +78,13 @@ public class PacketSpawnMob extends ClientboundPacket {
     public void handle(Connection connection) {
         connection.fireEvent(new EntitySpawnEvent(connection, this));
 
-        connection.getPlayer().getWorld().addEntity(getEntity());
+        connection.getPlayer().getWorld().addEntity(this.entityId, this.entityUUID, getEntity());
         connection.getVelocityHandler().handleVelocity(getEntity(), getVelocity());
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Mob spawned at %s (entityId=%d, type=%s)", this.entity.getPosition().toString(), this.entity.getEntityId(), this.entity));
+        Log.protocol(String.format("[IN] Mob spawned at %s (entityId=%d, type=%s)", this.entity.getPosition().toString(), this.entityId, this.entity));
     }
 
     public Entity getEntity() {

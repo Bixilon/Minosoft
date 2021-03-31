@@ -17,18 +17,16 @@ import de.bixilon.minosoft.data.entities.EntityRotation;
 import de.bixilon.minosoft.protocol.network.Connection;
 import glm_.vec3.Vec3;
 
-import java.util.UUID;
-
 public class ExperienceOrb extends Entity {
     private final int count;
 
-    public ExperienceOrb(Connection connection, int entityId, UUID uuid, Vec3 position, EntityRotation rotation) {
-        super(connection, entityId, uuid, position, rotation);
+    public ExperienceOrb(Connection connection, Vec3 position, EntityRotation rotation) {
+        super(connection, position, rotation);
         this.count = 0;
     }
 
-    public ExperienceOrb(Connection connection, int entityId, Vec3 position, int count) {
-        super(connection, entityId, UUID.randomUUID(), position, new EntityRotation(0, 0, 0));
+    public ExperienceOrb(Connection connection, Vec3 position, int count) {
+        super(connection, position, new EntityRotation(0, 0, 0));
         this.count = count;
     }
 

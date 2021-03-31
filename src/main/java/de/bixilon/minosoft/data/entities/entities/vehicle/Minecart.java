@@ -17,11 +17,9 @@ import de.bixilon.minosoft.data.entities.EntityRotation;
 import de.bixilon.minosoft.protocol.network.Connection;
 import glm_.vec3.Vec3;
 
-import java.util.UUID;
-
 public class Minecart extends AbstractMinecart {
 
-    public Minecart(Connection connection, int entityId, UUID uuid, Vec3 position, EntityRotation rotation) {
-        super(connection, entityId, uuid, position, rotation);
+    public Minecart(Connection connection, Vec3 position, EntityRotation rotation) {
+        super(connection, position, rotation);
     }
 }
