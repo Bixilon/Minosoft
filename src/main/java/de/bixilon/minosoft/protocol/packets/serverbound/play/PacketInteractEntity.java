@@ -31,20 +31,9 @@ public class PacketInteractEntity implements ServerboundPacket {
     private EntityInteractionClicks click;
     private boolean sneaking;
 
-    public PacketInteractEntity(Entity entity, EntityInteractionClicks click) {
-        this.entityId = entity.getEntityId();
+    public PacketInteractEntity(Connection connection, Entity entity, EntityInteractionClicks click) {
+        this.entityId = connection.getWorld().getEntityIdMap().inverse().get(entity);
         this.click = click;
-    }
-
-    public PacketInteractEntity(int entityId, EntityInteractionClicks click) {
-        this.entityId = entityId;
-        this.click = click;
-    }
-
-    public PacketInteractEntity(int entityId, EntityInteractionClicks click, Vec3 position) {
-        this.entityId = entityId;
-        this.click = click;
-        this.position = position;
     }
 
     public PacketInteractEntity(int entityId, EntityInteractionClicks click, Vec3 position, Hands hand) {

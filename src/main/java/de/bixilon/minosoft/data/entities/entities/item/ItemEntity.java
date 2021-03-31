@@ -32,7 +32,7 @@ public class ItemEntity extends Entity {
     @EntityMetaDataFunction(name = "Item")
     @Nullable
     public ItemStack getItem() {
-        return this.metaData.getSets().getItemStack(EntityMetaDataFields.ITEM_ITEM);
+        return getEntityMetaData().getSets().getItemStack(EntityMetaDataFields.ITEM_ITEM);
     }
 }
 

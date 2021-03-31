@@ -38,7 +38,7 @@ data class BlockState(
     val renders: MutableList<BlockRenderInterface> = mutableListOf(),
     val tintColor: RGBColor? = null,
     val material: Material,
-    val collision: VoxelShape,
+    val collisionShape: VoxelShape,
 ) {
 
     override fun hashCode(): Int {
@@ -181,7 +181,7 @@ data class BlockState(
                 renders = renders,
                 tintColor = tintColor,
                 material = material,
-                collision = collision
+                collisionShape = collision
             )
         }
 

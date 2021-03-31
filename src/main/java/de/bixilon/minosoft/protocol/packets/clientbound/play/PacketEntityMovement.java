@@ -47,7 +47,7 @@ public class PacketEntityMovement extends ClientboundPacket {
             // thanks mojang
             return;
         }
-        entity.setLocation(getRelativePosition());
+        entity.forceMove(getRelativePosition());
     }
 
     @Override

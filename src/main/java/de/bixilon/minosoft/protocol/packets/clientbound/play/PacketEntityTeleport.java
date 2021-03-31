@@ -53,7 +53,7 @@ public class PacketEntityTeleport extends ClientboundPacket {
             // thanks mojang
             return;
         }
-        entity.setLocation(getRelativePosition());
+        entity.forceMove(getRelativePosition());
         entity.setRotation(getYaw(), getPitch());
     }
 

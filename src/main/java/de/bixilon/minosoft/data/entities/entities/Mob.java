@@ -24,7 +24,7 @@ public abstract class Mob extends LivingEntity {
     }
 
     private boolean getMobFlags(int bitMask) {
-        return this.metaData.getSets().getBitMask(EntityMetaDataFields.MOB_FLAGS, bitMask);
+        return getEntityMetaData().getSets().getBitMask(EntityMetaDataFields.MOB_FLAGS, bitMask);
     }
 
     @EntityMetaDataFunction(name = "isNoAI")

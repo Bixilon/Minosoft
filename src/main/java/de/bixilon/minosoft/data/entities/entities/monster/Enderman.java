@@ -34,18 +34,18 @@ public class Enderman extends AbstractSkeleton {
     @Nullable
     public BlockState getCarriedBlock() {
         if (this.versionId <= V_1_8_9) { // ToDo: No clue here
-            return this.connection.getMapping().getBlockState(this.metaData.getSets().getInt(EntityMetaDataFields.LEGACY_ENDERMAN_CARRIED_BLOCK) << 4 | this.metaData.getSets().getInt(EntityMetaDataFields.LEGACY_ENDERMAN_CARRIED_BLOCK_DATA));
+            return this.getConnection().getMapping().getBlockState(getEntityMetaData().getSets().getInt(EntityMetaDataFields.LEGACY_ENDERMAN_CARRIED_BLOCK) << 4 | getEntityMetaData().getSets().getInt(EntityMetaDataFields.LEGACY_ENDERMAN_CARRIED_BLOCK_DATA));
         }
-        return this.metaData.getSets().getBlock(EntityMetaDataFields.ENDERMAN_CARRIED_BLOCK);
+        return getEntityMetaData().getSets().getBlock(EntityMetaDataFields.ENDERMAN_CARRIED_BLOCK);
     }
 
     @EntityMetaDataFunction(name = "Is screaming")
     public boolean isScreaming() {
-        return this.metaData.getSets().getBoolean(EntityMetaDataFields.ENDERMAN_IS_SCREAMING);
+        return getEntityMetaData().getSets().getBoolean(EntityMetaDataFields.ENDERMAN_IS_SCREAMING);
     }
 
     @EntityMetaDataFunction(name = "Is starring")
     public boolean isStarring() {
-        return this.metaData.getSets().getBoolean(EntityMetaDataFields.ENDERMAN_IS_STARRING);
+        return getEntityMetaData().getSets().getBoolean(EntityMetaDataFields.ENDERMAN_IS_STARRING);
     }
 }

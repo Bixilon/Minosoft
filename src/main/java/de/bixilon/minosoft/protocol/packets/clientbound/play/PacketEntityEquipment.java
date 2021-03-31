@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.entities.entities.Entity;
+import de.bixilon.minosoft.data.inventory.InventorySlots;
 import de.bixilon.minosoft.data.inventory.ItemStack;
 import de.bixilon.minosoft.modding.event.events.EntityEquipmentChangeEvent;
 import de.bixilon.minosoft.protocol.network.Connection;
@@ -28,17 +29,17 @@ import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_15W31A;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_16_PRE7;
 
 public class PacketEntityEquipment extends ClientboundPacket {
-    private final HashMap<Integer, ItemStack> slots = new HashMap<>();
+    private final HashMap<InventorySlots.EquipmentSlots, ItemStack> slots = new HashMap<>();
     private final int entityId;
 
     public PacketEntityEquipment(InByteBuffer buffer) {
         this.entityId = buffer.readEntityId();
         if (buffer.getVersionId() < V_15W31A) {
-            this.slots.put((int) buffer.readShort(), buffer.readItemStack());
+            this.slots.put(buffer.getConnection().getMapping().getEquipmentSlotRegistry().get(buffer.readShort()), buffer.readItemStack());
             return;
         }
         if (buffer.getVersionId() < V_1_16_PRE7) {
-            this.slots.put(buffer.readVarInt(), buffer.readItemStack());
+            this.slots.put(buffer.getConnection().getMapping().getEquipmentSlotRegistry().get(buffer.readVarInt()), buffer.readItemStack());
             return;
         }
         boolean slotAvailable = true;
@@ -48,7 +49,7 @@ public class PacketEntityEquipment extends ClientboundPacket {
                 slotAvailable = false;
             }
             slotId &= 0x7F;
-            this.slots.put(slotId, buffer.readItemStack());
+            this.slots.put(buffer.getConnection().getMapping().getEquipmentSlotRegistry().get(slotId), buffer.readItemStack());
         }
     }
 
@@ -61,13 +62,14 @@ public class PacketEntityEquipment extends ClientboundPacket {
             // thanks mojang
             return;
         }
-        entity.setEquipment(getSlots());
+        entity.getEquipment().clear();
+        entity.getEquipment().putAll(getSlots());
     }
 
     @Override
     public void log() {
         if (this.slots.size() == 1) {
-            Map.Entry<Integer, ItemStack> set = this.slots.entrySet().iterator().next();
+            Map.Entry<InventorySlots.EquipmentSlots, ItemStack> set = this.slots.entrySet().iterator().next();
             if (set.getValue() == null) {
                 Log.protocol(String.format("[IN] Entity equipment changed (entityId=%d, slot=%s): AIR", this.entityId, set.getKey()));
                 return;
@@ -82,7 +84,7 @@ public class PacketEntityEquipment extends ClientboundPacket {
         return this.entityId;
     }
 
-    public HashMap<Integer, ItemStack> getSlots() {
+    public HashMap<InventorySlots.EquipmentSlots, ItemStack> getSlots() {
         return this.slots;
     }
 }

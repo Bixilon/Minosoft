@@ -28,6 +28,6 @@ public class Hoglin extends Animal {
 
     @EntityMetaDataFunction(name = "Immune zo zombification")
     public boolean isImmuneToZombification() {
-        return this.metaData.getSets().getBoolean(EntityMetaDataFields.HOGLIN_IMMUNE_TO_ZOMBIFICATION);
+        return getEntityMetaData().getSets().getBoolean(EntityMetaDataFields.HOGLIN_IMMUNE_TO_ZOMBIFICATION);
     }
 }

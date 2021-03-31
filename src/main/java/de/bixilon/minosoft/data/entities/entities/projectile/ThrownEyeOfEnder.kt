@@ -25,7 +25,7 @@ class ThrownEyeOfEnder(connection: Connection, location: Vec3, rotation: EntityR
 
     @get:EntityMetaDataFunction(name = "Item")
     val item: ItemStack
-        get() = metaData.sets.getItemStack(EntityMetaDataFields.THROWN_EYE_OF_ENDER_ITEM) ?: getDefaultItem()
+        get() = entityMetaData.sets.getItemStack(EntityMetaDataFields.THROWN_EYE_OF_ENDER_ITEM) ?: getDefaultItem()
 
     fun getDefaultItem(): ItemStack {
         return ItemStack(connection.mapping.itemRegistry.get(DEFAULT_ITEM)!!, connection.version)

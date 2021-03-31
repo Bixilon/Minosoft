@@ -53,7 +53,7 @@ public class PacketPlayerPositionAndRotation extends ClientboundPacket {
     @Override
     public void handle(Connection connection) {
         // ToDo: GUI should do this
-        connection.getPlayer().getEntity().setLocation(getPosition());
+        connection.getPlayer().getEntity().setPosition(getPosition());
         if (connection.getVersion().getVersionId() >= V_15W42A) {
             connection.sendPacket(new PacketConfirmTeleport(getTeleportId()));
         } else {

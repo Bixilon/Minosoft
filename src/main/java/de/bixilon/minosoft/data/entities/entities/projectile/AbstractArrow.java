@@ -28,7 +28,7 @@ public abstract class AbstractArrow extends Projectile {
     }
 
     private boolean getAbstractArrowFlag(int bitMask) {
-        return this.metaData.getSets().getBitMask(EntityMetaDataFields.ABSTRACT_ARROW_FLAGS, bitMask);
+        return getEntityMetaData().getSets().getBitMask(EntityMetaDataFields.ABSTRACT_ARROW_FLAGS, bitMask);
     }
 
     @EntityMetaDataFunction(name = "Is critical")
@@ -43,12 +43,12 @@ public abstract class AbstractArrow extends Projectile {
 
     @EntityMetaDataFunction(name = "Piercing level")
     public byte getPiercingLevel() {
-        return this.metaData.getSets().getByte(EntityMetaDataFields.ABSTRACT_ARROW_PIERCE_LEVEL);
+        return getEntityMetaData().getSets().getByte(EntityMetaDataFields.ABSTRACT_ARROW_PIERCE_LEVEL);
     }
 
     @EntityMetaDataFunction(name = "Owner UUID")
     public UUID getOwnerUUID() {
-        return this.metaData.getSets().getUUID(EntityMetaDataFields.ABSTRACT_ARROW_OWNER_UUID);
+        return getEntityMetaData().getSets().getUUID(EntityMetaDataFields.ABSTRACT_ARROW_OWNER_UUID);
     }
 }
 

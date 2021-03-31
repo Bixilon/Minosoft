@@ -29,7 +29,7 @@ public abstract class LivingEntity extends Entity {
     }
 
     private boolean getLivingEntityFlag(int bitMask) {
-        return this.metaData.getSets().getBitMask(EntityMetaDataFields.LIVING_ENTITY_FLAGS, bitMask);
+        return getEntityMetaData().getSets().getBitMask(EntityMetaDataFields.LIVING_ENTITY_FLAGS, bitMask);
     }
 
     // = isUsingItem
@@ -50,33 +50,33 @@ public abstract class LivingEntity extends Entity {
 
     @EntityMetaDataFunction(name = "Health")
     public float getHealth() {
-        return this.metaData.getSets().getFloat(EntityMetaDataFields.LIVING_ENTITY_HEALTH);
+        return getEntityMetaData().getSets().getFloat(EntityMetaDataFields.LIVING_ENTITY_HEALTH);
     }
 
     @EntityMetaDataFunction(name = "Effect color")
     public int getEffectColor() {
-        return this.metaData.getSets().getInt(EntityMetaDataFields.LIVING_ENTITY_EFFECT_COLOR);
+        return getEntityMetaData().getSets().getInt(EntityMetaDataFields.LIVING_ENTITY_EFFECT_COLOR);
     }
 
     @EntityMetaDataFunction(name = "Is effect ambient")
     public boolean getEffectAmbient() {
-        return this.metaData.getSets().getBoolean(EntityMetaDataFields.LIVING_ENTITY_EFFECT_AMBIENCE);
+        return getEntityMetaData().getSets().getBoolean(EntityMetaDataFields.LIVING_ENTITY_EFFECT_AMBIENCE);
     }
 
     @EntityMetaDataFunction(name = "Arrows in entity")
     public int getArrowCount() {
-        return this.metaData.getSets().getInt(EntityMetaDataFields.LIVING_ENTITY_ARROW_COUNT);
+        return getEntityMetaData().getSets().getInt(EntityMetaDataFields.LIVING_ENTITY_ARROW_COUNT);
     }
 
     @EntityMetaDataFunction(name = "Absorption hearts")
     public int getAbsorptionHearts() {
-        return this.metaData.getSets().getInt(EntityMetaDataFields.LIVING_ENTITY_ABSORPTION_HEARTS);
+        return getEntityMetaData().getSets().getInt(EntityMetaDataFields.LIVING_ENTITY_ABSORPTION_HEARTS);
     }
 
     @EntityMetaDataFunction(name = "Bed location")
     @Nullable
     public Vec3i getBedPosition() {
-        return this.metaData.getSets().getBlockPosition(EntityMetaDataFields.LIVING_ENTITY_BED_POSITION);
+        return getEntityMetaData().getSets().getBlockPosition(EntityMetaDataFields.LIVING_ENTITY_BED_POSITION);
     }
 
 }

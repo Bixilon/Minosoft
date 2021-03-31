@@ -71,11 +71,11 @@ public class PacketSender {
     }
 
     public void sendAction(PacketEntityAction.EntityActions action) {
-        this.connection.sendPacket(new PacketEntityAction(this.connection.getPlayer().getEntity().getEntityId(), action));
+        this.connection.sendPacket(new PacketEntityAction(this.connection.getWorld().getEntityIdMap().inverse().get(this.connection.getPlayer().getEntity()), action));
     }
 
     public void jumpWithHorse(int jumpBoost) {
-        this.connection.sendPacket(new PacketEntityAction(this.connection.getPlayer().getEntity().getEntityId(), PacketEntityAction.EntityActions.START_HORSE_JUMP, jumpBoost));
+        this.connection.sendPacket(new PacketEntityAction(this.connection.getWorld().getEntityIdMap().inverse().get(this.connection.getPlayer().getEntity()), PacketEntityAction.EntityActions.START_HORSE_JUMP, jumpBoost));
     }
 
     public void dropItem() {
@@ -124,7 +124,7 @@ public class PacketSender {
 
     public void setLocation(Vec3 position, EntityRotation rotation, boolean onGround) {
         this.connection.sendPacket(new PacketPlayerPositionAndRotationSending(position, rotation, onGround));
-        this.connection.getPlayer().getEntity().setLocation(position);
+        this.connection.getPlayer().getEntity().setPosition(position);
         this.connection.getPlayer().getEntity().setRotation(rotation);
     }
 

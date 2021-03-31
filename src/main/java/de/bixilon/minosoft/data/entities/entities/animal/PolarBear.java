@@ -27,6 +27,6 @@ public class PolarBear extends Animal {
 
     @EntityMetaDataFunction(name = "Is standing")
     public boolean isStanding() {
-        return this.metaData.getSets().getBoolean(EntityMetaDataFields.POLAR_BEAR_STANDING);
+        return getEntityMetaData().getSets().getBoolean(EntityMetaDataFields.POLAR_BEAR_STANDING);
     }
 }

@@ -27,16 +27,16 @@ public class Creeper extends Monster {
 
     @EntityMetaDataFunction(name = "State")
     public int getState() {
-        return this.metaData.getSets().getInt(EntityMetaDataFields.CREEPER_STATE);
+        return getEntityMetaData().getSets().getInt(EntityMetaDataFields.CREEPER_STATE);
     }
 
     @EntityMetaDataFunction(name = "Is charged")
     public boolean isCharged() {
-        return this.metaData.getSets().getBoolean(EntityMetaDataFields.CREEPER_IS_CHARGED);
+        return getEntityMetaData().getSets().getBoolean(EntityMetaDataFields.CREEPER_IS_CHARGED);
     }
 
     @EntityMetaDataFunction(name = "Is ignited")
     public boolean isIgnited() {
-        return this.metaData.getSets().getBoolean(EntityMetaDataFields.CREEPER_IS_IGNITED);
+        return getEntityMetaData().getSets().getBoolean(EntityMetaDataFields.CREEPER_IS_IGNITED);
     }
 }

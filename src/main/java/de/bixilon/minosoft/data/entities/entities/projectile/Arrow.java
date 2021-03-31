@@ -27,6 +27,6 @@ public class Arrow extends AbstractArrow {
 
     @EntityMetaDataFunction(name = "Effect color")
     public int getEffectColor() {
-        return this.metaData.getSets().getInt(EntityMetaDataFields.ARROW_EFFECT_COLOR);
+        return getEntityMetaData().getSets().getInt(EntityMetaDataFields.ARROW_EFFECT_COLOR);
     }
 }

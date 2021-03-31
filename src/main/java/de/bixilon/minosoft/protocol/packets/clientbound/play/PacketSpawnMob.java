@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
+import de.bixilon.minosoft.config.StaticConfiguration;
 import de.bixilon.minosoft.data.entities.EntityRotation;
 import de.bixilon.minosoft.data.entities.Velocity;
 import de.bixilon.minosoft.data.entities.entities.Entity;
@@ -70,7 +71,10 @@ public class PacketSpawnMob extends ClientboundPacket {
 
         this.entity = typeClass.getConstructor(Connection.class, Vec3.class, EntityRotation.class).newInstance(buffer.getConnection(), position, rotation);
         if (metaData != null) {
-            this.entity.setMetaData(metaData);
+            this.entity.setEntityMetaData(metaData);
+            if (StaticConfiguration.VERBOSE_ENTITY_META_DATA_LOGGING) {
+                Log.verbose(String.format("Metadata of entity %s (entityId=%d): %s", this.entity.toString(), this.entityId, this.entity.getEntityMetaDataAsString()));
+            }
         }
     }
 

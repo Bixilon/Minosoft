@@ -28,7 +28,7 @@ public class EnderDragon extends Mob {
 
     @EntityMetaDataFunction(name = "Phase")
     public DragonPhases getPhase() {
-        return DragonPhases.byId(this.metaData.getSets().getInt(EntityMetaDataFields.ENDER_DRAGON_PHASE));
+        return DragonPhases.byId(getEntityMetaData().getSets().getInt(EntityMetaDataFields.ENDER_DRAGON_PHASE));
     }
 
     public enum DragonPhases {

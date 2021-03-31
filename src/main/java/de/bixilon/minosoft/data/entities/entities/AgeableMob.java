@@ -26,6 +26,6 @@ public abstract class AgeableMob extends PathfinderMob {
 
     @EntityMetaDataFunction(name = "Is baby")
     public boolean isBaby() {
-        return this.metaData.getSets().getBoolean(EntityMetaDataFields.AGEABLE_IS_BABY);
+        return getEntityMetaData().getSets().getBoolean(EntityMetaDataFields.AGEABLE_IS_BABY);
     }
 }

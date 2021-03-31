@@ -28,6 +28,6 @@ public abstract class AbstractVillager extends AgeableMob {
 
     @EntityMetaDataFunction(name = "Unhappy timer")
     public int getUnhappyTimer() {
-        return this.metaData.getSets().getInt(EntityMetaDataFields.ABSTRACT_VILLAGER_UNHAPPY_TIMER);
+        return getEntityMetaData().getSets().getInt(EntityMetaDataFields.ABSTRACT_VILLAGER_UNHAPPY_TIMER);
     }
 }

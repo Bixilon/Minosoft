@@ -26,7 +26,7 @@ public class IronGolem extends AbstractGolem {
     }
 
     private boolean getIronGolemFlag(int bitMask) {
-        return this.metaData.getSets().getBitMask(EntityMetaDataFields.IRON_GOLEM_FLAGS, bitMask);
+        return getEntityMetaData().getSets().getBitMask(EntityMetaDataFields.IRON_GOLEM_FLAGS, bitMask);
     }
 
     @EntityMetaDataFunction(name = "Is player created")

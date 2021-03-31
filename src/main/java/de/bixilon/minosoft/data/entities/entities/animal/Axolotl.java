@@ -27,17 +27,17 @@ public class Axolotl extends Animal {
 
     @EntityMetaDataFunction(name = "Axolotl variant")
     public AxolotlVariants getVariant() {
-        return AxolotlVariants.byId(this.metaData.getSets().getInt(EntityMetaDataFields.AXOLOTL_VARIANT));
+        return AxolotlVariants.byId(getEntityMetaData().getSets().getInt(EntityMetaDataFields.AXOLOTL_VARIANT));
     }
 
     @EntityMetaDataFunction(name = "Is playing dead")
     public boolean isPlayingDead() {
-        return this.metaData.getSets().getBoolean(EntityMetaDataFields.AXOLOTL_PLAYING_DEAD);
+        return getEntityMetaData().getSets().getBoolean(EntityMetaDataFields.AXOLOTL_PLAYING_DEAD);
     }
 
     @EntityMetaDataFunction(name = "Is from bucket")
     public boolean isFromBucket() {
-        return this.metaData.getSets().getBoolean(EntityMetaDataFields.AXOLOTL_FROM_BUCKET);
+        return getEntityMetaData().getSets().getBoolean(EntityMetaDataFields.AXOLOTL_FROM_BUCKET);
     }
 
     public enum AxolotlVariants {

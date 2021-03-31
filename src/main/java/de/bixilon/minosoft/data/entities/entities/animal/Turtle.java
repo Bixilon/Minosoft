@@ -31,32 +31,32 @@ public class Turtle extends Animal {
     @EntityMetaDataFunction(name = "Home Position")
     @Nullable
     public Vec3i getHomePosition() {
-        return this.metaData.getSets().getBlockPosition(EntityMetaDataFields.TURTLE_HOME_POSITION);
+        return getEntityMetaData().getSets().getBlockPosition(EntityMetaDataFields.TURTLE_HOME_POSITION);
     }
 
     @EntityMetaDataFunction(name = "Has egg")
     public boolean hasEgg() {
-        return this.metaData.getSets().getBoolean(EntityMetaDataFields.TURTLE_HAS_EGG);
+        return getEntityMetaData().getSets().getBoolean(EntityMetaDataFields.TURTLE_HAS_EGG);
     }
 
     @EntityMetaDataFunction(name = "Is laying egg")
     public boolean isLayingEgg() {
-        return this.metaData.getSets().getBoolean(EntityMetaDataFields.TURTLE_IS_LAYING_EGG);
+        return getEntityMetaData().getSets().getBoolean(EntityMetaDataFields.TURTLE_IS_LAYING_EGG);
     }
 
     @EntityMetaDataFunction(name = "Travel position")
     @Nullable
     public Vec3i getTravelPosition() {
-        return this.metaData.getSets().getBlockPosition(EntityMetaDataFields.TURTLE_TRAVEL_POSITION);
+        return getEntityMetaData().getSets().getBlockPosition(EntityMetaDataFields.TURTLE_TRAVEL_POSITION);
     }
 
     @EntityMetaDataFunction(name = "Is going home")
     public boolean isGoingHome() {
-        return this.metaData.getSets().getBoolean(EntityMetaDataFields.TURTLE_IS_GOING_HOME);
+        return getEntityMetaData().getSets().getBoolean(EntityMetaDataFields.TURTLE_IS_GOING_HOME);
     }
 
     @EntityMetaDataFunction(name = "Is traveling")
     public boolean isTraveling() {
-        return this.metaData.getSets().getBoolean(EntityMetaDataFields.TURTLE_IS_TRAVELING);
+        return getEntityMetaData().getSets().getBoolean(EntityMetaDataFields.TURTLE_IS_TRAVELING);
     }
 }

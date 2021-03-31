@@ -28,7 +28,7 @@ public abstract class ThrowableItemProjectile extends ThrowableProjectile {
 
     @EntityMetaDataFunction(name = "Item")
     public ItemStack getItem() {
-        ItemStack itemStack = this.metaData.getSets().getItemStack(EntityMetaDataFields.THROWABLE_ITEM_PROJECTILE_ITEM);
+        ItemStack itemStack = getEntityMetaData().getSets().getItemStack(EntityMetaDataFields.THROWABLE_ITEM_PROJECTILE_ITEM);
         if (itemStack == null) {
             return getDefaultItem();
         }

@@ -32,12 +32,12 @@ public class EndCrystal extends Entity {
     @EntityMetaDataFunction(name = "Beam target")
     @Nullable
     public Vec3i getBeamTarget() {
-        return getMetaData().getSets().getBlockPosition(EntityMetaDataFields.END_CRYSTAL_BEAM_TARGET);
+        return getEntityMetaData().getSets().getBlockPosition(EntityMetaDataFields.END_CRYSTAL_BEAM_TARGET);
     }
 
     @EntityMetaDataFunction(name = "Show bottom")
     public boolean shotBottom() {
-        return getMetaData().getSets().getBoolean(EntityMetaDataFields.END_CRYSTAL_SHOW_BOTTOM);
+        return getEntityMetaData().getSets().getBoolean(EntityMetaDataFields.END_CRYSTAL_SHOW_BOTTOM);
     }
 }
 

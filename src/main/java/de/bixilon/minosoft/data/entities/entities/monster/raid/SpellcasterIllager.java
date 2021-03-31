@@ -27,7 +27,7 @@ public class SpellcasterIllager extends AbstractIllager {
 
     @EntityMetaDataFunction(name = "Spell")
     public Spells getSpell() {
-        return Spells.byId(this.metaData.getSets().getInt(EntityMetaDataFields.SPELLCASTER_ILLAGER_SPELL));
+        return Spells.byId(getEntityMetaData().getSets().getInt(EntityMetaDataFields.SPELLCASTER_ILLAGER_SPELL));
     }
 
     public enum Spells {

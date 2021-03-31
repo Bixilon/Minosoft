@@ -27,16 +27,16 @@ public class Strider extends Animal {
 
     @EntityMetaDataFunction(name = "Boost stime")
     private int getBoostTime() {
-        return this.metaData.getSets().getInt(EntityMetaDataFields.STRIDER_TIME_TO_BOOST);
+        return getEntityMetaData().getSets().getInt(EntityMetaDataFields.STRIDER_TIME_TO_BOOST);
     }
 
     @EntityMetaDataFunction(name = "Is suffocating")
     private boolean isSuffocating() {
-        return this.metaData.getSets().getBoolean(EntityMetaDataFields.STRIDER_IS_SUFFOCATING);
+        return getEntityMetaData().getSets().getBoolean(EntityMetaDataFields.STRIDER_IS_SUFFOCATING);
     }
 
     @EntityMetaDataFunction(name = "Has saddle")
     private boolean hasSaddle() {
-        return this.metaData.getSets().getBoolean(EntityMetaDataFields.STRIDER_HAS_SADDLE);
+        return getEntityMetaData().getSets().getBoolean(EntityMetaDataFields.STRIDER_HAS_SADDLE);
     }
 }

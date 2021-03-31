@@ -28,21 +28,21 @@ public class WitherBoss extends Monster {
 
     @EntityMetaDataFunction(name = "Center head target entity id")
     public int getCenterHeadTargetEntityId() {
-        return this.metaData.getSets().getInt(EntityMetaDataFields.WITHER_BOSS_CENTER_HEAD_TARGET_ENTITY_ID);
+        return getEntityMetaData().getSets().getInt(EntityMetaDataFields.WITHER_BOSS_CENTER_HEAD_TARGET_ENTITY_ID);
     }
 
     @EntityMetaDataFunction(name = "Left head target entity id")
     public int getLeftHeadTargetEntityId() {
-        return this.metaData.getSets().getInt(EntityMetaDataFields.WITHER_BOSS_LEFT_HEAD_TARGET_ENTITY_ID);
+        return getEntityMetaData().getSets().getInt(EntityMetaDataFields.WITHER_BOSS_LEFT_HEAD_TARGET_ENTITY_ID);
     }
 
     @EntityMetaDataFunction(name = "Right head target entity id")
     public int getRightHeadTargetEntityId() {
-        return this.metaData.getSets().getInt(EntityMetaDataFields.WITHER_BOSS_RIGHT_HEAD_TARGET_ENTITY_ID);
+        return getEntityMetaData().getSets().getInt(EntityMetaDataFields.WITHER_BOSS_RIGHT_HEAD_TARGET_ENTITY_ID);
     }
 
     @EntityMetaDataFunction(name = "Invulnerable time")
     public int getInvulnerableTime() {
-        return this.metaData.getSets().getInt(EntityMetaDataFields.WITHER_BOSS_INVULNERABLE_TIME);
+        return getEntityMetaData().getSets().getInt(EntityMetaDataFields.WITHER_BOSS_INVULNERABLE_TIME);
     }
 }

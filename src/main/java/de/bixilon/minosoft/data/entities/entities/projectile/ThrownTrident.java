@@ -27,12 +27,12 @@ public class ThrownTrident extends AbstractArrow {
 
     @EntityMetaDataFunction(name = "Loyalty level")
     public byte getLoyaltyLevel() {
-        return getMetaData().getSets().getByte(EntityMetaDataFields.THROWN_TRIDENT_LOYALTY_LEVEL);
+        return getEntityMetaData().getSets().getByte(EntityMetaDataFields.THROWN_TRIDENT_LOYALTY_LEVEL);
     }
 
     @EntityMetaDataFunction(name = "Is enchanted")
     public boolean isEnchanted() {
-        return getMetaData().getSets().getBoolean(EntityMetaDataFields.THROWN_TRIDENT_FOIL);
+        return getEntityMetaData().getSets().getBoolean(EntityMetaDataFields.THROWN_TRIDENT_FOIL);
     }
 
 }

@@ -143,7 +143,7 @@ class PacketJoinGame(buffer: InByteBuffer) : ClientboundPacket() {
         connection.mapping.dimensionRegistry.setData(dimensions)
         connection.world.dimension = dimension
 
-        connection.world.addEntity(entityId, connection.player.playerUUID, playerEntity)
+        connection.world.addEntity(entityId, connection.player.entity.uuid, playerEntity)
         connection.world.hashedSeed = hashedSeed
         connection.world.biomeAccessor = if (connection.version.versionId < ProtocolVersions.V_19W36A) {
             BlockBiomeAccessor(connection.world)

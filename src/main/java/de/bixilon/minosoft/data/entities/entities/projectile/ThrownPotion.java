@@ -35,7 +35,7 @@ public class ThrownPotion extends ThrowableItemProjectile {
         if (this.versionId > V_20W09A) {
             return super.getItem();
         }
-        ItemStack itemStack = this.metaData.getSets().getItemStack(EntityMetaDataFields.THROWN_POTION_ITEM);
+        ItemStack itemStack = getEntityMetaData().getSets().getItemStack(EntityMetaDataFields.THROWN_POTION_ITEM);
         if (itemStack == null) {
             return getDefaultItem();
         }

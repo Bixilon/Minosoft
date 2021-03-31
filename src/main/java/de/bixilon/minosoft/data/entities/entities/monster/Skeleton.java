@@ -25,6 +25,6 @@ public class Skeleton extends AbstractSkeleton {
     }
 
     public boolean isFreezeConverting() {
-        return this.metaData.getSets().get(EntityMetaDataFields.SKELETON_STRAY_FREEZE_CONVERTING);
+        return getEntityMetaData().getSets().get(EntityMetaDataFields.SKELETON_STRAY_FREEZE_CONVERTING);
     }
 }

@@ -34,7 +34,7 @@ class PacketEntityMetadata() : ClientboundPacket() {
     override fun handle(connection: Connection) {
         val entity = connection.world.getEntity(entityId) ?: return
 
-        entity.metaData = entityData
+        entity.entityMetaData = entityData
         connection.fireEvent(EntityMetaDataChangeEvent(connection, entity))
 
         if (entity === connection.player.entity) {

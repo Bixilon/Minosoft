@@ -27,7 +27,7 @@ public class Parrot extends ShoulderRidingAnimal {
 
     @EntityMetaDataFunction(name = "Variant")
     public ParrotVariants getVariant() {
-        return ParrotVariants.byId(this.metaData.getSets().getInt(EntityMetaDataFields.PARROT_VARIANT));
+        return ParrotVariants.byId(getEntityMetaData().getSets().getInt(EntityMetaDataFields.PARROT_VARIANT));
     }
 
     public enum ParrotVariants {

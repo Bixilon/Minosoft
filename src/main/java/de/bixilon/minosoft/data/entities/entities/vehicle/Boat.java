@@ -28,37 +28,37 @@ public class Boat extends Entity {
 
     @EntityMetaDataFunction(name = "Time since last hit")
     public int getTimeSinceLastHit() {
-        return getMetaData().getSets().getInt(EntityMetaDataFields.BOAT_HURT);
+        return getEntityMetaData().getSets().getInt(EntityMetaDataFields.BOAT_HURT);
     }
 
     @EntityMetaDataFunction(name = "Forward direction")
     public int getForwardDirection() {
-        return getMetaData().getSets().getInt(EntityMetaDataFields.BOAT_HURT_DIRECTION);
+        return getEntityMetaData().getSets().getInt(EntityMetaDataFields.BOAT_HURT_DIRECTION);
     }
 
     @EntityMetaDataFunction(name = "Damage taken")
     public float getDamageTaken() {
-        return getMetaData().getSets().getFloat(EntityMetaDataFields.BOAT_DAMAGE_TAKEN);
+        return getEntityMetaData().getSets().getFloat(EntityMetaDataFields.BOAT_DAMAGE_TAKEN);
     }
 
     @EntityMetaDataFunction(name = "Material")
     public BoatMaterials getMaterial() {
-        return BoatMaterials.byId(getMetaData().getSets().getInt(EntityMetaDataFields.BOAT_MATERIAL));
+        return BoatMaterials.byId(getEntityMetaData().getSets().getInt(EntityMetaDataFields.BOAT_MATERIAL));
     }
 
     @EntityMetaDataFunction(name = "Left paddle turning")
     public boolean isLeftPaddleTurning() {
-        return getMetaData().getSets().getBoolean(EntityMetaDataFields.BOAT_PADDLE_LEFT);
+        return getEntityMetaData().getSets().getBoolean(EntityMetaDataFields.BOAT_PADDLE_LEFT);
     }
 
     @EntityMetaDataFunction(name = "Right paddle turning")
     public boolean isRightPaddleTurning() {
-        return getMetaData().getSets().getBoolean(EntityMetaDataFields.BOAT_PADDLE_RIGHT);
+        return getEntityMetaData().getSets().getBoolean(EntityMetaDataFields.BOAT_PADDLE_RIGHT);
     }
 
     @EntityMetaDataFunction(name = "Splash timer")
     public int getSplashTimer() {
-        return getMetaData().getSets().getInt(EntityMetaDataFields.BOAT_BUBBLE_TIME);
+        return getEntityMetaData().getSets().getInt(EntityMetaDataFields.BOAT_BUBBLE_TIME);
     }
 
     public enum BoatMaterials {

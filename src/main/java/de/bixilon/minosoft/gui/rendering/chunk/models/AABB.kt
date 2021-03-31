@@ -83,7 +83,7 @@ class AABB {
         return Axes.choose(axis, max)
     }
 
-    fun extend(vec3: Vec3): AABB {
+    infix fun extend(vec3: Vec3): AABB {
         val newMin = Vec3(min)
         val newMax = Vec3(max)
 

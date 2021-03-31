@@ -30,22 +30,22 @@ public class Cat extends TamableAnimal {
 
     @EntityMetaDataFunction(name = "Variant")
     public CatVariants getVariant() {
-        return CatVariants.byId(this.metaData.getSets().getInt(EntityMetaDataFields.CAT_VARIANT));
+        return CatVariants.byId(getEntityMetaData().getSets().getInt(EntityMetaDataFields.CAT_VARIANT));
     }
 
     @EntityMetaDataFunction(name = "Lying")
     public boolean isLying() {
-        return this.metaData.getSets().getBoolean(EntityMetaDataFields.CAT_IS_LYING);
+        return getEntityMetaData().getSets().getBoolean(EntityMetaDataFields.CAT_IS_LYING);
     }
 
     @EntityMetaDataFunction(name = "Relaxed")
     public boolean isRelaxed() {
-        return this.metaData.getSets().getBoolean(EntityMetaDataFields.CAT_IS_RELAXED);
+        return getEntityMetaData().getSets().getBoolean(EntityMetaDataFields.CAT_IS_RELAXED);
     }
 
     @EntityMetaDataFunction(name = "Collar color")
     public RGBColor getCollarColor() {
-        return ChatColors.getColorById(this.metaData.getSets().getInt(EntityMetaDataFields.CAT_GET_COLLAR_COLOR));
+        return ChatColors.getColorById(getEntityMetaData().getSets().getInt(EntityMetaDataFields.CAT_GET_COLLAR_COLOR));
     }
 
     public enum CatVariants {

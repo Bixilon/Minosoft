@@ -27,6 +27,6 @@ public class Villager extends AbstractVillager {
 
     @EntityMetaDataFunction(name = "Villager data")
     public VillagerData getVillagerDate() {
-        return this.metaData.getSets().getVillagerData(EntityMetaDataFields.VILLAGER_VILLAGER_DATA);
+        return getEntityMetaData().getSets().getVillagerData(EntityMetaDataFields.VILLAGER_VILLAGER_DATA);
     }
 }

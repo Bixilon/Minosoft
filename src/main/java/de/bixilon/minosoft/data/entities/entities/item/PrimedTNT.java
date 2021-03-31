@@ -28,6 +28,6 @@ public class PrimedTNT extends Entity {
 
     @EntityMetaDataFunction(name = "Fuse time")
     public int getFuseTime() {
-        return this.metaData.getSets().getInt(EntityMetaDataFields.PRIMED_TNT_FUSE_TIME);
+        return getEntityMetaData().getSets().getInt(EntityMetaDataFields.PRIMED_TNT_FUSE_TIME);
     }
 }

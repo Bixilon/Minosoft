@@ -26,9 +26,11 @@ import glm_.vec3.Vec3;
 
 import javax.annotation.Nullable;
 import java.util.HashSet;
+import java.util.UUID;
 
 public class PlayerEntity extends LivingEntity {
     private String name;
+    private UUID uuid;
     private final HashSet<PlayerPropertyData> properties;
     private Gamemodes gamemode;
 
@@ -38,9 +40,10 @@ public class PlayerEntity extends LivingEntity {
         this.properties = null;
     }
 
-    public PlayerEntity(Connection connection, Vec3 position, EntityRotation rotation, String name, @Nullable HashSet<PlayerPropertyData> properties, Gamemodes gamemode) {
+    public PlayerEntity(Connection connection, Vec3 position, EntityRotation rotation, String name, UUID uuid, @Nullable HashSet<PlayerPropertyData> properties, Gamemodes gamemode) {
         super(connection, position, rotation);
         this.name = name;
+        this.uuid = uuid;
         this.properties = properties;
         this.gamemode = gamemode;
         this.hasCollisions = gamemode != Gamemodes.SPECTATOR;
@@ -48,33 +51,33 @@ public class PlayerEntity extends LivingEntity {
 
     @EntityMetaDataFunction(name = "Absorption hearts")
     public float getPlayerAbsorptionHearts() {
-        return this.metaData.getSets().getFloat(EntityMetaDataFields.PLAYER_ABSORPTION_HEARTS);
+        return getEntityMetaData().getSets().getFloat(EntityMetaDataFields.PLAYER_ABSORPTION_HEARTS);
     }
 
     @EntityMetaDataFunction(name = "Score")
     public int getScore() {
-        return this.metaData.getSets().getInt(EntityMetaDataFields.PLAYER_SCORE);
+        return getEntityMetaData().getSets().getInt(EntityMetaDataFields.PLAYER_SCORE);
     }
 
     private boolean getSkinPartsFlag(int bitMask) {
-        return this.metaData.getSets().getBitMask(EntityMetaDataFields.PLAYER_SKIN_PARTS_FLAGS, bitMask);
+        return getEntityMetaData().getSets().getBitMask(EntityMetaDataFields.PLAYER_SKIN_PARTS_FLAGS, bitMask);
     }
 
     @EntityMetaDataFunction(name = "Main hand")
     public Hands getMainHand() {
-        return this.metaData.getSets().getByte(EntityMetaDataFields.PLAYER_SKIN_MAIN_HAND) == 0x01 ? Hands.OFF_HAND : Hands.MAIN_HAND;
+        return getEntityMetaData().getSets().getByte(EntityMetaDataFields.PLAYER_SKIN_MAIN_HAND) == 0x01 ? Hands.OFF_HAND : Hands.MAIN_HAND;
     }
 
     @EntityMetaDataFunction(name = "Left shoulder entity data")
     @Nullable
     public CompoundTag getLeftShoulderData() {
-        return this.metaData.getSets().getNBT(EntityMetaDataFields.PLAYER_LEFT_SHOULDER_DATA);
+        return getEntityMetaData().getSets().getNBT(EntityMetaDataFields.PLAYER_LEFT_SHOULDER_DATA);
     }
 
     @EntityMetaDataFunction(name = "Right shoulder entity data")
     @Nullable
     public CompoundTag getRightShoulderData() {
-        return this.metaData.getSets().getNBT(EntityMetaDataFields.PLAYER_RIGHT_SHOULDER_DATA);
+        return getEntityMetaData().getSets().getNBT(EntityMetaDataFields.PLAYER_RIGHT_SHOULDER_DATA);
     }
 
     @EntityMetaDataFunction(name = "Name")
@@ -99,6 +102,14 @@ public class PlayerEntity extends LivingEntity {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public UUID getUUID() {
+        return this.uuid;
+    }
+
+    public void setUUID(UUID uuid) {
+        this.uuid = uuid;
     }
 }
 

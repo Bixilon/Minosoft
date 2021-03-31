@@ -27,6 +27,6 @@ public class Rabbit extends Animal {
 
     @EntityMetaDataFunction(name = "Variant")
     public int getVariant() {
-        return this.metaData.getSets().getInt(EntityMetaDataFields.RABBIT_VARIANT);
+        return getEntityMetaData().getSets().getInt(EntityMetaDataFields.RABBIT_VARIANT);
     }
 }

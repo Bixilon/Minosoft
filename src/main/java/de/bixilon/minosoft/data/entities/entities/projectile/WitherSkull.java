@@ -27,7 +27,7 @@ public class WitherSkull extends AbstractHurtingProjectile {
 
     @EntityMetaDataFunction(name = "Is dangerous")
     public boolean isDangerous() {
-        return getMetaData().getSets().getBoolean(EntityMetaDataFields.WITHER_SKULL_DANGEROUS);
+        return getEntityMetaData().getSets().getBoolean(EntityMetaDataFields.WITHER_SKULL_DANGEROUS);
     }
 
 }

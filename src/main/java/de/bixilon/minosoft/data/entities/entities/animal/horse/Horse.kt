@@ -24,11 +24,11 @@ import glm_.vec3.Vec3
 class Horse(connection: Connection, location: Vec3, rotation: EntityRotation) : AbstractHorse(connection, location, rotation) {
 
     private fun getAbstractHorseFlag(bitMask: Int): Boolean {
-        return metaData.sets.getBitMask(EntityMetaDataFields.ABSTRACT_HORSE_FLAGS, bitMask)
+        return entityMetaData.sets.getBitMask(EntityMetaDataFields.ABSTRACT_HORSE_FLAGS, bitMask)
     }
 
     private val variant: Int
-        get() = metaData.sets.getInt(EntityMetaDataFields.HORSE_VARIANT)
+        get() = entityMetaData.sets.getInt(EntityMetaDataFields.HORSE_VARIANT)
 
     @get:EntityMetaDataFunction(name = "Color")
     val color: HorseColors
@@ -45,7 +45,7 @@ class Horse(connection: Connection, location: Vec3, rotation: EntityRotation) : 
             if (versionId <= ProtocolVersions.V_1_8_9) { // ToDo
                 return null
             }
-            return connection.mapping.itemRegistry.get(when (this.metaData.sets.getInt(EntityMetaDataFields.LEGACY_HORSE_ARMOR)) {
+            return connection.mapping.itemRegistry.get(when (this.entityMetaData.sets.getInt(EntityMetaDataFields.LEGACY_HORSE_ARMOR)) {
                 1 -> LEGACY_IRON_ARMOR
                 2 -> LEGACY_GOLD_ARMOR
                 3 -> LEGACY_DIAMOND_ARMOR

@@ -31,17 +31,17 @@ public class Dolphin extends WaterAnimal {
     @EntityMetaDataFunction(name = "Treasure position")
     @Nullable
     public Vec3i getTreasurePosition() {
-        return this.metaData.getSets().getBlockPosition(EntityMetaDataFields.DOLPHIN_TREASURE_POSITION);
+        return getEntityMetaData().getSets().getBlockPosition(EntityMetaDataFields.DOLPHIN_TREASURE_POSITION);
     }
 
     @EntityMetaDataFunction(name = "Has fish")
     public boolean hasFish() {
-        return this.metaData.getSets().getBoolean(EntityMetaDataFields.DOLPHIN_HAS_FISH);
+        return getEntityMetaData().getSets().getBoolean(EntityMetaDataFields.DOLPHIN_HAS_FISH);
     }
 
     @EntityMetaDataFunction(name = "Moistness level")
     public int getMoistnessLevel() {
-        return this.metaData.getSets().getInt(EntityMetaDataFields.DOLPHIN_MOISTNESS_LEVEL);
+        return getEntityMetaData().getSets().getInt(EntityMetaDataFields.DOLPHIN_MOISTNESS_LEVEL);
     }
 }
 

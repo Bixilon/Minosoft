@@ -30,11 +30,11 @@ public class Fox extends Animal {
 
     @EntityMetaDataFunction(name = "Variant")
     public int getVariant() {
-        return this.metaData.getSets().getInt(EntityMetaDataFields.FOX_VARIANT);
+        return getEntityMetaData().getSets().getInt(EntityMetaDataFields.FOX_VARIANT);
     }
 
     private boolean getFoxFlag(int bitMask) {
-        return this.metaData.getSets().getBitMask(EntityMetaDataFields.FOX_FLAGS, bitMask);
+        return getEntityMetaData().getSets().getBitMask(EntityMetaDataFields.FOX_FLAGS, bitMask);
     }
 
     @EntityMetaDataFunction(name = "Is sitting")
@@ -75,12 +75,12 @@ public class Fox extends Animal {
     @EntityMetaDataFunction(name = "Trusted 1")
     @Nullable
     public UUID getFirstTrusted() {
-        return this.metaData.getSets().getUUID(EntityMetaDataFields.FOX_TRUSTED_1);
+        return getEntityMetaData().getSets().getUUID(EntityMetaDataFields.FOX_TRUSTED_1);
     }
 
     @EntityMetaDataFunction(name = "Trusted 2")
     @Nullable
     public UUID getSecondTrusted() {
-        return this.metaData.getSets().getUUID(EntityMetaDataFields.FOX_TRUSTED_2);
+        return getEntityMetaData().getSets().getUUID(EntityMetaDataFields.FOX_TRUSTED_2);
     }
 }

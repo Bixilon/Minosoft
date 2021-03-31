@@ -31,12 +31,12 @@ public class ItemFrame extends HangingEntity {
     @EntityMetaDataFunction(name = "Item")
     @Nullable
     public ItemStack getItem() {
-        return this.metaData.getSets().getItemStack(EntityMetaDataFields.ITEM_FRAME_ITEM);
+        return getEntityMetaData().getSets().getItemStack(EntityMetaDataFields.ITEM_FRAME_ITEM);
     }
 
     @EntityMetaDataFunction(name = "Item rotation level")
     public int getItemRotation() {
-        return this.metaData.getSets().getInt(EntityMetaDataFields.ITEM_FRAME_ROTATION);
+        return getEntityMetaData().getSets().getInt(EntityMetaDataFields.ITEM_FRAME_ROTATION);
     }
 
 }

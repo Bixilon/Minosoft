@@ -31,7 +31,7 @@ public abstract class Fireball extends AbstractHurtingProjectile {
     @EntityMetaDataFunction(name = "Item")
     @Nullable
     private ItemStack getItem() {
-        ItemStack itemStack = this.metaData.getSets().getItemStack(EntityMetaDataFields.FIREBALL_ITEM);
+        ItemStack itemStack = getEntityMetaData().getSets().getItemStack(EntityMetaDataFields.FIREBALL_ITEM);
         if (itemStack == null) {
             return getDefaultItem();
         }

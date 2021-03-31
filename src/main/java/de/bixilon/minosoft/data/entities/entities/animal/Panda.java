@@ -27,31 +27,31 @@ public class Panda extends Animal {
 
     @EntityMetaDataFunction(name = "Unhappy timer")
     public int getUnhappyTimer() {
-        return this.metaData.getSets().getInt(EntityMetaDataFields.PANDA_UNHAPPY_TIMER);
+        return getEntityMetaData().getSets().getInt(EntityMetaDataFields.PANDA_UNHAPPY_TIMER);
     }
 
     @EntityMetaDataFunction(name = "Sneeze timer")
     public int getSneezeTimer() {
-        return this.metaData.getSets().getInt(EntityMetaDataFields.PANDA_SNEEZE_TIMER);
+        return getEntityMetaData().getSets().getInt(EntityMetaDataFields.PANDA_SNEEZE_TIMER);
     }
 
     @EntityMetaDataFunction(name = "Eat timer")
     public int getEatTimer() {
-        return this.metaData.getSets().getInt(EntityMetaDataFields.PANDA_EAT_TIMER);
+        return getEntityMetaData().getSets().getInt(EntityMetaDataFields.PANDA_EAT_TIMER);
     }
 
     @EntityMetaDataFunction(name = "Main gene")
     public Genes getMainGene() {
-        return Genes.byId(this.metaData.getSets().getInt(EntityMetaDataFields.PANDA_MAIN_GENE));
+        return Genes.byId(getEntityMetaData().getSets().getInt(EntityMetaDataFields.PANDA_MAIN_GENE));
     }
 
     @EntityMetaDataFunction(name = "Hidden gene")
     public Genes getHiddenGene() {
-        return Genes.byId(this.metaData.getSets().getInt(EntityMetaDataFields.PANDA_HIDDEN_GAME));
+        return Genes.byId(getEntityMetaData().getSets().getInt(EntityMetaDataFields.PANDA_HIDDEN_GAME));
     }
 
     private boolean getPandaFlag(int bitMask) {
-        return this.metaData.getSets().getBitMask(EntityMetaDataFields.PANDA_FLAGS, bitMask);
+        return getEntityMetaData().getSets().getBitMask(EntityMetaDataFields.PANDA_FLAGS, bitMask);
     }
 
     @EntityMetaDataFunction(name = "Is sneezing")
