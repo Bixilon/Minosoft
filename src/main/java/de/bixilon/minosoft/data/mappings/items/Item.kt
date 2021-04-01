@@ -19,18 +19,19 @@ import de.bixilon.minosoft.data.mappings.inventory.CreativeModeTab
 import de.bixilon.minosoft.data.mappings.items.armor.ArmorItem
 import de.bixilon.minosoft.data.mappings.registry.RegistryItem
 import de.bixilon.minosoft.data.mappings.registry.ResourceLocationDeserializer
+import de.bixilon.minosoft.data.mappings.registry.Translatable
 import de.bixilon.minosoft.data.mappings.versions.VersionMapping
 
 open class Item(
     override val resourceLocation: ResourceLocation,
     data: JsonObject,
     versionMapping: VersionMapping,
-) : RegistryItem {
+) : RegistryItem, Translatable {
     val rarity: Rarities = data["rarity"]?.asInt?.let { Rarities.VALUES[it] } ?: Rarities.COMMON
     val maxStackSize: Int = data["max_stack_size"]?.asInt ?: 64
     val maxDamage: Int = data["max_damage"]?.asInt ?: 64
     val isFireResistant: Boolean = data["is_fire_resistant"]?.asBoolean ?: false
-    val translationKey: String? = data["description_id"]?.asString
+    override val translationKey: String? = data["description_id"]?.asString
     val creativeModeTab: CreativeModeTab? = data["category"]?.asInt?.let { versionMapping.creativeModeTabRegistry.get(it) }
 
     override fun toString(): String {

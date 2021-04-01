@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.mappings.statistics.Statistic;
-import de.bixilon.minosoft.data.mappings.statistics.StatisticCategories;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
@@ -32,7 +31,7 @@ public class PacketStatistics extends ClientboundPacket {
             if (buffer.getVersionId() < V_17W47A) { // ToDo
                 this.statistics.put(buffer.getConnection().getMapping().getStatisticRegistry().get(buffer.readResourceLocation()), buffer.readVarInt());
             } else {
-                StatisticCategories category = StatisticCategories.byId(buffer.readVarInt());
+                var category = buffer.getConnection().getMapping().getStatisticRegistry().get(buffer.readVarInt()); // category before?
                 this.statistics.put(buffer.getConnection().getMapping().getStatisticRegistry().get(buffer.readVarInt()), buffer.readVarInt());
             }
         }

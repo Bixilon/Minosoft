@@ -26,7 +26,6 @@ import de.bixilon.minosoft.data.mappings.particle.data.ParticleData
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.network.Connection
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.BitByte
 import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.enum.ValuesEnum
@@ -85,11 +84,7 @@ class EntityMetaData(
             EntityMetaDataDataTypes.VILLAGER_DATA -> VillagerData(VillagerTypes.VALUES[buffer.readVarInt()], connection.mapping.villagerProfessionRegistry.get(buffer.readVarInt()).resourceLocation, VillagerLevels.VALUES[buffer.readVarInt()])
             EntityMetaDataDataTypes.OPT_BLOCK_ID -> {
                 val blockId = buffer.readVarInt()
-                if (blockId == ProtocolDefinition.NULL_BLOCK_ID) {
-                    null
-                } else {
-                    buffer.connection.mapping.getBlockState(blockId)
-                }
+                buffer.connection.mapping.getBlockState(blockId)
             }
         }
     }

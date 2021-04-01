@@ -14,21 +14,22 @@ package de.bixilon.minosoft.data.entities
 
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.data.mappings.registry.Translatable
 
 data class EntityInformation(
     val resourceLocation: ResourceLocation,
-    val descriptionId: String?,
+    override val translationKey: String?,
     val width: Float,
     val height: Float,
     val sizeFixed: Boolean,
     val fireImmune: Boolean,
-) {
+) : Translatable {
 
     companion object {
         fun deserialize(resourceLocation: ResourceLocation, data: JsonObject): EntityInformation {
             return EntityInformation(
                 resourceLocation = resourceLocation,
-                descriptionId = data["description_id"]?.asString,
+                translationKey = data["description_id"]?.asString,
                 width = data["width"].asFloat,
                 height = data["height"].asFloat,
                 fireImmune = data["fire_immune"]?.asBoolean ?: false,
