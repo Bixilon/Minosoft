@@ -19,7 +19,6 @@ import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.Poses
 import de.bixilon.minosoft.data.entities.entities.npc.villager.data.VillagerData
 import de.bixilon.minosoft.data.entities.entities.npc.villager.data.VillagerLevels
-import de.bixilon.minosoft.data.entities.entities.npc.villager.data.VillagerProfessions
 import de.bixilon.minosoft.data.entities.entities.npc.villager.data.VillagerTypes
 import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.mappings.blocks.BlockState
@@ -83,7 +82,7 @@ class EntityMetaData(
             EntityMetaDataDataTypes.POSE -> buffer.readPose()
             EntityMetaDataDataTypes.BLOCK_ID -> buffer.connection.mapping.getBlockState(buffer.readVarInt()) // ToDo
             EntityMetaDataDataTypes.OPT_VAR_INT -> buffer.readVarInt() - 1
-            EntityMetaDataDataTypes.VILLAGER_DATA -> VillagerData(VillagerTypes.VALUES[buffer.readVarInt()], VillagerProfessions.byId(buffer.readVarInt(), buffer.versionId)!!, VillagerLevels.VALUES[buffer.readVarInt()])
+            EntityMetaDataDataTypes.VILLAGER_DATA -> VillagerData(VillagerTypes.VALUES[buffer.readVarInt()], connection.mapping.villagerProfessionRegistry.get(buffer.readVarInt()).resourceLocation, VillagerLevels.VALUES[buffer.readVarInt()])
             EntityMetaDataDataTypes.OPT_BLOCK_ID -> {
                 val blockId = buffer.readVarInt()
                 if (blockId == ProtocolDefinition.NULL_BLOCK_ID) {

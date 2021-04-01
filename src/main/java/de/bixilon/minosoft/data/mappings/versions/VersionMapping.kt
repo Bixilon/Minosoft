@@ -37,6 +37,7 @@ import de.bixilon.minosoft.data.mappings.registry.EnumRegistry
 import de.bixilon.minosoft.data.mappings.registry.FakeEnumRegistry
 import de.bixilon.minosoft.data.mappings.registry.Registry
 import de.bixilon.minosoft.data.mappings.statistics.Statistic
+import de.bixilon.minosoft.data.mappings.villagers.VillagerProfession
 import de.bixilon.minosoft.gui.rendering.chunk.VoxelShape
 import de.bixilon.minosoft.gui.rendering.chunk.models.AABB
 import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModel
@@ -59,6 +60,8 @@ class VersionMapping(var version: Version?) {
     val biomeRegistry: Registry<Biome> = Registry()
     val dimensionRegistry: Registry<Dimension> = Registry()
     val materialRegistry: Registry<Material> = Registry()
+
+    val villagerProfessionRegistry: Registry<VillagerProfession> = Registry()
 
     val equipmentSlotRegistry: EnumRegistry<InventorySlots.EquipmentSlots> = EnumRegistry(values = InventorySlots.EquipmentSlots)
     val handEquipmentSlotRegistry: EnumRegistry<InventorySlots.EquipmentSlots> = EnumRegistry(values = InventorySlots.EquipmentSlots)
@@ -106,6 +109,7 @@ class VersionMapping(var version: Version?) {
             biomePrecipitationRegistry.setParent(value?.biomePrecipitationRegistry)
             biomeCategoryRegistry.setParent(value?.biomeCategoryRegistry)
             materialRegistry.setParent(value?.materialRegistry)
+            villagerProfessionRegistry.setParent(value?.villagerProfessionRegistry)
 
             equipmentSlotRegistry.setParent(value?.equipmentSlotRegistry)
             handEquipmentSlotRegistry.setParent(value?.handEquipmentSlotRegistry)
@@ -162,20 +166,22 @@ class VersionMapping(var version: Version?) {
         loadEnumRegistry(pixlyzerData["title_actions"], titleActionsRegistry, DefaultRegistries.TITLE_ACTIONS_REGISTRY)
 
         // id stuff
-        biomeCategoryRegistry.initialize(pixlyzerData["biome_categories"]?.asJsonObject, this, BiomeCategory.Companion)
-        biomePrecipitationRegistry.initialize(pixlyzerData["biome_precipations"]?.asJsonObject, this, BiomePrecipitation.Companion)
-        creativeModeTabRegistry.initialize(pixlyzerData["creative_inventory_tab"]?.asJsonObject, this, CreativeModeTab.Companion)
+        biomeCategoryRegistry.initialize(pixlyzerData["biome_categories"]?.asJsonObject, this, BiomeCategory)
+        biomePrecipitationRegistry.initialize(pixlyzerData["biome_precipations"]?.asJsonObject, this, BiomePrecipitation)
+        creativeModeTabRegistry.initialize(pixlyzerData["creative_inventory_tab"]?.asJsonObject, this, CreativeModeTab)
 
         // id resource location stuff
-        materialRegistry.initialize(pixlyzerData["materials"]?.asJsonObject, this, Material.Companion)
-        motiveRegistry.initialize(pixlyzerData["motives"]?.asJsonObject, this, Motive.Companion, version.isFlattened())
-        blockRegistry.initialize(pixlyzerData["blocks"]?.asJsonObject, this, Block.Companion, version.isFlattened(), Registry.MetaTypes.BITS_4)
-        itemRegistry.initialize(pixlyzerData["items"]?.asJsonObject, this, Item.Companion, version.isFlattened(), Registry.MetaTypes.BITS_16)
-        enchantmentRegistry.initialize(pixlyzerData["enchantments"]?.asJsonObject, this, Enchantment.Companion)
-        particleRegistry.initialize(pixlyzerData["particles"]?.asJsonObject, this, Particle.Companion)
-        statusEffectRegistry.initialize(pixlyzerData["mob_effect"]?.asJsonObject, this, StatusEffect.Companion)
-        biomeRegistry.initialize(pixlyzerData["biomes"]?.asJsonObject, this, Biome.Companion)
-        dimensionRegistry.initialize(pixlyzerData["dimensions"]?.asJsonObject, this, Dimension.Companion)
+        materialRegistry.initialize(pixlyzerData["materials"]?.asJsonObject, this, Material)
+        motiveRegistry.initialize(pixlyzerData["motives"]?.asJsonObject, this, Motive, version.isFlattened())
+        blockRegistry.initialize(pixlyzerData["blocks"]?.asJsonObject, this, Block, version.isFlattened(), Registry.MetaTypes.BITS_4)
+        itemRegistry.initialize(pixlyzerData["items"]?.asJsonObject, this, Item, version.isFlattened(), Registry.MetaTypes.BITS_16)
+        enchantmentRegistry.initialize(pixlyzerData["enchantments"]?.asJsonObject, this, Enchantment)
+        particleRegistry.initialize(pixlyzerData["particles"]?.asJsonObject, this, Particle)
+        statusEffectRegistry.initialize(pixlyzerData["mob_effect"]?.asJsonObject, this, StatusEffect)
+        biomeRegistry.initialize(pixlyzerData["biomes"]?.asJsonObject, this, Biome)
+        dimensionRegistry.initialize(pixlyzerData["dimensions"]?.asJsonObject, this, Dimension)
+
+        villagerProfessionRegistry.initialize(pixlyzerData["villager_professions"]?.asJsonObject, this, VillagerProfession)
 
         loadEntities(pixlyzerData["entities"]?.asJsonObject)
         // post init

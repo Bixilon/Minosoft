@@ -17,7 +17,6 @@ import de.bixilon.minosoft.data.Directions;
 import de.bixilon.minosoft.data.entities.entities.animal.Axolotl;
 import de.bixilon.minosoft.data.entities.entities.npc.villager.data.VillagerData;
 import de.bixilon.minosoft.data.entities.entities.npc.villager.data.VillagerLevels;
-import de.bixilon.minosoft.data.entities.entities.npc.villager.data.VillagerProfessions;
 import de.bixilon.minosoft.data.entities.entities.npc.villager.data.VillagerTypes;
 import de.bixilon.minosoft.data.entities.entities.vehicle.Boat;
 import de.bixilon.minosoft.data.mappings.ResourceLocation;
@@ -194,7 +193,7 @@ public enum EntityMetaDataFields {
 
     ABSTRACT_VILLAGER_UNHAPPY_TIMER(0),
 
-    VILLAGER_VILLAGER_DATA(new VillagerData(VillagerTypes.PLAINS, VillagerProfessions.NONE, VillagerLevels.APPRENTICE)),
+    VILLAGER_VILLAGER_DATA(new VillagerData(VillagerTypes.PLAINS, new ResourceLocation("minecraft:none"), VillagerLevels.APPRENTICE)),
 
     IRON_GOLEM_FLAGS((byte) 0),
 
@@ -239,7 +238,7 @@ public enum EntityMetaDataFields {
     ZOGLIN_IS_BABY(false),
 
     ZOMBIE_VILLAGER_IS_CONVERTING(false),
-    ZOMBIE_VILLAGER_DATA(new VillagerData(VillagerTypes.PLAINS, VillagerProfessions.NONE, VillagerLevels.APPRENTICE)),
+    ZOMBIE_VILLAGER_DATA(VILLAGER_VILLAGER_DATA.defaultValue),
 
     ENDERMAN_CARRIED_BLOCK,
     ENDERMAN_IS_SCREAMING(false),

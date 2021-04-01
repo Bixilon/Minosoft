@@ -10,12 +10,29 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.data.entities.entities.npc.villager.data
 
+package de.bixilon.minosoft.data.mappings.villagers
+
+import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.data.mappings.registry.RegistryItem
+import de.bixilon.minosoft.data.mappings.registry.ResourceLocationDeserializer
+import de.bixilon.minosoft.data.mappings.versions.VersionMapping
 
-data class VillagerData(
-    val type: VillagerTypes,
-    val profession: ResourceLocation,
-    val level: VillagerLevels,
-)
+data class VillagerProfession(
+    override val resourceLocation: ResourceLocation,
+    // ToDo
+) : RegistryItem {
+
+    override fun toString(): String {
+        return resourceLocation.full
+    }
+
+    companion object : ResourceLocationDeserializer<VillagerProfession> {
+        override fun deserialize(mappings: VersionMapping, resourceLocation: ResourceLocation, data: JsonObject): VillagerProfession {
+            return VillagerProfession(
+                resourceLocation = resourceLocation,
+            )
+        }
+    }
+}
