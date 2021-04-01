@@ -60,7 +60,6 @@ class WorldRenderer(
         synchronized(this.queuedChunks) {
             queuedChunks.remove(chunkPosition)
         }
-        val chunk = world.getChunk(chunkPosition) ?: error("Chunk in world is null at $chunkPosition?")
         val meshCollection = ChunkMeshCollection()
 
         for ((sectionHeight, section) in sections) {

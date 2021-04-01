@@ -39,12 +39,10 @@ class TextureAnimation(
     }
 
     private fun getNextIndex(): Int {
-        var nextFrameIndex = currentFrameIndex + 1
-
-        if (nextFrameIndex == animationProperties.frames.size) {
-            nextFrameIndex = 0
+        return if (currentFrameIndex == animationProperties.frames.size - 1) {
+            1
+        } else {
+            currentFrameIndex + 1
         }
-
-        return nextFrameIndex
     }
 }

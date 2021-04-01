@@ -202,18 +202,6 @@ public final class Minosoft {
         return config;
     }
 
-
-    /**
-     * Waits until all critical components are started
-     */
-    public static void waitForStartup() {
-        try {
-            START_STATUS_LATCH.waitUntilZero();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
     public static void shutdown(String message, ShutdownReasons reason) {
         if (isExiting) {
             return;
@@ -246,9 +234,4 @@ public final class Minosoft {
     public static void shutdown(ShutdownReasons reason) {
         shutdown(null, reason);
     }
-
-    public static CountUpAndDownLatch getStartStatusLatch() {
-        return START_STATUS_LATCH;
-    }
-
 }
