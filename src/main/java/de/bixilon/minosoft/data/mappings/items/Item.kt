@@ -39,7 +39,8 @@ open class Item(
     }
 
     companion object : ResourceLocationDeserializer<Item> {
-        override fun deserialize(mappings: VersionMapping, resourceLocation: ResourceLocation, data: JsonObject): Item {
+        override fun deserialize(mappings: VersionMapping?, resourceLocation: ResourceLocation, data: JsonObject): Item {
+            check(mappings != null) { "VersionMapping is null!" }
             return when (data["class"].asString) {
                 "ArmorItem" -> ArmorItem(resourceLocation, data, mappings)
                 //   "Item" -> Item(resourceLocation, data)

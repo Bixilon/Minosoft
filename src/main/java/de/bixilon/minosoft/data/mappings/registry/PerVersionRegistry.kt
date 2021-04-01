@@ -11,21 +11,16 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.mappings
+package de.bixilon.minosoft.data.mappings.registry
 
 import com.google.gson.JsonObject
-import de.bixilon.minosoft.data.mappings.registry.EnumRegistry
 import de.bixilon.minosoft.data.mappings.versions.Version
-import de.bixilon.minosoft.util.enum.ValuesEnum
 import java.util.*
 
-class PerVersionRegistry<T : Enum<*>>(
-    val values: ValuesEnum<T>,
-) {
-    private lateinit var versions: Map<Int, EnumRegistry<T>>
+class PerVersionRegistry<T : RegistryItem> {
+    private lateinit var versions: Map<Int, Registry<T>>
 
-
-    fun forVersion(version: Version): EnumRegistry<T> {
+    fun forVersion(version: Version): Registry<T> {
         // must loop from highest version to lowest!
         for ((versionId, registry) in versions) {
             if (version.versionId < versionId) {
@@ -36,12 +31,12 @@ class PerVersionRegistry<T : Enum<*>>(
         throw IllegalArgumentException("Can not find a registry for version $version")
     }
 
-    fun initialize(data: JsonObject) {
+    fun initialize(data: JsonObject, deserializer: ResourceLocationDeserializer<T>) {
         check(!this::versions.isInitialized) { "Already initialized!" }
 
-        val versions: SortedMap<Int, EnumRegistry<T>> = sortedMapOf({ t, t2 -> t2 - t })
+        val versions: SortedMap<Int, Registry<T>> = sortedMapOf({ t, t2 -> t2 - t })
         for ((versionId, json) in data.entrySet()) {
-            versions[Integer.parseInt(versionId)] = EnumRegistry(values = values, mutable = false).initialize(json)
+            versions[Integer.parseInt(versionId)] = Registry<T>().initialize(json as JsonObject, null, deserializer)
         }
         this.versions = versions.toMap()
     }

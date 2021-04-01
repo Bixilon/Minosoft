@@ -18,7 +18,9 @@ import de.bixilon.minosoft.config.StaticConfiguration;
 import de.bixilon.minosoft.data.VelocityHandler;
 import de.bixilon.minosoft.data.accounts.Account;
 import de.bixilon.minosoft.data.commands.CommandRootNode;
+import de.bixilon.minosoft.data.mappings.DefaultRegistries;
 import de.bixilon.minosoft.data.mappings.MappingsLoadingException;
+import de.bixilon.minosoft.data.mappings.ResourceLocation;
 import de.bixilon.minosoft.data.mappings.recipes.Recipes;
 import de.bixilon.minosoft.data.mappings.versions.Version;
 import de.bixilon.minosoft.data.mappings.versions.VersionMapping;
@@ -28,10 +30,13 @@ import de.bixilon.minosoft.data.player.tab.TabList;
 import de.bixilon.minosoft.data.scoreboard.ScoreboardManager;
 import de.bixilon.minosoft.data.world.World;
 import de.bixilon.minosoft.gui.rendering.Rendering;
+import de.bixilon.minosoft.modding.channels.DefaultPluginChannels;
 import de.bixilon.minosoft.modding.event.EventInvoker;
+import de.bixilon.minosoft.modding.event.EventInvokerCallback;
 import de.bixilon.minosoft.modding.event.events.*;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
+import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketStopSound;
 import de.bixilon.minosoft.protocol.packets.serverbound.handshaking.PacketHandshake;
 import de.bixilon.minosoft.protocol.packets.serverbound.login.PacketLoginStart;
 import de.bixilon.minosoft.protocol.packets.serverbound.status.PacketStatusRequest;
@@ -49,6 +54,8 @@ import org.xbill.DNS.TextParseException;
 import javax.annotation.Nullable;
 import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W29A;
 
 public class Connection {
     public static int lastConnectionId;
@@ -497,5 +504,45 @@ public class Connection {
 
     public ScoreboardManager getScoreboardManager() {
         return this.scoreboardManager;
+    }
+
+    public ResourceLocation getDefaultChannelName(ResourceLocation channel) {
+        return DefaultRegistries.INSTANCE.getDEFAULT_PLUGIN_CHANNELS_REGISTRY().forVersion(this.version).get(channel).getName();
+    }
+
+    private void registerDefaultPluginChannels() {
+        registerEvent(new EventInvokerCallback<PluginMessageReceiveEvent>((event) -> {
+            ResourceLocation brandChannelName = getDefaultChannelName(DefaultPluginChannels.BRAND);
+            if (!event.getChannel().equals(brandChannelName)) {
+                return;
+            }
+
+            InByteBuffer data = event.getData();
+            String serverVersion;
+            String clientVersion = (Minosoft.getConfig().getConfig().getNetwork().getFakeNetworkBrand() ? "vanilla" : "Minosoft");
+            OutByteBuffer toSend = new OutByteBuffer(this);
+            if (this.version.getVersionId() < V_14W29A) {
+                // no length prefix
+                serverVersion = new String(data.getBytes());
+                toSend.writeBytes(clientVersion.getBytes());
+            } else {
+                // length prefix
+                serverVersion = data.readString();
+                toSend.writeString(clientVersion);
+            }
+            Log.info(String.format("Server is running \"%s\", connected with %s", serverVersion, getVersion().getVersionName()));
+
+            getSender().sendPluginMessageData(brandChannelName.getFull(), toSend);
+        }));
+
+
+        registerEvent(new EventInvokerCallback<PluginMessageReceiveEvent>((event) -> {
+            ResourceLocation brandChannelName = getDefaultChannelName(DefaultPluginChannels.STOP_SOUND);
+            if (!event.getChannel().equals(brandChannelName)) {
+                return;
+            }
+            PacketStopSound packet = new PacketStopSound(event.getData());
+            packet.handle(this);
+        }));
     }
 }

@@ -44,11 +44,11 @@ open class Registry<T : RegistryItem>(
         this.parentRegistry = registry
     }
 
-    open fun initialize(data: Map<ResourceLocation, JsonObject>?, mappings: VersionMapping, deserializer: ResourceLocationDeserializer<T>, flattened: Boolean = true, metaType: MetaTypes = MetaTypes.NONE) {
+    open fun initialize(data: Map<ResourceLocation, JsonObject>?, mappings: VersionMapping?, deserializer: ResourceLocationDeserializer<T>, flattened: Boolean = true, metaType: MetaTypes = MetaTypes.NONE): Registry<T> {
         check(!initialized) { "Already initialized" }
 
         if (data == null) {
-            return
+            return this
         }
 
         for ((resourceLocation, value) in data) {
@@ -76,10 +76,11 @@ open class Registry<T : RegistryItem>(
             resourceLocationMap[resourceLocation] = item
         }
         initialized = true
+        return this
     }
 
-    open fun initialize(data: JsonObject?, mappings: VersionMapping, deserializer: ResourceLocationDeserializer<T>, flattened: Boolean = true, metaType: MetaTypes = MetaTypes.NONE) {
-        initialize(data?.toResourceLocationMap(), mappings, deserializer, flattened, metaType)
+    open fun initialize(data: JsonObject?, mappings: VersionMapping?, deserializer: ResourceLocationDeserializer<T>, flattened: Boolean = true, metaType: MetaTypes = MetaTypes.NONE): Registry<T> {
+        return initialize(data?.toResourceLocationMap(), mappings, deserializer, flattened, metaType)
     }
 
 

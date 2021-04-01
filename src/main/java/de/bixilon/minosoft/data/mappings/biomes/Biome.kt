@@ -55,7 +55,8 @@ data class Biome(
     }
 
     companion object : ResourceLocationDeserializer<Biome> {
-        override fun deserialize(mappings: VersionMapping, resourceLocation: ResourceLocation, data: JsonObject): Biome {
+        override fun deserialize(mappings: VersionMapping?, resourceLocation: ResourceLocation, data: JsonObject): Biome {
+            check(mappings != null) { "VersionMapping is null!" }
             return Biome(
                 resourceLocation = resourceLocation,
                 depth = data["depth"]?.asFloat ?: 0.0f,

@@ -44,7 +44,8 @@ data class Block(
     }
 
     companion object : ResourceLocationDeserializer<Block> {
-        override fun deserialize(mappings: VersionMapping, resourceLocation: ResourceLocation, data: JsonObject): Block {
+        override fun deserialize(mappings: VersionMapping?, resourceLocation: ResourceLocation, data: JsonObject): Block {
+            check(mappings != null) { "VersionMapping is null!" }
             val block = Block(
                 resourceLocation = resourceLocation, explosionResistance = data["explosion_resistance"]?.asFloat ?: 0.0f,
                 hasCollision = data["has_collision"]?.asBoolean ?: false,

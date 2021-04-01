@@ -28,7 +28,7 @@ data class Particle(
     }
 
     companion object : ResourceLocationDeserializer<Particle> {
-        override fun deserialize(mappings: VersionMapping, resourceLocation: ResourceLocation, data: JsonObject): Particle {
+        override fun deserialize(mappings: VersionMapping?, resourceLocation: ResourceLocation, data: JsonObject): Particle {
             return Particle(resourceLocation)
         }
     }

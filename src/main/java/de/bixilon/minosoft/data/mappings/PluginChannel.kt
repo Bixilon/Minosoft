@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2021 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -10,6 +10,7 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+
 package de.bixilon.minosoft.data.mappings
 
 import com.google.gson.JsonObject
@@ -17,18 +18,21 @@ import de.bixilon.minosoft.data.mappings.registry.RegistryItem
 import de.bixilon.minosoft.data.mappings.registry.ResourceLocationDeserializer
 import de.bixilon.minosoft.data.mappings.versions.VersionMapping
 
-data class StatusEffect(
+data class PluginChannel(
     override val resourceLocation: ResourceLocation,
-    // ToDo
+    val name: ResourceLocation,
 ) : RegistryItem {
 
     override fun toString(): String {
         return resourceLocation.full
     }
 
-    companion object : ResourceLocationDeserializer<StatusEffect> {
-        override fun deserialize(mappings: VersionMapping?, resourceLocation: ResourceLocation, data: JsonObject): StatusEffect {
-            return StatusEffect(resourceLocation)
+    companion object : ResourceLocationDeserializer<PluginChannel> {
+        override fun deserialize(mappings: VersionMapping?, resourceLocation: ResourceLocation, data: JsonObject): PluginChannel {
+            return PluginChannel(
+                resourceLocation = resourceLocation,
+                name = LegacyResourceLocation(data["name"].asString)
+            )
         }
     }
 }

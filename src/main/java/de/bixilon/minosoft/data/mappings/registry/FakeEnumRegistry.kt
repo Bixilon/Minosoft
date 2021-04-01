@@ -42,11 +42,11 @@ class FakeEnumRegistry<T : RegistryFakeEnumerable>(
         this.parentRegistry = registry
     }
 
-    fun initialize(data: JsonObject?, mappings: VersionMapping, deserializer: IdDeserializer<T>) {
+    fun initialize(data: JsonObject?, mappings: VersionMapping, deserializer: IdDeserializer<T>): FakeEnumRegistry<T> {
         check(!initialized) { "Already initialized" }
 
         if (data == null) {
-            return
+            return this
         }
 
         for ((id, value) in data.entrySet()) {
@@ -62,6 +62,7 @@ class FakeEnumRegistry<T : RegistryFakeEnumerable>(
             nameValueMap[item.name] = item
         }
         initialized = true
+        return this
     }
 
     override fun clear() {

@@ -1,0 +1,29 @@
+{
+  "minecraft:default_plugin_channels": {
+    "0": {
+      "minecraft:brand": {
+        "name": "MC|Brand"
+      },
+      "minecraft:stop_sound": {
+        "name": "MC|StopSound"
+      },
+      "minecraft:register": {
+        "name": "REGISTER"
+      },
+      "minecraft:unregister": {
+        "name": "UNREGISTER"
+      }
+    },
+    "385": {
+      "minecraft:brand": {
+        "name": "minecraft:brand"
+      },
+      "minecraft:register": {
+        "name": "minecraft:register"
+      },
+      "minecraft:unregister": {
+        "name": "minecraft:unregister"
+      }
+    }
+  }
+}

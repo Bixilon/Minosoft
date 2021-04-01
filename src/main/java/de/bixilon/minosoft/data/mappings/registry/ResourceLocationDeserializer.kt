@@ -18,5 +18,5 @@ import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.versions.VersionMapping
 
 interface ResourceLocationDeserializer<T> {
-    fun deserialize(mappings: VersionMapping, resourceLocation: ResourceLocation, data: JsonObject): T
+    fun deserialize(mappings: VersionMapping?, resourceLocation: ResourceLocation, data: JsonObject): T
 }

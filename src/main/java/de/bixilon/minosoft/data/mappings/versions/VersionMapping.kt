@@ -35,6 +35,7 @@ import de.bixilon.minosoft.data.mappings.materials.Material
 import de.bixilon.minosoft.data.mappings.particle.Particle
 import de.bixilon.minosoft.data.mappings.registry.EnumRegistry
 import de.bixilon.minosoft.data.mappings.registry.FakeEnumRegistry
+import de.bixilon.minosoft.data.mappings.registry.PerEnumVersionRegistry
 import de.bixilon.minosoft.data.mappings.registry.Registry
 import de.bixilon.minosoft.data.mappings.statistics.Statistic
 import de.bixilon.minosoft.data.mappings.villagers.VillagerProfession
@@ -140,7 +141,7 @@ class VersionMapping(var version: Version?) {
         return entityIdClassMap[entityTypeId] ?: _parentMapping?.getEntityClassById(entityTypeId)
     }
 
-    private fun <T : Enum<*>> loadEnumRegistry(data: JsonElement?, registry: EnumRegistry<T>, alternative: PerVersionRegistry<T>) {
+    private fun <T : Enum<*>> loadEnumRegistry(data: JsonElement?, registry: EnumRegistry<T>, alternative: PerEnumVersionRegistry<T>) {
         data?.let {
             registry.initialize(it)
         } ?: let {

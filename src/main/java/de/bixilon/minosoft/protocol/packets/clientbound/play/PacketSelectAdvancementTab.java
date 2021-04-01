@@ -13,18 +13,19 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.data.ChangeableResourceLocation;
 import de.bixilon.minosoft.data.mappings.ResourceLocation;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
+
+import java.util.HashMap;
 
 public class PacketSelectAdvancementTab extends ClientboundPacket {
     private AdvancementTabs tab;
 
     public PacketSelectAdvancementTab(InByteBuffer buffer) {
         if (buffer.readBoolean()) {
-            this.tab = AdvancementTabs.byResourceLocation(buffer.readResourceLocation(), buffer.getVersionId());
+            this.tab = AdvancementTabs.VALUES.get(buffer.readResourceLocation());
         }
     }
 
@@ -38,29 +39,28 @@ public class PacketSelectAdvancementTab extends ClientboundPacket {
     }
 
     public enum AdvancementTabs {
-        STORY(new ChangeableResourceLocation("story/root")),
-        NETHER(new ChangeableResourceLocation("nether/root")),
-        END(new ChangeableResourceLocation("end/root")),
-        ADVENTURE(new ChangeableResourceLocation("adventure/root")),
-        HUSBANDRY(new ChangeableResourceLocation("husbandry/root"));
+        STORY(new ResourceLocation("story/root")),
+        NETHER(new ResourceLocation("nether/root")),
+        END(new ResourceLocation("end/root")),
+        ADVENTURE(new ResourceLocation("adventure/root")),
+        HUSBANDRY(new ResourceLocation("husbandry/root"));
 
-        private final ChangeableResourceLocation changeableResourceLocation;
+        public static final HashMap<ResourceLocation, AdvancementTabs> VALUES = new HashMap<>();
 
-        AdvancementTabs(ChangeableResourceLocation changeableResourceLocation) {
-            this.changeableResourceLocation = changeableResourceLocation;
-        }
-
-        public static AdvancementTabs byResourceLocation(ResourceLocation resourceLocation, int versionId) {
-            for (AdvancementTabs advancementTab : values()) {
-                if (advancementTab.getChangeableResourceLocation().get(versionId).equals(resourceLocation)) {
-                    return advancementTab;
-                }
+        static {
+            for (var tab : values()) {
+                VALUES.put(tab.resourceLocation, tab);
             }
-            return null;
         }
 
-        public ChangeableResourceLocation getChangeableResourceLocation() {
-            return this.changeableResourceLocation;
+        private final ResourceLocation resourceLocation;
+
+        AdvancementTabs(ResourceLocation resourceLocation) {
+            this.resourceLocation = resourceLocation;
+        }
+
+        public ResourceLocation getResourceLocation() {
+            return this.resourceLocation;
         }
     }
 }

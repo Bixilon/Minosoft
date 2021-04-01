@@ -29,7 +29,7 @@ data class VillagerProfession(
     }
 
     companion object : ResourceLocationDeserializer<VillagerProfession> {
-        override fun deserialize(mappings: VersionMapping, resourceLocation: ResourceLocation, data: JsonObject): VillagerProfession {
+        override fun deserialize(mappings: VersionMapping?, resourceLocation: ResourceLocation, data: JsonObject): VillagerProfession {
             return VillagerProfession(
                 resourceLocation = resourceLocation,
             )

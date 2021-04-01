@@ -13,36 +13,11 @@
 
 package de.bixilon.minosoft.modding.channels;
 
-import de.bixilon.minosoft.data.ChangeableResourceLocation;
 import de.bixilon.minosoft.data.mappings.ResourceLocation;
 
-import java.util.Map;
-
-import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.LOWEST_VERSION_SUPPORTED;
-import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_13_PRE3;
-
-public enum DefaultPluginChannels {
-    MC_BRAND(new ChangeableResourceLocation(Map.of(LOWEST_VERSION_SUPPORTED, "MC|Brand", V_1_13_PRE3, "minecraft:brand"))),
-    STOP_SOUND(new ChangeableResourceLocation("MC|StopSound")),
-    REGISTER(new ChangeableResourceLocation(Map.of(LOWEST_VERSION_SUPPORTED, "REGISTER", V_1_13_PRE3, "minecraft:register"))),
-    UNREGISTER(new ChangeableResourceLocation(Map.of(LOWEST_VERSION_SUPPORTED, "UNREGISTER", V_1_13_PRE3, "minecraft:unregister")));
-
-    private final ChangeableResourceLocation changeableResourceLocation;
-
-    DefaultPluginChannels(ChangeableResourceLocation changeableResourceLocation) {
-        this.changeableResourceLocation = changeableResourceLocation;
-    }
-
-    public static DefaultPluginChannels byResourceLocation(ResourceLocation resourceLocation, int versionId) {
-        for (DefaultPluginChannels channel : values()) {
-            if (channel.getChangeableResourceLocation().get(versionId).equals(resourceLocation)) {
-                return channel;
-            }
-        }
-        return null;
-    }
-
-    public ChangeableResourceLocation getChangeableResourceLocation() {
-        return this.changeableResourceLocation;
-    }
+public class DefaultPluginChannels {
+    public static final ResourceLocation REGISTER = new ResourceLocation("minecraft:register");
+    public static final ResourceLocation UNREGISTER = new ResourceLocation("minecraft:unregister");
+    public static final ResourceLocation BRAND = new ResourceLocation("minecraft:brand");
+    public static final ResourceLocation STOP_SOUND = new ResourceLocation("minecraft:stop_sound");
 }
