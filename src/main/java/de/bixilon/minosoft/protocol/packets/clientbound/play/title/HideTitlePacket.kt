@@ -14,10 +14,9 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play.title
 
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer
 import de.bixilon.minosoft.util.logging.Log
 
-class HideTitlePacket(buffer: InByteBuffer) : ClientboundPacket() {
+class HideTitlePacket : ClientboundPacket() {
 
     override fun log() {
         Log.protocol("[IN] Received hide title")

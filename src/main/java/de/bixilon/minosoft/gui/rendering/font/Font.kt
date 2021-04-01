@@ -48,7 +48,7 @@ class Font {
         preLoaded = true
     }
 
-    fun loadAtlas(textureArray: TextureArray) {
+    fun loadAtlas() {
         check(!loaded) { "Font has already a atlas texture!" }
         check(preLoaded) { "Font hasn't been preloaded!" }
 

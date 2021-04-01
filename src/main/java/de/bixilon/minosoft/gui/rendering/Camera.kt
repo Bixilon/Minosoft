@@ -96,8 +96,8 @@ class Camera(
         lastMouseY = yPos
         xOffset *= mouseSensitivity
         yOffset *= mouseSensitivity
-        var yaw = xOffset.toFloat() + (playerEntity.rotation?.headYaw ?: 0f)
-        var pitch = yOffset.toFloat() + (playerEntity.rotation?.pitch ?: 0f)
+        var yaw = xOffset.toFloat() + playerEntity.rotation.headYaw
+        var pitch = yOffset.toFloat() + playerEntity.rotation.pitch
 
         // make sure that when pitch is out of bounds, screen doesn't get flipped
         if (pitch > 89.9) {

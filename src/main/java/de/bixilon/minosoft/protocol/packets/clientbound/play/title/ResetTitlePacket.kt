@@ -14,10 +14,9 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play.title
 
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer
 import de.bixilon.minosoft.util.logging.Log
 
-class ResetTitlePacket(buffer: InByteBuffer) : ClientboundPacket() {
+class ResetTitlePacket : ClientboundPacket() {
 
     override fun log() {
         Log.protocol("[IN] Received reset title")

@@ -107,8 +107,7 @@ class HUDWorldDebugElement(hudRenderer: HUDRenderer) : DebugScreen(hudRenderer) 
 
 
     private fun getPosition(): String {
-        return "${formatCoordinate(camera.cameraPosition.x)} / ${formatCoordinate(camera.cameraPosition.y)} / ${formatCoordinate(camera.cameraPosition.z)}"
-        return "${formatCoordinate(camera.playerEntity.position?.x!!)} / ${formatCoordinate(camera.playerEntity.position?.y!!)} / ${formatCoordinate(camera.playerEntity.position?.z!!)}"
+        return "${formatCoordinate(camera.playerEntity.position.x)} / ${formatCoordinate(camera.playerEntity.position.y)} / ${formatCoordinate(camera.playerEntity.position.z)}"
     }
 
     private fun getBlockPosition(): String {
@@ -120,8 +119,8 @@ class HUDWorldDebugElement(hudRenderer: HUDRenderer) : DebugScreen(hudRenderer) 
     }
 
     private fun getFacing(): String {
-        val yaw = hudRenderer.renderWindow.camera.playerEntity.rotation?.yaw!!
-        val pitch = hudRenderer.renderWindow.camera.playerEntity.rotation?.pitch!!
+        val yaw = hudRenderer.renderWindow.camera.playerEntity.rotation.yaw
+        val pitch = hudRenderer.renderWindow.camera.playerEntity.rotation.pitch
         val direction = Directions.byDirection(camera.cameraFront)
         return "${Directions.byDirection(camera.cameraFront).name.toLowerCase()} ${direction.directionVector} (${formatRotation(yaw.toDouble())} / ${formatRotation(pitch.toDouble())})"
     }

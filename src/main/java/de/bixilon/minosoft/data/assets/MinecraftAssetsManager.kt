@@ -126,6 +126,8 @@ class MinecraftAssetsManager(
                     )
                 ), hash, false)
             }
+            else -> {
+            }
         }
     }
 

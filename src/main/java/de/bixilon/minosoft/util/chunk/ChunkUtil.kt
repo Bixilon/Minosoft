@@ -68,7 +68,7 @@ object ChunkUtil {
 
             for (blockNumber in 0 until ProtocolDefinition.BLOCKS_PER_SECTION) {
                 var blockId = (blockData[arrayPosition].toInt() and 0xFF) shl 4
-                var blockMeta = 0
+                var blockMeta: Int
                 // get block meta and shift and add (merge) id if needed
                 if (arrayPosition % 2 == 0) {
                     // high bits

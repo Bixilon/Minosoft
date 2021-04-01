@@ -41,16 +41,16 @@ data class HUDAtlasElement(
         private val UV_START_ADD = Vec2(0, 0.000015f) // ToDo: This fixes the "half pixel bug"
 
 
-        fun deserialize(json: Map<ResourceLocation, JsonObject>, versionId: Int): Pair<Collection<Texture>, Map<ResourceLocation, HUDAtlasElement>> {
+        fun deserialize(json: Map<ResourceLocation, JsonObject>): Pair<Collection<Texture>, Map<ResourceLocation, HUDAtlasElement>> {
             val textures: MutableMap<ResourceLocation, Texture> = mutableMapOf()
             val ret: MutableMap<ResourceLocation, HUDAtlasElement> = mutableMapOf()
             for ((resourceLocation, data) in json) {
-                ret[resourceLocation] = deserialize(data, textures, versionId)
+                ret[resourceLocation] = deserialize(data, textures)
             }
             return Pair(textures.values, ret)
         }
 
-        fun deserialize(json: JsonObject, textures: MutableMap<ResourceLocation, Texture>, versionId: Int): HUDAtlasElement {
+        fun deserialize(json: JsonObject, textures: MutableMap<ResourceLocation, Texture>): HUDAtlasElement {
             val keys: MutableSet<Int> = mutableSetOf()
             var textureResourceLocation: ResourceLocation? = json["texture"]?.asString?.let { ResourceLocation(it) }
             for (key in json["versions"].asJsonObject.keySet()) {

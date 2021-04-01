@@ -250,7 +250,7 @@ class RenderWindow(
 
         textures.preLoad(connection.version.assetsManager)
 
-        font.loadAtlas(textures)
+        font.loadAtlas()
         textures.load()
 
 

@@ -41,7 +41,8 @@ class PacketMultiBlockChange() : ClientboundPacket() {
                 buffer.readChunkPosition()
             }
             val count = buffer.readShort()
-            val dataSize = buffer.readInt() // should be count * 4
+            val dataSize = buffer.readInt()
+            check(dataSize == count * 4) { "MultiBlockChangePacket needs 4 bytes per block change!" }
             for (i in 0 until count) {
                 val raw = buffer.readInt()
                 val meta = (raw and 0xF)

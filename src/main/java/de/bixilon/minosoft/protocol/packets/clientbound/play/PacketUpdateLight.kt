@@ -40,22 +40,20 @@ class PacketUpdateLight(buffer: InByteBuffer) : ClientboundPacket() {
 
         val skyLightMask: BitSet
         val blockLightMask: BitSet
-        val emptySkyLightMask: BitSet
-        val emptyBlockLightMask: BitSet
 
         if (buffer.versionId < ProtocolVersions.V_20W49A) {
             skyLightMask = KUtil.bitSetOf(buffer.readVarLong())
             blockLightMask = KUtil.bitSetOf(buffer.readVarLong())
-            emptyBlockLightMask = KUtil.bitSetOf(buffer.readVarLong())
-            emptySkyLightMask = KUtil.bitSetOf(buffer.readVarLong())
+            buffer.readVarLong() // emptyBlockLightMask
+            buffer.readVarLong() // emptySkyLightMask
         } else {
             skyLightMask = BitSet.valueOf(buffer.readLongArray())
             blockLightMask = BitSet.valueOf(buffer.readLongArray())
-            emptySkyLightMask = BitSet.valueOf(buffer.readLongArray())
-            emptyBlockLightMask = BitSet.valueOf(buffer.readLongArray())
+            buffer.readLongArray() // emptySkyLightMask
+            buffer.readLongArray() // emptyBlockLightMask
         }
 
-        lightAccessor = readLightPacket(buffer, skyLightMask, blockLightMask, emptyBlockLightMask, emptySkyLightMask, buffer.connection.world.dimension!!)
+        lightAccessor = readLightPacket(buffer, skyLightMask, blockLightMask, buffer.connection.world.dimension!!)
     }
 
     override fun log() {

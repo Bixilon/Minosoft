@@ -14,10 +14,9 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play.combat
 
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer
 import de.bixilon.minosoft.util.logging.Log
 
-class EnterCombatEventPacket(buffer: InByteBuffer) : ClientboundPacket() {
+class EnterCombatEventPacket : ClientboundPacket() {
 
     override fun log() {
         Log.protocol("[IN] Received enter combat event")

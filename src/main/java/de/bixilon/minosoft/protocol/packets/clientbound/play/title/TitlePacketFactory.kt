@@ -26,8 +26,8 @@ object TitlePacketFactory {
             TitleActions.SET_SUBTITLE -> SetSubTitlePacket(buffer)
             TitleActions.SET_ACTION_BAR -> SetActionBarTextPacket(buffer)
             TitleActions.SET_TIMES_AND_DISPLAY -> SetTimesAndDisplayPacket(buffer)
-            TitleActions.HIDE -> HideTitlePacket(buffer)
-            TitleActions.RESET -> ResetTitlePacket(buffer)
+            TitleActions.HIDE -> HideTitlePacket()
+            TitleActions.RESET -> ResetTitlePacket()
         }
     }
 
