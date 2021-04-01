@@ -10,14 +10,9 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.gui.rendering.exceptions
 
-package de.bixilon.minosoft.gui.rendering.exceptions;
-
-public class ShaderLoadingException extends Exception {
-    public ShaderLoadingException() {
-    }
-
-    public ShaderLoadingException(String message) {
-        super(message);
-    }
+class ShaderLoadingException : Exception {
+    constructor()
+    constructor(message: String) : super(message)
 }

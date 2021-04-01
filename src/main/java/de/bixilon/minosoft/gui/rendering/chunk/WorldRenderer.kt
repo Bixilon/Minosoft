@@ -372,8 +372,8 @@ class WorldRenderer(
             return divided
         }
     }
-}
 
-private operator fun Int.plus(upOrDown: Directions): Int {
-    return this + upOrDown.directionVector.y.toInt()
+    private operator fun Int.plus(upOrDown: Directions): Int {
+        return this + upOrDown.directionVector.y
+    }
 }

@@ -208,8 +208,8 @@ class TextureArray(val allTextures: MutableList<Texture>) {
 
                 val arrayOffset = textureAnimation.animationProperties.animationId * INTS_PER_ANIMATED_TEXTURE
 
-                animatedData[arrayOffset] = baseAnimatedData or currentFrame.index
-                animatedData[arrayOffset + 1] = baseAnimatedData or nextFrame.index
+                animatedData[arrayOffset] = baseAnimatedData + currentFrame.index
+                animatedData[arrayOffset + 1] = baseAnimatedData + nextFrame.index
                 animatedData[arrayOffset + 2] = interpolation.toInt()
             }
 
