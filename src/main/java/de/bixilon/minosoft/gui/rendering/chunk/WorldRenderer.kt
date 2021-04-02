@@ -75,9 +75,10 @@ class WorldRenderer(
                 }
 
 
-                val biome = world.getBiome(blockPosition)!!
+                val biome = world.getBiome(blockPosition)
 
                 val tintColor: RGBColor? = when {
+                    biome == null -> null
                     StaticConfiguration.BIOME_DEBUG_MODE -> RGBColor(biome.hashCode())
                     blockInfo.tintColor != null -> blockInfo.tintColor
                     blockInfo.owner.tint != null -> renderWindow.tintColorCalculator.calculateTint(blockInfo.owner.tint, biome, blockPosition)
