@@ -42,6 +42,7 @@ open class Item(
         override fun deserialize(mappings: VersionMapping?, resourceLocation: ResourceLocation, data: JsonObject): Item {
             check(mappings != null) { "VersionMapping is null!" }
             return when (data["class"].asString) {
+                "BlockItem" -> BlockItem(resourceLocation, data, mappings)
                 "ArmorItem" -> ArmorItem(resourceLocation, data, mappings)
                 //   "Item" -> Item(resourceLocation, data)
                 // else -> TODO("Can not find item class: ${data["class"].asString}")
