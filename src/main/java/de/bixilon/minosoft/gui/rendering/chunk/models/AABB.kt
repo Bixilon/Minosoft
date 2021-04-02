@@ -12,8 +12,8 @@ import glm_.vec3.Vec3
 import glm_.vec3.Vec3i
 
 class AABB {
-    private val min: Vec3
-    private val max: Vec3
+    val min: Vec3
+    val max: Vec3
 
     constructor(jsonData: JsonObject) {
         min = readPositionFromJson(jsonData["from"], VecUtil.EMPTY_VEC3)

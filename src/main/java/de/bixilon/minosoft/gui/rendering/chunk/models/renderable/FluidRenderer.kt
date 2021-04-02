@@ -230,6 +230,5 @@ class FluidRenderer(
         )
 
         val HEIGHT_POSITIONS_REVERSED = HEIGHT_POSITIONS.entries.associate { (k, v) -> v to k }
-        val MODEL_MATRIX_OFFSET = Vec3(0.5f, 0.5f, 0.5f)
     }
 }

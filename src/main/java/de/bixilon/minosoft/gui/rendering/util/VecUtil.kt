@@ -70,7 +70,7 @@ object VecUtil {
     }
 
     fun JsonArray.readUV(): Pair<Vec2, Vec2> {
-        return Pair(Vec2(this[0].asFloat, this[3].asFloat), Vec2(this[2].asFloat, this[1].asFloat))
+        return Pair(Vec2(this[0].asFloat, BlockModelElement.BLOCK_RESOLUTION - this[1].asFloat), Vec2(this[2].asFloat, BlockModelElement.BLOCK_RESOLUTION - this[3].asFloat))
     }
 
     val Vec3i.chunkPosition: Vec2i

@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.chunk.models.loading
 
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.Directions
+import de.bixilon.minosoft.gui.rendering.chunk.models.AABB
 import de.bixilon.minosoft.gui.rendering.util.VecUtil
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.readUV
 import glm_.func.cos
@@ -45,7 +46,7 @@ class BlockModelFace {
     }
 
     private fun calculateTexturePositions(data: JsonObject?, from: Vec3, to: Vec3, direction: Directions): MutableList<Vec2> {
-        val (textureTopLeft: Vec2, textureBottomRight: Vec2) = data?.get("uv")?.asJsonArray?.readUV() ?: getTexturePositionsFromRegion(from, to, direction)
+        val (textureTopLeft: Vec2, textureBottomRight: Vec2) = data?.get("uv")?.asJsonArray?.readUV() ?: getTexturePositionsFromRegion(AABB(from, to), direction)
         return mutableListOf(
             uvToFloat(Vec2(textureTopLeft.x, textureTopLeft.y)),
             uvToFloat(Vec2(textureTopLeft.x, textureBottomRight.y)),
@@ -54,12 +55,12 @@ class BlockModelFace {
         )
     }
 
-    private fun getTexturePositionsFromRegion(from: Vec3, to: Vec3, direction: Directions): Pair<Vec2, Vec2> {
+    private fun getTexturePositionsFromRegion(aabb: AABB, direction: Directions): Pair<Vec2, Vec2> {
         // ToDo: Remove the duplicated code in Directions
         return when (direction) {
-            Directions.UP, Directions.DOWN ->     Pair(Vec2(from.x.toInt(), to.z.toInt()), Vec2(to.x.toInt(), from.z.toInt()))
-            Directions.NORTH, Directions.SOUTH -> Pair(Vec2(from.x.toInt(), to.y.toInt()), Vec2(to.x.toInt(), from.y.toInt()))
-            Directions.EAST, Directions.WEST -> Pair(Vec2(from.z.toInt(), to.y.toInt()), Vec2(to.z.toInt(), from.y.toInt()))
+            Directions.UP, Directions.DOWN ->     Pair(Vec2(aabb.min.x.toInt(), aabb.max.z.toInt()), Vec2(aabb.max.x.toInt(), aabb.min.z.toInt()))
+            Directions.NORTH, Directions.SOUTH -> Pair(Vec2(aabb.min.x.toInt(), aabb.max.y.toInt()), Vec2(aabb.max.x.toInt(), aabb.min.y.toInt()))
+            Directions.EAST, Directions.WEST ->   Pair(Vec2(aabb.min.z.toInt(), aabb.max.y.toInt()), Vec2(aabb.max.z.toInt(), aabb.min.y.toInt()))
         }
     }
 
@@ -71,13 +72,6 @@ class BlockModelFace {
         for (position in parent.positions) {
             positions.add(Vec2(position))
         }
-    }
-
-    constructor() {
-        textureName = null
-        cullFace = null
-        tint = false
-        positions = calculateTexturePositions(null, VecUtil.EMPTY_VEC3, VecUtil.BLOCK_SIZE_VEC3, Directions.EAST)
     }
 
     constructor(from: Vec3, to: Vec3, direction: Directions) {
