@@ -18,7 +18,6 @@ import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.Directions
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.rotate
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3
-import glm_.func.cos
 import glm_.func.rad
 import glm_.vec3.Vec3
 
@@ -80,10 +79,7 @@ open class BlockModelElement(data: JsonObject) {
             }
             for ((i, position) in positions.withIndex()) {
                 var transformedPosition = position - origin
-                transformedPosition = transformedPosition.rotate(angle, axis)
-                if (rescale) {
-                    transformedPosition = transformedPosition / angle.cos
-                }
+                transformedPosition = transformedPosition.rotate(angle, axis, rescale)
                 positions[i] = transformedPosition + origin
             }
         }

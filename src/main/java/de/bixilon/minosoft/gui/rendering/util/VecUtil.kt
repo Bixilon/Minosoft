@@ -41,25 +41,33 @@ object VecUtil {
         }
     }
 
-    fun getRotatedValues(x: Float, y: Float, sin: Float, cos: Float): Vec2 {
-        return Vec2(x * cos - y * sin, x * sin + y * cos)
+    fun getRotatedValues(x: Float, y: Float, sin: Float, cos: Float, rescale: Boolean): Vec2 {
+        val result = Vec2(x * cos - y * sin, x * sin + y * cos)
+        if (rescale) {
+            return result / cos
+        }
+        return result
     }
 
     fun Vec3.rotate(angle: Float, axis: Axes): Vec3 {
+        return this.rotate(angle, axis, false)
+    }
+
+    fun Vec3.rotate(angle: Float, axis: Axes, rescale: Boolean): Vec3 {
         if (angle == 0.0f) {
             return this
         }
         return when (axis) {
             Axes.X -> {
-                val rotatedValues = getRotatedValues(this.y, this.z, angle.sin, angle.cos)
+                val rotatedValues = getRotatedValues(this.y, this.z, angle.sin, angle.cos, rescale)
                 Vec3(this.x, rotatedValues)
             }
             Axes.Y -> {
-                val rotatedValues = getRotatedValues(this.x, this.z, angle.sin, angle.cos)
+                val rotatedValues = getRotatedValues(this.x, this.z, angle.sin, angle.cos, rescale)
                 Vec3(rotatedValues.x, this.y, rotatedValues.y)
             }
             Axes.Z -> {
-                val rotatedValues = getRotatedValues(this.x, this.y, angle.sin, angle.cos)
+                val rotatedValues = getRotatedValues(this.x, this.y, angle.sin, angle.cos, rescale)
                 Vec3(rotatedValues.x, rotatedValues.y, this.z)
             }
         }

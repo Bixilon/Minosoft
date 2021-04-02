@@ -98,7 +98,7 @@ class BlockModelFace {
         val cos = angle.cos
         for ((i, position) in positions.withIndex()) {
             val offset = position - TEXTURE_MIDDLE
-            positions[i] = VecUtil.getRotatedValues(offset.x, offset.y, sin, cos) + TEXTURE_MIDDLE
+            positions[i] = VecUtil.getRotatedValues(offset.x, offset.y, sin, cos, false) + TEXTURE_MIDDLE
         }
     }
 
