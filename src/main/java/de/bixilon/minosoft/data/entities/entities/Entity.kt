@@ -23,7 +23,6 @@ import de.bixilon.minosoft.gui.rendering.Camera
 import de.bixilon.minosoft.gui.rendering.chunk.VoxelShape
 import de.bixilon.minosoft.gui.rendering.chunk.models.AABB
 import de.bixilon.minosoft.protocol.network.Connection
-import de.bixilon.minosoft.util.logging.Log
 import glm_.vec3.Vec3
 import java.lang.reflect.InvocationTargetException
 import java.util.*
@@ -47,7 +46,7 @@ abstract class Entity(
     protected var hasCollisions = true
 
     fun forceMove(relativePosition: Vec3) {
-        position = Vec3(position.x + relativePosition.x, position.y + relativePosition.y, position.z + relativePosition.z)
+        position = position + relativePosition
     }
 
     fun addEffect(effect: StatusEffectInstance) {
@@ -181,14 +180,13 @@ abstract class Entity(
 
     fun move(deltaPosition: Vec3) {
         if (!hasCollisions) {
-            position = Vec3(position + deltaPosition)
-            Log.debug("New Position: $position")
+            forceMove(deltaPosition)
             return
         }
-        val aabb = aabb
-        val collisionsToCheck = getCollisionsToCheck(deltaPosition, aabb)
-        val realMovement = collide(deltaPosition, collisionsToCheck, aabb)
-        position = Vec3(position + realMovement)
+        val currentAABB = aabb
+        val collisionsToCheck = getCollisionsToCheck(deltaPosition, currentAABB)
+        val realMovement = collide(deltaPosition, collisionsToCheck, currentAABB)
+        forceMove(realMovement)
     }
 
     private fun getCollisionsToCheck(deltaPosition: Vec3, originalAABB: AABB): VoxelShape {
@@ -203,13 +201,22 @@ abstract class Entity(
 
     private fun collide(deltaPosition: Vec3, collisionsToCheck: VoxelShape, aabb: AABB): Vec3 {
         val delta = Vec3(deltaPosition)
-        if (deltaPosition.y != 0.0f) {
+        if (delta.y != 0.0f) {
             delta.y = collisionsToCheck.computeOffset(aabb, deltaPosition.y, Axes.Y)
-            aabb.offsetAssign(Vec3(0f, delta.y, 0f))
+            aabb.offsetAssign(0f, delta.y, 0f)
         }
-        if (deltaPosition.x != 0.0f) {
+        val xPriority = delta.x <= delta.z
+        if (delta.x != 0.0f && xPriority) {
             delta.x = collisionsToCheck.computeOffset(aabb, deltaPosition.x, Axes.X)
-            aabb.offsetAssign(Vec3(delta.x, 0f, 0f))
+            aabb.offsetAssign(delta.x, 0f, 0f)
+        }
+        if (delta.z != 0.0f) {
+            delta.z = collisionsToCheck.computeOffset(aabb, deltaPosition.z, Axes.Z)
+            aabb.offsetAssign(0f, 0f, delta.z)
+        }
+        if (delta.x != 0.0f && !xPriority) {
+            delta.x = collisionsToCheck.computeOffset(aabb, deltaPosition.x, Axes.X)
+            aabb.offsetAssign(delta.x, 0f, 0f)
         }
         return delta
     }
@@ -217,15 +224,10 @@ abstract class Entity(
     private val aabb: AABB
         get() = DEFAULT_PLAYER_AABB + position
 
-    fun hasCollisions(): Boolean {
-        return hasCollisions
-    }
-
     companion object {
         private val DEFAULT_PLAYER_AABB = AABB(
             Vec3(-Camera.PLAYER_WIDTH / 2, 0, -Camera.PLAYER_WIDTH / 2),
             Vec3(Camera.PLAYER_WIDTH / 2, 1.8, Camera.PLAYER_WIDTH / 2)
         )
     }
-
 }

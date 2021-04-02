@@ -33,9 +33,9 @@ class AABB {
     }
 
     fun intersect(other: AABB): Boolean {
-        return (min.x <= other.max.x && max.x >= other.min.x) &&
-                (min.y <= other.max.y && max.y >= other.min.y) &&
-                (min.z <= other.max.z && max.z >= other.min.z)
+        return  (min.x < other.max.x && max.x > other.min.x) &&
+                (min.y < other.max.y && max.y > other.min.y) &&
+                (min.z < other.max.z && max.z > other.min.z)
     }
 
     operator fun plus(vec3: Vec3): AABB {
@@ -124,6 +124,10 @@ class AABB {
             return glm.max(thisMax - otherMin, offset)
         }
         return offset
+    }
+
+    fun offsetAssign(x: Float, y: Float, z: Float) {
+        offsetAssign(Vec3(x, y, z))
     }
 
     fun offsetAssign(vec3: Vec3) {
