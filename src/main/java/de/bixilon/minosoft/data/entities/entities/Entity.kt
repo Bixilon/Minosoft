@@ -13,6 +13,7 @@
 package de.bixilon.minosoft.data.entities.entities
 
 import de.bixilon.minosoft.data.Axes
+import de.bixilon.minosoft.data.Directions
 import de.bixilon.minosoft.data.entities.*
 import de.bixilon.minosoft.data.entities.meta.EntityMetaData
 import de.bixilon.minosoft.data.inventory.InventorySlots.EquipmentSlots
@@ -190,7 +191,8 @@ abstract class Entity(
     }
 
     private fun getCollisionsToCheck(deltaPosition: Vec3, originalAABB: AABB): VoxelShape {
-        val blockPositions = (originalAABB extend deltaPosition).getBlockPositions()
+        // also look at blocks further down to also cover blocks with a higher than normal hitbox (for example fences)
+        val blockPositions = (originalAABB extend deltaPosition extend Directions.DOWN.directionVector).getBlockPositions()
         val result = VoxelShape()
         for (blockPosition in blockPositions) {
             val blockState = connection.world.getBlockState(blockPosition) ?: continue
@@ -205,18 +207,13 @@ abstract class Entity(
             delta.y = collisionsToCheck.computeOffset(aabb, deltaPosition.y, Axes.Y)
             aabb.offsetAssign(0f, delta.y, 0f)
         }
-        val xPriority = delta.x <= delta.z
-        if (delta.x != 0.0f && xPriority) {
+        if (delta.x != 0.0f) {
             delta.x = collisionsToCheck.computeOffset(aabb, deltaPosition.x, Axes.X)
             aabb.offsetAssign(delta.x, 0f, 0f)
         }
         if (delta.z != 0.0f) {
             delta.z = collisionsToCheck.computeOffset(aabb, deltaPosition.z, Axes.Z)
             aabb.offsetAssign(0f, 0f, delta.z)
-        }
-        if (delta.x != 0.0f && !xPriority) {
-            delta.x = collisionsToCheck.computeOffset(aabb, deltaPosition.x, Axes.X)
-            aabb.offsetAssign(delta.x, 0f, 0f)
         }
         return delta
     }

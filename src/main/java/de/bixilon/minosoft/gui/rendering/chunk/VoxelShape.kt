@@ -63,6 +63,5 @@ class VoxelShape {
     companion object {
         val EMPTY = VoxelShape()
         val FULL = VoxelShape(mutableListOf(AABB(VecUtil.EMPTY_VEC3, VecUtil.ONES_VEC3)))
-        const val VALUE_NEAR_ZERO = 1.0e-7f
     }
 }

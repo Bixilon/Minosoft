@@ -109,6 +109,10 @@ class AABB {
         return AABB(newMin, newMax)
     }
 
+    infix fun extend(vec3i: Vec3i): AABB {
+        return this extend Vec3(vec3i)
+    }
+
     fun computeOffset(other: AABB, offset: Float, axis: Axes): Float {
         if (!offset(axis, offset).intersect(other)) {
             return offset
