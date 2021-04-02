@@ -52,12 +52,7 @@ open class BlockCondition {
                     propertyJsonValue.asInt
                 }
                 else -> {
-                    // ToDo: Why is this needed?
-                    try {
-                        Integer.parseInt(propertyJsonValue.asString)
-                    } catch (exception: Exception) {
-                        propertyJsonValue.asString.toLowerCase()
-                    }
+                    propertyJsonValue.asString.toLowerCase()
                 }
             }
             try {

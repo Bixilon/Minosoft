@@ -287,7 +287,6 @@ class Camera(
         lastMovementPacketSent = System.currentTimeMillis()
         currentPositionSent = true
         currentRotationSent = true
-        return
     }
 
     fun setPosition(position: Vec3) {
