@@ -97,7 +97,7 @@ public class PlayerEntity extends LivingEntity {
 
     public void setGamemode(Gamemodes gamemode) {
         this.gamemode = gamemode;
-        this.hasCollisions = gamemode == Gamemodes.SPECTATOR;
+        this.hasCollisions = gamemode != Gamemodes.SPECTATOR;
     }
 
     public void setName(String name) {
