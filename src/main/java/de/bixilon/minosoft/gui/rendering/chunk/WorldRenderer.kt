@@ -75,22 +75,13 @@ class WorldRenderer(
                 }
 
 
-                val biome = world.getBiome(blockPosition)
+                val biome = world.getBiome(blockPosition)!!
 
-                var tintColor: RGBColor? = null
-
-                if (StaticConfiguration.BIOME_DEBUG_MODE) {
-                    tintColor = RGBColor(biome.hashCode())
-                } else {
-                    biome?.let {
-                        biome.foliageColor?.let { tintColor = it }
-
-                        blockInfo.owner.tint?.let { tint ->
-                            tintColor = renderWindow.tintColorCalculator.calculateTint(tint, biome, blockPosition)
-                        }
-                    }
-
-                    blockInfo.tintColor?.let { tintColor = it }
+                val tintColor: RGBColor? = when {
+                    StaticConfiguration.BIOME_DEBUG_MODE -> RGBColor(biome.hashCode())
+                    blockInfo.tintColor != null -> blockInfo.tintColor
+                    blockInfo.owner.tint != null -> renderWindow.tintColorCalculator.calculateTint(blockInfo.owner.tint, biome, blockPosition)
+                    else -> null
                 }
 
                 blockInfo.getBlockRenderer(blockPosition).render(blockInfo, world.worldLightAccessor, tintColor, blockPosition, meshCollection, neighborBlocks, world)

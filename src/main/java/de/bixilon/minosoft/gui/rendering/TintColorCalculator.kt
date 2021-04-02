@@ -34,6 +34,9 @@ class TintColorCalculator {
         return when (tint) {
             ResourceLocation("water_tint") -> biome.waterColor
             ResourceLocation("grass_tint"), ResourceLocation("sugar_cane_tint"), ResourceLocation("shearing_double_plant_tint") -> {
+                // ToDo: color overrider in < 1.16
+                biome.grassColorOverride?.let { return it }
+
                 val colorMapPixelIndex = biome.downfallColorMapCoordinate shl 8 or biome.temperatureColorMapCoordinate
                 var color = if (colorMapPixelIndex > grassColorMap.size) {
                     RenderConstants.GRASS_OUT_OF_BOUNDS_COLOR
@@ -46,7 +49,9 @@ class TintColorCalculator {
                 biome.grassColorModifier.modifier.invoke(color)
             }
             ResourceLocation("foliage_tint") -> {
-                foliageColorMap[biome.downfallColorMapCoordinate shl 8 or biome.getClampedTemperature(blockPosition.y)] // ToDo: hardcoded color values
+                biome.foliageColorOverride?.let { return it }
+                // ToDo: color overrider in < 1.16
+                foliageColorMap[biome.downfallColorMapCoordinate shl 8 or biome.getClampedTemperature(blockPosition.y)]
             }
             ResourceLocation("lily_pad_tint") -> RenderConstants.LILY_PAD_BLOCK_COLOR
             else -> null

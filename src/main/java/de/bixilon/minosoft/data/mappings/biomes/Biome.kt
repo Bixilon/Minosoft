@@ -34,8 +34,8 @@ data class Biome(
     val category: BiomeCategory,
     val precipitation: BiomePrecipitation,
     val skyColor: RGBColor,
-    val foliageColor: RGBColor?,
-    val grassColor: RGBColor?,
+    val foliageColorOverride: RGBColor?,
+    val grassColorOverride: RGBColor?,
     val descriptionId: String?,
     val grassColorModifier: GrassColorModifiers = GrassColorModifiers.NONE,
 ) : RegistryItem {
@@ -68,8 +68,8 @@ data class Biome(
                 category = mappings.biomeCategoryRegistry.get(data["category"]?.asInt ?: -1) ?: DEFAULT_CATEGORY,
                 precipitation = mappings.biomePrecipitationRegistry.get(data["precipitation"]?.asInt ?: -1) ?: DEFAULT_PRECIPITATION,
                 skyColor = data["sky_color"]?.asInt?.let { RGBColor.noAlpha(it) } ?: RenderConstants.GRASS_FAILOVER_COLOR,
-                foliageColor = TintColorCalculator.getJsonColor(data["foliage_color_override"]?.asInt ?: data["foliage_color"]?.asInt ?: 0),
-                grassColor = TintColorCalculator.getJsonColor(data["grass_color_override"]?.asInt ?: 0),
+                foliageColorOverride = TintColorCalculator.getJsonColor(data["foliage_color_override"]?.asInt ?: data["foliage_color"]?.asInt ?: 0),
+                grassColorOverride = TintColorCalculator.getJsonColor(data["grass_color_override"]?.asInt ?: 0),
                 descriptionId = data["water_fog_color"]?.asString,
                 grassColorModifier = data["grass_color_modifier"]?.asString?.toUpperCase()?.let { GrassColorModifiers.valueOf(it) } ?: when (resourceLocation) {
                     ResourceLocation("minecraft:swamp"), ResourceLocation("minecraft:swamp_hills") -> GrassColorModifiers.SWAMP
