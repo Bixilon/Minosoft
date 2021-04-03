@@ -36,7 +36,7 @@ data class Version(
 ) {
     var isLoaded = false
     var isGettingLoaded = false
-    val mapping: VersionMapping = VersionMapping(this)
+    val mapping: VersionMapping = VersionMapping()
     lateinit var assetsManager: MinecraftAssetsManager
     lateinit var localeManager: MinecraftLocaleManager
 
@@ -110,8 +110,7 @@ data class Version(
             JsonObject()
         }
         latch.addCount(1)
-        mapping.version = this
-        mapping.load(pixlyzerData)
+        mapping.load(this, pixlyzerData)
         latch.countDown()
         if (pixlyzerData.size() > 0) {
             Log.verbose(String.format("Loaded mappings for version %s in %dms (%s)", this, (System.currentTimeMillis() - startTime), versionName))

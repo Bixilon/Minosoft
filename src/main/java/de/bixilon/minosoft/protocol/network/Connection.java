@@ -75,7 +75,7 @@ public class Connection {
     private int desiredVersionNumber = -1;
     private ServerAddress address;
     private Version version = Versions.LOWEST_VERSION_SUPPORTED; // default
-    private final VersionMapping customMapping = new VersionMapping(this.version);
+    private final VersionMapping customMapping = new VersionMapping();
     private ConnectionStates state = ConnectionStates.DISCONNECTED;
     private ConnectionReasons reason;
     private ConnectionReasons nextReason;
@@ -144,7 +144,6 @@ public class Connection {
         setVersion(version);
         try {
             version.load(latch);  // ToDo: show gui loader
-            this.customMapping.setVersion(version);
             this.customMapping.setParentMapping(version.getMapping());
             this.player = new Player(this.account, this);
 
@@ -159,10 +158,6 @@ public class Connection {
         } catch (Throwable exception) {
             Log.printException(exception, LogLevels.DEBUG);
             Log.fatal(String.format("Could not load version %s. This version seems to be unsupported!", version));
-            if (this.customMapping.getVersion() != null) {
-                this.customMapping.getVersion().getMapping().setParentMapping(null);
-            }
-            this.customMapping.setVersion(null);
             version.unload();
             this.lastException = new MappingsLoadingException("Mappings could not be loaded", exception);
             setConnectionState(ConnectionStates.FAILED_NO_RETRY);

@@ -24,7 +24,7 @@ class EnumRegistry<T : Enum<*>>(
     private var parentRegistry: EnumRegistry<T>? = null,
     var values: ValuesEnum<T>,
     private val mutable: Boolean = true,
-) : Clearable {
+) : Clearable, Parentable<EnumRegistry<T>> {
     private var initialized = false
     private val idValueMap: MutableMap<Int, T> = mutableMapOf()
     private val valueIdMap: MutableMap<T, Int> = mutableMapOf()
@@ -37,11 +37,11 @@ class EnumRegistry<T : Enum<*>>(
         return valueIdMap[value] ?: parentRegistry?.getId(value)!!
     }
 
-    fun setParent(registry: EnumRegistry<T>?) {
+    override fun setParent(parent: EnumRegistry<T>?) {
         if (!mutable) {
             throw IllegalStateException("Registry is immutable!")
         }
-        this.parentRegistry = registry
+        this.parentRegistry = parent
     }
 
     private fun getEnum(data: Any): T {

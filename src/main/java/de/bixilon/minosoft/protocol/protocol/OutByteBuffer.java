@@ -190,7 +190,7 @@ public class OutByteBuffer {
             writeShort((short) this.connection.getMapping().getItemRegistry().getId(itemStack.getItem()));
             writeByte((byte) itemStack.getItemCount());
             writeShort((short) itemStack.getItemMetadata());
-            writeNBT(itemStack.getNbt(this.connection.getMapping()));
+            writeNBT(itemStack.getNBT());
         }
         if (itemStack == null) {
             writeBoolean(false);
@@ -198,7 +198,7 @@ public class OutByteBuffer {
         }
         writeVarInt(this.connection.getMapping().getItemRegistry().getId(itemStack.getItem()));
         writeByte((byte) itemStack.getItemCount());
-        writeNBT(itemStack.getNbt(this.connection.getMapping()));
+        writeNBT(itemStack.getNBT());
     }
 
     void writeNBT(CompoundTag nbt) {

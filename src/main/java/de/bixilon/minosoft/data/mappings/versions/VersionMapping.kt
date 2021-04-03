@@ -31,10 +31,7 @@ import de.bixilon.minosoft.data.mappings.items.Item
 import de.bixilon.minosoft.data.mappings.items.ItemRegistry
 import de.bixilon.minosoft.data.mappings.materials.Material
 import de.bixilon.minosoft.data.mappings.particle.Particle
-import de.bixilon.minosoft.data.mappings.registry.EnumRegistry
-import de.bixilon.minosoft.data.mappings.registry.FakeEnumRegistry
-import de.bixilon.minosoft.data.mappings.registry.PerEnumVersionRegistry
-import de.bixilon.minosoft.data.mappings.registry.Registry
+import de.bixilon.minosoft.data.mappings.registry.*
 import de.bixilon.minosoft.data.mappings.statistics.Statistic
 import de.bixilon.minosoft.gui.rendering.chunk.VoxelShape
 import de.bixilon.minosoft.gui.rendering.chunk.models.AABB
@@ -43,10 +40,11 @@ import de.bixilon.minosoft.protocol.packets.clientbound.play.title.TitlePacketFa
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.collections.Clearable
 import de.bixilon.minosoft.util.json.ResourceLocationJsonMap.toResourceLocationMap
+import java.lang.reflect.Field
 import java.util.*
 
 
-class VersionMapping(var version: Version?) {
+class VersionMapping {
     var shapes: MutableList<VoxelShape> = mutableListOf()
     val motiveRegistry: Registry<Motive> = Registry()
     val blockRegistry: Registry<Block> = Registry()
@@ -94,32 +92,9 @@ class VersionMapping(var version: Version?) {
         set(value) {
             _parentMapping = value
 
-            // ToDo: Use reflections for this
-
-            motiveRegistry.setParent(value?.motiveRegistry)
-            itemRegistry.setParent(value?.itemRegistry)
-            enchantmentRegistry.setParent(value?.enchantmentRegistry)
-            particleRegistry.setParent(value?.particleRegistry)
-            statusEffectRegistry.setParent(value?.statusEffectRegistry)
-            blockRegistry.setParent(value?.blockRegistry)
-            statisticRegistry.setParent(value?.statisticRegistry)
-            biomeRegistry.setParent(value?.biomeRegistry)
-            dimensionRegistry.setParent(value?.dimensionRegistry)
-            biomePrecipitationRegistry.setParent(value?.biomePrecipitationRegistry)
-            biomeCategoryRegistry.setParent(value?.biomeCategoryRegistry)
-            materialRegistry.setParent(value?.materialRegistry)
-            villagerProfessionRegistry.setParent(value?.villagerProfessionRegistry)
-
-            equipmentSlotRegistry.setParent(value?.equipmentSlotRegistry)
-            handEquipmentSlotRegistry.setParent(value?.handEquipmentSlotRegistry)
-            armorEquipmentSlotRegistry.setParent(value?.armorEquipmentSlotRegistry)
-            armorStandEquipmentSlotRegistry.setParent(value?.armorStandEquipmentSlotRegistry)
-            entityMetaDataDataDataTypesRegistry.setParent(value?.entityMetaDataDataDataTypesRegistry)
-            creativeModeTabRegistry.setParent(value?.creativeModeTabRegistry)
-
-            titleActionsRegistry.setParent(value?.titleActionsRegistry)
-
-            entityRegistry.setParent(value?.entityRegistry)
+            for (field in PARENTABLE_FIELDS) {
+                PARENTABLE_SET_PARENT_METHOD.invoke(field.get(this), value?.let { field.get(it) })
+            }
         }
 
     fun getBlockState(blockState: Int): BlockState? {
@@ -133,30 +108,29 @@ class VersionMapping(var version: Version?) {
         return entityMetaIndexMap[field] ?: _parentMapping?.getEntityMetaDataIndex(field)
     }
 
-    private fun <T : Enum<*>> loadEnumRegistry(data: JsonElement?, registry: EnumRegistry<T>, alternative: PerEnumVersionRegistry<T>) {
+    private fun <T : Enum<*>> loadEnumRegistry(version: Version, data: JsonElement?, registry: EnumRegistry<T>, alternative: PerEnumVersionRegistry<T>) {
         data?.let {
             registry.initialize(it)
         } ?: let {
-            registry.setParent(alternative.forVersion(version!!))
+            registry.setParent(alternative.forVersion(version))
         }
     }
 
-    fun load(pixlyzerData: JsonObject) {
-        val version = version!!
+    fun load(version: Version, pixlyzerData: JsonObject) {
         // pre init stuff
         loadShapes(pixlyzerData["shapes"]?.asJsonObject)
 
         loadBlockModels(pixlyzerData["models"].asJsonObject.toResourceLocationMap())
 
         // enums
-        loadEnumRegistry(pixlyzerData["equipment_slots"], equipmentSlotRegistry, DefaultRegistries.EQUIPMENT_SLOTS_REGISTRY)
-        loadEnumRegistry(pixlyzerData["hand_equipment_slots"], handEquipmentSlotRegistry, DefaultRegistries.HAND_EQUIPMENT_SLOTS_REGISTRY)
-        loadEnumRegistry(pixlyzerData["armor_equipment_slots"], armorEquipmentSlotRegistry, DefaultRegistries.ARMOR_EQUIPMENT_SLOTS_REGISTRY)
-        loadEnumRegistry(pixlyzerData["armor_stand_equipment_slots"], armorStandEquipmentSlotRegistry, DefaultRegistries.ARMOR_STAND_EQUIPMENT_SLOTS_REGISTRY)
+        loadEnumRegistry(version, pixlyzerData["equipment_slots"], equipmentSlotRegistry, DefaultRegistries.EQUIPMENT_SLOTS_REGISTRY)
+        loadEnumRegistry(version, pixlyzerData["hand_equipment_slots"], handEquipmentSlotRegistry, DefaultRegistries.HAND_EQUIPMENT_SLOTS_REGISTRY)
+        loadEnumRegistry(version, pixlyzerData["armor_equipment_slots"], armorEquipmentSlotRegistry, DefaultRegistries.ARMOR_EQUIPMENT_SLOTS_REGISTRY)
+        loadEnumRegistry(version, pixlyzerData["armor_stand_equipment_slots"], armorStandEquipmentSlotRegistry, DefaultRegistries.ARMOR_STAND_EQUIPMENT_SLOTS_REGISTRY)
 
-        loadEnumRegistry(pixlyzerData["entity_meta_data_data_types"], entityMetaDataDataDataTypesRegistry, DefaultRegistries.ENTITY_META_DATA_DATA_TYPES_REGISTRY)
+        loadEnumRegistry(version, pixlyzerData["entity_meta_data_data_types"], entityMetaDataDataDataTypesRegistry, DefaultRegistries.ENTITY_META_DATA_DATA_TYPES_REGISTRY)
 
-        loadEnumRegistry(pixlyzerData["title_actions"], titleActionsRegistry, DefaultRegistries.TITLE_ACTIONS_REGISTRY)
+        loadEnumRegistry(version, pixlyzerData["title_actions"], titleActionsRegistry, DefaultRegistries.TITLE_ACTIONS_REGISTRY)
 
         // id stuff
         biomeCategoryRegistry.initialize(pixlyzerData["biome_categories"]?.asJsonObject, this, BiomeCategory)
@@ -240,6 +214,24 @@ class VersionMapping(var version: Version?) {
                 continue
             }
             field.javaClass.getMethod("clear").invoke(this)
+        }
+    }
+
+    companion object {
+        private val PARENTABLE_FIELDS: List<Field>
+        private val PARENTABLE_SET_PARENT_METHOD = Parentable::class.java.getDeclaredMethod("setParent", Any::class.java)
+
+        init {
+            val fields: MutableList<Field> = mutableListOf()
+
+            for (field in VersionMapping::class.java.declaredFields) {
+                if (!Parentable::class.java.isAssignableFrom(field.type)) {
+                    continue
+                }
+                fields.add(field)
+            }
+
+            PARENTABLE_FIELDS = fields.toList()
         }
     }
 }

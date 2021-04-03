@@ -19,7 +19,7 @@ import de.bixilon.minosoft.util.collections.Clearable
 
 class FakeEnumRegistry<T : RegistryFakeEnumerable>(
     private var parentRegistry: FakeEnumRegistry<T>? = null,
-) : Clearable {
+) : Clearable, Parentable<FakeEnumRegistry<T>> {
     private var initialized = false
     private val idValueMap: MutableMap<Int, T> = mutableMapOf()
     private val valueIdMap: MutableMap<T, Int> = mutableMapOf()
@@ -37,9 +37,9 @@ class FakeEnumRegistry<T : RegistryFakeEnumerable>(
         return valueIdMap[value] ?: parentRegistry?.getId(value)!!
     }
 
-    fun setParent(registry: FakeEnumRegistry<T>?) {
-        check(registry !== this) { "Can not set our self as parent!" }
-        this.parentRegistry = registry
+    override fun setParent(parent: FakeEnumRegistry<T>?) {
+        check(parent !== this) { "Can not set our self as parent!" }
+        this.parentRegistry = parent
     }
 
     fun initialize(data: JsonObject?, mappings: VersionMapping, deserializer: IdDeserializer<T>): FakeEnumRegistry<T> {

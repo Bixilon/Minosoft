@@ -26,7 +26,6 @@ import de.bixilon.minosoft.data.inventory.ItemNBTValues.UNBREAKABLE_TAG
 import de.bixilon.minosoft.data.mappings.Enchantment
 import de.bixilon.minosoft.data.mappings.items.Item
 import de.bixilon.minosoft.data.mappings.versions.Version
-import de.bixilon.minosoft.data.mappings.versions.VersionMapping
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.util.BitByte
 import de.bixilon.minosoft.util.nbt.tag.*
@@ -110,7 +109,7 @@ class ItemStack(
         additionalNBT = nbt
     }
 
-    fun getNbt(mapping: VersionMapping): CompoundTag {
+    fun getNBT(): CompoundTag {
         val nbt = additionalNBT?.clone() ?: CompoundTag()
         if (repairCost != 0) {
             nbt.writeTag(REPAIR_COST_TAG, IntTag(repairCost))
@@ -147,13 +146,13 @@ class ItemStack(
                 val enchantmentTag = CompoundTag()
                 enchantmentTag.writeTag(ENCHANTMENT_ID_TAG, StringTag(id.toString()))
 
-                enchantmentTag.writeTag(ENCHANTMENT_LEVEL_TAG, if (mapping.version!!.isFlattened()) {
+                enchantmentTag.writeTag(ENCHANTMENT_LEVEL_TAG, if (version!!.isFlattened()) {
                     IntTag(level)
                 } else {
                     ShortTag(level.toShort())
                 })
             }
-            if (mapping.version!!.isFlattened()) {
+            if (version!!.isFlattened()) {
                 nbt.writeTag(ENCHANTMENT_FLATTENING_TAG, enchantmentList)
             } else {
                 nbt.writeTag(ENCHANTMENT_PRE_FLATTENING_TAG, enchantmentList)

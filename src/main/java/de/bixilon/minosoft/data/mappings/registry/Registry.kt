@@ -21,7 +21,7 @@ import de.bixilon.minosoft.util.json.ResourceLocationJsonMap.toResourceLocationM
 
 open class Registry<T : RegistryItem>(
     private var parentRegistry: Registry<T>? = null,
-) : Iterable<T>, Clearable {
+) : Iterable<T>, Clearable, Parentable<Registry<T>> {
     private var initialized = false
     private val idValueMap: MutableMap<Int, T> = mutableMapOf()
     private val valueIdMap: MutableMap<T, Int> = mutableMapOf()
@@ -40,8 +40,8 @@ open class Registry<T : RegistryItem>(
         return valueIdMap[value] ?: parentRegistry?.getId(value)!!
     }
 
-    fun setParent(registry: Registry<T>?) {
-        this.parentRegistry = registry
+    override fun setParent(parent: Registry<T>?) {
+        this.parentRegistry = parent
     }
 
     open fun initialize(data: Map<ResourceLocation, JsonObject>?, mappings: VersionMapping?, deserializer: ResourceLocationDeserializer<T>, flattened: Boolean = true, metaType: MetaTypes = MetaTypes.NONE): Registry<T> {
