@@ -333,7 +333,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
             });
 
             if (connection.isConnected()) {
-                this.optionsConnect.setDisable(Minosoft.getConfig().getConfig().getAccount().getSelected().equals(connection.getPlayer().getAccount().getId()));
+                this.optionsConnect.setDisable(Minosoft.getConfig().getConfig().getAccount().getSelected().equals(connection.getAccount().getId()));
                 this.optionsSessions.setDisable(false);
                 return;
             }

@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.data.commands.parser
 
-import de.bixilon.minosoft.data.EntityClassMappings
+import de.bixilon.minosoft.data.DefaultEntityFactories
 import de.bixilon.minosoft.data.commands.CommandStringReader
 import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException
 import de.bixilon.minosoft.data.commands.parser.exceptions.resourcelocation.DimensionNotFoundCommandParseException
@@ -41,7 +41,7 @@ class ResourceLocationListParser : CommandParser() {
         if (this == SUMMONABLE_ENTITY_PARSER) {
             // ToDo: only summonable entities, not all of them
 
-            if (EntityClassMappings.getByResourceLocation(resourceLocation.value) == null) {
+            if (DefaultEntityFactories.getEntityFactory(resourceLocation.value) == null) {
                 throw EntityNotFoundCommandParseException(stringReader, resourceLocation.key)
             }
             return null // ToDo

@@ -41,7 +41,7 @@ public class PacketLoginSuccess extends ClientboundPacket {
     public void handle(Connection connection) {
         connection.setConnectionState(ConnectionStates.PLAY);
 
-        connection.getPlayer().getEntity().setUUID(getUUID());
+        connection.getPlayer().getEntity().setUuid(getUUID());
         connection.getPlayer().getEntity().setName(getPlayerName());
     }
 

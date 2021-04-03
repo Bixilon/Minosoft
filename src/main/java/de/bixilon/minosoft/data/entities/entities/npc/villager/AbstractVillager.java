@@ -17,13 +17,14 @@ import de.bixilon.minosoft.data.entities.EntityMetaDataFields;
 import de.bixilon.minosoft.data.entities.EntityRotation;
 import de.bixilon.minosoft.data.entities.entities.AgeableMob;
 import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction;
+import de.bixilon.minosoft.data.mappings.entities.EntityType;
 import de.bixilon.minosoft.protocol.network.Connection;
 import glm_.vec3.Vec3;
 
 public abstract class AbstractVillager extends AgeableMob {
 
-    public AbstractVillager(Connection connection, Vec3 position, EntityRotation rotation) {
-        super(connection, position, rotation);
+    public AbstractVillager(Connection connection, EntityType entityType, Vec3 position, EntityRotation rotation) {
+        super(connection, entityType, position, rotation);
     }
 
     @EntityMetaDataFunction(name = "Unhappy timer")

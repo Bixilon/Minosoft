@@ -64,7 +64,7 @@ public class Connection {
     private final VelocityHandler velocityHandler = new VelocityHandler(this);
     private final LinkedList<EventInvoker> eventListeners = new LinkedList<>();
     private final int connectionId;
-    private final Player player;
+    private final Account account;
     private final String hostname;
     private final Recipes recipes = new Recipes();
     private final World world = new World();
@@ -84,14 +84,11 @@ public class Connection {
     private CommandRootNode commandRootNode;
     private ConnectionPing connectionStatusPing;
     private ServerListPongEvent pong;
+    private Player player;
 
     public Connection(int connectionId, String hostname, Account account) {
         this.connectionId = connectionId;
-        if (account == null) {
-            this.player = null;
-        } else {
-            this.player = new Player(account, this);
-        }
+        this.account = account;
         this.hostname = hostname;
     }
 
@@ -149,6 +146,7 @@ public class Connection {
             version.load(latch);  // ToDo: show gui loader
             this.customMapping.setVersion(version);
             this.customMapping.setParentMapping(version.getMapping());
+            this.player = new Player(this.account, this);
 
             if (!StaticConfiguration.HEADLESS_MODE) {
                 this.rendering = new Rendering(this);
@@ -479,7 +477,7 @@ public class Connection {
 
     @Override
     public String toString() {
-        return String.format("(id=%d, address=%s, account=\"%s\")", getConnectionId(), getAddress(), ((this.player == null) ? null : getPlayer().getAccount()));
+        return String.format("(id=%d, address=%s, account=\"%s\")", getConnectionId(), getAddress(), getAccount());
     }
 
     public Rendering getRenderer() {
@@ -544,5 +542,9 @@ public class Connection {
             PacketStopSound packet = new PacketStopSound(event.getData());
             packet.handle(this);
         }));
+    }
+
+    public Account getAccount() {
+        return this.account;
     }
 }

@@ -67,7 +67,7 @@ public class PacketSpawnPlayer extends ClientboundPacket {
         if (buffer.getVersionId() < V_19W34A) {
             metaData = buffer.readMetaData();
         }
-        this.entity = new PlayerEntity(buffer.getConnection(), position, new EntityRotation(yaw, pitch, 0), name, this.entityUUID, properties, Gamemodes.CREATIVE); // ToDo
+        this.entity = new PlayerEntity(buffer.getConnection(), buffer.getConnection().getMapping().getEntityRegistry().get(PlayerEntity.Companion.getRESOURCE_LOCATION()), position, new EntityRotation(yaw, pitch, 0), name, this.entityUUID, properties, Gamemodes.CREATIVE); // ToDo
         if (metaData != null) {
             this.entity.setEntityMetaData(metaData);
             if (StaticConfiguration.VERBOSE_ENTITY_META_DATA_LOGGING) {
@@ -85,7 +85,7 @@ public class PacketSpawnPlayer extends ClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Player spawned at %s (entityId=%d, name=%s, uuid=%s)", this.entity.getPosition(), this.entityId, this.entity.getName(), this.entity.getUUID()));
+        Log.protocol(String.format("[IN] Player spawned at %s (entityId=%d, name=%s, uuid=%s)", this.entity.getPosition(), this.entityId, this.entity.getName(), this.entity.getUuid()));
     }
 
     public PlayerEntity getEntity() {

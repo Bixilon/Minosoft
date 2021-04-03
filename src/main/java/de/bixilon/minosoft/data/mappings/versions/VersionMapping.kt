@@ -12,14 +12,10 @@
  */
 package de.bixilon.minosoft.data.mappings.versions
 
-import com.google.common.collect.HashBiMap
 import com.google.gson.JsonArray
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
-import de.bixilon.minosoft.data.EntityClassMappings
-import de.bixilon.minosoft.data.entities.EntityInformation
 import de.bixilon.minosoft.data.entities.EntityMetaDataFields
-import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.meta.EntityMetaData
 import de.bixilon.minosoft.data.inventory.InventorySlots
 import de.bixilon.minosoft.data.mappings.*
@@ -28,6 +24,8 @@ import de.bixilon.minosoft.data.mappings.biomes.BiomeCategory
 import de.bixilon.minosoft.data.mappings.biomes.BiomePrecipitation
 import de.bixilon.minosoft.data.mappings.blocks.Block
 import de.bixilon.minosoft.data.mappings.blocks.BlockState
+import de.bixilon.minosoft.data.mappings.entities.EntityType
+import de.bixilon.minosoft.data.mappings.entities.villagers.VillagerProfession
 import de.bixilon.minosoft.data.mappings.inventory.CreativeModeTab
 import de.bixilon.minosoft.data.mappings.items.Item
 import de.bixilon.minosoft.data.mappings.items.ItemRegistry
@@ -38,7 +36,6 @@ import de.bixilon.minosoft.data.mappings.registry.FakeEnumRegistry
 import de.bixilon.minosoft.data.mappings.registry.PerEnumVersionRegistry
 import de.bixilon.minosoft.data.mappings.registry.Registry
 import de.bixilon.minosoft.data.mappings.statistics.Statistic
-import de.bixilon.minosoft.data.mappings.villagers.VillagerProfession
 import de.bixilon.minosoft.gui.rendering.chunk.VoxelShape
 import de.bixilon.minosoft.gui.rendering.chunk.models.AABB
 import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModel
@@ -79,11 +76,10 @@ class VersionMapping(var version: Version?) {
     val biomeCategoryRegistry: FakeEnumRegistry<BiomeCategory> = FakeEnumRegistry()
 
 
-    internal val blockStateIdMap: MutableMap<Int, BlockState> = mutableMapOf()
+    val blockStateIdMap: MutableMap<Int, BlockState> = mutableMapOf()
 
-    private val entityInformationMap = HashBiMap.create<Class<out Entity>, EntityInformation>(120)
-    private val entityMetaIndexMap = HashMap<EntityMetaDataFields, Int>(180)
-    private val entityIdClassMap = HashBiMap.create<Int, Class<out Entity?>>(120)
+    val entityMetaIndexMap = HashMap<EntityMetaDataFields, Int>(180)
+    val entityRegistry: Registry<EntityType> = Registry()
 
     internal val models: MutableMap<ResourceLocation, BlockModel> = mutableMapOf()
 
@@ -97,6 +93,8 @@ class VersionMapping(var version: Version?) {
         get() = _parentMapping
         set(value) {
             _parentMapping = value
+
+            // ToDo: Use reflections for this
 
             motiveRegistry.setParent(value?.motiveRegistry)
             itemRegistry.setParent(value?.itemRegistry)
@@ -120,6 +118,8 @@ class VersionMapping(var version: Version?) {
             creativeModeTabRegistry.setParent(value?.creativeModeTabRegistry)
 
             titleActionsRegistry.setParent(value?.titleActionsRegistry)
+
+            entityRegistry.setParent(value?.entityRegistry)
         }
 
     fun getBlockState(blockState: Int): BlockState? {
@@ -129,16 +129,8 @@ class VersionMapping(var version: Version?) {
         return blockStateIdMap[blockState] ?: _parentMapping?.getBlockState(blockState)
     }
 
-    fun getEntityInformation(clazz: Class<out Entity?>): EntityInformation? {
-        return entityInformationMap[clazz] ?: _parentMapping?.getEntityInformation(clazz)
-    }
-
     fun getEntityMetaDataIndex(field: EntityMetaDataFields): Int? {
         return entityMetaIndexMap[field] ?: _parentMapping?.getEntityMetaDataIndex(field)
-    }
-
-    fun getEntityClassById(entityTypeId: Int): Class<out Entity?>? {
-        return entityIdClassMap[entityTypeId] ?: _parentMapping?.getEntityClassById(entityTypeId)
     }
 
     private fun <T : Enum<*>> loadEnumRegistry(data: JsonElement?, registry: EnumRegistry<T>, alternative: PerEnumVersionRegistry<T>) {
@@ -184,7 +176,9 @@ class VersionMapping(var version: Version?) {
 
         villagerProfessionRegistry.initialize(pixlyzerData["villager_professions"]?.asJsonObject, this, VillagerProfession)
 
-        loadEntities(pixlyzerData["entities"]?.asJsonObject)
+
+        entityRegistry.initialize(pixlyzerData["entities"]?.asJsonObject, this, EntityType)
+
         // post init
         biomeRegistry.postInit(this)
         isFullyLoaded = true
@@ -208,29 +202,6 @@ class VersionMapping(var version: Version?) {
             aabbs.add(AABB(data.asJsonObject))
         }
         return aabbs
-    }
-
-    private fun loadEntities(data: JsonObject?) {
-        if (data == null) {
-            return
-        }
-
-        for ((resourceLocationName, entity) in data.entrySet()) {
-            check(entity is JsonObject)
-            val resourceLocation = ResourceLocation(resourceLocationName)
-            EntityClassMappings.getByResourceLocation(resourceLocation)?.let {
-                // not abstract
-                entityInformationMap[it] = EntityInformation.deserialize(resourceLocation, entity)
-                entityIdClassMap[entity["id"].asInt] = it
-            }
-            entity["meta"]?.asJsonObject?.let {
-                for ((minosoftFieldName, index) in it.entrySet()) {
-                    val minosoftField = EntityMetaDataFields.valueOf(minosoftFieldName)
-                    entityMetaIndexMap[minosoftField] = index.asInt
-                }
-            }
-
-        }
     }
 
     private fun loadBlockModels(data: Map<ResourceLocation, JsonObject>) {

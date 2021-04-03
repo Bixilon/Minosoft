@@ -43,7 +43,7 @@ public class PacketEncryptionRequest extends ClientboundPacket {
         PublicKey publicKey = CryptManager.decodePublicKey(getPublicKey());
         String serverHash = new BigInteger(CryptManager.getServerHash(getServerId(), publicKey, secretKey)).toString(16);
         try {
-            connection.getPlayer().getAccount().join(serverHash);
+            connection.getAccount().join(serverHash);
         } catch (MojangJoinServerErrorException | NoNetworkConnectionException e) {
             e.printStackTrace();
             connection.disconnect();

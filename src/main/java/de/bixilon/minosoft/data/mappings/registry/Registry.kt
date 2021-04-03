@@ -52,7 +52,7 @@ open class Registry<T : RegistryItem>(
         }
 
         for ((resourceLocation, value) in data) {
-            val item = deserializer.deserialize(mappings, resourceLocation, value)
+            val item = deserializer.deserialize(mappings, resourceLocation, value) ?: continue
             value["id"]?.asInt?.let { id ->
                 var itemId = id
                 if (!flattened) {

@@ -16,13 +16,14 @@ package de.bixilon.minosoft.data.entities.entities.animal.horse;
 import de.bixilon.minosoft.data.entities.EntityMetaDataFields;
 import de.bixilon.minosoft.data.entities.EntityRotation;
 import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction;
+import de.bixilon.minosoft.data.mappings.entities.EntityType;
 import de.bixilon.minosoft.protocol.network.Connection;
 import glm_.vec3.Vec3;
 
 public abstract class AbstractChestedHorse extends AbstractHorse {
 
-    public AbstractChestedHorse(Connection connection, Vec3 position, EntityRotation rotation) {
-        super(connection, position, rotation);
+    public AbstractChestedHorse(Connection connection, EntityType entityType, Vec3 position, EntityRotation rotation) {
+        super(connection, entityType, position, rotation);
     }
 
     @EntityMetaDataFunction(name = "Has chest")

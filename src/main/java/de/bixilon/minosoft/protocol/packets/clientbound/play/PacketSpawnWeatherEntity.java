@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.entities.entities.LightningBolt;
+import de.bixilon.minosoft.data.mappings.ResourceLocation;
 import de.bixilon.minosoft.modding.event.events.EntitySpawnEvent;
 import de.bixilon.minosoft.modding.event.events.LightningBoltSpawnEvent;
 import de.bixilon.minosoft.protocol.network.Connection;
@@ -25,6 +26,7 @@ import glm_.vec3.Vec3;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_16W06A;
 
 public class PacketSpawnWeatherEntity extends ClientboundPacket {
+    private static final ResourceLocation LIGHTNING_BOLT_RESOURCE_LOCATION = new ResourceLocation("lightning_bolt");
     private final int entityId;
     private final LightningBolt entity;
 
@@ -37,7 +39,7 @@ public class PacketSpawnWeatherEntity extends ClientboundPacket {
         } else {
             position = buffer.readEntityPosition();
         }
-        this.entity = new LightningBolt(buffer.getConnection(), this.entityId, position);
+        this.entity = new LightningBolt(buffer.getConnection(), buffer.getConnection().getMapping().getEntityRegistry().get(LIGHTNING_BOLT_RESOURCE_LOCATION), position);
     }
 
     @Override

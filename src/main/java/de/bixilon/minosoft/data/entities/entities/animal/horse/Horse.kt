@@ -16,12 +16,14 @@ import de.bixilon.minosoft.data.entities.EntityMetaDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
 import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.data.mappings.entities.EntityFactory
+import de.bixilon.minosoft.data.mappings.entities.EntityType
 import de.bixilon.minosoft.data.mappings.items.Item
 import de.bixilon.minosoft.protocol.network.Connection
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import glm_.vec3.Vec3
 
-class Horse(connection: Connection, location: Vec3, rotation: EntityRotation) : AbstractHorse(connection, location, rotation) {
+class Horse(connection: Connection, entityType: EntityType, location: Vec3, rotation: EntityRotation) : AbstractHorse(connection, entityType, location, rotation) {
 
     private fun getAbstractHorseFlag(bitMask: Int): Boolean {
         return entityMetaData.sets.getBitMask(EntityMetaDataFields.ABSTRACT_HORSE_FLAGS, bitMask)
@@ -85,9 +87,14 @@ class Horse(connection: Connection, location: Vec3, rotation: EntityRotation) : 
         }
     }
 
-    companion object {
+    companion object : EntityFactory<Horse> {
         private val LEGACY_IRON_ARMOR = ResourceLocation("iron_horse_armor")
         private val LEGACY_GOLD_ARMOR = ResourceLocation("golden_horse_armor")
         private val LEGACY_DIAMOND_ARMOR = ResourceLocation("diamond_horse_armor")
+        override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("horse")
+
+        override fun build(connection: Connection, entityType: EntityType, position: Vec3, rotation: EntityRotation): Horse {
+            return Horse(connection, entityType, position, rotation)
+        }
     }
 }

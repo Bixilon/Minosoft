@@ -29,7 +29,7 @@ class HUDWorldDebugElement(hudRenderer: HUDRenderer) : DebugScreen(hudRenderer) 
     private val openGLText = text("TBA")
 
     init {
-        text("Connected to ${hudRenderer.connection.address} on ${hudRenderer.connection.version} with ${hudRenderer.connection.player.account.username}")
+        text("Connected to ${hudRenderer.connection.address} on ${hudRenderer.connection.version} with ${hudRenderer.connection.account.username}")
         text("")
     }
 
@@ -61,7 +61,7 @@ class HUDWorldDebugElement(hudRenderer: HUDRenderer) : DebugScreen(hudRenderer) 
 
 
         // ToDo: Prepare on change
-        gamemodeText.sText = "Gamemode: ${hudRenderer.connection.player.entity.gamemode?.name?.toLowerCase()}"
+        gamemodeText.sText = "Gamemode: ${hudRenderer.connection.player.entity.gamemode.name.toLowerCase()}"
         positionText.sText = "XYZ ${getPosition()}"
         blockPositionText.sText = "Block ${getBlockPosition()}"
         chunkPositionText.sText = "Chunk ${getChunkLocation()}"

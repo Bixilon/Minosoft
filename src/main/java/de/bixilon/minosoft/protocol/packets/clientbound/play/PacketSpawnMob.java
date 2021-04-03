@@ -19,7 +19,6 @@ import de.bixilon.minosoft.data.entities.Velocity;
 import de.bixilon.minosoft.data.entities.entities.Entity;
 import de.bixilon.minosoft.data.entities.entities.UnknownEntityException;
 import de.bixilon.minosoft.data.entities.meta.EntityMetaData;
-import de.bixilon.minosoft.data.mappings.tweaker.VersionTweaker;
 import de.bixilon.minosoft.modding.event.events.EntitySpawnEvent;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
@@ -48,7 +47,6 @@ public class PacketSpawnMob extends ClientboundPacket {
         } else {
             type = buffer.readVarInt();
         }
-        Class<? extends Entity> typeClass = buffer.getConnection().getMapping().getEntityClassById(type);
 
         Vec3 position;
         if (buffer.getVersionId() < V_16W06A) {
@@ -63,13 +61,16 @@ public class PacketSpawnMob extends ClientboundPacket {
         if (buffer.getVersionId() < V_19W34A) {
             metaData = buffer.readMetaData();
             // we have meta data, check if we need to correct the class
-            typeClass = VersionTweaker.getRealEntityClass(typeClass, metaData, buffer.getVersionId());
         }
-        if (typeClass == null) {
+
+        final var entityType = buffer.getConnection().getMapping().getEntityRegistry().get(type);
+
+        if (entityType == null) {
             throw new UnknownEntityException(String.format("Unknown entity (typeId=%d)", type));
         }
 
-        this.entity = typeClass.getConstructor(Connection.class, Vec3.class, EntityRotation.class).newInstance(buffer.getConnection(), position, rotation);
+        this.entity = entityType.build(buffer.getConnection(), position, rotation, metaData, buffer.getVersionId());
+
         if (metaData != null) {
             this.entity.setEntityMetaData(metaData);
             if (StaticConfiguration.VERBOSE_ENTITY_META_DATA_LOGGING) {

@@ -13,12 +13,10 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
+import de.bixilon.minosoft.data.entities.EntityObjects;
 import de.bixilon.minosoft.data.entities.EntityRotation;
-import de.bixilon.minosoft.data.entities.Objects;
 import de.bixilon.minosoft.data.entities.Velocity;
 import de.bixilon.minosoft.data.entities.entities.Entity;
-import de.bixilon.minosoft.data.entities.entities.UnknownEntityException;
-import de.bixilon.minosoft.data.mappings.tweaker.VersionTweaker;
 import de.bixilon.minosoft.modding.event.events.EntitySpawnEvent;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
@@ -48,12 +46,6 @@ public class PacketSpawnObject extends ClientboundPacket {
         } else {
             type = buffer.readVarInt();
         }
-        Class<? extends Entity> typeClass;
-        if (buffer.getVersionId() < V_19W05A) {
-            typeClass = Objects.byId(type).getClazz();
-        } else {
-            typeClass = buffer.getConnection().getMapping().getEntityClassById(type);
-        }
 
         Vec3 position;
         if (buffer.getVersionId() < V_16W06A) {
@@ -72,15 +64,11 @@ public class PacketSpawnObject extends ClientboundPacket {
             this.velocity = new Velocity(buffer.readShort(), buffer.readShort(), buffer.readShort());
         }
 
-        if (buffer.getVersionId() <= V_1_8_9) { // ToDo
-            typeClass = VersionTweaker.getRealEntityObjectClass(typeClass, data, buffer.getVersionId());
+        if (buffer.getVersionId() < V_19W05A) {
+            this.entity = EntityObjects.byId(type).build(buffer.getConnection(), position, rotation, null, buffer.getVersionId()); // ToDo: Entity meta data tweaking
+        } else {
+            this.entity = buffer.getConnection().getMapping().getEntityRegistry().get(type).build(buffer.getConnection(), position, rotation, null, buffer.getVersionId());
         }
-
-        if (typeClass == null) {
-            throw new UnknownEntityException(String.format("Unknown entity (typeId=%d)", type));
-        }
-
-        this.entity = typeClass.getConstructor(Connection.class, Vec3.class, EntityRotation.class).newInstance(buffer.getConnection(), position, rotation);
     }
 
     @Override

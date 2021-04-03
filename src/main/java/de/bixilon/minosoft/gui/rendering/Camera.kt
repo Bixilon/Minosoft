@@ -52,7 +52,8 @@ class Camera(
     var cameraPosition = Vec3(0.0f, 0.0f, 0.0f)
     private var lastMouseX = 0.0
     private var lastMouseY = 0.0
-    val playerEntity: PlayerEntity = connection.player.entity
+    val playerEntity: PlayerEntity
+        get() = connection.player.entity
     var yaw = 0.0
     var pitch = 0.0
     private var zoom = 0.0f

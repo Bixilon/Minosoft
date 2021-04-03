@@ -36,7 +36,7 @@ public class CommandConnection extends Command {
                             ArrayList<Object[]> tableData = new ArrayList<>();
 
                             for (var entry : Minosoft.CONNECTIONS.entrySet()) {
-                                tableData.add(new Object[]{entry.getKey(), entry.getValue().getAddress(), entry.getValue().getPlayer().getAccount()});
+                                tableData.add(new Object[]{entry.getKey(), entry.getValue().getAddress(), entry.getValue().getAccount()});
                             }
 
                             print(AsciiTable.getTable(new String[]{"ID", "ADDRESS", "ACCOUNT"}, tableData.toArray(new Object[0][0])));

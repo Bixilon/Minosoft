@@ -14,11 +14,15 @@ package de.bixilon.minosoft.data.entities.entities
 
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.Directions
-import de.bixilon.minosoft.data.entities.*
+import de.bixilon.minosoft.data.entities.EntityMetaDataFields
+import de.bixilon.minosoft.data.entities.EntityRotation
+import de.bixilon.minosoft.data.entities.Poses
+import de.bixilon.minosoft.data.entities.StatusEffectInstance
 import de.bixilon.minosoft.data.entities.meta.EntityMetaData
 import de.bixilon.minosoft.data.inventory.InventorySlots.EquipmentSlots
 import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.mappings.StatusEffect
+import de.bixilon.minosoft.data.mappings.entities.EntityType
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.gui.rendering.Camera
 import de.bixilon.minosoft.gui.rendering.chunk.VoxelShape
@@ -30,10 +34,10 @@ import java.util.*
 
 abstract class Entity(
     protected val connection: Connection,
+    val type: EntityType,
     var position: Vec3,
     var rotation: EntityRotation,
 ) {
-    val entityInformation: EntityInformation? = connection.mapping.getEntityInformation(javaClass)
     val equipment: MutableMap<EquipmentSlots, ItemStack> = mutableMapOf()
     val effectList: MutableSet<StatusEffectInstance> = mutableSetOf()
 
@@ -140,7 +144,7 @@ abstract class Entity(
         get() = entityMetaData.sets.getInt(EntityMetaDataFields.ENTITY_TICKS_FROZEN)
 
     override fun toString(): String {
-        return entityInformation.toString()
+        return type.toString()
     }
 
     val entityMetaDataAsString: String

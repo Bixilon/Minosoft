@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.entities.entities.ExperienceOrb;
+import de.bixilon.minosoft.data.mappings.ResourceLocation;
 import de.bixilon.minosoft.modding.event.events.EntitySpawnEvent;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
@@ -24,6 +25,7 @@ import glm_.vec3.Vec3;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_16W06A;
 
 public class PacketSpawnExperienceOrb extends ClientboundPacket {
+    private static final ResourceLocation EXPERIENCE_ORB_RESOURCE_LOCATION = new ResourceLocation("minecraft:experience_orb");
     private final int entityId;
     private final ExperienceOrb entity;
 
@@ -36,7 +38,7 @@ public class PacketSpawnExperienceOrb extends ClientboundPacket {
             position = buffer.readEntityPosition();
         }
         int count = buffer.readUnsignedShort();
-        this.entity = new ExperienceOrb(buffer.getConnection(), position, count);
+        this.entity = new ExperienceOrb(buffer.getConnection(), buffer.getConnection().getMapping().getEntityRegistry().get(EXPERIENCE_ORB_RESOURCE_LOCATION), position, count);
     }
 
     @Override

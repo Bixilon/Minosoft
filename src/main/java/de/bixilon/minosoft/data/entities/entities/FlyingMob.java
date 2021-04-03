@@ -14,12 +14,13 @@
 package de.bixilon.minosoft.data.entities.entities;
 
 import de.bixilon.minosoft.data.entities.EntityRotation;
+import de.bixilon.minosoft.data.mappings.entities.EntityType;
 import de.bixilon.minosoft.protocol.network.Connection;
 import glm_.vec3.Vec3;
 
 public abstract class FlyingMob extends Mob {
 
-    public FlyingMob(Connection connection, Vec3 position, EntityRotation rotation) {
-        super(connection, position, rotation);
+    public FlyingMob(Connection connection, EntityType entityType, Vec3 position, EntityRotation rotation) {
+        super(connection, entityType, position, rotation);
     }
 }

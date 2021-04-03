@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.commands.parser.entity;
 
-import de.bixilon.minosoft.data.EntityClassMappings;
+import de.bixilon.minosoft.data.DefaultEntityFactories;
 import de.bixilon.minosoft.data.commands.CommandStringReader;
 import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException;
 import de.bixilon.minosoft.data.commands.parser.exceptions.entity.UnknownEntityCommandParseException;
@@ -30,7 +30,7 @@ public class ResourceLocationSelectorArgumentParser extends EntitySelectorArgume
         }
         ResourceLocation resourceLocation = new ResourceLocation(value);
         if (this == ENTITY_TYPE_RESOURCE_LOCATION_SELECTOR_ARGUMENT_PARSER) {
-            if (EntityClassMappings.INSTANCE.getByResourceLocation(resourceLocation) == null) {
+            if (DefaultEntityFactories.INSTANCE.getEntityFactory(resourceLocation) == null) {
                 throw new UnknownEntityCommandParseException(stringReader, value);
             }
             return;

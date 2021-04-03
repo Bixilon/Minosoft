@@ -21,15 +21,16 @@ import de.bixilon.minosoft.protocol.network.Connection
 import glm_.vec3.Vec3i
 
 class Player(
-    val account: Account,
+    account: Account,
     connection: Connection,
 ) {
     val healthCondition = PlayerHealthCondition()
     val experienceCondition = PlayerExperienceCondition()
     val inventoryManager = PlayerInventoryManager()
     var spawnPosition: Vec3i = VecUtil.EMPTY_VEC3I
-    val entity: PlayerEntity = PlayerEntity(connection, VecUtil.EMPTY_VEC3, EntityRotation(0.0, 0.0), account.username, account.uuid, null, Gamemodes.SPECTATOR)
+    val entity: PlayerEntity = PlayerEntity(connection, connection.mapping.entityRegistry.get(PlayerEntity.RESOURCE_LOCATION)!!, VecUtil.EMPTY_VEC3, EntityRotation(0.0, 0.0), account.username, account.uuid, null, Gamemodes.SPECTATOR)
 
     @Deprecated(message = "Will be replaced with some kind of teleport manager, ...")
     var isSpawnConfirmed = false
+
 }

@@ -28,8 +28,11 @@ import glm_.vec3.Vec3i
 object VersionTweaker {
     // some data was packed in mata data in early versions (1.8). This function converts it to the real resource location
     @JvmStatic
-    fun getRealEntityClass(fakeClass: Class<out Entity>, metaData: EntityMetaData, versionId: Int): Class<out Entity> {
+    fun getRealEntityClass(fakeClass: Class<out Entity>, metaData: EntityMetaData?, versionId: Int): Class<out Entity> {
         if (versionId > ProtocolVersions.V_1_8_9) { // ToDo: No clue here
+            return fakeClass
+        }
+        if (metaData == null) {
             return fakeClass
         }
         when (fakeClass) {
@@ -72,12 +75,12 @@ object VersionTweaker {
         when (fakeClass) {
             Minecart::class.java -> {
                 return when (data) {
-                    1 -> MinecartChest::class.java
-                    2 -> MinecartFurnace::class.java
-                    3 -> MinecartTNT::class.java
-                    4 -> MinecartSpawner::class.java
-                    5 -> MinecartHopper::class.java
-                    6 -> MinecartCommandBlock::class.java
+                    1 -> ChestMinecart::class.java
+                    2 -> FurnaceMinecart::class.java
+                    3 -> TNTMinecart::class.java
+                    4 -> SpawnerMinecart::class.java
+                    5 -> HopperMinecart::class.java
+                    6 -> CommandBlockMinecart::class.java
                     else -> fakeClass
                 }
             }

@@ -16,6 +16,7 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 import de.bixilon.minosoft.data.Directions;
 import de.bixilon.minosoft.data.entities.entities.decoration.Painting;
 import de.bixilon.minosoft.data.mappings.Motive;
+import de.bixilon.minosoft.data.mappings.ResourceLocation;
 import de.bixilon.minosoft.modding.event.events.EntitySpawnEvent;
 import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
@@ -28,6 +29,7 @@ import java.util.UUID;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
 
 public class PacketSpawnPainting extends ClientboundPacket {
+    private static final ResourceLocation PAINTING_RESOURCE_LOCATION = new ResourceLocation("minecraft:painting");
     private final int entityId;
     private UUID entityUUID;
     private final Painting entity;
@@ -53,7 +55,7 @@ public class PacketSpawnPainting extends ClientboundPacket {
             position = buffer.readBlockPosition();
             direction = Directions.byId(buffer.readUnsignedByte());
         }
-        this.entity = new Painting(buffer.getConnection(), position, direction, motive);
+        this.entity = new Painting(buffer.getConnection(), buffer.getConnection().getMapping().getEntityRegistry().get(PAINTING_RESOURCE_LOCATION), position, direction, motive);
     }
 
     @Override

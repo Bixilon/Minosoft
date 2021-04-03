@@ -15,16 +15,23 @@ package de.bixilon.minosoft.data.entities.entities.projectile
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.data.mappings.entities.EntityFactory
+import de.bixilon.minosoft.data.mappings.entities.EntityType
 import de.bixilon.minosoft.protocol.network.Connection
 import glm_.vec3.Vec3
 
-class ThrownEgg(connection: Connection, location: Vec3, rotation: EntityRotation) : ThrowableItemProjectile(connection, location, rotation) {
+class ThrownEgg(connection: Connection, entityType: EntityType, location: Vec3, rotation: EntityRotation) : ThrowableItemProjectile(connection, entityType, location, rotation) {
 
     override fun getDefaultItem(): ItemStack {
         return ItemStack(connection.mapping.itemRegistry.get(DEFAULT_ITEM)!!, connection.version)
     }
 
-    companion object {
+    companion object : EntityFactory<ThrownEgg> {
         private val DEFAULT_ITEM = ResourceLocation("egg")
+        override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("egg")
+
+        override fun build(connection: Connection, entityType: EntityType, position: Vec3, rotation: EntityRotation): ThrownEgg {
+            return ThrownEgg(connection, entityType, position, rotation)
+        }
     }
 }
