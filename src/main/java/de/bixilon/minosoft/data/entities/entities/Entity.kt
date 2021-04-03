@@ -207,7 +207,7 @@ abstract class Entity(
             delta.y = collisionsToCheck.computeOffset(aabb, deltaPosition.y, Axes.Y)
             aabb.offsetAssign(0f, delta.y, 0f)
         }
-        val xPriority = delta.x <= delta.z
+        val xPriority = delta.x > delta.z
         if (delta.x != 0.0f && xPriority) {
             delta.x = collisionsToCheck.computeOffset(aabb, deltaPosition.x, Axes.X)
             aabb.offsetAssign(delta.x, 0f, 0f)

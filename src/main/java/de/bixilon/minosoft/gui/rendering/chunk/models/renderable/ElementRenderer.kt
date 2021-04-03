@@ -30,15 +30,13 @@ import de.bixilon.minosoft.gui.rendering.textures.TextureTransparencies
 import de.bixilon.minosoft.gui.rendering.util.VecUtil
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.rotate
-import glm_.Java.Companion.glm
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3i
 
-class ElementRenderer(parent: BlockModelElement, val rotation: Vec3, uvLock: Boolean, rescale: Boolean) {
+class ElementRenderer(parent: BlockModelElement, val rotation: Vec3, uvLock: Boolean, rescale: Boolean, private val directionMapping: HashBiMap<Directions, Directions>) {
     val faceBorderSize: Array<FaceSize?> = arrayOfNulls(Directions.DIRECTIONS.size)
     private val faces: MutableMap<Directions, BlockModelFace> = mutableMapOf()
     private var transformedPositions: Array<Vec3> = parent.transformedPositions.clone()
-    private val directionMapping: HashBiMap<Directions, Directions> = HashBiMap.create()
     private val from = parent.from
     private val to = parent.to
 
@@ -48,8 +46,6 @@ class ElementRenderer(parent: BlockModelElement, val rotation: Vec3, uvLock: Boo
             direction.getFaceBorderSizes(from, to)?.let {
                 faceBorderSize[direction.ordinal] = it
             }
-
-            directionMapping[direction] = getRotatedDirection(rotation, direction)
             parent.faces[direction]?.let {
                 faces[direction] = BlockModelFace(it)
             }
@@ -116,14 +112,13 @@ class ElementRenderer(parent: BlockModelElement, val rotation: Vec3, uvLock: Boo
             0 to 1,
         )
 
-        fun createElements(state: JsonObject, parent: BlockModel): MutableList<ElementRenderer> {
-            val rotation = glm.radians(state.asVec3())
+        fun createElements(state: JsonObject, parent: BlockModel, rotation: Vec3, directionMapping: HashBiMap<Directions, Directions>): MutableList<ElementRenderer> {
             val uvLock = state["uvlock"]?.asBoolean ?: false
             val rescale = state["rescale"]?.asBoolean ?: false
             val parentElements = parent.elements
             val result: MutableList<ElementRenderer> = mutableListOf()
             for (parentElement in parentElements) {
-                result.add(ElementRenderer(parentElement, rotation, uvLock, rescale))
+                result.add(ElementRenderer(parentElement, rotation, uvLock, rescale, directionMapping))
             }
             return result
         }
@@ -161,8 +156,4 @@ class ElementRenderer(parent: BlockModelElement, val rotation: Vec3, uvLock: Boo
             }
         }
     }
-}
-
-private fun JsonObject.asVec3(): Vec3 {
-    return Vec3(this["x"]?.asFloat ?: 0, this["y"]?.asFloat ?: 0, this["z"]?.asFloat ?: 0)
 }

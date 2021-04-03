@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk.models.renderable
 
+import com.google.common.collect.HashBiMap
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.Directions
 import de.bixilon.minosoft.data.mappings.ResourceLocation
@@ -27,6 +28,9 @@ import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModel
 import de.bixilon.minosoft.gui.rendering.textures.Texture
 import de.bixilon.minosoft.gui.rendering.textures.TextureTransparencies
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3
+import glm_.Java
+import glm_.vec3.Vec3
 import glm_.vec3.Vec3i
 
 class BlockRenderer : BlockRenderInterface {
@@ -36,18 +40,32 @@ class BlockRenderer : BlockRenderInterface {
     private val textureMapping: MutableMap<String, Texture> = mutableMapOf()
     override val faceBorderSizes: Array<Array<FaceSize>?> = arrayOfNulls(Directions.DIRECTIONS.size)
     override val transparentFaces: BooleanArray = BooleanArray(Directions.DIRECTIONS.size)
+    private val directionMapping: HashBiMap<Directions, Directions> = HashBiMap.create()
 
     constructor(data: JsonObject, parent: BlockModel) {
-        val newElements = ElementRenderer.createElements(data, parent)
+        val rotation = Java.glm.radians(data.toVec3())
+        createDirectionMapping(rotation)
+        val newElements = ElementRenderer.createElements(data, parent, rotation, directionMapping)
         // reverse drawing order (for e.g. grass block side overlays
         this.elements.addAll(newElements.reversed())
         textures.putAll(parent.textures)
     }
 
+    private fun createDirectionMapping(rotation: Vec3) {
+        for (direction in Directions.DIRECTIONS) {
+            try {
+                directionMapping[direction] = ElementRenderer.getRotatedDirection(rotation, direction)
+            } catch (e: Exception) {
+            }
+        }
+    }
+
     constructor(data: List<JsonObject>, models: Map<ResourceLocation, BlockModel>) {
         for (state in data) {
+            val rotation = Java.glm.radians(state.toVec3())
+            createDirectionMapping(rotation)
             val parent = models[ResourceLocation(state["model"].asString)]!!
-            val newElements = ElementRenderer.createElements(state, parent)
+            val newElements = ElementRenderer.createElements(state, parent, rotation, directionMapping)
             this.elements.addAll(newElements)
             textures.putAll(parent.textures)
         }
@@ -104,7 +122,7 @@ class BlockRenderer : BlockRenderInterface {
             var neighbourFaceSize: Array<FaceSize>? = null
             val neighbourBlock = neighbourBlocks[direction.ordinal]
             // ToDo: We need to rotate the direction first and then rotate it
-            neighbourBlock?.getBlockRenderer(blockPosition + direction)?.let {
+            neighbourBlock?.getBlockRenderer(blockPosition + directionMapping[direction])?.let {
                 if (it.transparentFaces[invertedDirection.ordinal]) {
                     isNeighbourTransparent = true
                 }

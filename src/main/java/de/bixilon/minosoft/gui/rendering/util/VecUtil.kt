@@ -34,9 +34,9 @@ object VecUtil {
     val ONES_VEC3 = Vec3(1)
 
     fun JsonElement.toVec3(): Vec3 {
-        when (this) {
-            is JsonArray -> return Vec3(this[0].asFloat, this[1].asFloat, this[2].asFloat)
-            is JsonObject -> TODO()
+        return when (this) {
+            is JsonArray -> Vec3(this[0].asFloat, this[1].asFloat, this[2].asFloat)
+            is JsonObject -> Vec3(this["x"]?.asFloat ?: 0, this["y"]?.asFloat ?: 0, this["z"]?.asFloat ?: 0)
             else -> throw IllegalArgumentException("Not a Vec3!")
         }
     }
