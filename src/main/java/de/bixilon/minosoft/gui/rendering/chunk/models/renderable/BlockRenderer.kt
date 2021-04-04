@@ -141,11 +141,6 @@ class BlockRenderer : BlockRenderInterface {
                 var drawElementFace = true
 
                 neighbourFaceSize?.let {
-                    // force draw transparent faces
-                    if (transparentFaces[direction.ordinal] || isNeighbourTransparent) {
-                        return@let
-                    }
-
                     val elementFaceBorderSize = element.faceBorderSize[rotatedDirection.ordinal] ?: return@let
                     for (size in it) {
                         if (elementFaceBorderSize.start.x < size.start.x || elementFaceBorderSize.start.y < size.start.y) {
@@ -156,6 +151,15 @@ class BlockRenderer : BlockRenderInterface {
                         }
                     }
                     drawElementFace = false
+                }
+
+                if (!drawElementFace) {
+                    // force draw transparent faces
+                    if (isNeighbourTransparent && !transparentFaces[direction.ordinal]) {
+                        drawElementFace = true
+                    } else if (isNeighbourTransparent && transparentFaces[direction.ordinal] && neighbourBlock != blockState) {
+                        drawElementFace = true
+                    }
                 }
 
                 if (!drawElementFace) {
