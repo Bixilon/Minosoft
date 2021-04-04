@@ -10,10 +10,9 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft
 
-package de.bixilon.minosoft;
-
-public enum ShutdownReasons {
+enum class ShutdownReasons(val exitCode: Int) {
     UNKNOWN(1),
     REQUESTED_BY_USER(0),
     ALL_FINE(0),
@@ -21,15 +20,7 @@ public enum ShutdownReasons {
     NO_ACCOUNT_SELECTED(1),
     CLI_WRONG_PARAMETER(1),
     CLI_HELP(0),
-    LAUNCHER_FXML_LOAD_ERROR(1);
+    LAUNCHER_FXML_LOAD_ERROR(1),
+    ;
 
-    private final int exitCode;
-
-    ShutdownReasons(int exitCode) {
-        this.exitCode = exitCode;
-    }
-
-    public int getExitCode() {
-        return this.exitCode;
-    }
 }
