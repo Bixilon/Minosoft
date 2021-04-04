@@ -117,14 +117,14 @@ class BlockRenderer : BlockRenderInterface {
             return
         }
         for (direction in Directions.DIRECTIONS) {
-            val rotatedDirection = directionMapping[direction]!!
+            val rotatedDirection = directionMapping[direction] ?: direction
             val invertedDirection = direction.inversed
             var isNeighbourTransparent = false
             var neighbourFaceSize: Array<FaceSize>? = null
             val neighbourBlock = neighbourBlocks[direction.ordinal]
             neighbourBlock?.getBlockRenderer(blockPosition + direction)?.let {
                 val itDirection = if (it is BlockRenderer) {
-                    it.directionMapping[invertedDirection]!!
+                    it.directionMapping[invertedDirection] ?: invertedDirection
                 } else {
                     invertedDirection
                 }
