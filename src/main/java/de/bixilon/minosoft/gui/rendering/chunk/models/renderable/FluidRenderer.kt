@@ -44,14 +44,14 @@ class FluidRenderer(
             if (isFlowing || Directions.SIDES.contains(direction)) {
                 face.scale(0.5)
                 texture = flowingTexture
-                if (! Directions.SIDES.contains(direction)) {
+                if (!Directions.SIDES.contains(direction)) {
                     val angle = getRotationAngle(heights)
                     face.rotate(angle)
                 }
             } else {
                 texture = stillTexture
             }
-            if (isBlockSameFluid(neighbourBlocks[direction.ordinal]) || neighbourBlocks[direction.ordinal]?.getBlockRenderer(blockPosition + direction)?.faceBorderSizes?.let { it[direction.inverse.ordinal] != null } == true && direction != Directions.UP) {
+            if (isBlockSameFluid(neighbourBlocks[direction.ordinal]) || neighbourBlocks[direction.ordinal]?.getBlockRenderer(blockPosition + direction)?.faceBorderSizes?.let { it[direction.inversed.ordinal] != null } == true && direction != Directions.UP) {
                 continue
             }
             val positionTemplate = BlockModelElement.FACE_POSITION_MAP_TEMPLATE[direction.ordinal]

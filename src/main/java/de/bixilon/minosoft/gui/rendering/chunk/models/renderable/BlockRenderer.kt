@@ -40,7 +40,7 @@ class BlockRenderer : BlockRenderInterface {
     private val textureMapping: MutableMap<String, Texture> = mutableMapOf()
     override val faceBorderSizes: Array<Array<FaceSize>?> = arrayOfNulls(Directions.DIRECTIONS.size)
     override val transparentFaces: BooleanArray = BooleanArray(Directions.DIRECTIONS.size)
-    private val directionMapping: HashBiMap<Directions, Directions> = HashBiMap.create()
+    val directionMapping: HashBiMap<Directions, Directions> = HashBiMap.create()
 
     constructor(data: JsonObject, parent: BlockModel) {
         val rotation = Java.glm.radians(data.toVec3())
@@ -117,16 +117,22 @@ class BlockRenderer : BlockRenderInterface {
             return
         }
         for (direction in Directions.DIRECTIONS) {
-            val invertedDirection = direction.inverse
+            val rotatedDirection = directionMapping[direction]!!
+            val invertedDirection = direction.inversed
             var isNeighbourTransparent = false
             var neighbourFaceSize: Array<FaceSize>? = null
             val neighbourBlock = neighbourBlocks[direction.ordinal]
-            // ToDo: We need to rotate the direction first and then rotate it
-            neighbourBlock?.getBlockRenderer(blockPosition + directionMapping[direction])?.let {
-                if (it.transparentFaces[invertedDirection.ordinal]) {
+            neighbourBlock?.getBlockRenderer(blockPosition + direction)?.let {
+                val itDirection = if (it is BlockRenderer) {
+                    it.directionMapping[invertedDirection]!!
+                } else {
+                    invertedDirection
+                }
+
+                if (it.transparentFaces[itDirection.ordinal]) {
                     isNeighbourTransparent = true
                 }
-                neighbourFaceSize = it.faceBorderSizes[invertedDirection.ordinal]
+                neighbourFaceSize = it.faceBorderSizes[itDirection.ordinal]
             }
 
             // ToDo: Should we preserve the cullface attribute? It seems to has no point here.
@@ -140,7 +146,7 @@ class BlockRenderer : BlockRenderInterface {
                         return@let
                     }
 
-                    val elementFaceBorderSize = element.faceBorderSize[direction.ordinal] ?: return@let
+                    val elementFaceBorderSize = element.faceBorderSize[rotatedDirection.ordinal] ?: return@let
                     for (size in it) {
                         if (elementFaceBorderSize.start.x < size.start.x || elementFaceBorderSize.start.y < size.start.y) {
                             return@let
