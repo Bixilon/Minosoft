@@ -24,6 +24,7 @@ import de.bixilon.minosoft.data.inventory.ItemNBTValues.HIDE_FLAGS_TAG
 import de.bixilon.minosoft.data.inventory.ItemNBTValues.REPAIR_COST_TAG
 import de.bixilon.minosoft.data.inventory.ItemNBTValues.UNBREAKABLE_TAG
 import de.bixilon.minosoft.data.mappings.Enchantment
+import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.items.Item
 import de.bixilon.minosoft.data.mappings.versions.Version
 import de.bixilon.minosoft.data.text.ChatComponent
@@ -103,7 +104,18 @@ class ItemStack(
         nbt.getAndRemoveTag(ENCHANTMENTS_TAG)?.let {
             check(it is ListTag) { "Invalid $ENCHANTMENTS_TAG NBT data" }
             for (enchantmentTag in it.getValue<CompoundTag>()) {
-                enchantments[version!!.mapping.enchantmentRegistry.get(enchantmentTag.getNumberTag(ENCHANTMENT_ID_TAG).asInt)] = enchantmentTag.getNumberTag(ENCHANTMENT_LEVEL_TAG).asInt
+                val enchantment = enchantmentTag.getTag(ENCHANTMENT_ID_TAG)?.let { enchantmentId ->
+                    when (enchantmentId) {
+                        is NumberTag -> {
+                            version!!.mapping.enchantmentRegistry.get(enchantmentId.asInt)
+                        }
+                        is StringTag -> {
+                            version!!.mapping.enchantmentRegistry.get(ResourceLocation.getPathResourceLocation(enchantmentId.value))
+                        }
+                        else -> TODO()
+                    }
+                }!!
+                enchantments[enchantment] = enchantmentTag.getNumberTag(ENCHANTMENT_LEVEL_TAG).asInt
             }
         }
         additionalNBT = nbt
@@ -142,11 +154,15 @@ class ItemStack(
         }
         if (enchantments.isNotEmpty()) {
             val enchantmentList = ListTag(TagTypes.COMPOUND, arrayListOf())
-            for ((id, level) in enchantments) {
+            for ((enchantment, level) in enchantments) {
                 val enchantmentTag = CompoundTag()
-                enchantmentTag.writeTag(ENCHANTMENT_ID_TAG, StringTag(id.toString()))
+                if (version!!.isFlattened()) {
+                    enchantmentTag.writeTag(ENCHANTMENT_ID_TAG, StringTag(enchantment.resourceLocation.full))
+                } else {
+                    enchantmentTag.writeTag(ENCHANTMENT_ID_TAG, IntTag(version.mapping.enchantmentRegistry.getId(enchantment)))
+                }
 
-                enchantmentTag.writeTag(ENCHANTMENT_LEVEL_TAG, if (version!!.isFlattened()) {
+                enchantmentTag.writeTag(ENCHANTMENT_LEVEL_TAG, if (version.isFlattened()) {
                     IntTag(level)
                 } else {
                     ShortTag(level.toShort())

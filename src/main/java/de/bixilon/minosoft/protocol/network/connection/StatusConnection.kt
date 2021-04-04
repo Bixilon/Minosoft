@@ -55,8 +55,8 @@ class StatusConnection(
 
         if (this.addresses == null) {
             this.addresses = DNSUtil.getServerAddresses(address)
+            this.realAddress = this.addresses!!.first
         }
-        this.realAddress = this.addresses!!.first
     }
 
     fun ping() {
