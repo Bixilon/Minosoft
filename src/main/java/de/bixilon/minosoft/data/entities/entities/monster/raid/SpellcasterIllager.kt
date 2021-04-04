@@ -10,27 +10,35 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.data.entities.entities.projectile
+package de.bixilon.minosoft.data.entities.entities.monster.raid
 
+import de.bixilon.minosoft.data.entities.EntityMetaDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
-import de.bixilon.minosoft.data.inventory.ItemStack
-import de.bixilon.minosoft.data.mappings.ResourceLocation
-import de.bixilon.minosoft.data.mappings.entities.EntityFactory
+import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
 import de.bixilon.minosoft.data.mappings.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import glm_.vec3.Vec3
 
-class ThrownSnowball(connection: PlayConnection, entityType: EntityType, location: Vec3, rotation: EntityRotation) : ThrowableItemProjectile(connection, entityType, location, rotation) {
+abstract class SpellcasterIllager(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : AbstractIllager(connection, entityType, position, rotation) {
 
-    override val defaultItem: ItemStack
-        get() = ItemStack(connection.mapping.itemRegistry.get(DEFAULT_ITEM)!!, connection.version)
+    @get:EntityMetaDataFunction(name = "Spell")
+    val spell: Spells
+        get() = Spells.byId(entityMetaData.sets.getInt(EntityMetaDataFields.SPELLCASTER_ILLAGER_SPELL))
 
-    companion object : EntityFactory<ThrownSnowball> {
-        private val DEFAULT_ITEM = ResourceLocation("snowball")
-        override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("snowball")
+    enum class Spells {
+        NONE,
+        SUMMON_VEX,
+        ATTACK,
+        WOLOLO,
+        DISAPPEAR,
+        BLINDNESS,
+        ;
 
-        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation): ThrownSnowball {
-            return ThrownSnowball(connection, entityType, position, rotation)
+        companion object {
+            private val SPELLS = values()
+            fun byId(id: Int): Spells {
+                return SPELLS[id]
+            }
         }
     }
 }

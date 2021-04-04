@@ -10,13 +10,11 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.data.entities.entities.animal.water
 
-package de.bixilon.minosoft.data.entities.entities;
+import de.bixilon.minosoft.data.entities.EntityRotation
+import de.bixilon.minosoft.data.mappings.entities.EntityType
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import glm_.vec3.Vec3
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-
-@Retention(RetentionPolicy.RUNTIME)
-public @interface EntityMetaDataFunction {
-    String name();
-}
+abstract class AbstractSchoolingFish(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : AbstractFish(connection, entityType, position, rotation)

@@ -10,26 +10,19 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.data.entities.entities.projectile
+package de.bixilon.minosoft.data.entities.entities.monster.raid
 
+import de.bixilon.minosoft.data.entities.EntityMetaDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
-import de.bixilon.minosoft.data.inventory.ItemStack
-import de.bixilon.minosoft.data.mappings.ResourceLocation
-import de.bixilon.minosoft.data.mappings.entities.EntityFactory
+import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
+import de.bixilon.minosoft.data.entities.entities.monster.PatrollingMonster
 import de.bixilon.minosoft.data.mappings.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import glm_.vec3.Vec3
 
-class ThrownEgg(connection: PlayConnection, entityType: EntityType, location: Vec3, rotation: EntityRotation) : ThrowableItemProjectile(connection, entityType, location, rotation) {
-    override val defaultItem: ItemStack
-        get() = ItemStack(connection.mapping.itemRegistry.get(DEFAULT_ITEM)!!, connection.version)
+abstract class Raider(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : PatrollingMonster(connection, entityType, position, rotation) {
 
-    companion object : EntityFactory<ThrownEgg> {
-        private val DEFAULT_ITEM = ResourceLocation("egg")
-        override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("egg")
-
-        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation): ThrownEgg {
-            return ThrownEgg(connection, entityType, position, rotation)
-        }
-    }
+    @get:EntityMetaDataFunction(name = "Is celebrating")
+    val isCelebrating: Boolean
+        get() = entityMetaData.sets.getBoolean(EntityMetaDataFields.RAIDER_IS_CELEBRATING)
 }

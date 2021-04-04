@@ -45,13 +45,12 @@ class Wolf(connection: PlayConnection, entityType: EntityType, position: Vec3, r
         }
 
     @EntityMetaDataFunction(name = "Health")
-    override fun getHealth(): Float {
-        return if (versionId > ProtocolVersions.V_19W45B) {
-            super.getHealth()
+    override val health: Float
+        get() = if (versionId > ProtocolVersions.V_19W45B) {
+            super.health
         } else {
             entityMetaData.sets.getFloat(EntityMetaDataFields.WOLF_HEALTH)
         }
-    }
 
     companion object : EntityFactory<Wolf> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("wolf")

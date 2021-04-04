@@ -10,17 +10,12 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.data.entities.entities.animal
 
-package de.bixilon.minosoft.data.entities.entities.vehicle;
+import de.bixilon.minosoft.data.entities.EntityRotation
+import de.bixilon.minosoft.data.entities.entities.TamableAnimal
+import de.bixilon.minosoft.data.mappings.entities.EntityType
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import glm_.vec3.Vec3
 
-import de.bixilon.minosoft.data.entities.EntityRotation;
-import de.bixilon.minosoft.data.mappings.entities.EntityType;
-import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
-import glm_.vec3.Vec3;
-
-public abstract class AbstractMinecartContainer extends AbstractMinecart {
-
-    public AbstractMinecartContainer(PlayConnection connection, EntityType entityType, Vec3 position, EntityRotation rotation) {
-        super(connection, entityType, position, rotation);
-    }
-}
+open class ShoulderRidingAnimal(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : TamableAnimal(connection, entityType, position, rotation)

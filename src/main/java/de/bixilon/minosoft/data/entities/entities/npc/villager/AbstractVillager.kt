@@ -10,32 +10,19 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.data.entities.entities.monster.raid
+package de.bixilon.minosoft.data.entities.entities.npc.villager
 
 import de.bixilon.minosoft.data.entities.EntityMetaDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
+import de.bixilon.minosoft.data.entities.entities.AgeableMob
 import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
-import de.bixilon.minosoft.data.mappings.ResourceLocation
-import de.bixilon.minosoft.data.mappings.entities.EntityFactory
 import de.bixilon.minosoft.data.mappings.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import glm_.vec3.Vec3
 
-class Witch(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : Raider(connection, entityType, position, rotation) {
+abstract class AbstractVillager(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : AgeableMob(connection, entityType, position, rotation) {
 
-    @get:EntityMetaDataFunction(name = "Is drinking Potion")
-    val isDrinkingPotion: Boolean
-        get() = entityMetaData.sets.getBoolean(EntityMetaDataFields.WITCH_IS_DRINKING_POTION)
-
-    @get:EntityMetaDataFunction(name = "Is aggressive")
-    override val isAggressive: Boolean
-        get() = entityMetaData.sets.getBoolean(EntityMetaDataFields.LEGACY_WITCH_IS_AGGRESSIVE)
-
-    companion object : EntityFactory<Witch> {
-        override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("witch")
-
-        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation): Witch {
-            return Witch(connection, entityType, position, rotation)
-        }
-    }
+    @get:EntityMetaDataFunction(name = "Unhappy timer")
+    val unhappyTimer: Int
+        get() = entityMetaData.sets.getInt(EntityMetaDataFields.ABSTRACT_VILLAGER_UNHAPPY_TIMER)
 }

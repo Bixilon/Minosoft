@@ -21,10 +21,8 @@ import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import glm_.vec3.Vec3
 
 class ThrownExperienceBottle(connection: PlayConnection, entityType: EntityType, location: Vec3, rotation: EntityRotation) : ThrowableItemProjectile(connection, entityType, location, rotation) {
-
-    override fun getDefaultItem(): ItemStack {
-        return ItemStack(connection.mapping.itemRegistry.get(DEFAULT_ITEM)!!, connection.version)
-    }
+    override val defaultItem: ItemStack
+        get() = ItemStack(connection.mapping.itemRegistry.get(DEFAULT_ITEM)!!, connection.version)
 
     companion object : EntityFactory<ThrownExperienceBottle> {
         private val DEFAULT_ITEM = ResourceLocation("experience_bottle")

@@ -25,13 +25,13 @@ import glm_.vec3.Vec3
 class Piglin(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : AbstractPiglin(connection, entityType, position, rotation) {
 
     @EntityMetaDataFunction(name = "Is immune to zombification")
-    override fun isImmuneToZombification(): Boolean {
-        return if (versionId < ProtocolVersions.V_20W27A) {
-            super.isImmuneToZombification()
+    override val isImmuneToZombification: Boolean
+        get() = if (versionId < ProtocolVersions.V_20W27A) {
+            super.isImmuneToZombification
         } else {
             entityMetaData.sets.getBoolean(EntityMetaDataFields.PIGLIN_IMMUNE_TO_ZOMBIFICATION)
+
         }
-    }
 
     @get:EntityMetaDataFunction(name = "Is baby")
     val isBaby: Boolean

@@ -34,6 +34,7 @@ data class EntityType(
     val height: Float,
     val sizeFixed: Boolean,
     val fireImmune: Boolean,
+    val maxHealth: Float,
     val factory: EntityFactory<out Entity>,
 ) : RegistryItem, Translatable {
 
@@ -63,6 +64,7 @@ data class EntityType(
                 height = data["height"].asFloat,
                 fireImmune = data["fire_immune"]?.asBoolean ?: false,
                 sizeFixed = data["size_fixed"]?.asBoolean ?: false,
+                maxHealth = data["minecraft:generic.max_health"]?.asFloat ?: Float.MAX_VALUE,
                 factory = DefaultEntityFactories.getEntityFactory(resourceLocation) ?: error("Can not find entity factory for $resourceLocation"),
             )
         }

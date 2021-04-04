@@ -10,23 +10,11 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.data.entities.entities.projectile
 
-package de.bixilon.minosoft.data.entities.entities;
+import de.bixilon.minosoft.data.entities.EntityRotation
+import de.bixilon.minosoft.data.mappings.entities.EntityType
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import glm_.vec3.Vec3
 
-import de.bixilon.minosoft.data.entities.EntityMetaDataFields;
-import de.bixilon.minosoft.data.entities.EntityRotation;
-import de.bixilon.minosoft.data.mappings.entities.EntityType;
-import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
-import glm_.vec3.Vec3;
-
-public abstract class AgeableMob extends PathfinderMob {
-
-    public AgeableMob(PlayConnection connection, EntityType entityType, Vec3 position, EntityRotation rotation) {
-        super(connection, entityType, position, rotation);
-    }
-
-    @EntityMetaDataFunction(name = "Is baby")
-    public boolean isBaby() {
-        return getEntityMetaData().getSets().getBoolean(EntityMetaDataFields.AGEABLE_IS_BABY);
-    }
-}
+abstract class AbstractHurtingProjectile(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : Projectile(connection, entityType, position, rotation)

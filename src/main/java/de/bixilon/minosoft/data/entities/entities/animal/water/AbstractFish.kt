@@ -10,27 +10,18 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.data.entities.entities.animal.water
 
-package de.bixilon.minosoft.data.entities.entities;
+import de.bixilon.minosoft.data.entities.EntityMetaDataFields
+import de.bixilon.minosoft.data.entities.EntityRotation
+import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
+import de.bixilon.minosoft.data.mappings.entities.EntityType
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import glm_.vec3.Vec3
 
-public class UnknownEntityException extends Exception {
+abstract class AbstractFish(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : WaterAnimal(connection, entityType, position, rotation) {
 
-    public UnknownEntityException() {
-    }
-
-    public UnknownEntityException(String message) {
-        super(message);
-    }
-
-    public UnknownEntityException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public UnknownEntityException(Throwable cause) {
-        super(cause);
-    }
-
-    public UnknownEntityException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
-    }
+    @get:EntityMetaDataFunction(name = "Is from bucket")
+    val isFromBucket: Boolean
+        get() = entityMetaData.sets.getBoolean(EntityMetaDataFields.ABSTRACT_FISH_FROM_BUCKET)
 }

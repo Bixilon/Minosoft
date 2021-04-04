@@ -10,19 +10,13 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.data.entities.entities
 
-package de.bixilon.minosoft.data.entities.entities.animal.water;
+class UnknownEntityException : Exception {
 
-import de.bixilon.minosoft.data.entities.EntityRotation;
-import de.bixilon.minosoft.data.entities.entities.PathfinderMob;
-import de.bixilon.minosoft.data.mappings.entities.EntityType;
-import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
-import glm_.vec3.Vec3;
-
-public abstract class WaterAnimal extends PathfinderMob {
-
-    public WaterAnimal(PlayConnection connection, EntityType entityType, Vec3 position, EntityRotation rotation) {
-        super(connection, entityType, position, rotation);
-    }
+    constructor()
+    constructor(message: String?) : super(message)
+    constructor(message: String?, cause: Throwable?) : super(message, cause)
+    constructor(cause: Throwable?) : super(cause)
+    constructor(message: String?, cause: Throwable?, enableSuppression: Boolean, writableStackTrace: Boolean) : super(message, cause, enableSuppression, writableStackTrace)
 }
-

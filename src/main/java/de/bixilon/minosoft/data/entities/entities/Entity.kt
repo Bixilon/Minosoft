@@ -34,7 +34,7 @@ import java.util.*
 
 abstract class Entity(
     protected val connection: PlayConnection,
-    val type: EntityType,
+    val entityType: EntityType,
     var position: Vec3,
     var rotation: EntityRotation,
 ) {
@@ -103,7 +103,7 @@ abstract class Entity(
 
     @EntityMetaDataFunction(name = "Has glowing effect")
     val hasGLowingEffect: Boolean
-        get() =  getEntityFlag(0x20)
+        get() = getEntityFlag(0x20)
 
     val isFlyingWithElytra: Boolean
         get() = getEntityFlag(0x80)
@@ -144,7 +144,7 @@ abstract class Entity(
         get() = entityMetaData.sets.getInt(EntityMetaDataFields.ENTITY_TICKS_FROZEN)
 
     override fun toString(): String {
-        return type.toString()
+        return entityType.toString()
     }
 
     val entityMetaDataAsString: String

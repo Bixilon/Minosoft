@@ -12,25 +12,19 @@
  */
 package de.bixilon.minosoft.data.entities.entities.projectile
 
+import de.bixilon.minosoft.data.entities.EntityMetaDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
+import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
 import de.bixilon.minosoft.data.inventory.ItemStack
-import de.bixilon.minosoft.data.mappings.ResourceLocation
-import de.bixilon.minosoft.data.mappings.entities.EntityFactory
 import de.bixilon.minosoft.data.mappings.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import glm_.vec3.Vec3
 
-class ThrownSnowball(connection: PlayConnection, entityType: EntityType, location: Vec3, rotation: EntityRotation) : ThrowableItemProjectile(connection, entityType, location, rotation) {
+abstract class Fireball(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : AbstractHurtingProjectile(connection, entityType, position, rotation) {
 
-    override val defaultItem: ItemStack
-        get() = ItemStack(connection.mapping.itemRegistry.get(DEFAULT_ITEM)!!, connection.version)
+    @get:EntityMetaDataFunction(name = "Item")
+    val item: ItemStack?
+        get() = entityMetaData.sets.getItemStack(EntityMetaDataFields.FIREBALL_ITEM) ?: defaultItem
 
-    companion object : EntityFactory<ThrownSnowball> {
-        private val DEFAULT_ITEM = ResourceLocation("snowball")
-        override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("snowball")
-
-        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation): ThrownSnowball {
-            return ThrownSnowball(connection, entityType, position, rotation)
-        }
-    }
+    protected abstract val defaultItem: ItemStack?
 }

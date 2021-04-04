@@ -10,26 +10,31 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.data.entities.entities.projectile
+package de.bixilon.minosoft.data.entities.entities
 
+import de.bixilon.minosoft.data.entities.EntityMetaDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
-import de.bixilon.minosoft.data.inventory.ItemStack
-import de.bixilon.minosoft.data.mappings.ResourceLocation
-import de.bixilon.minosoft.data.mappings.entities.EntityFactory
+import de.bixilon.minosoft.data.entities.entities.animal.Animal
 import de.bixilon.minosoft.data.mappings.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import glm_.vec3.Vec3
+import java.util.*
 
-class ThrownEgg(connection: PlayConnection, entityType: EntityType, location: Vec3, rotation: EntityRotation) : ThrowableItemProjectile(connection, entityType, location, rotation) {
-    override val defaultItem: ItemStack
-        get() = ItemStack(connection.mapping.itemRegistry.get(DEFAULT_ITEM)!!, connection.version)
+abstract class TamableAnimal(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : Animal(connection, entityType, position, rotation) {
 
-    companion object : EntityFactory<ThrownEgg> {
-        private val DEFAULT_ITEM = ResourceLocation("egg")
-        override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("egg")
-
-        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation): ThrownEgg {
-            return ThrownEgg(connection, entityType, position, rotation)
-        }
+    private fun getTameableFlag(bitMask: Int): Boolean {
+        return entityMetaData.sets.getBitMask(EntityMetaDataFields.TAMABLE_ENTITY_FLAGS, bitMask)
     }
+
+    @get:EntityMetaDataFunction(name = "Is sitting")
+    val isSitting: Boolean
+        get() = getTameableFlag(0x01)
+
+    @get:EntityMetaDataFunction(name = "Is tamed")
+    val isTamed: Boolean
+        get() = getTameableFlag(0x04)
+
+    @get:EntityMetaDataFunction(name = "Owner UUID")
+    val owner: UUID?
+        get() = entityMetaData.sets.getUUID(EntityMetaDataFields.TAMABLE_ENTITY_OWNER_UUID)
 }

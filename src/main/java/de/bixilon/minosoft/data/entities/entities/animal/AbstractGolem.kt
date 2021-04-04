@@ -10,18 +10,12 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.data.entities.entities.animal
 
-package de.bixilon.minosoft.data.entities.entities.animal.water;
+import de.bixilon.minosoft.data.entities.EntityRotation
+import de.bixilon.minosoft.data.entities.entities.PathfinderMob
+import de.bixilon.minosoft.data.mappings.entities.EntityType
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import glm_.vec3.Vec3
 
-import de.bixilon.minosoft.data.entities.EntityRotation;
-import de.bixilon.minosoft.data.mappings.entities.EntityType;
-import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
-import glm_.vec3.Vec3;
-
-public abstract class AbstractSchoolingFish extends AbstractFish {
-
-    public AbstractSchoolingFish(PlayConnection connection, EntityType entityType, Vec3 position, EntityRotation rotation) {
-        super(connection, entityType, position, rotation);
-    }
-}
-
+abstract class AbstractGolem(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : PathfinderMob(connection, entityType, position, rotation)

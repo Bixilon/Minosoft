@@ -24,18 +24,16 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import glm_.vec3.Vec3
 
 class ThrownPotion(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : ThrowableItemProjectile(connection, entityType, position, rotation) {
-    @EntityMetaDataFunction(name = "Item")
-    override fun getItem(): ItemStack {
-        return if (versionId > ProtocolVersions.V_20W09A) {
-            super.getItem()
-        } else {
-            entityMetaData.sets.getItemStack(EntityMetaDataFields.THROWN_POTION_ITEM) ?: return defaultItem
-        }
-    }
 
-    override fun getDefaultItem(): ItemStack {
-        return DEFAULT_ITEM!! // ToDo: This can only fail
-    }
+    @EntityMetaDataFunction(name = "Item")
+    override val item: ItemStack?
+        get() = if (versionId > ProtocolVersions.V_20W09A) {
+            super.item
+        } else {
+            entityMetaData.sets.getItemStack(EntityMetaDataFields.THROWN_POTION_ITEM) ?: defaultItem
+        }
+
+    override val defaultItem: ItemStack? = DEFAULT_ITEM
 
     companion object : EntityFactory<ThrownPotion> {
         private val DEFAULT_ITEM: ItemStack? = null

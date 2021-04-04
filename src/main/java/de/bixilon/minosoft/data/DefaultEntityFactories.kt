@@ -163,6 +163,7 @@ object DefaultEntityFactories {
             PlayerEntity,
             FishingHook,
             GlowSquid,
+            EvokerFangs
         )
 
         val ret: MutableMap<ResourceLocation, EntityFactory<out Entity>> = mutableMapOf()

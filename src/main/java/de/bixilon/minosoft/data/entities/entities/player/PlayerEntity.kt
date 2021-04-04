@@ -61,10 +61,9 @@ class PlayerEntity(
         return entityMetaData.sets.getBitMask(EntityMetaDataFields.PLAYER_SKIN_PARTS_FLAGS, bitMask)
     }
 
-    @EntityMetaDataFunction(name = "Main hand")
-    override fun getMainHand(): Hands {
-        return if (entityMetaData.sets.getByte(EntityMetaDataFields.PLAYER_SKIN_MAIN_HAND).toInt() == 0x01) Hands.OFF_HAND else Hands.MAIN_HAND
-    }
+    @get:EntityMetaDataFunction(name = "Main hand")
+    override val mainHand: Hands
+        get() = if (entityMetaData.sets.getByte(EntityMetaDataFields.PLAYER_SKIN_MAIN_HAND).toInt() == 0x01) Hands.OFF_HAND else Hands.MAIN_HAND
 
     @get:EntityMetaDataFunction(name = "Left shoulder entity data")
     val leftShoulderData: CompoundTag?
