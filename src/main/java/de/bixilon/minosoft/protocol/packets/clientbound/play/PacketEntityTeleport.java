@@ -53,7 +53,7 @@ public class PacketEntityTeleport extends PlayClientboundPacket {
             // thanks mojang
             return;
         }
-        entity.forceMove(getRelativePosition());
+        entity.setPosition(getRelativePosition());
         entity.setRotation(getYaw(), getPitch());
     }
 

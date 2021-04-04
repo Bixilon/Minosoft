@@ -52,7 +52,7 @@ public class PacketEntityMovementAndRotation extends PlayClientboundPacket {
             // thanks mojang
             return;
         }
-        entity.setPosition(getRelativePosition());
+        entity.forceMove(getRelativePosition());
         entity.setRotation(getYaw(), getPitch());
     }
 

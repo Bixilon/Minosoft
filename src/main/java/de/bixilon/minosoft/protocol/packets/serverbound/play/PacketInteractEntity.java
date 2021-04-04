@@ -58,7 +58,7 @@ public class PacketInteractEntity implements PlayServerboundPacket {
                 this.click = EntityInteractionClicks.INTERACT;
             }
         }
-        buffer.writeByte((byte) this.click.ordinal());
+        buffer.writeVarInt(this.click.ordinal());
         if (buffer.getVersionId() >= V_14W32A) {
             if (this.click == EntityInteractionClicks.INTERACT_AT) {
                 // position
@@ -76,7 +76,7 @@ public class PacketInteractEntity implements PlayServerboundPacket {
                     buffer.writeBoolean(this.sneaking);
                 }
             }
-            if (buffer.getVersionId() <= V_1_16_PRE5) {
+            if (buffer.getVersionId() >= V_1_16_PRE5) {
                 buffer.writeBoolean(this.sneaking);
             }
         }
