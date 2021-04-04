@@ -10,24 +10,31 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.modding.event.events
 
-import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketHeldItemChangeReceiving
-import de.bixilon.minosoft.protocol.packets.serverbound.play.HeldItemChangeServerboundPacket
+package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
-class HeldItemChangeEvent : PlayConnectionEvent {
-    val slot: Int
+import de.bixilon.minosoft.protocol.packets.serverbound.PlayServerboundPacket;
+import de.bixilon.minosoft.protocol.protocol.OutPlayByteBuffer;
+import de.bixilon.minosoft.util.logging.Log;
 
-    constructor(connection: PlayConnection, slot: Int) : super(connection) {
-        this.slot = slot
+public class CloseWindowServerboundPacket implements PlayServerboundPacket {
+    private final byte windowId;
+
+    public CloseWindowServerboundPacket(byte windowId) {
+        this.windowId = windowId;
     }
 
-    constructor(connection: PlayConnection, pkg: HeldItemChangeServerboundPacket) : super(connection) {
-        slot = pkg.slot
+    @Override
+    public void write(OutPlayByteBuffer buffer) {
+        buffer.writeByte(this.windowId);
     }
 
-    constructor(connection: PlayConnection, pkg: PacketHeldItemChangeReceiving) : super(connection) {
-        slot = pkg.slot
+    public byte getWindowId() {
+        return this.windowId;
+    }
+
+    @Override
+    public void log() {
+        Log.protocol(String.format("[OUT] Sending Close window packet (windowId=%d)", this.windowId));
     }
 }

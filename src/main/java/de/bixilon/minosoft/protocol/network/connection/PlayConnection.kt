@@ -32,8 +32,8 @@ import de.bixilon.minosoft.modding.event.events.ConnectionStateChangeEvent
 import de.bixilon.minosoft.modding.event.events.PacketReceiveEvent
 import de.bixilon.minosoft.protocol.packets.clientbound.ClientboundPacket
 import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket
-import de.bixilon.minosoft.protocol.packets.serverbound.handshaking.PacketHandshake
-import de.bixilon.minosoft.protocol.packets.serverbound.login.PacketLoginStart
+import de.bixilon.minosoft.protocol.packets.serverbound.handshaking.HandshakeServerboundPacket
+import de.bixilon.minosoft.protocol.packets.serverbound.login.LoginStartServerboundPacket
 import de.bixilon.minosoft.protocol.protocol.ConnectionStates
 import de.bixilon.minosoft.protocol.protocol.PacketSender
 import de.bixilon.minosoft.protocol.protocol.PacketTypes
@@ -96,14 +96,14 @@ class PlayConnection(
                     }
 
 
-                    network.sendPacket(PacketHandshake(address, ConnectionStates.LOGIN, version.protocolId))
+                    network.sendPacket(HandshakeServerboundPacket(address, ConnectionStates.LOGIN, version.protocolId))
                     // after sending it, switch to next state
                     // after sending it, switch to next state
                     connectionState = ConnectionStates.LOGIN
 
                 }
                 ConnectionStates.LOGIN -> {
-                    this.network.sendPacket(PacketLoginStart(this.player))
+                    this.network.sendPacket(LoginStartServerboundPacket(this.player))
                 }
                 ConnectionStates.PLAY -> {
                     Minosoft.CONNECTIONS[connectionId] = this

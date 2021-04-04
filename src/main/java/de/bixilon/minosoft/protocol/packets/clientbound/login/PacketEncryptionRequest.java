@@ -15,7 +15,7 @@ package de.bixilon.minosoft.protocol.packets.clientbound.login;
 
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
 import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket;
-import de.bixilon.minosoft.protocol.packets.serverbound.login.PacketEncryptionResponse;
+import de.bixilon.minosoft.protocol.packets.serverbound.login.EncryptionResponseServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.CryptManager;
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
@@ -49,7 +49,7 @@ public class PacketEncryptionRequest extends PlayClientboundPacket {
             connection.disconnect();
             return;
         }
-        connection.sendPacket(new PacketEncryptionResponse(secretKey, getVerifyToken(), publicKey));
+        connection.sendPacket(new EncryptionResponseServerboundPacket(secretKey, getVerifyToken(), publicKey));
     }
 
     @Override

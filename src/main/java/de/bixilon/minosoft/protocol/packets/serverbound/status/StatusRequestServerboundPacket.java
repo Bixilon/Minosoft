@@ -10,24 +10,23 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.modding.event.events
 
-import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketHeldItemChangeReceiving
-import de.bixilon.minosoft.protocol.packets.serverbound.play.HeldItemChangeServerboundPacket
+package de.bixilon.minosoft.protocol.packets.serverbound.status;
 
-class HeldItemChangeEvent : PlayConnectionEvent {
-    val slot: Int
+import de.bixilon.minosoft.protocol.packets.serverbound.AllServerboundPacket;
+import de.bixilon.minosoft.protocol.protocol.OutByteBuffer;
+import de.bixilon.minosoft.util.logging.Log;
+import org.jetbrains.annotations.NotNull;
 
-    constructor(connection: PlayConnection, slot: Int) : super(connection) {
-        this.slot = slot
+public class StatusRequestServerboundPacket implements AllServerboundPacket {
+
+    @Override
+    public void write(@NotNull OutByteBuffer buffer) {
     }
 
-    constructor(connection: PlayConnection, pkg: HeldItemChangeServerboundPacket) : super(connection) {
-        slot = pkg.slot
-    }
 
-    constructor(connection: PlayConnection, pkg: PacketHeldItemChangeReceiving) : super(connection) {
-        slot = pkg.slot
+    @Override
+    public void log() {
+        Log.protocol("[OUT] Sending status request packet");
     }
 }

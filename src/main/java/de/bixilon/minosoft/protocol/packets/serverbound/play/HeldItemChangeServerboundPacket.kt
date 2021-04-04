@@ -10,24 +10,19 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.modding.event.events
+package de.bixilon.minosoft.protocol.packets.serverbound.play
 
-import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketHeldItemChangeReceiving
-import de.bixilon.minosoft.protocol.packets.serverbound.play.HeldItemChangeServerboundPacket
+import de.bixilon.minosoft.protocol.packets.serverbound.PlayServerboundPacket
+import de.bixilon.minosoft.protocol.protocol.OutPlayByteBuffer
+import de.bixilon.minosoft.util.logging.Log
 
-class HeldItemChangeEvent : PlayConnectionEvent {
-    val slot: Int
+class HeldItemChangeServerboundPacket(val slot: Int) : PlayServerboundPacket {
 
-    constructor(connection: PlayConnection, slot: Int) : super(connection) {
-        this.slot = slot
+    override fun write(buffer: OutPlayByteBuffer) {
+        buffer.writeShort(slot.toShort())
     }
 
-    constructor(connection: PlayConnection, pkg: HeldItemChangeServerboundPacket) : super(connection) {
-        slot = pkg.slot
-    }
-
-    constructor(connection: PlayConnection, pkg: PacketHeldItemChangeReceiving) : super(connection) {
-        slot = pkg.slot
+    override fun log() {
+        Log.protocol("[OUT] Sending slot selection: ($slot)")
     }
 }

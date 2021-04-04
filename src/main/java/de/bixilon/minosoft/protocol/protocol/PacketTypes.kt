@@ -22,76 +22,74 @@ import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket
 import de.bixilon.minosoft.protocol.packets.clientbound.StatusClientboundPacket
 import de.bixilon.minosoft.protocol.packets.clientbound.login.*
 import de.bixilon.minosoft.protocol.packets.clientbound.play.*
-import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketVehicleMovement
 import de.bixilon.minosoft.protocol.packets.clientbound.play.combat.CombatEventPacketFactory
 import de.bixilon.minosoft.protocol.packets.clientbound.play.title.TitlePacketFactory
 import de.bixilon.minosoft.protocol.packets.clientbound.status.PacketStatusPong
 import de.bixilon.minosoft.protocol.packets.clientbound.status.PacketStatusResponse
 import de.bixilon.minosoft.protocol.packets.serverbound.ServerboundPacket
-import de.bixilon.minosoft.protocol.packets.serverbound.handshaking.PacketHandshake
-import de.bixilon.minosoft.protocol.packets.serverbound.login.PacketEncryptionResponse
-import de.bixilon.minosoft.protocol.packets.serverbound.login.PacketLoginPluginResponse
-import de.bixilon.minosoft.protocol.packets.serverbound.login.PacketLoginStart
+import de.bixilon.minosoft.protocol.packets.serverbound.handshaking.HandshakeServerboundPacket
+import de.bixilon.minosoft.protocol.packets.serverbound.login.EncryptionResponseServerboundPacket
+import de.bixilon.minosoft.protocol.packets.serverbound.login.LoginPluginResponseServerboundPacket
+import de.bixilon.minosoft.protocol.packets.serverbound.login.LoginStartServerboundPacket
 import de.bixilon.minosoft.protocol.packets.serverbound.play.*
-import de.bixilon.minosoft.protocol.packets.serverbound.status.PacketStatusPing
-import de.bixilon.minosoft.protocol.packets.serverbound.status.PacketStatusRequest
+import de.bixilon.minosoft.protocol.packets.serverbound.status.StatusPingServerboundPacket
+import de.bixilon.minosoft.protocol.packets.serverbound.status.StatusRequestServerboundPacket
 
 class PacketTypes {
     enum class Serverbound(val clazz: Class<out ServerboundPacket>? = null) {
-        HANDSHAKING_HANDSHAKE(PacketHandshake::class.java),
-        STATUS_PING(PacketStatusPing::class.java),
-        STATUS_REQUEST(PacketStatusRequest::class.java),
-        LOGIN_LOGIN_START(PacketLoginStart::class.java),
-        LOGIN_ENCRYPTION_RESPONSE(PacketEncryptionResponse::class.java),
-        LOGIN_PLUGIN_RESPONSE(PacketLoginPluginResponse::class.java),
-        PLAY_TELEPORT_CONFIRM(PacketTeleportConfirm::class.java),
+        HANDSHAKING_HANDSHAKE(HandshakeServerboundPacket::class.java),
+        STATUS_PING(StatusPingServerboundPacket::class.java),
+        STATUS_REQUEST(StatusRequestServerboundPacket::class.java),
+        LOGIN_LOGIN_START(LoginStartServerboundPacket::class.java),
+        LOGIN_ENCRYPTION_RESPONSE(EncryptionResponseServerboundPacket::class.java),
+        LOGIN_PLUGIN_RESPONSE(LoginPluginResponseServerboundPacket::class.java),
+        PLAY_TELEPORT_CONFIRMATION(TeleportConfirmServerboundPacket::class.java),
         PLAY_QUERY_BLOCK_NBT,
         PLAY_SET_DIFFICULTY,
-        PLAY_CHAT_MESSAGE(PacketChatMessageSending::class.java),
-        PLAY_CLIENT_STATUS(PacketClientStatus::class.java),
-        PLAY_CLIENT_SETTINGS(PacketClientSettings::class.java),
-        PLAY_TAB_COMPLETE(PacketTabCompleteSending::class.java),
-        PLAY_WINDOW_CONFIRMATION(PacketWindowConfirmationSending::class.java),
-        PLAY_CLICK_WINDOW_BUTTON(PacketWindowClickButton::class.java),
-        PLAY_CLICK_WINDOW(PacketClickWindow::class.java),
-        PLAY_CLOSE_WINDOW(PacketCloseWindowSending::class.java),
-        PLAY_PLUGIN_MESSAGE(PacketPluginMessageSending::class.java),
+        PLAY_CHAT_MESSAGE(ChatMessageServerboundPacket::class.java),
+        PLAY_CLIENT_ACTION(ClientActionServerboundPacket::class.java),
+        PLAY_CLIENT_SETTINGS(ClientSettingsServerboundPacket::class.java),
+        PLAY_TAB_COMPLETE(TabCompleteServerboundPacket::class.java),
+        PLAY_WINDOW_CONFIRMATION(WindowConfirmationServerboundPacket::class.java),
+        PLAY_CLICK_WINDOW_ACTION(ClickWindowActionServerboundPacket::class.java),
+        PLAY_CLICK_WINDOW_SLOT(ClickWindowSlotServerboundPacket::class.java),
+        PLAY_CLOSE_WINDOW(CloseWindowServerboundPacket::class.java),
+        PLAY_PLUGIN_MESSAGE(PluginMessageServerboundPacket::class.java),
         PLAY_EDIT_BOOK,
-        PLAY_ENTITY_NBT_REQUEST(PacketQueryEntityNBT::class.java),
+        PLAY_ENTITY_NBT_REQUEST(EntityNBTRequestServerboundPacket::class.java),
         PLAY_INTERACT_ENTITY(PacketInteractEntity::class.java),
-        PLAY_KEEP_ALIVE(PacketKeepAliveResponse::class.java),
+        PLAY_KEEP_ALIVE(KeepAliveServerboundPacket::class.java),
         PLAY_LOCK_DIFFICULTY,
-        PLAY_PLAYER_POSITION(PacketPlayerPositionSending::class.java),
-        PLAY_PLAYER_POSITION_AND_ROTATION(PacketPlayerPositionAndRotationSending::class.java),
-        PLAY_PLAYER_ROTATION(PacketPlayerRotationSending::class.java),
-        PLAY_VEHICLE_MOVE(de.bixilon.minosoft.protocol.packets.serverbound.play.PacketVehicleMovement::class.java),
-        PLAY_STEER_BOAT(PacketSteerBoat::class.java),
+        PLAY_PLAYER_POSITION(PlayerPositionServerboundPacket::class.java),
+        PLAY_PLAYER_POSITION_AND_ROTATION(PlayerPositionAndRotationServerboundPacket::class.java),
+        PLAY_PLAYER_ROTATION(PlayerRotationServerboundPacket::class.java),
+        PLAY_VEHICLE_MOVE(PacketVehicleMovementServerboundPacket::class.java),
+        PLAY_STEER_BOAT(SteerBoatServerboundPacket::class.java),
         PLAY_PICK_ITEM,
-        PLAY_CRAFT_RECIPE_REQUEST(PacketCraftingRecipeRequest::class.java),
-        PLAY_PLAYER_ABILITIES(PacketPlayerAbilitiesSending::class.java),
-        PLAY_PLAYER_DIGGING(PacketPlayerDigging::class.java),
-        PLAY_ENTITY_ACTION(PacketEntityAction::class.java),
-        PLAY_STEER_VEHICLE(PacketSteerVehicle::class.java),
-        PLAY_RECIPE_BOOK_DATA(PacketRecipeBookState::class.java),
-        PLAY_NAME_ITEM(PacketNameItem::class.java),
-        PLAY_RESOURCE_PACK_STATUS(PacketResourcePackStatus::class.java),
-        PLAY_ADVANCEMENT_TAB(PacketAdvancementTab::class.java),
-        PLAY_SELECT_TRADE(PacketSelectTrade::class.java),
-        PLAY_SET_BEACON_EFFECT(PacketSetBeaconEffect::class.java),
-        PLAY_HELD_ITEM_CHANGE(PacketHeldItemChangeSending::class.java),
-        PLAY_UPDATE_COMMAND_BLOCK(PacketUpdateCommandBlock::class.java),
-        PLAY_CREATIVE_INVENTORY_ACTION(PacketCreativeInventoryAction::class.java),
-        PLAY_UPDATE_JIGSAW_BLOCK(PacketUpdateJigsawBlock::class.java),
-        PLAY_UPDATE_STRUCTURE_BLOCK(PacketUpdateStructureBlock::class.java),
-        PLAY_UPDATE_SIGN(PacketUpdateSignSending::class.java),
-        PLAY_ANIMATION(PacketAnimation::class.java),
-        PLAY_SPECTATE(PacketSpectate::class.java),
-        PLAY_PLAYER_BLOCK_PLACEMENT(PacketPlayerBlockPlacement::class.java),
-        PLAY_USE_ITEM(PacketUseItem::class.java),
-        PLAY_UPDATE_COMMAND_BLOCK_MINECART(PacketUpdateCommandBlockMinecart::class.java),
-        PLAY_GENERATE_STRUCTURE(PacketGenerateStructure::class.java),
-        PLAY_SET_DISPLAYED_RECIPE(PacketSetDisplayedRecipe::class.java),
-        PLAY_SET_RECIPE_BOOK_STATE(PacketRecipeBookState::class.java),
+        PLAY_CRAFTING_RECIPE_REQUEST(CraftingRecipeRequestServerboundPacket::class.java),
+        PLAY_PLAYER_ABILITIES(PlayerAbilitiesServerboundPacket::class.java),
+        PLAY_PLAYER_DIGGING(PlayerDiggingServerboundPacket::class.java),
+        PLAY_ENTITY_ACTION(EntityActionServerboundPacket::class.java),
+        PLAY_STEER_VEHICLE(SteerVehicleServerboundPacket::class.java),
+        PLAY_RECIPE_BOOK_STATE(RecipeBookStateServerboundPacket::class.java),
+        PLAY_NAME_ITEM(NameItemServerboundPacket::class.java),
+        PLAY_RESOURCE_PACK_STATUS(ResourcePackStatusServerboundPacket::class.java),
+        PLAY_ADVANCEMENT_TAB(AdvancementTabServerboundPacket::class.java),
+        PLAY_SELECT_TRADE(SelectTradeServerboundPacket::class.java),
+        PLAY_SET_BEACON_EFFECT(SetBeaconEffectServerboundPacket::class.java),
+        PLAY_HELD_ITEM_CHANGE(HeldItemChangeServerboundPacket::class.java),
+        PLAY_UPDATE_COMMAND_BLOCK(UpdateCommandBlockServerboundPacket::class.java),
+        PLAY_CREATIVE_INVENTORY_ACTION(CreativeInventoryActionServerboundPacket::class.java),
+        PLAY_UPDATE_JIGSAW_BLOCK(UpdateJigsawBlockServerboundPacket::class.java),
+        PLAY_UPDATE_STRUCTURE_BLOCK(UpdateStructureBlockServerboundPacket::class.java),
+        PLAY_UPDATE_SIGN(UpdateSignServerboundPacket::class.java),
+        PLAY_HAND_ANIMATION(HandAnimationServerboundPacket::class.java),
+        PLAY_SPECTATE_ENTITY(SpectateEntityServerboundPacket::class.java),
+        PLAY_PLACE_BLOCK(PlaceBlockServerboundPacket::class.java),
+        PLAY_USE_ITEM(UseItemServerboundPacket::class.java),
+        PLAY_UPDATE_COMMAND_BLOCK_MINECART(UpdateCommandBlockMinecartServerboundPacket::class.java),
+        PLAY_GENERATE_STRUCTURE(GenerateStructureServerboundPacket::class.java),
+        PLAY_SET_DISPLAYED_RECIPE(SetDisplayedRecipeServerboundPacket::class.java),
         PLAY_PLAYER_GROUND_CHANGE,
         PLAY_PREPARE_CRAFTING_GRID,
         PLAY_VEHICLE_MOVEMENT,

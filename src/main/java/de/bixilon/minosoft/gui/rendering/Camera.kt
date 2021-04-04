@@ -28,9 +28,9 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.inChunkSectionPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketPlayerPositionAndRotationSending
-import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketPlayerPositionSending
-import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketPlayerRotationSending
+import de.bixilon.minosoft.protocol.packets.serverbound.play.PlayerPositionAndRotationServerboundPacket
+import de.bixilon.minosoft.protocol.packets.serverbound.play.PlayerPositionServerboundPacket
+import de.bixilon.minosoft.protocol.packets.serverbound.play.PlayerRotationServerboundPacket
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import glm_.func.cos
 import glm_.func.rad
@@ -263,11 +263,11 @@ class Camera(
     private fun sendPositionToServer() {
         if (System.currentTimeMillis() - lastMovementPacketSent > ProtocolDefinition.TICK_TIME) {
             if (!currentPositionSent && !currentPositionSent) {
-                connection.sendPacket(PacketPlayerPositionAndRotationSending(playerEntity.position, playerEntity.rotation, false))
+                connection.sendPacket(PlayerPositionAndRotationServerboundPacket(playerEntity.position, playerEntity.rotation, false))
             } else if (!currentPositionSent) {
-                connection.sendPacket(PacketPlayerPositionSending(playerEntity.position, false))
+                connection.sendPacket(PlayerPositionServerboundPacket(playerEntity.position, false))
             } else {
-                connection.sendPacket(PacketPlayerRotationSending(playerEntity.rotation, false))
+                connection.sendPacket(PlayerRotationServerboundPacket(playerEntity.rotation, false))
             }
             lastMovementPacketSent = System.currentTimeMillis()
             currentPositionSent = true
@@ -279,11 +279,11 @@ class Camera(
         }
 
         if (!currentPositionSent && !currentPositionSent) {
-            connection.sendPacket(PacketPlayerPositionAndRotationSending(cameraPosition - Vec3(0, PLAYER_HEIGHT, 0), EntityRotation(yaw, pitch), false))
+            connection.sendPacket(PlayerPositionAndRotationServerboundPacket(cameraPosition - Vec3(0, PLAYER_HEIGHT, 0), EntityRotation(yaw, pitch), false))
         } else if (!currentPositionSent) {
-            connection.sendPacket(PacketPlayerPositionSending(cameraPosition - Vec3(0, PLAYER_HEIGHT, 0), false))
+            connection.sendPacket(PlayerPositionServerboundPacket(cameraPosition - Vec3(0, PLAYER_HEIGHT, 0), false))
         } else {
-            connection.sendPacket(PacketPlayerRotationSending(EntityRotation(yaw, pitch), false))
+            connection.sendPacket(PlayerRotationServerboundPacket(EntityRotation(yaw, pitch), false))
         }
         lastMovementPacketSent = System.currentTimeMillis()
         currentPositionSent = true

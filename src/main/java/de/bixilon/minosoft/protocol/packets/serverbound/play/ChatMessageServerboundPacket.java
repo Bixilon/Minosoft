@@ -10,24 +10,27 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.modding.event.events
 
-import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketHeldItemChangeReceiving
-import de.bixilon.minosoft.protocol.packets.serverbound.play.HeldItemChangeServerboundPacket
+package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
-class HeldItemChangeEvent : PlayConnectionEvent {
-    val slot: Int
+import de.bixilon.minosoft.protocol.packets.serverbound.PlayServerboundPacket;
+import de.bixilon.minosoft.protocol.protocol.OutPlayByteBuffer;
+import de.bixilon.minosoft.util.logging.Log;
 
-    constructor(connection: PlayConnection, slot: Int) : super(connection) {
-        this.slot = slot
+public class ChatMessageServerboundPacket implements PlayServerboundPacket {
+    private final String message;
+
+    public ChatMessageServerboundPacket(String message) {
+        this.message = message;
     }
 
-    constructor(connection: PlayConnection, pkg: HeldItemChangeServerboundPacket) : super(connection) {
-        slot = pkg.slot
+    @Override
+    public void write(OutPlayByteBuffer buffer) {
+        buffer.writeString(this.message);
     }
 
-    constructor(connection: PlayConnection, pkg: PacketHeldItemChangeReceiving) : super(connection) {
-        slot = pkg.slot
+    @Override
+    public void log() {
+        Log.protocol(String.format("[OUT] Sending Chat message: %s", this.message));
     }
 }

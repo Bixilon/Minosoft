@@ -23,7 +23,7 @@ import de.bixilon.minosoft.modding.event.events.ChatMessageSendingEvent;
 import de.bixilon.minosoft.modding.event.events.CloseWindowEvent;
 import de.bixilon.minosoft.modding.event.events.HeldItemChangeEvent;
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
-import de.bixilon.minosoft.protocol.packets.serverbound.login.PacketLoginPluginResponse;
+import de.bixilon.minosoft.protocol.packets.serverbound.login.LoginPluginResponseServerboundPacket;
 import de.bixilon.minosoft.protocol.packets.serverbound.play.*;
 import de.bixilon.minosoft.util.Util;
 import de.bixilon.minosoft.util.logging.Log;
@@ -41,7 +41,7 @@ public class PacketSender {
     }
 
     public void setFlyStatus(boolean flying) {
-        this.connection.sendPacket(new PacketPlayerAbilitiesSending(flying));
+        this.connection.sendPacket(new PlayerAbilitiesServerboundPacket(flying));
     }
 
     public void sendChatMessage(String message) {
@@ -55,39 +55,39 @@ public class PacketSender {
             return;
         }
         Log.game("Sending chat message: %s", message);
-        this.connection.sendPacket(new PacketChatMessageSending(event.getMessage()));
+        this.connection.sendPacket(new ChatMessageServerboundPacket(event.getMessage()));
     }
 
     public void spectateEntity(UUID entityUUID) {
-        this.connection.sendPacket(new PacketSpectate(entityUUID));
+        this.connection.sendPacket(new SpectateEntityServerboundPacket(entityUUID));
     }
 
     public void swingArm(Hands hand) {
-        this.connection.sendPacket(new PacketAnimation(hand));
+        this.connection.sendPacket(new HandAnimationServerboundPacket(hand));
     }
 
     public void swingArm() {
-        this.connection.sendPacket(new PacketAnimation(Hands.MAIN_HAND));
+        this.connection.sendPacket(new HandAnimationServerboundPacket(Hands.MAIN_HAND));
     }
 
-    public void sendAction(PacketEntityAction.EntityActions action) {
-        this.connection.sendPacket(new PacketEntityAction(this.connection.getWorld().getEntityIdMap().inverse().get(this.connection.getPlayer().getEntity()), action));
+    public void sendAction(EntityActionServerboundPacket.EntityActions action) {
+        this.connection.sendPacket(new EntityActionServerboundPacket(this.connection.getWorld().getEntityIdMap().inverse().get(this.connection.getPlayer().getEntity()), action));
     }
 
     public void jumpWithHorse(int jumpBoost) {
-        this.connection.sendPacket(new PacketEntityAction(this.connection.getWorld().getEntityIdMap().inverse().get(this.connection.getPlayer().getEntity()), PacketEntityAction.EntityActions.START_HORSE_JUMP, jumpBoost));
+        this.connection.sendPacket(new EntityActionServerboundPacket(this.connection.getWorld().getEntityIdMap().inverse().get(this.connection.getPlayer().getEntity()), EntityActionServerboundPacket.EntityActions.START_HORSE_JUMP, jumpBoost));
     }
 
     public void dropItem() {
-        this.connection.sendPacket(new PacketPlayerDigging(PacketPlayerDigging.DiggingStatus.DROP_ITEM, null, PacketPlayerDigging.DiggingFaces.BOTTOM));
+        this.connection.sendPacket(new PlayerDiggingServerboundPacket(PlayerDiggingServerboundPacket.DiggingStatus.DROP_ITEM, null, PlayerDiggingServerboundPacket.DiggingFaces.BOTTOM));
     }
 
     public void dropItemStack() {
-        this.connection.sendPacket(new PacketPlayerDigging(PacketPlayerDigging.DiggingStatus.DROP_ITEM_STACK, null, PacketPlayerDigging.DiggingFaces.BOTTOM));
+        this.connection.sendPacket(new PlayerDiggingServerboundPacket(PlayerDiggingServerboundPacket.DiggingStatus.DROP_ITEM_STACK, null, PlayerDiggingServerboundPacket.DiggingFaces.BOTTOM));
     }
 
     public void swapItemInHand() {
-        this.connection.sendPacket(new PacketPlayerDigging(PacketPlayerDigging.DiggingStatus.SWAP_ITEMS_IN_HAND, null, PacketPlayerDigging.DiggingFaces.BOTTOM));
+        this.connection.sendPacket(new PlayerDiggingServerboundPacket(PlayerDiggingServerboundPacket.DiggingStatus.SWAP_ITEMS_IN_HAND, null, PlayerDiggingServerboundPacket.DiggingFaces.BOTTOM));
     }
 
     public void closeWindow(byte windowId) {
@@ -95,19 +95,19 @@ public class PacketSender {
         if (this.connection.fireEvent(event)) {
             return;
         }
-        this.connection.sendPacket(new PacketCloseWindowSending(windowId));
+        this.connection.sendPacket(new CloseWindowServerboundPacket(windowId));
     }
 
     public void respawn() {
-        sendClientStatus(PacketClientStatus.ClientStates.PERFORM_RESPAWN);
+        sendClientStatus(ClientActionServerboundPacket.ClientStates.PERFORM_RESPAWN);
     }
 
-    public void sendClientStatus(PacketClientStatus.ClientStates status) {
-        this.connection.sendPacket(new PacketClientStatus(status));
+    public void sendClientStatus(ClientActionServerboundPacket.ClientStates status) {
+        this.connection.sendPacket(new ClientActionServerboundPacket(status));
     }
 
     public void sendPluginMessageData(String channel, OutByteBuffer toSend) {
-        this.connection.sendPacket(new PacketPluginMessageSending(channel, toSend.toByteArray()));
+        this.connection.sendPacket(new PluginMessageServerboundPacket(channel, toSend.toByteArray()));
     }
 
     public void sendPluginMessageData(ResourceLocation channel, OutByteBuffer toSend) {
@@ -115,15 +115,15 @@ public class PacketSender {
         if (Util.doesStringContainsUppercaseLetters(channelName)) {
             channelName = channel.getPath();
         }
-        this.connection.sendPacket(new PacketPluginMessageSending(channelName, toSend.toByteArray()));
+        this.connection.sendPacket(new PluginMessageServerboundPacket(channelName, toSend.toByteArray()));
     }
 
     public void sendLoginPluginMessageResponse(int messageId, OutByteBuffer toSend) {
-        this.connection.sendPacket(new PacketLoginPluginResponse(messageId, toSend.toByteArray()));
+        this.connection.sendPacket(new LoginPluginResponseServerboundPacket(messageId, toSend.toByteArray()));
     }
 
     public void setLocation(Vec3 position, EntityRotation rotation, boolean onGround) {
-        this.connection.sendPacket(new PacketPlayerPositionAndRotationSending(position, rotation, onGround));
+        this.connection.sendPacket(new PlayerPositionAndRotationServerboundPacket(position, rotation, onGround));
         this.connection.getPlayer().getEntity().setPosition(position);
         this.connection.getPlayer().getEntity().setRotation(rotation);
     }
@@ -139,6 +139,6 @@ public class PacketSender {
     public void selectSlot(@IntRange(from = 0, to = 8) int slot) {
         this.connection.fireEvent(new HeldItemChangeEvent(this.connection, slot));
         this.connection.getPlayer().getInventoryManager().setSelectedHotbarSlot(slot);
-        this.connection.sendPacket(new PacketHeldItemChangeSending(slot));
+        this.connection.sendPacket(new HeldItemChangeServerboundPacket(slot));
     }
 }

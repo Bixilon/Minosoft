@@ -15,7 +15,7 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
 import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket;
-import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketKeepAliveResponse;
+import de.bixilon.minosoft.protocol.packets.serverbound.play.KeepAliveServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
@@ -39,7 +39,7 @@ public class PacketKeepAlive extends PlayClientboundPacket {
 
     @Override
     public void handle(PlayConnection connection) {
-        connection.sendPacket(new PacketKeepAliveResponse(getId()));
+        connection.sendPacket(new KeepAliveServerboundPacket(getId()));
     }
 
     @Override

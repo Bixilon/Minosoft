@@ -16,8 +16,8 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 import de.bixilon.minosoft.data.entities.EntityRotation;
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
 import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket;
-import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketPlayerPositionAndRotationSending;
-import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketTeleportConfirm;
+import de.bixilon.minosoft.protocol.packets.serverbound.play.PlayerPositionAndRotationServerboundPacket;
+import de.bixilon.minosoft.protocol.packets.serverbound.play.TeleportConfirmServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 import glm_.vec3.Vec3;
@@ -55,9 +55,9 @@ public class PacketPlayerPositionAndRotation extends PlayClientboundPacket {
         // ToDo: GUI should do this
         connection.getPlayer().getEntity().setPosition(getPosition());
         if (connection.getVersion().getVersionId() >= V_15W42A) {
-            connection.sendPacket(new PacketTeleportConfirm(getTeleportId()));
+            connection.sendPacket(new TeleportConfirmServerboundPacket(getTeleportId()));
         } else {
-            connection.sendPacket(new PacketPlayerPositionAndRotationSending(getPosition(), getRotation(), isOnGround()));
+            connection.sendPacket(new PlayerPositionAndRotationServerboundPacket(getPosition(), getRotation(), isOnGround()));
         }
     }
 

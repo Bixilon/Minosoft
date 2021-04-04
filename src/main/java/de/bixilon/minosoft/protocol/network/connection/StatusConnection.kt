@@ -23,8 +23,8 @@ import de.bixilon.minosoft.modding.event.events.ServerListPongEvent
 import de.bixilon.minosoft.modding.event.events.ServerListStatusArriveEvent
 import de.bixilon.minosoft.protocol.packets.clientbound.ClientboundPacket
 import de.bixilon.minosoft.protocol.packets.clientbound.StatusClientboundPacket
-import de.bixilon.minosoft.protocol.packets.serverbound.handshaking.PacketHandshake
-import de.bixilon.minosoft.protocol.packets.serverbound.status.PacketStatusRequest
+import de.bixilon.minosoft.protocol.packets.serverbound.handshaking.HandshakeServerboundPacket
+import de.bixilon.minosoft.protocol.packets.serverbound.status.StatusRequestServerboundPacket
 import de.bixilon.minosoft.protocol.ping.ServerListPing
 import de.bixilon.minosoft.protocol.protocol.ConnectionPing
 import de.bixilon.minosoft.protocol.protocol.ConnectionStates
@@ -87,11 +87,11 @@ class StatusConnection(
             fireEvent(ConnectionStateChangeEvent(this, previousConnectionState, _connectionState))
             when (value) {
                 ConnectionStates.HANDSHAKING -> {
-                    network.sendPacket(PacketHandshake(realAddress, ConnectionStates.STATUS, Versions.AUTOMATIC_VERSION.protocolId))
+                    network.sendPacket(HandshakeServerboundPacket(realAddress, ConnectionStates.STATUS, Versions.AUTOMATIC_VERSION.protocolId))
                     connectionState = ConnectionStates.STATUS
                 }
                 ConnectionStates.STATUS -> {
-                    network.sendPacket(PacketStatusRequest())
+                    network.sendPacket(StatusRequestServerboundPacket())
                 }
                 ConnectionStates.FAILED -> {
                     if (addresses == null) {

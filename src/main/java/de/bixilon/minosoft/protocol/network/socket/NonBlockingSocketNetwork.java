@@ -18,7 +18,7 @@ import de.bixilon.minosoft.protocol.exceptions.PacketTooLongException;
 import de.bixilon.minosoft.protocol.network.Network;
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
 import de.bixilon.minosoft.protocol.packets.serverbound.ServerboundPacket;
-import de.bixilon.minosoft.protocol.packets.serverbound.login.PacketEncryptionResponse;
+import de.bixilon.minosoft.protocol.packets.serverbound.login.EncryptionResponseServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.ConnectionStates;
 import de.bixilon.minosoft.protocol.protocol.CryptManager;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
@@ -88,7 +88,7 @@ public class NonBlockingSocketNetwork extends Network {
                             this.socketChannel.write(sendBuffer);
                         }
 
-                        if (packet instanceof PacketEncryptionResponse packetEncryptionResponse) {
+                        if (packet instanceof EncryptionResponseServerboundPacket packetEncryptionResponse) {
                             // enable encryption
                             enableEncryption(packetEncryptionResponse.getSecretKey());
                         }

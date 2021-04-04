@@ -10,24 +10,29 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.modding.event.events
 
-import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketHeldItemChangeReceiving
-import de.bixilon.minosoft.protocol.packets.serverbound.play.HeldItemChangeServerboundPacket
+package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
-class HeldItemChangeEvent : PlayConnectionEvent {
-    val slot: Int
+import de.bixilon.minosoft.protocol.packets.serverbound.PlayServerboundPacket;
+import de.bixilon.minosoft.protocol.protocol.OutPlayByteBuffer;
+import de.bixilon.minosoft.util.logging.Log;
 
-    constructor(connection: PlayConnection, slot: Int) : super(connection) {
-        this.slot = slot
+import java.util.UUID;
+
+public class SpectateEntityServerboundPacket implements PlayServerboundPacket {
+    private final UUID entityUUID;
+
+    public SpectateEntityServerboundPacket(UUID entityUUID) {
+        this.entityUUID = entityUUID;
     }
 
-    constructor(connection: PlayConnection, pkg: HeldItemChangeServerboundPacket) : super(connection) {
-        slot = pkg.slot
+    @Override
+    public void write(OutPlayByteBuffer buffer) {
+        buffer.writeUUID(this.entityUUID);
     }
 
-    constructor(connection: PlayConnection, pkg: PacketHeldItemChangeReceiving) : super(connection) {
-        slot = pkg.slot
+    @Override
+    public void log() {
+        Log.protocol(String.format("[OUT] Spectating entity (entityUUID=%s)", this.entityUUID));
     }
 }

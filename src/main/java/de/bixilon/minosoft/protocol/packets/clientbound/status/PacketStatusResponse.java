@@ -18,7 +18,7 @@ import de.bixilon.minosoft.data.mappings.versions.Versions;
 import de.bixilon.minosoft.modding.event.events.StatusResponseEvent;
 import de.bixilon.minosoft.protocol.network.connection.StatusConnection;
 import de.bixilon.minosoft.protocol.packets.clientbound.StatusClientboundPacket;
-import de.bixilon.minosoft.protocol.packets.serverbound.status.PacketStatusPing;
+import de.bixilon.minosoft.protocol.packets.serverbound.status.StatusPingServerboundPacket;
 import de.bixilon.minosoft.protocol.ping.ServerListPing;
 import de.bixilon.minosoft.protocol.protocol.ConnectionPing;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
@@ -51,7 +51,7 @@ public class PacketStatusResponse extends StatusClientboundPacket {
         Log.info(String.format("Status response received: %s/%s online. MotD: '%s'", getResponse().getPlayerOnline(), getResponse().getMaxPlayers(), getResponse().getMotd().getANSIColoredMessage()));
         connection.handlePingCallbacks(getResponse());
         connection.setConnectionStatusPing(new ConnectionPing());
-        connection.sendPacket(new PacketStatusPing(connection.getConnectionStatusPing()));
+        connection.sendPacket(new StatusPingServerboundPacket(connection.getConnectionStatusPing()));
     }
 
     @Override
