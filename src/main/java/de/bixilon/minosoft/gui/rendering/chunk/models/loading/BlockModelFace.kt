@@ -81,6 +81,25 @@ class BlockModelFace {
         positions = calculateTexturePositions(null, from, to, direction)
     }
 
+    constructor(vertexPositions: List<Vec3>, direction: Directions) {
+        textureName = null
+        cullFace = null
+        tint = false
+        val template = BlockModelElement.FACE_POSITION_MAP_TEMPLATE[direction.ordinal]
+        positions = mutableListOf()
+        for (templatePosition in template) {
+            positions.add(calculateTexturePosition(vertexPositions[templatePosition], direction))
+        }
+    }
+
+    private fun calculateTexturePosition(position: Vec3, direction: Directions): Vec2 {
+        return when (direction) {
+            Directions.UP, Directions.DOWN ->     Vec2(position.x, BlockModelElement.BLOCK_RESOLUTION - position.z)
+            Directions.NORTH, Directions.SOUTH -> Vec2(position.x, position.y)
+            Directions.EAST, Directions.WEST ->   Vec2(position.z, BlockModelElement.BLOCK_RESOLUTION - position.y)
+        }
+    }
+
     fun getTexturePositionArray(direction: Directions): Array<Vec2?> {
         val template = textureTemplate[direction.ordinal]
         val result = arrayOfNulls<Vec2>(template.size)

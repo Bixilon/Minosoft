@@ -55,7 +55,7 @@ class BlockRenderer : BlockRenderInterface {
         for (direction in Directions.DIRECTIONS) {
             try {
                 directionMapping[direction] = ElementRenderer.getRotatedDirection(rotation, direction)
-            } catch (e: Exception) {
+            } catch (_: IllegalArgumentException) {
             }
         }
     }

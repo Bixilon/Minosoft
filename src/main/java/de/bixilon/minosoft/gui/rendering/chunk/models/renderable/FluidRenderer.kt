@@ -12,7 +12,6 @@ import de.bixilon.minosoft.gui.rendering.chunk.models.FaceSize
 import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModelElement
 import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModelFace
 import de.bixilon.minosoft.gui.rendering.textures.Texture
-import de.bixilon.minosoft.gui.rendering.util.VecUtil
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import glm_.glm
 import glm_.vec2.Vec2
@@ -37,26 +36,24 @@ class FluidRenderer(
         val heights = calculateHeights(neighbourBlocks, blockState, world, blockPosition)
         val isFlowing = isLiquidFlowing(heights)
 
-        val texture: Texture
-        val angle: Float
-        if (isFlowing) {
-            texture = flowingTexture
-            angle = getRotationAngle(heights)
-        } else {
-            texture = stillTexture
-            angle = 0.0f
-        }
+        var texture: Texture
 
         val positions = calculatePositions(heights)
         for (direction in Directions.DIRECTIONS) {
+            val face = BlockModelFace(positions, direction)
+            if (isFlowing || Directions.SIDES.contains(direction)) {
+                face.scale(0.5)
+                texture = flowingTexture
+                if (! Directions.SIDES.contains(direction)) {
+                    val angle = getRotationAngle(heights)
+                    face.rotate(angle)
+                }
+            } else {
+                texture = stillTexture
+            }
             if (isBlockSameFluid(neighbourBlocks[direction.ordinal]) || neighbourBlocks[direction.ordinal]?.getBlockRenderer(blockPosition + direction)?.faceBorderSizes?.let { it[direction.inverse.ordinal] != null } == true && direction != Directions.UP) {
                 continue
             }
-            val face = BlockModelFace(VecUtil.EMPTY_VEC3, Vec3(VecUtil.BLOCK_SIZE_VEC3.x, positions[7].y * 8, VecUtil.BLOCK_SIZE_VEC3.z), direction)
-            if (isFlowing) {
-                face.scale(0.5)
-            }
-            face.rotate(angle)
             val positionTemplate = BlockModelElement.FACE_POSITION_MAP_TEMPLATE[direction.ordinal]
             val drawPositions = arrayOf(positions[positionTemplate[0]], positions[positionTemplate[1]], positions[positionTemplate[2]], positions[positionTemplate[3]])
             createQuad(drawPositions, face.getTexturePositionArray(direction), texture, blockPosition, meshCollection, tintColor, lightLevel)
@@ -131,6 +128,9 @@ class FluidRenderer(
     }
 
     private fun calculateHeights(neighbourBlocks: Array<BlockState?>, blockState: BlockState, world: World, position: Vec3i): FloatArray {
+        if (isBlockSameFluid(neighbourBlocks[Directions.UP.ordinal])) {
+            return floatArrayOf(1f, 1f, 1f, 1f)
+        }
         val height = getLevel(blockState)
         val heights = floatArrayOf(height, height, height, height)
         for (direction in Directions.SIDES) {
