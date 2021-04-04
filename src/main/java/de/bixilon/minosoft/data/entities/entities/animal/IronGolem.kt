@@ -18,10 +18,10 @@ import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.entities.EntityFactory
 import de.bixilon.minosoft.data.mappings.entities.EntityType
-import de.bixilon.minosoft.protocol.network.Connection
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import glm_.vec3.Vec3
 
-class IronGolem(connection: Connection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : AbstractGolem(connection, entityType, position, rotation) {
+class IronGolem(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : AbstractGolem(connection, entityType, position, rotation) {
 
     private fun getIronGolemFlag(bitMask: Int): Boolean {
         return entityMetaData.sets.getBitMask(EntityMetaDataFields.IRON_GOLEM_FLAGS, bitMask)
@@ -34,7 +34,7 @@ class IronGolem(connection: Connection, entityType: EntityType, position: Vec3, 
     companion object : EntityFactory<IronGolem> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("iron_golem")
 
-        override fun build(connection: Connection, entityType: EntityType, position: Vec3, rotation: EntityRotation): IronGolem {
+        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation): IronGolem {
             return IronGolem(connection, entityType, position, rotation)
         }
     }

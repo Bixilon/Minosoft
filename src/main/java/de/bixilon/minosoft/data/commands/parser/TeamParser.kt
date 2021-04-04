@@ -14,11 +14,11 @@ package de.bixilon.minosoft.data.commands.parser
 
 import de.bixilon.minosoft.data.commands.CommandStringReader
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties
-import de.bixilon.minosoft.protocol.network.Connection
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 
 object TeamParser : CommandParser() {
 
-    override fun parse(connection: Connection, properties: ParserProperties?, stringReader: CommandStringReader): String {
+    override fun parse(connection: PlayConnection, properties: ParserProperties?, stringReader: CommandStringReader): String {
         return stringReader.readUnquotedString()
     }
 }

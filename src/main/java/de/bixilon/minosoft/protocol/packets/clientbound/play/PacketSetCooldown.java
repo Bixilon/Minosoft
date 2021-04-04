@@ -13,15 +13,15 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket;
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
-public class PacketSetCooldown extends ClientboundPacket {
+public class PacketSetCooldown extends PlayClientboundPacket {
     private final int item;
     private final int cooldownTicks;
 
-    public PacketSetCooldown(InByteBuffer buffer) {
+    public PacketSetCooldown(PlayInByteBuffer buffer) {
         this.item = buffer.readVarInt();
         this.cooldownTicks = buffer.readVarInt();
     }

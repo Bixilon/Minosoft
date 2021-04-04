@@ -14,17 +14,14 @@ package de.bixilon.minosoft.protocol.packets.serverbound.play
 
 import de.bixilon.minosoft.data.Difficulties
 import de.bixilon.minosoft.data.player.Hands
-import de.bixilon.minosoft.protocol.network.Connection
-import de.bixilon.minosoft.protocol.packets.ServerboundPacket
-import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer
-import de.bixilon.minosoft.protocol.protocol.PacketTypes
+import de.bixilon.minosoft.protocol.packets.serverbound.PlayServerboundPacket
+import de.bixilon.minosoft.protocol.protocol.OutPlayByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.util.logging.Log
 
-class PacketClientSettings(private val locale: String = "en_US", private val renderDistance: Int = 10, private val mainHand: Hands = Hands.MAIN_HAND, private val disableTextFiltering: Boolean = true) : ServerboundPacket {
+class PacketClientSettings(private val locale: String = "en_US", private val renderDistance: Int = 10, private val mainHand: Hands = Hands.MAIN_HAND, private val disableTextFiltering: Boolean = true) : PlayServerboundPacket {
 
-    override fun write(connection: Connection): OutPacketBuffer {
-        val buffer = OutPacketBuffer(connection, PacketTypes.Serverbound.PLAY_CLIENT_SETTINGS)
+    override fun write(buffer: OutPlayByteBuffer) {
         buffer.writeString(locale) // locale
         buffer.writeByte(renderDistance) // render Distance
         buffer.writeByte(0x00.toByte()) // chat settings (nobody uses them)
@@ -41,7 +38,6 @@ class PacketClientSettings(private val locale: String = "en_US", private val ren
         if (buffer.versionId >= ProtocolVersions.V_21W07A) {
             buffer.writeBoolean(disableTextFiltering)
         }
-        return buffer
     }
 
     override fun log() {

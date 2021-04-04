@@ -17,7 +17,7 @@ import de.bixilon.minosoft.data.entities.EntityMetaDataFields;
 import de.bixilon.minosoft.data.entities.EntityRotation;
 import de.bixilon.minosoft.data.mappings.entities.EntityType;
 import de.bixilon.minosoft.data.player.Hands;
-import de.bixilon.minosoft.protocol.network.Connection;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
 import glm_.vec3.Vec3;
 import glm_.vec3.Vec3i;
 
@@ -25,7 +25,7 @@ import javax.annotation.Nullable;
 
 public abstract class LivingEntity extends Entity {
 
-    public LivingEntity(Connection connection, EntityType entityType, Vec3 position, EntityRotation rotation) {
+    public LivingEntity(PlayConnection connection, EntityType entityType, Vec3 position, EntityRotation rotation) {
         super(connection, entityType, position, rotation);
     }
 

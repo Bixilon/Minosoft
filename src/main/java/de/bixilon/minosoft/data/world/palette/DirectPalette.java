@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.world.palette;
 
 import de.bixilon.minosoft.data.mappings.blocks.BlockState;
 import de.bixilon.minosoft.data.mappings.versions.VersionMapping;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_17W47A;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_18W10D;
@@ -38,7 +38,7 @@ public class DirectPalette implements Palette {
     }
 
     @Override
-    public void read(InByteBuffer buffer) {
+    public void read(PlayInByteBuffer buffer) {
         this.versionId = buffer.getVersionId();
         this.mapping = buffer.getConnection().getMapping();
         if (buffer.getVersionId() < V_17W47A) {

@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.commands.parser
 import de.bixilon.minosoft.data.commands.CommandStringReader
 import de.bixilon.minosoft.data.commands.parser.exceptions.UnknownInventorySlotCommandParseException
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties
-import de.bixilon.minosoft.protocol.network.Connection
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 
 object ItemSlotParser : CommandParser() {
     private val SLOTS = HashSet<String>()
@@ -43,7 +43,7 @@ object ItemSlotParser : CommandParser() {
         SLOTS.addAll(setOf("weapon", "weapon.mainhand", "weapon.offhand", "armor.head", "armor.chest", "armor.legs", "armor.feet", "horse.saddle", "horse.armor", "horse.chest"))
     }
 
-    override fun parse(connection: Connection, properties: ParserProperties?, stringReader: CommandStringReader): Any {
+    override fun parse(connection: PlayConnection, properties: ParserProperties?, stringReader: CommandStringReader): Any {
         val slot = stringReader.readUnquotedString()
 
         if (!SLOTS.contains(slot)) {

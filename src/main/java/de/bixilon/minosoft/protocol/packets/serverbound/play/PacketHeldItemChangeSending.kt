@@ -12,18 +12,14 @@
  */
 package de.bixilon.minosoft.protocol.packets.serverbound.play
 
-import de.bixilon.minosoft.protocol.network.Connection
-import de.bixilon.minosoft.protocol.packets.ServerboundPacket
-import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer
-import de.bixilon.minosoft.protocol.protocol.PacketTypes
+import de.bixilon.minosoft.protocol.packets.serverbound.PlayServerboundPacket
+import de.bixilon.minosoft.protocol.protocol.OutPlayByteBuffer
 import de.bixilon.minosoft.util.logging.Log
 
-class PacketHeldItemChangeSending(val slot: Int) : ServerboundPacket {
+class PacketHeldItemChangeSending(val slot: Int) : PlayServerboundPacket {
 
-    override fun write(connection: Connection): OutPacketBuffer {
-        val buffer = OutPacketBuffer(connection, PacketTypes.Serverbound.PLAY_HELD_ITEM_CHANGE)
+    override fun write(buffer: OutPlayByteBuffer) {
         buffer.writeShort(slot.toShort())
-        return buffer
     }
 
     override fun log() {

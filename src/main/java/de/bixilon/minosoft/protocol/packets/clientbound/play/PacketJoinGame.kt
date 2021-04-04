@@ -22,9 +22,10 @@ import de.bixilon.minosoft.data.world.biome.accessor.BlockBiomeAccessor
 import de.bixilon.minosoft.data.world.biome.accessor.NoiseBiomeAccessor
 import de.bixilon.minosoft.modding.event.events.JoinGameEvent
 import de.bixilon.minosoft.protocol.ErrorHandler
-import de.bixilon.minosoft.protocol.network.Connection
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer
+import de.bixilon.minosoft.protocol.network.connection.Connection
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_20W27A
 import de.bixilon.minosoft.util.BitByte
@@ -34,7 +35,7 @@ import de.bixilon.minosoft.util.nbt.tag.ListTag
 import de.bixilon.minosoft.util.nbt.tag.NBTTag
 import kotlin.experimental.and
 
-class PacketJoinGame(buffer: InByteBuffer) : ClientboundPacket() {
+class PacketJoinGame(buffer: PlayInByteBuffer) : PlayClientboundPacket() {
     val entityId: Int
     val isHardcore: Boolean
     val gamemode: Gamemodes
@@ -132,7 +133,7 @@ class PacketJoinGame(buffer: InByteBuffer) : ClientboundPacket() {
         }
     }
 
-    override fun handle(connection: Connection) {
+    override fun handle(connection: PlayConnection) {
         if (connection.fireEvent(JoinGameEvent(connection, this))) {
             return
         }

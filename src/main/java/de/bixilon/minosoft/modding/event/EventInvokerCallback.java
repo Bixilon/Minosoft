@@ -13,10 +13,10 @@
 
 package de.bixilon.minosoft.modding.event;
 
-import de.bixilon.minosoft.modding.event.events.ConnectionEvent;
+import de.bixilon.minosoft.modding.event.events.Event;
 import de.bixilon.minosoft.modding.loading.Priorities;
 
-public class EventInvokerCallback<V extends ConnectionEvent> extends EventInvoker {
+public class EventInvokerCallback<V extends Event> extends EventInvoker {
     private final InvokerCallback<V> callback;
 
     public EventInvokerCallback(boolean ignoreCancelled, InvokerCallback<V> callback) {
@@ -30,15 +30,15 @@ public class EventInvokerCallback<V extends ConnectionEvent> extends EventInvoke
     }
 
     @SuppressWarnings("unchecked")
-    public void invoke(ConnectionEvent event) {
+    public void invoke(Event event) {
         try {
             this.callback.handle((V) event);
         } catch (ClassCastException ignored) {
         }
     }
 
-    public Class<? extends ConnectionEvent> getEventType() {
-        return ConnectionEvent.class;
+    public Class<? extends Event> getEventType() {
+        return Event.class;
     }
 
     public interface InvokerCallback<V> {

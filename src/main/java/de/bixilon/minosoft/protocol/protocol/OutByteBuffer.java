@@ -14,9 +14,8 @@
 package de.bixilon.minosoft.protocol.protocol;
 
 import com.google.gson.JsonObject;
-import de.bixilon.minosoft.data.inventory.ItemStack;
 import de.bixilon.minosoft.data.text.ChatComponent;
-import de.bixilon.minosoft.protocol.network.Connection;
+import de.bixilon.minosoft.protocol.network.connection.Connection;
 import de.bixilon.minosoft.util.Util;
 import de.bixilon.minosoft.util.nbt.tag.CompoundTag;
 import glm_.vec3.Vec3i;
@@ -26,39 +25,24 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.UUID;
 
-import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
-
 public class OutByteBuffer {
     private final ArrayList<Byte> bytes;
     private final Connection connection;
-    private final int versionId;
 
     public OutByteBuffer() {
         this.bytes = new ArrayList<>();
         this.connection = null;
-        this.versionId = -1;
     }
 
     public OutByteBuffer(Connection connection) {
         this.bytes = new ArrayList<>();
         this.connection = connection;
-        this.versionId = connection.getVersion().getVersionId();
     }
 
     @SuppressWarnings("unchecked")
     public OutByteBuffer(OutByteBuffer buffer) {
         this.bytes = (ArrayList<Byte>) buffer.getBytes().clone();
         this.connection = buffer.getConnection();
-        this.versionId = buffer.getVersionId();
-    }
-
-    public void writeByteArray(byte[] data) {
-        if (this.versionId < V_14W21A) {
-            writeShort((short) data.length);
-        } else {
-            writeVarInt(data.length);
-        }
-        writeBytes(data);
     }
 
     public void writeShort(short value) {
@@ -144,18 +128,6 @@ public class OutByteBuffer {
         return this.bytes;
     }
 
-    public void writePosition(Vec3i position) {
-        if (position == null) {
-            writeLong(0L);
-            return;
-        }
-        if (this.versionId < V_18W43A) {
-            writeLong((((long) position.getX() & 0x3FFFFFF) << 38) | (((long) position.getZ() & 0x3FFFFFF)) | ((long) position.getY() & 0xFFF) << 26);
-            return;
-        }
-        writeLong((((long) (position.getX() & 0x3FFFFFF) << 38) | ((long) (position.getZ() & 0x3FFFFFF) << 12) | (long) (position.getY() & 0xFFF)));
-    }
-
     public void writeVarInt(int value) {
         // thanks https://wiki.vg/Protocol#VarInt_and_VarLong
         do {
@@ -179,26 +151,6 @@ public class OutByteBuffer {
             }
             this.bytes.add(count++, temp);
         } while (value != 0);
-    }
-
-    public void writeItemStack(ItemStack itemStack) {
-        if (this.versionId < V_1_13_2_PRE1) {
-            if (itemStack == null) {
-                writeShort((short) -1);
-                return;
-            }
-            writeShort((short) this.connection.getMapping().getItemRegistry().getId(itemStack.getItem()));
-            writeByte((byte) itemStack.getItemCount());
-            writeShort((short) itemStack.getItemMetadata());
-            writeNBT(itemStack.getNBT());
-        }
-        if (itemStack == null) {
-            writeBoolean(false);
-            return;
-        }
-        writeVarInt(this.connection.getMapping().getItemRegistry().getId(itemStack.getItem()));
-        writeByte((byte) itemStack.getItemCount());
-        writeNBT(itemStack.getNBT());
     }
 
     void writeNBT(CompoundTag nbt) {
@@ -237,18 +189,6 @@ public class OutByteBuffer {
     public void writeLongs(long[] data) {
         for (long l : data) {
             writeLong(l);
-        }
-    }
-
-    public int getVersionId() {
-        return this.versionId;
-    }
-
-    public void writeEntityId(int entityId) {
-        if (this.versionId < V_14W04A) {
-            writeInt(entityId);
-        } else {
-            writeVarInt(entityId);
         }
     }
 

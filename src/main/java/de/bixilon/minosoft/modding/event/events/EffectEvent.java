@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.modding.event.events;
 
-import de.bixilon.minosoft.protocol.network.Connection;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
 import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketEffect;
 import glm_.vec3.Vec3i;
 
@@ -23,7 +23,7 @@ public class EffectEvent extends CancelableEvent {
     private final int data;
     private final boolean disableRelativeVolume;
 
-    public EffectEvent(Connection connection, PacketEffect.EffectEffects effect, Vec3i position, int data, boolean disableRelativeVolume) {
+    public EffectEvent(PlayConnection connection, PacketEffect.EffectEffects effect, Vec3i position, int data, boolean disableRelativeVolume) {
         super(connection);
         this.effect = effect;
         this.position = position;
@@ -31,7 +31,7 @@ public class EffectEvent extends CancelableEvent {
         this.disableRelativeVolume = disableRelativeVolume;
     }
 
-    public EffectEvent(Connection connection, PacketEffect pkg) {
+    public EffectEvent(PlayConnection connection, PacketEffect pkg) {
         super(connection);
         this.effect = pkg.getEffect();
         this.position = pkg.getPosition();

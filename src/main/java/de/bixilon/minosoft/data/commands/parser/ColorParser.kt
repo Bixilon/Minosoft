@@ -16,11 +16,11 @@ import de.bixilon.minosoft.data.commands.CommandStringReader
 import de.bixilon.minosoft.data.commands.parser.exceptions.ColorNotFoundCommandParseException
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties
 import de.bixilon.minosoft.data.text.ChatColors
-import de.bixilon.minosoft.protocol.network.Connection
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 
 object ColorParser : CommandParser() {
 
-    override fun parse(connection: Connection, properties: ParserProperties?, stringReader: CommandStringReader): Any? {
+    override fun parse(connection: PlayConnection, properties: ParserProperties?, stringReader: CommandStringReader): Any? {
         val color = stringReader.readUnquotedString()
         try {
             return ChatColors.getChatFormattingByName(color)

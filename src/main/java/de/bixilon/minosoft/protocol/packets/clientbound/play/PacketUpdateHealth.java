@@ -14,19 +14,19 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.modding.event.events.UpdateHealthEvent;
-import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket;
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W04A;
 
-public class PacketUpdateHealth extends ClientboundPacket {
+public class PacketUpdateHealth extends PlayClientboundPacket {
     private final int food;
     private final float saturation;
     private float health;
 
-    public PacketUpdateHealth(InByteBuffer buffer) {
+    public PacketUpdateHealth(PlayInByteBuffer buffer) {
         this.health = buffer.readFloat();
         if (this.health < 0.0F) {
             this.health = 0.0F;
@@ -40,7 +40,7 @@ public class PacketUpdateHealth extends ClientboundPacket {
     }
 
     @Override
-    public void handle(Connection connection) {
+    public void handle(PlayConnection connection) {
         connection.fireEvent(new UpdateHealthEvent(connection, this));
 
         connection.getPlayer().getHealthCondition().setFood(getFood());

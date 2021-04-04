@@ -15,22 +15,22 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.text.ChatComponent;
 import de.bixilon.minosoft.modding.event.events.PlayerListInfoChangeEvent;
-import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket;
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
-public class PacketTabHeaderAndFooter extends ClientboundPacket {
+public class PacketTabHeaderAndFooter extends PlayClientboundPacket {
     private final ChatComponent header;
     private final ChatComponent footer;
 
-    public PacketTabHeaderAndFooter(InByteBuffer buffer) {
+    public PacketTabHeaderAndFooter(PlayInByteBuffer buffer) {
         this.header = buffer.readChatComponent();
         this.footer = buffer.readChatComponent();
     }
 
     @Override
-    public void handle(Connection connection) {
+    public void handle(PlayConnection connection) {
         if (connection.fireEvent(new PlayerListInfoChangeEvent(connection, this))) {
             return;
         }

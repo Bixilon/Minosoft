@@ -13,15 +13,15 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket;
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
-public class PacketEntityEvent extends ClientboundPacket {
+public class PacketEntityEvent extends PlayClientboundPacket {
     private final int entityId;
     private final byte eventId;
 
-    public PacketEntityEvent(InByteBuffer buffer) {
+    public PacketEntityEvent(PlayInByteBuffer buffer) {
         this.entityId = buffer.readInt();
         this.eventId = buffer.readByte();
     }

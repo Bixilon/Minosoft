@@ -14,13 +14,13 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.protocol.packets.clientbound.interfaces.CompressionThresholdChange;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
 public class PacketSetCompression extends CompressionThresholdChange {
     private final int threshold;
 
-    public PacketSetCompression(InByteBuffer buffer) {
+    public PacketSetCompression(PlayInByteBuffer buffer) {
         this.threshold = buffer.readVarInt();
     }
 

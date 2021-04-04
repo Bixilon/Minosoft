@@ -15,15 +15,15 @@ package de.bixilon.minosoft.data;
 
 import de.bixilon.minosoft.data.entities.Velocity;
 import de.bixilon.minosoft.data.entities.entities.Entity;
-import de.bixilon.minosoft.protocol.network.Connection;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
 
 import java.util.HashMap;
 
 public class VelocityHandler {
-    private final Connection connection;
+    private final PlayConnection connection;
     private final HashMap<Entity, Velocity> entities = new HashMap<>();
 
-    public VelocityHandler(Connection connection) {
+    public VelocityHandler(PlayConnection connection) {
         this.connection = connection;
     }
 

@@ -14,16 +14,16 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.mappings.ResourceLocation;
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket;
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
 import java.util.HashMap;
 
-public class PacketSelectAdvancementTab extends ClientboundPacket {
+public class PacketSelectAdvancementTab extends PlayClientboundPacket {
     private AdvancementTabs tab;
 
-    public PacketSelectAdvancementTab(InByteBuffer buffer) {
+    public PacketSelectAdvancementTab(PlayInByteBuffer buffer) {
         if (buffer.readBoolean()) {
             this.tab = AdvancementTabs.VALUES.get(buffer.readResourceLocation());
         }

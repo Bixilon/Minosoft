@@ -28,7 +28,7 @@ import de.bixilon.minosoft.data.entities.entities.vehicle.Boat
 import de.bixilon.minosoft.data.entities.entities.vehicle.Minecart
 import de.bixilon.minosoft.data.entities.meta.EntityMetaData
 import de.bixilon.minosoft.data.mappings.entities.EntityFactory
-import de.bixilon.minosoft.protocol.network.Connection
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import glm_.vec3.Vec3
 
 @Deprecated(message = "We will use json for this soon")
@@ -68,7 +68,7 @@ enum class EntityObjects(
     TRIDENT(94, ThrownTrident);
 
 
-    fun build(connection: Connection, position: Vec3, rotation: EntityRotation, entityMetaData: EntityMetaData?, versionId: Int): Entity? {
+    fun build(connection: PlayConnection, position: Vec3, rotation: EntityRotation, entityMetaData: EntityMetaData?, versionId: Int): Entity? {
         return DefaultEntityFactories.buildEntity(factory, connection, position, rotation, entityMetaData, versionId)
     }
 

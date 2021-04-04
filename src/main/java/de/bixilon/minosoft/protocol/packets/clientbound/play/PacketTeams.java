@@ -17,9 +17,9 @@ import de.bixilon.minosoft.data.scoreboard.Team;
 import de.bixilon.minosoft.data.text.ChatCode;
 import de.bixilon.minosoft.data.text.ChatColors;
 import de.bixilon.minosoft.data.text.ChatComponent;
-import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket;
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 import de.bixilon.minosoft.util.BitByte;
 import de.bixilon.minosoft.util.logging.Log;
 
@@ -27,7 +27,7 @@ import java.util.Arrays;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
 
-public class PacketTeams extends ClientboundPacket {
+public class PacketTeams extends PlayClientboundPacket {
     String name;
     TeamActions action;
     ChatComponent displayName;
@@ -40,7 +40,7 @@ public class PacketTeams extends ClientboundPacket {
     ChatCode formattingCode;
     String[] playerNames;
 
-    public PacketTeams(InByteBuffer buffer) {
+    public PacketTeams(PlayInByteBuffer buffer) {
         this.name = buffer.readString();
         this.action = TeamActions.byId(buffer.readUnsignedByte());
         if (this.action == TeamActions.CREATE || this.action == TeamActions.INFORMATION_UPDATE) {
@@ -87,7 +87,7 @@ public class PacketTeams extends ClientboundPacket {
     }
 
     @Override
-    public void handle(Connection connection) {
+    public void handle(PlayConnection connection) {
         switch (getAction()) {
             case CREATE -> connection.getScoreboardManager().addTeam(new Team(getName(), getDisplayName(), getPrefix(), getSuffix(), isFriendlyFireEnabled(), isSeeingFriendlyInvisibles(), getPlayerNames()));
             case INFORMATION_UPDATE -> connection.getScoreboardManager().getTeam(getName()).updateInformation(getDisplayName(), getPrefix(), getSuffix(), isFriendlyFireEnabled(), isSeeingFriendlyInvisibles());

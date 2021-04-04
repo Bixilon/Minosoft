@@ -16,16 +16,16 @@ import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.entities.EntityFactory
 import de.bixilon.minosoft.data.mappings.entities.EntityType
-import de.bixilon.minosoft.protocol.network.Connection
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import glm_.vec3.Vec3
 
-class TraderLlama(connection: Connection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : Llama(connection, entityType, position, rotation) {
+class TraderLlama(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : Llama(connection, entityType, position, rotation) {
 
 
     companion object : EntityFactory<TraderLlama> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("trader_llama")
 
-        override fun build(connection: Connection, entityType: EntityType, position: Vec3, rotation: EntityRotation): TraderLlama {
+        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation): TraderLlama {
             return TraderLlama(connection, entityType, position, rotation)
         }
     }

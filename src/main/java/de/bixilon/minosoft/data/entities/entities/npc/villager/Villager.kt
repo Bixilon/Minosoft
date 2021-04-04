@@ -19,10 +19,10 @@ import de.bixilon.minosoft.data.entities.entities.npc.villager.data.VillagerData
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.entities.EntityFactory
 import de.bixilon.minosoft.data.mappings.entities.EntityType
-import de.bixilon.minosoft.protocol.network.Connection
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import glm_.vec3.Vec3
 
-class Villager(connection: Connection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : AbstractVillager(connection, entityType, position, rotation) {
+class Villager(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : AbstractVillager(connection, entityType, position, rotation) {
 
     @get:EntityMetaDataFunction(name = "Villager data")
     val villagerDate: VillagerData
@@ -31,7 +31,7 @@ class Villager(connection: Connection, entityType: EntityType, position: Vec3, r
     companion object : EntityFactory<Villager> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("villager")
 
-        override fun build(connection: Connection, entityType: EntityType, position: Vec3, rotation: EntityRotation): Villager {
+        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation): Villager {
             return Villager(connection, entityType, position, rotation)
         }
     }

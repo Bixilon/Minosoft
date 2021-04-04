@@ -14,15 +14,13 @@
 package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
 import de.bixilon.minosoft.data.player.Hands;
-import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
-import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketTypes;
+import de.bixilon.minosoft.protocol.packets.serverbound.PlayServerboundPacket;
+import de.bixilon.minosoft.protocol.protocol.OutPlayByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_15W31A;
 
-public class PacketAnimation implements ServerboundPacket {
+public class PacketAnimation implements PlayServerboundPacket {
     private final Hands hand;
 
     public PacketAnimation(Hands hand) {
@@ -30,12 +28,10 @@ public class PacketAnimation implements ServerboundPacket {
     }
 
     @Override
-    public OutPacketBuffer write(Connection connection) {
-        OutPacketBuffer buffer = new OutPacketBuffer(connection, PacketTypes.Serverbound.PLAY_ANIMATION);
+    public void write(OutPlayByteBuffer buffer) {
         if (buffer.getVersionId() >= V_15W31A) {
             buffer.writeVarInt(this.hand.ordinal());
         }
-        return buffer;
     }
 
     @Override

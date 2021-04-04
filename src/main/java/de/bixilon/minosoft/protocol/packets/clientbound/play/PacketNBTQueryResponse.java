@@ -13,16 +13,16 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket;
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 import de.bixilon.minosoft.util.nbt.tag.CompoundTag;
 
-public class PacketNBTQueryResponse extends ClientboundPacket {
+public class PacketNBTQueryResponse extends PlayClientboundPacket {
     private final int transactionId;
     private final CompoundTag tag;
 
-    public PacketNBTQueryResponse(InByteBuffer buffer) {
+    public PacketNBTQueryResponse(PlayInByteBuffer buffer) {
         this.transactionId = buffer.readVarInt();
         this.tag = (CompoundTag) buffer.readNBT();
     }

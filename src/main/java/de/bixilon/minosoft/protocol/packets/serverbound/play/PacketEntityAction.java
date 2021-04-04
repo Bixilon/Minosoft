@@ -14,17 +14,15 @@
 package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
 import de.bixilon.minosoft.data.VersionValueMap;
-import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
-import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketTypes;
+import de.bixilon.minosoft.protocol.packets.serverbound.PlayServerboundPacket;
+import de.bixilon.minosoft.protocol.protocol.OutPlayByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
 import java.util.Map;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
 
-public class PacketEntityAction implements ServerboundPacket {
+public class PacketEntityAction implements PlayServerboundPacket {
     private final int entityId;
     private final EntityActions action;
     private final int parameter; // only for horse (jump boost)
@@ -42,8 +40,7 @@ public class PacketEntityAction implements ServerboundPacket {
     }
 
     @Override
-    public OutPacketBuffer write(Connection connection) {
-        OutPacketBuffer buffer = new OutPacketBuffer(connection, PacketTypes.Serverbound.PLAY_ENTITY_ACTION);
+    public void write(OutPlayByteBuffer buffer) {
         buffer.writeEntityId(this.entityId);
         if (buffer.getVersionId() < V_14W04A) {
             buffer.writeByte((byte) this.action.getId(buffer.getVersionId()));
@@ -52,7 +49,6 @@ public class PacketEntityAction implements ServerboundPacket {
             buffer.writeVarInt(this.action.getId(buffer.getVersionId()));
             buffer.writeVarInt(this.parameter);
         }
-        return buffer;
     }
 
     @Override

@@ -13,18 +13,18 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket;
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W33A;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_17W45A;
 
-public class PacketTabCompleteReceiving extends ClientboundPacket {
+public class PacketTabCompleteReceiving extends PlayClientboundPacket {
     private final int count;
     private final String[] match;
 
-    public PacketTabCompleteReceiving(InByteBuffer buffer) {
+    public PacketTabCompleteReceiving(PlayInByteBuffer buffer) {
         if (buffer.getVersionId() < V_14W33A) {
             this.count = buffer.readVarInt();
             this.match = new String[]{buffer.readString()};

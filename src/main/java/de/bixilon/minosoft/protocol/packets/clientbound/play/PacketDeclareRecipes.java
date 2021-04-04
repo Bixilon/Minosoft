@@ -19,17 +19,17 @@ import de.bixilon.minosoft.data.mappings.ResourceLocation;
 import de.bixilon.minosoft.data.mappings.recipes.Ingredient;
 import de.bixilon.minosoft.data.mappings.recipes.Recipe;
 import de.bixilon.minosoft.data.mappings.recipes.RecipeTypes;
-import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket;
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_19W03A;
 
-public class PacketDeclareRecipes extends ClientboundPacket {
+public class PacketDeclareRecipes extends PlayClientboundPacket {
     private final HashBiMap<ResourceLocation, Recipe> recipes = HashBiMap.create();
 
-    public PacketDeclareRecipes(InByteBuffer buffer) {
+    public PacketDeclareRecipes(PlayInByteBuffer buffer) {
         int length = buffer.readVarInt();
         for (int i = 0; i < length; i++) {
             Recipe recipe;
@@ -85,7 +85,7 @@ public class PacketDeclareRecipes extends ClientboundPacket {
     }
 
     @Override
-    public void handle(Connection connection) {
+    public void handle(PlayConnection connection) {
         connection.getRecipes().registerCustomRecipes(getRecipes());
     }
 

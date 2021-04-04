@@ -15,11 +15,11 @@ package de.bixilon.minosoft.data.commands.parser
 import de.bixilon.minosoft.data.commands.CommandStringReader
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties
 import de.bixilon.minosoft.data.mappings.ResourceLocation
-import de.bixilon.minosoft.protocol.network.Connection
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 
 object ResourceLocationParser : CommandParser() {
 
-    override fun parse(connection: Connection, properties: ParserProperties?, stringReader: CommandStringReader): ResourceLocation {
+    override fun parse(connection: PlayConnection, properties: ParserProperties?, stringReader: CommandStringReader): ResourceLocation {
         return stringReader.readResourceLocation().value
     }
 }

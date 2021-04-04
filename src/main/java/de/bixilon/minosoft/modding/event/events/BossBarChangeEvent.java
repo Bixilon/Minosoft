@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.modding.event.events;
 
 import de.bixilon.minosoft.data.text.ChatComponent;
-import de.bixilon.minosoft.protocol.network.Connection;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
 import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketBossBar;
 
 import java.util.UUID;
@@ -33,7 +33,7 @@ public class BossBarChangeEvent extends CancelableEvent {
     private boolean shouldDarkenSky;
     private boolean createFog;
 
-    public BossBarChangeEvent(Connection connection, UUID uuid, PacketBossBar.BossBarActions action, ChatComponent title, float health, PacketBossBar.BossBarColors color, PacketBossBar.BossBarDivisions divisions, boolean isDragonBar, boolean shouldDarkenSky, boolean createFog) {
+    public BossBarChangeEvent(PlayConnection connection, UUID uuid, PacketBossBar.BossBarActions action, ChatComponent title, float health, PacketBossBar.BossBarColors color, PacketBossBar.BossBarDivisions divisions, boolean isDragonBar, boolean shouldDarkenSky, boolean createFog) {
         super(connection);
         this.uuid = uuid;
         this.action = action;
@@ -46,7 +46,7 @@ public class BossBarChangeEvent extends CancelableEvent {
         this.createFog = createFog;
     }
 
-    public BossBarChangeEvent(Connection connection, PacketBossBar pkg) {
+    public BossBarChangeEvent(PlayConnection connection, PacketBossBar pkg) {
         super(connection);
         this.uuid = pkg.getUUID();
         this.action = pkg.getAction();

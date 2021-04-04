@@ -15,23 +15,23 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play
 import de.bixilon.minosoft.data.entities.meta.EntityMetaData
 import de.bixilon.minosoft.modding.event.events.EntityMetaDataChangeEvent
 import de.bixilon.minosoft.modding.event.events.OwnEntityMetaDataChangeEvent
-import de.bixilon.minosoft.protocol.network.Connection
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.util.logging.Log
 
-class PacketEntityMetadata() : ClientboundPacket() {
+class PacketEntityMetadata() : PlayClientboundPacket() {
     var entityId = 0
         private set
     lateinit var entityData: EntityMetaData
         private set
 
-    constructor(buffer: InByteBuffer) : this() {
+    constructor(buffer: PlayInByteBuffer) : this() {
         entityId = buffer.readEntityId()
         entityData = buffer.readMetaData()
     }
 
-    override fun handle(connection: Connection) {
+    override fun handle(connection: PlayConnection) {
         val entity = connection.world.getEntity(entityId) ?: return
 
         entity.entityMetaData = entityData

@@ -13,14 +13,14 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket;
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 import glm_.vec3.Vec3i;
 import org.jetbrains.annotations.NotNull;
 
-public class PacketExplosion extends ClientboundPacket {
+public class PacketExplosion extends PlayClientboundPacket {
     private final Vec3i position;
     private final float radius;
     private final byte[][] records;
@@ -28,7 +28,7 @@ public class PacketExplosion extends ClientboundPacket {
     private final float motionY;
     private final float motionZ;
 
-    public PacketExplosion(InByteBuffer buffer) {
+    public PacketExplosion(PlayInByteBuffer buffer) {
         this.position = new Vec3i(buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
         this.radius = buffer.readFloat();
         int recordCount = buffer.readInt();
@@ -43,7 +43,7 @@ public class PacketExplosion extends ClientboundPacket {
     }
 
     @Override
-    public void check(@NotNull Connection connection) {
+    public void check(@NotNull PlayConnection connection) {
         if (this.radius > 100.0F) {
             // maybe somebody tries to make bullshit?
             // Sorry, Maximilian Rosenmüller
@@ -52,7 +52,7 @@ public class PacketExplosion extends ClientboundPacket {
     }
 
     @Override
-    public void handle(Connection connection) {
+    public void handle(PlayConnection connection) {
         // remove all blocks set by explosion
         for (byte[] record : getRecords()) {
             int x = getPosition().getX() + record[0];

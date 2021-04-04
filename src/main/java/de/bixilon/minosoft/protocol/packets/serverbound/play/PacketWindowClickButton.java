@@ -13,13 +13,11 @@
 
 package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
-import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
-import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketTypes;
+import de.bixilon.minosoft.protocol.packets.serverbound.PlayServerboundPacket;
+import de.bixilon.minosoft.protocol.protocol.OutPlayByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
-public class PacketWindowClickButton implements ServerboundPacket {
+public class PacketWindowClickButton implements PlayServerboundPacket {
     private final byte windowId;
     private final byte buttonId; // up, middle, bottom (0, 1, 2); in later versions: lectern page, etc
 
@@ -29,11 +27,9 @@ public class PacketWindowClickButton implements ServerboundPacket {
     }
 
     @Override
-    public OutPacketBuffer write(Connection connection) {
-        OutPacketBuffer buffer = new OutPacketBuffer(connection, PacketTypes.Serverbound.PLAY_CLICK_WINDOW_BUTTON);
+    public void write(OutPlayByteBuffer buffer) {
         buffer.writeByte(this.windowId);
         buffer.writeByte(this.buttonId);
-        return buffer;
     }
 
     @Override

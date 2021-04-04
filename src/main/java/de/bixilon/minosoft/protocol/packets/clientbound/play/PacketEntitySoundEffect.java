@@ -14,18 +14,18 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.SoundCategories;
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket;
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
-public class PacketEntitySoundEffect extends ClientboundPacket {
+public class PacketEntitySoundEffect extends PlayClientboundPacket {
     private final int soundId;
     private final SoundCategories category;
     private final int entityId;
     private final float volume;
     private final float pitch;
 
-    public PacketEntitySoundEffect(InByteBuffer buffer) {
+    public PacketEntitySoundEffect(PlayInByteBuffer buffer) {
         this.soundId = buffer.readVarInt();
         this.category = SoundCategories.byId(buffer.readVarInt());
         this.entityId = buffer.readVarInt();

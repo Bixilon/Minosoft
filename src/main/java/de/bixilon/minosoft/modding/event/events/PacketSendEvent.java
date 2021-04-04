@@ -14,8 +14,8 @@
 package de.bixilon.minosoft.modding.event.events;
 
 import de.bixilon.minosoft.modding.event.events.annotations.Unsafe;
-import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
+import de.bixilon.minosoft.protocol.network.connection.Connection;
+import de.bixilon.minosoft.protocol.packets.serverbound.ServerboundPacket;
 
 @Unsafe
 public class PacketSendEvent extends ConnectionEvent {

@@ -19,10 +19,10 @@ import de.bixilon.minosoft.data.entities.entities.LivingEntity
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.entities.EntityFactory
 import de.bixilon.minosoft.data.mappings.entities.EntityType
-import de.bixilon.minosoft.protocol.network.Connection
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import glm_.vec3.Vec3
 
-class ArmorStand(connection: Connection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : LivingEntity(connection, entityType, position, rotation) {
+class ArmorStand(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : LivingEntity(connection, entityType, position, rotation) {
 
     private fun getArmorStandFlag(bitMask: Int): Boolean {
         return entityMetaData.sets.getBitMask(EntityMetaDataFields.ARMOR_STAND_FLAGS, bitMask)
@@ -74,7 +74,7 @@ class ArmorStand(connection: Connection, entityType: EntityType, position: Vec3,
     companion object : EntityFactory<ArmorStand> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("armor_stand")
 
-        override fun build(connection: Connection, entityType: EntityType, position: Vec3, rotation: EntityRotation): ArmorStand {
+        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation): ArmorStand {
             return ArmorStand(connection, entityType, position, rotation)
         }
     }

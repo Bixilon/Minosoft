@@ -16,20 +16,20 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 import de.bixilon.minosoft.data.entities.entities.ExperienceOrb;
 import de.bixilon.minosoft.data.mappings.ResourceLocation;
 import de.bixilon.minosoft.modding.event.events.EntitySpawnEvent;
-import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket;
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 import glm_.vec3.Vec3;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_16W06A;
 
-public class PacketSpawnExperienceOrb extends ClientboundPacket {
+public class PacketSpawnExperienceOrb extends PlayClientboundPacket {
     private static final ResourceLocation EXPERIENCE_ORB_RESOURCE_LOCATION = new ResourceLocation("minecraft:experience_orb");
     private final int entityId;
     private final ExperienceOrb entity;
 
-    public PacketSpawnExperienceOrb(InByteBuffer buffer) {
+    public PacketSpawnExperienceOrb(PlayInByteBuffer buffer) {
         this.entityId = buffer.readEntityId();
         Vec3 position;
         if (buffer.getVersionId() < V_16W06A) {
@@ -42,7 +42,7 @@ public class PacketSpawnExperienceOrb extends ClientboundPacket {
     }
 
     @Override
-    public void handle(Connection connection) {
+    public void handle(PlayConnection connection) {
         connection.fireEvent(new EntitySpawnEvent(connection, this));
 
         connection.getWorld().addEntity(this.entityId, null, getEntity());

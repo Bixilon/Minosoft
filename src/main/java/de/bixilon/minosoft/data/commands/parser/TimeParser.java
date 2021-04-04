@@ -17,14 +17,14 @@ import de.bixilon.minosoft.data.commands.CommandStringReader;
 import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException;
 import de.bixilon.minosoft.data.commands.parser.exceptions.UnknownTimeUnitCommandParseException;
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties;
-import de.bixilon.minosoft.protocol.network.Connection;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
 
 public class TimeParser extends CommandParser {
     public static final TimeParser TIME_PARSER = new TimeParser();
 
 
     @Override
-    public Object parse(Connection connection, ParserProperties properties, CommandStringReader stringReader) throws CommandParseException {
+    public Object parse(PlayConnection connection, ParserProperties properties, CommandStringReader stringReader) throws CommandParseException {
         int time = stringReader.readInt();
 
         if (stringReader.canRead()) {

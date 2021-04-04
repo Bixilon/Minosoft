@@ -19,11 +19,11 @@ import de.bixilon.minosoft.data.mappings.particle.data.BlockParticleData
 import de.bixilon.minosoft.data.mappings.particle.data.DustParticleData
 import de.bixilon.minosoft.data.mappings.particle.data.ItemParticleData
 import de.bixilon.minosoft.data.mappings.particle.data.ParticleData
-import de.bixilon.minosoft.protocol.network.Connection
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 
 object ParticleParser : CommandParser() {
 
-    override fun parse(connection: Connection, properties: ParserProperties?, stringReader: CommandStringReader): ParticleData {
+    override fun parse(connection: PlayConnection, properties: ParserProperties?, stringReader: CommandStringReader): ParticleData {
         val resourceLocation = stringReader.readResourceLocation()
 
         val particle = connection.mapping.particleRegistry.get(resourceLocation.value) ?: throw ParticleNotFoundCommandParseException(stringReader, resourceLocation.key)

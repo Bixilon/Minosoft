@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.modding.event.events;
 
-import de.bixilon.minosoft.protocol.network.Connection;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
 import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketCloseWindowReceiving;
 import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketCloseWindowSending;
 
@@ -24,19 +24,19 @@ public class CloseWindowEvent extends CancelableEvent {
     private final byte windowId;
     private final Initiators initiator;
 
-    public CloseWindowEvent(Connection connection, byte windowId, Initiators initiator) {
+    public CloseWindowEvent(PlayConnection connection, byte windowId, Initiators initiator) {
         super(connection);
         this.windowId = windowId;
         this.initiator = initiator;
     }
 
-    public CloseWindowEvent(Connection connection, PacketCloseWindowReceiving pkg) {
+    public CloseWindowEvent(PlayConnection connection, PacketCloseWindowReceiving pkg) {
         super(connection);
         this.windowId = pkg.getWindowId();
         this.initiator = Initiators.SERVER;
     }
 
-    public CloseWindowEvent(Connection connection, PacketCloseWindowSending pkg) {
+    public CloseWindowEvent(PlayConnection connection, PacketCloseWindowSending pkg) {
         super(connection);
         this.windowId = pkg.getWindowId();
         this.initiator = Initiators.CLIENT;

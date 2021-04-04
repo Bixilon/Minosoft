@@ -13,17 +13,17 @@
 package de.bixilon.minosoft.modding.event.events
 
 import de.bixilon.minosoft.data.entities.entities.Entity
-import de.bixilon.minosoft.protocol.network.Connection
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketEntityMetadata
 
-class EntityMetaDataChangeEvent : ConnectionEvent {
+class EntityMetaDataChangeEvent : PlayConnectionEvent {
     val entity: Entity
 
-    constructor(connection: Connection?, entity: Entity) : super(connection) {
+    constructor(connection: PlayConnection?, entity: Entity) : super(connection) {
         this.entity = entity
     }
 
-    constructor(connection: Connection, pkg: PacketEntityMetadata) : super(connection) {
+    constructor(connection: PlayConnection, pkg: PacketEntityMetadata) : super(connection) {
         entity = connection.world.getEntity(pkg.entityId)!!
     }
 }

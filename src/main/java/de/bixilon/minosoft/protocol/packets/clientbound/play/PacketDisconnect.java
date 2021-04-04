@@ -15,20 +15,20 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.text.ChatComponent;
 import de.bixilon.minosoft.modding.event.events.DisconnectEvent;
-import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket;
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
-public class PacketDisconnect extends ClientboundPacket {
+public class PacketDisconnect extends PlayClientboundPacket {
     private final ChatComponent reason;
 
-    public PacketDisconnect(InByteBuffer buffer) {
+    public PacketDisconnect(PlayInByteBuffer buffer) {
         this.reason = buffer.readChatComponent();
     }
 
     @Override
-    public void handle(Connection connection) {
+    public void handle(PlayConnection connection) {
         connection.fireEvent(new DisconnectEvent(connection, this));
         // got kicked
         connection.disconnect();

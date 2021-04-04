@@ -15,12 +15,12 @@ package de.bixilon.minosoft.data.entities.entities.monster;
 
 import de.bixilon.minosoft.data.entities.EntityRotation;
 import de.bixilon.minosoft.data.mappings.entities.EntityType;
-import de.bixilon.minosoft.protocol.network.Connection;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
 import glm_.vec3.Vec3;
 
 public abstract class PatrollingMonster extends Monster {
 
-    public PatrollingMonster(Connection connection, EntityType entityType, Vec3 position, EntityRotation rotation) {
+    public PatrollingMonster(PlayConnection connection, EntityType entityType, Vec3 position, EntityRotation rotation) {
         super(connection, entityType, position, rotation);
     }
 }

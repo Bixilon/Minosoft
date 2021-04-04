@@ -13,24 +13,20 @@
 
 package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
-import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
-import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketTypes;
+import de.bixilon.minosoft.protocol.packets.serverbound.PlayServerboundPacket;
+import de.bixilon.minosoft.protocol.protocol.OutPlayByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
-public class PacketChatMessageSending implements ServerboundPacket {
-private final String message;
+public class PacketChatMessageSending implements PlayServerboundPacket {
+    private final String message;
 
     public PacketChatMessageSending(String message) {
         this.message = message;
     }
 
     @Override
-    public OutPacketBuffer write(Connection connection) {
-        OutPacketBuffer buffer = new OutPacketBuffer(connection, PacketTypes.Serverbound.PLAY_CHAT_MESSAGE);
+    public void write(OutPlayByteBuffer buffer) {
         buffer.writeString(this.message);
-        return buffer;
     }
 
     @Override

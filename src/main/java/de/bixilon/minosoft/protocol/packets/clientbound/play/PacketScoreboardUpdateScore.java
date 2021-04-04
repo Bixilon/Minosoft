@@ -15,20 +15,20 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.scoreboard.ScoreboardObjective;
 import de.bixilon.minosoft.data.scoreboard.ScoreboardScore;
-import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket;
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W04A;
 
-public class PacketScoreboardUpdateScore extends ClientboundPacket {
+public class PacketScoreboardUpdateScore extends PlayClientboundPacket {
     private final String itemName;
     private final ScoreboardUpdateScoreActions action;
     private String scoreName;
     private int scoreValue;
 
-    public PacketScoreboardUpdateScore(InByteBuffer buffer) {
+    public PacketScoreboardUpdateScore(PlayInByteBuffer buffer) {
         this.itemName = buffer.readString();
         this.action = ScoreboardUpdateScoreActions.byId(buffer.readUnsignedByte());
         if (buffer.getVersionId() < V_14W04A) { // ToDo
@@ -50,7 +50,7 @@ public class PacketScoreboardUpdateScore extends ClientboundPacket {
     }
 
     @Override
-    public void handle(Connection connection) {
+    public void handle(PlayConnection connection) {
         switch (getAction()) {
             case CREATE_UPDATE -> connection.getScoreboardManager().getObjective(getScoreName()).addScore(new ScoreboardScore(getItemName(), getScoreName(), getScoreValue()));
             case REMOVE -> {

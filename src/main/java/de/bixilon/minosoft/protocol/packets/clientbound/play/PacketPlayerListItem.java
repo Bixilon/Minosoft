@@ -20,9 +20,9 @@ import de.bixilon.minosoft.data.player.tab.PlayerListItem;
 import de.bixilon.minosoft.data.player.tab.PlayerListItemBulk;
 import de.bixilon.minosoft.data.text.ChatComponent;
 import de.bixilon.minosoft.modding.event.events.PlayerListItemChangeEvent;
-import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket;
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
 import java.util.ArrayList;
@@ -32,11 +32,11 @@ import java.util.UUID;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W04A;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W19A;
 
-public class PacketPlayerListItem extends ClientboundPacket {
+public class PacketPlayerListItem extends PlayClientboundPacket {
     private final ArrayList<PlayerListItemBulk> playerList = new ArrayList<>();
 
 
-    public PacketPlayerListItem(InByteBuffer buffer) {
+    public PacketPlayerListItem(PlayInByteBuffer buffer) {
         if (buffer.getVersionId() < V_14W19A) { // ToDo: 19?
             String name = buffer.readString();
             int ping;
@@ -80,7 +80,7 @@ public class PacketPlayerListItem extends ClientboundPacket {
     }
 
     @Override
-    public void handle(Connection connection) {
+    public void handle(PlayConnection connection) {
         if (connection.fireEvent(new PlayerListItemChangeEvent(connection, this))) {
             return;
         }

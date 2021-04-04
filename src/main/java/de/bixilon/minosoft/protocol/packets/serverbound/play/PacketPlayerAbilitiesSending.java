@@ -13,15 +13,13 @@
 
 package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
-import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
-import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketTypes;
+import de.bixilon.minosoft.protocol.packets.serverbound.PlayServerboundPacket;
+import de.bixilon.minosoft.protocol.protocol.OutPlayByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_16_PRE4;
 
-public class PacketPlayerAbilitiesSending implements ServerboundPacket {
+public class PacketPlayerAbilitiesSending implements PlayServerboundPacket {
     private final boolean flying;
 
     public PacketPlayerAbilitiesSending(boolean flying) {
@@ -29,8 +27,7 @@ public class PacketPlayerAbilitiesSending implements ServerboundPacket {
     }
 
     @Override
-    public OutPacketBuffer write(Connection connection) {
-        OutPacketBuffer buffer = new OutPacketBuffer(connection, PacketTypes.Serverbound.PLAY_PLAYER_ABILITIES);
+    public void write(OutPlayByteBuffer buffer) {
         byte flags = 0;
         if (this.flying) {
             flags |= 0b10;
@@ -41,7 +38,6 @@ public class PacketPlayerAbilitiesSending implements ServerboundPacket {
             buffer.writeFloat(0.0F);
             buffer.writeFloat(0.0F);
         }
-        return buffer;
     }
 
     @Override

@@ -16,9 +16,9 @@ import de.bixilon.minosoft.data.mappings.tweaker.VersionTweaker
 import de.bixilon.minosoft.data.world.ChunkData
 
 import de.bixilon.minosoft.modding.event.events.ChunkDataChangeEvent
-import de.bixilon.minosoft.protocol.network.Connection
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.util.Util
 import de.bixilon.minosoft.util.chunk.ChunkUtil
@@ -26,10 +26,10 @@ import de.bixilon.minosoft.util.logging.Log
 import glm_.vec2.Vec2i
 import java.util.*
 
-class PacketChunkBulk() : ClientboundPacket() {
+class PacketChunkBulk() : PlayClientboundPacket() {
     val data: MutableMap<Vec2i, ChunkData?> = mutableMapOf()
 
-    constructor(buffer: InByteBuffer) : this() {
+    constructor(buffer: PlayInByteBuffer) : this() {
         val dimension = buffer.connection.world.dimension!!
         if (buffer.versionId < ProtocolVersions.V_14W26A) {
             val chunkCount = buffer.readUnsignedShort()
@@ -37,7 +37,7 @@ class PacketChunkBulk() : ClientboundPacket() {
             val containsSkyLight = buffer.readBoolean()
 
             // decompress chunk data
-            val decompressed: InByteBuffer = if (buffer.versionId < ProtocolVersions.V_14W28A) {
+            val decompressed: PlayInByteBuffer = if (buffer.versionId < ProtocolVersions.V_14W28A) {
                 Util.decompress(buffer.readBytes(dataLength), buffer.connection)
             } else {
                 buffer
@@ -65,7 +65,7 @@ class PacketChunkBulk() : ClientboundPacket() {
         }
     }
 
-    override fun handle(connection: Connection) {
+    override fun handle(connection: PlayConnection) {
         // transform data
         for ((chunkPosition, data) in data) {
             data?.blocks?.let {
@@ -76,11 +76,11 @@ class PacketChunkBulk() : ClientboundPacket() {
                 connection.fireEvent(ChunkDataChangeEvent(connection, chunkPosition, data))
                 val chunk = connection.world.getOrCreateChunk(chunkPosition)
                 chunk.setData(data)
-                connection.renderer.renderWindow.worldRenderer.prepareChunk(chunkPosition, chunk)
+                connection.renderer?.renderWindow?.worldRenderer?.prepareChunk(chunkPosition, chunk)
             } ?: let {
                 // unload chunk
                 connection.world.unloadChunk(chunkPosition)
-                connection.renderer.renderWindow.worldRenderer.unloadChunk(chunkPosition)
+                connection.renderer?.renderWindow?.worldRenderer?.unloadChunk(chunkPosition)
             }
         }
     }

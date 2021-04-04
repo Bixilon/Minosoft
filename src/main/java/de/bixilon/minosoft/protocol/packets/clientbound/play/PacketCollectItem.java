@@ -14,20 +14,20 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.modding.event.events.CollectItemAnimationEvent;
-import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket;
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W04A;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_16W32A;
 
-public class PacketCollectItem extends ClientboundPacket {
+public class PacketCollectItem extends PlayClientboundPacket {
     private final int itemEntityId;
     private final int collectorEntityId;
     private int count;
 
-    public PacketCollectItem(InByteBuffer buffer) {
+    public PacketCollectItem(PlayInByteBuffer buffer) {
         this.itemEntityId = buffer.readEntityId();
         if (buffer.getVersionId() < V_14W04A) {
             this.collectorEntityId = buffer.readInt();
@@ -40,7 +40,7 @@ public class PacketCollectItem extends ClientboundPacket {
     }
 
     @Override
-    public void handle(Connection connection) {
+    public void handle(PlayConnection connection) {
         if (connection.fireEvent(new CollectItemAnimationEvent(connection, this))) {
             return;
         }

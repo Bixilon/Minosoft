@@ -13,15 +13,15 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.interfaces;
 
-import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket;
 import org.jetbrains.annotations.NotNull;
 
-public abstract class CompressionThresholdChange extends ClientboundPacket {
+public abstract class CompressionThresholdChange extends PlayClientboundPacket {
     public abstract int getThreshold();
 
     @Override
-    public void handle(@NotNull Connection connection) {
+    public void handle(@NotNull PlayConnection connection) {
         connection.getNetwork().setCompressionThreshold(getThreshold());
     }
 }

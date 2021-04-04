@@ -18,10 +18,10 @@ import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.entities.EntityFactory
 import de.bixilon.minosoft.data.mappings.entities.EntityType
-import de.bixilon.minosoft.protocol.network.Connection
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import glm_.vec3.Vec3
 
-class Strider(connection: Connection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : Animal(connection, entityType, position, rotation) {
+class Strider(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : Animal(connection, entityType, position, rotation) {
 
     @get:EntityMetaDataFunction(name = "Boost stime")
     val boostTime: Int
@@ -39,7 +39,7 @@ class Strider(connection: Connection, entityType: EntityType, position: Vec3, ro
     companion object : EntityFactory<Strider> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("strider")
 
-        override fun build(connection: Connection, entityType: EntityType, position: Vec3, rotation: EntityRotation): Strider {
+        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation): Strider {
             return Strider(connection, entityType, position, rotation)
         }
     }

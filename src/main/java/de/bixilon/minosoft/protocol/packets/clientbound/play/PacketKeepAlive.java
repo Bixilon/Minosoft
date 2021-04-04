@@ -13,19 +13,19 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket;
 import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketKeepAliveResponse;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W31A;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_12_2_PRE2;
 
-public class PacketKeepAlive extends ClientboundPacket {
+public class PacketKeepAlive extends PlayClientboundPacket {
     private final long id;
 
-    public PacketKeepAlive(InByteBuffer buffer) {
+    public PacketKeepAlive(PlayInByteBuffer buffer) {
         if (buffer.getVersionId() < V_14W31A) {
             this.id = buffer.readInt();
             return;
@@ -38,7 +38,7 @@ public class PacketKeepAlive extends ClientboundPacket {
     }
 
     @Override
-    public void handle(Connection connection) {
+    public void handle(PlayConnection connection) {
         connection.sendPacket(new PacketKeepAliveResponse(getId()));
     }
 

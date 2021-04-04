@@ -33,7 +33,7 @@ import de.bixilon.minosoft.gui.main.cells.AccountListCell;
 import de.bixilon.minosoft.modding.event.EventManager;
 import de.bixilon.minosoft.modding.loading.ModLoader;
 import de.bixilon.minosoft.modding.loading.Priorities;
-import de.bixilon.minosoft.protocol.network.Connection;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
 import de.bixilon.minosoft.protocol.protocol.LANServerListener;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import de.bixilon.minosoft.terminal.CLI;
@@ -55,7 +55,7 @@ public final class Minosoft {
     public static final ExecutorService THREAD_POOL = Executors.newFixedThreadPool(MMath.INSTANCE.clamp(Runtime.getRuntime().availableProcessors() - 1, 2, 16), Util.getThreadFactory("Worker"));
     public static final JarAssetsManager MINOSOFT_ASSETS_MANAGER = new JarAssetsManager(Minosoft.class);
     public static final HashSet<EventManager> EVENT_MANAGERS = new HashSet<>();
-    public static final HashBiMap<Integer, Connection> CONNECTIONS = HashBiMap.create();
+    public static final HashBiMap<Integer, PlayConnection> CONNECTIONS = HashBiMap.create();
     private static final CountUpAndDownLatch START_STATUS_LATCH = new CountUpAndDownLatch(1);
     private static Configuration config;
     private static boolean isExiting;
@@ -219,7 +219,7 @@ public final class Minosoft {
             if (!CONNECTIONS.isEmpty()) {
                 // disconnect from all servers
                 for (Object connection : CONNECTIONS.values().toArray()) {
-                    ((Connection) connection).disconnect();
+                    ((PlayConnection) connection).disconnect();
                 }
                 Log.info("Disconnected from all connections!");
             }

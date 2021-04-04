@@ -16,19 +16,19 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 import de.bixilon.minosoft.data.mappings.blocks.Block;
 import de.bixilon.minosoft.data.mappings.blocks.actions.*;
 import de.bixilon.minosoft.modding.event.events.BlockActionEvent;
-import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket;
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 import glm_.vec3.Vec3i;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W03B;
 
-public class PacketBlockAction extends ClientboundPacket {
+public class PacketBlockAction extends PlayClientboundPacket {
     private final Vec3i position;
     private final BlockAction data;
 
-    public PacketBlockAction(InByteBuffer buffer) {
+    public PacketBlockAction(PlayInByteBuffer buffer) {
         // that's the only difference here
         if (buffer.getVersionId() < V_14W03B) {
             this.position = buffer.readBlockPositionShort();
@@ -55,7 +55,7 @@ public class PacketBlockAction extends ClientboundPacket {
     }
 
     @Override
-    public void handle(Connection connection) {
+    public void handle(PlayConnection connection) {
         BlockActionEvent event = new BlockActionEvent(connection, this);
         if (connection.fireEvent(event)) {
             return;

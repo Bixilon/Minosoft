@@ -15,9 +15,9 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play
 
 import de.bixilon.minosoft.data.world.light.ChunkLightAccessor
 import de.bixilon.minosoft.data.world.light.LightAccessor
-import de.bixilon.minosoft.protocol.network.Connection
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.chunk.LightUtil.readLightPacket
@@ -25,7 +25,7 @@ import de.bixilon.minosoft.util.logging.Log
 import glm_.vec2.Vec2i
 import java.util.*
 
-class PacketUpdateLight(buffer: InByteBuffer) : ClientboundPacket() {
+class PacketUpdateLight(buffer: PlayInByteBuffer) : PlayClientboundPacket() {
     val position: Vec2i
     var trustEdges: Boolean = false
         private set
@@ -60,13 +60,13 @@ class PacketUpdateLight(buffer: InByteBuffer) : ClientboundPacket() {
         Log.protocol("[IN] Received light update (position=%s)", position)
     }
 
-    override fun handle(connection: Connection) {
+    override fun handle(connection: PlayConnection) {
         val chunk = connection.world.getOrCreateChunk(position)
         if (chunk.lightAccessor != null && chunk.lightAccessor is ChunkLightAccessor && lightAccessor is ChunkLightAccessor) {
             (chunk.lightAccessor as ChunkLightAccessor).merge(lightAccessor)
         } else {
             chunk.lightAccessor = lightAccessor
         }
-        connection.renderer.renderWindow.worldRenderer.prepareChunk(position, chunk)
+        connection.renderer?.renderWindow?.worldRenderer?.prepareChunk(position, chunk)
     }
 }

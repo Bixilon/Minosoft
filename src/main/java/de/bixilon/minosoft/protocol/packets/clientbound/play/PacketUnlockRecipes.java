@@ -14,13 +14,13 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.mappings.recipes.Recipe;
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket;
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
 
-public class PacketUnlockRecipes extends ClientboundPacket {
+public class PacketUnlockRecipes extends PlayClientboundPacket {
     private final UnlockRecipeActions action;
     private final boolean isCraftingBookOpen;
     private boolean isSmeltingBookOpen;
@@ -33,7 +33,7 @@ public class PacketUnlockRecipes extends ClientboundPacket {
     private final Recipe[] listed;
     private Recipe[] tagged;
 
-    public PacketUnlockRecipes(InByteBuffer buffer) {
+    public PacketUnlockRecipes(PlayInByteBuffer buffer) {
         if (buffer.getVersionId() < V_1_12) {
             this.action = UnlockRecipeActions.byId(buffer.readInt());
         } else {

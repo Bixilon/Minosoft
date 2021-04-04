@@ -13,24 +13,20 @@
 
 package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
-import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
-import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketTypes;
+import de.bixilon.minosoft.protocol.packets.serverbound.PlayServerboundPacket;
+import de.bixilon.minosoft.protocol.protocol.OutPlayByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
-public class PacketCloseWindowSending implements ServerboundPacket {
-private final byte windowId;
+public class PacketCloseWindowSending implements PlayServerboundPacket {
+    private final byte windowId;
 
     public PacketCloseWindowSending(byte windowId) {
         this.windowId = windowId;
     }
 
     @Override
-    public OutPacketBuffer write(Connection connection) {
-        OutPacketBuffer buffer = new OutPacketBuffer(connection, PacketTypes.Serverbound.PLAY_CLOSE_WINDOW);
+    public void write(OutPlayByteBuffer buffer) {
         buffer.writeByte(this.windowId);
-        return buffer;
     }
 
     public byte getWindowId() {

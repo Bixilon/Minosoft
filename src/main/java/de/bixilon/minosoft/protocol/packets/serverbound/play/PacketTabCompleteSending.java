@@ -13,17 +13,15 @@
 
 package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
-import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
-import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketTypes;
+import de.bixilon.minosoft.protocol.packets.serverbound.PlayServerboundPacket;
+import de.bixilon.minosoft.protocol.protocol.OutPlayByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 import glm_.vec3.Vec3i;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W33A;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_15W31A;
 
-public class PacketTabCompleteSending implements ServerboundPacket {
+public class PacketTabCompleteSending implements PlayServerboundPacket {
     private final String text;
     private final Vec3i position;
     private final boolean assumeCommand;
@@ -47,8 +45,7 @@ public class PacketTabCompleteSending implements ServerboundPacket {
     }
 
     @Override
-    public OutPacketBuffer write(Connection connection) {
-        OutPacketBuffer buffer = new OutPacketBuffer(connection, PacketTypes.Serverbound.PLAY_TAB_COMPLETE);
+    public void write(OutPlayByteBuffer buffer) {
         buffer.writeString(this.text);
         if (buffer.getVersionId() >= V_15W31A) {
             buffer.writeBoolean(this.assumeCommand);
@@ -61,7 +58,6 @@ public class PacketTabCompleteSending implements ServerboundPacket {
                 buffer.writePosition(this.position);
             }
         }
-        return buffer;
     }
 
     @Override

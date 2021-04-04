@@ -18,10 +18,10 @@ import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.entities.EntityFactory
 import de.bixilon.minosoft.data.mappings.entities.EntityType
-import de.bixilon.minosoft.protocol.network.Connection
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import glm_.vec3.Vec3
 
-class Pillager(connection: Connection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : AbstractIllager(connection, entityType, position, rotation) {
+class Pillager(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : AbstractIllager(connection, entityType, position, rotation) {
 
     @get:EntityMetaDataFunction(name = "Is charging crossbow")
     val isChargingCrossbow: Boolean
@@ -30,7 +30,7 @@ class Pillager(connection: Connection, entityType: EntityType, position: Vec3, r
     companion object : EntityFactory<Pillager> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("pillager")
 
-        override fun build(connection: Connection, entityType: EntityType, position: Vec3, rotation: EntityRotation): Pillager {
+        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation): Pillager {
             return Pillager(connection, entityType, position, rotation)
         }
     }

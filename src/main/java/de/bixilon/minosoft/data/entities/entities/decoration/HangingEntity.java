@@ -16,12 +16,12 @@ package de.bixilon.minosoft.data.entities.entities.decoration;
 import de.bixilon.minosoft.data.entities.EntityRotation;
 import de.bixilon.minosoft.data.entities.entities.Entity;
 import de.bixilon.minosoft.data.mappings.entities.EntityType;
-import de.bixilon.minosoft.protocol.network.Connection;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
 import glm_.vec3.Vec3;
 
 public abstract class HangingEntity extends Entity {
 
-    public HangingEntity(Connection connection, EntityType entityType, Vec3 position, EntityRotation rotation) {
+    public HangingEntity(PlayConnection connection, EntityType entityType, Vec3 position, EntityRotation rotation) {
         super(connection, entityType, position, rotation);
     }
 }

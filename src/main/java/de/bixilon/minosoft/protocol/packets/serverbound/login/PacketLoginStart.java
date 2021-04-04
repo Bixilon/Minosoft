@@ -14,13 +14,11 @@
 package de.bixilon.minosoft.protocol.packets.serverbound.login;
 
 import de.bixilon.minosoft.data.player.Player;
-import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
-import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketTypes;
+import de.bixilon.minosoft.protocol.packets.serverbound.PlayServerboundPacket;
+import de.bixilon.minosoft.protocol.protocol.OutPlayByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
-public class PacketLoginStart implements ServerboundPacket {
+public class PacketLoginStart implements PlayServerboundPacket {
     private final String username;
 
     public PacketLoginStart(Player player) {
@@ -32,10 +30,8 @@ public class PacketLoginStart implements ServerboundPacket {
     }
 
     @Override
-    public OutPacketBuffer write(Connection connection) {
-        OutPacketBuffer buffer = new OutPacketBuffer(connection, PacketTypes.Serverbound.LOGIN_LOGIN_START);
+    public void write(OutPlayByteBuffer buffer) {
         buffer.writeString(this.username);
-        return buffer;
     }
 
     @Override

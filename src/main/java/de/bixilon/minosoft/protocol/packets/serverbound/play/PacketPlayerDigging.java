@@ -13,17 +13,15 @@
 
 package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
-import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
-import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketTypes;
+import de.bixilon.minosoft.protocol.packets.serverbound.PlayServerboundPacket;
+import de.bixilon.minosoft.protocol.protocol.OutPlayByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 import glm_.vec3.Vec3i;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W04A;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_15W31A;
 
-public class PacketPlayerDigging implements ServerboundPacket {
+public class PacketPlayerDigging implements PlayServerboundPacket {
     private final DiggingStatus status;
     private final Vec3i position;
     private final DiggingFaces face;
@@ -35,8 +33,7 @@ public class PacketPlayerDigging implements ServerboundPacket {
     }
 
     @Override
-    public OutPacketBuffer write(Connection connection) {
-        OutPacketBuffer buffer = new OutPacketBuffer(connection, PacketTypes.Serverbound.PLAY_PLAYER_DIGGING);
+    public void write(OutPlayByteBuffer buffer) {
         if (buffer.getVersionId() < V_15W31A) { // ToDo
             buffer.writeByte((byte) this.status.ordinal());
         } else {
@@ -56,7 +53,6 @@ public class PacketPlayerDigging implements ServerboundPacket {
         }
 
         buffer.writeByte(this.face.getId());
-        return buffer;
     }
 
     @Override

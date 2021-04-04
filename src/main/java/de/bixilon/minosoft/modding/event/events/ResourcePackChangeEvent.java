@@ -15,7 +15,7 @@ package de.bixilon.minosoft.modding.event.events;
 
 import de.bixilon.minosoft.modding.event.events.annotations.MaximumProtocolVersion;
 import de.bixilon.minosoft.modding.event.events.annotations.MinimumProtocolVersion;
-import de.bixilon.minosoft.protocol.network.Connection;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
 import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketResourcePackSend;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W31A;
@@ -26,13 +26,13 @@ public class ResourcePackChangeEvent extends CancelableEvent {
     private String url;
     private String hash;
 
-    public ResourcePackChangeEvent(Connection connection, String url, String hash) {
+    public ResourcePackChangeEvent(PlayConnection connection, String url, String hash) {
         super(connection);
         this.url = url;
         this.hash = hash;
     }
 
-    public ResourcePackChangeEvent(Connection connection, PacketResourcePackSend pkg) {
+    public ResourcePackChangeEvent(PlayConnection connection, PacketResourcePackSend pkg) {
         super(connection);
         this.url = pkg.getUrl();
         this.hash = pkg.getHash();

@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.modding.event.events;
 
 import de.bixilon.minosoft.data.mappings.blocks.BlockState;
-import de.bixilon.minosoft.protocol.network.Connection;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
 import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketMultiBlockChange;
 import glm_.vec2.Vec2i;
 import glm_.vec3.Vec3i;
@@ -24,17 +24,17 @@ import java.util.HashMap;
 /**
  * Fired when at least block is changed
  */
-public class MultiBlockChangeEvent extends ConnectionEvent {
+public class MultiBlockChangeEvent extends PlayConnectionEvent {
     private final HashMap<Vec3i, BlockState> blocks;
     private final Vec2i chunkPosition;
 
-    public MultiBlockChangeEvent(Connection connection, HashMap<Vec3i, BlockState> blocks, Vec2i position) {
+    public MultiBlockChangeEvent(PlayConnection connection, HashMap<Vec3i, BlockState> blocks, Vec2i position) {
         super(connection);
         this.blocks = blocks;
         this.chunkPosition = position;
     }
 
-    public MultiBlockChangeEvent(Connection connection, PacketMultiBlockChange pkg) {
+    public MultiBlockChangeEvent(PlayConnection connection, PacketMultiBlockChange pkg) {
         super(connection);
         this.blocks = pkg.getBlocks();
         this.chunkPosition = pkg.getChunkPosition();

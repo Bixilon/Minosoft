@@ -17,7 +17,7 @@ import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException
 import de.bixilon.minosoft.data.commands.parser.exceptions.FloatingDataCommandParseException;
 import de.bixilon.minosoft.data.commands.parser.exceptions.UnknownCommandParseException;
 import de.bixilon.minosoft.data.commands.parser.exceptions.WrongArgumentCommandParseException;
-import de.bixilon.minosoft.protocol.network.Connection;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.terminal.commands.CommandStack;
 import de.bixilon.minosoft.terminal.commands.exceptions.CLIException;
@@ -32,7 +32,7 @@ public class CommandRootNode extends CommandNode {
     }
 
     @Override
-    public CommandStack parse(Connection connection, CommandStringReader stringReader, CommandStack stack, boolean execute) throws CommandParseException, CLIException {
+    public CommandStack parse(PlayConnection connection, CommandStringReader stringReader, CommandStack stack, boolean execute) throws CommandParseException, CLIException {
         try {
             stack = super.parse(connection, stringReader, stack, execute);
             if (stringReader.getRemainingLength() > 0) {

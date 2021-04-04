@@ -19,21 +19,21 @@ import de.bixilon.minosoft.data.player.advancements.AdvancementDisplay;
 import de.bixilon.minosoft.data.player.advancements.AdvancementProgress;
 import de.bixilon.minosoft.data.player.advancements.CriterionProgress;
 import de.bixilon.minosoft.data.text.ChatComponent;
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket;
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 import de.bixilon.minosoft.util.BitByte;
 import de.bixilon.minosoft.util.logging.Log;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class PacketAdvancements extends ClientboundPacket {
+public class PacketAdvancements extends PlayClientboundPacket {
     private final HashMap<String, Advancement> advancements = new HashMap<>();
     private final HashMap<String, AdvancementProgress> progresses = new HashMap<>();
     private final boolean reset;
     private final String[] toRemove;
 
-    public PacketAdvancements(InByteBuffer buffer) {
+    public PacketAdvancements(PlayInByteBuffer buffer) {
         this.reset = buffer.readBoolean();
         int length = buffer.readVarInt();
         for (int i = 0; i < length; i++) {

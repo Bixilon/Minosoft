@@ -14,18 +14,18 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.login;
 
 import de.bixilon.minosoft.modding.event.events.LoginPluginMessageRequestEvent;
-import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket;
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
-public class PacketLoginPluginRequest extends ClientboundPacket {
+public class PacketLoginPluginRequest extends PlayClientboundPacket {
     private final int messageId;
     private final String channel;
     private final byte[] data;
-    private final Connection connection;
+    private final PlayConnection connection;
 
-    public PacketLoginPluginRequest(InByteBuffer buffer) {
+    public PacketLoginPluginRequest(PlayInByteBuffer buffer) {
         this.connection = buffer.getConnection();
         this.messageId = buffer.readVarInt();
         this.channel = buffer.readString();
@@ -33,7 +33,7 @@ public class PacketLoginPluginRequest extends ClientboundPacket {
     }
 
     @Override
-    public void handle(Connection connection) {
+    public void handle(PlayConnection connection) {
         connection.fireEvent(new LoginPluginMessageRequestEvent(this.connection, this));
     }
 
@@ -54,7 +54,7 @@ public class PacketLoginPluginRequest extends ClientboundPacket {
         return this.data;
     }
 
-    public InByteBuffer getDataAsBuffer() {
-        return new InByteBuffer(this.data, this.connection);
+    public PlayInByteBuffer getDataAsBuffer() {
+        return new PlayInByteBuffer(this.data, this.connection);
     }
 }

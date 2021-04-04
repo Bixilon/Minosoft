@@ -14,20 +14,20 @@
 package de.bixilon.minosoft.modding.event.events;
 
 import de.bixilon.minosoft.data.text.ChatComponent;
-import de.bixilon.minosoft.protocol.network.Connection;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
 import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketTabHeaderAndFooter;
 
 public class PlayerListInfoChangeEvent extends CancelableEvent {
     private final ChatComponent header;
     private final ChatComponent footer;
 
-    public PlayerListInfoChangeEvent(Connection connection, ChatComponent header, ChatComponent footer) {
+    public PlayerListInfoChangeEvent(PlayConnection connection, ChatComponent header, ChatComponent footer) {
         super(connection);
         this.header = header;
         this.footer = footer;
     }
 
-    public PlayerListInfoChangeEvent(Connection connection, PacketTabHeaderAndFooter pkg) {
+    public PlayerListInfoChangeEvent(PlayConnection connection, PacketTabHeaderAndFooter pkg) {
         super(connection);
         this.header = pkg.getHeader();
         this.footer = pkg.getFooter();

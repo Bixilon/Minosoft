@@ -68,7 +68,7 @@ public class CommandServer extends Command {
 
     private void addServer(String name, String address, @Nullable Version version) {
         if (version == null) {
-            version = Versions.LOWEST_VERSION_SUPPORTED;
+            version = Versions.AUTOMATIC_VERSION;
         }
         Server server = new Server(ChatComponent.valueOf(name), address, version);
 

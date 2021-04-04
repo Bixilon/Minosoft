@@ -16,26 +16,26 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 import de.bixilon.minosoft.data.Gamemodes;
 import de.bixilon.minosoft.data.VersionValueMap;
 import de.bixilon.minosoft.modding.event.events.ChangeGameStateEvent;
-import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket;
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
 import java.util.Map;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
 
-public class PacketChangeGameState extends ClientboundPacket {
+public class PacketChangeGameState extends PlayClientboundPacket {
     private final Reason reason;
     private final float value;
 
-    public PacketChangeGameState(InByteBuffer buffer) {
+    public PacketChangeGameState(PlayInByteBuffer buffer) {
         this.reason = Reason.byId(buffer.readByte(), buffer.getVersionId());
         this.value = buffer.readFloat();
     }
 
     @Override
-    public void handle(Connection connection) {
+    public void handle(PlayConnection connection) {
         ChangeGameStateEvent event = new ChangeGameStateEvent(connection, this);
         if (connection.fireEvent(event)) {
             return;

@@ -18,10 +18,10 @@ import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.entities.EntityFactory
 import de.bixilon.minosoft.data.mappings.entities.EntityType
-import de.bixilon.minosoft.protocol.network.Connection
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import glm_.vec3.Vec3
 
-class PufferFish(connection: Connection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : AbstractFish(connection, entityType, position, rotation) {
+class PufferFish(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : AbstractFish(connection, entityType, position, rotation) {
     @get:EntityMetaDataFunction(name = "Puff state")
     val puffState: Int
         get() = entityMetaData.sets.getInt(EntityMetaDataFields.PUFFERFISH_PUFF_STATE)
@@ -30,7 +30,7 @@ class PufferFish(connection: Connection, entityType: EntityType, position: Vec3,
     companion object : EntityFactory<PufferFish> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("pufferfish")
 
-        override fun build(connection: Connection, entityType: EntityType, position: Vec3, rotation: EntityRotation): PufferFish {
+        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation): PufferFish {
             return PufferFish(connection, entityType, position, rotation)
         }
     }

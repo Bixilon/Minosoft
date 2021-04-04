@@ -15,8 +15,8 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.entities.EntityProperty;
 import de.bixilon.minosoft.data.entities.EntityPropertyKeys;
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket;
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
 import java.util.HashMap;
@@ -24,11 +24,11 @@ import java.util.UUID;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W04A;
 
-public class PacketEntityProperties extends ClientboundPacket {
+public class PacketEntityProperties extends PlayClientboundPacket {
     private final HashMap<EntityPropertyKeys, EntityProperty> properties = new HashMap<>();
     private final int entityId;
 
-    public PacketEntityProperties(InByteBuffer buffer) {
+    public PacketEntityProperties(PlayInByteBuffer buffer) {
         this.entityId = buffer.readEntityId();
         if (buffer.getVersionId() < V_14W04A) {
             int count = buffer.readInt();

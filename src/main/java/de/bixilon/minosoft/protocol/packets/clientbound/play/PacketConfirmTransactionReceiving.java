@@ -13,16 +13,16 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket;
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
-public class PacketConfirmTransactionReceiving extends ClientboundPacket {
+public class PacketConfirmTransactionReceiving extends PlayClientboundPacket {
     private final byte windowId;
     private final short actionNumber;
     private final boolean accepted;
 
-    public PacketConfirmTransactionReceiving(InByteBuffer buffer) {
+    public PacketConfirmTransactionReceiving(PlayInByteBuffer buffer) {
         this.windowId = buffer.readByte();
         this.actionNumber = buffer.readShort();
         this.accepted = buffer.readBoolean();

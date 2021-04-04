@@ -14,43 +14,43 @@
 package de.bixilon.minosoft.modding.event.events;
 
 import de.bixilon.minosoft.data.entities.entities.Entity;
-import de.bixilon.minosoft.protocol.network.Connection;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
 import de.bixilon.minosoft.protocol.packets.clientbound.play.*;
 
-public class EntitySpawnEvent extends ConnectionEvent {
+public class EntitySpawnEvent extends PlayConnectionEvent {
     private final Entity entity;
 
-    public EntitySpawnEvent(Connection connection, Entity entity) {
+    public EntitySpawnEvent(PlayConnection connection, Entity entity) {
         super(connection);
         this.entity = entity;
     }
 
-    public EntitySpawnEvent(Connection connection, PacketSpawnMob pkg) {
+    public EntitySpawnEvent(PlayConnection connection, PacketSpawnMob pkg) {
         super(connection);
         this.entity = pkg.getEntity();
     }
 
-    public EntitySpawnEvent(Connection connection, PacketSpawnWeatherEntity pkg) {
+    public EntitySpawnEvent(PlayConnection connection, PacketSpawnWeatherEntity pkg) {
         super(connection);
         this.entity = pkg.getEntity();
     }
 
-    public EntitySpawnEvent(Connection connection, PacketSpawnPlayer pkg) {
+    public EntitySpawnEvent(PlayConnection connection, PacketSpawnPlayer pkg) {
         super(connection);
         this.entity = pkg.getEntity();
     }
 
-    public EntitySpawnEvent(Connection connection, PacketSpawnExperienceOrb pkg) {
+    public EntitySpawnEvent(PlayConnection connection, PacketSpawnExperienceOrb pkg) {
         super(connection);
         this.entity = pkg.getEntity();
     }
 
-    public EntitySpawnEvent(Connection connection, PacketSpawnObject pkg) {
+    public EntitySpawnEvent(PlayConnection connection, PacketSpawnObject pkg) {
         super(connection);
         this.entity = pkg.getEntity();
     }
 
-    public EntitySpawnEvent(Connection connection, PacketSpawnPainting pkg) {
+    public EntitySpawnEvent(PlayConnection connection, PacketSpawnPainting pkg) {
         super(connection);
         this.entity = pkg.getEntity();
     }

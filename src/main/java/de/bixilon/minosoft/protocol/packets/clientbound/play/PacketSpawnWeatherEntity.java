@@ -17,20 +17,20 @@ import de.bixilon.minosoft.data.entities.entities.LightningBolt;
 import de.bixilon.minosoft.data.mappings.ResourceLocation;
 import de.bixilon.minosoft.modding.event.events.EntitySpawnEvent;
 import de.bixilon.minosoft.modding.event.events.LightningBoltSpawnEvent;
-import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket;
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 import glm_.vec3.Vec3;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_16W06A;
 
-public class PacketSpawnWeatherEntity extends ClientboundPacket {
+public class PacketSpawnWeatherEntity extends PlayClientboundPacket {
     private static final ResourceLocation LIGHTNING_BOLT_RESOURCE_LOCATION = new ResourceLocation("lightning_bolt");
     private final int entityId;
     private final LightningBolt entity;
 
-    public PacketSpawnWeatherEntity(InByteBuffer buffer) {
+    public PacketSpawnWeatherEntity(PlayInByteBuffer buffer) {
         this.entityId = buffer.readVarInt();
         byte type = buffer.readByte();
         Vec3 position;
@@ -43,7 +43,7 @@ public class PacketSpawnWeatherEntity extends ClientboundPacket {
     }
 
     @Override
-    public void handle(Connection connection) {
+    public void handle(PlayConnection connection) {
         connection.fireEvent(new EntitySpawnEvent(connection, this));
         connection.fireEvent(new LightningBoltSpawnEvent(connection, this));
         connection.getWorld().addEntity(this.entityId, null, this.entity);

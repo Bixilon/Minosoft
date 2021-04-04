@@ -14,20 +14,20 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.modding.event.events.ResourcePackChangeEvent;
-import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket;
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 import de.bixilon.minosoft.util.Util;
 import de.bixilon.minosoft.util.logging.Log;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_20W45A;
 
-public class PacketResourcePackSend extends ClientboundPacket {
+public class PacketResourcePackSend extends PlayClientboundPacket {
     private final String url;
     private final String hash;
     private boolean forced;
 
-    public PacketResourcePackSend(InByteBuffer buffer) {
+    public PacketResourcePackSend(PlayInByteBuffer buffer) {
         this.url = buffer.readString();
         Util.checkURL(this.url);
         this.hash = buffer.readString();
@@ -37,7 +37,7 @@ public class PacketResourcePackSend extends ClientboundPacket {
     }
 
     @Override
-    public void handle(Connection connection) {
+    public void handle(PlayConnection connection) {
         ResourcePackChangeEvent event = new ResourcePackChangeEvent(connection, this);
         if (connection.fireEvent(event)) {
             return;

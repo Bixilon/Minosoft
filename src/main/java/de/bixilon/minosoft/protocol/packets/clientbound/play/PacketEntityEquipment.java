@@ -17,9 +17,9 @@ import de.bixilon.minosoft.data.entities.entities.Entity;
 import de.bixilon.minosoft.data.inventory.InventorySlots;
 import de.bixilon.minosoft.data.inventory.ItemStack;
 import de.bixilon.minosoft.modding.event.events.EntityEquipmentChangeEvent;
-import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket;
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
 import java.util.HashMap;
@@ -28,11 +28,11 @@ import java.util.Map;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_15W31A;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_16_PRE7;
 
-public class PacketEntityEquipment extends ClientboundPacket {
+public class PacketEntityEquipment extends PlayClientboundPacket {
     private final HashMap<InventorySlots.EquipmentSlots, ItemStack> slots = new HashMap<>();
     private final int entityId;
 
-    public PacketEntityEquipment(InByteBuffer buffer) {
+    public PacketEntityEquipment(PlayInByteBuffer buffer) {
         this.entityId = buffer.readEntityId();
         if (buffer.getVersionId() < V_15W31A) {
             this.slots.put(buffer.getConnection().getMapping().getEquipmentSlotRegistry().get(buffer.readShort()), buffer.readItemStack());
@@ -54,7 +54,7 @@ public class PacketEntityEquipment extends ClientboundPacket {
     }
 
     @Override
-    public void handle(Connection connection) {
+    public void handle(PlayConnection connection) {
         connection.fireEvent(new EntityEquipmentChangeEvent(connection, this));
 
         Entity entity = connection.getWorld().getEntity(getEntityId());

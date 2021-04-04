@@ -40,11 +40,11 @@ data class Version(
     lateinit var assetsManager: MinecraftAssetsManager
     lateinit var localeManager: MinecraftLocaleManager
 
-    fun getPacketByCommand(state: ConnectionStates, command: Int): Clientbound? {
+    fun getPacketById(state: ConnectionStates, command: Int): Clientbound? {
         return clientboundPacketMapping[state]?.inverse()?.get(command)
     }
 
-    fun getCommandByPacket(packet: Serverbound): Int? {
+    fun getPacketId(packet: Serverbound): Int? {
         return serverboundPacketMapping[packet.state]?.get(packet)
     }
 

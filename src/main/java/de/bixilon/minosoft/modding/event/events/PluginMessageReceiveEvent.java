@@ -14,21 +14,21 @@
 package de.bixilon.minosoft.modding.event.events;
 
 import de.bixilon.minosoft.data.mappings.ResourceLocation;
-import de.bixilon.minosoft.protocol.network.Connection;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
 import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketPluginMessageReceiving;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 
 public class PluginMessageReceiveEvent extends CancelableEvent {
     private final ResourceLocation channel;
-    private final InByteBuffer data;
+    private final PlayInByteBuffer data;
 
-    public PluginMessageReceiveEvent(Connection connection, ResourceLocation channel, InByteBuffer data) {
+    public PluginMessageReceiveEvent(PlayConnection connection, ResourceLocation channel, PlayInByteBuffer data) {
         super(connection);
         this.channel = channel;
         this.data = data;
     }
 
-    public PluginMessageReceiveEvent(Connection connection, PacketPluginMessageReceiving pkg) {
+    public PluginMessageReceiveEvent(PlayConnection connection, PacketPluginMessageReceiving pkg) {
         super(connection);
         this.channel = pkg.getChannel();
         this.data = pkg.getDataAsBuffer();
@@ -38,7 +38,7 @@ public class PluginMessageReceiveEvent extends CancelableEvent {
         return this.channel;
     }
 
-    public InByteBuffer getData() {
+    public PlayInByteBuffer getData() {
         return this.data;
     }
 }

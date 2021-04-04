@@ -13,17 +13,15 @@
 
 package de.bixilon.minosoft.protocol.packets.serverbound.login;
 
-import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
+import de.bixilon.minosoft.protocol.packets.serverbound.PlayServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.CryptManager;
-import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketTypes;
+import de.bixilon.minosoft.protocol.protocol.OutPlayByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
 import javax.crypto.SecretKey;
 import java.security.PublicKey;
 
-public class PacketEncryptionResponse implements ServerboundPacket {
+public class PacketEncryptionResponse implements PlayServerboundPacket {
     private final byte[] secret;
     private final byte[] token;
     private final SecretKey secretKey;
@@ -39,11 +37,9 @@ public class PacketEncryptionResponse implements ServerboundPacket {
     }
 
     @Override
-    public OutPacketBuffer write(Connection connection) {
-        OutPacketBuffer buffer = new OutPacketBuffer(connection, PacketTypes.Serverbound.LOGIN_ENCRYPTION_RESPONSE);
+    public void write(OutPlayByteBuffer buffer) {
         buffer.writeByteArray(this.secret);
         buffer.writeByteArray(this.token);
-        return buffer;
     }
 
     @Override

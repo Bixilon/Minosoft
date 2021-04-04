@@ -13,11 +13,11 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play.title
 
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.util.logging.Log
 
-class SetTitlePacket(buffer: InByteBuffer) : ClientboundPacket() {
+class SetTitlePacket(buffer: PlayInByteBuffer) : PlayClientboundPacket() {
     val text = buffer.readChatComponent()
 
     override fun log() {

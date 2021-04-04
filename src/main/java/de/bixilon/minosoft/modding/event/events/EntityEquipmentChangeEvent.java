@@ -16,22 +16,22 @@ package de.bixilon.minosoft.modding.event.events;
 import de.bixilon.minosoft.data.entities.entities.Entity;
 import de.bixilon.minosoft.data.inventory.InventorySlots;
 import de.bixilon.minosoft.data.inventory.ItemStack;
-import de.bixilon.minosoft.protocol.network.Connection;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
 import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketEntityEquipment;
 
 import java.util.HashMap;
 
-public class EntityEquipmentChangeEvent extends ConnectionEvent {
+public class EntityEquipmentChangeEvent extends PlayConnectionEvent {
     private final int entityId;
     private final HashMap<InventorySlots.EquipmentSlots, ItemStack> slots;
 
-    public EntityEquipmentChangeEvent(Connection connection, int entityId, HashMap<InventorySlots.EquipmentSlots, ItemStack> slots) {
+    public EntityEquipmentChangeEvent(PlayConnection connection, int entityId, HashMap<InventorySlots.EquipmentSlots, ItemStack> slots) {
         super(connection);
         this.entityId = entityId;
         this.slots = slots;
     }
 
-    public EntityEquipmentChangeEvent(Connection connection, PacketEntityEquipment pkg) {
+    public EntityEquipmentChangeEvent(PlayConnection connection, PacketEntityEquipment pkg) {
         super(connection);
         this.entityId = pkg.getEntityId();
         this.slots = pkg.getSlots();

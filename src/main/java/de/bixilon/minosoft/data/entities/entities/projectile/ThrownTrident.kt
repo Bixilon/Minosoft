@@ -18,10 +18,10 @@ import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.entities.EntityFactory
 import de.bixilon.minosoft.data.mappings.entities.EntityType
-import de.bixilon.minosoft.protocol.network.Connection
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import glm_.vec3.Vec3
 
-class ThrownTrident(connection: Connection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : AbstractArrow(connection, entityType, position, rotation) {
+class ThrownTrident(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : AbstractArrow(connection, entityType, position, rotation) {
 
     @get:EntityMetaDataFunction(name = "Loyalty level")
     val loyaltyLevel: Byte
@@ -34,7 +34,7 @@ class ThrownTrident(connection: Connection, entityType: EntityType, position: Ve
     companion object : EntityFactory<ThrownTrident> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("trident")
 
-        override fun build(connection: Connection, entityType: EntityType, position: Vec3, rotation: EntityRotation): ThrownTrident {
+        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation): ThrownTrident {
             return ThrownTrident(connection, entityType, position, rotation)
         }
     }

@@ -15,20 +15,20 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.Tag;
 import de.bixilon.minosoft.data.mappings.ResourceLocation;
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket;
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
 
-public class PacketTags extends ClientboundPacket {
+public class PacketTags extends PlayClientboundPacket {
     private Tag[] blockTags = {};
     private Tag[] itemTags = {};
     private Tag[] fluidTags = {};
     private Tag[] entityTags = {};
     private Tag[] gameEventTags = {};
 
-    public PacketTags(InByteBuffer buffer) {
+    public PacketTags(PlayInByteBuffer buffer) {
         if (buffer.getVersionId() < V_20W51A) {
             this.blockTags = readTags(buffer);
             this.itemTags = readTags(buffer);
@@ -54,7 +54,7 @@ public class PacketTags extends ClientboundPacket {
         }
     }
 
-    private Tag[] readTags(InByteBuffer buffer) {
+    private Tag[] readTags(PlayInByteBuffer buffer) {
         Tag[] ret = new Tag[buffer.readVarInt()];
         for (int i = 0; i < ret.length; i++) {
             ret[i] = new Tag(buffer.readResourceLocation(), buffer.readVarIntArray());

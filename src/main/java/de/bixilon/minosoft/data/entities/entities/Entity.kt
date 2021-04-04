@@ -27,13 +27,13 @@ import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.gui.rendering.Camera
 import de.bixilon.minosoft.gui.rendering.chunk.VoxelShape
 import de.bixilon.minosoft.gui.rendering.chunk.models.AABB
-import de.bixilon.minosoft.protocol.network.Connection
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import glm_.vec3.Vec3
 import java.lang.reflect.InvocationTargetException
 import java.util.*
 
 abstract class Entity(
-    protected val connection: Connection,
+    protected val connection: PlayConnection,
     val type: EntityType,
     var position: Vec3,
     var rotation: EntityRotation,

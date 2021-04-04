@@ -18,13 +18,13 @@ import de.bixilon.minosoft.data.commands.parser.exceptions.InvalidItemPredicateC
 import de.bixilon.minosoft.data.commands.parser.exceptions.resourcelocation.ItemNotFoundCommandParseException
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties
 import de.bixilon.minosoft.data.inventory.ItemStack
-import de.bixilon.minosoft.protocol.network.Connection
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.util.nbt.tag.CompoundTag
 
 class ItemStackParser : CommandParser() {
 
     @Throws(CommandParseException::class)
-    override fun parse(connection: Connection, properties: ParserProperties?, stringReader: CommandStringReader): ItemStack {
+    override fun parse(connection: PlayConnection, properties: ParserProperties?, stringReader: CommandStringReader): ItemStack {
         if (this == ITEM_PREDICATE_PARSER) {
             if (stringReader.peek() != '#') {
                 throw InvalidItemPredicateCommandParseException(stringReader, stringReader.read().toString())

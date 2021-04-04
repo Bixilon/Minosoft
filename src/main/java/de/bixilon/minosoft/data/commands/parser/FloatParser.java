@@ -18,7 +18,7 @@ import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException
 import de.bixilon.minosoft.data.commands.parser.exceptions.number.ValueOutOfRangeCommandParseException;
 import de.bixilon.minosoft.data.commands.parser.properties.FloatParserProperties;
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties;
-import de.bixilon.minosoft.protocol.network.Connection;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 
 public class FloatParser extends CommandParser {
@@ -30,7 +30,7 @@ public class FloatParser extends CommandParser {
     }
 
     @Override
-    public Object parse(Connection connection, ParserProperties properties, CommandStringReader stringReader) throws CommandParseException {
+    public Object parse(PlayConnection connection, ParserProperties properties, CommandStringReader stringReader) throws CommandParseException {
         float value = stringReader.readFloat();
         FloatParserProperties floatParserProperties = (FloatParserProperties) properties;
         if (value < floatParserProperties.getMinValue() || value > floatParserProperties.getMaxValue()) {

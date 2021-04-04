@@ -42,7 +42,7 @@ import de.bixilon.minosoft.data.entities.entities.vehicle.*
 import de.bixilon.minosoft.data.entities.meta.EntityMetaData
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.entities.EntityFactory
-import de.bixilon.minosoft.protocol.network.Connection
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import glm_.vec3.Vec3
 
 object DefaultEntityFactories {
@@ -179,12 +179,12 @@ object DefaultEntityFactories {
         return ENTITY_FACTORY_MAP[resourceLocation]
     }
 
-    fun buildEntity(resourceLocation: ResourceLocation, connection: Connection, position: Vec3, rotation: EntityRotation, entityMetaData: EntityMetaData?, versionId: Int): Entity? {
+    fun buildEntity(resourceLocation: ResourceLocation, connection: PlayConnection, position: Vec3, rotation: EntityRotation, entityMetaData: EntityMetaData?, versionId: Int): Entity? {
         val factory = getEntityFactory(resourceLocation) ?: throw UnknownEntityException("Can not find entity type: $resourceLocation")
         return buildEntity(factory, connection, position, rotation, entityMetaData, versionId)
     }
 
-    fun buildEntity(factory: EntityFactory<out Entity>, connection: Connection, position: Vec3, rotation: EntityRotation, entityMetaData: EntityMetaData?, versionId: Int): Entity? {
+    fun buildEntity(factory: EntityFactory<out Entity>, connection: PlayConnection, position: Vec3, rotation: EntityRotation, entityMetaData: EntityMetaData?, versionId: Int): Entity? {
         val tweakedResourceLocation = factory.tweak(connection, entityMetaData, versionId)
 
         val tweakedFactory = ENTITY_FACTORY_MAP[tweakedResourceLocation] ?: throw UnknownEntityException("Can not find tweaked entity type: $tweakedResourceLocation for $factory")

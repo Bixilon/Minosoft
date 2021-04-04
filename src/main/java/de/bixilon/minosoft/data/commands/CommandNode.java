@@ -19,7 +19,7 @@ import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException
 import de.bixilon.minosoft.data.commands.parser.exceptions.NoConnectionCommandParseException;
 import de.bixilon.minosoft.data.commands.parser.exceptions.RequiresMoreArgumentsCommandParseException;
 import de.bixilon.minosoft.data.commands.parser.exceptions.WrongArgumentCommandParseException;
-import de.bixilon.minosoft.protocol.network.Connection;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.terminal.commands.CommandStack;
 import de.bixilon.minosoft.terminal.commands.exceptions.CLIException;
@@ -111,7 +111,7 @@ public abstract class CommandNode {
         return this.childrenIds;
     }
 
-    protected CommandStack parse(Connection connection, CommandStringReader stringReader, CommandStack stack, boolean execute) throws CommandParseException, CLIException {
+    protected CommandStack parse(PlayConnection connection, CommandStringReader stringReader, CommandStack stack, boolean execute) throws CommandParseException, CLIException {
         stringReader.skipWhitespaces();
         if (stringReader.getRemainingLength() == 0) {
             if (this.isExecutable) {
@@ -154,15 +154,15 @@ public abstract class CommandNode {
         throw new WrongArgumentCommandParseException(stringReader, nextArgument);
     }
 
-    public CommandStack parse(Connection connection, CommandStringReader stringReader, CommandStack stack) throws CommandParseException, CLIException {
+    public CommandStack parse(PlayConnection connection, CommandStringReader stringReader, CommandStack stack) throws CommandParseException, CLIException {
         return parse(connection, stringReader, stack, false);
     }
 
-    public CommandStack execute(Connection connection, CommandStringReader stringReader, CommandStack stack) throws CommandParseException, CLIException {
+    public CommandStack execute(PlayConnection connection, CommandStringReader stringReader, CommandStack stack) throws CommandParseException, CLIException {
         return parse(connection, stringReader, stack, true);
     }
 
-    public CommandStack parse(Connection connection, String string) throws CommandParseException, CLIException {
+    public CommandStack parse(PlayConnection connection, String string) throws CommandParseException, CLIException {
         // replace multiple spaces with nothing
         string = string.replaceAll("\\s{2,}", " ");
         CommandStringReader stringReader = new CommandStringReader(string);

@@ -14,18 +14,18 @@
 package de.bixilon.minosoft.modding.event.events;
 
 import de.bixilon.minosoft.data.entities.entities.Entity;
-import de.bixilon.minosoft.protocol.network.Connection;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
 import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketDestroyEntity;
 
-public class EntityDespawnEvent extends ConnectionEvent {
+public class EntityDespawnEvent extends PlayConnectionEvent {
     private final int[] entityIds;
 
-    public EntityDespawnEvent(Connection connection, int[] entityIds) {
+    public EntityDespawnEvent(PlayConnection connection, int[] entityIds) {
         super(connection);
         this.entityIds = entityIds;
     }
 
-    public EntityDespawnEvent(Connection connection, PacketDestroyEntity pkg) {
+    public EntityDespawnEvent(PlayConnection connection, PacketDestroyEntity pkg) {
         super(connection);
         this.entityIds = pkg.getEntityIds();
     }

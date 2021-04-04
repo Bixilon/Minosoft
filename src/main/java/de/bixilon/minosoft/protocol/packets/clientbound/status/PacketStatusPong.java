@@ -16,13 +16,13 @@ package de.bixilon.minosoft.protocol.packets.clientbound.status;
 import de.bixilon.minosoft.data.player.tab.PingBars;
 import de.bixilon.minosoft.modding.event.events.ServerListPongEvent;
 import de.bixilon.minosoft.modding.event.events.StatusPongEvent;
-import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
+import de.bixilon.minosoft.protocol.network.connection.StatusConnection;
+import de.bixilon.minosoft.protocol.packets.clientbound.StatusClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.ConnectionPing;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
-public class PacketStatusPong extends ClientboundPacket {
+public class PacketStatusPong extends StatusClientboundPacket {
     private final long pingId;
 
     public PacketStatusPong(InByteBuffer buffer) {
@@ -30,7 +30,7 @@ public class PacketStatusPong extends ClientboundPacket {
     }
 
     @Override
-    public void handle(Connection connection) {
+    public void handle(StatusConnection connection) {
         connection.fireEvent(new StatusPongEvent(connection, this));
 
         ConnectionPing ping = connection.getConnectionStatusPing();
@@ -40,14 +40,10 @@ public class PacketStatusPong extends ClientboundPacket {
         }
         long pingDifference = System.currentTimeMillis() - ping.getSendingTime();
         Log.debug(String.format("Pong received (ping=%dms, pingBars=%s)", pingDifference, PingBars.byPing(pingDifference)));
-        switch (connection.getReason()) {
-            case PING -> connection.disconnect();// pong arrived, closing connection
-            case GET_VERSION -> {
-                // reconnect...
-                connection.disconnect();
-                Log.info(String.format("Server is running on version %s (versionId=%d, protocolId=%d), reconnecting...", connection.getVersion().getVersionName(), connection.getVersion().getVersionId(), connection.getVersion().getProtocolId()));
-            }
-        }
+
+        connection.disconnect();
+        // ToDo: Log.info(String.format("Server is running on version %s (versionId=%d, protocolId=%d), reconnecting...", connection.getVersion().getVersionName(), connection.getVersion().getVersionId(), connection.getVersion().getProtocolId()));
+
         ServerListPongEvent pongEvent = new ServerListPongEvent(connection, getPingId(), pingDifference);
         connection.setPong(pongEvent);
         connection.fireEvent(pongEvent);

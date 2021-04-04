@@ -13,20 +13,20 @@
 
 package de.bixilon.minosoft.modding.event.events;
 
-import de.bixilon.minosoft.protocol.network.Connection;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
 import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketTimeUpdate;
 
 public class TimeChangeEvent extends CancelableEvent {
     private final long worldAge;
     private final long timeOfDay;
 
-    public TimeChangeEvent(Connection connection, long worldAge, long timeOfDay) {
+    public TimeChangeEvent(PlayConnection connection, long worldAge, long timeOfDay) {
         super(connection);
         this.worldAge = worldAge;
         this.timeOfDay = timeOfDay;
     }
 
-    public TimeChangeEvent(Connection connection, PacketTimeUpdate pkg) {
+    public TimeChangeEvent(PlayConnection connection, PacketTimeUpdate pkg) {
         super(connection);
         this.worldAge = pkg.getWorldAge();
         this.timeOfDay = pkg.getTimeOfDay();

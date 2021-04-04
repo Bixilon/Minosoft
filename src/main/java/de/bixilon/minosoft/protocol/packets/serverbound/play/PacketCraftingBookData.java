@@ -13,16 +13,14 @@
 
 package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
-import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
-import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketTypes;
+import de.bixilon.minosoft.protocol.packets.serverbound.PlayServerboundPacket;
+import de.bixilon.minosoft.protocol.protocol.OutPlayByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_18W50A;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_12_PRE6;
 
-public class PacketCraftingBookData implements ServerboundPacket {
+public class PacketCraftingBookData implements PlayServerboundPacket {
     private final BookDataStatus action;
     private final int recipeId;
     private final boolean craftingBookOpen;
@@ -56,8 +54,7 @@ public class PacketCraftingBookData implements ServerboundPacket {
     }
 
     @Override
-    public OutPacketBuffer write(Connection connection) {
-        OutPacketBuffer buffer = new OutPacketBuffer(connection, PacketTypes.Serverbound.PLAY_RECIPE_BOOK_DATA);
+    public void write(OutPlayByteBuffer buffer) {
         if (buffer.getVersionId() < V_1_12_PRE6) {
             buffer.writeInt(this.action.ordinal());
         } else {
@@ -77,7 +74,6 @@ public class PacketCraftingBookData implements ServerboundPacket {
                 }
             }
         }
-        return buffer;
     }
 
     @Override

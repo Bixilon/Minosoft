@@ -13,13 +13,11 @@
 
 package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
-import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
-import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketTypes;
+import de.bixilon.minosoft.protocol.packets.serverbound.PlayServerboundPacket;
+import de.bixilon.minosoft.protocol.protocol.OutPlayByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
-public class PacketAdvancementTab implements ServerboundPacket {
+public class PacketAdvancementTab implements PlayServerboundPacket {
     private final AdvancementTabStatus action;
     private final String tabToOpen;
 
@@ -34,13 +32,11 @@ public class PacketAdvancementTab implements ServerboundPacket {
     }
 
     @Override
-    public OutPacketBuffer write(Connection connection) {
-        OutPacketBuffer buffer = new OutPacketBuffer(connection, PacketTypes.Serverbound.PLAY_ADVANCEMENT_TAB);
+    public void write(OutPlayByteBuffer buffer) {
         buffer.writeVarInt(this.action.ordinal());
         if (this.action == AdvancementTabStatus.OPEN_TAB) {
             buffer.writeString(this.tabToOpen);
         }
-        return buffer;
     }
 
     @Override

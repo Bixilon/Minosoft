@@ -14,23 +14,23 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.entities.entities.Entity;
-import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket;
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
-public class PacketEntityHeadRotation extends ClientboundPacket {
+public class PacketEntityHeadRotation extends PlayClientboundPacket {
     private final int entityId;
     private final short headYaw;
 
-    public PacketEntityHeadRotation(InByteBuffer buffer) {
+    public PacketEntityHeadRotation(PlayInByteBuffer buffer) {
         this.entityId = buffer.readEntityId();
 
         this.headYaw = buffer.readAngle();
     }
 
     @Override
-    public void handle(Connection connection) {
+    public void handle(PlayConnection connection) {
         Entity entity = connection.getWorld().getEntity(getEntityId());
         if (entity == null) {
             // thanks mojang

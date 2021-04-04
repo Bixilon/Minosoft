@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.modding.event.events;
 
 import de.bixilon.minosoft.modding.event.events.annotations.MinimumProtocolVersion;
-import de.bixilon.minosoft.protocol.network.Connection;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
 import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketBlockBreakAnimation;
 import glm_.vec3.Vec3i;
 
@@ -26,14 +26,14 @@ public class BlockBreakAnimationEvent extends CancelableEvent {
     private final Vec3i position;
     private final byte stage;
 
-    public BlockBreakAnimationEvent(Connection connection, int entityId, Vec3i position, byte stage) {
+    public BlockBreakAnimationEvent(PlayConnection connection, int entityId, Vec3i position, byte stage) {
         super(connection);
         this.entityId = entityId;
         this.position = position;
         this.stage = stage;
     }
 
-    public BlockBreakAnimationEvent(Connection connection, PacketBlockBreakAnimation pkg) {
+    public BlockBreakAnimationEvent(PlayConnection connection, PacketBlockBreakAnimation pkg) {
         super(connection);
         this.entityId = pkg.getEntityId();
         this.position = pkg.getPosition();

@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.modding.event.events;
 
-import de.bixilon.minosoft.protocol.network.Connection;
+import de.bixilon.minosoft.protocol.network.connection.StatusConnection;
 import de.bixilon.minosoft.protocol.packets.clientbound.status.PacketStatusPong;
 
 /**
@@ -22,12 +22,12 @@ import de.bixilon.minosoft.protocol.packets.clientbound.status.PacketStatusPong;
 public class StatusPongEvent extends ConnectionEvent {
     private final long pongId;
 
-    public StatusPongEvent(Connection connection, long pongId) {
+    public StatusPongEvent(StatusConnection connection, long pongId) {
         super(connection);
         this.pongId = pongId;
     }
 
-    public StatusPongEvent(Connection connection, PacketStatusPong pkg) {
+    public StatusPongEvent(StatusConnection connection, PacketStatusPong pkg) {
         super(connection);
         this.pongId = pkg.getPingId();
     }

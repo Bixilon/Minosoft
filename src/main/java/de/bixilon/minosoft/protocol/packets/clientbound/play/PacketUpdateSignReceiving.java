@@ -14,9 +14,9 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.text.ChatComponent;
-import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket;
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import de.bixilon.minosoft.util.logging.Log;
 import de.bixilon.minosoft.util.nbt.tag.CompoundTag;
@@ -25,11 +25,11 @@ import glm_.vec3.Vec3i;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W04A;
 
-public class PacketUpdateSignReceiving extends ClientboundPacket {
+public class PacketUpdateSignReceiving extends PlayClientboundPacket {
     private final ChatComponent[] lines = new ChatComponent[ProtocolDefinition.SIGN_LINES];
     private final Vec3i position;
 
-    public PacketUpdateSignReceiving(InByteBuffer buffer) {
+    public PacketUpdateSignReceiving(PlayInByteBuffer buffer) {
         if (buffer.getVersionId() < V_14W04A) {
             this.position = buffer.readBlockPositionShort();
         } else {
@@ -41,7 +41,7 @@ public class PacketUpdateSignReceiving extends ClientboundPacket {
     }
 
     @Override
-    public void handle(Connection connection) {
+    public void handle(PlayConnection connection) {
         CompoundTag nbt = new CompoundTag();
         nbt.writeBlockPosition(getPosition());
         nbt.writeTag("id", new StringTag("minecraft:sign"));

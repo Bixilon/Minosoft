@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.entities.block;
 
 import de.bixilon.minosoft.data.inventory.ItemStack;
 import de.bixilon.minosoft.data.mappings.ResourceLocation;
-import de.bixilon.minosoft.protocol.network.Connection;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
 import de.bixilon.minosoft.util.nbt.tag.CompoundTag;
 import de.bixilon.minosoft.util.nbt.tag.ListTag;
 
@@ -26,7 +26,7 @@ public class CampfireBlockEntityMetaData extends BlockEntityMetaData {
         this.items = items;
     }
 
-    public CampfireBlockEntityMetaData(Connection connection, ListTag nbt) {
+    public CampfireBlockEntityMetaData(PlayConnection connection, ListTag nbt) {
         this.items = new ItemStack[4];
         for (CompoundTag tag : nbt.<CompoundTag>getValue()) {
             this.items[tag.getByteTag("Slot").getValue()] = new ItemStack(null, connection.getMapping().getItemRegistry().get(new ResourceLocation(tag.getStringTag("id").getValue())), tag.getByteTag("Count").getValue()); // ToDo: version should not be null

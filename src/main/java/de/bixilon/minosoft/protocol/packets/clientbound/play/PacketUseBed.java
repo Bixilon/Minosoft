@@ -13,18 +13,18 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket;
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 import glm_.vec3.Vec3i;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W04A;
 
-public class PacketUseBed extends ClientboundPacket {
+public class PacketUseBed extends PlayClientboundPacket {
     private final int entityId;
     private final Vec3i blockPosition;
 
-    public PacketUseBed(InByteBuffer buffer) {
+    public PacketUseBed(PlayInByteBuffer buffer) {
         this.entityId = buffer.readInt();
         if (buffer.getVersionId() < V_14W04A) {
             this.blockPosition = buffer.readBlockPositionByte();

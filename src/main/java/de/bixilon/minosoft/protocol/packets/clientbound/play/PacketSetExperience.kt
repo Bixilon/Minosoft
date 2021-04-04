@@ -13,13 +13,13 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play
 
 import de.bixilon.minosoft.modding.event.events.ExperienceChangeEvent
-import de.bixilon.minosoft.protocol.network.Connection
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.util.logging.Log
 
-class PacketSetExperience() : ClientboundPacket() {
+class PacketSetExperience() : PlayClientboundPacket() {
     var bar = 0.0f
         private set
     var level = 0
@@ -27,7 +27,7 @@ class PacketSetExperience() : ClientboundPacket() {
     var total = 0
         private set
 
-    constructor(buffer: InByteBuffer) : this() {
+    constructor(buffer: PlayInByteBuffer) : this() {
         bar = buffer.readFloat()
         if (buffer.versionId < ProtocolVersions.V_14W04A) {
             level = buffer.readUnsignedShort()
@@ -38,13 +38,13 @@ class PacketSetExperience() : ClientboundPacket() {
         total = buffer.readVarInt()
     }
 
-    override fun check(connection: Connection) {
+    override fun check(connection: PlayConnection) {
         check(bar in 0.0f..1.0f) { "Bar is invalid!" }
         check(level >= 0) { "Level is negative is invalid!" }
         check(total >= 0) { "Total experience is negative!" }
     }
 
-    override fun handle(connection: Connection) {
+    override fun handle(connection: PlayConnection) {
         if (connection.fireEvent(ExperienceChangeEvent(connection, this))) {
             return
         }

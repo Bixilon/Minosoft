@@ -14,18 +14,18 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.mappings.statistics.Statistic;
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket;
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
 import java.util.HashMap;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_17W47A;
 
-public class PacketStatistics extends ClientboundPacket {
+public class PacketStatistics extends PlayClientboundPacket {
     private final HashMap<Statistic, Integer> statistics = new HashMap<>();
 
-    public PacketStatistics(InByteBuffer buffer) {
+    public PacketStatistics(PlayInByteBuffer buffer) {
         int length = buffer.readVarInt();
         for (int i = 0; i < length; i++) {
             if (buffer.getVersionId() < V_17W47A) { // ToDo

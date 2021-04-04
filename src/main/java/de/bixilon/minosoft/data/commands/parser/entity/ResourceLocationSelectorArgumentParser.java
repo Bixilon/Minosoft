@@ -18,13 +18,13 @@ import de.bixilon.minosoft.data.commands.CommandStringReader;
 import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException;
 import de.bixilon.minosoft.data.commands.parser.exceptions.entity.UnknownEntityCommandParseException;
 import de.bixilon.minosoft.data.mappings.ResourceLocation;
-import de.bixilon.minosoft.protocol.network.Connection;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
 
 public class ResourceLocationSelectorArgumentParser extends EntitySelectorArgumentParser {
     public static final ResourceLocationSelectorArgumentParser ENTITY_TYPE_RESOURCE_LOCATION_SELECTOR_ARGUMENT_PARSER = new ResourceLocationSelectorArgumentParser();
 
     @Override
-    public void isParsable(Connection connection, CommandStringReader stringReader, String value) throws CommandParseException {
+    public void isParsable(PlayConnection connection, CommandStringReader stringReader, String value) throws CommandParseException {
         if (value.startsWith("!")) {
             value = value.substring(1);
         }

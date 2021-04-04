@@ -31,7 +31,7 @@ import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.gui.rendering.textures.Texture
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.of
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
-import de.bixilon.minosoft.protocol.network.Connection
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.logging.Log
 import glm_.vec2.Vec2i
@@ -39,7 +39,7 @@ import glm_.vec3.Vec3i
 import java.util.concurrent.ConcurrentHashMap
 
 class WorldRenderer(
-    private val connection: Connection,
+    private val connection: PlayConnection,
     private val world: World,
     val renderWindow: RenderWindow,
 ) : Renderer {

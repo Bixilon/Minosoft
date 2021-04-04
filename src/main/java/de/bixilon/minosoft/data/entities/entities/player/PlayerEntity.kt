@@ -22,13 +22,13 @@ import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.entities.EntityFactory
 import de.bixilon.minosoft.data.mappings.entities.EntityType
 import de.bixilon.minosoft.data.player.Hands
-import de.bixilon.minosoft.protocol.network.Connection
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.util.nbt.tag.CompoundTag
 import glm_.vec3.Vec3
 import java.util.*
 
 class PlayerEntity(
-    connection: Connection,
+    connection: PlayConnection,
     entityType: EntityType,
     position: Vec3,
     rotation: EntityRotation,

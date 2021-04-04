@@ -19,7 +19,7 @@ import de.bixilon.minosoft.data.Gamemodes;
 import de.bixilon.minosoft.data.LevelTypes;
 import de.bixilon.minosoft.data.mappings.Dimension;
 import de.bixilon.minosoft.data.mappings.ResourceLocation;
-import de.bixilon.minosoft.protocol.network.Connection;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
 import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketJoinGame;
 
 public class JoinGameEvent extends CancelableEvent {
@@ -36,7 +36,7 @@ public class JoinGameEvent extends CancelableEvent {
     private final long hashedSeed;
     private final HashBiMap<ResourceLocation, Dimension> dimensions;
 
-    public JoinGameEvent(Connection connection, int entityId, boolean hardcore, Gamemodes gamemode, Dimension dimension, Difficulties difficulty, int viewDistance, int maxPlayers, LevelTypes levelType, boolean reducedDebugScreen, boolean enableRespawnScreen, long hashedSeed, HashBiMap<ResourceLocation, Dimension> dimensions) {
+    public JoinGameEvent(PlayConnection connection, int entityId, boolean hardcore, Gamemodes gamemode, Dimension dimension, Difficulties difficulty, int viewDistance, int maxPlayers, LevelTypes levelType, boolean reducedDebugScreen, boolean enableRespawnScreen, long hashedSeed, HashBiMap<ResourceLocation, Dimension> dimensions) {
         super(connection);
         this.entityId = entityId;
         this.hardcore = hardcore;
@@ -52,7 +52,7 @@ public class JoinGameEvent extends CancelableEvent {
         this.dimensions = dimensions;
     }
 
-    public JoinGameEvent(Connection connection, PacketJoinGame pkg) {
+    public JoinGameEvent(PlayConnection connection, PacketJoinGame pkg) {
         super(connection);
         this.entityId = pkg.getEntityId();
         this.hardcore = pkg.isHardcore();

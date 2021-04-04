@@ -14,19 +14,19 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.mappings.blocks.BlockState;
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket;
 import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketPlayerDigging;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 import glm_.vec3.Vec3i;
 
-public class PacketAcknowledgePlayerDigging extends ClientboundPacket {
+public class PacketAcknowledgePlayerDigging extends PlayClientboundPacket {
     private final Vec3i blockPosition;
     private final BlockState block;
     private final PacketPlayerDigging.DiggingStatus status;
     private final boolean successful;
 
-    public PacketAcknowledgePlayerDigging(InByteBuffer buffer) {
+    public PacketAcknowledgePlayerDigging(PlayInByteBuffer buffer) {
         this.blockPosition = buffer.readBlockPosition();
         this.block = buffer.getConnection().getMapping().getBlockState(buffer.readVarInt());
         this.status = PacketPlayerDigging.DiggingStatus.byId(buffer.readVarInt());

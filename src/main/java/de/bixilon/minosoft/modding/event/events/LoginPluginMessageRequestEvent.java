@@ -13,23 +13,23 @@
 
 package de.bixilon.minosoft.modding.event.events;
 
-import de.bixilon.minosoft.protocol.network.Connection;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
 import de.bixilon.minosoft.protocol.packets.clientbound.login.PacketLoginPluginRequest;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 
 public class LoginPluginMessageRequestEvent extends CancelableEvent {
     private final int messageId;
     private final String channel;
-    private final InByteBuffer data;
+    private final PlayInByteBuffer data;
 
-    public LoginPluginMessageRequestEvent(Connection connection, int messageId, String channel, InByteBuffer data) {
+    public LoginPluginMessageRequestEvent(PlayConnection connection, int messageId, String channel, PlayInByteBuffer data) {
         super(connection);
         this.messageId = messageId;
         this.channel = channel;
         this.data = data;
     }
 
-    public LoginPluginMessageRequestEvent(Connection connection, PacketLoginPluginRequest pkg) {
+    public LoginPluginMessageRequestEvent(PlayConnection connection, PacketLoginPluginRequest pkg) {
         super(connection);
         this.messageId = pkg.getMessageId();
         this.channel = pkg.getChannel();
@@ -44,7 +44,7 @@ public class LoginPluginMessageRequestEvent extends CancelableEvent {
         return this.channel;
     }
 
-    public InByteBuffer getData() {
+    public PlayInByteBuffer getData() {
         return this.data;
     }
 }

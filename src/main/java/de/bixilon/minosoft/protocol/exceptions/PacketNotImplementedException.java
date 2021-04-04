@@ -13,13 +13,16 @@
 
 package de.bixilon.minosoft.protocol.exceptions;
 
-import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
+import de.bixilon.minosoft.data.mappings.versions.Version;
+import de.bixilon.minosoft.protocol.protocol.ConnectionStates;
+import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketTypes;
+
+import javax.annotation.Nullable;
 
 public class PacketNotImplementedException extends PacketParseException {
 
-    public PacketNotImplementedException(InPacketBuffer buffer, PacketTypes.Clientbound packetType, Connection connection) {
-        super(String.format("Packet not implemented yet (id=0x%x, name=%s, length=%d, dataLength=%d, version=%s, state=%s)", buffer.getPacketTypeId(), packetType, buffer.getLength(), buffer.getBytesLeft(), connection.getVersion(), connection.getConnectionState()));
+    public PacketNotImplementedException(InByteBuffer buffer, int packetId, PacketTypes.Clientbound packetType, @Nullable Version version, ConnectionStates connectionState) {
+        super(String.format("Packet not implemented yet (id=0x%x, name=%s, length=%d, dataLength=%d, version=%s, state=%s)", packetId, packetType, buffer.getLength(), buffer.getBytesLeft(), version, connectionState));
     }
 }

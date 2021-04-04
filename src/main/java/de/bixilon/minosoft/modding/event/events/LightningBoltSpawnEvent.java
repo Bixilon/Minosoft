@@ -14,18 +14,18 @@
 package de.bixilon.minosoft.modding.event.events;
 
 import de.bixilon.minosoft.data.entities.entities.LightningBolt;
-import de.bixilon.minosoft.protocol.network.Connection;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
 import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketSpawnWeatherEntity;
 
-public class LightningBoltSpawnEvent extends ConnectionEvent {
+public class LightningBoltSpawnEvent extends PlayConnectionEvent {
     private final LightningBolt entity;
 
-    public LightningBoltSpawnEvent(Connection connection, LightningBolt entity) {
+    public LightningBoltSpawnEvent(PlayConnection connection, LightningBolt entity) {
         super(connection);
         this.entity = entity;
     }
 
-    public LightningBoltSpawnEvent(Connection connection, PacketSpawnWeatherEntity pkg) {
+    public LightningBoltSpawnEvent(PlayConnection connection, PacketSpawnWeatherEntity pkg) {
         super(connection);
         this.entity = pkg.getEntity();
     }

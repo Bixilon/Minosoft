@@ -16,9 +16,9 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 import de.bixilon.minosoft.data.ChatTextPositions;
 import de.bixilon.minosoft.data.text.ChatComponent;
 import de.bixilon.minosoft.modding.event.events.ChatMessageReceivingEvent;
-import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket;
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
 import java.util.UUID;
@@ -26,12 +26,12 @@ import java.util.UUID;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W04A;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_20W21A;
 
-public class PacketChatMessageReceiving extends ClientboundPacket {
+public class PacketChatMessageReceiving extends PlayClientboundPacket {
     private final ChatComponent message;
     private final ChatTextPositions position;
     private UUID sender;
 
-    public PacketChatMessageReceiving(InByteBuffer buffer) {
+    public PacketChatMessageReceiving(PlayInByteBuffer buffer) {
         this.message = buffer.readChatComponent();
         if (buffer.getVersionId() < V_14W04A) {
             this.position = ChatTextPositions.CHAT_BOX;
@@ -44,7 +44,7 @@ public class PacketChatMessageReceiving extends ClientboundPacket {
     }
 
     @Override
-    public void handle(Connection connection) {
+    public void handle(PlayConnection connection) {
         ChatMessageReceivingEvent event = new ChatMessageReceivingEvent(connection, this);
         if (connection.fireEvent(event)) {
             return;

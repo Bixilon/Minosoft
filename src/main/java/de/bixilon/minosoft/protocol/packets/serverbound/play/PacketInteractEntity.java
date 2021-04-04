@@ -15,23 +15,22 @@ package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
 import de.bixilon.minosoft.data.entities.entities.Entity;
 import de.bixilon.minosoft.data.player.Hands;
-import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
-import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketTypes;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
+import de.bixilon.minosoft.protocol.packets.serverbound.PlayServerboundPacket;
+import de.bixilon.minosoft.protocol.protocol.OutPlayByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 import glm_.vec3.Vec3;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
 
-public class PacketInteractEntity implements ServerboundPacket {
+public class PacketInteractEntity implements PlayServerboundPacket {
     private final int entityId;
     private Vec3 position;
     private Hands hand;
     private EntityInteractionClicks click;
     private boolean sneaking;
 
-    public PacketInteractEntity(Connection connection, Entity entity, EntityInteractionClicks click) {
+    public PacketInteractEntity(PlayConnection connection, Entity entity, EntityInteractionClicks click) {
         this.entityId = connection.getWorld().getEntityIdMap().inverse().get(entity);
         this.click = click;
     }
@@ -52,8 +51,7 @@ public class PacketInteractEntity implements ServerboundPacket {
     }
 
     @Override
-    public OutPacketBuffer write(Connection connection) {
-        OutPacketBuffer buffer = new OutPacketBuffer(connection, PacketTypes.Serverbound.PLAY_INTERACT_ENTITY);
+    public void write(OutPlayByteBuffer buffer) {
         buffer.writeEntityId(this.entityId);
         if (buffer.getVersionId() < V_14W32A) {
             if (this.click == EntityInteractionClicks.INTERACT_AT) {
@@ -82,7 +80,6 @@ public class PacketInteractEntity implements ServerboundPacket {
                 buffer.writeBoolean(this.sneaking);
             }
         }
-        return buffer;
     }
 
     @Override

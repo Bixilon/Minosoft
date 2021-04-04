@@ -15,7 +15,7 @@ package de.bixilon.minosoft.modding.event.events;
 
 import de.bixilon.minosoft.data.mappings.particle.Particle;
 import de.bixilon.minosoft.data.mappings.particle.data.ParticleData;
-import de.bixilon.minosoft.protocol.network.Connection;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
 import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketParticle;
 import glm_.vec3.Vec3;
 
@@ -29,7 +29,7 @@ public class ParticleSpawnEvent extends CancelableEvent {
     private float offsetZ;
     private int count;
 
-    public ParticleSpawnEvent(Connection connection, Particle particleType, ParticleData particleData, boolean longDistance, Vec3 position, float offsetX, float offsetY, float offsetZ, int count) {
+    public ParticleSpawnEvent(PlayConnection connection, Particle particleType, ParticleData particleData, boolean longDistance, Vec3 position, float offsetX, float offsetY, float offsetZ, int count) {
         super(connection);
         this.particleType = particleType;
         this.particleData = particleData;
@@ -41,14 +41,14 @@ public class ParticleSpawnEvent extends CancelableEvent {
         this.count = count;
     }
 
-    public ParticleSpawnEvent(Connection connection, Particle particleType, ParticleData particleData, Vec3 position) {
+    public ParticleSpawnEvent(PlayConnection connection, Particle particleType, ParticleData particleData, Vec3 position) {
         super(connection);
         this.particleType = particleType;
         this.particleData = particleData;
         this.position = position;
     }
 
-    public ParticleSpawnEvent(Connection connection, PacketParticle pkg) {
+    public ParticleSpawnEvent(PlayConnection connection, PacketParticle pkg) {
         super(connection);
         this.particleType = pkg.getParticleType();
         this.particleData = pkg.getParticleData();

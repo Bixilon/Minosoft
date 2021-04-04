@@ -20,7 +20,7 @@ import de.bixilon.minosoft.data.commands.CommandLiteralNode;
 import de.bixilon.minosoft.data.commands.CommandNode;
 import de.bixilon.minosoft.data.commands.parser.IntegerParser;
 import de.bixilon.minosoft.data.commands.parser.properties.IntegerParserProperties;
-import de.bixilon.minosoft.protocol.network.Connection;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
 import de.bixilon.minosoft.terminal.CLI;
 import de.bixilon.minosoft.terminal.commands.exceptions.ConnectionNotFoundCommandParseException;
 
@@ -43,7 +43,7 @@ public class CommandConnection extends Command {
                         }),
                         new CommandLiteralNode("select", new CommandArgumentNode("connectionId", IntegerParser.INTEGER_PARSER, new IntegerParserProperties(0), (stack) -> {
                             int connectionId = stack.getInt(0);
-                            Connection connection = Minosoft.CONNECTIONS.get(connectionId);
+                            PlayConnection connection = Minosoft.CONNECTIONS.get(connectionId);
                             if (connection == null) {
                                 throw new ConnectionNotFoundCommandParseException(stack, connectionId);
                             }
@@ -51,7 +51,7 @@ public class CommandConnection extends Command {
                             print("Current connection changed %s", connection);
                         })),
                         new CommandLiteralNode("current", (stack) -> {
-                            Connection connection = CLI.getCurrentConnection();
+                            PlayConnection connection = CLI.getCurrentConnection();
                             if (connection == null) {
                                 print("No connection selected");
                                 return;

@@ -13,21 +13,21 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket;
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 import glm_.vec2.Vec2i;
 
-public class PacketUnloadChunk extends ClientboundPacket {
+public class PacketUnloadChunk extends PlayClientboundPacket {
     private final Vec2i chunkPosition;
 
-    public PacketUnloadChunk(InByteBuffer buffer) {
+    public PacketUnloadChunk(PlayInByteBuffer buffer) {
         this.chunkPosition = buffer.readChunkPosition();
     }
 
     @Override
-    public void handle(Connection connection) {
+    public void handle(PlayConnection connection) {
         connection.getWorld().unloadChunk(getChunkPosition());
         connection.getRenderer().getRenderWindow().getWorldRenderer().unloadChunk(this.chunkPosition);
     }

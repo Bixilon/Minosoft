@@ -13,19 +13,19 @@
 
 package de.bixilon.minosoft.modding.event.events;
 
-import de.bixilon.minosoft.protocol.network.Connection;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
 import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketOpenSignEditor;
 import glm_.vec3.Vec3i;
 
 public class OpenSignEditorEvent extends CancelableEvent {
     private final Vec3i position;
 
-    public OpenSignEditorEvent(Connection connection, Vec3i position) {
+    public OpenSignEditorEvent(PlayConnection connection, Vec3i position) {
         super(connection);
         this.position = position;
     }
 
-    public OpenSignEditorEvent(Connection connection, PacketOpenSignEditor pkg) {
+    public OpenSignEditorEvent(PlayConnection connection, PacketOpenSignEditor pkg) {
         super(connection);
         this.position = pkg.getPosition();
     }

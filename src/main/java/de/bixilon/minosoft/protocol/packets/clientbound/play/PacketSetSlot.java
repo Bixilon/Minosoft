@@ -15,24 +15,24 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.inventory.ItemStack;
 import de.bixilon.minosoft.modding.event.events.SingleSlotChangeEvent;
-import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket;
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
-public class PacketSetSlot extends ClientboundPacket {
+public class PacketSetSlot extends PlayClientboundPacket {
     private final byte windowId;
     private final short slotId;
     private final ItemStack itemStack; // ToDo use enum Slots
 
-    public PacketSetSlot(InByteBuffer buffer) {
+    public PacketSetSlot(PlayInByteBuffer buffer) {
         this.windowId = buffer.readByte();
         this.slotId = buffer.readShort();
         this.itemStack = buffer.readItemStack();
     }
 
     @Override
-    public void handle(Connection connection) {
+    public void handle(PlayConnection connection) {
         connection.fireEvent(new SingleSlotChangeEvent(connection, this));
 
         if (getWindowId() == -1) {

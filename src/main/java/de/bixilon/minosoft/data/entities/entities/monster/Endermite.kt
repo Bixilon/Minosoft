@@ -16,15 +16,15 @@ import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.entities.EntityFactory
 import de.bixilon.minosoft.data.mappings.entities.EntityType
-import de.bixilon.minosoft.protocol.network.Connection
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import glm_.vec3.Vec3
 
-class Endermite(connection: Connection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : Monster(connection, entityType, position, rotation) {
+class Endermite(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : Monster(connection, entityType, position, rotation) {
 
     companion object : EntityFactory<Endermite> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("endermite")
 
-        override fun build(connection: Connection, entityType: EntityType, position: Vec3, rotation: EntityRotation): Endermite {
+        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation): Endermite {
             return Endermite(connection, entityType, position, rotation)
         }
     }

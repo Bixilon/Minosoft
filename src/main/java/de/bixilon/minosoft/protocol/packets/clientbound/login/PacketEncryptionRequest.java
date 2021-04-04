@@ -13,11 +13,11 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.login;
 
-import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket;
 import de.bixilon.minosoft.protocol.packets.serverbound.login.PacketEncryptionResponse;
 import de.bixilon.minosoft.protocol.protocol.CryptManager;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 import de.bixilon.minosoft.util.mojang.api.exceptions.MojangJoinServerErrorException;
 import de.bixilon.minosoft.util.mojang.api.exceptions.NoNetworkConnectionException;
@@ -26,19 +26,19 @@ import javax.crypto.SecretKey;
 import java.math.BigInteger;
 import java.security.PublicKey;
 
-public class PacketEncryptionRequest extends ClientboundPacket {
+public class PacketEncryptionRequest extends PlayClientboundPacket {
     private final String serverId; // normally empty
     private final byte[] publicKey;
     private final byte[] verifyToken;
 
-    public PacketEncryptionRequest(InByteBuffer buffer) {
+    public PacketEncryptionRequest(PlayInByteBuffer buffer) {
         this.serverId = buffer.readString();
         this.publicKey = buffer.readByteArray();
         this.verifyToken = buffer.readByteArray();
     }
 
     @Override
-    public void handle(Connection connection) {
+    public void handle(PlayConnection connection) {
         SecretKey secretKey = CryptManager.createNewSharedKey();
         PublicKey publicKey = CryptManager.decodePublicKey(getPublicKey());
         String serverHash = new BigInteger(CryptManager.getServerHash(getServerId(), publicKey, secretKey)).toString(16);

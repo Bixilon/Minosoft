@@ -17,7 +17,7 @@ import de.bixilon.minosoft.data.commands.CommandStringReader;
 import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException;
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties;
 import de.bixilon.minosoft.data.commands.parser.properties.RangeParserProperties;
-import de.bixilon.minosoft.protocol.network.Connection;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 
 import javax.annotation.Nullable;
@@ -32,7 +32,7 @@ public class IntRangeParser extends RangeParser {
     }
 
     @Override
-    public Object parse(Connection connection, @Nullable ParserProperties properties, CommandStringReader stringReader) throws CommandParseException {
+    public Object parse(PlayConnection connection, @Nullable ParserProperties properties, CommandStringReader stringReader) throws CommandParseException {
         return super.parse(connection, INT_RANGE_PARSER_PROPERTIES, stringReader);
     }
 }

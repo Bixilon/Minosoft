@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.modding.event.events;
 
 import de.bixilon.minosoft.data.player.tab.PlayerListItemBulk;
-import de.bixilon.minosoft.protocol.network.Connection;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
 import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketPlayerListItem;
 
 import java.util.ArrayList;
@@ -22,12 +22,12 @@ import java.util.ArrayList;
 public class PlayerListItemChangeEvent extends CancelableEvent {
     private final ArrayList<PlayerListItemBulk> playerList;
 
-    public PlayerListItemChangeEvent(Connection connection, ArrayList<PlayerListItemBulk> playerList) {
+    public PlayerListItemChangeEvent(PlayConnection connection, ArrayList<PlayerListItemBulk> playerList) {
         super(connection);
         this.playerList = playerList;
     }
 
-    public PlayerListItemChangeEvent(Connection connection, PacketPlayerListItem pkg) {
+    public PlayerListItemChangeEvent(PlayConnection connection, PacketPlayerListItem pkg) {
         super(connection);
         this.playerList = pkg.getPlayerList();
     }

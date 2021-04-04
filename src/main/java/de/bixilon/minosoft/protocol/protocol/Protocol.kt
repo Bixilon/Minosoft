@@ -22,12 +22,12 @@ object Protocol {
     private val CLIENTBOUND_PACKET_MAPPING = HashMap<ConnectionStates, HashBiMap<Clientbound, Int>>()
 
     @JvmStatic
-    fun getPacketCommand(packet: Serverbound): Int {
-        return SERVERBOUND_PACKET_MAPPING[packet.state]!![packet]!!
+    fun getPacketId(packet: Serverbound): Int? {
+        return SERVERBOUND_PACKET_MAPPING[packet.state]?.get(packet)
     }
 
     @JvmStatic
-    fun getPacketByCommand(state: ConnectionStates, command: Int): Clientbound? {
+    fun getPacketById(state: ConnectionStates, command: Int): Clientbound? {
         return CLIENTBOUND_PACKET_MAPPING[state]?.inverse()?.get(command)
     }
 

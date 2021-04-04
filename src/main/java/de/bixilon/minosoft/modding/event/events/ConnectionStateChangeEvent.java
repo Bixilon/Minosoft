@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.modding.event.events;
 
 import de.bixilon.minosoft.modding.event.events.annotations.Unsafe;
-import de.bixilon.minosoft.protocol.network.Connection;
+import de.bixilon.minosoft.protocol.network.connection.Connection;
 import de.bixilon.minosoft.protocol.protocol.ConnectionStates;
 
 /**

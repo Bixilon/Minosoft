@@ -17,12 +17,12 @@ import de.bixilon.minosoft.data.commands.parser.exceptions.ColorNotFoundCommandP
 import de.bixilon.minosoft.data.commands.parser.exceptions.UnknownOperationCommandParseException
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties
 import de.bixilon.minosoft.data.text.ChatColors
-import de.bixilon.minosoft.protocol.network.Connection
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 
 object ScoreboardSlotParser : CommandParser() {
     private val SCOREBOARD_SLOTS = setOf("list", "sidebar", "belowName")
 
-    override fun parse(connection: Connection, properties: ParserProperties?, stringReader: CommandStringReader): Any? {
+    override fun parse(connection: PlayConnection, properties: ParserProperties?, stringReader: CommandStringReader): Any? {
         val slot = stringReader.readUnquotedString()
 
         if (slot.startsWith("sidebar.team.")) {

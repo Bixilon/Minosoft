@@ -13,15 +13,13 @@
 
 package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
-import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
-import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketTypes;
+import de.bixilon.minosoft.protocol.packets.serverbound.PlayServerboundPacket;
+import de.bixilon.minosoft.protocol.protocol.OutPlayByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
 import java.util.UUID;
 
-public class PacketSpectate implements ServerboundPacket {
+public class PacketSpectate implements PlayServerboundPacket {
     private final UUID entityUUID;
 
     public PacketSpectate(UUID entityUUID) {
@@ -29,10 +27,8 @@ public class PacketSpectate implements ServerboundPacket {
     }
 
     @Override
-    public OutPacketBuffer write(Connection connection) {
-        OutPacketBuffer buffer = new OutPacketBuffer(connection, PacketTypes.Serverbound.PLAY_SPECTATE);
+    public void write(OutPlayByteBuffer buffer) {
         buffer.writeUUID(this.entityUUID);
-        return buffer;
     }
 
     @Override

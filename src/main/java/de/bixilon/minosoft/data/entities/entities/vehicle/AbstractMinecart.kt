@@ -17,10 +17,10 @@ import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
 import de.bixilon.minosoft.data.mappings.entities.EntityType
-import de.bixilon.minosoft.protocol.network.Connection
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import glm_.vec3.Vec3
 
-abstract class AbstractMinecart(connection: Connection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : Entity(connection, entityType, position, rotation) {
+abstract class AbstractMinecart(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : Entity(connection, entityType, position, rotation) {
 
     @get:EntityMetaDataFunction(name = "Shaking power")
     val shakingPower: Int

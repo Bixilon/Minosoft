@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.modding.event.events;
 
 import de.bixilon.minosoft.data.mappings.blocks.actions.BlockAction;
-import de.bixilon.minosoft.protocol.network.Connection;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
 import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketBlockAction;
 import glm_.vec3.Vec3i;
 
@@ -25,13 +25,13 @@ public class BlockActionEvent extends CancelableEvent {
     private final Vec3i position;
     private final BlockAction data;
 
-    public BlockActionEvent(Connection connection, Vec3i position, BlockAction data) {
+    public BlockActionEvent(PlayConnection connection, Vec3i position, BlockAction data) {
         super(connection);
         this.position = position;
         this.data = data;
     }
 
-    public BlockActionEvent(Connection connection, PacketBlockAction pkg) {
+    public BlockActionEvent(PlayConnection connection, PacketBlockAction pkg) {
         super(connection);
         this.position = pkg.getPosition();
         this.data = pkg.getData();

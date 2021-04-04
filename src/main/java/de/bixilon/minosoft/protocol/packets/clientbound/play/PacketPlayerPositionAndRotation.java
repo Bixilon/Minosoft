@@ -14,17 +14,17 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.entities.EntityRotation;
-import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketConfirmTeleport;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket;
 import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketPlayerPositionAndRotationSending;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketTeleportConfirm;
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 import glm_.vec3.Vec3;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
 
-public class PacketPlayerPositionAndRotation extends ClientboundPacket {
+public class PacketPlayerPositionAndRotation extends PlayClientboundPacket {
     private final Vec3 position;
     private final EntityRotation rotation;
     private boolean onGround;
@@ -32,7 +32,7 @@ public class PacketPlayerPositionAndRotation extends ClientboundPacket {
     private int teleportId;
     private boolean dismountVehicle = true;
 
-    public PacketPlayerPositionAndRotation(InByteBuffer buffer) {
+    public PacketPlayerPositionAndRotation(PlayInByteBuffer buffer) {
         this.position = buffer.readEntityPosition();
         this.rotation = new EntityRotation(buffer.readFloat(), buffer.readFloat(), 0);
         if (buffer.getVersionId() < V_14W03B) {
@@ -51,11 +51,11 @@ public class PacketPlayerPositionAndRotation extends ClientboundPacket {
     }
 
     @Override
-    public void handle(Connection connection) {
+    public void handle(PlayConnection connection) {
         // ToDo: GUI should do this
         connection.getPlayer().getEntity().setPosition(getPosition());
         if (connection.getVersion().getVersionId() >= V_15W42A) {
-            connection.sendPacket(new PacketConfirmTeleport(getTeleportId()));
+            connection.sendPacket(new PacketTeleportConfirm(getTeleportId()));
         } else {
             connection.sendPacket(new PacketPlayerPositionAndRotationSending(getPosition(), getRotation(), isOnGround()));
         }

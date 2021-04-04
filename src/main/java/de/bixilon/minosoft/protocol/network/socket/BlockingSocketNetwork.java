@@ -15,11 +15,11 @@ package de.bixilon.minosoft.protocol.network.socket;
 
 import de.bixilon.minosoft.protocol.exceptions.PacketParseException;
 import de.bixilon.minosoft.protocol.exceptions.PacketTooLongException;
-import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.network.Network;
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
+import de.bixilon.minosoft.protocol.network.connection.Connection;
+import de.bixilon.minosoft.protocol.packets.clientbound.ClientboundPacket;
 import de.bixilon.minosoft.protocol.packets.clientbound.login.PacketEncryptionRequest;
+import de.bixilon.minosoft.protocol.packets.serverbound.ServerboundPacket;
 import de.bixilon.minosoft.protocol.packets.serverbound.login.PacketEncryptionResponse;
 import de.bixilon.minosoft.protocol.protocol.ConnectionStates;
 import de.bixilon.minosoft.protocol.protocol.CryptManager;

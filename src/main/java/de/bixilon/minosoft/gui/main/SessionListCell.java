@@ -19,7 +19,7 @@ import de.bixilon.minosoft.data.locale.Strings;
 import de.bixilon.minosoft.data.mappings.ResourceLocation;
 import de.bixilon.minosoft.modding.event.EventInvokerCallback;
 import de.bixilon.minosoft.modding.event.events.ConnectionStateChangeEvent;
-import de.bixilon.minosoft.protocol.network.Connection;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -35,15 +35,15 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class SessionListCell extends ListCell<Connection> implements Initializable {
-    public static final ListView<Connection> CONNECTION_LIST_VIEW = new ListView<>();
+public class SessionListCell extends ListCell<PlayConnection> implements Initializable {
+    public static final ListView<PlayConnection> CONNECTION_LIST_VIEW = new ListView<>();
 
     public Label account;
     public Label connectionId;
     public MenuItem optionsDisconnect;
     public AnchorPane root;
 
-    private Connection connection;
+    private PlayConnection connection;
 
     public static SessionListCell newInstance() {
         FXMLLoader loader = new FXMLLoader(Minosoft.MINOSOFT_ASSETS_MANAGER.getAssetURL(new ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "layout/cells/session.fxml")));
@@ -69,7 +69,7 @@ public class SessionListCell extends ListCell<Connection> implements Initializab
     }
 
     @Override
-    protected void updateItem(Connection connection, boolean empty) {
+    protected void updateItem(PlayConnection connection, boolean empty) {
         super.updateItem(connection, empty);
 
         this.root.setVisible(!empty);
@@ -92,7 +92,7 @@ public class SessionListCell extends ListCell<Connection> implements Initializab
     }
 
     private void handleConnectionCallback(ConnectionStateChangeEvent event) {
-        Connection connection = event.getConnection();
+        PlayConnection connection = (PlayConnection) event.getConnection();
         if (this.connection != connection) {
             // the card got recycled
             return;

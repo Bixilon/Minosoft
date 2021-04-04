@@ -16,15 +16,15 @@ import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.entities.EntityFactory
 import de.bixilon.minosoft.data.mappings.entities.EntityType
-import de.bixilon.minosoft.protocol.network.Connection
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import glm_.vec3.Vec3
 
-class Cod(connection: Connection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : AbstractSchoolingFish(connection, entityType, position, rotation) {
+class Cod(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : AbstractSchoolingFish(connection, entityType, position, rotation) {
 
     companion object : EntityFactory<Cod> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("cod")
 
-        override fun build(connection: Connection, entityType: EntityType, position: Vec3, rotation: EntityRotation): Cod {
+        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation): Cod {
             return Cod(connection, entityType, position, rotation)
         }
     }

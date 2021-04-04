@@ -20,12 +20,12 @@ import de.bixilon.minosoft.data.commands.parser.exceptions.resourcelocation.Ench
 import de.bixilon.minosoft.data.commands.parser.exceptions.resourcelocation.EntityNotFoundCommandParseException
 import de.bixilon.minosoft.data.commands.parser.exceptions.resourcelocation.MobEffectNotFoundCommandParseException
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties
-import de.bixilon.minosoft.protocol.network.Connection
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 
 class ResourceLocationListParser : CommandParser() {
 
     @Throws(CommandParseException::class)
-    override fun parse(connection: Connection, properties: ParserProperties?, stringReader: CommandStringReader): Any? {
+    override fun parse(connection: PlayConnection, properties: ParserProperties?, stringReader: CommandStringReader): Any? {
         val resourceLocation = stringReader.readResourceLocation()
 
 

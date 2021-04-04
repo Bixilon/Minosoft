@@ -13,15 +13,15 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket;
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
-public class PacketScoreboardDisplayScoreboard extends ClientboundPacket {
+public class PacketScoreboardDisplayScoreboard extends PlayClientboundPacket {
     private final ScoreboardAnimations action;
     private final String scoreName;
 
-    public PacketScoreboardDisplayScoreboard(InByteBuffer buffer) {
+    public PacketScoreboardDisplayScoreboard(PlayInByteBuffer buffer) {
         this.action = ScoreboardAnimations.byId(buffer.readUnsignedByte());
         this.scoreName = buffer.readString();
     }

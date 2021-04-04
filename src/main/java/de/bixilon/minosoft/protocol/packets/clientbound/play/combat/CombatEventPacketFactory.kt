@@ -13,14 +13,14 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play.combat
 
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.enum.ValuesEnum
 
 object CombatEventPacketFactory {
 
-    fun createPacket(buffer: InByteBuffer): ClientboundPacket {
+    fun createPacket(buffer: PlayInByteBuffer): PlayClientboundPacket {
         return when (CombatEvents.VALUES[buffer.readVarInt()]) {
             CombatEvents.ENTER_COMBAT -> EnterCombatEventPacket()
             CombatEvents.END_COMBAT -> EnterCombatEventPacket()

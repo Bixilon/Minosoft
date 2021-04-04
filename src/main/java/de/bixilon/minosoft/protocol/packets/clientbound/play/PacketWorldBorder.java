@@ -13,11 +13,11 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket;
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
-public class PacketWorldBorder extends ClientboundPacket {
+public class PacketWorldBorder extends PlayClientboundPacket {
     private final WorldBorderActions action;
 
     // fields depend on action
@@ -34,7 +34,7 @@ public class PacketWorldBorder extends ClientboundPacket {
     private int warningTime;
     private int warningBlocks;
 
-    public PacketWorldBorder(InByteBuffer buffer) {
+    public PacketWorldBorder(PlayInByteBuffer buffer) {
         this.action = WorldBorderActions.byId(buffer.readVarInt());
         switch (this.action) {
             case SET_SIZE -> this.radius = buffer.readDouble();

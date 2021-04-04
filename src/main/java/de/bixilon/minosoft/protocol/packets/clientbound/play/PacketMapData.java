@@ -14,15 +14,15 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.text.ChatComponent;
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket;
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
 import java.util.ArrayList;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
 
-public class PacketMapData extends ClientboundPacket {
+public class PacketMapData extends PlayClientboundPacket {
     private final int mapId;
     private PacketMapDataDataActions dataData;
 
@@ -41,7 +41,7 @@ public class PacketMapData extends ClientboundPacket {
 
     private byte[] data;
 
-    public PacketMapData(InByteBuffer buffer) {
+    public PacketMapData(PlayInByteBuffer buffer) {
         this.mapId = buffer.readVarInt(); // mapId
         if (buffer.getVersionId() < V_14W28A) {
             int length = buffer.readUnsignedShort();

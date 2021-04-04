@@ -13,16 +13,16 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket;
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
-public class PacketSetPassenger extends ClientboundPacket {
+public class PacketSetPassenger extends PlayClientboundPacket {
     private final int vehicleId;
     private final int[] entityIds;
 
 
-    public PacketSetPassenger(InByteBuffer buffer) {
+    public PacketSetPassenger(PlayInByteBuffer buffer) {
         this.vehicleId = buffer.readVarInt();
         this.entityIds = new int[buffer.readVarInt()];
         for (int i = 0; i < this.entityIds.length; i++) {

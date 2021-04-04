@@ -13,18 +13,18 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket;
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_17W47A;
 
-public class PacketCraftRecipeResponse extends ClientboundPacket {
+public class PacketCraftRecipeResponse extends PlayClientboundPacket {
     private final byte windowId;
     private int recipeId;
     private String recipeName;
 
-    public PacketCraftRecipeResponse(InByteBuffer buffer) {
+    public PacketCraftRecipeResponse(PlayInByteBuffer buffer) {
         this.windowId = buffer.readByte();
         if (buffer.getVersionId() < V_17W47A) { // ToDo: was this really in 346?
             this.recipeId = buffer.readVarInt();

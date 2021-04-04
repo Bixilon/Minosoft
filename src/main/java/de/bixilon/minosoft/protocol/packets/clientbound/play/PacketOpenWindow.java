@@ -16,21 +16,21 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 import de.bixilon.minosoft.data.inventory.InventoryProperties;
 import de.bixilon.minosoft.data.inventory.InventoryTypes;
 import de.bixilon.minosoft.data.text.ChatComponent;
-import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket;
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
 
-public class PacketOpenWindow extends ClientboundPacket {
+public class PacketOpenWindow extends PlayClientboundPacket {
     private final byte windowId;
     private final InventoryTypes type;
     private ChatComponent title;
     private byte slotCount;
     private int entityId;
 
-    public PacketOpenWindow(InByteBuffer buffer) {
+    public PacketOpenWindow(PlayInByteBuffer buffer) {
         if (buffer.getVersionId() < V_14W03B) {
             this.windowId = buffer.readByte();
             this.type = InventoryTypes.byId(buffer.readUnsignedByte());
@@ -55,7 +55,7 @@ public class PacketOpenWindow extends ClientboundPacket {
     }
 
     @Override
-    public void handle(Connection connection) {
+    public void handle(PlayConnection connection) {
         // ToDo: connection.getPlayer().createInventory(getInventoryProperties());
     }
 

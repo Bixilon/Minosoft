@@ -10,13 +10,8 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.modding.event.events
 
-package de.bixilon.minosoft.protocol.packets;
+import de.bixilon.minosoft.protocol.network.connection.Connection
 
-import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
-
-// packet to send to server
-public interface ServerboundPacket extends Packet {
-    OutPacketBuffer write(Connection connection);
-}
+abstract class ConnectionEvent(open val connection: Connection) : Event()

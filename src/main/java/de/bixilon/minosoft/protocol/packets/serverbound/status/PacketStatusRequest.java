@@ -13,18 +13,17 @@
 
 package de.bixilon.minosoft.protocol.packets.serverbound.status;
 
-import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
-import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketTypes;
+import de.bixilon.minosoft.protocol.packets.serverbound.AllServerboundPacket;
+import de.bixilon.minosoft.protocol.protocol.OutByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
+import org.jetbrains.annotations.NotNull;
 
-public class PacketStatusRequest implements ServerboundPacket {
+public class PacketStatusRequest implements AllServerboundPacket {
 
     @Override
-    public OutPacketBuffer write(Connection connection) {
-        return new OutPacketBuffer(connection, PacketTypes.Serverbound.STATUS_REQUEST);
+    public void write(@NotNull OutByteBuffer buffer) {
     }
+
 
     @Override
     public void log() {

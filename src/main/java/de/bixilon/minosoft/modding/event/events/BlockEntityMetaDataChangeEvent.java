@@ -14,25 +14,25 @@
 package de.bixilon.minosoft.modding.event.events;
 
 import de.bixilon.minosoft.data.entities.block.BlockEntityMetaData;
-import de.bixilon.minosoft.protocol.network.Connection;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
 import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketBlockEntityMetadata;
 import glm_.vec3.Vec3i;
 
 import javax.annotation.Nullable;
 
-public class BlockEntityMetaDataChangeEvent extends ConnectionEvent {
+public class BlockEntityMetaDataChangeEvent extends PlayConnectionEvent {
     private final Vec3i position;
     private final PacketBlockEntityMetadata.BlockEntityActions action;
     private final BlockEntityMetaData data;
 
-    public BlockEntityMetaDataChangeEvent(Connection connection, Vec3i position, PacketBlockEntityMetadata.BlockEntityActions action, BlockEntityMetaData data) {
+    public BlockEntityMetaDataChangeEvent(PlayConnection connection, Vec3i position, PacketBlockEntityMetadata.BlockEntityActions action, BlockEntityMetaData data) {
         super(connection);
         this.position = position;
         this.action = action;
         this.data = data;
     }
 
-    public BlockEntityMetaDataChangeEvent(Connection connection, PacketBlockEntityMetadata pkg) {
+    public BlockEntityMetaDataChangeEvent(PlayConnection connection, PacketBlockEntityMetadata pkg) {
         super(connection);
         this.position = pkg.getPosition();
         this.action = pkg.getAction();

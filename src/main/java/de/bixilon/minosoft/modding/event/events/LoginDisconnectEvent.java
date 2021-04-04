@@ -14,18 +14,18 @@
 package de.bixilon.minosoft.modding.event.events;
 
 import de.bixilon.minosoft.data.text.ChatComponent;
-import de.bixilon.minosoft.protocol.network.Connection;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
 import de.bixilon.minosoft.protocol.packets.clientbound.login.PacketLoginDisconnect;
 
-public class LoginDisconnectEvent extends ConnectionEvent {
+public class LoginDisconnectEvent extends PlayConnectionEvent {
     private final ChatComponent reason;
 
-    public LoginDisconnectEvent(Connection connection, ChatComponent reason) {
+    public LoginDisconnectEvent(PlayConnection connection, ChatComponent reason) {
         super(connection);
         this.reason = reason;
     }
 
-    public LoginDisconnectEvent(Connection connection, PacketLoginDisconnect pkg) {
+    public LoginDisconnectEvent(PlayConnection connection, PacketLoginDisconnect pkg) {
         super(connection);
         this.reason = pkg.getReason();
     }

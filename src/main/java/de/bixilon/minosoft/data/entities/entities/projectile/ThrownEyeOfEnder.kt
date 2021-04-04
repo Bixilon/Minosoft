@@ -20,10 +20,10 @@ import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.entities.EntityFactory
 import de.bixilon.minosoft.data.mappings.entities.EntityType
-import de.bixilon.minosoft.protocol.network.Connection
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import glm_.vec3.Vec3
 
-class ThrownEyeOfEnder(connection: Connection, entityType: EntityType, location: Vec3, rotation: EntityRotation) : Entity(connection, entityType, location, rotation) {
+class ThrownEyeOfEnder(connection: PlayConnection, entityType: EntityType, location: Vec3, rotation: EntityRotation) : Entity(connection, entityType, location, rotation) {
 
     @get:EntityMetaDataFunction(name = "Item")
     val item: ItemStack
@@ -37,7 +37,7 @@ class ThrownEyeOfEnder(connection: Connection, entityType: EntityType, location:
         private val DEFAULT_ITEM = ResourceLocation("ender_eye")
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("eye_of_ender")
 
-        override fun build(connection: Connection, entityType: EntityType, position: Vec3, rotation: EntityRotation): ThrownEyeOfEnder {
+        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation): ThrownEyeOfEnder {
             return ThrownEyeOfEnder(connection, entityType, position, rotation)
         }
     }

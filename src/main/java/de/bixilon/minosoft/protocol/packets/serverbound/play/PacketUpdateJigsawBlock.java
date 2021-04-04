@@ -13,16 +13,14 @@
 
 package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
-import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
-import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketTypes;
+import de.bixilon.minosoft.protocol.packets.serverbound.PlayServerboundPacket;
+import de.bixilon.minosoft.protocol.protocol.OutPlayByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 import glm_.vec3.Vec3i;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_20W13A;
 
-public class PacketUpdateJigsawBlock implements ServerboundPacket {
+public class PacketUpdateJigsawBlock implements PlayServerboundPacket {
     private final Vec3i position;
     private final String targetPool;
     private final String finalState;
@@ -48,8 +46,7 @@ public class PacketUpdateJigsawBlock implements ServerboundPacket {
     }
 
     @Override
-    public OutPacketBuffer write(Connection connection) {
-        OutPacketBuffer buffer = new OutPacketBuffer(connection, PacketTypes.Serverbound.PLAY_UPDATE_JIGSAW_BLOCK);
+    public void write(OutPlayByteBuffer buffer) {
         buffer.writePosition(this.position);
         if (buffer.getVersionId() < V_20W13A) {
             buffer.writeString(this.attachmentType);
@@ -62,7 +59,6 @@ public class PacketUpdateJigsawBlock implements ServerboundPacket {
             buffer.writeString(this.finalState);
             buffer.writeString(this.jointType);
         }
-        return buffer;
     }
 
     @Override

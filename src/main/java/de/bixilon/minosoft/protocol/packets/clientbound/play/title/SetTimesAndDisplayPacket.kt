@@ -13,16 +13,16 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play.title
 
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.util.logging.Log
 
-class SetTimesAndDisplayPacket(buffer: InByteBuffer) : ClientboundPacket() {
-   val fadeInTime = buffer.readInt()
-   val stayTime = buffer.readInt()
-   val fadeOutTime = buffer.readInt()
+class SetTimesAndDisplayPacket(buffer: PlayInByteBuffer) : PlayClientboundPacket() {
+    val fadeInTime = buffer.readInt()
+    val stayTime = buffer.readInt()
+    val fadeOutTime = buffer.readInt()
 
-   override fun log() {
-      Log.protocol("[IN] Received set time and display title (fadeInTime=$fadeInTime, stayTime=$stayTime, fadeOutTime=$fadeOutTime)")
-   }
+    override fun log() {
+        Log.protocol("[IN] Received set time and display title (fadeInTime=$fadeInTime, stayTime=$stayTime, fadeOutTime=$fadeOutTime)")
+    }
 }

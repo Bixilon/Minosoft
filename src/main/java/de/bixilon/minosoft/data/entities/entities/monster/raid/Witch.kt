@@ -18,10 +18,10 @@ import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.entities.EntityFactory
 import de.bixilon.minosoft.data.mappings.entities.EntityType
-import de.bixilon.minosoft.protocol.network.Connection
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import glm_.vec3.Vec3
 
-class Witch(connection: Connection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : Raider(connection, entityType, position, rotation) {
+class Witch(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : Raider(connection, entityType, position, rotation) {
     @get:EntityMetaDataFunction(name = "Is drinking Potion")
     val isDrinkingPotion: Boolean
         get() = entityMetaData.sets.getBoolean(EntityMetaDataFields.WITCH_IS_DRINKING_POTION)
@@ -33,7 +33,7 @@ class Witch(connection: Connection, entityType: EntityType, position: Vec3, rota
     companion object : EntityFactory<Witch> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("witch")
 
-        override fun build(connection: Connection, entityType: EntityType, position: Vec3, rotation: EntityRotation): Witch {
+        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation): Witch {
             return Witch(connection, entityType, position, rotation)
         }
     }

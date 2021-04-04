@@ -13,14 +13,14 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket;
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
-public class PacketEntityInitialisation extends ClientboundPacket {
+public class PacketEntityInitialisation extends PlayClientboundPacket {
     private final int entityId;
 
-    public PacketEntityInitialisation(InByteBuffer buffer) {
+    public PacketEntityInitialisation(PlayInByteBuffer buffer) {
         this.entityId = buffer.readEntityId();
     }
 

@@ -14,19 +14,19 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.entities.entities.Entity;
-import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket;
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_15W41A;
 
-public class PacketAttachEntity extends ClientboundPacket {
+public class PacketAttachEntity extends PlayClientboundPacket {
     private final int entityId;
     private final int vehicleId;
     private final boolean leash;
 
-    public PacketAttachEntity(InByteBuffer buffer) {
+    public PacketAttachEntity(PlayInByteBuffer buffer) {
         this.entityId = buffer.readInt();
         this.vehicleId = buffer.readInt();
         if (buffer.getVersionId() < V_15W41A) {
@@ -37,7 +37,7 @@ public class PacketAttachEntity extends ClientboundPacket {
     }
 
     @Override
-    public void handle(Connection connection) {
+    public void handle(PlayConnection connection) {
         Entity entity = connection.getWorld().getEntity(getEntityId());
         if (entity == null) {
             // thanks mojang

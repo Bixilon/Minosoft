@@ -16,7 +16,7 @@ package de.bixilon.minosoft.modding.event.events;
 import de.bixilon.minosoft.data.ChatTextPositions;
 import de.bixilon.minosoft.data.text.ChatComponent;
 import de.bixilon.minosoft.modding.event.events.annotations.MinimumProtocolVersion;
-import de.bixilon.minosoft.protocol.network.Connection;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
 import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketChatMessageReceiving;
 
 import java.util.UUID;
@@ -28,14 +28,14 @@ public class ChatMessageReceivingEvent extends CancelableEvent {
     private final ChatTextPositions position;
     private final UUID sender;
 
-    public ChatMessageReceivingEvent(Connection connection, ChatComponent message, ChatTextPositions position, UUID sender) {
+    public ChatMessageReceivingEvent(PlayConnection connection, ChatComponent message, ChatTextPositions position, UUID sender) {
         super(connection);
         this.message = message;
         this.position = position;
         this.sender = sender;
     }
 
-    public ChatMessageReceivingEvent(Connection connection, PacketChatMessageReceiving pkg) {
+    public ChatMessageReceivingEvent(PlayConnection connection, PacketChatMessageReceiving pkg) {
         super(connection);
         this.message = pkg.getMessage();
         this.position = pkg.getPosition();

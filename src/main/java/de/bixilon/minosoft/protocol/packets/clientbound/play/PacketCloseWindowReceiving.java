@@ -14,20 +14,20 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.modding.event.events.CloseWindowEvent;
-import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket;
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
-public class PacketCloseWindowReceiving extends ClientboundPacket {
+public class PacketCloseWindowReceiving extends PlayClientboundPacket {
     private final byte windowId;
 
-    public PacketCloseWindowReceiving(InByteBuffer buffer) {
+    public PacketCloseWindowReceiving(PlayInByteBuffer buffer) {
         this.windowId = buffer.readByte();
     }
 
     @Override
-    public void handle(Connection connection) {
+    public void handle(PlayConnection connection) {
         CloseWindowEvent event = new CloseWindowEvent(connection, this);
         if (connection.fireEvent(event)) {
             return;

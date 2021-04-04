@@ -15,7 +15,7 @@ package de.bixilon.minosoft.gui.main;
 
 import de.bixilon.minosoft.data.locale.LocaleManager;
 import de.bixilon.minosoft.data.locale.Strings;
-import de.bixilon.minosoft.protocol.network.Connection;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.Initializable;
@@ -43,8 +43,8 @@ public class SessionsWindow implements Initializable {
 
     public void setServer(Server server) {
         this.server = server;
-        ObservableList<Connection> connections = FXCollections.observableArrayList();
-        for (Connection connection : server.getConnections()) {
+        ObservableList<PlayConnection> connections = FXCollections.observableArrayList();
+        for (PlayConnection connection : server.getConnections()) {
             if (!connection.isConnected()) {
                 server.getConnections().remove(connection);
             }
@@ -55,6 +55,6 @@ public class SessionsWindow implements Initializable {
     }
 
     public void disconnectAll() {
-        this.server.getConnections().forEach(Connection::disconnect);
+        this.server.getConnections().forEach(PlayConnection::disconnect);
     }
 }

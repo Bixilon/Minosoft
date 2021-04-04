@@ -19,12 +19,12 @@ import de.bixilon.minosoft.data.mappings.blocks.BlockRotations
 import de.bixilon.minosoft.data.mappings.blocks.BlockState
 import de.bixilon.minosoft.data.mappings.blocks.WannabeBlockState
 import de.bixilon.minosoft.data.mappings.blocks.properties.BlockProperties
-import de.bixilon.minosoft.protocol.network.Connection
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 
 class BlockStateParser : CommandParser() {
 
     @Throws(CommandParseException::class)
-    override fun parse(connection: Connection, properties: ParserProperties?, stringReader: CommandStringReader): BlockState? {
+    override fun parse(connection: PlayConnection, properties: ParserProperties?, stringReader: CommandStringReader): BlockState? {
         if (this == BLOCK_PREDICATE_PARSER) {
             if (stringReader.peek() != '#') {
                 throw InvalidBlockPredicateCommandParseException(stringReader, stringReader.read().toString())

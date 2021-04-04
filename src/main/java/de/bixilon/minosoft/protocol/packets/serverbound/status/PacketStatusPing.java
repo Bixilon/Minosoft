@@ -13,14 +13,13 @@
 
 package de.bixilon.minosoft.protocol.packets.serverbound.status;
 
-import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
+import de.bixilon.minosoft.protocol.packets.serverbound.AllServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.ConnectionPing;
-import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketTypes;
+import de.bixilon.minosoft.protocol.protocol.OutByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
+import org.jetbrains.annotations.NotNull;
 
-public class PacketStatusPing implements ServerboundPacket {
+public class PacketStatusPing implements AllServerboundPacket {
     private final long id;
 
     public PacketStatusPing(long id) {
@@ -36,10 +35,8 @@ public class PacketStatusPing implements ServerboundPacket {
     }
 
     @Override
-    public OutPacketBuffer write(Connection connection) {
-        OutPacketBuffer buffer = new OutPacketBuffer(connection, PacketTypes.Serverbound.STATUS_PING);
+    public void write(@NotNull OutByteBuffer buffer) {
         buffer.writeLong(this.id);
-        return buffer;
     }
 
     @Override

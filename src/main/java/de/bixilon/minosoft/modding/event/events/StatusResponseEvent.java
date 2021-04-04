@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.modding.event.events;
 
-import de.bixilon.minosoft.protocol.network.Connection;
+import de.bixilon.minosoft.protocol.network.connection.StatusConnection;
 import de.bixilon.minosoft.protocol.packets.clientbound.status.PacketStatusResponse;
 import de.bixilon.minosoft.protocol.ping.ServerListPing;
 
@@ -23,12 +23,12 @@ import de.bixilon.minosoft.protocol.ping.ServerListPing;
 public class StatusResponseEvent extends ConnectionEvent {
     private final ServerListPing response;
 
-    public StatusResponseEvent(Connection connection, ServerListPing response) {
+    public StatusResponseEvent(StatusConnection connection, ServerListPing response) {
         super(connection);
         this.response = response;
     }
 
-    public StatusResponseEvent(Connection connection, PacketStatusResponse pkg) {
+    public StatusResponseEvent(StatusConnection connection, PacketStatusResponse pkg) {
         super(connection);
         this.response = pkg.getResponse();
     }

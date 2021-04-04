@@ -13,20 +13,20 @@
 
 package de.bixilon.minosoft.modding.event.events;
 
-import de.bixilon.minosoft.protocol.network.Connection;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
 import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketChangeGameState;
 
-public class ChangeGameStateEvent extends ConnectionEvent {
+public class ChangeGameStateEvent extends PlayConnectionEvent {
     private final PacketChangeGameState.Reason reason;
     private final float value;
 
-    public ChangeGameStateEvent(Connection connection, PacketChangeGameState.Reason reason, float value) {
+    public ChangeGameStateEvent(PlayConnection connection, PacketChangeGameState.Reason reason, float value) {
         super(connection);
         this.reason = reason;
         this.value = value;
     }
 
-    public ChangeGameStateEvent(Connection connection, PacketChangeGameState pkg) {
+    public ChangeGameStateEvent(PlayConnection connection, PacketChangeGameState pkg) {
         super(connection);
         this.reason = pkg.getReason();
         this.value = pkg.getFloatValue();

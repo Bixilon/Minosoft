@@ -18,8 +18,8 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
-import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import de.bixilon.minosoft.util.logging.Log;
 import de.bixilon.minosoft.util.microsoft.MicrosoftOAuthUtils;
@@ -72,8 +72,8 @@ public final class Util {
         throw new IllegalArgumentException(String.format("%s is not a valid UUID String", uuid));
     }
 
-    public static InByteBuffer decompress(byte[] bytes, Connection connection) {
-        return new InByteBuffer(decompress(bytes), connection);
+    public static PlayInByteBuffer decompress(byte[] bytes, PlayConnection connection) {
+        return new PlayInByteBuffer(decompress(bytes), connection);
     }
 
     public static byte[] decompress(byte[] bytes) {

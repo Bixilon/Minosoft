@@ -20,9 +20,9 @@ import de.bixilon.minosoft.data.entities.EntityRotation;
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity;
 import de.bixilon.minosoft.data.entities.meta.EntityMetaData;
 import de.bixilon.minosoft.modding.event.events.EntitySpawnEvent;
-import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket;
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 import glm_.vec3.Vec3;
 
@@ -31,12 +31,12 @@ import java.util.UUID;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
 
-public class PacketSpawnPlayer extends ClientboundPacket {
+public class PacketSpawnPlayer extends PlayClientboundPacket {
     private final int entityId;
     private final UUID entityUUID;
     private final PlayerEntity entity;
 
-    public PacketSpawnPlayer(InByteBuffer buffer) {
+    public PacketSpawnPlayer(PlayInByteBuffer buffer) {
         this.entityId = buffer.readVarInt();
         String name = null;
         HashSet<PlayerPropertyData> properties = null;
@@ -77,7 +77,7 @@ public class PacketSpawnPlayer extends ClientboundPacket {
     }
 
     @Override
-    public void handle(Connection connection) {
+    public void handle(PlayConnection connection) {
         connection.fireEvent(new EntitySpawnEvent(connection, this));
 
         connection.getWorld().addEntity(this.entityId, this.entityUUID, this.entity);

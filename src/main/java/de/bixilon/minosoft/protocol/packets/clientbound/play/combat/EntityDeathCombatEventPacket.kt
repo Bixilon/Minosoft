@@ -13,11 +13,11 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play.combat
 
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.util.logging.Log
 
-class EntityDeathCombatEventPacket(buffer: InByteBuffer) : ClientboundPacket() {
+class EntityDeathCombatEventPacket(buffer: PlayInByteBuffer) : PlayClientboundPacket() {
     val playerId = buffer.readVarInt()
     val entityId = buffer.readInt()
     val message = buffer.readChatComponent()

@@ -17,12 +17,12 @@ import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.gui.rendering.util.VecUtil
-import de.bixilon.minosoft.protocol.network.Connection
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import glm_.vec3.Vec3i
 
 class Player(
     account: Account,
-    connection: Connection,
+    connection: PlayConnection,
 ) {
     val healthCondition = PlayerHealthCondition()
     val experienceCondition = PlayerExperienceCondition()

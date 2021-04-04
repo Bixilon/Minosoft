@@ -13,15 +13,15 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play
 
 import de.bixilon.minosoft.modding.event.events.HeldItemChangeEvent
-import de.bixilon.minosoft.protocol.network.Connection
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.util.logging.Log
 
-class PacketHeldItemChangeReceiving(buffer: InByteBuffer) : ClientboundPacket() {
+class PacketHeldItemChangeReceiving(buffer: PlayInByteBuffer) : PlayClientboundPacket() {
     val slot: Int = buffer.readByte().toInt()
 
-    override fun handle(connection: Connection) {
+    override fun handle(connection: PlayConnection) {
         connection.fireEvent(HeldItemChangeEvent(connection, slot))
 
         connection.player.inventoryManager.selectedHotbarSlot = slot

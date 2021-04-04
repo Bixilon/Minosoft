@@ -15,13 +15,11 @@ package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
 import de.bixilon.minosoft.data.inventory.InventoryActions;
 import de.bixilon.minosoft.data.inventory.ItemStack;
-import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
-import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketTypes;
+import de.bixilon.minosoft.protocol.packets.serverbound.PlayServerboundPacket;
+import de.bixilon.minosoft.protocol.protocol.OutPlayByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
-public class PacketClickWindow implements ServerboundPacket {
+public class PacketClickWindow implements PlayServerboundPacket {
     private final byte windowId;
     private final short slot;
     private final InventoryActions action;
@@ -37,15 +35,13 @@ public class PacketClickWindow implements ServerboundPacket {
     }
 
     @Override
-    public OutPacketBuffer write(Connection connection) {
-        OutPacketBuffer buffer = new OutPacketBuffer(connection, PacketTypes.Serverbound.PLAY_CLICK_WINDOW);
+    public void write(OutPlayByteBuffer buffer) {
         buffer.writeByte(this.windowId);
         buffer.writeShort(this.slot);
         buffer.writeByte(this.action.getButton());
         buffer.writeShort(this.actionNumber);
         buffer.writeByte(this.action.getMode());
         buffer.writeItemStack(this.clickedItem);
-        return buffer;
     }
 
     @Override

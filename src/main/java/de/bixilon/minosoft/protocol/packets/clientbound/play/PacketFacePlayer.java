@@ -13,18 +13,18 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket;
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 import glm_.vec3.Vec3;
 
-public class PacketFacePlayer extends ClientboundPacket {
+public class PacketFacePlayer extends PlayClientboundPacket {
     private final PlayerFaces face;
     private final Vec3 position;
     private int entityId = -1;
     private PlayerFaces entityFace;
 
-    public PacketFacePlayer(InByteBuffer buffer) {
+    public PacketFacePlayer(PlayInByteBuffer buffer) {
         this.face = PlayerFaces.byId(buffer.readVarInt());
         this.position = buffer.readEntityPosition();
         if (buffer.readBoolean()) {

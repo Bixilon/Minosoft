@@ -28,7 +28,7 @@ import de.bixilon.minosoft.modding.event.EventInvokerCallback;
 import de.bixilon.minosoft.modding.event.events.ConnectionStateChangeEvent;
 import de.bixilon.minosoft.modding.event.events.ServerListPongEvent;
 import de.bixilon.minosoft.modding.event.events.ServerListStatusArriveEvent;
-import de.bixilon.minosoft.protocol.network.Connection;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
 import de.bixilon.minosoft.protocol.ping.ForgeModInfo;
 import de.bixilon.minosoft.protocol.ping.ServerListPing;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
@@ -156,7 +156,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
                 this.playersField.setText("");
                 this.versionField.setText(LocaleManager.translate(Strings.OFFLINE));
                 this.versionField.getStyleClass().add("version-error");
-                setErrorMotd(String.format("%s", server.getLastPing().getLastConnectionException()));
+                setErrorMotd(String.format("%s", server.getLastPing().getLastException()));
                 this.optionsConnect.setDisable(true);
                 this.canConnect = false;
                 return;
@@ -193,12 +193,12 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
                 this.optionsEdit.setDisable(true);
                 this.optionsDelete.setDisable(true);
             }
-            if (server.getLastPing().getLastConnectionException() != null) {
+            if (server.getLastPing().getLastException() != null) {
                 // connection failed because of an error in minosoft, but ping was okay
                 this.versionField.setStyle("-fx-text-fill: red;");
                 this.optionsConnect.setDisable(true);
                 this.canConnect = false;
-                setErrorMotd(String.format("%s: %s", server.getLastPing().getLastConnectionException().getClass().getCanonicalName(), server.getLastPing().getLastConnectionException().getMessage()));
+                setErrorMotd(String.format("%s: %s", server.getLastPing().getLastException().getClass().getCanonicalName(), server.getLastPing().getLastException().getMessage()));
             }
         })));
         server.getLastPing().registerEvent(new EventInvokerCallback<ServerListPongEvent>(event -> Platform.runLater(() -> {
@@ -251,7 +251,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
         if (this.server.isReadOnly()) {
             return;
         }
-        this.server.getConnections().forEach(Connection::disconnect);
+        this.server.getConnections().forEach(PlayConnection::disconnect);
         this.server.delete();
         Log.info(String.format("Deleted server (name=\"%s\", address=\"%s\")", this.server.getName().getLegacyText(), this.server.getAddress()));
         SERVER_LIST_VIEW.getItems().remove(this.server);
@@ -291,21 +291,22 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
         }
         this.root.getStyleClass().add("list-cell-connecting");
         Minosoft.THREAD_POOL.execute(() -> {
-            Connection connection = new Connection(Connection.lastConnectionId++, this.server.getAddress(), Minosoft.getConfig().getConfig().getAccount().getEntries().get(Minosoft.getConfig().getConfig().getAccount().getSelected()));
+            Version version;
+            if (this.server.getDesiredVersionId() == ProtocolDefinition.QUERY_PROTOCOL_VERSION_ID) {
+                version = this.server.getLastPing().getServerVersion();
+            } else {
+                version = Versions.getVersionById(this.server.getDesiredVersionId());
+            }
+
+            PlayConnection connection = new PlayConnection(this.server.getLastPing().getRealAddress(), Minosoft.getConfig().getConfig().getAccount().getEntries().get(Minosoft.getConfig().getConfig().getAccount().getSelected()), version);
             this.server.addConnection(connection);
             Platform.runLater(() -> {
                 this.optionsConnect.setDisable(true);
             });
-            Version version;
-            if (this.server.getDesiredVersionId() == ProtocolDefinition.QUERY_PROTOCOL_VERSION_ID) {
-                version = this.server.getLastPing().getVersion();
-            } else {
-                version = Versions.getVersionById(this.server.getDesiredVersionId());
-            }
             // ToDo: show progress dialog
 
             connection.registerEvent(new EventInvokerCallback<>(this::handleConnectionCallback));
-            connection.connect(this.server.getLastPing().getAddress(), version, new CountUpAndDownLatch(1));
+            connection.connect(new CountUpAndDownLatch(1));
         });
     }
 
@@ -314,7 +315,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
     }
 
     private void handleConnectionCallback(ConnectionStateChangeEvent event) {
-        Connection connection = event.getConnection();
+        PlayConnection connection = (PlayConnection) event.getConnection();
         if (!this.server.getConnections().contains(connection)) {
             // the card got recycled
             return;
@@ -371,7 +372,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
         Label forcedVersionLabel = new Label();
 
         if (this.server.getDesiredVersionId() == ProtocolDefinition.QUERY_PROTOCOL_VERSION_ID) {
-            forcedVersionLabel.setText(Versions.LOWEST_VERSION_SUPPORTED.getVersionName());
+            forcedVersionLabel.setText(Versions.AUTOMATIC_VERSION.getVersionName());
         } else {
             forcedVersionLabel.setText(Versions.getVersionById(this.server.getDesiredVersionId()).getVersionName());
         }
@@ -387,8 +388,8 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
         grid.add(forcedVersionLabel, 1, column);
 
         if (this.server.getLastPing() != null) {
-            if (this.server.getLastPing().getLastConnectionException() != null) {
-                Label lastConnectionExceptionLabel = new Label(this.server.getLastPing().getLastConnectionException().toString());
+            if (this.server.getLastPing().getLastException() != null) {
+                Label lastConnectionExceptionLabel = new Label(this.server.getLastPing().getLastException().toString());
                 lastConnectionExceptionLabel.setStyle("-fx-text-fill: red");
                 grid.add(new Label(LocaleManager.translate(Strings.SERVER_INFO_LAST_CONNECTION_EXCEPTION) + ":"), 0, ++column);
                 grid.add(lastConnectionExceptionLabel, 1, column);
@@ -403,7 +404,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
                 } else {
                     serverVersionString = serverVersion.getVersionName();
                 }
-                Label realServerAddressLabel = new Label(this.server.getLastPing().getAddress().toString());
+                Label realServerAddressLabel = new Label(this.server.getLastPing().getAddress());
                 Label serverVersionLabel = new Label(serverVersionString);
                 Label serverBrandLabel = new Label(lastPing.getServerBrand());
                 Label playersOnlineMaxLabel = new Label(LocaleManager.translate(Strings.SERVER_INFO_SLOTS_PLAYERS_ONLINE, lastPing.getPlayerOnline(), lastPing.getMaxPlayers()));

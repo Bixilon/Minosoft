@@ -14,22 +14,22 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.modding.event.events.TimeChangeEvent;
-import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket;
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
-public class PacketTimeUpdate extends ClientboundPacket {
+public class PacketTimeUpdate extends PlayClientboundPacket {
     private final long worldAge;
     private final long timeOfDay;
 
-    public PacketTimeUpdate(InByteBuffer buffer) {
+    public PacketTimeUpdate(PlayInByteBuffer buffer) {
         this.worldAge = buffer.readLong();
         this.timeOfDay = buffer.readLong();
     }
 
     @Override
-    public void handle(Connection connection) {
+    public void handle(PlayConnection connection) {
         if (connection.fireEvent(new TimeChangeEvent(connection, this))) {
             return;
         }

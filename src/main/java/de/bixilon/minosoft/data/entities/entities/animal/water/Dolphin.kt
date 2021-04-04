@@ -18,11 +18,11 @@ import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.entities.EntityFactory
 import de.bixilon.minosoft.data.mappings.entities.EntityType
-import de.bixilon.minosoft.protocol.network.Connection
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3i
 
-class Dolphin(connection: Connection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : WaterAnimal(connection, entityType, position, rotation) {
+class Dolphin(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : WaterAnimal(connection, entityType, position, rotation) {
 
     @get:EntityMetaDataFunction(name = "Treasure position")
     val treasurePosition: Vec3i?
@@ -41,7 +41,7 @@ class Dolphin(connection: Connection, entityType: EntityType, position: Vec3, ro
     companion object : EntityFactory<Dolphin> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("dolphin")
 
-        override fun build(connection: Connection, entityType: EntityType, position: Vec3, rotation: EntityRotation): Dolphin {
+        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation): Dolphin {
             return Dolphin(connection, entityType, position, rotation)
         }
     }

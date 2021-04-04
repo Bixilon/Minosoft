@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.modding.event;
 
-import de.bixilon.minosoft.modding.event.events.ConnectionEvent;
+import de.bixilon.minosoft.modding.event.events.Event;
 import de.bixilon.minosoft.modding.loading.Priorities;
 
 public abstract class EventInvoker {
@@ -35,7 +35,7 @@ public abstract class EventInvoker {
         return this.priority;
     }
 
-    public abstract void invoke(ConnectionEvent event);
+    public abstract void invoke(Event event);
 
-    public abstract Class<? extends ConnectionEvent> getEventType();
+    public abstract Class<? extends Event> getEventType();
 }

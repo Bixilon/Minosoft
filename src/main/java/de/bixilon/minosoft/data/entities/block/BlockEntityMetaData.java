@@ -13,14 +13,14 @@
 
 package de.bixilon.minosoft.data.entities.block;
 
-import de.bixilon.minosoft.protocol.network.Connection;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
 import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketBlockEntityMetadata;
 import de.bixilon.minosoft.util.nbt.tag.CompoundTag;
 
 import javax.annotation.Nullable;
 
 public abstract class BlockEntityMetaData {
-    public static BlockEntityMetaData getData(Connection connection, @Nullable PacketBlockEntityMetadata.BlockEntityActions action, CompoundTag nbt) {
+    public static BlockEntityMetaData getData(PlayConnection connection, @Nullable PacketBlockEntityMetadata.BlockEntityActions action, CompoundTag nbt) {
         String item;
         if (action != null) {
             item = action.name();

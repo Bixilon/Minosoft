@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.modding.event.events;
 
-import de.bixilon.minosoft.protocol.network.Connection;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
 import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketSetExperience;
 
 public class ExperienceChangeEvent extends CancelableEvent {
@@ -21,14 +21,14 @@ public class ExperienceChangeEvent extends CancelableEvent {
     private final int level;
     private final int total;
 
-    public ExperienceChangeEvent(Connection connection, float bar, int level, int total) {
+    public ExperienceChangeEvent(PlayConnection connection, float bar, int level, int total) {
         super(connection);
         this.bar = bar;
         this.level = level;
         this.total = total;
     }
 
-    public ExperienceChangeEvent(Connection connection, PacketSetExperience pkg) {
+    public ExperienceChangeEvent(PlayConnection connection, PacketSetExperience pkg) {
         super(connection);
         this.bar = pkg.getBar();
         this.level = pkg.getLevel();

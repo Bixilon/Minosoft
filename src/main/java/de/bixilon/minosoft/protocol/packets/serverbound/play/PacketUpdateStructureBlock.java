@@ -13,14 +13,12 @@
 
 package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
-import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
-import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketTypes;
+import de.bixilon.minosoft.protocol.packets.serverbound.PlayServerboundPacket;
+import de.bixilon.minosoft.protocol.protocol.OutPlayByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 import glm_.vec3.Vec3i;
 
-public class PacketUpdateStructureBlock implements ServerboundPacket {
+public class PacketUpdateStructureBlock implements PlayServerboundPacket {
     private final Vec3i position;
     private final StructureBlockActions action;
     private final StructureBlockModes mode;
@@ -58,8 +56,7 @@ public class PacketUpdateStructureBlock implements ServerboundPacket {
     }
 
     @Override
-    public OutPacketBuffer write(Connection connection) {
-        OutPacketBuffer buffer = new OutPacketBuffer(connection, PacketTypes.Serverbound.PLAY_UPDATE_STRUCTURE_BLOCK);
+    public void write(OutPlayByteBuffer buffer) {
         buffer.writePosition(this.position);
         buffer.writeVarInt(this.action.ordinal());
         buffer.writeVarInt(this.mode.ordinal());
@@ -76,7 +73,6 @@ public class PacketUpdateStructureBlock implements ServerboundPacket {
         buffer.writeFloat(this.integrity);
         buffer.writeVarLong(this.seed);
         buffer.writeByte(this.flags);
-        return buffer;
     }
 
     @Override

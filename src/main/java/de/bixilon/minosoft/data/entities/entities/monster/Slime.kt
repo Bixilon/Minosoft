@@ -19,11 +19,11 @@ import de.bixilon.minosoft.data.entities.entities.Mob
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.entities.EntityFactory
 import de.bixilon.minosoft.data.mappings.entities.EntityType
-import de.bixilon.minosoft.protocol.network.Connection
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import glm_.vec3.Vec3
 import org.checkerframework.common.value.qual.IntRange
 
-open class Slime(connection: Connection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : Mob(connection, entityType, position, rotation) {
+open class Slime(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : Mob(connection, entityType, position, rotation) {
 
     @get:EntityMetaDataFunction(name = "Size")
     val size: @IntRange(from = 0.toLong()) Int
@@ -33,7 +33,7 @@ open class Slime(connection: Connection, entityType: EntityType, position: Vec3,
     companion object : EntityFactory<Slime> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("slime")
 
-        override fun build(connection: Connection, entityType: EntityType, position: Vec3, rotation: EntityRotation): Slime {
+        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation): Slime {
             return Slime(connection, entityType, position, rotation)
         }
     }

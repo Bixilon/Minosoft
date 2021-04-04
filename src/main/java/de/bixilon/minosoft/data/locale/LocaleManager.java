@@ -67,7 +67,7 @@ public class LocaleManager {
             e.printStackTrace();
             Log.warn(String.format("Could not load language file: %s", language));
         }
-        Versions.LOWEST_VERSION_SUPPORTED.setVersionName(translate(Strings.VERSION_AUTOMATIC));
+        Versions.AUTOMATIC_VERSION.setVersionName(translate(Strings.VERSION_AUTOMATIC));
         Log.verbose(String.format("Loaded language files successfully in %dms", (System.currentTimeMillis() - startTime)));
     }
 }

@@ -27,7 +27,7 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.blockPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.inChunkSectionPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
-import de.bixilon.minosoft.protocol.network.Connection
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketPlayerPositionAndRotationSending
 import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketPlayerPositionSending
 import de.bixilon.minosoft.protocol.packets.serverbound.play.PacketPlayerRotationSending
@@ -43,7 +43,7 @@ import glm_.vec3.Vec3
 import glm_.vec3.Vec3i
 
 class Camera(
-    val connection: Connection,
+    val connection: PlayConnection,
     var fov: Float,
     val renderWindow: RenderWindow,
 ) {

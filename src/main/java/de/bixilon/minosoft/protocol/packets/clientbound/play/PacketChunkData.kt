@@ -20,9 +20,9 @@ import de.bixilon.minosoft.data.world.ChunkData
 import de.bixilon.minosoft.data.world.biome.source.SpatialBiomeArray
 import de.bixilon.minosoft.modding.event.events.BlockEntityMetaDataChangeEvent
 import de.bixilon.minosoft.modding.event.events.ChunkDataChangeEvent
-import de.bixilon.minosoft.protocol.network.Connection
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.util.Util
 import de.bixilon.minosoft.util.chunk.ChunkUtil
@@ -32,7 +32,7 @@ import glm_.vec2.Vec2i
 import glm_.vec3.Vec3i
 import java.util.*
 
-class PacketChunkData() : ClientboundPacket() {
+class PacketChunkData() : PlayClientboundPacket() {
     private val blockEntities = HashMap<Vec3i, BlockEntityMetaData>()
     lateinit var chunkPosition: Vec2i
     var chunkData: ChunkData? = ChunkData()
@@ -40,7 +40,7 @@ class PacketChunkData() : ClientboundPacket() {
     var heightMap: CompoundTag? = null
     private var isFullChunk = false
 
-    constructor(buffer: InByteBuffer) : this() {
+    constructor(buffer: PlayInByteBuffer) : this() {
         val dimension = buffer.connection.world.dimension!!
         chunkPosition = Vec2i(buffer.readInt(), buffer.readInt())
         if (buffer.versionId < ProtocolVersions.V_20W45A) {
@@ -51,7 +51,7 @@ class PacketChunkData() : ClientboundPacket() {
             val addBitMask = BitSet.valueOf(buffer.readBytes(2))
 
             // decompress chunk data
-            val decompressed: InByteBuffer = if (buffer.versionId < ProtocolVersions.V_14W28A) {
+            val decompressed: PlayInByteBuffer = if (buffer.versionId < ProtocolVersions.V_14W28A) {
                 Util.decompress(buffer.readBytes(buffer.readInt()), buffer.connection)
             } else {
                 buffer
@@ -109,7 +109,7 @@ class PacketChunkData() : ClientboundPacket() {
         return
     }
 
-    override fun handle(connection: Connection) {
+    override fun handle(connection: PlayConnection) {
         for ((position, blockEntityMetaData) in blockEntities) {
             connection.fireEvent(BlockEntityMetaDataChangeEvent(connection, position, null, blockEntityMetaData))
         }
@@ -123,10 +123,10 @@ class PacketChunkData() : ClientboundPacket() {
             val chunk = connection.world.getOrCreateChunk(chunkPosition)
             chunk.setData(chunkData!!)
             connection.world.setBlockEntityData(blockEntities)
-            connection.renderer.renderWindow.worldRenderer.prepareChunk(chunkPosition, chunk)
+            connection.renderer?.renderWindow?.worldRenderer?.prepareChunk(chunkPosition, chunk)
         } ?: let {
             connection.world.unloadChunk(chunkPosition)
-            connection.renderer.renderWindow.worldRenderer.unloadChunk(chunkPosition)
+            connection.renderer?.renderWindow?.worldRenderer?.unloadChunk(chunkPosition)
         }
     }
 

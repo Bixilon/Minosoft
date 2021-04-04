@@ -14,19 +14,19 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.modding.event.events.OpenSignEditorEvent;
-import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket;
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 import glm_.vec3.Vec3i;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W03B;
 
-public class PacketOpenSignEditor extends ClientboundPacket {
+public class PacketOpenSignEditor extends PlayClientboundPacket {
     private final Vec3i position;
 
 
-    public PacketOpenSignEditor(InByteBuffer buffer) {
+    public PacketOpenSignEditor(PlayInByteBuffer buffer) {
         if (buffer.getVersionId() < V_14W03B) {
             this.position = buffer.readBlockPositionInteger();
             return;
@@ -35,7 +35,7 @@ public class PacketOpenSignEditor extends ClientboundPacket {
     }
 
     @Override
-    public void handle(Connection connection) {
+    public void handle(PlayConnection connection) {
         OpenSignEditorEvent event = new OpenSignEditorEvent(connection, this);
         if (connection.fireEvent(event)) {
             return;

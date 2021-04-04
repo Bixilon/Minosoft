@@ -15,21 +15,21 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.commands.CommandNode;
 import de.bixilon.minosoft.data.commands.CommandRootNode;
-import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket;
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
-public class PacketDeclareCommands extends ClientboundPacket {
+public class PacketDeclareCommands extends PlayClientboundPacket {
     private final CommandRootNode rootNode;
 
-    public PacketDeclareCommands(InByteBuffer buffer) {
+    public PacketDeclareCommands(PlayInByteBuffer buffer) {
         CommandNode[] nodes = buffer.readCommandNodesArray();
         this.rootNode = (CommandRootNode) nodes[buffer.readVarInt()];
     }
 
     @Override
-    public void handle(Connection connection) {
+    public void handle(PlayConnection connection) {
         connection.setCommandRootNode(getRootNode());
     }
 

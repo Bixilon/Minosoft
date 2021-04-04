@@ -14,20 +14,20 @@
 package de.bixilon.minosoft.modding.event.events;
 
 import de.bixilon.minosoft.data.inventory.ItemStack;
-import de.bixilon.minosoft.protocol.network.Connection;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
 import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketWindowItems;
 
-public class MultiSlotChangeEvent extends ConnectionEvent {
+public class MultiSlotChangeEvent extends PlayConnectionEvent {
     private final byte windowId;
     private final ItemStack[] data;
 
-    public MultiSlotChangeEvent(Connection connection, byte windowId, ItemStack[] data) {
+    public MultiSlotChangeEvent(PlayConnection connection, byte windowId, ItemStack[] data) {
         super(connection);
         this.windowId = windowId;
         this.data = data;
     }
 
-    public MultiSlotChangeEvent(Connection connection, PacketWindowItems pkg) {
+    public MultiSlotChangeEvent(PlayConnection connection, PacketWindowItems pkg) {
         super(connection);
         this.windowId = pkg.getWindowId();
         this.data = pkg.getData();

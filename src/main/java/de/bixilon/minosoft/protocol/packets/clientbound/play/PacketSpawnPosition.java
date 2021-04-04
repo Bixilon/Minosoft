@@ -14,18 +14,18 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.modding.event.events.SpawnPositionChangeEvent;
-import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket;
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 import glm_.vec3.Vec3i;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W03B;
 
-public class PacketSpawnPosition extends ClientboundPacket {
+public class PacketSpawnPosition extends PlayClientboundPacket {
     private final Vec3i position;
 
-    public PacketSpawnPosition(InByteBuffer buffer) {
+    public PacketSpawnPosition(PlayInByteBuffer buffer) {
         if (buffer.getVersionId() < V_14W03B) {
             this.position = buffer.readBlockPositionInteger();
             return;
@@ -34,7 +34,7 @@ public class PacketSpawnPosition extends ClientboundPacket {
     }
 
     @Override
-    public void handle(Connection connection) {
+    public void handle(PlayConnection connection) {
         connection.fireEvent(new SpawnPositionChangeEvent(connection, this));
         connection.getPlayer().setSpawnPosition(getSpawnPosition());
     }

@@ -13,13 +13,11 @@
 
 package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
-import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
-import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketTypes;
+import de.bixilon.minosoft.protocol.packets.serverbound.PlayServerboundPacket;
+import de.bixilon.minosoft.protocol.protocol.OutPlayByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
-public class PacketQueryEntityNBT implements ServerboundPacket {
+public class PacketQueryEntityNBT implements PlayServerboundPacket {
     private final int transactionId;
     private final int entityId;
 
@@ -29,11 +27,9 @@ public class PacketQueryEntityNBT implements ServerboundPacket {
     }
 
     @Override
-    public OutPacketBuffer write(Connection connection) {
-        OutPacketBuffer buffer = new OutPacketBuffer(connection, PacketTypes.Serverbound.PLAY_ENTITY_NBT_REQUEST);
+    public void write(OutPlayByteBuffer buffer) {
         buffer.writeVarInt(this.transactionId);
         buffer.writeVarInt(this.entityId);
-        return buffer;
     }
 
     @Override

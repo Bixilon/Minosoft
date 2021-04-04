@@ -16,13 +16,13 @@ package de.bixilon.minosoft.util.chunk
 import de.bixilon.minosoft.data.mappings.Dimension
 import de.bixilon.minosoft.data.world.light.ChunkLightAccessor
 import de.bixilon.minosoft.data.world.light.LightAccessor
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import java.util.*
 
 object LightUtil {
 
-    fun readLightPacket(buffer: InByteBuffer, skyLightMask: BitSet, blockLightMask: BitSet, dimension: Dimension): LightAccessor {
+    fun readLightPacket(buffer: PlayInByteBuffer, skyLightMask: BitSet, blockLightMask: BitSet, dimension: Dimension): LightAccessor {
         // ToDo
         val skyLight = if (dimension.hasSkyLight) {
             readLightArray(buffer, skyLightMask, dimension)
@@ -33,7 +33,7 @@ object LightUtil {
         return ChunkLightAccessor(blockLight, skyLight)
     }
 
-    private fun readLightArray(buffer: InByteBuffer, lightMask: BitSet, dimension: Dimension): MutableMap<Int, ByteArray> {
+    private fun readLightArray(buffer: PlayInByteBuffer, lightMask: BitSet, dimension: Dimension): MutableMap<Int, ByteArray> {
         var highestSectionIndex = dimension.highestSection + 1
         val lowesSectionIndex = dimension.lowestSection - 1
         if (buffer.versionId >= ProtocolVersions.V_20W49A) {

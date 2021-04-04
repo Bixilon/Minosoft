@@ -18,8 +18,8 @@ import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.data.mappings.versions.Version;
 import de.bixilon.minosoft.data.text.BaseComponent;
 import de.bixilon.minosoft.data.text.ChatComponent;
-import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.protocol.ConnectionReasons;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
+import de.bixilon.minosoft.protocol.network.connection.StatusConnection;
 import de.bixilon.minosoft.protocol.protocol.LANServerListener;
 import de.bixilon.minosoft.util.ServerAddress;
 
@@ -32,13 +32,13 @@ import java.util.Set;
 public class Server {
     private static int highestServerId;
     private final int id;
-    private final Set<Connection> connections = Sets.newConcurrentHashSet();
+    private final Set<PlayConnection> connections = Sets.newConcurrentHashSet();
     private ChatComponent name;
     private ChatComponent addressName;
     private String address;
     private int desiredVersion;
     private byte[] favicon;
-    private Connection lastPing;
+    private StatusConnection lastPing;
     private boolean readOnly;
     private ServerListCell cell;
 
@@ -111,7 +111,7 @@ public class Server {
         Minosoft.getConfig().saveToFile();
     }
 
-    public Connection getLastPing() {
+    public StatusConnection getLastPing() {
         return this.lastPing;
     }
 
@@ -147,9 +147,9 @@ public class Server {
 
     public void ping() {
         if (this.lastPing == null) {
-            this.lastPing = new Connection(Connection.lastConnectionId++, getAddress(), null);
+            this.lastPing = new StatusConnection(getAddress());
         }
-        this.lastPing.resolve(ConnectionReasons.PING, getDesiredVersionId()); // resolve dns address and ping
+        this.lastPing.ping(); // resolve dns address and ping
     }
 
     public int getDesiredVersionId() {
@@ -160,16 +160,16 @@ public class Server {
         this.desiredVersion = versionId;
     }
 
-    public Set<Connection> getConnections() {
+    public Set<PlayConnection> getConnections() {
         return this.connections;
     }
 
-    public void addConnection(Connection connection) {
+    public void addConnection(PlayConnection connection) {
         this.connections.add(connection);
     }
 
     public boolean isConnected() {
-        for (Connection connection : this.connections) {
+        for (PlayConnection connection : this.connections) {
             if (connection.isConnected()) {
                 return true;
             }

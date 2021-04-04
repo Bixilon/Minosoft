@@ -13,16 +13,14 @@
 
 package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
-import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
-import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketTypes;
+import de.bixilon.minosoft.protocol.packets.serverbound.PlayServerboundPacket;
+import de.bixilon.minosoft.protocol.protocol.OutPlayByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W29A;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W31A;
 
-public class PacketPluginMessageSending implements ServerboundPacket {
+public class PacketPluginMessageSending implements PlayServerboundPacket {
 
     public final String channel;
     public final byte[] data;
@@ -33,8 +31,7 @@ public class PacketPluginMessageSending implements ServerboundPacket {
     }
 
     @Override
-    public OutPacketBuffer write(Connection connection) {
-        OutPacketBuffer buffer = new OutPacketBuffer(connection, PacketTypes.Serverbound.PLAY_PLUGIN_MESSAGE);
+    public void write(OutPlayByteBuffer buffer) {
         buffer.writeString(this.channel);
 
         if (buffer.getVersionId() < V_14W29A) {
@@ -44,7 +41,6 @@ public class PacketPluginMessageSending implements ServerboundPacket {
         }
 
         buffer.writeBytes(this.data);
-        return buffer;
     }
 
     @Override

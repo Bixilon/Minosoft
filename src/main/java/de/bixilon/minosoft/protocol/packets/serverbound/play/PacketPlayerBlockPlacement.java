@@ -15,16 +15,14 @@ package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
 import de.bixilon.minosoft.data.inventory.ItemStack;
 import de.bixilon.minosoft.data.player.Hands;
-import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
-import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketTypes;
+import de.bixilon.minosoft.protocol.packets.serverbound.PlayServerboundPacket;
+import de.bixilon.minosoft.protocol.protocol.OutPlayByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 import glm_.vec3.Vec3i;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
 
-public class PacketPlayerBlockPlacement implements ServerboundPacket {
+public class PacketPlayerBlockPlacement implements PlayServerboundPacket {
     private final Vec3i position;
     private final byte direction;
     private final float cursorX;
@@ -64,8 +62,7 @@ public class PacketPlayerBlockPlacement implements ServerboundPacket {
     }
 
     @Override
-    public OutPacketBuffer write(Connection connection) {
-        OutPacketBuffer buffer = new OutPacketBuffer(connection, PacketTypes.Serverbound.PLAY_PLAYER_BLOCK_PLACEMENT);
+    public void write(OutPlayByteBuffer buffer) {
         if (buffer.getVersionId() >= V_19W03A) {
             buffer.writeVarInt(this.hand.ordinal());
         }
@@ -97,7 +94,6 @@ public class PacketPlayerBlockPlacement implements ServerboundPacket {
             buffer.writeFloat(this.cursorY);
             buffer.writeFloat(this.cursorZ);
         }
-        return buffer;
     }
 
     @Override

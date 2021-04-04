@@ -13,15 +13,13 @@
 
 package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
-import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
-import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketTypes;
+import de.bixilon.minosoft.protocol.packets.serverbound.PlayServerboundPacket;
+import de.bixilon.minosoft.protocol.protocol.OutPlayByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W04A;
 
-public class PacketSteerVehicle implements ServerboundPacket {
+public class PacketSteerVehicle implements PlayServerboundPacket {
     private final float sideways;
     private final float forward;
     private final boolean jump;
@@ -35,8 +33,7 @@ public class PacketSteerVehicle implements ServerboundPacket {
     }
 
     @Override
-    public OutPacketBuffer write(Connection connection) {
-        OutPacketBuffer buffer = new OutPacketBuffer(connection, PacketTypes.Serverbound.PLAY_STEER_VEHICLE);
+    public void write(OutPlayByteBuffer buffer) {
         buffer.writeFloat(this.sideways);
         buffer.writeFloat(this.forward);
         if (buffer.getVersionId() < V_14W04A) {
@@ -52,7 +49,6 @@ public class PacketSteerVehicle implements ServerboundPacket {
             }
             buffer.writeByte(flags);
         }
-        return buffer;
     }
 
     @Override

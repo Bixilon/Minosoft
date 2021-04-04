@@ -14,21 +14,21 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.entities.entities.Entity;
-import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket;
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 import glm_.vec3.Vec3;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W25B;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_16W06A;
 
-public class PacketEntityMovement extends ClientboundPacket {
+public class PacketEntityMovement extends PlayClientboundPacket {
     private final int entityId;
     private final Vec3 position;
     private boolean onGround;
 
-    public PacketEntityMovement(InByteBuffer buffer) {
+    public PacketEntityMovement(PlayInByteBuffer buffer) {
         this.entityId = buffer.readEntityId();
         if (buffer.getVersionId() < V_16W06A) {
             this.position = new Vec3(buffer.readFixedPointNumberByte(), buffer.readFixedPointNumberByte(), buffer.readFixedPointNumberByte());
@@ -41,7 +41,7 @@ public class PacketEntityMovement extends ClientboundPacket {
     }
 
     @Override
-    public void handle(Connection connection) {
+    public void handle(PlayConnection connection) {
         Entity entity = connection.getWorld().getEntity(getEntityId());
         if (entity == null) {
             // thanks mojang

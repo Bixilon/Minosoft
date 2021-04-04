@@ -15,20 +15,20 @@ package de.bixilon.minosoft.protocol.packets.clientbound.login;
 
 import de.bixilon.minosoft.data.text.ChatComponent;
 import de.bixilon.minosoft.modding.event.events.LoginDisconnectEvent;
-import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket;
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
-public class PacketLoginDisconnect extends ClientboundPacket {
-   private final ChatComponent reason;
+public class PacketLoginDisconnect extends PlayClientboundPacket {
+    private final ChatComponent reason;
 
-    public PacketLoginDisconnect(InByteBuffer buffer) {
+    public PacketLoginDisconnect(PlayInByteBuffer buffer) {
         this.reason = buffer.readChatComponent();
     }
 
     @Override
-    public void handle(Connection connection) {
+    public void handle(PlayConnection connection) {
         connection.fireEvent(new LoginDisconnectEvent(connection, this));
         Log.info(String.format("Kicked while logging in to %s (reason=%s)", connection.getAddress(), getReason().getANSIColoredMessage()));
         connection.disconnect();

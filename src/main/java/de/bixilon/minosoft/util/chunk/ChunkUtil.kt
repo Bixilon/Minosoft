@@ -21,7 +21,7 @@ import de.bixilon.minosoft.data.world.ChunkSection
 import de.bixilon.minosoft.data.world.biome.source.XZBiomeArray
 import de.bixilon.minosoft.data.world.light.DummyLightAccessor
 import de.bixilon.minosoft.data.world.palette.Palette.Companion.choosePalette
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*
 import java.util.*
@@ -29,14 +29,14 @@ import java.util.*
 
 object ChunkUtil {
 
-    fun readChunkPacket(buffer: InByteBuffer, dimension: Dimension, sectionBitMask: BitSet, addBitMask: BitSet? = null, isFullChunk: Boolean, containsSkyLight: Boolean): ChunkData? {
+    fun readChunkPacket(buffer: PlayInByteBuffer, dimension: Dimension, sectionBitMask: BitSet, addBitMask: BitSet? = null, isFullChunk: Boolean, containsSkyLight: Boolean): ChunkData? {
         if (buffer.versionId < V_15W35A) { // ToDo: was this really changed in 62?
             return readLegacyChunk(buffer, dimension, sectionBitMask, addBitMask, isFullChunk, containsSkyLight)
         }
         return readPaletteChunk(buffer, dimension, sectionBitMask, isFullChunk, containsSkyLight)
     }
 
-    private fun readLegacyChunkWithAddBitSet(buffer: InByteBuffer, dimension: Dimension, sectionBitMask: BitSet, addBitMask: BitSet, isFullChunk: Boolean, containsSkyLight: Boolean): ChunkData {
+    private fun readLegacyChunkWithAddBitSet(buffer: PlayInByteBuffer, dimension: Dimension, sectionBitMask: BitSet, addBitMask: BitSet, isFullChunk: Boolean, containsSkyLight: Boolean): ChunkData {
         val chunkData = ChunkData()
         chunkData.lightAccessor = DummyLightAccessor // ToDo
 
@@ -99,7 +99,7 @@ object ChunkUtil {
         return chunkData
     }
 
-    fun readLegacyChunk(buffer: InByteBuffer, dimension: Dimension, sectionBitMask: BitSet, addBitMask: BitSet? = null, isFullChunk: Boolean, containsSkyLight: Boolean = false): ChunkData? {
+    fun readLegacyChunk(buffer: PlayInByteBuffer, dimension: Dimension, sectionBitMask: BitSet, addBitMask: BitSet? = null, isFullChunk: Boolean, containsSkyLight: Boolean = false): ChunkData? {
         if (sectionBitMask.length() == 0 && isFullChunk) {
             // unload chunk
             return null
@@ -144,7 +144,7 @@ object ChunkUtil {
         return chunkData
     }
 
-    fun readPaletteChunk(buffer: InByteBuffer, dimension: Dimension, sectionBitMask: BitSet, isFullChunk: Boolean, containsSkyLight: Boolean = false): ChunkData {
+    fun readPaletteChunk(buffer: PlayInByteBuffer, dimension: Dimension, sectionBitMask: BitSet, isFullChunk: Boolean, containsSkyLight: Boolean = false): ChunkData {
         val chunkData = ChunkData()
         val sectionMap: MutableMap<Int, ChunkSection> = mutableMapOf()
 
@@ -207,7 +207,7 @@ object ChunkUtil {
     }
 
 
-    private fun readLegacyBiomeArray(buffer: InByteBuffer): XZBiomeArray {
+    private fun readLegacyBiomeArray(buffer: PlayInByteBuffer): XZBiomeArray {
         val biomes: MutableList<Biome> = mutableListOf()
         for (i in 0 until ProtocolDefinition.SECTION_WIDTH_X * ProtocolDefinition.SECTION_WIDTH_Z) {
             biomes.add(i, buffer.connection.mapping.biomeRegistry.get(if (buffer.versionId < V_15W35A) {

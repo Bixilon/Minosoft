@@ -20,7 +20,7 @@ import de.bixilon.minosoft.data.commands.CommandRootNode;
 import de.bixilon.minosoft.data.commands.CommandStringReader;
 import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException;
 import de.bixilon.minosoft.data.commands.parser.exceptions.UnknownCommandParseException;
-import de.bixilon.minosoft.protocol.network.Connection;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
 import de.bixilon.minosoft.terminal.commands.CommandStack;
 import de.bixilon.minosoft.terminal.commands.commands.Command;
 import de.bixilon.minosoft.terminal.commands.exceptions.CLIException;
@@ -38,7 +38,7 @@ import java.lang.reflect.InvocationTargetException;
 
 public class CLI {
     private static final CommandRootNode ROOT_NODE;
-    private static Connection currentConnection;
+    private static PlayConnection currentConnection;
 
     static {
         ROOT_NODE = new CommandRootNode();
@@ -63,11 +63,11 @@ public class CLI {
         }
     }
 
-    public static Connection getCurrentConnection() {
+    public static PlayConnection getCurrentConnection() {
         return currentConnection;
     }
 
-    public static void setCurrentConnection(@Nullable Connection connection) {
+    public static void setCurrentConnection(@Nullable PlayConnection connection) {
         currentConnection = connection;
     }
 

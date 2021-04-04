@@ -20,9 +20,9 @@ import de.bixilon.minosoft.data.entities.entities.Entity;
 import de.bixilon.minosoft.data.entities.entities.UnknownEntityException;
 import de.bixilon.minosoft.data.entities.meta.EntityMetaData;
 import de.bixilon.minosoft.modding.event.events.EntitySpawnEvent;
-import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket;
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 import glm_.vec3.Vec3;
 
@@ -30,13 +30,13 @@ import java.util.UUID;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
 
-public class PacketSpawnMob extends ClientboundPacket {
+public class PacketSpawnMob extends PlayClientboundPacket {
     private final int entityId;
     private final Velocity velocity;
     private final Entity entity;
     private UUID entityUUID;
 
-    public PacketSpawnMob(InByteBuffer buffer) throws Exception {
+    public PacketSpawnMob(PlayInByteBuffer buffer) throws Exception {
         this.entityId = buffer.readEntityId();
         if (buffer.getVersionId() >= V_15W31A) {
             this.entityUUID = buffer.readUUID();
@@ -80,7 +80,7 @@ public class PacketSpawnMob extends ClientboundPacket {
     }
 
     @Override
-    public void handle(Connection connection) {
+    public void handle(PlayConnection connection) {
         connection.fireEvent(new EntitySpawnEvent(connection, this));
 
         connection.getWorld().addEntity(this.entityId, this.entityUUID, getEntity());

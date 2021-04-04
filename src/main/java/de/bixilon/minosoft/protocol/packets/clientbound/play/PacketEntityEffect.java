@@ -15,22 +15,22 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.entities.StatusEffectInstance;
 import de.bixilon.minosoft.data.entities.entities.Entity;
-import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket;
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 import de.bixilon.minosoft.util.BitByte;
 import de.bixilon.minosoft.util.logging.Log;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
 
-public class PacketEntityEffect extends ClientboundPacket {
+public class PacketEntityEffect extends PlayClientboundPacket {
     private final int entityId;
     private final StatusEffectInstance effect;
     private boolean isAmbient;
     private boolean hideParticles;
     private boolean showIcon = true;
 
-    public PacketEntityEffect(InByteBuffer buffer) {
+    public PacketEntityEffect(PlayInByteBuffer buffer) {
         this.entityId = buffer.readEntityId();
         if (buffer.getVersionId() < V_14W04A) {
             this.effect = new StatusEffectInstance(buffer.getConnection().getMapping().getStatusEffectRegistry().get(buffer.readByte()), buffer.readByte() + 1, buffer.readShort());
@@ -52,7 +52,7 @@ public class PacketEntityEffect extends ClientboundPacket {
     }
 
     @Override
-    public void handle(Connection connection) {
+    public void handle(PlayConnection connection) {
         Entity entity = connection.getWorld().getEntity(getEntityId());
         if (entity == null) {
             // thanks mojang

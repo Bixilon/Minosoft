@@ -21,10 +21,10 @@ import de.bixilon.minosoft.data.mappings.entities.EntityFactory
 import de.bixilon.minosoft.data.mappings.entities.EntityType
 import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.RGBColor
-import de.bixilon.minosoft.protocol.network.Connection
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import glm_.vec3.Vec3
 
-class Cat(connection: Connection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : TamableAnimal(connection, entityType, position, rotation) {
+class Cat(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : TamableAnimal(connection, entityType, position, rotation) {
 
     @get:EntityMetaDataFunction(name = "Variant")
     val variant: CatVariants
@@ -66,7 +66,7 @@ class Cat(connection: Connection, entityType: EntityType, position: Vec3, rotati
     companion object : EntityFactory<Cat> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("cat")
 
-        override fun build(connection: Connection, entityType: EntityType, position: Vec3, rotation: EntityRotation): Cat {
+        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation): Cat {
             return Cat(connection, entityType, position, rotation)
         }
     }

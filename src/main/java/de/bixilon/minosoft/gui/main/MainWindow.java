@@ -136,7 +136,7 @@ public class MainWindow implements Initializable {
             return change;
         }));
 
-        GUITools.VERSION_COMBO_BOX.getSelectionModel().select(Versions.LOWEST_VERSION_SUPPORTED);
+        GUITools.VERSION_COMBO_BOX.getSelectionModel().select(Versions.AUTOMATIC_VERSION);
 
         if (server == null) {
             // add

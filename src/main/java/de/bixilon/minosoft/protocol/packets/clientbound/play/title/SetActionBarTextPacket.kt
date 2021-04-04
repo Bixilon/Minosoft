@@ -13,19 +13,19 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play.title
 
-import de.bixilon.minosoft.protocol.network.Connection
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.util.logging.Log
 
-class SetActionBarTextPacket(buffer: InByteBuffer) : ClientboundPacket() {
+class SetActionBarTextPacket(buffer: PlayInByteBuffer) : PlayClientboundPacket() {
     val actionBarText = buffer.readChatComponent()
 
     override fun log() {
         Log.protocol("[IN] Received set action bar title (actionBarText=$actionBarText)")
     }
 
-    override fun handle(connection: Connection) {
+    override fun handle(connection: PlayConnection) {
         Log.game("[ACTION] $actionBarText")
     }
 }

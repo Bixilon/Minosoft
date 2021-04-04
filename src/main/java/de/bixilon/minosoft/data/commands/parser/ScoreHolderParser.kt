@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.commands.parser
 import de.bixilon.minosoft.data.commands.CommandStringReader
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties
 import de.bixilon.minosoft.data.commands.parser.properties.ScoreHolderParserProperties
-import de.bixilon.minosoft.protocol.network.Connection
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer
 
 object ScoreHolderParser : CommandParser() {
@@ -24,7 +24,7 @@ object ScoreHolderParser : CommandParser() {
         return ScoreHolderParserProperties(buffer)
     }
 
-    override fun parse(connection: Connection, properties: ParserProperties?, stringReader: CommandStringReader): Any {
+    override fun parse(connection: PlayConnection, properties: ParserProperties?, stringReader: CommandStringReader): Any {
         TODO()
     }
 }

@@ -13,14 +13,14 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket;
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
-public class PacketUpdateViewDistance extends ClientboundPacket {
+public class PacketUpdateViewDistance extends PlayClientboundPacket {
     private final int viewDistance;
 
-    public PacketUpdateViewDistance(InByteBuffer buffer) {
+    public PacketUpdateViewDistance(PlayInByteBuffer buffer) {
         this.viewDistance = buffer.readVarInt();
     }
 

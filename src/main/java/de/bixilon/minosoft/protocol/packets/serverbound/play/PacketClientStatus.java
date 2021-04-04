@@ -13,30 +13,26 @@
 
 package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
-import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
-import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketTypes;
+import de.bixilon.minosoft.protocol.packets.serverbound.PlayServerboundPacket;
+import de.bixilon.minosoft.protocol.protocol.OutPlayByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W04A;
 
-public class PacketClientStatus implements ServerboundPacket {
-private final ClientStates status;
+public class PacketClientStatus implements PlayServerboundPacket {
+    private final ClientStates status;
 
     public PacketClientStatus(ClientStates status) {
         this.status = status;
     }
 
     @Override
-    public OutPacketBuffer write(Connection connection) {
-        OutPacketBuffer buffer = new OutPacketBuffer(connection, PacketTypes.Serverbound.PLAY_CLIENT_STATUS);
+    public void write(OutPlayByteBuffer buffer) {
         if (buffer.getVersionId() < V_14W04A) {
             buffer.writeByte((byte) this.status.ordinal());
         } else {
             buffer.writeVarInt(this.status.ordinal());
         }
-        return buffer;
     }
 
     @Override

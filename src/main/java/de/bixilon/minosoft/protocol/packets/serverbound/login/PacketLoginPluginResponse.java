@@ -13,13 +13,11 @@
 
 package de.bixilon.minosoft.protocol.packets.serverbound.login;
 
-import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
-import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketTypes;
+import de.bixilon.minosoft.protocol.packets.serverbound.PlayServerboundPacket;
+import de.bixilon.minosoft.protocol.protocol.OutPlayByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
-public class PacketLoginPluginResponse implements ServerboundPacket {
+public class PacketLoginPluginResponse implements PlayServerboundPacket {
     private final int messageId;
     private final boolean successful;
     byte[] data;
@@ -36,14 +34,12 @@ public class PacketLoginPluginResponse implements ServerboundPacket {
     }
 
     @Override
-    public OutPacketBuffer write(Connection connection) {
-        OutPacketBuffer buffer = new OutPacketBuffer(connection, PacketTypes.Serverbound.LOGIN_PLUGIN_RESPONSE);
+    public void write(OutPlayByteBuffer buffer) {
         buffer.writeVarInt(this.messageId);
         buffer.writeBoolean(this.successful);
         if (this.successful) {
             buffer.writeBytes(this.data);
         }
-        return buffer;
     }
 
     @Override

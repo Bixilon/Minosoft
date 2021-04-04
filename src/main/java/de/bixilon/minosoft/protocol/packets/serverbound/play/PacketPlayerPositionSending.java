@@ -13,16 +13,14 @@
 
 package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
-import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
-import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketTypes;
+import de.bixilon.minosoft.protocol.packets.serverbound.PlayServerboundPacket;
+import de.bixilon.minosoft.protocol.protocol.OutPlayByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 import glm_.vec3.Vec3;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W06B;
 
-public class PacketPlayerPositionSending implements ServerboundPacket {
+public class PacketPlayerPositionSending implements PlayServerboundPacket {
     private final Vec3 position;
     private final boolean onGround;
 
@@ -32,8 +30,7 @@ public class PacketPlayerPositionSending implements ServerboundPacket {
     }
 
     @Override
-    public OutPacketBuffer write(Connection connection) {
-        OutPacketBuffer buffer = new OutPacketBuffer(connection, PacketTypes.Serverbound.PLAY_PLAYER_POSITION);
+    public void write(OutPlayByteBuffer buffer) {
         buffer.writeDouble(this.position.getX());
         buffer.writeDouble(this.position.getY());
         if (buffer.getVersionId() < V_14W06B) {
@@ -41,7 +38,6 @@ public class PacketPlayerPositionSending implements ServerboundPacket {
         }
         buffer.writeDouble(this.position.getZ());
         buffer.writeBoolean(this.onGround);
-        return buffer;
     }
 
     @Override

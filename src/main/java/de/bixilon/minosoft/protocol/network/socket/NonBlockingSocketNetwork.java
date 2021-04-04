@@ -15,9 +15,9 @@ package de.bixilon.minosoft.protocol.network.socket;
 
 import de.bixilon.minosoft.protocol.exceptions.PacketParseException;
 import de.bixilon.minosoft.protocol.exceptions.PacketTooLongException;
-import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.network.Network;
-import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
+import de.bixilon.minosoft.protocol.packets.serverbound.ServerboundPacket;
 import de.bixilon.minosoft.protocol.packets.serverbound.login.PacketEncryptionResponse;
 import de.bixilon.minosoft.protocol.protocol.ConnectionStates;
 import de.bixilon.minosoft.protocol.protocol.CryptManager;
@@ -39,13 +39,13 @@ import java.nio.channels.SocketChannel;
 import java.util.LinkedList;
 
 public class NonBlockingSocketNetwork extends Network {
-    private final Connection connection;
+    private final PlayConnection connection;
     private final LinkedList<ServerboundPacket> queue = new LinkedList<>();
     private SocketChannel socketChannel;
     private Cipher decryptCipher;
     private Cipher encryptCipher;
 
-    public NonBlockingSocketNetwork(Connection connection) {
+    public NonBlockingSocketNetwork(PlayConnection connection) {
         super(connection);
         this.connection = connection;
     }

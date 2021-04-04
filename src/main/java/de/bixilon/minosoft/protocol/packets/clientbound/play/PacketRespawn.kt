@@ -17,14 +17,14 @@ import de.bixilon.minosoft.data.Gamemodes
 import de.bixilon.minosoft.data.LevelTypes
 import de.bixilon.minosoft.data.mappings.Dimension
 import de.bixilon.minosoft.modding.event.events.RespawnEvent
-import de.bixilon.minosoft.protocol.network.Connection
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.nbt.tag.CompoundTag
 
-class PacketRespawn(buffer: InByteBuffer) : ClientboundPacket() {
+class PacketRespawn(buffer: PlayInByteBuffer) : PlayClientboundPacket() {
     lateinit var dimension: Dimension
         private set
     var difficulty: Difficulties = Difficulties.NORMAL
@@ -82,7 +82,7 @@ class PacketRespawn(buffer: InByteBuffer) : ClientboundPacket() {
         }
     }
 
-    override fun handle(connection: Connection) {
+    override fun handle(connection: PlayConnection) {
         if (connection.fireEvent(RespawnEvent(connection, this))) {
             return
         }
@@ -92,7 +92,7 @@ class PacketRespawn(buffer: InByteBuffer) : ClientboundPacket() {
         connection.world.dimension = dimension
         connection.player.isSpawnConfirmed = false
         connection.player.entity.gamemode = gamemode
-        connection.renderer.renderWindow.worldRenderer.clearChunkCache()
+        connection.renderer?.renderWindow?.worldRenderer?.clearChunkCache()
     }
 
     override fun log() {

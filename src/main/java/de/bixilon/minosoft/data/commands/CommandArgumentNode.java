@@ -18,7 +18,7 @@ import de.bixilon.minosoft.data.commands.parser.CommandParsers;
 import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException;
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties;
 import de.bixilon.minosoft.data.mappings.ResourceLocation;
-import de.bixilon.minosoft.protocol.network.Connection;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.terminal.commands.CommandStack;
 import de.bixilon.minosoft.terminal.commands.exceptions.CLIException;
@@ -104,7 +104,7 @@ public class CommandArgumentNode extends CommandLiteralNode {
     }
 
     @Override
-    public CommandStack parse(Connection connection, CommandStringReader stringReader, CommandStack stack, boolean execute) throws CommandParseException, CLIException {
+    public CommandStack parse(PlayConnection connection, CommandStringReader stringReader, CommandStack stack, boolean execute) throws CommandParseException, CLIException {
         stack.addArgument(this.parser.parse(connection, this.properties, stringReader));
         return super.parse(connection, stringReader, stack, execute);
     }

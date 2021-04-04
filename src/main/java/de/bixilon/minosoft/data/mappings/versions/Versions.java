@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Versions {
-    public static final Version LOWEST_VERSION_SUPPORTED = new Version("Automatic", -1, -1, Map.of(), Map.of());
+    public static final Version AUTOMATIC_VERSION = new Version("Automatic", -1, -1, Map.of(), Map.of());
     private static final HashBiMap<Integer, Version> VERSION_ID_MAP = HashBiMap.create(500);
     private static final HashBiMap<Integer, Version> VERSION_PROTOCOL_ID_MAP = HashBiMap.create(500);
     private static final HashBiMap<String, Version> VERSION_NAME_MAP = HashBiMap.create(500);

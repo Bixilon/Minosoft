@@ -13,16 +13,14 @@
 
 package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
-import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
-import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketTypes;
+import de.bixilon.minosoft.protocol.packets.serverbound.PlayServerboundPacket;
+import de.bixilon.minosoft.protocol.protocol.OutPlayByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 import glm_.vec3.Vec3i;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_20W22A;
 
-public class PacketGenerateStructure implements ServerboundPacket {
+public class PacketGenerateStructure implements PlayServerboundPacket {
     private final Vec3i position;
     private final int levels;
     private final boolean keepJigsaw;
@@ -34,14 +32,12 @@ public class PacketGenerateStructure implements ServerboundPacket {
     }
 
     @Override
-    public OutPacketBuffer write(Connection connection) {
-        OutPacketBuffer buffer = new OutPacketBuffer(connection, PacketTypes.Serverbound.PLAY_GENERATE_STRUCTURE);
+    public void write(OutPlayByteBuffer buffer) {
         buffer.writePosition(this.position);
         buffer.writeVarInt(this.levels);
         if (buffer.getVersionId() <= V_20W22A) {
             buffer.writeBoolean(this.keepJigsaw);
         }
-        return buffer;
     }
 
     @Override

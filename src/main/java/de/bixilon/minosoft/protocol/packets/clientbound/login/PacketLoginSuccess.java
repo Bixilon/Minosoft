@@ -13,10 +13,10 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.login;
 
-import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.ConnectionStates;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 import de.bixilon.minosoft.util.Util;
 import de.bixilon.minosoft.util.logging.Log;
 
@@ -24,11 +24,11 @@ import java.util.UUID;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_20W12A;
 
-public class PacketLoginSuccess extends ClientboundPacket {
+public class PacketLoginSuccess extends PlayClientboundPacket {
     private final UUID uuid;
     private final String playerName;
 
-    public PacketLoginSuccess(InByteBuffer buffer) {
+    public PacketLoginSuccess(PlayInByteBuffer buffer) {
         if (buffer.getVersionId() < V_20W12A) {
             this.uuid = Util.getUUIDFromString(buffer.readString());
         } else {
@@ -38,7 +38,7 @@ public class PacketLoginSuccess extends ClientboundPacket {
     }
 
     @Override
-    public void handle(Connection connection) {
+    public void handle(PlayConnection connection) {
         connection.setConnectionState(ConnectionStates.PLAY);
 
         connection.getPlayer().getEntity().setUuid(getUUID());

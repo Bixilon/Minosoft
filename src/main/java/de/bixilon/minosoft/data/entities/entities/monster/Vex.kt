@@ -18,10 +18,10 @@ import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.entities.EntityFactory
 import de.bixilon.minosoft.data.mappings.entities.EntityType
-import de.bixilon.minosoft.protocol.network.Connection
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import glm_.vec3.Vec3
 
-class Vex(connection: Connection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : Monster(connection, entityType, position, rotation) {
+class Vex(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : Monster(connection, entityType, position, rotation) {
 
     private fun getVexFlag(bitMask: Int): Boolean {
         return entityMetaData.sets.getBitMask(EntityMetaDataFields.VEX_FLAGS, bitMask)
@@ -35,7 +35,7 @@ class Vex(connection: Connection, entityType: EntityType, position: Vec3, rotati
     companion object : EntityFactory<Vex> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("vex")
 
-        override fun build(connection: Connection, entityType: EntityType, position: Vec3, rotation: EntityRotation): Vex {
+        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation): Vex {
             return Vex(connection, entityType, position, rotation)
         }
     }

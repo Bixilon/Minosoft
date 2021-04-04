@@ -17,7 +17,7 @@ import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.meta.EntityMetaData
 import de.bixilon.minosoft.data.mappings.ResourceLocation
-import de.bixilon.minosoft.protocol.network.Connection
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import glm_.vec3.Vec3
 
 interface EntityFactory<T : Entity> {
@@ -26,11 +26,11 @@ interface EntityFactory<T : Entity> {
     /**
      * Tweaks the entity resource location. Used for pre flattening versions.
      */
-    fun tweak(connection: Connection, entityMetaData: EntityMetaData?, versionId: Int): ResourceLocation {
+    fun tweak(connection: PlayConnection, entityMetaData: EntityMetaData?, versionId: Int): ResourceLocation {
         return RESOURCE_LOCATION
     }
 
-    fun build(connection: Connection, entityType: EntityType, position: Vec3, rotation: EntityRotation): T? {
+    fun build(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation): T? {
         return null
     }
 }

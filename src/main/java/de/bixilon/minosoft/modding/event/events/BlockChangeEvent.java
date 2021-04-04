@@ -14,24 +14,24 @@
 package de.bixilon.minosoft.modding.event.events;
 
 import de.bixilon.minosoft.data.mappings.blocks.BlockState;
-import de.bixilon.minosoft.protocol.network.Connection;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
 import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketBlockChange;
 import glm_.vec3.Vec3i;
 
 /**
  * Fired when one block is changed
  */
-public class BlockChangeEvent extends ConnectionEvent {
+public class BlockChangeEvent extends PlayConnectionEvent {
     private final Vec3i position;
     private final BlockState block;
 
-    public BlockChangeEvent(Connection connection, Vec3i position, BlockState block) {
+    public BlockChangeEvent(PlayConnection connection, Vec3i position, BlockState block) {
         super(connection);
         this.position = position;
         this.block = block;
     }
 
-    public BlockChangeEvent(Connection connection, PacketBlockChange pkg) {
+    public BlockChangeEvent(PlayConnection connection, PacketBlockChange pkg) {
         super(connection);
         this.position = pkg.getBlockPosition();
         this.block = pkg.getBlock();

@@ -21,11 +21,11 @@ import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.entities.EntityFactory
 import de.bixilon.minosoft.data.mappings.entities.EntityType
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.entityPosition
-import de.bixilon.minosoft.protocol.network.Connection
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import glm_.vec3.Vec3i
 
 class Painting(
-    connection: Connection,
+    connection: PlayConnection,
     entityType: EntityType,
     position: Vec3i,
     @get:EntityMetaDataFunction(name = "Direction") val direction: Directions,

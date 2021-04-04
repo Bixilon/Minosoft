@@ -16,15 +16,15 @@ import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.entities.EntityFactory
 import de.bixilon.minosoft.data.mappings.entities.EntityType
-import de.bixilon.minosoft.protocol.network.Connection
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import glm_.vec3.Vec3
 
-open class Squid(connection: Connection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : WaterAnimal(connection, entityType, position, rotation) {
+open class Squid(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : WaterAnimal(connection, entityType, position, rotation) {
 
     companion object : EntityFactory<Squid> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("squid")
 
-        override fun build(connection: Connection, entityType: EntityType, position: Vec3, rotation: EntityRotation): Squid {
+        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation): Squid {
             return Squid(connection, entityType, position, rotation)
         }
     }

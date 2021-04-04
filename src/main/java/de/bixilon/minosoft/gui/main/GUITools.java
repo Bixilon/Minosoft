@@ -41,7 +41,7 @@ public class GUITools {
     public static final ObservableList<LogLevels> LOG_LEVELS = FXCollections.observableList(Arrays.asList(LogLevels.values().clone()));
 
     static {
-        VERSIONS.add(Versions.LOWEST_VERSION_SUPPORTED);
+        VERSIONS.add(Versions.AUTOMATIC_VERSION);
         Versions.getVersionIdMap().forEach((key, value) -> VERSIONS.add(value));
 
         VERSIONS.sort((a, b) -> {

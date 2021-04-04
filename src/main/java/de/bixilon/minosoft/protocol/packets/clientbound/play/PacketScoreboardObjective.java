@@ -15,20 +15,20 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.scoreboard.ScoreboardObjective;
 import de.bixilon.minosoft.data.text.ChatComponent;
-import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket;
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
 
-public class PacketScoreboardObjective extends ClientboundPacket {
+public class PacketScoreboardObjective extends PlayClientboundPacket {
     private final String name;
     private final ScoreboardObjectiveActions action;
     private ChatComponent value;
     private ScoreboardObjectiveTypes type;
 
-    public PacketScoreboardObjective(InByteBuffer buffer) {
+    public PacketScoreboardObjective(PlayInByteBuffer buffer) {
         this.name = buffer.readString();
         if (buffer.getVersionId() < V_14W04A) { // ToDo
             this.value = buffer.readChatComponent();
@@ -54,7 +54,7 @@ public class PacketScoreboardObjective extends ClientboundPacket {
     }
 
     @Override
-    public void handle(Connection connection) {
+    public void handle(PlayConnection connection) {
         switch (getAction()) {
             case CREATE -> connection.getScoreboardManager().addObjective(new ScoreboardObjective(getName(), getValue()));
             case UPDATE -> connection.getScoreboardManager().getObjective(getName()).setValue(getValue());

@@ -18,10 +18,10 @@ import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.entities.EntityFactory
 import de.bixilon.minosoft.data.mappings.entities.EntityType
-import de.bixilon.minosoft.protocol.network.Connection
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import glm_.vec3.Vec3
 
-class Zoglin(connection: Connection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : Monster(connection, entityType, position, rotation) {
+class Zoglin(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : Monster(connection, entityType, position, rotation) {
 
     @get:EntityMetaDataFunction(name = "Is baby")
     val isBaby: Boolean
@@ -31,7 +31,7 @@ class Zoglin(connection: Connection, entityType: EntityType, position: Vec3, rot
     companion object : EntityFactory<Zoglin> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("zoglin")
 
-        override fun build(connection: Connection, entityType: EntityType, position: Vec3, rotation: EntityRotation): Zoglin {
+        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation): Zoglin {
             return Zoglin(connection, entityType, position, rotation)
         }
     }

@@ -20,7 +20,7 @@ import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException
 import de.bixilon.minosoft.data.commands.parser.exceptions.entity.*;
 import de.bixilon.minosoft.data.commands.parser.properties.EntityParserProperties;
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties;
-import de.bixilon.minosoft.protocol.network.Connection;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import de.bixilon.minosoft.util.Util;
@@ -62,7 +62,7 @@ public class EntityParser extends CommandParser {
     }
 
     @Override
-    public Object parse(Connection connection, ParserProperties properties, CommandStringReader stringReader) throws CommandParseException {
+    public Object parse(PlayConnection connection, ParserProperties properties, CommandStringReader stringReader) throws CommandParseException {
         EntityParserProperties entityParserProperties = (EntityParserProperties) properties;
         if (stringReader.peek() == '@') {
             // selector

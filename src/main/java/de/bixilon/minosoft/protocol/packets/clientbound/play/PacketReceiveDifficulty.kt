@@ -13,13 +13,13 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play
 
 import de.bixilon.minosoft.data.Difficulties
-import de.bixilon.minosoft.protocol.network.Connection
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.util.logging.Log
 
-class PacketServerDifficulty(buffer: InByteBuffer) : ClientboundPacket() {
+class PacketReceiveDifficulty(buffer: PlayInByteBuffer) : PlayClientboundPacket() {
     val difficulty: Difficulties = Difficulties.byId(buffer.readUnsignedByte().toInt())
     var locked = false
         private set
@@ -30,7 +30,7 @@ class PacketServerDifficulty(buffer: InByteBuffer) : ClientboundPacket() {
         }
     }
 
-    override fun handle(connection: Connection) {
+    override fun handle(connection: PlayConnection) {
         connection.world.difficulty = difficulty
         connection.world.difficultyLocked = locked
     }

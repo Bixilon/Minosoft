@@ -19,21 +19,21 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
 
 
 import de.bixilon.minosoft.modding.event.events.MultiBlockChangeEvent
-import de.bixilon.minosoft.protocol.network.Connection
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.util.logging.Log
 import glm_.vec2.Vec2i
 import glm_.vec3.Vec3i
 import java.util.*
 
-class PacketMultiBlockChange() : ClientboundPacket() {
+class PacketMultiBlockChange() : PlayClientboundPacket() {
     val blocks = HashMap<Vec3i, BlockState?>()
     lateinit var chunkPosition: Vec2i
         private set
 
-    constructor(buffer: InByteBuffer) : this() {
+    constructor(buffer: PlayInByteBuffer) : this() {
         if (buffer.versionId < ProtocolVersions.V_14W26C) {
             chunkPosition = if (buffer.versionId < ProtocolVersions.V_1_7_5) {
                 Vec2i(buffer.readVarInt(), buffer.readVarInt())
@@ -79,7 +79,7 @@ class PacketMultiBlockChange() : ClientboundPacket() {
         return
     }
 
-    override fun handle(connection: Connection) {
+    override fun handle(connection: PlayConnection) {
         val chunk = connection.world.getChunk(chunkPosition) ?: return // thanks mojang
         if (!chunk.isFullyLoaded) {
             return
@@ -102,7 +102,7 @@ class PacketMultiBlockChange() : ClientboundPacket() {
             sectionHeights.add(key.sectionHeight)
         }
         for (sectionHeight in sectionHeights) {
-            connection.renderer.renderWindow.worldRenderer.prepareChunkSection(chunkPosition, sectionHeight)
+            connection.renderer?.renderWindow?.worldRenderer?.prepareChunkSection(chunkPosition, sectionHeight)
         }
     }
 

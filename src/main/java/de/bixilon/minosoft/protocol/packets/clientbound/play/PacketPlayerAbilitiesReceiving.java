@@ -13,14 +13,14 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket;
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 import de.bixilon.minosoft.util.BitByte;
 import de.bixilon.minosoft.util.logging.Log;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W03B;
 
-public class PacketPlayerAbilitiesReceiving extends ClientboundPacket {
+public class PacketPlayerAbilitiesReceiving extends PlayClientboundPacket {
     private final boolean creative; // is this needed? receiving the gamemode in change Game state
     private final boolean flying;
     private final boolean canFly;
@@ -28,7 +28,7 @@ public class PacketPlayerAbilitiesReceiving extends ClientboundPacket {
     private final float flyingSpeed;
     private final float walkingSpeed;
 
-    public PacketPlayerAbilitiesReceiving(InByteBuffer buffer) {
+    public PacketPlayerAbilitiesReceiving(PlayInByteBuffer buffer) {
         byte flags = buffer.readByte();
         if (buffer.getVersionId() < V_14W03B) { // ToDo
             this.creative = BitByte.isBitSet(flags, 0);

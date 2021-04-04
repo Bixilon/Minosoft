@@ -15,20 +15,20 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.mappings.ResourceLocation;
 import de.bixilon.minosoft.modding.event.events.PluginMessageReceiveEvent;
-import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket;
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W29A;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W31A;
 
-public class PacketPluginMessageReceiving extends ClientboundPacket {
+public class PacketPluginMessageReceiving extends PlayClientboundPacket {
     private final ResourceLocation channel;
     private final byte[] data;
-    private final Connection connection;
+    private final PlayConnection connection;
 
-    public PacketPluginMessageReceiving(InByteBuffer buffer) {
+    public PacketPluginMessageReceiving(PlayInByteBuffer buffer) {
         this.connection = buffer.getConnection();
         this.channel = buffer.readResourceLocation();
         // "read" length prefix
@@ -41,7 +41,7 @@ public class PacketPluginMessageReceiving extends ClientboundPacket {
     }
 
     @Override
-    public void handle(Connection connection) {
+    public void handle(PlayConnection connection) {
         connection.fireEvent(new PluginMessageReceiveEvent(connection, this));
     }
 
@@ -58,7 +58,7 @@ public class PacketPluginMessageReceiving extends ClientboundPacket {
         return this.data;
     }
 
-    public InByteBuffer getDataAsBuffer() {
-        return new InByteBuffer(getData(), this.connection);
+    public PlayInByteBuffer getDataAsBuffer() {
+        return new PlayInByteBuffer(getData(), this.connection);
     }
 }

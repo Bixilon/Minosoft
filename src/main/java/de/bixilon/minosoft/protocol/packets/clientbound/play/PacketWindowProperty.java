@@ -13,16 +13,16 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket;
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
-public class PacketWindowProperty extends ClientboundPacket {
+public class PacketWindowProperty extends PlayClientboundPacket {
     private final byte windowId;
     private final short property;
     private final short value;
 
-    public PacketWindowProperty(InByteBuffer buffer) {
+    public PacketWindowProperty(PlayInByteBuffer buffer) {
         this.windowId = buffer.readByte();
         this.property = buffer.readShort();
         this.value = buffer.readShort();

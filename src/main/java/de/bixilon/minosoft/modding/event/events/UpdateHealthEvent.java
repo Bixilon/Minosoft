@@ -13,22 +13,22 @@
 
 package de.bixilon.minosoft.modding.event.events;
 
-import de.bixilon.minosoft.protocol.network.Connection;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
 import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketUpdateHealth;
 
-public class UpdateHealthEvent extends ConnectionEvent {
+public class UpdateHealthEvent extends PlayConnectionEvent {
     private final float health;
     private final int food;
     private final float saturation;
 
-    public UpdateHealthEvent(Connection connection, float health, int food, float saturation) {
+    public UpdateHealthEvent(PlayConnection connection, float health, int food, float saturation) {
         super(connection);
         this.health = health;
         this.food = food;
         this.saturation = saturation;
     }
 
-    public UpdateHealthEvent(Connection connection, PacketUpdateHealth pkg) {
+    public UpdateHealthEvent(PlayConnection connection, PacketUpdateHealth pkg) {
         super(connection);
         this.health = pkg.getHealth();
         this.food = pkg.getFood();

@@ -13,14 +13,14 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play.title
 
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.enum.ValuesEnum
 
 object TitlePacketFactory {
 
-    fun createPacket(buffer: InByteBuffer): ClientboundPacket {
+    fun createPacket(buffer: PlayInByteBuffer): PlayClientboundPacket {
         return when (buffer.connection.mapping.titleActionsRegistry.get(buffer.readVarInt())!!) {
             TitleActions.SET_TITLE -> SetTitlePacket(buffer)
             TitleActions.SET_SUBTITLE -> SetSubTitlePacket(buffer)

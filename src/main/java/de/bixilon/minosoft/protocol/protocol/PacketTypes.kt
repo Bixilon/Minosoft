@@ -18,70 +18,80 @@
 package de.bixilon.minosoft.protocol.protocol
 
 import de.bixilon.minosoft.protocol.ErrorHandler
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket
+import de.bixilon.minosoft.protocol.packets.clientbound.StatusClientboundPacket
 import de.bixilon.minosoft.protocol.packets.clientbound.login.*
 import de.bixilon.minosoft.protocol.packets.clientbound.play.*
+import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketVehicleMovement
 import de.bixilon.minosoft.protocol.packets.clientbound.play.combat.CombatEventPacketFactory
 import de.bixilon.minosoft.protocol.packets.clientbound.play.title.TitlePacketFactory
 import de.bixilon.minosoft.protocol.packets.clientbound.status.PacketStatusPong
 import de.bixilon.minosoft.protocol.packets.clientbound.status.PacketStatusResponse
+import de.bixilon.minosoft.protocol.packets.serverbound.ServerboundPacket
+import de.bixilon.minosoft.protocol.packets.serverbound.handshaking.PacketHandshake
+import de.bixilon.minosoft.protocol.packets.serverbound.login.PacketEncryptionResponse
+import de.bixilon.minosoft.protocol.packets.serverbound.login.PacketLoginPluginResponse
+import de.bixilon.minosoft.protocol.packets.serverbound.login.PacketLoginStart
+import de.bixilon.minosoft.protocol.packets.serverbound.play.*
+import de.bixilon.minosoft.protocol.packets.serverbound.status.PacketStatusPing
+import de.bixilon.minosoft.protocol.packets.serverbound.status.PacketStatusRequest
 
 class PacketTypes {
-    enum class Serverbound {
-        HANDSHAKING_HANDSHAKE,
-        STATUS_PING,
-        STATUS_REQUEST,
-        LOGIN_LOGIN_START,
-        LOGIN_ENCRYPTION_RESPONSE,
-        LOGIN_PLUGIN_RESPONSE,
-        PLAY_TELEPORT_CONFIRM,
+    enum class Serverbound(val clazz: Class<out ServerboundPacket>? = null) {
+        HANDSHAKING_HANDSHAKE(PacketHandshake::class.java),
+        STATUS_PING(PacketStatusPing::class.java),
+        STATUS_REQUEST(PacketStatusRequest::class.java),
+        LOGIN_LOGIN_START(PacketLoginStart::class.java),
+        LOGIN_ENCRYPTION_RESPONSE(PacketEncryptionResponse::class.java),
+        LOGIN_PLUGIN_RESPONSE(PacketLoginPluginResponse::class.java),
+        PLAY_TELEPORT_CONFIRM(PacketTeleportConfirm::class.java),
         PLAY_QUERY_BLOCK_NBT,
         PLAY_SET_DIFFICULTY,
-        PLAY_CHAT_MESSAGE,
-        PLAY_CLIENT_STATUS,
-        PLAY_CLIENT_SETTINGS,
-        PLAY_TAB_COMPLETE,
-        PLAY_WINDOW_CONFIRMATION,
-        PLAY_CLICK_WINDOW_BUTTON,
-        PLAY_CLICK_WINDOW,
-        PLAY_CLOSE_WINDOW,
-        PLAY_PLUGIN_MESSAGE,
+        PLAY_CHAT_MESSAGE(PacketChatMessageSending::class.java),
+        PLAY_CLIENT_STATUS(PacketClientStatus::class.java),
+        PLAY_CLIENT_SETTINGS(PacketClientSettings::class.java),
+        PLAY_TAB_COMPLETE(PacketTabCompleteSending::class.java),
+        PLAY_WINDOW_CONFIRMATION(PacketWindowConfirmationSending::class.java),
+        PLAY_CLICK_WINDOW_BUTTON(PacketWindowClickButton::class.java),
+        PLAY_CLICK_WINDOW(PacketClickWindow::class.java),
+        PLAY_CLOSE_WINDOW(PacketCloseWindowSending::class.java),
+        PLAY_PLUGIN_MESSAGE(PacketPluginMessageSending::class.java),
         PLAY_EDIT_BOOK,
-        PLAY_ENTITY_NBT_REQUEST,
-        PLAY_INTERACT_ENTITY,
-        PLAY_KEEP_ALIVE,
+        PLAY_ENTITY_NBT_REQUEST(PacketQueryEntityNBT::class.java),
+        PLAY_INTERACT_ENTITY(PacketInteractEntity::class.java),
+        PLAY_KEEP_ALIVE(PacketKeepAliveResponse::class.java),
         PLAY_LOCK_DIFFICULTY,
-        PLAY_PLAYER_POSITION,
-        PLAY_PLAYER_POSITION_AND_ROTATION,
-        PLAY_PLAYER_ROTATION,
-        PLAY_VEHICLE_MOVE,
-        PLAY_STEER_BOAT,
+        PLAY_PLAYER_POSITION(PacketPlayerPositionSending::class.java),
+        PLAY_PLAYER_POSITION_AND_ROTATION(PacketPlayerPositionAndRotationSending::class.java),
+        PLAY_PLAYER_ROTATION(PacketPlayerRotationSending::class.java),
+        PLAY_VEHICLE_MOVE(de.bixilon.minosoft.protocol.packets.serverbound.play.PacketVehicleMovement::class.java),
+        PLAY_STEER_BOAT(PacketSteerBoat::class.java),
         PLAY_PICK_ITEM,
-        PLAY_CRAFT_RECIPE_REQUEST,
-        PLAY_PLAYER_ABILITIES,
-        PLAY_PLAYER_DIGGING,
-        PLAY_ENTITY_ACTION,
-        PLAY_STEER_VEHICLE,
-        PLAY_RECIPE_BOOK_DATA,
-        PLAY_NAME_ITEM,
-        PLAY_RESOURCE_PACK_STATUS,
-        PLAY_ADVANCEMENT_TAB,
-        PLAY_SELECT_TRADE,
-        PLAY_SET_BEACON_EFFECT,
-        PLAY_HELD_ITEM_CHANGE,
-        PLAY_UPDATE_COMMAND_BLOCK,
-        PLAY_CREATIVE_INVENTORY_ACTION,
-        PLAY_UPDATE_JIGSAW_BLOCK,
-        PLAY_UPDATE_STRUCTURE_BLOCK,
-        PLAY_UPDATE_SIGN,
-        PLAY_ANIMATION,
-        PLAY_SPECTATE,
-        PLAY_PLAYER_BLOCK_PLACEMENT,
-        PLAY_USE_ITEM,
-        PLAY_UPDATE_COMMAND_BLOCK_MINECART,
-        PLAY_GENERATE_STRUCTURE,
-        PLAY_SET_DISPLAYED_RECIPE,
-        PLAY_SET_RECIPE_BOOK_STATE,
+        PLAY_CRAFT_RECIPE_REQUEST(PacketCraftingRecipeRequest::class.java),
+        PLAY_PLAYER_ABILITIES(PacketPlayerAbilitiesSending::class.java),
+        PLAY_PLAYER_DIGGING(PacketPlayerDigging::class.java),
+        PLAY_ENTITY_ACTION(PacketEntityAction::class.java),
+        PLAY_STEER_VEHICLE(PacketSteerVehicle::class.java),
+        PLAY_RECIPE_BOOK_DATA(PacketRecipeBookState::class.java),
+        PLAY_NAME_ITEM(PacketNameItem::class.java),
+        PLAY_RESOURCE_PACK_STATUS(PacketResourcePackStatus::class.java),
+        PLAY_ADVANCEMENT_TAB(PacketAdvancementTab::class.java),
+        PLAY_SELECT_TRADE(PacketSelectTrade::class.java),
+        PLAY_SET_BEACON_EFFECT(PacketSetBeaconEffect::class.java),
+        PLAY_HELD_ITEM_CHANGE(PacketHeldItemChangeSending::class.java),
+        PLAY_UPDATE_COMMAND_BLOCK(PacketUpdateCommandBlock::class.java),
+        PLAY_CREATIVE_INVENTORY_ACTION(PacketCreativeInventoryAction::class.java),
+        PLAY_UPDATE_JIGSAW_BLOCK(PacketUpdateJigsawBlock::class.java),
+        PLAY_UPDATE_STRUCTURE_BLOCK(PacketUpdateStructureBlock::class.java),
+        PLAY_UPDATE_SIGN(PacketUpdateSignSending::class.java),
+        PLAY_ANIMATION(PacketAnimation::class.java),
+        PLAY_SPECTATE(PacketSpectate::class.java),
+        PLAY_PLAYER_BLOCK_PLACEMENT(PacketPlayerBlockPlacement::class.java),
+        PLAY_USE_ITEM(PacketUseItem::class.java),
+        PLAY_UPDATE_COMMAND_BLOCK_MINECART(PacketUpdateCommandBlockMinecart::class.java),
+        PLAY_GENERATE_STRUCTURE(PacketGenerateStructure::class.java),
+        PLAY_SET_DISPLAYED_RECIPE(PacketSetDisplayedRecipe::class.java),
+        PLAY_SET_RECIPE_BOOK_STATE(PacketRecipeBookState::class.java),
         PLAY_PLAYER_GROUND_CHANGE,
         PLAY_PREPARE_CRAFTING_GRID,
         PLAY_VEHICLE_MOVEMENT,
@@ -89,26 +99,44 @@ class PacketTypes {
         ;
 
         val state: ConnectionStates = ConnectionStates.valueOf(name.split("_".toRegex()).toTypedArray()[0])
+
+        companion object {
+            val MAPPING: Map<Class<out ServerboundPacket>, Serverbound>
+
+            init {
+                val mapping: MutableMap<Class<out ServerboundPacket>, Serverbound> = mutableMapOf()
+
+                for (value in values()) {
+                    if (value.clazz == null) {
+                        continue
+                    }
+                    mapping[value.clazz] = value
+                }
+
+                MAPPING = mapping.toMap()
+            }
+        }
     }
 
 
     enum class Clientbound(
-        val factory: ((buffer: InByteBuffer) -> ClientboundPacket)? = null,
+        val playFactory: ((buffer: PlayInByteBuffer) -> PlayClientboundPacket)? = null,
+        val statusFactory: ((buffer: InByteBuffer) -> StatusClientboundPacket)? = null,
         val isThreadSafe: Boolean = true,
         val errorHandler: ErrorHandler? = null,
     ) {
-        STATUS_RESPONSE({ PacketStatusResponse(it) }, false),
-        STATUS_PONG({ PacketStatusPong(it) }, false),
-        LOGIN_DISCONNECT({ PacketLoginDisconnect(it) }, false),
-        LOGIN_ENCRYPTION_REQUEST({ PacketEncryptionRequest(it) }, false),
-        LOGIN_LOGIN_SUCCESS({ PacketLoginSuccess(it) }, false),
-        LOGIN_SET_COMPRESSION({ PacketLoginSetCompression(it) }, false),
+        STATUS_RESPONSE(statusFactory = { PacketStatusResponse(it) }, isThreadSafe = false),
+        STATUS_PONG(statusFactory = { PacketStatusPong(it) }, isThreadSafe = false),
+        LOGIN_DISCONNECT({ PacketLoginDisconnect(it) }, isThreadSafe = false),
+        LOGIN_ENCRYPTION_REQUEST({ PacketEncryptionRequest(it) }, isThreadSafe = false),
+        LOGIN_LOGIN_SUCCESS({ PacketLoginSuccess(it) }, isThreadSafe = false),
+        LOGIN_SET_COMPRESSION({ PacketLoginSetCompression(it) }, isThreadSafe = false),
         LOGIN_PLUGIN_REQUEST({ PacketLoginPluginRequest(it) }),
-        PLAY_SPAWN_MOB({ PacketSpawnMob(it) }, false),
-        PLAY_SPAWN_EXPERIENCE_ORB({ PacketSpawnExperienceOrb(it) }, false),
-        PLAY_SPAWN_WEATHER_ENTITY({ PacketSpawnWeatherEntity(it) }, false),
-        PLAY_SPAWN_PAINTING({ PacketSpawnPainting(it) }, false),
-        PLAY_SPAWN_PLAYER({ PacketSpawnPlayer(it) }, false),
+        PLAY_SPAWN_MOB({ PacketSpawnMob(it) }, isThreadSafe = false),
+        PLAY_SPAWN_EXPERIENCE_ORB({ PacketSpawnExperienceOrb(it) }, isThreadSafe = false),
+        PLAY_SPAWN_WEATHER_ENTITY({ PacketSpawnWeatherEntity(it) }, isThreadSafe = false),
+        PLAY_SPAWN_PAINTING({ PacketSpawnPainting(it) }, isThreadSafe = false),
+        PLAY_SPAWN_PLAYER({ PacketSpawnPlayer(it) }, isThreadSafe = false),
         PLAY_ENTITY_ANIMATION({ PacketEntityAnimation(it) }),
         PLAY_STATS_RESPONSE({ PacketStatistics(it) }),
         PLAY_ACKNOWLEDGE_PLAYER_DIGGING({ PacketAcknowledgePlayerDigging(it) }),
@@ -117,7 +145,7 @@ class PacketTypes {
         PLAY_BLOCK_ACTION({ PacketBlockAction(it) }),
         PLAY_BLOCK_CHANGE({ PacketBlockChange(it) }),
         PLAY_BOSS_BAR({ PacketBossBar(it) }),
-        PLAY_SERVER_DIFFICULTY({ PacketServerDifficulty(it) }),
+        PLAY_SERVER_DIFFICULTY({ PacketReceiveDifficulty(it) }),
         PLAY_CHAT_MESSAGE({ PacketChatMessageReceiving(it) }),
         PLAY_MULTIBLOCK_CHANGE({ PacketMultiBlockChange(it) }),
         PLAY_TAB_COMPLETE({ PacketTabCompleteReceiving(it) }),
@@ -130,7 +158,7 @@ class PacketTypes {
         PLAY_SET_COOLDOWN({ PacketSetCooldown(it) }),
         PLAY_PLUGIN_MESSAGE({ PacketPluginMessageReceiving(it) }),
         PLAY_NAMED_SOUND_EFFECT({ PacketNamedSoundEffect(it) }),
-        PLAY_DISCONNECT({ PacketDisconnect(it) }, false),
+        PLAY_DISCONNECT({ PacketDisconnect(it) }, isThreadSafe = false),
         PLAY_ENTITY_EVENT({ PacketEntityEvent(it) }),
         PLAY_EXPLOSION({ PacketExplosion(it) }),
         PLAY_UNLOAD_CHUNK({ PacketUnloadChunk(it) }),
@@ -141,7 +169,7 @@ class PacketTypes {
         PLAY_EFFECT({ PacketEffect(it) }),
         PLAY_PARTICLE({ PacketParticle(it) }),
         PLAY_UPDATE_LIGHT({ PacketUpdateLight(it) }),
-        PLAY_JOIN_GAME({ PacketJoinGame(it) }, false, PacketJoinGame),
+        PLAY_JOIN_GAME({ PacketJoinGame(it) }, isThreadSafe = false, errorHandler = PacketJoinGame),
         PLAY_MAP_DATA({ PacketMapData(it) }),
         PLAY_TRADE_LIST({ PacketTradeList(it) }),
         PLAY_ENTITY_MOVEMENT_AND_ROTATION({ PacketEntityMovementAndRotation(it) }),
@@ -161,7 +189,7 @@ class PacketTypes {
         PLAY_DESTROY_ENTITIES({ PacketDestroyEntity(it) }),
         PLAY_REMOVE_ENTITY_EFFECT({ PacketRemoveEntityStatusEffect(it) }),
         PLAY_RESOURCE_PACK_SEND({ PacketResourcePackSend(it) }),
-        PLAY_RESPAWN({ PacketRespawn(it) }, false),
+        PLAY_RESPAWN({ PacketRespawn(it) }, isThreadSafe = false),
         PLAY_ENTITY_HEAD_ROTATION({ PacketEntityHeadRotation(it) }),
         PLAY_SELECT_ADVANCEMENT_TAB({ PacketSelectAdvancementTab(it) }),
         PLAY_WORLD_BORDER({ PacketWorldBorder(it) }),
@@ -187,7 +215,7 @@ class PacketTypes {
         PLAY_PLAYER_LIST_HEADER_AND_FOOTER({ PacketTabHeaderAndFooter(it) }),
         PLAY_NBT_QUERY_RESPONSE({ PacketNBTQueryResponse(it) }),
         PLAY_COLLECT_ITEM({ PacketCollectItem(it) }),
-        PLAY_ENTITY_TELEPORT({ PacketEntityTeleport(it) }, false),
+        PLAY_ENTITY_TELEPORT({ PacketEntityTeleport(it) }, isThreadSafe = false),
         PLAY_ADVANCEMENTS({ PacketAdvancements(it) }),
         PLAY_ENTITY_PROPERTIES({ PacketEntityProperties(it) }),
         PLAY_ENTITY_EFFECT({ PacketEntityEffect(it) }),
@@ -198,13 +226,21 @@ class PacketTypes {
         PLAY_CHUNK_BULK({ PacketChunkBulk(it) }),
         PLAY_UPDATE_SIGN({ PacketUpdateSignReceiving(it) }),
         PLAY_STATISTICS({ PacketStatistics(it) }),
-        PLAY_SPAWN_ENTITY({ PacketSpawnObject(it) }, false),
+        PLAY_SPAWN_ENTITY({ PacketSpawnObject(it) }, isThreadSafe = false),
         PLAY_TITLE({ TitlePacketFactory.createPacket(it) }),
-        PLAY_ENTITY_INITIALISATION({ PacketEntityInitialisation(it) }, false),
-        PLAY_SET_COMPRESSION({ PacketSetCompression(it) }, false),
+        PLAY_ENTITY_INITIALISATION({ PacketEntityInitialisation(it) }, isThreadSafe = false),
+        PLAY_SET_COMPRESSION({ PacketSetCompression(it) }, isThreadSafe = false),
         PLAY_ADVANCEMENT_PROGRESS({ TODO() }),
         PLAY_SCULK_VIBRATION_SIGNAL({ PacketSculkVibrationSignal(it) }),
         ;
+
+        init {
+            //  if (playFactory == null && statusFactory == null) {
+            //      throw IllegalStateException("Both factories are null!")
+            //  } else if (playFactory != null && statusFactory != null) {
+            //     throw IllegalStateException("Both factories are not null!")
+            //  }
+        }
 
 
         val state: ConnectionStates = ConnectionStates.valueOf(name.split("_".toRegex()).toTypedArray()[0])

@@ -13,7 +13,7 @@
 package de.bixilon.minosoft.data.world.palette
 
 import de.bixilon.minosoft.data.mappings.blocks.BlockState
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 
 interface Palette {
 
@@ -21,7 +21,7 @@ interface Palette {
 
     val bitsPerBlock: Int
 
-    fun read(buffer: InByteBuffer)
+    fun read(buffer: PlayInByteBuffer)
 
     companion object {
         fun choosePalette(bitsPerBlock: Int): Palette {

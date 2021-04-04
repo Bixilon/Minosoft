@@ -16,15 +16,15 @@ import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.entities.EntityFactory
 import de.bixilon.minosoft.data.mappings.entities.EntityType
-import de.bixilon.minosoft.protocol.network.Connection
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import glm_.vec3.Vec3
 
-class DragonFireball(connection: Connection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : AbstractHurtingProjectile(connection, entityType, position, rotation) {
+class DragonFireball(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : AbstractHurtingProjectile(connection, entityType, position, rotation) {
 
     companion object : EntityFactory<DragonFireball> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("dragon_fireball")
 
-        override fun build(connection: Connection, entityType: EntityType, position: Vec3, rotation: EntityRotation): DragonFireball {
+        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation): DragonFireball {
             return DragonFireball(connection, entityType, position, rotation)
         }
     }

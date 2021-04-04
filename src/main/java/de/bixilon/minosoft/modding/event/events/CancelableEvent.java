@@ -13,12 +13,12 @@
 
 package de.bixilon.minosoft.modding.event.events;
 
-import de.bixilon.minosoft.protocol.network.Connection;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
 
-public abstract class CancelableEvent extends ConnectionEvent {
+public abstract class CancelableEvent extends PlayConnectionEvent {
     private boolean cancelled;
 
-    protected CancelableEvent(Connection connection) {
+    protected CancelableEvent(PlayConnection connection) {
         super(connection);
     }
 

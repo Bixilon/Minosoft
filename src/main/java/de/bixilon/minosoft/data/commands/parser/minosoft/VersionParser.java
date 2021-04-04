@@ -21,7 +21,7 @@ import de.bixilon.minosoft.data.commands.parser.exceptions.minosoft.InvalidVersi
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties;
 import de.bixilon.minosoft.data.mappings.versions.Version;
 import de.bixilon.minosoft.data.mappings.versions.Versions;
-import de.bixilon.minosoft.protocol.network.Connection;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
 
 import javax.annotation.Nullable;
 
@@ -29,7 +29,7 @@ public class VersionParser extends CommandParser {
     public static final VersionParser VERSION_PARSER = new VersionParser();
 
     @Override
-    public Object parse(Connection connection, @Nullable ParserProperties properties, CommandStringReader stringReader) throws CommandParseException {
+    public Object parse(PlayConnection connection, @Nullable ParserProperties properties, CommandStringReader stringReader) throws CommandParseException {
         String rawVersionName = stringReader.readString();
         if (rawVersionName.isBlank()) {
             throw new BlankStringCommandParseException(stringReader, rawVersionName);

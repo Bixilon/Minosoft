@@ -15,16 +15,16 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.inventory.ItemStack;
 import de.bixilon.minosoft.modding.event.events.MultiSlotChangeEvent;
-import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket;
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
-public class PacketWindowItems extends ClientboundPacket {
+public class PacketWindowItems extends PlayClientboundPacket {
     private final byte windowId;
     private final ItemStack[] data;
 
-    public PacketWindowItems(InByteBuffer buffer) {
+    public PacketWindowItems(PlayInByteBuffer buffer) {
         this.windowId = buffer.readByte();
         this.data = new ItemStack[buffer.readUnsignedShort()];
         for (int i = 0; i < this.data.length; i++) {
@@ -33,10 +33,10 @@ public class PacketWindowItems extends ClientboundPacket {
     }
 
     @Override
-    public void handle(Connection connection) {
+    public void handle(PlayConnection connection) {
         connection.fireEvent(new MultiSlotChangeEvent(connection, this));
 
-    // ToDo:    connection.getPlayer().getInventoryManager().getInventories().put(getWindowId(), getData());
+        // ToDo:    connection.getPlayer().getInventoryManager().getInventories().put(getWindowId(), getData());
     }
 
     @Override

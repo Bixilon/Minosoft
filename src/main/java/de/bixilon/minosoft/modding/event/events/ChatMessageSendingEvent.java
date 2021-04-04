@@ -13,12 +13,12 @@
 
 package de.bixilon.minosoft.modding.event.events;
 
-import de.bixilon.minosoft.protocol.network.Connection;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
 
 public class ChatMessageSendingEvent extends CancelableEvent {
     private String message;
 
-    public ChatMessageSendingEvent(Connection connection, String message) {
+    public ChatMessageSendingEvent(PlayConnection connection, String message) {
         super(connection);
         this.message = message;
     }

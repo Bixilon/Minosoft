@@ -17,7 +17,7 @@ import de.bixilon.minosoft.data.Gamemodes;
 import de.bixilon.minosoft.data.commands.CommandStringReader;
 import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException;
 import de.bixilon.minosoft.data.commands.parser.exceptions.entity.UnknownEnumValueCommandParseException;
-import de.bixilon.minosoft.protocol.network.Connection;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -44,7 +44,7 @@ public class ListSelectorArgumentParser extends EntitySelectorArgumentParser {
     }
 
     @Override
-    public void isParsable(Connection connection, CommandStringReader stringReader, String value) throws CommandParseException {
+    public void isParsable(PlayConnection connection, CommandStringReader stringReader, String value) throws CommandParseException {
         if (value.startsWith("!")) {
             value = value.substring(1);
         }

@@ -14,7 +14,7 @@ package de.bixilon.minosoft.modding.event.events
 
 import de.bixilon.minosoft.data.world.ChunkData
 
-import de.bixilon.minosoft.protocol.network.Connection
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketChunkData
 import de.bixilon.minosoft.util.nbt.tag.CompoundTag
 import glm_.vec2.Vec2i
@@ -22,24 +22,24 @@ import glm_.vec2.Vec2i
 /**
  * Fired when a new chunk is received or a full chunk changes
  */
-class ChunkDataChangeEvent : ConnectionEvent {
+class ChunkDataChangeEvent : PlayConnectionEvent {
     val chunkPosition: Vec2i
     val chunkData: ChunkData?
     val heightMap: CompoundTag?
 
-    constructor(connection: Connection, position: Vec2i, chunkData: ChunkData, heightMap: CompoundTag?) : super(connection) {
+    constructor(connection: PlayConnection, position: Vec2i, chunkData: ChunkData, heightMap: CompoundTag?) : super(connection) {
         this.chunkPosition = position
         this.chunkData = chunkData
         this.heightMap = heightMap
     }
 
-    constructor(connection: Connection, position: Vec2i, chunkData: ChunkData) : super(connection) {
+    constructor(connection: PlayConnection, position: Vec2i, chunkData: ChunkData) : super(connection) {
         this.chunkPosition = position
         this.chunkData = chunkData
         heightMap = CompoundTag()
     }
 
-    constructor(connection: Connection, pkg: PacketChunkData) : super(connection) {
+    constructor(connection: PlayConnection, pkg: PacketChunkData) : super(connection) {
         chunkPosition = pkg.chunkPosition
         chunkData = pkg.chunkData
         heightMap = pkg.heightMap

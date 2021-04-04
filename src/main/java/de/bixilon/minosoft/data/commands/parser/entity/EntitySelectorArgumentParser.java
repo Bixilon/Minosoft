@@ -15,8 +15,8 @@ package de.bixilon.minosoft.data.commands.parser.entity;
 
 import de.bixilon.minosoft.data.commands.CommandStringReader;
 import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException;
-import de.bixilon.minosoft.protocol.network.Connection;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
 
 public abstract class EntitySelectorArgumentParser {
-    public abstract void isParsable(Connection connection, CommandStringReader stringReader, String value) throws CommandParseException;
+    public abstract void isParsable(PlayConnection connection, CommandStringReader stringReader, String value) throws CommandParseException;
 }

@@ -18,10 +18,10 @@ import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.entities.EntityFactory
 import de.bixilon.minosoft.data.mappings.entities.EntityType
-import de.bixilon.minosoft.protocol.network.Connection
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import glm_.vec3.Vec3
 
-class Mooshroom(connection: Connection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : Cow(connection, entityType, position, rotation) {
+class Mooshroom(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : Cow(connection, entityType, position, rotation) {
 
     @get:EntityMetaDataFunction(name = "Variant")
     val variant: String?
@@ -31,7 +31,7 @@ class Mooshroom(connection: Connection, entityType: EntityType, position: Vec3, 
     companion object : EntityFactory<Mooshroom> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("mooshroom")
 
-        override fun build(connection: Connection, entityType: EntityType, position: Vec3, rotation: EntityRotation): Mooshroom {
+        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation): Mooshroom {
             return Mooshroom(connection, entityType, position, rotation)
         }
     }

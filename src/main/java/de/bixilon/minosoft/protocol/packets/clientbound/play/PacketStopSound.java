@@ -15,18 +15,18 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.SoundCategories;
 import de.bixilon.minosoft.data.mappings.ResourceLocation;
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket;
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 import de.bixilon.minosoft.util.BitByte;
 import de.bixilon.minosoft.util.logging.Log;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_17W45A;
 
-public class PacketStopSound extends ClientboundPacket {
+public class PacketStopSound extends PlayClientboundPacket {
     private SoundCategories category;
     private ResourceLocation soundResourceLocation;
 
-    public PacketStopSound(InByteBuffer buffer) {
+    public PacketStopSound(PlayInByteBuffer buffer) {
         if (buffer.getVersionId() < V_17W45A) { // ToDo: these 2 values need to be switched in before 1.12.2
             this.category = SoundCategories.valueOf(buffer.readString().toUpperCase());
             this.soundResourceLocation = buffer.readResourceLocation();

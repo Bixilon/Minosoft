@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.protocol
 
-import de.bixilon.minosoft.protocol.network.Connection
+import de.bixilon.minosoft.protocol.network.connection.Connection
 
 interface ErrorHandler {
 

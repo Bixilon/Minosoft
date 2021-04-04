@@ -15,15 +15,15 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.text.ChatComponent;
 import de.bixilon.minosoft.modding.event.events.BossBarChangeEvent;
-import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket;
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 import de.bixilon.minosoft.util.BitByte;
 import de.bixilon.minosoft.util.logging.Log;
 
 import java.util.UUID;
 
-public class PacketBossBar extends ClientboundPacket {
+public class PacketBossBar extends PlayClientboundPacket {
     private final UUID uuid;
     private final BossBarActions action;
 
@@ -35,7 +35,7 @@ public class PacketBossBar extends ClientboundPacket {
     private byte flags;
 
 
-    public PacketBossBar(InByteBuffer buffer) {
+    public PacketBossBar(PlayInByteBuffer buffer) {
         this.uuid = buffer.readUUID();
         this.action = BossBarActions.byId(buffer.readVarInt());
         switch (this.action) {
@@ -57,7 +57,7 @@ public class PacketBossBar extends ClientboundPacket {
     }
 
     @Override
-    public void handle(Connection connection) {
+    public void handle(PlayConnection connection) {
         BossBarChangeEvent event = new BossBarChangeEvent(connection, this);
         if (connection.fireEvent(event)) {
             return;

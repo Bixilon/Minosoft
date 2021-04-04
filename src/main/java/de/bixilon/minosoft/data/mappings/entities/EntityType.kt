@@ -24,7 +24,7 @@ import de.bixilon.minosoft.data.mappings.registry.RegistryItem
 import de.bixilon.minosoft.data.mappings.registry.ResourceLocationDeserializer
 import de.bixilon.minosoft.data.mappings.registry.Translatable
 import de.bixilon.minosoft.data.mappings.versions.VersionMapping
-import de.bixilon.minosoft.protocol.network.Connection
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import glm_.vec3.Vec3
 
 data class EntityType(
@@ -37,7 +37,7 @@ data class EntityType(
     val factory: EntityFactory<out Entity>,
 ) : RegistryItem, Translatable {
 
-    fun build(connection: Connection, position: Vec3, rotation: EntityRotation, entityMetaData: EntityMetaData?, versionId: Int): Entity? {
+    fun build(connection: PlayConnection, position: Vec3, rotation: EntityRotation, entityMetaData: EntityMetaData?, versionId: Int): Entity? {
         return DefaultEntityFactories.buildEntity(factory, connection, position, rotation, entityMetaData, versionId)
     }
 

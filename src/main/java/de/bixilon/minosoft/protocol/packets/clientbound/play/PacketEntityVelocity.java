@@ -15,23 +15,23 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.entities.Velocity;
 import de.bixilon.minosoft.data.entities.entities.Entity;
-import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket;
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
-public class PacketEntityVelocity extends ClientboundPacket {
+public class PacketEntityVelocity extends PlayClientboundPacket {
     private final int entityId;
     private final Velocity velocity;
 
-    public PacketEntityVelocity(InByteBuffer buffer) {
+    public PacketEntityVelocity(PlayInByteBuffer buffer) {
         this.entityId = buffer.readEntityId();
 
         this.velocity = new Velocity(buffer.readShort(), buffer.readShort(), buffer.readShort());
     }
 
     @Override
-    public void handle(Connection connection) {
+    public void handle(PlayConnection connection) {
         Entity entity = connection.getWorld().getEntity(getEntityId());
 
         if (entity == null) {

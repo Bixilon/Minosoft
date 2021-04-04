@@ -13,13 +13,11 @@
 
 package de.bixilon.minosoft.protocol.packets.serverbound.play;
 
-import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
-import de.bixilon.minosoft.protocol.protocol.OutPacketBuffer;
-import de.bixilon.minosoft.protocol.protocol.PacketTypes;
+import de.bixilon.minosoft.protocol.packets.serverbound.PlayServerboundPacket;
+import de.bixilon.minosoft.protocol.protocol.OutPlayByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
-public class PacketSteerBoat implements ServerboundPacket {
+public class PacketSteerBoat implements PlayServerboundPacket {
     private final boolean leftPaddle;
     private final boolean rightPaddle;
 
@@ -29,11 +27,9 @@ public class PacketSteerBoat implements ServerboundPacket {
     }
 
     @Override
-    public OutPacketBuffer write(Connection connection) {
-        OutPacketBuffer buffer = new OutPacketBuffer(connection, PacketTypes.Serverbound.PLAY_STEER_BOAT);
+    public void write(OutPlayByteBuffer buffer) {
         buffer.writeBoolean(this.leftPaddle);
         buffer.writeBoolean(this.rightPaddle);
-        return buffer;
     }
 
     @Override

@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.modding.event.events;
 
-import de.bixilon.minosoft.protocol.network.Connection;
+import de.bixilon.minosoft.protocol.network.connection.Connection;
 import de.bixilon.minosoft.protocol.ping.ServerListPing;
 
 import javax.annotation.Nullable;

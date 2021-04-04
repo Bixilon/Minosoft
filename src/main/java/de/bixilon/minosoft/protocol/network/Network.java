@@ -13,12 +13,20 @@
 
 package de.bixilon.minosoft.protocol.network;
 
+import de.bixilon.minosoft.data.mappings.versions.Version;
 import de.bixilon.minosoft.protocol.exceptions.PacketNotImplementedException;
 import de.bixilon.minosoft.protocol.exceptions.PacketParseException;
 import de.bixilon.minosoft.protocol.exceptions.UnknownPacketException;
+import de.bixilon.minosoft.protocol.network.connection.Connection;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
+import de.bixilon.minosoft.protocol.network.connection.StatusConnection;
 import de.bixilon.minosoft.protocol.network.socket.BlockingSocketNetwork;
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
+import de.bixilon.minosoft.protocol.packets.clientbound.ClientboundPacket;
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket;
+import de.bixilon.minosoft.protocol.packets.clientbound.StatusClientboundPacket;
+import de.bixilon.minosoft.protocol.packets.serverbound.AllServerboundPacket;
+import de.bixilon.minosoft.protocol.packets.serverbound.PlayServerboundPacket;
+import de.bixilon.minosoft.protocol.packets.serverbound.ServerboundPacket;
 import de.bixilon.minosoft.protocol.protocol.*;
 import de.bixilon.minosoft.util.Pair;
 import de.bixilon.minosoft.util.ServerAddress;
@@ -48,6 +56,7 @@ public abstract class Network {
         return this.lastException;
     }
 
+
     protected Pair<PacketTypes.Clientbound, ClientboundPacket> receiveClientboundPacket(byte[] bytes) throws PacketParseException {
         if (this.compressionThreshold >= 0) {
             // compression is enabled
@@ -59,29 +68,44 @@ public abstract class Network {
                 bytes = Util.decompress(bytes);
             }
         }
-        InPacketBuffer data = new InPacketBuffer(bytes, this.connection);
+        var data = new InByteBuffer(bytes, this.connection);
+        var packetId = data.readVarInt();
 
         PacketTypes.Clientbound packetType = null;
 
         try {
-            packetType = this.connection.getPacketByCommand(this.connection.getConnectionState(), data.getPacketTypeId());
+            packetType = this.connection.getPacketById(packetId);
             if (packetType == null) {
-                throw new UnknownPacketException(String.format("Server sent us an unknown packet (id=0x%x, length=%d, data=%s)", data.getPacketTypeId(), bytes.length, data.getBase64()));
+                throw new UnknownPacketException(String.format("Server sent us an unknown packet (id=0x%x, length=%d, data=%s)", packetId, bytes.length, data.getBase64()));
             }
 
-            var factory = packetType.getFactory();
 
-            if (factory == null) {
-                throw new PacketNotImplementedException(data, packetType, this.connection);
+            Version version = null;
+            if (this.connection instanceof PlayConnection) {
+                version = ((PlayConnection) this.connection).getVersion();
             }
 
             ClientboundPacket packet;
             try {
-                packet = factory.invoke(data);
-                if (data.getBytesLeft() > 0) {
-                    throw new PacketParseException(String.format("Could not parse packet %s (used=%d, available=%d, total=%d)", packetType, data.getPosition(), data.getBytesLeft(), data.getLength()));
+                if (packetType.getPlayFactory() != null) {
+                    var playData = new PlayInByteBuffer(data.readBytesLeft(), ((PlayConnection) this.connection));
+                    packet = packetType.getPlayFactory().invoke(playData);
+                    if (playData.getBytesLeft() > 0) {
+                        throw new PacketParseException(String.format("Could not parse packet %s (used=%d, available=%d, total=%d)", packetType, data.getPosition(), data.getBytesLeft(), data.getLength()));
+                    }
+                    ((PlayClientboundPacket) packet).check(((PlayConnection) this.connection));
+                } else if (packetType.getStatusFactory() != null) {
+                    var statusData = new InByteBuffer(data);
+                    packet = packetType.getStatusFactory().invoke(statusData);
+                    if (statusData.getBytesLeft() > 0) {
+                        throw new PacketParseException(String.format("Could not parse packet %s (used=%d, available=%d, total=%d)", packetType, data.getPosition(), data.getBytesLeft(), data.getLength()));
+                    }
+                    ((StatusClientboundPacket) packet).check((StatusConnection) this.connection);
+                } else {
+                    throw new PacketNotImplementedException(data, packetId, packetType, version, this.connection.getConnectionState());
                 }
-                packet.check(this.connection);
+
+
             } catch (Throwable exception) {
                 var errorHandler = packetType.getErrorHandler();
                 if (errorHandler != null) {
@@ -101,7 +125,26 @@ public abstract class Network {
     }
 
     protected byte[] prepareServerboundPacket(ServerboundPacket packet) {
-        byte[] data = packet.write(this.connection).toByteArray();
+        byte[] data;
+        if (packet instanceof PlayServerboundPacket) {
+            var buffer = new OutPlayByteBuffer((PlayConnection) this.connection);
+            ((PlayServerboundPacket) packet).write(buffer);
+            data = buffer.toByteArray();
+        } else if (packet instanceof AllServerboundPacket) {
+            var buffer = new OutByteBuffer(this.connection);
+            ((AllServerboundPacket) packet).write(buffer);
+            data = buffer.toByteArray();
+        } else {
+            throw new IllegalStateException();
+        }
+
+        OutByteBuffer outByteBuffer = new OutByteBuffer();
+        outByteBuffer.writeVarInt(this.connection.getPacketId(PacketTypes.Serverbound.Companion.getMAPPING().get(packet.getClass())));
+        outByteBuffer.writeBytes(data);
+
+        data = outByteBuffer.toByteArray();
+
+
         if (this.compressionThreshold >= 0) {
             // compression is enabled
             // check if there is a need to compress it and if so, do it!

@@ -14,18 +14,18 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.mappings.ResourceLocation;
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket;
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 import glm_.vec3.Vec3i;
 
-public class PacketSculkVibrationSignal extends ClientboundPacket {
+public class PacketSculkVibrationSignal extends PlayClientboundPacket {
     private final Vec3i vibrationSourcePosition;
     private final ResourceLocation vibrationTargetType;
     private final Object vibrationTargetData;
     private final int arrivalTicks;
 
-    public PacketSculkVibrationSignal(InByteBuffer buffer) {
+    public PacketSculkVibrationSignal(PlayInByteBuffer buffer) {
         this.vibrationSourcePosition = buffer.readBlockPosition();
         this.vibrationTargetType = buffer.readResourceLocation();
         this.vibrationTargetData = switch (this.vibrationTargetType.getFull()) {

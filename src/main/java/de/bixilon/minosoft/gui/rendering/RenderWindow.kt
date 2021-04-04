@@ -30,7 +30,7 @@ import de.bixilon.minosoft.gui.rendering.util.ScreenshotTaker
 import de.bixilon.minosoft.modding.event.EventInvokerCallback
 import de.bixilon.minosoft.modding.event.events.ConnectionStateChangeEvent
 import de.bixilon.minosoft.modding.event.events.PacketReceiveEvent
-import de.bixilon.minosoft.protocol.network.Connection
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketPlayerPositionAndRotation
 import de.bixilon.minosoft.util.CountUpAndDownLatch
 import de.bixilon.minosoft.util.logging.Log
@@ -46,7 +46,7 @@ import org.lwjgl.system.MemoryUtil
 import java.util.concurrent.ConcurrentLinkedQueue
 
 class RenderWindow(
-    val connection: Connection,
+    val connection: PlayConnection,
     val rendering: Rendering,
 ) {
     private val keyBindingCallbacks: MutableMap<ResourceLocation, Pair<KeyBinding, MutableSet<((keyCode: KeyCodes, keyEvent: KeyAction) -> Unit)>>> = mutableMapOf()

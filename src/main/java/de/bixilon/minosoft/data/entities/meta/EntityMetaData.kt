@@ -24,8 +24,8 @@ import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.mappings.blocks.BlockState
 import de.bixilon.minosoft.data.mappings.particle.data.ParticleData
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.protocol.network.Connection
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.util.BitByte
 import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.enum.ValuesEnum
@@ -36,11 +36,11 @@ import glm_.vec3.Vec3i
 import java.util.*
 
 class EntityMetaData(
-    val connection: Connection,
+    val connection: PlayConnection,
 ) {
     val sets: MetaDataHashMap = MetaDataHashMap()
 
-    fun getData(type: EntityMetaDataDataTypes, buffer: InByteBuffer): Any? {
+    fun getData(type: EntityMetaDataDataTypes, buffer: PlayInByteBuffer): Any? {
         return when (type) {
             EntityMetaDataDataTypes.BYTE -> buffer.readByte()
             EntityMetaDataDataTypes.VAR_INT -> buffer.readVarInt()

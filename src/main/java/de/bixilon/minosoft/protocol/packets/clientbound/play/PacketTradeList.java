@@ -16,14 +16,14 @@ package de.bixilon.minosoft.protocol.packets.clientbound.play;
 import de.bixilon.minosoft.data.Trade;
 import de.bixilon.minosoft.data.entities.entities.npc.villager.data.VillagerLevels;
 import de.bixilon.minosoft.data.inventory.ItemStack;
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket;
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_14_3_PRE1;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_14_4_PRE5;
 
-public class PacketTradeList extends ClientboundPacket {
+public class PacketTradeList extends PlayClientboundPacket {
     int windowId;
     Trade[] trades;
     VillagerLevels level;
@@ -31,7 +31,7 @@ public class PacketTradeList extends ClientboundPacket {
     boolean isRegularVillager;
     boolean canRestock;
 
-    public PacketTradeList(InByteBuffer buffer) {
+    public PacketTradeList(PlayInByteBuffer buffer) {
         this.windowId = buffer.readVarInt();
         this.trades = new Trade[buffer.readByte()];
         for (int i = 0; i < this.trades.length; i++) {

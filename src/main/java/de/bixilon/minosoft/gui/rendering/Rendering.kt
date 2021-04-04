@@ -13,13 +13,13 @@
 
 package de.bixilon.minosoft.gui.rendering
 
-import de.bixilon.minosoft.protocol.network.Connection
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ConnectionStates
 import de.bixilon.minosoft.util.CountUpAndDownLatch
 import de.bixilon.minosoft.util.logging.Log
 import org.lwjgl.Version
 
-class Rendering(private val connection: Connection) {
+class Rendering(private val connection: PlayConnection) {
     val renderWindow: RenderWindow = RenderWindow(connection, this)
 
     fun start(latch: CountUpAndDownLatch) {

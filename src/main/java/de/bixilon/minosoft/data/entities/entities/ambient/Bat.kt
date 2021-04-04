@@ -18,10 +18,10 @@ import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.entities.EntityFactory
 import de.bixilon.minosoft.data.mappings.entities.EntityType
-import de.bixilon.minosoft.protocol.network.Connection
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import glm_.vec3.Vec3
 
-class Bat(connection: Connection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : AmbientCreature(connection, entityType, position, rotation) {
+class Bat(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : AmbientCreature(connection, entityType, position, rotation) {
 
     private fun getBatFlag(bitMask: Int): Boolean {
         return entityMetaData.sets.getBitMask(EntityMetaDataFields.BAT_FLAGS, bitMask)
@@ -35,7 +35,7 @@ class Bat(connection: Connection, entityType: EntityType, position: Vec3, rotati
     companion object : EntityFactory<Bat> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("bat")
 
-        override fun build(connection: Connection, entityType: EntityType, position: Vec3, rotation: EntityRotation): Bat {
+        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation): Bat {
             return Bat(connection, entityType, position, rotation)
         }
     }

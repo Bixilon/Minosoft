@@ -19,11 +19,11 @@ import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.entities.EntityFactory
 import de.bixilon.minosoft.data.mappings.entities.EntityType
-import de.bixilon.minosoft.protocol.network.Connection
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import glm_.vec3.Vec3
 
-class ThrownPotion(connection: Connection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : ThrowableItemProjectile(connection, entityType, position, rotation) {
+class ThrownPotion(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : ThrowableItemProjectile(connection, entityType, position, rotation) {
     @EntityMetaDataFunction(name = "Item")
     override fun getItem(): ItemStack {
         return if (versionId > ProtocolVersions.V_20W09A) {
@@ -41,7 +41,7 @@ class ThrownPotion(connection: Connection, entityType: EntityType, position: Vec
         private val DEFAULT_ITEM: ItemStack? = null
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("potion")
 
-        override fun build(connection: Connection, entityType: EntityType, position: Vec3, rotation: EntityRotation): ThrownPotion {
+        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation): ThrownPotion {
             return ThrownPotion(connection, entityType, position, rotation)
         }
     }

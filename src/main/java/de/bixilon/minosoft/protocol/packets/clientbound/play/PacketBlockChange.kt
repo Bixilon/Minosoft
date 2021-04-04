@@ -19,14 +19,14 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.inChunkSectionPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
 
 import de.bixilon.minosoft.modding.event.events.BlockChangeEvent
-import de.bixilon.minosoft.protocol.network.Connection
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.util.logging.Log
 import glm_.vec3.Vec3i
 
-class PacketBlockChange(buffer: InByteBuffer) : ClientboundPacket() {
+class PacketBlockChange(buffer: PlayInByteBuffer) : PlayClientboundPacket() {
     val blockPosition: Vec3i
     val block: BlockState?
 
@@ -40,7 +40,7 @@ class PacketBlockChange(buffer: InByteBuffer) : ClientboundPacket() {
         }
     }
 
-    override fun handle(connection: Connection) {
+    override fun handle(connection: PlayConnection) {
         val chunk = connection.world.getChunk(blockPosition.chunkPosition) ?: return // thanks mojang
         if (!chunk.isFullyLoaded) {
             return
@@ -58,7 +58,7 @@ class PacketBlockChange(buffer: InByteBuffer) : ClientboundPacket() {
             section.setBlockState(inChunkSectionPosition, block)
         }
 
-        connection.renderer.renderWindow.worldRenderer.prepareChunkSection(blockPosition.chunkPosition, sectionHeight)
+        connection.renderer?.renderWindow?.worldRenderer?.prepareChunkSection(blockPosition.chunkPosition, sectionHeight)
     }
 
     override fun log() {

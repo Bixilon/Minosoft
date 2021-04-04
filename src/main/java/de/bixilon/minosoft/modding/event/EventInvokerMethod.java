@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.modding.event;
 
 import de.bixilon.minosoft.modding.event.events.CancelableEvent;
-import de.bixilon.minosoft.modding.event.events.ConnectionEvent;
+import de.bixilon.minosoft.modding.event.events.Event;
 import de.bixilon.minosoft.modding.event.events.annotations.EventHandler;
 import de.bixilon.minosoft.modding.loading.Priorities;
 
@@ -23,13 +23,13 @@ import java.lang.reflect.Method;
 
 public class EventInvokerMethod extends EventInvoker {
     private final Method method;
-    private final Class<? extends ConnectionEvent> eventType;
+    private final Class<? extends Event> eventType;
 
     @SuppressWarnings("unchecked")
     public EventInvokerMethod(boolean ignoreCancelled, Priorities priority, EventListener listener, Method method) {
         super(ignoreCancelled, priority, listener);
         this.method = method;
-        this.eventType = (Class<? extends ConnectionEvent>) method.getParameters()[0].getType();
+        this.eventType = (Class<? extends Event>) method.getParameters()[0].getType();
     }
 
     public EventInvokerMethod(EventHandler annotation, EventListener listener, Method method) {
@@ -40,7 +40,7 @@ public class EventInvokerMethod extends EventInvoker {
         return this.method;
     }
 
-    public void invoke(ConnectionEvent event) {
+    public void invoke(Event event) {
         if (!this.method.getParameters()[0].getType().isAssignableFrom(event.getClass())) {
             return;
         }
@@ -54,7 +54,7 @@ public class EventInvokerMethod extends EventInvoker {
         }
     }
 
-    public Class<? extends ConnectionEvent> getEventType() {
+    public Class<? extends Event> getEventType() {
         return this.eventType;
     }
 }

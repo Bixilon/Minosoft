@@ -13,15 +13,15 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket;
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 import glm_.vec2.Vec2i;
 
-public class PacketUpdateViewPosition extends ClientboundPacket {
+public class PacketUpdateViewPosition extends PlayClientboundPacket {
     private final Vec2i position;
 
-    public PacketUpdateViewPosition(InByteBuffer buffer) {
+    public PacketUpdateViewPosition(PlayInByteBuffer buffer) {
         this.position = new Vec2i(buffer.readVarInt(), buffer.readVarInt());
     }
 

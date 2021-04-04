@@ -14,22 +14,22 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.SoundCategories;
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket;
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import de.bixilon.minosoft.util.logging.Log;
 import glm_.vec3.Vec3;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
 
-public class PacketNamedSoundEffect extends ClientboundPacket {
+public class PacketNamedSoundEffect extends PlayClientboundPacket {
     private Vec3 position;
     private final String sound;
     private final float volume;
     private final float pitch;
     private SoundCategories category;
 
-    public PacketNamedSoundEffect(InByteBuffer buffer) {
+    public PacketNamedSoundEffect(PlayInByteBuffer buffer) {
         if (buffer.getVersionId() >= V_17W15A && buffer.getVersionId() < V_17W18A) {
             // category was moved to the top
             this.category = SoundCategories.byId(buffer.readVarInt());

@@ -16,15 +16,15 @@ import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.entities.EntityFactory
 import de.bixilon.minosoft.data.mappings.entities.EntityType
-import de.bixilon.minosoft.protocol.network.Connection
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import glm_.vec3.Vec3
 
-class ZombieHorse(connection: Connection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : AbstractHorse(connection, entityType, position, rotation) {
+class ZombieHorse(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : AbstractHorse(connection, entityType, position, rotation) {
 
     companion object : EntityFactory<ZombieHorse> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("zombie_horse")
 
-        override fun build(connection: Connection, entityType: EntityType, position: Vec3, rotation: EntityRotation): ZombieHorse {
+        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation): ZombieHorse {
             return ZombieHorse(connection, entityType, position, rotation)
         }
     }

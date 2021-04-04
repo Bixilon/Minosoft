@@ -22,7 +22,7 @@ import de.bixilon.minosoft.modding.event.events.ChatMessageReceivingEvent;
 import de.bixilon.minosoft.modding.event.events.ChatMessageSendingEvent;
 import de.bixilon.minosoft.modding.event.events.CloseWindowEvent;
 import de.bixilon.minosoft.modding.event.events.HeldItemChangeEvent;
-import de.bixilon.minosoft.protocol.network.Connection;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
 import de.bixilon.minosoft.protocol.packets.serverbound.login.PacketLoginPluginResponse;
 import de.bixilon.minosoft.protocol.packets.serverbound.play.*;
 import de.bixilon.minosoft.util.Util;
@@ -34,9 +34,9 @@ import java.util.UUID;
 
 public class PacketSender {
     public static final String[] ILLEGAL_CHAT_CHARS = {"§"};
-    private final Connection connection;
+    private final PlayConnection connection;
 
-    public PacketSender(Connection connection) {
+    public PacketSender(PlayConnection connection) {
         this.connection = connection;
     }
 

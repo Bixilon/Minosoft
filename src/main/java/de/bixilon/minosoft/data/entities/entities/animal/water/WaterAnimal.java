@@ -16,12 +16,12 @@ package de.bixilon.minosoft.data.entities.entities.animal.water;
 import de.bixilon.minosoft.data.entities.EntityRotation;
 import de.bixilon.minosoft.data.entities.entities.PathfinderMob;
 import de.bixilon.minosoft.data.mappings.entities.EntityType;
-import de.bixilon.minosoft.protocol.network.Connection;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
 import glm_.vec3.Vec3;
 
 public abstract class WaterAnimal extends PathfinderMob {
 
-    public WaterAnimal(Connection connection, EntityType entityType, Vec3 position, EntityRotation rotation) {
+    public WaterAnimal(PlayConnection connection, EntityType entityType, Vec3 position, EntityRotation rotation) {
         super(connection, entityType, position, rotation);
     }
 }

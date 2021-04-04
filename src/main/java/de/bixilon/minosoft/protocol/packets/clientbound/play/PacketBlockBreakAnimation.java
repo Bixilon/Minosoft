@@ -14,20 +14,20 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.modding.event.events.BlockBreakAnimationEvent;
-import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
+import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket;
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 import glm_.vec3.Vec3i;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W03B;
 
-public class PacketBlockBreakAnimation extends ClientboundPacket {
+public class PacketBlockBreakAnimation extends PlayClientboundPacket {
     private final int entityId;
     private final Vec3i position;
     private final byte stage;
 
-    public PacketBlockBreakAnimation(InByteBuffer buffer) {
+    public PacketBlockBreakAnimation(PlayInByteBuffer buffer) {
         this.entityId = buffer.readVarInt();
         if (buffer.getVersionId() < V_14W03B) {
             this.position = buffer.readBlockPositionInteger();
@@ -38,7 +38,7 @@ public class PacketBlockBreakAnimation extends ClientboundPacket {
     }
 
     @Override
-    public void handle(Connection connection) {
+    public void handle(PlayConnection connection) {
         BlockBreakAnimationEvent event = new BlockBreakAnimationEvent(connection, this);
         if (connection.fireEvent(event)) {
             return;

@@ -27,7 +27,7 @@ import de.bixilon.minosoft.gui.rendering.hud.elements.debug.HUDWorldDebugElement
 import de.bixilon.minosoft.gui.rendering.hud.elements.other.CrosshairHUDElement
 import de.bixilon.minosoft.gui.rendering.hud.elements.other.HotbarHUDElement
 import de.bixilon.minosoft.gui.rendering.shader.Shader
-import de.bixilon.minosoft.protocol.network.Connection
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.json.ResourceLocationJsonMap.toResourceLocationMap
 import glm_.glm
@@ -35,7 +35,7 @@ import glm_.mat4x4.Mat4
 import glm_.vec2.Vec2
 import glm_.vec2.Vec2i
 
-class HUDRenderer(val connection: Connection, val renderWindow: RenderWindow) : Renderer {
+class HUDRenderer(val connection: PlayConnection, val renderWindow: RenderWindow) : Renderer {
     private val hudElements: MutableMap<ResourceLocation, Pair<HUDElementProperties, HUDElement>> = mutableMapOf()
     private val enabledHUDElement: MutableMap<ResourceLocation, Pair<HUDElementProperties, HUDElement>> = mutableMapOf()
     private val hudShader = Shader(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "rendering/shader/hud_vertex.glsl"), ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "rendering/shader/hud_fragment.glsl"))
