@@ -119,7 +119,7 @@ data class BlockState(
     companion object {
         val ROTATION_PROPERTIES = setOf("facing", "rotation", "orientation", "axis")
 
-        private val SPECIAL_RENDERERS = mutableMapOf(
+        val SPECIAL_RENDERERS = mutableMapOf(
             "water" to FluidRenderer("block/water_still", "block/water_flow", "water"),
             "lava" to FluidRenderer("block/lava_still", "block/lava_flow", "lava"),
         ) // ToDo: Don't like this

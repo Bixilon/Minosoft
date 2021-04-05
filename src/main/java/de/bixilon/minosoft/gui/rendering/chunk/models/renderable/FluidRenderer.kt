@@ -191,7 +191,7 @@ class FluidRenderer(
 
     private fun getLevel(blockState: BlockState): Float {
         blockState.properties[BlockProperties.FLUID_LEVEL]?.let {
-            return (8 - it as Int) * (1f / 8f) - 0.125f
+            return 0.9f - (it as Int / 8f)
         }
         return 0.8125f
     }

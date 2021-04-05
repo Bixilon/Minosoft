@@ -18,6 +18,7 @@ import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.Directions
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.blocks.BlockState
+import de.bixilon.minosoft.data.mappings.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.light.LightAccessor
@@ -115,6 +116,10 @@ class BlockRenderer : BlockRenderInterface {
     override fun render(blockState: BlockState, lightAccessor: LightAccessor, tintColor: RGBColor?, blockPosition: Vec3i, meshCollection: ChunkMeshCollection, neighbourBlocks: Array<BlockState?>, world: World) {
         if (!RenderConstants.RENDER_BLOCKS) {
             return
+        }
+        if (blockState.properties[BlockProperties.WATERLOGGED] == true) {
+            // TODO: tint this!
+            BlockState.SPECIAL_RENDERERS["water"]?.render(blockState, lightAccessor, tintColor, blockPosition, meshCollection, neighbourBlocks, world)
         }
         for (direction in Directions.DIRECTIONS) {
             val rotatedDirection = directionMapping[direction] ?: direction

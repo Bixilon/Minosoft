@@ -95,7 +95,7 @@ class BlockModelFace {
     private fun calculateTexturePosition(position: Vec3, direction: Directions): Vec2 {
         return when (direction) {
             Directions.UP, Directions.DOWN ->     Vec2(position.x, BlockModelElement.BLOCK_RESOLUTION - position.z)
-            Directions.NORTH, Directions.SOUTH -> Vec2(position.x, position.y)
+            Directions.NORTH, Directions.SOUTH -> Vec2(position.x,  position.y)
             Directions.EAST, Directions.WEST ->   Vec2(position.z, BlockModelElement.BLOCK_RESOLUTION - position.y)
         }
     }
