@@ -14,12 +14,11 @@
 package de.bixilon.minosoft.gui.rendering.chunk
 
 import de.bixilon.minosoft.Minosoft
-import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames
 import de.bixilon.minosoft.data.Directions
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.blocks.BlockState
-import de.bixilon.minosoft.data.text.RGBColor
+import de.bixilon.minosoft.data.mappings.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.world.Chunk
 import de.bixilon.minosoft.data.world.ChunkSection
 import de.bixilon.minosoft.data.world.ChunkSection.Companion.indexPosition
@@ -43,6 +42,8 @@ class WorldRenderer(
     private val world: World,
     val renderWindow: RenderWindow,
 ) : Renderer {
+    private val WATER_BLOCK_STATE = connection.mapping.blockRegistry.get(ResourceLocation("minecraft:water"))!!.defaultState
+
     lateinit var chunkShader: Shader
     val allChunkSections = ConcurrentHashMap<Vec2i, ConcurrentHashMap<Int, ChunkMeshCollection>>()
     val visibleChunks = ConcurrentHashMap<Vec2i, ConcurrentHashMap<Int, ChunkMeshCollection>>()
@@ -63,8 +64,8 @@ class WorldRenderer(
         val meshCollection = ChunkMeshCollection()
 
         for ((sectionHeight, section) in sections) {
-            for ((index, blockInfo) in section.blocks.withIndex()) {
-                if (blockInfo == null) {
+            for ((index, blockState) in section.blocks.withIndex()) {
+                if (blockState == null) {
                     continue
                 }
                 val blockPosition = Vec3i.of(chunkPosition, sectionHeight, index.indexPosition)
@@ -77,15 +78,15 @@ class WorldRenderer(
 
                 val biome = world.getBiome(blockPosition)
 
-                val tintColor: RGBColor? = when {
-                    biome == null -> null
-                    StaticConfiguration.BIOME_DEBUG_MODE -> RGBColor(biome.hashCode())
-                    blockInfo.tintColor != null -> blockInfo.tintColor
-                    blockInfo.owner.tint != null -> renderWindow.tintColorCalculator.calculateTint(blockInfo.owner.tint, biome, blockPosition)
-                    else -> null
+                val tintColor = renderWindow.tintColorCalculator.getTint(biome, blockState, blockPosition)
+
+
+                if (blockState.properties[BlockProperties.WATERLOGGED] == true) {
+                    val waterTintColor = renderWindow.tintColorCalculator.getTint(biome, WATER_BLOCK_STATE, blockPosition)
+                    BlockState.SPECIAL_RENDERERS["water"]?.render(blockState, world.worldLightAccessor, waterTintColor, blockPosition, meshCollection, neighborBlocks, world)
                 }
 
-                blockInfo.getBlockRenderer(blockPosition).render(blockInfo, world.worldLightAccessor, tintColor, blockPosition, meshCollection, neighborBlocks, world)
+                blockState.getBlockRenderer(blockPosition).render(blockState, world.worldLightAccessor, tintColor, blockPosition, meshCollection, neighborBlocks, world)
             }
         }
 

@@ -13,9 +13,11 @@
 
 package de.bixilon.minosoft.gui.rendering
 
+import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.data.assets.MinecraftAssetsManager
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.biomes.Biome
+import de.bixilon.minosoft.data.mappings.blocks.BlockState
 import de.bixilon.minosoft.data.text.RGBColor
 
 import de.bixilon.minosoft.gui.rendering.textures.Texture
@@ -28,6 +30,16 @@ class TintColorCalculator {
     fun init(assetsManager: MinecraftAssetsManager) {
         grassColorMap = assetsManager.readPixelArrayAsset(Texture.getResourceTextureIdentifier(textureName = "colormap/grass.png"))
         foliageColorMap = assetsManager.readPixelArrayAsset(Texture.getResourceTextureIdentifier(textureName = "colormap/foliage.png"))
+    }
+
+    fun getTint(biome: Biome?, blockState: BlockState, blockPosition: Vec3i): RGBColor? {
+        return when {
+            biome == null -> null
+            StaticConfiguration.BIOME_DEBUG_MODE -> RGBColor(biome.hashCode())
+            blockState.tintColor != null -> blockState.tintColor
+            blockState.owner.tint != null -> calculateTint(blockState.owner.tint, biome, blockPosition)
+            else -> null
+        }
     }
 
     fun calculateTint(tint: ResourceLocation, biome: Biome, blockPosition: Vec3i): RGBColor? {

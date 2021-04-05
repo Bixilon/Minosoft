@@ -22,7 +22,7 @@ class FluidRenderer(
     private val stillTextureName: String,
     private val flowingTextureName: String,
     private val regex: String,
-) : BlockRenderInterface {
+) : BlockLikeRenderer {
     override val faceBorderSizes: Array<Array<FaceSize>?> = arrayOfNulls(Directions.DIRECTIONS.size)
     override val transparentFaces: BooleanArray = BooleanArray(Directions.DIRECTIONS.size)
     private lateinit var stillTexture: Texture
@@ -210,8 +210,8 @@ class FluidRenderer(
     }
 
     override fun resolveTextures(indexed: MutableList<Texture>, textureMap: MutableMap<String, Texture>) {
-        stillTexture = BlockRenderInterface.resolveTexture(indexed, textureMap, stillTextureName)!!
-        flowingTexture = BlockRenderInterface.resolveTexture(indexed, textureMap, flowingTextureName)!!
+        stillTexture = BlockLikeRenderer.resolveTexture(indexed, textureMap, stillTextureName)!!
+        flowingTexture = BlockLikeRenderer.resolveTexture(indexed, textureMap, flowingTextureName)!!
     }
 
     companion object {

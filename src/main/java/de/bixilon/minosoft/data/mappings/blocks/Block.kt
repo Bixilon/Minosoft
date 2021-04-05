@@ -31,7 +31,10 @@ data class Block(
     private val itemId: Int = 0,
     val tint: ResourceLocation? = null,
 ) : RegistryItem {
+    lateinit var defaultState: BlockState
+        private set
     lateinit var item: Item
+        private set
     val states: MutableSet<BlockState> = mutableSetOf()
     var multipartMapping: MutableMap<BlockCondition, MutableList<JsonObject>>? = null
 
@@ -83,6 +86,8 @@ data class Block(
                 val state = BlockState.deserialize(block, mappings, stateJson, mappings.models)
                 mappings.blockStateIdMap[stateId.toInt()] = state
             }
+
+            block.defaultState = mappings.blockStateIdMap[data["default_state"].asInt]!!
             return block
         }
 
