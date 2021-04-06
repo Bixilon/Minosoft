@@ -156,8 +156,8 @@ object ChunkUtil {
                 buffer.readShort() // block count
             }
 
-            val palette = choosePalette(buffer.readUnsignedByte().toInt())
-            palette.read(buffer)
+            val palette = choosePalette(buffer.readUnsignedByte(), buffer)
+
             val individualValueMask = (1 shl palette.bitsPerBlock) - 1
 
             val data = buffer.readLongArray()

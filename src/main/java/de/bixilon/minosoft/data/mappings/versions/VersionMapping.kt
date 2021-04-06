@@ -82,6 +82,10 @@ class VersionMapping {
     internal val models: MutableMap<ResourceLocation, BlockModel> = mutableMapOf()
 
 
+    val blockStateCount: Int
+        get() = blockStateIdMap.size + (parentMapping?.blockStateCount ?: 0)
+
+
     var isFullyLoaded = false
         private set
 
