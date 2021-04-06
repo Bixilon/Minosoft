@@ -32,6 +32,7 @@ import de.bixilon.minosoft.protocol.packets.serverbound.login.EncryptionResponse
 import de.bixilon.minosoft.protocol.packets.serverbound.login.LoginPluginResponseServerboundPacket
 import de.bixilon.minosoft.protocol.packets.serverbound.login.LoginStartServerboundPacket
 import de.bixilon.minosoft.protocol.packets.serverbound.play.*
+import de.bixilon.minosoft.protocol.packets.serverbound.play.interact.BaseInteractEntityServerboundPacket
 import de.bixilon.minosoft.protocol.packets.serverbound.status.StatusPingServerboundPacket
 import de.bixilon.minosoft.protocol.packets.serverbound.status.StatusRequestServerboundPacket
 
@@ -57,7 +58,7 @@ class PacketTypes {
         PLAY_PLUGIN_MESSAGE(PluginMessageServerboundPacket::class.java),
         PLAY_EDIT_BOOK,
         PLAY_ENTITY_NBT_REQUEST(EntityNBTRequestServerboundPacket::class.java),
-        PLAY_INTERACT_ENTITY(PacketInteractEntity::class.java),
+        PLAY_INTERACT_ENTITY(BaseInteractEntityServerboundPacket::class.java),
         PLAY_KEEP_ALIVE(KeepAliveServerboundPacket::class.java),
         PLAY_LOCK_DIFFICULTY,
         PLAY_PLAYER_POSITION(PlayerPositionServerboundPacket::class.java),
@@ -99,7 +100,7 @@ class PacketTypes {
         val state: ConnectionStates = ConnectionStates.valueOf(name.split("_".toRegex()).toTypedArray()[0])
 
         companion object {
-            val MAPPING: Map<Class<out ServerboundPacket>, Serverbound>
+            private val MAPPING: Map<Class<out ServerboundPacket>, Serverbound>
 
             init {
                 val mapping: MutableMap<Class<out ServerboundPacket>, Serverbound> = mutableMapOf()
@@ -112,6 +113,18 @@ class PacketTypes {
                 }
 
                 MAPPING = mapping.toMap()
+            }
+
+            fun getPacketType(`class`: Class<out ServerboundPacket>): Serverbound {
+                var checkedClass: Class<*> = `class`
+
+                while (checkedClass != ServerboundPacket::class.java) {
+                    MAPPING[checkedClass]?.let {
+                        return it
+                    }
+                    checkedClass = checkedClass.superclass
+                }
+                error("Can not find packet type for class $`class`")
             }
         }
     }

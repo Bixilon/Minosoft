@@ -139,7 +139,7 @@ public abstract class Network {
         }
 
         OutByteBuffer outByteBuffer = new OutByteBuffer();
-        outByteBuffer.writeVarInt(this.connection.getPacketId(PacketTypes.Serverbound.Companion.getMAPPING().get(packet.getClass())));
+        outByteBuffer.writeVarInt(this.connection.getPacketId(PacketTypes.Serverbound.Companion.getPacketType(packet.getClass())));
         outByteBuffer.writeBytes(data);
 
         data = outByteBuffer.toByteArray();
