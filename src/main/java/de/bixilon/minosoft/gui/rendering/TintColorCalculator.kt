@@ -26,12 +26,13 @@ import de.bixilon.minosoft.gui.rendering.textures.Texture
 import glm_.vec3.Vec3i
 
 class TintColorCalculator(val world: World) {
+    val colorMaps: MutableMap<ResourceLocation, Array<RGBColor>> = mutableMapOf()
     private lateinit var grassColorMap: Array<RGBColor>
     private lateinit var foliageColorMap: Array<RGBColor>
 
     fun init(assetsManager: MinecraftAssetsManager) {
-        grassColorMap = assetsManager.readPixelArrayAsset(Texture.getResourceTextureIdentifier(textureName = "colormap/grass.png"))
-        foliageColorMap = assetsManager.readPixelArrayAsset(Texture.getResourceTextureIdentifier(textureName = "colormap/foliage.png"))
+        colorMaps[DEFAULT_GRASS_COLOR_MAP] = assetsManager.readPixelArrayAsset(Texture.getResourceTextureIdentifier(textureName = "colormap/grass.png"))
+        colorMaps[DEFAULT_FOLIAGE_COLOR_MAP] = assetsManager.readPixelArrayAsset(Texture.getResourceTextureIdentifier(textureName = "colormap/foliage.png"))
     }
 
     fun getAverageTint(biome: Biome?, blockState: BlockState, blockPosition: Vec3i): RGBColor? {
@@ -85,10 +86,29 @@ class TintColorCalculator(val world: World) {
     }
 
     private fun calculateTint(tint: ResourceLocation, biome: Biome, blockPosition: Vec3i): RGBColor? {
-        return when (tint) {
-            WATER_TINT_RESOURCE_LOCATION -> biome.waterColor
-            GRASS_TINT_RESOURCE_LOCATION, SUGAR_CANE_TINT_RESOURCE_LOCATION, SHEARING_DOUBLE_PLANT_TINT_RESOURCE_LOCATION -> {
-                biome.grassColorOverride?.let { return it }
+        return TINTS[tint]?.invoke(biome, blockPosition, colorMaps)
+    }
+
+
+    companion object {
+        val TINTS: MutableMap<ResourceLocation, (biome: Biome, blockPosition: Vec3i, colorMaps: Map<ResourceLocation, Array<RGBColor>>) -> RGBColor?> = mutableMapOf()
+        private val DEFAULT_GRASS_COLOR_MAP = ResourceLocation("minecraft:grass_colormap")
+        private val DEFAULT_FOLIAGE_COLOR_MAP = ResourceLocation("minecraft:grass_colormap")
+
+        private val WATER_TINT_RESOURCE_LOCATION = ResourceLocation("water_tint")
+        private val GRASS_TINT_RESOURCE_LOCATION = ResourceLocation("grass_tint")
+        private val SUGAR_CANE_TINT_RESOURCE_LOCATION = ResourceLocation("sugar_cane_tint")
+        private val SHEARING_DOUBLE_PLANT_TINT_RESOURCE_LOCATION = ResourceLocation("shearing_double_plant_tint")
+        private val FOLIAGE_TINT_RESOURCE_LOCATION = ResourceLocation("foliage_tint")
+        private val LILY_PAD_TINT_RESOURCE_LOCATION = ResourceLocation("lily_pad_tint")
+
+        init {
+            TINTS[WATER_TINT_RESOURCE_LOCATION] = { biome, _, _ ->
+                biome.waterColor
+            }
+            val grassTintCalculator = tint@{ biome: Biome, blockPosition: Vec3i, colorMaps: Map<ResourceLocation, Array<RGBColor>> ->
+                biome.grassColorOverride?.let { return@tint it }
+                val grassColorMap = colorMaps[DEFAULT_GRASS_COLOR_MAP]!!
 
                 val colorMapPixelIndex = biome.downfallColorMapCoordinate shl 8 or biome.temperatureColorMapCoordinate
                 var color = if (colorMapPixelIndex > grassColorMap.size) {
@@ -101,23 +121,21 @@ class TintColorCalculator(val world: World) {
                 }
                 biome.grassColorModifier.modifier.invoke(color)
             }
-            FOLIAGE_TINT_RESOURCE_LOCATION -> {
-                biome.foliageColorOverride?.let { return it }
+            TINTS[GRASS_TINT_RESOURCE_LOCATION] = grassTintCalculator
+            TINTS[SUGAR_CANE_TINT_RESOURCE_LOCATION] = grassTintCalculator
+            TINTS[SHEARING_DOUBLE_PLANT_TINT_RESOURCE_LOCATION] = grassTintCalculator
+
+
+            TINTS[FOLIAGE_TINT_RESOURCE_LOCATION] = tint@{ biome, blockPosition, colorMaps ->
+                biome.foliageColorOverride?.let { return@tint it }
+                val foliageColorMap = colorMaps[DEFAULT_FOLIAGE_COLOR_MAP]!!
+
                 foliageColorMap[biome.downfallColorMapCoordinate shl 8 or biome.getClampedTemperature(blockPosition.y)]
             }
-            LILY_PAD_TINT_RESOURCE_LOCATION -> RenderConstants.LILY_PAD_BLOCK_COLOR
-            else -> null
+
+            TINTS[LILY_PAD_TINT_RESOURCE_LOCATION] = { _, _, _ -> RenderConstants.LILY_PAD_BLOCK_COLOR }
+
         }
-    }
-
-
-    companion object {
-        private val WATER_TINT_RESOURCE_LOCATION = ResourceLocation("water_tint")
-        private val GRASS_TINT_RESOURCE_LOCATION = ResourceLocation("grass_tint")
-        private val SUGAR_CANE_TINT_RESOURCE_LOCATION = ResourceLocation("sugar_cane_tint")
-        private val SHEARING_DOUBLE_PLANT_TINT_RESOURCE_LOCATION = ResourceLocation("shearing_double_plant_tint")
-        private val FOLIAGE_TINT_RESOURCE_LOCATION = ResourceLocation("foliage_tint")
-        private val LILY_PAD_TINT_RESOURCE_LOCATION = ResourceLocation("lily_pad_tint")
 
 
         fun getJsonColor(color: Int): RGBColor? {
