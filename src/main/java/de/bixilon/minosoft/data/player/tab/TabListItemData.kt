@@ -13,11 +13,17 @@
 
 package de.bixilon.minosoft.data.player.tab
 
+import de.bixilon.minosoft.data.Gamemodes
+import de.bixilon.minosoft.data.player.PlayerProperties
+import de.bixilon.minosoft.data.player.PlayerProperty
 import de.bixilon.minosoft.data.text.ChatComponent
-import java.util.*
 
-class TabList {
-    val tabListItems: MutableMap<UUID, TabListItem> = mutableMapOf()
-    var header = ChatComponent.valueOf("")!!
-    var footer = ChatComponent.valueOf("")!!
-}
+data class TabListItemData(
+    val name: String? = null,
+    var ping: Int? = null,
+    var gamemode: Gamemodes? = null,
+    var hasDisplayName: Boolean? = null,
+    var displayName: ChatComponent? = null,
+    val properties: Map<PlayerProperties, PlayerProperty>? = null,
+    var remove: Boolean = false, // used for legacy tab list
+)

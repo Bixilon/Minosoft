@@ -13,11 +13,30 @@
 
 package de.bixilon.minosoft.data.player.tab
 
+import de.bixilon.minosoft.data.Gamemodes
+import de.bixilon.minosoft.data.player.PlayerProperties
+import de.bixilon.minosoft.data.player.PlayerProperty
 import de.bixilon.minosoft.data.text.ChatComponent
-import java.util.*
 
-class TabList {
-    val tabListItems: MutableMap<UUID, TabListItem> = mutableMapOf()
-    var header = ChatComponent.valueOf("")!!
-    var footer = ChatComponent.valueOf("")!!
+data class TabListItem(
+    var name: String,
+    var ping: Int = -1,
+    var gamemode: Gamemodes = Gamemodes.SURVIVAL,
+    var displayName: ChatComponent = ChatComponent.valueOf(name),
+    var properties: Map<PlayerProperties, PlayerProperty> = mutableMapOf(),
+) {
+
+    fun merge(data: TabListItemData) {
+        data.name?.let { name = it }
+        data.ping?.let { ping = it }
+        data.gamemode?.let { gamemode = it }
+        data.hasDisplayName?.let {
+            displayName = if (it) {
+                data.displayName!!
+            } else {
+                ChatComponent.valueOf(name)
+            }
+        }
+        data.properties?.let { properties = it }
+    }
 }

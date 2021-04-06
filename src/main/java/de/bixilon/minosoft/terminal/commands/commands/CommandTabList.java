@@ -17,7 +17,7 @@ import com.github.freva.asciitable.AsciiTable;
 import de.bixilon.minosoft.data.commands.CommandLiteralNode;
 import de.bixilon.minosoft.data.commands.CommandNode;
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity;
-import de.bixilon.minosoft.data.player.tab.PlayerListItem;
+import de.bixilon.minosoft.data.player.tab.TabListItem;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -31,7 +31,7 @@ public class CommandTabList extends Command {
                         new CommandLiteralNode("list", (connection, stack) -> {
                             print(connection.getTabList().getHeader().getANSIColoredMessage());
 
-                            int entries = connection.getTabList().getPlayerList().size();
+                            int entries = connection.getTabList().getTabListItems().size();
                             int columns = (entries / 20) + 1;
                             if (columns > 4) {
                                 columns = 4;
@@ -43,7 +43,7 @@ public class CommandTabList extends Command {
 
                             ArrayList<Object[]> tableData = new ArrayList<>();
 
-                            Iterator<PlayerListItem> playerListItems = connection.getTabList().getPlayerList().values().iterator();
+                            Iterator<TabListItem> playerListItems = connection.getTabList().getTabListItems().values().iterator();
                             for (int row = 0; row < rows; row++) {
                                 ArrayList<Object> current = new ArrayList<>();
                                 for (int column = 0; column < columns; column++) {
@@ -68,8 +68,8 @@ public class CommandTabList extends Command {
 
                             ArrayList<Object[]> tableData = new ArrayList<>();
 
-                            for (var entry : connection.getTabList().getPlayerList().entrySet()) {
-                                PlayerEntity playerEntity = (PlayerEntity) connection.getWorld().getEntity(entry.getValue().getUUID());
+                            for (var entry : connection.getTabList().getTabListItems().entrySet()) {
+                                PlayerEntity playerEntity = (PlayerEntity) connection.getWorld().getEntity(entry.getKey());
                                 Integer entityId = playerEntity != null ? connection.getWorld().getEntityIdMap().inverse().get(playerEntity) : null;
                                 tableData.add(new Object[]{entry.getKey(), entityId, entry.getValue().getName(), entry.getValue().getDisplayName(), entry.getValue().getGamemode(), entry.getValue().getPing() + "ms"});
                             }

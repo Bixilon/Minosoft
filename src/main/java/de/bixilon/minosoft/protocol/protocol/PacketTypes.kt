@@ -193,7 +193,7 @@ class PacketTypes {
         PLAY_CRAFT_RECIPE_RESPONSE({ PacketCraftRecipeResponse(it) }),
         PLAY_PLAYER_ABILITIES({ PacketPlayerAbilitiesReceiving(it) }),
         PLAY_COMBAT_EVENT({ CombatEventPacketFactory.createPacket(it) }),
-        PLAY_PLAYER_LIST_ITEM({ PacketPlayerListItem(it) }),
+        PLAY_TAB_LIST_ITEM({ PacketTabListItem(it) }),
         PLAY_FACE_PLAYER({ PacketFacePlayer(it) }),
         PLAY_PLAYER_POSITION_AND_ROTATION({ PacketPlayerPositionAndRotation(it) }),
         PLAY_UNLOCK_RECIPES({ PacketUnlockRecipes(it) }),
