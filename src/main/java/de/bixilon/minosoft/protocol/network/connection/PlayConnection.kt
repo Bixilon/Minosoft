@@ -100,7 +100,6 @@ class PlayConnection(
                     // after sending it, switch to next state
                     // after sending it, switch to next state
                     connectionState = ConnectionStates.LOGIN
-
                 }
                 ConnectionStates.LOGIN -> {
                     this.network.sendPacket(LoginStartServerboundPacket(this.player))

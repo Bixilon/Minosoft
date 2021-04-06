@@ -29,7 +29,6 @@ class ArrayFloatList(
 
     fun clear() {
         size = 0
-        data = FloatArray(initialSize)
         outputUpToDate = false
         output = FloatArray(0)
     }
