@@ -33,7 +33,7 @@ import java.util.concurrent.ConcurrentHashMap
  * Collection of chunks and more
  */
 class World : BiomeAccessor {
-    val chunks = ConcurrentHashMap<Vec2i, Chunk>()
+    val chunks: MutableMap<Vec2i, Chunk> = Collections.synchronizedMap(ConcurrentHashMap())
     val entityIdMap = HashBiMap.create<Int, Entity>()
     val entityUUIDMap = HashBiMap.create<UUID, Entity>()
     var isHardcore = false

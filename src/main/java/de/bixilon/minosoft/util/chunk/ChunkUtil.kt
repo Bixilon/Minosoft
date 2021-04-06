@@ -25,6 +25,7 @@ import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*
 import java.util.*
+import java.util.concurrent.ConcurrentHashMap
 
 
 object ChunkUtil {
@@ -58,7 +59,7 @@ object ChunkUtil {
 
         // parse data
         var arrayPosition = 0
-        val sectionMap: MutableMap<Int, ChunkSection> = mutableMapOf()
+        val sectionMap: MutableMap<Int, ChunkSection> = Collections.synchronizedMap(ConcurrentHashMap())
         for (sectionHeight in dimension.lowestSection until dimension.highestSection) {
             if (!sectionBitMask.get(sectionHeight)) {
                 continue
@@ -127,7 +128,7 @@ object ChunkUtil {
         }
 
         var arrayPos = 0
-        val sectionMap: MutableMap<Int, ChunkSection> = mutableMapOf()
+        val sectionMap: MutableMap<Int, ChunkSection> = Collections.synchronizedMap(ConcurrentHashMap())
         for (sectionHeight in dimension.lowestSection until dimension.highestSection) { // max sections per chunks in chunk column
             if (!sectionBitMask.get(sectionHeight)) {
                 continue
@@ -146,7 +147,7 @@ object ChunkUtil {
 
     fun readPaletteChunk(buffer: PlayInByteBuffer, dimension: Dimension, sectionBitMask: BitSet, isFullChunk: Boolean, containsSkyLight: Boolean = false): ChunkData {
         val chunkData = ChunkData()
-        val sectionMap: MutableMap<Int, ChunkSection> = mutableMapOf()
+        val sectionMap: MutableMap<Int, ChunkSection> = Collections.synchronizedMap(ConcurrentHashMap())
 
         for (sectionHeight in dimension.lowestSection until sectionBitMask.length()) { // max sections per chunks in chunk column
             if (!sectionBitMask[sectionHeight]) {
@@ -210,7 +211,7 @@ object ChunkUtil {
         val biomes: MutableList<Biome> = mutableListOf()
         for (i in 0 until ProtocolDefinition.SECTION_WIDTH_X * ProtocolDefinition.SECTION_WIDTH_Z) {
             biomes.add(i, buffer.connection.mapping.biomeRegistry.get(if (buffer.versionId < V_15W35A) {
-                buffer.readUnsignedByte().toInt()
+                buffer.readUnsignedByte()
             } else {
                 buffer.readInt()
             }))

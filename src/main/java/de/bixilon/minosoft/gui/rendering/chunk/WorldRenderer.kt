@@ -35,6 +35,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.logging.Log
 import glm_.vec2.Vec2i
 import glm_.vec3.Vec3i
+import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
 class WorldRenderer(
@@ -45,9 +46,9 @@ class WorldRenderer(
     private val WATER_BLOCK_STATE = connection.mapping.blockRegistry.get(ResourceLocation("minecraft:water"))!!.defaultState
 
     lateinit var chunkShader: Shader
-    val allChunkSections = ConcurrentHashMap<Vec2i, ConcurrentHashMap<Int, ChunkMeshCollection>>()
-    val visibleChunks = ConcurrentHashMap<Vec2i, ConcurrentHashMap<Int, ChunkMeshCollection>>()
-    val queuedChunks: MutableSet<Vec2i> = mutableSetOf()
+    val allChunkSections: MutableMap<Vec2i, MutableMap<Int, ChunkMeshCollection>> = Collections.synchronizedMap(ConcurrentHashMap())
+    val visibleChunks: MutableMap<Vec2i, MutableMap<Int, ChunkMeshCollection>> = Collections.synchronizedMap(ConcurrentHashMap())
+    val queuedChunks: MutableSet<Vec2i> = Collections.synchronizedSet(mutableSetOf())
 
     var meshes = 0
         private set
@@ -58,9 +59,7 @@ class WorldRenderer(
         //  val stopwatch = Stopwatch()
 
         check(sections.isNotEmpty()) { "Illegal argument!" }
-        synchronized(this.queuedChunks) {
             queuedChunks.remove(chunkPosition)
-        }
         val meshCollection = ChunkMeshCollection()
 
         for ((sectionHeight, section) in sections) {
@@ -142,7 +141,7 @@ class WorldRenderer(
 
     private fun resolveBlockTextureIds(blocks: Collection<BlockState>): List<Texture> {
         val textures: MutableList<Texture> = mutableListOf()
-        val textureMap: MutableMap<String, Texture> = mutableMapOf()
+        val textureMap: MutableMap<String, Texture> = ConcurrentHashMap()
 
         for (block in blocks) {
             for (model in block.renders) {
@@ -178,23 +177,19 @@ class WorldRenderer(
                 if (checkQueued) {
                     checkQueuedChunks(neighborsVec2is)
                 }
-                synchronized(this.queuedChunks) {
                     queuedChunks.add(chunkPosition)
-                }
                 return
             }
         }
-        synchronized(this.queuedChunks) {
             queuedChunks.remove(chunkPosition)
-        }
-        allChunkSections[chunkPosition] = ConcurrentHashMap()
+        allChunkSections[chunkPosition] = Collections.synchronizedMap(ConcurrentHashMap())
 
-        var currentChunks: MutableMap<Int, ChunkSection> = mutableMapOf()
+        var currentChunks: MutableMap<Int, ChunkSection> = Collections.synchronizedMap(ConcurrentHashMap())
         var currentIndex = 0
         for ((sectionHeight, section) in chunk.sections!!) {
             if (getSectionIndex(sectionHeight) != currentIndex) {
                 prepareChunkSections(chunkPosition, currentChunks)
-                currentChunks = mutableMapOf()
+                currentChunks = Collections.synchronizedMap(ConcurrentHashMap())
                 currentIndex = getSectionIndex(sectionHeight)
             }
             currentChunks[sectionHeight] = section
@@ -283,7 +278,7 @@ class WorldRenderer(
     }
 
     fun prepareChunkSection(chunkPosition: Vec2i, sectionHeight: Int) {
-        val sections: MutableMap<Int, ChunkSection> = mutableMapOf()
+        val sections: MutableMap<Int, ChunkSection> = Collections.synchronizedMap(ConcurrentHashMap())
         val chunk = world.getChunk(chunkPosition)!!
         val lowestSectionHeight = getSectionIndex(sectionHeight) * RenderConstants.CHUNK_SECTIONS_PER_MESH
         for (i in lowestSectionHeight until lowestSectionHeight + (RenderConstants.CHUNK_SECTIONS_PER_MESH - 1)) {
@@ -294,9 +289,7 @@ class WorldRenderer(
 
     fun clearChunkCache() {
         // ToDo: Stop all preparations
-        synchronized(this.queuedChunks) {
             queuedChunks.clear()
-        }
         renderWindow.renderQueue.add {
             visibleChunks.clear()
             for ((location, _) in allChunkSections) {
@@ -306,9 +299,7 @@ class WorldRenderer(
     }
 
     fun unloadChunk(chunkPosition: Vec2i) {
-        synchronized(this.queuedChunks) {
             queuedChunks.remove(chunkPosition)
-        }
         renderWindow.renderQueue.add {
             allChunkSections[chunkPosition]?.let {
                 for ((_, meshCollection) in it) {
@@ -343,7 +334,7 @@ class WorldRenderer(
     fun recalculateVisibleChunks() {
         visibleChunks.clear()
         for ((chunkLocation, indexMap) in allChunkSections) {
-            val visibleIndexMap: ConcurrentHashMap<Int, ChunkMeshCollection> = ConcurrentHashMap()
+            val visibleIndexMap: MutableMap<Int, ChunkMeshCollection> = Collections.synchronizedMap(ConcurrentHashMap())
             for ((index, mesh) in indexMap) {
                 if (renderWindow.camera.frustum.containsChunk(chunkLocation, mesh.lowestBlockHeight, mesh.highestBlockHeight)) {
                     visibleIndexMap[index] = mesh
