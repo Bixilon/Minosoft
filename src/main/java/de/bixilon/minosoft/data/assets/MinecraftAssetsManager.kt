@@ -46,7 +46,7 @@ class MinecraftAssetsManager(
         if (!verifyAssetHash(assetVersion.indexHash!!)) {
             downloadAssetsIndex()
         }
-        this.assetsMapping.putAll(verifyAssets(AssetsSource.MOJANG, latch!!, parseAssetsIndex(assetVersion.indexHash)))
+        this.assetsMapping.putAll(verifyAssets(AssetsSource.MINECRAFT, latch, parseAssetsIndex(assetVersion.indexHash)))
 
         // generate jar assets index
         generateJarAssets()
@@ -132,19 +132,19 @@ class MinecraftAssetsManager(
         }
     }
 
-    private fun verifyAssets(source: AssetsSource, latch: CountUpAndDownLatch, assets: Map<ResourceLocation, String>): Map<ResourceLocation, String> {
+    private fun verifyAssets(source: AssetsSource, latch: CountUpAndDownLatch?, assets: Map<ResourceLocation, String>): Map<ResourceLocation, String> {
         val assetsLatch = CountUpAndDownLatch(assets.size)
-        latch.addCount(assets.size)
+        latch?.addCount(assets.size)
         for (hash in assets.values) {
             Minosoft.THREAD_POOL.execute {
-                val compressed = source == AssetsSource.MOJANG
+                val compressed = source != AssetsSource.PIXLYZER
                 if (StaticConfiguration.DEBUG_SLOW_LOADING) {
                     Thread.sleep(100L)
                 }
                 if (!verifyAssetHash(hash, compressed)) {
                     downloadAsset(source, hash)
                 }
-                latch.countDown()
+                latch?.countDown()
                 assetsLatch.countDown()
             }
         }
