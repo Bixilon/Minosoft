@@ -77,17 +77,18 @@ class MinecraftAssetsManager(
             return this.assetVersion.jarAssetsHash
         }
         // download jar
-        downloadAsset(String.format(ProtocolDefinition.MOJANG_LAUNCHER_URL_PACKAGES, this.assetVersion.clientJarHash, "client.jar"), this.assetVersion.clientJarHash!!, false)
+        downloadAsset(String.format(ProtocolDefinition.MOJANG_LAUNCHER_URL_PACKAGES, this.assetVersion.clientJarHash, "client.jar"), this.assetVersion.clientJarHash!!, true)
         val clientJarAssetsHashMap = HashMap<String, String>()
         val versionJar = ZipInputStream(readAssetAsStream(this.assetVersion.clientJarHash))
-        var currentFile: ZipEntry
-        while (versionJar.nextEntry.also { currentFile = it } != null) {
-            if (!currentFile.name.startsWith("assets") || currentFile.isDirectory) {
+        var nextZipEntry: ZipEntry?
+        while (versionJar.nextEntry.also { nextZipEntry = it } != null) {
+            val currentZipEntry = nextZipEntry!!
+            if (!currentZipEntry.name.startsWith("assets") || currentZipEntry.isDirectory) {
                 continue
             }
             var relevant = false
             for (prefix in ProtocolDefinition.RELEVANT_MINECRAFT_ASSETS) {
-                if (currentFile.name.startsWith("assets/$prefix")) {
+                if (currentZipEntry.name.startsWith("assets/$prefix")) {
                     relevant = true
                     break
                 }
@@ -96,7 +97,7 @@ class MinecraftAssetsManager(
                 continue
             }
             val hash: String = saveAsset(versionJar)
-            clientJarAssetsHashMap[currentFile.name.substring("assets/".length)] = hash
+            clientJarAssetsHashMap[currentZipEntry.name.substring("assets/".length)] = hash
         }
         val clientJarAssetsMapping = JsonObject()
         for ((path, hash) in clientJarAssetsHashMap) {
