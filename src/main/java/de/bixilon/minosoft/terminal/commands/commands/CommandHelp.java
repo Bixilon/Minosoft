@@ -30,7 +30,7 @@ public class CommandHelp extends Command {
                     print("");
                     print("help -> Get this list");
                     print("connection -> Manage connections");
-                    print("[disconnect]] -> Disconnect from current connection");
+                    print("[disconnect] -> Disconnect from current connection");
                     print("[chat] -> Write a command or chat message");
                     print("[tab] -> Manage tab");
                     print("[entity] -> See all entities");

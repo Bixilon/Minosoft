@@ -30,9 +30,9 @@ class SectionArrayMesh : Mesh(initialCacheSize = 100000) {
 
         val color = tintColor ?: ChatColors.WHITE
 
-        val lightFactor = MAX_LIGHT_LEVEL / (lightLevel + 1)
+        val lightFactor = (lightLevel + 1) / MAX_LIGHT_LEVEL_FLOAT
 
-        val lightColor = RGBColor(color.red / lightFactor, color.green / lightFactor, color.blue / lightFactor)
+        val lightColor = RGBColor((color.red * lightFactor).toInt(), (color.green * lightFactor).toInt(), (color.blue * lightFactor).toInt())
 
         data.addAll(floatArrayOf(
             position.x,
