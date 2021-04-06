@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2021 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,17 +11,11 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.config.config.game
+package de.bixilon.minosoft.config.config.game.graphics
 
-import de.bixilon.minosoft.config.config.game.controls.ControlsGameConfig
-import de.bixilon.minosoft.config.config.game.elements.ElementsGameConfig
-import de.bixilon.minosoft.config.config.game.graphics.GraphicsGameConfig
+import com.squareup.moshi.Json
 
-data class GameConfig(
-    var graphics: GraphicsGameConfig = GraphicsGameConfig(),
-    var other: OtherGameConfig = OtherGameConfig(),
-    var hud: HUDGameConfig = HUDGameConfig(),
-    var controls: ControlsGameConfig = ControlsGameConfig(),
-    var elements: ElementsGameConfig = ElementsGameConfig(),
-    var camera: CameraGameConfig = CameraGameConfig(),
+data class GraphicsGameConfig(
+    var animations: AnimationsGameConfig = AnimationsGameConfig(),
+    @Json(name = "biome_blend_radius") var biomeBlendRadius: Int = 3,
 )

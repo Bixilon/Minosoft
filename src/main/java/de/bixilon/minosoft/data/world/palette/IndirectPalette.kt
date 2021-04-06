@@ -25,18 +25,18 @@ class IndirectPalette(
     private val connection = buffer.connection
     private var palette = buffer.readVarIntArray()
 
-    override fun blockById(blockId: Int): BlockState? {
-        var realBlockId = blockId
-        if (realBlockId < palette.size) {
-            realBlockId = palette[realBlockId]
+    override fun blockById(id: Int): BlockState? {
+        var blockId = id
+        if (blockId < palette.size) {
+            blockId = palette[blockId]
         }
-        val block = connection.mapping.getBlockState(realBlockId)
+        val block = connection.mapping.getBlockState(blockId)
 
-        if (StaticConfiguration.DEBUG_MODE && block == null && realBlockId != ProtocolDefinition.NULL_BLOCK_ID) {
+        if (StaticConfiguration.DEBUG_MODE && block == null && blockId != ProtocolDefinition.NULL_BLOCK_ID) {
             val blockName: String = if (connection.version.isFlattened()) {
-                realBlockId.toString()
+                blockId.toString()
             } else {
-                "(${realBlockId shr 4}:${realBlockId and 0x0F}"
+                "(${blockId shr 4}:${blockId and 0x0F}"
             }
             Log.warn("Server sent unknown block: $blockName")
         }

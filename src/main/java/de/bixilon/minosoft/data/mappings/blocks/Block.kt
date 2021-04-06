@@ -55,7 +55,8 @@ data class Block(
                 hasDynamicShape = data["has_dynamic_shape"]?.asBoolean ?: false,
                 tintColor = data["tint_color"]?.asInt?.let { TintColorCalculator.getJsonColor(it) },
                 itemId = data["item"]?.asInt ?: 0,
-                tint = data["tint"]?.asString?.let { ResourceLocation(it) })
+                tint = data["tint"]?.asString?.let { ResourceLocation(it) },
+            )
 
             // block states
 

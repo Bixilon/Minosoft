@@ -178,7 +178,7 @@ class TextureArray(val allTextures: MutableList<Texture>) {
             if (!initialized) {
                 return
             }
-            if (!Minosoft.getConfig().config.game.animations.textures) {
+            if (!Minosoft.getConfig().config.game.graphics.animations.textures) {
                 return
             }
 

@@ -78,11 +78,11 @@ class WorldRenderer(
 
                 val biome = world.getBiome(blockPosition)
 
-                val tintColor = renderWindow.tintColorCalculator.getTint(biome, blockState, blockPosition)
+                val tintColor = renderWindow.tintColorCalculator.getAverageTint(biome, blockState, blockPosition)
 
 
                 if (blockState.properties[BlockProperties.WATERLOGGED] == true) {
-                    val waterTintColor = renderWindow.tintColorCalculator.getTint(biome, WATER_BLOCK_STATE, blockPosition)
+                    val waterTintColor = renderWindow.tintColorCalculator.getAverageTint(biome, WATER_BLOCK_STATE, blockPosition)
                     BlockState.SPECIAL_RENDERERS["water"]?.render(blockState, world.worldLightAccessor, waterTintColor, blockPosition, meshCollection, neighborBlocks, world)
                 }
 

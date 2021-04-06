@@ -121,4 +121,21 @@ class World : BiomeAccessor {
     override fun getBiome(blockPosition: Vec3i): Biome? {
         return biomeAccessor.getBiome(blockPosition)
     }
+
+    fun getBlocks(start: Vec3i, end: Vec3i): Map<Vec3i, BlockState> {
+        val blocks: MutableMap<Vec3i, BlockState> = mutableMapOf()
+
+        for (z in start.z until end.z) {
+            for (y in start.y until end.y) {
+                for (x in start.x until end.x) {
+                    val blockPosition = Vec3i(x, y, z)
+                    getBlockState(blockPosition)?.let {
+                        blocks[blockPosition] = it
+                    }
+                }
+            }
+        }
+
+        return blocks.toMap()
+    }
 }

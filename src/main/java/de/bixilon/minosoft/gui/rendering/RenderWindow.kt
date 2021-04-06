@@ -71,7 +71,7 @@ class RenderWindow(
     private var mouseCatch = !StaticConfiguration.DEBUG_MODE
 
     private val screenshotTaker = ScreenshotTaker(this)
-    val tintColorCalculator = TintColorCalculator()
+    val tintColorCalculator = TintColorCalculator(connection.world)
     val font = Font()
     val textures = TextureArray(mutableListOf())
 

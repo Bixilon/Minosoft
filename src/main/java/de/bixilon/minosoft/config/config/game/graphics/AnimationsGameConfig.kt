@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.config.config.game
+package de.bixilon.minosoft.config.config.game.graphics
 
 data class AnimationsGameConfig(
     var textures: Boolean = true,
