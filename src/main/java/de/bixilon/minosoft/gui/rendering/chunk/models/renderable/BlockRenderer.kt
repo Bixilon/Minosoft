@@ -17,11 +17,13 @@ import com.google.common.collect.HashBiMap
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.Directions
 import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.data.mappings.biomes.Biome
 import de.bixilon.minosoft.data.mappings.blocks.BlockState
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.light.LightAccessor
 import de.bixilon.minosoft.gui.rendering.RenderConstants
+import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.chunk.ChunkMeshCollection
 import de.bixilon.minosoft.gui.rendering.chunk.models.FaceSize
 import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModel
@@ -112,10 +114,13 @@ class BlockRenderer : BlockLikeRenderer {
         }
     }
 
-    override fun render(blockState: BlockState, lightAccessor: LightAccessor, tintColor: RGBColor?, blockPosition: Vec3i, meshCollection: ChunkMeshCollection, neighbourBlocks: Array<BlockState?>, world: World) {
+    override fun render(blockState: BlockState, lightAccessor: LightAccessor, renderWindow: RenderWindow, blockPosition: Vec3i, meshCollection: ChunkMeshCollection, neighbourBlocks: Array<BlockState?>, world: World) {
         if (!RenderConstants.RENDER_BLOCKS) {
             return
         }
+        var tintColor: RGBColor? = null
+        var biome: Biome? = null
+
         for (direction in Directions.DIRECTIONS) {
             val rotatedDirection = directionMapping[direction] ?: direction
             val invertedDirection = direction.inversed
@@ -166,6 +171,10 @@ class BlockRenderer : BlockLikeRenderer {
                     continue
                 }
 
+                if (biome == null) {
+                    biome = world.getBiome(blockPosition)
+                    tintColor = renderWindow.tintColorCalculator.getAverageTint(biome, blockState, blockPosition)
+                }
                 element.render(tintColor, blockPosition, lightAccessor, textureMapping, direction, meshCollection)
             }
         }

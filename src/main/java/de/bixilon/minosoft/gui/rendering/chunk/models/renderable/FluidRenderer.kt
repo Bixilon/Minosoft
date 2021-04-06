@@ -1,12 +1,14 @@
 package de.bixilon.minosoft.gui.rendering.chunk.models.renderable
 
 import de.bixilon.minosoft.data.Directions
+import de.bixilon.minosoft.data.mappings.biomes.Biome
 import de.bixilon.minosoft.data.mappings.blocks.BlockState
 import de.bixilon.minosoft.data.mappings.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.light.LightAccessor
 import de.bixilon.minosoft.gui.rendering.RenderConstants
+import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.chunk.ChunkMeshCollection
 import de.bixilon.minosoft.gui.rendering.chunk.models.FaceSize
 import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModelElement
@@ -28,7 +30,7 @@ class FluidRenderer(
     private lateinit var stillTexture: Texture
     private lateinit var flowingTexture: Texture
 
-    override fun render(blockState: BlockState, lightAccessor: LightAccessor, tintColor: RGBColor?, blockPosition: Vec3i, meshCollection: ChunkMeshCollection, neighbourBlocks: Array<BlockState?>, world: World) {
+    override fun render(blockState: BlockState, lightAccessor: LightAccessor, renderWindow: RenderWindow, blockPosition: Vec3i, meshCollection: ChunkMeshCollection, neighbourBlocks: Array<BlockState?>, world: World) {
         if (!RenderConstants.RENDER_FLUIDS) {
             return
         }
@@ -37,6 +39,9 @@ class FluidRenderer(
         val isFlowing = isLiquidFlowing(heights)
 
         var texture: Texture
+
+        var tintColor: RGBColor? = null
+        var biome: Biome? = null
 
         val positions = calculatePositions(heights)
         for (direction in Directions.DIRECTIONS) {
@@ -56,6 +61,12 @@ class FluidRenderer(
             }
             val positionTemplate = BlockModelElement.FACE_POSITION_MAP_TEMPLATE[direction.ordinal]
             val drawPositions = arrayOf(positions[positionTemplate[0]], positions[positionTemplate[1]], positions[positionTemplate[2]], positions[positionTemplate[3]])
+
+            if (biome == null) {
+                biome = world.getBiome(blockPosition)
+                tintColor = renderWindow.tintColorCalculator.getAverageTint(biome, blockState, blockPosition)
+            }
+
             createQuad(drawPositions, face.getTexturePositionArray(direction), texture, blockPosition, meshCollection, tintColor, lightLevel)
         }
     }

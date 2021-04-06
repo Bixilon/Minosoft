@@ -59,7 +59,7 @@ class WorldRenderer(
         //  val stopwatch = Stopwatch()
 
         check(sections.isNotEmpty()) { "Illegal argument!" }
-            queuedChunks.remove(chunkPosition)
+        queuedChunks.remove(chunkPosition)
         val meshCollection = ChunkMeshCollection()
 
         for ((sectionHeight, section) in sections) {
@@ -75,17 +75,11 @@ class WorldRenderer(
                 }
 
 
-                val biome = world.getBiome(blockPosition)
-
-                val tintColor = renderWindow.tintColorCalculator.getAverageTint(biome, blockState, blockPosition)
-
-
                 if (blockState.properties[BlockProperties.WATERLOGGED] == true) {
-                    val waterTintColor = renderWindow.tintColorCalculator.getAverageTint(biome, WATER_BLOCK_STATE, blockPosition)
-                    BlockState.SPECIAL_RENDERERS["water"]?.render(blockState, world.worldLightAccessor, waterTintColor, blockPosition, meshCollection, neighborBlocks, world)
+                    BlockState.SPECIAL_RENDERERS["water"]?.render(WATER_BLOCK_STATE, world.worldLightAccessor, renderWindow, blockPosition, meshCollection, neighborBlocks, world)
                 }
 
-                blockState.getBlockRenderer(blockPosition).render(blockState, world.worldLightAccessor, tintColor, blockPosition, meshCollection, neighborBlocks, world)
+                blockState.getBlockRenderer(blockPosition).render(blockState, world.worldLightAccessor, renderWindow, blockPosition, meshCollection, neighborBlocks, world)
             }
         }
 
@@ -177,11 +171,11 @@ class WorldRenderer(
                 if (checkQueued) {
                     checkQueuedChunks(neighborsVec2is)
                 }
-                    queuedChunks.add(chunkPosition)
+                queuedChunks.add(chunkPosition)
                 return
             }
         }
-            queuedChunks.remove(chunkPosition)
+        queuedChunks.remove(chunkPosition)
         allChunkSections[chunkPosition] = Collections.synchronizedMap(ConcurrentHashMap())
 
         var currentChunks: MutableMap<Int, ChunkSection> = Collections.synchronizedMap(ConcurrentHashMap())
@@ -289,7 +283,7 @@ class WorldRenderer(
 
     fun clearChunkCache() {
         // ToDo: Stop all preparations
-            queuedChunks.clear()
+        queuedChunks.clear()
         renderWindow.renderQueue.add {
             visibleChunks.clear()
             for ((location, _) in allChunkSections) {
@@ -299,7 +293,7 @@ class WorldRenderer(
     }
 
     fun unloadChunk(chunkPosition: Vec2i) {
-            queuedChunks.remove(chunkPosition)
+        queuedChunks.remove(chunkPosition)
         renderWindow.renderQueue.add {
             allChunkSections[chunkPosition]?.let {
                 for ((_, meshCollection) in it) {

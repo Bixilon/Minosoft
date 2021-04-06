@@ -43,8 +43,7 @@ class SectionArrayMesh : Mesh(initialCacheSize = 100000) {
             Float.fromBits((texture.arrayId shl 24) or texture.arrayLayer),
             Float.fromBits(texture.properties.animation?.animationId ?: -1),
             Float.fromBits(lightColor.color ushr 8),
-        )
-        )
+        ))
     }
 
     override fun load() {
