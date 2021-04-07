@@ -51,7 +51,7 @@ public class PacketChangeGameState extends PlayClientboundPacket {
         switch (getReason()) {
             case STOP_RAINING -> connection.getWorld().setRaining(false);
             case START_RAINING -> connection.getWorld().setRaining(true);
-            case CHANGE_GAMEMODE -> connection.getPlayer().getEntity().setGamemode(Gamemodes.byId(getIntValue()));
+            case CHANGE_GAMEMODE -> connection.getPlayer().getEntity().getTabListItem().setGamemode(Gamemodes.byId(getIntValue()));
         }
     }
 

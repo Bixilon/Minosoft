@@ -12,7 +12,6 @@
  */
 package de.bixilon.minosoft.data.player
 
-import de.bixilon.minosoft.data.Gamemodes
 import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
@@ -28,7 +27,7 @@ class Player(
     val experienceCondition = PlayerExperienceCondition()
     val inventoryManager = PlayerInventoryManager()
     var spawnPosition: Vec3i = VecUtil.EMPTY_VEC3I
-    val entity: PlayerEntity = PlayerEntity(connection, connection.mapping.entityRegistry.get(PlayerEntity.RESOURCE_LOCATION)!!, VecUtil.EMPTY_VEC3, EntityRotation(0.0, 0.0), account.username, account.uuid, null, Gamemodes.SPECTATOR)
+    val entity: PlayerEntity = PlayerEntity(connection, connection.mapping.entityRegistry.get(PlayerEntity.RESOURCE_LOCATION)!!, VecUtil.EMPTY_VEC3, EntityRotation(0.0, 0.0), account.username)
 
     @Deprecated(message = "Will be replaced with some kind of teleport manager, ...")
     var isSpawnConfirmed = false

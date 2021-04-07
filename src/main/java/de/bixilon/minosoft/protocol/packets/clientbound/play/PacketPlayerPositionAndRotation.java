@@ -63,7 +63,7 @@ public class PacketPlayerPositionAndRotation extends PlayClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Received player location: (position=%s, rotation=%s, onGround=%b)", this.position, this.rotation, this.onGround));
+        Log.protocol(String.format("[IN] Received player position (position=%s, rotation=%s, onGround=%b)", this.position, this.rotation, this.onGround));
     }
 
     public Vec3 getPosition() {

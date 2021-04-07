@@ -91,7 +91,7 @@ class PacketRespawn(buffer: PlayInByteBuffer) : PlayClientboundPacket() {
         connection.world.chunks.clear()
         connection.world.dimension = dimension
         connection.player.isSpawnConfirmed = false
-        connection.player.entity.gamemode = gamemode
+        connection.player.entity.tabListItem.gamemode = gamemode
         connection.renderer?.renderWindow?.worldRenderer?.clearChunkCache()
     }
 

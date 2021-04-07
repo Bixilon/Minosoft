@@ -47,8 +47,7 @@ abstract class Entity(
 
     var entityMetaData: EntityMetaData = EntityMetaData(connection)
 
-    @JvmField
-    protected var hasCollisions = true
+    protected open val hasCollisions = true
 
     fun forceMove(relativePosition: Vec3) {
         position = position + relativePosition

@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.login;
 
+import de.bixilon.minosoft.data.text.ChatComponent;
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
 import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.ConnectionStates;
@@ -41,8 +42,11 @@ public class PacketLoginSuccess extends PlayClientboundPacket {
     public void handle(PlayConnection connection) {
         connection.setConnectionState(ConnectionStates.PLAY);
 
-        connection.getPlayer().getEntity().setUuid(getUUID());
-        connection.getPlayer().getEntity().setName(getPlayerName());
+        var playerEntity = connection.getPlayer().getEntity();
+        playerEntity.getTabListItem().setName(this.playerName);
+        playerEntity.getTabListItem().setDisplayName(ChatComponent.valueOf(this.playerName));
+
+        connection.getWorld().addEntity(null, this.uuid, playerEntity);
     }
 
     @Override

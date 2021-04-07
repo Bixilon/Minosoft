@@ -27,9 +27,14 @@ data class TabListItem(
 ) {
 
     fun merge(data: TabListItemData) {
+        specialMerge(data)
+        data.gamemode?.let { gamemode = it }
+    }
+
+    fun specialMerge(data: TabListItemData) {
         data.name?.let { name = it }
         data.ping?.let { ping = it }
-        data.gamemode?.let { gamemode = it }
+
         data.hasDisplayName?.let {
             displayName = if (it) {
                 data.displayName!!

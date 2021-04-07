@@ -13,6 +13,7 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play
 
 import de.bixilon.minosoft.data.Gamemodes
+import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.data.player.PlayerProperties
 import de.bixilon.minosoft.data.player.PlayerProperty
 import de.bixilon.minosoft.data.player.tab.TabListItem
@@ -118,6 +119,7 @@ class PacketTabListItem(buffer: PlayInByteBuffer) : PlayClientboundPacket() {
         }
         for ((uuid, data) in items) {
             // legacy
+
             if (connection.version.versionId < ProtocolVersions.V_14W19A) { // ToDo: 19?
                 val item: TabListItem = if (data.remove) {
                     // add or remove
@@ -141,6 +143,10 @@ class PacketTabListItem(buffer: PlayInByteBuffer) : PlayClientboundPacket() {
                 connection.tabList.tabListItems.remove(uuid)
                 continue
             }
+
+            val entity = connection.world.getEntity(uuid)
+
+
             val tabListItem = connection.tabList.tabListItems[uuid] ?: run {
                 if (data.name == null) {
                     // item not yet created
@@ -151,7 +157,18 @@ class PacketTabListItem(buffer: PlayInByteBuffer) : PlayClientboundPacket() {
                 item
             } ?: continue
 
+
+            if (entity === connection.player.entity) {
+                entity.tabListItem.specialMerge(data)
+                continue
+            }
+
             tabListItem.merge(data)
+            if (entity == null || entity !is PlayerEntity) {
+                continue
+            }
+
+            entity.tabListItem = tabListItem
         }
     }
 

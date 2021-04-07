@@ -80,8 +80,8 @@ class World : BiomeAccessor {
         }
     }
 
-    fun addEntity(entityId: Int, entityUUID: UUID?, entity: Entity) {
-        entityIdMap[entityId] = entity
+    fun addEntity(entityId: Int?, entityUUID: UUID?, entity: Entity) {
+        entityId?.let { entityIdMap[it] = entity }
         entityUUID?.let { entityUUIDMap[it] = entity }
 
     }

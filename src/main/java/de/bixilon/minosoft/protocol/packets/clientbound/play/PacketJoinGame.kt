@@ -138,13 +138,13 @@ class PacketJoinGame(buffer: PlayInByteBuffer) : PlayClientboundPacket() {
             return
         }
         val playerEntity = connection.player.entity
-        playerEntity.gamemode = gamemode
+        playerEntity.tabListItem.gamemode = gamemode
 
         connection.world.isHardcore = isHardcore
         connection.mapping.dimensionRegistry.setData(dimensions)
         connection.world.dimension = dimension
 
-        connection.world.addEntity(entityId, connection.player.entity.uuid, playerEntity)
+        connection.world.addEntity(entityId, null, playerEntity)
         connection.world.hashedSeed = hashedSeed
         connection.world.biomeAccessor = if (connection.version.versionId < ProtocolVersions.V_19W36A) {
             BlockBiomeAccessor(connection.world)
@@ -183,7 +183,7 @@ class PacketJoinGame(buffer: PlayInByteBuffer) : PlayClientboundPacket() {
     }
 
     override fun log() {
-        Log.protocol("[IN] Receiving join game packet (entityId=$entityId, gamemode=$gamemode, dimension=$dimensions, difficulty=$difficulty, hardcore=$isHardcore, viewDistance=$viewDistance)")
+        Log.protocol("[IN] Receiving join game packet (entityId=$entityId, gamemode=$gamemode, dimension=$dimension, difficulty=$difficulty, hardcore=$isHardcore, viewDistance=$viewDistance)")
     }
 
     companion object : ErrorHandler {

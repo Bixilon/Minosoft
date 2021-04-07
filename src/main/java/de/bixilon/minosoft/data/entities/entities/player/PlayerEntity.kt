@@ -13,7 +13,6 @@
 package de.bixilon.minosoft.data.entities.entities.player
 
 import de.bixilon.minosoft.data.Gamemodes
-import de.bixilon.minosoft.data.PlayerPropertyData
 import de.bixilon.minosoft.data.entities.EntityMetaDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
@@ -22,32 +21,33 @@ import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.entities.EntityFactory
 import de.bixilon.minosoft.data.mappings.entities.EntityType
 import de.bixilon.minosoft.data.player.Hands
+import de.bixilon.minosoft.data.player.PlayerProperties
+import de.bixilon.minosoft.data.player.PlayerProperty
+import de.bixilon.minosoft.data.player.tab.TabListItem
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.util.nbt.tag.CompoundTag
 import glm_.vec3.Vec3
-import java.util.*
 
 class PlayerEntity(
     connection: PlayConnection,
     entityType: EntityType,
-    position: Vec3,
-    rotation: EntityRotation,
-    @get:EntityMetaDataFunction(name = "Name") var name: String,
-    @get:EntityMetaDataFunction(name = "uuid") var uuid: UUID,
-    @get:EntityMetaDataFunction(name = "Properties") val properties: HashSet<PlayerPropertyData>?,
-    gamemode: Gamemodes,
+    position: Vec3 = Vec3(0, 0, 0),
+    rotation: EntityRotation = EntityRotation(0.0, 0.0),
+    name: String = "TBA",
+    properties: Map<PlayerProperties, PlayerProperty> = mapOf(),
+    var tabListItem: TabListItem = TabListItem(name = name, gamemode = Gamemodes.SURVIVAL, properties = properties),
 ) : LivingEntity(connection, entityType, position, rotation) {
-    private var _gamemode: Gamemodes = gamemode
-    var gamemode: Gamemodes
-        get() = _gamemode
-        set(value) {
-            hasCollisions = value != Gamemodes.SPECTATOR
-            _gamemode = value
-        }
 
-    init {
-        hasCollisions = gamemode != Gamemodes.SPECTATOR
-    }
+    @get:EntityMetaDataFunction(name = "Gamemode")
+    val gamemode: Gamemodes
+        get() = tabListItem.gamemode
+
+    @get:EntityMetaDataFunction(name = "name")
+    val name: String
+        get() = tabListItem.name
+
+    override val hasCollisions: Boolean
+        get() = gamemode != Gamemodes.SPECTATOR
 
     @get:EntityMetaDataFunction(name = "Absorption hearts")
     val playerAbsorptionHearts: Float
