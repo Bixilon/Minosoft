@@ -24,7 +24,6 @@ import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.mappings.StatusEffect
 import de.bixilon.minosoft.data.mappings.entities.EntityType
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.gui.rendering.Camera
 import de.bixilon.minosoft.gui.rendering.chunk.VoxelShape
 import de.bixilon.minosoft.gui.rendering.chunk.models.AABB
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
@@ -48,6 +47,11 @@ abstract class Entity(
     var entityMetaData: EntityMetaData = EntityMetaData(connection)
 
     protected open val hasCollisions = true
+
+    private val defaultAABB = AABB(
+        Vec3(-entityType.width / 2, 0               , -entityType.width),
+        Vec3(+entityType.width / 2, entityType.height  , +entityType.width)
+    )
 
     fun forceMove(relativePosition: Vec3) {
         position = position + relativePosition
@@ -227,12 +231,5 @@ abstract class Entity(
     }
 
     private val aabb: AABB
-        get() = DEFAULT_PLAYER_AABB + position
-
-    companion object {
-        private val DEFAULT_PLAYER_AABB = AABB(
-            Vec3(-Camera.PLAYER_WIDTH / 2, 0, -Camera.PLAYER_WIDTH / 2),
-            Vec3(Camera.PLAYER_WIDTH / 2, 1.8, Camera.PLAYER_WIDTH / 2)
-        )
-    }
+        get() = defaultAABB + position
 }
