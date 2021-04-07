@@ -19,4 +19,5 @@ data class CameraGameConfig(
     @Json(name = "render_distance") var renderDistance: Int = 10,
     var fov: Float = 60f,
     @Json(name = "mouse_sensitivity") var moseSensitivity: Float = 0.1f,
+    @Json(name = "no_clip_movement") var noCipMovement: Boolean = false,
 )

@@ -211,10 +211,10 @@ class FluidRenderer(
         if (blockState == null) {
             return false
         }
-        if (blockState.owner.resourceLocation.full.contains(regex)) {
+        if (blockState.properties[BlockProperties.WATERLOGGED] == true) {
             return true
         }
-        if (blockState.properties[BlockProperties.WATERLOGGED] == true) {
+        if (blockState.owner.resourceLocation.full.contains(regex)) {
             return true
         }
         return false

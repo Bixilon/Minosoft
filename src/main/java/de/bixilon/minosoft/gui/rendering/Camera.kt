@@ -145,8 +145,10 @@ class Camera(
     fun handleInput(deltaTime: Double) {
         var cameraSpeed = movementSpeed * deltaTime
         val movementFront = Vec3(cameraFront)
-        movementFront.y = 0.0f
-        movementFront.normalizeAssign() // when moving forwards, do not move down
+        if (! Minosoft.getConfig().config.game.camera.noCipMovement) {
+            movementFront.y = 0.0f
+            movementFront.normalizeAssign() // when moving forwards, do not move down
+        }
         if (keySprintDown) {
             cameraSpeed *= 5
         }
