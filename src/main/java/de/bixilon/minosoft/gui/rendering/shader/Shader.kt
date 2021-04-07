@@ -24,6 +24,7 @@ import glm_.vec3.Vec3
 import glm_.vec4.Vec4
 import org.lwjgl.BufferUtils
 import org.lwjgl.opengl.ARBFragmentShader.GL_FRAGMENT_SHADER_ARB
+import org.lwjgl.opengl.ARBGeometryShader4.GL_GEOMETRY_SHADER_ARB
 import org.lwjgl.opengl.ARBShaderObjects.*
 import org.lwjgl.opengl.ARBVertexShader.GL_VERTEX_SHADER_ARB
 import org.lwjgl.opengl.GL11.GL_FALSE
@@ -32,13 +33,16 @@ import org.lwjgl.system.MemoryUtil
 
 class Shader(
     private val vertexPath: ResourceLocation,
+    private val geometryPath: ResourceLocation? = null,
     private val fragmentPath: ResourceLocation,
+    private val defines: Map<String, Any> = mapOf(),
 ) {
     private var programId = 0
 
     fun load(assetsManager: AssetsManager = Minosoft.MINOSOFT_ASSETS_MANAGER): Int {
-        val vertexShader = ShaderUtil.createShader(assetsManager, vertexPath, GL_VERTEX_SHADER_ARB)
-        val fragmentShader = ShaderUtil.createShader(assetsManager, fragmentPath, GL_FRAGMENT_SHADER_ARB)
+        val vertexShader = createShader(assetsManager, vertexPath, GL_VERTEX_SHADER_ARB, defines)
+        val geometryShader = geometryPath?.let { createShader(assetsManager, it, GL_GEOMETRY_SHADER_ARB, defines) }
+        val fragmentShader = createShader(assetsManager, fragmentPath, GL_FRAGMENT_SHADER_ARB, defines)
         programId = glCreateProgramObjectARB()
 
         if (programId.toLong() == MemoryUtil.NULL) {
@@ -46,6 +50,9 @@ class Shader(
         }
 
         glAttachObjectARB(programId, vertexShader)
+        geometryShader?.let {
+            glAttachObjectARB(programId, it)
+        }
         glAttachObjectARB(programId, fragmentShader)
         glLinkProgramARB(programId)
 
@@ -59,6 +66,9 @@ class Shader(
             throw ShaderLoadingException(OpenGLUtil.getLogInfo(programId))
         }
         glDeleteShader(vertexShader)
+        geometryShader?.let {
+            glDeleteShader(it)
+        }
         glDeleteShader(fragmentShader)
 
         return programId
@@ -133,5 +143,41 @@ class Shader(
 
     companion object {
         private var usedShader: Shader? = null
+
+
+        private fun createShader(assetsManager: AssetsManager = Minosoft.MINOSOFT_ASSETS_MANAGER, resourceLocation: ResourceLocation, shaderType: Int, defines: Map<String, Any>): Int {
+            val shaderId = glCreateShaderObjectARB(shaderType)
+            if (shaderId.toLong() == MemoryUtil.NULL) {
+                throw ShaderLoadingException()
+            }
+            val total = StringBuilder()
+            val lines = assetsManager.readStringAsset(resourceLocation).lines()
+
+            for (line in lines) {
+                total.append(line)
+                total.append('\n')
+                if (line.startsWith("#version")) {
+
+                    // add all defines
+                    total.append('\n')
+                    for ((define, value) in defines) {
+                        total.append("#define ")
+                        total.append(define)
+                        total.append(' ')
+                        total.append(value)
+                        total.append('\n')
+                    }
+                }
+            }
+
+            glShaderSourceARB(shaderId, total.toString())
+            glCompileShaderARB(shaderId)
+
+            if (glGetObjectParameteriARB(shaderId, GL_OBJECT_COMPILE_STATUS_ARB) == GL_FALSE) {
+                throw ShaderLoadingException(OpenGLUtil.getLogInfo(shaderId))
+            }
+
+            return shaderId
+        }
     }
 }

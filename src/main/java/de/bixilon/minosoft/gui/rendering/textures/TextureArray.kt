@@ -161,7 +161,7 @@ class TextureArray(val allTextures: MutableList<Texture>) {
             private set
 
         fun initBuffer() {
-            animatedData = IntArray(128 * INTS_PER_ANIMATED_TEXTURE) // 4 data ints per entry
+            animatedData = IntArray(animatedTextures.size * INTS_PER_ANIMATED_TEXTURE) // 4 data ints per entry
 
 
             animatedBufferDataId = glGenBuffers()

@@ -95,9 +95,6 @@ class WorldRenderer(
         renderWindow.textures.allTextures.addAll(resolveBlockTextureIds(connection.version.mapping.blockStateIdMap.values))
 
 
-        chunkShader = Shader(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "rendering/shader/chunk_vertex.glsl"), ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "rendering/shader/chunk_fragment.glsl"))
-        chunkShader.load()
-
         // register keybindings
         renderWindow.registerKeyCallback(KeyBindingsNames.DEBUG_CLEAR_CHUNK_CACHE) { _, _ ->
             clearChunkCache()
@@ -107,6 +104,14 @@ class WorldRenderer(
     }
 
     override fun postInit() {
+        check(renderWindow.textures.animator.animatedTextures.size < 4096) { "Can not have more than 4096 animated textures!" } // uniform buffer limit: 16kb. 4 ints per texture
+        chunkShader = Shader(
+            vertexPath = ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "rendering/shader/chunk_vertex.glsl"),
+            fragmentPath = ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "rendering/shader/chunk_fragment.glsl"),
+            defines = mapOf("ANIMATED_TEXTURE_COUNT" to renderWindow.textures.animator.animatedTextures.size),
+        )
+        chunkShader.load()
+
         renderWindow.textures.use(chunkShader, "textureArray")
         renderWindow.textures.animator.use(chunkShader, "AnimatedDataBuffer")
 
