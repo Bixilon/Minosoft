@@ -38,7 +38,7 @@ public class PacketSpawnPlayer extends PlayClientboundPacket {
 
     public PacketSpawnPlayer(PlayInByteBuffer buffer) {
         this.entityId = buffer.readVarInt();
-        String name = null;
+        String name = "TBA";
         HashSet<PlayerPropertyData> properties = null;
         if (buffer.getVersionId() < V_14W21A) {
             name = buffer.readString();
@@ -67,7 +67,7 @@ public class PacketSpawnPlayer extends PlayClientboundPacket {
         if (buffer.getVersionId() < V_19W34A) {
             metaData = buffer.readMetaData();
         }
-        this.entity = new PlayerEntity(buffer.getConnection(), buffer.getConnection().getMapping().getEntityRegistry().get(PlayerEntity.Companion.getRESOURCE_LOCATION()), position, new EntityRotation(yaw, pitch, 0), "TBA", this.entityUUID, properties, Gamemodes.CREATIVE); // ToDo
+        this.entity = new PlayerEntity(buffer.getConnection(), buffer.getConnection().getMapping().getEntityRegistry().get(PlayerEntity.Companion.getRESOURCE_LOCATION()), position, new EntityRotation(yaw, pitch, 0), name, this.entityUUID, properties, Gamemodes.CREATIVE); // ToDo
         if (metaData != null) {
             this.entity.setEntityMetaData(metaData);
             if (StaticConfiguration.VERBOSE_ENTITY_META_DATA_LOGGING) {
