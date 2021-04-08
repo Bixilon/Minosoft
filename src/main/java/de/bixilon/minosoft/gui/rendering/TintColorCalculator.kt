@@ -91,7 +91,7 @@ class TintColorCalculator(val world: World) {
     companion object {
         val TINTS: MutableMap<ResourceLocation, (biome: Biome, blockPosition: Vec3i, colorMaps: Map<ResourceLocation, Array<RGBColor>>) -> RGBColor?> = mutableMapOf()
         private val DEFAULT_GRASS_COLOR_MAP = ResourceLocation("minecraft:grass_colormap")
-        private val DEFAULT_FOLIAGE_COLOR_MAP = ResourceLocation("minecraft:grass_colormap")
+        private val DEFAULT_FOLIAGE_COLOR_MAP = ResourceLocation("minecraft:foliage_colormap")
 
         private val WATER_TINT_RESOURCE_LOCATION = ResourceLocation("water_tint")
         private val GRASS_TINT_RESOURCE_LOCATION = ResourceLocation("grass_tint")
