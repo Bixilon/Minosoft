@@ -116,7 +116,7 @@ class WorldRenderer(
         renderWindow.textures.animator.use(chunkShader, "AnimatedDataBuffer")
 
         for (block in connection.version.mapping.blockStateIdMap.values) {
-            for (model in block.renders) {
+            for (model in block.renderers) {
                 model.postInit()
             }
         }
@@ -143,7 +143,7 @@ class WorldRenderer(
         val textureMap: MutableMap<String, Texture> = ConcurrentHashMap()
 
         for (block in blocks) {
-            for (model in block.renders) {
+            for (model in block.renderers) {
                 model.resolveTextures(textures, textureMap)
             }
         }

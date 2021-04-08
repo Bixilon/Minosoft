@@ -66,11 +66,13 @@ interface FileAssetsManager : AssetsManager {
         return verifyAssetHash(hash, true)
     }
 
-    fun downloadAsset(url: String, hash: String, compress: Boolean) {
+    fun downloadAsset(url: String, hash: String, compress: Boolean, checkURL: Boolean = true) {
         if (verifyAssetHash(hash, compress)) {
             return
         }
-        Util.checkURL(url)
+        if (checkURL) {
+            Util.checkURL(url)
+        }
         Log.debug("Downloading %s -> %s", url, hash)
         if (compress) {
             Util.downloadFileAsGz(url, getAssetDiskPath(hash))

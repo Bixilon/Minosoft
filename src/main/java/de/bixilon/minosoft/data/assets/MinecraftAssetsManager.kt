@@ -127,7 +127,7 @@ class MinecraftAssetsManager(
                         "hashPrefix" to hash.substring(0, 2),
                         "fullHash" to hash
                     )
-                ), hash, false)
+                ), hash, compress = false, checkURL = false)
             }
             else -> {
             }

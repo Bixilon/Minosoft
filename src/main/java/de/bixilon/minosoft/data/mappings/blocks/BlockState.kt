@@ -13,7 +13,6 @@
 package de.bixilon.minosoft.data.mappings.blocks
 
 import com.google.gson.JsonArray
-import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.google.gson.JsonPrimitive
 import de.bixilon.minosoft.Minosoft
@@ -28,6 +27,7 @@ import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModel
 import de.bixilon.minosoft.gui.rendering.chunk.models.renderable.BlockLikeRenderer
 import de.bixilon.minosoft.gui.rendering.chunk.models.renderable.BlockRenderer
 import de.bixilon.minosoft.gui.rendering.chunk.models.renderable.FluidRenderer
+import de.bixilon.minosoft.gui.rendering.chunk.models.renderable.MultipartRenderer
 import glm_.vec3.Vec3i
 import java.util.*
 import kotlin.random.Random
@@ -36,7 +36,7 @@ data class BlockState(
     val owner: Block,
     val properties: Map<BlockProperties, Any> = mapOf(),
     val rotation: BlockRotations = BlockRotations.NONE,
-    val renders: MutableList<BlockLikeRenderer> = mutableListOf(),
+    val renderers: MutableList<BlockLikeRenderer> = mutableListOf(),
     val tintColor: RGBColor? = null,
     val material: Material,
     val collisionShape: VoxelShape,
@@ -109,11 +109,11 @@ data class BlockState(
     }
 
     fun getBlockRenderer(blockPosition: Vec3i): BlockLikeRenderer {
-        if (Minosoft.getConfig().config.game.other.antiMoirePattern && renders.size > 1) {
+        if (Minosoft.getConfig().config.game.other.antiMoirePattern && renderers.size > 1) {
             // ToDo: Support weight attribute
-            return renders.random(Random(blockPosition.hashCode()))
+            return renderers.random(Random(blockPosition.hashCode()))
         }
-        return renders[0]
+        return renderers[0]
     }
 
 
@@ -133,21 +133,30 @@ data class BlockState(
 
             val renders: MutableList<BlockLikeRenderer> = mutableListOf()
 
-            fun addBlockModel(json: JsonElement) {
-                when (json) {
+            data["render"]?.let {
+                when (it) {
                     is JsonArray -> {
-                        for (model in json) {
-                            addBlockModel(model)
+                        for (model in it) {
+                            when (model) {
+                                is JsonObject -> {
+                                    addBlockModel(model, renders, models)
+                                }
+                                is JsonArray -> {
+                                    val modelList: MutableList<BlockLikeRenderer> = mutableListOf()
+                                    for (singleModel in model) {
+                                        check(singleModel is JsonObject)
+                                        addBlockModel(singleModel, modelList, models)
+                                    }
+                                    renders.add(MultipartRenderer(modelList.toList()))
+                                }
+                            }
                         }
                     }
                     is JsonObject -> {
-                        addBlockModel(json, renders, models)
+                        addBlockModel(it, renders, models)
                     }
                     else -> error("Not a render json!")
                 }
-            }
-            data["render"]?.let {
-                addBlockModel(it)
             }
 
             val tintColor: RGBColor? = data["tint_color"]?.asInt?.let { TintColorCalculator.getJsonColor(it) } ?: owner.tintColor
@@ -173,7 +182,7 @@ data class BlockState(
                 owner = owner,
                 properties = properties.toMap(),
                 rotation = rotation,
-                renders = renders,
+                renderers = renders,
                 tintColor = tintColor,
                 material = material,
                 collisionShape = collision,
