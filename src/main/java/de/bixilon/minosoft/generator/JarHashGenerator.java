@@ -16,6 +16,8 @@ package de.bixilon.minosoft.generator;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import de.bixilon.minosoft.Minosoft;
+import de.bixilon.minosoft.config.Configuration;
 import de.bixilon.minosoft.data.assets.MinecraftAssetsManager;
 import de.bixilon.minosoft.data.assets.Resources;
 import de.bixilon.minosoft.data.mappings.versions.Version;
@@ -24,6 +26,7 @@ import java.io.*;
 import java.util.Collections;
 
 public class JarHashGenerator {
+    private static final String RESOURCE_JSON_PATH = "src/main/resources/assets/minosoft/mapping/resources.json";
 
     public static void main(String[] args) throws IOException {
         if (args.length != 1) {
@@ -31,9 +34,12 @@ public class JarHashGenerator {
             return;
         }
         try {
+            Minosoft.config = new Configuration();
+
+
             Version version = new Version(args[0], -1, -1, Collections.emptyMap(), Collections.emptyMap());
 
-            JsonObject json = JsonParser.parseReader(new InputStreamReader(new FileInputStream("src/main/resources/assets/mapping/resources.json"))).getAsJsonObject();
+            JsonObject json = JsonParser.parseReader(new InputStreamReader(new FileInputStream(RESOURCE_JSON_PATH))).getAsJsonObject();
 
 
             JsonObject versions = json.getAsJsonObject("versions");
@@ -42,7 +48,8 @@ public class JarHashGenerator {
 
             Resources.loadVersion(version, versionJson);
 
-            MinecraftAssetsManager assetsManager = new MinecraftAssetsManager(Resources.getAssetVersionByVersion(version), Resources.getPixLyzerDataHashByVersion(version));
+            var resource = Resources.getAssetVersionByVersion(version);
+            MinecraftAssetsManager assetsManager = new MinecraftAssetsManager(resource, "dummy");
             String jarAssetsHash = assetsManager.generateJarAssets();
 
             versionJson.addProperty("jar_assets_hash", jarAssetsHash);
@@ -50,18 +57,17 @@ public class JarHashGenerator {
 
             // reload json, because the generator is async
 
-            json = JsonParser.parseReader(new InputStreamReader(new FileInputStream("src/main/resources/assets/mapping/resources.json"))).getAsJsonObject();
+            json = JsonParser.parseReader(new InputStreamReader(new FileInputStream(RESOURCE_JSON_PATH))).getAsJsonObject();
 
             json.getAsJsonObject("versions").add(version.getVersionName(), versionJson);
 
-            File file = new File("src/main/resources/assets/mapping/resources.json");
+            File file = new File(RESOURCE_JSON_PATH);
             FileWriter writer = new FileWriter(file.getAbsoluteFile());
             writer.write(new Gson().toJson(json));
             writer.close();
             System.exit(0);
         } catch (Exception e) {
-            e.printStackTrace();
-            System.exit(1);
+            throw new RuntimeException(e);
         }
     }
 }

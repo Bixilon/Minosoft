@@ -9,7 +9,6 @@
 #
 #  This software is not affiliated with Mojang AB, the original developer of Minecraft.
 
-import os
 import subprocess
 import urllib.request
 
@@ -17,49 +16,38 @@ import ujson
 
 print("Minecraft mappings downloader (and generator)")
 
-DOWNLOAD_UNTIL_VERSION = "18w01a"
-SKIP_VERSIONS = ["1.13-pre6", "1.13-pre5"]
-DATA_FOLDER = "../data/resources/"
-TEMP_FOLDER = DATA_FOLDER + "tmp/"
-DOWNLOAD_BASE_URL = "https://apimon.de/mcdata/"
-RESOURCE_MAPPINGS_INDEX = ujson.load(open("../src/main/resources/assets/mapping/resources.json"))
+DOWNLOAD_UNTIL_VERSION = "17w45b"
+SKIP_VERSIONS = []
+RESOURCE_MAPPINGS_INDEX_PATH = "../src/main/resources/assets/minosoft/mapping/resources.json"
+RESOURCE_MAPPINGS_INDEX = ujson.load(open(RESOURCE_MAPPINGS_INDEX_PATH))
 VERSION_MANIFEST = ujson.loads(urllib.request.urlopen('https://launchermeta.mojang.com/mc/game/version_manifest.json').read().decode("utf-8"))
 VERBOSE_LOG = False
+SKIP_COMPILE = False
 failedVersionIds = []
 partlyFailedVersionIds = []
 
 
-if not os.path.isdir(DATA_FOLDER):
-    os.mkdir(DATA_FOLDER)
-if not os.path.isdir(TEMP_FOLDER):
-    os.mkdir(TEMP_FOLDER)
-
-
-# compile minosoft
-
-
 def generateJarAssets(versionId):
     print("Generating jar asset hash: %s" % versionId)
-    generateProcess = ""
-    try:
-        generateProcess = subprocess.run(r'mvn exec:java -Dexec.mainClass="de.bixilon.minosoft.generator.JarHashGenerator" -Dexec.args="\"%s\""' % versionId, cwd=r'../', shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        # reload mappings
-        global RESOURCE_MAPPINGS_INDEX
-        RESOURCE_MAPPINGS_INDEX = ujson.load(open("../src/main/resources/assets/mapping/resources.json"))
-    except Exception:
-        print(generateProcess.stdout)
-        print(generateProcess.stderr)
+    process = subprocess.Popen(r'mvn exec:java -Dexec.mainClass="de.bixilon.minosoft.generator.JarHashGenerator" -Dexec.args="\"%s\""' % versionId, shell=True, cwd='../', stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    exitCode = process.wait()
+
+    global RESOURCE_MAPPINGS_INDEX
+    RESOURCE_MAPPINGS_INDEX = ujson.load(open(RESOURCE_MAPPINGS_INDEX_PATH))
+
+    if exitCode != 0:
+        print(process.stdout.read().decode('utf-8'))
+        print(process.stderr.read().decode('utf-8'))
 
 
-print("Compiling minosoft...")
-compileProcess = ""
-try:
-    compileProcess = subprocess.run(r'mvn compile', shell=True, check=True, cwd='../', stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-except Exception:
-    print(compileProcess.stdout)
-    print(compileProcess.stderr)
-    exit(1)
-print("Minosoft compiled!")
+if not SKIP_COMPILE:
+    print("Compiling minosoft...")
+    compileProcess = subprocess.Popen(r'mvn compile', shell=True, cwd='../', stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    compileExitCode = compileProcess.wait()
+    if compileExitCode != 0:
+        print(compileProcess.stdout.read().decode('utf-8'))
+        print(compileProcess.stderr.read().decode('utf-8'))
+    print("Minosoft compiled!")
 
 
 def downloadVersion(version):
@@ -68,8 +56,9 @@ def downloadVersion(version):
         print("Force skipping %s" % version["id"])
         return
 
-    if version["id"] in RESOURCE_MAPPINGS_INDEX["versions"]:
+    if version["id"] in RESOURCE_MAPPINGS_INDEX["versions"] and "jar_assets_hash" in RESOURCE_MAPPINGS_INDEX["versions"][version["id"]]:
         print("Skipping %s" % version["id"])
+        return
     print()
 
     print("DEBUG: Downloading versions json for %s" % version["id"])
@@ -81,19 +70,15 @@ def downloadVersion(version):
         resourcesVersion["client_jar_hash"] = versionJson["downloads"]["client"]["sha1"]
         RESOURCE_MAPPINGS_INDEX["versions"][version["id"]] = resourcesVersion
         # dump resources index
-        with open("../src/main/resources/assets/mapping/resources.json", 'w') as file:
+        with open(RESOURCE_MAPPINGS_INDEX_PATH, 'w') as file:
             ujson.dump(RESOURCE_MAPPINGS_INDEX, file)
         # start jar hash generator
         try:
             generateJarAssets(version["id"])
         except Exception:
             failedVersionIds.append(version["id"])
+            print("%s failed!" % version["id"])
             return
-
-    RESOURCE_MAPPINGS_INDEX["versions"][version["id"]] = resourcesVersion
-    # dump resources index
-    with open("../src/main/resources/assets/mapping/resources.json", 'w') as file:
-        ujson.dump(RESOURCE_MAPPINGS_INDEX, file)
 
 
 for version in VERSION_MANIFEST["versions"]:

@@ -57,7 +57,7 @@ public final class Minosoft {
     public static final HashSet<EventManager> EVENT_MANAGERS = new HashSet<>();
     public static final HashBiMap<Integer, PlayConnection> CONNECTIONS = HashBiMap.create();
     private static final CountUpAndDownLatch START_STATUS_LATCH = new CountUpAndDownLatch(1);
-    private static Configuration config;
+    public static Configuration config;
     private static boolean isExiting;
 
     public static void main(String[] args) {
