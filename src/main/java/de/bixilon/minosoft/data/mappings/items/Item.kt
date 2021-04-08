@@ -31,7 +31,7 @@ open class Item(
     val maxStackSize: Int = data["max_stack_size"]?.asInt ?: 64
     val maxDamage: Int = data["max_damage"]?.asInt ?: 64
     val isFireResistant: Boolean = data["is_fire_resistant"]?.asBoolean ?: false
-    override val translationKey: String? = data["description_id"]?.asString
+    override val translationKey: String? = data["translation_key"]?.asString
     val creativeModeTab: CreativeModeTab? = data["category"]?.asInt?.let { versionMapping.creativeModeTabRegistry.get(it) }
 
     override fun toString(): String {

@@ -20,12 +20,10 @@ import de.bixilon.minosoft.data.mappings.registry.ResourceLocationDeserializer
 import de.bixilon.minosoft.data.mappings.versions.VersionMapping
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.TintColorCalculator
-import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockCondition
 
 data class Block(
     override val resourceLocation: ResourceLocation,
     val explosionResistance: Float = 0.0f,
-    val hasCollision: Boolean = false,
     val hasDynamicShape: Boolean = false,
     val tintColor: RGBColor? = null,
     private val itemId: Int = 0,
@@ -36,7 +34,6 @@ data class Block(
     lateinit var item: Item
         private set
     val states: MutableSet<BlockState> = mutableSetOf()
-    var multipartMapping: MutableMap<BlockCondition, MutableList<JsonObject>>? = null
 
     override fun postInit(versionMapping: VersionMapping) {
         item = versionMapping.itemRegistry.get(itemId)
@@ -51,36 +48,12 @@ data class Block(
             check(mappings != null) { "VersionMapping is null!" }
             val block = Block(
                 resourceLocation = resourceLocation, explosionResistance = data["explosion_resistance"]?.asFloat ?: 0.0f,
-                hasCollision = data["has_collision"]?.asBoolean ?: false,
                 hasDynamicShape = data["has_dynamic_shape"]?.asBoolean ?: false,
                 tintColor = data["tint_color"]?.asInt?.let { TintColorCalculator.getJsonColor(it) },
                 itemId = data["item"]?.asInt ?: 0,
                 tint = data["tint"]?.asString?.let { ResourceLocation(it) },
             )
 
-            // block states
-
-            data["render"]?.asJsonObject?.get("multipart")?.asJsonArray?.let { multipart ->
-                block.multipartMapping = mutableMapOf()
-                for (item in multipart) {
-                    val part = item.asJsonObject
-                    val propertiesJson = part["properties"]
-                    val condition = propertiesJson?.let {
-                        BlockCondition(propertiesJson)
-                    } ?: BlockCondition.TRUE_CONDITION
-                    val apply = part["apply"]
-                    when {
-                        apply.isJsonObject -> {
-                            addMultiPart(block, condition, apply.asJsonObject!!)
-                        }
-                        apply.isJsonArray -> {
-                            for (model in apply.asJsonArray) {
-                                addMultiPart(block, condition, model.asJsonObject!!)
-                            }
-                        }
-                    }
-                }
-            }
 
             for ((stateId, stateJson) in data["states"].asJsonObject.entrySet()) {
                 check(stateJson is JsonObject) { "Not a state element!" }
@@ -90,11 +63,6 @@ data class Block(
 
             block.defaultState = mappings.blockStateIdMap[data["default_state"].asInt]!!
             return block
-        }
-
-        private fun addMultiPart(block: Block, condition: BlockCondition, apply: JsonObject) {
-            block.multipartMapping!![condition]?.add(apply)
-                ?: run { block.multipartMapping!![condition] = mutableListOf(apply) }
         }
     }
 }

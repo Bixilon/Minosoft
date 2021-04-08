@@ -34,7 +34,7 @@ data class Dimension(
     val coordinateScale: Double = 0.0,
     val minY: Int = 0,
     val hasCeiling: Boolean = false,
-    val ultrawarm: Boolean = false,
+    val ultraWarm: Boolean = false,
     val height: Int = 256,
     val supports3DBiomes: Boolean = true,
 ) : RegistryItem {
@@ -70,7 +70,7 @@ data class Dimension(
                 coordinateScale = nbt.getDoubleTag("coordinate_scale")?.value ?: 0.0,
                 minY = nbt.getNumberTag("min_y")?.asInt ?: 0,
                 hasCeiling = nbt.getBoolean("has_ceiling") == true,
-                ultrawarm = nbt.getBoolean("ultrawarm") == true,
+                ultraWarm = nbt.getBoolean("ultrawarm") == true,
                 height = nbt.getNumberTag("height")?.asInt ?: 256,
             )
         }
@@ -91,9 +91,9 @@ data class Dimension(
                 coordinateScale = data.get("coordinate_scale")?.asDouble ?: 0.0,
                 minY = data.get("min_y")?.asInt ?: 0,
                 hasCeiling = data.get("has_ceiling")?.asBoolean == true,
-                ultrawarm = data.get("ultrawarm")?.asBoolean == true,
+                ultraWarm = data.get("ultrawarm")?.asBoolean == true,
                 height = data.get("height")?.asInt ?: 256,
-                supports3DBiomes = data.get("supports_3d_biomes")?.asBoolean ?: !resourceLocation.full.contains("overworld")
+                supports3DBiomes = data.get("supports_3d_biomes")?.asBoolean ?: false,
             )
         }
     }

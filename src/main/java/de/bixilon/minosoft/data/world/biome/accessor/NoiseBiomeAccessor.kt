@@ -20,7 +20,6 @@ import de.bixilon.minosoft.data.world.biome.noise.FuzzyNoiseBiomeCalculator
 import glm_.vec3.Vec3i
 
 class NoiseBiomeAccessor(private val world: World) : BiomeAccessor {
-    private val blockBiomeAccessor = BlockBiomeAccessor(world)
 
     override fun getBiome(blockPosition: Vec3i): Biome? {
         val y = if (world.dimension?.supports3DBiomes == true) {

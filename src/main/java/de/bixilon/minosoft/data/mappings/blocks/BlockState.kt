@@ -13,6 +13,7 @@
 package de.bixilon.minosoft.data.mappings.blocks
 
 import com.google.gson.JsonArray
+import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.google.gson.JsonPrimitive
 import de.bixilon.minosoft.Minosoft
@@ -129,31 +130,24 @@ data class BlockState(
             val (rotation, properties) = data["properties"]?.asJsonObject?.let {
                 getProperties(it)
             } ?: Pair(BlockRotations.NONE, mutableMapOf())
+
             val renders: MutableList<BlockLikeRenderer> = mutableListOf()
 
-            data["render"]?.let {
-                when (it) {
+            fun addBlockModel(json: JsonElement) {
+                when (json) {
                     is JsonArray -> {
-                        for (model in it) {
-                            check(model is JsonObject)
-                            addBlockModel(model, renders, models)
+                        for (model in json) {
+                            addBlockModel(model)
                         }
                     }
                     is JsonObject -> {
-                        addBlockModel(it.asJsonObject, renders, models)
+                        addBlockModel(json, renders, models)
                     }
                     else -> error("Not a render json!")
                 }
             }
-
-            owner.multipartMapping?.let {
-                val elementRenderers: MutableList<JsonObject> = mutableListOf()
-                for ((condition, model) in it.entries) {
-                    if (condition.contains(properties, rotation)) {
-                        elementRenderers.addAll(model)
-                    }
-                }
-                renders.add(BlockRenderer(elementRenderers, models))
+            data["render"]?.let {
+                addBlockModel(it)
             }
 
             val tintColor: RGBColor? = data["tint_color"]?.asInt?.let { TintColorCalculator.getJsonColor(it) } ?: owner.tintColor
@@ -182,7 +176,7 @@ data class BlockState(
                 renders = renders,
                 tintColor = tintColor,
                 material = material,
-                collisionShape = collision
+                collisionShape = collision,
             )
         }
 

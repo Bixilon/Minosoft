@@ -59,7 +59,7 @@ data class EntityType(
 
             return EntityType(
                 resourceLocation = resourceLocation,
-                translationKey = data["description_id"]?.asString,
+                translationKey = data["translation_key"]?.asString,
                 width = data["width"].asFloat,
                 height = data["height"].asFloat,
                 fireImmune = data["fire_immune"]?.asBoolean ?: false,

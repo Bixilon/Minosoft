@@ -27,8 +27,6 @@ import glm_.vec3.Vec3i
 
 class TintColorCalculator(val world: World) {
     val colorMaps: MutableMap<ResourceLocation, Array<RGBColor>> = mutableMapOf()
-    private lateinit var grassColorMap: Array<RGBColor>
-    private lateinit var foliageColorMap: Array<RGBColor>
 
     fun init(assetsManager: MinecraftAssetsManager) {
         colorMaps[DEFAULT_GRASS_COLOR_MAP] = assetsManager.readPixelArrayAsset(Texture.getResourceTextureIdentifier(textureName = "colormap/grass.png"))
@@ -106,7 +104,7 @@ class TintColorCalculator(val world: World) {
             TINTS[WATER_TINT_RESOURCE_LOCATION] = { biome, _, _ ->
                 biome.waterColor
             }
-            val grassTintCalculator = tint@{ biome: Biome, blockPosition: Vec3i, colorMaps: Map<ResourceLocation, Array<RGBColor>> ->
+            val grassTintCalculator = tint@{ biome: Biome, _: Vec3i, colorMaps: Map<ResourceLocation, Array<RGBColor>> ->
                 biome.grassColorOverride?.let { return@tint it }
                 val grassColorMap = colorMaps[DEFAULT_GRASS_COLOR_MAP]!!
 
@@ -134,7 +132,6 @@ class TintColorCalculator(val world: World) {
             }
 
             TINTS[LILY_PAD_TINT_RESOURCE_LOCATION] = { _, _, _ -> RenderConstants.LILY_PAD_BLOCK_COLOR }
-
         }
 
 
