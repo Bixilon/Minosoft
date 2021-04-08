@@ -60,8 +60,8 @@ object ChunkUtil {
         // parse data
         var arrayPosition = 0
         val sectionMap: MutableMap<Int, ChunkSection> = Collections.synchronizedMap(ConcurrentHashMap())
-        for (sectionHeight in dimension.lowestSection until dimension.highestSection) {
-            if (!sectionBitMask.get(sectionHeight)) {
+        for ((sectionIndex, sectionHeight) in (dimension.lowestSection until dimension.highestSection).withIndex()) {
+            if (!sectionBitMask[sectionIndex]) {
                 continue
             }
 
@@ -94,7 +94,7 @@ object ChunkUtil {
 
                 blocks[blockNumber] = buffer.connection.mapping.getBlockState(blockId) ?: continue
             }
-            sectionMap[dimension.lowestSection + sectionHeight] = ChunkSection(blocks)
+            sectionMap[sectionHeight] = ChunkSection(blocks)
         }
         chunkData.blocks = sectionMap
         return chunkData
@@ -129,8 +129,8 @@ object ChunkUtil {
 
         var arrayPos = 0
         val sectionMap: MutableMap<Int, ChunkSection> = Collections.synchronizedMap(ConcurrentHashMap())
-        for (sectionHeight in dimension.lowestSection until dimension.highestSection) { // max sections per chunks in chunk column
-            if (!sectionBitMask.get(sectionHeight)) {
+        for ((sectionIndex, sectionHeight) in (dimension.lowestSection until dimension.highestSection).withIndex()) { // max sections per chunks in chunk column
+            if (!sectionBitMask[sectionIndex]) {
                 continue
             }
             val blocks = arrayOfNulls<BlockState>(ProtocolDefinition.BLOCKS_PER_SECTION)
@@ -139,7 +139,7 @@ object ChunkUtil {
                 val block = buffer.connection.mapping.getBlockState(blockId) ?: continue
                 blocks[blockNumber] = block
             }
-            sectionMap[dimension.lowestSection + sectionHeight] = ChunkSection(blocks)
+            sectionMap[sectionHeight] = ChunkSection(blocks)
         }
         chunkData.blocks = sectionMap
         return chunkData
@@ -149,8 +149,8 @@ object ChunkUtil {
         val chunkData = ChunkData()
         val sectionMap: MutableMap<Int, ChunkSection> = Collections.synchronizedMap(ConcurrentHashMap())
 
-        for (sectionHeight in dimension.lowestSection until sectionBitMask.length()) { // max sections per chunks in chunk column
-            if (!sectionBitMask[sectionHeight]) {
+        for ((sectionIndex, sectionHeight) in (dimension.lowestSection until sectionBitMask.length()).withIndex()) { // max sections per chunks in chunk column
+            if (!sectionBitMask[sectionIndex]) {
                 continue
             }
             if (buffer.versionId >= V_18W43A) {
@@ -195,7 +195,7 @@ object ChunkUtil {
                 }
                 // ToDo
             }
-            sectionMap[dimension.lowestSection + sectionHeight] = ChunkSection(blocks)
+            sectionMap[sectionHeight] = ChunkSection(blocks)
         }
 
         chunkData.blocks = sectionMap

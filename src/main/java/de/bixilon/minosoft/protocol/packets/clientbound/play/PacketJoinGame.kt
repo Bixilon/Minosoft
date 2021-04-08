@@ -99,11 +99,10 @@ class PacketJoinGame(buffer: PlayInByteBuffer) : PlayClientboundPacket() {
             } else {
                 buffer.readNBT() as CompoundTag // dimension tag
             }
+            val currentDimension = buffer.readResourceLocation()
+            dimension = dimensions[currentDimension] ?: buffer.connection.mapping.dimensionRegistry.get(currentDimension)!!
         }
 
-        if (buffer.versionId >= ProtocolVersions.V_20W22A) {
-            dimension = buffer.connection.mapping.dimensionRegistry.get(buffer.readResourceLocation())!!
-        }
         if (buffer.versionId >= ProtocolVersions.V_19W36A) {
             hashedSeed = buffer.readLong()
         }

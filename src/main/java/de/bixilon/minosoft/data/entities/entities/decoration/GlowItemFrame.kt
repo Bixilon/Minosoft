@@ -12,31 +12,20 @@
  */
 package de.bixilon.minosoft.data.entities.entities.decoration
 
-import de.bixilon.minosoft.data.entities.EntityMetaDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
-import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
-import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.entities.EntityFactory
 import de.bixilon.minosoft.data.mappings.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import glm_.vec3.Vec3
 
-open class ItemFrame(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : HangingEntity(connection, entityType, position, rotation) {
+class GlowItemFrame(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : ItemFrame(connection, entityType, position, rotation) {
 
-    @get:EntityMetaDataFunction(name = "Item")
-    val item: ItemStack?
-        get() = entityMetaData.sets.getItemStack(EntityMetaDataFields.ITEM_FRAME_ITEM)
+    companion object : EntityFactory<GlowItemFrame> {
+        override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("glow_item_frame")
 
-    @get:EntityMetaDataFunction(name = "Item rotation level")
-    val itemRotation: Int
-        get() = entityMetaData.sets.getInt(EntityMetaDataFields.ITEM_FRAME_ROTATION)
-
-    companion object : EntityFactory<ItemFrame> {
-        override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("item_frame")
-
-        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation): ItemFrame {
-            return ItemFrame(connection, entityType, position, rotation)
+        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation): GlowItemFrame {
+            return GlowItemFrame(connection, entityType, position, rotation)
         }
     }
 }

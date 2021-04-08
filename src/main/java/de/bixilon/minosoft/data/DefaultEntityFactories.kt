@@ -23,10 +23,7 @@ import de.bixilon.minosoft.data.entities.entities.animal.water.*
 import de.bixilon.minosoft.data.entities.entities.boss.enderdragon.EndCrystal
 import de.bixilon.minosoft.data.entities.entities.boss.enderdragon.EnderDragon
 import de.bixilon.minosoft.data.entities.entities.boss.wither.WitherBoss
-import de.bixilon.minosoft.data.entities.entities.decoration.ArmorStand
-import de.bixilon.minosoft.data.entities.entities.decoration.ItemFrame
-import de.bixilon.minosoft.data.entities.entities.decoration.LeashFenceKnotEntity
-import de.bixilon.minosoft.data.entities.entities.decoration.Painting
+import de.bixilon.minosoft.data.entities.entities.decoration.*
 import de.bixilon.minosoft.data.entities.entities.item.FallingBlock
 import de.bixilon.minosoft.data.entities.entities.item.ItemEntity
 import de.bixilon.minosoft.data.entities.entities.item.PrimedTNT
@@ -91,6 +88,7 @@ object DefaultEntityFactories {
             Illusioner,
             IronGolem,
             ItemEntity,
+            GlowItemFrame,
             ItemFrame,
             LargeFireball,
             LeashFenceKnotEntity,

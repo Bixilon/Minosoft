@@ -89,7 +89,7 @@ data class Dimension(
                 hasRaids = data.get("has_raids")?.asBoolean == true,
                 logicalHeight = data.get("logical_height")?.asInt ?: 256,
                 coordinateScale = data.get("coordinate_scale")?.asDouble ?: 0.0,
-                minY = data.get("min_y")?.asInt ?: 0,
+                minY = data.get("minimum_y")?.asInt ?: 0,
                 hasCeiling = data.get("has_ceiling")?.asBoolean == true,
                 ultraWarm = data.get("ultrawarm")?.asBoolean == true,
                 height = data.get("height")?.asInt ?: 256,

@@ -95,7 +95,7 @@ enum class BlockProperties {
     LEGACY_SMOOTH("smooth", BooleanBlocKPropertiesSerializer),
     SCULK_SENSOR_PHASE("sculk_sensor_phase", SensorPhases),
     DRIPSTONE_TILT("tilt", Tilts),
-    CAVE_VINES_BERRIES(BooleanBlocKPropertiesSerializer),
+    CAVE_VINES_BERRIES("berries", BooleanBlocKPropertiesSerializer),
     ;
 
     val group: String
@@ -141,7 +141,7 @@ enum class BlockProperties {
                     throw IllegalArgumentException("Can not parse value $value for group $group")
                 }
                 return Pair(retProperty, retValue)
-            } ?: throw IllegalArgumentException("Can not find group: $group")
+            } ?: throw IllegalArgumentException("Can not find group: $group, expected value $value")
         }
 
     }
