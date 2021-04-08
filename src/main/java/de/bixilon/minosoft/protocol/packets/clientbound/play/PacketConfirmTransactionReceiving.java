@@ -30,7 +30,7 @@ public class PacketConfirmTransactionReceiving extends PlayClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Closing inventory (windowId=%d)", this.windowId));
+        Log.protocol(String.format("[IN] Window transaction receiving (windowId=%d, actionNumber=%s, accepted=%s)", this.windowId, this.actionNumber, this.accepted));
     }
 
     public byte getWindowId() {

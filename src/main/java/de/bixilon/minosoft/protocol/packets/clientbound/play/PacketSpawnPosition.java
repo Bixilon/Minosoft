@@ -21,7 +21,7 @@ import de.bixilon.minosoft.util.logging.Log;
 import glm_.vec3.Vec3i;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W03B;
-import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_20W08A;
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_21W08A;
 
 public class PacketSpawnPosition extends PlayClientboundPacket {
     private final Vec3i position;
@@ -33,7 +33,7 @@ public class PacketSpawnPosition extends PlayClientboundPacket {
             return;
         }
         this.position = buffer.readBlockPosition();
-        if (buffer.getVersionId() >= V_20W08A) {
+        if (buffer.getVersionId() >= V_21W08A) {
             this.angle = buffer.readFloat();
         }
     }
