@@ -11,16 +11,14 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.protocol.packets.clientbound.play.title
+package de.bixilon.minosoft.protocol.packets.clientbound.play.combat
 
 import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket
-import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.util.logging.Log
 
-class SetTitlePacket(buffer: PlayInByteBuffer) : PlayClientboundPacket() {
-    val text = buffer.readChatComponent()
+class EnterCombatEventClientboundPacket : PlayClientboundPacket() {
 
     override fun log() {
-        Log.protocol("[IN] Received set title (text=$text)")
+        Log.protocol("[IN] Received enter combat event")
     }
 }

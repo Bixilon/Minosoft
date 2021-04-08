@@ -22,8 +22,9 @@ import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket
 import de.bixilon.minosoft.protocol.packets.clientbound.StatusClientboundPacket
 import de.bixilon.minosoft.protocol.packets.clientbound.login.*
 import de.bixilon.minosoft.protocol.packets.clientbound.play.*
-import de.bixilon.minosoft.protocol.packets.clientbound.play.combat.CombatEventPacketFactory
-import de.bixilon.minosoft.protocol.packets.clientbound.play.title.TitlePacketFactory
+import de.bixilon.minosoft.protocol.packets.clientbound.play.border.WorldBorderClientboundPacketFactory
+import de.bixilon.minosoft.protocol.packets.clientbound.play.combat.CombatEventClientboundPacketFactory
+import de.bixilon.minosoft.protocol.packets.clientbound.play.title.TitleClientboundPacketFactory
 import de.bixilon.minosoft.protocol.packets.clientbound.status.PacketStatusPong
 import de.bixilon.minosoft.protocol.packets.clientbound.status.PacketStatusResponse
 import de.bixilon.minosoft.protocol.packets.serverbound.ServerboundPacket
@@ -192,7 +193,7 @@ class PacketTypes {
         PLAY_OPEN_SIGN_EDITOR({ PacketOpenSignEditor(it) }),
         PLAY_CRAFT_RECIPE_RESPONSE({ PacketCraftRecipeResponse(it) }),
         PLAY_PLAYER_ABILITIES({ PacketPlayerAbilitiesReceiving(it) }),
-        PLAY_COMBAT_EVENT({ CombatEventPacketFactory.createPacket(it) }),
+        PLAY_COMBAT_EVENT({ CombatEventClientboundPacketFactory.createPacket(it) }),
         PLAY_TAB_LIST_ITEM({ PacketTabListItem(it) }),
         PLAY_FACE_PLAYER({ PacketFacePlayer(it) }),
         PLAY_PLAYER_POSITION_AND_ROTATION({ PacketPlayerPositionAndRotation(it) }),
@@ -203,7 +204,7 @@ class PacketTypes {
         PLAY_RESPAWN({ PacketRespawn(it) }, isThreadSafe = false),
         PLAY_ENTITY_HEAD_ROTATION({ PacketEntityHeadRotation(it) }),
         PLAY_SELECT_ADVANCEMENT_TAB({ PacketSelectAdvancementTab(it) }),
-        PLAY_WORLD_BORDER({ PacketWorldBorder(it) }),
+        PLAY_WORLD_BORDER({ WorldBorderClientboundPacketFactory.createPacket(it) }),
         PLAY_CAMERA({ PacketCamera(it) }),
         PLAY_HELD_ITEM_CHANGE({ PacketHeldItemChangeReceiving(it) }),
         PLAY_UPDATE_VIEW_POSITION({ PacketUpdateViewPosition(it) }),
@@ -238,7 +239,7 @@ class PacketTypes {
         PLAY_UPDATE_SIGN({ PacketUpdateSignReceiving(it) }),
         PLAY_STATISTICS({ PacketStatistics(it) }),
         PLAY_SPAWN_ENTITY({ PacketSpawnObject(it) }, isThreadSafe = false),
-        PLAY_TITLE({ TitlePacketFactory.createPacket(it) }),
+        PLAY_TITLE({ TitleClientboundPacketFactory.createPacket(it) }),
         PLAY_ENTITY_INITIALISATION({ PacketEntityInitialisation(it) }, isThreadSafe = false),
         PLAY_SET_COMPRESSION({ PacketSetCompression(it) }, isThreadSafe = false),
         PLAY_ADVANCEMENT_PROGRESS({ TODO() }),

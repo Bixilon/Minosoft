@@ -18,16 +18,16 @@ import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.enum.ValuesEnum
 
-object TitlePacketFactory {
+object TitleClientboundPacketFactory {
 
     fun createPacket(buffer: PlayInByteBuffer): PlayClientboundPacket {
         return when (buffer.connection.mapping.titleActionsRegistry.get(buffer.readVarInt())!!) {
-            TitleActions.SET_TITLE -> SetTitlePacket(buffer)
-            TitleActions.SET_SUBTITLE -> SetSubTitlePacket(buffer)
-            TitleActions.SET_ACTION_BAR -> SetActionBarTextPacket(buffer)
-            TitleActions.SET_TIMES_AND_DISPLAY -> SetTimesAndDisplayPacket(buffer)
-            TitleActions.HIDE -> HideTitlePacket()
-            TitleActions.RESET -> ResetTitlePacket()
+            TitleActions.SET_TITLE -> SetTitleClientboundPacket(buffer)
+            TitleActions.SET_SUBTITLE -> SetSubTitleClientboundPacket(buffer)
+            TitleActions.SET_ACTION_BAR -> SetActionBarTextClientboundPacket(buffer)
+            TitleActions.SET_TIMES_AND_DISPLAY -> SetTimesAndDisplayClientboundPacket(buffer)
+            TitleActions.HIDE -> HideTitleClientboundPacket()
+            TitleActions.RESET -> ResetTitleClientboundPacket()
         }
     }
 

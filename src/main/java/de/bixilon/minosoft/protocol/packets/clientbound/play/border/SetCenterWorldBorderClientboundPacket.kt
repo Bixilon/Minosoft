@@ -11,16 +11,17 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.protocol.packets.clientbound.play.title
+package de.bixilon.minosoft.protocol.packets.clientbound.play.border
 
 import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.util.logging.Log
 
-class SetSubTitlePacket(buffer: PlayInByteBuffer) : PlayClientboundPacket() {
-    val subTtitle = buffer.readChatComponent()
+class SetCenterWorldBorderClientboundPacket(buffer: PlayInByteBuffer) : PlayClientboundPacket() {
+    val x = buffer.readDouble()
+    val z = buffer.readDouble()
 
     override fun log() {
-        Log.protocol("[IN] Received title (subText=$subTtitle)")
+        Log.protocol("[IN] Receiving set center world border packet (x=$x, z=$z")
     }
 }

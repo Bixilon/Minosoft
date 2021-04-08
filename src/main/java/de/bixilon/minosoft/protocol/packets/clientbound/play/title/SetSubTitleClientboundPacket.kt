@@ -14,11 +14,13 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play.title
 
 import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.util.logging.Log
 
-class HideTitlePacket : PlayClientboundPacket() {
+class SetSubTitleClientboundPacket(buffer: PlayInByteBuffer) : PlayClientboundPacket() {
+    val subTtitle = buffer.readChatComponent()
 
     override fun log() {
-        Log.protocol("[IN] Received hide title")
+        Log.protocol("[IN] Received title (subText=$subTtitle)")
     }
 }

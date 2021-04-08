@@ -11,18 +11,16 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.protocol.packets.clientbound.play.combat
+package de.bixilon.minosoft.protocol.packets.clientbound.play.border
 
 import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.util.logging.Log
 
-class EntityDeathCombatEventPacket(buffer: PlayInByteBuffer) : PlayClientboundPacket() {
-    val playerId = buffer.readVarInt()
-    val entityId = buffer.readInt()
-    val message = buffer.readChatComponent()
+class SetSizeWorldBorderClientboundPacket(buffer: PlayInByteBuffer) : PlayClientboundPacket() {
+    val radius = buffer.readDouble()
 
     override fun log() {
-        Log.protocol("[IN] Received entity dead combat event (playerId=%$playerId, entityId=$entityId, message=$message)")
+        Log.protocol("[IN] Receiving set size world border packet (radius=$radius)")
     }
 }

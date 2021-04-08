@@ -14,11 +14,15 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play.title
 
 import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.util.logging.Log
 
-class ResetTitlePacket : PlayClientboundPacket() {
+class SetTimesAndDisplayClientboundPacket(buffer: PlayInByteBuffer) : PlayClientboundPacket() {
+    val fadeInTime = buffer.readInt()
+    val stayTime = buffer.readInt()
+    val fadeOutTime = buffer.readInt()
 
     override fun log() {
-        Log.protocol("[IN] Received reset title")
+        Log.protocol("[IN] Received set time and display title (fadeInTime=$fadeInTime, stayTime=$stayTime, fadeOutTime=$fadeOutTime)")
     }
 }

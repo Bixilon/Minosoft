@@ -36,7 +36,7 @@ import de.bixilon.minosoft.data.mappings.statistics.Statistic
 import de.bixilon.minosoft.gui.rendering.chunk.VoxelShape
 import de.bixilon.minosoft.gui.rendering.chunk.models.AABB
 import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModel
-import de.bixilon.minosoft.protocol.packets.clientbound.play.title.TitlePacketFactory
+import de.bixilon.minosoft.protocol.packets.clientbound.play.title.TitleClientboundPacketFactory
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.collections.Clearable
 import de.bixilon.minosoft.util.json.ResourceLocationJsonMap.toResourceLocationMap
@@ -66,7 +66,7 @@ class VersionMapping {
 
     val entityMetaDataDataDataTypesRegistry: EnumRegistry<EntityMetaData.EntityMetaDataDataTypes> = EnumRegistry(values = EntityMetaData.EntityMetaDataDataTypes)
 
-    val titleActionsRegistry: EnumRegistry<TitlePacketFactory.TitleActions> = EnumRegistry(values = TitlePacketFactory.TitleActions)
+    val titleActionsRegistry: EnumRegistry<TitleClientboundPacketFactory.TitleActions> = EnumRegistry(values = TitleClientboundPacketFactory.TitleActions)
 
     val creativeModeTabRegistry: FakeEnumRegistry<CreativeModeTab> = FakeEnumRegistry()
 

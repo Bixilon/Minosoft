@@ -11,17 +11,21 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.protocol.packets.clientbound.play.combat
+package de.bixilon.minosoft.protocol.packets.clientbound.play.title
 
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.util.logging.Log
 
-class EndCombatEventPacket(buffer: PlayInByteBuffer) : PlayClientboundPacket() {
-    val duration = buffer.readVarInt()
-    val entityId = buffer.readInt()
+class SetActionBarTextClientboundPacket(buffer: PlayInByteBuffer) : PlayClientboundPacket() {
+    val actionBarText = buffer.readChatComponent()
 
     override fun log() {
-        Log.protocol("[IN] Received end combat event (duration=$duration, entityId=$entityId)")
+        Log.protocol("[IN] Received set action bar title (actionBarText=$actionBarText)")
+    }
+
+    override fun handle(connection: PlayConnection) {
+        Log.game("[ACTION] $actionBarText")
     }
 }

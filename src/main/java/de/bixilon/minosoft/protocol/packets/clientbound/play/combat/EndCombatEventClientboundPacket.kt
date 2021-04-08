@@ -14,11 +14,14 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play.combat
 
 import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.util.logging.Log
 
-class EnterCombatEventPacket : PlayClientboundPacket() {
+class EndCombatEventClientboundPacket(buffer: PlayInByteBuffer) : PlayClientboundPacket() {
+    val duration = buffer.readVarInt()
+    val entityId = buffer.readInt()
 
     override fun log() {
-        Log.protocol("[IN] Received enter combat event")
+        Log.protocol("[IN] Received end combat event (duration=$duration, entityId=$entityId)")
     }
 }
