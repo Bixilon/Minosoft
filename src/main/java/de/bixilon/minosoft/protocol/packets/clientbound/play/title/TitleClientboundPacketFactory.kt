@@ -31,6 +31,15 @@ object TitleClientboundPacketFactory {
         }
     }
 
+    fun createClearTitlePackets(buffer: PlayInByteBuffer): PlayClientboundPacket {
+        val resetTimes = buffer.readBoolean()
+        return if (resetTimes) {
+            ResetTitleClientboundPacket()
+        } else {
+            HideTitleClientboundPacket()
+        }
+    }
+
     enum class TitleActions {
         SET_TITLE,
         SET_SUBTITLE,

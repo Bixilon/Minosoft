@@ -79,6 +79,7 @@ object DefaultEntityFactories {
             FallingBlock,
             FireworkRocketEntity,
             Fox,
+            Goat,
             Ghast,
             Giant,
             Guardian,

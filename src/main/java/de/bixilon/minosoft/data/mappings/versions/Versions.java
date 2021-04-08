@@ -89,8 +89,8 @@ public class Versions {
             }
         }
         int protocolId = versionId;
-        if (versionJson.has("protocolId")) {
-            protocolId = versionJson.get("protocolId").getAsInt();
+        if (versionJson.has("protocol_id")) {
+            protocolId = versionJson.get("protocol_id").getAsInt();
         }
         Version version = new Version(versionName, versionId, protocolId, serverboundPacketMapping, clientboundPacketMapping);
         VERSION_ID_MAP.put(version.getVersionId(), version);

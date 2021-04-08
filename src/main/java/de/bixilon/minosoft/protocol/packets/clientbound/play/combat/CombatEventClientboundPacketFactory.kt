@@ -23,8 +23,8 @@ object CombatEventClientboundPacketFactory {
     fun createPacket(buffer: PlayInByteBuffer): PlayClientboundPacket {
         return when (CombatEvents.VALUES[buffer.readVarInt()]) {
             CombatEvents.ENTER_COMBAT -> EnterCombatEventClientboundPacket()
-            CombatEvents.END_COMBAT -> EnterCombatEventClientboundPacket()
-            CombatEvents.ENTITY_DEATH -> EnterCombatEventClientboundPacket()
+            CombatEvents.END_COMBAT -> EndCombatEventClientboundPacket(buffer)
+            CombatEvents.ENTITY_DEATH -> EntityDeathCombatEventClientboundPacket(buffer)
         }
     }
 

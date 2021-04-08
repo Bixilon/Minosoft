@@ -91,14 +91,14 @@ public abstract class Network {
                     var playData = new PlayInByteBuffer(data.readBytesLeft(), ((PlayConnection) this.connection));
                     packet = packetType.getPlayFactory().invoke(playData);
                     if (playData.getBytesLeft() > 0) {
-                        throw new PacketParseException(String.format("Could not parse packet %s (used=%d, available=%d, total=%d)", packetType, data.getPosition(), data.getBytesLeft(), data.getLength()));
+                        throw new PacketParseException(String.format("Could not parse packet %s (used=%d, available=%d, total=%d)", packetType, playData.getPosition(), playData.getBytesLeft(), playData.getLength()));
                     }
                     ((PlayClientboundPacket) packet).check(((PlayConnection) this.connection));
                 } else if (packetType.getStatusFactory() != null) {
                     var statusData = new InByteBuffer(data);
                     packet = packetType.getStatusFactory().invoke(statusData);
                     if (statusData.getBytesLeft() > 0) {
-                        throw new PacketParseException(String.format("Could not parse packet %s (used=%d, available=%d, total=%d)", packetType, data.getPosition(), data.getBytesLeft(), data.getLength()));
+                        throw new PacketParseException(String.format("Could not parse packet %s (used=%d, available=%d, total=%d)", packetType, statusData.getPosition(), statusData.getBytesLeft(), statusData.getLength()));
                     }
                     ((StatusClientboundPacket) packet).check((StatusConnection) this.connection);
                 } else {

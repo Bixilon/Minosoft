@@ -96,6 +96,9 @@ enum class BlockProperties {
     SCULK_SENSOR_PHASE("sculk_sensor_phase", SensorPhases),
     DRIPSTONE_TILT("tilt", Tilts),
     CAVE_VINES_BERRIES("berries", BooleanBlocKPropertiesSerializer),
+
+
+    VERTICAL_DIRECTION("vertical_direction", VerticalDirections),
     ;
 
     val group: String

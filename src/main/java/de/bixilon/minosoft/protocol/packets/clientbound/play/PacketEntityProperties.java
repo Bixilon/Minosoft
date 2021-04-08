@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.UUID;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W04A;
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_21W08A;
 
 public class PacketEntityProperties extends PlayClientboundPacket {
     private final HashMap<EntityPropertyKeys, EntityProperty> properties = new HashMap<>();
@@ -46,7 +47,12 @@ public class PacketEntityProperties extends PlayClientboundPacket {
             }
             return;
         }
-        int count = buffer.readInt();
+        int count;
+        if (buffer.getVersionId() < V_21W08A) {
+            count = buffer.readInt();
+        } else {
+            count = buffer.readVarInt();
+        }
         for (int i = 0; i < count; i++) {
             EntityPropertyKeys key = EntityPropertyKeys.byName(buffer.readString());
             double value = buffer.readDouble();

@@ -17,16 +17,16 @@ import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket;
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
-public class PacketEntityInitialisation extends PlayClientboundPacket {
+public class EmptyEntityMovementClientboundPacket extends PlayClientboundPacket {
     private final int entityId;
 
-    public PacketEntityInitialisation(PlayInByteBuffer buffer) {
+    public EmptyEntityMovementClientboundPacket(PlayInByteBuffer buffer) {
         this.entityId = buffer.readEntityId();
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Initialising entity (entityId=%d)", this.entityId));
+        Log.protocol(String.format("[IN] Received empty entity move packet (entityId=%d)", this.entityId));
     }
 
     public int getEntityId() {

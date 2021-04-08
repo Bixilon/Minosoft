@@ -22,9 +22,12 @@ import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket
 import de.bixilon.minosoft.protocol.packets.clientbound.StatusClientboundPacket
 import de.bixilon.minosoft.protocol.packets.clientbound.login.*
 import de.bixilon.minosoft.protocol.packets.clientbound.play.*
-import de.bixilon.minosoft.protocol.packets.clientbound.play.border.WorldBorderClientboundPacketFactory
+import de.bixilon.minosoft.protocol.packets.clientbound.play.border.*
 import de.bixilon.minosoft.protocol.packets.clientbound.play.combat.CombatEventClientboundPacketFactory
-import de.bixilon.minosoft.protocol.packets.clientbound.play.title.TitleClientboundPacketFactory
+import de.bixilon.minosoft.protocol.packets.clientbound.play.combat.EndCombatEventClientboundPacket
+import de.bixilon.minosoft.protocol.packets.clientbound.play.combat.EnterCombatEventClientboundPacket
+import de.bixilon.minosoft.protocol.packets.clientbound.play.combat.EntityDeathCombatEventClientboundPacket
+import de.bixilon.minosoft.protocol.packets.clientbound.play.title.*
 import de.bixilon.minosoft.protocol.packets.clientbound.status.PacketStatusPong
 import de.bixilon.minosoft.protocol.packets.clientbound.status.PacketStatusResponse
 import de.bixilon.minosoft.protocol.packets.serverbound.ServerboundPacket
@@ -194,6 +197,9 @@ class PacketTypes {
         PLAY_CRAFT_RECIPE_RESPONSE({ PacketCraftRecipeResponse(it) }),
         PLAY_PLAYER_ABILITIES({ PacketPlayerAbilitiesReceiving(it) }),
         PLAY_COMBAT_EVENT({ CombatEventClientboundPacketFactory.createPacket(it) }),
+        PLAY_COMBAT_EVENT_END({ EndCombatEventClientboundPacket(it) }),
+        PLAY_COMBAT_EVENT_ENTER({ EnterCombatEventClientboundPacket() }),
+        PLAY_COMBAT_EVENT_KILL({ EntityDeathCombatEventClientboundPacket(it) }),
         PLAY_TAB_LIST_ITEM({ PacketTabListItem(it) }),
         PLAY_FACE_PLAYER({ PacketFacePlayer(it) }),
         PLAY_PLAYER_POSITION_AND_ROTATION({ PacketPlayerPositionAndRotation(it) }),
@@ -205,6 +211,12 @@ class PacketTypes {
         PLAY_ENTITY_HEAD_ROTATION({ PacketEntityHeadRotation(it) }),
         PLAY_SELECT_ADVANCEMENT_TAB({ PacketSelectAdvancementTab(it) }),
         PLAY_WORLD_BORDER({ WorldBorderClientboundPacketFactory.createPacket(it) }),
+        PLAY_WORLD_BORDER_INITIALIZE({ InitializeWorldBorderClientboundPacket(it) }),
+        PLAY_WORLD_BORDER_SET_CENTER({ SetCenterWorldBorderClientboundPacket(it) }),
+        PLAY_WORLD_BORDER_LERP_SIZE({ LerpSizeWorldBorderClientboundPacket(it) }),
+        PLAY_WORLD_BORDER_SIZE({ SetSizeWorldBorderClientboundPacket(it) }),
+        PLAY_WORLD_BORDER_SET_WARN_TIME({ SetWarningTimeWorldBorderClientboundPacket(it) }),
+        PLAY_WORLD_BORDER_SET_WARN_BLOCKS({ SetWarningBlocksWorldBorderClientboundPacket(it) }),
         PLAY_CAMERA({ PacketCamera(it) }),
         PLAY_HELD_ITEM_CHANGE({ PacketHeldItemChangeReceiving(it) }),
         PLAY_UPDATE_VIEW_POSITION({ PacketUpdateViewPosition(it) }),
@@ -240,7 +252,12 @@ class PacketTypes {
         PLAY_STATISTICS({ PacketStatistics(it) }),
         PLAY_SPAWN_ENTITY({ PacketSpawnObject(it) }, isThreadSafe = false),
         PLAY_TITLE({ TitleClientboundPacketFactory.createPacket(it) }),
-        PLAY_ENTITY_INITIALISATION({ PacketEntityInitialisation(it) }, isThreadSafe = false),
+        PLAY_CLEAR_TITLE({ TitleClientboundPacketFactory.createClearTitlePackets(it) }),
+        PLAY_SET_ACTION_BAR_TEXT({ SetActionBarTextClientboundPacket(it) }),
+        PLAY_SET_ACTION_SUBTITLE({ SetSubTitleClientboundPacket(it) }),
+        PLAY_SET_TITLE({ SetTitleClientboundPacket(it) }),
+        PLAY_SET_TIMES({ SetTimesAndDisplayClientboundPacket(it) }),
+        PLAY_EMPTY_ENTITY_MOVEMENT({ EmptyEntityMovementClientboundPacket(it) }, isThreadSafe = false),
         PLAY_SET_COMPRESSION({ PacketSetCompression(it) }, isThreadSafe = false),
         PLAY_ADVANCEMENT_PROGRESS({ TODO() }),
         PLAY_SCULK_VIBRATION_SIGNAL({ PacketSculkVibrationSignal(it) }),
