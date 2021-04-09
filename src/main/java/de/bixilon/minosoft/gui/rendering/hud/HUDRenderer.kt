@@ -182,7 +182,7 @@ class HUDRenderer(val connection: PlayConnection, val renderWindow: RenderWindow
 
         if (forcePrepare || needsUpdate) {
             for ((elementProperties, hudElement) in enabledHUDElement.values) {
-                val realScaleFactor = elementProperties.scale * Minosoft.getConfig().config.game.hud.scale.scale
+                val realScaleFactor = elementProperties.scale * Minosoft.getConfig().config.game.hud.scale
                 val realSize = Vec2i(hudElement.layout.fakeX ?: hudElement.layout.size.x, hudElement.layout.fakeY ?: hudElement.layout.size.y) * realScaleFactor
 
                 val elementStart = getRealPosition(realSize, elementProperties, renderWindow.screenDimensions)
