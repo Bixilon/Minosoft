@@ -145,7 +145,7 @@ class TextureArray(val allTextures: MutableList<Texture>) {
         val TEXTURE_RESOLUTION_ID_MAP = arrayOf(16, 32, 64, 128, 256, 512, 1024) // A 12x12 texture will be saved in texture id 0 (in 0 are only 16x16 textures). Animated textures get split
         const val TEXTURE_MAX_RESOLUTION = 1024
 
-        val DEBUG_TEXTURE = Texture.getResourceTextureIdentifier(textureName = "block/debug")
+        val DEBUG_TEXTURE = ResourceLocation("minosoft:textures/debug.png")
 
         private const val INTS_PER_ANIMATED_TEXTURE = 4
     }
