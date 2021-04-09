@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering
 
+import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.text.RGBColor
 
 object RenderConstants {
@@ -57,4 +58,8 @@ object RenderConstants {
     const val RENDER_HUD = true
 
     const val FORCE_DEBUG_TEXTURE = false
+
+
+    val DEBUG_TEXTURE_RESOURCE_LOCATION = ResourceLocation("minosoft:textures/debug.png")
+    const val DEBUG_TEXTURE_ID = 0 // always add the debug texture to the texture array first to ensure the id is 0
 }

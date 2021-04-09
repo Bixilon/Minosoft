@@ -33,7 +33,13 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.rotate
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3i
 
-class ElementRenderer(parent: BlockModelElement, val rotation: Vec3, uvLock: Boolean, rescale: Boolean, private val directionMapping: HashBiMap<Directions, Directions>) {
+class ElementRenderer(
+    parent: BlockModelElement,
+    val rotation: Vec3,
+    uvLock: Boolean,
+    rescale: Boolean,
+    private val directionMapping: HashBiMap<Directions, Directions>,
+) {
     val faceBorderSize: Array<FaceSize?> = arrayOfNulls(Directions.DIRECTIONS.size)
     private val faces: MutableMap<Directions, BlockModelFace> = mutableMapOf()
     private var transformedPositions: Array<Vec3> = parent.transformedPositions.clone()
@@ -68,7 +74,7 @@ class ElementRenderer(parent: BlockModelElement, val rotation: Vec3, uvLock: Boo
         val face = faces[realDirection] ?: return // Not our face
         val positionTemplate = BlockModelElement.FACE_POSITION_MAP_TEMPLATE[realDirection.ordinal]
 
-        val texture = textureMapping[face.textureName] ?: TODO("Unknown texture used ${face.textureName}")
+        val texture = textureMapping[face.textureName] ?: TODO("Unknown texture used ${face.textureName}") // ToDo: can be replaced with RenderConstants.DEBUG_TEXTURE_ID?
 
         val lightLevel = lightAccessor.getLightLevel(blockPosition + face.cullFace?.let { directionMapping[it] }) // ToDo: rotate cullface
 

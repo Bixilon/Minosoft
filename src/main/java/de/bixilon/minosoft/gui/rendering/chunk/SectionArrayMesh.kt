@@ -36,7 +36,7 @@ class SectionArrayMesh : Mesh(initialCacheSize = 100000) {
         val lightColor = RGBColor((color.red * lightFactor).toInt(), (color.green * lightFactor).toInt(), (color.blue * lightFactor).toInt())
 
         val textureLayer = if (RenderConstants.FORCE_DEBUG_TEXTURE) {
-            0
+            RenderConstants.DEBUG_TEXTURE_ID
         } else {
             (texture.arrayId shl 24) or texture.arrayLayer
         }

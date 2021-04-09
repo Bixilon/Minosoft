@@ -18,8 +18,8 @@ import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.assets.AssetsManager
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.text.RGBColor
+import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.textures.Texture
-import de.bixilon.minosoft.gui.rendering.textures.TextureArray
 import java.io.InputStream
 
 object FontLoader {
@@ -97,7 +97,7 @@ object FontLoader {
             if (i % 256 == 0) {
                 currentAtlasTexture = if (MISSING_UNICODE_PAGES.contains(i / UNICODE_CHARS_PER_PAGE)) {
                     // ToDo: Why is this texture missing in minecraft?
-                    Texture(TextureArray.DEBUG_TEXTURE)
+                    Texture(RenderConstants.DEBUG_TEXTURE_RESOURCE_LOCATION)
                 } else {
                     // new page (texture)
                     Texture(Texture.getResourceTextureIdentifier(template.namespace, template.path.format("%02x".format(i / 256))))

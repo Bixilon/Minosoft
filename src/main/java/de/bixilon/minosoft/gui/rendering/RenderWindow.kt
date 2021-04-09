@@ -238,7 +238,7 @@ class RenderWindow(
         glEnable(GL_CULL_FACE)
 
 
-        textures.allTextures.add(Texture(TextureArray.DEBUG_TEXTURE))
+        textures.allTextures.add(Texture(RenderConstants.DEBUG_TEXTURE_RESOURCE_LOCATION))
 
         font.load(connection.assetsManager)
 
