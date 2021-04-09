@@ -131,7 +131,7 @@ data class BlockState(
                 getProperties(it)
             } ?: Pair(BlockRotations.NONE, mutableMapOf())
 
-            val renders: MutableList<BlockLikeRenderer> = mutableListOf()
+            val renderers: MutableList<BlockLikeRenderer> = mutableListOf()
 
             data["render"]?.let {
                 when (it) {
@@ -139,7 +139,7 @@ data class BlockState(
                         for (model in it) {
                             when (model) {
                                 is JsonObject -> {
-                                    addBlockModel(model, renders, models)
+                                    addBlockModel(model, renderers, models)
                                 }
                                 is JsonArray -> {
                                     val modelList: MutableList<BlockLikeRenderer> = mutableListOf()
@@ -147,13 +147,13 @@ data class BlockState(
                                         check(singleModel is JsonObject)
                                         addBlockModel(singleModel, modelList, models)
                                     }
-                                    renders.add(MultipartRenderer(modelList.toList()))
+                                    renderers.add(MultipartRenderer(modelList.toList()))
                                 }
                             }
                         }
                     }
                     is JsonObject -> {
-                        addBlockModel(it, renders, models)
+                        addBlockModel(it, renderers, models)
                     }
                     else -> error("Not a render json!")
                 }
@@ -163,8 +163,8 @@ data class BlockState(
 
             for ((regex, renderer) in SPECIAL_RENDERERS) {
                 if (owner.resourceLocation.full.contains(regex)) {
-                    renders.clear()
-                    renders.add(renderer)
+                    renderers.clear()
+                    renderers.add(renderer)
                 }
             }
 
@@ -182,7 +182,7 @@ data class BlockState(
                 owner = owner,
                 properties = properties.toMap(),
                 rotation = rotation,
-                renderers = renders,
+                renderers = renderers,
                 tintColor = tintColor,
                 material = material,
                 collisionShape = collision,
@@ -219,9 +219,9 @@ data class BlockState(
             return Pair(rotation, properties)
         }
 
-        private fun addBlockModel(data: JsonObject, renders: MutableList<BlockLikeRenderer>, models: Map<ResourceLocation, BlockModel>) {
+        private fun addBlockModel(data: JsonObject, renderer: MutableList<BlockLikeRenderer>, models: Map<ResourceLocation, BlockModel>) {
             val model = models[ResourceLocation(data["model"].asString)] ?: error("Can not find block model ${data["model"]}")
-            renders.add(BlockRenderer(data, model))
+            renderer.add(BlockRenderer(data, model))
         }
     }
 

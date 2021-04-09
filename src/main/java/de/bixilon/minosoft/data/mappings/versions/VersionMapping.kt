@@ -26,6 +26,7 @@ import de.bixilon.minosoft.data.mappings.blocks.Block
 import de.bixilon.minosoft.data.mappings.blocks.BlockState
 import de.bixilon.minosoft.data.mappings.entities.EntityType
 import de.bixilon.minosoft.data.mappings.entities.villagers.VillagerProfession
+import de.bixilon.minosoft.data.mappings.fluid.Fluid
 import de.bixilon.minosoft.data.mappings.inventory.CreativeModeTab
 import de.bixilon.minosoft.data.mappings.items.Item
 import de.bixilon.minosoft.data.mappings.items.ItemRegistry
@@ -56,6 +57,7 @@ class VersionMapping {
     val biomeRegistry: Registry<Biome> = Registry()
     val dimensionRegistry: Registry<Dimension> = Registry()
     val materialRegistry: Registry<Material> = Registry()
+    val fluidRegistry: Registry<Fluid> = Registry()
 
     val villagerProfessionRegistry: Registry<VillagerProfession> = Registry()
 
@@ -153,7 +155,7 @@ class VersionMapping {
         dimensionRegistry.initialize(pixlyzerData["dimensions"]?.asJsonObject, this, Dimension)
 
         villagerProfessionRegistry.initialize(pixlyzerData["villager_professions"]?.asJsonObject, this, VillagerProfession)
-
+        fluidRegistry.initialize(pixlyzerData["fluids"]?.asJsonObject, this, Fluid)
 
         entityRegistry.initialize(pixlyzerData["entities"]?.asJsonObject, this, EntityType)
 
