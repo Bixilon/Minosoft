@@ -41,7 +41,6 @@ class HUDCacheMesh(
                 Float.fromBits(tintColor.color)
             },
         ))
-
     }
 
     val size: Int

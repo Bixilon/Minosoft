@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering
 
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.text.RGBColor
+import glm_.vec2.Vec2
 
 object RenderConstants {
     val DEFAULT_SKY_COLOR = RGBColor("#ecff89")
@@ -62,4 +63,7 @@ object RenderConstants {
 
     val DEBUG_TEXTURE_RESOURCE_LOCATION = ResourceLocation("minosoft:textures/debug.png")
     const val DEBUG_TEXTURE_ID = 0 // always add the debug texture to the texture array first to ensure the id is 0
+
+
+    val PIXEL_UV_PIXEL_ADD = Vec2(0, 0.1f)
 }

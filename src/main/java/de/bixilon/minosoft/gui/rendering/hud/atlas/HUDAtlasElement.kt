@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.hud.atlas
 
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.textures.Texture
 import glm_.vec2.Vec2
 import glm_.vec2.Vec2i
@@ -33,14 +34,11 @@ data class HUDAtlasElement(
 
 
     fun postInit() {
-        uvStart = Vec2(binding.start) * texture.arraySinglePixelFactor + UV_START_ADD
+        uvStart = (Vec2(binding.start) + RenderConstants.PIXEL_UV_PIXEL_ADD) * texture.arraySinglePixelFactor
         uvEnd = Vec2(binding.end) * texture.arraySinglePixelFactor
     }
 
     companion object {
-        private val UV_START_ADD = Vec2(0, 0.000015f) // ToDo: This fixes the "half pixel bug"
-
-
         fun deserialize(json: Map<ResourceLocation, JsonObject>): Pair<Collection<Texture>, Map<ResourceLocation, HUDAtlasElement>> {
             val textures: MutableMap<ResourceLocation, Texture> = mutableMapOf()
             val ret: MutableMap<ResourceLocation, HUDAtlasElement> = mutableMapOf()

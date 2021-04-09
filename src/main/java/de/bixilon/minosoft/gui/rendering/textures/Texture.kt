@@ -39,7 +39,7 @@ class Texture(
 
     lateinit var properties: ImageProperties
 
-    var arraySinglePixelFactor = Vec2(1.0f, 1.0f)
+    var arraySinglePixelFactor = 1.0f
 
     var buffer: ByteBuffer? = null
 

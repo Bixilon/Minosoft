@@ -66,7 +66,7 @@ class TextureArray(val allTextures: MutableList<Texture>) {
                     y = size.y.toFloat() / arrayResolution
                 )
 
-                texture.arraySinglePixelFactor = Vec2(1.0f / arrayResolution, 1.0f / (arrayResolution + 1)) // ToDo: Why +1 ?? Still not working right
+                texture.arraySinglePixelFactor = 1.0f / arrayResolution // ToDo: Why +1 ?? Still not working right
                 texture.arrayLayer = it.size
 
 

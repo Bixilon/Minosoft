@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.font
 
+import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.hud.atlas.TextureLike
 import de.bixilon.minosoft.gui.rendering.textures.Texture
 import glm_.vec2.Vec2
@@ -34,13 +35,8 @@ data class FontChar(
     override val size = Vec2i(endPixel - startPixel, height)
 
 
-    fun calculateUV(letterWidth: Int, arraySinglePixelFactor: Vec2) {
-        uvStart = Vec2(letterWidth * column + startPixel, height * row) * arraySinglePixelFactor + UV_START_ADD
-        uvEnd = Vec2(letterWidth * column + endPixel, height * (row + 1)) * arraySinglePixelFactor
-    }
-
-
-    companion object {
-        private val UV_START_ADD = Vec2(0, 0.0015f) // ToDo: This fixes the "half pixel bug"
+    fun calculateUV(letterWidth: Int) {
+        uvStart = (Vec2(letterWidth * column + startPixel, height * row) + RenderConstants.PIXEL_UV_PIXEL_ADD) * texture.arraySinglePixelFactor
+        uvEnd = Vec2(letterWidth * column + endPixel, height * (row + 1)) * texture.arraySinglePixelFactor
     }
 }
