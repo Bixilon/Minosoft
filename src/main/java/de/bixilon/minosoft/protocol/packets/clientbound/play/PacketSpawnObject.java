@@ -13,10 +13,10 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
-import de.bixilon.minosoft.data.entities.EntityObjects;
 import de.bixilon.minosoft.data.entities.EntityRotation;
 import de.bixilon.minosoft.data.entities.Velocity;
 import de.bixilon.minosoft.data.entities.entities.Entity;
+import de.bixilon.minosoft.data.mappings.DefaultRegistries;
 import de.bixilon.minosoft.modding.event.events.EntitySpawnEvent;
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
 import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket;
@@ -65,7 +65,8 @@ public class PacketSpawnObject extends PlayClientboundPacket {
         }
 
         if (buffer.getVersionId() < V_19W05A) {
-            this.entity = EntityObjects.byId(type).build(buffer.getConnection(), position, rotation, null, buffer.getVersionId()); // ToDo: Entity meta data tweaking
+            var entityResourceLocation = DefaultRegistries.INSTANCE.getENTITY_OBJECT_REGISTRY().get(type).getResourceLocation();
+            this.entity = buffer.getConnection().getMapping().getEntityRegistry().get(entityResourceLocation).build(buffer.getConnection(), position, rotation, null, buffer.getVersionId()); // ToDo: Entity meta data tweaking
         } else {
             this.entity = buffer.getConnection().getMapping().getEntityRegistry().get(type).build(buffer.getConnection(), position, rotation, null, buffer.getVersionId());
         }

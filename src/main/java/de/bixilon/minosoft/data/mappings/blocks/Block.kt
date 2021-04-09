@@ -55,7 +55,7 @@ open class Block(
             val block = when (data["class"].asString) {
                 "FluidBlock" -> {
                     val stillFluid = mappings.fluidRegistry.get(data["still_fluid"].asInt)
-                    val flowingFluid = mappings.fluidRegistry.get(data["flowing_fluid"].asInt)
+                    val flowingFluid = mappings.fluidRegistry.get(data["flow_fluid"].asInt)
                     renderOverride = mutableListOf()
 
 

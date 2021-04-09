@@ -14,10 +14,12 @@
 package de.bixilon.minosoft.data.mappings
 
 import de.bixilon.minosoft.Minosoft
+import de.bixilon.minosoft.data.entities.EntityObjectType
 import de.bixilon.minosoft.data.entities.meta.EntityMetaData
 import de.bixilon.minosoft.data.inventory.InventorySlots
 import de.bixilon.minosoft.data.mappings.registry.PerEnumVersionRegistry
 import de.bixilon.minosoft.data.mappings.registry.PerVersionRegistry
+import de.bixilon.minosoft.data.mappings.registry.Registry
 import de.bixilon.minosoft.protocol.packets.clientbound.play.title.TitleClientboundPacketFactory
 import de.bixilon.minosoft.util.json.ResourceLocationJsonMap.toResourceLocationMap
 
@@ -34,6 +36,8 @@ object DefaultRegistries {
     val ENTITY_META_DATA_DATA_TYPES_REGISTRY = PerEnumVersionRegistry(EntityMetaData.EntityMetaDataDataTypes)
 
     val TITLE_ACTIONS_REGISTRY = PerEnumVersionRegistry(TitleClientboundPacketFactory.TitleActions)
+
+    val ENTITY_OBJECT_REGISTRY: Registry<EntityObjectType> = Registry()
 
     val DEFAULT_PLUGIN_CHANNELS_REGISTRY = PerVersionRegistry<PluginChannel>()
 
@@ -56,6 +60,8 @@ object DefaultRegistries {
         val registriesJson = Minosoft.MINOSOFT_ASSETS_MANAGER.readJsonAsset(REGISTRIES_RESOURCE_LOCATION).asJsonObject.toResourceLocationMap()
 
         DEFAULT_PLUGIN_CHANNELS_REGISTRY.initialize(registriesJson[ResourceLocation("default_plugin_channels")]!!, PluginChannel)
+
+        ENTITY_OBJECT_REGISTRY.initialize(registriesJson[ResourceLocation("entity_objects")]!!, null, EntityObjectType)
 
         initialized = true
     }

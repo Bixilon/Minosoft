@@ -25,5 +25,87 @@
         "name": "minecraft:unregister"
       }
     }
+  },
+  "minecraft:entity_objects": {
+    "0": {
+      "minecraft:boat": {
+        "id": 1
+      },
+      "minecraft:item": {
+        "id": 2
+      },
+      "minecraft:area_effect_cloud": {
+        "id": 3
+      },
+      "minecraft:minecart": {
+        "id": 10
+      },
+      "minecraft:tnt": {
+        "id": 50
+      },
+      "minecraft:end_crystal": {
+        "id": 51
+      },
+      "minecraft:arrow": {
+        "id": 60
+      },
+      "minecraft:snowball": {
+        "id": 61
+      },
+      "minecraft:egg": {
+        "id": 62
+      },
+      "minecraft:fireball": {
+        "id": 63
+      },
+      "minecraft:small_fireball": {
+        "id": 64
+      },
+      "minecraft:ender_pearl": {
+        "id": 65
+      },
+      "minecraft:wither_skull": {
+        "id": 66
+      },
+      "minecraft:llama_spit": {
+        "id": 67
+      },
+      "minecraft:falling_block": {
+        "id": 70
+      },
+      "minecraft:item_frame": {
+        "id": 71
+      },
+      "minecraft:eye_of_ender": {
+        "id": 72
+      },
+      "minecraft:potion": {
+        "id": 73
+      },
+      "minecraft:experience_bottle": {
+        "id": 75
+      },
+      "minecraft:firework_rocket": {
+        "id": 76
+      },
+      "minecraft:leash_knot": {
+        "id": 77
+      },
+      "minecraft:evoker_fangs": {
+        "id": 78
+      },
+      "minecraft:fishing_bobber": {
+        "id": 90
+      },
+      "minecraft:spectral_arrow": {
+        "id": 91
+      },
+      "minecraft:dragon_fireball": {
+        "id": 93
+      },
+      "minecraft:trident": {
+        "id": 94
+      }
+    }
   }
 }

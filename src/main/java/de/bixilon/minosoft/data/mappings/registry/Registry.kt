@@ -40,6 +40,7 @@ open class Registry<T : RegistryItem>(
         return valueIdMap[value] ?: parentRegistry?.getId(value)!!
     }
 
+
     override fun setParent(parent: Registry<T>?) {
         this.parentRegistry = parent
     }

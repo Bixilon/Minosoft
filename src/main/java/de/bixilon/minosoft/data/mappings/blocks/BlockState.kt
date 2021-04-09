@@ -166,8 +166,8 @@ data class BlockState(
             }
 
             owner.renderOverride?.let {
-
-
+                renderers.clear()
+                renderers.addAll(it)
             }
 
             return BlockState(
