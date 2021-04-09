@@ -26,7 +26,6 @@ import de.bixilon.minosoft.gui.rendering.chunk.VoxelShape
 import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModel
 import de.bixilon.minosoft.gui.rendering.chunk.models.renderable.BlockLikeRenderer
 import de.bixilon.minosoft.gui.rendering.chunk.models.renderable.BlockRenderer
-import de.bixilon.minosoft.gui.rendering.chunk.models.renderable.FluidRenderer
 import de.bixilon.minosoft.gui.rendering.chunk.models.renderable.MultipartRenderer
 import glm_.vec3.Vec3i
 import java.util.*
@@ -120,12 +119,6 @@ data class BlockState(
     companion object {
         val ROTATION_PROPERTIES = setOf("facing", "rotation", "orientation", "axis")
 
-        @Deprecated(message = "Should be replaced when updating pixlyzer with fluid block map")
-        val SPECIAL_RENDERERS = mutableMapOf(
-            "water" to FluidRenderer("block/water_still", "block/water_flow", "water"),
-            "lava" to FluidRenderer("block/lava_still", "block/lava_flow", "lava"),
-        ) // ToDo: Don't like this
-
         fun deserialize(owner: Block, versionMapping: VersionMapping, data: JsonObject, models: Map<ResourceLocation, BlockModel>): BlockState {
             val (rotation, properties) = data["properties"]?.asJsonObject?.let {
                 getProperties(it)
@@ -161,12 +154,6 @@ data class BlockState(
 
             val tintColor: RGBColor? = data["tint_color"]?.asInt?.let { TintColorCalculator.getJsonColor(it) } ?: owner.tintColor
 
-            for ((regex, renderer) in SPECIAL_RENDERERS) {
-                if (owner.resourceLocation.full.contains(regex)) {
-                    renderers.clear()
-                    renderers.add(renderer)
-                }
-            }
 
             val material = versionMapping.materialRegistry.get(ResourceLocation(data["material"].asString))!!
 
@@ -176,6 +163,11 @@ data class BlockState(
                 VoxelShape.FULL
             } else {
                 VoxelShape.EMPTY
+            }
+
+            owner.renderOverride?.let {
+
+
             }
 
             return BlockState(

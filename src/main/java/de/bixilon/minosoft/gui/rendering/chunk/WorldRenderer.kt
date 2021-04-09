@@ -18,6 +18,7 @@ import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames
 import de.bixilon.minosoft.data.Directions
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.blocks.BlockState
+import de.bixilon.minosoft.data.mappings.blocks.FluidBlock
 import de.bixilon.minosoft.data.mappings.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.world.Chunk
 import de.bixilon.minosoft.data.world.ChunkSection
@@ -43,7 +44,7 @@ class WorldRenderer(
     private val world: World,
     val renderWindow: RenderWindow,
 ) : Renderer {
-    private val WATER_BLOCK_STATE = connection.mapping.blockRegistry.get(ResourceLocation("minecraft:water"))!!.defaultState
+    private val waterBlock = connection.mapping.blockRegistry.get(ResourceLocation("minecraft:water")) as FluidBlock
 
     lateinit var chunkShader: Shader
     val allChunkSections: MutableMap<Vec2i, MutableMap<Int, ChunkMeshCollection>> = Collections.synchronizedMap(ConcurrentHashMap())
@@ -76,7 +77,7 @@ class WorldRenderer(
 
 
                 if (blockState.properties[BlockProperties.WATERLOGGED] == true) {
-                    BlockState.SPECIAL_RENDERERS["water"]?.render(WATER_BLOCK_STATE, world.worldLightAccessor, renderWindow, blockPosition, meshCollection, neighborBlocks, world)
+                    waterBlock.fluidRenderer.render(waterBlock.defaultState, world.worldLightAccessor, renderWindow, blockPosition, meshCollection, neighborBlocks, world)
                 }
 
                 blockState.getBlockRenderer(blockPosition).render(blockState, world.worldLightAccessor, renderWindow, blockPosition, meshCollection, neighborBlocks, world)

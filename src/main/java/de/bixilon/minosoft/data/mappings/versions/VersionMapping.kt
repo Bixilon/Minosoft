@@ -144,23 +144,24 @@ class VersionMapping {
         creativeModeTabRegistry.initialize(pixlyzerData["creative_inventory_tab"]?.asJsonObject, this, CreativeModeTab)
 
         // id resource location stuff
+        particleRegistry.initialize(pixlyzerData["particles"]?.asJsonObject, this, Particle)
         materialRegistry.initialize(pixlyzerData["materials"]?.asJsonObject, this, Material)
         motiveRegistry.initialize(pixlyzerData["motives"]?.asJsonObject, this, Motive, version.isFlattened())
+        fluidRegistry.initialize(pixlyzerData["fluids"]?.asJsonObject, this, Fluid)
         blockRegistry.initialize(pixlyzerData["blocks"]?.asJsonObject, this, Block, version.isFlattened(), Registry.MetaTypes.BITS_4)
         itemRegistry.initialize(pixlyzerData["items"]?.asJsonObject, this, Item, version.isFlattened(), Registry.MetaTypes.BITS_16)
         enchantmentRegistry.initialize(pixlyzerData["enchantments"]?.asJsonObject, this, Enchantment)
-        particleRegistry.initialize(pixlyzerData["particles"]?.asJsonObject, this, Particle)
         statusEffectRegistry.initialize(pixlyzerData["mob_effect"]?.asJsonObject, this, StatusEffect)
         biomeRegistry.initialize(pixlyzerData["biomes"]?.asJsonObject, this, Biome)
         dimensionRegistry.initialize(pixlyzerData["dimensions"]?.asJsonObject, this, Dimension)
 
         villagerProfessionRegistry.initialize(pixlyzerData["villager_professions"]?.asJsonObject, this, VillagerProfession)
-        fluidRegistry.initialize(pixlyzerData["fluids"]?.asJsonObject, this, Fluid)
 
         entityRegistry.initialize(pixlyzerData["entities"]?.asJsonObject, this, EntityType)
 
         // post init
         biomeRegistry.postInit(this)
+        fluidRegistry.postInit(this)
         isFullyLoaded = true
     }
 

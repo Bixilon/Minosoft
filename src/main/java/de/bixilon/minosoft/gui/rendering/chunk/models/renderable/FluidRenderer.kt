@@ -2,8 +2,10 @@ package de.bixilon.minosoft.gui.rendering.chunk.models.renderable
 
 import de.bixilon.minosoft.data.Directions
 import de.bixilon.minosoft.data.mappings.biomes.Biome
+import de.bixilon.minosoft.data.mappings.blocks.Block
 import de.bixilon.minosoft.data.mappings.blocks.BlockState
 import de.bixilon.minosoft.data.mappings.blocks.properties.BlockProperties
+import de.bixilon.minosoft.data.mappings.fluid.Fluid
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.light.LightAccessor
@@ -21,9 +23,9 @@ import glm_.vec3.Vec3
 import glm_.vec3.Vec3i
 
 class FluidRenderer(
-    private val stillTextureName: String,
-    private val flowingTextureName: String,
-    private val regex: String,
+    val block: Block,
+    private val stillFluid: Fluid,
+    private val flowingFluid: Fluid,
 ) : BlockLikeRenderer {
     override val faceBorderSizes: Array<Array<FaceSize>?> = arrayOfNulls(Directions.DIRECTIONS.size)
     override val transparentFaces: BooleanArray = BooleanArray(Directions.DIRECTIONS.size)
@@ -211,18 +213,18 @@ class FluidRenderer(
         if (blockState == null) {
             return false
         }
-        if (blockState.properties[BlockProperties.WATERLOGGED] == true) {
+        if (blockState.properties[BlockProperties.WATERLOGGED] == true) { // ToDo: Lava
             return true
         }
-        if (blockState.owner.resourceLocation.full.contains(regex)) {
+        if (block == blockState.owner) {
             return true
         }
         return false
     }
 
     override fun resolveTextures(indexed: MutableList<Texture>, textureMap: MutableMap<String, Texture>) {
-        stillTexture = BlockLikeRenderer.resolveTexture(indexed, textureMap, stillTextureName)!!
-        flowingTexture = BlockLikeRenderer.resolveTexture(indexed, textureMap, flowingTextureName)!!
+        stillTexture = BlockLikeRenderer.resolveTexture(indexed, textureMap, stillFluid.renderTexture.toString())!!
+        flowingTexture = BlockLikeRenderer.resolveTexture(indexed, textureMap, flowingFluid.renderTexture.toString())!!
     }
 
     companion object {

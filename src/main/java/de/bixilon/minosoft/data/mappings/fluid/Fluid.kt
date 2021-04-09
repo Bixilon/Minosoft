@@ -19,17 +19,22 @@ import de.bixilon.minosoft.data.mappings.particle.Particle
 import de.bixilon.minosoft.data.mappings.registry.RegistryItem
 import de.bixilon.minosoft.data.mappings.registry.ResourceLocationDeserializer
 import de.bixilon.minosoft.data.mappings.versions.VersionMapping
-import de.bixilon.minosoft.gui.rendering.chunk.models.renderable.FluidRenderer
 
 data class Fluid(
     override val resourceLocation: ResourceLocation,
-    val bucketItem: Item?,
+    private val bucketItemId: Int?,
     val dripParticle: Particle?,
-    val renderer: FluidRenderer?,
+    val renderTexture: ResourceLocation?,
 ) : RegistryItem {
+    var bucketItem: Item? = null
+        private set
 
     override fun toString(): String {
         return resourceLocation.full
+    }
+
+    override fun postInit(versionMapping: VersionMapping) {
+        bucketItem = bucketItemId?.let { versionMapping.itemRegistry.get(it) }
     }
 
     companion object : ResourceLocationDeserializer<Fluid> {
@@ -37,9 +42,9 @@ data class Fluid(
             check(mappings != null) { "VersionMapping is null!" }
             return Fluid(
                 resourceLocation = resourceLocation,
-                bucketItem = data["bucket"]?.asInt?.let { mappings.itemRegistry.get(it) },
+                bucketItemId = data["bucket"]?.asInt,
                 dripParticle = data["drip_particle_type"]?.asInt?.let { mappings.particleRegistry.get(it) },
-                renderer = null,
+                renderTexture = data["render"]?.asJsonObject?.get("texture")?.asString?.let { ResourceLocation(it) },
             )
         }
     }
