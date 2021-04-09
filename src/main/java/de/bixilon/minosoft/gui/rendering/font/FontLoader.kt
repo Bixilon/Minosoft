@@ -15,7 +15,7 @@ package de.bixilon.minosoft.gui.rendering.font
 
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
-import de.bixilon.minosoft.data.assets.MinecraftAssetsManager
+import de.bixilon.minosoft.data.assets.AssetsManager
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.textures.Texture
@@ -37,7 +37,7 @@ object FontLoader {
         return ret
     }
 
-    private fun loadBitmapFontProvider(atlasPath: ResourceLocation, height: Int? = 8, ascent: Int, chars: List<Char>, assetsManager: MinecraftAssetsManager): FontProvider {
+    private fun loadBitmapFontProvider(atlasPath: ResourceLocation, height: Int? = 8, ascent: Int, chars: List<Char>, assetsManager: AssetsManager): FontProvider {
         val width = if (ascent == 7) { // ToDo: Why?
             8
         } else {
@@ -89,7 +89,7 @@ object FontLoader {
     }
 
 
-    private fun loadUnicodeFontProvider(template: ResourceLocation, sizes: InputStream, assetsManager: MinecraftAssetsManager): FontProvider {
+    private fun loadUnicodeFontProvider(template: ResourceLocation, sizes: InputStream, assetsManager: AssetsManager): FontProvider {
         val provider = FontProvider(UNICODE_SIZE)
         var i = 0
         lateinit var currentAtlasTexture: Texture
@@ -113,7 +113,7 @@ object FontLoader {
         return provider
     }
 
-    fun loadFontProvider(data: JsonObject, assetsManager: MinecraftAssetsManager): FontProvider {
+    fun loadFontProvider(data: JsonObject, assetsManager: AssetsManager): FontProvider {
         return when (data["type"].asString) {
             "bitmap" -> {
                 loadBitmapFontProvider(ResourceLocation(data["file"].asString), data["height"]?.asInt, data["ascent"].asInt, getCharArray(data["chars"].asJsonArray), assetsManager)
@@ -129,7 +129,7 @@ object FontLoader {
     }
 
 
-    fun loadFontProviders(assetsManager: MinecraftAssetsManager): List<FontProvider> {
+    fun loadFontProviders(assetsManager: AssetsManager): List<FontProvider> {
         val ret: MutableList<FontProvider> = mutableListOf()
         for (providerElement in assetsManager.readJsonAsset(FONT_JSON_RESOURCE_LOCATION).asJsonObject["providers"].asJsonArray) {
             val provider = loadFontProvider(providerElement.asJsonObject, assetsManager)

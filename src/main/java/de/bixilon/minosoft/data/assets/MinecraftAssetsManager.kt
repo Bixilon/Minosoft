@@ -36,6 +36,7 @@ class MinecraftAssetsManager(
     private val assetVersion: AssetVersion,
     private val pixlyzerHash: String,
 ) : FileAssetsManager {
+    override val namespaces: MutableSet<String> = mutableSetOf()
     private val assetsMapping: MutableMap<ResourceLocation, String> = mutableMapOf()
 
     fun downloadAllAssets(latch: CountUpAndDownLatch?) {
@@ -168,6 +169,7 @@ class MinecraftAssetsManager(
         for ((location, data) in json.entrySet()) {
             try {
                 val resourceLocation = ResourceLocation.getPathResourceLocation(location)
+                namespaces.add(resourceLocation.namespace)
                 ret[resourceLocation] = if (data is JsonPrimitive) {
                     data.asString
                 } else {

@@ -15,20 +15,19 @@ package de.bixilon.minosoft.gui.rendering
 
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.StaticConfiguration
-import de.bixilon.minosoft.data.assets.MinecraftAssetsManager
+import de.bixilon.minosoft.data.assets.AssetsManager
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.biomes.Biome
 import de.bixilon.minosoft.data.mappings.blocks.BlockState
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.data.world.World
-
 import de.bixilon.minosoft.gui.rendering.textures.Texture
 import glm_.vec3.Vec3i
 
 class TintColorCalculator(val world: World) {
     val colorMaps: MutableMap<ResourceLocation, Array<RGBColor>> = mutableMapOf()
 
-    fun init(assetsManager: MinecraftAssetsManager) {
+    fun init(assetsManager: AssetsManager) {
         colorMaps[DEFAULT_GRASS_COLOR_MAP] = assetsManager.readPixelArrayAsset(Texture.getResourceTextureIdentifier(textureName = "colormap/grass.png"))
         colorMaps[DEFAULT_FOLIAGE_COLOR_MAP] = assetsManager.readPixelArrayAsset(Texture.getResourceTextureIdentifier(textureName = "colormap/foliage.png"))
     }

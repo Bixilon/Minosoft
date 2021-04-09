@@ -27,6 +27,8 @@ import java.net.URL
 
 interface AssetsManager {
 
+    val namespaces: Set<String>
+
     fun getAssetURL(resourceLocation: ResourceLocation): URL
 
     fun getAssetSize(resourceLocation: ResourceLocation): Long

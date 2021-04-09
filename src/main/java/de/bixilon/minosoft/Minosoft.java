@@ -48,12 +48,13 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public final class Minosoft {
     public static final ExecutorService THREAD_POOL = Executors.newFixedThreadPool(MMath.INSTANCE.clamp(Runtime.getRuntime().availableProcessors() - 1, 2, 16), Util.getThreadFactory("Worker"));
-    public static final JarAssetsManager MINOSOFT_ASSETS_MANAGER = new JarAssetsManager(Minosoft.class);
+    public static final JarAssetsManager MINOSOFT_ASSETS_MANAGER = new JarAssetsManager(Minosoft.class, Set.of("minosoft"));
     public static final HashSet<EventManager> EVENT_MANAGERS = new HashSet<>();
     public static final HashBiMap<Integer, PlayConnection> CONNECTIONS = HashBiMap.create();
     private static final CountUpAndDownLatch START_STATUS_LATCH = new CountUpAndDownLatch(1);

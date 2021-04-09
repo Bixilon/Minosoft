@@ -20,9 +20,11 @@ import java.net.URL
 
 class JarAssetsManager(
     private val clazz: Class<*>,
+    override val namespaces: Set<String>, // ToDo
 ) : AssetsManager {
+
     override fun getAssetURL(resourceLocation: ResourceLocation): URL {
-        return clazz.getResource("/assets/${resourceLocation.namespace}/${resourceLocation.path}")
+        return clazz.getResource("/assets/${resourceLocation.namespace}/${resourceLocation.path}") ?: throw FileNotFoundException("Can not find $resourceLocation")
     }
 
     override fun getAssetSize(resourceLocation: ResourceLocation): Long {

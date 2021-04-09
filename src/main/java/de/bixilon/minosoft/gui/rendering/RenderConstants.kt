@@ -55,4 +55,6 @@ object RenderConstants {
     const val RENDER_BLOCKS = true
     const val RENDER_FLUIDS = true
     const val RENDER_HUD = true
+
+    const val FORCE_DEBUG_TEXTURE = true
 }

@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.textures
 
-import de.bixilon.minosoft.data.assets.MinecraftAssetsManager
+import de.bixilon.minosoft.data.assets.AssetsManager
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.textures.properties.ImageProperties
@@ -55,7 +55,7 @@ class Texture(
         isLoaded = true
     }
 
-    fun load(assetsManager: MinecraftAssetsManager) {
+    fun load(assetsManager: AssetsManager) {
         if (isLoaded) {
             return
         }

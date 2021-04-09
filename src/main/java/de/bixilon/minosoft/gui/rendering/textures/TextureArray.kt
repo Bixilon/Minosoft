@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.textures
 
 import de.bixilon.minosoft.Minosoft
-import de.bixilon.minosoft.data.assets.MinecraftAssetsManager
+import de.bixilon.minosoft.data.assets.AssetsManager
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.util.logging.Log
@@ -34,7 +34,7 @@ class TextureArray(val allTextures: MutableList<Texture>) {
 
     private val texturesByResolution = Array<MutableList<Texture>>(TEXTURE_RESOLUTION_ID_MAP.size) { mutableListOf() }
 
-    fun preLoad(assetsManager: MinecraftAssetsManager?) {
+    fun preLoad(assetsManager: AssetsManager?) {
         for (texture in allTextures) {
             if (!texture.isLoaded) {
                 texture.load(assetsManager!!)

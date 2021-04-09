@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.font
 
-import de.bixilon.minosoft.data.assets.MinecraftAssetsManager
+import de.bixilon.minosoft.data.assets.AssetsManager
 import de.bixilon.minosoft.gui.rendering.textures.Texture
 import de.bixilon.minosoft.gui.rendering.textures.TextureArray
 
@@ -22,7 +22,7 @@ class Font {
     private var preLoaded = false
     private var loaded = false
 
-    fun load(assetsManager: MinecraftAssetsManager) {
+    fun load(assetsManager: AssetsManager) {
         providers = FontLoader.loadFontProviders(assetsManager)
     }
 

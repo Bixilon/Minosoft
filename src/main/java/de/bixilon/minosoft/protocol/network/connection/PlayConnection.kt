@@ -17,6 +17,7 @@ import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.data.VelocityHandler
 import de.bixilon.minosoft.data.accounts.Account
+import de.bixilon.minosoft.data.assets.MultiAssetsManager
 import de.bixilon.minosoft.data.commands.CommandRootNode
 import de.bixilon.minosoft.data.mappings.MappingsLoadingException
 import de.bixilon.minosoft.data.mappings.recipes.Recipes
@@ -58,6 +59,8 @@ class PlayConnection(
     val mapping = VersionMapping()
     val sender = PacketSender(this)
     val velocityHandler = VelocityHandler(this)
+    lateinit var assetsManager: MultiAssetsManager
+        private set
 
     var commandRootNode: CommandRootNode? = null
 
@@ -128,6 +131,7 @@ class PlayConnection(
     fun connect(latch: CountUpAndDownLatch) {
         try {
             version.load(latch) // ToDo: show gui loader
+            assetsManager = MultiAssetsManager(version.assetsManager, Minosoft.MINOSOFT_ASSETS_MANAGER)
             mapping.parentMapping = version.mapping
             player = Player(account, this)
 

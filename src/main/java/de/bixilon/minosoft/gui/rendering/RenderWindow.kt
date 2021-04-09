@@ -129,7 +129,7 @@ class RenderWindow(
         }
         camera.init(this)
 
-        tintColorCalculator.init(connection.version.assetsManager)
+        tintColorCalculator.init(connection.assetsManager)
 
 
         glfwSetKeyCallback(this.windowId) { _: Long, key: Int, _: Int, action: Int, _: Int ->
@@ -240,7 +240,7 @@ class RenderWindow(
 
         textures.allTextures.add(Texture(TextureArray.DEBUG_TEXTURE))
 
-        font.load(connection.version.assetsManager)
+        font.load(connection.assetsManager)
 
         font.preLoadAtlas(textures)
 
@@ -248,7 +248,7 @@ class RenderWindow(
         hudRenderer.init()
 
 
-        textures.preLoad(connection.version.assetsManager)
+        textures.preLoad(connection.assetsManager)
 
         font.loadAtlas()
         textures.load()

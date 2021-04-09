@@ -52,7 +52,6 @@ data class Version(
         return versionId >= ProtocolDefinition.FLATTING_VERSION_ID
     }
 
-
     private fun initializeAssetManger(latch: CountUpAndDownLatch) {
         if (this::assetsManager.isInitialized) {
             return
