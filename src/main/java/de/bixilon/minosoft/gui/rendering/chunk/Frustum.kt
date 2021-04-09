@@ -38,7 +38,7 @@ class Frustum(private val camera: Camera) {
     }
 
     private fun calculateVerticalNormals() {
-        val aspect = camera.renderWindow.screenDimensions.x / camera.renderWindow.screenDimensions.y // ToDo: x/y or y/x
+        val aspect = camera.renderWindow.screenDimensions.y.toFloat() / camera.renderWindow.screenDimensions.x // ToDo: x/y or y/x
         val angle = (camera.fov * aspect - 90.0f).rad
         val sin = angle.sin
         val cos = angle.cos
