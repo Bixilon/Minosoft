@@ -125,9 +125,9 @@ class World : BiomeAccessor {
     fun getBlocks(start: Vec3i, end: Vec3i): Map<Vec3i, BlockState> {
         val blocks: MutableMap<Vec3i, BlockState> = mutableMapOf()
 
-        for (z in start.z until end.z) {
-            for (y in start.y until end.y) {
-                for (x in start.x until end.x) {
+        for (z in start.z..end.z) {
+            for (y in start.y..end.y) {
+                for (x in start.x..end.x) {
                     val blockPosition = Vec3i(x, y, z)
                     getBlockState(blockPosition)?.let {
                         blocks[blockPosition] = it

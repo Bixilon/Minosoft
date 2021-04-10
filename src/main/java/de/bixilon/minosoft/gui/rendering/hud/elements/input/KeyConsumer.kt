@@ -11,19 +11,16 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.config.config.game.elements
+package de.bixilon.minosoft.gui.rendering.hud.elements.input
 
-import de.bixilon.minosoft.data.mappings.ResourceLocation
-import de.bixilon.minosoft.gui.rendering.hud.HUDElementProperties
+import de.bixilon.minosoft.config.key.KeyCodes
 
-data class ElementsGameConfig(
-    val entries: MutableMap<ResourceLocation, HUDElementProperties> = mutableMapOf(),
-)
+interface KeyConsumer {
 
-object ElementsNames {
-    val HOTBAR_RESOURCE_LOCATION = ResourceLocation("minosoft:hotbar")
-    val CROSSHAIR_RESOURCE_LOCATION = ResourceLocation("minosoft:crosshair")
-    val WORLD_DEBUG_SCREEN_RESOURCE_LOCATION = ResourceLocation("minosoft:world_debug_screen")
-    val SYSTEM_DEBUG_SCREEN_RESOURCE_LOCATION = ResourceLocation("minosoft:system_debug_screen")
-    val CHAT_RESOURCE_LOCATION = ResourceLocation("minosoft:chat")
+    val focused: Boolean
+
+    fun charInput(char: Char) {}
+
+    fun keyInput(keyCodes: KeyCodes) {
+    }
 }

@@ -216,8 +216,7 @@ open class TextComponent : ChatComponent {
         for (char in charArray) {
             if (char == '\n') {
                 offset.x = 0
-                offset.y = 0
-                val yOffset = offset.y + Font.CHAR_HEIGHT + RenderConstants.TEXT_LINE_PADDING
+                val yOffset = Font.CHAR_HEIGHT + RenderConstants.TEXT_LINE_PADDING
                 offset.y += yOffset
                 retMaxSize.y += yOffset
                 continue

@@ -34,7 +34,6 @@ import glm_.vec2.Vec2i
 class HotbarHUDElement(
     hudRender: HUDRenderer,
 ) : HUDElement(hudRender) {
-
     private lateinit var hotbarBase: HotbarBaseElement
 
     private lateinit var experienceBar: ProgressBar
@@ -54,7 +53,6 @@ class HotbarHUDElement(
             fullAtlasElement = hudRenderer.hudAtlasElements[ResourceLocation("minecraft:experience_bar_full")]!!,
             z = 1,
         )
-
 
         levelText = TextElement(
             font = hudRenderer.renderWindow.font,
@@ -110,7 +108,6 @@ class HotbarHUDElement(
             healthBar.prepare()
             prepare()
         })
-
     }
 
     private fun prepare() {
@@ -166,7 +163,7 @@ class HotbarHUDElement(
         private val frame = ImageElement(textureLike = frameHUDAtlasElement, z = 2)
 
         init {
-            fakeX = base.size.x.toInt()
+            fakeX = base.size.x
             addChild(base)
             addChild(frame)
         }

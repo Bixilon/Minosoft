@@ -95,6 +95,9 @@ class Camera(
         var yOffset = yPos - this.lastMouseY
         lastMouseX = xPos
         lastMouseY = yPos
+        if (!renderWindow.currentElement.contains(KeyBindingsNames.WHEN_IN_GAME)) {
+            return
+        }
         xOffset *= mouseSensitivity
         yOffset *= mouseSensitivity
         var yaw = xOffset.toFloat() + playerEntity.rotation.headYaw
@@ -145,7 +148,7 @@ class Camera(
     fun handleInput(deltaTime: Double) {
         var cameraSpeed = movementSpeed * deltaTime
         val movementFront = Vec3(cameraFront)
-        if (! Minosoft.getConfig().config.game.camera.noCipMovement) {
+        if (!Minosoft.getConfig().config.game.camera.noCipMovement) {
             movementFront.y = 0.0f
             movementFront.normalizeAssign() // when moving forwards, do not move down
         }

@@ -24,6 +24,7 @@ import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.chunk.WorldRenderer
 import de.bixilon.minosoft.gui.rendering.font.Font
 import de.bixilon.minosoft.gui.rendering.hud.HUDRenderer
+import de.bixilon.minosoft.gui.rendering.hud.elements.input.KeyConsumer
 import de.bixilon.minosoft.gui.rendering.textures.Texture
 import de.bixilon.minosoft.gui.rendering.textures.TextureArray
 import de.bixilon.minosoft.gui.rendering.util.ScreenshotTaker
@@ -36,10 +37,9 @@ import de.bixilon.minosoft.util.CountUpAndDownLatch
 import de.bixilon.minosoft.util.logging.Log
 import glm_.vec2.Vec2
 import glm_.vec2.Vec2i
-import org.lwjgl.*
 import org.lwjgl.glfw.*
 import org.lwjgl.glfw.GLFW.*
-import org.lwjgl.opengl.*
+import org.lwjgl.opengl.GL
 import org.lwjgl.opengl.GL11.*
 import org.lwjgl.system.MemoryStack
 import org.lwjgl.system.MemoryUtil
@@ -81,6 +81,30 @@ class RenderWindow(
 
     val renderQueue = ConcurrentLinkedQueue<Runnable>()
 
+    private var _currentInputConsumer: KeyConsumer? = null
+    val currentElement: MutableList<ResourceLocation> = mutableListOf(KeyBindingsNames.WHEN_IN_GAME, KeyBindingsNames.WHEN_PLAYER_IS_FLYING)
+
+    private var skipNextChatPress = false
+
+    var currentInputConsumer: KeyConsumer?
+        get() = _currentInputConsumer
+        set(value) {
+            _currentInputConsumer = value
+            for ((_, binding) in keyBindingCallbacks) {
+                if (!keyBindingDown.contains(binding.first)) {
+                    continue
+                }
+                if (!binding.first.action.containsKey(KeyAction.TOGGLE) && !binding.first.action.containsKey(KeyAction.CHANGE)) {
+                    continue
+                }
+
+                for (keyCallback in binding.second) {
+                    keyCallback.invoke(KeyCodes.KEY_UNKNOWN, KeyAction.RELEASE)
+                }
+            }
+            keyBindingDown.clear()
+        }
+
     init {
         connection.registerEvent(EventInvokerCallback<ConnectionStateChangeEvent> {
             if (it.connection.isDisconnected) {
@@ -103,7 +127,6 @@ class RenderWindow(
             }
         })
     }
-
 
     fun init(latch: CountUpAndDownLatch) {
         // Setup an error callback. The default implementation
@@ -146,12 +169,37 @@ class RenderWindow(
                 keysDown.remove(keyCode)
             }
 
+            if (keyAction == KeyAction.PRESS) {
+                // ToDo: Repeatable keys, long holding, etc
+
+                currentInputConsumer?.keyInput(keyCode)
+            }
+
             for ((_, keyCallbackPair) in keyBindingCallbacks) {
                 run {
                     val keyBinding = keyCallbackPair.first
                     val keyCallbacks = keyCallbackPair.second
 
                     var anyCheckRun = false
+
+                    var andWhenValid = false
+                    for (or in keyBinding.`when`) {
+                        var andValid = true
+                        for (and in or) {
+                            if (!currentElement.contains(and)) {
+                                andValid = false
+                                break
+                            }
+                        }
+                        if (andValid) {
+                            andWhenValid = true
+                            break
+                        }
+                    }
+                    if (!andWhenValid) {
+                        return@run
+                    }
+
                     keyBinding.action[KeyAction.MODIFIER]?.let {
                         val previousKeysDown = if (keyAction == KeyAction.RELEASE) {
                             val previousKeysDown = keysDown.toMutableList()
@@ -196,11 +244,19 @@ class RenderWindow(
                     }
                     for (keyCallback in keyCallbacks) {
                         keyCallback.invoke(keyCode, keyAction)
+                        skipNextChatPress = true
                     }
                 }
             }
         }
 
+        glfwSetCharCallback(windowId) { _: Long, char: Int ->
+            if (skipNextChatPress) {
+                skipNextChatPress = false
+                return@glfwSetCharCallback
+            }
+            currentInputConsumer?.charInput(char.toChar())
+        }
 
         if (mouseCatch) {
             glfwSetInputMode(windowId, GLFW_CURSOR, GLFW_CURSOR_DISABLED)

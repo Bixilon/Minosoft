@@ -33,7 +33,7 @@ import org.checkerframework.common.value.qual.IntRange;
 import java.util.UUID;
 
 public class PacketSender {
-    public static final String[] ILLEGAL_CHAT_CHARS = {"§"};
+    public static final char[] ILLEGAL_CHAT_CHARS = {'§', '\n', '\r'};
     private final PlayConnection connection;
 
     public PacketSender(PlayConnection connection) {
@@ -45,8 +45,11 @@ public class PacketSender {
     }
 
     public void sendChatMessage(String message) {
-        for (String illegalChar : ILLEGAL_CHAT_CHARS) {
-            if (message.contains(illegalChar)) {
+        if (message.isBlank()) {
+            throw new IllegalArgumentException(("Chat message is blank!"));
+        }
+        for (char illegalChar : ILLEGAL_CHAT_CHARS) {
+            if (message.indexOf(illegalChar) != -1) {
                 throw new IllegalArgumentException(String.format("%s is not allowed in chat", illegalChar));
             }
         }

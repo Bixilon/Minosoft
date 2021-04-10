@@ -52,10 +52,15 @@ object KeyBindingsNames {
 
     val WHEN_IN_GAME = ResourceLocation("minosoft:in_game")
     val WHEN_PLAYER_IS_FLYING = ResourceLocation("minosoft:is_flying")
+    val WHEN_IN_CHAT = ResourceLocation("minosoft:in_chat")
 
     val TAKE_SCREENSHOT = ResourceLocation("minosoft:take_screenshot")
 
     val TOGGLE_HUD = ResourceLocation("minosoft:toggle_hud")
+
+    val OPEN_CHAT = ResourceLocation("minosoft:open_chat")
+
+    val CLOSE_CHAT = ResourceLocation("minosoft:close_chat")
 
 
     val SELECT_HOTBAR_SLOTS = arrayOf(ResourceLocation("minosoft:select_hotbar_slot_1"),
@@ -216,6 +221,18 @@ object KeyBindingsNames {
                 KeyAction.PRESS to mutableSetOf(KeyCodes.KEY_F1)
             ),
             mutableSetOf(mutableSetOf(WHEN_IN_GAME))
+        ),
+        OPEN_CHAT to KeyBinding(
+            mutableMapOf(
+                KeyAction.PRESS to mutableSetOf(KeyCodes.KEY_T)
+            ),
+            mutableSetOf(mutableSetOf(WHEN_IN_GAME))
+        ),
+        CLOSE_CHAT to KeyBinding(
+            mutableMapOf(
+                KeyAction.PRESS to mutableSetOf(KeyCodes.KEY_ESCAPE)
+            ),
+            mutableSetOf(mutableSetOf(WHEN_IN_CHAT))
         ),
     )
 }

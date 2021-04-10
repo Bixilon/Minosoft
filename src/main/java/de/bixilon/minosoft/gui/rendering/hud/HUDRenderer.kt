@@ -22,6 +22,7 @@ import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.Renderer
 import de.bixilon.minosoft.gui.rendering.hud.atlas.HUDAtlasElement
 import de.bixilon.minosoft.gui.rendering.hud.elements.HUDElement
+import de.bixilon.minosoft.gui.rendering.hud.elements.chat.ChatBoxHUDElement
 import de.bixilon.minosoft.gui.rendering.hud.elements.debug.HUDSystemDebugElement
 import de.bixilon.minosoft.gui.rendering.hud.elements.debug.HUDWorldDebugElement
 import de.bixilon.minosoft.gui.rendering.hud.elements.other.CrosshairHUDElement
@@ -75,7 +76,6 @@ class HUDRenderer(val connection: PlayConnection, val renderWindow: RenderWindow
         addElement(ElementsNames.HOTBAR_RESOURCE_LOCATION, HotbarHUDElement(this), HUDElementProperties(
             position = Vec2(0.0f, -1.0f),
             xBinding = HUDElementProperties.PositionBindings.CENTER,
-            yBinding = HUDElementProperties.PositionBindings.FURTHEST_POINT_AWAY,
         ))
 
         addElement(ElementsNames.CROSSHAIR_RESOURCE_LOCATION, CrosshairHUDElement(this), HUDElementProperties(
@@ -85,17 +85,16 @@ class HUDRenderer(val connection: PlayConnection, val renderWindow: RenderWindow
         ))
         addElement(ElementsNames.WORLD_DEBUG_SCREEN_RESOURCE_LOCATION, HUDWorldDebugElement(this), HUDElementProperties(
             position = Vec2(-1.0f, 1.0f),
-            xBinding = HUDElementProperties.PositionBindings.FURTHEST_POINT_AWAY,
-            yBinding = HUDElementProperties.PositionBindings.FURTHEST_POINT_AWAY,
             toggleKeyBinding = KeyBindingsNames.TOGGLE_DEBUG_SCREEN,
             enabled = false,
         ))
         addElement(ElementsNames.SYSTEM_DEBUG_SCREEN_RESOURCE_LOCATION, HUDSystemDebugElement(this), HUDElementProperties(
             position = Vec2(1.0f, 1.0f),
-            xBinding = HUDElementProperties.PositionBindings.FURTHEST_POINT_AWAY,
-            yBinding = HUDElementProperties.PositionBindings.FURTHEST_POINT_AWAY,
             toggleKeyBinding = KeyBindingsNames.TOGGLE_DEBUG_SCREEN,
             enabled = false,
+        ))
+        addElement(ElementsNames.CHAT_RESOURCE_LOCATION, ChatBoxHUDElement(this), HUDElementProperties(
+            position = Vec2(0f, -1.0f),
         ))
     }
 

@@ -11,24 +11,36 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.hud
+package de.bixilon.minosoft.gui.rendering.hud.elements.input
 
-import com.squareup.moshi.Json
-import de.bixilon.minosoft.data.mappings.ResourceLocation
-import glm_.vec2.Vec2
+import de.bixilon.minosoft.config.key.KeyCodes
+import de.bixilon.minosoft.gui.rendering.font.Font
+import glm_.vec2.Vec2i
 
-data class HUDElementProperties(
-    val position: Vec2,
-    @Json(name = "x_binding") val xBinding: PositionBindings = PositionBindings.FURTHEST_POINT_AWAY,
-    @Json(name = "y_binding") val yBinding: PositionBindings = PositionBindings.FURTHEST_POINT_AWAY,
-    @Json(name = "toggle_key_binding") var toggleKeyBinding: ResourceLocation? = null,
-    val scale: Float = 1.0f,
-    var enabled: Boolean = true,
-    val properties: MutableMap<String, Any> = mutableMapOf(),
-) {
+class SubmittableTextField(
+    start: Vec2i = Vec2i(0, 0),
+    z: Int = 0,
+    font: Font,
+    defaultText: String = "",
+    maxLength: Int = 256,
+    private val onSubmit: (text: String) -> Boolean,
+) : TextField(start, z, font, defaultText, maxLength) {
 
-    enum class PositionBindings {
-        CENTER,
-        FURTHEST_POINT_AWAY
+    fun submit() {
+        if (!onSubmit.invoke(text)) {
+            // failed
+            return
+        }
+        text = ""
+    }
+
+
+    override fun keyInput(keyCodes: KeyCodes) {
+        if (keyCodes == KeyCodes.KEY_ENTER) {
+            // submit
+            submit()
+            return
+        }
+        super.keyInput(keyCodes)
     }
 }
