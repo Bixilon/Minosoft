@@ -49,8 +49,8 @@ abstract class Entity(
     protected open val hasCollisions = true
 
     private val defaultAABB = AABB(
-        Vec3(-entityType.width / 2, 0               , -entityType.width),
-        Vec3(+entityType.width / 2, entityType.height  , +entityType.width)
+        Vec3(-(entityType.width / 2 + HITBOX_MARGIN), 0               , -(entityType.width / 2 + HITBOX_MARGIN)),
+        Vec3(+(entityType.width / 2 + HITBOX_MARGIN), entityType.height  , +(entityType.width / 2 + HITBOX_MARGIN))
     )
 
     fun forceMove(relativePosition: Vec3) {
@@ -232,4 +232,8 @@ abstract class Entity(
 
     private val aabb: AABB
         get() = defaultAABB + position
+
+    companion object {
+        val HITBOX_MARGIN = 1e-5;
+    }
 }
