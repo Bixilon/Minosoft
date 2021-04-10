@@ -57,8 +57,6 @@ class WorldRenderer(
         private set
 
     private fun prepareSections(chunkPosition: Vec2i, sections: Map<Int, ChunkSection>): ChunkMeshCollection {
-        //  val stopwatch = Stopwatch()
-
         check(sections.isNotEmpty()) { "Illegal argument!" }
         queuedChunks.remove(chunkPosition)
         val meshCollection = ChunkMeshCollection()
@@ -88,7 +86,6 @@ class WorldRenderer(
             meshCollection.transparentSectionArrayMesh = null
         }
 
-        // stopwatch.labPrint()
         return meshCollection
     }
 

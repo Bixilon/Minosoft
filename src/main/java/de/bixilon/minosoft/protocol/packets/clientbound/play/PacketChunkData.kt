@@ -110,13 +110,12 @@ class PacketChunkData() : PlayClientboundPacket() {
     }
 
     override fun handle(connection: PlayConnection) {
-        for ((position, blockEntityMetaData) in blockEntities) {
-            connection.fireEvent(BlockEntityMetaDataChangeEvent(connection, position, null, blockEntityMetaData))
-        }
-
 
         chunkData?.blocks?.let {
             VersionTweaker.transformSections(it, connection.version.versionId)
+        }
+        for ((position, blockEntityMetaData) in blockEntities) {
+            connection.fireEvent(BlockEntityMetaDataChangeEvent(connection, position, null, blockEntityMetaData))
         }
         chunkData?.let {
             connection.fireEvent(ChunkDataChangeEvent(connection, this))

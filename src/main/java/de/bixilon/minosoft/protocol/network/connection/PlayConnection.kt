@@ -27,6 +27,7 @@ import de.bixilon.minosoft.data.player.Player
 import de.bixilon.minosoft.data.player.tab.TabList
 import de.bixilon.minosoft.data.scoreboard.ScoreboardManager
 import de.bixilon.minosoft.data.world.World
+import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.Rendering
 import de.bixilon.minosoft.modding.event.EventInvoker
 import de.bixilon.minosoft.modding.event.events.ConnectionStateChangeEvent
@@ -135,11 +136,13 @@ class PlayConnection(
             mapping.parentMapping = version.mapping
             player = Player(account, this)
 
-            if (!StaticConfiguration.HEADLESS_MODE) {
-                renderer = Rendering(this)
-                renderer!!.start(latch)
+            if (!RenderConstants.DISABLE_RENDERING) {
+                if (!StaticConfiguration.HEADLESS_MODE) {
+                    renderer = Rendering(this)
+                    renderer!!.start(latch)
+                }
+                latch.waitForChange()
             }
-            latch.waitForChange()
         } catch (exception: Throwable) {
             Log.printException(exception, LogLevels.DEBUG)
             Log.fatal("Could not load version $version. This version seems to be unsupported!")
