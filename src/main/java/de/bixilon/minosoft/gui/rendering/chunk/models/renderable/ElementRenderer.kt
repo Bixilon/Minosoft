@@ -133,18 +133,18 @@ class ElementRenderer(
             if (rotation == VecUtil.EMPTY_VEC3) {
                 return direction
             }
-            var rotatedDirectionVector = direction.floatDirectionVector.rotate(rotation.x, Axes.X)
+            var rotatedDirectionVector = direction.floatDirectionVector.rotate(-rotation.x, Axes.X)
             rotatedDirectionVector = rotatedDirectionVector.rotate(rotation.y, Axes.Y)
-            return Directions.byDirection(rotatedDirectionVector.rotate(rotation.z, Axes.Z))
+            return Directions.byDirection(rotatedDirectionVector.rotate(-rotation.z, Axes.Z))
         }
 
         fun rotatePositionsAxes(positions: Array<Vec3>, angles: Vec3, rescale: Boolean) {
             if (angles == VecUtil.EMPTY_VEC3) {
                 return
             }
-            BlockModelElement.rotatePositions(positions, Axes.X, angles.x, VecUtil.EMPTY_VEC3, rescale)
+            BlockModelElement.rotatePositions(positions, Axes.X, -angles.x, VecUtil.EMPTY_VEC3, rescale)
             BlockModelElement.rotatePositions(positions, Axes.Y, angles.y, VecUtil.EMPTY_VEC3, rescale)
-            BlockModelElement.rotatePositions(positions, Axes.Z, angles.z, VecUtil.EMPTY_VEC3, rescale)
+            BlockModelElement.rotatePositions(positions, Axes.Z, -angles.z, VecUtil.EMPTY_VEC3, rescale)
         }
 
         val POSITION_1 = Vec3(-0.5f, -0.5f, -0.5f)

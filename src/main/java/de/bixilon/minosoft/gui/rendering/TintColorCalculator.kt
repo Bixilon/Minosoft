@@ -51,16 +51,14 @@ class TintColorCalculator(val world: World) {
 
 
         for (z in blendStart.z until blendEnd.z) {
-            for (y in blendStart.y until blendEnd.y) {
-                for (x in blendStart.x until blendEnd.x) {
-                    val blendBlockPosition = Vec3i(x, y, z)
-                    getTint(world.getBiome(blendBlockPosition), blockState, blendBlockPosition)?.let {
-                        totalRed += it.red
-                        totalGreen += it.green
-                        totalBlue += it.blue
+            for (x in blendStart.x until blendEnd.x) {
+                val blendBlockPosition = Vec3i(x, blockPosition.y, z)
+                getTint(world.getBiome(blendBlockPosition), blockState, blendBlockPosition)?.let {
+                    totalRed += it.red
+                    totalGreen += it.green
+                    totalBlue += it.blue
 
-                        count++
-                    }
+                    count++
                 }
             }
         }
