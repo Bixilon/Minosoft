@@ -29,7 +29,7 @@ public class CommandTabList extends Command {
         parent.addChildren(
                 new CommandLiteralNode("tab",
                         new CommandLiteralNode("list", (connection, stack) -> {
-                            print(connection.getTabList().getHeader().getANSIColoredMessage());
+                            print(connection.getTabList().getHeader().getAnsiColoredMessage());
 
                             int entries = connection.getTabList().getTabListItems().size();
                             int columns = (entries / 20) + 1;
@@ -61,10 +61,10 @@ public class CommandTabList extends Command {
 
                             print(AsciiTable.getTable(tableData.toArray(new Object[0][0])));
 
-                            print(connection.getTabList().getFooter().getANSIColoredMessage());
+                            print(connection.getTabList().getFooter().getAnsiColoredMessage());
 
                         }, new CommandLiteralNode("all", (connection, stack) -> {
-                            print(connection.getTabList().getHeader().getANSIColoredMessage());
+                            print(connection.getTabList().getHeader().getAnsiColoredMessage());
 
                             ArrayList<Object[]> tableData = new ArrayList<>();
 
@@ -76,7 +76,7 @@ public class CommandTabList extends Command {
 
                             print(AsciiTable.getTable(new String[]{"UUID", "ENTITY ID", "PLAYER NAME", "DISPLAY NAME", "GAMEMODE", "PING"}, tableData.toArray(new Object[0][0])));
 
-                            print(connection.getTabList().getFooter().getANSIColoredMessage());
+                            print(connection.getTabList().getFooter().getAnsiColoredMessage());
                         }))));
         return parent;
     }

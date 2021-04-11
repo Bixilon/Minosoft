@@ -87,7 +87,7 @@ class HotbarHUDElement(
 
         hudRenderer.connection.registerEvent(EventInvokerCallback<ExperienceChangeEvent> {
             experienceBar.progress = it.bar
-            levelText.text = TextComponent(it.level.toString()).setColor(RenderConstants.EXPERIENCE_BAR_LEVEL_COLOR)
+            levelText.text = TextComponent(it.level.toString()).color(RenderConstants.EXPERIENCE_BAR_LEVEL_COLOR)
             experienceBar.prepare()
             prepare()
         })

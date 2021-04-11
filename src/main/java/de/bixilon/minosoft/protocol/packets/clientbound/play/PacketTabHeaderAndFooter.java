@@ -41,8 +41,8 @@ public class PacketTabHeaderAndFooter extends PlayClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Received tab list header: %s", this.header.getANSIColoredMessage()));
-        Log.protocol(String.format("[IN] Received tab list footer: %s", this.footer.getANSIColoredMessage()));
+        Log.protocol(String.format("[IN] Received tab list header: %s", this.header.getAnsiColoredMessage()));
+        Log.protocol(String.format("[IN] Received tab list footer: %s", this.footer.getAnsiColoredMessage()));
     }
 
     public ChatComponent getHeader() {

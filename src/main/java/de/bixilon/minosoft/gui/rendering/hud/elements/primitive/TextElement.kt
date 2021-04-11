@@ -20,7 +20,7 @@ import de.bixilon.minosoft.gui.rendering.font.Font
 import glm_.vec2.Vec2i
 
 class TextElement(
-    private var _text: ChatComponent = ChatComponent.valueOf(""),
+    private var _text: ChatComponent = ChatComponent.valueOf(raw = ""),
     private val font: Font,
     start: Vec2i = Vec2i(0, 0),
     z: Int = 1,
@@ -37,7 +37,7 @@ class TextElement(
     var sText: String
         get() = text.message
         set(value) {
-            text = ChatComponent.valueOf(value)
+            text = ChatComponent.valueOf(raw = value)
         }
 
     init {

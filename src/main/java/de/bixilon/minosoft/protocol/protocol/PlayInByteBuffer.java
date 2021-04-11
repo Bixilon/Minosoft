@@ -72,7 +72,7 @@ public class PlayInByteBuffer extends InByteBuffer {
 
     @Override
     public ChatComponent readChatComponent() {
-        return ChatComponent.valueOf(this.connection.getVersion().getLocaleManager(), readString());
+        return ChatComponent.Companion.valueOf(this.connection.getVersion().getLocaleManager(), null, readString());
     }
 
     public ParticleData readParticle() {

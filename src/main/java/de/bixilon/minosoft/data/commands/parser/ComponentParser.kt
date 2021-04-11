@@ -15,14 +15,14 @@ package de.bixilon.minosoft.data.commands.parser
 import de.bixilon.minosoft.data.commands.CommandStringReader
 import de.bixilon.minosoft.data.commands.parser.exceptions.InvalidComponentCommandParseException
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties
-import de.bixilon.minosoft.data.text.BaseComponent
+import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 
 object ComponentParser : CommandParser() {
 
-    override fun parse(connection: PlayConnection, properties: ParserProperties?, stringReader: CommandStringReader): Any? {
+    override fun parse(connection: PlayConnection, properties: ParserProperties?, stringReader: CommandStringReader): Any {
         try {
-            return BaseComponent(connection.version.localeManager, stringReader.readJson().asJsonObject)
+            return ChatComponent.valueOf(connection.version.localeManager, null, stringReader.readJson().asJsonObject)
         } catch (exception: Exception) {
             stringReader.skip(-1)
             throw InvalidComponentCommandParseException(stringReader, stringReader.read().toString(), exception)

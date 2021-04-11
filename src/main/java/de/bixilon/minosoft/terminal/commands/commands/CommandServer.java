@@ -70,7 +70,7 @@ public class CommandServer extends Command {
         if (version == null) {
             version = Versions.AUTOMATIC_VERSION;
         }
-        Server server = new Server(ChatComponent.valueOf(name), address, version);
+        Server server = new Server(ChatComponent.Companion.valueOf(null, null, name), address, version);
 
         server.saveToConfig();
         print("Added server %s (address=%s, version=%d)", server.getName(), server.getAddress(), server.getDesiredVersionId());

@@ -44,7 +44,7 @@ public class PacketLoginSuccess extends PlayClientboundPacket {
 
         var playerEntity = connection.getPlayer().getEntity();
         playerEntity.getTabListItem().setName(this.playerName);
-        playerEntity.getTabListItem().setDisplayName(ChatComponent.valueOf(this.playerName));
+        playerEntity.getTabListItem().setDisplayName(ChatComponent.Companion.valueOf(null, null, this.playerName));
 
         connection.getWorld().addEntity(null, this.uuid, playerEntity);
     }

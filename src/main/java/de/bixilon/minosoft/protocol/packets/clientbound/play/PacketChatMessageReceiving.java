@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
 import de.bixilon.minosoft.data.ChatTextPositions;
+import de.bixilon.minosoft.data.text.ChatColors;
 import de.bixilon.minosoft.data.text.ChatComponent;
 import de.bixilon.minosoft.modding.event.events.ChatMessageReceivingEvent;
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
@@ -41,6 +42,7 @@ public class PacketChatMessageReceiving extends PlayClientboundPacket {
         if (buffer.getVersionId() >= V_20W21A) {
             this.sender = buffer.readUUID();
         }
+        this.message.applyDefaultColor(ChatColors.WHITE);
     }
 
     @Override

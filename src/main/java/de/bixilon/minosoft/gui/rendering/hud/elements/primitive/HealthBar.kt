@@ -53,7 +53,7 @@ class HealthBar(
         clear()
 
         if (value >= textReplaceValue) {
-            alternativeText.text = TextComponent(value.toString()).setColor(textColor)
+            alternativeText.text = TextComponent(value.toString()).color(textColor)
             alternativeText.start = Vec2i((width - alternativeText.size.x) / 2, 0)
 
             addChild(alternativeText)

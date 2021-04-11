@@ -32,12 +32,12 @@ public class PacketDisconnect extends PlayClientboundPacket {
         connection.fireEvent(new DisconnectEvent(connection, this));
         // got kicked
         connection.disconnect();
-        Log.info(String.format("Kicked from %s (reason=%s)", connection.getAddress(), getReason().getANSIColoredMessage()));
+        Log.info(String.format("Kicked from %s (reason=%s)", connection.getAddress(), getReason().getAnsiColoredMessage()));
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Received disconnect packet (reason=\"%s\")", this.reason.getANSIColoredMessage()));
+        Log.protocol(String.format("[IN] Received disconnect packet (reason=\"%s\")", this.reason.getAnsiColoredMessage()));
     }
 
     public ChatComponent getReason() {

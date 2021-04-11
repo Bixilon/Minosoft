@@ -75,13 +75,13 @@ class ItemStack(
             check(it is CompoundTag) { "Invalid $DISPLAY_TAG NBT data" }
             it.getAndRemoveTag(DISPLAY_MAME_TAG)?.let { nameTag ->
                 check(nameTag is StringTag) { "Invalid $DISPLAY_MAME_TAG NBT data" }
-                customDisplayName = ChatComponent.valueOf(version?.localeManager, nameTag.value)
+                customDisplayName = ChatComponent.valueOf(translator = version?.localeManager, raw = nameTag)
             }
 
             it.getAndRemoveTag(DISPLAY_LORE_TAG)?.let { loreTag ->
                 check(loreTag is ListTag) { "Invalid $DISPLAY_LORE_TAG NBT data" }
                 for (lore in loreTag.getValue<StringTag>()) {
-                    this.lore.add(ChatComponent.valueOf(version?.localeManager, lore.value))
+                    this.lore.add(ChatComponent.valueOf(translator = version?.localeManager, raw = lore))
                 }
             }
         }
@@ -196,11 +196,11 @@ class ItemStack(
         return fullDisplayName
     }
 
-    val displayName: String
+    val displayName: ChatComponent
         get() {
-            customDisplayName?.let { return it.legacyText }
+            customDisplayName?.let { return it }
             item.translationKey?.let { version?.localeManager?.translate(it)?.let { translatedName -> return translatedName } }
-            return item.toString()
+            return ChatComponent.valueOf(raw = item.toString())
         }
 
     // ToDo all properties

@@ -37,8 +37,10 @@ public class Log {
     private static LogLevels level = LogLevels.PROTOCOL;
 
     static {
-        System.setErr(ERROR_PRINT_STREAM);
-        System.setOut(OUT_PRINT_STREAM);
+        if (StaticConfiguration.REPLACE_SYSTEM_OUT_STREAMS) {
+            System.setErr(ERROR_PRINT_STREAM);
+            System.setOut(OUT_PRINT_STREAM);
+        }
         new Thread(() -> {
             while (true) {
                 // something to print
@@ -49,7 +51,7 @@ public class Log {
                     e.printStackTrace();
                     continue;
                 }
-                SYSTEM_OUT_STREAM.println(message.getKey().getANSIColoredMessage() + message.getValue().getANSIColoredMessage());
+                SYSTEM_OUT_STREAM.println(message.getKey().getAnsiColoredMessage() + message.getValue().getAnsiColoredMessage());
 
                 if (StaticConfiguration.SHOW_LOG_MESSAGES_IN_CHAT) {
                     for (var connection : Minosoft.CONNECTIONS.values()) {
@@ -107,8 +109,8 @@ public class Log {
         builder.append(level.name());
         builder.append("] ");
         builder.append(prefix);
-        var component = (BaseComponent) ChatComponent.valueOf(builder.toString());
-        var messageComponent = (BaseComponent) ChatComponent.valueOf(message);
+        var component = (BaseComponent) ChatComponent.Companion.valueOf(null, null, builder.toString());
+        var messageComponent = (BaseComponent) ChatComponent.Companion.valueOf(null, null, message);
         if (color != null && StaticConfiguration.COLORED_LOG) {
             messageComponent.applyDefaultColor(color);
         }

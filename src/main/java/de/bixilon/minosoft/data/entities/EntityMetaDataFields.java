@@ -262,7 +262,7 @@ public enum EntityMetaDataFields {
     MINECART_FURNACE_HAS_FUEL(false),
 
     MINECART_COMMAND_BLOCK_COMMAND(""),
-    MINECART_COMMAND_BLOCK_LAST_OUTPUT(ChatComponent.valueOf("")),
+    MINECART_COMMAND_BLOCK_LAST_OUTPUT(ChatComponent.Companion.valueOf(null, null, "")),
 
     PRIMED_TNT_FUSE_TIME(80),
 

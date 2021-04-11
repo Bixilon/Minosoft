@@ -30,7 +30,7 @@ open class TextField(
 ) : Layout(start, z), KeyConsumer, MouseConsumer {
     override var focused: Boolean = true
     private var textBuilder: StringBuilder = StringBuilder(defaultText)
-    private val textElement = TextElement(ChatComponent.valueOf(text), font)
+    private val textElement = TextElement(ChatComponent.valueOf(raw = text), font)
     private var position = text.length
 
     var text: String
@@ -51,7 +51,7 @@ open class TextField(
     }
 
     private fun update() {
-        textElement.text = ChatComponent.valueOf(text)
+        textElement.text = ChatComponent.valueOf(raw = text)
     }
 
     override fun keyInput(keyCodes: KeyCodes) {

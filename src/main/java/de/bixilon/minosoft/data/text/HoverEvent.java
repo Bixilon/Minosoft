@@ -37,7 +37,7 @@ public class HoverEvent {
         }
         json.get("value");
         this.value = switch (this.action) { // ToDo
-            case SHOW_TEXT -> ChatComponent.valueOf(data);
+            case SHOW_TEXT -> ChatComponent.Companion.valueOf(null, null, data);
             case SHOW_ENTITY -> EntityHoverData.deserialize(data);
             default -> null;
         };
@@ -79,7 +79,7 @@ public class HoverEvent {
             if (json.has("type")) {
                 type = new ResourceLocation(json.get("type").getAsString());
             }
-            return new EntityHoverData(Util.getUUIDFromString(json.get("id").getAsString()), type, ChatComponent.valueOf(json.get("name")));
+            return new EntityHoverData(Util.getUUIDFromString(json.get("id").getAsString()), type, ChatComponent.Companion.valueOf(null, null, json.get("name")));
         }
     }
 }

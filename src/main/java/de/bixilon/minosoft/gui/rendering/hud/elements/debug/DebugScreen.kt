@@ -24,7 +24,7 @@ abstract class DebugScreen(hudRenderer: HUDRenderer) : HUDElement(hudRenderer) {
     protected var lastPrepareTime = 0L
 
     fun text(text: String = ""): TextElement {
-        val textElement = TextElement(ChatComponent.valueOf(text), hudRenderer.renderWindow.font, Vec2i(2, layout.size.y + RenderConstants.TEXT_LINE_PADDING))
+        val textElement = TextElement(ChatComponent.valueOf(raw = text), hudRenderer.renderWindow.font, Vec2i(2, layout.size.y + RenderConstants.TEXT_LINE_PADDING))
         layout.addChild(textElement)
         return textElement
     }

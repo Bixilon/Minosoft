@@ -182,7 +182,7 @@ public class MainWindow implements Initializable {
 
         submitButton.setOnAction(actionEvent -> {
             Server server1 = server;
-            ChatComponent serverName = ChatComponent.valueOf(serverNameField.getText());
+            ChatComponent serverName = ChatComponent.Companion.valueOf(null, null, serverNameField.getText());
             String serverAddress = DNSUtil.correctHostName(serverAddressField.getText());
             int desiredVersionId = GUITools.VERSION_COMBO_BOX.getSelectionModel().getSelectedItem().getVersionId();
 

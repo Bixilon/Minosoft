@@ -20,6 +20,8 @@ import de.bixilon.minosoft.util.enum.ValuesEnum
 
 object WorldBorderClientboundPacketFactory {
 
+    // this function was signed by Maximilian Rosenmüller
+    // and that means A LOT!
     fun createPacket(buffer: PlayInByteBuffer): PlayClientboundPacket {
         return when (WorldBorderActions.VALUES[buffer.readVarInt()]) {
             WorldBorderActions.SET_SIZE -> SetSizeWorldBorderClientboundPacket(buffer)

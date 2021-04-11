@@ -67,10 +67,10 @@ public class PacketBossBar extends PlayClientboundPacket {
     @Override
     public void log() {
         switch (this.action) {
-            case ADD -> Log.protocol(String.format("[IN] Received boss bar (action=%s, uuid=%s, title=\"%s\", health=%s, color=%s, divisions=%s, dragonBar=%s, darkenSky=%s)", this.action, this.uuid.toString(), this.title.getANSIColoredMessage(), this.health, this.color, this.divisions, isDragonBar(), shouldDarkenSky()));
+            case ADD -> Log.protocol(String.format("[IN] Received boss bar (action=%s, uuid=%s, title=\"%s\", health=%s, color=%s, divisions=%s, dragonBar=%s, darkenSky=%s)", this.action, this.uuid.toString(), this.title.getAnsiColoredMessage(), this.health, this.color, this.divisions, isDragonBar(), shouldDarkenSky()));
             case REMOVE -> Log.protocol(String.format("[IN] Received boss bar (action=%s, uuid=%s)", this.action, this.uuid.toString()));
             case UPDATE_HEALTH -> Log.protocol(String.format("[IN] Received boss bar (action=%s, uuid=%s, health=%s)", this.action, this.uuid.toString(), this.health));
-            case UPDATE_TITLE -> Log.protocol(String.format("[IN] Received boss bar (action=%s, uuid=%s, title=\"%s\")", this.action, this.uuid.toString(), this.title.getANSIColoredMessage()));
+            case UPDATE_TITLE -> Log.protocol(String.format("[IN] Received boss bar (action=%s, uuid=%s, title=\"%s\")", this.action, this.uuid.toString(), this.title.getAnsiColoredMessage()));
             case UPDATE_STYLE -> Log.protocol(String.format("[IN] Received boss bar (action=%s, uuid=%s, color=%s, divisions=%s)", this.action, this.uuid.toString(), this.color, this.divisions));
             case UPDATE_FLAGS -> Log.protocol(String.format("[IN] Received boss bar (action=%s, uuid=%s, dragonBar=%s, darkenSky=%s)", this.action, this.uuid.toString(), isDragonBar(), shouldDarkenSky()));
         }

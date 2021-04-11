@@ -48,7 +48,7 @@ public class PacketStatusResponse extends StatusClientboundPacket {
         } else {
             connection.setServerVersion(version);
         }
-        Log.info(String.format("Status response received: %s/%s online. MotD: '%s'", getResponse().getPlayerOnline(), getResponse().getMaxPlayers(), getResponse().getMotd().getANSIColoredMessage()));
+        Log.info(String.format("Status response received: %s/%s online. MotD: '%s'", getResponse().getPlayerOnline(), getResponse().getMaxPlayers(), getResponse().getMotd().getAnsiColoredMessage()));
         connection.handlePingCallbacks(getResponse());
         connection.setConnectionStatusPing(new ConnectionPing());
         connection.sendPacket(new StatusPingServerboundPacket(connection.getConnectionStatusPing()));

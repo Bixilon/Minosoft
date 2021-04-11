@@ -39,7 +39,7 @@ class PacketJoinGame(buffer: PlayInByteBuffer) : PlayClientboundPacket() {
     val entityId: Int
     val isHardcore: Boolean
     val gamemode: Gamemodes
-    lateinit var dimension: Dimension
+    var dimension: Dimension
         private set
     var difficulty: Difficulties = Difficulties.NORMAL
         private set

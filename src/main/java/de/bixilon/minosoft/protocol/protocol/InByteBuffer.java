@@ -179,7 +179,7 @@ public class InByteBuffer {
     }
 
     public ChatComponent readChatComponent() {
-        return ChatComponent.valueOf(null, readString());
+        return ChatComponent.Companion.valueOf(null, null, readString());
     }
 
     @IntRange(from = 0)

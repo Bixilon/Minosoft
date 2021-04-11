@@ -15,7 +15,6 @@ package de.bixilon.minosoft.protocol.ping;
 
 import com.google.gson.JsonObject;
 import de.bixilon.minosoft.data.locale.minecraft.MinecraftLocaleManager;
-import de.bixilon.minosoft.data.text.BaseComponent;
 import de.bixilon.minosoft.data.text.ChatComponent;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import de.bixilon.minosoft.util.logging.Log;
@@ -46,11 +45,7 @@ public class ServerListPing {
             this.favicon = Base64.getDecoder().decode(json.get("favicon").getAsString().replace("data:image/png;base64,", "").replace("\n", ""));
         }
 
-        if (json.get("description").isJsonPrimitive()) {
-            this.motd = ChatComponent.valueOf(json.get("description").getAsString());
-        } else {
-            this.motd = new BaseComponent(localeManager, json.getAsJsonObject("description"));
-        }
+        this.motd = ChatComponent.Companion.valueOf(localeManager, null, json.get("description"));
         this.serverBrand = json.getAsJsonObject("version").get("name").getAsString();
 
         if (json.has("modinfo") && json.getAsJsonObject("modinfo").has("type") && json.getAsJsonObject("modinfo").get("type").getAsString().equals("FML")) {

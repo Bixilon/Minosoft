@@ -30,13 +30,13 @@ public class PacketLoginDisconnect extends PlayClientboundPacket {
     @Override
     public void handle(PlayConnection connection) {
         connection.fireEvent(new LoginDisconnectEvent(connection, this));
-        Log.info(String.format("Kicked while logging in to %s (reason=%s)", connection.getAddress(), getReason().getANSIColoredMessage()));
+        Log.info(String.format("Kicked while logging in to %s (reason=%s)", connection.getAddress(), getReason().getAnsiColoredMessage()));
         connection.disconnect();
     }
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Receiving login disconnect packet (%s)", this.reason.getANSIColoredMessage()));
+        Log.protocol(String.format("[IN] Receiving login disconnect packet (%s)", this.reason.getAnsiColoredMessage()));
     }
 
     public ChatComponent getReason() {
