@@ -62,6 +62,6 @@ class PacketBlockChange(buffer: PlayInByteBuffer) : PlayClientboundPacket() {
     }
 
     override fun log() {
-        Log.protocol(String.format("[IN] Block change received at %s (block=%s)", blockPosition, block))
+        Log.protocol("[IN] Block change received (position=${blockPosition}, block=$block)")
     }
 }

@@ -278,7 +278,7 @@ class WorldRenderer(
         val sections: MutableMap<Int, ChunkSection> = Collections.synchronizedMap(ConcurrentHashMap())
         val chunk = world.getChunk(chunkPosition)!!
         val lowestSectionHeight = getSectionIndex(sectionHeight) * RenderConstants.CHUNK_SECTIONS_PER_MESH
-        for (i in lowestSectionHeight until lowestSectionHeight + (RenderConstants.CHUNK_SECTIONS_PER_MESH - 1)) {
+        for (i in lowestSectionHeight until lowestSectionHeight + RenderConstants.CHUNK_SECTIONS_PER_MESH) {
             sections[i] = chunk.sections?.get(i) ?: continue
         }
         prepareChunkSections(chunkPosition, sections)

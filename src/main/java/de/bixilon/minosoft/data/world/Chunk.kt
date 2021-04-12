@@ -18,7 +18,6 @@ import de.bixilon.minosoft.data.world.light.LightAccessor
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.inChunkSectionPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
 import glm_.vec3.Vec3i
-import java.util.*
 
 /**
  * Collection of chunks sections (allocated in y)
@@ -71,7 +70,7 @@ class Chunk(
         }
     }
 
-    fun setRawBlocks(blocks: HashMap<Vec3i, BlockState?>) {
+    fun setRawBlocks(blocks: Map<Vec3i, BlockState?>) {
         for ((location, blockState) in blocks) {
             setBlockState(location, blockState)
         }

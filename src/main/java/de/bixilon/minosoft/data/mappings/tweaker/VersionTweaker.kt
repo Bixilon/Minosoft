@@ -115,7 +115,7 @@ object VersionTweaker {
 
 
     @JvmStatic
-    fun transformBlock(originalBlock: BlockState, sections: Map<Int, ChunkSection>, inChunkSectionPositions: Vec3i, sectionHeight: Int): BlockState? {
+    fun transformBlock(originalBlock: BlockState?, sections: Map<Int, ChunkSection>, inChunkSectionPositions: Vec3i, sectionHeight: Int): BlockState? {
         // ToDo: Broken
         return originalBlock
     }

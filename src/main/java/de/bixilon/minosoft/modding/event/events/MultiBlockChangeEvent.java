@@ -19,16 +19,16 @@ import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketMultiBlockCha
 import glm_.vec2.Vec2i;
 import glm_.vec3.Vec3i;
 
-import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Fired when at least block is changed
  */
 public class MultiBlockChangeEvent extends PlayConnectionEvent {
-    private final HashMap<Vec3i, BlockState> blocks;
+    private final Map<Vec3i, BlockState> blocks;
     private final Vec2i chunkPosition;
 
-    public MultiBlockChangeEvent(PlayConnection connection, HashMap<Vec3i, BlockState> blocks, Vec2i position) {
+    public MultiBlockChangeEvent(PlayConnection connection, Map<Vec3i, BlockState> blocks, Vec2i position) {
         super(connection);
         this.blocks = blocks;
         this.chunkPosition = position;
@@ -40,7 +40,7 @@ public class MultiBlockChangeEvent extends PlayConnectionEvent {
         this.chunkPosition = pkg.getChunkPosition();
     }
 
-    public HashMap<Vec3i, BlockState> getBlocks() {
+    public Map<Vec3i, BlockState> getBlocks() {
         return this.blocks;
     }
 

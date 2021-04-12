@@ -418,4 +418,16 @@ public class InByteBuffer {
     public Vec2i readChunkPosition() {
         return new Vec2i(readInt(), readInt());
     }
+
+    public long[] readVarLongArray(int size) {
+        var ret = new long[size];
+        for (int i = 0; i < size; i++) {
+            ret[i] = readVarLong();
+        }
+        return ret;
+    }
+
+    public long[] readVarLongArray() {
+        return readVarLongArray(readVarInt());
+    }
 }
