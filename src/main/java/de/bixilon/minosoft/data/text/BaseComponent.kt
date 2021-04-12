@@ -79,7 +79,7 @@ class BaseComponent : ChatComponent {
     }
 
     constructor(translator: Translator? = null, parent: TextComponent? = null, json: JsonObject) {
-        var currentParent = parent
+        val currentParent: TextComponent?
         var currentText = ""
         json["text"]?.asString?.let {
             if (it.indexOf(ProtocolDefinition.TEXT_COMPONENT_SPECIAL_PREFIX_CHAR) != -1) {
