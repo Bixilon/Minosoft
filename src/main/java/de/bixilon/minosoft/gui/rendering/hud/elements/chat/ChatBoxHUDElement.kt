@@ -17,6 +17,7 @@ import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames
 import de.bixilon.minosoft.gui.rendering.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.hud.elements.HUDElement
 import de.bixilon.minosoft.gui.rendering.hud.elements.input.SubmittableTextField
+import glm_.vec2.Vec2i
 
 class ChatBoxHUDElement(hudRenderer: HUDRenderer) : HUDElement(hudRenderer) {
     private lateinit var inputField: SubmittableTextField
@@ -41,6 +42,10 @@ class ChatBoxHUDElement(hudRenderer: HUDRenderer) : HUDElement(hudRenderer) {
         hudRenderer.renderWindow.registerKeyCallback(KeyBindingsNames.CLOSE_CHAT) { _, _ ->
             closeChat()
         }
+    }
+
+    override fun screenChangeResizeCallback(screenDimensions: Vec2i) {
+        layout.fakeX = screenDimensions.x
     }
 
     fun openChat() {

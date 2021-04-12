@@ -94,16 +94,17 @@ class HUDRenderer(val connection: PlayConnection, val renderWindow: RenderWindow
             enabled = false,
         ))
         addElement(ElementsNames.CHAT_RESOURCE_LOCATION, ChatBoxHUDElement(this), HUDElementProperties(
-            position = Vec2(0f, -1.0f),
+            position = Vec2(0.0f, -1.0f),
+            xBinding = HUDElementProperties.PositionBindings.CENTER,
         ))
     }
 
     fun addElement(resourceLocation: ResourceLocation, hudElement: HUDElement, defaultProperties: HUDElementProperties) {
         var needToSafeConfig = false
-        val properties = Minosoft.getConfig().config.game.elements.entries.getOrPut(resourceLocation, {
+        val properties = Minosoft.getConfig().config.game.elements.entries.getOrPut(resourceLocation) {
             needToSafeConfig = true
             defaultProperties
-        })
+        }
         if (needToSafeConfig) {
             Minosoft.getConfig().saveToFile()
         }
@@ -182,7 +183,7 @@ class HUDRenderer(val connection: PlayConnection, val renderWindow: RenderWindow
         if (forcePrepare || needsUpdate) {
             for ((elementProperties, hudElement) in enabledHUDElement.values) {
                 val realScaleFactor = elementProperties.scale * Minosoft.getConfig().config.game.hud.scale
-                val realSize = Vec2i(hudElement.layout.fakeX ?: hudElement.layout.size.x, hudElement.layout.fakeY ?: hudElement.layout.size.y) * realScaleFactor
+                val realSize = Vec2i(hudElement.layout.fakeX ?: (hudElement.layout.size.x * realScaleFactor), hudElement.layout.fakeY ?: (hudElement.layout.size.y * realScaleFactor))
 
                 val elementStart = getRealPosition(realSize, elementProperties, renderWindow.screenDimensions)
 
