@@ -108,11 +108,14 @@ data class BlockState(
     }
 
     fun getBlockRenderer(blockPosition: Vec3i): BlockLikeRenderer {
-        if (Minosoft.getConfig().config.game.other.antiMoirePattern && renderers.size > 1) {
-            // ToDo: Support weight attribute
-            return renderers.random(Random(blockPosition.hashCode()))
+        if (renderers.isEmpty()) {
+            throw IllegalArgumentException("$this has not renderer!")
         }
-        return renderers[0]
+        if (renderers.size == 1 || Minosoft.getConfig().config.game.other.antiMoirePattern) {
+            return renderers[0]
+        }
+        // ToDo: Support weight attribute
+        return renderers.random(Random(blockPosition.hashCode()))
     }
 
 

@@ -64,6 +64,10 @@ class PacketChunkData() : PlayClientboundPacket() {
             }
             return
         }
+
+        if (buffer.versionId >= ProtocolVersions.V_1_16_PRE7 && buffer.versionId < ProtocolVersions.V_1_16_2_PRE2) {
+            buffer.readBoolean() // ToDo: ignore old data???
+        }
         val sectionBitMask: BitSet = when {
             buffer.versionId < ProtocolVersions.V_15W34C -> {
                 BitSet.valueOf(buffer.readBytes(2))
@@ -77,9 +81,6 @@ class PacketChunkData() : PlayClientboundPacket() {
             else -> {
                 BitSet.valueOf(buffer.readLongArray())
             }
-        }
-        if (buffer.versionId >= ProtocolVersions.V_1_16_PRE7 && buffer.versionId < ProtocolVersions.V_1_16_2_PRE2) {
-            isFullChunk = buffer.readBoolean()
         }
         if (buffer.versionId >= ProtocolVersions.V_18W44A) {
             heightMap = buffer.readNBT() as CompoundTag

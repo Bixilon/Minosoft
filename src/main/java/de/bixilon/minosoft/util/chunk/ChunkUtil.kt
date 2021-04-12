@@ -166,19 +166,19 @@ object ChunkUtil {
             val blocks = arrayOfNulls<BlockState>(ProtocolDefinition.BLOCKS_PER_SECTION)
             for (blockNumber in 0 until ProtocolDefinition.BLOCKS_PER_SECTION) {
                 var blockId: Long = if (buffer.versionId < V_1_16) { // ToDo: When did this changed? is just a guess
-                    val startLong = blockNumber * palette.bitsPerBlock / java.lang.Long.SIZE
-                    val startOffset = blockNumber * palette.bitsPerBlock % java.lang.Long.SIZE
-                    val endLong = ((blockNumber + 1) * palette.bitsPerBlock - 1) / java.lang.Long.SIZE
+                    val startLong = blockNumber * palette.bitsPerBlock / Long.SIZE_BITS
+                    val startOffset = blockNumber * palette.bitsPerBlock % Long.SIZE_BITS
+                    val endLong = ((blockNumber + 1) * palette.bitsPerBlock - 1) / Long.SIZE_BITS
 
                     if (startLong == endLong) {
                         data[startLong] ushr startOffset
                     } else {
-                        val endOffset = java.lang.Long.SIZE - startOffset
+                        val endOffset = Long.SIZE_BITS - startOffset
                         data[startLong] ushr startOffset or (data[endLong] shl endOffset)
                     }
                 } else {
-                    val startLong = blockNumber / (java.lang.Long.SIZE / palette.bitsPerBlock)
-                    val startOffset = blockNumber % (java.lang.Long.SIZE / palette.bitsPerBlock) * palette.bitsPerBlock
+                    val startLong = blockNumber / (Long.SIZE_BITS / palette.bitsPerBlock)
+                    val startOffset = blockNumber % (Long.SIZE_BITS / palette.bitsPerBlock) * palette.bitsPerBlock
                     data[startLong] ushr startOffset
                 }
 
