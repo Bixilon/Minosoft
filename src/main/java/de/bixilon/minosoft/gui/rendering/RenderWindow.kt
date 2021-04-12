@@ -188,9 +188,8 @@ class RenderWindow(
                     val keyBinding = keyCallbackPair.first
                     val keyCallbacks = keyCallbackPair.second
 
-                    var anyCheckRun = false
 
-                    var andWhenValid = false
+                    var andWhenValid = keyBinding.`when`.isEmpty()
                     for (or in keyBinding.`when`) {
                         var andValid = true
                         for (and in or) {
@@ -207,6 +206,8 @@ class RenderWindow(
                     if (!andWhenValid) {
                         return@run
                     }
+
+                    var anyCheckRun = false
 
                     keyBinding.action[KeyAction.MODIFIER]?.let {
                         val previousKeysDown = if (keyAction == KeyAction.RELEASE) {

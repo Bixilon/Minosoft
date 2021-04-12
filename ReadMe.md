@@ -36,7 +36,10 @@ Works. Still missing many features, but heavily developed.
 Lighting demo.
 
 ![Rendering](doc/img/rendering2.png)  
-Biomes demo (picture not up to date, contains bugs)
+Old picture with bugs
+
+![Rendering](doc/img/rendering3.png)  
+Picture with hotbar, biomes, biome blending, lighting, fluids, ...
 
 ## Starting, etc
 
