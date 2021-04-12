@@ -55,7 +55,7 @@ public class NonBlockingSocketNetwork extends Network {
         if (this.connection.isConnected() || this.connection.getConnectionState() == ConnectionStates.CONNECTING) {
             return;
         }
-        this.lastException = null;
+        this.connection.setLastException(null);
         this.connection.setConnectionState(ConnectionStates.CONNECTING);
         new Thread(() -> {
             try {
@@ -155,12 +155,12 @@ public class NonBlockingSocketNetwork extends Network {
                         }
                     }
                 }
-            } catch (IOException | PacketTooLongException e) {
-                if (e instanceof SocketException && e.getMessage().equals("Socket closed")) {
+            } catch (IOException | PacketTooLongException exception) {
+                if (exception instanceof SocketException && exception.getMessage().equals("Socket closed")) {
                     return;
                 }
-                Log.printException(e, LogLevels.PROTOCOL);
-                this.lastException = e;
+                Log.printException(exception, LogLevels.PROTOCOL);
+                this.connection.setLastException(exception);
                 this.connection.setConnectionState(ConnectionStates.FAILED);
             }
         }, String.format("Network#%d", this.connection.getConnectionId())).start();

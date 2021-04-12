@@ -79,7 +79,7 @@ public class BlockingSocketNetwork extends Network {
         if (this.connection.isConnected() || this.connection.getConnectionState() == ConnectionStates.CONNECTING) {
             return;
         }
-        this.lastException = null;
+        this.connection.setLastException(null);
         this.connection.setConnectionState(ConnectionStates.CONNECTING);
         this.socketReceiveThread = new Thread(() -> {
             try {
@@ -111,18 +111,18 @@ public class BlockingSocketNetwork extends Network {
                     }
                 }
                 this.connection.disconnect();
-            } catch (Throwable e) {
+            } catch (Throwable exception) {
                 // Could not connect
                 this.connection.setConnectionState(ConnectionStates.DISCONNECTING);
                 if (this.socketSendThread != null) {
                     this.socketSendThread.interrupt();
                 }
-                if (e instanceof SocketException && e.getMessage().equals("Socket closed")) {
+                if (exception instanceof SocketException && exception.getMessage().equals("Socket closed")) {
                     this.connection.setConnectionState(ConnectionStates.DISCONNECTED);
                     return;
                 }
-                Log.printException(e, LogLevels.PROTOCOL);
-                this.lastException = e;
+                Log.printException(exception, LogLevels.PROTOCOL);
+                this.connection.setLastException(exception);
                 this.connection.setConnectionState(ConnectionStates.FAILED);
             }
         }, String.format("%d/Socket", this.connection.getConnectionId()));

@@ -36,7 +36,6 @@ import de.bixilon.minosoft.util.logging.Log;
 public abstract class Network {
     protected final Connection connection;
     protected int compressionThreshold = -1;
-    protected Throwable lastException;
 
     protected Network(Connection connection) {
         this.connection = connection;
@@ -51,11 +50,6 @@ public abstract class Network {
     public abstract void sendPacket(ServerboundPacket packet);
 
     public abstract void disconnect();
-
-    public Throwable getLastException() {
-        return this.lastException;
-    }
-
 
     protected Pair<PacketTypes.Clientbound, ClientboundPacket> receiveClientboundPacket(byte[] bytes) throws PacketParseException {
         if (this.compressionThreshold >= 0) {

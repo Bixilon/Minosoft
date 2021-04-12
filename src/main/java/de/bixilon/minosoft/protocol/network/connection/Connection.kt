@@ -31,7 +31,7 @@ abstract class Connection {
     protected val eventListeners = LinkedList<EventInvoker>()
     val connectionId = lastConnectionId++
     abstract var connectionState: ConnectionStates
-    var lastException: Exception? = null
+    var lastException: Throwable? = null
 
     abstract fun getPacketId(packetType: Serverbound): Int
     abstract fun getPacketById(packetId: Int): Clientbound?
