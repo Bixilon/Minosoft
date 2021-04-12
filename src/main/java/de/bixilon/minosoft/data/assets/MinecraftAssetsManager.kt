@@ -27,7 +27,6 @@ import java.io.FileInputStream
 import java.io.FileNotFoundException
 import java.io.InputStream
 import java.net.URL
-import java.util.*
 import java.util.zip.GZIPInputStream
 import java.util.zip.ZipEntry
 import java.util.zip.ZipInputStream
@@ -71,14 +70,15 @@ class MinecraftAssetsManager(
 
     fun generateJarAssets(): String {
         val startTime = System.currentTimeMillis()
-        Log.verbose("Generating client.jar assets for %s...", this.assetVersion.version)
         this.assetVersion.jarAssetsHash?.let {
-            verifyAssetHash(it)
-            // ToDo: Verify all jar assets
-            Log.verbose("client.jar assets probably already generated for %s, skipping", this.assetVersion.version)
-            return this.assetVersion.jarAssetsHash
-
+            if (verifyAssetHash(it)) {
+                // ToDo: Verify all jar assets
+                Log.verbose("client.jar assets probably already generated for %s, skipping", this.assetVersion.version)
+                return this.assetVersion.jarAssetsHash
+            }
         }
+
+        Log.verbose("Generating client.jar assets for %s...", this.assetVersion.version)
         // download jar
         downloadAsset(String.format(ProtocolDefinition.MOJANG_LAUNCHER_URL_PACKAGES, this.assetVersion.clientJarHash, "client.jar"), this.assetVersion.clientJarHash!!, true)
         val clientJarAssetsHashMap = HashMap<String, String>()
