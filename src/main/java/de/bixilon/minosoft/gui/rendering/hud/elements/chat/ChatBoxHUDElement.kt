@@ -44,14 +44,14 @@ class ChatBoxHUDElement(hudRenderer: HUDRenderer) : HUDElement(hudRenderer) {
     }
 
     fun openChat() {
-        hudRenderer.renderWindow.currentInputConsumer = inputField
+        hudRenderer.renderWindow.currentKeyConsumer = inputField
         hudRenderer.renderWindow.currentElement.remove(KeyBindingsNames.WHEN_IN_GAME)
         hudRenderer.renderWindow.currentElement.add(KeyBindingsNames.WHEN_IN_CHAT)
     }
 
     fun closeChat() {
         inputField.clearText()
-        hudRenderer.renderWindow.currentInputConsumer = null
+        hudRenderer.renderWindow.currentKeyConsumer = null
         hudRenderer.renderWindow.currentElement.remove(KeyBindingsNames.WHEN_IN_CHAT)
         hudRenderer.renderWindow.currentElement.add(KeyBindingsNames.WHEN_IN_GAME)
     }

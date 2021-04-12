@@ -86,7 +86,7 @@ class RenderWindow(
 
     private var skipNextChatPress = false
 
-    var currentInputConsumer: KeyConsumer?
+    var currentKeyConsumer: KeyConsumer?
         get() = _currentInputConsumer
         set(value) {
             _currentInputConsumer = value
@@ -101,6 +101,14 @@ class RenderWindow(
                 for (keyCallback in binding.second) {
                     keyCallback.invoke(KeyCodes.KEY_UNKNOWN, KeyAction.RELEASE)
                 }
+            }
+            // ToDo: move to mouse consumer
+            if (value == null) {
+                if (mouseCatch) {
+                    renderQueue.add { glfwSetInputMode(windowId, GLFW_CURSOR, GLFW_CURSOR_DISABLED) }
+                }
+            } else {
+                renderQueue.add { glfwSetInputMode(windowId, GLFW_CURSOR, GLFW_CURSOR_NORMAL) }
             }
             keyBindingDown.clear()
         }
@@ -172,7 +180,7 @@ class RenderWindow(
             if (keyAction == KeyAction.PRESS) {
                 // ToDo: Repeatable keys, long holding, etc
 
-                currentInputConsumer?.keyInput(keyCode)
+                currentKeyConsumer?.keyInput(keyCode)
             }
 
             for ((_, keyCallbackPair) in keyBindingCallbacks) {
@@ -255,7 +263,7 @@ class RenderWindow(
                 skipNextChatPress = false
                 return@glfwSetCharCallback
             }
-            currentInputConsumer?.charInput(char.toChar())
+            currentKeyConsumer?.charInput(char.toChar())
         }
 
         if (mouseCatch) {
