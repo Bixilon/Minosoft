@@ -17,8 +17,8 @@ import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import com.google.gson.JsonPrimitive
 import de.bixilon.minosoft.data.locale.minecraft.Translator
-import de.bixilon.minosoft.gui.rendering.font.Font
-import de.bixilon.minosoft.gui.rendering.hud.elements.primitive.TextElement
+import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.hud.nodes.primitive.LabelNode
 import de.bixilon.minosoft.util.nbt.tag.StringTag
 import glm_.vec2.Vec2i
 import javafx.collections.FXCollections
@@ -61,7 +61,7 @@ interface ChatComponent {
     /**
      * Prepares the chat component for rendering (used in opengl)
      */
-    fun prepareRender(startPosition: Vec2i, offset: Vec2i, font: Font, textElement: TextElement, z: Int, retMaxSize: Vec2i)
+    fun prepareRender(startPosition: Vec2i, offset: Vec2i, renderWindow: RenderWindow, textElement: LabelNode, z: Int, retMaxSize: Vec2i)
 
     companion object {
 

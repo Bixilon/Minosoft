@@ -11,34 +11,27 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.hud.elements.primitive
+package de.bixilon.minosoft.gui.rendering.hud.nodes.primitive
 
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderConstants
+import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.hud.HUDMesh
 import de.bixilon.minosoft.gui.rendering.hud.atlas.TextureLike
+import de.bixilon.minosoft.gui.rendering.hud.nodes.properties.NodeSizing
 import glm_.mat4x4.Mat4
 import glm_.vec2.Vec2
 import glm_.vec2.Vec2i
 import glm_.vec3.Vec3
 import glm_.vec4.Vec4
 
-class ImageElement(
-    start: Vec2i = Vec2i(0, 0),
+class ImageNode(
+    renderWindow: RenderWindow,
+    sizing: NodeSizing = NodeSizing(),
     var textureLike: TextureLike?,
-    end: Vec2i = textureLike?.size ?: Vec2i(0, 0),
     val z: Int = 0,
     val tintColor: RGBColor? = null,
-) : EndElement(start, end, initialCacheSize = HUDMesh.FLOATS_PER_VERTEX * 6) {
-
-    init {
-        recalculateSize()
-    }
-
-    override fun recalculateSize() {
-        size = end - start
-        parent?.recalculateSize()
-    }
+) : Node(renderWindow, sizing = sizing, initialCacheSize = HUDMesh.FLOATS_PER_VERTEX * 6) {
 
 
     private fun addToStart(start: Vec2i, elementPosition: Vec2i): Vec2i {
@@ -49,22 +42,11 @@ class ImageElement(
         return Vec2i(start.x + elementPosition.x, start.y - elementPosition.y)
     }
 
+    override fun apply() {}
+
     override fun prepareCache(start: Vec2i, scaleFactor: Float, matrix: Mat4, z: Int) {
-        val ourStart = addToStart(start, this.start * scaleFactor)
-        val modelStart = matrix * Vec4(RenderConstants.PIXEL_UV_PIXEL_ADD + ourStart, 1.0f, 1.0f)
-        val realEnd = Vec2i(
-            x = if (end.x == -1) {
-                parent!!.size.x
-            } else {
-                end.x * scaleFactor
-            },
-            y = if (end.y == -1) {
-                parent!!.size.y
-            } else {
-                end.y * scaleFactor
-            }
-        )
-        val ourEnd = addToEnd(start, realEnd)
+        val modelStart = matrix * Vec4(RenderConstants.PIXEL_UV_PIXEL_ADD + start, 1.0f, 1.0f)
+        val ourEnd = addToEnd(start, sizing.currentSize * scaleFactor)
         val modelEnd = matrix * Vec4(RenderConstants.PIXEL_UV_PIXEL_ADD + ourEnd, 1.0f, 1.0f)
 
         val uvStart = textureLike?.uvStart ?: Vec2()

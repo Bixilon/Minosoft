@@ -11,15 +11,11 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.hud.elements.input
+package de.bixilon.minosoft.gui.rendering.hud.nodes.properties
 
-import de.bixilon.minosoft.config.key.KeyCodes
+enum class NodeAlignment {
+    LEFT,
+    RIGHT,
+    CENTER,
 
-interface KeyConsumer {
-
-    val focused: Boolean
-
-    fun charInput(char: Char) {}
-
-    fun keyInput(keyCodes: KeyCodes) {}
 }

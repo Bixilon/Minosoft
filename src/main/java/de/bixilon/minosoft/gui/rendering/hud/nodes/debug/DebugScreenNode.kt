@@ -11,36 +11,22 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.hud.elements.input
+package de.bixilon.minosoft.gui.rendering.hud.nodes.debug
 
-import de.bixilon.minosoft.config.key.KeyCodes
-import de.bixilon.minosoft.gui.rendering.font.Font
+import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.gui.rendering.RenderConstants
+import de.bixilon.minosoft.gui.rendering.hud.HUDRenderer
+import de.bixilon.minosoft.gui.rendering.hud.nodes.HUDElement
+import de.bixilon.minosoft.gui.rendering.hud.nodes.primitive.LabelNode
 import glm_.vec2.Vec2i
 
-class SubmittableTextField(
-    start: Vec2i = Vec2i(0, 0),
-    z: Int = 0,
-    font: Font,
-    defaultText: String = "",
-    maxLength: Int = 256,
-    private val onSubmit: (text: String) -> Boolean,
-) : TextField(start, z, font, defaultText, maxLength) {
+abstract class DebugScreenNode(hudRenderer: HUDRenderer) : HUDElement(hudRenderer) {
+    protected var lastPrepareTime = 0L
 
-    fun submit() {
-        if (!onSubmit.invoke(text)) {
-            // failed
-            return
-        }
-        text = ""
-    }
-
-
-    override fun keyInput(keyCodes: KeyCodes) {
-        if (keyCodes == KeyCodes.KEY_ENTER) {
-            // submit
-            submit()
-            return
-        }
-        super.keyInput(keyCodes)
+    fun text(text: String = ""): LabelNode {
+        val textElement = LabelNode(hudRenderer.renderWindow, text = ChatComponent.valueOf(raw = text))
+        layout.addChild(Vec2i(0, layout.sizing.currentSize.y + RenderConstants.TEXT_LINE_PADDING), textElement)
+        layout.apply()
+        return textElement
     }
 }

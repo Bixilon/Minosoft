@@ -15,8 +15,8 @@ package de.bixilon.minosoft.data.text
 
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.locale.minecraft.Translator
-import de.bixilon.minosoft.gui.rendering.font.Font
-import de.bixilon.minosoft.gui.rendering.hud.elements.primitive.TextElement
+import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.hud.nodes.primitive.LabelNode
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import glm_.vec2.Vec2i
 import javafx.collections.ObservableList
@@ -174,9 +174,9 @@ class BaseComponent : ChatComponent {
         return nodes
     }
 
-    override fun prepareRender(startPosition: Vec2i, offset: Vec2i, font: Font, textElement: TextElement, z: Int, retMaxSize: Vec2i) {
+    override fun prepareRender(startPosition: Vec2i, offset: Vec2i, renderWindow: RenderWindow, textElement: LabelNode, z: Int, retMaxSize: Vec2i) {
         for (part in parts) {
-            part.prepareRender(startPosition, offset, font, textElement, z, retMaxSize)
+            part.prepareRender(startPosition, offset, renderWindow, textElement, z, retMaxSize)
         }
     }
 

@@ -21,12 +21,10 @@ import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.Renderer
 import de.bixilon.minosoft.gui.rendering.hud.atlas.HUDAtlasElement
-import de.bixilon.minosoft.gui.rendering.hud.elements.HUDElement
-import de.bixilon.minosoft.gui.rendering.hud.elements.chat.ChatBoxHUDElement
-import de.bixilon.minosoft.gui.rendering.hud.elements.debug.HUDSystemDebugElement
-import de.bixilon.minosoft.gui.rendering.hud.elements.debug.HUDWorldDebugElement
 import de.bixilon.minosoft.gui.rendering.hud.elements.other.CrosshairHUDElement
-import de.bixilon.minosoft.gui.rendering.hud.elements.other.HotbarHUDElement
+import de.bixilon.minosoft.gui.rendering.hud.nodes.HUDElement
+import de.bixilon.minosoft.gui.rendering.hud.nodes.debug.HUDSystemDebugNode
+import de.bixilon.minosoft.gui.rendering.hud.nodes.debug.HUDWorldDebugNode
 import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
@@ -73,29 +71,21 @@ class HUDRenderer(val connection: PlayConnection, val renderWindow: RenderWindow
     }
 
     private fun registerDefaultElements() {
-        addElement(ElementsNames.HOTBAR_RESOURCE_LOCATION, HotbarHUDElement(this), HUDElementProperties(
-            position = Vec2(0.0f, -1.0f),
-            xBinding = HUDElementProperties.PositionBindings.CENTER,
-        ))
-
         addElement(ElementsNames.CROSSHAIR_RESOURCE_LOCATION, CrosshairHUDElement(this), HUDElementProperties(
             position = Vec2(0.0f, 0.0f),
             xBinding = HUDElementProperties.PositionBindings.CENTER,
             yBinding = HUDElementProperties.PositionBindings.CENTER,
         ))
-        addElement(ElementsNames.WORLD_DEBUG_SCREEN_RESOURCE_LOCATION, HUDWorldDebugElement(this), HUDElementProperties(
+
+        addElement(ElementsNames.WORLD_DEBUG_SCREEN_RESOURCE_LOCATION, HUDWorldDebugNode(this), HUDElementProperties(
             position = Vec2(-1.0f, 1.0f),
             toggleKeyBinding = KeyBindingsNames.TOGGLE_DEBUG_SCREEN,
             enabled = false,
         ))
-        addElement(ElementsNames.SYSTEM_DEBUG_SCREEN_RESOURCE_LOCATION, HUDSystemDebugElement(this), HUDElementProperties(
+        addElement(ElementsNames.SYSTEM_DEBUG_SCREEN_RESOURCE_LOCATION, HUDSystemDebugNode(this), HUDElementProperties(
             position = Vec2(1.0f, 1.0f),
             toggleKeyBinding = KeyBindingsNames.TOGGLE_DEBUG_SCREEN,
             enabled = false,
-        ))
-        addElement(ElementsNames.CHAT_RESOURCE_LOCATION, ChatBoxHUDElement(this), HUDElementProperties(
-            position = Vec2(0.0f, -1.0f),
-            xBinding = HUDElementProperties.PositionBindings.CENTER,
         ))
     }
 
@@ -183,7 +173,7 @@ class HUDRenderer(val connection: PlayConnection, val renderWindow: RenderWindow
         if (forcePrepare || needsUpdate) {
             for ((elementProperties, hudElement) in enabledHUDElement.values) {
                 val realScaleFactor = elementProperties.scale * Minosoft.getConfig().config.game.hud.scale
-                val realSize = Vec2i(hudElement.layout.fakeX ?: (hudElement.layout.size.x * realScaleFactor), hudElement.layout.fakeY ?: (hudElement.layout.size.y * realScaleFactor))
+                val realSize = hudElement.layout.sizing.currentSize * realScaleFactor
 
                 val elementStart = getRealPosition(realSize, elementProperties, renderWindow.screenDimensions)
 

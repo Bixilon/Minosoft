@@ -11,18 +11,25 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.hud.elements.debug
+package de.bixilon.minosoft.gui.rendering.hud.nodes.debug
 
 import de.bixilon.minosoft.data.Directions
 import de.bixilon.minosoft.gui.rendering.hud.HUDRenderer
+import de.bixilon.minosoft.gui.rendering.hud.nodes.properties.NodeAlignment
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.UnitFormatter
 
 
-class HUDWorldDebugElement(hudRenderer: HUDRenderer) : DebugScreen(hudRenderer) {
+class HUDWorldDebugNode(hudRenderer: HUDRenderer) : DebugScreenNode(hudRenderer) {
     private val camera = hudRenderer.renderWindow.camera
 
-    private val brandText = text("§cMinosoft 0.1-pre1")
+    init {
+        layout.sizing.forceAlign = NodeAlignment.LEFT
+        layout.sizing.padding.left = 2
+        layout.sizing.padding.top = 2
+        text("§cMinosoft 0.1-pre1")
+    }
+
     private val fpsText = text("TBA")
     private val timingsText = text("TBA")
     private val chunksText = text("TBA")

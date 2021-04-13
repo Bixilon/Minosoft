@@ -14,12 +14,13 @@ package de.bixilon.minosoft.data.text
 
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.gui.rendering.RenderConstants
+import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.font.Font
-import de.bixilon.minosoft.gui.rendering.hud.elements.primitive.ImageElement
-import de.bixilon.minosoft.gui.rendering.hud.elements.primitive.TextElement
+import de.bixilon.minosoft.gui.rendering.hud.nodes.primitive.ImageNode
+import de.bixilon.minosoft.gui.rendering.hud.nodes.primitive.LabelNode
+import de.bixilon.minosoft.gui.rendering.hud.nodes.properties.NodeSizing
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.Util
-import glm_.vec2.Vec2
 import glm_.vec2.Vec2i
 import javafx.animation.Animation
 import javafx.animation.KeyFrame
@@ -160,7 +161,7 @@ open class TextComponent(
     }
 
 
-    override fun prepareRender(startPosition: Vec2i, offset: Vec2i, font: Font, textElement: TextElement, z: Int, retMaxSize: Vec2i) {
+    override fun prepareRender(startPosition: Vec2i, offset: Vec2i, renderWindow: RenderWindow, textElement: LabelNode, z: Int, retMaxSize: Vec2i) {
         val color = this.color ?: ChatColors.WHITE
 
 
@@ -177,11 +178,11 @@ open class TextComponent(
                 retMaxSize.y += yOffset
                 continue
             }
-            val fontChar = font.getChar(char)
+            val fontChar = renderWindow.font.getChar(char)
             val scaledWidth = (fontChar.size.x * (Font.CHAR_HEIGHT / fontChar.height.toFloat())).toInt()
 
             val charStart = startPosition + offset
-            textElement.batchAdd(ImageElement(charStart, fontChar, charStart + Vec2(scaledWidth, Font.CHAR_HEIGHT), z, color))
+            textElement.addChild(charStart, ImageNode(renderWindow, NodeSizing(minSize = Vec2i(scaledWidth, Font.CHAR_HEIGHT)), fontChar, 1, color))
 
             // ad spacer between chars
             offset.x += scaledWidth + Font.SPACE_BETWEEN_CHARS

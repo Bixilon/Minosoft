@@ -11,31 +11,23 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.hud.elements.primitive
+package de.bixilon.minosoft.gui.rendering.hud.nodes.primitive
 
+import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.hud.HUDCacheMesh
+import de.bixilon.minosoft.gui.rendering.hud.nodes.properties.NodeSizing
 import glm_.mat4x4.Mat4
 import glm_.vec2.Vec2i
 
-abstract class Element(
-    private var _start: Vec2i,
-    initialCacheSize: Int = 1000,
+abstract class Node(
+    val renderWindow: RenderWindow,
+    val sizing: NodeSizing = NodeSizing(),
+    initialCacheSize: Int = DEFAULT_INITIAL_CACHE_SIZE,
 ) {
-    var start: Vec2i
-        get() {
-            return _start
-        }
-        set(value) {
-            _start = value
-            parent?.recalculateSize()
-            clearCache()
-        }
-
     val cache = HUDCacheMesh(initialCacheSize)
-    open var parent: Element? = null
-    open var size: Vec2i = Vec2i()
+    open var parent: Node? = null
 
-    abstract fun recalculateSize()
+    abstract fun apply()
 
     fun needsCacheUpdate(): Boolean {
         return cache.isEmpty()
@@ -53,4 +45,8 @@ abstract class Element(
     }
 
     abstract fun prepareCache(start: Vec2i, scaleFactor: Float, matrix: Mat4, z: Int = 1)
+
+    companion object {
+        const val DEFAULT_INITIAL_CACHE_SIZE = 1000
+    }
 }

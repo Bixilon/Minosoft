@@ -11,21 +11,16 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.hud.elements.debug
+package de.bixilon.minosoft.gui.rendering.hud.nodes.properties
 
-import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.gui.rendering.RenderConstants
-import de.bixilon.minosoft.gui.rendering.hud.HUDRenderer
-import de.bixilon.minosoft.gui.rendering.hud.elements.HUDElement
-import de.bixilon.minosoft.gui.rendering.hud.elements.primitive.TextElement
 import glm_.vec2.Vec2i
 
-abstract class DebugScreen(hudRenderer: HUDRenderer) : HUDElement(hudRenderer) {
-    protected var lastPrepareTime = 0L
-
-    fun text(text: String = ""): TextElement {
-        val textElement = TextElement(ChatComponent.valueOf(raw = text), hudRenderer.renderWindow.font, Vec2i(2, layout.size.y + RenderConstants.TEXT_LINE_PADDING))
-        layout.addChild(textElement)
-        return textElement
-    }
+data class NodeSizing(
+    val minSize: Vec2i = Vec2i(0, 0),
+    val margin: Spacing = Spacing(),
+    val padding: Spacing = Spacing(),
+    val maxSize: Vec2i = Vec2i(Int.MAX_VALUE, Int.MAX_VALUE),
+    var forceAlign: NodeAlignment? = null,
+) {
+    val currentSize: Vec2i = Vec2i(minSize)
 }

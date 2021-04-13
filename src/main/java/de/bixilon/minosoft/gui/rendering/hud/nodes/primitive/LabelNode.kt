@@ -11,28 +11,31 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.hud.elements.primitive
+package de.bixilon.minosoft.gui.rendering.hud.nodes.primitive
 
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderConstants
+import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.font.Font
+import de.bixilon.minosoft.gui.rendering.hud.nodes.layout.AbsoluteLayout
+import de.bixilon.minosoft.gui.rendering.hud.nodes.properties.NodeSizing
 import glm_.vec2.Vec2i
 
-class TextElement(
-    private var _text: ChatComponent = ChatComponent.valueOf(raw = ""),
-    private val font: Font,
-    start: Vec2i = Vec2i(0, 0),
-    z: Int = 1,
+class LabelNode(
+    renderWindow: RenderWindow,
+    sizing: NodeSizing = NodeSizing(minSize = Vec2i(0, Font.CHAR_HEIGHT)),
+    text: ChatComponent = ChatComponent.valueOf(raw = ""),
     var background: Boolean = true,
-) : Layout(start, z) {
+) : AbsoluteLayout(renderWindow, sizing) {
+    private var _text: ChatComponent = text
 
     var text: ChatComponent
         get() = _text
         set(value) {
-            size = Vec2i(0, 0)
             _text = value
             prepare()
+            apply()
         }
     var sText: String
         get() = text.message
@@ -45,22 +48,17 @@ class TextElement(
     }
 
     private fun prepare() {
-        clear()
-        if (text.message.isBlank()) {
-            fakeY = Font.CHAR_HEIGHT
-        } else {
-            fakeY = null
-            val textSize = Vec2i(0, 0)
-            text.prepareRender(Vec2i(1, 1), Vec2i(), font, this, this.z + z + 1, textSize)
-            finishBatchAdd()
+        clearChildren()
+        val textSize = Vec2i(0, 0)
+        text.prepareRender(Vec2i(1, 1), Vec2i(), renderWindow, this, 1, textSize)
+        apply()
 
-            if (background) {
-                drawBackground(textSize + 1, z)
-            }
+        if (background) {
+            drawBackground(textSize + 1)
         }
     }
 
-    private fun drawBackground(end: Vec2i, z: Int, tintColor: RGBColor = RenderConstants.TEXT_BACKGROUND_COLOR) {
-        addChild(ImageElement(Vec2i(0, 0), null, end, this.z + z, tintColor))
+    private fun drawBackground(end: Vec2i, z: Int = 1, tintColor: RGBColor = RenderConstants.TEXT_BACKGROUND_COLOR) {
+        addChild(Vec2i(0, 0), ImageNode(renderWindow, NodeSizing(minSize = end), renderWindow.WHITE_TEXTURE, 0, tintColor))
     }
 }

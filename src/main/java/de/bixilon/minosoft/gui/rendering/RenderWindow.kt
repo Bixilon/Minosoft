@@ -24,6 +24,8 @@ import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.chunk.WorldRenderer
 import de.bixilon.minosoft.gui.rendering.font.Font
 import de.bixilon.minosoft.gui.rendering.hud.HUDRenderer
+import de.bixilon.minosoft.gui.rendering.hud.atlas.TextureLike
+import de.bixilon.minosoft.gui.rendering.hud.atlas.TextureLikeTexture
 import de.bixilon.minosoft.gui.rendering.hud.elements.input.KeyConsumer
 import de.bixilon.minosoft.gui.rendering.textures.Texture
 import de.bixilon.minosoft.gui.rendering.textures.TextureArray
@@ -85,6 +87,8 @@ class RenderWindow(
     val currentElement: MutableList<ResourceLocation> = mutableListOf(KeyBindingsNames.WHEN_IN_GAME, KeyBindingsNames.WHEN_PLAYER_IS_FLYING)
 
     private var skipNextChatPress = false
+
+    lateinit var WHITE_TEXTURE: TextureLike
 
     var currentKeyConsumer: KeyConsumer?
         get() = _currentInputConsumer
@@ -304,6 +308,13 @@ class RenderWindow(
 
 
         textures.allTextures.add(Texture(RenderConstants.DEBUG_TEXTURE_RESOURCE_LOCATION))
+        WHITE_TEXTURE = TextureLikeTexture(
+            texture = Texture(ResourceLocation("minosoft:textures/white.png")),
+            uvStart = Vec2(0, 0),
+            uvEnd = Vec2(1.0f, 1.0f),
+            size = Vec2i(16, 16)
+        )
+        textures.allTextures.add(WHITE_TEXTURE.texture)
 
         font.load(connection.assetsManager)
 

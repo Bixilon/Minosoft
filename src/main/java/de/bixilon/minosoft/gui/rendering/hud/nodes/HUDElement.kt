@@ -11,14 +11,14 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.hud.elements
+package de.bixilon.minosoft.gui.rendering.hud.nodes
 
 import de.bixilon.minosoft.gui.rendering.hud.HUDRenderer
-import de.bixilon.minosoft.gui.rendering.hud.elements.primitive.Layout
+import de.bixilon.minosoft.gui.rendering.hud.nodes.layout.AbsoluteLayout
 import glm_.vec2.Vec2i
 
 abstract class HUDElement(protected val hudRenderer: HUDRenderer) {
-    val layout = Layout(Vec2i(), 0)
+    val layout = AbsoluteLayout(hudRenderer.renderWindow)
 
     open fun init() {}
     open fun postInit() {}

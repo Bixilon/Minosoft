@@ -11,23 +11,11 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.hud.elements.primitive
+package de.bixilon.minosoft.gui.rendering.hud.nodes.properties
 
-import glm_.vec2.Vec2i
-
-abstract class EndElement(
-    start: Vec2i,
-    private var _end: Vec2i,
-    initialCacheSize: Int = 10000,
-) : Element(start, initialCacheSize = initialCacheSize) {
-    var end: Vec2i
-        get() {
-            return _end
-        }
-        set(value) {
-            _end = value
-            parent?.recalculateSize()
-            clearCache()
-        }
-
-}
+data class Spacing(
+    var top: Int = 0,
+    var right: Int = 0,
+    var bottom: Int = 0,
+    var left: Int = 0,
+)

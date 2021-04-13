@@ -47,12 +47,7 @@ void main() {
         texelColor *= passTintColor;
     }
 
-    // ToDo
-    if (passTintColor.r == 0.0f && passTintColor.g == 0.0f && passTintColor.b == 0.0f && passTintColor.a != 0.0f){
-        outColor= vec4(passTintColor.rgb * (vec3(1.0f) / texelColor.rgb), passTintColor.a);
-    } else {
-        outColor = texelColor;
-    }
+    outColor = texelColor;
 
     //
     //  outColor = vec4(1.0f, 0.0f, 0.5f, 1.0f);

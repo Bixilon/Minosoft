@@ -11,9 +11,10 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.hud.elements.debug
+package de.bixilon.minosoft.gui.rendering.hud.nodes.debug
 
 import de.bixilon.minosoft.gui.rendering.hud.HUDRenderer
+import de.bixilon.minosoft.gui.rendering.hud.nodes.properties.NodeAlignment
 import de.bixilon.minosoft.modding.loading.ModLoader
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.GitInfo
@@ -23,9 +24,12 @@ import glm_.vec2.Vec2i
 import org.lwjgl.opengl.GL11.*
 
 
-class HUDSystemDebugElement(hudRenderer: HUDRenderer) : DebugScreen(hudRenderer) {
+class HUDSystemDebugNode(hudRenderer: HUDRenderer) : DebugScreenNode(hudRenderer) {
 
     init {
+        layout.sizing.forceAlign = NodeAlignment.RIGHT
+        layout.sizing.padding.top = 2
+        layout.sizing.padding.right = 2
         text("Java: ${Runtime.version()} ${System.getProperty("sun.arch.data.model")}bit")
     }
 
@@ -59,7 +63,6 @@ class HUDSystemDebugElement(hudRenderer: HUDRenderer) : DebugScreen(hudRenderer)
 
     override fun screenChangeResizeCallback(screenDimensions: Vec2i) {
         displayText.sText = "Display: ${getScreenDimensions()}"
-        layout.pushChildrenToRight(1)
     }
 
     override fun init() {
@@ -73,7 +76,7 @@ class HUDSystemDebugElement(hudRenderer: HUDRenderer) : DebugScreen(hudRenderer)
         }
         memoryText.sText = "Memory: ${getUsedMemoryPercent()}% ${getFormattedUsedMemory()}/${SystemInformation.MAX_MEMORY_TEXT}"
         allocatedMemoryText.sText = "Allocated: ${getAllocatedMemoryPercent()}% ${getFormattedAllocatedMemory()}"
-        layout.pushChildrenToRight(1)
+
 
         lastPrepareTime = System.currentTimeMillis()
     }
