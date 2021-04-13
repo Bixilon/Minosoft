@@ -6,7 +6,7 @@
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with this program.If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
@@ -29,7 +29,7 @@ enum class Axes {
         }
 
         fun choose(axis: Axes, vec3: Vec3): Float {
-            return choose(axis, vec3.x, vec3.y, vec3.z);
+            return choose(axis, vec3.x, vec3.y, vec3.z)
         }
 
         private fun choose(axis: Axes, x: Float, y: Float, z: Float): Float {

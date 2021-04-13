@@ -6,7 +6,7 @@
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with this program.If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
@@ -74,7 +74,7 @@ public class PacketSpawnMob extends PlayClientboundPacket {
         if (metaData != null) {
             this.entity.setEntityMetaData(metaData);
             if (StaticConfiguration.VERBOSE_ENTITY_META_DATA_LOGGING) {
-                Log.verbose(String.format("Metadata of entity %s (entityId=%d): %s", this.entity.toString(), this.entityId, this.entity.getEntityMetaDataAsString()));
+                Log.verbose(String.format("Metadata of entity %s (entityId=%d): %s", this.entity, this.entityId, this.entity.getEntityMetaDataAsString()));
             }
         }
     }
@@ -89,7 +89,7 @@ public class PacketSpawnMob extends PlayClientboundPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Mob spawned at %s (entityId=%d, type=%s)", this.entity.getPosition().toString(), this.entityId, this.entity));
+        Log.protocol(String.format("[IN] Mob spawned at %s (entityId=%d, type=%s)", this.entity.getPosition(), this.entityId, this.entity));
     }
 
     public Entity getEntity() {
