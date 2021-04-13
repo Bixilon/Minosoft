@@ -45,7 +45,8 @@ class ChatBoxHUDElement(hudRenderer: HUDRenderer) : HUDElement(hudRenderer) {
     }
 
     override fun screenChangeResizeCallback(screenDimensions: Vec2i) {
-        layout.fakeX = screenDimensions.x
+        layout.fakeX = screenDimensions.x - 2 // 1 pixel padding on every side
+        inputField.fakeX = layout.fakeX
     }
 
     fun openChat() {

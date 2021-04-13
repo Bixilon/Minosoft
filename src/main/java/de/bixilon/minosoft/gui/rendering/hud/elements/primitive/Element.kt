@@ -33,7 +33,7 @@ abstract class Element(
 
     val cache = HUDCacheMesh(initialCacheSize)
     open var parent: Element? = null
-    var size: Vec2i = Vec2i()
+    open var size: Vec2i = Vec2i()
 
     abstract fun recalculateSize()
 

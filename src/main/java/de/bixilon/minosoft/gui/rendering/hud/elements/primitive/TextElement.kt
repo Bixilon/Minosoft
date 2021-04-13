@@ -46,9 +46,10 @@ class TextElement(
 
     private fun prepare() {
         clear()
-        size = if (text.message.isBlank()) {
-            Vec2i(0, Font.CHAR_HEIGHT)
+        if (text.message.isBlank()) {
+            fakeY = Font.CHAR_HEIGHT
         } else {
+            fakeY = null
             val textSize = Vec2i(0, 0)
             text.prepareRender(Vec2i(1, 1), Vec2i(), font, this, this.z + z + 1, textSize)
             finishBatchAdd()
@@ -56,7 +57,6 @@ class TextElement(
             if (background) {
                 drawBackground(textSize + 1, z)
             }
-            Vec2i(textSize + 1)
         }
     }
 

@@ -20,6 +20,11 @@ open class Layout(
     start: Vec2i,
     val z: Int,
 ) : Element(start) {
+    override var size: Vec2i
+        get() = Vec2i(fakeX ?: super.size.x, fakeY ?: super.size.y)
+        set(value) {
+            super.size = value
+        }
     private val children: MutableList<Element> = mutableListOf()
     var fakeX: Int? = null
     var fakeY: Int? = null
@@ -80,7 +85,6 @@ open class Layout(
         }
         if (changed) {
             clearCache()
-
         }
     }
 

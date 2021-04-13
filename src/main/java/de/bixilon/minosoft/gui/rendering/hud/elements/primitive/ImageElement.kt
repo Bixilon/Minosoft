@@ -52,7 +52,19 @@ class ImageElement(
     override fun prepareCache(start: Vec2i, scaleFactor: Float, matrix: Mat4, z: Int) {
         val ourStart = addToStart(start, this.start * scaleFactor)
         val modelStart = matrix * Vec4(RenderConstants.PIXEL_UV_PIXEL_ADD + ourStart, 1.0f, 1.0f)
-        val ourEnd = addToEnd(start, this.end * scaleFactor)
+        val realEnd = Vec2i(
+            x = if (end.x == -1) {
+                parent!!.size.x
+            } else {
+                end.x * scaleFactor
+            },
+            y = if (end.y == -1) {
+                parent!!.size.y
+            } else {
+                end.y * scaleFactor
+            }
+        )
+        val ourEnd = addToEnd(start, realEnd)
         val modelEnd = matrix * Vec4(RenderConstants.PIXEL_UV_PIXEL_ADD + ourEnd, 1.0f, 1.0f)
 
         val uvStart = textureLike?.uvStart ?: Vec2()

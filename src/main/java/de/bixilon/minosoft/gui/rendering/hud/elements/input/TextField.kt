@@ -15,7 +15,9 @@ package de.bixilon.minosoft.gui.rendering.hud.elements.input
 
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.font.Font
+import de.bixilon.minosoft.gui.rendering.hud.elements.primitive.ImageElement
 import de.bixilon.minosoft.gui.rendering.hud.elements.primitive.Layout
 import de.bixilon.minosoft.gui.rendering.hud.elements.primitive.TextElement
 import de.bixilon.minosoft.util.MMath
@@ -26,11 +28,11 @@ open class TextField(
     z: Int = 0,
     font: Font,
     defaultText: String = "",
-    val maxLength: Int = 256,
+    var maxLength: Int = 256,
 ) : Layout(start, z), KeyConsumer, MouseConsumer {
     override var focused: Boolean = true
     private var textBuilder: StringBuilder = StringBuilder(defaultText)
-    private val textElement = TextElement(ChatComponent.valueOf(raw = text), font)
+    private val textElement = TextElement(ChatComponent.valueOf(raw = text), font, background = false)
     private var position = text.length
 
     var text: String
@@ -43,6 +45,7 @@ open class TextField(
 
     init {
         addChild(textElement)
+        addChild(ImageElement(Vec2i(0, 0), null, Vec2i(-1), z, RenderConstants.TEXT_BACKGROUND_COLOR))
     }
 
     fun clearText() {
