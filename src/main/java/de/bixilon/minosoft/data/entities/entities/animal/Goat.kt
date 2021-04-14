@@ -12,7 +12,9 @@
  */
 package de.bixilon.minosoft.data.entities.entities.animal
 
+import de.bixilon.minosoft.data.entities.EntityMetaDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
+import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.entities.EntityFactory
 import de.bixilon.minosoft.data.mappings.entities.EntityType
@@ -20,6 +22,10 @@ import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import glm_.vec3.Vec3
 
 class Goat(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : Animal(connection, entityType, position, rotation) {
+
+    @get:EntityMetaDataFunction(name = "Is screaming")
+    val isScreaming: Boolean
+        get() = entityMetaData.sets.getBoolean(EntityMetaDataFields.GOAT_IS_SCREAMING)
 
     companion object : EntityFactory<Goat> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("goat")

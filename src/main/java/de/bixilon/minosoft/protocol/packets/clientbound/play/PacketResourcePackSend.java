@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.clientbound.play;
 
+import de.bixilon.minosoft.data.text.ChatComponent;
 import de.bixilon.minosoft.modding.event.events.ResourcePackChangeEvent;
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
 import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket;
@@ -21,11 +22,13 @@ import de.bixilon.minosoft.util.Util;
 import de.bixilon.minosoft.util.logging.Log;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_20W45A;
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_21W15A;
 
 public class PacketResourcePackSend extends PlayClientboundPacket {
     private final String url;
     private final String hash;
     private boolean forced;
+    private ChatComponent text; // TODO: rename
 
     public PacketResourcePackSend(PlayInByteBuffer buffer) {
         this.url = buffer.readString();
@@ -33,6 +36,11 @@ public class PacketResourcePackSend extends PlayClientboundPacket {
         this.hash = buffer.readString();
         if (buffer.getVersionId() >= V_20W45A) {
             this.forced = buffer.readBoolean();
+        }
+        if (buffer.getVersionId() >= V_21W15A) {
+            if (buffer.readBoolean()) {
+                text = buffer.readChatComponent();
+            }
         }
     }
 

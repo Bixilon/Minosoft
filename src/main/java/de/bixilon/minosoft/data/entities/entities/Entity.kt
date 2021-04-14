@@ -226,7 +226,6 @@ abstract class Entity(
         }
         if (delta.x != 0.0f && !xPriority) {
             delta.x = collisionsToCheck.computeOffset(aabb, deltaPosition.x, Axes.X)
-            aabb.offsetAssign(delta.x, 0f, 0f)
         }
         return delta
     }

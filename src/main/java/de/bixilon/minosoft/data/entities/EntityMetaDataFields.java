@@ -278,6 +278,8 @@ public enum EntityMetaDataFields {
 
     SKELETON_STRAY_FREEZE_CONVERTING(false),
 
+    GOAT_IS_SCREAMING(false),
+
     // pretty old stuff here. 1.8 mostly (or even after, I don't know and I don't care)
     LEGACY_SKELETON_TYPE((byte) 0),
     LEGACY_ENDERMAN_CARRIED_BLOCK(0),

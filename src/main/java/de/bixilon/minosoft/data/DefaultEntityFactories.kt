@@ -97,6 +97,7 @@ object DefaultEntityFactories {
             Llama,
             LlamaSpit,
             MagmaCube,
+            Marker,
             Minecart,
             ChestMinecart,
             CommandBlockMinecart,
