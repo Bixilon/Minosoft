@@ -37,6 +37,7 @@ class LabelNode(
             prepare()
             apply()
         }
+
     var sText: String
         get() = text.message
         set(value) {

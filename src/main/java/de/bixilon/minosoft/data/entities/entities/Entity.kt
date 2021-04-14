@@ -49,12 +49,12 @@ abstract class Entity(
     protected open val hasCollisions = true
 
     private val defaultAABB = AABB(
-        Vec3(-(entityType.width / 2 + HITBOX_MARGIN), 0               , -(entityType.width / 2 + HITBOX_MARGIN)),
-        Vec3(+(entityType.width / 2 + HITBOX_MARGIN), entityType.height  , +(entityType.width / 2 + HITBOX_MARGIN))
+        Vec3(-(entityType.width / 2 + HITBOX_MARGIN), 0, -(entityType.width / 2 + HITBOX_MARGIN)),
+        Vec3(+(entityType.width / 2 + HITBOX_MARGIN), entityType.height, +(entityType.width / 2 + HITBOX_MARGIN))
     )
 
-    fun forceMove(relativePosition: Vec3) {
-        position = position + relativePosition
+    fun forceMove(deltaPosition: Vec3) {
+        position = position + deltaPosition
     }
 
     fun addEffect(effect: StatusEffectInstance) {
@@ -202,6 +202,7 @@ abstract class Entity(
         val blockPositions = (originalAABB extend deltaPosition extend Directions.DOWN.directionVector).getBlockPositions()
         val result = VoxelShape()
         for (blockPosition in blockPositions) {
+            // ToDo: Check if chunk is loaded
             val blockState = connection.world.getBlockState(blockPosition) ?: continue
             result.add(blockState.collisionShape + blockPosition)
         }

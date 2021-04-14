@@ -23,11 +23,13 @@ import de.bixilon.minosoft.gui.rendering.Renderer
 import de.bixilon.minosoft.gui.rendering.hud.atlas.HUDAtlasElement
 import de.bixilon.minosoft.gui.rendering.hud.elements.other.CrosshairHUDElement
 import de.bixilon.minosoft.gui.rendering.hud.nodes.HUDElement
+import de.bixilon.minosoft.gui.rendering.hud.nodes.chat.ChatBoxHUDElement
 import de.bixilon.minosoft.gui.rendering.hud.nodes.debug.HUDSystemDebugNode
 import de.bixilon.minosoft.gui.rendering.hud.nodes.debug.HUDWorldDebugNode
 import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.util.MMath
 import de.bixilon.minosoft.util.json.ResourceLocationJsonMap.toResourceLocationMap
 import glm_.glm
 import glm_.mat4x4.Mat4
@@ -87,6 +89,11 @@ class HUDRenderer(val connection: PlayConnection, val renderWindow: RenderWindow
             toggleKeyBinding = KeyBindingsNames.TOGGLE_DEBUG_SCREEN,
             enabled = false,
         ))
+        addElement(ElementsNames.CHAT_RESOURCE_LOCATION, ChatBoxHUDElement(this), HUDElementProperties(
+            position = Vec2(0.0f, -1.0f),
+            xBinding = HUDElementProperties.PositionBindings.CENTER,
+        ))
+
     }
 
     fun addElement(resourceLocation: ResourceLocation, hudElement: HUDElement, defaultProperties: HUDElementProperties) {
@@ -174,6 +181,8 @@ class HUDRenderer(val connection: PlayConnection, val renderWindow: RenderWindow
             for ((elementProperties, hudElement) in enabledHUDElement.values) {
                 val realScaleFactor = elementProperties.scale * Minosoft.getConfig().config.game.hud.scale
                 val realSize = hudElement.layout.sizing.currentSize * realScaleFactor
+                realSize.x = MMath.clamp(realSize.x, hudElement.layout.sizing.minSize.x, hudElement.layout.sizing.maxSize.x)
+                realSize.y = MMath.clamp(realSize.y, hudElement.layout.sizing.minSize.y, hudElement.layout.sizing.maxSize.y)
 
                 val elementStart = getRealPosition(realSize, elementProperties, renderWindow.screenDimensions)
 

@@ -83,8 +83,7 @@ open class AbsoluteLayout(
 
     private fun recalculateSize() {
         if (children.isEmpty()) {
-            sizing.currentSize.x = sizing.minSize.x
-            sizing.currentSize.y = sizing.minSize.y
+            sizing.currentSize = Vec2i(sizing.minSize)
         } else {
             for ((childNode, start) in children) {
                 checkSize(childNode, start)

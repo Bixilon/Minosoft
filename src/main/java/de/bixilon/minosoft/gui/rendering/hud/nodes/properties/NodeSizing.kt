@@ -13,14 +13,20 @@
 
 package de.bixilon.minosoft.gui.rendering.hud.nodes.properties
 
+import de.bixilon.minosoft.util.MMath
 import glm_.vec2.Vec2i
 
 data class NodeSizing(
-    val minSize: Vec2i = Vec2i(0, 0),
-    val margin: Spacing = Spacing(),
-    val padding: Spacing = Spacing(),
-    val maxSize: Vec2i = Vec2i(Int.MAX_VALUE, Int.MAX_VALUE),
+    var minSize: Vec2i = Vec2i(0, 0),
+    var margin: Spacing = Spacing(0, 0, 0, 0),
+    var padding: Spacing = Spacing(0, 0, 0, 0),
+    var maxSize: Vec2i = Vec2i(Int.MAX_VALUE, Int.MAX_VALUE),
     var forceAlign: NodeAlignment? = null,
 ) {
-    val currentSize: Vec2i = Vec2i(minSize)
+    var currentSize: Vec2i = Vec2i(minSize)
+
+
+    fun validate() {
+        MMath.clamp(currentSize, minSize, maxSize)
+    }
 }

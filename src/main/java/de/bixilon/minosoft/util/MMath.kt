@@ -13,12 +13,20 @@
 
 package de.bixilon.minosoft.util
 
+import glm_.vec2.Vec2i
+
 object MMath {
 
     fun minClamp(value: Int, min: Int): Int {
         if (value < min) {
             return min
         }
+        return value
+    }
+
+    fun clamp(value: Vec2i, min: Vec2i, max: Vec2i): Vec2i {
+        value.x = clamp(value.x, min.x, max.x)
+        value.y = clamp(value.y, min.y, max.y)
         return value
     }
 
