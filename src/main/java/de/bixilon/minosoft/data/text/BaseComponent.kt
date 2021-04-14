@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.text
 
+import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.locale.minecraft.Translator
 import de.bixilon.minosoft.gui.rendering.RenderWindow
@@ -129,10 +130,10 @@ class BaseComponent : ChatComponent {
 
 
         json["translate"]?.asString?.let {
-            val with: MutableList<JsonObject> = mutableListOf()
+            val with: MutableList<JsonElement> = mutableListOf()
             json["with"]?.asJsonArray?.let { withArray ->
                 for (part in withArray) {
-                    with.add(part.asJsonObject)
+                    with.add(part)
                 }
             }
             parts.add(translator?.translate(it, currentParent, *with.toTypedArray()) ?: ChatComponent.valueOf(translator, currentParent, json["with"]))
