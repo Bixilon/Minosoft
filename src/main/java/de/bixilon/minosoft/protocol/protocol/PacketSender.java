@@ -46,11 +46,13 @@ public class PacketSender {
 
     public void sendChatMessage(String message) {
         if (message.isBlank()) {
-            throw new IllegalArgumentException(("Chat message is blank!"));
+            // throw new IllegalArgumentException(("Chat message is blank!"));
+            return;
         }
         for (char illegalChar : ILLEGAL_CHAT_CHARS) {
             if (message.indexOf(illegalChar) != -1) {
-                throw new IllegalArgumentException(String.format("%s is not allowed in chat", illegalChar));
+                // throw new IllegalArgumentException(String.format("%s is not allowed in chat", illegalChar));
+                return;
             }
         }
         ChatMessageSendingEvent event = new ChatMessageSendingEvent(this.connection, message);

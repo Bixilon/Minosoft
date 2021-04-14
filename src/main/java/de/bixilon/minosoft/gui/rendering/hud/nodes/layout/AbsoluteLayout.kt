@@ -133,4 +133,8 @@ open class AbsoluteLayout(
         }
         clearCache()
     }
+
+    fun removeChild(node: Node) {
+        children.remove(node)
+    }
 }

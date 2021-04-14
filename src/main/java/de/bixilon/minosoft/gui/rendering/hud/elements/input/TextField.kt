@@ -15,10 +15,8 @@ package de.bixilon.minosoft.gui.rendering.hud.elements.input
 
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.hud.nodes.layout.AbsoluteLayout
-import de.bixilon.minosoft.gui.rendering.hud.nodes.primitive.ImageNode
 import de.bixilon.minosoft.gui.rendering.hud.nodes.primitive.LabelNode
 import de.bixilon.minosoft.util.MMath
 import glm_.vec2.Vec2i
@@ -44,7 +42,6 @@ open class TextField(
 
     init {
         addChild(Vec2i(0, 0), textElement)
-        addChild(Vec2i(0, 0), ImageNode(renderWindow, sizing = sizing, renderWindow.WHITE_TEXTURE, 0, RenderConstants.TEXT_BACKGROUND_COLOR))
         clearChildrenCache()
     }
 
@@ -92,6 +89,14 @@ open class TextField(
         }
         update()
         super.keyInput(keyCodes)
+    }
+
+    override fun tick(tick: Long) {
+        if ((tick / 8) % 2L == 0L && position == text.length) {
+            textElement.sText = "$textBuilder" + "_"
+        } else {
+            textElement.sText = textBuilder.toString()
+        }
     }
 
     override fun charInput(char: Char) {

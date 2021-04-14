@@ -35,6 +35,7 @@ import de.bixilon.minosoft.modding.event.events.ConnectionStateChangeEvent
 import de.bixilon.minosoft.modding.event.events.PacketReceiveEvent
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketPlayerPositionAndRotation
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.CountUpAndDownLatch
 import de.bixilon.minosoft.util.logging.Log
 import glm_.vec2.Vec2
@@ -89,6 +90,10 @@ class RenderWindow(
     private var skipNextChatPress = false
 
     lateinit var WHITE_TEXTURE: TextureLike
+
+
+    var tickCount = 0L
+    var lastTickTimer = System.currentTimeMillis()
 
     var currentKeyConsumer: KeyConsumer?
         get() = _currentInputConsumer
@@ -418,6 +423,14 @@ class RenderWindow(
             }
             renderStats.startFrame()
             glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT) // clear the framebuffer
+
+
+            val currentTickTime = System.currentTimeMillis()
+            if (currentTickTime - this.lastTickTimer > ProtocolDefinition.TICK_TIME) {
+                tickCount++
+                currentKeyConsumer?.tick(tickCount)
+                this.lastTickTimer = currentTickTime
+            }
 
             val currentFrame = glfwGetTime()
             deltaFrameTime = currentFrame - lastFrame

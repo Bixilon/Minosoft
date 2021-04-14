@@ -29,4 +29,12 @@ data class NodeSizing(
     fun validate() {
         MMath.clamp(currentSize, minSize, maxSize)
     }
+
+    var forceSize: Vec2i
+        get() = currentSize
+        set(value) {
+            minSize = value
+            maxSize = value
+            validate()
+        }
 }

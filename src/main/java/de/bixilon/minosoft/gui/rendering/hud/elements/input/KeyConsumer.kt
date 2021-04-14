@@ -22,4 +22,6 @@ interface KeyConsumer {
     fun charInput(char: Char) {}
 
     fun keyInput(keyCodes: KeyCodes) {}
+
+    fun tick(tick: Long) {}
 }
