@@ -36,6 +36,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.logging.Log
 import glm_.vec2.Vec2i
 import glm_.vec3.Vec3i
+import org.lwjgl.opengl.GL11.glDepthMask
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
@@ -128,12 +129,14 @@ class WorldRenderer(
                 mesh.opaqueSectionArrayMesh.draw()
             }
         }
+        glDepthMask(false)
 
         for ((_, map) in visibleChunks) {
             for ((_, mesh) in map) {
                 mesh.transparentSectionArrayMesh?.draw()
             }
         }
+        glDepthMask(true)
     }
 
     private fun resolveBlockTextureIds(blocks: Collection<BlockState>): List<Texture> {
