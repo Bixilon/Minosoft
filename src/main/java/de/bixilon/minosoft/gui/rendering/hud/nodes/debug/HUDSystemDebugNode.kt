@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.hud.nodes.debug
 
 import de.bixilon.minosoft.gui.rendering.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.hud.nodes.properties.NodeAlignment
+import de.bixilon.minosoft.gui.rendering.util.abstractions.ScreenResizeCallback
 import de.bixilon.minosoft.modding.loading.ModLoader
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.GitInfo
@@ -24,7 +25,7 @@ import glm_.vec2.Vec2i
 import org.lwjgl.opengl.GL11.*
 
 
-class HUDSystemDebugNode(hudRenderer: HUDRenderer) : DebugScreenNode(hudRenderer) {
+class HUDSystemDebugNode(hudRenderer: HUDRenderer) : DebugScreenNode(hudRenderer), ScreenResizeCallback {
 
     init {
         layout.sizing.forceAlign = NodeAlignment.RIGHT
@@ -61,7 +62,7 @@ class HUDSystemDebugNode(hudRenderer: HUDRenderer) : DebugScreenNode(hudRenderer
         text("Mods: ${ModLoader.MOD_MAP.size} active, ${hudRenderer.connection.eventListenerSize} listeners")
     }
 
-    override fun screenChangeResizeCallback(screenDimensions: Vec2i) {
+    override fun onScreenResize(screenDimensions: Vec2i) {
         displayText.sText = "Display: ${getScreenDimensions()}"
     }
 

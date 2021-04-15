@@ -15,7 +15,6 @@ package de.bixilon.minosoft.gui.rendering.hud.nodes
 
 import de.bixilon.minosoft.gui.rendering.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.hud.nodes.layout.AbsoluteLayout
-import glm_.vec2.Vec2i
 
 abstract class HUDElement(protected val hudRenderer: HUDRenderer) {
     val layout = AbsoluteLayout(hudRenderer.renderWindow)
@@ -23,5 +22,4 @@ abstract class HUDElement(protected val hudRenderer: HUDRenderer) {
     open fun init() {}
     open fun postInit() {}
     open fun draw() {}
-    open fun screenChangeResizeCallback(screenDimensions: Vec2i) {}
 }

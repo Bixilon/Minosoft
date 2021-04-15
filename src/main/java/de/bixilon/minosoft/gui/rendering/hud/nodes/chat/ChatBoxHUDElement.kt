@@ -23,10 +23,11 @@ import de.bixilon.minosoft.gui.rendering.hud.nodes.HUDElement
 import de.bixilon.minosoft.gui.rendering.hud.nodes.primitive.ImageNode
 import de.bixilon.minosoft.gui.rendering.hud.nodes.properties.NodeSizing
 import de.bixilon.minosoft.gui.rendering.hud.nodes.properties.Spacing
+import de.bixilon.minosoft.gui.rendering.util.abstractions.ScreenResizeCallback
 import de.bixilon.minosoft.util.MMath
 import glm_.vec2.Vec2i
 
-class ChatBoxHUDElement(hudRenderer: HUDRenderer) : HUDElement(hudRenderer) {
+class ChatBoxHUDElement(hudRenderer: HUDRenderer) : HUDElement(hudRenderer), ScreenResizeCallback {
     private lateinit var inputField: SubmittableTextField
     private var inputFieldBackground = ImageNode(hudRenderer.renderWindow, sizing = NodeSizing(margin = Spacing(left = 1, right = 1)), textureLike = hudRenderer.renderWindow.WHITE_TEXTURE, z = 0, tintColor = RenderConstants.TEXT_BACKGROUND_COLOR)
 
@@ -47,9 +48,9 @@ class ChatBoxHUDElement(hudRenderer: HUDRenderer) : HUDElement(hudRenderer) {
         }
     }
 
-    override fun screenChangeResizeCallback(screenDimensions: Vec2i) {
+    override fun onScreenResize(screenDimensions: Vec2i) {
         layout.sizing.minSize.x = screenDimensions.x
-        inputFieldBackground.sizing.forceSize = Vec2i(screenDimensions.x - 2, MMath.clamp(inputField.sizing.currentSize.y, Font.CHAR_HEIGHT, Int.MAX_VALUE)) // 2 pixels for log
+        inputFieldBackground.sizing.forceSize = Vec2i(screenDimensions.x - 2, MMath.clamp(inputField.sizing.currentSize.y, Font.CHAR_HEIGHT, Int.MAX_VALUE)) // 2 pixels for margin
         layout.sizing.maxSize.x = screenDimensions.x
         layout.sizing.validate()
         layout.apply()

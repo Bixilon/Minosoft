@@ -27,6 +27,7 @@ import de.bixilon.minosoft.gui.rendering.hud.nodes.chat.ChatBoxHUDElement
 import de.bixilon.minosoft.gui.rendering.hud.nodes.debug.HUDSystemDebugNode
 import de.bixilon.minosoft.gui.rendering.hud.nodes.debug.HUDWorldDebugNode
 import de.bixilon.minosoft.gui.rendering.shader.Shader
+import de.bixilon.minosoft.gui.rendering.util.abstractions.ScreenResizeCallback
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.MMath
@@ -36,7 +37,7 @@ import glm_.mat4x4.Mat4
 import glm_.vec2.Vec2
 import glm_.vec2.Vec2i
 
-class HUDRenderer(val connection: PlayConnection, val renderWindow: RenderWindow) : Renderer {
+class HUDRenderer(val connection: PlayConnection, val renderWindow: RenderWindow) : Renderer, ScreenResizeCallback {
     private val hudElements: MutableMap<ResourceLocation, Pair<HUDElementProperties, HUDElement>> = mutableMapOf()
     private val enabledHUDElement: MutableMap<ResourceLocation, Pair<HUDElementProperties, HUDElement>> = mutableMapOf()
     private val hudShader = Shader(
@@ -105,6 +106,9 @@ class HUDRenderer(val connection: PlayConnection, val renderWindow: RenderWindow
         if (needToSafeConfig) {
             Minosoft.getConfig().saveToFile()
         }
+        if (hudElement is ScreenResizeCallback) {
+            renderWindow.screenResizeCallbacks.add(hudElement)
+        }
         val pair = Pair(properties, hudElement)
         hudElements[resourceLocation] = pair
 
@@ -128,10 +132,17 @@ class HUDRenderer(val connection: PlayConnection, val renderWindow: RenderWindow
     }
 
     fun removeElement(resourceLocation: ResourceLocation) {
-        hudElements[resourceLocation]?.first?.toggleKeyBinding?.let {
-            renderWindow.unregisterKeyBinding(it)
+        val element = hudElements[resourceLocation] ?: return
+
+        element.second.let {
+            if (it is ScreenResizeCallback) {
+                renderWindow.screenResizeCallbacks.remove(it)
+            }
         }
 
+        element.first.toggleKeyBinding?.let {
+            renderWindow.unregisterKeyBinding(it)
+        }
         enabledHUDElement.remove(resourceLocation)
         hudElements.remove(resourceLocation)
         forcePrepare = true
@@ -149,11 +160,10 @@ class HUDRenderer(val connection: PlayConnection, val renderWindow: RenderWindow
         }
     }
 
-    override fun screenChangeResizeCallback(screenDimensions: Vec2i) {
-        orthographicMatrix = glm.ortho(-screenDimensions.x / 2f, screenDimensions.x / 2f, -screenDimensions.y / 2f, screenDimensions.y / 2f)
+    override fun onScreenResize(screenDimensions: Vec2i) {
+        orthographicMatrix = glm.ortho(-screenDimensions.x / 2.0f, screenDimensions.x / 2.0f, -screenDimensions.y / 2.0f, screenDimensions.y / 2.0f)
         for ((_, hudElement) in hudElements.values) {
             hudElement.layout.clearChildrenCache()
-            hudElement.screenChangeResizeCallback(screenDimensions)
         }
     }
 

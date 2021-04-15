@@ -30,6 +30,7 @@ import de.bixilon.minosoft.gui.rendering.hud.elements.input.KeyConsumer
 import de.bixilon.minosoft.gui.rendering.textures.Texture
 import de.bixilon.minosoft.gui.rendering.textures.TextureArray
 import de.bixilon.minosoft.gui.rendering.util.ScreenshotTaker
+import de.bixilon.minosoft.gui.rendering.util.abstractions.ScreenResizeCallback
 import de.bixilon.minosoft.modding.event.EventInvokerCallback
 import de.bixilon.minosoft.modding.event.events.ConnectionStateChangeEvent
 import de.bixilon.minosoft.modding.event.events.PacketReceiveEvent
@@ -91,6 +92,11 @@ class RenderWindow(
 
     lateinit var WHITE_TEXTURE: TextureLike
 
+
+    val screenResizeCallbacks: MutableSet<ScreenResizeCallback> = mutableSetOf(
+        camera,
+        hudRenderer,
+    )
 
     var tickCount = 0L
     var lastTickTimer = System.currentTimeMillis()
@@ -344,8 +350,9 @@ class RenderWindow(
                 glViewport(0, 0, width, height)
                 screenDimensions = Vec2i(width, height)
                 screenDimensionsF = Vec2(screenDimensions)
-                camera.screenChangeResizeCallback()
-                hudRenderer.screenChangeResizeCallback(screenDimensions)
+                for (callback in screenResizeCallbacks) {
+                    callback.onScreenResize(screenDimensions)
+                }
             }
         })
 
@@ -372,11 +379,12 @@ class RenderWindow(
 
         registerGlobalKeyCombinations()
 
-        hudRenderer.screenChangeResizeCallback(screenDimensions)
-
         camera.addShaders(worldRenderer.chunkShader)
 
-        camera.screenChangeResizeCallback()
+        for (callback in screenResizeCallbacks) {
+            callback.onScreenResize(screenDimensions)
+        }
+
 
         glEnable(GL_DEPTH_TEST)
 

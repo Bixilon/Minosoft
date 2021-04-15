@@ -58,7 +58,7 @@ class PacketRespawn(buffer: PlayInByteBuffer) : PlayS2CPacket() {
             }
         }
         if (buffer.versionId < ProtocolVersions.V_19W11A) {
-            difficulty = Difficulties.byId(buffer.readUnsignedByte().toInt())
+            difficulty = Difficulties.byId(buffer.readUnsignedByte())
         }
         if (buffer.versionId >= ProtocolVersions.V_20W22A) {
             dimension = buffer.connection.mapping.dimensionRegistry.get(buffer.readResourceLocation())!!
@@ -66,7 +66,7 @@ class PacketRespawn(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         if (buffer.versionId >= ProtocolVersions.V_19W36A) {
             hashedSeed = buffer.readLong()
         }
-        gamemode = Gamemodes.byId(buffer.readUnsignedByte().toInt())
+        gamemode = Gamemodes.byId(buffer.readUnsignedByte())
         if (buffer.versionId >= ProtocolVersions.V_1_16_PRE6) {
             buffer.readByte() // previous game mode
         }
@@ -96,6 +96,6 @@ class PacketRespawn(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     }
 
     override fun log() {
-        Log.protocol(String.format("[IN] Respawn packet received (dimension=%s, difficulty=%s, gamemode=%s, levelType=%s)", dimension, difficulty, gamemode, levelType))
+        Log.protocol("[IN] Respawn packet received (dimension=$dimension, difficulty=$difficulty, gamemode=$gamemode, levelType=$levelType)")
     }
 }

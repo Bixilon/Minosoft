@@ -27,6 +27,7 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.blockPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.inChunkSectionPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
+import de.bixilon.minosoft.gui.rendering.util.abstractions.ScreenResizeCallback
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.c2s.play.PlayerPositionAndRotationC2SPacket
 import de.bixilon.minosoft.protocol.packets.c2s.play.PlayerPositionC2SPacket
@@ -46,7 +47,7 @@ class Camera(
     val connection: PlayConnection,
     var fov: Float,
     val renderWindow: RenderWindow,
-) {
+) : ScreenResizeCallback {
     private var mouseSensitivity = Minosoft.getConfig().config.game.camera.moseSensitivity
     private var movementSpeed = 7
     var cameraPosition = Vec3(0.0f, 0.0f, 0.0f)
@@ -196,7 +197,7 @@ class Camera(
         this.shaders.addAll(shaders)
     }
 
-    fun screenChangeResizeCallback() {
+    override fun onScreenResize(screenDimensions: Vec2i) {
         recalculateViewProjectionMatrix()
     }
 
