@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.modding.event.events;
 
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
-import de.bixilon.minosoft.protocol.packets.clientbound.login.PacketLoginPluginRequest;
+import de.bixilon.minosoft.protocol.packets.s2c.login.PacketLoginPluginRequest;
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 
 public class LoginPluginMessageRequestEvent extends CancelableEvent {

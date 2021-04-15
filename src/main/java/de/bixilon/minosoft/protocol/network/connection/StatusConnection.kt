@@ -21,10 +21,10 @@ import de.bixilon.minosoft.modding.event.events.ConnectionStateChangeEvent
 import de.bixilon.minosoft.modding.event.events.PacketReceiveEvent
 import de.bixilon.minosoft.modding.event.events.ServerListPongEvent
 import de.bixilon.minosoft.modding.event.events.ServerListStatusArriveEvent
-import de.bixilon.minosoft.protocol.packets.clientbound.ClientboundPacket
-import de.bixilon.minosoft.protocol.packets.clientbound.StatusClientboundPacket
-import de.bixilon.minosoft.protocol.packets.serverbound.handshaking.HandshakeServerboundPacket
-import de.bixilon.minosoft.protocol.packets.serverbound.status.StatusRequestServerboundPacket
+import de.bixilon.minosoft.protocol.packets.c2s.handshaking.HandshakeC2SPacket
+import de.bixilon.minosoft.protocol.packets.c2s.status.StatusRequestC2SPacket
+import de.bixilon.minosoft.protocol.packets.s2c.S2CPacket
+import de.bixilon.minosoft.protocol.packets.s2c.StatusS2CPacket
 import de.bixilon.minosoft.protocol.ping.ServerListPing
 import de.bixilon.minosoft.protocol.protocol.ConnectionPing
 import de.bixilon.minosoft.protocol.protocol.ConnectionStates
@@ -87,11 +87,11 @@ class StatusConnection(
             fireEvent(ConnectionStateChangeEvent(this, previousConnectionState, _connectionState))
             when (value) {
                 ConnectionStates.HANDSHAKING -> {
-                    network.sendPacket(HandshakeServerboundPacket(realAddress, ConnectionStates.STATUS, Versions.AUTOMATIC_VERSION.protocolId))
+                    network.sendPacket(HandshakeC2SPacket(realAddress, ConnectionStates.STATUS, Versions.AUTOMATIC_VERSION.protocolId))
                     connectionState = ConnectionStates.STATUS
                 }
                 ConnectionStates.STATUS -> {
-                    network.sendPacket(StatusRequestServerboundPacket())
+                    network.sendPacket(StatusRequestC2SPacket())
                 }
                 ConnectionStates.FAILED -> {
                     if (addresses == null) {
@@ -123,15 +123,15 @@ class StatusConnection(
         fireEvent(ServerListStatusArriveEvent(this, ping))
     }
 
-    override fun getPacketId(packetType: PacketTypes.Serverbound): Int {
+    override fun getPacketId(packetType: PacketTypes.C2S): Int {
         return Protocol.getPacketId(packetType)!!
     }
 
-    override fun getPacketById(packetId: Int): PacketTypes.Clientbound {
+    override fun getPacketById(packetId: Int): PacketTypes.S2C {
         return Protocol.getPacketById(connectionState, packetId)!!
     }
 
-    override fun handlePacket(packet: ClientboundPacket) {
+    override fun handlePacket(packet: S2CPacket) {
         try {
             if (Log.getLevel().ordinal >= LogLevels.PROTOCOL.ordinal) {
                 packet.log()
@@ -140,7 +140,7 @@ class StatusConnection(
             if (fireEvent(event)) {
                 return
             }
-            if (packet is StatusClientboundPacket) {
+            if (packet is StatusS2CPacket) {
                 packet.handle(this)
             }
         } catch (exception: Throwable) {

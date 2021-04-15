@@ -32,10 +32,10 @@ import de.bixilon.minosoft.gui.rendering.Rendering
 import de.bixilon.minosoft.modding.event.EventInvoker
 import de.bixilon.minosoft.modding.event.events.ConnectionStateChangeEvent
 import de.bixilon.minosoft.modding.event.events.PacketReceiveEvent
-import de.bixilon.minosoft.protocol.packets.clientbound.ClientboundPacket
-import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket
-import de.bixilon.minosoft.protocol.packets.serverbound.handshaking.HandshakeServerboundPacket
-import de.bixilon.minosoft.protocol.packets.serverbound.login.LoginStartServerboundPacket
+import de.bixilon.minosoft.protocol.packets.c2s.handshaking.HandshakeC2SPacket
+import de.bixilon.minosoft.protocol.packets.c2s.login.LoginStartC2SPacket
+import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
+import de.bixilon.minosoft.protocol.packets.s2c.S2CPacket
 import de.bixilon.minosoft.protocol.protocol.ConnectionStates
 import de.bixilon.minosoft.protocol.protocol.PacketSender
 import de.bixilon.minosoft.protocol.protocol.PacketTypes
@@ -100,13 +100,13 @@ class PlayConnection(
                     }
 
 
-                    network.sendPacket(HandshakeServerboundPacket(address, ConnectionStates.LOGIN, version.protocolId))
+                    network.sendPacket(HandshakeC2SPacket(address, ConnectionStates.LOGIN, version.protocolId))
                     // after sending it, switch to next state
                     // after sending it, switch to next state
                     connectionState = ConnectionStates.LOGIN
                 }
                 ConnectionStates.LOGIN -> {
-                    this.network.sendPacket(LoginStartServerboundPacket(this.player))
+                    this.network.sendPacket(LoginStartC2SPacket(this.player))
                 }
                 ConnectionStates.PLAY -> {
                     Minosoft.CONNECTIONS[connectionId] = this
@@ -156,15 +156,15 @@ class PlayConnection(
     }
 
 
-    override fun getPacketId(packetType: PacketTypes.Serverbound): Int {
+    override fun getPacketId(packetType: PacketTypes.C2S): Int {
         return version.getPacketId(packetType) ?: Protocol.getPacketId(packetType) ?: error("Can not find packet $packetType for $version")
     }
 
-    override fun getPacketById(packetId: Int): PacketTypes.Clientbound {
+    override fun getPacketById(packetId: Int): PacketTypes.S2C {
         return version.getPacketById(connectionState, packetId) ?: Protocol.getPacketById(connectionState, packetId) ?: error("Can not find packet $packetId in $connectionState for $version")
     }
 
-    override fun handlePacket(packet: ClientboundPacket) {
+    override fun handlePacket(packet: S2CPacket) {
         try {
             if (Log.getLevel().ordinal >= LogLevels.PROTOCOL.ordinal) {
                 packet.log()
@@ -173,7 +173,7 @@ class PlayConnection(
             if (fireEvent(event)) {
                 return
             }
-            if (packet is PlayClientboundPacket) {
+            if (packet is PlayS2CPacket) {
                 packet.handle(this)
             }
         } catch (exception: Throwable) {

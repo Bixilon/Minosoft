@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.modding.event.events;
 
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
-import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketChangeGameState;
+import de.bixilon.minosoft.protocol.packets.s2c.play.PacketChangeGameState;
 
 public class ChangeGameStateEvent extends PlayConnectionEvent {
     private final PacketChangeGameState.Reason reason;

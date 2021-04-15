@@ -13,59 +13,59 @@
 package de.bixilon.minosoft.protocol.protocol
 
 import com.google.common.collect.HashBiMap
-import de.bixilon.minosoft.protocol.protocol.PacketTypes.Clientbound
-import de.bixilon.minosoft.protocol.protocol.PacketTypes.Serverbound
+import de.bixilon.minosoft.protocol.protocol.PacketTypes.C2S
+import de.bixilon.minosoft.protocol.protocol.PacketTypes.S2C
 
 object Protocol {
-    private val SERVERBOUND_PACKET_MAPPING = HashMap<ConnectionStates, HashBiMap<Serverbound, Int>>()
-    private val CLIENTBOUND_PACKET_MAPPING = HashMap<ConnectionStates, HashBiMap<Clientbound, Int>>()
+    private val C2S_PACKET_MAPPING = HashMap<ConnectionStates, HashBiMap<C2S, Int>>()
+    private val S2C_PACKET_MAPPING = HashMap<ConnectionStates, HashBiMap<S2C, Int>>()
 
     @JvmStatic
-    fun getPacketId(packet: Serverbound): Int? {
-        return SERVERBOUND_PACKET_MAPPING[packet.state]?.get(packet)
+    fun getPacketId(packet: C2S): Int? {
+        return C2S_PACKET_MAPPING[packet.state]?.get(packet)
     }
 
     @JvmStatic
-    fun getPacketById(state: ConnectionStates, command: Int): Clientbound? {
-        return CLIENTBOUND_PACKET_MAPPING[state]?.inverse()?.get(command)
+    fun getPacketById(state: ConnectionStates, command: Int): S2C? {
+        return S2C_PACKET_MAPPING[state]?.inverse()?.get(command)
     }
 
     init {
-        SERVERBOUND_PACKET_MAPPING[ConnectionStates.HANDSHAKING] = HashBiMap.create(
+        C2S_PACKET_MAPPING[ConnectionStates.HANDSHAKING] = HashBiMap.create(
             mapOf(
-                Serverbound.HANDSHAKING_HANDSHAKE to 0x00
+                C2S.HANDSHAKING_HANDSHAKE to 0x00
             )
         )
-        SERVERBOUND_PACKET_MAPPING[ConnectionStates.STATUS] = HashBiMap.create(
+        C2S_PACKET_MAPPING[ConnectionStates.STATUS] = HashBiMap.create(
             mapOf(
-                Serverbound.STATUS_REQUEST to 0x00,
-                Serverbound.STATUS_PING to 0x01
+                C2S.STATUS_REQUEST to 0x00,
+                C2S.STATUS_PING to 0x01
             )
         )
-        SERVERBOUND_PACKET_MAPPING[ConnectionStates.LOGIN] = HashBiMap.create(
+        C2S_PACKET_MAPPING[ConnectionStates.LOGIN] = HashBiMap.create(
             mapOf(
-                Serverbound.LOGIN_LOGIN_START to 0x00,
-                Serverbound.LOGIN_ENCRYPTION_RESPONSE to 0x01,
-                Serverbound.LOGIN_PLUGIN_RESPONSE to 0x02
+                C2S.LOGIN_LOGIN_START to 0x00,
+                C2S.LOGIN_ENCRYPTION_RESPONSE to 0x01,
+                C2S.LOGIN_PLUGIN_RESPONSE to 0x02
             )
         )
 
-        // clientbound
-        CLIENTBOUND_PACKET_MAPPING[ConnectionStates.STATUS] = HashBiMap.create(
+        // server to client
+        S2C_PACKET_MAPPING[ConnectionStates.STATUS] = HashBiMap.create(
             mapOf(
-                Clientbound.STATUS_RESPONSE to 0x00,
-                Clientbound.STATUS_PONG to 0x01
+                S2C.STATUS_RESPONSE to 0x00,
+                S2C.STATUS_PONG to 0x01
             )
         )
-        CLIENTBOUND_PACKET_MAPPING[ConnectionStates.LOGIN] = HashBiMap.create(
+        S2C_PACKET_MAPPING[ConnectionStates.LOGIN] = HashBiMap.create(
             mapOf(
-                Clientbound.LOGIN_DISCONNECT to 0x00,
-                Clientbound.LOGIN_ENCRYPTION_REQUEST to 0x01,
-                Clientbound.LOGIN_LOGIN_SUCCESS to 0x02,
-                Clientbound.LOGIN_SET_COMPRESSION to 0x03,
-                Clientbound.LOGIN_PLUGIN_REQUEST to 0x04
+                S2C.LOGIN_DISCONNECT to 0x00,
+                S2C.LOGIN_ENCRYPTION_REQUEST to 0x01,
+                S2C.LOGIN_LOGIN_SUCCESS to 0x02,
+                S2C.LOGIN_SET_COMPRESSION to 0x03,
+                S2C.LOGIN_PLUGIN_REQUEST to 0x04
             )
         )
-        CLIENTBOUND_PACKET_MAPPING[ConnectionStates.PLAY] = HashBiMap.create()
+        S2C_PACKET_MAPPING[ConnectionStates.PLAY] = HashBiMap.create()
     }
 }

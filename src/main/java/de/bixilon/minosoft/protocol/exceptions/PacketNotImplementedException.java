@@ -22,7 +22,7 @@ import javax.annotation.Nullable;
 
 public class PacketNotImplementedException extends PacketParseException {
 
-    public PacketNotImplementedException(InByteBuffer buffer, int packetId, PacketTypes.Clientbound packetType, @Nullable Version version, ConnectionStates connectionState) {
+    public PacketNotImplementedException(InByteBuffer buffer, int packetId, PacketTypes.S2C packetType, @Nullable Version version, ConnectionStates connectionState) {
         super(String.format("Packet not implemented yet (id=0x%x, name=%s, length=%d, dataLength=%d, version=%s, state=%s)", packetId, packetType, buffer.getLength(), buffer.getBytesLeft(), version, connectionState));
     }
 }

@@ -15,7 +15,7 @@ package de.bixilon.minosoft.modding.event.events;
 
 import de.bixilon.minosoft.data.mappings.blocks.actions.BlockAction;
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
-import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketBlockAction;
+import de.bixilon.minosoft.protocol.packets.s2c.play.PacketBlockAction;
 import glm_.vec3.Vec3i;
 
 /**

@@ -1,0 +1,51 @@
+/*
+ * Minosoft
+ * Copyright (C) 2021 Moritz Zwerger
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *
+ * This software is not affiliated with Mojang AB, the original developer of Minecraft.
+ */
+
+package de.bixilon.minosoft.protocol.packets.c2s.play.interact
+
+import de.bixilon.minosoft.data.entities.entities.Entity
+import de.bixilon.minosoft.data.player.Hands
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.protocol.protocol.OutPlayByteBuffer
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
+import de.bixilon.minosoft.util.logging.Log
+import glm_.vec3.Vec3
+
+class InteractEntityC2SPacket(
+    entityId: Int,
+    val position: Vec3,
+    val hand: Hands,
+    override val sneaking: Boolean,
+) : BaseInteractEntityC2SPacket(entityId, EntityInteractionActions.INTERACT) {
+
+    constructor(connection: PlayConnection, entity: Entity, position: Vec3, hand: Hands, sneaking: Boolean) : this(connection.world.entityIdMap.inverse()[entity]!!, position, hand, sneaking)
+
+    override fun write(buffer: OutPlayByteBuffer) {
+        super.write(buffer)
+
+        if (buffer.versionId >= ProtocolVersions.V_14W32A) {
+            if (buffer.versionId >= ProtocolVersions.V_15W31A) {
+                buffer.writeVarInt(hand.ordinal)
+            }
+
+            if (buffer.versionId >= ProtocolVersions.V_1_16_PRE3) {
+                buffer.writeBoolean(sneaking)
+            }
+        }
+
+    }
+
+    override fun log() {
+        Log.protocol("[OUT] Entity interaction (entityId=$entityId, hand=$hand, sneaking=$sneaking)")
+    }
+}

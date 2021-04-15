@@ -14,8 +14,8 @@
 package de.bixilon.minosoft.modding.event.events;
 
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
-import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketCloseWindowReceiving;
-import de.bixilon.minosoft.protocol.packets.serverbound.play.CloseWindowServerboundPacket;
+import de.bixilon.minosoft.protocol.packets.c2s.play.CloseWindowC2SPacket;
+import de.bixilon.minosoft.protocol.packets.s2c.play.PacketCloseWindowReceiving;
 
 /**
  * Fired when a inventory (window) closes
@@ -36,7 +36,7 @@ public class CloseWindowEvent extends CancelableEvent {
         this.initiator = Initiators.SERVER;
     }
 
-    public CloseWindowEvent(PlayConnection connection, CloseWindowServerboundPacket pkg) {
+    public CloseWindowEvent(PlayConnection connection, CloseWindowC2SPacket pkg) {
         super(connection);
         this.windowId = pkg.getWindowId();
         this.initiator = Initiators.CLIENT;

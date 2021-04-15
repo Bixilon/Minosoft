@@ -20,8 +20,8 @@ import de.bixilon.minosoft.data.inventory.InventorySlots
 import de.bixilon.minosoft.data.mappings.registry.PerEnumVersionRegistry
 import de.bixilon.minosoft.data.mappings.registry.PerVersionRegistry
 import de.bixilon.minosoft.data.mappings.registry.Registry
-import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketEntityAnimation
-import de.bixilon.minosoft.protocol.packets.clientbound.play.title.TitleClientboundPacketFactory
+import de.bixilon.minosoft.protocol.packets.s2c.play.PacketEntityAnimation
+import de.bixilon.minosoft.protocol.packets.s2c.play.title.TitleS2CPFactory
 import de.bixilon.minosoft.util.json.ResourceLocationJsonMap.toResourceLocationMap
 
 object DefaultRegistries {
@@ -36,7 +36,7 @@ object DefaultRegistries {
 
     val ENTITY_META_DATA_DATA_TYPES_REGISTRY = PerEnumVersionRegistry(EntityMetaData.EntityMetaDataDataTypes)
 
-    val TITLE_ACTIONS_REGISTRY = PerEnumVersionRegistry(TitleClientboundPacketFactory.TitleActions)
+    val TITLE_ACTIONS_REGISTRY = PerEnumVersionRegistry(TitleS2CPFactory.TitleActions)
 
     val ENTITY_ANIMATION_REGISTRY = PerEnumVersionRegistry(PacketEntityAnimation.EntityAnimations)
 

@@ -37,8 +37,8 @@ import de.bixilon.minosoft.data.mappings.statistics.Statistic
 import de.bixilon.minosoft.gui.rendering.chunk.VoxelShape
 import de.bixilon.minosoft.gui.rendering.chunk.models.AABB
 import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModel
-import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketEntityAnimation
-import de.bixilon.minosoft.protocol.packets.clientbound.play.title.TitleClientboundPacketFactory
+import de.bixilon.minosoft.protocol.packets.s2c.play.PacketEntityAnimation
+import de.bixilon.minosoft.protocol.packets.s2c.play.title.TitleS2CPFactory
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.collections.Clearable
 import de.bixilon.minosoft.util.json.ResourceLocationJsonMap.toResourceLocationMap
@@ -68,7 +68,7 @@ class VersionMapping {
 
     val entityMetaDataDataDataTypesRegistry: EnumRegistry<EntityMetaData.EntityMetaDataDataTypes> = EnumRegistry(values = EntityMetaData.EntityMetaDataDataTypes)
 
-    val titleActionsRegistry: EnumRegistry<TitleClientboundPacketFactory.TitleActions> = EnumRegistry(values = TitleClientboundPacketFactory.TitleActions)
+    val titleActionsRegistry: EnumRegistry<TitleS2CPFactory.TitleActions> = EnumRegistry(values = TitleS2CPFactory.TitleActions)
 
     val entityAnimationRegistry: EnumRegistry<PacketEntityAnimation.EntityAnimations> = EnumRegistry(values = PacketEntityAnimation.EntityAnimations)
 

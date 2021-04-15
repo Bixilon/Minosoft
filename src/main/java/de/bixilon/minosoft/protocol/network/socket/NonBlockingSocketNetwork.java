@@ -17,8 +17,8 @@ import de.bixilon.minosoft.protocol.exceptions.PacketParseException;
 import de.bixilon.minosoft.protocol.exceptions.PacketTooLongException;
 import de.bixilon.minosoft.protocol.network.Network;
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
-import de.bixilon.minosoft.protocol.packets.serverbound.ServerboundPacket;
-import de.bixilon.minosoft.protocol.packets.serverbound.login.EncryptionResponseServerboundPacket;
+import de.bixilon.minosoft.protocol.packets.c2s.C2SPacket;
+import de.bixilon.minosoft.protocol.packets.c2s.login.EncryptionResponseC2SPacket;
 import de.bixilon.minosoft.protocol.protocol.ConnectionStates;
 import de.bixilon.minosoft.protocol.protocol.CryptManager;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
@@ -40,7 +40,7 @@ import java.util.LinkedList;
 
 public class NonBlockingSocketNetwork extends Network {
     private final PlayConnection connection;
-    private final LinkedList<ServerboundPacket> queue = new LinkedList<>();
+    private final LinkedList<C2SPacket> queue = new LinkedList<>();
     private SocketChannel socketChannel;
     private Cipher decryptCipher;
     private Cipher encryptCipher;
@@ -80,15 +80,15 @@ public class NonBlockingSocketNetwork extends Network {
 
                 while (this.connection.getConnectionState() != ConnectionStates.DISCONNECTING && this.connection.getConnectionState() != ConnectionStates.DISCONNECTED) {
                     while (!this.queue.isEmpty()) {
-                        ServerboundPacket packet = this.queue.getFirst();
+                        C2SPacket packet = this.queue.getFirst();
                         this.queue.removeFirst();
-                        ByteBuffer sendBuffer = ByteBuffer.wrap(encryptData(prepareServerboundPacket(packet)));
+                        ByteBuffer sendBuffer = ByteBuffer.wrap(encryptData(prepareC2SPacket(packet)));
 
                         while (sendBuffer.hasRemaining()) {
                             this.socketChannel.write(sendBuffer);
                         }
 
-                        if (packet instanceof EncryptionResponseServerboundPacket packetEncryptionResponse) {
+                        if (packet instanceof EncryptionResponseC2SPacket packetEncryptionResponse) {
                             // enable encryption
                             enableEncryption(packetEncryptionResponse.getSecretKey());
                         }
@@ -137,7 +137,7 @@ public class NonBlockingSocketNetwork extends Network {
                         if (!currentPacketBuffer.hasRemaining()) {
                             currentPacketBuffer.flip();
                             try {
-                                var typeAndPacket = receiveClientboundPacket(decryptData(currentPacketBuffer.array()));
+                                var typeAndPacket = receiveS2CPacket(decryptData(currentPacketBuffer.array()));
                                 handlePacket(typeAndPacket.getKey(), typeAndPacket.getValue());
                             } catch (PacketParseException e) {
                                 Log.printException(e, LogLevels.PROTOCOL);
@@ -167,7 +167,7 @@ public class NonBlockingSocketNetwork extends Network {
     }
 
     @Override
-    public void sendPacket(ServerboundPacket packet) {
+    public void sendPacket(C2SPacket packet) {
         this.queue.add(packet);
     }
 

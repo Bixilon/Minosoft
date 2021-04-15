@@ -13,8 +13,8 @@
 package de.bixilon.minosoft.modding.event.events
 
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketHeldItemChangeReceiving
-import de.bixilon.minosoft.protocol.packets.serverbound.play.HeldItemChangeServerboundPacket
+import de.bixilon.minosoft.protocol.packets.c2s.play.HeldItemChangeC2SPacket
+import de.bixilon.minosoft.protocol.packets.s2c.play.PacketHeldItemChangeReceiving
 
 class HeldItemChangeEvent : PlayConnectionEvent {
     val slot: Int
@@ -23,7 +23,7 @@ class HeldItemChangeEvent : PlayConnectionEvent {
         this.slot = slot
     }
 
-    constructor(connection: PlayConnection, pkg: HeldItemChangeServerboundPacket) : super(connection) {
+    constructor(connection: PlayConnection, pkg: HeldItemChangeC2SPacket) : super(connection) {
         slot = pkg.slot
     }
 

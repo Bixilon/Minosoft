@@ -15,7 +15,7 @@ package de.bixilon.minosoft.modding.event.events;
 
 import de.bixilon.minosoft.data.entities.entities.Entity;
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
-import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketDestroyEntity;
+import de.bixilon.minosoft.protocol.packets.s2c.play.PacketDestroyEntity;
 
 public class EntityDespawnEvent extends PlayConnectionEvent {
     private final int[] entityIds;

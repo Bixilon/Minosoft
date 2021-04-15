@@ -19,11 +19,11 @@ import de.bixilon.minosoft.modding.event.events.CancelableEvent
 import de.bixilon.minosoft.modding.event.events.ConnectionEvent
 import de.bixilon.minosoft.modding.event.events.PacketSendEvent
 import de.bixilon.minosoft.protocol.network.Network
-import de.bixilon.minosoft.protocol.packets.clientbound.ClientboundPacket
-import de.bixilon.minosoft.protocol.packets.serverbound.ServerboundPacket
+import de.bixilon.minosoft.protocol.packets.c2s.C2SPacket
+import de.bixilon.minosoft.protocol.packets.s2c.S2CPacket
 import de.bixilon.minosoft.protocol.protocol.ConnectionStates
-import de.bixilon.minosoft.protocol.protocol.PacketTypes.Clientbound
-import de.bixilon.minosoft.protocol.protocol.PacketTypes.Serverbound
+import de.bixilon.minosoft.protocol.protocol.PacketTypes.C2S
+import de.bixilon.minosoft.protocol.protocol.PacketTypes.S2C
 import java.util.*
 
 abstract class Connection {
@@ -33,10 +33,10 @@ abstract class Connection {
     abstract var connectionState: ConnectionStates
     var lastException: Throwable? = null
 
-    abstract fun getPacketId(packetType: Serverbound): Int
-    abstract fun getPacketById(packetId: Int): Clientbound?
+    abstract fun getPacketId(packetType: C2S): Int
+    abstract fun getPacketById(packetId: Int): S2C?
 
-    open fun sendPacket(packet: ServerboundPacket) {
+    open fun sendPacket(packet: C2SPacket) {
         val event = PacketSendEvent(this, packet)
         if (fireEvent(event)) {
             return
@@ -64,7 +64,7 @@ abstract class Connection {
         return false
     }
 
-    open fun handle(packetType: Clientbound, packet: ClientboundPacket) {
+    open fun handle(packetType: S2C, packet: S2CPacket) {
         if (!packetType.isThreadSafe) {
             handlePacket(packet)
             return
@@ -73,7 +73,7 @@ abstract class Connection {
     }
 
 
-    abstract fun handlePacket(packet: ClientboundPacket)
+    abstract fun handlePacket(packet: S2CPacket)
 
     open fun unregisterEvent(method: EventInvoker?) {
         eventListeners.remove(method)

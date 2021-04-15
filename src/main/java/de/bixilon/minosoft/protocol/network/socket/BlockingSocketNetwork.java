@@ -17,10 +17,10 @@ import de.bixilon.minosoft.protocol.exceptions.PacketParseException;
 import de.bixilon.minosoft.protocol.exceptions.PacketTooLongException;
 import de.bixilon.minosoft.protocol.network.Network;
 import de.bixilon.minosoft.protocol.network.connection.Connection;
-import de.bixilon.minosoft.protocol.packets.clientbound.ClientboundPacket;
-import de.bixilon.minosoft.protocol.packets.clientbound.login.PacketEncryptionRequest;
-import de.bixilon.minosoft.protocol.packets.serverbound.ServerboundPacket;
-import de.bixilon.minosoft.protocol.packets.serverbound.login.EncryptionResponseServerboundPacket;
+import de.bixilon.minosoft.protocol.packets.c2s.C2SPacket;
+import de.bixilon.minosoft.protocol.packets.c2s.login.EncryptionResponseC2SPacket;
+import de.bixilon.minosoft.protocol.packets.s2c.S2CPacket;
+import de.bixilon.minosoft.protocol.packets.s2c.login.PacketEncryptionRequest;
 import de.bixilon.minosoft.protocol.protocol.ConnectionStates;
 import de.bixilon.minosoft.protocol.protocol.CryptManager;
 import de.bixilon.minosoft.protocol.protocol.PacketTypes;
@@ -43,7 +43,7 @@ import java.net.SocketException;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class BlockingSocketNetwork extends Network {
-    private final LinkedBlockingQueue<ServerboundPacket> queue = new LinkedBlockingQueue<>();
+    private final LinkedBlockingQueue<C2SPacket> queue = new LinkedBlockingQueue<>();
     private Thread socketReceiveThread;
     private Thread socketSendThread;
     private Socket socket;
@@ -104,7 +104,7 @@ public class BlockingSocketNetwork extends Network {
                         break;
                     }
                     try {
-                        var typeAndPacket = receiveClientboundPacket(this.inputStream);
+                        var typeAndPacket = prepareS2CPacket(this.inputStream);
                         handlePacket(typeAndPacket.getKey(), typeAndPacket.getValue());
                     } catch (PacketParseException e) {
                         Log.printException(e, LogLevels.PROTOCOL);
@@ -130,7 +130,7 @@ public class BlockingSocketNetwork extends Network {
     }
 
     @Override
-    public void sendPacket(ServerboundPacket packet) {
+    public void sendPacket(C2SPacket packet) {
         this.queue.add(packet);
     }
 
@@ -153,7 +153,7 @@ public class BlockingSocketNetwork extends Network {
     }
 
     @Override
-    protected void handlePacket(PacketTypes.Clientbound packetType, ClientboundPacket packet) {
+    protected void handlePacket(PacketTypes.S2C packetType, S2CPacket packet) {
         super.handlePacket(packetType, packet);
         if (packet instanceof PacketEncryptionRequest) {
             try {
@@ -174,14 +174,14 @@ public class BlockingSocketNetwork extends Network {
                         break;
                     }
 
-                    ServerboundPacket packet = this.queue.take();
+                    C2SPacket packet = this.queue.take();
                     if (Log.getLevel().ordinal() >= LogLevels.PROTOCOL.ordinal()) {
                         packet.log();
                     }
 
-                    this.outputStream.write(prepareServerboundPacket(packet));
+                    this.outputStream.write(prepareC2SPacket(packet));
                     this.outputStream.flush();
-                    if (packet instanceof EncryptionResponseServerboundPacket packetEncryptionResponse) {
+                    if (packet instanceof EncryptionResponseC2SPacket packetEncryptionResponse) {
                         // enable encryption
                         enableEncryption(packetEncryptionResponse.getSecretKey());
                         // wake up other thread
@@ -194,7 +194,7 @@ public class BlockingSocketNetwork extends Network {
         this.socketSendThread.start();
     }
 
-    private Pair<PacketTypes.Clientbound, ClientboundPacket> receiveClientboundPacket(InputStream inputStream) throws IOException, PacketParseException {
+    private Pair<PacketTypes.S2C, S2CPacket> prepareS2CPacket(InputStream inputStream) throws IOException, PacketParseException {
         int packetLength = readStreamVarInt(inputStream);
 
         if (packetLength > ProtocolDefinition.PROTOCOL_PACKET_MAX_SIZE) {
@@ -203,7 +203,7 @@ public class BlockingSocketNetwork extends Network {
         }
 
         byte[] bytes = this.inputStream.readNBytes(packetLength);
-        return super.receiveClientboundPacket(bytes);
+        return super.receiveS2CPacket(bytes);
     }
 
     protected void enableEncryption(SecretKey secretKey) {

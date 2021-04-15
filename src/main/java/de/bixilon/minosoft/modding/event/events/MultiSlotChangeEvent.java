@@ -15,7 +15,7 @@ package de.bixilon.minosoft.modding.event.events;
 
 import de.bixilon.minosoft.data.inventory.ItemStack;
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
-import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketWindowItems;
+import de.bixilon.minosoft.protocol.packets.s2c.play.PacketWindowItems;
 
 public class MultiSlotChangeEvent extends PlayConnectionEvent {
     private final byte windowId;

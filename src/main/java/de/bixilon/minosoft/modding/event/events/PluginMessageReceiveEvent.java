@@ -15,7 +15,7 @@ package de.bixilon.minosoft.modding.event.events;
 
 import de.bixilon.minosoft.data.mappings.ResourceLocation;
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
-import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketPluginMessageReceiving;
+import de.bixilon.minosoft.protocol.packets.s2c.play.PacketPluginMessageReceiving;
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 
 public class PluginMessageReceiveEvent extends CancelableEvent {

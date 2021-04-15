@@ -19,8 +19,8 @@ import de.bixilon.minosoft.data.assets.MinecraftAssetsManager
 import de.bixilon.minosoft.data.assets.Resources
 import de.bixilon.minosoft.data.locale.minecraft.MinecraftLocaleManager
 import de.bixilon.minosoft.protocol.protocol.ConnectionStates
-import de.bixilon.minosoft.protocol.protocol.PacketTypes.Clientbound
-import de.bixilon.minosoft.protocol.protocol.PacketTypes.Serverbound
+import de.bixilon.minosoft.protocol.protocol.PacketTypes.C2S
+import de.bixilon.minosoft.protocol.protocol.PacketTypes.S2C
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.CountUpAndDownLatch
 import de.bixilon.minosoft.util.Util
@@ -31,8 +31,8 @@ data class Version(
     var versionName: String,
     val versionId: Int,
     val protocolId: Int,
-    val serverboundPacketMapping: Map<ConnectionStates, HashBiMap<Serverbound, Int>>,
-    val clientboundPacketMapping: Map<ConnectionStates, HashBiMap<Clientbound, Int>>,
+    val c2SPacketMapping: Map<ConnectionStates, HashBiMap<C2S, Int>>,
+    val s2CPacketMapping: Map<ConnectionStates, HashBiMap<S2C, Int>>,
 ) {
     var isLoaded = false
     var isGettingLoaded = false
@@ -40,12 +40,12 @@ data class Version(
     lateinit var assetsManager: MinecraftAssetsManager
     lateinit var localeManager: MinecraftLocaleManager
 
-    fun getPacketById(state: ConnectionStates, command: Int): Clientbound? {
-        return clientboundPacketMapping[state]?.inverse()?.get(command)
+    fun getPacketById(state: ConnectionStates, command: Int): S2C? {
+        return s2CPacketMapping[state]?.inverse()?.get(command)
     }
 
-    fun getPacketId(packet: Serverbound): Int? {
-        return serverboundPacketMapping[packet.state]?.get(packet)
+    fun getPacketId(packet: C2S): Int? {
+        return c2SPacketMapping[packet.state]?.get(packet)
     }
 
     fun isFlattened(): Boolean {

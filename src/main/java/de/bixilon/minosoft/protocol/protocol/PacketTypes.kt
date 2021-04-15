@@ -18,83 +18,84 @@
 package de.bixilon.minosoft.protocol.protocol
 
 import de.bixilon.minosoft.protocol.ErrorHandler
-import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket
-import de.bixilon.minosoft.protocol.packets.clientbound.StatusClientboundPacket
-import de.bixilon.minosoft.protocol.packets.clientbound.login.*
-import de.bixilon.minosoft.protocol.packets.clientbound.play.*
-import de.bixilon.minosoft.protocol.packets.clientbound.play.border.*
-import de.bixilon.minosoft.protocol.packets.clientbound.play.combat.CombatEventClientboundPacketFactory
-import de.bixilon.minosoft.protocol.packets.clientbound.play.combat.EndCombatEventClientboundPacket
-import de.bixilon.minosoft.protocol.packets.clientbound.play.combat.EnterCombatEventClientboundPacket
-import de.bixilon.minosoft.protocol.packets.clientbound.play.combat.EntityDeathCombatEventClientboundPacket
-import de.bixilon.minosoft.protocol.packets.clientbound.play.title.*
-import de.bixilon.minosoft.protocol.packets.clientbound.status.PacketStatusPong
-import de.bixilon.minosoft.protocol.packets.clientbound.status.PacketStatusResponse
-import de.bixilon.minosoft.protocol.packets.serverbound.ServerboundPacket
-import de.bixilon.minosoft.protocol.packets.serverbound.handshaking.HandshakeServerboundPacket
-import de.bixilon.minosoft.protocol.packets.serverbound.login.EncryptionResponseServerboundPacket
-import de.bixilon.minosoft.protocol.packets.serverbound.login.LoginPluginResponseServerboundPacket
-import de.bixilon.minosoft.protocol.packets.serverbound.login.LoginStartServerboundPacket
-import de.bixilon.minosoft.protocol.packets.serverbound.play.*
-import de.bixilon.minosoft.protocol.packets.serverbound.play.interact.BaseInteractEntityServerboundPacket
-import de.bixilon.minosoft.protocol.packets.serverbound.status.StatusPingServerboundPacket
-import de.bixilon.minosoft.protocol.packets.serverbound.status.StatusRequestServerboundPacket
+import de.bixilon.minosoft.protocol.packets.c2s.C2SPacket
+import de.bixilon.minosoft.protocol.packets.c2s.handshaking.HandshakeC2SPacket
+import de.bixilon.minosoft.protocol.packets.c2s.login.EncryptionResponseC2SPacket
+import de.bixilon.minosoft.protocol.packets.c2s.login.LoginPluginResponseC2SPacket
+import de.bixilon.minosoft.protocol.packets.c2s.login.LoginStartC2SPacket
+import de.bixilon.minosoft.protocol.packets.c2s.play.*
+import de.bixilon.minosoft.protocol.packets.c2s.play.interact.BaseInteractEntityC2SPacket
+import de.bixilon.minosoft.protocol.packets.c2s.status.StatusPingC2SPacket
+import de.bixilon.minosoft.protocol.packets.c2s.status.StatusRequestC2SPacket
+import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
+import de.bixilon.minosoft.protocol.packets.s2c.StatusS2CPacket
+import de.bixilon.minosoft.protocol.packets.s2c.login.*
+import de.bixilon.minosoft.protocol.packets.s2c.play.*
+import de.bixilon.minosoft.protocol.packets.s2c.play.border.*
+import de.bixilon.minosoft.protocol.packets.s2c.play.combat.CombatEventS2CPFactory
+import de.bixilon.minosoft.protocol.packets.s2c.play.combat.EndCombatEventS2CPacket
+import de.bixilon.minosoft.protocol.packets.s2c.play.combat.EnterCombatEventS2CPacket
+import de.bixilon.minosoft.protocol.packets.s2c.play.combat.EntityDeathCombatEventS2CPacket
+import de.bixilon.minosoft.protocol.packets.s2c.play.title.*
+import de.bixilon.minosoft.protocol.packets.s2c.status.PacketStatusPong
+import de.bixilon.minosoft.protocol.packets.s2c.status.PacketStatusResponse
 
 class PacketTypes {
-    enum class Serverbound(val clazz: Class<out ServerboundPacket>? = null) {
-        HANDSHAKING_HANDSHAKE(HandshakeServerboundPacket::class.java),
-        STATUS_PING(StatusPingServerboundPacket::class.java),
-        STATUS_REQUEST(StatusRequestServerboundPacket::class.java),
-        LOGIN_LOGIN_START(LoginStartServerboundPacket::class.java),
-        LOGIN_ENCRYPTION_RESPONSE(EncryptionResponseServerboundPacket::class.java),
-        LOGIN_PLUGIN_RESPONSE(LoginPluginResponseServerboundPacket::class.java),
-        PLAY_TELEPORT_CONFIRMATION(TeleportConfirmServerboundPacket::class.java),
+
+    enum class C2S(val clazz: Class<out C2SPacket>? = null) {
+        HANDSHAKING_HANDSHAKE(HandshakeC2SPacket::class.java),
+        STATUS_PING(StatusPingC2SPacket::class.java),
+        STATUS_REQUEST(StatusRequestC2SPacket::class.java),
+        LOGIN_LOGIN_START(LoginStartC2SPacket::class.java),
+        LOGIN_ENCRYPTION_RESPONSE(EncryptionResponseC2SPacket::class.java),
+        LOGIN_PLUGIN_RESPONSE(LoginPluginResponseC2SPacket::class.java),
+        PLAY_TELEPORT_CONFIRMATION(TeleportConfirmC2SPacket::class.java),
         PLAY_QUERY_BLOCK_NBT,
         PLAY_SET_DIFFICULTY,
-        PLAY_CHAT_MESSAGE(ChatMessageServerboundPacket::class.java),
-        PLAY_CLIENT_ACTION(ClientActionServerboundPacket::class.java),
-        PLAY_CLIENT_SETTINGS(ClientSettingsServerboundPacket::class.java),
-        PLAY_TAB_COMPLETE(TabCompleteServerboundPacket::class.java),
-        PLAY_WINDOW_CONFIRMATION(WindowConfirmationServerboundPacket::class.java),
-        PLAY_CLICK_WINDOW_ACTION(ClickWindowActionServerboundPacket::class.java),
-        PLAY_CLICK_WINDOW_SLOT(ClickWindowSlotServerboundPacket::class.java),
-        PLAY_CLOSE_WINDOW(CloseWindowServerboundPacket::class.java),
-        PLAY_PLUGIN_MESSAGE(PluginMessageServerboundPacket::class.java),
+        PLAY_CHAT_MESSAGE(ChatMessageC2SPacket::class.java),
+        PLAY_CLIENT_ACTION(ClientActionC2SPacket::class.java),
+        PLAY_CLIENT_SETTINGS(ClientSettingsC2SPacket::class.java),
+        PLAY_TAB_COMPLETE(TabCompleteC2SPacket::class.java),
+        PLAY_WINDOW_CONFIRMATION(WindowConfirmationC2SPacket::class.java),
+        PLAY_CLICK_WINDOW_ACTION(ClickWindowActionC2SPacket::class.java),
+        PLAY_CLICK_WINDOW_SLOT(ClickWindowSlotC2SPacket::class.java),
+        PLAY_CLOSE_WINDOW(CloseWindowC2SPacket::class.java),
+        PLAY_PLUGIN_MESSAGE(PluginMessageC2SPacket::class.java),
         PLAY_EDIT_BOOK,
-        PLAY_ENTITY_NBT_REQUEST(EntityNBTRequestServerboundPacket::class.java),
-        PLAY_INTERACT_ENTITY(BaseInteractEntityServerboundPacket::class.java),
-        PLAY_KEEP_ALIVE(KeepAliveServerboundPacket::class.java),
+        PLAY_ENTITY_NBT_REQUEST(EntityNBTRequestC2SPacket::class.java),
+        PLAY_INTERACT_ENTITY(BaseInteractEntityC2SPacket::class.java),
+        PLAY_KEEP_ALIVE(KeepAliveC2SPacket::class.java),
         PLAY_LOCK_DIFFICULTY,
-        PLAY_PLAYER_POSITION(PlayerPositionServerboundPacket::class.java),
-        PLAY_PLAYER_POSITION_AND_ROTATION(PlayerPositionAndRotationServerboundPacket::class.java),
-        PLAY_PLAYER_ROTATION(PlayerRotationServerboundPacket::class.java),
-        PLAY_VEHICLE_MOVE(PacketVehicleMovementServerboundPacket::class.java),
-        PLAY_STEER_BOAT(SteerBoatServerboundPacket::class.java),
+        PLAY_PLAYER_POSITION(PlayerPositionC2SPacket::class.java),
+        PLAY_PLAYER_POSITION_AND_ROTATION(PlayerPositionAndRotationC2SPacket::class.java),
+        PLAY_PLAYER_ROTATION(PlayerRotationC2SPacket::class.java),
+        PLAY_VEHICLE_MOVE(PacketVehicleMovementC2SPacket::class.java),
+        PLAY_STEER_BOAT(SteerBoatC2SPacket::class.java),
         PLAY_PICK_ITEM,
-        PLAY_CRAFTING_RECIPE_REQUEST(CraftingRecipeRequestServerboundPacket::class.java),
-        PLAY_PLAYER_ABILITIES(PlayerAbilitiesServerboundPacket::class.java),
-        PLAY_PLAYER_DIGGING(PlayerDiggingServerboundPacket::class.java),
-        PLAY_ENTITY_ACTION(EntityActionServerboundPacket::class.java),
-        PLAY_STEER_VEHICLE(SteerVehicleServerboundPacket::class.java),
-        PLAY_RECIPE_BOOK_STATE(RecipeBookStateServerboundPacket::class.java),
-        PLAY_NAME_ITEM(NameItemServerboundPacket::class.java),
-        PLAY_RESOURCE_PACK_STATUS(ResourcePackStatusServerboundPacket::class.java),
-        PLAY_ADVANCEMENT_TAB(AdvancementTabServerboundPacket::class.java),
-        PLAY_SELECT_TRADE(SelectTradeServerboundPacket::class.java),
-        PLAY_SET_BEACON_EFFECT(SetBeaconEffectServerboundPacket::class.java),
-        PLAY_HELD_ITEM_CHANGE(HeldItemChangeServerboundPacket::class.java),
-        PLAY_UPDATE_COMMAND_BLOCK(UpdateCommandBlockServerboundPacket::class.java),
-        PLAY_CREATIVE_INVENTORY_ACTION(CreativeInventoryActionServerboundPacket::class.java),
-        PLAY_UPDATE_JIGSAW_BLOCK(UpdateJigsawBlockServerboundPacket::class.java),
-        PLAY_UPDATE_STRUCTURE_BLOCK(UpdateStructureBlockServerboundPacket::class.java),
-        PLAY_UPDATE_SIGN(UpdateSignServerboundPacket::class.java),
-        PLAY_HAND_ANIMATION(HandAnimationServerboundPacket::class.java),
-        PLAY_SPECTATE_ENTITY(SpectateEntityServerboundPacket::class.java),
-        PLAY_PLACE_BLOCK(PlaceBlockServerboundPacket::class.java),
-        PLAY_USE_ITEM(UseItemServerboundPacket::class.java),
-        PLAY_UPDATE_COMMAND_BLOCK_MINECART(UpdateCommandBlockMinecartServerboundPacket::class.java),
-        PLAY_GENERATE_STRUCTURE(GenerateStructureServerboundPacket::class.java),
-        PLAY_SET_DISPLAYED_RECIPE(SetDisplayedRecipeServerboundPacket::class.java),
+        PLAY_CRAFTING_RECIPE_REQUEST(CraftingRecipeRequestC2SPacket::class.java),
+        PLAY_PLAYER_ABILITIES(PlayerAbilitiesC2SPacket::class.java),
+        PLAY_PLAYER_DIGGING(PlayerDiggingC2SPacket::class.java),
+        PLAY_ENTITY_ACTION(EntityActionC2SPacket::class.java),
+        PLAY_STEER_VEHICLE(SteerVehicleC2SPacket::class.java),
+        PLAY_RECIPE_BOOK_STATE(RecipeBookStateC2SPacket::class.java),
+        PLAY_NAME_ITEM(NameItemC2SPacket::class.java),
+        PLAY_RESOURCE_PACK_STATUS(ResourcePackStatusC2SPacket::class.java),
+        PLAY_ADVANCEMENT_TAB(AdvancementTabC2SPacket::class.java),
+        PLAY_SELECT_TRADE(SelectTradeC2SPacket::class.java),
+        PLAY_SET_BEACON_EFFECT(SetBeaconEffectC2SPacket::class.java),
+        PLAY_HELD_ITEM_CHANGE(HeldItemChangeC2SPacket::class.java),
+        PLAY_UPDATE_COMMAND_BLOCK(UpdateCommandBlockC2SPacket::class.java),
+        PLAY_CREATIVE_INVENTORY_ACTION(CreativeInventoryActionC2SPacket::class.java),
+        PLAY_UPDATE_JIGSAW_BLOCK(UpdateJigsawBlockC2SPacket::class.java),
+        PLAY_UPDATE_STRUCTURE_BLOCK(UpdateStructureBlockC2SPacket::class.java),
+        PLAY_UPDATE_SIGN(UpdateSignC2SPacket::class.java),
+        PLAY_HAND_ANIMATION(HandAnimationC2SPacket::class.java),
+        PLAY_SPECTATE_ENTITY(SpectateEntityC2SPacket::class.java),
+        PLAY_PLACE_BLOCK(PlaceBlockC2SPacket::class.java),
+        PLAY_USE_ITEM(UseItemC2SPacket::class.java),
+        PLAY_UPDATE_COMMAND_BLOCK_MINECART(UpdateCommandBlockMinecartC2SPacket::class.java),
+        PLAY_GENERATE_STRUCTURE(GenerateStructureC2SPacket::class.java),
+        PLAY_SET_DISPLAYED_RECIPE(SetDisplayedRecipeC2SPacket::class.java),
         PLAY_PLAYER_GROUND_CHANGE,
         PLAY_PREPARE_CRAFTING_GRID,
         PLAY_VEHICLE_MOVEMENT,
@@ -104,10 +105,10 @@ class PacketTypes {
         val state: ConnectionStates = ConnectionStates.valueOf(name.split("_".toRegex()).toTypedArray()[0])
 
         companion object {
-            private val MAPPING: Map<Class<out ServerboundPacket>, Serverbound>
+            private val MAPPING: Map<Class<out C2SPacket>, C2S>
 
             init {
-                val mapping: MutableMap<Class<out ServerboundPacket>, Serverbound> = mutableMapOf()
+                val mapping: MutableMap<Class<out C2SPacket>, C2S> = mutableMapOf()
 
                 for (value in values()) {
                     if (value.clazz == null) {
@@ -119,10 +120,10 @@ class PacketTypes {
                 MAPPING = mapping.toMap()
             }
 
-            fun getPacketType(`class`: Class<out ServerboundPacket>): Serverbound {
+            fun getPacketType(`class`: Class<out C2SPacket>): C2S {
                 var checkedClass: Class<*> = `class`
 
-                while (checkedClass != ServerboundPacket::class.java) {
+                while (checkedClass != C2SPacket::class.java) {
                     MAPPING[checkedClass]?.let {
                         return it
                     }
@@ -134,9 +135,9 @@ class PacketTypes {
     }
 
 
-    enum class Clientbound(
-        val playFactory: ((buffer: PlayInByteBuffer) -> PlayClientboundPacket)? = null,
-        val statusFactory: ((buffer: InByteBuffer) -> StatusClientboundPacket)? = null,
+    enum class S2C(
+        val playFactory: ((buffer: PlayInByteBuffer) -> PlayS2CPacket)? = null,
+        val statusFactory: ((buffer: InByteBuffer) -> StatusS2CPacket)? = null,
         val isThreadSafe: Boolean = true,
         val errorHandler: ErrorHandler? = null,
     ) {
@@ -196,10 +197,10 @@ class PacketTypes {
         PLAY_OPEN_SIGN_EDITOR({ PacketOpenSignEditor(it) }),
         PLAY_CRAFT_RECIPE_RESPONSE({ PacketCraftRecipeResponse(it) }),
         PLAY_PLAYER_ABILITIES({ PacketPlayerAbilitiesReceiving(it) }),
-        PLAY_COMBAT_EVENT({ CombatEventClientboundPacketFactory.createPacket(it) }),
-        PLAY_COMBAT_EVENT_END({ EndCombatEventClientboundPacket(it) }),
-        PLAY_COMBAT_EVENT_ENTER({ EnterCombatEventClientboundPacket() }),
-        PLAY_COMBAT_EVENT_KILL({ EntityDeathCombatEventClientboundPacket(it) }),
+        PLAY_COMBAT_EVENT({ CombatEventS2CPFactory.createPacket(it) }),
+        PLAY_COMBAT_EVENT_END({ EndCombatEventS2CPacket(it) }),
+        PLAY_COMBAT_EVENT_ENTER({ EnterCombatEventS2CPacket() }),
+        PLAY_COMBAT_EVENT_KILL({ EntityDeathCombatEventS2CPacket(it) }),
         PLAY_TAB_LIST_ITEM({ PacketTabListItem(it) }),
         PLAY_FACE_PLAYER({ PacketFacePlayer(it) }),
         PLAY_PLAYER_POSITION_AND_ROTATION({ PacketPlayerPositionAndRotation(it) }),
@@ -210,20 +211,20 @@ class PacketTypes {
         PLAY_RESPAWN({ PacketRespawn(it) }, isThreadSafe = false),
         PLAY_ENTITY_HEAD_ROTATION({ PacketEntityHeadRotation(it) }),
         PLAY_SELECT_ADVANCEMENT_TAB({ PacketSelectAdvancementTab(it) }),
-        PLAY_WORLD_BORDER({ WorldBorderClientboundPacketFactory.createPacket(it) }),
-        PLAY_WORLD_BORDER_INITIALIZE({ InitializeWorldBorderClientboundPacket(it) }),
-        PLAY_WORLD_BORDER_SET_CENTER({ SetCenterWorldBorderClientboundPacket(it) }),
-        PLAY_WORLD_BORDER_LERP_SIZE({ LerpSizeWorldBorderClientboundPacket(it) }),
-        PLAY_WORLD_BORDER_SIZE({ SetSizeWorldBorderClientboundPacket(it) }),
-        PLAY_WORLD_BORDER_SET_WARN_TIME({ SetWarningTimeWorldBorderClientboundPacket(it) }),
-        PLAY_WORLD_BORDER_SET_WARN_BLOCKS({ SetWarningBlocksWorldBorderClientboundPacket(it) }),
+        PLAY_WORLD_BORDER({ WorldBorderS2CFactory.createPacket(it) }),
+        PLAY_WORLD_BORDER_INITIALIZE({ InitializeWorldBorderS2CPacket(it) }),
+        PLAY_WORLD_BORDER_SET_CENTER({ SetCenterWorldBorderS2CPacket(it) }),
+        PLAY_WORLD_BORDER_LERP_SIZE({ LerpSizeWorldBorderS2CPacket(it) }),
+        PLAY_WORLD_BORDER_SIZE({ SetSizeWorldBorderS2CPacket(it) }),
+        PLAY_WORLD_BORDER_SET_WARN_TIME({ SetWarningTimeWorldBorderS2CPacket(it) }),
+        PLAY_WORLD_BORDER_SET_WARN_BLOCKS({ SetWarningBlocksWorldBorderS2CPacket(it) }),
         PLAY_CAMERA({ PacketCamera(it) }),
         PLAY_HELD_ITEM_CHANGE({ PacketHeldItemChangeReceiving(it) }),
         PLAY_UPDATE_VIEW_POSITION({ PacketUpdateViewPosition(it) }),
         PLAY_DISPLAY_SCOREBOARD({ PacketScoreboardDisplayScoreboard(it) }),
         PLAY_ENTITY_METADATA({ PacketEntityMetadata(it) }),
         PLAY_ATTACH_ENTITY({ PacketAttachEntity(it) }),
-        PLAY_ENTITY_VELOCITY({ PacketEntityVelocity(it) }),
+        PLAY_ENTITY_VELOCITY({ EntityVelocityS2CP(it) }),
         PLAY_ENTITY_EQUIPMENT({ PacketEntityEquipment(it) }),
         PLAY_SET_EXPERIENCE({ PacketSetExperience(it) }),
         PLAY_UPDATE_HEALTH({ PacketUpdateHealth(it) }),
@@ -251,13 +252,13 @@ class PacketTypes {
         PLAY_UPDATE_SIGN({ PacketUpdateSignReceiving(it) }),
         PLAY_STATISTICS({ PacketStatistics(it) }),
         PLAY_SPAWN_ENTITY({ PacketSpawnObject(it) }, isThreadSafe = false),
-        PLAY_TITLE({ TitleClientboundPacketFactory.createPacket(it) }),
-        PLAY_CLEAR_TITLE({ TitleClientboundPacketFactory.createClearTitlePackets(it) }),
-        PLAY_SET_ACTION_BAR_TEXT({ SetActionBarTextClientboundPacket(it) }),
-        PLAY_SET_ACTION_SUBTITLE({ SetSubTitleClientboundPacket(it) }),
-        PLAY_SET_TITLE({ SetTitleClientboundPacket(it) }),
-        PLAY_SET_TIMES({ SetTimesAndDisplayClientboundPacket(it) }),
-        PLAY_EMPTY_ENTITY_MOVEMENT({ EmptyEntityMovementClientboundPacket(it) }, isThreadSafe = false),
+        PLAY_TITLE({ TitleS2CPFactory.createPacket(it) }),
+        PLAY_CLEAR_TITLE({ TitleS2CPFactory.createClearTitlePacket(it) }),
+        PLAY_SET_ACTION_BAR_TEXT({ SetActionBarTextS2CPacket(it) }),
+        PLAY_SET_ACTION_SUBTITLE({ SetSubTitleS2CPacket(it) }),
+        PLAY_SET_TITLE({ SetTitleS2CPacket(it) }),
+        PLAY_SET_TIMES({ SetTimesAndDisplayS2CPacket(it) }),
+        PLAY_EMPTY_ENTITY_MOVEMENT({ EmptyEntityMovementS2CPacket(it) }, isThreadSafe = false),
         PLAY_SET_COMPRESSION({ PacketSetCompression(it) }, isThreadSafe = false),
         PLAY_ADVANCEMENT_PROGRESS({ TODO() }),
         PLAY_SCULK_VIBRATION_SIGNAL({ PacketSculkVibrationSignal(it) }),

@@ -15,7 +15,7 @@ package de.bixilon.minosoft.modding.event.events
 import de.bixilon.minosoft.data.world.ChunkData
 
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketChunkData
+import de.bixilon.minosoft.protocol.packets.s2c.play.PacketChunkData
 import de.bixilon.minosoft.util.nbt.tag.CompoundTag
 import glm_.vec2.Vec2i
 

@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.data.entities.block;
 
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
-import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketBlockEntityMetadata;
+import de.bixilon.minosoft.protocol.packets.s2c.play.PacketBlockEntityMetadata;
 import de.bixilon.minosoft.util.nbt.tag.CompoundTag;
 
 import javax.annotation.Nullable;

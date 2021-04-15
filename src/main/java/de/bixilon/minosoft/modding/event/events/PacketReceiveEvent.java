@@ -15,18 +15,18 @@ package de.bixilon.minosoft.modding.event.events;
 
 import de.bixilon.minosoft.modding.event.events.annotations.Unsafe;
 import de.bixilon.minosoft.protocol.network.connection.Connection;
-import de.bixilon.minosoft.protocol.packets.clientbound.ClientboundPacket;
+import de.bixilon.minosoft.protocol.packets.s2c.S2CPacket;
 
 @Unsafe
 public class PacketReceiveEvent extends ConnectionEvent {
-    private final ClientboundPacket packet;
+    private final S2CPacket packet;
 
-    public PacketReceiveEvent(Connection connection, ClientboundPacket packet) {
+    public PacketReceiveEvent(Connection connection, S2CPacket packet) {
         super(connection);
         this.packet = packet;
     }
 
-    public ClientboundPacket getPacket() {
+    public S2CPacket getPacket() {
         return this.packet;
     }
 }

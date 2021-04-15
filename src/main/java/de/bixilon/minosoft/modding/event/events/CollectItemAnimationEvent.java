@@ -17,7 +17,7 @@ import de.bixilon.minosoft.data.entities.entities.Entity;
 import de.bixilon.minosoft.data.entities.entities.item.ItemEntity;
 import de.bixilon.minosoft.modding.event.events.annotations.MinimumProtocolVersion;
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
-import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketCollectItem;
+import de.bixilon.minosoft.protocol.packets.s2c.play.PacketCollectItem;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_16W32A;
 

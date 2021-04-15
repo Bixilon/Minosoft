@@ -21,12 +21,12 @@ import de.bixilon.minosoft.protocol.network.connection.Connection;
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
 import de.bixilon.minosoft.protocol.network.connection.StatusConnection;
 import de.bixilon.minosoft.protocol.network.socket.BlockingSocketNetwork;
-import de.bixilon.minosoft.protocol.packets.clientbound.ClientboundPacket;
-import de.bixilon.minosoft.protocol.packets.clientbound.PlayClientboundPacket;
-import de.bixilon.minosoft.protocol.packets.clientbound.StatusClientboundPacket;
-import de.bixilon.minosoft.protocol.packets.serverbound.AllServerboundPacket;
-import de.bixilon.minosoft.protocol.packets.serverbound.PlayServerboundPacket;
-import de.bixilon.minosoft.protocol.packets.serverbound.ServerboundPacket;
+import de.bixilon.minosoft.protocol.packets.c2s.AllC2SPacket;
+import de.bixilon.minosoft.protocol.packets.c2s.C2SPacket;
+import de.bixilon.minosoft.protocol.packets.c2s.PlayC2SPacket;
+import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket;
+import de.bixilon.minosoft.protocol.packets.s2c.S2CPacket;
+import de.bixilon.minosoft.protocol.packets.s2c.StatusS2CPacket;
 import de.bixilon.minosoft.protocol.protocol.*;
 import de.bixilon.minosoft.util.Pair;
 import de.bixilon.minosoft.util.ServerAddress;
@@ -47,11 +47,11 @@ public abstract class Network {
 
     public abstract void connect(ServerAddress address);
 
-    public abstract void sendPacket(ServerboundPacket packet);
+    public abstract void sendPacket(C2SPacket packet);
 
     public abstract void disconnect();
 
-    protected Pair<PacketTypes.Clientbound, ClientboundPacket> receiveClientboundPacket(byte[] bytes) throws PacketParseException {
+    protected Pair<PacketTypes.S2C, S2CPacket> receiveS2CPacket(byte[] bytes) throws PacketParseException {
         if (this.compressionThreshold >= 0) {
             // compression is enabled
             InByteBuffer rawData = new InByteBuffer(bytes, this.connection);
@@ -65,7 +65,7 @@ public abstract class Network {
         var data = new InByteBuffer(bytes, this.connection);
         var packetId = data.readVarInt();
 
-        PacketTypes.Clientbound packetType = null;
+        PacketTypes.S2C packetType = null;
 
         try {
             packetType = this.connection.getPacketById(packetId);
@@ -79,7 +79,7 @@ public abstract class Network {
                 version = ((PlayConnection) this.connection).getVersion();
             }
 
-            ClientboundPacket packet;
+            S2CPacket packet;
             try {
                 if (packetType.getPlayFactory() != null) {
                     var playData = new PlayInByteBuffer(data.readBytesLeft(), ((PlayConnection) this.connection));
@@ -87,14 +87,14 @@ public abstract class Network {
                     if (playData.getBytesLeft() > 0) {
                         throw new PacketParseException(String.format("Could not parse packet %s (used=%d, available=%d, total=%d)", packetType, playData.getPosition(), playData.getBytesLeft(), playData.getLength()));
                     }
-                    ((PlayClientboundPacket) packet).check(((PlayConnection) this.connection));
+                    ((PlayS2CPacket) packet).check(((PlayConnection) this.connection));
                 } else if (packetType.getStatusFactory() != null) {
                     var statusData = new InByteBuffer(data);
                     packet = packetType.getStatusFactory().invoke(statusData);
                     if (statusData.getBytesLeft() > 0) {
                         throw new PacketParseException(String.format("Could not parse packet %s (used=%d, available=%d, total=%d)", packetType, statusData.getPosition(), statusData.getBytesLeft(), statusData.getLength()));
                     }
-                    ((StatusClientboundPacket) packet).check((StatusConnection) this.connection);
+                    ((StatusS2CPacket) packet).check((StatusConnection) this.connection);
                 } else {
                     throw new PacketNotImplementedException(data, packetId, packetType, version, this.connection.getConnectionState());
                 }
@@ -118,22 +118,22 @@ public abstract class Network {
         }
     }
 
-    protected byte[] prepareServerboundPacket(ServerboundPacket packet) {
+    protected byte[] prepareC2SPacket(C2SPacket packet) {
         byte[] data;
-        if (packet instanceof PlayServerboundPacket) {
+        if (packet instanceof PlayC2SPacket) {
             var buffer = new OutPlayByteBuffer((PlayConnection) this.connection);
-            ((PlayServerboundPacket) packet).write(buffer);
+            ((PlayC2SPacket) packet).write(buffer);
             data = buffer.toByteArray();
-        } else if (packet instanceof AllServerboundPacket) {
+        } else if (packet instanceof AllC2SPacket) {
             var buffer = new OutByteBuffer(this.connection);
-            ((AllServerboundPacket) packet).write(buffer);
+            ((AllC2SPacket) packet).write(buffer);
             data = buffer.toByteArray();
         } else {
             throw new IllegalStateException();
         }
 
         OutByteBuffer outByteBuffer = new OutByteBuffer();
-        outByteBuffer.writeVarInt(this.connection.getPacketId(PacketTypes.Serverbound.Companion.getPacketType(packet.getClass())));
+        outByteBuffer.writeVarInt(this.connection.getPacketId(PacketTypes.C2S.Companion.getPacketType(packet.getClass())));
         outByteBuffer.writeBytes(data);
 
         data = outByteBuffer.toByteArray();
@@ -167,7 +167,7 @@ public abstract class Network {
         return data;
     }
 
-    protected void handlePacket(PacketTypes.Clientbound packetType, ClientboundPacket packet) {
+    protected void handlePacket(PacketTypes.S2C packetType, S2CPacket packet) {
         this.connection.handle(packetType, packet);
     }
 

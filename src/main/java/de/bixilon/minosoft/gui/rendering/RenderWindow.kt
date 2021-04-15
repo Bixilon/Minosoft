@@ -34,7 +34,7 @@ import de.bixilon.minosoft.modding.event.EventInvokerCallback
 import de.bixilon.minosoft.modding.event.events.ConnectionStateChangeEvent
 import de.bixilon.minosoft.modding.event.events.PacketReceiveEvent
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketPlayerPositionAndRotation
+import de.bixilon.minosoft.protocol.packets.s2c.play.PacketPlayerPositionAndRotation
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.CountUpAndDownLatch
 import de.bixilon.minosoft.util.logging.Log

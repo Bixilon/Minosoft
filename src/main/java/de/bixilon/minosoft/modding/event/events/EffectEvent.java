@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.modding.event.events;
 
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
-import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketEffect;
+import de.bixilon.minosoft.protocol.packets.s2c.play.PacketEffect;
 import glm_.vec3.Vec3i;
 
 public class EffectEvent extends CancelableEvent {

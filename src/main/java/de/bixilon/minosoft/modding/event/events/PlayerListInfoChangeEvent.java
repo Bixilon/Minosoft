@@ -15,7 +15,7 @@ package de.bixilon.minosoft.modding.event.events;
 
 import de.bixilon.minosoft.data.text.ChatComponent;
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
-import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketTabHeaderAndFooter;
+import de.bixilon.minosoft.protocol.packets.s2c.play.PacketTabHeaderAndFooter;
 
 public class PlayerListInfoChangeEvent extends CancelableEvent {
     private final ChatComponent header;

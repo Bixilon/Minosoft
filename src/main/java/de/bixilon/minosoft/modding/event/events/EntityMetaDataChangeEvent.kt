@@ -14,7 +14,7 @@ package de.bixilon.minosoft.modding.event.events
 
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketEntityMetadata
+import de.bixilon.minosoft.protocol.packets.s2c.play.PacketEntityMetadata
 
 class EntityMetaDataChangeEvent : PlayConnectionEvent {
     val entity: Entity

@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.modding.event.events;
 
 import de.bixilon.minosoft.protocol.network.connection.StatusConnection;
-import de.bixilon.minosoft.protocol.packets.clientbound.status.PacketStatusResponse;
+import de.bixilon.minosoft.protocol.packets.s2c.status.PacketStatusResponse;
 import de.bixilon.minosoft.protocol.ping.ServerListPing;
 
 /**

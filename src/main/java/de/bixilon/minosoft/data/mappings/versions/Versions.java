@@ -58,41 +58,41 @@ public class Versions {
             return VERSION_ID_MAP.get(versionId);
         }
 
-        Map<ConnectionStates, HashBiMap<PacketTypes.Serverbound, Integer>> serverboundPacketMapping;
-        Map<ConnectionStates, HashBiMap<PacketTypes.Clientbound, Integer>> clientboundPacketMapping;
+        Map<ConnectionStates, HashBiMap<PacketTypes.C2S, Integer>> c2sMapping;
+        Map<ConnectionStates, HashBiMap<PacketTypes.S2C, Integer>> s2cMapping;
         if (versionJson.get("mapping").isJsonPrimitive()) {
             // inherits or copies mapping from an other version
             Version parent = VERSION_ID_MAP.get(versionJson.get("mapping").getAsInt());
             if (parent == null) {
                 parent = loadVersion(json, versionJson.get("mapping").getAsString());
             }
-            serverboundPacketMapping = parent.getServerboundPacketMapping();
-            clientboundPacketMapping = parent.getClientboundPacketMapping();
+            c2sMapping = parent.getC2SPacketMapping();
+            s2cMapping = parent.getS2CPacketMapping();
         } else {
             JsonObject mappingJson = versionJson.getAsJsonObject("mapping");
-            serverboundPacketMapping = new HashMap<>();
+            c2sMapping = new HashMap<>();
 
-            for (JsonElement packetElement : mappingJson.getAsJsonArray("serverbound")) {
-                PacketTypes.Serverbound packet = PacketTypes.Serverbound.valueOf(packetElement.getAsString());
-                if (!serverboundPacketMapping.containsKey(packet.getState())) {
-                    serverboundPacketMapping.put(packet.getState(), HashBiMap.create(30));
+            for (JsonElement packetElement : mappingJson.getAsJsonArray("c2s")) {
+                PacketTypes.C2S packet = PacketTypes.C2S.valueOf(packetElement.getAsString());
+                if (!c2sMapping.containsKey(packet.getState())) {
+                    c2sMapping.put(packet.getState(), HashBiMap.create(30));
                 }
-                serverboundPacketMapping.get(packet.getState()).put(packet, serverboundPacketMapping.get(packet.getState()).size());
+                c2sMapping.get(packet.getState()).put(packet, c2sMapping.get(packet.getState()).size());
             }
-            clientboundPacketMapping = new HashMap<>();
-            for (JsonElement packetElement : mappingJson.getAsJsonArray("clientbound")) {
-                PacketTypes.Clientbound packet = PacketTypes.Clientbound.valueOf(packetElement.getAsString());
-                if (!clientboundPacketMapping.containsKey(packet.getState())) {
-                    clientboundPacketMapping.put(packet.getState(), HashBiMap.create(100));
+            s2cMapping = new HashMap<>();
+            for (JsonElement packetElement : mappingJson.getAsJsonArray("s2c")) {
+                PacketTypes.S2C packet = PacketTypes.S2C.valueOf(packetElement.getAsString());
+                if (!s2cMapping.containsKey(packet.getState())) {
+                    s2cMapping.put(packet.getState(), HashBiMap.create(100));
                 }
-                clientboundPacketMapping.get(packet.getState()).put(packet, clientboundPacketMapping.get(packet.getState()).size());
+                s2cMapping.get(packet.getState()).put(packet, s2cMapping.get(packet.getState()).size());
             }
         }
         int protocolId = versionId;
         if (versionJson.has("protocol_id")) {
             protocolId = versionJson.get("protocol_id").getAsInt();
         }
-        Version version = new Version(versionName, versionId, protocolId, serverboundPacketMapping, clientboundPacketMapping);
+        Version version = new Version(versionName, versionId, protocolId, c2sMapping, s2cMapping);
         VERSION_ID_MAP.put(version.getVersionId(), version);
         VERSION_PROTOCOL_ID_MAP.put(version.getProtocolId(), version);
         VERSION_NAME_MAP.put(version.getVersionName(), version);

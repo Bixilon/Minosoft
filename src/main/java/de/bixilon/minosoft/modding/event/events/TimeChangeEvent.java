@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.modding.event.events;
 
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
-import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketTimeUpdate;
+import de.bixilon.minosoft.protocol.packets.s2c.play.PacketTimeUpdate;
 
 public class TimeChangeEvent extends CancelableEvent {
     private final long worldAge;

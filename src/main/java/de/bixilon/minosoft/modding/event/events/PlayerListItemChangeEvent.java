@@ -15,7 +15,7 @@ package de.bixilon.minosoft.modding.event.events;
 
 import de.bixilon.minosoft.data.player.tab.TabListItemData;
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
-import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketTabListItem;
+import de.bixilon.minosoft.protocol.packets.s2c.play.PacketTabListItem;
 
 import java.util.Map;
 import java.util.UUID;

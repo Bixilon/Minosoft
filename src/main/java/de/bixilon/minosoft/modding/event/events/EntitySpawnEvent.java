@@ -15,7 +15,7 @@ package de.bixilon.minosoft.modding.event.events;
 
 import de.bixilon.minosoft.data.entities.entities.Entity;
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
-import de.bixilon.minosoft.protocol.packets.clientbound.play.*;
+import de.bixilon.minosoft.protocol.packets.s2c.play.*;
 
 public class EntitySpawnEvent extends PlayConnectionEvent {
     private final Entity entity;

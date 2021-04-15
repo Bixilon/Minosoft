@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.modding.event.events;
 
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
-import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketCamera;
+import de.bixilon.minosoft.protocol.packets.s2c.play.PacketCamera;
 
 /**
  * Fired when the player should spectate an entity

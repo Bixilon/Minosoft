@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.modding.event.events;
 
 import de.bixilon.minosoft.protocol.network.connection.StatusConnection;
-import de.bixilon.minosoft.protocol.packets.clientbound.status.PacketStatusPong;
+import de.bixilon.minosoft.protocol.packets.s2c.status.PacketStatusPong;
 
 /**
  * Fired when the connection status is "STATUS" and the ping gets pack (pong)

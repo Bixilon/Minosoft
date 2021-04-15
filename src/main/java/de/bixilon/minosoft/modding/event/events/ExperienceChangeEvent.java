@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.modding.event.events;
 
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
-import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketSetExperience;
+import de.bixilon.minosoft.protocol.packets.s2c.play.PacketSetExperience;
 
 public class ExperienceChangeEvent extends CancelableEvent {
     private final float bar;

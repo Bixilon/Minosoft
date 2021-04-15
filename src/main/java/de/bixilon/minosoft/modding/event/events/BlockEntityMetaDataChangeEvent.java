@@ -15,7 +15,7 @@ package de.bixilon.minosoft.modding.event.events;
 
 import de.bixilon.minosoft.data.entities.block.BlockEntityMetaData;
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
-import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketBlockEntityMetadata;
+import de.bixilon.minosoft.protocol.packets.s2c.play.PacketBlockEntityMetadata;
 import glm_.vec3.Vec3i;
 
 import javax.annotation.Nullable;
