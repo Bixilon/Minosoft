@@ -15,7 +15,6 @@ package de.bixilon.minosoft.protocol.packets.s2c.play;
 
 import de.bixilon.minosoft.config.StaticConfiguration;
 import de.bixilon.minosoft.data.entities.EntityRotation;
-import de.bixilon.minosoft.data.entities.Velocity;
 import de.bixilon.minosoft.data.entities.entities.Entity;
 import de.bixilon.minosoft.data.entities.entities.UnknownEntityException;
 import de.bixilon.minosoft.data.entities.meta.EntityMetaData;
@@ -23,6 +22,7 @@ import de.bixilon.minosoft.modding.event.events.EntitySpawnEvent;
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket;
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import de.bixilon.minosoft.util.logging.Log;
 import glm_.vec3.Vec3;
 
@@ -32,7 +32,7 @@ import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
 
 public class PacketSpawnMob extends PlayS2CPacket {
     private final int entityId;
-    private final Velocity velocity;
+    private final Vec3 velocity;
     private final Entity entity;
     private UUID entityUUID;
 
@@ -55,7 +55,7 @@ public class PacketSpawnMob extends PlayS2CPacket {
             position = buffer.readEntityPosition();
         }
         EntityRotation rotation = new EntityRotation(buffer.readAngle(), buffer.readAngle(), buffer.readAngle());
-        this.velocity = new Velocity(buffer.readShort(), buffer.readShort(), buffer.readShort());
+        this.velocity = new Vec3(buffer.readShort(), buffer.readShort(), buffer.readShort()).times(ProtocolDefinition.VELOCITY_CONSTANT);
 
         EntityMetaData metaData = null;
         if (buffer.getVersionId() < V_19W34A) {
@@ -82,9 +82,8 @@ public class PacketSpawnMob extends PlayS2CPacket {
     @Override
     public void handle(PlayConnection connection) {
         connection.fireEvent(new EntitySpawnEvent(connection, this));
-
         connection.getWorld().addEntity(this.entityId, this.entityUUID, getEntity());
-        connection.getVelocityHandler().handleVelocity(getEntity(), getVelocity());
+        entity.setVelocity(velocity);
     }
 
     @Override
@@ -95,9 +94,4 @@ public class PacketSpawnMob extends PlayS2CPacket {
     public Entity getEntity() {
         return this.entity;
     }
-
-    public Velocity getVelocity() {
-        return this.velocity;
-    }
-
 }

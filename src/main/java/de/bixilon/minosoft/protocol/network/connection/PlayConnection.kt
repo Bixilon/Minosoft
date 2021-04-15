@@ -15,7 +15,6 @@ package de.bixilon.minosoft.protocol.network.connection
 
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.StaticConfiguration
-import de.bixilon.minosoft.data.VelocityHandler
 import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.data.assets.MultiAssetsManager
 import de.bixilon.minosoft.data.commands.CommandRootNode
@@ -59,7 +58,6 @@ class PlayConnection(
     val scoreboardManager = ScoreboardManager()
     val mapping = VersionMapping()
     val sender = PacketSender(this)
-    val velocityHandler = VelocityHandler(this)
     lateinit var assetsManager: MultiAssetsManager
         private set
 

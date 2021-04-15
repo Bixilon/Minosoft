@@ -26,7 +26,9 @@ import de.bixilon.minosoft.data.mappings.entities.EntityType
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.gui.rendering.chunk.VoxelShape
 import de.bixilon.minosoft.gui.rendering.chunk.models.AABB
+import de.bixilon.minosoft.gui.rendering.util.VecUtil
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import glm_.vec3.Vec3
 import java.lang.reflect.InvocationTargetException
 import java.util.*
@@ -45,6 +47,8 @@ abstract class Entity(
     open var attachedEntity: Int? = null
 
     var entityMetaData: EntityMetaData = EntityMetaData(connection)
+
+    var velocity: Vec3? = null
 
     protected open val hasCollisions = true
 
@@ -228,6 +232,22 @@ abstract class Entity(
             delta.x = collisionsToCheck.computeOffset(aabb, deltaPosition.x, Axes.X)
         }
         return delta
+    }
+
+    fun computeTimeStep(deltaTime: Float) {
+        if (! hasNoGravity) {
+            if (velocity == null) {
+                velocity = Vec3(0, deltaTime * ProtocolDefinition.GRAVITY)
+            } else {
+                velocity!!.y += deltaTime * ProtocolDefinition.GRAVITY;
+            }
+        }
+        if (velocity == VecUtil.EMPTY_VEC3) {
+            velocity = null
+        }
+        velocity?.let {
+            move(velocity!! * deltaTime)
+        }
     }
 
     private val aabb: AABB

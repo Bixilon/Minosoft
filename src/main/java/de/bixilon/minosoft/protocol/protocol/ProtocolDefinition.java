@@ -93,6 +93,10 @@ public final class ProtocolDefinition {
     public static final int TICKS_PER_SECOND = 20;
     public static final int TICK_TIME = 1000 / TICKS_PER_SECOND;
 
+    public static final float VELOCITY_CONSTANT = 1 / 8000f * TICKS_PER_SECOND;
+
+    public static final float GRAVITY = -10; //  TODO: find the correct value
+
     public static final int SEA_LEVEL_HEIGHT = 62;
 
     public static final float HEIGHT_SEA_LEVEL_MODIFIER = 0.00166667f;
