@@ -28,7 +28,7 @@ public class PacketResourcePackSend extends PlayClientboundPacket {
     private final String url;
     private final String hash;
     private boolean forced;
-    private ChatComponent text; // TODO: rename
+    private ChatComponent promptText;
 
     public PacketResourcePackSend(PlayInByteBuffer buffer) {
         this.url = buffer.readString();
@@ -39,7 +39,7 @@ public class PacketResourcePackSend extends PlayClientboundPacket {
         }
         if (buffer.getVersionId() >= V_21W15A) {
             if (buffer.readBoolean()) {
-                text = buffer.readChatComponent();
+                this.promptText = buffer.readChatComponent();
             }
         }
     }
@@ -67,5 +67,9 @@ public class PacketResourcePackSend extends PlayClientboundPacket {
 
     public boolean isForced() {
         return this.forced;
+    }
+
+    public ChatComponent getPromptText() {
+        return this.promptText;
     }
 }
