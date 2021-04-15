@@ -13,6 +13,7 @@
 package de.bixilon.minosoft.data
 
 import glm_.vec3.Vec3
+import glm_.vec3.Vec3i
 
 enum class Axes {
     X,
@@ -30,6 +31,10 @@ enum class Axes {
 
         fun choose(axis: Axes, vec3: Vec3): Float {
             return choose(axis, vec3.x, vec3.y, vec3.z)
+        }
+
+        fun choose(axis: Axes, vec3i: Vec3i): Int {
+            return choose(axis, Vec3(vec3i)).toInt()
         }
 
         private fun choose(axis: Axes, x: Float, y: Float, z: Float): Float {

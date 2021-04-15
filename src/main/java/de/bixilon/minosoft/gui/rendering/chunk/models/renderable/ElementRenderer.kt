@@ -58,12 +58,9 @@ class ElementRenderer(
         }
         if (uvLock) {
             for (direction in Directions.DIRECTIONS) {
-                val angle = when (Axes.byDirection(direction)) {
-                    Axes.X -> rotation.x
-                    Axes.Y -> rotation.y
-                    Axes.Z -> rotation.z
-                }
-                faces[direction]?.rotate(angle)
+                val axis = Axes.byDirection(direction)
+                val angle = Axes.choose(axis, rotation) * Axes.choose(axis, direction.directionVector)
+                faces[direction]?.rotate(-angle)
             }
         }
     }
