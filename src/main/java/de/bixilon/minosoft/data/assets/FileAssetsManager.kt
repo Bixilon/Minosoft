@@ -20,6 +20,7 @@ import de.bixilon.minosoft.util.Util
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import java.io.*
+import java.nio.file.Files
 import java.security.MessageDigest
 import java.util.zip.GZIPOutputStream
 
@@ -105,13 +106,11 @@ interface FileAssetsManager : AssetsManager {
         if (outputFile.exists()) {
             // file is already extracted
             if (!tempDestinationFile.delete()) {
-                throw IllegalStateException(String.format("Could not delete temporary file %s", tempDestinationFile.absolutePath))
+                throw IllegalStateException("Could not delete temporary file ${tempDestinationFile.absolutePath}")
             }
             return hash
         }
-        if (!tempDestinationFile.renameTo(outputFile)) {
-            throw IllegalStateException(String.format("Could not rename file %s to %s", tempDestinationFile.absolutePath, outputFile.absolutePath))
-        }
+        Files.move(tempDestinationFile.toPath(), outputFile.toPath())
         return hash
     }
 

@@ -239,10 +239,6 @@ class Camera(
         return glm.lookAt(cameraPosition, cameraPosition + cameraFront, CAMERA_UP_VEC3)
     }
 
-    fun setFOV(fov: Float) {
-        this.fov = fov
-    }
-
     fun setRotation(yaw: Float, pitch: Float) {
         playerEntity.rotation = EntityRotation(yaw.toDouble(), pitch.toDouble())
 
@@ -303,6 +299,5 @@ class Camera(
     companion object {
         private val CAMERA_UP_VEC3 = Vec3(0.0f, 1.0f, 0.0f)
         private const val PLAYER_HEIGHT = 1.3 // player is 1.8 blocks high, the camera is normally at 0.5. 1.8 - 0.5 = 1.13
-        const val PLAYER_WIDTH = 0.60001
     }
 }

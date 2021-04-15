@@ -31,7 +31,7 @@ open class MinecraftLanguage : Translator {
 
     constructor(language: String, data: String) {
         this.language = language
-        for (line in data.split("\\r?\\n").toTypedArray()) {
+        for (line in data.lines().toTypedArray()) {
             if (line.isBlank()) {
                 continue
             }

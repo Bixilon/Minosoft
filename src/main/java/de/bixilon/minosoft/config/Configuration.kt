@@ -22,6 +22,7 @@ import okio.Buffer
 import java.io.File
 import java.io.FileWriter
 import java.io.IOException
+import java.nio.file.Files
 
 class Configuration(private val configName: String = StaticConfiguration.CONFIG_FILENAME) {
     private val file = File(StaticConfiguration.HOME_DIRECTORY + "config/minosoft/" + configName)
@@ -74,11 +75,7 @@ class Configuration(private val configName: String = StaticConfiguration.CONFIG_
                     throw RuntimeException("Could not save config!")
                 }
             }
-            if (!tempFile.renameTo(file)) {
-                Log.fatal("An error occurred while saving the config file")
-            } else {
-                Log.verbose("Configuration saved to file %s", configName)
-            }
+            Files.move(tempFile.toPath(), file.toPath())
         }
     }
 
