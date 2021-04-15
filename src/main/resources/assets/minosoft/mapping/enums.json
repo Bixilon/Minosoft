@@ -214,5 +214,34 @@
       "HIDE",
       "RESET"
     ]
+  },
+  "minecraft:entity_animations": {
+    "0": {
+      "0": "SWING_MAIN_ARM",
+      "1": "TAKE_DAMAGE",
+      "2": "LEAVE_BED",
+      "3": "EAT_FOOD",
+      "4": "CRITICAL_EFFECT",
+      "5": "MAGIC_CRITICAL_EFFECT",
+      "102": "UNKNOWN_1",
+      "104": "SNEAK",
+      "105": "UNSNEAK"
+    },
+    "47": {
+      "0": "SWING_MAIN_ARM",
+      "1": "TAKE_DAMAGE",
+      "2": "LEAVE_BED",
+      "3": "EAT_FOOD",
+      "4": "CRITICAL_EFFECT",
+      "5": "MAGIC_CRITICAL_EFFECT"
+    },
+    "110": [
+      "SWING_MAIN_ARM",
+      "TAKE_DAMAGE",
+      "LEAVE_BED",
+      "SWING_OFF_ARM",
+      "CRITICAL_EFFECT",
+      "MAGIC_CRITICAL_EFFECT"
+    ]
   }
 }

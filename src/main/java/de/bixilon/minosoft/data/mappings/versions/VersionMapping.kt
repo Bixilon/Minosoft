@@ -37,6 +37,7 @@ import de.bixilon.minosoft.data.mappings.statistics.Statistic
 import de.bixilon.minosoft.gui.rendering.chunk.VoxelShape
 import de.bixilon.minosoft.gui.rendering.chunk.models.AABB
 import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModel
+import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketEntityAnimation
 import de.bixilon.minosoft.protocol.packets.clientbound.play.title.TitleClientboundPacketFactory
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.collections.Clearable
@@ -68,6 +69,8 @@ class VersionMapping {
     val entityMetaDataDataDataTypesRegistry: EnumRegistry<EntityMetaData.EntityMetaDataDataTypes> = EnumRegistry(values = EntityMetaData.EntityMetaDataDataTypes)
 
     val titleActionsRegistry: EnumRegistry<TitleClientboundPacketFactory.TitleActions> = EnumRegistry(values = TitleClientboundPacketFactory.TitleActions)
+
+    val entityAnimationRegistry: EnumRegistry<PacketEntityAnimation.EntityAnimations> = EnumRegistry(values = PacketEntityAnimation.EntityAnimations)
 
     val creativeModeTabRegistry: FakeEnumRegistry<CreativeModeTab> = FakeEnumRegistry()
 
@@ -136,10 +139,11 @@ class VersionMapping {
         loadEnumRegistry(version, pixlyzerData["entity_meta_data_data_types"], entityMetaDataDataDataTypesRegistry, DefaultRegistries.ENTITY_META_DATA_DATA_TYPES_REGISTRY)
 
         loadEnumRegistry(version, pixlyzerData["title_actions"], titleActionsRegistry, DefaultRegistries.TITLE_ACTIONS_REGISTRY)
+        loadEnumRegistry(version, pixlyzerData["entity_animations"], entityAnimationRegistry, DefaultRegistries.ENTITY_ANIMATION_REGISTRY)
 
         // id stuff
         biomeCategoryRegistry.initialize(pixlyzerData["biome_categories"]?.asJsonObject, this, BiomeCategory)
-        biomePrecipitationRegistry.initialize(pixlyzerData["biome_precipations"]?.asJsonObject, this, BiomePrecipitation)
+        biomePrecipitationRegistry.initialize(pixlyzerData["biome_precipitations"]?.asJsonObject, this, BiomePrecipitation)
         creativeModeTabRegistry.initialize(pixlyzerData["creative_inventory_tab"]?.asJsonObject, this, CreativeModeTab)
 
         // id resource location stuff

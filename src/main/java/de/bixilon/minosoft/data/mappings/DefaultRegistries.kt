@@ -20,6 +20,7 @@ import de.bixilon.minosoft.data.inventory.InventorySlots
 import de.bixilon.minosoft.data.mappings.registry.PerEnumVersionRegistry
 import de.bixilon.minosoft.data.mappings.registry.PerVersionRegistry
 import de.bixilon.minosoft.data.mappings.registry.Registry
+import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketEntityAnimation
 import de.bixilon.minosoft.protocol.packets.clientbound.play.title.TitleClientboundPacketFactory
 import de.bixilon.minosoft.util.json.ResourceLocationJsonMap.toResourceLocationMap
 
@@ -36,6 +37,8 @@ object DefaultRegistries {
     val ENTITY_META_DATA_DATA_TYPES_REGISTRY = PerEnumVersionRegistry(EntityMetaData.EntityMetaDataDataTypes)
 
     val TITLE_ACTIONS_REGISTRY = PerEnumVersionRegistry(TitleClientboundPacketFactory.TitleActions)
+
+    val ENTITY_ANIMATION_REGISTRY = PerEnumVersionRegistry(PacketEntityAnimation.EntityAnimations)
 
     val ENTITY_OBJECT_REGISTRY: Registry<EntityObjectType> = Registry()
 
@@ -55,6 +58,8 @@ object DefaultRegistries {
         ENTITY_META_DATA_DATA_TYPES_REGISTRY.initialize(enumJson[ResourceLocation("entity_meta_data_data_types")]!!)
 
         TITLE_ACTIONS_REGISTRY.initialize(enumJson[ResourceLocation("title_actions")]!!)
+
+        ENTITY_ANIMATION_REGISTRY.initialize(enumJson[ResourceLocation("entity_animations")]!!)
 
 
         val registriesJson = Minosoft.MINOSOFT_ASSETS_MANAGER.readJsonAsset(REGISTRIES_RESOURCE_LOCATION).asJsonObject.toResourceLocationMap()

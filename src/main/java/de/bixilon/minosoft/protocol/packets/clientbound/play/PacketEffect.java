@@ -78,6 +78,7 @@ public class PacketEffect extends PlayClientboundPacket {
         return this.disableRelativeVolume;
     }
 
+    @Deprecated
     public enum EffectEffects {
 
         // ToDo: find out correct versions
