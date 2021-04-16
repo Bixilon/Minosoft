@@ -75,14 +75,6 @@ public class PacketSender {
         this.connection.sendPacket(new HandAnimationC2SPacket(Hands.MAIN_HAND));
     }
 
-    public void sendAction(EntityActionC2SPacket.EntityActions action) {
-        this.connection.sendPacket(new EntityActionC2SPacket(this.connection.getWorld().getEntityIdMap().inverse().get(this.connection.getPlayer().getEntity()), action));
-    }
-
-    public void jumpWithHorse(int jumpBoost) {
-        this.connection.sendPacket(new EntityActionC2SPacket(this.connection.getWorld().getEntityIdMap().inverse().get(this.connection.getPlayer().getEntity()), EntityActionC2SPacket.EntityActions.START_HORSE_JUMP, jumpBoost));
-    }
-
     public void dropItem() {
         this.connection.sendPacket(new PlayerDiggingC2SPacket(PlayerDiggingC2SPacket.DiggingStatus.DROP_ITEM, null, PlayerDiggingC2SPacket.DiggingFaces.BOTTOM));
     }

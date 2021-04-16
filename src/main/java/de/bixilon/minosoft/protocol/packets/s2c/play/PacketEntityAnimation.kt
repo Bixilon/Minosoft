@@ -36,8 +36,8 @@ class PacketEntityAnimation(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         CRITICAL_EFFECT,
         MAGIC_CRITICAL_EFFECT,
         UNKNOWN_1,
-        SNEAK,
-        UNSNEAK,
+        START_SNEAKING,
+        STOP_SNEAKING,
         ;
         // ToDo: find out what unknown_1 is, check values, check ids and load data from pixlyzer
 

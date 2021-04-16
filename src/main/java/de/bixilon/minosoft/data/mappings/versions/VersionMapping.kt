@@ -37,6 +37,7 @@ import de.bixilon.minosoft.data.mappings.statistics.Statistic
 import de.bixilon.minosoft.gui.rendering.chunk.VoxelShape
 import de.bixilon.minosoft.gui.rendering.chunk.models.AABB
 import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModel
+import de.bixilon.minosoft.protocol.packets.c2s.play.EntityActionC2SPacket
 import de.bixilon.minosoft.protocol.packets.s2c.play.PacketEntityAnimation
 import de.bixilon.minosoft.protocol.packets.s2c.play.title.TitleS2CPFactory
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
@@ -71,6 +72,7 @@ class VersionMapping {
     val titleActionsRegistry: EnumRegistry<TitleS2CPFactory.TitleActions> = EnumRegistry(values = TitleS2CPFactory.TitleActions)
 
     val entityAnimationRegistry: EnumRegistry<PacketEntityAnimation.EntityAnimations> = EnumRegistry(values = PacketEntityAnimation.EntityAnimations)
+    val entityActionsRegistry: EnumRegistry<EntityActionC2SPacket.EntityActions> = EnumRegistry(values = EntityActionC2SPacket.EntityActions)
 
     val creativeModeTabRegistry: FakeEnumRegistry<CreativeModeTab> = FakeEnumRegistry()
 
@@ -140,6 +142,7 @@ class VersionMapping {
 
         loadEnumRegistry(version, pixlyzerData["title_actions"], titleActionsRegistry, DefaultRegistries.TITLE_ACTIONS_REGISTRY)
         loadEnumRegistry(version, pixlyzerData["entity_animations"], entityAnimationRegistry, DefaultRegistries.ENTITY_ANIMATION_REGISTRY)
+        loadEnumRegistry(version, pixlyzerData["entity_actions"], entityActionsRegistry, DefaultRegistries.ENTITY_ACTIONS_REGISTRY)
 
         // id stuff
         biomeCategoryRegistry.initialize(pixlyzerData["biome_categories"]?.asJsonObject, this, BiomeCategory)

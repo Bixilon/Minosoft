@@ -224,8 +224,8 @@
       "4": "CRITICAL_EFFECT",
       "5": "MAGIC_CRITICAL_EFFECT",
       "102": "UNKNOWN_1",
-      "104": "SNEAK",
-      "105": "UNSNEAK"
+      "104": "START_SNEAKING",
+      "105": "STOP_SNEAKING"
     },
     "47": {
       "0": "SWING_MAIN_ARM",
@@ -242,6 +242,28 @@
       "SWING_OFF_ARM",
       "CRITICAL_EFFECT",
       "MAGIC_CRITICAL_EFFECT"
+    ]
+  },
+  "minecraft:entity_actions": {
+    "0": [
+      "START_SNEAKING",
+      "STOP_SNEAKING",
+      "LEAVE_BED",
+      "START_SPRINTING",
+      "STOP_SPRINTING",
+      "START_JUMPING_WITH_HORSE",
+      "OPEN_HORSE_INVENTORY"
+    ],
+    "77": [
+      "START_SNEAKING",
+      "STOP_SNEAKING",
+      "LEAVE_BED",
+      "START_SPRINTING",
+      "STOP_SPRINTING",
+      "START_JUMPING_WITH_HORSE",
+      "STOP_JUMPING_WITH_HORSE",
+      "OPEN_HORSE_INVENTORY",
+      "START_ELYTRA_FLYING"
     ]
   }
 }
