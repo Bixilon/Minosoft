@@ -32,6 +32,10 @@ open class Registry<T : RegistryItem>(
         return resourceLocationMap[resourceLocation] ?: parentRegistry?.get(resourceLocation)
     }
 
+    open fun get(resourceLocation: String): T? {
+        return get(ResourceLocation.getPathResourceLocation(resourceLocation))
+    }
+
     open fun get(id: Int): T {
         return idValueMap[id] ?: parentRegistry?.get(id)!!
     }

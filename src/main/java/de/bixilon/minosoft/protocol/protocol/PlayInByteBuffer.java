@@ -63,7 +63,7 @@ public class PlayInByteBuffer extends InByteBuffer {
         int x = (int) (raw >> 38);
         if (this.versionId < V_18W43A) {
             int y = (int) ((raw >> 26) & 0xFFF);
-            int z = (int) (raw & 0x3FFFFFF);
+            int z = (int) (raw << 38 >> 38);
             return new Vec3i(x, y, z);
         }
         int y = (int) (raw << 52 >> 52);

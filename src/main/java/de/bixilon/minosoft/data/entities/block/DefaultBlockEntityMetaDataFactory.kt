@@ -22,7 +22,12 @@ object DefaultBlockEntityMetaDataFactory {
 
     init {
         val entityFactories: List<BlockEntityFactory<out BlockEntity>> = listOf(
-            BedBlockEntity
+            BedBlockEntity,
+            HopperBlockEntity,
+            SignBlockEntity,
+            BlastBlockEntity,
+            FurnaceBlockEntity,
+            CampfireBlockEntity,
         )
 
         val ret: MutableMap<ResourceLocation, BlockEntityFactory<out BlockEntity>> = mutableMapOf()

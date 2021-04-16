@@ -41,6 +41,6 @@ class ClientSettingsC2SPacket(private val locale: String = "en_US", private val 
     }
 
     override fun log() {
-        Log.protocol(String.format("[OUT] Sending settings (locale=%s, renderDistance=%d)", locale, renderDistance))
+        Log.protocol("[OUT] Sending settings (locale=$locale, renderDistance=$renderDistance)")
     }
 }

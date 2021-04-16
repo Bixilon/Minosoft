@@ -68,4 +68,7 @@ object RenderConstants {
 
 
     val PIXEL_UV_PIXEL_ADD = Vec2(0, 0.1f)
+
+    const val SIGN_LINES = 4
+    const val CAMPFIRE_ITEMS = 4
 }

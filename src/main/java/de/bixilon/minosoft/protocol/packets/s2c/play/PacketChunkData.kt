@@ -137,6 +137,6 @@ class PacketChunkData() : PlayS2CPacket() {
     }
 
     override fun log() {
-        Log.protocol(String.format("[IN] Chunk packet received (position=%s)", chunkPosition))
+        Log.protocol("[IN] Chunk packet received (chunkPosition=$chunkPosition)")
     }
 }
