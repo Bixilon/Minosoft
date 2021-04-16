@@ -237,7 +237,7 @@ public class InByteBuffer {
     }
 
     public NBTTag readNBT() {
-        return readNBT(false);
+        return readNBT(true);
     }
 
     public String getBase64() {

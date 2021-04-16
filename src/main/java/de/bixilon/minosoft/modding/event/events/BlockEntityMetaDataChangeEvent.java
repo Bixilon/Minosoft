@@ -13,42 +13,32 @@
 
 package de.bixilon.minosoft.modding.event.events;
 
-import de.bixilon.minosoft.data.entities.block.BlockEntityMetaData;
+import de.bixilon.minosoft.data.mappings.ResourceLocation;
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
-import de.bixilon.minosoft.protocol.packets.s2c.play.PacketBlockEntityMetadata;
+import de.bixilon.minosoft.protocol.packets.s2c.play.BlockEntityMetaDataS2CP;
+import de.bixilon.minosoft.util.nbt.tag.CompoundTag;
 import glm_.vec3.Vec3i;
-
-import javax.annotation.Nullable;
 
 public class BlockEntityMetaDataChangeEvent extends PlayConnectionEvent {
     private final Vec3i position;
-    private final PacketBlockEntityMetadata.BlockEntityActions action;
-    private final BlockEntityMetaData data;
+    private final ResourceLocation type;
+    private final CompoundTag nbt;
 
-    public BlockEntityMetaDataChangeEvent(PlayConnection connection, Vec3i position, PacketBlockEntityMetadata.BlockEntityActions action, BlockEntityMetaData data) {
+    public BlockEntityMetaDataChangeEvent(PlayConnection connection, Vec3i position, ResourceLocation type, CompoundTag nbt) {
         super(connection);
         this.position = position;
-        this.action = action;
-        this.data = data;
+        this.type = type;
+        this.nbt = nbt;
     }
 
-    public BlockEntityMetaDataChangeEvent(PlayConnection connection, PacketBlockEntityMetadata pkg) {
+    public BlockEntityMetaDataChangeEvent(PlayConnection connection, BlockEntityMetaDataS2CP pkg) {
         super(connection);
         this.position = pkg.getPosition();
-        this.action = pkg.getAction();
-        this.data = pkg.getData();
+        this.type = pkg.getType();
+        this.nbt = pkg.getNbt();
     }
 
     public Vec3i getPosition() {
         return this.position;
-    }
-
-    @Nullable
-    public PacketBlockEntityMetadata.BlockEntityActions getAction() {
-        return this.action;
-    }
-
-    public BlockEntityMetaData getData() {
-        return this.data;
     }
 }

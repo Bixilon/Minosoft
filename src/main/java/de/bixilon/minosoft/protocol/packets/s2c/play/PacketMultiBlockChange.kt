@@ -83,7 +83,7 @@ class PacketMultiBlockChange(buffer: PlayInByteBuffer) : PlayS2CPacket() {
             return
         }
         connection.fireEvent(MultiBlockChangeEvent(connection, this))
-        chunk.setRawBlocks(blocks)
+        chunk.setBlocks(blocks)
 
         // tweak
         if (!connection.version.isFlattened()) {

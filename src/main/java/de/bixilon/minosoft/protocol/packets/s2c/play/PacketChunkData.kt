@@ -12,13 +12,11 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play
 
-import de.bixilon.minosoft.data.entities.block.BlockEntityMetaData
+import de.bixilon.minosoft.data.entities.block.BlockEntity
+import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.tweaker.VersionTweaker
-
 import de.bixilon.minosoft.data.world.ChunkData
-
 import de.bixilon.minosoft.data.world.biome.source.SpatialBiomeArray
-import de.bixilon.minosoft.modding.event.events.BlockEntityMetaDataChangeEvent
 import de.bixilon.minosoft.modding.event.events.ChunkDataChangeEvent
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
@@ -33,7 +31,7 @@ import glm_.vec3.Vec3i
 import java.util.*
 
 class PacketChunkData() : PlayS2CPacket() {
-    private val blockEntities = HashMap<Vec3i, BlockEntityMetaData>()
+    private val blockEntities: MutableMap<Vec3i, BlockEntity> = mutableMapOf()
     lateinit var chunkPosition: Vec2i
     var chunkData: ChunkData? = ChunkData()
         private set
@@ -102,9 +100,16 @@ class PacketChunkData() : PlayS2CPacket() {
         if (buffer.versionId >= ProtocolVersions.V_1_9_4) {
             val blockEntitiesCount = buffer.readVarInt()
             for (i in 0 until blockEntitiesCount) {
-                val tag = buffer.readNBT() as CompoundTag
-                val data = BlockEntityMetaData.getData(buffer.connection, null, tag) ?: continue
-                blockEntities[Vec3i(tag.getNumberTag("x").asInt, tag.getNumberTag("y").asInt, tag.getNumberTag("z").asInt)] = data
+                val nbt = buffer.readNBT() as CompoundTag
+                val position = Vec3i(nbt.getNumberTag("x").asInt, nbt.getNumberTag("y").asInt, nbt.getNumberTag("z").asInt)
+                val resourceLocation = ResourceLocation(nbt.getStringTag("id").value)
+                val type = buffer.connection.mapping.blockEntityRegistry.get(resourceLocation) ?: let {
+                    Log.warn("Unknown block entity $resourceLocation")
+                    null
+                } ?: continue
+                val entity = type.build(buffer.connection) ?: continue
+                entity.updateNBT(nbt)
+                blockEntities[position] = entity
             }
         }
         return
@@ -115,18 +120,19 @@ class PacketChunkData() : PlayS2CPacket() {
         chunkData?.blocks?.let {
             VersionTweaker.transformSections(it, connection.version.versionId)
         }
-        for ((position, blockEntityMetaData) in blockEntities) {
-            connection.fireEvent(BlockEntityMetaDataChangeEvent(connection, position, null, blockEntityMetaData))
-        }
         chunkData?.let {
             connection.fireEvent(ChunkDataChangeEvent(connection, this))
             val chunk = connection.world.getOrCreateChunk(chunkPosition)
             chunk.setData(chunkData!!)
-            connection.world.setBlockEntityData(blockEntities)
+            connection.world.setBlockEntity(blockEntities)
             connection.renderer?.renderWindow?.worldRenderer?.prepareChunk(chunkPosition, chunk)
         } ?: let {
             connection.world.unloadChunk(chunkPosition)
             connection.renderer?.renderWindow?.worldRenderer?.unloadChunk(chunkPosition)
+        }
+
+        for ((blockPosition, blockEntity) in blockEntities) {
+            connection.world.setBlockEntity(blockPosition, blockEntity)
         }
     }
 

@@ -15,6 +15,7 @@ package de.bixilon.minosoft.data.mappings
 
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.entities.EntityObjectType
+import de.bixilon.minosoft.data.entities.block.BlockEntityMetaType
 import de.bixilon.minosoft.data.entities.meta.EntityMetaData
 import de.bixilon.minosoft.data.inventory.InventorySlots
 import de.bixilon.minosoft.data.mappings.registry.PerEnumVersionRegistry
@@ -44,6 +45,8 @@ object DefaultRegistries {
 
     val ENTITY_OBJECT_REGISTRY: Registry<EntityObjectType> = Registry()
 
+    val BLOCK_ENTITY_META_TYPE_REGISTRY: Registry<BlockEntityMetaType> = Registry()
+
     val DEFAULT_PLUGIN_CHANNELS_REGISTRY = PerVersionRegistry<PluginChannel>()
 
 
@@ -70,6 +73,8 @@ object DefaultRegistries {
         DEFAULT_PLUGIN_CHANNELS_REGISTRY.initialize(registriesJson[ResourceLocation("default_plugin_channels")]!!, PluginChannel)
 
         ENTITY_OBJECT_REGISTRY.initialize(registriesJson[ResourceLocation("entity_objects")]!!, null, EntityObjectType)
+
+        BLOCK_ENTITY_META_TYPE_REGISTRY.initialize(registriesJson[ResourceLocation("block_entity_meta_data_types")]!!, null, BlockEntityMetaType)
 
         initialized = true
     }

@@ -1,0 +1,47 @@
+/*
+ * Minosoft
+ * Copyright (C) 2020 Moritz Zwerger
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *
+ * This software is not affiliated with Mojang AB, the original developer of Minecraft.
+ */
+package de.bixilon.minosoft.protocol.packets.s2c.play
+
+import de.bixilon.minosoft.data.entities.block.DefaultBlockEntityMetaDataFactory
+import de.bixilon.minosoft.data.mappings.DefaultRegistries
+import de.bixilon.minosoft.modding.event.events.BlockEntityMetaDataChangeEvent
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.nbt.tag.CompoundTag
+import glm_.vec3.Vec3i
+
+class BlockEntityMetaDataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
+    val position: Vec3i = if (buffer.versionId < ProtocolVersions.V_14W03B) {
+        buffer.readBlockPositionShort()
+    } else {
+        buffer.readBlockPosition()
+    }
+    val type = DefaultRegistries.BLOCK_ENTITY_META_TYPE_REGISTRY.get(buffer.readUnsignedByte()).resourceLocation
+    val nbt = buffer.readNBT() as CompoundTag
+
+    override fun handle(connection: PlayConnection) {
+        connection.fireEvent(BlockEntityMetaDataChangeEvent(connection, this))
+        connection.world.getBlockEntity(position)?.updateNBT(nbt) ?: let {
+            val blockEntity = DefaultBlockEntityMetaDataFactory.buildBlockEntity(DefaultBlockEntityMetaDataFactory.getEntityFactory(type)!!, connection)
+            blockEntity.updateNBT(nbt)
+            connection.world.setBlockEntity(position, blockEntity)
+        }
+    }
+
+    override fun log() {
+        Log.protocol("[IN] Received block entity meta data (position=$position, type=$type, nbt=$nbt)")
+    }
+}

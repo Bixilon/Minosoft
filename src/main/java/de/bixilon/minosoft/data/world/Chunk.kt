@@ -12,6 +12,7 @@
  */
 package de.bixilon.minosoft.data.world
 
+import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.mappings.blocks.BlockState
 import de.bixilon.minosoft.data.world.biome.source.BiomeSource
 import de.bixilon.minosoft.data.world.light.LightAccessor
@@ -41,7 +42,7 @@ class Chunk(
         return getBlockState(Vec3i(x, y, z))
     }
 
-    fun setBlocks(blocks: HashMap<Vec3i, BlockState?>) {
+    fun setBlocks(blocks: Map<Vec3i, BlockState?>) {
         for ((location, blockInfo) in blocks) {
             setBlockState(location, blockInfo)
         }
@@ -70,11 +71,6 @@ class Chunk(
         }
     }
 
-    fun setRawBlocks(blocks: Map<Vec3i, BlockState?>) {
-        for ((location, blockState) in blocks) {
-            setBlockState(location, blockState)
-        }
-    }
 
     fun setBlockState(inChunkPosition: Vec3i, blockState: BlockState?) {
         getSectionOrCreate(inChunkPosition.sectionHeight).setBlockState(inChunkPosition.inChunkSectionPosition, blockState)
@@ -92,5 +88,13 @@ class Chunk(
             }
             section
         }
+    }
+
+    fun getBlockEntity(inChunkPosition: Vec3i): BlockEntity? {
+        return sections?.get(inChunkPosition.sectionHeight)?.getBlockEntity(inChunkPosition.inChunkSectionPosition)
+    }
+
+    fun setBlockEntity(inChunkPosition: Vec3i, blockEntity: BlockEntity?) {
+        sections?.get(inChunkPosition.sectionHeight)?.setBlockEntity(inChunkPosition.inChunkSectionPosition, blockEntity)
     }
 }

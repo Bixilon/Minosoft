@@ -88,9 +88,6 @@ object ChunkUtil {
                 arrayPosition++
 
                 blockId = blockId or blockMeta
-                if (blockId == ProtocolDefinition.NULL_BLOCK_ID) {
-                    continue
-                }
 
                 blocks[blockNumber] = buffer.connection.mapping.getBlockState(blockId) ?: continue
             }

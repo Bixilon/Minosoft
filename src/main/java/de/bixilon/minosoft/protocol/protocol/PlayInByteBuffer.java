@@ -25,6 +25,7 @@ import de.bixilon.minosoft.data.mappings.recipes.Ingredient;
 import de.bixilon.minosoft.data.text.ChatComponent;
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
 import de.bixilon.minosoft.util.nbt.tag.CompoundTag;
+import de.bixilon.minosoft.util.nbt.tag.NBTTag;
 import glm_.vec3.Vec3i;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
@@ -95,6 +96,11 @@ public class PlayInByteBuffer extends InByteBuffer {
             case "minecraft:item" -> new ItemParticleData(readItemStack(), type);
             default -> new ParticleData(type);
         };
+    }
+
+    @Override
+    public NBTTag readNBT() {
+        return readNBT(this.versionId < V_14W28B);
     }
 
     public ItemStack readItemStack() {

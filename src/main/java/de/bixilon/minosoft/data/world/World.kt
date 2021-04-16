@@ -14,7 +14,7 @@ package de.bixilon.minosoft.data.world
 
 import com.google.common.collect.HashBiMap
 import de.bixilon.minosoft.data.Difficulties
-import de.bixilon.minosoft.data.entities.block.BlockEntityMetaData
+import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.mappings.Dimension
 import de.bixilon.minosoft.data.mappings.biomes.Biome
@@ -107,14 +107,17 @@ class World : BiomeAccessor {
         entityUUIDMap[entityUUID]?.let { removeEntity(it) }
     }
 
-    fun setBlockEntityData(position: Vec3i, data: BlockEntityMetaData?) {
-        // ToDo
-        // chunks[position.getVec2i()]?.sections?.get(position.getSectionHeight())?.getBlockState(position.getInChunkSectionPosition())?.metaData = data
+    fun getBlockEntity(blockPosition: Vec3i): BlockEntity? {
+        return getChunk(blockPosition.chunkPosition)?.getBlockEntity(blockPosition.inChunkPosition)
     }
 
-    fun setBlockEntityData(blockEntities: HashMap<Vec3i, BlockEntityMetaData>) {
+    fun setBlockEntity(blockPosition: Vec3i, blockEntity: BlockEntity?) {
+        getChunk(blockPosition.chunkPosition)?.setBlockEntity(blockPosition.inChunkPosition, blockEntity)
+    }
+
+    fun setBlockEntity(blockEntities: Map<Vec3i, BlockEntity>) {
         for ((blockPosition, entityMetaData) in blockEntities) {
-            setBlockEntityData(blockPosition, entityMetaData)
+            setBlockEntity(blockPosition, entityMetaData)
         }
     }
 

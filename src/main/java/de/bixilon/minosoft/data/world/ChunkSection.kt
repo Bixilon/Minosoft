@@ -12,6 +12,7 @@
  */
 package de.bixilon.minosoft.data.world
 
+import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.mappings.blocks.BlockState
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import glm_.vec3.Vec3i
@@ -21,6 +22,7 @@ import glm_.vec3.Vec3i
  */
 class ChunkSection(
     val blocks: Array<BlockState?> = arrayOfNulls(ProtocolDefinition.BLOCKS_PER_SECTION),
+    val blockEntities: Array<BlockEntity?> = arrayOfNulls(ProtocolDefinition.BLOCKS_PER_SECTION),
     // ToDo: BlockEntityMeta
 ) {
 
@@ -40,6 +42,14 @@ class ChunkSection(
         for ((index, blockInfo) in chunkSection.blocks.withIndex()) {
             blocks[index] = blockInfo
         }
+    }
+
+    fun getBlockEntity(inChunkSectionPositions: Vec3i): BlockEntity? {
+        return blockEntities[inChunkSectionPositions.index]
+    }
+
+    fun setBlockEntity(inChunkSectionPositions: Vec3i, blockEntity: BlockEntity?) {
+        blockEntities[inChunkSectionPositions.index] = blockEntity
     }
 
     companion object {

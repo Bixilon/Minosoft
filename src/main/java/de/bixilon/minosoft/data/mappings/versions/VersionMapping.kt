@@ -24,6 +24,7 @@ import de.bixilon.minosoft.data.mappings.biomes.BiomeCategory
 import de.bixilon.minosoft.data.mappings.biomes.BiomePrecipitation
 import de.bixilon.minosoft.data.mappings.blocks.Block
 import de.bixilon.minosoft.data.mappings.blocks.BlockState
+import de.bixilon.minosoft.data.mappings.blocks.entites.BlockEntityType
 import de.bixilon.minosoft.data.mappings.entities.EntityType
 import de.bixilon.minosoft.data.mappings.entities.villagers.VillagerProfession
 import de.bixilon.minosoft.data.mappings.fluid.Fluid
@@ -82,8 +83,10 @@ class VersionMapping {
 
     val blockStateIdMap: MutableMap<Int, BlockState> = mutableMapOf()
 
-    val entityMetaIndexMap = HashMap<EntityMetaDataFields, Int>(180)
+    val entityMetaIndexMap: MutableMap<EntityMetaDataFields, Int> = mutableMapOf()
     val entityRegistry: Registry<EntityType> = Registry()
+
+    val blockEntityRegistry: Registry<BlockEntityType> = Registry()
 
     internal val models: MutableMap<ResourceLocation, BlockModel> = mutableMapOf()
 
@@ -164,6 +167,9 @@ class VersionMapping {
         villagerProfessionRegistry.initialize(pixlyzerData["villager_professions"]?.asJsonObject, this, VillagerProfession)
 
         entityRegistry.initialize(pixlyzerData["entities"]?.asJsonObject, this, EntityType)
+
+        blockEntityRegistry.initialize(pixlyzerData["block_entities"]?.asJsonObject, this, BlockEntityType)
+
 
         // post init
         biomeRegistry.postInit(this)

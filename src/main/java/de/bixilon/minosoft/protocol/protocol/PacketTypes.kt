@@ -157,7 +157,7 @@ class PacketTypes {
         PLAY_STATS_RESPONSE({ PacketStatistics(it) }),
         PLAY_ACKNOWLEDGE_PLAYER_DIGGING({ PacketAcknowledgePlayerDigging(it) }),
         PLAY_BLOCK_BREAK_ANIMATION({ PacketBlockBreakAnimation(it) }),
-        PLAY_BLOCK_ENTITY_DATA({ PacketBlockEntityMetadata(it) }),
+        PLAY_BLOCK_ENTITY_DATA({ BlockEntityMetaDataS2CP(it) }),
         PLAY_BLOCK_ACTION({ PacketBlockAction(it) }),
         PLAY_BLOCK_CHANGE({ PacketBlockChange(it) }),
         PLAY_BOSS_BAR({ PacketBossBar(it) }),

@@ -107,5 +107,370 @@
         "id": 94
       }
     }
+  },
+  "minecraft:block_entity_meta_data_types": {
+    "0": {
+      "minecraft:spawner": {
+        "id": 1
+      },
+      "minecraft:command_block": {
+        "id": 2
+      },
+      "minecraft:skull": {
+        "id": 3
+      },
+      "minecraft:flower_pot": {
+        "id": 4
+      }
+    },
+    "30": {
+      "minecraft:spawner": {
+        "id": 1
+      },
+      "minecraft:command_block": {
+        "id": 2
+      },
+      "minecraft:skull": {
+        "id": 3
+      },
+      "minecraft:flower_pot": {
+        "id": 4
+      },
+      "minecraft:banner": {
+        "id": 6
+      }
+    },
+    "33": {
+      "minecraft:spawner": {
+        "id": 1
+      },
+      "minecraft:command_block": {
+        "id": 2
+      },
+      "minecraft:beacon": {
+        "id": 3
+      },
+      "minecraft:skull": {
+        "id": 4
+      },
+      "minecraft:flower_pot": {
+        "id": 5
+      },
+      "minecraft:banner": {
+        "id": 6
+      }
+    },
+    "49": {
+      "minecraft:spawner": {
+        "id": 1
+      },
+      "minecraft:command_block": {
+        "id": 2
+      },
+      "minecraft:beacon": {
+        "id": 3
+      },
+      "minecraft:skull": {
+        "id": 4
+      },
+      "minecraft:flower_pot": {
+        "id": 5
+      },
+      "minecraft:banner": {
+        "id": 6
+      },
+      "minecraft:data_structure": {
+        "id": 7
+      },
+      "minecraft:end_gateway": {
+        "id": 8
+      }
+    },
+    "110": {
+      "minecraft:spawner": {
+        "id": 1
+      },
+      "minecraft:command_block": {
+        "id": 2
+      },
+      "minecraft:beacon": {
+        "id": 3
+      },
+      "minecraft:skull": {
+        "id": 4
+      },
+      "minecraft:flower_pot": {
+        "id": 5
+      },
+      "minecraft:banner": {
+        "id": 6
+      },
+      "minecraft:data_structure": {
+        "id": 7
+      },
+      "minecraft:end_gateway": {
+        "id": 8
+      },
+      "minecraft:sign": {
+        "id": 9
+      }
+    },
+    "307": {
+      "minecraft:spawner": {
+        "id": 1
+      },
+      "minecraft:command_block": {
+        "id": 2
+      },
+      "minecraft:beacon": {
+        "id": 3
+      },
+      "minecraft:skull": {
+        "id": 4
+      },
+      "minecraft:flower_pot": {
+        "id": 5
+      },
+      "minecraft:banner": {
+        "id": 6
+      },
+      "minecraft:data_structure": {
+        "id": 7
+      },
+      "minecraft:end_gateway": {
+        "id": 8
+      },
+      "minecraft:sign": {
+        "id": 9
+      },
+      "minecraft:shulker_box": {
+        "id": 10
+      }
+    },
+    "321": {
+      "minecraft:spawner": {
+        "id": 1
+      },
+      "minecraft:command_block": {
+        "id": 2
+      },
+      "minecraft:beacon": {
+        "id": 3
+      },
+      "minecraft:skull": {
+        "id": 4
+      },
+      "minecraft:flower_pot": {
+        "id": 5
+      },
+      "minecraft:banner": {
+        "id": 6
+      },
+      "minecraft:data_structure": {
+        "id": 7
+      },
+      "minecraft:end_gateway": {
+        "id": 8
+      },
+      "minecraft:sign": {
+        "id": 9
+      },
+      "minecraft:shulker_box": {
+        "id": 10
+      },
+      "minecraft:bed": {
+        "id": 11
+      }
+    },
+    "346": {
+      "minecraft:spawner": {
+        "id": 1
+      },
+      "minecraft:command_block": {
+        "id": 2
+      },
+      "minecraft:beacon": {
+        "id": 3
+      },
+      "minecraft:skull": {
+        "id": 4
+      },
+      "minecraft:banner": {
+        "id": 6
+      },
+      "minecraft:data_structure": {
+        "id": 7
+      },
+      "minecraft:end_gateway": {
+        "id": 8
+      },
+      "minecraft:sign": {
+        "id": 9
+      },
+      "minecraft:shulker_box": {
+        "id": 10
+      },
+      "minecraft:bed": {
+        "id": 11
+      }
+    },
+    "371": {
+      "minecraft:spawner": {
+        "id": 1
+      },
+      "minecraft:command_block": {
+        "id": 2
+      },
+      "minecraft:beacon": {
+        "id": 3
+      },
+      "minecraft:skull": {
+        "id": 4
+      },
+      "minecraft:conduit": {
+        "id": 5
+      },
+      "minecraft:banner": {
+        "id": 6
+      },
+      "minecraft:data_structure": {
+        "id": 7
+      },
+      "minecraft:end_gateway": {
+        "id": 8
+      },
+      "minecraft:sign": {
+        "id": 9
+      },
+      "minecraft:shulker_box": {
+        "id": 10
+      },
+      "minecraft:bed": {
+        "id": 11
+      }
+    },
+    "445": {
+      "minecraft:spawner": {
+        "id": 1
+      },
+      "minecraft:command_block": {
+        "id": 2
+      },
+      "minecraft:beacon": {
+        "id": 3
+      },
+      "minecraft:skull": {
+        "id": 4
+      },
+      "minecraft:conduit": {
+        "id": 5
+      },
+      "minecraft:banner": {
+        "id": 6
+      },
+      "minecraft:data_structure": {
+        "id": 7
+      },
+      "minecraft:end_gateway": {
+        "id": 8
+      },
+      "minecraft:sign": {
+        "id": 9
+      },
+      "minecraft:shulker_box": {
+        "id": 10
+      },
+      "minecraft:bed": {
+        "id": 11
+      },
+      "minecraft:jigsaw": {
+        "id": 12
+      }
+    },
+    "452": {
+      "minecraft:spawner": {
+        "id": 1
+      },
+      "minecraft:command_block": {
+        "id": 2
+      },
+      "minecraft:beacon": {
+        "id": 3
+      },
+      "minecraft:skull": {
+        "id": 4
+      },
+      "minecraft:conduit": {
+        "id": 5
+      },
+      "minecraft:banner": {
+        "id": 6
+      },
+      "minecraft:data_structure": {
+        "id": 7
+      },
+      "minecraft:end_gateway": {
+        "id": 8
+      },
+      "minecraft:sign": {
+        "id": 9
+      },
+      "minecraft:shulker_box": {
+        "id": 10
+      },
+      "minecraft:bed": {
+        "id": 11
+      },
+      "minecraft:jigsaw": {
+        "id": 12
+      },
+      "minecraft:campfire": {
+        "id": 13
+      }
+    },
+    "550": {
+      "minecraft:spawner": {
+        "id": 1
+      },
+      "minecraft:command_block": {
+        "id": 2
+      },
+      "minecraft:beacon": {
+        "id": 3
+      },
+      "minecraft:skull": {
+        "id": 4
+      },
+      "minecraft:conduit": {
+        "id": 5
+      },
+      "minecraft:banner": {
+        "id": 6
+      },
+      "minecraft:data_structure": {
+        "id": 7
+      },
+      "minecraft:end_gateway": {
+        "id": 8
+      },
+      "minecraft:sign": {
+        "id": 9
+      },
+      "minecraft:shulker_box": {
+        "id": 10
+      },
+      "minecraft:bed": {
+        "id": 11
+      },
+      "minecraft:jigsaw": {
+        "id": 12
+      },
+      "minecraft:campfire": {
+        "id": 13
+      },
+      "minecraft:bee_hive": {
+        "id": 14
+      }
+    }
   }
 }
