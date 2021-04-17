@@ -16,6 +16,7 @@ import com.google.gson.JsonArray
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.entities.EntityMetaDataFields
+import de.bixilon.minosoft.data.entities.block.BlockEntityMetaType
 import de.bixilon.minosoft.data.entities.meta.EntityMetaData
 import de.bixilon.minosoft.data.inventory.InventorySlots
 import de.bixilon.minosoft.data.mappings.*
@@ -87,6 +88,7 @@ class VersionMapping {
     val entityRegistry: Registry<EntityType> = Registry()
 
     val blockEntityRegistry: Registry<BlockEntityType> = Registry()
+    val blockEntityMetaDataTypeRegistry: Registry<BlockEntityMetaType> = Registry()
 
     internal val models: MutableMap<ResourceLocation, BlockModel> = mutableMapOf()
 
@@ -121,7 +123,7 @@ class VersionMapping {
         return entityMetaIndexMap[field] ?: _parentMapping?.getEntityMetaDataIndex(field)
     }
 
-    private fun <T : Enum<*>> loadEnumRegistry(version: Version, data: JsonElement?, registry: EnumRegistry<T>, alternative: PerEnumVersionRegistry<T>) {
+    private fun <T : Enum<*>> loadEnumRegistry(version: Version, data: JsonElement?, registry: EnumRegistry<T>, alternative: PerVersionEnumRegistry<T>) {
         data?.let {
             registry.initialize(it)
         } ?: let {
@@ -169,6 +171,7 @@ class VersionMapping {
         entityRegistry.initialize(pixlyzerData["entities"]?.asJsonObject, this, EntityType)
 
         blockEntityRegistry.initialize(pixlyzerData["block_entities"]?.asJsonObject, this, BlockEntityType)
+        blockEntityMetaDataTypeRegistry.initialize(pixlyzerData["block_entity_meta_data_types"]?.asJsonObject, this, BlockEntityMetaType, alternative = DefaultRegistries.BLOCK_ENTITY_META_TYPE_REGISTRY.forVersion(version))
 
 
         // post init

@@ -13,7 +13,6 @@
 package de.bixilon.minosoft.protocol.packets.s2c.play
 
 import de.bixilon.minosoft.data.entities.block.DefaultBlockEntityMetaDataFactory
-import de.bixilon.minosoft.data.mappings.DefaultRegistries
 import de.bixilon.minosoft.modding.event.events.BlockEntityMetaDataChangeEvent
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
@@ -29,7 +28,7 @@ class BlockEntityMetaDataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     } else {
         buffer.readBlockPosition()
     }
-    val type = DefaultRegistries.BLOCK_ENTITY_META_TYPE_REGISTRY.get(buffer.readUnsignedByte()).resourceLocation
+    val type = buffer.connection.mapping.blockEntityMetaDataTypeRegistry.get(buffer.readUnsignedByte()).resourceLocation
     val nbt = buffer.readNBT() as CompoundTag
 
     override fun handle(connection: PlayConnection) {

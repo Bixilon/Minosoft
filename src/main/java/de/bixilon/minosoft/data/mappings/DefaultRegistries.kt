@@ -18,7 +18,7 @@ import de.bixilon.minosoft.data.entities.EntityObjectType
 import de.bixilon.minosoft.data.entities.block.BlockEntityMetaType
 import de.bixilon.minosoft.data.entities.meta.EntityMetaData
 import de.bixilon.minosoft.data.inventory.InventorySlots
-import de.bixilon.minosoft.data.mappings.registry.PerEnumVersionRegistry
+import de.bixilon.minosoft.data.mappings.registry.PerVersionEnumRegistry
 import de.bixilon.minosoft.data.mappings.registry.PerVersionRegistry
 import de.bixilon.minosoft.data.mappings.registry.Registry
 import de.bixilon.minosoft.protocol.packets.c2s.play.EntityActionC2SPacket
@@ -31,23 +31,23 @@ object DefaultRegistries {
     private val REGISTRIES_RESOURCE_LOCATION = ResourceLocation("minosoft:mapping/default_registries.json")
     private var initialized = false
 
-    val EQUIPMENT_SLOTS_REGISTRY = PerEnumVersionRegistry(InventorySlots.EquipmentSlots)
-    val HAND_EQUIPMENT_SLOTS_REGISTRY = PerEnumVersionRegistry(InventorySlots.EquipmentSlots)
-    val ARMOR_EQUIPMENT_SLOTS_REGISTRY = PerEnumVersionRegistry(InventorySlots.EquipmentSlots)
-    val ARMOR_STAND_EQUIPMENT_SLOTS_REGISTRY = PerEnumVersionRegistry(InventorySlots.EquipmentSlots)
+    val EQUIPMENT_SLOTS_REGISTRY = PerVersionEnumRegistry(InventorySlots.EquipmentSlots)
+    val HAND_EQUIPMENT_SLOTS_REGISTRY = PerVersionEnumRegistry(InventorySlots.EquipmentSlots)
+    val ARMOR_EQUIPMENT_SLOTS_REGISTRY = PerVersionEnumRegistry(InventorySlots.EquipmentSlots)
+    val ARMOR_STAND_EQUIPMENT_SLOTS_REGISTRY = PerVersionEnumRegistry(InventorySlots.EquipmentSlots)
 
-    val ENTITY_META_DATA_DATA_TYPES_REGISTRY = PerEnumVersionRegistry(EntityMetaData.EntityMetaDataDataTypes)
+    val ENTITY_META_DATA_DATA_TYPES_REGISTRY = PerVersionEnumRegistry(EntityMetaData.EntityMetaDataDataTypes)
 
-    val TITLE_ACTIONS_REGISTRY = PerEnumVersionRegistry(TitleS2CPFactory.TitleActions)
+    val TITLE_ACTIONS_REGISTRY = PerVersionEnumRegistry(TitleS2CPFactory.TitleActions)
 
-    val ENTITY_ANIMATION_REGISTRY = PerEnumVersionRegistry(PacketEntityAnimation.EntityAnimations)
-    val ENTITY_ACTIONS_REGISTRY = PerEnumVersionRegistry(EntityActionC2SPacket.EntityActions)
+    val ENTITY_ANIMATION_REGISTRY = PerVersionEnumRegistry(PacketEntityAnimation.EntityAnimations)
+    val ENTITY_ACTIONS_REGISTRY = PerVersionEnumRegistry(EntityActionC2SPacket.EntityActions)
 
     val ENTITY_OBJECT_REGISTRY: Registry<EntityObjectType> = Registry()
 
-    val BLOCK_ENTITY_META_TYPE_REGISTRY: Registry<BlockEntityMetaType> = Registry()
+    val BLOCK_ENTITY_META_TYPE_REGISTRY: PerVersionRegistry<BlockEntityMetaType> = PerVersionRegistry()
 
-    val DEFAULT_PLUGIN_CHANNELS_REGISTRY = PerVersionRegistry<PluginChannel>()
+    val DEFAULT_PLUGIN_CHANNELS_REGISTRY: PerVersionRegistry<PluginChannel> = PerVersionRegistry()
 
 
     fun load() {
@@ -74,7 +74,7 @@ object DefaultRegistries {
 
         ENTITY_OBJECT_REGISTRY.initialize(registriesJson[ResourceLocation("entity_objects")]!!, null, EntityObjectType)
 
-        BLOCK_ENTITY_META_TYPE_REGISTRY.initialize(registriesJson[ResourceLocation("block_entity_meta_data_types")]!!, null, BlockEntityMetaType)
+        BLOCK_ENTITY_META_TYPE_REGISTRY.initialize(registriesJson[ResourceLocation("block_entity_meta_data_types")]!!, BlockEntityMetaType)
 
         initialized = true
     }

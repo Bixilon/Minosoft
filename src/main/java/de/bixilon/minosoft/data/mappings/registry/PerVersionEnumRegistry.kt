@@ -18,7 +18,7 @@ import de.bixilon.minosoft.data.mappings.versions.Version
 import de.bixilon.minosoft.util.enum.ValuesEnum
 import java.util.*
 
-class PerEnumVersionRegistry<T : Enum<*>>(
+class PerVersionEnumRegistry<T : Enum<*>>(
     val values: ValuesEnum<T>,
 ) {
     private lateinit var versions: Map<Int, EnumRegistry<T>>
