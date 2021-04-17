@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.mappings.blocks.properties
 
 import de.bixilon.minosoft.data.mappings.blocks.properties.serializer.BlockPropertiesSerializer
+import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.enum.ValuesEnum
 
 enum class SensorPhases {
@@ -24,6 +25,7 @@ enum class SensorPhases {
 
     companion object : BlockPropertiesSerializer, ValuesEnum<SensorPhases> {
         override val VALUES = values()
+        override val NAME_MAP: Map<String, SensorPhases> = KUtil.getEnumValues(VALUES)
 
         override fun serialize(value: Any): SensorPhases {
             return NAME_MAP[value] ?: throw IllegalArgumentException("No such property: $value")

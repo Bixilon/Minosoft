@@ -210,7 +210,7 @@ public class InByteBuffer {
                 throw new IllegalArgumentException("Bad nbt");
             }
         }
-        NBTTagTypes type = NBTTagTypes.byId(readUnsignedByte());
+        NBTTagTypes type = NBTTagTypes.Companion.getVALUES()[readUnsignedByte()];
         if (type == NBTTagTypes.COMPOUND) {
             // shouldn't be a subtag
             return new CompoundTag(false, this);

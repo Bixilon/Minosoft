@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.mappings.blocks.properties
 
 import de.bixilon.minosoft.data.mappings.blocks.properties.serializer.BlockPropertiesSerializer
+import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.enum.ValuesEnum
 
 enum class Thicknesses {
@@ -28,6 +29,7 @@ enum class Thicknesses {
 
     companion object : BlockPropertiesSerializer, ValuesEnum<Thicknesses> {
         override val VALUES = values()
+        override val NAME_MAP: Map<String, Thicknesses> = KUtil.getEnumValues(VALUES)
 
         override fun serialize(value: Any): Thicknesses {
             return NAME_MAP[value] ?: throw IllegalArgumentException("No such property: $value")

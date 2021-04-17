@@ -15,6 +15,7 @@ package de.bixilon.minosoft.protocol.packets.s2c.play.border
 
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
+import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.enum.ValuesEnum
 
 object WorldBorderS2CFactory {
@@ -43,6 +44,7 @@ object WorldBorderS2CFactory {
 
         companion object : ValuesEnum<WorldBorderActions> {
             override val VALUES = values()
+            override val NAME_MAP: Map<String, WorldBorderActions> = KUtil.getEnumValues(VALUES)
         }
     }
 }

@@ -27,6 +27,7 @@ import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.util.BitByte
+import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.enum.ValuesEnum
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -116,6 +117,7 @@ class EntityMetaData(
 
         companion object : ValuesEnum<EntityMetaDataDataTypes> {
             override val VALUES = values()
+            override val NAME_MAP: Map<String, EntityMetaDataDataTypes> = KUtil.getEnumValues(VALUES)
         }
     }
 

@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.mappings.blocks.properties
 
 import de.bixilon.minosoft.data.mappings.blocks.properties.serializer.BlockPropertiesSerializer
+import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.enum.ValuesEnum
 
 enum class VerticalDirections {
@@ -23,6 +24,7 @@ enum class VerticalDirections {
 
     companion object : BlockPropertiesSerializer, ValuesEnum<VerticalDirections> {
         override val VALUES = values()
+        override val NAME_MAP: Map<String, VerticalDirections> = KUtil.getEnumValues(VALUES)
 
         override fun serialize(value: Any): VerticalDirections {
             return NAME_MAP[value] ?: throw IllegalArgumentException("No such property: $value")
