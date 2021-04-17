@@ -41,7 +41,7 @@ public class CompoundTag extends NBTTag {
             this.name = null;
         } else {
             // if in an array, there is no name
-            this.name = buffer.readString(buffer.readShort()); // length
+            this.name = buffer.readString(buffer.readUnsignedShort()); // length
         }
         this.data = new HashMap<>();
         while (true) {

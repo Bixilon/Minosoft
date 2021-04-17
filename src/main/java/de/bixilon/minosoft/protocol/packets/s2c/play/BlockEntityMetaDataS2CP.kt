@@ -24,7 +24,7 @@ import glm_.vec3.Vec3i
 
 class BlockEntityMetaDataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     val position: Vec3i = if (buffer.versionId < ProtocolVersions.V_14W03B) {
-        buffer.readBlockPositionShort()
+        buffer.readShortBlockPosition()
     } else {
         buffer.readBlockPosition()
     }

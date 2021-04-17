@@ -27,7 +27,7 @@ public class PacketUseBed extends PlayS2CPacket {
     public PacketUseBed(PlayInByteBuffer buffer) {
         this.entityId = buffer.readInt();
         if (buffer.getVersionId() < V_14W04A) {
-            this.blockPosition = buffer.readBlockPositionByte();
+            this.blockPosition = buffer.readByteBlockPosition();
         } else {
             this.blockPosition = buffer.readBlockPosition();
         }

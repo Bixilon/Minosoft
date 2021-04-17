@@ -26,7 +26,7 @@ public class PacketFacePlayer extends PlayS2CPacket {
 
     public PacketFacePlayer(PlayInByteBuffer buffer) {
         this.face = PlayerFaces.byId(buffer.readVarInt());
-        this.position = buffer.readEntityPosition();
+        this.position = buffer.readPosition();
         if (buffer.readBoolean()) {
             // entity present
             this.entityId = buffer.readVarInt();

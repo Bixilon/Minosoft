@@ -41,9 +41,9 @@ public abstract class CommandNode {
     protected int[] childrenIds;
     protected CommandNode redirectNode;
 
-    public CommandNode(byte flags, InByteBuffer buffer) {
+    public CommandNode(int flags, InByteBuffer buffer) {
         this.isExecutable = BitByte.isBitMask(flags, 0x04);
-        this.childrenIds = buffer.readVarIntArray();
+        this.childrenIds = buffer.readVarIntArray(buffer.readVarInt());
         if (BitByte.isBitMask(flags, 0x08)) {
             this.redirectNodeId = buffer.readVarInt();
         } else {

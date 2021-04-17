@@ -56,7 +56,7 @@ public abstract class Network {
             // compression is enabled
             InByteBuffer rawData = new InByteBuffer(bytes, this.connection);
             int packetSize = rawData.readVarInt();
-            bytes = rawData.readBytesLeft();
+            bytes = rawData.readRest();
             if (packetSize > 0) {
                 // need to decompress data
                 bytes = Util.decompress(bytes);
@@ -82,17 +82,17 @@ public abstract class Network {
             S2CPacket packet;
             try {
                 if (packetType.getPlayFactory() != null) {
-                    var playData = new PlayInByteBuffer(data.readBytesLeft(), ((PlayConnection) this.connection));
+                    var playData = new PlayInByteBuffer(data.readRest(), ((PlayConnection) this.connection));
                     packet = packetType.getPlayFactory().invoke(playData);
                     if (playData.getBytesLeft() > 0) {
-                        throw new PacketParseException(String.format("Could not parse packet %s (used=%d, available=%d, total=%d)", packetType, playData.getPosition(), playData.getBytesLeft(), playData.getLength()));
+                        throw new PacketParseException(String.format("Could not parse packet %s (used=%d, available=%d, total=%d)", packetType, playData.getPointer(), playData.getBytesLeft(), playData.getSize()));
                     }
                     ((PlayS2CPacket) packet).check(((PlayConnection) this.connection));
                 } else if (packetType.getStatusFactory() != null) {
                     var statusData = new InByteBuffer(data);
                     packet = packetType.getStatusFactory().invoke(statusData);
                     if (statusData.getBytesLeft() > 0) {
-                        throw new PacketParseException(String.format("Could not parse packet %s (used=%d, available=%d, total=%d)", packetType, statusData.getPosition(), statusData.getBytesLeft(), statusData.getLength()));
+                        throw new PacketParseException(String.format("Could not parse packet %s (used=%d, available=%d, total=%d)", packetType, statusData.getPointer(), statusData.getBytesLeft(), statusData.getSize()));
                     }
                     ((StatusS2CPacket) packet).check((StatusConnection) this.connection);
                 } else {

@@ -25,10 +25,9 @@ import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W03B;
 public class PacketOpenSignEditor extends PlayS2CPacket {
     private final Vec3i position;
 
-
     public PacketOpenSignEditor(PlayInByteBuffer buffer) {
         if (buffer.getVersionId() < V_14W03B) {
-            this.position = buffer.readBlockPositionInteger();
+            this.position = buffer.readIntBlockPosition();
             return;
         }
         this.position = buffer.readBlockPosition();

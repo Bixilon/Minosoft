@@ -31,7 +31,7 @@ public class PacketUpdateSignReceiving extends PlayS2CPacket {
 
     public PacketUpdateSignReceiving(PlayInByteBuffer buffer) {
         if (buffer.getVersionId() < V_14W04A) {
-            this.position = buffer.readBlockPositionShort();
+            this.position = buffer.readShortBlockPosition();
         } else {
             this.position = buffer.readBlockPosition();
         }

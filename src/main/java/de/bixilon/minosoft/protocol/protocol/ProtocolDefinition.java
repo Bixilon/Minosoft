@@ -21,7 +21,7 @@ import java.net.InetAddress;
 import java.util.regex.Pattern;
 
 public final class ProtocolDefinition {
-    public static final int STRING_MAX_LEN = 32767;
+    public static final int STRING_MAX_LENGTH = 32767;
     public static final int DEFAULT_PORT = 25565;
     public static final int SOCKET_CONNECT_TIMEOUT = 5000;
     public static final int SOCKET_TIMEOUT = 30000;

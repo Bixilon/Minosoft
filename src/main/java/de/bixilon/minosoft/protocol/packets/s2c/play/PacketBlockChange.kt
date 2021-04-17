@@ -32,7 +32,7 @@ class PacketBlockChange(buffer: PlayInByteBuffer) : PlayS2CPacket() {
 
     init {
         if (buffer.versionId < ProtocolVersions.V_14W03B) {
-            blockPosition = buffer.readBlockPositionByte()
+            blockPosition = buffer.readByteBlockPosition()
             block = buffer.connection.mapping.getBlockState(buffer.readVarInt() shl 4 or buffer.readByte().toInt()) // ToDo: When was the meta data "compacted"? (between 1.7.10 - 1.8)
         } else {
             blockPosition = buffer.readBlockPosition()

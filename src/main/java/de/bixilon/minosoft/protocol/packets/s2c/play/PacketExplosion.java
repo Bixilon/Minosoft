@@ -34,7 +34,7 @@ public class PacketExplosion extends PlayS2CPacket {
         int recordCount = buffer.readInt();
         this.records = new byte[recordCount][3];
         for (int i = 0; i < recordCount; i++) {
-            this.records[i] = buffer.readBytes(3);
+            this.records[i] = buffer.readByteArray(3);
         }
 
         this.motionX = buffer.readFloat();

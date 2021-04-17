@@ -29,7 +29,7 @@ public class PacketSpawnPosition extends PlayS2CPacket {
 
     public PacketSpawnPosition(PlayInByteBuffer buffer) {
         if (buffer.getVersionId() < V_14W03B) {
-            this.position = buffer.readBlockPositionInteger();
+            this.position = buffer.readIntBlockPosition();
             return;
         }
         this.position = buffer.readBlockPosition();

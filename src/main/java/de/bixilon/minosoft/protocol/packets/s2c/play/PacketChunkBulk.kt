@@ -38,7 +38,7 @@ class PacketChunkBulk() : PlayS2CPacket() {
 
             // decompress chunk data
             val decompressed: PlayInByteBuffer = if (buffer.versionId < ProtocolVersions.V_14W28A) {
-                Util.decompress(buffer.readBytes(dataLength), buffer.connection)
+                Util.decompress(buffer.readByteArray(dataLength), buffer.connection)
             } else {
                 buffer
             }
@@ -46,8 +46,8 @@ class PacketChunkBulk() : PlayS2CPacket() {
             // chunk meta data
             for (i in 0 until chunkCount) {
                 val chunkPosition = buffer.readChunkPosition()
-                val sectionBitMask = BitSet.valueOf(buffer.readBytes(2)) // ToDo: Test
-                val addBitMask = BitSet.valueOf(buffer.readBytes(2)) // ToDo: Test
+                val sectionBitMask = BitSet.valueOf(buffer.readByteArray(2)) // ToDo: Test
+                val addBitMask = BitSet.valueOf(buffer.readByteArray(2)) // ToDo: Test
                 data[chunkPosition] = ChunkUtil.readLegacyChunk(decompressed, dimension, sectionBitMask, addBitMask, true, containsSkyLight)
             }
             return
@@ -58,7 +58,7 @@ class PacketChunkBulk() : PlayS2CPacket() {
 
         // ToDo: this was still compressed in 14w28a
         for (i in 0 until chunkCount) {
-            chunkData[buffer.readChunkPosition()] = BitSet.valueOf(buffer.readBytes(2))
+            chunkData[buffer.readChunkPosition()] = BitSet.valueOf(buffer.readByteArray(2))
         }
         for ((chunkPosition, sectionBitMask) in chunkData) {
             data[chunkPosition] = ChunkUtil.readChunkPacket(buffer, dimension, sectionBitMask, null, true, containsSkyLight)

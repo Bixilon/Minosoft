@@ -37,7 +37,7 @@ public class PacketSpawnWeatherEntity extends PlayS2CPacket {
         if (buffer.getVersionId() < V_16W06A) {
             position = new Vec3(buffer.readFixedPointNumberInt(), buffer.readFixedPointNumberInt(), buffer.readFixedPointNumberInt());
         } else {
-            position = buffer.readEntityPosition();
+            position = buffer.readPosition();
         }
         this.entity = new LightningBolt(buffer.getConnection(), buffer.getConnection().getMapping().getEntityRegistry().get(LIGHTNING_BOLT_RESOURCE_LOCATION), position);
     }

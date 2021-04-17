@@ -34,7 +34,7 @@ public class CommandArgumentNode extends CommandLiteralNode {
     private ParserProperties properties;
     private SuggestionTypes suggestionType;
 
-    public CommandArgumentNode(byte flags, InByteBuffer buffer) {
+    public CommandArgumentNode(int flags, InByteBuffer buffer) {
         super(flags, buffer);
         ResourceLocation parserResourceLocation = buffer.readResourceLocation();
         this.parser = CommandParsers.INSTANCE.getParserInstance(parserResourceLocation);

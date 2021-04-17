@@ -51,7 +51,7 @@ public class PacketMapData extends PlayS2CPacket {
                 case START -> {
                     this.xStart = buffer.readByte();
                     this.yStart = buffer.readByte();
-                    this.colors = buffer.readBytes(length - 3); // 3: dataData(1) + xStart (1) + yStart (1)
+                    this.colors = buffer.readByteArray(length - 3); // 3: dataData(1) + xStart (1) + yStart (1)
                 }
                 case PLAYERS -> {
                     this.pins = new ArrayList<>();
@@ -114,7 +114,7 @@ public class PacketMapData extends PlayS2CPacket {
             int zOffset = buffer.readUnsignedByte();
 
             int dataLength = buffer.readVarInt();
-            this.data = buffer.readBytes(dataLength);
+            this.data = buffer.readByteArray(dataLength);
         }
     }
 

@@ -45,14 +45,14 @@ object ChunkUtil {
         val halfBytes = totalBytes / 2
 
 
-        val blockData = buffer.readBytes(totalBytes)
-        val blockMetaData = buffer.readBytes(halfBytes)
-        val light = buffer.readBytes(halfBytes)
+        val blockData = buffer.readByteArray(totalBytes)
+        val blockMetaData = buffer.readByteArray(halfBytes)
+        val light = buffer.readByteArray(halfBytes)
         var skyLight: ByteArray? = null
         if (containsSkyLight) {
-            skyLight = buffer.readBytes(halfBytes)
+            skyLight = buffer.readByteArray(halfBytes)
         }
-        val addBlockData = buffer.readBytes(addBitMask.cardinality() * (ProtocolDefinition.BLOCKS_PER_SECTION / 2))
+        val addBlockData = buffer.readByteArray(addBitMask.cardinality() * (ProtocolDefinition.BLOCKS_PER_SECTION / 2))
         if (isFullChunk) {
             chunkData.biomeSource = readLegacyBiomeArray(buffer)
         }
@@ -115,10 +115,10 @@ object ChunkUtil {
         val blockData = buffer.readUnsignedShortsLE(totalEntries) // blocks >>> 4, data & 0xF
 
 
-        val light = buffer.readBytes(totalHalfEntries)
+        val light = buffer.readByteArray(totalHalfEntries)
         var skyLight: ByteArray? = null
         if (containsSkyLight) {
-            skyLight = buffer.readBytes(totalHalfEntries)
+            skyLight = buffer.readByteArray(totalHalfEntries)
         }
         if (isFullChunk) {
             chunkData.biomeSource = readLegacyBiomeArray(buffer)
@@ -186,9 +186,9 @@ object ChunkUtil {
             }
 
             if (buffer.versionId < V_18W43A) {
-                val light = buffer.readBytes(ProtocolDefinition.BLOCKS_PER_SECTION / 2)
+                val light = buffer.readByteArray(ProtocolDefinition.BLOCKS_PER_SECTION / 2)
                 if (containsSkyLight) {
-                    val skyLight = buffer.readBytes(ProtocolDefinition.BLOCKS_PER_SECTION / 2)
+                    val skyLight = buffer.readByteArray(ProtocolDefinition.BLOCKS_PER_SECTION / 2)
                 }
                 // ToDo
             }

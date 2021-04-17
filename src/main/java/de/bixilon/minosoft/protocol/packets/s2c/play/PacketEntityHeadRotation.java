@@ -21,7 +21,7 @@ import de.bixilon.minosoft.util.logging.Log;
 
 public class PacketEntityHeadRotation extends PlayS2CPacket {
     private final int entityId;
-    private final short headYaw;
+    private final int headYaw;
 
     public PacketEntityHeadRotation(PlayInByteBuffer buffer) {
         this.entityId = buffer.readEntityId();
@@ -48,7 +48,7 @@ public class PacketEntityHeadRotation extends PlayS2CPacket {
         return this.entityId;
     }
 
-    public short getHeadYaw() {
+    public int getHeadYaw() {
         return this.headYaw;
     }
 }

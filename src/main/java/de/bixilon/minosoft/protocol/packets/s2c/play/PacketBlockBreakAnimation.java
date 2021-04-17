@@ -30,7 +30,7 @@ public class PacketBlockBreakAnimation extends PlayS2CPacket {
     public PacketBlockBreakAnimation(PlayInByteBuffer buffer) {
         this.entityId = buffer.readVarInt();
         if (buffer.getVersionId() < V_14W03B) {
-            this.position = buffer.readBlockPositionInteger();
+            this.position = buffer.readIntBlockPosition();
         } else {
             this.position = buffer.readBlockPosition();
         }

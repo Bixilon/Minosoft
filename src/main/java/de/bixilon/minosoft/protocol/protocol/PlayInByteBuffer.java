@@ -53,7 +53,7 @@ public class PlayInByteBuffer extends InByteBuffer {
         } else {
             count = readVarInt();
         }
-        return readBytes(count);
+        return readByteArray(count);
     }
 
 
@@ -98,7 +98,6 @@ public class PlayInByteBuffer extends InByteBuffer {
         };
     }
 
-    @Override
     public NBTTag readNBT() {
         return readNBT(this.versionId < V_14W28B);
     }

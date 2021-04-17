@@ -77,8 +77,8 @@ public class OutByteBuffer {
     }
 
     public void writeString(String string) {
-        if (string.length() > ProtocolDefinition.STRING_MAX_LEN) {
-            throw new IllegalArgumentException(String.format("String max string length exceeded %d > %d", string.length(), ProtocolDefinition.STRING_MAX_LEN));
+        if (string.length() > ProtocolDefinition.STRING_MAX_LENGTH) {
+            throw new IllegalArgumentException(String.format("String max string length exceeded %d > %d", string.length(), ProtocolDefinition.STRING_MAX_LENGTH));
         }
         writeVarInt(string.length());
         writeBytes(string.getBytes(StandardCharsets.UTF_8));

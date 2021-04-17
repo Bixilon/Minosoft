@@ -24,7 +24,7 @@ public class PacketDeclareCommands extends PlayS2CPacket {
     private final CommandRootNode rootNode;
 
     public PacketDeclareCommands(PlayInByteBuffer buffer) {
-        CommandNode[] nodes = buffer.readCommandNodesArray();
+        CommandNode[] nodes = buffer.readCommandNodeArray();
         this.rootNode = (CommandRootNode) nodes[buffer.readVarInt()];
     }
 

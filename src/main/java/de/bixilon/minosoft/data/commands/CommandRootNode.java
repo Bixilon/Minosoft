@@ -23,7 +23,7 @@ import de.bixilon.minosoft.terminal.commands.CommandStack;
 import de.bixilon.minosoft.terminal.commands.exceptions.CLIException;
 
 public class CommandRootNode extends CommandNode {
-    public CommandRootNode(byte flags, InByteBuffer buffer) {
+    public CommandRootNode(int flags, InByteBuffer buffer) {
         super(flags, buffer);
     }
 

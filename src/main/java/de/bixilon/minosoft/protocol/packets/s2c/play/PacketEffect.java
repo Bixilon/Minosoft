@@ -34,7 +34,7 @@ public class PacketEffect extends PlayS2CPacket {
     public PacketEffect(PlayInByteBuffer buffer) {
         this.effect = EffectEffects.byId(buffer.readInt(), buffer.getVersionId());
         if (buffer.getVersionId() < V_14W03B) {
-            this.position = buffer.readBlockPositionByte();
+            this.position = buffer.readByteBlockPosition();
         } else {
             this.position = buffer.readBlockPosition();
         }

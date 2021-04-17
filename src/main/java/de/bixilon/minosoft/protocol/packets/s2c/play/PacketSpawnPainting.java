@@ -49,7 +49,7 @@ public class PacketSpawnPainting extends PlayS2CPacket {
         Vec3i position;
         Directions direction;
         if (buffer.getVersionId() < V_14W04B) {
-            position = buffer.readBlockPositionInteger();
+            position = buffer.readIntBlockPosition();
             direction = Directions.byId(buffer.readInt());
         } else {
             position = buffer.readBlockPosition();

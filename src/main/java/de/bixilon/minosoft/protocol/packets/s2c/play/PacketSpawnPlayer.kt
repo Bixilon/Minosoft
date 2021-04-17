@@ -51,7 +51,7 @@ class PacketSpawnPlayer(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         val position: Vec3 = if (buffer.versionId < ProtocolVersions.V_16W06A) {
             Vec3(buffer.readFixedPointNumberInt(), buffer.readFixedPointNumberInt(), buffer.readFixedPointNumberInt())
         } else {
-            buffer.readEntityPosition()
+            buffer.readPosition()
         }
 
         val yaw = buffer.readAngle()

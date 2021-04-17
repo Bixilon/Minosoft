@@ -20,7 +20,7 @@ import de.bixilon.minosoft.terminal.commands.executors.CommandExecutor;
 public class CommandLiteralNode extends CommandNode {
     private final String name;
 
-    public CommandLiteralNode(byte flags, InByteBuffer buffer) {
+    public CommandLiteralNode(int flags, InByteBuffer buffer) {
         super(flags, buffer);
         this.name = buffer.readString();
     }

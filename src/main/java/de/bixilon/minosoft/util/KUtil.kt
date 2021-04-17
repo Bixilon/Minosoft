@@ -37,4 +37,15 @@ object KUtil {
     fun bitSetOf(long: Long): BitSet {
         return BitSet.valueOf(longArrayOf(long))
     }
+
+    fun <T> Any.unsafeCast(): T {
+        return this as T
+    }
+
+    inline fun <reified T> Any.nullCast(): T? {
+        if (this is T) {
+            return this
+        }
+        return null
+    }
 }

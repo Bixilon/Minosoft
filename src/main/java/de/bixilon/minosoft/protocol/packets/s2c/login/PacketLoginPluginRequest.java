@@ -29,7 +29,7 @@ public class PacketLoginPluginRequest extends PlayS2CPacket {
         this.connection = buffer.getConnection();
         this.messageId = buffer.readVarInt();
         this.channel = buffer.readString();
-        this.data = buffer.readBytesLeft();
+        this.data = buffer.readRest();
     }
 
     @Override

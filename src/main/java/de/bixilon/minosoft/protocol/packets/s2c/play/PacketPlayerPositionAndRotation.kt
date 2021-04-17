@@ -32,7 +32,7 @@ class PacketPlayerPositionAndRotation(buffer: PlayInByteBuffer) : PlayS2CPacket(
     private var dismountVehicle = true
 
     init {
-        position = buffer.readEntityPosition()
+        position = buffer.readPosition()
         rotation = EntityRotation(buffer.readFloat(), buffer.readFloat(), 0.0f)
         if (buffer.versionId < ProtocolVersions.V_14W03B) {
             isOnGround = buffer.readBoolean()

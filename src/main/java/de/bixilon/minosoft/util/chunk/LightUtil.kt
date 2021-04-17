@@ -48,7 +48,7 @@ object LightUtil {
             if (!lightMask[arrayIndex]) {
                 continue
             }
-            lightLevels[sectionHeight] = buffer.readBytes(buffer.readVarInt())
+            lightLevels[sectionHeight] = buffer.readByteArray(buffer.readVarInt())
         }
         return lightLevels
     }

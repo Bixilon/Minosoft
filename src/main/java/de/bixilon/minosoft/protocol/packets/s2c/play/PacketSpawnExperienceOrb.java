@@ -35,7 +35,7 @@ public class PacketSpawnExperienceOrb extends PlayS2CPacket {
         if (buffer.getVersionId() < V_16W06A) {
             position = new Vec3(buffer.readFixedPointNumberInt(), buffer.readFixedPointNumberInt(), buffer.readFixedPointNumberInt());
         } else {
-            position = buffer.readEntityPosition();
+            position = buffer.readPosition();
         }
         int count = buffer.readUnsignedShort();
         this.entity = new ExperienceOrb(buffer.getConnection(), buffer.getConnection().getMapping().getEntityRegistry().get(EXPERIENCE_ORB_RESOURCE_LOCATION), position, count);

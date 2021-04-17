@@ -37,7 +37,7 @@ public class PacketPluginMessageReceiving extends PlayS2CPacket {
         } else if (buffer.getVersionId() < V_14W31A) {
             buffer.readVarInt();
         }
-        this.data = buffer.readBytesLeft();
+        this.data = buffer.readRest();
     }
 
     @Override

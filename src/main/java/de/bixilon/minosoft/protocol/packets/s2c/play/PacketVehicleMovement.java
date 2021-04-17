@@ -24,7 +24,7 @@ public class PacketVehicleMovement extends PlayS2CPacket {
     private final float pitch;
 
     public PacketVehicleMovement(PlayInByteBuffer buffer) {
-        this.position = buffer.readEntityPosition();
+        this.position = buffer.readPosition();
         this.yaw = buffer.readFloat();
         this.pitch = buffer.readFloat();
     }

@@ -45,12 +45,12 @@ class PacketChunkData() : PlayS2CPacket() {
             isFullChunk = !buffer.readBoolean()
         }
         if (buffer.versionId < ProtocolVersions.V_14W26A) {
-            val sectionBitMask = BitSet.valueOf(buffer.readBytes(2))
-            val addBitMask = BitSet.valueOf(buffer.readBytes(2))
+            val sectionBitMask = BitSet.valueOf(buffer.readByteArray(2))
+            val addBitMask = BitSet.valueOf(buffer.readByteArray(2))
 
             // decompress chunk data
             val decompressed: PlayInByteBuffer = if (buffer.versionId < ProtocolVersions.V_14W28A) {
-                Util.decompress(buffer.readBytes(buffer.readInt()), buffer.connection)
+                Util.decompress(buffer.readByteArray(buffer.readInt()), buffer.connection)
             } else {
                 buffer
             }
@@ -68,10 +68,10 @@ class PacketChunkData() : PlayS2CPacket() {
         }
         val sectionBitMask: BitSet = when {
             buffer.versionId < ProtocolVersions.V_15W34C -> {
-                BitSet.valueOf(buffer.readBytes(2))
+                BitSet.valueOf(buffer.readByteArray(2))
             }
             buffer.versionId < ProtocolVersions.V_15W36D -> {
-                BitSet.valueOf(buffer.readBytes(4))
+                BitSet.valueOf(buffer.readByteArray(4))
             }
             buffer.versionId < ProtocolVersions.V_21W03A -> {
                 BitSet.valueOf(longArrayOf(buffer.readVarInt().toLong()))
@@ -87,7 +87,7 @@ class PacketChunkData() : PlayS2CPacket() {
             chunkData!!.biomeSource = SpatialBiomeArray(buffer.readBiomeArray())
         }
         val size = buffer.readVarInt()
-        val lastPos = buffer.position
+        val lastPos = buffer.pointer
         if (size > 0) {
             ChunkUtil.readChunkPacket(buffer, dimension, sectionBitMask, null, !isFullChunk, dimension.hasSkyLight)?.let {
                 chunkData!!.replace(it)
@@ -95,7 +95,7 @@ class PacketChunkData() : PlayS2CPacket() {
                 chunkData = null
             }
             // set position of the byte buffer, because of some reasons HyPixel makes some weird stuff and sends way to much 0 bytes. (~ 190k), thanks @pokechu22
-            buffer.position = size + lastPos
+            buffer.pointer = size + lastPos
         }
         if (buffer.versionId >= ProtocolVersions.V_1_9_4) {
             val blockEntitiesCount = buffer.readVarInt()

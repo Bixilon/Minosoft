@@ -47,7 +47,7 @@ public class PacketParticle extends PlayS2CPacket {
         if (buffer.getVersionId() < V_1_15_PRE4) {
             this.position = buffer.readFloatPosition();
         } else {
-            this.position = buffer.readEntityPosition();
+            this.position = buffer.readPosition();
         }
 
         // offset

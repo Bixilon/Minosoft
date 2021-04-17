@@ -23,8 +23,8 @@ import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W25B;
 
 public class PacketEntityRotation extends PlayS2CPacket {
     private final int entityId;
-    private final short yaw;
-    private final short pitch;
+    private final int yaw;
+    private final int pitch;
     private boolean onGround;
 
     public PacketEntityRotation(PlayInByteBuffer buffer) {
@@ -57,11 +57,11 @@ public class PacketEntityRotation extends PlayS2CPacket {
         return this.entityId;
     }
 
-    public short getYaw() {
+    public int getYaw() {
         return this.yaw;
     }
 
-    public short getPitch() {
+    public int getPitch() {
         return this.pitch;
     }
 }

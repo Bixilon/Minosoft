@@ -24,7 +24,7 @@ public class ByteArrayTag extends NBTTag {
     }
 
     public ByteArrayTag(InByteBuffer buffer) {
-        this.value = buffer.readBytes(new IntTag(buffer).getValue());
+        this.value = buffer.readByteArray(new IntTag(buffer).getValue());
     }
 
     @Override

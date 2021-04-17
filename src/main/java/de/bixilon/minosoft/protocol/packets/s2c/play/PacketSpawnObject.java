@@ -51,7 +51,7 @@ public class PacketSpawnObject extends PlayS2CPacket {
         if (buffer.getVersionId() < V_16W06A) {
             position = new Vec3(buffer.readFixedPointNumberInt(), buffer.readFixedPointNumberInt(), buffer.readFixedPointNumberInt());
         } else {
-            position = buffer.readEntityPosition();
+            position = buffer.readPosition();
         }
         EntityRotation rotation = new EntityRotation(buffer.readAngle(), buffer.readAngle(), 0);
         int data = buffer.readInt();
@@ -77,7 +77,7 @@ public class PacketSpawnObject extends PlayS2CPacket {
         connection.fireEvent(new EntitySpawnEvent(connection, this));
 
         connection.getWorld().addEntity(this.entityId, this.entityUUID, getEntity());
-        entity.setVelocity(velocity);
+        this.entity.setVelocity(this.velocity);
     }
 
     @Override

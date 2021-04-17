@@ -31,7 +31,7 @@ public class PacketBlockAction extends PlayS2CPacket {
     public PacketBlockAction(PlayInByteBuffer buffer) {
         // that's the only difference here
         if (buffer.getVersionId() < V_14W03B) {
-            this.position = buffer.readBlockPositionShort();
+            this.position = buffer.readShortBlockPosition();
         } else {
             this.position = buffer.readBlockPosition();
         }

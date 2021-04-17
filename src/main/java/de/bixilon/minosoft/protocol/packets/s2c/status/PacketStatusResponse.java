@@ -29,7 +29,7 @@ public class PacketStatusResponse extends StatusS2CPacket {
     private final ServerListPing response;
 
     public PacketStatusResponse(InByteBuffer buffer) {
-        this.response = new ServerListPing(null, buffer.readJSON());
+        this.response = new ServerListPing(null, buffer.readJson());
     }
 
     @Override
