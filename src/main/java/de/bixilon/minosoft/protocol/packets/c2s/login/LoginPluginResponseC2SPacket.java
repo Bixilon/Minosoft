@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.protocol.packets.c2s.login;
 
 import de.bixilon.minosoft.protocol.packets.c2s.PlayC2SPacket;
-import de.bixilon.minosoft.protocol.protocol.OutPlayByteBuffer;
+import de.bixilon.minosoft.protocol.protocol.PlayOutByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
 public class LoginPluginResponseC2SPacket implements PlayC2SPacket {
@@ -34,11 +34,11 @@ public class LoginPluginResponseC2SPacket implements PlayC2SPacket {
     }
 
     @Override
-    public void write(OutPlayByteBuffer buffer) {
+    public void write(PlayOutByteBuffer buffer) {
         buffer.writeVarInt(this.messageId);
         buffer.writeBoolean(this.successful);
         if (this.successful) {
-            buffer.writeBytes(this.data);
+            buffer.writeByteArray(this.data);
         }
     }
 

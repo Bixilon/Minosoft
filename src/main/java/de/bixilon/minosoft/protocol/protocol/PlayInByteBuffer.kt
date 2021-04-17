@@ -174,7 +174,9 @@ class PlayInByteBuffer : InByteBuffer {
                     readVarInt()
                 }
                 val type = connection.mapping.entityMetaDataDataDataTypesRegistry.get(id) ?: error("Can not get meta data index for id $id")
-                sets[index] = metaData.getData(type, this)!!
+                metaData.getData(type, this)?.let {
+                    sets[index] = it
+                }
                 index = readUnsignedByte()
             }
         }

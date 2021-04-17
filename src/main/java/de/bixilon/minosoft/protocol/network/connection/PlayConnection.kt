@@ -116,7 +116,7 @@ class PlayConnection(
                     }
                     velocityHandlerLastExecutionTime = System.currentTimeMillis()
                     velocityHandlerTask = TimeWorkerTask(ProtocolDefinition.TICK_TIME / 4) {
-                        val currentTime = System.currentTimeMillis();
+                        val currentTime = System.currentTimeMillis()
                         val deltaTime = currentTime - velocityHandlerLastExecutionTime
                         for (entity in world.entityIdMap.values) {
                             entity.computeTimeStep(deltaTime)
@@ -175,7 +175,17 @@ class PlayConnection(
     }
 
     override fun getPacketById(packetId: Int): PacketTypes.S2C {
-        return version.getPacketById(connectionState, packetId) ?: Protocol.getPacketById(connectionState, packetId) ?: error("Can not find packet $packetId in $connectionState for $version")
+        return version.getPacketById(connectionState, packetId) ?: Protocol.getPacketById(connectionState, packetId) ?: let {
+            // wtf, notchain sends play disconnect packet in login state...
+            if (connectionState != ConnectionStates.LOGIN) {
+                return@let null
+            }
+            val playPacket = version.getPacketById(ConnectionStates.PLAY, packetId)
+            if (playPacket == PacketTypes.S2C.PLAY_DISCONNECT) {
+                return@let playPacket
+            }
+            null
+        } ?: error("Can not find packet $packetId in $connectionState for $version")
     }
 
     override fun handlePacket(packet: S2CPacket) {

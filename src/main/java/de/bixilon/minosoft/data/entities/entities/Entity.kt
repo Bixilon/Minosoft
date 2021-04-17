@@ -225,7 +225,7 @@ abstract class Entity(
             if (delta.y != deltaPosition.y) {
                 velocity?.y = 0.0f
                 if (deltaPosition.y < 0) {
-                    onGround = true;
+                    onGround = true
                 }
             }
         }
@@ -255,26 +255,28 @@ abstract class Entity(
 
     fun computeTimeStep(deltaMillis: Long) {
         val deltaTime = deltaMillis.toFloat() / 1000.0f
-        if (! hasNoGravity) {
+        if (!hasNoGravity) {
             if (velocity == null) {
                 velocity = Vec3(0, deltaTime * ProtocolDefinition.GRAVITY, 0)
             } else {
-                velocity!!.y += deltaTime * ProtocolDefinition.GRAVITY;
+                velocity!!.y += deltaTime * ProtocolDefinition.GRAVITY
             }
-        }
-        if (velocity == VecUtil.EMPTY_VEC3) {
-            velocity = null
         }
         if (velocity == null) {
             return
         }
-        velocity?.timesAssign(0.25f.pow(deltaTime))
-        if (velocity?.length()!! < 0.05f) {
+        if (velocity == VecUtil.EMPTY_VEC3) {
             velocity = null
-            return
+        }
+        velocity?.timesAssign(0.25f.pow(deltaTime))
+        velocity?.let {
+            if (it.length() < 0.05f) {
+                velocity = null
+                return
+            }
         }
         velocity?.let {
-            move(velocity!! * deltaTime)
+            move(it * deltaTime)
         }
     }
 

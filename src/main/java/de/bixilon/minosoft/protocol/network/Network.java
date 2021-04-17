@@ -121,7 +121,7 @@ public abstract class Network {
     protected byte[] prepareC2SPacket(C2SPacket packet) {
         byte[] data;
         if (packet instanceof PlayC2SPacket) {
-            var buffer = new OutPlayByteBuffer((PlayConnection) this.connection);
+            var buffer = new PlayOutByteBuffer((PlayConnection) this.connection);
             ((PlayC2SPacket) packet).write(buffer);
             data = buffer.toByteArray();
         } else if (packet instanceof AllC2SPacket) {
@@ -134,7 +134,7 @@ public abstract class Network {
 
         OutByteBuffer outByteBuffer = new OutByteBuffer();
         outByteBuffer.writeVarInt(this.connection.getPacketId(PacketTypes.C2S.Companion.getPacketType(packet.getClass())));
-        outByteBuffer.writeBytes(data);
+        outByteBuffer.writeUnprefixedByteArray(data);
 
         data = outByteBuffer.toByteArray();
 
@@ -148,20 +148,20 @@ public abstract class Network {
                 OutByteBuffer lengthPrefixedBuffer = new OutByteBuffer(this.connection);
                 byte[] compressed = Util.compress(data);
                 lengthPrefixedBuffer.writeVarInt(data.length); // uncompressed length
-                lengthPrefixedBuffer.writeBytes(compressed);
+                lengthPrefixedBuffer.writeUnprefixedByteArray(compressed);
                 outRawBuffer.prefixVarInt(lengthPrefixedBuffer.toByteArray().length); // length of total data is uncompressed length + compressed data
-                outRawBuffer.writeBytes(lengthPrefixedBuffer.toByteArray()); // write all bytes
+                outRawBuffer.writeUnprefixedByteArray(lengthPrefixedBuffer.toByteArray()); // write all bytes
             } else {
                 outRawBuffer.writeVarInt(data.length + 1); // 1 for the compressed length (0)
                 outRawBuffer.writeVarInt(0); // data is uncompressed, compressed size is 0
-                outRawBuffer.writeBytes(data);
+                outRawBuffer.writeUnprefixedByteArray(data);
             }
             data = outRawBuffer.toByteArray();
         } else {
             // append packet length
             OutByteBuffer bufferWithLengthPrefix = new OutByteBuffer(this.connection);
             bufferWithLengthPrefix.writeVarInt(data.length);
-            bufferWithLengthPrefix.writeBytes(data);
+            bufferWithLengthPrefix.writeUnprefixedByteArray(data);
             data = bufferWithLengthPrefix.toByteArray();
         }
         return data;

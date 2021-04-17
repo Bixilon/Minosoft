@@ -15,7 +15,7 @@ package de.bixilon.minosoft.protocol.packets.c2s.play
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.c2s.PlayC2SPacket
-import de.bixilon.minosoft.protocol.protocol.OutPlayByteBuffer
+import de.bixilon.minosoft.protocol.protocol.PlayOutByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.enum.ValuesEnum
@@ -28,7 +28,7 @@ class EntityActionC2SPacket(
 ) : PlayC2SPacket {
     constructor(entity: Entity, connection: PlayConnection, action: EntityActions, parameter: Int = 0) : this(connection.world.entityIdMap.inverse()[entity]!!, action, parameter)
 
-    override fun write(buffer: OutPlayByteBuffer) {
+    override fun write(buffer: PlayOutByteBuffer) {
         buffer.writeEntityId(entityId)
         buffer.writeVarInt(buffer.connection.mapping.entityActionsRegistry.getId(action))
 

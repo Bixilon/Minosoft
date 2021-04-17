@@ -15,7 +15,7 @@ package de.bixilon.minosoft.protocol.packets.c2s.login;
 
 import de.bixilon.minosoft.data.player.Player;
 import de.bixilon.minosoft.protocol.packets.c2s.PlayC2SPacket;
-import de.bixilon.minosoft.protocol.protocol.OutPlayByteBuffer;
+import de.bixilon.minosoft.protocol.protocol.PlayOutByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
 public class LoginStartC2SPacket implements PlayC2SPacket {
@@ -30,7 +30,7 @@ public class LoginStartC2SPacket implements PlayC2SPacket {
     }
 
     @Override
-    public void write(OutPlayByteBuffer buffer) {
+    public void write(PlayOutByteBuffer buffer) {
         buffer.writeString(this.username);
     }
 

@@ -35,7 +35,7 @@ public class ByteArrayTag extends NBTTag {
     @Override
     public void writeBytes(OutByteBuffer buffer) {
         new IntTag(this.value.length).writeBytes(buffer);
-        buffer.writeBytes(this.value);
+        buffer.writeUnprefixedByteArray(this.value);
     }
 
     public byte[] getValue() {

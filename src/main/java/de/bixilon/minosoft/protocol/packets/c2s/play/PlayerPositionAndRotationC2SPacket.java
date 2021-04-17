@@ -15,7 +15,7 @@ package de.bixilon.minosoft.protocol.packets.c2s.play;
 
 import de.bixilon.minosoft.data.entities.EntityRotation;
 import de.bixilon.minosoft.protocol.packets.c2s.PlayC2SPacket;
-import de.bixilon.minosoft.protocol.protocol.OutPlayByteBuffer;
+import de.bixilon.minosoft.protocol.protocol.PlayOutByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 import glm_.vec3.Vec3;
 
@@ -33,7 +33,7 @@ public class PlayerPositionAndRotationC2SPacket implements PlayC2SPacket {
     }
 
     @Override
-    public void write(OutPlayByteBuffer buffer) {
+    public void write(PlayOutByteBuffer buffer) {
         buffer.writeDouble(this.position.getX());
         buffer.writeDouble(this.position.getY());
         if (buffer.getVersionId() < V_14W06B) {

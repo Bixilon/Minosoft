@@ -35,7 +35,7 @@ public class LongArrayTag extends NBTTag {
     @Override
     public void writeBytes(OutByteBuffer buffer) {
         new IntTag(this.value.length).writeBytes(buffer);
-        buffer.writeLongs(this.value);
+        buffer.writeLongArray(this.value);
     }
 
     public long[] getValue() {

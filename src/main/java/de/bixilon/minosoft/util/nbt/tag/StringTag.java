@@ -35,7 +35,7 @@ public class StringTag extends NBTTag {
     @Override
     public void writeBytes(OutByteBuffer buffer) {
         buffer.writeShort((short) this.value.length());
-        buffer.writeStringNoLength(this.value);
+        buffer.writeUnprefixedString(this.value);
     }
 
     public String getValue() {

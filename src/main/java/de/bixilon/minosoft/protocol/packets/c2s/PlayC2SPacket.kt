@@ -12,10 +12,10 @@
  */
 package de.bixilon.minosoft.protocol.packets.c2s
 
-import de.bixilon.minosoft.protocol.protocol.OutPlayByteBuffer
+import de.bixilon.minosoft.protocol.protocol.PlayOutByteBuffer
 
 // packet to send to server
 interface PlayC2SPacket : C2SPacket {
 
-    fun write(buffer: OutPlayByteBuffer) {}
+    fun write(buffer: PlayOutByteBuffer) {}
 }

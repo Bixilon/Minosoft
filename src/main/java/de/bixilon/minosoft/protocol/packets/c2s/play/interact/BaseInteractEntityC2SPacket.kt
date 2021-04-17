@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.protocol.packets.c2s.play.interact
 
 import de.bixilon.minosoft.protocol.packets.c2s.PlayC2SPacket
-import de.bixilon.minosoft.protocol.protocol.OutPlayByteBuffer
+import de.bixilon.minosoft.protocol.protocol.PlayOutByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 
 abstract class BaseInteractEntityC2SPacket(
@@ -23,7 +23,7 @@ abstract class BaseInteractEntityC2SPacket(
 ) : PlayC2SPacket {
     abstract val sneaking: Boolean
 
-    override fun write(buffer: OutPlayByteBuffer) {
+    override fun write(buffer: PlayOutByteBuffer) {
         buffer.writeVarInt(entityId)
 
         val realAction = if (buffer.versionId < ProtocolVersions.V_14W32A && this.action == EntityInteractionActions.INTERACT_AT) {

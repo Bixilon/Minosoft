@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.protocol.packets.c2s.play;
 
 import de.bixilon.minosoft.protocol.packets.c2s.PlayC2SPacket;
-import de.bixilon.minosoft.protocol.protocol.OutPlayByteBuffer;
+import de.bixilon.minosoft.protocol.protocol.PlayOutByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 import glm_.vec3.Vec3i;
 
@@ -33,7 +33,7 @@ public class PlayerDiggingC2SPacket implements PlayC2SPacket {
     }
 
     @Override
-    public void write(OutPlayByteBuffer buffer) {
+    public void write(PlayOutByteBuffer buffer) {
         if (buffer.getVersionId() < V_15W31A) { // ToDo
             buffer.writeByte((byte) this.status.ordinal());
         } else {
@@ -46,7 +46,7 @@ public class PlayerDiggingC2SPacket implements PlayC2SPacket {
                 buffer.writeByte((byte) 0);
                 buffer.writeInt(0);
             } else {
-                buffer.writeVec3iByte(this.position);
+                buffer.writeByteBlockPosition(this.position);
             }
         } else {
             buffer.writePosition(this.position);

@@ -15,7 +15,7 @@ package de.bixilon.minosoft.protocol.packets.c2s.play.interact
 
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import de.bixilon.minosoft.protocol.protocol.OutPlayByteBuffer
+import de.bixilon.minosoft.protocol.protocol.PlayOutByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.util.logging.Log
 
@@ -26,7 +26,7 @@ class AttackEntityC2SPacket(
 
     constructor(connection: PlayConnection, entity: Entity, sneaking: Boolean) : this(connection.world.entityIdMap.inverse()[entity]!!, sneaking)
 
-    override fun write(buffer: OutPlayByteBuffer) {
+    override fun write(buffer: PlayOutByteBuffer) {
         super.write(buffer)
 
         if (buffer.versionId >= ProtocolVersions.V_1_16_PRE5) {

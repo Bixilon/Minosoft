@@ -16,7 +16,6 @@ import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
-import java.util.*
 
 open class MinecraftLanguage : Translator {
     val language: String
@@ -25,7 +24,7 @@ open class MinecraftLanguage : Translator {
     constructor(language: String, json: JsonObject) {
         this.language = language
         for ((key, value) in json.entrySet()) {
-            data[key.toLowerCase(Locale.ROOT)] = value.asString
+            data[key] = value.asString
         }
     }
 
@@ -36,7 +35,7 @@ open class MinecraftLanguage : Translator {
                 continue
             }
             val splitLine = line.split("=", limit = 2).toTypedArray()
-            this.data[splitLine[0].toLowerCase(Locale.ROOT)] = splitLine[1]
+            this.data[splitLine[0]] = splitLine[1]
         }
     }
 

@@ -13,12 +13,12 @@
 package de.bixilon.minosoft.protocol.packets.c2s.play
 
 import de.bixilon.minosoft.protocol.packets.c2s.PlayC2SPacket
-import de.bixilon.minosoft.protocol.protocol.OutPlayByteBuffer
+import de.bixilon.minosoft.protocol.protocol.PlayOutByteBuffer
 import de.bixilon.minosoft.util.logging.Log
 
 class HeldItemChangeC2SPacket(val slot: Int) : PlayC2SPacket {
 
-    override fun write(buffer: OutPlayByteBuffer) {
+    override fun write(buffer: PlayOutByteBuffer) {
         buffer.writeShort(slot.toShort())
     }
 
