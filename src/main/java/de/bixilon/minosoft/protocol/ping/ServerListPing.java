@@ -45,7 +45,7 @@ public class ServerListPing {
             this.favicon = Base64.getDecoder().decode(json.get("favicon").getAsString().replace("data:image/png;base64,", "").replace("\n", ""));
         }
 
-        this.motd = ChatComponent.Companion.valueOf(localeManager, null, json.get("description"));
+        this.motd = ChatComponent.Companion.valueOf(localeManager, json.get("description"));
         this.serverBrand = json.getAsJsonObject("version").get("name").getAsString();
 
         if (json.has("modinfo") && json.getAsJsonObject("modinfo").has("type") && json.getAsJsonObject("modinfo").get("type").getAsString().equals("FML")) {

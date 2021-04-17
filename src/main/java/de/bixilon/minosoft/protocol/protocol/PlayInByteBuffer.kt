@@ -186,11 +186,7 @@ class PlayInByteBuffer : InByteBuffer {
         return Ingredient(readItemStackArray())
     }
 
-    @Deprecated(message = "Legacy only", replaceWith = ReplaceWith("readIngredientArray(readVarInt())"))
-    fun readIngredientArray(): Array<Ingredient> {
-        return readIngredientArray(readVarInt())
-    }
-
+    @JvmOverloads
     fun readIngredientArray(length: Int = readVarInt()): Array<Ingredient> {
         return readArray(length) { readIngredient() }
     }

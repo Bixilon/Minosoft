@@ -109,8 +109,8 @@ public class Log {
         builder.append(level.name());
         builder.append("] ");
         builder.append(prefix);
-        var component = (BaseComponent) ChatComponent.Companion.valueOf(null, null, builder.toString());
-        var messageComponent = (BaseComponent) ChatComponent.Companion.valueOf(null, null, message);
+        var component = (BaseComponent) ChatComponent.Companion.valueOf(builder.toString());
+        var messageComponent = (BaseComponent) ChatComponent.Companion.valueOf(message);
         if (color != null && StaticConfiguration.COLORED_LOG) {
             messageComponent.applyDefaultColor(color);
         }

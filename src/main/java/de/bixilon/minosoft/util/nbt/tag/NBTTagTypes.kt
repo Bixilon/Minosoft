@@ -28,7 +28,8 @@ enum class NBTTagTypes {
     LIST,
     COMPOUND,
     INT_ARRAY,
-    LONG_ARRAY;
+    LONG_ARRAY,
+    ;
 
     companion object : ValuesEnum<NBTTagTypes> {
         override val VALUES: Array<NBTTagTypes> = values()
