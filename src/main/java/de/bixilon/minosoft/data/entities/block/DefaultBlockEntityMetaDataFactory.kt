@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.data.entities.block
 
+import de.bixilon.minosoft.data.entities.block.container.*
+import de.bixilon.minosoft.data.entities.block.container.storage.*
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 

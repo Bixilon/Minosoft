@@ -11,18 +11,9 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.entities.block
+package de.bixilon.minosoft.data.entities.block.container.storage
 
-import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.data.entities.block.container.ContainerBlockEntity
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 
-class BrewingStandBlockEntity(connection: PlayConnection) : BlockEntity(connection) {
-
-    companion object : BlockEntityFactory<BrewingStandBlockEntity> {
-        override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("minecraft:brewing_stand")
-
-        override fun build(connection: PlayConnection): BrewingStandBlockEntity {
-            return BrewingStandBlockEntity(connection)
-        }
-    }
-}
+abstract class StorageBlockEntity(connection: PlayConnection) : ContainerBlockEntity(connection)

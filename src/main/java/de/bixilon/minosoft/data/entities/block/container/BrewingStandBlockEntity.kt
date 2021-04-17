@@ -11,18 +11,19 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.entities.block
+package de.bixilon.minosoft.data.entities.block.container
 
+import de.bixilon.minosoft.data.entities.block.BlockEntityFactory
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 
-class SmokerBlockEntity(connection: PlayConnection) : BlockEntity(connection) {
+class BrewingStandBlockEntity(connection: PlayConnection) : ContainerBlockEntity(connection) {
 
-    companion object : BlockEntityFactory<SmokerBlockEntity> {
-        override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("minecraft:smoker")
+    companion object : BlockEntityFactory<BrewingStandBlockEntity> {
+        override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("minecraft:brewing_stand")
 
-        override fun build(connection: PlayConnection): SmokerBlockEntity {
-            return SmokerBlockEntity(connection)
+        override fun build(connection: PlayConnection): BrewingStandBlockEntity {
+            return BrewingStandBlockEntity(connection)
         }
     }
 }

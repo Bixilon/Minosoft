@@ -11,18 +11,19 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.entities.block
+package de.bixilon.minosoft.data.entities.block.container.storage
 
+import de.bixilon.minosoft.data.entities.block.BlockEntityFactory
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 
-class TrappedChestBlockEntity(connection: PlayConnection) : BlockEntity(connection) {
+class ShulkerBoxBlockEntity(connection: PlayConnection) : StorageBlockEntity(connection) {
 
-    companion object : BlockEntityFactory<TrappedChestBlockEntity> {
-        override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("minecraft:trapped_chest")
+    companion object : BlockEntityFactory<ShulkerBoxBlockEntity> {
+        override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("minecraft:shulker_box")
 
-        override fun build(connection: PlayConnection): TrappedChestBlockEntity {
-            return TrappedChestBlockEntity(connection)
+        override fun build(connection: PlayConnection): ShulkerBoxBlockEntity {
+            return ShulkerBoxBlockEntity(connection)
         }
     }
 }

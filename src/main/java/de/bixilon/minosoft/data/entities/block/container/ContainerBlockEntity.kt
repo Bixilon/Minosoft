@@ -11,18 +11,9 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.entities.block
+package de.bixilon.minosoft.data.entities.block.container
 
-import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 
-class DispenserBlockEntity(connection: PlayConnection) : BlockEntity(connection) {
-
-    companion object : BlockEntityFactory<DispenserBlockEntity> {
-        override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("minecraft:dispenser")
-
-        override fun build(connection: PlayConnection): DispenserBlockEntity {
-            return DispenserBlockEntity(connection)
-        }
-    }
-}
+abstract class ContainerBlockEntity(connection: PlayConnection) : BlockEntity(connection)

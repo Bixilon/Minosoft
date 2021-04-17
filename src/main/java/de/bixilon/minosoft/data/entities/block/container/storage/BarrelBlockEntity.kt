@@ -11,18 +11,19 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.entities.block
+package de.bixilon.minosoft.data.entities.block.container.storage
 
+import de.bixilon.minosoft.data.entities.block.BlockEntityFactory
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 
-class FurnaceBlockEntity(connection: PlayConnection) : BlockEntity(connection) {
+class BarrelBlockEntity(connection: PlayConnection) : StorageBlockEntity(connection) {
 
-    companion object : BlockEntityFactory<FurnaceBlockEntity> {
-        override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("minecraft:furnace")
+    companion object : BlockEntityFactory<BarrelBlockEntity> {
+        override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("minecraft:barrel")
 
-        override fun build(connection: PlayConnection): FurnaceBlockEntity {
-            return FurnaceBlockEntity(connection)
+        override fun build(connection: PlayConnection): BarrelBlockEntity {
+            return BarrelBlockEntity(connection)
         }
     }
 }
