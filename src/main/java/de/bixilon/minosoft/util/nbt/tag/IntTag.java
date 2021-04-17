@@ -28,8 +28,8 @@ public class IntTag extends NumberTag {
     }
 
     @Override
-    public TagTypes getType() {
-        return TagTypes.INT;
+    public NBTTagTypes getType() {
+        return NBTTagTypes.INT;
     }
 
     @Override

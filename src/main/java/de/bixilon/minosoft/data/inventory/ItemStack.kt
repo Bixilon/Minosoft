@@ -153,7 +153,7 @@ class ItemStack(
             nbt.writeTag(HIDE_FLAGS_TAG, IntTag(hideFlags))
         }
         if (enchantments.isNotEmpty()) {
-            val enchantmentList = ListTag(TagTypes.COMPOUND, arrayListOf())
+            val enchantmentList = ListTag(NBTTagTypes.COMPOUND, arrayListOf())
             for ((enchantment, level) in enchantments) {
                 val enchantmentTag = CompoundTag()
                 if (version!!.isFlattened()) {

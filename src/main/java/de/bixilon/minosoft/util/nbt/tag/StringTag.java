@@ -28,8 +28,8 @@ public class StringTag extends NBTTag {
     }
 
     @Override
-    public TagTypes getType() {
-        return TagTypes.STRING;
+    public NBTTagTypes getType() {
+        return NBTTagTypes.STRING;
     }
 
     @Override

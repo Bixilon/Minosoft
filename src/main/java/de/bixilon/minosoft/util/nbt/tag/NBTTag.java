@@ -18,7 +18,7 @@ import de.bixilon.minosoft.protocol.protocol.OutByteBuffer;
 public abstract class NBTTag {
     boolean isFinal;
 
-    abstract TagTypes getType();
+    abstract NBTTagTypes getType();
 
     abstract void writeBytes(OutByteBuffer buffer);
 

@@ -28,8 +28,8 @@ public class FloatTag extends NBTTag {
     }
 
     @Override
-    public TagTypes getType() {
-        return TagTypes.FLOAT;
+    public NBTTagTypes getType() {
+        return NBTTagTypes.FLOAT;
     }
 
     @Override

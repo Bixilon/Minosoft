@@ -28,8 +28,8 @@ public class ShortTag extends NumberTag {
     }
 
     @Override
-    public TagTypes getType() {
-        return TagTypes.SHORT;
+    public NBTTagTypes getType() {
+        return NBTTagTypes.SHORT;
     }
 
     @Override

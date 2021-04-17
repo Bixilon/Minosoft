@@ -28,8 +28,8 @@ public class LongTag extends NumberTag {
     }
 
     @Override
-    public TagTypes getType() {
-        return TagTypes.LONG;
+    public NBTTagTypes getType() {
+        return NBTTagTypes.LONG;
     }
 
     @Override

@@ -12,7 +12,6 @@
  */
 package de.bixilon.minosoft.data.inventory
 
-import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.enum.AliasableEnum
 import de.bixilon.minosoft.util.enum.ValuesEnum
 
@@ -31,7 +30,6 @@ class InventorySlots {
 
         companion object : ValuesEnum<EquipmentSlots> {
             override val VALUES = values()
-            override val NAME_MAP: Map<String, EquipmentSlots> = KUtil.getEnumValues(VALUES)
         }
     }
 }

@@ -28,8 +28,8 @@ public class LongArrayTag extends NBTTag {
     }
 
     @Override
-    public TagTypes getType() {
-        return TagTypes.LONG_ARRAY;
+    public NBTTagTypes getType() {
+        return NBTTagTypes.LONG_ARRAY;
     }
 
     @Override

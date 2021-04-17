@@ -28,8 +28,8 @@ public class DoubleTag extends NBTTag {
     }
 
     @Override
-    public TagTypes getType() {
-        return TagTypes.DOUBLE;
+    public NBTTagTypes getType() {
+        return NBTTagTypes.DOUBLE;
     }
 
     @Override

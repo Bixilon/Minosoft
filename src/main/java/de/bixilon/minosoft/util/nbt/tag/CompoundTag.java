@@ -46,8 +46,8 @@ public class CompoundTag extends NBTTag {
         this.data = new HashMap<>();
         while (true) {
             byte tag = buffer.readByte();
-            TagTypes tagType = TagTypes.byId(tag);
-            if (tagType == TagTypes.END) {
+            NBTTagTypes tagType = NBTTagTypes.Companion.getVALUES()[tag];
+            if (tagType == NBTTagTypes.END) {
                 // end tag
                 break;
             }
@@ -62,13 +62,13 @@ public class CompoundTag extends NBTTag {
     }
 
     @Override
-    public TagTypes getType() {
-        return TagTypes.COMPOUND;
+    public NBTTagTypes getType() {
+        return NBTTagTypes.COMPOUND;
     }
 
     @Override
     public void writeBytes(OutByteBuffer buffer) {
-        buffer.writeByte((byte) TagTypes.COMPOUND.ordinal());
+        buffer.writeByte((byte) NBTTagTypes.COMPOUND.ordinal());
         buffer.writeShort((short) this.name.length());
         buffer.writeStringNoLength(this.name);
         // now with prefixed name, etc it is technically the same as a subtag

@@ -14,15 +14,15 @@
 package de.bixilon.minosoft.data.mappings.blocks.properties
 
 import de.bixilon.minosoft.data.mappings.blocks.properties.serializer.BlockPropertiesSerializer
-import de.bixilon.minosoft.util.KUtil
+import de.bixilon.minosoft.util.enum.ValuesEnum
 
 enum class Sides {
     LEFT,
     RIGHT,
     ;
 
-    companion object : BlockPropertiesSerializer {
-        private val NAME_MAP: Map<String, Sides> = KUtil.getEnumValues(values())
+    companion object : BlockPropertiesSerializer, ValuesEnum<Sides> {
+        override val VALUES = values()
 
         override fun serialize(value: Any): Sides {
             return NAME_MAP[value] ?: throw IllegalArgumentException("No such property: $value")

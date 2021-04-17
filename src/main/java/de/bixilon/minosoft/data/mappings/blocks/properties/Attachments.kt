@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.data.mappings.blocks.properties
 
 import de.bixilon.minosoft.data.mappings.blocks.properties.serializer.BlockPropertiesSerializer
-import de.bixilon.minosoft.util.KUtil
+import de.bixilon.minosoft.util.enum.ValuesEnum
 
 enum class Attachments {
     FLOOR,
@@ -24,11 +24,12 @@ enum class Attachments {
     DOUBLE_WALL,
     ;
 
-    companion object : BlockPropertiesSerializer {
-        private val NAME_MAP: Map<String, Attachments> = KUtil.getEnumValues(values())
+    companion object : BlockPropertiesSerializer, ValuesEnum<Attachments> {
+        override val VALUES: Array<Attachments> = values()
 
         override fun serialize(value: Any): Attachments {
             return NAME_MAP[value] ?: throw IllegalArgumentException("No such property: $value")
         }
+
     }
 }

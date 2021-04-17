@@ -14,7 +14,6 @@ package de.bixilon.minosoft.protocol.packets.s2c.play
 
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
-import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.enum.ValuesEnum
 import de.bixilon.minosoft.util.logging.Log
 
@@ -43,7 +42,6 @@ class PacketEntityAnimation(buffer: PlayInByteBuffer) : PlayS2CPacket() {
 
         companion object : ValuesEnum<EntityAnimations> {
             override val VALUES = values()
-            override val NAME_MAP = KUtil.getEnumValues(VALUES)
         }
     }
 }

@@ -10,10 +10,11 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.util.nbt.tag
 
-package de.bixilon.minosoft.util.nbt.tag;
+import de.bixilon.minosoft.util.enum.ValuesEnum
 
-public enum TagTypes {
+enum class NBTTagTypes {
     END,
     BYTE,
     SHORT,
@@ -28,9 +29,7 @@ public enum TagTypes {
     INT_ARRAY,
     LONG_ARRAY;
 
-    private static final TagTypes[] TAG_TYPES = values();
-
-    public static TagTypes byId(int id) {
-        return TAG_TYPES[id];
+    companion object : ValuesEnum<NBTTagTypes> {
+        override val VALUES: Array<NBTTagTypes> = values()
     }
 }

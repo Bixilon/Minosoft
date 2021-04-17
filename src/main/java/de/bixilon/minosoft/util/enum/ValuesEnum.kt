@@ -13,7 +13,10 @@
 
 package de.bixilon.minosoft.util.enum
 
-interface ValuesEnum<T> {
+import de.bixilon.minosoft.util.KUtil
+
+interface ValuesEnum<T : Enum<*>> {
     val VALUES: Array<T>
     val NAME_MAP: Map<String, T>
+        get() = KUtil.getEnumValues(VALUES)
 }

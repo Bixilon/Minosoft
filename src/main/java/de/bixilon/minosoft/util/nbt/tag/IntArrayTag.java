@@ -30,8 +30,8 @@ public class IntArrayTag extends NBTTag {
     }
 
     @Override
-    public TagTypes getType() {
-        return TagTypes.INT_ARRAY;
+    public NBTTagTypes getType() {
+        return NBTTagTypes.INT_ARRAY;
     }
 
     @Override

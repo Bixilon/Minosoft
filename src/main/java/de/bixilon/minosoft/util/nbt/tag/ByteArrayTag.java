@@ -28,8 +28,8 @@ public class ByteArrayTag extends NBTTag {
     }
 
     @Override
-    public TagTypes getType() {
-        return TagTypes.BYTE_ARRAY;
+    public NBTTagTypes getType() {
+        return NBTTagTypes.BYTE_ARRAY;
     }
 
     @Override

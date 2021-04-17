@@ -32,8 +32,8 @@ public class ByteTag extends NumberTag {
     }
 
     @Override
-    public TagTypes getType() {
-        return TagTypes.BYTE;
+    public NBTTagTypes getType() {
+        return NBTTagTypes.BYTE;
     }
 
     @Override

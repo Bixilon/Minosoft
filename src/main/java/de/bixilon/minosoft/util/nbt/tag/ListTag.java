@@ -21,14 +21,14 @@ import java.util.Arrays;
 
 public class ListTag extends NBTTag {
     private final ArrayList<NBTTag> list;
-    private TagTypes type;
+    private NBTTagTypes type;
 
-    public ListTag(TagTypes type, ArrayList<NBTTag> list) {
+    public ListTag(NBTTagTypes type, ArrayList<NBTTag> list) {
         this.type = type;
         this.list = list;
     }
 
-    public ListTag(TagTypes type, NBTTag... list) {
+    public ListTag(NBTTagTypes type, NBTTag... list) {
         this.type = type;
         this.list = new ArrayList<>(Arrays.asList(list));
     }
@@ -40,7 +40,7 @@ public class ListTag extends NBTTag {
     }
 
     public ListTag(InByteBuffer buffer) {
-        this.type = TagTypes.byId(new ByteTag(buffer).getValue());
+        this.type = NBTTagTypes.Companion.getVALUES()[new ByteTag(buffer).getValue()];
         int length = new IntTag(buffer).getValue();
         this.list = new ArrayList<>();
         for (int i = 0; i < length; i++) {
@@ -61,14 +61,14 @@ public class ListTag extends NBTTag {
     }
 
     @Override
-    public TagTypes getType() {
-        return TagTypes.LIST;
+    public NBTTagTypes getType() {
+        return NBTTagTypes.LIST;
     }
 
     @Override
     public void writeBytes(OutByteBuffer buffer) {
         if (this.type == null) {
-            this.type = TagTypes.BYTE; // idk, default value?
+            this.type = NBTTagTypes.BYTE; // idk, default value?
         }
         new ByteTag((byte) this.type.ordinal()).writeBytes(buffer);
 

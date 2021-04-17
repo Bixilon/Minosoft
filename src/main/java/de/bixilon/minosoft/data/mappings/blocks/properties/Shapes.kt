@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.data.mappings.blocks.properties
 
 import de.bixilon.minosoft.data.mappings.blocks.properties.serializer.BlockPropertiesSerializer
-import de.bixilon.minosoft.util.KUtil
+import de.bixilon.minosoft.util.enum.ValuesEnum
 
 enum class Shapes {
     STRAIGHT,
@@ -34,8 +34,8 @@ enum class Shapes {
     ASCENDING_SOUTH,
     ;
 
-    companion object : BlockPropertiesSerializer {
-        private val NAME_MAP: Map<String, Shapes> = KUtil.getEnumValues(values())
+    companion object : BlockPropertiesSerializer, ValuesEnum<Shapes> {
+        override val VALUES = values()
 
         override fun serialize(value: Any): Shapes {
             return NAME_MAP[value] ?: throw IllegalArgumentException("No such property: $value")

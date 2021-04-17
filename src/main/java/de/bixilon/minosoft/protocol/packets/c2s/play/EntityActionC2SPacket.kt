@@ -17,7 +17,6 @@ import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.c2s.PlayC2SPacket
 import de.bixilon.minosoft.protocol.protocol.OutPlayByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
-import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.enum.ValuesEnum
 import de.bixilon.minosoft.util.logging.Log
 
@@ -57,7 +56,6 @@ class EntityActionC2SPacket(
 
         companion object : ValuesEnum<EntityActions> {
             override val VALUES = values()
-            override val NAME_MAP = KUtil.getEnumValues(VALUES)
         }
     }
 }

@@ -210,15 +210,15 @@ public class InByteBuffer {
                 throw new IllegalArgumentException("Bad nbt");
             }
         }
-        TagTypes type = TagTypes.byId(readUnsignedByte());
-        if (type == TagTypes.COMPOUND) {
+        NBTTagTypes type = NBTTagTypes.byId(readUnsignedByte());
+        if (type == NBTTagTypes.COMPOUND) {
             // shouldn't be a subtag
             return new CompoundTag(false, this);
         }
         return readNBT(type);
     }
 
-    public NBTTag readNBT(TagTypes tagType) {
+    public NBTTag readNBT(NBTTagTypes tagType) {
         return switch (tagType) {
             case END -> null;
             case BYTE -> new ByteTag(this);

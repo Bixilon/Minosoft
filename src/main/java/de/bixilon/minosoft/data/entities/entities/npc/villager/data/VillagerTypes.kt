@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.data.entities.entities.npc.villager.data
 
-import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.enum.ValuesEnum
 
 enum class VillagerTypes {
@@ -28,6 +27,5 @@ enum class VillagerTypes {
 
     companion object : ValuesEnum<VillagerTypes> {
         override val VALUES = values()
-        override val NAME_MAP = KUtil.getEnumValues(VALUES)
     }
 }
