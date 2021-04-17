@@ -13,12 +13,21 @@
 
 package de.bixilon.minosoft.data.entities.block
 
+import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.util.nbt.tag.CompoundTag
 
-abstract class BlockEntity(
-    val connection: PlayConnection,
-) {
+class BeaconBlockEntity(connection: PlayConnection) : BlockEntity(connection) {
 
-    open fun updateNBT(nbt: CompoundTag) {}
+    override fun updateNBT(nbt: CompoundTag) {
+        // ToDO: {Secondary: -1, Paper.Range: -1.0D, Primary: -1, x: -90, y: 4, Levels: 0, z: 212, id: "minecraft:beacon"}
+    }
+
+    companion object : BlockEntityFactory<BeaconBlockEntity> {
+        override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("minecraft:beacon")
+
+        override fun build(connection: PlayConnection): BeaconBlockEntity {
+            return BeaconBlockEntity(connection)
+        }
+    }
 }

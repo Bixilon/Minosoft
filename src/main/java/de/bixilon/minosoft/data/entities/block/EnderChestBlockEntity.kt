@@ -13,12 +13,16 @@
 
 package de.bixilon.minosoft.data.entities.block
 
+import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import de.bixilon.minosoft.util.nbt.tag.CompoundTag
 
-abstract class BlockEntity(
-    val connection: PlayConnection,
-) {
+class EnderChestBlockEntity(connection: PlayConnection) : BlockEntity(connection) {
 
-    open fun updateNBT(nbt: CompoundTag) {}
+    companion object : BlockEntityFactory<EnderChestBlockEntity> {
+        override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("minecraft:ender_chest")
+
+        override fun build(connection: PlayConnection): EnderChestBlockEntity {
+            return EnderChestBlockEntity(connection)
+        }
+    }
 }

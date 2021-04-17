@@ -13,12 +13,21 @@
 
 package de.bixilon.minosoft.data.entities.block
 
+import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.util.nbt.tag.CompoundTag
 
-abstract class BlockEntity(
-    val connection: PlayConnection,
-) {
+class StructureBlockBlockEntity(connection: PlayConnection) : BlockEntity(connection) {
 
-    open fun updateNBT(nbt: CompoundTag) {}
+    override fun updateNBT(nbt: CompoundTag) {
+        // ToDo: {mirror: "NONE", metadata: "asd", ignoreEntities: 1b, powered: 0b, seed: 0l, author: "Bixilon", rotation: "NONE", posX: 0, mode: "DATA", posY: 1, sizeX: 0, integrity: 1.0F, posZ: 0, showair: 0b, x: -102, name: "", y: 4, z: 212, id: "minecraft:structure_block", sizeY: 0, sizeZ: 0, showboundingbox: 1b}
+    }
+
+    companion object : BlockEntityFactory<StructureBlockBlockEntity> {
+        override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("minecraft:structure_block")
+
+        override fun build(connection: PlayConnection): StructureBlockBlockEntity {
+            return StructureBlockBlockEntity(connection)
+        }
+    }
 }

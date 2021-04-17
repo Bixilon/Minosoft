@@ -13,12 +13,16 @@
 
 package de.bixilon.minosoft.data.entities.block
 
+import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import de.bixilon.minosoft.util.nbt.tag.CompoundTag
 
-abstract class BlockEntity(
-    val connection: PlayConnection,
-) {
+class BarrelBlockEntity(connection: PlayConnection) : BlockEntity(connection) {
 
-    open fun updateNBT(nbt: CompoundTag) {}
+    companion object : BlockEntityFactory<BarrelBlockEntity> {
+        override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("minecraft:barrel")
+
+        override fun build(connection: PlayConnection): BarrelBlockEntity {
+            return BarrelBlockEntity(connection)
+        }
+    }
 }

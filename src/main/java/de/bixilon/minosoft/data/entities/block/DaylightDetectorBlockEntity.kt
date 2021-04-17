@@ -15,20 +15,14 @@ package de.bixilon.minosoft.data.entities.block
 
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import de.bixilon.minosoft.util.nbt.tag.CompoundTag
 
-class BlastBlockEntity(connection: PlayConnection) : BlockEntity(connection) {
+class DaylightDetectorBlockEntity(connection: PlayConnection) : BlockEntity(connection) {
 
+    companion object : BlockEntityFactory<DaylightDetectorBlockEntity> {
+        override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("minecraft:daylight_detector")
 
-    override fun updateNBT(nbt: CompoundTag) {
-
-    }
-
-    companion object : BlockEntityFactory<BlastBlockEntity> {
-        override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("minecraft:blast_furnace")
-
-        override fun build(connection: PlayConnection): BlastBlockEntity {
-            return BlastBlockEntity(connection)
+        override fun build(connection: PlayConnection): DaylightDetectorBlockEntity {
+            return DaylightDetectorBlockEntity(connection)
         }
     }
 }
