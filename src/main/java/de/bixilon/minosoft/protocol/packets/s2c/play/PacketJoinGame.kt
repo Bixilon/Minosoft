@@ -92,7 +92,7 @@ class PacketJoinGame(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         if (buffer.versionId < ProtocolVersions.V_20W21A) {
             dimension = buffer.connection.mapping.dimensionRegistry.get(buffer.readInt())
         } else {
-            val dimensionCodec = buffer.readNBT()
+            val dimensionCodec = buffer.readNBT()!!
             dimensions = parseDimensionCodec(dimensionCodec, buffer.versionId)
             if (buffer.versionId < ProtocolVersions.V_1_16_2_PRE3) {
                 dimension = dimensions[buffer.readResourceLocation()]!!

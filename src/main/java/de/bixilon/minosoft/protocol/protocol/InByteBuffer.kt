@@ -70,12 +70,11 @@ open class InByteBuffer {
         return bytes[pointer++]
     }
 
-    fun readByteArray(length: Int = readVarInt()): ByteArray {
+    open fun readByteArray(length: Int = readVarInt()): ByteArray {
         check(length <= bytes.size) { "Trying to allocate to much memory!" }
         val array = ByteArray(length)
-        for (i in 0 until length) {
-            array[i] = readByte()
-        }
+        System.arraycopy(bytes, pointer, array, 0, length)
+        pointer += length
         return array
     }
 

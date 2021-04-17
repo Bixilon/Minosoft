@@ -14,7 +14,7 @@ package de.bixilon.minosoft.data.mappings.recipes
 
 import de.bixilon.minosoft.data.inventory.ItemStack
 
-data class Ingredient(val itemStacks: Array<ItemStack>) {
+data class Ingredient(val itemStacks: Array<ItemStack?>) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
