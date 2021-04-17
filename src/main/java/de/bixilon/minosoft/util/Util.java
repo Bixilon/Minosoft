@@ -23,6 +23,7 @@ import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import de.bixilon.minosoft.util.logging.Log;
 import de.bixilon.minosoft.util.microsoft.MicrosoftOAuthUtils;
+import de.bixilon.minosoft.util.time.TimeWorker;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
@@ -286,6 +287,7 @@ public final class Util {
     public static void initUtilClasses() {
         forceClassInit(Log.class);
         forceClassInit(MicrosoftOAuthUtils.class);
+        forceClassInit(TimeWorker.class);
     }
 
     public static Map<String, String> urlQueryToMap(String query) {

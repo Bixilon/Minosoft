@@ -206,7 +206,6 @@ class Camera(
         for (shader in shaders) {
             shader.use().setMat4("viewProjectionMatrix", matrix)
         }
-
         positionChangeCallback()
     }
 
@@ -236,8 +235,18 @@ class Camera(
     }
 
     private fun calculateViewMatrix(): Mat4 {
-        cameraPosition = playerEntity.position + Vec3(0, PLAYER_HEIGHT, 0)
+        cameraPosition = getAbsoluteCameraPosition()
         return glm.lookAt(cameraPosition, cameraPosition + cameraFront, CAMERA_UP_VEC3)
+    }
+
+    private fun getAbsoluteCameraPosition(): Vec3 {
+        return playerEntity.position + Vec3(0, PLAYER_HEIGHT, 0)
+    }
+
+    fun checkPosition() {
+        if (cameraPosition != getAbsoluteCameraPosition()) {
+            currentPositionSent = false
+        }
     }
 
     fun setRotation(yaw: Float, pitch: Float) {
@@ -258,34 +267,21 @@ class Camera(
 
     fun draw() {
         if (!currentPositionSent || !currentRotationSent) {
+            recalculateViewProjectionMatrix()
             sendPositionToServer()
         }
     }
 
     private fun sendPositionToServer() {
-        if (System.currentTimeMillis() - lastMovementPacketSent > ProtocolDefinition.TICK_TIME) {
-            if (!currentPositionSent && !currentPositionSent) {
-                connection.sendPacket(PlayerPositionAndRotationC2SPacket(playerEntity.position, playerEntity.rotation, false))
-            } else if (!currentPositionSent) {
-                connection.sendPacket(PlayerPositionC2SPacket(playerEntity.position, false))
-            } else {
-                connection.sendPacket(PlayerRotationC2SPacket(playerEntity.rotation, false))
-            }
-            lastMovementPacketSent = System.currentTimeMillis()
-            currentPositionSent = true
-            currentRotationSent = true
-            return
-        }
         if (System.currentTimeMillis() - lastMovementPacketSent < ProtocolDefinition.TICK_TIME) {
             return
         }
-
         if (!currentPositionSent && !currentPositionSent) {
-            connection.sendPacket(PlayerPositionAndRotationC2SPacket(cameraPosition - Vec3(0, PLAYER_HEIGHT, 0), EntityRotation(yaw, pitch), false))
+            connection.sendPacket(PlayerPositionAndRotationC2SPacket(playerEntity.position, playerEntity.rotation, playerEntity.onGround))
         } else if (!currentPositionSent) {
-            connection.sendPacket(PlayerPositionC2SPacket(cameraPosition - Vec3(0, PLAYER_HEIGHT, 0), false))
+            connection.sendPacket(PlayerPositionC2SPacket(playerEntity.position, playerEntity.onGround))
         } else {
-            connection.sendPacket(PlayerRotationC2SPacket(EntityRotation(yaw, pitch), false))
+            connection.sendPacket(PlayerRotationC2SPacket(playerEntity.rotation, playerEntity.onGround))
         }
         lastMovementPacketSent = System.currentTimeMillis()
         currentPositionSent = true

@@ -35,16 +35,15 @@ import de.bixilon.minosoft.protocol.packets.c2s.handshaking.HandshakeC2SPacket
 import de.bixilon.minosoft.protocol.packets.c2s.login.LoginStartC2SPacket
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.packets.s2c.S2CPacket
-import de.bixilon.minosoft.protocol.protocol.ConnectionStates
-import de.bixilon.minosoft.protocol.protocol.PacketSender
-import de.bixilon.minosoft.protocol.protocol.PacketTypes
-import de.bixilon.minosoft.protocol.protocol.Protocol
+import de.bixilon.minosoft.protocol.protocol.*
 import de.bixilon.minosoft.terminal.CLI
 import de.bixilon.minosoft.terminal.commands.commands.Command
 import de.bixilon.minosoft.util.CountUpAndDownLatch
 import de.bixilon.minosoft.util.ServerAddress
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.time.TimeWorker
+import de.bixilon.minosoft.util.time.TimeWorkerTask
 
 
 class PlayConnection(
@@ -69,6 +68,9 @@ class PlayConnection(
     lateinit var player: Player
         private set
     private var _connectionState: ConnectionStates = ConnectionStates.DISCONNECTED
+
+    lateinit var velocityHandlerTask: TimeWorkerTask
+    private var velocityHandlerLastExecutionTime: Long = 0L
 
     override var connectionState: ConnectionStates
         get() = _connectionState
@@ -112,6 +114,17 @@ class PlayConnection(
                     if (CLI.getCurrentConnection() == null) {
                         CLI.setCurrentConnection(this)
                     }
+                    velocityHandlerLastExecutionTime = System.currentTimeMillis()
+                    velocityHandlerTask = TimeWorkerTask(ProtocolDefinition.TICK_TIME / 4) {
+                        val currentTime = System.currentTimeMillis();
+                        val deltaTime = currentTime - velocityHandlerLastExecutionTime
+                        for (entity in world.entityIdMap.values) {
+                            entity.computeTimeStep(deltaTime)
+                        }
+                        renderer?.renderWindow?.camera?.checkPosition()
+                        velocityHandlerLastExecutionTime = currentTime
+                    }
+                    TimeWorker.addTask(velocityHandlerTask)
                 }
                 ConnectionStates.DISCONNECTED -> {
                     // unregister all custom recipes
@@ -120,6 +133,9 @@ class PlayConnection(
                     if (CLI.getCurrentConnection() == this) {
                         CLI.setCurrentConnection(null)
                         Command.print("Disconnected from current connection!")
+                    }
+                    if (this::velocityHandlerTask.isInitialized) {
+                        TimeWorker.removeTask(velocityHandlerTask)
                     }
                 }
                 else -> {

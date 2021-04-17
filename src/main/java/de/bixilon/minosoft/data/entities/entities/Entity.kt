@@ -32,6 +32,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import glm_.vec3.Vec3
 import java.lang.reflect.InvocationTargetException
 import java.util.*
+import kotlin.math.pow
 
 abstract class Entity(
     protected val connection: PlayConnection,
@@ -51,6 +52,8 @@ abstract class Entity(
     var velocity: Vec3? = null
 
     protected open val hasCollisions = true
+
+    var onGround = false
 
     private val defaultAABB = AABB(
         Vec3(-(entityType.width / 2 + HITBOX_MARGIN), 0, -(entityType.width / 2 + HITBOX_MARGIN)),
@@ -214,36 +217,61 @@ abstract class Entity(
     }
 
     private fun collide(deltaPosition: Vec3, collisionsToCheck: VoxelShape, aabb: AABB): Vec3 {
+        onGround = false
         val delta = Vec3(deltaPosition)
         if (delta.y != 0.0f) {
             delta.y = collisionsToCheck.computeOffset(aabb, deltaPosition.y, Axes.Y)
             aabb.offsetAssign(0f, delta.y, 0f)
+            if (delta.y != deltaPosition.y) {
+                velocity?.y = 0.0f
+                if (deltaPosition.y < 0) {
+                    onGround = true;
+                }
+            }
         }
         val xPriority = delta.x > delta.z
         if (delta.x != 0.0f && xPriority) {
             delta.x = collisionsToCheck.computeOffset(aabb, deltaPosition.x, Axes.X)
             aabb.offsetAssign(delta.x, 0f, 0f)
+            if (delta.x != deltaPosition.x) {
+                velocity?.x = 0.0f
+            }
         }
         if (delta.z != 0.0f) {
             delta.z = collisionsToCheck.computeOffset(aabb, deltaPosition.z, Axes.Z)
             aabb.offsetAssign(0f, 0f, delta.z)
+            if (delta.z != deltaPosition.z) {
+                velocity?.z = 0.0f
+            }
         }
         if (delta.x != 0.0f && !xPriority) {
             delta.x = collisionsToCheck.computeOffset(aabb, deltaPosition.x, Axes.X)
+            if (delta.x != deltaPosition.x) {
+                velocity?.x = 0.0f
+            }
         }
         return delta
     }
 
-    fun computeTimeStep(deltaTime: Float) {
+    fun computeTimeStep(deltaMillis: Long) {
+        val deltaTime = deltaMillis.toFloat() / 1000.0f
         if (! hasNoGravity) {
             if (velocity == null) {
-                velocity = Vec3(0, deltaTime * ProtocolDefinition.GRAVITY)
+                velocity = Vec3(0, deltaTime * ProtocolDefinition.GRAVITY, 0)
             } else {
                 velocity!!.y += deltaTime * ProtocolDefinition.GRAVITY;
             }
         }
         if (velocity == VecUtil.EMPTY_VEC3) {
             velocity = null
+        }
+        if (velocity == null) {
+            return
+        }
+        velocity?.timesAssign(0.25f.pow(deltaTime))
+        if (velocity?.length()!! < 0.05f) {
+            velocity = null
+            return
         }
         velocity?.let {
             move(velocity!! * deltaTime)
