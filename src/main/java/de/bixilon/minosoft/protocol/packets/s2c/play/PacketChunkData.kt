@@ -22,10 +22,11 @@ import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
+import de.bixilon.minosoft.util.KUtil.nullCast
 import de.bixilon.minosoft.util.Util
 import de.bixilon.minosoft.util.chunk.ChunkUtil
 import de.bixilon.minosoft.util.logging.Log
-import de.bixilon.minosoft.util.nbt.tag.CompoundTag
+import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
 import glm_.vec2.Vec2i
 import glm_.vec3.Vec3i
 import java.util.*
@@ -35,7 +36,7 @@ class PacketChunkData() : PlayS2CPacket() {
     lateinit var chunkPosition: Vec2i
     var chunkData: ChunkData? = ChunkData()
         private set
-    var heightMap: CompoundTag? = null
+    var heightMap: Map<String, Any>? = null
     private var isFullChunk = false
 
     constructor(buffer: PlayInByteBuffer) : this() {
@@ -81,7 +82,7 @@ class PacketChunkData() : PlayS2CPacket() {
             }
         }
         if (buffer.versionId >= ProtocolVersions.V_18W44A) {
-            heightMap = buffer.readNBT() as CompoundTag
+            heightMap = buffer.readNBT()?.compoundCast()
         }
         if (!isFullChunk) {
             chunkData!!.biomeSource = SpatialBiomeArray(buffer.readBiomeArray())
@@ -100,9 +101,9 @@ class PacketChunkData() : PlayS2CPacket() {
         if (buffer.versionId >= ProtocolVersions.V_1_9_4) {
             val blockEntitiesCount = buffer.readVarInt()
             for (i in 0 until blockEntitiesCount) {
-                val nbt = buffer.readNBT() as CompoundTag
-                val position = Vec3i(nbt.getNumberTag("x").asInt, nbt.getNumberTag("y").asInt, nbt.getNumberTag("z").asInt)
-                val resourceLocation = ResourceLocation(nbt.getStringTag("id").value)
+                val nbt = buffer.readNBT()?.compoundCast()!!
+                val position = Vec3i(nbt["x"]?.nullCast<Int>()!!, nbt["y"]?.nullCast<Int>()!!, nbt["z"]?.nullCast<Int>()!!)
+                val resourceLocation = ResourceLocation(nbt["id"]?.nullCast<String>()!!)
                 val type = buffer.connection.mapping.blockEntityRegistry.get(resourceLocation) ?: let {
                     Log.warn("Unknown block entity $resourceLocation")
                     null

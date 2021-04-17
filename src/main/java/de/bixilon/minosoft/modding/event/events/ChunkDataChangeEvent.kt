@@ -16,7 +16,6 @@ import de.bixilon.minosoft.data.world.ChunkData
 
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.play.PacketChunkData
-import de.bixilon.minosoft.util.nbt.tag.CompoundTag
 import glm_.vec2.Vec2i
 
 /**
@@ -25,9 +24,9 @@ import glm_.vec2.Vec2i
 class ChunkDataChangeEvent : PlayConnectionEvent {
     val chunkPosition: Vec2i
     val chunkData: ChunkData?
-    val heightMap: CompoundTag?
+    val heightMap: Map<String, Any>?
 
-    constructor(connection: PlayConnection, position: Vec2i, chunkData: ChunkData, heightMap: CompoundTag?) : super(connection) {
+    constructor(connection: PlayConnection, position: Vec2i, chunkData: ChunkData, heightMap: Map<String, Any>?) : super(connection) {
         this.chunkPosition = position
         this.chunkData = chunkData
         this.heightMap = heightMap
@@ -36,7 +35,7 @@ class ChunkDataChangeEvent : PlayConnectionEvent {
     constructor(connection: PlayConnection, position: Vec2i, chunkData: ChunkData) : super(connection) {
         this.chunkPosition = position
         this.chunkData = chunkData
-        heightMap = CompoundTag()
+        heightMap = mutableMapOf()
     }
 
     constructor(connection: PlayConnection, pkg: PacketChunkData) : super(connection) {

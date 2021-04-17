@@ -25,7 +25,6 @@ import de.bixilon.minosoft.data.player.PlayerProperties
 import de.bixilon.minosoft.data.player.PlayerProperty
 import de.bixilon.minosoft.data.player.tab.TabListItem
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import de.bixilon.minosoft.util.nbt.tag.CompoundTag
 import glm_.vec3.Vec3
 
 class PlayerEntity(
@@ -66,11 +65,11 @@ class PlayerEntity(
         get() = if (entityMetaData.sets.getByte(EntityMetaDataFields.PLAYER_SKIN_MAIN_HAND).toInt() == 0x01) Hands.OFF_HAND else Hands.MAIN_HAND
 
     @get:EntityMetaDataFunction(name = "Left shoulder entity data")
-    val leftShoulderData: CompoundTag?
+    val leftShoulderData: Map<String, Any>?
         get() = entityMetaData.sets.getNBT(EntityMetaDataFields.PLAYER_LEFT_SHOULDER_DATA)
 
     @get:EntityMetaDataFunction(name = "Right shoulder entity data")
-    val rightShoulderData: CompoundTag?
+    val rightShoulderData: Map<String, Any>?
         get() = entityMetaData.sets.getNBT(EntityMetaDataFields.PLAYER_RIGHT_SHOULDER_DATA)
 
     companion object : EntityFactory<PlayerEntity> {

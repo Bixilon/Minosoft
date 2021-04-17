@@ -16,7 +16,6 @@ import de.bixilon.minosoft.data.commands.CommandStringReader
 import de.bixilon.minosoft.data.commands.parser.exceptions.nbt.ExpectedPrimitiveTagCommandParseException
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import de.bixilon.minosoft.util.nbt.tag.CompoundTag
 
 class NBTParser : CommandParser() {
 
@@ -28,7 +27,7 @@ class NBTParser : CommandParser() {
             NBT_TAG_PARSER -> {
                 val startPos = stringReader.cursor
                 val tag = stringReader.readNBTTag()
-                if (tag!! is CompoundTag) {
+                if (tag is Map<*, *>) {
                     throw ExpectedPrimitiveTagCommandParseException(stringReader, stringReader.string.substring(startPos, stringReader.cursor), "Compound Tag is invalid here!")
                 }
                 tag

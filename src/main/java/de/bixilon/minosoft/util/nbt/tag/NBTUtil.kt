@@ -11,22 +11,35 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.entities.block
+package de.bixilon.minosoft.util.nbt.tag
 
-import de.bixilon.minosoft.data.mappings.ResourceLocation
-import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-
-class BeaconBlockEntity(connection: PlayConnection) : BlockEntity(connection) {
-
-    override fun updateNBT(nbt: Map<String, Any>) {
-        // ToDO: {Secondary: -1, Paper.Range: -1.0D, Primary: -1, x: -90, y: 4, Levels: 0, z: 212, id: "minecraft:beacon"}
+object NBTUtil {
+    fun MutableMap<String, Any>.getAndRemove(key: String): Any? {
+        val value = this[key]
+        this.remove(key)
+        return value
     }
 
-    companion object : BlockEntityFactory<BeaconBlockEntity> {
-        override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("minecraft:beacon")
-
-        override fun build(connection: PlayConnection): BeaconBlockEntity {
-            return BeaconBlockEntity(connection)
+    fun MutableMap<String, Any>.getAndRemove(vararg keys: String): Any? {
+        for (key in keys) {
+            getAndRemove(key)?.let { return it }
         }
+        return null
+    }
+
+    fun Any.compoundCast(): MutableMap<String, Any>? {
+        try {
+            return this as MutableMap<String, Any>
+        } catch (ignored: ClassCastException) {
+        }
+        return null
+    }
+
+    fun <T> Any.listCast(): MutableList<T>? {
+        try {
+            return this as MutableList<T>
+        } catch (ignored: ClassCastException) {
+        }
+        return null
     }
 }

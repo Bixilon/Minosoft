@@ -31,7 +31,6 @@ import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.enum.ValuesEnum
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
-import de.bixilon.minosoft.util.nbt.tag.CompoundTag
 import glm_.vec3.Vec3i
 import java.util.*
 
@@ -151,7 +150,7 @@ class EntityMetaData(
             return get(field)
         }
 
-        fun getNBT(field: EntityMetaDataFields): CompoundTag? {
+        fun getNBT(field: EntityMetaDataFields): Map<String, Any>? {
             return get(field)
         }
 

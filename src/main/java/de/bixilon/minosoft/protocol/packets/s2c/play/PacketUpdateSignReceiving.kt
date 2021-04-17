@@ -12,35 +12,45 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play
 
-import de.bixilon.minosoft.data.entities.block.DefaultBlockEntityMetaDataFactory
-import de.bixilon.minosoft.modding.event.events.BlockEntityMetaDataChangeEvent
+import de.bixilon.minosoft.data.entities.block.SignBlockEntity
+import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
+import de.bixilon.minosoft.util.KUtil.unsafeCast
 import de.bixilon.minosoft.util.logging.Log
-import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
 import glm_.vec3.Vec3i
 
-class BlockEntityMetaDataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
-    val position: Vec3i = if (buffer.versionId < ProtocolVersions.V_14W03B) {
+class PacketUpdateSignReceiving(buffer: PlayInByteBuffer) : PlayS2CPacket() {
+    val signPosition: Vec3i = if (buffer.versionId < ProtocolVersions.V_14W04A) {
         buffer.readShortBlockPosition()
     } else {
         buffer.readBlockPosition()
     }
-    val type = buffer.connection.mapping.blockEntityMetaDataTypeRegistry.get(buffer.readUnsignedByte()).resourceLocation
-    val nbt = buffer.readNBT()?.compoundCast()!!
+    val lines: Array<ChatComponent>
+
+
+    init {
+        val lines: MutableList<ChatComponent> = mutableListOf()
+        for (i in 0 until ProtocolDefinition.SIGN_LINES) {
+            lines.add(buffer.readChatComponent())
+        }
+        this.lines = lines.toTypedArray()
+    }
 
     override fun handle(connection: PlayConnection) {
-        connection.fireEvent(BlockEntityMetaDataChangeEvent(connection, this))
-        connection.world.getBlockEntity(position)?.updateNBT(nbt) ?: let {
-            val blockEntity = DefaultBlockEntityMetaDataFactory.buildBlockEntity(DefaultBlockEntityMetaDataFactory.getEntityFactory(type)!!, connection)
-            blockEntity.updateNBT(nbt)
-            connection.world.setBlockEntity(position, blockEntity)
+        val signBlockEntity = connection.world.getBlockEntity(signPosition)?.unsafeCast<SignBlockEntity>() ?: let {
+            val blockEntity = SignBlockEntity(connection)
+            connection.world.setBlockEntity(signPosition, blockEntity)
+            blockEntity
         }
+
+        signBlockEntity.lines = lines
     }
 
     override fun log() {
-        Log.protocol("[IN] Received block entity meta data (position=$position, type=$type, nbt=$nbt)")
+        Log.protocol("[IN] Sign data received (position=$signPosition, lines=$lines")
     }
 }

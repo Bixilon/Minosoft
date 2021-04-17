@@ -15,19 +15,19 @@ package de.bixilon.minosoft.data.entities.block
 
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import de.bixilon.minosoft.util.nbt.tag.CompoundTag
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.util.KUtil.nullCast
 
 class SignBlockEntity(connection: PlayConnection) : BlockEntity(connection) {
-    var lines: Array<ChatComponent> = Array(RenderConstants.SIGN_LINES) { ChatComponent.valueOf(raw = "") }
+    var lines: Array<ChatComponent> = Array(ProtocolDefinition.SIGN_LINES) { ChatComponent.valueOf(raw = "") }
 
 
-    override fun updateNBT(nbt: CompoundTag) {
-        for (i in 0 until RenderConstants.SIGN_LINES) {
-            val tag = nbt.getStringTag("Text$i") ?: continue
+    override fun updateNBT(nbt: Map<String, Any>) {
+        for (i in 0 until ProtocolDefinition.SIGN_LINES) {
+            val tag = nbt["Text$i"]?.nullCast<String>() ?: continue
 
-            lines[i] = ChatComponent.valueOf(translator = connection.version.localeManager, raw = tag.value)
+            lines[i] = ChatComponent.valueOf(translator = connection.version.localeManager, raw = tag)
         }
     }
 

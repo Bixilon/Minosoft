@@ -29,7 +29,10 @@ import de.bixilon.minosoft.data.mappings.items.Item
 import de.bixilon.minosoft.data.mappings.versions.Version
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.util.BitByte
-import de.bixilon.minosoft.util.nbt.tag.*
+import de.bixilon.minosoft.util.KUtil.nullCast
+import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
+import de.bixilon.minosoft.util.nbt.tag.NBTUtil.getAndRemove
+import de.bixilon.minosoft.util.nbt.tag.NBTUtil.listCast
 
 class ItemStack(
     val item: Item,
@@ -44,14 +47,14 @@ class ItemStack(
     var customDisplayName: ChatComponent? = null
     var isUnbreakable = false
     var hideFlags = 0
-    private var additionalNBT: CompoundTag? = null
+    private var additionalNBT: MutableMap<String, Any>? = null
 
-    constructor(version: Version, item: Item, itemCount: Int, nbt: CompoundTag?) : this(item, version) {
+    constructor(version: Version, item: Item, itemCount: Int, nbt: MutableMap<String, Any>?) : this(item, version) {
         this.itemCount = itemCount
         setNBT(nbt)
     }
 
-    constructor(version: Version, item: Item, itemCount: Byte, itemMetadata: Int, nbt: CompoundTag?) : this(item, version) {
+    constructor(version: Version, item: Item, itemCount: Byte, itemMetadata: Int, nbt: MutableMap<String, Any>?) : this(item, version) {
         this.itemMetadata = itemMetadata
         this.itemCount = itemCount.toInt()
         setNBT(nbt)
@@ -61,117 +64,110 @@ class ItemStack(
         this.itemCount = itemCount
     }
 
-    private fun setNBT(nbt: CompoundTag?) {
+    private fun setNBT(nbt: MutableMap<String, Any>?) {
         if (nbt == null) {
             return
         }
 
-        nbt.getAndRemoveTag(REPAIR_COST_TAG)?.let {
-            check(it is NumberTag) { "Invalid $REPAIR_COST_TAG NBT data" }
-            repairCost = it.asInt
+        nbt.getAndRemove(REPAIR_COST_TAG)?.let {
+            check(it is Number) { "Invalid $REPAIR_COST_TAG NBT data" }
+            repairCost = it.toInt()
         }
 
-        nbt.getAndRemoveTag(DISPLAY_TAG)?.let {
-            check(it is CompoundTag) { "Invalid $DISPLAY_TAG NBT data" }
-            it.getAndRemoveTag(DISPLAY_MAME_TAG)?.let { nameTag ->
-                check(nameTag is StringTag) { "Invalid $DISPLAY_MAME_TAG NBT data" }
+        nbt.getAndRemove(DISPLAY_TAG)?.compoundCast()?.let {
+            it.getAndRemove(DISPLAY_MAME_TAG)?.nullCast<String>()?.let { nameTag ->
                 customDisplayName = ChatComponent.valueOf(translator = version?.localeManager, raw = nameTag)
             }
 
-            it.getAndRemoveTag(DISPLAY_LORE_TAG)?.let { loreTag ->
-                check(loreTag is ListTag) { "Invalid $DISPLAY_LORE_TAG NBT data" }
-                for (lore in loreTag.getValue<StringTag>()) {
+            it.getAndRemove(DISPLAY_LORE_TAG)?.listCast<String>()?.let { loreTag ->
+                for (lore in loreTag) {
                     this.lore.add(ChatComponent.valueOf(translator = version?.localeManager, raw = lore))
                 }
             }
         }
 
-        nbt.getAndRemoveTag(UNBREAKABLE_TAG)?.let {
-            check(it is NumberTag) { "Invalid $UNBREAKABLE_TAG NBT data" }
-            isUnbreakable = it.asInt == 0x01
+        nbt.getAndRemove(UNBREAKABLE_TAG)?.nullCast<Number>()?.let {
+            isUnbreakable = it.toInt() == 0x01
         }
 
-        nbt.getAndRemoveTag(UNBREAKABLE_TAG)?.let {
-            check(it is NumberTag) { "Invalid $UNBREAKABLE_TAG NBT data" }
-            isUnbreakable = it.asInt == 0x01
+        nbt.getAndRemove(UNBREAKABLE_TAG)?.nullCast<Number>()?.let {
+            isUnbreakable = it.toInt() == 0x01
         }
 
-        nbt.getAndRemoveTag(HIDE_FLAGS_TAG)?.let {
-            check(it is IntTag) { "Invalid $HIDE_FLAGS_TAG NBT data" }
-            hideFlags = it.value
+        nbt.getAndRemove(HIDE_FLAGS_TAG)?.nullCast<Number>()?.let {
+            hideFlags = it.toInt()
         }
 
-        nbt.getAndRemoveTag(ENCHANTMENTS_TAG)?.let {
-            check(it is ListTag) { "Invalid $ENCHANTMENTS_TAG NBT data" }
-            for (enchantmentTag in it.getValue<CompoundTag>()) {
-                val enchantment = enchantmentTag.getTag(ENCHANTMENT_ID_TAG)?.let { enchantmentId ->
+        nbt.getAndRemove(*ENCHANTMENTS_TAG)?.listCast<Map<String, Any>>()?.let {
+            for (enchantmentTag in it) {
+                val enchantment = enchantmentTag[ENCHANTMENT_ID_TAG]?.let { enchantmentId ->
                     when (enchantmentId) {
-                        is NumberTag -> {
-                            version!!.mapping.enchantmentRegistry.get(enchantmentId.asInt)
+                        is Number -> {
+                            version!!.mapping.enchantmentRegistry.get(enchantmentId.toInt())
                         }
-                        is StringTag -> {
-                            version!!.mapping.enchantmentRegistry.get(ResourceLocation.getPathResourceLocation(enchantmentId.value))
+                        is String -> {
+                            version!!.mapping.enchantmentRegistry.get(ResourceLocation.getPathResourceLocation(enchantmentId))
                         }
                         else -> TODO()
                     }
                 }!!
-                enchantments[enchantment] = enchantmentTag.getNumberTag(ENCHANTMENT_LEVEL_TAG).asInt
+                enchantments[enchantment] = enchantmentTag[ENCHANTMENT_LEVEL_TAG]?.nullCast<Number>()?.toInt()!!
             }
         }
         additionalNBT = nbt
     }
 
-    fun getNBT(): CompoundTag {
-        val nbt = additionalNBT?.clone() ?: CompoundTag()
+    fun getNBT(): MutableMap<String, Any> {
+        val nbt = additionalNBT?.toMutableMap() ?: mutableMapOf()
         if (repairCost != 0) {
-            nbt.writeTag(REPAIR_COST_TAG, IntTag(repairCost))
+            nbt[REPAIR_COST_TAG] = repairCost
         }
-        CompoundTag().let {
+        mutableMapOf<String, Any>().let {
             customDisplayName?.let { displayName ->
-                it.writeTag(DISPLAY_MAME_TAG, StringTag(displayName.legacyText))
+                it[DISPLAY_MAME_TAG] = displayName.legacyText
             }
-            ListTag().let { loreTag ->
+            mutableListOf<String>().let { loreTag ->
                 for (lore in this.lore) {
-                    loreTag.addTag(StringTag(lore.legacyText))
+                    loreTag.add(lore.legacyText)
                 }
 
-                if (loreTag.getValue<StringTag>().isNotEmpty()) {
-                    it.writeTag(DISPLAY_LORE_TAG, loreTag)
+                if (loreTag.isNotEmpty()) {
+                    it[DISPLAY_LORE_TAG] = loreTag
                 }
             }
 
-            if (it.size() > 0) {
-                nbt.writeTag(DISPLAY_TAG, it)
+            if (it.isNotEmpty()) {
+                nbt[DISPLAY_TAG] = it
             }
         }
 
         if (isUnbreakable) {
-            nbt.writeTag(UNBREAKABLE_TAG, ByteTag(true))
+            nbt[UNBREAKABLE_TAG] = true
         }
 
         if (hideFlags != 0) {
-            nbt.writeTag(HIDE_FLAGS_TAG, IntTag(hideFlags))
+            nbt[HIDE_FLAGS_TAG] = hideFlags
         }
         if (enchantments.isNotEmpty()) {
-            val enchantmentList = ListTag(NBTTagTypes.COMPOUND, arrayListOf())
+            val enchantmentList: MutableList<Map<String, Any>> = mutableListOf()
             for ((enchantment, level) in enchantments) {
-                val enchantmentTag = CompoundTag()
+                val enchantmentTag: MutableMap<String, Any> = mutableMapOf()
                 if (version!!.isFlattened()) {
-                    enchantmentTag.writeTag(ENCHANTMENT_ID_TAG, StringTag(enchantment.resourceLocation.full))
+                    enchantmentTag[ENCHANTMENT_ID_TAG] = enchantment.resourceLocation.full
                 } else {
-                    enchantmentTag.writeTag(ENCHANTMENT_ID_TAG, IntTag(version.mapping.enchantmentRegistry.getId(enchantment)))
+                    enchantmentTag[ENCHANTMENT_ID_TAG] = version.mapping.enchantmentRegistry.getId(enchantment)
                 }
 
-                enchantmentTag.writeTag(ENCHANTMENT_LEVEL_TAG, if (version.isFlattened()) {
-                    IntTag(level)
+                enchantmentTag[ENCHANTMENT_LEVEL_TAG] = if (version.isFlattened()) {
+                    level
                 } else {
-                    ShortTag(level.toShort())
-                })
+                    level.toShort()
+                }
             }
             if (version!!.isFlattened()) {
-                nbt.writeTag(ENCHANTMENT_FLATTENING_TAG, enchantmentList)
+                nbt[ENCHANTMENT_FLATTENING_TAG] = enchantmentList
             } else {
-                nbt.writeTag(ENCHANTMENT_PRE_FLATTENING_TAG, enchantmentList)
+                nbt[ENCHANTMENT_PRE_FLATTENING_TAG] = enchantmentList
             }
         }
         return nbt

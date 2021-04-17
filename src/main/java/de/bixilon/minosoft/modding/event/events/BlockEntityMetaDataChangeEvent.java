@@ -16,15 +16,16 @@ package de.bixilon.minosoft.modding.event.events;
 import de.bixilon.minosoft.data.mappings.ResourceLocation;
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
 import de.bixilon.minosoft.protocol.packets.s2c.play.BlockEntityMetaDataS2CP;
-import de.bixilon.minosoft.util.nbt.tag.CompoundTag;
 import glm_.vec3.Vec3i;
+
+import java.util.Map;
 
 public class BlockEntityMetaDataChangeEvent extends PlayConnectionEvent {
     private final Vec3i position;
     private final ResourceLocation type;
-    private final CompoundTag nbt;
+    private final Map<String, Object> nbt;
 
-    public BlockEntityMetaDataChangeEvent(PlayConnection connection, Vec3i position, ResourceLocation type, CompoundTag nbt) {
+    public BlockEntityMetaDataChangeEvent(PlayConnection connection, Vec3i position, ResourceLocation type, Map<String, Object> nbt) {
         super(connection);
         this.position = position;
         this.type = type;

@@ -19,7 +19,6 @@ import com.google.gson.JsonPrimitive
 import de.bixilon.minosoft.data.locale.minecraft.Translator
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.hud.nodes.primitive.LabelNode
-import de.bixilon.minosoft.util.nbt.tag.StringTag
 import glm_.vec2.Vec2i
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList
@@ -84,7 +83,6 @@ interface ChatComponent {
                     return component
                 }
                 is JsonPrimitive -> raw.asString
-                is StringTag -> raw.value
                 else -> raw.toString()
             }
             try {

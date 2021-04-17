@@ -25,8 +25,7 @@ import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.ChatComponent.Companion.valueOf
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*
-import de.bixilon.minosoft.util.nbt.tag.CompoundTag
-import de.bixilon.minosoft.util.nbt.tag.NBTTag
+import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
 import glm_.vec3.Vec3i
 
 
@@ -97,8 +96,8 @@ class PlayInByteBuffer : InByteBuffer {
         }
     }
 
-    fun readNBT(): NBTTag? {
-        return readNBT(versionId < V_14W28B)
+    fun readNBT(): Any? {
+        return readNBTTag(versionId < V_14W28B)
     }
 
     fun readItemStack(): ItemStack? {
@@ -112,12 +111,12 @@ class PlayInByteBuffer : InByteBuffer {
             if (connection.version.isFlattened()) {
                 metaData = readUnsignedShort()
             }
-            val nbt = readNBT(versionId < V_14W28B) as CompoundTag?
+            val nbt = readNBTTag(versionId < V_14W28B)?.compoundCast()
             return ItemStack(connection.version, connection.mapping.itemRegistry.get(id shl 16 or metaData), count, metaData, nbt)
         }
 
         return if (readBoolean()) {
-            ItemStack(connection.version, connection.mapping.itemRegistry.get(readVarInt()), readByte().toInt(), readNBT() as CompoundTag?)
+            ItemStack(connection.version, connection.mapping.itemRegistry.get(readVarInt()), readByte().toInt(), readNBT()?.compoundCast())
         } else {
             null
         }

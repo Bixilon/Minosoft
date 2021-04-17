@@ -16,7 +16,6 @@ import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.network.connection.Connection
 import de.bixilon.minosoft.util.Util
-import de.bixilon.minosoft.util.nbt.tag.CompoundTag
 import glm_.vec3.Vec3i
 import java.nio.ByteBuffer
 import java.nio.charset.StandardCharsets
@@ -135,9 +134,8 @@ open class OutByteBuffer(open val connection: Connection? = null) {
         } while (value != 0)
     }
 
-    fun writeNBT(nbt: CompoundTag) {
-        // ToDo: test
-        nbt.writeBytes(this)
+    fun writeNBT(nbt: Any) {
+        TODO()
     }
 
     fun writeBoolean(value: Boolean) {

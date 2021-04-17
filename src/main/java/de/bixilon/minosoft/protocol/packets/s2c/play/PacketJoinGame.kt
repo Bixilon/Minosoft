@@ -29,10 +29,10 @@ import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_20W27A
 import de.bixilon.minosoft.util.BitByte
+import de.bixilon.minosoft.util.KUtil.nullCast
 import de.bixilon.minosoft.util.logging.Log
-import de.bixilon.minosoft.util.nbt.tag.CompoundTag
-import de.bixilon.minosoft.util.nbt.tag.ListTag
-import de.bixilon.minosoft.util.nbt.tag.NBTTag
+import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
+import de.bixilon.minosoft.util.nbt.tag.NBTUtil.listCast
 import kotlin.experimental.and
 
 class PacketJoinGame(buffer: PlayInByteBuffer) : PlayS2CPacket() {
@@ -92,12 +92,12 @@ class PacketJoinGame(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         if (buffer.versionId < ProtocolVersions.V_20W21A) {
             dimension = buffer.connection.mapping.dimensionRegistry.get(buffer.readInt())
         } else {
-            val dimensionCodec = buffer.readNBT()!!
+            val dimensionCodec = buffer.readNBT()?.compoundCast()!!
             dimensions = parseDimensionCodec(dimensionCodec, buffer.versionId)
             if (buffer.versionId < ProtocolVersions.V_1_16_2_PRE3) {
                 dimension = dimensions[buffer.readResourceLocation()]!!
             } else {
-                buffer.readNBT() as CompoundTag // dimension tag
+                buffer.readNBT()!!.compoundCast() // dimension tag
             }
             val currentDimension = buffer.readResourceLocation()
             dimension = dimensions[currentDimension] ?: buffer.connection.mapping.dimensionRegistry.get(currentDimension)!!
@@ -153,30 +153,25 @@ class PacketJoinGame(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         connection.sender.sendChatMessage("I am alive! ~ Minosoft")
     }
 
-    private fun parseDimensionCodec(nbt: NBTTag, versionId: Int): HashBiMap<ResourceLocation, Dimension> {
-        if (nbt !is CompoundTag) {
-            throw IllegalArgumentException()
-        }
+    private fun parseDimensionCodec(nbt: Map<String, Any>, versionId: Int): HashBiMap<ResourceLocation, Dimension> {
         val dimensionMap: HashBiMap<ResourceLocation, Dimension> = HashBiMap.create()
-        val listTag: ListTag = if (versionId < ProtocolVersions.V_20W28A) {
-            nbt.getListTag("dimension")
+        val listTag: MutableList<Map<*, *>> = if (versionId < ProtocolVersions.V_20W28A) {
+            nbt["dimension"]?.listCast()
         } else {
-            nbt.getCompoundTag("minecraft:dimension_type").getListTag("value")
-        }
-        for (tag in listTag.getValue<NBTTag>()) {
-            check(tag is CompoundTag) { "Invalid dimension codec!" }
-
-            val dimensionResourceLocation = tag.getStringTag(if (versionId < ProtocolVersions.V_1_16_PRE3) {
+            nbt["minecraft:dimension_type"]?.compoundCast()?.get("value")?.listCast()
+        }!!
+        for (tag in listTag) {
+            val dimensionResourceLocation = ResourceLocation(tag[if (versionId < ProtocolVersions.V_1_16_PRE3) {
                 "key"
             } else {
                 "name"
-            }).value
+            }]?.nullCast<String>()!!)
             val dimensionPropertyTag = if (versionId < ProtocolVersions.V_1_16_PRE3 || versionId >= ProtocolVersions.V_1_16_2_PRE1) {
-                tag.getCompoundTag("element")
+                tag["element"]?.compoundCast()!!
             } else {
-                tag
-            }
-            dimensionMap[ResourceLocation(dimensionResourceLocation)] = Dimension.deserialize(ResourceLocation(dimensionResourceLocation), dimensionPropertyTag)
+                tag.compoundCast()
+            }!!
+            dimensionMap[dimensionResourceLocation] = Dimension.deserialize(dimensionResourceLocation, dimensionPropertyTag)
         }
         return dimensionMap
     }

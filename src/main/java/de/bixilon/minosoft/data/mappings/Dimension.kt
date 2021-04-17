@@ -17,7 +17,7 @@ import de.bixilon.minosoft.data.mappings.registry.RegistryItem
 import de.bixilon.minosoft.data.mappings.registry.ResourceLocationDeserializer
 import de.bixilon.minosoft.data.mappings.versions.VersionMapping
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import de.bixilon.minosoft.util.nbt.tag.CompoundTag
+import de.bixilon.minosoft.util.KUtil.nullCast
 
 data class Dimension(
     override val resourceLocation: ResourceLocation,
@@ -54,24 +54,24 @@ data class Dimension(
     }
 
     companion object : ResourceLocationDeserializer<Dimension> {
-        fun deserialize(resourceLocation: ResourceLocation, nbt: CompoundTag): Dimension {
+        fun deserialize(resourceLocation: ResourceLocation, nbt: Map<String, Any>): Dimension {
             return Dimension(
                 resourceLocation = resourceLocation,
-                piglinSafe = nbt.getBoolean("piglin_safe") == true,
-                natural = nbt.getBoolean("natural") == true,
-                ambientLight = nbt.getFloatTag("ambient_light")?.value ?: 0.0f,
-                infiniBurn = ResourceLocation(nbt.getStringTag("infiniburn")?.value ?: "infiniburn_overworld"),
-                respawnAnchorWorks = nbt.getBoolean("respawn_anchor_works") == true,
-                hasSkyLight = nbt.getBoolean("has_skylight") == true,
-                bedWorks = nbt.getBoolean("bed_works") == true,
-                effects = ResourceLocation(nbt.getStringTag("effects")?.value ?: "overworld"),
-                hasRaids = nbt.getBoolean("has_raids") == true,
-                logicalHeight = nbt.getNumberTag("logical_height")?.asInt ?: 256,
-                coordinateScale = nbt.getDoubleTag("coordinate_scale")?.value ?: 0.0,
-                minY = nbt.getNumberTag("min_y")?.asInt ?: 0,
-                hasCeiling = nbt.getBoolean("has_ceiling") == true,
-                ultraWarm = nbt.getBoolean("ultrawarm") == true,
-                height = nbt.getNumberTag("height")?.asInt ?: 256,
+                piglinSafe = nbt["piglin_safe"]?.nullCast<Number>()?.toInt() == 0x01,
+                natural = nbt["natural"]?.nullCast<Number>()?.toInt() == 0x01,
+                ambientLight = nbt["ambient_light"]?.nullCast<Float>() ?: 0.0f,
+                infiniBurn = ResourceLocation(nbt["infiniburn"]?.nullCast<String>() ?: "infiniburn_overworld"),
+                respawnAnchorWorks = nbt["respawn_anchor_works"]?.nullCast<Number>()?.toInt() == 0x01,
+                hasSkyLight = nbt["has_skylight"]?.nullCast<Number>()?.toInt() == 0x01,
+                bedWorks = nbt["bed_works"]?.nullCast<Number>()?.toInt() == 0x01,
+                effects = ResourceLocation(nbt["effects"]?.nullCast<String>() ?: "overworld"),
+                hasRaids = nbt["has_raids"]?.nullCast<Number>()?.toInt() == 0x01,
+                logicalHeight = nbt["logical_height"]?.nullCast<Int>() ?: 256,
+                coordinateScale = nbt["coordinate_scale"]?.nullCast() ?: 0.0,
+                minY = nbt["min_y"]?.nullCast<Number>()?.toInt() ?: 0,
+                hasCeiling = nbt["has_ceiling"]?.nullCast<Number>()?.toInt() == 0x01,
+                ultraWarm = nbt["ultrawarm"]?.nullCast<Number>()?.toInt() == 0x01,
+                height = nbt["height"]?.nullCast<Number>()?.toInt() ?: 256,
             )
         }
 

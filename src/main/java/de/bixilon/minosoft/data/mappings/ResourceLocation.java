@@ -41,12 +41,6 @@ public class ResourceLocation implements Comparable<ResourceLocation> {
         this.full = this.namespace + ":" + this.path;
     }
 
-    public ResourceLocation(ResourceLocation path) {
-        this.namespace = path.getNamespace();
-        this.path = path.getPath();
-        this.full = path.getFull();
-    }
-
     public static ResourceLocation getResourceLocation(String resourceLocation) throws IllegalArgumentException {
         if (!ProtocolDefinition.RESOURCE_LOCATION_PATTERN.matcher(resourceLocation).matches()) {
             throw new IllegalArgumentException(String.format("%s in not a valid resource locaion!", resourceLocation));

@@ -19,7 +19,6 @@ import de.bixilon.minosoft.data.commands.parser.exceptions.resourcelocation.Item
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties
 import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import de.bixilon.minosoft.util.nbt.tag.CompoundTag
 
 class ItemStackParser : CommandParser() {
 
@@ -36,7 +35,7 @@ class ItemStackParser : CommandParser() {
         check(item != null) {
             throw ItemNotFoundCommandParseException(stringReader, argument.key)
         }
-        var nbt: CompoundTag? = null
+        var nbt: MutableMap<String, Any>? = null
         if (stringReader.peek() == '{') {
             nbt = stringReader.readNBTCompoundTag()
         }

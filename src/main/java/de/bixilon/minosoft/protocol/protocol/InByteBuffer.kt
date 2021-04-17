@@ -25,12 +25,11 @@ import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.network.connection.Connection
 import de.bixilon.minosoft.util.Util
-import de.bixilon.minosoft.util.nbt.tag.*
+import de.bixilon.minosoft.util.nbt.tag.NBTTagTypes
 import de.bixilon.minosoft.util.nbt.tag.NBTTagTypes.Companion.VALUES
 import glm_.vec2.Vec2i
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3i
-import java.io.IOException
 import java.nio.charset.StandardCharsets
 import java.util.*
 
@@ -133,11 +132,8 @@ open class InByteBuffer {
         return result
     }
 
-    @Deprecated(message = "Legacy only", replaceWith = ReplaceWith("readVarIntArray(readVarInt())"))
-    fun readVarIntArray(): IntArray {
-        return readVarIntArray(readVarInt())
-    }
 
+    @JvmOverloads
     fun readVarIntArray(length: Int = readVarInt()): IntArray {
         check(length <= bytes.size) { "Trying to allocate to much memory!" }
         val array = IntArray(length)
@@ -229,11 +225,7 @@ open class InByteBuffer {
         return readUnsignedByte() == 1
     }
 
-    @Deprecated(message = "Java legacy", replaceWith = ReplaceWith("readString()"))
-    fun readString(): String {
-        return readString(readVarInt())
-    }
-
+    @JvmOverloads
     fun readString(length: Int = readVarInt()): String {
         val string = String(readByteArray(length), StandardCharsets.UTF_8)
         check(string.length <= ProtocolDefinition.STRING_MAX_LENGTH) { "String max string length exceeded ${string.length} > ${ProtocolDefinition.STRING_MAX_LENGTH}" }
@@ -292,7 +284,6 @@ open class InByteBuffer {
         return Vec3(readFloat(), readFloat(), readFloat())
     }
 
-
     fun readByteBlockPosition(): Vec3i {
         return Vec3i(readInt(), readByte(), readInt())
     }
@@ -326,11 +317,7 @@ open class InByteBuffer {
         }
     }
 
-    @Deprecated(message = "Legacy only", replaceWith = ReplaceWith("readCommandNodeArray(readVarInt())"))
-    fun readCommandNodeArray(): Array<CommandNode> {
-        return readCommandNodeArray(readVarInt())
-    }
-
+    @JvmOverloads
     fun readCommandNodeArray(length: Int = readVarInt()): Array<CommandNode> {
         val nodes = readArray(length) { readCommandNode() }
         for (node in nodes) {
@@ -350,7 +337,6 @@ open class InByteBuffer {
             }
         }
 
-
         return nodes
     }
 
@@ -367,47 +353,60 @@ open class InByteBuffer {
         return ret
     }
 
-    @Deprecated(message = "Refactored soon!")
-    fun readNBT(tagType: NBTTagTypes): NBTTag? {
+    fun readNBTTag(tagType: NBTTagTypes): Any? {
         return when (tagType) {
             NBTTagTypes.END -> null
-            NBTTagTypes.BYTE -> ByteTag(this)
-            NBTTagTypes.SHORT -> ShortTag(this)
-            NBTTagTypes.INT -> IntTag(this)
-            NBTTagTypes.LONG -> LongTag(this)
-            NBTTagTypes.FLOAT -> FloatTag(this)
-            NBTTagTypes.DOUBLE -> DoubleTag(this)
-            NBTTagTypes.BYTE_ARRAY -> ByteArrayTag(this)
-            NBTTagTypes.STRING -> StringTag(this)
-            NBTTagTypes.LIST -> ListTag(this)
-            NBTTagTypes.COMPOUND -> CompoundTag(true, this)
-            NBTTagTypes.INT_ARRAY -> IntArrayTag(this)
-            NBTTagTypes.LONG_ARRAY -> LongArrayTag(this)
+            NBTTagTypes.BYTE -> readByte()
+            NBTTagTypes.SHORT -> readShort()
+            NBTTagTypes.INT -> readInt()
+            NBTTagTypes.LONG -> readLong()
+            NBTTagTypes.FLOAT -> readFloat()
+            NBTTagTypes.DOUBLE -> readDouble()
+            NBTTagTypes.BYTE_ARRAY -> readByteArray(readInt())
+            NBTTagTypes.STRING -> readString(readUnsignedShort())
+            NBTTagTypes.LIST -> {
+                val listType = NBTTagTypes.VALUES[readUnsignedByte()]
+                val length = readInt()
+                val out: MutableList<Any> = mutableListOf()
+                for (i in 0 until length) {
+                    readNBTTag(listType)?.let { out.add(it) }
+                }
+                out
+            }
+            NBTTagTypes.COMPOUND -> {
+                val out: MutableMap<String, Any> = mutableMapOf()
+                while (true) {
+                    val compoundTagType = VALUES[readUnsignedByte()]
+                    if (compoundTagType === NBTTagTypes.END) {
+                        // end tag
+                        break
+                    }
+                    val tagName: String = readString(readUnsignedShort())
+                    val tag = readNBTTag(compoundTagType) ?: continue
+                    out[tagName] = tag
+                }
+                out
+            }
+            NBTTagTypes.INT_ARRAY -> readIntArray(readInt())
+            NBTTagTypes.LONG_ARRAY -> readLongArray(readInt())
         }
     }
 
-    @Deprecated(message = "Refactored soon!")
-    fun readNBT(compressed: Boolean): NBTTag? {
+    fun readNBTTag(compressed: Boolean): Any? {
         if (compressed) {
-            val length = readUnsignedShort()
+            val length = readShort().toInt()
             return if (length == -1) {
                 // no nbt data here...
-                CompoundTag()
-            } else try {
-                InByteBuffer(Util.decompressGzip(readByteArray(length)), connection!!).readNBT(false)
-            } catch (e: IOException) {
-                // oh no
-                e.printStackTrace()
-                throw IllegalArgumentException("Bad nbt")
+                null
+            } else {
+                InByteBuffer(Util.decompressGzip(readByteArray(length)), connection!!).readNBTTag(false)
             }
         }
         val type = VALUES[readUnsignedByte()]
-        return if (type === NBTTagTypes.COMPOUND) {
-            // shouldn't be a subtag
-            CompoundTag(false, this)
-        } else {
-            readNBT(type)
+        if (type === NBTTagTypes.COMPOUND) {
+            var name = readString(readUnsignedShort()) // ToDo
         }
+        return readNBTTag(type)
     }
 
     fun getBase64(): String {

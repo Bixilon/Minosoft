@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.entities.block
 
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import de.bixilon.minosoft.util.nbt.tag.CompoundTag
+import de.bixilon.minosoft.util.KUtil.nullCast
 
 class JigsawBlockEntity(connection: PlayConnection) : BlockEntity(connection) {
     var joint: String = "rollable"
@@ -30,12 +30,12 @@ class JigsawBlockEntity(connection: PlayConnection) : BlockEntity(connection) {
         private set
 
 
-    override fun updateNBT(nbt: CompoundTag) {
-        nbt.getStringTag("joint")?.value?.let { joint = it }
-        nbt.getStringTag("name")?.value?.let { name = ResourceLocation.getPathResourceLocation(it) }
-        nbt.getStringTag("pool")?.value?.let { pool = ResourceLocation.getPathResourceLocation(it) }
-        nbt.getStringTag("finalState")?.value?.let { finalState = ResourceLocation.getPathResourceLocation(it) }
-        nbt.getStringTag("target")?.value?.let { target = ResourceLocation.getPathResourceLocation(it) }
+    override fun updateNBT(nbt: Map<String, Any>) {
+        nbt["joint"]?.nullCast<String>()?.let { joint = it }
+        nbt["name"]?.nullCast<String>()?.let { name = ResourceLocation.getPathResourceLocation(it) }
+        nbt["pool"]?.nullCast<String>()?.let { pool = ResourceLocation.getPathResourceLocation(it) }
+        nbt["finalState"]?.nullCast<String>()?.let { finalState = ResourceLocation.getPathResourceLocation(it) }
+        nbt["target"]?.nullCast<String>()?.let { target = ResourceLocation.getPathResourceLocation(it) }
     }
 
     companion object : BlockEntityFactory<JigsawBlockEntity> {

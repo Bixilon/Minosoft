@@ -14,11 +14,10 @@
 package de.bixilon.minosoft.data.entities.block
 
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import de.bixilon.minosoft.util.nbt.tag.CompoundTag
 
 abstract class BlockEntity(
     val connection: PlayConnection,
 ) {
 
-    open fun updateNBT(nbt: CompoundTag) {}
+    open fun updateNBT(nbt: Map<String, Any>) {}
 }

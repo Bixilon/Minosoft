@@ -10,23 +10,18 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.protocol.packets.s2c.play
 
-package de.bixilon.minosoft.util.nbt.tag;
+import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
 
-import de.bixilon.minosoft.protocol.protocol.OutByteBuffer;
+class PacketNBTQueryResponse(buffer: PlayInByteBuffer) : PlayS2CPacket() {
+    val transactionId: Int = buffer.readVarInt()
+    val nbt: Map<String, Any> = buffer.readNBT()?.compoundCast()!!
 
-public abstract class NBTTag {
-    boolean isFinal;
-
-    abstract NBTTagTypes getType();
-
-    abstract void writeBytes(OutByteBuffer buffer);
-
-    public boolean isFinal() {
-        return this.isFinal;
-    }
-
-    public void setFinal() {
-        this.isFinal = true;
+    override fun log() {
+        Log.protocol("[IN] Received nbt response (transactionId=$transactionId nbt=$nbt)")
     }
 }

@@ -26,14 +26,12 @@ import glm_.vec2.Vec2i
 import java.util.*
 
 class PacketUpdateLight(buffer: PlayInByteBuffer) : PlayS2CPacket() {
-    val position: Vec2i
+    val position: Vec2i = Vec2i(buffer.readVarInt(), buffer.readVarInt())
     var trustEdges: Boolean = false
         private set
     val lightAccessor: LightAccessor
 
     init {
-        position = Vec2i(buffer.readVarInt(), buffer.readVarInt())
-
         if (buffer.versionId >= ProtocolVersions.V_1_16_PRE3) {
             trustEdges = buffer.readBoolean()
         }

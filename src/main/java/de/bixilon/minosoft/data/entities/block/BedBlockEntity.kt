@@ -17,23 +17,20 @@ import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import de.bixilon.minosoft.util.nbt.tag.CompoundTag
-import de.bixilon.minosoft.util.nbt.tag.IntTag
-import de.bixilon.minosoft.util.nbt.tag.StringTag
 
 class BedBlockEntity(connection: PlayConnection) : BlockEntity(connection) {
     var color = ChatColors.RED
         private set
 
 
-    override fun updateNBT(nbt: CompoundTag) {
-        color = nbt.getTag("color")?.let {
+    override fun updateNBT(nbt: Map<String, Any>) {
+        color = nbt["color"]?.let {
             when (it) {
-                is StringTag -> {
-                    RGBColor(it.value)
+                is String -> {
+                    RGBColor(it)
                 }
-                is IntTag -> {
-                    when (it.value) {
+                is Number -> {
+                    when (it.toInt()) {
                         0 -> RGBColor(255, 255, 255) // white
                         1 -> RGBColor(234, 103, 3) // orange
                         2 -> RGBColor(199, 78, 189) // magenta

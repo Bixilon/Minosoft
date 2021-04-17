@@ -17,23 +17,22 @@ import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import de.bixilon.minosoft.util.nbt.tag.CompoundTag
-import de.bixilon.minosoft.util.nbt.tag.NBTTag
+import de.bixilon.minosoft.util.KUtil.nullCast
+import de.bixilon.minosoft.util.nbt.tag.NBTUtil.listCast
 
 class CampfireBlockEntity(connection: PlayConnection) : BlockEntity(connection) {
     val items: Array<ItemStack?> = arrayOfNulls(RenderConstants.CAMPFIRE_ITEMS)
 
 
-    override fun updateNBT(nbt: CompoundTag) {
-        val itemArray = nbt.getListTag("Items")?.getValue<NBTTag>() as List<NBTTag>? ?: return
+    override fun updateNBT(nbt: Map<String, Any>) {
+        val itemArray = nbt["Items"]?.listCast<Map<String, Any>>() ?: return
         for (slot in itemArray) {
-            check(slot is CompoundTag)
 
-            val itemStack = ItemStack(connection.mapping.itemRegistry.get(slot.getStringTag("id").value)!!, connection.version)
+            val itemStack = ItemStack(connection.mapping.itemRegistry.get(slot["id"]?.nullCast<String>()!!)!!, connection.version)
 
-            itemStack.itemCount = slot.getNumberTag("Count").asInt
+            itemStack.itemCount = slot["Count"]?.nullCast<Number>()?.toInt()!!
 
-            items[slot.getNumberTag("Slot").asInt] = itemStack
+            items[slot["Slot"]?.nullCast<Number>()?.toInt()!!] = itemStack
         }
     }
 
