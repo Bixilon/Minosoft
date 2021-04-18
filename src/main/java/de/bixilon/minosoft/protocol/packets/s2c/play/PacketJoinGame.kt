@@ -107,7 +107,7 @@ class PacketJoinGame(buffer: PlayInByteBuffer) : PlayS2CPacket() {
             hashedSeed = buffer.readLong()
         }
         if (buffer.versionId < ProtocolVersions.V_19W11A) {
-            difficulty = Difficulties.byId(buffer.readUnsignedByte().toInt())
+            difficulty = Difficulties.byId(buffer.readUnsignedByte())
         }
         maxPlayers = if (buffer.versionId < ProtocolVersions.V_1_16_2_RC1) {
             buffer.readByte().toInt()

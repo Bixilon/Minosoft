@@ -157,6 +157,8 @@ class PlayConnection(
                 }
                 latch.waitForChange()
             }
+            Log.info("Connecting to server: $address")
+            network.connect(address)
         } catch (exception: Throwable) {
             Log.printException(exception, LogLevels.DEBUG)
             Log.fatal("Could not load version $version. This version seems to be unsupported!")
@@ -164,8 +166,6 @@ class PlayConnection(
             lastException = MappingsLoadingException("Mappings could not be loaded", exception)
             connectionState = ConnectionStates.FAILED_NO_RETRY
         }
-        Log.info("Connecting to server: $address")
-        network.connect(address)
         latch.countDown()
     }
 

@@ -135,7 +135,7 @@ class VersionMapping {
         // pre init stuff
         loadShapes(pixlyzerData["shapes"]?.asJsonObject)
 
-        loadBlockModels(pixlyzerData["models"].asJsonObject.toResourceLocationMap())
+        loadBlockModels(pixlyzerData["models"]?.asJsonObject?.toResourceLocationMap() ?: mutableMapOf())
 
         // enums
         loadEnumRegistry(version, pixlyzerData["equipment_slots"], equipmentSlotRegistry, DefaultRegistries.EQUIPMENT_SLOTS_REGISTRY)

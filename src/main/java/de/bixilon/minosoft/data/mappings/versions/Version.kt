@@ -97,11 +97,11 @@ data class Version(
         }
         val pixlyzerData = try {
             Util.readJsonFromStream(assetsManager.readAssetAsStream(Resources.getPixLyzerDataHashByVersion(this)))
-        } catch (e: Throwable) {
+        } catch (exception: Throwable) {
             // should not happen, but if this version is not flattened, we can fallback to the flatten mappings. Some things might not work...
-            Log.printException(e, LogLevels.VERBOSE)
+            Log.printException(exception, LogLevels.VERBOSE)
             if (isFlattened()) {
-                throw e
+                throw exception
             }
             if (versionId == ProtocolDefinition.PRE_FLATTENING_VERSION_ID) {
                 Versions.PRE_FLATTENING_MAPPING = null
