@@ -53,7 +53,9 @@ open class Registry<T : RegistryItem>(
         check(!initialized) { "Already initialized" }
 
         if (data == null) {
-            setParent(alternative)
+            if (alternative != null) {
+                setParent(alternative)
+            }
             return this
         }
 

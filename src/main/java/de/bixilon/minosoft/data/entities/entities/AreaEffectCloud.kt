@@ -23,6 +23,10 @@ import glm_.vec3.Vec3
 
 class AreaEffectCloud(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : Entity(connection, entityType, position, rotation) {
 
+    @get:EntityMetaDataFunction(name = "Ignore radius")
+    val ignoreRadius: Boolean
+        get() = entityMetaData.sets.getBoolean(EntityMetaDataFields.AREA_EFFECT_CLOUD_IGNORE_RADIUS)
+
     @get:EntityMetaDataFunction(name = "Radius")
     val radius: Float
         get() = entityMetaData.sets.getFloat(EntityMetaDataFields.AREA_EFFECT_CLOUD_RADIUS)

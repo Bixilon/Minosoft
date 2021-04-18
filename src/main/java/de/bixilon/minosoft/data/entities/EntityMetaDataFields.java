@@ -44,6 +44,7 @@ public enum EntityMetaDataFields {
 
     MOB_FLAGS((byte) 0),
 
+    ZOMBIE_HANDS_HELD_UP(false),
     ZOMBIE_IS_BABY(false),
     ZOMBIE_SPECIAL_TYPE(0),
     ZOMBIE_DROWNING_CONVERSION(false),
@@ -54,6 +55,7 @@ public enum EntityMetaDataFields {
 
     FALLING_BLOCK_SPAWN_POSITION,
 
+    AREA_EFFECT_CLOUD_IGNORE_RADIUS(false),
     AREA_EFFECT_CLOUD_RADIUS(0.5f),
     AREA_EFFECT_CLOUD_COLOR(0),
     AREA_EFFECT_CLOUD_WAITING(false),
@@ -191,6 +193,7 @@ public enum EntityMetaDataFields {
 
     PARROT_VARIANT(0),
 
+    ABSTRACT_ILLAGER_FLAGS((byte) 0),
     ABSTRACT_VILLAGER_UNHAPPY_TIMER(0),
 
     VILLAGER_VILLAGER_DATA(new VillagerData(VillagerTypes.PLAINS, new ResourceLocation("minecraft:none"), VillagerLevels.APPRENTICE)),
@@ -277,6 +280,7 @@ public enum EntityMetaDataFields {
     GLOW_SQUID_DARK_TICKS_REMAINING(0),
 
     SKELETON_STRAY_FREEZE_CONVERTING(false),
+    SKELETON_SWING_ARMS(false),
 
     GOAT_IS_SCREAMING(false),
 
@@ -294,7 +298,15 @@ public enum EntityMetaDataFields {
     LEGACY_END_CRYSTAL_HEALTH(5),
     LEGACY_LIVING_ENTITY_AI_DISABLED((byte) 0),
     LEGACY_AGEABLE_ENTITY_AGE((byte) 0),
-    LEGACY_AGEABLE_OWNER_NAME("");
+    LEGACY_AGEABLE_OWNER_NAME(""),
+
+    LEGACY_ZOMBIE_VILLAGER_TYPE(0),
+
+
+    LEGACY_AREA_EFFECT_CLOUD_PARTICLE_ID(0),
+    LEGACY_AREA_EFFECT_CLOUD_PARTICLE_PARAMETER_1(0),
+    LEGACY_AREA_EFFECT_CLOUD_PARTICLE_PARAMETER_2(0),
+    ;
 
     private final Object defaultValue;
 
