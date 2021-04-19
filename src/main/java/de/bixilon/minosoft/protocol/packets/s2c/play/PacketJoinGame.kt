@@ -81,54 +81,55 @@ class PacketJoinGame(buffer: PlayInByteBuffer) : PlayS2CPacket() {
             if (buffer.versionId >= ProtocolVersions.V_14W29A) {
                 isReducedDebugScreen = buffer.readBoolean()
             }
-        }
-
-        if (buffer.versionId >= ProtocolVersions.V_1_16_PRE6) {
-            buffer.readByte() // previous game mode
-        }
-        if (buffer.versionId >= ProtocolVersions.V_20W22A) {
-            buffer.readStringArray() // dimensions
-        }
-        if (buffer.versionId < ProtocolVersions.V_20W21A) {
-            dimension = buffer.connection.mapping.dimensionRegistry.get(buffer.readInt())
         } else {
-            val dimensionCodec = buffer.readNBT()?.compoundCast()!!
-            dimensions = parseDimensionCodec(dimensionCodec, buffer.versionId)
-            if (buffer.versionId < ProtocolVersions.V_1_16_2_PRE3) {
-                dimension = dimensions[buffer.readResourceLocation()]!!
+
+            if (buffer.versionId >= ProtocolVersions.V_1_16_PRE6) {
+                buffer.readByte() // previous game mode
+            }
+            if (buffer.versionId >= ProtocolVersions.V_20W22A) {
+                buffer.readStringArray() // dimensions
+            }
+            if (buffer.versionId < ProtocolVersions.V_20W21A) {
+                dimension = buffer.connection.mapping.dimensionRegistry.get(buffer.readInt())
             } else {
-                buffer.readNBT()!!.compoundCast() // dimension tag
+                val dimensionCodec = buffer.readNBT()?.compoundCast()!!
+                dimensions = parseDimensionCodec(dimensionCodec, buffer.versionId)
+                if (buffer.versionId < ProtocolVersions.V_1_16_2_PRE3) {
+                    dimension = dimensions[buffer.readResourceLocation()]!!
+                } else {
+                    buffer.readNBT()!!.compoundCast() // dimension tag
+                }
+                val currentDimension = buffer.readResourceLocation()
+                dimension = dimensions[currentDimension] ?: buffer.connection.mapping.dimensionRegistry.get(currentDimension)!!
             }
-            val currentDimension = buffer.readResourceLocation()
-            dimension = dimensions[currentDimension] ?: buffer.connection.mapping.dimensionRegistry.get(currentDimension)!!
-        }
 
-        if (buffer.versionId >= ProtocolVersions.V_19W36A) {
-            hashedSeed = buffer.readLong()
-        }
-        if (buffer.versionId < ProtocolVersions.V_19W11A) {
-            difficulty = Difficulties.byId(buffer.readUnsignedByte())
-        }
-        maxPlayers = if (buffer.versionId < ProtocolVersions.V_1_16_2_RC1) {
-            buffer.readByte().toInt()
-        } else {
-            buffer.readVarInt()
-        }
-        if (buffer.versionId < ProtocolVersions.V_20W20A) {
-            levelType = LevelTypes.byType(buffer.readString())
-        }
-        if (buffer.versionId >= ProtocolVersions.V_19W13A) {
-            viewDistance = buffer.readVarInt()
-        }
-        if (buffer.versionId >= ProtocolVersions.V_20W20A) {
-            buffer.readBoolean() // isDebug
-            if (buffer.readBoolean()) {
-                levelType = LevelTypes.FLAT
+            if (buffer.versionId >= ProtocolVersions.V_19W36A) {
+                hashedSeed = buffer.readLong()
             }
-        }
-        isReducedDebugScreen = buffer.readBoolean()
-        if (buffer.versionId >= ProtocolVersions.V_19W36A) {
-            isEnableRespawnScreen = buffer.readBoolean()
+            if (buffer.versionId < ProtocolVersions.V_19W11A) {
+                difficulty = Difficulties.byId(buffer.readUnsignedByte())
+            }
+            maxPlayers = if (buffer.versionId < ProtocolVersions.V_1_16_2_RC1) {
+                buffer.readByte().toInt()
+            } else {
+                buffer.readVarInt()
+            }
+            if (buffer.versionId < ProtocolVersions.V_20W20A) {
+                levelType = LevelTypes.byType(buffer.readString())
+            }
+            if (buffer.versionId >= ProtocolVersions.V_19W13A) {
+                viewDistance = buffer.readVarInt()
+            }
+            if (buffer.versionId >= ProtocolVersions.V_20W20A) {
+                buffer.readBoolean() // isDebug
+                if (buffer.readBoolean()) {
+                    levelType = LevelTypes.FLAT
+                }
+            }
+            isReducedDebugScreen = buffer.readBoolean()
+            if (buffer.versionId >= ProtocolVersions.V_19W36A) {
+                isEnableRespawnScreen = buffer.readBoolean()
+            }
         }
     }
 

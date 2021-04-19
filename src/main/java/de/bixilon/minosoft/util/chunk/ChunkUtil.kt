@@ -191,6 +191,7 @@ object ChunkUtil {
                     val skyLight = buffer.readByteArray(ProtocolDefinition.BLOCKS_PER_SECTION / 2)
                 }
                 // ToDo
+                chunkData.lightAccessor = DummyLightAccessor
             }
             sectionMap[sectionHeight] = ChunkSection(blocks)
         }
