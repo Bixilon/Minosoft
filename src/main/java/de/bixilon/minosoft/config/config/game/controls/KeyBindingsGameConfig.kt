@@ -40,6 +40,7 @@ object KeyBindingsNames {
     val MOVE_SPRINT = ResourceLocation("minosoft:move_sprint")
     val MOVE_FLY_UP = ResourceLocation("minosoft:move_fly_up")
     val MOVE_FLY_DOWN = ResourceLocation("minosoft:move_fly_down")
+    val MOVE_JUMP = ResourceLocation("minosoft:move_jump")
 
     val ZOOM = ResourceLocation("minosoft:zoom")
 
@@ -110,6 +111,12 @@ object KeyBindingsNames {
                 KeyAction.CHANGE to mutableSetOf(KeyCodes.KEY_SPACE)
             ),
             mutableSetOf(mutableSetOf(WHEN_IN_GAME, WHEN_PLAYER_IS_FLYING))
+        ),
+        MOVE_JUMP to KeyBinding(
+            mutableMapOf(
+                KeyAction.CHANGE to mutableSetOf(KeyCodes.KEY_SPACE)
+            ),
+            mutableSetOf(mutableSetOf(WHEN_IN_GAME))
         ),
         MOVE_FLY_DOWN to KeyBinding(
             mutableMapOf(

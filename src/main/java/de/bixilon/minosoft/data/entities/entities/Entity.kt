@@ -52,6 +52,7 @@ abstract class Entity(
     var velocity: Vec3? = null
 
     protected open val hasCollisions = true
+    protected open val isFlying = false
 
     var onGround = false
 
@@ -217,11 +218,11 @@ abstract class Entity(
     }
 
     private fun collide(deltaPosition: Vec3, collisionsToCheck: VoxelShape, aabb: AABB): Vec3 {
-        onGround = false
         val delta = Vec3(deltaPosition)
         if (delta.y != 0.0f) {
             delta.y = collisionsToCheck.computeOffset(aabb, deltaPosition.y, Axes.Y)
             aabb.offsetAssign(0f, delta.y, 0f)
+            onGround = false
             if (delta.y != deltaPosition.y) {
                 velocity?.y = 0.0f
                 if (deltaPosition.y < 0) {
@@ -255,7 +256,7 @@ abstract class Entity(
 
     fun computeTimeStep(deltaMillis: Long) {
         val deltaTime = deltaMillis.toFloat() / 1000.0f
-        if (!hasNoGravity) {
+        if (!hasNoGravity && !isFlying) {
             if (velocity == null) {
                 velocity = Vec3(0, deltaTime * ProtocolDefinition.GRAVITY, 0)
             } else {

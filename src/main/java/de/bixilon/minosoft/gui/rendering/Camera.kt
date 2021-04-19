@@ -90,6 +90,7 @@ class Camera(
     private var keyFlyDown = false
     private var keySprintDown = false
     private var keyZoomDown = false
+    private var keyJumpDown = false
 
     fun mouseCallback(xPos: Double, yPos: Double) {
         var xOffset = xPos - this.lastMouseX
@@ -144,6 +145,9 @@ class Camera(
         renderWindow.registerKeyCallback(KeyBindingsNames.ZOOM) { _: KeyCodes, keyAction: KeyAction ->
             keyZoomDown = keyAction == KeyAction.PRESS
         }
+        renderWindow.registerKeyCallback(KeyBindingsNames.MOVE_JUMP) { _: KeyCodes, keyAction: KeyAction ->
+            keyJumpDown = keyAction == KeyAction.PRESS
+        }
     }
 
     fun handleInput(deltaTime: Double) {
@@ -172,8 +176,15 @@ class Camera(
         if (keyFlyDown) {
             deltaMovement = deltaMovement - CAMERA_UP_VEC3 * cameraSpeed
         }
-        if (keyFlyUp) {
+        if (playerEntity.isFlying && keyFlyUp) {
             deltaMovement = deltaMovement + CAMERA_UP_VEC3 * cameraSpeed
+        } else if (playerEntity.onGround && keyJumpDown) {
+            // TODO: jump delay, correct jump height, direction wrong?
+            playerEntity.velocity?.let {
+                it.y += -0.75f * ProtocolDefinition.GRAVITY
+            } ?: run {
+                playerEntity.velocity = Vec3(0, -0.75f * ProtocolDefinition.GRAVITY, 0)
+            }
         }
         if (deltaMovement != VecUtil.EMPTY_VEC3) {
             playerEntity.move(deltaMovement)

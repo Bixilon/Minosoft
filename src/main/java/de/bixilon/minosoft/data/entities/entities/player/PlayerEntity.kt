@@ -48,6 +48,9 @@ class PlayerEntity(
     override val hasCollisions: Boolean
         get() = gamemode != Gamemodes.SPECTATOR
 
+    public override val isFlying: Boolean
+        get() = !hasCollisions || gamemode == Gamemodes.CREATIVE
+
     @get:EntityMetaDataFunction(name = "Absorption hearts")
     val playerAbsorptionHearts: Float
         get() = entityMetaData.sets.getFloat(EntityMetaDataFields.PLAYER_ABSORPTION_HEARTS)
