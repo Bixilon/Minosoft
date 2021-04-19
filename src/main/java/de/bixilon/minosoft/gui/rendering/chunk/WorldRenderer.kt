@@ -20,6 +20,7 @@ import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.blocks.BlockState
 import de.bixilon.minosoft.data.mappings.blocks.FluidBlock
 import de.bixilon.minosoft.data.mappings.blocks.properties.BlockProperties
+import de.bixilon.minosoft.data.mappings.versions.VersionMapping
 import de.bixilon.minosoft.data.world.Chunk
 import de.bixilon.minosoft.data.world.ChunkSection
 import de.bixilon.minosoft.data.world.ChunkSection.Companion.indexPosition
@@ -92,8 +93,20 @@ class WorldRenderer(
         return meshCollection
     }
 
+
+    private fun getAllBlocks(mapping: VersionMapping): Collection<BlockState> {
+        val list: MutableList<BlockState> = mutableListOf()
+
+        var currentMapping: VersionMapping? = mapping
+        while (currentMapping != null) {
+            list.addAll(currentMapping.blockStateIdMap.values)
+            currentMapping = currentMapping.parentMapping
+        }
+        return list
+    }
+
     override fun init() {
-        renderWindow.textures.allTextures.addAll(resolveBlockTextureIds(connection.version.mapping.blockStateIdMap.values))
+        renderWindow.textures.allTextures.addAll(resolveBlockTextureIds(getAllBlocks(connection.version.mapping)))
 
 
         // register keybindings
