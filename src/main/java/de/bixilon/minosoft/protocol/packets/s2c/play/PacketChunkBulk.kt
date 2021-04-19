@@ -86,6 +86,6 @@ class PacketChunkBulk() : PlayS2CPacket() {
     }
 
     override fun log() {
-        Log.protocol("[IN] Chunk bulk packet received (chunks${data.size})")
+        Log.protocol("[IN] Chunk bulk packet received (chunks=${data.size})")
     }
 }
