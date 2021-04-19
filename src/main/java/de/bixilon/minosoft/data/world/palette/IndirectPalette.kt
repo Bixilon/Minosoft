@@ -36,7 +36,7 @@ class IndirectPalette(
             val blockName: String = if (connection.version.isFlattened()) {
                 blockId.toString()
             } else {
-                "(${blockId shr 4}:${blockId and 0x0F}"
+                "${blockId shr 4}:${blockId and 0x0F} ($blockId)"
             }
             Log.warn("Server sent unknown block: $blockName")
         }

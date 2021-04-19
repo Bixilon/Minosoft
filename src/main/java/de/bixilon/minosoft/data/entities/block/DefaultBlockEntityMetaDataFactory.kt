@@ -54,6 +54,7 @@ object DefaultBlockEntityMetaDataFactory {
             ChestBlockEntity,
             TrappedChestBlockEntity,
             BeehiveBlockEntity,
+            NoteblockBlockEntity,
         )
 
         val ret: MutableMap<ResourceLocation, BlockEntityFactory<out BlockEntity>> = mutableMapOf()

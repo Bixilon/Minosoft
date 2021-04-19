@@ -33,6 +33,8 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.of
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.util.KUtil.nullCast
+import de.bixilon.minosoft.util.MMath
 import de.bixilon.minosoft.util.logging.Log
 import glm_.vec2.Vec2i
 import glm_.vec3.Vec3i
@@ -45,7 +47,7 @@ class WorldRenderer(
     private val world: World,
     val renderWindow: RenderWindow,
 ) : Renderer {
-    private val waterBlock = connection.mapping.blockRegistry.get(ResourceLocation("minecraft:water")) as FluidBlock
+    private val waterBlock = connection.mapping.blockRegistry.get(ResourceLocation("minecraft:water"))?.nullCast<FluidBlock>()
 
     lateinit var chunkShader: Shader
     val allChunkSections: MutableMap<Vec2i, MutableMap<Int, ChunkMeshCollection>> = Collections.synchronizedMap(ConcurrentHashMap())
@@ -76,7 +78,7 @@ class WorldRenderer(
 
 
                 if (blockState.properties[BlockProperties.WATERLOGGED] == true) {
-                    waterBlock.fluidRenderer.render(waterBlock.defaultState, world.worldLightAccessor, renderWindow, blockPosition, meshCollection, neighborBlocks, world)
+                    waterBlock?.fluidRenderer?.render(waterBlock.defaultState, world.worldLightAccessor, renderWindow, blockPosition, meshCollection, neighborBlocks, world)
                 }
 
                 blockState.getBlockRenderer(blockPosition).render(blockState, world.worldLightAccessor, renderWindow, blockPosition, meshCollection, neighborBlocks, world)
@@ -107,7 +109,7 @@ class WorldRenderer(
         chunkShader = Shader(
             vertexPath = ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "rendering/shader/chunk_vertex.glsl"),
             fragmentPath = ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "rendering/shader/chunk_fragment.glsl"),
-            defines = mapOf("ANIMATED_TEXTURE_COUNT" to renderWindow.textures.animator.animatedTextures.size),
+            defines = mapOf("ANIMATED_TEXTURE_COUNT" to MMath.clamp(renderWindow.textures.animator.animatedTextures.size, 1, Int.MAX_VALUE)),
         )
         chunkShader.load()
 

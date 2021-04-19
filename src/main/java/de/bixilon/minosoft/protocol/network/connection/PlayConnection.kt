@@ -146,7 +146,7 @@ class PlayConnection(
     fun connect(latch: CountUpAndDownLatch) {
         try {
             version.load(latch) // ToDo: show gui loader
-            assetsManager = MultiAssetsManager(version.assetsManager, Minosoft.MINOSOFT_ASSETS_MANAGER)
+            assetsManager = MultiAssetsManager(version.assetsManager, Minosoft.MINOSOFT_ASSETS_MANAGER, Minosoft.MINECRAFT_FALLBACK_ASSETS_MANAGER)
             mapping.parentMapping = version.mapping
             player = Player(account, this)
 

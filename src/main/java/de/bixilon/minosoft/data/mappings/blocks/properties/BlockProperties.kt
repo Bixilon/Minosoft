@@ -99,6 +99,11 @@ enum class BlockProperties {
 
 
     VERTICAL_DIRECTION("vertical_direction", VerticalDirections),
+
+
+    LEGACY_CHECK_DECAY("check_decay", BooleanBlocKPropertiesSerializer),
+    LEGAVY_DECAYABLE("decayable", BooleanBlocKPropertiesSerializer),
+    LEGAVY_NODROP("nodrop", BooleanBlocKPropertiesSerializer),
     ;
 
     val group: String
