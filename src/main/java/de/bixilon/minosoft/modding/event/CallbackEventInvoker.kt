@@ -17,7 +17,7 @@ import de.bixilon.minosoft.modding.loading.Priorities
 
 class CallbackEventInvoker<E : Event?> private constructor(
     ignoreCancelled: Boolean,
-    private val callback: (event: E) -> Unit,
+    private val callback: (E) -> Unit,
     override val eventType: Class<out Event>,
 ) : EventInvoker(ignoreCancelled, Priorities.NORMAL, null) {
 
@@ -28,7 +28,7 @@ class CallbackEventInvoker<E : Event?> private constructor(
     companion object {
         @JvmOverloads
         @Suppress("NON_PUBLIC_CALL_FROM_PUBLIC_INLINE")
-        inline fun <reified E : Event> of(ignoreCancelled: Boolean = false, noinline callback: (event: E) -> Unit): CallbackEventInvoker<E> {
+        inline fun <reified E : Event> of(ignoreCancelled: Boolean = false, noinline callback: (E) -> Unit): CallbackEventInvoker<E> {
             return CallbackEventInvoker(
                 ignoreCancelled = ignoreCancelled,
                 callback = callback,

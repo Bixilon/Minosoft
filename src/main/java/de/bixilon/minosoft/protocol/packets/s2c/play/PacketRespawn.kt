@@ -83,16 +83,13 @@ class PacketRespawn(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     }
 
     override fun handle(connection: PlayConnection) {
-        if (connection.fireEvent(RespawnEvent(connection, this))) {
-            return
-        }
-
         // clear all chunks
         connection.world.chunks.clear()
         connection.world.dimension = dimension
         connection.player.isSpawnConfirmed = false
         connection.player.entity.tabListItem.gamemode = gamemode
-        connection.renderer?.renderWindow?.worldRenderer?.clearChunkCache()
+
+        connection.fireEvent(RespawnEvent(connection, this))
     }
 
     override fun log() {

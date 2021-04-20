@@ -15,6 +15,7 @@ package de.bixilon.minosoft.protocol.packets.s2c.play
 
 import de.bixilon.minosoft.data.world.light.ChunkLightAccessor
 import de.bixilon.minosoft.data.world.light.LightAccessor
+import de.bixilon.minosoft.modding.event.events.ChunkDataChangeEvent
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
@@ -26,7 +27,7 @@ import glm_.vec2.Vec2i
 import java.util.*
 
 class PacketUpdateLight(buffer: PlayInByteBuffer) : PlayS2CPacket() {
-    val position: Vec2i = Vec2i(buffer.readVarInt(), buffer.readVarInt())
+    val chunkPosition: Vec2i = Vec2i(buffer.readVarInt(), buffer.readVarInt())
     var trustEdges: Boolean = false
         private set
     val lightAccessor: LightAccessor
@@ -55,16 +56,16 @@ class PacketUpdateLight(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     }
 
     override fun log() {
-        Log.protocol("[IN] Received light update (position=%s)", position)
+        Log.protocol("[IN] Received light update (position=$chunkPosition)")
     }
 
     override fun handle(connection: PlayConnection) {
-        val chunk = connection.world.getOrCreateChunk(position)
+        val chunk = connection.world.getOrCreateChunk(chunkPosition)
         if (chunk.lightAccessor != null && chunk.lightAccessor is ChunkLightAccessor && lightAccessor is ChunkLightAccessor) {
             (chunk.lightAccessor as ChunkLightAccessor).merge(lightAccessor)
         } else {
             chunk.lightAccessor = lightAccessor
         }
-        connection.renderer?.renderWindow?.worldRenderer?.prepareChunk(position, chunk)
+        connection.fireEvent(ChunkDataChangeEvent(connection, chunkPosition, chunk))
     }
 }

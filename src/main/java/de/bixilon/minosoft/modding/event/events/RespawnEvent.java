@@ -20,7 +20,7 @@ import de.bixilon.minosoft.data.mappings.Dimension;
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
 import de.bixilon.minosoft.protocol.packets.s2c.play.PacketRespawn;
 
-public class RespawnEvent extends CancelableEvent {
+public class RespawnEvent extends PlayConnectionEvent {
     private final Gamemodes gamemode;
     private final Dimension dimension;
     private final Difficulties difficulty;

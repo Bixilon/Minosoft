@@ -76,7 +76,7 @@ class PacketChunkBulk() : PlayS2CPacket() {
             data?.let {
                 val chunk = connection.world.getOrCreateChunk(chunkPosition)
                 chunk.setData(data)
-                connection.fireEvent(ChunkDataChangeEvent(connection, chunkPosition, data))
+                connection.fireEvent(ChunkDataChangeEvent(connection, chunkPosition, chunk))
             } ?: let {
                 // unload chunk
                 connection.world.unloadChunk(chunkPosition)

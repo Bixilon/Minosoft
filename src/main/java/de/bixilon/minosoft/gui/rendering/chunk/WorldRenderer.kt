@@ -35,10 +35,7 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.of
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
 import de.bixilon.minosoft.modding.event.CallbackEventInvoker
-import de.bixilon.minosoft.modding.event.events.BlockChangeEvent
-import de.bixilon.minosoft.modding.event.events.ChunkDataChangeEvent
-import de.bixilon.minosoft.modding.event.events.ChunkUnloadEvent
-import de.bixilon.minosoft.modding.event.events.MultiBlockChangeEvent
+import de.bixilon.minosoft.modding.event.events.*
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.nullCast
@@ -137,6 +134,10 @@ class WorldRenderer(
 
         connection.registerEvent(CallbackEventInvoker.of<BlockChangeEvent> {
             prepareChunkSection(it.blockPosition.chunkPosition, it.blockPosition.sectionHeight)
+        })
+
+        connection.registerEvent(CallbackEventInvoker.of<RespawnEvent> {
+            clearChunkCache()
         })
 
         connection.registerEvent(CallbackEventInvoker.of<MultiBlockChangeEvent> {
