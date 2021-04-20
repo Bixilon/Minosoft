@@ -149,10 +149,11 @@ class StatusConnection(
     }
 
     override fun registerEvent(method: EventInvoker) {
-        if (method.eventType.isAssignableFrom(ServerListStatusArriveEvent::class.java) && wasPingDone()) {
+        val wasPingDone = wasPingDone()
+        if (method.eventType.isAssignableFrom(ServerListStatusArriveEvent::class.java) && wasPingDone) {
             // ping done
             method.invoke(ServerListStatusArriveEvent(this, this.lastPing))
-        } else if (method.eventType.isAssignableFrom(ServerListPongEvent::class.java) && wasPingDone() && this.pong != null) {
+        } else if (method.eventType.isAssignableFrom(ServerListPongEvent::class.java) && wasPingDone && this.pong != null) {
             method.invoke(this.pong)
         } else {
             super.registerEvent(method)

@@ -127,19 +127,19 @@ class WorldRenderer(
             prepareWorld(world)
         }
 
-        connection.registerEvent(CallbackEventInvoker<ChunkUnloadEvent> {
+        connection.registerEvent(CallbackEventInvoker.of<ChunkUnloadEvent> {
             unloadChunk(it.chunkPosition)
         })
 
-        connection.registerEvent(CallbackEventInvoker<ChunkDataChangeEvent> {
+        connection.registerEvent(CallbackEventInvoker.of<ChunkDataChangeEvent> {
             prepareChunk(it.chunkPosition)
         })
 
-        connection.registerEvent(CallbackEventInvoker<BlockChangeEvent> {
+        connection.registerEvent(CallbackEventInvoker.of<BlockChangeEvent> {
             prepareChunkSection(it.blockPosition.chunkPosition, it.blockPosition.sectionHeight)
         })
 
-        connection.registerEvent(CallbackEventInvoker<MultiBlockChangeEvent> {
+        connection.registerEvent(CallbackEventInvoker.of<MultiBlockChangeEvent> {
             val sectionHeights: MutableSet<Int> = mutableSetOf()
             for ((key) in it.blocks) {
                 sectionHeights.add(key.sectionHeight)

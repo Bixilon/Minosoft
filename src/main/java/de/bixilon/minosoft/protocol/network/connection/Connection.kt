@@ -56,6 +56,9 @@ abstract class Connection {
         }
 
         for (eventInvoker in eventListeners) {
+            if (!eventInvoker.eventType.isAssignableFrom(connectionEvent::class.java)) {
+                continue
+            }
             eventInvoker.invoke(connectionEvent)
         }
         if (connectionEvent is CancelableEvent) {

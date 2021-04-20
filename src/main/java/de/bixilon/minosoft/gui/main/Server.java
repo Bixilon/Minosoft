@@ -39,7 +39,7 @@ public class Server {
     private int desiredVersion;
     private byte[] favicon;
     private StatusConnection lastPing;
-    private boolean readOnly;
+    private boolean temporary;
     private ServerListCell cell;
 
     public Server(int id, ChatComponent name, String address, int desiredVersion, byte[] favicon) {
@@ -67,7 +67,7 @@ public class Server {
         this.name = ChatComponent.Companion.valueOf(String.format("LAN Server #%d", LANServerListener.getServerMap().size()));
         this.address = address.toString();
         this.desiredVersion = -1; // Automatic
-        this.readOnly = true;
+        this.temporary = true;
     }
 
     public static int getNextServerId() {
@@ -96,7 +96,7 @@ public class Server {
     }
 
     public void saveToConfig() {
-        if (isReadOnly()) {
+        if (isTemporary()) {
             return;
         }
         Minosoft.getConfig().getConfig().getServer().getEntries().put(this.getId(), this);
@@ -104,7 +104,7 @@ public class Server {
     }
 
     public void delete() {
-        if (isReadOnly()) {
+        if (isTemporary()) {
             return;
         }
         Minosoft.getConfig().getConfig().getServer().getEntries().remove(this.getId());
@@ -197,8 +197,8 @@ public class Server {
         return Base64.getEncoder().encodeToString(this.favicon);
     }
 
-    public boolean isReadOnly() {
-        return this.readOnly;
+    public boolean isTemporary() {
+        return this.temporary;
     }
 
     public ServerListCell getCell() {

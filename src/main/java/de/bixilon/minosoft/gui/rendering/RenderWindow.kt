@@ -129,17 +129,17 @@ class RenderWindow(
         }
 
     init {
-        connection.registerEvent(CallbackEventInvoker<ConnectionStateChangeEvent> {
+        connection.registerEvent(CallbackEventInvoker.of<ConnectionStateChangeEvent> {
             if (it.connection.isDisconnected) {
                 renderQueue.add {
                     glfwSetWindowShouldClose(windowId, true)
                 }
             }
         })
-        connection.registerEvent(CallbackEventInvoker<PacketReceiveEvent> {
+        connection.registerEvent(CallbackEventInvoker.of<PacketReceiveEvent> {
             val packet = it.packet
             if (packet !is PacketPlayerPositionAndRotation) {
-                return@CallbackEventInvoker
+                return@of
             }
             if (latch.count > 0) {
                 latch.countDown()
