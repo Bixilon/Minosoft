@@ -16,16 +16,16 @@ package de.bixilon.minosoft.modding.event;
 import de.bixilon.minosoft.modding.event.events.Event;
 import de.bixilon.minosoft.modding.loading.Priorities;
 
-public class EventInvokerCallback<V extends Event> extends EventInvoker {
+public class CallbackEventInvoker<V extends Event> extends EventInvoker {
     private final InvokerCallback<V> callback;
 
-    public EventInvokerCallback(boolean ignoreCancelled, InvokerCallback<V> callback) {
+    public CallbackEventInvoker(boolean ignoreCancelled, InvokerCallback<V> callback) {
         super(ignoreCancelled, Priorities.NORMAL, null);
         this.callback = callback;
     }
 
     // if you need instant fireing support
-    public EventInvokerCallback(InvokerCallback<V> callback) {
+    public CallbackEventInvoker(InvokerCallback<V> callback) {
         this(false, callback);
     }
 

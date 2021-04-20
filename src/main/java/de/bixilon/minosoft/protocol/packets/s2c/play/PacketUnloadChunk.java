@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.s2c.play;
 
+import de.bixilon.minosoft.modding.event.events.ChunkUnloadEvent;
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket;
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
@@ -29,7 +30,7 @@ public class PacketUnloadChunk extends PlayS2CPacket {
     @Override
     public void handle(PlayConnection connection) {
         connection.getWorld().unloadChunk(getChunkPosition());
-        connection.getRenderer().getRenderWindow().getWorldRenderer().unloadChunk(this.chunkPosition);
+        connection.fireEvent(new ChunkUnloadEvent(connection, this.chunkPosition));
     }
 
     @Override

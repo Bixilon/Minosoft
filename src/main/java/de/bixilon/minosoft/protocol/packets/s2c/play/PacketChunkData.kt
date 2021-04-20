@@ -18,6 +18,7 @@ import de.bixilon.minosoft.data.mappings.tweaker.VersionTweaker
 import de.bixilon.minosoft.data.world.ChunkData
 import de.bixilon.minosoft.data.world.biome.source.SpatialBiomeArray
 import de.bixilon.minosoft.modding.event.events.ChunkDataChangeEvent
+import de.bixilon.minosoft.modding.event.events.ChunkUnloadEvent
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
@@ -122,14 +123,13 @@ class PacketChunkData() : PlayS2CPacket() {
             VersionTweaker.transformSections(it, connection.version.versionId)
         }
         chunkData?.let {
-            connection.fireEvent(ChunkDataChangeEvent(connection, this))
             val chunk = connection.world.getOrCreateChunk(chunkPosition)
             chunk.setData(chunkData!!)
             connection.world.setBlockEntity(blockEntities)
-            connection.renderer?.renderWindow?.worldRenderer?.prepareChunk(chunkPosition, chunk)
+            connection.fireEvent(ChunkDataChangeEvent(connection, this))
         } ?: let {
             connection.world.unloadChunk(chunkPosition)
-            connection.renderer?.renderWindow?.worldRenderer?.unloadChunk(chunkPosition)
+            connection.fireEvent(ChunkUnloadEvent(connection, chunkPosition))
         }
 
         for ((blockPosition, blockEntity) in blockEntities) {

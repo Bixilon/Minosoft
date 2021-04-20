@@ -30,12 +30,20 @@ import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.Renderer
 import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.gui.rendering.textures.Texture
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.of
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
+import de.bixilon.minosoft.modding.event.CallbackEventInvoker
+import de.bixilon.minosoft.modding.event.events.BlockChangeEvent
+import de.bixilon.minosoft.modding.event.events.ChunkDataChangeEvent
+import de.bixilon.minosoft.modding.event.events.ChunkUnloadEvent
+import de.bixilon.minosoft.modding.event.events.MultiBlockChangeEvent
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.nullCast
 import de.bixilon.minosoft.util.MMath
+import de.bixilon.minosoft.util.ResourceLocationAble
 import de.bixilon.minosoft.util.logging.Log
 import glm_.vec2.Vec2i
 import glm_.vec3.Vec3i
@@ -118,6 +126,28 @@ class WorldRenderer(
             renderWindow.sendDebugMessage("Cleared chunk cache!")
             prepareWorld(world)
         }
+
+        connection.registerEvent(CallbackEventInvoker<ChunkUnloadEvent> {
+            unloadChunk(it.chunkPosition)
+        })
+
+        connection.registerEvent(CallbackEventInvoker<ChunkDataChangeEvent> {
+            prepareChunk(it.chunkPosition)
+        })
+
+        connection.registerEvent(CallbackEventInvoker<BlockChangeEvent> {
+            prepareChunkSection(it.blockPosition.chunkPosition, it.blockPosition.sectionHeight)
+        })
+
+        connection.registerEvent(CallbackEventInvoker<MultiBlockChangeEvent> {
+            val sectionHeights: MutableSet<Int> = mutableSetOf()
+            for ((key) in it.blocks) {
+                sectionHeights.add(key.sectionHeight)
+            }
+            for (sectionHeight in sectionHeights) {
+                prepareChunkSection(it.chunkPosition, sectionHeight)
+            }
+        })
     }
 
     override fun postInit() {
@@ -365,7 +395,13 @@ class WorldRenderer(
         }
     }
 
-    companion object {
+    private operator fun Int.plus(upOrDown: Directions): Int {
+        return this + upOrDown.directionVector.y
+    }
+
+    companion object : ResourceLocationAble {
+        override val RESOURCE_LOCATION = ResourceLocation("minosoft:world_renderer")
+
         fun getSectionIndex(sectionHeight: Int): Int {
             val divided = sectionHeight / RenderConstants.CHUNK_SECTIONS_PER_MESH
             if (sectionHeight < 0) {
@@ -373,9 +409,5 @@ class WorldRenderer(
             }
             return divided
         }
-    }
-
-    private operator fun Int.plus(upOrDown: Directions): Int {
-        return this + upOrDown.directionVector.y
     }
 }

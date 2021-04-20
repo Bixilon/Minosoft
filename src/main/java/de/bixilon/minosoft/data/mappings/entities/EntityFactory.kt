@@ -18,10 +18,10 @@ import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.meta.EntityMetaData
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.util.ResourceLocationAble
 import glm_.vec3.Vec3
 
-interface EntityFactory<T : Entity> {
-    val RESOURCE_LOCATION: ResourceLocation
+interface EntityFactory<T : Entity> : ResourceLocationAble {
 
     /**
      * Tweaks the entity resource location. Used for pre flattening versions.

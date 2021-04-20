@@ -24,7 +24,7 @@ import de.bixilon.minosoft.data.mappings.versions.Version;
 import de.bixilon.minosoft.data.mappings.versions.Versions;
 import de.bixilon.minosoft.data.player.tab.PingBars;
 import de.bixilon.minosoft.data.text.ChatComponent;
-import de.bixilon.minosoft.modding.event.EventInvokerCallback;
+import de.bixilon.minosoft.modding.event.CallbackEventInvoker;
 import de.bixilon.minosoft.modding.event.events.ConnectionStateChangeEvent;
 import de.bixilon.minosoft.modding.event.events.ServerListPongEvent;
 import de.bixilon.minosoft.modding.event.events.ServerListStatusArriveEvent;
@@ -140,7 +140,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
             server.ping();
         }
 
-        server.getLastPing().registerEvent(new EventInvokerCallback<ServerListStatusArriveEvent>(event -> Platform.runLater(() -> {
+        server.getLastPing().registerEvent(new CallbackEventInvoker<ServerListStatusArriveEvent>(event -> Platform.runLater(() -> {
             ServerListPing ping = event.getServerListPing();
             if (server != this.server) {
                 // cell does not contains us anymore
@@ -201,7 +201,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
                 setErrorMotd(String.format("%s: %s", server.getLastPing().getLastException().getClass().getCanonicalName(), server.getLastPing().getLastException().getMessage()));
             }
         })));
-        server.getLastPing().registerEvent(new EventInvokerCallback<ServerListPongEvent>(event -> Platform.runLater(() -> {
+        server.getLastPing().registerEvent(new CallbackEventInvoker<ServerListPongEvent>(event -> Platform.runLater(() -> {
             this.pingField.setText(String.format("%dms", event.getLatency()));
             switch (PingBars.byPing(event.getLatency())) {
                 case BARS_5 -> this.pingField.getStyleClass().add("ping-5-bars");
@@ -305,7 +305,7 @@ public class ServerListCell extends ListCell<Server> implements Initializable {
             });
             // ToDo: show progress dialog
 
-            connection.registerEvent(new EventInvokerCallback<>(this::handleConnectionCallback));
+            connection.registerEvent(new CallbackEventInvoker<>(this::handleConnectionCallback));
             connection.connect(new CountUpAndDownLatch(1));
         });
     }

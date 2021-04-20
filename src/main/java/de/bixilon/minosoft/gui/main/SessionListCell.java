@@ -17,7 +17,7 @@ import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.data.locale.LocaleManager;
 import de.bixilon.minosoft.data.locale.Strings;
 import de.bixilon.minosoft.data.mappings.ResourceLocation;
-import de.bixilon.minosoft.modding.event.EventInvokerCallback;
+import de.bixilon.minosoft.modding.event.CallbackEventInvoker;
 import de.bixilon.minosoft.modding.event.events.ConnectionStateChangeEvent;
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
@@ -86,7 +86,7 @@ public class SessionListCell extends ListCell<PlayConnection> implements Initial
         }
         setStyle(null);
         this.connection = connection;
-        connection.registerEvent(new EventInvokerCallback<>(this::handleConnectionCallback));
+        connection.registerEvent(new CallbackEventInvoker<>(this::handleConnectionCallback));
         this.connectionId.setText(String.format("#%d", connection.getConnectionId()));
         this.account.setText(connection.getAccount().getUsername());
     }

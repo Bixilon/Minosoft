@@ -82,7 +82,6 @@ class PacketMultiBlockChange(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         if (chunk.sections == null) {
             return
         }
-        connection.fireEvent(MultiBlockChangeEvent(connection, this))
         chunk.setBlocks(blocks)
 
         // tweak
@@ -95,13 +94,7 @@ class PacketMultiBlockChange(buffer: PlayInByteBuffer) : PlayS2CPacket() {
                 chunk.setBlockState(key, block)
             }
         }
-        val sectionHeights: MutableSet<Int> = mutableSetOf()
-        for ((key) in blocks) {
-            sectionHeights.add(key.sectionHeight)
-        }
-        for (sectionHeight in sectionHeights) {
-            connection.renderer?.renderWindow?.worldRenderer?.prepareChunkSection(chunkPosition, sectionHeight)
-        }
+        connection.fireEvent(MultiBlockChangeEvent(connection, this))
     }
 
     override fun log() {

@@ -31,7 +31,7 @@ import de.bixilon.minosoft.gui.rendering.textures.Texture
 import de.bixilon.minosoft.gui.rendering.textures.TextureArray
 import de.bixilon.minosoft.gui.rendering.util.ScreenshotTaker
 import de.bixilon.minosoft.gui.rendering.util.abstractions.ScreenResizeCallback
-import de.bixilon.minosoft.modding.event.EventInvokerCallback
+import de.bixilon.minosoft.modding.event.CallbackEventInvoker
 import de.bixilon.minosoft.modding.event.events.ConnectionStateChangeEvent
 import de.bixilon.minosoft.modding.event.events.PacketReceiveEvent
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
@@ -129,17 +129,17 @@ class RenderWindow(
         }
 
     init {
-        connection.registerEvent(EventInvokerCallback<ConnectionStateChangeEvent> {
+        connection.registerEvent(CallbackEventInvoker<ConnectionStateChangeEvent> {
             if (it.connection.isDisconnected) {
                 renderQueue.add {
                     glfwSetWindowShouldClose(windowId, true)
                 }
             }
         })
-        connection.registerEvent(EventInvokerCallback<PacketReceiveEvent> {
+        connection.registerEvent(CallbackEventInvoker<PacketReceiveEvent> {
             val packet = it.packet
             if (packet !is PacketPlayerPositionAndRotation) {
-                return@EventInvokerCallback
+                return@CallbackEventInvoker
             }
             if (latch.count > 0) {
                 latch.countDown()

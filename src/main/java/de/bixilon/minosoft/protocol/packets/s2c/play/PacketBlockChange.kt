@@ -45,7 +45,6 @@ class PacketBlockChange(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         if (!chunk.isFullyLoaded) {
             return
         }
-        connection.fireEvent(BlockChangeEvent(connection, this))
         val sectionHeight = blockPosition.sectionHeight
         val inChunkSectionPosition = blockPosition.inChunkSectionPosition
         val section = chunk.getSectionOrCreate(sectionHeight)
@@ -57,8 +56,7 @@ class PacketBlockChange(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         } else {
             section.setBlockState(inChunkSectionPosition, block)
         }
-
-        connection.renderer?.renderWindow?.worldRenderer?.prepareChunkSection(blockPosition.chunkPosition, sectionHeight)
+        connection.fireEvent(BlockChangeEvent(connection, this))
     }
 
     override fun log() {

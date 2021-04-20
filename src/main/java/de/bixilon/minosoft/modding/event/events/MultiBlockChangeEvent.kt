@@ -12,20 +12,20 @@
  */
 package de.bixilon.minosoft.modding.event.events
 
-import de.bixilon.minosoft.data.world.ChunkData
-
+import de.bixilon.minosoft.data.mappings.blocks.BlockState
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import de.bixilon.minosoft.protocol.packets.s2c.play.PacketChunkData
+import de.bixilon.minosoft.protocol.packets.s2c.play.PacketMultiBlockChange
 import glm_.vec2.Vec2i
+import glm_.vec3.Vec3i
 
 /**
- * Fired when a new chunk is received or a full chunk changes
+ * Fired when at least block is changed
  */
-class ChunkDataChangeEvent(
+class MultiBlockChangeEvent(
     connection: PlayConnection,
+    val blocks: Map<Vec3i, BlockState?>,
     val chunkPosition: Vec2i,
-    val chunkData: ChunkData,
 ) : PlayConnectionEvent(connection) {
 
-    constructor(connection: PlayConnection, packet: PacketChunkData) : this(connection, packet.chunkPosition, packet.chunkData!!)
+    constructor(connection: PlayConnection, packet: PacketMultiBlockChange) : this(connection, packet.blocks, packet.chunkPosition)
 }

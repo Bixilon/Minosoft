@@ -16,6 +16,7 @@ import de.bixilon.minosoft.data.mappings.tweaker.VersionTweaker
 import de.bixilon.minosoft.data.world.ChunkData
 
 import de.bixilon.minosoft.modding.event.events.ChunkDataChangeEvent
+import de.bixilon.minosoft.modding.event.events.ChunkUnloadEvent
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
@@ -73,14 +74,13 @@ class PacketChunkBulk() : PlayS2CPacket() {
             }
 
             data?.let {
-                connection.fireEvent(ChunkDataChangeEvent(connection, chunkPosition, data))
                 val chunk = connection.world.getOrCreateChunk(chunkPosition)
                 chunk.setData(data)
-                connection.renderer?.renderWindow?.worldRenderer?.prepareChunk(chunkPosition, chunk)
+                connection.fireEvent(ChunkDataChangeEvent(connection, chunkPosition, data))
             } ?: let {
                 // unload chunk
                 connection.world.unloadChunk(chunkPosition)
-                connection.renderer?.renderWindow?.worldRenderer?.unloadChunk(chunkPosition)
+                connection.fireEvent(ChunkUnloadEvent(connection, chunkPosition))
             }
         }
     }
