@@ -15,25 +15,12 @@ package de.bixilon.minosoft.modding.event
 import de.bixilon.minosoft.modding.event.events.Event
 import de.bixilon.minosoft.modding.loading.Priorities
 
-class CallbackEventInvoker<E : Event?> private constructor(
-    ignoreCancelled: Boolean,
-    private val callback: (event: E) -> Unit,
-    override val eventType: Class<out Event>,
-) : EventInvoker(ignoreCancelled, Priorities.NORMAL, null) {
+abstract class EventInvoker(
+    val isIgnoreCancelled: Boolean,
+    val priority: Priorities,
+    protected val listener: EventListener?,
+) {
+    abstract val eventType: Class<out Event?>
 
-    override fun invoke(event: Event) {
-        callback.invoke(event as E)
-    }
-
-    companion object {
-        @JvmOverloads
-        @Suppress("NON_PUBLIC_CALL_FROM_PUBLIC_INLINE")
-        inline fun <reified E : Event> of(ignoreCancelled: Boolean = false, noinline callback: (event: E) -> Unit): CallbackEventInvoker<E> {
-            return CallbackEventInvoker(
-                ignoreCancelled = ignoreCancelled,
-                callback = callback,
-                eventType = E::class.java
-            )
-        }
-    }
+    abstract operator fun invoke(event: Event)
 }

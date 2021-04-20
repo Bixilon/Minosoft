@@ -154,7 +154,7 @@ class StatusConnection(
             // ping done
             method.invoke(ServerListStatusArriveEvent(this, this.lastPing))
         } else if (method.eventType.isAssignableFrom(ServerListPongEvent::class.java) && wasPingDone && this.pong != null) {
-            method.invoke(this.pong)
+            method.invoke(this.pong!!)
         } else {
             super.registerEvent(method)
         }
