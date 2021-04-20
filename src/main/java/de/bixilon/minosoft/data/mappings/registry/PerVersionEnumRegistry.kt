@@ -24,7 +24,7 @@ class PerVersionEnumRegistry<T : Enum<*>>(
     private lateinit var versions: Map<Int, EnumRegistry<T>>
 
 
-    fun forVersion(version: Version): EnumRegistry<T> {
+    fun forVersion(version: Version): EnumRegistry<T>? {
         // must loop from highest version to lowest!
         for ((versionId, registry) in versions) {
             if (version.versionId < versionId) {
@@ -32,7 +32,8 @@ class PerVersionEnumRegistry<T : Enum<*>>(
             }
             return registry
         }
-        throw IllegalArgumentException("Can not find a registry for version $version")
+
+        return null
     }
 
     fun initialize(data: JsonObject) {

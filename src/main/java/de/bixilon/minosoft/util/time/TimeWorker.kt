@@ -8,11 +8,13 @@ object TimeWorker {
     init {
         Thread({
                while (true) {
-                   val currentTime = System.currentTimeMillis();
-                   for (task in TASKS) {
-                       if (currentTime - task.lastExecution >= task.interval) {
-                           Minosoft.THREAD_POOL.execute(task.runnable)
-                           task.lastExecution = currentTime
+                   val currentTime = System.currentTimeMillis()
+                   synchronized(TASKS) {
+                       for (task in TASKS) {
+                           if (currentTime - task.lastExecution >= task.interval) {
+                               Minosoft.THREAD_POOL.execute(task.runnable)
+                               task.lastExecution = currentTime
+                           }
                        }
                    }
                    Thread.sleep(1)
@@ -21,10 +23,14 @@ object TimeWorker {
     }
 
     fun addTask(task: TimeWorkerTask) {
-        TASKS.add(task)
+        synchronized(TASKS) {
+            TASKS.add(task)
+        }
     }
 
     fun removeTask(task: TimeWorkerTask) {
-        TASKS.remove(task)
+        synchronized(TASKS) {
+            TASKS.remove(task)
+        }
     }
 }
