@@ -182,7 +182,7 @@ class PacketTypes {
         PLAY_OPEN_HORSE_WINDOW({ PacketOpenHorseWindow(it) }),
         PLAY_KEEP_ALIVE({ PacketKeepAlive(it) }),
         PLAY_CHUNK_DATA({ PacketChunkData(it) }),
-        PLAY_EFFECT({ PacketEffect(it) }),
+        PLAY_WORLD_EVENT({ WorldEventS2CP(it) }),
         PLAY_PARTICLE({ PacketParticle(it) }),
         PLAY_UPDATE_LIGHT({ PacketUpdateLight(it) }),
         PLAY_JOIN_GAME({ PacketJoinGame(it) }, isThreadSafe = false, errorHandler = PacketJoinGame),
