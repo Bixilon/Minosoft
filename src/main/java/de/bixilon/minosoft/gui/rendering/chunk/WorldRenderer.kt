@@ -55,6 +55,8 @@ class WorldRenderer(
     val visibleChunks: MutableMap<Vec2i, MutableMap<Int, ChunkMeshCollection>> = Collections.synchronizedMap(ConcurrentHashMap())
     val queuedChunks: MutableSet<Vec2i> = Collections.synchronizedSet(mutableSetOf())
 
+    private var allBlocks: Collection<BlockState>? = null
+
     var meshes = 0
         private set
     var triangles = 0
@@ -106,7 +108,8 @@ class WorldRenderer(
     }
 
     override fun init() {
-        renderWindow.textures.allTextures.addAll(resolveBlockTextureIds(getAllBlocks(connection.version.mapping)))
+        allBlocks = getAllBlocks(connection.version.mapping)
+        renderWindow.textures.allTextures.addAll(resolveBlockTextureIds(allBlocks!!))
 
 
         // register keybindings
@@ -129,11 +132,12 @@ class WorldRenderer(
         renderWindow.textures.use(chunkShader, "textureArray")
         renderWindow.textures.animator.use(chunkShader, "AnimatedDataBuffer")
 
-        for (block in connection.version.mapping.blockStateIdMap.values) {
+        for (block in allBlocks!!) {
             for (model in block.renderers) {
                 model.postInit()
             }
         }
+        allBlocks = null
     }
 
     override fun draw() {

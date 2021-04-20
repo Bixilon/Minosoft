@@ -26,7 +26,6 @@ import glm_.vec3.Vec3i
 class MultipartRenderer(
     val models: List<BlockLikeRenderer>,
 ) : BlockLikeRenderer {
-
     override val faceBorderSizes: Array<Array<FaceSize>?>
     override val transparentFaces: BooleanArray = BooleanArray(Directions.DIRECTIONS.size)
 
