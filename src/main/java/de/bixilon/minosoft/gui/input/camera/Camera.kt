@@ -99,7 +99,7 @@ class Camera(
         var yOffset = yPos - this.lastMouseY
         lastMouseX = xPos
         lastMouseY = yPos
-        if (renderWindow.currentKeyConsumer != null) {
+        if (renderWindow.inputHandler.currentKeyConsumer != null) {
             return
         }
         xOffset *= mouseSensitivity
@@ -123,31 +123,31 @@ class Camera(
     }
 
     fun init(renderWindow: RenderWindow) {
-        renderWindow.registerKeyCallback(KeyBindingsNames.MOVE_FORWARD) { _: KeyCodes, keyAction: KeyAction ->
+        renderWindow.inputHandler.registerKeyCallback(KeyBindingsNames.MOVE_FORWARD) { _: KeyCodes, keyAction: KeyAction ->
             keyForwardDown = keyAction == KeyAction.PRESS
         }
-        renderWindow.registerKeyCallback(KeyBindingsNames.MOVE_LEFT) { _: KeyCodes, keyAction: KeyAction ->
+        renderWindow.inputHandler.registerKeyCallback(KeyBindingsNames.MOVE_LEFT) { _: KeyCodes, keyAction: KeyAction ->
             keyLeftDown = keyAction == KeyAction.PRESS
         }
-        renderWindow.registerKeyCallback(KeyBindingsNames.MOVE_BACKWARDS) { _: KeyCodes, keyAction: KeyAction ->
+        renderWindow.inputHandler.registerKeyCallback(KeyBindingsNames.MOVE_BACKWARDS) { _: KeyCodes, keyAction: KeyAction ->
             keyBackDown = keyAction == KeyAction.PRESS
         }
-        renderWindow.registerKeyCallback(KeyBindingsNames.MOVE_RIGHT) { _: KeyCodes, keyAction: KeyAction ->
+        renderWindow.inputHandler.registerKeyCallback(KeyBindingsNames.MOVE_RIGHT) { _: KeyCodes, keyAction: KeyAction ->
             keyRightDown = keyAction == KeyAction.PRESS
         }
-        renderWindow.registerKeyCallback(KeyBindingsNames.MOVE_FLY_UP) { _: KeyCodes, keyAction: KeyAction ->
+        renderWindow.inputHandler.registerKeyCallback(KeyBindingsNames.MOVE_FLY_UP) { _: KeyCodes, keyAction: KeyAction ->
             keyFlyUp = keyAction == KeyAction.PRESS
         }
-        renderWindow.registerKeyCallback(KeyBindingsNames.MOVE_FLY_DOWN) { _: KeyCodes, keyAction: KeyAction ->
+        renderWindow.inputHandler.registerKeyCallback(KeyBindingsNames.MOVE_FLY_DOWN) { _: KeyCodes, keyAction: KeyAction ->
             keyFlyDown = keyAction == KeyAction.PRESS
         }
-        renderWindow.registerKeyCallback(KeyBindingsNames.MOVE_SPRINT) { _: KeyCodes, keyAction: KeyAction ->
+        renderWindow.inputHandler.registerKeyCallback(KeyBindingsNames.MOVE_SPRINT) { _: KeyCodes, keyAction: KeyAction ->
             keySprintDown = keyAction == KeyAction.PRESS
         }
-        renderWindow.registerKeyCallback(KeyBindingsNames.ZOOM) { _: KeyCodes, keyAction: KeyAction ->
+        renderWindow.inputHandler.registerKeyCallback(KeyBindingsNames.ZOOM) { _: KeyCodes, keyAction: KeyAction ->
             keyZoomDown = keyAction == KeyAction.PRESS
         }
-        renderWindow.registerKeyCallback(KeyBindingsNames.MOVE_JUMP) { _: KeyCodes, keyAction: KeyAction ->
+        renderWindow.inputHandler.registerKeyCallback(KeyBindingsNames.MOVE_JUMP) { _: KeyCodes, keyAction: KeyAction ->
             keyJumpDown = keyAction == KeyAction.PRESS
         }
 
@@ -158,7 +158,7 @@ class Camera(
     }
 
     fun handleInput(deltaTime: Double) {
-        if (renderWindow.currentKeyConsumer != null) { // ToDo
+        if (renderWindow.inputHandler.currentKeyConsumer != null) { // ToDo
             return
         }
         var cameraSpeed = movementSpeed * deltaTime

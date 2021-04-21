@@ -118,7 +118,7 @@ class WorldRenderer(
 
 
         // register keybindings
-        renderWindow.registerKeyCallback(KeyBindingsNames.DEBUG_CLEAR_CHUNK_CACHE) { _, _ ->
+        renderWindow.inputHandler.registerKeyCallback(KeyBindingsNames.DEBUG_CLEAR_CHUNK_CACHE) { _, _ ->
             clearChunkCache()
             renderWindow.sendDebugMessage("Cleared chunk cache!")
             prepareWorld(world)
@@ -324,7 +324,7 @@ class WorldRenderer(
 
                 sectionMap[index] = meshCollection
 
-                if (renderWindow.camera.frustum.containsChunk(chunkPosition, lowestBlockHeight, highestBlockHeight)) {
+                if (renderWindow.inputHandler.camera.frustum.containsChunk(chunkPosition, lowestBlockHeight, highestBlockHeight)) {
                     visibleChunks.getOrPut(chunkPosition, { ConcurrentHashMap() })[index] = meshCollection
                 } else {
                     visibleChunks[chunkPosition]?.remove(index)
@@ -392,7 +392,7 @@ class WorldRenderer(
         for ((chunkLocation, indexMap) in allChunkSections) {
             val visibleIndexMap: MutableMap<Int, ChunkMeshCollection> = Collections.synchronizedMap(ConcurrentHashMap())
             for ((index, mesh) in indexMap) {
-                if (renderWindow.camera.frustum.containsChunk(chunkLocation, mesh.lowestBlockHeight, mesh.highestBlockHeight)) {
+                if (renderWindow.inputHandler.camera.frustum.containsChunk(chunkLocation, mesh.lowestBlockHeight, mesh.highestBlockHeight)) {
                     visibleIndexMap[index] = mesh
                 }
             }

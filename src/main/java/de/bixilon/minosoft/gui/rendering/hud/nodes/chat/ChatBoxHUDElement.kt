@@ -40,10 +40,10 @@ class ChatBoxHUDElement(hudRenderer: HUDRenderer) : HUDElement(hudRenderer), Scr
         layout.addChild(Vec2i(0, 0), inputField)
         inputField.apply()
 
-        hudRenderer.renderWindow.registerKeyCallback(KeyBindingsNames.OPEN_CHAT) { _, _ ->
+        hudRenderer.renderWindow.inputHandler.registerKeyCallback(KeyBindingsNames.OPEN_CHAT) { _, _ ->
             openChat()
         }
-        hudRenderer.renderWindow.registerKeyCallback(KeyBindingsNames.CLOSE_CHAT) { _, _ ->
+        hudRenderer.renderWindow.inputHandler.registerKeyCallback(KeyBindingsNames.CLOSE_CHAT) { _, _ ->
             closeChat()
         }
     }
@@ -58,12 +58,12 @@ class ChatBoxHUDElement(hudRenderer: HUDRenderer) : HUDElement(hudRenderer), Scr
 
     fun openChat() {
         layout.addChild(Vec2i(0, 0), inputFieldBackground)
-        hudRenderer.renderWindow.currentKeyConsumer = inputField
+        hudRenderer.renderWindow.inputHandler.currentKeyConsumer = inputField
     }
 
     fun closeChat() {
         layout.removeChild(inputFieldBackground)
         inputField.clearText()
-        hudRenderer.renderWindow.currentKeyConsumer = null
+        hudRenderer.renderWindow.inputHandler.currentKeyConsumer = null
     }
 }

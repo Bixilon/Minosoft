@@ -13,23 +13,19 @@
 
 package de.bixilon.minosoft.gui.rendering
 
-import de.bixilon.minosoft.Minosoft
-import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames
 import de.bixilon.minosoft.config.key.KeyAction
-import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.text.RGBColor
-import de.bixilon.minosoft.gui.input.camera.Camera
 import de.bixilon.minosoft.gui.input.camera.FrustumChangeCallback
+import de.bixilon.minosoft.gui.input.key.RenderWindowInputHandler
 import de.bixilon.minosoft.gui.modding.events.RenderingStateChangeEvent
 import de.bixilon.minosoft.gui.rendering.chunk.WorldRenderer
 import de.bixilon.minosoft.gui.rendering.font.Font
 import de.bixilon.minosoft.gui.rendering.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.hud.atlas.TextureLike
 import de.bixilon.minosoft.gui.rendering.hud.atlas.TextureLikeTexture
-import de.bixilon.minosoft.gui.rendering.hud.elements.input.KeyConsumer
 import de.bixilon.minosoft.gui.rendering.shader.ShaderHolder
 import de.bixilon.minosoft.gui.rendering.textures.Texture
 import de.bixilon.minosoft.gui.rendering.textures.TextureArray
@@ -57,26 +53,22 @@ class RenderWindow(
     val connection: PlayConnection,
     val rendering: Rendering,
 ) {
-    private val keyBindingCallbacks: MutableMap<ResourceLocation, Pair<KeyBinding, MutableSet<((keyCode: KeyCodes, keyEvent: KeyAction) -> Unit)>>> = mutableMapOf()
-    private val keysDown: MutableSet<KeyCodes> = mutableSetOf()
-    private val keyBindingDown: MutableSet<KeyBinding> = mutableSetOf()
     val renderStats = RenderStats()
     var screenDimensions = Vec2i(900, 500)
         private set
     var screenDimensionsF = Vec2(screenDimensions)
         private set
+    val inputHandler = RenderWindowInputHandler(this)
 
-    private var windowId = 0L
+    var windowId = 0L
     private var deltaFrameTime = 0.0 // time between current frame and last frame
 
     private var lastFrame = 0.0
-    val camera: Camera = Camera(connection, Minosoft.getConfig().config.game.camera.fov, this)
     private val latch = CountUpAndDownLatch(1)
 
     private var renderingState = RenderingStates.RUNNING
 
     private var polygonEnabled = false
-    private var mouseCatch = !StaticConfiguration.DEBUG_MODE
 
     private val screenshotTaker = ScreenshotTaker(this)
     val tintColorCalculator = TintColorCalculator(connection.world)
@@ -87,44 +79,13 @@ class RenderWindow(
 
     val renderQueue = ConcurrentLinkedQueue<Runnable>()
 
-    private var _currentInputConsumer: KeyConsumer? = null
-
-    private var skipNextCharPress = false
-
     lateinit var WHITE_TEXTURE: TextureLike
 
 
-    val screenResizeCallbacks: MutableSet<ScreenResizeCallback> = mutableSetOf(camera)
+    val screenResizeCallbacks: MutableSet<ScreenResizeCallback> = mutableSetOf(inputHandler.camera)
 
     var tickCount = 0L
     var lastTickTimer = System.currentTimeMillis()
-
-    var currentKeyConsumer: KeyConsumer?
-        get() = _currentInputConsumer
-        set(value) {
-            _currentInputConsumer = value
-            for ((_, binding) in keyBindingCallbacks) {
-                if (!keyBindingDown.contains(binding.first)) {
-                    continue
-                }
-                if (!binding.first.action.containsKey(KeyAction.TOGGLE) && !binding.first.action.containsKey(KeyAction.CHANGE)) {
-                    continue
-                }
-
-                for (keyCallback in binding.second) {
-                    keyCallback.invoke(KeyCodes.KEY_UNKNOWN, KeyAction.RELEASE)
-                }
-            }
-            // ToDo: move to mouse consumer
-            if (value == null) {
-                if (mouseCatch) {
-                    renderQueue.add { glfwSetInputMode(windowId, GLFW_CURSOR, GLFW_CURSOR_DISABLED) }
-                }
-            } else {
-                renderQueue.add { glfwSetInputMode(windowId, GLFW_CURSOR, GLFW_CURSOR_NORMAL) }
-            }
-            keyBindingDown.clear()
-        }
 
     init {
         connection.registerEvent(CallbackEventInvoker.of<ConnectionStateChangeEvent> {
@@ -143,8 +104,8 @@ class RenderWindow(
                 latch.countDown()
             }
             renderQueue.add {
-                camera.setPosition(packet.position)
-                camera.setRotation(packet.rotation.yaw, packet.rotation.pitch)
+                inputHandler.camera.setPosition(packet.position)
+                inputHandler.camera.setRotation(packet.rotation.yaw, packet.rotation.pitch)
             }
         })
 
@@ -174,102 +135,20 @@ class RenderWindow(
             glfwTerminate()
             throw RuntimeException("Failed to create the GLFW window")
         }
-        camera.init(this)
+        inputHandler.camera.init(this)
 
         tintColorCalculator.init(connection.assetsManager)
 
 
-        glfwSetKeyCallback(this.windowId) { _: Long, key: Int, _: Int, action: Int, _: Int ->
-            val keyCode = KeyCodes.KEY_CODE_GLFW_ID_MAP[key] ?: KeyCodes.KEY_UNKNOWN
-            val keyAction = when (action) {
-                GLFW_PRESS -> KeyAction.PRESS
-                GLFW_RELEASE -> KeyAction.RELEASE
-                // ToDo: Double, Hold
-                else -> return@glfwSetKeyCallback
-            }
-            if (keyAction == KeyAction.PRESS) {
-                keysDown.add(keyCode)
-            } else if (keyAction == KeyAction.RELEASE) {
-                keysDown.remove(keyCode)
-            }
+        glfwSetKeyCallback(this.windowId, inputHandler::invoke)
 
-            if (keyAction == KeyAction.PRESS) {
-                // ToDo: Repeatable keys, long holding, etc
-                currentKeyConsumer?.keyInput(keyCode)
-            }
+        glfwSetCharCallback(windowId, inputHandler::invoke)
 
-            val previousKeyConsumer = currentKeyConsumer
-            for ((_, keyCallbackPair) in keyBindingCallbacks) {
-                run {
-                    val keyBinding = keyCallbackPair.first
-                    val keyCallbacks = keyCallbackPair.second
-
-                    var anyCheckRun = false
-
-                    keyBinding.action[KeyAction.MODIFIER]?.let {
-                        val previousKeysDown = if (keyAction == KeyAction.RELEASE) {
-                            val previousKeysDown = keysDown.toMutableList()
-                            previousKeysDown.add(keyCode)
-                            previousKeysDown
-                        } else {
-                            keysDown
-                        }
-                        if (!previousKeysDown.containsAll(it)) {
-                            return@run
-                        }
-                        anyCheckRun = true
-                    }
-                    keyBinding.action[KeyAction.CHANGE]?.let {
-                        if (!it.contains(keyCode)) {
-                            return@run
-                        }
-                        anyCheckRun = true
-                    }
-
-                    // release or press
-                    if (keyBinding.action[KeyAction.CHANGE] == null) {
-                        keyBinding.action[keyAction].let {
-                            if (it == null) {
-                                return@run
-                            }
-                            if (!it.contains(keyCode)) {
-                                return@run
-                            }
-                            anyCheckRun = true
-                        }
-                    }
-
-                    if (!anyCheckRun) {
-                        return@run
-                    }
-
-                    if (keyAction == KeyAction.PRESS) {
-                        keyBindingDown.add(keyBinding)
-                    } else if (keyAction == KeyAction.RELEASE) {
-                        keyBindingDown.remove(keyBinding)
-                    }
-                    for (keyCallback in keyCallbacks) {
-                        keyCallback.invoke(keyCode, keyAction)
-                        if (previousKeyConsumer != currentKeyConsumer) {
-                            skipNextCharPress = true
-                        }
-                    }
-                }
-            }
-        }
-
-        glfwSetCharCallback(windowId) { _: Long, char: Int ->
-            if (skipNextCharPress) {
-                skipNextCharPress = false
-                return@glfwSetCharCallback
-            }
-            currentKeyConsumer?.charInput(char.toChar())
-        }
-
-        if (mouseCatch) {
+        if (inputHandler.mouseCatch) {
             glfwSetInputMode(windowId, GLFW_CURSOR, GLFW_CURSOR_DISABLED)
         }
-        glfwSetCursorPosCallback(windowId) { _: Long, xPos: Double, yPos: Double -> camera.mouseCallback(xPos, yPos) }
+        glfwSetCursorPosCallback(windowId, inputHandler::invoke)
+
         MemoryStack.stackPush().let { stack ->
             val pWidth = stack.mallocInt(1)
             val pHeight = stack.mallocInt(1)
@@ -328,7 +207,7 @@ class RenderWindow(
         for (renderer in rendererMap.values) {
             renderer.postInit()
             if (renderer is ShaderHolder) {
-                camera.addShaders(renderer.shader)
+                inputHandler.camera.addShaders(renderer.shader)
             }
         }
 
@@ -382,7 +261,7 @@ class RenderWindow(
     }
 
     private fun registerGlobalKeyCombinations() {
-        registerKeyCallback(KeyBindingsNames.DEBUG_POLYGON) { _: KeyCodes, _: KeyAction ->
+        inputHandler.registerKeyCallback(KeyBindingsNames.DEBUG_POLYGON) { _: KeyCodes, _: KeyAction ->
             polygonEnabled = !polygonEnabled
             glPolygonMode(GL_FRONT_AND_BACK, if (polygonEnabled) {
                 GL_LINE
@@ -391,19 +270,10 @@ class RenderWindow(
             })
             sendDebugMessage("Toggled polygon mode!")
         }
-        registerKeyCallback(KeyBindingsNames.DEBUG_MOUSE_CATCH) { _: KeyCodes, _: KeyAction ->
-            mouseCatch = !mouseCatch
-            if (mouseCatch) {
-                glfwSetInputMode(windowId, GLFW_CURSOR, GLFW_CURSOR_DISABLED)
-            } else {
-                glfwSetInputMode(windowId, GLFW_CURSOR, GLFW_CURSOR_NORMAL)
-            }
-            sendDebugMessage("Toggled mouse catch!")
-        }
-        registerKeyCallback(KeyBindingsNames.QUIT_RENDERING) { _: KeyCodes, _: KeyAction ->
+        inputHandler.registerKeyCallback(KeyBindingsNames.QUIT_RENDERING) { _: KeyCodes, _: KeyAction ->
             glfwSetWindowShouldClose(windowId, true)
         }
-        registerKeyCallback(KeyBindingsNames.TAKE_SCREENSHOT, true) { _: KeyCodes, _: KeyAction ->
+        inputHandler.registerKeyCallback(KeyBindingsNames.TAKE_SCREENSHOT, true) { _: KeyCodes, _: KeyAction ->
             screenshotTaker.takeScreenshot()
         }
     }
@@ -422,7 +292,7 @@ class RenderWindow(
             val currentTickTime = System.currentTimeMillis()
             if (currentTickTime - this.lastTickTimer > ProtocolDefinition.TICK_TIME) {
                 tickCount++
-                currentKeyConsumer?.tick(tickCount)
+                inputHandler.currentKeyConsumer?.tick(tickCount)
                 this.lastTickTimer = currentTickTime
             }
 
@@ -443,8 +313,8 @@ class RenderWindow(
 
             glfwSwapBuffers(windowId)
             glfwPollEvents()
-            camera.draw()
-            camera.handleInput(deltaFrameTime)
+            inputHandler.camera.draw()
+            inputHandler.camera.handleInput(deltaFrameTime)
 
             // handle opengl context tasks, but limit it per frame
             var actionsDone = 0
@@ -496,23 +366,6 @@ class RenderWindow(
         connection.fireEvent(RenderingStateChangeEvent(connection, previousState, renderingState))
     }
 
-    fun registerKeyCallback(resourceLocation: ResourceLocation, ignoreConsumer: Boolean = false, callback: ((keyCode: KeyCodes, keyEvent: KeyAction) -> Unit)) {
-        var resourceLocationCallbacks = keyBindingCallbacks[resourceLocation]?.second
-        if (resourceLocationCallbacks == null) {
-            resourceLocationCallbacks = mutableSetOf()
-            val keyBinding = Minosoft.getConfig().config.game.controls.keyBindings.entries[resourceLocation] ?: return
-            keyBindingCallbacks[resourceLocation] = Pair(keyBinding, resourceLocationCallbacks)
-        }
-        resourceLocationCallbacks.add { keyCode, keyEvent ->
-            if (!ignoreConsumer) {
-                if (currentKeyConsumer != null) {
-                    return@add
-                }
-            }
-            callback.invoke(keyCode, keyEvent)
-        }
-    }
-
     fun registerRenderer(renderBuilder: RenderBuilder) {
         val renderer = renderBuilder.build(connection, this)
         rendererMap[renderBuilder.RESOURCE_LOCATION] = renderer
@@ -520,7 +373,7 @@ class RenderWindow(
             screenResizeCallbacks.add(renderer)
         }
         if (renderer is FrustumChangeCallback) {
-            camera.addFrustumChangeCallback(renderer)
+            inputHandler.camera.addFrustumChangeCallback(renderer)
         }
     }
 
@@ -530,9 +383,5 @@ class RenderWindow(
 
     fun sendDebugMessage(message: String) {
         connection.sender.sendFakeChatMessage(RenderConstants.DEBUG_MESSAGES_PREFIX + message)
-    }
-
-    fun unregisterKeyBinding(it: ResourceLocation) {
-        keyBindingCallbacks.remove(it)
     }
 }

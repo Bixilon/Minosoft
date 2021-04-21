@@ -65,7 +65,7 @@ class HUDRenderer(val connection: PlayConnection, val renderWindow: RenderWindow
 
         registerDefaultElements()
 
-        renderWindow.registerKeyCallback(KeyBindingsNames.TOGGLE_HUD) { _, _ ->
+        renderWindow.inputHandler.registerKeyCallback(KeyBindingsNames.TOGGLE_HUD) { _, _ ->
             hudEnabled = !hudEnabled
         }
 
@@ -116,7 +116,7 @@ class HUDRenderer(val connection: PlayConnection, val renderWindow: RenderWindow
 
         properties.toggleKeyBinding?.let {
             // register key binding
-            renderWindow.registerKeyCallback(it) { _, _ ->
+            renderWindow.inputHandler.registerKeyCallback(it) { _, _ ->
                 if (enabledHUDElement.contains(resourceLocation)) {
                     enabledHUDElement.remove(resourceLocation)
                 } else {
@@ -142,7 +142,7 @@ class HUDRenderer(val connection: PlayConnection, val renderWindow: RenderWindow
         }
 
         element.first.toggleKeyBinding?.let {
-            renderWindow.unregisterKeyBinding(it)
+            renderWindow.inputHandler.unregisterKeyBinding(it)
         }
         enabledHUDElement.remove(resourceLocation)
         hudElements.remove(resourceLocation)

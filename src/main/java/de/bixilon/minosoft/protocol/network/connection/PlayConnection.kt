@@ -121,7 +121,7 @@ class PlayConnection(
                         for (entity in world.entityIdMap.values) {
                             entity.computeTimeStep(deltaTime)
                         }
-                        renderer?.renderWindow?.camera?.checkPosition()
+                        renderer?.renderWindow?.inputHandler?.camera?.checkPosition()
                         velocityHandlerLastExecutionTime = currentTime
                     }
                     TimeWorker.addTask(velocityHandlerTask)
