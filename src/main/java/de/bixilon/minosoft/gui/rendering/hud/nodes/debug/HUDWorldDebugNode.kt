@@ -85,7 +85,7 @@ class HUDWorldDebugNode(hudRenderer: HUDRenderer) : DebugScreenNode(hudRenderer)
             }
         }"
 
-        lightText.sText = "Client light: ${hudRenderer.connection.world.worldLightAccessor.getLightLevel(camera.blockPosition)} (sky=${hudRenderer.connection.world.worldLightAccessor.getSkyLight(camera.blockPosition)}, block=${hudRenderer.connection.world.worldLightAccessor.getBlockLight(camera.blockPosition)})"
+        lightText.sText = "Client light: sky=${hudRenderer.connection.world.worldLightAccessor.getSkyLight(camera.blockPosition)}, block=${hudRenderer.connection.world.worldLightAccessor.getBlockLight(camera.blockPosition)}"
 
 
         lastPrepareTime = System.currentTimeMillis()
@@ -141,5 +141,4 @@ class HUDWorldDebugNode(hudRenderer: HUDRenderer) : DebugScreenNode(hudRenderer)
             return "%.1f".format(rotation)
         }
     }
-
 }

@@ -15,7 +15,7 @@ package de.bixilon.minosoft.modding.event
 import de.bixilon.minosoft.modding.event.events.Event
 import de.bixilon.minosoft.modding.loading.Priorities
 
-class CallbackEventInvoker<E : Event?> private constructor(
+class CallbackEventInvoker<E : Event> private constructor(
     ignoreCancelled: Boolean,
     private val callback: (E) -> Unit,
     override val eventType: Class<out Event>,
@@ -32,7 +32,7 @@ class CallbackEventInvoker<E : Event?> private constructor(
             return CallbackEventInvoker(
                 ignoreCancelled = ignoreCancelled,
                 callback = callback,
-                eventType = E::class.java
+                eventType = E::class.java,
             )
         }
     }

@@ -44,10 +44,10 @@ public class MicrosoftLoginController implements Initializable {
                 }
             }
         });
-        requestOathFlowToken();
+        requestOauthFlowToken();
     }
 
-    private void requestOathFlowToken() {
+    private void requestOauthFlowToken() {
         this.webView.getEngine().load(ProtocolDefinition.MICROSOFT_ACCOUNT_OAUTH_FLOW_URL);
     }
 
