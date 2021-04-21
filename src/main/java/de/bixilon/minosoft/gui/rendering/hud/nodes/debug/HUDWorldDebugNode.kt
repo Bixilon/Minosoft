@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.hud.nodes.debug
 
 import de.bixilon.minosoft.data.Directions
+import de.bixilon.minosoft.gui.rendering.chunk.WorldRenderer
 import de.bixilon.minosoft.gui.rendering.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.hud.nodes.properties.NodeAlignment
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
@@ -22,6 +23,7 @@ import de.bixilon.minosoft.util.UnitFormatter
 
 class HUDWorldDebugNode(hudRenderer: HUDRenderer) : DebugScreenNode(hudRenderer) {
     private val camera = hudRenderer.renderWindow.camera
+    private val worldRenderer = hudRenderer.renderWindow.rendererMap[WorldRenderer.RESOURCE_LOCATION] as WorldRenderer?
 
     init {
         layout.sizing.forceAlign = NodeAlignment.LEFT
@@ -62,9 +64,9 @@ class HUDWorldDebugNode(hudRenderer: HUDRenderer) : DebugScreenNode(hudRenderer)
         }
 
         fpsText.sText = "FPS: ${getFPS()}"
-        chunksText.sText = "Chunks: q=${hudRenderer.renderWindow.worldRenderer.queuedChunks.size} v=${hudRenderer.renderWindow.worldRenderer.visibleChunks.size} p=${hudRenderer.renderWindow.worldRenderer.allChunkSections.size} t=${hudRenderer.connection.world.chunks.size}"
+        chunksText.sText = "Chunks: q=${worldRenderer?.queuedChunks?.size} v=${worldRenderer?.visibleChunks?.size} p=${worldRenderer?.allChunkSections?.size} t=${hudRenderer.connection.world.chunks.size}"
         timingsText.sText = "Timings: avg ${getAvgFrameTime()}ms, min ${getMinFrameTime()}ms, max ${getMaxFrameTime()}ms"
-        openGLText.sText = "GL: m=${UnitFormatter.formatNumber(hudRenderer.renderWindow.worldRenderer.meshes)} t=${UnitFormatter.formatNumber(hudRenderer.renderWindow.worldRenderer.triangles)}"
+        openGLText.sText = "GL: m=${worldRenderer?.meshes?.let { UnitFormatter.formatNumber(it) }} t=${worldRenderer?.triangles?.let { UnitFormatter.formatNumber(it) }}"
 
 
         // ToDo: Prepare on change

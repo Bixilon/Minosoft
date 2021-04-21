@@ -25,10 +25,11 @@ import de.bixilon.minosoft.data.world.Chunk
 import de.bixilon.minosoft.data.world.ChunkSection
 import de.bixilon.minosoft.data.world.ChunkSection.Companion.indexPosition
 import de.bixilon.minosoft.data.world.World
-import de.bixilon.minosoft.gui.rendering.RenderConstants
-import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.Renderer
+import de.bixilon.minosoft.gui.input.camera.FrustumChangeCallback
+import de.bixilon.minosoft.gui.modding.events.RenderingStateChangeEvent
+import de.bixilon.minosoft.gui.rendering.*
 import de.bixilon.minosoft.gui.rendering.shader.Shader
+import de.bixilon.minosoft.gui.rendering.shader.ShaderHolder
 import de.bixilon.minosoft.gui.rendering.textures.Texture
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.of
@@ -40,7 +41,6 @@ import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.nullCast
 import de.bixilon.minosoft.util.MMath
-import de.bixilon.minosoft.util.ResourceLocationAble
 import de.bixilon.minosoft.util.logging.Log
 import glm_.vec2.Vec2i
 import glm_.vec3.Vec3i
@@ -50,12 +50,12 @@ import java.util.concurrent.ConcurrentHashMap
 
 class WorldRenderer(
     private val connection: PlayConnection,
-    private val world: World,
     val renderWindow: RenderWindow,
-) : Renderer {
+) : Renderer, ShaderHolder, FrustumChangeCallback {
+    private val world: World = connection.world
     private val waterBlock = connection.mapping.blockRegistry.get(ResourceLocation("minecraft:water"))?.nullCast<FluidBlock>()
 
-    lateinit var chunkShader: Shader
+    override lateinit var shader: Shader
     val allChunkSections: MutableMap<Vec2i, MutableMap<Int, ChunkMeshCollection>> = Collections.synchronizedMap(ConcurrentHashMap())
     val visibleChunks: MutableMap<Vec2i, MutableMap<Int, ChunkMeshCollection>> = Collections.synchronizedMap(ConcurrentHashMap())
     val queuedChunks: MutableSet<Vec2i> = Collections.synchronizedSet(mutableSetOf())
@@ -149,19 +149,25 @@ class WorldRenderer(
                 prepareChunkSection(it.chunkPosition, sectionHeight)
             }
         })
+
+        connection.registerEvent(CallbackEventInvoker.of<RenderingStateChangeEvent> {
+            if (it.previousState == RenderingStates.PAUSED && it.state == RenderingStates.RUNNING) {
+                clearChunkCache()
+            }
+        })
     }
 
     override fun postInit() {
         check(renderWindow.textures.animator.animatedTextures.size < 4096) { "Can not have more than 4096 animated textures!" } // uniform buffer limit: 16kb. 4 ints per texture
-        chunkShader = Shader(
+        shader = Shader(
             vertexPath = ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "rendering/shader/chunk_vertex.glsl"),
             fragmentPath = ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "rendering/shader/chunk_fragment.glsl"),
             defines = mapOf("ANIMATED_TEXTURE_COUNT" to MMath.clamp(renderWindow.textures.animator.animatedTextures.size, 1, Int.MAX_VALUE)),
         )
-        chunkShader.load()
+        shader.load()
 
-        renderWindow.textures.use(chunkShader, "textureArray")
-        renderWindow.textures.animator.use(chunkShader, "AnimatedDataBuffer")
+        renderWindow.textures.use(shader, "textureArray")
+        renderWindow.textures.animator.use(shader, "AnimatedDataBuffer")
 
         for (block in allBlocks!!) {
             for (model in block.renderers) {
@@ -172,7 +178,7 @@ class WorldRenderer(
     }
 
     override fun draw() {
-        chunkShader.use()
+        shader.use()
 
         for ((_, map) in visibleChunks) {
             for ((_, mesh) in map) {
@@ -381,7 +387,7 @@ class WorldRenderer(
         prepareWorld(connection.world)
     }
 
-    fun recalculateVisibleChunks() {
+    override fun onFrustumChange() {
         visibleChunks.clear()
         for ((chunkLocation, indexMap) in allChunkSections) {
             val visibleIndexMap: MutableMap<Int, ChunkMeshCollection> = Collections.synchronizedMap(ConcurrentHashMap())
@@ -400,8 +406,12 @@ class WorldRenderer(
         return this + upOrDown.directionVector.y
     }
 
-    companion object : ResourceLocationAble {
+    companion object : RenderBuilder {
         override val RESOURCE_LOCATION = ResourceLocation("minosoft:world_renderer")
+
+        override fun build(connection: PlayConnection, renderWindow: RenderWindow): WorldRenderer {
+            return WorldRenderer(connection, renderWindow)
+        }
 
         fun getSectionIndex(sectionHeight: Int): Int {
             val divided = sectionHeight / RenderConstants.CHUNK_SECTIONS_PER_MESH

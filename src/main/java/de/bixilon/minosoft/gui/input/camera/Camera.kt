@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger, Lukas Eisenhauer
+ * Copyright (C) 2021 Moritz Zwerger, Lukas Eisenhauer
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering
+package de.bixilon.minosoft.gui.input.camera
 
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames
@@ -20,7 +20,8 @@ import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.data.mappings.biomes.Biome
-import de.bixilon.minosoft.gui.rendering.chunk.Frustum
+import de.bixilon.minosoft.gui.rendering.RenderConstants
+import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.gui.rendering.util.VecUtil
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.blockPosition
@@ -81,6 +82,7 @@ class Camera(
     val frustum: Frustum = Frustum(this)
 
     private val shaders: MutableSet<Shader> = mutableSetOf()
+    private val frustumChangeCallbacks: MutableSet<FrustumChangeCallback> = mutableSetOf()
 
     private var keyForwardDown = false
     private var keyLeftDown = false
@@ -148,6 +150,11 @@ class Camera(
         renderWindow.registerKeyCallback(KeyBindingsNames.MOVE_JUMP) { _: KeyCodes, keyAction: KeyAction ->
             keyJumpDown = keyAction == KeyAction.PRESS
         }
+
+        frustum.recalculate()
+        for (frustumChangeCallback in frustumChangeCallbacks) {
+            frustumChangeCallback.onFrustumChange()
+        }
     }
 
     fun handleInput(deltaTime: Double) {
@@ -208,6 +215,10 @@ class Camera(
         this.shaders.addAll(shaders)
     }
 
+    fun addFrustumChangeCallback(vararg shaders: FrustumChangeCallback) {
+        this.frustumChangeCallbacks.addAll(shaders)
+    }
+
     override fun onScreenResize(screenDimensions: Vec2i) {
         recalculateViewProjectionMatrix()
     }
@@ -230,7 +241,9 @@ class Camera(
         renderWindow.setSkyColor(connection.world.getBiome(blockPosition)?.skyColor ?: RenderConstants.DEFAULT_SKY_COLOR)
 
         frustum.recalculate()
-        renderWindow.worldRenderer.recalculateVisibleChunks()
+        for (frustumChangeCallback in frustumChangeCallbacks) {
+            frustumChangeCallback.onFrustumChange()
+        }
 
         connection.world.dimension?.hasSkyLight?.let {
             if (it) {

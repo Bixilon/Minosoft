@@ -21,12 +21,16 @@ import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.text.RGBColor
+import de.bixilon.minosoft.gui.input.camera.Camera
+import de.bixilon.minosoft.gui.input.camera.FrustumChangeCallback
+import de.bixilon.minosoft.gui.modding.events.RenderingStateChangeEvent
 import de.bixilon.minosoft.gui.rendering.chunk.WorldRenderer
 import de.bixilon.minosoft.gui.rendering.font.Font
 import de.bixilon.minosoft.gui.rendering.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.hud.atlas.TextureLike
 import de.bixilon.minosoft.gui.rendering.hud.atlas.TextureLikeTexture
 import de.bixilon.minosoft.gui.rendering.hud.elements.input.KeyConsumer
+import de.bixilon.minosoft.gui.rendering.shader.ShaderHolder
 import de.bixilon.minosoft.gui.rendering.textures.Texture
 import de.bixilon.minosoft.gui.rendering.textures.TextureArray
 import de.bixilon.minosoft.gui.rendering.util.ScreenshotTaker
@@ -69,7 +73,7 @@ class RenderWindow(
     val camera: Camera = Camera(connection, Minosoft.getConfig().config.game.camera.fov, this)
     private val latch = CountUpAndDownLatch(1)
 
-    private var renderingStatus = RenderingStates.RUNNING
+    private var renderingState = RenderingStates.RUNNING
 
     private var polygonEnabled = false
     private var mouseCatch = !StaticConfiguration.DEBUG_MODE
@@ -79,9 +83,7 @@ class RenderWindow(
     val font = Font()
     val textures = TextureArray(mutableListOf())
 
-    // all renderers
-    val worldRenderer: WorldRenderer = WorldRenderer(connection, connection.world, this)
-    val hudRenderer: HUDRenderer = HUDRenderer(connection, this)
+    val rendererMap: MutableMap<ResourceLocation, Renderer> = mutableMapOf()
 
     val renderQueue = ConcurrentLinkedQueue<Runnable>()
 
@@ -93,10 +95,7 @@ class RenderWindow(
     lateinit var WHITE_TEXTURE: TextureLike
 
 
-    val screenResizeCallbacks: MutableSet<ScreenResizeCallback> = mutableSetOf(
-        camera,
-        hudRenderer,
-    )
+    val screenResizeCallbacks: MutableSet<ScreenResizeCallback> = mutableSetOf(camera)
 
     var tickCount = 0L
     var lastTickTimer = System.currentTimeMillis()
@@ -149,6 +148,9 @@ class RenderWindow(
                 camera.setRotation(packet.rotation.yaw, packet.rotation.pitch)
             }
         })
+
+        registerRenderer(WorldRenderer)
+        registerRenderer(HUDRenderer)
     }
 
     fun init(latch: CountUpAndDownLatch) {
@@ -331,8 +333,9 @@ class RenderWindow(
 
         font.preLoadAtlas(textures)
 
-        worldRenderer.init()
-        hudRenderer.init()
+        for (renderer in rendererMap.values) {
+            renderer.init()
+        }
 
 
         textures.preLoad(connection.assetsManager)
@@ -340,9 +343,12 @@ class RenderWindow(
         font.loadAtlas()
         textures.load()
 
-
-        worldRenderer.postInit()
-        hudRenderer.postInit()
+        for (renderer in rendererMap.values) {
+            renderer.postInit()
+            if (renderer is ShaderHolder) {
+                camera.addShaders(renderer.shader)
+            }
+        }
 
 
         glfwSetWindowSizeCallback(windowId, object : GLFWWindowSizeCallback() {
@@ -378,8 +384,6 @@ class RenderWindow(
 
 
         registerGlobalKeyCombinations()
-
-        camera.addShaders(worldRenderer.chunkShader)
 
         for (callback in screenResizeCallbacks) {
             callback.onScreenResize(screenDimensions)
@@ -424,7 +428,7 @@ class RenderWindow(
 
     fun startRenderLoop() {
         while (!glfwWindowShouldClose(windowId)) {
-            if (renderingStatus == RenderingStates.PAUSED) {
+            if (renderingState == RenderingStates.PAUSED) {
                 Thread.sleep(100L)
                 glfwPollEvents()
                 continue
@@ -448,8 +452,9 @@ class RenderWindow(
             textures.animator.draw()
 
 
-            worldRenderer.draw()
-            hudRenderer.draw()
+            for (renderer in rendererMap.values) {
+                renderer.draw()
+            }
 
             renderStats.endDraw()
 
@@ -470,7 +475,7 @@ class RenderWindow(
                 actionsDone++
             }
 
-            when (renderingStatus) {
+            when (renderingState) {
                 RenderingStates.SLOW -> Thread.sleep(100L)
                 RenderingStates.RUNNING, RenderingStates.PAUSED -> {
                 }
@@ -498,14 +503,15 @@ class RenderWindow(
     }
 
     private fun setRenderStatus(renderingStatus: RenderingStates) {
-        if (renderingStatus == this.renderingStatus) {
+        if (renderingStatus == this.renderingState) {
             return
         }
-        if (this.renderingStatus == RenderingStates.PAUSED) {
+        if (this.renderingState == RenderingStates.PAUSED) {
             renderQueue.clear()
-            worldRenderer.refreshChunkCache()
         }
-        this.renderingStatus = renderingStatus
+        val previousState = this.renderingState
+        this.renderingState = renderingStatus
+        connection.fireEvent(RenderingStateChangeEvent(connection, previousState, renderingState))
     }
 
     fun registerKeyCallback(resourceLocation: ResourceLocation, callback: ((keyCode: KeyCodes, keyEvent: KeyAction) -> Unit)) {
@@ -516,6 +522,17 @@ class RenderWindow(
             keyBindingCallbacks[resourceLocation] = Pair(keyBinding, resourceLocationCallbacks)
         }
         resourceLocationCallbacks.add(callback)
+    }
+
+    fun registerRenderer(renderBuilder: RenderBuilder) {
+        val renderer = renderBuilder.build(connection, this)
+        rendererMap[renderBuilder.RESOURCE_LOCATION] = renderer
+        if (renderer is ScreenResizeCallback) {
+            screenResizeCallbacks.add(renderer)
+        }
+        if (renderer is FrustumChangeCallback) {
+            camera.addFrustumChangeCallback(renderer)
+        }
     }
 
     fun setSkyColor(color: RGBColor) {

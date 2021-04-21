@@ -17,6 +17,7 @@ import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames
 import de.bixilon.minosoft.config.config.game.elements.ElementsNames
 import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.gui.rendering.RenderBuilder
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.Renderer
@@ -31,7 +32,6 @@ import de.bixilon.minosoft.gui.rendering.util.abstractions.ScreenResizeCallback
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.MMath
-import de.bixilon.minosoft.util.ResourceLocationAble
 import de.bixilon.minosoft.util.json.ResourceLocationJsonMap.toResourceLocationMap
 import glm_.glm
 import glm_.mat4x4.Mat4
@@ -234,7 +234,11 @@ class HUDRenderer(val connection: PlayConnection, val renderWindow: RenderWindow
         return Vec2i(x, y)
     }
 
-    companion object : ResourceLocationAble {
-        override val RESOURCE_LOCATION = ResourceLocation("minosoft:world_renderer")
+    companion object : RenderBuilder {
+        override val RESOURCE_LOCATION = ResourceLocation("minosoft:hud_renderer")
+
+        override fun build(connection: PlayConnection, renderWindow: RenderWindow): HUDRenderer {
+            return HUDRenderer(connection, renderWindow)
+        }
     }
 }
