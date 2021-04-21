@@ -59,15 +59,11 @@ class ChatBoxHUDElement(hudRenderer: HUDRenderer) : HUDElement(hudRenderer), Scr
     fun openChat() {
         layout.addChild(Vec2i(0, 0), inputFieldBackground)
         hudRenderer.renderWindow.currentKeyConsumer = inputField
-        hudRenderer.renderWindow.currentElement.remove(KeyBindingsNames.WHEN_IN_GAME)
-        hudRenderer.renderWindow.currentElement.add(KeyBindingsNames.WHEN_IN_CHAT)
     }
 
     fun closeChat() {
         layout.removeChild(inputFieldBackground)
         inputField.clearText()
         hudRenderer.renderWindow.currentKeyConsumer = null
-        hudRenderer.renderWindow.currentElement.remove(KeyBindingsNames.WHEN_IN_CHAT)
-        hudRenderer.renderWindow.currentElement.add(KeyBindingsNames.WHEN_IN_GAME)
     }
 }

@@ -99,7 +99,7 @@ class Camera(
         var yOffset = yPos - this.lastMouseY
         lastMouseX = xPos
         lastMouseY = yPos
-        if (!renderWindow.currentElement.contains(KeyBindingsNames.WHEN_IN_GAME)) {
+        if (renderWindow.currentKeyConsumer != null) {
             return
         }
         xOffset *= mouseSensitivity
@@ -158,6 +158,9 @@ class Camera(
     }
 
     fun handleInput(deltaTime: Double) {
+        if (renderWindow.currentKeyConsumer != null) { // ToDo
+            return
+        }
         var cameraSpeed = movementSpeed * deltaTime
         val movementFront = Vec3(cameraFront)
         if (!Minosoft.getConfig().config.game.camera.noCipMovement) {

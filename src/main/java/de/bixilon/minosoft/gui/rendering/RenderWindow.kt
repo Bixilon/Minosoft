@@ -88,9 +88,8 @@ class RenderWindow(
     val renderQueue = ConcurrentLinkedQueue<Runnable>()
 
     private var _currentInputConsumer: KeyConsumer? = null
-    val currentElement: MutableList<ResourceLocation> = mutableListOf(KeyBindingsNames.WHEN_IN_GAME, KeyBindingsNames.WHEN_PLAYER_IS_FLYING)
 
-    private var skipNextChatPress = false
+    private var skipNextCharPress = false
 
     lateinit var WHITE_TEXTURE: TextureLike
 
@@ -196,33 +195,14 @@ class RenderWindow(
 
             if (keyAction == KeyAction.PRESS) {
                 // ToDo: Repeatable keys, long holding, etc
-
                 currentKeyConsumer?.keyInput(keyCode)
             }
 
+            val previousKeyConsumer = currentKeyConsumer
             for ((_, keyCallbackPair) in keyBindingCallbacks) {
                 run {
                     val keyBinding = keyCallbackPair.first
                     val keyCallbacks = keyCallbackPair.second
-
-
-                    var andWhenValid = keyBinding.`when`.isEmpty()
-                    for (or in keyBinding.`when`) {
-                        var andValid = true
-                        for (and in or) {
-                            if (!currentElement.contains(and)) {
-                                andValid = false
-                                break
-                            }
-                        }
-                        if (andValid) {
-                            andWhenValid = true
-                            break
-                        }
-                    }
-                    if (!andWhenValid) {
-                        return@run
-                    }
 
                     var anyCheckRun = false
 
@@ -270,15 +250,17 @@ class RenderWindow(
                     }
                     for (keyCallback in keyCallbacks) {
                         keyCallback.invoke(keyCode, keyAction)
-                        skipNextChatPress = true
+                        if (previousKeyConsumer != currentKeyConsumer) {
+                            skipNextCharPress = true
+                        }
                     }
                 }
             }
         }
 
         glfwSetCharCallback(windowId) { _: Long, char: Int ->
-            if (skipNextChatPress) {
-                skipNextChatPress = false
+            if (skipNextCharPress) {
+                skipNextCharPress = false
                 return@glfwSetCharCallback
             }
             currentKeyConsumer?.charInput(char.toChar())
@@ -421,7 +403,7 @@ class RenderWindow(
         registerKeyCallback(KeyBindingsNames.QUIT_RENDERING) { _: KeyCodes, _: KeyAction ->
             glfwSetWindowShouldClose(windowId, true)
         }
-        registerKeyCallback(KeyBindingsNames.TAKE_SCREENSHOT) { _: KeyCodes, _: KeyAction ->
+        registerKeyCallback(KeyBindingsNames.TAKE_SCREENSHOT, true) { _: KeyCodes, _: KeyAction ->
             screenshotTaker.takeScreenshot()
         }
     }
@@ -514,14 +496,21 @@ class RenderWindow(
         connection.fireEvent(RenderingStateChangeEvent(connection, previousState, renderingState))
     }
 
-    fun registerKeyCallback(resourceLocation: ResourceLocation, callback: ((keyCode: KeyCodes, keyEvent: KeyAction) -> Unit)) {
+    fun registerKeyCallback(resourceLocation: ResourceLocation, ignoreConsumer: Boolean = false, callback: ((keyCode: KeyCodes, keyEvent: KeyAction) -> Unit)) {
         var resourceLocationCallbacks = keyBindingCallbacks[resourceLocation]?.second
         if (resourceLocationCallbacks == null) {
             resourceLocationCallbacks = mutableSetOf()
             val keyBinding = Minosoft.getConfig().config.game.controls.keyBindings.entries[resourceLocation] ?: return
             keyBindingCallbacks[resourceLocation] = Pair(keyBinding, resourceLocationCallbacks)
         }
-        resourceLocationCallbacks.add(callback)
+        resourceLocationCallbacks.add { keyCode, keyEvent ->
+            if (!ignoreConsumer) {
+                if (currentKeyConsumer != null) {
+                    return@add
+                }
+            }
+            callback.invoke(keyCode, keyEvent)
+        }
     }
 
     fun registerRenderer(renderBuilder: RenderBuilder) {
