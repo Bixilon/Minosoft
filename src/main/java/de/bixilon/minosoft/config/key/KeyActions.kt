@@ -14,12 +14,44 @@
 package de.bixilon.minosoft.config.key
 
 enum class KeyAction {
-    MODIFIER,
-    CHANGE,
+    // primitive ones
+
+    /**
+     * Key is normally pressed on the keyboard
+     */
     PRESS,
+
+    /**
+     * Key is normally released on the keyboard
+     */
     RELEASE,
+
+    /**
+     * Key must be pressed or released
+     */
+    CHANGE,
+
+    // custom ones
+
+    /**
+     * Key must be hold in addition to a other action
+     */
+    MODIFIER,
+
+    /**
+     * ToDo: Key must be pressed twice
+     */
     DOUBLE_CLICK,
-    TOGGLE,
+
+    /**
+     * Pressing the key makes it sticky, you have to press it again to make it not pressed anymore
+     */
+    STICKY,
+
+    /**
+     * Exactly the same as STICKY, but inverted. Initial pressed
+     */
+    STICKY_INVERTED,
     ;
 
     companion object {

@@ -65,7 +65,7 @@ class HUDRenderer(val connection: PlayConnection, val renderWindow: RenderWindow
 
         registerDefaultElements()
 
-        renderWindow.inputHandler.registerKeyCallback(KeyBindingsNames.TOGGLE_HUD) { _, _ ->
+        renderWindow.inputHandler.registerKeyCallback(KeyBindingsNames.TOGGLE_HUD) {
             hudEnabled = !hudEnabled
         }
 
@@ -116,7 +116,8 @@ class HUDRenderer(val connection: PlayConnection, val renderWindow: RenderWindow
 
         properties.toggleKeyBinding?.let {
             // register key binding
-            renderWindow.inputHandler.registerKeyCallback(it) { _, _ ->
+            renderWindow.inputHandler.registerKeyCallback(it) {
+                // ToDo: Use sticky
                 if (enabledHUDElement.contains(resourceLocation)) {
                     enabledHUDElement.remove(resourceLocation)
                 } else {

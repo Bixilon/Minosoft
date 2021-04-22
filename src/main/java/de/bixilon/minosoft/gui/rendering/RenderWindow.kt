@@ -13,9 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering
 
+import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames
-import de.bixilon.minosoft.config.key.KeyAction
-import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.input.camera.FrustumChangeCallback
@@ -68,7 +67,6 @@ class RenderWindow(
 
     private var renderingState = RenderingStates.RUNNING
 
-    private var polygonEnabled = false
 
     private val screenshotTaker = ScreenshotTaker(this)
     val tintColorCalculator = TintColorCalculator(connection.world)
@@ -144,10 +142,12 @@ class RenderWindow(
 
         glfwSetCharCallback(windowId, inputHandler::invoke)
 
-        if (inputHandler.mouseCatch) {
+        if (!StaticConfiguration.DEBUG_MODE) {
             glfwSetInputMode(windowId, GLFW_CURSOR, GLFW_CURSOR_DISABLED)
         }
         glfwSetCursorPosCallback(windowId, inputHandler::invoke)
+        glfwSetWindowSizeLimits(windowId, 100, 100, GLFW_DONT_CARE, GLFW_DONT_CARE)
+
 
         MemoryStack.stackPush().let { stack ->
             val pWidth = stack.mallocInt(1)
@@ -261,19 +261,19 @@ class RenderWindow(
     }
 
     private fun registerGlobalKeyCombinations() {
-        inputHandler.registerKeyCallback(KeyBindingsNames.DEBUG_POLYGON) { _: KeyCodes, _: KeyAction ->
-            polygonEnabled = !polygonEnabled
-            glPolygonMode(GL_FRONT_AND_BACK, if (polygonEnabled) {
+        inputHandler.registerKeyCallback(KeyBindingsNames.DEBUG_POLYGON) {
+            glPolygonMode(GL_FRONT_AND_BACK, if (it) {
                 GL_LINE
             } else {
                 GL_FILL
             })
             sendDebugMessage("Toggled polygon mode!")
         }
-        inputHandler.registerKeyCallback(KeyBindingsNames.QUIT_RENDERING) { _: KeyCodes, _: KeyAction ->
+
+        inputHandler.registerKeyCallback(KeyBindingsNames.QUIT_RENDERING) {
             glfwSetWindowShouldClose(windowId, true)
         }
-        inputHandler.registerKeyCallback(KeyBindingsNames.TAKE_SCREENSHOT, true) { _: KeyCodes, _: KeyAction ->
+        inputHandler.registerKeyCallback(KeyBindingsNames.TAKE_SCREENSHOT) {
             screenshotTaker.takeScreenshot()
         }
     }

@@ -15,8 +15,6 @@ package de.bixilon.minosoft.gui.input.camera
 
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames
-import de.bixilon.minosoft.config.key.KeyAction
-import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.data.mappings.biomes.Biome
@@ -84,15 +82,6 @@ class Camera(
     private val shaders: MutableSet<Shader> = mutableSetOf()
     private val frustumChangeCallbacks: MutableSet<FrustumChangeCallback> = mutableSetOf()
 
-    private var keyForwardDown = false
-    private var keyLeftDown = false
-    private var keyRightDown = false
-    private var keyBackDown = false
-    private var keyFlyUp = false
-    private var keyFlyDown = false
-    private var keySprintDown = false
-    private var keyZoomDown = false
-    private var keyJumpDown = false
 
     fun mouseCallback(xPos: Double, yPos: Double) {
         var xOffset = xPos - this.lastMouseX
@@ -123,33 +112,17 @@ class Camera(
     }
 
     fun init(renderWindow: RenderWindow) {
-        renderWindow.inputHandler.registerKeyCallback(KeyBindingsNames.MOVE_FORWARD) { _: KeyCodes, keyAction: KeyAction ->
-            keyForwardDown = keyAction == KeyAction.PRESS
-        }
-        renderWindow.inputHandler.registerKeyCallback(KeyBindingsNames.MOVE_LEFT) { _: KeyCodes, keyAction: KeyAction ->
-            keyLeftDown = keyAction == KeyAction.PRESS
-        }
-        renderWindow.inputHandler.registerKeyCallback(KeyBindingsNames.MOVE_BACKWARDS) { _: KeyCodes, keyAction: KeyAction ->
-            keyBackDown = keyAction == KeyAction.PRESS
-        }
-        renderWindow.inputHandler.registerKeyCallback(KeyBindingsNames.MOVE_RIGHT) { _: KeyCodes, keyAction: KeyAction ->
-            keyRightDown = keyAction == KeyAction.PRESS
-        }
-        renderWindow.inputHandler.registerKeyCallback(KeyBindingsNames.MOVE_FLY_UP) { _: KeyCodes, keyAction: KeyAction ->
-            keyFlyUp = keyAction == KeyAction.PRESS
-        }
-        renderWindow.inputHandler.registerKeyCallback(KeyBindingsNames.MOVE_FLY_DOWN) { _: KeyCodes, keyAction: KeyAction ->
-            keyFlyDown = keyAction == KeyAction.PRESS
-        }
-        renderWindow.inputHandler.registerKeyCallback(KeyBindingsNames.MOVE_SPRINT) { _: KeyCodes, keyAction: KeyAction ->
-            keySprintDown = keyAction == KeyAction.PRESS
-        }
-        renderWindow.inputHandler.registerKeyCallback(KeyBindingsNames.ZOOM) { _: KeyCodes, keyAction: KeyAction ->
-            keyZoomDown = keyAction == KeyAction.PRESS
-        }
-        renderWindow.inputHandler.registerKeyCallback(KeyBindingsNames.MOVE_JUMP) { _: KeyCodes, keyAction: KeyAction ->
-            keyJumpDown = keyAction == KeyAction.PRESS
-        }
+        renderWindow.inputHandler.registerCheckCallback(
+            KeyBindingsNames.MOVE_SPRINT,
+            KeyBindingsNames.MOVE_FORWARD,
+            KeyBindingsNames.MOVE_BACKWARDS,
+            KeyBindingsNames.MOVE_LEFT,
+            KeyBindingsNames.MOVE_RIGHT,
+            KeyBindingsNames.MOVE_FLY_UP,
+            KeyBindingsNames.MOVE_FLY_DOWN,
+            KeyBindingsNames.ZOOM,
+            KeyBindingsNames.MOVE_JUMP,
+        )
 
         frustum.recalculate()
         for (frustumChangeCallback in frustumChangeCallbacks) {
@@ -167,33 +140,37 @@ class Camera(
             movementFront.y = 0.0f
             movementFront.normalizeAssign() // when moving forwards, do not move down
         }
-        if (keySprintDown) {
+        if (renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.MOVE_SPRINT)) {
             cameraSpeed *= 5
         }
         var deltaMovement = Vec3()
-        if (keyForwardDown) {
+        if (renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.MOVE_FORWARD)) {
             deltaMovement = deltaMovement + movementFront * cameraSpeed
         }
-        if (keyBackDown) {
+        if (renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.MOVE_BACKWARDS)) {
             deltaMovement = deltaMovement - movementFront * cameraSpeed
         }
-        if (keyLeftDown) {
+        if (renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.MOVE_LEFT)) {
             deltaMovement = deltaMovement - cameraRight * cameraSpeed
         }
-        if (keyRightDown) {
+        if (renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.MOVE_RIGHT)) {
             deltaMovement = deltaMovement + cameraRight * cameraSpeed
         }
-        if (keyFlyDown) {
-            deltaMovement = deltaMovement - CAMERA_UP_VEC3 * cameraSpeed
-        }
-        if (playerEntity.isFlying && keyFlyUp) {
-            deltaMovement = deltaMovement + CAMERA_UP_VEC3 * cameraSpeed
-        } else if (playerEntity.onGround && keyJumpDown) {
-            // TODO: jump delay, correct jump height, direction wrong?
-            playerEntity.velocity?.let {
-                it.y += -0.75f * ProtocolDefinition.GRAVITY
-            } ?: run {
-                playerEntity.velocity = Vec3(0, -0.75f * ProtocolDefinition.GRAVITY, 0)
+        if (playerEntity.isFlying) {
+            if (renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.MOVE_FLY_UP)) {
+                deltaMovement = deltaMovement + CAMERA_UP_VEC3 * cameraSpeed
+            }
+            if (renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.MOVE_FLY_DOWN)) {
+                deltaMovement = deltaMovement - CAMERA_UP_VEC3 * cameraSpeed
+            }
+        } else {
+            if (playerEntity.onGround && renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.MOVE_JUMP)) {
+                // TODO: jump delay, correct jump height, direction wrong?
+                playerEntity.velocity?.let {
+                    it.y += -0.75f * ProtocolDefinition.GRAVITY
+                } ?: run {
+                    playerEntity.velocity = Vec3(0, -0.75f * ProtocolDefinition.GRAVITY, 0)
+                }
             }
         }
         if (deltaMovement != VecUtil.EMPTY_VEC3) {
@@ -204,7 +181,7 @@ class Camera(
         }
 
         val lastZoom = zoom
-        zoom = if (keyZoomDown) {
+        zoom = if (renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.ZOOM)) {
             2f
         } else {
             0.0f

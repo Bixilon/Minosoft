@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2021 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,11 +11,13 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.config.key
+package de.bixilon.minosoft.gui.input.key
 
-class KeyBinding(
-    val action: MutableMap<KeyAction, MutableSet<KeyCodes>>,
-    var ignoreConsumer: Boolean = false,
+import de.bixilon.minosoft.config.key.KeyBinding
+
+data class KeyBindingCallbackPair(
+    val keyBinding: KeyBinding,
+    val callback: MutableSet<(keyDown: Boolean) -> Unit> = mutableSetOf(),
 ) {
-    constructor(keyBinding: KeyBinding) : this(keyBinding.action.toMutableMap()) // ToDo: Deep copy
+    var lastChangeDown = false
 }

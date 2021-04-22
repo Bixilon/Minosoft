@@ -40,10 +40,10 @@ class ChatBoxHUDElement(hudRenderer: HUDRenderer) : HUDElement(hudRenderer), Scr
         layout.addChild(Vec2i(0, 0), inputField)
         inputField.apply()
 
-        hudRenderer.renderWindow.inputHandler.registerKeyCallback(KeyBindingsNames.OPEN_CHAT) { _, _ ->
+        hudRenderer.renderWindow.inputHandler.registerKeyCallback(KeyBindingsNames.OPEN_CHAT) {
             openChat()
         }
-        hudRenderer.renderWindow.inputHandler.registerKeyCallback(KeyBindingsNames.CLOSE_CHAT) { _, _ ->
+        hudRenderer.renderWindow.inputHandler.registerKeyCallback(KeyBindingsNames.CLOSE_CHAT) {
             closeChat()
         }
     }

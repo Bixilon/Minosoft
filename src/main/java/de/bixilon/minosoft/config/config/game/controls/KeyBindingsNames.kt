@@ -106,19 +106,19 @@ object KeyBindingsNames {
         ),
         TOGGLE_DEBUG_SCREEN to KeyBinding(
             mutableMapOf(
-                KeyAction.PRESS to mutableSetOf(KeyCodes.KEY_F3)
+                KeyAction.STICKY to mutableSetOf(KeyCodes.KEY_F3)
             ),
         ),
         DEBUG_POLYGON to KeyBinding(
             mutableMapOf(
                 KeyAction.MODIFIER to mutableSetOf(KeyCodes.KEY_F4),
-                KeyAction.PRESS to mutableSetOf(KeyCodes.KEY_P)
+                KeyAction.STICKY to mutableSetOf(KeyCodes.KEY_P)
             ),
         ),
         DEBUG_MOUSE_CATCH to KeyBinding(
             mutableMapOf(
                 KeyAction.MODIFIER to mutableSetOf(KeyCodes.KEY_F4),
-                KeyAction.PRESS to mutableSetOf(KeyCodes.KEY_M)
+                KeyAction.STICKY to mutableSetOf(KeyCodes.KEY_M)
             ),
         ),
         QUIT_RENDERING to KeyBinding(
@@ -136,6 +136,7 @@ object KeyBindingsNames {
             mutableMapOf(
                 KeyAction.PRESS to mutableSetOf(KeyCodes.KEY_F2)
             ),
+            ignoreConsumer = true,
         ),
         SELECT_HOTBAR_SLOTS[0] to KeyBinding(
             mutableMapOf(

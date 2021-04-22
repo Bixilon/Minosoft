@@ -257,10 +257,10 @@ abstract class Entity(
     fun computeTimeStep(deltaMillis: Long) {
         val deltaTime = deltaMillis.toFloat() / 1000.0f
         if (!hasNoGravity && !isFlying) {
-            if (velocity == null) {
+            velocity?.let {
+                it.y += deltaTime * ProtocolDefinition.GRAVITY
+            } ?: let {
                 velocity = Vec3(0, deltaTime * ProtocolDefinition.GRAVITY, 0)
-            } else {
-                velocity!!.y += deltaTime * ProtocolDefinition.GRAVITY
             }
         }
         if (velocity == null) {

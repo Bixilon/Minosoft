@@ -118,7 +118,7 @@ class WorldRenderer(
 
 
         // register keybindings
-        renderWindow.inputHandler.registerKeyCallback(KeyBindingsNames.DEBUG_CLEAR_CHUNK_CACHE) { _, _ ->
+        renderWindow.inputHandler.registerKeyCallback(KeyBindingsNames.DEBUG_CLEAR_CHUNK_CACHE) {
             clearChunkCache()
             renderWindow.sendDebugMessage("Cleared chunk cache!")
             prepareWorld(world)
