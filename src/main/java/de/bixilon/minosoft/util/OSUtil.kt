@@ -10,29 +10,26 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.util
 
-package de.bixilon.minosoft.util;
+object OSUtil {
+    @JvmStatic
+    val OS: OSs
 
-public final class OSUtil {
-    public static final OSs OS;
-
-    static {
-        String name = System.getProperty("os.name");
-        if (name.startsWith("Windows")) {
-            OS = OSs.WINDOWS;
-        } else if (name.startsWith("Linux")) {
-            OS = OSs.LINUX;
-        } else if (name.startsWith("Mac")) {
-            OS = OSs.MAC;
-        } else {
-            OS = OSs.OTHER;
-        }
-    }
-
-    public enum OSs {
+    enum class OSs {
         WINDOWS,
         LINUX,
         MAC,
-        OTHER
+        OTHER,
+    }
+
+    init {
+        val name = System.getProperty("os.name")
+        OS = when {
+            name.startsWith("Windows") -> OSs.WINDOWS
+            name.startsWith("Linux") -> OSs.LINUX
+            name.startsWith("Mac") -> OSs.MAC
+            else -> OSs.OTHER
+        }
     }
 }
