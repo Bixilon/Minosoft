@@ -37,7 +37,7 @@ public class PacketTimeUpdate extends PlayS2CPacket {
 
     @Override
     public void log() {
-        Log.protocol(String.format("[IN] Time Update packet received. Time is now %st (total %st, moving=%s)", Math.abs(this.timeOfDay), this.worldAge, this.timeOfDay > 0));
+        Log.protocol(String.format("[IN] Time update packet received. Time is now %st (total %st, moving=%s)", Math.abs(this.timeOfDay), this.worldAge, this.timeOfDay > 0));
     }
 
     public long getWorldAge() {

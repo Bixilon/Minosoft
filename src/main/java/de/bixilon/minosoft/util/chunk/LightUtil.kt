@@ -18,13 +18,14 @@ import de.bixilon.minosoft.data.world.light.ChunkLightAccessor
 import de.bixilon.minosoft.data.world.light.LightAccessor
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_16
 import java.util.*
 
 object LightUtil {
 
     fun readLightPacket(buffer: PlayInByteBuffer, skyLightMask: BitSet, blockLightMask: BitSet, dimension: Dimension): LightAccessor {
         // ToDo
-        val skyLight = if (dimension.hasSkyLight) {
+        val skyLight = if (dimension.hasSkyLight || buffer.versionId > V_1_16) { // ToDo: find out version
             readLightArray(buffer, skyLightMask, dimension)
         } else {
             mutableMapOf()
