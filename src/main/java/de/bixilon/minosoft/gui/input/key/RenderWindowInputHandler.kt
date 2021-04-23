@@ -160,18 +160,27 @@ class RenderWindowInputHandler(
             }
 
             pair.keyBinding.action[KeyAction.DOUBLE_PRESS]?.let {
+                checksRun++
+                if (!keyDown) {
+                    thisIsChange = false
+                    return@let
+                }
                 if (!it.contains(keyCode)) {
                     thisIsChange = false
-                    return
+                    return@let
                 }
                 val lastDownTime = keysLastDownTime[keyCode]
                 if (lastDownTime == null) {
                     thisIsChange = false
-                    return
+                    return@let
                 }
-                if (currentTime - lastDownTime > RenderConstants.DOUBLE_PRESS_KEY_MAX_DELAY) {
+                if (currentTime - lastDownTime > RenderConstants.DOUBLE_PRESS_KEY_PRESS_MAX_DELAY) {
                     thisIsChange = false
-                    return
+                    return@let
+                }
+                if (currentTime - pair.lastChange <= RenderConstants.DOUBLE_PRESS_DELAY_BETWEEN_PRESSED) {
+                    thisIsChange = false
+                    return@let
                 }
                 thisKeyBindingDown = !isKeyBindingDown(resourceLocation)
             }
@@ -181,6 +190,7 @@ class RenderWindowInputHandler(
             }
 
             // Log.debug("Changing $resourceLocation because of $keyCode -> $thisKeyBindingDown")
+            pair.lastChange = System.currentTimeMillis()
             for (callback in pair.callback) {
                 callback.invoke(thisKeyBindingDown)
             }

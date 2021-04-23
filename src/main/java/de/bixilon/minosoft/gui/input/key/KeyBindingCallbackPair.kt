@@ -19,5 +19,5 @@ data class KeyBindingCallbackPair(
     val keyBinding: KeyBinding,
     val callback: MutableSet<(keyDown: Boolean) -> Unit> = mutableSetOf(),
 ) {
-    var lastChangeDown = false
+    var lastChange = 0L
 }
