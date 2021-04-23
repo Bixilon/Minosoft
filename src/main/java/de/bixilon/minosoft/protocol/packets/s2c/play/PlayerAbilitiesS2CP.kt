@@ -16,7 +16,7 @@ import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
-import de.bixilon.minosoft.util.BitByte
+import de.bixilon.minosoft.util.BitByte.isBit
 import de.bixilon.minosoft.util.logging.Log
 
 class PlayerAbilitiesS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
@@ -29,17 +29,17 @@ class PlayerAbilitiesS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     val walkingSpeed: Float
 
     init {
-        val flags = buffer.readByte()
+        val flags = buffer.readUnsignedByte()
         if (buffer.versionId < ProtocolVersions.V_14W03B) { // ToDo: Find out correct version
-            isInvulnerable = BitByte.isBitSet(flags.toInt(), 0)
-            isFlying = BitByte.isBitSet(flags.toInt(), 1)
-            canFly = BitByte.isBitSet(flags.toInt(), 2)
-            canInstantBuild = BitByte.isBitSet(flags.toInt(), 3)
+            isInvulnerable = flags isBit (0)
+            isFlying = flags.isBit(1)
+            canFly = flags.isBit(2)
+            canInstantBuild = flags.isBit(3)
         } else {
-            canInstantBuild = BitByte.isBitSet(flags.toInt(), 0)
-            isFlying = BitByte.isBitSet(flags.toInt(), 1)
-            canFly = BitByte.isBitSet(flags.toInt(), 2)
-            isInvulnerable = BitByte.isBitSet(flags.toInt(), 3)
+            canInstantBuild = flags.isBit(0)
+            isFlying = flags.isBit(1)
+            canFly = flags.isBit(2)
+            isInvulnerable = flags.isBit(3)
         }
         flyingSpeed = buffer.readFloat()
         walkingSpeed = buffer.readFloat()

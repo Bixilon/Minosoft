@@ -44,11 +44,12 @@ class RenderWindowInputHandler(
 
     init {
         registerKeyCallback(KeyBindingsNames.DEBUG_MOUSE_CATCH) {
-            if (it) {
-                glfwSetInputMode(renderWindow.windowId, GLFW_CURSOR, GLFW_CURSOR_DISABLED)
+            val newCursorMode = if (it) {
+                GLFW_CURSOR_DISABLED
             } else {
-                glfwSetInputMode(renderWindow.windowId, GLFW_CURSOR, GLFW_CURSOR_NORMAL)
+                GLFW_CURSOR_NORMAL
             }
+            glfwSetInputMode(renderWindow.windowId, GLFW_CURSOR, newCursorMode)
             renderWindow.sendDebugMessage("Toggled mouse catch!")
         }
     }
@@ -179,7 +180,7 @@ class RenderWindowInputHandler(
                 continue
             }
 
-            // Log.debug("Changing $resourceLocation because of $keyCode -> $combinationDown")
+            // Log.debug("Changing $resourceLocation because of $keyCode -> $thisKeyBindingDown")
             for (callback in pair.callback) {
                 callback.invoke(thisKeyBindingDown)
             }

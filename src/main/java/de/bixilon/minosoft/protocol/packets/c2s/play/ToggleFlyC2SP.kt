@@ -27,8 +27,8 @@ class ToggleFlyC2SP(val flying: Boolean) : PlayC2SPacket {
         buffer.writeByte(flags)
         if (buffer.versionId < ProtocolVersions.V_1_16_PRE4) {
             // only fly matters, everything else ignored
-            buffer.writeFloat(0.0f) // flyingSpeed
-            buffer.writeFloat(0.0f) // walkingSpeed
+            buffer.writeFloat(1.0f) // flyingSpeed
+            buffer.writeFloat(1.0f) // walkingSpeed
         }
     }
 
