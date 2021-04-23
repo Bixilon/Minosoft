@@ -26,6 +26,7 @@ import de.bixilon.minosoft.data.mappings.biomes.BiomePrecipitation
 import de.bixilon.minosoft.data.mappings.blocks.Block
 import de.bixilon.minosoft.data.mappings.blocks.BlockState
 import de.bixilon.minosoft.data.mappings.blocks.entites.BlockEntityType
+import de.bixilon.minosoft.data.mappings.effects.StatusEffect
 import de.bixilon.minosoft.data.mappings.entities.EntityType
 import de.bixilon.minosoft.data.mappings.entities.villagers.VillagerProfession
 import de.bixilon.minosoft.data.mappings.fluid.Fluid

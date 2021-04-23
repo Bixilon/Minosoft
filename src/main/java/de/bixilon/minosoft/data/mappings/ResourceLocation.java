@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.mappings;
 
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
+import de.bixilon.minosoft.util.Util;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
@@ -43,7 +44,12 @@ public class ResourceLocation implements Comparable<ResourceLocation> {
 
     public static ResourceLocation getResourceLocation(String resourceLocation) throws IllegalArgumentException {
         if (!ProtocolDefinition.RESOURCE_LOCATION_PATTERN.matcher(resourceLocation).matches()) {
-            throw new IllegalArgumentException(String.format("%s in not a valid resource locaion!", resourceLocation));
+            throw new IllegalArgumentException(String.format("%s in not a valid resource location!", resourceLocation));
+        }
+
+        if (Util.doesStringContainsUppercaseLetters(resourceLocation)) {
+            // just a string but wrapped into a resourceLocation (like old plugin channels MC|BRAND or ...)
+            return new LegacyResourceLocation(resourceLocation);
         }
 
         return new ResourceLocation(resourceLocation);

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2021 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -10,17 +10,24 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.data.mappings
+package de.bixilon.minosoft.data.mappings.effects
 
 import com.google.gson.JsonObject
+import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.registry.RegistryItem
 import de.bixilon.minosoft.data.mappings.registry.ResourceLocationDeserializer
+import de.bixilon.minosoft.data.mappings.registry.Translatable
 import de.bixilon.minosoft.data.mappings.versions.VersionMapping
+import de.bixilon.minosoft.data.text.RGBColor
+import de.bixilon.minosoft.datafixer.EntityAttributeFixer.fix
 
 data class StatusEffect(
     override val resourceLocation: ResourceLocation,
-    // ToDo
-) : RegistryItem {
+    val category: StatusEffectCategories,
+    override val translationKey: String?,
+    val color: RGBColor,
+    val attributes: Map<ResourceLocation, StatusEffectAttribute>,
+) : RegistryItem, Translatable {
 
     override fun toString(): String {
         return resourceLocation.full
@@ -28,7 +35,22 @@ data class StatusEffect(
 
     companion object : ResourceLocationDeserializer<StatusEffect> {
         override fun deserialize(mappings: VersionMapping?, resourceLocation: ResourceLocation, data: JsonObject): StatusEffect {
-            return StatusEffect(resourceLocation)
+            val attributes: MutableMap<ResourceLocation, StatusEffectAttribute> = mutableMapOf()
+
+            // ToDo: Remove "modifiers" key
+            (data["attributes"].asJsonObject ?: data["modifiers"].asJsonObject)?.let {
+                for ((key, value) in it.entrySet()) {
+                    attributes[ResourceLocation.getResourceLocation(key).fix()] = StatusEffectAttribute.deserialize(value.asJsonObject)
+                }
+            }
+
+            return StatusEffect(
+                resourceLocation = resourceLocation,
+                category = StatusEffectCategories.NAME_MAP[data["category"].asString]!!,
+                translationKey = data["translation_key"]?.asString,
+                color = RGBColor.noAlpha(data["color"].asInt),
+                attributes.toMap(),
+            )
         }
     }
 }

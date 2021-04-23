@@ -20,7 +20,6 @@ import de.bixilon.minosoft.data.commands.CommandLiteralNode
 import de.bixilon.minosoft.data.commands.CommandNode
 import de.bixilon.minosoft.data.commands.CommandRootNode
 import de.bixilon.minosoft.data.entities.Poses
-import de.bixilon.minosoft.data.mappings.LegacyResourceLocation
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.network.connection.Connection
@@ -299,12 +298,7 @@ open class InByteBuffer {
     fun readResourceLocation(): ResourceLocation {
         val resourceLocation = readString()
 
-        return if (Util.doesStringContainsUppercaseLetters(resourceLocation)) {
-            // just a string but wrapped into a resourceLocation (like old plugin channels MC|BRAND or ...)
-            LegacyResourceLocation(resourceLocation)
-        } else {
-            ResourceLocation(resourceLocation)
-        }
+        return ResourceLocation.getResourceLocation(resourceLocation)
     }
 
 
