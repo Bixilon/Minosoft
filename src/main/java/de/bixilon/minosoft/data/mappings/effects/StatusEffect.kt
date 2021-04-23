@@ -37,8 +37,7 @@ data class StatusEffect(
         override fun deserialize(mappings: VersionMapping?, resourceLocation: ResourceLocation, data: JsonObject): StatusEffect {
             val attributes: MutableMap<ResourceLocation, StatusEffectAttribute> = mutableMapOf()
 
-            // ToDo: Remove "modifiers" key
-            (data["attributes"].asJsonObject ?: data["modifiers"].asJsonObject)?.let {
+            data["attributes"].asJsonObject?.let {
                 for ((key, value) in it.entrySet()) {
                     attributes[ResourceLocation.getResourceLocation(key).fix()] = StatusEffectAttribute.deserialize(value.asJsonObject)
                 }

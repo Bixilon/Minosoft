@@ -163,7 +163,7 @@ class VersionMapping {
         blockRegistry.initialize(pixlyzerData["blocks"]?.asJsonObject, this, Block, version.isFlattened(), Registry.MetaTypes.BITS_4)
         itemRegistry.initialize(pixlyzerData["items"]?.asJsonObject, this, Item, version.isFlattened(), Registry.MetaTypes.BITS_16)
         enchantmentRegistry.initialize(pixlyzerData["enchantments"]?.asJsonObject, this, Enchantment)
-        statusEffectRegistry.initialize(pixlyzerData["mob_effect"]?.asJsonObject, this, StatusEffect)
+        statusEffectRegistry.initialize(pixlyzerData["status_effect"]?.asJsonObject, this, StatusEffect)
         biomeRegistry.initialize(pixlyzerData["biomes"]?.asJsonObject, this, Biome)
         dimensionRegistry.initialize(pixlyzerData["dimensions"]?.asJsonObject, this, Dimension)
 
