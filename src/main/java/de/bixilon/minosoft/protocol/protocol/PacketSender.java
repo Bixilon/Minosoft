@@ -41,7 +41,7 @@ public class PacketSender {
     }
 
     public void setFlyStatus(boolean flying) {
-        this.connection.sendPacket(new PlayerAbilitiesC2SPacket(flying));
+        this.connection.sendPacket(new ToggleFlyC2SP(flying));
     }
 
     public void sendChatMessage(String message) {

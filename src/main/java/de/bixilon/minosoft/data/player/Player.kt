@@ -32,4 +32,5 @@ class Player(
     @Deprecated(message = "Will be replaced with some kind of teleport manager, ...")
     var isSpawnConfirmed = false
 
+    val baseAbilities = Abilities()
 }
