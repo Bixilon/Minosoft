@@ -31,7 +31,7 @@ class PlayerAbilitiesS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     init {
         val flags = buffer.readUnsignedByte()
         if (buffer.versionId < ProtocolVersions.V_14W03B) { // ToDo: Find out correct version
-            isInvulnerable = flags isBit (0)
+            isInvulnerable = flags.isBit(0)
             isFlying = flags.isBit(1)
             canFly = flags.isBit(2)
             canInstantBuild = flags.isBit(3)

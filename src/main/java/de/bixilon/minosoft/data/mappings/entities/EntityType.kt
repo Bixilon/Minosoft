@@ -24,6 +24,7 @@ import de.bixilon.minosoft.data.mappings.registry.RegistryItem
 import de.bixilon.minosoft.data.mappings.registry.ResourceLocationDeserializer
 import de.bixilon.minosoft.data.mappings.registry.Translatable
 import de.bixilon.minosoft.data.mappings.versions.VersionMapping
+import de.bixilon.minosoft.datafixer.EntityAttributeFixer.fix
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import glm_.vec3.Vec3
 
@@ -34,7 +35,7 @@ data class EntityType(
     val height: Float,
     val sizeFixed: Boolean,
     val fireImmune: Boolean,
-    val maxHealth: Float,
+    val attributes: Map<ResourceLocation, Float>,
     val factory: EntityFactory<out Entity>,
 ) : RegistryItem, Translatable {
 
@@ -57,6 +58,14 @@ data class EntityType(
                 return null
             }
 
+            val attributes: MutableMap<ResourceLocation, Float> = mutableMapOf()
+
+            data["attributes"]?.asJsonObject?.let {
+                for ((attributeResourceLocation, value) in it.entrySet()) {
+                    attributes[ResourceLocation.getPathResourceLocation(attributeResourceLocation).fix()] = value.asFloat
+                }
+            }
+
             return EntityType(
                 resourceLocation = resourceLocation,
                 translationKey = data["translation_key"]?.asString,
@@ -64,7 +73,7 @@ data class EntityType(
                 height = data["height"].asFloat,
                 fireImmune = data["fire_immune"]?.asBoolean ?: false,
                 sizeFixed = data["size_fixed"]?.asBoolean ?: false,
-                maxHealth = data["minecraft:generic.max_health"]?.asFloat ?: Float.MAX_VALUE,
+                attributes = attributes.toMap(),
                 factory = DefaultEntityFactories.getEntityFactory(resourceLocation) ?: error("Can not find entity factory for $resourceLocation"),
             )
         }

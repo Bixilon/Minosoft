@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.util
 
+import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.util.enum.AliasableEnum
 import java.util.*
 
@@ -47,5 +48,9 @@ object KUtil {
             return this
         }
         return null
+    }
+
+    fun String.asResourceLocation(): ResourceLocation {
+        return ResourceLocation(this)
     }
 }

@@ -14,6 +14,7 @@ package de.bixilon.minosoft.data.entities.entities
 
 import de.bixilon.minosoft.data.entities.EntityMetaDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
+import de.bixilon.minosoft.data.entities.attributes.DefaultEntityAttributes
 import de.bixilon.minosoft.data.mappings.entities.EntityType
 import de.bixilon.minosoft.data.player.Hands
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
@@ -44,7 +45,7 @@ abstract class LivingEntity(connection: PlayConnection, entityType: EntityType, 
         get() {
             val meta = entityMetaData.sets.getFloat(EntityMetaDataFields.LIVING_ENTITY_HEALTH)
             return if (meta == Float.MIN_VALUE) {
-                entityType.maxHealth
+                entityType.attributes[DefaultEntityAttributes.GENERIC_MAX_HEALTH] ?: 1.0f
             } else {
                 meta
             }
