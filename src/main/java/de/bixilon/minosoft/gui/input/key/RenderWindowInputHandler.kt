@@ -19,6 +19,7 @@ import de.bixilon.minosoft.config.key.KeyAction
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.gui.input.camera.Camera
+import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.hud.elements.input.KeyConsumer
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
@@ -33,7 +34,8 @@ class RenderWindowInputHandler(
 
     private val keyBindingCallbacks: MutableMap<ResourceLocation, KeyBindingCallbackPair> = mutableMapOf()
     private val keysDown: MutableList<KeyCodes> = mutableListOf()
-    private val keyCombinationsDown: MutableList<ResourceLocation> = mutableListOf()
+    private val keyBindingsDown: MutableList<ResourceLocation> = mutableListOf()
+    private val keysLastDownTime: MutableMap<KeyCodes, Long> = mutableMapOf()
 
     private var skipNextCharPress = false
 
@@ -75,10 +77,11 @@ class RenderWindowInputHandler(
                 return
             }
             else -> {
-                Log.game("Unknown glfw action $action")
+                Log.warn("Unknown glfw action $action")
                 return
             }
         }
+        val currentTime = System.currentTimeMillis()
 
         if (keyDown) {
             keysDown += keyCode
@@ -92,7 +95,7 @@ class RenderWindowInputHandler(
             if (currentKeyConsumer != null && !pair.keyBinding.ignoreConsumer) {
                 continue
             }
-            var combinationDown = keyDown
+            var thisKeyBindingDown = keyDown
             var checksRun = 0
             var thisIsChange = true
 
@@ -131,7 +134,7 @@ class RenderWindowInputHandler(
             }
 
             fun checkSticky(keys: MutableSet<KeyCodes>, invert: Boolean) {
-                var alreadyActive = keyCombinationsDown.contains(resourceLocation)
+                var alreadyActive = keyBindingsDown.contains(resourceLocation)
                 if (invert) {
                     alreadyActive = !alreadyActive
                 }
@@ -144,7 +147,7 @@ class RenderWindowInputHandler(
                     thisIsChange = false
                     return
                 }
-                combinationDown = !alreadyActive
+                thisKeyBindingDown = !alreadyActive
             }
 
             pair.keyBinding.action[KeyAction.STICKY]?.let {
@@ -155,21 +158,42 @@ class RenderWindowInputHandler(
                 checkSticky(it, true)
             }
 
+            pair.keyBinding.action[KeyAction.DOUBLE_PRESS]?.let {
+                if (!it.contains(keyCode)) {
+                    thisIsChange = false
+                    return
+                }
+                val lastDownTime = keysLastDownTime[keyCode]
+                if (lastDownTime == null) {
+                    thisIsChange = false
+                    return
+                }
+                if (currentTime - lastDownTime > RenderConstants.DOUBLE_PRESS_KEY_MAX_DELAY) {
+                    thisIsChange = false
+                    return
+                }
+                thisKeyBindingDown = !isKeyBindingDown(resourceLocation)
+            }
+
             if (!thisIsChange || checksRun == 0) {
                 continue
             }
 
             // Log.debug("Changing $resourceLocation because of $keyCode -> $combinationDown")
             for (callback in pair.callback) {
-                callback.invoke(combinationDown)
+                callback.invoke(thisKeyBindingDown)
             }
 
-            if (combinationDown) {
-                keyCombinationsDown += resourceLocation
+            if (thisKeyBindingDown) {
+                keyBindingsDown += resourceLocation
             } else {
-                keyCombinationsDown -= resourceLocation
+                keyBindingsDown -= resourceLocation
             }
         }
+        if (keyDown) {
+            keysLastDownTime[keyCode] = currentTime
+        }
+
         if (previousKeyConsumer != currentKeyConsumer) {
             skipNextCharPress = true
         }
@@ -216,7 +240,7 @@ class RenderWindowInputHandler(
     }
 
     fun isKeyBindingDown(resourceLocation: ResourceLocation): Boolean {
-        return keyCombinationsDown.contains(resourceLocation)
+        return keyBindingsDown.contains(resourceLocation)
     }
 
     fun unregisterKeyBinding(it: ResourceLocation) {

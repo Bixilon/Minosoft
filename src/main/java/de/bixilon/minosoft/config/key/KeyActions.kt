@@ -27,7 +27,7 @@ enum class KeyAction {
     RELEASE,
 
     /**
-     * Key must be pressed or released
+     * Key is pressed or released
      */
     CHANGE,
 
@@ -39,19 +39,19 @@ enum class KeyAction {
     MODIFIER,
 
     /**
-     * ToDo: Key must be pressed twice
-     */
-    DOUBLE_CLICK,
-
-    /**
      * Pressing the key makes it sticky, you have to press it again to make it not pressed anymore
      */
     STICKY,
 
     /**
-     * Exactly the same as STICKY, but inverted. Initial pressed
+     * Exactly the same as STICKY, but inverted. Initial pressed.
      */
     STICKY_INVERTED,
+
+    /**
+     * Key must be pressed twice in a certain time. Behaves like sticky (press twice again to disable)
+     */
+    DOUBLE_PRESS,
     ;
 
     companion object {

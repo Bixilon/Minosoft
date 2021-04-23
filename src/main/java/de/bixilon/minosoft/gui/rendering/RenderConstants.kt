@@ -70,4 +70,6 @@ object RenderConstants {
     val PIXEL_UV_PIXEL_ADD = Vec2(0, 0.1f)
 
     const val CAMPFIRE_ITEMS = 4
+
+    const val DOUBLE_PRESS_KEY_MAX_DELAY = 200
 }
