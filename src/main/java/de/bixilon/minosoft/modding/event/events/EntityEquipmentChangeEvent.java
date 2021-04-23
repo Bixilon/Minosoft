@@ -38,7 +38,7 @@ public class EntityEquipmentChangeEvent extends PlayConnectionEvent {
     }
 
     public Entity getEntity() {
-        return getConnection().getWorld().getEntity(this.entityId);
+        return getConnection().getWorld().getEntities().get(this.entityId);
     }
 
     public int getEntityId() {

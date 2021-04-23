@@ -144,7 +144,7 @@ class PacketJoinGame(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         connection.mapping.dimensionRegistry.setData(dimensions)
         connection.world.dimension = dimension
 
-        connection.world.addEntity(entityId, null, playerEntity)
+        connection.world.entities.add(entityId, null, playerEntity)
         connection.world.hashedSeed = hashedSeed
         connection.world.biomeAccessor = if (connection.version.versionId < ProtocolVersions.V_19W36A) {
             BlockBiomeAccessor(connection.world)

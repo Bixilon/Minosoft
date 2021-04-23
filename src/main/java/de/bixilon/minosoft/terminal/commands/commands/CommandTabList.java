@@ -69,8 +69,8 @@ public class CommandTabList extends Command {
                             ArrayList<Object[]> tableData = new ArrayList<>();
 
                             for (var entry : connection.getTabList().getTabListItems().entrySet()) {
-                                PlayerEntity playerEntity = (PlayerEntity) connection.getWorld().getEntity(entry.getKey());
-                                Integer entityId = playerEntity != null ? connection.getWorld().getEntityIdMap().inverse().get(playerEntity) : null;
+                                PlayerEntity playerEntity = (PlayerEntity) connection.getWorld().getEntities().get(entry.getKey());
+                                Integer entityId = playerEntity != null ? connection.getWorld().getEntities().getId(playerEntity) : null;
                                 tableData.add(new Object[]{entry.getKey(), entityId, entry.getValue().getName(), entry.getValue().getDisplayName(), entry.getValue().getGamemode(), entry.getValue().getPing() + "ms"});
                             }
 

@@ -32,8 +32,8 @@ public class CommandEntities extends Command {
                         new CommandLiteralNode("list", (connection, stack) -> {
                             ArrayList<Object[]> tableData = new ArrayList<>();
 
-                            for (var entry : connection.getWorld().getEntityIdMap().entrySet()) {
-                                tableData.add(new Object[]{entry.getKey(), connection.getWorld().getEntityIdMap().inverse().get(entry.getValue()), entry.getValue().getEntityType().toString(), entry.getValue().getEquipment(), entry.getValue().getPosition(), entry.getValue().getRotation()});
+                            for (var entry : connection.getWorld().getEntities()) {
+                                tableData.add(new Object[]{connection.getWorld().getEntities().getId(entry), connection.getWorld().getEntities().getUUID(entry), entry.getEntityType().toString(), entry.getEquipment(), entry.getPosition(), entry.getRotation()});
                             }
 
                             print(AsciiTable.getTable(new String[]{"ID", "UUID", "TYPE", "EQUIPMENT", "LOCATION", "ROTATION"}, tableData.toArray(new Object[0][0])));
@@ -41,15 +41,15 @@ public class CommandEntities extends Command {
                         new CommandLiteralNode("info", new CommandArgumentNode("entityId", IntegerParser.INTEGER_PARSER, new IntegerParserProperties(0, Integer.MAX_VALUE), (connection, stack) -> {
                             // ToDo: entity uuids
 
-                            Entity entity = connection.getWorld().getEntity(stack.getInt(0));
+                            Entity entity = connection.getWorld().getEntities().get(stack.getInt(0));
                             if (entity == null) {
                                 printError("Entity %d not found!", stack.getInt(0));
                                 return;
                             }
                             ArrayList<Object[]> tableData = new ArrayList<>();
 
-                            tableData.add(new Object[]{"Entity id", connection.getWorld().getEntityIdMap().inverse().get(entity)});
-                            tableData.add(new Object[]{"UUID", connection.getWorld().getEntityUUIDMap().inverse().get(entity)});
+                            tableData.add(new Object[]{"Entity id", connection.getWorld().getEntities().getId(entity)});
+                            tableData.add(new Object[]{"UUID", connection.getWorld().getEntities().getUUID(entity)});
                             tableData.add(new Object[]{"Type", entity.getEntityType()});
                             tableData.add(new Object[]{"Class", entity.getClass().getName()});
                             tableData.add(new Object[]{"Location", entity.getPosition()});

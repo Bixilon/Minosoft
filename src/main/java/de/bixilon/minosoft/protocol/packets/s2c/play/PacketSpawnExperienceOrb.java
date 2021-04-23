@@ -45,7 +45,7 @@ public class PacketSpawnExperienceOrb extends PlayS2CPacket {
     public void handle(PlayConnection connection) {
         connection.fireEvent(new EntitySpawnEvent(connection, this));
 
-        connection.getWorld().addEntity(this.entityId, null, getEntity());
+        connection.getWorld().getEntities().add(this.entityId, null, getEntity());
     }
 
     @Override

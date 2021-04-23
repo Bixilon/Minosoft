@@ -57,7 +57,7 @@ public class PacketEntityEquipment extends PlayS2CPacket {
     public void handle(PlayConnection connection) {
         connection.fireEvent(new EntityEquipmentChangeEvent(connection, this));
 
-        Entity entity = connection.getWorld().getEntity(getEntityId());
+        Entity entity = connection.getWorld().getEntities().get(getEntityId());
         if (entity == null) {
             // thanks mojang
             return;

@@ -12,10 +12,8 @@
  */
 package de.bixilon.minosoft.data.world
 
-import com.google.common.collect.HashBiMap
 import de.bixilon.minosoft.data.Difficulties
 import de.bixilon.minosoft.data.entities.block.BlockEntity
-import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.mappings.Dimension
 import de.bixilon.minosoft.data.mappings.biomes.Biome
 import de.bixilon.minosoft.data.mappings.blocks.BlockState
@@ -34,8 +32,7 @@ import java.util.concurrent.ConcurrentHashMap
  */
 class World : BiomeAccessor {
     val chunks: MutableMap<Vec2i, Chunk> = Collections.synchronizedMap(ConcurrentHashMap())
-    val entityIdMap = HashBiMap.create<Int, Entity>()
-    val entityUUIDMap = HashBiMap.create<UUID, Entity>()
+    val entities = WorldEntities()
     var isHardcore = false
     var isRaining = false
     var dimension: Dimension? = null
@@ -78,33 +75,6 @@ class World : BiomeAccessor {
         for ((chunkLocation, chunk) in chunkMap) {
             chunks[chunkLocation] = chunk
         }
-    }
-
-    fun addEntity(entityId: Int?, entityUUID: UUID?, entity: Entity) {
-        entityId?.let { entityIdMap[it] = entity }
-        entityUUID?.let { entityUUIDMap[it] = entity }
-
-    }
-
-    fun getEntity(id: Int): Entity? {
-        return entityIdMap[id]
-    }
-
-    fun getEntity(uuid: UUID): Entity? {
-        return entityUUIDMap[uuid]
-    }
-
-    fun removeEntity(entity: Entity) {
-        entityIdMap.inverse().remove(entity)
-        entityUUIDMap.inverse().remove(entity)
-    }
-
-    fun removeEntity(entityId: Int) {
-        entityIdMap[entityId]?.let { removeEntity(it) }
-    }
-
-    fun removeEntity(entityUUID: UUID) {
-        entityUUIDMap[entityUUID]?.let { removeEntity(it) }
     }
 
     fun getBlockEntity(blockPosition: Vec3i): BlockEntity? {

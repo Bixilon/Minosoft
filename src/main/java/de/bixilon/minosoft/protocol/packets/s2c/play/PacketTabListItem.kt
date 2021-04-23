@@ -144,7 +144,7 @@ class PacketTabListItem(buffer: PlayInByteBuffer) : PlayS2CPacket() {
                 continue
             }
 
-            val entity = connection.world.getEntity(uuid)
+            val entity = connection.world.entities[uuid]
 
 
             val tabListItem = connection.tabList.tabListItems[uuid] ?: run {

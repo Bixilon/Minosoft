@@ -26,7 +26,7 @@ class EntityActionC2SPacket(
     val action: EntityActions,
     val parameter: Int = 0, // currently used as jump boost for horse jumping
 ) : PlayC2SPacket {
-    constructor(entity: Entity, connection: PlayConnection, action: EntityActions, parameter: Int = 0) : this(connection.world.entityIdMap.inverse()[entity]!!, action, parameter)
+    constructor(entity: Entity, connection: PlayConnection, action: EntityActions, parameter: Int = 0) : this(connection.world.entities.getId(entity)!!, action, parameter)
 
     override fun write(buffer: PlayOutByteBuffer) {
         buffer.writeEntityId(entityId)

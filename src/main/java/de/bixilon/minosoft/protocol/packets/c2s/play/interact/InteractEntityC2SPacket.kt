@@ -28,7 +28,7 @@ class InteractEntityC2SPacket(
     override val sneaking: Boolean,
 ) : BaseInteractEntityC2SPacket(entityId, EntityInteractionActions.INTERACT) {
 
-    constructor(connection: PlayConnection, entity: Entity, position: Vec3, hand: Hands, sneaking: Boolean) : this(connection.world.entityIdMap.inverse()[entity]!!, position, hand, sneaking)
+    constructor(connection: PlayConnection, entity: Entity, position: Vec3, hand: Hands, sneaking: Boolean) : this(connection.world.entities.getId(entity)!!, position, hand, sneaking)
 
     override fun write(buffer: PlayOutByteBuffer) {
         super.write(buffer)

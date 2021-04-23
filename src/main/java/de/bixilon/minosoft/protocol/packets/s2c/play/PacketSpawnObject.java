@@ -76,7 +76,7 @@ public class PacketSpawnObject extends PlayS2CPacket {
     public void handle(PlayConnection connection) {
         connection.fireEvent(new EntitySpawnEvent(connection, this));
 
-        connection.getWorld().addEntity(this.entityId, this.entityUUID, getEntity());
+        connection.getWorld().getEntities().add(this.entityId, this.entityUUID, getEntity());
         this.entity.setVelocity(this.velocity);
     }
 

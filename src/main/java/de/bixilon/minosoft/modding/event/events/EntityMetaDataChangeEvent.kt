@@ -24,6 +24,6 @@ class EntityMetaDataChangeEvent : PlayConnectionEvent {
     }
 
     constructor(connection: PlayConnection, pkg: PacketEntityMetadata) : super(connection) {
-        entity = connection.world.getEntity(pkg.entityId)!!
+        entity = connection.world.entities[pkg.entityId]!!
     }
 }

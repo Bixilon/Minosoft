@@ -85,7 +85,7 @@ class PacketSpawnPlayer(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         connection.tabList.tabListItems[entityUUID]?.let { entity.tabListItem = it }
 
         connection.fireEvent(EntitySpawnEvent(connection, this))
-        connection.world.addEntity(entityId, entityUUID, entity)
+        connection.world.entities.add(entityId, entityUUID, entity)
     }
 
     override fun log() {

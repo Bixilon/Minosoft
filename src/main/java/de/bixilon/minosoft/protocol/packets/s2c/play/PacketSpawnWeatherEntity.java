@@ -46,7 +46,7 @@ public class PacketSpawnWeatherEntity extends PlayS2CPacket {
     public void handle(PlayConnection connection) {
         connection.fireEvent(new EntitySpawnEvent(connection, this));
         connection.fireEvent(new LightningBoltSpawnEvent(connection, this));
-        connection.getWorld().addEntity(this.entityId, null, this.entity);
+        connection.getWorld().getEntities().add(this.entityId, null, this.entity);
     }
 
     @Override

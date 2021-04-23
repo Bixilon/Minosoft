@@ -118,7 +118,7 @@ class PlayConnection(
                     velocityHandlerTask = TimeWorkerTask(ProtocolDefinition.TICK_TIME / 4) {
                         val currentTime = System.currentTimeMillis()
                         val deltaTime = currentTime - velocityHandlerLastExecutionTime
-                        for (entity in world.entityIdMap.values) {
+                        for (entity in world.entities) {
                             entity.computeTimeStep(deltaTime)
                         }
                         renderer?.renderWindow?.inputHandler?.camera?.checkPosition()

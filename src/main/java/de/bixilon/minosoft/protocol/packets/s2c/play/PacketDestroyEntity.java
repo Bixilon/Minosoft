@@ -43,7 +43,7 @@ public class PacketDestroyEntity extends PlayS2CPacket {
         connection.fireEvent(new EntityDespawnEvent(connection, this));
 
         for (int entityId : getEntityIds()) {
-            connection.getWorld().removeEntity(entityId);
+            connection.getWorld().getEntities().remove(entityId);
         }
     }
 

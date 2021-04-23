@@ -24,7 +24,7 @@ class EntityVelocityS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     val velocity: Vec3 = Vec3(buffer.readShort(), buffer.readShort(), buffer.readShort()) * ProtocolDefinition.VELOCITY_CONSTANT
 
     override fun handle(connection: PlayConnection) {
-        val entity = connection.world.getEntity(entityId) ?: return
+        val entity = connection.world.entities[entityId] ?: return
         entity.velocity = velocity
     }
 

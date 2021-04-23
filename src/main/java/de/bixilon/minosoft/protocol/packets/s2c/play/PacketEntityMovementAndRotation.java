@@ -47,7 +47,7 @@ public class PacketEntityMovementAndRotation extends PlayS2CPacket {
 
     @Override
     public void handle(PlayConnection connection) {
-        Entity entity = connection.getWorld().getEntity(getEntityId());
+        Entity entity = connection.getWorld().getEntities().get(getEntityId());
         if (entity == null) {
             // thanks mojang
             return;

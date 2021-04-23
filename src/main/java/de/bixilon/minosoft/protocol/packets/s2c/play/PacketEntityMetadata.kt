@@ -32,7 +32,7 @@ class PacketEntityMetadata() : PlayS2CPacket() {
     }
 
     override fun handle(connection: PlayConnection) {
-        val entity = connection.world.getEntity(entityId) ?: return
+        val entity = connection.world.entities[entityId] ?: return
 
         entity.entityMetaData = entityData
         connection.fireEvent(EntityMetaDataChangeEvent(connection, entity))
