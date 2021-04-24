@@ -47,7 +47,8 @@ object KeyBindingsNames {
     val CLOSE_CHAT = ResourceLocation("minosoft:close_chat")
 
 
-    val SELECT_HOTBAR_SLOTS = arrayOf(ResourceLocation("minosoft:select_hotbar_slot_1"),
+    val SELECT_HOTBAR_SLOTS = arrayOf(
+        ResourceLocation("minosoft:select_hotbar_slot_1"),
         ResourceLocation("minosoft:select_hotbar_slot_2"),
         ResourceLocation("minosoft:select_hotbar_slot_3"),
         ResourceLocation("minosoft:select_hotbar_slot_4"),

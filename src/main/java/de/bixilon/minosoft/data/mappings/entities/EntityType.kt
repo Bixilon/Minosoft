@@ -62,7 +62,7 @@ data class EntityType(
 
             data["attributes"]?.asJsonObject?.let {
                 for ((attributeResourceLocation, value) in it.entrySet()) {
-                    attributes[ResourceLocation.getPathResourceLocation(attributeResourceLocation).fix()] = value.asFloat
+                    attributes[ResourceLocation.getResourceLocation(attributeResourceLocation).fix()] = value.asFloat
                 }
             }
 
