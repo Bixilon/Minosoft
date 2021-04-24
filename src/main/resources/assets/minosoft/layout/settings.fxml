@@ -11,9 +11,7 @@
   ~
   ~ This software is not affiliated with Mojang AB, the original developer of Minecraft.
   -->
-<?import com.jfoenix.controls.JFXComboBox?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.layout.*?>
@@ -32,8 +30,6 @@
                     <RowConstraints />
                     <RowConstraints />
                 </rowConstraints>
-                <Label fx:id="generalLogLevelLabel" text="-Log level-" />
-                <JFXComboBox fx:id="generalLogLevel" prefWidth="150.0" GridPane.columnIndex="1"/>
             </GridPane>
         </Tab>
         <Tab disable="true"  fx:id="download" text="Download">

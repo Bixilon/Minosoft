@@ -31,6 +31,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_20W27A
 import de.bixilon.minosoft.util.BitByte
 import de.bixilon.minosoft.util.KUtil.nullCast
 import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogMessageType
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.listCast
 import kotlin.experimental.and
@@ -178,7 +179,7 @@ class PacketJoinGame(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     }
 
     override fun log() {
-        Log.protocol("[IN] Receiving join game packet (entityId=$entityId, gamemode=$gamemode, dimension=$dimension, difficulty=$difficulty, hardcore=$isHardcore, viewDistance=$viewDistance)")
+        Log.log(LogMessageType.NETWORK_PACKETS_IN) { "Join game packet (entityId=$entityId, gamemode=$gamemode, dimension=$dimension, difficulty=$difficulty, hardcore=$isHardcore, viewDistance=$viewDistance)" }
     }
 
     companion object : ErrorHandler {

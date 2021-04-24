@@ -21,6 +21,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.util.KUtil.unsafeCast
 import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogMessageType
 import glm_.vec3.Vec3i
 
 class PacketUpdateSignReceiving(buffer: PlayInByteBuffer) : PlayS2CPacket() {
@@ -51,6 +52,6 @@ class PacketUpdateSignReceiving(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     }
 
     override fun log() {
-        Log.protocol("[IN] Sign data received (position=$signPosition, lines=$lines")
+        Log.log(LogMessageType.NETWORK_PACKETS_IN) { "Sign data (position=$signPosition, lines=$lines" }
     }
 }

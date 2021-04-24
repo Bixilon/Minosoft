@@ -10,23 +10,13 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.util.logging
 
-package de.bixilon.minosoft.util.logging;
+import java.io.PrintStream
 
-import java.io.OutputStream;
-import java.io.PrintStream;
+class LogPrintStream(private val level: LogMessageType) : PrintStream(nullOutputStream()) {
 
-public class LogPrintStream extends PrintStream {
-    private final LogLevels level;
-
-    public LogPrintStream(LogLevels level) {
-        super(OutputStream.nullOutputStream());
-        this.level = level;
-    }
-
-
-    @Override
-    public void print(String s) {
-        Log.log(this.level, s);
+    override fun print(string: String) {
+        Log.log(message = string, logMessageType = level)
     }
 }

@@ -17,8 +17,8 @@ import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.Util
-import de.bixilon.minosoft.util.logging.Log
-import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.Log.log
+import de.bixilon.minosoft.util.logging.LogMessageType
 import java.io.*
 import java.nio.file.Files
 import java.security.MessageDigest
@@ -58,7 +58,7 @@ interface FileAssetsManager : AssetsManager {
                 hash == Util.sha1(File(getAssetDiskPath(hash)))
             }
         } catch (exception: IOException) {
-            Log.printException(exception, LogLevels.DEBUG)
+            log(LogMessageType.OTHER_DEBUG, message = exception)
         }
         return false
     }
@@ -74,7 +74,7 @@ interface FileAssetsManager : AssetsManager {
         if (checkURL) {
             Util.checkURL(url)
         }
-        Log.debug("Downloading %s -> %s", url, hash)
+        log(LogMessageType.OTHER_DEBUG, message = "Downloading %s -> %s", formatting = arrayOf<Any>(url, hash))
         if (compress) {
             Util.downloadFileAsGz(url, getAssetDiskPath(hash))
             return

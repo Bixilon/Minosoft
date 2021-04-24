@@ -21,7 +21,6 @@ public abstract class MinosoftMod {
     private final EventManager eventManager = new EventManager();
     protected boolean enabled = true;
     private ModInfo info;
-    private Logger logger;
 
     public boolean isEnabled() {
         return this.enabled;
@@ -40,15 +39,10 @@ public abstract class MinosoftMod {
             throw new RuntimeException(String.format("Mod info already set %s vs %s", this.info, info));
         }
         this.info = info;
-        this.logger = new Logger(info.getName());
     }
 
     public EventManager getEventManager() {
         return this.eventManager;
-    }
-
-    public Logger getLogger() {
-        return this.logger;
     }
 
     /**

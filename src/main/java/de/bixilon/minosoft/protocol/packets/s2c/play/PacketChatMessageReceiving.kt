@@ -12,49 +12,49 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play
 
-import de.bixilon.minosoft.modding.event.events.ExperienceChangeEvent
+import de.bixilon.minosoft.data.ChatTextPositions
+import de.bixilon.minosoft.data.text.ChatColors
+import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.modding.event.events.ChatMessageReceivingEvent
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogMessageType
+import java.util.*
 
-class PacketSetExperience() : PlayS2CPacket() {
-    var bar = 0.0f
-        private set
-    var level = 0
-        private set
-    var total = 0
-        private set
+class PacketChatMessageReceiving(buffer: PlayInByteBuffer) : PlayS2CPacket() {
+    val message: ChatComponent = buffer.readChatComponent()
+    var position: ChatTextPositions
+    var sender: UUID? = null
 
-    constructor(buffer: PlayInByteBuffer) : this() {
-        bar = buffer.readFloat()
+    init {
         if (buffer.versionId < ProtocolVersions.V_14W04A) {
-            level = buffer.readUnsignedShort()
-            total = buffer.readUnsignedShort()
-            return
+            position = ChatTextPositions.CHAT_BOX
+        } else {
+            position = ChatTextPositions.byId(buffer.readUnsignedByte())
+            if (buffer.versionId >= ProtocolVersions.V_20W21A) {
+                sender = buffer.readUUID()
+            }
         }
-        level = buffer.readVarInt()
-        total = buffer.readVarInt()
-    }
-
-    override fun check(connection: PlayConnection) {
-        check(bar in 0.0f..1.0f) { "Bar is invalid!" }
-        check(level >= 0) { "Level is negative is invalid!" }
-        check(total >= 0) { "Total experience is negative!" }
+        message.applyDefaultColor(ChatColors.WHITE)
     }
 
     override fun handle(connection: PlayConnection) {
-        if (connection.fireEvent(ExperienceChangeEvent(connection, this))) {
+        val event = ChatMessageReceivingEvent(connection, this)
+        if (connection.fireEvent(event)) {
             return
         }
-        connection.player.experienceCondition.level = level
-        connection.player.experienceCondition.experienceBarProgress = bar
-        connection.player.experienceCondition.totalExperience = total
+        val additionalPrefix = when (position) {
+            ChatTextPositions.SYSTEM_MESSAGE -> "[SYSTEM] "
+            ChatTextPositions.ABOVE_HOTBAR -> "[HOTBAR] "
+            else -> ""
+        }
+        Log.log(LogMessageType.CHAT_IN, ChatComponent.valueOf(raw = additionalPrefix)) { event.message }
     }
 
     override fun log() {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN) { "Level update (bar=$bar, level=$level, total=$total)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN) { "Received chat message (message=\"$message\")" }
     }
 }

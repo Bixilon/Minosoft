@@ -41,7 +41,8 @@ import de.bixilon.minosoft.terminal.commands.commands.Command
 import de.bixilon.minosoft.util.CountUpAndDownLatch
 import de.bixilon.minosoft.util.ServerAddress
 import de.bixilon.minosoft.util.logging.Log
-import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.Log.log
+import de.bixilon.minosoft.util.logging.LogMessageType
 import de.bixilon.minosoft.util.time.TimeWorker
 import de.bixilon.minosoft.util.time.TimeWorkerTask
 
@@ -157,11 +158,11 @@ class PlayConnection(
                 }
                 latch.waitForChange()
             }
-            Log.info("Connecting to server: $address")
+            log(LogMessageType.OTHER_INFO, message = "Connecting to server: $address", formatting = arrayOf())
             network.connect(address)
         } catch (exception: Throwable) {
-            Log.printException(exception, LogLevels.DEBUG)
-            Log.fatal("Could not load version $version. This version seems to be unsupported!")
+            Log.log(LogMessageType.VERSION_LOADING) { exception }
+            log(LogMessageType.OTHER_FATAL, message = "Could not load version $version. This version seems to be unsupported!", formatting = arrayOf())
             version.unload()
             lastException = MappingsLoadingException("Mappings could not be loaded", exception)
             connectionState = ConnectionStates.FAILED_NO_RETRY
@@ -190,9 +191,7 @@ class PlayConnection(
 
     override fun handlePacket(packet: S2CPacket) {
         try {
-            if (Log.getLevel().ordinal >= LogLevels.PROTOCOL.ordinal) {
-                packet.log()
-            }
+            packet.log()
             val event = PacketReceiveEvent(this, packet)
             if (fireEvent(event)) {
                 return
@@ -201,7 +200,7 @@ class PlayConnection(
                 packet.handle(this)
             }
         } catch (exception: Throwable) {
-            Log.printException(exception, LogLevels.PROTOCOL)
+            Log.log(LogMessageType.NETWORK_PACKETS_IN_ERROR) { exception }
         }
     }
 

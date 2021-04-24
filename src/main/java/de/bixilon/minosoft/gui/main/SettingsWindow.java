@@ -14,11 +14,9 @@
 package de.bixilon.minosoft.gui.main;
 
 import com.jfoenix.controls.JFXComboBox;
-import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.data.locale.LocaleManager;
 import de.bixilon.minosoft.data.locale.Strings;
-import de.bixilon.minosoft.util.logging.Log;
-import de.bixilon.minosoft.util.logging.LogLevels;
+import de.bixilon.minosoft.util.logging.LogMessageType;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
@@ -29,7 +27,7 @@ import java.util.ResourceBundle;
 
 public class SettingsWindow implements Initializable {
     public GridPane tabGeneral;
-    public JFXComboBox<LogLevels> generalLogLevel;
+    public JFXComboBox<LogMessageType> generalLogLevel;
     public Tab general;
     public Tab download;
     public Label generalLogLevelLabel;
@@ -37,16 +35,6 @@ public class SettingsWindow implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         this.generalLogLevel.setItems(GUITools.LOG_LEVELS);
-        this.generalLogLevel.getSelectionModel().select(Log.getLevel());
-        this.generalLogLevel.setOnAction((actionEvent -> {
-            LogLevels newLevel = this.generalLogLevel.getValue();
-            if (Log.getLevel() == newLevel) {
-                return;
-            }
-            Log.setLevel(newLevel);
-            Minosoft.getConfig().getConfig().getGeneral().setLogLevel(newLevel);
-            Minosoft.getConfig().saveToFile();
-        }));
 
         this.general.setText(LocaleManager.translate(Strings.SETTINGS_GENERAL));
         this.generalLogLevelLabel.setText(LocaleManager.translate(Strings.SETTINGS_GENERAL_LOG_LEVEL));

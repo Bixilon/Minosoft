@@ -28,7 +28,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import de.bixilon.minosoft.util.Pair;
 import de.bixilon.minosoft.util.ServerAddress;
 import de.bixilon.minosoft.util.logging.Log;
-import de.bixilon.minosoft.util.logging.LogLevels;
+import de.bixilon.minosoft.util.logging.LogMessageType;
 
 import javax.crypto.Cipher;
 import javax.crypto.CipherInputStream;
@@ -107,7 +107,7 @@ public class BlockingSocketNetwork extends Network {
                         var typeAndPacket = prepareS2CPacket(this.inputStream);
                         handlePacket(typeAndPacket.getKey(), typeAndPacket.getValue());
                     } catch (PacketParseException e) {
-                        Log.printException(e, LogLevels.PROTOCOL);
+                        Log.printException(e, LogMessageType.NETWORK_PACKETS_IN_ERROR);
                     }
                 }
                 this.connection.disconnect();
@@ -121,7 +121,7 @@ public class BlockingSocketNetwork extends Network {
                     this.connection.setConnectionState(ConnectionStates.DISCONNECTED);
                     return;
                 }
-                Log.printException(exception, LogLevels.PROTOCOL);
+                Log.printException(exception, LogMessageType.NETWORK_PACKETS_IN_ERROR);
                 this.connection.setLastException(exception);
                 this.connection.setConnectionState(ConnectionStates.FAILED);
             }
@@ -175,9 +175,7 @@ public class BlockingSocketNetwork extends Network {
                     }
 
                     C2SPacket packet = this.queue.take();
-                    if (Log.getLevel().ordinal() >= LogLevels.PROTOCOL.ordinal()) {
-                        packet.log();
-                    }
+                    packet.log();
 
                     this.outputStream.write(prepareC2SPacket(packet));
                     this.outputStream.flush();

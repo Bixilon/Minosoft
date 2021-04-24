@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2021 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,15 +11,14 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.util.logging;
+package de.bixilon.minosoft.util.logging
 
-public enum LogLevels {
-    FATAL,
-    INFO,
-    MOJANG,
-    WARNING,
-    GAME,
-    DEBUG,
-    VERBOSE,
-    PROTOCOL
-}
+import de.bixilon.minosoft.data.text.ChatComponent
+
+data class MessageToSend(
+    val message: ChatComponent,
+    val time: Long,
+    val logMessageType: LogMessageType,
+    val thread: Thread,
+    val additionalPrefix: ChatComponent? = null,
+)

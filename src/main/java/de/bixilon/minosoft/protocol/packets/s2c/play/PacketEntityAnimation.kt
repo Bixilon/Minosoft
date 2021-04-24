@@ -17,6 +17,7 @@ import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.enum.ValuesEnum
 import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogMessageType
 
 class PacketEntityAnimation(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     val entityId: Int = buffer.readVarInt()
@@ -24,7 +25,7 @@ class PacketEntityAnimation(buffer: PlayInByteBuffer) : PlayS2CPacket() {
 
 
     override fun log() {
-        Log.protocol("[IN] Play entity animation (entityId=$entityId, animation=$animation)")
+        Log.log(LogMessageType.NETWORK_PACKETS_IN) { "Play entity animation (entityId=$entityId, animation=$animation)" }
     }
 
     enum class EntityAnimations {

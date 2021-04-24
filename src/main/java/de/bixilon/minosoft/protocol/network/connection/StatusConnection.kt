@@ -33,7 +33,7 @@ import de.bixilon.minosoft.protocol.protocol.Protocol
 import de.bixilon.minosoft.util.DNSUtil
 import de.bixilon.minosoft.util.ServerAddress
 import de.bixilon.minosoft.util.logging.Log
-import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
 import java.util.*
 
 class StatusConnection(
@@ -64,13 +64,13 @@ class StatusConnection(
             try {
                 resolve()
             } catch (exception: Exception) {
-                Log.info("Can not resolve $realAddress")
+                Log.log(LogMessageType.NETWORK_RESOLVING) { "Can not resolve $realAddress" }
                 lastException = exception
                 connectionState = ConnectionStates.FAILED_NO_RETRY
                 return@execute
             }
 
-            Log.info("Trying to ping $realAddress (from $address)")
+            Log.log(LogMessageType.NETWORK_RESOLVING) { "Trying to ping $realAddress (from $address)" }
 
             network.connect(realAddress)
         }
@@ -102,7 +102,7 @@ class StatusConnection(
                     val nextIndex = addresses!!.indexOf(realAddress) + 1
                     if (addresses!!.size > nextIndex) {
                         val nextAddress = addresses!![nextIndex]
-                        Log.warn(String.format("Could not connect to %s, trying next hostname: %s", address, nextAddress))
+                        Log.log(LogMessageType.NETWORK_RESOLVING) { "Could not connect to $address, trying next hostname: $nextAddress" }
                         realAddress = nextAddress
                         ping()
                     } else {
@@ -133,9 +133,7 @@ class StatusConnection(
 
     override fun handlePacket(packet: S2CPacket) {
         try {
-            if (Log.getLevel().ordinal >= LogLevels.PROTOCOL.ordinal) {
-                packet.log()
-            }
+            packet.log()
             val event = PacketReceiveEvent(this, packet)
             if (fireEvent(event)) {
                 return
@@ -144,7 +142,7 @@ class StatusConnection(
                 packet.handle(this)
             }
         } catch (exception: Throwable) {
-            Log.printException(exception, LogLevels.PROTOCOL)
+            Log.log(LogMessageType.NETWORK_PACKETS_IN_ERROR) { exception }
         }
     }
 

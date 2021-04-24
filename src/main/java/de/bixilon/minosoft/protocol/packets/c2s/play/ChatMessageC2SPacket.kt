@@ -10,27 +10,22 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.protocol.packets.c2s.play
 
-package de.bixilon.minosoft.protocol.packets.c2s.play;
+import de.bixilon.minosoft.protocol.packets.c2s.PlayC2SPacket
+import de.bixilon.minosoft.protocol.protocol.PlayOutByteBuffer
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogMessageType
 
-import de.bixilon.minosoft.protocol.packets.c2s.PlayC2SPacket;
-import de.bixilon.minosoft.protocol.protocol.PlayOutByteBuffer;
-import de.bixilon.minosoft.util.logging.Log;
+class ChatMessageC2SPacket(
+    val message: String,
+) : PlayC2SPacket {
 
-public class ChatMessageC2SPacket implements PlayC2SPacket {
-    private final String message;
-
-    public ChatMessageC2SPacket(String message) {
-        this.message = message;
+    override fun write(buffer: PlayOutByteBuffer) {
+        buffer.writeString(message)
     }
 
-    @Override
-    public void write(PlayOutByteBuffer buffer) {
-        buffer.writeString(this.message);
-    }
-
-    @Override
-    public void log() {
-        Log.protocol(String.format("[OUT] Sending Chat message: %s", this.message));
+    override fun log() {
+        Log.log(LogMessageType.NETWORK_PACKETS_OUT) { "Sending Chat message: $message" }
     }
 }

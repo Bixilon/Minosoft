@@ -23,6 +23,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.chunk.LightUtil.readLightPacket
 import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogMessageType
 import glm_.vec2.Vec2i
 import java.util.*
 
@@ -56,7 +57,7 @@ class PacketUpdateLight(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     }
 
     override fun log() {
-        Log.protocol("[IN] Received light update (position=$chunkPosition)")
+        Log.log(LogMessageType.NETWORK_PACKETS_IN) { "Light update (position=$chunkPosition)" }
     }
 
     override fun handle(connection: PlayConnection) {

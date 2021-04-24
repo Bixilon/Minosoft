@@ -17,6 +17,7 @@ import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogMessageType
 
 class PacketHeldItemChangeReceiving(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     val slot: Int = buffer.readByte().toInt()
@@ -28,6 +29,6 @@ class PacketHeldItemChangeReceiving(buffer: PlayInByteBuffer) : PlayS2CPacket() 
     }
 
     override fun log() {
-        Log.protocol("[IN] Slot change received. Now on slot $slot")
+        Log.log(LogMessageType.NETWORK_PACKETS_IN) { "Slot change (slot=$slot)" }
     }
 }

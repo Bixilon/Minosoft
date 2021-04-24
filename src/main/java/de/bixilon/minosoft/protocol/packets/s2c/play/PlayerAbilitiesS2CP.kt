@@ -18,6 +18,7 @@ import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.util.BitByte.isBit
 import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogMessageType
 
 class PlayerAbilitiesS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     val isInvulnerable: Boolean
@@ -30,15 +31,13 @@ class PlayerAbilitiesS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
 
     init {
         val flags = buffer.readUnsignedByte()
+        isFlying = flags.isBit(1)
+        canFly = flags.isBit(2)
         if (buffer.versionId < ProtocolVersions.V_14W03B) { // ToDo: Find out correct version
             isInvulnerable = flags.isBit(0)
-            isFlying = flags.isBit(1)
-            canFly = flags.isBit(2)
             canInstantBuild = flags.isBit(3)
         } else {
             canInstantBuild = flags.isBit(0)
-            isFlying = flags.isBit(1)
-            canFly = flags.isBit(2)
             isInvulnerable = flags.isBit(3)
         }
         flyingSpeed = buffer.readFloat()
@@ -46,7 +45,7 @@ class PlayerAbilitiesS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     }
 
     override fun log() {
-        Log.protocol("[IN] Received player abilities: (isInvulnerable=$isInvulnerable, isFlying=$isFlying, canFly=$canFly, canInstantBuild=$canInstantBuild, flyingSpeed=$flyingSpeed, walkingSpeed=$walkingSpeed)")
+        Log.log(LogMessageType.NETWORK_PACKETS_IN) { "Player abilities: (isInvulnerable=$isInvulnerable, isFlying=$isFlying, canFly=$canFly, canInstantBuild=$canInstantBuild, flyingSpeed=$flyingSpeed, walkingSpeed=$walkingSpeed)" }
     }
 
     override fun handle(connection: PlayConnection) {

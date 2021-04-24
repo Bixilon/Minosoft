@@ -21,7 +21,7 @@ import de.bixilon.minosoft.data.accounts.MojangAccount;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import de.bixilon.minosoft.util.HTTP;
 import de.bixilon.minosoft.util.logging.Log;
-import de.bixilon.minosoft.util.logging.LogLevels;
+import de.bixilon.minosoft.util.logging.LogMessageType;
 import de.bixilon.minosoft.util.mojang.api.exceptions.AuthenticationException;
 import de.bixilon.minosoft.util.mojang.api.exceptions.MojangJoinServerErrorException;
 import de.bixilon.minosoft.util.mojang.api.exceptions.NoNetworkConnectionException;
@@ -51,7 +51,7 @@ public final class MojangAuthentication {
         try {
             response = HTTP.postJson(ProtocolDefinition.MOJANG_URL_LOGIN, payload);
         } catch (IOException | InterruptedException e) {
-            Log.printException(e, LogLevels.DEBUG);
+            Log.printException(e, LogMessageType.OTHER_INFO);
             throw new NoNetworkConnectionException(e);
         }
         if (response == null) {

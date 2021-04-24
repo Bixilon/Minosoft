@@ -29,8 +29,8 @@ import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.util.BitByte
 import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.enum.ValuesEnum
-import de.bixilon.minosoft.util.logging.Log
-import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.Log.log
+import de.bixilon.minosoft.util.logging.LogMessageType
 import glm_.vec3.Vec3i
 import java.util.*
 
@@ -128,7 +128,7 @@ class EntityMetaData(
                 try {
                     return it as K
                 } catch (e: ClassCastException) {
-                    Log.printException(e, LogLevels.VERBOSE)
+                    log(LogMessageType.OTHER_DEBUG, message = e)
                 }
             }
             return field.getDefaultValue()

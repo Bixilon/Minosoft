@@ -122,9 +122,6 @@ public final class Minosoft {
                 throw e;
             }
             Log.info(String.format("Loaded config file (version=%s)", config.getConfig().getGeneral().getVersion()));
-            // set log level from config
-            Log.setLevel(config.getConfig().getGeneral().getLogLevel());
-            Log.info(String.format("Logging info with level: %s", Log.getLevel()));
         }, "Configuration", String.format("Load config file (%s)", StaticConfiguration.CONFIG_FILENAME), Priorities.HIGHEST, TaskImportance.REQUIRED));
 
         taskWorker.addTask(new Task(progress -> LocaleManager.load(config.getConfig().getGeneral().getLanguage()), "Minosoft Language", "Load minosoft language files", Priorities.HIGH, TaskImportance.REQUIRED, "Configuration"));

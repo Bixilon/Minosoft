@@ -17,6 +17,7 @@ import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogMessageType
 import glm_.vec3.Vec3
 
 class EntityVelocityS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
@@ -29,6 +30,6 @@ class EntityVelocityS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     }
 
     override fun log() {
-        Log.protocol("[IN] Entity velocity changed(entityId=$entityId, velocity=$velocity)")
+        Log.log(LogMessageType.NETWORK_PACKETS_IN) { "[IN] Entity velocity changed(entityId=$entityId, velocity=$velocity)" }
     }
 }

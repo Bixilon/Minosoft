@@ -27,6 +27,8 @@ import de.bixilon.minosoft.util.KUtil.nullCast
 import de.bixilon.minosoft.util.Util
 import de.bixilon.minosoft.util.chunk.ChunkUtil
 import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.Log.log
+import de.bixilon.minosoft.util.logging.LogMessageType
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
 import glm_.vec2.Vec2i
 import glm_.vec3.Vec3i
@@ -106,7 +108,7 @@ class PacketChunkData() : PlayS2CPacket() {
                 val position = Vec3i(nbt["x"]?.nullCast<Int>()!!, nbt["y"]?.nullCast<Int>()!!, nbt["z"]?.nullCast<Int>()!!)
                 val resourceLocation = ResourceLocation(nbt["id"]?.nullCast<String>()!!)
                 val type = buffer.connection.mapping.blockEntityRegistry.get(resourceLocation) ?: let {
-                    Log.warn("Unknown block entity $resourceLocation")
+                    log(LogMessageType.OTHER_ERROR, message = "Unknown block entity $resourceLocation", formatting = arrayOf())
                     null
                 } ?: continue
                 val entity = type.build(buffer.connection) ?: continue
@@ -138,6 +140,6 @@ class PacketChunkData() : PlayS2CPacket() {
     }
 
     override fun log() {
-        Log.protocol("[IN] Chunk packet received (chunkPosition=$chunkPosition)")
+        Log.log(LogMessageType.NETWORK_PACKETS_IN) { "Chunk data (chunkPosition=$chunkPosition)" }
     }
 }

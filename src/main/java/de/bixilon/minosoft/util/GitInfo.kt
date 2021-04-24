@@ -16,8 +16,8 @@ package de.bixilon.minosoft.util
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import de.bixilon.minosoft.util.logging.Log
-import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.Log.log
+import de.bixilon.minosoft.util.logging.LogMessageType
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 
@@ -103,8 +103,8 @@ object GitInfo {
 
             IS_INITIALIZED = true
         } catch (exception: Throwable) {
-            Log.printException(exception, LogLevels.DEBUG)
-            Log.warn("Can not load git information.")
+            log(LogMessageType.OTHER_DEBUG, message = exception)
+            log(LogMessageType.OTHER_ERROR, message = "Can not load git information.", formatting = arrayOf())
         }
     }
 }

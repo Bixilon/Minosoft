@@ -18,6 +18,7 @@ import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogMessageType
 
 class PacketReceiveDifficulty(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     val difficulty: Difficulties = Difficulties.byId(buffer.readUnsignedByte().toInt())
@@ -36,6 +37,6 @@ class PacketReceiveDifficulty(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     }
 
     override fun log() {
-        Log.protocol("[IN] Received server difficulty (difficulty=$difficulty, locked=${locked})")
+        Log.log(LogMessageType.NETWORK_PACKETS_IN) { "Server difficulty (difficulty=$difficulty, locked=${locked})" }
     }
 }
