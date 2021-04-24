@@ -29,7 +29,7 @@ open class TextField(
 ) : AbsoluteLayout(renderWindow), KeyConsumer, MouseConsumer {
     override var focused: Boolean = true
     private var textBuilder: StringBuilder = StringBuilder(defaultText)
-    private val textElement = LabelNode(renderWindow, sizing = sizing, text = ChatComponent.valueOf(raw = text), background = false)
+    val textElement = LabelNode(renderWindow, sizing = sizing, text = ChatComponent.valueOf(raw = text), background = false)
     private var position = text.length
 
     var text: String

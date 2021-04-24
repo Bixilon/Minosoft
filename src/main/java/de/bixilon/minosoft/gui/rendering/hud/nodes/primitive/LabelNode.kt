@@ -18,6 +18,8 @@ import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.font.Font
+import de.bixilon.minosoft.gui.rendering.font.text.TextGetProperties
+import de.bixilon.minosoft.gui.rendering.font.text.TextSetProperties
 import de.bixilon.minosoft.gui.rendering.hud.nodes.layout.AbsoluteLayout
 import de.bixilon.minosoft.gui.rendering.hud.nodes.properties.NodeSizing
 import glm_.vec2.Vec2i
@@ -27,8 +29,11 @@ class LabelNode(
     sizing: NodeSizing = NodeSizing(minSize = Vec2i(0, Font.CHAR_HEIGHT)),
     text: ChatComponent = ChatComponent.valueOf(raw = ""),
     var background: Boolean = true,
+    val setProperties: TextSetProperties = TextSetProperties(),
 ) : AbsoluteLayout(renderWindow, sizing) {
     private var _text: ChatComponent = text
+    var getProperties = TextGetProperties()
+        private set
 
     var text: ChatComponent
         get() = _text
@@ -50,12 +55,12 @@ class LabelNode(
 
     private fun prepare() {
         clearChildren()
-        val textSize = Vec2i(0, 0)
-        text.prepareRender(Vec2i(1, 1), Vec2i(), renderWindow, this, 1, textSize)
+        getProperties = TextGetProperties()
+        text.prepareRender(Vec2i(1, 1), Vec2i(), renderWindow, this, 1, setProperties, getProperties)
         apply()
 
         if (background) {
-            drawBackground(textSize + 1)
+            drawBackground(getProperties.size + 1)
         }
     }
 

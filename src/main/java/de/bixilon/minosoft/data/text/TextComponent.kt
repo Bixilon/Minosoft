@@ -16,6 +16,8 @@ import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.font.Font
+import de.bixilon.minosoft.gui.rendering.font.text.TextGetProperties
+import de.bixilon.minosoft.gui.rendering.font.text.TextSetProperties
 import de.bixilon.minosoft.gui.rendering.hud.nodes.primitive.ImageNode
 import de.bixilon.minosoft.gui.rendering.hud.nodes.primitive.LabelNode
 import de.bixilon.minosoft.gui.rendering.hud.nodes.properties.NodeSizing
@@ -161,7 +163,7 @@ open class TextComponent(
     }
 
 
-    override fun prepareRender(startPosition: Vec2i, offset: Vec2i, renderWindow: RenderWindow, textElement: LabelNode, z: Int, retMaxSize: Vec2i) {
+    override fun prepareRender(startPosition: Vec2i, offset: Vec2i, renderWindow: RenderWindow, textElement: LabelNode, z: Int, setProperties: TextSetProperties, getProperties: TextGetProperties) {
         val color = this.color ?: ChatColors.WHITE
 
 
@@ -175,7 +177,7 @@ open class TextComponent(
                 offset.x = 0
                 val yOffset = Font.CHAR_HEIGHT + RenderConstants.TEXT_LINE_PADDING
                 offset.y += yOffset
-                retMaxSize.y += yOffset
+                getProperties.size.y += yOffset
                 continue
             }
             val fontChar = renderWindow.font.getChar(char)
@@ -186,13 +188,14 @@ open class TextComponent(
 
             // ad spacer between chars
             offset.x += scaledWidth + Font.SPACE_BETWEEN_CHARS
-            if (offset.x > retMaxSize.x) {
-                retMaxSize.x += scaledWidth + Font.SPACE_BETWEEN_CHARS
+            if (offset.x > getProperties.size.x) {
+                getProperties.size.x += scaledWidth + Font.SPACE_BETWEEN_CHARS
             }
-            if (offset.y >= retMaxSize.y) {
-                if (retMaxSize.y < fontChar.height) {
-                    retMaxSize.y = fontChar.height
+            if (offset.y >= getProperties.size.y) {
+                if (getProperties.size.y < fontChar.height) {
+                    getProperties.size.y = fontChar.height
                 }
+                getProperties.lines = (offset.y + Font.CHAR_HEIGHT) / (Font.CHAR_HEIGHT + RenderConstants.TEXT_LINE_PADDING)
             }
         }
     }

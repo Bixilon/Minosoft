@@ -50,7 +50,7 @@ class ChatBoxHUDElement(hudRenderer: HUDRenderer) : HUDElement(hudRenderer), Scr
 
     override fun onScreenResize(screenDimensions: Vec2i) {
         layout.sizing.minSize.x = screenDimensions.x
-        inputFieldBackground.sizing.forceSize = Vec2i(screenDimensions.x - 2, MMath.clamp(inputField.sizing.currentSize.y, Font.CHAR_HEIGHT, Int.MAX_VALUE)) // 2 pixels for margin
+        inputFieldBackground.sizing.forceSize = Vec2i(screenDimensions.x - 2, MMath.clamp(inputField.textElement.getProperties.lines, 1, Int.MAX_VALUE) * (Font.CHAR_HEIGHT + RenderConstants.TEXT_LINE_PADDING)) // 2 pixels for margin
         layout.sizing.maxSize.x = screenDimensions.x
         layout.sizing.validate()
         layout.apply()
