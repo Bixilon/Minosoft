@@ -13,13 +13,10 @@
 
 package de.bixilon.minosoft.util.logging
 
-import de.bixilon.minosoft.data.text.ChatComponent
-
-data class MessageToSend(
-    val message: ChatComponent,
-    val time: Long,
-    val logMessageType: LogMessageType,
-    val level: LogLevels,
-    val thread: Thread,
-    val additionalPrefix: ChatComponent? = null,
-)
+enum class LogLevels {
+    FATAL,
+    WARN,
+    INFO,
+    VERBOSE,
+    ;
+}

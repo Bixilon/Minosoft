@@ -24,6 +24,7 @@ import de.bixilon.minosoft.protocol.protocol.CryptManager;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import de.bixilon.minosoft.util.ServerAddress;
 import de.bixilon.minosoft.util.logging.Log;
+import de.bixilon.minosoft.util.logging.LogLevels;
 import de.bixilon.minosoft.util.logging.LogMessageType;
 
 import javax.crypto.Cipher;
@@ -140,7 +141,7 @@ public class NonBlockingSocketNetwork extends Network {
                                 var typeAndPacket = receiveS2CPacket(decryptData(currentPacketBuffer.array()));
                                 handlePacket(typeAndPacket.getKey(), typeAndPacket.getValue());
                             } catch (PacketParseException e) {
-                                Log.printException(e, LogMessageType.NETWORK_PACKETS_IN_ERROR);
+                                Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.WARN, e);
                             }
                             currentPacketBuffer.clear();
                             currentPacketBuffer = null;
@@ -159,7 +160,7 @@ public class NonBlockingSocketNetwork extends Network {
                 if (exception instanceof SocketException && exception.getMessage().equals("Socket closed")) {
                     return;
                 }
-                Log.printException(exception, LogMessageType.NETWORK_PACKETS_IN_ERROR);
+                Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.WARN, exception);
                 this.connection.setLastException(exception);
                 this.connection.setConnectionState(ConnectionStates.FAILED);
             }

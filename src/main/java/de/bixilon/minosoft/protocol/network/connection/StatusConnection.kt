@@ -33,6 +33,7 @@ import de.bixilon.minosoft.protocol.protocol.Protocol
 import de.bixilon.minosoft.util.DNSUtil
 import de.bixilon.minosoft.util.ServerAddress
 import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import java.util.*
 
@@ -142,7 +143,7 @@ class StatusConnection(
                 packet.handle(this)
             }
         } catch (exception: Throwable) {
-            Log.log(LogMessageType.NETWORK_PACKETS_IN_ERROR) { exception }
+            Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.WARN) { exception }
         }
     }
 

@@ -16,6 +16,7 @@ import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import glm_.vec3.Vec3i
 
@@ -30,6 +31,6 @@ class WorldEventS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     val isGlobal: Boolean = buffer.readBoolean()
 
     override fun log() {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN) { "World event packet (position=$position, eventId=$eventId, data=$data, isGlobal=$isGlobal)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "World event packet (position=$position, eventId=$eventId, data=$data, isGlobal=$isGlobal)" }
     }
 }

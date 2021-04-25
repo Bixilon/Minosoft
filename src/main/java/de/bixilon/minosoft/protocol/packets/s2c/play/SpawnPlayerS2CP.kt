@@ -24,7 +24,7 @@ import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.util.Util
 import de.bixilon.minosoft.util.logging.Log
-import de.bixilon.minosoft.util.logging.Log.log
+import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import glm_.vec3.Vec3
 import java.util.*
@@ -78,7 +78,7 @@ class SpawnPlayerS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         if (metaData != null) {
             entity.entityMetaData = metaData
             if (StaticConfiguration.VERBOSE_ENTITY_META_DATA_LOGGING) {
-                log(LogMessageType.OTHER_DEBUG, message = String.format("Metadata of entity %s (entityId=%d): %s", entity.toString(), entityId, entity.entityMetaDataAsString), formatting = arrayOf())
+                Log.log(LogMessageType.OTHER, level = LogLevels.VERBOSE) { "Players metadata of $entity: ${entity.entityMetaData}" }
             }
         }
     }
@@ -91,6 +91,6 @@ class SpawnPlayerS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     }
 
     override fun log() {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN) { "Player spawned (position=${entity.position}, entityId=$entityId, name=${entity.name}, uuid=$entityUUID)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Player spawned (position=${entity.position}, entityId=$entityId, name=${entity.name}, uuid=$entityUUID)" }
     }
 }

@@ -23,6 +23,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.chunk.LightUtil.readLightPacket
 import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import glm_.vec2.Vec2i
 import java.util.*
@@ -57,7 +58,7 @@ class ChunkLightDataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     }
 
     override fun log() {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN) { "Chunk light data (position=$chunkPosition)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Chunk light data (position=$chunkPosition)" }
     }
 
     override fun handle(connection: PlayConnection) {

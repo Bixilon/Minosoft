@@ -28,6 +28,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import de.bixilon.minosoft.util.Pair;
 import de.bixilon.minosoft.util.ServerAddress;
 import de.bixilon.minosoft.util.logging.Log;
+import de.bixilon.minosoft.util.logging.LogLevels;
 import de.bixilon.minosoft.util.logging.LogMessageType;
 
 import javax.crypto.Cipher;
@@ -107,7 +108,7 @@ public class BlockingSocketNetwork extends Network {
                         var typeAndPacket = prepareS2CPacket(this.inputStream);
                         handlePacket(typeAndPacket.getKey(), typeAndPacket.getValue());
                     } catch (PacketParseException e) {
-                        Log.printException(e, LogMessageType.NETWORK_PACKETS_IN_ERROR);
+                        Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.WARN, e);
                     }
                 }
                 this.connection.disconnect();
@@ -121,7 +122,7 @@ public class BlockingSocketNetwork extends Network {
                     this.connection.setConnectionState(ConnectionStates.DISCONNECTED);
                     return;
                 }
-                Log.printException(exception, LogMessageType.NETWORK_PACKETS_IN_ERROR);
+                Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.WARN, exception);
                 this.connection.setLastException(exception);
                 this.connection.setConnectionState(ConnectionStates.FAILED);
             }

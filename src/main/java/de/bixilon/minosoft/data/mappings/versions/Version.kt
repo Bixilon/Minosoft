@@ -24,7 +24,8 @@ import de.bixilon.minosoft.protocol.protocol.PacketTypes.S2C
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.CountUpAndDownLatch
 import de.bixilon.minosoft.util.Util
-import de.bixilon.minosoft.util.logging.Log.log
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
 data class Version(
@@ -85,7 +86,7 @@ data class Version(
         }
         latch.countUp()
         isGettingLoaded = true
-        log(LogMessageType.OTHER_DEBUG, message = String.format("Loading mappings for version %s...", this), formatting = arrayOf())
+        Log.log(LogMessageType.VERSION_LOADING, level = LogLevels.INFO) { "Loading mappings for $this..." }
         initializeAssetManger(latch)
         val startTime = System.currentTimeMillis()
 
@@ -99,7 +100,7 @@ data class Version(
             Util.readJsonFromStream(assetsManager.readAssetAsStream(Resources.getPixLyzerDataHashByVersion(this)))
         } catch (exception: Throwable) {
             // should not happen, but if this version is not flattened, we can fallback to the flatten mappings. Some things might not work...
-            log(LogMessageType.OTHER_DEBUG, message = exception)
+            Log.log(LogMessageType.VERSION_LOADING, level = LogLevels.VERBOSE) { exception }
             if (isFlattened()) {
                 throw exception
             }
@@ -112,9 +113,9 @@ data class Version(
         mapping.load(this, pixlyzerData)
         latch.countDown()
         if (pixlyzerData.size() > 0) {
-            log(LogMessageType.OTHER_DEBUG, message = String.format("Loaded mappings for version %s in %dms (%s)", this, (System.currentTimeMillis() - startTime), versionName), formatting = arrayOf())
+            Log.log(LogMessageType.VERSION_LOADING, level = LogLevels.INFO) { "Loaded mappings for $this (${versionName} in ${System.currentTimeMillis() - startTime}ms" }
         } else {
-            log(LogMessageType.OTHER_DEBUG, message = String.format("Could not load mappings for version %s. Some features will be unavailable.", this), formatting = arrayOf())
+            Log.log(LogMessageType.VERSION_LOADING, level = LogLevels.WARN) { "Could not load mappings for $this (${versionName}. Some features might not work." }
         }
         isLoaded = true
         isGettingLoaded = false

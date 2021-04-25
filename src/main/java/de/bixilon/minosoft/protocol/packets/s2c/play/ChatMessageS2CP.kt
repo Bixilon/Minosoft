@@ -21,6 +21,7 @@ import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import java.util.*
 
@@ -51,10 +52,10 @@ class ChatMessageS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
             ChatTextPositions.ABOVE_HOTBAR -> "[HOTBAR] "
             else -> ""
         }
-        Log.log(LogMessageType.CHAT_IN, ChatComponent.valueOf(raw = additionalPrefix)) { event.message }
+        Log.log(LogMessageType.CHAT_IN, additionalPrefix = ChatComponent.valueOf(raw = additionalPrefix)) { event.message }
     }
 
     override fun log() {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN) { "Received chat message (message=\"$message\")" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Received chat message (message=\"$message\")" }
     }
 }

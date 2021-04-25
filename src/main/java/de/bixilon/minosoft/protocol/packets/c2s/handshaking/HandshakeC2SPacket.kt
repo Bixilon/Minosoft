@@ -34,6 +34,6 @@ class HandshakeC2SPacket(
     }
 
     override fun log() {
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT) { "Handshake packet" }
+        Log.log(LogMessageType.NETWORK_PACKETS_OUT) { "Handshake" }
     }
 }

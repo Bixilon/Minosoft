@@ -15,10 +15,11 @@ package de.bixilon.minosoft.config.config.general
 
 import com.squareup.moshi.Json
 import de.bixilon.minosoft.config.Configuration
+import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
 data class GeneralConfig(
     var version: Int = Configuration.LATEST_CONFIG_VERSION,
-    @Json(name = "enabled_log_types") var enabledLogTypes: MutableSet<LogMessageType> = LogMessageType.DEFAULT_LOG_MESSAGE_TYPES.toMutableSet(),
+    @Json(name = "log") var log: MutableMap<LogMessageType, LogLevels> = LogMessageType.DEFAULT_LOG_MAP.toMutableMap(),
     var language: String = "en_US",
 )

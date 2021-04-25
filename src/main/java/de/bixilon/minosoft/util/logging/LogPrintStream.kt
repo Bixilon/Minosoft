@@ -14,9 +14,12 @@ package de.bixilon.minosoft.util.logging
 
 import java.io.PrintStream
 
-class LogPrintStream(private val level: LogMessageType) : PrintStream(nullOutputStream()) {
+class LogPrintStream(
+    val type: LogMessageType = LogMessageType.OTHER,
+    val level: LogLevels,
+) : PrintStream(nullOutputStream()) {
 
     override fun print(string: String) {
-        Log.log(message = string, logMessageType = level)
+        Log.log(message = string, logMessageType = type, level = level)
     }
 }

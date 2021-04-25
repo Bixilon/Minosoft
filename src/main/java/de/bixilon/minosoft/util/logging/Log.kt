@@ -31,8 +31,8 @@ object Log {
     private val LOG_QUEUE = LinkedBlockingQueue<MessageToSend>()
     private val SYSTEM_ERR_STREAM = System.err
     private val SYSTEM_OUT_STREAM = System.out
-    private val ERROR_PRINT_STREAM: PrintStream = LogPrintStream(LogMessageType.OTHER_ERROR)
-    private val OUT_PRINT_STREAM: PrintStream = LogPrintStream(LogMessageType.OTHER_INFO)
+    private val ERROR_PRINT_STREAM: PrintStream = LogPrintStream(LogMessageType.OTHER, LogLevels.WARN)
+    private val OUT_PRINT_STREAM: PrintStream = LogPrintStream(LogMessageType.OTHER, LogLevels.INFO)
 
 
     init {
@@ -48,11 +48,12 @@ object Log {
                     message.parts.add(TextComponent("[${TIME_FORMAT.format(messageToSend.time)}] "))
                     message.parts.add(TextComponent("[${messageToSend.thread.name}] "))
                     message.parts.add(TextComponent("[${messageToSend.logMessageType}] "))
+                    message.parts.add(TextComponent("[${messageToSend.level}] "))
                     messageToSend.additionalPrefix?.let {
                         message.parts.add(it)
                     }
                     message.parts.add(messageToSend.message)
-                    message.applyDefaultColor(messageToSend.logMessageType.color)
+                    message.applyDefaultColor(messageToSend.logMessageType.colorMap[messageToSend.level] ?: messageToSend.logMessageType.defaultColor)
 
                     val stream = if (messageToSend.logMessageType.error) {
                         SYSTEM_ERR_STREAM
@@ -71,9 +72,13 @@ object Log {
     @DoNotCall
     @JvmOverloads
     @JvmStatic
-    fun log(logMessageType: LogMessageType, additionalPrefix: ChatComponent? = null, message: Any, vararg formatting: Any) {
-        if (Minosoft.config != null && !Minosoft.config.config.general.enabledLogTypes.contains(logMessageType)) {
-            return
+    fun log(logMessageType: LogMessageType, level: LogLevels = LogLevels.INFO, additionalPrefix: ChatComponent? = null, message: Any, vararg formatting: Any) {
+        if (Minosoft.config != null) {
+            Minosoft.config.config.general.log[logMessageType]?.let {
+                if (it.ordinal < level.ordinal) {
+                    return
+                }
+            }
         }
         val formattedMessage = when (message) {
             is ChatComponent -> message
@@ -91,6 +96,7 @@ object Log {
                 message = formattedMessage,
                 time = System.currentTimeMillis(),
                 logMessageType = logMessageType,
+                level = level,
                 thread = Thread.currentThread(),
                 additionalPrefix = additionalPrefix,
             )
@@ -98,11 +104,20 @@ object Log {
     }
 
     @JvmStatic
-    fun log(logMessageType: LogMessageType, additionalPrefix: ChatComponent? = null, messageBuilder: () -> Any) {
-        if (!Minosoft.config.config.general.enabledLogTypes.contains(logMessageType)) {
-            return
+    fun log(logMessageType: LogMessageType, level: LogLevels = LogLevels.INFO, additionalPrefix: ChatComponent? = null, messageBuilder: () -> Any) {
+        if (Minosoft.config != null) {
+            Minosoft.config.config.general.log[logMessageType]?.let {
+                if (it.ordinal < level.ordinal) {
+                    return
+                }
+            }
         }
-        log(logMessageType, additionalPrefix, messageBuilder.invoke())
+        log(logMessageType, level, additionalPrefix, messageBuilder.invoke())
+    }
+
+    @JvmStatic
+    fun log(logMessageType: LogMessageType, level: LogLevels, messageBuilder: () -> Any) {
+        log(logMessageType, level = level, additionalPrefix = null, messageBuilder = messageBuilder)
     }
 
     @JvmStatic
@@ -110,63 +125,69 @@ object Log {
         log(logMessageType, additionalPrefix = null, messageBuilder = messageBuilder)
     }
 
-    @Deprecated(message = "Java only", replaceWith = ReplaceWith("log(logMessageType, message = exception)", "de.bixilon.minosoft.util.logging.Log.log"))
+    @Deprecated(message = "Java only")
+    @JvmStatic
+    fun printException(exception: Throwable, logMessageType: LogMessageType, level: LogLevels) {
+        log(logMessageType, level = level, message = exception)
+    }
+
+    @Deprecated(message = "Java only")
     @JvmStatic
     fun printException(exception: Throwable, logMessageType: LogMessageType) {
         log(logMessageType, message = exception)
     }
 
-    @Deprecated(message = "Java only", replaceWith = ReplaceWith("log(LogMessageType.OTHER_FATAL, message = message, formatting = formatting)", "de.bixilon.minosoft.util.logging.Log.log"))
+    @Deprecated(message = "Java only")
     @JvmStatic
     fun fatal(message: Any, vararg formatting: Any) {
-        log(LogMessageType.OTHER_FATAL, message = message, formatting = formatting)
+        log(LogMessageType.OTHER, level = LogLevels.FATAL, message = message, formatting = formatting)
     }
 
-    @Deprecated(message = "Java only", replaceWith = ReplaceWith("log(LogMessageType.OTHER_ERROR, message = message, formatting = formatting)", "de.bixilon.minosoft.util.logging.Log.log"))
+    @Deprecated(message = "Java only")
     @JvmStatic
     fun error(message: Any, vararg formatting: Any) {
-        log(LogMessageType.OTHER_ERROR, message = message, formatting = formatting)
+        log(LogMessageType.OTHER, level = LogLevels.WARN, message = message, formatting = formatting)
     }
 
-    @Deprecated(message = "Java only", replaceWith = ReplaceWith("log(LogMessageType.OTHER_INFO, message = message, formatting = formatting)", "de.bixilon.minosoft.util.logging.Log.log"))
+    @Deprecated(message = "Java only")
     @JvmStatic
     fun info(message: Any, vararg formatting: Any) {
-        log(LogMessageType.OTHER_INFO, message = message, formatting = formatting)
+        log(LogMessageType.OTHER, level = LogLevels.INFO, message = message, formatting = formatting)
     }
 
-    @Deprecated(message = "Java only", replaceWith = ReplaceWith("log(LogMessageType.OTHER_DEBUG, message = message, formatting = formatting)", "de.bixilon.minosoft.util.logging.Log.log"))
+    @Deprecated(message = "Java only")
     @JvmStatic
     fun debug(message: Any, vararg formatting: Any) {
-        log(LogMessageType.OTHER_DEBUG, message = message, formatting = formatting)
+        log(LogMessageType.OTHER, level = LogLevels.VERBOSE, message = message, formatting = formatting)
     }
 
-    @Deprecated(message = "Java only", replaceWith = ReplaceWith("log(LogMessageType.OTHER_DEBUG, message = message, formatting = formatting)", "de.bixilon.minosoft.util.logging.Log.log"))
+    @Deprecated(message = "Java only")
     @JvmStatic
     fun verbose(message: Any, vararg formatting: Any) {
-        log(LogMessageType.OTHER_DEBUG, message = message, formatting = formatting)
+        log(LogMessageType.OTHER, level = LogLevels.VERBOSE, message = message, formatting = formatting)
     }
 
-    @Deprecated(message = "Java only", replaceWith = ReplaceWith("log(LogMessageType.NETWORK_PACKETS_IN, message = message, formatting = formatting)", "de.bixilon.minosoft.util.logging.Log.log"))
+    @Deprecated(message = "Java only")
     @JvmStatic
     fun protocol(message: Any, vararg formatting: Any) {
-        log(LogMessageType.NETWORK_PACKETS_IN, message = message, formatting = formatting)
+        log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE, message = message, formatting = formatting)
     }
 
-    @Deprecated(message = "Java only", replaceWith = ReplaceWith("log(LogMessageType.OTHER_ERROR, message = message, formatting = formatting)", "de.bixilon.minosoft.util.logging.Log.log"))
+    @Deprecated(message = "Java only")
     @JvmStatic
     fun warn(message: Any, vararg formatting: Any) {
-        log(LogMessageType.OTHER_ERROR, message = message, formatting = formatting)
+        log(LogMessageType.OTHER, level = LogLevels.WARN, message = message, formatting = formatting)
     }
 
-    @Deprecated(message = "Java only", replaceWith = ReplaceWith("log(LogMessageType.OTHER_INFO, message = message, formatting = formatting)", "de.bixilon.minosoft.util.logging.Log.log"))
+    @Deprecated(message = "Java only")
     @JvmStatic
     fun game(message: Any, vararg formatting: Any) {
-        log(LogMessageType.OTHER_INFO, message = message, formatting = formatting)
+        log(LogMessageType.OTHER, level = LogLevels.INFO, message = message, formatting = formatting)
     }
 
-    @Deprecated(message = "Java only", replaceWith = ReplaceWith("log(LogMessageType.OTHER_INFO, message = message, formatting = formatting)", "de.bixilon.minosoft.util.logging.Log.log"))
+    @Deprecated(message = "Java only")
     @JvmStatic
     fun mojang(message: Any, vararg formatting: Any) {
-        log(LogMessageType.OTHER_INFO, message = message, formatting = formatting)
+        log(LogMessageType.OTHER, level = LogLevels.INFO, message = message, formatting = formatting)
     }
 }

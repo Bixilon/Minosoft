@@ -18,8 +18,9 @@ import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.enum.ValuesEnum
 
 enum class LogMessageType(
-    val color: RGBColor,
-    val enabledDefault: Boolean = true,
+    val defaultColor: RGBColor,
+    val colorMap: Map<LogLevels, RGBColor> = mapOf(),
+    val defaultLevel: LogLevels = LogLevels.INFO,
     val error: Boolean = false,
 ) {
     GENERAL(ChatColors.WHITE),
@@ -27,12 +28,18 @@ enum class LogMessageType(
     JAVAFX(ChatColors.DARK_GRAY),
 
     VERSION_LOADING(ChatColors.YELLOW),
+    ASSETS(ChatColors.BLACK),
 
     NETWORK_RESOLVING(ChatColors.DARK_GREEN),
-    NETWORK_STATUS(ChatColors.DARK_GREEN, enabledDefault = false),
-    NETWORK_PACKETS_IN(ChatColors.BLUE, enabledDefault = false),
-    NETWORK_PACKETS_IN_ERROR(ChatColors.RED, error = true),
-    NETWORK_PACKETS_OUT(ChatColors.DARK_AQUA, enabledDefault = false),
+    NETWORK_STATUS(ChatColors.DARK_GREEN),
+    NETWORK_PACKETS_IN(ChatColors.BLUE, mapOf(
+        LogLevels.FATAL to ChatColors.DARK_RED,
+        LogLevels.WARN to ChatColors.RED,
+    ), defaultLevel = LogLevels.WARN),
+    NETWORK_PACKETS_OUT(ChatColors.DARK_AQUA, mapOf(
+        LogLevels.FATAL to ChatColors.DARK_RED,
+        LogLevels.WARN to ChatColors.RED,
+    ), defaultLevel = LogLevels.WARN),
 
     RENDERING_GENERAL(ChatColors.GREEN),
     RENDERING_LOADING(ChatColors.GREEN),
@@ -40,25 +47,25 @@ enum class LogMessageType(
     CHAT_IN(ChatColors.LIGHT_PURPLE),
     CHAT_OUT(ChatColors.LIGHT_PURPLE),
 
-    OTHER_INFO(ChatColors.WHITE),
-    OTHER_DEBUG(ChatColors.YELLOW),
-    OTHER_ERROR(ChatColors.RED, error = true),
-    OTHER_FATAL(ChatColors.DARK_RED, error = true),
+    OTHER(ChatColors.WHITE, mapOf(
+        LogLevels.FATAL to ChatColors.DARK_RED,
+        LogLevels.WARN to ChatColors.RED,
+        LogLevels.VERBOSE to ChatColors.YELLOW,
+    )),
     ;
 
     companion object : ValuesEnum<LogMessageType> {
         override val VALUES: Array<LogMessageType> = values()
         override val NAME_MAP: Map<String, LogMessageType> = KUtil.getEnumValues(VALUES)
 
-        val DEFAULT_LOG_MESSAGE_TYPES = let {
-            val ret: MutableSet<LogMessageType> = mutableSetOf()
+        val DEFAULT_LOG_MAP: Map<LogMessageType, LogLevels> = let {
+            val ret: MutableMap<LogMessageType, LogLevels> = mutableMapOf()
 
             for (value in VALUES) {
-                if (value.enabledDefault) {
-                    ret += value
-                }
+                ret[value] = value.defaultLevel
             }
-            ret.toSet()
+
+            ret.toMap()
         }
     }
 }

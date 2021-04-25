@@ -37,7 +37,7 @@ import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.play.PositionAndRotationS2CP
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.CountUpAndDownLatch
-import de.bixilon.minosoft.util.logging.Log.log
+import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogMessageType
 import glm_.vec2.Vec2
 import glm_.vec2.Vec2i
@@ -113,6 +113,7 @@ class RenderWindow(
     }
 
     fun init(latch: CountUpAndDownLatch) {
+        Log.log(LogMessageType.RENDERING_LOADING) { "Creating window..." }
         // Setup an error callback. The default implementation
         // will print the error message in System.err.
         GLFWErrorCallback.createPrint(System.err).set()
@@ -164,6 +165,7 @@ class RenderWindow(
             glfwSetWindowPos(windowId, (videoMode.width() - pWidth[0]) / 2, (videoMode.height() - pHeight[0]) / 2)
         }
 
+        Log.log(LogMessageType.RENDERING_LOADING) { "Creating context..." }
         // Make the OpenGL context current
         glfwMakeContextCurrent(windowId)
         // Enable v-sync
@@ -175,6 +177,7 @@ class RenderWindow(
 
         setSkyColor(RGBColor("#fffe7a"))
 
+        Log.log(LogMessageType.RENDERING_LOADING) { "Enabling all open gl features..." }
         glEnable(GL_DEPTH_TEST)
         glEnable(GL_BLEND)
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
@@ -182,6 +185,7 @@ class RenderWindow(
         glEnable(GL_CULL_FACE)
 
 
+        Log.log(LogMessageType.RENDERING_LOADING) { "Generating font and textures..." }
         textures.allTextures.add(Texture(RenderConstants.DEBUG_TEXTURE_RESOURCE_LOCATION))
         WHITE_TEXTURE = TextureLikeTexture(
             texture = Texture(ResourceLocation("minosoft:textures/white.png")),
@@ -195,16 +199,20 @@ class RenderWindow(
 
         font.preLoadAtlas(textures)
 
+        Log.log(LogMessageType.RENDERING_LOADING) { "Initializing renderer..." }
         for (renderer in rendererMap.values) {
             renderer.init()
         }
 
 
+        Log.log(LogMessageType.RENDERING_LOADING) { "Preloading textures..." }
         textures.preLoad(connection.assetsManager)
 
         font.loadAtlas()
+        Log.log(LogMessageType.RENDERING_LOADING) { "Loading textures..." }
         textures.load()
 
+        Log.log(LogMessageType.RENDERING_LOADING) { "Post loading renderer..." }
         for (renderer in rendererMap.values) {
             renderer.postInit()
             if (renderer is ShaderHolder) {
@@ -213,6 +221,7 @@ class RenderWindow(
         }
 
 
+        Log.log(LogMessageType.RENDERING_LOADING) { "Registering glfw callbacks..." }
         glfwSetWindowSizeCallback(windowId, object : GLFWWindowSizeCallback() {
             override fun invoke(window: Long, width: Int, height: Int) {
                 glViewport(0, 0, width, height)
@@ -254,11 +263,12 @@ class RenderWindow(
 
         glEnable(GL_DEPTH_TEST)
 
-        log(LogMessageType.OTHER_DEBUG, message = "Rendering is prepared and ready to go!", formatting = arrayOf())
+        Log.log(LogMessageType.RENDERING_LOADING) { "Rendering is fully prepared" }
         latch.countDown()
         latch.waitUntilZero()
         this.latch.waitUntilZero()
         glfwShowWindow(windowId)
+        Log.log(LogMessageType.RENDERING_GENERAL) { "Showing window" }
     }
 
     private fun registerGlobalKeyCombinations() {
@@ -280,6 +290,7 @@ class RenderWindow(
     }
 
     fun startRenderLoop() {
+        Log.log(LogMessageType.RENDERING_LOADING) { "Starting loop" }
         while (!glfwWindowShouldClose(windowId)) {
             if (renderingState == RenderingStates.PAUSED) {
                 Thread.sleep(100L)
@@ -343,6 +354,7 @@ class RenderWindow(
     }
 
     fun exit() {
+        Log.log(LogMessageType.RENDERING_LOADING) { "Destroying render window..." }
         // Free the window callbacks and destroy the window
         Callbacks.glfwFreeCallbacks(windowId)
         glfwDestroyWindow(windowId)
@@ -351,6 +363,7 @@ class RenderWindow(
         glfwTerminate()
         glfwSetErrorCallback(null)!!.free()
 
+        Log.log(LogMessageType.RENDERING_LOADING) { "Render window destroyed!" }
         // disconnect
         connection.disconnect()
     }

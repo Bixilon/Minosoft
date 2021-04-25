@@ -51,7 +51,7 @@ public final class MojangAuthentication {
         try {
             response = HTTP.postJson(ProtocolDefinition.MOJANG_URL_LOGIN, payload);
         } catch (IOException | InterruptedException e) {
-            Log.printException(e, LogMessageType.OTHER_INFO);
+            Log.printException(e, LogMessageType.OTHER);
             throw new NoNetworkConnectionException(e);
         }
         if (response == null) {

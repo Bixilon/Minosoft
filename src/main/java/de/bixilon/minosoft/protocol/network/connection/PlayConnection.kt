@@ -41,7 +41,7 @@ import de.bixilon.minosoft.terminal.commands.commands.Command
 import de.bixilon.minosoft.util.CountUpAndDownLatch
 import de.bixilon.minosoft.util.ServerAddress
 import de.bixilon.minosoft.util.logging.Log
-import de.bixilon.minosoft.util.logging.Log.log
+import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import de.bixilon.minosoft.util.time.TimeWorker
 import de.bixilon.minosoft.util.time.TimeWorkerTask
@@ -158,11 +158,11 @@ class PlayConnection(
                 }
                 latch.waitForChange()
             }
-            log(LogMessageType.OTHER_INFO, message = "Connecting to server: $address", formatting = arrayOf())
+            Log.log(LogMessageType.NETWORK_STATUS, level = LogLevels.INFO) { "Connecting to server: $address" }
             network.connect(address)
         } catch (exception: Throwable) {
-            Log.log(LogMessageType.VERSION_LOADING) { exception }
-            log(LogMessageType.OTHER_FATAL, message = "Could not load version $version. This version seems to be unsupported!", formatting = arrayOf())
+            Log.log(LogMessageType.VERSION_LOADING, level = LogLevels.FATAL) { exception }
+            Log.log(LogMessageType.VERSION_LOADING, level = LogLevels.FATAL) { "Could not load version $version. This version seems to be unsupported" }
             version.unload()
             lastException = MappingsLoadingException("Mappings could not be loaded", exception)
             connectionState = ConnectionStates.FAILED_NO_RETRY
@@ -200,7 +200,7 @@ class PlayConnection(
                 packet.handle(this)
             }
         } catch (exception: Throwable) {
-            Log.log(LogMessageType.NETWORK_PACKETS_IN_ERROR) { exception }
+            Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.WARN) { exception }
         }
     }
 
