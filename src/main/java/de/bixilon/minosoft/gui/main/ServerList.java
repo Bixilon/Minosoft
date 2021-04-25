@@ -22,6 +22,8 @@ import de.bixilon.minosoft.data.mappings.versions.Version;
 import de.bixilon.minosoft.protocol.protocol.LANServerListener;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import de.bixilon.minosoft.util.logging.Log;
+import de.bixilon.minosoft.util.logging.LogLevels;
+import de.bixilon.minosoft.util.logging.LogMessageType;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -36,13 +38,13 @@ import javafx.util.Callback;
 import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 
-public class Launcher {
+public class ServerList {
     private static Stage stage;
     private static boolean exit;
     private static MainWindow mainWindow;
 
     public static void start() {
-        Log.info("Starting launcher...");
+        Log.log(LogMessageType.JAVAFX, LogLevels.INFO, () -> "Starting server list...");
         CountDownLatch latch = new CountDownLatch(1);
         Platform.runLater(() -> {
             if (exit) {
@@ -90,7 +92,7 @@ public class Launcher {
             if (exit) {
                 return;
             }
-            Launcher.stage = stage;
+            ServerList.stage = stage;
             mainWindow = loader.getController();
 
 
@@ -105,7 +107,7 @@ public class Launcher {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        Log.info("Launcher started!");
+        Log.log(LogMessageType.JAVAFX, LogLevels.INFO, () -> "Server list started!");
     }
 
     public static void exit() {

@@ -22,6 +22,8 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.CountUpAndDownLatch
 import de.bixilon.minosoft.util.Util
 import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileNotFoundException
@@ -73,12 +75,13 @@ class MinecraftAssetsManager(
         this.assetVersion.jarAssetsHash?.let {
             if (verifyAssetHash(it)) {
                 // ToDo: Verify all jar assets
-                Log.verbose("client.jar assets probably already generated for %s, skipping", this.assetVersion.version)
+                Log.log(LogMessageType.ASSETS, LogLevels.INFO) { "client.jar assets probably already generated for ${assetVersion.version}, skipping" }
                 return this.assetVersion.jarAssetsHash
             }
         }
 
-        Log.verbose("Generating client.jar assets for %s...", this.assetVersion.version)
+        Log.log(LogMessageType.ASSETS, LogLevels.INFO) { "Generating client.jar assets for ${assetVersion.version}" }
+        Log.log(LogMessageType.ASSETS, LogLevels.INFO) { "Generating client.jar assets for ${assetVersion.version}" }
         // download jar
         downloadAsset(String.format(ProtocolDefinition.MOJANG_LAUNCHER_URL_PACKAGES, this.assetVersion.clientJarHash, "client.jar"), this.assetVersion.clientJarHash!!, true)
         val clientJarAssetsHashMap = HashMap<String, String>()
@@ -108,7 +111,7 @@ class MinecraftAssetsManager(
         }
         val json = Util.GSON.toJson(clientJarAssetsMapping)
         val assetHash: String = saveAsset(json.toByteArray())
-        Log.verbose(String.format("Generated jar assets in %dms (elements=%d, hash=%s)", System.currentTimeMillis() - startTime, clientJarAssetsHashMap.size, assetHash))
+        Log.log(LogMessageType.ASSETS, LogLevels.INFO) { "Generated client.jar assets for ${assetVersion.version} in ${System.currentTimeMillis() - startTime}ms (elements=${clientJarAssetsHashMap.size}, hash=$assetHash" }
         return assetHash
     }
 

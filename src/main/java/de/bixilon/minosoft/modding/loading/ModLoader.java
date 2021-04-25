@@ -19,6 +19,8 @@ import de.bixilon.minosoft.modding.MinosoftMod;
 import de.bixilon.minosoft.util.CountUpAndDownLatch;
 import de.bixilon.minosoft.util.Util;
 import de.bixilon.minosoft.util.logging.Log;
+import de.bixilon.minosoft.util.logging.LogLevels;
+import de.bixilon.minosoft.util.logging.LogMessageType;
 import org.xeustechnologies.jcl.JarClassLoader;
 import org.xeustechnologies.jcl.JclObjectFactory;
 
@@ -37,7 +39,7 @@ public class ModLoader {
 
     public static void loadMods(CountUpAndDownLatch progress) throws Exception {
         final long startTime = System.currentTimeMillis();
-        Log.info("Start loading mods...");
+        Log.log(LogMessageType.MOD_LOADING, LogLevels.INFO, () -> "Start loading mods...");
 
         // load all jars, parse the mod.json
         // sort the list and prioritize
@@ -63,7 +65,7 @@ public class ModLoader {
         latch.await();
 
         if (MOD_MAP.isEmpty()) {
-            Log.info("No mods to load.");
+            Log.log(LogMessageType.MOD_LOADING, LogLevels.INFO, () -> "No mods to load.");
             return;
         }
 
@@ -120,7 +122,7 @@ public class ModLoader {
         sortedModMap.putAll(MOD_MAP);
 
         for (ModPhases phase : ModPhases.values()) {
-            Log.verbose(String.format("Mod loading phase changed: %s", phase));
+            Log.log(LogMessageType.MOD_LOADING, LogLevels.VERBOSE, () -> "Mod initializing started in " + phase);
             CountDownLatch modLatch = new CountDownLatch(sortedModMap.size());
             for (Map.Entry<UUID, MinosoftMod> entry : sortedModMap.entrySet()) {
                 Minosoft.THREAD_POOL.execute(() -> {
@@ -129,13 +131,14 @@ public class ModLoader {
                         progress.countDown();
                         return;
                     }
+                    Log.log(LogMessageType.MOD_LOADING, LogLevels.VERBOSE, () -> "Loading mod " + entry.getValue().getInfo() + "in " + phase);
                     try {
                         if (!entry.getValue().start(phase)) {
-                            throw new ModLoadingException(String.format("Could not load mod %s", entry.getValue().getInfo()));
+                            Log.log(LogMessageType.MOD_LOADING, LogLevels.WARN, () -> "Loading mod " + entry.getValue().getInfo() + "in " + phase + "failed!");
                         }
                     } catch (Throwable e) {
                         e.printStackTrace();
-                        Log.warn(String.format("An error occurred while loading %s", entry.getValue().getInfo()));
+                        Log.log(LogMessageType.MOD_LOADING, LogLevels.WARN, () -> "Loading mod " + entry.getValue().getInfo() + "in " + phase + "failed!");
                         entry.getValue().setEnabled(false);
                     }
                     modLatch.countDown();
@@ -152,13 +155,13 @@ public class ModLoader {
                 MOD_MAP.remove(entry.getKey());
             }
         }
-        Log.info("Loading of %d mods finished in %dms!", sortedModMap.size(), (System.currentTimeMillis() - startTime));
+        Log.log(LogMessageType.MOD_LOADING, LogLevels.INFO, () -> "Initialized " + sortedModMap.size() + " in " + (System.currentTimeMillis() - startTime) + "!");
     }
 
     public static MinosoftMod loadMod(CountUpAndDownLatch progress, File file) {
         MinosoftMod instance;
         try {
-            Log.verbose(String.format("[MOD] Loading file %s", file.getAbsolutePath()));
+            Log.log(LogMessageType.MOD_LOADING, LogLevels.VERBOSE, () -> "Trying to load " + file.getAbsolutePath());
             progress.countUp();
             ZipFile zipFile = new ZipFile(file);
             ModInfo modInfo = new ModInfo(Util.readJsonFromZip("mod.json", zipFile));
@@ -177,7 +180,7 @@ public class ModLoader {
         } catch (Throwable e) {
             instance = null;
             e.printStackTrace();
-            Log.warn(String.format("Could not load mod: %s", file.getAbsolutePath()));
+            Log.log(LogMessageType.MOD_LOADING, LogLevels.WARN, () -> "Could not load " + file.getAbsolutePath());
         }
         progress.countDown(); // failed
         return instance;

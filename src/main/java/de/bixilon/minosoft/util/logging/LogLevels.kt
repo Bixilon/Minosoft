@@ -13,10 +13,13 @@
 
 package de.bixilon.minosoft.util.logging
 
-enum class LogLevels {
-    FATAL,
-    WARN,
-    INFO,
-    VERBOSE,
+import de.bixilon.minosoft.data.text.ChatColors
+import de.bixilon.minosoft.data.text.RGBColor
+
+enum class LogLevels(val levelColors: RGBColor) {
+    FATAL(ChatColors.DARK_RED),
+    WARN(ChatColors.RED),
+    INFO(ChatColors.WHITE),
+    VERBOSE(ChatColors.YELLOW),
     ;
 }

@@ -29,8 +29,9 @@ object StaticConfiguration {
     @JvmField
     var SKIP_MOJANG_AUTHENTICATION = false // disables all connections to mojang
 
-    @JvmField
-    var COLORED_LOG = true // the log should be colored with ANSI (does not affect base components)
+    var LOG_COLOR_MESSAGE = true // The message (after all prefixes) should be colored with ANSI color codes
+    var LOG_COLOR_LEVEL = true // The level (e.g. [INFO]) should be colored
+    var LOG_COLOR_TYPE = true // The type (e.g. [OTHER]) should be colored
 
     @JvmField
     var LOG_RELATIVE_TIME = false // prefix all log messages with the relative start time in milliseconds instead of the formatted time

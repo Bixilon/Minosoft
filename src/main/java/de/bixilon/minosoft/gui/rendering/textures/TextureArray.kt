@@ -18,6 +18,8 @@ import de.bixilon.minosoft.data.assets.AssetsManager
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
 import de.matthiasmann.twl.utils.PNGDecoder
 import glm_.vec2.Vec2
 import glm_.vec2.Vec2i
@@ -103,7 +105,7 @@ class TextureArray(val allTextures: MutableList<Texture>) {
             loadResolution(index)
             totalLayers += textures.size
         }
-        Log.game("Loaded ${allTextures.size} textures containing ${animator.animatedTextures.size} animated ones, split into $totalLayers layers!")
+        Log.log(LogMessageType.NETWORK_RESOLVING, LogLevels.VERBOSE) { "Loaded ${allTextures.size} textures containing ${animator.animatedTextures.size} animated ones, split into $totalLayers layers!" }
 
         animator.initBuffer()
     }

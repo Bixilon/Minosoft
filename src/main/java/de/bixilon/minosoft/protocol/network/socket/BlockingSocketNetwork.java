@@ -97,7 +97,7 @@ public class BlockingSocketNetwork extends Network {
 
                 initSendThread();
 
-                this.socketReceiveThread.setName(String.format("%d/SocketReceive", this.connection.getConnectionId()));
+                this.socketReceiveThread.setName(String.format("%d/Receiving", this.connection.getConnectionId()));
 
 
                 while (this.connection.getConnectionState() != ConnectionStates.DISCONNECTING) {
@@ -189,7 +189,7 @@ public class BlockingSocketNetwork extends Network {
                 }
             } catch (IOException | InterruptedException ignored) {
             }
-        }, String.format("%d/SocketSend", this.connection.getConnectionId()));
+        }, String.format("%d/Sending", this.connection.getConnectionId()));
         this.socketSendThread.start();
     }
 

@@ -22,6 +22,8 @@ import de.bixilon.minosoft.data.locale.LocaleManager;
 import de.bixilon.minosoft.data.locale.Strings;
 import de.bixilon.minosoft.util.CountUpAndDownLatch;
 import de.bixilon.minosoft.util.logging.Log;
+import de.bixilon.minosoft.util.logging.LogLevels;
+import de.bixilon.minosoft.util.logging.LogMessageType;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.control.Label;
@@ -92,11 +94,11 @@ public class StartProgressWindow extends Application {
     }
 
     public static void start() throws InterruptedException {
-        Log.debug("Initializing JavaFX Toolkit...");
+        Log.log(LogMessageType.JAVAFX, LogLevels.INFO, () -> "Initializing JavaFX Toolkit...");
         TOOLKIT_LATCH.countDown();
         new Thread(Application::launch, "JavaFX Application Launch Thread").start();
         TOOLKIT_LATCH.await();
-        Log.debug("Initialized JavaFX Toolkit!");
+        Log.log(LogMessageType.JAVAFX, LogLevels.INFO, () -> "Initialized JavaFX Toolkit!");
     }
 
     public static void hideDialog() {

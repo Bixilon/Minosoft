@@ -18,6 +18,8 @@ import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
 
 class MinecraftLocaleManager(private val version: Version) : Translator {
     lateinit var language: MinecraftLanguage
@@ -37,14 +39,15 @@ class MinecraftLocaleManager(private val version: Version) : Translator {
 
     fun load(version: Version, language: String) {
         val startTime = System.currentTimeMillis()
+        Log.log(LogMessageType.VERSION_LOADING, LogLevels.INFO) { "Loading minecraft $language language files for $version..." }
         Log.verbose(String.format("Loading minecraft language file (%s) for %s", language, this.version))
         try {
             this.language = loadLanguage(version, language)
         } catch (exception: Exception) {
-            Log.warn("Could not load minecraft language file: %s for %s", language, this.version)
-            throw exception
+            Log.log(LogMessageType.VERSION_LOADING, LogLevels.WARN) { "Could not load minecraft language files for $version (language=$language)!" }
+            return
         }
-        Log.verbose("Loaded minecraft language files for %s successfully in %dms", this.version, System.currentTimeMillis() - startTime)
+        Log.log(LogMessageType.VERSION_LOADING, LogLevels.INFO) { "Loaded minecraft language files for $version successfully in ${System.currentTimeMillis() - startTime}ms" }
     }
 
     fun canTranslate(key: String?): Boolean {

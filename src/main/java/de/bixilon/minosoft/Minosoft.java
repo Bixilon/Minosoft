@@ -26,7 +26,7 @@ import de.bixilon.minosoft.data.mappings.DefaultRegistries;
 import de.bixilon.minosoft.data.mappings.ResourceLocation;
 import de.bixilon.minosoft.data.mappings.versions.Versions;
 import de.bixilon.minosoft.gui.main.GUITools;
-import de.bixilon.minosoft.gui.main.Launcher;
+import de.bixilon.minosoft.gui.main.ServerList;
 import de.bixilon.minosoft.gui.main.ServerListCell;
 import de.bixilon.minosoft.gui.main.StartProgressWindow;
 import de.bixilon.minosoft.gui.main.cells.AccountListCell;
@@ -88,7 +88,7 @@ public final class Minosoft {
             }
             // hide all other gui parts
             StartProgressWindow.hideDialog();
-            Launcher.exit();
+            ServerList.exit();
             Platform.runLater(() -> {
                 JFXAlert<Boolean> dialog = new JFXAlert<>();
                 GUITools.initializePane(dialog.getDialogPane());
@@ -170,7 +170,7 @@ public final class Minosoft {
         if (StaticConfiguration.HEADLESS_MODE) {
             return;
         }
-        Launcher.start();
+        ServerList.start();
     }
 
     public static boolean selectAccount(Account account) {
@@ -183,8 +183,8 @@ public final class Minosoft {
             config.getConfig().getAccount().getEntries().put(account.getId(), account);
             config.getConfig().getAccount().setSelected(account.getId());
             config.saveToFile();
-            if (Launcher.getMainWindow() != null) {
-                Launcher.getMainWindow().selectAccount(account);
+            if (ServerList.getMainWindow() != null) {
+                ServerList.getMainWindow().selectAccount(account);
             }
             AccountListCell.ACCOUNT_LIST_VIEW.refresh();
             ServerListCell.SERVER_LIST_VIEW.refresh();
