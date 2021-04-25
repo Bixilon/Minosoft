@@ -27,6 +27,8 @@ import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.gui.rendering.chunk.VoxelShape
 import de.bixilon.minosoft.gui.rendering.chunk.models.AABB
 import de.bixilon.minosoft.gui.rendering.util.VecUtil
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.chunkPosition
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.inChunkPosition
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import glm_.vec3.Vec3
@@ -194,24 +196,29 @@ abstract class Entity(
             return values
         }
 
-    fun move(deltaPosition: Vec3) {
+    fun move(deltaPosition: Vec3, ignoreUnloadedChunks: Boolean = true) {
         if (!hasCollisions) {
             forceMove(deltaPosition)
             return
         }
         val currentAABB = aabb
-        val collisionsToCheck = getCollisionsToCheck(deltaPosition, currentAABB)
+        val collisionsToCheck = getCollisionsToCheck(deltaPosition, currentAABB, ignoreUnloadedChunks)
         val realMovement = collide(deltaPosition, collisionsToCheck, currentAABB)
         forceMove(realMovement)
     }
 
-    private fun getCollisionsToCheck(deltaPosition: Vec3, originalAABB: AABB): VoxelShape {
+    private fun getCollisionsToCheck(deltaPosition: Vec3, originalAABB: AABB, ignoreUnloadedChunks: Boolean = true): VoxelShape {
         // also look at blocks further down to also cover blocks with a higher than normal hitbox (for example fences)
         val blockPositions = (originalAABB extend deltaPosition extend Directions.DOWN.directionVector).getBlockPositions()
         val result = VoxelShape()
         for (blockPosition in blockPositions) {
-            // ToDo: Check if chunk is loaded
-            val blockState = connection.world.getBlockState(blockPosition) ?: continue
+            val chunk = connection.world.getChunk(blockPosition.chunkPosition)
+            if (chunk == null && !ignoreUnloadedChunks) {
+                // chunk is not loaded
+                result.add(VoxelShape.FULL + blockPosition)
+                continue
+            }
+            val blockState = chunk?.getBlockState(blockPosition.inChunkPosition) ?: continue
             result.add(blockState.collisionShape + blockPosition)
         }
         return result

@@ -180,7 +180,7 @@ class Camera(
             }
         }
         if (deltaMovement != VecUtil.EMPTY_VEC3) {
-            playerEntity.move(deltaMovement)
+            playerEntity.move(deltaMovement, false)
             recalculateViewProjectionMatrix()
             currentPositionSent = false
             sendPositionToServer()

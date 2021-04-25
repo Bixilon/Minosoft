@@ -7,18 +7,11 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3i
 
-class VoxelShape {
-    var aabbs: MutableList<AABB> = mutableListOf()
+class VoxelShape(val aabbs: MutableList<AABB> = mutableListOf()) {
 
-    constructor()
-
-    constructor(aabbs: MutableList<AABB>) {
-        this.aabbs = aabbs;
-    }
-
-    constructor(data: JsonObject, aabbList: List<AABB>) {
+    constructor(data: JsonObject, aabbs: List<AABB>) : this() {
         data["shape"]?.let {
-            aabbs.add(aabbList[it.asInt])
+            this.aabbs.add(aabbs[it.asInt])
         }
     }
 
@@ -52,6 +45,7 @@ class VoxelShape {
             aabbs.add(newAABB)
         }
     }
+
     fun computeOffset(other: AABB, offset: Float, axis: Axes): Float {
         var result = offset
         for (aabb in aabbs) {
