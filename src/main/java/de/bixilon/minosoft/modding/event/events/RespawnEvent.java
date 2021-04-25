@@ -18,7 +18,7 @@ import de.bixilon.minosoft.data.Gamemodes;
 import de.bixilon.minosoft.data.LevelTypes;
 import de.bixilon.minosoft.data.mappings.Dimension;
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
-import de.bixilon.minosoft.protocol.packets.s2c.play.PacketRespawn;
+import de.bixilon.minosoft.protocol.packets.s2c.play.RespawnS2CP;
 
 public class RespawnEvent extends PlayConnectionEvent {
     private final Gamemodes gamemode;
@@ -34,7 +34,7 @@ public class RespawnEvent extends PlayConnectionEvent {
         this.levelType = levelType;
     }
 
-    public RespawnEvent(PlayConnection connection, PacketRespawn pkg) {
+    public RespawnEvent(PlayConnection connection, RespawnS2CP pkg) {
         super(connection);
         this.gamemode = pkg.getGamemode();
         this.dimension = pkg.getDimension();

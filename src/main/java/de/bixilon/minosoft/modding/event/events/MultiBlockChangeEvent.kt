@@ -14,7 +14,7 @@ package de.bixilon.minosoft.modding.event.events
 
 import de.bixilon.minosoft.data.mappings.blocks.BlockState
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import de.bixilon.minosoft.protocol.packets.s2c.play.PacketMultiBlockChange
+import de.bixilon.minosoft.protocol.packets.s2c.play.MassBlockSetS2CP
 import glm_.vec2.Vec2i
 import glm_.vec3.Vec3i
 
@@ -27,5 +27,5 @@ class MultiBlockChangeEvent(
     val chunkPosition: Vec2i,
 ) : PlayConnectionEvent(connection) {
 
-    constructor(connection: PlayConnection, packet: PacketMultiBlockChange) : this(connection, packet.blocks, packet.chunkPosition)
+    constructor(connection: PlayConnection, packet: MassBlockSetS2CP) : this(connection, packet.blocks, packet.chunkPosition)
 }

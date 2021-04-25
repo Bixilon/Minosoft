@@ -15,34 +15,25 @@ package de.bixilon.minosoft.protocol.packets.c2s.handshaking
 import de.bixilon.minosoft.protocol.packets.c2s.AllC2SPacket
 import de.bixilon.minosoft.protocol.protocol.ConnectionStates
 import de.bixilon.minosoft.protocol.protocol.OutByteBuffer
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.ServerAddress
 import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogMessageType
 
-class HandshakeC2SPacket : AllC2SPacket {
-    private val address: ServerAddress
-    private val nextState: ConnectionStates
-    private val protocolId: Int
-
-    constructor(address: ServerAddress, nextState: ConnectionStates, protocolId: Int) {
-        this.address = address
-        this.nextState = nextState
-        this.protocolId = protocolId
-    }
-
-    constructor(address: ServerAddress, protocolId: Int) {
-        this.address = address
-        this.protocolId = protocolId
-        nextState = ConnectionStates.STATUS
-    }
+class HandshakeC2SPacket(
+    val address: ServerAddress,
+    val nextState: ConnectionStates = ConnectionStates.STATUS,
+    val protocolId: Int = ProtocolDefinition.QUERY_PROTOCOL_VERSION_ID,
+) : AllC2SPacket {
 
     override fun write(buffer: OutByteBuffer) {
-        buffer.writeVarInt(protocolId) // get best protocol version
+        buffer.writeVarInt(protocolId)
         buffer.writeString(address.hostname)
-        buffer.writeShort(address.port.toShort())
+        buffer.writeShort(address.port)
         buffer.writeVarInt(nextState.ordinal)
     }
 
     override fun log() {
-        Log.protocol("[OUT] Sending handshake packet (address=$address)")
+        Log.log(LogMessageType.NETWORK_PACKETS_OUT) { "Handshake packet" }
     }
 }

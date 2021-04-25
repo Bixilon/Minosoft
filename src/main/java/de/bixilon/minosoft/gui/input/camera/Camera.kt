@@ -28,9 +28,9 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.inChunkSectionPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
 import de.bixilon.minosoft.gui.rendering.util.abstractions.ScreenResizeCallback
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import de.bixilon.minosoft.protocol.packets.c2s.play.PlayerPositionAndRotationC2SPacket
-import de.bixilon.minosoft.protocol.packets.c2s.play.PlayerPositionC2SPacket
-import de.bixilon.minosoft.protocol.packets.c2s.play.PlayerRotationC2SPacket
+import de.bixilon.minosoft.protocol.packets.c2s.play.PositionAndRotationC2SP
+import de.bixilon.minosoft.protocol.packets.c2s.play.PositionC2SP
+import de.bixilon.minosoft.protocol.packets.c2s.play.RotationC2SP
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import glm_.func.cos
 import glm_.func.rad
@@ -287,11 +287,11 @@ class Camera(
             return
         }
         if (!currentPositionSent && !currentPositionSent) {
-            connection.sendPacket(PlayerPositionAndRotationC2SPacket(playerEntity.position, playerEntity.rotation, playerEntity.onGround))
+            connection.sendPacket(PositionAndRotationC2SP(playerEntity.position, playerEntity.rotation, playerEntity.onGround))
         } else if (!currentPositionSent) {
-            connection.sendPacket(PlayerPositionC2SPacket(playerEntity.position, playerEntity.onGround))
+            connection.sendPacket(PositionC2SP(playerEntity.position, playerEntity.onGround))
         } else {
-            connection.sendPacket(PlayerRotationC2SPacket(playerEntity.rotation, playerEntity.onGround))
+            connection.sendPacket(RotationC2SP(playerEntity.rotation, playerEntity.onGround))
         }
         lastMovementPacketSent = System.currentTimeMillis()
         currentPositionSent = true

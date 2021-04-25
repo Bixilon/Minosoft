@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.protocol.packets.s2c.play;
 
 import de.bixilon.minosoft.data.mappings.blocks.BlockState;
-import de.bixilon.minosoft.protocol.packets.c2s.play.PlayerDiggingC2SPacket;
+import de.bixilon.minosoft.protocol.packets.c2s.play.BlockBreakC2SP;
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket;
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
@@ -23,13 +23,13 @@ import glm_.vec3.Vec3i;
 public class PacketAcknowledgePlayerDigging extends PlayS2CPacket {
     private final Vec3i blockPosition;
     private final BlockState block;
-    private final PlayerDiggingC2SPacket.DiggingStatus status;
+    private final BlockBreakC2SP.BreakType status;
     private final boolean successful;
 
     public PacketAcknowledgePlayerDigging(PlayInByteBuffer buffer) {
         this.blockPosition = buffer.readBlockPosition();
         this.block = buffer.getConnection().getMapping().getBlockState(buffer.readVarInt());
-        this.status = PlayerDiggingC2SPacket.DiggingStatus.byId(buffer.readVarInt());
+        this.status = BlockBreakC2SP.BreakType.Companion.getVALUES()[buffer.readVarInt()];
         this.successful = buffer.readBoolean();
     }
 
@@ -46,7 +46,7 @@ public class PacketAcknowledgePlayerDigging extends PlayS2CPacket {
         return this.block;
     }
 
-    public PlayerDiggingC2SPacket.DiggingStatus getStatus() {
+    public BlockBreakC2SP.BreakType getStatus() {
         return this.status;
     }
 

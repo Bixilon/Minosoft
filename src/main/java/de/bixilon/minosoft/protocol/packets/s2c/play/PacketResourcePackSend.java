@@ -16,7 +16,7 @@ package de.bixilon.minosoft.protocol.packets.s2c.play;
 import de.bixilon.minosoft.data.text.ChatComponent;
 import de.bixilon.minosoft.modding.event.events.ResourcePackChangeEvent;
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
-import de.bixilon.minosoft.protocol.packets.c2s.play.ResourcePackStatusC2SPacket;
+import de.bixilon.minosoft.protocol.packets.c2s.play.ResourcePackStatusC2SP;
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket;
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 import de.bixilon.minosoft.util.Util;
@@ -51,7 +51,7 @@ public class PacketResourcePackSend extends PlayS2CPacket {
         if (connection.fireEvent(event)) {
             return;
         }
-        connection.sendPacket(new ResourcePackStatusC2SPacket(this.hash, ResourcePackStatusC2SPacket.ResourcePackStates.SUCCESSFULLY));
+        connection.sendPacket(new ResourcePackStatusC2SP(this.hash, ResourcePackStatusC2SP.ResourcePackStates.SUCCESSFULLY));
     }
 
     @Override

@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.modding.event.events;
 
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
-import de.bixilon.minosoft.protocol.packets.s2c.play.PacketSetExperience;
+import de.bixilon.minosoft.protocol.packets.s2c.play.SetExperienceS2CP;
 
 public class ExperienceChangeEvent extends CancelableEvent {
     private final float bar;
@@ -28,7 +28,7 @@ public class ExperienceChangeEvent extends CancelableEvent {
         this.total = total;
     }
 
-    public ExperienceChangeEvent(PlayConnection connection, PacketSetExperience pkg) {
+    public ExperienceChangeEvent(PlayConnection connection, SetExperienceS2CP pkg) {
         super(connection);
         this.bar = pkg.getBar();
         this.level = pkg.getLevel();

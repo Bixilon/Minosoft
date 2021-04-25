@@ -34,10 +34,11 @@ import de.bixilon.minosoft.modding.event.CallbackEventInvoker
 import de.bixilon.minosoft.modding.event.events.ConnectionStateChangeEvent
 import de.bixilon.minosoft.modding.event.events.PacketReceiveEvent
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import de.bixilon.minosoft.protocol.packets.s2c.play.PacketPlayerPositionAndRotation
+import de.bixilon.minosoft.protocol.packets.s2c.play.PositionAndRotationS2CP
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.CountUpAndDownLatch
-import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.Log.log
+import de.bixilon.minosoft.util.logging.LogMessageType
 import glm_.vec2.Vec2
 import glm_.vec2.Vec2i
 import org.lwjgl.glfw.*
@@ -95,7 +96,7 @@ class RenderWindow(
         })
         connection.registerEvent(CallbackEventInvoker.of<PacketReceiveEvent> {
             val packet = it.packet
-            if (packet !is PacketPlayerPositionAndRotation) {
+            if (packet !is PositionAndRotationS2CP) {
                 return@of
             }
             if (latch.count > 0) {
@@ -253,7 +254,7 @@ class RenderWindow(
 
         glEnable(GL_DEPTH_TEST)
 
-        Log.debug("Rendering is prepared and ready to go!")
+        log(LogMessageType.OTHER_DEBUG, message = "Rendering is prepared and ready to go!", formatting = arrayOf())
         latch.countDown()
         latch.waitUntilZero()
         this.latch.waitUntilZero()

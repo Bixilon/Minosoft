@@ -14,7 +14,7 @@ package de.bixilon.minosoft.modding.event.events
 
 import de.bixilon.minosoft.data.mappings.blocks.BlockState
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import de.bixilon.minosoft.protocol.packets.s2c.play.PacketBlockChange
+import de.bixilon.minosoft.protocol.packets.s2c.play.BlockSetS2CP
 import glm_.vec3.Vec3i
 
 /**
@@ -26,5 +26,5 @@ class BlockChangeEvent(
     val block: BlockState?,
 ) : PlayConnectionEvent(connection) {
 
-    constructor(connection: PlayConnection, packet: PacketBlockChange) : this(connection, packet.blockPosition, packet.block)
+    constructor(connection: PlayConnection, packet: BlockSetS2CP) : this(connection, packet.blockPosition, packet.block)
 }

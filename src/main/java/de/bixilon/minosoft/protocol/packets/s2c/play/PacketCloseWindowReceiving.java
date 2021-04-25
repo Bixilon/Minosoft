@@ -13,14 +13,14 @@
 
 package de.bixilon.minosoft.protocol.packets.s2c.play;
 
-import de.bixilon.minosoft.modding.event.events.CloseWindowEvent;
+import de.bixilon.minosoft.modding.event.events.ContainerCloseEvent;
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket;
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
 
 public class PacketCloseWindowReceiving extends PlayS2CPacket {
-    private final byte windowId;
+    private final int windowId;
 
     public PacketCloseWindowReceiving(PlayInByteBuffer buffer) {
         this.windowId = buffer.readByte();
@@ -28,12 +28,12 @@ public class PacketCloseWindowReceiving extends PlayS2CPacket {
 
     @Override
     public void handle(PlayConnection connection) {
-        CloseWindowEvent event = new CloseWindowEvent(connection, this);
+        ContainerCloseEvent event = new ContainerCloseEvent(connection, this);
         if (connection.fireEvent(event)) {
             return;
         }
 
-        connection.getPlayer().getInventoryManager().getInventories().remove((int) getWindowId());
+        connection.getPlayer().getInventoryManager().getInventories().remove(getWindowId());
     }
 
     @Override
@@ -41,7 +41,7 @@ public class PacketCloseWindowReceiving extends PlayS2CPacket {
         Log.protocol(String.format("[IN] Closing inventory (windowId=%d)", this.windowId));
     }
 
-    public byte getWindowId() {
+    public int getWindowId() {
         return this.windowId;
     }
 }

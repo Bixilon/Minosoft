@@ -20,13 +20,13 @@ import de.bixilon.minosoft.data.player.Hands;
 import de.bixilon.minosoft.data.text.ChatComponent;
 import de.bixilon.minosoft.modding.event.events.ChatMessageReceivingEvent;
 import de.bixilon.minosoft.modding.event.events.ChatMessageSendingEvent;
-import de.bixilon.minosoft.modding.event.events.CloseWindowEvent;
+import de.bixilon.minosoft.modding.event.events.ContainerCloseEvent;
 import de.bixilon.minosoft.modding.event.events.HeldItemChangeEvent;
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
 import de.bixilon.minosoft.protocol.packets.c2s.login.LoginPluginResponseC2SPacket;
 import de.bixilon.minosoft.protocol.packets.c2s.play.*;
-import de.bixilon.minosoft.util.Util;
 import de.bixilon.minosoft.util.logging.Log;
+import de.bixilon.minosoft.util.logging.LogMessageType;
 import glm_.vec3.Vec3;
 import org.checkerframework.common.value.qual.IntRange;
 
@@ -41,7 +41,7 @@ public class PacketSender {
     }
 
     public void setFlyStatus(boolean flying) {
-        this.connection.sendPacket(new ToggleFlyC2SP(flying));
+        this.connection.sendPacket(new FlyToggleC2SP(flying));
     }
 
     public void sendChatMessage(String message) {
@@ -59,60 +59,38 @@ public class PacketSender {
         if (this.connection.fireEvent(event)) {
             return;
         }
-        Log.game("Sending chat message: %s", message);
-        this.connection.sendPacket(new ChatMessageC2SPacket(event.getMessage()));
+        Log.log(LogMessageType.CHAT_OUT, "Sending chat message: %s", message);
+        this.connection.sendPacket(new ChatMessageC2SP(event.getMessage()));
     }
 
     public void spectateEntity(UUID entityUUID) {
-        this.connection.sendPacket(new SpectateEntityC2SPacket(entityUUID));
+        this.connection.sendPacket(new EntitySpectateC2SP(entityUUID));
     }
 
     public void swingArm(Hands hand) {
-        this.connection.sendPacket(new HandAnimationC2SPacket(hand));
+        this.connection.sendPacket(new ArmSwingC2SP(hand));
     }
 
-    public void swingArm() {
-        this.connection.sendPacket(new HandAnimationC2SPacket(Hands.MAIN_HAND));
-    }
-
-    public void dropItem() {
-        this.connection.sendPacket(new PlayerDiggingC2SPacket(PlayerDiggingC2SPacket.DiggingStatus.DROP_ITEM, null, PlayerDiggingC2SPacket.DiggingFaces.BOTTOM));
-    }
-
-    public void dropItemStack() {
-        this.connection.sendPacket(new PlayerDiggingC2SPacket(PlayerDiggingC2SPacket.DiggingStatus.DROP_ITEM_STACK, null, PlayerDiggingC2SPacket.DiggingFaces.BOTTOM));
-    }
-
-    public void swapItemInHand() {
-        this.connection.sendPacket(new PlayerDiggingC2SPacket(PlayerDiggingC2SPacket.DiggingStatus.SWAP_ITEMS_IN_HAND, null, PlayerDiggingC2SPacket.DiggingFaces.BOTTOM));
-    }
 
     public void closeWindow(byte windowId) {
-        CloseWindowEvent event = new CloseWindowEvent(this.connection, windowId, CloseWindowEvent.Initiators.CLIENT);
+        ContainerCloseEvent event = new ContainerCloseEvent(this.connection, windowId, ContainerCloseEvent.Initiators.CLIENT);
         if (this.connection.fireEvent(event)) {
             return;
         }
-        this.connection.sendPacket(new CloseWindowC2SPacket(windowId));
+        this.connection.sendPacket(new ContainerCloseC2SP(windowId));
     }
 
     public void respawn() {
-        sendClientStatus(ClientActionC2SPacket.ClientStates.PERFORM_RESPAWN);
+        sendClientStatus(ClientActionC2SP.ClientActions.PERFORM_RESPAWN);
     }
 
-    public void sendClientStatus(ClientActionC2SPacket.ClientStates status) {
-        this.connection.sendPacket(new ClientActionC2SPacket(status));
+    public void sendClientStatus(ClientActionC2SP.ClientActions status) {
+        this.connection.sendPacket(new ClientActionC2SP(status));
     }
 
-    public void sendPluginMessageData(String channel, OutByteBuffer toSend) {
-        this.connection.sendPacket(new PluginMessageC2SPacket(channel, toSend.toByteArray()));
-    }
 
     public void sendPluginMessageData(ResourceLocation channel, OutByteBuffer toSend) {
-        String channelName = channel.getFull();
-        if (Util.doesStringContainsUppercaseLetters(channelName)) {
-            channelName = channel.getPath();
-        }
-        this.connection.sendPacket(new PluginMessageC2SPacket(channelName, toSend.toByteArray()));
+        this.connection.sendPacket(new PluginMessageC2SP(channel, toSend.toByteArray()));
     }
 
     public void sendLoginPluginMessageResponse(int messageId, OutByteBuffer toSend) {
@@ -120,7 +98,7 @@ public class PacketSender {
     }
 
     public void setLocation(Vec3 position, EntityRotation rotation, boolean onGround) {
-        this.connection.sendPacket(new PlayerPositionAndRotationC2SPacket(position, rotation, onGround));
+        this.connection.sendPacket(new PositionAndRotationC2SP(position, rotation, onGround));
         this.connection.getPlayer().getEntity().setPosition(position);
         this.connection.getPlayer().getEntity().setRotation(rotation);
     }
@@ -136,6 +114,6 @@ public class PacketSender {
     public void selectSlot(@IntRange(from = 0, to = 8) int slot) {
         this.connection.fireEvent(new HeldItemChangeEvent(this.connection, slot));
         this.connection.getPlayer().getInventoryManager().setSelectedHotbarSlot(slot);
-        this.connection.sendPacket(new HeldItemChangeC2SPacket(slot));
+        this.connection.sendPacket(new HotbarSlotSetC2SP(slot));
     }
 }

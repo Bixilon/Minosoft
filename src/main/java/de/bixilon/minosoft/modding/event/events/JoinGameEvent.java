@@ -20,7 +20,7 @@ import de.bixilon.minosoft.data.LevelTypes;
 import de.bixilon.minosoft.data.mappings.Dimension;
 import de.bixilon.minosoft.data.mappings.ResourceLocation;
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
-import de.bixilon.minosoft.protocol.packets.s2c.play.PacketJoinGame;
+import de.bixilon.minosoft.protocol.packets.s2c.play.JoinGameS2CP;
 
 public class JoinGameEvent extends CancelableEvent {
     private final int entityId;
@@ -52,7 +52,7 @@ public class JoinGameEvent extends CancelableEvent {
         this.dimensions = dimensions;
     }
 
-    public JoinGameEvent(PlayConnection connection, PacketJoinGame pkg) {
+    public JoinGameEvent(PlayConnection connection, JoinGameS2CP pkg) {
         super(connection);
         this.entityId = pkg.getEntityId();
         this.hardcore = pkg.isHardcore();

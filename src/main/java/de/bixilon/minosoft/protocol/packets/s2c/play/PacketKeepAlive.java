@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.protocol.packets.s2c.play;
 
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
-import de.bixilon.minosoft.protocol.packets.c2s.play.KeepAliveC2SPacket;
+import de.bixilon.minosoft.protocol.packets.c2s.play.KeepAliveC2SP;
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket;
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
@@ -39,7 +39,7 @@ public class PacketKeepAlive extends PlayS2CPacket {
 
     @Override
     public void handle(PlayConnection connection) {
-        connection.sendPacket(new KeepAliveC2SPacket(getId()));
+        connection.sendPacket(new KeepAliveC2SP(getId()));
     }
 
     @Override

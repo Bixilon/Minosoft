@@ -17,7 +17,7 @@ import de.bixilon.minosoft.data.ChatTextPositions;
 import de.bixilon.minosoft.data.text.ChatComponent;
 import de.bixilon.minosoft.modding.event.events.annotations.MinimumProtocolVersion;
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
-import de.bixilon.minosoft.protocol.packets.s2c.play.PacketChatMessageReceiving;
+import de.bixilon.minosoft.protocol.packets.s2c.play.ChatMessageS2CP;
 
 import java.util.UUID;
 
@@ -35,7 +35,7 @@ public class ChatMessageReceivingEvent extends CancelableEvent {
         this.sender = sender;
     }
 
-    public ChatMessageReceivingEvent(PlayConnection connection, PacketChatMessageReceiving pkg) {
+    public ChatMessageReceivingEvent(PlayConnection connection, ChatMessageS2CP pkg) {
         super(connection);
         this.message = pkg.getMessage();
         this.position = pkg.getPosition();

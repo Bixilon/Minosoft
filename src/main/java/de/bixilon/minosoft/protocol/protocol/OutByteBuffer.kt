@@ -13,9 +13,13 @@
 package de.bixilon.minosoft.protocol.protocol
 
 import com.google.gson.JsonObject
+import com.sun.javafx.geom.Vec3f
+import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.network.connection.Connection
 import de.bixilon.minosoft.util.Util
+import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 import glm_.vec3.Vec3i
 import java.nio.ByteBuffer
 import java.nio.charset.StandardCharsets
@@ -98,6 +102,10 @@ open class OutByteBuffer(open val connection: Connection? = null) {
         writeLong(double.toBits())
     }
 
+    fun writeDouble(float: Float) {
+        writeDouble(float.toDouble())
+    }
+
     fun writeUUID(uuid: UUID) {
         writeLong(uuid.mostSignificantBits)
         writeLong(uuid.leastSignificantBits)
@@ -150,10 +158,10 @@ open class OutByteBuffer(open val connection: Connection? = null) {
         writeUnprefixedByteArray(string.toByteArray(StandardCharsets.UTF_8))
     }
 
-    fun writeByteBlockPosition(blockPosition: Vec3i) {
-        writeInt(blockPosition.x)
-        writeByte(blockPosition.y.toByte())
-        writeInt(blockPosition.z)
+    fun writeByteBlockPosition(blockPosition: Vec3i?) {
+        writeInt(blockPosition?.x ?: 0)
+        writeByte(blockPosition?.y ?: 0)
+        writeInt(blockPosition?.z ?: 0)
     }
 
     fun toByteArray(): ByteArray {
@@ -174,5 +182,29 @@ open class OutByteBuffer(open val connection: Connection? = null) {
 
     fun writeTo(buffer: ByteBuffer) {
         buffer.put(toByteArray())
+    }
+
+    fun writeResourceLocation(resourceLocation: ResourceLocation) {
+        writeString(resourceLocation.full)
+    }
+
+    fun writeVec3d(vec3: Vec3) {
+        writeVec3d(Vec3d(vec3))
+    }
+
+    fun writeVec3d(vec3: Vec3d) {
+        writeDouble(vec3.x)
+        writeDouble(vec3.y)
+        writeDouble(vec3.z)
+    }
+
+    fun writeVec3f(vec3: Vec3) {
+        writeVec3f(Vec3f(vec3.x, vec3.y, vec3.z))
+    }
+
+    fun writeVec3f(vec3: Vec3f) {
+        writeFloat(vec3.x)
+        writeFloat(vec3.y)
+        writeFloat(vec3.z)
     }
 }

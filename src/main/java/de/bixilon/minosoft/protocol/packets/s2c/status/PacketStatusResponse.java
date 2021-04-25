@@ -51,7 +51,7 @@ public class PacketStatusResponse extends StatusS2CPacket {
         Log.info(String.format("Status response received: %s/%s online. MotD: '%s'", getResponse().getPlayerOnline(), getResponse().getMaxPlayers(), getResponse().getMotd().getAnsiColoredMessage()));
         connection.handlePingCallbacks(getResponse());
         connection.setConnectionStatusPing(new ConnectionPing());
-        connection.sendPacket(new StatusPingC2SPacket(connection.getConnectionStatusPing()));
+        connection.sendPacket(new StatusPingC2SPacket(connection.getConnectionStatusPing().getPingId()));
     }
 
     @Override
