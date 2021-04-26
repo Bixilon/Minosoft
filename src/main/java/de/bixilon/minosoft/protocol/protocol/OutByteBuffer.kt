@@ -66,8 +66,9 @@ open class OutByteBuffer(open val connection: Connection? = null) {
 
     fun writeString(string: String) {
         check(string.length <= ProtocolDefinition.STRING_MAX_LENGTH) { "String max string length exceeded ${string.length} > ${ProtocolDefinition.STRING_MAX_LENGTH}" }
-        writeVarInt(string.length)
-        writeUnprefixedByteArray(string.toByteArray(StandardCharsets.UTF_8))
+        val bytes = string.toByteArray(StandardCharsets.UTF_8)
+        writeVarInt(bytes.size)
+        writeUnprefixedByteArray(bytes)
     }
 
     fun writeVarLong(long: Long) {
