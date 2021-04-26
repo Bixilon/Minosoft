@@ -32,7 +32,7 @@ import java.util.*
 import kotlin.random.Random
 
 data class BlockState(
-    val owner: Block,
+    val block: Block,
     val properties: Map<BlockProperties, Any> = mapOf(),
     val rotation: BlockRotations = BlockRotations.NONE,
     val renderers: MutableList<BlockLikeRenderer> = mutableListOf(),
@@ -42,7 +42,7 @@ data class BlockState(
 ) {
 
     override fun hashCode(): Int {
-        return Objects.hash(owner, properties, rotation)
+        return Objects.hash(block, properties, rotation)
     }
 
     override fun equals(other: Any?): Boolean {
@@ -53,7 +53,7 @@ data class BlockState(
             return false
         }
         if (other is WannabeBlockState) {
-            if (owner.resourceLocation != other.resourceLocation) {
+            if (block.resourceLocation != other.resourceLocation) {
                 return false
             }
 
@@ -77,7 +77,7 @@ data class BlockState(
             return false
         }
         if (other is BlockState) {
-            return owner.resourceLocation == other.owner.resourceLocation && rotation == other.rotation && properties == other.properties && owner.resourceLocation.namespace == other.owner.resourceLocation.namespace
+            return block.resourceLocation == other.block.resourceLocation && rotation == other.rotation && properties == other.properties && block.resourceLocation.namespace == other.block.resourceLocation.namespace
         }
         if (other is ResourceLocation) {
             return super.equals(other)
@@ -104,7 +104,7 @@ data class BlockState(
         if (out.isNotEmpty()) {
             out.append(")")
         }
-        return String.format("%s%s", owner.resourceLocation, out)
+        return String.format("%s%s", block.resourceLocation, out)
     }
 
     fun getBlockRenderer(blockPosition: Vec3i): BlockLikeRenderer {
@@ -174,7 +174,7 @@ data class BlockState(
             }
 
             return BlockState(
-                owner = owner,
+                block = owner,
                 properties = properties.toMap(),
                 rotation = rotation,
                 renderers = renderers,

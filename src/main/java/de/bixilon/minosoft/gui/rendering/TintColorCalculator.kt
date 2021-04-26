@@ -75,7 +75,7 @@ class TintColorCalculator(val world: World) {
             biome == null -> null
             StaticConfiguration.BIOME_DEBUG_MODE -> RGBColor(biome.hashCode())
             blockState.tintColor != null -> blockState.tintColor
-            blockState.owner.tint != null -> calculateTint(blockState.owner.tint, biome, blockPosition)
+            blockState.block.tint != null -> calculateTint(blockState.block.tint, biome, blockPosition)
             else -> null
         }
     }

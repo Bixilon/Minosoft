@@ -264,7 +264,6 @@ class RenderWindow(
         }
 
 
-
         Log.log(LogMessageType.RENDERING_LOADING) { "Rendering is fully prepared in  ${stopwatch.totalTime()}" }
         latch.countDown()
         latch.waitUntilZero()

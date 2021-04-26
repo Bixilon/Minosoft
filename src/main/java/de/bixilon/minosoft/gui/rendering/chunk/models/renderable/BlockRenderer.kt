@@ -77,15 +77,16 @@ class BlockRenderer(data: JsonObject, parent: BlockModel) : BlockLikeRenderer {
                 if (element.isCullFace(direction)) {
                     directionIsCullFace = true
                 }
-                if (textureMapping[element.getTexture(direction)]?.transparency != TextureTransparencies.OPAQUE) {
-                    if (directionIsNotTransparent == null) {
-                        directionIsNotTransparent = false
-                    }
-                } else {
-                    directionIsNotTransparent = true
-                }
                 element.faceBorderSize[direction.ordinal]?.let {
                     faceBorderSites.add(it)
+
+                    if (textureMapping[element.getTexture(direction)]?.transparency != TextureTransparencies.OPAQUE) {
+                        if (directionIsNotTransparent == null) {
+                            directionIsNotTransparent = false
+                        }
+                    } else {
+                        directionIsNotTransparent = true
+                    }
                 }
             }
 
@@ -135,10 +136,7 @@ class BlockRenderer(data: JsonObject, parent: BlockModel) : BlockLikeRenderer {
                 neighbourFaceSize?.let {
                     val elementFaceBorderSize = element.faceBorderSize[rotatedDirection.ordinal] ?: return@let
                     for (size in it) {
-                        if (elementFaceBorderSize.start.x < size.start.x || elementFaceBorderSize.start.y < size.start.y) {
-                            return@let
-                        }
-                        if (elementFaceBorderSize.end.x > size.end.x || elementFaceBorderSize.end.y > size.end.y) {
+                        if ((elementFaceBorderSize.start.x < size.start.x || elementFaceBorderSize.start.y < size.start.y) && (elementFaceBorderSize.end.x > size.end.x || elementFaceBorderSize.end.y > size.end.y)) {
                             return@let
                         }
                     }

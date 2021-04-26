@@ -216,7 +216,7 @@ class FluidRenderer(
         if (blockState.properties[BlockProperties.WATERLOGGED] == true) { // ToDo: Lava
             return true
         }
-        if (block == blockState.owner) {
+        if (block == blockState.block) {
             return true
         }
         return false

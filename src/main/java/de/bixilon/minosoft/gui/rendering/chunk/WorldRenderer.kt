@@ -169,8 +169,8 @@ class WorldRenderer(
         renderWindow.textures.use(shader, "textureArray")
         renderWindow.textures.animator.use(shader, "AnimatedDataBuffer")
 
-        for (block in allBlocks!!) {
-            for (model in block.renderers) {
+        for (blockState in allBlocks!!) {
+            for (model in blockState.renderers) {
                 model.postInit()
             }
         }
