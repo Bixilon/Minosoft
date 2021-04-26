@@ -94,6 +94,5 @@ open class MinecraftLanguage : Translator {
     companion object {
         private val FORMATTER_ORDER_REGEX = "%(\\w+)\\\$[sd]".toRegex() // %1$s fell from a high place
         private val FORMATTER_SPLIT_REGEX = "%[ds]".toRegex() // %s fell from a high place
-
     }
 }

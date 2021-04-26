@@ -133,10 +133,6 @@ class ChunkDataS2CP() : PlayS2CPacket() {
             connection.world.unloadChunk(chunkPosition)
             connection.fireEvent(ChunkUnloadEvent(connection, chunkPosition))
         }
-
-        for ((blockPosition, blockEntity) in blockEntities) {
-            connection.world.setBlockEntity(blockPosition, blockEntity)
-        }
     }
 
     override fun log() {

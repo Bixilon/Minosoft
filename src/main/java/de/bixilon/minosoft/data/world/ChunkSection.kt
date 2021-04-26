@@ -14,6 +14,9 @@ package de.bixilon.minosoft.data.world
 
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.mappings.blocks.BlockState
+import de.bixilon.minosoft.data.world.block.entities.ArrayBlockEntityProvider
+import de.bixilon.minosoft.data.world.block.entities.BlockEntityProvider
+import de.bixilon.minosoft.data.world.block.entities.MapBlockEntityProvider
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import glm_.vec3.Vec3i
 
@@ -21,9 +24,8 @@ import glm_.vec3.Vec3i
  * Collection of 16x16x16 blocks
  */
 class ChunkSection(
-    val blocks: Array<BlockState?> = arrayOfNulls(ProtocolDefinition.BLOCKS_PER_SECTION),
-    val blockEntities: Array<BlockEntity?> = arrayOfNulls(ProtocolDefinition.BLOCKS_PER_SECTION),
-    // ToDo: BlockEntityMeta
+    var blocks: Array<BlockState?> = arrayOfNulls(ProtocolDefinition.BLOCKS_PER_SECTION),
+    private var blockEntities: BlockEntityProvider = MapBlockEntityProvider(),
 ) {
 
     fun getBlockState(inChunkSectionPositions: Vec3i): BlockState? {
@@ -34,22 +36,22 @@ class ChunkSection(
         blocks[inChunkSectionPositions.index] = blockState
     }
 
-    fun getBlockState(x: Int, y: Int, z: Int): BlockState? {
-        return getBlockState(Vec3i(x, y, z))
-    }
-
     fun setData(chunkSection: ChunkSection) {
-        for ((index, blockInfo) in chunkSection.blocks.withIndex()) {
-            blocks[index] = blockInfo
-        }
+        blocks = chunkSection.blocks.clone()
     }
 
     fun getBlockEntity(inChunkSectionPositions: Vec3i): BlockEntity? {
-        return blockEntities[inChunkSectionPositions.index]
+        return blockEntities[inChunkSectionPositions]
     }
 
     fun setBlockEntity(inChunkSectionPositions: Vec3i, blockEntity: BlockEntity?) {
-        blockEntities[inChunkSectionPositions.index] = blockEntity
+        blockEntities[inChunkSectionPositions] = blockEntity
+        val blockEntities = blockEntities
+        if (blockEntities.size > BlockEntityProvider.BLOCK_ENTITY_MAP_LIMIT_UP && blockEntities is MapBlockEntityProvider) {
+            this.blockEntities = ArrayBlockEntityProvider(blockEntities)
+        } else if (blockEntities.size <= BlockEntityProvider.BLOCK_ENTITY_MAP_LIMIT_DOWN && blockEntities is ArrayBlockEntityProvider) {
+            this.blockEntities = MapBlockEntityProvider(blockEntities)
+        }
     }
 
     companion object {
