@@ -257,4 +257,13 @@ class RenderWindowInputHandler(
     fun unregisterKeyBinding(it: ResourceLocation) {
         keyBindingCallbacks.remove(it)
     }
+
+    fun isKeyDown(vararg keys: KeyCodes): Boolean {
+        for (key in keys) {
+            if (keysDown.contains(key)) {
+                return true
+            }
+        }
+        return false
+    }
 }

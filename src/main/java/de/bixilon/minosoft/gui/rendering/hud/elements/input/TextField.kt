@@ -24,11 +24,9 @@ import glm_.vec2.Vec2i
 
 open class TextField(
     renderWindow: RenderWindow,
-    defaultText: String = "",
-    var maxLength: Int = 256,
+    val properties: TextFieldProperties,
 ) : AbsoluteLayout(renderWindow), KeyConsumer, MouseConsumer {
-    override var focused: Boolean = true
-    private var textBuilder: StringBuilder = StringBuilder(defaultText)
+    private var textBuilder: StringBuilder = StringBuilder(properties.defaultText)
     val textElement = LabelNode(renderWindow, sizing = sizing, text = ChatComponent.valueOf(raw = text), background = false)
     private var position = text.length
 
@@ -57,7 +55,7 @@ open class TextField(
     override fun keyInput(keyCodes: KeyCodes) {
         when (keyCodes) {
             KeyCodes.KEY_BACKSPACE -> {
-                if (textBuilder.isEmpty()) {
+                if (textBuilder.isEmpty() || position == 0) {
                     return
                 }
                 textBuilder.deleteCharAt(--position)
@@ -69,10 +67,19 @@ open class TextField(
                 textBuilder.deleteCharAt(position)
             }
             KeyCodes.KEY_ENTER -> {
-                if (position > maxLength) {
+                if (renderWindow.inputHandler.isKeyDown(KeyCodes.KEY_LEFT_CONTROL, KeyCodes.KEY_RIGHT_CONTROL, KeyCodes.KEY_LEFT_SHIFT, KeyCodes.KEY_RIGHT_SHIFT)) {
+                    // new line
+                    if (position > properties.maxLength) {
+                        return
+                    }
+                    textBuilder.insert(position++, '\n')
                     return
                 }
-                textBuilder.insert(position++, '\n')
+                properties.onSubmit(text)
+                if (properties.submitCloses) {
+                    properties.onClose()
+                }
+                text = properties.defaultText
             }
             KeyCodes.KEY_LEFT -> {
                 position = MMath.clamp(position - 1, 0, text.length)
@@ -92,18 +99,28 @@ open class TextField(
     }
 
     override fun tick(tick: Long) {
-        if ((tick / 8) % 2L == 0L && position == text.length) {
+        if ((tick / FIELD_CURSOR_BLINK_INTERVAL) % 2L == 0L && position == text.length) {
             textElement.sText = "$textBuilder" + "_"
         } else {
             textElement.sText = textBuilder.toString()
         }
     }
 
+    override fun close() {
+        properties.onClose()
+    }
+
     override fun charInput(char: Char) {
-        if (position >= maxLength) {
+        if (position >= properties.maxLength) {
             return
         }
+        val previous = textBuilder.toString()
         textBuilder.insert(position++, char.toString())
+        properties.onInput(previous, textBuilder.toString())
         update()
+    }
+
+    companion object {
+        const val FIELD_CURSOR_BLINK_INTERVAL = 8
     }
 }

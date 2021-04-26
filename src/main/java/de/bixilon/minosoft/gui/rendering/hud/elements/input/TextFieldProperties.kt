@@ -13,28 +13,11 @@
 
 package de.bixilon.minosoft.gui.rendering.hud.elements.input
 
-import de.bixilon.minosoft.config.key.KeyCodes
-import de.bixilon.minosoft.gui.rendering.RenderWindow
-
-class SubmittableTextField(
-    renderWindow: RenderWindow,
-    defaultText: String = "",
-    maxLength: Int = 256,
-    private val onSubmit: (text: String) -> Unit,
-) : TextField(renderWindow, defaultText, maxLength) {
-
-    fun submit() {
-        onSubmit.invoke(text)
-        text = ""
-    }
-
-
-    override fun keyInput(keyCodes: KeyCodes) {
-        if (keyCodes == KeyCodes.KEY_ENTER) {
-            // submit
-            submit()
-            return
-        }
-        super.keyInput(keyCodes)
-    }
-}
+data class TextFieldProperties(
+    var defaultText: String = "",
+    var maxLength: Int = 256,
+    var onSubmit: (text: String) -> Unit = {},
+    var onClose: () -> Unit = {},
+    var onInput: (previousText: String, nextText: String) -> Unit = { _, _ -> },
+    var submitCloses: Boolean = false,
+)

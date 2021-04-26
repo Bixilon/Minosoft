@@ -72,6 +72,10 @@ class HUDRenderer(val connection: PlayConnection, val renderWindow: RenderWindow
         for ((_, element) in hudElements.values) {
             element.init()
         }
+
+        renderWindow.inputHandler.registerKeyCallback(KeyBindingsNames.CLOSE) {
+
+        }
     }
 
     private fun registerDefaultElements() {

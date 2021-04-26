@@ -18,7 +18,8 @@ import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.font.Font
 import de.bixilon.minosoft.gui.rendering.hud.HUDRenderer
-import de.bixilon.minosoft.gui.rendering.hud.elements.input.SubmittableTextField
+import de.bixilon.minosoft.gui.rendering.hud.elements.input.TextField
+import de.bixilon.minosoft.gui.rendering.hud.elements.input.TextFieldProperties
 import de.bixilon.minosoft.gui.rendering.hud.nodes.HUDElement
 import de.bixilon.minosoft.gui.rendering.hud.nodes.primitive.ImageNode
 import de.bixilon.minosoft.gui.rendering.hud.nodes.properties.NodeSizing
@@ -28,23 +29,24 @@ import de.bixilon.minosoft.util.MMath
 import glm_.vec2.Vec2i
 
 class ChatBoxHUDElement(hudRenderer: HUDRenderer) : HUDElement(hudRenderer), ScreenResizeCallback {
-    private lateinit var inputField: SubmittableTextField
+    private lateinit var inputField: TextField
     private var inputFieldBackground = ImageNode(hudRenderer.renderWindow, sizing = NodeSizing(margin = Spacing(left = 1, right = 1)), textureLike = hudRenderer.renderWindow.WHITE_TEXTURE, z = 0, tintColor = RenderConstants.TEXT_BACKGROUND_COLOR)
 
     override fun init() {
-        inputField = SubmittableTextField(renderWindow = hudRenderer.renderWindow, maxLength = 256, onSubmit = {
-            hudRenderer.renderWindow.connection.sender.sendChatMessage(it)
-            closeChat()
-        })
+        inputField = TextField(
+            renderWindow = hudRenderer.renderWindow,
+            properties = TextFieldProperties(
+                maxLength = 256,
+                submitCloses = true,
+                onSubmit = { hudRenderer.renderWindow.connection.sender.sendChatMessage(it) },
+                onClose = { closeChat() },
+            ))
 
         layout.addChild(Vec2i(0, 0), inputField)
         inputField.apply()
 
         hudRenderer.renderWindow.inputHandler.registerKeyCallback(KeyBindingsNames.OPEN_CHAT) {
             openChat()
-        }
-        hudRenderer.renderWindow.inputHandler.registerKeyCallback(KeyBindingsNames.CLOSE_CHAT) {
-            closeChat()
         }
     }
 
@@ -63,7 +65,6 @@ class ChatBoxHUDElement(hudRenderer: HUDRenderer) : HUDElement(hudRenderer), Scr
 
     fun closeChat() {
         layout.removeChild(inputFieldBackground)
-        inputField.clearText()
         hudRenderer.renderWindow.inputHandler.currentKeyConsumer = null
     }
 }

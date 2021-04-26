@@ -16,7 +16,6 @@ package de.bixilon.minosoft.gui.rendering.hud.elements.input
 import glm_.vec2.Vec2i
 
 interface MouseConsumer {
-    val focused: Boolean
 
     fun mouseMove(position: Vec2i) {}
 }

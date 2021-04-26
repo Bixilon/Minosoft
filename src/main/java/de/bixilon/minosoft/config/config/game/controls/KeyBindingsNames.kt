@@ -44,7 +44,7 @@ object KeyBindingsNames {
 
     val OPEN_CHAT = ResourceLocation("minosoft:open_chat")
 
-    val CLOSE_CHAT = ResourceLocation("minosoft:close_chat")
+    val CLOSE = ResourceLocation("minosoft:close")
 
 
     val SELECT_HOTBAR_SLOTS = arrayOf(
@@ -194,10 +194,11 @@ object KeyBindingsNames {
                 KeyAction.PRESS to mutableSetOf(KeyCodes.KEY_T)
             ),
         ),
-        CLOSE_CHAT to KeyBinding(
+        CLOSE to KeyBinding(
             mutableMapOf(
                 KeyAction.PRESS to mutableSetOf(KeyCodes.KEY_ESCAPE)
             ),
+            ignoreConsumer = true
         ),
     )
 }

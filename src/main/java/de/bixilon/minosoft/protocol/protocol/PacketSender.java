@@ -59,7 +59,7 @@ public class PacketSender {
         if (this.connection.fireEvent(event)) {
             return;
         }
-        Log.log(LogMessageType.CHAT_OUT, "Sending chat message: %s", message);
+        Log.log(LogMessageType.CHAT_OUT, message);
         this.connection.sendPacket(new ChatMessageC2SP(event.getMessage()));
     }
 

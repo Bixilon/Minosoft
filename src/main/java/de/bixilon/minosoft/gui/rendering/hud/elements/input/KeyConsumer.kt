@@ -17,7 +17,7 @@ import de.bixilon.minosoft.config.key.KeyCodes
 
 interface KeyConsumer {
 
-    val focused: Boolean
+    fun close()
 
     fun charInput(char: Char) {}
 
