@@ -102,7 +102,13 @@ object Log {
                 message.printStackTrace(PrintWriter(stringWriter))
                 ChatComponent.valueOf(raw = stringWriter.toString())
             }
-            is String -> ChatComponent.valueOf(raw = message.format(*formatting))
+            is String -> {
+                if (formatting.isNotEmpty()) {
+                    ChatComponent.valueOf(raw = message.format(*formatting))
+                } else {
+                    ChatComponent.valueOf(raw = message)
+                }
+            }
             else -> ChatComponent.valueOf(raw = message)
         }
 

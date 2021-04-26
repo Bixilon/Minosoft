@@ -115,7 +115,7 @@ open class TextComponent(
 
     override fun getJavaFXText(nodes: ObservableList<Node>): ObservableList<Node> {
         val text = Text(this.message)
-        val color = this.color ?: ChatColors.WHITE
+        val color = this.color ?: ProtocolDefinition.DEFAULT_COLOR
         text.fill = Color.WHITE
         if (Minosoft.getConfig().config.chat.colored) {
             text.fill = Color.rgb(color.red, color.green, color.blue)
@@ -164,7 +164,7 @@ open class TextComponent(
 
 
     override fun prepareRender(startPosition: Vec2i, offset: Vec2i, renderWindow: RenderWindow, textElement: LabelNode, z: Int, setProperties: TextSetProperties, getProperties: TextGetProperties) {
-        val color = this.color ?: ChatColors.WHITE
+        val color = this.color ?: ProtocolDefinition.DEFAULT_COLOR
 
 
         // bring chars in right order and reverse them if right bound

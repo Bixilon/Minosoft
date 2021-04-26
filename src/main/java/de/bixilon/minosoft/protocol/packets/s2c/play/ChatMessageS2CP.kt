@@ -13,12 +13,12 @@
 package de.bixilon.minosoft.protocol.packets.s2c.play
 
 import de.bixilon.minosoft.data.ChatTextPositions
-import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.modding.event.events.ChatMessageReceivingEvent
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -39,7 +39,7 @@ class ChatMessageS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
                 sender = buffer.readUUID()
             }
         }
-        message.applyDefaultColor(ChatColors.WHITE)
+        message.applyDefaultColor(ProtocolDefinition.DEFAULT_COLOR)
     }
 
     override fun handle(connection: PlayConnection) {

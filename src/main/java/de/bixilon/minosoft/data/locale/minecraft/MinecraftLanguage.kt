@@ -46,14 +46,41 @@ open class MinecraftLanguage : Translator {
     override fun translate(key: String?, parent: TextComponent?, vararg data: Any?): ChatComponent {
         val placeholder = this.data[key] ?: return ChatComponent.valueOf(null, parent, key.toString() + "->" + data.toString())
 
-        val split = placeholder.split("%s") // ToDo: Split correctly
-
         val ret = BaseComponent()
 
-        for ((index, part) in split.withIndex()) {
+        val arguments: MutableList<Any?> = mutableListOf()
+        var splitPlaceholder: List<String> = listOf()
+        FORMATTER_ORDER_REGEX.find(placeholder)?.let {
+            if (it.groupValues.isEmpty()) {
+                // this is not the correct formatter
+                return@let
+            }
+            splitPlaceholder = placeholder.split(FORMATTER_ORDER_REGEX)
+            for ((index, part) in it.groupValues.withIndex()) {
+                if (index % 2 == 0) {
+                    continue
+                }
+                val dataIndex = part.toInt() - 1
+                if (dataIndex < 0 || dataIndex > data.size) {
+                    arguments += null
+                    continue
+                }
+                arguments += data[dataIndex]
+            }
+        }
+
+
+        placeholder.split(FORMATTER_SPLIT_REGEX).let {
+            if (splitPlaceholder.isEmpty()) {
+                splitPlaceholder = it
+            }
+            arguments.addAll(data.toList())
+        }
+
+        for ((index, part) in splitPlaceholder.withIndex()) {
             ret.parts.add(ChatComponent.valueOf(this, parent, part))
             if (index < data.size) {
-                ret.parts.add(ChatComponent.valueOf(this, parent, data[index]))
+                ret.parts.add(ChatComponent.valueOf(this, parent, arguments[index]))
             }
         }
 
@@ -62,5 +89,11 @@ open class MinecraftLanguage : Translator {
 
     override fun toString(): String {
         return language
+    }
+
+    companion object {
+        private val FORMATTER_ORDER_REGEX = "%(\\w+)\\\$[sd]".toRegex() // %1$s fell from a high place
+        private val FORMATTER_SPLIT_REGEX = "%[ds]".toRegex() // %s fell from a high place
+
     }
 }

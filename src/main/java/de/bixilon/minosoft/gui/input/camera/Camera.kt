@@ -49,7 +49,7 @@ class Camera(
 ) : ScreenResizeCallback {
     private var mouseSensitivity = Minosoft.getConfig().config.game.camera.moseSensitivity
     private val walkingSpeed get() = connection.player.baseAbilities.walkingSpeed * ProtocolDefinition.TICKS_PER_SECOND
-    private val flyingSpeed get()  = connection.player.baseAbilities.flyingSpeed  * ProtocolDefinition.TICKS_PER_SECOND
+    private val flyingSpeed get() = connection.player.baseAbilities.flyingSpeed * ProtocolDefinition.TICKS_PER_SECOND
     var cameraPosition = Vec3(0.0f, 0.0f, 0.0f)
     private var lastMouseX = 0.0
     private var lastMouseY = 0.0
