@@ -33,7 +33,7 @@ import org.checkerframework.common.value.qual.IntRange;
 import java.util.UUID;
 
 public class PacketSender {
-    public static final char[] ILLEGAL_CHAT_CHARS = {'§', '\n', '\r'};
+    public static final char[] ILLEGAL_CHAT_CHARS = {'§'};
     private final PlayConnection connection;
 
     public PacketSender(PlayConnection connection) {

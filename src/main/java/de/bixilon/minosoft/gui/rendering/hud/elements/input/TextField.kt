@@ -89,6 +89,12 @@ open class TextField(
                 position = MMath.clamp(position + 1, 0, text.length)
                 return
             }
+            KeyCodes.KEY_V -> {
+                if (renderWindow.inputHandler.isKeyDown(KeyCodes.KEY_LEFT_CONTROL, KeyCodes.KEY_RIGHT_CONTROL)) {
+                    // paste
+                    textInput(renderWindow.getClipboardText())
+                }
+            }
             // ToDo: Up and down for line breaks, shift and ctrl modifier, ...
             else -> {
                 return
@@ -116,6 +122,18 @@ open class TextField(
         }
         val previous = textBuilder.toString()
         textBuilder.insert(position++, char.toString())
+        properties.onInput(previous, textBuilder.toString())
+        update()
+    }
+
+    fun textInput(text: String) {
+        if (position >= properties.maxLength) {
+            return
+        }
+        val length = MMath.clamp(text.length, 0, properties.maxLength - position)
+        val previous = textBuilder.toString()
+        textBuilder.insert(position, text.substring(0, length))
+        position += length
         properties.onInput(previous, textBuilder.toString())
         update()
     }

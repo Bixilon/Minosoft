@@ -398,4 +398,8 @@ class RenderWindow(
     fun sendDebugMessage(message: String) {
         connection.sender.sendFakeChatMessage(RenderConstants.DEBUG_MESSAGES_PREFIX + message)
     }
+
+    fun getClipboardText(): String {
+        return glfwGetClipboardString(windowId) ?: ""
+    }
 }
