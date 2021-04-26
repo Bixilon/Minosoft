@@ -21,18 +21,26 @@ class Stopwatch {
     private val labs: MutableList<Long> = mutableListOf()
 
     /**
-     * @return Returns the difference between the last lab and their new one
+     * @return Returns the difference between the last lab and the current time
      */
     fun lab(): Long {
         val currentTime = System.nanoTime()
-        val lastLab = labs.getOrNull(0) ?: startTime
+        val lastLab = labs.getOrNull(labs.size - 1) ?: startTime
         labs.add(currentTime)
         return currentTime - lastLab
+    }
+
+    fun labTime(): String {
+        return UnitFormatter.formatNanos(lab())
     }
 
     fun labPrint() {
         val delta = lab()
         Log.info("Stop watch ($id) lab: ${UnitFormatter.formatNanos(delta)}")
+    }
+
+    fun totalTime(): String {
+        return UnitFormatter.formatNanos(System.nanoTime() - startTime)
     }
 
     companion object {

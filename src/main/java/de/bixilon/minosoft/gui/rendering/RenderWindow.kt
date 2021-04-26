@@ -37,6 +37,7 @@ import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.play.PositionAndRotationS2CP
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.CountUpAndDownLatch
+import de.bixilon.minosoft.util.Stopwatch
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogMessageType
 import glm_.vec2.Vec2
@@ -114,6 +115,7 @@ class RenderWindow(
 
     fun init(latch: CountUpAndDownLatch) {
         Log.log(LogMessageType.RENDERING_LOADING) { "Creating window..." }
+        val stopwatch = Stopwatch()
         // Setup an error callback. The default implementation
         // will print the error message in System.err.
         GLFWErrorCallback.createPrint(System.err).set()
@@ -140,14 +142,10 @@ class RenderWindow(
         tintColorCalculator.init(connection.assetsManager)
 
 
-        glfwSetKeyCallback(this.windowId, inputHandler::invoke)
-
-        glfwSetCharCallback(windowId, inputHandler::invoke)
 
         if (!StaticConfiguration.DEBUG_MODE) {
             glfwSetInputMode(windowId, GLFW_CURSOR, GLFW_CURSOR_DISABLED)
         }
-        glfwSetCursorPosCallback(windowId, inputHandler::invoke)
         glfwSetWindowSizeLimits(windowId, 100, 100, GLFW_DONT_CARE, GLFW_DONT_CARE)
 
 
@@ -165,7 +163,7 @@ class RenderWindow(
             glfwSetWindowPos(windowId, (videoMode.width() - pWidth[0]) / 2, (videoMode.height() - pHeight[0]) / 2)
         }
 
-        Log.log(LogMessageType.RENDERING_LOADING) { "Creating context..." }
+        Log.log(LogMessageType.RENDERING_LOADING) { "Creating context (${stopwatch.labTime()})..." }
         // Make the OpenGL context current
         glfwMakeContextCurrent(windowId)
         // Enable v-sync
@@ -177,15 +175,16 @@ class RenderWindow(
 
         setSkyColor(RGBColor("#fffe7a"))
 
-        Log.log(LogMessageType.RENDERING_LOADING) { "Enabling all open gl features..." }
+        Log.log(LogMessageType.RENDERING_LOADING) { "Enabling all open gl features (${stopwatch.labTime()})..." }
         glEnable(GL_DEPTH_TEST)
+
         glEnable(GL_BLEND)
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
 
         glEnable(GL_CULL_FACE)
 
 
-        Log.log(LogMessageType.RENDERING_LOADING) { "Generating font and textures..." }
+        Log.log(LogMessageType.RENDERING_LOADING) { "Generating font and gathering textures (${stopwatch.labTime()})..." }
         textures.allTextures.add(Texture(RenderConstants.DEBUG_TEXTURE_RESOURCE_LOCATION))
         WHITE_TEXTURE = TextureLikeTexture(
             texture = Texture(ResourceLocation("minosoft:textures/white.png")),
@@ -197,22 +196,22 @@ class RenderWindow(
 
         font.load(connection.assetsManager)
 
-        font.preLoadAtlas(textures)
 
-        Log.log(LogMessageType.RENDERING_LOADING) { "Initializing renderer..." }
+        Log.log(LogMessageType.RENDERING_LOADING) { "Initializing renderer (${stopwatch.labTime()})..." }
         for (renderer in rendererMap.values) {
             renderer.init()
         }
 
 
-        Log.log(LogMessageType.RENDERING_LOADING) { "Preloading textures..." }
+        Log.log(LogMessageType.RENDERING_LOADING) { "Preloading textures (${stopwatch.labTime()})..." }
+        font.preLoadAtlas(textures)
         textures.preLoad(connection.assetsManager)
-
         font.loadAtlas()
-        Log.log(LogMessageType.RENDERING_LOADING) { "Loading textures..." }
+
+        Log.log(LogMessageType.RENDERING_LOADING) { "Loading textures (${stopwatch.labTime()})..." }
         textures.load()
 
-        Log.log(LogMessageType.RENDERING_LOADING) { "Post loading renderer..." }
+        Log.log(LogMessageType.RENDERING_LOADING) { "Post loading renderer (${stopwatch.labTime()})..." }
         for (renderer in rendererMap.values) {
             renderer.postInit()
             if (renderer is ShaderHolder) {
@@ -221,7 +220,7 @@ class RenderWindow(
         }
 
 
-        Log.log(LogMessageType.RENDERING_LOADING) { "Registering glfw callbacks..." }
+        Log.log(LogMessageType.RENDERING_LOADING) { "Registering glfw callbacks (${stopwatch.labTime()})..." }
         glfwSetWindowSizeCallback(windowId, object : GLFWWindowSizeCallback() {
             override fun invoke(window: Long, width: Int, height: Int) {
                 glViewport(0, 0, width, height)
@@ -252,6 +251,10 @@ class RenderWindow(
                 })
             }
         })
+        glfwSetKeyCallback(this.windowId, inputHandler::invoke)
+
+        glfwSetCharCallback(windowId, inputHandler::invoke)
+        glfwSetCursorPosCallback(windowId, inputHandler::invoke)
 
 
         registerGlobalKeyCombinations()
@@ -261,14 +264,13 @@ class RenderWindow(
         }
 
 
-        glEnable(GL_DEPTH_TEST)
 
-        Log.log(LogMessageType.RENDERING_LOADING) { "Rendering is fully prepared" }
+        Log.log(LogMessageType.RENDERING_LOADING) { "Rendering is fully prepared in  ${stopwatch.totalTime()}" }
         latch.countDown()
         latch.waitUntilZero()
         this.latch.waitUntilZero()
         glfwShowWindow(windowId)
-        Log.log(LogMessageType.RENDERING_GENERAL) { "Showing window" }
+        Log.log(LogMessageType.RENDERING_GENERAL) { "Showing window after ${stopwatch.totalTime()}" }
     }
 
     private fun registerGlobalKeyCombinations() {

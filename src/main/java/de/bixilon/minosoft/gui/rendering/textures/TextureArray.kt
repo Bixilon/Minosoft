@@ -105,7 +105,7 @@ class TextureArray(val allTextures: MutableList<Texture>) {
             loadResolution(index)
             totalLayers += textures.size
         }
-        Log.log(LogMessageType.NETWORK_RESOLVING, LogLevels.VERBOSE) { "Loaded ${allTextures.size} textures containing ${animator.animatedTextures.size} animated ones, split into $totalLayers layers!" }
+        Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Loaded ${allTextures.size} textures containing ${animator.animatedTextures.size} animated ones, split into $totalLayers layers!" }
 
         animator.initBuffer()
     }
