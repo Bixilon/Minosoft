@@ -38,6 +38,7 @@ class ChunkSection(
 
     fun setData(chunkSection: ChunkSection) {
         blocks = chunkSection.blocks.clone()
+        blockEntities = chunkSection.blockEntities.clone()
     }
 
     fun getBlockEntity(inChunkSectionPositions: Vec3i): BlockEntity? {

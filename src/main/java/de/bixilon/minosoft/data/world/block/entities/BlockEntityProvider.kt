@@ -23,9 +23,10 @@ interface BlockEntityProvider {
 
     operator fun set(inChunkSectionPosition: Vec3i, blockEntity: BlockEntity?)
 
-    companion object {
-        const val BLOCK_ENTITY_MAP_LIMIT_UP = 100
-        const val BLOCK_ENTITY_MAP_LIMIT_DOWN = 80
-    }
+    fun clone(): BlockEntityProvider
 
+    companion object {
+        const val BLOCK_ENTITY_MAP_LIMIT_UP = 15
+        const val BLOCK_ENTITY_MAP_LIMIT_DOWN = 5
+    }
 }

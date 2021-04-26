@@ -17,11 +17,11 @@ import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.world.ChunkSection.Companion.indexPosition
 import glm_.vec3.Vec3i
 
-class MapBlockEntityProvider() : BlockEntityProvider {
+class MapBlockEntityProvider(
+    var blockEntities: MutableMap<Vec3i, BlockEntity> = mutableMapOf(),
+) : BlockEntityProvider {
     override val size: Int
         get() = blockEntities.size
-
-    var blockEntities: MutableMap<Vec3i, BlockEntity> = mutableMapOf()
 
     constructor(blockEntityProvider: ArrayBlockEntityProvider) : this() {
         for ((index, blockEntity) in blockEntityProvider.blockEntities.withIndex()) {
@@ -42,5 +42,9 @@ class MapBlockEntityProvider() : BlockEntityProvider {
             return
         }
         blockEntities[inChunkSectionPosition] = blockEntity
+    }
+
+    override fun clone(): MapBlockEntityProvider {
+        return MapBlockEntityProvider(blockEntities.toMutableMap())
     }
 }

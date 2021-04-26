@@ -18,18 +18,17 @@ import de.bixilon.minosoft.data.world.ChunkSection.Companion.index
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import glm_.vec3.Vec3i
 
-class ArrayBlockEntityProvider() : BlockEntityProvider {
+class ArrayBlockEntityProvider(
+    var blockEntities: Array<BlockEntity?> = arrayOfNulls(ProtocolDefinition.BLOCKS_PER_SECTION),
+) : BlockEntityProvider {
     override var size: Int = 0
         private set
-
 
     constructor(blockEntityProvider: MapBlockEntityProvider) : this() {
         for ((position, blockEntity) in blockEntityProvider.blockEntities) {
             blockEntities[position.index] = blockEntity
         }
     }
-
-    var blockEntities: Array<BlockEntity?> = arrayOfNulls(ProtocolDefinition.BLOCKS_PER_SECTION)
 
     override fun get(inChunkSectionPosition: Vec3i): BlockEntity? {
         return blockEntities[inChunkSectionPosition.index]
@@ -43,5 +42,9 @@ class ArrayBlockEntityProvider() : BlockEntityProvider {
         } else if (previous == null && blockEntity != null) {
             size++
         }
+    }
+
+    override fun clone(): ArrayBlockEntityProvider {
+        return ArrayBlockEntityProvider(blockEntities.clone())
     }
 }
