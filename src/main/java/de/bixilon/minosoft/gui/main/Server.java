@@ -54,7 +54,7 @@ public class Server {
         }
         this.name = name;
         this.address = address;
-        this.addressName = ChatComponent.Companion.valueOf(address);
+        this.addressName = ChatComponent.Companion.of(address);
         this.desiredVersion = desiredVersion;
     }
 
@@ -64,7 +64,7 @@ public class Server {
 
     public Server(ServerAddress address) {
         this.id = getNextServerId();
-        this.name = ChatComponent.Companion.valueOf(String.format("LAN Server #%d", LANServerListener.getServerMap().size()));
+        this.name = ChatComponent.Companion.of(String.format("LAN Server #%d", LANServerListener.getServerMap().size()));
         this.address = address.toString();
         this.desiredVersion = -1; // Automatic
         this.temporary = true;
@@ -75,7 +75,7 @@ public class Server {
     }
 
     public static Server deserialize(Map<String, Object> json) {
-        Server server = new Server((int) (double) json.get("id"), ChatComponent.Companion.valueOf(json.get("name")), (String) json.get("address"), (int) (double) json.get("version"));
+        Server server = new Server((int) (double) json.get("id"), ChatComponent.Companion.of(json.get("name")), (String) json.get("address"), (int) (double) json.get("version"));
         if (json.containsKey("favicon")) {
             server.setFavicon(Base64.getDecoder().decode((String) json.get("favicon")));
         }
@@ -142,7 +142,7 @@ public class Server {
 
     public void setAddress(String address) {
         this.address = address;
-        this.addressName = ChatComponent.Companion.valueOf(address);
+        this.addressName = ChatComponent.Companion.of(address);
     }
 
     public void ping() {

@@ -44,7 +44,7 @@ open class MinecraftLanguage : Translator {
     }
 
     override fun translate(key: String?, parent: TextComponent?, vararg data: Any?): ChatComponent {
-        val placeholder = this.data[key] ?: return ChatComponent.valueOf(null, parent, key.toString() + "->" + data.toString())
+        val placeholder = this.data[key] ?: return ChatComponent.of(key.toString() + "->" + data.toString(), null, parent)
 
         val ret = BaseComponent()
 
@@ -78,9 +78,9 @@ open class MinecraftLanguage : Translator {
         }
 
         for ((index, part) in splitPlaceholder.withIndex()) {
-            ret.parts.add(ChatComponent.valueOf(this, parent, part))
+            ret.parts.add(ChatComponent.of(part, this, parent))
             if (index < data.size) {
-                ret.parts.add(ChatComponent.valueOf(this, parent, arguments[index]))
+                ret.parts.add(ChatComponent.of(arguments[index], this, parent))
             }
         }
 

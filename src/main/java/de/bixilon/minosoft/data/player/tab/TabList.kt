@@ -18,6 +18,6 @@ import java.util.*
 
 class TabList {
     val tabListItems: MutableMap<UUID, TabListItem> = mutableMapOf()
-    var header = ChatComponent.valueOf(raw = "")
-    var footer = ChatComponent.valueOf(raw = "")
+    var header = ChatComponent.of("")
+    var footer = ChatComponent.of("")
 }

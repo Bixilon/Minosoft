@@ -27,7 +27,7 @@ open class TextField(
     val properties: TextFieldProperties,
 ) : AbsoluteLayout(renderWindow), KeyConsumer, MouseConsumer {
     private var textBuilder: StringBuilder = StringBuilder(properties.defaultText)
-    val textElement = LabelNode(renderWindow, sizing = sizing, text = ChatComponent.valueOf(raw = text), background = false)
+    val textElement = LabelNode(renderWindow, sizing = sizing, text = ChatComponent.of(text), background = false)
     private var position = text.length
 
     var text: String
@@ -49,7 +49,7 @@ open class TextField(
     }
 
     private fun update() {
-        textElement.text = ChatComponent.valueOf(raw = text)
+        textElement.text = ChatComponent.of(text)
     }
 
     override fun keyInput(keyCodes: KeyCodes) {

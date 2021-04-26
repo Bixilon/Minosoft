@@ -100,16 +100,16 @@ object Log {
             is Throwable -> {
                 val stringWriter = StringWriter()
                 message.printStackTrace(PrintWriter(stringWriter))
-                ChatComponent.valueOf(raw = stringWriter.toString())
+                ChatComponent.of(stringWriter.toString())
             }
             is String -> {
                 if (formatting.isNotEmpty()) {
-                    ChatComponent.valueOf(raw = message.format(*formatting))
+                    ChatComponent.of(message.format(*formatting))
                 } else {
-                    ChatComponent.valueOf(raw = message)
+                    ChatComponent.of(message)
                 }
             }
-            else -> ChatComponent.valueOf(raw = message)
+            else -> ChatComponent.of(message)
         }
 
         LOG_QUEUE.add(

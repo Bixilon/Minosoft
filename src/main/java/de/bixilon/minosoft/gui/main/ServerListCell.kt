@@ -68,7 +68,7 @@ class ServerListCell : ListCell<Server?>(), Initializable {
     private var connectable = true
 
 
-    var name: ChatComponent = ChatComponent.valueOf(raw = "")
+    var name: ChatComponent = ChatComponent.of("")
         set(value) {
             field = value
             nameField.children.setAll(name.javaFXText)

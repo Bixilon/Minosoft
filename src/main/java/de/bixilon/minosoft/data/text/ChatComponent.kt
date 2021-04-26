@@ -67,7 +67,7 @@ interface ChatComponent {
     companion object {
 
         @JvmOverloads
-        fun valueOf(translator: Translator? = null, parent: TextComponent? = null, raw: Any?): ChatComponent {
+        fun of(raw: Any?, translator: Translator? = null, parent: TextComponent? = null): ChatComponent {
             if (raw == null) {
                 return BaseComponent()
             }
@@ -81,7 +81,7 @@ interface ChatComponent {
                 is JsonArray -> {
                     val component = BaseComponent()
                     for (part in raw) {
-                        component.parts.add(valueOf(translator, parent, part))
+                        component.parts.add(of(part, translator, parent))
                     }
                     return component
                 }
@@ -94,6 +94,10 @@ interface ChatComponent {
             }
 
             return BaseComponent(parent, string)
+        }
+
+        fun String.chat(): ChatComponent {
+            return of(this)
         }
     }
 }

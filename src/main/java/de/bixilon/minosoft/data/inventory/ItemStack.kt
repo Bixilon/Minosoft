@@ -76,12 +76,12 @@ class ItemStack(
 
         nbt.getAndRemove(DISPLAY_TAG)?.compoundCast()?.let {
             it.getAndRemove(DISPLAY_MAME_TAG)?.nullCast<String>()?.let { nameTag ->
-                customDisplayName = ChatComponent.valueOf(translator = version?.localeManager, raw = nameTag)
+                customDisplayName = ChatComponent.of(nameTag, translator = version?.localeManager)
             }
 
             it.getAndRemove(DISPLAY_LORE_TAG)?.listCast<String>()?.let { loreTag ->
                 for (lore in loreTag) {
-                    this.lore.add(ChatComponent.valueOf(translator = version?.localeManager, raw = lore))
+                    this.lore.add(ChatComponent.of(lore, translator = version?.localeManager))
                 }
             }
         }
@@ -196,7 +196,7 @@ class ItemStack(
         get() {
             customDisplayName?.let { return it }
             item.translationKey?.let { version?.localeManager?.translate(it)?.let { translatedName -> return translatedName } }
-            return ChatComponent.valueOf(raw = item.toString())
+            return ChatComponent.of(item.toString())
         }
 
     // ToDo all properties

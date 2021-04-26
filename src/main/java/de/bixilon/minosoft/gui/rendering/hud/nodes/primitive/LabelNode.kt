@@ -27,7 +27,7 @@ import glm_.vec2.Vec2i
 class LabelNode(
     renderWindow: RenderWindow,
     sizing: NodeSizing = NodeSizing(minSize = Vec2i(0, Font.CHAR_HEIGHT)),
-    text: ChatComponent = ChatComponent.valueOf(raw = ""),
+    text: ChatComponent = ChatComponent.of(""),
     var background: Boolean = true,
     val setProperties: TextSetProperties = TextSetProperties(),
 ) : AbsoluteLayout(renderWindow, sizing) {
@@ -44,7 +44,7 @@ class LabelNode(
     var sText: String
         get() = text.message
         set(value) {
-            text = ChatComponent.valueOf(raw = value)
+            text = ChatComponent.of(value)
         }
 
     init {

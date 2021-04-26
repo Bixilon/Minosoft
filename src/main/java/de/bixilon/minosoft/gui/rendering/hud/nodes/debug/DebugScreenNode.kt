@@ -24,7 +24,7 @@ abstract class DebugScreenNode(hudRenderer: HUDRenderer) : HUDElement(hudRendere
     protected var lastPrepareTime = 0L
 
     fun text(text: String = ""): LabelNode {
-        val textElement = LabelNode(hudRenderer.renderWindow, text = ChatComponent.valueOf(raw = text))
+        val textElement = LabelNode(hudRenderer.renderWindow, text = ChatComponent.of(text))
         layout.addChild(Vec2i(0, layout.sizing.currentSize.y + RenderConstants.TEXT_LINE_PADDING), textElement)
         layout.apply()
         return textElement

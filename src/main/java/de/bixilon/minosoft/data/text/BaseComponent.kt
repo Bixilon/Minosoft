@@ -86,7 +86,7 @@ class BaseComponent : ChatComponent {
         var currentText = ""
         json["text"]?.asString?.let {
             if (it.indexOf(ProtocolDefinition.TEXT_COMPONENT_SPECIAL_PREFIX_CHAR) != -1) {
-                parts.add(ChatComponent.valueOf(translator, parent, it))
+                parts.add(ChatComponent.of(it, translator, parent))
                 return
             }
             currentText = it
@@ -126,7 +126,7 @@ class BaseComponent : ChatComponent {
 
         json["extra"]?.asJsonArray?.let {
             for (data in it) {
-                parts.add(ChatComponent.valueOf(translator, currentParent, data))
+                parts.add(ChatComponent.of(data, translator, currentParent))
             }
         }
 
@@ -138,7 +138,7 @@ class BaseComponent : ChatComponent {
                     with.add(part)
                 }
             }
-            parts.add(translator?.translate(it, currentParent, *with.toTypedArray()) ?: ChatComponent.valueOf(translator, currentParent, json["with"]))
+            parts.add(translator?.translate(it, currentParent, *with.toTypedArray()) ?: ChatComponent.of(json["with"], translator, currentParent))
         }
     }
 

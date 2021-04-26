@@ -108,7 +108,7 @@ public class PacketSender {
     }
 
     public void sendFakeChatMessage(String message) {
-        sendFakeChatMessage(ChatComponent.Companion.valueOf(message), ChatTextPositions.CHAT_BOX);
+        sendFakeChatMessage(ChatComponent.Companion.of(message), ChatTextPositions.CHAT_BOX);
     }
 
     public void selectSlot(@IntRange(from = 0, to = 8) int slot) {

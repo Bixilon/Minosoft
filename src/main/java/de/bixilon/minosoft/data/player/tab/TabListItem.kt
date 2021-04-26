@@ -22,7 +22,7 @@ data class TabListItem(
     var name: String,
     var ping: Int = -1,
     var gamemode: Gamemodes = Gamemodes.SURVIVAL,
-    var displayName: ChatComponent = ChatComponent.valueOf(raw = name),
+    var displayName: ChatComponent = ChatComponent.of(name),
     var properties: Map<PlayerProperties, PlayerProperty> = mutableMapOf(),
 ) {
 
@@ -39,7 +39,7 @@ data class TabListItem(
             displayName = if (it) {
                 data.displayName!!
             } else {
-                ChatComponent.valueOf(raw = name)
+                ChatComponent.of(name)
             }
         }
         data.properties?.let { properties = it }

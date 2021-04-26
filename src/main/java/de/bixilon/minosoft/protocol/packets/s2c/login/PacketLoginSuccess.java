@@ -44,7 +44,7 @@ public class PacketLoginSuccess extends PlayS2CPacket {
 
         var playerEntity = connection.getPlayer().getEntity();
         playerEntity.getTabListItem().setName(this.playerName);
-        playerEntity.getTabListItem().setDisplayName(ChatComponent.Companion.valueOf(this.playerName));
+        playerEntity.getTabListItem().setDisplayName(ChatComponent.Companion.of(this.playerName));
 
         connection.getWorld().getEntities().add(null, this.uuid, playerEntity);
     }

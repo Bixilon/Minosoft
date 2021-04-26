@@ -52,7 +52,7 @@ class ChatMessageS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
             ChatTextPositions.ABOVE_HOTBAR -> "[HOTBAR] "
             else -> ""
         }
-        Log.log(LogMessageType.CHAT_IN, additionalPrefix = ChatComponent.valueOf(raw = additionalPrefix)) { event.message }
+        Log.log(LogMessageType.CHAT_IN, additionalPrefix = ChatComponent.of(additionalPrefix)) { event.message }
     }
 
     override fun log() {

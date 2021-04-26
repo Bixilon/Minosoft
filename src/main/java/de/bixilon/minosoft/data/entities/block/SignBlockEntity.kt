@@ -20,14 +20,14 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.nullCast
 
 class SignBlockEntity(connection: PlayConnection) : BlockEntity(connection) {
-    var lines: Array<ChatComponent> = Array(ProtocolDefinition.SIGN_LINES) { ChatComponent.valueOf(raw = "") }
+    var lines: Array<ChatComponent> = Array(ProtocolDefinition.SIGN_LINES) { ChatComponent.of("") }
 
 
     override fun updateNBT(nbt: Map<String, Any>) {
         for (i in 0 until ProtocolDefinition.SIGN_LINES) {
             val tag = nbt["Text$i"]?.nullCast<String>() ?: continue
 
-            lines[i] = ChatComponent.valueOf(translator = connection.version.localeManager, raw = tag)
+            lines[i] = ChatComponent.of(tag, translator = connection.version.localeManager)
         }
     }
 

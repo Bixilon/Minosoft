@@ -22,7 +22,7 @@ object ComponentParser : CommandParser() {
 
     override fun parse(connection: PlayConnection, properties: ParserProperties?, stringReader: CommandStringReader): Any {
         try {
-            return ChatComponent.valueOf(connection.version.localeManager, null, stringReader.readJson().asJsonObject)
+            return ChatComponent.of(stringReader.readJson().asJsonObject, connection.version.localeManager, null)
         } catch (exception: Exception) {
             stringReader.skip(-1)
             throw InvalidComponentCommandParseException(stringReader, stringReader.read().toString(), exception)

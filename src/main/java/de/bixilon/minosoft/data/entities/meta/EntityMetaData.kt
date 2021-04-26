@@ -197,7 +197,7 @@ class EntityMetaData(
         }
 
         fun getChatComponent(field: EntityMetaDataFields): ChatComponent? {
-            return ChatComponent.valueOf(connection.version.localeManager, raw = get(field))
+            return ChatComponent.of(get(field), connection.version.localeManager)
         }
 
         fun getString(field: EntityMetaDataFields): String? {
