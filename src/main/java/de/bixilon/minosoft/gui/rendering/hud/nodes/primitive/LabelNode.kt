@@ -31,14 +31,12 @@ class LabelNode(
     var background: Boolean = true,
     val setProperties: TextSetProperties = TextSetProperties(),
 ) : AbsoluteLayout(renderWindow, sizing) {
-    private var _text: ChatComponent = text
     var getProperties = TextGetProperties()
         private set
 
-    var text: ChatComponent
-        get() = _text
+    var text: ChatComponent = text
         set(value) {
-            _text = value
+            field = value
             prepare()
             apply()
         }

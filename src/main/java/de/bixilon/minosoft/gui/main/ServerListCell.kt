@@ -67,12 +67,10 @@ class ServerListCell : ListCell<Server?>(), Initializable {
     private var server: Server? = null
     private var connectable = true
 
-    private var _name: ChatComponent = ChatComponent.valueOf(raw = "")
 
-    var name: ChatComponent
-        get() = _name
+    var name: ChatComponent = ChatComponent.valueOf(raw = "")
         set(value) {
-            _name = value
+            field = value
             nameField.children.setAll(name.javaFXText)
             for (node in nameField.children) {
                 node.style = "-fx-font-size: 15pt ;"

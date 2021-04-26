@@ -101,15 +101,13 @@ class VersionMapping {
     var isFullyLoaded = false
         private set
 
-    private var _parentMapping: VersionMapping? = null
 
-    var parentMapping: VersionMapping?
-        get() = _parentMapping
+    var parentMapping: VersionMapping? = null
         set(value) {
-            _parentMapping = value
+            field = value
 
-            for (field in PARENTABLE_FIELDS) {
-                PARENTABLE_SET_PARENT_METHOD.invoke(field.get(this), value?.let { field.get(it) })
+            for (parentableField in PARENTABLE_FIELDS) {
+                PARENTABLE_SET_PARENT_METHOD.invoke(parentableField.get(this), value?.let { parentableField.get(it) })
             }
         }
 
@@ -117,11 +115,11 @@ class VersionMapping {
         if (blockState == ProtocolDefinition.NULL_BLOCK_ID) {
             return null
         }
-        return blockStateIdMap[blockState] ?: _parentMapping?.getBlockState(blockState)
+        return blockStateIdMap[blockState] ?: parentMapping?.getBlockState(blockState)
     }
 
     fun getEntityMetaDataIndex(field: EntityMetaDataFields): Int? {
-        return entityMetaIndexMap[field] ?: _parentMapping?.getEntityMetaDataIndex(field)
+        return entityMetaIndexMap[field] ?: parentMapping?.getEntityMetaDataIndex(field)
     }
 
     private fun <T : Enum<*>> loadEnumRegistry(version: Version, data: JsonElement?, registry: EnumRegistry<T>, alternative: PerVersionEnumRegistry<T>) {

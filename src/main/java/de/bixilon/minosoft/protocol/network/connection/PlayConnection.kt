@@ -68,18 +68,16 @@ class PlayConnection(
         private set
     lateinit var player: Player
         private set
-    private var _connectionState: ConnectionStates = ConnectionStates.DISCONNECTED
 
     lateinit var velocityHandlerTask: TimeWorkerTask
     private var velocityHandlerLastExecutionTime: Long = 0L
 
-    override var connectionState: ConnectionStates
-        get() = _connectionState
+    override var connectionState: ConnectionStates = ConnectionStates.DISCONNECTED
         set(value) {
             val previousConnectionState = connectionState
-            _connectionState = value
+            field = value
             // handle callbacks
-            fireEvent(ConnectionStateChangeEvent(this, previousConnectionState, _connectionState))
+            fireEvent(ConnectionStateChangeEvent(this, previousConnectionState, connectionState))
             when (value) {
                 ConnectionStates.HANDSHAKING -> {
                     for (eventManager in Minosoft.EVENT_MANAGERS) {

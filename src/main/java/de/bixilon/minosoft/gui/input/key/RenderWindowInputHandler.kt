@@ -39,8 +39,6 @@ class RenderWindowInputHandler(
 
     private var skipNextCharPress = false
 
-    private var _currentInputConsumer: KeyConsumer? = null
-
 
     init {
         registerKeyCallback(KeyBindingsNames.DEBUG_MOUSE_CATCH) {
@@ -55,11 +53,7 @@ class RenderWindowInputHandler(
     }
 
 
-    var currentKeyConsumer: KeyConsumer?
-        get() = _currentInputConsumer
-        set(value) {
-            _currentInputConsumer = value
-        }
+    var currentKeyConsumer: KeyConsumer? = null
 
     fun invoke(windowId: Long, key: Int, char: Int, action: Int, modifierKey: Int) {
         if (windowId != renderWindow.windowId) {

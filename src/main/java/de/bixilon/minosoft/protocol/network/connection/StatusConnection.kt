@@ -77,15 +77,13 @@ class StatusConnection(
         }
     }
 
-    private var _connectionState = ConnectionStates.DISCONNECTED
 
-    override var connectionState: ConnectionStates
-        get() = _connectionState
+    override var connectionState: ConnectionStates = ConnectionStates.DISCONNECTED
         set(value) {
             val previousConnectionState = connectionState
-            _connectionState = value
+            field = value
             // handle callbacks
-            fireEvent(ConnectionStateChangeEvent(this, previousConnectionState, _connectionState))
+            fireEvent(ConnectionStateChangeEvent(this, previousConnectionState, connectionState))
             when (value) {
                 ConnectionStates.HANDSHAKING -> {
                     network.sendPacket(HandshakeC2SPacket(realAddress, ConnectionStates.STATUS, Versions.AUTOMATIC_VERSION.protocolId))
