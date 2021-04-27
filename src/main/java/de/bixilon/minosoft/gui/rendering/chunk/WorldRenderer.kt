@@ -84,6 +84,10 @@ class WorldRenderer(
                     neighborBlocks[direction.ordinal] = world.getBlockState(blockPosition + direction)
                 }
 
+                // if (!blockState.block.resourceLocation.full.contains("white_stained_glass_pane")) {
+                //     continue
+                // }
+
 
                 if (blockState.properties[BlockProperties.WATERLOGGED] == true) {
                     waterBlock?.fluidRenderer?.render(waterBlock.defaultState, world.worldLightAccessor, renderWindow, blockPosition, meshCollection, neighborBlocks, world)

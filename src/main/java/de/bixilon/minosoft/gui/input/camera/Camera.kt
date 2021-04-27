@@ -148,6 +148,9 @@ class Camera(
         if (renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.MOVE_SPRINT)) {
             cameraSpeed *= 5
         }
+        if (ProtocolDefinition.FAST_MOVEMENT) {
+            cameraSpeed *= 5
+        }
         var deltaMovement = Vec3()
         if (renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.MOVE_FORWARD)) {
             deltaMovement = deltaMovement + movementFront * cameraSpeed

@@ -128,7 +128,7 @@ class BlockRenderer(data: JsonObject, parent: BlockModel) : BlockLikeRenderer {
                 neighbourFaceSize = it.faceBorderSizes[itDirection.ordinal]
             }
 
-            // ToDo: Should we preserve the cullface attribute? It seems to has no point here.
+            // ToDo: Should we preserve the cullface attribute? It seems to has no point here and only makes the results worse. Otherwise it could improve the performance...
 
             for (element in elements) {
                 var drawElementFace = true
@@ -136,11 +136,11 @@ class BlockRenderer(data: JsonObject, parent: BlockModel) : BlockLikeRenderer {
                 neighbourFaceSize?.let {
                     val elementFaceBorderSize = element.faceBorderSize[rotatedDirection.ordinal] ?: return@let
                     for (size in it) {
-                        if ((elementFaceBorderSize.start.x < size.start.x || elementFaceBorderSize.start.y < size.start.y) && (elementFaceBorderSize.end.x > size.end.x || elementFaceBorderSize.end.y > size.end.y)) {
-                            return@let
+                        if (size.start.x <= elementFaceBorderSize.start.x && size.start.y <= elementFaceBorderSize.start.y && size.end.x >= elementFaceBorderSize.end.x && size.end.y >= elementFaceBorderSize.end.y) {
+                            drawElementFace = false
+                            break
                         }
                     }
-                    drawElementFace = false
                 }
 
                 if (!drawElementFace) {
