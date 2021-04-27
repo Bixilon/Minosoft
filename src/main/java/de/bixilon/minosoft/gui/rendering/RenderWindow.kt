@@ -37,6 +37,9 @@ import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.play.PositionAndRotationS2CP
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.CountUpAndDownLatch
+import de.bixilon.minosoft.util.KUtil.synchronizedListOf
+import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
+import de.bixilon.minosoft.util.KUtil.synchronizedSetOf
 import de.bixilon.minosoft.util.Stopwatch
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -48,7 +51,6 @@ import org.lwjgl.opengl.GL
 import org.lwjgl.opengl.GL11.*
 import org.lwjgl.system.MemoryStack
 import org.lwjgl.system.MemoryUtil
-import java.util.concurrent.ConcurrentLinkedQueue
 
 class RenderWindow(
     val connection: PlayConnection,
@@ -73,16 +75,16 @@ class RenderWindow(
     private val screenshotTaker = ScreenshotTaker(this)
     val tintColorCalculator = TintColorCalculator(connection.world)
     val font = Font()
-    val textures = TextureArray(mutableListOf())
+    val textures = TextureArray(synchronizedListOf())
 
-    val rendererMap: MutableMap<ResourceLocation, Renderer> = mutableMapOf()
+    val rendererMap: MutableMap<ResourceLocation, Renderer> = synchronizedMapOf()
 
-    val renderQueue = ConcurrentLinkedQueue<Runnable>()
+    val renderQueue: MutableList<Runnable> = synchronizedListOf()
 
     lateinit var WHITE_TEXTURE: TextureLike
 
 
-    val screenResizeCallbacks: MutableSet<ScreenResizeCallback> = mutableSetOf(inputHandler.camera)
+    val screenResizeCallbacks: MutableSet<ScreenResizeCallback> = synchronizedSetOf(inputHandler.camera)
 
     var tickCount = 0L
     var lastTickTimer = System.currentTimeMillis()
@@ -331,12 +333,13 @@ class RenderWindow(
 
             // handle opengl context tasks, but limit it per frame
             var actionsDone = 0
+            val renderQueue = renderQueue.toList()
             for (renderQueueElement in renderQueue) {
                 if (actionsDone == RenderConstants.MAXIMUM_CALLS_PER_FRAME) {
                     break
                 }
                 renderQueueElement.run()
-                renderQueue.remove(renderQueueElement)
+                this.renderQueue.remove(renderQueueElement)
                 actionsDone++
             }
 

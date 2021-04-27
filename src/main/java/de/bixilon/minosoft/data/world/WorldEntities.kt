@@ -14,14 +14,14 @@
 package de.bixilon.minosoft.data.world
 
 import de.bixilon.minosoft.data.entities.entities.Entity
+import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
 import java.util.*
-import java.util.concurrent.ConcurrentHashMap
 
 class WorldEntities : Iterable<Entity> {
-    private val idEntityMap: MutableMap<Int, Entity> = ConcurrentHashMap()
-    private val entityIdMap: MutableMap<Entity, Int> = ConcurrentHashMap()
-    private val entityUUIDMap: MutableMap<Entity, UUID> = ConcurrentHashMap()
-    private val uuidEntityMap: MutableMap<UUID, Entity> = ConcurrentHashMap()
+    private val idEntityMap: MutableMap<Int, Entity> = synchronizedMapOf()
+    private val entityIdMap: MutableMap<Entity, Int> = synchronizedMapOf()
+    private val entityUUIDMap: MutableMap<Entity, UUID> = synchronizedMapOf()
+    private val uuidEntityMap: MutableMap<UUID, Entity> = synchronizedMapOf()
 
 
     fun add(entityId: Int?, entityUUID: UUID?, entity: Entity) {

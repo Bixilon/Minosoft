@@ -22,16 +22,15 @@ import de.bixilon.minosoft.data.world.biome.accessor.NullBiomeAccessor
 import de.bixilon.minosoft.data.world.light.WorldLightAccessor
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.inChunkPosition
+import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
 import glm_.vec2.Vec2i
 import glm_.vec3.Vec3i
-import java.util.*
-import java.util.concurrent.ConcurrentHashMap
 
 /**
  * Collection of chunks and more
  */
 class World : BiomeAccessor {
-    val chunks: MutableMap<Vec2i, Chunk> = Collections.synchronizedMap(ConcurrentHashMap())
+    val chunks: MutableMap<Vec2i, Chunk> = synchronizedMapOf()
     val entities = WorldEntities()
     var isHardcore = false
     var isRaining = false
@@ -47,16 +46,14 @@ class World : BiomeAccessor {
         return chunks[chunkLocation]?.getBlockState(blockPosition.inChunkPosition)
     }
 
+    @Synchronized
     fun getChunk(chunkPosition: Vec2i): Chunk? {
         return chunks[chunkPosition]
     }
 
+    @Synchronized
     fun getOrCreateChunk(chunkPosition: Vec2i): Chunk {
-        return chunks[chunkPosition] ?: run {
-            val chunk = Chunk()
-            chunks[chunkPosition] = chunk
-            chunk
-        }
+        return chunks.getOrPut(chunkPosition) { Chunk() }
     }
 
     fun setBlock(blockPosition: Vec3i, blockState: BlockState?) {

@@ -40,13 +40,13 @@ import de.bixilon.minosoft.modding.event.events.*
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.nullCast
+import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
+import de.bixilon.minosoft.util.KUtil.synchronizedSetOf
 import de.bixilon.minosoft.util.MMath
 import de.bixilon.minosoft.util.logging.Log
 import glm_.vec2.Vec2i
 import glm_.vec3.Vec3i
 import org.lwjgl.opengl.GL11.glDepthMask
-import java.util.*
-import java.util.concurrent.ConcurrentHashMap
 
 class WorldRenderer(
     private val connection: PlayConnection,
@@ -56,9 +56,9 @@ class WorldRenderer(
     private val waterBlock = connection.mapping.blockRegistry.get(ResourceLocation("minecraft:water"))?.nullCast<FluidBlock>()
 
     override lateinit var shader: Shader
-    val allChunkSections: MutableMap<Vec2i, MutableMap<Int, ChunkMeshCollection>> = Collections.synchronizedMap(ConcurrentHashMap())
-    val visibleChunks: MutableMap<Vec2i, MutableMap<Int, ChunkMeshCollection>> = Collections.synchronizedMap(ConcurrentHashMap())
-    val queuedChunks: MutableSet<Vec2i> = Collections.synchronizedSet(mutableSetOf())
+    val allChunkSections: MutableMap<Vec2i, MutableMap<Int, ChunkMeshCollection>> = synchronizedMapOf()
+    val visibleChunks: MutableMap<Vec2i, MutableMap<Int, ChunkMeshCollection>> = synchronizedMapOf()
+    val queuedChunks: MutableSet<Vec2i> = synchronizedSetOf()
 
     private var allBlocks: Collection<BlockState>? = null
 
@@ -145,7 +145,7 @@ class WorldRenderer(
         })
 
         connection.registerEvent(CallbackEventInvoker.of<MultiBlockChangeEvent> {
-            val sectionHeights: MutableSet<Int> = mutableSetOf()
+            val sectionHeights: MutableSet<Int> = synchronizedSetOf()
             for ((key) in it.blocks) {
                 sectionHeights.add(key.sectionHeight)
             }
@@ -201,7 +201,7 @@ class WorldRenderer(
 
     private fun resolveBlockTextureIds(blocks: Collection<BlockState>): List<Texture> {
         val textures: MutableList<Texture> = mutableListOf()
-        val textureMap: MutableMap<String, Texture> = ConcurrentHashMap()
+        val textureMap: MutableMap<String, Texture> = synchronizedMapOf()
 
         for (block in blocks) {
             for (model in block.renderers) {
@@ -242,14 +242,14 @@ class WorldRenderer(
             }
         }
         queuedChunks.remove(chunkPosition)
-        allChunkSections[chunkPosition] = Collections.synchronizedMap(ConcurrentHashMap())
+        allChunkSections[chunkPosition] = synchronizedMapOf()
 
-        var currentChunks: MutableMap<Int, ChunkSection> = Collections.synchronizedMap(ConcurrentHashMap())
+        var currentChunks: MutableMap<Int, ChunkSection> = synchronizedMapOf()
         var currentIndex = 0
         for ((sectionHeight, section) in chunk.sections!!) {
             if (getSectionIndex(sectionHeight) != currentIndex) {
                 prepareChunkSections(chunkPosition, currentChunks)
-                currentChunks = Collections.synchronizedMap(ConcurrentHashMap())
+                currentChunks = synchronizedMapOf()
                 currentIndex = getSectionIndex(sectionHeight)
             }
             currentChunks[sectionHeight] = section
@@ -300,7 +300,7 @@ class WorldRenderer(
 
 
             renderWindow.renderQueue.add {
-                val sectionMap = allChunkSections.getOrPut(chunkPosition, { ConcurrentHashMap() })
+                val sectionMap = allChunkSections.getOrPut(chunkPosition) { synchronizedMapOf() }
 
                 sectionMap[index]?.let {
                     it.opaqueSectionArrayMesh.unload()
@@ -329,7 +329,7 @@ class WorldRenderer(
                 sectionMap[index] = meshCollection
 
                 if (renderWindow.inputHandler.camera.frustum.containsChunk(chunkPosition, lowestBlockHeight, highestBlockHeight)) {
-                    visibleChunks.getOrPut(chunkPosition, { ConcurrentHashMap() })[index] = meshCollection
+                    visibleChunks.getOrPut(chunkPosition) { synchronizedMapOf() }[index] = meshCollection
                 } else {
                     visibleChunks[chunkPosition]?.remove(index)
                 }
@@ -338,7 +338,7 @@ class WorldRenderer(
     }
 
     fun prepareChunkSection(chunkPosition: Vec2i, sectionHeight: Int) {
-        val sections: MutableMap<Int, ChunkSection> = Collections.synchronizedMap(ConcurrentHashMap())
+        val sections: MutableMap<Int, ChunkSection> = synchronizedMapOf()
         val chunk = world.getChunk(chunkPosition)!!
         val lowestSectionHeight = getSectionIndex(sectionHeight) * RenderConstants.CHUNK_SECTIONS_PER_MESH
         for (i in lowestSectionHeight until lowestSectionHeight + RenderConstants.CHUNK_SECTIONS_PER_MESH) {
@@ -381,7 +381,8 @@ class WorldRenderer(
     }
 
     private fun prepareWorld(world: World) {
-        for ((chunkLocation, chunk) in world.chunks) {
+        val chunkMap = world.chunks.toMap()
+        for ((chunkLocation, chunk) in chunkMap) {
             prepareChunk(chunkLocation, chunk)
         }
     }
@@ -393,8 +394,13 @@ class WorldRenderer(
 
     override fun onFrustumChange() {
         visibleChunks.clear()
-        for ((chunkLocation, indexMap) in allChunkSections) {
-            val visibleIndexMap: MutableMap<Int, ChunkMeshCollection> = Collections.synchronizedMap(ConcurrentHashMap())
+        val allChunkSections: Map<Vec2i, MutableMap<Int, ChunkMeshCollection>>
+        synchronized(this.allChunkSections) {
+            allChunkSections = this.allChunkSections.toMap()
+        }
+        for ((chunkLocation, rawIndexMap) in allChunkSections) {
+            val visibleIndexMap: MutableMap<Int, ChunkMeshCollection> = synchronizedMapOf()
+            val indexMap = rawIndexMap.toMap()
             for ((index, mesh) in indexMap) {
                 if (renderWindow.inputHandler.camera.frustum.containsChunk(chunkLocation, mesh.lowestBlockHeight, mesh.highestBlockHeight)) {
                     visibleIndexMap[index] = mesh

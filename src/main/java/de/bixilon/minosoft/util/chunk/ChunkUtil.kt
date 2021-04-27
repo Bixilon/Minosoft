@@ -24,8 +24,8 @@ import de.bixilon.minosoft.data.world.palette.Palette.Companion.choosePalette
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*
+import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
 import java.util.*
-import java.util.concurrent.ConcurrentHashMap
 
 
 object ChunkUtil {
@@ -59,7 +59,7 @@ object ChunkUtil {
 
         // parse data
         var arrayPosition = 0
-        val sectionMap: MutableMap<Int, ChunkSection> = Collections.synchronizedMap(ConcurrentHashMap())
+        val sectionMap: MutableMap<Int, ChunkSection> = synchronizedMapOf()
         for ((sectionIndex, sectionHeight) in (dimension.lowestSection until dimension.highestSection).withIndex()) {
             if (!sectionBitMask[sectionIndex]) {
                 continue
@@ -125,7 +125,7 @@ object ChunkUtil {
         }
 
         var arrayPos = 0
-        val sectionMap: MutableMap<Int, ChunkSection> = Collections.synchronizedMap(ConcurrentHashMap())
+        val sectionMap: MutableMap<Int, ChunkSection> = synchronizedMapOf()
         for ((sectionIndex, sectionHeight) in (dimension.lowestSection until dimension.highestSection).withIndex()) { // max sections per chunks in chunk column
             if (!sectionBitMask[sectionIndex]) {
                 continue
@@ -144,7 +144,7 @@ object ChunkUtil {
 
     fun readPaletteChunk(buffer: PlayInByteBuffer, dimension: Dimension, sectionBitMask: BitSet, isFullChunk: Boolean, containsSkyLight: Boolean = false): ChunkData {
         val chunkData = ChunkData()
-        val sectionMap: MutableMap<Int, ChunkSection> = Collections.synchronizedMap(ConcurrentHashMap())
+        val sectionMap: MutableMap<Int, ChunkSection> = synchronizedMapOf()
 
         for ((sectionIndex, sectionHeight) in (dimension.lowestSection until sectionBitMask.length()).withIndex()) { // max sections per chunks in chunk column
             if (!sectionBitMask[sectionIndex]) {

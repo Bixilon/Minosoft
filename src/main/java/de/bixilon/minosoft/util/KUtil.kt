@@ -16,6 +16,7 @@ package de.bixilon.minosoft.util
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.util.enum.AliasableEnum
 import java.util.*
+import kotlin.Pair
 
 object KUtil {
 
@@ -52,5 +53,17 @@ object KUtil {
 
     fun String.asResourceLocation(): ResourceLocation {
         return ResourceLocation(this)
+    }
+
+    fun <K, V> synchronizedMapOf(vararg pairs: Pair<K, V>): MutableMap<K, V> {
+        return Collections.synchronizedMap(mutableMapOf(*pairs))
+    }
+
+    fun <V> synchronizedSetOf(vararg values: V): MutableSet<V> {
+        return Collections.synchronizedSet(mutableSetOf(*values))
+    }
+
+    fun <V> synchronizedListOf(vararg values: V): MutableList<V> {
+        return Collections.synchronizedList(mutableListOf(*values))
     }
 }
