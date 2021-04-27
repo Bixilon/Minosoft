@@ -26,7 +26,7 @@ class EncryptionResponseC2SPacket(
     val token: ByteArray,
 ) : PlayC2SPacket {
 
-    constructor(secretKey: SecretKey, token: ByteArray, key: PublicKey) : this(secretKey, CryptManager.encryptData(secretKey, secretKey.encoded), CryptManager.encryptData(secretKey, token))
+    constructor(secretKey: SecretKey, token: ByteArray, key: PublicKey) : this(secretKey, CryptManager.encryptData(key, secretKey.encoded), CryptManager.encryptData(key, token))
 
     override fun write(buffer: PlayOutByteBuffer) {
         buffer.writeByteArray(secret)
