@@ -28,7 +28,7 @@ enum class Directions(val directionVector: Vec3i) {
 
     val floatDirectionVector = Vec3(directionVector)
 
-    lateinit var inversed: Directions
+    lateinit var inverted: Directions
         private set
 
     private fun inverse(): Directions {
@@ -113,7 +113,7 @@ enum class Directions(val directionVector: Vec3i) {
 
         init {
             for (direction in DIRECTIONS) {
-                direction.inversed = direction.inverse()
+                direction.inverted = direction.inverse()
             }
         }
     }

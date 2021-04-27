@@ -111,7 +111,7 @@ class BlockRenderer(data: JsonObject, parent: BlockModel) : BlockLikeRenderer {
 
         for (direction in Directions.DIRECTIONS) {
             val rotatedDirection = directionMapping[direction] ?: direction
-            val invertedDirection = direction.inversed
+            val invertedDirection = direction.inverted
             var isNeighbourTransparent = false
             var neighbourFaceSize: Array<FaceSize>? = null
             val neighbourBlock = neighbourBlocks[direction.ordinal]

@@ -29,6 +29,7 @@ import de.bixilon.minosoft.gui.rendering.chunk.models.renderable.BlockRenderer
 import de.bixilon.minosoft.gui.rendering.chunk.models.renderable.MultipartRenderer
 import glm_.vec3.Vec3i
 import java.util.*
+import kotlin.math.abs
 import kotlin.random.Random
 
 data class BlockState(
@@ -114,8 +115,8 @@ data class BlockState(
         if (renderers.size == 1 || !Minosoft.getConfig().config.game.other.antiMoirePattern) {
             return renderers[0]
         }
-        // ToDo: Support weight attribute
-        return renderers.random(Random(blockPosition.hashCode()))
+        val random = Random(getPositionSeed(blockPosition.x, blockPosition.y, blockPosition.z))
+        return renderers[abs(random.nextLong().toInt() % renderers.size)]
     }
 
 
@@ -182,6 +183,12 @@ data class BlockState(
                 material = material,
                 collisionShape = collision,
             )
+        }
+
+        fun getPositionSeed(x: Int, y: Int, z: Int): Long {
+            var ret = (x * 3129871L) xor z * 116129781L xor y.toLong()
+            ret = ret * ret * 42317861L + ret * 11L
+            return ret shr 16
         }
 
         private fun getProperties(json: JsonObject): Pair<BlockRotations, MutableMap<BlockProperties, Any>> {

@@ -58,7 +58,7 @@ class FluidRenderer(
             } else {
                 texture = stillTexture
             }
-            if (isBlockSameFluid(neighbourBlocks[direction.ordinal]) || neighbourBlocks[direction.ordinal]?.getBlockRenderer(blockPosition + direction)?.faceBorderSizes?.let { it[direction.inversed.ordinal] != null } == true && direction != Directions.UP) {
+            if (isBlockSameFluid(neighbourBlocks[direction.ordinal]) || neighbourBlocks[direction.ordinal]?.getBlockRenderer(blockPosition + direction)?.faceBorderSizes?.let { it[direction.inverted.ordinal] != null } == true && direction != Directions.UP) {
                 continue
             }
             val positionTemplate = BlockModelElement.FACE_POSITION_MAP_TEMPLATE[direction.ordinal]
