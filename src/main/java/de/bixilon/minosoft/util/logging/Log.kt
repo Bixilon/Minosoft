@@ -100,16 +100,16 @@ object Log {
             is Throwable -> {
                 val stringWriter = StringWriter()
                 message.printStackTrace(PrintWriter(stringWriter))
-                ChatComponent.of(stringWriter.toString())
+                ChatComponent.of(stringWriter.toString(), ignoreJson = true)
             }
             is String -> {
                 if (formatting.isNotEmpty()) {
-                    ChatComponent.of(message.format(*formatting))
+                    ChatComponent.of(message.format(*formatting), ignoreJson = true)
                 } else {
-                    ChatComponent.of(message)
+                    ChatComponent.of(message, ignoreJson = true)
                 }
             }
-            else -> ChatComponent.of(message)
+            else -> ChatComponent.of(message, ignoreJson = true)
         }
 
         LOG_QUEUE.add(

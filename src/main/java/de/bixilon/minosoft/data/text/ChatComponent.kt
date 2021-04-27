@@ -67,7 +67,7 @@ interface ChatComponent {
     companion object {
 
         @JvmOverloads
-        fun of(raw: Any?, translator: Translator? = null, parent: TextComponent? = null): ChatComponent {
+        fun of(raw: Any?, translator: Translator? = null, parent: TextComponent? = null, ignoreJson: Boolean = false): ChatComponent {
             if (raw == null) {
                 return BaseComponent()
             }
@@ -88,9 +88,11 @@ interface ChatComponent {
                 is JsonPrimitive -> raw.asString
                 else -> raw.toString()
             }
-            try {
-                return BaseComponent(translator, parent, JsonParser.parseString(string).asJsonObject)
-            } catch (ignored: RuntimeException) {
+            if (!ignoreJson) {
+                try {
+                    return BaseComponent(translator, parent, JsonParser.parseString(string).asJsonObject)
+                } catch (ignored: RuntimeException) {
+                }
             }
 
             return BaseComponent(parent, string)
