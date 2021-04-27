@@ -213,7 +213,7 @@ abstract class Entity(
         val result = VoxelShape()
         for (blockPosition in blockPositions) {
             val chunk = connection.world.getChunk(blockPosition.chunkPosition)
-            if (chunk == null && !ignoreUnloadedChunks) {
+            if ((chunk == null || !chunk.isFullyLoaded) && !ignoreUnloadedChunks) {
                 // chunk is not loaded
                 result.add(VoxelShape.FULL + blockPosition)
                 continue
@@ -284,7 +284,7 @@ abstract class Entity(
             }
         }
         velocity?.let {
-            move(it * deltaTime)
+            move(it * deltaTime, false)
         }
     }
 
