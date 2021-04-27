@@ -48,8 +48,8 @@ class Camera(
     val renderWindow: RenderWindow,
 ) : ScreenResizeCallback {
     private var mouseSensitivity = Minosoft.getConfig().config.game.camera.moseSensitivity
-    private val walkingSpeed get() = connection.player.baseAbilities.walkingSpeed * ProtocolDefinition.TICKS_PER_SECOND
-    private val flyingSpeed get() = connection.player.baseAbilities.flyingSpeed * ProtocolDefinition.TICKS_PER_SECOND
+    private val walkingSpeed get() = connection.player.baseAbilities.walkingSpeed * ProtocolDefinition.TICKS_PER_SECOND * 2
+    private val flyingSpeed  get() = connection.player.baseAbilities.flyingSpeed  * ProtocolDefinition.TICKS_PER_SECOND * 2
     var cameraPosition = Vec3(0.0f, 0.0f, 0.0f)
     private var lastMouseX = 0.0
     private var lastMouseY = 0.0
@@ -173,12 +173,8 @@ class Camera(
             }
         } else {
             if (playerEntity.onGround && renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.MOVE_JUMP)) {
-                // TODO: jump delay, correct jump height, direction wrong?
-                playerEntity.velocity?.let {
-                    it.y += -0.75f * ProtocolDefinition.GRAVITY
-                } ?: run {
-                    playerEntity.velocity = Vec3(0, -0.75f * ProtocolDefinition.GRAVITY, 0)
-                }
+                // TODO: jump delay, correct jump height
+                playerEntity.velocity.y += 0.75f * ProtocolDefinition.GRAVITY
                 playerEntity.onGround = false
             }
         }

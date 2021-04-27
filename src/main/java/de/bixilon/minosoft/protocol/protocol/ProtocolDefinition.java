@@ -95,13 +95,12 @@ public final class ProtocolDefinition {
 
     public static final float VELOCITY_CONSTANT = (float) TICKS_PER_SECOND / 80f;
 
-    public static final float GRAVITY = -10; //  TODO: find the correct value
+    public static final float GRAVITY = 32;
     public static final boolean FAST_MOVEMENT = true;
 
     public static final int SEA_LEVEL_HEIGHT = 62;
 
     public static final float HEIGHT_SEA_LEVEL_MODIFIER = 0.00166667f;
-
 
     public static final ResourceLocation AIR_RESOURCE_LOCATION = new ResourceLocation("air");
 

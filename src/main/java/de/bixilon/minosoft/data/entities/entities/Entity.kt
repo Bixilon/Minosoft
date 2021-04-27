@@ -26,7 +26,6 @@ import de.bixilon.minosoft.data.mappings.entities.EntityType
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.gui.rendering.chunk.VoxelShape
 import de.bixilon.minosoft.gui.rendering.chunk.models.AABB
-import de.bixilon.minosoft.gui.rendering.util.VecUtil
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.inChunkPosition
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
@@ -51,7 +50,7 @@ abstract class Entity(
 
     var entityMetaData: EntityMetaData = EntityMetaData(connection)
 
-    var velocity: Vec3? = null
+    var velocity: Vec3 = Vec3()
 
     protected open val hasCollisions = true
     protected open val isFlying = false
@@ -229,9 +228,9 @@ abstract class Entity(
         if (delta.y != 0.0f) {
             delta.y = collisionsToCheck.computeOffset(aabb, deltaPosition.y, Axes.Y)
             aabb.offsetAssign(0f, delta.y, 0f)
-            onGround = false
             if (delta.y != deltaPosition.y) {
-                velocity?.y = 0.0f
+                onGround = false
+                velocity.y = 0.0f
                 if (deltaPosition.y < 0) {
                     onGround = true
                 }
@@ -242,56 +241,49 @@ abstract class Entity(
             delta.x = collisionsToCheck.computeOffset(aabb, deltaPosition.x, Axes.X)
             aabb.offsetAssign(delta.x, 0f, 0f)
             if (delta.x != deltaPosition.x) {
-                velocity?.x = 0.0f
+                velocity.x = 0.0f
             }
         }
         if (delta.z != 0.0f) {
             delta.z = collisionsToCheck.computeOffset(aabb, deltaPosition.z, Axes.Z)
             aabb.offsetAssign(0f, 0f, delta.z)
             if (delta.z != deltaPosition.z) {
-                velocity?.z = 0.0f
+                velocity.z = 0.0f
             }
         }
         if (delta.x != 0.0f && !xPriority) {
             delta.x = collisionsToCheck.computeOffset(aabb, deltaPosition.x, Axes.X)
             if (delta.x != deltaPosition.x) {
-                velocity?.x = 0.0f
+                velocity.x = 0.0f
             }
         }
         return delta
     }
 
     fun computeTimeStep(deltaMillis: Long) {
+        val newVelocity = Vec3(velocity)
+        val oldVelocity = Vec3(velocity)
         val deltaTime = deltaMillis.toFloat() / 1000.0f
         if (!hasNoGravity && !isFlying) {
-            velocity?.let {
-                it.y += deltaTime * ProtocolDefinition.GRAVITY
-            } ?: let {
-                velocity = Vec3(0, deltaTime * ProtocolDefinition.GRAVITY, 0)
-            }
+            newVelocity.y -= ProtocolDefinition.GRAVITY * deltaTime
         }
-        if (velocity == null) {
+        newVelocity *= 0.25f.pow(deltaTime) // apply
+        if (newVelocity.length() < 0.05f) {
+            newVelocity *= 0
+        }
+        if (velocity != oldVelocity) {
+            // the velocity has changed
+            computeTimeStep(deltaMillis)
             return
         }
-        if (velocity == VecUtil.EMPTY_VEC3) {
-            velocity = null
-        }
-        velocity?.timesAssign(0.25f.pow(deltaTime))
-        velocity?.let {
-            if (it.length() < 0.05f) {
-                velocity = null
-                return
-            }
-        }
-        velocity?.let {
-            move(it * deltaTime, false)
-        }
+        velocity = newVelocity
+        move(velocity * deltaTime)
     }
 
     private val aabb: AABB
         get() = defaultAABB + position
 
     companion object {
-        val HITBOX_MARGIN = 1e-5
+        private const val HITBOX_MARGIN = 1e-5
     }
 }
