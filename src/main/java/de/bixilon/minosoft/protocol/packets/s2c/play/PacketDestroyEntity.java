@@ -22,20 +22,25 @@ import de.bixilon.minosoft.util.logging.Log;
 import java.util.Arrays;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W04A;
+import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_21W17A;
 
 public class PacketDestroyEntity extends PlayS2CPacket {
     private final int[] entityIds;
 
     public PacketDestroyEntity(PlayInByteBuffer buffer) {
-        if (buffer.getVersionId() < V_14W04A) {
-            this.entityIds = new int[buffer.readByte()];
-        } else {
-            this.entityIds = new int[buffer.readVarInt()];
-        }
+        if (buffer.getVersionId() < V_21W17A) {
+            if (buffer.getVersionId() < V_14W04A) {
+                this.entityIds = new int[buffer.readByte()];
+            } else {
+                this.entityIds = new int[buffer.readVarInt()];
+            }
 
-        for (int i = 0; i < this.entityIds.length; i++) {
-            this.entityIds[i] = buffer.readEntityId();
+            for (int i = 0; i < this.entityIds.length; i++) {
+                this.entityIds[i] = buffer.readEntityId();
+            }
+            return;
         }
+        this.entityIds = new int[]{buffer.readVarInt()};
     }
 
     @Override
