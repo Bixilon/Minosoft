@@ -25,7 +25,6 @@ import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.network.connection.Connection
 import de.bixilon.minosoft.util.Util
 import de.bixilon.minosoft.util.nbt.tag.NBTTagTypes
-import de.bixilon.minosoft.util.nbt.tag.NBTTagTypes.Companion.VALUES
 import glm_.vec2.Vec2i
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3i
@@ -370,7 +369,7 @@ open class InByteBuffer {
             NBTTagTypes.COMPOUND -> {
                 val out: MutableMap<String, Any> = mutableMapOf()
                 while (true) {
-                    val compoundTagType = VALUES[readUnsignedByte()]
+                    val compoundTagType = NBTTagTypes.VALUES[readUnsignedByte()]
                     if (compoundTagType === NBTTagTypes.END) {
                         // end tag
                         break
@@ -396,7 +395,7 @@ open class InByteBuffer {
                 InByteBuffer(Util.decompressGzip(readByteArray(length)), connection!!).readNBTTag(false)
             }
         }
-        val type = VALUES[readUnsignedByte()]
+        val type = NBTTagTypes.VALUES[readUnsignedByte()]
         if (type === NBTTagTypes.COMPOUND) {
             var name = readString(readUnsignedShort()) // ToDo
         }
@@ -406,5 +405,4 @@ open class InByteBuffer {
     fun getBase64(): String {
         return String(Base64.getEncoder().encode(readRest()))
     }
-
 }

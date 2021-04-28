@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.textures
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.assets.AssetsManager
 import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -24,10 +25,9 @@ import de.matthiasmann.twl.utils.PNGDecoder
 import glm_.vec2.Vec2
 import glm_.vec2.Vec2i
 import org.lwjgl.BufferUtils
-import org.lwjgl.opengl.GL12.glTexImage3D
-import org.lwjgl.opengl.GL12.glTexSubImage3D
 import org.lwjgl.opengl.GL30.*
 import org.lwjgl.opengl.GL31.GL_UNIFORM_BUFFER
+import org.lwjgl.opengl.GL31.glBindBuffer
 import java.nio.ByteBuffer
 
 class TextureArray(val allTextures: MutableList<Texture>) {
@@ -119,17 +119,129 @@ class TextureArray(val allTextures: MutableList<Texture>) {
         glBindTexture(GL_TEXTURE_2D_ARRAY, textureId)
         glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, GL_REPEAT)
         glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, GL_REPEAT)
-        glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
-        // glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR) // ToDo: This breaks transparency again
+        // glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
+        glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST)
         glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
+        glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAX_LEVEL, MAX_MIPMAP_LEVELS - 1)
 
-        glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, GL_RGBA, resolution, resolution, textures.size, 0, GL_RGBA, GL_UNSIGNED_BYTE, null as ByteBuffer?)
-
-        for (texture in textures) {
-            glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, texture.arrayLayer, texture.size.x, texture.size.y, 1, GL_RGBA, GL_UNSIGNED_BYTE, texture.buffer!!)
-            texture.buffer = null
+        for (i in 0 until MAX_MIPMAP_LEVELS) {
+            glTexImage3D(GL_TEXTURE_2D_ARRAY, i, GL_RGBA, resolution shr i, resolution shr i, textures.size, 0, GL_RGBA, GL_UNSIGNED_BYTE, null as ByteBuffer?)
         }
-        //  glGenerateMipmap(GL_TEXTURE_2D_ARRAY)
+        for (texture in textures) {
+            var lastBuffer = texture.buffer!!
+            var lastSize = texture.size
+            for (i in 0 until MAX_MIPMAP_LEVELS) {
+                val size = Vec2i(texture.size.x shr i, texture.size.y shr i)
+                if (i != 0) {
+                    lastBuffer = generateMipmap(lastBuffer, lastSize, size)
+                    lastSize = size
+                }
+                glTexSubImage3D(GL_TEXTURE_2D_ARRAY, i, 0, 0, texture.arrayLayer, size.x, size.y, i + 1, GL_RGBA, GL_UNSIGNED_BYTE, lastBuffer)
+            }
+        }
+    }
+
+    private fun ByteBuffer.getRGB(start: Int): RGBColor {
+        return RGBColor(get(start), get(start + 1), get(start + 2), get(start + 3))
+    }
+
+    private fun ByteBuffer.setRGB(start: Int, color: RGBColor) {
+        put(start, color.red.toByte())
+        put(start + 1, color.green.toByte())
+        put(start + 2, color.blue.toByte())
+        put(start + 3, color.alpha.toByte())
+    }
+
+    @Deprecated(message = "This is garbage, will be improved soon...")
+    private fun generateMipmap(biggerBuffer: ByteBuffer, oldSize: Vec2i, newSize: Vec2i): ByteBuffer {
+        val sizeFactor = oldSize / newSize
+        val buffer = BufferUtils.createByteBuffer(biggerBuffer.capacity() shr 1)
+        buffer.limit(buffer.capacity())
+
+        fun getRGB(x: Int, y: Int): RGBColor {
+            return biggerBuffer.getRGB((y * oldSize.x + x) * 4)
+        }
+
+        fun setRGB(x: Int, y: Int, color: RGBColor) {
+            buffer.setRGB((y * newSize.x + x) * 4, color)
+        }
+
+        for (y in 0 until newSize.y) {
+            for (x in 0 until newSize.x) {
+
+                // check what is the most used transparency
+                val transparencyPixelCount = IntArray(TextureTransparencies.VALUES.size)
+                for (mixY in 0 until sizeFactor.y) {
+                    for (mixX in 0 until sizeFactor.x) {
+                        val color = getRGB(x * sizeFactor.x + mixX, y * sizeFactor.y + mixY)
+                        when (color.alpha) {
+                            255 -> transparencyPixelCount[TextureTransparencies.OPAQUE.ordinal]++
+                            0 -> transparencyPixelCount[TextureTransparencies.TRANSPARENT.ordinal]++
+                            else -> transparencyPixelCount[TextureTransparencies.TRANSLUCENT.ordinal]++
+                        }
+                    }
+                }
+                var largest = 0
+                for (count in transparencyPixelCount) {
+                    if (count > largest) {
+                        largest = count
+                    }
+                }
+                var transparency: TextureTransparencies = TextureTransparencies.OPAQUE
+                for ((index, count) in transparencyPixelCount.withIndex()) {
+                    if (count >= largest) {
+                        transparency = TextureTransparencies.VALUES[index]
+                        break
+                    }
+                }
+
+                var count = 0
+                var red = 0
+                var green = 0
+                var blue = 0
+                var alpha = 0
+
+                // make magic for the most used transparency
+                for (mixY in 0 until sizeFactor.y) {
+                    for (mixX in 0 until sizeFactor.x) {
+                        val color = getRGB(x * sizeFactor.x + mixX, y * sizeFactor.y + mixY)
+                        when (transparency) {
+                            TextureTransparencies.OPAQUE -> {
+                                if (color.alpha != 0xFF) {
+                                    continue
+                                }
+                                red += color.red
+                                green += color.green
+                                blue += color.blue
+                                alpha += color.alpha
+                                count++
+                            }
+                            TextureTransparencies.TRANSPARENT -> {
+                            }
+                            TextureTransparencies.TRANSLUCENT -> {
+                                red += color.red
+                                green += color.green
+                                blue += color.blue
+                                alpha += color.alpha
+                                count++
+                            }
+                        }
+                    }
+                }
+
+
+
+
+
+                if (count == 0) {
+                    count++
+                }
+                setRGB(x, y, RGBColor(red / count, green / count, blue / count, alpha / count))
+            }
+        }
+
+        buffer.rewind()
+        return buffer
     }
 
 
@@ -146,6 +258,7 @@ class TextureArray(val allTextures: MutableList<Texture>) {
     companion object {
         val TEXTURE_RESOLUTION_ID_MAP = arrayOf(16, 32, 64, 128, 256, 512, 1024) // A 12x12 texture will be saved in texture id 0 (in 0 are only 16x16 textures). Animated textures get split
         const val TEXTURE_MAX_RESOLUTION = 1024
+        const val MAX_MIPMAP_LEVELS = 5
 
         private const val INTS_PER_ANIMATED_TEXTURE = 4
     }
