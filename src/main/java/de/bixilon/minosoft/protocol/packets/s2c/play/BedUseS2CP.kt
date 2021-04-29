@@ -12,24 +12,23 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play
 
-import de.bixilon.minosoft.modding.event.events.HeldItemChangeEvent
-import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
+import glm_.vec3.Vec3i
 
-class HotbarSlotSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
-    val slot: Int = buffer.readByte().toInt()
-
-    override fun handle(connection: PlayConnection) {
-        connection.fireEvent(HeldItemChangeEvent(connection, slot))
-
-        connection.player.inventoryManager.selectedHotbarSlot = slot
+class BedUseS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
+    val entityId: Int = buffer.readInt()
+    val blockPosition: Vec3i = if (buffer.versionId < ProtocolVersions.V_14W04A) {
+        buffer.readByteBlockPosition()
+    } else {
+        buffer.readBlockPosition()
     }
 
     override fun log() {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Hotbar slot set (slot=$slot)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Bed use (entityId=$entityId, blocKPosition=$blockPosition)" }
     }
 }

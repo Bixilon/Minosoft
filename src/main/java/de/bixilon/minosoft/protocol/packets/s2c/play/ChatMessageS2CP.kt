@@ -27,13 +27,11 @@ import java.util.*
 
 class ChatMessageS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     val message: ChatComponent = buffer.readChatComponent()
-    var position: ChatTextPositions
+    var position: ChatTextPositions = ChatTextPositions.CHAT_BOX
     var sender: UUID? = null
 
     init {
-        if (buffer.versionId < ProtocolVersions.V_14W04A) {
-            position = ChatTextPositions.CHAT_BOX
-        } else {
+        if (buffer.versionId >= ProtocolVersions.V_14W04A) {
             position = ChatTextPositions.byId(buffer.readUnsignedByte())
             if (buffer.versionId >= ProtocolVersions.V_20W21A) {
                 sender = buffer.readUUID()

@@ -12,47 +12,46 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play
 
-import de.bixilon.minosoft.data.entities.block.SignBlockEntity
-import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.modding.event.events.ExperienceChangeEvent
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
-import de.bixilon.minosoft.util.KUtil.unsafeCast
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
-import glm_.vec3.Vec3i
 
-class SetSignTextS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
-    val signPosition: Vec3i = if (buffer.versionId < ProtocolVersions.V_14W04A) {
-        buffer.readShortBlockPosition()
-    } else {
-        buffer.readBlockPosition()
-    }
-    val lines: Array<ChatComponent>
-
+class ExperienceSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
+    val bar = buffer.readFloat()
+    val level: Int
+    val total: Int
 
     init {
-        val lines: MutableList<ChatComponent> = mutableListOf()
-        for (i in 0 until ProtocolDefinition.SIGN_LINES) {
-            lines.add(buffer.readChatComponent())
+        if (buffer.versionId < ProtocolVersions.V_14W04A) {
+            level = buffer.readUnsignedShort()
+            total = buffer.readUnsignedShort()
+        } else {
+            level = buffer.readVarInt()
+            total = buffer.readVarInt()
         }
-        this.lines = lines.toTypedArray()
+    }
+
+    override fun check(connection: PlayConnection) {
+        check(bar in 0.0f..1.0f) { "Bar is invalid!" }
+        check(level >= 0) { "Level is negative is invalid!" }
+        check(total >= 0) { "Total experience is negative!" }
     }
 
     override fun handle(connection: PlayConnection) {
-        val signBlockEntity = connection.world.getBlockEntity(signPosition)?.unsafeCast<SignBlockEntity>() ?: let {
-            val blockEntity = SignBlockEntity(connection)
-            connection.world.setBlockEntity(signPosition, blockEntity)
-            blockEntity
+        if (connection.fireEvent(ExperienceChangeEvent(connection, this))) {
+            return
         }
-
-        signBlockEntity.lines = lines
+        connection.player.experienceCondition.level = level
+        connection.player.experienceCondition.experienceBarProgress = bar
+        connection.player.experienceCondition.totalExperience = total
     }
 
     override fun log() {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Sign data (position=$signPosition, lines=$lines" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Experience set (bar=$bar, level=$level, total=$total)" }
     }
 }

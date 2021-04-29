@@ -36,13 +36,13 @@ import de.bixilon.minosoft.protocol.packets.s2c.StatusS2CPacket
 import de.bixilon.minosoft.protocol.packets.s2c.login.*
 import de.bixilon.minosoft.protocol.packets.s2c.play.*
 import de.bixilon.minosoft.protocol.packets.s2c.play.border.*
-import de.bixilon.minosoft.protocol.packets.s2c.play.combat.CombatEventS2CPFactory
-import de.bixilon.minosoft.protocol.packets.s2c.play.combat.EndCombatEventS2CPacket
-import de.bixilon.minosoft.protocol.packets.s2c.play.combat.EnterCombatEventS2CPacket
-import de.bixilon.minosoft.protocol.packets.s2c.play.combat.EntityDeathCombatEventS2CPacket
+import de.bixilon.minosoft.protocol.packets.s2c.play.combat.CombatEventEndS2CP
+import de.bixilon.minosoft.protocol.packets.s2c.play.combat.CombatEventEnterS2CP
+import de.bixilon.minosoft.protocol.packets.s2c.play.combat.CombatEventKillS2CP
+import de.bixilon.minosoft.protocol.packets.s2c.play.combat.CombatEventS2CF
 import de.bixilon.minosoft.protocol.packets.s2c.play.title.*
-import de.bixilon.minosoft.protocol.packets.s2c.status.PacketStatusPong
 import de.bixilon.minosoft.protocol.packets.s2c.status.PacketStatusResponse
+import de.bixilon.minosoft.protocol.packets.s2c.status.StatusPongS2CP
 
 class PacketTypes {
 
@@ -146,7 +146,7 @@ class PacketTypes {
         val errorHandler: ErrorHandler? = null,
     ) {
         STATUS_RESPONSE(statusFactory = { PacketStatusResponse(it) }, isThreadSafe = false),
-        STATUS_PONG(statusFactory = { PacketStatusPong(it) }, isThreadSafe = false),
+        STATUS_PONG(statusFactory = { StatusPongS2CP(it) }, isThreadSafe = false),
         LOGIN_DISCONNECT({ PacketLoginDisconnect(it) }, isThreadSafe = false),
         LOGIN_ENCRYPTION_REQUEST({ PacketEncryptionRequest(it) }, isThreadSafe = false),
         LOGIN_LOGIN_SUCCESS({ PacketLoginSuccess(it) }, isThreadSafe = false),
@@ -156,12 +156,12 @@ class PacketTypes {
         PLAY_SPAWN_EXPERIENCE_ORB({ PacketSpawnExperienceOrb(it) }, isThreadSafe = false),
         PLAY_SPAWN_WEATHER_ENTITY({ PacketSpawnWeatherEntity(it) }, isThreadSafe = false),
         PLAY_SPAWN_PAINTING({ PacketSpawnPainting(it) }, isThreadSafe = false),
-        PLAY_SPAWN_PLAYER({ SpawnPlayerS2CP(it) }, isThreadSafe = false),
+        PLAY_PLAYER_ENTITY_SPAWN({ PlayerEntitySpawnS2CP(it) }, isThreadSafe = false),
         PLAY_ENTITY_ANIMATION({ EntityAnimationS2CP(it) }),
         PLAY_STATS_RESPONSE({ PacketStatistics(it) }),
         PLAY_ACKNOWLEDGE_PLAYER_DIGGING({ PacketAcknowledgePlayerDigging(it) }),
         PLAY_BLOCK_BREAK_ANIMATION({ PacketBlockBreakAnimation(it) }),
-        PLAY_BLOCK_ENTITY_DATA({ BlockEntityMetaDataS2CP(it) }),
+        PLAY_BLOCK_ENTITY_META_DATA({ BlockEntityMetaDataS2CP(it) }),
         PLAY_BLOCK_ACTION({ PacketBlockAction(it) }),
         PLAY_BLOCK_SET({ BlockSetS2CP(it) }),
         PLAY_BOSS_BAR({ PacketBossBar(it) }),
@@ -175,10 +175,10 @@ class PacketTypes {
         PLAY_WINDOW_ITEMS({ PacketWindowItems(it) }),
         PLAY_WINDOW_PROPERTY({ PacketWindowProperty(it) }),
         PLAY_SET_SLOT({ PacketSetSlot(it) }),
-        PLAY_SET_COOLDOWN({ PacketSetCooldown(it) }),
+        PLAY_ITEM_COOLDOWN_SET({ ItemCooldownSetS2CP(it) }),
         PLAY_PLUGIN_MESSAGE({ PacketPluginMessageReceiving(it) }),
         PLAY_NAMED_SOUND_EFFECT({ PacketNamedSoundEffect(it) }),
-        PLAY_DISCONNECT({ PacketDisconnect(it) }, isThreadSafe = false),
+        PLAY_KICK({ KickS2CP(it) }, isThreadSafe = false),
         PLAY_ENTITY_EVENT({ PacketEntityEvent(it) }),
         PLAY_EXPLOSION({ PacketExplosion(it) }),
         PLAY_UNLOAD_CHUNK({ PacketUnloadChunk(it) }),
@@ -198,14 +198,14 @@ class PacketTypes {
         PLAY_VEHICLE_MOVEMENT({ PacketVehicleMovement(it) }),
         PLAY_OPEN_BOOK({ PacketOpenBook(it) }),
         PLAY_OPEN_WINDOW({ PacketOpenWindow(it) }),
-        PLAY_OPEN_SIGN_EDITOR({ PacketOpenSignEditor(it) }),
+        PLAY_SIGN_EDITOR_OPEN({ SignEditorOpenS2CP(it) }),
         PLAY_CRAFT_RECIPE_RESPONSE({ PacketCraftRecipeResponse(it) }),
         PLAY_PLAYER_ABILITIES({ PlayerAbilitiesS2CP(it) }),
-        PLAY_COMBAT_EVENT({ CombatEventS2CPFactory.createPacket(it) }),
-        PLAY_COMBAT_EVENT_END({ EndCombatEventS2CPacket(it) }),
-        PLAY_COMBAT_EVENT_ENTER({ EnterCombatEventS2CPacket() }),
-        PLAY_COMBAT_EVENT_KILL({ EntityDeathCombatEventS2CPacket(it) }),
-        PLAY_TAB_LIST_ITEM({ TabListItemS2CP(it) }),
+        PLAY_COMBAT_EVENT({ CombatEventS2CF.createPacket(it) }),
+        PLAY_COMBAT_EVENT_END({ CombatEventEndS2CP(it) }),
+        PLAY_COMBAT_EVENT_ENTER({ CombatEventEnterS2CP() }),
+        PLAY_COMBAT_EVENT_KILL({ CombatEventKillS2CP(it) }),
+        PLAY_TAB_LIST_DATA({ TabListDataS2CP(it) }),
         PLAY_FACE_PLAYER({ PacketFacePlayer(it) }),
         PLAY_POSITION_AND_ROTATION({ PositionAndRotationS2CP(it) }),
         PLAY_UNLOCK_RECIPES({ PacketUnlockRecipes(it) }),
@@ -222,7 +222,7 @@ class PacketTypes {
         PLAY_WORLD_BORDER_SIZE({ SetSizeWorldBorderS2CPacket(it) }),
         PLAY_WORLD_BORDER_SET_WARN_TIME({ SetWarningTimeWorldBorderS2CPacket(it) }),
         PLAY_WORLD_BORDER_SET_WARN_BLOCKS({ SetWarningBlocksWorldBorderS2CPacket(it) }),
-        PLAY_CAMERA({ PacketCamera(it) }),
+        PLAY_CAMERA({ CameraS2CP(it) }),
         PLAY_HOTBAR_SLOT_SET({ HotbarSlotSetS2CP(it) }),
         PLAY_UPDATE_VIEW_POSITION({ PacketUpdateViewPosition(it) }),
         PLAY_DISPLAY_SCOREBOARD({ PacketScoreboardDisplayScoreboard(it) }),
@@ -230,14 +230,14 @@ class PacketTypes {
         PLAY_ATTACH_ENTITY({ PacketAttachEntity(it) }),
         PLAY_ENTITY_VELOCITY({ EntityVelocityS2CP(it) }),
         PLAY_ENTITY_EQUIPMENT({ PacketEntityEquipment(it) }),
-        PLAY_SET_EXPERIENCE({ SetExperienceS2CP(it) }),
+        PLAY_EXPERIENCE_SET({ ExperienceSetS2CP(it) }),
         PLAY_UPDATE_HEALTH({ PacketUpdateHealth(it) }),
         PLAY_SCOREBOARD_OBJECTIVE({ PacketScoreboardObjective(it) }),
         PLAY_SET_PASSENGERS({ PacketSetPassenger(it) }),
         PLAY_TEAMS({ PacketTeams(it) }),
         PLAY_UPDATE_SCORE({ PacketScoreboardUpdateScore(it) }),
         PLAY_SPAWN_POSITION({ PacketSpawnPosition(it) }),
-        PLAY_TIME_UPDATE({ PacketTimeUpdate(it) }),
+        PLAY_WORLD_TIME_SET({ WorldTimeSetS2CP(it) }),
         PLAY_ENTITY_SOUND_EFFECT({ PacketEntitySoundEffect(it) }),
         PLAY_SOUND_EFFECT({ PacketSoundEffect(it) }),
         PLAY_STOP_SOUND({ PacketStopSound(it) }),
@@ -250,20 +250,20 @@ class PacketTypes {
         PLAY_ENTITY_EFFECT({ PacketEntityEffect(it) }),
         PLAY_DECLARE_RECIPES({ PacketDeclareRecipes(it) }),
         PLAY_TAGS({ PacketTags(it) }),
-        PLAY_USE_BED({ PacketUseBed(it) }),
+        PLAY_BED_USE({ BedUseS2CP(it) }),
         PLAY_UPDATE_VIEW_DISTANCE({ PacketUpdateViewDistance(it) }),
         PLAY_MASS_CHUNK_DATA({ MassChunkDataS2CP(it) }),
-        PLAY_SIGN_TEXT_SET({ SetSignTextS2CP(it) }),
+        PLAY_SIGN_TEXT_SET({ SignTextSetS2CP(it) }),
         PLAY_STATISTICS({ PacketStatistics(it) }),
         PLAY_SPAWN_ENTITY({ PacketSpawnObject(it) }, isThreadSafe = false),
-        PLAY_TITLE({ TitleS2CPFactory.createPacket(it) }),
-        PLAY_CLEAR_TITLE({ TitleS2CPFactory.createClearTitlePacket(it) }),
-        PLAY_SET_ACTION_BAR_TEXT({ SetActionBarTextS2CPacket(it) }),
-        PLAY_SET_ACTION_SUBTITLE({ SetSubTitleS2CPacket(it) }),
-        PLAY_SET_TITLE({ SetTitleS2CPacket(it) }),
-        PLAY_SET_TIMES({ SetTimesAndDisplayS2CPacket(it) }),
-        PLAY_EMPTY_ENTITY_MOVEMENT({ EmptyEntityMovementS2CPacket(it) }, isThreadSafe = false),
-        PLAY_SET_COMPRESSION({ PacketSetCompression(it) }, isThreadSafe = false),
+        PLAY_TITLE({ TitleS2CF.createPacket(it) }),
+        PLAY_TITLE_CLEAR({ TitleS2CF.createClearTitlePacket(it) }),
+        PLAY_HOTBAR_TEXT_SET({ HotbarTextSetS2CP(it) }),
+        PLAY_SUB_TITLE_SET({ SubTitleSetS2CP(it) }),
+        PLAY_TITLE_SET({ TitleSetS2CP(it) }),
+        PLAY_TIMES_SET({ TitleTimesSetS2CP(it) }),
+        PLAY_EMPTY_ENTITY_MOVE({ EmptyEntityMoveS2CP(it) }, isThreadSafe = false),
+        PLAY_COMPRESSION_SET({ CompressionSetS2CP(it) }, isThreadSafe = false),
         PLAY_ADVANCEMENT_PROGRESS({ TODO() }),
         PLAY_SCULK_VIBRATION_SIGNAL({ PacketSculkVibrationSignal(it) }),
         ;

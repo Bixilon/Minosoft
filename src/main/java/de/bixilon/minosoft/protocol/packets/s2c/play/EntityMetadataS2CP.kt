@@ -24,12 +24,12 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 
 class EntityMetadataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     val entityId = buffer.readEntityId()
-    val entityData: EntityMetaData = buffer.readMetaData()
+    val metaData: EntityMetaData = buffer.readMetaData()
 
     override fun handle(connection: PlayConnection) {
         val entity = connection.world.entities[entityId] ?: return
 
-        entity.entityMetaData = entityData
+        entity.entityMetaData = metaData
         connection.fireEvent(EntityMetaDataChangeEvent(connection, entity))
 
         if (entity === connection.player.entity) {
@@ -38,6 +38,6 @@ class EntityMetadataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     }
 
     override fun log() {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "[IN] Received entity metadata (entityId=$entityId)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Entity metadata (entityId=$entityId, metaData=$metaData)" }
     }
 }

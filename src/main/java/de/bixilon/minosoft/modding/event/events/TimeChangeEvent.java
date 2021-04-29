@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.modding.event.events;
 
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
-import de.bixilon.minosoft.protocol.packets.s2c.play.PacketTimeUpdate;
+import de.bixilon.minosoft.protocol.packets.s2c.play.WorldTimeSetS2CP;
 
 public class TimeChangeEvent extends CancelableEvent {
     private final long worldAge;
@@ -26,7 +26,7 @@ public class TimeChangeEvent extends CancelableEvent {
         this.timeOfDay = timeOfDay;
     }
 
-    public TimeChangeEvent(PlayConnection connection, PacketTimeUpdate pkg) {
+    public TimeChangeEvent(PlayConnection connection, WorldTimeSetS2CP pkg) {
         super(connection);
         this.worldAge = pkg.getWorldAge();
         this.timeOfDay = pkg.getTimeOfDay();

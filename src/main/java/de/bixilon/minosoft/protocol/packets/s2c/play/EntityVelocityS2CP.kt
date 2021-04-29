@@ -31,6 +31,6 @@ class EntityVelocityS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     }
 
     override fun log() {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "[IN] Entity velocity changed(entityId=$entityId, velocity=$velocity)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Entity velocity (entityId=$entityId, velocity=$velocity)" }
     }
 }

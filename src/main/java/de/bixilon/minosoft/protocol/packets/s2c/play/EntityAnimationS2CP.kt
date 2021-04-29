@@ -26,7 +26,7 @@ class EntityAnimationS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
 
 
     override fun log() {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Play entity animation (entityId=$entityId, animation=$animation)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Entity animation (entityId=$entityId, animation=$animation)" }
     }
 
     enum class EntityAnimations {

@@ -15,7 +15,7 @@ package de.bixilon.minosoft.modding.event.events;
 
 import de.bixilon.minosoft.data.player.tab.TabListItemData;
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
-import de.bixilon.minosoft.protocol.packets.s2c.play.TabListItemS2CP;
+import de.bixilon.minosoft.protocol.packets.s2c.play.TabListDataS2CP;
 
 import java.util.Map;
 import java.util.UUID;
@@ -28,7 +28,7 @@ public class PlayerListItemChangeEvent extends CancelableEvent {
         this.items = items;
     }
 
-    public PlayerListItemChangeEvent(PlayConnection connection, TabListItemS2CP pkg) {
+    public PlayerListItemChangeEvent(PlayConnection connection, TabListDataS2CP pkg) {
         super(connection);
         this.items = pkg.getItems();
     }

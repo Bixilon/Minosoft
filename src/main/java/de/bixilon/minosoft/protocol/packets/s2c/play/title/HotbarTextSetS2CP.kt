@@ -13,12 +13,21 @@
 
 package de.bixilon.minosoft.protocol.packets.s2c.play.title
 
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
 
-class HideTitleS2CPacket : PlayS2CPacket() {
+class HotbarTextSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
+    val text = buffer.readChatComponent()
 
     override fun log() {
-        Log.protocol("[IN] Received hide title")
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Hotbar text set (text=$text)" }
+    }
+
+    override fun handle(connection: PlayConnection) {
+        Log.log(LogMessageType.CHAT_IN) { "[HOTBAR] $text" }
     }
 }

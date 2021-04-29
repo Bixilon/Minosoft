@@ -23,7 +23,7 @@ import de.bixilon.minosoft.data.mappings.registry.PerVersionRegistry
 import de.bixilon.minosoft.data.mappings.registry.Registry
 import de.bixilon.minosoft.protocol.packets.c2s.play.EntityActionC2SP
 import de.bixilon.minosoft.protocol.packets.s2c.play.EntityAnimationS2CP
-import de.bixilon.minosoft.protocol.packets.s2c.play.title.TitleS2CPFactory
+import de.bixilon.minosoft.protocol.packets.s2c.play.title.TitleS2CF
 import de.bixilon.minosoft.util.json.ResourceLocationJsonMap.toResourceLocationMap
 
 object DefaultRegistries {
@@ -38,7 +38,7 @@ object DefaultRegistries {
 
     val ENTITY_META_DATA_DATA_TYPES_REGISTRY = PerVersionEnumRegistry(EntityMetaData.EntityMetaDataDataTypes)
 
-    val TITLE_ACTIONS_REGISTRY = PerVersionEnumRegistry(TitleS2CPFactory.TitleActions)
+    val TITLE_ACTIONS_REGISTRY = PerVersionEnumRegistry(TitleS2CF.TitleActions)
 
     val ENTITY_ANIMATION_REGISTRY = PerVersionEnumRegistry(EntityAnimationS2CP.EntityAnimations)
     val ENTITY_ACTIONS_REGISTRY = PerVersionEnumRegistry(EntityActionC2SP.EntityActions)

@@ -16,13 +16,15 @@ package de.bixilon.minosoft.protocol.packets.s2c.play.combat
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
 
-class EntityDeathCombatEventS2CPacket(buffer: PlayInByteBuffer) : PlayS2CPacket() {
-    val playerId = buffer.readVarInt()
-    val entityId = buffer.readInt()
+class CombatEventKillS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
+    val killerEntityId = buffer.readVarInt()
+    val deadEntityId = buffer.readInt()
     val message = buffer.readChatComponent()
 
     override fun log() {
-        Log.protocol("[IN] Received entity dead combat event (playerId=%$playerId, entityId=$entityId, message=$message)")
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Combat event kill (killerEntityId=$killerEntityId, deadEntityId=$deadEntityId, message=$message )" }
     }
 }

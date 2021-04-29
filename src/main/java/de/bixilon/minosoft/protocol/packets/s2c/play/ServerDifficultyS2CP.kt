@@ -22,7 +22,7 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
 class ServerDifficultyS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
-    val difficulty: Difficulties = Difficulties.byId(buffer.readUnsignedByte().toInt())
+    val difficulty: Difficulties = Difficulties.byId(buffer.readUnsignedByte())
     var locked = false
         private set
 

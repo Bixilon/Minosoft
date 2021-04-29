@@ -10,26 +10,15 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.protocol.packets.s2c.play
+package de.bixilon.minosoft.protocol.packets.s2c.interfaces
 
-import de.bixilon.minosoft.modding.event.events.HeldItemChangeEvent
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
-import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
-import de.bixilon.minosoft.util.logging.Log
-import de.bixilon.minosoft.util.logging.LogLevels
-import de.bixilon.minosoft.util.logging.LogMessageType
 
-class HotbarSlotSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
-    val slot: Int = buffer.readByte().toInt()
+abstract class CompressionThresholdChange : PlayS2CPacket() {
+    abstract val threshold: Int
 
     override fun handle(connection: PlayConnection) {
-        connection.fireEvent(HeldItemChangeEvent(connection, slot))
-
-        connection.player.inventoryManager.selectedHotbarSlot = slot
-    }
-
-    override fun log() {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Hotbar slot set (slot=$slot)" }
+        connection.network.setCompressionThreshold(threshold)
     }
 }

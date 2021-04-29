@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.modding.event.events;
 
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
-import de.bixilon.minosoft.protocol.packets.s2c.play.PacketOpenSignEditor;
+import de.bixilon.minosoft.protocol.packets.s2c.play.SignEditorOpenS2CP;
 import glm_.vec3.Vec3i;
 
 public class OpenSignEditorEvent extends CancelableEvent {
@@ -25,9 +25,9 @@ public class OpenSignEditorEvent extends CancelableEvent {
         this.position = position;
     }
 
-    public OpenSignEditorEvent(PlayConnection connection, PacketOpenSignEditor pkg) {
+    public OpenSignEditorEvent(PlayConnection connection, SignEditorOpenS2CP pkg) {
         super(connection);
-        this.position = pkg.getPosition();
+        this.position = pkg.getBlockPosition();
     }
 
     public Vec3i getPosition() {

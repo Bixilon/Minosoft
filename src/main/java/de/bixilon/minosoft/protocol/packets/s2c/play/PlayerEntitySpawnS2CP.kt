@@ -29,7 +29,7 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 import glm_.vec3.Vec3
 import java.util.*
 
-class SpawnPlayerS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
+class PlayerEntitySpawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     private val entityId: Int
     private var entityUUID: UUID? = null
     val entity: PlayerEntity
@@ -91,6 +91,6 @@ class SpawnPlayerS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     }
 
     override fun log() {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Player spawned (position=${entity.position}, entityId=$entityId, name=${entity.name}, uuid=$entityUUID)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Player entity spawn (position=${entity.position}, entityId=$entityId, name=${entity.name}, uuid=$entityUUID)" }
     }
 }

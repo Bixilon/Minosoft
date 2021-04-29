@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.modding.event.events;
 
 import de.bixilon.minosoft.protocol.network.connection.StatusConnection;
-import de.bixilon.minosoft.protocol.packets.s2c.status.PacketStatusPong;
+import de.bixilon.minosoft.protocol.packets.s2c.status.StatusPongS2CP;
 
 /**
  * Fired when the connection status is "STATUS" and the ping gets pack (pong)
@@ -27,7 +27,7 @@ public class StatusPongEvent extends ConnectionEvent {
         this.pongId = pongId;
     }
 
-    public StatusPongEvent(StatusConnection connection, PacketStatusPong pkg) {
+    public StatusPongEvent(StatusConnection connection, StatusPongS2CP pkg) {
         super(connection);
         this.pongId = pkg.getPingId();
     }

@@ -10,27 +10,18 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.protocol.packets.s2c.play
 
-package de.bixilon.minosoft.protocol.packets.s2c.play;
+import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
 
-import de.bixilon.minosoft.protocol.packets.s2c.interfaces.CompressionThresholdChange;
-import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
-import de.bixilon.minosoft.util.logging.Log;
+class CameraS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
+    val entityId: Int = buffer.readVarInt()
 
-public class PacketSetCompression extends CompressionThresholdChange {
-    private final int threshold;
-
-    public PacketSetCompression(PlayInByteBuffer buffer) {
-        this.threshold = buffer.readVarInt();
-    }
-
-    @Override
-    public void log() {
-        Log.protocol(String.format("[IN] Received set compression packet (threshold=%d)", this.threshold));
-    }
-
-    @Override
-    public int getThreshold() {
-        return this.threshold;
+    override fun log() {
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Camera (entityId=$entityId)" }
     }
 }

@@ -34,15 +34,16 @@ import glm_.vec2.Vec2i
 import glm_.vec3.Vec3i
 import java.util.*
 
-class ChunkDataS2CP() : PlayS2CPacket() {
-    private val blockEntities: MutableMap<Vec3i, BlockEntity> = mutableMapOf()
-    lateinit var chunkPosition: Vec2i
+class ChunkDataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
+    val blockEntities: MutableMap<Vec3i, BlockEntity> = mutableMapOf()
+    val chunkPosition: Vec2i
     var chunkData: ChunkData? = ChunkData()
         private set
     var heightMap: Map<String, Any>? = null
+        private set
     private var isFullChunk = false
 
-    constructor(buffer: PlayInByteBuffer) : this() {
+    init {
         val dimension = buffer.connection.world.dimension!!
         chunkPosition = Vec2i(buffer.readInt(), buffer.readInt())
         if (buffer.versionId < ProtocolVersions.V_20W45A) {
@@ -64,59 +65,57 @@ class ChunkDataS2CP() : PlayS2CPacket() {
                 // unload chunk
                 chunkData = null
             }
-            return
-        }
-
-        if (buffer.versionId >= ProtocolVersions.V_1_16_PRE7 && buffer.versionId < ProtocolVersions.V_1_16_2_PRE2) {
-            buffer.readBoolean() // ToDo: ignore old data???
-        }
-        val sectionBitMask: BitSet = when {
-            buffer.versionId < ProtocolVersions.V_15W34C -> {
-                BitSet.valueOf(buffer.readByteArray(2))
+        } else {
+            if (buffer.versionId >= ProtocolVersions.V_1_16_PRE7 && buffer.versionId < ProtocolVersions.V_1_16_2_PRE2) {
+                buffer.readBoolean() // ToDo: ignore old data???
             }
-            buffer.versionId < ProtocolVersions.V_15W36D -> {
-                BitSet.valueOf(buffer.readByteArray(4))
+            val sectionBitMask: BitSet = when {
+                buffer.versionId < ProtocolVersions.V_15W34C -> {
+                    BitSet.valueOf(buffer.readByteArray(2))
+                }
+                buffer.versionId < ProtocolVersions.V_15W36D -> {
+                    BitSet.valueOf(buffer.readByteArray(4))
+                }
+                buffer.versionId < ProtocolVersions.V_21W03A -> {
+                    BitSet.valueOf(longArrayOf(buffer.readVarInt().toLong()))
+                }
+                else -> {
+                    BitSet.valueOf(buffer.readLongArray())
+                }
             }
-            buffer.versionId < ProtocolVersions.V_21W03A -> {
-                BitSet.valueOf(longArrayOf(buffer.readVarInt().toLong()))
+            if (buffer.versionId >= ProtocolVersions.V_18W44A) {
+                heightMap = buffer.readNBT()?.compoundCast()
             }
-            else -> {
-                BitSet.valueOf(buffer.readLongArray())
+            if (!isFullChunk) {
+                chunkData!!.biomeSource = SpatialBiomeArray(buffer.readBiomeArray())
+            }
+            val size = buffer.readVarInt()
+            val lastPos = buffer.pointer
+            if (size > 0) {
+                ChunkUtil.readChunkPacket(buffer, dimension, sectionBitMask, null, !isFullChunk, dimension.hasSkyLight)?.let {
+                    chunkData!!.replace(it)
+                } ?: let {
+                    chunkData = null
+                }
+                // set position of the byte buffer, because of some reasons HyPixel makes some weird stuff and sends way to much 0 bytes. (~ 190k), thanks @pokechu22
+                buffer.pointer = size + lastPos
+            }
+            if (buffer.versionId >= ProtocolVersions.V_1_9_4) {
+                val blockEntitiesCount = buffer.readVarInt()
+                for (i in 0 until blockEntitiesCount) {
+                    val nbt = buffer.readNBT()?.compoundCast()!!
+                    val position = Vec3i(nbt["x"]?.nullCast<Int>()!!, nbt["y"]?.nullCast<Int>()!!, nbt["z"]?.nullCast<Int>()!!)
+                    val resourceLocation = ResourceLocation(nbt["id"]?.nullCast<String>()!!)
+                    val type = buffer.connection.mapping.blockEntityRegistry.get(resourceLocation) ?: let {
+                        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.WARN) { "Unknown block entity: $resourceLocation" }
+                        null
+                    } ?: continue
+                    val entity = type.build(buffer.connection) ?: continue
+                    entity.updateNBT(nbt)
+                    blockEntities[position] = entity
+                }
             }
         }
-        if (buffer.versionId >= ProtocolVersions.V_18W44A) {
-            heightMap = buffer.readNBT()?.compoundCast()
-        }
-        if (!isFullChunk) {
-            chunkData!!.biomeSource = SpatialBiomeArray(buffer.readBiomeArray())
-        }
-        val size = buffer.readVarInt()
-        val lastPos = buffer.pointer
-        if (size > 0) {
-            ChunkUtil.readChunkPacket(buffer, dimension, sectionBitMask, null, !isFullChunk, dimension.hasSkyLight)?.let {
-                chunkData!!.replace(it)
-            } ?: let {
-                chunkData = null
-            }
-            // set position of the byte buffer, because of some reasons HyPixel makes some weird stuff and sends way to much 0 bytes. (~ 190k), thanks @pokechu22
-            buffer.pointer = size + lastPos
-        }
-        if (buffer.versionId >= ProtocolVersions.V_1_9_4) {
-            val blockEntitiesCount = buffer.readVarInt()
-            for (i in 0 until blockEntitiesCount) {
-                val nbt = buffer.readNBT()?.compoundCast()!!
-                val position = Vec3i(nbt["x"]?.nullCast<Int>()!!, nbt["y"]?.nullCast<Int>()!!, nbt["z"]?.nullCast<Int>()!!)
-                val resourceLocation = ResourceLocation(nbt["id"]?.nullCast<String>()!!)
-                val type = buffer.connection.mapping.blockEntityRegistry.get(resourceLocation) ?: let {
-                    Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.WARN) { "Unknown block entity: $resourceLocation" }
-                    null
-                } ?: continue
-                val entity = type.build(buffer.connection) ?: continue
-                entity.updateNBT(nbt)
-                blockEntities[position] = entity
-            }
-        }
-        return
     }
 
     override fun handle(connection: PlayConnection) {

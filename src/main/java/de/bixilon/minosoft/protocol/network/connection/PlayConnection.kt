@@ -180,7 +180,7 @@ class PlayConnection(
                 return@let null
             }
             val playPacket = version.getPacketById(ConnectionStates.PLAY, packetId)
-            if (playPacket == PacketTypes.S2C.PLAY_DISCONNECT) {
+            if (playPacket == PacketTypes.S2C.PLAY_KICK) {
                 return@let playPacket
             }
             null

@@ -30,7 +30,7 @@ import java.nio.charset.StandardCharsets
 import java.util.*
 
 
-class TabListItemS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
+class TabListDataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     val items: MutableMap<UUID, TabListItemData> = mutableMapOf()
 
     init {
@@ -175,7 +175,7 @@ class TabListItemS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     }
 
     override fun log() {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Received tab list items: $items" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Tab list data (items=$items)" }
     }
 
 

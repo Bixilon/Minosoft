@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.modding.event.events;
 
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
-import de.bixilon.minosoft.protocol.packets.s2c.play.PacketCamera;
+import de.bixilon.minosoft.protocol.packets.s2c.play.CameraS2CP;
 
 /**
  * Fired when the player should spectate an entity
@@ -27,7 +27,7 @@ public class EntitySpectateEvent extends PlayConnectionEvent {
         this.entityId = entityId;
     }
 
-    public EntitySpectateEvent(PlayConnection connection, PacketCamera pkg) {
+    public EntitySpectateEvent(PlayConnection connection, CameraS2CP pkg) {
         super(connection);
         this.entityId = pkg.getEntityId();
     }
