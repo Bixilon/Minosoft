@@ -63,5 +63,4 @@ void main() {
     passSecondTextureCoordinates = vec3(textureIndex, secondTexture & 0xFFFFFFu);
 
     passInterpolateBetweenTextures = interpolation / 100.0f;
-
 }

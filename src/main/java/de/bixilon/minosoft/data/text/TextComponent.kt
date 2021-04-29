@@ -170,33 +170,43 @@ open class TextComponent(
         // bring chars in right order and reverse them if right bound
         val charArray = this.message.toCharArray().toList()
 
+        fun checkGetSize(charEnd: Vec2i) {
+            if (charEnd.x > getProperties.size.x) {
+                getProperties.size.x = charEnd.x
+            }
+            if (charEnd.y > getProperties.size.y) {
+                getProperties.size.y = charEnd.y
+            }
+        }
+
+        fun pushNewLine() {
+            offset.x = 0
+            offset.y += Font.CHAR_HEIGHT + RenderConstants.TEXT_LINE_PADDING
+
+            checkGetSize(Vec2i(0, 0))
+        }
 
         // add all chars
         for (char in charArray) {
-            if (char == '\n') {
-                offset.x = 0
-                val yOffset = Font.CHAR_HEIGHT + RenderConstants.TEXT_LINE_PADDING
-                offset.y += yOffset
-                getProperties.size.y += yOffset
+            if (ProtocolDefinition.LINE_BREAK_CHARS.contains(char)) {
+                pushNewLine()
                 continue
             }
             val fontChar = renderWindow.font.getChar(char)
-            val scaledWidth = (fontChar.size.x * (Font.CHAR_HEIGHT / fontChar.height.toFloat())).toInt()
+            val charSize = fontChar.size
 
-            val charStart = startPosition + offset
-            textElement.addChild(charStart, ImageNode(renderWindow, NodeSizing(minSize = Vec2i(scaledWidth, Font.CHAR_HEIGHT)), fontChar, 1, color))
+            var charStart = Vec2i(offset)
+            var charEnd = charStart + charSize
 
-            // ad spacer between chars
-            offset.x += scaledWidth + Font.SPACE_BETWEEN_CHARS
-            if (offset.x > getProperties.size.x) {
-                getProperties.size.x += scaledWidth + Font.SPACE_BETWEEN_CHARS
+            if (charEnd.x >= setProperties.hardWrap) {
+                pushNewLine()
+                charStart = Vec2i(offset)
+                charEnd = charStart + charSize
             }
-            if (offset.y >= getProperties.size.y) {
-                if (getProperties.size.y < fontChar.height) {
-                    getProperties.size.y = fontChar.height
-                }
-                getProperties.lines = (offset.y + Font.CHAR_HEIGHT) / (Font.CHAR_HEIGHT + RenderConstants.TEXT_LINE_PADDING)
-            }
+            textElement.addChild(charStart + startPosition, ImageNode(renderWindow, NodeSizing(minSize = charSize), fontChar, 1, color))
+            offset.x += charSize.x + Font.SPACE_BETWEEN_CHARS
+
+            checkGetSize(charEnd)
         }
     }
 }

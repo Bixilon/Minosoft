@@ -106,6 +106,8 @@ public final class ProtocolDefinition {
 
     public static final RGBColor DEFAULT_COLOR = ChatColors.WHITE;
 
+    public static final char[] LINE_BREAK_CHARS = {'\n', '\r'};
+
 
     public static final String[] RELEVANT_MINECRAFT_ASSETS = {"minecraft/lang/", "minecraft/sounds.json", "minecraft/sounds/", "minecraft/textures/", "minecraft/font/"}; // whitelist for all assets we care (we have our own block models, etc)
 

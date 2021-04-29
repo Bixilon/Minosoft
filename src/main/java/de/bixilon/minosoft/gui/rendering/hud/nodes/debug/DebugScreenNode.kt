@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.rendering.hud.nodes.debug
 
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.hud.nodes.HUDElement
 import de.bixilon.minosoft.gui.rendering.hud.nodes.primitive.LabelNode
@@ -25,7 +24,7 @@ abstract class DebugScreenNode(hudRenderer: HUDRenderer) : HUDElement(hudRendere
 
     fun text(text: String = ""): LabelNode {
         val textElement = LabelNode(hudRenderer.renderWindow, text = ChatComponent.of(text))
-        layout.addChild(Vec2i(0, layout.sizing.currentSize.y + RenderConstants.TEXT_LINE_PADDING), textElement)
+        layout.addChild(Vec2i(0, layout.sizing.currentSize.y), textElement)
         layout.apply()
         return textElement
     }

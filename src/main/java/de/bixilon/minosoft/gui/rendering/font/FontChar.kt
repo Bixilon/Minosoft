@@ -25,7 +25,7 @@ data class FontChar(
     val column: Int,
     var startPixel: Int,
     var endPixel: Int,
-    val height: Int,
+    private val height: Int,
 ) : TextureLike {
     override lateinit var uvStart: Vec2
         private set

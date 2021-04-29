@@ -23,6 +23,5 @@ enum class Hands {
     companion object : ValuesEnum<Hands> {
         override val VALUES: Array<Hands> = values()
         override val NAME_MAP: Map<String, Hands> = KUtil.getEnumValues(VALUES)
-
     }
 }

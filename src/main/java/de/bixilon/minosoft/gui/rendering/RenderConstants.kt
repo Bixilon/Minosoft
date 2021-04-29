@@ -45,7 +45,7 @@ object RenderConstants {
 
     val TEXT_BACKGROUND_COLOR = RGBColor(0, 0, 0, 80)
 
-    const val TEXT_LINE_PADDING = 0
+    const val TEXT_LINE_PADDING = 2
     val WORD_SEPARATORS = arrayOf(' ', '.', ',', '!', '-', '?')
 
     const val CHUNK_SECTIONS_PER_MESH = 1

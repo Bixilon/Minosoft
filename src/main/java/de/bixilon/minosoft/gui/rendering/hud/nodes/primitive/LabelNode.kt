@@ -26,7 +26,7 @@ import glm_.vec2.Vec2i
 
 class LabelNode(
     renderWindow: RenderWindow,
-    sizing: NodeSizing = NodeSizing(minSize = Vec2i(0, Font.CHAR_HEIGHT)),
+    sizing: NodeSizing = NodeSizing(minSize = Vec2i(0, Font.CHAR_HEIGHT + 2 * TEXT_BACKGROUND_OFFSET)),
     text: ChatComponent = ChatComponent.of(""),
     var background: Boolean = true,
     val setProperties: TextSetProperties = TextSetProperties(),
@@ -54,15 +54,20 @@ class LabelNode(
     private fun prepare() {
         clearChildren()
         getProperties = TextGetProperties()
-        text.prepareRender(Vec2i(1, 1), Vec2i(), renderWindow, this, 1, setProperties, getProperties)
-        apply()
+        val textStartPosition = Vec2i(TEXT_BACKGROUND_OFFSET, TEXT_BACKGROUND_OFFSET)
+        text.prepareRender(textStartPosition, Vec2i(), renderWindow, this, 1, setProperties, getProperties)
 
-        if (background) {
-            drawBackground(getProperties.size + 1)
+        if (background && text.message.isNotBlank()) {
+            drawBackground(getProperties.size + textStartPosition + TEXT_BACKGROUND_OFFSET)
         }
+        apply()
     }
 
     private fun drawBackground(end: Vec2i, z: Int = 1, tintColor: RGBColor = RenderConstants.TEXT_BACKGROUND_COLOR) {
         addChild(Vec2i(0, 0), ImageNode(renderWindow, NodeSizing(minSize = end), renderWindow.WHITE_TEXTURE, 0, tintColor))
+    }
+
+    companion object {
+        private const val TEXT_BACKGROUND_OFFSET = 1
     }
 }

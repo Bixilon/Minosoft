@@ -193,7 +193,6 @@ class BaseComponent : ChatComponent {
         return legacyText
     }
 
-
     private fun <T> MutableSet<T>.addOrRemove(value: T, addOrRemove: Boolean?) {
         if (addOrRemove == null) {
             return
