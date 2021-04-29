@@ -14,7 +14,7 @@ package de.bixilon.minosoft.data.text
 
 import org.checkerframework.common.value.qual.IntRange
 
-class RGBColor(val color: Int) : ChatCode {
+class RGBColor(val rgba: Int) : ChatCode {
 
     @JvmOverloads
     constructor(red: Int, green: Int, blue: Int, alpha: Int = 0xFF) : this(alpha or (blue shl 8) or (green shl 16) or (red shl 24))
@@ -24,22 +24,31 @@ class RGBColor(val color: Int) : ChatCode {
     constructor(colorString: String) : this(colorString.toColorInt())
 
     val alpha: @IntRange(from = 0.toLong(), to = 255.toLong()) Int
-        get() = color and 0xFF
+        get() = rgba and 0xFF
+
     val red: @IntRange(from = 0.toLong(), to = 255.toLong()) Int
-        get() = color ushr 24 and 0xFF
+        get() = rgba ushr 24 and 0xFF
+
     val floatRed: @IntRange(from = 0.toLong(), to = 1.toLong()) Float
         get() = red / COLOR_FLOAT_DIVIDER
+
     val green: @IntRange(from = 0.toLong(), to = 255.toLong()) Int
-        get() = color ushr 16 and 0xFF
+        get() = rgba ushr 16 and 0xFF
+
     val floatGreen: @IntRange(from = 0.toLong(), to = 1.toLong()) Float
         get() = green / COLOR_FLOAT_DIVIDER
+
     val blue: @IntRange(from = 0.toLong(), to = 255.toLong()) Int
-        get() = color ushr 8 and 0xFF
+        get() = rgba ushr 8 and 0xFF
+
     val floatBlue: @IntRange(from = 0.toLong(), to = 1.toLong()) Float
         get() = blue / COLOR_FLOAT_DIVIDER
 
+    val rgb: Int
+        get() = rgba ushr 8
+
     override fun hashCode(): Int {
-        return color
+        return rgba
     }
 
     override fun equals(other: Any?): Boolean {
@@ -47,19 +56,20 @@ class RGBColor(val color: Int) : ChatCode {
             return true
         }
         val their = other as RGBColor? ?: return false
-        return color == their.color
+        return rgba == their.rgba
     }
 
     override fun toString(): String {
         return if (alpha != 255) {
-            String.format("#%08X", color)
+            String.format("#%08X", rgba)
         } else {
-            String.format("#%06X", 0xFFFFFF and color)
+            String.format("#%06X", 0xFFFFFF and rgba)
         }
     }
 
     companion object {
         private const val COLOR_FLOAT_DIVIDER = 255.0f
+
         fun noAlpha(color: Int): RGBColor {
             return RGBColor(color shl 8 or 0xFF)
         }

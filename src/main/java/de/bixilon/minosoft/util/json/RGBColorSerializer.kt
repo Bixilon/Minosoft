@@ -35,9 +35,9 @@ object RGBColorSerializer : JsonAdapter<RGBColor>() {
             jsonWriter.nullValue()
             return
         }
-        if (color.color == 0) {
+        if (color.rgba == 0) {
             jsonWriter.nullValue()
         }
-        jsonWriter.value(color.color)
+        jsonWriter.value(color.rgba)
     }
 }

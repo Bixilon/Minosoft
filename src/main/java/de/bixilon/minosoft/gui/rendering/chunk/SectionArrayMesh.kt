@@ -48,7 +48,7 @@ class SectionArrayMesh : Mesh(initialCacheSize = 100000) {
             textureCoordinates.y * texture.uvEnd.y,
             Float.fromBits(textureLayer),
             Float.fromBits(texture.properties.animation?.animationId ?: -1),
-            Float.fromBits(lightColor.color ushr 8),
+            Float.fromBits(lightColor.rgb),
         ))
     }
 

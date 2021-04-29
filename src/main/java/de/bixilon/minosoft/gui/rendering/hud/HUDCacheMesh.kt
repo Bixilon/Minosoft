@@ -38,7 +38,7 @@ class HUDCacheMesh(
             if (tintColor == null) {
                 0.0f
             } else {
-                Float.fromBits(tintColor.color)
+                Float.fromBits(tintColor.rgba)
             },
         ))
     }
