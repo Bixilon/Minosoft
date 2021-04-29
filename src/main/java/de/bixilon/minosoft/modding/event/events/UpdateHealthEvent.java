@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.modding.event.events;
 
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
-import de.bixilon.minosoft.protocol.packets.s2c.play.PacketUpdateHealth;
+import de.bixilon.minosoft.protocol.packets.s2c.play.HealthSetS2CP;
 
 public class UpdateHealthEvent extends PlayConnectionEvent {
     private final float health;
@@ -28,10 +28,10 @@ public class UpdateHealthEvent extends PlayConnectionEvent {
         this.saturation = saturation;
     }
 
-    public UpdateHealthEvent(PlayConnection connection, PacketUpdateHealth pkg) {
+    public UpdateHealthEvent(PlayConnection connection, HealthSetS2CP pkg) {
         super(connection);
-        this.health = pkg.getHealth();
-        this.food = pkg.getFood();
+        this.health = pkg.getHp();
+        this.food = pkg.getHunger();
         this.saturation = pkg.getSaturation();
     }
 

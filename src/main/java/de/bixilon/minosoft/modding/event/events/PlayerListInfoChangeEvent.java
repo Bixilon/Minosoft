@@ -15,7 +15,7 @@ package de.bixilon.minosoft.modding.event.events;
 
 import de.bixilon.minosoft.data.text.ChatComponent;
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
-import de.bixilon.minosoft.protocol.packets.s2c.play.PacketTabHeaderAndFooter;
+import de.bixilon.minosoft.protocol.packets.s2c.play.TabListTextSetS2CP;
 
 public class PlayerListInfoChangeEvent extends CancelableEvent {
     private final ChatComponent header;
@@ -27,7 +27,7 @@ public class PlayerListInfoChangeEvent extends CancelableEvent {
         this.footer = footer;
     }
 
-    public PlayerListInfoChangeEvent(PlayConnection connection, PacketTabHeaderAndFooter pkg) {
+    public PlayerListInfoChangeEvent(PlayConnection connection, TabListTextSetS2CP pkg) {
         super(connection);
         this.header = pkg.getHeader();
         this.footer = pkg.getFooter();

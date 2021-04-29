@@ -11,37 +11,36 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.protocol.packets.s2c.play;
+package de.bixilon.minosoft.modding.event.events;
 
-import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket;
-import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
-import de.bixilon.minosoft.util.logging.Log;
+import de.bixilon.minosoft.data.inventory.ItemStack;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
+import de.bixilon.minosoft.protocol.packets.s2c.play.ContainerItemsSetS2CP;
 
-public class PacketWindowProperty extends PlayS2CPacket {
+public class ContainerItemsSetEvent extends PlayConnectionEvent {
     private final byte windowId;
-    private final short property;
-    private final short value;
+    private final ItemStack[] data;
 
-    public PacketWindowProperty(PlayInByteBuffer buffer) {
-        this.windowId = buffer.readByte();
-        this.property = buffer.readShort();
-        this.value = buffer.readShort();
+    public ContainerItemsSetEvent(PlayConnection connection, byte windowId, ItemStack[] data) {
+        super(connection);
+        this.windowId = windowId;
+        this.data = data;
     }
 
-    @Override
-    public void log() {
-        Log.protocol(String.format("[IN] Received window property (windowId=%d, property=%d, value=%d)", this.windowId, this.property, this.value));
+    public ContainerItemsSetEvent(PlayConnection connection, ContainerItemsSetS2CP pkg) {
+        super(connection);
+        this.windowId = pkg.getContainerId();
+        this.data = pkg.getItems();
     }
 
     public byte getWindowId() {
         return this.windowId;
     }
 
-    public short getProperty() {
-        return this.property;
-    }
-
-    public short getValue() {
-        return this.value;
+    /**
+     * @return Data array. Array position equals the slot id
+     */
+    public ItemStack[] getData() {
+        return this.data;
     }
 }

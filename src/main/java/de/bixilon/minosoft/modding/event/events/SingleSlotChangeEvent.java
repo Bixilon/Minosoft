@@ -15,11 +15,11 @@ package de.bixilon.minosoft.modding.event.events;
 
 import de.bixilon.minosoft.data.inventory.ItemStack;
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
-import de.bixilon.minosoft.protocol.packets.s2c.play.PacketSetSlot;
+import de.bixilon.minosoft.protocol.packets.s2c.play.ContainerItemSetS2CP;
 
 public class SingleSlotChangeEvent extends PlayConnectionEvent {
     private final byte windowId;
-    private final short slotId;
+    private final int slotId;
     private final ItemStack itemStack;
 
     public SingleSlotChangeEvent(PlayConnection connection, byte windowId, short slotId, ItemStack itemStack) {
@@ -29,18 +29,18 @@ public class SingleSlotChangeEvent extends PlayConnectionEvent {
         this.itemStack = itemStack;
     }
 
-    public SingleSlotChangeEvent(PlayConnection connection, PacketSetSlot pkg) {
+    public SingleSlotChangeEvent(PlayConnection connection, ContainerItemSetS2CP pkg) {
         super(connection);
-        this.windowId = pkg.getWindowId();
+        this.windowId = pkg.getContainerId();
         this.slotId = pkg.getSlotId();
-        this.itemStack = pkg.getSlot();
+        this.itemStack = pkg.getItem();
     }
 
     public byte getWindowId() {
         return this.windowId;
     }
 
-    public short getSlotId() {
+    public int getSlotId() {
         return this.slotId;
     }
 

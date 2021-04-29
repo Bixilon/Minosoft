@@ -16,4 +16,12 @@ package de.bixilon.minosoft.util.enum
 interface ValuesEnum<T : Enum<*>> {
     val VALUES: Array<T>
     val NAME_MAP: Map<String, T>
+
+    operator fun get(ordinal: Int): T {
+        return VALUES[ordinal]
+    }
+
+    operator fun get(name: String): T {
+        return NAME_MAP[name]!!
+    }
 }

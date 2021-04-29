@@ -10,23 +10,19 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.protocol.packets.s2c.play
 
-package de.bixilon.minosoft.protocol.packets.s2c.play;
+import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
 
-import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket;
-import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
-import de.bixilon.minosoft.util.logging.Log;
-import glm_.vec2.Vec2i;
+class EntityAttachS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
+    val vehicleEntityId: Int = buffer.readVarInt()
+    val passengerEntityIds: IntArray = buffer.readVarIntArray()
 
-public class PacketUpdateViewPosition extends PlayS2CPacket {
-    private final Vec2i position;
-
-    public PacketUpdateViewPosition(PlayInByteBuffer buffer) {
-        this.position = new Vec2i(buffer.readVarInt(), buffer.readVarInt());
-    }
-
-    @Override
-    public void log() {
-        Log.protocol(String.format("[IN] Received view position update (position=%s)", this.position));
+    override fun log() {
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Entity attach (vehicleEntityId=$vehicleEntityId, passengerEntityIds=$passengerEntityIds)" }
     }
 }

@@ -10,31 +10,19 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.protocol.packets.s2c.login
 
-package de.bixilon.minosoft.protocol.packets.s2c.play;
+import de.bixilon.minosoft.protocol.packets.s2c.interfaces.CompressionThresholdChange
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
 
-import de.bixilon.minosoft.data.player.Hands;
-import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket;
-import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
-import de.bixilon.minosoft.util.logging.Log;
+class CompressionSetS2CP(buffer: PlayInByteBuffer) : CompressionThresholdChange() {
+    override val threshold: Int = buffer.readVarInt()
 
-public class PacketOpenBook extends PlayS2CPacket {
-    private final Hands hand;
 
-    public PacketOpenBook(PlayInByteBuffer buffer) {
-        if (buffer.readVarInt() == 0) {
-            this.hand = Hands.MAIN_HAND;
-            return;
-        }
-        this.hand = Hands.OFF_HAND;
-    }
-
-    @Override
-    public void log() {
-        Log.protocol(String.format("[IN] Received open book packet (hand=%s)", this.hand));
-    }
-
-    public Hands getHand() {
-        return this.hand;
+    override fun log() {
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Compression set (threshold=$threshold)" }
     }
 }

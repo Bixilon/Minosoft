@@ -32,7 +32,7 @@ public class PacketNamedSoundEffect extends PlayS2CPacket {
     public PacketNamedSoundEffect(PlayInByteBuffer buffer) {
         if (buffer.getVersionId() >= V_17W15A && buffer.getVersionId() < V_17W18A) {
             // category was moved to the top
-            this.category = SoundCategories.byId(buffer.readVarInt());
+            this.category = SoundCategories.Companion.get(buffer.readVarInt());
         }
         this.sound = buffer.readString();
 
@@ -44,7 +44,7 @@ public class PacketNamedSoundEffect extends PlayS2CPacket {
         }
 
         if (buffer.getVersionId() >= V_16W02A && (buffer.getVersionId() < V_17W15A || buffer.getVersionId() >= V_17W18A)) {
-            this.category = SoundCategories.byId(buffer.readVarInt());
+            this.category = SoundCategories.Companion.get(buffer.readVarInt());
         }
         if (buffer.getVersionId() >= V_16W02A) {
             this.position = new Vec3(buffer.readFixedPointNumberInt() * 4, buffer.readFixedPointNumberInt() * 4, buffer.readFixedPointNumberInt() * 4);

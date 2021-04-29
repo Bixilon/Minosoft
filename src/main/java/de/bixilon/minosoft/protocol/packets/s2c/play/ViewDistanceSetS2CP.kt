@@ -10,16 +10,18 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.protocol.packets.s2c.play
 
-package de.bixilon.minosoft.data.player;
+import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
 
-public enum Hands {
-    OFF_HAND, // left
-    MAIN_HAND; // right
+class ViewDistanceSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
+    val viewDistance: Int = buffer.readVarInt()
 
-    private static final Hands[] HANDS = values();
-
-    public static Hands byId(int id) {
-        return HANDS[id];
+    override fun log() {
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "View distance set (viewDistance=$viewDistance)" }
     }
 }

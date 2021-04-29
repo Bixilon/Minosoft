@@ -10,33 +10,24 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.protocol.packets.c2s.play
+package de.bixilon.minosoft.protocol.packets.s2c.play
 
-import de.bixilon.minosoft.protocol.packets.c2s.PlayC2SPacket
-import de.bixilon.minosoft.protocol.protocol.PlayOutByteBuffer
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
+import de.bixilon.minosoft.data.SoundCategories
+import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-class KeepAliveC2SP(
-    val id: Long,
-) : PlayC2SPacket {
-
-    override fun write(buffer: PlayOutByteBuffer) {
-        when {
-            buffer.versionId < ProtocolVersions.V_14W31A -> {
-                buffer.writeInt(id.toInt())
-            }
-            buffer.versionId < ProtocolVersions.V_1_12_2_PRE2 -> {
-                buffer.writeVarInt(id.toInt())
-            }
-            else -> {
-                buffer.writeLong(id)
-            }
-        }
-    }
+class EntitySoundEffectS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
+    val soundId: Int = buffer.readVarInt() // ToDo: Resolve in registry
+    val category: SoundCategories = SoundCategories.VALUES[buffer.readVarInt()]
+    val entityId: Int = buffer.readVarInt()
+    val volume: Float = buffer.readFloat()
+    val pitch: Float = buffer.readFloat()
 
     override fun log() {
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT) { "Keep alive (id=$id)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Entity sound effect (soundId=$soundId, category=$category, entityId$entityId, volume=$volume, pitch=$pitch)" }
     }
+
 }

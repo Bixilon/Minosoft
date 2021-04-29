@@ -30,7 +30,7 @@ public class EntitySpawnEvent extends PlayConnectionEvent {
         this.entity = pkg.getEntity();
     }
 
-    public EntitySpawnEvent(PlayConnection connection, PacketSpawnWeatherEntity pkg) {
+    public EntitySpawnEvent(PlayConnection connection, GlobalEntitySpawnS2CP pkg) {
         super(connection);
         this.entity = pkg.getEntity();
     }
@@ -50,7 +50,7 @@ public class EntitySpawnEvent extends PlayConnectionEvent {
         this.entity = pkg.getEntity();
     }
 
-    public EntitySpawnEvent(PlayConnection connection, PacketSpawnPainting pkg) {
+    public EntitySpawnEvent(PlayConnection connection, PaintingSpawnS2CP pkg) {
         super(connection);
         this.entity = pkg.getEntity();
     }

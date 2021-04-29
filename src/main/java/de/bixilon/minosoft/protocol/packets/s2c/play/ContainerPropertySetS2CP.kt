@@ -10,24 +10,21 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.protocol.packets.s2c.play
 
-package de.bixilon.minosoft.data;
+import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
 
-public enum SoundCategories {
-    MASTER,
-    MUSIC,
-    RECORD,
-    WEATHER,
-    BLOCK,
-    HOSTILE,
-    NEUTRAL,
-    PLAYER,
-    AMBIENT,
-    VOICE;
+class ContainerPropertySetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
+    val containerId: Byte = buffer.readByte()
+    val property = buffer.readUnsignedShort()
+    val value = buffer.readUnsignedShort()
 
-    private static final SoundCategories[] SOUND_CATEGORIES = values();
-
-    public static SoundCategories byId(int id) {
-        return SOUND_CATEGORIES[id];
+    override fun log() {
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Container property set (containerId=$containerId, property=$property, value=$value)" }
     }
+
 }

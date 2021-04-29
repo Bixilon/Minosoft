@@ -34,7 +34,7 @@ public class PacketStopSound extends PlayS2CPacket {
         }
         byte flags = buffer.readByte();
         if (BitByte.isBitMask(flags, 0x01)) {
-            this.category = SoundCategories.byId(buffer.readVarInt());
+            this.category = SoundCategories.Companion.get(buffer.readVarInt());
         }
         if (BitByte.isBitMask(flags, 0x02)) {
             this.soundResourceLocation = buffer.readResourceLocation();

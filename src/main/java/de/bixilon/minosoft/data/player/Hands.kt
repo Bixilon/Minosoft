@@ -10,27 +10,19 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.data.player
 
-package de.bixilon.minosoft.modding.event.events;
+import de.bixilon.minosoft.util.KUtil
+import de.bixilon.minosoft.util.enum.ValuesEnum
 
-import de.bixilon.minosoft.data.entities.entities.LightningBolt;
-import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
-import de.bixilon.minosoft.protocol.packets.s2c.play.PacketSpawnWeatherEntity;
+enum class Hands {
+    MAIN_HAND,
+    OFF_HAND,  // left
+    ;
 
-public class LightningBoltSpawnEvent extends PlayConnectionEvent {
-    private final LightningBolt entity;
+    companion object : ValuesEnum<Hands> {
+        override val VALUES: Array<Hands> = values()
+        override val NAME_MAP: Map<String, Hands> = KUtil.getEnumValues(VALUES)
 
-    public LightningBoltSpawnEvent(PlayConnection connection, LightningBolt entity) {
-        super(connection);
-        this.entity = entity;
-    }
-
-    public LightningBoltSpawnEvent(PlayConnection connection, PacketSpawnWeatherEntity pkg) {
-        super(connection);
-        this.entity = pkg.getEntity();
-    }
-
-    public LightningBolt getEntity() {
-        return this.entity;
     }
 }

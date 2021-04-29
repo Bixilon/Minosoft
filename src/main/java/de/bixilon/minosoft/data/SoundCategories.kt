@@ -10,27 +10,26 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.data
 
-package de.bixilon.minosoft.modding.event.events;
+import de.bixilon.minosoft.util.KUtil
+import de.bixilon.minosoft.util.enum.ValuesEnum
 
-import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
-import de.bixilon.minosoft.protocol.packets.s2c.play.SpawnPositionSetS2CP;
-import glm_.vec3.Vec3i;
+enum class SoundCategories {
+    MASTER,
+    MUSIC,
+    RECORD,
+    WEATHER,
+    BLOCK,
+    HOSTILE,
+    NEUTRAL,
+    PLAYER,
+    AMBIENT,
+    VOICE,
+    ;
 
-public class SpawnPositionChangeEvent extends PlayConnectionEvent {
-    private final Vec3i position;
-
-    public SpawnPositionChangeEvent(PlayConnection connection, Vec3i position) {
-        super(connection);
-        this.position = position;
-    }
-
-    public SpawnPositionChangeEvent(PlayConnection connection, SpawnPositionSetS2CP pkg) {
-        super(connection);
-        this.position = pkg.getSpawnPosition();
-    }
-
-    public Vec3i getSpawnPosition() {
-        return this.position;
+    companion object : ValuesEnum<SoundCategories> {
+        override val VALUES: Array<SoundCategories> = values()
+        override val NAME_MAP: Map<String, SoundCategories> = KUtil.getEnumValues(VALUES)
     }
 }

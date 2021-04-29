@@ -10,27 +10,20 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.protocol.packets.s2c.play
 
-package de.bixilon.minosoft.modding.event.events;
+import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
+import glm_.vec2.Vec2i
 
-import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
-import de.bixilon.minosoft.protocol.packets.s2c.play.SpawnPositionSetS2CP;
-import glm_.vec3.Vec3i;
+class ChunkCenterSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
+    private val position: Vec2i = Vec2i(buffer.readVarInt(), buffer.readVarInt())
 
-public class SpawnPositionChangeEvent extends PlayConnectionEvent {
-    private final Vec3i position;
-
-    public SpawnPositionChangeEvent(PlayConnection connection, Vec3i position) {
-        super(connection);
-        this.position = position;
+    override fun log() {
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Chunk center set (position=$position)" }
     }
 
-    public SpawnPositionChangeEvent(PlayConnection connection, SpawnPositionSetS2CP pkg) {
-        super(connection);
-        this.position = pkg.getSpawnPosition();
-    }
-
-    public Vec3i getSpawnPosition() {
-        return this.position;
-    }
 }

@@ -62,7 +62,7 @@ object Protocol {
                 S2C.LOGIN_DISCONNECT to 0x00,
                 S2C.LOGIN_ENCRYPTION_REQUEST to 0x01,
                 S2C.LOGIN_LOGIN_SUCCESS to 0x02,
-                S2C.LOGIN_SET_COMPRESSION to 0x03,
+                S2C.LOGIN_COMPRESSION_SET to 0x03,
                 S2C.LOGIN_PLUGIN_REQUEST to 0x04
             )
         )

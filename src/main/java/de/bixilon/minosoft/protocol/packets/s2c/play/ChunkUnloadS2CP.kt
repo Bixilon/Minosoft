@@ -10,16 +10,26 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.modding.event.events
+package de.bixilon.minosoft.protocol.packets.s2c.play
 
+import de.bixilon.minosoft.modding.event.events.ChunkUnloadEvent
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import de.bixilon.minosoft.protocol.packets.s2c.play.ChunkUnloadS2CP
+import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
 import glm_.vec2.Vec2i
 
-class ChunkUnloadEvent(
-    connection: PlayConnection,
-    val chunkPosition: Vec2i,
-) : PlayConnectionEvent(connection) {
+class ChunkUnloadS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
+    val chunkPosition: Vec2i = buffer.readChunkPosition()
 
-    constructor(connection: PlayConnection, packet: ChunkUnloadS2CP) : this(connection, packet.chunkPosition)
+    override fun handle(connection: PlayConnection) {
+        connection.world.unloadChunk(chunkPosition)
+        connection.fireEvent(ChunkUnloadEvent(connection, chunkPosition))
+    }
+
+    override fun log() {
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Chunk unload (chunkPosition=$chunkPosition)" }
+    }
 }

@@ -17,7 +17,7 @@ import de.bixilon.minosoft.data.entities.entities.Entity;
 import de.bixilon.minosoft.data.entities.entities.item.ItemEntity;
 import de.bixilon.minosoft.modding.event.events.annotations.MinimumProtocolVersion;
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
-import de.bixilon.minosoft.protocol.packets.s2c.play.PacketCollectItem;
+import de.bixilon.minosoft.protocol.packets.s2c.play.ItemCollectAnimationS2CP;
 
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_16W32A;
 
@@ -33,7 +33,7 @@ public class CollectItemAnimationEvent extends CancelableEvent {
         this.count = count;
     }
 
-    public CollectItemAnimationEvent(PlayConnection connection, PacketCollectItem pkg) {
+    public CollectItemAnimationEvent(PlayConnection connection, ItemCollectAnimationS2CP pkg) {
         super(connection);
         this.item = connection.getWorld().getEntities().get(pkg.getItemEntityId());
         this.collector = connection.getWorld().getEntities().get(pkg.getCollectorEntityId());
