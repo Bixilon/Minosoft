@@ -21,8 +21,8 @@ class CallbackEventInvoker<E : Event> private constructor(
     override val eventType: Class<out Event>,
 ) : EventInvoker(ignoreCancelled, Priorities.NORMAL, null) {
 
-    override fun invoke(event: Event) {
-        callback.invoke(event as E)
+    override operator fun invoke(event: Event) {
+        callback(event as E)
     }
 
     companion object {

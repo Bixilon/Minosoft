@@ -149,9 +149,9 @@ class StatusConnection(
         val wasPingDone = wasPingDone()
         if (method.eventType.isAssignableFrom(ServerListStatusArriveEvent::class.java) && wasPingDone) {
             // ping done
-            method.invoke(ServerListStatusArriveEvent(this, this.lastPing))
+            method(ServerListStatusArriveEvent(this, this.lastPing))
         } else if (method.eventType.isAssignableFrom(ServerListPongEvent::class.java) && wasPingDone && this.pong != null) {
-            method.invoke(this.pong!!)
+            method(this.pong!!)
         } else {
             super.registerEvent(method)
         }

@@ -51,7 +51,7 @@ abstract class Connection {
     fun fireEvent(connectionEvent: ConnectionEvent): Boolean {
         for (eventManager in Minosoft.EVENT_MANAGERS) {
             for (eventListener in eventManager.globalEventListeners) {
-                eventListener.invoke(connectionEvent)
+                eventListener(connectionEvent)
             }
         }
 
@@ -59,7 +59,7 @@ abstract class Connection {
             if (!eventInvoker.eventType.isAssignableFrom(connectionEvent::class.java)) {
                 continue
             }
-            eventInvoker.invoke(connectionEvent)
+            eventInvoker(connectionEvent)
         }
         if (connectionEvent is CancelableEvent) {
             return connectionEvent.isCancelled

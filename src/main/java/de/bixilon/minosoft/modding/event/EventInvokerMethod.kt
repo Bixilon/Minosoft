@@ -28,14 +28,14 @@ class EventInvokerMethod(
 
     constructor(annotation: EventHandler, listener: EventListener, method: Method) : this(annotation.ignoreCancelled, annotation.priority, listener, method)
 
-    override fun invoke(event: Event) {
+    override operator fun invoke(event: Event) {
         if (!method.parameters[0].type.isAssignableFrom(event.javaClass)) {
             return
         }
         if (!this.isIgnoreCancelled && event is CancelableEvent && event.isCancelled) {
             return
         }
-        method.invoke(listener, event)
+        method(listener, event)
     }
 
 }

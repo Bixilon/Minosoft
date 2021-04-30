@@ -58,7 +58,7 @@ open class InByteBuffer {
         check(length <= size) { "Trying to allocate to much memory!" }
         val array: MutableList<T> = mutableListOf()
         for (i in 0 until length) {
-            array.add(i, reader.invoke())
+            array.add(i, reader())
         }
         return array.toTypedArray()
     }

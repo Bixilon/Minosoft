@@ -114,7 +114,7 @@ class TintColorCalculator(val world: World) {
                 if (color == RenderConstants.WHITE_COLOR) {
                     color = RenderConstants.GRASS_FAILOVER_COLOR
                 }
-                biome.grassColorModifier.modifier.invoke(color)
+                biome.grassColorModifier.modifier(color)
             }
             TINTS[GRASS_TINT_RESOURCE_LOCATION] = grassTintCalculator
             TINTS[SUGAR_CANE_TINT_RESOURCE_LOCATION] = grassTintCalculator

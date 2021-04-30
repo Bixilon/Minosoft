@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.hud.elements.input
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.font.text.TextSetProperties
 import de.bixilon.minosoft.gui.rendering.hud.nodes.layout.AbsoluteLayout
 import de.bixilon.minosoft.gui.rendering.hud.nodes.primitive.LabelNode
 import de.bixilon.minosoft.util.MMath
@@ -27,7 +28,7 @@ open class TextField(
     val properties: TextFieldProperties,
 ) : AbsoluteLayout(renderWindow), KeyConsumer, MouseConsumer {
     private var textBuilder: StringBuilder = StringBuilder(properties.defaultText)
-    val textElement = LabelNode(renderWindow, sizing = sizing, text = ChatComponent.of(text), background = false)
+    val textElement = LabelNode(renderWindow, sizing = sizing.copy(), setProperties = TextSetProperties(hardWrap = 100), text = ChatComponent.of(text), background = false)
     private var position = text.length
 
     var text: String

@@ -182,7 +182,7 @@ abstract class Entity(
                         if (values.containsKey(resourceLocation)) {
                             continue
                         }
-                        val methodRetValue = method.invoke(this) ?: continue
+                        val methodRetValue = method(this) ?: continue
                         values[resourceLocation] = methodRetValue
                     } catch (e: IllegalAccessException) {
                         e.printStackTrace()

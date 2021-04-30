@@ -109,7 +109,7 @@ class VersionMapping {
             field = value
 
             for (parentableField in PARENTABLE_FIELDS) {
-                PARENTABLE_SET_PARENT_METHOD.invoke(parentableField.get(this), value?.let { parentableField.get(it) })
+                PARENTABLE_SET_PARENT_METHOD(parentableField.get(this), value?.let { parentableField.get(it) })
             }
         }
 
@@ -243,7 +243,7 @@ class VersionMapping {
             if (!field.type.isAssignableFrom(Clearable::class.java)) {
                 continue
             }
-            field.javaClass.getMethod("clear").invoke(this)
+            field.javaClass.getMethod("clear")(this)
         }
     }
 

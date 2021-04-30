@@ -46,7 +46,7 @@ class MultiAssetsManager(
 
         for (assetManager in assetsManagers) {
             try {
-                return runnable.invoke(assetManager)
+                return runnable(assetManager)
             } catch (ignored: FileNotFoundException) {
                 continue
             }

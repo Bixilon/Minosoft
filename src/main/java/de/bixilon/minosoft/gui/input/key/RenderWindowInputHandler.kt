@@ -55,7 +55,7 @@ class RenderWindowInputHandler(
 
     var currentKeyConsumer: KeyConsumer? = null
 
-    fun invoke(windowId: Long, key: Int, char: Int, action: Int, modifierKey: Int) {
+    fun keyInput(windowId: Long, key: Int, char: Int, action: Int, modifierKey: Int) {
         if (windowId != renderWindow.windowId) {
             return
         }
@@ -186,7 +186,7 @@ class RenderWindowInputHandler(
             // Log.debug("Changing $resourceLocation because of $keyCode -> $thisKeyBindingDown")
             pair.lastChange = System.currentTimeMillis()
             for (callback in pair.callback) {
-                callback.invoke(thisKeyBindingDown)
+                callback(thisKeyBindingDown)
             }
 
             if (thisKeyBindingDown) {
@@ -204,7 +204,7 @@ class RenderWindowInputHandler(
         }
     }
 
-    fun invoke(windowId: Long, char: Int) {
+    fun charInput(windowId: Long, char: Int) {
         if (windowId != renderWindow.windowId) {
             return
         }
@@ -215,7 +215,7 @@ class RenderWindowInputHandler(
         currentKeyConsumer?.charInput(char.toChar())
     }
 
-    fun invoke(windowId: Long, xPos: Double, yPos: Double) {
+    fun mouseMove(windowId: Long, xPos: Double, yPos: Double) {
         if (windowId != renderWindow.windowId) {
             return
         }
@@ -232,7 +232,7 @@ class RenderWindowInputHandler(
                 if (currentKeyConsumer != null) {
                     return@add
                 }
-                callback.invoke(it)
+                callback(it)
             }
         }
     }

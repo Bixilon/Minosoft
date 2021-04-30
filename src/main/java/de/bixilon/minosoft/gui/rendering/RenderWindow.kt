@@ -253,10 +253,10 @@ class RenderWindow(
                 })
             }
         })
-        glfwSetKeyCallback(this.windowId, inputHandler::invoke)
+        glfwSetKeyCallback(this.windowId, inputHandler::keyInput)
 
-        glfwSetCharCallback(windowId, inputHandler::invoke)
-        glfwSetCursorPosCallback(windowId, inputHandler::invoke)
+        glfwSetCharCallback(windowId, inputHandler::charInput)
+        glfwSetCursorPosCallback(windowId, inputHandler::mouseMove)
 
 
         registerGlobalKeyCombinations()

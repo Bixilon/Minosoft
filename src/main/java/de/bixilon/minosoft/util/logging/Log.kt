@@ -133,7 +133,7 @@ object Log {
                 }
             }
         }
-        log(logMessageType, level, additionalPrefix, messageBuilder.invoke())
+        log(logMessageType, level, additionalPrefix, messageBuilder())
     }
 
     @JvmStatic

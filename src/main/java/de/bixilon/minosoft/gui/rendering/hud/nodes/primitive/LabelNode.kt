@@ -38,7 +38,6 @@ class LabelNode(
         set(value) {
             field = value
             prepare()
-            apply()
         }
 
     var sText: String
