@@ -101,6 +101,8 @@ class VersionMapping {
     var isFullyLoaded = false
         private set
 
+    private var isFlattened = false
+
 
     var parentMapping: VersionMapping? = null
         set(value) {
@@ -115,7 +117,13 @@ class VersionMapping {
         if (blockState == ProtocolDefinition.NULL_BLOCK_ID) {
             return null
         }
-        return blockStateIdMap[blockState] ?: parentMapping?.getBlockState(blockState)
+        return blockStateIdMap[blockState] ?: parentMapping?.getBlockState(blockState) ?: let {
+            if (isFlattened) {
+                null
+            } else {
+                blockStateIdMap[(blockState shr 4) shl 4] // Remove meta data and test again
+            }
+        }
     }
 
     fun getEntityMetaDataIndex(field: EntityMetaDataFields): Int? {
@@ -131,6 +139,7 @@ class VersionMapping {
     }
 
     fun load(version: Version, pixlyzerData: JsonObject) {
+        isFlattened = version.isFlattened()
         // pre init stuff
         loadShapes(pixlyzerData["shapes"]?.asJsonObject)
 
