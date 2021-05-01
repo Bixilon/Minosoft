@@ -13,6 +13,10 @@
 
 package de.bixilon.minosoft.gui.rendering.hud.nodes.debug
 
+import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames
+import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.gui.rendering.hud.HUDElementProperties
+import de.bixilon.minosoft.gui.rendering.hud.HUDRenderBuilder
 import de.bixilon.minosoft.gui.rendering.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.hud.nodes.properties.NodeAlignment
 import de.bixilon.minosoft.gui.rendering.util.abstractions.ScreenResizeCallback
@@ -21,6 +25,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.GitInfo
 import de.bixilon.minosoft.util.SystemInformation
 import de.bixilon.minosoft.util.UnitFormatter
+import glm_.vec2.Vec2
 import glm_.vec2.Vec2i
 import org.lwjgl.opengl.GL11.*
 
@@ -108,5 +113,18 @@ class HUDSystemDebugNode(hudRenderer: HUDRenderer) : DebugScreenNode(hudRenderer
 
     private fun getScreenDimensions(): String {
         return "${hudRenderer.renderWindow.screenDimensions.x}x${hudRenderer.renderWindow.screenDimensions.y}"
+    }
+
+    companion object : HUDRenderBuilder<HUDSystemDebugNode> {
+        override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("minosoft:system_debug_screen")
+        override val DEFAULT_PROPERTIES = HUDElementProperties(
+            position = Vec2(1.0f, 1.0f),
+            toggleKeyBinding = KeyBindingsNames.TOGGLE_DEBUG_SCREEN,
+            enabled = false,
+        )
+
+        override fun build(hudRenderer: HUDRenderer): HUDSystemDebugNode {
+            return HUDSystemDebugNode(hudRenderer)
+        }
     }
 }

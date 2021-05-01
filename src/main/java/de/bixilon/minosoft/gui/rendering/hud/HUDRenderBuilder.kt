@@ -11,18 +11,15 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.hud.nodes
+package de.bixilon.minosoft.gui.rendering.hud
 
-import de.bixilon.minosoft.gui.rendering.hud.HUDElementProperties
-import de.bixilon.minosoft.gui.rendering.hud.HUDRenderer
-import de.bixilon.minosoft.gui.rendering.hud.nodes.layout.AbsoluteLayout
+import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.gui.rendering.hud.nodes.HUDElement
 
-abstract class HUDElement(protected val hudRenderer: HUDRenderer) {
-    val layout = AbsoluteLayout(hudRenderer.renderWindow)
+interface HUDRenderBuilder<T : HUDElement> {
+    val RESOURCE_LOCATION: ResourceLocation
 
-    lateinit var properties: HUDElementProperties
+    val DEFAULT_PROPERTIES: HUDElementProperties
 
-    open fun init() {}
-    open fun postInit() {}
-    open fun draw() {}
+    fun build(hudRenderer: HUDRenderer): T
 }

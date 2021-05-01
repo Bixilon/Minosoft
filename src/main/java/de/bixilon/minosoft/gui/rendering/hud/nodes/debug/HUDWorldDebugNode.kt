@@ -13,12 +13,17 @@
 
 package de.bixilon.minosoft.gui.rendering.hud.nodes.debug
 
+import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames
 import de.bixilon.minosoft.data.Directions
+import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.chunk.WorldRenderer
+import de.bixilon.minosoft.gui.rendering.hud.HUDElementProperties
+import de.bixilon.minosoft.gui.rendering.hud.HUDRenderBuilder
 import de.bixilon.minosoft.gui.rendering.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.hud.nodes.properties.NodeAlignment
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.UnitFormatter
+import glm_.vec2.Vec2
 
 
 class HUDWorldDebugNode(hudRenderer: HUDRenderer) : DebugScreenNode(hudRenderer) {
@@ -134,7 +139,19 @@ class HUDWorldDebugNode(hudRenderer: HUDRenderer) : DebugScreenNode(hudRenderer)
         return "${Directions.byDirection(camera.cameraFront).name.toLowerCase()} ${direction.directionVector} (${formatRotation(yaw.toDouble())} / ${formatRotation(pitch.toDouble())})"
     }
 
-    companion object {
+    companion object : HUDRenderBuilder<HUDWorldDebugNode> {
+        override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("minosoft:world_debug_screen")
+
+        override val DEFAULT_PROPERTIES = HUDElementProperties(
+            position = Vec2(-1.0f, 1.0f),
+            toggleKeyBinding = KeyBindingsNames.TOGGLE_DEBUG_SCREEN,
+            enabled = false,
+        )
+
+        override fun build(hudRenderer: HUDRenderer): HUDWorldDebugNode {
+            return HUDWorldDebugNode(hudRenderer)
+        }
+
         fun formatCoordinate(coordinate: Float): String {
             return "%.3f".format(coordinate)
         }

@@ -19,11 +19,3 @@ import de.bixilon.minosoft.gui.rendering.hud.HUDElementProperties
 data class ElementsGameConfig(
     val entries: MutableMap<ResourceLocation, HUDElementProperties> = mutableMapOf(),
 )
-
-object ElementsNames {
-    val HOTBAR_RESOURCE_LOCATION = ResourceLocation("minosoft:hotbar")
-    val CROSSHAIR_RESOURCE_LOCATION = ResourceLocation("minosoft:crosshair")
-    val WORLD_DEBUG_SCREEN_RESOURCE_LOCATION = ResourceLocation("minosoft:world_debug_screen")
-    val SYSTEM_DEBUG_SCREEN_RESOURCE_LOCATION = ResourceLocation("minosoft:system_debug_screen")
-    val CHAT_RESOURCE_LOCATION = ResourceLocation("minosoft:chat")
-}

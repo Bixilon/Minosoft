@@ -15,11 +15,15 @@ package de.bixilon.minosoft.gui.rendering.hud.nodes.chat
 
 
 import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames
+import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.gui.rendering.hud.HUDElementProperties
+import de.bixilon.minosoft.gui.rendering.hud.HUDRenderBuilder
 import de.bixilon.minosoft.gui.rendering.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.hud.elements.input.TextField
 import de.bixilon.minosoft.gui.rendering.hud.elements.input.TextFieldProperties
 import de.bixilon.minosoft.gui.rendering.hud.nodes.HUDElement
 import de.bixilon.minosoft.gui.rendering.util.abstractions.ScreenResizeCallback
+import glm_.vec2.Vec2
 import glm_.vec2.Vec2i
 
 class ChatBoxHUDElement(hudRenderer: HUDRenderer) : HUDElement(hudRenderer), ScreenResizeCallback {
@@ -60,5 +64,17 @@ class ChatBoxHUDElement(hudRenderer: HUDRenderer) : HUDElement(hudRenderer), Scr
 
     fun closeChat() {
         hudRenderer.renderWindow.inputHandler.currentKeyConsumer = null
+    }
+
+    companion object : HUDRenderBuilder<ChatBoxHUDElement> {
+        override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("minosoft:chat")
+        override val DEFAULT_PROPERTIES = HUDElementProperties(
+            position = Vec2(0.0f, -1.0f),
+            xBinding = HUDElementProperties.PositionBindings.CENTER,
+        )
+
+        override fun build(hudRenderer: HUDRenderer): ChatBoxHUDElement {
+            return ChatBoxHUDElement(hudRenderer)
+        }
     }
 }

@@ -15,7 +15,6 @@ package de.bixilon.minosoft.gui.rendering.hud
 
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames
-import de.bixilon.minosoft.config.config.game.elements.ElementsNames
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderBuilder
 import de.bixilon.minosoft.gui.rendering.RenderConstants
@@ -35,7 +34,6 @@ import de.bixilon.minosoft.util.MMath
 import de.bixilon.minosoft.util.json.ResourceLocationJsonMap.toResourceLocationMap
 import glm_.glm
 import glm_.mat4x4.Mat4
-import glm_.vec2.Vec2
 import glm_.vec2.Vec2i
 
 class HUDRenderer(val connection: PlayConnection, val renderWindow: RenderWindow) : Renderer, ScreenResizeCallback {
@@ -79,60 +77,46 @@ class HUDRenderer(val connection: PlayConnection, val renderWindow: RenderWindow
     }
 
     private fun registerDefaultElements() {
-        addElement(ElementsNames.CROSSHAIR_RESOURCE_LOCATION, CrosshairHUDElement(this), HUDElementProperties(
-            position = Vec2(0.0f, 0.0f),
-            xBinding = HUDElementProperties.PositionBindings.CENTER,
-            yBinding = HUDElementProperties.PositionBindings.CENTER,
-        ))
+        addElement(CrosshairHUDElement)
 
-        addElement(ElementsNames.WORLD_DEBUG_SCREEN_RESOURCE_LOCATION, HUDWorldDebugNode(this), HUDElementProperties(
-            position = Vec2(-1.0f, 1.0f),
-            toggleKeyBinding = KeyBindingsNames.TOGGLE_DEBUG_SCREEN,
-            enabled = false,
-        ))
-        addElement(ElementsNames.SYSTEM_DEBUG_SCREEN_RESOURCE_LOCATION, HUDSystemDebugNode(this), HUDElementProperties(
-            position = Vec2(1.0f, 1.0f),
-            toggleKeyBinding = KeyBindingsNames.TOGGLE_DEBUG_SCREEN,
-            enabled = false,
-        ))
-        addElement(ElementsNames.CHAT_RESOURCE_LOCATION, ChatBoxHUDElement(this), HUDElementProperties(
-            position = Vec2(0.0f, -1.0f),
-            xBinding = HUDElementProperties.PositionBindings.CENTER,
-        ))
-
+        addElement(HUDWorldDebugNode)
+        addElement(HUDSystemDebugNode)
+        addElement(ChatBoxHUDElement)
     }
 
-    fun addElement(resourceLocation: ResourceLocation, hudElement: HUDElement, defaultProperties: HUDElementProperties) {
+    fun addElement(builder: HUDRenderBuilder<*>) {
         var needToSafeConfig = false
-        val properties = Minosoft.getConfig().config.game.elements.entries.getOrPut(resourceLocation) {
+        val properties = Minosoft.getConfig().config.game.elements.entries.getOrPut(builder.RESOURCE_LOCATION) {
             needToSafeConfig = true
-            defaultProperties
+            builder.DEFAULT_PROPERTIES
         }
         if (needToSafeConfig) {
             Minosoft.getConfig().saveToFile()
         }
+        val hudElement = builder.build(this)
         if (hudElement is ScreenResizeCallback) {
             renderWindow.screenResizeCallbacks.add(hudElement)
         }
+        hudElement.properties = properties
         val pair = Pair(properties, hudElement)
-        hudElements[resourceLocation] = pair
+        hudElements[builder.RESOURCE_LOCATION] = pair
 
 
         properties.toggleKeyBinding?.let {
             // register key binding
             renderWindow.inputHandler.registerKeyCallback(it) {
                 // ToDo: Use sticky
-                if (enabledHUDElement.contains(resourceLocation)) {
-                    enabledHUDElement.remove(resourceLocation)
+                if (enabledHUDElement.contains(builder.RESOURCE_LOCATION)) {
+                    enabledHUDElement.remove(builder.RESOURCE_LOCATION)
                 } else {
-                    enabledHUDElement[resourceLocation] = pair
+                    enabledHUDElement[builder.RESOURCE_LOCATION] = pair
                 }
                 forcePrepare = true
             }
         }
 
         if (properties.enabled) {
-            enabledHUDElement[resourceLocation] = pair
+            enabledHUDElement[builder.RESOURCE_LOCATION] = pair
             forcePrepare = true
         }
     }

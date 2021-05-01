@@ -14,10 +14,13 @@
 package de.bixilon.minosoft.gui.rendering.hud.elements.other
 
 import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.gui.rendering.hud.HUDElementProperties
+import de.bixilon.minosoft.gui.rendering.hud.HUDRenderBuilder
 import de.bixilon.minosoft.gui.rendering.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.hud.nodes.HUDElement
 import de.bixilon.minosoft.gui.rendering.hud.nodes.primitive.ImageNode
 import de.bixilon.minosoft.gui.rendering.hud.nodes.properties.NodeSizing
+import glm_.vec2.Vec2
 import glm_.vec2.Vec2i
 
 class CrosshairHUDElement(
@@ -29,5 +32,18 @@ class CrosshairHUDElement(
         val atlasElement = hudRenderer.hudAtlasElements[ResourceLocation("minecraft:crosshair")]!!
         crosshairImage = ImageNode(hudRenderer.renderWindow, NodeSizing(minSize = atlasElement.binding.size), textureLike = atlasElement)
         layout.addChild(Vec2i(0, 0), crosshairImage)
+    }
+
+    companion object : HUDRenderBuilder<CrosshairHUDElement> {
+        override val RESOURCE_LOCATION = ResourceLocation("minosoft:crosshair")
+        override val DEFAULT_PROPERTIES = HUDElementProperties(
+            position = Vec2(0.0f, 0.0f),
+            xBinding = HUDElementProperties.PositionBindings.CENTER,
+            yBinding = HUDElementProperties.PositionBindings.CENTER,
+        )
+
+        override fun build(hudRenderer: HUDRenderer): CrosshairHUDElement {
+            return CrosshairHUDElement(hudRenderer)
+        }
     }
 }
