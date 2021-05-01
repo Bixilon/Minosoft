@@ -227,13 +227,24 @@ abstract class Entity(
         val delta = Vec3(deltaPosition)
         if (delta.y != 0.0f) {
             delta.y = collisionsToCheck.computeOffset(aabb, deltaPosition.y, Axes.Y)
-            aabb.offsetAssign(0f, delta.y, 0f)
             if (delta.y != deltaPosition.y) {
                 onGround = false
                 velocity.y = 0.0f
                 if (deltaPosition.y < 0) {
                     onGround = true
                 }
+                aabb.offsetAssign(0f, delta.y, 0f)
+            } else if (delta.y < 0) {
+                onGround = false
+            }
+        }
+        if ((deltaPosition.x != 0f || deltaPosition.z != 0f)) {
+            val testDelta = Vec3(delta)
+            testDelta.y = STEP_HEIGHT
+            val stepMovementY = collisionsToCheck.computeOffset(aabb + testDelta, -STEP_HEIGHT, Axes.Y)
+            if (stepMovementY < 0 && stepMovementY >= -STEP_HEIGHT) {
+                delta.y = STEP_HEIGHT + stepMovementY
+                aabb.offsetAssign(0f, delta.y, 0f)
             }
         }
         val xPriority = delta.x > delta.z
@@ -264,7 +275,7 @@ abstract class Entity(
         val newVelocity = Vec3(velocity)
         val oldVelocity = Vec3(velocity)
         val deltaTime = deltaMillis.toFloat() / 1000.0f
-        if (!hasNoGravity && !isFlying) {
+        if (! hasNoGravity && !isFlying) {
             newVelocity.y -= ProtocolDefinition.GRAVITY * deltaTime
         }
         newVelocity *= 0.25f.pow(deltaTime) // apply
@@ -284,6 +295,7 @@ abstract class Entity(
         get() = defaultAABB + position
 
     companion object {
-        private const val HITBOX_MARGIN = 1e-5
+        private const val HITBOX_MARGIN = 1e-5f
+        private const val STEP_HEIGHT = 0.6f
     }
 }

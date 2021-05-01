@@ -134,7 +134,7 @@ class AABB {
         offsetAssign(Vec3(x, y, z))
     }
 
-    fun offsetAssign(vec3: Vec3) {
+    private fun offsetAssign(vec3: Vec3) {
         min += vec3
         max += vec3
     }
