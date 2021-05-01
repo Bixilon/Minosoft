@@ -130,11 +130,11 @@ class AABB {
         return offset
     }
 
-    fun offsetAssign(x: Float, y: Float, z: Float) {
-        offsetAssign(Vec3(x, y, z))
+    fun plusAssign(x: Float, y: Float, z: Float) {
+        this += Vec3(x, y, z)
     }
 
-    private fun offsetAssign(vec3: Vec3) {
+    operator fun plusAssign(vec3: Vec3) {
         min += vec3
         max += vec3
     }

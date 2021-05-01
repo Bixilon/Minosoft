@@ -233,7 +233,7 @@ abstract class Entity(
                 if (deltaPosition.y < 0) {
                     onGround = true
                 }
-                aabb.offsetAssign(0f, delta.y, 0f)
+                aabb += Vec3(0f, delta.y, 0f)
             } else if (delta.y < 0) {
                 onGround = false
             }
@@ -244,27 +244,28 @@ abstract class Entity(
             val stepMovementY = collisionsToCheck.computeOffset(aabb + testDelta, -STEP_HEIGHT, Axes.Y)
             if (stepMovementY < 0 && stepMovementY >= -STEP_HEIGHT) {
                 testDelta.y = STEP_HEIGHT + stepMovementY
-                aabb.offsetAssign(0f, testDelta.y, 0f)
+                aabb += Vec3(0f, testDelta.y, 0f)
                 delta.y += testDelta.y
             }
         }
         val xPriority = delta.x > delta.z
         if (delta.x != 0.0f && xPriority) {
             delta.x = collisionsToCheck.computeOffset(aabb, deltaPosition.x, Axes.X)
-            aabb.offsetAssign(delta.x, 0f, 0f)
+            aabb += Vec3(delta.x, 0f, 0f)
             if (delta.x != deltaPosition.x) {
                 velocity.x = 0.0f
             }
         }
         if (delta.z != 0.0f) {
             delta.z = collisionsToCheck.computeOffset(aabb, deltaPosition.z, Axes.Z)
-            aabb.offsetAssign(0f, 0f, delta.z)
+            aabb += Vec3(0f, 0f, delta.z)
             if (delta.z != deltaPosition.z) {
                 velocity.z = 0.0f
             }
         }
         if (delta.x != 0.0f && !xPriority) {
             delta.x = collisionsToCheck.computeOffset(aabb, deltaPosition.x, Axes.X)
+            // no need to offset the aabb any more, as it won't be used any more
             if (delta.x != deltaPosition.x) {
                 velocity.x = 0.0f
             }
