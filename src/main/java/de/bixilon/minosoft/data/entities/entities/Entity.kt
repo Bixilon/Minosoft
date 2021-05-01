@@ -26,6 +26,7 @@ import de.bixilon.minosoft.data.mappings.entities.EntityType
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.gui.rendering.chunk.VoxelShape
 import de.bixilon.minosoft.gui.rendering.chunk.models.AABB
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.blockPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.inChunkPosition
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
@@ -277,6 +278,9 @@ abstract class Entity(
     }
 
     fun computeTimeStep(deltaMillis: Long) {
+        if (connection.world.getChunk(position.blockPosition.chunkPosition)?.isFullyLoaded != true) {
+            return // ignore update if chunk is not loaded yet
+        }
         val newVelocity = Vec3(velocity)
         val oldVelocity = Vec3(velocity)
         val deltaTime = deltaMillis.toFloat() / 1000.0f

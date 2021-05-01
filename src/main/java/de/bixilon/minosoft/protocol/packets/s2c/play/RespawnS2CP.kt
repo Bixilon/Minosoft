@@ -25,6 +25,7 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
+import glm_.vec3.Vec3
 
 class RespawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     lateinit var dimension: Dimension
@@ -90,6 +91,7 @@ class RespawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         connection.world.dimension = dimension
         connection.player.isSpawnConfirmed = false
         connection.player.entity.tabListItem.gamemode = gamemode
+        connection.player.entity.velocity = Vec3()
 
         connection.fireEvent(RespawnEvent(connection, this))
     }
