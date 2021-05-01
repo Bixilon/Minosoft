@@ -243,8 +243,9 @@ abstract class Entity(
             testDelta.y = STEP_HEIGHT
             val stepMovementY = collisionsToCheck.computeOffset(aabb + testDelta, -STEP_HEIGHT, Axes.Y)
             if (stepMovementY < 0 && stepMovementY >= -STEP_HEIGHT) {
-                delta.y = STEP_HEIGHT + stepMovementY
-                aabb.offsetAssign(0f, delta.y, 0f)
+                testDelta.y = STEP_HEIGHT + stepMovementY
+                aabb.offsetAssign(0f, testDelta.y, 0f)
+                delta.y += testDelta.y
             }
         }
         val xPriority = delta.x > delta.z
@@ -267,6 +268,9 @@ abstract class Entity(
             if (delta.x != deltaPosition.x) {
                 velocity.x = 0.0f
             }
+        }
+        if (delta.length() > deltaPosition.length() + STEP_HEIGHT) {
+            return Vec3() // abort all movement if the collision system would move the entity further than wanted
         }
         return delta
     }
