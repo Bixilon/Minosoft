@@ -37,7 +37,7 @@ class MultiAssetsManager(
             throw IllegalArgumentException("Can not add ourself!")
         }
         for (namespace in assetsManager.namespaces) {
-            this.assetsManagers.getOrPut(namespace, { mutableListOf() }).add(assetsManager)
+            this.assetsManagers.getOrPut(namespace) { mutableListOf() }.add(assetsManager)
         }
     }
 

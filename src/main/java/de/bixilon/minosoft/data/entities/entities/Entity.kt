@@ -136,9 +136,9 @@ abstract class Entity(
     val isSilent: Boolean
         get() = entityMetaData.sets.getBoolean(EntityMetaDataFields.ENTITY_SILENT)
 
-    @EntityMetaDataFunction(name = "Has no gravity")
-    val hasNoGravity: Boolean
-        get() = entityMetaData.sets.getBoolean(EntityMetaDataFields.ENTITY_NO_GRAVITY)
+    @EntityMetaDataFunction(name = "Has gravity")
+    open val hasGravity: Boolean
+        get() = !entityMetaData.sets.getBoolean(EntityMetaDataFields.ENTITY_NO_GRAVITY)
 
     @get:EntityMetaDataFunction(name = "Pose")
     val pose: Poses?
@@ -275,7 +275,7 @@ abstract class Entity(
         val newVelocity = Vec3(velocity)
         val oldVelocity = Vec3(velocity)
         val deltaTime = deltaMillis.toFloat() / 1000.0f
-        if (! hasNoGravity && !isFlying) {
+        if (hasGravity && !isFlying) {
             newVelocity.y -= ProtocolDefinition.GRAVITY * deltaTime
         }
         newVelocity *= 0.25f.pow(deltaTime) // apply

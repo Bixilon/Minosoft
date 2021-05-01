@@ -48,6 +48,14 @@ class PlayerEntity(
     override val hasCollisions: Boolean
         get() = gamemode != Gamemodes.SPECTATOR
 
+    override val hasGravity: Boolean
+        get() {
+            if (gamemode == Gamemodes.SPECTATOR) {
+                return false
+            }
+            return super.hasGravity
+        }
+
     public override val isFlying: Boolean
         get() = !hasCollisions || gamemode == Gamemodes.CREATIVE
 
