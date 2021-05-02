@@ -39,7 +39,11 @@ class ItemStackParser : CommandParser() {
         if (stringReader.peek() == '{') {
             nbt = stringReader.readNBTCompoundTag()
         }
-        return ItemStack(connection.version, item, 1, nbt)
+        return ItemStack(
+            item = item,
+            version = connection.version,
+            initialNBT = nbt,
+        )
     }
 
     companion object {

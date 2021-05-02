@@ -74,7 +74,7 @@ public class PacketEntityEquipment extends PlayS2CPacket {
                 Log.protocol(String.format("[IN] Entity equipment changed (entityId=%d, slot=%s): AIR", this.entityId, set.getKey()));
                 return;
             }
-            Log.protocol(String.format("[IN] Entity equipment changed (entityId=%d, slot=%s, item=%s): %dx %s", this.entityId, set.getKey(), set.getValue().getItem(), set.getValue().getItemCount(), set.getValue().getDisplayName()));
+            Log.protocol(String.format("[IN] Entity equipment changed (entityId=%d, slot=%s, item=%s): %dx %s", this.entityId, set.getKey(), set.getValue().getItem(), set.getValue().getCount(), set.getValue().getDisplayName()));
         } else {
             Log.protocol(String.format("[IN] Entity equipment changed (entityId=%d, slotCount=%d)", this.entityId, this.slots.size()));
         }

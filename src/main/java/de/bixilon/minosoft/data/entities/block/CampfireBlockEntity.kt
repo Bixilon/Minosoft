@@ -28,9 +28,11 @@ class CampfireBlockEntity(connection: PlayConnection) : BlockEntity(connection) 
         val itemArray = nbt["Items"]?.listCast<Map<String, Any>>() ?: return
         for (slot in itemArray) {
 
-            val itemStack = ItemStack(connection.mapping.itemRegistry.get(slot["id"]?.nullCast<String>()!!)!!, connection.version)
-
-            itemStack.itemCount = slot["Count"]?.nullCast<Number>()?.toInt()!!
+            val itemStack = ItemStack(
+                item = connection.mapping.itemRegistry.get(slot["id"]?.nullCast<String>()!!)!!,
+                version = connection.version,
+                count = slot["Count"]?.nullCast<Number>()?.toInt() ?: 1,
+            )
 
             items[slot["Slot"]?.nullCast<Number>()?.toInt()!!] = itemStack
         }

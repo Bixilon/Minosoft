@@ -34,34 +34,23 @@ import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.getAndRemove
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.listCast
 
-class ItemStack(
+data class ItemStack(
     val item: Item,
     private val version: Version? = null,
+    var count: Int = 0,
+    val enchantments: MutableMap<Enchantment, Int> = mutableMapOf(),
+    val lore: MutableList<ChatComponent> = mutableListOf(),
+    var repairCost: Int = 0,
+    var customDisplayName: ChatComponent? = null,
+    var isUnbreakable: Boolean = false,
+    var durability: Int = 0,
+    private var initialNBT: MutableMap<String, Any>? = null,
 ) {
-    val enchantments: MutableMap<Enchantment, Int> = mutableMapOf()
-    val lore: MutableList<ChatComponent> = mutableListOf()
-    var itemCount = 0
-    var itemMetadata = 0
-    var repairCost = 0
-    var durability = 0
-    var customDisplayName: ChatComponent? = null
-    var isUnbreakable = false
     var hideFlags = 0
     private var additionalNBT: MutableMap<String, Any>? = null
 
-    constructor(version: Version, item: Item, itemCount: Int, nbt: MutableMap<String, Any>?) : this(item, version) {
-        this.itemCount = itemCount
-        setNBT(nbt)
-    }
-
-    constructor(version: Version, item: Item, itemCount: Byte, itemMetadata: Int, nbt: MutableMap<String, Any>?) : this(item, version) {
-        this.itemMetadata = itemMetadata
-        this.itemCount = itemCount.toInt()
-        setNBT(nbt)
-    }
-
-    constructor(version: Version, item: Item, itemCount: Int) : this(item, version) {
-        this.itemCount = itemCount
+    init {
+        setNBT(initialNBT)
     }
 
     private fun setNBT(nbt: MutableMap<String, Any>?) {
@@ -173,20 +162,6 @@ class ItemStack(
         return nbt
     }
 
-    override fun equals(other: Any?): Boolean {
-        if (super.equals(other)) {
-            return true
-        }
-        if (other !is ItemStack?) {
-            return false
-        }
-        if (other == null) {
-            return false
-        }
-
-        // ToDo: check nbt
-        return other.item == item && other.itemCount == itemCount && other.itemMetadata == itemMetadata
-    }
 
     override fun toString(): String {
         return fullDisplayName
@@ -201,31 +176,7 @@ class ItemStack(
 
     // ToDo all properties
     val fullDisplayName: String
-        get() {
-            val builder = StringBuilder()
-            builder.append(displayName)
-            builder.append('{')
-            if (itemCount != 1) {
-                builder.append("count: ")
-                builder.append(itemCount)
-                builder.append(", ")
-            }
-            if (enchantments.isNotEmpty()) {
-                builder.append("enchantments: ")
-                builder.append(enchantments.toString())
-                builder.append(", ")
-            }
-            // ToDo all properties
-            var endString = builder.toString()
-            if (endString.endsWith(", ")) {
-                endString = endString.substring(0, endString.length - 2)
-            }
-            endString += "}"
-            if (endString.endsWith("{}")) {
-                endString = endString.substring(0, endString.length - 2)
-            }
-            return endString
-        }
+        get() = displayName.legacyText + ": " + super.toString()
 
     fun shouldHideEnchantments(): Boolean {
         return BitByte.isBitSet(hideFlags, HIDE_ENCHANTMENT_BIT)

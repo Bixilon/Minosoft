@@ -106,17 +106,28 @@ class PlayInByteBuffer : InByteBuffer {
             if (id == -1) {
                 return null
             }
-            val count = readByte()
+            val count = readUnsignedByte()
             var metaData = 0
             if (connection.version.isFlattened()) {
                 metaData = readUnsignedShort()
             }
             val nbt = readNBTTag(versionId < V_14W28B)?.compoundCast()
-            return ItemStack(connection.version, connection.mapping.itemRegistry.get(id shl 16 or metaData), count, metaData, nbt)
+            return ItemStack(
+                item = connection.mapping.itemRegistry.get(id shl 16 or metaData),
+                version = connection.version,
+                count = count,
+                durability = metaData,
+                initialNBT = nbt,
+            )
         }
 
         return if (readBoolean()) {
-            ItemStack(connection.version, connection.mapping.itemRegistry.get(readVarInt()), readByte().toInt(), readNBT()?.compoundCast())
+            ItemStack(
+                item = connection.mapping.itemRegistry.get(readVarInt()),
+                version = connection.version,
+                count = readUnsignedByte(),
+                initialNBT = readNBT()?.compoundCast(),
+            )
         } else {
             null
         }
