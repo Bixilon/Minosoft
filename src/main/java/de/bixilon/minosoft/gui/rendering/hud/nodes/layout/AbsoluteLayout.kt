@@ -27,10 +27,10 @@ open class AbsoluteLayout(
     renderWindow: RenderWindow,
     sizing: NodeSizing = NodeSizing(),
     initialCacheSize: Int = DEFAULT_INITIAL_CACHE_SIZE,
-) : Node(renderWindow, sizing, initialCacheSize) {
+) : Layout(renderWindow, sizing, initialCacheSize) {
     private val children: MutableMap<Node, Vec2i> = synchronizedMapOf()
 
-    fun clearChildren() {
+    override fun clearChildren() {
         children.clear()
     }
 
@@ -45,7 +45,7 @@ open class AbsoluteLayout(
         apply()
     }
 
-    fun recursiveApply() {
+    override fun recursiveApply() {
         for ((child, _) in children.toSynchronizedMap()) {
             if (child is AbsoluteLayout) {
                 child.recursiveApply()
@@ -55,7 +55,7 @@ open class AbsoluteLayout(
         }
     }
 
-    private fun checkAlignment() {
+    override fun checkAlignment() {
         when (sizing.forceAlign) {
             NodeAlignment.RIGHT -> {
                 for ((child, start) in children.toSynchronizedMap()) {
@@ -76,13 +76,14 @@ open class AbsoluteLayout(
     }
 
     override fun apply() {
+        sizing.validate()
         clearCache()
         recalculateSize()
         checkAlignment()
         parent?.apply()
     }
 
-    private fun recalculateSize() {
+    override fun recalculateSize() {
         sizing.currentSize = Vec2i(sizing.minSize)
         for ((childNode, start) in children.toSynchronizedMap()) {
             checkSize(childNode, start)
@@ -121,7 +122,7 @@ open class AbsoluteLayout(
         }
     }
 
-    fun clearChildrenCache() {
+    override fun clearChildrenCache() {
         for ((child, _) in children.toSynchronizedMap()) {
             if (child is AbsoluteLayout) {
                 child.clearChildrenCache()
@@ -132,7 +133,7 @@ open class AbsoluteLayout(
         clearCache()
     }
 
-    fun removeChild(node: Node) {
+    override fun removeChild(node: Node) {
         children.remove(node)
     }
 }

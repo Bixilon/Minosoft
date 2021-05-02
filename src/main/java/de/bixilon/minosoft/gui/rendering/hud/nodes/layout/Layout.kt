@@ -11,30 +11,27 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.hud.nodes.properties
+package de.bixilon.minosoft.gui.rendering.hud.nodes.layout
 
-import de.bixilon.minosoft.util.MMath
-import glm_.vec2.Vec2i
+import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.hud.nodes.primitive.Node
+import de.bixilon.minosoft.gui.rendering.hud.nodes.properties.NodeSizing
 
-data class NodeSizing(
-    var minSize: Vec2i = Vec2i(0, 0),
-    var maxSize: Vec2i = Vec2i(Int.MAX_VALUE, Int.MAX_VALUE),
-    var margin: Spacing = Spacing(0, 0, 0, 0),
-    var padding: Spacing = Spacing(0, 0, 0, 0),
-    var forceAlign: NodeAlignment? = null,
-) {
-    var currentSize: Vec2i = Vec2i(minSize)
+abstract class Layout(
+    renderWindow: RenderWindow,
+    sizing: NodeSizing = NodeSizing(),
+    initialCacheSize: Int = DEFAULT_INITIAL_CACHE_SIZE,
+) : Node(renderWindow, sizing, initialCacheSize) {
 
+    abstract fun clearChildren()
 
-    fun validate() {
-        MMath.clamp(currentSize, minSize, maxSize)
-    }
+    abstract fun recursiveApply()
 
-    var forceSize: Vec2i
-        get() = currentSize
-        set(value) {
-            minSize = value
-            maxSize = value
-            validate()
-        }
+    abstract fun checkAlignment()
+
+    abstract fun recalculateSize()
+
+    abstract fun clearChildrenCache()
+
+    abstract fun removeChild(node: Node)
 }
