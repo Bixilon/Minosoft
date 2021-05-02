@@ -53,8 +53,8 @@ class PlayOutByteBuffer(override val connection: PlayConnection) : OutByteBuffer
             writeNBT(itemStack.nbtOut)
             return
         }
+        writeBoolean(itemStack != null)
         if (itemStack == null) {
-            writeBoolean(false)
             return
         }
         writeVarInt(connection.mapping.itemRegistry.getId(itemStack.item))

@@ -29,7 +29,7 @@ data class BlockEntityType(
     val factory: BlockEntityFactory<out BlockEntity>,
 ) : RegistryItem {
 
-    fun build(connection: PlayConnection): BlockEntity? {
+    fun build(connection: PlayConnection): BlockEntity {
         return DefaultBlockEntityMetaDataFactory.buildBlockEntity(factory, connection)
     }
 
