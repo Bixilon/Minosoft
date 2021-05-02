@@ -56,10 +56,10 @@ class HUDRenderer(val connection: PlayConnection, val renderWindow: RenderWindow
     override fun init() {
         hudShader.load(Minosoft.MINOSOFT_ASSETS_MANAGER)
 
-        val hudImages = HUDAtlasElement.deserialize(Minosoft.MINOSOFT_ASSETS_MANAGER.readJsonAsset(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "mapping/atlas.json")).toResourceLocationMap())
-        this.hudAtlasElements = hudImages.second
+        val (hudTextures, hudAtlasElements) = HUDAtlasElement.deserialize(Minosoft.MINOSOFT_ASSETS_MANAGER.readJsonAsset(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "mapping/atlas.json")).toResourceLocationMap())
+        this.hudAtlasElements = hudAtlasElements
 
-        renderWindow.textures.allTextures.addAll(hudImages.first.toList())
+        renderWindow.textures.allTextures.addAll(hudTextures.toList())
 
         registerDefaultElements()
 
@@ -94,10 +94,10 @@ class HUDRenderer(val connection: PlayConnection, val renderWindow: RenderWindow
             Minosoft.getConfig().saveToFile()
         }
         val hudElement = builder.build(this)
+        hudElement.properties = properties
         if (hudElement is ScreenResizeCallback) {
             renderWindow.screenResizeCallbacks.add(hudElement)
         }
-        hudElement.properties = properties
         val pair = Pair(properties, hudElement)
         hudElements[builder.RESOURCE_LOCATION] = pair
 
@@ -139,7 +139,7 @@ class HUDRenderer(val connection: PlayConnection, val renderWindow: RenderWindow
     }
 
     override fun postInit() {
-        for ((_, element) in hudAtlasElements) {
+        for (element in hudAtlasElements.values) {
             element.postInit()
         }
 

@@ -141,7 +141,6 @@ class HUDWorldDebugNode(hudRenderer: HUDRenderer) : DebugScreenNode(hudRenderer)
 
     companion object : HUDRenderBuilder<HUDWorldDebugNode> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("minosoft:world_debug_screen")
-
         override val DEFAULT_PROPERTIES = HUDElementProperties(
             position = Vec2(-1.0f, 1.0f),
             toggleKeyBinding = KeyBindingsNames.TOGGLE_DEBUG_SCREEN,

@@ -34,6 +34,6 @@ class HandshakeC2SPacket(
     }
 
     override fun log() {
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT) { "Handshake" }
+        Log.log(LogMessageType.NETWORK_PACKETS_OUT) { "Handshake (protocolId=$protocolId, hostname=${address.hostname}, port=${address.port}, nextState=$nextState)" }
     }
 }

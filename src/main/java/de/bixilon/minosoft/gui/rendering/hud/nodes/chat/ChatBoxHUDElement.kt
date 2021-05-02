@@ -53,7 +53,7 @@ class ChatBoxHUDElement(hudRenderer: HUDRenderer) : HUDElement(hudRenderer), Scr
         inputField.sizing.minSize.x = screenDimensions.x
         inputField.sizing.maxSize.x = screenDimensions.x
         layout.sizing.maxSize.x = screenDimensions.x
-        inputField.textElement.setProperties.hardWrap = inputField.textElement.sizing.minSize.x
+        inputField.textElement.setProperties.hardWrap = (inputField.textElement.sizing.minSize.x / scale).toInt()
         layout.sizing.validate()
         layout.apply()
     }

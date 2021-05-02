@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.hud.nodes
 
+import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.gui.rendering.hud.HUDElementProperties
 import de.bixilon.minosoft.gui.rendering.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.hud.nodes.layout.AbsoluteLayout
@@ -21,6 +22,9 @@ abstract class HUDElement(protected val hudRenderer: HUDRenderer) {
     val layout = AbsoluteLayout(hudRenderer.renderWindow)
 
     lateinit var properties: HUDElementProperties
+
+    val scale: Float
+        get() = properties.scale * Minosoft.getConfig().config.game.hud.scale
 
     open fun init() {}
     open fun postInit() {}
