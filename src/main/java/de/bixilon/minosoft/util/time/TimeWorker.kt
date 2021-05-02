@@ -1,36 +1,32 @@
 package de.bixilon.minosoft.util.time
 
 import de.bixilon.minosoft.Minosoft
+import de.bixilon.minosoft.util.KUtil.synchronizedListOf
+import de.bixilon.minosoft.util.KUtil.toSynchronizedList
 
 object TimeWorker {
-    private val TASKS: MutableList<TimeWorkerTask> = mutableListOf()
+    private val TASKS: MutableList<TimeWorkerTask> = synchronizedListOf()
 
     init {
         Thread({
-               while (true) {
-                   val currentTime = System.currentTimeMillis()
-                   synchronized(TASKS) {
-                       for (task in TASKS) {
-                           if (currentTime - task.lastExecution >= task.interval) {
-                               Minosoft.THREAD_POOL.execute(task.runnable)
-                               task.lastExecution = currentTime
-                           }
-                       }
-                   }
-                   Thread.sleep(1)
-               }
+            while (true) {
+                val currentTime = System.currentTimeMillis()
+                for (task in TASKS.toSynchronizedList()) {
+                    if (currentTime - task.lastExecution >= task.interval) {
+                        Minosoft.THREAD_POOL.execute(task.runnable)
+                        task.lastExecution = currentTime
+                    }
+                }
+                Thread.sleep(1)
+            }
         }, "TimeWorkerThread").start()
     }
 
     fun addTask(task: TimeWorkerTask) {
-        synchronized(TASKS) {
-            TASKS.add(task)
-        }
+        TASKS += task
     }
 
     fun removeTask(task: TimeWorkerTask) {
-        synchronized(TASKS) {
-            TASKS.remove(task)
-        }
+        TASKS -= task
     }
 }

@@ -42,6 +42,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.nullCast
 import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
 import de.bixilon.minosoft.util.KUtil.synchronizedSetOf
+import de.bixilon.minosoft.util.KUtil.toSynchronizedMap
 import de.bixilon.minosoft.util.MMath
 import de.bixilon.minosoft.util.logging.Log
 import glm_.vec2.Vec2i
@@ -394,11 +395,7 @@ class WorldRenderer(
 
     override fun onFrustumChange() {
         visibleChunks.clear()
-        val allChunkSections: Map<Vec2i, MutableMap<Int, ChunkMeshCollection>>
-        synchronized(this.allChunkSections) {
-            allChunkSections = this.allChunkSections.toMap()
-        }
-        for ((chunkLocation, rawIndexMap) in allChunkSections) {
+        for ((chunkLocation, rawIndexMap) in allChunkSections.toSynchronizedMap()) {
             val visibleIndexMap: MutableMap<Int, ChunkMeshCollection> = synchronizedMapOf()
             val indexMap = rawIndexMap.toMap()
             for ((index, mesh) in indexMap) {

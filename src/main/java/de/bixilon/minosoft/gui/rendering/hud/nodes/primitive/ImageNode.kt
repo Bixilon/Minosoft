@@ -33,7 +33,6 @@ class ImageNode(
     val tintColor: RGBColor? = null,
 ) : Node(renderWindow, sizing = sizing, initialCacheSize = HUDMesh.FLOATS_PER_VERTEX * 6) {
 
-
     private fun addToStart(start: Vec2i, elementPosition: Vec2i): Vec2i {
         return Vec2i(start.x + elementPosition.x, start.y - elementPosition.y)
     }

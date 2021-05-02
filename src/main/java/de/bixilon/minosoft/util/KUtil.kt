@@ -66,4 +66,24 @@ object KUtil {
     fun <V> synchronizedListOf(vararg values: V): MutableList<V> {
         return Collections.synchronizedList(mutableListOf(*values))
     }
+
+    private fun <K> Any.synchronizedCopy(copier: () -> K): K {
+        val ret: K
+        synchronized(this) {
+            ret = copier()
+        }
+        return ret
+    }
+
+    fun <K, V> Map<K, V>.toSynchronizedMap(): MutableMap<K, V> {
+        return synchronizedCopy { Collections.synchronizedMap(this.toMutableMap()) }
+    }
+
+    fun <V> List<V>.toSynchronizedList(): MutableList<V> {
+        return synchronizedCopy { Collections.synchronizedList(this.toMutableList()) }
+    }
+
+    fun <V> Set<V>.toSynchronizedSet(): MutableSet<V> {
+        return synchronizedCopy { Collections.synchronizedSet(this.toMutableSet()) }
+    }
 }
