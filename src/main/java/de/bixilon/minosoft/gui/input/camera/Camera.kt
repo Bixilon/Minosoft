@@ -151,25 +151,30 @@ class Camera(
         if (ProtocolDefinition.FAST_MOVEMENT) {
             cameraSpeed *= 5
         }
-        var deltaMovement = Vec3()
+        val movementDirection = Vec3()
         if (renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.MOVE_FORWARD)) {
-            deltaMovement = deltaMovement + movementFront * cameraSpeed
+            movementDirection += movementFront
         }
         if (renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.MOVE_BACKWARDS)) {
-            deltaMovement = deltaMovement - movementFront * cameraSpeed
+            movementDirection -= movementFront
         }
         if (renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.MOVE_LEFT)) {
-            deltaMovement = deltaMovement - cameraRight * cameraSpeed
+            movementDirection -= cameraRight
         }
         if (renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.MOVE_RIGHT)) {
-            deltaMovement = deltaMovement + cameraRight * cameraSpeed
+            movementDirection += cameraRight
+        }
+        val deltaMovement = if (movementDirection != VecUtil.EMPTY_VEC3) {
+            movementDirection.normalize() * cameraSpeed
+        } else {
+            movementDirection
         }
         if (playerEntity.isFlying) {
             if (renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.MOVE_FLY_UP)) {
-                deltaMovement = deltaMovement + CAMERA_UP_VEC3 * cameraSpeed
+                deltaMovement += CAMERA_UP_VEC3 * cameraSpeed
             }
             if (renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.MOVE_FLY_DOWN)) {
-                deltaMovement = deltaMovement - CAMERA_UP_VEC3 * cameraSpeed
+                deltaMovement -= CAMERA_UP_VEC3 * cameraSpeed
             }
         } else {
             if (playerEntity.onGround && renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.MOVE_JUMP)) {
