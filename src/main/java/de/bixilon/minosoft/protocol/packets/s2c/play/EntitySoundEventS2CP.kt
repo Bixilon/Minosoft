@@ -13,21 +13,22 @@
 package de.bixilon.minosoft.protocol.packets.s2c.play
 
 import de.bixilon.minosoft.data.SoundCategories
+import de.bixilon.minosoft.data.mappings.sounds.SoundEvent
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-class EntitySoundEffectS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
-    val soundId: Int = buffer.readVarInt() // ToDo: Resolve in registry
+class EntitySoundEventS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
+    val soundEvent: SoundEvent = buffer.connection.mapping.soundEventRegistry.get(buffer.readVarInt())
     val category: SoundCategories = SoundCategories.VALUES[buffer.readVarInt()]
     val entityId: Int = buffer.readVarInt()
     val volume: Float = buffer.readFloat()
     val pitch: Float = buffer.readFloat()
 
     override fun log() {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Entity sound effect (soundId=$soundId, category=$category, entityId$entityId, volume=$volume, pitch=$pitch)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Entity sound effect (soundEvent=$soundEvent, category=$category, entityId$entityId, volume=$volume, pitch=$pitch)" }
     }
 
 }

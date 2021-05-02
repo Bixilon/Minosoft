@@ -13,6 +13,7 @@
 package de.bixilon.minosoft.protocol.packets.s2c.play
 
 import de.bixilon.minosoft.data.SoundCategories
+import de.bixilon.minosoft.data.mappings.sounds.SoundEvent
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
@@ -22,11 +23,11 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import glm_.vec3.Vec3i
 
-class SoundEffectS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
+class SoundEventS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     var category: SoundCategories? = null
         private set
     val position: Vec3i
-    val soundId: Int
+    val soundEvent: SoundEvent
     val volume: Float
     val pitch: Float
 
@@ -35,7 +36,7 @@ class SoundEffectS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
             // category was moved to the top
             this.category = SoundCategories[buffer.readVarInt()]
         }
-        soundId = buffer.readVarInt()
+        soundEvent = buffer.connection.mapping.soundEventRegistry.get(buffer.readVarInt())
         if (buffer.versionId >= ProtocolVersions.V_17W15A && buffer.versionId < ProtocolVersions.V_17W18A) {
             buffer.readString() // parrot entity type
         }
@@ -52,6 +53,6 @@ class SoundEffectS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     }
 
     override fun log() {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Sound effect (category=$category, position=$position, soundId=$soundId, volume=$volume, pitch=$pitch)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "SoundEvent effect (category=$category, position=$position, soundEvent=$soundEvent, volume=$volume, pitch=$pitch)" }
     }
 }

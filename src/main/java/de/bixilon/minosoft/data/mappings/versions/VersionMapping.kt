@@ -36,6 +36,7 @@ import de.bixilon.minosoft.data.mappings.items.ItemRegistry
 import de.bixilon.minosoft.data.mappings.materials.Material
 import de.bixilon.minosoft.data.mappings.particle.Particle
 import de.bixilon.minosoft.data.mappings.registry.*
+import de.bixilon.minosoft.data.mappings.sounds.SoundEvent
 import de.bixilon.minosoft.data.mappings.statistics.Statistic
 import de.bixilon.minosoft.gui.rendering.chunk.VoxelShape
 import de.bixilon.minosoft.gui.rendering.chunk.models.AABB
@@ -62,6 +63,7 @@ class VersionMapping {
     val dimensionRegistry: Registry<Dimension> = Registry()
     val materialRegistry: Registry<Material> = Registry()
     val fluidRegistry: Registry<Fluid> = Registry()
+    val soundEventRegistry: Registry<SoundEvent> = Registry()
 
     val villagerProfessionRegistry: Registry<VillagerProfession> = Registry()
 
@@ -163,6 +165,7 @@ class VersionMapping {
         creativeModeTabRegistry.initialize(pixlyzerData["creative_inventory_tab"]?.asJsonObject, this, CreativeModeTab)
 
         // id resource location stuff
+        soundEventRegistry.initialize(pixlyzerData["sound_events"]?.asJsonObject, this, SoundEvent)
         particleRegistry.initialize(pixlyzerData["particles"]?.asJsonObject, this, Particle)
         materialRegistry.initialize(pixlyzerData["materials"]?.asJsonObject, this, Material)
         motiveRegistry.initialize(pixlyzerData["motives"]?.asJsonObject, this, Motive, version.isFlattened())
