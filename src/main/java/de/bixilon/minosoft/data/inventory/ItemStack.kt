@@ -44,16 +44,15 @@ data class ItemStack(
     var customDisplayName: ChatComponent? = null,
     var isUnbreakable: Boolean = false,
     var durability: Int = 0,
-    private var initialNBT: MutableMap<String, Any>? = null,
+    val nbt: MutableMap<String, Any> = mutableMapOf(),
 ) {
     var hideFlags = 0
-    private var additionalNBT: MutableMap<String, Any>? = null
 
     init {
-        setNBT(initialNBT)
+        parseNBT(nbt)
     }
 
-    private fun setNBT(nbt: MutableMap<String, Any>?) {
+    private fun parseNBT(nbt: MutableMap<String, Any>?) {
         if (nbt == null) {
             return
         }
@@ -103,64 +102,64 @@ data class ItemStack(
                 enchantments[enchantment] = enchantmentTag[ENCHANTMENT_LEVEL_TAG]?.nullCast<Number>()?.toInt()!!
             }
         }
-        additionalNBT = nbt
     }
 
-    fun getNBT(): MutableMap<String, Any> {
-        val nbt = additionalNBT?.toMutableMap() ?: mutableMapOf()
-        if (repairCost != 0) {
-            nbt[REPAIR_COST_TAG] = repairCost
-        }
-        mutableMapOf<String, Any>().let {
-            customDisplayName?.let { displayName ->
-                it[DISPLAY_MAME_TAG] = displayName.legacyText
+    val nbtOut: MutableMap<String, Any>
+        get() {
+            val nbt = nbt.toMutableMap()
+            if (repairCost != 0) {
+                nbt[REPAIR_COST_TAG] = repairCost
             }
-            mutableListOf<String>().let { loreTag ->
-                for (lore in this.lore) {
-                    loreTag.add(lore.legacyText)
+            mutableMapOf<String, Any>().let {
+                customDisplayName?.let { displayName ->
+                    it[DISPLAY_MAME_TAG] = displayName.legacyText
+                }
+                mutableListOf<String>().let { loreTag ->
+                    for (lore in this.lore) {
+                        loreTag.add(lore.legacyText)
+                    }
+
+                    if (loreTag.isNotEmpty()) {
+                        it[DISPLAY_LORE_TAG] = loreTag
+                    }
                 }
 
-                if (loreTag.isNotEmpty()) {
-                    it[DISPLAY_LORE_TAG] = loreTag
+                if (it.isNotEmpty()) {
+                    nbt[DISPLAY_TAG] = it
                 }
             }
 
-            if (it.isNotEmpty()) {
-                nbt[DISPLAY_TAG] = it
+            if (isUnbreakable) {
+                nbt[UNBREAKABLE_TAG] = true
             }
-        }
 
-        if (isUnbreakable) {
-            nbt[UNBREAKABLE_TAG] = true
-        }
+            if (hideFlags != 0) {
+                nbt[HIDE_FLAGS_TAG] = hideFlags
+            }
+            if (enchantments.isNotEmpty()) {
+                val enchantmentList: MutableList<Map<String, Any>> = mutableListOf()
+                for ((enchantment, level) in enchantments) {
+                    val enchantmentTag: MutableMap<String, Any> = mutableMapOf()
+                    if (version!!.isFlattened()) {
+                        enchantmentTag[ENCHANTMENT_ID_TAG] = enchantment.resourceLocation.full
+                    } else {
+                        enchantmentTag[ENCHANTMENT_ID_TAG] = version.mapping.enchantmentRegistry.getId(enchantment)
+                    }
 
-        if (hideFlags != 0) {
-            nbt[HIDE_FLAGS_TAG] = hideFlags
-        }
-        if (enchantments.isNotEmpty()) {
-            val enchantmentList: MutableList<Map<String, Any>> = mutableListOf()
-            for ((enchantment, level) in enchantments) {
-                val enchantmentTag: MutableMap<String, Any> = mutableMapOf()
+                    enchantmentTag[ENCHANTMENT_LEVEL_TAG] = if (version.isFlattened()) {
+                        level
+                    } else {
+                        level.toShort()
+                    }
+                }
                 if (version!!.isFlattened()) {
-                    enchantmentTag[ENCHANTMENT_ID_TAG] = enchantment.resourceLocation.full
+                    nbt[ENCHANTMENT_FLATTENING_TAG] = enchantmentList
                 } else {
-                    enchantmentTag[ENCHANTMENT_ID_TAG] = version.mapping.enchantmentRegistry.getId(enchantment)
-                }
-
-                enchantmentTag[ENCHANTMENT_LEVEL_TAG] = if (version.isFlattened()) {
-                    level
-                } else {
-                    level.toShort()
+                    nbt[ENCHANTMENT_PRE_FLATTENING_TAG] = enchantmentList
                 }
             }
-            if (version!!.isFlattened()) {
-                nbt[ENCHANTMENT_FLATTENING_TAG] = enchantmentList
-            } else {
-                nbt[ENCHANTMENT_PRE_FLATTENING_TAG] = enchantmentList
-            }
+            return nbt
         }
-        return nbt
-    }
 
 
     override fun toString(): String {

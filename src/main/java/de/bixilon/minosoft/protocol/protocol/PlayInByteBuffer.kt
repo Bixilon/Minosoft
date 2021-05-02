@@ -117,16 +117,16 @@ class PlayInByteBuffer : InByteBuffer {
                 version = connection.version,
                 count = count,
                 durability = metaData,
-                initialNBT = nbt,
+                nbt = nbt ?: mutableMapOf(),
             )
         }
 
         return if (readBoolean()) {
             ItemStack(
-                item = connection.mapping.itemRegistry.get(readVarInt()),
                 version = connection.version,
+                item = connection.mapping.itemRegistry.get(readVarInt()),
                 count = readUnsignedByte(),
-                initialNBT = readNBT()?.compoundCast(),
+                nbt = readNBT()?.compoundCast() ?: mutableMapOf(),
             )
         } else {
             null

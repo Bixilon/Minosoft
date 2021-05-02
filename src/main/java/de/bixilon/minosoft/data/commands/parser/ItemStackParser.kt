@@ -35,14 +35,14 @@ class ItemStackParser : CommandParser() {
         check(item != null) {
             throw ItemNotFoundCommandParseException(stringReader, argument.key)
         }
-        var nbt: MutableMap<String, Any>? = null
+        var nbt: MutableMap<String, Any> = mutableMapOf()
         if (stringReader.peek() == '{') {
             nbt = stringReader.readNBTCompoundTag()
         }
         return ItemStack(
             item = item,
             version = connection.version,
-            initialNBT = nbt,
+            nbt = nbt,
         )
     }
 
