@@ -351,32 +351,36 @@ class WorldRenderer(
     fun clearChunkCache() {
         // ToDo: Stop all preparations
         queuedChunks.clear()
+        val chunkMeshes = allChunkSections.toSynchronizedMap().values
+        allChunkSections.clear()
+        visibleChunks.clear()
         renderWindow.renderQueue.add {
-            visibleChunks.clear()
-            for ((location, _) in allChunkSections) {
-                unloadChunk(location)
+            for (meshCollection in chunkMeshes) {
+                unloadMeshes(meshCollection.values)
             }
         }
     }
 
     fun unloadChunk(chunkPosition: Vec2i) {
         queuedChunks.remove(chunkPosition)
-        renderWindow.renderQueue.add {
-            allChunkSections[chunkPosition]?.let {
-                for ((_, meshCollection) in it) {
-                    meshCollection.opaqueSectionArrayMesh.let {
-                        it.unload()
-                        meshes--
-                        triangles -= it.trianglesCount
-                    }
-                    meshCollection.transparentSectionArrayMesh?.let {
-                        it.unload()
-                        meshes--
-                        triangles -= it.trianglesCount
-                    }
-                }
-                allChunkSections.remove(chunkPosition)
-                visibleChunks.remove(chunkPosition)
+        val chunkMesh = allChunkSections[chunkPosition] ?: return
+        allChunkSections.remove(chunkPosition)
+        visibleChunks.remove(chunkPosition)
+        renderWindow.renderQueue.add { unloadMeshes(chunkMesh.values) }
+    }
+
+    private fun unloadMeshes(meshes: Collection<ChunkMeshCollection>) {
+        renderWindow.assertOnRenderThread()
+        for (meshCollection in meshes) {
+            meshCollection.opaqueSectionArrayMesh.let {
+                it.unload()
+                this.meshes--
+                triangles -= it.trianglesCount
+            }
+            meshCollection.transparentSectionArrayMesh?.let {
+                it.unload()
+                this.meshes--
+                triangles -= it.trianglesCount
             }
         }
     }

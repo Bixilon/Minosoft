@@ -56,6 +56,7 @@ class RenderWindow(
     val connection: PlayConnection,
     val rendering: Rendering,
 ) {
+    private lateinit var renderThread: Thread
     val renderStats = RenderStats()
     var screenDimensions = Vec2i(900, 500)
         private set
@@ -116,6 +117,7 @@ class RenderWindow(
     }
 
     fun init(latch: CountUpAndDownLatch) {
+        renderThread = Thread.currentThread()
         Log.log(LogMessageType.RENDERING_LOADING) { "Creating window..." }
         val stopwatch = Stopwatch()
         // Setup an error callback. The default implementation
@@ -405,5 +407,9 @@ class RenderWindow(
 
     fun getClipboardText(): String {
         return glfwGetClipboardString(windowId) ?: ""
+    }
+
+    fun assertOnRenderThread() {
+        check(Thread.currentThread() == renderThread) { "Current thread (${Thread.currentThread().name} is not the render thread!" }
     }
 }
