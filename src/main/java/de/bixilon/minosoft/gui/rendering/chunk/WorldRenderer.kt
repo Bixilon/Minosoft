@@ -184,6 +184,7 @@ class WorldRenderer(
 
     override fun draw() {
         shader.use()
+        val visibleChunks = visibleChunks.toSynchronizedMap()
 
         for ((_, map) in visibleChunks) {
             for ((_, mesh) in map) {
