@@ -11,8 +11,7 @@ Minosoft is an open source minecraft client, written from scratch in java. It ai
 
 - Rendering
 - Multi protocol support (1.7 - latest)
-- Stable modding API
-- Unsafe modding API
+- Stable modding API + Unstable modding API
 - Bleeding edge performance (incredible start time of 3 - 5 seconds on modern hardware)
 - Free (as far as we consider original minecraft as free) and open source
 - Multi accounting (also multiple account vendors: Offline, Mojang, Microsoft)
@@ -20,12 +19,13 @@ Minosoft is an open source minecraft client, written from scratch in java. It ai
 - Multi threading and asynchronous loading
 - Debugging on protocol layer
 - LAN servers
+- Independent, We'd accept almost all types of patches (except explicit server support)
 - Way more stuff
 
 ## System requirements
 
 - CPU: Minosoft works mostly asynchronous, so multiple cores are good. For FPS more clock speed is better.
-- RAM: Our goal was it to run without compromises on an 8 GiB computer and at least limited on an 4 GiB one.
+- RAM: ~500Mib. With overhead, etc 2Gib recommended
 - Disk space: Minosoft itself is pretty small (2-3 Mib), the libraries are a bit bigger. You also need to have the "normal" minecraft assets (~ 300 MB for one version).
 - GPU: OpenGL 3.3+. Every moden GPU works and is recommended.
 - Java 15 (This is really important, we use experimental features that are only available in this version. Java 8 is currently **not** supported).
@@ -55,11 +55,11 @@ I always try to add support for the newest version of minecraft. Mostly it is pr
 
 ### Supported versions
 
-Almost all versions (and snapshots!) between 1.7 and the latest one (21w07a as of writing this, snapshot for 1.17). I plan to maintain Minosoft to at least version 1.20, so stay tuned. Support for older protocols will not be dropped as newer protocols are added. And I can only recommend using the latest stable version.
+Almost all versions (and snapshots!) between 1.7 and the latest one (21w17a as of writing this, snapshot for 1.17). I plan to maintain Minosoft to at least version 1.20, so stay tuned. Support for older protocols will not be dropped as newer protocols are added. And I can only recommend using the latest stable version.
 
 ### Unsupported versions
 
-Minosoft uses [PixLyzer](https://gitlab.bixilon.de/bixilon/pixlyzer) as data source for all kind of data (like block ids, item ids, ...). PixLyzer currently works for 19w12a+ (1.14 snapshot). We will backport it for 1.13 and 17w46a (only version needed for <1.12) soon.
+Minosoft uses [PixLyzer](https://gitlab.bixilon.de/bixilon/pixlyzer) as data source for all kind of data (like block ids, item ids, ...). PixLyzer currently works for 19w12a+ (1.14 snapshot) and 1.12.2 (these mappings are used for 1.7 - 1.12). 1.13 is currently unsupported and won't be in near future.
 
 ## Modding
 

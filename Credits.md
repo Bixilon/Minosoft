@@ -2,9 +2,11 @@
 First: Thanks to the authors from [wiki.vg](https://wiki.vg) for documenting the protocol. Also, special thanks to the #mcdevs irc, there are many great people that helped us.
 
 ## Thanks to the following projects:
- - [Burger](https://github.com/Pokechu22/Burger)
- - [wiki.vg](https://wiki.vg)
- - [Mojang](https://mojang.com) For the original game
+
+- [PixLyzer](https://gitlab.bixilon.de/bixilon/pixlyzer)
+- [Burger](https://github.com/Pokechu22/Burger)
+- [wiki.vg](https://wiki.vg)
+- [Mojang](https://mojang.com) For the original game
 
 ## Thanks to all contributors:
 
