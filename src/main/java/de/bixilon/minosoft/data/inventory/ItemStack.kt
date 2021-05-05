@@ -28,7 +28,7 @@ import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.items.Item
 import de.bixilon.minosoft.data.mappings.versions.Version
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.util.BitByte
+import de.bixilon.minosoft.util.BitByte.isBit
 import de.bixilon.minosoft.util.KUtil.nullCast
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.getAndRemove
@@ -168,36 +168,37 @@ data class ItemStack(
             return ChatComponent.of(item.toString())
         }
 
-    fun shouldHideEnchantments(): Boolean {
-        return BitByte.isBitSet(hideFlags, HIDE_ENCHANTMENT_BIT)
-    }
+    var shouldHideEnchantments: Boolean
+        get() = hideFlags.isBit(HIDE_ENCHANTMENT_BIT)
+        set(value) = setHideFlag(HIDE_ENCHANTMENT_BIT, value)
 
-    fun shouldHideModifiers(): Boolean {
-        return BitByte.isBitSet(hideFlags, HIDE_MODIFIERS_BIT)
-    }
+    var shouldHideModifiers: Boolean
+        get() = hideFlags.isBit(HIDE_MODIFIERS_BIT)
+        set(value) = setHideFlag(HIDE_MODIFIERS_BIT, value)
 
-    fun shouldHideUnbreakable(): Boolean {
-        return BitByte.isBitSet(hideFlags, HIDE_UNBREAKABLE_BIT)
-    }
+    var shouldHideUnbreakable: Boolean
+        get() = hideFlags.isBit(HIDE_UNBREAKABLE_BIT)
+        set(value) = setHideFlag(HIDE_UNBREAKABLE_BIT, value)
 
-    fun shouldHideCanDestroy(): Boolean {
-        return BitByte.isBitSet(hideFlags, HIDE_CAN_DESTROY_BIT)
-    }
+    var shouldHideCanDestroy: Boolean
+        get() = hideFlags.isBit(HIDE_CAN_DESTROY_BIT)
+        set(value) = setHideFlag(HIDE_CAN_DESTROY_BIT, value)
 
-    fun shouldHideCanPlaceOn(): Boolean {
-        return BitByte.isBitSet(hideFlags, HIDE_CAN_PLACE_BIT)
-    }
+    var shouldHideCanPlaceOn: Boolean
+        get() = hideFlags.isBit(HIDE_CAN_PLACE_BIT)
+        set(value) = setHideFlag(HIDE_CAN_PLACE_BIT, value)
 
     /**
      * @return hides other information, including potion effects, shield pattern info, "StoredEnchantments", written book "generation" and "author", "Explosion", "Fireworks", and map tooltips
      */
-    fun shouldHideOtherInformation(): Boolean {
-        return BitByte.isBitSet(hideFlags, HIDE_OTHER_INFORMATION_BIT)
-    }
+    var shouldHideOtherInformation: Boolean
+        get() = hideFlags.isBit(HIDE_OTHER_INFORMATION_BIT)
+        set(value) = setHideFlag(HIDE_OTHER_INFORMATION_BIT, value)
 
-    fun shouldHideLeatherDyeColor(): Boolean {
-        return BitByte.isBitSet(hideFlags, HIDE_LEATHER_DYE_COLOR_BIT)
-    }
+
+    var shouldHideLeatherDyeColor: Boolean
+        get() = hideFlags.isBit(HIDE_LEATHER_DYE_COLOR_BIT)
+        set(value) = setHideFlag(HIDE_LEATHER_DYE_COLOR_BIT, value)
 
     private fun setHideFlag(bit: Int, setOrRemove: Boolean) {
         val mask = (1 shl bit)
@@ -206,37 +207,6 @@ data class ItemStack(
         } else {
             hideFlags and mask.inv()
         }
-    }
-
-    fun setShouldHideEnchantments(hideEnchantments: Boolean) {
-        setHideFlag(HIDE_ENCHANTMENT_BIT, hideEnchantments)
-    }
-
-    fun setShouldHideModifiers(hideModifiers: Boolean) {
-        setHideFlag(HIDE_MODIFIERS_BIT, hideModifiers)
-    }
-
-    fun setShouldHideUnbreakable(hideUnbreakable: Boolean) {
-        setHideFlag(HIDE_UNBREAKABLE_BIT, hideUnbreakable)
-    }
-
-    fun setShouldHideCanDestroy(hideCanDestroy: Boolean) {
-        setHideFlag(HIDE_CAN_DESTROY_BIT, hideCanDestroy)
-    }
-
-    fun setShouldHideCanPlaceOn(hideCanPlaceOn: Boolean) {
-        setHideFlag(HIDE_CAN_PLACE_BIT, hideCanPlaceOn)
-    }
-
-    /**
-     * @ hides other information, including potion effects, shield pattern info, "StoredEnchantments", written book "generation" and "author", "Explosion", "Fireworks", and map tooltips
-     */
-    fun setShouldHideOtherInformation(hideOtherInformation: Boolean) {
-        setHideFlag(HIDE_OTHER_INFORMATION_BIT, hideOtherInformation)
-    }
-
-    fun setShouldHideLeatherDyeColor(hideLeatherDyeColor: Boolean) {
-        setHideFlag(HIDE_LEATHER_DYE_COLOR_BIT, hideLeatherDyeColor)
     }
 
     companion object {
