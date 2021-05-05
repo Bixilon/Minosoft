@@ -17,6 +17,7 @@ import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.text.RGBColor
+import de.bixilon.minosoft.data.text.RGBColor.Companion.asColor
 import de.bixilon.minosoft.gui.input.camera.FrustumChangeCallback
 import de.bixilon.minosoft.gui.input.key.RenderWindowInputHandler
 import de.bixilon.minosoft.gui.modding.events.RenderingStateChangeEvent
@@ -177,7 +178,7 @@ class RenderWindow(
         // Make the window visible
         GL.createCapabilities()
 
-        setSkyColor(RGBColor("#fffe7a"))
+        setSkyColor("#fffe7a".asColor())
 
         Log.log(LogMessageType.RENDERING_LOADING) { "Enabling all open gl features (${stopwatch.labTime()})..." }
         glEnable(GL_DEPTH_TEST)

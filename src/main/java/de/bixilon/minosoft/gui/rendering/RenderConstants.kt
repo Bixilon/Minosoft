@@ -15,25 +15,27 @@ package de.bixilon.minosoft.gui.rendering
 
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.text.RGBColor
+import de.bixilon.minosoft.data.text.RGBColor.Companion.asColor
+import de.bixilon.minosoft.data.text.RGBColor.Companion.asRGBColor
 import glm_.vec2.Vec2
 
 object RenderConstants {
     const val DISABLE_RENDERING = false
 
-    val DEFAULT_SKY_COLOR = RGBColor("#ecff89")
-    val WHITE_COLOR = RGBColor("#ffffff")
-    val BLACK_COLOR = RGBColor("#000000")
+    val DEFAULT_SKY_COLOR = "#ecff89".asColor()
+    val WHITE_COLOR = "#ffffff".asColor()
+    val BLACK_COLOR = "#000000".asColor()
 
-    val GRASS_FAILOVER_COLOR = RGBColor("#48B518")
+    val GRASS_FAILOVER_COLOR = "#48B518".asColor()
 
-    val GRASS_OUT_OF_BOUNDS_COLOR = RGBColor(-65281)
+    val GRASS_OUT_OF_BOUNDS_COLOR = (-65281).asRGBColor()
 
-    val LILY_PAD_INVENTORY_COLOR = RGBColor("#71C35C")
-    val LILY_PAD_BLOCK_COLOR = RGBColor("#208030")
+    val LILY_PAD_INVENTORY_COLOR = "#71C35C".asColor()
+    val LILY_PAD_BLOCK_COLOR = "#208030".asColor()
 
 
-    val EXPERIENCE_BAR_LEVEL_COLOR = RGBColor("#80ff20")
-    val HP_TEXT_COLOR = RGBColor("#ff1313")
+    val EXPERIENCE_BAR_LEVEL_COLOR = "#80ff20".asColor()
+    val HP_TEXT_COLOR = "#ff1313".asColor()
 
     const val COLORMAP_SIZE = 255
 

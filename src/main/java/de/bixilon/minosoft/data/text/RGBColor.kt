@@ -21,27 +21,25 @@ class RGBColor(val rgba: Int) : ChatCode {
 
     constructor(red: Byte, green: Byte, blue: Byte, alpha: Byte = 0xFF.toByte()) : this(red.toInt() and 0xFF, green.toInt() and 0xFF, blue.toInt() and 0xFF, alpha.toInt() and 0xFF)
 
-    constructor(colorString: String) : this(colorString.toColorInt())
-
-    val alpha: @IntRange(from = 0.toLong(), to = 255.toLong()) Int
+    val alpha: @IntRange(from = 0L, to = 255L) Int
         get() = rgba and 0xFF
 
-    val red: @IntRange(from = 0.toLong(), to = 255.toLong()) Int
+    val red: @IntRange(from = 0L, to = 255L) Int
         get() = rgba ushr 24 and 0xFF
 
-    val floatRed: @IntRange(from = 0.toLong(), to = 1.toLong()) Float
+    val floatRed: @IntRange(from = 0L, to = 1L) Float
         get() = red / COLOR_FLOAT_DIVIDER
 
-    val green: @IntRange(from = 0.toLong(), to = 255.toLong()) Int
+    val green: @IntRange(from = 0L, to = 255L) Int
         get() = rgba ushr 16 and 0xFF
 
-    val floatGreen: @IntRange(from = 0.toLong(), to = 1.toLong()) Float
+    val floatGreen: @IntRange(from = 0L, to = 1L) Float
         get() = green / COLOR_FLOAT_DIVIDER
 
-    val blue: @IntRange(from = 0.toLong(), to = 255.toLong()) Int
+    val blue: @IntRange(from = 0L, to = 255L) Int
         get() = rgba ushr 8 and 0xFF
 
-    val floatBlue: @IntRange(from = 0.toLong(), to = 1.toLong()) Float
+    val floatBlue: @IntRange(from = 0L, to = 1L) Float
         get() = blue / COLOR_FLOAT_DIVIDER
 
     val rgb: Int
@@ -63,31 +61,33 @@ class RGBColor(val rgba: Int) : ChatCode {
         return if (alpha != 255) {
             String.format("#%08X", rgba)
         } else {
-            String.format("#%06X", 0xFFFFFF and rgba)
+            String.format("#%06X", rgb)
         }
     }
 
     companion object {
         private const val COLOR_FLOAT_DIVIDER = 255.0f
 
-        fun noAlpha(color: Int): RGBColor {
-            return RGBColor(color shl 8 or 0xFF)
+        fun String.asColor(): RGBColor {
+            return RGBColor(let {
+                var colorString = this
+                if (colorString.startsWith("#")) {
+                    colorString = colorString.substring(1)
+                }
+                return@let if (colorString.length == 6) {
+                    Integer.parseUnsignedInt(colorString + "ff", 16)
+                } else {
+                    Integer.parseUnsignedInt(colorString, 16)
+                }
+            })
         }
 
-        fun String.toColor(): RGBColor {
+        fun Int.asRGBColor(): RGBColor {
+            return RGBColor(this shl 8 or 0xFF)
+        }
+
+        fun Int.asRGBAColor(): RGBColor {
             return RGBColor(this)
-        }
-
-        fun String.toColorInt(): Int {
-            var colorString = this
-            if (colorString.startsWith("#")) {
-                colorString = colorString.substring(1)
-            }
-            return if (colorString.length == 6) {
-                Integer.parseUnsignedInt(colorString + "ff", 16)
-            } else {
-                Integer.parseUnsignedInt(colorString, 16)
-            }
         }
 
         fun mix(vararg colors: RGBColor): RGBColor {

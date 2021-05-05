@@ -15,6 +15,7 @@ package de.bixilon.minosoft.util.json
 
 import com.squareup.moshi.*
 import de.bixilon.minosoft.data.text.RGBColor
+import de.bixilon.minosoft.data.text.RGBColor.Companion.asRGBColor
 
 object RGBColorSerializer : JsonAdapter<RGBColor>() {
     @FromJson
@@ -26,7 +27,7 @@ object RGBColorSerializer : JsonAdapter<RGBColor>() {
         if (rgb == 0) {
             return null
         }
-        return RGBColor.noAlpha(rgb)
+        return rgb.asRGBColor()
     }
 
     @ToJson
@@ -35,9 +36,9 @@ object RGBColorSerializer : JsonAdapter<RGBColor>() {
             jsonWriter.nullValue()
             return
         }
-        if (color.rgba == 0) {
+        if (color.rgb == 0) {
             jsonWriter.nullValue()
         }
-        jsonWriter.value(color.rgba)
+        jsonWriter.value(color.rgb)
     }
 }

@@ -16,6 +16,7 @@ package de.bixilon.minosoft.data.entities.block
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.RGBColor
+import de.bixilon.minosoft.data.text.RGBColor.Companion.asColor
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 
 class BedBlockEntity(connection: PlayConnection) : BlockEntity(connection) {
@@ -27,7 +28,7 @@ class BedBlockEntity(connection: PlayConnection) : BlockEntity(connection) {
         color = nbt["color"]?.let {
             when (it) {
                 is String -> {
-                    RGBColor(it)
+                    it.asColor()
                 }
                 is Number -> {
                     when (it.toInt()) {

@@ -20,6 +20,7 @@ import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.biomes.Biome
 import de.bixilon.minosoft.data.mappings.blocks.BlockState
 import de.bixilon.minosoft.data.text.RGBColor
+import de.bixilon.minosoft.data.text.RGBColor.Companion.asRGBColor
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.gui.rendering.textures.Texture
 import glm_.vec3.Vec3i
@@ -136,7 +137,7 @@ class TintColorCalculator(val world: World) {
             if (color == 0) {
                 return null
             }
-            return RGBColor.noAlpha(color)
+            return color.asRGBColor()
         }
     }
 }

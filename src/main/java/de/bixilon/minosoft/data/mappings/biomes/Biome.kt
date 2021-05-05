@@ -18,6 +18,8 @@ import de.bixilon.minosoft.data.mappings.registry.RegistryItem
 import de.bixilon.minosoft.data.mappings.registry.ResourceLocationDeserializer
 import de.bixilon.minosoft.data.mappings.versions.VersionMapping
 import de.bixilon.minosoft.data.text.RGBColor
+import de.bixilon.minosoft.data.text.RGBColor.Companion.asColor
+import de.bixilon.minosoft.data.text.RGBColor.Companion.asRGBColor
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.TintColorCalculator
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
@@ -55,6 +57,7 @@ data class Biome(
     }
 
     companion object : ResourceLocationDeserializer<Biome> {
+        private val TODO_SWAMP_COLOR = "#6A7039".asColor()
         override fun deserialize(mappings: VersionMapping?, resourceLocation: ResourceLocation, data: JsonObject): Biome {
             check(mappings != null) { "VersionMapping is null!" }
             return Biome(
@@ -67,7 +70,7 @@ data class Biome(
                 waterFogColor = TintColorCalculator.getJsonColor(data["water_fog_color"]?.asInt ?: 0),
                 category = mappings.biomeCategoryRegistry.get(data["category"]?.asInt ?: -1) ?: DEFAULT_CATEGORY,
                 precipitation = mappings.biomePrecipitationRegistry.get(data["precipitation"]?.asInt ?: -1) ?: DEFAULT_PRECIPITATION,
-                skyColor = data["sky_color"]?.asInt?.let { RGBColor.noAlpha(it) } ?: RenderConstants.GRASS_FAILOVER_COLOR,
+                skyColor = data["sky_color"]?.asInt?.let { it.asRGBColor() } ?: RenderConstants.GRASS_FAILOVER_COLOR,
                 foliageColorOverride = TintColorCalculator.getJsonColor(data["foliage_color_override"]?.asInt ?: 0),
                 grassColorOverride = TintColorCalculator.getJsonColor(data["grass_color_override"]?.asInt ?: 0),
                 descriptionId = data["water_fog_color"]?.asString,
@@ -89,7 +92,7 @@ data class Biome(
         DARK_FOREST({ color: RGBColor -> color }), // ToDo: This rgb 2634762 should be added to this?
         SWAMP({
             // ToDo: Minecraft uses PerlinSimplexNoise here
-            RGBColor("#6A7039")
+            TODO_SWAMP_COLOR
         }),
     }
 }

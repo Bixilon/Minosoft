@@ -16,6 +16,7 @@ package de.bixilon.minosoft.data.text
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.locale.minecraft.Translator
+import de.bixilon.minosoft.data.text.RGBColor.Companion.asColor
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.font.text.TextGetProperties
 import de.bixilon.minosoft.gui.rendering.font.text.TextSetProperties
@@ -94,7 +95,7 @@ class BaseComponent : ChatComponent {
 
         val color = json["color"]?.asString?.let { colorName ->
             if (colorName.startsWith("#")) {
-                RGBColor(colorName)
+                colorName.asColor()
             } else {
                 ChatColors.getColorByName(colorName)
             }

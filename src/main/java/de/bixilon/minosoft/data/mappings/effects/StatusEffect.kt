@@ -19,6 +19,7 @@ import de.bixilon.minosoft.data.mappings.registry.ResourceLocationDeserializer
 import de.bixilon.minosoft.data.mappings.registry.Translatable
 import de.bixilon.minosoft.data.mappings.versions.VersionMapping
 import de.bixilon.minosoft.data.text.RGBColor
+import de.bixilon.minosoft.data.text.RGBColor.Companion.asRGBColor
 import de.bixilon.minosoft.datafixer.EntityAttributeFixer.fix
 
 data class StatusEffect(
@@ -47,7 +48,7 @@ data class StatusEffect(
                 resourceLocation = resourceLocation,
                 category = StatusEffectCategories.NAME_MAP[data["category"].asString]!!,
                 translationKey = data["translation_key"]?.asString,
-                color = RGBColor.noAlpha(data["color"].asInt),
+                color = data["color"].asInt.asRGBColor(),
                 attributes.toMap(),
             )
         }
