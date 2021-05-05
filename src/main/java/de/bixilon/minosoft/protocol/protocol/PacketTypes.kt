@@ -247,7 +247,7 @@ class PacketTypes {
         PLAY_ENTITY_TELEPORT({ EntityTeleportS2CP(it) }, isThreadSafe = false),
         PLAY_ADVANCEMENTS({ PacketAdvancements(it) }),
         PLAY_ENTITY_PROPERTIES({ PacketEntityProperties(it) }),
-        PLAY_ENTITY_EFFECT({ PacketEntityEffect(it) }),
+        PLAY_ENTITY_STATUS_EFFECT({ EntityStatusEffectS2CP(it) }),
         PLAY_DECLARE_RECIPES({ PacketDeclareRecipes(it) }),
         PLAY_TAGS({ PacketTags(it) }),
         PLAY_BED_USE({ BedUseS2CP(it) }),

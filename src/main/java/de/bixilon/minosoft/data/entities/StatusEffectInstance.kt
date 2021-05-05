@@ -18,9 +18,4 @@ data class StatusEffectInstance(
     val statusEffect: StatusEffect,
     val amplifier: Int,
     val duration: Int,
-) {
-
-    override fun toString(): String {
-        return "$statusEffect (amplifier: $amplifier, duration: $duration)"
-    }
-}
+)

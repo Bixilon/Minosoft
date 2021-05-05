@@ -100,6 +100,7 @@ abstract class Entity(
     @get:EntityMetaDataFunction(name = "On fire")
     val isOnFire: Boolean
         get() = getEntityFlag(0x01)
+
     open val isCrouching: Boolean
         get() = getEntityFlag(0x02)
 
@@ -277,7 +278,7 @@ abstract class Entity(
         return delta
     }
 
-    fun computeTimeStep(deltaMillis: Long) {
+    fun tick(deltaMillis: Long) {
         if (connection.world.getChunk(position.blockPosition.chunkPosition)?.isFullyLoaded != true) {
             return // ignore update if chunk is not loaded yet
         }
@@ -293,7 +294,7 @@ abstract class Entity(
         }
         if (velocity != oldVelocity) {
             // the velocity has changed
-            computeTimeStep(deltaMillis)
+            tick(deltaMillis)
             return
         }
         velocity = newVelocity
