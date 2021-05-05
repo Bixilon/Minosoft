@@ -15,9 +15,11 @@ package de.bixilon.minosoft.config
 import com.squareup.moshi.JsonWriter
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.config.Config
+import de.bixilon.minosoft.util.KUtil.nullCast
 import de.bixilon.minosoft.util.Util
 import de.bixilon.minosoft.util.json.JSONSerializer
 import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
 import okio.Buffer
 import java.io.File
 import java.io.FileWriter
@@ -30,13 +32,24 @@ class Configuration(private val configName: String = StaticConfiguration.CONFIG_
 
     init {
         if (file.exists()) {
-            config = JSONSerializer.CONFIG_ADAPTER.fromJson(Util.readFile(file.absolutePath))!!
+            val config = JSONSerializer.MAP_ADAPTER.fromJson(Util.readFile(file.absolutePath))!!
 
-            if (config.general.version > LATEST_CONFIG_VERSION) {
-                throw ConfigMigrationException(String.format("Configuration was migrated to newer config format (version=${config.general.version}, expected=${LATEST_CONFIG_VERSION}). Downgrading the config file is unsupported!"))
+            var wasMigrated = false
+            let {
+                val configVersion = config["general"]?.compoundCast()?.get("version")?.nullCast<Int>() ?: return@let
+                if (config["general"]?.compoundCast()?.get("version")?.nullCast<Int>() ?: 0 > LATEST_CONFIG_VERSION) {
+                    throw ConfigMigrationException("Configuration was migrated to newer config format (version=${configVersion}, expected=${LATEST_CONFIG_VERSION}). Downgrading the config file is unsupported!")
+                }
+                if (configVersion < LATEST_CONFIG_VERSION) {
+                    startMigration(configVersion, config)
+                    wasMigrated = true
+                }
             }
-            if (config.general.version < LATEST_CONFIG_VERSION) {
-                migrateConfiguration()
+
+            this.config = JSONSerializer.CONFIG_ADAPTER.fromJsonValue(config)!!
+
+            if (wasMigrated) {
+                saveToFile()
             }
         } else {
             // no configuration file
@@ -79,21 +92,19 @@ class Configuration(private val configName: String = StaticConfiguration.CONFIG_
         }
     }
 
-    private fun migrateConfiguration() {
-        Log.info(String.format("Migrating config from version ${config.general.version} to  $LATEST_CONFIG_VERSION"))
-        for (nextVersion in config.general.version + 1..LATEST_CONFIG_VERSION) {
-            migrateConfiguration(nextVersion)
+    private fun startMigration(configVersion: Int, config: MutableMap<String, Any>) {
+        Log.info(String.format("Migrating config from version $configVersion to  $LATEST_CONFIG_VERSION"))
+        for (nextVersion in configVersion + 1..LATEST_CONFIG_VERSION) {
+            migrateConfiguration(nextVersion, config)
         }
-        config.general.version = LATEST_CONFIG_VERSION
-        saveToFile()
+        config["general"]?.compoundCast()?.put("version", LATEST_CONFIG_VERSION)
         Log.info("Finished migrating config!")
     }
 
-    private fun migrateConfiguration(nextVersion: Int) {
-        // switch (nextVersion) {
-        //     // ToDo
-        //     default: throw new ConfigMigrationException("Can not migrate config: Unknown config version " + nextVersion);
-        // }
+    private fun migrateConfiguration(nextVersion: Int, config: Map<String, Any>) {
+        when (nextVersion) {
+            else -> throw ConfigMigrationException("Can not migrate config: Unknown config version $nextVersion")
+        }
     }
 
     companion object {

@@ -18,7 +18,8 @@ import glm_.vec3.Vec3i
 enum class Axes {
     X,
     Y,
-    Z;
+    Z,
+    ;
 
     companion object {
         fun byDirection(direction: Directions): Axes {

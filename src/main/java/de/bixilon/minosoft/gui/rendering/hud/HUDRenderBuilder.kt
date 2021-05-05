@@ -18,7 +18,6 @@ import de.bixilon.minosoft.gui.rendering.hud.nodes.HUDElement
 
 interface HUDRenderBuilder<T : HUDElement> {
     val RESOURCE_LOCATION: ResourceLocation
-
     val DEFAULT_PROPERTIES: HUDElementProperties
 
     fun build(hudRenderer: HUDRenderer): T

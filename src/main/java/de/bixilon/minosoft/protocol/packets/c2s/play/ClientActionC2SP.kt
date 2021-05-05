@@ -39,7 +39,8 @@ class ClientActionC2SP(
     enum class ClientActions {
         PERFORM_RESPAWN,
         REQUEST_STATISTICS,
-        OPEN_INVENTORY;
+        OPEN_INVENTORY,
+        ;
 
         companion object : ValuesEnum<ClientActions> {
             override val VALUES: Array<ClientActions> = values()
