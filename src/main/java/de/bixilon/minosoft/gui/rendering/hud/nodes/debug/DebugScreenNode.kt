@@ -16,16 +16,16 @@ package de.bixilon.minosoft.gui.rendering.hud.nodes.debug
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.gui.rendering.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.hud.nodes.HUDElement
+import de.bixilon.minosoft.gui.rendering.hud.nodes.layout.RowLayout
 import de.bixilon.minosoft.gui.rendering.hud.nodes.primitive.LabelNode
-import glm_.vec2.Vec2i
 
 abstract class DebugScreenNode(hudRenderer: HUDRenderer) : HUDElement(hudRenderer) {
+    override val layout = RowLayout(hudRenderer.renderWindow)
     protected var lastPrepareTime = 0L
 
     fun text(text: String = ""): LabelNode {
         val textElement = LabelNode(hudRenderer.renderWindow, text = ChatComponent.of(text))
-        layout.addChild(Vec2i(0, layout.sizing.currentSize.y), textElement)
-        layout.apply()
+        layout.addRow(textElement)
         return textElement
     }
 }

@@ -11,22 +11,21 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.hud.nodes
+package de.bixilon.minosoft.gui.rendering.hud.nodes.layout
 
-import de.bixilon.minosoft.Minosoft
-import de.bixilon.minosoft.gui.rendering.hud.HUDElementProperties
-import de.bixilon.minosoft.gui.rendering.hud.HUDRenderer
-import de.bixilon.minosoft.gui.rendering.hud.nodes.layout.Layout
+import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.hud.nodes.primitive.Node
+import de.bixilon.minosoft.gui.rendering.hud.nodes.properties.NodeSizing
+import glm_.vec2.Vec2i
 
-abstract class HUDElement(protected val hudRenderer: HUDRenderer) {
-    abstract val layout: Layout
+class RowLayout(
+    renderWindow: RenderWindow,
+    sizing: NodeSizing = NodeSizing(),
+    initialCacheSize: Int = DEFAULT_INITIAL_CACHE_SIZE,
+) : AbsoluteLayout(renderWindow, sizing, initialCacheSize) {
 
-    lateinit var properties: HUDElementProperties
-
-    val scale: Float
-        get() = properties.scale * Minosoft.getConfig().config.game.hud.scale
-
-    open fun init() {}
-    open fun postInit() {}
-    open fun draw() {}
+    fun addRow(node: Node) {
+        addChild(Vec2i(0, sizing.currentSize.y + node.sizing.margin.top + node.sizing.padding.top), node)
+        apply()
+    }
 }

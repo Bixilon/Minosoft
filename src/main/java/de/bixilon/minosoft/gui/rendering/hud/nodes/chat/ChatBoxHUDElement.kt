@@ -22,11 +22,13 @@ import de.bixilon.minosoft.gui.rendering.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.hud.elements.input.TextField
 import de.bixilon.minosoft.gui.rendering.hud.elements.input.TextFieldProperties
 import de.bixilon.minosoft.gui.rendering.hud.nodes.HUDElement
+import de.bixilon.minosoft.gui.rendering.hud.nodes.layout.AbsoluteLayout
 import de.bixilon.minosoft.gui.rendering.util.abstractions.ScreenResizeCallback
 import glm_.vec2.Vec2
 import glm_.vec2.Vec2i
 
 class ChatBoxHUDElement(hudRenderer: HUDRenderer) : HUDElement(hudRenderer), ScreenResizeCallback {
+    override val layout = AbsoluteLayout(hudRenderer.renderWindow)
     private lateinit var inputField: TextField
 
     override fun init() {

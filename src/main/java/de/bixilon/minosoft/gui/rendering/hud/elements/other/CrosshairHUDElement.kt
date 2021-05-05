@@ -18,14 +18,16 @@ import de.bixilon.minosoft.gui.rendering.hud.HUDElementProperties
 import de.bixilon.minosoft.gui.rendering.hud.HUDRenderBuilder
 import de.bixilon.minosoft.gui.rendering.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.hud.nodes.HUDElement
+import de.bixilon.minosoft.gui.rendering.hud.nodes.layout.AbsoluteLayout
 import de.bixilon.minosoft.gui.rendering.hud.nodes.primitive.ImageNode
 import de.bixilon.minosoft.gui.rendering.hud.nodes.properties.NodeSizing
 import glm_.vec2.Vec2
 import glm_.vec2.Vec2i
 
 class CrosshairHUDElement(
-    hudRender: HUDRenderer,
-) : HUDElement(hudRender) {
+    hudRenderer: HUDRenderer,
+) : HUDElement(hudRenderer) {
+    override val layout = AbsoluteLayout(hudRenderer.renderWindow)
     private lateinit var crosshairImage: ImageNode
 
     override fun init() {
