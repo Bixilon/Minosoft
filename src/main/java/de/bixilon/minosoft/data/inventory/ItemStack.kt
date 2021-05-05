@@ -161,21 +161,12 @@ data class ItemStack(
             return nbt
         }
 
-
-    override fun toString(): String {
-        return fullDisplayName
-    }
-
     val displayName: ChatComponent
         get() {
             customDisplayName?.let { return it }
             item.translationKey?.let { version?.localeManager?.translate(it)?.let { translatedName -> return translatedName } }
             return ChatComponent.of(item.toString())
         }
-
-    // ToDo all properties
-    val fullDisplayName: String
-        get() = displayName.legacyText + ": " + super.toString()
 
     fun shouldHideEnchantments(): Boolean {
         return BitByte.isBitSet(hideFlags, HIDE_ENCHANTMENT_BIT)

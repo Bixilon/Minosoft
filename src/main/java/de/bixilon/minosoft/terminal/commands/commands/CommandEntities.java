@@ -55,7 +55,7 @@ public class CommandEntities extends Command {
                             tableData.add(new Object[]{"Location", entity.getPosition()});
                             tableData.add(new Object[]{"Rotation", entity.getRotation()});
                             tableData.add(new Object[]{"Equipment", entity.getEquipment()});
-                            tableData.add(new Object[]{"Effects", entity.getEffectList()});
+                            tableData.add(new Object[]{"Effects", entity.getActiveStatusEffects()});
                             tableData.add(new Object[]{"Attached to", entity.getAttachedEntity() == -1 ? "" : entity.getAttachedEntity()});
 
                             for (var entry : entity.getEntityMetaDataFormatted().entrySet()) {

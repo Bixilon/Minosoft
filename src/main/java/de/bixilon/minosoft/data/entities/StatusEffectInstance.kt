@@ -18,4 +18,10 @@ data class StatusEffectInstance(
     val statusEffect: StatusEffect,
     val amplifier: Int,
     val duration: Int,
-)
+) {
+    private val startMillis = System.currentTimeMillis()
+
+    val remainingMillis: Long
+        get() = System.currentTimeMillis() - startMillis
+}
+

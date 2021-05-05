@@ -31,6 +31,7 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.inChunkPosition
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
 import glm_.vec3.Vec3
 import java.lang.reflect.InvocationTargetException
 import java.util.*
@@ -42,8 +43,8 @@ abstract class Entity(
     var position: Vec3,
     var rotation: EntityRotation,
 ) {
-    val equipment: MutableMap<EquipmentSlots, ItemStack> = mutableMapOf()
-    val effectList: MutableSet<StatusEffectInstance> = mutableSetOf()
+    val equipment: MutableMap<EquipmentSlots, ItemStack> = synchronizedMapOf()
+    val activeStatusEffects: MutableMap<StatusEffect, StatusEffectInstance> = synchronizedMapOf()
 
     @JvmField
     protected val versionId: Int = connection.version.versionId
@@ -69,12 +70,11 @@ abstract class Entity(
 
     fun addEffect(effect: StatusEffectInstance) {
         // effect already applied, maybe the duration or the amplifier changed?
-        effectList.removeIf { (statusEffect) -> statusEffect === effect.statusEffect }
-        effectList.add(effect)
+        activeStatusEffects[effect.statusEffect] = effect
     }
 
     fun removeEffect(effect: StatusEffect) {
-        effectList.removeIf { (statusEffect) -> statusEffect === effect }
+        activeStatusEffects.remove(effect)
     }
 
     fun attachTo(vehicleId: Int?) {
@@ -278,7 +278,7 @@ abstract class Entity(
         return delta
     }
 
-    fun tick(deltaMillis: Long) {
+    private fun tickMovement(deltaMillis: Long) {
         if (connection.world.getChunk(position.blockPosition.chunkPosition)?.isFullyLoaded != true) {
             return // ignore update if chunk is not loaded yet
         }
@@ -299,6 +299,12 @@ abstract class Entity(
         }
         velocity = newVelocity
         move(velocity * deltaTime)
+    }
+
+    fun tick(deltaMillis: Long) {
+        check(deltaMillis > 0L) { "Delta tick time is <= 0: $deltaMillis" }
+
+        tickMovement(deltaMillis)
     }
 
     private val aabb: AABB

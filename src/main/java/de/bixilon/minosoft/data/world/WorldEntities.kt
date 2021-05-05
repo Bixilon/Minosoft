@@ -15,6 +15,7 @@ package de.bixilon.minosoft.data.world
 
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
+import de.bixilon.minosoft.util.KUtil.toSynchronizedMap
 import java.util.*
 
 class WorldEntities : Iterable<Entity> {
@@ -72,6 +73,6 @@ class WorldEntities : Iterable<Entity> {
     }
 
     override fun iterator(): Iterator<Entity> {
-        return idEntityMap.values.iterator()
+        return idEntityMap.toSynchronizedMap().values.iterator()
     }
 }

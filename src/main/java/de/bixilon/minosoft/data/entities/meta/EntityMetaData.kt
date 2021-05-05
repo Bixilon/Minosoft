@@ -40,6 +40,10 @@ class EntityMetaData(
 ) {
     val sets: MetaDataHashMap = MetaDataHashMap()
 
+    override fun toString(): String {
+        return sets.toString()
+    }
+
     fun getData(type: EntityMetaDataDataTypes, buffer: PlayInByteBuffer): Any? {
         return when (type) {
             EntityMetaDataDataTypes.BYTE -> buffer.readByte()
@@ -128,8 +132,8 @@ class EntityMetaData(
             get(index)?.let {
                 try {
                     return it as K
-                } catch (e: ClassCastException) {
-                    Log.log(LogMessageType.OTHER, level = LogLevels.WARN, message = e)
+                } catch (exception: ClassCastException) {
+                    Log.log(LogMessageType.OTHER, level = LogLevels.WARN, message = exception)
                 }
             }
             return field.getDefaultValue()
@@ -197,7 +201,7 @@ class EntityMetaData(
         }
 
         fun getChatComponent(field: EntityMetaDataFields): ChatComponent? {
-            return ChatComponent.of(get(field), connection.version.localeManager)
+            return get<Any?>(field)?.let { ChatComponent.of(it, connection.version.localeManager) }
         }
 
         fun getString(field: EntityMetaDataFields): String? {
