@@ -23,6 +23,8 @@ import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
+import de.bixilon.minosoft.util.KUtil
+import de.bixilon.minosoft.util.enum.ValuesEnum
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -50,7 +52,7 @@ class TabListDataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
             val item = TabListItemData(name = name, ping = ping, remove = action == PlayerListItemActions.REMOVE_PLAYER)
             items[uuid] = item
         } else {
-            val action = PlayerListItemActions.VALUES[buffer.readVarInt()]
+            val action = PlayerListItemActions[buffer.readVarInt()]
             val count: Int = buffer.readVarInt()
             for (i in 0 until count) {
                 val uuid: UUID = buffer.readUUID()
@@ -187,8 +189,9 @@ class TabListDataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         REMOVE_PLAYER,
         ;
 
-        companion object {
-            val VALUES = values()
+        companion object : ValuesEnum<PlayerListItemActions> {
+            override val VALUES = values()
+            override val NAME_MAP: Map<String, PlayerListItemActions> = KUtil.getEnumValues(VALUES)
         }
     }
 }

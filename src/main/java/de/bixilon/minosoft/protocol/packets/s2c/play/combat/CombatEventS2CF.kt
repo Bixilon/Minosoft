@@ -21,7 +21,7 @@ import de.bixilon.minosoft.util.enum.ValuesEnum
 object CombatEventS2CF {
 
     fun createPacket(buffer: PlayInByteBuffer): PlayS2CPacket {
-        return when (CombatEvents.VALUES[buffer.readVarInt()]) {
+        return when (CombatEvents[buffer.readVarInt()]) {
             CombatEvents.ENTER_COMBAT -> CombatEventEnterS2CP()
             CombatEvents.END_COMBAT -> CombatEventEndS2CP(buffer)
             CombatEvents.ENTITY_DEATH -> CombatEventKillS2CP(buffer)

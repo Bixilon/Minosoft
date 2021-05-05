@@ -10,22 +10,23 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.data.entities
 
-package de.bixilon.minosoft.data.entities;
+import de.bixilon.minosoft.data.Directions
+import de.bixilon.minosoft.data.entities.entities.animal.Axolotl
+import de.bixilon.minosoft.data.entities.entities.npc.villager.data.VillagerData
+import de.bixilon.minosoft.data.entities.entities.npc.villager.data.VillagerLevels
+import de.bixilon.minosoft.data.entities.entities.npc.villager.data.VillagerTypes
+import de.bixilon.minosoft.data.entities.entities.vehicle.Boat
+import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.data.mappings.particle.Particle
+import de.bixilon.minosoft.data.mappings.particle.data.ParticleData
+import de.bixilon.minosoft.data.text.ChatComponent.Companion.of
+import de.bixilon.minosoft.util.KUtil
+import de.bixilon.minosoft.util.enum.ValuesEnum
 
-import de.bixilon.minosoft.data.Directions;
-import de.bixilon.minosoft.data.entities.entities.animal.Axolotl;
-import de.bixilon.minosoft.data.entities.entities.npc.villager.data.VillagerData;
-import de.bixilon.minosoft.data.entities.entities.npc.villager.data.VillagerLevels;
-import de.bixilon.minosoft.data.entities.entities.npc.villager.data.VillagerTypes;
-import de.bixilon.minosoft.data.entities.entities.vehicle.Boat;
-import de.bixilon.minosoft.data.mappings.ResourceLocation;
-import de.bixilon.minosoft.data.mappings.particle.Particle;
-import de.bixilon.minosoft.data.mappings.particle.data.ParticleData;
-import de.bixilon.minosoft.data.text.ChatComponent;
-
-public enum EntityMetaDataFields {
-    ENTITY_FLAGS((byte) 0),
+enum class EntityMetaDataFields(val defaultValue: Any? = null) {
+    ENTITY_FLAGS(0.toByte()),
     ENTITY_AIR_SUPPLY(300),
     ENTITY_CUSTOM_NAME,
     ENTITY_CUSTOM_NAME_VISIBLE(false),
@@ -34,7 +35,7 @@ public enum EntityMetaDataFields {
     ENTITY_POSE(Poses.STANDING),
     ENTITY_TICKS_FROZEN(0),
 
-    LIVING_ENTITY_FLAGS((byte) 0),
+    LIVING_ENTITY_FLAGS(0.toByte()),
     LIVING_ENTITY_HEALTH(Float.MIN_VALUE),
     LIVING_ENTITY_EFFECT_COLOR(0),
     LIVING_ENTITY_EFFECT_AMBIENCE(false),
@@ -42,7 +43,7 @@ public enum EntityMetaDataFields {
     LIVING_ENTITY_ABSORPTION_HEARTS(0),
     LIVING_ENTITY_BED_POSITION,
 
-    MOB_FLAGS((byte) 0),
+    MOB_FLAGS(0.toByte()),
 
     ZOMBIE_HANDS_HELD_UP(false),
     ZOMBIE_IS_BABY(false),
@@ -50,7 +51,6 @@ public enum EntityMetaDataFields {
     ZOMBIE_DROWNING_CONVERSION(false),
 
     THROWABLE_ITEM_PROJECTILE_ITEM,
-
     THROWN_POTION_ITEM,
 
     FALLING_BLOCK_SPAWN_POSITION,
@@ -59,16 +59,16 @@ public enum EntityMetaDataFields {
     AREA_EFFECT_CLOUD_RADIUS(0.5f),
     AREA_EFFECT_CLOUD_COLOR(0),
     AREA_EFFECT_CLOUD_WAITING(false),
-    AREA_EFFECT_CLOUD_PARTICLE(new ParticleData(new Particle(new ResourceLocation("effect")))),
+    AREA_EFFECT_CLOUD_PARTICLE(ParticleData(Particle(ResourceLocation("effect")))),
 
-    ABSTRACT_ARROW_FLAGS((byte) 0),
-    ABSTRACT_ARROW_PIERCE_LEVEL((byte) 0),
+    ABSTRACT_ARROW_FLAGS(0.toByte()),
+    ABSTRACT_ARROW_PIERCE_LEVEL(0.toByte()),
     ABSTRACT_ARROW_OWNER_UUID,
+
+    ARROW_EFFECT_COLOR(-1),
 
     FISHING_HOOK_HOOKED_ENTITY(0),
     FISHING_HOOK_CATCHABLE(false),
-
-    ARROW_EFFECT_COLOR(-1),
 
     THROWN_TRIDENT_LOYALTY_LEVEL(0),
     THROWN_TRIDENT_FOIL(false),
@@ -76,7 +76,7 @@ public enum EntityMetaDataFields {
     BOAT_HURT(0),
     BOAT_HURT_DIRECTION(1),
     BOAT_DAMAGE_TAKEN(0.0f),
-    BOAT_MATERIAL(Boat.BoatMaterials.OAK.ordinal()),
+    BOAT_MATERIAL(Boat.BoatMaterials.OAK.ordinal),
     BOAT_PADDLE_LEFT(false),
     BOAT_PADDLE_RIGHT(false),
     BOAT_BUBBLE_TIME(0),
@@ -99,20 +99,20 @@ public enum EntityMetaDataFields {
 
     PLAYER_ABSORPTION_HEARTS(0.0f),
     PLAYER_SCORE(0),
-    PLAYER_SKIN_PARTS_FLAGS((byte) 0),
-    PLAYER_SKIN_MAIN_HAND((byte) 1),
+    PLAYER_SKIN_PARTS_FLAGS(0.toByte()),
+    PLAYER_SKIN_MAIN_HAND(1.toByte()),
     PLAYER_LEFT_SHOULDER_DATA,
     PLAYER_RIGHT_SHOULDER_DATA,
 
-    ARMOR_STAND_FLAGS((byte) 0),
-    ARMOR_STAND_HEAD_ROTATION(new EntityRotation(0.0F, 0.0F, 0.0F)),
-    ARMOR_STAND_BODY_ROTATION(new EntityRotation(0.0F, 0.0F, 0.0F)),
-    ARMOR_STAND_LEFT_ARM_ROTATION(new EntityRotation(-10.0F, 0.0F, -10.0F)),
-    ARMOR_STAND_RIGHT_ARM_ROTATION(new EntityRotation(-15.0F, 0.0F, 10.0F)),
-    ARMOR_STAND_LEFT_LAG_ROTATION(new EntityRotation(-1.0F, 0.0F, -1.0F)),
-    ARMOR_STAND_RIGHT_LAG_ROTATION(new EntityRotation(1.0F, 0.0F, 1.0F)),
+    ARMOR_STAND_FLAGS(0.toByte()),
+    ARMOR_STAND_HEAD_ROTATION(EntityRotation(0.0f, 0.0f, 0.0f)),
+    ARMOR_STAND_BODY_ROTATION(EntityRotation(0.0f, 0.0f, 0.0f)),
+    ARMOR_STAND_LEFT_ARM_ROTATION(EntityRotation(-10.0f, 0.0f, -10.0f)),
+    ARMOR_STAND_RIGHT_ARM_ROTATION(EntityRotation(-15.0f, 0.0f, 10.0f)),
+    ARMOR_STAND_LEFT_LAG_ROTATION(EntityRotation(-1.0f, 0.0f, -1.0f)),
+    ARMOR_STAND_RIGHT_LAG_ROTATION(EntityRotation(1.0f, 0.0f, 1.0f)),
 
-    BAT_FLAGS((byte) 0),
+    BAT_FLAGS(0.toByte()),
 
     AGEABLE_IS_BABY(false),
 
@@ -126,7 +126,7 @@ public enum EntityMetaDataFields {
 
     TROPICAL_FISH_VARIANT(0),
 
-    ABSTRACT_HORSE_FLAGS((byte) 0),
+    ABSTRACT_HORSE_FLAGS(0.toByte()),
     ABSTRACT_HORSE_OWNER_UUID,
 
     HORSE_VARIANT(0),
@@ -137,11 +137,11 @@ public enum EntityMetaDataFields {
     LLAMA_CARPET_COLOR(-1),
     LLAMA_VARIANT(0),
 
-    BEE_FLAGS((byte) 0),
+    BEE_FLAGS(0.toByte()),
     BEE_REMAINING_ANGER_TIME(0),
 
     FOX_VARIANT(0),
-    FOX_FLAGS((byte) 0),
+    FOX_FLAGS(0.toByte()),
     FOX_TRUSTED_1,
     FOX_TRUSTED_2,
 
@@ -150,9 +150,9 @@ public enum EntityMetaDataFields {
     PANDA_UNHAPPY_TIMER(0),
     PANDA_SNEEZE_TIMER(0),
     PANDA_EAT_TIMER(0),
-    PANDA_MAIN_GENE((byte) 0),
-    PANDA_HIDDEN_GAME((byte) 0),
-    PANDA_FLAGS((byte) 0),
+    PANDA_MAIN_GENE(0.toByte()),
+    PANDA_HIDDEN_GAME(0.toByte()),
+    PANDA_FLAGS(0.toByte()),
 
     PIG_HAS_SADDLE(false),
     PIG_BOOST_TIME(0),
@@ -172,19 +172,19 @@ public enum EntityMetaDataFields {
 
     MOOSHROOM_VARIANT("red"),
 
-    SHEEP_FLAGS((byte) 0),
+    SHEEP_FLAGS(0.toByte()),
 
     STRIDER_TIME_TO_BOOST(0),
     STRIDER_IS_SUFFOCATING(false),
     STRIDER_HAS_SADDLE(false),
 
-    TAMABLE_ENTITY_FLAGS((byte) 0),
+    TAMABLE_ENTITY_FLAGS(0.toByte()),
     TAMABLE_ENTITY_OWNER_UUID,
 
     CAT_VARIANT(1),
     CAT_IS_LYING(false),
     CAT_IS_RELAXED(false),
-    CAT_GET_COLLAR_COLOR(14), // RED
+    CAT_GET_COLLAR_COLOR(14),  // RED
 
     WOLF_IS_BEGGING(false),
     WOLF_COLLAR_COLOR(14),
@@ -193,19 +193,18 @@ public enum EntityMetaDataFields {
 
     PARROT_VARIANT(0),
 
-    ABSTRACT_ILLAGER_FLAGS((byte) 0),
+    ABSTRACT_ILLAGER_FLAGS(0.toByte()),
     ABSTRACT_VILLAGER_UNHAPPY_TIMER(0),
+    VILLAGER_VILLAGER_DATA(VillagerData(VillagerTypes.PLAINS, ResourceLocation("minecraft:none"), VillagerLevels.APPRENTICE)),
 
-    VILLAGER_VILLAGER_DATA(new VillagerData(VillagerTypes.PLAINS, new ResourceLocation("minecraft:none"), VillagerLevels.APPRENTICE)),
+    IRON_GOLEM_FLAGS(0.toByte()),
 
-    IRON_GOLEM_FLAGS((byte) 0),
-
-    SNOW_GOLEM_FLAGS((byte) 0),
+    SNOW_GOLEM_FLAGS(0.toByte()),
 
     SHULKER_ATTACH_FACE(Directions.DOWN),
     SHULKER_ATTACHMENT_POSITION,
-    SHULKER_PEEK((byte) 0),
-    SHULKER_COLOR((byte) 10),
+    SHULKER_PEEK(0.toByte()),
+    SHULKER_COLOR(10.toByte()),
 
     ABSTRACT_PIGLIN_IMMUNE_TO_ZOMBIFICATION(false),
 
@@ -214,7 +213,7 @@ public enum EntityMetaDataFields {
     PIGLIN_IS_DANCING(false),
     PIGLIN_IMMUNE_TO_ZOMBIFICATION(false),
 
-    BLAZE_FLAGS((byte) 0),
+    BLAZE_FLAGS(0.toByte()),
 
     CREEPER_STATE(-1),
     CREEPER_IS_CHARGED(false),
@@ -229,9 +228,9 @@ public enum EntityMetaDataFields {
 
     WITCH_IS_DRINKING_POTION(0),
 
-    VEX_FLAGS((byte) 0),
+    VEX_FLAGS(0.toByte()),
 
-    SPIDER_FLAGS((byte) 0),
+    SPIDER_FLAGS(0.toByte()),
 
     WITHER_BOSS_CENTER_HEAD_TARGET_ENTITY_ID(0),
     WITHER_BOSS_LEFT_HEAD_TARGET_ENTITY_ID(0),
@@ -261,11 +260,9 @@ public enum EntityMetaDataFields {
     MINECART_BLOCK_ID(0),
     MINECART_BLOCK_Y_OFFSET(6),
     MINECART_SHOW_BLOCK(false),
-
     MINECART_FURNACE_HAS_FUEL(false),
-
     MINECART_COMMAND_BLOCK_COMMAND(""),
-    MINECART_COMMAND_BLOCK_LAST_OUTPUT(ChatComponent.Companion.of("")),
+    MINECART_COMMAND_BLOCK_LAST_OUTPUT(of("")),
 
     PRIMED_TNT_FUSE_TIME(80),
 
@@ -273,7 +270,8 @@ public enum EntityMetaDataFields {
 
     THROWN_EYE_OF_ENDER_ITEM,
 
-    AXOLOTL_VARIANT(Axolotl.AxolotlVariants.LUCY.ordinal()),
+    AXOLOTL_VARIANT(Axolotl.AxolotlVariants.LUCY.ordinal),
+
     AXOLOTL_PLAYING_DEAD(false),
     AXOLOTL_FROM_BUCKET(false),
 
@@ -282,44 +280,31 @@ public enum EntityMetaDataFields {
     SKELETON_STRAY_FREEZE_CONVERTING(false),
     SKELETON_SWING_ARMS(false),
 
-    GOAT_IS_SCREAMING(false),
+    GOAT_IS_SCREAMING(false),  // pretty old stuff here. 1.8 mostly (or even after, I don't know and I don't care)
 
-    // pretty old stuff here. 1.8 mostly (or even after, I don't know and I don't care)
-    LEGACY_SKELETON_TYPE((byte) 0),
+
+    LEGACY_SKELETON_TYPE(0.toByte()),
     LEGACY_ENDERMAN_CARRIED_BLOCK(0),
     LEGACY_ENDERMAN_CARRIED_BLOCK_DATA(0),
     LEGACY_WITCH_IS_AGGRESSIVE(false),
-    LEGACY_GUARDIAN_FLAGS((byte) 0),
-    LEGACY_OCELOT_TYPE((byte) 0),
+    LEGACY_GUARDIAN_FLAGS(0.toByte()),
+    LEGACY_OCELOT_TYPE(0.toByte()),
     LEGACY_HORSE_OWNER_NAME(""),
-    LEGACY_HORSE_SPECIAL_TYPE((byte) 0),
+    LEGACY_HORSE_SPECIAL_TYPE(0.toByte()),
     LEGACY_HORSE_ARMOR(0),
     LEGACY_VILLAGE_PROFESSION(0),
     LEGACY_END_CRYSTAL_HEALTH(5),
-    LEGACY_LIVING_ENTITY_AI_DISABLED((byte) 0),
-    LEGACY_AGEABLE_ENTITY_AGE((byte) 0),
+    LEGACY_LIVING_ENTITY_AI_DISABLED(0.toByte()),
+    LEGACY_AGEABLE_ENTITY_AGE(0.toByte()),
     LEGACY_AGEABLE_OWNER_NAME(""),
-
     LEGACY_ZOMBIE_VILLAGER_TYPE(0),
-
-
     LEGACY_AREA_EFFECT_CLOUD_PARTICLE_ID(0),
     LEGACY_AREA_EFFECT_CLOUD_PARTICLE_PARAMETER_1(0),
     LEGACY_AREA_EFFECT_CLOUD_PARTICLE_PARAMETER_2(0),
     ;
 
-    private final Object defaultValue;
-
-    EntityMetaDataFields() {
-        this.defaultValue = null;
-    }
-
-    EntityMetaDataFields(Object defaultValue) {
-        this.defaultValue = defaultValue;
-    }
-
-    @SuppressWarnings("unchecked")
-    public <K> K getDefaultValue() {
-        return (K) this.defaultValue;
+    companion object : ValuesEnum<EntityMetaDataFields> {
+        override val VALUES: Array<EntityMetaDataFields> = values()
+        override val NAME_MAP: Map<String, EntityMetaDataFields> = KUtil.getEnumValues(VALUES)
     }
 }

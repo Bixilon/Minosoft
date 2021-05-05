@@ -27,7 +27,7 @@ open class Item(
     data: JsonObject,
     versionMapping: VersionMapping,
 ) : RegistryItem, Translatable {
-    val rarity: Rarities = data["rarity"]?.asInt?.let { Rarities.VALUES[it] } ?: Rarities.COMMON
+    val rarity: Rarities = data["rarity"]?.asInt?.let { Rarities[it] } ?: Rarities.COMMON
     val maxStackSize: Int = data["max_stack_size"]?.asInt ?: 64
     val maxDamage: Int = data["max_damage"]?.asInt ?: 64
     val isFireResistant: Boolean = data["is_fire_resistant"]?.asBoolean ?: false

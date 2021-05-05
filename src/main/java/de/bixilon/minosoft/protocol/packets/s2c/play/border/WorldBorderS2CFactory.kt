@@ -23,7 +23,7 @@ object WorldBorderS2CFactory {
     // this function was signed by Maximilian Rosenmüller
     // and that means A LOT!
     fun createPacket(buffer: PlayInByteBuffer): PlayS2CPacket {
-        return when (WorldBorderActions.VALUES[buffer.readVarInt()]) {
+        return when (WorldBorderActions[buffer.readVarInt()]) {
             WorldBorderActions.SET_SIZE -> SetSizeWorldBorderS2CPacket(buffer)
             WorldBorderActions.LERP_SIZE -> LerpSizeWorldBorderS2CPacket(buffer)
             WorldBorderActions.SET_CENTER -> SetCenterWorldBorderS2CPacket(buffer)

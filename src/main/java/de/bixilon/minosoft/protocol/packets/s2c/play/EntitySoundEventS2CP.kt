@@ -22,7 +22,7 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 
 class EntitySoundEventS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     val soundEvent: SoundEvent = buffer.connection.mapping.soundEventRegistry.get(buffer.readVarInt())
-    val category: SoundCategories = SoundCategories.VALUES[buffer.readVarInt()]
+    val category: SoundCategories = SoundCategories[buffer.readVarInt()]
     val entityId: Int = buffer.readVarInt()
     val volume: Float = buffer.readFloat()
     val pitch: Float = buffer.readFloat()

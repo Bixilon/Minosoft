@@ -57,10 +57,7 @@ data class ItemStack(
             return
         }
 
-        nbt.getAndRemove(REPAIR_COST_TAG)?.let {
-            check(it is Number) { "Invalid $REPAIR_COST_TAG NBT data" }
-            repairCost = it.toInt()
-        }
+        nbt.getAndRemove(REPAIR_COST_TAG)?.nullCast<Number>()?.let { repairCost = it.toInt() }
 
         nbt.getAndRemove(DISPLAY_TAG)?.compoundCast()?.let {
             it.getAndRemove(DISPLAY_MAME_TAG)?.nullCast<String>()?.let { nameTag ->

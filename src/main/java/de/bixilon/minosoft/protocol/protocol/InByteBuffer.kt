@@ -263,7 +263,7 @@ open class InByteBuffer {
     }
 
     fun readPose(): Poses {
-        return Poses.byId(readVarInt())
+        return Poses[readVarInt()]
     }
 
     fun readRest(): ByteArray {
@@ -295,9 +295,7 @@ open class InByteBuffer {
     }
 
     fun readResourceLocation(): ResourceLocation {
-        val resourceLocation = readString()
-
-        return ResourceLocation.getResourceLocation(resourceLocation)
+        return ResourceLocation.getResourceLocation(readString())
     }
 
 
@@ -358,7 +356,7 @@ open class InByteBuffer {
             NBTTagTypes.BYTE_ARRAY -> readByteArray(readInt())
             NBTTagTypes.STRING -> readString(readUnsignedShort())
             NBTTagTypes.LIST -> {
-                val listType = NBTTagTypes.VALUES[readUnsignedByte()]
+                val listType = NBTTagTypes[readUnsignedByte()]
                 val length = readInt()
                 val out: MutableList<Any> = mutableListOf()
                 for (i in 0 until length) {
@@ -369,7 +367,7 @@ open class InByteBuffer {
             NBTTagTypes.COMPOUND -> {
                 val out: MutableMap<String, Any> = mutableMapOf()
                 while (true) {
-                    val compoundTagType = NBTTagTypes.VALUES[readUnsignedByte()]
+                    val compoundTagType = NBTTagTypes[readUnsignedByte()]
                     if (compoundTagType === NBTTagTypes.END) {
                         // end tag
                         break
@@ -395,7 +393,7 @@ open class InByteBuffer {
                 InByteBuffer(Util.decompressGzip(readByteArray(length)), connection!!).readNBTTag(false)
             }
         }
-        val type = NBTTagTypes.VALUES[readUnsignedByte()]
+        val type = NBTTagTypes[readUnsignedByte()]
         if (type === NBTTagTypes.COMPOUND) {
             var name = readString(readUnsignedShort()) // ToDo
         }

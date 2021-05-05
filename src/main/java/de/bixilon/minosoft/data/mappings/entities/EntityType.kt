@@ -49,7 +49,7 @@ data class EntityType(
 
             data["meta"]?.asJsonObject?.let {
                 for ((minosoftFieldName, index) in it.entrySet()) {
-                    val minosoftField = EntityMetaDataFields.valueOf(minosoftFieldName)
+                    val minosoftField = EntityMetaDataFields[minosoftFieldName.toLowerCase()]
                     mappings.entityMetaIndexMap[minosoftField] = index.asInt
                 }
             }

@@ -190,7 +190,7 @@ class TextureArray(val allTextures: MutableList<Texture>) {
                 var transparency: TextureTransparencies = TextureTransparencies.OPAQUE
                 for ((index, count) in transparencyPixelCount.withIndex()) {
                     if (count >= largest) {
-                        transparency = TextureTransparencies.VALUES[index]
+                        transparency = TextureTransparencies[index]
                         break
                     }
                 }

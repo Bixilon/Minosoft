@@ -85,11 +85,8 @@ class EntityMetaData(
             EntityMetaDataDataTypes.POSE -> buffer.readPose()
             EntityMetaDataDataTypes.BLOCK_ID -> buffer.connection.mapping.getBlockState(buffer.readVarInt()) // ToDo
             EntityMetaDataDataTypes.OPT_VAR_INT -> buffer.readVarInt() - 1
-            EntityMetaDataDataTypes.VILLAGER_DATA -> VillagerData(VillagerTypes.VALUES[buffer.readVarInt()], connection.mapping.villagerProfessionRegistry.get(buffer.readVarInt()).resourceLocation, VillagerLevels.VALUES[buffer.readVarInt()])
-            EntityMetaDataDataTypes.OPT_BLOCK_ID -> {
-                val blockId = buffer.readVarInt()
-                buffer.connection.mapping.getBlockState(blockId)
-            }
+            EntityMetaDataDataTypes.VILLAGER_DATA -> VillagerData(VillagerTypes[buffer.readVarInt()], connection.mapping.villagerProfessionRegistry.get(buffer.readVarInt()).resourceLocation, VillagerLevels[buffer.readVarInt()])
+            EntityMetaDataDataTypes.OPT_BLOCK_ID -> buffer.connection.mapping.getBlockState(buffer.readVarInt())
         }
     }
 
@@ -128,7 +125,7 @@ class EntityMetaData(
     inner class MetaDataHashMap : HashMap<Int, Any>() {
 
         operator fun <K> get(field: EntityMetaDataFields): K {
-            val index: Int = this@EntityMetaData.connection.mapping.getEntityMetaDataIndex(field) ?: return field.getDefaultValue() // Can not find field.
+            val index: Int = this@EntityMetaData.connection.mapping.getEntityMetaDataIndex(field) ?: return field.defaultValue as K // Can not find field.
             get(index)?.let {
                 try {
                     return it as K
@@ -136,7 +133,7 @@ class EntityMetaData(
                     Log.log(LogMessageType.OTHER, level = LogLevels.WARN, message = exception)
                 }
             }
-            return field.getDefaultValue()
+            return field.defaultValue as K
         }
 
         fun getPose(field: EntityMetaDataFields): Poses? {

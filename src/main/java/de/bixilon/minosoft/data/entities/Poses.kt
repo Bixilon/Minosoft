@@ -10,21 +10,23 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.data.entities
 
-package de.bixilon.minosoft.data.entities;
+import de.bixilon.minosoft.util.KUtil
+import de.bixilon.minosoft.util.enum.ValuesEnum
 
-public enum Poses {
+enum class Poses {
     STANDING,
     FLYING,
     SLEEPING,
     SWIMMING,
     SPIN_ATTACK,
     SNEAKING,
-    DYING;
+    DYING,
+    ;
 
-    private static final Poses[] POSES = values();
-
-    public static Poses byId(int id) {
-        return POSES[id];
+    companion object : ValuesEnum<Poses> {
+        override val VALUES: Array<Poses> = values()
+        override val NAME_MAP: Map<String, Poses> = KUtil.getEnumValues(VALUES)
     }
 }

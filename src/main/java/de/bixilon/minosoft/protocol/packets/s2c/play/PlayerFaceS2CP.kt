@@ -22,7 +22,7 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 import glm_.vec3.Vec3
 
 class PlayerFaceS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
-    val face: PlayerFaces = PlayerFaces.VALUES[buffer.readVarInt()]
+    val face: PlayerFaces = PlayerFaces[buffer.readVarInt()]
     val position: Vec3 = buffer.readPosition()
     var entityId: Int? = null
         private set
@@ -33,7 +33,7 @@ class PlayerFaceS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         if (buffer.readBoolean()) {
             // entity present
             entityId = buffer.readVarInt()
-            entityFace = PlayerFaces.VALUES[buffer.readVarInt()]
+            entityFace = PlayerFaces[buffer.readVarInt()]
         }
     }
 

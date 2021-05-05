@@ -46,7 +46,7 @@ class EnumRegistry<T : Enum<*>>(
 
     private fun getEnum(data: Any): T {
         return when (data) {
-            is Int -> values.VALUES[data]
+            is Int -> values[data]
             is String -> values.NAME_MAP[data.toLowerCase()] ?: error("Can not find enum: $data")
             is JsonPrimitive -> {
                 if (data.isNumber) {
