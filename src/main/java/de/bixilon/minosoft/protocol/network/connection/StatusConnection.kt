@@ -21,8 +21,8 @@ import de.bixilon.minosoft.modding.event.events.ConnectionStateChangeEvent
 import de.bixilon.minosoft.modding.event.events.PacketReceiveEvent
 import de.bixilon.minosoft.modding.event.events.ServerListPongEvent
 import de.bixilon.minosoft.modding.event.events.ServerListStatusArriveEvent
-import de.bixilon.minosoft.protocol.packets.c2s.handshaking.HandshakeC2SPacket
-import de.bixilon.minosoft.protocol.packets.c2s.status.StatusRequestC2SPacket
+import de.bixilon.minosoft.protocol.packets.c2s.handshaking.HandshakeC2SP
+import de.bixilon.minosoft.protocol.packets.c2s.status.StatusRequestC2SP
 import de.bixilon.minosoft.protocol.packets.s2c.S2CPacket
 import de.bixilon.minosoft.protocol.packets.s2c.StatusS2CPacket
 import de.bixilon.minosoft.protocol.ping.ServerListPing
@@ -86,11 +86,11 @@ class StatusConnection(
             fireEvent(ConnectionStateChangeEvent(this, previousConnectionState, connectionState))
             when (value) {
                 ConnectionStates.HANDSHAKING -> {
-                    network.sendPacket(HandshakeC2SPacket(realAddress, ConnectionStates.STATUS, Versions.AUTOMATIC_VERSION.protocolId))
+                    network.sendPacket(HandshakeC2SP(realAddress, ConnectionStates.STATUS, Versions.AUTOMATIC_VERSION.protocolId))
                     connectionState = ConnectionStates.STATUS
                 }
                 ConnectionStates.STATUS -> {
-                    network.sendPacket(StatusRequestC2SPacket())
+                    network.sendPacket(StatusRequestC2SP())
                 }
                 ConnectionStates.FAILED -> {
                     if (addresses == null) {

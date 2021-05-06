@@ -10,20 +10,19 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.protocol.packets.c2s.status
+package de.bixilon.minosoft.protocol.packets.s2c.play
 
-import de.bixilon.minosoft.protocol.packets.c2s.AllC2SPacket
-import de.bixilon.minosoft.protocol.protocol.OutByteBuffer
+import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-class StatusPingC2SPacket(val pingId: Long) : AllC2SPacket {
-
-    override fun write(buffer: OutByteBuffer) {
-        buffer.writeLong(pingId)
-    }
+class EntityStatusS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
+    private val entityId: Int = buffer.readInt()
+    private val eventId: Int = buffer.readUnsignedByte()
 
     override fun log() {
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT) { "Status ping (pingId=$pingId)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Entity status (entityId=$entityId, eventId=$eventId)" }
     }
 }

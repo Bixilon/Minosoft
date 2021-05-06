@@ -23,7 +23,7 @@ import de.bixilon.minosoft.modding.event.events.ChatMessageSendingEvent;
 import de.bixilon.minosoft.modding.event.events.ContainerCloseEvent;
 import de.bixilon.minosoft.modding.event.events.HeldItemChangeEvent;
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
-import de.bixilon.minosoft.protocol.packets.c2s.login.LoginPluginResponseC2SPacket;
+import de.bixilon.minosoft.protocol.packets.c2s.login.LoginPluginResponseC2SP;
 import de.bixilon.minosoft.protocol.packets.c2s.play.*;
 import de.bixilon.minosoft.util.logging.Log;
 import de.bixilon.minosoft.util.logging.LogMessageType;
@@ -94,7 +94,7 @@ public class PacketSender {
     }
 
     public void sendLoginPluginMessageResponse(int messageId, OutByteBuffer toSend) {
-        this.connection.sendPacket(new LoginPluginResponseC2SPacket(messageId, toSend.toByteArray()));
+        this.connection.sendPacket(new LoginPluginResponseC2SP(messageId, toSend.toByteArray()));
     }
 
     public void setLocation(Vec3 position, EntityRotation rotation, boolean onGround) {

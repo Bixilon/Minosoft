@@ -261,6 +261,17 @@ class TextureArray(val allTextures: MutableList<Texture>) {
         const val MAX_MIPMAP_LEVELS = 5
 
         private const val INTS_PER_ANIMATED_TEXTURE = 4
+
+
+        private fun ByteBuffer.copyFrom(origin: ByteBuffer, sourceOffset: Int, destinationOffset: Int, length: Int) {
+            origin.rewind()
+            origin.position(sourceOffset)
+            val bytes = ByteArray(length)
+
+            origin.get(bytes, 0, length)
+
+            this.put(bytes, destinationOffset, length)
+        }
     }
 
     inner class Animator {
@@ -343,15 +354,4 @@ class TextureArray(val allTextures: MutableList<Texture>) {
             glBindBuffer(GL_UNIFORM_BUFFER, 0)
         }
     }
-}
-
-private fun ByteBuffer.copyFrom(origin: ByteBuffer, sourceOffset: Int, destinationOffset: Int, length: Int) {
-    origin.rewind()
-    origin.position(sourceOffset)
-    val bytes = ByteArray(length)
-
-    origin.get(bytes, 0, length)
-
-    this.put(bytes, destinationOffset, length)
-
 }

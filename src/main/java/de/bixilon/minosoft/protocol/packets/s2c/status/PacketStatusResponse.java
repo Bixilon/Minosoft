@@ -17,7 +17,7 @@ import de.bixilon.minosoft.data.mappings.versions.Version;
 import de.bixilon.minosoft.data.mappings.versions.Versions;
 import de.bixilon.minosoft.modding.event.events.StatusResponseEvent;
 import de.bixilon.minosoft.protocol.network.connection.StatusConnection;
-import de.bixilon.minosoft.protocol.packets.c2s.status.StatusPingC2SPacket;
+import de.bixilon.minosoft.protocol.packets.c2s.status.StatusPingC2SP;
 import de.bixilon.minosoft.protocol.packets.s2c.StatusS2CPacket;
 import de.bixilon.minosoft.protocol.ping.ServerListPing;
 import de.bixilon.minosoft.protocol.protocol.ConnectionPing;
@@ -51,7 +51,7 @@ public class PacketStatusResponse extends StatusS2CPacket {
         Log.info(String.format("Status response received: %s/%s online. MotD: '%s'", getResponse().getPlayerOnline(), getResponse().getMaxPlayers(), getResponse().getMotd().getAnsiColoredMessage()));
         connection.handlePingCallbacks(getResponse());
         connection.setConnectionStatusPing(new ConnectionPing());
-        connection.sendPacket(new StatusPingC2SPacket(connection.getConnectionStatusPing().getPingId()));
+        connection.sendPacket(new StatusPingC2SP(connection.getConnectionStatusPing().getPingId()));
     }
 
     @Override

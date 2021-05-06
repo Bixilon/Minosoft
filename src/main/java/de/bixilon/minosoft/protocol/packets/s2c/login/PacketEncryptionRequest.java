@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.protocol.packets.s2c.login;
 
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
-import de.bixilon.minosoft.protocol.packets.c2s.login.EncryptionResponseC2SPacket;
+import de.bixilon.minosoft.protocol.packets.c2s.login.EncryptionResponseC2SP;
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket;
 import de.bixilon.minosoft.protocol.protocol.CryptManager;
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
@@ -49,7 +49,7 @@ public class PacketEncryptionRequest extends PlayS2CPacket {
             connection.disconnect();
             return;
         }
-        connection.sendPacket(new EncryptionResponseC2SPacket(secretKey, getVerifyToken(), publicKey));
+        connection.sendPacket(new EncryptionResponseC2SP(secretKey, getVerifyToken(), publicKey));
     }
 
     @Override

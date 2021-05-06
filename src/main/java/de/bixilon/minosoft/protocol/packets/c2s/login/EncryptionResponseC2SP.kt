@@ -20,7 +20,7 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 import java.security.PublicKey
 import javax.crypto.SecretKey
 
-class EncryptionResponseC2SPacket(
+class EncryptionResponseC2SP(
     val secretKey: SecretKey,
     val secret: ByteArray,
     val token: ByteArray,

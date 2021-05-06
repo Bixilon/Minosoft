@@ -18,7 +18,7 @@ import de.bixilon.minosoft.protocol.protocol.PlayOutByteBuffer
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-class LoginStartC2SPacket(
+class LoginStartC2SP(
     val username: String,
 ) : PlayC2SPacket {
 

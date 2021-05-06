@@ -19,18 +19,18 @@ package de.bixilon.minosoft.protocol.protocol
 
 import de.bixilon.minosoft.protocol.ErrorHandler
 import de.bixilon.minosoft.protocol.packets.c2s.C2SPacket
-import de.bixilon.minosoft.protocol.packets.c2s.handshaking.HandshakeC2SPacket
-import de.bixilon.minosoft.protocol.packets.c2s.login.EncryptionResponseC2SPacket
-import de.bixilon.minosoft.protocol.packets.c2s.login.LoginPluginResponseC2SPacket
-import de.bixilon.minosoft.protocol.packets.c2s.login.LoginStartC2SPacket
+import de.bixilon.minosoft.protocol.packets.c2s.handshaking.HandshakeC2SP
+import de.bixilon.minosoft.protocol.packets.c2s.login.EncryptionResponseC2SP
+import de.bixilon.minosoft.protocol.packets.c2s.login.LoginPluginResponseC2SP
+import de.bixilon.minosoft.protocol.packets.c2s.login.LoginStartC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.*
 import de.bixilon.minosoft.protocol.packets.c2s.play.advancement.tab.AdvancementTabC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.crafting.CraftingRecipeRequestC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.crafting.DisplayRecipeSetC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.crafting.RecipeBookStateC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.entity.interact.BaseInteractEntityC2SP
-import de.bixilon.minosoft.protocol.packets.c2s.status.StatusPingC2SPacket
-import de.bixilon.minosoft.protocol.packets.c2s.status.StatusRequestC2SPacket
+import de.bixilon.minosoft.protocol.packets.c2s.status.StatusPingC2SP
+import de.bixilon.minosoft.protocol.packets.c2s.status.StatusRequestC2SP
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.packets.s2c.StatusS2CPacket
 import de.bixilon.minosoft.protocol.packets.s2c.login.*
@@ -48,12 +48,12 @@ import de.bixilon.minosoft.protocol.packets.s2c.status.StatusPongS2CP
 class PacketTypes {
 
     enum class C2S(val clazz: Class<out C2SPacket>? = null) {
-        HANDSHAKING_HANDSHAKE(HandshakeC2SPacket::class.java),
-        STATUS_PING(StatusPingC2SPacket::class.java),
-        STATUS_REQUEST(StatusRequestC2SPacket::class.java),
-        LOGIN_LOGIN_START(LoginStartC2SPacket::class.java),
-        LOGIN_ENCRYPTION_RESPONSE(EncryptionResponseC2SPacket::class.java),
-        LOGIN_PLUGIN_RESPONSE(LoginPluginResponseC2SPacket::class.java),
+        HANDSHAKING_HANDSHAKE(HandshakeC2SP::class.java),
+        STATUS_PING(StatusPingC2SP::class.java),
+        STATUS_REQUEST(StatusRequestC2SP::class.java),
+        LOGIN_LOGIN_START(LoginStartC2SP::class.java),
+        LOGIN_ENCRYPTION_RESPONSE(EncryptionResponseC2SP::class.java),
+        LOGIN_PLUGIN_RESPONSE(LoginPluginResponseC2SP::class.java),
         PLAY_TELEPORT_CONFIRM(TeleportConfirmC2SP::class.java),
         PLAY_QUERY_BLOCK_NBT,
         PLAY_SET_DIFFICULTY,
@@ -160,7 +160,7 @@ class PacketTypes {
         PLAY_ENTITY_ANIMATION({ EntityAnimationS2CP(it) }),
         PLAY_STATS_RESPONSE({ PacketStatistics(it) }),
         PLAY_BLOCK_BREAK_ACK({ BlockBreakAckS2CP(it) }),
-        PLAY_BLOCK_BREAK_ANIMATION({ PacketBlockBreakAnimation(it) }),
+        PLAY_BLOCK_BREAK_ANIMATION({ BlockBreakAnimationS2CP(it) }),
         PLAY_BLOCK_ENTITY_META_DATA({ BlockEntityMetaDataS2CP(it) }),
         PLAY_BLOCK_ACTION({ PacketBlockAction(it) }),
         PLAY_BLOCK_SET({ BlockSetS2CP(it) }),
@@ -179,7 +179,7 @@ class PacketTypes {
         PLAY_PLUGIN_MESSAGE({ PluginMessageS2CP(it) }),
         PLAY_NAMED_SOUND_EFFECT({ PacketNamedSoundEffect(it) }),
         PLAY_KICK({ KickS2CP(it) }, isThreadSafe = false),
-        PLAY_ENTITY_EVENT({ PacketEntityEvent(it) }),
+        PLAY_ENTITY_STATUS({ EntityStatusS2CP(it) }),
         PLAY_EXPLOSION({ ExplosionS2CP(it) }),
         PLAY_CHUNK_UNLOAD({ ChunkUnloadS2CP(it) }),
         PLAY_CHANGE_GAME_STATE({ PacketChangeGameState(it) }),
@@ -192,9 +192,9 @@ class PacketTypes {
         PLAY_JOIN_GAME({ JoinGameS2CP(it) }, isThreadSafe = false, errorHandler = JoinGameS2CP),
         PLAY_MAP_DATA({ PacketMapData(it) }),
         PLAY_TRADE_LIST({ PacketTradeList(it) }),
-        PLAY_ENTITY_MOVEMENT_AND_ROTATION({ PacketEntityMovementAndRotation(it) }),
-        PLAY_ENTITY_ROTATION({ PacketEntityRotation(it) }),
-        PLAY_ENTITY_MOVEMENT({ PacketEntityMovement(it) }),
+        PLAY_ENTITY_MOVE_AND_ROTATE({ EntityMoveAndRotateS2CP(it) }),
+        PLAY_ENTITY_ROTATION({ EntityRotationS2CP(it) }),
+        PLAY_ENTITY_RELATIVE_MOVE({ EntityRelativeMoveS2CP(it) }),
         PLAY_VEHICLE_MOVE({ VehicleMoveS2CP(it) }),
         PLAY_BOOK_OPEN({ BookOpenS2CP(it) }),
         PLAY_OPEN_WINDOW({ PacketOpenWindow(it) }),
@@ -213,7 +213,7 @@ class PacketTypes {
         PLAY_REMOVE_ENTITY_EFFECT({ PacketRemoveEntityStatusEffect(it) }),
         PLAY_RESOURCE_PACK_SEND({ PacketResourcePackSend(it) }),
         PLAY_RESPAWN({ RespawnS2CP(it) }, isThreadSafe = false),
-        PLAY_ENTITY_HEAD_ROTATION({ PacketEntityHeadRotation(it) }),
+        PLAY_ENTITY_HEAD_ROTATION({ EntityHeadRotationS2CP(it) }),
         PLAY_SELECT_ADVANCEMENT_TAB({ PacketSelectAdvancementTab(it) }),
         PLAY_WORLD_BORDER({ WorldBorderS2CFactory.createPacket(it) }),
         PLAY_WORLD_BORDER_INITIALIZE({ InitializeWorldBorderS2CPacket(it) }),
@@ -240,7 +240,7 @@ class PacketTypes {
         PLAY_WORLD_TIME_SET({ WorldTimeSetS2CP(it) }),
         PLAY_ENTITY_SOUND_EVENT({ EntitySoundEventS2CP(it) }),
         PLAY_SOUND_EVENT({ SoundEventS2CP(it) }),
-        PLAY_STOP_SOUND({ PacketStopSound(it) }),
+        PLAY_STOP_SOUND({ StopSoundS2CP(it) }),
         PLAY_TAB_LIST_TEXT_SET({ TabListTextSetS2CP(it) }),
         PLAY_NBT_QUERY_RESPONSE({ NBTQueryResponseS2CP(it) }),
         PLAY_ITEM_COLLECT_ANIMATION({ ItemCollectAnimationS2CP(it) }),

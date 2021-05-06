@@ -10,15 +10,26 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.protocol.packets.c2s.status
+package de.bixilon.minosoft.protocol.packets.s2c.play
 
-import de.bixilon.minosoft.protocol.packets.c2s.AllC2SPacket
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-class StatusRequestC2SPacket : AllC2SPacket {
+class EntityHeadRotationS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
+    val entityId: Int = buffer.readEntityId()
+    val headYaw: Int = buffer.readAngle()
+
+    override fun handle(connection: PlayConnection) {
+        val entity = connection.world.entities[entityId] ?: return
+        entity.setHeadRotation(headYaw)
+    }
 
     override fun log() {
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT) { "Status request" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Entity head rotation (entityId=$entityId, headYaw=$headYaw)" }
     }
+
 }

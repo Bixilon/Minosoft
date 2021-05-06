@@ -10,29 +10,20 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.protocol.packets.c2s.login
+package de.bixilon.minosoft.protocol.packets.c2s.status
 
-import de.bixilon.minosoft.protocol.packets.c2s.PlayC2SPacket
-import de.bixilon.minosoft.protocol.protocol.PlayOutByteBuffer
+import de.bixilon.minosoft.protocol.packets.c2s.AllC2SPacket
+import de.bixilon.minosoft.protocol.protocol.OutByteBuffer
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-class LoginPluginResponseC2SPacket(
-    val messageId: Int,
-    val data: ByteArray?,
-) : PlayC2SPacket {
+class StatusPingC2SP(val pingId: Long) : AllC2SPacket {
 
-    override fun write(buffer: PlayOutByteBuffer) {
-        buffer.writeVarInt(messageId)
-        data?.let {
-            buffer.writeBoolean(true)
-            buffer.writeByteArray(it)
-        } ?: let {
-            buffer.writeBoolean(false)
-        }
+    override fun write(buffer: OutByteBuffer) {
+        buffer.writeLong(pingId)
     }
 
     override fun log() {
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT) { "Login plugin response (messageId=$messageId, data=$data)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_OUT) { "Status ping (pingId=$pingId)" }
     }
 }

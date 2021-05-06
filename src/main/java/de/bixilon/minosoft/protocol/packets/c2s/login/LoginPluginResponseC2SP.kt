@@ -10,24 +10,29 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.protocol.packets.c2s.login
 
-package de.bixilon.minosoft.protocol.packets.s2c.play;
+import de.bixilon.minosoft.protocol.packets.c2s.PlayC2SPacket
+import de.bixilon.minosoft.protocol.protocol.PlayOutByteBuffer
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogMessageType
 
-import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket;
-import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
-import de.bixilon.minosoft.util.logging.Log;
+class LoginPluginResponseC2SP(
+    val messageId: Int,
+    val data: ByteArray?,
+) : PlayC2SPacket {
 
-public class PacketEntityEvent extends PlayS2CPacket {
-    private final int entityId;
-    private final byte eventId;
-
-    public PacketEntityEvent(PlayInByteBuffer buffer) {
-        this.entityId = buffer.readInt();
-        this.eventId = buffer.readByte();
+    override fun write(buffer: PlayOutByteBuffer) {
+        buffer.writeVarInt(messageId)
+        data?.let {
+            buffer.writeBoolean(true)
+            buffer.writeByteArray(it)
+        } ?: let {
+            buffer.writeBoolean(false)
+        }
     }
 
-    @Override
-    public void log() {
-        Log.protocol(String.format("[IN] Entity status: (entityId=%d, eventId=%s)", this.entityId, this.eventId));
+    override fun log() {
+        Log.log(LogMessageType.NETWORK_PACKETS_OUT) { "Login plugin response (messageId=$messageId, data=$data)" }
     }
 }

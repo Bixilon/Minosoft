@@ -31,8 +31,8 @@ import de.bixilon.minosoft.gui.rendering.Rendering
 import de.bixilon.minosoft.modding.event.EventInvoker
 import de.bixilon.minosoft.modding.event.events.ConnectionStateChangeEvent
 import de.bixilon.minosoft.modding.event.events.PacketReceiveEvent
-import de.bixilon.minosoft.protocol.packets.c2s.handshaking.HandshakeC2SPacket
-import de.bixilon.minosoft.protocol.packets.c2s.login.LoginStartC2SPacket
+import de.bixilon.minosoft.protocol.packets.c2s.handshaking.HandshakeC2SP
+import de.bixilon.minosoft.protocol.packets.c2s.login.LoginStartC2SP
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.packets.s2c.S2CPacket
 import de.bixilon.minosoft.protocol.protocol.*
@@ -99,13 +99,13 @@ class PlayConnection(
                     }
 
 
-                    network.sendPacket(HandshakeC2SPacket(address, ConnectionStates.LOGIN, version.protocolId))
+                    network.sendPacket(HandshakeC2SP(address, ConnectionStates.LOGIN, version.protocolId))
                     // after sending it, switch to next state
                     // after sending it, switch to next state
                     connectionState = ConnectionStates.LOGIN
                 }
                 ConnectionStates.LOGIN -> {
-                    this.network.sendPacket(LoginStartC2SPacket(this.player))
+                    this.network.sendPacket(LoginStartC2SP(this.player))
                 }
                 ConnectionStates.PLAY -> {
                     Minosoft.CONNECTIONS[connectionId] = this

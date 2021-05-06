@@ -18,7 +18,7 @@ import de.bixilon.minosoft.protocol.exceptions.PacketTooLongException;
 import de.bixilon.minosoft.protocol.network.Network;
 import de.bixilon.minosoft.protocol.network.connection.Connection;
 import de.bixilon.minosoft.protocol.packets.c2s.C2SPacket;
-import de.bixilon.minosoft.protocol.packets.c2s.login.EncryptionResponseC2SPacket;
+import de.bixilon.minosoft.protocol.packets.c2s.login.EncryptionResponseC2SP;
 import de.bixilon.minosoft.protocol.packets.s2c.S2CPacket;
 import de.bixilon.minosoft.protocol.packets.s2c.login.PacketEncryptionRequest;
 import de.bixilon.minosoft.protocol.protocol.ConnectionStates;
@@ -180,7 +180,7 @@ public class BlockingSocketNetwork extends Network {
 
                     this.outputStream.write(prepareC2SPacket(packet));
                     this.outputStream.flush();
-                    if (packet instanceof EncryptionResponseC2SPacket packetEncryptionResponse) {
+                    if (packet instanceof EncryptionResponseC2SP packetEncryptionResponse) {
                         // enable encryption
                         enableEncryption(packetEncryptionResponse.getSecretKey());
                         // wake up other thread
