@@ -28,7 +28,7 @@ Minosoft is an open source minecraft client, written from scratch in java. It ai
 - RAM: ~500Mib. With overhead, etc 2Gib recommended
 - Disk space: Minosoft itself is pretty small (2-3 Mib), the libraries are a bit bigger. You also need to have the "normal" minecraft assets (~ 300 MB for one version).
 - GPU: OpenGL 3.3+. Every moden GPU works and is recommended.
-- Java 15 (This is really important, we use experimental features that are only available in this version. Java 8 is currently **not** supported).
+- Java 16 (This is really important, we use features that are only available in this version. Java 8 is currently **not** supported).
 
 ## Rendering
 
