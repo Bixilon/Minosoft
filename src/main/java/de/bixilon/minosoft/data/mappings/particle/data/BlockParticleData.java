@@ -14,12 +14,12 @@
 package de.bixilon.minosoft.data.mappings.particle.data;
 
 import de.bixilon.minosoft.data.mappings.blocks.BlockState;
-import de.bixilon.minosoft.data.mappings.particle.Particle;
+import de.bixilon.minosoft.data.mappings.particle.ParticleType;
 
 public class BlockParticleData extends ParticleData {
     private final BlockState block;
 
-    public BlockParticleData(BlockState block, Particle type) {
+    public BlockParticleData(BlockState block, ParticleType type) {
         super(type);
         this.block = block;
     }

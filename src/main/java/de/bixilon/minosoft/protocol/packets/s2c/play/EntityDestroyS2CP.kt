@@ -12,6 +12,7 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play
 
+import de.bixilon.minosoft.modding.event.events.EntityDestroyEvent
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
@@ -20,22 +21,26 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-class EntityAttachS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
-    val entityId: Int = buffer.readInt()
-    val vehicleEntityId: Int = buffer.readInt()
-    val leash: Boolean = if (buffer.versionId < ProtocolVersions.V_15W41A) {
-        buffer.readBoolean()
+class EntityDestroyS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
+    val entityIds: List<Int> = if (buffer.versionId < ProtocolVersions.V_21W17A) {
+        buffer.readEntityIdArray(if (buffer.versionId < ProtocolVersions.V_14W04A) {
+            buffer.readUnsignedByte()
+        } else {
+            buffer.readVarInt()
+        }).toList()
     } else {
-        true
+        listOf(buffer.readVarInt())
     }
 
+
     override fun handle(connection: PlayConnection) {
-        val entity = connection.world.entities[entityId] ?: return
-        entity.attachTo(vehicleEntityId)
-        // ToDo leash support
+        connection.fireEvent(EntityDestroyEvent(connection, this))
+        for (entityId in entityIds) {
+            connection.world.entities.remove(entityId)
+        }
     }
 
     override fun log() {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Entity attach (entityId=$entityId, vehicleEntityId=$vehicleEntityId, leash=$leash)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Entity destroy (entityIds=$entityIds)" }
     }
 }

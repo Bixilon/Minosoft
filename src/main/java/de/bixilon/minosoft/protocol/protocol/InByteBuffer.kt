@@ -15,6 +15,7 @@ package de.bixilon.minosoft.protocol.protocol
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import de.bixilon.minosoft.data.Directions
+import de.bixilon.minosoft.data.Tag
 import de.bixilon.minosoft.data.commands.CommandArgumentNode
 import de.bixilon.minosoft.data.commands.CommandLiteralNode
 import de.bixilon.minosoft.data.commands.CommandNode
@@ -402,5 +403,13 @@ open class InByteBuffer {
 
     fun getBase64(): String {
         return String(Base64.getEncoder().encode(readRest()))
+    }
+
+    fun readTag(): Tag {
+        return Tag(readResourceLocation(), readVarIntArray())
+    }
+
+    fun readTagArray(length: Int = readVarInt()): Array<Tag> {
+        return readArray(length) { readTag() }
     }
 }

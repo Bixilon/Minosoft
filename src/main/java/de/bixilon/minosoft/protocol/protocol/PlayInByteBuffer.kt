@@ -15,7 +15,7 @@ package de.bixilon.minosoft.protocol.protocol
 import de.bixilon.minosoft.data.entities.meta.EntityMetaData
 import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.mappings.biomes.Biome
-import de.bixilon.minosoft.data.mappings.particle.Particle
+import de.bixilon.minosoft.data.mappings.particle.ParticleType
 import de.bixilon.minosoft.data.mappings.particle.data.BlockParticleData
 import de.bixilon.minosoft.data.mappings.particle.data.DustParticleData
 import de.bixilon.minosoft.data.mappings.particle.data.ItemParticleData
@@ -74,11 +74,11 @@ class PlayInByteBuffer : InByteBuffer {
     }
 
     fun readParticle(): ParticleData {
-        val type = connection.mapping.particleRegistry.get(readVarInt())
+        val type = connection.mapping.particleTypeRegistry.get(readVarInt())
         return readParticleData(type)
     }
 
-    fun readParticleData(type: Particle): ParticleData {
+    fun readParticleData(type: ParticleType): ParticleData {
         // ToDo: Replace with dynamic particle type calling
         if (this.versionId < V_17W45A) {
             return when (type.resourceLocation.full) {
@@ -210,5 +210,7 @@ class PlayInByteBuffer : InByteBuffer {
         }
     }
 
-
+    fun readEntityIdArray(length: Int = readVarInt()): Array<Int> {
+        return readArray(length) { readEntityId() }
+    }
 }

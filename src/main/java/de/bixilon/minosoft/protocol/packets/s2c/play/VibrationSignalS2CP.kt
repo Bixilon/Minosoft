@@ -12,30 +12,29 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play
 
-import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
+import glm_.vec3.Vec3i
 
-class EntityAttachS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
-    val entityId: Int = buffer.readInt()
-    val vehicleEntityId: Int = buffer.readInt()
-    val leash: Boolean = if (buffer.versionId < ProtocolVersions.V_15W41A) {
-        buffer.readBoolean()
-    } else {
-        true
-    }
+class VibrationSignalS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
+    val sourcePosition: Vec3i = buffer.readBlockPosition()
+    val targetType: ResourceLocation = buffer.readResourceLocation()
 
-    override fun handle(connection: PlayConnection) {
-        val entity = connection.world.entities[entityId] ?: return
-        entity.attachTo(vehicleEntityId)
-        // ToDo leash support
+    /**
+     * @return Depends on vibration target type, if block: block postion, if entity: entity id
+     */
+    val targetData: Any = when (targetType.full) {
+        "minecraft:block" -> buffer.readBlockPosition()
+        "minecraft:entity" -> buffer.readEntityId()
+        else -> error("Unknown target type: $targetType")
     }
+    val arrivalTicks: Int = buffer.readVarInt()
 
     override fun log() {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Entity attach (entityId=$entityId, vehicleEntityId=$vehicleEntityId, leash=$leash)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Vibration signal (sourcePosition=$sourcePosition, targetType=$targetType, targetData=$targetData, arrivalTicks=$arrivalTicks)" }
     }
 }

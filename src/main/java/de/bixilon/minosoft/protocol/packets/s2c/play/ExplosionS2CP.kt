@@ -15,27 +15,35 @@ package de.bixilon.minosoft.protocol.packets.s2c.play
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
+import glm_.vec3.Vec3
+import glm_.vec3.Vec3i
 
-class EntityAttachS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
-    val entityId: Int = buffer.readInt()
-    val vehicleEntityId: Int = buffer.readInt()
-    val leash: Boolean = if (buffer.versionId < ProtocolVersions.V_15W41A) {
-        buffer.readBoolean()
-    } else {
-        true
+class ExplosionS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
+    val position = buffer.readFloatPosition()
+    val radius = buffer.readFloat()
+    val explodedBlocks: Array<Vec3> = buffer.readArray(buffer.readInt()) { Vec3(buffer.readByte(), buffer.readByte(), buffer.readByte()) }
+    val velocity = buffer.readFloatPosition()
+
+    override fun check(connection: PlayConnection) {
+        require(radius <= 100.0f) {
+            // maybe somebody tries to make bullshit?
+            // Sorry, Maximilian Rosenmüller
+            "Explosion to big $radius > 100.0F"
+        }
     }
 
     override fun handle(connection: PlayConnection) {
-        val entity = connection.world.entities[entityId] ?: return
-        entity.attachTo(vehicleEntityId)
-        // ToDo leash support
+        for (record in explodedBlocks) {
+            val blockPosition = Vec3i(position + record)
+            connection.world.setBlock(blockPosition, null)
+        }
+        connection.player.entity.velocity = velocity
     }
 
     override fun log() {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Entity attach (entityId=$entityId, vehicleEntityId=$vehicleEntityId, leash=$leash)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Explosion (position=$position, radius=$radius, explodedBlocks=$explodedBlocks, velocity=$velocity)" }
     }
 }

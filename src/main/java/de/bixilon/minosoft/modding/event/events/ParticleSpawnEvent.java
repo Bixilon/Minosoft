@@ -13,54 +13,48 @@
 
 package de.bixilon.minosoft.modding.event.events;
 
-import de.bixilon.minosoft.data.mappings.particle.Particle;
+import de.bixilon.minosoft.data.mappings.particle.ParticleType;
 import de.bixilon.minosoft.data.mappings.particle.data.ParticleData;
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
-import de.bixilon.minosoft.protocol.packets.s2c.play.PacketParticle;
+import de.bixilon.minosoft.protocol.packets.s2c.play.ParticleS2CP;
 import glm_.vec3.Vec3;
 
 public class ParticleSpawnEvent extends CancelableEvent {
-    private final Particle particleType;
+    private final ParticleType particleType;
     private final ParticleData particleData;
     private final Vec3 position;
     private boolean longDistance;
-    private float offsetX;
-    private float offsetY;
-    private float offsetZ;
+    private Vec3 offset;
     private int count;
 
-    public ParticleSpawnEvent(PlayConnection connection, Particle particleType, ParticleData particleData, boolean longDistance, Vec3 position, float offsetX, float offsetY, float offsetZ, int count) {
+    public ParticleSpawnEvent(PlayConnection connection, ParticleType particleType, ParticleData particleData, boolean longDistance, Vec3 position, Vec3 offset, int count) {
         super(connection);
         this.particleType = particleType;
         this.particleData = particleData;
         this.longDistance = longDistance;
         this.position = position;
-        this.offsetX = offsetX;
-        this.offsetY = offsetY;
-        this.offsetZ = offsetZ;
+        this.offset = offset;
         this.count = count;
     }
 
-    public ParticleSpawnEvent(PlayConnection connection, Particle particleType, ParticleData particleData, Vec3 position) {
+    public ParticleSpawnEvent(PlayConnection connection, ParticleType particleType, ParticleData particleData, Vec3 position) {
         super(connection);
         this.particleType = particleType;
         this.particleData = particleData;
         this.position = position;
     }
 
-    public ParticleSpawnEvent(PlayConnection connection, PacketParticle pkg) {
+    public ParticleSpawnEvent(PlayConnection connection, ParticleS2CP pkg) {
         super(connection);
-        this.particleType = pkg.getParticleType();
+        this.particleType = pkg.getType();
         this.particleData = pkg.getParticleData();
-        this.longDistance = pkg.isLongDistance();
+        this.longDistance = pkg.getLongDistance();
         this.position = pkg.getPosition();
-        this.offsetX = pkg.getOffsetX();
-        this.offsetY = pkg.getOffsetY();
-        this.offsetZ = pkg.getOffsetZ();
+        this.offset = pkg.getOffset();
         this.count = pkg.getCount();
     }
 
-    public Particle getParticleType() {
+    public ParticleType getParticleType() {
         return this.particleType;
     }
 
@@ -80,28 +74,8 @@ public class ParticleSpawnEvent extends CancelableEvent {
         return this.position;
     }
 
-    public float getOffsetX() {
-        return this.offsetX;
-    }
-
-    public void setOffsetX(float offsetX) {
-        this.offsetX = offsetX;
-    }
-
-    public float getOffsetY() {
-        return this.offsetY;
-    }
-
-    public void setOffsetY(float offsetY) {
-        this.offsetY = offsetY;
-    }
-
-    public float getOffsetZ() {
-        return this.offsetZ;
-    }
-
-    public void setOffsetZ(float offsetZ) {
-        this.offsetZ = offsetZ;
+    public Vec3 getOffset() {
+        return this.offset;
     }
 
     public int getCount() {

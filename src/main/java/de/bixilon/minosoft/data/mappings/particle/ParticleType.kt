@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -10,42 +10,26 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.data.mappings.fluid
+package de.bixilon.minosoft.data.mappings.particle
 
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.mappings.ResourceLocation
-import de.bixilon.minosoft.data.mappings.items.Item
-import de.bixilon.minosoft.data.mappings.particle.ParticleType
 import de.bixilon.minosoft.data.mappings.registry.RegistryItem
 import de.bixilon.minosoft.data.mappings.registry.ResourceLocationDeserializer
 import de.bixilon.minosoft.data.mappings.versions.VersionMapping
 
-data class Fluid(
+data class ParticleType(
     override val resourceLocation: ResourceLocation,
-    private val bucketItemId: Int?,
-    val dripParticle: ParticleType?,
-    val renderTexture: ResourceLocation?,
+    // ToDo
 ) : RegistryItem {
-    var bucketItem: Item? = null
-        private set
 
     override fun toString(): String {
         return resourceLocation.full
     }
 
-    override fun postInit(versionMapping: VersionMapping) {
-        bucketItem = bucketItemId?.let { versionMapping.itemRegistry.get(it) }
-    }
-
-    companion object : ResourceLocationDeserializer<Fluid> {
-        override fun deserialize(mappings: VersionMapping?, resourceLocation: ResourceLocation, data: JsonObject): Fluid {
-            check(mappings != null) { "VersionMapping is null!" }
-            return Fluid(
-                resourceLocation = resourceLocation,
-                bucketItemId = data["bucket"]?.asInt,
-                dripParticle = data["drip_particle_type"]?.asInt?.let { mappings.particleTypeRegistry.get(it) },
-                renderTexture = data["render"]?.asJsonObject?.get("texture")?.asString?.let { ResourceLocation(it) },
-            )
+    companion object : ResourceLocationDeserializer<ParticleType> {
+        override fun deserialize(mappings: VersionMapping?, resourceLocation: ResourceLocation, data: JsonObject): ParticleType {
+            return ParticleType(resourceLocation)
         }
     }
 }

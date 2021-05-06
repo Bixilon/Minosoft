@@ -34,7 +34,7 @@ import de.bixilon.minosoft.data.mappings.inventory.CreativeModeTab
 import de.bixilon.minosoft.data.mappings.items.Item
 import de.bixilon.minosoft.data.mappings.items.ItemRegistry
 import de.bixilon.minosoft.data.mappings.materials.Material
-import de.bixilon.minosoft.data.mappings.particle.Particle
+import de.bixilon.minosoft.data.mappings.particle.ParticleType
 import de.bixilon.minosoft.data.mappings.registry.*
 import de.bixilon.minosoft.data.mappings.sounds.SoundEvent
 import de.bixilon.minosoft.data.mappings.statistics.Statistic
@@ -56,7 +56,7 @@ class VersionMapping {
     val blockRegistry: Registry<Block> = Registry()
     val itemRegistry: ItemRegistry = ItemRegistry()
     val enchantmentRegistry: Registry<Enchantment> = Registry()
-    val particleRegistry: Registry<Particle> = Registry()
+    val particleTypeRegistry: Registry<ParticleType> = Registry()
     val statusEffectRegistry: Registry<StatusEffect> = Registry()
     val statisticRegistry: Registry<Statistic> = Registry()
     val biomeRegistry: Registry<Biome> = Registry()
@@ -166,7 +166,7 @@ class VersionMapping {
 
         // id resource location stuff
         soundEventRegistry.initialize(pixlyzerData["sound_events"]?.asJsonObject, this, SoundEvent)
-        particleRegistry.initialize(pixlyzerData["particles"]?.asJsonObject, this, Particle)
+        particleTypeRegistry.initialize(pixlyzerData["particles"]?.asJsonObject, this, ParticleType)
         materialRegistry.initialize(pixlyzerData["materials"]?.asJsonObject, this, Material)
         motiveRegistry.initialize(pixlyzerData["motives"]?.asJsonObject, this, Motive, version.isFlattened())
         fluidRegistry.initialize(pixlyzerData["fluids"]?.asJsonObject, this, Fluid)

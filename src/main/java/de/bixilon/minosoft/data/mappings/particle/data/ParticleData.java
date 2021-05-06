@@ -13,16 +13,16 @@
 
 package de.bixilon.minosoft.data.mappings.particle.data;
 
-import de.bixilon.minosoft.data.mappings.particle.Particle;
+import de.bixilon.minosoft.data.mappings.particle.ParticleType;
 
 public class ParticleData {
-    private final Particle type;
+    private final ParticleType type;
 
-    public ParticleData(Particle type) {
+    public ParticleData(ParticleType type) {
         this.type = type;
     }
 
-    public Particle getType() {
+    public ParticleType getType() {
         return this.type;
     }
 

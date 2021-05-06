@@ -10,25 +10,25 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.modding.event.events
 
-package de.bixilon.minosoft.data;
+import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.protocol.packets.s2c.play.PluginMessageS2CP
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 
-import de.bixilon.minosoft.data.mappings.ResourceLocation;
+class PluginMessageReceiveEvent : CancelableEvent {
+    val channel: ResourceLocation
+    val data: PlayInByteBuffer
+        get() = PlayInByteBuffer(field)
 
-public class Tag {
-    private final ResourceLocation resourceLocation;
-    private final int[] idList;
-
-    public Tag(ResourceLocation resourceLocation, int[] idList) {
-        this.resourceLocation = resourceLocation;
-        this.idList = idList;
+    constructor(connection: PlayConnection?, channel: ResourceLocation, data: PlayInByteBuffer) : super(connection) {
+        this.channel = channel
+        this.data = data
     }
 
-    public ResourceLocation getResourceLocation() {
-        return this.resourceLocation;
-    }
-
-    public int[] getIdList() {
-        return this.idList;
+    constructor(connection: PlayConnection?, pkg: PluginMessageS2CP) : super(connection) {
+        channel = pkg.channel
+        data = pkg.data
     }
 }

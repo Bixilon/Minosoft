@@ -40,7 +40,7 @@ class AreaEffectCloud(connection: PlayConnection, entityType: EntityType, positi
     val isWaiting: Boolean
         get() = entityMetaData.sets.getBoolean(EntityMetaDataFields.AREA_EFFECT_CLOUD_WAITING)
 
-    @get:EntityMetaDataFunction(name = "Particle")
+    @get:EntityMetaDataFunction(name = "ParticleType")
     val particle: ParticleData
         get() = entityMetaData.sets.getParticle(EntityMetaDataFields.AREA_EFFECT_CLOUD_PARTICLE)
 

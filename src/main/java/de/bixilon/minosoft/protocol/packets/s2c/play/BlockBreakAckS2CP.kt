@@ -12,30 +12,22 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play
 
-import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.data.mappings.blocks.BlockState
+import de.bixilon.minosoft.protocol.packets.c2s.play.BlockBreakC2SP.BreakType
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
-import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
+import glm_.vec3.Vec3i
 
-class EntityAttachS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
-    val entityId: Int = buffer.readInt()
-    val vehicleEntityId: Int = buffer.readInt()
-    val leash: Boolean = if (buffer.versionId < ProtocolVersions.V_15W41A) {
-        buffer.readBoolean()
-    } else {
-        true
-    }
-
-    override fun handle(connection: PlayConnection) {
-        val entity = connection.world.entities[entityId] ?: return
-        entity.attachTo(vehicleEntityId)
-        // ToDo leash support
-    }
+class BlockBreakAckS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
+    val blockPosition: Vec3i = buffer.readBlockPosition()
+    val blockState: BlockState? = buffer.connection.mapping.getBlockState(buffer.readVarInt())
+    val breakType: BreakType = BreakType[buffer.readVarInt()]
+    val successful: Boolean = buffer.readBoolean()
 
     override fun log() {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Entity attach (entityId=$entityId, vehicleEntityId=$vehicleEntityId, leash=$leash)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Block break acknowledge (blockPosition=$blockPosition, blockState=$blockState, breakType=$breakType, successful=$successful)" }
     }
 }

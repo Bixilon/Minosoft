@@ -14,12 +14,12 @@
 package de.bixilon.minosoft.data.mappings.particle.data;
 
 import de.bixilon.minosoft.data.inventory.ItemStack;
-import de.bixilon.minosoft.data.mappings.particle.Particle;
+import de.bixilon.minosoft.data.mappings.particle.ParticleType;
 
 public class ItemParticleData extends ParticleData {
     private final ItemStack itemStack;
 
-    public ItemParticleData(ItemStack itemStack, Particle type) {
+    public ItemParticleData(ItemStack itemStack, ParticleType type) {
         super(type);
         this.itemStack = itemStack;
     }

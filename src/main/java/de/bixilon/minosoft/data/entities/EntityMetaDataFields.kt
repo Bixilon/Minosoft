@@ -19,7 +19,7 @@ import de.bixilon.minosoft.data.entities.entities.npc.villager.data.VillagerLeve
 import de.bixilon.minosoft.data.entities.entities.npc.villager.data.VillagerTypes
 import de.bixilon.minosoft.data.entities.entities.vehicle.Boat
 import de.bixilon.minosoft.data.mappings.ResourceLocation
-import de.bixilon.minosoft.data.mappings.particle.Particle
+import de.bixilon.minosoft.data.mappings.particle.ParticleType
 import de.bixilon.minosoft.data.mappings.particle.data.ParticleData
 import de.bixilon.minosoft.data.text.ChatComponent.Companion.of
 import de.bixilon.minosoft.util.KUtil
@@ -59,7 +59,7 @@ enum class EntityMetaDataFields(val defaultValue: Any? = null) {
     AREA_EFFECT_CLOUD_RADIUS(0.5f),
     AREA_EFFECT_CLOUD_COLOR(0),
     AREA_EFFECT_CLOUD_WAITING(false),
-    AREA_EFFECT_CLOUD_PARTICLE(ParticleData(Particle(ResourceLocation("effect")))),
+    AREA_EFFECT_CLOUD_PARTICLE(ParticleData(ParticleType(ResourceLocation("effect")))),
 
     ABSTRACT_ARROW_FLAGS(0.toByte()),
     ABSTRACT_ARROW_PIERCE_LEVEL(0.toByte()),

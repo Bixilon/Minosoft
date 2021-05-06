@@ -12,6 +12,9 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play
 
+import de.bixilon.minosoft.data.mappings.particle.ParticleType
+import de.bixilon.minosoft.data.mappings.particle.data.ParticleData
+import de.bixilon.minosoft.modding.event.events.ParticleSpawnEvent
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
@@ -19,23 +22,37 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
+import glm_.vec3.Vec3
 
-class EntityAttachS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
-    val entityId: Int = buffer.readInt()
-    val vehicleEntityId: Int = buffer.readInt()
-    val leash: Boolean = if (buffer.versionId < ProtocolVersions.V_15W41A) {
+class ParticleS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
+    val type: ParticleType = if (buffer.versionId < ProtocolVersions.V_14W19A) {
+        buffer.connection.mapping.particleTypeRegistry.get(buffer.readResourceLocation())!!
+    } else {
+        buffer.connection.mapping.particleTypeRegistry.get(buffer.readInt())
+    }
+    val longDistance = if (buffer.versionId >= ProtocolVersions.V_14W29A) {
         buffer.readBoolean()
     } else {
-        true
+        false
     }
+    val position: Vec3 = if (buffer.versionId < ProtocolVersions.V_1_15_PRE4) {
+        buffer.readFloatPosition()
+    } else {
+        buffer.readPosition()
+    }
+    val offset: Vec3 = buffer.readFloatPosition()
+    val data: Float = buffer.readFloat()
+    val count: Int = buffer.readInt()
+    val particleData: ParticleData = buffer.readParticleData(type)
+
 
     override fun handle(connection: PlayConnection) {
-        val entity = connection.world.entities[entityId] ?: return
-        entity.attachTo(vehicleEntityId)
-        // ToDo leash support
+        if (connection.fireEvent(ParticleSpawnEvent(connection, this))) {
+            return
+        }
     }
 
     override fun log() {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Entity attach (entityId=$entityId, vehicleEntityId=$vehicleEntityId, leash=$leash)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "ParticleType (type=$type, longDistance=$longDistance, position=$position, offset=$offset, data=$data, count=$count, particleData=$particleData)" }
     }
 }

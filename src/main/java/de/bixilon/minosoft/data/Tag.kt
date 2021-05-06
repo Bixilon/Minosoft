@@ -10,26 +10,8 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.data.mappings.particle
+package de.bixilon.minosoft.data
 
-import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.mappings.ResourceLocation
-import de.bixilon.minosoft.data.mappings.registry.RegistryItem
-import de.bixilon.minosoft.data.mappings.registry.ResourceLocationDeserializer
-import de.bixilon.minosoft.data.mappings.versions.VersionMapping
 
-data class Particle(
-    override val resourceLocation: ResourceLocation,
-    // ToDo
-) : RegistryItem {
-
-    override fun toString(): String {
-        return resourceLocation.full
-    }
-
-    companion object : ResourceLocationDeserializer<Particle> {
-        override fun deserialize(mappings: VersionMapping?, resourceLocation: ResourceLocation, data: JsonObject): Particle {
-            return Particle(resourceLocation)
-        }
-    }
-}
+class Tag(val resourceLocation: ResourceLocation, val idList: IntArray)

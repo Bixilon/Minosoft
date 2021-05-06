@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.mappings.particle.data;
 
-import de.bixilon.minosoft.data.mappings.particle.Particle;
+import de.bixilon.minosoft.data.mappings.particle.ParticleType;
 
 public class DustParticleData extends ParticleData {
     private final float red;
@@ -21,7 +21,7 @@ public class DustParticleData extends ParticleData {
     private final float blue;
     private final float scale;
 
-    public DustParticleData(float red, float green, float blue, float scale, Particle type) {
+    public DustParticleData(float red, float green, float blue, float scale, ParticleType type) {
         super(type);
         this.red = red;
         this.green = green;
