@@ -27,7 +27,7 @@ class MultipartRenderer(
     val models: List<BlockLikeRenderer>,
 ) : BlockLikeRenderer {
     override val faceBorderSizes: Array<Array<FaceSize>?>
-    override val transparentFaces: BooleanArray = BooleanArray(Directions.DIRECTIONS.size)
+    override val transparentFaces: BooleanArray = BooleanArray(Directions.VALUES.size)
 
     init {
         val faceBorderSizes: MutableList<Array<FaceSize>?> = mutableListOf()

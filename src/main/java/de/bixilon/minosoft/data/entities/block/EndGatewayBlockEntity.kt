@@ -14,34 +14,22 @@
 package de.bixilon.minosoft.data.entities.block
 
 import de.bixilon.minosoft.data.mappings.ResourceLocation
-import de.bixilon.minosoft.data.mappings.blocks.properties.Instruments
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 
-class NoteblockBlockEntity(connection: PlayConnection) : BlockEntity(connection), BlockActionEntity {
-    var instrument: Instruments? = null
-        private set
-    var pitch: Int? = null
-        private set
+class EndGatewayBlockEntity(connection: PlayConnection) : BlockEntity(connection), BlockActionEntity {
 
     override fun setBlockActionData(data1: Byte, data2: Byte) {
-        instrument = when (data1.toInt()) {
-            0 -> Instruments.HARP
-            1 -> Instruments.BASS
-            2 -> Instruments.SNARE
-            3 -> Instruments.BANJO // ToDo: Was CLICKS_STICKS before
-            4 -> Instruments.BASE_DRUM
-            else -> null
-        }
-
-        pitch = data2.toInt()
+        // just emits the beacon like beam
     }
 
-    companion object : BlockEntityFactory<NoteblockBlockEntity> {
-        override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("minecraft:noteblock")
-
-        override fun build(connection: PlayConnection): NoteblockBlockEntity {
-            return NoteblockBlockEntity(connection)
-        }
+    override fun updateNBT(nbt: Map<String, Any>) {
     }
 
+    companion object : BlockEntityFactory<EndGatewayBlockEntity> {
+        override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("minecraft:end_gateway")
+
+        override fun build(connection: PlayConnection): EndGatewayBlockEntity {
+            return EndGatewayBlockEntity(connection)
+        }
+    }
 }

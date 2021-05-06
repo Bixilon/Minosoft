@@ -15,6 +15,8 @@ package de.bixilon.minosoft.data.entities.block
 
 import de.bixilon.minosoft.data.entities.block.container.*
 import de.bixilon.minosoft.data.entities.block.container.storage.*
+import de.bixilon.minosoft.data.entities.block.piston.PistonBlockEntity
+import de.bixilon.minosoft.data.entities.block.piston.StickyPistonBlockEntity
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 
@@ -55,6 +57,9 @@ object DefaultBlockEntityMetaDataFactory {
             TrappedChestBlockEntity,
             BeehiveBlockEntity,
             NoteblockBlockEntity,
+            EndGatewayBlockEntity,
+            PistonBlockEntity,
+            StickyPistonBlockEntity,
         )
 
         val ret: MutableMap<ResourceLocation, BlockEntityFactory<out BlockEntity>> = mutableMapOf()

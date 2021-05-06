@@ -13,10 +13,17 @@
 
 package de.bixilon.minosoft.data.entities.block
 
+import de.bixilon.minosoft.data.Directions
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 
-class BellBlockEntity(connection: PlayConnection) : BlockEntity(connection) {
+class BellBlockEntity(connection: PlayConnection) : BlockEntity(connection), BlockActionEntity {
+    var shakingDirection: Directions = Directions.NORTH
+        private set
+
+    override fun setBlockActionData(data1: Byte, data2: Byte) {
+        shakingDirection = Directions[data2.toInt()]
+    }
 
     companion object : BlockEntityFactory<BellBlockEntity> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("minecraft:bell")

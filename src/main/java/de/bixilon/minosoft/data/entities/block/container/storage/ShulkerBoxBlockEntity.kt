@@ -19,6 +19,7 @@ import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 
 class ShulkerBoxBlockEntity(connection: PlayConnection) : StorageBlockEntity(connection) {
 
+
     companion object : BlockEntityFactory<ShulkerBoxBlockEntity> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("minecraft:shulker_box")
 

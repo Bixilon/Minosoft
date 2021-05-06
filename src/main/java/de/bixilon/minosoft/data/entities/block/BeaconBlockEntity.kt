@@ -16,7 +16,11 @@ package de.bixilon.minosoft.data.entities.block
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 
-class BeaconBlockEntity(connection: PlayConnection) : BlockEntity(connection) {
+class BeaconBlockEntity(connection: PlayConnection) : BlockEntity(connection), BlockActionEntity {
+
+    override fun setBlockActionData(data1: Byte, data2: Byte) {
+        // no data used, just recalculates the beam
+    }
 
     override fun updateNBT(nbt: Map<String, Any>) {
         // ToDO: {Secondary: -1, Paper.Range: -1.0D, Primary: -1, x: -90, y: 4, Levels: 0, z: 212, id: "minecraft:beacon"}

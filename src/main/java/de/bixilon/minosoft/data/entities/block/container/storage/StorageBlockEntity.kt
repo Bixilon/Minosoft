@@ -13,7 +13,15 @@
 
 package de.bixilon.minosoft.data.entities.block.container.storage
 
+import de.bixilon.minosoft.data.entities.block.BlockActionEntity
 import de.bixilon.minosoft.data.entities.block.container.ContainerBlockEntity
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 
-abstract class StorageBlockEntity(connection: PlayConnection) : ContainerBlockEntity(connection)
+abstract class StorageBlockEntity(connection: PlayConnection) : ContainerBlockEntity(connection), BlockActionEntity {
+    var playersLookingIntoStorage: Int = 0
+        private set
+
+    override fun setBlockActionData(data1: Byte, data2: Byte) {
+        playersLookingIntoStorage = data2.toInt()
+    }
+}

@@ -40,7 +40,7 @@ class ElementRenderer(
     rescale: Boolean,
     private val directionMapping: HashBiMap<Directions, Directions>,
 ) {
-    val faceBorderSize: Array<FaceSize?> = arrayOfNulls(Directions.DIRECTIONS.size)
+    val faceBorderSize: Array<FaceSize?> = arrayOfNulls(Directions.VALUES.size)
     private val faces: MutableMap<Directions, BlockModelFace> = mutableMapOf()
     private var transformedPositions: Array<Vec3> = parent.transformedPositions.clone()
     private val from = parent.from
@@ -48,7 +48,7 @@ class ElementRenderer(
 
     init {
         rotatePositionsAxes(transformedPositions, rotation, rescale)
-        for (direction in Directions.DIRECTIONS) {
+        for (direction in Directions.VALUES) {
             direction.getFaceBorderSizes(from, to)?.let {
                 faceBorderSize[direction.ordinal] = it
             }
@@ -57,7 +57,7 @@ class ElementRenderer(
             }
         }
         if (uvLock) {
-            for (direction in Directions.DIRECTIONS) {
+            for (direction in Directions.VALUES) {
                 val axis = Axes.byDirection(direction)
                 val angle = Axes.choose(axis, rotation) * Axes.choose(axis, direction.directionVector)
                 faces[direction]?.rotate(-angle)

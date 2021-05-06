@@ -35,12 +35,12 @@ import glm_.vec3.Vec3
 import glm_.vec3.Vec3i
 
 class BlockRenderer(data: JsonObject, parent: BlockModel) : BlockLikeRenderer {
-    private val cullFaces: Array<Directions?> = arrayOfNulls(Directions.DIRECTIONS.size)
+    private val cullFaces: Array<Directions?> = arrayOfNulls(Directions.VALUES.size)
     val textures: MutableMap<String, String> = mutableMapOf()
     private val elements: MutableSet<ElementRenderer> = mutableSetOf()
     private val textureMapping: MutableMap<String, Texture> = mutableMapOf()
-    override val faceBorderSizes: Array<Array<FaceSize>?> = arrayOfNulls(Directions.DIRECTIONS.size)
-    override val transparentFaces: BooleanArray = BooleanArray(Directions.DIRECTIONS.size)
+    override val faceBorderSizes: Array<Array<FaceSize>?> = arrayOfNulls(Directions.VALUES.size)
+    override val transparentFaces: BooleanArray = BooleanArray(Directions.VALUES.size)
     val directionMapping: HashBiMap<Directions, Directions> = HashBiMap.create()
 
     init {
@@ -52,7 +52,7 @@ class BlockRenderer(data: JsonObject, parent: BlockModel) : BlockLikeRenderer {
     }
 
     private fun createDirectionMapping(rotation: Vec3) {
-        for (direction in Directions.DIRECTIONS) {
+        for (direction in Directions.VALUES) {
             try {
                 directionMapping[direction] = ElementRenderer.getRotatedDirection(rotation, direction)
             } catch (_: IllegalArgumentException) {
@@ -69,7 +69,7 @@ class BlockRenderer(data: JsonObject, parent: BlockModel) : BlockLikeRenderer {
     }
 
     override fun postInit() {
-        for (direction in Directions.DIRECTIONS) {
+        for (direction in Directions.VALUES) {
             var directionIsCullFace: Boolean? = null
             var directionIsNotTransparent: Boolean? = null
             val faceBorderSites: MutableList<FaceSize> = mutableListOf()
@@ -109,7 +109,7 @@ class BlockRenderer(data: JsonObject, parent: BlockModel) : BlockLikeRenderer {
         var tintColor: RGBColor? = null
         var biome: Biome? = null
 
-        for (direction in Directions.DIRECTIONS) {
+        for (direction in Directions.VALUES) {
             val rotatedDirection = directionMapping[direction] ?: direction
             val invertedDirection = direction.inverted
             var isNeighbourTransparent = false

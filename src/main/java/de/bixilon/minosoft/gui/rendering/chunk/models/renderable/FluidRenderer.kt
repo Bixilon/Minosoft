@@ -27,8 +27,8 @@ class FluidRenderer(
     private val stillFluid: Fluid,
     private val flowingFluid: Fluid,
 ) : BlockLikeRenderer {
-    override val faceBorderSizes: Array<Array<FaceSize>?> = arrayOfNulls(Directions.DIRECTIONS.size)
-    override val transparentFaces: BooleanArray = BooleanArray(Directions.DIRECTIONS.size)
+    override val faceBorderSizes: Array<Array<FaceSize>?> = arrayOfNulls(Directions.VALUES.size)
+    override val transparentFaces: BooleanArray = BooleanArray(Directions.VALUES.size)
     private lateinit var stillTexture: Texture
     private lateinit var flowingTexture: Texture
 
@@ -46,7 +46,7 @@ class FluidRenderer(
         var biome: Biome? = null
 
         val positions = calculatePositions(heights)
-        for (direction in Directions.DIRECTIONS) {
+        for (direction in Directions.VALUES) {
             val face = BlockModelFace(positions, direction)
             if (isFlowing || Directions.SIDES.contains(direction)) {
                 face.scale(0.5)

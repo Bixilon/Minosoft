@@ -260,7 +260,7 @@ open class InByteBuffer {
     }
 
     fun readDirection(): Directions {
-        return Directions.DIRECTIONS[readVarInt()]
+        return Directions.VALUES[readVarInt()]
     }
 
     fun readPose(): Poses {

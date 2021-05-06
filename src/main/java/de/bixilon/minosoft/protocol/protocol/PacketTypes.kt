@@ -162,7 +162,7 @@ class PacketTypes {
         PLAY_BLOCK_BREAK_ACK({ BlockBreakAckS2CP(it) }),
         PLAY_BLOCK_BREAK_ANIMATION({ BlockBreakAnimationS2CP(it) }),
         PLAY_BLOCK_ENTITY_META_DATA({ BlockEntityMetaDataS2CP(it) }),
-        PLAY_BLOCK_ACTION({ PacketBlockAction(it) }),
+        PLAY_BLOCK_ACTION({ BlockActionS2CP(it) }),
         PLAY_BLOCK_SET({ BlockSetS2CP(it) }),
         PLAY_BOSS_BAR({ PacketBossBar(it) }),
         PLAY_SERVER_DIFFICULTY({ ServerDifficultyS2CP(it) }),

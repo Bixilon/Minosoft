@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2021 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,16 +11,8 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.mappings.blocks.actions;
+package de.bixilon.minosoft.data.entities.block
 
-public class MobSpawnerAction implements BlockAction {
-
-    public MobSpawnerAction(int status, int ignored) {
-        // only 1 action (id 1)
-    }
-
-    @Override
-    public String toString() {
-        return "MOB_SPAWNER_RESET_DELAY";
-    }
+interface BlockActionEntity {
+    fun setBlockActionData(data1: Byte, data2: Byte)
 }

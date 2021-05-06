@@ -80,8 +80,8 @@ class WorldRenderer(
                 }
                 val blockPosition = Vec3i.of(chunkPosition, sectionHeight, index.indexPosition)
 
-                val neighborBlocks: Array<BlockState?> = arrayOfNulls(Directions.DIRECTIONS.size)
-                for (direction in Directions.DIRECTIONS) {
+                val neighborBlocks: Array<BlockState?> = arrayOfNulls(Directions.VALUES.size)
+                for (direction in Directions.VALUES) {
                     neighborBlocks[direction.ordinal] = world.getBlockState(blockPosition + direction)
                 }
 

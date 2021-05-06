@@ -14,6 +14,8 @@ package de.bixilon.minosoft.data
 
 import de.bixilon.minosoft.gui.rendering.chunk.models.FaceSize
 import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModelElement
+import de.bixilon.minosoft.util.KUtil
+import de.bixilon.minosoft.util.enum.ValuesEnum
 import glm_.vec2.Vec2i
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3i
@@ -83,22 +85,23 @@ enum class Directions(val directionVector: Vec3i) {
     }
 
 
-    companion object {
-        val DIRECTIONS = values()
+    companion object : ValuesEnum<Directions> {
+        override val VALUES = values()
+        override val NAME_MAP: Map<String, Directions> = KUtil.getEnumValues(VALUES)
         val SIDES = arrayOf(NORTH, SOUTH, WEST, EAST)
         const val SIDES_OFFSET = 2
 
         @JvmStatic
         fun byId(id: Int): Directions {
-            return DIRECTIONS[id]
+            return VALUES[id]
         }
 
         private const val MIN_ERROR = 0.0001f
 
         fun byDirection(direction: Vec3): Directions {
-            var minDirection = DIRECTIONS[0]
+            var minDirection = VALUES[0]
             var minError = 2.0f
-            for (testDirection in DIRECTIONS) {
+            for (testDirection in VALUES) {
                 val error = (testDirection.floatDirectionVector - direction).length()
                 if (error < MIN_ERROR) {
                     return testDirection
@@ -112,7 +115,7 @@ enum class Directions(val directionVector: Vec3i) {
 
 
         init {
-            for (direction in DIRECTIONS) {
+            for (direction in VALUES) {
                 direction.inverted = direction.inverse()
             }
         }
