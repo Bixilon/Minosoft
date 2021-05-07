@@ -197,7 +197,7 @@
         <maven.compiler.source>16</maven.compiler.source>
         <maven.compiler.target>16</maven.compiler.target>
         <javafx.version>17-ea+9</javafx.version>
-        <kotlin.version>1.4.32</kotlin.version>
+        <kotlin.version>1.5.0</kotlin.version>
         <lwjgl.version>3.2.3</lwjgl.version>
     </properties>
 
