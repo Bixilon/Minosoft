@@ -98,6 +98,10 @@ open class InByteBuffer {
         return readShort().toInt() and ((1 shl Short.SIZE_BITS) - 1)
     }
 
+    fun readVelocity(): Vec3 {
+        return Vec3(readShort(), readShort(), readShort()) * ProtocolDefinition.VELOCITY_CONSTANT
+    }
+
 
     fun readInt(): Int {
         return (readUnsignedShort() shl Short.SIZE_BITS or readUnsignedShort())

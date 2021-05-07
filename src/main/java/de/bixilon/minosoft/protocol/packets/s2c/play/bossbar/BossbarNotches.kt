@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2021 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -10,17 +10,21 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.modding.event.events
+package de.bixilon.minosoft.protocol.packets.s2c.play.bossbar
 
-import de.bixilon.minosoft.data.mappings.other.game.event.GameEvent
-import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import de.bixilon.minosoft.protocol.packets.s2c.play.GameEventS2CP
+import de.bixilon.minosoft.util.KUtil
+import de.bixilon.minosoft.util.enum.ValuesEnum
 
-class ChangeGameStateEvent(
-    connection: PlayConnection,
-    val event: GameEvent,
-    val data: Float,
-) : PlayConnectionEvent(connection) {
+enum class BossbarNotches {
+    NO_NOTCHES,
+    NOTCHES_6,
+    NOTCHES_10,
+    NOTCHES_12,
+    NOTCHES_20,
+    ;
 
-    constructor(connection: PlayConnection, packet: GameEventS2CP) : this(connection, packet.event, packet.data)
+    companion object : ValuesEnum<BossbarNotches> {
+        override val VALUES: Array<BossbarNotches> = values()
+        override val NAME_MAP: Map<String, BossbarNotches> = KUtil.getEnumValues(VALUES)
+    }
 }

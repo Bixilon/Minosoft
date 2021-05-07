@@ -25,7 +25,7 @@ public class EntitySpawnEvent extends PlayConnectionEvent {
         this.entity = entity;
     }
 
-    public EntitySpawnEvent(PlayConnection connection, PacketSpawnMob pkg) {
+    public EntitySpawnEvent(PlayConnection connection, MobSpawnS2CP pkg) {
         super(connection);
         this.entity = pkg.getEntity();
     }

@@ -37,6 +37,7 @@ import de.bixilon.minosoft.protocol.packets.s2c.login.*
 import de.bixilon.minosoft.protocol.packets.s2c.login.CompressionSetS2CP
 import de.bixilon.minosoft.protocol.packets.s2c.play.*
 import de.bixilon.minosoft.protocol.packets.s2c.play.border.*
+import de.bixilon.minosoft.protocol.packets.s2c.play.bossbar.BossbarS2CPF
 import de.bixilon.minosoft.protocol.packets.s2c.play.combat.CombatEventEndS2CP
 import de.bixilon.minosoft.protocol.packets.s2c.play.combat.CombatEventEnterS2CP
 import de.bixilon.minosoft.protocol.packets.s2c.play.combat.CombatEventKillS2CP
@@ -152,7 +153,7 @@ class PacketTypes {
         LOGIN_LOGIN_SUCCESS({ PacketLoginSuccess(it) }, isThreadSafe = false),
         LOGIN_COMPRESSION_SET({ CompressionSetS2CP(it) }, isThreadSafe = false),
         LOGIN_PLUGIN_REQUEST({ PacketLoginPluginRequest(it) }),
-        PLAY_SPAWN_MOB({ PacketSpawnMob(it) }, isThreadSafe = false),
+        PLAY_MOB_SPAWN({ MobSpawnS2CP(it) }, isThreadSafe = false),
         PLAY_EXPERIENCE_ORB_SPAWN({ ExperienceOrbSpawnS2CP(it) }, isThreadSafe = false),
         PLAY_GLOBAL_ENTITY_SPAWN({ GlobalEntitySpawnS2CP(it) }, isThreadSafe = false),
         PLAY_PAINTING_SPAWN({ PaintingSpawnS2CP(it) }, isThreadSafe = false),
@@ -164,14 +165,14 @@ class PacketTypes {
         PLAY_BLOCK_ENTITY_META_DATA({ BlockEntityMetaDataS2CP(it) }),
         PLAY_BLOCK_ACTION({ BlockActionS2CP(it) }),
         PLAY_BLOCK_SET({ BlockSetS2CP(it) }),
-        PLAY_BOSS_BAR({ PacketBossBar(it) }),
+        PLAY_BOSS_BAR({ BossbarS2CPF.createPacket(it) }),
         PLAY_SERVER_DIFFICULTY({ ServerDifficultyS2CP(it) }),
         PLAY_CHAT_MESSAGE({ ChatMessageS2CP(it) }),
         PLAY_MASS_BLOCK_SET({ MassBlockSetS2CP(it) }),
         PLAY_TAB_COMPLETE({ PacketTabCompleteReceiving(it) }),
         PLAY_DECLARE_COMMANDS({ PacketDeclareCommands(it) }),
         PLAY_CONTAINER_CONFIRMATION({ PacketConfirmTransactionReceiving(it) }),
-        PLAY_CONTAINER_CLOSE({ PacketCloseWindowReceiving(it) }),
+        PLAY_CONTAINER_CLOSE({ ContainerCloseS2CP(it) }),
         PLAY_CONTAINER_ITEMS_SET({ ContainerItemsSetS2CP(it) }),
         PLAY_CONTAINER_PROPERTY_SET({ ContainerPropertySetS2CP(it) }),
         PLAY_CONTAINER_ITEM_SET({ ContainerItemSetS2CP(it) }),
@@ -229,7 +230,7 @@ class PacketTypes {
         PLAY_ENTITY_METADATA({ EntityMetadataS2CP(it) }),
         PLAY_ENTITY_ATTACH({ EntityAttachS2CP(it) }),
         PLAY_ENTITY_VELOCITY({ EntityVelocityS2CP(it) }),
-        PLAY_ENTITY_EQUIPMENT({ PacketEntityEquipment(it) }),
+        PLAY_ENTITY_EQUIPMENT({ EntityEquipmentS2CP(it) }),
         PLAY_EXPERIENCE_SET({ ExperienceSetS2CP(it) }),
         PLAY_HEALTH_SET({ HealthSetS2CP(it) }),
         PLAY_SCOREBOARD_OBJECTIVE({ PacketScoreboardObjective(it) }),

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2021 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -10,17 +10,23 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.modding.event.events
+package de.bixilon.minosoft.protocol.packets.s2c.play.bossbar
 
-import de.bixilon.minosoft.data.mappings.other.game.event.GameEvent
-import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import de.bixilon.minosoft.protocol.packets.s2c.play.GameEventS2CP
+import de.bixilon.minosoft.util.KUtil
+import de.bixilon.minosoft.util.enum.ValuesEnum
 
-class ChangeGameStateEvent(
-    connection: PlayConnection,
-    val event: GameEvent,
-    val data: Float,
-) : PlayConnectionEvent(connection) {
+enum class BossbarColors {
+    PINK,
+    BLUE,
+    RED,
+    GREEN,
+    YELLOW,
+    PURPLE,
+    WHITE,
+    ;
 
-    constructor(connection: PlayConnection, packet: GameEventS2CP) : this(connection, packet.event, packet.data)
+    companion object : ValuesEnum<BossbarColors> {
+        override val VALUES: Array<BossbarColors> = values()
+        override val NAME_MAP: Map<String, BossbarColors> = KUtil.getEnumValues(VALUES)
+    }
 }

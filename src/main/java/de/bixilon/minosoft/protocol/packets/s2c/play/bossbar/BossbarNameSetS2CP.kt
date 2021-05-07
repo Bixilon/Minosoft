@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2021 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -10,17 +10,23 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.modding.event.events
 
-import de.bixilon.minosoft.data.mappings.other.game.event.GameEvent
-import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import de.bixilon.minosoft.protocol.packets.s2c.play.GameEventS2CP
+package de.bixilon.minosoft.protocol.packets.s2c.play.bossbar
 
-class ChangeGameStateEvent(
-    connection: PlayConnection,
-    val event: GameEvent,
-    val data: Float,
-) : PlayConnectionEvent(connection) {
+import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
+import de.bixilon.minosoft.protocol.protocol.InByteBuffer
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
+import java.util.*
 
-    constructor(connection: PlayConnection, packet: GameEventS2CP) : this(connection, packet.event, packet.data)
+class BossbarNameSetS2CP(
+    val uuid: UUID,
+    buffer: InByteBuffer,
+) : PlayS2CPacket() {
+    val name = buffer.readChatComponent()
+
+    override fun log() {
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.VERBOSE) { "Bossbar name set (uuid=$uuid, name=\"$name\")" }
+    }
 }

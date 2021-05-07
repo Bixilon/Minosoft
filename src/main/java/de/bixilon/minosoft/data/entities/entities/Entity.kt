@@ -43,7 +43,7 @@ abstract class Entity(
     var position: Vec3,
     var rotation: EntityRotation,
 ) {
-    val equipment: MutableMap<EquipmentSlots, ItemStack> = synchronizedMapOf()
+    var equipment: Map<EquipmentSlots, ItemStack> = mapOf()
     val activeStatusEffects: MutableMap<StatusEffect, StatusEffectInstance> = synchronizedMapOf()
 
     @JvmField

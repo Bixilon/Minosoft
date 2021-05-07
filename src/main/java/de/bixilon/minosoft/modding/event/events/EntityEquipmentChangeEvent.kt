@@ -12,15 +12,17 @@
  */
 package de.bixilon.minosoft.modding.event.events
 
-import de.bixilon.minosoft.data.mappings.other.game.event.GameEvent
+import de.bixilon.minosoft.data.entities.entities.Entity
+import de.bixilon.minosoft.data.inventory.InventorySlots.EquipmentSlots
+import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import de.bixilon.minosoft.protocol.packets.s2c.play.GameEventS2CP
+import de.bixilon.minosoft.protocol.packets.s2c.play.EntityEquipmentS2CP
 
-class ChangeGameStateEvent(
+class EntityEquipmentChangeEvent(
     connection: PlayConnection,
-    val event: GameEvent,
-    val data: Float,
+    val entity: Entity,
+    val equipment: Map<EquipmentSlots, ItemStack>,
 ) : PlayConnectionEvent(connection) {
 
-    constructor(connection: PlayConnection, packet: GameEventS2CP) : this(connection, packet.event, packet.data)
+    constructor(connection: PlayConnection, packet: EntityEquipmentS2CP) : this(connection, connection.world.entities[packet.entityId]!!, packet.equipment)
 }

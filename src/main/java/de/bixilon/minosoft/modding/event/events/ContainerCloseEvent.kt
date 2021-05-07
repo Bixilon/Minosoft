@@ -14,7 +14,7 @@ package de.bixilon.minosoft.modding.event.events
 
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.c2s.play.ContainerCloseC2SP
-import de.bixilon.minosoft.protocol.packets.s2c.play.PacketCloseWindowReceiving
+import de.bixilon.minosoft.protocol.packets.s2c.play.ContainerCloseS2CP
 
 /**
  * Fired when an container (inventory, window, whatever) closes
@@ -25,7 +25,7 @@ class ContainerCloseEvent(
     val initiator: Initiators,
 ) : CancelableEvent(connection) {
 
-    constructor(connection: PlayConnection, packet: PacketCloseWindowReceiving) : this(connection, packet.windowId, Initiators.SERVER)
+    constructor(connection: PlayConnection, packet: ContainerCloseS2CP) : this(connection, packet.containerId, Initiators.SERVER)
 
     constructor(connection: PlayConnection, packet: ContainerCloseC2SP) : this(connection, packet.containerId, Initiators.CLIENT)
 
