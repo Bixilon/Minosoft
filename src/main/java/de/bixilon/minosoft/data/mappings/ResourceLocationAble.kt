@@ -11,11 +11,8 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.mappings.other.game.event.handlers
+package de.bixilon.minosoft.data.mappings
 
-import de.bixilon.minosoft.data.mappings.CompanionResourceLocation
-import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-
-interface GameEventHandler : CompanionResourceLocation {
-    fun handle(data: Float, connection: PlayConnection)
+interface ResourceLocationAble {
+    val resourceLocation: ResourceLocation
 }

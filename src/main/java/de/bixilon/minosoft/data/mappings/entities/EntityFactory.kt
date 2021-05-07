@@ -16,12 +16,12 @@ package de.bixilon.minosoft.data.mappings.entities
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.meta.EntityMetaData
+import de.bixilon.minosoft.data.mappings.CompanionResourceLocation
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import de.bixilon.minosoft.util.ResourceLocationAble
 import glm_.vec3.Vec3
 
-interface EntityFactory<T : Entity> : ResourceLocationAble {
+interface EntityFactory<T : Entity> : CompanionResourceLocation {
 
     /**
      * Tweaks the entity resource location. Used for pre flattening versions.

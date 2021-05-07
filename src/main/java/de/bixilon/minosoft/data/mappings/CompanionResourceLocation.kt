@@ -11,10 +11,11 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.util
+package de.bixilon.minosoft.data.mappings
 
-import de.bixilon.minosoft.data.mappings.ResourceLocation
-
-interface ResourceLocationAble {
+interface CompanionResourceLocation : ResourceLocationAble {
     val RESOURCE_LOCATION: ResourceLocation
+
+    override val resourceLocation: ResourceLocation
+        get() = RESOURCE_LOCATION
 }

@@ -13,10 +13,10 @@
 
 package de.bixilon.minosoft.gui.rendering
 
+import de.bixilon.minosoft.data.mappings.CompanionResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import de.bixilon.minosoft.util.ResourceLocationAble
 
-interface RenderBuilder : ResourceLocationAble {
+interface RenderBuilder : CompanionResourceLocation {
 
     fun build(connection: PlayConnection, renderWindow: RenderWindow): Renderer
 }

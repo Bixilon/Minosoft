@@ -13,11 +13,10 @@
 
 package de.bixilon.minosoft.gui.rendering.hud
 
-import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.data.mappings.CompanionResourceLocation
 import de.bixilon.minosoft.gui.rendering.hud.nodes.HUDElement
 
-interface HUDRenderBuilder<T : HUDElement> {
-    val RESOURCE_LOCATION: ResourceLocation
+interface HUDRenderBuilder<T : HUDElement> : CompanionResourceLocation {
     val DEFAULT_PROPERTIES: HUDElementProperties
 
     fun build(hudRenderer: HUDRenderer): T
