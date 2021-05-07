@@ -34,6 +34,8 @@ import de.bixilon.minosoft.data.mappings.inventory.CreativeModeTab
 import de.bixilon.minosoft.data.mappings.items.Item
 import de.bixilon.minosoft.data.mappings.items.ItemRegistry
 import de.bixilon.minosoft.data.mappings.materials.Material
+import de.bixilon.minosoft.data.mappings.other.ContainerType
+import de.bixilon.minosoft.data.mappings.other.game.event.GameEvent
 import de.bixilon.minosoft.data.mappings.particle.ParticleType
 import de.bixilon.minosoft.data.mappings.registry.*
 import de.bixilon.minosoft.data.mappings.sounds.SoundEvent
@@ -92,6 +94,9 @@ class VersionMapping {
 
     val blockEntityRegistry: Registry<BlockEntityType> = Registry()
     val blockEntityMetaDataTypeRegistry: Registry<BlockEntityMetaType> = Registry()
+
+    val containerTypeRegistry: Registry<ContainerType> = Registry()
+    val gameEventRegistry: Registry<GameEvent> = Registry()
 
     internal val models: MutableMap<ResourceLocation, BlockModel> = mutableMapOf()
 
@@ -165,6 +170,9 @@ class VersionMapping {
         creativeModeTabRegistry.initialize(pixlyzerData["creative_inventory_tab"]?.asJsonObject, this, CreativeModeTab)
 
         // id resource location stuff
+        containerTypeRegistry.initialize(pixlyzerData["container_types"]?.asJsonObject, this, ContainerType, alternative = DefaultRegistries.CONTAINER_TYPE_REGISTRY.forVersion(version))
+        gameEventRegistry.initialize(pixlyzerData["game_events"]?.asJsonObject, this, GameEvent, alternative = DefaultRegistries.GAME_EVENT_REGISTRY.forVersion(version))
+
         soundEventRegistry.initialize(pixlyzerData["sound_events"]?.asJsonObject, this, SoundEvent)
         particleTypeRegistry.initialize(pixlyzerData["particles"]?.asJsonObject, this, ParticleType)
         materialRegistry.initialize(pixlyzerData["materials"]?.asJsonObject, this, Material)

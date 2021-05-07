@@ -16,6 +16,7 @@ package de.bixilon.minosoft.data.inventory;
 import com.google.common.collect.HashBiMap;
 import de.bixilon.minosoft.data.mappings.ResourceLocation;
 
+@Deprecated
 public enum InventoryTypes {
     CHEST(new ResourceLocation("minecraft:chest")),
     WORKBENCH(new ResourceLocation("minecraft:crafting_table")),

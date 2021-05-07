@@ -18,6 +18,8 @@ import de.bixilon.minosoft.data.entities.EntityObjectType
 import de.bixilon.minosoft.data.entities.block.BlockEntityMetaType
 import de.bixilon.minosoft.data.entities.meta.EntityMetaData
 import de.bixilon.minosoft.data.inventory.InventorySlots
+import de.bixilon.minosoft.data.mappings.other.ContainerType
+import de.bixilon.minosoft.data.mappings.other.game.event.GameEvent
 import de.bixilon.minosoft.data.mappings.registry.PerVersionEnumRegistry
 import de.bixilon.minosoft.data.mappings.registry.PerVersionRegistry
 import de.bixilon.minosoft.data.mappings.registry.Registry
@@ -49,6 +51,9 @@ object DefaultRegistries {
 
     val DEFAULT_PLUGIN_CHANNELS_REGISTRY: PerVersionRegistry<PluginChannel> = PerVersionRegistry()
 
+    val CONTAINER_TYPE_REGISTRY: PerVersionRegistry<ContainerType> = PerVersionRegistry()
+    val GAME_EVENT_REGISTRY: PerVersionRegistry<GameEvent> = PerVersionRegistry()
+
 
     fun load() {
         check(!initialized) { "Already initialized!" }
@@ -75,6 +80,9 @@ object DefaultRegistries {
         ENTITY_OBJECT_REGISTRY.initialize(registriesJson[ResourceLocation("entity_objects")]!!, null, EntityObjectType)
 
         BLOCK_ENTITY_META_TYPE_REGISTRY.initialize(registriesJson[ResourceLocation("block_entity_meta_data_types")]!!, BlockEntityMetaType)
+
+        CONTAINER_TYPE_REGISTRY.initialize(registriesJson[ResourceLocation("container_types")]!!, ContainerType)
+        GAME_EVENT_REGISTRY.initialize(registriesJson[ResourceLocation("game_events")]!!, GameEvent)
 
         initialized = true
     }

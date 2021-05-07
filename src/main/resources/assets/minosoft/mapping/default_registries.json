@@ -472,5 +472,120 @@
         "id": 14
       }
     }
+  },
+  "minecraft:container_types": {
+    "0": {
+      "minecraft:chest": {
+        "id": 0
+      },
+      "minecraft:crafting_table": {
+        "id": 1
+      },
+      "minecraft:furnace": {
+        "id": 2
+      },
+      "minecraft:dispenser": {
+        "id": 3
+      },
+      "minecraft:enchanting_table": {
+        "id": 4
+      },
+      "minecraft:brewing_stand": {
+        "id": 5
+      },
+      "minecraft:villager": {
+        "id": 6
+      },
+      "minecraft:beacon": {
+        "id": 7
+      },
+      "minecraft:anvil": {
+        "id": 8
+      },
+      "minecraft:hopper": {
+        "id": 9
+      },
+      "minecraft:dropper": {
+        "id": 9
+      },
+      "minecraft:EntityHorse": {
+        "id": 9
+      }
+    }
+  },
+  "minecraft:game_events": {
+    "0": {
+      "minecraft:bed_break": {
+        "id": 0
+      },
+      "minecraft:rain_start": {
+        "id": 1
+      },
+      "minecraft:rain_stop": {
+        "id": 2
+      },
+      "minecraft:gamemode_change": {
+        "id": 3
+      },
+      "minecraft:show_credits": {
+        "id": 4
+      },
+      "minecraft:hide_demo_messages": {
+        "id": 5
+      },
+      "minecraft:arrow_player_hit": {
+        "id": 6
+      },
+      "minecraft:rain_level_set": {
+        "id": 7
+      },
+      "minecraft:thunder_level_Set": {
+        "id": 8
+      },
+      "minecraft:pufferfish_sting": {
+        "id": 9
+      },
+      "minecraft:elder_guardian_effect": {
+        "id": 10
+      }
+    },
+    "552": {
+      "minecraft:bed_break": {
+        "id": 0
+      },
+      "minecraft:rain_start": {
+        "id": 1
+      },
+      "minecraft:rain_stop": {
+        "id": 2
+      },
+      "minecraft:gamemode_change": {
+        "id": 3
+      },
+      "minecraft:show_credits": {
+        "id": 4
+      },
+      "minecraft:hide_demo_messages": {
+        "id": 5
+      },
+      "minecraft:arrow_player_hit": {
+        "id": 6
+      },
+      "minecraft:rain_level_set": {
+        "id": 7
+      },
+      "minecraft:thunder_level_Set": {
+        "id": 8
+      },
+      "minecraft:pufferfish_sting": {
+        "id": 9
+      },
+      "minecraft:elder_guardian_effect": {
+        "id": 10
+      },
+      "minecraft:immediate_respawn": {
+        "id": 11
+      }
+    }
   }
 }
