@@ -110,7 +110,7 @@ class ChunkDataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
                         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.WARN) { "Unknown block entity: $resourceLocation" }
                         null
                     } ?: continue
-                    val entity = type.build(buffer.connection) ?: continue
+                    val entity = type.build(buffer.connection)
                     entity.updateNBT(nbt)
                     blockEntities[position] = entity
                 }

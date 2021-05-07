@@ -204,7 +204,7 @@ data class BlockState(
                         propertyJsonValue.asInt
                     }
                     else -> {
-                        propertyJsonValue.asString.toLowerCase()
+                        propertyJsonValue.asString.lowercase(Locale.getDefault())
                     }
                 }
                 try {

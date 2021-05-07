@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.protocol.packets.s2c.play.bossbar
 
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -22,7 +21,6 @@ import java.util.*
 
 class BossbarRemoveS2CP(
     val uuid: UUID,
-    buffer: InByteBuffer,
 ) : PlayS2CPacket() {
 
     override fun log() {

@@ -37,7 +37,7 @@ class BlockModelFace {
             if (it == "bottom") {
                 Directions.DOWN
             } else {
-                Directions.valueOf(it.toUpperCase())
+                Directions.valueOf(it.uppercase(Locale.getDefault()))
             }
         }
         positions = calculateTexturePositions(data, from, to, direction)
@@ -58,9 +58,9 @@ class BlockModelFace {
     private fun getTexturePositionsFromRegion(aabb: AABB, direction: Directions): Pair<Vec2, Vec2> {
         // ToDo: Remove the duplicated code in Directions
         return when (direction) {
-            Directions.UP, Directions.DOWN ->     Pair(Vec2(aabb.min.x.toInt(), aabb.max.z.toInt()), Vec2(aabb.max.x.toInt(), aabb.min.z.toInt()))
+            Directions.UP, Directions.DOWN -> Pair(Vec2(aabb.min.x.toInt(), aabb.max.z.toInt()), Vec2(aabb.max.x.toInt(), aabb.min.z.toInt()))
             Directions.NORTH, Directions.SOUTH -> Pair(Vec2(aabb.min.x.toInt(), aabb.max.y.toInt()), Vec2(aabb.max.x.toInt(), aabb.min.y.toInt()))
-            Directions.EAST, Directions.WEST ->   Pair(Vec2(aabb.min.z.toInt(), aabb.max.y.toInt()), Vec2(aabb.max.z.toInt(), aabb.min.y.toInt()))
+            Directions.EAST, Directions.WEST -> Pair(Vec2(aabb.min.z.toInt(), aabb.max.y.toInt()), Vec2(aabb.max.z.toInt(), aabb.min.y.toInt()))
         }
     }
 
@@ -94,9 +94,9 @@ class BlockModelFace {
 
     private fun calculateTexturePosition(position: Vec3, direction: Directions): Vec2 {
         return when (direction) {
-            Directions.UP, Directions.DOWN ->     Vec2(position.x, BlockModelElement.BLOCK_RESOLUTION - position.z)
-            Directions.NORTH, Directions.SOUTH -> Vec2(position.x,  position.y)
-            Directions.EAST, Directions.WEST ->   Vec2(position.z, BlockModelElement.BLOCK_RESOLUTION - position.y)
+            Directions.UP, Directions.DOWN -> Vec2(position.x, BlockModelElement.BLOCK_RESOLUTION - position.z)
+            Directions.NORTH, Directions.SOUTH -> Vec2(position.x, position.y)
+            Directions.EAST, Directions.WEST -> Vec2(position.z, BlockModelElement.BLOCK_RESOLUTION - position.y)
         }
     }
 

@@ -21,6 +21,7 @@ import de.bixilon.minosoft.util.BitByte.isBitMask
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
+import java.util.*
 
 class StopSoundS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     val category: SoundCategories?
@@ -30,7 +31,7 @@ class StopSoundS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         var category: SoundCategories? = null
         var sound: ResourceLocation? = null
         if (buffer.versionId < ProtocolVersions.V_17W45A) { // ToDo: these 2 values need to be switched in before 1.12.2
-            category = SoundCategories.valueOf(buffer.readString().toUpperCase())
+            category = SoundCategories.valueOf(buffer.readString().uppercase(Locale.getDefault()))
             sound = buffer.readResourceLocation()
         } else {
             val flags = buffer.readByte()

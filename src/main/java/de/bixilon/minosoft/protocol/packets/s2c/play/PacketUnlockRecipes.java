@@ -23,14 +23,14 @@ import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
 public class PacketUnlockRecipes extends PlayS2CPacket {
     private final UnlockRecipeActions action;
     private final boolean isCraftingBookOpen;
+    private final boolean isCraftingFilteringActive;
+    private final Recipe[] listed;
     private boolean isSmeltingBookOpen;
     private boolean isBlastFurnaceBookOpen;
     private boolean isSmokerBookOpen;
-    private final boolean isCraftingFilteringActive;
     private boolean isSmeltingFilteringActive;
     private boolean isBlastFurnaceFilteringActive;
     private boolean isSmokerFilteringActive;
-    private final Recipe[] listed;
     private Recipe[] tagged;
 
     public PacketUnlockRecipes(PlayInByteBuffer buffer) {

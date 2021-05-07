@@ -27,6 +27,7 @@ import de.bixilon.minosoft.data.mappings.versions.VersionMapping
 import de.bixilon.minosoft.datafixer.EntityAttributeFixer.fix
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import glm_.vec3.Vec3
+import java.util.*
 
 data class EntityType(
     override val resourceLocation: ResourceLocation,
@@ -49,7 +50,7 @@ data class EntityType(
 
             data["meta"]?.asJsonObject?.let {
                 for ((minosoftFieldName, index) in it.entrySet()) {
-                    val minosoftField = EntityMetaDataFields[minosoftFieldName.toLowerCase()]
+                    val minosoftField = EntityMetaDataFields[minosoftFieldName.lowercase(Locale.getDefault())]
                     mappings.entityMetaIndexMap[minosoftField] = index.asInt
                 }
             }

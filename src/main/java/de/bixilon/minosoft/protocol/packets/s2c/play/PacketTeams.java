@@ -178,7 +178,7 @@ public class PacketTeams extends PlayS2CPacket {
         HIDE_FOR_OWN_TEAM("hideForOwnTeam"),
         NEVER("never");
 
-   private final String name;
+        private final String name;
 
         TeamNameTagVisibilities(String name) {
             this.name = name;

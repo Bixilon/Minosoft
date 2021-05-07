@@ -24,7 +24,7 @@ object KUtil {
         val ret: MutableMap<String, T> = mutableMapOf()
 
         for (value in values) {
-            ret[value.name.toLowerCase()] = value
+            ret[value.name.lowercase(Locale.getDefault())] = value
 
             if (value is AliasableEnum) {
                 for (name in value.names) {

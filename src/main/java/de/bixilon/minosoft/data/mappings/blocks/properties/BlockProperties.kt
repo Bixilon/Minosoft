@@ -16,6 +16,7 @@ package de.bixilon.minosoft.data.mappings.blocks.properties
 import de.bixilon.minosoft.data.mappings.blocks.properties.serializer.BlockPropertiesSerializer
 import de.bixilon.minosoft.data.mappings.blocks.properties.serializer.BooleanBlocKPropertiesSerializer
 import de.bixilon.minosoft.data.mappings.blocks.properties.serializer.IntBlockPropertiesSerializer
+import java.util.*
 
 enum class BlockProperties {
     POWERED(BooleanBlocKPropertiesSerializer),
@@ -115,7 +116,7 @@ enum class BlockProperties {
     }
 
     constructor(serializer: BlockPropertiesSerializer) {
-        this.group = name.toLowerCase()
+        this.group = name.lowercase(Locale.getDefault())
         this.serializer = serializer
     }
 

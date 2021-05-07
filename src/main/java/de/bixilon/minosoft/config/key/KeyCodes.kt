@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.config.key
 
 import org.lwjgl.glfw.GLFW.*
+import java.util.*
 
 enum class KeyCodes(val glfwKeyId: Int) {
     KEY_UNKNOWN(GLFW_KEY_UNKNOWN),
@@ -156,7 +157,7 @@ enum class KeyCodes(val glfwKeyId: Int) {
 
     ;
 
-    val keyName = name.toUpperCase().removePrefix("KEY_")
+    val keyName = name.uppercase(Locale.getDefault()).removePrefix("KEY_")
 
 
     companion object {
@@ -169,7 +170,7 @@ enum class KeyCodes(val glfwKeyId: Int) {
             val keyCodeGLFWIdMap: MutableMap<Int, KeyCodes> = mutableMapOf()
 
             for (keyCode in VALUES) {
-                keyCodeMap[keyCode.keyName.toUpperCase().replace(' ', '_')] = keyCode
+                keyCodeMap[keyCode.keyName.uppercase(Locale.getDefault()).replace(' ', '_')] = keyCode
                 keyCodeGLFWIdMap[keyCode.glfwKeyId] = keyCode
             }
 

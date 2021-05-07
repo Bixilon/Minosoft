@@ -19,6 +19,7 @@ import com.google.gson.JsonObject
 import com.google.gson.JsonPrimitive
 import de.bixilon.minosoft.util.collections.Clearable
 import de.bixilon.minosoft.util.enum.ValuesEnum
+import java.util.*
 
 class EnumRegistry<T : Enum<*>>(
     private var parentRegistry: EnumRegistry<T>? = null,
@@ -47,7 +48,7 @@ class EnumRegistry<T : Enum<*>>(
     private fun getEnum(data: Any): T {
         return when (data) {
             is Int -> values[data]
-            is String -> values.NAME_MAP[data.toLowerCase()] ?: error("Can not find enum: $data")
+            is String -> values.NAME_MAP[data.lowercase(Locale.getDefault())] ?: error("Can not find enum: $data")
             is JsonPrimitive -> {
                 if (data.isNumber) {
                     return getEnum(data.asInt)

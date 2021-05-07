@@ -20,6 +20,7 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.rotate
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3
 import glm_.func.rad
 import glm_.vec3.Vec3
+import java.util.*
 
 open class BlockModelElement(data: JsonObject) {
     val faces: MutableMap<Directions, BlockModelFace> = mutableMapOf()
@@ -40,7 +41,7 @@ open class BlockModelElement(data: JsonObject) {
         )
 
         data["rotation"]?.asJsonObject?.let {
-            val axis = Axes.valueOf(it["axis"].asString.toUpperCase())
+            val axis = Axes.valueOf(it["axis"].asString.uppercase(Locale.getDefault()))
             val angle = it["angle"].asFloat.rad
             val rescale = it["rescale"]?.asBoolean ?: false
             rotatePositions(transformedPositions, axis, angle, it["origin"].asJsonArray.toVec3(), rescale)
@@ -48,7 +49,7 @@ open class BlockModelElement(data: JsonObject) {
 
         data["faces"]?.asJsonObject?.let {
             for ((directionName, json) in it.entrySet()) {
-                val direction = Directions.valueOf(directionName.toUpperCase())
+                val direction = Directions.valueOf(directionName.uppercase(Locale.getDefault()))
                 faces[direction] = BlockModelFace(json.asJsonObject, from, to, direction)
             }
         }

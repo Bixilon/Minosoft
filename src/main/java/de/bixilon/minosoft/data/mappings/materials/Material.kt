@@ -19,6 +19,7 @@ import de.bixilon.minosoft.data.mappings.registry.ResourceLocationDeserializer
 import de.bixilon.minosoft.data.mappings.versions.VersionMapping
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.TintColorCalculator
+import java.util.*
 
 data class Material(
     override val resourceLocation: ResourceLocation,
@@ -41,7 +42,7 @@ data class Material(
             return Material(
                 resourceLocation = resourceLocation,
                 color = TintColorCalculator.getJsonColor(data["color"]?.asInt ?: 0),
-                pushReaction = data["push_reaction"]?.asString?.let { PushReactions.valueOf(it.toUpperCase()) } ?: PushReactions.NORMAL,
+                pushReaction = data["push_reaction"]?.asString?.let { PushReactions.valueOf(it.uppercase(Locale.getDefault())) } ?: PushReactions.NORMAL,
                 blockMotion = data["blocks_motion"]?.asBoolean ?: false,
                 flammable = data["flammable"]?.asBoolean ?: false,
                 liquid = data["liquid"]?.asBoolean ?: false,

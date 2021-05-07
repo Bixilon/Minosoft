@@ -24,6 +24,7 @@ import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.TintColorCalculator
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.MMath
+import java.util.*
 
 data class Biome(
     override val resourceLocation: ResourceLocation,
@@ -74,7 +75,7 @@ data class Biome(
                 foliageColorOverride = TintColorCalculator.getJsonColor(data["foliage_color_override"]?.asInt ?: 0),
                 grassColorOverride = TintColorCalculator.getJsonColor(data["grass_color_override"]?.asInt ?: 0),
                 descriptionId = data["water_fog_color"]?.asString,
-                grassColorModifier = data["grass_color_modifier"]?.asString?.toUpperCase()?.let { GrassColorModifiers.valueOf(it) } ?: when (resourceLocation) {
+                grassColorModifier = data["grass_color_modifier"]?.asString?.uppercase(Locale.getDefault())?.let { GrassColorModifiers.valueOf(it) } ?: when (resourceLocation) {
                     ResourceLocation("minecraft:swamp"), ResourceLocation("minecraft:swamp_hills") -> GrassColorModifiers.SWAMP
                     ResourceLocation("minecraft:dark_forest"), ResourceLocation("minecraft:dark_forest_hills") -> GrassColorModifiers.DARK_FOREST
                     else -> GrassColorModifiers.NONE

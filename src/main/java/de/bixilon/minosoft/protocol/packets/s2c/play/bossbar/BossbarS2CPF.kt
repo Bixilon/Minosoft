@@ -24,7 +24,7 @@ object BossbarS2CPF {
         val uuid = buffer.readUUID()
         return when (BossBarActions[buffer.readVarInt()]) {
             BossBarActions.ADD -> BossbarAddS2CP(uuid, buffer)
-            BossBarActions.REMOVE -> BossbarRemoveS2CP(uuid, buffer)
+            BossBarActions.REMOVE -> BossbarRemoveS2CP(uuid)
             BossBarActions.SET_HEALTH -> BossbarHealthSetS2CP(uuid, buffer)
             BossBarActions.SET_NAME -> BossbarNameSetS2CP(uuid, buffer)
             BossBarActions.SET_STYLE -> BossbarStyleSetS2CP(uuid, buffer)

@@ -351,7 +351,7 @@ class CommandStringReader {
         if (peek() == '{') {
             return readNBTCompoundTag()
         }
-        val data = readString().toLowerCase(Locale.ROOT)
+        val data = readString().lowercase(Locale.ROOT)
         if (data == "true") {
             return true
         }

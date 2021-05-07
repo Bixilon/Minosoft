@@ -30,8 +30,8 @@ import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
 
 public class PacketSpawnObject extends PlayS2CPacket {
     private final int entityId;
-    private UUID entityUUID;
     private final Entity entity;
+    private UUID entityUUID;
     private Vec3 velocity;
 
     public PacketSpawnObject(PlayInByteBuffer buffer) throws Exception {

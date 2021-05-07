@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.mappings.blocks.properties
 
 import de.bixilon.minosoft.data.mappings.blocks.properties.serializer.BlockPropertiesSerializer
+import java.util.*
 
 enum class MultipartDirectionParser(
     vararg val aliases: Any,
@@ -32,7 +33,7 @@ enum class MultipartDirectionParser(
             val names: MutableMap<Any, MultipartDirectionParser> = mutableMapOf()
 
             for (value in values()) {
-                names[value.name.toLowerCase()] = value
+                names[value.name.lowercase(Locale.getDefault())] = value
                 for (alias in value.aliases) {
                     names[alias] = value
                 }

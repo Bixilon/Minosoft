@@ -23,10 +23,10 @@ import glm_.vec3.Vec3;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*;
 
 public class PacketNamedSoundEffect extends PlayS2CPacket {
-    private Vec3 position;
     private final String sound;
     private final float volume;
     private final float pitch;
+    private Vec3 position;
     private SoundCategories category;
 
     public PacketNamedSoundEffect(PlayInByteBuffer buffer) {

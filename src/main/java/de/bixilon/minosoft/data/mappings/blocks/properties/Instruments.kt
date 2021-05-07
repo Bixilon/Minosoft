@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.mappings.blocks.properties
 
 import de.bixilon.minosoft.data.mappings.blocks.properties.serializer.BlockPropertiesSerializer
+import java.util.*
 
 enum class Instruments(
     vararg val aliases: String,
@@ -43,7 +44,7 @@ enum class Instruments(
             val names: MutableMap<Any, Instruments> = mutableMapOf()
 
             for (value in values()) {
-                names[value.name.toLowerCase()] = value
+                names[value.name.lowercase(Locale.getDefault())] = value
                 for (alias in value.aliases) {
                     names[alias] = value
                 }

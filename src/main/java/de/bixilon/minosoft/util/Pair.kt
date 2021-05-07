@@ -14,7 +14,7 @@ package de.bixilon.minosoft.util
 
 data class Pair<K, V>(
     val key: K,
-    val value: V
+    val value: V,
 ) {
     override fun toString(): String {
         return "$key=$value"

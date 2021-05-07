@@ -24,6 +24,7 @@ import de.bixilon.minosoft.gui.rendering.hud.nodes.properties.NodeAlignment
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.UnitFormatter
 import glm_.vec2.Vec2
+import java.util.*
 
 
 class HUDWorldDebugNode(hudRenderer: HUDRenderer) : DebugScreenNode(hudRenderer) {
@@ -75,7 +76,7 @@ class HUDWorldDebugNode(hudRenderer: HUDRenderer) : DebugScreenNode(hudRenderer)
 
 
         // ToDo: Prepare on change
-        gamemodeText.sText = "Gamemode: ${hudRenderer.connection.player.entity.gamemode.name.toLowerCase()}"
+        gamemodeText.sText = "Gamemode: ${hudRenderer.connection.player.entity.gamemode.name.lowercase(Locale.getDefault())}"
         positionText.sText = "XYZ ${getPosition()}"
         blockPositionText.sText = "Block ${getBlockPosition()}"
         chunkPositionText.sText = "Chunk ${getChunkLocation()}"
@@ -84,7 +85,7 @@ class HUDWorldDebugNode(hudRenderer: HUDRenderer) : DebugScreenNode(hudRenderer)
         biomeText.sText = "Biome: ${camera.currentBiome}"
         dimensionText.sText = "Dimension: ${hudRenderer.connection.world.dimension}"
 
-        difficultyText.sText = "Difficulty: ${hudRenderer.connection.world.difficulty?.name?.toLowerCase()}, ${
+        difficultyText.sText = "Difficulty: ${hudRenderer.connection.world.difficulty?.name?.lowercase(Locale.getDefault())}, ${
             if (hudRenderer.connection.world.difficultyLocked) {
                 "locked"
             } else {
@@ -136,7 +137,7 @@ class HUDWorldDebugNode(hudRenderer: HUDRenderer) : DebugScreenNode(hudRenderer)
         val yaw = hudRenderer.renderWindow.inputHandler.camera.playerEntity.rotation.yaw
         val pitch = hudRenderer.renderWindow.inputHandler.camera.playerEntity.rotation.pitch
         val direction = Directions.byDirection(camera.cameraFront)
-        return "${Directions.byDirection(camera.cameraFront).name.toLowerCase()} ${direction.directionVector} (${formatRotation(yaw.toDouble())} / ${formatRotation(pitch.toDouble())})"
+        return "${Directions.byDirection(camera.cameraFront).name.lowercase(Locale.getDefault())} ${direction.directionVector} (${formatRotation(yaw.toDouble())} / ${formatRotation(pitch.toDouble())})"
     }
 
     companion object : HUDRenderBuilder<HUDWorldDebugNode> {
