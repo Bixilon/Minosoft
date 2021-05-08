@@ -177,6 +177,5 @@ enum class KeyCodes(val glfwKeyId: Int) {
             KEY_CODE_MAP = keyCodeMap.toMap()
             KEY_CODE_GLFW_ID_MAP = keyCodeGLFWIdMap.toMap()
         }
-
     }
 }

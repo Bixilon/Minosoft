@@ -149,8 +149,8 @@ data class BlockState(
 
             val material = versionMapping.materialRegistry.get(ResourceLocation(data["material"].asString))!!
 
-            val collision = data["collision_shapes"]?.let {
-                versionMapping.shapes[it.asInt]
+            val collision = data["collision_shape"]?.asInt?.let {
+                versionMapping.shapes[it]
             } ?: if (data["is_collision_shape_full_block"]?.asBoolean == true) {
                 VoxelShape.FULL
             } else {

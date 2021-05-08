@@ -202,12 +202,12 @@ class VersionMapping {
     private fun loadShapes(pixlyzerData: JsonObject?) {
         pixlyzerData ?: return
         val aabbs = loadAABBs(pixlyzerData["aabbs"]?.asJsonArray!!)
-        loadVoxelShapes(pixlyzerData["shapes"].asJsonArray!!, aabbs)
+        loadVoxelShapes(pixlyzerData["shapes"].asJsonArray, aabbs)
     }
 
     private fun loadVoxelShapes(pixlyzerData: JsonArray, aabbs: List<AABB>) {
         for (shape in pixlyzerData) {
-            shapes.add(VoxelShape(shape.asJsonObject, aabbs))
+            shapes.add(VoxelShape(shape, aabbs))
         }
     }
 

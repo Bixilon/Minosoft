@@ -1,6 +1,8 @@
 package de.bixilon.minosoft.gui.rendering.chunk
 
-import com.google.gson.JsonObject
+import com.google.gson.JsonArray
+import com.google.gson.JsonElement
+import com.google.gson.JsonPrimitive
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.gui.rendering.chunk.models.AABB
 import de.bixilon.minosoft.gui.rendering.util.VecUtil
@@ -9,9 +11,16 @@ import glm_.vec3.Vec3i
 
 class VoxelShape(val aabbs: MutableList<AABB> = mutableListOf()) {
 
-    constructor(data: JsonObject, aabbs: List<AABB>) : this() {
-        data["shape"]?.let {
-            this.aabbs.add(aabbs[it.asInt])
+    constructor(data: JsonElement, aabbs: List<AABB>) : this() {
+        when (data) {
+            is JsonArray -> {
+                for (index in data) {
+                    this.aabbs.add(aabbs[index.asInt])
+                }
+            }
+            is JsonPrimitive -> {
+                this.aabbs.add(aabbs[data.asInt])
+            }
         }
     }
 

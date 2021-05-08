@@ -85,6 +85,7 @@ open class Block(
                 check(stateJson is JsonObject) { "Not a state element!" }
                 val state = BlockState.deserialize(block, mappings, stateJson, mappings.models)
                 mappings.blockStateIdMap[stateId.toInt()] = state
+                block.states.add(state)
             }
 
             block.defaultState = mappings.blockStateIdMap[data["default_state"].asInt]!!
