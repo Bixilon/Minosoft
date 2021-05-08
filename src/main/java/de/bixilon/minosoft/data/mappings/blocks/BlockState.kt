@@ -35,7 +35,6 @@ import kotlin.random.Random
 data class BlockState(
     val block: Block,
     val properties: Map<BlockProperties, Any> = mapOf(),
-    val rotation: BlockRotations = BlockRotations.NONE,
     val renderers: MutableList<BlockLikeRenderer> = mutableListOf(),
     val tintColor: RGBColor? = null,
     val material: Material,
@@ -43,7 +42,7 @@ data class BlockState(
 ) {
 
     override fun hashCode(): Int {
-        return Objects.hash(block, properties, rotation)
+        return Objects.hash(block, properties)
     }
 
     override fun equals(other: Any?): Boolean {
@@ -58,11 +57,6 @@ data class BlockState(
                 return false
             }
 
-            other.rotation?.let {
-                if (rotation != it) {
-                    return false
-                }
-            }
             other.properties?.let {
                 for ((state, value) in it) {
                     if (properties[state] != value) {
@@ -78,7 +72,7 @@ data class BlockState(
             return false
         }
         if (other is BlockState) {
-            return block.resourceLocation == other.block.resourceLocation && rotation == other.rotation && properties == other.properties && block.resourceLocation.namespace == other.block.resourceLocation.namespace
+            return block.resourceLocation == other.block.resourceLocation && properties == other.properties && block.resourceLocation.namespace == other.block.resourceLocation.namespace
         }
         if (other is ResourceLocation) {
             return super.equals(other)
@@ -88,11 +82,6 @@ data class BlockState(
 
     override fun toString(): String {
         val out = StringBuilder()
-        if (rotation != BlockRotations.NONE) {
-            out.append(" (")
-            out.append("rotation=")
-            out.append(rotation)
-        }
         if (properties.isNotEmpty()) {
             if (out.isNotEmpty()) {
                 out.append(", ")
@@ -121,12 +110,11 @@ data class BlockState(
 
 
     companion object {
-        val ROTATION_PROPERTIES = setOf("facing", "rotation", "orientation", "axis")
 
         fun deserialize(owner: Block, versionMapping: VersionMapping, data: JsonObject, models: Map<ResourceLocation, BlockModel>): BlockState {
-            val (rotation, properties) = data["properties"]?.asJsonObject?.let {
+            val properties = data["properties"]?.asJsonObject?.let {
                 getProperties(it)
-            } ?: Pair(BlockRotations.NONE, mutableMapOf())
+            } ?: mutableMapOf()
 
             val renderers: MutableList<BlockLikeRenderer> = mutableListOf()
 
@@ -177,7 +165,6 @@ data class BlockState(
             return BlockState(
                 block = owner,
                 properties = properties.toMap(),
-                rotation = rotation,
                 renderers = renderers,
                 tintColor = tintColor,
                 material = material,
@@ -191,8 +178,7 @@ data class BlockState(
             return ret shr 16
         }
 
-        private fun getProperties(json: JsonObject): Pair<BlockRotations, MutableMap<BlockProperties, Any>> {
-            var rotation = BlockRotations.NONE
+        private fun getProperties(json: JsonObject): MutableMap<BlockProperties, Any> {
             val properties: MutableMap<BlockProperties, Any> = mutableMapOf()
             for ((propertyGroup, propertyJsonValue) in json.entrySet()) {
                 check(propertyJsonValue is JsonPrimitive) { "Not a json primitive!" }
@@ -208,17 +194,13 @@ data class BlockState(
                     }
                 }
                 try {
-                    if (propertyGroup in ROTATION_PROPERTIES) {
-                        rotation = BlockRotations.ROTATION_MAPPING[propertyValue]!!
-                    } else {
-                        val (blockProperty, value) = BlockProperties.parseProperty(propertyGroup, propertyValue)
-                        properties[blockProperty] = value
-                    }
+                    val (blockProperty, value) = BlockProperties.parseProperty(propertyGroup, propertyValue)
+                    properties[blockProperty] = value
                 } catch (exception: NullPointerException) {
                     throw NullPointerException("Invalid block property $propertyGroup or value $propertyValue")
                 }
             }
-            return Pair(rotation, properties)
+            return properties
         }
 
         private fun addBlockModel(data: JsonObject, renderer: MutableList<BlockLikeRenderer>, models: Map<ResourceLocation, BlockModel>) {

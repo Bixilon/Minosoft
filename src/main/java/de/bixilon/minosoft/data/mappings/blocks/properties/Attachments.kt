@@ -29,7 +29,7 @@ enum class Attachments {
         override val VALUES: Array<Attachments> = values()
         override val NAME_MAP: Map<String, Attachments> = KUtil.getEnumValues(VALUES)
 
-        override fun serialize(value: Any): Attachments {
+        override fun deserialize(value: Any): Attachments {
             return NAME_MAP[value] ?: throw IllegalArgumentException("No such property: $value")
         }
 

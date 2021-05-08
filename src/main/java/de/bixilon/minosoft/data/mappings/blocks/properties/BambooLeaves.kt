@@ -27,7 +27,7 @@ enum class BambooLeaves {
         override val VALUES = values()
         override val NAME_MAP: Map<String, BambooLeaves> = KUtil.getEnumValues(VALUES)
 
-        override fun serialize(value: Any): BambooLeaves {
+        override fun deserialize(value: Any): BambooLeaves {
             return NAME_MAP[value] ?: throw IllegalArgumentException("No such property: $value")
         }
     }

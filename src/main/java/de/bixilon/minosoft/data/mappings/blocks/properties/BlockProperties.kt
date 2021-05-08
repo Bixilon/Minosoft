@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.data.mappings.blocks.properties
 
+import de.bixilon.minosoft.data.Axes
+import de.bixilon.minosoft.data.Directions
 import de.bixilon.minosoft.data.mappings.blocks.properties.serializer.BlockPropertiesSerializer
 import de.bixilon.minosoft.data.mappings.blocks.properties.serializer.BooleanBlocKPropertiesSerializer
 import de.bixilon.minosoft.data.mappings.blocks.properties.serializer.IntBlockPropertiesSerializer
@@ -105,6 +107,12 @@ enum class BlockProperties {
     LEGACY_CHECK_DECAY("check_decay", BooleanBlocKPropertiesSerializer),
     LEGAVY_DECAYABLE("decayable", BooleanBlocKPropertiesSerializer),
     LEGAVY_NODROP("nodrop", BooleanBlocKPropertiesSerializer),
+
+    AXIS("axis", Axes),
+    FACING("facing", Directions),
+
+    ROTATION("rotation", IntBlockPropertiesSerializer),
+    ORIENTATION("orientation", Orientations),
     ;
 
     val group: String
@@ -139,7 +147,7 @@ enum class BlockProperties {
 
                 for (blockProperty in it) {
                     retValue = try {
-                        blockProperty.serializer.serialize(value)
+                        blockProperty.serializer.deserialize(value)
                     } catch (exception: Throwable) {
                         continue
                     }
@@ -152,6 +160,5 @@ enum class BlockProperties {
                 return Pair(retProperty, retValue)
             } ?: throw IllegalArgumentException("Can not find group: $group, expected value $value")
         }
-
     }
 }

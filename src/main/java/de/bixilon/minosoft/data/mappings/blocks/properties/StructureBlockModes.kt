@@ -30,7 +30,7 @@ enum class StructureBlockModes {
         override val VALUES = values()
         override val NAME_MAP: Map<String, StructureBlockModes> = KUtil.getEnumValues(VALUES)
 
-        override fun serialize(value: Any): StructureBlockModes {
+        override fun deserialize(value: Any): StructureBlockModes {
             return NAME_MAP[value] ?: throw IllegalArgumentException("No such property: $value")
         }
     }

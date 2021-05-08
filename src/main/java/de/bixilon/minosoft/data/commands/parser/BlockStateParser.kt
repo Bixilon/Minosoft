@@ -13,9 +13,11 @@
 package de.bixilon.minosoft.data.commands.parser
 
 import de.bixilon.minosoft.data.commands.CommandStringReader
-import de.bixilon.minosoft.data.commands.parser.exceptions.*
+import de.bixilon.minosoft.data.commands.parser.exceptions.BlockNotFoundCommandParseException
+import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException
+import de.bixilon.minosoft.data.commands.parser.exceptions.InvalidBlockPredicateCommandParseException
+import de.bixilon.minosoft.data.commands.parser.exceptions.UnknownBlockPropertyCommandParseException
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties
-import de.bixilon.minosoft.data.mappings.blocks.BlockRotations
 import de.bixilon.minosoft.data.mappings.blocks.BlockState
 import de.bixilon.minosoft.data.mappings.blocks.WannabeBlockState
 import de.bixilon.minosoft.data.mappings.blocks.properties.BlockProperties
@@ -38,20 +40,8 @@ class BlockStateParser : CommandParser() {
         if (stringReader.canRead() && stringReader.peek() == '[') {
             val propertyMap = stringReader.readProperties()
 
-            var rotation: BlockRotations? = null
             val allProperties: MutableMap<BlockProperties, Any> = mutableMapOf()
             for ((groupName, value) in propertyMap) {
-
-                if (BlockState.ROTATION_PROPERTIES.contains(groupName)) {
-                    if (rotation != null) {
-                        throw BlockPropertyDuplicatedCommandParseException(stringReader, groupName)
-                    }
-                    rotation = BlockRotations.ROTATION_MAPPING[value]
-                    if (rotation == null) {
-                        throw UnknownBlockPropertyCommandParseException(stringReader, value)
-                    }
-                    continue
-                }
                 val (parsedGroup, parsedValue) = try {
                     BlockProperties.parseProperty(groupName, value)
                 } catch (exception: Throwable) {
@@ -60,7 +50,7 @@ class BlockStateParser : CommandParser() {
                 allProperties[parsedGroup] = parsedValue
             }
             for (state in block.states) {
-                if (state.equals(WannabeBlockState(block.resourceLocation, allProperties, rotation))) {
+                if (state.equals(WannabeBlockState(block.resourceLocation, allProperties))) {
                     blockState = state
                     break
                 }

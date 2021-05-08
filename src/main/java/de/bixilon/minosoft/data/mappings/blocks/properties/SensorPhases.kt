@@ -27,7 +27,7 @@ enum class SensorPhases {
         override val VALUES = values()
         override val NAME_MAP: Map<String, SensorPhases> = KUtil.getEnumValues(VALUES)
 
-        override fun serialize(value: Any): SensorPhases {
+        override fun deserialize(value: Any): SensorPhases {
             return NAME_MAP[value] ?: throw IllegalArgumentException("No such property: $value")
         }
     }

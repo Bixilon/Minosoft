@@ -26,7 +26,7 @@ enum class Sides {
         override val VALUES = values()
         override val NAME_MAP: Map<String, Sides> = KUtil.getEnumValues(VALUES)
 
-        override fun serialize(value: Any): Sides {
+        override fun deserialize(value: Any): Sides {
             return NAME_MAP[value] ?: throw IllegalArgumentException("No such property: $value")
         }
     }

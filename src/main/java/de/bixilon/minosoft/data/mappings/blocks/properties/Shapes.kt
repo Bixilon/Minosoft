@@ -39,7 +39,7 @@ enum class Shapes {
         override val VALUES = values()
         override val NAME_MAP: Map<String, Shapes> = KUtil.getEnumValues(VALUES)
 
-        override fun serialize(value: Any): Shapes {
+        override fun deserialize(value: Any): Shapes {
             return NAME_MAP[value] ?: throw IllegalArgumentException("No such property: $value")
         }
     }

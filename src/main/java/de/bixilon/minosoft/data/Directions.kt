@@ -12,6 +12,7 @@
  */
 package de.bixilon.minosoft.data
 
+import de.bixilon.minosoft.data.mappings.blocks.properties.serializer.BlockPropertiesSerializer
 import de.bixilon.minosoft.gui.rendering.chunk.models.FaceSize
 import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModelElement
 import de.bixilon.minosoft.util.KUtil
@@ -85,11 +86,16 @@ enum class Directions(val directionVector: Vec3i) {
     }
 
 
-    companion object : ValuesEnum<Directions> {
+    companion object : BlockPropertiesSerializer, ValuesEnum<Directions> {
         override val VALUES = values()
         override val NAME_MAP: Map<String, Directions> = KUtil.getEnumValues(VALUES)
         val SIDES = arrayOf(NORTH, SOUTH, WEST, EAST)
         const val SIDES_OFFSET = 2
+
+
+        override fun deserialize(value: Any): Directions {
+            return NAME_MAP[value] ?: throw IllegalArgumentException("No such property: $value")
+        }
 
         @JvmStatic
         fun byId(id: Int): Directions {

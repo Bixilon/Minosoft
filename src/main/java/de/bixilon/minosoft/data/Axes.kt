@@ -12,6 +12,9 @@
  */
 package de.bixilon.minosoft.data
 
+import de.bixilon.minosoft.data.mappings.blocks.properties.serializer.BlockPropertiesSerializer
+import de.bixilon.minosoft.util.KUtil
+import de.bixilon.minosoft.util.enum.ValuesEnum
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3i
 
@@ -21,7 +24,10 @@ enum class Axes {
     Z,
     ;
 
-    companion object {
+    companion object : ValuesEnum<Axes>, BlockPropertiesSerializer {
+        override val VALUES: Array<Axes> = values()
+        override val NAME_MAP: Map<String, Axes> = KUtil.getEnumValues(VALUES)
+
         fun byDirection(direction: Directions): Axes {
             return when (direction) {
                 Directions.EAST, Directions.WEST -> X
@@ -46,6 +52,8 @@ enum class Axes {
             }
         }
 
-        val AXES = values()
+        override fun deserialize(value: Any): Axes {
+            return NAME_MAP[value] ?: throw IllegalArgumentException("No such property: $value")
+        }
     }
 }

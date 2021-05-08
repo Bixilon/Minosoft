@@ -14,46 +14,29 @@
 package de.bixilon.minosoft.data.mappings.blocks.properties
 
 import de.bixilon.minosoft.data.mappings.blocks.properties.serializer.BlockPropertiesSerializer
-import java.util.*
+import de.bixilon.minosoft.util.KUtil
+import de.bixilon.minosoft.util.enum.ValuesEnum
 
-enum class Instruments(
-    vararg val aliases: String,
-) {
-    HARP,
-    BASE_DRUM("basedrum"),
-    SNARE,
-    HAT,
-    BASS,
-    FLUTE,
-    BELL,
-    GUITAR,
-    CHIME,
-    XYLOPHONE,
-    IRON_XYLOPHONE,
-    COW_BELL,
-    DIDGERIDOO,
-    BIT,
-    BANJO,
-    PLING,
+enum class Orientations {
+    DOWN_EAST,
+    DOWN_WEST,
+    DOWN_NORTH,
+    DOWN_SOUTH,
+    UP_EAST,
+    EAST_UP,
+    UP_WEST,
+    WEST_UP,
+    UP_NORTH,
+    NORTH_UP,
+    UP_SOUTH,
+    SOUTH_UP,
     ;
 
-    companion object : BlockPropertiesSerializer {
-        private val NAME_MAP: Map<Any, Instruments>
+    companion object : ValuesEnum<Orientations>, BlockPropertiesSerializer {
+        override val VALUES: Array<Orientations> = values()
+        override val NAME_MAP: Map<String, Orientations> = KUtil.getEnumValues(VALUES)
 
-        init {
-            val names: MutableMap<Any, Instruments> = mutableMapOf()
-
-            for (value in values()) {
-                names[value.name.lowercase(Locale.getDefault())] = value
-                for (alias in value.aliases) {
-                    names[alias] = value
-                }
-            }
-
-            NAME_MAP = names.toMap()
-        }
-
-        override fun deserialize(value: Any): Instruments {
+        override fun deserialize(value: Any): Orientations {
             return NAME_MAP[value] ?: throw IllegalArgumentException("No such property: $value")
         }
     }

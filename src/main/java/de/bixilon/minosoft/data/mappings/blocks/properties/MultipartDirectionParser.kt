@@ -42,7 +42,7 @@ enum class MultipartDirectionParser(
             NAME_MAP = names.toMap()
         }
 
-        override fun serialize(value: Any): MultipartDirectionParser {
+        override fun deserialize(value: Any): MultipartDirectionParser {
             return NAME_MAP[value] ?: throw IllegalArgumentException("No such property: $value")
         }
     }

@@ -28,7 +28,7 @@ enum class Tilts {
         override val VALUES = values()
         override val NAME_MAP: Map<String, Tilts> = KUtil.getEnumValues(VALUES)
 
-        override fun serialize(value: Any): Tilts {
+        override fun deserialize(value: Any): Tilts {
             return NAME_MAP[value] ?: throw IllegalArgumentException("No such property: $value")
         }
     }

@@ -26,7 +26,7 @@ enum class PistonTypes {
         override val VALUES = values()
         override val NAME_MAP: Map<String, PistonTypes> = KUtil.getEnumValues(VALUES)
 
-        override fun serialize(value: Any): PistonTypes {
+        override fun deserialize(value: Any): PistonTypes {
             return NAME_MAP[value] ?: throw IllegalArgumentException("No such property: $value")
         }
     }

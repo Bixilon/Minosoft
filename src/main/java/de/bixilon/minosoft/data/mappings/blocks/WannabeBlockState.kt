@@ -18,5 +18,4 @@ import de.bixilon.minosoft.data.mappings.blocks.properties.BlockProperties
 data class WannabeBlockState(
     val resourceLocation: ResourceLocation,
     val properties: Map<BlockProperties, Any>? = null,
-    val rotation: BlockRotations? = null,
 )

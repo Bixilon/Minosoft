@@ -27,7 +27,7 @@ enum class ChestTypes {
         override val VALUES = values()
         override val NAME_MAP: Map<String, ChestTypes> = KUtil.getEnumValues(VALUES)
 
-        override fun serialize(value: Any): ChestTypes {
+        override fun deserialize(value: Any): ChestTypes {
             return NAME_MAP[value] ?: throw IllegalArgumentException("No such property: $value")
         }
     }

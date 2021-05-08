@@ -40,7 +40,7 @@ enum class Halves(
             NAME_MAP = names.toMap()
         }
 
-        override fun serialize(value: Any): Halves {
+        override fun deserialize(value: Any): Halves {
             return NAME_MAP[value] ?: throw IllegalArgumentException("No such property: $value")
         }
     }

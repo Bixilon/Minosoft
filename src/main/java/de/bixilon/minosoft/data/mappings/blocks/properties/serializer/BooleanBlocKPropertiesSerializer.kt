@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.mappings.blocks.properties.serializer
 
 object BooleanBlocKPropertiesSerializer : BlockPropertiesSerializer {
 
-    override fun serialize(value: Any): Boolean {
+    override fun deserialize(value: Any): Boolean {
         if (value is Boolean) {
             return value
         }

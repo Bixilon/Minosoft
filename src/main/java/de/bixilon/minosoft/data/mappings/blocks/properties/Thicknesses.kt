@@ -31,7 +31,7 @@ enum class Thicknesses {
         override val VALUES = values()
         override val NAME_MAP: Map<String, Thicknesses> = KUtil.getEnumValues(VALUES)
 
-        override fun serialize(value: Any): Thicknesses {
+        override fun deserialize(value: Any): Thicknesses {
             return NAME_MAP[value] ?: throw IllegalArgumentException("No such property: $value")
         }
     }

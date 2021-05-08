@@ -15,5 +15,5 @@ package de.bixilon.minosoft.data.mappings.blocks.properties.serializer
 
 interface BlockPropertiesSerializer {
 
-    fun serialize(value: Any): Any
+    fun deserialize(value: Any): Any
 }

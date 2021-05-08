@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.mappings.blocks.properties.serializer
 
 object IntBlockPropertiesSerializer : BlockPropertiesSerializer {
 
-    override fun serialize(value: Any): Int {
+    override fun deserialize(value: Any): Int {
         return value as Int
     }
 }
