@@ -14,8 +14,6 @@
 package de.bixilon.minosoft.gui.main.dialogs.login;
 
 import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXPasswordField;
-import com.jfoenix.controls.JFXTextField;
 import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.data.accounts.Account;
 import de.bixilon.minosoft.data.accounts.MojangAccount;
@@ -29,6 +27,8 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
@@ -40,9 +40,9 @@ public class MojangLoginController implements Initializable {
     public HBox hBox;
     public Label header;
     public Label emailLabel;
-    public JFXTextField email;
+    public TextField email;
     public Label passwordLabel;
-    public JFXPasswordField password;
+    public PasswordField password;
     public JFXButton loginButton;
     public Label errorMessage;
 

@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.main.dialogs.login;
 
 import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXTextField;
 import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.data.accounts.OfflineAccount;
 import de.bixilon.minosoft.data.locale.LocaleManager;
@@ -28,6 +27,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
@@ -39,9 +39,9 @@ public class OfflineLoginController implements Initializable {
     public HBox hBox;
     public Label header;
     public Label usernameLabel;
-    public JFXTextField username;
+    public TextField username;
     public Label uuidLabel;
-    public JFXTextField uuid;
+    public TextField uuid;
     public JFXButton addButton;
 
     @Override
