@@ -81,6 +81,9 @@ open class Block(
             }
 
 
+            if (block.resourceLocation.full == "minecraft:oak_stairs") {
+                var a = 1
+            }
             for ((stateId, stateJson) in data["states"].asJsonObject.entrySet()) {
                 check(stateJson is JsonObject) { "Not a state element!" }
                 val state = BlockState.deserialize(block, mappings, stateJson, mappings.models)

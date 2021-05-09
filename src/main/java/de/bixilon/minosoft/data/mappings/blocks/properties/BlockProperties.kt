@@ -110,9 +110,9 @@ enum class BlockProperties {
 
     AXIS("axis", Axes),
     FACING("facing", Directions),
-
     ROTATION("rotation", IntBlockPropertiesSerializer),
     ORIENTATION("orientation", Orientations),
+
     ;
 
     val group: String

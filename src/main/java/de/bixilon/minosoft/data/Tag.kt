@@ -14,4 +14,7 @@ package de.bixilon.minosoft.data
 
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 
-class Tag(val resourceLocation: ResourceLocation, val idList: IntArray)
+data class Tag(
+    val resourceLocation: ResourceLocation,
+    val ids: IntArray,
+)
