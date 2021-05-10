@@ -17,19 +17,19 @@ import de.bixilon.minosoft.protocol.protocol.PlayOutByteBuffer
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-class ContainerConfirmationC2SP(
+class ContainerActionStatusC2SP(
     val containerId: Int,
-    val actionNumber: Int,
+    val actionId: Int,
     val accepted: Boolean,
 ) : PlayC2SPacket {
 
     override fun write(buffer: PlayOutByteBuffer) {
         buffer.writeByte(containerId)
-        buffer.writeShort(actionNumber)
+        buffer.writeShort(actionId)
         buffer.writeBoolean(accepted)
     }
 
     override fun log() {
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT) { "Confirming container action (containerId=$containerId, actionNumber=$actionNumber, accepted=$accepted)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_OUT) { "Confirming container action (containerId=$containerId, actionId=$actionId, accepted=$accepted)" }
     }
 }
