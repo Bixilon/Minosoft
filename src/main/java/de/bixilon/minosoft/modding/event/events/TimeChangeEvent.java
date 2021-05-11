@@ -28,8 +28,8 @@ public class TimeChangeEvent extends CancelableEvent {
 
     public TimeChangeEvent(PlayConnection connection, WorldTimeSetS2CP pkg) {
         super(connection);
-        this.worldAge = pkg.getWorldAge();
-        this.timeOfDay = pkg.getTimeOfDay();
+        this.worldAge = pkg.getAge();
+        this.timeOfDay = pkg.getTime();
     }
 
     public long getWorldAge() {

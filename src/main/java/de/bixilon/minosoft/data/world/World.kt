@@ -40,6 +40,8 @@ class World : BiomeAccessor {
     val worldLightAccessor = WorldLightAccessor(this)
     var hashedSeed = 0L
     var biomeAccessor: BiomeAccessor = NullBiomeAccessor
+    var time = 0L
+    var age = 0L
 
     fun getBlockState(blockPosition: Vec3i): BlockState? {
         val chunkLocation = blockPosition.chunkPosition

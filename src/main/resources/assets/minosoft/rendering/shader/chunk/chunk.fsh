@@ -23,20 +23,7 @@ in float passInterpolateBetweenTextures;
 
 in vec4 passTintColor;
 
-uniform sampler2DArray textureArray[7];
-
-vec4 getTexture(uint textureId, vec3 textureCoordinates){
-    switch (textureId){
-        case 0u : return texture(textureArray[0], textureCoordinates);
-        case 1u: return texture(textureArray[1], textureCoordinates);
-        case 2u: return texture(textureArray[2], textureCoordinates);
-        case 3u: return texture(textureArray[3], textureCoordinates);
-        case 4u: return texture(textureArray[4], textureCoordinates);
-        case 5u: return texture(textureArray[5], textureCoordinates);
-        case 6u: return texture(textureArray[6], textureCoordinates);
-    }
-    return texture(textureArray[0], textureCoordinates);
-}
+#include "minosoft:texture"
 
 void main() {
     vec4 firstTexelColor = getTexture(passFirstTextureIdIndex, passFirstTextureCoordinates);

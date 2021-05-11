@@ -44,7 +44,7 @@ class Shader(
 
     fun load(assetsManager: AssetsManager = Minosoft.MINOSOFT_ASSETS_MANAGER): Int {
         val uniforms: MutableList<String> = mutableListOf()
-        val pathPrefix = resourceLocation.namespace + ":rendering/shader/" + resourceLocation.path + "/" + resourceLocation.path.replace("/", "_")
+        val pathPrefix = """${resourceLocation.namespace}:rendering/shader/${resourceLocation.path}/${resourceLocation.path.replace("/", "_")}"""
         val vertexShader = createShader(assetsManager, ResourceLocation("$pathPrefix.vsh"), GL_VERTEX_SHADER_ARB, defines, uniforms)!!
         val geometryShader = createShader(assetsManager, ResourceLocation("$pathPrefix.gsh"), GL_GEOMETRY_SHADER_ARB, defines, uniforms)
         val fragmentShader = createShader(assetsManager, ResourceLocation("$pathPrefix.fsh"), GL_FRAGMENT_SHADER_ARB, defines, uniforms)!!
@@ -165,9 +165,25 @@ class Shader(
             }
 
             for (line in lines) {
+                val reader = CommandStringReader(line)
+                when {
+                    line.startsWith("#include ") -> {
+                        val includeResourceLocation = ResourceLocation(line.removePrefix("#include ").removePrefix("\"").removeSuffix("\"").replace("\\\"", "\""))
+                        total.append("\n")
+                        total.append(assetsManager.readStringAsset(if (includeResourceLocation.path.contains(".glsl")) {
+                            includeResourceLocation
+                        } else {
+                            ResourceLocation(includeResourceLocation.namespace, "rendering/shader/includes/${includeResourceLocation.path}.glsl")
+                        }))
+
+                        total.append("\n")
+                        continue
+                    }
+                }
+
                 total.append(line)
                 total.append('\n')
-                val reader = CommandStringReader(line)
+
                 when {
                     line.startsWith("#version") -> {
                         // add all defines

@@ -21,17 +21,19 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
 class WorldTimeSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
-    val worldAge: Long = buffer.readLong()
-    val timeOfDay: Long = buffer.readLong()
+    val age = buffer.readLong()
+    val time = buffer.readLong()
 
     override fun handle(connection: PlayConnection) {
         if (connection.fireEvent(TimeChangeEvent(connection, this))) {
             return
         }
+        connection.world.age = age
+        connection.world.time = time
     }
 
     override fun log() {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "World time set (worldAge=$worldAge, timeOfDay=$timeOfDay)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "World time set (age=$age, time=$time)" }
     }
 
 }
