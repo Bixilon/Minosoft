@@ -16,10 +16,10 @@ package de.bixilon.minosoft.gui.rendering.hud
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames
 import de.bixilon.minosoft.data.mappings.ResourceLocation
-import de.bixilon.minosoft.gui.rendering.RenderBuilder
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.Renderer
+import de.bixilon.minosoft.gui.rendering.RendererBuilder
 import de.bixilon.minosoft.gui.rendering.hud.atlas.HUDAtlasElement
 import de.bixilon.minosoft.gui.rendering.hud.elements.other.CrosshairHUDElement
 import de.bixilon.minosoft.gui.rendering.hud.nodes.HUDElement
@@ -214,7 +214,7 @@ class HUDRenderer(val connection: PlayConnection, val renderWindow: RenderWindow
         return Vec2i(x, y)
     }
 
-    companion object : RenderBuilder {
+    companion object : RendererBuilder<HUDRenderer> {
         override val RESOURCE_LOCATION = ResourceLocation("minosoft:hud_renderer")
 
         override fun build(connection: PlayConnection, renderWindow: RenderWindow): HUDRenderer {

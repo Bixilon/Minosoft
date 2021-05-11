@@ -17,6 +17,7 @@ import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.assets.AssetsManager
 import de.bixilon.minosoft.data.commands.CommandStringReader
 import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.Rendering
 import de.bixilon.minosoft.gui.rendering.exceptions.ShaderLoadingException
 import de.bixilon.minosoft.gui.rendering.util.OpenGLUtil
@@ -123,6 +124,10 @@ class Shader(
             val currentUniformName = "$uniformName[$i]"
             setUniform(currentUniformName, value)
         }
+    }
+
+    fun setRGBColor(uniformName: String, color: RGBColor) {
+        setVec4(uniformName, Vec4(color.floatRed, color.floatGreen, color.floatBlue, color.alpha))
     }
 
     fun setUniform(uniformName: String, data: Any?) {

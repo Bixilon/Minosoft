@@ -23,6 +23,7 @@ import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.modding.events.CameraMatrixChangeEvent
 import de.bixilon.minosoft.gui.rendering.modding.events.FrustumChangeEvent
 import de.bixilon.minosoft.gui.rendering.modding.events.ScreenResizeEvent
+import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
 import de.bixilon.minosoft.gui.rendering.util.VecUtil
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.blockPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.chunkPosition
@@ -232,18 +233,19 @@ class Camera(
         sectionHeight = blockPosition.sectionHeight
         inChunkSectionPosition = blockPosition.inChunkSectionPosition
         // recalculate sky color for current biome
-        renderWindow.setSkyColor(connection.world.getBiome(blockPosition)?.skyColor ?: RenderConstants.DEFAULT_SKY_COLOR)
+        val skyRenderer = renderWindow[SkyRenderer] ?: return
+        skyRenderer.setSkyColor(connection.world.getBiome(blockPosition)?.skyColor ?: RenderConstants.DEFAULT_SKY_COLOR)
 
         frustum.recalculate()
         connection.fireEvent(FrustumChangeEvent(renderWindow, frustum))
 
         connection.world.dimension?.hasSkyLight?.let {
             if (it) {
-                renderWindow.setSkyColor(currentBiome?.skyColor ?: RenderConstants.DEFAULT_SKY_COLOR)
+                skyRenderer.setSkyColor(currentBiome?.skyColor ?: RenderConstants.DEFAULT_SKY_COLOR)
             } else {
-                renderWindow.setSkyColor(RenderConstants.BLACK_COLOR)
+                skyRenderer.setSkyColor(RenderConstants.BLACK_COLOR)
             }
-        } ?: renderWindow.setSkyColor(RenderConstants.DEFAULT_SKY_COLOR)
+        } ?: skyRenderer.setSkyColor(RenderConstants.DEFAULT_SKY_COLOR)
     }
 
     private fun calculateProjectionMatrix(screenDimensions: Vec2): Mat4 {

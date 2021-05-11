@@ -18,12 +18,15 @@ out vec4 color;
 
 uniform mat4 skyViewProjectionMatrix;
 
+uniform vec4 bottomColor;
+uniform vec4 topColor;
+
 void main() {
     gl_Position = (skyViewProjectionMatrix * vec4(inPosition, 1.0)).xyww;
 
     if (inPosition.y < 0.5f) {
-        color = vec4(0.0f, 1.0f, 1.0f, 1.0f);
+        color = bottomColor;
     } else {
-        color = vec4(1.0f, 0.0f, 1.0f, 1.0f);
+        color = topColor;
     }
 }

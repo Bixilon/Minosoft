@@ -14,10 +14,12 @@
 package de.bixilon.minosoft.gui.rendering.sky
 
 import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.RGBColor
-import de.bixilon.minosoft.gui.rendering.RenderBuilder
+import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.Renderer
+import de.bixilon.minosoft.gui.rendering.RendererBuilder
 import de.bixilon.minosoft.gui.rendering.modding.events.CameraMatrixChangeEvent
 import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.gui.rendering.textures.Texture
@@ -43,12 +45,11 @@ class SkyRenderer(
         resourceLocation = ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "sky/sun"),
     )
     private val skyboxMesh = SkyboxMesh()
-
     private var skySunMesh = SkySunMesh()
-
     private var sunTexture = Texture(SUN_TEXTURE_RESOURCE_LOCATION)
-
     private var recalculateSunNextFrame: Boolean = true
+    private var bottomColor = ChatColors.BLACK
+    private var topColor = RenderConstants.DEFAULT_SKY_COLOR
 
 
     override fun init() {
@@ -110,6 +111,21 @@ class SkyRenderer(
         skySunMesh.draw()
     }
 
+    fun setSkyColor(color: RGBColor) {
+        topColor = color
+        bottomColor = RGBColor(color.red * 8 / 9, color.green * 8 / 9, color.blue * 8 / 9)
+        renderWindow.renderQueue.add {
+            updateSkyColor()
+        }
+    }
+
+    private fun updateSkyColor() {
+        skyboxShader.use()
+
+        skyboxShader.setRGBColor("bottomColor", bottomColor)
+        skyboxShader.setRGBColor("topColor", topColor)
+    }
+
     private fun drawSkybox() {
         skyboxShader.use()
         skyboxMesh.draw()
@@ -124,7 +140,7 @@ class SkyRenderer(
         glDepthFunc(GL_LESS)
     }
 
-    companion object : RenderBuilder {
+    companion object : RendererBuilder<SkyRenderer> {
         override val RESOURCE_LOCATION = ResourceLocation("minosoft:sky")
 
         private val SUN_TEXTURE_RESOURCE_LOCATION = ResourceLocation("minecraft:textures/environment/sun.png")

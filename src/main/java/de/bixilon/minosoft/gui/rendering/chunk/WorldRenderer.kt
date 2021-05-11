@@ -419,7 +419,7 @@ class WorldRenderer(
         return this + upOrDown.directionVector.y
     }
 
-    companion object : RenderBuilder {
+    companion object : RendererBuilder<WorldRenderer> {
         override val RESOURCE_LOCATION = ResourceLocation("minosoft:world_renderer")
 
         override fun build(connection: PlayConnection, renderWindow: RenderWindow): WorldRenderer {

@@ -16,8 +16,6 @@ package de.bixilon.minosoft.gui.rendering
 import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames
 import de.bixilon.minosoft.data.mappings.ResourceLocation
-import de.bixilon.minosoft.data.text.RGBColor
-import de.bixilon.minosoft.data.text.RGBColor.Companion.asColor
 import de.bixilon.minosoft.gui.input.key.RenderWindowInputHandler
 import de.bixilon.minosoft.gui.rendering.chunk.WorldRenderer
 import de.bixilon.minosoft.gui.rendering.font.Font
@@ -179,7 +177,7 @@ class RenderWindow(
         // Make the window visible
         GL.createCapabilities()
 
-        setSkyColor("#fffe7a".asColor())
+        glClearColor(1.0f, 1.0f, 0.0f, 1.0f)
 
         Log.log(LogMessageType.RENDERING_LOADING) { "Enabling all open gl features (${stopwatch.labTime()})..." }
         glEnable(GL_DEPTH_TEST)
@@ -382,14 +380,9 @@ class RenderWindow(
         connection.fireEvent(RenderingStateChangeEvent(connection, previousState, renderingState))
     }
 
-    fun registerRenderer(renderBuilder: RenderBuilder) {
-        val renderer = renderBuilder.build(connection, this)
-        rendererMap[renderBuilder.RESOURCE_LOCATION] = renderer
-    }
-
-    @Deprecated(message = "Will be replaced with SkyRenderer")
-    fun setSkyColor(color: RGBColor) {
-        glClearColor(color.floatRed, color.floatGreen, color.floatBlue, 1.0f)
+    fun registerRenderer(rendererBuilder: RendererBuilder<*>) {
+        val renderer = rendererBuilder.build(connection, this)
+        rendererMap[rendererBuilder.RESOURCE_LOCATION] = renderer
     }
 
     fun sendDebugMessage(message: String) {
@@ -402,5 +395,9 @@ class RenderWindow(
 
     fun assertOnRenderThread() {
         check(Thread.currentThread() == renderThread) { "Current thread (${Thread.currentThread().name} is not the render thread!" }
+    }
+
+    operator fun <T : Renderer> get(renderer: RendererBuilder<T>): T? {
+        return rendererMap[renderer.RESOURCE_LOCATION] as T
     }
 }
