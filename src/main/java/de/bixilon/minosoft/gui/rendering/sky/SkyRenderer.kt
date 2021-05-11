@@ -77,7 +77,12 @@ class SkyRenderer(
 
     private fun setSunMatrix(projectionViewMatrix: Mat4) {
         val timeAngle = (getSkyAngle(connection.world.time).toFloat() * 360.0f)
-        skySunShader.use().setMat4("skyViewProjectionMatrix", projectionViewMatrix.rotate(timeAngle, Vec3(0.0f, 0.0f, 1.0f))) // ToDo: 180° is top, not correct yet
+        val rotatedMatrix = if (timeAngle == 0.0f) {
+            projectionViewMatrix
+        } else {
+            projectionViewMatrix.rotate(timeAngle, Vec3(0.0f, 0.0f, 1.0f))
+        }
+        skySunShader.use().setMat4("skyViewProjectionMatrix", rotatedMatrix) // ToDo: 180° is top, not correct yet
     }
 
     override fun postInit() {
@@ -103,7 +108,7 @@ class SkyRenderer(
                 start = Vec3(-0.15f, 1.0f, -0.15f),
                 end = Vec3(+0.15f, 1.0f, +0.15f),
                 texture = sunTexture,
-                tintColor = RGBColor(255, 255, 255),
+                tintColor = RGBColor(255, 255, 255), // ToDo: Depends on time
             )
             skySunMesh.load()
         }
