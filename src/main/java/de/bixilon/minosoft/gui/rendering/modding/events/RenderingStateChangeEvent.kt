@@ -11,11 +11,14 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.util.abstractions
+package de.bixilon.minosoft.gui.rendering.modding.events
 
-import glm_.vec2.Vec2i
+import de.bixilon.minosoft.gui.rendering.RenderingStates
+import de.bixilon.minosoft.modding.event.events.PlayConnectionEvent
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 
-interface ScreenResizeCallback {
-
-    fun onScreenResize(screenDimensions: Vec2i) {}
-}
+class RenderingStateChangeEvent(
+    override val connection: PlayConnection,
+    val previousState: RenderingStates,
+    val state: RenderingStates,
+) : PlayConnectionEvent(connection)

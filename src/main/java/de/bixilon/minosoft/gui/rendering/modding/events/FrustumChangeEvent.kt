@@ -11,14 +11,13 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.modding.events
+package de.bixilon.minosoft.gui.rendering.modding.events
 
-import de.bixilon.minosoft.gui.rendering.RenderingStates
-import de.bixilon.minosoft.modding.event.events.PlayConnectionEvent
-import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.gui.input.camera.Frustum
+import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.Rendering
 
-class RenderingStateChangeEvent(
-    override val connection: PlayConnection,
-    val previousState: RenderingStates,
-    val state: RenderingStates,
-) : PlayConnectionEvent(connection)
+class FrustumChangeEvent(
+    renderWindow: RenderWindow = Rendering.currentContext!!,
+    val frustum: Frustum,
+) : RenderEvent(renderWindow)

@@ -11,8 +11,11 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.shader
+package de.bixilon.minosoft.gui.rendering.modding.events
 
-interface ShaderHolder {
-    val shader: Shader
-}
+import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.modding.event.events.PlayConnectionEvent
+
+abstract class RenderEvent(
+    val renderWindow: RenderWindow,
+) : PlayConnectionEvent(renderWindow.connection)

@@ -19,18 +19,18 @@ import de.bixilon.minosoft.gui.rendering.hud.HUDElementProperties
 import de.bixilon.minosoft.gui.rendering.hud.HUDRenderBuilder
 import de.bixilon.minosoft.gui.rendering.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.hud.nodes.properties.NodeAlignment
-import de.bixilon.minosoft.gui.rendering.util.abstractions.ScreenResizeCallback
+import de.bixilon.minosoft.gui.rendering.modding.events.ScreenResizeEvent
+import de.bixilon.minosoft.modding.event.CallbackEventInvoker
 import de.bixilon.minosoft.modding.loading.ModLoader
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.GitInfo
 import de.bixilon.minosoft.util.SystemInformation
 import de.bixilon.minosoft.util.UnitFormatter
 import glm_.vec2.Vec2
-import glm_.vec2.Vec2i
 import org.lwjgl.opengl.GL11.*
 
 
-class HUDSystemDebugNode(hudRenderer: HUDRenderer) : DebugScreenNode(hudRenderer), ScreenResizeCallback {
+class HUDSystemDebugNode(hudRenderer: HUDRenderer) : DebugScreenNode(hudRenderer) {
 
     init {
         layout.sizing.forceAlign = NodeAlignment.RIGHT
@@ -67,13 +67,13 @@ class HUDSystemDebugNode(hudRenderer: HUDRenderer) : DebugScreenNode(hudRenderer
         text("Mods: ${ModLoader.MOD_MAP.size} active, ${hudRenderer.connection.eventListenerSize} listeners")
     }
 
-    override fun onScreenResize(screenDimensions: Vec2i) {
-        displayText.sText = "Display: ${getScreenDimensions()}"
-    }
-
     override fun init() {
         gpuText.sText = "GPU: " + (glGetString(GL_RENDERER) ?: "unknown")
         gpuVersionText.sText = "Version: " + (glGetString(GL_VERSION) ?: "unknown")
+
+        hudRenderer.connection.registerEvent(CallbackEventInvoker.of<ScreenResizeEvent> {
+            displayText.sText = "Display: ${getScreenDimensions()}"
+        })
     }
 
     override fun draw() {

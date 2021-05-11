@@ -26,8 +26,9 @@ import de.bixilon.minosoft.gui.rendering.hud.nodes.HUDElement
 import de.bixilon.minosoft.gui.rendering.hud.nodes.chat.ChatBoxHUDElement
 import de.bixilon.minosoft.gui.rendering.hud.nodes.debug.HUDSystemDebugNode
 import de.bixilon.minosoft.gui.rendering.hud.nodes.debug.HUDWorldDebugNode
+import de.bixilon.minosoft.gui.rendering.modding.events.ScreenResizeEvent
 import de.bixilon.minosoft.gui.rendering.shader.Shader
-import de.bixilon.minosoft.gui.rendering.util.abstractions.ScreenResizeCallback
+import de.bixilon.minosoft.modding.event.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.MMath
@@ -36,12 +37,11 @@ import glm_.glm
 import glm_.mat4x4.Mat4
 import glm_.vec2.Vec2i
 
-class HUDRenderer(val connection: PlayConnection, val renderWindow: RenderWindow) : Renderer, ScreenResizeCallback {
+class HUDRenderer(val connection: PlayConnection, val renderWindow: RenderWindow) : Renderer {
     private val hudElements: MutableMap<ResourceLocation, Pair<HUDElementProperties, HUDElement>> = mutableMapOf()
     private val enabledHUDElement: MutableMap<ResourceLocation, Pair<HUDElementProperties, HUDElement>> = mutableMapOf()
     private val hudShader = Shader(
-        vertexPath = ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "rendering/shader/hud_vertex.glsl"),
-        fragmentPath = ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "rendering/shader/hud_fragment.glsl"),
+        resourceLocation = ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "hud"),
     )
     lateinit var hudAtlasElements: Map<ResourceLocation, HUDAtlasElement>
     var orthographicMatrix: Mat4 = Mat4()
@@ -74,6 +74,13 @@ class HUDRenderer(val connection: PlayConnection, val renderWindow: RenderWindow
         renderWindow.inputHandler.registerKeyCallback(KeyBindingsNames.CLOSE) {
 
         }
+
+        connection.registerEvent(CallbackEventInvoker.of<ScreenResizeEvent> {
+            orthographicMatrix = glm.ortho(-it.screenDimensions.x / 2.0f, it.screenDimensions.x / 2.0f, -it.screenDimensions.y / 2.0f, it.screenDimensions.y / 2.0f)
+            for ((_, hudElement) in hudElements.values) {
+                hudElement.layout.clearChildrenCache()
+            }
+        })
     }
 
     private fun registerDefaultElements() {
@@ -95,9 +102,6 @@ class HUDRenderer(val connection: PlayConnection, val renderWindow: RenderWindow
         }
         val hudElement = builder.build(this)
         hudElement.properties = properties
-        if (hudElement is ScreenResizeCallback) {
-            renderWindow.screenResizeCallbacks.add(hudElement)
-        }
         val pair = Pair(properties, hudElement)
         hudElements[builder.RESOURCE_LOCATION] = pair
 
@@ -124,12 +128,6 @@ class HUDRenderer(val connection: PlayConnection, val renderWindow: RenderWindow
     fun removeElement(resourceLocation: ResourceLocation) {
         val element = hudElements[resourceLocation] ?: return
 
-        element.second.let {
-            if (it is ScreenResizeCallback) {
-                renderWindow.screenResizeCallbacks.remove(it)
-            }
-        }
-
         element.first.toggleKeyBinding?.let {
             renderWindow.inputHandler.unregisterKeyBinding(it)
         }
@@ -147,13 +145,6 @@ class HUDRenderer(val connection: PlayConnection, val renderWindow: RenderWindow
 
         for (element in hudElements.values) {
             element.second.postInit()
-        }
-    }
-
-    override fun onScreenResize(screenDimensions: Vec2i) {
-        orthographicMatrix = glm.ortho(-screenDimensions.x / 2.0f, screenDimensions.x / 2.0f, -screenDimensions.y / 2.0f, screenDimensions.y / 2.0f)
-        for ((_, hudElement) in hudElements.values) {
-            hudElement.layout.clearChildrenCache()
         }
     }
 

@@ -18,20 +18,19 @@ import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.data.text.RGBColor.Companion.asColor
-import de.bixilon.minosoft.gui.input.camera.FrustumChangeCallback
 import de.bixilon.minosoft.gui.input.key.RenderWindowInputHandler
-import de.bixilon.minosoft.gui.modding.events.RenderingStateChangeEvent
 import de.bixilon.minosoft.gui.rendering.chunk.WorldRenderer
 import de.bixilon.minosoft.gui.rendering.font.Font
 import de.bixilon.minosoft.gui.rendering.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.hud.atlas.TextureLike
 import de.bixilon.minosoft.gui.rendering.hud.atlas.TextureLikeTexture
-import de.bixilon.minosoft.gui.rendering.shader.ShaderHolder
+import de.bixilon.minosoft.gui.rendering.modding.events.RenderingStateChangeEvent
+import de.bixilon.minosoft.gui.rendering.modding.events.ScreenResizeEvent
+import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
 import de.bixilon.minosoft.gui.rendering.textures.Texture
 import de.bixilon.minosoft.gui.rendering.textures.TextureArray
 import de.bixilon.minosoft.gui.rendering.util.ScreenshotTaker
-import de.bixilon.minosoft.gui.rendering.util.abstractions.ScreenResizeCallback
 import de.bixilon.minosoft.modding.event.CallbackEventInvoker
 import de.bixilon.minosoft.modding.event.events.ConnectionStateChangeEvent
 import de.bixilon.minosoft.modding.event.events.PacketReceiveEvent
@@ -41,7 +40,6 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.CountUpAndDownLatch
 import de.bixilon.minosoft.util.KUtil.synchronizedListOf
 import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
-import de.bixilon.minosoft.util.KUtil.synchronizedSetOf
 import de.bixilon.minosoft.util.Stopwatch
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -84,10 +82,11 @@ class RenderWindow(
 
     val renderQueue: MutableList<Runnable> = synchronizedListOf()
 
+
+    val shaders: MutableList<Shader> = mutableListOf()
+
     lateinit var WHITE_TEXTURE: TextureLike
 
-
-    val screenResizeCallbacks: MutableSet<ScreenResizeCallback> = synchronizedSetOf(inputHandler.camera)
 
     var tickCount = 0L
     var lastTickTimer = System.currentTimeMillis()
@@ -221,9 +220,6 @@ class RenderWindow(
         Log.log(LogMessageType.RENDERING_LOADING) { "Post loading renderer (${stopwatch.labTime()})..." }
         for (renderer in rendererMap.values) {
             renderer.postInit()
-            if (renderer is ShaderHolder) {
-                inputHandler.camera.addShaders(renderer.shader)
-            }
         }
 
 
@@ -231,11 +227,10 @@ class RenderWindow(
         glfwSetWindowSizeCallback(windowId, object : GLFWWindowSizeCallback() {
             override fun invoke(window: Long, width: Int, height: Int) {
                 glViewport(0, 0, width, height)
+                val previousSize = screenDimensions
                 screenDimensions = Vec2i(width, height)
                 screenDimensionsF = Vec2(screenDimensions)
-                for (callback in screenResizeCallbacks) {
-                    callback.onScreenResize(screenDimensions)
-                }
+                connection.fireEvent(ScreenResizeEvent(previousScreenDimensions = previousSize, screenDimensions = screenDimensions))
             }
         })
 
@@ -266,9 +261,7 @@ class RenderWindow(
 
         registerGlobalKeyCombinations()
 
-        for (callback in screenResizeCallbacks) {
-            callback.onScreenResize(screenDimensions)
-        }
+        connection.fireEvent(ScreenResizeEvent(previousScreenDimensions = Vec2i(0, 0), screenDimensions = screenDimensions))
 
 
         Log.log(LogMessageType.RENDERING_LOADING) { "Rendering is fully prepared in  ${stopwatch.totalTime()}" }
@@ -392,12 +385,6 @@ class RenderWindow(
     fun registerRenderer(renderBuilder: RenderBuilder) {
         val renderer = renderBuilder.build(connection, this)
         rendererMap[renderBuilder.RESOURCE_LOCATION] = renderer
-        if (renderer is ScreenResizeCallback) {
-            screenResizeCallbacks.add(renderer)
-        }
-        if (renderer is FrustumChangeCallback) {
-            inputHandler.camera.addFrustumChangeCallback(renderer)
-        }
     }
 
     @Deprecated(message = "Will be replaced with SkyRenderer")

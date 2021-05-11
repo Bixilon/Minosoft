@@ -15,7 +15,9 @@ package de.bixilon.minosoft.gui.rendering.shader
 
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.assets.AssetsManager
+import de.bixilon.minosoft.data.commands.CommandStringReader
 import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.gui.rendering.Rendering
 import de.bixilon.minosoft.gui.rendering.exceptions.ShaderLoadingException
 import de.bixilon.minosoft.gui.rendering.util.OpenGLUtil
 import glm_.mat4x4.Mat4
@@ -30,19 +32,23 @@ import org.lwjgl.opengl.ARBVertexShader.GL_VERTEX_SHADER_ARB
 import org.lwjgl.opengl.GL11.GL_FALSE
 import org.lwjgl.opengl.GL43.*
 import org.lwjgl.system.MemoryUtil
+import java.io.FileNotFoundException
 
 class Shader(
-    private val vertexPath: ResourceLocation,
-    private val geometryPath: ResourceLocation? = null,
-    private val fragmentPath: ResourceLocation,
+    private val resourceLocation: ResourceLocation,
     private val defines: Map<String, Any> = mapOf(),
 ) {
+    lateinit var uniforms: List<String>
+        private set
     private var programId = 0
 
     fun load(assetsManager: AssetsManager = Minosoft.MINOSOFT_ASSETS_MANAGER): Int {
-        val vertexShader = createShader(assetsManager, vertexPath, GL_VERTEX_SHADER_ARB, defines)
-        val geometryShader = geometryPath?.let { createShader(assetsManager, it, GL_GEOMETRY_SHADER_ARB, defines) }
-        val fragmentShader = createShader(assetsManager, fragmentPath, GL_FRAGMENT_SHADER_ARB, defines)
+        val uniforms: MutableList<String> = mutableListOf()
+        val pathPrefix = resourceLocation.namespace + ":rendering/shader/" + resourceLocation.path + "/" + resourceLocation.path.replace("/", "_")
+        val vertexShader = createShader(assetsManager, ResourceLocation("$pathPrefix.vsh"), GL_VERTEX_SHADER_ARB, defines, uniforms)!!
+        val geometryShader = createShader(assetsManager, ResourceLocation("$pathPrefix.gsh"), GL_GEOMETRY_SHADER_ARB, defines, uniforms)
+        val fragmentShader = createShader(assetsManager, ResourceLocation("$pathPrefix.fsh"), GL_FRAGMENT_SHADER_ARB, defines, uniforms)!!
+        this.uniforms = uniforms.toList()
         programId = glCreateProgramObjectARB()
 
         if (programId.toLong() == MemoryUtil.NULL) {
@@ -71,13 +77,15 @@ class Shader(
         }
         glDeleteShader(fragmentShader)
 
+        val context = Rendering.currentContext!!
+        context.shaders.add(this)
         return programId
     }
 
     fun use(): Shader {
-        if (usedShader !== this) {
+        if (currentShaderInUse !== this) {
             glUseProgram(programId)
-            usedShader = this
+            currentShaderInUse = this
         }
         return this
     }
@@ -142,30 +150,42 @@ class Shader(
 
 
     companion object {
-        private var usedShader: Shader? = null
+        private var currentShaderInUse: Shader? = null
 
-
-        private fun createShader(assetsManager: AssetsManager = Minosoft.MINOSOFT_ASSETS_MANAGER, resourceLocation: ResourceLocation, shaderType: Int, defines: Map<String, Any>): Int {
+        private fun createShader(assetsManager: AssetsManager = Minosoft.MINOSOFT_ASSETS_MANAGER, resourceLocation: ResourceLocation, shaderType: Int, defines: Map<String, Any>, uniforms: MutableList<String>): Int? {
             val shaderId = glCreateShaderObjectARB(shaderType)
             if (shaderId.toLong() == MemoryUtil.NULL) {
                 throw ShaderLoadingException()
             }
             val total = StringBuilder()
-            val lines = assetsManager.readStringAsset(resourceLocation).lines()
+            val lines = try {
+                assetsManager.readStringAsset(resourceLocation).lines()
+            } catch (exception: FileNotFoundException) {
+                return null
+            }
 
             for (line in lines) {
                 total.append(line)
                 total.append('\n')
-                if (line.startsWith("#version")) {
-
-                    // add all defines
-                    total.append('\n')
-                    for ((define, value) in defines) {
-                        total.append("#define ")
-                        total.append(define)
-                        total.append(' ')
-                        total.append(value)
+                val reader = CommandStringReader(line)
+                when {
+                    line.startsWith("#version") -> {
+                        // add all defines
                         total.append('\n')
+                        for ((define, value) in defines) {
+                            total.append("#define ")
+                            total.append(define)
+                            total.append(' ')
+                            total.append(value)
+                            total.append('\n')
+                        }
+                    }
+                    line.startsWith("uniform ") -> { // ToDo: Packed in layout
+                        reader.readUnquotedString() // "uniform"
+                        reader.skipWhitespaces()
+                        reader.readUnquotedString() // datatype
+                        reader.skipWhitespaces()
+                        uniforms.add(reader.readString()) // uniform name
                     }
                 }
             }

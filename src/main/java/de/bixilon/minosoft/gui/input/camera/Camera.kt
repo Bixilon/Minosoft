@@ -20,13 +20,14 @@ import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.data.mappings.biomes.Biome
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.shader.Shader
+import de.bixilon.minosoft.gui.rendering.modding.events.FrustumChangeEvent
+import de.bixilon.minosoft.gui.rendering.modding.events.ScreenResizeEvent
 import de.bixilon.minosoft.gui.rendering.util.VecUtil
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.blockPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.inChunkSectionPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
-import de.bixilon.minosoft.gui.rendering.util.abstractions.ScreenResizeCallback
+import de.bixilon.minosoft.modding.event.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.c2s.play.PositionAndRotationC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.PositionC2SP
@@ -46,7 +47,7 @@ class Camera(
     val connection: PlayConnection,
     var fov: Float,
     val renderWindow: RenderWindow,
-) : ScreenResizeCallback {
+) {
     private var mouseSensitivity = Minosoft.getConfig().config.game.camera.moseSensitivity
     private val walkingSpeed get() = connection.player.baseAbilities.walkingSpeed * ProtocolDefinition.TICKS_PER_SECOND * 2
     private val flyingSpeed get() = connection.player.baseAbilities.flyingSpeed * ProtocolDefinition.TICKS_PER_SECOND * 2
@@ -79,9 +80,6 @@ class Camera(
         private set
 
     val frustum: Frustum = Frustum(this)
-
-    private val shaders: MutableSet<Shader> = mutableSetOf()
-    private val frustumChangeCallbacks: MutableSet<FrustumChangeCallback> = mutableSetOf()
 
 
     var viewMatrix = calculateViewMatrix()
@@ -135,10 +133,9 @@ class Camera(
             KeyBindingsNames.MOVE_JUMP,
         )
 
+        connection.registerEvent(CallbackEventInvoker.of<ScreenResizeEvent> { recalculateViewProjectionMatrix() })
         frustum.recalculate()
-        for (frustumChangeCallback in frustumChangeCallbacks) {
-            frustumChangeCallback.onFrustumChange()
-        }
+        connection.fireEvent(FrustumChangeEvent(renderWindow, frustum))
     }
 
     fun handleInput(deltaTime: Double) {
@@ -211,25 +208,15 @@ class Camera(
         }
     }
 
-    fun addShaders(vararg shaders: Shader) {
-        this.shaders.addAll(shaders)
-    }
-
-    fun addFrustumChangeCallback(vararg shaders: FrustumChangeCallback) {
-        this.frustumChangeCallbacks.addAll(shaders)
-    }
-
-    override fun onScreenResize(screenDimensions: Vec2i) {
-        recalculateViewProjectionMatrix()
-    }
-
     private fun recalculateViewProjectionMatrix() {
         viewMatrix = calculateViewMatrix()
         projectionMatrix = calculateProjectionMatrix(renderWindow.screenDimensionsF)
         viewProjectionMatrix = projectionMatrix * viewMatrix
         lastMatrixChange = System.currentTimeMillis()
-        for (shader in shaders) {
-            shader.use().setMat4("viewProjectionMatrix", viewProjectionMatrix)
+        for (shader in renderWindow.shaders) {
+            if (shader.uniforms.contains("viewProjectionMatrix")) {
+                shader.use().setMat4("viewProjectionMatrix", viewProjectionMatrix)
+            }
         }
         positionChangeCallback()
     }
@@ -244,9 +231,7 @@ class Camera(
         renderWindow.setSkyColor(connection.world.getBiome(blockPosition)?.skyColor ?: RenderConstants.DEFAULT_SKY_COLOR)
 
         frustum.recalculate()
-        for (frustumChangeCallback in frustumChangeCallbacks) {
-            frustumChangeCallback.onFrustumChange()
-        }
+        connection.fireEvent(FrustumChangeEvent(renderWindow, frustum))
 
         connection.world.dimension?.hasSkyLight?.let {
             if (it) {

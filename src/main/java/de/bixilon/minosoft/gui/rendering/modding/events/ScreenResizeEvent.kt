@@ -11,8 +11,14 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.input.camera
+package de.bixilon.minosoft.gui.rendering.modding.events
 
-interface FrustumChangeCallback {
-    fun onFrustumChange()
-}
+import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.Rendering
+import glm_.vec2.Vec2i
+
+class ScreenResizeEvent(
+    renderWindow: RenderWindow = Rendering.currentContext!!,
+    val previousScreenDimensions: Vec2i,
+    val screenDimensions: Vec2i,
+) : RenderEvent(renderWindow)

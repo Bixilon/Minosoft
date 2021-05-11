@@ -23,11 +23,12 @@ import de.bixilon.minosoft.gui.rendering.hud.elements.input.TextField
 import de.bixilon.minosoft.gui.rendering.hud.elements.input.TextFieldProperties
 import de.bixilon.minosoft.gui.rendering.hud.nodes.HUDElement
 import de.bixilon.minosoft.gui.rendering.hud.nodes.layout.AbsoluteLayout
-import de.bixilon.minosoft.gui.rendering.util.abstractions.ScreenResizeCallback
+import de.bixilon.minosoft.gui.rendering.modding.events.ScreenResizeEvent
+import de.bixilon.minosoft.modding.event.CallbackEventInvoker
 import glm_.vec2.Vec2
 import glm_.vec2.Vec2i
 
-class ChatBoxHUDElement(hudRenderer: HUDRenderer) : HUDElement(hudRenderer), ScreenResizeCallback {
+class ChatBoxHUDElement(hudRenderer: HUDRenderer) : HUDElement(hudRenderer) {
     override val layout = AbsoluteLayout(hudRenderer.renderWindow)
     private lateinit var inputField: TextField
 
@@ -48,13 +49,12 @@ class ChatBoxHUDElement(hudRenderer: HUDRenderer) : HUDElement(hudRenderer), Scr
         hudRenderer.renderWindow.inputHandler.registerKeyCallback(KeyBindingsNames.OPEN_CHAT) {
             openChat()
         }
-    }
-
-    override fun onScreenResize(screenDimensions: Vec2i) {
-        layout.sizing.minSize.x = screenDimensions.x
-        layout.sizing.maxSize.x = screenDimensions.x
-        inputField.textElement.setProperties.hardWrap = (inputField.textElement.sizing.minSize.x / scale).toInt()
-        layout.apply()
+        hudRenderer.connection.registerEvent(CallbackEventInvoker.of<ScreenResizeEvent> {
+            layout.sizing.minSize.x = it.screenDimensions.x
+            layout.sizing.maxSize.x = it.screenDimensions.x
+            inputField.textElement.setProperties.hardWrap = (inputField.textElement.sizing.minSize.x / scale).toInt()
+            layout.apply()
+        })
     }
 
     fun openChat() {

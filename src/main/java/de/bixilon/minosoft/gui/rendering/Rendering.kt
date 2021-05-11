@@ -29,10 +29,12 @@ class Rendering(private val connection: PlayConnection) {
         Thread({
             try {
                 Log.log(LogMessageType.RENDERING_GENERAL, LogLevels.INFO) { "Hello LWJGL ${Version.getVersion()}!" }
+                CONTEXT_MAP[Thread.currentThread()] = renderWindow
                 renderWindow.init(latch)
                 renderWindow.startRenderLoop()
                 renderWindow.exit()
             } catch (exception: Throwable) {
+                CONTEXT_MAP.remove(Thread.currentThread())
                 exception.printStackTrace()
                 try {
                     renderWindow.exit()
@@ -44,5 +46,12 @@ class Rendering(private val connection: PlayConnection) {
                 connection.connectionState = ConnectionStates.FAILED_NO_RETRY
             }
         }, "Rendering").start()
+    }
+
+    companion object {
+        private val CONTEXT_MAP: MutableMap<Thread, RenderWindow> = mutableMapOf()
+
+        val currentContext: RenderWindow?
+            get() = CONTEXT_MAP[Thread.currentThread()]
     }
 }

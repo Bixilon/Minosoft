@@ -27,8 +27,6 @@ import org.lwjgl.opengl.GL20.glVertexAttribPointer
 class SectionArrayMesh : Mesh(initialCacheSize = 100000) {
 
     fun addVertex(position: Vec3, textureCoordinates: Vec2, texture: Texture, tintColor: RGBColor?, lightLevel: Int = 14) {
-        val data = data!!
-
         val color = tintColor ?: ChatColors.WHITE
 
         val lightFactor = (lightLevel + 1) / MAX_LIGHT_LEVEL_FLOAT

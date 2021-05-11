@@ -18,7 +18,6 @@ import de.bixilon.minosoft.gui.rendering.RenderBuilder
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.Renderer
 import de.bixilon.minosoft.gui.rendering.shader.Shader
-import de.bixilon.minosoft.gui.rendering.shader.ShaderHolder
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import org.lwjgl.opengl.GL11.*
@@ -26,39 +25,35 @@ import org.lwjgl.opengl.GL11.*
 class SkyRenderer(
     private val connection: PlayConnection,
     val renderWindow: RenderWindow,
-) : Renderer, ShaderHolder {
+) : Renderer {
     private var lastMatrixUpdate = System.currentTimeMillis()
-    override val shader = Shader(
-        vertexPath = ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "rendering/shader/sky_vertex.glsl"),
-        fragmentPath = ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "rendering/shader/sky_fragment.glsl"),
+    private val skyColorShader = Shader(
+        resourceLocation = ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "sky/color"),
     )
     private val mesh = SkyMesh()
 
     init {
-        mesh.data!!.addAll(VERTICES)
+        mesh.data.addAll(VERTICES)
     }
 
     override fun init() {
-        shader.load()
+        skyColorShader.load()
 
         mesh.load()
-    }
-
-    override fun postInit() {
     }
 
     private fun setShaderMatrix() {
         if (lastMatrixUpdate == renderWindow.inputHandler.camera.lastMatrixChange) {
             return
         }
-        shader.use().setMat4("skyViewProjectionMatrix", renderWindow.inputHandler.camera.projectionMatrix * renderWindow.inputHandler.camera.viewMatrix.toMat3().toMat4())
+        skyColorShader.use().setMat4("skyViewProjectionMatrix", renderWindow.inputHandler.camera.projectionMatrix * renderWindow.inputHandler.camera.viewMatrix.toMat3().toMat4())
         lastMatrixUpdate = renderWindow.inputHandler.camera.lastMatrixChange
     }
 
 
     override fun draw() {
         glDepthFunc(GL_LEQUAL)
-        shader.use()
+        skyColorShader.use()
         setShaderMatrix()
         mesh.draw()
         glDepthFunc(GL_LESS)

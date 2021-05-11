@@ -21,7 +21,13 @@ import org.lwjgl.opengl.GL30.*
 abstract class Mesh(
     initialCacheSize: Int = 10000,
 ) {
-    var data: ArrayFloatList? = ArrayFloatList(initialCacheSize)
+    private var _data: ArrayFloatList? = ArrayFloatList(initialCacheSize)
+    var data: ArrayFloatList
+        get() = _data!!
+        set(value) {
+            _data = value
+        }
+
     private var vao: Int = -1
     private var vbo: Int = -1
     var trianglesCount: Int = -1
@@ -36,16 +42,16 @@ abstract class Mesh(
     protected fun initializeBuffers(floatsPerVertex: Int) {
         check(state == MeshStates.PREPARING) { "Mesh already loaded: $state" }
 
-        trianglesCount = data!!.size / floatsPerVertex
+        trianglesCount = data.size / floatsPerVertex
         vao = glGenVertexArrays()
         vbo = glGenBuffers()
         glBindVertexArray(vao)
         glBindBuffer(GL_ARRAY_BUFFER, vbo)
 
-        glBufferData(GL_ARRAY_BUFFER, data!!.toArray(), GL_STATIC_DRAW)
+        glBufferData(GL_ARRAY_BUFFER, data.toArray(), GL_STATIC_DRAW)
 
         state = MeshStates.LOADED
-        data = null
+        _data = null
     }
 
     protected fun unbind() {

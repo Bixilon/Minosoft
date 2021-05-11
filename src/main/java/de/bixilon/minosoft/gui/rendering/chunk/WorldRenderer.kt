@@ -25,11 +25,11 @@ import de.bixilon.minosoft.data.world.Chunk
 import de.bixilon.minosoft.data.world.ChunkSection
 import de.bixilon.minosoft.data.world.ChunkSection.Companion.indexPosition
 import de.bixilon.minosoft.data.world.World
-import de.bixilon.minosoft.gui.input.camera.FrustumChangeCallback
-import de.bixilon.minosoft.gui.modding.events.RenderingStateChangeEvent
+import de.bixilon.minosoft.gui.input.camera.Frustum
 import de.bixilon.minosoft.gui.rendering.*
+import de.bixilon.minosoft.gui.rendering.modding.events.FrustumChangeEvent
+import de.bixilon.minosoft.gui.rendering.modding.events.RenderingStateChangeEvent
 import de.bixilon.minosoft.gui.rendering.shader.Shader
-import de.bixilon.minosoft.gui.rendering.shader.ShaderHolder
 import de.bixilon.minosoft.gui.rendering.textures.Texture
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.of
@@ -52,11 +52,11 @@ import org.lwjgl.opengl.GL11.glDepthMask
 class WorldRenderer(
     private val connection: PlayConnection,
     val renderWindow: RenderWindow,
-) : Renderer, ShaderHolder, FrustumChangeCallback {
+) : Renderer {
     private val world: World = connection.world
     private val waterBlock = connection.mapping.blockRegistry.get(ResourceLocation("minecraft:water"))?.nullCast<FluidBlock>()
 
-    override lateinit var shader: Shader
+    lateinit var chunkShader: Shader
     val allChunkSections: MutableMap<Vec2i, MutableMap<Int, ChunkMeshCollection>> = synchronizedMapOf()
     val visibleChunks: MutableMap<Vec2i, MutableMap<Int, ChunkMeshCollection>> = synchronizedMapOf()
     val queuedChunks: MutableSet<Vec2i> = synchronizedSetOf()
@@ -160,19 +160,20 @@ class WorldRenderer(
                 clearChunkCache()
             }
         })
+
+        connection.registerEvent(CallbackEventInvoker.of<FrustumChangeEvent> { onFrustumChange(it.frustum) })
     }
 
     override fun postInit() {
         check(renderWindow.textures.animator.animatedTextures.size < 4096) { "Can not have more than 4096 animated textures!" } // uniform buffer limit: 16kb. 4 ints per texture
-        shader = Shader(
-            vertexPath = ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "rendering/shader/chunk_vertex.glsl"),
-            fragmentPath = ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "rendering/shader/chunk_fragment.glsl"),
+        chunkShader = Shader(
+            resourceLocation = ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "chunk"),
             defines = mapOf("ANIMATED_TEXTURE_COUNT" to MMath.clamp(renderWindow.textures.animator.animatedTextures.size, 1, Int.MAX_VALUE)),
         )
-        shader.load()
+        chunkShader.load()
 
-        renderWindow.textures.use(shader, "textureArray")
-        renderWindow.textures.animator.use(shader, "AnimatedDataBuffer")
+        renderWindow.textures.use(chunkShader, "textureArray")
+        renderWindow.textures.animator.use(chunkShader, "AnimatedDataBuffer")
 
         for (blockState in allBlocks!!) {
             for (model in blockState.renderers) {
@@ -183,7 +184,7 @@ class WorldRenderer(
     }
 
     override fun draw() {
-        shader.use()
+        chunkShader.use()
         val visibleChunks = visibleChunks.toSynchronizedMap()
 
         for ((_, map) in visibleChunks) {
@@ -398,13 +399,13 @@ class WorldRenderer(
         prepareWorld(connection.world)
     }
 
-    override fun onFrustumChange() {
+    private fun onFrustumChange(frustum: Frustum) {
         visibleChunks.clear()
         for ((chunkLocation, rawIndexMap) in allChunkSections.toSynchronizedMap()) {
             val visibleIndexMap: MutableMap<Int, ChunkMeshCollection> = synchronizedMapOf()
             val indexMap = rawIndexMap.toMap()
             for ((index, mesh) in indexMap) {
-                if (renderWindow.inputHandler.camera.frustum.containsChunk(chunkLocation, mesh.lowestBlockHeight, mesh.highestBlockHeight)) {
+                if (frustum.containsChunk(chunkLocation, mesh.lowestBlockHeight, mesh.highestBlockHeight)) {
                     visibleIndexMap[index] = mesh
                 }
             }

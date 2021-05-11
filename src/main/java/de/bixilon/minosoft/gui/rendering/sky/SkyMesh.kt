@@ -22,8 +22,6 @@ import org.lwjgl.opengl.GL20.glVertexAttribPointer
 class SkyMesh : Mesh(initialCacheSize = 6 * 2 * 3 * FLOATS_PER_VERTEX) {
 
     fun addVertex(position: Vec3) {
-        val data = data!!
-
         data.addAll(floatArrayOf(
             position.x,
             position.y,
