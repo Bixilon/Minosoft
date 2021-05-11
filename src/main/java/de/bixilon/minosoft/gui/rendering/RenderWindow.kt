@@ -27,6 +27,7 @@ import de.bixilon.minosoft.gui.rendering.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.hud.atlas.TextureLike
 import de.bixilon.minosoft.gui.rendering.hud.atlas.TextureLikeTexture
 import de.bixilon.minosoft.gui.rendering.shader.ShaderHolder
+import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
 import de.bixilon.minosoft.gui.rendering.textures.Texture
 import de.bixilon.minosoft.gui.rendering.textures.TextureArray
 import de.bixilon.minosoft.gui.rendering.util.ScreenshotTaker
@@ -113,6 +114,7 @@ class RenderWindow(
             }
         })
 
+        registerRenderer(SkyRenderer)
         registerRenderer(WorldRenderer)
         registerRenderer(HUDRenderer)
     }
@@ -398,6 +400,7 @@ class RenderWindow(
         }
     }
 
+    @Deprecated(message = "Will be replaced with SkyRenderer")
     fun setSkyColor(color: RGBColor) {
         glClearColor(color.floatRed, color.floatGreen, color.floatBlue, 1.0f)
     }

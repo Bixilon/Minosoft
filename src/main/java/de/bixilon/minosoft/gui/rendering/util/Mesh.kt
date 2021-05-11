@@ -21,7 +21,7 @@ import org.lwjgl.opengl.GL30.*
 abstract class Mesh(
     initialCacheSize: Int = 10000,
 ) {
-    protected var data: ArrayFloatList? = ArrayFloatList(initialCacheSize)
+    var data: ArrayFloatList? = ArrayFloatList(initialCacheSize)
     private var vao: Int = -1
     private var vbo: Int = -1
     var trianglesCount: Int = -1

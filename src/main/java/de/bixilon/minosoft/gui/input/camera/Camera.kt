@@ -84,6 +84,16 @@ class Camera(
     private val frustumChangeCallbacks: MutableSet<FrustumChangeCallback> = mutableSetOf()
 
 
+    var viewMatrix = calculateViewMatrix()
+        private set
+    var projectionMatrix = calculateProjectionMatrix(renderWindow.screenDimensionsF)
+        private set
+    var viewProjectionMatrix = projectionMatrix * viewMatrix
+        private set
+    var lastMatrixChange = System.currentTimeMillis()
+        private set
+
+
     fun mouseCallback(xPos: Double, yPos: Double) {
         var xOffset = xPos - this.lastMouseX
         var yOffset = yPos - this.lastMouseY
@@ -214,9 +224,12 @@ class Camera(
     }
 
     private fun recalculateViewProjectionMatrix() {
-        val matrix = calculateProjectionMatrix(renderWindow.screenDimensionsF) * calculateViewMatrix()
+        viewMatrix = calculateViewMatrix()
+        projectionMatrix = calculateProjectionMatrix(renderWindow.screenDimensionsF)
+        viewProjectionMatrix = projectionMatrix * viewMatrix
+        lastMatrixChange = System.currentTimeMillis()
         for (shader in shaders) {
-            shader.use().setMat4("viewProjectionMatrix", matrix)
+            shader.use().setMat4("viewProjectionMatrix", viewProjectionMatrix)
         }
         positionChangeCallback()
     }
