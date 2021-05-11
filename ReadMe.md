@@ -84,7 +84,7 @@ See [Credits](Credits.md).
 
 ## Releases and beta
 
-No clue, but still waiting for !21. Also, some features need to be implemented, so not soo soon (but we are getting closer).
+No clue, but still waiting for !21. Also, some features need to be implemented, so not soo soon (but we are getting closer). If you want to get notified about cool new changes, feel free to subscribe to our dev news telegram channel [@MinosoftDevNews]((https://t.me/MinosoftDevNews))
 
 ## Compiling and running
 

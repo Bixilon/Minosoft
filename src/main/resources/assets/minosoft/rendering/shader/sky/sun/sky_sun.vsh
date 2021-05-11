@@ -27,7 +27,7 @@ uniform mat4 skyViewProjectionMatrix;
 #include "minosoft:color"
 
 void main() {
-    gl_Position = (skyViewProjectionMatrix * vec4(inPosition, 1.0f)).xyww - vec4(0.0f, 0.0f, 0.01f, 0.0f);
+    gl_Position = (skyViewProjectionMatrix * vec4(inPosition, 1.0f)).xyww - vec4(0.0f, 0.0f, 0.000001f, 0.0f);// prevent face fighting
 
     passTextureCoordinates = vec3(textureIndex, textureLayer & 0xFFFFFFu);
     passTextureIndex = textureLayer >> 24u;
