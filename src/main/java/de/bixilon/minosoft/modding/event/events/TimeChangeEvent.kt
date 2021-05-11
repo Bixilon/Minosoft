@@ -10,30 +10,17 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.modding.event.events
 
-#version 330 core
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.protocol.packets.s2c.play.WorldTimeSetS2CP
 
-out vec4 outColor;
+class TimeChangeEvent(
+    connection: PlayConnection,
+    val age: Long,
+    val time: Long,
+) : CancelableEvent(connection) {
 
-flat in uint passTextureIndex;
-in vec3 passTextureCoordinates;
-in vec4 passTintColor;
 
-#include "minosoft:texture"
-
-void main() {
-    vec4 texelColor = getTexture(passTextureIndex, passTextureCoordinates);
-
-    if (passTintColor.a == 1.0f && texelColor.a == 0) {
-        discard;
-    }
-    if (passTintColor.a != 0.0f){
-        texelColor *= passTintColor;
-    }
-
-    outColor = texelColor;
-
-    //
-    //  outColor = vec4(1.0f, 0.0f, 0.5f, 1.0f);
-    //
+    constructor(connection: PlayConnection, packet: WorldTimeSetS2CP) : this(connection, packet.age, packet.time)
 }

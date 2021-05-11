@@ -15,8 +15,7 @@
 uniform sampler2DArray textureArray[7];
 
 vec4 getTexture(uint textureId, vec3 textureCoordinates) { // ToDo: This method is just stupid and workarounds a opengl crash with mesa drivers
-    switch (textureId){
-        case 0u : return texture(textureArray[0], textureCoordinates);
+    switch (textureId) {
         case 1u: return texture(textureArray[1], textureCoordinates);
         case 2u: return texture(textureArray[2], textureCoordinates);
         case 3u: return texture(textureArray[3], textureCoordinates);

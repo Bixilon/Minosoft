@@ -6,7 +6,7 @@
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with this program.If not, see <https://www.gnu.org/licenses/>.
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
@@ -15,25 +15,8 @@
 
 out vec4 outColor;
 
-flat in uint passTextureIndex;
-in vec3 passTextureCoordinates;
-in vec4 passTintColor;
-
-#include "minosoft:texture"
+in vec4 color;
 
 void main() {
-    vec4 texelColor = getTexture(passTextureIndex, passTextureCoordinates);
-
-    if (passTintColor.a == 1.0f && texelColor.a == 0) {
-        discard;
-    }
-    if (passTintColor.a != 0.0f){
-        texelColor *= passTintColor;
-    }
-
-    outColor = texelColor;
-
-    //
-    //  outColor = vec4(1.0f, 0.0f, 0.5f, 1.0f);
-    //
+    outColor = color;
 }

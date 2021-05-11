@@ -6,7 +6,7 @@
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with this program.If not, see <https://www.gnu.org/licenses/>.
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
@@ -18,14 +18,17 @@ layout (location = 1) in vec2 textureIndex;
 layout (location = 2) in uint textureLayer;
 layout (location = 3) in uint tintColor;
 
+out vec4 passTintColor;
 flat out uint passTextureIndex;
 out vec3 passTextureCoordinates;
-out vec4 passTintColor;
+
+uniform mat4 skyViewProjectionMatrix;
 
 #include "minosoft:color"
 
 void main() {
-    gl_Position = vec4(inPosition.xyz, 1.0f);
+    gl_Position = (skyViewProjectionMatrix * vec4(inPosition, 1.0f)).xyww - vec4(0.0f, 0.0f, 0.01f, 0.0f);
+
     passTextureCoordinates = vec3(textureIndex, textureLayer & 0xFFFFFFu);
     passTextureIndex = textureLayer >> 24u;
     passTintColor = getRGBAColor(tintColor);

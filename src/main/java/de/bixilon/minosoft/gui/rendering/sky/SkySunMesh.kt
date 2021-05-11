@@ -13,19 +13,33 @@
 
 package de.bixilon.minosoft.gui.rendering.sky
 
+import de.bixilon.minosoft.data.text.RGBColor
+import de.bixilon.minosoft.gui.rendering.RenderConstants
+import de.bixilon.minosoft.gui.rendering.textures.Texture
 import de.bixilon.minosoft.gui.rendering.util.Mesh
+import glm_.vec2.Vec2
 import glm_.vec3.Vec3
 import org.lwjgl.opengl.GL11.GL_FLOAT
 import org.lwjgl.opengl.GL20.glEnableVertexAttribArray
 import org.lwjgl.opengl.GL20.glVertexAttribPointer
 
-class SkyMesh : Mesh(initialCacheSize = 6 * 2 * 3 * FLOATS_PER_VERTEX) {
+class SkySunMesh : Mesh(initialCacheSize = 2 * 3 * FLOATS_PER_VERTEX) {
 
-    fun addVertex(position: Vec3) {
+    fun addVertex(position: Vec3, texture: Texture, textureCoordinates: Vec2, tintColor: RGBColor) {
+        val textureLayer = if (RenderConstants.FORCE_DEBUG_TEXTURE) {
+            RenderConstants.DEBUG_TEXTURE_ID
+        } else {
+            (texture.arrayId shl 24) or texture.arrayLayer
+        }
+
         data.addAll(floatArrayOf(
             position.x,
             position.y,
             position.z,
+            textureCoordinates.x,
+            textureCoordinates.y,
+            Float.fromBits(textureLayer),
+            Float.fromBits(tintColor.rgba),
         ))
     }
 
@@ -34,12 +48,17 @@ class SkyMesh : Mesh(initialCacheSize = 6 * 2 * 3 * FLOATS_PER_VERTEX) {
         var index = 0
         glVertexAttribPointer(index, 3, GL_FLOAT, false, FLOATS_PER_VERTEX * Float.SIZE_BYTES, 0L)
         glEnableVertexAttribArray(index++)
-
+        glVertexAttribPointer(index, 2, GL_FLOAT, false, FLOATS_PER_VERTEX * Float.SIZE_BYTES, (3 * Float.SIZE_BYTES).toLong())
+        glEnableVertexAttribArray(index++)
+        glVertexAttribPointer(index, 1, GL_FLOAT, false, FLOATS_PER_VERTEX * Float.SIZE_BYTES, (5 * Float.SIZE_BYTES).toLong())
+        glEnableVertexAttribArray(index++)
+        glVertexAttribPointer(index, 1, GL_FLOAT, false, FLOATS_PER_VERTEX * Float.SIZE_BYTES, (6 * Float.SIZE_BYTES).toLong())
+        glEnableVertexAttribArray(index++)
         super.unbind()
     }
 
 
     companion object {
-        private const val FLOATS_PER_VERTEX = 3
+        private const val FLOATS_PER_VERTEX = 7
     }
 }

@@ -111,6 +111,8 @@ public final class ProtocolDefinition {
 
     public static final String[] RELEVANT_MINECRAFT_ASSETS = {"minecraft/lang/", "minecraft/sounds.json", "minecraft/sounds/", "minecraft/textures/", "minecraft/font/"}; // whitelist for all assets we care (we have our own block models, etc)
 
+    public static final int TICKS_PER_DAY = 24000;
+    public static final float TICKS_PER_DAYf = (float) TICKS_PER_DAY;
 
     static {
         // java does (why ever) not allow to directly assign a null

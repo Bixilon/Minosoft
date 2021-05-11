@@ -11,29 +11,10 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-#version 330 core
 
-out vec4 outColor;
-
-flat in uint passTextureIndex;
-in vec3 passTextureCoordinates;
-in vec4 passTintColor;
-
-#include "minosoft:texture"
-
-void main() {
-    vec4 texelColor = getTexture(passTextureIndex, passTextureCoordinates);
-
-    if (passTintColor.a == 1.0f && texelColor.a == 0) {
-        discard;
-    }
-    if (passTintColor.a != 0.0f){
-        texelColor *= passTintColor;
-    }
-
-    outColor = texelColor;
-
-    //
-    //  outColor = vec4(1.0f, 0.0f, 0.5f, 1.0f);
-    //
+vec4 getRGBColor(uint color) {
+    return vec4(((tintColor >> 16u) & 0xFFu) / 255.0f, ((tintColor >> 8u) & 0xFFu) / 255.0f, (tintColor & 0xFFu) / 255.0f, 1.0f);
+}
+vec4 getRGBAColor(uint color) {
+    return vec4(((tintColor >> 24u) & 0xFFu) / 255.0f, ((tintColor >> 16u) & 0xFFu) / 255.0f, ((tintColor >> 8u) & 0xFFu) / 255.0f, (tintColor & 0xFFu) / 255.0f);
 }

@@ -20,9 +20,9 @@ layout (location = 2) in uint textureLayer;
 layout (location = 3) in int animationIndex;
 layout (location = 4) in uint tintColor;
 
-flat out uint passFirstTextureIdIndex;
+flat out uint passFirstTextureIndex;
 out vec3 passFirstTextureCoordinates;
-flat out uint passSecondTextureIdIndex;
+flat out uint passSecondTextureIndex;
 out vec3 passSecondTextureCoordinates;
 out float passInterpolateBetweenTextures;
 
@@ -33,17 +33,18 @@ uniform mat4 viewProjectionMatrix;
 
 layout(std140) uniform AnimatedDataBuffer
 {
-    uvec4 globalAnimationData[ANIMATED_TEXTURE_COUNT];// ToDo: WTF. Why 4 values??
+    uvec4 globalAnimationData[ANIMATED_TEXTURE_COUNT];
 };
 
+#include "minosoft:color"
 
 void main() {
     gl_Position = viewProjectionMatrix * vec4(inPosition, 1.0f);
-    passTintColor = vec4(((tintColor >> 16u) & 0xFFu) / 255.0f, ((tintColor >> 8u) & 0xFFu) / 255.0f, (tintColor & 0xFFu) / 255.0f, 1.0f);
+    passTintColor = getRGBColor(tintColor);
 
 
     if (animationIndex == -1) {
-        passFirstTextureIdIndex = textureLayer >> 24u;
+        passFirstTextureIndex = textureLayer >> 24u;
 
         passFirstTextureCoordinates = vec3(textureIndex, (textureLayer & 0xFFFFFFu));
 
@@ -56,10 +57,10 @@ void main() {
     uint secondTexture = data.y;
     uint interpolation = data.z;
 
-    passFirstTextureIdIndex = firstTexture >> 24u;
+    passFirstTextureIndex = firstTexture >> 24u;
     passFirstTextureCoordinates = vec3(textureIndex, firstTexture & 0xFFFFFFu);
 
-    passSecondTextureIdIndex = secondTexture >> 24u;
+    passSecondTextureIndex = secondTexture >> 24u;
     passSecondTextureCoordinates = vec3(textureIndex, secondTexture & 0xFFFFFFu);
 
     passInterpolateBetweenTextures = interpolation / 100.0f;

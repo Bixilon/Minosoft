@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.util
 
 import glm_.vec2.Vec2i
+import kotlin.math.floor
 
 object MMath {
 
@@ -73,5 +74,9 @@ object MMath {
 
     fun square(d: Double): Double {
         return d * d
+    }
+
+    fun fractionalPart(value: Double): Double {
+        return value - floor(value)
     }
 }

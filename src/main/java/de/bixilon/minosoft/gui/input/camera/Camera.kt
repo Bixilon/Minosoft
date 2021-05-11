@@ -20,6 +20,7 @@ import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.data.mappings.biomes.Biome
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.modding.events.CameraMatrixChangeEvent
 import de.bixilon.minosoft.gui.rendering.modding.events.FrustumChangeEvent
 import de.bixilon.minosoft.gui.rendering.modding.events.ScreenResizeEvent
 import de.bixilon.minosoft.gui.rendering.util.VecUtil
@@ -87,8 +88,6 @@ class Camera(
     var projectionMatrix = calculateProjectionMatrix(renderWindow.screenDimensionsF)
         private set
     var viewProjectionMatrix = projectionMatrix * viewMatrix
-        private set
-    var lastMatrixChange = System.currentTimeMillis()
         private set
 
 
@@ -212,7 +211,12 @@ class Camera(
         viewMatrix = calculateViewMatrix()
         projectionMatrix = calculateProjectionMatrix(renderWindow.screenDimensionsF)
         viewProjectionMatrix = projectionMatrix * viewMatrix
-        lastMatrixChange = System.currentTimeMillis()
+        connection.fireEvent(CameraMatrixChangeEvent(
+            renderWindow = renderWindow,
+            viewMatrix = viewMatrix,
+            projectionMatrix = projectionMatrix,
+            viewProjectionMatrix = viewProjectionMatrix,
+        ))
         for (shader in renderWindow.shaders) {
             if (shader.uniforms.contains("viewProjectionMatrix")) {
                 shader.use().setMat4("viewProjectionMatrix", viewProjectionMatrix)
