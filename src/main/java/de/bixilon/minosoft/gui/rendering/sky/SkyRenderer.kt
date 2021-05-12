@@ -28,6 +28,7 @@ import de.bixilon.minosoft.modding.event.events.TimeChangeEvent
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.MMath
+import glm_.func.rad
 import glm_.mat4x4.Mat4
 import glm_.vec2.Vec2
 import glm_.vec3.Vec3
@@ -76,7 +77,7 @@ class SkyRenderer(
     }
 
     private fun setSunMatrix(projectionViewMatrix: Mat4) {
-        val timeAngle = (getSkyAngle(connection.world.time).toFloat() * 360.0f)
+        val timeAngle = ((getSkyAngle(connection.world.time).toFloat() * 360.0f) + 180.0f).rad
         val rotatedMatrix = if (timeAngle == 0.0f) {
             projectionViewMatrix
         } else {
