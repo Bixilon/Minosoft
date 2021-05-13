@@ -183,7 +183,7 @@ object VecUtil {
 
         }
         val positionHash = generatePositionHash(x, 0, z)
-        val maxModelOffset = 0.25f // use block.model.max_model_offset
+        val maxModelOffset = 0.25f // ToDo: use block.model.max_model_offset
 
         fun horizontal(axisHash: Long): Float {
             return (((axisHash and 0xF) / 15.0f) - 0.5f) / 2.0f

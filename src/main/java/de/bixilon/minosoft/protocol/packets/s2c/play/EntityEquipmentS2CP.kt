@@ -25,10 +25,10 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 
 class EntityEquipmentS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     val entityId: Int = buffer.readEntityId()
-    val equipment: Map<EquipmentSlots, ItemStack>
+    val equipment: Map<EquipmentSlots, ItemStack?>
 
     init {
-        val equipment: MutableMap<EquipmentSlots, ItemStack> = mutableMapOf()
+        val equipment: MutableMap<EquipmentSlots, ItemStack?> = mutableMapOf()
         if (buffer.versionId < ProtocolVersions.V_1_16_PRE7) {
             val slotId = if (buffer.versionId < ProtocolVersions.V_15W31A) {
                 buffer.readUnsignedShort()
@@ -40,12 +40,11 @@ class EntityEquipmentS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
             }
         } else {
             while (true) {
-                var slotId = buffer.readByte().toInt()
-                if (slotId < 0) {
+                val slotId = buffer.readByte().toInt()
+                equipment[buffer.connection.mapping.equipmentSlotRegistry.get(slotId and 0x7F)!!] = buffer.readItemStack() ?: continue
+                if (slotId >= 0) {
                     break
                 }
-                slotId = slotId and 0x7F
-                equipment[buffer.connection.mapping.equipmentSlotRegistry.get(slotId)!!] = buffer.readItemStack() ?: continue
             }
         }
         this.equipment = equipment.toMap()
@@ -55,7 +54,13 @@ class EntityEquipmentS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         val entity = connection.world.entities[entityId] ?: return
 
         connection.fireEvent(EntityEquipmentChangeEvent(connection, this))
-        entity.equipment = equipment
+        for ((slot, itemStack) in equipment) {
+            if (itemStack == null) {
+                entity.equipment.remove(slot)
+            } else {
+                entity.equipment[slot] = itemStack
+            }
+        }
     }
 
     override fun log() {

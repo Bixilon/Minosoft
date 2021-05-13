@@ -21,7 +21,7 @@ import de.bixilon.minosoft.protocol.packets.s2c.play.EntityEquipmentS2CP
 class EntityEquipmentChangeEvent(
     connection: PlayConnection,
     val entity: Entity,
-    val equipment: Map<EquipmentSlots, ItemStack>,
+    val equipment: Map<EquipmentSlots, ItemStack?>,
 ) : PlayConnectionEvent(connection) {
 
     constructor(connection: PlayConnection, packet: EntityEquipmentS2CP) : this(connection, connection.world.entities[packet.entityId]!!, packet.equipment)
