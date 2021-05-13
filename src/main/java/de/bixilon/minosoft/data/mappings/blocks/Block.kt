@@ -27,6 +27,7 @@ open class Block(
     val explosionResistance: Float = 0.0f,
     val hasDynamicShape: Boolean = false,
     val tintColor: RGBColor? = null,
+    val randomOffsetType: RandomOffsetTypes? = null,
     private val itemId: Int = 0,
     val tint: ResourceLocation? = null,
     val renderOverride: MutableList<BlockLikeRenderer>? = null,
@@ -52,6 +53,13 @@ open class Block(
             var renderOverride: MutableList<BlockLikeRenderer>? = null
 
 
+            val explosionResistance = data["explosion_resistance"]?.asFloat ?: 0.0f
+            val hasDynamicShape = data["has_dynamic_shape"]?.asBoolean ?: false
+            val tintColor = data["tint_color"]?.asInt?.let { TintColorCalculator.getJsonColor(it) }
+            val randomOffsetType = data["offset_type"]?.asString?.let { RandomOffsetTypes[it] }
+            val itemId = data["item"]?.asInt ?: 0
+            val tint = data["tint"]?.asString?.let { ResourceLocation(it) }
+
             val block = when (data["class"].asString) {
                 "FluidBlock" -> {
                     val stillFluid = mappings.fluidRegistry.get(data["still_fluid"].asInt)
@@ -60,22 +68,26 @@ open class Block(
 
 
                     FluidBlock(
-                        resourceLocation = resourceLocation, explosionResistance = data["explosion_resistance"]?.asFloat ?: 0.0f,
-                        hasDynamicShape = data["has_dynamic_shape"]?.asBoolean ?: false,
-                        tintColor = data["tint_color"]?.asInt?.let { TintColorCalculator.getJsonColor(it) },
-                        itemId = data["item"]?.asInt ?: 0,
-                        tint = data["tint"]?.asString?.let { ResourceLocation(it) },
+                        resourceLocation = resourceLocation,
+                        explosionResistance = explosionResistance,
+                        hasDynamicShape = hasDynamicShape,
+                        tintColor = tintColor,
+                        randomOffsetType = randomOffsetType,
+                        itemId = itemId,
+                        tint = tint,
                         renderOverride = renderOverride,
                         stillFluid = stillFluid,
                         flowingFluid = flowingFluid,
                     )
                 }
                 else -> Block(
-                    resourceLocation = resourceLocation, explosionResistance = data["explosion_resistance"]?.asFloat ?: 0.0f,
-                    hasDynamicShape = data["has_dynamic_shape"]?.asBoolean ?: false,
-                    tintColor = data["tint_color"]?.asInt?.let { TintColorCalculator.getJsonColor(it) },
-                    itemId = data["item"]?.asInt ?: 0,
-                    tint = data["tint"]?.asString?.let { ResourceLocation(it) },
+                    resourceLocation = resourceLocation,
+                    explosionResistance = explosionResistance,
+                    hasDynamicShape = hasDynamicShape,
+                    tintColor = tintColor,
+                    randomOffsetType = randomOffsetType,
+                    itemId = itemId,
+                    tint = tint,
                     renderOverride = renderOverride,
                 )
             }

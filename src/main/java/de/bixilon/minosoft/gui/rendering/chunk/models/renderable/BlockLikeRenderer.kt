@@ -1,19 +1,13 @@
 package de.bixilon.minosoft.gui.rendering.chunk.models.renderable
 
-import de.bixilon.minosoft.data.mappings.blocks.BlockState
-import de.bixilon.minosoft.data.world.World
-import de.bixilon.minosoft.data.world.light.LightAccessor
-import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.chunk.ChunkMeshCollection
 import de.bixilon.minosoft.gui.rendering.chunk.models.FaceSize
 import de.bixilon.minosoft.gui.rendering.textures.Texture
-import glm_.vec3.Vec3i
 
 interface BlockLikeRenderer {
     val faceBorderSizes: Array<Array<FaceSize>?> // direction indexed
     val transparentFaces: BooleanArray
 
-    fun render(blockState: BlockState, lightAccessor: LightAccessor, renderWindow: RenderWindow, blockPosition: Vec3i, meshCollection: ChunkMeshCollection, neighbourBlocks: Array<BlockState?>, world: World)
+    fun render(context: BlockLikeRenderContext)
 
     fun resolveTextures(indexed: MutableList<Texture>, textureMap: MutableMap<String, Texture>)
 

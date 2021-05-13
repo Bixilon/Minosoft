@@ -18,7 +18,6 @@ import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.Directions
 import de.bixilon.minosoft.data.text.RGBColor
-import de.bixilon.minosoft.data.world.light.LightAccessor
 import de.bixilon.minosoft.gui.rendering.chunk.ChunkMeshCollection
 import de.bixilon.minosoft.gui.rendering.chunk.SectionArrayMesh
 import de.bixilon.minosoft.gui.rendering.chunk.models.FaceSize
@@ -31,7 +30,6 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.rotate
 import glm_.vec3.Vec3
-import glm_.vec3.Vec3i
 
 class ElementRenderer(
     parent: BlockModelElement,
@@ -65,7 +63,7 @@ class ElementRenderer(
         }
     }
 
-    fun render(tintColor: RGBColor?, blockPosition: Vec3i, lightAccessor: LightAccessor, textureMapping: MutableMap<String, Texture>, direction: Directions, meshCollection: ChunkMeshCollection) {
+    fun render(tintColor: RGBColor?, textureMapping: MutableMap<String, Texture>, direction: Directions, context: BlockLikeRenderContext) {
         val realDirection = directionMapping.inverse()[direction]!!
 
         val face = faces[realDirection] ?: return // Not our face
@@ -73,16 +71,16 @@ class ElementRenderer(
 
         val texture = textureMapping[face.textureName] ?: TODO("Unknown texture used ${face.textureName}") // ToDo: can be replaced with RenderConstants.DEBUG_TEXTURE_ID?
 
-        val lightLevel = lightAccessor.getLightLevel(blockPosition + face.cullFace?.let { directionMapping[it] }) // ToDo: rotate cullface
+        val lightLevel = context.lightAccessor.getLightLevel(context.blockPosition + face.cullFace?.let { directionMapping[it] }) // ToDo: rotate cullface
 
         val drawPositions = arrayOf(transformedPositions[positionTemplate[0]], transformedPositions[positionTemplate[1]], transformedPositions[positionTemplate[2]], transformedPositions[positionTemplate[3]])
 
-        val mesh = getMesh(meshCollection, texture.transparency)
+        val mesh = getMesh(context.meshCollection, texture.transparency)
         val texturePositions = face.getTexturePositionArray(realDirection)
 
         for (vertex in DRAW_ODER) {
             val input = drawPositions[vertex.first]
-            val output = blockPosition plus input + DRAW_OFFSET
+            val output = context.blockPosition plus context.offset + input + DRAW_OFFSET
             mesh.addVertex(
                 position = output,
                 textureCoordinates = texturePositions[vertex.second]!!,

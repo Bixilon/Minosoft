@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2021 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,11 +11,23 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.config.config.game
+package de.bixilon.minosoft.gui.rendering.chunk.models.renderable
 
-import com.squareup.moshi.Json
+import de.bixilon.minosoft.data.mappings.blocks.BlockState
+import de.bixilon.minosoft.data.world.World
+import de.bixilon.minosoft.data.world.light.LightAccessor
+import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.chunk.ChunkMeshCollection
+import glm_.vec3.Vec3
+import glm_.vec3.Vec3i
 
-data class OtherGameConfig(
-    @Json(name = "anti_moire_pattern") var antiMoirePattern: Boolean = true,
-    @Json(name = "flower_random_offset") var flowerRandomOffset: Boolean = true,
+data class BlockLikeRenderContext(
+    val blockState: BlockState,
+    val lightAccessor: LightAccessor,
+    val renderWindow: RenderWindow,
+    val blockPosition: Vec3i,
+    val meshCollection: ChunkMeshCollection,
+    val neighbourBlocks: Array<BlockState?>,
+    val world: World,
+    val offset: Vec3,
 )

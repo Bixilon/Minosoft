@@ -24,12 +24,13 @@ class FluidBlock(
     explosionResistance: Float = 0.0f,
     hasDynamicShape: Boolean = false,
     tintColor: RGBColor? = null,
+    randomOffsetType: RandomOffsetTypes? = null,
     itemId: Int = 0,
     tint: ResourceLocation? = null,
     val stillFluid: Fluid,
     val flowingFluid: Fluid,
     renderOverride: MutableList<BlockLikeRenderer> = mutableListOf(),
-) : Block(resourceLocation, explosionResistance, hasDynamicShape, tintColor, itemId, tint, renderOverride) {
+) : Block(resourceLocation, explosionResistance, hasDynamicShape, tintColor, randomOffsetType, itemId, tint, renderOverride) {
     val fluidRenderer: FluidRenderer = FluidRenderer(this, stillFluid, flowingFluid)
 
     init {

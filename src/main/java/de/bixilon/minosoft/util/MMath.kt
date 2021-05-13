@@ -51,6 +51,16 @@ object MMath {
         return value
     }
 
+    fun clamp(value: Double, min: Double, max: Double): Double {
+        if (value < min) {
+            return min
+        }
+        if (value > max) {
+            return max
+        }
+        return value
+    }
+
     fun divideUp(value: Int, divider: Int): Int {
         return (value + divider - 1) / divider
     }

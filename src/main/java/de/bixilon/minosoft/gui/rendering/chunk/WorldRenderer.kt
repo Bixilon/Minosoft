@@ -27,11 +27,13 @@ import de.bixilon.minosoft.data.world.ChunkSection.Companion.indexPosition
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.gui.input.camera.Frustum
 import de.bixilon.minosoft.gui.rendering.*
+import de.bixilon.minosoft.gui.rendering.chunk.models.renderable.BlockLikeRenderContext
 import de.bixilon.minosoft.gui.rendering.modding.events.FrustumChangeEvent
 import de.bixilon.minosoft.gui.rendering.modding.events.RenderingStateChangeEvent
 import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.gui.rendering.textures.Texture
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.chunkPosition
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.getWorldOffset
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.of
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
@@ -80,9 +82,9 @@ class WorldRenderer(
                 }
                 val blockPosition = Vec3i.of(chunkPosition, sectionHeight, index.indexPosition)
 
-                val neighborBlocks: Array<BlockState?> = arrayOfNulls(Directions.VALUES.size)
+                val neighbourBlocks: Array<BlockState?> = arrayOfNulls(Directions.VALUES.size)
                 for (direction in Directions.VALUES) {
-                    neighborBlocks[direction.ordinal] = world.getBlockState(blockPosition + direction)
+                    neighbourBlocks[direction.ordinal] = world.getBlockState(blockPosition + direction)
                 }
 
                 // if (!blockState.block.resourceLocation.full.contains("white_stained_glass_pane")) {
@@ -90,11 +92,22 @@ class WorldRenderer(
                 // }
 
 
+                val context = BlockLikeRenderContext(
+                    blockState = blockState,
+                    lightAccessor = world.worldLightAccessor,
+                    renderWindow = renderWindow,
+                    blockPosition = blockPosition,
+                    meshCollection = meshCollection,
+                    neighbourBlocks = neighbourBlocks,
+                    world = world,
+                    offset = blockPosition.getWorldOffset(blockState.block),
+                )
+
                 if (blockState.properties[BlockProperties.WATERLOGGED] == true) {
-                    waterBlock?.fluidRenderer?.render(waterBlock.defaultState, world.worldLightAccessor, renderWindow, blockPosition, meshCollection, neighborBlocks, world)
+                    waterBlock?.fluidRenderer?.render(context.copy(blockState = waterBlock.defaultState))
                 }
 
-                blockState.getBlockRenderer(blockPosition).render(blockState, world.worldLightAccessor, renderWindow, blockPosition, meshCollection, neighborBlocks, world)
+                blockState.getBlockRenderer(blockPosition).render(context)
             }
         }
 

@@ -16,10 +16,14 @@ package de.bixilon.minosoft.gui.rendering.util
 import com.google.gson.JsonArray
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
+import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.Directions
+import de.bixilon.minosoft.data.mappings.blocks.Block
+import de.bixilon.minosoft.data.mappings.blocks.RandomOffsetTypes
 import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModelElement
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import glm_.func.common.clamp
 import glm_.func.cos
 import glm_.func.sin
 import glm_.vec2.Vec2
@@ -171,5 +175,41 @@ object VecUtil {
 
     infix operator fun Vec2i.plus(direction: Directions): Vec2i {
         return this + direction.directionVector
+    }
+
+    fun Vec3i.getWorldOffset(block: Block): Vec3 {
+        if (block.randomOffsetType == null || !Minosoft.config.config.game.other.flowerRandomOffset) {
+            return EMPTY_VEC3
+
+        }
+        val positionHash = generatePositionHash(x, 0, z)
+        val maxModelOffset = 0.25f // use block.model.max_model_offset
+
+        fun horizontal(axisHash: Long): Float {
+            return (((axisHash and 0xF) / 15.0f) - 0.5f) / 2.0f
+        }
+
+        return Vec3(
+            x = horizontal(positionHash),
+            y = if (block.randomOffsetType === RandomOffsetTypes.XYZ) {
+                (((positionHash shr 4 and 0xF) / 15.0f) - 1.0f) / 5.0f
+            } else {
+                0.0f
+            },
+            z = horizontal(positionHash shr 8)).clamp(-maxModelOffset, maxModelOffset)
+    }
+
+    private fun Vec3.clamp(min: Float, max: Float): Vec3 {
+        return Vec3(
+            x = x.clamp(min, max),
+            y = y.clamp(min, max),
+            z = z.clamp(min, max),
+        )
+    }
+
+    private fun generatePositionHash(x: Int, y: Int, z: Int): Long {
+        var hash = (x * 3129871L) xor z.toLong() * 116129781L xor y.toLong()
+        hash = hash * hash * 42317861L + hash * 11L
+        return hash shr 16
     }
 }

@@ -17,13 +17,8 @@ import com.google.common.collect.HashBiMap
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.Directions
 import de.bixilon.minosoft.data.mappings.biomes.Biome
-import de.bixilon.minosoft.data.mappings.blocks.BlockState
 import de.bixilon.minosoft.data.text.RGBColor
-import de.bixilon.minosoft.data.world.World
-import de.bixilon.minosoft.data.world.light.LightAccessor
 import de.bixilon.minosoft.gui.rendering.RenderConstants
-import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.chunk.ChunkMeshCollection
 import de.bixilon.minosoft.gui.rendering.chunk.models.FaceSize
 import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModel
 import de.bixilon.minosoft.gui.rendering.textures.Texture
@@ -32,7 +27,6 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3
 import glm_.glm
 import glm_.vec3.Vec3
-import glm_.vec3.Vec3i
 
 class BlockRenderer(data: JsonObject, parent: BlockModel) : BlockLikeRenderer {
     private val cullFaces: Array<Directions?> = arrayOfNulls(Directions.VALUES.size)
@@ -102,7 +96,7 @@ class BlockRenderer(data: JsonObject, parent: BlockModel) : BlockLikeRenderer {
         }
     }
 
-    override fun render(blockState: BlockState, lightAccessor: LightAccessor, renderWindow: RenderWindow, blockPosition: Vec3i, meshCollection: ChunkMeshCollection, neighbourBlocks: Array<BlockState?>, world: World) {
+    override fun render(context: BlockLikeRenderContext) {
         if (!RenderConstants.RENDER_BLOCKS) {
             return
         }
@@ -114,8 +108,8 @@ class BlockRenderer(data: JsonObject, parent: BlockModel) : BlockLikeRenderer {
             val invertedDirection = direction.inverted
             var isNeighbourTransparent = false
             var neighbourFaceSize: Array<FaceSize>? = null
-            val neighbourBlock = neighbourBlocks[direction.ordinal]
-            neighbourBlock?.getBlockRenderer(blockPosition + direction)?.let {
+            val neighbourBlock = context.neighbourBlocks[direction.ordinal]
+            neighbourBlock?.getBlockRenderer(context.blockPosition + direction)?.let {
                 val itDirection = if (it is BlockRenderer) {
                     it.directionMapping[invertedDirection] ?: invertedDirection
                 } else {
@@ -147,7 +141,7 @@ class BlockRenderer(data: JsonObject, parent: BlockModel) : BlockLikeRenderer {
                     // force draw transparent faces
                     if (isNeighbourTransparent && !transparentFaces[direction.ordinal]) {
                         drawElementFace = true
-                    } else if (isNeighbourTransparent && transparentFaces[direction.ordinal] && neighbourBlock != blockState) {
+                    } else if (isNeighbourTransparent && transparentFaces[direction.ordinal] && neighbourBlock != context.blockState) {
                         drawElementFace = true
                     }
                 }
@@ -157,10 +151,10 @@ class BlockRenderer(data: JsonObject, parent: BlockModel) : BlockLikeRenderer {
                 }
 
                 if (biome == null) {
-                    biome = world.getBiome(blockPosition)
-                    tintColor = renderWindow.tintColorCalculator.getAverageTint(biome, blockState, blockPosition)
+                    biome = context.world.getBiome(context.blockPosition)
+                    tintColor = context.renderWindow.tintColorCalculator.getAverageTint(biome, context.blockState, context.blockPosition)
                 }
-                element.render(tintColor, blockPosition, lightAccessor, textureMapping, direction, meshCollection)
+                element.render(tintColor, textureMapping, direction, context)
             }
         }
     }

@@ -8,9 +8,7 @@ import de.bixilon.minosoft.data.mappings.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.mappings.fluid.Fluid
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.data.world.World
-import de.bixilon.minosoft.data.world.light.LightAccessor
 import de.bixilon.minosoft.gui.rendering.RenderConstants
-import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.chunk.ChunkMeshCollection
 import de.bixilon.minosoft.gui.rendering.chunk.models.FaceSize
 import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModelElement
@@ -32,12 +30,12 @@ class FluidRenderer(
     private lateinit var stillTexture: Texture
     private lateinit var flowingTexture: Texture
 
-    override fun render(blockState: BlockState, lightAccessor: LightAccessor, renderWindow: RenderWindow, blockPosition: Vec3i, meshCollection: ChunkMeshCollection, neighbourBlocks: Array<BlockState?>, world: World) {
+    override fun render(context: BlockLikeRenderContext) {
         if (!RenderConstants.RENDER_FLUIDS) {
             return
         }
-        val lightLevel = lightAccessor.getLightLevel(blockPosition)
-        val heights = calculateHeights(neighbourBlocks, blockState, world, blockPosition)
+        val lightLevel = context.lightAccessor.getLightLevel(context.blockPosition)
+        val heights = calculateHeights(context.neighbourBlocks, context.blockState, context.world, context.blockPosition)
         val isFlowing = isLiquidFlowing(heights)
 
         var texture: Texture
@@ -58,18 +56,19 @@ class FluidRenderer(
             } else {
                 texture = stillTexture
             }
-            if (isBlockSameFluid(neighbourBlocks[direction.ordinal]) || neighbourBlocks[direction.ordinal]?.getBlockRenderer(blockPosition + direction)?.faceBorderSizes?.let { it[direction.inverted.ordinal] != null } == true && direction != Directions.UP) {
+            val neighbourBlocks = context.neighbourBlocks
+            if (isBlockSameFluid(neighbourBlocks[direction.ordinal]) || neighbourBlocks[direction.ordinal]?.getBlockRenderer(context.blockPosition + direction)?.faceBorderSizes?.let { it[direction.inverted.ordinal] != null } == true && direction != Directions.UP) {
                 continue
             }
             val positionTemplate = BlockModelElement.FACE_POSITION_MAP_TEMPLATE[direction.ordinal]
             val drawPositions = arrayOf(positions[positionTemplate[0]], positions[positionTemplate[1]], positions[positionTemplate[2]], positions[positionTemplate[3]])
 
             if (biome == null) {
-                biome = world.getBiome(blockPosition)
-                tintColor = renderWindow.tintColorCalculator.getAverageTint(biome, blockState, blockPosition)
+                biome = context.world.getBiome(context.blockPosition)
+                tintColor = context.renderWindow.tintColorCalculator.getAverageTint(biome, context.blockState, context.blockPosition)
             }
 
-            createQuad(drawPositions, face.getTexturePositionArray(direction), texture, blockPosition, meshCollection, tintColor, lightLevel)
+            createQuad(drawPositions, face.getTexturePositionArray(direction), texture, context.blockPosition, context.meshCollection, tintColor, lightLevel)
         }
     }
 
