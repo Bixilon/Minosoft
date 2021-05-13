@@ -56,7 +56,7 @@ open class InByteBuffer {
         get() = size - pointer
 
     inline fun <reified T> readArray(length: Int = readVarInt(), reader: () -> T): Array<T> {
-        check(length <= size) { "Trying to allocate to much memory!" }
+        check(length <= size) { "Trying to allocate too much memory!" }
         val array: MutableList<T> = mutableListOf()
         for (i in 0 until length) {
             array.add(i, reader())
@@ -69,7 +69,7 @@ open class InByteBuffer {
     }
 
     open fun readByteArray(length: Int = readVarInt()): ByteArray {
-        check(length <= bytes.size) { "Trying to allocate to much memory!" }
+        check(length <= bytes.size) { "Trying to allocate too much memory!" }
         val array = ByteArray(length)
         System.arraycopy(bytes, pointer, array, 0, length)
         pointer += length
@@ -86,7 +86,7 @@ open class InByteBuffer {
     }
 
     fun readShortArray(length: Int = readVarInt()): ShortArray {
-        check(length <= bytes.size / Short.SIZE_BYTES) { "Trying to allocate to much memory!" }
+        check(length <= bytes.size / Short.SIZE_BYTES) { "Trying to allocate too much memory!" }
         val array = ShortArray(length)
         for (i in 0 until length) {
             array[i] = readShort()
@@ -108,7 +108,7 @@ open class InByteBuffer {
     }
 
     fun readIntArray(length: Int = readVarInt()): IntArray {
-        check(length <= bytes.size / Int.SIZE_BYTES) { "Trying to allocate to much memory!" }
+        check(length <= bytes.size / Int.SIZE_BYTES) { "Trying to allocate too much memory!" }
         val array = IntArray(length)
         for (i in 0 until length) {
             array[i] = readInt()
@@ -138,7 +138,7 @@ open class InByteBuffer {
 
     @JvmOverloads
     fun readVarIntArray(length: Int = readVarInt()): IntArray {
-        check(length <= bytes.size) { "Trying to allocate to much memory!" }
+        check(length <= bytes.size) { "Trying to allocate too much memory!" }
         val array = IntArray(length)
         for (i in 0 until length) {
             array[i] = readVarInt()
@@ -156,7 +156,7 @@ open class InByteBuffer {
     }
 
     fun readLongArray(length: Int = readVarInt()): LongArray {
-        check(length <= bytes.size / Long.SIZE_BYTES) { "Trying to allocate to much memory!" }
+        check(length <= bytes.size / Long.SIZE_BYTES) { "Trying to allocate too much memory!" }
         val array = LongArray(length)
         for (i in 0 until length) {
             array[i] = readLong()
@@ -180,7 +180,7 @@ open class InByteBuffer {
     }
 
     fun readVarLongArray(length: Int = readVarInt()): LongArray {
-        check(length <= bytes.size) { "Trying to allocate to much memory!" }
+        check(length <= bytes.size) { "Trying to allocate too much memory!" }
         val array = LongArray(length)
         for (i in 0 until length) {
             array[i] = readVarLong()
@@ -193,7 +193,7 @@ open class InByteBuffer {
     }
 
     fun readFloatArray(length: Int = readVarInt()): FloatArray {
-        check(length <= bytes.size / Float.SIZE_BYTES) { "Trying to allocate to much memory!" }
+        check(length <= bytes.size / Float.SIZE_BYTES) { "Trying to allocate too much memory!" }
         val array = FloatArray(length)
         for (i in 0 until length) {
             array[i] = readFloat()
@@ -207,7 +207,7 @@ open class InByteBuffer {
     }
 
     fun readDoubleArray(length: Int = readVarInt()): DoubleArray {
-        check(length <= bytes.size / Double.SIZE_BYTES) { "Trying to allocate to much memory!" }
+        check(length <= bytes.size / Double.SIZE_BYTES) { "Trying to allocate too much memory!" }
         val array = DoubleArray(length)
         for (i in 0 until length) {
             array[i] = readDouble()
