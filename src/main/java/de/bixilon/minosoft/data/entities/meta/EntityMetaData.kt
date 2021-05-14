@@ -58,28 +58,10 @@ class EntityMetaData(
             EntityMetaDataDataTypes.ITEM_STACK -> buffer.readItemStack()
             EntityMetaDataDataTypes.ROTATION -> EntityRotation(buffer.readFloat(), buffer.readFloat(), buffer.readFloat())
             EntityMetaDataDataTypes.BLOCK_POSITION -> buffer.readBlockPosition()
-            EntityMetaDataDataTypes.OPT_CHAT -> {
-                if (buffer.readBoolean()) {
-                    buffer.readChatComponent()
-                } else {
-                    null
-                }
-            }
-            EntityMetaDataDataTypes.OPT_BLOCK_POSITION -> {
-                if (buffer.readBoolean()) {
-                    buffer.readBlockPosition()
-                } else {
-                    null
-                }
-            }
+            EntityMetaDataDataTypes.OPT_CHAT -> buffer.readOptional { buffer.readChatComponent() }
+            EntityMetaDataDataTypes.OPT_BLOCK_POSITION -> buffer.readOptional { buffer.readBlockPosition() }
             EntityMetaDataDataTypes.DIRECTION -> buffer.readDirection()
-            EntityMetaDataDataTypes.OPT_UUID -> {
-                if (buffer.readBoolean()) {
-                    buffer.readUUID()
-                } else {
-                    null
-                }
-            }
+            EntityMetaDataDataTypes.OPT_UUID -> buffer.readOptional { buffer.readUUID() }
             EntityMetaDataDataTypes.NBT -> buffer.readNBT()
             EntityMetaDataDataTypes.PARTICLE -> buffer.readParticle()
             EntityMetaDataDataTypes.POSE -> buffer.readPose()

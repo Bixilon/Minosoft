@@ -65,11 +65,7 @@ class TabListDataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
                             val property = PlayerProperty(
                                 PlayerProperties.byName(buffer.readString()),
                                 buffer.readString(),
-                                if (buffer.readBoolean()) {
-                                    buffer.readString()
-                                } else {
-                                    null
-                                },
+                                buffer.readOptional { buffer.readString() },
                             )
                             playerProperties[property.property] = property
                         }

@@ -416,4 +416,12 @@ open class InByteBuffer {
     fun readTagArray(length: Int = readVarInt()): Array<Tag> {
         return readArray(length) { readTag() }
     }
+
+    fun <T> readOptional(reader: () -> T): T? {
+        return if (readBoolean()) {
+            reader()
+        } else {
+            null
+        }
+    }
 }
