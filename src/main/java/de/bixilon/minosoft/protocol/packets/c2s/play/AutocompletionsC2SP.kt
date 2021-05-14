@@ -19,7 +19,7 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogMessageType
 import glm_.vec3.Vec3i
 
-class TabCompleteC2SP(
+class AutocompletionsC2SP(
     val text: String,
     val assumeCommand: Boolean,
     val position: Vec3i? = null,

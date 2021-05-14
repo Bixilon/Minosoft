@@ -15,7 +15,7 @@ package de.bixilon.minosoft.modding.event.events;
 
 import de.bixilon.minosoft.data.text.ChatComponent;
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
-import de.bixilon.minosoft.protocol.packets.s2c.login.PacketLoginDisconnect;
+import de.bixilon.minosoft.protocol.packets.s2c.login.LoginKickS2CP;
 
 public class LoginDisconnectEvent extends PlayConnectionEvent {
     private final ChatComponent reason;
@@ -25,7 +25,7 @@ public class LoginDisconnectEvent extends PlayConnectionEvent {
         this.reason = reason;
     }
 
-    public LoginDisconnectEvent(PlayConnection connection, PacketLoginDisconnect pkg) {
+    public LoginDisconnectEvent(PlayConnection connection, LoginKickS2CP pkg) {
         super(connection);
         this.reason = pkg.getReason();
     }

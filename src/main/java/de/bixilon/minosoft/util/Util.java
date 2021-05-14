@@ -270,10 +270,11 @@ public final class Util {
         }
     }
 
-    public static void checkURL(String url) {
+    public static String checkURL(String url) {
         if (!url.startsWith("http://") && !url.startsWith("https://")) {
             throw new IllegalArgumentException("Not a valid url:" + url);
         }
+        return url;
     }
 
     public static <T> void forceClassInit(Class<T> clazz) {

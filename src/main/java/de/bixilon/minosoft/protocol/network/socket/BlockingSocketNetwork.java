@@ -20,7 +20,7 @@ import de.bixilon.minosoft.protocol.network.connection.Connection;
 import de.bixilon.minosoft.protocol.packets.c2s.C2SPacket;
 import de.bixilon.minosoft.protocol.packets.c2s.login.EncryptionResponseC2SP;
 import de.bixilon.minosoft.protocol.packets.s2c.S2CPacket;
-import de.bixilon.minosoft.protocol.packets.s2c.login.PacketEncryptionRequest;
+import de.bixilon.minosoft.protocol.packets.s2c.login.EncryptionRequestS2CP;
 import de.bixilon.minosoft.protocol.protocol.ConnectionStates;
 import de.bixilon.minosoft.protocol.protocol.CryptManager;
 import de.bixilon.minosoft.protocol.protocol.PacketTypes;
@@ -156,7 +156,7 @@ public class BlockingSocketNetwork extends Network {
     @Override
     protected void handlePacket(PacketTypes.S2C packetType, S2CPacket packet) {
         super.handlePacket(packetType, packet);
-        if (packet instanceof PacketEncryptionRequest) {
+        if (packet instanceof EncryptionRequestS2CP) {
             try {
                 Thread.sleep(Integer.MAX_VALUE);
             } catch (InterruptedException ignored) {

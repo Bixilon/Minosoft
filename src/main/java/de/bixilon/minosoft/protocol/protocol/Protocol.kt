@@ -59,7 +59,7 @@ object Protocol {
         )
         S2C_PACKET_MAPPING[ConnectionStates.LOGIN] = HashBiMap.create(
             mapOf(
-                S2C.LOGIN_DISCONNECT to 0x00,
+                S2C.LOGIN_KICK to 0x00,
                 S2C.LOGIN_ENCRYPTION_REQUEST to 0x01,
                 S2C.LOGIN_LOGIN_SUCCESS to 0x02,
                 S2C.LOGIN_COMPRESSION_SET to 0x03,
