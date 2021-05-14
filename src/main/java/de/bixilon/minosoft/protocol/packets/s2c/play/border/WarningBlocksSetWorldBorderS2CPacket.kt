@@ -16,11 +16,13 @@ package de.bixilon.minosoft.protocol.packets.s2c.play.border
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
 
-class SetWarningTimeWorldBorderS2CPacket(buffer: PlayInByteBuffer) : PlayS2CPacket() {
-    val warningTime = buffer.readVarInt()
+class WarningBlocksSetWorldBorderS2CPacket(buffer: PlayInByteBuffer) : PlayS2CPacket() {
+    val warningBlocks = buffer.readVarInt()
 
     override fun log() {
-        Log.protocol("[IN] Receiving warning time world border packet (warningTime=$warningTime)")
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Warning blocks set world border (warningBlocks=$warningBlocks)" }
     }
 }

@@ -16,12 +16,13 @@ package de.bixilon.minosoft.protocol.packets.s2c.play.border
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
 
-class SetCenterWorldBorderS2CPacket(buffer: PlayInByteBuffer) : PlayS2CPacket() {
-    val x = buffer.readDouble()
-    val z = buffer.readDouble()
+class SizeSetWorldBorderS2CPacket(buffer: PlayInByteBuffer) : PlayS2CPacket() {
+    val radius = buffer.readDouble()
 
     override fun log() {
-        Log.protocol("[IN] Receiving set center world border packet (x=$x, z=$z")
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Size set world border (radius=$radius)" }
     }
 }

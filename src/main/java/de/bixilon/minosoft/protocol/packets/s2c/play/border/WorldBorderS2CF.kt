@@ -24,12 +24,12 @@ object WorldBorderS2CF {
     // and that means A LOT!
     fun createPacket(buffer: PlayInByteBuffer): PlayS2CPacket {
         return when (WorldBorderActions[buffer.readVarInt()]) {
-            WorldBorderActions.SET_SIZE -> SetSizeWorldBorderS2CPacket(buffer)
+            WorldBorderActions.SET_SIZE -> SizeSetWorldBorderS2CPacket(buffer)
             WorldBorderActions.LERP_SIZE -> LerpSizeWorldBorderS2CPacket(buffer)
-            WorldBorderActions.SET_CENTER -> SetCenterWorldBorderS2CPacket(buffer)
+            WorldBorderActions.SET_CENTER -> CenterSetWorldBorderS2CPacket(buffer)
             WorldBorderActions.INITIALIZE -> InitializeWorldBorderS2CPacket(buffer)
-            WorldBorderActions.SET_WARNING_TIME -> SetWarningTimeWorldBorderS2CPacket(buffer)
-            WorldBorderActions.SET_WARNING_BLOCKS -> SetWarningBlocksWorldBorderS2CPacket(buffer)
+            WorldBorderActions.SET_WARNING_TIME -> WarningTimeSetWorldBorderS2CPacket(buffer)
+            WorldBorderActions.SET_WARNING_BLOCKS -> WarningBlocksSetWorldBorderS2CPacket(buffer)
         }
     }
 
