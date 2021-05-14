@@ -10,37 +10,9 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.data.scoreboard
 
-package de.bixilon.minosoft.data.scoreboard;
-
-public class ScoreboardScore {
-    private final String itemName;
-    String scoreName;
-    int score;
-
-    public ScoreboardScore(String itemName, String scoreName, int score) {
-        this.itemName = itemName;
-        this.scoreName = scoreName;
-        this.score = score;
-    }
-
-    public String getItemName() {
-        return this.itemName;
-    }
-
-    public String getScoreName() {
-        return this.scoreName;
-    }
-
-    public void setScoreName(String scoreName) {
-        this.scoreName = scoreName;
-    }
-
-    public int getScore() {
-        return this.score;
-    }
-
-    public void setScore(int score) {
-        this.score = score;
-    }
+class ScoreboardManager {
+    val teams: MutableMap<String, Team> = mutableMapOf()
+    val objectives: MutableMap<String, ScoreboardObjective> = mutableMapOf()
 }

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2021 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.protocol.packets.s2c.play;
+package de.bixilon.minosoft.protocol.packets.s2c.play.scoreboard;
 
 import de.bixilon.minosoft.data.scoreboard.Team;
 import de.bixilon.minosoft.data.text.ChatCode;
@@ -89,11 +89,11 @@ public class PacketTeams extends PlayS2CPacket {
     @Override
     public void handle(PlayConnection connection) {
         switch (getAction()) {
-            case CREATE -> connection.getScoreboardManager().addTeam(new Team(getName(), getDisplayName(), getPrefix(), getSuffix(), isFriendlyFireEnabled(), isSeeingFriendlyInvisibles(), getPlayerNames()));
-            case INFORMATION_UPDATE -> connection.getScoreboardManager().getTeam(getName()).updateInformation(getDisplayName(), getPrefix(), getSuffix(), isFriendlyFireEnabled(), isSeeingFriendlyInvisibles());
-            case REMOVE -> connection.getScoreboardManager().removeTeam(getName());
-            case PLAYER_ADD -> connection.getScoreboardManager().getTeam(getName()).addPlayers(Arrays.asList(getPlayerNames()));
-            case PLAYER_REMOVE -> connection.getScoreboardManager().getTeam(getName()).removePlayers(Arrays.asList(getPlayerNames()));
+            case CREATE -> connection.getScoreboardManager().getTeams().put(getName(), new Team(getName(), getDisplayName(), getPrefix(), getSuffix(), isFriendlyFireEnabled(), isSeeingFriendlyInvisibles(), getPlayerNames()));
+            case INFORMATION_UPDATE -> connection.getScoreboardManager().getTeams().get(getName()).updateInformation(getDisplayName(), getPrefix(), getSuffix(), isFriendlyFireEnabled(), isSeeingFriendlyInvisibles());
+            case REMOVE -> connection.getScoreboardManager().getTeams().remove(getName());
+            case PLAYER_ADD -> connection.getScoreboardManager().getTeams().get(getName()).addPlayers(Arrays.asList(getPlayerNames()));
+            case PLAYER_REMOVE -> connection.getScoreboardManager().getTeams().get(getName()).removePlayers(Arrays.asList(getPlayerNames()));
         }
     }
 

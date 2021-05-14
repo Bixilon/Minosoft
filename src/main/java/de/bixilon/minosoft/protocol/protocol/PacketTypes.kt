@@ -42,6 +42,10 @@ import de.bixilon.minosoft.protocol.packets.s2c.play.combat.CombatEventEndS2CP
 import de.bixilon.minosoft.protocol.packets.s2c.play.combat.CombatEventEnterS2CP
 import de.bixilon.minosoft.protocol.packets.s2c.play.combat.CombatEventKillS2CP
 import de.bixilon.minosoft.protocol.packets.s2c.play.combat.CombatEventS2CF
+import de.bixilon.minosoft.protocol.packets.s2c.play.scoreboard.PacketScoreboardDisplayScoreboard
+import de.bixilon.minosoft.protocol.packets.s2c.play.scoreboard.PacketTeams
+import de.bixilon.minosoft.protocol.packets.s2c.play.scoreboard.objective.ScoreboardObjectiveS2CF
+import de.bixilon.minosoft.protocol.packets.s2c.play.scoreboard.score.ScoreboardScoreS2CF
 import de.bixilon.minosoft.protocol.packets.s2c.play.title.*
 import de.bixilon.minosoft.protocol.packets.s2c.status.PacketStatusResponse
 import de.bixilon.minosoft.protocol.packets.s2c.status.StatusPongS2CP
@@ -216,7 +220,7 @@ class PacketTypes {
         PLAY_RESPAWN({ RespawnS2CP(it) }, isThreadSafe = false),
         PLAY_ENTITY_HEAD_ROTATION({ EntityHeadRotationS2CP(it) }),
         PLAY_SELECT_ADVANCEMENT_TAB({ PacketSelectAdvancementTab(it) }),
-        PLAY_WORLD_BORDER({ WorldBorderS2CFactory.createPacket(it) }),
+        PLAY_WORLD_BORDER({ WorldBorderS2CF.createPacket(it) }),
         PLAY_WORLD_BORDER_INITIALIZE({ InitializeWorldBorderS2CPacket(it) }),
         PLAY_WORLD_BORDER_SET_CENTER({ SetCenterWorldBorderS2CPacket(it) }),
         PLAY_WORLD_BORDER_LERP_SIZE({ LerpSizeWorldBorderS2CPacket(it) }),
@@ -233,10 +237,10 @@ class PacketTypes {
         PLAY_ENTITY_EQUIPMENT({ EntityEquipmentS2CP(it) }),
         PLAY_EXPERIENCE_SET({ ExperienceSetS2CP(it) }),
         PLAY_HEALTH_SET({ HealthSetS2CP(it) }),
-        PLAY_SCOREBOARD_OBJECTIVE({ PacketScoreboardObjective(it) }),
+        PLAY_SCOREBOARD_OBJECTIVE({ ScoreboardObjectiveS2CF.createPacket(it) }),
         PLAY_ENTITY_PASSENGER_SET({ EntityPassengerSetS2CP(it) }),
         PLAY_TEAMS({ PacketTeams(it) }),
-        PLAY_UPDATE_SCORE({ PacketScoreboardUpdateScore(it) }),
+        PLAY_UPDATE_SCORE({ ScoreboardScoreS2CF.createPacket(it) }),
         PLAY_SPAWN_POSITION_SET({ SpawnPositionSetS2CP(it) }),
         PLAY_WORLD_TIME_SET({ WorldTimeSetS2CP(it) }),
         PLAY_ENTITY_SOUND_EVENT({ EntitySoundEventS2CP(it) }),

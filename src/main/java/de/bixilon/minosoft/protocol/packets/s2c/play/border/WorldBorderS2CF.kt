@@ -18,7 +18,7 @@ import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.enum.ValuesEnum
 
-object WorldBorderS2CFactory {
+object WorldBorderS2CF {
 
     // this function was signed by Maximilian Rosenmüller
     // and that means A LOT!
