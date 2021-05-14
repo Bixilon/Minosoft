@@ -10,28 +10,25 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.protocol.packets.s2c.play.scoreboard
 
-package de.bixilon.minosoft.protocol.packets.s2c.play.scoreboard;
+import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
+import de.bixilon.minosoft.util.KUtil
+import de.bixilon.minosoft.util.enum.ValuesEnum
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
 
-import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket;
-import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
-import de.bixilon.minosoft.util.logging.Log;
+class ScoreboardPositionSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
+    private val position: ScoreboardPositions = ScoreboardPositions[buffer.readUnsignedByte()]
+    private val score: String = buffer.readString()
 
-public class PacketScoreboardDisplayScoreboard extends PlayS2CPacket {
-    private final ScoreboardAnimations action;
-    private final String scoreName;
-
-    public PacketScoreboardDisplayScoreboard(PlayInByteBuffer buffer) {
-        this.action = ScoreboardAnimations.byId(buffer.readUnsignedByte());
-        this.scoreName = buffer.readString();
+    override fun log() {
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Scoreboard position set (position=$position, score=$score)" }
     }
 
-    @Override
-    public void log() {
-        Log.protocol(String.format("[IN] Received display scoreboard packet (position=%s, scoreName=\"%s\"", this.action, this.scoreName));
-    }
-
-    public enum ScoreboardAnimations {
+    enum class ScoreboardPositions {
         LIST,
         SIDEBAR,
         BELOW_NAME,
@@ -50,12 +47,12 @@ public class PacketScoreboardDisplayScoreboard extends PlayS2CPacket {
         TEAM_RED,
         TEAM_PURPLE,
         TEAM_YELLOW,
-        TEAM_WHITE;
+        TEAM_WHITE,
+        ;
 
-        private static final ScoreboardAnimations[] SCOREBOARD_ANIMATIONS = values();
-
-        public static ScoreboardAnimations byId(int id) {
-            return SCOREBOARD_ANIMATIONS[id];
+        companion object : ValuesEnum<ScoreboardPositions> {
+            override val VALUES: Array<ScoreboardPositions> = values()
+            override val NAME_MAP: Map<String, ScoreboardPositions> = KUtil.getEnumValues(VALUES)
         }
     }
 }

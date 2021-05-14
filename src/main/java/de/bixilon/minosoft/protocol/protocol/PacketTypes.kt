@@ -42,10 +42,10 @@ import de.bixilon.minosoft.protocol.packets.s2c.play.combat.CombatEventEndS2CP
 import de.bixilon.minosoft.protocol.packets.s2c.play.combat.CombatEventEnterS2CP
 import de.bixilon.minosoft.protocol.packets.s2c.play.combat.CombatEventKillS2CP
 import de.bixilon.minosoft.protocol.packets.s2c.play.combat.CombatEventS2CF
-import de.bixilon.minosoft.protocol.packets.s2c.play.scoreboard.PacketScoreboardDisplayScoreboard
-import de.bixilon.minosoft.protocol.packets.s2c.play.scoreboard.PacketTeams
+import de.bixilon.minosoft.protocol.packets.s2c.play.scoreboard.ScoreboardPositionSetS2CP
 import de.bixilon.minosoft.protocol.packets.s2c.play.scoreboard.objective.ScoreboardObjectiveS2CF
 import de.bixilon.minosoft.protocol.packets.s2c.play.scoreboard.score.ScoreboardScoreS2CF
+import de.bixilon.minosoft.protocol.packets.s2c.play.scoreboard.teams.TeamsS2CF
 import de.bixilon.minosoft.protocol.packets.s2c.play.title.*
 import de.bixilon.minosoft.protocol.packets.s2c.status.PacketStatusResponse
 import de.bixilon.minosoft.protocol.packets.s2c.status.StatusPongS2CP
@@ -230,7 +230,7 @@ class PacketTypes {
         PLAY_CAMERA({ CameraS2CP(it) }),
         PLAY_HOTBAR_SLOT_SET({ HotbarSlotSetS2CP(it) }),
         PLAY_CHUNK_CENTER_SET({ ChunkCenterSetS2CP(it) }),
-        PLAY_DISPLAY_SCOREBOARD({ PacketScoreboardDisplayScoreboard(it) }),
+        PLAY_SCOREBOARD_POSITION_SET({ ScoreboardPositionSetS2CP(it) }),
         PLAY_ENTITY_METADATA({ EntityMetadataS2CP(it) }),
         PLAY_ENTITY_ATTACH({ EntityAttachS2CP(it) }),
         PLAY_ENTITY_VELOCITY({ EntityVelocityS2CP(it) }),
@@ -239,7 +239,7 @@ class PacketTypes {
         PLAY_HEALTH_SET({ HealthSetS2CP(it) }),
         PLAY_SCOREBOARD_OBJECTIVE({ ScoreboardObjectiveS2CF.createPacket(it) }),
         PLAY_ENTITY_PASSENGER_SET({ EntityPassengerSetS2CP(it) }),
-        PLAY_TEAMS({ PacketTeams(it) }),
+        PLAY_TEAMS({ TeamsS2CF.createPacket(it) }),
         PLAY_UPDATE_SCORE({ ScoreboardScoreS2CF.createPacket(it) }),
         PLAY_SPAWN_POSITION_SET({ SpawnPositionSetS2CP(it) }),
         PLAY_WORLD_TIME_SET({ WorldTimeSetS2CP(it) }),
