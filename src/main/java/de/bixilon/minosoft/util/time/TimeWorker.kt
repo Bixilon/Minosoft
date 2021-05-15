@@ -19,7 +19,9 @@ object TimeWorker {
                             task.lastExecution = currentTime
                             task.getsExecuted = false
                         }
-                        TASKS -= task
+                        if (task.runOnce) {
+                            TASKS -= task
+                        }
                     }
                 }
                 Thread.sleep(1)

@@ -2,7 +2,7 @@ package de.bixilon.minosoft.util.time
 
 data class TimeWorkerTask(
     val interval: Int,
-    val runOnce: Boolean = true,
+    val runOnce: Boolean = false,
     val runnable: Runnable,
 ) {
     var getsExecuted: Boolean = false
