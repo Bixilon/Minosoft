@@ -9,7 +9,7 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3i
 
-class VoxelShape(val aabbs: MutableList<AABB> = mutableListOf()) {
+class VoxelShape(private val aabbs: MutableList<AABB> = mutableListOf()) {
 
     constructor(data: JsonElement, aabbs: List<AABB>) : this() {
         when (data) {
@@ -20,6 +20,20 @@ class VoxelShape(val aabbs: MutableList<AABB> = mutableListOf()) {
             }
             is JsonPrimitive -> {
                 this.aabbs.add(aabbs[data.asInt])
+            }
+        }
+    }
+
+    // somehow, the kotlin compiler gives an error if both constructors have the "same" signature JsonElement, List<>
+    constructor(voxelShapes: List<VoxelShape>, data: JsonElement) : this() {
+        when (data) {
+            is JsonArray -> {
+                for (index in data) {
+                    this.aabbs.addAll(voxelShapes[index.asInt].aabbs)
+                }
+            }
+            is JsonPrimitive -> {
+                this.aabbs.addAll(voxelShapes[data.asInt].aabbs)
             }
         }
     }
@@ -61,6 +75,19 @@ class VoxelShape(val aabbs: MutableList<AABB> = mutableListOf()) {
             result = aabb.computeOffset(other, result, axis)
         }
         return result
+    }
+
+    fun raycast(position: Vec3, direction: Vec3): Float {
+        for (aabb in aabbs) {
+            if (position in aabb) {
+                return 0f
+            }
+            val current = aabb.raycast(position, direction)
+            if (current >= -0.1f) {
+                return 0f
+            }
+        }
+        return -1f
     }
 
     companion object {

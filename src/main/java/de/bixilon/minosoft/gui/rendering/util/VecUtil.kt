@@ -24,8 +24,10 @@ import de.bixilon.minosoft.data.mappings.blocks.RandomOffsetTypes
 import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModelElement
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import glm_.func.common.clamp
+import glm_.func.common.floor
 import glm_.func.cos
 import glm_.func.sin
+import glm_.glm
 import glm_.vec2.Vec2
 import glm_.vec2.Vec2i
 import glm_.vec3.Vec3
@@ -211,5 +213,44 @@ object VecUtil {
         var hash = (x * 3129871L) xor z.toLong() * 116129781L xor y.toLong()
         hash = hash * hash * 42317861L + hash * 11L
         return hash shr 16
+    }
+
+    fun getDistanceToNextIntegerAxis(position: Vec3, direction: Vec3): Float {
+        val directionXDistance = (direction * getLengthMultiplier(direction, position, Axes.X)).length()
+        val directionYDistance = (direction * getLengthMultiplier(direction, position, Axes.Y)).length()
+        val directionZDistance = (direction * getLengthMultiplier(direction, position, Axes.Z)).length()
+        return glm.min(directionXDistance, directionYDistance, directionZDistance)
+    }
+
+    private fun getLengthMultiplier(direction: Vec3, position: Vec3, axis: Axes): Float {
+        return (getTarget(direction, position, axis) - position.choose(axis)) / direction.choose(axis)
+    }
+
+    private fun getTarget(direction: Vec3, position: Vec3, axis: Axes): Int {
+        return if (direction.choose(axis) > 0) {
+            position.floor.choose(axis) + 1
+        } else {
+            position.floor.choose(axis)
+        }
+    }
+
+    fun Vec3.choose(axis: Axes): Float {
+        return Axes.choose(axis, this)
+    }
+
+    val Vec3.min: Float get() = glm.min(this.x, this.y, this.z)
+
+    val Vec3.max: Float get() = glm.max(this.x, this.y, this.z)
+
+    val Vec3.signs: Vec3 get() {
+        return Vec3(glm.sign(this.x), glm.sign(this.y), glm.sign(this.z))
+    }
+
+    val Vec3.floor: Vec3i get() {
+        return Vec3i(this.x.floor, this.y.floor, this.z.floor)
+    }
+
+    fun Vec3i.choose(axis: Axes): Int {
+        return Axes.choose(axis, this)
     }
 }

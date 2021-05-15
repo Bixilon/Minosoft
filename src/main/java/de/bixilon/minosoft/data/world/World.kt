@@ -20,10 +20,13 @@ import de.bixilon.minosoft.data.mappings.blocks.BlockState
 import de.bixilon.minosoft.data.world.biome.accessor.BiomeAccessor
 import de.bixilon.minosoft.data.world.biome.accessor.NullBiomeAccessor
 import de.bixilon.minosoft.data.world.light.WorldLightAccessor
+import de.bixilon.minosoft.gui.rendering.util.VecUtil
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.chunkPosition
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.floor
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.inChunkPosition
 import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
 import glm_.vec2.Vec2i
+import glm_.vec3.Vec3
 import glm_.vec3.Vec3i
 
 /**
@@ -109,5 +112,31 @@ class World : BiomeAccessor {
         }
 
         return blocks.toMap()
+    }
+
+    data class RayCastHit(
+        val position: Vec3,
+        val distance: Float,
+        val i: Int,
+    )
+
+    fun raycast(origin: Vec3, direction: Vec3): RayCastHit {
+        val currentPosition = Vec3(origin)
+        fun getTotalDistance(): Float {
+            return (origin - currentPosition).length()
+        }
+        for (i in 0..MAX_STEPS) {
+            val blockPosition = currentPosition.floor
+            val distance = getBlockState(blockPosition)?.collisionShape?.plus(blockPosition)?.raycast(currentPosition, direction) ?: -1f
+            if (distance >= 0f) {
+                return RayCastHit(currentPosition + direction * distance, getTotalDistance() + distance, i)
+            }
+            currentPosition += direction * (VecUtil.getDistanceToNextIntegerAxis(currentPosition, direction) + 0.001)
+        }
+        return RayCastHit(currentPosition, getTotalDistance(), MAX_STEPS)
+    }
+
+    companion object {
+        private const val MAX_STEPS = 100
     }
 }

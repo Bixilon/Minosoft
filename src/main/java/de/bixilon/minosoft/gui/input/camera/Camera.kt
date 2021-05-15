@@ -103,20 +103,13 @@ class Camera(
         xOffset *= mouseSensitivity
         yOffset *= mouseSensitivity
         var yaw = xOffset.toFloat() + playerEntity.rotation.headYaw
-        var pitch = yOffset.toFloat() + playerEntity.rotation.pitch
-
-        // make sure that when pitch is out of bounds, screen doesn't get flipped
-        if (pitch > 89.9) {
-            pitch = 89.9f
-        } else if (pitch < -89.9) {
-            pitch = -89.9f
-        }
         if (yaw > 180) {
             yaw -= 360
         } else if (yaw < -180) {
             yaw += 360
         }
         yaw %= 180
+        val pitch = glm.clamp(yOffset.toFloat() + playerEntity.rotation.pitch, -89.9f, 89.9f)
         setRotation(yaw, pitch)
     }
 
@@ -153,7 +146,7 @@ class Camera(
             movementFront.normalizeAssign() // when moving forwards, do not move down
         }
         if (renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.MOVE_SPRINT)) {
-            cameraSpeed *= 5
+            cameraSpeed *= PLAYER_SPRINT_SPEED_MODIFIER
         }
         if (ProtocolDefinition.FAST_MOVEMENT) {
             cameraSpeed *= 5
@@ -183,12 +176,10 @@ class Camera(
             if (renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.MOVE_FLY_DOWN)) {
                 deltaMovement -= CAMERA_UP_VEC3 * cameraSpeed
             }
-        } else {
-            if (playerEntity.onGround && renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.MOVE_JUMP)) {
-                // TODO: jump delay, correct jump height
-                playerEntity.velocity.y += 0.75f * ProtocolDefinition.GRAVITY
-                playerEntity.onGround = false
-            }
+        } else if (playerEntity.onGround && renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.MOVE_JUMP)) {
+            // TODO: jump delay, correct jump height
+            playerEntity.velocity.y += 0.75f * ProtocolDefinition.GRAVITY
+            playerEntity.onGround = false
         }
         if (deltaMovement != VecUtil.EMPTY_VEC3) {
             playerEntity.move(deltaMovement, false)
@@ -227,7 +218,7 @@ class Camera(
     }
 
     private fun positionChangeCallback() {
-        blockPosition = (cameraPosition - Vec3(0, PLAYER_HEIGHT, 0)).blockPosition
+        blockPosition = playerEntity.position.blockPosition
         currentBiome = connection.world.getBiome(blockPosition)
         chunkPosition = blockPosition.chunkPosition
         sectionHeight = blockPosition.sectionHeight
@@ -258,7 +249,7 @@ class Camera(
     }
 
     private fun getAbsoluteCameraPosition(): Vec3 {
-        return playerEntity.position + Vec3(0, PLAYER_HEIGHT, 0)
+        return playerEntity.position + Vec3(0, PLAYER_EYE_HEIGHT, 0)
     }
 
     fun checkPosition() {
@@ -307,12 +298,13 @@ class Camera(
     }
 
     fun setPosition(position: Vec3) {
-        cameraPosition = (position + Vec3(0, PLAYER_HEIGHT, 0))
         playerEntity.position = position
+        cameraPosition = getAbsoluteCameraPosition()
     }
 
     companion object {
         private val CAMERA_UP_VEC3 = Vec3(0.0f, 1.0f, 0.0f)
-        private const val PLAYER_HEIGHT = 1.3 // player is 1.8 blocks high, the camera is normally at 0.5. 1.8 - 0.5 = 1.13
+        private const val PLAYER_EYE_HEIGHT = 1.3 // player is 1.8 blocks high, the camera is normally at 0.5. 1.8 - 0.5 = 1.13
+        private const val PLAYER_SPRINT_SPEED_MODIFIER = 1.30000001192092896
     }
 }

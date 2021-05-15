@@ -5,11 +5,14 @@ import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.gui.rendering.util.VecUtil
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.choose
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.max
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.min
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3
 import glm_.Java.Companion.glm
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3i
+
 
 class AABB {
     val min: Vec3
@@ -43,7 +46,7 @@ class AABB {
     }
 
     operator fun plus(vec3i: Vec3i): AABB {
-        return AABB(vec3i plus min, vec3i plus max)
+        return plus(Vec3(vec3i))
     }
 
     operator fun plus(other: AABB): AABB {
@@ -145,6 +148,36 @@ class AABB {
             Axes.Y -> this + Vec3(0, -offset, 0)
             Axes.Z -> this + Vec3(0, 0, -offset)
         }
+    }
+
+    fun raycast(position: Vec3, direction: Vec3): Float {
+        val tMins = getLengthMultipliers(position, direction, min)
+        val tMaxs = getLengthMultipliers(position, direction, max)
+        val tMin = tMins.max
+        val tMax = tMaxs.min
+        if (tMax < 0 || tMin > tMax) {
+            return -1f
+        }
+        return tMin
+    }
+
+    private fun getLengthMultipliers(position: Vec3, direction: Vec3, target: Vec3): Vec3 {
+        return Vec3(
+            getLengthMultiplier(position, direction, target, Axes.X),
+            getLengthMultiplier(position, direction, target, Axes.Y),
+            getLengthMultiplier(position, direction, target, Axes.Z),
+        )
+    }
+
+    private fun getLengthMultiplier(position: Vec3, direction: Vec3, target: Vec3, axis: Axes): Float {
+        return (position.choose(axis) - target.choose(axis)) / direction.choose(axis)
+    }
+
+    operator fun contains(position: Vec3): Boolean {
+        return (
+            position.x in min.x..max.x &&
+            position.y in min.y..max.y &&
+            position.z in min.z..max.z )
     }
 
     companion object {

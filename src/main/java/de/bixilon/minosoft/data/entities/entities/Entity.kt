@@ -288,7 +288,7 @@ abstract class Entity(
         if (hasGravity && !isFlying) {
             newVelocity.y -= ProtocolDefinition.GRAVITY * deltaTime
         }
-        newVelocity *= 0.25f.pow(deltaTime) // apply
+        newVelocity *= 0.25f.pow(deltaTime) // apply friction
         if (newVelocity.length() < 0.05f) {
             newVelocity *= 0
         }

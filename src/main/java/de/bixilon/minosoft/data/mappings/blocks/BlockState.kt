@@ -39,6 +39,7 @@ data class BlockState(
     val tintColor: RGBColor? = null,
     val material: Material,
     val collisionShape: VoxelShape,
+    val occlusionShape: VoxelShape,
 ) {
 
     override fun hashCode(): Int {
@@ -157,6 +158,14 @@ data class BlockState(
                 VoxelShape.EMPTY
             }
 
+            val occlusion = data["occlusion_shapes"]?.let {
+                if (it.isJsonPrimitive) {
+                    versionMapping.shapes[it.asInt]
+                } else {
+                    VoxelShape(versionMapping.shapes, it)
+                }
+            } ?: VoxelShape.EMPTY
+
             owner.renderOverride?.let {
                 renderers.clear()
                 renderers.addAll(it)
@@ -169,6 +178,7 @@ data class BlockState(
                 tintColor = tintColor,
                 material = material,
                 collisionShape = collision,
+                occlusionShape = occlusion,
             )
         }
 

@@ -20,6 +20,7 @@ import de.bixilon.minosoft.gui.rendering.hud.HUDRenderBuilder
 import de.bixilon.minosoft.gui.rendering.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.hud.nodes.properties.NodeAlignment
 import de.bixilon.minosoft.gui.rendering.modding.events.ScreenResizeEvent
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.floor
 import de.bixilon.minosoft.modding.event.CallbackEventInvoker
 import de.bixilon.minosoft.modding.loading.ModLoader
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
@@ -67,6 +68,9 @@ class HUDSystemDebugNode(hudRenderer: HUDRenderer) : DebugScreenNode(hudRenderer
         text("Mods: ${ModLoader.MOD_MAP.size} active, ${hudRenderer.connection.eventListenerSize} listeners")
     }
 
+    private val targetPosition = text("TBA")
+    private val targetBlockState = text("TBA")
+
     override fun init() {
         gpuText.sText = "GPU: " + (glGetString(GL_RENDERER) ?: "unknown")
         gpuVersionText.sText = "Version: " + (glGetString(GL_VERSION) ?: "unknown")
@@ -82,7 +86,18 @@ class HUDSystemDebugNode(hudRenderer: HUDRenderer) : DebugScreenNode(hudRenderer
         }
         memoryText.sText = "Memory: ${getUsedMemoryPercent()}% ${getFormattedUsedMemory()}/${SystemInformation.MAX_MEMORY_TEXT}"
         allocatedMemoryText.sText = "Allocated: ${getAllocatedMemoryPercent()}% ${getFormattedAllocatedMemory()}"
-
+        val rayCastHit = hudRenderer.connection.renderer?.renderWindow?.inputHandler?.camera?.let {
+            hudRenderer.connection.world.raycast(it.cameraPosition, it.cameraFront)
+        }
+        val position = rayCastHit?.position?.floor
+        val blockState = position?.let { hudRenderer.connection.world.getBlockState(it) }
+        if (rayCastHit?.distance ?: Float.MAX_VALUE < 5) {
+            targetPosition.sText =  "looking at $position"
+            targetBlockState.sText = blockState.toString()
+        } else {
+            targetPosition.sText = "No blocks in reach!"
+            targetBlockState.sText = ""
+        }
 
         lastPrepareTime = System.currentTimeMillis()
     }
