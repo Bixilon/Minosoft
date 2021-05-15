@@ -13,6 +13,7 @@
 package de.bixilon.minosoft.data.mappings.blocks
 
 import com.google.gson.JsonArray
+import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.google.gson.JsonPrimitive
 import de.bixilon.minosoft.Minosoft
@@ -40,6 +41,7 @@ data class BlockState(
     val material: Material,
     val collisionShape: VoxelShape,
     val occlusionShape: VoxelShape,
+    val outlineShape: VoxelShape,
 ) {
 
     override fun hashCode(): Int {
@@ -150,21 +152,24 @@ data class BlockState(
 
             val material = versionMapping.materialRegistry.get(ResourceLocation(data["material"].asString))!!
 
-            val collision = data["collision_shape"]?.asInt?.let {
-                versionMapping.shapes[it]
-            } ?: if (data["is_collision_shape_full_block"]?.asBoolean == true) {
-                VoxelShape.FULL
-            } else {
-                VoxelShape.EMPTY
+
+            fun JsonElement.asShape(): VoxelShape {
+                return if (this.isJsonPrimitive) {
+                    versionMapping.shapes[this.asInt]
+                } else {
+                    VoxelShape(versionMapping.shapes, this)
+                }
             }
 
-            val occlusion = data["occlusion_shapes"]?.let {
-                if (it.isJsonPrimitive) {
-                    versionMapping.shapes[it.asInt]
+            val collisionShape = data["collision_shape"]?.asShape()
+                ?: if (data["is_collision_shape_full_block"]?.asBoolean == true) {
+                    VoxelShape.FULL
                 } else {
-                    VoxelShape(versionMapping.shapes, it)
+                    VoxelShape.EMPTY
                 }
-            } ?: VoxelShape.EMPTY
+
+            val occlusionShape = data["occlusion_shapes"]?.asShape() ?: VoxelShape.EMPTY
+            val outlineShape = data["outline_shape"]?.asShape() ?: VoxelShape.EMPTY
 
             owner.renderOverride?.let {
                 renderers.clear()
@@ -177,8 +182,9 @@ data class BlockState(
                 renderers = renderers,
                 tintColor = tintColor,
                 material = material,
-                collisionShape = collision,
-                occlusionShape = occlusion,
+                collisionShape = collisionShape,
+                occlusionShape = occlusionShape,
+                outlineShape = outlineShape,
             )
         }
 

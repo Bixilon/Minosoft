@@ -23,6 +23,7 @@ import de.bixilon.minosoft.data.world.light.WorldLightAccessor
 import de.bixilon.minosoft.gui.rendering.util.VecUtil
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.floor
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.getWorldOffset
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.inChunkPosition
 import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
 import glm_.vec2.Vec2i
@@ -122,12 +123,18 @@ class World : BiomeAccessor {
 
     fun raycast(origin: Vec3, direction: Vec3): RayCastHit {
         val currentPosition = Vec3(origin)
+
         fun getTotalDistance(): Float {
             return (origin - currentPosition).length()
         }
+
         for (i in 0..MAX_STEPS) {
             val blockPosition = currentPosition.floor
-            val distance = getBlockState(blockPosition)?.collisionShape?.plus(blockPosition)?.raycast(currentPosition, direction) ?: -1f
+            val blockState = getBlockState(blockPosition)
+            val distance = blockState?.outlineShape?.let {
+                val aabb = it + blockPosition + blockPosition.getWorldOffset(blockState.block)
+                aabb.raycast(currentPosition, direction)
+            } ?: -1f
             if (distance >= 0f) {
                 return RayCastHit(currentPosition + direction * distance, getTotalDistance() + distance, i)
             }
