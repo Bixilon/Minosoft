@@ -18,6 +18,7 @@ import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.data.mappings.biomes.Biome
+import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.modding.events.CameraMatrixChangeEvent
@@ -300,6 +301,10 @@ class Camera(
     fun setPosition(position: Vec3) {
         playerEntity.position = position
         cameraPosition = getAbsoluteCameraPosition()
+    }
+
+    fun getTargetBlock(): World.RayCastHit? {
+        return connection.world.raycast(cameraPosition, cameraFront)
     }
 
     companion object {

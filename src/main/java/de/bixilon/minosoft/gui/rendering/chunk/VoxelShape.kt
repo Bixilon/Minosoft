@@ -9,7 +9,7 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3i
 
-class VoxelShape(private val aabbs: MutableList<AABB> = mutableListOf()) {
+class VoxelShape(private val aabbs: MutableList<AABB> = mutableListOf()) : Iterable<AABB> {
 
     constructor(data: JsonElement, aabbs: List<AABB>) : this() {
         when (data) {
@@ -93,5 +93,9 @@ class VoxelShape(private val aabbs: MutableList<AABB> = mutableListOf()) {
     companion object {
         val EMPTY = VoxelShape()
         val FULL = VoxelShape(mutableListOf(AABB(VecUtil.EMPTY_VEC3, VecUtil.ONES_VEC3)))
+    }
+
+    override fun iterator(): Iterator<AABB> {
+        return aabbs.iterator()
     }
 }

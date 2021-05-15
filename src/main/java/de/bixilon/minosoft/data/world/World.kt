@@ -118,10 +118,13 @@ class World : BiomeAccessor {
     data class RayCastHit(
         val position: Vec3,
         val distance: Float,
-        val i: Int,
-    )
+        val blockState: BlockState,
+        val steps: Int,
+    ) {
+        val blockPosition = position.floor
+    }
 
-    fun raycast(origin: Vec3, direction: Vec3): RayCastHit {
+    fun raycast(origin: Vec3, direction: Vec3): RayCastHit? {
         val currentPosition = Vec3(origin)
 
         fun getTotalDistance(): Float {
@@ -134,13 +137,19 @@ class World : BiomeAccessor {
             val distance = blockState?.outlineShape?.let {
                 val aabb = it + blockPosition + blockPosition.getWorldOffset(blockState.block)
                 aabb.raycast(currentPosition, direction)
-            } ?: -1f
-            if (distance >= 0f) {
-                return RayCastHit(currentPosition + direction * distance, getTotalDistance() + distance, i)
+            } ?: -1.0f
+
+            if (distance >= 0.0f && blockState != null) {
+                return RayCastHit(
+                    currentPosition + direction * distance,
+                    getTotalDistance() + distance,
+                    blockState = blockState,
+                    steps = i,
+                )
             }
             currentPosition += direction * (VecUtil.getDistanceToNextIntegerAxis(currentPosition, direction) + 0.001)
         }
-        return RayCastHit(currentPosition, getTotalDistance(), MAX_STEPS)
+        return null
     }
 
     companion object {

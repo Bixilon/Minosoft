@@ -18,6 +18,7 @@ import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.gui.input.key.RenderWindowInputHandler
 import de.bixilon.minosoft.gui.rendering.chunk.WorldRenderer
+import de.bixilon.minosoft.gui.rendering.chunk.block.outline.BlockOutlineRenderer
 import de.bixilon.minosoft.gui.rendering.font.Font
 import de.bixilon.minosoft.gui.rendering.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.hud.atlas.TextureLike
@@ -113,6 +114,7 @@ class RenderWindow(
 
         registerRenderer(SkyRenderer)
         registerRenderer(WorldRenderer)
+        registerRenderer(BlockOutlineRenderer)
         registerRenderer(HUDRenderer)
     }
 

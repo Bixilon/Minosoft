@@ -20,7 +20,6 @@ import de.bixilon.minosoft.gui.rendering.hud.HUDRenderBuilder
 import de.bixilon.minosoft.gui.rendering.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.hud.nodes.properties.NodeAlignment
 import de.bixilon.minosoft.gui.rendering.modding.events.ScreenResizeEvent
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.floor
 import de.bixilon.minosoft.modding.event.CallbackEventInvoker
 import de.bixilon.minosoft.modding.loading.ModLoader
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
@@ -86,17 +85,13 @@ class HUDSystemDebugNode(hudRenderer: HUDRenderer) : DebugScreenNode(hudRenderer
         }
         memoryText.sText = "Memory: ${getUsedMemoryPercent()}% ${getFormattedUsedMemory()}/${SystemInformation.MAX_MEMORY_TEXT}"
         allocatedMemoryText.sText = "Allocated: ${getAllocatedMemoryPercent()}% ${getFormattedAllocatedMemory()}"
-        val rayCastHit = hudRenderer.connection.renderer?.renderWindow?.inputHandler?.camera?.let {
-            hudRenderer.connection.world.raycast(it.cameraPosition, it.cameraFront)
-        }
-        val position = rayCastHit?.position?.floor
-        val blockState = position?.let { hudRenderer.connection.world.getBlockState(it) }
-        if (rayCastHit?.distance ?: Float.MAX_VALUE < 5) {
-            targetPosition.sText =  "looking at $position"
-            targetBlockState.sText = blockState.toString()
-        } else {
+        val rayCastHit = hudRenderer.renderWindow.inputHandler.camera.getTargetBlock()
+        if (rayCastHit == null) {
             targetPosition.sText = "No blocks in reach!"
             targetBlockState.sText = ""
+        } else {
+            targetPosition.sText = "looking at ${rayCastHit.blockPosition}"
+            targetBlockState.sText = rayCastHit.blockState.toString()
         }
 
         lastPrepareTime = System.currentTimeMillis()

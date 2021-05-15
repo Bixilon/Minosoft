@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,24 +11,12 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.modding.events
+#version 330 core
 
-import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.Rendering
-import glm_.mat4x4.Mat4
+out vec4 outColor;
 
-class CameraMatrixChangeEvent(
-    renderWindow: RenderWindow = Rendering.currentContext!!,
-    viewMatrix: Mat4,
-    projectionMatrix: Mat4,
-    viewProjectionMatrix: Mat4,
-) : RenderEvent(renderWindow) {
-    val viewMatrix: Mat4 = viewMatrix
-        get() = Mat4(field)
+uniform vec4 tintColor;
 
-    val projectionMatrix: Mat4 = projectionMatrix
-        get() = Mat4(field)
-
-    val viewProjectionMatrix: Mat4 = viewProjectionMatrix
-        get() = Mat4(field)
+void main() {
+    outColor = tintColor;
 }

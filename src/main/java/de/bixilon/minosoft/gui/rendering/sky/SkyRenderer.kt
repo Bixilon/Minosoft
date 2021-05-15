@@ -62,10 +62,10 @@ class SkyRenderer(
 
 
         connection.registerEvent(CallbackEventInvoker.of<CameraMatrixChangeEvent> {
-            val projectionViewMatrix = renderWindow.inputHandler.camera.projectionMatrix * renderWindow.inputHandler.camera.viewMatrix.toMat3().toMat4()
+            val viewProjectionMatrix = it.projectionMatrix * it.viewMatrix.toMat3().toMat4()
             renderWindow.renderQueue.add {
-                skyboxShader.use().setMat4("skyViewProjectionMatrix", projectionViewMatrix)
-                setSunMatrix(projectionViewMatrix)
+                skyboxShader.use().setMat4("skyViewProjectionMatrix", viewProjectionMatrix)
+                setSunMatrix(viewProjectionMatrix)
             }
         })
         connection.registerEvent(CallbackEventInvoker.of<TimeChangeEvent> {

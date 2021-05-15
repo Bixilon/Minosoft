@@ -45,7 +45,7 @@ class Shader(
 
     fun load(assetsManager: AssetsManager = Minosoft.MINOSOFT_ASSETS_MANAGER): Int {
         val uniforms: MutableList<String> = mutableListOf()
-        val pathPrefix = """${resourceLocation.namespace}:rendering/shader/${resourceLocation.path}/${resourceLocation.path.replace("/", "_")}"""
+        val pathPrefix = "${resourceLocation.namespace}:rendering/shader/${resourceLocation.path}/${resourceLocation.path.replace("/", "_")}"
         val vertexShader = createShader(assetsManager, ResourceLocation("$pathPrefix.vsh"), GL_VERTEX_SHADER_ARB, defines, uniforms)!!
         val geometryShader = createShader(assetsManager, ResourceLocation("$pathPrefix.gsh"), GL_GEOMETRY_SHADER_ARB, defines, uniforms)
         val fragmentShader = createShader(assetsManager, ResourceLocation("$pathPrefix.fsh"), GL_FRAGMENT_SHADER_ARB, defines, uniforms)!!
