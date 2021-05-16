@@ -115,7 +115,7 @@ class World : BiomeAccessor {
         return blocks.toMap()
     }
 
-    data class RayCastHit(
+    data class RaycastHit(
         val position: Vec3,
         val distance: Float,
         val blockState: BlockState,
@@ -124,7 +124,7 @@ class World : BiomeAccessor {
         val blockPosition = position.floor
     }
 
-    fun raycast(origin: Vec3, direction: Vec3): RayCastHit? {
+    fun raycast(origin: Vec3, direction: Vec3): RaycastHit? {
         val currentPosition = Vec3(origin)
 
         fun getTotalDistance(): Float {
@@ -140,7 +140,7 @@ class World : BiomeAccessor {
             } ?: -1.0f
 
             if (distance >= 0.0f && blockState != null) {
-                return RayCastHit(
+                return RaycastHit(
                     currentPosition + direction * distance,
                     getTotalDistance() + distance,
                     blockState = blockState,

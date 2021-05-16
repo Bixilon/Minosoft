@@ -28,9 +28,10 @@ abstract class Mesh(
             _data = value
         }
 
-    private var vao: Int = -1
+    protected var vao: Int = -1
+        private set
     private var vbo: Int = -1
-    var trianglesCount: Int = -1
+    var primitiveCount: Int = -1
         private set
 
     var state = MeshStates.PREPARING
@@ -42,7 +43,7 @@ abstract class Mesh(
     protected fun initializeBuffers(floatsPerVertex: Int) {
         check(state == MeshStates.PREPARING) { "Mesh already loaded: $state" }
 
-        trianglesCount = data.size / floatsPerVertex
+        primitiveCount = data.size / floatsPerVertex
         vao = glGenVertexArrays()
         vbo = glGenBuffers()
         glBindVertexArray(vao)
@@ -58,10 +59,10 @@ abstract class Mesh(
         glBindBuffer(GL_ARRAY_BUFFER, 0)
     }
 
-    fun draw() {
+    open fun draw() {
         // check(state == MeshStates.LOADED) { "Mesh not loaded: $state" }
         glBindVertexArray(vao)
-        glDrawArrays(GL_TRIANGLES, 0, trianglesCount)
+        glDrawArrays(GL_TRIANGLES, 0, primitiveCount)
     }
 
     fun unload(checkLoaded: Boolean = true) {

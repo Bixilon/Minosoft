@@ -87,10 +87,10 @@ class HUDSystemDebugNode(hudRenderer: HUDRenderer) : DebugScreenNode(hudRenderer
         allocatedMemoryText.sText = "Allocated: ${getAllocatedMemoryPercent()}% ${getFormattedAllocatedMemory()}"
         val rayCastHit = hudRenderer.renderWindow.inputHandler.camera.getTargetBlock()
         if (rayCastHit == null) {
-            targetPosition.sText = "No blocks in reach!"
+            targetPosition.sText = ""
             targetBlockState.sText = ""
         } else {
-            targetPosition.sText = "looking at ${rayCastHit.blockPosition}"
+            targetPosition.sText = "Target block: ${rayCastHit.blockPosition}"
             targetBlockState.sText = rayCastHit.blockState.toString()
         }
 

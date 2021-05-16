@@ -20,6 +20,7 @@ import org.lwjgl.opengl.GL20.glEnableVertexAttribArray
 import org.lwjgl.opengl.GL20.glVertexAttribPointer
 
 class BlockOutlineMesh : Mesh() {
+
     fun addVertex(position: Vec3) {
         data.addAll(floatArrayOf(
             position.x,
@@ -36,6 +37,7 @@ class BlockOutlineMesh : Mesh() {
 
         super.unbind()
     }
+
 
     companion object {
         private const val FLOATS_PER_VERTEX = 3

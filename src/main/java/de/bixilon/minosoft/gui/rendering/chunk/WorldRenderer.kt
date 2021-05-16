@@ -111,7 +111,7 @@ class WorldRenderer(
             }
         }
 
-        if (meshCollection.transparentSectionArrayMesh!!.trianglesCount == 0) {
+        if (meshCollection.transparentSectionArrayMesh!!.primitiveCount == 0) {
             meshCollection.transparentSectionArrayMesh = null
         }
 
@@ -321,24 +321,24 @@ class WorldRenderer(
                 sectionMap[index]?.let {
                     it.opaqueSectionArrayMesh.unload()
                     meshes--
-                    triangles -= it.opaqueSectionArrayMesh.trianglesCount
+                    triangles -= it.opaqueSectionArrayMesh.primitiveCount
 
                     it.transparentSectionArrayMesh?.let {
                         it.unload()
                         meshes--
-                        triangles -= it.trianglesCount
+                        triangles -= it.primitiveCount
                     }
                 }
 
                 meshCollection.opaqueSectionArrayMesh.let {
                     it.load()
                     meshes++
-                    triangles += it.trianglesCount
+                    triangles += it.primitiveCount
                 }
                 meshCollection.transparentSectionArrayMesh?.let {
                     it.load()
                     meshes++
-                    triangles += it.trianglesCount
+                    triangles += it.primitiveCount
                 }
 
 
@@ -390,12 +390,12 @@ class WorldRenderer(
             meshCollection.opaqueSectionArrayMesh.let {
                 it.unload()
                 this.meshes--
-                triangles -= it.trianglesCount
+                triangles -= it.primitiveCount
             }
             meshCollection.transparentSectionArrayMesh?.let {
                 it.unload()
                 this.meshes--
-                triangles -= it.trianglesCount
+                triangles -= it.primitiveCount
             }
         }
     }

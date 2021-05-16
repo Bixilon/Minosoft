@@ -303,7 +303,7 @@ class Camera(
         cameraPosition = getAbsoluteCameraPosition()
     }
 
-    fun getTargetBlock(): World.RayCastHit? {
+    fun getTargetBlock(): World.RaycastHit? {
         return connection.world.raycast(cameraPosition, cameraFront)
     }
 

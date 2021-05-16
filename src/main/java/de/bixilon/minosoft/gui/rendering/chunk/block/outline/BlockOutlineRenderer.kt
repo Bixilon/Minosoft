@@ -13,9 +13,11 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk.block.outline
 
+import de.bixilon.minosoft.data.Gamemodes
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.blocks.BlockState
 import de.bixilon.minosoft.data.text.ChatColors
+import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.Renderer
 import de.bixilon.minosoft.gui.rendering.RendererBuilder
@@ -26,7 +28,7 @@ import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3i
-import org.lwjgl.opengl.GL11
+import org.lwjgl.opengl.GL11.*
 
 class BlockOutlineRenderer(
     val connection: PlayConnection,
@@ -61,17 +63,19 @@ class BlockOutlineRenderer(
         for (aabb in shape) {
             val min = blockPosition + aabb.min
             val max = blockPosition + aabb.max
+
+            fun drawSideQuad(x: Float) {
+                drawLine(Vec3(x, min.y, min.z), Vec3(x, max.y, min.z), mesh)
+                drawLine(Vec3(x, min.y, min.z), Vec3(x, min.y, max.z), mesh)
+                drawLine(Vec3(x, max.y, min.z), Vec3(x, max.y, max.z), mesh)
+                drawLine(Vec3(x, min.y, max.z), Vec3(x, max.y, max.z), mesh)
+            }
+
             // left quad
-            drawLine(Vec3(min.x, min.y, min.z), Vec3(min.x, max.y, min.z), mesh)
-            drawLine(Vec3(min.x, min.y, min.z), Vec3(min.x, min.y, max.z), mesh)
-            drawLine(Vec3(min.x, max.y, min.z), Vec3(min.x, max.y, max.z), mesh)
-            drawLine(Vec3(min.x, min.y, max.z), Vec3(min.x, max.y, max.z), mesh)
+            drawSideQuad(min.x)
 
             // right quad
-            drawLine(Vec3(max.x, min.y, min.z), Vec3(max.x, max.y, min.z), mesh)
-            drawLine(Vec3(max.x, min.y, min.z), Vec3(max.x, min.y, max.z), mesh)
-            drawLine(Vec3(max.x, max.y, min.z), Vec3(max.x, max.y, max.z), mesh)
-            drawLine(Vec3(max.x, min.y, max.z), Vec3(max.x, max.y, max.z), mesh)
+            drawSideQuad(max.x)
 
             // connections between 2 quads
             drawLine(Vec3(min.x, min.y, min.z), Vec3(max.x, min.y, min.z), mesh)
@@ -82,28 +86,45 @@ class BlockOutlineRenderer(
     }
 
     private fun draw(mesh: BlockOutlineMesh) {
-        GL11.glDisable(GL11.GL_CULL_FACE)
+        glDisable(GL_CULL_FACE)
         outlineShader.use()
         mesh.draw()
-        GL11.glEnable(GL11.GL_CULL_FACE)
+        glEnable(GL_CULL_FACE)
+    }
+
+    private fun unload() {
+        outlineMesh ?: return
+        outlineMesh?.unload()
+        this.outlineMesh = null
+        this.currentOutlinePosition = null
+        this.currentOutlineBlockState = null
     }
 
     override fun draw() {
-        val rayCastHit = renderWindow.inputHandler.camera.getTargetBlock()
+        val raycastHit = renderWindow.inputHandler.camera.getTargetBlock()
 
         var outlineMesh = outlineMesh
 
 
-        if (rayCastHit == null) {
-            outlineMesh ?: return
-            outlineMesh.unload()
-            this.outlineMesh = null
-            this.currentOutlinePosition = null
-            this.currentOutlineBlockState = null
+
+        if (raycastHit == null) {
+            unload()
             return
         }
 
-        if (rayCastHit.blockPosition == currentOutlinePosition && rayCastHit.blockState == currentOutlineBlockState) {
+        if (raycastHit.distance >= RenderConstants.MAX_BLOCK_OUTLINE_RAYCAST_DISTANCE) {
+            unload()
+            return
+        }
+
+        if (connection.player.entity.gamemode == Gamemodes.ADVENTURE || connection.player.entity.gamemode == Gamemodes.SPECTATOR) {
+            if (connection.mapping.blockEntityRegistry.get(raycastHit.blockState.block.resourceLocation) == null) {
+                unload()
+                return
+            }
+        }
+
+        if (raycastHit.blockPosition == currentOutlinePosition && raycastHit.blockState == currentOutlineBlockState) {
             draw(outlineMesh!!)
             return
         }
@@ -111,11 +132,11 @@ class BlockOutlineRenderer(
         outlineMesh?.unload()
         outlineMesh = BlockOutlineMesh()
 
-        drawVoxelShape(rayCastHit.blockState.outlineShape, rayCastHit.blockPosition.getWorldOffset(rayCastHit.blockState.block).plus(rayCastHit.blockPosition), outlineMesh)
+        drawVoxelShape(raycastHit.blockState.outlineShape, raycastHit.blockPosition.getWorldOffset(raycastHit.blockState.block).plus(raycastHit.blockPosition), outlineMesh)
         outlineMesh.load()
 
-        this.currentOutlinePosition = rayCastHit.blockPosition
-        this.currentOutlineBlockState = rayCastHit.blockState
+        this.currentOutlinePosition = raycastHit.blockPosition
+        this.currentOutlineBlockState = raycastHit.blockState
         this.outlineMesh = outlineMesh
         draw(outlineMesh)
     }
@@ -123,7 +144,7 @@ class BlockOutlineRenderer(
 
     companion object : RendererBuilder<BlockOutlineRenderer> {
         override val RESOURCE_LOCATION = ResourceLocation("minosoft:block_outline")
-        private const val LINE_WIDTH = 1.0f / 16.0f
+        private const val LINE_WIDTH = 1.0f / 64.0f
         private const val HALF_LINE_WIDTH = LINE_WIDTH / 2.0f
 
         override fun build(connection: PlayConnection, renderWindow: RenderWindow): BlockOutlineRenderer {
