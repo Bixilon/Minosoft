@@ -56,8 +56,8 @@ class BlockOutlineRenderer(
     }
 
     private fun drawLine(start: Vec3, end: Vec3, mesh: BlockOutlineMesh) {
-        val direction = (end-start).normalize()
-        val normal1 = Vec3(direction.z, direction.z, direction.x-direction.y)
+        val direction = (end - start).normalize()
+        val normal1 = Vec3(direction.z, direction.z, direction.x - direction.y)
         if (normal1 == VecUtil.EMPTY_VEC3) {
             normal1.x = normal1.z
             normal1.z = direction.z
@@ -75,8 +75,8 @@ class BlockOutlineRenderer(
         val positions = listOf(
             start + normal2 * normal2Multiplier * HALF_LINE_WIDTH - direction * HALF_LINE_WIDTH,
             start + normal1 * normal1Multiplier * HALF_LINE_WIDTH - direction * HALF_LINE_WIDTH,
-            end  +  normal1 * normal1Multiplier * HALF_LINE_WIDTH + direction * HALF_LINE_WIDTH,
-            end  +  normal2 * normal2Multiplier * HALF_LINE_WIDTH + direction * HALF_LINE_WIDTH,
+            end + normal1 * normal1Multiplier * HALF_LINE_WIDTH + direction * HALF_LINE_WIDTH,
+            end + normal2 * normal2Multiplier * HALF_LINE_WIDTH + direction * HALF_LINE_WIDTH,
         )
         for ((_, positionIndex) in ElementRenderer.DRAW_ODER) {
             mesh.addVertex(positions[positionIndex])
@@ -111,6 +111,9 @@ class BlockOutlineRenderer(
 
     private fun draw(outlineMesh: BlockOutlineMesh, collisionMesh: BlockOutlineMesh?) {
         glDisable(GL_CULL_FACE)
+        if (Minosoft.config.config.game.other.blockOutline.disableZBuffer) {
+            glDepthFunc(GL_ALWAYS)
+        }
         outlineShader.use()
         outlineShader.setRGBColor("tintColor", outlineColor)
         outlineMesh.draw()
@@ -119,6 +122,9 @@ class BlockOutlineRenderer(
             it.draw()
         }
         glEnable(GL_CULL_FACE)
+        if (Minosoft.config.config.game.other.blockOutline.disableZBuffer) {
+            glDepthFunc(GL_LESS)
+        }
     }
 
     private fun unload() {
@@ -169,7 +175,7 @@ class BlockOutlineRenderer(
         outlineMesh.load()
 
 
-        if (Minosoft.config.config.game.other.renderBlockOutlineCollisionBox) {
+        if (Minosoft.config.config.game.other.blockOutline.collisionBoxes) {
             collisionMesh = BlockOutlineMesh()
 
             drawVoxelShape(raycastHit.blockState.collisionShape, blockOffset, collisionMesh, 0.005f)
