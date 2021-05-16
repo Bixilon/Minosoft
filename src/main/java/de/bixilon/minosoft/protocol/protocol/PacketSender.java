@@ -21,14 +21,12 @@ import de.bixilon.minosoft.data.text.ChatComponent;
 import de.bixilon.minosoft.modding.event.events.ChatMessageReceivingEvent;
 import de.bixilon.minosoft.modding.event.events.ChatMessageSendingEvent;
 import de.bixilon.minosoft.modding.event.events.ContainerCloseEvent;
-import de.bixilon.minosoft.modding.event.events.HeldItemChangeEvent;
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
 import de.bixilon.minosoft.protocol.packets.c2s.login.LoginPluginResponseC2SP;
 import de.bixilon.minosoft.protocol.packets.c2s.play.*;
 import de.bixilon.minosoft.util.logging.Log;
 import de.bixilon.minosoft.util.logging.LogMessageType;
 import glm_.vec3.Vec3;
-import org.checkerframework.common.value.qual.IntRange;
 
 import java.util.UUID;
 
@@ -109,11 +107,5 @@ public class PacketSender {
 
     public void sendFakeChatMessage(String message) {
         sendFakeChatMessage(ChatComponent.Companion.of(message), ChatTextPositions.CHAT_BOX);
-    }
-
-    public void selectSlot(@IntRange(from = 0, to = 8) int slot) {
-        this.connection.fireEvent(new HeldItemChangeEvent(this.connection, slot));
-        this.connection.getPlayer().getInventoryManager().setSelectedHotbarSlot(slot);
-        this.connection.sendPacket(new HotbarSlotSetC2SP(slot));
     }
 }

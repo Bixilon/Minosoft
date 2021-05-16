@@ -22,13 +22,21 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
 class ContainerItemsSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
-    val containerId: Byte = buffer.readByte()
+    val containerId = buffer.readUnsignedByte()
     val items: Array<ItemStack?> = buffer.readItemStackArray(buffer.readUnsignedShort())
 
     override fun handle(connection: PlayConnection) {
         connection.fireEvent(ContainerItemsSetEvent(connection, this))
 
-        // ToDo:    connection.getPlayer().getInventoryManager().getInventories().put(getWindowId(), getData());
+        connection.player.containers[containerId]?.let {
+            it.slots.clear()
+            for ((slot, itemStack) in items.withIndex()) {
+                if (itemStack == null) {
+                    continue
+                }
+                it.slots[slot] = itemStack
+            }
+        }
     }
 
     override fun log() {

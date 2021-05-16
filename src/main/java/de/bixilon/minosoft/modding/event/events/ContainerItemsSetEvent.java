@@ -18,7 +18,7 @@ import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
 import de.bixilon.minosoft.protocol.packets.s2c.play.ContainerItemsSetS2CP;
 
 public class ContainerItemsSetEvent extends PlayConnectionEvent {
-    private final byte windowId;
+    private final int windowId;
     private final ItemStack[] data;
 
     public ContainerItemsSetEvent(PlayConnection connection, byte windowId, ItemStack[] data) {
@@ -33,7 +33,7 @@ public class ContainerItemsSetEvent extends PlayConnectionEvent {
         this.data = pkg.getItems();
     }
 
-    public byte getWindowId() {
+    public int getWindowId() {
         return this.windowId;
     }
 

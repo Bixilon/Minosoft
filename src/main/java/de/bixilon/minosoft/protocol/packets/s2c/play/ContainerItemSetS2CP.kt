@@ -21,22 +21,23 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
 class ContainerItemSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
-    val containerId: Byte = buffer.readByte()
-    val slotId = buffer.readUnsignedShort()
-    val item = buffer.readItemStack()
+    val containerId = buffer.readUnsignedByte()
+    val slot = buffer.readUnsignedShort()
+    val itemStack = buffer.readItemStack()
 
     override fun handle(connection: PlayConnection) {
         connection.fireEvent(SingleSlotChangeEvent(connection, this))
-        if (containerId.toInt() == -1) {
-            // thanks mojang
-            // ToDo: what is windowId -1
-            return
+
+        connection.player.containers[containerId]?.slots?.let {
+            if (itemStack == null) {
+                it.remove(slot)
+            } else {
+                it[slot] = itemStack
+            }
         }
-        // ToDo
-        //  connection.getPlayer().setSlot(getWindowId(), getSlotId(), getSlot());
     }
 
     override fun log() {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Container item set (containerId=$containerId, slotId=$slotId, item=$item)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Container item set (containerId=$containerId, slot=$slot, itemStack=$itemStack)" }
     }
 }

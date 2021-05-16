@@ -18,7 +18,7 @@ import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
 import de.bixilon.minosoft.protocol.packets.s2c.play.ContainerItemSetS2CP;
 
 public class SingleSlotChangeEvent extends PlayConnectionEvent {
-    private final byte windowId;
+    private final int windowId;
     private final int slotId;
     private final ItemStack itemStack;
 
@@ -32,11 +32,11 @@ public class SingleSlotChangeEvent extends PlayConnectionEvent {
     public SingleSlotChangeEvent(PlayConnection connection, ContainerItemSetS2CP pkg) {
         super(connection);
         this.windowId = pkg.getContainerId();
-        this.slotId = pkg.getSlotId();
-        this.itemStack = pkg.getItem();
+        this.slotId = pkg.getSlot();
+        this.itemStack = pkg.getItemStack();
     }
 
-    public byte getWindowId() {
+    public int getWindowId() {
         return this.windowId;
     }
 

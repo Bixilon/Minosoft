@@ -16,6 +16,7 @@ import de.bixilon.minosoft.modding.event.events.ContainerCloseEvent
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -28,7 +29,12 @@ class ContainerCloseS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         if (connection.fireEvent(event)) {
             return
         }
-        connection.player.inventoryManager.inventories.remove(containerId)
+
+        if (containerId == ProtocolDefinition.PLAYER_INVENTORY_ID) {
+            return
+        }
+
+        connection.player.containers.remove(containerId)
     }
 
     override fun log() {

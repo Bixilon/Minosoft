@@ -26,7 +26,7 @@ class HotbarSlotSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     override fun handle(connection: PlayConnection) {
         connection.fireEvent(HeldItemChangeEvent(connection, slot))
 
-        connection.player.inventoryManager.selectedHotbarSlot = slot
+        connection.player.selectedHotbarSlot = slot
     }
 
     override fun log() {

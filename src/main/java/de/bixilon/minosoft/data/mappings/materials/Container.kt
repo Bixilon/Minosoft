@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2021 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -10,22 +10,18 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.protocol.packets.c2s.play
 
-import de.bixilon.minosoft.protocol.packets.c2s.PlayC2SPacket
-import de.bixilon.minosoft.protocol.protocol.PlayOutByteBuffer
-import de.bixilon.minosoft.util.logging.Log
-import de.bixilon.minosoft.util.logging.LogMessageType
+package de.bixilon.minosoft.data.mappings.materials
 
-class ContainerCloseC2SP(
-    val containerId: Int,
-) : PlayC2SPacket {
+import de.bixilon.minosoft.data.inventory.ItemStack
+import de.bixilon.minosoft.data.mappings.other.ContainerType
+import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
 
-    override fun write(buffer: PlayOutByteBuffer) {
-        buffer.writeByte(containerId)
-    }
-
-    override fun log() {
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT) { "Container close (containerId=$containerId)" }
-    }
+open class Container(
+    val type: ContainerType,
+    val title: ChatComponent? = null,
+    val hasTitle: Boolean = false,
+) {
+    val slots: MutableMap<Int, ItemStack> = synchronizedMapOf()
 }

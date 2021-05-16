@@ -13,22 +13,34 @@
 package de.bixilon.minosoft.protocol.packets.s2c.play
 
 import de.bixilon.minosoft.data.inventory.DefaultInventoryTypes
+import de.bixilon.minosoft.data.mappings.materials.Container
 import de.bixilon.minosoft.data.mappings.other.ContainerType
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
 class ContainerOpenS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
-    val containerId: Byte = buffer.readByte()
-    val containerType: ContainerType = if (buffer.versionId < V_14W03B) {
-        buffer.connection.mapping.containerTypeRegistry[buffer.readUnsignedByte()]
+    val containerId = if (buffer.versionId <= V_1_16) { // ToDo: This is completely guessed
+        buffer.readUnsignedByte()
     } else {
-        buffer.connection.mapping.containerTypeRegistry[buffer.readResourceLocation()]!!
+        buffer.readVarInt()
+    }
+    val containerType: ContainerType = when {
+        buffer.versionId < V_14W03B -> {
+            buffer.connection.mapping.containerTypeRegistry[buffer.readUnsignedByte()]
+        }
+        buffer.versionId >= V_1_16 -> { // ToDo: This is completely guessed
+            buffer.connection.mapping.containerTypeRegistry[buffer.readVarInt()]
+        }
+        else -> {
+            buffer.connection.mapping.containerTypeRegistry[buffer.readResourceLocation()]!!
+        }
     }
     val title: ChatComponent = buffer.readChatComponent()
     val slotCount: Int = if (buffer.versionId < V_19W02A || buffer.versionId >= V_19W11A) {
@@ -49,7 +61,14 @@ class ContainerOpenS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     }
 
     override fun handle(connection: PlayConnection) {
-        // ToDo: connection.getPlayer().createInventory(getInventoryProperties());
+        if (containerId == ProtocolDefinition.PLAYER_INVENTORY_ID) {
+            return
+        }
+        connection.player.containers[containerId] = Container(
+            containerType,
+            title,
+            hasTitle,
+        )
     }
 
     override fun log() {
