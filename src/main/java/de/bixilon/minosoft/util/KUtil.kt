@@ -86,4 +86,14 @@ object KUtil {
     fun <V> Set<V>.toSynchronizedSet(): MutableSet<V> {
         return synchronizedCopy { Collections.synchronizedSet(this.toMutableSet()) }
     }
+
+    fun Set<String>.toResourceLocationList(): Set<ResourceLocation> {
+        val ret: MutableSet<ResourceLocation> = mutableSetOf()
+
+        for (resourceLocation in this) {
+            ret += resourceLocation.asResourceLocation()
+        }
+
+        return ret.toSet()
+    }
 }

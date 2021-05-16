@@ -19,7 +19,6 @@ import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
-import de.bixilon.minosoft.util.KUtil.asResourceLocation
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -36,20 +35,11 @@ class BlockActionS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     val block: Block = buffer.connection.mapping.blockRegistry.get(buffer.readVarInt())
 
     override fun handle(connection: PlayConnection) {
-        val blockEntityTypeResourceLocation = when (block.resourceLocation.full) {
-            "minecraft:white_shulker_box", "minecraft:orange_shulker_box", "minecraft:magenta_shulker_box", "minecraft:light_blue_shulker_box",
-            "minecraft:yellow_shulker_box", "minecraft:lime_shulker_box", "minecraft:pink_shulker_box", "minecraft:gray_shulker_box",
-            "minecraft:silver_shulker_box", "minecraft:cyan_shulker_box", "minecraft:purple_shulker_box", "minecraft:blue_shulker_box",
-            "minecraft:brown_shulker_box", "minecraft:green_shulker_box", "minecraft:red_shulker_box", "minecraft:black_shulker_box",
-            -> "minecraft:shulker_box"
-            else -> block.resourceLocation.full
-        }.asResourceLocation()
-
         val blockEntity = connection.world.getBlockEntity(position) ?: let {
-            val factory = connection.mapping.blockEntityRegistry.get(blockEntityTypeResourceLocation)?.factory
-                ?: DefaultBlockEntityMetaDataFactory.getEntityFactory(blockEntityTypeResourceLocation)
+            val factory = connection.mapping.blockEntityTypeRegistry[block.resourceLocation]?.factory
+                ?: DefaultBlockEntityMetaDataFactory.getEntityFactory(block.resourceLocation)
                 ?: let {
-                    Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.WARN) { "Unknown block entity $blockEntityTypeResourceLocation" }
+                    Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.WARN) { "Unknown block entity ${block.resourceLocation}" }
                     return
                 }
             val blockEntity = factory.build(connection)

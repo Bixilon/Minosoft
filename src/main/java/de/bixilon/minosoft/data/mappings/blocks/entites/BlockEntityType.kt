@@ -18,6 +18,7 @@ import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.entities.block.BlockEntityFactory
 import de.bixilon.minosoft.data.entities.block.DefaultBlockEntityMetaDataFactory
 import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.data.mappings.blocks.Block
 import de.bixilon.minosoft.data.mappings.registry.RegistryItem
 import de.bixilon.minosoft.data.mappings.registry.ResourceLocationDeserializer
 import de.bixilon.minosoft.data.mappings.versions.VersionMapping
@@ -25,9 +26,22 @@ import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 
 data class BlockEntityType(
     override val resourceLocation: ResourceLocation,
-    // ToDo: Block ids, more?
+    private var blockIds: Set<Int>?,
     val factory: BlockEntityFactory<out BlockEntity>,
 ) : RegistryItem {
+    lateinit var blocks: Set<Block>
+        private set
+
+    override fun postInit(versionMapping: VersionMapping) {
+        val blocks: MutableSet<Block> = mutableSetOf()
+
+        for (blockId in blockIds!!) {
+            blocks += versionMapping.blockRegistry[blockId]
+        }
+        this.blockIds = null
+
+        this.blocks = blocks.toSet()
+    }
 
     fun build(connection: PlayConnection): BlockEntity {
         return DefaultBlockEntityMetaDataFactory.buildBlockEntity(factory, connection)
@@ -37,8 +51,15 @@ data class BlockEntityType(
         override fun deserialize(mappings: VersionMapping?, resourceLocation: ResourceLocation, data: JsonObject): BlockEntityType? {
             val factory = DefaultBlockEntityMetaDataFactory.getEntityFactory(resourceLocation) ?: return null // ToDo
 
+            val blockIds: MutableSet<Int> = mutableSetOf()
+
+            for (blockId in data["blocks"].asJsonArray) {
+                blockIds += blockId.asInt
+            }
+
             return BlockEntityType(
                 resourceLocation = resourceLocation,
+                blockIds = blockIds,
                 factory = factory,
             )
         }

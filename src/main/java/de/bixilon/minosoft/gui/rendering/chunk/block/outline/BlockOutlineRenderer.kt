@@ -150,7 +150,7 @@ class BlockOutlineRenderer(
         }
 
         if (connection.player.entity.gamemode == Gamemodes.ADVENTURE || connection.player.entity.gamemode == Gamemodes.SPECTATOR) {
-            if (connection.mapping.blockEntityRegistry.get(raycastHit.blockState.block.resourceLocation) == null) {
+            if (raycastHit.blockState.block.blockEntityType == null) {
                 unload()
                 return
             }

@@ -14,6 +14,7 @@ package de.bixilon.minosoft.data.mappings.blocks
 
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.data.mappings.blocks.entites.BlockEntityType
 import de.bixilon.minosoft.data.mappings.items.Item
 import de.bixilon.minosoft.data.mappings.registry.RegistryItem
 import de.bixilon.minosoft.data.mappings.registry.ResourceLocationDeserializer
@@ -22,12 +23,14 @@ import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.TintColorCalculator
 import de.bixilon.minosoft.gui.rendering.chunk.models.renderable.BlockLikeRenderer
 
-open class Block(override val resourceLocation: ResourceLocation, mappings: VersionMapping, data: JsonObject) : RegistryItem {
+open class Block(final override val resourceLocation: ResourceLocation, mappings: VersionMapping, data: JsonObject) : RegistryItem {
     open val explosionResistance: Float = data["explosion_resistance"]?.asFloat ?: 0.0f
     open val tintColor: RGBColor? = data["tint_color"]?.asInt?.let { TintColorCalculator.getJsonColor(it) }
     open val randomOffsetType: RandomOffsetTypes? = data["offset_type"]?.asString?.let { RandomOffsetTypes[it] }
     open val tint: ResourceLocation? = data["tint"]?.asString?.let { ResourceLocation(it) }
     open val renderOverride: List<BlockLikeRenderer>? = null
+    open var blockEntityType: BlockEntityType? = null
+        protected set
 
     private val itemId: Int = data["item"]?.asInt ?: 0
 
@@ -39,7 +42,8 @@ open class Block(override val resourceLocation: ResourceLocation, mappings: Vers
         protected set
 
     override fun postInit(versionMapping: VersionMapping) {
-        item = versionMapping.itemRegistry.get(itemId)
+        item = versionMapping.itemRegistry[itemId]
+        blockEntityType = versionMapping.blockEntityTypeRegistry.getByBlock(this)
     }
 
     override fun toString(): String {

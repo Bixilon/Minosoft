@@ -17,6 +17,7 @@ import de.bixilon.minosoft.data.entities.block.container.*
 import de.bixilon.minosoft.data.entities.block.container.storage.*
 import de.bixilon.minosoft.data.entities.block.piston.PistonBlockEntity
 import de.bixilon.minosoft.data.entities.block.piston.StickyPistonBlockEntity
+import de.bixilon.minosoft.data.mappings.MultiResourceLocationAble
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 
@@ -67,6 +68,11 @@ object DefaultBlockEntityMetaDataFactory {
 
         for (entityFactory in entityFactories) {
             ret[entityFactory.RESOURCE_LOCATION] = entityFactory
+            if (entityFactory is MultiResourceLocationAble) {
+                for (resourceLocation in entityFactory.ALIASES) {
+                    ret[resourceLocation] = entityFactory
+                }
+            }
         }
 
         BLOCK_ENTITY_FACTORY_MAP = ret.toMap()

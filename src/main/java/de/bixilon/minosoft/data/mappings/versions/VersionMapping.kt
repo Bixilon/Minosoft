@@ -26,6 +26,7 @@ import de.bixilon.minosoft.data.mappings.biomes.BiomePrecipitation
 import de.bixilon.minosoft.data.mappings.blocks.Block
 import de.bixilon.minosoft.data.mappings.blocks.BlockState
 import de.bixilon.minosoft.data.mappings.blocks.entites.BlockEntityType
+import de.bixilon.minosoft.data.mappings.blocks.entites.BlockEntityTypeRegistry
 import de.bixilon.minosoft.data.mappings.effects.StatusEffect
 import de.bixilon.minosoft.data.mappings.entities.EntityType
 import de.bixilon.minosoft.data.mappings.entities.villagers.VillagerProfession
@@ -92,7 +93,7 @@ class VersionMapping {
     val entityMetaIndexMap: MutableMap<EntityMetaDataFields, Int> = mutableMapOf()
     val entityRegistry: Registry<EntityType> = Registry()
 
-    val blockEntityRegistry: Registry<BlockEntityType> = Registry()
+    val blockEntityTypeRegistry = BlockEntityTypeRegistry(this)
     val blockEntityMetaDataTypeRegistry: Registry<BlockEntityMetaType> = Registry()
 
     val containerTypeRegistry: Registry<ContainerType> = Registry()
@@ -173,6 +174,8 @@ class VersionMapping {
         containerTypeRegistry.initialize(pixlyzerData["container_types"]?.asJsonObject, this, ContainerType, alternative = DefaultRegistries.CONTAINER_TYPE_REGISTRY.forVersion(version))
         gameEventRegistry.initialize(pixlyzerData["game_events"]?.asJsonObject, this, GameEvent, alternative = DefaultRegistries.GAME_EVENT_REGISTRY.forVersion(version))
 
+        blockEntityTypeRegistry.initialize(pixlyzerData["block_entities"]?.asJsonObject, this, BlockEntityType)
+
         soundEventRegistry.initialize(pixlyzerData["sound_events"]?.asJsonObject, this, SoundEvent)
         particleTypeRegistry.initialize(pixlyzerData["particles"]?.asJsonObject, this, ParticleType)
         materialRegistry.initialize(pixlyzerData["materials"]?.asJsonObject, this, Material)
@@ -189,13 +192,14 @@ class VersionMapping {
 
         entityRegistry.initialize(pixlyzerData["entities"]?.asJsonObject, this, EntityType)
 
-        blockEntityRegistry.initialize(pixlyzerData["block_entities"]?.asJsonObject, this, BlockEntityType)
         blockEntityMetaDataTypeRegistry.initialize(pixlyzerData["block_entity_meta_data_types"]?.asJsonObject, this, BlockEntityMetaType, alternative = DefaultRegistries.BLOCK_ENTITY_META_TYPE_REGISTRY.forVersion(version))
 
 
         // post init
         biomeRegistry.postInit(this)
         fluidRegistry.postInit(this)
+        blockEntityTypeRegistry.postInit(this)
+        blockRegistry.postInit(this)
         isFullyLoaded = true
     }
 

@@ -14,14 +14,23 @@
 package de.bixilon.minosoft.data.entities.block.container.storage
 
 import de.bixilon.minosoft.data.entities.block.BlockEntityFactory
+import de.bixilon.minosoft.data.mappings.MultiResourceLocationAble
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.util.KUtil.toResourceLocationList
 
 class ShulkerBoxBlockEntity(connection: PlayConnection) : StorageBlockEntity(connection) {
 
 
-    companion object : BlockEntityFactory<ShulkerBoxBlockEntity> {
+    companion object : BlockEntityFactory<ShulkerBoxBlockEntity>, MultiResourceLocationAble {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("minecraft:shulker_box")
+        override val ALIASES: Set<ResourceLocation> = setOf(
+            "minecraft:white_shulker_box", "minecraft:orange_shulker_box", "minecraft:magenta_shulker_box", "minecraft:light_blue_shulker_box",
+            "minecraft:yellow_shulker_box", "minecraft:lime_shulker_box", "minecraft:pink_shulker_box", "minecraft:gray_shulker_box",
+            "minecraft:silver_shulker_box", "minecraft:cyan_shulker_box", "minecraft:purple_shulker_box", "minecraft:blue_shulker_box",
+            "minecraft:brown_shulker_box", "minecraft:green_shulker_box", "minecraft:red_shulker_box", "minecraft:black_shulker_box",
+        ).toResourceLocationList()
+
 
         override fun build(connection: PlayConnection): ShulkerBoxBlockEntity {
             return ShulkerBoxBlockEntity(connection)

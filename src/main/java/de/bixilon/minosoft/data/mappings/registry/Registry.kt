@@ -23,20 +23,20 @@ open class Registry<T : RegistryItem>(
     private var parentRegistry: Registry<T>? = null,
 ) : Iterable<T>, Clearable, Parentable<Registry<T>> {
     private var initialized = false
-    private val idValueMap: MutableMap<Int, T> = mutableMapOf()
-    private val valueIdMap: MutableMap<T, Int> = mutableMapOf()
-    private val resourceLocationMap: MutableMap<ResourceLocation, T> = mutableMapOf()
+    protected val idValueMap: MutableMap<Int, T> = mutableMapOf()
+    protected val valueIdMap: MutableMap<T, Int> = mutableMapOf()
+    protected val resourceLocationMap: MutableMap<ResourceLocation, T> = mutableMapOf()
 
 
-    open fun get(resourceLocation: ResourceLocation): T? {
+    open operator fun get(resourceLocation: ResourceLocation): T? {
         return resourceLocationMap[resourceLocation] ?: parentRegistry?.get(resourceLocation)
     }
 
-    open fun get(resourceLocation: String): T? {
+    open operator fun get(resourceLocation: String): T? {
         return get(ResourceLocation.getPathResourceLocation(resourceLocation))
     }
 
-    open fun get(id: Int): T {
+    open operator fun get(id: Int): T {
         return idValueMap[id] ?: parentRegistry?.get(id)!!
     }
 
@@ -95,7 +95,7 @@ open class Registry<T : RegistryItem>(
     }
 
 
-    fun postInit(versionMapping: VersionMapping) {
+    open fun postInit(versionMapping: VersionMapping) {
         for ((_, value) in resourceLocationMap) {
             value.postInit(versionMapping)
         }
