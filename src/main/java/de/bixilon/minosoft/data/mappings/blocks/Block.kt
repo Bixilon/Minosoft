@@ -22,16 +22,14 @@ import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.TintColorCalculator
 import de.bixilon.minosoft.gui.rendering.chunk.models.renderable.BlockLikeRenderer
 
-open class Block : RegistryItem {
-    override val resourceLocation: ResourceLocation
-
-    open val explosionResistance: Float
-    open val tintColor: RGBColor?
-    open val randomOffsetType: RandomOffsetTypes?
-    open val tint: ResourceLocation?
+open class Block(override val resourceLocation: ResourceLocation, mappings: VersionMapping, data: JsonObject) : RegistryItem {
+    open val explosionResistance: Float = data["explosion_resistance"]?.asFloat ?: 0.0f
+    open val tintColor: RGBColor? = data["tint_color"]?.asInt?.let { TintColorCalculator.getJsonColor(it) }
+    open val randomOffsetType: RandomOffsetTypes? = data["offset_type"]?.asString?.let { RandomOffsetTypes[it] }
+    open val tint: ResourceLocation? = data["tint"]?.asString?.let { ResourceLocation(it) }
     open val renderOverride: List<BlockLikeRenderer>? = null
 
-    private val itemId: Int
+    private val itemId: Int = data["item"]?.asInt ?: 0
 
     open lateinit var states: Set<BlockState>
         protected set
@@ -39,15 +37,6 @@ open class Block : RegistryItem {
         protected set
     open lateinit var item: Item
         protected set
-
-    constructor(resourceLocation: ResourceLocation, mappings: VersionMapping, data: JsonObject) {
-        resourceLocation.also { this.resourceLocation = it }
-        (data["explosion_resistance"]?.asFloat ?: 0.0f).also { explosionResistance = it }
-        data["tint_color"]?.asInt?.let { TintColorCalculator.getJsonColor(it) }.also { this@Block.tintColor = it }
-        data["offset_type"]?.asString?.let { RandomOffsetTypes[it] }.also { randomOffsetType = it }
-        itemId = data["item"]?.asInt ?: 0
-        data["tint"]?.asString?.let { ResourceLocation(it) }.also { tint = it }
-    }
 
     override fun postInit(versionMapping: VersionMapping) {
         item = versionMapping.itemRegistry.get(itemId)

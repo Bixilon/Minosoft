@@ -20,20 +20,19 @@ import de.bixilon.minosoft.data.mappings.versions.VersionMapping
 import de.bixilon.minosoft.gui.rendering.chunk.models.renderable.BlockLikeRenderer
 import de.bixilon.minosoft.gui.rendering.chunk.models.renderable.FluidRenderer
 
-class FluidBlock : Block {
-    override val renderOverride: List<BlockLikeRenderer>
-
-    open val stillFluid: Fluid
-    open val flowingFluid: Fluid
+open class FluidBlock(resourceLocation: ResourceLocation, mappings: VersionMapping, data: JsonObject) : Block(resourceLocation, mappings, data) {
+    open val stillFluid: Fluid = mappings.fluidRegistry.get(data["still_fluid"].asInt)
+    open val flowingFluid: Fluid = mappings.fluidRegistry.get(data["flow_fluid"].asInt)
 
     val fluidRenderer: FluidRenderer
 
+    override val renderOverride: List<BlockLikeRenderer>
 
-    constructor(resourceLocation: ResourceLocation, mappings: VersionMapping, data: JsonObject) : super(resourceLocation, mappings, data) {
-        stillFluid = mappings.fluidRegistry.get(data["still_fluid"].asInt)
-        flowingFluid = mappings.fluidRegistry.get(data["flow_fluid"].asInt)
-
-        fluidRenderer = FluidRenderer(this, stillFluid, flowingFluid)
-        renderOverride = listOf(fluidRenderer)
+    init {
+        also {
+            fluidRenderer = FluidRenderer(it, stillFluid, flowingFluid)
+            renderOverride = listOf(fluidRenderer)
+        }
     }
+
 }

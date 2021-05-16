@@ -24,8 +24,8 @@ import de.bixilon.minosoft.data.mappings.versions.VersionMapping
 
 open class Item(
     override val resourceLocation: ResourceLocation,
-    data: JsonObject,
     versionMapping: VersionMapping,
+    data: JsonObject,
 ) : RegistryItem, Translatable {
     val rarity: Rarities = data["rarity"]?.asInt?.let { Rarities[it] } ?: Rarities.COMMON
     val maxStackSize: Int = data["max_stack_size"]?.asInt ?: 64
@@ -43,10 +43,10 @@ open class Item(
             check(mappings != null) { "VersionMapping is null!" }
             return when (data["class"].asString) {
                 "BlockItem" -> BlockItem(resourceLocation, data, mappings)
-                "ArmorItem" -> ArmorItem(resourceLocation, data, mappings)
+                "ArmorItem" -> ArmorItem(resourceLocation, mappings, data)
                 //   "Item" -> Item(resourceLocation, data)
                 // else -> TODO("Can not find item class: ${data["class"].asString}")
-                else -> Item(resourceLocation, data, mappings)
+                else -> Item(resourceLocation, mappings, data)
             }
         }
     }

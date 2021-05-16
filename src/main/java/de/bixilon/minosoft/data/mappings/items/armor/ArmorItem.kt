@@ -21,9 +21,9 @@ import de.bixilon.minosoft.data.mappings.versions.VersionMapping
 
 open class ArmorItem(
     resourceLocation: ResourceLocation,
-    data: JsonObject,
     versionMapping: VersionMapping,
-) : Item(resourceLocation, data, versionMapping) {
+    data: JsonObject,
+) : Item(resourceLocation, versionMapping, data) {
     val protection = data["defense"].asFloat
     val toughness = data["toughness"].asFloat
     val equipmentSlot = data["equipment_slot"].asString.let { InventorySlots.EquipmentSlots.NAME_MAP[it]!! }
