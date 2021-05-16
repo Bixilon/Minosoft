@@ -100,4 +100,11 @@ object MMath {
     val Float.floor: Float get() = glm.floor(this)
 
     val Float.fractionalPart: Float get() = this - floor
+
+    val Boolean.positiveNegative: Int get() =
+        if (this) {
+            1
+        } else {
+            -1
+        }
 }

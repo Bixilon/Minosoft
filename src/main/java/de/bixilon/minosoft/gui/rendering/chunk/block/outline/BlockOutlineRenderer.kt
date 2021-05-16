@@ -23,10 +23,14 @@ import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.Renderer
 import de.bixilon.minosoft.gui.rendering.RendererBuilder
 import de.bixilon.minosoft.gui.rendering.chunk.VoxelShape
+import de.bixilon.minosoft.gui.rendering.chunk.models.renderable.ElementRenderer
 import de.bixilon.minosoft.gui.rendering.shader.Shader
+import de.bixilon.minosoft.gui.rendering.util.VecUtil
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.getWorldOffset
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.util.BitByte.isBit
+import de.bixilon.minosoft.util.MMath.positiveNegative
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3i
 import org.lwjgl.opengl.GL11.*
@@ -52,15 +56,31 @@ class BlockOutlineRenderer(
     }
 
     private fun drawLine(start: Vec3, end: Vec3, mesh: BlockOutlineMesh) {
-        // ToDo: Maybe use a cuboid, also we need to rotate `rotatedLineWidth`
-        val rotatedLineWidth = Vec3(HALF_LINE_WIDTH, HALF_LINE_WIDTH, HALF_LINE_WIDTH)
-        mesh.addVertex(Vec3(start.x, start.y, start.z) - rotatedLineWidth)
-        mesh.addVertex(Vec3(start.x, start.y, start.z) + rotatedLineWidth)
-        mesh.addVertex(Vec3(end.x, end.y, end.z) - rotatedLineWidth)
+        val direction = (end-start).normalize()
+        val normal1 = Vec3(direction.z, direction.z, direction.x-direction.y)
+        if (normal1 == VecUtil.EMPTY_VEC3) {
+            normal1.x = normal1.z
+            normal1.z = direction.z
+        }
+        normal1.normalizeAssign()
+        val normal2 = (direction cross normal1).normalize()
+        for (i in 0..4) {
+            drawLineQuad(mesh, start, end, direction, normal1, normal2, i.isBit(0), i.isBit(1))
+        }
+    }
 
-        mesh.addVertex(Vec3(end.x, end.y, end.z) - rotatedLineWidth)
-        mesh.addVertex(Vec3(start.x, start.y, start.z) + rotatedLineWidth)
-        mesh.addVertex(Vec3(end.x, end.y, end.z) + rotatedLineWidth)
+    private fun drawLineQuad(mesh: BlockOutlineMesh, start: Vec3, end: Vec3, direction: Vec3, normal1: Vec3, normal2: Vec3, invertNormal1: Boolean, invertNormal2: Boolean) {
+        val normal1Multiplier = invertNormal1.positiveNegative
+        val normal2Multiplier = invertNormal2.positiveNegative
+        val positions = listOf(
+            start + normal2 * normal2Multiplier * HALF_LINE_WIDTH - direction * HALF_LINE_WIDTH,
+            start + normal1 * normal1Multiplier * HALF_LINE_WIDTH - direction * HALF_LINE_WIDTH,
+            end  +  normal1 * normal1Multiplier * HALF_LINE_WIDTH + direction * HALF_LINE_WIDTH,
+            end  +  normal2 * normal2Multiplier * HALF_LINE_WIDTH + direction * HALF_LINE_WIDTH,
+        )
+        for ((_, positionIndex) in ElementRenderer.DRAW_ODER) {
+            mesh.addVertex(positions[positionIndex])
+        }
     }
 
     private fun drawVoxelShape(shape: VoxelShape, blockPosition: Vec3, mesh: BlockOutlineMesh, margin: Float = 0.0f) {
@@ -167,7 +187,7 @@ class BlockOutlineRenderer(
 
     companion object : RendererBuilder<BlockOutlineRenderer> {
         override val RESOURCE_LOCATION = ResourceLocation("minosoft:block_outline")
-        private const val LINE_WIDTH = 1.0f / 64.0f
+        private const val LINE_WIDTH = 1.0f / 128.0f
         private const val HALF_LINE_WIDTH = LINE_WIDTH / 2.0f
 
         override fun build(connection: PlayConnection, renderWindow: RenderWindow): BlockOutlineRenderer {

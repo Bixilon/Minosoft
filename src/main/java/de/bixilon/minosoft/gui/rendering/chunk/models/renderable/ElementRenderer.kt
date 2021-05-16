@@ -73,17 +73,20 @@ class ElementRenderer(
 
         val lightLevel = context.lightAccessor.getLightLevel(context.blockPosition + face.cullFace?.let { directionMapping[it] }) // ToDo: rotate cullface
 
-        val drawPositions = arrayOf(transformedPositions[positionTemplate[0]], transformedPositions[positionTemplate[1]], transformedPositions[positionTemplate[2]], transformedPositions[positionTemplate[3]])
+        val drawPositions = mutableListOf<Vec3>()
+        for (position in positionTemplate) {
+            drawPositions += transformedPositions[position]
+        }
 
         val mesh = getMesh(context.meshCollection, texture.transparency)
         val texturePositions = face.getTexturePositionArray(realDirection)
 
-        for (vertex in DRAW_ODER) {
-            val input = drawPositions[vertex.first]
+        for ((drawPositionIndex, texturePositionIndex) in DRAW_ODER) {
+            val input = drawPositions[drawPositionIndex]
             val output = context.blockPosition plus context.offset + input + DRAW_OFFSET
             mesh.addVertex(
                 position = output,
-                textureCoordinates = texturePositions[vertex.second]!!,
+                textureCoordinates = texturePositions[texturePositionIndex]!!,
                 texture = texture,
                 tintColor = if (face.tint) {
                     tintColor
