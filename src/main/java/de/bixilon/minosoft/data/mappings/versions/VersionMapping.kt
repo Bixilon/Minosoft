@@ -23,10 +23,10 @@ import de.bixilon.minosoft.data.mappings.*
 import de.bixilon.minosoft.data.mappings.biomes.Biome
 import de.bixilon.minosoft.data.mappings.biomes.BiomeCategory
 import de.bixilon.minosoft.data.mappings.biomes.BiomePrecipitation
-import de.bixilon.minosoft.data.mappings.blocks.Block
 import de.bixilon.minosoft.data.mappings.blocks.BlockState
 import de.bixilon.minosoft.data.mappings.blocks.entites.BlockEntityType
 import de.bixilon.minosoft.data.mappings.blocks.entites.BlockEntityTypeRegistry
+import de.bixilon.minosoft.data.mappings.blocks.types.Block
 import de.bixilon.minosoft.data.mappings.effects.StatusEffect
 import de.bixilon.minosoft.data.mappings.entities.EntityType
 import de.bixilon.minosoft.data.mappings.entities.villagers.VillagerProfession
@@ -93,7 +93,7 @@ class VersionMapping {
     val entityMetaIndexMap: MutableMap<EntityMetaDataFields, Int> = mutableMapOf()
     val entityRegistry: Registry<EntityType> = Registry()
 
-    val blockEntityTypeRegistry = BlockEntityTypeRegistry(this)
+    val blockEntityTypeRegistry = BlockEntityTypeRegistry()
     val blockEntityMetaDataTypeRegistry: Registry<BlockEntityMetaType> = Registry()
 
     val containerTypeRegistry: Registry<ContainerType> = Registry()

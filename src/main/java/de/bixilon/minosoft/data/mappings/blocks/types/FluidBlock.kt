@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.mappings.blocks
+package de.bixilon.minosoft.data.mappings.blocks.types
 
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.mappings.ResourceLocation

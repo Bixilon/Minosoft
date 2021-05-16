@@ -27,7 +27,7 @@ class BlockPlaceC2SP(
     val position: Vec3i,
     val direction: Directions,
     val cursorPosition: Vec3,
-    val item: ItemStack,
+    val item: ItemStack?,
     val hand: Hands,
     val insideBlock: Boolean,
 ) : PlayC2SPacket {

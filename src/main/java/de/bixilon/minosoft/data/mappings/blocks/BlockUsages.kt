@@ -11,25 +11,27 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.util.enum
+package de.bixilon.minosoft.data.mappings.blocks
 
-interface ValuesEnum<T : Enum<*>> {
-    val VALUES: Array<T>
-    val NAME_MAP: Map<String, T>
+enum class BlockUsages {
+    /**
+     * Usage get consumed (like trying to open an iron door) without animation
+     */
+    CONSUME,
 
-    operator fun get(ordinal: Int): T {
-        return VALUES[ordinal]
-    }
+    /**
+     * Usage get consumed (like pressing a button, opening a door, right clicking on block entities) with animation
+     */
+    SUCCESS,
 
-    operator fun get(name: String): T {
-        return NAME_MAP[name]!!
-    }
+    /**
+     * Nothing happens from block side (e.g. right clicking on dirt). You can maybe place a block, whatever
+     */
+    PASS,
 
-    fun next(current: T): T {
-        val ordinal = current.ordinal
-        if (ordinal + 1 > VALUES.size) {
-            return VALUES[0]
-        }
-        return VALUES[ordinal + 1]
-    }
+    /**
+     * Nothing happens, basically `CONSUME`, but a requirement was not satisfied.
+     */
+    FAIL,
+    ;
 }

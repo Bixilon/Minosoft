@@ -260,7 +260,9 @@ class RenderWindow(
         glfwSetCursorPosCallback(windowId, inputHandler::mouseMove)
 
 
+        inputHandler.init()
         registerGlobalKeyCombinations()
+
 
         connection.fireEvent(ScreenResizeEvent(previousScreenDimensions = Vec2i(0, 0), screenDimensions = screenDimensions))
 
@@ -327,7 +329,7 @@ class RenderWindow(
 
             glfwSwapBuffers(windowId)
             glfwPollEvents()
-            inputHandler.camera.draw()
+            inputHandler.draw()
             inputHandler.camera.handleInput(deltaFrameTime)
 
             // handle opengl context tasks, but limit it per frame

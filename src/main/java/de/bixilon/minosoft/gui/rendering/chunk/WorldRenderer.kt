@@ -18,8 +18,8 @@ import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames
 import de.bixilon.minosoft.data.Directions
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.blocks.BlockState
-import de.bixilon.minosoft.data.mappings.blocks.FluidBlock
 import de.bixilon.minosoft.data.mappings.blocks.properties.BlockProperties
+import de.bixilon.minosoft.data.mappings.blocks.types.FluidBlock
 import de.bixilon.minosoft.data.mappings.versions.VersionMapping
 import de.bixilon.minosoft.data.world.Chunk
 import de.bixilon.minosoft.data.world.ChunkSection

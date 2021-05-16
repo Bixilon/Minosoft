@@ -20,7 +20,7 @@ import de.bixilon.minosoft.util.collections.Clearable
 import de.bixilon.minosoft.util.json.ResourceLocationJsonMap.toResourceLocationMap
 
 open class Registry<T : RegistryItem>(
-    private var parentRegistry: Registry<T>? = null,
+    protected var parentRegistry: Registry<T>? = null,
 ) : Iterable<T>, Clearable, Parentable<Registry<T>> {
     private var initialized = false
     protected val idValueMap: MutableMap<Int, T> = mutableMapOf()

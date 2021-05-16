@@ -39,7 +39,7 @@ class BlockBreakC2SP(
         } else {
             buffer.writePosition(position)
         }
-        buffer.writeByte(direction?.ordinal ?: 0xFF)
+        buffer.writeByte(direction?.ordinal ?: 0x00)
     }
 
     override fun log() {

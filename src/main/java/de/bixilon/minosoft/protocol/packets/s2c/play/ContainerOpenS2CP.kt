@@ -26,9 +26,9 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 class ContainerOpenS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     val containerId: Byte = buffer.readByte()
     val containerType: ContainerType = if (buffer.versionId < V_14W03B) {
-        buffer.connection.mapping.containerTypeRegistry.get(buffer.readUnsignedByte())
+        buffer.connection.mapping.containerTypeRegistry[buffer.readUnsignedByte()]
     } else {
-        buffer.connection.mapping.containerTypeRegistry.get(buffer.readResourceLocation())!!
+        buffer.connection.mapping.containerTypeRegistry[buffer.readResourceLocation()]!!
     }
     val title: ChatComponent = buffer.readChatComponent()
     val slotCount: Int = if (buffer.versionId < V_19W02A || buffer.versionId >= V_19W11A) {

@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.mappings.items
 
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.mappings.ResourceLocation
-import de.bixilon.minosoft.data.mappings.blocks.Block
+import de.bixilon.minosoft.data.mappings.blocks.types.Block
 import de.bixilon.minosoft.data.mappings.versions.VersionMapping
 
 open class BlockItem(

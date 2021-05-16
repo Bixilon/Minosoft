@@ -11,18 +11,10 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.mappings.blocks.properties.serializer
+package de.bixilon.minosoft.data.mappings.materials
 
-object BooleanBlocKPropertiesSerializer : BlockPropertiesSerializer {
+import de.bixilon.minosoft.util.KUtil.asResourceLocation
 
-    override fun deserialize(value: Any): Boolean {
-        if (value is Boolean) {
-            return value
-        }
-        return when (value) {
-            "true" -> true
-            "false" -> false
-            else -> throw IllegalArgumentException("Not a boolean: $value")
-        }
-    }
+object DefaultMaterials {
+    val METAL = "minecraft:metal".asResourceLocation()
 }

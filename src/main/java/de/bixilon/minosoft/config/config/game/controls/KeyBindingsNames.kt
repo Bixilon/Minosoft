@@ -47,6 +47,9 @@ object KeyBindingsNames {
     val CLOSE = ResourceLocation("minosoft:close")
 
 
+    val BLOCK_INTERACT = ResourceLocation("minosoft:interact_block")
+
+
     val SELECT_HOTBAR_SLOTS = arrayOf(
         ResourceLocation("minosoft:select_hotbar_slot_1"),
         ResourceLocation("minosoft:select_hotbar_slot_2"),
@@ -200,5 +203,10 @@ object KeyBindingsNames {
             ),
             ignoreConsumer = true
         ),
+        BLOCK_INTERACT to KeyBinding(
+            mutableMapOf(
+                KeyAction.CHANGE to mutableSetOf(KeyCodes.MOUSE_BUTTON_RIGHT)
+            )
+        )
     )
 }

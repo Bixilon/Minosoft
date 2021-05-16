@@ -13,23 +13,18 @@
 
 package de.bixilon.minosoft.data.mappings.blocks.entites
 
-import de.bixilon.minosoft.data.mappings.blocks.Block
+import de.bixilon.minosoft.data.mappings.blocks.types.Block
 import de.bixilon.minosoft.data.mappings.registry.Registry
 import de.bixilon.minosoft.data.mappings.versions.VersionMapping
 
 class BlockEntityTypeRegistry(
-    private val versionMapping: VersionMapping,
-    private var parentRegistry: BlockEntityTypeRegistry? = null,
-) : Registry<BlockEntityType>() {
+    parentRegistry: BlockEntityTypeRegistry? = null,
+) : Registry<BlockEntityType>(parentRegistry) {
     private lateinit var blockTypeMap: MutableMap<Block, BlockEntityType>
 
     fun getByBlock(block: Block): BlockEntityType? {
+        val parentRegistry = super.parentRegistry as BlockEntityTypeRegistry?
         return blockTypeMap[block] ?: parentRegistry?.getByBlock(block)
-    }
-
-    fun setParent(parent: BlockEntityTypeRegistry?) {
-        super.setParent(parent)
-        this.parentRegistry = parent
     }
 
     override fun postInit(versionMapping: VersionMapping) {

@@ -11,25 +11,18 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.util.enum
+package de.bixilon.minosoft.data.mappings.blocks.properties.serializer
 
-interface ValuesEnum<T : Enum<*>> {
-    val VALUES: Array<T>
-    val NAME_MAP: Map<String, T>
+object BooleanBlockPropertiesSerializer : BlockPropertiesSerializer {
 
-    operator fun get(ordinal: Int): T {
-        return VALUES[ordinal]
-    }
-
-    operator fun get(name: String): T {
-        return NAME_MAP[name]!!
-    }
-
-    fun next(current: T): T {
-        val ordinal = current.ordinal
-        if (ordinal + 1 > VALUES.size) {
-            return VALUES[0]
+    override fun deserialize(value: Any): Boolean {
+        if (value is Boolean) {
+            return value
         }
-        return VALUES[ordinal + 1]
+        return when (value) {
+            "true" -> true
+            "false" -> false
+            else -> throw IllegalArgumentException("Not a boolean: $value")
+        }
     }
 }

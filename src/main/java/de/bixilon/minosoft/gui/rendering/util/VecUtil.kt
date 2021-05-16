@@ -19,8 +19,8 @@ import com.google.gson.JsonObject
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.Directions
-import de.bixilon.minosoft.data.mappings.blocks.Block
 import de.bixilon.minosoft.data.mappings.blocks.RandomOffsetTypes
+import de.bixilon.minosoft.data.mappings.blocks.types.Block
 import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModelElement
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import glm_.func.common.clamp

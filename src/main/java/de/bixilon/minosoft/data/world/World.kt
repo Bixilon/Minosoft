@@ -80,6 +80,11 @@ class World(
             } else {
                 VersionTweaker.transformBlock(blockState, sections, blockPosition.inChunkSectionPosition, blockPosition.sectionHeight)
             }
+            val inChunkPosition = blockPosition.inChunkPosition
+            it.getBlockState(inChunkPosition)?.let { oldBlockState ->
+                oldBlockState.block.onBreak(connection, blockPosition, oldBlockState, it.getBlockEntity(inChunkPosition))
+            }
+            blockState?.block?.onPlace(connection, blockPosition, blockState)
             it.setBlockState(blockPosition.inChunkPosition, transformedBlockState)
             connection.fireEvent(BlockSetEvent(
                 connection = connection,
@@ -87,6 +92,10 @@ class World(
                 blockState = transformedBlockState,
             ))
         }
+    }
+
+    fun forceSetBlock(blockPosition: Vec3i, blockState: BlockState?) {
+        chunks[blockPosition.chunkPosition]?.setBlockState(blockPosition.inChunkPosition, blockState)
     }
 
     fun unloadChunk(chunkPosition: Vec2i) {

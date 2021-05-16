@@ -19,6 +19,7 @@ import com.google.gson.JsonPrimitive
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.blocks.properties.BlockProperties
+import de.bixilon.minosoft.data.mappings.blocks.types.Block
 import de.bixilon.minosoft.data.mappings.materials.Material
 import de.bixilon.minosoft.data.mappings.versions.VersionMapping
 import de.bixilon.minosoft.data.text.RGBColor
@@ -28,10 +29,12 @@ import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModel
 import de.bixilon.minosoft.gui.rendering.chunk.models.renderable.BlockLikeRenderer
 import de.bixilon.minosoft.gui.rendering.chunk.models.renderable.BlockRenderer
 import de.bixilon.minosoft.gui.rendering.chunk.models.renderable.MultipartRenderer
+import de.bixilon.minosoft.util.enum.ValuesEnum
 import glm_.vec3.Vec3i
 import java.util.*
 import kotlin.math.abs
 import kotlin.random.Random
+import kotlin.reflect.full.companionObjectInstance
 
 data class BlockState(
     val block: Block,
@@ -110,7 +113,6 @@ data class BlockState(
         val random = Random(getPositionSeed(blockPosition.x, blockPosition.y, blockPosition.z))
         return renderers[abs(random.nextLong().toInt() % renderers.size)]
     }
-
 
     companion object {
 
@@ -225,10 +227,43 @@ data class BlockState(
         }
     }
 
-    // properties
 
-    fun isPowered(): Boolean? {
-        return properties[BlockProperties.POWERED] as Boolean?
+    fun withProperties(vararg properties: Pair<BlockProperties, Any>): BlockState {
+        val newProperties = this.properties.toMutableMap()
+        for ((key, value) in properties) {
+            newProperties[key] = value
+        }
+        val wannabe = WannabeBlockState(resourceLocation = this.block.resourceLocation, properties = newProperties)
+        for (blockState in this.block.states) {
+            if (blockState.equals(wannabe)) {
+                return blockState
+            }
+        }
+        throw IllegalArgumentException("Can not find ${this.block.resourceLocation}, with properties: $properties")
     }
-    // ToDo
+
+
+    fun cycle(property: BlockProperties): BlockState {
+        val currentValue = properties[property] ?: throw IllegalArgumentException("$this has no property $property")
+
+        when (currentValue) {
+            is Boolean -> {
+                return withProperties(property to !currentValue)
+            }
+            is Number -> {
+                return try {
+                    withProperties(property to (currentValue.toInt() + 1))
+                } catch (exception: IllegalArgumentException) {
+                    withProperties(property to 0)
+                }
+            }
+            is Enum<*> -> {
+                val values = currentValue::class.companionObjectInstance as ValuesEnum<Enum<*>>
+                return withProperties(property to values.next(currentValue))
+            }
+            else -> {
+                return this
+            }
+        }
+    }
 }

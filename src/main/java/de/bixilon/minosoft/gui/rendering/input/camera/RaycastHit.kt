@@ -24,4 +24,5 @@ data class RaycastHit(
     val steps: Int,
 ) {
     val blockPosition = position.floor
+    val hitPosition = position.minus(blockPosition)
 }

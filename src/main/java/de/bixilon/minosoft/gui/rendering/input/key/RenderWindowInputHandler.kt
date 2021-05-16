@@ -21,6 +21,7 @@ import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.hud.elements.input.KeyConsumer
+import de.bixilon.minosoft.gui.rendering.input.InteractionHandler
 import de.bixilon.minosoft.gui.rendering.input.camera.Camera
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.util.logging.Log
@@ -41,6 +42,7 @@ class RenderWindowInputHandler(
 
     private var skipNextCharPress = false
 
+    private val interactionHandler = InteractionHandler(renderWindow)
 
     init {
         registerKeyCallback(KeyBindingsNames.DEBUG_MOUSE_CATCH) {
@@ -52,6 +54,10 @@ class RenderWindowInputHandler(
             glfwSetInputMode(renderWindow.windowId, GLFW_CURSOR, newCursorMode)
             renderWindow.sendDebugMessage("Toggled mouse catch!")
         }
+    }
+
+    fun init() {
+        interactionHandler.init()
     }
 
 
@@ -265,5 +271,10 @@ class RenderWindowInputHandler(
             }
         }
         return false
+    }
+
+    fun draw() {
+        camera.draw()
+        interactionHandler.draw()
     }
 }

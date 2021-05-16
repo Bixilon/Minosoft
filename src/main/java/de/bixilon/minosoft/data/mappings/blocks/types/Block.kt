@@ -10,18 +10,28 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.data.mappings.blocks
+package de.bixilon.minosoft.data.mappings.blocks.types
 
 import com.google.gson.JsonObject
+import de.bixilon.minosoft.data.entities.block.BlockEntity
+import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.data.mappings.blocks.BlockState
+import de.bixilon.minosoft.data.mappings.blocks.BlockUsages
+import de.bixilon.minosoft.data.mappings.blocks.RandomOffsetTypes
 import de.bixilon.minosoft.data.mappings.blocks.entites.BlockEntityType
+import de.bixilon.minosoft.data.mappings.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.mappings.items.Item
 import de.bixilon.minosoft.data.mappings.registry.RegistryItem
 import de.bixilon.minosoft.data.mappings.registry.ResourceLocationDeserializer
 import de.bixilon.minosoft.data.mappings.versions.VersionMapping
+import de.bixilon.minosoft.data.player.Hands
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.TintColorCalculator
 import de.bixilon.minosoft.gui.rendering.chunk.models.renderable.BlockLikeRenderer
+import de.bixilon.minosoft.gui.rendering.input.camera.RaycastHit
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import glm_.vec3.Vec3i
 
 open class Block(final override val resourceLocation: ResourceLocation, mappings: VersionMapping, data: JsonObject) : RegistryItem {
     open val explosionResistance: Float = data["explosion_resistance"]?.asFloat ?: 0.0f
@@ -50,12 +60,40 @@ open class Block(final override val resourceLocation: ResourceLocation, mappings
         return resourceLocation.full
     }
 
+    open fun getPlacementState(connection: PlayConnection, raycastHit: RaycastHit): BlockState {
+        return defaultState
+    }
+
+    open fun onBreak(connection: PlayConnection, blockPosition: Vec3i, blockState: BlockState, blockEntity: BlockEntity?) {
+
+    }
+
+    open fun onPlace(connection: PlayConnection, blockPosition: Vec3i, blockState: BlockState) {
+
+    }
+
+    open fun canPlaceAt(connection: PlayConnection, blockPosition: Vec3i, blockState: BlockState): Boolean {
+        return true
+    }
+
+    open fun use(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, raycastHit: RaycastHit, hands: Hands, itemStack: ItemStack?): BlockUsages {
+        if (blockEntityType == null) {
+            return BlockUsages.PASS
+        }
+        return BlockUsages.SUCCESS
+    }
+
+    fun withProperties(vararg properties: Pair<BlockProperties, Any>): BlockState {
+        return this.defaultState.withProperties(*properties)
+    }
+
     companion object : ResourceLocationDeserializer<Block> {
         override fun deserialize(mappings: VersionMapping?, resourceLocation: ResourceLocation, data: JsonObject): Block {
             check(mappings != null) { "VersionMapping is null!" }
 
             val block = when (data["class"].asString) {
                 "FluidBlock" -> FluidBlock(resourceLocation, mappings, data)
+                "DoorBlock" -> DoorBlock(resourceLocation, mappings, data)
                 else -> Block(resourceLocation, mappings, data)
             }
 

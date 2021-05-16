@@ -16,35 +16,35 @@ package de.bixilon.minosoft.data.mappings.blocks.properties
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.Directions
 import de.bixilon.minosoft.data.mappings.blocks.properties.serializer.BlockPropertiesSerializer
-import de.bixilon.minosoft.data.mappings.blocks.properties.serializer.BooleanBlocKPropertiesSerializer
+import de.bixilon.minosoft.data.mappings.blocks.properties.serializer.BooleanBlockPropertiesSerializer
 import de.bixilon.minosoft.data.mappings.blocks.properties.serializer.IntBlockPropertiesSerializer
 import java.util.*
 
 enum class BlockProperties {
-    POWERED(BooleanBlocKPropertiesSerializer),
-    TRIGGERED(BooleanBlocKPropertiesSerializer),
-    INVERTED(BooleanBlocKPropertiesSerializer),
-    LIT(BooleanBlocKPropertiesSerializer),
-    WATERLOGGED(BooleanBlocKPropertiesSerializer),
+    POWERED(BooleanBlockPropertiesSerializer),
+    TRIGGERED(BooleanBlockPropertiesSerializer),
+    INVERTED(BooleanBlockPropertiesSerializer),
+    LIT(BooleanBlockPropertiesSerializer),
+    WATERLOGGED(BooleanBlockPropertiesSerializer),
     STAIR_DIRECTIONAL("shape", Shapes),
     STAIR_HALF("half", Halves),
     SLAB_TYPE("type", Halves),
     MOISTURE_LEVEL("moisture", IntBlockPropertiesSerializer),
     FLUID_LEVEL("level", IntBlockPropertiesSerializer),
     HONEY_LEVEL("honey_level", IntBlockPropertiesSerializer),
-    PISTON_EXTENDED("extended", BooleanBlocKPropertiesSerializer),
+    PISTON_EXTENDED("extended", BooleanBlockPropertiesSerializer),
     PISTON_TYPE("type", PistonTypes),
-    PISTON_SHORT("short", BooleanBlocKPropertiesSerializer),
+    PISTON_SHORT("short", BooleanBlockPropertiesSerializer),
     RAILS_SHAPE("shape", Shapes),
-    SNOWY(BooleanBlocKPropertiesSerializer),
+    SNOWY(BooleanBlockPropertiesSerializer),
     STAGE(IntBlockPropertiesSerializer),
     DISTANCE(IntBlockPropertiesSerializer),
-    LEAVES_PERSISTENT("persistent", BooleanBlocKPropertiesSerializer),
+    LEAVES_PERSISTENT("persistent", BooleanBlockPropertiesSerializer),
     BED_PART("part", BedParts),
-    BED_OCCUPIED("occupied", BooleanBlocKPropertiesSerializer),
-    TNT_UNSTABLE("unstable", BooleanBlocKPropertiesSerializer),
+    BED_OCCUPIED("occupied", BooleanBlockPropertiesSerializer),
+    TNT_UNSTABLE("unstable", BooleanBlockPropertiesSerializer),
     DOOR_HINGE("hinge", Sides),
-    DOOR_OPEN("open", BooleanBlocKPropertiesSerializer),
+    DOOR_OPEN("open", BooleanBlockPropertiesSerializer),
     AGE(IntBlockPropertiesSerializer),
     INSTRUMENT(Instruments),
     NOTE(IntBlockPropertiesSerializer),
@@ -58,55 +58,55 @@ enum class BlockProperties {
     MULTIPART_DOWN("down", MultipartDirectionParser),
 
     SNOW_LAYERS("layers", IntBlockPropertiesSerializer),
-    FENCE_IN_WALL("in_wall", BooleanBlocKPropertiesSerializer),
-    SCAFFOLDING_BOTTOM("bottom", BooleanBlocKPropertiesSerializer),
-    TRIPWIRE_DISARMED("disarmed", BooleanBlocKPropertiesSerializer),
-    TRIPWIRE_IN_AIR("in_air", BooleanBlocKPropertiesSerializer),
-    TRIPWIRE_ATTACHED("attached", BooleanBlocKPropertiesSerializer),
+    FENCE_IN_WALL("in_wall", BooleanBlockPropertiesSerializer),
+    SCAFFOLDING_BOTTOM("bottom", BooleanBlockPropertiesSerializer),
+    TRIPWIRE_DISARMED("disarmed", BooleanBlockPropertiesSerializer),
+    TRIPWIRE_IN_AIR("in_air", BooleanBlockPropertiesSerializer),
+    TRIPWIRE_ATTACHED("attached", BooleanBlockPropertiesSerializer),
     STRUCTURE_BLOCK_MODE("mode", StructureBlockModes),
-    COMMAND_BLOCK_CONDITIONAL("conditional", BooleanBlocKPropertiesSerializer),
-    BUBBLE_COLUMN_DRAG("drag", BooleanBlocKPropertiesSerializer),
+    COMMAND_BLOCK_CONDITIONAL("conditional", BooleanBlockPropertiesSerializer),
+    BUBBLE_COLUMN_DRAG("drag", BooleanBlockPropertiesSerializer),
     BELL_ATTACHMENT("attachment", Attachments),
-    LANTERN_HANGING("hanging", BooleanBlocKPropertiesSerializer),
+    LANTERN_HANGING("hanging", BooleanBlockPropertiesSerializer),
     SEA_PICKLE_PICKLES("pickles", IntBlockPropertiesSerializer),
-    LECTERN_BOOK("has_book", BooleanBlocKPropertiesSerializer),
+    LECTERN_BOOK("has_book", BooleanBlockPropertiesSerializer),
 
-    BREWING_STAND_BOTTLE_0("has_bottle_0", BooleanBlocKPropertiesSerializer),
-    BREWING_STAND_BOTTLE_1("has_bottle_1", BooleanBlocKPropertiesSerializer),
-    BREWING_STAND_BOTTLE_2("has_bottle_2", BooleanBlocKPropertiesSerializer),
+    BREWING_STAND_BOTTLE_0("has_bottle_0", BooleanBlockPropertiesSerializer),
+    BREWING_STAND_BOTTLE_1("has_bottle_1", BooleanBlockPropertiesSerializer),
+    BREWING_STAND_BOTTLE_2("has_bottle_2", BooleanBlockPropertiesSerializer),
 
     CHEST_TYPE("type", ChestTypes),
 
     CAKE_BITES("bites", IntBlockPropertiesSerializer),
     BAMBOO_LEAVES("leaves", BambooLeaves),
-    REPEATER_LOCKED("locked", BooleanBlocKPropertiesSerializer),
+    REPEATER_LOCKED("locked", BooleanBlockPropertiesSerializer),
     REPEATER_DELAY("delay", IntBlockPropertiesSerializer),
-    PORTA_FRAME_EYE("eye", BooleanBlocKPropertiesSerializer),
-    JUKEBOX_HAS_RECORD("has_record", BooleanBlocKPropertiesSerializer),
-    CAMPFIRE_SIGNAL_FIRE("signal_fire", BooleanBlocKPropertiesSerializer),
+    PORTA_FRAME_EYE("eye", BooleanBlockPropertiesSerializer),
+    JUKEBOX_HAS_RECORD("has_record", BooleanBlockPropertiesSerializer),
+    CAMPFIRE_SIGNAL_FIRE("signal_fire", BooleanBlockPropertiesSerializer),
     TURTLE_EGS_EGGS("eggs", IntBlockPropertiesSerializer),
     TURTLE_EGGS_HATCH("hatch", IntBlockPropertiesSerializer),
     RESPAWN_ANCHOR_CHARGES("charges", IntBlockPropertiesSerializer),
     CANDLES(IntBlockPropertiesSerializer),
     FACE("face", Attachments),
-    HOPPER_ENABLED("enabled", BooleanBlocKPropertiesSerializer),
+    HOPPER_ENABLED("enabled", BooleanBlockPropertiesSerializer),
 
     DRIPSTONE_THICKNESS("thickness", Thicknesses),
 
 
-    LEGACY_BLOCK_UPDATE("block_update", BooleanBlocKPropertiesSerializer),
-    LEGACY_SMOOTH("smooth", BooleanBlocKPropertiesSerializer),
+    LEGACY_BLOCK_UPDATE("block_update", BooleanBlockPropertiesSerializer),
+    LEGACY_SMOOTH("smooth", BooleanBlockPropertiesSerializer),
     SCULK_SENSOR_PHASE("sculk_sensor_phase", SensorPhases),
     DRIPSTONE_TILT("tilt", Tilts),
-    CAVE_VINES_BERRIES("berries", BooleanBlocKPropertiesSerializer),
+    CAVE_VINES_BERRIES("berries", BooleanBlockPropertiesSerializer),
 
 
     VERTICAL_DIRECTION("vertical_direction", VerticalDirections),
 
 
-    LEGACY_CHECK_DECAY("check_decay", BooleanBlocKPropertiesSerializer),
-    LEGAVY_DECAYABLE("decayable", BooleanBlocKPropertiesSerializer),
-    LEGAVY_NODROP("nodrop", BooleanBlocKPropertiesSerializer),
+    LEGACY_CHECK_DECAY("check_decay", BooleanBlockPropertiesSerializer),
+    LEGAVY_DECAYABLE("decayable", BooleanBlockPropertiesSerializer),
+    LEGAVY_NODROP("nodrop", BooleanBlockPropertiesSerializer),
 
     AXIS("axis", Axes),
     FACING("facing", Directions),
@@ -127,6 +127,7 @@ enum class BlockProperties {
         this.group = name.lowercase(Locale.getDefault())
         this.serializer = serializer
     }
+
 
     companion object {
         private val PROPERTIES: Map<String, List<BlockProperties>> = run {
