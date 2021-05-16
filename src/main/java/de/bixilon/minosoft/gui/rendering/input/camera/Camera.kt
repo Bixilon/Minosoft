@@ -11,14 +11,13 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.input.camera
+package de.bixilon.minosoft.gui.rendering.input.camera
 
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.data.mappings.biomes.Biome
-import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.modding.events.CameraMatrixChangeEvent
@@ -28,6 +27,8 @@ import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
 import de.bixilon.minosoft.gui.rendering.util.VecUtil
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.blockPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.chunkPosition
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.floor
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.getWorldOffset
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.inChunkSectionPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
 import de.bixilon.minosoft.modding.event.CallbackEventInvoker
@@ -303,13 +304,45 @@ class Camera(
         cameraPosition = getAbsoluteCameraPosition()
     }
 
-    fun getTargetBlock(): World.RaycastHit? {
-        return connection.world.raycast(cameraPosition, cameraFront)
+    fun getTargetBlock(): RaycastHit? {
+        return raycast(cameraPosition, cameraFront)
     }
+
+
+    private fun raycast(origin: Vec3, direction: Vec3): RaycastHit? {
+        val currentPosition = Vec3(origin)
+
+        fun getTotalDistance(): Float {
+            return (origin - currentPosition).length()
+        }
+
+        for (i in 0..RAYCAST_MAX_STEPS) {
+            val blockPosition = currentPosition.floor
+            val blockState = connection.world.getBlockState(blockPosition)
+            val distance = blockState?.outlineShape?.let {
+                val aabb = it + blockPosition + blockPosition.getWorldOffset(blockState.block)
+                aabb.raycast(currentPosition, direction)
+            } ?: -1.0f
+
+            if (distance >= 0.0f && blockState != null) {
+                return RaycastHit(
+                    currentPosition + direction * distance,
+                    getTotalDistance() + distance,
+                    blockState = blockState,
+                    steps = i,
+                )
+            }
+            currentPosition += direction * (VecUtil.getDistanceToNextIntegerAxis(currentPosition, direction) + 0.001)
+        }
+        return null
+    }
+
 
     companion object {
         private val CAMERA_UP_VEC3 = Vec3(0.0f, 1.0f, 0.0f)
         private const val PLAYER_EYE_HEIGHT = 1.3 // player is 1.8 blocks high, the camera is normally at 0.5. 1.8 - 0.5 = 1.13
         private const val PLAYER_SPRINT_SPEED_MODIFIER = 1.30000001192092896
+
+        private const val RAYCAST_MAX_STEPS = 100
     }
 }

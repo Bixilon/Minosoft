@@ -59,7 +59,6 @@ class BlockBreakC2SP(
         companion object : ValuesEnum<BreakType> {
             override val VALUES: Array<BreakType> = values()
             override val NAME_MAP: Map<String, BreakType> = KUtil.getEnumValues(VALUES)
-
         }
     }
 }

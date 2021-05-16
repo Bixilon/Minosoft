@@ -25,9 +25,9 @@ import de.bixilon.minosoft.data.world.Chunk
 import de.bixilon.minosoft.data.world.ChunkSection
 import de.bixilon.minosoft.data.world.ChunkSection.Companion.indexPosition
 import de.bixilon.minosoft.data.world.World
-import de.bixilon.minosoft.gui.input.camera.Frustum
 import de.bixilon.minosoft.gui.rendering.*
 import de.bixilon.minosoft.gui.rendering.chunk.models.renderable.BlockLikeRenderContext
+import de.bixilon.minosoft.gui.rendering.input.camera.Frustum
 import de.bixilon.minosoft.gui.rendering.modding.events.FrustumChangeEvent
 import de.bixilon.minosoft.gui.rendering.modding.events.RenderingStateChangeEvent
 import de.bixilon.minosoft.gui.rendering.shader.Shader
@@ -150,7 +150,7 @@ class WorldRenderer(
             prepareChunk(it.chunkPosition)
         })
 
-        connection.registerEvent(CallbackEventInvoker.of<BlockChangeEvent> {
+        connection.registerEvent(CallbackEventInvoker.of<BlockSetEvent> {
             prepareChunkSection(it.blockPosition.chunkPosition, it.blockPosition.sectionHeight)
         })
 
@@ -158,7 +158,7 @@ class WorldRenderer(
             clearChunkCache()
         })
 
-        connection.registerEvent(CallbackEventInvoker.of<MultiBlockChangeEvent> {
+        connection.registerEvent(CallbackEventInvoker.of<MassBlockSetEvent> {
             val sectionHeights: MutableSet<Int> = synchronizedSetOf()
             for ((key) in it.blocks) {
                 sectionHeights.add(key.sectionHeight)

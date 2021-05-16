@@ -13,12 +13,6 @@
 package de.bixilon.minosoft.protocol.packets.s2c.play
 
 import de.bixilon.minosoft.data.mappings.blocks.BlockState
-import de.bixilon.minosoft.data.mappings.tweaker.VersionTweaker
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.chunkPosition
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.inChunkSectionPosition
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
-
-import de.bixilon.minosoft.modding.event.events.BlockChangeEvent
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
@@ -30,38 +24,23 @@ import glm_.vec3.Vec3i
 
 class BlockSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     val blockPosition: Vec3i
-    val block: BlockState?
+    val blockState: BlockState?
 
     init {
         if (buffer.versionId < ProtocolVersions.V_14W03B) {
             blockPosition = buffer.readByteBlockPosition()
-            block = buffer.connection.mapping.getBlockState(buffer.readVarInt() shl 4 or buffer.readByte().toInt()) // ToDo: When was the meta data "compacted"? (between 1.7.10 - 1.8)
+            blockState = buffer.connection.mapping.getBlockState(buffer.readVarInt() shl 4 or buffer.readByte().toInt()) // ToDo: When was the meta data "compacted"? (between 1.7.10 - 1.8)
         } else {
             blockPosition = buffer.readBlockPosition()
-            block = buffer.connection.mapping.getBlockState(buffer.readVarInt())
+            blockState = buffer.connection.mapping.getBlockState(buffer.readVarInt())
         }
     }
 
     override fun handle(connection: PlayConnection) {
-        val chunk = connection.world.getChunk(blockPosition.chunkPosition) ?: return // thanks mojang
-        if (!chunk.isFullyLoaded) {
-            return
-        }
-        val sectionHeight = blockPosition.sectionHeight
-        val inChunkSectionPosition = blockPosition.inChunkSectionPosition
-        val section = chunk.getSectionOrCreate(sectionHeight)
-
-        // tweak
-        if (!connection.version.isFlattened()) {
-            val block = VersionTweaker.transformBlock(block!!, chunk.sections!!, inChunkSectionPosition, sectionHeight)
-            section.setBlockState(inChunkSectionPosition, block)
-        } else {
-            section.setBlockState(inChunkSectionPosition, block)
-        }
-        connection.fireEvent(BlockChangeEvent(connection, this))
+        connection.world.setBlock(blockPosition, blockState)
     }
 
     override fun log() {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Block change (position=${blockPosition}, block=$block)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Block change (position=${blockPosition}, block=$blockState)" }
     }
 }

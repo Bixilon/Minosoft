@@ -10,24 +10,25 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.protocol.packets.s2c.play
+package de.bixilon.minosoft.modding.event.events
 
+import de.bixilon.minosoft.data.mappings.blocks.BlockState
+import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
-import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
-import de.bixilon.minosoft.util.logging.Log
-import de.bixilon.minosoft.util.logging.LogLevels
-import de.bixilon.minosoft.util.logging.LogMessageType
+import de.bixilon.minosoft.protocol.packets.s2c.play.MassBlockSetS2CP
 import glm_.vec2.Vec2i
+import glm_.vec3.Vec3i
 
-class ChunkUnloadS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
-    val chunkPosition: Vec2i = buffer.readChunkPosition()
+/**
+ * Fired when at least block is changed
+ */
+class MassBlockSetEvent(
+    connection: PlayConnection,
+    val blocks: Map<Vec3i, BlockState?>,
+    val chunkPosition: Vec2i,
+    val initiator: EventInitiators = EventInitiators.CLIENT,
+) : PlayConnectionEvent(connection) {
 
-    override fun handle(connection: PlayConnection) {
-        connection.world.unloadChunk(chunkPosition)
-    }
+    constructor(connection: PlayConnection, packet: MassBlockSetS2CP) : this(connection, packet.blocks, packet.chunkPosition, EventInitiators.SERVER)
 
-    override fun log() {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Chunk unload (chunkPosition=$chunkPosition)" }
-    }
 }

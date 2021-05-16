@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.input.key
+package de.bixilon.minosoft.gui.rendering.input.key
 
 import de.bixilon.minosoft.config.key.KeyBinding
 

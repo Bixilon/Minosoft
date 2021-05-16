@@ -11,17 +11,17 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.input.key
+package de.bixilon.minosoft.gui.rendering.input.key
 
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames
 import de.bixilon.minosoft.config.key.KeyAction
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.mappings.ResourceLocation
-import de.bixilon.minosoft.gui.input.camera.Camera
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.hud.elements.input.KeyConsumer
+import de.bixilon.minosoft.gui.rendering.input.camera.Camera
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels

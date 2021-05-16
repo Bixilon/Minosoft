@@ -53,7 +53,7 @@ class PlayConnection(
     val version: Version,
 ) : Connection() {
     val recipes = Recipes()
-    val world = World()
+    val world = World(this)
     val tabList = TabList()
     val scoreboardManager = ScoreboardManager()
     val mapping = VersionMapping()

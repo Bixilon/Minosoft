@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.modding.events
 
-import de.bixilon.minosoft.gui.input.camera.Frustum
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.Rendering
+import de.bixilon.minosoft.gui.rendering.input.camera.Frustum
 
 class FrustumChangeEvent(
     renderWindow: RenderWindow = Rendering.currentContext!!,

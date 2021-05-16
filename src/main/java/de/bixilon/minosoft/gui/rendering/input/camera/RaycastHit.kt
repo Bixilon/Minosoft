@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2021 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -10,22 +10,18 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.modding.event.events
+
+package de.bixilon.minosoft.gui.rendering.input.camera
 
 import de.bixilon.minosoft.data.mappings.blocks.BlockState
-import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import de.bixilon.minosoft.protocol.packets.s2c.play.MassBlockSetS2CP
-import glm_.vec2.Vec2i
-import glm_.vec3.Vec3i
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.floor
+import glm_.vec3.Vec3
 
-/**
- * Fired when at least block is changed
- */
-class MultiBlockChangeEvent(
-    connection: PlayConnection,
-    val blocks: Map<Vec3i, BlockState?>,
-    val chunkPosition: Vec2i,
-) : PlayConnectionEvent(connection) {
-
-    constructor(connection: PlayConnection, packet: MassBlockSetS2CP) : this(connection, packet.blocks, packet.chunkPosition)
+data class RaycastHit(
+    val position: Vec3,
+    val distance: Float,
+    val blockState: BlockState,
+    val steps: Int,
+) {
+    val blockPosition = position.floor
 }

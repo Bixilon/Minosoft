@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2021 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -10,21 +10,20 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.modding.event.events
 
-import de.bixilon.minosoft.data.mappings.blocks.BlockState
-import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import de.bixilon.minosoft.protocol.packets.s2c.play.BlockSetS2CP
-import glm_.vec3.Vec3i
+package de.bixilon.minosoft.modding.event
 
-/**
- * Fired when one block is changed
- */
-class BlockChangeEvent(
-    connection: PlayConnection,
-    val blockPosition: Vec3i,
-    val block: BlockState?,
-) : PlayConnectionEvent(connection) {
+import de.bixilon.minosoft.util.KUtil
+import de.bixilon.minosoft.util.enum.ValuesEnum
 
-    constructor(connection: PlayConnection, packet: BlockSetS2CP) : this(connection, packet.blockPosition, packet.block)
+enum class EventInitiators {
+    CLIENT,
+    SERVER,
+    ;
+
+    companion object : ValuesEnum<EventInitiators> {
+        override val VALUES: Array<EventInitiators> = values()
+        override val NAME_MAP: Map<String, EventInitiators> = KUtil.getEnumValues(VALUES)
+
+    }
 }

@@ -17,23 +17,27 @@ import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.mappings.Dimension
 import de.bixilon.minosoft.data.mappings.biomes.Biome
 import de.bixilon.minosoft.data.mappings.blocks.BlockState
+import de.bixilon.minosoft.data.mappings.tweaker.VersionTweaker
 import de.bixilon.minosoft.data.world.biome.accessor.BiomeAccessor
 import de.bixilon.minosoft.data.world.biome.accessor.NullBiomeAccessor
 import de.bixilon.minosoft.data.world.light.WorldLightAccessor
-import de.bixilon.minosoft.gui.rendering.util.VecUtil
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.chunkPosition
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.floor
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.getWorldOffset
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.inChunkPosition
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.inChunkSectionPosition
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
+import de.bixilon.minosoft.modding.event.events.BlockSetEvent
+import de.bixilon.minosoft.modding.event.events.ChunkUnloadEvent
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
 import glm_.vec2.Vec2i
-import glm_.vec3.Vec3
 import glm_.vec3.Vec3i
 
 /**
  * Collection of chunks and more
  */
-class World : BiomeAccessor {
+class World(
+    val connection: PlayConnection,
+) : BiomeAccessor {
     val chunks: MutableMap<Vec2i, Chunk> = synchronizedMapOf()
     val entities = WorldEntities()
     var isHardcore = false
@@ -48,8 +52,7 @@ class World : BiomeAccessor {
     var age = 0L
 
     fun getBlockState(blockPosition: Vec3i): BlockState? {
-        val chunkLocation = blockPosition.chunkPosition
-        return chunks[chunkLocation]?.getBlockState(blockPosition.inChunkPosition)
+        return chunks[blockPosition.chunkPosition]?.getBlockState(blockPosition.inChunkPosition)
     }
 
     @Synchronized
@@ -62,12 +65,34 @@ class World : BiomeAccessor {
         return chunks.getOrPut(chunkPosition) { Chunk() }
     }
 
-    fun setBlock(blockPosition: Vec3i, blockState: BlockState?) {
-        chunks[blockPosition.chunkPosition]?.setBlockState(blockPosition.inChunkPosition, blockState)
+    fun setBlock(blockPosition: Vec3i, blockState: BlockState?, createChunk: Boolean = false) {
+        val chunkPosition = blockPosition.chunkPosition
+        if (createChunk) {
+            //  chunks.getOrPut(chunkPosition) { Chunk() }
+            TODO()
+        } else {
+            chunks[chunkPosition]
+        }?.let {
+            val sections = it.sections ?: return
+
+            val transformedBlockState = if (connection.version.isFlattened()) {
+                blockState
+            } else {
+                VersionTweaker.transformBlock(blockState, sections, blockPosition.inChunkSectionPosition, blockPosition.sectionHeight)
+            }
+            it.setBlockState(blockPosition.inChunkPosition, transformedBlockState)
+            connection.fireEvent(BlockSetEvent(
+                connection = connection,
+                blockPosition = blockPosition,
+                blockState = transformedBlockState,
+            ))
+        }
     }
 
-    fun unloadChunk(position: Vec2i) {
-        chunks.remove(position)
+    fun unloadChunk(chunkPosition: Vec2i) {
+        chunks.remove(chunkPosition)?.let {
+            connection.fireEvent(ChunkUnloadEvent(connection, chunkPosition))
+        }
     }
 
     fun replaceChunk(position: Vec2i, chunk: Chunk) {
@@ -113,46 +138,5 @@ class World : BiomeAccessor {
         }
 
         return blocks.toMap()
-    }
-
-    data class RaycastHit(
-        val position: Vec3,
-        val distance: Float,
-        val blockState: BlockState,
-        val steps: Int,
-    ) {
-        val blockPosition = position.floor
-    }
-
-    fun raycast(origin: Vec3, direction: Vec3): RaycastHit? {
-        val currentPosition = Vec3(origin)
-
-        fun getTotalDistance(): Float {
-            return (origin - currentPosition).length()
-        }
-
-        for (i in 0..MAX_STEPS) {
-            val blockPosition = currentPosition.floor
-            val blockState = getBlockState(blockPosition)
-            val distance = blockState?.outlineShape?.let {
-                val aabb = it + blockPosition + blockPosition.getWorldOffset(blockState.block)
-                aabb.raycast(currentPosition, direction)
-            } ?: -1.0f
-
-            if (distance >= 0.0f && blockState != null) {
-                return RaycastHit(
-                    currentPosition + direction * distance,
-                    getTotalDistance() + distance,
-                    blockState = blockState,
-                    steps = i,
-                )
-            }
-            currentPosition += direction * (VecUtil.getDistanceToNextIntegerAxis(currentPosition, direction) + 0.001)
-        }
-        return null
-    }
-
-    companion object {
-        private const val MAX_STEPS = 100
     }
 }

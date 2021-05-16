@@ -17,7 +17,7 @@ import de.bixilon.minosoft.data.mappings.blocks.BlockState
 import de.bixilon.minosoft.data.mappings.tweaker.VersionTweaker
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.inChunkSectionPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
-import de.bixilon.minosoft.modding.event.events.MultiBlockChangeEvent
+import de.bixilon.minosoft.modding.event.events.MassBlockSetEvent
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
@@ -96,7 +96,7 @@ class MassBlockSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
                 chunk.setBlockState(key, block)
             }
         }
-        connection.fireEvent(MultiBlockChangeEvent(connection, this))
+        connection.fireEvent(MassBlockSetEvent(connection, this))
     }
 
     override fun log() {
