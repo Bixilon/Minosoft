@@ -254,6 +254,7 @@ class RenderWindow(
             }
         })
         glfwSetKeyCallback(this.windowId, inputHandler::keyInput)
+        glfwSetMouseButtonCallback(this.windowId, inputHandler::mouseKeyInput)
 
         glfwSetCharCallback(windowId, inputHandler::charInput)
         glfwSetCursorPosCallback(windowId, inputHandler::mouseMove)

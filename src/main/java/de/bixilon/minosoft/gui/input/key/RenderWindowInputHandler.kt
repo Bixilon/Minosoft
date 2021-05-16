@@ -24,6 +24,8 @@ import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.hud.elements.input.KeyConsumer
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
 import org.lwjgl.glfw.GLFW.*
 
 class RenderWindowInputHandler(
@@ -55,6 +57,10 @@ class RenderWindowInputHandler(
 
     var currentKeyConsumer: KeyConsumer? = null
 
+    fun mouseKeyInput(windowId: Long, button: Int, action: Int, modifierKey: Int) {
+        keyInput(windowId, button, 0, action, modifierKey)
+    }
+
     fun keyInput(windowId: Long, key: Int, char: Int, action: Int, modifierKey: Int) {
         if (windowId != renderWindow.windowId) {
             return
@@ -72,7 +78,7 @@ class RenderWindowInputHandler(
                 return
             }
             else -> {
-                Log.warn("Unknown glfw action $action")
+                Log.log(LogMessageType.RENDERING_GENERAL, LogLevels.WARN) { "Unknown glfw action $action" }
                 return
             }
         }
