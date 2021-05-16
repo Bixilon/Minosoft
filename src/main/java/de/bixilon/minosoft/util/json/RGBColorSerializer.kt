@@ -15,19 +15,23 @@ package de.bixilon.minosoft.util.json
 
 import com.squareup.moshi.*
 import de.bixilon.minosoft.data.text.RGBColor
+import de.bixilon.minosoft.data.text.RGBColor.Companion.asColor
 import de.bixilon.minosoft.data.text.RGBColor.Companion.asRGBColor
 
 object RGBColorSerializer : JsonAdapter<RGBColor>() {
     @FromJson
     override fun fromJson(jsonReader: JsonReader): RGBColor? {
-        if (jsonReader.peek() == JsonReader.Token.NULL) {
-            return null
+        return when (jsonReader.peek()) {
+            JsonReader.Token.NUMBER -> {
+                val rgb = jsonReader.nextInt()
+                if (rgb == 0) {
+                    return null
+                }
+                return rgb.asRGBColor()
+            }
+            JsonReader.Token.STRING -> jsonReader.nextString().asColor()
+            else -> null
         }
-        val rgb = jsonReader.nextInt()
-        if (rgb == 0) {
-            return null
-        }
-        return rgb.asRGBColor()
     }
 
     @ToJson
@@ -36,9 +40,9 @@ object RGBColorSerializer : JsonAdapter<RGBColor>() {
             jsonWriter.nullValue()
             return
         }
-        if (color.rgb == 0) {
+        if (color.rgba == 0) {
             jsonWriter.nullValue()
         }
-        jsonWriter.value(color.rgb)
+        jsonWriter.value(color.toString())
     }
 }

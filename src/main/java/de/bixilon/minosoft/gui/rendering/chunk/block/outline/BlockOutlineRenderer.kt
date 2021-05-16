@@ -17,7 +17,6 @@ import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.Gamemodes
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.blocks.BlockState
-import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.Renderer
@@ -47,9 +46,6 @@ class BlockOutlineRenderer(
     private val outlineShader = Shader(
         resourceLocation = ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "chunk/block/outline"),
     )
-
-    private val outlineColor = ChatColors.RED
-    private val collisionColor = ChatColors.BLUE
 
     override fun init() {
         outlineShader.load(connection.assetsManager)
@@ -115,10 +111,10 @@ class BlockOutlineRenderer(
             glDepthFunc(GL_ALWAYS)
         }
         outlineShader.use()
-        outlineShader.setRGBColor("tintColor", outlineColor)
+        outlineShader.setRGBColor("tintColor", Minosoft.config.config.game.other.blockOutline.outlineColor)
         outlineMesh.draw()
         collisionMesh?.let {
-            outlineShader.setRGBColor("tintColor", collisionColor)
+            outlineShader.setRGBColor("tintColor", Minosoft.config.config.game.other.blockOutline.collisionColor)
             it.draw()
         }
         glEnable(GL_CULL_FACE)
