@@ -13,27 +13,27 @@
 
 package de.bixilon.minosoft.data.mappings.blocks
 
+import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.fluid.Fluid
-import de.bixilon.minosoft.data.text.RGBColor
+import de.bixilon.minosoft.data.mappings.versions.VersionMapping
 import de.bixilon.minosoft.gui.rendering.chunk.models.renderable.BlockLikeRenderer
 import de.bixilon.minosoft.gui.rendering.chunk.models.renderable.FluidRenderer
 
-class FluidBlock(
-    resourceLocation: ResourceLocation,
-    explosionResistance: Float = 0.0f,
-    hasDynamicShape: Boolean = false,
-    tintColor: RGBColor? = null,
-    randomOffsetType: RandomOffsetTypes? = null,
-    itemId: Int = 0,
-    tint: ResourceLocation? = null,
-    val stillFluid: Fluid,
-    val flowingFluid: Fluid,
-    renderOverride: MutableList<BlockLikeRenderer> = mutableListOf(),
-) : Block(resourceLocation, explosionResistance, hasDynamicShape, tintColor, randomOffsetType, itemId, tint, renderOverride) {
-    val fluidRenderer: FluidRenderer = FluidRenderer(this, stillFluid, flowingFluid)
+class FluidBlock : Block {
+    override val renderOverride: List<BlockLikeRenderer>
 
-    init {
-        renderOverride.add(fluidRenderer)
+    open val stillFluid: Fluid
+    open val flowingFluid: Fluid
+
+    val fluidRenderer: FluidRenderer
+
+
+    constructor(resourceLocation: ResourceLocation, mappings: VersionMapping, data: JsonObject) : super(resourceLocation, mappings, data) {
+        stillFluid = mappings.fluidRegistry.get(data["still_fluid"].asInt)
+        flowingFluid = mappings.fluidRegistry.get(data["flow_fluid"].asInt)
+
+        fluidRenderer = FluidRenderer(this, stillFluid, flowingFluid)
+        renderOverride = listOf(fluidRenderer)
     }
 }
