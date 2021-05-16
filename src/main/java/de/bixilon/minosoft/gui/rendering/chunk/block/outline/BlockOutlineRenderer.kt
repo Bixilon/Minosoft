@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk.block.outline
 
+import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.Gamemodes
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.blocks.BlockState
@@ -38,13 +39,16 @@ class BlockOutlineRenderer(
     private var currentOutlineBlockState: BlockState? = null
 
     private var outlineMesh: BlockOutlineMesh? = null
+    private var collisionMesh: BlockOutlineMesh? = null
     private val outlineShader = Shader(
         resourceLocation = ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "chunk/block/outline"),
     )
 
+    private val outlineColor = ChatColors.RED
+    private val collisionColor = ChatColors.BLUE
+
     override fun init() {
         outlineShader.load(connection.assetsManager)
-        outlineShader.use().setRGBColor("tintColor", ChatColors.RED)
     }
 
     private fun drawLine(start: Vec3, end: Vec3, mesh: BlockOutlineMesh) {
@@ -59,10 +63,10 @@ class BlockOutlineRenderer(
         mesh.addVertex(Vec3(end.x, end.y, end.z) + rotatedLineWidth)
     }
 
-    private fun drawVoxelShape(shape: VoxelShape, blockPosition: Vec3, mesh: BlockOutlineMesh) {
+    private fun drawVoxelShape(shape: VoxelShape, blockPosition: Vec3, mesh: BlockOutlineMesh, margin: Float = 0.0f) {
         for (aabb in shape) {
-            val min = blockPosition + aabb.min
-            val max = blockPosition + aabb.max
+            val min = blockPosition + aabb.min - margin
+            val max = blockPosition + aabb.max + margin
 
             fun drawSideQuad(x: Float) {
                 drawLine(Vec3(x, min.y, min.z), Vec3(x, max.y, min.z), mesh)
@@ -85,17 +89,24 @@ class BlockOutlineRenderer(
         }
     }
 
-    private fun draw(mesh: BlockOutlineMesh) {
+    private fun draw(outlineMesh: BlockOutlineMesh, collisionMesh: BlockOutlineMesh?) {
         glDisable(GL_CULL_FACE)
         outlineShader.use()
-        mesh.draw()
+        outlineShader.setRGBColor("tintColor", outlineColor)
+        outlineMesh.draw()
+        collisionMesh?.let {
+            outlineShader.setRGBColor("tintColor", collisionColor)
+            it.draw()
+        }
         glEnable(GL_CULL_FACE)
     }
 
     private fun unload() {
         outlineMesh ?: return
         outlineMesh?.unload()
+        collisionMesh?.unload()
         this.outlineMesh = null
+        this.collisionMesh = null
         this.currentOutlinePosition = null
         this.currentOutlineBlockState = null
     }
@@ -104,8 +115,7 @@ class BlockOutlineRenderer(
         val raycastHit = renderWindow.inputHandler.camera.getTargetBlock()
 
         var outlineMesh = outlineMesh
-
-
+        var collisionMesh = collisionMesh
 
         if (raycastHit == null) {
             unload()
@@ -125,20 +135,33 @@ class BlockOutlineRenderer(
         }
 
         if (raycastHit.blockPosition == currentOutlinePosition && raycastHit.blockState == currentOutlineBlockState) {
-            draw(outlineMesh!!)
+            draw(outlineMesh!!, collisionMesh)
             return
         }
 
         outlineMesh?.unload()
+        collisionMesh?.unload()
         outlineMesh = BlockOutlineMesh()
 
-        drawVoxelShape(raycastHit.blockState.outlineShape, raycastHit.blockPosition.getWorldOffset(raycastHit.blockState.block).plus(raycastHit.blockPosition), outlineMesh)
+        val blockOffset = raycastHit.blockPosition.getWorldOffset(raycastHit.blockState.block).plus(raycastHit.blockPosition)
+
+        drawVoxelShape(raycastHit.blockState.outlineShape, blockOffset, outlineMesh)
         outlineMesh.load()
+
+
+        if (Minosoft.config.config.game.other.renderBlockOutlineCollisionBox) {
+            collisionMesh = BlockOutlineMesh()
+
+            drawVoxelShape(raycastHit.blockState.collisionShape, blockOffset, collisionMesh, 0.005f)
+            collisionMesh.load()
+            this.collisionMesh = collisionMesh
+        }
+
 
         this.currentOutlinePosition = raycastHit.blockPosition
         this.currentOutlineBlockState = raycastHit.blockState
         this.outlineMesh = outlineMesh
-        draw(outlineMesh)
+        draw(outlineMesh, collisionMesh)
     }
 
 
