@@ -29,6 +29,8 @@ object KeyBindingsNames {
     val MOVE_FLY_DOWN = ResourceLocation("minosoft:move_fly_down")
     val MOVE_JUMP = ResourceLocation("minosoft:move_jump")
 
+    val DESTROY_BLOCK = ResourceLocation("minosoft:destroy_block")
+
     val ZOOM = ResourceLocation("minosoft:zoom")
 
     val QUIT_RENDERING = ResourceLocation("minosoft:quit_rendering")
@@ -101,6 +103,11 @@ object KeyBindingsNames {
         MOVE_FLY_DOWN to KeyBinding(
             mutableMapOf(
                 KeyAction.CHANGE to mutableSetOf(KeyCodes.KEY_LEFT_SHIFT)
+            ),
+        ),
+        DESTROY_BLOCK to KeyBinding(
+            mutableMapOf(
+                KeyAction.CHANGE to mutableSetOf(KeyCodes.MOUSE_BUTTON_LEFT)
             ),
         ),
         ZOOM to KeyBinding(

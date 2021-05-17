@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.input
 
 import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames
+import de.bixilon.minosoft.data.Directions
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.mappings.blocks.BlockUsages
 import de.bixilon.minosoft.data.mappings.items.BlockItem
@@ -22,6 +23,7 @@ import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.protocol.packets.c2s.play.ArmSwingC2SP
+import de.bixilon.minosoft.protocol.packets.c2s.play.BlockBreakC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.BlockPlaceC2SP
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
@@ -34,6 +36,20 @@ class InteractionHandler(
 
     fun init() {
         renderWindow.inputHandler.registerCheckCallback(KeyBindingsNames.BLOCK_INTERACT)
+        renderWindow.inputHandler.registerKeyCallback(KeyBindingsNames.DESTROY_BLOCK) {
+            if (!it) {
+                return@registerKeyCallback
+            }
+            val raycastHit = renderWindow.inputHandler.camera.getTargetBlock()
+            raycastHit?.let {
+                if (raycastHit.distance > RenderConstants.MAX_BLOCK_OUTLINE_RAYCAST_DISTANCE) {
+                    return@let
+                }
+                connection.sendPacket(BlockBreakC2SP(BlockBreakC2SP.BreakType.START_DIGGING, raycastHit.blockPosition, Directions.UP))
+                connection.sendPacket(BlockBreakC2SP(BlockBreakC2SP.BreakType.FINISHED_DIGGING, raycastHit.blockPosition, Directions.UP))
+                connection.world.setBlock(raycastHit.blockPosition, null)
+            }
+        }
     }
 
     private fun checkInteraction(isKeyDown: Boolean) {

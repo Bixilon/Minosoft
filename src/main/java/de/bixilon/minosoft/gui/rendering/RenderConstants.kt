@@ -57,7 +57,7 @@ object RenderConstants {
 
     const val MAXIMUM_CALLS_PER_FRAME = 10
 
-    const val DISABLE_LIGHTING = false
+    const val DISABLE_LIGHTING = true
 
     const val RENDER_BLOCKS = true
     const val RENDER_FLUIDS = true
