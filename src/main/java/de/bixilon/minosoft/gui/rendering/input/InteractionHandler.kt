@@ -26,6 +26,7 @@ import de.bixilon.minosoft.protocol.packets.c2s.play.ArmSwingC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.BlockBreakC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.BlockPlaceC2SP
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import glm_.vec3.Vec3i
 
 class InteractionHandler(
     val renderWindow: RenderWindow,
@@ -34,22 +35,54 @@ class InteractionHandler(
     private var lastInteraction = 0L
     private var lastInteractionSent = 0L
 
+    private var lastBreak = 0L
+    private var lastBreakSent = 0L
+    private var currentlyBreakingBlock: Vec3i? = null
+
     fun init() {
         renderWindow.inputHandler.registerCheckCallback(KeyBindingsNames.BLOCK_INTERACT)
-        renderWindow.inputHandler.registerKeyCallback(KeyBindingsNames.DESTROY_BLOCK) {
-            if (!it) {
-                return@registerKeyCallback
-            }
-            val raycastHit = renderWindow.inputHandler.camera.getTargetBlock()
-            raycastHit?.let {
-                if (raycastHit.distance > RenderConstants.MAX_BLOCK_OUTLINE_RAYCAST_DISTANCE) {
-                    return@let
-                }
-                connection.sendPacket(BlockBreakC2SP(BlockBreakC2SP.BreakType.START_DIGGING, raycastHit.blockPosition, Directions.UP))
-                connection.sendPacket(BlockBreakC2SP(BlockBreakC2SP.BreakType.FINISHED_DIGGING, raycastHit.blockPosition, Directions.UP))
-                connection.world.setBlock(raycastHit.blockPosition, null)
+        renderWindow.inputHandler.registerCheckCallback(KeyBindingsNames.DESTROY_BLOCK)
+    }
+
+    private fun checkBreaking(isKeyDown: Boolean) {
+        val currentTime = System.currentTimeMillis()
+        if (!isKeyDown) {
+            lastBreak = 0L
+            return
+        }
+        if (currentTime - lastBreak < ProtocolDefinition.TICK_TIME * 5) {
+            return
+        }
+        val raycastHit = renderWindow.inputHandler.camera.getTargetBlock()
+
+        fun cancel() {
+            currentlyBreakingBlock?.let {
+                connection.sendPacket(BlockBreakC2SP(BlockBreakC2SP.BreakType.CANCELLED_DIGGING, currentlyBreakingBlock, Directions.UP)) // ToDo
+                currentlyBreakingBlock = null
             }
         }
+
+        if (raycastHit?.blockPosition != currentlyBreakingBlock) {
+            cancel()
+        }
+        if ((raycastHit?.distance ?: Float.MAX_VALUE) > RenderConstants.MAX_BLOCK_OUTLINE_RAYCAST_DISTANCE) {
+            cancel()
+            return
+        }
+        raycastHit ?: return
+
+        if (currentTime - lastBreakSent < ProtocolDefinition.TICK_TIME) {
+            return
+        }
+
+        currentlyBreakingBlock = raycastHit.blockPosition
+        connection.sendPacket(BlockBreakC2SP(BlockBreakC2SP.BreakType.START_DIGGING, raycastHit.blockPosition, raycastHit.hitDirection))
+        connection.sendPacket(BlockBreakC2SP(BlockBreakC2SP.BreakType.FINISHED_DIGGING, raycastHit.blockPosition, raycastHit.hitDirection))
+        connection.world.setBlock(raycastHit.blockPosition, null)
+        currentlyBreakingBlock = null
+
+        lastBreak = currentTime
+        lastBreakSent = currentTime
     }
 
     private fun checkInteraction(isKeyDown: Boolean) {
@@ -139,5 +172,6 @@ class InteractionHandler(
 
     fun draw() {
         checkInteraction(renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.BLOCK_INTERACT))
+        checkBreaking(renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.DESTROY_BLOCK))
     }
 }
