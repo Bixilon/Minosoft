@@ -96,6 +96,12 @@ class InteractionHandler(
                 }
                 val selectedItemStack = connection.player.inventory.getHotbarSlot() ?: return
                 val blockPosition = raycastHit.blockPosition + raycastHit.hitDirection
+
+                val dimension = connection.world.dimension!!
+                if (blockPosition.y < dimension.minY || blockPosition.y >= dimension.height) {
+                    return
+                }
+
                 renderWindow.connection.world.getBlockState(blockPosition)?.let {
                     if (!it.material.replaceable) {
                         return
