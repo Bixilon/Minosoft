@@ -18,7 +18,7 @@ import de.bixilon.minosoft.data.entities.EntityObjectType
 import de.bixilon.minosoft.data.entities.block.BlockEntityMetaType
 import de.bixilon.minosoft.data.entities.meta.EntityMetaData
 import de.bixilon.minosoft.data.inventory.InventorySlots
-import de.bixilon.minosoft.data.mappings.other.ContainerType
+import de.bixilon.minosoft.data.mappings.other.containers.ContainerType
 import de.bixilon.minosoft.data.mappings.other.game.event.GameEvent
 import de.bixilon.minosoft.data.mappings.registry.PerVersionEnumRegistry
 import de.bixilon.minosoft.data.mappings.registry.PerVersionRegistry

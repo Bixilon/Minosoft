@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play
 
-import de.bixilon.minosoft.data.Gamemodes
+import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.data.player.PlayerProperties
 import de.bixilon.minosoft.data.player.PlayerProperty
@@ -69,7 +69,7 @@ class TabListDataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
                             )
                             playerProperties[property.property] = property
                         }
-                        val gamemode = Gamemodes.GAME_MODES[buffer.readVarInt()]
+                        val gamemode = Gamemodes[buffer.readVarInt()]
                         val ping = buffer.readVarInt()
                         val hasDisplayName = buffer.readBoolean()
                         val displayName = if (hasDisplayName) {
@@ -87,7 +87,7 @@ class TabListDataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
                         )
                     }
                     PlayerListItemActions.UPDATE_GAMEMODE -> {
-                        data = TabListItemData(gamemode = Gamemodes.GAME_MODES[buffer.readVarInt()])
+                        data = TabListItemData(gamemode = Gamemodes[buffer.readVarInt()])
                     }
                     PlayerListItemActions.UPDATE_LATENCY -> {
                         data = TabListItemData(ping = buffer.readVarInt())

@@ -15,12 +15,11 @@ package de.bixilon.minosoft.data.player
 import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
-import de.bixilon.minosoft.data.mappings.materials.Container
-import de.bixilon.minosoft.data.mappings.other.ContainerType
+import de.bixilon.minosoft.data.mappings.other.containers.Container
+import de.bixilon.minosoft.data.mappings.other.containers.PlayerInventory
 import de.bixilon.minosoft.gui.rendering.util.VecUtil
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import de.bixilon.minosoft.util.KUtil.asResourceLocation
 import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
 import glm_.vec3.Vec3i
 
@@ -38,11 +37,8 @@ class Player(
 
     val baseAbilities = Abilities()
 
+    val inventory = PlayerInventory(connection)
     val containers: MutableMap<Int, Container> = synchronizedMapOf(
-        ProtocolDefinition.PLAYER_INVENTORY_ID to Container(
-            ContainerType(
-                resourceLocation = "TBO".asResourceLocation()
-            ),
-        ))
+        ProtocolDefinition.PLAYER_INVENTORY_ID to inventory)
     var selectedHotbarSlot: Int = 0
 }

@@ -11,17 +11,27 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.mappings.other.game.event.handlers
+package de.bixilon.minosoft.data.mappings.other.containers
 
-import de.bixilon.minosoft.data.abilities.Gamemodes
-import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.data.inventory.ItemStack
+import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import de.bixilon.minosoft.util.KUtil.asResourceLocation
+import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
+import de.bixilon.minosoft.util.KUtil.toSynchronizedMap
 
-object GameMoveChangeGameEventHandler : GameEventHandler {
-    override val RESOURCE_LOCATION: ResourceLocation = "minecraft:gamemode_change".asResourceLocation()
+open class Container(
+    protected val connection: PlayConnection,
+    val type: ContainerType,
+    val title: ChatComponent? = null,
+    val hasTitle: Boolean = false,
+) {
+    val slots: MutableMap<Int, ItemStack> = synchronizedMapOf()
 
-    override fun handle(data: Float, connection: PlayConnection) {
-        connection.player.entity.tabListItem.gamemode = Gamemodes[data.toInt()]
+    fun validate() {
+        for ((slot, itemStack) in slots.toSynchronizedMap()) {
+            if (itemStack.count <= 0) {
+                slots.remove(slot)
+            }
+        }
     }
 }

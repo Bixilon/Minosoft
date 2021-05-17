@@ -14,8 +14,8 @@ package de.bixilon.minosoft.protocol.packets.s2c.play
 
 import com.google.common.collect.HashBiMap
 import de.bixilon.minosoft.data.Difficulties
-import de.bixilon.minosoft.data.Gamemodes
 import de.bixilon.minosoft.data.LevelTypes
+import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.mappings.Dimension
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.world.biome.accessor.BlockBiomeAccessor
@@ -35,7 +35,6 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.listCast
-import kotlin.experimental.and
 
 class JoinGameS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     val entityId: Int
@@ -64,13 +63,13 @@ class JoinGameS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         entityId = buffer.readInt()
 
         if (buffer.versionId < V_20W27A) {
-            val gamemodeRaw = buffer.readByte()
-            isHardcore = BitByte.isBitSet(gamemodeRaw.toLong(), 3)
+            val gamemodeRaw = buffer.readUnsignedByte()
+            isHardcore = BitByte.isBitSet(gamemodeRaw, 3)
             // remove hardcore bit and get gamemode
-            gamemode = Gamemodes.byId((gamemodeRaw and (0x8.inv())).toInt())
+            gamemode = Gamemodes[(gamemodeRaw and (0x8.inv()))]
         } else {
             isHardcore = buffer.readBoolean()
-            gamemode = Gamemodes.byId(buffer.readUnsignedByte().toInt())
+            gamemode = Gamemodes[buffer.readUnsignedByte()]
         }
 
         if (buffer.versionId < ProtocolVersions.V_1_9_1) {

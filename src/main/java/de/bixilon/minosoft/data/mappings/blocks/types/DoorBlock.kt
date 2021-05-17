@@ -14,42 +14,22 @@
 package de.bixilon.minosoft.data.mappings.blocks.types
 
 import com.google.gson.JsonObject
-import de.bixilon.minosoft.data.Directions
-import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.blocks.BlockState
 import de.bixilon.minosoft.data.mappings.blocks.BlockUsages
 import de.bixilon.minosoft.data.mappings.blocks.properties.BlockProperties
-import de.bixilon.minosoft.data.mappings.blocks.properties.Halves
 import de.bixilon.minosoft.data.mappings.materials.DefaultMaterials
 import de.bixilon.minosoft.data.mappings.versions.VersionMapping
 import de.bixilon.minosoft.data.player.Hands
 import de.bixilon.minosoft.gui.rendering.input.camera.RaycastHit
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import glm_.vec3.Vec3i
 
-open class DoorBlock(resourceLocation: ResourceLocation, mappings: VersionMapping, data: JsonObject) : Block(resourceLocation, mappings, data) {
+open class DoorBlock(resourceLocation: ResourceLocation, mappings: VersionMapping, data: JsonObject) : DoubleSizeBlock(resourceLocation, mappings, data) {
 
     override fun getPlacementState(connection: PlayConnection, raycastHit: RaycastHit): BlockState {
         TODO()
-    }
-
-    override fun onBreak(connection: PlayConnection, blockPosition: Vec3i, blockState: BlockState, blockEntity: BlockEntity?) {
-        if (blockState.properties[BlockProperties.STAIR_HALF] == Halves.LOWER) {
-            connection.world.forceSetBlock(blockPosition + Directions.UP, null)
-        } else {
-            connection.world.forceSetBlock(blockPosition + Directions.DOWN, null)
-        }
-    }
-
-    override fun onPlace(connection: PlayConnection, blockPosition: Vec3i, blockState: BlockState) {
-        if (blockState.properties[BlockProperties.STAIR_HALF] == Halves.LOWER) {
-            connection.world.forceSetBlock(blockPosition + Directions.UP, blockState.withProperties(BlockProperties.STAIR_HALF to Halves.UPPER))
-        } else {
-            connection.world.forceSetBlock(blockPosition + Directions.DOWN, blockState.withProperties(BlockProperties.STAIR_HALF to Halves.LOWER))
-        }
     }
 
     override fun use(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, raycastHit: RaycastHit, hands: Hands, itemStack: ItemStack?): BlockUsages {

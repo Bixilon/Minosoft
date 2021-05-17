@@ -14,11 +14,13 @@
 package de.bixilon.minosoft.gui.rendering.input
 
 import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames
-import de.bixilon.minosoft.data.Directions
+import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.mappings.blocks.BlockUsages
+import de.bixilon.minosoft.data.mappings.items.BlockItem
 import de.bixilon.minosoft.data.player.Hands
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.protocol.packets.c2s.play.ArmSwingC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.BlockPlaceC2SP
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
@@ -26,6 +28,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 class InteractionHandler(
     val renderWindow: RenderWindow,
 ) {
+    private val connection = renderWindow.connection
     private var lastInteraction = 0L
     private var lastInteractionSent = 0L
 
@@ -51,26 +54,62 @@ class InteractionHandler(
 
         val usage = raycastHit.blockState.block.use(renderWindow.connection, raycastHit.blockState, raycastHit.blockPosition, raycastHit, Hands.MAIN_HAND, null) // ToDo
 
+        lastInteractionSent = currentTime
+        lastInteraction = currentTime
+
         when (usage) {
             BlockUsages.SUCCESS -> {
                 if (currentTime - lastInteractionSent < ProtocolDefinition.TICK_TIME) {
                     return
                 }
-                renderWindow.connection.sendPacket(ArmSwingC2SP(Hands.MAIN_HAND))
+                connection.sendPacket(ArmSwingC2SP(Hands.MAIN_HAND))
 
-                renderWindow.connection.sendPacket(BlockPlaceC2SP(
+                connection.sendPacket(BlockPlaceC2SP(
                     position = raycastHit.blockPosition,
-                    direction = Directions.NORTH, // ToDo
+                    direction = raycastHit.hitDirection,
                     cursorPosition = raycastHit.hitPosition,
-                    item = null, // ToDo
+                    item = connection.player.inventory.getHotbarSlot(),
                     hand = Hands.MAIN_HAND,
                     insideBlock = false,  // ToDo
                 ))
-                lastInteractionSent = currentTime
-                lastInteraction = currentTime
             }
             BlockUsages.PASS -> {
                 // use item or place block
+                if (!connection.player.entity.gamemode.canBuild) {
+                    return
+                }
+                val selectedItemStack = connection.player.inventory.getHotbarSlot() ?: return
+                val blockPosition = raycastHit.blockPosition + raycastHit.hitDirection
+                renderWindow.connection.world.getBlockState(blockPosition)?.let {
+                    if (!it.material.replaceable) {
+                        return
+                    }
+                }
+
+
+                val blockState = if (selectedItemStack.item is BlockItem) {
+                    selectedItemStack.item.block.getPlacementState(renderWindow.connection, raycastHit)
+                } else {
+                    return
+                }
+
+                renderWindow.connection.world.setBlock(blockPosition, blockState)
+
+                if (connection.player.entity.gamemode != Gamemodes.CREATIVE) {
+                    selectedItemStack.count--
+                    renderWindow.connection.player.inventory.validate()
+                }
+
+                connection.sendPacket(ArmSwingC2SP(Hands.MAIN_HAND))
+
+                connection.sendPacket(BlockPlaceC2SP(
+                    position = blockPosition,
+                    direction = raycastHit.hitDirection,
+                    cursorPosition = raycastHit.hitPosition,
+                    item = connection.player.inventory.getHotbarSlot(),
+                    hand = Hands.MAIN_HAND,
+                    insideBlock = false,  // ToDo
+                ))
             }
         }
 

@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.chunk.block.outline
 
 import de.bixilon.minosoft.Minosoft
-import de.bixilon.minosoft.data.Gamemodes
+import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.blocks.BlockState
 import de.bixilon.minosoft.gui.rendering.RenderConstants

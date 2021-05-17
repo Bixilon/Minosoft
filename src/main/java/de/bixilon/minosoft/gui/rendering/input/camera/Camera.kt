@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.input.camera
 
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames
+import de.bixilon.minosoft.data.Directions
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.data.mappings.biomes.Biome
@@ -329,6 +330,7 @@ class Camera(
                     currentPosition + direction * distance,
                     getTotalDistance() + distance,
                     blockState = blockState,
+                    hitDirection = Directions.UP, // ToDo: Get real hitDirection of AABB
                     steps = i,
                 )
             }

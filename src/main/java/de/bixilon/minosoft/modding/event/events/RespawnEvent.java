@@ -14,8 +14,8 @@
 package de.bixilon.minosoft.modding.event.events;
 
 import de.bixilon.minosoft.data.Difficulties;
-import de.bixilon.minosoft.data.Gamemodes;
 import de.bixilon.minosoft.data.LevelTypes;
+import de.bixilon.minosoft.data.abilities.Gamemodes;
 import de.bixilon.minosoft.data.mappings.Dimension;
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
 import de.bixilon.minosoft.protocol.packets.s2c.play.RespawnS2CP;

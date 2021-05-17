@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.commands.parser.entity;
 
-import de.bixilon.minosoft.data.Gamemodes;
+import de.bixilon.minosoft.data.abilities.Gamemodes;
 import de.bixilon.minosoft.data.commands.CommandStringReader;
 import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException;
 import de.bixilon.minosoft.data.commands.parser.exceptions.entity.UnknownEnumValueCommandParseException;

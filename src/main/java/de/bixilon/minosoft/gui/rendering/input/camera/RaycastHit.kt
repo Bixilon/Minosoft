@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.input.camera
 
+import de.bixilon.minosoft.data.Directions
 import de.bixilon.minosoft.data.mappings.blocks.BlockState
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.floor
 import glm_.vec3.Vec3
@@ -21,6 +22,7 @@ data class RaycastHit(
     val position: Vec3,
     val distance: Float,
     val blockState: BlockState,
+    val hitDirection: Directions,
     val steps: Int,
 ) {
     val blockPosition = position.floor

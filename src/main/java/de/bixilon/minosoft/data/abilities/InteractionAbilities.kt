@@ -11,17 +11,11 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.mappings.materials
+package de.bixilon.minosoft.data.abilities
 
-import de.bixilon.minosoft.data.inventory.ItemStack
-import de.bixilon.minosoft.data.mappings.other.ContainerType
-import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
-
-open class Container(
-    val type: ContainerType,
-    val title: ChatComponent? = null,
-    val hasTitle: Boolean = false,
-) {
-    val slots: MutableMap<Int, ItemStack> = synchronizedMapOf()
+enum class InteractionAbilities {
+    NOTHING,
+    ONLY_ENTITIES,
+    EVERYTHING,
+    ;
 }

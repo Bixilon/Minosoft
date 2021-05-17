@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.player.tab
 
-import de.bixilon.minosoft.data.Gamemodes
+import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.player.PlayerProperties
 import de.bixilon.minosoft.data.player.PlayerProperty
 import de.bixilon.minosoft.data.text.ChatComponent

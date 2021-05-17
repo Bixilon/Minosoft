@@ -13,8 +13,8 @@
 package de.bixilon.minosoft.protocol.packets.s2c.play
 
 import de.bixilon.minosoft.data.inventory.DefaultInventoryTypes
-import de.bixilon.minosoft.data.mappings.materials.Container
-import de.bixilon.minosoft.data.mappings.other.ContainerType
+import de.bixilon.minosoft.data.mappings.other.containers.Container
+import de.bixilon.minosoft.data.mappings.other.containers.ContainerType
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
@@ -65,6 +65,7 @@ class ContainerOpenS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
             return
         }
         connection.player.containers[containerId] = Container(
+            connection,
             containerType,
             title,
             hasTitle,

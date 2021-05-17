@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2021 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,17 +11,20 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data;
+package de.bixilon.minosoft.data.mappings.other.containers
 
-public enum Gamemodes {
-    SURVIVAL,
-    CREATIVE,
-    ADVENTURE,
-    SPECTATOR;
+import de.bixilon.minosoft.data.inventory.ItemStack
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.util.KUtil.asResourceLocation
 
-    public static final Gamemodes[] GAME_MODES = values();
+class PlayerInventory(connection: PlayConnection) : Container(
+    connection = connection,
+    ContainerType(
+        resourceLocation = "TBO".asResourceLocation()
+    ),
+) {
 
-    public static Gamemodes byId(int id) {
-        return GAME_MODES[id];
+    fun getHotbarSlot(hotbarSlot: Int = connection.player.selectedHotbarSlot): ItemStack? {
+        return slots[hotbarSlot + 36] // ToDo
     }
 }

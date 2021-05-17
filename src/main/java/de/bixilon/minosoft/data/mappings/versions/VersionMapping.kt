@@ -35,7 +35,7 @@ import de.bixilon.minosoft.data.mappings.inventory.CreativeModeTab
 import de.bixilon.minosoft.data.mappings.items.Item
 import de.bixilon.minosoft.data.mappings.items.ItemRegistry
 import de.bixilon.minosoft.data.mappings.materials.Material
-import de.bixilon.minosoft.data.mappings.other.ContainerType
+import de.bixilon.minosoft.data.mappings.other.containers.ContainerType
 import de.bixilon.minosoft.data.mappings.other.game.event.GameEvent
 import de.bixilon.minosoft.data.mappings.particle.ParticleType
 import de.bixilon.minosoft.data.mappings.registry.*

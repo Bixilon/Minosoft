@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.data.entities.entities.player
 
-import de.bixilon.minosoft.data.Gamemodes
+import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.entities.EntityMetaDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
