@@ -15,7 +15,6 @@ package de.bixilon.minosoft.gui.rendering.input.camera
 
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames
-import de.bixilon.minosoft.data.Directions
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.data.mappings.biomes.Biome
@@ -31,6 +30,7 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.floor
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.getWorldOffset
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.inChunkSectionPosition
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.nearestIntegerPositionDirection
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
 import de.bixilon.minosoft.modding.event.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
@@ -326,11 +326,12 @@ class Camera(
             } ?: -1.0f
 
             if (distance >= 0.0f && blockState != null) {
+                currentPosition += direction * distance
                 return RaycastHit(
-                    currentPosition + direction * distance,
+                    currentPosition ,
                     getTotalDistance() + distance,
                     blockState = blockState,
-                    hitDirection = Directions.UP, // ToDo: Get real hitDirection of AABB
+                    hitDirection = currentPosition.nearestIntegerPositionDirection,
                     steps = i,
                 )
             }

@@ -31,6 +31,8 @@ enum class Directions(val directionVector: Vec3i) {
 
     val floatDirectionVector = Vec3(directionVector)
 
+    val axis: Axes get() = Axes.byDirection(this)
+
     lateinit var inverted: Directions
         private set
 
@@ -91,7 +93,6 @@ enum class Directions(val directionVector: Vec3i) {
         override val NAME_MAP: Map<String, Directions> = KUtil.getEnumValues(VALUES)
         val SIDES = arrayOf(NORTH, SOUTH, WEST, EAST)
         const val SIDES_OFFSET = 2
-
 
         override fun deserialize(value: Any): Directions {
             return NAME_MAP[value] ?: throw IllegalArgumentException("No such property: $value")

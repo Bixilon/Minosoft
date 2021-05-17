@@ -216,17 +216,17 @@ object VecUtil {
     }
 
     fun getDistanceToNextIntegerAxis(position: Vec3, direction: Vec3): Float {
-        val directionXDistance = (direction * getLengthMultiplier(direction, position, Axes.X)).length()
-        val directionYDistance = (direction * getLengthMultiplier(direction, position, Axes.Y)).length()
-        val directionZDistance = (direction * getLengthMultiplier(direction, position, Axes.Z)).length()
+        val directionXDistance = (direction * getLengthMultiplierToNextIntegerAxisInDirection(direction, position, Axes.X)).length()
+        val directionYDistance = (direction * getLengthMultiplierToNextIntegerAxisInDirection(direction, position, Axes.Y)).length()
+        val directionZDistance = (direction * getLengthMultiplierToNextIntegerAxisInDirection(direction, position, Axes.Z)).length()
         return glm.min(directionXDistance, directionYDistance, directionZDistance)
     }
 
-    private fun getLengthMultiplier(direction: Vec3, position: Vec3, axis: Axes): Float {
-        return (getTarget(direction, position, axis) - position.choose(axis)) / direction.choose(axis)
+    private fun getLengthMultiplierToNextIntegerAxisInDirection(direction: Vec3, position: Vec3, axis: Axes): Float {
+        return (getTargetForNextIntegerAxisInDirection(direction, position, axis) - position.choose(axis)) / direction.choose(axis)
     }
 
-    private fun getTarget(direction: Vec3, position: Vec3, axis: Axes): Int {
+    private fun getTargetForNextIntegerAxisInDirection(direction: Vec3, position: Vec3, axis: Axes): Int {
         return if (direction.choose(axis) > 0) {
             position.floor.choose(axis) + 1
         } else {
@@ -253,4 +253,19 @@ object VecUtil {
     fun Vec3i.choose(axis: Axes): Int {
         return Axes.choose(axis, this)
     }
+
+    val Vec3.nearestIntegerPositionDirection: Directions get() = run {
+        var minDistance = Float.MAX_VALUE
+        var minDistanceDirection = Directions.UP
+        for (direction in Directions.VALUES) {
+            val distance = (getTargetForNextIntegerAxisInDirection(direction.directionVector.toVec3, this, direction.axis) - this.choose(direction.axis)) / direction.directionVector.choose(direction.axis)
+            if (distance < minDistance) {
+                minDistance = distance
+                minDistanceDirection = direction
+            }
+        }
+        return minDistanceDirection
+    }
+
+    val Vec3i.toVec3: Vec3 get() = Vec3(this)
 }
