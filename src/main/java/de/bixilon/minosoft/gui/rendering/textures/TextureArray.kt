@@ -255,25 +255,6 @@ class TextureArray(val allTextures: MutableList<Texture>) {
         }
     }
 
-    companion object {
-        val TEXTURE_RESOLUTION_ID_MAP = arrayOf(16, 32, 64, 128, 256, 512, 1024) // A 12x12 texture will be saved in texture id 0 (in 0 are only 16x16 textures). Animated textures get split
-        const val TEXTURE_MAX_RESOLUTION = 1024
-        const val MAX_MIPMAP_LEVELS = 5
-
-        private const val INTS_PER_ANIMATED_TEXTURE = 4
-
-
-        private fun ByteBuffer.copyFrom(origin: ByteBuffer, sourceOffset: Int, destinationOffset: Int, length: Int) {
-            origin.rewind()
-            origin.position(sourceOffset)
-            val bytes = ByteArray(length)
-
-            origin.get(bytes, 0, length)
-
-            this.put(bytes, destinationOffset, length)
-        }
-    }
-
     inner class Animator {
         val animatedTextures: MutableList<TextureAnimation> = mutableListOf()
         private var animatedBufferDataId = -1
@@ -354,4 +335,25 @@ class TextureArray(val allTextures: MutableList<Texture>) {
             glBindBuffer(GL_UNIFORM_BUFFER, 0)
         }
     }
+
+    companion object {
+        const val MAX_ANIMATED_TEXTURE = 4096 // 16kb / 4 (ints per animation)
+        val TEXTURE_RESOLUTION_ID_MAP = arrayOf(16, 32, 64, 128, 256, 512, 1024) // A 12x12 texture will be saved in texture id 0 (in 0 are only 16x16 textures). Animated textures get split
+        const val TEXTURE_MAX_RESOLUTION = 1024
+        const val MAX_MIPMAP_LEVELS = 5
+
+        private const val INTS_PER_ANIMATED_TEXTURE = 4
+
+
+        private fun ByteBuffer.copyFrom(origin: ByteBuffer, sourceOffset: Int, destinationOffset: Int, length: Int) {
+            origin.rewind()
+            origin.position(sourceOffset)
+            val bytes = ByteArray(length)
+
+            origin.get(bytes, 0, length)
+
+            this.put(bytes, destinationOffset, length)
+        }
+    }
+
 }

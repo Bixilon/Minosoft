@@ -32,6 +32,7 @@ import de.bixilon.minosoft.gui.rendering.modding.events.FrustumChangeEvent
 import de.bixilon.minosoft.gui.rendering.modding.events.RenderingStateChangeEvent
 import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.gui.rendering.textures.Texture
+import de.bixilon.minosoft.gui.rendering.textures.TextureArray
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.getWorldOffset
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.of
@@ -46,7 +47,6 @@ import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
 import de.bixilon.minosoft.util.KUtil.synchronizedSetOf
 import de.bixilon.minosoft.util.KUtil.toSynchronizedMap
 import de.bixilon.minosoft.util.MMath
-import de.bixilon.minosoft.util.logging.Log
 import glm_.vec2.Vec2i
 import glm_.vec3.Vec3i
 import org.lwjgl.opengl.GL11.glDepthMask
@@ -59,6 +59,7 @@ class WorldRenderer(
     private val waterBlock = connection.mapping.blockRegistry.get(ResourceLocation("minecraft:water"))?.nullCast<FluidBlock>()
 
     lateinit var chunkShader: Shader
+
     val allChunkSections: MutableMap<Vec2i, MutableMap<Int, ChunkMeshCollection>> = synchronizedMapOf()
     val visibleChunks: MutableMap<Vec2i, MutableMap<Int, ChunkMeshCollection>> = synchronizedMapOf()
     val queuedChunks: MutableSet<Vec2i> = synchronizedSetOf()
@@ -142,21 +143,13 @@ class WorldRenderer(
             prepareWorld(world)
         }
 
-        connection.registerEvent(CallbackEventInvoker.of<ChunkUnloadEvent> {
-            unloadChunk(it.chunkPosition)
-        })
+        connection.registerEvent(CallbackEventInvoker.of<ChunkUnloadEvent> { unloadChunk(it.chunkPosition) })
 
-        connection.registerEvent(CallbackEventInvoker.of<ChunkDataChangeEvent> {
-            prepareChunk(it.chunkPosition)
-        })
+        connection.registerEvent(CallbackEventInvoker.of<ChunkDataChangeEvent> { prepareChunk(it.chunkPosition) })
 
-        connection.registerEvent(CallbackEventInvoker.of<BlockSetEvent> {
-            prepareChunkSection(it.blockPosition.chunkPosition, it.blockPosition.sectionHeight)
-        })
+        connection.registerEvent(CallbackEventInvoker.of<BlockSetEvent> { prepareChunkSection(it.blockPosition.chunkPosition, it.blockPosition.sectionHeight) })
 
-        connection.registerEvent(CallbackEventInvoker.of<RespawnEvent> {
-            clearChunkCache()
-        })
+        connection.registerEvent(CallbackEventInvoker.of<RespawnEvent> { clearChunkCache() })
 
         connection.registerEvent(CallbackEventInvoker.of<MassBlockSetEvent> {
             val sectionHeights: MutableSet<Int> = synchronizedSetOf()
@@ -178,10 +171,10 @@ class WorldRenderer(
     }
 
     override fun postInit() {
-        check(renderWindow.textures.animator.animatedTextures.size < 4096) { "Can not have more than 4096 animated textures!" } // uniform buffer limit: 16kb. 4 ints per texture
+        check(renderWindow.textures.animator.animatedTextures.size < TextureArray.MAX_ANIMATED_TEXTURE) { "Can not have more than ${TextureArray.MAX_ANIMATED_TEXTURE} animated textures!" }
         chunkShader = Shader(
             resourceLocation = ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "chunk"),
-            defines = mapOf("ANIMATED_TEXTURE_COUNT" to MMath.clamp(renderWindow.textures.animator.animatedTextures.size, 1, Int.MAX_VALUE)),
+            defines = mapOf("ANIMATED_TEXTURE_COUNT" to MMath.clamp(renderWindow.textures.animator.animatedTextures.size, 1, TextureArray.MAX_ANIMATED_TEXTURE)),
         )
         chunkShader.load()
 
@@ -228,11 +221,9 @@ class WorldRenderer(
     }
 
 
-    fun prepareChunk(chunkPosition: Vec2i, chunk: Chunk? = world.getChunk(chunkPosition), checkQueued: Boolean = true) {
-        if (chunk == null) {
-            Log.warn("Can not prepare null chunk: $chunkPosition")
-            return
-        }
+    private fun prepareChunk(chunkPosition: Vec2i, chunk: Chunk? = world.getChunk(chunkPosition), checkQueued: Boolean = true) {
+        chunk ?: return
+
         if (!chunk.isFullyLoaded) {
             // chunk not fully received
             return
@@ -263,10 +254,10 @@ class WorldRenderer(
         var currentChunks: MutableMap<Int, ChunkSection> = synchronizedMapOf()
         var currentIndex = 0
         for ((sectionHeight, section) in chunk.sections!!) {
-            if (getSectionIndex(sectionHeight) != currentIndex) {
+            if (sectionHeight.sectionIndex != currentIndex) {
                 prepareChunkSections(chunkPosition, currentChunks)
                 currentChunks = synchronizedMapOf()
-                currentIndex = getSectionIndex(sectionHeight)
+                currentIndex = sectionHeight.sectionIndex
             }
             currentChunks[sectionHeight] = section
         }
@@ -310,7 +301,7 @@ class WorldRenderer(
             highestBlockHeight = highestBlockHeight * ProtocolDefinition.SECTION_HEIGHT_Y + ProtocolDefinition.SECTION_MAX_Y
 
 
-            val index = getSectionIndex(highestBlockHeight)
+            val index = highestBlockHeight.sectionIndex
             meshCollection.lowestBlockHeight = lowestBlockHeight
             meshCollection.highestBlockHeight = highestBlockHeight
 
@@ -353,17 +344,17 @@ class WorldRenderer(
         }
     }
 
-    fun prepareChunkSection(chunkPosition: Vec2i, sectionHeight: Int) {
+    private fun prepareChunkSection(chunkPosition: Vec2i, sectionHeight: Int) {
         val sections: MutableMap<Int, ChunkSection> = synchronizedMapOf()
         val chunk = world.getChunk(chunkPosition)!!
-        val lowestSectionHeight = getSectionIndex(sectionHeight) * RenderConstants.CHUNK_SECTIONS_PER_MESH
+        val lowestSectionHeight = sectionHeight.sectionIndex * RenderConstants.CHUNK_SECTIONS_PER_MESH
         for (i in lowestSectionHeight until lowestSectionHeight + RenderConstants.CHUNK_SECTIONS_PER_MESH) {
             sections[i] = chunk.sections?.get(i) ?: continue
         }
         prepareChunkSections(chunkPosition, sections)
     }
 
-    fun clearChunkCache() {
+    private fun clearChunkCache() {
         // ToDo: Stop all preparations
         queuedChunks.clear()
         val chunkMeshes = allChunkSections.toSynchronizedMap().values
@@ -376,7 +367,7 @@ class WorldRenderer(
         }
     }
 
-    fun unloadChunk(chunkPosition: Vec2i) {
+    private fun unloadChunk(chunkPosition: Vec2i) {
         queuedChunks.remove(chunkPosition)
         val chunkMesh = allChunkSections[chunkPosition] ?: return
         allChunkSections.remove(chunkPosition)
@@ -407,17 +398,11 @@ class WorldRenderer(
         }
     }
 
-    fun refreshChunkCache() {
-        clearChunkCache()
-        prepareWorld(connection.world)
-    }
-
     private fun onFrustumChange(frustum: Frustum) {
         visibleChunks.clear()
-        for ((chunkLocation, rawIndexMap) in allChunkSections.toSynchronizedMap()) {
+        for ((chunkLocation, indexMap) in allChunkSections.toSynchronizedMap()) {
             val visibleIndexMap: MutableMap<Int, ChunkMeshCollection> = synchronizedMapOf()
-            val indexMap = rawIndexMap.toMap()
-            for ((index, mesh) in indexMap) {
+            for ((index, mesh) in indexMap.toSynchronizedMap()) {
                 if (frustum.containsChunk(chunkLocation, mesh.lowestBlockHeight, mesh.highestBlockHeight)) {
                     visibleIndexMap[index] = mesh
                 }
@@ -428,10 +413,6 @@ class WorldRenderer(
         }
     }
 
-    private operator fun Int.plus(upOrDown: Directions): Int {
-        return this + upOrDown.directionVector.y
-    }
-
     companion object : RendererBuilder<WorldRenderer> {
         override val RESOURCE_LOCATION = ResourceLocation("minosoft:world_renderer")
 
@@ -439,12 +420,17 @@ class WorldRenderer(
             return WorldRenderer(connection, renderWindow)
         }
 
-        fun getSectionIndex(sectionHeight: Int): Int {
-            val divided = sectionHeight / RenderConstants.CHUNK_SECTIONS_PER_MESH
-            if (sectionHeight < 0) {
-                return divided - 1
+        val Int.sectionIndex: Int
+            get() {
+                val divided = this / RenderConstants.CHUNK_SECTIONS_PER_MESH
+                if (this < 0) {
+                    return divided - 1
+                }
+                return divided
             }
-            return divided
+
+        private operator fun Int.plus(upOrDown: Directions): Int {
+            return this + upOrDown.directionVector.y
         }
     }
 }

@@ -75,6 +75,10 @@ class InteractionHandler(
             return
         }
 
+        if (!connection.player.entity.gamemode.canBreak) {
+            return
+        }
+
         currentlyBreakingBlock = raycastHit.blockPosition
         connection.sendPacket(BlockBreakC2SP(BlockBreakC2SP.BreakType.START_DIGGING, raycastHit.blockPosition, raycastHit.hitDirection))
         connection.sendPacket(BlockBreakC2SP(BlockBreakC2SP.BreakType.FINISHED_DIGGING, raycastHit.blockPosition, raycastHit.hitDirection))
@@ -143,7 +147,7 @@ class InteractionHandler(
 
 
                 val blockState = if (selectedItemStack.item is BlockItem) {
-                    selectedItemStack.item.block.getPlacementState(renderWindow.connection, raycastHit)
+                    selectedItemStack.item.block.getPlacementState(renderWindow.connection, raycastHit) ?: return
                 } else {
                     return
                 }

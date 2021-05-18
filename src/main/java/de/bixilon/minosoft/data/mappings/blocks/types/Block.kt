@@ -60,7 +60,7 @@ open class Block(final override val resourceLocation: ResourceLocation, mappings
         return resourceLocation.full
     }
 
-    open fun getPlacementState(connection: PlayConnection, raycastHit: RaycastHit): BlockState {
+    open fun getPlacementState(connection: PlayConnection, raycastHit: RaycastHit): BlockState? {
         return defaultState
     }
 

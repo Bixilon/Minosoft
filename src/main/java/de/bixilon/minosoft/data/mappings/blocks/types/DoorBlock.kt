@@ -28,7 +28,7 @@ import glm_.vec3.Vec3i
 
 open class DoorBlock(resourceLocation: ResourceLocation, mappings: VersionMapping, data: JsonObject) : DoubleSizeBlock(resourceLocation, mappings, data) {
 
-    override fun getPlacementState(connection: PlayConnection, raycastHit: RaycastHit): BlockState {
+    override fun getPlacementState(connection: PlayConnection, raycastHit: RaycastHit): BlockState? {
         TODO()
     }
 

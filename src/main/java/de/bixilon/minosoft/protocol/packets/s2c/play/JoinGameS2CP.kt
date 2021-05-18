@@ -83,7 +83,6 @@ class JoinGameS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
                 isReducedDebugScreen = buffer.readBoolean()
             }
         } else {
-
             if (buffer.versionId >= ProtocolVersions.V_1_16_PRE6) {
                 buffer.readByte() // previous game mode
             }

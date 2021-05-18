@@ -17,6 +17,7 @@ package de.bixilon.minosoft.gui.rendering.input.camera
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.rotate
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.util.KUtil.synchronizedListOf
 import glm_.func.cos
 import glm_.func.rad
 import glm_.func.sin
@@ -24,7 +25,7 @@ import glm_.vec2.Vec2i
 import glm_.vec3.Vec3
 
 class Frustum(private val camera: Camera) {
-    private val normals: MutableList<Vec3> = mutableListOf(
+    private val normals: MutableList<Vec3> = synchronizedListOf(
         camera.cameraFront.normalize(),
     )
 
