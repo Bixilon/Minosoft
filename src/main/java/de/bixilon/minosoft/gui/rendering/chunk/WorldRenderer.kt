@@ -193,15 +193,15 @@ class WorldRenderer(
         chunkShader.use()
         val visibleChunks = visibleChunks.toSynchronizedMap()
 
-        for ((_, map) in visibleChunks) {
-            for ((_, mesh) in map) {
+        for (map in visibleChunks.values) {
+            for (mesh in map.values) {
                 mesh.opaqueSectionArrayMesh.draw()
             }
         }
         glDepthMask(false)
 
-        for ((_, map) in visibleChunks) {
-            for ((_, mesh) in map) {
+        for (map in visibleChunks.values) {
+            for (mesh in map.values) {
                 mesh.transparentSectionArrayMesh?.draw()
             }
         }
