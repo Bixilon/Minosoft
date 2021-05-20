@@ -23,5 +23,5 @@ open class BlockItem(
     data: JsonObject,
     versionMapping: VersionMapping,
 ) : Item(resourceLocation, versionMapping, data) {
-    val block: Block = versionMapping.blockRegistry.get(data["block"].asInt)
+    val block: Block = versionMapping.blockRegistry[data["block"].asInt]
 }

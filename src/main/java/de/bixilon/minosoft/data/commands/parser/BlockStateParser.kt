@@ -34,7 +34,7 @@ class BlockStateParser : CommandParser() {
             stringReader.skip()
         }
         val resourceLocation = stringReader.readResourceLocation() // ToDo: check tags
-        val block = connection.mapping.blockRegistry.get(resourceLocation.value) ?: throw BlockNotFoundCommandParseException(stringReader, resourceLocation.key)
+        val block = connection.mapping.blockRegistry[resourceLocation.value] ?: throw BlockNotFoundCommandParseException(stringReader, resourceLocation.key)
         var blockState: BlockState? = null
 
         if (stringReader.canRead() && stringReader.peek() == '[') {

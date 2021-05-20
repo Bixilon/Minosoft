@@ -32,7 +32,7 @@ class BlockActionS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     }
     val data1: Byte = buffer.readByte()
     val data2: Byte = buffer.readByte()
-    val block: Block = buffer.connection.mapping.blockRegistry.get(buffer.readVarInt())
+    val block: Block = buffer.connection.mapping.blockRegistry[buffer.readVarInt()]
 
     override fun handle(connection: PlayConnection) {
         val blockEntity = connection.world.getBlockEntity(position) ?: let {

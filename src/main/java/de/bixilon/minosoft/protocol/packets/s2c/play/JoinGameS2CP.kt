@@ -73,7 +73,7 @@ class JoinGameS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         }
 
         if (buffer.versionId < ProtocolVersions.V_1_9_1) {
-            dimension = buffer.connection.mapping.dimensionRegistry.get(buffer.readByte().toInt())
+            dimension = buffer.connection.mapping.dimensionRegistry[buffer.readByte().toInt()]
             difficulty = Difficulties.byId(buffer.readUnsignedByte().toInt())
             maxPlayers = buffer.readByte().toInt()
             if (buffer.versionId >= ProtocolVersions.V_13W42B) {
@@ -90,7 +90,7 @@ class JoinGameS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
                 buffer.readStringArray() // dimensions
             }
             if (buffer.versionId < ProtocolVersions.V_20W21A) {
-                dimension = buffer.connection.mapping.dimensionRegistry.get(buffer.readInt())
+                dimension = buffer.connection.mapping.dimensionRegistry[buffer.readInt()]
             } else {
                 val dimensionCodec = buffer.readNBT()?.compoundCast()!!
                 dimensions = parseDimensionCodec(dimensionCodec, buffer.versionId)
@@ -100,7 +100,7 @@ class JoinGameS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
                     buffer.readNBT()!!.compoundCast() // dimension tag
                 }
                 val currentDimension = buffer.readResourceLocation()
-                dimension = dimensions[currentDimension] ?: buffer.connection.mapping.dimensionRegistry.get(currentDimension)!!
+                dimension = dimensions[currentDimension] ?: buffer.connection.mapping.dimensionRegistry[currentDimension]!!
             }
 
             if (buffer.versionId >= ProtocolVersions.V_19W36A) {

@@ -30,13 +30,13 @@ class ResourceLocationListParser : CommandParser() {
 
 
         if (this == ENCHANTMENT_PARSER) {
-            return connection.mapping.enchantmentRegistry.get(resourceLocation.value) ?: throw EnchantmentNotFoundCommandParseException(stringReader, resourceLocation.key)
+            return connection.mapping.enchantmentRegistry[resourceLocation.value] ?: throw EnchantmentNotFoundCommandParseException(stringReader, resourceLocation.key)
         }
         if (this == MOB_EFFECT_PARSER) {
-            return connection.mapping.statusEffectRegistry.get(resourceLocation.value) ?: throw MobEffectNotFoundCommandParseException(stringReader, resourceLocation.key)
+            return connection.mapping.statusEffectRegistry[resourceLocation.value] ?: throw MobEffectNotFoundCommandParseException(stringReader, resourceLocation.key)
         }
         if (this == DIMENSION_EFFECT_PARSER) {
-            return connection.mapping.dimensionRegistry.get(resourceLocation.value) ?: throw DimensionNotFoundCommandParseException(stringReader, resourceLocation.key)
+            return connection.mapping.dimensionRegistry[resourceLocation.value] ?: throw DimensionNotFoundCommandParseException(stringReader, resourceLocation.key)
         }
         if (this == SUMMONABLE_ENTITY_PARSER) {
             // ToDo: only summonable entities, not all of them

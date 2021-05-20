@@ -30,7 +30,7 @@ class BlockEntityMetaDataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     } else {
         buffer.readBlockPosition()
     }
-    val type = buffer.connection.mapping.blockEntityMetaDataTypeRegistry.get(buffer.readUnsignedByte()).resourceLocation
+    val type = buffer.connection.mapping.blockEntityMetaDataTypeRegistry[buffer.readUnsignedByte()].resourceLocation
     val nbt = buffer.readNBT()?.compoundCast()!!
 
     override fun handle(connection: PlayConnection) {

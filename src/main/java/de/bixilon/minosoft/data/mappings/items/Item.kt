@@ -32,7 +32,7 @@ open class Item(
     val maxDamage: Int = data["max_damage"]?.asInt ?: 64
     val isFireResistant: Boolean = data["is_fire_resistant"]?.asBoolean ?: false
     override val translationKey: String? = data["translation_key"]?.asString
-    val creativeModeTab: CreativeModeTab? = data["category"]?.asInt?.let { versionMapping.creativeModeTabRegistry.get(it) }
+    val creativeModeTab: CreativeModeTab? = data["category"]?.asInt?.let { versionMapping.creativeModeTabRegistry[it] }
 
     override fun toString(): String {
         return resourceLocation.toString()

@@ -25,11 +25,11 @@ class FakeEnumRegistry<T : RegistryFakeEnumerable>(
     private val valueIdMap: MutableMap<T, Int> = mutableMapOf()
     private val nameValueMap: MutableMap<String, T> = mutableMapOf()
 
-    fun get(name: String): T? {
+    operator fun get(name: String): T? {
         return nameValueMap[name] ?: parentRegistry?.get(name)
     }
 
-    fun get(id: Int): T? {
+    operator fun get(id: Int): T? {
         return idValueMap[id] ?: parentRegistry?.get(id)
     }
 

@@ -39,9 +39,9 @@ class PaintingSpawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
 
     init {
         val motive: Motive? = if (buffer.versionId < ProtocolVersions.V_18W02A) {
-            buffer.connection.mapping.motiveRegistry.get(buffer.readResourceLocation())
+            buffer.connection.mapping.motiveRegistry[buffer.readResourceLocation()]
         } else {
-            buffer.connection.mapping.motiveRegistry.get(buffer.readVarInt())
+            buffer.connection.mapping.motiveRegistry[buffer.readVarInt()]
         }
         val position: Vec3i
         val direction: Directions
@@ -52,7 +52,7 @@ class PaintingSpawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
             position = buffer.readBlockPosition()
             direction = byId(buffer.readUnsignedByte())
         }
-        entity = Painting(buffer.connection, buffer.connection.mapping.entityRegistry.get(Painting.RESOURCE_LOCATION)!!, position, direction, motive!!)
+        entity = Painting(buffer.connection, buffer.connection.mapping.entityRegistry[Painting.RESOURCE_LOCATION]!!, position, direction, motive!!)
     }
 
     override fun handle(connection: PlayConnection) {

@@ -190,7 +190,7 @@ object DefaultEntityFactories {
 
         val tweakedFactory = ENTITY_FACTORY_MAP[tweakedResourceLocation] ?: throw UnknownEntityException("Can not find tweaked entity type: $tweakedResourceLocation for $factory")
 
-        val tweakedEntityType = connection.mapping.entityRegistry.get(tweakedResourceLocation) ?: throw UnknownEntityException("Can not find tweaked entity type data in ${connection.version}: $tweakedResourceLocation for $factory")
+        val tweakedEntityType = connection.mapping.entityRegistry[tweakedResourceLocation] ?: throw UnknownEntityException("Can not find tweaked entity type data in ${connection.version}: $tweakedResourceLocation for $factory")
         return tweakedFactory.build(connection, tweakedEntityType, position, rotation)
     }
 

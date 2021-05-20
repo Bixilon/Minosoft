@@ -34,7 +34,7 @@ data class Fluid(
     }
 
     override fun postInit(versionMapping: VersionMapping) {
-        bucketItem = bucketItemId?.let { versionMapping.itemRegistry.get(it) }
+        bucketItem = bucketItemId?.let { versionMapping.itemRegistry[it] }
     }
 
     companion object : ResourceLocationDeserializer<Fluid> {
@@ -43,7 +43,7 @@ data class Fluid(
             return Fluid(
                 resourceLocation = resourceLocation,
                 bucketItemId = data["bucket"]?.asInt,
-                dripParticle = data["drip_particle_type"]?.asInt?.let { mappings.particleTypeRegistry.get(it) },
+                dripParticle = data["drip_particle_type"]?.asInt?.let { mappings.particleTypeRegistry[it] },
                 renderTexture = data["render"]?.asJsonObject?.get("texture")?.asString?.let { ResourceLocation(it) },
             )
         }

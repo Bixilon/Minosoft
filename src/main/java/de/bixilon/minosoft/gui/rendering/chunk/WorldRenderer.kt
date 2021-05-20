@@ -56,7 +56,7 @@ class WorldRenderer(
     val renderWindow: RenderWindow,
 ) : Renderer {
     private val world: World = connection.world
-    private val waterBlock = connection.mapping.blockRegistry.get(ResourceLocation("minecraft:water"))?.nullCast<FluidBlock>()
+    private val waterBlock = connection.mapping.blockRegistry[ResourceLocation("minecraft:water")]?.nullCast<FluidBlock>()
 
     lateinit var chunkShader: Shader
 

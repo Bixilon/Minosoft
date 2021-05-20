@@ -47,12 +47,12 @@ class Horse(connection: PlayConnection, entityType: EntityType, location: Vec3, 
             if (versionId <= ProtocolVersions.V_1_8_9) { // ToDo
                 return null
             }
-            return connection.mapping.itemRegistry.get(when (this.entityMetaData.sets.getInt(EntityMetaDataFields.LEGACY_HORSE_ARMOR)) {
+            return connection.mapping.itemRegistry[when (this.entityMetaData.sets.getInt(EntityMetaDataFields.LEGACY_HORSE_ARMOR)) {
                 1 -> LEGACY_IRON_ARMOR
                 2 -> LEGACY_GOLD_ARMOR
                 3 -> LEGACY_DIAMOND_ARMOR
                 else -> error("Invalid armor set")
-            })
+            }]
         }
 
     enum class HorseColors {

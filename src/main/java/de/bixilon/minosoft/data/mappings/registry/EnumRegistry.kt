@@ -30,7 +30,7 @@ class EnumRegistry<T : Enum<*>>(
     private val idValueMap: MutableMap<Int, T> = mutableMapOf()
     private val valueIdMap: MutableMap<T, Int> = mutableMapOf()
 
-    fun get(id: Int): T? {
+    operator fun get(id: Int): T? {
         return idValueMap[id] ?: parentRegistry?.get(id)
     }
 

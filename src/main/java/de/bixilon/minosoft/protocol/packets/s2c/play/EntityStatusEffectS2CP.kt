@@ -25,9 +25,9 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 class EntityStatusEffectS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     val entityId: Int = buffer.readEntityId()
     var effect: StatusEffectInstance = if (buffer.versionId < ProtocolVersions.V_14W04A) {
-        StatusEffectInstance(buffer.connection.mapping.statusEffectRegistry.get(buffer.readUnsignedByte()), buffer.readByte() + 1, buffer.readUnsignedShort())
+        StatusEffectInstance(buffer.connection.mapping.statusEffectRegistry[buffer.readUnsignedByte()], buffer.readByte() + 1, buffer.readUnsignedShort())
     } else {
-        StatusEffectInstance(buffer.connection.mapping.statusEffectRegistry.get(buffer.readUnsignedByte()), buffer.readByte() + 1, buffer.readVarInt())
+        StatusEffectInstance(buffer.connection.mapping.statusEffectRegistry[buffer.readUnsignedByte()], buffer.readByte() + 1, buffer.readVarInt())
     }
     val isAmbient: Boolean
     val hideParticles: Boolean

@@ -36,7 +36,7 @@ class SoundEventS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
             // category was moved to the top
             this.category = SoundCategories[buffer.readVarInt()]
         }
-        soundEvent = buffer.connection.mapping.soundEventRegistry.get(buffer.readVarInt())
+        soundEvent = buffer.connection.mapping.soundEventRegistry[buffer.readVarInt()]
         if (buffer.versionId >= ProtocolVersions.V_17W15A && buffer.versionId < ProtocolVersions.V_17W18A) {
             buffer.readString() // parrot entity type
         }

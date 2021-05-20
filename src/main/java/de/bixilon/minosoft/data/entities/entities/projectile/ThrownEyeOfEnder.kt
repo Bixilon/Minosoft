@@ -27,11 +27,10 @@ class ThrownEyeOfEnder(connection: PlayConnection, entityType: EntityType, locat
 
     @get:EntityMetaDataFunction(name = "Item")
     val item: ItemStack
-        get() = entityMetaData.sets.getItemStack(EntityMetaDataFields.THROWN_EYE_OF_ENDER_ITEM) ?: getDefaultItem()
+        get() = entityMetaData.sets.getItemStack(EntityMetaDataFields.THROWN_EYE_OF_ENDER_ITEM) ?: defaultItem
 
-    fun getDefaultItem(): ItemStack {
-        return ItemStack(connection.mapping.itemRegistry.get(DEFAULT_ITEM)!!, connection.version)
-    }
+    val defaultItem: ItemStack
+        get() = ItemStack(connection.mapping.itemRegistry[DEFAULT_ITEM]!!, connection.version)
 
     companion object : EntityFactory<ThrownEyeOfEnder> {
         private val DEFAULT_ITEM = ResourceLocation("ender_eye")

@@ -67,7 +67,7 @@ class EntityMetaData(
             EntityMetaDataDataTypes.POSE -> buffer.readPose()
             EntityMetaDataDataTypes.BLOCK_ID -> buffer.connection.mapping.getBlockState(buffer.readVarInt()) // ToDo
             EntityMetaDataDataTypes.OPT_VAR_INT -> buffer.readVarInt() - 1
-            EntityMetaDataDataTypes.VILLAGER_DATA -> VillagerData(VillagerTypes[buffer.readVarInt()], connection.mapping.villagerProfessionRegistry.get(buffer.readVarInt()).resourceLocation, VillagerLevels[buffer.readVarInt()])
+            EntityMetaDataDataTypes.VILLAGER_DATA -> VillagerData(VillagerTypes[buffer.readVarInt()], connection.mapping.villagerProfessionRegistry[buffer.readVarInt()].resourceLocation, VillagerLevels[buffer.readVarInt()])
             EntityMetaDataDataTypes.OPT_BLOCK_ID -> buffer.connection.mapping.getBlockState(buffer.readVarInt())
         }
     }

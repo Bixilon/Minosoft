@@ -59,7 +59,7 @@ class PlayerEntitySpawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         val yaw = buffer.readAngle()
         val pitch = buffer.readAngle()
         if (buffer.versionId < ProtocolVersions.V_15W31A) {
-            buffer.connection.mapping.itemRegistry.get(buffer.readUnsignedShort()) // current item
+            buffer.connection.mapping.itemRegistry[buffer.readUnsignedShort()] // current item
         }
 
         var metaData: EntityMetaData? = null
@@ -68,7 +68,7 @@ class PlayerEntitySpawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         }
         entity = PlayerEntity(
             connection = buffer.connection,
-            entityType = buffer.connection.mapping.entityRegistry.get(PlayerEntity.RESOURCE_LOCATION)!!,
+            entityType = buffer.connection.mapping.entityRegistry[PlayerEntity.RESOURCE_LOCATION]!!,
             position = position,
             rotation = EntityRotation(yaw.toFloat(), pitch.toFloat(), 0.0f),
             name = name,

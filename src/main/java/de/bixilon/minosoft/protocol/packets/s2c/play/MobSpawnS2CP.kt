@@ -55,7 +55,7 @@ class MobSpawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         } else {
             null
         }
-        val entityType = buffer.connection.mapping.entityRegistry.get(typeId)
+        val entityType = buffer.connection.mapping.entityRegistry[typeId]
         entity = entityType.build(buffer.connection, position, rotation, metaData, buffer.versionId)!!
         entity.velocity = velocity
         metaData?.let {

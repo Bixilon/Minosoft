@@ -152,7 +152,7 @@ data class BlockState(
             val tintColor: RGBColor? = data["tint_color"]?.asInt?.let { TintColorCalculator.getJsonColor(it) } ?: owner.tintColor
 
 
-            val material = versionMapping.materialRegistry.get(ResourceLocation(data["material"].asString))!!
+            val material = versionMapping.materialRegistry[ResourceLocation(data["material"].asString)]!!
 
 
             fun JsonElement.asShape(): VoxelShape {

@@ -88,10 +88,10 @@ data class ItemStack(
                 val enchantment = enchantmentTag[ENCHANTMENT_ID_TAG]?.let { enchantmentId ->
                     when (enchantmentId) {
                         is Number -> {
-                            version!!.mapping.enchantmentRegistry.get(enchantmentId.toInt())
+                            version!!.mapping.enchantmentRegistry[enchantmentId.toInt()]
                         }
                         is String -> {
-                            version!!.mapping.enchantmentRegistry.get(ResourceLocation.getPathResourceLocation(enchantmentId))
+                            version!!.mapping.enchantmentRegistry[ResourceLocation.getPathResourceLocation(enchantmentId)]
                         }
                         else -> TODO()
                     }

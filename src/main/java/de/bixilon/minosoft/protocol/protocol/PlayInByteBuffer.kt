@@ -74,7 +74,7 @@ class PlayInByteBuffer : InByteBuffer {
     }
 
     fun readParticle(): ParticleData {
-        val type = connection.mapping.particleTypeRegistry.get(readVarInt())
+        val type = connection.mapping.particleTypeRegistry[readVarInt()]
         return readParticleData(type)
     }
 
@@ -82,7 +82,7 @@ class PlayInByteBuffer : InByteBuffer {
         // ToDo: Replace with dynamic particle type calling
         if (this.versionId < V_17W45A) {
             return when (type.resourceLocation.full) {
-                "minecraft:iconcrack" -> ItemParticleData(ItemStack(item = connection.mapping.itemRegistry.get(readVarInt() shl 16 or readVarInt()), connection.version), type)
+                "minecraft:iconcrack" -> ItemParticleData(ItemStack(item = connection.mapping.itemRegistry[readVarInt() shl 16 or readVarInt()], connection.version), type)
                 "minecraft:blockcrack", "minecraft:blockdust", "minecraft:falling_dust" -> BlockParticleData(connection.mapping.getBlockState(readVarInt() shl 4), type) // ToDo: What about meta data?
                 else -> ParticleData(type)
             }
@@ -113,7 +113,7 @@ class PlayInByteBuffer : InByteBuffer {
             }
             val nbt = readNBTTag(versionId < V_14W28B)?.compoundCast()
             return ItemStack(
-                item = connection.mapping.itemRegistry.get(id shl 16 or metaData),
+                item = connection.mapping.itemRegistry[id shl 16 or metaData],
                 version = connection.version,
                 count = count,
                 durability = metaData,
@@ -124,7 +124,7 @@ class PlayInByteBuffer : InByteBuffer {
         return if (readBoolean()) {
             ItemStack(
                 version = connection.version,
-                item = connection.mapping.itemRegistry.get(readVarInt()),
+                item = connection.mapping.itemRegistry[readVarInt()],
                 count = readUnsignedByte(),
                 nbt = readNBT()?.compoundCast() ?: mutableMapOf(),
             )
@@ -159,7 +159,7 @@ class PlayInByteBuffer : InByteBuffer {
             } else {
                 readInt()
             }
-            ret.add(i, connection.mapping.biomeRegistry.get(biomeId))
+            ret.add(i, connection.mapping.biomeRegistry[biomeId])
         }
         return ret.toTypedArray()
     }
@@ -171,7 +171,7 @@ class PlayInByteBuffer : InByteBuffer {
             var item = readUnsignedByte()
             while (item != 0x7F) {
                 val index = item and 0x1F
-                val type = connection.mapping.entityMetaDataDataDataTypesRegistry.get(item and 0xFF shr 5)!!
+                val type = connection.mapping.entityMetaDataDataDataTypesRegistry[item and 0xFF shr 5]!!
                 sets[index] = metaData.getData(type, this)!!
                 item = readUnsignedByte()
             }
@@ -183,7 +183,7 @@ class PlayInByteBuffer : InByteBuffer {
                 } else {
                     readVarInt()
                 }
-                val type = connection.mapping.entityMetaDataDataDataTypesRegistry.get(id) ?: error("Can not get meta data index for id $id")
+                val type = connection.mapping.entityMetaDataDataDataTypesRegistry[id] ?: error("Can not get meta data index for id $id")
                 metaData.getData(type, this)?.let {
                     sets[index] = it
                 }
