@@ -16,7 +16,6 @@ package de.bixilon.minosoft.gui.main;
 import com.jfoenix.controls.JFXAlert;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXDialogLayout;
-import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.validation.RequiredFieldValidator;
 import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.ShutdownReasons;
@@ -118,19 +117,13 @@ public class MainWindow implements Initializable {
 
         JFXButton submitButton;
 
-        JFXTextField serverNameField = new JFXTextField();
+        TextField serverNameField = new TextField();
         serverNameField.setPromptText(LocaleManager.translate(Strings.SERVER_NAME));
 
-        JFXTextField serverAddressField = new JFXTextField();
+        TextField serverAddressField = new TextField();
         serverAddressField.setPromptText(LocaleManager.translate(Strings.SERVER_ADDRESS));
         RequiredFieldValidator serverAddressValidator = new RequiredFieldValidator();
         serverAddressValidator.setMessage(LocaleManager.translate(Strings.SERVER_ADDRESS_INPUT_REQUIRED));
-        serverAddressField.getValidators().add(serverAddressValidator);
-        serverAddressField.focusedProperty().addListener((observableValue, oldValue, newValue) -> {
-            if (!newValue) {
-                serverAddressField.validate();
-            }
-        });
         serverAddressField.setTextFormatter(new TextFormatter<String>((change) -> {
             change.setText(DNSUtil.correctHostName(change.getText()));
             return change;
