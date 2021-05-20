@@ -126,7 +126,7 @@ class ChunkDataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         chunkData?.let {
             val chunk = connection.world.getOrCreateChunk(chunkPosition)
             chunk.setData(chunkData!!)
-            connection.world.setBlockEntity(blockEntities)
+            connection.world.setBlockEntities(blockEntities)
             connection.fireEvent(ChunkDataChangeEvent(connection, this))
         } ?: let {
             connection.world.unloadChunk(chunkPosition)

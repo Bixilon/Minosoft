@@ -34,17 +34,17 @@ class Chunk(
             return sections != null && biomeSource != null && lightAccessor != null
         }
 
-    fun getBlockState(inChunkPosition: Vec3i): BlockState? {
+    operator fun get(inChunkPosition: Vec3i): BlockState? {
         return sections?.get(inChunkPosition.sectionHeight)?.getBlockState(inChunkPosition.inChunkSectionPosition)
     }
 
-    fun getBlockState(x: Int, y: Int, z: Int): BlockState? {
-        return getBlockState(Vec3i(x, y, z))
+    operator fun get(x: Int, y: Int, z: Int): BlockState? {
+        return get(Vec3i(x, y, z))
     }
 
     fun setBlocks(blocks: Map<Vec3i, BlockState?>) {
         for ((location, blockInfo) in blocks) {
-            setBlockState(location, blockInfo)
+            set(location, blockInfo)
         }
     }
 
@@ -59,7 +59,7 @@ class Chunk(
                 }
                 // replace all chunk sections
                 for ((sectionHeight, chunkSection) in it) {
-                    getSectionOrCreate(sectionHeight).setData(chunkSection)
+                    getOrPut(sectionHeight).setData(chunkSection)
                 }
             }
             data.biomeSource?.let {
@@ -72,11 +72,11 @@ class Chunk(
     }
 
 
-    fun setBlockState(inChunkPosition: Vec3i, blockState: BlockState?) {
-        getSectionOrCreate(inChunkPosition.sectionHeight).setBlockState(inChunkPosition.inChunkSectionPosition, blockState)
+    operator fun set(inChunkPosition: Vec3i, blockState: BlockState?) {
+        getOrPut(inChunkPosition.sectionHeight).setBlockState(inChunkPosition.inChunkSectionPosition, blockState)
     }
 
-    fun getSectionOrCreate(sectionHeight: Int): ChunkSection {
+    private fun getOrPut(sectionHeight: Int): ChunkSection {
         if (sections == null) {
             throw IllegalStateException("Chunk not received/initialized yet!")
         }
@@ -94,7 +94,7 @@ class Chunk(
         return sections?.get(inChunkPosition.sectionHeight)?.getBlockEntity(inChunkPosition.inChunkSectionPosition)
     }
 
-    fun setBlockEntity(inChunkPosition: Vec3i, blockEntity: BlockEntity?) {
+    operator fun set(inChunkPosition: Vec3i, blockEntity: BlockEntity?) {
         sections?.get(inChunkPosition.sectionHeight)?.setBlockEntity(inChunkPosition.inChunkSectionPosition, blockEntity)
     }
 }

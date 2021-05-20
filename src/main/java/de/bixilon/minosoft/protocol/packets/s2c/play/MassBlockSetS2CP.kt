@@ -44,7 +44,7 @@ class MassBlockSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
                 }
                 val count = buffer.readShort()
                 val dataSize = buffer.readInt()
-                check(dataSize == count * 4) { "MultiBlockChangePacket needs 4 bytes per block change!" }
+                check(dataSize == count * 4) { "Mass block set needs 4 bytes per block change!" }
                 for (i in 0 until count) {
                     val raw = buffer.readInt()
                     val meta = (raw and 0xF)
@@ -80,7 +80,7 @@ class MassBlockSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     }
 
     override fun handle(connection: PlayConnection) {
-        val chunk = connection.world.getChunk(chunkPosition) ?: return // thanks mojang
+        val chunk = connection.world[chunkPosition] ?: return // thanks mojang
         if (chunk.sections == null) {
             return
         }
@@ -93,7 +93,7 @@ class MassBlockSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
                 if (block === value) {
                     continue
                 }
-                chunk.setBlockState(key, block)
+                chunk[key] = block
             }
         }
         connection.fireEvent(MassBlockSetEvent(connection, this))

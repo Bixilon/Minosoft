@@ -82,7 +82,7 @@ class InteractionHandler(
         currentlyBreakingBlock = raycastHit.blockPosition
         connection.sendPacket(BlockBreakC2SP(BlockBreakC2SP.BreakType.START_DIGGING, raycastHit.blockPosition, raycastHit.hitDirection))
         connection.sendPacket(BlockBreakC2SP(BlockBreakC2SP.BreakType.FINISHED_DIGGING, raycastHit.blockPosition, raycastHit.hitDirection))
-        connection.world.setBlock(raycastHit.blockPosition, null)
+        connection.world.setBlockState(raycastHit.blockPosition, null)
         currentlyBreakingBlock = null
 
         lastBreak = currentTime
@@ -139,7 +139,7 @@ class InteractionHandler(
                     return
                 }
 
-                renderWindow.connection.world.getBlockState(blockPosition)?.let {
+                renderWindow.connection.world[blockPosition]?.let {
                     if (!it.material.replaceable) {
                         return
                     }
@@ -152,7 +152,7 @@ class InteractionHandler(
                     return
                 }
 
-                renderWindow.connection.world.setBlock(blockPosition, blockState)
+                renderWindow.connection.world[blockPosition] = blockState
 
                 if (connection.player.entity.gamemode != Gamemodes.CREATIVE) {
                     selectedItemStack.count--

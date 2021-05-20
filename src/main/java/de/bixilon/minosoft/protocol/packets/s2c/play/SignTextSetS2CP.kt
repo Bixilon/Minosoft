@@ -45,7 +45,7 @@ class SignTextSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     override fun handle(connection: PlayConnection) {
         val signBlockEntity = connection.world.getBlockEntity(signPosition)?.unsafeCast<SignBlockEntity>() ?: let {
             val blockEntity = SignBlockEntity(connection)
-            connection.world.setBlockEntity(signPosition, blockEntity)
+            connection.world[signPosition] = blockEntity
             blockEntity
         }
 

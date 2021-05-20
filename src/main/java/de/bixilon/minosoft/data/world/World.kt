@@ -40,8 +40,7 @@ class World(
 ) : BiomeAccessor {
     val chunks: MutableMap<Vec2i, Chunk> = synchronizedMapOf()
     val entities = WorldEntities()
-    var isHardcore = false
-    var isRaining = false
+    var hardcore = false
     var dimension: Dimension? = null
     var difficulty: Difficulties? = null
     var difficultyLocked = false
@@ -51,13 +50,21 @@ class World(
     var time = 0L
     var age = 0L
 
+    operator fun get(blockPosition: Vec3i): BlockState? {
+        return chunks[blockPosition.chunkPosition]?.get(blockPosition.inChunkPosition)
+    }
+
     fun getBlockState(blockPosition: Vec3i): BlockState? {
-        return chunks[blockPosition.chunkPosition]?.getBlockState(blockPosition.inChunkPosition)
+        return this[blockPosition]
     }
 
     @Synchronized
-    fun getChunk(chunkPosition: Vec2i): Chunk? {
+    operator fun get(chunkPosition: Vec2i): Chunk? {
         return chunks[chunkPosition]
+    }
+
+    fun getChunk(chunkPosition: Vec2i): Chunk? {
+        return this[chunkPosition]
     }
 
     @Synchronized
@@ -65,14 +72,13 @@ class World(
         return chunks.getOrPut(chunkPosition) { Chunk() }
     }
 
-    fun setBlock(blockPosition: Vec3i, blockState: BlockState?, createChunk: Boolean = false) {
+    fun setBlockState(blockPosition: Vec3i, blockState: BlockState?) {
+        this[blockPosition] = blockState
+    }
+
+    operator fun set(blockPosition: Vec3i, blockState: BlockState?) {
         val chunkPosition = blockPosition.chunkPosition
-        if (createChunk) {
-            //  chunks.getOrPut(chunkPosition) { Chunk() }
-            TODO()
-        } else {
-            chunks[chunkPosition]
-        }?.let {
+        chunks[chunkPosition]?.let {
             val sections = it.sections ?: return
 
             val transformedBlockState = if (connection.version.isFlattened()) {
@@ -81,11 +87,11 @@ class World(
                 VersionTweaker.transformBlock(blockState, sections, blockPosition.inChunkSectionPosition, blockPosition.sectionHeight)
             }
             val inChunkPosition = blockPosition.inChunkPosition
-            it.getBlockState(inChunkPosition)?.let { oldBlockState ->
+            it[inChunkPosition]?.let { oldBlockState ->
                 oldBlockState.block.onBreak(connection, blockPosition, oldBlockState, it.getBlockEntity(inChunkPosition))
             }
             blockState?.block?.onPlace(connection, blockPosition, blockState)
-            it.setBlockState(blockPosition.inChunkPosition, transformedBlockState)
+            it[blockPosition.inChunkPosition] = transformedBlockState
             connection.fireEvent(BlockSetEvent(
                 connection = connection,
                 blockPosition = blockPosition,
@@ -94,8 +100,8 @@ class World(
         }
     }
 
-    fun forceSetBlock(blockPosition: Vec3i, blockState: BlockState?) {
-        chunks[blockPosition.chunkPosition]?.setBlockState(blockPosition.inChunkPosition, blockState)
+    fun forceSetBlockState(blockPosition: Vec3i, blockState: BlockState?) {
+        chunks[blockPosition.chunkPosition]?.set(blockPosition.inChunkPosition, blockState)
     }
 
     fun unloadChunk(chunkPosition: Vec2i) {
@@ -115,16 +121,21 @@ class World(
     }
 
     fun getBlockEntity(blockPosition: Vec3i): BlockEntity? {
-        return getChunk(blockPosition.chunkPosition)?.getBlockEntity(blockPosition.inChunkPosition)
+        return get(blockPosition.chunkPosition)?.getBlockEntity(blockPosition.inChunkPosition)
+    }
+
+    operator fun set(blockPosition: Vec3i, blockEntity: BlockEntity?) {
+        get(blockPosition.chunkPosition)?.set(blockPosition.inChunkPosition, blockEntity)
     }
 
     fun setBlockEntity(blockPosition: Vec3i, blockEntity: BlockEntity?) {
-        getChunk(blockPosition.chunkPosition)?.setBlockEntity(blockPosition.inChunkPosition, blockEntity)
+        this[blockPosition] = blockEntity
     }
 
-    fun setBlockEntity(blockEntities: Map<Vec3i, BlockEntity>) {
+
+    fun setBlockEntities(blockEntities: Map<Vec3i, BlockEntity>) {
         for ((blockPosition, entityMetaData) in blockEntities) {
-            setBlockEntity(blockPosition, entityMetaData)
+            set(blockPosition, entityMetaData)
         }
     }
 
@@ -139,7 +150,7 @@ class World(
             for (y in start.y..end.y) {
                 for (x in start.x..end.x) {
                     val blockPosition = Vec3i(x, y, z)
-                    getBlockState(blockPosition)?.let {
+                    this[blockPosition]?.let {
                         blocks[blockPosition] = it
                     }
                 }

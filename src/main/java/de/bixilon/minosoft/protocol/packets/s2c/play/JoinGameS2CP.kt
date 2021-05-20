@@ -140,7 +140,7 @@ class JoinGameS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         val playerEntity = connection.player.entity
         playerEntity.tabListItem.gamemode = gamemode
 
-        connection.world.isHardcore = isHardcore
+        connection.world.hardcore = isHardcore
         connection.mapping.dimensionRegistry.setData(dimensions)
         connection.world.dimension = dimension
 

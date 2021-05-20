@@ -37,7 +37,7 @@ class BlockSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     }
 
     override fun handle(connection: PlayConnection) {
-        connection.world.setBlock(blockPosition, blockState)
+        connection.world[blockPosition] = blockState
     }
 
     override fun log() {

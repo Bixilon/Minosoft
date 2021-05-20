@@ -29,17 +29,17 @@ open class DoubleSizeBlock(resourceLocation: ResourceLocation, mappings: Version
 
     override fun onBreak(connection: PlayConnection, blockPosition: Vec3i, blockState: BlockState, blockEntity: BlockEntity?) {
         if (blockState.properties[BlockProperties.STAIR_HALF] == Halves.LOWER) {
-            connection.world.forceSetBlock(blockPosition + Directions.UP, null)
+            connection.world.forceSetBlockState(blockPosition + Directions.UP, null)
         } else {
-            connection.world.forceSetBlock(blockPosition + Directions.DOWN, null)
+            connection.world.forceSetBlockState(blockPosition + Directions.DOWN, null)
         }
     }
 
     override fun onPlace(connection: PlayConnection, blockPosition: Vec3i, blockState: BlockState) {
         if (blockState.properties[BlockProperties.STAIR_HALF] == Halves.LOWER) {
-            connection.world.forceSetBlock(blockPosition + Directions.UP, blockState.withProperties(BlockProperties.STAIR_HALF to Halves.UPPER))
+            connection.world.forceSetBlockState(blockPosition + Directions.UP, blockState.withProperties(BlockProperties.STAIR_HALF to Halves.UPPER))
         } else {
-            connection.world.forceSetBlock(blockPosition + Directions.DOWN, blockState.withProperties(BlockProperties.STAIR_HALF to Halves.LOWER))
+            connection.world.forceSetBlockState(blockPosition + Directions.DOWN, blockState.withProperties(BlockProperties.STAIR_HALF to Halves.LOWER))
         }
     }
 }

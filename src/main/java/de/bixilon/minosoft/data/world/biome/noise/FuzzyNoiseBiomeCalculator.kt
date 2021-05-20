@@ -59,7 +59,7 @@ object FuzzyNoiseBiomeCalculator {
         val biomeY = checkMask(0x02, q)
         val biomeZ = checkMask(0x01, r)
 
-        return world.getChunk(Vec2i(biomeX shr 2, biomeZ shr 2))?.biomeSource?.getBiome(Vec3i(biomeX, biomeY, biomeZ))
+        return world[Vec2i(biomeX shr 2, biomeZ shr 2)]?.biomeSource?.getBiome(Vec3i(biomeX, biomeY, biomeZ))
     }
 
     private fun calculateFiddle(seed: Long, x: Int, y: Int, z: Int, xFraction: Double, yFraction: Double, zFraction: Double): Double {

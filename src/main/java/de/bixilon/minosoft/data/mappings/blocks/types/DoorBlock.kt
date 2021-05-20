@@ -39,7 +39,7 @@ open class DoorBlock(resourceLocation: ResourceLocation, mappings: VersionMappin
 
         val nextBlockState = blockState.cycle(BlockProperties.DOOR_OPEN)
 
-        connection.world.setBlock(blockPosition, nextBlockState)
+        connection.world[blockPosition] = nextBlockState
 
         return BlockUsages.SUCCESS
     }

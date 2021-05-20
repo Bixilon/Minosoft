@@ -213,13 +213,13 @@ abstract class Entity(
         val blockPositions = (originalAABB extend deltaPosition extend Directions.DOWN.directionVector).getBlockPositions()
         val result = VoxelShape()
         for (blockPosition in blockPositions) {
-            val chunk = connection.world.getChunk(blockPosition.chunkPosition)
+            val chunk = connection.world[blockPosition.chunkPosition]
             if ((chunk == null || !chunk.isFullyLoaded) && !ignoreUnloadedChunks) {
                 // chunk is not loaded
                 result.add(VoxelShape.FULL + blockPosition)
                 continue
             }
-            val blockState = chunk?.getBlockState(blockPosition.inChunkPosition) ?: continue
+            val blockState = chunk?.get(blockPosition.inChunkPosition) ?: continue
             result.add(blockState.collisionShape + blockPosition)
         }
         return result
@@ -279,7 +279,7 @@ abstract class Entity(
     }
 
     private fun tickMovement(deltaMillis: Long) {
-        if (connection.world.getChunk(position.blockPosition.chunkPosition)?.isFullyLoaded != true) {
+        if (connection.world[position.blockPosition.chunkPosition]?.isFullyLoaded != true) {
             return // ignore update if chunk is not loaded yet
         }
         val newVelocity = Vec3(velocity)

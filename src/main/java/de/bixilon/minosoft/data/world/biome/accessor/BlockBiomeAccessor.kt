@@ -24,6 +24,6 @@ class BlockBiomeAccessor(private val world: World) : BiomeAccessor {
 
     override fun getBiome(blockPosition: Vec3i): Biome? {
         val biomePosition = blockPosition.inChunkPosition
-        return world.getChunk(blockPosition.chunkPosition)?.biomeSource?.getBiome(biomePosition)
+        return world[blockPosition.chunkPosition]?.biomeSource?.getBiome(biomePosition)
     }
 }

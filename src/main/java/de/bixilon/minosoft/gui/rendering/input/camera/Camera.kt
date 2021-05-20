@@ -319,7 +319,7 @@ class Camera(
 
         for (i in 0..RAYCAST_MAX_STEPS) {
             val blockPosition = currentPosition.floor
-            val blockState = connection.world.getBlockState(blockPosition)
+            val blockState = connection.world[blockPosition]
             val distance = blockState?.outlineShape?.let {
                 val aabb = it + blockPosition + blockPosition.getWorldOffset(blockState.block)
                 aabb.raycast(currentPosition, direction)

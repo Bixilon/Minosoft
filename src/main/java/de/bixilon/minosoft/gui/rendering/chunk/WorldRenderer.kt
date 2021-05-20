@@ -85,7 +85,7 @@ class WorldRenderer(
 
                 val neighbourBlocks: Array<BlockState?> = arrayOfNulls(Directions.VALUES.size)
                 for (direction in Directions.VALUES) {
-                    neighbourBlocks[direction.ordinal] = world.getBlockState(blockPosition + direction)
+                    neighbourBlocks[direction.ordinal] = world[blockPosition + direction]
                 }
 
                 // if (!blockState.block.resourceLocation.full.contains("white_stained_glass_pane")) {
@@ -221,7 +221,7 @@ class WorldRenderer(
     }
 
 
-    private fun prepareChunk(chunkPosition: Vec2i, chunk: Chunk? = world.getChunk(chunkPosition), checkQueued: Boolean = true) {
+    private fun prepareChunk(chunkPosition: Vec2i, chunk: Chunk? = world[chunkPosition], checkQueued: Boolean = true) {
         chunk ?: return
 
         if (!chunk.isFullyLoaded) {
@@ -346,7 +346,7 @@ class WorldRenderer(
 
     private fun prepareChunkSection(chunkPosition: Vec2i, sectionHeight: Int) {
         val sections: MutableMap<Int, ChunkSection> = synchronizedMapOf()
-        val chunk = world.getChunk(chunkPosition)!!
+        val chunk = world[chunkPosition]!!
         val lowestSectionHeight = sectionHeight.sectionIndex * RenderConstants.CHUNK_SECTIONS_PER_MESH
         for (i in lowestSectionHeight until lowestSectionHeight + RenderConstants.CHUNK_SECTIONS_PER_MESH) {
             sections[i] = chunk.sections?.get(i) ?: continue

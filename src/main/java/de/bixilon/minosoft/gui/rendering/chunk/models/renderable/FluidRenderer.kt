@@ -162,8 +162,8 @@ class FluidRenderer(
         }
         for (altDirection in direction.sidesNextTo(direction)) {
             val bothDirections = setOf(direction, altDirection)
-            if (isBlockSameFluid(world.getBlockState(position + direction + altDirection))) {
-                val neighbourLevel = getLevel(world.getBlockState(position + direction + altDirection)!!)
+            if (isBlockSameFluid(world[position + direction + altDirection])) {
+                val neighbourLevel = getLevel(world[position + direction + altDirection]!!)
                 for (heightPosition in HEIGHT_POSITIONS) {
                     if (heightPosition.key.containsAll(bothDirections)) {
                         heights[heightPosition.value] = glm.max(heights[heightPosition.value], neighbourLevel)
@@ -174,14 +174,14 @@ class FluidRenderer(
     }
 
     private fun handleUpperBlocks(world: World, position: Vec3i, direction: Directions, positions: MutableSet<Int>, heights: FloatArray) {
-        if (isBlockSameFluid(world.getBlockState(position + Directions.UP + direction))) {
+        if (isBlockSameFluid(world[position + Directions.UP + direction])) {
             for (heightPosition in positions) {
                 heights[heightPosition] = 1.0f
             }
         }
         for (altDirection in direction.sidesNextTo(direction)) {
             val bothDirections = setOf(direction, altDirection)
-            if (isBlockSameFluid(world.getBlockState(position + Directions.UP + direction + altDirection))) {
+            if (isBlockSameFluid(world[position + Directions.UP + direction + altDirection])) {
                 for (heightPosition in HEIGHT_POSITIONS) {
                     if (heightPosition.key.containsAll(bothDirections)) {
                         heights[heightPosition.value] = 1.0f
