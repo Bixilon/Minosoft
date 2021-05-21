@@ -229,6 +229,10 @@ data class BlockState(
 
 
     fun withProperties(vararg properties: Pair<BlockProperties, Any>): BlockState {
+        return withProperties(properties.toMap())
+    }
+
+    fun withProperties(properties: Map<BlockProperties, Any>): BlockState {
         val newProperties = this.properties.toMutableMap()
         for ((key, value) in properties) {
             newProperties[key] = value

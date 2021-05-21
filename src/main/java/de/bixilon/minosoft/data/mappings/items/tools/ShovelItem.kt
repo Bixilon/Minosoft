@@ -14,21 +14,35 @@
 package de.bixilon.minosoft.data.mappings.items.tools
 
 import com.google.gson.JsonObject
+import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.blocks.BlockState
+import de.bixilon.minosoft.data.mappings.blocks.BlockUsages
+import de.bixilon.minosoft.data.mappings.blocks.types.Block
 import de.bixilon.minosoft.data.mappings.versions.Registries
+import de.bixilon.minosoft.data.player.Hands
+import de.bixilon.minosoft.gui.rendering.input.camera.RaycastHit
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import glm_.vec3.Vec3i
 
 open class ShovelItem(
     resourceLocation: ResourceLocation,
     registries: Registries,
     data: JsonObject,
 ) : MiningToolItem(resourceLocation, registries, data) {
-    val flattenableBlockStates: List<BlockState>? = data["flattenables_block_states"]?.asJsonArray?.let {
-        val flattenableBlockStates: MutableList<BlockState> = mutableListOf()
-        for (id in it) {
-            flattenableBlockStates += registries.getBlockState(id.asInt)!!
+    val flattenableBlockStates: Map<Block, BlockState>? = data["flattenables_block_states"]?.asJsonObject?.let {
+        val items: MutableMap<Block, BlockState> = mutableMapOf()
+        for ((origin, target) in it.entrySet()) {
+            items[registries.blockRegistry[origin.toInt()]] = registries.getBlockState(target.asInt)!!
         }
-        flattenableBlockStates.toList()
+        items.toMap()
     }
 
+
+    override fun use(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, raycastHit: RaycastHit, hands: Hands, itemStack: ItemStack): BlockUsages {
+        // ToDo: Check tags (21w19a+)
+
+        connection.world[blockPosition] = flattenableBlockStates?.get(blockState.block) ?: return BlockUsages.PASS
+        return BlockUsages.SUCCESS
+    }
 }

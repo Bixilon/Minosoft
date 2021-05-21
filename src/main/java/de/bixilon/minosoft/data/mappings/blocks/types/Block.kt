@@ -91,6 +91,10 @@ open class Block(
         return this.defaultState.withProperties(*properties)
     }
 
+    fun withProperties(properties: Map<BlockProperties, Any>): BlockState {
+        return this.defaultState.withProperties(properties)
+    }
+
     companion object : ResourceLocationDeserializer<Block> {
         override fun deserialize(mappings: Registries?, resourceLocation: ResourceLocation, data: JsonObject): Block {
             check(mappings != null) { "Registries is null!" }

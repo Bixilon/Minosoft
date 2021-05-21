@@ -14,21 +14,37 @@
 package de.bixilon.minosoft.data.mappings.items.tools
 
 import com.google.gson.JsonObject
+import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.data.mappings.blocks.BlockState
+import de.bixilon.minosoft.data.mappings.blocks.BlockUsages
 import de.bixilon.minosoft.data.mappings.blocks.types.Block
 import de.bixilon.minosoft.data.mappings.versions.Registries
+import de.bixilon.minosoft.data.player.Hands
+import de.bixilon.minosoft.gui.rendering.input.camera.RaycastHit
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import glm_.vec3.Vec3i
 
 open class AxeItem(
     resourceLocation: ResourceLocation,
     registries: Registries,
     data: JsonObject,
 ) : MiningToolItem(resourceLocation, registries, data) {
-    val strippableBlocks: List<Block>? = data["strippables_blocks"]?.asJsonArray?.let {
-        val strippableBlocks: MutableList<Block> = mutableListOf()
-        for (id in it) {
-            strippableBlocks += registries.blockRegistry[id.asInt]
+    val strippableBlocks: Map<Block, Block>? = data["strippables_blocks"]?.asJsonObject?.let {
+        val items: MutableMap<Block, Block> = mutableMapOf()
+        for ((origin, target) in it.entrySet()) {
+            items[registries.blockRegistry[origin.toInt()]] = registries.blockRegistry[target.asInt]
         }
-        strippableBlocks.toList()
+        items.toMap()
     }
 
+    override fun use(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, raycastHit: RaycastHit, hands: Hands, itemStack: ItemStack): BlockUsages {
+        // ToDo: Check tags (21w19a+)
+
+        val target = strippableBlocks?.get(blockState.block) ?: return BlockUsages.PASS
+
+
+        connection.world[blockPosition] = target.withProperties(blockState.properties)
+        return BlockUsages.SUCCESS
+    }
 }
