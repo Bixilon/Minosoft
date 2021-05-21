@@ -12,9 +12,11 @@
  */
 package de.bixilon.minosoft.data.player
 
+import de.bixilon.minosoft.data.abilities.ItemCooldown
 import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
+import de.bixilon.minosoft.data.mappings.items.Item
 import de.bixilon.minosoft.data.mappings.other.containers.Container
 import de.bixilon.minosoft.data.mappings.other.containers.PlayerInventory
 import de.bixilon.minosoft.gui.rendering.util.VecUtil
@@ -41,4 +43,6 @@ class Player(
     val containers: MutableMap<Int, Container> = synchronizedMapOf(
         ProtocolDefinition.PLAYER_INVENTORY_ID to inventory)
     var selectedHotbarSlot: Int = 0
+
+    val itemCooldown: MutableMap<Item, ItemCooldown> = synchronizedMapOf()
 }

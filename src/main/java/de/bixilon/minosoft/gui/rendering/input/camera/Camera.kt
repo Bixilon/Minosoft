@@ -94,6 +94,8 @@ class Camera(
     var viewProjectionMatrix = projectionMatrix * viewMatrix
         private set
 
+    var sneaking: Boolean = false // ToDo: Not yet implemented
+
 
     fun mouseCallback(xPos: Double, yPos: Double) {
         var xOffset = xPos - this.lastMouseX
@@ -328,7 +330,7 @@ class Camera(
             if (distance >= 0.0f && blockState != null) {
                 currentPosition += direction * distance
                 return RaycastHit(
-                    currentPosition ,
+                    currentPosition,
                     getTotalDistance() + distance,
                     blockState = blockState,
                     hitDirection = currentPosition.nearestIntegerPositionDirection,

@@ -11,22 +11,16 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.mappings.blocks
+package de.bixilon.minosoft.data.abilities
 
-enum class BlockUsages {
-    /**
-     * Usage get consumed (like trying to open an iron door) without animation
-     */
-    CONSUME,
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
-    /**
-     * Usage get consumed (like pressing a button, opening a door, right clicking on block entities, placing a block, …) with animation
-     */
-    SUCCESS,
+data class ItemCooldown(
+    val start: Long,
+    val time: Int,
+) {
+    val end: Long = start + (time * ProtocolDefinition.TICK_TIME)
 
-    /**
-     * Nothing happens from block side (e.g. right clicking on dirt). You can maybe place a block, whatever
-     */
-    PASS,
-    ;
+    val ended: Boolean
+        get() = System.currentTimeMillis() >= end
 }

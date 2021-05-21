@@ -15,16 +15,14 @@ package de.bixilon.minosoft.gui.rendering.input
 
 import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames
 import de.bixilon.minosoft.data.Directions
-import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.mappings.blocks.BlockUsages
-import de.bixilon.minosoft.data.mappings.items.BlockItem
 import de.bixilon.minosoft.data.player.Hands
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.protocol.packets.c2s.play.ArmSwingC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.BlockBreakC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.BlockPlaceC2SP
+import de.bixilon.minosoft.protocol.packets.c2s.play.ItemUseC2SP
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import glm_.vec3.Vec3i
 
@@ -104,8 +102,13 @@ class InteractionHandler(
         if (raycastHit.distance > RenderConstants.MAX_BLOCK_OUTLINE_RAYCAST_DISTANCE) {
             return
         }
+        val itemInHand = connection.player.inventory.getHotbarSlot()
 
-        val usage = raycastHit.blockState.block.use(renderWindow.connection, raycastHit.blockState, raycastHit.blockPosition, raycastHit, Hands.MAIN_HAND, null) // ToDo
+        val usage = if (renderWindow.inputHandler.camera.sneaking) {
+            BlockUsages.PASS
+        } else {
+            raycastHit.blockState.block.use(renderWindow.connection, raycastHit.blockState, raycastHit.blockPosition, raycastHit, Hands.MAIN_HAND, itemInHand)
+        }
 
         lastInteractionSent = currentTime
         lastInteraction = currentTime
@@ -128,47 +131,32 @@ class InteractionHandler(
             }
             BlockUsages.PASS -> {
                 // use item or place block
-                if (!connection.player.entity.gamemode.canBuild) {
-                    return
-                }
-                val selectedItemStack = connection.player.inventory.getHotbarSlot() ?: return
-                val blockPosition = raycastHit.blockPosition + raycastHit.hitDirection
+                itemInHand ?: return
 
-                val dimension = connection.world.dimension!!
-                if (blockPosition.y < dimension.minY || blockPosition.y >= dimension.height) {
-                    return
-                }
+                val cooldown = connection.player.itemCooldown[itemInHand.item]
 
-                renderWindow.connection.world[blockPosition]?.let {
-                    if (!it.material.replaceable) {
+                cooldown?.let {
+                    if (it.ended) {
+                        connection.player.itemCooldown.remove(itemInHand.item)
+                    } else {
                         return
                     }
                 }
 
 
-                val blockState = if (selectedItemStack.item is BlockItem) {
-                    selectedItemStack.item.block.getPlacementState(renderWindow.connection, raycastHit) ?: return
-                } else {
-                    return
+
+                when (itemInHand.item.use(connection, raycastHit.blockState, raycastHit.blockPosition, raycastHit, Hands.MAIN_HAND, itemInHand)) {
+                    BlockUsages.SUCCESS -> {
+                        connection.sendPacket(ArmSwingC2SP(Hands.MAIN_HAND))
+                    }
+                    BlockUsages.PASS -> {
+                        return
+                    }
+                    BlockUsages.CONSUME -> {
+                    }
                 }
-
-                renderWindow.connection.world[blockPosition] = blockState
-
-                if (connection.player.entity.gamemode != Gamemodes.CREATIVE) {
-                    selectedItemStack.count--
-                    renderWindow.connection.player.inventory.validate()
-                }
-
-                connection.sendPacket(ArmSwingC2SP(Hands.MAIN_HAND))
-
-                connection.sendPacket(BlockPlaceC2SP(
-                    position = blockPosition,
-                    direction = raycastHit.hitDirection,
-                    cursorPosition = raycastHit.hitPosition,
-                    item = connection.player.inventory.getHotbarSlot(),
-                    hand = Hands.MAIN_HAND,
-                    insideBlock = false,  // ToDo
-                ))
+                // ToDo: Before 1.9
+                connection.sendPacket(ItemUseC2SP(Hands.MAIN_HAND))
             }
         }
 

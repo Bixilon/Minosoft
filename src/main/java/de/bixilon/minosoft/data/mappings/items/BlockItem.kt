@@ -14,9 +14,19 @@
 package de.bixilon.minosoft.data.mappings.items
 
 import com.google.gson.JsonObject
+import de.bixilon.minosoft.data.abilities.Gamemodes
+import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.data.mappings.blocks.BlockState
+import de.bixilon.minosoft.data.mappings.blocks.BlockUsages
 import de.bixilon.minosoft.data.mappings.blocks.types.Block
 import de.bixilon.minosoft.data.mappings.versions.Registries
+import de.bixilon.minosoft.data.player.Hands
+import de.bixilon.minosoft.gui.rendering.input.camera.RaycastHit
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.protocol.packets.c2s.play.BlockPlaceC2SP
+import glm_.vec3.Vec3i
 
 open class BlockItem(
     resourceLocation: ResourceLocation,
@@ -24,4 +34,44 @@ open class BlockItem(
     data: JsonObject,
 ) : Item(resourceLocation, registries, data) {
     val block: Block = registries.blockRegistry[data["block"].asInt]
+
+    override fun use(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, raycastHit: RaycastHit, hands: Hands, itemStack: ItemStack): BlockUsages {
+        if (!connection.player.entity.gamemode.canBuild) {
+            return BlockUsages.PASS
+        }
+
+        val placePosition = raycastHit.blockPosition + raycastHit.hitDirection
+        val dimension = connection.world.dimension!!
+        if (placePosition.y < dimension.minY || placePosition.y >= dimension.height) {
+            return BlockUsages.PASS
+        }
+
+        connection.world[placePosition]?.let {
+            if (!it.material.replaceable) {
+                return BlockUsages.PASS
+            }
+        }
+
+
+        val placeBlockState = block.getPlacementState(connection, raycastHit) ?: return BlockUsages.PASS
+
+
+        connection.world[placePosition] = placeBlockState
+
+        if (connection.player.entity.gamemode != Gamemodes.CREATIVE) {
+            itemStack.count--
+            connection.player.inventory.validate()
+        }
+
+
+        connection.sendPacket(BlockPlaceC2SP(
+            position = placePosition,
+            direction = raycastHit.hitDirection,
+            cursorPosition = raycastHit.hitPosition,
+            item = connection.player.inventory.getHotbarSlot(),
+            hand = Hands.MAIN_HAND,
+            insideBlock = false,  // ToDo
+        ))
+        return BlockUsages.SUCCESS
+    }
 }
