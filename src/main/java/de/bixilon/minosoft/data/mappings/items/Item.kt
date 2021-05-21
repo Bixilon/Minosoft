@@ -21,10 +21,7 @@ import de.bixilon.minosoft.data.mappings.blocks.BlockUsages
 import de.bixilon.minosoft.data.mappings.inventory.CreativeModeTab
 import de.bixilon.minosoft.data.mappings.items.armor.ArmorItem
 import de.bixilon.minosoft.data.mappings.items.armor.HorseArmorItem
-import de.bixilon.minosoft.data.mappings.items.tools.AxeItem
-import de.bixilon.minosoft.data.mappings.items.tools.MiningToolItem
-import de.bixilon.minosoft.data.mappings.items.tools.SwordItem
-import de.bixilon.minosoft.data.mappings.items.tools.ToolItem
+import de.bixilon.minosoft.data.mappings.items.tools.*
 import de.bixilon.minosoft.data.mappings.registry.RegistryItem
 import de.bixilon.minosoft.data.mappings.registry.ResourceLocationDeserializer
 import de.bixilon.minosoft.data.mappings.registry.Translatable
@@ -69,6 +66,8 @@ open class Item(
                 "HorseArmorItem" -> HorseArmorItem(resourceLocation, mappings, data)
                 "SpawnEggItem" -> SpawnEggItem(resourceLocation, mappings, data)
                 "MusicDiscItem" -> MusicDiscItem(resourceLocation, mappings, data)
+                "ShovelItem" -> ShovelItem(resourceLocation, mappings, data)
+                "HoeItem" -> HoeItem(resourceLocation, mappings, data)
                 //   "Item" -> Item(resourceLocation, data)
                 // else -> TODO("Can not find item class: ${data["class"].asString}")
                 else -> Item(resourceLocation, mappings, data)

@@ -146,8 +146,16 @@ class InteractionHandler(
 
                 when (itemInHand.item.use(connection, raycastHit.blockState, raycastHit.blockPosition, raycastHit, Hands.MAIN_HAND, itemInHand)) {
                     BlockUsages.SUCCESS -> {
-                        // ToDo: Interact with block?
                         connection.sendPacket(ArmSwingC2SP(Hands.MAIN_HAND))
+
+                        connection.sendPacket(BlockPlaceC2SP(
+                            position = raycastHit.blockPosition,
+                            direction = raycastHit.hitDirection,
+                            cursorPosition = raycastHit.hitPosition,
+                            item = connection.player.inventory.getHotbarSlot(),
+                            hand = Hands.MAIN_HAND,
+                            insideBlock = false,  // ToDo
+                        ))
                     }
                     BlockUsages.PASS -> {
                         return
