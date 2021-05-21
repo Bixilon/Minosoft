@@ -47,6 +47,7 @@ import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
 import de.bixilon.minosoft.util.KUtil.synchronizedSetOf
 import de.bixilon.minosoft.util.KUtil.toSynchronizedMap
 import de.bixilon.minosoft.util.MMath
+import de.bixilon.minosoft.util.task.ThreadPoolRunnable
 import glm_.vec2.Vec2i
 import glm_.vec3.Vec3i
 import org.lwjgl.opengl.GL11.glDepthMask
@@ -63,6 +64,7 @@ class WorldRenderer(
     val allChunkSections: MutableMap<Vec2i, MutableMap<Int, ChunkMeshCollection>> = synchronizedMapOf()
     val visibleChunks: MutableMap<Vec2i, MutableMap<Int, ChunkMeshCollection>> = synchronizedMapOf()
     val queuedChunks: MutableSet<Vec2i> = synchronizedSetOf()
+    private val preparationTasks: MutableMap<Vec2i, MutableMap<Int, ThreadPoolRunnable>> = synchronizedMapOf()
 
     private var allBlocks: Collection<BlockState>? = null
 
@@ -115,7 +117,6 @@ class WorldRenderer(
         if (meshCollection.transparentSectionArrayMesh!!.primitiveCount == 0) {
             meshCollection.transparentSectionArrayMesh = null
         }
-
         return meshCollection
     }
 
@@ -283,65 +284,84 @@ class WorldRenderer(
         if (sections.isEmpty()) {
             return
         }
-        Minosoft.THREAD_POOL.execute {
-            val meshCollection = prepareSections(chunkPosition, sections)
-
-            var lowestBlockHeight = 0
-            var highestBlockHeight = 0
-            for ((sectionHeight, _) in sections) {
-                if (sectionHeight < lowestBlockHeight) {
-                    lowestBlockHeight = sectionHeight
-                }
-                if (sectionHeight > highestBlockHeight) {
-                    highestBlockHeight = sectionHeight
-                }
+        var lowestBlockHeight = 0
+        var highestBlockHeight = 0
+        for ((sectionHeight, _) in sections) {
+            if (sectionHeight < lowestBlockHeight) {
+                lowestBlockHeight = sectionHeight
             }
-
-            lowestBlockHeight *= ProtocolDefinition.SECTION_HEIGHT_Y
-            highestBlockHeight = highestBlockHeight * ProtocolDefinition.SECTION_HEIGHT_Y + ProtocolDefinition.SECTION_MAX_Y
-
-
-            val index = highestBlockHeight.sectionIndex
-            meshCollection.lowestBlockHeight = lowestBlockHeight
-            meshCollection.highestBlockHeight = highestBlockHeight
-
-
-            renderWindow.renderQueue.add {
-                val sectionMap = allChunkSections.getOrPut(chunkPosition) { synchronizedMapOf() }
-
-                sectionMap[index]?.let {
-                    it.opaqueSectionArrayMesh.unload()
-                    meshes--
-                    triangles -= it.opaqueSectionArrayMesh.primitiveCount
-
-                    it.transparentSectionArrayMesh?.let {
-                        it.unload()
-                        meshes--
-                        triangles -= it.primitiveCount
-                    }
-                }
-
-                meshCollection.opaqueSectionArrayMesh.let {
-                    it.load()
-                    meshes++
-                    triangles += it.primitiveCount
-                }
-                meshCollection.transparentSectionArrayMesh?.let {
-                    it.load()
-                    meshes++
-                    triangles += it.primitiveCount
-                }
-
-
-                sectionMap[index] = meshCollection
-
-                if (renderWindow.inputHandler.camera.frustum.containsChunk(chunkPosition, lowestBlockHeight, highestBlockHeight)) {
-                    visibleChunks.getOrPut(chunkPosition) { synchronizedMapOf() }[index] = meshCollection
-                } else {
-                    visibleChunks[chunkPosition]?.remove(index)
-                }
+            if (sectionHeight > highestBlockHeight) {
+                highestBlockHeight = sectionHeight
             }
         }
+
+        lowestBlockHeight *= ProtocolDefinition.SECTION_HEIGHT_Y
+        highestBlockHeight = highestBlockHeight * ProtocolDefinition.SECTION_HEIGHT_Y + ProtocolDefinition.SECTION_MAX_Y
+
+        val index = highestBlockHeight.sectionIndex
+
+        preparationTasks[chunkPosition]?.let {
+            it[index]?.interrupt()
+            it.remove(index)
+        }
+
+        val runnable = ThreadPoolRunnable(
+            interuptable = true,
+            runnable = {
+                val meshCollection = prepareSections(chunkPosition, sections)
+                meshCollection.lowestBlockHeight = lowestBlockHeight
+                meshCollection.highestBlockHeight = highestBlockHeight
+
+
+                renderWindow.renderQueue.add {
+                    val map = preparationTasks[chunkPosition] ?: return@add
+                    val runnable = map[index] ?: return@add
+                    if (runnable.wasInterrupted) {
+                        return@add
+                    }
+                    map.remove(index)
+                    if (map.isEmpty()) {
+                        preparationTasks.remove(chunkPosition)
+                    }
+
+                    val sectionMap = allChunkSections.getOrPut(chunkPosition) { synchronizedMapOf() }
+
+                    sectionMap[index]?.let {
+                        it.opaqueSectionArrayMesh.unload()
+                        meshes--
+                        triangles -= it.opaqueSectionArrayMesh.primitiveCount
+
+                        it.transparentSectionArrayMesh?.let {
+                            it.unload()
+                            meshes--
+                            triangles -= it.primitiveCount
+                        }
+                    }
+
+                    meshCollection.opaqueSectionArrayMesh.let {
+                        it.load()
+                        meshes++
+                        triangles += it.primitiveCount
+                    }
+                    meshCollection.transparentSectionArrayMesh?.let {
+                        it.load()
+                        meshes++
+                        triangles += it.primitiveCount
+                    }
+
+
+                    sectionMap[index] = meshCollection
+
+                    if (renderWindow.inputHandler.camera.frustum.containsChunk(chunkPosition, lowestBlockHeight, highestBlockHeight)) {
+                        visibleChunks.getOrPut(chunkPosition) { synchronizedMapOf() }[index] = meshCollection
+                    } else {
+                        visibleChunks[chunkPosition]?.remove(index)
+                    }
+                }
+            }
+        )
+        preparationTasks.getOrPut(chunkPosition) { synchronizedMapOf() }[index] = runnable
+        Minosoft.THREAD_POOL.execute(runnable)
     }
 
     private fun prepareChunkSection(chunkPosition: Vec2i, sectionHeight: Int) {
@@ -355,7 +375,11 @@ class WorldRenderer(
     }
 
     private fun clearChunkCache() {
-        // ToDo: Stop all preparations
+        for (map in preparationTasks.toSynchronizedMap().values) {
+            for (runnable in map.toSynchronizedMap().values) {
+                runnable.interrupt()
+            }
+        }
         queuedChunks.clear()
         val chunkMeshes = allChunkSections.toSynchronizedMap().values
         allChunkSections.clear()
@@ -368,6 +392,12 @@ class WorldRenderer(
     }
 
     private fun unloadChunk(chunkPosition: Vec2i) {
+        preparationTasks[chunkPosition]?.let {
+            for (runnable in it.toSynchronizedMap().values) {
+                runnable.interrupt()
+            }
+        }
+        preparationTasks.remove(chunkPosition)
         queuedChunks.remove(chunkPosition)
         val chunkMesh = allChunkSections[chunkPosition] ?: return
         allChunkSections.remove(chunkPosition)

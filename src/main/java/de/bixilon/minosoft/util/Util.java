@@ -23,7 +23,7 @@ import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import de.bixilon.minosoft.util.logging.Log;
 import de.bixilon.minosoft.util.microsoft.MicrosoftOAuthUtils;
-import de.bixilon.minosoft.util.time.TimeWorker;
+import de.bixilon.minosoft.util.task.time.TimeWorker;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.*;

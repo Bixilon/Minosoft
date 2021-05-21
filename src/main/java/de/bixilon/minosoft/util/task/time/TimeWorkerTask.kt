@@ -1,4 +1,4 @@
-package de.bixilon.minosoft.util.time
+package de.bixilon.minosoft.util.task.time
 
 data class TimeWorkerTask(
     val interval: Int,

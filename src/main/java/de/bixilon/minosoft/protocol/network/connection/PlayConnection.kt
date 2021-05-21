@@ -43,8 +43,8 @@ import de.bixilon.minosoft.util.ServerAddress
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
-import de.bixilon.minosoft.util.time.TimeWorker
-import de.bixilon.minosoft.util.time.TimeWorkerTask
+import de.bixilon.minosoft.util.task.time.TimeWorker
+import de.bixilon.minosoft.util.task.time.TimeWorkerTask
 
 
 class PlayConnection(
