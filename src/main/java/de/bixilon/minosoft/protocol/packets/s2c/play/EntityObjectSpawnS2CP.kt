@@ -61,9 +61,9 @@ class EntityObjectSpawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         }
         entity = if (buffer.versionId < ProtocolVersions.V_19W05A) {
             val entityResourceLocation = ENTITY_OBJECT_REGISTRY[type].resourceLocation
-            buffer.connection.mapping.entityRegistry[entityResourceLocation]!!.build(buffer.connection, position, rotation, null, buffer.versionId)!! // ToDo: Entity meta data tweaking
+            buffer.connection.mapping.entityTypeRegistry[entityResourceLocation]!!.build(buffer.connection, position, rotation, null, buffer.versionId)!! // ToDo: Entity meta data tweaking
         } else {
-            buffer.connection.mapping.entityRegistry[type].build(buffer.connection, position, rotation, null, buffer.versionId)!!
+            buffer.connection.mapping.entityTypeRegistry[type].build(buffer.connection, position, rotation, null, buffer.versionId)!!
         }
     }
 

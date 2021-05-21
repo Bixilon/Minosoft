@@ -37,7 +37,7 @@ open class Registry<T : RegistryItem>(
     }
 
     open operator fun get(id: Int): T {
-        return idValueMap[id] ?: parentRegistry?.get(id)!!
+        return idValueMap[id] ?: parentRegistry?.get(id) ?: throw NullPointerException("Can not find item with id $id")
     }
 
     open fun getId(value: T): Int {

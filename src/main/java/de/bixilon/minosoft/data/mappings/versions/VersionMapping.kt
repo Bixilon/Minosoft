@@ -91,7 +91,7 @@ class VersionMapping {
     val blockStateIdMap: MutableMap<Int, BlockState> = mutableMapOf()
 
     val entityMetaIndexMap: MutableMap<EntityMetaDataFields, Int> = mutableMapOf()
-    val entityRegistry: Registry<EntityType> = Registry()
+    val entityTypeRegistry: Registry<EntityType> = Registry()
 
     val blockEntityTypeRegistry = BlockEntityTypeRegistry()
     val blockEntityMetaDataTypeRegistry: Registry<BlockEntityMetaType> = Registry()
@@ -190,7 +190,7 @@ class VersionMapping {
 
         villagerProfessionRegistry.initialize(pixlyzerData["villager_professions"]?.asJsonObject, this, VillagerProfession)
 
-        entityRegistry.initialize(pixlyzerData["entities"]?.asJsonObject, this, EntityType)
+        entityTypeRegistry.initialize(pixlyzerData["entities"]?.asJsonObject, this, EntityType)
 
         blockEntityMetaDataTypeRegistry.initialize(pixlyzerData["block_entity_meta_data_types"]?.asJsonObject, this, BlockEntityMetaType, alternative = DefaultRegistries.BLOCK_ENTITY_META_TYPE_REGISTRY.forVersion(version))
 

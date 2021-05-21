@@ -52,7 +52,7 @@ class PaintingSpawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
             position = buffer.readBlockPosition()
             direction = byId(buffer.readUnsignedByte())
         }
-        entity = Painting(buffer.connection, buffer.connection.mapping.entityRegistry[Painting.RESOURCE_LOCATION]!!, position, direction, motive!!)
+        entity = Painting(buffer.connection, buffer.connection.mapping.entityTypeRegistry[Painting.RESOURCE_LOCATION]!!, position, direction, motive!!)
     }
 
     override fun handle(connection: PlayConnection) {

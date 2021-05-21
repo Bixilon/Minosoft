@@ -68,7 +68,7 @@ class PlayerEntitySpawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         }
         entity = PlayerEntity(
             connection = buffer.connection,
-            entityType = buffer.connection.mapping.entityRegistry[PlayerEntity.RESOURCE_LOCATION]!!,
+            entityType = buffer.connection.mapping.entityTypeRegistry[PlayerEntity.RESOURCE_LOCATION]!!,
             position = position,
             rotation = EntityRotation(yaw.toFloat(), pitch.toFloat(), 0.0f),
             name = name,
