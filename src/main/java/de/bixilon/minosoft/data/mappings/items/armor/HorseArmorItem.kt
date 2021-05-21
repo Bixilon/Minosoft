@@ -11,17 +11,18 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.mappings.items
+package de.bixilon.minosoft.data.mappings.items.armor
 
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.mappings.ResourceLocation
-import de.bixilon.minosoft.data.mappings.blocks.types.Block
+import de.bixilon.minosoft.data.mappings.items.Item
 import de.bixilon.minosoft.data.mappings.versions.VersionMapping
 
-open class BlockItem(
+open class HorseArmorItem(
     resourceLocation: ResourceLocation,
     versionMapping: VersionMapping,
     data: JsonObject,
 ) : Item(resourceLocation, versionMapping, data) {
-    val block: Block = versionMapping.blockRegistry[data["block"].asInt]
+    val horseProtection = data["horse_protection"]?.asInt ?: 0
+    val horseTexture = data["horse_texture"]?.asString
 }

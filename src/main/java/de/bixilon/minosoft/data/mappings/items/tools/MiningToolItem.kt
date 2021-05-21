@@ -11,17 +11,26 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.mappings.items
+package de.bixilon.minosoft.data.mappings.items.tools
 
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.blocks.types.Block
 import de.bixilon.minosoft.data.mappings.versions.VersionMapping
 
-open class BlockItem(
+open class MiningToolItem(
     resourceLocation: ResourceLocation,
     versionMapping: VersionMapping,
     data: JsonObject,
-) : Item(resourceLocation, versionMapping, data) {
-    val block: Block = versionMapping.blockRegistry[data["block"].asInt]
+) : ToolItem(resourceLocation, versionMapping, data) {
+    val diggableBlocks: List<Block>? = data["diggable_blocks"]?.asJsonArray?.let {
+        val diggableBlocks: MutableList<Block> = mutableListOf()
+        for (id in it) {
+            diggableBlocks += versionMapping.blockRegistry[id.asInt]
+        }
+        diggableBlocks.toList()
+    }
+    override val attackDamage: Float = data["attack_damage"]?.asFloat ?: 1.0f
+    val miningSpeed: Float = data["mining_speed"]?.asFloat ?: 1.0f
+
 }

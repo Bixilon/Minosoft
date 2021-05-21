@@ -176,6 +176,8 @@ class VersionMapping {
 
         blockEntityTypeRegistry.initialize(pixlyzerData["block_entities"]?.asJsonObject, this, BlockEntityType)
 
+        entityTypeRegistry.initialize(pixlyzerData["entities"]?.asJsonObject, this, EntityType)
+
         soundEventRegistry.initialize(pixlyzerData["sound_events"]?.asJsonObject, this, SoundEvent)
         particleTypeRegistry.initialize(pixlyzerData["particles"]?.asJsonObject, this, ParticleType)
         materialRegistry.initialize(pixlyzerData["materials"]?.asJsonObject, this, Material)
@@ -190,7 +192,6 @@ class VersionMapping {
 
         villagerProfessionRegistry.initialize(pixlyzerData["villager_professions"]?.asJsonObject, this, VillagerProfession)
 
-        entityTypeRegistry.initialize(pixlyzerData["entities"]?.asJsonObject, this, EntityType)
 
         blockEntityMetaDataTypeRegistry.initialize(pixlyzerData["block_entity_meta_data_types"]?.asJsonObject, this, BlockEntityMetaType, alternative = DefaultRegistries.BLOCK_ENTITY_META_TYPE_REGISTRY.forVersion(version))
 

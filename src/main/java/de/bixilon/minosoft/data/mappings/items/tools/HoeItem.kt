@@ -11,17 +11,24 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.mappings.items
+package de.bixilon.minosoft.data.mappings.items.tools
 
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.mappings.ResourceLocation
-import de.bixilon.minosoft.data.mappings.blocks.types.Block
+import de.bixilon.minosoft.data.mappings.blocks.BlockState
 import de.bixilon.minosoft.data.mappings.versions.VersionMapping
 
-open class BlockItem(
+open class HoeItem(
     resourceLocation: ResourceLocation,
     versionMapping: VersionMapping,
     data: JsonObject,
-) : Item(resourceLocation, versionMapping, data) {
-    val block: Block = versionMapping.blockRegistry[data["block"].asInt]
+) : MiningToolItem(resourceLocation, versionMapping, data) {
+    val tillableBlocKStates: List<BlockState>? = data["tillables_block_states"]?.asJsonArray?.let {
+        val diggableBlocks: MutableList<BlockState> = mutableListOf()
+        for (id in it) {
+            diggableBlocks += versionMapping.getBlockState(id.asInt)!!
+        }
+        diggableBlocks.toList()
+    }
+
 }

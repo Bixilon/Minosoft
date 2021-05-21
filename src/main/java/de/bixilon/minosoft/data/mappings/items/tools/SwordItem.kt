@@ -11,17 +11,17 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.mappings.items
+package de.bixilon.minosoft.data.mappings.items.tools
 
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.mappings.ResourceLocation
-import de.bixilon.minosoft.data.mappings.blocks.types.Block
 import de.bixilon.minosoft.data.mappings.versions.VersionMapping
 
-open class BlockItem(
+
+open class SwordItem(
     resourceLocation: ResourceLocation,
     versionMapping: VersionMapping,
     data: JsonObject,
-) : Item(resourceLocation, versionMapping, data) {
-    val block: Block = versionMapping.blockRegistry[data["block"].asInt]
+) : ToolItem(resourceLocation, versionMapping, data) {
+    override val attackDamage = data["attack_damage"]?.asFloat ?: -1.0f
 }

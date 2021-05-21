@@ -15,13 +15,13 @@ package de.bixilon.minosoft.data.mappings.items
 
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.mappings.ResourceLocation
-import de.bixilon.minosoft.data.mappings.blocks.types.Block
 import de.bixilon.minosoft.data.mappings.versions.VersionMapping
 
-open class BlockItem(
+open class MusicDiscItem(
     resourceLocation: ResourceLocation,
     versionMapping: VersionMapping,
     data: JsonObject,
 ) : Item(resourceLocation, versionMapping, data) {
-    val block: Block = versionMapping.blockRegistry[data["block"].asInt]
+    val analogOutput = data["analog_output"]?.asInt ?: 0
+    val sound = data["sound"]?.asInt?.let { versionMapping.soundEventRegistry[it] }
 }

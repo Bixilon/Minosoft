@@ -33,7 +33,11 @@ import de.bixilon.minosoft.gui.rendering.input.camera.RaycastHit
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import glm_.vec3.Vec3i
 
-open class Block(final override val resourceLocation: ResourceLocation, mappings: VersionMapping, data: JsonObject) : RegistryItem {
+open class Block(
+    final override val resourceLocation: ResourceLocation,
+    mappings: VersionMapping,
+    data: JsonObject,
+) : RegistryItem {
     open val explosionResistance: Float = data["explosion_resistance"]?.asFloat ?: 0.0f
     open val tintColor: RGBColor? = data["tint_color"]?.asInt?.let { TintColorCalculator.getJsonColor(it) }
     open val randomOffsetType: RandomOffsetTypes? = data["offset_type"]?.asString?.let { RandomOffsetTypes[it] }

@@ -14,6 +14,7 @@ package de.bixilon.minosoft.protocol.packets.s2c.play
 
 import de.bixilon.minosoft.data.Tag
 import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
@@ -23,10 +24,10 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
 class TagsS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
-    val tags: Map<ResourceLocation, List<Tag<Any>>>
+    val tags: Map<ResourceLocation, Map<ResourceLocation, Tag<Any>>>
 
     init {
-        val tags: MutableMap<ResourceLocation, List<Tag<Any>>> = mutableMapOf()
+        val tags: MutableMap<ResourceLocation, Map<ResourceLocation, Tag<Any>>> = mutableMapOf()
         if (buffer.versionId < ProtocolVersions.V_20W51A) {
             tags[BLOCK_TAG_RESOURCE_LOCATION] = buffer.readTagArray { buffer.connection.mapping.getBlockState(it)!! }
             tags[ITEM_TAG_RESOURCE_LOCATION] = buffer.readTagArray { buffer.connection.mapping.itemRegistry[it] }
@@ -49,6 +50,10 @@ class TagsS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
             }
         }
         this.tags = tags.toMap()
+    }
+
+    override fun handle(connection: PlayConnection) {
+        connection.tags.putAll(tags)
     }
 
     override fun log() {

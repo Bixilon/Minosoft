@@ -12,9 +12,6 @@
  */
 package de.bixilon.minosoft.data
 
-import de.bixilon.minosoft.data.mappings.ResourceLocation
-
 data class Tag<T>(
-    val resourceLocation: ResourceLocation,
     val ids: Set<T>,
 )

@@ -17,6 +17,11 @@ import de.bixilon.minosoft.data.Rarities
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.inventory.CreativeModeTab
 import de.bixilon.minosoft.data.mappings.items.armor.ArmorItem
+import de.bixilon.minosoft.data.mappings.items.armor.HorseArmorItem
+import de.bixilon.minosoft.data.mappings.items.tools.AxeItem
+import de.bixilon.minosoft.data.mappings.items.tools.MiningToolItem
+import de.bixilon.minosoft.data.mappings.items.tools.SwordItem
+import de.bixilon.minosoft.data.mappings.items.tools.ToolItem
 import de.bixilon.minosoft.data.mappings.registry.RegistryItem
 import de.bixilon.minosoft.data.mappings.registry.ResourceLocationDeserializer
 import de.bixilon.minosoft.data.mappings.registry.Translatable
@@ -42,8 +47,17 @@ open class Item(
         override fun deserialize(mappings: VersionMapping?, resourceLocation: ResourceLocation, data: JsonObject): Item {
             check(mappings != null) { "VersionMapping is null!" }
             return when (data["class"].asString) {
-                "BlockItem" -> BlockItem(resourceLocation, data, mappings)
+                "BlockItem" -> BlockItem(resourceLocation, mappings, data)
                 "ArmorItem" -> ArmorItem(resourceLocation, mappings, data)
+                "SwordItem" -> SwordItem(resourceLocation, mappings, data)
+                "ToolItem" -> ToolItem(resourceLocation, mappings, data)
+                "MiningToolItem" -> MiningToolItem(resourceLocation, mappings, data)
+                "AxeItem" -> AxeItem(resourceLocation, mappings, data)
+                "BucketItem" -> BucketItem(resourceLocation, mappings, data)
+                "DyeItem" -> DyeItem(resourceLocation, mappings, data)
+                "HorseArmorItem" -> HorseArmorItem(resourceLocation, mappings, data)
+                "SpawnEggItem" -> SpawnEggItem(resourceLocation, mappings, data)
+                "MusicDiscItem" -> MusicDiscItem(resourceLocation, mappings, data)
                 //   "Item" -> Item(resourceLocation, data)
                 // else -> TODO("Can not find item class: ${data["class"].asString}")
                 else -> Item(resourceLocation, mappings, data)

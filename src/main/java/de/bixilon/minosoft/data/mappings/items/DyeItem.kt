@@ -15,13 +15,12 @@ package de.bixilon.minosoft.data.mappings.items
 
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.mappings.ResourceLocation
-import de.bixilon.minosoft.data.mappings.blocks.types.Block
 import de.bixilon.minosoft.data.mappings.versions.VersionMapping
 
-open class BlockItem(
+open class DyeItem(
     resourceLocation: ResourceLocation,
     versionMapping: VersionMapping,
     data: JsonObject,
 ) : Item(resourceLocation, versionMapping, data) {
-    val block: Block = versionMapping.blockRegistry[data["block"].asInt]
+    val dyeColor = data["dye_color"]?.asString ?: "white"
 }

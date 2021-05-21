@@ -409,18 +409,18 @@ open class InByteBuffer {
         return String(Base64.getEncoder().encode(readRest()))
     }
 
-    fun <T> readTag(idResolver: (Int) -> T): Tag<T> {
+    fun <T> readTag(idResolver: (Int) -> T): Pair<ResourceLocation, Tag<T>> {
         val resourceLocation = readResourceLocation()
         val ids = readVarIntArray()
         val items: MutableSet<T> = mutableSetOf()
         for (id in ids) {
             items += idResolver(id)
         }
-        return Tag(resourceLocation, items.toSet())
+        return Pair(resourceLocation, Tag(items.toSet()))
     }
 
-    fun <T> readTagArray(length: Int = readVarInt(), idResolver: (Int) -> T): List<Tag<T>> {
-        return (readArray(length) { readTag(idResolver) }).toList()
+    fun <T> readTagArray(length: Int = readVarInt(), idResolver: (Int) -> T): Map<ResourceLocation, Tag<T>> {
+        return mapOf(*(readArray(length) { readTag(idResolver) }))
     }
 
     fun <T> readOptional(reader: () -> T): T? {

@@ -11,17 +11,22 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.mappings.items
+package de.bixilon.minosoft.data.mappings.items.tools
 
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.mappings.ResourceLocation
-import de.bixilon.minosoft.data.mappings.blocks.types.Block
+import de.bixilon.minosoft.data.mappings.items.Item
 import de.bixilon.minosoft.data.mappings.versions.VersionMapping
 
-open class BlockItem(
+
+open class ToolItem(
     resourceLocation: ResourceLocation,
     versionMapping: VersionMapping,
     data: JsonObject,
 ) : Item(resourceLocation, versionMapping, data) {
-    val block: Block = versionMapping.blockRegistry[data["block"].asInt]
+    val durability = data["uses"]?.asInt ?: 1
+    val speed = data["speed"]?.asFloat ?: 1.0f
+    open val attackDamage = data["attack_damage_bonus"]?.asFloat ?: 1.0f
+    val miningLevel = data["mining_level"]?.asInt ?: 1
+    val enchantmentValue = data["enchantment_value"]?.asInt ?: 1
 }

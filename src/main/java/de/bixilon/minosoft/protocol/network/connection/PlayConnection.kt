@@ -15,10 +15,12 @@ package de.bixilon.minosoft.protocol.network.connection
 
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.StaticConfiguration
+import de.bixilon.minosoft.data.Tag
 import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.data.assets.MultiAssetsManager
 import de.bixilon.minosoft.data.commands.CommandRootNode
 import de.bixilon.minosoft.data.mappings.MappingsLoadingException
+import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.recipes.Recipes
 import de.bixilon.minosoft.data.mappings.versions.Version
 import de.bixilon.minosoft.data.mappings.versions.VersionMapping
@@ -39,6 +41,7 @@ import de.bixilon.minosoft.protocol.protocol.*
 import de.bixilon.minosoft.terminal.CLI
 import de.bixilon.minosoft.terminal.commands.commands.Command
 import de.bixilon.minosoft.util.CountUpAndDownLatch
+import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
 import de.bixilon.minosoft.util.ServerAddress
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -60,6 +63,7 @@ class PlayConnection(
     val sender = PacketSender(this)
     lateinit var assetsManager: MultiAssetsManager
         private set
+    val tags: MutableMap<ResourceLocation, Map<ResourceLocation, Tag<Any>>> = synchronizedMapOf()
 
     var commandRootNode: CommandRootNode? = null
 
