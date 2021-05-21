@@ -109,6 +109,7 @@ class PacketTypes {
         PLAY_PLAYER_GROUND_CHANGE,
         PLAY_PREPARE_CRAFTING_GRID,
         PLAY_QUERY_ENTITY_NBT,
+        PLAY_PONG(PongC2SP::class.java)
         ;
 
         val state: ConnectionStates = ConnectionStates.valueOf(name.split("_".toRegex()).toTypedArray()[0])
@@ -271,6 +272,7 @@ class PacketTypes {
         PLAY_COMPRESSION_SET({ CompressionSetS2CP(it) }, isThreadSafe = false),
         PLAY_ADVANCEMENT_PROGRESS({ TODO() }),
         PLAY_VIBRATION_SIGNAL({ VibrationSignalS2CP(it) }),
+        PLAY_PING({ PingS2CP(it) }),
         ;
 
         init {

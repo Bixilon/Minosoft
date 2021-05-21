@@ -43,9 +43,9 @@ public class ResourceLocation implements Comparable<ResourceLocation> {
     }
 
     public static ResourceLocation getResourceLocation(String resourceLocation) throws IllegalArgumentException {
-        if (!ProtocolDefinition.RESOURCE_LOCATION_PATTERN.matcher(resourceLocation).matches()) {
-            throw new IllegalArgumentException(String.format("%s in not a valid resource location!", resourceLocation));
-        }
+        // if (!ProtocolDefinition.RESOURCE_LOCATION_PATTERN.matcher(resourceLocation).matches()) {
+        //     throw new IllegalArgumentException(String.format("%s in not a valid resource location!", resourceLocation));
+        // }
 
         if (Util.doesStringContainsUppercaseLetters(resourceLocation)) {
             // just a string but wrapped into a resourceLocation (like old plugin channels MC|BRAND or ...)
