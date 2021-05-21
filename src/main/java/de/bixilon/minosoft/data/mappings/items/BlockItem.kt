@@ -41,8 +41,7 @@ open class BlockItem(
         }
 
         val placePosition = raycastHit.blockPosition + raycastHit.hitDirection
-        val dimension = connection.world.dimension!!
-        if (placePosition.y < dimension.minY || placePosition.y >= dimension.height) {
+        if (!connection.world.isPositionChangeable(placePosition)) {
             return BlockUsages.PASS
         }
 

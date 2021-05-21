@@ -25,21 +25,21 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import glm_.vec3.Vec3i
 
-open class DoubleSizeBlock(resourceLocation: ResourceLocation, mappings: Registries, data: JsonObject) : Block(resourceLocation, mappings, data) {
+abstract class DoubleSizeBlock(resourceLocation: ResourceLocation, mappings: Registries, data: JsonObject) : Block(resourceLocation, mappings, data) {
 
     override fun onBreak(connection: PlayConnection, blockPosition: Vec3i, blockState: BlockState, blockEntity: BlockEntity?) {
         if (blockState.properties[BlockProperties.STAIR_HALF] == Halves.LOWER) {
-            connection.world.forceSetBlockState(blockPosition + Directions.UP, null)
+            connection.world.forceSetBlockState(blockPosition + Directions.UP, null, check = true)
         } else {
-            connection.world.forceSetBlockState(blockPosition + Directions.DOWN, null)
+            connection.world.forceSetBlockState(blockPosition + Directions.DOWN, null, check = true)
         }
     }
 
     override fun onPlace(connection: PlayConnection, blockPosition: Vec3i, blockState: BlockState) {
         if (blockState.properties[BlockProperties.STAIR_HALF] == Halves.LOWER) {
-            connection.world.forceSetBlockState(blockPosition + Directions.UP, blockState.withProperties(BlockProperties.STAIR_HALF to Halves.UPPER))
+            connection.world.forceSetBlockState(blockPosition + Directions.UP, blockState.withProperties(BlockProperties.STAIR_HALF to Halves.UPPER), check = true)
         } else {
-            connection.world.forceSetBlockState(blockPosition + Directions.DOWN, blockState.withProperties(BlockProperties.STAIR_HALF to Halves.LOWER))
+            connection.world.forceSetBlockState(blockPosition + Directions.DOWN, blockState.withProperties(BlockProperties.STAIR_HALF to Halves.LOWER), check = true)
         }
     }
 }

@@ -100,7 +100,15 @@ class World(
         }
     }
 
-    fun forceSetBlockState(blockPosition: Vec3i, blockState: BlockState?) {
+    fun isPositionChangeable(blockPosition: Vec3i): Boolean {
+        val dimension = connection.world.dimension!!
+        return (blockPosition.y >= dimension.minY || blockPosition.y < dimension.height)
+    }
+
+    fun forceSetBlockState(blockPosition: Vec3i, blockState: BlockState?, check: Boolean = false) {
+        if (check && !isPositionChangeable(blockPosition)) {
+            return
+        }
         chunks[blockPosition.chunkPosition]?.set(blockPosition.inChunkPosition, blockState)
     }
 

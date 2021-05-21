@@ -19,25 +19,20 @@ import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.blocks.BlockState
 import de.bixilon.minosoft.data.mappings.blocks.BlockUsages
 import de.bixilon.minosoft.data.mappings.blocks.properties.BlockProperties
-import de.bixilon.minosoft.data.mappings.materials.DefaultMaterials
 import de.bixilon.minosoft.data.mappings.versions.Registries
 import de.bixilon.minosoft.data.player.Hands
 import de.bixilon.minosoft.gui.rendering.input.camera.RaycastHit
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import glm_.vec3.Vec3i
 
-open class DoorBlock(resourceLocation: ResourceLocation, mappings: Registries, data: JsonObject) : DoubleSizeBlock(resourceLocation, mappings, data) {
+open class LeverBlock(resourceLocation: ResourceLocation, mappings: Registries, data: JsonObject) : Block(resourceLocation, mappings, data) {
 
     override fun getPlacementState(connection: PlayConnection, raycastHit: RaycastHit): BlockState? {
         TODO()
     }
 
     override fun use(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, raycastHit: RaycastHit, hands: Hands, itemStack: ItemStack?): BlockUsages {
-        if (blockState.material.resourceLocation == DefaultMaterials.METAL) {
-            return BlockUsages.CONSUME
-        }
-
-        connection.world[blockPosition] = blockState.cycle(BlockProperties.DOOR_OPEN)
+        connection.world[blockPosition] = blockState.cycle(BlockProperties.POWERED)
 
         return BlockUsages.SUCCESS
     }

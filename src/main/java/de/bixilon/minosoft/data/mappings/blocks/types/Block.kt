@@ -98,6 +98,7 @@ open class Block(
             val block = when (data["class"].asString) {
                 "FluidBlock" -> FluidBlock(resourceLocation, mappings, data)
                 "DoorBlock" -> DoorBlock(resourceLocation, mappings, data)
+                "LeverBlock" -> LeverBlock(resourceLocation, mappings, data)
                 else -> Block(resourceLocation, mappings, data)
             }
 
