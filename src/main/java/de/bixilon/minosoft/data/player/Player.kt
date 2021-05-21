@@ -30,7 +30,7 @@ class Player(
     val healthCondition = PlayerHealthCondition()
     val experienceCondition = PlayerExperienceCondition()
     var spawnPosition: Vec3i = VecUtil.EMPTY_VEC3I
-    val entity: PlayerEntity = PlayerEntity(connection, connection.mapping.entityTypeRegistry[PlayerEntity.RESOURCE_LOCATION]!!, VecUtil.EMPTY_VEC3, EntityRotation(0.0, 0.0), account.username)
+    val entity: PlayerEntity = PlayerEntity(connection, connection.registries.entityTypeRegistry[PlayerEntity.RESOURCE_LOCATION]!!, VecUtil.EMPTY_VEC3, EntityRotation(0.0, 0.0), account.username)
 
     @Deprecated(message = "Will be replaced with some kind of teleport manager, ...")
     var isSpawnConfirmed = false

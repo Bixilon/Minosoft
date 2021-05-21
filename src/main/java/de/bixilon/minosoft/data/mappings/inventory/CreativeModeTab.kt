@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.mappings.inventory
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.mappings.registry.IdDeserializer
 import de.bixilon.minosoft.data.mappings.registry.RegistryFakeEnumerable
-import de.bixilon.minosoft.data.mappings.versions.VersionMapping
+import de.bixilon.minosoft.data.mappings.versions.Registries
 
 data class CreativeModeTab(
     override val name: String,
@@ -27,7 +27,7 @@ data class CreativeModeTab(
 
 
     companion object : IdDeserializer<CreativeModeTab> {
-        override fun deserialize(mappings: VersionMapping, data: JsonObject): CreativeModeTab {
+        override fun deserialize(mappings: Registries, data: JsonObject): CreativeModeTab {
             return CreativeModeTab(
                 name = data["language_id"].asString,
                 recipeFolderName = data["recipe_folder_name"].asString,

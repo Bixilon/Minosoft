@@ -15,8 +15,8 @@ package de.bixilon.minosoft.data.mappings.registry
 
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.mappings.ResourceLocation
-import de.bixilon.minosoft.data.mappings.versions.VersionMapping
+import de.bixilon.minosoft.data.mappings.versions.Registries
 
 interface ResourceLocationDeserializer<T> {
-    fun deserialize(mappings: VersionMapping?, resourceLocation: ResourceLocation, data: JsonObject): T?
+    fun deserialize(mappings: Registries?, resourceLocation: ResourceLocation, data: JsonObject): T?
 }

@@ -14,7 +14,10 @@ package de.bixilon.minosoft.data.mappings.items
 
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.Rarities
+import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.data.mappings.blocks.BlockState
+import de.bixilon.minosoft.data.mappings.blocks.BlockUsages
 import de.bixilon.minosoft.data.mappings.inventory.CreativeModeTab
 import de.bixilon.minosoft.data.mappings.items.armor.ArmorItem
 import de.bixilon.minosoft.data.mappings.items.armor.HorseArmorItem
@@ -25,27 +28,35 @@ import de.bixilon.minosoft.data.mappings.items.tools.ToolItem
 import de.bixilon.minosoft.data.mappings.registry.RegistryItem
 import de.bixilon.minosoft.data.mappings.registry.ResourceLocationDeserializer
 import de.bixilon.minosoft.data.mappings.registry.Translatable
-import de.bixilon.minosoft.data.mappings.versions.VersionMapping
+import de.bixilon.minosoft.data.mappings.versions.Registries
+import de.bixilon.minosoft.data.player.Hands
+import de.bixilon.minosoft.gui.rendering.input.camera.RaycastHit
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import glm_.vec3.Vec3i
 
 open class Item(
     override val resourceLocation: ResourceLocation,
-    versionMapping: VersionMapping,
+    registries: Registries,
     data: JsonObject,
 ) : RegistryItem, Translatable {
     val rarity: Rarities = data["rarity"]?.asInt?.let { Rarities[it] } ?: Rarities.COMMON
     val maxStackSize: Int = data["max_stack_size"]?.asInt ?: 64
-    val maxDamage: Int = data["max_damage"]?.asInt ?: 64
+    val maxDamage: Int = data["max_damage"]?.asInt ?: 1
     val isFireResistant: Boolean = data["is_fire_resistant"]?.asBoolean ?: false
     override val translationKey: String? = data["translation_key"]?.asString
-    val creativeModeTab: CreativeModeTab? = data["category"]?.asInt?.let { versionMapping.creativeModeTabRegistry[it] }
+    val creativeModeTab: CreativeModeTab? = data["category"]?.asInt?.let { registries.creativeModeTabRegistry[it] }
 
     override fun toString(): String {
         return resourceLocation.toString()
     }
 
+    open fun use(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, raycastHit: RaycastHit, hands: Hands, itemStack: ItemStack?): BlockUsages {
+        return BlockUsages.PASS
+    }
+
     companion object : ResourceLocationDeserializer<Item> {
-        override fun deserialize(mappings: VersionMapping?, resourceLocation: ResourceLocation, data: JsonObject): Item {
-            check(mappings != null) { "VersionMapping is null!" }
+        override fun deserialize(mappings: Registries?, resourceLocation: ResourceLocation, data: JsonObject): Item {
+            check(mappings != null) { "Registries is null!" }
             return when (data["class"].asString) {
                 "BlockItem" -> BlockItem(resourceLocation, mappings, data)
                 "ArmorItem" -> ArmorItem(resourceLocation, mappings, data)

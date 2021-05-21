@@ -28,7 +28,7 @@ public class Versions {
     private static final HashBiMap<Integer, Version> VERSION_ID_MAP = HashBiMap.create(500);
     private static final HashBiMap<Integer, Version> VERSION_PROTOCOL_ID_MAP = HashBiMap.create(500);
     private static final HashBiMap<String, Version> VERSION_NAME_MAP = HashBiMap.create(500);
-    public static VersionMapping PRE_FLATTENING_MAPPING;
+    public static Registries PRE_FLATTENING_MAPPING;
     public static Version PRE_FLATTENING_VERSION;
 
     public static Version getVersionById(int versionId) {

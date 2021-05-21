@@ -17,14 +17,14 @@ import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.registry.RegistryItem
 import de.bixilon.minosoft.data.mappings.registry.ResourceLocationDeserializer
-import de.bixilon.minosoft.data.mappings.versions.VersionMapping
+import de.bixilon.minosoft.data.mappings.versions.Registries
 
 class EntityObjectType(
     override val resourceLocation: ResourceLocation,
 ) : RegistryItem {
 
     companion object : ResourceLocationDeserializer<EntityObjectType> {
-        override fun deserialize(mappings: VersionMapping?, resourceLocation: ResourceLocation, data: JsonObject): EntityObjectType {
+        override fun deserialize(mappings: Registries?, resourceLocation: ResourceLocation, data: JsonObject): EntityObjectType {
             return EntityObjectType(resourceLocation)
         }
     }

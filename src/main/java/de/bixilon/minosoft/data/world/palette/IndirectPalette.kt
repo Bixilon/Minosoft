@@ -30,7 +30,7 @@ class IndirectPalette(
         if (blockId < palette.size) {
             blockId = palette[blockId]
         }
-        val block = connection.mapping.getBlockState(blockId)
+        val block = connection.registries.getBlockState(blockId)
 
         if (StaticConfiguration.DEBUG_MODE && block == null && blockId != ProtocolDefinition.NULL_BLOCK_ID) {
             val blockName: String = if (connection.version.isFlattened()) {

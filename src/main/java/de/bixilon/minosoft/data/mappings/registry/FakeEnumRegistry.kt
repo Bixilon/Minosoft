@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.data.mappings.registry
 
 import com.google.gson.JsonObject
-import de.bixilon.minosoft.data.mappings.versions.VersionMapping
+import de.bixilon.minosoft.data.mappings.versions.Registries
 import de.bixilon.minosoft.util.collections.Clearable
 
 class FakeEnumRegistry<T : RegistryFakeEnumerable>(
@@ -42,7 +42,7 @@ class FakeEnumRegistry<T : RegistryFakeEnumerable>(
         this.parentRegistry = parent
     }
 
-    fun initialize(data: JsonObject?, mappings: VersionMapping, deserializer: IdDeserializer<T>): FakeEnumRegistry<T> {
+    fun initialize(data: JsonObject?, mappings: Registries, deserializer: IdDeserializer<T>): FakeEnumRegistry<T> {
         check(!initialized) { "Already initialized" }
 
         if (data == null) {

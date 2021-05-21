@@ -16,17 +16,17 @@ package de.bixilon.minosoft.data.mappings.items.tools
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.blocks.types.Block
-import de.bixilon.minosoft.data.mappings.versions.VersionMapping
+import de.bixilon.minosoft.data.mappings.versions.Registries
 
 open class AxeItem(
     resourceLocation: ResourceLocation,
-    versionMapping: VersionMapping,
+    registries: Registries,
     data: JsonObject,
-) : MiningToolItem(resourceLocation, versionMapping, data) {
+) : MiningToolItem(resourceLocation, registries, data) {
     val strippableBlocks: List<Block>? = data["strippables_blocks"]?.asJsonArray?.let {
         val strippableBlocks: MutableList<Block> = mutableListOf()
         for (id in it) {
-            strippableBlocks += versionMapping.blockRegistry[id.asInt]
+            strippableBlocks += registries.blockRegistry[id.asInt]
         }
         strippableBlocks.toList()
     }

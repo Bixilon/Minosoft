@@ -29,7 +29,7 @@ class DirectPalette(buffer: PlayInByteBuffer) : Palette {
     }
 
     override fun blockById(id: Int): BlockState? {
-        return connection.mapping.getBlockState(id)
+        return connection.registries.getBlockState(id)
     }
 
     override val bitsPerBlock: Int
@@ -37,6 +37,6 @@ class DirectPalette(buffer: PlayInByteBuffer) : Palette {
             if (this.connection.version.versionId < ProtocolVersions.V_18W10D) {
                 return 13
             }
-            return ceil(ln(connection.mapping.blockStateCount.toDouble()) / ln(2.0)).toInt()
+            return ceil(ln(connection.registries.blockStateCount.toDouble()) / ln(2.0)).toInt()
         }
 }

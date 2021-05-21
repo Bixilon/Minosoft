@@ -16,11 +16,11 @@ package de.bixilon.minosoft.data.mappings.blocks.types
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.fluid.Fluid
-import de.bixilon.minosoft.data.mappings.versions.VersionMapping
+import de.bixilon.minosoft.data.mappings.versions.Registries
 import de.bixilon.minosoft.gui.rendering.chunk.models.renderable.BlockLikeRenderer
 import de.bixilon.minosoft.gui.rendering.chunk.models.renderable.FluidRenderer
 
-open class FluidBlock(resourceLocation: ResourceLocation, mappings: VersionMapping, data: JsonObject) : Block(resourceLocation, mappings, data) {
+open class FluidBlock(resourceLocation: ResourceLocation, mappings: Registries, data: JsonObject) : Block(resourceLocation, mappings, data) {
     open val stillFluid: Fluid = mappings.fluidRegistry[data["still_fluid"].asInt]
     open val flowingFluid: Fluid = mappings.fluidRegistry[data["flow_fluid"].asInt]
 

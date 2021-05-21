@@ -31,7 +31,7 @@ class EntityActionC2SP(
 
     override fun write(buffer: PlayOutByteBuffer) {
         buffer.writeEntityId(entityId)
-        buffer.writeVarInt(buffer.connection.mapping.entityActionsRegistry.getId(action))
+        buffer.writeVarInt(buffer.connection.registries.entityActionsRegistry.getId(action))
 
         if (buffer.versionId < ProtocolVersions.V_14W04A) {
             buffer.writeInt(parameter)

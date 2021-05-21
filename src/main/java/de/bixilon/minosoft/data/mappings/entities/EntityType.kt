@@ -23,7 +23,7 @@ import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.registry.RegistryItem
 import de.bixilon.minosoft.data.mappings.registry.ResourceLocationDeserializer
 import de.bixilon.minosoft.data.mappings.registry.Translatable
-import de.bixilon.minosoft.data.mappings.versions.VersionMapping
+import de.bixilon.minosoft.data.mappings.versions.Registries
 import de.bixilon.minosoft.datafixer.EntityAttributeFixer.fix
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import glm_.vec3.Vec3
@@ -45,8 +45,8 @@ data class EntityType(
     }
 
     companion object : ResourceLocationDeserializer<EntityType> {
-        override fun deserialize(mappings: VersionMapping?, resourceLocation: ResourceLocation, data: JsonObject): EntityType? {
-            check(mappings != null) { "VersionMapping is null!" }
+        override fun deserialize(mappings: Registries?, resourceLocation: ResourceLocation, data: JsonObject): EntityType? {
+            check(mappings != null) { "Registries is null!" }
 
             data["meta"]?.asJsonObject?.let {
                 for ((minosoftFieldName, index) in it.entrySet()) {

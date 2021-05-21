@@ -16,17 +16,17 @@ package de.bixilon.minosoft.data.mappings.items.tools
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.blocks.BlockState
-import de.bixilon.minosoft.data.mappings.versions.VersionMapping
+import de.bixilon.minosoft.data.mappings.versions.Registries
 
 open class HoeItem(
     resourceLocation: ResourceLocation,
-    versionMapping: VersionMapping,
+    registries: Registries,
     data: JsonObject,
-) : MiningToolItem(resourceLocation, versionMapping, data) {
+) : MiningToolItem(resourceLocation, registries, data) {
     val tillableBlocKStates: List<BlockState>? = data["tillables_block_states"]?.asJsonArray?.let {
         val diggableBlocks: MutableList<BlockState> = mutableListOf()
         for (id in it) {
-            diggableBlocks += versionMapping.getBlockState(id.asInt)!!
+            diggableBlocks += registries.getBlockState(id.asInt)!!
         }
         diggableBlocks.toList()
     }

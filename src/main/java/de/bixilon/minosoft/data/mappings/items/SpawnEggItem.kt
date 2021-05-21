@@ -15,15 +15,15 @@ package de.bixilon.minosoft.data.mappings.items
 
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.mappings.ResourceLocation
-import de.bixilon.minosoft.data.mappings.versions.VersionMapping
+import de.bixilon.minosoft.data.mappings.versions.Registries
 import de.bixilon.minosoft.data.text.RGBColor.Companion.asRGBColor
 
 open class SpawnEggItem(
     resourceLocation: ResourceLocation,
-    versionMapping: VersionMapping,
+    registries: Registries,
     data: JsonObject,
-) : Item(resourceLocation, versionMapping, data) {
+) : Item(resourceLocation, registries, data) {
     val color1 = data["spawn_egg_color_1"]?.asInt?.asRGBColor()
     val color2 = data["spawn_egg_color_2"]?.asInt?.asRGBColor()
-    val entityType = data["spawn_egg_entity_type"]?.asInt?.let { versionMapping.entityTypeRegistry[it] }
+    val entityType = data["spawn_egg_entity_type"]?.asInt?.let { registries.entityTypeRegistry[it] }
 }

@@ -29,10 +29,10 @@ public class PacketStatistics extends PlayS2CPacket {
         int length = buffer.readVarInt();
         for (int i = 0; i < length; i++) {
             if (buffer.getVersionId() < V_17W47A) { // ToDo
-                this.statistics.put(buffer.getConnection().getMapping().getStatisticRegistry().get(buffer.readResourceLocation()), buffer.readVarInt());
+                this.statistics.put(buffer.getConnection().getRegistries().getStatisticRegistry().get(buffer.readResourceLocation()), buffer.readVarInt());
             } else {
-                var category = buffer.getConnection().getMapping().getStatisticRegistry().get(buffer.readVarInt()); // category before?
-                this.statistics.put(buffer.getConnection().getMapping().getStatisticRegistry().get(buffer.readVarInt()), buffer.readVarInt());
+                var category = buffer.getConnection().getRegistries().getStatisticRegistry().get(buffer.readVarInt()); // category before?
+                this.statistics.put(buffer.getConnection().getRegistries().getStatisticRegistry().get(buffer.readVarInt()), buffer.readVarInt());
             }
         }
     }

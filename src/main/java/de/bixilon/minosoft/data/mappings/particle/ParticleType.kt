@@ -16,7 +16,7 @@ import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.registry.RegistryItem
 import de.bixilon.minosoft.data.mappings.registry.ResourceLocationDeserializer
-import de.bixilon.minosoft.data.mappings.versions.VersionMapping
+import de.bixilon.minosoft.data.mappings.versions.Registries
 
 data class ParticleType(
     override val resourceLocation: ResourceLocation,
@@ -28,7 +28,7 @@ data class ParticleType(
     }
 
     companion object : ResourceLocationDeserializer<ParticleType> {
-        override fun deserialize(mappings: VersionMapping?, resourceLocation: ResourceLocation, data: JsonObject): ParticleType {
+        override fun deserialize(mappings: Registries?, resourceLocation: ResourceLocation, data: JsonObject): ParticleType {
             return ParticleType(resourceLocation)
         }
     }

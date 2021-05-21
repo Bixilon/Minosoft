@@ -73,7 +73,7 @@ class JoinGameS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         }
 
         if (buffer.versionId < ProtocolVersions.V_1_9_1) {
-            dimension = buffer.connection.mapping.dimensionRegistry[buffer.readByte().toInt()]
+            dimension = buffer.connection.registries.dimensionRegistry[buffer.readByte().toInt()]
             difficulty = Difficulties.byId(buffer.readUnsignedByte().toInt())
             maxPlayers = buffer.readByte().toInt()
             if (buffer.versionId >= ProtocolVersions.V_13W42B) {
@@ -90,7 +90,7 @@ class JoinGameS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
                 buffer.readStringArray() // dimensions
             }
             if (buffer.versionId < ProtocolVersions.V_20W21A) {
-                dimension = buffer.connection.mapping.dimensionRegistry[buffer.readInt()]
+                dimension = buffer.connection.registries.dimensionRegistry[buffer.readInt()]
             } else {
                 val dimensionCodec = buffer.readNBT()?.compoundCast()!!
                 dimensions = parseDimensionCodec(dimensionCodec, buffer.versionId)
@@ -100,7 +100,7 @@ class JoinGameS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
                     buffer.readNBT()!!.compoundCast() // dimension tag
                 }
                 val currentDimension = buffer.readResourceLocation()
-                dimension = dimensions[currentDimension] ?: buffer.connection.mapping.dimensionRegistry[currentDimension]!!
+                dimension = dimensions[currentDimension] ?: buffer.connection.registries.dimensionRegistry[currentDimension]!!
             }
 
             if (buffer.versionId >= ProtocolVersions.V_19W36A) {
@@ -141,7 +141,7 @@ class JoinGameS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         playerEntity.tabListItem.gamemode = gamemode
 
         connection.world.hardcore = isHardcore
-        connection.mapping.dimensionRegistry.setData(dimensions)
+        connection.registries.dimensionRegistry.setData(dimensions)
         connection.world.dimension = dimension
 
         connection.world.entities.add(entityId, null, playerEntity)

@@ -18,7 +18,7 @@ import de.bixilon.minosoft.data.mappings.items.Item
 import de.bixilon.minosoft.data.mappings.particle.ParticleType
 import de.bixilon.minosoft.data.mappings.registry.RegistryItem
 import de.bixilon.minosoft.data.mappings.registry.ResourceLocationDeserializer
-import de.bixilon.minosoft.data.mappings.versions.VersionMapping
+import de.bixilon.minosoft.data.mappings.versions.Registries
 
 data class Fluid(
     override val resourceLocation: ResourceLocation,
@@ -33,13 +33,13 @@ data class Fluid(
         return resourceLocation.full
     }
 
-    override fun postInit(versionMapping: VersionMapping) {
-        bucketItem = bucketItemId?.let { versionMapping.itemRegistry[it] }
+    override fun postInit(registries: Registries) {
+        bucketItem = bucketItemId?.let { registries.itemRegistry[it] }
     }
 
     companion object : ResourceLocationDeserializer<Fluid> {
-        override fun deserialize(mappings: VersionMapping?, resourceLocation: ResourceLocation, data: JsonObject): Fluid {
-            check(mappings != null) { "VersionMapping is null!" }
+        override fun deserialize(mappings: Registries?, resourceLocation: ResourceLocation, data: JsonObject): Fluid {
+            check(mappings != null) { "Registries is null!" }
             return Fluid(
                 resourceLocation = resourceLocation,
                 bucketItemId = data["bucket"]?.asInt,

@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.mappings.blocks.entites
 
 import de.bixilon.minosoft.data.mappings.blocks.types.Block
 import de.bixilon.minosoft.data.mappings.registry.Registry
-import de.bixilon.minosoft.data.mappings.versions.VersionMapping
+import de.bixilon.minosoft.data.mappings.versions.Registries
 
 class BlockEntityTypeRegistry(
     parentRegistry: BlockEntityTypeRegistry? = null,
@@ -27,8 +27,8 @@ class BlockEntityTypeRegistry(
         return blockTypeMap[block] ?: parentRegistry?.getByBlock(block)
     }
 
-    override fun postInit(versionMapping: VersionMapping) {
-        super.postInit(versionMapping)
+    override fun postInit(registries: Registries) {
+        super.postInit(registries)
         blockTypeMap = mutableMapOf()
         for ((_, type) in resourceLocationMap) {
             for (block in type.blocks) {

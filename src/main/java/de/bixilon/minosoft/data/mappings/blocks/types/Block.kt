@@ -24,7 +24,7 @@ import de.bixilon.minosoft.data.mappings.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.mappings.items.Item
 import de.bixilon.minosoft.data.mappings.registry.RegistryItem
 import de.bixilon.minosoft.data.mappings.registry.ResourceLocationDeserializer
-import de.bixilon.minosoft.data.mappings.versions.VersionMapping
+import de.bixilon.minosoft.data.mappings.versions.Registries
 import de.bixilon.minosoft.data.player.Hands
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.TintColorCalculator
@@ -35,7 +35,7 @@ import glm_.vec3.Vec3i
 
 open class Block(
     final override val resourceLocation: ResourceLocation,
-    mappings: VersionMapping,
+    mappings: Registries,
     data: JsonObject,
 ) : RegistryItem {
     open val explosionResistance: Float = data["explosion_resistance"]?.asFloat ?: 0.0f
@@ -55,9 +55,9 @@ open class Block(
     open lateinit var item: Item
         protected set
 
-    override fun postInit(versionMapping: VersionMapping) {
-        item = versionMapping.itemRegistry[itemId]
-        blockEntityType = versionMapping.blockEntityTypeRegistry.getByBlock(this)
+    override fun postInit(registries: Registries) {
+        item = registries.itemRegistry[itemId]
+        blockEntityType = registries.blockEntityTypeRegistry.getByBlock(this)
     }
 
     override fun toString(): String {
@@ -92,8 +92,8 @@ open class Block(
     }
 
     companion object : ResourceLocationDeserializer<Block> {
-        override fun deserialize(mappings: VersionMapping?, resourceLocation: ResourceLocation, data: JsonObject): Block {
-            check(mappings != null) { "VersionMapping is null!" }
+        override fun deserialize(mappings: Registries?, resourceLocation: ResourceLocation, data: JsonObject): Block {
+            check(mappings != null) { "Registries is null!" }
 
             val block = when (data["class"].asString) {
                 "FluidBlock" -> FluidBlock(resourceLocation, mappings, data)

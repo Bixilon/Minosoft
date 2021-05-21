@@ -16,7 +16,7 @@ import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.registry.RegistryItem
 import de.bixilon.minosoft.data.mappings.registry.ResourceLocationDeserializer
-import de.bixilon.minosoft.data.mappings.versions.VersionMapping
+import de.bixilon.minosoft.data.mappings.versions.Registries
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.data.text.RGBColor.Companion.asColor
 import de.bixilon.minosoft.data.text.RGBColor.Companion.asRGBColor
@@ -59,8 +59,8 @@ data class Biome(
 
     companion object : ResourceLocationDeserializer<Biome> {
         private val TODO_SWAMP_COLOR = "#6A7039".asColor()
-        override fun deserialize(mappings: VersionMapping?, resourceLocation: ResourceLocation, data: JsonObject): Biome {
-            check(mappings != null) { "VersionMapping is null!" }
+        override fun deserialize(mappings: Registries?, resourceLocation: ResourceLocation, data: JsonObject): Biome {
+            check(mappings != null) { "Registries is null!" }
             return Biome(
                 resourceLocation = resourceLocation,
                 depth = data["depth"]?.asFloat ?: 0.0f,

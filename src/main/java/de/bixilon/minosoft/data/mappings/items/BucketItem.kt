@@ -15,13 +15,13 @@ package de.bixilon.minosoft.data.mappings.items
 
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.mappings.ResourceLocation
-import de.bixilon.minosoft.data.mappings.versions.VersionMapping
+import de.bixilon.minosoft.data.mappings.versions.Registries
 
 
 open class BucketItem(
     resourceLocation: ResourceLocation,
-    versionMapping: VersionMapping,
+    registries: Registries,
     data: JsonObject,
-) : Item(resourceLocation, versionMapping, data) {
-    val fluid = versionMapping.fluidRegistry[data["bucked_fluid_type"].asInt]
+) : Item(resourceLocation, registries, data) {
+    val fluid = registries.fluidRegistry[data["bucked_fluid_type"].asInt]
 }

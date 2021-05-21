@@ -33,13 +33,13 @@ class ContainerOpenS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     }
     val containerType: ContainerType = when {
         buffer.versionId < V_14W03B -> {
-            buffer.connection.mapping.containerTypeRegistry[buffer.readUnsignedByte()]
+            buffer.connection.registries.containerTypeRegistry[buffer.readUnsignedByte()]
         }
         buffer.versionId >= V_1_16 -> { // ToDo: This is completely guessed
-            buffer.connection.mapping.containerTypeRegistry[buffer.readVarInt()]
+            buffer.connection.registries.containerTypeRegistry[buffer.readVarInt()]
         }
         else -> {
-            buffer.connection.mapping.containerTypeRegistry[buffer.readResourceLocation()]!!
+            buffer.connection.registries.containerTypeRegistry[buffer.readResourceLocation()]!!
         }
     }
     val title: ChatComponent = buffer.readChatComponent()

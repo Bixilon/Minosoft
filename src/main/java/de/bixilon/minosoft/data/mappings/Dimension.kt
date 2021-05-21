@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.mappings
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.mappings.registry.RegistryItem
 import de.bixilon.minosoft.data.mappings.registry.ResourceLocationDeserializer
-import de.bixilon.minosoft.data.mappings.versions.VersionMapping
+import de.bixilon.minosoft.data.mappings.versions.Registries
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.nullCast
 
@@ -75,7 +75,7 @@ data class Dimension(
             )
         }
 
-        override fun deserialize(mappings: VersionMapping?, resourceLocation: ResourceLocation, data: JsonObject): Dimension {
+        override fun deserialize(mappings: Registries?, resourceLocation: ResourceLocation, data: JsonObject): Dimension {
             return Dimension(
                 resourceLocation = resourceLocation,
                 piglinSafe = data.get("piglin_safe")?.asBoolean == true,

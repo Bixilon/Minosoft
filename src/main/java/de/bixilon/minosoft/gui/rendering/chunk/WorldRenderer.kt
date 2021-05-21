@@ -20,7 +20,7 @@ import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.blocks.BlockState
 import de.bixilon.minosoft.data.mappings.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.mappings.blocks.types.FluidBlock
-import de.bixilon.minosoft.data.mappings.versions.VersionMapping
+import de.bixilon.minosoft.data.mappings.versions.Registries
 import de.bixilon.minosoft.data.world.Chunk
 import de.bixilon.minosoft.data.world.ChunkSection
 import de.bixilon.minosoft.data.world.ChunkSection.Companion.indexPosition
@@ -57,7 +57,7 @@ class WorldRenderer(
     val renderWindow: RenderWindow,
 ) : Renderer {
     private val world: World = connection.world
-    private val waterBlock = connection.mapping.blockRegistry[ResourceLocation("minecraft:water")]?.nullCast<FluidBlock>()
+    private val waterBlock = connection.registries.blockRegistry[ResourceLocation("minecraft:water")]?.nullCast<FluidBlock>()
 
     lateinit var chunkShader: Shader
 
@@ -121,10 +121,10 @@ class WorldRenderer(
     }
 
 
-    private fun getAllBlocks(mapping: VersionMapping): Collection<BlockState> {
+    private fun getAllBlocks(mapping: Registries): Collection<BlockState> {
         val list: MutableList<BlockState> = mutableListOf()
 
-        var currentMapping: VersionMapping? = mapping
+        var currentMapping: Registries? = mapping
         while (currentMapping != null) {
             list.addAll(currentMapping.blockStateIdMap.values)
             currentMapping = currentMapping.parentMapping

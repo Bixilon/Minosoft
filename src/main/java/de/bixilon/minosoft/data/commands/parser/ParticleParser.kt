@@ -26,7 +26,7 @@ object ParticleParser : CommandParser() {
     override fun parse(connection: PlayConnection, properties: ParserProperties?, stringReader: CommandStringReader): ParticleData {
         val resourceLocation = stringReader.readResourceLocation()
 
-        val particle = connection.mapping.particleTypeRegistry[resourceLocation.value] ?: throw ParticleNotFoundCommandParseException(stringReader, resourceLocation.key)
+        val particle = connection.registries.particleTypeRegistry[resourceLocation.value] ?: throw ParticleNotFoundCommandParseException(stringReader, resourceLocation.key)
 
         stringReader.skipWhitespaces()
 

@@ -27,7 +27,7 @@ class ExperienceOrbSpawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     val entityId: Int = buffer.readEntityId()
     val entity: ExperienceOrb = ExperienceOrb(
         connection = buffer.connection,
-        entityType = buffer.connection.mapping.entityTypeRegistry[ExperienceOrb.RESOURCE_LOCATION]!!,
+        entityType = buffer.connection.registries.entityTypeRegistry[ExperienceOrb.RESOURCE_LOCATION]!!,
         position = if (buffer.versionId < ProtocolVersions.V_16W06A) {
             Vec3(buffer.readFixedPointNumberInt(), buffer.readFixedPointNumberInt(), buffer.readFixedPointNumberInt())
         } else {

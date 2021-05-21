@@ -21,7 +21,7 @@ import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.mappings.blocks.types.Block
 import de.bixilon.minosoft.data.mappings.materials.Material
-import de.bixilon.minosoft.data.mappings.versions.VersionMapping
+import de.bixilon.minosoft.data.mappings.versions.Registries
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.TintColorCalculator
 import de.bixilon.minosoft.gui.rendering.chunk.VoxelShape
@@ -116,7 +116,7 @@ data class BlockState(
 
     companion object {
 
-        fun deserialize(owner: Block, versionMapping: VersionMapping, data: JsonObject, models: Map<ResourceLocation, BlockModel>): BlockState {
+        fun deserialize(owner: Block, registries: Registries, data: JsonObject, models: Map<ResourceLocation, BlockModel>): BlockState {
             val properties = data["properties"]?.asJsonObject?.let {
                 getProperties(it)
             } ?: mutableMapOf()
@@ -152,14 +152,14 @@ data class BlockState(
             val tintColor: RGBColor? = data["tint_color"]?.asInt?.let { TintColorCalculator.getJsonColor(it) } ?: owner.tintColor
 
 
-            val material = versionMapping.materialRegistry[ResourceLocation(data["material"].asString)]!!
+            val material = registries.materialRegistry[ResourceLocation(data["material"].asString)]!!
 
 
             fun JsonElement.asShape(): VoxelShape {
                 return if (this.isJsonPrimitive) {
-                    versionMapping.shapes[this.asInt]
+                    registries.shapes[this.asInt]
                 } else {
-                    VoxelShape(versionMapping.shapes, this)
+                    VoxelShape(registries.shapes, this)
                 }
             }
 

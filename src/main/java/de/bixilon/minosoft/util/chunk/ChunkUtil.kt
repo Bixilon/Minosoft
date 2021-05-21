@@ -89,7 +89,7 @@ object ChunkUtil {
 
                 blockId = blockId or blockMeta
 
-                blocks[blockNumber] = buffer.connection.mapping.getBlockState(blockId) ?: continue
+                blocks[blockNumber] = buffer.connection.registries.getBlockState(blockId) ?: continue
             }
             sectionMap[sectionHeight] = ChunkSection(blocks)
         }
@@ -133,7 +133,7 @@ object ChunkUtil {
             val blocks = arrayOfNulls<BlockState>(ProtocolDefinition.BLOCKS_PER_SECTION)
             for (blockNumber in 0 until ProtocolDefinition.BLOCKS_PER_SECTION) {
                 val blockId = blockData[arrayPos++]
-                val block = buffer.connection.mapping.getBlockState(blockId) ?: continue
+                val block = buffer.connection.registries.getBlockState(blockId) ?: continue
                 blocks[blockNumber] = block
             }
             sectionMap[sectionHeight] = ChunkSection(blocks)
@@ -208,7 +208,7 @@ object ChunkUtil {
     private fun readLegacyBiomeArray(buffer: PlayInByteBuffer): XZBiomeArray {
         val biomes: MutableList<Biome> = mutableListOf()
         for (i in 0 until ProtocolDefinition.SECTION_WIDTH_X * ProtocolDefinition.SECTION_WIDTH_Z) {
-            biomes.add(i, buffer.connection.mapping.biomeRegistry[if (buffer.versionId < V_1_13_2) { // ToDo: Was V_15W35A, but this can't be correct
+            biomes.add(i, buffer.connection.registries.biomeRegistry[if (buffer.versionId < V_1_13_2) { // ToDo: Was V_15W35A, but this can't be correct
                 buffer.readUnsignedByte()
             } else {
                 buffer.readInt()

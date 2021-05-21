@@ -22,7 +22,7 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 
 class EntityStatusEffectRemoveS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     val entityId: Int = buffer.readEntityId()
-    val effect: StatusEffect = buffer.connection.mapping.statusEffectRegistry[buffer.readUnsignedByte()]
+    val effect: StatusEffect = buffer.connection.registries.statusEffectRegistry[buffer.readUnsignedByte()]
 
     override fun handle(connection: PlayConnection) {
         connection.world.entities[entityId]?.removeEffect(effect)

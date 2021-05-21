@@ -37,7 +37,7 @@ data class Version(
 ) {
     var isLoaded = false
     var isGettingLoaded = false
-    val mapping: VersionMapping = VersionMapping()
+    val mapping: Registries = Registries()
     lateinit var assetsManager: MinecraftAssetsManager
     lateinit var localeManager: MinecraftLocaleManager
 

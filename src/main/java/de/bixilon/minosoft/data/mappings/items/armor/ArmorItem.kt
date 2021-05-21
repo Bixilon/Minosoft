@@ -17,13 +17,13 @@ import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.inventory.InventorySlots
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.items.Item
-import de.bixilon.minosoft.data.mappings.versions.VersionMapping
+import de.bixilon.minosoft.data.mappings.versions.Registries
 
 open class ArmorItem(
     resourceLocation: ResourceLocation,
-    versionMapping: VersionMapping,
+    registries: Registries,
     data: JsonObject,
-) : Item(resourceLocation, versionMapping, data) {
+) : Item(resourceLocation, registries, data) {
     val protection = data["defense"].asFloat
     val toughness = data["toughness"].asFloat
     val equipmentSlot = data["equipment_slot"].asString.let { InventorySlots.EquipmentSlots.NAME_MAP[it]!! }

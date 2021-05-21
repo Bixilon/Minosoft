@@ -17,7 +17,7 @@ import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.registry.RegistryItem
 import de.bixilon.minosoft.data.mappings.registry.ResourceLocationDeserializer
 import de.bixilon.minosoft.data.mappings.registry.Translatable
-import de.bixilon.minosoft.data.mappings.versions.VersionMapping
+import de.bixilon.minosoft.data.mappings.versions.Registries
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.data.text.RGBColor.Companion.asRGBColor
 import de.bixilon.minosoft.datafixer.EntityAttributeFixer.fix
@@ -35,7 +35,7 @@ data class StatusEffect(
     }
 
     companion object : ResourceLocationDeserializer<StatusEffect> {
-        override fun deserialize(mappings: VersionMapping?, resourceLocation: ResourceLocation, data: JsonObject): StatusEffect {
+        override fun deserialize(mappings: Registries?, resourceLocation: ResourceLocation, data: JsonObject): StatusEffect {
             val attributes: MutableMap<ResourceLocation, StatusEffectAttribute> = mutableMapOf()
 
             data["attributes"]?.asJsonObject?.let {

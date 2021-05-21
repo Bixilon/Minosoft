@@ -17,7 +17,7 @@ import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.registry.RegistryItem
 import de.bixilon.minosoft.data.mappings.registry.ResourceLocationDeserializer
-import de.bixilon.minosoft.data.mappings.versions.VersionMapping
+import de.bixilon.minosoft.data.mappings.versions.Registries
 
 data class VillagerProfession(
     override val resourceLocation: ResourceLocation,
@@ -29,7 +29,7 @@ data class VillagerProfession(
     }
 
     companion object : ResourceLocationDeserializer<VillagerProfession> {
-        override fun deserialize(mappings: VersionMapping?, resourceLocation: ResourceLocation, data: JsonObject): VillagerProfession {
+        override fun deserialize(mappings: Registries?, resourceLocation: ResourceLocation, data: JsonObject): VillagerProfession {
             return VillagerProfession(
                 resourceLocation = resourceLocation,
             )

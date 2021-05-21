@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.mappings
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.mappings.registry.RegistryItem
 import de.bixilon.minosoft.data.mappings.registry.ResourceLocationDeserializer
-import de.bixilon.minosoft.data.mappings.versions.VersionMapping
+import de.bixilon.minosoft.data.mappings.versions.Registries
 
 data class Motive(
     override val resourceLocation: ResourceLocation,
@@ -28,7 +28,7 @@ data class Motive(
     }
 
     companion object : ResourceLocationDeserializer<Motive> {
-        override fun deserialize(mappings: VersionMapping?, resourceLocation: ResourceLocation, data: JsonObject): Motive {
+        override fun deserialize(mappings: Registries?, resourceLocation: ResourceLocation, data: JsonObject): Motive {
             return Motive(
                 resourceLocation = resourceLocation,
                 width = data["width"].asInt,

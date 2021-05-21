@@ -26,9 +26,9 @@ import glm_.vec3.Vec3
 
 class ParticleS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     val type: ParticleType = if (buffer.versionId < ProtocolVersions.V_14W19A) {
-        buffer.connection.mapping.particleTypeRegistry[buffer.readResourceLocation()]!!
+        buffer.connection.registries.particleTypeRegistry[buffer.readResourceLocation()]!!
     } else {
-        buffer.connection.mapping.particleTypeRegistry[buffer.readInt()]
+        buffer.connection.registries.particleTypeRegistry[buffer.readInt()]
     }
     val longDistance = if (buffer.versionId >= ProtocolVersions.V_14W29A) {
         buffer.readBoolean()

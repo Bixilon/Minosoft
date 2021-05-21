@@ -19,8 +19,8 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
 class ItemCooldownSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
-    val item: Int = buffer.readVarInt()
-    val time: Int = buffer.readVarInt()
+    val item = buffer.connection.registries.itemRegistry[buffer.readVarInt()]
+    val time = buffer.readVarInt()
 
     override fun log() {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Item cooldown set (item=$item, time=$time)" }

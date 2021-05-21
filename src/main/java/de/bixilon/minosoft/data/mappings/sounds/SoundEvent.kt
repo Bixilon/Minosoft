@@ -16,14 +16,14 @@ import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.registry.RegistryItem
 import de.bixilon.minosoft.data.mappings.registry.ResourceLocationDeserializer
-import de.bixilon.minosoft.data.mappings.versions.VersionMapping
+import de.bixilon.minosoft.data.mappings.versions.Registries
 
 data class SoundEvent(
     override val resourceLocation: ResourceLocation,
 ) : RegistryItem {
 
     companion object : ResourceLocationDeserializer<SoundEvent> {
-        override fun deserialize(mappings: VersionMapping?, resourceLocation: ResourceLocation, data: JsonObject): SoundEvent {
+        override fun deserialize(mappings: Registries?, resourceLocation: ResourceLocation, data: JsonObject): SoundEvent {
             return SoundEvent(
                 resourceLocation = resourceLocation,
             )

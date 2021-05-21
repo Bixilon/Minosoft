@@ -29,7 +29,7 @@ class Enderman(connection: PlayConnection, entityType: EntityType, position: Vec
     @get:EntityMetaDataFunction(name = "Carried block")
     val carriedBlock: BlockState?
         get() = if (versionId <= ProtocolVersions.V_1_8_9) { // ToDo: No clue here
-            connection.mapping.getBlockState(entityMetaData.sets.getInt(EntityMetaDataFields.LEGACY_ENDERMAN_CARRIED_BLOCK) shl 4 or entityMetaData.sets.getInt(EntityMetaDataFields.LEGACY_ENDERMAN_CARRIED_BLOCK_DATA))
+            connection.registries.getBlockState(entityMetaData.sets.getInt(EntityMetaDataFields.LEGACY_ENDERMAN_CARRIED_BLOCK) shl 4 or entityMetaData.sets.getInt(EntityMetaDataFields.LEGACY_ENDERMAN_CARRIED_BLOCK_DATA))
         } else {
             entityMetaData.sets.getBlock(EntityMetaDataFields.ENDERMAN_CARRIED_BLOCK)
         }

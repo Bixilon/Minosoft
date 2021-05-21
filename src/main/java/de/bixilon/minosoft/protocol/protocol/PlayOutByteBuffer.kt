@@ -47,7 +47,7 @@ class PlayOutByteBuffer(override val connection: PlayConnection) : OutByteBuffer
                 writeShort(-1)
                 return
             }
-            writeShort(connection.mapping.itemRegistry.getId(itemStack.item))
+            writeShort(connection.registries.itemRegistry.getId(itemStack.item))
             writeByte(itemStack.count)
             writeShort(itemStack.durability)
             writeNBT(itemStack.nbtOut)
@@ -57,7 +57,7 @@ class PlayOutByteBuffer(override val connection: PlayConnection) : OutByteBuffer
         if (itemStack == null) {
             return
         }
-        writeVarInt(connection.mapping.itemRegistry.getId(itemStack.item))
+        writeVarInt(connection.registries.itemRegistry.getId(itemStack.item))
         writeByte(itemStack.count)
         writeNBT(itemStack.nbtOut)
     }

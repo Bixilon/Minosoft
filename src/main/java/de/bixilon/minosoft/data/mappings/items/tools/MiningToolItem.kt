@@ -16,17 +16,17 @@ package de.bixilon.minosoft.data.mappings.items.tools
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.blocks.types.Block
-import de.bixilon.minosoft.data.mappings.versions.VersionMapping
+import de.bixilon.minosoft.data.mappings.versions.Registries
 
 open class MiningToolItem(
     resourceLocation: ResourceLocation,
-    versionMapping: VersionMapping,
+    registries: Registries,
     data: JsonObject,
-) : ToolItem(resourceLocation, versionMapping, data) {
+) : ToolItem(resourceLocation, registries, data) {
     val diggableBlocks: List<Block>? = data["diggable_blocks"]?.asJsonArray?.let {
         val diggableBlocks: MutableList<Block> = mutableListOf()
         for (id in it) {
-            diggableBlocks += versionMapping.blockRegistry[id.asInt]
+            diggableBlocks += registries.blockRegistry[id.asInt]
         }
         diggableBlocks.toList()
     }

@@ -21,7 +21,7 @@ import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.blocks.types.Block
 import de.bixilon.minosoft.data.mappings.registry.RegistryItem
 import de.bixilon.minosoft.data.mappings.registry.ResourceLocationDeserializer
-import de.bixilon.minosoft.data.mappings.versions.VersionMapping
+import de.bixilon.minosoft.data.mappings.versions.Registries
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 
 data class BlockEntityType(
@@ -32,11 +32,11 @@ data class BlockEntityType(
     lateinit var blocks: Set<Block>
         private set
 
-    override fun postInit(versionMapping: VersionMapping) {
+    override fun postInit(registries: Registries) {
         val blocks: MutableSet<Block> = mutableSetOf()
 
         for (blockId in blockIds!!) {
-            blocks += versionMapping.blockRegistry[blockId]
+            blocks += registries.blockRegistry[blockId]
         }
         this.blockIds = null
 
@@ -48,7 +48,7 @@ data class BlockEntityType(
     }
 
     companion object : ResourceLocationDeserializer<BlockEntityType> {
-        override fun deserialize(mappings: VersionMapping?, resourceLocation: ResourceLocation, data: JsonObject): BlockEntityType? {
+        override fun deserialize(mappings: Registries?, resourceLocation: ResourceLocation, data: JsonObject): BlockEntityType? {
             val factory = DefaultBlockEntityMetaDataFactory.getEntityFactory(resourceLocation) ?: return null // ToDo
 
             val blockIds: MutableSet<Int> = mutableSetOf()

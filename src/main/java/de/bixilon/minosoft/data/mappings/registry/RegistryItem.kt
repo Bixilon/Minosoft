@@ -14,9 +14,9 @@
 package de.bixilon.minosoft.data.mappings.registry
 
 import de.bixilon.minosoft.data.mappings.ResourceLocationAble
-import de.bixilon.minosoft.data.mappings.versions.VersionMapping
+import de.bixilon.minosoft.data.mappings.versions.Registries
 
 interface RegistryItem : ResourceLocationAble {
 
-    fun postInit(versionMapping: VersionMapping) {}
+    fun postInit(registries: Registries) {}
 }

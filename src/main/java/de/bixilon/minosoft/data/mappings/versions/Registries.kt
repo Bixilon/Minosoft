@@ -53,7 +53,7 @@ import de.bixilon.minosoft.util.json.ResourceLocationJsonMap.toResourceLocationM
 import java.lang.reflect.Field
 
 
-class VersionMapping {
+class Registries {
     var shapes: MutableList<VoxelShape> = mutableListOf()
     val motiveRegistry: Registry<Motive> = Registry()
     val blockRegistry: Registry<Block> = Registry()
@@ -112,7 +112,7 @@ class VersionMapping {
     private var isFlattened = false
 
 
-    var parentMapping: VersionMapping? = null
+    var parentMapping: Registries? = null
         set(value) {
             field = value
 
@@ -270,7 +270,7 @@ class VersionMapping {
         init {
             val fields: MutableList<Field> = mutableListOf()
 
-            for (field in VersionMapping::class.java.declaredFields) {
+            for (field in Registries::class.java.declaredFields) {
                 if (!Parentable::class.java.isAssignableFrom(field.type)) {
                     continue
                 }

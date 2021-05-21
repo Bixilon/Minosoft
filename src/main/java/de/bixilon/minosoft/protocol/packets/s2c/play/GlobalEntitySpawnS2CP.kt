@@ -35,7 +35,7 @@ class GlobalEntitySpawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
             buffer.readPosition()
         }
 
-        entity = LightningBolt(buffer.connection, buffer.connection.mapping.entityTypeRegistry[LightningBolt.RESOURCE_LOCATION]!!, position)
+        entity = LightningBolt(buffer.connection, buffer.connection.registries.entityTypeRegistry[LightningBolt.RESOURCE_LOCATION]!!, position)
     }
 
     override fun handle(connection: PlayConnection) {

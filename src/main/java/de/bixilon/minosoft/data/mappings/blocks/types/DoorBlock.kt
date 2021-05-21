@@ -20,13 +20,13 @@ import de.bixilon.minosoft.data.mappings.blocks.BlockState
 import de.bixilon.minosoft.data.mappings.blocks.BlockUsages
 import de.bixilon.minosoft.data.mappings.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.mappings.materials.DefaultMaterials
-import de.bixilon.minosoft.data.mappings.versions.VersionMapping
+import de.bixilon.minosoft.data.mappings.versions.Registries
 import de.bixilon.minosoft.data.player.Hands
 import de.bixilon.minosoft.gui.rendering.input.camera.RaycastHit
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import glm_.vec3.Vec3i
 
-open class DoorBlock(resourceLocation: ResourceLocation, mappings: VersionMapping, data: JsonObject) : DoubleSizeBlock(resourceLocation, mappings, data) {
+open class DoorBlock(resourceLocation: ResourceLocation, mappings: Registries, data: JsonObject) : DoubleSizeBlock(resourceLocation, mappings, data) {
 
     override fun getPlacementState(connection: PlayConnection, raycastHit: RaycastHit): BlockState? {
         TODO()

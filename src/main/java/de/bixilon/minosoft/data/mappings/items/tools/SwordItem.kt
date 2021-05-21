@@ -15,13 +15,13 @@ package de.bixilon.minosoft.data.mappings.items.tools
 
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.mappings.ResourceLocation
-import de.bixilon.minosoft.data.mappings.versions.VersionMapping
+import de.bixilon.minosoft.data.mappings.versions.Registries
 
 
 open class SwordItem(
     resourceLocation: ResourceLocation,
-    versionMapping: VersionMapping,
+    registries: Registries,
     data: JsonObject,
-) : ToolItem(resourceLocation, versionMapping, data) {
+) : ToolItem(resourceLocation, registries, data) {
     override val attackDamage = data["attack_damage"]?.asFloat ?: -1.0f
 }

@@ -16,14 +16,14 @@ package de.bixilon.minosoft.data.mappings.items.tools
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.items.Item
-import de.bixilon.minosoft.data.mappings.versions.VersionMapping
+import de.bixilon.minosoft.data.mappings.versions.Registries
 
 
 open class ToolItem(
     resourceLocation: ResourceLocation,
-    versionMapping: VersionMapping,
+    registries: Registries,
     data: JsonObject,
-) : Item(resourceLocation, versionMapping, data) {
+) : Item(resourceLocation, registries, data) {
     val durability = data["uses"]?.asInt ?: 1
     val speed = data["speed"]?.asFloat ?: 1.0f
     open val attackDamage = data["attack_damage_bonus"]?.asFloat ?: 1.0f

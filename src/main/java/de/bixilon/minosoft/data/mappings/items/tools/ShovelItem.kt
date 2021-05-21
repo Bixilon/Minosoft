@@ -16,17 +16,17 @@ package de.bixilon.minosoft.data.mappings.items.tools
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.blocks.BlockState
-import de.bixilon.minosoft.data.mappings.versions.VersionMapping
+import de.bixilon.minosoft.data.mappings.versions.Registries
 
 open class ShovelItem(
     resourceLocation: ResourceLocation,
-    versionMapping: VersionMapping,
+    registries: Registries,
     data: JsonObject,
-) : MiningToolItem(resourceLocation, versionMapping, data) {
+) : MiningToolItem(resourceLocation, registries, data) {
     val flattenableBlockStates: List<BlockState>? = data["flattenables_block_states"]?.asJsonArray?.let {
         val flattenableBlockStates: MutableList<BlockState> = mutableListOf()
         for (id in it) {
-            flattenableBlockStates += versionMapping.getBlockState(id.asInt)!!
+            flattenableBlockStates += registries.getBlockState(id.asInt)!!
         }
         flattenableBlockStates.toList()
     }

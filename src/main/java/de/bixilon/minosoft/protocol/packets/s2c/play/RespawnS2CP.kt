@@ -47,14 +47,14 @@ class RespawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     init {
         when {
             buffer.versionId < ProtocolVersions.V_20W21A -> {
-                dimension = buffer.connection.mapping.dimensionRegistry[if (buffer.versionId < ProtocolVersions.V_1_8_9) { // ToDo: this should be 108 but wiki.vg is wrong. In 1.8 it is an int.
+                dimension = buffer.connection.registries.dimensionRegistry[if (buffer.versionId < ProtocolVersions.V_1_8_9) { // ToDo: this should be 108 but wiki.vg is wrong. In 1.8 it is an int.
                     buffer.readByte().toInt()
                 } else {
                     buffer.readInt()
                 }]
             }
             buffer.versionId < ProtocolVersions.V_1_16_2_PRE3 -> {
-                dimension = buffer.connection.mapping.dimensionRegistry[buffer.readResourceLocation()]!!
+                dimension = buffer.connection.registries.dimensionRegistry[buffer.readResourceLocation()]!!
             }
             else -> {
                 buffer.readNBT()?.compoundCast() // current dimension data
@@ -64,7 +64,7 @@ class RespawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
             difficulty = Difficulties.byId(buffer.readUnsignedByte())
         }
         if (buffer.versionId >= ProtocolVersions.V_20W22A) {
-            dimension = buffer.connection.mapping.dimensionRegistry[buffer.readResourceLocation()]!!
+            dimension = buffer.connection.registries.dimensionRegistry[buffer.readResourceLocation()]!!
         }
         if (buffer.versionId >= ProtocolVersions.V_19W36A) {
             hashedSeed = buffer.readLong()

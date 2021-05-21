@@ -23,7 +23,7 @@ import glm_.vec3.Vec3i
 
 class BlockBreakAckS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     val blockPosition: Vec3i = buffer.readBlockPosition()
-    val blockState: BlockState? = buffer.connection.mapping.getBlockState(buffer.readVarInt())
+    val blockState: BlockState? = buffer.connection.registries.getBlockState(buffer.readVarInt())
     val breakType: BreakType = BreakType[buffer.readVarInt()]
     val successful: Boolean = buffer.readBoolean()
 

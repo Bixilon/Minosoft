@@ -16,7 +16,7 @@ package de.bixilon.minosoft.data.mappings
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.mappings.registry.RegistryItem
 import de.bixilon.minosoft.data.mappings.registry.ResourceLocationDeserializer
-import de.bixilon.minosoft.data.mappings.versions.VersionMapping
+import de.bixilon.minosoft.data.mappings.versions.Registries
 
 data class PluginChannel(
     override val resourceLocation: ResourceLocation,
@@ -28,7 +28,7 @@ data class PluginChannel(
     }
 
     companion object : ResourceLocationDeserializer<PluginChannel> {
-        override fun deserialize(mappings: VersionMapping?, resourceLocation: ResourceLocation, data: JsonObject): PluginChannel {
+        override fun deserialize(mappings: Registries?, resourceLocation: ResourceLocation, data: JsonObject): PluginChannel {
             return PluginChannel(
                 resourceLocation = resourceLocation,
                 name = LegacyResourceLocation(data["name"].asString)

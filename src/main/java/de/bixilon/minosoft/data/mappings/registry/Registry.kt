@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.mappings.registry
 
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.mappings.ResourceLocation
-import de.bixilon.minosoft.data.mappings.versions.VersionMapping
+import de.bixilon.minosoft.data.mappings.versions.Registries
 import de.bixilon.minosoft.util.collections.Clearable
 import de.bixilon.minosoft.util.json.ResourceLocationJsonMap.toResourceLocationMap
 
@@ -49,7 +49,7 @@ open class Registry<T : RegistryItem>(
         this.parentRegistry = parent
     }
 
-    open fun initialize(data: Map<ResourceLocation, JsonObject>?, mappings: VersionMapping?, deserializer: ResourceLocationDeserializer<T>, flattened: Boolean = true, metaType: MetaTypes = MetaTypes.NONE, alternative: Registry<T>? = null): Registry<T> {
+    open fun initialize(data: Map<ResourceLocation, JsonObject>?, mappings: Registries?, deserializer: ResourceLocationDeserializer<T>, flattened: Boolean = true, metaType: MetaTypes = MetaTypes.NONE, alternative: Registry<T>? = null): Registry<T> {
         check(!initialized) { "Already initialized" }
 
         if (data == null) {
@@ -90,14 +90,14 @@ open class Registry<T : RegistryItem>(
         return this
     }
 
-    open fun initialize(data: JsonObject?, mappings: VersionMapping?, deserializer: ResourceLocationDeserializer<T>, flattened: Boolean = true, metaType: MetaTypes = MetaTypes.NONE, alternative: Registry<T>? = null): Registry<T> {
+    open fun initialize(data: JsonObject?, mappings: Registries?, deserializer: ResourceLocationDeserializer<T>, flattened: Boolean = true, metaType: MetaTypes = MetaTypes.NONE, alternative: Registry<T>? = null): Registry<T> {
         return initialize(data?.toResourceLocationMap(), mappings, deserializer, flattened, metaType, alternative)
     }
 
 
-    open fun postInit(versionMapping: VersionMapping) {
+    open fun postInit(registries: Registries) {
         for ((_, value) in resourceLocationMap) {
-            value.postInit(versionMapping)
+            value.postInit(registries)
         }
     }
 

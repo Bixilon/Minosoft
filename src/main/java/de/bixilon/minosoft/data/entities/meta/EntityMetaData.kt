@@ -65,10 +65,10 @@ class EntityMetaData(
             EntityMetaDataDataTypes.NBT -> buffer.readNBT()
             EntityMetaDataDataTypes.PARTICLE -> buffer.readParticle()
             EntityMetaDataDataTypes.POSE -> buffer.readPose()
-            EntityMetaDataDataTypes.BLOCK_ID -> buffer.connection.mapping.getBlockState(buffer.readVarInt()) // ToDo
+            EntityMetaDataDataTypes.BLOCK_ID -> buffer.connection.registries.getBlockState(buffer.readVarInt()) // ToDo
             EntityMetaDataDataTypes.OPT_VAR_INT -> buffer.readVarInt() - 1
-            EntityMetaDataDataTypes.VILLAGER_DATA -> VillagerData(VillagerTypes[buffer.readVarInt()], connection.mapping.villagerProfessionRegistry[buffer.readVarInt()].resourceLocation, VillagerLevels[buffer.readVarInt()])
-            EntityMetaDataDataTypes.OPT_BLOCK_ID -> buffer.connection.mapping.getBlockState(buffer.readVarInt())
+            EntityMetaDataDataTypes.VILLAGER_DATA -> VillagerData(VillagerTypes[buffer.readVarInt()], connection.registries.villagerProfessionRegistry[buffer.readVarInt()].resourceLocation, VillagerLevels[buffer.readVarInt()])
+            EntityMetaDataDataTypes.OPT_BLOCK_ID -> buffer.connection.registries.getBlockState(buffer.readVarInt())
         }
     }
 
@@ -107,7 +107,7 @@ class EntityMetaData(
     inner class MetaDataHashMap : HashMap<Int, Any>() {
 
         operator fun <K> get(field: EntityMetaDataFields): K {
-            val index: Int = this@EntityMetaData.connection.mapping.getEntityMetaDataIndex(field) ?: return field.defaultValue as K // Can not find field.
+            val index: Int = this@EntityMetaData.connection.registries.getEntityMetaDataIndex(field) ?: return field.defaultValue as K // Can not find field.
             get(index)?.let {
                 try {
                     return it as K

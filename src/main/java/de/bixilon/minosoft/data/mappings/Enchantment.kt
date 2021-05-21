@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.mappings
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.mappings.registry.RegistryItem
 import de.bixilon.minosoft.data.mappings.registry.ResourceLocationDeserializer
-import de.bixilon.minosoft.data.mappings.versions.VersionMapping
+import de.bixilon.minosoft.data.mappings.versions.Registries
 
 data class Enchantment(
     override val resourceLocation: ResourceLocation,
@@ -27,7 +27,7 @@ data class Enchantment(
     }
 
     companion object : ResourceLocationDeserializer<Enchantment> {
-        override fun deserialize(mappings: VersionMapping?, resourceLocation: ResourceLocation, data: JsonObject): Enchantment {
+        override fun deserialize(mappings: Registries?, resourceLocation: ResourceLocation, data: JsonObject): Enchantment {
             return Enchantment(resourceLocation)
         }
     }

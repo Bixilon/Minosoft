@@ -29,11 +29,11 @@ class TagsS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     init {
         val tags: MutableMap<ResourceLocation, Map<ResourceLocation, Tag<Any>>> = mutableMapOf()
         if (buffer.versionId < ProtocolVersions.V_20W51A) {
-            tags[BLOCK_TAG_RESOURCE_LOCATION] = buffer.readTagArray { buffer.connection.mapping.getBlockState(it)!! }
-            tags[ITEM_TAG_RESOURCE_LOCATION] = buffer.readTagArray { buffer.connection.mapping.itemRegistry[it] }
-            tags[FLUID_TAG_RESOURCE_LOCATION] = buffer.readTagArray { buffer.connection.mapping.fluidRegistry[it] } // ToDo: when was this added? Was not available in 18w01
+            tags[BLOCK_TAG_RESOURCE_LOCATION] = buffer.readTagArray { buffer.connection.registries.getBlockState(it)!! }
+            tags[ITEM_TAG_RESOURCE_LOCATION] = buffer.readTagArray { buffer.connection.registries.itemRegistry[it] }
+            tags[FLUID_TAG_RESOURCE_LOCATION] = buffer.readTagArray { buffer.connection.registries.fluidRegistry[it] } // ToDo: when was this added? Was not available in 18w01
             if (buffer.versionId >= ProtocolVersions.V_18W43A) {
-                tags[ENTITY_TYPE_TAG_RESOURCE_LOCATION] = buffer.readTagArray { buffer.connection.mapping.entityTypeRegistry[it] }
+                tags[ENTITY_TYPE_TAG_RESOURCE_LOCATION] = buffer.readTagArray { buffer.connection.registries.entityTypeRegistry[it] }
             }
             if (buffer.versionId >= ProtocolVersions.V_20W49A) {
                 tags[GAME_EVENT_TAG_RESOURCE_LOCATION] = buffer.readTagArray { it }
@@ -41,10 +41,10 @@ class TagsS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         } else {
             for (i in 0 until buffer.readVarInt()) {
                 when (buffer.readResourceLocation()) {
-                    BLOCK_TAG_RESOURCE_LOCATION -> buffer.readTagArray { buffer.connection.mapping.blockRegistry[it] }
-                    ITEM_TAG_RESOURCE_LOCATION -> buffer.readTagArray { buffer.connection.mapping.itemRegistry[it] }
-                    FLUID_TAG_RESOURCE_LOCATION -> buffer.readTagArray { buffer.connection.mapping.fluidRegistry[it] }
-                    ENTITY_TYPE_TAG_RESOURCE_LOCATION -> buffer.readTagArray { buffer.connection.mapping.entityTypeRegistry[it] }
+                    BLOCK_TAG_RESOURCE_LOCATION -> buffer.readTagArray { buffer.connection.registries.blockRegistry[it] }
+                    ITEM_TAG_RESOURCE_LOCATION -> buffer.readTagArray { buffer.connection.registries.itemRegistry[it] }
+                    FLUID_TAG_RESOURCE_LOCATION -> buffer.readTagArray { buffer.connection.registries.fluidRegistry[it] }
+                    ENTITY_TYPE_TAG_RESOURCE_LOCATION -> buffer.readTagArray { buffer.connection.registries.entityTypeRegistry[it] }
                     GAME_EVENT_TAG_RESOURCE_LOCATION -> buffer.readTagArray { it }
                 }
             }

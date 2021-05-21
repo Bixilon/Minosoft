@@ -16,7 +16,7 @@ import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.registry.RegistryItem
 import de.bixilon.minosoft.data.mappings.registry.ResourceLocationDeserializer
-import de.bixilon.minosoft.data.mappings.versions.VersionMapping
+import de.bixilon.minosoft.data.mappings.versions.Registries
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.TintColorCalculator
 import java.util.*
@@ -38,7 +38,7 @@ data class Material(
     }
 
     companion object : ResourceLocationDeserializer<Material> {
-        override fun deserialize(mappings: VersionMapping?, resourceLocation: ResourceLocation, data: JsonObject): Material {
+        override fun deserialize(mappings: Registries?, resourceLocation: ResourceLocation, data: JsonObject): Material {
             return Material(
                 resourceLocation = resourceLocation,
                 color = TintColorCalculator.getJsonColor(data["color"]?.asInt ?: 0),

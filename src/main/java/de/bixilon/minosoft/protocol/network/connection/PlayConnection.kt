@@ -22,8 +22,8 @@ import de.bixilon.minosoft.data.commands.CommandRootNode
 import de.bixilon.minosoft.data.mappings.MappingsLoadingException
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.recipes.Recipes
+import de.bixilon.minosoft.data.mappings.versions.Registries
 import de.bixilon.minosoft.data.mappings.versions.Version
-import de.bixilon.minosoft.data.mappings.versions.VersionMapping
 import de.bixilon.minosoft.data.player.Player
 import de.bixilon.minosoft.data.player.tab.TabList
 import de.bixilon.minosoft.data.scoreboard.ScoreboardManager
@@ -59,7 +59,7 @@ class PlayConnection(
     val world = World(this)
     val tabList = TabList()
     val scoreboardManager = ScoreboardManager()
-    val mapping = VersionMapping()
+    val registries = Registries()
     val sender = PacketSender(this)
     lateinit var assetsManager: MultiAssetsManager
         private set
@@ -152,7 +152,7 @@ class PlayConnection(
         try {
             version.load(latch) // ToDo: show gui loader
             assetsManager = MultiAssetsManager(version.assetsManager, Minosoft.MINOSOFT_ASSETS_MANAGER, Minosoft.MINECRAFT_FALLBACK_ASSETS_MANAGER)
-            mapping.parentMapping = version.mapping
+            registries.parentMapping = version.mapping
             player = Player(account, this)
 
             if (!RenderConstants.DISABLE_RENDERING) {

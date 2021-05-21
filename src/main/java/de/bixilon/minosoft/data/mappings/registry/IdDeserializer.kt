@@ -14,8 +14,8 @@
 package de.bixilon.minosoft.data.mappings.registry
 
 import com.google.gson.JsonObject
-import de.bixilon.minosoft.data.mappings.versions.VersionMapping
+import de.bixilon.minosoft.data.mappings.versions.Registries
 
 interface IdDeserializer<T> {
-    fun deserialize(mappings: VersionMapping, data: JsonObject): T
+    fun deserialize(mappings: Registries, data: JsonObject): T
 }

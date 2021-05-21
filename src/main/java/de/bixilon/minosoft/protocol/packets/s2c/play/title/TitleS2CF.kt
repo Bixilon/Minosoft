@@ -21,7 +21,7 @@ import de.bixilon.minosoft.util.enum.ValuesEnum
 object TitleS2CF {
 
     fun createPacket(buffer: PlayInByteBuffer): PlayS2CPacket {
-        return when (buffer.connection.mapping.titleActionsRegistry[buffer.readVarInt()]!!) {
+        return when (buffer.connection.registries.titleActionsRegistry[buffer.readVarInt()]!!) {
             TitleActions.SET_TITLE -> TitleSetS2CP(buffer)
             TitleActions.SET_SUBTITLE -> SubTitleSetS2CP(buffer)
             TitleActions.SET_ACTION_BAR -> HotbarTextSetS2CP(buffer)
