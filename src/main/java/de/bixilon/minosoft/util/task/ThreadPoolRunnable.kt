@@ -22,6 +22,9 @@ class ThreadPoolRunnable(
     var thread: Thread? = null
 
     fun interrupt() {
-        thread?.interrupt()
+        thread?.let {
+            it.interrupt()
+            // Log.log(LogMessageType.OTHER, LogLevels.VERBOSE){"Interrupting runnable in thread $thread"}
+        }
     }
 }

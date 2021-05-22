@@ -194,6 +194,9 @@ class PlayConnection(
     }
 
     override fun handlePacket(packet: S2CPacket) {
+        if (!isConnected) {
+            return
+        }
         try {
             packet.log()
             val event = PacketReceiveEvent(this, packet)
