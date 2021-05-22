@@ -64,9 +64,9 @@ class RenderWindow(
     val inputHandler = RenderWindowInputHandler(this)
 
     var windowId = 0L
-    private var deltaFrameTime = 0L
+    private var deltaFrameTime = 0.0
 
-    private var lastFrame = 0L
+    private var lastFrame = 0.0
     private val latch = CountUpAndDownLatch(1)
 
     private var renderingState = RenderingStates.RUNNING
@@ -312,7 +312,7 @@ class RenderWindow(
                 this.lastTickTimer = currentTickTime
             }
 
-            val currentFrame = System.currentTimeMillis()
+            val currentFrame = glfwGetTime()
             deltaFrameTime = currentFrame - lastFrame
             lastFrame = currentFrame
 

@@ -33,7 +33,7 @@ class LeftClickHandler(
 
     private var breakPosition: Vec3i? = null
     private var breakBlockState: BlockState? = null
-    private var breakProgress: Float = -1.0f
+    private var breakProgress = -1.0
 
     private var breakSelectedSlot: Int = -1
     private var breakItemInHand: ItemStack? = null
@@ -45,7 +45,7 @@ class LeftClickHandler(
     private fun clearDigging() {
         breakPosition = null
         breakBlockState = null
-        breakProgress = -1.0f
+        breakProgress = -1.0
 
         breakSelectedSlot = -1
         breakItemInHand = null
@@ -58,7 +58,16 @@ class LeftClickHandler(
         }
     }
 
-    private fun checkBreaking(isKeyDown: Boolean, deltaTime: Long): Boolean {
+    private fun swingArm() {
+        val currentTime = System.currentTimeMillis()
+        if (currentTime - lastSwing <= ProtocolDefinition.TICK_TIME) {
+            return
+        }
+        lastSwing = currentTime
+        connection.sendPacket(ArmSwingC2SP(Hands.MAIN_HAND))
+    }
+
+    private fun checkBreaking(isKeyDown: Boolean, deltaTime: Double): Boolean {
         val currentTime = System.currentTimeMillis()
 
         if (!isKeyDown) {
@@ -97,7 +106,7 @@ class LeftClickHandler(
 
             breakPosition = raycastHit.blockPosition
             breakBlockState = raycastHit.blockState
-            breakProgress = 0.0f
+            breakProgress = 0.0
 
             breakSelectedSlot = connection.player.selectedHotbarSlot
             breakItemInHand = connection.player.inventory.getHotbarSlot()
@@ -109,29 +118,62 @@ class LeftClickHandler(
             connection.world.setBlockState(raycastHit.blockPosition, null)
         }
 
-        if (currentTime - breakSent <= ProtocolDefinition.TICK_TIME) {
-            return true
-        }
-        breakSent = currentTime
+        val canStartBreaking = currentTime - breakSent >= ProtocolDefinition.TICK_TIME
+
 
         val canInstantBreak = connection.player.baseAbilities.canInstantBreak || connection.player.entity.gamemode == Gamemodes.CREATIVE
 
         if (canInstantBreak) {
+            if (!canStartBreaking) {
+                return true
+            }
             // creative
             if (currentTime - creativeLastHoldBreakTime <= ProtocolDefinition.TICK_TIME * 5) {
                 return true
             }
-            connection.sendPacket(ArmSwingC2SP(Hands.MAIN_HAND))
+            swingArm()
             startDigging()
             finishDigging()
             creativeLastHoldBreakTime = currentTime
+            breakSent = currentTime
             return true
         }
 
-        startDigging()
-        connection.sendPacket(ArmSwingC2SP(Hands.MAIN_HAND))
+        if (breakPosition == null && !canStartBreaking) {
+            return true
+        }
 
-        breakProgress += 0.05f
+        breakSent = currentTime
+
+        startDigging()
+
+        swingArm()
+
+
+        var speedMultiplier = 1.0f
+
+        var damage = speedMultiplier / raycastHit.blockState.hardness
+
+        damage /= if (raycastHit.blockState.requiresTool) {
+            100
+        } else {
+            30
+        }
+
+        when {
+            damage > 1.0f -> {
+                breakProgress = 1.0
+            }
+            damage <= 0.0f -> {
+                breakProgress = 0.0
+            }
+            else -> {
+                val ticks = 1.0f / damage
+                val seconds = (ticks / ProtocolDefinition.TICKS_PER_SECOND)
+                val progress = ((1.0f / seconds) * deltaTime)
+                breakProgress += progress
+            }
+        }
 
         if (breakProgress >= 1.0f) {
             finishDigging()
@@ -143,8 +185,7 @@ class LeftClickHandler(
         renderWindow.inputHandler.registerCheckCallback(KeyBindingsNames.DESTROY_BLOCK)
     }
 
-    fun draw(deltaTime: Long) {
-        val currentTime = System.currentTimeMillis()
+    fun draw(deltaTime: Double) {
         val isKeyDown = renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.DESTROY_BLOCK)
         // ToDo: Entity attacking
         val consumed = checkBreaking(isKeyDown, deltaTime)
@@ -155,10 +196,6 @@ class LeftClickHandler(
         if (consumed) {
             return
         }
-        if (currentTime - lastSwing <= ProtocolDefinition.TICK_TIME) {
-            return
-        }
-        connection.sendPacket(ArmSwingC2SP(Hands.MAIN_HAND))
-        lastSwing = currentTime
+        swingArm()
     }
 }

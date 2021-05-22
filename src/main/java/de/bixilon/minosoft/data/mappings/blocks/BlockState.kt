@@ -45,6 +45,8 @@ data class BlockState(
     val collisionShape: VoxelShape,
     val occlusionShape: VoxelShape,
     val outlineShape: VoxelShape,
+    val hardness: Float,
+    val requiresTool: Boolean,
 ) {
 
     override fun hashCode(): Int {
@@ -116,7 +118,7 @@ data class BlockState(
 
     companion object {
 
-        fun deserialize(owner: Block, registries: Registries, data: JsonObject, models: Map<ResourceLocation, BlockModel>): BlockState {
+        fun deserialize(block: Block, registries: Registries, data: JsonObject, models: Map<ResourceLocation, BlockModel>): BlockState {
             val properties = data["properties"]?.asJsonObject?.let {
                 getProperties(it)
             } ?: mutableMapOf()
@@ -149,7 +151,7 @@ data class BlockState(
                 }
             }
 
-            val tintColor: RGBColor? = data["tint_color"]?.asInt?.let { TintColorCalculator.getJsonColor(it) } ?: owner.tintColor
+            val tintColor: RGBColor? = data["tint_color"]?.asInt?.let { TintColorCalculator.getJsonColor(it) } ?: block.tintColor
 
 
             val material = registries.materialRegistry[ResourceLocation(data["material"].asString)]!!
@@ -173,13 +175,13 @@ data class BlockState(
             val occlusionShape = data["occlusion_shapes"]?.asShape() ?: VoxelShape.EMPTY
             val outlineShape = data["outline_shape"]?.asShape() ?: VoxelShape.EMPTY
 
-            owner.renderOverride?.let {
+            block.renderOverride?.let {
                 renderers.clear()
                 renderers.addAll(it)
             }
 
             return BlockState(
-                block = owner,
+                block = block,
                 properties = properties.toMap(),
                 renderers = renderers,
                 tintColor = tintColor,
@@ -187,6 +189,8 @@ data class BlockState(
                 collisionShape = collisionShape,
                 occlusionShape = occlusionShape,
                 outlineShape = outlineShape,
+                hardness = data["hardness"].asFloat,
+                requiresTool = data["requires_tool"]?.asBoolean ?: material.soft,
             )
         }
 

@@ -117,7 +117,7 @@ class RightClickHandler(
 
     }
 
-    fun draw(deltaTime: Long) {
+    fun draw(deltaTime: Double) {
         // ToDo: Entity interaction, shield/sword blocking, etc
         checkInteraction(renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.BLOCK_INTERACT))
     }

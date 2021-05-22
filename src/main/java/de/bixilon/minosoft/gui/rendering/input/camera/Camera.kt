@@ -211,7 +211,7 @@ class Camera(
         sendPositionToServer()
     }
 
-    fun draw(deltaTime: Long) {
+    fun draw(deltaTime: Double) {
         if (!currentPositionSent || !currentRotationSent) {
             recalculateViewProjectionMatrix()
             sendPositionToServer()
@@ -224,7 +224,7 @@ class Camera(
             flyingSpeed
         } else {
             walkingSpeed
-        } * (deltaTime / 1000.0)
+        } * deltaTime
         val movementFront = Vec3(cameraFront)
         if (!Minosoft.getConfig().config.game.camera.noCipMovement) {
             movementFront.y = 0.0f
