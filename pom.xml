@@ -196,7 +196,7 @@
         <exec.mainClass>de.bixilon.minosoft.Minosoft</exec.mainClass>
         <maven.compiler.source>16</maven.compiler.source>
         <maven.compiler.target>16</maven.compiler.target>
-        <javafx.version>17-ea+9</javafx.version>
+        <javafx.version>17-ea+11</javafx.version>
         <kotlin.version>1.5.0</kotlin.version>
         <lwjgl.version>3.2.3</lwjgl.version>
     </properties>
@@ -338,7 +338,7 @@
         <dependency>
             <groupId>com.github.oshi</groupId>
             <artifactId>oshi-core</artifactId>
-            <version>5.7.2</version>
+            <version>5.7.3</version>
         </dependency>
         <dependency>
             <groupId>com.squareup.moshi</groupId>
