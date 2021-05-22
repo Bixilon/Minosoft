@@ -39,6 +39,7 @@ class LeftClickHandler(
     private var breakItemInHand: ItemStack? = null
 
     private var breakSent = 0L
+    private var lastSwing = 0L
     private var creativeLastHoldBreakTime = 0L
 
     private fun clearDigging() {
@@ -57,29 +58,29 @@ class LeftClickHandler(
         }
     }
 
-    private fun checkBreaking(isKeyDown: Boolean, deltaTime: Long) {
+    private fun checkBreaking(isKeyDown: Boolean, deltaTime: Long): Boolean {
         val currentTime = System.currentTimeMillis()
 
         if (!isKeyDown) {
             creativeLastHoldBreakTime = 0L
             cancelDigging()
-            return
+            return false
         }
 
         if (!connection.player.entity.gamemode.canBreak) {
             cancelDigging()
-            return
+            return false
         }
         val raycastHit = renderWindow.inputHandler.camera.getTargetBlock()
 
         if (raycastHit == null) {
             cancelDigging()
-            return
+            return false
         }
 
         if (raycastHit.distance >= RenderConstants.MAX_BLOCK_OUTLINE_RAYCAST_DISTANCE) {
             cancelDigging()
-            return
+            return false
         }
 
         // check if we look at another block or our inventory changed
@@ -109,7 +110,7 @@ class LeftClickHandler(
         }
 
         if (currentTime - breakSent <= ProtocolDefinition.TICK_TIME) {
-            return
+            return true
         }
         breakSent = currentTime
 
@@ -118,13 +119,13 @@ class LeftClickHandler(
         if (canInstantBreak) {
             // creative
             if (currentTime - creativeLastHoldBreakTime <= ProtocolDefinition.TICK_TIME * 5) {
-                return
+                return true
             }
             connection.sendPacket(ArmSwingC2SP(Hands.MAIN_HAND))
             startDigging()
             finishDigging()
             creativeLastHoldBreakTime = currentTime
-            return
+            return true
         }
 
         startDigging()
@@ -135,6 +136,7 @@ class LeftClickHandler(
         if (breakProgress >= 1.0f) {
             finishDigging()
         }
+        return true
     }
 
     fun init() {
@@ -142,7 +144,21 @@ class LeftClickHandler(
     }
 
     fun draw(deltaTime: Long) {
-        // ToDo: Entity attacking, arm swing animation when hitting air
-        checkBreaking(renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.DESTROY_BLOCK), deltaTime)
+        val currentTime = System.currentTimeMillis()
+        val isKeyDown = renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.DESTROY_BLOCK)
+        // ToDo: Entity attacking
+        val consumed = checkBreaking(isKeyDown, deltaTime)
+
+        if (!isKeyDown) {
+            return
+        }
+        if (consumed) {
+            return
+        }
+        if (currentTime - lastSwing <= ProtocolDefinition.TICK_TIME) {
+            return
+        }
+        connection.sendPacket(ArmSwingC2SP(Hands.MAIN_HAND))
+        lastSwing = currentTime
     }
 }
