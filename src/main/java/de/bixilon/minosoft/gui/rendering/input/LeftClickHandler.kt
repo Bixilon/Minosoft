@@ -18,12 +18,16 @@ import de.bixilon.minosoft.data.Directions
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.mappings.blocks.BlockState
+import de.bixilon.minosoft.data.mappings.effects.DefaultStatusEffects
+import de.bixilon.minosoft.data.mappings.enchantment.DefaultEnchantments
+import de.bixilon.minosoft.data.mappings.items.tools.MiningToolItem
 import de.bixilon.minosoft.data.player.Hands
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.protocol.packets.c2s.play.ArmSwingC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.BlockBreakC2SP
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import glm_.pow
 import glm_.vec3.Vec3i
 
 class LeftClickHandler(
@@ -41,6 +45,10 @@ class LeftClickHandler(
     private var breakSent = 0L
     private var lastSwing = 0L
     private var creativeLastHoldBreakTime = 0L
+
+    private val efficiencyEnchantment = connection.registries.enchantmentRegistry[DefaultEnchantments.EFFICIENCY]
+    private val hasteStatusEffect = connection.registries.statusEffectRegistry[DefaultStatusEffects.HASTE]
+    private val miningFatigueStatusEffect = connection.registries.statusEffectRegistry[DefaultStatusEffects.MINING_FATIGUE]
 
     private fun clearDigging() {
         breakPosition = null
@@ -116,6 +124,11 @@ class LeftClickHandler(
             connection.sendPacket(BlockBreakC2SP(BlockBreakC2SP.BreakType.FINISHED_DIGGING, raycastHit.blockPosition, raycastHit.hitDirection))
             clearDigging()
             connection.world.setBlockState(raycastHit.blockPosition, null)
+
+            if (connection.player.entity.gamemode != Gamemodes.CREATIVE) {
+                // decrease durability
+                // ToDo
+            }
         }
 
         val canStartBreaking = currentTime - breakSent >= ProtocolDefinition.TICK_TIME
@@ -149,15 +162,51 @@ class LeftClickHandler(
 
         swingArm()
 
+        // thanks to https://minecraft.fandom.com/wiki/Breaking#Calculation
 
-        var speedMultiplier = 1.0f
+        val breakItemInHand = breakItemInHand
+
+        val isBestTool = !raycastHit.blockState.requiresTool || breakItemInHand?.item?.let {
+            return@let if (it is MiningToolItem) {
+                it.isEffectiveOn(raycastHit.blockState)
+            } else {
+                false
+            }
+        } ?: false
+
+        var speedMultiplier = breakItemInHand?.let { it.item.getMiningSpeedMultiplier(connection, raycastHit.blockState, it) } ?: 1.0f
+
+        if (isBestTool) {
+            breakItemInHand?.enchantments?.get(efficiencyEnchantment)?.let {
+                speedMultiplier += it.pow(2) + 1.0f
+            }
+        }
+
+        connection.player.entity.activeStatusEffects[hasteStatusEffect]?.let {
+            speedMultiplier *= (0.2f * it.amplifier) + 1.0f
+        }
+
+        connection.player.entity.activeStatusEffects[miningFatigueStatusEffect]?.let {
+            speedMultiplier *= when (it.amplifier) {
+                0 -> 0.3f
+                1 -> 0.09f
+                2 -> 0.0027f
+                else -> 0.00081f
+            }
+        }
+
+        // ToDp: Check if is in water
+
+        if (!connection.player.entity.onGround) {
+            speedMultiplier /= 5.0f
+        }
 
         var damage = speedMultiplier / raycastHit.blockState.hardness
 
-        damage /= if (raycastHit.blockState.requiresTool) {
-            100
-        } else {
+        damage /= if (isBestTool) {
             30
+        } else {
+            100
         }
 
         when {

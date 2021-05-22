@@ -13,9 +13,12 @@
 
 package de.bixilon.minosoft.data.mappings.registry
 
+import com.google.gson.JsonElement
 import com.google.gson.JsonObject
+import com.google.gson.JsonPrimitive
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.versions.Registries
+import de.bixilon.minosoft.util.KUtil.asResourceLocation
 import de.bixilon.minosoft.util.collections.Clearable
 import de.bixilon.minosoft.util.json.ResourceLocationJsonMap.toResourceLocationMap
 
@@ -27,6 +30,18 @@ open class Registry<T : RegistryItem>(
     protected val valueIdMap: MutableMap<T, Int> = mutableMapOf()
     protected val resourceLocationMap: MutableMap<ResourceLocation, T> = mutableMapOf()
 
+    open operator fun get(json: JsonElement): T {
+        return when (json) {
+            is JsonPrimitive -> {
+                when {
+                    json.isString -> get(json.asString.asResourceLocation())!!
+                    json.isNumber -> get(json.asInt)
+                    else -> TODO()
+                }
+            }
+            else -> TODO()
+        }
+    }
 
     open operator fun get(resourceLocation: ResourceLocation): T? {
         return resourceLocationMap[resourceLocation] ?: parentRegistry?.get(resourceLocation)

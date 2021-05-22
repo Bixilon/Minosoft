@@ -19,7 +19,10 @@ import de.bixilon.minosoft.data.entities.EntityMetaDataFields
 import de.bixilon.minosoft.data.entities.block.BlockEntityMetaType
 import de.bixilon.minosoft.data.entities.meta.EntityMetaData
 import de.bixilon.minosoft.data.inventory.InventorySlots
-import de.bixilon.minosoft.data.mappings.*
+import de.bixilon.minosoft.data.mappings.DefaultRegistries
+import de.bixilon.minosoft.data.mappings.Dimension
+import de.bixilon.minosoft.data.mappings.Motive
+import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.biomes.Biome
 import de.bixilon.minosoft.data.mappings.biomes.BiomeCategory
 import de.bixilon.minosoft.data.mappings.biomes.BiomePrecipitation
@@ -28,6 +31,7 @@ import de.bixilon.minosoft.data.mappings.blocks.entites.BlockEntityType
 import de.bixilon.minosoft.data.mappings.blocks.entites.BlockEntityTypeRegistry
 import de.bixilon.minosoft.data.mappings.blocks.types.Block
 import de.bixilon.minosoft.data.mappings.effects.StatusEffect
+import de.bixilon.minosoft.data.mappings.enchantment.Enchantment
 import de.bixilon.minosoft.data.mappings.entities.EntityType
 import de.bixilon.minosoft.data.mappings.entities.villagers.VillagerProfession
 import de.bixilon.minosoft.data.mappings.fluid.Fluid

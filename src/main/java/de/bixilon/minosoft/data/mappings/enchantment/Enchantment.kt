@@ -10,29 +10,26 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-
-package de.bixilon.minosoft.data.mappings.items.tools
+package de.bixilon.minosoft.data.mappings.enchantment
 
 import com.google.gson.JsonObject
-import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.mappings.ResourceLocation
-import de.bixilon.minosoft.data.mappings.blocks.BlockState
-import de.bixilon.minosoft.data.mappings.blocks.DefaultBlocks
+import de.bixilon.minosoft.data.mappings.registry.RegistryItem
+import de.bixilon.minosoft.data.mappings.registry.ResourceLocationDeserializer
 import de.bixilon.minosoft.data.mappings.versions.Registries
-import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 
+data class Enchantment(
+    override val resourceLocation: ResourceLocation,
+    // ToDo
+) : RegistryItem {
 
-open class SwordItem(
-    resourceLocation: ResourceLocation,
-    registries: Registries,
-    data: JsonObject,
-) : ToolItem(resourceLocation, registries, data) {
-    override val attackDamage = data["attack_damage"]?.asFloat ?: -1.0f
+    override fun toString(): String {
+        return resourceLocation.full
+    }
 
-    override fun getMiningSpeedMultiplier(connection: PlayConnection, blockState: BlockState, itemStack: ItemStack): Float {
-        if (blockState.block.resourceLocation == DefaultBlocks.COBWEB) {
-            return 15.0f
+    companion object : ResourceLocationDeserializer<Enchantment> {
+        override fun deserialize(mappings: Registries?, resourceLocation: ResourceLocation, data: JsonObject): Enchantment {
+            return Enchantment(resourceLocation)
         }
-        return super.getMiningSpeedMultiplier(connection, blockState, itemStack)
     }
 }

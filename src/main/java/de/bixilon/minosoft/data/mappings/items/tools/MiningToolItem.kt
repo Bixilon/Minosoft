@@ -17,6 +17,7 @@ import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.blocks.BlockState
+import de.bixilon.minosoft.data.mappings.blocks.BlockUsages
 import de.bixilon.minosoft.data.mappings.blocks.types.Block
 import de.bixilon.minosoft.data.mappings.versions.Registries
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
@@ -27,23 +28,38 @@ open class MiningToolItem(
     registries: Registries,
     data: JsonObject,
 ) : ToolItem(resourceLocation, registries, data) {
-    val diggableBlocks: List<Block>? = data["diggable_blocks"]?.asJsonArray?.let {
-        val diggableBlocks: MutableList<Block> = mutableListOf()
+    val diggableBlocks: Set<Block>? = data["diggable_blocks"]?.asJsonArray?.let {
+        val entries: MutableList<Block> = mutableListOf()
         for (id in it) {
-            diggableBlocks += registries.blockRegistry[id.asInt]
+            entries += registries.blockRegistry[id]
         }
-        diggableBlocks.toList()
+        entries.toSet()
     }
     override val attackDamage: Float = data["attack_damage"]?.asFloat ?: 1.0f
-    val miningSpeed: Float = data["mining_speed"]?.asFloat ?: 1.0f
 
 
-    override fun getMiningSpeedMultiplier(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, itemStack: ItemStack): Float {
-        // ToDo: Calculate correct, Tags (21w19a)
-        if (diggableBlocks?.contains(blockState.block) == true) {
-            return 10.0f * miningSpeed
+    open fun isEffectiveOn(blockState: BlockState): Boolean {
+        return diggableBlocks?.contains(blockState.block) == true
+    }
+
+    protected fun interactWithTool(connection: PlayConnection, blockPosition: Vec3i, replace: BlockState?): BlockUsages {
+        if (!connection.player.entity.gamemode.useTools) {
+            return BlockUsages.PASS
         }
-        return super.getMiningSpeedMultiplier(connection, blockState, blockPosition, itemStack)
+
+        replace ?: return BlockUsages.PASS
+
+
+        connection.world[blockPosition] = replace
+        return BlockUsages.SUCCESS
+    }
+
+    override fun getMiningSpeedMultiplier(connection: PlayConnection, blockState: BlockState, itemStack: ItemStack): Float {
+        // ToDo: Calculate correct, Tags (21w19a)
+        if (isEffectiveOn(blockState)) {
+            return speed
+        }
+        return super.getMiningSpeedMultiplier(connection, blockState, itemStack)
     }
 
 }

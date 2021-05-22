@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2021 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,13 +11,10 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.config.config.game.controls
+package de.bixilon.minosoft.data.mappings.blocks
 
-import com.squareup.moshi.Json
+import de.bixilon.minosoft.util.KUtil.asResourceLocation
 
-data class ControlsGameConfig(
-    @Json(name = "key_bindings") var keyBindings: KeyBindingsGameConfig = KeyBindingsGameConfig(),
-    @Json(name = "enable_flattening") var enableFlattening: Boolean = true,
-    @Json(name = "enable_stripping") var enableStripping: Boolean = true,
-    @Json(name = "enable_tilling") var enableTilling: Boolean = true,
-)
+object DefaultBlocks {
+    val COBWEB = "minecraft:cobweb".asResourceLocation()
+}

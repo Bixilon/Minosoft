@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.mappings.items.tools
 
 import com.google.gson.JsonObject
+import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.Directions
 import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.mappings.ResourceLocation
@@ -33,23 +34,24 @@ open class HoeItem(
     data: JsonObject,
 ) : MiningToolItem(resourceLocation, registries, data) {
     val tillableBlockStates: Map<Block, BlockState>? = data["tillables_block_states"]?.asJsonObject?.let {
-        val items: MutableMap<Block, BlockState> = mutableMapOf()
+        val entries: MutableMap<Block, BlockState> = mutableMapOf()
         for ((origin, target) in it.entrySet()) {
-            items[registries.blockRegistry[origin.toInt()]] = registries.getBlockState(target.asInt)!!
+            entries[registries.blockRegistry[origin.toInt()]] = registries.getBlockState(target.asInt)!!
         }
-        items.toMap()
+        entries.toMap()
     }
 
     override fun use(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, raycastHit: RaycastHit, hands: Hands, itemStack: ItemStack): BlockUsages {
         // ToDo: Check tags (21w19a+)
 
-        val nextState = tillableBlockStates?.get(blockState.block) ?: return BlockUsages.PASS
+        if (!Minosoft.config.config.game.controls.enableTilling) {
+            return BlockUsages.CONSUME
+        }
 
         if (connection.world[blockPosition + Directions.UP] != null) {
             return BlockUsages.PASS
         }
 
-        connection.world[blockPosition] = nextState
-        return BlockUsages.SUCCESS
+        return super.interactWithTool(connection, blockPosition, tillableBlockStates?.get(blockState.block))
     }
 }

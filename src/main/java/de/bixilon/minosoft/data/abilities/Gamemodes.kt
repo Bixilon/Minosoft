@@ -18,26 +18,31 @@ import de.bixilon.minosoft.util.enum.ValuesEnum
 enum class Gamemodes(
     val canBuild: Boolean,
     val canBreak: Boolean,
+    val useTools: Boolean,
     val canInteract: InteractionAbilities,
 ) {
     SURVIVAL(
         canBuild = true,
         canBreak = true,
+        useTools = true,
         canInteract = InteractionAbilities.EVERYTHING,
     ),
     CREATIVE(
         canBuild = true,
         canBreak = true,
+        useTools = true,
         canInteract = InteractionAbilities.EVERYTHING,
     ),
     ADVENTURE(
         canBuild = false,
         canBreak = false,
+        useTools = false,
         canInteract = InteractionAbilities.ONLY_ENTITIES,
     ),
     SPECTATOR(
         canBuild = false,
         canBreak = false,
+        useTools = false,
         canInteract = InteractionAbilities.ONLY_ENTITIES,
     ),
     ;

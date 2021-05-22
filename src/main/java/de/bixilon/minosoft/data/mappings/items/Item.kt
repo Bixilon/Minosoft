@@ -47,7 +47,7 @@ open class Item(
         return resourceLocation.toString()
     }
 
-    open fun getMiningSpeedMultiplier(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, itemStack: ItemStack): Float {
+    open fun getMiningSpeedMultiplier(connection: PlayConnection, blockState: BlockState, itemStack: ItemStack): Float {
         return 1.0f
     }
 
@@ -73,6 +73,7 @@ open class Item(
                 "SpawnEggItem" -> SpawnEggItem(resourceLocation, mappings, data)
                 "MusicDiscItem" -> MusicDiscItem(resourceLocation, mappings, data)
                 "ShovelItem" -> ShovelItem(resourceLocation, mappings, data)
+                "PickaxeItem" -> PickaxeItem(resourceLocation, mappings, data)
                 "HoeItem" -> HoeItem(resourceLocation, mappings, data)
                 //   "Item" -> Item(resourceLocation, data)
                 // else -> TODO("Can not find item class: ${data["class"].asString}")

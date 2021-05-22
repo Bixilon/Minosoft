@@ -11,17 +11,10 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.player
+package de.bixilon.minosoft.data.mappings.enchantment
 
-import de.bixilon.minosoft.data.inventory.Inventory
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.util.KUtil.asResourceLocation
 
-class PlayerInventoryManager {
-    val inventories: MutableMap<Int, Inventory> = mutableMapOf()
-    var selectedHotbarSlot: Int = 0
-
-    init {
-        // create our own inventory without any properties
-        inventories[ProtocolDefinition.PLAYER_INVENTORY_ID] = Inventory(null)
-    }
+object DefaultEnchantments {
+    val EFFICIENCY = "minecraft:efficiency".asResourceLocation()
 }
