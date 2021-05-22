@@ -136,74 +136,6 @@ class Camera(
         connection.fireEvent(FrustumChangeEvent(renderWindow, frustum))
     }
 
-    fun handleInput(deltaTime: Double) {
-        if (renderWindow.inputHandler.currentKeyConsumer != null) { // ToDo
-            return
-        }
-        var cameraSpeed = if (connection.player.entity.isFlying) {
-            flyingSpeed
-        } else {
-            walkingSpeed
-        } * deltaTime
-        val movementFront = Vec3(cameraFront)
-        if (!Minosoft.getConfig().config.game.camera.noCipMovement) {
-            movementFront.y = 0.0f
-            movementFront.normalizeAssign() // when moving forwards, do not move down
-        }
-        if (renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.MOVE_SPRINT)) {
-            cameraSpeed *= PLAYER_SPRINT_SPEED_MODIFIER
-        }
-        if (ProtocolDefinition.FAST_MOVEMENT) {
-            cameraSpeed *= 5
-        }
-        val movementDirection = Vec3()
-        if (renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.MOVE_FORWARD)) {
-            movementDirection += movementFront
-        }
-        if (renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.MOVE_BACKWARDS)) {
-            movementDirection -= movementFront
-        }
-        if (renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.MOVE_LEFT)) {
-            movementDirection -= cameraRight
-        }
-        if (renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.MOVE_RIGHT)) {
-            movementDirection += cameraRight
-        }
-        val deltaMovement = if (movementDirection != VecUtil.EMPTY_VEC3) {
-            movementDirection.normalize() * cameraSpeed
-        } else {
-            movementDirection
-        }
-        if (playerEntity.isFlying) {
-            if (renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.MOVE_FLY_UP)) {
-                deltaMovement += CAMERA_UP_VEC3 * cameraSpeed
-            }
-            if (renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.MOVE_FLY_DOWN)) {
-                deltaMovement -= CAMERA_UP_VEC3 * cameraSpeed
-            }
-        } else if (playerEntity.onGround && renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.MOVE_JUMP)) {
-            // TODO: jump delay, correct jump height
-            playerEntity.velocity.y += 0.75f * ProtocolDefinition.GRAVITY
-            playerEntity.onGround = false
-        }
-        if (deltaMovement != VecUtil.EMPTY_VEC3) {
-            playerEntity.move(deltaMovement, false)
-            recalculateViewProjectionMatrix()
-            currentPositionSent = false
-            sendPositionToServer()
-        }
-
-        val lastZoom = zoom
-        zoom = if (renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.ZOOM)) {
-            2f
-        } else {
-            0.0f
-        }
-        if (lastZoom != zoom) {
-            recalculateViewProjectionMatrix()
-        }
-    }
-
     private fun recalculateViewProjectionMatrix() {
         viewMatrix = calculateViewMatrix()
         projectionMatrix = calculateProjectionMatrix(renderWindow.screenDimensionsF)
@@ -279,10 +211,76 @@ class Camera(
         sendPositionToServer()
     }
 
-    fun draw() {
+    fun draw(deltaTime: Long) {
         if (!currentPositionSent || !currentRotationSent) {
             recalculateViewProjectionMatrix()
             sendPositionToServer()
+        }
+
+        if (renderWindow.inputHandler.currentKeyConsumer != null) { // ToDo
+            return
+        }
+        var cameraSpeed = if (connection.player.entity.isFlying) {
+            flyingSpeed
+        } else {
+            walkingSpeed
+        } * (deltaTime / 1000.0)
+        val movementFront = Vec3(cameraFront)
+        if (!Minosoft.getConfig().config.game.camera.noCipMovement) {
+            movementFront.y = 0.0f
+            movementFront.normalizeAssign() // when moving forwards, do not move down
+        }
+        if (renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.MOVE_SPRINT)) {
+            cameraSpeed *= PLAYER_SPRINT_SPEED_MODIFIER
+        }
+        if (ProtocolDefinition.FAST_MOVEMENT) {
+            cameraSpeed *= 5
+        }
+        val movementDirection = Vec3()
+        if (renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.MOVE_FORWARD)) {
+            movementDirection += movementFront
+        }
+        if (renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.MOVE_BACKWARDS)) {
+            movementDirection -= movementFront
+        }
+        if (renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.MOVE_LEFT)) {
+            movementDirection -= cameraRight
+        }
+        if (renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.MOVE_RIGHT)) {
+            movementDirection += cameraRight
+        }
+        val deltaMovement = if (movementDirection != VecUtil.EMPTY_VEC3) {
+            movementDirection.normalize() * cameraSpeed
+        } else {
+            movementDirection
+        }
+        if (playerEntity.isFlying) {
+            if (renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.MOVE_FLY_UP)) {
+                deltaMovement += CAMERA_UP_VEC3 * cameraSpeed
+            }
+            if (renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.MOVE_FLY_DOWN)) {
+                deltaMovement -= CAMERA_UP_VEC3 * cameraSpeed
+            }
+        } else if (playerEntity.onGround && renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.MOVE_JUMP)) {
+            // TODO: jump delay, correct jump height
+            playerEntity.velocity.y += 0.75f * ProtocolDefinition.GRAVITY
+            playerEntity.onGround = false
+        }
+        if (deltaMovement != VecUtil.EMPTY_VEC3) {
+            playerEntity.move(deltaMovement, false)
+            recalculateViewProjectionMatrix()
+            currentPositionSent = false
+            sendPositionToServer()
+        }
+
+        val lastZoom = zoom
+        zoom = if (renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.ZOOM)) {
+            2f
+        } else {
+            0.0f
+        }
+        if (lastZoom != zoom) {
+            recalculateViewProjectionMatrix()
         }
     }
 

@@ -64,9 +64,9 @@ class RenderWindow(
     val inputHandler = RenderWindowInputHandler(this)
 
     var windowId = 0L
-    private var deltaFrameTime = 0.0 // time between current frame and last frame
+    private var deltaFrameTime = 0L
 
-    private var lastFrame = 0.0
+    private var lastFrame = 0L
     private val latch = CountUpAndDownLatch(1)
 
     private var renderingState = RenderingStates.RUNNING
@@ -312,7 +312,7 @@ class RenderWindow(
                 this.lastTickTimer = currentTickTime
             }
 
-            val currentFrame = glfwGetTime()
+            val currentFrame = System.currentTimeMillis()
             deltaFrameTime = currentFrame - lastFrame
             lastFrame = currentFrame
 
@@ -329,8 +329,7 @@ class RenderWindow(
 
             glfwSwapBuffers(windowId)
             glfwPollEvents()
-            inputHandler.draw()
-            inputHandler.camera.handleInput(deltaFrameTime)
+            inputHandler.draw(deltaFrameTime)
 
             // handle opengl context tasks, but limit it per frame
             var actionsDone = 0

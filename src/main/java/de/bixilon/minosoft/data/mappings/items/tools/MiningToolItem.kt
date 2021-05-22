@@ -14,9 +14,13 @@
 package de.bixilon.minosoft.data.mappings.items.tools
 
 import com.google.gson.JsonObject
+import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.data.mappings.blocks.BlockState
 import de.bixilon.minosoft.data.mappings.blocks.types.Block
 import de.bixilon.minosoft.data.mappings.versions.Registries
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import glm_.vec3.Vec3i
 
 open class MiningToolItem(
     resourceLocation: ResourceLocation,
@@ -32,5 +36,14 @@ open class MiningToolItem(
     }
     override val attackDamage: Float = data["attack_damage"]?.asFloat ?: 1.0f
     val miningSpeed: Float = data["mining_speed"]?.asFloat ?: 1.0f
+
+
+    override fun getMiningSpeedMultiplier(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, itemStack: ItemStack): Float {
+        // ToDo: Calculate correct, Tags (21w19a)
+        if (diggableBlocks?.contains(blockState.block) == true) {
+            return 10.0f * miningSpeed
+        }
+        return super.getMiningSpeedMultiplier(connection, blockState, blockPosition, itemStack)
+    }
 
 }

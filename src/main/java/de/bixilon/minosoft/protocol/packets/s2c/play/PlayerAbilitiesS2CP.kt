@@ -55,7 +55,7 @@ class PlayerAbilitiesS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         abilities.isInvulnerable = isInvulnerable
         abilities.isFlying = isFlying
         abilities.canFly = canFly
-        abilities.canInstantBuild = canInstantBuild
+        abilities.canInstantBreak = canInstantBuild
 
         abilities.flyingSpeed = flyingSpeed
         abilities.walkingSpeed = walkingSpeed

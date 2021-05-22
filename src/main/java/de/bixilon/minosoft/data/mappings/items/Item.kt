@@ -47,11 +47,17 @@ open class Item(
         return resourceLocation.toString()
     }
 
+    open fun getMiningSpeedMultiplier(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, itemStack: ItemStack): Float {
+        return 1.0f
+    }
+
     open fun use(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, raycastHit: RaycastHit, hands: Hands, itemStack: ItemStack): BlockUsages {
         return BlockUsages.PASS
     }
 
     companion object : ResourceLocationDeserializer<Item> {
+        const val INFINITE_MINING_SPEED_MULTIPLIER = -1.0f
+
         override fun deserialize(mappings: Registries?, resourceLocation: ResourceLocation, data: JsonObject): Item {
             check(mappings != null) { "Registries is null!" }
             return when (data["class"].asString) {

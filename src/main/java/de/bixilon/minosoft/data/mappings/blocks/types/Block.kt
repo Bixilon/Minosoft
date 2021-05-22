@@ -38,6 +38,7 @@ open class Block(
     mappings: Registries,
     data: JsonObject,
 ) : RegistryItem {
+    open val hardness: Float = data["hardness"]?.asFloat ?: 0.0f
     open val explosionResistance: Float = data["explosion_resistance"]?.asFloat ?: 0.0f
     open val tintColor: RGBColor? = data["tint_color"]?.asInt?.let { TintColorCalculator.getJsonColor(it) }
     open val randomOffsetType: RandomOffsetTypes? = data["offset_type"]?.asString?.let { RandomOffsetTypes[it] }

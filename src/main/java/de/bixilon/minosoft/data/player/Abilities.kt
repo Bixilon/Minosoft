@@ -17,7 +17,7 @@ data class Abilities(
     var isInvulnerable: Boolean = false,
     var isFlying: Boolean = false,
     var canFly: Boolean = false,
-    var canInstantBuild: Boolean = false,
+    var canInstantBreak: Boolean = false,
 
     var flyingSpeed: Float = 1.0f,
     var walkingSpeed: Float = 1.0f,

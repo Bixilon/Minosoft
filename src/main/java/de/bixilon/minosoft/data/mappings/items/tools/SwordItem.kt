@@ -14,8 +14,13 @@
 package de.bixilon.minosoft.data.mappings.items.tools
 
 import com.google.gson.JsonObject
+import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.data.mappings.blocks.BlockState
 import de.bixilon.minosoft.data.mappings.versions.Registries
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.util.KUtil.asResourceLocation
+import glm_.vec3.Vec3i
 
 
 open class SwordItem(
@@ -24,4 +29,16 @@ open class SwordItem(
     data: JsonObject,
 ) : ToolItem(resourceLocation, registries, data) {
     override val attackDamage = data["attack_damage"]?.asFloat ?: -1.0f
+
+    override fun getMiningSpeedMultiplier(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, itemStack: ItemStack): Float {
+        if (blockState.block.resourceLocation == COBWEB_BLOCK) {
+            return 15.0f
+        }
+        return super.getMiningSpeedMultiplier(connection, blockState, blockPosition, itemStack)
+    }
+
+
+    companion object {
+        val COBWEB_BLOCK = "minecraft:cobweb".asResourceLocation()
+    }
 }

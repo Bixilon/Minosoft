@@ -34,11 +34,13 @@ class Frustum(private val camera: Camera) {
     }
 
     fun recalculate() {
-        normals.clear()
-        normals.add(camera.cameraFront.normalize())
+        synchronized(normals) {
+            normals.clear()
+            normals.add(camera.cameraFront.normalize())
 
-        calculateSideNormals()
-        calculateVerticalNormals()
+            calculateSideNormals()
+            calculateVerticalNormals()
+        }
     }
 
     private fun calculateSideNormals() {
