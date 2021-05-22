@@ -33,7 +33,7 @@ class LeftClickHandler(
 
     private var breakPosition: Vec3i? = null
     private var breakBlockState: BlockState? = null
-    private var breakPercentBroken: Float = -1.0f
+    private var breakProgress: Float = -1.0f
 
     private var breakSelectedSlot: Int = -1
     private var breakItemInHand: ItemStack? = null
@@ -44,7 +44,7 @@ class LeftClickHandler(
     private fun clearDigging() {
         breakPosition = null
         breakBlockState = null
-        breakPercentBroken = -1.0f
+        breakProgress = -1.0f
 
         breakSelectedSlot = -1
         breakItemInHand = null
@@ -96,7 +96,7 @@ class LeftClickHandler(
 
             breakPosition = raycastHit.blockPosition
             breakBlockState = raycastHit.blockState
-            breakPercentBroken = 0.0f
+            breakProgress = 0.0f
 
             breakSelectedSlot = connection.player.selectedHotbarSlot
             breakItemInHand = connection.player.inventory.getHotbarSlot()
@@ -130,7 +130,11 @@ class LeftClickHandler(
         startDigging()
         connection.sendPacket(ArmSwingC2SP(Hands.MAIN_HAND))
 
+        breakProgress += 0.05f
 
+        if (breakProgress >= 1.0f) {
+            finishDigging()
+        }
     }
 
     fun init() {
