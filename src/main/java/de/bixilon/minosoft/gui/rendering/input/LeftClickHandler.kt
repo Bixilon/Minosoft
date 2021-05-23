@@ -191,7 +191,7 @@ class LeftClickHandler(
             speedMultiplier *= 0.3f.pow(it.amplifier + 1)
         }
 
-        // ToDp: Check if is in water
+        // ToDo: Check if is in water
 
         if (!connection.player.entity.onGround) {
             speedMultiplier /= 5.0f

@@ -43,10 +43,10 @@ class ThreadPool(
             try {
                 availableThreads += Thread.currentThread()
                 Thread.sleep(Long.MAX_VALUE)
-                availableThreads -= Thread.currentThread()
             } catch (exception: InterruptedException) {
                 // Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Thread (${Thread.currentThread()} sleeping got interrupted" }
             }
+            availableThreads -= Thread.currentThread()
         }
 
         for (i in 0 until threadCount - threads.size) {
