@@ -24,6 +24,7 @@ import de.bixilon.minosoft.data.mappings.versions.Registries
 import de.bixilon.minosoft.data.player.Hands
 import de.bixilon.minosoft.gui.rendering.input.camera.RaycastHit
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.util.KUtil.asResourceLocation
 import glm_.vec3.Vec3i
 
 open class AxeItem(
@@ -31,6 +32,7 @@ open class AxeItem(
     registries: Registries,
     data: JsonObject,
 ) : MiningToolItem(resourceLocation, registries, data) {
+    override val diggableTag: ResourceLocation = AXE_MINEABLE_TAG
     val strippableBlocks: Map<Block, Block>? = data["strippables_blocks"]?.asJsonObject?.let {
         val entries: MutableMap<Block, Block> = mutableMapOf()
         for ((origin, target) in it.entrySet()) {
@@ -40,12 +42,14 @@ open class AxeItem(
     }
 
     override fun use(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, raycastHit: RaycastHit, hands: Hands, itemStack: ItemStack): BlockUsages {
-        // ToDo: Check tags (21w19a+)
-
         if (!Minosoft.config.config.game.controls.enableStripping) {
             return BlockUsages.CONSUME
         }
 
         return super.interactWithTool(connection, blockPosition, strippableBlocks?.get(blockState.block)?.withProperties(blockState.properties))
+    }
+
+    companion object {
+        val AXE_MINEABLE_TAG = "minecraft:mineable/axe".asResourceLocation()
     }
 }

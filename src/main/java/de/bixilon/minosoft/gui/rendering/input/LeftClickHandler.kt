@@ -168,7 +168,7 @@ class LeftClickHandler(
 
         val isToolEffective = breakItemInHand?.item?.let {
             return@let if (it is MiningToolItem) {
-                it.isEffectiveOn(raycastHit.blockState)
+                it.isEffectiveOn(connection, raycastHit.blockState)
             } else {
                 false
             }

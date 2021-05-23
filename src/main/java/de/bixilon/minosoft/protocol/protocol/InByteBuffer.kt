@@ -15,13 +15,13 @@ package de.bixilon.minosoft.protocol.protocol
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import de.bixilon.minosoft.data.Directions
-import de.bixilon.minosoft.data.Tag
 import de.bixilon.minosoft.data.commands.CommandArgumentNode
 import de.bixilon.minosoft.data.commands.CommandLiteralNode
 import de.bixilon.minosoft.data.commands.CommandNode
 import de.bixilon.minosoft.data.commands.CommandRootNode
 import de.bixilon.minosoft.data.entities.Poses
 import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.data.tags.Tag
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.network.connection.Connection
 import de.bixilon.minosoft.util.Util

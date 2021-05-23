@@ -26,6 +26,7 @@ import de.bixilon.minosoft.data.player.Hands
 import de.bixilon.minosoft.gui.rendering.input.camera.RaycastHit
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.util.KUtil.asResourceLocation
 import glm_.vec3.Vec3i
 
 open class ShovelItem(
@@ -33,6 +34,7 @@ open class ShovelItem(
     registries: Registries,
     data: JsonObject,
 ) : MiningToolItem(resourceLocation, registries, data) {
+    override val diggableTag: ResourceLocation = SHOVEL_MINEABLE_TAG
     val flattenableBlockStates: Map<Block, BlockState>? = data["flattenables_block_states"]?.asJsonObject?.let {
         val entries: MutableMap<Block, BlockState> = mutableMapOf()
         for ((origin, target) in it.entrySet()) {
@@ -43,9 +45,6 @@ open class ShovelItem(
 
 
     override fun use(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, raycastHit: RaycastHit, hands: Hands, itemStack: ItemStack): BlockUsages {
-        // ToDo: Check tags (21w19a+)
-
-
         if (!Minosoft.config.config.game.controls.enableFlattening) {
             return BlockUsages.CONSUME
         }
@@ -55,5 +54,10 @@ open class ShovelItem(
         }
 
         return super.interactWithTool(connection, blockPosition, flattenableBlockStates?.get(blockState.block))
+    }
+
+
+    companion object {
+        val SHOVEL_MINEABLE_TAG = "minecraft:mineable/shovel".asResourceLocation()
     }
 }

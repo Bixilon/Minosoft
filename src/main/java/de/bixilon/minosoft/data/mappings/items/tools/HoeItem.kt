@@ -26,6 +26,7 @@ import de.bixilon.minosoft.data.player.Hands
 import de.bixilon.minosoft.gui.rendering.input.camera.RaycastHit
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.util.KUtil.asResourceLocation
 import glm_.vec3.Vec3i
 
 open class HoeItem(
@@ -33,6 +34,7 @@ open class HoeItem(
     registries: Registries,
     data: JsonObject,
 ) : MiningToolItem(resourceLocation, registries, data) {
+    override val diggableTag: ResourceLocation = HOE_MINEABLE_TAG
     val tillableBlockStates: Map<Block, BlockState>? = data["tillables_block_states"]?.asJsonObject?.let {
         val entries: MutableMap<Block, BlockState> = mutableMapOf()
         for ((origin, target) in it.entrySet()) {
@@ -42,8 +44,6 @@ open class HoeItem(
     }
 
     override fun use(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, raycastHit: RaycastHit, hands: Hands, itemStack: ItemStack): BlockUsages {
-        // ToDo: Check tags (21w19a+)
-
         if (!Minosoft.config.config.game.controls.enableTilling) {
             return BlockUsages.CONSUME
         }
@@ -53,5 +53,9 @@ open class HoeItem(
         }
 
         return super.interactWithTool(connection, blockPosition, tillableBlockStates?.get(blockState.block))
+    }
+
+    companion object {
+        val HOE_MINEABLE_TAG = "minecraft:mineable/hoe".asResourceLocation()
     }
 }

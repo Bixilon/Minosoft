@@ -16,9 +16,17 @@ package de.bixilon.minosoft.data.mappings.items.tools
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.versions.Registries
+import de.bixilon.minosoft.util.KUtil.asResourceLocation
 
 open class PickaxeItem(
     resourceLocation: ResourceLocation,
     registries: Registries,
     data: JsonObject,
-) : MiningToolItem(resourceLocation, registries, data)
+) : MiningToolItem(resourceLocation, registries, data) {
+    override val diggableTag: ResourceLocation = PICKAXE_MINEABLE_TAG
+
+
+    companion object {
+        val PICKAXE_MINEABLE_TAG = "minecraft:mineable/pickaxe".asResourceLocation()
+    }
+}

@@ -12,8 +12,8 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play
 
-import de.bixilon.minosoft.data.Tag
 import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.data.tags.Tag
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
@@ -40,12 +40,14 @@ class TagsS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
             }
         } else {
             for (i in 0 until buffer.readVarInt()) {
-                when (buffer.readResourceLocation()) {
+                val resourceLocation = buffer.readResourceLocation()
+                tags[resourceLocation] = when (resourceLocation) {
                     BLOCK_TAG_RESOURCE_LOCATION -> buffer.readTagArray { buffer.connection.registries.blockRegistry[it] }
                     ITEM_TAG_RESOURCE_LOCATION -> buffer.readTagArray { buffer.connection.registries.itemRegistry[it] }
                     FLUID_TAG_RESOURCE_LOCATION -> buffer.readTagArray { buffer.connection.registries.fluidRegistry[it] }
                     ENTITY_TYPE_TAG_RESOURCE_LOCATION -> buffer.readTagArray { buffer.connection.registries.entityTypeRegistry[it] }
-                    GAME_EVENT_TAG_RESOURCE_LOCATION -> buffer.readTagArray { it }
+                    // GAME_EVENT_TAG_RESOURCE_LOCATION -> buffer.readTagArray { it }
+                    else -> buffer.readTagArray { it }
                 }
             }
         }

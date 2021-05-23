@@ -65,7 +65,6 @@ open class Item(
                 "ArmorItem" -> ArmorItem(resourceLocation, mappings, data)
                 "SwordItem" -> SwordItem(resourceLocation, mappings, data)
                 "ToolItem" -> ToolItem(resourceLocation, mappings, data)
-                "MiningToolItem" -> MiningToolItem(resourceLocation, mappings, data)
                 "AxeItem" -> AxeItem(resourceLocation, mappings, data)
                 "BucketItem" -> BucketItem(resourceLocation, mappings, data)
                 "DyeItem" -> DyeItem(resourceLocation, mappings, data)

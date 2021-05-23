@@ -27,6 +27,6 @@ open class ToolItem(
     val durability = data["uses"]?.asInt ?: 1
     val speed = data["speed"]?.asFloat ?: 1.0f
     open val attackDamage = data["attack_damage_bonus"]?.asFloat ?: 1.0f
-    val miningLevel = data["mining_level"]?.asInt ?: 1
+    val miningLevel = data["level"]?.asInt ?: 1
     val enchantmentValue = data["enchantment_value"]?.asInt ?: 1
 }

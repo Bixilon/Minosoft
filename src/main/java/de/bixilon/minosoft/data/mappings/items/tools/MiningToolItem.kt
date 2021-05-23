@@ -21,9 +21,11 @@ import de.bixilon.minosoft.data.mappings.blocks.BlockUsages
 import de.bixilon.minosoft.data.mappings.blocks.types.Block
 import de.bixilon.minosoft.data.mappings.versions.Registries
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.protocol.packets.s2c.play.TagsS2CP
+import de.bixilon.minosoft.util.KUtil.asResourceLocation
 import glm_.vec3.Vec3i
 
-open class MiningToolItem(
+abstract class MiningToolItem(
     resourceLocation: ResourceLocation,
     registries: Registries,
     data: JsonObject,
@@ -37,9 +39,17 @@ open class MiningToolItem(
     }
     override val attackDamage: Float = data["attack_damage"]?.asFloat ?: 1.0f
 
+    abstract val diggableTag: ResourceLocation?
 
-    open fun isEffectiveOn(blockState: BlockState): Boolean {
-        return diggableBlocks?.contains(blockState.block) == true
+
+    open fun isEffectiveOn(connection: PlayConnection, blockState: BlockState): Boolean {
+        val blockTags = connection.tags[TagsS2CP.BLOCK_TAG_RESOURCE_LOCATION] ?: mutableMapOf()
+        return when {
+            miningLevel < DIAMOND_MINING_LEVEL && blockTags[NEED_DIAMOND_TOOL_TAG]?.entries?.contains(blockState.block) == true -> false
+            miningLevel < IRON_MINING_LEVEL && blockTags[NEED_IRON_TOOL_TAG]?.entries?.contains(blockState.block) == true -> false
+            miningLevel < STONE_MINING_LEVEL && blockTags[NEED_STONE_TOOL_TAG]?.entries?.contains(blockState.block) == true -> false
+            else -> blockTags[diggableTag]?.entries?.contains(blockState.block) == true || diggableBlocks?.contains(blockState.block) == true
+        }
     }
 
     protected fun interactWithTool(connection: PlayConnection, blockPosition: Vec3i, replace: BlockState?): BlockUsages {
@@ -54,12 +64,22 @@ open class MiningToolItem(
         return BlockUsages.SUCCESS
     }
 
+
     override fun getMiningSpeedMultiplier(connection: PlayConnection, blockState: BlockState, itemStack: ItemStack): Float {
-        // ToDo: Calculate correct, Tags (21w19a)
-        if (isEffectiveOn(blockState)) {
+        if (isEffectiveOn(connection, blockState)) {
             return speed
         }
         return super.getMiningSpeedMultiplier(connection, blockState, itemStack)
+    }
+
+    companion object {
+        const val DIAMOND_MINING_LEVEL = 3
+        const val IRON_MINING_LEVEL = 2
+        const val STONE_MINING_LEVEL = 1
+
+        val NEED_DIAMOND_TOOL_TAG = "minecraft:needs_diamond_tool".asResourceLocation()
+        val NEED_IRON_TOOL_TAG = "minecraft:needs_iron_tool".asResourceLocation()
+        val NEED_STONE_TOOL_TAG = "minecraft:needs_stone_tool".asResourceLocation()
     }
 
 }

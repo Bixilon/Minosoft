@@ -15,7 +15,6 @@ package de.bixilon.minosoft.protocol.network.connection
 
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.StaticConfiguration
-import de.bixilon.minosoft.data.Tag
 import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.data.assets.MultiAssetsManager
 import de.bixilon.minosoft.data.commands.CommandRootNode
@@ -27,6 +26,7 @@ import de.bixilon.minosoft.data.mappings.versions.Version
 import de.bixilon.minosoft.data.player.Player
 import de.bixilon.minosoft.data.player.tab.TabList
 import de.bixilon.minosoft.data.scoreboard.ScoreboardManager
+import de.bixilon.minosoft.data.tags.Tag
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.Rendering
