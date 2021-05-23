@@ -166,17 +166,18 @@ class LeftClickHandler(
 
         val breakItemInHand = breakItemInHand
 
-        val isBestTool = !raycastHit.blockState.requiresTool || breakItemInHand?.item?.let {
+        val isToolEffective = breakItemInHand?.item?.let {
             return@let if (it is MiningToolItem) {
                 it.isEffectiveOn(raycastHit.blockState)
             } else {
                 false
             }
         } ?: false
+        val isBestTool = !raycastHit.blockState.requiresTool || isToolEffective
 
         var speedMultiplier = breakItemInHand?.let { it.item.getMiningSpeedMultiplier(connection, raycastHit.blockState, it) } ?: 1.0f
 
-        if (isBestTool) {
+        if (isToolEffective) {
             breakItemInHand?.enchantments?.get(efficiencyEnchantment)?.let {
                 speedMultiplier += it.pow(2) + 1.0f
             }
@@ -187,12 +188,7 @@ class LeftClickHandler(
         }
 
         connection.player.entity.activeStatusEffects[miningFatigueStatusEffect]?.let {
-            speedMultiplier *= when (it.amplifier) {
-                0 -> 0.3f
-                1 -> 0.09f
-                2 -> 0.0027f
-                else -> 0.00081f
-            }
+            speedMultiplier *= 0.3f.pow(it.amplifier + 1)
         }
 
         // ToDp: Check if is in water
