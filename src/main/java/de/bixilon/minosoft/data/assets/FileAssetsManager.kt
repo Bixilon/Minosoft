@@ -29,6 +29,8 @@ interface FileAssetsManager : AssetsManager {
 
     fun getAssetSize(hash: String): Long
 
+    fun getFileAssetSize(hash: String): Long
+
     fun saveAsset(data: ByteArray): String {
         val hash = Util.sha1(data)
         val destination = getAssetDiskPath(hash)
@@ -43,14 +45,20 @@ interface FileAssetsManager : AssetsManager {
         return hash
     }
 
-    fun verifyAssetHash(hash: String, compressed: Boolean): Boolean {
-        if (getAssetSize(hash) < 0L) {
+    fun verifyAssetHash(hash: String, expectedSize: Long? = null, compressed: Boolean): Boolean {
+        val size = getFileAssetSize(hash)
+        if (size < 0L) {
             // file does not exist
             return false
         }
         if (!Minosoft.getConfig().config.debug.verifyAssets) {
             // file exists AND we should not check the hash of our file
             return true
+        }
+        expectedSize?.let {
+            if (it != size) {
+                return false
+            }
         }
         try {
             return if (compressed) {
@@ -65,11 +73,11 @@ interface FileAssetsManager : AssetsManager {
     }
 
     fun verifyAssetHash(hash: String): Boolean {
-        return verifyAssetHash(hash, true)
+        return verifyAssetHash(hash, compressed = true)
     }
 
     fun downloadAsset(url: String, hash: String, compress: Boolean, checkURL: Boolean = true) {
-        if (verifyAssetHash(hash, compress)) {
+        if (verifyAssetHash(hash, compressed = compress)) {
             return
         }
         if (checkURL) {

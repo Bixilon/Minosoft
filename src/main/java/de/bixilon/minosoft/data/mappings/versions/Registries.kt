@@ -107,7 +107,7 @@ class Registries {
 
 
     val blockStateCount: Int
-        get() = blockStateIdMap.size + (parentMapping?.blockStateCount ?: 0)
+        get() = blockStateIdMap.size + (parentRegistries?.blockStateCount ?: 0)
 
 
     var isFullyLoaded = false
@@ -116,7 +116,7 @@ class Registries {
     private var isFlattened = false
 
 
-    var parentMapping: Registries? = null
+    var parentRegistries: Registries? = null
         set(value) {
             field = value
 
@@ -129,7 +129,7 @@ class Registries {
         if (blockState == ProtocolDefinition.NULL_BLOCK_ID) {
             return null
         }
-        return blockStateIdMap[blockState] ?: parentMapping?.getBlockState(blockState) ?: let {
+        return blockStateIdMap[blockState] ?: parentRegistries?.getBlockState(blockState) ?: let {
             if (isFlattened) {
                 null
             } else {
@@ -139,7 +139,7 @@ class Registries {
     }
 
     fun getEntityMetaDataIndex(field: EntityMetaDataFields): Int? {
-        return entityMetaIndexMap[field] ?: parentMapping?.getEntityMetaDataIndex(field)
+        return entityMetaIndexMap[field] ?: parentRegistries?.getEntityMetaDataIndex(field)
     }
 
     private fun <T : Enum<*>> loadEnumRegistry(version: Version, data: JsonElement?, registry: EnumRegistry<T>, alternative: PerVersionEnumRegistry<T>) {

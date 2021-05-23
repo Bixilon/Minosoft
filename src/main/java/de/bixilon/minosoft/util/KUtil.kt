@@ -96,4 +96,8 @@ object KUtil {
 
         return ret.toSet()
     }
+
+    fun pause() {
+        var setBreakPointHere = 1
+    }
 }

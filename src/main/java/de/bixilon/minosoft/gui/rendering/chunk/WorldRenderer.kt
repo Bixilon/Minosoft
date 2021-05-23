@@ -127,7 +127,7 @@ class WorldRenderer(
         var currentMapping: Registries? = mapping
         while (currentMapping != null) {
             list.addAll(currentMapping.blockStateIdMap.values)
-            currentMapping = currentMapping.parentMapping
+            currentMapping = currentMapping.parentRegistries
         }
         return list
     }

@@ -94,7 +94,7 @@ data class Version(
         if (versionId == ProtocolDefinition.PRE_FLATTENING_VERSION_ID) {
             Versions.PRE_FLATTENING_MAPPING = registries
         } else if (!isFlattened()) {
-            registries.parentMapping = Versions.PRE_FLATTENING_MAPPING
+            registries.parentRegistries = Versions.PRE_FLATTENING_MAPPING
         }
         val pixlyzerData = try {
             Util.readJsonFromStream(assetsManager.readAssetAsStream(Resources.getPixLyzerDataHashByVersion(this)))
@@ -124,8 +124,8 @@ data class Version(
 
     fun unload() {
         registries.clear()
-        if (registries.parentMapping == registries) {
-            registries.parentMapping = null
+        if (registries.parentRegistries == registries) {
+            registries.parentRegistries = null
         }
         isLoaded = false
         isGettingLoaded = false

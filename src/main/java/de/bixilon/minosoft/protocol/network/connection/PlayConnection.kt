@@ -152,15 +152,16 @@ class PlayConnection(
         try {
             version.load(latch) // ToDo: show gui loader
             assetsManager = MultiAssetsManager(version.assetsManager, Minosoft.MINOSOFT_ASSETS_MANAGER, Minosoft.MINECRAFT_FALLBACK_ASSETS_MANAGER)
-            registries.parentMapping = version.registries
+            registries.parentRegistries = version.registries
             player = Player(account, this)
 
-            if (!RenderConstants.DISABLE_RENDERING) {
-                if (!StaticConfiguration.HEADLESS_MODE) {
-                    renderer = Rendering(this)
-                    renderer!!.start(latch)
+            if (!RenderConstants.DISABLE_RENDERING && !StaticConfiguration.HEADLESS_MODE) {
+                val renderer = Rendering(this)
+                this.renderer = renderer
+                renderer.init(latch)
+                while (!renderer.renderWindow.initialized || !renderer.audioPlayer.initialized) {
+                    latch.waitForChange()
                 }
-                latch.waitForChange()
             }
             Log.log(LogMessageType.NETWORK_STATUS, level = LogLevels.INFO) { "Connecting to server: $address" }
             network.connect(address)

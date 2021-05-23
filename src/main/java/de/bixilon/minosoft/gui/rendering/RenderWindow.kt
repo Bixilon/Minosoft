@@ -55,6 +55,8 @@ class RenderWindow(
     val connection: PlayConnection,
     val rendering: Rendering,
 ) {
+    var initialized = false
+        private set
     private lateinit var renderThread: Thread
     val renderStats = RenderStats()
     var screenDimensions = Vec2i(900, 500)
@@ -268,6 +270,7 @@ class RenderWindow(
 
 
         Log.log(LogMessageType.RENDERING_LOADING) { "Rendering is fully prepared in  ${stopwatch.totalTime()}" }
+        initialized = true
         latch.countDown()
         latch.waitUntilZero()
         this.latch.waitUntilZero()
@@ -293,7 +296,7 @@ class RenderWindow(
         }
     }
 
-    fun startRenderLoop() {
+    fun startLoop() {
         Log.log(LogMessageType.RENDERING_LOADING) { "Starting loop" }
         while (!glfwWindowShouldClose(windowId)) {
             if (renderingState == RenderingStates.PAUSED) {

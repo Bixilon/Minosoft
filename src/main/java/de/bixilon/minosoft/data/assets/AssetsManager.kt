@@ -20,10 +20,13 @@ import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.util.Util
 import de.matthiasmann.twl.utils.PNGDecoder
 import org.lwjgl.BufferUtils
+import org.lwjgl.system.MemoryUtil
 import java.io.BufferedReader
 import java.io.InputStream
 import java.io.InputStreamReader
 import java.net.URL
+import java.nio.ByteBuffer
+import java.nio.channels.Channels
 
 interface AssetsManager {
 
@@ -62,5 +65,19 @@ interface AssetsManager {
             colors.add(RGBColor(buffer.get(), buffer.get(), buffer.get(), buffer.get()))
         }
         return colors.toTypedArray()
+    }
+
+    fun readByteAsset(resourceLocation: ResourceLocation): ByteBuffer {
+        val buffer = BufferUtils.createByteBuffer(getAssetSize(resourceLocation).toInt() + 1)
+        val byteChannel = Channels.newChannel(readAssetAsStream(resourceLocation))
+        while (true) {
+            val bytes: Int = byteChannel.read(buffer)
+            if (bytes <= 0) {
+                break
+            }
+        }
+
+        buffer.flip()
+        return MemoryUtil.memSlice(buffer)
     }
 }

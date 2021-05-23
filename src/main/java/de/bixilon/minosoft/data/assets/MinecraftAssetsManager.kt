@@ -39,6 +39,7 @@ class MinecraftAssetsManager(
 ) : FileAssetsManager {
     override val namespaces: MutableSet<String> = mutableSetOf()
     private val assetsMapping: MutableMap<ResourceLocation, String> = mutableMapOf()
+    private val assetsSizes: MutableMap<String, Long> = mutableMapOf()
 
     fun downloadAllAssets(latch: CountUpAndDownLatch?) {
         if (this.assetsMapping.isNotEmpty()) {
@@ -147,7 +148,7 @@ class MinecraftAssetsManager(
                 if (StaticConfiguration.DEBUG_SLOW_LOADING) {
                     Thread.sleep(100L)
                 }
-                if (!verifyAssetHash(hash, compressed)) {
+                if (!verifyAssetHash(hash, compressed = compressed)) {
                     downloadAsset(source, hash)
                 }
                 latch?.countDown()
@@ -176,7 +177,11 @@ class MinecraftAssetsManager(
                 ret[resourceLocation] = if (data is JsonPrimitive) {
                     data.asString
                 } else {
-                    data.asJsonObject["hash"].asString
+                    val hash = data.asJsonObject["hash"].asString
+                    data.asJsonObject["size"]?.asLong?.let {
+                        assetsSizes[hash] = it // ToDo: Return this somehow
+                    }
+                    hash
                 }
             } catch (exception: Exception) {
             }
@@ -185,6 +190,14 @@ class MinecraftAssetsManager(
     }
 
     override fun getAssetSize(hash: String): Long {
+        val fileSize = getFileAssetSize(hash)
+        if (fileSize < 0) {
+            return -1L
+        }
+        return assetsSizes[hash] ?: -1L // ToDo: Get real size
+    }
+
+    override fun getFileAssetSize(hash: String): Long {
         val file = File(FileAssetsManager.getAssetDiskPath(hash))
         return if (file.exists()) {
             file.length()

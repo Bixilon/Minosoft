@@ -343,7 +343,7 @@ class Camera(
 
     companion object {
         private val CAMERA_UP_VEC3 = Vec3(0.0f, 1.0f, 0.0f)
-        private const val PLAYER_EYE_HEIGHT = 1.3 // player is 1.8 blocks high, the camera is normally at 0.5. 1.8 - 0.5 = 1.13
+        private const val PLAYER_EYE_HEIGHT = 1.3 // player is 1.8 blocks high, the camera is normally at 0.5. 1.8 - 0.5 = 1.3
         private const val PLAYER_SPRINT_SPEED_MODIFIER = 1.30000001192092896
 
         private const val RAYCAST_MAX_STEPS = 100

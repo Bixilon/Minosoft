@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering
 
+import de.bixilon.minosoft.gui.rendering.sound.AudioPlayer
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ConnectionStates
 import de.bixilon.minosoft.util.CountUpAndDownLatch
@@ -23,15 +24,38 @@ import org.lwjgl.Version
 
 class Rendering(private val connection: PlayConnection) {
     val renderWindow: RenderWindow = RenderWindow(connection, this)
+    val audioPlayer: AudioPlayer = AudioPlayer(connection, this)
 
-    fun start(latch: CountUpAndDownLatch) {
+    fun init(latch: CountUpAndDownLatch) {
+        Log.log(LogMessageType.RENDERING_GENERAL, LogLevels.INFO) { "Hello LWJGL ${Version.getVersion()}!" }
         latch.countUp()
+        startRenderThread(latch)
+        latch.countUp()
+        startAudioPlayerThread(latch)
+    }
+
+    private fun startAudioPlayerThread(latch: CountUpAndDownLatch) {
         Thread({
             try {
-                Log.log(LogMessageType.RENDERING_GENERAL, LogLevels.INFO) { "Hello LWJGL ${Version.getVersion()}!" }
+                audioPlayer.init(latch)
+                audioPlayer.startLoop()
+                audioPlayer.exit()
+            } catch (exception: Throwable) {
+                exception.printStackTrace()
+                try {
+                    audioPlayer.exit()
+                } catch (ignored: Throwable) {
+                }
+            }
+        }, "Audio#${connection.connectionId}").start()
+    }
+
+    private fun startRenderThread(latch: CountUpAndDownLatch) {
+        Thread({
+            try {
                 CONTEXT_MAP[Thread.currentThread()] = renderWindow
                 renderWindow.init(latch)
-                renderWindow.startRenderLoop()
+                renderWindow.startLoop()
                 renderWindow.exit()
             } catch (exception: Throwable) {
                 CONTEXT_MAP.remove(Thread.currentThread())
@@ -45,7 +69,7 @@ class Rendering(private val connection: PlayConnection) {
                 }
                 connection.connectionState = ConnectionStates.FAILED_NO_RETRY
             }
-        }, "Rendering").start()
+        }, "Rendering#${connection.connectionId}").start()
     }
 
     companion object {
