@@ -43,8 +43,8 @@ class RenderWindowInputHandler(
 
     private var skipNextCharPress = false
 
-    private val rightClickHandler = RightClickHandler(renderWindow)
-    private val leftClickHandler = LeftClickHandler(renderWindow)
+    val rightClickHandler = RightClickHandler(renderWindow)
+    val leftClickHandler = LeftClickHandler(renderWindow)
 
     init {
         registerKeyCallback(KeyBindingsNames.DEBUG_MOUSE_CATCH) {

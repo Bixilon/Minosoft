@@ -402,6 +402,6 @@ class RenderWindow(
     }
 
     operator fun <T : Renderer> get(renderer: RendererBuilder<T>): T? {
-        return rendererMap[renderer.RESOURCE_LOCATION] as T
+        return rendererMap[renderer.RESOURCE_LOCATION] as T?
     }
 }

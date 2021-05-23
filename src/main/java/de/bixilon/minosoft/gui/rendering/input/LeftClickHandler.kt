@@ -40,7 +40,9 @@ class LeftClickHandler(
 
     private var breakPosition: Vec3i? = null
     private var breakBlockState: BlockState? = null
-    private var breakProgress = Double.NEGATIVE_INFINITY
+    var breakProgress = Double.NEGATIVE_INFINITY
+        private set
+
 
     private var breakSelectedSlot: Int = -1
     private var breakItemInHand: ItemStack? = null

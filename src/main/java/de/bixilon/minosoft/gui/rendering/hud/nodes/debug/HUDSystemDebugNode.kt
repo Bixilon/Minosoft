@@ -85,6 +85,7 @@ class HUDSystemDebugNode(hudRenderer: HUDRenderer) : DebugScreenNode(hudRenderer
         }
         memoryText.sText = "Memory: ${getUsedMemoryPercent()}% ${getFormattedUsedMemory()}/${SystemInformation.MAX_MEMORY_TEXT}"
         allocatedMemoryText.sText = "Allocated: ${getAllocatedMemoryPercent()}% ${getFormattedAllocatedMemory()}"
+
         val rayCastHit = hudRenderer.renderWindow.inputHandler.camera.getTargetBlock()
         if (rayCastHit == null) {
             targetPosition.sText = ""

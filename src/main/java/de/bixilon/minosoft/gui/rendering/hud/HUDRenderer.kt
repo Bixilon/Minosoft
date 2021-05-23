@@ -21,6 +21,7 @@ import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.Renderer
 import de.bixilon.minosoft.gui.rendering.RendererBuilder
 import de.bixilon.minosoft.gui.rendering.hud.atlas.HUDAtlasElement
+import de.bixilon.minosoft.gui.rendering.hud.elements.other.BreakProgressHUDElement
 import de.bixilon.minosoft.gui.rendering.hud.elements.other.CrosshairHUDElement
 import de.bixilon.minosoft.gui.rendering.hud.nodes.HUDElement
 import de.bixilon.minosoft.gui.rendering.hud.nodes.chat.ChatBoxHUDElement
@@ -84,6 +85,7 @@ class HUDRenderer(val connection: PlayConnection, val renderWindow: RenderWindow
     }
 
     private fun registerDefaultElements() {
+        addElement(BreakProgressHUDElement)
         addElement(CrosshairHUDElement)
 
         addElement(HUDWorldDebugNode)
