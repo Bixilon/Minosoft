@@ -10,26 +10,22 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.protocol.packets.s2c.play
+package de.bixilon.minosoft.modding.event.events
 
-import de.bixilon.minosoft.modding.event.events.SelectHotbarSlotEvent
+import de.bixilon.minosoft.data.mappings.blocks.BlockState
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
-import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
-import de.bixilon.minosoft.util.logging.Log
-import de.bixilon.minosoft.util.logging.LogLevels
-import de.bixilon.minosoft.util.logging.LogMessageType
+import de.bixilon.minosoft.protocol.packets.c2s.play.BlockBreakC2SP
+import de.bixilon.minosoft.protocol.packets.s2c.play.BlockBreakAckS2CP
+import glm_.vec3.Vec3i
 
-class HotbarSlotSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
-    val slot: Int = buffer.readByte().toInt()
+class BlockBreakAckEvent(
+    connection: PlayConnection,
+    val blockPosition: Vec3i,
+    val blockState: BlockState?,
+    val breakType: BlockBreakC2SP.BreakType,
+    val successful: Boolean,
+) : PlayConnectionEvent(connection) {
 
-    override fun handle(connection: PlayConnection) {
-        connection.fireEvent(SelectHotbarSlotEvent(connection, slot))
+    constructor(connection: PlayConnection, packet: BlockBreakAckS2CP) : this(connection, packet.blockPosition, packet.blockState, packet.breakType, packet.successful)
 
-        connection.player.selectedHotbarSlot = slot
-    }
-
-    override fun log() {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Hotbar slot set (slot=$slot)" }
-    }
 }

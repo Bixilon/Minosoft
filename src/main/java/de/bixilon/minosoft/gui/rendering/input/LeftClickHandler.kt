@@ -24,9 +24,12 @@ import de.bixilon.minosoft.data.mappings.items.tools.MiningToolItem
 import de.bixilon.minosoft.data.player.Hands
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.modding.event.CallbackEventInvoker
+import de.bixilon.minosoft.modding.event.events.BlockBreakAckEvent
 import de.bixilon.minosoft.protocol.packets.c2s.play.ArmSwingC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.BlockBreakC2SP
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
 import glm_.pow
 import glm_.vec3.Vec3i
 
@@ -37,7 +40,7 @@ class LeftClickHandler(
 
     private var breakPosition: Vec3i? = null
     private var breakBlockState: BlockState? = null
-    private var breakProgress = -1.0
+    private var breakProgress = Double.NEGATIVE_INFINITY
 
     private var breakSelectedSlot: Int = -1
     private var breakItemInHand: ItemStack? = null
@@ -46,6 +49,8 @@ class LeftClickHandler(
     private var lastSwing = 0L
     private var creativeLastHoldBreakTime = 0L
 
+    private var acknowledgedBreakStarts: MutableMap<Vec3i, BlockState?> = synchronizedMapOf()
+
     private val efficiencyEnchantment = connection.registries.enchantmentRegistry[DefaultEnchantments.EFFICIENCY]
     private val hasteStatusEffect = connection.registries.statusEffectRegistry[DefaultStatusEffects.HASTE]
     private val miningFatigueStatusEffect = connection.registries.statusEffectRegistry[DefaultStatusEffects.MINING_FATIGUE]
@@ -53,7 +58,7 @@ class LeftClickHandler(
     private fun clearDigging() {
         breakPosition = null
         breakBlockState = null
-        breakProgress = -1.0
+        breakProgress = Double.NEGATIVE_INFINITY
 
         breakSelectedSlot = -1
         breakItemInHand = null
@@ -121,7 +126,6 @@ class LeftClickHandler(
         }
 
         fun finishDigging() {
-            // ToDo: Check for acknowledgment
             connection.sendPacket(BlockBreakC2SP(BlockBreakC2SP.BreakType.FINISHED_DIGGING, raycastHit.blockPosition, raycastHit.hitDirection))
             clearDigging()
             connection.world.setBlockState(raycastHit.blockPosition, null)
@@ -212,6 +216,7 @@ class LeftClickHandler(
                 val ticks = 1.0f / damage
                 val seconds = (ticks / ProtocolDefinition.TICKS_PER_SECOND)
                 val progress = ((1.0f / seconds) * deltaTime)
+                // Log.log(LogMessageType.OTHER, LogLevels.WARN){ "Breaking progress at $breakPosition, total=$breakProgress, totalEstimated=$seconds"}
                 breakProgress += progress
             }
         }
@@ -224,6 +229,28 @@ class LeftClickHandler(
 
     fun init() {
         renderWindow.inputHandler.registerCheckCallback(KeyBindingsNames.DESTROY_BLOCK)
+
+        connection.registerEvent(CallbackEventInvoker.of<BlockBreakAckEvent> {
+            when (it.breakType) {
+                BlockBreakC2SP.BreakType.START_DIGGING -> {
+                    if (it.successful) {
+                        acknowledgedBreakStarts[it.blockPosition] = it.blockState
+                    } else {
+                        if (it.blockPosition != breakPosition || it.blockState != breakBlockState) {
+                            return@of
+                        }
+                        breakProgress = Double.NEGATIVE_INFINITY
+                    }
+                }
+                BlockBreakC2SP.BreakType.FINISHED_DIGGING -> {
+                    if (acknowledgedBreakStarts[it.blockPosition] == null) {
+                        // start was not acknowledged, undoing
+                        connection.world[it.blockPosition] = it.blockState
+                    }
+                    acknowledgedBreakStarts.remove(it.blockPosition)
+                }
+            }
+        })
     }
 
     fun draw(deltaTime: Double) {

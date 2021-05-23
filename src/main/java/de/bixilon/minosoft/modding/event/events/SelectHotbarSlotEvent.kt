@@ -16,18 +16,12 @@ import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.c2s.play.HotbarSlotSetC2SP
 import de.bixilon.minosoft.protocol.packets.s2c.play.HotbarSlotSetS2CP
 
-class HeldItemChangeEvent : PlayConnectionEvent {
-    val slot: Int
+class SelectHotbarSlotEvent(
+    connection: PlayConnection,
+    val slot: Int,
+) : PlayConnectionEvent(connection) {
 
-    constructor(connection: PlayConnection, slot: Int) : super(connection) {
-        this.slot = slot
-    }
+    constructor(connection: PlayConnection, packet: HotbarSlotSetC2SP) : this(connection, packet.slot)
 
-    constructor(connection: PlayConnection, pkg: HotbarSlotSetC2SP) : super(connection) {
-        slot = pkg.slot
-    }
-
-    constructor(connection: PlayConnection, pkg: HotbarSlotSetS2CP) : super(connection) {
-        slot = pkg.slot
-    }
+    constructor(connection: PlayConnection, packet: HotbarSlotSetS2CP) : this(connection, packet.slot)
 }

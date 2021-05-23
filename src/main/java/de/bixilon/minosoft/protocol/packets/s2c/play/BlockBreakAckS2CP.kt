@@ -13,6 +13,8 @@
 package de.bixilon.minosoft.protocol.packets.s2c.play
 
 import de.bixilon.minosoft.data.mappings.blocks.BlockState
+import de.bixilon.minosoft.modding.event.events.BlockBreakAckEvent
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.c2s.play.BlockBreakC2SP.BreakType
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
@@ -26,6 +28,15 @@ class BlockBreakAckS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     val blockState: BlockState? = buffer.connection.registries.getBlockState(buffer.readVarInt())
     val breakType: BreakType = BreakType[buffer.readVarInt()]
     val successful: Boolean = buffer.readBoolean()
+
+    override fun handle(connection: PlayConnection) {
+        connection.fireEvent(BlockBreakAckEvent(connection, this))
+        if (breakType == BreakType.FINISHED_DIGGING && !successful) {
+            // never happens?
+            connection.world[blockPosition] = blockState
+        }
+
+    }
 
     override fun log() {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Block break acknowledge (blockPosition=$blockPosition, blockState=$blockState, breakType=$breakType, successful=$successful)" }

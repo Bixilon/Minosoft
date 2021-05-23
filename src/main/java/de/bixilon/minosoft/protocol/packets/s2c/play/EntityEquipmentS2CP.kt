@@ -41,7 +41,7 @@ class EntityEquipmentS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         } else {
             while (true) {
                 val slotId = buffer.readByte().toInt()
-                equipment[buffer.connection.registries.equipmentSlotRegistry[slotId and 0x7F]!!] = buffer.readItemStack() ?: continue
+                equipment[buffer.connection.registries.equipmentSlotRegistry[slotId and 0x7F]!!] = buffer.readItemStack()
                 if (slotId >= 0) {
                     break
                 }
