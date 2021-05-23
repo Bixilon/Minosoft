@@ -152,7 +152,7 @@ class PlayConnection(
         try {
             version.load(latch) // ToDo: show gui loader
             assetsManager = MultiAssetsManager(version.assetsManager, Minosoft.MINOSOFT_ASSETS_MANAGER, Minosoft.MINECRAFT_FALLBACK_ASSETS_MANAGER)
-            registries.parentMapping = version.mapping
+            registries.parentMapping = version.registries
             player = Player(account, this)
 
             if (!RenderConstants.DISABLE_RENDERING) {

@@ -37,7 +37,7 @@ data class Version(
 ) {
     var isLoaded = false
     var isGettingLoaded = false
-    val mapping: Registries = Registries()
+    val registries: Registries = Registries()
     lateinit var assetsManager: MinecraftAssetsManager
     lateinit var localeManager: MinecraftLocaleManager
 
@@ -92,9 +92,9 @@ data class Version(
 
 
         if (versionId == ProtocolDefinition.PRE_FLATTENING_VERSION_ID) {
-            Versions.PRE_FLATTENING_MAPPING = mapping
+            Versions.PRE_FLATTENING_MAPPING = registries
         } else if (!isFlattened()) {
-            mapping.parentMapping = Versions.PRE_FLATTENING_MAPPING
+            registries.parentMapping = Versions.PRE_FLATTENING_MAPPING
         }
         val pixlyzerData = try {
             Util.readJsonFromStream(assetsManager.readAssetAsStream(Resources.getPixLyzerDataHashByVersion(this)))
@@ -110,7 +110,7 @@ data class Version(
             JsonObject()
         }
         latch.addCount(1)
-        mapping.load(this, pixlyzerData)
+        registries.load(this, pixlyzerData)
         latch.countDown()
         if (pixlyzerData.size() > 0) {
             Log.log(LogMessageType.VERSION_LOADING, level = LogLevels.INFO) { "Loaded mappings for $this (${versionName} in ${System.currentTimeMillis() - startTime}ms" }
@@ -123,9 +123,9 @@ data class Version(
     }
 
     fun unload() {
-        mapping.clear()
-        if (mapping.parentMapping == mapping) {
-            mapping.parentMapping = null
+        registries.clear()
+        if (registries.parentMapping == registries) {
+            registries.parentMapping = null
         }
         isLoaded = false
         isGettingLoaded = false

@@ -133,7 +133,7 @@ class WorldRenderer(
     }
 
     override fun init() {
-        allBlocks = getAllBlocks(connection.version.mapping)
+        allBlocks = getAllBlocks(connection.version.registries)
         renderWindow.textures.allTextures.addAll(resolveBlockTextureIds(allBlocks!!))
 
 

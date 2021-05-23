@@ -30,7 +30,7 @@ class CampfireBlockEntity(connection: PlayConnection) : BlockEntity(connection) 
 
             val itemStack = ItemStack(
                 item = connection.registries.itemRegistry[slot["id"]?.nullCast<String>()!!]!!,
-                version = connection.version,
+                connection = connection,
                 count = slot["Count"]?.nullCast<Number>()?.toInt() ?: 1,
             )
 

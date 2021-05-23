@@ -29,7 +29,7 @@ open class Container(
 
     fun validate() {
         for ((slot, itemStack) in slots.toSynchronizedMap()) {
-            if (itemStack.count <= 0) {
+            if (itemStack.count <= 0 || itemStack.durability < 0) {
                 slots.remove(slot)
             }
         }

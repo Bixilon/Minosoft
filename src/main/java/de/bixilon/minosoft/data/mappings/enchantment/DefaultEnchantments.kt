@@ -16,5 +16,6 @@ package de.bixilon.minosoft.data.mappings.enchantment
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
 
 object DefaultEnchantments {
+    val UNBREAKING = "minecraft:unbreaking".asResourceLocation()
     val EFFICIENCY = "minecraft:efficiency".asResourceLocation()
 }

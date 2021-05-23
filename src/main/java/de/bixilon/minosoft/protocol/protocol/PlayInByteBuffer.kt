@@ -82,7 +82,7 @@ class PlayInByteBuffer : InByteBuffer {
         // ToDo: Replace with dynamic particle type calling
         if (this.versionId < V_17W45A) {
             return when (type.resourceLocation.full) {
-                "minecraft:iconcrack" -> ItemParticleData(ItemStack(item = connection.registries.itemRegistry[readVarInt() shl 16 or readVarInt()], connection.version), type)
+                "minecraft:iconcrack" -> ItemParticleData(ItemStack(item = connection.registries.itemRegistry[readVarInt() shl 16 or readVarInt()], connection), type)
                 "minecraft:blockcrack", "minecraft:blockdust", "minecraft:falling_dust" -> BlockParticleData(connection.registries.getBlockState(readVarInt() shl 4), type) // ToDo: What about meta data?
                 else -> ParticleData(type)
             }
@@ -114,7 +114,7 @@ class PlayInByteBuffer : InByteBuffer {
             val nbt = readNBTTag(versionId < V_14W28B)?.compoundCast()
             return ItemStack(
                 item = connection.registries.itemRegistry[id shl 16 or metaData],
-                version = connection.version,
+                connection = connection,
                 count = count,
                 durability = metaData,
                 nbt = nbt ?: mutableMapOf(),
@@ -123,8 +123,8 @@ class PlayInByteBuffer : InByteBuffer {
 
         return if (readBoolean()) {
             ItemStack(
-                version = connection.version,
                 item = connection.registries.itemRegistry[readVarInt()],
+                connection = connection,
                 count = readUnsignedByte(),
                 nbt = readNBT()?.compoundCast() ?: mutableMapOf(),
             )

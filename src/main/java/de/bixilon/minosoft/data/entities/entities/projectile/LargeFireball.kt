@@ -22,7 +22,7 @@ import glm_.vec3.Vec3
 
 class LargeFireball(connection: PlayConnection, entityType: EntityType, location: Vec3, rotation: EntityRotation) : Fireball(connection, entityType, location, rotation) {
     override val defaultItem: ItemStack
-        get() = ItemStack(connection.registries.itemRegistry[DEFAULT_ITEM]!!, connection.version)
+        get() = ItemStack(connection.registries.itemRegistry[DEFAULT_ITEM]!!, connection)
 
     companion object : EntityFactory<LargeFireball> {
         private val DEFAULT_ITEM = ResourceLocation("fire_charge")

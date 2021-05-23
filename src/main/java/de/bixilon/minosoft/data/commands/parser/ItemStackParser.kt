@@ -41,7 +41,7 @@ class ItemStackParser : CommandParser() {
         }
         return ItemStack(
             item = item,
-            version = connection.version,
+            connection = connection,
             nbt = nbt,
         )
     }

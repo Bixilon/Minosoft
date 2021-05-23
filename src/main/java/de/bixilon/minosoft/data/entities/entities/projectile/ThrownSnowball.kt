@@ -23,7 +23,7 @@ import glm_.vec3.Vec3
 class ThrownSnowball(connection: PlayConnection, entityType: EntityType, location: Vec3, rotation: EntityRotation) : ThrowableItemProjectile(connection, entityType, location, rotation) {
 
     override val defaultItem: ItemStack
-        get() = ItemStack(connection.registries.itemRegistry[DEFAULT_ITEM]!!, connection.version)
+        get() = ItemStack(connection.registries.itemRegistry[DEFAULT_ITEM]!!, connection)
 
     companion object : EntityFactory<ThrownSnowball> {
         private val DEFAULT_ITEM = ResourceLocation("snowball")

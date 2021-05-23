@@ -121,14 +121,10 @@ class LeftClickHandler(
         }
 
         fun finishDigging() {
+            // ToDo: Check for acknowledgment
             connection.sendPacket(BlockBreakC2SP(BlockBreakC2SP.BreakType.FINISHED_DIGGING, raycastHit.blockPosition, raycastHit.hitDirection))
             clearDigging()
             connection.world.setBlockState(raycastHit.blockPosition, null)
-
-            if (connection.player.entity.gamemode != Gamemodes.CREATIVE) {
-                // decrease durability
-                // ToDo
-            }
         }
 
         val canStartBreaking = currentTime - breakSent >= ProtocolDefinition.TICK_TIME
