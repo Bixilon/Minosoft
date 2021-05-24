@@ -21,6 +21,7 @@ import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.mappings.blocks.types.Block
 import de.bixilon.minosoft.data.mappings.materials.Material
+import de.bixilon.minosoft.data.mappings.sounds.SoundEvent
 import de.bixilon.minosoft.data.mappings.versions.Registries
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.TintColorCalculator
@@ -47,6 +48,13 @@ data class BlockState(
     val outlineShape: VoxelShape,
     val hardness: Float,
     val requiresTool: Boolean,
+    val breakSoundEvent: SoundEvent?,
+    val stepSoundEvent: SoundEvent?,
+    val placeSoundEvent: SoundEvent?,
+    val hitSoundEvent: SoundEvent?,
+    val fallSoundEvent: SoundEvent?,
+    val soundEventVolume: Float = 1.0f,
+    val soundEventPitch: Float = 1.0f,
 ) {
 
     override fun hashCode(): Int {
@@ -191,6 +199,13 @@ data class BlockState(
                 outlineShape = outlineShape,
                 hardness = data["hardness"].asFloat,
                 requiresTool = data["requires_tool"]?.asBoolean ?: material.soft,
+                breakSoundEvent = data["break_sound_type"]?.asInt?.let { registries.soundEventRegistry[it] },
+                stepSoundEvent = data["step_sound_type"]?.asInt?.let { registries.soundEventRegistry[it] },
+                placeSoundEvent = data["place_sound_type"]?.asInt?.let { registries.soundEventRegistry[it] },
+                hitSoundEvent = data["hit_sound_type"]?.asInt?.let { registries.soundEventRegistry[it] },
+                fallSoundEvent = data["fall_sound_type"]?.asInt?.let { registries.soundEventRegistry[it] },
+                soundEventVolume = data["sound_type_volume"]?.asFloat ?: 1.0f,
+                soundEventPitch = data["sound_type_pitch"]?.asFloat ?: 1.0f,
             )
         }
 

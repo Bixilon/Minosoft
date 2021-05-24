@@ -13,4 +13,6 @@
 
 package de.bixilon.minosoft.util.microsoft
 
-class LoginException(val errorCode: Int, override val message: String, val errorMessage: String) : Exception()
+class LoginException(val errorCode: Int, val outMessage: String, val errorMessage: String) : Exception() {
+    override val message: String = "$outMessage: $errorMessage"
+}
