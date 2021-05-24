@@ -28,11 +28,13 @@ import de.bixilon.minosoft.util.KUtil.asResourceLocation
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
+import org.lwjgl.BufferUtils.createShortBuffer
 import org.lwjgl.openal.AL
 import org.lwjgl.openal.AL10.*
 import org.lwjgl.openal.ALC
 import org.lwjgl.openal.ALC10.*
 import org.lwjgl.openal.EXTThreadLocalContext.alcSetThreadContext
+import org.lwjgl.stb.STBVorbis.stb_vorbis_get_samples_short_interleaved
 import org.lwjgl.system.MemoryUtil
 import java.nio.ByteBuffer
 import java.nio.IntBuffer
@@ -61,12 +63,6 @@ class AudioPlayer(
 
         Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Loading sounds.json" }
         loadSounds()
-        Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Loading all sounds into memory" }
-        for (soundList in sounds.values) {
-            for (sound in soundList.sounds) {
-                // sound.load(connection.assetsManager)
-            }
-        }
 
 
         Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Initializing OpenAL..." }
@@ -81,29 +77,36 @@ class AudioPlayer(
         val deviceCaps = ALC.createCapabilities(device)
         AL.createCapabilities(deviceCaps)
 
-        val listenerOri = floatArrayOf(0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f)
+        val listener = SoundListener()
 
-        alListener3f(AL_POSITION, 0f, 0f, 1.0f)
-        alListener3f(AL_VELOCITY, 0f, 0f, 0f)
-        alListenerfv(AL_ORIENTATION, listenerOri)
-
-        val source = alGenSources()
-
-        alSourcef(source, AL_PITCH, 1.0f)
-        alSourcef(source, AL_GAIN, 1.0f)
-        alSource3f(source, AL_POSITION, 0.0f, 0.0f, 0.0f)
-        alSource3f(source, AL_VELOCITY, 0.0f, 0.0f, 0.0f)
-        alSourcei(source, AL_LOOPING, AL_FALSE)
+        val source = SoundSource(false)
 
 
         // Testing, ToDo
-        val buffer = alGenBuffers()
+        val sound = sounds[connection.registries.soundEventRegistry[0]]!!.sounds.iterator().next()
 
-        val soundEvent = sounds[connection.registries.soundEventRegistry[0]]!!.getRandom()
-
-
+        sound.load(connection.assetsManager)
 
         Log.log(LogMessageType.RENDERING_LOADING, LogLevels.INFO) { "OpenAL loaded!" }
+
+
+        val pcm = createShortBuffer(sound.samplesLength)
+
+        pcm.limit(stb_vorbis_get_samples_short_interleaved(sound.handle, sound.channels, pcm) * sound.channels)
+
+        val buffer = alGenBuffers()
+
+        alBufferData(buffer, sound.format, pcm, sound.sampleRate)
+
+        source.buffer = buffer
+        source.play()
+
+        while (source.isPlaying) {
+            Thread.sleep(1L)
+        }
+        Log.log(LogMessageType.RENDERING_LOADING, LogLevels.INFO) { "Sound played!" }
+
+
         initialized = true
         latch.countDown()
     }
@@ -131,12 +134,12 @@ class AudioPlayer(
 
         for ((soundEventResourceLocation, json) in data.entrySet()) {
             check(json is JsonObject)
-            val soundEvent = connection.registries.soundEventRegistry[ResourceLocation(ProtocolDefinition.DEFAULT_NAMESPACE, soundEventResourceLocation)]!!
+            val soundEvent = connection.registries.soundEventRegistry[ResourceLocation(soundEventResourceLocation)]!!
 
             val sounds: MutableSet<Sound> = mutableSetOf()
 
             fun String.getSoundLocation(): ResourceLocation {
-                return ResourceLocation(ProtocolDefinition.DEFAULT_NAMESPACE, "sounds/${this}".replace('.', '/') + ".ogg")
+                return ResourceLocation(ProtocolDefinition.DEFAULT_NAMESPACE, "sounds/${this}".replace('.', '/') + ".ogg") // ToDo: Resource Location
             }
 
             for (soundJson in json["sounds"].asJsonArray) {
@@ -147,8 +150,12 @@ class AudioPlayer(
                     is JsonObject -> {
                         sounds += Sound(
                             path = soundJson["name"].asString.getSoundLocation(),
-                            weight = soundJson["weight"]?.asInt ?: 1,
                             volume = soundJson["volume"]?.asFloat ?: 1.0f,
+                            pitch = soundJson["pitch"]?.asFloat ?: 1.0f,
+                            weight = soundJson["weight"]?.asInt ?: 1,
+                            stream = soundJson["stream"]?.asBoolean ?: false,
+                            attenuationDistance = soundJson["attenuation_distance"]?.asInt ?: 16,
+                            preload = soundJson["preload"]?.asBoolean ?: false,
                         )
                     }
                     is JsonArray -> TODO()

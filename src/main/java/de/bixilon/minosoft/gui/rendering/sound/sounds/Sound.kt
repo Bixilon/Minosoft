@@ -18,24 +18,37 @@ import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
-import org.lwjgl.stb.STBVorbis
+import org.lwjgl.BufferUtils
+import org.lwjgl.openal.AL10.AL_FORMAT_MONO16
+import org.lwjgl.openal.AL10.AL_FORMAT_STEREO16
+import org.lwjgl.stb.STBVorbis.*
 import org.lwjgl.stb.STBVorbisInfo
-import org.lwjgl.system.MemoryStack
 import org.lwjgl.system.MemoryUtil
 import java.io.FileNotFoundException
 import java.nio.ByteBuffer
 
 data class Sound(
     val path: ResourceLocation,
-    val weight: Int = 1,
     val volume: Float = 1.0f,
+    val pitch: Float = 1.0f,
+    val weight: Int = 1,
+    val stream: Boolean = false, // ToDo
+    val attenuationDistance: Int = 16,
+    val preload: Boolean = false,
+    // ToDo: type
 ) {
     var loaded: Boolean = false
         private set
     var loadFailed: Boolean = false
         private set
-    private var buffer: ByteBuffer? = null
-    private var handle: Long = -1L
+    var buffer: ByteBuffer? = null
+    var handle: Long = -1L
+    var channels: Int = -1
+    var sampleRate: Int = -1
+    var samplesLength: Int = -1
+    var sampleSeconds: Float = -1.0f
+
+    var format: Int = -1
 
     fun load(assetsManager: AssetsManager) {
         if (loaded || loadFailed) {
@@ -47,14 +60,23 @@ data class Sound(
             val buffer = assetsManager.readByteAsset(path)
             this.buffer = buffer
 
-            MemoryStack.stackPush().use { stack ->
-                val error = stack.mallocInt(1)
-                handle = STBVorbis.stb_vorbis_open_memory(buffer, error, null)
-                if (handle == MemoryUtil.NULL) {
-                    throw IllegalStateException("Can not load vorbis: ${path}: ${error[0]}")
-                }
-                val info = STBVorbisInfo.mallocStack(stack)
+
+            val error = BufferUtils.createIntBuffer(1)
+            handle = stb_vorbis_open_memory(buffer, error, null)
+            if (handle == MemoryUtil.NULL) {
+                throw IllegalStateException("Can not load vorbis: ${path}: ${error[0]}")
             }
+            val info = stb_vorbis_get_info(handle, STBVorbisInfo.malloc())
+            channels = info.channels()
+            format = when (channels) {
+                1 -> AL_FORMAT_MONO16
+                2 -> AL_FORMAT_STEREO16
+                else -> TODO("Channels: $channels")
+            }
+            sampleRate = info.sample_rate()
+
+            samplesLength = stb_vorbis_stream_length_in_samples(handle)
+            sampleSeconds = stb_vorbis_stream_length_in_seconds(handle)
 
             loaded = true
         } catch (exception: FileNotFoundException) {
