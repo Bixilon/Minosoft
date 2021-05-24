@@ -16,6 +16,7 @@ import de.bixilon.minosoft.protocol.packets.c2s.PlayC2SPacket
 import de.bixilon.minosoft.protocol.protocol.PlayOutByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import glm_.vec3.Vec3i
 
@@ -45,6 +46,6 @@ class UpdateJigsawBlockC2SP(
     }
 
     override fun log() {
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT) { "Jigsaw block (position=$position, targetPool=$targetPool, finalState=$finalState, attachmentType=$attachmentType, name=$name, target=$target, jointType=$jointType)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Jigsaw block (position=$position, targetPool=$targetPool, finalState=$finalState, attachmentType=$attachmentType, name=$name, target=$target, jointType=$jointType)" }
     }
 }

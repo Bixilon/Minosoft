@@ -20,6 +20,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.enum.ValuesEnum
 import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
 class EntityActionC2SP(
@@ -41,7 +42,7 @@ class EntityActionC2SP(
     }
 
     override fun log() {
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT) { "Entity action (entityId=$entityId, action=$action, parameter=$parameter)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Entity action (entityId=$entityId, action=$action, parameter=$parameter)" }
     }
 
     enum class EntityActions {

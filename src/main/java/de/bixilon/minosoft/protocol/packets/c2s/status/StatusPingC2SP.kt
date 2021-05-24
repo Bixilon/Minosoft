@@ -15,6 +15,7 @@ package de.bixilon.minosoft.protocol.packets.c2s.status
 import de.bixilon.minosoft.protocol.packets.c2s.AllC2SPacket
 import de.bixilon.minosoft.protocol.protocol.OutByteBuffer
 import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
 class StatusPingC2SP(val pingId: Long) : AllC2SPacket {
@@ -24,6 +25,6 @@ class StatusPingC2SP(val pingId: Long) : AllC2SPacket {
     }
 
     override fun log() {
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT) { "Status ping (pingId=$pingId)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Status ping (pingId=$pingId)" }
     }
 }

@@ -17,6 +17,7 @@ import de.bixilon.minosoft.protocol.protocol.PlayOutByteBuffer
 import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.enum.ValuesEnum
 import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import glm_.vec3.Vec3i
 
@@ -58,7 +59,7 @@ class UpdateStructureBlockC2SP(
     }
 
     override fun log() {
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT) { "Update structure block (position=$position, action=$action, mode=$mode, name=\"$name\", offsetX=$offsetX, offsetY=$offsetY, offsetZ=$offsetZ, sizeX=$sizeX, sizeY=$sizeY, sizeZ=$sizeZ, mirror=$mirror, rotation=$rotation, metaData=$metaData, integrity=$integrity, seed=$seed, flags=$flags)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Update structure block (position=$position, action=$action, mode=$mode, name=\"$name\", offsetX=$offsetX, offsetY=$offsetY, offsetZ=$offsetZ, sizeX=$sizeX, sizeY=$sizeY, sizeZ=$sizeZ, mirror=$mirror, rotation=$rotation, metaData=$metaData, integrity=$integrity, seed=$seed, flags=$flags)" }
     }
 
     enum class StructureBlockActions {

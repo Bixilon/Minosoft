@@ -14,11 +14,12 @@
 package de.bixilon.minosoft.protocol.packets.c2s.play.advancement.tab
 
 import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
 class AdvancementCloseTabC2SP : AdvancementTabC2SP(AdvancementTabStatus.CLOSE_TAB) {
 
     override fun log() {
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT) { "Close advancement tab" }
+        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Close advancement tab" }
     }
 }

@@ -16,6 +16,7 @@ package de.bixilon.minosoft.protocol.packets.c2s.play.crafting.book
 import de.bixilon.minosoft.protocol.protocol.PlayOutByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
 class CraftingBookStatusBookStateC2SP(
@@ -41,6 +42,6 @@ class CraftingBookStatusBookStateC2SP(
     }
 
     override fun log() {
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT) { "Crafting book status (craftingBookOpen=$craftingBookOpen, craftingFilter=$craftingFilter, blastingBookOpen=$blastingBookOpen, blastingFilter=$blastingFilter, smokingBookOpen=$smokingBookOpen, smokingFilter=$smokingFilter)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Crafting book status (craftingBookOpen=$craftingBookOpen, craftingFilter=$craftingFilter, blastingBookOpen=$blastingBookOpen, blastingFilter=$blastingFilter, smokingBookOpen=$smokingBookOpen, smokingFilter=$smokingFilter)" }
     }
 }

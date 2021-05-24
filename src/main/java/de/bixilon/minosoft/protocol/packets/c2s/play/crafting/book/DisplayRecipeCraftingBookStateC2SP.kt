@@ -15,6 +15,7 @@ package de.bixilon.minosoft.protocol.packets.c2s.play.crafting.book
 
 import de.bixilon.minosoft.protocol.protocol.PlayOutByteBuffer
 import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
 class DisplayRecipeCraftingBookStateC2SP(
@@ -27,6 +28,6 @@ class DisplayRecipeCraftingBookStateC2SP(
     }
 
     override fun log() {
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT) { "Display recipe crafting book state (recipeId=$recipeId)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Display recipe crafting book state (recipeId=$recipeId)" }
     }
 }

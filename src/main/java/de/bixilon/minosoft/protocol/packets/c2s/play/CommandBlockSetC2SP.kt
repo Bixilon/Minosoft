@@ -17,6 +17,7 @@ import de.bixilon.minosoft.protocol.protocol.PlayOutByteBuffer
 import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.enum.ValuesEnum
 import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import glm_.vec3.Vec3i
 
@@ -47,7 +48,7 @@ class CommandBlockSetC2SP(
     }
 
     override fun log() {
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT) { "Set command block (position=$position, command=\"$command\", type=$type, trackOutput=$trackOutput, isConditional=$isConditional, isAutomatic=$isAutomatic)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Set command block (position=$position, command=\"$command\", type=$type, trackOutput=$trackOutput, isConditional=$isConditional, isAutomatic=$isAutomatic)" }
     }
 
     enum class CommandBlockTypes {
