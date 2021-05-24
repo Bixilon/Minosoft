@@ -20,7 +20,6 @@ import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.util.Util
 import de.matthiasmann.twl.utils.PNGDecoder
 import org.lwjgl.BufferUtils
-import org.lwjgl.system.MemoryUtil
 import java.io.BufferedReader
 import java.io.InputStream
 import java.io.InputStreamReader
@@ -68,16 +67,19 @@ interface AssetsManager {
     }
 
     fun readByteAsset(resourceLocation: ResourceLocation): ByteBuffer {
-        val buffer = BufferUtils.createByteBuffer(getAssetSize(resourceLocation).toInt() + 1)
-        val byteChannel = Channels.newChannel(readAssetAsStream(resourceLocation))
+        val buffer = BufferUtils.createByteBuffer(getAssetSize(resourceLocation).toInt())
+        val inputStream = readAssetAsStream(resourceLocation)
+        val byteChannel = Channels.newChannel(inputStream)
         while (true) {
             val bytes: Int = byteChannel.read(buffer)
             if (bytes <= 0) {
                 break
             }
         }
+        byteChannel.close()
+        inputStream.close()
 
         buffer.flip()
-        return MemoryUtil.memSlice(buffer)
+        return buffer
     }
 }

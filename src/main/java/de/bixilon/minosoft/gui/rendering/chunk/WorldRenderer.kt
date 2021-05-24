@@ -313,7 +313,7 @@ class WorldRenderer(
                 meshCollection.highestBlockHeight = highestBlockHeight
 
 
-                renderWindow.renderQueue.add {
+                renderWindow.queue += add@{
                     val map = preparationTasks[chunkPosition] ?: return@add
                     val runnable = map[index] ?: return@add
                     if (runnable.wasInterrupted) {
@@ -384,7 +384,7 @@ class WorldRenderer(
         val chunkMeshes = allChunkSections.toSynchronizedMap().values
         allChunkSections.clear()
         visibleChunks.clear()
-        renderWindow.renderQueue.add {
+        renderWindow.queue += {
             for (meshCollection in chunkMeshes) {
                 unloadMeshes(meshCollection.values)
             }
@@ -402,7 +402,7 @@ class WorldRenderer(
         val chunkMesh = allChunkSections[chunkPosition] ?: return
         allChunkSections.remove(chunkPosition)
         visibleChunks.remove(chunkPosition)
-        renderWindow.renderQueue.add { unloadMeshes(chunkMesh.values) }
+        renderWindow.queue += { unloadMeshes(chunkMesh.values) }
     }
 
     private fun unloadMeshes(meshes: Collection<ChunkMeshCollection>) {

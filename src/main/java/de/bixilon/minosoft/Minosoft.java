@@ -217,7 +217,13 @@ public final class Minosoft {
             if (!CONNECTIONS.isEmpty()) {
                 // disconnect from all servers
                 for (Object connection : CONNECTIONS.values().toArray()) {
-                    ((PlayConnection) connection).disconnect();
+                    var playConnection = (PlayConnection) connection;
+                    if (playConnection.getRenderer() != null) {
+                        // ToDo
+                        // playConnection.getRenderer().getAudioPlayer().exit();
+                        // playConnection.getRenderer().getRenderWindow().exit();
+                    }
+                    playConnection.disconnect();
                 }
                 Log.info("Disconnected from all connections!");
             }

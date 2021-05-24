@@ -63,7 +63,7 @@ class SkyRenderer(
 
         connection.registerEvent(CallbackEventInvoker.of<CameraMatrixChangeEvent> {
             val viewProjectionMatrix = it.projectionMatrix * it.viewMatrix.toMat3().toMat4()
-            renderWindow.renderQueue.add {
+            renderWindow.queue += {
                 skyboxShader.use().setMat4("skyViewProjectionMatrix", viewProjectionMatrix)
                 setSunMatrix(viewProjectionMatrix)
             }
@@ -120,7 +120,7 @@ class SkyRenderer(
     fun setSkyColor(color: RGBColor) {
         topColor = color
         bottomColor = RGBColor(color.red * 8 / 9, color.green * 8 / 9, color.blue * 8 / 9)
-        renderWindow.renderQueue.add {
+        renderWindow.queue += {
             updateSkyColor()
         }
     }

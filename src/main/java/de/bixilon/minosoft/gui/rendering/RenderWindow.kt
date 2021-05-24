@@ -39,6 +39,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.CountUpAndDownLatch
 import de.bixilon.minosoft.util.KUtil.synchronizedListOf
 import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
+import de.bixilon.minosoft.util.Queue
 import de.bixilon.minosoft.util.Stopwatch
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -81,7 +82,7 @@ class RenderWindow(
 
     val rendererMap: MutableMap<ResourceLocation, Renderer> = synchronizedMapOf()
 
-    val renderQueue: MutableList<Runnable> = synchronizedListOf()
+    val queue = Queue()
 
 
     val shaders: MutableList<Shader> = mutableListOf()
@@ -95,7 +96,7 @@ class RenderWindow(
     init {
         connection.registerEvent(CallbackEventInvoker.of<ConnectionStateChangeEvent> {
             if (it.connection.isDisconnected) {
-                renderQueue.add {
+                queue += {
                     glfwSetWindowShouldClose(windowId, true)
                 }
             }
@@ -108,7 +109,7 @@ class RenderWindow(
             if (latch.count > 0) {
                 latch.countDown()
             }
-            renderQueue.add {
+            queue += {
                 inputHandler.camera.setPosition(packet.position)
                 inputHandler.camera.setRotation(packet.rotation.yaw, packet.rotation.pitch)
             }
@@ -335,16 +336,7 @@ class RenderWindow(
             inputHandler.draw(deltaFrameTime)
 
             // handle opengl context tasks, but limit it per frame
-            var actionsDone = 0
-            val renderQueue = renderQueue.toList()
-            for (renderQueueElement in renderQueue) {
-                if (actionsDone == RenderConstants.MAXIMUM_CALLS_PER_FRAME) {
-                    break
-                }
-                renderQueueElement.run()
-                this.renderQueue.remove(renderQueueElement)
-                actionsDone++
-            }
+            queue.timeWork(RenderConstants.MAXIMUM_QUEUE_TIME_PER_FRAME)
 
             when (renderingState) {
                 RenderingStates.SLOW -> Thread.sleep(100L)
@@ -380,7 +372,7 @@ class RenderWindow(
             return
         }
         if (this.renderingState == RenderingStates.PAUSED) {
-            renderQueue.clear()
+            queue.clear()
         }
         val previousState = this.renderingState
         this.renderingState = renderingStatus
