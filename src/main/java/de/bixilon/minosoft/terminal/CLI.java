@@ -85,7 +85,7 @@ public class CLI {
                         .build();
 
 
-                latch.countDown();
+                latch.dec();
 
                 while (true) {
                     try {
@@ -118,6 +118,6 @@ public class CLI {
                 e.printStackTrace();
             }
         }, "CLI").start();
-        latch.waitUntilZero();
+        latch.await();
     }
 }

@@ -90,18 +90,14 @@ public class AsyncTaskWorker {
                             }
                         }
                         this.jobsDone.add(task.getTaskName());
-                        latch.countDown();
+                        latch.dec();
                     });
                     doing.remove(task);
                 }
             }));
-            try {
-                latch.waitForChange();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            latch.waitForChange();
         }
-        progress.countDown(); // remove initial value of 1
+        progress.dec(); // remove initial value of 1
     }
 
     public boolean isJobDone(String name) {

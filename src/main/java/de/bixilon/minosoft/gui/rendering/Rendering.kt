@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering
 
+import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.gui.rendering.sound.AudioPlayer
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ConnectionStates
@@ -28,16 +29,19 @@ class Rendering(private val connection: PlayConnection) {
 
     fun init(latch: CountUpAndDownLatch) {
         Log.log(LogMessageType.RENDERING_GENERAL, LogLevels.INFO) { "Hello LWJGL ${Version.getVersion()}!" }
-        latch.countUp()
+        latch.inc()
         startRenderThread(latch)
-        latch.countUp()
         startAudioPlayerThread(latch)
     }
 
     private fun startAudioPlayerThread(latch: CountUpAndDownLatch) {
+        if (!Minosoft.config.config.game.sound.enabled) {
+            return
+        }
+        val audioLatch = CountUpAndDownLatch(1, latch)
         Thread({
             try {
-                audioPlayer.init(latch)
+                audioPlayer.init(audioLatch)
                 audioPlayer.startLoop()
                 audioPlayer.exit()
             } catch (exception: Throwable) {
@@ -46,6 +50,7 @@ class Rendering(private val connection: PlayConnection) {
                     audioPlayer.exit()
                 } catch (ignored: Throwable) {
                 }
+                latch.minus(audioLatch.count)
             }
         }, "Audio#${connection.connectionId}").start()
     }

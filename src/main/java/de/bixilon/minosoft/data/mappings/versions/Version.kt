@@ -36,7 +36,6 @@ data class Version(
     val s2CPacketMapping: Map<ConnectionStates, HashBiMap<S2C, Int>>,
 ) {
     var isLoaded = false
-    var isGettingLoaded = false
     val registries: Registries = Registries()
     lateinit var assetsManager: MinecraftAssetsManager
     lateinit var localeManager: MinecraftLocaleManager
@@ -68,9 +67,9 @@ data class Version(
         localeManager.load(this, Minosoft.getConfig().config.general.language)
     }
 
+    @Synchronized
     fun load(latch: CountUpAndDownLatch) {
-        if (isLoaded || isGettingLoaded) {
-            // already loaded or is getting loaded
+        if (isLoaded) {
             return
         }
 
@@ -84,8 +83,7 @@ data class Version(
                 throw exception
             }
         }
-        latch.countUp()
-        isGettingLoaded = true
+        latch.inc()
         Log.log(LogMessageType.VERSION_LOADING, level = LogLevels.INFO) { "Loading mappings for $this..." }
         initializeAssetManger(latch)
         val startTime = System.currentTimeMillis()
@@ -109,17 +107,16 @@ data class Version(
             }
             JsonObject()
         }
-        latch.addCount(1)
+        latch.inc()
         registries.load(this, pixlyzerData)
-        latch.countDown()
+        latch.dec()
         if (pixlyzerData.size() > 0) {
             Log.log(LogMessageType.VERSION_LOADING, level = LogLevels.INFO) { "Loaded mappings for $this (${versionName} in ${System.currentTimeMillis() - startTime}ms" }
         } else {
             Log.log(LogMessageType.VERSION_LOADING, level = LogLevels.WARN) { "Could not load mappings for $this (${versionName}. Some features might not work." }
         }
         isLoaded = true
-        isGettingLoaded = false
-        latch.countDown()
+        latch.dec()
     }
 
     fun unload() {
@@ -128,7 +125,6 @@ data class Version(
             registries.parentRegistries = null
         }
         isLoaded = false
-        isGettingLoaded = false
     }
 
     override fun hashCode(): Int {

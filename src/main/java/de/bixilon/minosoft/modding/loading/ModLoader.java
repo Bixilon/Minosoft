@@ -69,7 +69,7 @@ public class ModLoader {
             return;
         }
 
-        progress.addCount(MOD_MAP.size() * ModPhases.values().length); // count * mod phases
+        progress.setCount(progress.getCount() + MOD_MAP.size() * ModPhases.values().length); // count * mod phases
 
         // check if all dependencies are available
         modLoop:
@@ -128,7 +128,7 @@ public class ModLoader {
                 Minosoft.THREAD_POOL.execute(() -> {
                     if (!entry.getValue().isEnabled()) {
                         modLatch.countDown();
-                        progress.countDown();
+                        progress.dec();
                         return;
                     }
                     Log.log(LogMessageType.MOD_LOADING, LogLevels.VERBOSE, () -> "Loading mod " + entry.getValue().getInfo() + "in " + phase);
@@ -142,7 +142,7 @@ public class ModLoader {
                         entry.getValue().setEnabled(false);
                     }
                     modLatch.countDown();
-                    progress.countDown();
+                    progress.dec();
                 });
             }
             modLatch.await();
@@ -162,7 +162,7 @@ public class ModLoader {
         MinosoftMod instance;
         try {
             Log.log(LogMessageType.MOD_LOADING, LogLevels.VERBOSE, () -> "Trying to load " + file.getAbsolutePath());
-            progress.countUp();
+            progress.inc();
             ZipFile zipFile = new ZipFile(file);
             ModInfo modInfo = new ModInfo(Util.readJsonFromZip("mod.json", zipFile));
             if (isModLoaded(modInfo)) {
@@ -182,7 +182,7 @@ public class ModLoader {
             e.printStackTrace();
             Log.log(LogMessageType.MOD_LOADING, LogLevels.WARN, () -> "Could not load " + file.getAbsolutePath());
         }
-        progress.countDown(); // failed
+        progress.dec(); // failed
         return instance;
     }
 

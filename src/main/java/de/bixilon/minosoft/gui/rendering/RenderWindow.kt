@@ -93,6 +93,8 @@ class RenderWindow(
     var tickCount = 0L
     var lastTickTimer = System.currentTimeMillis()
 
+    private var initalPositionReceived = false
+
     init {
         connection.registerEvent(CallbackEventInvoker.of<ConnectionStateChangeEvent> {
             if (it.connection.isDisconnected) {
@@ -106,8 +108,9 @@ class RenderWindow(
             if (packet !is PositionAndRotationS2CP) {
                 return@of
             }
-            if (latch.count > 0) {
-                latch.countDown()
+            if (!initalPositionReceived) {
+                latch.dec()
+                initalPositionReceived = true
             }
             queue += {
                 inputHandler.camera.setPosition(packet.position)
@@ -270,11 +273,11 @@ class RenderWindow(
         connection.fireEvent(ScreenResizeEvent(previousScreenDimensions = Vec2i(0, 0), screenDimensions = screenDimensions))
 
 
-        Log.log(LogMessageType.RENDERING_LOADING) { "Rendering is fully prepared in  ${stopwatch.totalTime()}" }
+        Log.log(LogMessageType.RENDERING_LOADING) { "Rendering is fully prepared in ${stopwatch.totalTime()}" }
         initialized = true
-        latch.countDown()
-        latch.waitUntilZero()
-        this.latch.waitUntilZero()
+        latch.dec()
+        latch.await()
+        this.latch.await()
         glfwShowWindow(windowId)
         Log.log(LogMessageType.RENDERING_GENERAL) { "Showing window after ${stopwatch.totalTime()}" }
     }

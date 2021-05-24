@@ -160,11 +160,7 @@ public final class Minosoft {
             taskWorker.addTask(new Task((progress) -> StartProgressWindow.show(START_STATUS_LATCH), "Progress Window", "Display progress window", Priorities.HIGH, TaskImportance.OPTIONAL, "JavaFX Toolkit", "Configuration"));
         }
         taskWorker.work(START_STATUS_LATCH);
-        try {
-            START_STATUS_LATCH.waitUntilZero();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        START_STATUS_LATCH.await();
         Log.info("Everything initialized!");
         if (StaticConfiguration.HEADLESS_MODE) {
             return;

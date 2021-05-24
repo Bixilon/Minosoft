@@ -15,7 +15,6 @@ package de.bixilon.minosoft.gui.main;
 
 import com.jfoenix.controls.JFXAlert;
 import com.jfoenix.controls.JFXDialogLayout;
-import com.jfoenix.controls.JFXProgressBar;
 import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.ShutdownReasons;
 import de.bixilon.minosoft.data.locale.LocaleManager;
@@ -27,6 +26,7 @@ import de.bixilon.minosoft.util.logging.LogMessageType;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -36,7 +36,7 @@ import java.util.concurrent.CountDownLatch;
 public class StartProgressWindow extends Application {
     public static final CountDownLatch TOOLKIT_LATCH = new CountDownLatch(2); // 2 if not started, 1 if started, 0 if loaded
     public static JFXAlert<Boolean> progressDialog;
-    private static JFXProgressBar progressBar;
+    private static ProgressBar progressBar;
     private static Label progressLabel;
     private static boolean exit;
 
@@ -56,7 +56,7 @@ public class StartProgressWindow extends Application {
                 JFXDialogLayout layout = new JFXDialogLayout();
                 layout.setHeading(new Label(LocaleManager.translate(Strings.MINOSOFT_STILL_STARTING_HEADER)));
 
-                progressBar = new JFXProgressBar();
+                progressBar = new ProgressBar();
                 progressBar.setPrefHeight(50);
 
                 progressLabel = new Label();
@@ -79,11 +79,7 @@ public class StartProgressWindow extends Application {
                 stage.toFront();
             });
             while (progress.getCount() > 0) {
-                try {
-                    progress.waitForChange();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                progress.waitForChange();
                 Platform.runLater(() -> {
                     progressBar.setProgress(1.0F - ((float) progress.getCount() / progress.getTotal()));
                     progressLabel.setText(String.format("%d / %d", (progress.getTotal() - progress.getCount()), progress.getTotal()));

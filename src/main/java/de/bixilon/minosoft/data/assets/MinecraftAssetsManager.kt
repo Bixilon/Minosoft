@@ -140,10 +140,10 @@ class MinecraftAssetsManager(
     }
 
     private fun verifyAssets(source: AssetsSource, latch: CountUpAndDownLatch?, assets: Map<ResourceLocation, String>): Map<ResourceLocation, String> {
-        val assetsLatch = CountUpAndDownLatch(assets.size)
-        latch?.addCount(assets.size)
+        val assetsLatch = CountUpAndDownLatch(assets.size, latch)
         for (hash in assets.values) {
             Minosoft.THREAD_POOL.execute {
+                // Log.log(LogMessageType.ASSETS, LogLevels.VERBOSE){"Assets, total=${assets.size}, latchTotal=${assetsLatch.total}, current=${assetsLatch.count}"}
                 val compressed = source != AssetsSource.PIXLYZER
                 if (StaticConfiguration.DEBUG_SLOW_LOADING) {
                     Thread.sleep(100L)
@@ -151,11 +151,11 @@ class MinecraftAssetsManager(
                 if (!verifyAssetHash(hash, compressed = compressed)) {
                     downloadAsset(source, hash)
                 }
-                latch?.countDown()
-                assetsLatch.countDown()
+                assetsLatch.dec()
             }
         }
-        assetsLatch.waitUntilZero()
+
+        assetsLatch.awaitWithChange()
         return assets
     }
 

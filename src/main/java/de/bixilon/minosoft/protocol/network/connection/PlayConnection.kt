@@ -158,10 +158,9 @@ class PlayConnection(
             if (!RenderConstants.DISABLE_RENDERING && !StaticConfiguration.HEADLESS_MODE) {
                 val renderer = Rendering(this)
                 this.renderer = renderer
-                renderer.init(latch)
-                while (!renderer.renderWindow.initialized || !renderer.audioPlayer.initialized) {
-                    latch.waitForChange()
-                }
+                val renderLatch = CountUpAndDownLatch(0, latch)
+                renderer.init(renderLatch)
+                renderLatch.awaitWithChange()
             }
             Log.log(LogMessageType.NETWORK_STATUS, level = LogLevels.INFO) { "Connecting to server: $address" }
             network.connect(address)
@@ -172,7 +171,7 @@ class PlayConnection(
             lastException = MappingsLoadingException("Mappings could not be loaded", exception)
             connectionState = ConnectionStates.FAILED_NO_RETRY
         }
-        latch.countDown()
+        latch.dec()
     }
 
 

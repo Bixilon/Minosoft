@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.sound
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.google.gson.JsonPrimitive
+import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.sounds.SoundEvent
 import de.bixilon.minosoft.gui.rendering.Rendering
@@ -23,6 +24,7 @@ import de.bixilon.minosoft.gui.rendering.input.camera.Camera
 import de.bixilon.minosoft.gui.rendering.modding.events.CameraPositionChangeEvent
 import de.bixilon.minosoft.gui.rendering.sound.sounds.Sound
 import de.bixilon.minosoft.gui.rendering.sound.sounds.SoundList
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3
 import de.bixilon.minosoft.modding.event.CallbackEventInvoker
 import de.bixilon.minosoft.modding.event.events.PlaySoundEvent
@@ -45,7 +47,6 @@ import org.lwjgl.openal.EXTThreadLocalContext.alcSetThreadContext
 import org.lwjgl.system.MemoryUtil
 import java.nio.ByteBuffer
 import java.nio.IntBuffer
-import java.nio.ShortBuffer
 
 
 class AudioPlayer(
@@ -63,8 +64,6 @@ class AudioPlayer(
     private val queue = Queue()
     private lateinit var listener: SoundListener
     private val sources: MutableList<SoundSource> = synchronizedListOf()
-
-    private var pcm: ShortBuffer? = null
 
 
     private fun preloadSounds() {
@@ -120,10 +119,13 @@ class AudioPlayer(
 
 
         initialized = true
-        latch.countDown()
+        latch.dec()
     }
 
     fun playSoundEvent(soundEvent: SoundEvent, position: Vec3? = null, volume: Float = 1.0f, pitch: Float = 1.0f) {
+        if (!initialized) {
+            return
+        }
         playSound(sounds[soundEvent]!!.getRandom(), position, volume, pitch)
     }
 
@@ -144,7 +146,7 @@ class AudioPlayer(
     }
 
 
-    fun playSound(sound: Sound, position: Vec3? = null, volume: Float = 1.0f, pitch: Float = 1.0f) {
+    private fun playSound(sound: Sound, position: Vec3? = null, volume: Float = 1.0f, pitch: Float = 1.0f) {
         queue += add@{
             sound.load(connection.assetsManager)
             if (sound.loadFailed) {
@@ -159,12 +161,12 @@ class AudioPlayer(
                 source.relative = false
                 source.position = it
             } ?: let {
-                source.position = Vec3(0, 0, 0)
+                source.position = Vec3.EMPTY
                 source.relative = true
             }
             source.sound = sound
             source.pitch = pitch * sound.pitch
-            source.gain = volume * sound.volume
+            source.gain = volume * sound.volume * Minosoft.config.config.game.sound.masterVolume
             source.play()
         }
     }
@@ -191,7 +193,6 @@ class AudioPlayer(
         }
 
         Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Destroying OpenAL context..." }
-        MemoryUtil.memFree(pcm)
 
         alcSetThreadContext(MemoryUtil.NULL)
         alcDestroyContext(context)
