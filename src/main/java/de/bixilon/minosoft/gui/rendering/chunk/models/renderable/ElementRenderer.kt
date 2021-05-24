@@ -29,6 +29,7 @@ import de.bixilon.minosoft.gui.rendering.textures.TextureTransparencies
 import de.bixilon.minosoft.gui.rendering.util.VecUtil
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.rotate
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3
 import glm_.vec3.Vec3
 
 class ElementRenderer(
@@ -83,7 +84,7 @@ class ElementRenderer(
 
         for ((drawPositionIndex, texturePositionIndex) in DRAW_ODER) {
             val input = drawPositions[drawPositionIndex]
-            val output = context.blockPosition plus context.offset + input + DRAW_OFFSET
+            val output = context.blockPosition.toVec3 + input + DRAW_OFFSET + context.offset
             mesh.addVertex(
                 position = output,
                 textureCoordinates = texturePositions[texturePositionIndex]!!,

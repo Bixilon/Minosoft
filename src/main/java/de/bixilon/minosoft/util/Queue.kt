@@ -27,7 +27,7 @@ class Queue {
         add(runnable)
     }
 
-    fun work(maxJobs: Int) {
+    fun work(maxJobs: Int = Int.MAX_VALUE) {
         var jobsDone = 0
         for (runnable in queue.toSynchronizedList()) {
             this.queue.remove(runnable)

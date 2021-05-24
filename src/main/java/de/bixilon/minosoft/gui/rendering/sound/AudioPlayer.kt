@@ -22,19 +22,20 @@ import de.bixilon.minosoft.gui.rendering.Rendering
 import de.bixilon.minosoft.gui.rendering.sound.sounds.Sound
 import de.bixilon.minosoft.gui.rendering.sound.sounds.SoundList
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.protocol.protocol.ConnectionStates
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.CountUpAndDownLatch
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
+import de.bixilon.minosoft.util.KUtil.synchronizedListOf
+import de.bixilon.minosoft.util.KUtil.toSynchronizedList
+import de.bixilon.minosoft.util.Queue
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
-import org.lwjgl.BufferUtils.createShortBuffer
 import org.lwjgl.openal.AL
-import org.lwjgl.openal.AL10.*
 import org.lwjgl.openal.ALC
 import org.lwjgl.openal.ALC10.*
 import org.lwjgl.openal.EXTThreadLocalContext.alcSetThreadContext
-import org.lwjgl.stb.STBVorbis.stb_vorbis_get_samples_short_interleaved
 import org.lwjgl.system.MemoryUtil
 import java.nio.ByteBuffer
 import java.nio.IntBuffer
@@ -53,16 +54,35 @@ class AudioPlayer(
     private var device = 0L
     private var context = 0L
 
-    private var source = 0
+    private val queue = Queue()
+    private lateinit var listener: SoundListener
+    private val sources: MutableList<SoundSource> = synchronizedListOf()
 
     private var pcm: ShortBuffer? = null
+
+
+    private fun preloadSounds() {
+        Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Preloading sounds..." }
+        if (SoundConstants.DISABLE_PRELOADING) {
+            return
+        }
+
+        for (soundList in sounds.values) {
+            for (sound in soundList.sounds) {
+                if (SoundConstants.PRELOAD_ALL_SOUNDS || sound.preload) {
+                    sound.load(connection.assetsManager)
+                }
+            }
+        }
+    }
 
 
     fun init(latch: CountUpAndDownLatch) {
         Log.log(LogMessageType.RENDERING_LOADING, LogLevels.INFO) { "Loading OpenAL..." }
 
-        Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Loading sounds.json" }
         loadSounds()
+        preloadSounds()
+
 
 
         Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Initializing OpenAL..." }
@@ -77,59 +97,84 @@ class AudioPlayer(
         val deviceCaps = ALC.createCapabilities(device)
         AL.createCapabilities(deviceCaps)
 
-        val listener = SoundListener()
-
-        val source = SoundSource(false)
-
-
-        // Testing, ToDo
-        val sound = sounds[connection.registries.soundEventRegistry[0]]!!.sounds.iterator().next()
-
-        sound.load(connection.assetsManager)
+        listener = SoundListener()
 
         Log.log(LogMessageType.RENDERING_LOADING, LogLevels.INFO) { "OpenAL loaded!" }
-
-
-        val pcm = createShortBuffer(sound.samplesLength)
-
-        pcm.limit(stb_vorbis_get_samples_short_interleaved(sound.handle, sound.channels, pcm) * sound.channels)
-
-        val buffer = alGenBuffers()
-
-        alBufferData(buffer, sound.format, pcm, sound.sampleRate)
-
-        source.buffer = buffer
-        source.play()
-
-        while (source.isPlaying) {
-            Thread.sleep(1L)
-        }
-        Log.log(LogMessageType.RENDERING_LOADING, LogLevels.INFO) { "Sound played!" }
 
 
         initialized = true
         latch.countDown()
     }
 
+    fun playSoundEvent(soundEvent: SoundEvent) {
+        playSound(sounds[soundEvent]!!.getRandom())
+    }
+
+
+    private fun getAvailableSource(): SoundSource? {
+        for (source in sources.toSynchronizedList()) {
+            if (source.available) {
+                return source
+            }
+        }
+        // no source available
+        if (sources.size > SoundConstants.MAX_SOURCES_AMOUNT) {
+            return null
+        }
+        val source = SoundSource(false)
+        sources += source
+
+        return source
+    }
+
+
+    fun playSound(sound: Sound) {
+        queue += add@{
+            sound.load(connection.assetsManager)
+            if (sound.loadFailed) {
+                return@add
+            }
+            val source = getAvailableSource() ?: let {
+                Log.log(LogMessageType.RENDERING_GENERAL, LogLevels.WARN) { "Can not play sound: No source available!" }
+                return@add
+            }
+            source.sound = sound
+            source.play()
+        }
+    }
+
     fun startLoop() {
-        while (connection.isConnected) {
+        while (connection.connectionState != ConnectionStates.DISCONNECTING) {
+            queue.work()
             Thread.sleep(1L)
         }
     }
 
     fun exit() {
-        //  alDeleteBuffers(buffers)
-        alDeleteSources(source)
+        Log.log(LogMessageType.RENDERING_LOADING, LogLevels.INFO) { "Unloading OpenAL..." }
 
-        //MemoryUtil.memFree(buffers)
+        Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Unloading sounds..." }
+        for (soundList in sounds.values) {
+            for (sound in soundList.sounds) {
+                sound.unload()
+            }
+        }
+        Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Unloading sources..." }
+        for (source in sources.toSynchronizedList()) {
+            source.unload()
+        }
+
+        Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Destroying OpenAL context..." }
         MemoryUtil.memFree(pcm)
 
         alcSetThreadContext(MemoryUtil.NULL)
         alcDestroyContext(context)
         alcCloseDevice(device)
+        Log.log(LogMessageType.RENDERING_LOADING, LogLevels.INFO) { "Unloaded OpenAL!" }
     }
 
     private fun loadSounds() {
+        Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Loading sounds.json" }
         val data = connection.assetsManager.readJsonAsset(SOUNDS_INDEX_FILE)
 
         for ((soundEventResourceLocation, json) in data.entrySet()) {

@@ -13,31 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.sound
 
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
-import glm_.vec3.Vec3
-import org.lwjgl.openal.AL10.*
+object SoundConstants {
+    const val PRELOAD_ALL_SOUNDS = false
+    const val DISABLE_PRELOADING = false
 
-class SoundListener(position: Vec3 = Vec3.EMPTY) {
-
-    var position: Vec3 = position
-        set(value) {
-            alListener3f(AL_POSITION, value.x, value.y, value.z)
-            field = value
-        }
-
-    var velocity: Vec3 = Vec3.EMPTY
-        set(value) {
-            alListener3f(AL_VELOCITY, value.x, value.y, value.z)
-            field = value
-        }
-
-    fun setOrientation(look: Vec3, up: Vec3) {
-        alListenerfv(AL_ORIENTATION, floatArrayOf(look.x, look.y, look.z, up.x, up.y, up.z))
-    }
-
-    init {
-        this.position = position
-        this.velocity = Vec3.EMPTY
-        setOrientation(Vec3.EMPTY, Vec3(0.0f, 1.0f, 0.0f))
-    }
+    const val MAX_SOURCES_AMOUNT = 32
 }

@@ -148,14 +148,10 @@ object VecUtil {
         }
 
     val Vec3i.entityPosition: Vec3
-        get() {
-            return Vec3(x + 0.5f, y, z + 0.5f) // ToDo
-        }
+        get() = Vec3(x + 0.5f, y, z + 0.5f) // ToDo
 
     val Vec3.blockPosition: Vec3i
-        get() {
-            return Vec3i((x - 0.5f).toInt(), y.toInt(), (z - 0.5f).toInt()) // ToDo
-        }
+        get() = Vec3i((x - 0.5f).toInt(), y.toInt(), (z - 0.5f).toInt()) // ToDo
 
     fun Vec3i.Companion.of(chunkPosition: Vec2i, sectionHeight: Int, inChunkSectionPosition: Vec3i): Vec3i {
         return Vec3i(
@@ -198,8 +194,8 @@ object VecUtil {
     fun Vec3i.getWorldOffset(block: Block): Vec3 {
         if (block.randomOffsetType == null || !Minosoft.config.config.game.other.flowerRandomOffset) {
             return EMPTY_VEC3
-
         }
+
         val positionHash = generatePositionHash(x, 0, z)
         val maxModelOffset = 0.25f // ToDo: use block.model.max_model_offset
 
@@ -239,18 +235,22 @@ object VecUtil {
                 position[axis].ceilInt - 1
             }
         }
+
         fun getLengthMultiplier(direction: Vec3, position: Vec3, axis: Axes): Float {
             return (getTarget(direction, position, axis) - position[axis]) / direction[axis]
         }
+
         val directionXDistance = getLengthMultiplier(direction, position, Axes.X)
         val directionYDistance = getLengthMultiplier(direction, position, Axes.Y)
         val directionZDistance = getLengthMultiplier(direction, position, Axes.Z)
         return glm.min(directionXDistance, directionYDistance, directionZDistance)
     }
 
-    val Vec3.min: Float get() = glm.min(this.x, this.y, this.z)
+    val Vec3.min: Float
+        get() = glm.min(this.x, this.y, this.z)
 
-    val Vec3.max: Float get() = glm.max(this.x, this.y, this.z)
+    val Vec3.max: Float
+        get() = glm.max(this.x, this.y, this.z)
 
     val Vec3.signs: Vec3
         get() {
@@ -283,8 +283,11 @@ object VecUtil {
         return minDistanceDirection
     }
 
+    val Vec3i.toVec3: Vec3
+        get() = Vec3(this)
+
     operator fun Vec3.get(axis: Axes): Float {
-        return when(axis) {
+        return when (axis) {
             Axes.X -> this.x
             Axes.Y -> this.y
             Axes.Z -> this.z

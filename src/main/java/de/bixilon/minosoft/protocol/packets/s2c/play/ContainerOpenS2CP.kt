@@ -26,7 +26,7 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
 class ContainerOpenS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
-    val containerId = if (buffer.versionId <= V_1_16) { // ToDo: This is completely guessed
+    val containerId = if (buffer.versionId <= V_1_14) { // ToDo: This is completely guessed, it has changed between 1.13 and 1.14, same as #L38
         buffer.readUnsignedByte()
     } else {
         buffer.readVarInt()
@@ -35,7 +35,7 @@ class ContainerOpenS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         buffer.versionId < V_14W03B -> {
             buffer.connection.registries.containerTypeRegistry[buffer.readUnsignedByte()]
         }
-        buffer.versionId >= V_1_16 -> { // ToDo: This is completely guessed
+        buffer.versionId >= V_1_14 -> { // ToDo: This is completely guessed
             buffer.connection.registries.containerTypeRegistry[buffer.readVarInt()]
         }
         else -> {

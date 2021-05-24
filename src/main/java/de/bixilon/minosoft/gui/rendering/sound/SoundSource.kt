@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.sound
 
+import de.bixilon.minosoft.gui.rendering.sound.sounds.Sound
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
 import glm_.vec3.Vec3
 import org.lwjgl.openal.AL10.*
@@ -52,14 +53,22 @@ class SoundSource(loop: Boolean = false) {
             field = value
         }
 
-    var buffer: Int = -1
+    var sound: Sound? = null
         set(value) {
-            alSourcei(source, AL_BUFFER, value)
+            stop()
+            if (value?.loaded != true || value.loadFailed) {
+                field = null
+                return
+            }
+            alSourcei(source, AL_BUFFER, value.buffer)
             field = value
         }
 
     val isPlaying: Boolean
         get() = alGetSourcei(source, AL_SOURCE_STATE) == AL_PLAYING
+
+    val available: Boolean
+        get() = isPlaying
 
     fun play() {
         alSourcePlay(source)
@@ -73,7 +82,7 @@ class SoundSource(loop: Boolean = false) {
         alSourceStop(source)
     }
 
-    fun delete() {
+    fun unload() {
         stop()
         alDeleteSources(source)
     }

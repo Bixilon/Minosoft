@@ -29,6 +29,7 @@ import de.bixilon.minosoft.modding.event.events.BlockBreakAckEvent
 import de.bixilon.minosoft.protocol.packets.c2s.play.ArmSwingC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.BlockBreakC2SP
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.util.KUtil.asResourceLocation
 import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
 import glm_.pow
 import glm_.vec3.Vec3i
@@ -131,6 +132,8 @@ class LeftClickHandler(
             connection.sendPacket(BlockBreakC2SP(BlockBreakC2SP.BreakType.FINISHED_DIGGING, raycastHit.blockPosition, raycastHit.hitDirection))
             clearDigging()
             connection.world.setBlockState(raycastHit.blockPosition, null)
+
+            renderWindow.rendering.audioPlayer.playSoundEvent(connection.registries.soundEventRegistry[BLOCK_BREAK_SOUND]!!) // ToDO
         }
 
         val canStartBreaking = currentTime - breakSent >= ProtocolDefinition.TICK_TIME
@@ -267,5 +270,9 @@ class LeftClickHandler(
             return
         }
         swingArm()
+    }
+
+    companion object {
+        val BLOCK_BREAK_SOUND = "minecraft:block.metal.break".asResourceLocation()
     }
 }

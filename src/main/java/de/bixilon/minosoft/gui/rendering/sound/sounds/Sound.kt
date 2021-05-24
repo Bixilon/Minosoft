@@ -19,8 +19,7 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import org.lwjgl.BufferUtils
-import org.lwjgl.openal.AL10.AL_FORMAT_MONO16
-import org.lwjgl.openal.AL10.AL_FORMAT_STEREO16
+import org.lwjgl.openal.AL10.*
 import org.lwjgl.stb.STBVorbis.*
 import org.lwjgl.stb.STBVorbisInfo
 import org.lwjgl.system.MemoryUtil
@@ -41,47 +40,74 @@ data class Sound(
         private set
     var loadFailed: Boolean = false
         private set
-    var buffer: ByteBuffer? = null
-    var handle: Long = -1L
     var channels: Int = -1
+        private set
     var sampleRate: Int = -1
+        private set
     var samplesLength: Int = -1
+        private set
     var sampleSeconds: Float = -1.0f
+        private set
+    var buffer = -1
+        private set
 
-    var format: Int = -1
+    private var vorbisBuffer: ByteBuffer? = null
 
+    @Synchronized
     fun load(assetsManager: AssetsManager) {
         if (loaded || loadFailed) {
             return
         }
         Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Loading audio file: $path" }
         try {
-
-            val buffer = assetsManager.readByteAsset(path)
-            this.buffer = buffer
-
+            val vorbisBuffer = assetsManager.readByteAsset(path)
+            this.vorbisBuffer = vorbisBuffer
 
             val error = BufferUtils.createIntBuffer(1)
-            handle = stb_vorbis_open_memory(buffer, error, null)
-            if (handle == MemoryUtil.NULL) {
+            val vorbis = stb_vorbis_open_memory(vorbisBuffer, error, null)
+            if (vorbis == MemoryUtil.NULL) {
                 throw IllegalStateException("Can not load vorbis: ${path}: ${error[0]}")
             }
-            val info = stb_vorbis_get_info(handle, STBVorbisInfo.malloc())
+            val info = stb_vorbis_get_info(vorbis, STBVorbisInfo.malloc())
             channels = info.channels()
-            format = when (channels) {
+            val format = when (channels) {
                 1 -> AL_FORMAT_MONO16
                 2 -> AL_FORMAT_STEREO16
                 else -> TODO("Channels: $channels")
             }
             sampleRate = info.sample_rate()
 
-            samplesLength = stb_vorbis_stream_length_in_samples(handle)
-            sampleSeconds = stb_vorbis_stream_length_in_seconds(handle)
+            samplesLength = stb_vorbis_stream_length_in_samples(vorbis)
+            sampleSeconds = stb_vorbis_stream_length_in_seconds(vorbis)
 
+
+            val pcm = BufferUtils.createShortBuffer(samplesLength)
+
+            pcm.limit(stb_vorbis_get_samples_short_interleaved(vorbis, channels, pcm) * channels)
+            //ToDo: Somehow crashed?: MemoryUtil.memFree(vorbisBuffer)
+
+            this.buffer = alGenBuffers()
+
+            alBufferData(buffer, format, pcm, sampleRate)
             loaded = true
         } catch (exception: FileNotFoundException) {
             loadFailed = true
             Log.log(LogMessageType.RENDERING_LOADING, LogLevels.WARN) { "Can not load sound: $path: $exception" }
         }
+    }
+
+    @Synchronized
+    fun unload() {
+        if (!loaded) {
+            return
+        }
+        alDeleteBuffers(buffer)
+        vorbisBuffer?.let { MemoryUtil.memFree(it) }
+        buffer = -1
+        channels = -1
+        sampleRate = -1
+        samplesLength = -1
+        sampleSeconds = -1.0f
+        loaded = false
     }
 }
