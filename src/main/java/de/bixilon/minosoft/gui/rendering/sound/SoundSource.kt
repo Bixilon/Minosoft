@@ -18,16 +18,20 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
 import glm_.vec3.Vec3
 import org.lwjgl.openal.AL10.*
 
-class SoundSource(loop: Boolean = false) {
+class SoundSource {
     private val source: Int = alGenSources()
 
-    init {
-        if (loop) {
-            alSourcei(source, AL_LOOPING, AL_TRUE)
-        } else {
-            alSourcei(source, AL_SOURCE_RELATIVE, AL_TRUE)
+    var loop: Boolean = false
+        set(value) {
+            alSourcei(source, AL_LOOPING, value.AL_VALUE)
+            field = value
         }
-    }
+
+    var relative: Boolean = false
+        set(value) {
+            alSourcei(source, AL_SOURCE_RELATIVE, value.AL_VALUE)
+            field = value
+        }
 
     var position: Vec3 = Vec3.EMPTY
         set(value) {
@@ -68,7 +72,7 @@ class SoundSource(loop: Boolean = false) {
         get() = alGetSourcei(source, AL_SOURCE_STATE) == AL_PLAYING
 
     val available: Boolean
-        get() = isPlaying
+        get() = !isPlaying
 
     fun play() {
         alSourcePlay(source)
@@ -85,6 +89,15 @@ class SoundSource(loop: Boolean = false) {
     fun unload() {
         stop()
         alDeleteSources(source)
+    }
+
+    companion object {
+        val Boolean.AL_VALUE: Int
+            get() = if (this) {
+                AL_TRUE
+            } else {
+                AL_FALSE
+            }
     }
 
 }

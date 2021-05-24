@@ -24,6 +24,7 @@ import de.bixilon.minosoft.data.mappings.items.tools.MiningToolItem
 import de.bixilon.minosoft.data.player.Hands
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3
 import de.bixilon.minosoft.modding.event.CallbackEventInvoker
 import de.bixilon.minosoft.modding.event.events.BlockBreakAckEvent
 import de.bixilon.minosoft.protocol.packets.c2s.play.ArmSwingC2SP
@@ -133,7 +134,7 @@ class LeftClickHandler(
             clearDigging()
             connection.world.setBlockState(raycastHit.blockPosition, null)
 
-            renderWindow.rendering.audioPlayer.playSoundEvent(connection.registries.soundEventRegistry[BLOCK_BREAK_SOUND]!!) // ToDO
+            renderWindow.rendering.audioPlayer.playSoundEvent(connection.registries.soundEventRegistry[BLOCK_BREAK_SOUND]!!, raycastHit.blockPosition.toVec3) // ToDo
         }
 
         val canStartBreaking = currentTime - breakSent >= ProtocolDefinition.TICK_TIME

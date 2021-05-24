@@ -10,23 +10,17 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.data.mappings.sounds
 
-import com.google.gson.JsonObject
-import de.bixilon.minosoft.data.mappings.ResourceLocation
-import de.bixilon.minosoft.data.mappings.registry.RegistryItem
-import de.bixilon.minosoft.data.mappings.registry.ResourceLocationDeserializer
-import de.bixilon.minosoft.data.mappings.versions.Registries
+package de.bixilon.minosoft.gui.rendering.modding.events
 
-data class SoundEvent(
-    override val resourceLocation: ResourceLocation,
-) : RegistryItem {
+import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.Rendering
+import glm_.vec3.Vec3
 
-    companion object : ResourceLocationDeserializer<SoundEvent> {
-        override fun deserialize(mappings: Registries?, resourceLocation: ResourceLocation, data: JsonObject): SoundEvent {
-            return SoundEvent(
-                resourceLocation = resourceLocation,
-            )
-        }
-    }
+class CameraPositionChangeEvent(
+    renderWindow: RenderWindow = Rendering.currentContext!!,
+    newPosition: Vec3,
+) : RenderEvent(renderWindow) {
+    val newPosition: Vec3 = newPosition
+        get() = Vec3(field)
 }

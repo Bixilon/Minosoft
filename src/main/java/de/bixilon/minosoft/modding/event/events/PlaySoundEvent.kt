@@ -10,23 +10,25 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.data.mappings.sounds
 
-import com.google.gson.JsonObject
-import de.bixilon.minosoft.data.mappings.ResourceLocation
-import de.bixilon.minosoft.data.mappings.registry.RegistryItem
-import de.bixilon.minosoft.data.mappings.registry.ResourceLocationDeserializer
-import de.bixilon.minosoft.data.mappings.versions.Registries
+package de.bixilon.minosoft.modding.event.events
 
-data class SoundEvent(
-    override val resourceLocation: ResourceLocation,
-) : RegistryItem {
+import de.bixilon.minosoft.data.SoundCategories
+import de.bixilon.minosoft.data.mappings.sounds.SoundEvent
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.protocol.packets.s2c.play.SoundEventS2CP
+import glm_.vec3.Vec3i
 
-    companion object : ResourceLocationDeserializer<SoundEvent> {
-        override fun deserialize(mappings: Registries?, resourceLocation: ResourceLocation, data: JsonObject): SoundEvent {
-            return SoundEvent(
-                resourceLocation = resourceLocation,
-            )
-        }
-    }
+class PlaySoundEvent(
+    connection: PlayConnection,
+    val category: SoundCategories?,
+    position: Vec3i,
+    val soundEvent: SoundEvent,
+    val volume: Float,
+    val pitch: Float,
+) : CancelableEvent(connection) {
+    val position: Vec3i = position
+        get() = Vec3i(field)
+
+    constructor(connection: PlayConnection, packet: SoundEventS2CP) : this(connection, packet.category, packet.position, packet.soundEvent, packet.volume, packet.pitch)
 }

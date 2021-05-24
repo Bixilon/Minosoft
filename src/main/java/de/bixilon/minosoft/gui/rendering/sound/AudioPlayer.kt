@@ -19,8 +19,13 @@ import com.google.gson.JsonPrimitive
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.sounds.SoundEvent
 import de.bixilon.minosoft.gui.rendering.Rendering
+import de.bixilon.minosoft.gui.rendering.input.camera.Camera
+import de.bixilon.minosoft.gui.rendering.modding.events.CameraPositionChangeEvent
 import de.bixilon.minosoft.gui.rendering.sound.sounds.Sound
 import de.bixilon.minosoft.gui.rendering.sound.sounds.SoundList
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3
+import de.bixilon.minosoft.modding.event.CallbackEventInvoker
+import de.bixilon.minosoft.modding.event.events.PlaySoundEvent
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ConnectionStates
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
@@ -32,6 +37,7 @@ import de.bixilon.minosoft.util.Queue
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
+import glm_.vec3.Vec3
 import org.lwjgl.openal.AL
 import org.lwjgl.openal.ALC
 import org.lwjgl.openal.ALC10.*
@@ -99,6 +105,17 @@ class AudioPlayer(
 
         listener = SoundListener()
 
+        connection.registerEvent(CallbackEventInvoker.of<CameraPositionChangeEvent> {
+            queue += {
+                listener.position = it.newPosition
+                listener.setOrientation(it.renderWindow.inputHandler.camera.cameraFront, Camera.CAMERA_UP_VEC3)
+            }
+        })
+
+        connection.registerEvent(CallbackEventInvoker.of<PlaySoundEvent> {
+            playSoundEvent(it.soundEvent, it.position.toVec3, it.volume, it.pitch)
+        })
+
         Log.log(LogMessageType.RENDERING_LOADING, LogLevels.INFO) { "OpenAL loaded!" }
 
 
@@ -106,10 +123,9 @@ class AudioPlayer(
         latch.countDown()
     }
 
-    fun playSoundEvent(soundEvent: SoundEvent) {
-        playSound(sounds[soundEvent]!!.getRandom())
+    fun playSoundEvent(soundEvent: SoundEvent, position: Vec3? = null, volume: Float = 1.0f, pitch: Float = 1.0f) {
+        playSound(sounds[soundEvent]!!.getRandom(), position, volume, pitch)
     }
-
 
     private fun getAvailableSource(): SoundSource? {
         for (source in sources.toSynchronizedList()) {
@@ -121,24 +137,34 @@ class AudioPlayer(
         if (sources.size > SoundConstants.MAX_SOURCES_AMOUNT) {
             return null
         }
-        val source = SoundSource(false)
+        val source = SoundSource()
         sources += source
 
         return source
     }
 
 
-    fun playSound(sound: Sound) {
+    fun playSound(sound: Sound, position: Vec3? = null, volume: Float = 1.0f, pitch: Float = 1.0f) {
         queue += add@{
             sound.load(connection.assetsManager)
             if (sound.loadFailed) {
                 return@add
             }
             val source = getAvailableSource() ?: let {
+                // ToDo: Queue sound for later (and check a certain delay to not make the game feel laggy)
                 Log.log(LogMessageType.RENDERING_GENERAL, LogLevels.WARN) { "Can not play sound: No source available!" }
                 return@add
             }
+            position?.let {
+                source.relative = false
+                source.position = it
+            } ?: let {
+                source.position = Vec3(0, 0, 0)
+                source.relative = true
+            }
             source.sound = sound
+            source.pitch = pitch * sound.pitch
+            source.gain = volume * sound.volume
             source.play()
         }
     }

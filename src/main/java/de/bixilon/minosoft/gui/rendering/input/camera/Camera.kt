@@ -21,6 +21,7 @@ import de.bixilon.minosoft.data.mappings.biomes.Biome
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.modding.events.CameraMatrixChangeEvent
+import de.bixilon.minosoft.gui.rendering.modding.events.CameraPositionChangeEvent
 import de.bixilon.minosoft.gui.rendering.modding.events.FrustumChangeEvent
 import de.bixilon.minosoft.gui.rendering.modding.events.ScreenResizeEvent
 import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
@@ -173,6 +174,7 @@ class Camera(
                 skyRenderer.setSkyColor(RenderConstants.BLACK_COLOR)
             }
         } ?: skyRenderer.setSkyColor(RenderConstants.DEFAULT_SKY_COLOR)
+        connection.fireEvent(CameraPositionChangeEvent(renderWindow, cameraPosition))
     }
 
     private fun calculateProjectionMatrix(screenDimensions: Vec2): Mat4 {
@@ -302,6 +304,7 @@ class Camera(
     fun setPosition(position: Vec3) {
         playerEntity.position = position
         cameraPosition = getAbsoluteCameraPosition()
+        positionChangeCallback()
     }
 
     fun getTargetBlock(): RaycastHit? {
@@ -339,7 +342,7 @@ class Camera(
     }
 
     companion object {
-        private val CAMERA_UP_VEC3 = Vec3(0.0f, 1.0f, 0.0f)
+        val CAMERA_UP_VEC3 = Vec3(0.0f, 1.0f, 0.0f)
         private const val PLAYER_EYE_HEIGHT = 1.3 // player is 1.8 blocks high, the camera is normally at 0.5. 1.8 - 0.5 = 1.3
         private const val PLAYER_SPRINT_SPEED_MODIFIER = 1.30000001192092896
 

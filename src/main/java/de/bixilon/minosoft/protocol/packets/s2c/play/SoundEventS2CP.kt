@@ -14,6 +14,8 @@ package de.bixilon.minosoft.protocol.packets.s2c.play
 
 import de.bixilon.minosoft.data.SoundCategories
 import de.bixilon.minosoft.data.mappings.sounds.SoundEvent
+import de.bixilon.minosoft.modding.event.events.PlaySoundEvent
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
@@ -46,10 +48,14 @@ class SoundEventS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         position = Vec3i(buffer.readFixedPointNumberInt() * 4, buffer.readFixedPointNumberInt() * 4, buffer.readFixedPointNumberInt() * 4)
         volume = buffer.readFloat()
         pitch = if (buffer.versionId < ProtocolVersions.V_16W20A) {
-            buffer.readByte() * ProtocolDefinition.PITCH_CALCULATION_CONSTANT / 100f
+            buffer.readByte() * ProtocolDefinition.PITCH_CALCULATION_CONSTANT / 100.0f
         } else {
             buffer.readFloat()
         }
+    }
+
+    override fun handle(connection: PlayConnection) {
+        connection.fireEvent(PlaySoundEvent(connection, this))
     }
 
     override fun log() {
