@@ -30,7 +30,6 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.floor
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.getWorldOffset
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.inChunkSectionPosition
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.nearestIntegerPositionDirection
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
 import de.bixilon.minosoft.modding.event.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
@@ -319,27 +318,25 @@ class Camera(
 
         for (i in 0..RAYCAST_MAX_STEPS) {
             val blockPosition = currentPosition.floor
-            val blockState = connection.world[blockPosition]
-            val distance = blockState?.outlineShape?.let {
-                val aabb = it + blockPosition + blockPosition.getWorldOffset(blockState.block)
-                aabb.raycast(currentPosition, direction)
-            } ?: -1.0f
-
-            if (distance >= 0.0f && blockState != null) {
-                currentPosition += direction * distance
-                return RaycastHit(
-                    currentPosition,
-                    getTotalDistance() + distance,
-                    blockState = blockState,
-                    hitDirection = currentPosition.nearestIntegerPositionDirection,
-                    steps = i,
-                )
+            val blockState = connection.world.getBlockState(blockPosition)
+            if (blockState != null) {
+                val voxelShapeRaycastResult = (blockState.outlineShape + blockPosition + blockPosition.getWorldOffset(blockState.block)).raycast(currentPosition, direction)
+                if (voxelShapeRaycastResult.hit) {
+                    currentPosition += direction * voxelShapeRaycastResult.distance
+                    return RaycastHit(
+                        currentPosition,
+                        blockPosition,
+                        getTotalDistance(),
+                        blockState,
+                        voxelShapeRaycastResult.direction,
+                        i,
+                    )
+                }
             }
-            currentPosition += direction * (VecUtil.getDistanceToNextIntegerAxis(currentPosition, direction) + 0.001)
+            currentPosition += direction * (VecUtil.getDistanceToNextIntegerAxisInDirection(currentPosition, direction) + 0.001)
         }
         return null
     }
-
 
     companion object {
         private val CAMERA_UP_VEC3 = Vec3(0.0f, 1.0f, 0.0f)

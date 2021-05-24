@@ -5,9 +5,7 @@ import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.gui.rendering.util.VecUtil
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.choose
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.max
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.min
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.get
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3
 import glm_.Java.Companion.glm
 import glm_.vec3.Vec3
@@ -36,9 +34,7 @@ class AABB {
     }
 
     fun intersect(other: AABB): Boolean {
-        return (min.x < other.max.x && max.x > other.min.x) &&
-                (min.y < other.max.y && max.y > other.min.y) &&
-                (min.z < other.max.z && max.z > other.min.z)
+        return (min.x < other.max.x && max.x > other.min.x) && (min.y < other.max.y && max.y > other.min.y) && (min.z < other.max.z && max.z > other.min.z)
     }
 
     operator fun plus(vec3: Vec3): AABB {
@@ -50,16 +46,8 @@ class AABB {
     }
 
     operator fun plus(other: AABB): AABB {
-        val newMin = Vec3(
-            glm.min(min.x, other.min.x),
-            glm.min(min.y, other.min.y),
-            glm.min(min.z, other.min.z)
-        )
-        val newMax = Vec3(
-            glm.max(max.x, other.max.x),
-            glm.max(max.y, other.max.y),
-            glm.max(max.z, other.max.z)
-        )
+        val newMin = Vec3(glm.min(min.x, other.min.x), glm.min(min.y, other.min.y), glm.min(min.z, other.min.z))
+        val newMax = Vec3(glm.max(max.x, other.max.x), glm.max(max.y, other.max.y), glm.max(max.z, other.max.z))
         return AABB(newMin, newMax)
     }
 
@@ -151,33 +139,30 @@ class AABB {
     }
 
     fun raycast(position: Vec3, direction: Vec3): Float {
-        val tMins = getLengthMultipliers(position, direction, min)
-        val tMaxs = getLengthMultipliers(position, direction, max)
-        val tMin = tMins.max
-        val tMax = tMaxs.min
-        if (tMax < 0 || tMin > tMax) {
-            return -1f
+        if (max - min == VecUtil.ONES_VEC3 || position in this) {
+            return 0f
         }
-        return tMin
-    }
-
-    private fun getLengthMultipliers(position: Vec3, direction: Vec3, target: Vec3): Vec3 {
-        return Vec3(
-            getLengthMultiplier(position, direction, target, Axes.X),
-            getLengthMultiplier(position, direction, target, Axes.Y),
-            getLengthMultiplier(position, direction, target, Axes.Z),
-        )
+        var tMin = 0f
+        var tMax = +100f
+        for (axis in Axes.VALUES) {
+            val t1 = getLengthMultiplier(position, direction, min, axis)
+            val t2 = getLengthMultiplier(position, direction, max, axis)
+            tMin = glm.max(tMin, glm.min(t1, t2))
+            tMax = glm.min(tMax, glm.max(t1, t2))
+        }
+        return if (tMax > tMin) {
+            tMin
+        } else {
+            Float.MAX_VALUE
+        }
     }
 
     private fun getLengthMultiplier(position: Vec3, direction: Vec3, target: Vec3, axis: Axes): Float {
-        return (position.choose(axis) - target.choose(axis)) / direction.choose(axis)
+        return (target[axis] - position[axis]) / direction[axis]
     }
 
     operator fun contains(position: Vec3): Boolean {
-        return (
-            position.x in min.x..max.x &&
-            position.y in min.y..max.y &&
-            position.z in min.z..max.z )
+        return (position.x in min.x..max.x && position.y in min.y..max.y && position.z in min.z..max.z)
     }
 
     companion object {

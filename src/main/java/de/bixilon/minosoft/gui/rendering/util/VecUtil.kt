@@ -21,8 +21,11 @@ import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.Directions
 import de.bixilon.minosoft.data.mappings.blocks.RandomOffsetTypes
 import de.bixilon.minosoft.data.mappings.blocks.types.Block
+import de.bixilon.minosoft.gui.rendering.chunk.models.AABB
 import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModelElement
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.util.MMath.ceilInt
+import de.bixilon.minosoft.util.MMath.floorInt
 import glm_.func.common.clamp
 import glm_.func.common.floor
 import glm_.func.cos
@@ -155,7 +158,11 @@ object VecUtil {
         }
 
     fun Vec3i.Companion.of(chunkPosition: Vec2i, sectionHeight: Int, inChunkSectionPosition: Vec3i): Vec3i {
-        return Vec3i(chunkPosition.x * ProtocolDefinition.SECTION_WIDTH_X + inChunkSectionPosition.x, sectionHeight * ProtocolDefinition.SECTION_HEIGHT_Y + inChunkSectionPosition.y, chunkPosition.y * ProtocolDefinition.SECTION_WIDTH_Z + inChunkSectionPosition.z) // ToDo
+        return Vec3i(
+            chunkPosition.x * ProtocolDefinition.SECTION_WIDTH_X + inChunkSectionPosition.x,
+            sectionHeight * ProtocolDefinition.SECTION_HEIGHT_Y + inChunkSectionPosition.y,
+            chunkPosition.y * ProtocolDefinition.SECTION_WIDTH_Z + inChunkSectionPosition.z
+        ) // ToDo
     }
 
     infix operator fun Vec3i.plus(vec3: Vec3i?): Vec3i {
@@ -224,27 +231,21 @@ object VecUtil {
         return hash shr 16
     }
 
-    fun getDistanceToNextIntegerAxis(position: Vec3, direction: Vec3): Float {
-        val directionXDistance = (direction * getLengthMultiplierToNextIntegerAxisInDirection(direction, position, Axes.X)).length()
-        val directionYDistance = (direction * getLengthMultiplierToNextIntegerAxisInDirection(direction, position, Axes.Y)).length()
-        val directionZDistance = (direction * getLengthMultiplierToNextIntegerAxisInDirection(direction, position, Axes.Z)).length()
-        return glm.min(directionXDistance, directionYDistance, directionZDistance)
-    }
-
-    private fun getLengthMultiplierToNextIntegerAxisInDirection(direction: Vec3, position: Vec3, axis: Axes): Float {
-        return (getTargetForNextIntegerAxisInDirection(direction, position, axis) - position.choose(axis)) / direction.choose(axis)
-    }
-
-    private fun getTargetForNextIntegerAxisInDirection(direction: Vec3, position: Vec3, axis: Axes): Int {
-        return if (direction.choose(axis) > 0) {
-            position.floor.choose(axis) + 1
-        } else {
-            position.floor.choose(axis)
+    fun getDistanceToNextIntegerAxisInDirection(position: Vec3, direction: Vec3): Float {
+        fun getTarget(direction: Vec3, position: Vec3, axis: Axes): Int {
+            return if (direction[axis] > 0) {
+                position[axis].floorInt + 1
+            } else {
+                position[axis].ceilInt - 1
+            }
         }
-    }
-
-    fun Vec3.choose(axis: Axes): Float {
-        return Axes.choose(axis, this)
+        fun getLengthMultiplier(direction: Vec3, position: Vec3, axis: Axes): Float {
+            return (getTarget(direction, position, axis) - position[axis]) / direction[axis]
+        }
+        val directionXDistance = getLengthMultiplier(direction, position, Axes.X)
+        val directionYDistance = getLengthMultiplier(direction, position, Axes.Y)
+        val directionZDistance = getLengthMultiplier(direction, position, Axes.Z)
+        return glm.min(directionXDistance, directionYDistance, directionZDistance)
     }
 
     val Vec3.min: Float get() = glm.min(this.x, this.y, this.z)
@@ -261,23 +262,40 @@ object VecUtil {
             return Vec3i(this.x.floor, this.y.floor, this.z.floor)
         }
 
-    fun Vec3i.choose(axis: Axes): Int {
-        return Axes.choose(axis, this)
+    fun Vec3.getMinDistanceDirection(aabb: AABB): Directions {
+        var minDistance = Float.MAX_VALUE
+        var minDistanceDirection = Directions.UP
+        fun getDistance(position: Vec3, direction: Directions): Float {
+            val axis = direction.axis
+            return (position[axis] - this[axis]) * -direction[axis]
+        }
+        for (direction in Directions.VALUES) {
+            val distance = if (direction[direction.axis] > 0f) {
+                getDistance(aabb.max, direction)
+            } else {
+                getDistance(aabb.min, direction)
+            }
+            if (distance < minDistance) {
+                minDistance = distance
+                minDistanceDirection = direction
+            }
+        }
+        return minDistanceDirection
     }
 
-    val Vec3.nearestIntegerPositionDirection: Directions
-        get() {
-            var minDistance = Float.MAX_VALUE
-            var minDistanceDirection = Directions.UP
-            for (direction in Directions.VALUES) {
-                val distance = (getTargetForNextIntegerAxisInDirection(direction.directionVector.toVec3, this, direction.axis) - this.choose(direction.axis)) / direction.directionVector.choose(direction.axis)
-                if (distance < minDistance) {
-                    minDistance = distance
-                    minDistanceDirection = direction
-                }
-            }
-            return minDistanceDirection
+    operator fun Vec3.get(axis: Axes): Float {
+        return when(axis) {
+            Axes.X -> this.x
+            Axes.Y -> this.y
+            Axes.Z -> this.z
         }
+    }
 
-    val Vec3i.toVec3: Vec3 get() = Vec3(this)
+    operator fun Vec3i.get(axis: Axes): Int {
+        return when(axis) {
+            Axes.X -> this.x
+            Axes.Y -> this.y
+            Axes.Z -> this.z
+        }
+    }
 }

@@ -93,13 +93,9 @@ object MMath {
         return value - floor(value)
     }
 
-    fun linearInterpolate(delta: Float, start: Float, end: Float): Float {
-        return start + delta * (end - start)
-    }
+    val Float.floorInt: Int get() = glm.floor(this).toInt()
 
-    val Float.floor: Float get() = glm.floor(this)
-
-    val Float.fractionalPart: Float get() = this - floor
+    val Float.ceilInt: Int get() = glm.ceil(this).toInt()
 
     val Boolean.positiveNegative: Int get() =
         if (this) {

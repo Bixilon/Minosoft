@@ -4,8 +4,10 @@ import com.google.gson.JsonArray
 import com.google.gson.JsonElement
 import com.google.gson.JsonPrimitive
 import de.bixilon.minosoft.data.Axes
+import de.bixilon.minosoft.data.Directions
 import de.bixilon.minosoft.gui.rendering.chunk.models.AABB
 import de.bixilon.minosoft.gui.rendering.util.VecUtil
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.getMinDistanceDirection
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3i
 
@@ -77,17 +79,22 @@ class VoxelShape(private val aabbs: MutableList<AABB> = mutableListOf()) : Itera
         return result
     }
 
-    fun raycast(position: Vec3, direction: Vec3): Float {
+    data class VoxelShapeRaycastResult(val hit: Boolean, val distance: Float, val direction: Directions)
+
+    fun raycast(position: Vec3, direction: Vec3): VoxelShapeRaycastResult {
+        var minDistance = Float.MAX_VALUE
+        var minDistanceDirection = Directions.UP
         for (aabb in aabbs) {
             if (position in aabb) {
-                return 0f
+                return VoxelShapeRaycastResult(true, 0f, position.getMinDistanceDirection(aabb).inverted)
             }
-            val current = aabb.raycast(position, direction)
-            if (current >= -0.1f) {
-                return 0f
+            val currentDistance = aabb.raycast(position, direction)
+            if (minDistance > currentDistance) {
+                minDistance = currentDistance
+                minDistanceDirection = (position + direction * currentDistance).getMinDistanceDirection(aabb)
             }
         }
-        return -1f
+        return VoxelShapeRaycastResult(minDistance != Float.MAX_VALUE, minDistance, minDistanceDirection.inverted)
     }
 
     companion object {
