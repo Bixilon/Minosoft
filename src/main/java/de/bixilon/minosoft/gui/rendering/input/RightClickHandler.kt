@@ -57,16 +57,18 @@ class RightClickHandler(
             raycastHit.blockState.block.use(renderWindow.connection, raycastHit.blockState, raycastHit.blockPosition, raycastHit, Hands.MAIN_HAND, itemInHand)
         }
 
+        if (currentTime - lastInteractionSent < ProtocolDefinition.TICK_TIME) {
+            return
+        }
+
         lastInteractionSent = currentTime
         lastInteraction = currentTime
 
         when (usage) {
-            BlockUsages.SUCCESS -> {
-                if (currentTime - lastInteractionSent < ProtocolDefinition.TICK_TIME) {
-                    return
+            BlockUsages.CONSUME, BlockUsages.SUCCESS -> {
+                if (usage == BlockUsages.SUCCESS) {
+                    connection.sendPacket(ArmSwingC2SP(Hands.MAIN_HAND))
                 }
-                connection.sendPacket(ArmSwingC2SP(Hands.MAIN_HAND))
-
                 connection.sendPacket(BlockPlaceC2SP(
                     position = raycastHit.blockPosition,
                     direction = raycastHit.hitDirection,

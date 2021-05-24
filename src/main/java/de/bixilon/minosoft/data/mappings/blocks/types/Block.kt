@@ -103,6 +103,7 @@ open class Block(
                 "FluidBlock" -> FluidBlock(resourceLocation, mappings, data)
                 "DoorBlock" -> DoorBlock(resourceLocation, mappings, data)
                 "LeverBlock" -> LeverBlock(resourceLocation, mappings, data)
+                "NoteBlock" -> NoteBlock(resourceLocation, mappings, data)
                 else -> Block(resourceLocation, mappings, data)
             }
 
