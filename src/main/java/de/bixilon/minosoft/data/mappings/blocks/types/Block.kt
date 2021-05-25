@@ -54,6 +54,7 @@ open class Block(
         protected set
     open lateinit var item: Item
         protected set
+    open lateinit var properties: Map<BlockProperties, List<Any>>
 
     override fun postInit(registries: Registries) {
         item = registries.itemRegistry[itemId]
@@ -107,6 +108,7 @@ open class Block(
                 else -> Block(resourceLocation, mappings, data)
             }
 
+            val properties: MutableMap<BlockProperties, MutableSet<Any>> = mutableMapOf()
 
             val states: MutableSet<BlockState> = mutableSetOf()
             for ((stateId, stateJson) in data["states"].asJsonObject.entrySet()) {
@@ -114,10 +116,20 @@ open class Block(
                 val state = BlockState.deserialize(block, mappings, stateJson, mappings.models)
                 mappings.blockStateIdMap[stateId.toInt()] = state
                 states.add(state)
+                for ((property, value) in state.properties) {
+                    properties.getOrPut(property) { mutableSetOf() } += value
+                }
+            }
+
+            val propertiesOut: MutableMap<BlockProperties, List<Any>> = mutableMapOf()
+
+            for ((property, values) in properties) {
+                propertiesOut[property] = values.toList()
             }
 
             block.states = states.toSet()
             block.defaultState = mappings.blockStateIdMap[data["default_state"].asInt]!!
+            block.properties = propertiesOut.toMap()
             return block
         }
     }

@@ -30,12 +30,10 @@ import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModel
 import de.bixilon.minosoft.gui.rendering.chunk.models.renderable.BlockLikeRenderer
 import de.bixilon.minosoft.gui.rendering.chunk.models.renderable.BlockRenderer
 import de.bixilon.minosoft.gui.rendering.chunk.models.renderable.MultipartRenderer
-import de.bixilon.minosoft.util.enum.ValuesEnum
 import glm_.vec3.Vec3i
 import java.util.*
 import kotlin.math.abs
 import kotlin.random.Random
-import kotlin.reflect.full.companionObjectInstance
 
 data class BlockState(
     val block: Block,
@@ -269,24 +267,16 @@ data class BlockState(
     fun cycle(property: BlockProperties): BlockState {
         val currentValue = properties[property] ?: throw IllegalArgumentException("$this has no property $property")
 
-        when (currentValue) {
-            is Boolean -> {
-                return withProperties(property to !currentValue)
-            }
-            is Number -> {
-                return try {
-                    withProperties(property to (currentValue.toInt() + 1))
-                } catch (exception: IllegalArgumentException) {
-                    withProperties(property to 0)
-                }
-            }
-            is Enum<*> -> {
-                val values = currentValue::class.companionObjectInstance as ValuesEnum<Enum<*>>
-                return withProperties(property to values.next(currentValue))
-            }
-            else -> {
-                return this
-            }
+        return withProperties(property to block.properties[property]!!.next(currentValue))
+    }
+
+    private fun <T> List<T>.next(current: T): T {
+        val index = this.indexOf(current)
+        check(index >= 0) { "List does not contain $current" }
+
+        if (index == this.size - 1) {
+            return this[0]
         }
+        return this[index + 1]
     }
 }
