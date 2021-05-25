@@ -37,7 +37,7 @@ class NoteblockBlockEntity(connection: PlayConnection) : BlockEntity(connection)
     }
 
     companion object : BlockEntityFactory<NoteblockBlockEntity> {
-        override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("minecraft:noteblock")
+        override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("minecraft:note_block")
 
         override fun build(connection: PlayConnection): NoteblockBlockEntity {
             return NoteblockBlockEntity(connection)
