@@ -1,6 +1,6 @@
 # Minosoft
 
-Minosoft is an open source minecraft client, written from scratch in java. It aims to bring more functionality and stability.
+Minosoft is an open source minecraft client, written from scratch in kotlin (and java). It aims to bring more functionality and stability.
 
 [![pipeline status](https://gitlab.bixilon.de/bixilon/minosoft/badges/master/pipeline.svg)](https://gitlab.bixilon.de/bixilon/minosoft/-/commits/master)
 [![](https://jitpack.io/v/de.bixilon.gitlab.bixilon/minosoft.svg)](https://jitpack.io/#de.bixilon.gitlab.bixilon/minosoft)
@@ -86,7 +86,29 @@ See [Credits](Credits.md).
 
 No clue, but still waiting for !21. Also, some features need to be implemented, so not soo soon (but we are getting closer). If you want to get notified about cool new changes, feel free to subscribe to our dev news telegram channel [@MinosoftDevNews](https://t.me/MinosoftDevNews)
 
-## Compiling and running
+## Downloads / Installation
+
+Because we have no releases or tags yet, we don't build any versions ourselves. This will soon™ change.
+
+### Linux
+
+#### Ubuntu / Debian
+
+TBO
+
+#### Arch
+
+Thanks to @jugendhacker we are in the arch user repository (AUR): https://aur.archlinux.org/packages/minosoft-git/
+
+### Windows
+
+TBO
+
+### MacOS
+
+Not compatible (yet)
+
+## Building
 
 1. Install Maven and java 16 (On Ubuntu based distributions: `sudo apt install maven openjdk-16-jdk`).
 2. Clone this repo (`git clone https://gitlab.bixilon.de/bixilon/minosoft.git`).
