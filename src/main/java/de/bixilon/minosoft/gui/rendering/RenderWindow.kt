@@ -292,11 +292,16 @@ class RenderWindow(
             sendDebugMessage("Toggled polygon mode!")
         }
 
-        inputHandler.registerKeyCallback(KeyBindingsNames.QUIT_RENDERING) {
-            glfwSetWindowShouldClose(windowId, true)
+        inputHandler.registerKeyCallback(KeyBindingsNames.QUIT_RENDERING) { glfwSetWindowShouldClose(windowId, true) }
+        inputHandler.registerKeyCallback(KeyBindingsNames.TAKE_SCREENSHOT) { screenshotTaker.takeScreenshot() }
+
+        inputHandler.registerKeyCallback(KeyBindingsNames.DEBUG_PAUSE_INCOMING_PACKETS) {
+            sendDebugMessage("Incoming packets: $it")
+            connection.network.pauseReceiving(it)
         }
-        inputHandler.registerKeyCallback(KeyBindingsNames.TAKE_SCREENSHOT) {
-            screenshotTaker.takeScreenshot()
+        inputHandler.registerKeyCallback(KeyBindingsNames.DEBUG_PAUSE_OUTGOING_PACKETS) {
+            sendDebugMessage("Outgoing packets: $it")
+            connection.network.pauseSending(it)
         }
     }
 

@@ -45,12 +45,6 @@ class ChatMessageS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         if (connection.fireEvent(event)) {
             return
         }
-        val additionalPrefix = when (position) {
-            ChatTextPositions.SYSTEM_MESSAGE -> "[SYSTEM] "
-            ChatTextPositions.ABOVE_HOTBAR -> "[HOTBAR] "
-            else -> ""
-        }
-        Log.log(LogMessageType.CHAT_IN, additionalPrefix = ChatComponent.of(additionalPrefix)) { event.message }
     }
 
     override fun log() {

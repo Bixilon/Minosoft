@@ -15,6 +15,7 @@ package de.bixilon.minosoft.protocol.network.connection
 
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.StaticConfiguration
+import de.bixilon.minosoft.data.ChatTextPositions
 import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.data.assets.MultiAssetsManager
 import de.bixilon.minosoft.data.commands.CommandRootNode
@@ -27,10 +28,13 @@ import de.bixilon.minosoft.data.player.Player
 import de.bixilon.minosoft.data.player.tab.TabList
 import de.bixilon.minosoft.data.scoreboard.ScoreboardManager
 import de.bixilon.minosoft.data.tags.Tag
+import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.Rendering
+import de.bixilon.minosoft.modding.event.CallbackEventInvoker
 import de.bixilon.minosoft.modding.event.EventInvoker
+import de.bixilon.minosoft.modding.event.events.ChatMessageReceivingEvent
 import de.bixilon.minosoft.modding.event.events.ConnectionStateChangeEvent
 import de.bixilon.minosoft.modding.event.events.PacketReceiveEvent
 import de.bixilon.minosoft.protocol.packets.c2s.handshaking.HandshakeC2SP
@@ -130,6 +134,15 @@ class PlayConnection(
                         velocityHandlerLastExecutionTime = currentTime
                     }
                     TimeWorker.addTask(velocityHandlerTask)
+
+                    registerEvent(CallbackEventInvoker.of<ChatMessageReceivingEvent> {
+                        val additionalPrefix = when (it.position) {
+                            ChatTextPositions.SYSTEM_MESSAGE -> "[SYSTEM] "
+                            ChatTextPositions.ABOVE_HOTBAR -> "[HOTBAR] "
+                            else -> ""
+                        }
+                        Log.log(LogMessageType.CHAT_IN, additionalPrefix = ChatComponent.of(additionalPrefix)) { it.message }
+                    })
                 }
                 ConnectionStates.DISCONNECTED -> {
                     // unregister all custom recipes

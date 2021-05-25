@@ -30,6 +30,7 @@ import de.bixilon.minosoft.util.ServerAddress;
 import de.bixilon.minosoft.util.logging.Log;
 import de.bixilon.minosoft.util.logging.LogLevels;
 import de.bixilon.minosoft.util.logging.LogMessageType;
+import oshi.util.Util;
 
 import javax.crypto.Cipher;
 import javax.crypto.CipherInputStream;
@@ -50,6 +51,8 @@ public class BlockingSocketNetwork extends Network {
     private Socket socket;
     private OutputStream outputStream;
     private InputStream inputStream;
+    private boolean sendingPaused;
+    private boolean receivingPaused;
 
     public BlockingSocketNetwork(Connection connection) {
         super(connection);
@@ -106,6 +109,9 @@ public class BlockingSocketNetwork extends Network {
                     }
                     try {
                         var typeAndPacket = prepareS2CPacket(this.inputStream);
+                        while (this.receivingPaused) {
+                            Util.sleep(1L);
+                        }
                         handlePacket(typeAndPacket.getKey(), typeAndPacket.getValue());
                     } catch (PacketParseException e) {
                         Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.WARN, e);
@@ -164,6 +170,16 @@ public class BlockingSocketNetwork extends Network {
         }
     }
 
+    @Override
+    public void pauseSending(boolean pause) {
+        this.sendingPaused = pause;
+    }
+
+    @Override
+    public void pauseReceiving(boolean pause) {
+        this.receivingPaused = pause;
+    }
+
     private void initSendThread() {
         this.socketSendThread = new Thread(() -> {
             try {
@@ -176,6 +192,9 @@ public class BlockingSocketNetwork extends Network {
                     }
 
                     C2SPacket packet = this.queue.take();
+                    while (this.sendingPaused) {
+                        Util.sleep(1L);
+                    }
                     packet.log();
 
                     this.outputStream.write(prepareC2SPacket(packet));

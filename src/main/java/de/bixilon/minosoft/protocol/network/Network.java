@@ -174,4 +174,8 @@ public abstract class Network {
     public void setCompressionThreshold(int threshold) {
         this.compressionThreshold = threshold;
     }
+
+    public abstract void pauseSending(boolean pause);
+
+    public abstract void pauseReceiving(boolean pause);
 }

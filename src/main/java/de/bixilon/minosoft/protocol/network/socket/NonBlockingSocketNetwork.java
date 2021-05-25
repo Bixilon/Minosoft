@@ -187,6 +187,16 @@ public class NonBlockingSocketNetwork extends Network {
         this.connection.setConnectionState(ConnectionStates.DISCONNECTED);
     }
 
+    @Override
+    public void pauseSending(boolean pause) {
+        throw new RuntimeException("TODO");
+    }
+
+    @Override
+    public void pauseReceiving(boolean pause) {
+        throw new RuntimeException("TODO");
+    }
+
     private byte[] encryptData(byte[] data) {
         if (this.encryptCipher == null) {
             return data;
