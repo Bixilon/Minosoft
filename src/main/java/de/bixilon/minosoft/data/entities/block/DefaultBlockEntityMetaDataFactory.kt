@@ -57,7 +57,7 @@ object DefaultBlockEntityMetaDataFactory {
             ChestBlockEntity,
             TrappedChestBlockEntity,
             BeehiveBlockEntity,
-            NoteblockBlockEntity,
+            NoteBlockBlockEntity,
             EndGatewayBlockEntity,
             PistonBlockEntity,
             StickyPistonBlockEntity,

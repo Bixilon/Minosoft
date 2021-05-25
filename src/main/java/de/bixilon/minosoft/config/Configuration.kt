@@ -27,6 +27,7 @@ import java.io.IOException
 import java.nio.file.Files
 
 class Configuration(private val configName: String = StaticConfiguration.CONFIG_FILENAME) {
+    private val saveLock = Object()
     private val file = File(StaticConfiguration.HOME_DIRECTORY + "config/minosoft/" + configName)
     val config: Config
 
@@ -61,34 +62,36 @@ class Configuration(private val configName: String = StaticConfiguration.CONFIG_
 
     fun saveToFile() {
         Minosoft.THREAD_POOL.execute {
-            // write config to temp file, delete original config, rename temp file to original file to avoid conflicts if minosoft gets closed while saving the config
-            val tempFile = File(StaticConfiguration.HOME_DIRECTORY + "config/minosoft/" + configName + ".tmp")
-            Util.createParentFolderIfNotExist(tempFile)
-            val buffer = Buffer()
-            val jsonWriter: JsonWriter = JsonWriter.of(buffer)
-            jsonWriter.indent = "  "
+            synchronized(saveLock) {
+                // write config to temp file, delete original config, rename temp file to original file to avoid conflicts if minosoft gets closed while saving the config
+                val tempFile = File(StaticConfiguration.HOME_DIRECTORY + "config/minosoft/" + configName + ".tmp")
+                Util.createParentFolderIfNotExist(tempFile)
+                val buffer = Buffer()
+                val jsonWriter: JsonWriter = JsonWriter.of(buffer)
+                jsonWriter.indent = "  "
 
-            synchronized(this.config) {
-                JSONSerializer.CONFIG_ADAPTER.toJson(jsonWriter, config)
-            }
-            val writer: FileWriter = try {
-                FileWriter(tempFile)
-            } catch (e: IOException) {
-                e.printStackTrace()
-                return@execute
-            }
-            writer.write(buffer.readUtf8())
-            try {
-                writer.close()
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
-            if (file.exists()) {
-                if (!file.delete()) {
-                    throw RuntimeException("Could not save config!")
+                synchronized(this.config) {
+                    JSONSerializer.CONFIG_ADAPTER.toJson(jsonWriter, config)
                 }
+                val writer: FileWriter = try {
+                    FileWriter(tempFile)
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                    return@execute
+                }
+                writer.write(buffer.readUtf8())
+                try {
+                    writer.close()
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                }
+                if (file.exists()) {
+                    if (!file.delete()) {
+                        throw RuntimeException("Could not save config!")
+                    }
+                }
+                Files.move(tempFile.toPath(), file.toPath())
             }
-            Files.move(tempFile.toPath(), file.toPath())
         }
     }
 

@@ -17,7 +17,7 @@ import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.blocks.properties.Instruments
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 
-class NoteblockBlockEntity(connection: PlayConnection) : BlockEntity(connection), BlockActionEntity {
+class NoteBlockBlockEntity(connection: PlayConnection) : BlockEntity(connection), BlockActionEntity {
     var instrument: Instruments? = null
         private set
     var pitch: Int? = null
@@ -36,11 +36,11 @@ class NoteblockBlockEntity(connection: PlayConnection) : BlockEntity(connection)
         pitch = data2.toInt()
     }
 
-    companion object : BlockEntityFactory<NoteblockBlockEntity> {
+    companion object : BlockEntityFactory<NoteBlockBlockEntity> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("minecraft:note_block")
 
-        override fun build(connection: PlayConnection): NoteblockBlockEntity {
-            return NoteblockBlockEntity(connection)
+        override fun build(connection: PlayConnection): NoteBlockBlockEntity {
+            return NoteBlockBlockEntity(connection)
         }
     }
 
