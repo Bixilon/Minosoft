@@ -105,6 +105,8 @@ open class Block(
                 "DoorBlock" -> DoorBlock(resourceLocation, mappings, data)
                 "LeverBlock" -> LeverBlock(resourceLocation, mappings, data)
                 "NoteBlock" -> NoteBlock(resourceLocation, mappings, data)
+                "RepeaterBlock" -> RepeaterBlock(resourceLocation, mappings, data)
+                "ComparatorBlock" -> ComparatorBlock(resourceLocation, mappings, data)
                 else -> Block(resourceLocation, mappings, data)
             }
 
