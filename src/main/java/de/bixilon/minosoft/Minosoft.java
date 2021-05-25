@@ -214,7 +214,7 @@ public final class Minosoft {
                 // disconnect from all servers
                 for (Object connection : CONNECTIONS.values().toArray()) {
                     var playConnection = (PlayConnection) connection;
-                    if (playConnection.getRenderer() != null) {
+                    if (playConnection.getRendering() != null) {
                         // ToDo
                         // playConnection.getRenderer().getAudioPlayer().exit();
                         // playConnection.getRenderer().getRenderWindow().exit();

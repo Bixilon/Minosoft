@@ -25,6 +25,7 @@ import de.bixilon.minosoft.gui.rendering.modding.events.CameraPositionChangeEven
 import de.bixilon.minosoft.gui.rendering.sound.sounds.Sound
 import de.bixilon.minosoft.gui.rendering.sound.sounds.SoundList
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.center
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3
 import de.bixilon.minosoft.modding.event.CallbackEventInvoker
 import de.bixilon.minosoft.modding.event.events.PlaySoundEvent
@@ -40,6 +41,7 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import glm_.vec3.Vec3
+import glm_.vec3.Vec3i
 import org.lwjgl.openal.AL
 import org.lwjgl.openal.ALC
 import org.lwjgl.openal.ALC10.*
@@ -122,6 +124,10 @@ class AudioPlayer(
         latch.dec()
     }
 
+    fun playSoundEvent(soundEvent: SoundEvent, position: Vec3i? = null, volume: Float = 1.0f, pitch: Float = 1.0f) {
+        playSoundEvent(soundEvent, position?.center, volume, pitch)
+    }
+
     fun playSoundEvent(soundEvent: SoundEvent, position: Vec3? = null, volume: Float = 1.0f, pitch: Float = 1.0f) {
         if (!initialized) {
             return
@@ -144,7 +150,6 @@ class AudioPlayer(
 
         return source
     }
-
 
     private fun playSound(sound: Sound, position: Vec3? = null, volume: Float = 1.0f, pitch: Float = 1.0f) {
         queue += add@{

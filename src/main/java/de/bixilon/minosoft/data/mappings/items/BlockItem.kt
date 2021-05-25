@@ -62,6 +62,10 @@ open class BlockItem(
             connection.player.inventory.validate()
         }
 
+        placeBlockState.placeSoundEvent?.let {
+            connection.rendering?.audioPlayer?.playSoundEvent(it, placePosition, placeBlockState.soundEventVolume, placeBlockState.soundEventPitch)
+        }
+
 
         connection.sendPacket(BlockPlaceC2SP(
             position = placePosition,

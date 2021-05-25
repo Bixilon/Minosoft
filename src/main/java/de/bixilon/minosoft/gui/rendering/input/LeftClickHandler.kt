@@ -24,7 +24,6 @@ import de.bixilon.minosoft.data.mappings.items.tools.MiningToolItem
 import de.bixilon.minosoft.data.player.Hands
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3
 import de.bixilon.minosoft.modding.event.CallbackEventInvoker
 import de.bixilon.minosoft.modding.event.events.BlockBreakAckEvent
 import de.bixilon.minosoft.protocol.packets.c2s.play.ArmSwingC2SP
@@ -134,7 +133,7 @@ class LeftClickHandler(
             connection.world.setBlockState(raycastHit.blockPosition, null)
 
             raycastHit.blockState.breakSoundEvent?.let {
-                renderWindow.rendering.audioPlayer.playSoundEvent(it, raycastHit.blockPosition.toVec3, volume = raycastHit.blockState.soundEventVolume, pitch = raycastHit.blockState.soundEventPitch)
+                renderWindow.rendering.audioPlayer.playSoundEvent(it, raycastHit.blockPosition, volume = raycastHit.blockState.soundEventVolume, pitch = raycastHit.blockState.soundEventPitch)
             }
         }
 

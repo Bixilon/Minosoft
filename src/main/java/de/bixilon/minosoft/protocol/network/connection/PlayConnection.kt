@@ -68,7 +68,7 @@ class PlayConnection(
     var commandRootNode: CommandRootNode? = null
 
 
-    var renderer: Rendering? = null
+    var rendering: Rendering? = null
         private set
     lateinit var player: Player
         private set
@@ -125,7 +125,7 @@ class PlayConnection(
                             for (entity in world.entities) {
                                 entity.tick(deltaTime)
                             }
-                            renderer?.renderWindow?.inputHandler?.camera?.checkPosition()
+                            rendering?.renderWindow?.inputHandler?.camera?.checkPosition()
                         }
                         velocityHandlerLastExecutionTime = currentTime
                     }
@@ -157,7 +157,7 @@ class PlayConnection(
 
             if (!RenderConstants.DISABLE_RENDERING && !StaticConfiguration.HEADLESS_MODE) {
                 val renderer = Rendering(this)
-                this.renderer = renderer
+                this.rendering = renderer
                 val renderLatch = CountUpAndDownLatch(0, latch)
                 renderer.init(renderLatch)
                 renderLatch.awaitWithChange()

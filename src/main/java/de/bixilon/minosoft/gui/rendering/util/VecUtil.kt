@@ -153,6 +153,9 @@ object VecUtil {
     val Vec3.blockPosition: Vec3i
         get() = Vec3i((x - 0.5f).toInt(), y.toInt(), (z - 0.5f).toInt()) // ToDo
 
+    val Vec3i.center: Vec3
+        get() = Vec3(x + 0.5f, y + 0.5f, z + 0.5f) // ToDo
+
     fun Vec3i.Companion.of(chunkPosition: Vec2i, sectionHeight: Int, inChunkSectionPosition: Vec3i): Vec3i {
         return Vec3i(
             chunkPosition.x * ProtocolDefinition.SECTION_WIDTH_X + inChunkSectionPosition.x,
