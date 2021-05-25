@@ -83,14 +83,14 @@ class AudioPlayer(
 
 
     fun init(latch: CountUpAndDownLatch) {
-        Log.log(LogMessageType.RENDERING_LOADING, LogLevels.INFO) { "Loading OpenAL..." }
+        Log.log(LogMessageType.AUDIO_LOADING, LogLevels.INFO) { "Loading OpenAL..." }
 
         loadSounds()
         preloadSounds()
 
 
 
-        Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Initializing OpenAL..." }
+        Log.log(LogMessageType.AUDIO_LOADING, LogLevels.VERBOSE) { "Initializing OpenAL..." }
         device = alcOpenDevice(null as ByteBuffer?)
         check(device != MemoryUtil.NULL) { "Failed to open the default device." }
 
@@ -115,7 +115,7 @@ class AudioPlayer(
             playSoundEvent(it.soundEvent, it.position.toVec3, it.volume, it.pitch)
         })
 
-        Log.log(LogMessageType.RENDERING_LOADING, LogLevels.INFO) { "OpenAL loaded!" }
+        Log.log(LogMessageType.AUDIO_LOADING, LogLevels.INFO) { "OpenAL loaded!" }
 
 
         initialized = true
@@ -154,7 +154,7 @@ class AudioPlayer(
             }
             val source = getAvailableSource() ?: let {
                 // ToDo: Queue sound for later (and check a certain delay to not make the game feel laggy)
-                Log.log(LogMessageType.RENDERING_GENERAL, LogLevels.WARN) { "Can not play sound: No source available!" }
+                Log.log(LogMessageType.AUDIO_LOADING, LogLevels.WARN) { "Can not play sound: No source available!" }
                 return@add
             }
             position?.let {
@@ -179,25 +179,25 @@ class AudioPlayer(
     }
 
     fun exit() {
-        Log.log(LogMessageType.RENDERING_LOADING, LogLevels.INFO) { "Unloading OpenAL..." }
+        Log.log(LogMessageType.AUDIO_LOADING, LogLevels.INFO) { "Unloading OpenAL..." }
 
-        Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Unloading sounds..." }
+        Log.log(LogMessageType.AUDIO_LOADING, LogLevels.VERBOSE) { "Unloading sounds..." }
         for (soundList in sounds.values) {
             for (sound in soundList.sounds) {
                 sound.unload()
             }
         }
-        Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Unloading sources..." }
+        Log.log(LogMessageType.AUDIO_LOADING, LogLevels.VERBOSE) { "Unloading sources..." }
         for (source in sources.toSynchronizedList()) {
             source.unload()
         }
 
-        Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Destroying OpenAL context..." }
+        Log.log(LogMessageType.AUDIO_LOADING, LogLevels.VERBOSE) { "Destroying OpenAL context..." }
 
         alcSetThreadContext(MemoryUtil.NULL)
         alcDestroyContext(context)
         alcCloseDevice(device)
-        Log.log(LogMessageType.RENDERING_LOADING, LogLevels.INFO) { "Unloaded OpenAL!" }
+        Log.log(LogMessageType.AUDIO_LOADING, LogLevels.INFO) { "Unloaded OpenAL!" }
     }
 
     private fun loadSounds() {

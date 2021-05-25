@@ -58,7 +58,7 @@ data class Sound(
         if (loaded || loadFailed) {
             return
         }
-        Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Loading audio file: $path" }
+        Log.log(LogMessageType.AUDIO_LOADING, LogLevels.VERBOSE) { "Loading audio file: $path" }
         try {
             val vorbisBuffer = assetsManager.readByteAsset(path)
             this.vorbisBuffer = vorbisBuffer
@@ -92,7 +92,7 @@ data class Sound(
             loaded = true
         } catch (exception: FileNotFoundException) {
             loadFailed = true
-            Log.log(LogMessageType.RENDERING_LOADING, LogLevels.WARN) { "Can not load sound: $path: $exception" }
+            Log.log(LogMessageType.AUDIO_LOADING, LogLevels.WARN) { "Can not load sound: $path: $exception" }
         }
     }
 
