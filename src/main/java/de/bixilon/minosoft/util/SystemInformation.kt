@@ -26,6 +26,7 @@ object SystemInformation {
     val PROCESSOR_TEXT = " ${RUNTIME.availableProcessors()}x ${HARDWARE_SYSTEM_INFO.processor.processorIdentifier.name.replace("\\s{2,}".toRegex(), "")}"
 
     val MAX_MEMORY_TEXT: String = getFormattedMaxMemory()
+    val PROCESSOR_SPEED = HARDWARE_SYSTEM_INFO.processor.maxFreq
 
 
     private fun getMaxMemory(): Long {

@@ -13,6 +13,10 @@
 
 package de.bixilon.minosoft.gui.rendering
 
+import de.bixilon.minosoft.Minosoft
+import de.bixilon.minosoft.util.SystemInformation
+import java.util.concurrent.ThreadLocalRandom
+
 class RenderStats {
     var fpsLastSecond = -1
         private set
@@ -50,7 +54,11 @@ class RenderStats {
 
         if (frameEndTime - lastFPSCalcTime > 1E9) {
             // 1 second
-            fpsLastSecond = framesLastSecond
+            fpsLastSecond = if (Minosoft.config.config.game.other.magicFPS) {
+                ThreadLocalRandom.current().nextInt(MAGIC_FPS - 10, MAGIC_FPS)
+            } else {
+                framesLastSecond
+            }
 
             framesLastSecond = 0
             lastFPSCalcTime = frameEndTime
@@ -61,5 +69,10 @@ class RenderStats {
 
         this.frameTime += frameTime
         this.avgFrameTime = this.frameTime / framesLastSecond
+    }
+
+
+    companion object {
+        private var MAGIC_FPS = ThreadLocalRandom.current().nextLong(SystemInformation.PROCESSOR_SPEED / 10000000 - 100, SystemInformation.PROCESSOR_SPEED / 10000000 + 100).toInt()
     }
 }

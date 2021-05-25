@@ -19,4 +19,5 @@ data class OtherGameConfig(
     @Json(name = "anti_moire_pattern") var antiMoirePattern: Boolean = true,
     @Json(name = "flower_random_offset") var flowerRandomOffset: Boolean = true,
     @Json(name = "block_outline") var blockOutline: BlockOutline = BlockOutline(),
+    @Json(name = "magic_fps") var magicFPS: Boolean = false,
 )

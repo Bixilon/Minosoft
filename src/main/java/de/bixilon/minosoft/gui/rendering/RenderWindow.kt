@@ -94,7 +94,7 @@ class RenderWindow(
     var tickCount = 0L
     var lastTickTimer = System.currentTimeMillis()
 
-    private var initalPositionReceived = false
+    private var initialPositionReceived = false
 
     init {
         connection.registerEvent(CallbackEventInvoker.of<ConnectionStateChangeEvent> {
@@ -109,9 +109,9 @@ class RenderWindow(
             if (packet !is PositionAndRotationS2CP) {
                 return@of
             }
-            if (!initalPositionReceived) {
+            if (!initialPositionReceived) {
                 latch.dec()
-                initalPositionReceived = true
+                initialPositionReceived = true
             }
             queue += {
                 inputHandler.camera.setPosition(packet.position)
