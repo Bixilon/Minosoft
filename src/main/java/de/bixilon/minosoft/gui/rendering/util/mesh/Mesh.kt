@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.util
+package de.bixilon.minosoft.gui.rendering.util.mesh
 
 import de.bixilon.minosoft.util.collections.ArrayFloatList
 import org.lwjgl.opengl.GL11.GL_TRIANGLES

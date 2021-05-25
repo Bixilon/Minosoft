@@ -17,7 +17,7 @@ import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.textures.Texture
-import de.bixilon.minosoft.gui.rendering.util.Mesh
+import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import glm_.vec2.Vec2
 import glm_.vec3.Vec3
 import org.lwjgl.opengl.GL11.GL_FLOAT

@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.sky
 
-import de.bixilon.minosoft.gui.rendering.util.Mesh
+import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import org.lwjgl.opengl.GL11.GL_FLOAT
 import org.lwjgl.opengl.GL20.glEnableVertexAttribArray
 import org.lwjgl.opengl.GL20.glVertexAttribPointer

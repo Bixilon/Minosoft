@@ -11,14 +11,39 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.hud
+package de.bixilon.minosoft.gui.rendering.particle
 
+import de.bixilon.minosoft.data.text.RGBColor
+import de.bixilon.minosoft.gui.rendering.RenderConstants
+import de.bixilon.minosoft.gui.rendering.textures.Texture
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
-import org.lwjgl.opengl.GL11.GL_FLOAT
+import glm_.vec3.Vec3
+import org.lwjgl.opengl.ARBVertexArrayObject.glBindVertexArray
+import org.lwjgl.opengl.GL11.*
 import org.lwjgl.opengl.GL20.glEnableVertexAttribArray
 import org.lwjgl.opengl.GL20.glVertexAttribPointer
 
-class HUDMesh : Mesh() {
+class ParticleMesh : Mesh() {
+
+    fun addVertex(position: Vec3, scale: Float, texture: Texture, tintColor: RGBColor) {
+        val textureLayer = if (RenderConstants.FORCE_DEBUG_TEXTURE) {
+            RenderConstants.DEBUG_TEXTURE_ID
+        } else {
+            (texture.arrayId shl 24) or texture.arrayLayer
+        }
+
+        data.addAll(floatArrayOf(
+            position.x,
+            position.y,
+            position.z,
+            texture.uvEnd.x,
+            texture.uvEnd.y,
+            Float.fromBits(textureLayer),
+            scale,
+            Float.fromBits(tintColor.rgba),
+        ))
+    }
+
 
     override fun load() {
         super.initializeBuffers(FLOATS_PER_VERTEX)
@@ -31,15 +56,17 @@ class HUDMesh : Mesh() {
         glEnableVertexAttribArray(index++)
         glVertexAttribPointer(index, 1, GL_FLOAT, false, FLOATS_PER_VERTEX * Float.SIZE_BYTES, (6 * Float.SIZE_BYTES).toLong())
         glEnableVertexAttribArray(index++)
+        glVertexAttribPointer(index, 1, GL_FLOAT, false, FLOATS_PER_VERTEX * Float.SIZE_BYTES, (7 * Float.SIZE_BYTES).toLong())
+        glEnableVertexAttribArray(index++)
         super.unbind()
     }
 
-    fun addCacheMesh(cacheMesh: HUDCacheMesh) {
-        data.addAll(cacheMesh.cache)
+    override fun draw() {
+        glBindVertexArray(vao)
+        glDrawArrays(GL_POINTS, 0, 1)
     }
 
-
     companion object {
-        const val FLOATS_PER_VERTEX = 7
+        private val FLOATS_PER_VERTEX = 8
     }
 }

@@ -11,19 +11,18 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.sky
+package de.bixilon.minosoft.gui.rendering.util.mesh
 
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.textures.Texture
-import de.bixilon.minosoft.gui.rendering.util.Mesh
 import glm_.vec2.Vec2
 import glm_.vec3.Vec3
 import org.lwjgl.opengl.GL11.GL_FLOAT
 import org.lwjgl.opengl.GL20.glEnableVertexAttribArray
 import org.lwjgl.opengl.GL20.glVertexAttribPointer
 
-class SkySunMesh : Mesh(initialCacheSize = 2 * 3 * FLOATS_PER_VERTEX) {
+open class SimpleTextureMesh : Mesh(initialCacheSize = 2 * 3 * FLOATS_PER_VERTEX) {
 
     fun addVertex(position: Vec3, texture: Texture, textureCoordinates: Vec2, tintColor: RGBColor) {
         val textureLayer = if (RenderConstants.FORCE_DEBUG_TEXTURE) {

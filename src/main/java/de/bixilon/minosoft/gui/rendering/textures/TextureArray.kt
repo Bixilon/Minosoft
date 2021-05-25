@@ -132,7 +132,7 @@ class TextureArray(val allTextures: MutableList<Texture>) {
             var lastSize = texture.size
             for (i in 0 until MAX_MIPMAP_LEVELS) {
                 val size = Vec2i(texture.size.x shr i, texture.size.y shr i)
-                if (i != 0) {
+                if (i != 0 && size.x != 0 && size.y != 0) {
                     lastBuffer = generateMipmap(lastBuffer, lastSize, size)
                     lastSize = size
                 }

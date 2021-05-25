@@ -23,6 +23,7 @@ import de.bixilon.minosoft.gui.rendering.RendererBuilder
 import de.bixilon.minosoft.gui.rendering.modding.events.CameraMatrixChangeEvent
 import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.gui.rendering.textures.Texture
+import de.bixilon.minosoft.gui.rendering.util.mesh.SimpleTextureMesh
 import de.bixilon.minosoft.modding.event.CallbackEventInvoker
 import de.bixilon.minosoft.modding.event.events.TimeChangeEvent
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
@@ -46,7 +47,7 @@ class SkyRenderer(
         resourceLocation = ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "sky/sun"),
     )
     private val skyboxMesh = SkyboxMesh()
-    private var skySunMesh = SkySunMesh()
+    private var skySunMesh = SimpleTextureMesh()
     private var sunTexture = Texture(SUN_TEXTURE_RESOURCE_LOCATION)
     private var recalculateSunNextFrame: Boolean = true
     private var bottomColor = ChatColors.BLACK
@@ -95,7 +96,7 @@ class SkyRenderer(
             setSunMatrix(renderWindow.inputHandler.camera.projectionMatrix * renderWindow.inputHandler.camera.viewMatrix.toMat3().toMat4())
             skySunMesh.unload()
 
-            skySunMesh = SkySunMesh()
+            skySunMesh = SimpleTextureMesh()
 
             fun addQuad(start: Vec3, end: Vec3, texture: Texture, tintColor: RGBColor) {
                 skySunMesh.addVertex(Vec3(start.x, start.y, start.z), texture, Vec2(0.0, 0.0), tintColor)

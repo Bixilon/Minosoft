@@ -155,7 +155,7 @@ class Shader(
 
 
     companion object {
-        private var currentShaderInUse: Shader? = null
+        private var currentShaderInUse: Shader? = null // ToDo: This is not safe todo
 
         private fun createShader(assetsManager: AssetsManager = Minosoft.MINOSOFT_ASSETS_MANAGER, resourceLocation: ResourceLocation, shaderType: Int, defines: Map<String, Any>, uniforms: MutableList<String>): Int? {
             val shaderId = glCreateShaderObjectARB(shaderType)

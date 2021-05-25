@@ -11,10 +11,35 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
+#version 330 core
 
-vec4 getRGBColor(uint color) {
-    return vec4(((color >> 16u) & 0xFFu) / 255.0f, ((color >> 8u) & 0xFFu) / 255.0f, (color & 0xFFu) / 255.0f, 1.0f);
-}
-vec4 getRGBAColor(uint color) {
-    return vec4(((color >> 24u) & 0xFFu) / 255.0f, ((color >> 16u) & 0xFFu) / 255.0f, ((color >> 8u) & 0xFFu) / 255.0f, (color & 0xFFu) / 255.0f);
+layout (location = 0) in vec3 vinPosition;
+layout (location = 1) in vec2 vinMaxUVCoordinates;
+layout (location = 2) in uint vinTextureLayer;
+
+layout (location = 3) in float vinScale;
+layout (location = 4) in uint vinTintColor;
+
+
+out Vertex
+{
+    uint textureIndex;
+    uint textureLayer;
+    vec2 maxUVCoordinates;
+
+    float scale;
+    vec4 tintColor;
+} ginVertex;
+
+#include "minosoft:color"
+
+void main() {
+    gl_Position = vec4(vinPosition, 1.0f);
+
+    ginVertex.textureIndex = vinTextureLayer >> 24u;
+    ginVertex.textureLayer = vinTextureLayer & 0xFFFFFFu;
+    ginVertex.maxUVCoordinates = vinMaxUVCoordinates;
+
+    ginVertex.scale = vinScale;
+    ginVertex.tintColor = getRGBAColor(vinTintColor);
 }

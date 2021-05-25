@@ -15,6 +15,7 @@ package de.bixilon.minosoft.util
 
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.util.enum.AliasableEnum
+import sun.misc.Unsafe
 import java.util.*
 import kotlin.Pair
 
@@ -99,5 +100,12 @@ object KUtil {
 
     fun pause() {
         var setBreakPointHere = 1
+    }
+
+    fun hardCrash() {
+        val field = Unsafe::class.java.getDeclaredField("theUnsafe")
+        field.isAccessible = true
+        val unsafe = field[null] as Unsafe
+        unsafe.putAddress(0, 0)
     }
 }

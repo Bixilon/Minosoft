@@ -195,7 +195,7 @@ data class BlockState(
                 collisionShape = collisionShape,
                 occlusionShape = occlusionShape,
                 outlineShape = outlineShape,
-                hardness = data["hardness"].asFloat,
+                hardness = data["hardness"]?.asFloat ?: 1.0f,
                 requiresTool = data["requires_tool"]?.asBoolean ?: material.soft,
                 breakSoundEvent = data["break_sound_type"]?.asInt?.let { registries.soundEventRegistry[it] },
                 stepSoundEvent = data["step_sound_type"]?.asInt?.let { registries.soundEventRegistry[it] },
