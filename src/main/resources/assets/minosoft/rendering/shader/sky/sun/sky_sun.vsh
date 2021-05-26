@@ -13,23 +13,23 @@
 
 #version 330 core
 
-layout (location = 0) in vec3 inPosition;
-layout (location = 1) in vec2 textureIndex;
-layout (location = 2) in uint textureLayer;
-layout (location = 3) in uint tintColor;
+layout (location = 0) in vec3 vinPosition;
+layout (location = 1) in vec2 vinUVCoordinates;
+layout (location = 2) in uint vinTextureLayer;
+layout (location = 3) in uint vinTintColor;
 
-out vec4 passTintColor;
-flat out uint passTextureIndex;
-out vec3 passTextureCoordinates;
+out vec4 finTintColor;
+flat out uint finTextureIndex;
+out vec3 finTextureCoordinates;
 
-uniform mat4 skyViewProjectionMatrix;
+uniform mat4 uSkyViewProjectionMatrix;
 
 #include "minosoft:color"
 
 void main() {
-    gl_Position = (skyViewProjectionMatrix * vec4(inPosition, 1.0f)).xyww - vec4(0.0f, 0.0f, 0.000001f, 0.0f);// prevent face fighting
+    gl_Position = (uSkyViewProjectionMatrix * vec4(vinPosition, 1.0f)).xyww - vec4(0.0f, 0.0f, 0.000001f, 0.0f);// prevent face fighting
 
-    passTextureCoordinates = vec3(textureIndex, textureLayer & 0xFFFFFFu);
-    passTextureIndex = textureLayer >> 24u;
-    passTintColor = getRGBAColor(tintColor);
+    finTextureCoordinates = vec3(vinUVCoordinates, vinTextureLayer & 0xFFFFFFu);
+    finTextureIndex = vinTextureLayer >> 24u;
+    finTintColor = getRGBAColor(vinTintColor);
 }

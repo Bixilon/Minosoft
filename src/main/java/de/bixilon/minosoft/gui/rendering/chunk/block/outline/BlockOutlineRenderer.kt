@@ -112,10 +112,10 @@ class BlockOutlineRenderer(
             glDepthFunc(GL_ALWAYS)
         }
         outlineShader.use()
-        outlineShader.setRGBColor("tintColor", Minosoft.config.config.game.other.blockOutline.outlineColor)
+        outlineShader.setRGBColor("uTintColor", Minosoft.config.config.game.other.blockOutline.outlineColor)
         outlineMesh.draw()
         collisionMesh?.let {
-            outlineShader.setRGBColor("tintColor", Minosoft.config.config.game.other.blockOutline.collisionColor)
+            outlineShader.setRGBColor("uTintColor", Minosoft.config.config.game.other.blockOutline.collisionColor)
             it.draw()
         }
         glEnable(GL_CULL_FACE)

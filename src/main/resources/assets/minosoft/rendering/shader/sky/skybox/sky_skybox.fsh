@@ -13,10 +13,10 @@
 
 #version 330 core
 
-out vec4 outColor;
+out vec4 foutColor;
 
-in vec4 color;
+in vec4 finColor;
 
 void main() {
-    outColor = color;
+    foutColor = finColor;
 }

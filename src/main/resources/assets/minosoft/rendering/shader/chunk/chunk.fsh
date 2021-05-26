@@ -15,32 +15,32 @@
 
 out vec4 outColor;
 
-flat in uint passFirstTextureIndex;
-in vec3 passFirstTextureCoordinates;
-flat in uint passSecondTextureIndex;
-in vec3 passSecondTextureCoordinates;
-in float passInterpolateBetweenTextures;
+flat in uint finTextureIndex1;
+in vec3 finTextureCoordinates1;
+flat in uint finTextureIndex2;
+in vec3 finTextureCoordinates2;
+in float finInterpolation;
 
-in vec4 passTintColor;
+in vec4 finTintColor;
 
 #include "minosoft:texture"
 
 void main() {
-    vec4 firstTexelColor = getTexture(passFirstTextureIndex, passFirstTextureCoordinates);
-    if (firstTexelColor.a == 0.0f) { // ToDo: This only works for alpha == 0. What about semi transparency? We would need to sort the faces, etc. See: https://learnopengl.com/Advanced-OpenGL/Blending
+    vec4 firstTexelColor = getTexture(finTextureIndex1, finTextureCoordinates1);
+    if (firstTexelColor.a == 0.0f) {
         discard;
     }
 
-    if (passInterpolateBetweenTextures == 0.0f) {
-        outColor = firstTexelColor * passTintColor;
+    if (finInterpolation == 0.0f) {
+        outColor = firstTexelColor * finTintColor;
         return;
     }
 
-    vec4 secondTexelColor =  getTexture(passSecondTextureIndex, passSecondTextureCoordinates);
+    vec4 secondTexelColor =  getTexture(finTextureIndex2, finTextureCoordinates2);
 
     if (secondTexelColor.a == 0.0f) {
         discard;
     }
 
-    outColor = mix(firstTexelColor, secondTexelColor, passInterpolateBetweenTextures) * passTintColor;
+    outColor = mix(firstTexelColor, secondTexelColor, finInterpolation) * finTintColor;
 }

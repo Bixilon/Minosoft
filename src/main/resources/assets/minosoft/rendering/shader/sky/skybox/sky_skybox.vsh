@@ -13,20 +13,21 @@
 
 #version 330 core
 
-layout (location = 0) in vec3 inPosition;
-out vec4 color;
+layout (location = 0) in vec3 vinPosition;
 
-uniform mat4 skyViewProjectionMatrix;
+out vec4 finColor;
 
-uniform vec4 bottomColor;
-uniform vec4 topColor;
+uniform mat4 uSkyViewProjectionMatrix;
+
+uniform vec4 uBottomColor;
+uniform vec4 uTopColor;
 
 void main() {
-    gl_Position = (skyViewProjectionMatrix * vec4(inPosition, 1.0)).xyww;
+    gl_Position = (uSkyViewProjectionMatrix * vec4(vinPosition, 1.0)).xyww;
 
-    if (inPosition.y < 0.5f) {
-        color = bottomColor;
+    if (vinPosition.y < 0.5f) {
+        finColor = uBottomColor;
     } else {
-        color = topColor;
+        finColor = uTopColor;
     }
 }

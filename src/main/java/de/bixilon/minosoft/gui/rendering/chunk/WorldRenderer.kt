@@ -179,8 +179,8 @@ class WorldRenderer(
         )
         chunkShader.load()
 
-        renderWindow.textures.use(chunkShader, "textureArray")
-        renderWindow.textures.animator.use(chunkShader, "uAnimationBuffer")
+        renderWindow.textures.use(chunkShader)
+        renderWindow.textures.animator.use(chunkShader)
 
         for (blockState in allBlocks!!) {
             for (model in blockState.renderers) {

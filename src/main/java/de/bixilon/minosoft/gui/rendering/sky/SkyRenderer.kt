@@ -65,7 +65,7 @@ class SkyRenderer(
         connection.registerEvent(CallbackEventInvoker.of<CameraMatrixChangeEvent> {
             val viewProjectionMatrix = it.projectionMatrix * it.viewMatrix.toMat3().toMat4()
             renderWindow.queue += {
-                skyboxShader.use().setMat4("skyViewProjectionMatrix", viewProjectionMatrix)
+                skyboxShader.use().setMat4("uSkyViewProjectionMatrix", viewProjectionMatrix)
                 setSunMatrix(viewProjectionMatrix)
             }
         })
@@ -84,11 +84,11 @@ class SkyRenderer(
         } else {
             projectionViewMatrix.rotate(timeAngle, Vec3(0.0f, 0.0f, 1.0f))
         }
-        skySunShader.use().setMat4("skyViewProjectionMatrix", rotatedMatrix) // ToDo: 180° is top, not correct yet
+        skySunShader.use().setMat4("uSkyViewProjectionMatrix", rotatedMatrix) // ToDo: 180° is top, not correct yet
     }
 
     override fun postInit() {
-        renderWindow.textures.use(skySunShader, "textureArray")
+        renderWindow.textures.use(skySunShader)
     }
 
     private fun drawSun() {
@@ -129,8 +129,8 @@ class SkyRenderer(
     private fun updateSkyColor() {
         skyboxShader.use()
 
-        skyboxShader.setRGBColor("bottomColor", bottomColor)
-        skyboxShader.setRGBColor("topColor", topColor)
+        skyboxShader.setRGBColor("uBottomColor", bottomColor)
+        skyboxShader.setRGBColor("uTopColor", topColor)
     }
 
     private fun drawSkybox() {

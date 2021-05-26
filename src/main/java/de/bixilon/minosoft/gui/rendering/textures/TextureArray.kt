@@ -245,7 +245,7 @@ class TextureArray(val allTextures: MutableList<Texture>) {
     }
 
 
-    fun use(shader: Shader, arrayName: String) {
+    fun use(shader: Shader, arrayName: String = "uTextures") {
         shader.use()
 
         for ((index, textureId) in textureIds.withIndex()) {
@@ -323,7 +323,7 @@ class TextureArray(val allTextures: MutableList<Texture>) {
         }
 
 
-        fun use(shader: Shader, bufferName: String) {
+        fun use(shader: Shader, bufferName: String = "uAnimationBuffer") {
             shader.use()
 
             shader.setUniformBuffer(bufferName, 0)

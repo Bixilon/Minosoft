@@ -13,10 +13,10 @@
 
 #version 330 core
 
-out vec4 outColor;
+out vec4 foutColor;
 
-uniform vec4 tintColor;
+uniform vec4 uTintColor;
 
 void main() {
-    outColor = tintColor;
+    foutColor = uTintColor;
 }

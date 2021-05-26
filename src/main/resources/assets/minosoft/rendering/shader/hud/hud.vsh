@@ -13,20 +13,20 @@
 
 #version 330 core
 
-layout (location = 0) in vec3 inPosition;
-layout (location = 1) in vec2 textureIndex;
-layout (location = 2) in uint textureLayer;
-layout (location = 3) in uint tintColor;
+layout (location = 0) in vec3 vinPosition;
+layout (location = 1) in vec2 vinUVCoordinates;
+layout (location = 2) in uint vinRextureLayer;
+layout (location = 3) in uint vinTintColor;
 
-flat out uint passTextureIndex;
-out vec3 passTextureCoordinates;
-out vec4 passTintColor;
+flat out uint finTextureIndex;
+out vec3 finTextureCoordinates;
+out vec4 finTintColor;
 
 #include "minosoft:color"
 
 void main() {
-    gl_Position = vec4(inPosition.xyz, 1.0f);
-    passTextureCoordinates = vec3(textureIndex, textureLayer & 0xFFFFFFu);
-    passTextureIndex = textureLayer >> 24u;
-    passTintColor = getRGBAColor(tintColor);
+    gl_Position = vec4(vinPosition.xyz, 1.0f);
+    finTextureCoordinates = vec3(vinUVCoordinates, vinRextureLayer & 0xFFFFFFu);
+    finTextureIndex = vinRextureLayer >> 24u;
+    finTintColor = getRGBAColor(vinTintColor);
 }

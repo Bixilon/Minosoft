@@ -61,8 +61,8 @@ class ParticleRenderer(
             defines = mapOf("ANIMATED_TEXTURE_COUNT" to MMath.clamp(renderWindow.textures.animator.animatedTextures.size, 1, TextureArray.MAX_ANIMATED_TEXTURE)),
         )
         particleShader.load()
-        renderWindow.textures.use(particleShader, "textureArray")
-        renderWindow.textures.animator.use(particleShader, "uAnimationBuffer")
+        renderWindow.textures.use(particleShader)
+        renderWindow.textures.animator.use(particleShader)
     }
 
     var last = 0L

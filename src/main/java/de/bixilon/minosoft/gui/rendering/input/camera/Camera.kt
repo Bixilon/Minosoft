@@ -147,8 +147,8 @@ class Camera(
             viewProjectionMatrix = viewProjectionMatrix,
         ))
         for (shader in renderWindow.shaders) {
-            if (shader.uniforms.contains("viewProjectionMatrix")) {
-                shader.use().setMat4("viewProjectionMatrix", viewProjectionMatrix)
+            if (shader.uniforms.contains("uViewProjectionMatrix")) {
+                shader.use().setMat4("uViewProjectionMatrix", viewProjectionMatrix)
             }
         }
         positionChangeCallback()

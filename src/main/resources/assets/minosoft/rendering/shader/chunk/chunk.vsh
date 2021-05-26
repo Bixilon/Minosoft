@@ -13,22 +13,22 @@
 
 #version 330 core
 
-layout (location = 0) in vec3 inPosition;
-layout (location = 1) in vec2 textureIndex;
-layout (location = 2) in uint textureLayer;
+layout (location = 0) in vec3 vinPosition;
+layout (location = 1) in vec2 vinUVCoordinates;
+layout (location = 2) in uint vinTextureLayer;
 
-layout (location = 3) in int animationIndex;
-layout (location = 4) in uint tintColor;
+layout (location = 3) in int vinAnimationIndex;
+layout (location = 4) in uint vinTintColor;
 
-flat out uint passFirstTextureIndex;
-out vec3 passFirstTextureCoordinates;
-flat out uint passSecondTextureIndex;
-out vec3 passSecondTextureCoordinates;
-out float passInterpolateBetweenTextures;
+flat out uint finTextureIndex1;
+out vec3 finTextureCoordinates1;
+flat out uint finTextureIndex2;
+out vec3 finTextureCoordinates2;
+out float finInterpolation;
 
-out vec4 passTintColor;
+out vec4 finTintColor;
 
-uniform mat4 viewProjectionMatrix;
+uniform mat4 uViewProjectionMatrix;
 
 
 layout(std140) uniform uAnimationBuffer
@@ -39,29 +39,29 @@ layout(std140) uniform uAnimationBuffer
 #include "minosoft:color"
 
 void main() {
-    gl_Position = viewProjectionMatrix * vec4(inPosition, 1.0f);
-    passTintColor = getRGBColor(tintColor);
+    gl_Position = uViewProjectionMatrix * vec4(vinPosition, 1.0f);
+    finTintColor = getRGBColor(vinTintColor);
 
 
-    if (animationIndex == -1) {
-        passFirstTextureIndex = textureLayer >> 24u;
+    if (vinAnimationIndex == -1) {
+        finTextureIndex1 = vinTextureLayer >> 24u;
 
-        passFirstTextureCoordinates = vec3(textureIndex, (textureLayer & 0xFFFFFFu));
+        finTextureCoordinates1 = vec3(vinUVCoordinates, (vinTextureLayer & 0xFFFFFFu));
 
-        passInterpolateBetweenTextures = 0.0f;
+        finInterpolation = 0.0f;
         return;
     }
 
-    uvec4 data = uAnimationData[animationIndex];
+    uvec4 data = uAnimationData[vinAnimationIndex];
     uint firstTexture = data.x;
     uint secondTexture = data.y;
     uint interpolation = data.z;
 
-    passFirstTextureIndex = firstTexture >> 24u;
-    passFirstTextureCoordinates = vec3(textureIndex, firstTexture & 0xFFFFFFu);
+    finTextureIndex1 = firstTexture >> 24u;
+    finTextureCoordinates1 = vec3(vinUVCoordinates, firstTexture & 0xFFFFFFu);
 
-    passSecondTextureIndex = secondTexture >> 24u;
-    passSecondTextureCoordinates = vec3(textureIndex, secondTexture & 0xFFFFFFu);
+    finTextureIndex2 = secondTexture >> 24u;
+    finTextureCoordinates2 = vec3(vinUVCoordinates, secondTexture & 0xFFFFFFu);
 
-    passInterpolateBetweenTextures = interpolation / 100.0f;
+    finInterpolation = interpolation / 100.0f;
 }

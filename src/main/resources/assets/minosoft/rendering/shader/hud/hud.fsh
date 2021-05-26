@@ -13,27 +13,23 @@
 
 #version 330 core
 
-out vec4 outColor;
+out vec4 foutColor;
 
-flat in uint passTextureIndex;
-in vec3 passTextureCoordinates;
-in vec4 passTintColor;
+flat in uint finTextureIndex;
+in vec3 finTextureCoordinates;
+in vec4 finTintColor;
 
 #include "minosoft:texture"
 
 void main() {
-    vec4 texelColor = getTexture(passTextureIndex, passTextureCoordinates);
+    vec4 texelColor = getTexture(finTextureIndex, finTextureCoordinates);
 
-    if (passTintColor.a == 1.0f && texelColor.a == 0) {
+    if (finTintColor.a == 1.0f && texelColor.a == 0) {
         discard;
     }
-    if (passTintColor.a != 0.0f){
-        texelColor *= passTintColor;
+    if (finTintColor.a != 0.0f){
+        texelColor *= finTintColor;
     }
 
-    outColor = texelColor;
-
-    //
-    //  outColor = vec4(1.0f, 0.0f, 0.5f, 1.0f);
-    //
+    foutColor = texelColor;
 }

@@ -143,7 +143,7 @@ class HUDRenderer(val connection: PlayConnection, val renderWindow: RenderWindow
             element.postInit()
         }
 
-        renderWindow.textures.use(hudShader, "textureArray")
+        renderWindow.textures.use(hudShader)
 
         for (element in hudElements.values) {
             element.second.postInit()
