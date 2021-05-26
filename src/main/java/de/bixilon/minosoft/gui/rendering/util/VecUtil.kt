@@ -39,17 +39,13 @@ import glm_.vec3.Vec3i
 object VecUtil {
     val EMPTY_VEC3 = Vec3(0, 0, 0)
     val EMPTY_VEC3I = Vec3i(0, 0, 0)
-    val BLOCK_SIZE_VEC3 = Vec3(BlockModelElement.BLOCK_RESOLUTION)
     val ONES_VEC3 = Vec3(1)
 
     val Vec3.Companion.EMPTY: Vec3
-        get() = EMPTY_VEC3
+        get() = Vec3(EMPTY_VEC3)
 
     val Vec3.Companion.ONE: Vec3
-        get() = ONES_VEC3
-
-    val Vec3.Companion.BLOCK_SIZE: Vec3
-        get() = BLOCK_SIZE_VEC3
+        get() = Vec3(ONES_VEC3)
 
     fun JsonElement.toVec3(): Vec3 {
         return when (this) {

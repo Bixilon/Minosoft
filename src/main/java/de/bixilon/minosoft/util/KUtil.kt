@@ -18,6 +18,7 @@ import de.bixilon.minosoft.util.enum.AliasableEnum
 import sun.misc.Unsafe
 import java.util.*
 import kotlin.Pair
+import kotlin.random.Random
 
 object KUtil {
 
@@ -107,5 +108,9 @@ object KUtil {
         field.isAccessible = true
         val unsafe = field[null] as Unsafe
         unsafe.putAddress(0, 0)
+    }
+
+    fun Random.nextFloat(min: Float = Float.MIN_VALUE, max: Float = Float.MAX_VALUE): Float {
+        return min + this.nextFloat() * (max - min)
     }
 }

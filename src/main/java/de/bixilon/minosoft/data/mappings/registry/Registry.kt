@@ -125,11 +125,11 @@ open class Registry<T : RegistryItem>(
         this.valueIdMap.putAll(valueIdMap)
     }
 
-    fun forEach(lambda: (T) -> Unit) {
+    fun forEachItem(lambda: (T) -> Unit) {
         for (item in resourceLocationMap.values) {
             lambda(item)
         }
-        parentRegistry?.forEach(lambda)
+        parentRegistry?.forEachItem(lambda)
     }
 
     override fun toString(): String {

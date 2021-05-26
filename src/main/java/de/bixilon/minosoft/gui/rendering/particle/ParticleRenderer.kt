@@ -14,19 +14,25 @@
 package de.bixilon.minosoft.gui.rendering.particle
 
 import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.data.mappings.particle.data.ParticleData
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.Renderer
 import de.bixilon.minosoft.gui.rendering.RendererBuilder
 import de.bixilon.minosoft.gui.rendering.modding.events.CameraMatrixChangeEvent
+import de.bixilon.minosoft.gui.rendering.particle.types.HappyVillagerParticle
+import de.bixilon.minosoft.gui.rendering.particle.types.Particle
 import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.gui.rendering.textures.Texture
 import de.bixilon.minosoft.gui.rendering.textures.TextureArray
 import de.bixilon.minosoft.modding.event.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.util.KUtil.nextFloat
+import de.bixilon.minosoft.util.KUtil.synchronizedSetOf
+import de.bixilon.minosoft.util.KUtil.toSynchronizedSet
 import de.bixilon.minosoft.util.MMath
 import glm_.vec3.Vec3
-import java.util.concurrent.ThreadLocalRandom
+import kotlin.random.Random
 
 
 class ParticleRenderer(
@@ -35,6 +41,8 @@ class ParticleRenderer(
 ) : Renderer {
     private lateinit var particleShader: Shader
     private var particleMesh = ParticleMesh()
+
+    private var particles: MutableSet<Particle> = synchronizedSetOf()
 
     override fun init() {
         connection.registerEvent(CallbackEventInvoker.of<CameraMatrixChangeEvent> {
@@ -45,10 +53,21 @@ class ParticleRenderer(
             }
         })
         particleMesh.load()
-        connection.registries.particleTypeRegistry.forEach {
+        connection.registries.particleTypeRegistry.forEachItem {
             for (resourceLocation in it.textures) {
                 renderWindow.textures.allTextures[resourceLocation] = Texture(resourceLocation)
             }
+        }
+        val random = Random.Default
+
+        val type = connection.registries.particleTypeRegistry[HappyVillagerParticle.RESOURCE_LOCATION]!!
+        for (i in 0 until 10000) {
+            val particle = HappyVillagerParticle(connection, Vec3(random.nextFloat(0.0f, 50.0f), random.nextFloat(6.0f, 50.0f), random.nextFloat(0.0f, 50.0f)), ParticleData(type), Random(random.nextLong()))
+            // particle.grow(0.5f, 20000L)
+            // particle.velocity = Vec3(1f, 0.2f, 1f)
+            // particle.friction = Vec3(0.1f, 0.1f, 0.1f)
+            particle.relativeHover(-1.0f, 1.0f)
+            particles += particle
         }
     }
 
@@ -68,24 +87,20 @@ class ParticleRenderer(
         particleShader.use()
 
         val time = System.currentTimeMillis()
-        if (time - last >= ProtocolDefinition.TICK_TIME * 2) {
-            particleMesh.unload()
+        particleMesh.unload()
+        particleMesh = ParticleMesh()
 
-            particleMesh = ParticleMesh()
-
-
-            val random = ThreadLocalRandom.current()
-            fun randomFlot(min: Float, max: Float): Float {
-                return min + random.nextFloat() * (max - min)
+        for (particle in particles.toSynchronizedSet()) {
+            particle.tick()
+            if (particle.dead) {
+                this.particles -= particle
+                continue
             }
-            for (i in 0 until 123456) {
-                //  particleMesh.addVertex(Vec3(randomFlot(0.0f, 200.0f), randomFlot(6.0f, 200.0f), randomFlot(0.0f, 200.0f)), randomFlot(0.05f, 0.2f), texture, ChatColors.getRandomColor())
-            }
-
-
-            particleMesh.load()
-            last = time
+            particle.addVertex(particleMesh)
         }
+
+        particleMesh.load()
+        last = time
 
         particleMesh.draw()
     }
