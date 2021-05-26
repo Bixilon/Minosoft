@@ -13,9 +13,11 @@
 
 package de.bixilon.minosoft.data.entities.block
 
+import de.bixilon.minosoft.data.mappings.MultiResourceLocationAble
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.blocks.properties.Instruments
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.util.KUtil.asResourceLocation
 
 class NoteBlockBlockEntity(connection: PlayConnection) : BlockEntity(connection), BlockActionEntity {
     var instrument: Instruments? = null
@@ -36,8 +38,10 @@ class NoteBlockBlockEntity(connection: PlayConnection) : BlockEntity(connection)
         pitch = data2.toInt()
     }
 
-    companion object : BlockEntityFactory<NoteBlockBlockEntity> {
+    companion object : BlockEntityFactory<NoteBlockBlockEntity>, MultiResourceLocationAble {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("minecraft:note_block")
+
+        override val ALIASES: Set<ResourceLocation> = setOf("minecraft:noteblock".asResourceLocation())
 
         override fun build(connection: PlayConnection): NoteBlockBlockEntity {
             return NoteBlockBlockEntity(connection)

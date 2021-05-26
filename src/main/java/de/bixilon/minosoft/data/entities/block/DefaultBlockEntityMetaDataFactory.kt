@@ -17,71 +17,45 @@ import de.bixilon.minosoft.data.entities.block.container.*
 import de.bixilon.minosoft.data.entities.block.container.storage.*
 import de.bixilon.minosoft.data.entities.block.piston.PistonBlockEntity
 import de.bixilon.minosoft.data.entities.block.piston.StickyPistonBlockEntity
-import de.bixilon.minosoft.data.mappings.MultiResourceLocationAble
-import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.data.mappings.DefaultFactory
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 
-object DefaultBlockEntityMetaDataFactory {
-    private val BLOCK_ENTITY_FACTORY_MAP: Map<ResourceLocation, BlockEntityFactory<out BlockEntity>>
-
-
-    init {
-        val entityFactories: List<BlockEntityFactory<out BlockEntity>> = listOf(
-            BedBlockEntity,
-            HopperBlockEntity,
-            SignBlockEntity,
-            BlastFurnaceBlockEntity,
-            FurnaceBlockEntity,
-            CampfireBlockEntity,
-            JigsawBlockEntity,
-            LecternBlockEntity,
-            BellBlockEntity,
-            SmokerBlockEntity,
-            ConduitBlockEntity,
-            BarrelBlockEntity,
-            ShulkerBoxBlockEntity,
-            StructureBlockBlockEntity,
-            CommandBlockBlockEntity,
-            ComparatorBlockEntity,
-            BannerBlockEntity,
-            DaylightDetectorBlockEntity,
-            BeaconBlockEntity,
-            SkullBlockEntity,
-            EnchantingTableBlockEntity,
-            BrewingStandBlockEntity,
-            MobSpawnerBlockEntity,
-            DispenserBlockEntity,
-            DropperBlockEntity,
-            EnderChestBlockEntity,
-            JukeboxBlockEntity,
-            ChestBlockEntity,
-            TrappedChestBlockEntity,
-            BeehiveBlockEntity,
-            NoteBlockBlockEntity,
-            EndGatewayBlockEntity,
-            PistonBlockEntity,
-            StickyPistonBlockEntity,
-        )
-
-        val ret: MutableMap<ResourceLocation, BlockEntityFactory<out BlockEntity>> = mutableMapOf()
-
-
-        for (entityFactory in entityFactories) {
-            ret[entityFactory.RESOURCE_LOCATION] = entityFactory
-            if (entityFactory is MultiResourceLocationAble) {
-                for (resourceLocation in entityFactory.ALIASES) {
-                    ret[resourceLocation] = entityFactory
-                }
-            }
-        }
-
-        BLOCK_ENTITY_FACTORY_MAP = ret.toMap()
-    }
-
-
-    fun getEntityFactory(resourceLocation: ResourceLocation): BlockEntityFactory<out BlockEntity>? {
-        return BLOCK_ENTITY_FACTORY_MAP[resourceLocation]
-    }
+object DefaultBlockEntityMetaDataFactory : DefaultFactory<BlockEntityFactory<out BlockEntity>>(
+    BedBlockEntity,
+    HopperBlockEntity,
+    SignBlockEntity,
+    BlastFurnaceBlockEntity,
+    FurnaceBlockEntity,
+    CampfireBlockEntity,
+    JigsawBlockEntity,
+    LecternBlockEntity,
+    BellBlockEntity,
+    SmokerBlockEntity,
+    ConduitBlockEntity,
+    BarrelBlockEntity,
+    ShulkerBoxBlockEntity,
+    StructureBlockBlockEntity,
+    CommandBlockBlockEntity,
+    ComparatorBlockEntity,
+    BannerBlockEntity,
+    DaylightDetectorBlockEntity,
+    BeaconBlockEntity,
+    SkullBlockEntity,
+    EnchantingTableBlockEntity,
+    BrewingStandBlockEntity,
+    MobSpawnerBlockEntity,
+    DispenserBlockEntity,
+    DropperBlockEntity,
+    EnderChestBlockEntity,
+    JukeboxBlockEntity,
+    ChestBlockEntity,
+    TrappedChestBlockEntity,
+    BeehiveBlockEntity,
+    NoteBlockBlockEntity,
+    EndGatewayBlockEntity,
+    PistonBlockEntity,
+    StickyPistonBlockEntity,
+) {
 
     fun buildBlockEntity(factory: BlockEntityFactory<out BlockEntity>, connection: PlayConnection): BlockEntity {
         return factory.build(connection)

@@ -121,10 +121,11 @@ class WorldRenderer(
     }
 
 
-    private fun getAllBlocks(mapping: Registries): Collection<BlockState> {
+    private fun getAllBlocks(registries: Registries): Collection<BlockState> {
         val list: MutableList<BlockState> = mutableListOf()
 
-        var currentMapping: Registries? = mapping
+
+        var currentMapping: Registries? = registries
         while (currentMapping != null) {
             list.addAll(currentMapping.blockStateIdMap.values)
             currentMapping = currentMapping.parentRegistries
@@ -180,7 +181,7 @@ class WorldRenderer(
         chunkShader.load()
 
         renderWindow.textures.use(chunkShader)
-        renderWindow.textures.animator.use(chunkShader)
+        renderWindow.textures.animator.use(chunkShader, "uAnimationBuffer")
 
         for (blockState in allBlocks!!) {
             for (model in blockState.renderers) {

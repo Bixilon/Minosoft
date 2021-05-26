@@ -19,6 +19,7 @@ import de.bixilon.minosoft.data.mappings.particle.data.BlockParticleData
 import de.bixilon.minosoft.data.mappings.particle.data.DustParticleData
 import de.bixilon.minosoft.data.mappings.particle.data.ItemParticleData
 import de.bixilon.minosoft.data.mappings.particle.data.ParticleData
+import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 
 object ParticleParser : CommandParser() {
@@ -41,7 +42,7 @@ object ParticleParser : CommandParser() {
                 stringReader.skipWhitespaces()
                 val scale = stringReader.readFloat()
 
-                DustParticleData(red, green, blue, scale, particle)
+                DustParticleData(RGBColor(red, green, blue), scale, particle)
             }
             "minecraft:item" -> {
                 ItemParticleData(ItemStackParser.ITEM_STACK_PARSER.parse(connection, properties, stringReader), particle)

@@ -11,12 +11,28 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.mappings.other.game.event
+package de.bixilon.minosoft.data.mappings
 
-import de.bixilon.minosoft.data.mappings.DefaultFactory
-import de.bixilon.minosoft.data.mappings.other.game.event.handlers.GameEventHandler
-import de.bixilon.minosoft.data.mappings.other.game.event.handlers.GameMoveChangeGameEventHandler
+open class DefaultFactory<T : CompanionResourceLocation>(vararg factories: T) {
+    private val factoryMap: Map<ResourceLocation, T>
 
-object DefaultGameEventHandlers : DefaultFactory<GameEventHandler>(
-    GameMoveChangeGameEventHandler
-)
+    init {
+        val ret: MutableMap<ResourceLocation, T> = mutableMapOf()
+
+
+        for (entityFactory in factories) {
+            ret[entityFactory.RESOURCE_LOCATION] = entityFactory
+            if (entityFactory is MultiResourceLocationAble) {
+                for (resourceLocation in entityFactory.ALIASES) {
+                    ret[resourceLocation] = entityFactory
+                }
+            }
+        }
+
+        factoryMap = ret.toMap()
+    }
+
+    operator fun get(resourceLocation: ResourceLocation): T? {
+        return factoryMap[resourceLocation]
+    }
+}

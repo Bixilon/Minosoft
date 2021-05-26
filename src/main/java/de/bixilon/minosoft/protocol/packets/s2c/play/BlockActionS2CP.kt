@@ -37,7 +37,7 @@ class BlockActionS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     override fun handle(connection: PlayConnection) {
         val blockEntity = connection.world.getBlockEntity(position) ?: let {
             val factory = connection.registries.blockEntityTypeRegistry[block.resourceLocation]?.factory
-                ?: DefaultBlockEntityMetaDataFactory.getEntityFactory(block.resourceLocation)
+                ?: DefaultBlockEntityMetaDataFactory[block.resourceLocation]
                 ?: let {
                     Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.WARN) { "Unknown block entity ${block.resourceLocation}" }
                     return

@@ -75,7 +75,7 @@ data class EntityType(
                 fireImmune = data["fire_immune"]?.asBoolean ?: false,
                 sizeFixed = data["size_fixed"]?.asBoolean ?: false,
                 attributes = attributes.toMap(),
-                factory = DefaultEntityFactories.getEntityFactory(resourceLocation) ?: error("Can not find entity factory for $resourceLocation"),
+                factory = DefaultEntityFactories[resourceLocation] ?: error("Can not find entity factory for $resourceLocation"),
             )
         }
     }

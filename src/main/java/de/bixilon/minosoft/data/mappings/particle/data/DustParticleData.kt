@@ -10,29 +10,21 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.data.mappings.particle.data
 
-package de.bixilon.minosoft.data.mappings.particle.data;
+import de.bixilon.minosoft.data.mappings.particle.ParticleType
+import de.bixilon.minosoft.data.text.RGBColor
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 
-import de.bixilon.minosoft.data.mappings.blocks.BlockState;
-import de.bixilon.minosoft.data.mappings.particle.ParticleType;
+class DustParticleData(val color: RGBColor, val scale: Float, type: ParticleType) : ParticleData(type) {
 
-public class BlockParticleData extends ParticleData {
-    private final BlockState block;
-
-    public BlockParticleData(BlockState block, ParticleType type) {
-        super(type);
-        this.block = block;
+    override fun toString(): String {
+        return "$type (scale=$scale, color=$color)"
     }
 
-    public BlockState getBlock() {
-        return this.block;
-    }
-
-    @Override
-    public String toString() {
-        if (this.block == null) {
-            return null;
+    companion object : ParticleDataFactory<DustParticleData> {
+        override fun read(buffer: PlayInByteBuffer, type: ParticleType): DustParticleData {
+            return DustParticleData(RGBColor(buffer.readFloat(), buffer.readFloat(), buffer.readFloat()), buffer.readFloat(), type)
         }
-        return this.block.toString();
     }
 }

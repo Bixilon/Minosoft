@@ -82,16 +82,16 @@ class PlayInByteBuffer : InByteBuffer {
         // ToDo: Replace with dynamic particle type calling
         if (this.versionId < V_17W45A) {
             return when (type.resourceLocation.full) {
-                "minecraft:iconcrack" -> ItemParticleData(ItemStack(item = connection.registries.itemRegistry[readVarInt() shl 16 or readVarInt()], connection), type)
-                "minecraft:blockcrack", "minecraft:blockdust", "minecraft:falling_dust" -> BlockParticleData(connection.registries.getBlockState(readVarInt() shl 4), type) // ToDo: What about meta data?
+                "minecraft:iconcrack" -> ItemParticleData.read(this, type)
+                "minecraft:blockcrack", "minecraft:blockdust", "minecraft:falling_dust" -> BlockParticleData.read(this, type)
                 else -> ParticleData(type)
             }
         }
 
         return when (type.resourceLocation.full) {
-            "minecraft:block", "minecraft:falling_dust" -> BlockParticleData(connection.registries.getBlockState(readVarInt()), type)
-            "minecraft:dust" -> DustParticleData(readFloat(), readFloat(), readFloat(), readFloat(), type)
-            "minecraft:item" -> ItemParticleData(readItemStack(), type)
+            "minecraft:block", "minecraft:falling_dust" -> BlockParticleData.read(this, type)
+            "minecraft:dust" -> DustParticleData.read(this, type)
+            "minecraft:item" -> ItemParticleData.read(this, type)
             else -> ParticleData(type)
         }
     }

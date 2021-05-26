@@ -30,7 +30,7 @@ public class ResourceLocationSelectorArgumentParser extends EntitySelectorArgume
         }
         ResourceLocation resourceLocation = new ResourceLocation(value);
         if (this == ENTITY_TYPE_RESOURCE_LOCATION_SELECTOR_ARGUMENT_PARSER) {
-            if (DefaultEntityFactories.INSTANCE.getEntityFactory(resourceLocation) == null) {
+            if (DefaultEntityFactories.INSTANCE.get(resourceLocation) == null) {
                 throw new UnknownEntityCommandParseException(stringReader, value);
             }
             return;

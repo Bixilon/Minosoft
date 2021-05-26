@@ -10,24 +10,13 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.data.mappings.particle.data
 
-package de.bixilon.minosoft.data.mappings.particle.data;
+import de.bixilon.minosoft.data.mappings.particle.ParticleType
 
-import de.bixilon.minosoft.data.mappings.particle.ParticleType;
+open class ParticleData(val type: ParticleType) {
 
-public class ParticleData {
-    private final ParticleType type;
-
-    public ParticleData(ParticleType type) {
-        this.type = type;
-    }
-
-    public ParticleType getType() {
-        return this.type;
-    }
-
-    @Override
-    public String toString() {
-        return "";
+    override fun toString(): String {
+        return type.toString()
     }
 }

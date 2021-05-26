@@ -41,7 +41,7 @@ class ResourceLocationListParser : CommandParser() {
         if (this == SUMMONABLE_ENTITY_PARSER) {
             // ToDo: only summonable entities, not all of them
 
-            if (DefaultEntityFactories.getEntityFactory(resourceLocation.value) == null) {
+            if (DefaultEntityFactories[resourceLocation.value] == null) {
                 throw EntityNotFoundCommandParseException(stringReader, resourceLocation.key)
             }
             return null // ToDo

@@ -32,7 +32,7 @@ class GameEventS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
             return
         }
 
-        DefaultGameEventHandlers.GAME_EVENT_HANDLERS[this.event.resourceLocation]?.handle(data, connection)
+        DefaultGameEventHandlers[this.event.resourceLocation]?.handle(data, connection)
     }
 
     override fun log() {

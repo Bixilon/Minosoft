@@ -21,6 +21,8 @@ class RGBColor(val rgba: Int) : ChatCode {
 
     constructor(red: Byte, green: Byte, blue: Byte, alpha: Byte = 0xFF.toByte()) : this(red.toInt() and 0xFF, green.toInt() and 0xFF, blue.toInt() and 0xFF, alpha.toInt() and 0xFF)
 
+    constructor(red: Float, green: Float, blue: Float, alpha: Float = 1.0f) : this((red * 255.0f).toInt(), (green * 255.0f).toInt(), (blue * 255.0f).toInt(), (alpha * 255.0f).toInt())
+
     val alpha: @IntRange(from = 0L, to = 255L) Int
         get() = rgba and 0xFF
 
