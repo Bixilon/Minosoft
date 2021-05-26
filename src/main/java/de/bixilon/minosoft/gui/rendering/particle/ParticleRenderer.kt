@@ -19,7 +19,7 @@ import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.Renderer
 import de.bixilon.minosoft.gui.rendering.RendererBuilder
 import de.bixilon.minosoft.gui.rendering.modding.events.CameraMatrixChangeEvent
-import de.bixilon.minosoft.gui.rendering.particle.types.HappyVillagerParticle
+import de.bixilon.minosoft.gui.rendering.particle.types.ExplosionParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.Particle
 import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.gui.rendering.textures.Texture
@@ -60,9 +60,9 @@ class ParticleRenderer(
         }
         val random = Random.Default
 
-        val type = connection.registries.particleTypeRegistry[HappyVillagerParticle.RESOURCE_LOCATION]!!
+        val type = connection.registries.particleTypeRegistry[ExplosionParticle.RESOURCE_LOCATION]!!
         for (i in 0 until 10000) {
-            val particle = HappyVillagerParticle(connection, Vec3(random.nextFloat(0.0f, 50.0f), random.nextFloat(6.0f, 50.0f), random.nextFloat(0.0f, 50.0f)), ParticleData(type), Random(random.nextLong()))
+            val particle = ExplosionParticle(connection, Vec3(random.nextFloat(0.0f, 50.0f), random.nextFloat(6.0f, 50.0f), random.nextFloat(0.0f, 50.0f)), ParticleData(type), Random(random.nextLong()))
             // particle.grow(0.5f, 20000L)
             // particle.velocity = Vec3(1f, 0.2f, 1f)
             // particle.friction = Vec3(0.1f, 0.1f, 0.1f)

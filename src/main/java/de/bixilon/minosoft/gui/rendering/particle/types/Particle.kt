@@ -25,7 +25,7 @@ import kotlin.math.abs
 import kotlin.random.Random
 
 abstract class Particle(protected val connection: PlayConnection, protected val position: Vec3, protected val data: ParticleData, protected val random: Random) {
-    protected val texture = connection.rendering!!.renderWindow.textures.allTextures[data.type.textures.random()]!!
+    protected var texture = connection.rendering!!.renderWindow.textures.allTextures[data.type.textures.first()]!!
     protected var scale: Float = 0.1f
     protected var color: RGBColor = ChatColors.WHITE
 
@@ -39,7 +39,7 @@ abstract class Particle(protected val connection: PlayConnection, protected val 
     var dead = false
     var age: Int = 0
         protected set
-    var maxAge: Int = 100000 + random.nextInt(0, 10000)
+    var maxAge: Int = 10000 + random.nextInt(0, 10000)
 
     // moving
     var friction = Vec3.EMPTY
@@ -107,7 +107,7 @@ abstract class Particle(protected val connection: PlayConnection, protected val 
             hoverMaxY - position.y
         }
         val totalDistance = hoverMaxY - hoverMinY
-        val yVelocity = 1 / (totalDistance / distanceToMiddle)
+        val yFriction = 1 / (totalDistance / distanceToMiddle)
 
 
         when {
@@ -120,9 +120,22 @@ abstract class Particle(protected val connection: PlayConnection, protected val 
                 velocity.y = -1.0f
             }
             else -> {
-                friction.y = yVelocity
+                friction.y = yFriction
             }
         }
+    }
+
+    private fun checkSpriteTexture() {
+        val totalTextures = data.type.textures.size
+        if (totalTextures <= 1) {
+            return
+        }
+        // calculate next texture
+        val nextTextureResourceLocation = data.type.textures[age / ((maxAge / totalTextures) + 1)]
+        if (texture.resourceLocation == nextTextureResourceLocation) {
+            return
+        }
+        texture = connection.rendering!!.renderWindow.textures.allTextures[nextTextureResourceLocation]!!
     }
 
     open fun tick() {
@@ -146,6 +159,8 @@ abstract class Particle(protected val connection: PlayConnection, protected val 
         grow(deltaTime)
         move(deltaTime)
         hover(deltaTime)
+
+        checkSpriteTexture()
 
         lastTickTime = currentTime
     }
