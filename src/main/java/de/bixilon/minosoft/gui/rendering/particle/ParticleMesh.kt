@@ -17,13 +17,14 @@ import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.textures.Texture
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
+import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
+import glm_.vec2.Vec2
 import glm_.vec3.Vec3
 import org.lwjgl.opengl.ARBVertexArrayObject.glBindVertexArray
-import org.lwjgl.opengl.GL11.*
-import org.lwjgl.opengl.GL20.glEnableVertexAttribArray
-import org.lwjgl.opengl.GL20.glVertexAttribPointer
+import org.lwjgl.opengl.GL15.GL_POINTS
+import org.lwjgl.opengl.GL15.glDrawArrays
 
-class ParticleMesh : Mesh() {
+class ParticleMesh : Mesh(ParticleMeshStruct::class) {
 
     fun addVertex(position: Vec3, scale: Float, texture: Texture, tintColor: RGBColor) {
         val textureLayer = if (RenderConstants.FORCE_DEBUG_TEXTURE) {
@@ -46,30 +47,20 @@ class ParticleMesh : Mesh() {
     }
 
 
-    override fun load() {
-        super.initializeBuffers(FLOATS_PER_VERTEX)
-        var index = 0
-        glVertexAttribPointer(index, 3, GL_FLOAT, false, FLOATS_PER_VERTEX * Float.SIZE_BYTES, 0L)
-        glEnableVertexAttribArray(index++)
-        glVertexAttribPointer(index, 2, GL_FLOAT, false, FLOATS_PER_VERTEX * Float.SIZE_BYTES, (3 * Float.SIZE_BYTES).toLong())
-        glEnableVertexAttribArray(index++)
-        glVertexAttribPointer(index, 1, GL_FLOAT, false, FLOATS_PER_VERTEX * Float.SIZE_BYTES, (5 * Float.SIZE_BYTES).toLong())
-        glEnableVertexAttribArray(index++)
-        glVertexAttribPointer(index, 1, GL_FLOAT, false, FLOATS_PER_VERTEX * Float.SIZE_BYTES, (6 * Float.SIZE_BYTES).toLong())
-        glEnableVertexAttribArray(index++)
-        glVertexAttribPointer(index, 1, GL_FLOAT, false, FLOATS_PER_VERTEX * Float.SIZE_BYTES, (7 * Float.SIZE_BYTES).toLong())
-        glEnableVertexAttribArray(index++)
-        glVertexAttribPointer(index, 1, GL_FLOAT, false, FLOATS_PER_VERTEX * Float.SIZE_BYTES, (8 * Float.SIZE_BYTES).toLong())
-        glEnableVertexAttribArray(index++)
-        super.unbind()
-    }
-
     override fun draw() {
         glBindVertexArray(vao)
         glDrawArrays(GL_POINTS, 0, primitiveCount)
     }
 
-    companion object {
-        private val FLOATS_PER_VERTEX = 9
+
+    data class ParticleMeshStruct(
+        val position: Vec3,
+        val maxUVCoordinates: Vec2,
+        val textureLayer: Int,
+        val animationId: Int,
+        val scale: Float,
+        val tintColor: RGBColor,
+    ) {
+        companion object : MeshStruct(ParticleMeshStruct::class)
     }
 }

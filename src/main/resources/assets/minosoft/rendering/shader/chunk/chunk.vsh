@@ -31,7 +31,7 @@ out vec4 passTintColor;
 uniform mat4 viewProjectionMatrix;
 
 
-layout(std140) uniform AnimatedDataBuffer
+layout(std140) uniform uAnimationBuffer
 {
     uvec4 uAnimationData[ANIMATED_TEXTURE_COUNT];
 };

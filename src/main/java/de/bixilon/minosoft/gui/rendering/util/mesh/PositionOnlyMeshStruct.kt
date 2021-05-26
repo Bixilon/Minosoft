@@ -11,19 +11,13 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.chunk.block.outline
+package de.bixilon.minosoft.gui.rendering.util.mesh
 
-import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
-import de.bixilon.minosoft.gui.rendering.util.mesh.PositionOnlyMeshStruct
 import glm_.vec3.Vec3
 
-class BlockOutlineMesh : Mesh(PositionOnlyMeshStruct::class) {
 
-    fun addVertex(position: Vec3) {
-        data.addAll(floatArrayOf(
-            position.x,
-            position.y,
-            position.z,
-        ))
-    }
+data class PositionOnlyMeshStruct(
+    val position: Vec3,
+) {
+    companion object : MeshStruct(PositionOnlyMeshStruct::class)
 }

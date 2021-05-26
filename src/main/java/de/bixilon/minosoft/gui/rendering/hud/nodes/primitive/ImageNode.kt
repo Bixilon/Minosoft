@@ -16,9 +16,9 @@ package de.bixilon.minosoft.gui.rendering.hud.nodes.primitive
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.hud.HUDMesh
 import de.bixilon.minosoft.gui.rendering.hud.atlas.TextureLike
 import de.bixilon.minosoft.gui.rendering.hud.nodes.properties.NodeSizing
+import de.bixilon.minosoft.gui.rendering.util.mesh.SimpleTextureMesh
 import glm_.mat4x4.Mat4
 import glm_.vec2.Vec2
 import glm_.vec2.Vec2i
@@ -31,7 +31,7 @@ class ImageNode(
     var textureLike: TextureLike?,
     val z: Int = 0,
     val tintColor: RGBColor? = null,
-) : Node(renderWindow, sizing = sizing, initialCacheSize = HUDMesh.FLOATS_PER_VERTEX * 6) {
+) : Node(renderWindow, sizing = sizing, initialCacheSize = SimpleTextureMesh.SimpleTextureMeshStruct.FLOATS_PER_VERTEX * 6) {
 
     private fun addToStart(start: Vec2i, elementPosition: Vec2i): Vec2i {
         return Vec2i(start.x + elementPosition.x, start.y - elementPosition.y)

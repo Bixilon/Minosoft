@@ -13,15 +13,22 @@
 
 package de.bixilon.minosoft.gui.rendering.util.mesh
 
+import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct.Companion.BYTES
+import de.bixilon.minosoft.util.KUtil.unsafeCast
+import de.bixilon.minosoft.util.Util
 import de.bixilon.minosoft.util.collections.ArrayFloatList
 import org.lwjgl.opengl.GL11.GL_TRIANGLES
 import org.lwjgl.opengl.GL11.glDrawArrays
 import org.lwjgl.opengl.GL30.*
+import kotlin.reflect.KClass
+import kotlin.reflect.full.companionObjectInstance
+import kotlin.reflect.full.primaryConstructor
 
 abstract class Mesh(
+    protected val struct: KClass<*>,
     initialCacheSize: Int = 10000,
 ) {
-    private var _data: ArrayFloatList? = ArrayFloatList(initialCacheSize)
+    protected var _data: ArrayFloatList? = ArrayFloatList(initialCacheSize)
     var data: ArrayFloatList
         get() = _data!!
         set(value) {
@@ -29,16 +36,33 @@ abstract class Mesh(
         }
 
     protected var vao: Int = -1
-        private set
-    private var vbo: Int = -1
+    protected var vbo: Int = -1
     var primitiveCount: Int = -1
-        private set
+        protected set
 
     var state = MeshStates.PREPARING
-        private set
+        protected set
 
 
-    abstract fun load()
+    open fun load() {
+        Util.forceClassInit(struct.java)
+
+        val bytesPerVertex = struct.companionObjectInstance!!.unsafeCast<MeshStruct>().BYTES_PER_VERTEX
+
+        initializeBuffers(bytesPerVertex / Float.SIZE_BYTES)
+
+
+        var stride = 0L
+
+        for ((index, parameter) in struct.primaryConstructor!!.parameters.withIndex()) {
+            val bytes = parameter.BYTES
+            glVertexAttribPointer(index, bytes / Float.SIZE_BYTES, GL_FLOAT, false, bytesPerVertex, stride)
+            glEnableVertexAttribArray(index)
+            stride += bytes
+        }
+        unbind()
+    }
+
 
     protected fun initializeBuffers(floatsPerVertex: Int) {
         check(state == MeshStates.PREPARING) { "Mesh already loaded: $state" }

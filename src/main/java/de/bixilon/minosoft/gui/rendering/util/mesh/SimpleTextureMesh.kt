@@ -18,11 +18,8 @@ import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.textures.Texture
 import glm_.vec2.Vec2
 import glm_.vec3.Vec3
-import org.lwjgl.opengl.GL11.GL_FLOAT
-import org.lwjgl.opengl.GL20.glEnableVertexAttribArray
-import org.lwjgl.opengl.GL20.glVertexAttribPointer
 
-open class SimpleTextureMesh : Mesh(initialCacheSize = 2 * 3 * FLOATS_PER_VERTEX) {
+open class SimpleTextureMesh : Mesh(SimpleTextureMeshStruct::class, initialCacheSize = 2 * 3 * SimpleTextureMeshStruct.FLOATS_PER_VERTEX) {
 
     fun addVertex(position: Vec3, texture: Texture, textureCoordinates: Vec2, tintColor: RGBColor) {
         val textureLayer = if (RenderConstants.FORCE_DEBUG_TEXTURE) {
@@ -42,22 +39,13 @@ open class SimpleTextureMesh : Mesh(initialCacheSize = 2 * 3 * FLOATS_PER_VERTEX
         ))
     }
 
-    override fun load() {
-        super.initializeBuffers(FLOATS_PER_VERTEX)
-        var index = 0
-        glVertexAttribPointer(index, 3, GL_FLOAT, false, FLOATS_PER_VERTEX * Float.SIZE_BYTES, 0L)
-        glEnableVertexAttribArray(index++)
-        glVertexAttribPointer(index, 2, GL_FLOAT, false, FLOATS_PER_VERTEX * Float.SIZE_BYTES, (3 * Float.SIZE_BYTES).toLong())
-        glEnableVertexAttribArray(index++)
-        glVertexAttribPointer(index, 1, GL_FLOAT, false, FLOATS_PER_VERTEX * Float.SIZE_BYTES, (5 * Float.SIZE_BYTES).toLong())
-        glEnableVertexAttribArray(index++)
-        glVertexAttribPointer(index, 1, GL_FLOAT, false, FLOATS_PER_VERTEX * Float.SIZE_BYTES, (6 * Float.SIZE_BYTES).toLong())
-        glEnableVertexAttribArray(index++)
-        super.unbind()
-    }
 
-
-    companion object {
-        private const val FLOATS_PER_VERTEX = 7
+    data class SimpleTextureMeshStruct(
+        val position: Vec3,
+        val uvCoordinates: Vec2,
+        val textureLayer: Int,
+        val animationId: Int,
+    ) {
+        companion object : MeshStruct(SimpleTextureMeshStruct::class)
     }
 }

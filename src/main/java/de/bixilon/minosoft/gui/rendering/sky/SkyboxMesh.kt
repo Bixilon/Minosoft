@@ -14,11 +14,9 @@
 package de.bixilon.minosoft.gui.rendering.sky
 
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
-import org.lwjgl.opengl.GL11.GL_FLOAT
-import org.lwjgl.opengl.GL20.glEnableVertexAttribArray
-import org.lwjgl.opengl.GL20.glVertexAttribPointer
+import de.bixilon.minosoft.gui.rendering.util.mesh.PositionOnlyMeshStruct
 
-class SkyboxMesh : Mesh(initialCacheSize = 6 * 2 * 3 * FLOATS_PER_VERTEX) {
+class SkyboxMesh : Mesh(PositionOnlyMeshStruct::class, initialCacheSize = 6 * 2 * 3 * PositionOnlyMeshStruct.FLOATS_PER_VERTEX) {
 
     init {
         data.addAll(floatArrayOf(
@@ -66,17 +64,5 @@ class SkyboxMesh : Mesh(initialCacheSize = 6 * 2 * 3 * FLOATS_PER_VERTEX) {
         ))
     }
 
-    override fun load() {
-        super.initializeBuffers(FLOATS_PER_VERTEX)
-        var index = 0
-        glVertexAttribPointer(index, 3, GL_FLOAT, false, FLOATS_PER_VERTEX * Float.SIZE_BYTES, 0L)
-        glEnableVertexAttribArray(index++)
 
-        super.unbind()
-    }
-
-
-    companion object {
-        private const val FLOATS_PER_VERTEX = 3
-    }
 }

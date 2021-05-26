@@ -180,7 +180,7 @@ class WorldRenderer(
         chunkShader.load()
 
         renderWindow.textures.use(chunkShader, "textureArray")
-        renderWindow.textures.animator.use(chunkShader, "AnimatedDataBuffer")
+        renderWindow.textures.animator.use(chunkShader, "uAnimationBuffer")
 
         for (blockState in allBlocks!!) {
             for (model in blockState.renderers) {

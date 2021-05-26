@@ -62,7 +62,7 @@ class ParticleRenderer(
         )
         particleShader.load()
         renderWindow.textures.use(particleShader, "textureArray")
-        renderWindow.textures.animator.use(particleShader, "AnimatedDataBuffer")
+        renderWindow.textures.animator.use(particleShader, "uAnimationBuffer")
     }
 
     var last = 0L
@@ -71,7 +71,7 @@ class ParticleRenderer(
         particleShader.use()
 
         val time = System.currentTimeMillis()
-        if (time - last >= ProtocolDefinition.TICK_TIME * 2000) {
+        if (time - last >= ProtocolDefinition.TICK_TIME * 2) {
             particleMesh.unload()
 
             particleMesh = ParticleMesh()
