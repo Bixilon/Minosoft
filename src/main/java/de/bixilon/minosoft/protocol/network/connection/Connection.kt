@@ -86,6 +86,10 @@ abstract class Connection {
         eventListeners.add(method)
     }
 
+    open fun registerEvents(vararg method: EventInvoker) {
+        eventListeners.addAll(method)
+    }
+
     val isDisconnected: Boolean
         get() = connectionState == ConnectionStates.DISCONNECTING || connectionState == ConnectionStates.DISCONNECTED || connectionState == ConnectionStates.FAILED || connectionState == ConnectionStates.FAILED_NO_RETRY
 

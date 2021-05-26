@@ -26,9 +26,7 @@ import de.bixilon.minosoft.gui.rendering.sound.sounds.Sound
 import de.bixilon.minosoft.gui.rendering.sound.sounds.SoundList
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.center
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3
 import de.bixilon.minosoft.modding.event.CallbackEventInvoker
-import de.bixilon.minosoft.modding.event.events.PlaySoundEvent
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ConnectionStates
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
@@ -113,9 +111,7 @@ class AudioPlayer(
             }
         })
 
-        connection.registerEvent(CallbackEventInvoker.of<PlaySoundEvent> {
-            playSoundEvent(it.soundEvent, it.position.toVec3, it.volume, it.pitch)
-        })
+        DefaultAudioBehavior.register(connection, this)
 
         Log.log(LogMessageType.AUDIO_LOADING, LogLevels.INFO) { "OpenAL loaded!" }
 
@@ -124,9 +120,18 @@ class AudioPlayer(
         latch.dec()
     }
 
+    fun playSoundEvent(resourceLocation: ResourceLocation, position: Vec3i? = null, volume: Float = 1.0f, pitch: Float = 1.0f) {
+        connection.registries.soundEventRegistry[resourceLocation]?.let { playSoundEvent(it, position?.center, volume, pitch) }
+    }
+
+    fun playSoundEvent(resourceLocation: ResourceLocation, position: Vec3? = null, volume: Float = 1.0f, pitch: Float = 1.0f) {
+        connection.registries.soundEventRegistry[resourceLocation]?.let { playSoundEvent(it, position, volume, pitch) }
+    }
+
     fun playSoundEvent(soundEvent: SoundEvent, position: Vec3i? = null, volume: Float = 1.0f, pitch: Float = 1.0f) {
         playSoundEvent(soundEvent, position?.center, volume, pitch)
     }
+
 
     fun playSoundEvent(soundEvent: SoundEvent, position: Vec3? = null, volume: Float = 1.0f, pitch: Float = 1.0f) {
         if (!initialized) {

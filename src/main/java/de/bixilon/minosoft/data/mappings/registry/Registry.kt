@@ -17,6 +17,7 @@ import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.google.gson.JsonPrimitive
 import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.data.mappings.ResourceLocationAble
 import de.bixilon.minosoft.data.mappings.versions.Registries
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
 import de.bixilon.minosoft.util.collections.Clearable
@@ -50,6 +51,11 @@ open class Registry<T : RegistryItem>(
     open operator fun get(resourceLocation: String): T? {
         return get(ResourceLocation.getPathResourceLocation(resourceLocation))
     }
+
+    open operator fun get(resourceLocation: ResourceLocationAble): T? {
+        return get(resourceLocation.resourceLocation)
+    }
+
 
     open operator fun get(id: Int): T {
         return idValueMap[id] ?: parentRegistry?.get(id) ?: throw NullPointerException("Can not find item with id $id")

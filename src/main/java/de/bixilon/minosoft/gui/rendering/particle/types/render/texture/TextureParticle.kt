@@ -11,16 +11,21 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.particle
+package de.bixilon.minosoft.gui.rendering.particle.types.render.texture
 
-import de.bixilon.minosoft.data.mappings.CompanionResourceLocation
 import de.bixilon.minosoft.data.mappings.particle.data.ParticleData
-import de.bixilon.minosoft.gui.rendering.particle.types.Particle
+import de.bixilon.minosoft.gui.rendering.particle.ParticleMesh
+import de.bixilon.minosoft.gui.rendering.particle.ParticleRenderer
+import de.bixilon.minosoft.gui.rendering.particle.types.render.RenderParticle
+import de.bixilon.minosoft.gui.rendering.textures.Texture
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import glm_.vec3.Vec3
 
-interface ParticleFactory<T : Particle> : CompanionResourceLocation {
+abstract class TextureParticle(connection: PlayConnection, particleRenderer: ParticleRenderer, position: Vec3, data: ParticleData) : RenderParticle(connection, particleRenderer, position, data) {
+    abstract val texture: Texture
 
-    fun build(connection: PlayConnection, particleRenderer: ParticleRenderer = connection.rendering!!.renderWindow[ParticleRenderer]!!, position: Vec3, data: ParticleData = ParticleData(connection.registries.particleTypeRegistry[RESOURCE_LOCATION]!!)): T
 
+    override fun addVertex(particleMesh: ParticleMesh) {
+        particleMesh.addVertex(position, scale, texture, color)
+    }
 }

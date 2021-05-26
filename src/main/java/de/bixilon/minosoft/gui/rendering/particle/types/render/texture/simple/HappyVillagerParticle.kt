@@ -11,23 +11,23 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.particle.types
+package de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple
 
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.particle.data.ParticleData
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
+import de.bixilon.minosoft.gui.rendering.particle.ParticleRenderer
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
 import glm_.vec3.Vec3
-import kotlin.random.Random
 
-class ExplosionParticle(connection: PlayConnection, position: Vec3, data: ParticleData, random: Random) : Particle(connection, position, data, random) {
+class HappyVillagerParticle(connection: PlayConnection, particleRenderer: ParticleRenderer, position: Vec3, data: ParticleData) : SimpleTextureParticle(connection, particleRenderer, position, data) {
 
-    companion object : ParticleFactory<ExplosionParticle> {
-        override val RESOURCE_LOCATION: ResourceLocation = "minecraft:explosion".asResourceLocation()
+    companion object : ParticleFactory<HappyVillagerParticle> {
+        override val RESOURCE_LOCATION: ResourceLocation = "minecraft:happy_villager".asResourceLocation()
 
-        override fun build(connection: PlayConnection, position: Vec3, data: ParticleData, random: Random): ExplosionParticle {
-            return ExplosionParticle(connection, position, data, random)
+        override fun build(connection: PlayConnection, particleRenderer: ParticleRenderer, position: Vec3, data: ParticleData): HappyVillagerParticle {
+            return HappyVillagerParticle(connection, particleRenderer, position, data)
         }
     }
 }

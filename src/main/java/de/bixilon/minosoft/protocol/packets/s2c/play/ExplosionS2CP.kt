@@ -12,6 +12,7 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play
 
+import de.bixilon.minosoft.modding.event.events.ExplosionEvent
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
@@ -23,15 +24,15 @@ import glm_.vec3.Vec3i
 
 class ExplosionS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     val position = buffer.readFloatPosition()
-    val radius = buffer.readFloat()
-    val explodedBlocks: Array<Vec3> = buffer.readArray(buffer.readInt()) { Vec3(buffer.readByte(), buffer.readByte(), buffer.readByte()) }
+    val power = buffer.readFloat()
+    val explodedBlocks: List<Vec3> = buffer.readArray(buffer.readInt()) { Vec3(buffer.readByte(), buffer.readByte(), buffer.readByte()) }.toList()
     val velocity = buffer.readFloatPosition()
 
     override fun check(connection: PlayConnection) {
-        require(radius <= 100.0f) {
+        require(power <= 100.0f) {
             // maybe somebody tries to make bullshit?
             // Sorry, Maximilian Rosenmüller
-            "Explosion to big $radius > 100.0F"
+            "Explosion to big $power > 100.0F"
         }
     }
 
@@ -40,10 +41,12 @@ class ExplosionS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
             val blockPosition = Vec3i(position + record)
             connection.world.setBlockState(blockPosition, null)
         }
-        connection.player.entity.velocity = velocity
+        connection.player.entity.velocity = connection.player.entity.velocity + velocity
+
+        connection.fireEvent(ExplosionEvent(connection, this))
     }
 
     override fun log() {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Explosion (position=$position, radius=$radius, explodedBlocks=$explodedBlocks, velocity=$velocity)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Explosion (position=$position, radius=$power, explodedBlocks=$explodedBlocks, velocity=$velocity)" }
     }
 }

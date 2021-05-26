@@ -14,36 +14,40 @@
 package de.bixilon.minosoft.gui.rendering.particle.types
 
 import de.bixilon.minosoft.data.mappings.particle.data.ParticleData
-import de.bixilon.minosoft.data.text.ChatColors
-import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.particle.ParticleMesh
+import de.bixilon.minosoft.gui.rendering.particle.ParticleRenderer
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.ONE
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.clear
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import glm_.vec3.Vec3
-import kotlin.math.abs
 import kotlin.random.Random
 
-abstract class Particle(protected val connection: PlayConnection, protected val position: Vec3, protected val data: ParticleData, protected val random: Random) {
-    protected var texture = connection.rendering!!.renderWindow.textures.allTextures[data.type.textures.first()]!!
-    protected var scale: Float = 0.1f
-    protected var color: RGBColor = ChatColors.WHITE
-
+abstract class Particle(protected val connection: PlayConnection, protected val particleRenderer: ParticleRenderer, protected val position: Vec3, protected val data: ParticleData) {
+    protected val random = Random
     private var lastTickTime = -1L
 
-    // growing
-    protected var nextScale: Float = scale
-    protected var scalePerMillisecond = -1.0f
 
     // ageing
     var dead = false
     var age: Int = 0
         protected set
-    var maxAge: Int = 10000 + random.nextInt(0, 10000)
+    var tickAge: Int
+        get() = age / ProtocolDefinition.TICK_TIME
+        set(value) {
+            age = value * ProtocolDefinition.TICK_TIME
+        }
+    var maxAge: Int = Integer.MAX_VALUE
+    var maxTickAge: Int
+        get() = maxAge / ProtocolDefinition.TICK_TIME
+        set(value) {
+            maxAge = value * ProtocolDefinition.TICK_TIME
+        }
 
     // moving
-    var friction = Vec3.EMPTY
-    var velocity = Vec3.EMPTY
+    val friction = Vec3.EMPTY
+    val velocity = Vec3.EMPTY
 
     // hover
     protected var hovering = false
@@ -51,36 +55,16 @@ abstract class Particle(protected val connection: PlayConnection, protected val 
     protected var hoverMaxY = 0.0f
 
 
-    fun grow(scale: Float, time: Long) {
-        nextScale = scale
-        scalePerMillisecond = (scale - this.scale) / time
-    }
+    protected var lastRealTickTime = 0L
 
-    private fun grow(deltaTime: Int) {
-        val deltaScale = nextScale - scale
-        if (abs(deltaScale) > GROW_LOWER_LIMIT) {
-            // we need to grow
-            val scaleAdd = scalePerMillisecond * deltaTime
-
-            // checke if the delta gets bigger (aka. we'd grew to much)
-            val nextScale = scale + scaleAdd
-            if (abs(this.nextScale - nextScale) > deltaScale) {
-                // abort scaling and avoid getting called another time
-                scale = nextScale
-                return
-            }
-            // we can grow
-            scale = nextScale
-        }
-    }
 
     private fun move(deltaTime: Int) {
         val perSecond = deltaTime / 1000.0f
         position += velocity * perSecond
-        velocity = velocity * (Vec3.ONE - friction * perSecond)
+        velocity *= Vec3.ONE - friction * perSecond
 
         if (velocity.length() < MINIMUM_VELOCITY) {
-            velocity = Vec3.EMPTY
+            velocity.clear()
         }
     }
 
@@ -125,21 +109,8 @@ abstract class Particle(protected val connection: PlayConnection, protected val 
         }
     }
 
-    private fun checkSpriteTexture() {
-        val totalTextures = data.type.textures.size
-        if (totalTextures <= 1) {
-            return
-        }
-        // calculate next texture
-        val nextTextureResourceLocation = data.type.textures[age / ((maxAge / totalTextures) + 1)]
-        if (texture.resourceLocation == nextTextureResourceLocation) {
-            return
-        }
-        texture = connection.rendering!!.renderWindow.textures.allTextures[nextTextureResourceLocation]!!
-    }
 
-    open fun tick() {
-        check(!dead) { "Cannot tick dead particle!" }
+    fun tick() {
         val currentTime = System.currentTimeMillis()
         if (lastTickTime == -1L) {
             // never ticked before, skip
@@ -147,8 +118,22 @@ abstract class Particle(protected val connection: PlayConnection, protected val 
             return
         }
         val deltaTime = (currentTime - lastTickTime).toInt()
-        check(deltaTime >= 0)
 
+        tick(deltaTime)
+
+        if (lastRealTickTime == -1L) {
+            lastRealTickTime = System.currentTimeMillis()
+        } else if (currentTime - lastRealTickTime >= ProtocolDefinition.TICK_TIME) {
+            realTick()
+            lastRealTickTime = currentTime
+        }
+
+        lastTickTime = currentTime
+    }
+
+    open fun tick(deltaTime: Int) {
+        check(!dead) { "Cannot tick dead particle!" }
+        check(deltaTime >= 0)
         age += deltaTime
 
         if (age >= maxAge) {
@@ -156,22 +141,17 @@ abstract class Particle(protected val connection: PlayConnection, protected val 
             return
         }
 
-        grow(deltaTime)
         move(deltaTime)
         hover(deltaTime)
-
-        checkSpriteTexture()
-
-        lastTickTime = currentTime
     }
 
-    open fun addVertex(particleMesh: ParticleMesh) {
-        particleMesh.addVertex(position, scale, texture, color)
+    open fun realTick() {
+
     }
+
+    abstract fun addVertex(particleMesh: ParticleMesh)
 
     companion object {
-        const val GROW_LOWER_LIMIT = 0.001f
         const val MINIMUM_VELOCITY = 0.01f
     }
-
 }

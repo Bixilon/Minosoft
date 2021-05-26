@@ -55,6 +55,18 @@ object VecUtil {
         }
     }
 
+    fun Vec3.clear() {
+        x = 0.0f
+        y = 0.0f
+        z = 0.0f
+    }
+
+    fun Vec3.assign(vec3: Vec3) {
+        x = vec3.x
+        y = vec3.y
+        z = vec3.z
+    }
+
     fun getRotatedValues(x: Float, y: Float, sin: Float, cos: Float, rescale: Boolean): Vec2 {
         val result = Vec2(x * cos - y * sin, x * sin + y * cos)
         if (rescale) {
@@ -294,7 +306,7 @@ object VecUtil {
     }
 
     operator fun Vec3i.get(axis: Axes): Int {
-        return when(axis) {
+        return when (axis) {
             Axes.X -> this.x
             Axes.Y -> this.y
             Axes.Z -> this.z

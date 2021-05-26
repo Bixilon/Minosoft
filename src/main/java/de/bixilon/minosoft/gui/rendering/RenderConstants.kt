@@ -78,4 +78,6 @@ object RenderConstants {
     const val DOUBLE_PRESS_DELAY_BETWEEN_PRESSED = 500
 
     const val MAX_BLOCK_OUTLINE_RAYCAST_DISTANCE = 5.0f
+
+    const val MAXIMUM_PARTICLE_AMOUNT = 200000
 }

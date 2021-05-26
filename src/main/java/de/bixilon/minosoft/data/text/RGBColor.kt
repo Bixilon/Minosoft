@@ -92,6 +92,14 @@ class RGBColor(val rgba: Int) : ChatCode {
             return RGBColor(this)
         }
 
+        fun Int.asGray(): RGBColor {
+            return RGBColor(this, this, this)
+        }
+
+        fun Float.asGray(): RGBColor {
+            return RGBColor(this, this, this)
+        }
+
         fun mix(vararg colors: RGBColor): RGBColor {
             var red = 0
             var green = 0

@@ -14,9 +14,19 @@
 package de.bixilon.minosoft.gui.rendering.particle
 
 import de.bixilon.minosoft.data.mappings.DefaultFactory
-import de.bixilon.minosoft.gui.rendering.particle.types.HappyVillagerParticle
+import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.data.mappings.particle.data.ParticleData
 import de.bixilon.minosoft.gui.rendering.particle.types.Particle
+import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.ExplosionParticle
+import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.HappyVillagerParticle
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import glm_.vec3.Vec3
 
 object DefaultParticleFactory : DefaultFactory<ParticleFactory<out Particle>>(
     HappyVillagerParticle,
-)
+    ExplosionParticle,
+) {
+    fun build(particleType: ResourceLocation, particleRenderer: ParticleRenderer, connection: PlayConnection, position: Vec3, data: ParticleData = ParticleData(connection.registries.particleTypeRegistry[particleType]!!)) {
+        this[particleType]!!.build(connection, particleRenderer, position, data)
+    }
+}

@@ -15,12 +15,13 @@ package de.bixilon.minosoft.gui.rendering.particle
 
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.particle.data.ParticleData
+import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.Renderer
 import de.bixilon.minosoft.gui.rendering.RendererBuilder
 import de.bixilon.minosoft.gui.rendering.modding.events.CameraMatrixChangeEvent
-import de.bixilon.minosoft.gui.rendering.particle.types.ExplosionParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.Particle
+import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.ExplosionParticle
 import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.gui.rendering.textures.Texture
 import de.bixilon.minosoft.gui.rendering.textures.TextureArray
@@ -61,14 +62,16 @@ class ParticleRenderer(
         val random = Random.Default
 
         val type = connection.registries.particleTypeRegistry[ExplosionParticle.RESOURCE_LOCATION]!!
-        for (i in 0 until 10000) {
-            val particle = ExplosionParticle(connection, Vec3(random.nextFloat(0.0f, 50.0f), random.nextFloat(6.0f, 50.0f), random.nextFloat(0.0f, 50.0f)), ParticleData(type), Random(random.nextLong()))
+        for (i in 0 until 20) {
+            val particle = ExplosionParticle(connection, this, Vec3(random.nextFloat(0.0f, 10.0f), random.nextFloat(6.0f, 10.0f), random.nextFloat(0.0f, 10.0f)), ParticleData(type))
             // particle.grow(0.5f, 20000L)
             // particle.velocity = Vec3(1f, 0.2f, 1f)
             // particle.friction = Vec3(0.1f, 0.1f, 0.1f)
             particle.relativeHover(-1.0f, 1.0f)
             particles += particle
         }
+
+        DefaultParticleBehavior.register(connection, this)
     }
 
     override fun postInit() {
@@ -81,12 +84,16 @@ class ParticleRenderer(
         renderWindow.textures.animator.use(particleShader)
     }
 
-    var last = 0L
+
+    fun add(particle: Particle) {
+        check(particles.size < RenderConstants.MAXIMUM_PARTICLE_AMOUNT) { "Can not add particle: Limit reached (${particles.size} > ${RenderConstants.MAXIMUM_PARTICLE_AMOUNT}" }
+        particles += particle
+    }
+
 
     override fun draw() {
         particleShader.use()
 
-        val time = System.currentTimeMillis()
         particleMesh.unload()
         particleMesh = ParticleMesh()
 
@@ -100,7 +107,6 @@ class ParticleRenderer(
         }
 
         particleMesh.load()
-        last = time
 
         particleMesh.draw()
     }

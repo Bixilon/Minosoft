@@ -11,23 +11,25 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.particle.types
+package de.bixilon.minosoft.gui.rendering.sound
 
-import de.bixilon.minosoft.data.mappings.ResourceLocation
-import de.bixilon.minosoft.data.mappings.particle.data.ParticleData
-import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3
+import de.bixilon.minosoft.modding.event.CallbackEventInvoker
+import de.bixilon.minosoft.modding.event.events.ExplosionEvent
+import de.bixilon.minosoft.modding.event.events.PlaySoundEvent
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
-import glm_.vec3.Vec3
 import kotlin.random.Random
 
-class HappyVillagerParticle(connection: PlayConnection, position: Vec3, data: ParticleData, random: Random) : Particle(connection, position, data, random) {
+object DefaultAudioBehavior {
+    val ENTITY_GENERIC_EXPLODE = "minecraft:entity.generic.explode".asResourceLocation()
 
-    companion object : ParticleFactory<HappyVillagerParticle> {
-        override val RESOURCE_LOCATION: ResourceLocation = "minecraft:happy_villager".asResourceLocation()
+    fun register(connection: PlayConnection, audioPlayer: AudioPlayer) {
+        val invokers = listOf(
+            CallbackEventInvoker.of<PlaySoundEvent> { audioPlayer.playSoundEvent(it.soundEvent, it.position.toVec3, it.volume, it.pitch) },
+            CallbackEventInvoker.of<ExplosionEvent> { audioPlayer.playSoundEvent(ENTITY_GENERIC_EXPLODE, it.position, 4.0f, (1.0f + (Random.nextFloat() - Random.nextFloat()) * 0.2f) * 0.7f) },
+        )
 
-        override fun build(connection: PlayConnection, position: Vec3, data: ParticleData, random: Random): HappyVillagerParticle {
-            return HappyVillagerParticle(connection, position, data, random)
-        }
+        connection.registerEvents(*invokers.toTypedArray())
     }
 }
