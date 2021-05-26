@@ -48,7 +48,7 @@ class SkyRenderer(
     )
     private val skyboxMesh = SkyboxMesh()
     private var skySunMesh = SimpleTextureMesh()
-    private var sunTexture = Texture(SUN_TEXTURE_RESOURCE_LOCATION)
+    private lateinit var sunTexture: Texture
     private var recalculateSunNextFrame: Boolean = true
     private var bottomColor = ChatColors.BLACK
     private var topColor = RenderConstants.DEFAULT_SKY_COLOR
@@ -74,7 +74,7 @@ class SkyRenderer(
                 recalculateSunNextFrame = true
             }
         })
-        renderWindow.textures.allTextures.add(sunTexture)
+        sunTexture = renderWindow.textures.allTextures.getOrPut(SUN_TEXTURE_RESOURCE_LOCATION) { Texture(SUN_TEXTURE_RESOURCE_LOCATION) }
     }
 
     private fun setSunMatrix(projectionViewMatrix: Mat4) {

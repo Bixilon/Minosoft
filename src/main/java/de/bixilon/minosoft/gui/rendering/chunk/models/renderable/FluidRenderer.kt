@@ -1,6 +1,7 @@
 package de.bixilon.minosoft.gui.rendering.chunk.models.renderable
 
 import de.bixilon.minosoft.data.Directions
+import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.biomes.Biome
 import de.bixilon.minosoft.data.mappings.blocks.BlockState
 import de.bixilon.minosoft.data.mappings.blocks.properties.BlockProperties
@@ -221,9 +222,9 @@ class FluidRenderer(
         return false
     }
 
-    override fun resolveTextures(indexed: MutableList<Texture>, textureMap: MutableMap<String, Texture>) {
-        stillTexture = BlockLikeRenderer.resolveTexture(indexed, textureMap, stillFluid.renderTexture.toString())!!
-        flowingTexture = BlockLikeRenderer.resolveTexture(indexed, textureMap, flowingFluid.renderTexture.toString())!!
+    override fun resolveTextures(textures: MutableMap<ResourceLocation, Texture>) {
+        stillTexture = BlockLikeRenderer.resolveTexture(textures, Texture.getResourceTextureIdentifier(stillFluid.renderTexture!!.namespace, stillFluid.renderTexture.path))
+        flowingTexture = BlockLikeRenderer.resolveTexture(textures, Texture.getResourceTextureIdentifier(flowingFluid.renderTexture!!.namespace, flowingFluid.renderTexture.path))
     }
 
     companion object {

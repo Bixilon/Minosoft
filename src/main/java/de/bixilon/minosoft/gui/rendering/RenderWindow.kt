@@ -38,7 +38,6 @@ import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.play.PositionAndRotationS2CP
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.CountUpAndDownLatch
-import de.bixilon.minosoft.util.KUtil.synchronizedListOf
 import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
 import de.bixilon.minosoft.util.Queue
 import de.bixilon.minosoft.util.Stopwatch
@@ -79,7 +78,7 @@ class RenderWindow(
     private val screenshotTaker = ScreenshotTaker(this)
     val tintColorCalculator = TintColorCalculator(connection.world)
     val font = Font()
-    val textures = TextureArray(synchronizedListOf())
+    val textures = TextureArray(synchronizedMapOf())
 
     val rendererMap: MutableMap<ResourceLocation, Renderer> = synchronizedMapOf()
 
@@ -200,16 +199,16 @@ class RenderWindow(
 
 
         Log.log(LogMessageType.RENDERING_LOADING) { "Generating font and gathering textures (${stopwatch.labTime()})..." }
-        textures.allTextures.add(Texture(RenderConstants.DEBUG_TEXTURE_RESOURCE_LOCATION))
+        textures.allTextures.getOrPut(RenderConstants.DEBUG_TEXTURE_RESOURCE_LOCATION) { Texture(RenderConstants.DEBUG_TEXTURE_RESOURCE_LOCATION) }
         WHITE_TEXTURE = TextureLikeTexture(
             texture = Texture(ResourceLocation("minosoft:textures/white.png")),
             uvStart = Vec2(0, 0),
             uvEnd = Vec2(1.0f, 1.0f),
             size = Vec2i(16, 16)
         )
-        textures.allTextures.add(WHITE_TEXTURE.texture)
+        textures.allTextures.getOrPut(WHITE_TEXTURE.texture.resourceLocation) { WHITE_TEXTURE.texture }
 
-        font.load(connection.assetsManager)
+        font.load(connection.assetsManager, textures.allTextures)
 
 
         Log.log(LogMessageType.RENDERING_LOADING) { "Initializing renderer (${stopwatch.labTime()})..." }
@@ -219,7 +218,6 @@ class RenderWindow(
 
 
         Log.log(LogMessageType.RENDERING_LOADING) { "Preloading textures (${stopwatch.labTime()})..." }
-        font.preLoadAtlas(textures)
         textures.preLoad(connection.assetsManager)
         font.loadAtlas()
 

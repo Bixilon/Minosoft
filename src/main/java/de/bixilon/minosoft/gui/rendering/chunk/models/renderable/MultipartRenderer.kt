@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.chunk.models.renderable
 
 import de.bixilon.minosoft.data.Directions
+import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.chunk.models.FaceSize
 import de.bixilon.minosoft.gui.rendering.textures.Texture
 
@@ -45,9 +46,9 @@ class MultipartRenderer(
         }
     }
 
-    override fun resolveTextures(indexed: MutableList<Texture>, textureMap: MutableMap<String, Texture>) {
+    override fun resolveTextures(textures: MutableMap<ResourceLocation, Texture>) {
         for (model in models) {
-            model.resolveTextures(indexed, textureMap)
+            model.resolveTextures(textures)
         }
     }
 }

@@ -37,17 +37,17 @@ object FontLoader {
         return ret
     }
 
-    private fun loadBitmapFontProvider(atlasPath: ResourceLocation, height: Int? = 8, ascent: Int, chars: List<Char>, assetsManager: AssetsManager): FontProvider {
+    private fun loadBitmapFontProvider(atlasPath: ResourceLocation, height: Int? = 8, ascent: Int, chars: List<Char>, assetsManager: AssetsManager, textures: MutableMap<ResourceLocation, Texture>): FontProvider {
         val width = if (ascent == 7) { // ToDo: Why?
             8
         } else {
             9
         }
         val provider = FontProvider(width)
-        val atlasTexture = Texture((Texture.getResourceTextureIdentifier(atlasPath.namespace, atlasPath.path)))
+        val atlasResourceLocation = Texture.getResourceTextureIdentifier(atlasPath.namespace, atlasPath.path)
+        val atlasTexture = textures.getOrPut(atlasResourceLocation) { Texture(atlasResourceLocation) }
         atlasTexture.load(assetsManager)
         val height = height ?: atlasTexture.size.x / FONT_ATLAS_SIZE
-        provider.atlasTextures.add(atlasTexture)
         val charsCoordinates: MutableList<MutableList<FontChar>> = mutableListOf() // ToDo: Remove this
         for ((i, char) in chars.withIndex()) {
             if (i % FONT_ATLAS_SIZE == 0) {
@@ -89,21 +89,22 @@ object FontLoader {
     }
 
 
-    private fun loadUnicodeFontProvider(template: ResourceLocation, sizes: InputStream, assetsManager: AssetsManager): FontProvider {
+    private fun loadUnicodeFontProvider(template: ResourceLocation, sizes: InputStream, assetsManager: AssetsManager, textures: MutableMap<ResourceLocation, Texture>): FontProvider {
         val provider = FontProvider(UNICODE_SIZE)
         var i = 0
         lateinit var currentAtlasTexture: Texture
         while (sizes.available() > 0) {
+
             if (i % 256 == 0) {
-                currentAtlasTexture = if (MISSING_UNICODE_PAGES.contains(i / UNICODE_CHARS_PER_PAGE)) {
+                val textureResourceLocation = if (MISSING_UNICODE_PAGES.contains(i / UNICODE_CHARS_PER_PAGE)) {
                     // ToDo: Why is this texture missing in minecraft?
-                    Texture(RenderConstants.DEBUG_TEXTURE_RESOURCE_LOCATION)
+                    RenderConstants.DEBUG_TEXTURE_RESOURCE_LOCATION
                 } else {
                     // new page (texture)
-                    Texture(Texture.getResourceTextureIdentifier(template.namespace, template.path.format("%02x".format(i / 256))))
+                    Texture.getResourceTextureIdentifier(template.namespace, template.path.format("%02x".format(i / 256)))
                 }
+                currentAtlasTexture = textures.getOrPut(textureResourceLocation) { Texture(textureResourceLocation) }
                 currentAtlasTexture.load(assetsManager)
-                provider.atlasTextures.add(currentAtlasTexture)
             }
             val sizeByte = sizes.read()
             val fontChar = FontChar(currentAtlasTexture, (i % UNICODE_CHARS_PER_PAGE) / FONT_ATLAS_SIZE, (i % UNICODE_CHARS_PER_PAGE) % FONT_ATLAS_SIZE, (sizeByte shr 4) and 0x0F, (sizeByte and 0x0F) + 1, UNICODE_SIZE)
@@ -113,13 +114,13 @@ object FontLoader {
         return provider
     }
 
-    fun loadFontProvider(data: JsonObject, assetsManager: AssetsManager): FontProvider {
+    fun loadFontProvider(data: JsonObject, assetsManager: AssetsManager, textures: MutableMap<ResourceLocation, Texture>): FontProvider {
         return when (data["type"].asString) {
             "bitmap" -> {
-                loadBitmapFontProvider(ResourceLocation(data["file"].asString), data["height"]?.asInt, data["ascent"].asInt, getCharArray(data["chars"].asJsonArray), assetsManager)
+                loadBitmapFontProvider(ResourceLocation(data["file"].asString), data["height"]?.asInt, data["ascent"].asInt, getCharArray(data["chars"].asJsonArray), assetsManager, textures)
             }
             "legacy_unicode" -> {
-                loadUnicodeFontProvider(ResourceLocation(data["template"].asString), assetsManager.readAssetAsStream(ResourceLocation(data["sizes"].asString)), assetsManager)
+                loadUnicodeFontProvider(ResourceLocation(data["template"].asString), assetsManager.readAssetAsStream(ResourceLocation(data["sizes"].asString)), assetsManager, textures)
             }
             "ttf" -> {
                 TODO("True Type Fonts are not implemented yet")
@@ -129,10 +130,10 @@ object FontLoader {
     }
 
 
-    fun loadFontProviders(assetsManager: AssetsManager): List<FontProvider> {
+    fun loadFontProviders(assetsManager: AssetsManager, textures: MutableMap<ResourceLocation, Texture>): List<FontProvider> {
         val ret: MutableList<FontProvider> = mutableListOf()
         for (providerElement in assetsManager.readJsonAsset(FONT_JSON_RESOURCE_LOCATION).asJsonObject["providers"].asJsonArray) {
-            val provider = loadFontProvider(providerElement.asJsonObject, assetsManager)
+            val provider = loadFontProvider(providerElement.asJsonObject, assetsManager, textures)
             ret.add(provider)
         }
         return ret

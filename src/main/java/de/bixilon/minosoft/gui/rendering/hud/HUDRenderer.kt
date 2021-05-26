@@ -57,10 +57,9 @@ class HUDRenderer(val connection: PlayConnection, val renderWindow: RenderWindow
     override fun init() {
         hudShader.load(Minosoft.MINOSOFT_ASSETS_MANAGER)
 
-        val (hudTextures, hudAtlasElements) = HUDAtlasElement.deserialize(Minosoft.MINOSOFT_ASSETS_MANAGER.readJsonAsset(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "mapping/atlas.json")).toResourceLocationMap())
-        this.hudAtlasElements = hudAtlasElements
+        this.hudAtlasElements = HUDAtlasElement.deserialize(Minosoft.MINOSOFT_ASSETS_MANAGER.readJsonAsset(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "mapping/atlas.json")).toResourceLocationMap(), renderWindow.textures.allTextures)
 
-        renderWindow.textures.allTextures.addAll(hudTextures.toList())
+
 
         registerDefaultElements()
 

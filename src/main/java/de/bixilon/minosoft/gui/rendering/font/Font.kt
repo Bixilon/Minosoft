@@ -14,16 +14,15 @@
 package de.bixilon.minosoft.gui.rendering.font
 
 import de.bixilon.minosoft.data.assets.AssetsManager
+import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.textures.Texture
-import de.bixilon.minosoft.gui.rendering.textures.TextureArray
 
 class Font {
     lateinit var providers: List<FontProvider>
-    private var preLoaded = false
     private var loaded = false
 
-    fun load(assetsManager: AssetsManager) {
-        providers = FontLoader.loadFontProviders(assetsManager)
+    fun load(assetsManager: AssetsManager, textures: MutableMap<ResourceLocation, Texture>) {
+        providers = FontLoader.loadFontProviders(assetsManager, textures)
     }
 
     fun getChar(char: Char): FontChar {
@@ -35,24 +34,8 @@ class Font {
         throw IllegalStateException("$char can not be rendered!")
     }
 
-    fun preLoadAtlas(textureArray: TextureArray) {
-        check(!preLoaded) { "Font has already been preloaded!" }
-
-        val textures: MutableList<Texture> = mutableListOf()
-        for (provider in providers) {
-            for (atlasPage in provider.atlasTextures) {
-                textures.add(atlasPage)
-            }
-        }
-        textureArray.allTextures.addAll(textures)
-        preLoaded = true
-    }
-
     fun loadAtlas() {
         check(!loaded) { "Font has already a atlas texture!" }
-        check(preLoaded) { "Font hasn't been preloaded!" }
-
-
 
         for (provider in providers) {
             for (char in provider.chars.values) {

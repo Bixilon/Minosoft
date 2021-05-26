@@ -39,13 +39,12 @@ data class HUDAtlasElement(
     }
 
     companion object {
-        fun deserialize(json: Map<ResourceLocation, JsonObject>): Pair<Collection<Texture>, Map<ResourceLocation, HUDAtlasElement>> {
-            val textures: MutableMap<ResourceLocation, Texture> = mutableMapOf()
+        fun deserialize(json: Map<ResourceLocation, JsonObject>, textures: MutableMap<ResourceLocation, Texture>): Map<ResourceLocation, HUDAtlasElement> {
             val ret: MutableMap<ResourceLocation, HUDAtlasElement> = mutableMapOf()
             for ((resourceLocation, data) in json) {
                 ret[resourceLocation] = deserialize(data, textures)
             }
-            return Pair(textures.values, ret)
+            return ret
         }
 
         fun deserialize(json: JsonObject, textures: MutableMap<ResourceLocation, Texture>): HUDAtlasElement {

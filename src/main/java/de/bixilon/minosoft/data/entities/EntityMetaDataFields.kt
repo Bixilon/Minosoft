@@ -59,7 +59,7 @@ enum class EntityMetaDataFields(val defaultValue: Any? = null) {
     AREA_EFFECT_CLOUD_RADIUS(0.5f),
     AREA_EFFECT_CLOUD_COLOR(0),
     AREA_EFFECT_CLOUD_WAITING(false),
-    AREA_EFFECT_CLOUD_PARTICLE(ParticleData(ParticleType(ResourceLocation("effect")))),
+    AREA_EFFECT_CLOUD_PARTICLE(ParticleData(ParticleType(ResourceLocation("effect"), mutableListOf()))),
 
     ABSTRACT_ARROW_FLAGS(0.toByte()),
     ABSTRACT_ARROW_PIERCE_LEVEL(0.toByte()),

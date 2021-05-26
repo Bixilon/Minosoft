@@ -30,14 +30,14 @@ import org.lwjgl.opengl.GL31.GL_UNIFORM_BUFFER
 import org.lwjgl.opengl.GL31.glBindBuffer
 import java.nio.ByteBuffer
 
-class TextureArray(val allTextures: MutableList<Texture>) {
+class TextureArray(val allTextures: MutableMap<ResourceLocation, Texture>) {
     val animator = Animator()
     private var textureIds = Array(TEXTURE_RESOLUTION_ID_MAP.size) { -1 }
 
     private val texturesByResolution = Array<MutableList<Texture>>(TEXTURE_RESOLUTION_ID_MAP.size) { mutableListOf() }
 
     fun preLoad(assetsManager: AssetsManager?) {
-        for (texture in allTextures) {
+        for (texture in allTextures.values) {
             if (!texture.isLoaded) {
                 texture.load(assetsManager!!)
             }

@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.rendering.particle
 
 import de.bixilon.minosoft.data.mappings.ResourceLocation
-import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.Renderer
 import de.bixilon.minosoft.gui.rendering.RendererBuilder
@@ -37,14 +36,7 @@ class ParticleRenderer(
     private lateinit var particleShader: Shader
     private var particleMesh = ParticleMesh()
 
-    private val texture = Texture(DUMMY_PARTICLE_RESOURCE_LOCATION)
-
     override fun init() {
-
-
-
-        particleMesh.load()
-
         connection.registerEvent(CallbackEventInvoker.of<CameraMatrixChangeEvent> {
             renderWindow.queue += {
                 particleShader.use().setMat4("uViewProjectionMatrix", it.viewProjectionMatrix)
@@ -52,7 +44,12 @@ class ParticleRenderer(
                 particleShader.use().setVec3("uCameraUp", Vec3(it.viewMatrix[0][1], it.viewMatrix[1][1], it.viewMatrix[2][1]))
             }
         })
-        renderWindow.textures.allTextures += texture
+        particleMesh.load()
+        connection.registries.particleTypeRegistry.forEach {
+            for (resourceLocation in it.textures) {
+                renderWindow.textures.allTextures[resourceLocation] = Texture(resourceLocation)
+            }
+        }
     }
 
     override fun postInit() {
@@ -82,7 +79,7 @@ class ParticleRenderer(
                 return min + random.nextFloat() * (max - min)
             }
             for (i in 0 until 123456) {
-                particleMesh.addVertex(Vec3(randomFlot(0.0f, 200.0f), randomFlot(6.0f, 200.0f), randomFlot(0.0f, 200.0f)), randomFlot(0.05f, 0.2f), texture, ChatColors.getRandomColor())
+                //  particleMesh.addVertex(Vec3(randomFlot(0.0f, 200.0f), randomFlot(6.0f, 200.0f), randomFlot(0.0f, 200.0f)), randomFlot(0.05f, 0.2f), texture, ChatColors.getRandomColor())
             }
 
 
@@ -95,8 +92,6 @@ class ParticleRenderer(
 
     companion object : RendererBuilder<ParticleRenderer> {
         override val RESOURCE_LOCATION = ResourceLocation("minosoft:particle")
-
-        private val DUMMY_PARTICLE_RESOURCE_LOCATION = ResourceLocation("minecraft:textures/particle/spark_4.png")
 
 
         override fun build(connection: PlayConnection, renderWindow: RenderWindow): ParticleRenderer {

@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.chunk.models.renderable
 import com.google.common.collect.HashBiMap
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.Directions
+import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.biomes.Biome
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderConstants
@@ -54,10 +55,10 @@ class BlockRenderer(data: JsonObject, parent: BlockModel) : BlockLikeRenderer {
         }
     }
 
-    override fun resolveTextures(indexed: MutableList<Texture>, textureMap: MutableMap<String, Texture>) {
-        for ((key, textureName) in textures) {
+    override fun resolveTextures(textures: MutableMap<ResourceLocation, Texture>) {
+        for ((key, textureName) in this.textures) {
             if (!textureName.startsWith("#")) {
-                textureMapping[key] = BlockLikeRenderer.resolveTexture(indexed, textureMap, textureName = textureName)!!
+                textureMapping[key] = BlockLikeRenderer.resolveTexture(textures, textureResourceLocation = Texture.getResourceTextureIdentifier(textureName = textureName))
             }
         }
     }

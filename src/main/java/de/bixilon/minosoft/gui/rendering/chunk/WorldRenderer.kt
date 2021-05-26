@@ -135,7 +135,7 @@ class WorldRenderer(
 
     override fun init() {
         allBlocks = getAllBlocks(connection.version.registries)
-        renderWindow.textures.allTextures.addAll(resolveBlockTextureIds(allBlocks!!))
+        resolveBlockTextureIds(allBlocks!!, renderWindow.textures.allTextures)
 
 
         // register keybindings
@@ -210,16 +210,12 @@ class WorldRenderer(
         glDepthMask(true)
     }
 
-    private fun resolveBlockTextureIds(blocks: Collection<BlockState>): List<Texture> {
-        val textures: MutableList<Texture> = mutableListOf()
-        val textureMap: MutableMap<String, Texture> = synchronizedMapOf()
-
+    private fun resolveBlockTextureIds(blocks: Collection<BlockState>, textures: MutableMap<ResourceLocation, Texture>) {
         for (block in blocks) {
             for (model in block.renderers) {
-                model.resolveTextures(textures, textureMap)
+                model.resolveTextures(textures)
             }
         }
-        return textures
     }
 
 

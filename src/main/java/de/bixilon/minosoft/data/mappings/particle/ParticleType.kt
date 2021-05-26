@@ -17,10 +17,11 @@ import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.registry.RegistryItem
 import de.bixilon.minosoft.data.mappings.registry.ResourceLocationDeserializer
 import de.bixilon.minosoft.data.mappings.versions.Registries
+import de.bixilon.minosoft.gui.rendering.textures.Texture
 
 data class ParticleType(
     override val resourceLocation: ResourceLocation,
-    // ToDo
+    val textures: List<ResourceLocation>,
 ) : RegistryItem {
 
     override fun toString(): String {
@@ -29,7 +30,14 @@ data class ParticleType(
 
     companion object : ResourceLocationDeserializer<ParticleType> {
         override fun deserialize(mappings: Registries?, resourceLocation: ResourceLocation, data: JsonObject): ParticleType {
-            return ParticleType(resourceLocation)
+            val textures: MutableList<ResourceLocation> = mutableListOf()
+            data["render"]?.asJsonObject?.get("textures")?.asJsonArray?.let {
+                for (texture in it) {
+                    val textureResourceLocation = ResourceLocation(texture.asString)
+                    textures += Texture.getResourceTextureIdentifier(textureResourceLocation.namespace, textureName = "particle/${textureResourceLocation.path}")
+                }
+            }
+            return ParticleType(resourceLocation, textures.toList())
         }
     }
 }
