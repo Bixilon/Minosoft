@@ -21,25 +21,25 @@ import de.bixilon.minosoft.gui.rendering.RendererBuilder
 import de.bixilon.minosoft.gui.rendering.modding.events.CameraMatrixChangeEvent
 import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.gui.rendering.textures.Texture
+import de.bixilon.minosoft.gui.rendering.textures.TextureArray
 import de.bixilon.minosoft.modding.event.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.util.MMath
 import glm_.vec3.Vec3
+import java.util.concurrent.ThreadLocalRandom
 
 
 class ParticleRenderer(
     private val connection: PlayConnection,
     val renderWindow: RenderWindow,
 ) : Renderer {
-    private val particleShader = Shader(
-        resourceLocation = ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "particle"),
-    )
+    private lateinit var particleShader: Shader
     private var particleMesh = ParticleMesh()
 
     private val texture = Texture(DUMMY_PARTICLE_RESOURCE_LOCATION)
 
     override fun init() {
-        particleShader.load()
 
 
 
@@ -56,25 +56,39 @@ class ParticleRenderer(
     }
 
     override fun postInit() {
+        particleShader = Shader(
+            resourceLocation = ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "particle"),
+            defines = mapOf("ANIMATED_TEXTURE_COUNT" to MMath.clamp(renderWindow.textures.animator.animatedTextures.size, 1, TextureArray.MAX_ANIMATED_TEXTURE)),
+        )
+        particleShader.load()
         renderWindow.textures.use(particleShader, "textureArray")
+        renderWindow.textures.animator.use(particleShader, "AnimatedDataBuffer")
     }
 
+    var last = 0L
 
     override fun draw() {
         particleShader.use()
 
-        particleMesh.unload()
+        val time = System.currentTimeMillis()
+        if (time - last >= ProtocolDefinition.TICK_TIME * 2000) {
+            particleMesh.unload()
 
-        particleMesh = ParticleMesh()
-
-        // thanks: https://gamedev.stackexchange.com/questions/113147/rotate-billboard-towards-camera
-        val position = Vec3(0, 6, 0)
-
-
-        particleMesh.addVertex(position, 1.0f, texture, ChatColors.RED)
+            particleMesh = ParticleMesh()
 
 
-        particleMesh.load()
+            val random = ThreadLocalRandom.current()
+            fun randomFlot(min: Float, max: Float): Float {
+                return min + random.nextFloat() * (max - min)
+            }
+            for (i in 0 until 123456) {
+                particleMesh.addVertex(Vec3(randomFlot(0.0f, 200.0f), randomFlot(6.0f, 200.0f), randomFlot(0.0f, 200.0f)), randomFlot(0.05f, 0.2f), texture, ChatColors.getRandomColor())
+            }
+
+
+            particleMesh.load()
+            last = time
+        }
 
         particleMesh.draw()
     }

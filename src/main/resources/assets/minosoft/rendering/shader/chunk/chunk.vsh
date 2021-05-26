@@ -33,7 +33,7 @@ uniform mat4 viewProjectionMatrix;
 
 layout(std140) uniform AnimatedDataBuffer
 {
-    uvec4 globalAnimationData[ANIMATED_TEXTURE_COUNT];
+    uvec4 uAnimationData[ANIMATED_TEXTURE_COUNT];
 };
 
 #include "minosoft:color"
@@ -52,7 +52,7 @@ void main() {
         return;
     }
 
-    uvec4 data = globalAnimationData[animationIndex];
+    uvec4 data = uAnimationData[animationIndex];
     uint firstTexture = data.x;
     uint secondTexture = data.y;
     uint interpolation = data.z;

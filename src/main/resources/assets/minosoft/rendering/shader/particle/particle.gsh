@@ -24,8 +24,11 @@ uniform vec3 uCameraUp;
 
 in Vertex
 {
-    uint textureIndex;
-    uint textureLayer;
+    uint textureIndex1;
+    uint textureLayer1;
+    uint textureIndex2;
+    uint textureLayer2;
+    float interpolation;
     vec2 maxUVCoordinates;
 
     float scale;
@@ -33,8 +36,11 @@ in Vertex
 } ginVertex[];
 
 
-flat out uint finTextureIndex;
-out vec3 finTextureCoordinates;
+flat out uint finTextureIndex1;
+out vec3 finTextureCoordinates1;
+flat out uint finTextureIndex2;
+out vec3 finTextureCoordinates2;
+flat out float finInterpolation;
 
 out vec4 finTintColor;
 
@@ -43,24 +49,30 @@ void main()
     vec3 pointPosition = gl_in[0].gl_Position.xyz;
 
 
-    finTextureIndex = ginVertex[0].textureIndex;
+    finTextureIndex1 = ginVertex[0].textureIndex1;
+    finTextureIndex2 = ginVertex[0].textureIndex2;
+    finInterpolation = ginVertex[0].interpolation;
     finTintColor = ginVertex[0].tintColor;
 
 
     gl_Position = uViewProjectionMatrix * vec4(pointPosition - (uCameraRight - uCameraUp) * ginVertex[0].scale, 1.0);
-    finTextureCoordinates = vec3(0.0f, ginVertex[0].maxUVCoordinates.y, ginVertex[0].textureLayer);
+    finTextureCoordinates1 = vec3(0.0f, 0.0f, ginVertex[0].textureLayer1);
+    finTextureCoordinates2 = vec3(0.0f, 0.0f, ginVertex[0].textureLayer2);
     EmitVertex();
 
     gl_Position = uViewProjectionMatrix * vec4(pointPosition - (uCameraRight + uCameraUp) * ginVertex[0].scale, 1.0);
-    finTextureCoordinates = vec3(0.0f, 0.0f, ginVertex[0].textureLayer);
+    finTextureCoordinates1 = vec3(0.0f, ginVertex[0].maxUVCoordinates.y, ginVertex[0].textureLayer1);
+    finTextureCoordinates2 = vec3(0.0f, ginVertex[0].maxUVCoordinates.y, ginVertex[0].textureLayer2);
     EmitVertex();
 
     gl_Position = uViewProjectionMatrix * vec4(pointPosition + (uCameraRight + uCameraUp) * ginVertex[0].scale, 1.0);
-    finTextureCoordinates = vec3(ginVertex[0].maxUVCoordinates, ginVertex[0].textureLayer);
+    finTextureCoordinates1 = vec3(ginVertex[0].maxUVCoordinates.x, 0.0f, ginVertex[0].textureLayer1);
+    finTextureCoordinates2 = vec3(ginVertex[0].maxUVCoordinates.x, 0.0f, ginVertex[0].textureLayer2);
     EmitVertex();
 
     gl_Position = uViewProjectionMatrix * vec4(pointPosition + (uCameraRight - uCameraUp) * ginVertex[0].scale, 1.0);
-    finTextureCoordinates = vec3(ginVertex[0].maxUVCoordinates.x, 0.0f, ginVertex[0].textureLayer);
+    finTextureCoordinates1 = vec3(ginVertex[0].maxUVCoordinates.x, ginVertex[0].maxUVCoordinates.y, ginVertex[0].textureLayer1);
+    finTextureCoordinates2 = vec3(ginVertex[0].maxUVCoordinates.x, ginVertex[0].maxUVCoordinates.y, ginVertex[0].textureLayer2);
     EmitVertex();
 
 

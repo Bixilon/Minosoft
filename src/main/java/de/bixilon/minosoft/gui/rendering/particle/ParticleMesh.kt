@@ -39,6 +39,7 @@ class ParticleMesh : Mesh() {
             texture.uvEnd.x,
             texture.uvEnd.y,
             Float.fromBits(textureLayer),
+            Float.fromBits(texture.properties.animation?.animationId ?: -1),
             scale,
             Float.fromBits(tintColor.rgba),
         ))
@@ -58,15 +59,17 @@ class ParticleMesh : Mesh() {
         glEnableVertexAttribArray(index++)
         glVertexAttribPointer(index, 1, GL_FLOAT, false, FLOATS_PER_VERTEX * Float.SIZE_BYTES, (7 * Float.SIZE_BYTES).toLong())
         glEnableVertexAttribArray(index++)
+        glVertexAttribPointer(index, 1, GL_FLOAT, false, FLOATS_PER_VERTEX * Float.SIZE_BYTES, (8 * Float.SIZE_BYTES).toLong())
+        glEnableVertexAttribArray(index++)
         super.unbind()
     }
 
     override fun draw() {
         glBindVertexArray(vao)
-        glDrawArrays(GL_POINTS, 0, 1)
+        glDrawArrays(GL_POINTS, 0, primitiveCount)
     }
 
     companion object {
-        private val FLOATS_PER_VERTEX = 8
+        private val FLOATS_PER_VERTEX = 9
     }
 }

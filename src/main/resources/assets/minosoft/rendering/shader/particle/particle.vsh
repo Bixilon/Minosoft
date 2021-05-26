@@ -16,15 +16,24 @@
 layout (location = 0) in vec3 vinPosition;
 layout (location = 1) in vec2 vinMaxUVCoordinates;
 layout (location = 2) in uint vinTextureLayer;
+layout (location = 3) in int vinAnimationIndex;
 
-layout (location = 3) in float vinScale;
-layout (location = 4) in uint vinTintColor;
+layout (location = 4) in float vinScale;
+layout (location = 5) in uint vinTintColor;
 
+
+layout(std140) uniform AnimatedDataBuffer
+{
+    uvec4 uAnimationData[ANIMATED_TEXTURE_COUNT];
+};
 
 out Vertex
 {
-    uint textureIndex;
-    uint textureLayer;
+    uint textureIndex1;
+    uint textureLayer1;
+    uint textureIndex2;
+    uint textureLayer2;
+    float interpolation;
     vec2 maxUVCoordinates;
 
     float scale;
@@ -36,10 +45,29 @@ out Vertex
 void main() {
     gl_Position = vec4(vinPosition, 1.0f);
 
-    ginVertex.textureIndex = vinTextureLayer >> 24u;
-    ginVertex.textureLayer = vinTextureLayer & 0xFFFFFFu;
     ginVertex.maxUVCoordinates = vinMaxUVCoordinates;
 
     ginVertex.scale = vinScale;
     ginVertex.tintColor = getRGBAColor(vinTintColor);
+
+    if (vinAnimationIndex == -1) {
+        ginVertex.textureIndex1 = vinTextureLayer >> 24u;
+        ginVertex.textureLayer1 = vinTextureLayer & 0xFFFFFFu;
+
+        ginVertex.interpolation = 0.0f;
+        return;
+    }
+
+    uvec4 data = uAnimationData[vinAnimationIndex];
+    uint texture1 = data.x;
+    uint texture2 = data.y;
+    uint interpolation = data.z;
+
+    ginVertex.textureIndex1 = texture1 >> 24u;
+    ginVertex.textureLayer1 = texture1 & 0xFFFFFFu;
+
+    ginVertex.textureIndex2 = texture2 >> 24u;
+    ginVertex.textureLayer2 = texture2 & 0xFFFFFFu;
+
+    ginVertex.interpolation = interpolation / 100.0f;
 }

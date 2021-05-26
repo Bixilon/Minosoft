@@ -13,20 +13,34 @@
 
 #version 330 core
 
-out vec4 outColor;
+out vec4 foutColor;
 
-flat in uint finTextureIndex;
-in vec3 finTextureCoordinates;
+flat in uint finTextureIndex1;
+in vec3 finTextureCoordinates1;
+flat in uint finTextureIndex2;
+in vec3 finTextureCoordinates2;
+flat in float finInterpolation;
 
 in vec4 finTintColor;
 
 #include "minosoft:texture"
 
 void main() {
-    vec4 texelColor = getTexture(finTextureIndex, finTextureCoordinates);
-    if (texelColor.a == 0.0f) {
+    vec4 texelColor1 = getTexture(finTextureIndex1, finTextureCoordinates1);
+    if (texelColor1.a == 0.0f) {
         discard;
     }
 
-    outColor = texelColor * finTintColor;
+    if (finInterpolation == 0.0f) {
+        foutColor = texelColor1 * finTintColor;
+        return;
+    }
+
+    vec4 texelColor2 =  getTexture(finTextureIndex2, finTextureCoordinates2);
+
+    if (texelColor2.a == 0.0f) {
+        discard;
+    }
+
+    foutColor = mix(texelColor1, texelColor2, finInterpolation) * finTintColor;
 }
