@@ -12,18 +12,20 @@
  */
 package de.bixilon.minosoft.modding.event.events
 
+import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.play.ExplosionS2CP
 import glm_.vec3.Vec3
 
 class ExplosionEvent(
     connection: PlayConnection,
+    initiator: EventInitiators,
     val position: Vec3,
     val power: Float,
     val explodedBlocks: List<Vec3>,
     val velocity: Vec3,
 ) : PlayConnectionEvent(connection) {
 
-    constructor(connection: PlayConnection, packet: ExplosionS2CP) : this(connection, packet.position, packet.power, packet.explodedBlocks, packet.velocity)
+    constructor(connection: PlayConnection, packet: ExplosionS2CP) : this(connection, EventInitiators.SERVER, packet.position, packet.power, packet.explodedBlocks, packet.velocity)
 
 }

@@ -21,10 +21,10 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
 class HotbarSlotSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
-    val slot: Int = buffer.readByte().toInt()
+    val slot: Int = buffer.readUnsignedByte()
 
     override fun handle(connection: PlayConnection) {
-        connection.fireEvent(SelectHotbarSlotEvent(connection, slot))
+        connection.fireEvent(SelectHotbarSlotEvent(connection, this))
 
         connection.player.selectedHotbarSlot = slot
     }

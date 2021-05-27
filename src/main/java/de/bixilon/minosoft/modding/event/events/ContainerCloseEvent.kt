@@ -12,6 +12,7 @@
  */
 package de.bixilon.minosoft.modding.event.events
 
+import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.c2s.play.ContainerCloseC2SP
 import de.bixilon.minosoft.protocol.packets.s2c.play.ContainerCloseS2CP
@@ -21,16 +22,12 @@ import de.bixilon.minosoft.protocol.packets.s2c.play.ContainerCloseS2CP
  */
 class ContainerCloseEvent(
     connection: PlayConnection,
+    initiator: EventInitiators,
     val containerId: Int,
-    val initiator: Initiators,
-) : CancelableEvent(connection) {
+) : CancelableEvent(connection, initiator) {
 
-    constructor(connection: PlayConnection, packet: ContainerCloseS2CP) : this(connection, packet.containerId, Initiators.SERVER)
+    constructor(connection: PlayConnection, packet: ContainerCloseS2CP) : this(connection, EventInitiators.SERVER, packet.containerId)
 
-    constructor(connection: PlayConnection, packet: ContainerCloseC2SP) : this(connection, packet.containerId, Initiators.CLIENT)
+    constructor(connection: PlayConnection, packet: ContainerCloseC2SP) : this(connection, EventInitiators.CLIENT, packet.containerId)
 
-    enum class Initiators {
-        CLIENT,
-        SERVER,
-    }
 }

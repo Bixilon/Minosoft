@@ -12,8 +12,12 @@
  */
 package de.bixilon.minosoft.modding.event.events
 
+import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 
-abstract class CancelableEvent(connection: PlayConnection) : PlayConnectionEvent(connection) {
+abstract class CancelableEvent @JvmOverloads constructor(
+    connection: PlayConnection,
+    initiator: EventInitiators = EventInitiators.DEFAULT,
+) : PlayConnectionEvent(connection, initiator) {
     var isCancelled = false
 }

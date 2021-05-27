@@ -13,13 +13,15 @@
 package de.bixilon.minosoft.modding.event.events
 
 import de.bixilon.minosoft.data.entities.entities.Entity
+import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.play.EntityMetadataS2CP
 
 class EntityMetaDataChangeEvent(
     connection: PlayConnection,
+    initiator: EventInitiators,
     val entity: Entity,
-) : PlayConnectionEvent(connection) {
+) : PlayConnectionEvent(connection, initiator) {
 
-    constructor(connection: PlayConnection, packet: EntityMetadataS2CP) : this(connection, connection.world.entities[packet.entityId]!!)
+    constructor(connection: PlayConnection, packet: EntityMetadataS2CP) : this(connection, EventInitiators.SERVER, connection.world.entities[packet.entityId]!!)
 }

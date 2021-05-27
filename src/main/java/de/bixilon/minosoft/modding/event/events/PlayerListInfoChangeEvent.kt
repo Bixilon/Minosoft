@@ -12,7 +12,17 @@
  */
 package de.bixilon.minosoft.modding.event.events
 
-import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
+import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.protocol.packets.s2c.play.TabListTextSetS2CP
 
-class OwnEntityMetaDataChangeEvent(connection: PlayConnection, val entity: PlayerEntity) : PlayConnectionEvent(connection)
+class PlayerListInfoChangeEvent(
+    connection: PlayConnection,
+    initiator: EventInitiators,
+    val header: ChatComponent,
+    val footer: ChatComponent,
+) : CancelableEvent(connection, initiator) {
+
+    constructor(connection: PlayConnection, packet: TabListTextSetS2CP) : this(connection, EventInitiators.SERVER, packet.header, packet.footer)
+}

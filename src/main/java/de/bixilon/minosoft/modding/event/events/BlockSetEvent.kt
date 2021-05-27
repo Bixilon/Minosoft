@@ -23,10 +23,10 @@ import glm_.vec3.Vec3i
  */
 class BlockSetEvent(
     connection: PlayConnection,
+    initiator: EventInitiators = EventInitiators.DEFAULT,
     val blockPosition: Vec3i,
     val blockState: BlockState?,
-    val initiator: EventInitiators = EventInitiators.CLIENT,
-) : PlayConnectionEvent(connection) {
+) : PlayConnectionEvent(connection, initiator) {
 
-    constructor(connection: PlayConnection, packet: BlockSetS2CP) : this(connection, packet.blockPosition, packet.blockState, EventInitiators.SERVER)
+    constructor(connection: PlayConnection, packet: BlockSetS2CP) : this(connection, EventInitiators.SERVER, packet.blockPosition, packet.blockState)
 }

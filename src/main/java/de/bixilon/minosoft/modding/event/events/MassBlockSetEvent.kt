@@ -24,11 +24,11 @@ import glm_.vec3.Vec3i
  */
 class MassBlockSetEvent(
     connection: PlayConnection,
+    initiator: EventInitiators,
     val blocks: Map<Vec3i, BlockState?>,
     val chunkPosition: Vec2i,
-    val initiator: EventInitiators = EventInitiators.CLIENT,
-) : PlayConnectionEvent(connection) {
+) : PlayConnectionEvent(connection, initiator) {
 
-    constructor(connection: PlayConnection, packet: MassBlockSetS2CP) : this(connection, packet.blocks, packet.chunkPosition, EventInitiators.SERVER)
+    constructor(connection: PlayConnection, packet: MassBlockSetS2CP) : this(connection, EventInitiators.SERVER, packet.blocks, packet.chunkPosition)
 
 }

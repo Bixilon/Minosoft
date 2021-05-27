@@ -13,22 +13,24 @@
 package de.bixilon.minosoft.modding.event.events
 
 import de.bixilon.minosoft.data.mappings.particle.data.ParticleData
+import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.play.ParticleS2CP
 import glm_.vec3.Vec3
 
 class ParticleSpawnEvent(
     connection: PlayConnection,
+    initiator: EventInitiators,
     position: Vec3,
     offset: Vec3,
     val speed: Float,
     val count: Int,
     val data: ParticleData,
-) : CancelableEvent(connection) {
+) : CancelableEvent(connection, initiator) {
     val position: Vec3 = position
         get() = Vec3(field)
     val offset: Vec3 = offset
         get() = Vec3(field)
 
-    constructor(connection: PlayConnection, packet: ParticleS2CP) : this(connection, packet.position, packet.offset, packet.speed, packet.count, packet.data)
+    constructor(connection: PlayConnection, packet: ParticleS2CP) : this(connection, EventInitiators.SERVER, packet.position, packet.offset, packet.speed, packet.count, packet.data)
 }

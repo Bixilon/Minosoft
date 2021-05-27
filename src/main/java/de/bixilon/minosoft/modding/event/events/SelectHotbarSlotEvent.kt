@@ -12,16 +12,18 @@
  */
 package de.bixilon.minosoft.modding.event.events
 
+import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.c2s.play.HotbarSlotSetC2SP
 import de.bixilon.minosoft.protocol.packets.s2c.play.HotbarSlotSetS2CP
 
 class SelectHotbarSlotEvent(
     connection: PlayConnection,
+    initiator: EventInitiators,
     val slot: Int,
-) : PlayConnectionEvent(connection) {
+) : PlayConnectionEvent(connection, initiator) {
 
-    constructor(connection: PlayConnection, packet: HotbarSlotSetC2SP) : this(connection, packet.slot)
+    constructor(connection: PlayConnection, packet: HotbarSlotSetC2SP) : this(connection, EventInitiators.CLIENT, packet.slot)
 
-    constructor(connection: PlayConnection, packet: HotbarSlotSetS2CP) : this(connection, packet.slot)
+    constructor(connection: PlayConnection, packet: HotbarSlotSetS2CP) : this(connection, EventInitiators.SERVER, packet.slot)
 }

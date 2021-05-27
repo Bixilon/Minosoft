@@ -14,7 +14,6 @@ package de.bixilon.minosoft.protocol.packets.s2c.play
 
 import de.bixilon.minosoft.data.entities.meta.EntityMetaData
 import de.bixilon.minosoft.modding.event.events.EntityMetaDataChangeEvent
-import de.bixilon.minosoft.modding.event.events.OwnEntityMetaDataChangeEvent
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
@@ -30,11 +29,7 @@ class EntityMetadataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         val entity = connection.world.entities[entityId] ?: return
 
         entity.entityMetaData = metaData
-        connection.fireEvent(EntityMetaDataChangeEvent(connection, entity))
-
-        if (entity === connection.player.entity) {
-            connection.fireEvent(OwnEntityMetaDataChangeEvent(connection, entity))
-        }
+        connection.fireEvent(EntityMetaDataChangeEvent(connection, this))
     }
 
 

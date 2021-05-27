@@ -14,32 +14,22 @@
 package de.bixilon.minosoft.protocol.protocol;
 
 import de.bixilon.minosoft.data.ChatTextPositions;
-import de.bixilon.minosoft.data.entities.EntityRotation;
-import de.bixilon.minosoft.data.mappings.ResourceLocation;
-import de.bixilon.minosoft.data.player.Hands;
 import de.bixilon.minosoft.data.text.ChatComponent;
 import de.bixilon.minosoft.modding.event.events.ChatMessageReceivingEvent;
 import de.bixilon.minosoft.modding.event.events.ChatMessageSendingEvent;
-import de.bixilon.minosoft.modding.event.events.ContainerCloseEvent;
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
-import de.bixilon.minosoft.protocol.packets.c2s.login.LoginPluginResponseC2SP;
-import de.bixilon.minosoft.protocol.packets.c2s.play.*;
+import de.bixilon.minosoft.protocol.packets.c2s.play.ChatMessageC2SP;
+import de.bixilon.minosoft.protocol.packets.c2s.play.ClientActionC2SP;
 import de.bixilon.minosoft.util.logging.Log;
 import de.bixilon.minosoft.util.logging.LogMessageType;
-import glm_.vec3.Vec3;
 
-import java.util.UUID;
-
+@Deprecated
 public class PacketSender {
     public static final char[] ILLEGAL_CHAT_CHARS = {'§'};
     private final PlayConnection connection;
 
     public PacketSender(PlayConnection connection) {
         this.connection = connection;
-    }
-
-    public void setFlyStatus(boolean flying) {
-        this.connection.sendPacket(new FlyToggleC2SP(flying));
     }
 
     public void sendChatMessage(String message) {
@@ -61,22 +51,6 @@ public class PacketSender {
         this.connection.sendPacket(new ChatMessageC2SP(event.getMessage()));
     }
 
-    public void spectateEntity(UUID entityUUID) {
-        this.connection.sendPacket(new EntitySpectateC2SP(entityUUID));
-    }
-
-    public void swingArm(Hands hand) {
-        this.connection.sendPacket(new ArmSwingC2SP(hand));
-    }
-
-
-    public void closeWindow(byte windowId) {
-        ContainerCloseEvent event = new ContainerCloseEvent(this.connection, windowId, ContainerCloseEvent.Initiators.CLIENT);
-        if (this.connection.fireEvent(event)) {
-            return;
-        }
-        this.connection.sendPacket(new ContainerCloseC2SP(windowId));
-    }
 
     public void respawn() {
         sendClientStatus(ClientActionC2SP.ClientActions.PERFORM_RESPAWN);
@@ -84,21 +58,6 @@ public class PacketSender {
 
     public void sendClientStatus(ClientActionC2SP.ClientActions status) {
         this.connection.sendPacket(new ClientActionC2SP(status));
-    }
-
-
-    public void sendPluginMessageData(ResourceLocation channel, OutByteBuffer toSend) {
-        this.connection.sendPacket(new PluginMessageC2SP(channel, toSend.toByteArray()));
-    }
-
-    public void sendLoginPluginMessageResponse(int messageId, OutByteBuffer toSend) {
-        this.connection.sendPacket(new LoginPluginResponseC2SP(messageId, toSend.toByteArray()));
-    }
-
-    public void setLocation(Vec3 position, EntityRotation rotation, boolean onGround) {
-        this.connection.sendPacket(new PositionAndRotationC2SP(position, rotation, onGround));
-        this.connection.getPlayer().getEntity().setPosition(position);
-        this.connection.getPlayer().getEntity().setRotation(rotation);
     }
 
     public void sendFakeChatMessage(ChatComponent message, ChatTextPositions position) {

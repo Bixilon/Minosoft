@@ -12,15 +12,17 @@
  */
 package de.bixilon.minosoft.modding.event.events
 
+import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.play.WorldTimeSetS2CP
 
 class TimeChangeEvent(
     connection: PlayConnection,
+    initiator: EventInitiators,
     val age: Long,
     val time: Long,
-) : CancelableEvent(connection) {
+) : CancelableEvent(connection, initiator) {
 
 
-    constructor(connection: PlayConnection, packet: WorldTimeSetS2CP) : this(connection, packet.age, packet.time)
+    constructor(connection: PlayConnection, packet: WorldTimeSetS2CP) : this(connection, EventInitiators.SERVER, packet.age, packet.time)
 }

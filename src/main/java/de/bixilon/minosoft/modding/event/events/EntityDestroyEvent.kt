@@ -13,23 +13,16 @@
 package de.bixilon.minosoft.modding.event.events
 
 import de.bixilon.minosoft.data.entities.entities.Entity
+import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.play.EntityDestroyS2CP
 
 class EntityDestroyEvent(
     connection: PlayConnection,
+    initiator: EventInitiators,
     val entities: List<Entity>,
-) : PlayConnectionEvent(connection) {
+) : PlayConnectionEvent(connection, initiator) {
 
-    constructor(connection: PlayConnection, packet: EntityDestroyS2CP) : this(connection, packet.entityIds.resolveEntityIds(connection))
+    constructor(connection: PlayConnection, packet: EntityDestroyS2CP) : this(connection, EventInitiators.SERVER, packet.entityIds.entities(connection))
 
-    companion object {
-        private fun List<Int>.resolveEntityIds(connection: PlayConnection): List<Entity> {
-            val entities: MutableList<Entity> = mutableListOf()
-            for (id in this) {
-                entities += connection.world.entities[id] ?: continue
-            }
-            return entities.toList()
-        }
-    }
 }

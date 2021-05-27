@@ -12,6 +12,10 @@
  */
 package de.bixilon.minosoft.modding.event.events
 
+import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.protocol.network.connection.Connection
 
-abstract class ConnectionEvent(open val connection: Connection) : Event()
+abstract class ConnectionEvent @JvmOverloads constructor(
+    open val connection: Connection,
+    val initiator: EventInitiators = EventInitiators.DEFAULT,
+) : Event()

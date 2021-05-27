@@ -19,11 +19,12 @@ import de.bixilon.minosoft.util.enum.ValuesEnum
 enum class EventInitiators {
     CLIENT,
     SERVER,
+    UNKNOWN,
     ;
 
     companion object : ValuesEnum<EventInitiators> {
         override val VALUES: Array<EventInitiators> = values()
         override val NAME_MAP: Map<String, EventInitiators> = KUtil.getEnumValues(VALUES)
-
+        val DEFAULT = UNKNOWN
     }
 }
