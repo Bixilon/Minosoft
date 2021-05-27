@@ -10,17 +10,19 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.modding.event.events
 
-package de.bixilon.minosoft.modding.event.events.annotations;
+import de.bixilon.minosoft.modding.event.EventInitiators
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.protocol.packets.s2c.play.ExperienceSetS2CP
 
-import de.bixilon.minosoft.modding.loading.Priorities;
+class ExperienceChangeEvent(
+    connection: PlayConnection,
+    initiator: EventInitiators,
+    val bar: Float,
+    val level: Int,
+    val total: Int,
+) : CancelableEvent(connection, initiator) {
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-
-@Retention(RetentionPolicy.RUNTIME)
-public @interface EventHandler {
-    boolean ignoreCancelled() default false;
-
-    Priorities priority() default Priorities.NORMAL;
+    constructor(connection: PlayConnection, packet: ExperienceSetS2CP) : this(connection, EventInitiators.SERVER, packet.bar, packet.level, packet.total)
 }

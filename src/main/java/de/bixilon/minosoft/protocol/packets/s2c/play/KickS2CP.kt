@@ -13,7 +13,7 @@
 package de.bixilon.minosoft.protocol.packets.s2c.play
 
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.modding.event.events.DisconnectEvent
+import de.bixilon.minosoft.modding.event.events.KickEvent
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
@@ -25,7 +25,7 @@ class KickS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     val reason: ChatComponent = buffer.readChatComponent()
 
     override fun handle(connection: PlayConnection) {
-        connection.fireEvent(DisconnectEvent(connection, this))
+        connection.fireEvent(KickEvent(connection, this))
         // got kicked
         connection.disconnect()
         Log.log(LogMessageType.NETWORK_STATUS, LogLevels.WARN) { "Kicked from ${connection.address}: $reason" }

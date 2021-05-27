@@ -10,27 +10,14 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.modding.event.events
 
-package de.bixilon.minosoft.modding.event.events;
+import de.bixilon.minosoft.modding.event.EventInitiators
+import de.bixilon.minosoft.protocol.network.connection.Connection
+import de.bixilon.minosoft.protocol.protocol.ConnectionStates
 
-import de.bixilon.minosoft.data.text.ChatComponent;
-import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
-import de.bixilon.minosoft.protocol.packets.s2c.login.LoginKickS2CP;
-
-public class LoginDisconnectEvent extends PlayConnectionEvent {
-    private final ChatComponent reason;
-
-    public LoginDisconnectEvent(PlayConnection connection, ChatComponent reason) {
-        super(connection);
-        this.reason = reason;
-    }
-
-    public LoginDisconnectEvent(PlayConnection connection, LoginKickS2CP pkg) {
-        super(connection);
-        this.reason = pkg.getReason();
-    }
-
-    public ChatComponent getReason() {
-        return this.reason;
-    }
-}
+class ConnectionStateChangeEvent(
+    connection: Connection,
+    val previousState: ConnectionStates,
+    val currentState: ConnectionStates,
+) : ConnectionEvent(connection, EventInitiators.UNKNOWN)

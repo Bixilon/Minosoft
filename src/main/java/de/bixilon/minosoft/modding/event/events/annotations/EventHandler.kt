@@ -10,29 +10,12 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.modding.event.events.annotations
 
-package de.bixilon.minosoft.modding.event.events;
+import de.bixilon.minosoft.modding.loading.Priorities
 
-import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
-import de.bixilon.minosoft.protocol.packets.s2c.play.CameraS2CP;
-
-/**
- * Fired when the player should spectate an entity
- */
-public class EntitySpectateEvent extends PlayConnectionEvent {
-    private final int entityId;
-
-    public EntitySpectateEvent(PlayConnection connection, int entityId) {
-        super(connection);
-        this.entityId = entityId;
-    }
-
-    public EntitySpectateEvent(PlayConnection connection, CameraS2CP pkg) {
-        super(connection);
-        this.entityId = pkg.getEntityId();
-    }
-
-    public int getEntityId() {
-        return this.entityId;
-    }
-}
+@Retention(AnnotationRetention.RUNTIME)
+annotation class EventHandler(
+    val ignoreCancelled: Boolean = false,
+    val priority: Priorities = Priorities.NORMAL,
+)

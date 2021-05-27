@@ -10,27 +10,18 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.modding.event.events
 
-package de.bixilon.minosoft.modding.event.events;
+import de.bixilon.minosoft.modding.event.EventInitiators
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.protocol.packets.s2c.play.SignEditorOpenS2CP
+import glm_.vec3.Vec3i
 
-import de.bixilon.minosoft.protocol.network.connection.Connection;
-import de.bixilon.minosoft.protocol.protocol.ConnectionStates;
+class OpenSignEditorEvent(
+    connection: PlayConnection,
+    initiator: EventInitiators,
+    val blockPosition: Vec3i,
+) : CancelableEvent(connection, initiator) {
 
-public class ConnectionStateChangeEvent extends ConnectionEvent {
-    private final ConnectionStates previousState;
-    private final ConnectionStates currentState;
-
-    public ConnectionStateChangeEvent(Connection connection, ConnectionStates previousState, ConnectionStates currentState) {
-        super(connection);
-        this.previousState = previousState;
-        this.currentState = currentState;
-    }
-
-    public ConnectionStates getPreviousState() {
-        return this.previousState;
-    }
-
-    public ConnectionStates getCurrentState() {
-        return this.currentState;
-    }
+    constructor(connection: PlayConnection, packet: SignEditorOpenS2CP) : this(connection, EventInitiators.SERVER, packet.blockPosition)
 }

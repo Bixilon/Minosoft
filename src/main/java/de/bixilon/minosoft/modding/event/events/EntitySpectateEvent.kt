@@ -10,27 +10,21 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.modding.event.events
 
-package de.bixilon.minosoft.modding.event.events;
+import de.bixilon.minosoft.data.entities.entities.Entity
+import de.bixilon.minosoft.modding.event.EventInitiators
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.protocol.packets.s2c.play.CameraS2CP
 
-import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
-import de.bixilon.minosoft.protocol.packets.s2c.play.SignEditorOpenS2CP;
-import glm_.vec3.Vec3i;
+/**
+ * Fired when the player should spectate an entity
+ */
+class EntitySpectateEvent(
+    connection: PlayConnection,
+    initiator: EventInitiators,
+    val entity: Entity,
+) : PlayConnectionEvent(connection, initiator) {
 
-public class OpenSignEditorEvent extends CancelableEvent {
-    private final Vec3i position;
-
-    public OpenSignEditorEvent(PlayConnection connection, Vec3i position) {
-        super(connection);
-        this.position = position;
-    }
-
-    public OpenSignEditorEvent(PlayConnection connection, SignEditorOpenS2CP pkg) {
-        super(connection);
-        this.position = pkg.getBlockPosition();
-    }
-
-    public Vec3i getPosition() {
-        return this.position;
-    }
+    constructor(connection: PlayConnection, packet: CameraS2CP) : this(connection, EventInitiators.SERVER, connection.world.entities[packet.entityId]!!)
 }
