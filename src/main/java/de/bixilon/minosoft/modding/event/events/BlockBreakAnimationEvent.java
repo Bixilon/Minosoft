@@ -13,14 +13,10 @@
 
 package de.bixilon.minosoft.modding.event.events;
 
-import de.bixilon.minosoft.modding.event.events.annotations.MinimumProtocolVersion;
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
 import de.bixilon.minosoft.protocol.packets.s2c.play.BlockBreakAnimationS2CP;
 import glm_.vec3.Vec3i;
 
-import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W31A;
-
-@MinimumProtocolVersion(versionId = V_14W31A)
 public class BlockBreakAnimationEvent extends CancelableEvent {
     private final int entityId;
     private final Vec3i position;

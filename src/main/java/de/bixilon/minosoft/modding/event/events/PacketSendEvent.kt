@@ -10,17 +10,10 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.modding.event.events
 
-package de.bixilon.minosoft.data;
+import de.bixilon.minosoft.modding.event.EventInitiators
+import de.bixilon.minosoft.protocol.network.connection.Connection
+import de.bixilon.minosoft.protocol.packets.c2s.C2SPacket
 
-public enum ChatTextPositions {
-    CHAT_BOX,
-    SYSTEM_MESSAGE,
-    ABOVE_HOTBAR;
-
-    private static final ChatTextPositions[] CHAT_TEXT_POSITIONS = values();
-
-    public static ChatTextPositions byId(int id) {
-        return CHAT_TEXT_POSITIONS[id];
-    }
-}
+class PacketSendEvent(connection: Connection, val packet: C2SPacket) : ConnectionEvent(connection, EventInitiators.CLIENT)

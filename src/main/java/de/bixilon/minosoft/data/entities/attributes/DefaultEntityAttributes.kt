@@ -16,7 +16,7 @@ package de.bixilon.minosoft.data.entities.attributes
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
 
 object DefaultEntityAttributes {
-    // ToDo
+    // ToDo: They all had different names before 1.13
 
     val GENERIC_MAX_HEALTH = "minecraft:generic.max_health".asResourceLocation()
     val GENERIC_FOLLOW_RANGE = "minecraft:generic.follow_range".asResourceLocation()

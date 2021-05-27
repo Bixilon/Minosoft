@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play
 
-import de.bixilon.minosoft.modding.event.events.SpawnPositionChangeEvent
+import de.bixilon.minosoft.modding.event.events.CompassPositionChangeEvent
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
@@ -22,7 +22,7 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import glm_.vec3.Vec3i
 
-class SpawnPositionSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
+class CompassPositionSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     var spawnPosition: Vec3i = if (buffer.versionId < ProtocolVersions.V_14W03B) {
         buffer.readIntBlockPosition()
     } else {
@@ -35,7 +35,7 @@ class SpawnPositionSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     }
 
     override fun handle(connection: PlayConnection) {
-        connection.fireEvent(SpawnPositionChangeEvent(connection, this))
+        connection.fireEvent(CompassPositionChangeEvent(connection, this))
         connection.player.spawnPosition = spawnPosition
     }
 

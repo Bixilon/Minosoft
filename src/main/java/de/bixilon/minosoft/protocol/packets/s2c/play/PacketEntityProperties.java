@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.protocol.packets.s2c.play;
 
 import de.bixilon.minosoft.data.entities.EntityProperty;
-import de.bixilon.minosoft.data.entities.EntityPropertyKeys;
+import de.bixilon.minosoft.data.mappings.ResourceLocation;
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket;
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;
@@ -26,7 +26,7 @@ import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W04A;
 import static de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_21W08A;
 
 public class PacketEntityProperties extends PlayS2CPacket {
-    private final HashMap<EntityPropertyKeys, EntityProperty> properties = new HashMap<>();
+    private final HashMap<ResourceLocation, EntityProperty> properties = new HashMap<>();
     private final int entityId;
 
     public PacketEntityProperties(PlayInByteBuffer buffer) {
@@ -34,7 +34,7 @@ public class PacketEntityProperties extends PlayS2CPacket {
         if (buffer.getVersionId() < V_14W04A) {
             int count = buffer.readInt();
             for (int i = 0; i < count; i++) {
-                EntityPropertyKeys key = EntityPropertyKeys.byName(buffer.readString());
+                ResourceLocation key = buffer.readResourceLocation();
                 double value = buffer.readDouble();
                 int listLength = buffer.readUnsignedShort();
                 for (int ii = 0; ii < listLength; ii++) {
@@ -54,7 +54,7 @@ public class PacketEntityProperties extends PlayS2CPacket {
             count = buffer.readVarInt();
         }
         for (int i = 0; i < count; i++) {
-            EntityPropertyKeys key = EntityPropertyKeys.byName(buffer.readString());
+            ResourceLocation key = buffer.readResourceLocation();
             double value = buffer.readDouble();
             int listLength = buffer.readVarInt();
             for (int ii = 0; ii < listLength; ii++) {

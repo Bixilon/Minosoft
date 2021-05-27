@@ -10,23 +10,9 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.modding.event.events
 
-package de.bixilon.minosoft.modding.event.events;
+import de.bixilon.minosoft.modding.event.EventInitiators
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 
-import de.bixilon.minosoft.modding.event.events.annotations.Unsafe;
-import de.bixilon.minosoft.protocol.network.connection.Connection;
-import de.bixilon.minosoft.protocol.packets.c2s.C2SPacket;
-
-@Unsafe
-public class PacketSendEvent extends ConnectionEvent {
-    private final C2SPacket packet;
-
-    public PacketSendEvent(Connection connection, C2SPacket packet) {
-        super(connection);
-        this.packet = packet;
-    }
-
-    public C2SPacket getPacket() {
-        return this.packet;
-    }
-}
+class ChatMessageSendEvent(connection: PlayConnection, val message: String) : CancelableEvent(connection, EventInitiators.CLIENT)

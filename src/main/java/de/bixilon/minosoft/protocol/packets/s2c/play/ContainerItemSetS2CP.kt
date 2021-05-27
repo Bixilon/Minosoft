@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play
 
-import de.bixilon.minosoft.modding.event.events.SingleSlotChangeEvent
+import de.bixilon.minosoft.modding.event.events.ContainerSlotChangeEvent
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
@@ -26,7 +26,7 @@ class ContainerItemSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     val itemStack = buffer.readItemStack()
 
     override fun handle(connection: PlayConnection) {
-        connection.fireEvent(SingleSlotChangeEvent(connection, this))
+        connection.fireEvent(ContainerSlotChangeEvent(connection, this))
 
         connection.player.containers[containerId]?.slots?.let {
             if (itemStack == null) {

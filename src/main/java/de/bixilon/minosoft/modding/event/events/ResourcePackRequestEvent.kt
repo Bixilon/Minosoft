@@ -12,15 +12,19 @@
  */
 package de.bixilon.minosoft.modding.event.events
 
-import de.bixilon.minosoft.data.mappings.other.game.event.GameEvent
+import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import de.bixilon.minosoft.protocol.packets.s2c.play.GameEventS2CP
+import de.bixilon.minosoft.protocol.packets.s2c.play.ResourcepackRequestS2CP
 
-class ChangeGameStateEvent(
+class ResourcePackRequestEvent(
     connection: PlayConnection,
-    val event: GameEvent,
-    val data: Float,
-) : PlayConnectionEvent(connection) {
+    initiator: EventInitiators,
+    val url: String,
+    val hash: String,
+    val promptText: ChatComponent?,
+) : CancelableEvent(connection, initiator) {
 
-    constructor(connection: PlayConnection, packet: GameEventS2CP) : this(connection, packet.event, packet.data)
+
+    constructor(connection: PlayConnection, packet: ResourcepackRequestS2CP) : this(connection, EventInitiators.SERVER, packet.url, packet.hash, packet.promptText)
 }

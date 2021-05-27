@@ -10,9 +10,19 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.modding.event.events
 
-package de.bixilon.minosoft.modding.event.events.annotations;
+import de.bixilon.minosoft.modding.event.EventInitiators
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.protocol.packets.s2c.play.CompassPositionSetS2CP
+import glm_.vec3.Vec3i
 
-public @interface MaximumProtocolVersion {
-    int versionId() default Integer.MAX_VALUE;
+class CompassPositionChangeEvent(
+    connection: PlayConnection,
+    initiator: EventInitiators,
+    val spawnPosition: Vec3i,
+    val angle: Float,
+) : PlayConnectionEvent(connection, initiator) {
+
+    constructor(connection: PlayConnection, packet: CompassPositionSetS2CP) : this(connection, EventInitiators.SERVER, packet.spawnPosition, packet.angle)
 }

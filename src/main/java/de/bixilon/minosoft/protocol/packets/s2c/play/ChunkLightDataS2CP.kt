@@ -15,6 +15,7 @@ package de.bixilon.minosoft.protocol.packets.s2c.play
 
 import de.bixilon.minosoft.data.world.light.ChunkLightAccessor
 import de.bixilon.minosoft.data.world.light.LightAccessor
+import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.modding.event.events.ChunkDataChangeEvent
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
@@ -68,6 +69,6 @@ class ChunkLightDataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         } else {
             chunk.lightAccessor = lightAccessor
         }
-        connection.fireEvent(ChunkDataChangeEvent(connection, chunkPosition, chunk))
+        connection.fireEvent(ChunkDataChangeEvent(connection, EventInitiators.SERVER, chunkPosition, chunk))
     }
 }

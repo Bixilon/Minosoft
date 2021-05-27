@@ -14,7 +14,7 @@ package de.bixilon.minosoft.protocol.packets.s2c.play
 
 import de.bixilon.minosoft.data.mappings.other.game.event.DefaultGameEventHandlers
 import de.bixilon.minosoft.data.mappings.other.game.event.GameEvent
-import de.bixilon.minosoft.modding.event.events.ChangeGameStateEvent
+import de.bixilon.minosoft.modding.event.events.GameEventChangeEvent
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
@@ -27,7 +27,7 @@ class GameEventS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     val data: Float = buffer.readFloat()
 
     override fun handle(connection: PlayConnection) {
-        val event = ChangeGameStateEvent(connection, this)
+        val event = GameEventChangeEvent(connection, this)
         if (connection.fireEvent(event)) {
             return
         }

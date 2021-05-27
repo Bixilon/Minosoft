@@ -17,6 +17,7 @@ import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.tweaker.VersionTweaker
 import de.bixilon.minosoft.data.world.ChunkData
 import de.bixilon.minosoft.data.world.biome.source.SpatialBiomeArray
+import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.modding.event.events.ChunkDataChangeEvent
 import de.bixilon.minosoft.modding.event.events.ChunkUnloadEvent
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
@@ -130,7 +131,7 @@ class ChunkDataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
             connection.fireEvent(ChunkDataChangeEvent(connection, this))
         } ?: let {
             connection.world.unloadChunk(chunkPosition)
-            connection.fireEvent(ChunkUnloadEvent(connection, chunkPosition))
+            connection.fireEvent(ChunkUnloadEvent(connection, EventInitiators.SERVER, chunkPosition))
         }
     }
 

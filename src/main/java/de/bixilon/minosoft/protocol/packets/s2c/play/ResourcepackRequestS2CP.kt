@@ -13,7 +13,7 @@
 package de.bixilon.minosoft.protocol.packets.s2c.play
 
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.modding.event.events.ResourcePackChangeEvent
+import de.bixilon.minosoft.modding.event.events.ResourcePackRequestEvent
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.c2s.play.ResourcePackStatusC2SP
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
@@ -43,7 +43,7 @@ class ResourcepackRequestS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     }
 
     override fun handle(connection: PlayConnection) {
-        val event = ResourcePackChangeEvent(connection, this)
+        val event = ResourcePackRequestEvent(connection, this)
         if (connection.fireEvent(event)) {
             return
         }

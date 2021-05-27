@@ -12,16 +12,18 @@
  */
 package de.bixilon.minosoft.modding.event.events
 
+import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import de.bixilon.minosoft.protocol.packets.s2c.play.ChunkUnloadS2CP
-import glm_.vec2.Vec2i
+import de.bixilon.minosoft.protocol.packets.s2c.play.ContainerItemSetS2CP
 
-class ChunkUnloadEvent(
+class ContainerSlotChangeEvent(
     connection: PlayConnection,
     initiator: EventInitiators,
-    val chunkPosition: Vec2i,
+    val containerId: Int,
+    val slot: Int,
+    val itemStack: ItemStack?,
 ) : PlayConnectionEvent(connection, initiator) {
 
-    constructor(connection: PlayConnection, packet: ChunkUnloadS2CP) : this(connection, EventInitiators.SERVER, packet.chunkPosition)
+    constructor(connection: PlayConnection, packet: ContainerItemSetS2CP) : this(connection, EventInitiators.SERVER, packet.containerId, packet.slot, packet.itemStack)
 }

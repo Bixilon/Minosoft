@@ -13,6 +13,7 @@
 package de.bixilon.minosoft.modding.event.events
 
 import de.bixilon.minosoft.data.world.Chunk
+import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.play.ChunkDataS2CP
 import glm_.vec2.Vec2i
@@ -22,9 +23,10 @@ import glm_.vec2.Vec2i
  */
 class ChunkDataChangeEvent(
     connection: PlayConnection,
+    initiator: EventInitiators,
     val chunkPosition: Vec2i,
     val chunk: Chunk,
-) : PlayConnectionEvent(connection) {
+) : PlayConnectionEvent(connection, initiator) {
 
-    constructor(connection: PlayConnection, packet: ChunkDataS2CP) : this(connection, packet.chunkPosition, connection.world[packet.chunkPosition]!!)
+    constructor(connection: PlayConnection, packet: ChunkDataS2CP) : this(connection, EventInitiators.SERVER, packet.chunkPosition, connection.world[packet.chunkPosition]!!)
 }

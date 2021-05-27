@@ -242,7 +242,7 @@ class PacketTypes {
         PLAY_ENTITY_PASSENGER_SET({ EntityPassengerSetS2CP(it) }),
         PLAY_TEAMS({ TeamsS2CF.createPacket(it) }),
         PLAY_UPDATE_SCORE({ ScoreboardScoreS2CF.createPacket(it) }),
-        PLAY_SPAWN_POSITION_SET({ SpawnPositionSetS2CP(it) }),
+        PLAY_COMPASS_POSITION_SET({ CompassPositionSetS2CP(it) }),
         PLAY_WORLD_TIME_SET({ WorldTimeSetS2CP(it) }),
         PLAY_ENTITY_SOUND_EVENT({ EntitySoundEventS2CP(it) }),
         PLAY_SOUND_EVENT({ SoundEventS2CP(it) }),

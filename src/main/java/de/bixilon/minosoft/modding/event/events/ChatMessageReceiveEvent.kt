@@ -10,27 +10,23 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.modding.event.events
 
-package de.bixilon.minosoft.modding.event.events;
+import de.bixilon.minosoft.data.ChatTextPositions
+import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.modding.event.EventInitiators
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.protocol.packets.s2c.play.ChatMessageS2CP
+import java.util.*
 
-import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
-import de.bixilon.minosoft.protocol.packets.s2c.play.SpawnPositionSetS2CP;
-import glm_.vec3.Vec3i;
+class ChatMessageReceiveEvent(
+    connection: PlayConnection,
+    initiator: EventInitiators,
+    val message: ChatComponent,
+    val position: ChatTextPositions,
+    val sender: UUID?,
+) : CancelableEvent(connection, initiator) {
 
-public class SpawnPositionChangeEvent extends PlayConnectionEvent {
-    private final Vec3i position;
 
-    public SpawnPositionChangeEvent(PlayConnection connection, Vec3i position) {
-        super(connection);
-        this.position = position;
-    }
-
-    public SpawnPositionChangeEvent(PlayConnection connection, SpawnPositionSetS2CP pkg) {
-        super(connection);
-        this.position = pkg.getSpawnPosition();
-    }
-
-    public Vec3i getSpawnPosition() {
-        return this.position;
-    }
+    constructor(connection: PlayConnection, packet: ChatMessageS2CP) : this(connection, EventInitiators.SERVER, packet.message, packet.position, packet.sender)
 }

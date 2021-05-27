@@ -34,7 +34,7 @@ import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.Rendering
 import de.bixilon.minosoft.modding.event.CallbackEventInvoker
 import de.bixilon.minosoft.modding.event.EventInvoker
-import de.bixilon.minosoft.modding.event.events.ChatMessageReceivingEvent
+import de.bixilon.minosoft.modding.event.events.ChatMessageReceiveEvent
 import de.bixilon.minosoft.modding.event.events.ConnectionStateChangeEvent
 import de.bixilon.minosoft.modding.event.events.PacketReceiveEvent
 import de.bixilon.minosoft.protocol.packets.c2s.handshaking.HandshakeC2SP
@@ -135,7 +135,7 @@ class PlayConnection(
                     }
                     TimeWorker.addTask(velocityHandlerTask)
 
-                    registerEvent(CallbackEventInvoker.of<ChatMessageReceivingEvent> {
+                    registerEvent(CallbackEventInvoker.of<ChatMessageReceiveEvent> {
                         val additionalPrefix = when (it.position) {
                             ChatTextPositions.SYSTEM_MESSAGE -> "[SYSTEM] "
                             ChatTextPositions.ABOVE_HOTBAR -> "[HOTBAR] "

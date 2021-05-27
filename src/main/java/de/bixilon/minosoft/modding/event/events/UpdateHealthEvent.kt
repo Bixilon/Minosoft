@@ -10,24 +10,19 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.modding.event.events
 
-package de.bixilon.minosoft.modding.event.events;
+import de.bixilon.minosoft.modding.event.EventInitiators
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.protocol.packets.s2c.play.HealthSetS2CP
 
-import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
+class UpdateHealthEvent(
+    connection: PlayConnection,
+    initiator: EventInitiators,
+    val hp: Float,
+    val hunger: Int,
+    val saturation: Float,
+) : PlayConnectionEvent(connection, initiator) {
 
-public class ChatMessageSendingEvent extends CancelableEvent {
-    private String message;
-
-    public ChatMessageSendingEvent(PlayConnection connection, String message) {
-        super(connection);
-        this.message = message;
-    }
-
-    public String getMessage() {
-        return this.message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
+    constructor(connection: PlayConnection, packet: HealthSetS2CP) : this(connection, EventInitiators.SERVER, packet.hp, packet.hunger, packet.saturation)
 }

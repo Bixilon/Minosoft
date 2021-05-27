@@ -14,7 +14,7 @@ package de.bixilon.minosoft.protocol.packets.s2c.play
 
 import de.bixilon.minosoft.data.ChatTextPositions
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.modding.event.events.ChatMessageReceivingEvent
+import de.bixilon.minosoft.modding.event.events.ChatMessageReceiveEvent
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
@@ -28,11 +28,13 @@ import java.util.*
 class ChatMessageS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     val message: ChatComponent = buffer.readChatComponent()
     var position: ChatTextPositions = ChatTextPositions.CHAT_BOX
+        private set
     var sender: UUID? = null
+        private set
 
     init {
         if (buffer.versionId >= ProtocolVersions.V_14W04A) {
-            position = ChatTextPositions.byId(buffer.readUnsignedByte())
+            position = ChatTextPositions[buffer.readUnsignedByte()]
             if (buffer.versionId >= ProtocolVersions.V_20W21A) {
                 sender = buffer.readUUID()
             }
@@ -41,7 +43,7 @@ class ChatMessageS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     }
 
     override fun handle(connection: PlayConnection) {
-        val event = ChatMessageReceivingEvent(connection, this)
+        val event = ChatMessageReceiveEvent(connection, this)
         if (connection.fireEvent(event)) {
             return
         }

@@ -10,23 +10,19 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.modding.event.events
 
-package de.bixilon.minosoft.modding.event.events;
+import de.bixilon.minosoft.data.mappings.other.game.event.GameEvent
+import de.bixilon.minosoft.modding.event.EventInitiators
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.protocol.packets.s2c.play.GameEventS2CP
 
-import de.bixilon.minosoft.modding.event.events.annotations.Unsafe;
-import de.bixilon.minosoft.protocol.network.connection.Connection;
-import de.bixilon.minosoft.protocol.packets.s2c.S2CPacket;
+class GameEventChangeEvent(
+    connection: PlayConnection,
+    initiator: EventInitiators,
+    val event: GameEvent,
+    val data: Float,
+) : PlayConnectionEvent(connection, initiator) {
 
-@Unsafe
-public class PacketReceiveEvent extends ConnectionEvent {
-    private final S2CPacket packet;
-
-    public PacketReceiveEvent(Connection connection, S2CPacket packet) {
-        super(connection);
-        this.packet = packet;
-    }
-
-    public S2CPacket getPacket() {
-        return this.packet;
-    }
+    constructor(connection: PlayConnection, packet: GameEventS2CP) : this(connection, EventInitiators.SERVER, packet.event, packet.data)
 }

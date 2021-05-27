@@ -1,7 +1,11 @@
 # Modding
 
+## Disclaimer: This is completely outdated and will be rewritten soon. Just wait with mod writing! Sorry
+
 ## mod.json
+
 In the root folder of your jar file (the mod) must be a file called `mod.json`. It contains metadata for the mod loader.
+
 ### Example
 
 ```json
@@ -151,30 +155,32 @@ Your event methods need to be annotated by `EventHandler`. `EventHandler` **can*
  - `ignoreCancelled` If it is a cancellable event, your method only gets executed, when all prior listeners (potentially with a higher priority) did not cancel the connectionEvent. Defaults to `false`.
 
 Your XYEventListener class needs to extend `de.bixilon.minosoft.modding.event.EventListener`;
+
 ```java
 import de.bixilon.minosoft.modding.event.EventListener;
+import de.bixilon.minosoft.modding.event.events.ChatMessageReceiveEvent;
 import de.bixilon.minosoft.modding.event.events.ChatMessageReceivingEvent;
-import de.bixilon.minosoft.modding.event.events.ChatMessageSendingEvent;
+import de.bixilon.minosoft.modding.event.events.ChatMessageSendEvent;
 import de.bixilon.minosoft.modding.event.events.annotations.EventHandler;
 import de.bixilon.minosoft.modding.loading.Priorities;
 
 public class ChatEvent extends EventListener {
-    
-    @EventHandler(priority = Priorities.HIGHEST)
-    public void onChatMessageReceiving(ChatMessageReceivingEvent event) {
-        if (event.getMessage().getMessage().contains("Bixilon")) {
-            MinosoftExampleMod.getInstance().getLogger().info("Bixilon wrote a potential bad chat message. Suppressing it!");
-            event.setCancelled(true);
-        }
-    }
 
-    @EventHandler(ignoreCancelled = true)
-    public void onChatMessageSending(ChatMessageSendingEvent event) {
-        if (event.getMessage().contains("jeb_ is stupid")) {
-            event.setCancelled(true);
-            event.getConnection().getSender().sendChatMessage("jeb_ is awesome!");
-        }
+  @EventHandler(priority = Priorities.HIGHEST)
+  public void onChatMessageReceiving(ChatMessageReceiveEvent event) {
+    if (event.getMessage().getMessage().contains("Bixilon")) {
+      MinosoftExampleMod.getInstance().getLogger().info("Bixilon wrote a potential bad chat message. Suppressing it!");
+      event.setCancelled(true);
     }
+  }
+
+  @EventHandler(ignoreCancelled = true)
+  public void onChatMessageSending(ChatMessageSendEvent event) {
+    if (event.getMessage().contains("jeb_ is stupid")) {
+      event.setCancelled(true);
+      event.getConnection().getSender().sendChatMessage("jeb_ is awesome!");
+    }
+  }
 }
 ```
 

@@ -10,12 +10,21 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.modding.event.events
 
-package de.bixilon.minosoft.modding.event.events.annotations;
+import de.bixilon.minosoft.modding.event.EventInitiators
+import de.bixilon.minosoft.protocol.network.connection.StatusConnection
+import de.bixilon.minosoft.protocol.packets.s2c.status.PacketStatusResponse
+import de.bixilon.minosoft.protocol.ping.ServerListPing
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
+/**
+ * Fired when the connection status is "STATUS" and the server send general information such as players online, motd, etc
+ */
+class StatusResponseEvent(
+    connection: StatusConnection,
+    initiator: EventInitiators,
+    val response: ServerListPing,
+) : ConnectionEvent(connection, initiator) {
 
-@Retention(RetentionPolicy.RUNTIME)
-public @interface Unsafe {
+    constructor(connection: StatusConnection, packet: PacketStatusResponse) : this(connection, EventInitiators.SERVER, packet.response)
 }

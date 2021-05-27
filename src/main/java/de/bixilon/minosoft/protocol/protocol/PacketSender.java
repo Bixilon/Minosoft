@@ -15,8 +15,9 @@ package de.bixilon.minosoft.protocol.protocol;
 
 import de.bixilon.minosoft.data.ChatTextPositions;
 import de.bixilon.minosoft.data.text.ChatComponent;
-import de.bixilon.minosoft.modding.event.events.ChatMessageReceivingEvent;
-import de.bixilon.minosoft.modding.event.events.ChatMessageSendingEvent;
+import de.bixilon.minosoft.modding.event.EventInitiators;
+import de.bixilon.minosoft.modding.event.events.ChatMessageReceiveEvent;
+import de.bixilon.minosoft.modding.event.events.ChatMessageSendEvent;
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
 import de.bixilon.minosoft.protocol.packets.c2s.play.ChatMessageC2SP;
 import de.bixilon.minosoft.protocol.packets.c2s.play.ClientActionC2SP;
@@ -43,7 +44,7 @@ public class PacketSender {
                 return;
             }
         }
-        ChatMessageSendingEvent event = new ChatMessageSendingEvent(this.connection, message);
+        ChatMessageSendEvent event = new ChatMessageSendEvent(this.connection, message);
         if (this.connection.fireEvent(event)) {
             return;
         }
@@ -61,7 +62,7 @@ public class PacketSender {
     }
 
     public void sendFakeChatMessage(ChatComponent message, ChatTextPositions position) {
-        this.connection.fireEvent(new ChatMessageReceivingEvent(this.connection, message, position, null));
+        this.connection.fireEvent(new ChatMessageReceiveEvent(this.connection, EventInitiators.CLIENT, message, position, null));
     }
 
     public void sendFakeChatMessage(String message) {

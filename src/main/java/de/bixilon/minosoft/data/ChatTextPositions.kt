@@ -10,9 +10,19 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.data
 
-package de.bixilon.minosoft.modding.event.events.annotations;
+import de.bixilon.minosoft.util.KUtil
+import de.bixilon.minosoft.util.enum.ValuesEnum
 
-public @interface MinimumProtocolVersion {
-    int versionId() default 0;
+enum class ChatTextPositions {
+    CHAT_BOX,
+    SYSTEM_MESSAGE,
+    ABOVE_HOTBAR,
+    ;
+
+    companion object : ValuesEnum<ChatTextPositions> {
+        override val VALUES: Array<ChatTextPositions> = values()
+        override val NAME_MAP: Map<String, ChatTextPositions> = KUtil.getEnumValues(VALUES)
+    }
 }
