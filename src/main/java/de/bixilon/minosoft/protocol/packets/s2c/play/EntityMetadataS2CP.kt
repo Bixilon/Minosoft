@@ -37,6 +37,7 @@ class EntityMetadataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         }
     }
 
+
     override fun log() {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Entity metadata (entityId=$entityId, metaData=$metaData)" }
     }

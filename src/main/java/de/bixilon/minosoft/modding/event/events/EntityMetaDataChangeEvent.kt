@@ -16,14 +16,10 @@ import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.play.EntityMetadataS2CP
 
-class EntityMetaDataChangeEvent : PlayConnectionEvent {
-    val entity: Entity
+class EntityMetaDataChangeEvent(
+    connection: PlayConnection,
+    val entity: Entity,
+) : PlayConnectionEvent(connection) {
 
-    constructor(connection: PlayConnection?, entity: Entity) : super(connection) {
-        this.entity = entity
-    }
-
-    constructor(connection: PlayConnection, pkg: EntityMetadataS2CP) : super(connection) {
-        entity = connection.world.entities[pkg.entityId]!!
-    }
+    constructor(connection: PlayConnection, packet: EntityMetadataS2CP) : this(connection, connection.world.entities[packet.entityId]!!)
 }

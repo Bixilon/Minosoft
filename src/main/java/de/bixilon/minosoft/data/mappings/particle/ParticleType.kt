@@ -18,12 +18,16 @@ import de.bixilon.minosoft.data.mappings.particle.data.ParticleData
 import de.bixilon.minosoft.data.mappings.registry.RegistryItem
 import de.bixilon.minosoft.data.mappings.registry.ResourceLocationDeserializer
 import de.bixilon.minosoft.data.mappings.versions.Registries
+import de.bixilon.minosoft.gui.rendering.particle.DefaultParticleFactory
+import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
+import de.bixilon.minosoft.gui.rendering.particle.types.Particle
 import de.bixilon.minosoft.gui.rendering.textures.Texture
 
 data class ParticleType(
     override val resourceLocation: ResourceLocation,
     val textures: List<ResourceLocation>,
     val overrideLimiter: Boolean = false,
+    val factory: ParticleFactory<out Particle>? = null,
 ) : RegistryItem {
 
     override fun toString(): String {
@@ -43,7 +47,13 @@ data class ParticleType(
                     textures += Texture.getResourceTextureIdentifier(textureResourceLocation.namespace, textureName = "particle/${textureResourceLocation.path}")
                 }
             }
-            return ParticleType(resourceLocation, textures.toList(), data["override_limiter"]?.asBoolean ?: false)
+            val factory = DefaultParticleFactory[resourceLocation]
+            return ParticleType(
+                resourceLocation = resourceLocation,
+                textures = textures.toList(),
+                overrideLimiter = data["override_limiter"]?.asBoolean ?: false,
+                factory = factory,
+            )
         }
     }
 }

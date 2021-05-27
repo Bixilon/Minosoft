@@ -67,6 +67,15 @@ object VecUtil {
         z = vec3.z
     }
 
+    @JvmName(name = "times2")
+    infix operator fun Vec3.times(lambda: () -> Double): Vec3 {
+        return Vec3(
+            x = x * lambda(),
+            y = y * lambda(),
+            z = z * lambda(),
+        )
+    }
+
     fun getRotatedValues(x: Float, y: Float, sin: Float, cos: Float, rescale: Boolean): Vec2 {
         val result = Vec2(x * cos - y * sin, x * sin + y * cos)
         if (rescale) {

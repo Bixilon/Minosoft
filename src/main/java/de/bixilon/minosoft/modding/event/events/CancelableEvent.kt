@@ -10,23 +10,10 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.modding.event.events
 
-package de.bixilon.minosoft.modding.event.events;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 
-import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
-
-public abstract class CancelableEvent extends PlayConnectionEvent {
-    private boolean cancelled;
-
-    protected CancelableEvent(PlayConnection connection) {
-        super(connection);
-    }
-
-    public boolean isCancelled() {
-        return this.cancelled;
-    }
-
-    public void setCancelled(boolean cancelled) {
-        this.cancelled = cancelled;
-    }
+abstract class CancelableEvent(connection: PlayConnection) : PlayConnectionEvent(connection) {
+    var isCancelled = false
 }

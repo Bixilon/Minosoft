@@ -17,18 +17,13 @@ import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.play.PluginMessageS2CP
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 
-class PluginMessageReceiveEvent : CancelableEvent {
-    val channel: ResourceLocation
-    val data: PlayInByteBuffer
+class PluginMessageReceiveEvent(
+    connection: PlayConnection,
+    val channel: ResourceLocation,
+    data: PlayInByteBuffer,
+) : CancelableEvent(connection) {
+    val data: PlayInByteBuffer = data
         get() = PlayInByteBuffer(field)
 
-    constructor(connection: PlayConnection?, channel: ResourceLocation, data: PlayInByteBuffer) : super(connection) {
-        this.channel = channel
-        this.data = data
-    }
-
-    constructor(connection: PlayConnection?, pkg: PluginMessageS2CP) : super(connection) {
-        channel = pkg.channel
-        data = pkg.data
-    }
+    constructor(connection: PlayConnection, packet: PluginMessageS2CP) : this(connection, packet.channel, packet.data)
 }

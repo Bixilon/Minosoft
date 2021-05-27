@@ -28,14 +28,14 @@ class ExplosionParticle(connection: PlayConnection, particleRenderer: ParticleRe
         maxTickAge = 6 + random.nextInt(4)
         val gray = random.nextFloat() * 0.6f + 0.4f
         color = gray.asGray()
-        scale = 2.0f * (1.0f - gray * 0.5f)
+        scale = 2.0f * (power - gray * 0.5f)
     }
 
     companion object : ParticleFactory<ExplosionParticle> {
         override val RESOURCE_LOCATION: ResourceLocation = "minecraft:explosion".asResourceLocation()
 
-        override fun build(connection: PlayConnection, particleRenderer: ParticleRenderer, position: Vec3, data: ParticleData): ExplosionParticle {
-            return ExplosionParticle(connection, particleRenderer, position, data)
+        override fun build(connection: PlayConnection, particleRenderer: ParticleRenderer, position: Vec3, velocity: Vec3, data: ParticleData): ExplosionParticle {
+            return ExplosionParticle(connection, particleRenderer, position, data, velocity.x)
         }
     }
 }

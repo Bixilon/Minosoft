@@ -45,14 +45,13 @@ abstract class Particle(protected val connection: PlayConnection, protected val 
             maxAge = value * ProtocolDefinition.TICK_TIME
         }
 
+    init {
+        maxTickAge = (4.0f / (random.nextFloat() * 0.9f + 0.1f)).toInt()
+    }
+
     // moving
     val friction = Vec3.EMPTY
     val velocity = Vec3.EMPTY
-
-    // hover
-    protected var hovering = false
-    protected var hoverMinY = 0.0f
-    protected var hoverMaxY = 0.0f
 
 
     protected var lastRealTickTime = 0L
@@ -68,46 +67,6 @@ abstract class Particle(protected val connection: PlayConnection, protected val 
         }
     }
 
-
-    fun hover(minY: Float, maxY: Float) {
-        check(maxY >= minY) { "Maximum y can not be smaller than minimum!" }
-        hoverMinY = minY
-        hoverMaxY = maxY
-        hovering = true
-    }
-
-    fun relativeHover(minY: Float, maxY: Float) {
-        hover(position.y + minY, position.y + maxY)
-    }
-
-    private fun hover(deltaTime: Int) {
-        // ToDo: Maybe implement this sometimes later, not time for it now
-        if (!hovering) {
-            return
-        }
-        val distanceToMiddle = if (velocity.y <= 0) {
-            position.y - hoverMinY
-        } else {
-            hoverMaxY - position.y
-        }
-        val totalDistance = hoverMaxY - hoverMinY
-        val yFriction = 1 / (totalDistance / distanceToMiddle)
-
-
-        when {
-            position.y <= hoverMinY -> {
-                // change direction: up
-                velocity.y = 1.0f
-            }
-            position.y >= hoverMaxY || velocity.y == 0.0f -> {
-                // change direction: down
-                velocity.y = -1.0f
-            }
-            else -> {
-                friction.y = yFriction
-            }
-        }
-    }
 
 
     fun tick() {
@@ -142,12 +101,9 @@ abstract class Particle(protected val connection: PlayConnection, protected val 
         }
 
         move(deltaTime)
-        hover(deltaTime)
     }
 
-    open fun realTick() {
-
-    }
+    open fun realTick() {}
 
     abstract fun addVertex(particleMesh: ParticleMesh)
 

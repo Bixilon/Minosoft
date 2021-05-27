@@ -23,7 +23,7 @@ import de.bixilon.minosoft.util.KUtil.asResourceLocation
 import glm_.vec3.Vec3
 
 class ExplosionEmitterParticle(connection: PlayConnection, particleRenderer: ParticleRenderer, position: Vec3, data: ParticleData) : NoRenderParticle(connection, particleRenderer, position, data) {
-    val explosionParticleType = connection.registries.particleTypeRegistry[ExplosionParticle]!!
+    private val explosionParticleType = connection.registries.particleTypeRegistry[ExplosionParticle]!!
 
     init {
         maxTickAge = 8
@@ -45,7 +45,7 @@ class ExplosionEmitterParticle(connection: PlayConnection, particleRenderer: Par
     companion object : ParticleFactory<ExplosionEmitterParticle> {
         override val RESOURCE_LOCATION: ResourceLocation = "minecraft:explosion_emitter".asResourceLocation()
 
-        override fun build(connection: PlayConnection, particleRenderer: ParticleRenderer, position: Vec3, data: ParticleData): ExplosionEmitterParticle {
+        override fun build(connection: PlayConnection, particleRenderer: ParticleRenderer, position: Vec3, velocity: Vec3, data: ParticleData): ExplosionEmitterParticle {
             return ExplosionEmitterParticle(connection, particleRenderer, position, data)
         }
     }

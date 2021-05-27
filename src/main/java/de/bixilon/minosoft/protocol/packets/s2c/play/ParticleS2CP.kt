@@ -41,9 +41,9 @@ class ParticleS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         buffer.readPosition()
     }
     val offset: Vec3 = buffer.readFloatPosition()
-    val data: Float = buffer.readFloat()
+    val speed: Float = buffer.readFloat()
     val count: Int = buffer.readInt()
-    val particleData: ParticleData = buffer.readParticleData(type)
+    val data: ParticleData = buffer.readParticleData(type)
 
 
     override fun handle(connection: PlayConnection) {
@@ -53,6 +53,6 @@ class ParticleS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     }
 
     override fun log() {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "ParticleType (type=$type, longDistance=$longDistance, position=$position, offset=$offset, data=$data, count=$count, particleData=$particleData)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "ParticleType (type=$type, longDistance=$longDistance, position=$position, offset=$offset, speed=$speed, count=$count, data=$data)" }
     }
 }

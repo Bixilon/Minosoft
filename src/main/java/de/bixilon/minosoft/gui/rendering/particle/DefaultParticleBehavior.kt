@@ -15,13 +15,20 @@ package de.bixilon.minosoft.gui.rendering.particle
 
 import de.bixilon.minosoft.gui.rendering.particle.types.norender.ExplosionEmitterParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.ExplosionParticle
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.times
 import de.bixilon.minosoft.modding.event.CallbackEventInvoker
 import de.bixilon.minosoft.modding.event.events.ExplosionEvent
+import de.bixilon.minosoft.modding.event.events.ParticleSpawnEvent
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
+import glm_.vec3.Vec3
 
 object DefaultParticleBehavior {
 
     fun register(connection: PlayConnection, particleRenderer: ParticleRenderer) {
+        val random = java.util.Random()
         val explosionParticleType = connection.registries.particleTypeRegistry[ExplosionParticle]!!
         val explosionEmitterParticleType = connection.registries.particleTypeRegistry[ExplosionEmitterParticle]!!
         val invokers = listOf(
@@ -31,7 +38,29 @@ object DefaultParticleBehavior {
                 } else {
                     particleRenderer.add(ExplosionParticle(connection, particleRenderer, it.position, explosionParticleType.simple()))
                 }
-            }
+            },
+            CallbackEventInvoker.of<ParticleSpawnEvent> {
+                fun spawn(position: Vec3, velocity: Vec3) {
+                    val particle = it.data.type.factory?.build(connection, particleRenderer, position, velocity, it.data) ?: let { _ ->
+                        Log.log(LogMessageType.RENDERING_GENERAL, LogLevels.WARN) { "Can not spawn particle: ${it.data.type}" }
+                        return
+                    }
+                    particleRenderer.add(particle)
+                }
+                // ToDo: long distance = always spawn?
+                if (it.count == 0) {
+                    val velocity = it.offset * it.speed
+
+                    spawn(it.position, velocity)
+                } else {
+                    for (i in 0 until it.count) {
+                        val offset = it.offset * { random.nextGaussian() }
+                        val velocity = Vec3(it.speed) * { random.nextGaussian() }
+
+                        spawn(it.position + offset, velocity)
+                    }
+                }
+            },
         )
 
         connection.registerEvents(*invokers.toTypedArray())

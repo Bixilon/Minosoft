@@ -10,22 +10,8 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.modding.event.events
 
-package de.bixilon.minosoft.modding.event.events;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 
-import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
-import org.jetbrains.annotations.NotNull;
-
-public abstract class PlayConnectionEvent extends ConnectionEvent {
-    private final PlayConnection connection;
-
-    protected PlayConnectionEvent(PlayConnection connection) {
-        super(connection);
-        this.connection = connection;
-    }
-
-    @NotNull
-    public PlayConnection getConnection() {
-        return this.connection;
-    }
-}
+abstract class PlayConnectionEvent(override val connection: PlayConnection) : ConnectionEvent(connection)

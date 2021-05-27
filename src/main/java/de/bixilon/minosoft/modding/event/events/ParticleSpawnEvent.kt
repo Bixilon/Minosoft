@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -10,17 +10,25 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.modding.event.events
 
-package de.bixilon.minosoft.gui.rendering.particle
-
-import de.bixilon.minosoft.data.mappings.CompanionResourceLocation
 import de.bixilon.minosoft.data.mappings.particle.data.ParticleData
-import de.bixilon.minosoft.gui.rendering.particle.types.Particle
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.protocol.packets.s2c.play.ParticleS2CP
 import glm_.vec3.Vec3
 
-interface ParticleFactory<T : Particle> : CompanionResourceLocation {
+class ParticleSpawnEvent(
+    connection: PlayConnection,
+    position: Vec3,
+    offset: Vec3,
+    val speed: Float,
+    val count: Int,
+    val data: ParticleData,
+) : CancelableEvent(connection) {
+    val position: Vec3 = position
+        get() = Vec3(field)
+    val offset: Vec3 = offset
+        get() = Vec3(field)
 
-    fun build(connection: PlayConnection, particleRenderer: ParticleRenderer = connection.rendering!!.renderWindow[ParticleRenderer]!!, position: Vec3, velocity: Vec3, data: ParticleData = ParticleData(connection.registries.particleTypeRegistry[RESOURCE_LOCATION]!!)): T
-
+    constructor(connection: PlayConnection, packet: ParticleS2CP) : this(connection, packet.position, packet.offset, packet.speed, packet.count, packet.data)
 }
