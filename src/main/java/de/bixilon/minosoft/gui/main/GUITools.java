@@ -75,8 +75,8 @@ public class GUITools {
 
     public static Scene initializeScene(Scene scene) {
         scene.getStylesheets().add("/assets/minosoft/layout/style.css"); // ToDo: Migrate to minosoft assets manager
-        if (scene.getWindow() instanceof Stage stage) {
-            stage.getIcons().add(MINOSOFT_LOGO);
+        if (scene.getWindow() instanceof Stage) {
+            ((Stage) scene.getWindow()).getIcons().add(MINOSOFT_LOGO);
         }
         return scene;
     }
@@ -93,7 +93,8 @@ public class GUITools {
         stage.initModality(modality);
         double width = 600;
         double height = 400;
-        if (root instanceof Pane pane) {
+        if (root instanceof Pane) {
+            Pane pane = (Pane) root;
             width = pane.getPrefWidth();
             height = pane.getPrefHeight();
         }

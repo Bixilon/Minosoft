@@ -116,13 +116,13 @@ public abstract class CommandNode {
         if (stringReader.getRemainingLength() == 0) {
             if (this.isExecutable) {
                 if (this.executor != null) {
-                    if (this.executor instanceof CommandExecutor commandExecutor) {
-                        commandExecutor.execute(stack);
-                    } else if (this.executor instanceof CommandConnectionExecutor commandConnectionExecutor) {
+                    if (this.executor instanceof CommandExecutor) {
+                        ((CommandExecutor) this.executor).execute(stack);
+                    } else if (this.executor instanceof CommandConnectionExecutor) {
                         if (connection == null) {
                             throw new NoConnectionCommandParseException(stringReader, stringReader.getString());
                         }
-                        commandConnectionExecutor.execute(connection, stack);
+                        ((CommandConnectionExecutor) this.executor).execute(connection, stack);
                     }
                 }
 
@@ -171,11 +171,12 @@ public abstract class CommandNode {
 
     public CommandNode addChildren(Set<CommandNode> children) {
         for (CommandNode child : children) {
-            if (child instanceof CommandArgumentNode argumentNode) {
-                this.argumentsChildren.add(argumentNode);
+            if (child instanceof CommandArgumentNode) {
+                this.argumentsChildren.add(((CommandArgumentNode) child));
                 continue;
             }
-            if (child instanceof CommandLiteralNode literalNode) {
+            if (child instanceof CommandLiteralNode) {
+                CommandLiteralNode literalNode = (CommandLiteralNode) child;
                 this.literalChildren.put(literalNode.getName(), literalNode);
             }
         }

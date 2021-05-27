@@ -76,6 +76,14 @@ object VecUtil {
         )
     }
 
+    infix operator fun Vec3.plus(lambda: () -> Float): Vec3 {
+        return Vec3(
+            x = x + lambda(),
+            y = y + lambda(),
+            z = z + lambda(),
+        )
+    }
+
     fun getRotatedValues(x: Float, y: Float, sin: Float, cos: Float, rescale: Boolean): Vec2 {
         val result = Vec2(x * cos - y * sin, x * sin + y * cos)
         if (rescale) {

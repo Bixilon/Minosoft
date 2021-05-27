@@ -18,6 +18,7 @@ import de.bixilon.minosoft.data.mappings.particle.data.ParticleData
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.gui.rendering.particle.ParticleRenderer
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.ExplosionParticle
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
 import glm_.vec3.Vec3
@@ -33,11 +34,8 @@ class ExplosionEmitterParticle(connection: PlayConnection, particleRenderer: Par
     override fun realTick() {
         super.realTick()
         for (i in 0 until 6) {
-            val position = Vec3(
-                x = position.x + (random.nextFloat() - random.nextFloat()) * 4.0f,
-                y = position.y + (random.nextFloat() - random.nextFloat()) * 4.0f,
-                z = position.z + (random.nextFloat() - random.nextFloat()) * 4.0f
-            )
+            val position = position + { (random.nextFloat() - random.nextFloat()) * 4.0f }
+
             particleRenderer.add(ExplosionParticle(connection, particleRenderer, position, explosionParticleType.simple(), (tickAge.toFloat() / maxTickAge)))
         }
     }

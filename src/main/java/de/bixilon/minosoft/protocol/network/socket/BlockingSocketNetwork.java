@@ -199,9 +199,9 @@ public class BlockingSocketNetwork extends Network {
 
                     this.outputStream.write(prepareC2SPacket(packet));
                     this.outputStream.flush();
-                    if (packet instanceof EncryptionResponseC2SP packetEncryptionResponse) {
+                    if (packet instanceof EncryptionResponseC2SP) {
                         // enable encryption
-                        enableEncryption(packetEncryptionResponse.getSecretKey());
+                        enableEncryption(((EncryptionResponseC2SP) packet).getSecretKey());
                         // wake up other thread
                         this.socketReceiveThread.interrupt();
                     }

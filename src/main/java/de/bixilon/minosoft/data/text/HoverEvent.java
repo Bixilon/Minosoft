@@ -62,7 +62,16 @@ public class HoverEvent {
         SHOW_ACHIEVEMENT
     }
 
-    public static record EntityHoverData(UUID uuid, ResourceLocation resourceLocation, ChatComponent name) {
+    public static final class EntityHoverData {
+        private final UUID uuid;
+        private final ResourceLocation resourceLocation;
+        private final ChatComponent name;
+
+        public EntityHoverData(UUID uuid, ResourceLocation resourceLocation, ChatComponent name) {
+            this.uuid = uuid;
+            this.resourceLocation = resourceLocation;
+            this.name = name;
+        }
 
         public static EntityHoverData deserialize(JsonElement data) {
             JsonObject json;
@@ -80,6 +89,18 @@ public class HoverEvent {
                 type = new ResourceLocation(json.get("type").getAsString());
             }
             return new EntityHoverData(Util.getUUIDFromString(json.get("id").getAsString()), type, ChatComponent.Companion.of(json.get("name")));
+        }
+
+        public UUID uuid() {
+            return this.uuid;
+        }
+
+        public ResourceLocation resourceLocation() {
+            return this.resourceLocation;
+        }
+
+        public ChatComponent name() {
+            return this.name;
         }
     }
 }

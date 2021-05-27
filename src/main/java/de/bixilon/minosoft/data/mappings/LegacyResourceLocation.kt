@@ -10,36 +10,25 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.data.mappings
 
-package de.bixilon.minosoft.data.mappings;
+class LegacyResourceLocation(resourceLocation: String) : ResourceLocation("", resourceLocation) {
+    override val full: String = path
 
-public class LegacyResourceLocation extends ResourceLocation {
-
-    public LegacyResourceLocation(String resourceLocation) {
-        super(null, resourceLocation);
+    override fun hashCode(): Int {
+        return this.path.hashCode()
     }
 
-    @Override
-    public String getFull() {
-        return getPath();
-    }
-
-    @Override
-    public int hashCode() {
-        return this.path.hashCode();
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (super.equals(obj)) {
-            return true;
+    override fun equals(other: Any?): Boolean {
+        if (other === this) {
+            return true
         }
-        if (hashCode() != obj.hashCode()) {
-            return false;
+        if (hashCode() != other.hashCode()) {
+            return false
         }
-        if (obj instanceof ResourceLocation legacyResourceLocation) {
-            return getPath().equals(legacyResourceLocation.getPath());
+        if (other !is ResourceLocation) {
+            return false
         }
-        return false;
+        return path == other.path
     }
 }

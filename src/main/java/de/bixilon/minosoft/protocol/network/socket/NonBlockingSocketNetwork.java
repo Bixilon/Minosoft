@@ -89,9 +89,9 @@ public class NonBlockingSocketNetwork extends Network {
                             this.socketChannel.write(sendBuffer);
                         }
 
-                        if (packet instanceof EncryptionResponseC2SP packetEncryptionResponse) {
+                        if (packet instanceof EncryptionResponseC2SP) {
                             // enable encryption
-                            enableEncryption(packetEncryptionResponse.getSecretKey());
+                            enableEncryption(((EncryptionResponseC2SP) packet).getSecretKey());
                         }
 
                     }
