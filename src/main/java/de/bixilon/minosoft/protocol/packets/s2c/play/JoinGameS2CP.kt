@@ -14,7 +14,6 @@ package de.bixilon.minosoft.protocol.packets.s2c.play
 
 import com.google.common.collect.HashBiMap
 import de.bixilon.minosoft.data.Difficulties
-import de.bixilon.minosoft.data.LevelTypes
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.mappings.Dimension
 import de.bixilon.minosoft.data.mappings.ResourceLocation
@@ -48,7 +47,7 @@ class JoinGameS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         private set
     var maxPlayers = 0
         private set
-    var levelType: LevelTypes = LevelTypes.UNKNOWN
+    var levelType: String? = null
         private set
     var isReducedDebugScreen = false
         private set
@@ -74,10 +73,10 @@ class JoinGameS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
 
         if (buffer.versionId < ProtocolVersions.V_1_9_1) {
             dimension = buffer.connection.registries.dimensionRegistry[buffer.readByte().toInt()]
-            difficulty = Difficulties.byId(buffer.readUnsignedByte().toInt())
+            difficulty = Difficulties[buffer.readUnsignedByte()]
             maxPlayers = buffer.readByte().toInt()
             if (buffer.versionId >= ProtocolVersions.V_13W42B) {
-                levelType = LevelTypes.byType(buffer.readString())
+                levelType = buffer.readString()
             }
             if (buffer.versionId >= ProtocolVersions.V_14W29A) {
                 isReducedDebugScreen = buffer.readBoolean()
@@ -107,7 +106,7 @@ class JoinGameS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
                 hashedSeed = buffer.readLong()
             }
             if (buffer.versionId < ProtocolVersions.V_19W11A) {
-                difficulty = Difficulties.byId(buffer.readUnsignedByte())
+                difficulty = Difficulties[buffer.readUnsignedByte()]
             }
             maxPlayers = if (buffer.versionId < ProtocolVersions.V_1_16_2_RC1) {
                 buffer.readByte().toInt()
@@ -115,7 +114,7 @@ class JoinGameS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
                 buffer.readVarInt()
             }
             if (buffer.versionId < ProtocolVersions.V_20W20A) {
-                levelType = LevelTypes.byType(buffer.readString())
+                levelType = buffer.readString()
             }
             if (buffer.versionId >= ProtocolVersions.V_19W13A) {
                 viewDistance = buffer.readVarInt()
@@ -123,7 +122,7 @@ class JoinGameS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
             if (buffer.versionId >= ProtocolVersions.V_20W20A) {
                 buffer.readBoolean() // isDebug
                 if (buffer.readBoolean()) {
-                    levelType = LevelTypes.FLAT
+                    levelType = "flat"
                 }
             }
             isReducedDebugScreen = buffer.readBoolean()

@@ -10,18 +10,25 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.protocol.protocol
 
-package de.bixilon.minosoft.data;
+import de.bixilon.minosoft.util.KUtil
+import de.bixilon.minosoft.util.enum.ValuesEnum
 
-public enum Difficulties {
-    PEACEFUL,
-    EASY,
-    NORMAL,
-    HARD;
+enum class ConnectionStates {
+    HANDSHAKING,
+    STATUS,
+    LOGIN,
+    PLAY,
+    CONNECTING,
+    DISCONNECTING,
+    DISCONNECTED,
+    FAILED,
+    FAILED_NO_RETRY,
+    ;
 
-    private static final Difficulties[] DIFFICULTIES = values();
-
-    public static Difficulties byId(int id) {
-        return DIFFICULTIES[id];
+    companion object : ValuesEnum<ConnectionStates> {
+        override val VALUES: Array<ConnectionStates> = values()
+        override val NAME_MAP: Map<String, ConnectionStates> = KUtil.getEnumValues(VALUES)
     }
 }

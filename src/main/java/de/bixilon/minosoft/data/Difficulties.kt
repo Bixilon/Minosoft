@@ -10,34 +10,20 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.data
 
-package de.bixilon.minosoft.data;
+import de.bixilon.minosoft.util.KUtil
+import de.bixilon.minosoft.util.enum.ValuesEnum
 
-public enum LevelTypes {
-    DEFAULT("default"),
-    FLAT("flat"),
-    LARGE_BIOMES("largeBiomes"),
-    AMPLIFIED("amplified"),
-    DEFAULT_1_1("default_1_1"),
-    CUSTOMIZED("customized"),
-    BUFFET("buffet"),
-    UNKNOWN("unknown");
-    private final String type;
+enum class Difficulties {
+    PEACEFUL,
+    EASY,
+    NORMAL,
+    HARD,
+    ;
 
-    LevelTypes(String type) {
-        this.type = type;
-    }
-
-    public static LevelTypes byType(String type) {
-        for (LevelTypes levelType : values()) {
-            if (levelType.getId().equals(type)) {
-                return levelType;
-            }
-        }
-        return null;
-    }
-
-    public String getId() {
-        return this.type;
+    companion object : ValuesEnum<Difficulties> {
+        override val VALUES: Array<Difficulties> = values()
+        override val NAME_MAP: Map<String, Difficulties> = KUtil.getEnumValues(VALUES)
     }
 }

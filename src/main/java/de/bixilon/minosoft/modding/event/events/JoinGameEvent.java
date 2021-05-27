@@ -15,7 +15,6 @@ package de.bixilon.minosoft.modding.event.events;
 
 import com.google.common.collect.HashBiMap;
 import de.bixilon.minosoft.data.Difficulties;
-import de.bixilon.minosoft.data.LevelTypes;
 import de.bixilon.minosoft.data.abilities.Gamemodes;
 import de.bixilon.minosoft.data.mappings.Dimension;
 import de.bixilon.minosoft.data.mappings.ResourceLocation;
@@ -30,13 +29,12 @@ public class JoinGameEvent extends CancelableEvent {
     private final Difficulties difficulty;
     private final int viewDistance;
     private final int maxPlayers;
-    private final LevelTypes levelType;
     private final boolean reducedDebugScreen;
     private final boolean enableRespawnScreen;
     private final long hashedSeed;
     private final HashBiMap<ResourceLocation, Dimension> dimensions;
 
-    public JoinGameEvent(PlayConnection connection, int entityId, boolean hardcore, Gamemodes gamemode, Dimension dimension, Difficulties difficulty, int viewDistance, int maxPlayers, LevelTypes levelType, boolean reducedDebugScreen, boolean enableRespawnScreen, long hashedSeed, HashBiMap<ResourceLocation, Dimension> dimensions) {
+    public JoinGameEvent(PlayConnection connection, int entityId, boolean hardcore, Gamemodes gamemode, Dimension dimension, Difficulties difficulty, int viewDistance, int maxPlayers, boolean reducedDebugScreen, boolean enableRespawnScreen, long hashedSeed, HashBiMap<ResourceLocation, Dimension> dimensions) {
         super(connection);
         this.entityId = entityId;
         this.hardcore = hardcore;
@@ -45,7 +43,6 @@ public class JoinGameEvent extends CancelableEvent {
         this.difficulty = difficulty;
         this.viewDistance = viewDistance;
         this.maxPlayers = maxPlayers;
-        this.levelType = levelType;
         this.reducedDebugScreen = reducedDebugScreen;
         this.enableRespawnScreen = enableRespawnScreen;
         this.hashedSeed = hashedSeed;
@@ -61,7 +58,6 @@ public class JoinGameEvent extends CancelableEvent {
         this.difficulty = pkg.getDifficulty();
         this.viewDistance = pkg.getViewDistance();
         this.maxPlayers = pkg.getMaxPlayers();
-        this.levelType = pkg.getLevelType();
         this.reducedDebugScreen = pkg.isReducedDebugScreen();
         this.enableRespawnScreen = pkg.isEnableRespawnScreen();
         this.hashedSeed = pkg.getHashedSeed();
@@ -94,10 +90,6 @@ public class JoinGameEvent extends CancelableEvent {
 
     public int getMaxPlayers() {
         return this.maxPlayers;
-    }
-
-    public LevelTypes getLevelType() {
-        return this.levelType;
     }
 
     public boolean isReducedDebugScreen() {

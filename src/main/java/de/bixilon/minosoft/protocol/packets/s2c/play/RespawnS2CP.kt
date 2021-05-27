@@ -13,7 +13,6 @@
 package de.bixilon.minosoft.protocol.packets.s2c.play
 
 import de.bixilon.minosoft.data.Difficulties
-import de.bixilon.minosoft.data.LevelTypes
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.mappings.Dimension
 import de.bixilon.minosoft.modding.event.events.RespawnEvent
@@ -33,7 +32,7 @@ class RespawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     var difficulty: Difficulties = Difficulties.NORMAL
         private set
     val gamemode: Gamemodes
-    var levelType: LevelTypes = LevelTypes.UNKNOWN
+    var levelType: String? = null
         private set
     var hashedSeed = 0L
         private set
@@ -61,7 +60,7 @@ class RespawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
             }
         }
         if (buffer.versionId < ProtocolVersions.V_19W11A) {
-            difficulty = Difficulties.byId(buffer.readUnsignedByte())
+            difficulty = Difficulties[buffer.readUnsignedByte()]
         }
         if (buffer.versionId >= ProtocolVersions.V_20W22A) {
             dimension = buffer.connection.registries.dimensionRegistry[buffer.readResourceLocation()]!!
@@ -74,7 +73,7 @@ class RespawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
             buffer.readByte() // previous game mode
         }
         if (buffer.versionId >= ProtocolVersions.V_13W42B && buffer.versionId < ProtocolVersions.V_20W20A) {
-            levelType = LevelTypes.byType(buffer.readString())
+            levelType = buffer.readString()
         }
         if (buffer.versionId >= ProtocolVersions.V_20W20A) {
             isDebug = buffer.readBoolean()
