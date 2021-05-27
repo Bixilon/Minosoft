@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.util
 
 import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.enum.AliasableEnum
 import sun.misc.Unsafe
 import java.util.*
@@ -113,4 +114,16 @@ object KUtil {
     fun Random.nextFloat(min: Float = Float.MIN_VALUE, max: Float = Float.MAX_VALUE): Float {
         return min + this.nextFloat() * (max - min)
     }
+
+    /**
+     * Converts millis to ticks
+     */
+    val Number.ticks: Int
+        get() = this.toInt() / ProtocolDefinition.TICK_TIME
+
+    /**
+     * Converts ticks to millis
+     */
+    val Number.millis: Int
+        get() = this.toInt() * ProtocolDefinition.TICK_TIME
 }

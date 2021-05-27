@@ -26,6 +26,7 @@ import de.bixilon.minosoft.gui.rendering.modding.events.FrustumChangeEvent
 import de.bixilon.minosoft.gui.rendering.modding.events.ScreenResizeEvent
 import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
 import de.bixilon.minosoft.gui.rendering.util.VecUtil
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.blockPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.floor
@@ -250,7 +251,7 @@ class Camera(
         if (renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.MOVE_RIGHT)) {
             movementDirection += cameraRight
         }
-        val deltaMovement = if (movementDirection != VecUtil.EMPTY_VEC3) {
+        val deltaMovement = if (movementDirection != Vec3.EMPTY) {
             movementDirection.normalize() * cameraSpeed
         } else {
             movementDirection
@@ -267,7 +268,7 @@ class Camera(
             playerEntity.velocity.y += 0.75f * ProtocolDefinition.GRAVITY
             playerEntity.onGround = false
         }
-        if (deltaMovement != VecUtil.EMPTY_VEC3) {
+        if (deltaMovement != Vec3.EMPTY) {
             playerEntity.move(deltaMovement, false)
             recalculateViewProjectionMatrix()
             currentPositionSent = false

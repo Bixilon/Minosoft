@@ -24,7 +24,7 @@ import de.bixilon.minosoft.gui.rendering.RendererBuilder
 import de.bixilon.minosoft.gui.rendering.chunk.VoxelShape
 import de.bixilon.minosoft.gui.rendering.chunk.models.renderable.ElementRenderer
 import de.bixilon.minosoft.gui.rendering.shader.Shader
-import de.bixilon.minosoft.gui.rendering.util.VecUtil
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.getWorldOffset
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
@@ -55,7 +55,7 @@ class BlockOutlineRenderer(
     private fun drawLine(start: Vec3, end: Vec3, mesh: BlockOutlineMesh) {
         val direction = (end - start).normalize()
         val normal1 = Vec3(direction.z, direction.z, direction.x - direction.y)
-        if (normal1 == VecUtil.EMPTY_VEC3) {
+        if (normal1 == Vec3.EMPTY) {
             normal1.x = normal1.z
             normal1.z = direction.z
         }

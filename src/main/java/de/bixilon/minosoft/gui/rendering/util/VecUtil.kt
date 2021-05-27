@@ -37,15 +37,14 @@ import glm_.vec3.Vec3
 import glm_.vec3.Vec3i
 
 object VecUtil {
-    val EMPTY_VEC3 = Vec3(0, 0, 0)
-    val EMPTY_VEC3I = Vec3i(0, 0, 0)
-    val ONES_VEC3 = Vec3(1)
-
     val Vec3.Companion.EMPTY: Vec3
-        get() = Vec3(EMPTY_VEC3)
+        get() = Vec3(0, 0, 0)
+
+    val Vec3i.Companion.EMPTY: Vec3i
+        get() = Vec3i(0, 0, 0)
 
     val Vec3.Companion.ONE: Vec3
-        get() = Vec3(ONES_VEC3)
+        get() = Vec3(1, 1, 1)
 
     fun JsonElement.toVec3(): Vec3 {
         return when (this) {
@@ -221,7 +220,7 @@ object VecUtil {
 
     fun Vec3i.getWorldOffset(block: Block): Vec3 {
         if (block.randomOffsetType == null || !Minosoft.config.config.game.other.flowerRandomOffset) {
-            return EMPTY_VEC3
+            return Vec3.EMPTY
         }
 
         val positionHash = generatePositionHash(x, 0, z)

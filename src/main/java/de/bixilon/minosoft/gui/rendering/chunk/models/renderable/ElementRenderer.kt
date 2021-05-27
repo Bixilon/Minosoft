@@ -26,7 +26,7 @@ import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModelElement
 import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModelFace
 import de.bixilon.minosoft.gui.rendering.textures.Texture
 import de.bixilon.minosoft.gui.rendering.textures.TextureTransparencies
-import de.bixilon.minosoft.gui.rendering.util.VecUtil
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.rotate
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3
@@ -129,7 +129,7 @@ class ElementRenderer(
         }
 
         fun getRotatedDirection(rotation: Vec3, direction: Directions): Directions {
-            if (rotation == VecUtil.EMPTY_VEC3) {
+            if (rotation == Vec3.EMPTY) {
                 return direction
             }
             var rotatedDirectionVector = direction.floatDirectionVector.rotate(-rotation.x, Axes.X)
@@ -138,12 +138,12 @@ class ElementRenderer(
         }
 
         fun rotatePositionsAxes(positions: Array<Vec3>, angles: Vec3, rescale: Boolean) {
-            if (angles == VecUtil.EMPTY_VEC3) {
+            if (angles == Vec3.EMPTY) {
                 return
             }
-            BlockModelElement.rotatePositions(positions, Axes.X, -angles.x, VecUtil.EMPTY_VEC3, rescale)
-            BlockModelElement.rotatePositions(positions, Axes.Y, angles.y, VecUtil.EMPTY_VEC3, rescale)
-            BlockModelElement.rotatePositions(positions, Axes.Z, -angles.z, VecUtil.EMPTY_VEC3, rescale)
+            BlockModelElement.rotatePositions(positions, Axes.X, -angles.x, Vec3.EMPTY, rescale)
+            BlockModelElement.rotatePositions(positions, Axes.Y, angles.y, Vec3.EMPTY, rescale)
+            BlockModelElement.rotatePositions(positions, Axes.Z, -angles.z, Vec3.EMPTY, rescale)
         }
 
         val POSITION_1 = Vec3(-0.5f, -0.5f, -0.5f)

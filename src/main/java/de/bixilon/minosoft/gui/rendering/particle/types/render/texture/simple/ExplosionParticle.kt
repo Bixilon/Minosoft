@@ -20,12 +20,13 @@ import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.gui.rendering.particle.ParticleRenderer
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
+import de.bixilon.minosoft.util.KUtil.ticks
 import glm_.vec3.Vec3
 
 class ExplosionParticle(connection: PlayConnection, particleRenderer: ParticleRenderer, position: Vec3, data: ParticleData, val power: Float = 1.0f) : SimpleTextureParticle(connection, particleRenderer, position, data) {
 
     init {
-        maxTickAge = 6 + random.nextInt(4)
+        maxAge = (6 + random.nextInt(4)).ticks
         val gray = random.nextFloat() * 0.6f + 0.4f
         color = gray.asGray()
         scale = 2.0f * (power - gray * 0.5f)

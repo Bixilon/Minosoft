@@ -4,7 +4,8 @@ import com.google.gson.JsonArray
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.Axes
-import de.bixilon.minosoft.gui.rendering.util.VecUtil
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.ONE
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.get
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3
 import glm_.Java.Companion.glm
@@ -17,8 +18,8 @@ class AABB {
     val max: Vec3
 
     constructor(jsonData: JsonObject) {
-        min = readPositionFromJson(jsonData["from"], VecUtil.EMPTY_VEC3)
-        max = readPositionFromJson(jsonData["to"], VecUtil.ONES_VEC3)
+        min = readPositionFromJson(jsonData["from"], Vec3.EMPTY)
+        max = readPositionFromJson(jsonData["to"], Vec3.ONE)
     }
 
     private fun readPositionFromJson(jsonData: JsonElement, default: Vec3): Vec3 {
@@ -139,7 +140,7 @@ class AABB {
     }
 
     fun raycast(position: Vec3, direction: Vec3): Float {
-        if (max - min == VecUtil.ONES_VEC3 || position in this) {
+        if (max - min == Vec3.ONE || position in this) {
             return 0f
         }
         var tMin = 0f

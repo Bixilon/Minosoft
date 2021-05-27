@@ -21,13 +21,15 @@ import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.Ex
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
+import de.bixilon.minosoft.util.KUtil.millis
+import de.bixilon.minosoft.util.KUtil.ticks
 import glm_.vec3.Vec3
 
 class ExplosionEmitterParticle(connection: PlayConnection, particleRenderer: ParticleRenderer, position: Vec3, data: ParticleData) : NoRenderParticle(connection, particleRenderer, position, data) {
     private val explosionParticleType = connection.registries.particleTypeRegistry[ExplosionParticle]!!
 
     init {
-        maxTickAge = 8
+        maxAge = 8.millis
     }
 
 
@@ -36,7 +38,7 @@ class ExplosionEmitterParticle(connection: PlayConnection, particleRenderer: Par
         for (i in 0 until 6) {
             val position = position + { (random.nextFloat() - random.nextFloat()) * 4.0f }
 
-            particleRenderer.add(ExplosionParticle(connection, particleRenderer, position, explosionParticleType.simple(), (tickAge.toFloat() / maxTickAge)))
+            particleRenderer.add(ExplosionParticle(connection, particleRenderer, position, explosionParticleType.simple(), (age.ticks.toFloat() / maxAge.ticks)))
         }
     }
 

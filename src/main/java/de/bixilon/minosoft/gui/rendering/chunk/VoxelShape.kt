@@ -6,7 +6,8 @@ import com.google.gson.JsonPrimitive
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.Directions
 import de.bixilon.minosoft.gui.rendering.chunk.models.AABB
-import de.bixilon.minosoft.gui.rendering.util.VecUtil
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.ONE
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.getMinDistanceDirection
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3i
@@ -99,7 +100,7 @@ class VoxelShape(private val aabbs: MutableList<AABB> = mutableListOf()) : Itera
 
     companion object {
         val EMPTY = VoxelShape()
-        val FULL = VoxelShape(mutableListOf(AABB(VecUtil.EMPTY_VEC3, VecUtil.ONES_VEC3)))
+        val FULL = VoxelShape(mutableListOf(AABB(Vec3.EMPTY, Vec3.ONE)))
     }
 
     override fun iterator(): Iterator<AABB> {

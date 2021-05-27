@@ -21,10 +21,16 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.ONE
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.clear
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.util.KUtil.millis
 import glm_.vec3.Vec3
 import kotlin.random.Random
 
-abstract class Particle(protected val connection: PlayConnection, protected val particleRenderer: ParticleRenderer, protected val position: Vec3, protected val data: ParticleData) {
+abstract class Particle(
+    protected val connection: PlayConnection,
+    protected val particleRenderer: ParticleRenderer,
+    protected val position: Vec3,
+    protected val data: ParticleData,
+) {
     protected val random = Random
     private var lastTickTime = -1L
 
@@ -33,21 +39,7 @@ abstract class Particle(protected val connection: PlayConnection, protected val 
     var dead = false
     var age: Int = 0
         protected set
-    var tickAge: Int
-        get() = age / ProtocolDefinition.TICK_TIME
-        set(value) {
-            age = value * ProtocolDefinition.TICK_TIME
-        }
-    var maxAge: Int = Integer.MAX_VALUE
-    var maxTickAge: Int
-        get() = maxAge / ProtocolDefinition.TICK_TIME
-        set(value) {
-            maxAge = value * ProtocolDefinition.TICK_TIME
-        }
-
-    init {
-        maxTickAge = (4.0f / (random.nextFloat() * 0.9f + 0.1f)).toInt()
-    }
+    var maxAge: Int = (4.0f / (random.nextFloat() * 0.9f + 0.1f)).millis
 
     // moving
     val friction = Vec3.EMPTY
