@@ -60,14 +60,14 @@ object VecUtil {
         z = 0.0f
     }
 
-    fun Vec3.assign(vec3: Vec3) {
+    infix fun Vec3.assign(vec3: Vec3) {
         x = vec3.x
         y = vec3.y
         z = vec3.z
     }
 
     @JvmName(name = "times2")
-    infix operator fun Vec3.times(lambda: () -> Double): Vec3 {
+    infix operator fun Vec3.times(lambda: () -> Float): Vec3 {
         return Vec3(
             x = x * lambda(),
             y = y * lambda(),
@@ -82,6 +82,23 @@ object VecUtil {
             z = z + lambda(),
         )
     }
+
+    infix operator fun Vec3.plusAssign(lambda: () -> Float) {
+        this assign this + lambda
+    }
+
+    infix operator fun Vec3.timesAssign(lambda: () -> Float) {
+        this assign this * lambda
+    }
+
+    val Float.sqr: Float
+        get() = this * this
+
+    val Vec3.ticks: Vec3
+        get() = this / ProtocolDefinition.TICKS_PER_SECOND
+
+    val Vec3.millis: Vec3
+        get() = this * ProtocolDefinition.TICKS_PER_SECOND
 
     fun getRotatedValues(x: Float, y: Float, sin: Float, cos: Float, rescale: Boolean): Vec2 {
         val result = Vec2(x * cos - y * sin, x * sin + y * cos)
@@ -280,14 +297,10 @@ object VecUtil {
         get() = glm.max(this.x, this.y, this.z)
 
     val Vec3.signs: Vec3
-        get() {
-            return Vec3(glm.sign(this.x), glm.sign(this.y), glm.sign(this.z))
-        }
+        get() = Vec3(glm.sign(this.x), glm.sign(this.y), glm.sign(this.z))
 
     val Vec3.floor: Vec3i
-        get() {
-            return Vec3i(this.x.floor, this.y.floor, this.z.floor)
-        }
+        get() = Vec3i(this.x.floor, this.y.floor, this.z.floor)
 
     fun Vec3.getMinDistanceDirection(aabb: AABB): Directions {
         var minDistance = Float.MAX_VALUE

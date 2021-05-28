@@ -12,6 +12,7 @@
  */
 package de.bixilon.minosoft.data.text
 
+import de.bixilon.minosoft.util.MMath
 import org.checkerframework.common.value.qual.IntRange
 
 class RGBColor(val rgba: Int) : ChatCode {
@@ -21,7 +22,7 @@ class RGBColor(val rgba: Int) : ChatCode {
 
     constructor(red: Byte, green: Byte, blue: Byte, alpha: Byte = 0xFF.toByte()) : this(red.toInt() and 0xFF, green.toInt() and 0xFF, blue.toInt() and 0xFF, alpha.toInt() and 0xFF)
 
-    constructor(red: Float, green: Float, blue: Float, alpha: Float = 1.0f) : this((red * 255.0f).toInt(), (green * 255.0f).toInt(), (blue * 255.0f).toInt(), (alpha * 255.0f).toInt())
+    constructor(red: Float, green: Float, blue: Float, alpha: Float = 1.0f) : this((red * 255.0f).toInt(), (green * COLOR_FLOAT_DIVIDER).toInt(), (blue * COLOR_FLOAT_DIVIDER).toInt(), (alpha * COLOR_FLOAT_DIVIDER).toInt())
 
     val alpha: @IntRange(from = 0L, to = 255L) Int
         get() = rgba and 0xFF
@@ -44,6 +45,9 @@ class RGBColor(val rgba: Int) : ChatCode {
     val floatBlue: @IntRange(from = 0L, to = 1L) Float
         get() = blue / COLOR_FLOAT_DIVIDER
 
+    val floatAlpha: @IntRange(from = 0L, to = 1L) Float
+        get() = alpha / COLOR_FLOAT_DIVIDER
+
     val rgb: Int
         get() = rgba ushr 8
 
@@ -65,6 +69,14 @@ class RGBColor(val rgba: Int) : ChatCode {
         } else {
             String.format("#%06X", rgb)
         }
+    }
+
+    fun with(red: Int = this.red, green: Int = this.green, blue: Int = this.blue, alpha: Int = this.alpha): RGBColor {
+        return RGBColor(red, green, blue, alpha)
+    }
+
+    fun with(red: Float = this.floatRed, green: Float = this.floatGreen, blue: Float = this.floatBlue, alpha: Float = this.floatAlpha): RGBColor {
+        return RGBColor(MMath.clamp(red, 0.0f, 1.0f), MMath.clamp(green, 0.0f, 1.0f), MMath.clamp(blue, 0.0f, 1.0f), MMath.clamp(alpha, 0.0f, 1.0f))
     }
 
     companion object {

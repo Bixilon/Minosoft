@@ -20,7 +20,7 @@ import de.bixilon.minosoft.gui.rendering.particle.types.Particle
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import glm_.vec3.Vec3
 
-abstract class NoRenderParticle(connection: PlayConnection, particleRenderer: ParticleRenderer, position: Vec3, data: ParticleData) : Particle(connection, particleRenderer, position, data) {
+abstract class NoRenderParticle(connection: PlayConnection, particleRenderer: ParticleRenderer, position: Vec3, velocity: Vec3, data: ParticleData) : Particle(connection, particleRenderer, position, velocity, data) {
 
     override fun addVertex(particleMesh: ParticleMesh) {}
 }

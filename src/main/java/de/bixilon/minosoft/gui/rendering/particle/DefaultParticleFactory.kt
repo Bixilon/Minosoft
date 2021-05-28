@@ -16,9 +16,12 @@ package de.bixilon.minosoft.gui.rendering.particle
 import de.bixilon.minosoft.data.mappings.DefaultFactory
 import de.bixilon.minosoft.gui.rendering.particle.types.Particle
 import de.bixilon.minosoft.gui.rendering.particle.types.norender.ExplosionEmitterParticle
-import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.ExplosionParticle
+import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.CampfireSmokeParticle
+import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.ExplosionLargeParticle
 
 object DefaultParticleFactory : DefaultFactory<ParticleFactory<out Particle>>(
     ExplosionEmitterParticle,
-    ExplosionParticle,
+    ExplosionLargeParticle,
+    CampfireSmokeParticle.CosySmokeParticleFactory,
+    CampfireSmokeParticle.SignalSmokeParticleFactory,
 )

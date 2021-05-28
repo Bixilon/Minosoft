@@ -24,6 +24,7 @@ import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.recipes.Recipes
 import de.bixilon.minosoft.data.mappings.versions.Registries
 import de.bixilon.minosoft.data.mappings.versions.Version
+import de.bixilon.minosoft.data.physics.CollisionDetector
 import de.bixilon.minosoft.data.player.Player
 import de.bixilon.minosoft.data.player.tab.TabList
 import de.bixilon.minosoft.data.scoreboard.ScoreboardManager
@@ -79,6 +80,7 @@ class PlayConnection(
 
     lateinit var velocityHandlerTask: TimeWorkerTask
     private var velocityHandlerLastExecutionTime: Long = 0L
+    val collisionDetector = CollisionDetector(this)
 
     override var connectionState: ConnectionStates = ConnectionStates.DISCONNECTED
         set(value) {

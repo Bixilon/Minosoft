@@ -19,7 +19,7 @@ import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.TexturePa
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import glm_.vec3.Vec3
 
-abstract class SimpleTextureParticle(connection: PlayConnection, particleRenderer: ParticleRenderer, position: Vec3, data: ParticleData) : TextureParticle(connection, particleRenderer, position, data) {
+abstract class SimpleTextureParticle(connection: PlayConnection, particleRenderer: ParticleRenderer, position: Vec3, velocity: Vec3, data: ParticleData) : TextureParticle(connection, particleRenderer, position, velocity, data) {
     override var texture = particleRenderer.renderWindow.textures.allTextures[data.type.textures.first()]!!
 
 

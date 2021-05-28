@@ -17,33 +17,38 @@ import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.particle.data.ParticleData
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.gui.rendering.particle.ParticleRenderer
-import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.ExplosionParticle
+import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.ExplosionLargeParticle
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
-import de.bixilon.minosoft.util.KUtil.millis
-import de.bixilon.minosoft.util.KUtil.ticks
 import glm_.vec3.Vec3
 
-class ExplosionEmitterParticle(connection: PlayConnection, particleRenderer: ParticleRenderer, position: Vec3, data: ParticleData) : NoRenderParticle(connection, particleRenderer, position, data) {
-    private val explosionParticleType = connection.registries.particleTypeRegistry[ExplosionParticle]!!
+class ExplosionEmitterParticle(connection: PlayConnection, particleRenderer: ParticleRenderer, position: Vec3, data: ParticleData) : NoRenderParticle(connection, particleRenderer, position, Vec3.EMPTY, data) {
+    private val explosionParticleType = connection.registries.particleTypeRegistry[ExplosionLargeParticle]!!
 
     init {
-        maxAge = 8.millis
+        maxAge = Int.MAX_VALUE
+        movement = false
     }
 
-
+    private var ticks = 0
     override fun realTick() {
         super.realTick()
         for (i in 0 until 6) {
             val position = position + { (random.nextFloat() - random.nextFloat()) * 4.0f }
 
-            particleRenderer.add(ExplosionParticle(connection, particleRenderer, position, explosionParticleType.simple(), (age.ticks.toFloat() / maxAge.ticks)))
+            particleRenderer.add(ExplosionLargeParticle(connection, particleRenderer, position, explosionParticleType.simple(), (ticks.toFloat() / MAX_AGE)))
+        }
+
+        if (ticks == MAX_AGE) {
+            dead = true
         }
     }
 
     companion object : ParticleFactory<ExplosionEmitterParticle> {
         override val RESOURCE_LOCATION: ResourceLocation = "minecraft:explosion_emitter".asResourceLocation()
+        private const val MAX_AGE = 8
 
         override fun build(connection: PlayConnection, particleRenderer: ParticleRenderer, position: Vec3, velocity: Vec3, data: ParticleData): ExplosionEmitterParticle {
             return ExplosionEmitterParticle(connection, particleRenderer, position, data)

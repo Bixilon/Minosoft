@@ -20,6 +20,7 @@ import de.bixilon.minosoft.gui.rendering.Renderer
 import de.bixilon.minosoft.gui.rendering.RendererBuilder
 import de.bixilon.minosoft.gui.rendering.modding.events.CameraMatrixChangeEvent
 import de.bixilon.minosoft.gui.rendering.particle.types.Particle
+import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.CampfireSmokeParticle
 import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.gui.rendering.textures.Texture
 import de.bixilon.minosoft.gui.rendering.textures.TextureArray
@@ -30,6 +31,8 @@ import de.bixilon.minosoft.util.KUtil.synchronizedSetOf
 import de.bixilon.minosoft.util.KUtil.toSynchronizedSet
 import de.bixilon.minosoft.util.MMath
 import glm_.vec3.Vec3
+import org.lwjgl.opengl.GL11.glDepthMask
+import kotlin.random.Random
 
 
 class ParticleRenderer(
@@ -75,12 +78,33 @@ class ParticleRenderer(
         particles += particle
     }
 
+    var lastTickTime = System.currentTimeMillis()
 
     override fun draw() {
         particleShader.use()
 
         particleMesh.unload()
         particleMesh = ParticleMesh()
+
+        // ToDo: Remove, this ist just for testing purposes
+        if (System.currentTimeMillis() - lastTickTime > ProtocolDefinition.TICK_TIME) {
+            val blockPosition = Vec3(0, 5, 0)
+            if (Random.nextFloat() < 0.11f) {
+                for (i in 0 until Random.nextInt(2) + 2) {
+                    val horizontal = { 0.5f + Random.nextFloat() / 3.0f * if (Random.nextBoolean()) 1.0f else -1.0f }
+                    val position = Vec3(
+                        blockPosition.x + horizontal(),
+                        blockPosition.y + Random.nextFloat() + Random.nextFloat(),
+                        blockPosition.z + horizontal()
+                    )
+
+                    val data = connection.registries.particleTypeRegistry[CampfireSmokeParticle.CosySmokeParticleFactory]!!
+                    val particle = CampfireSmokeParticle(connection, this, position, Vec3(0.0f, 0.07f, 0.0f), data.simple(), true)
+                    add(particle)
+                }
+            }
+            lastTickTime = System.currentTimeMillis()
+        }
 
         for (particle in particles.toSynchronizedSet()) {
             particle.tick()
@@ -93,7 +117,9 @@ class ParticleRenderer(
 
         particleMesh.load()
 
+        glDepthMask(false)
         particleMesh.draw()
+        glDepthMask(true)
     }
 
     companion object : RendererBuilder<ParticleRenderer> {

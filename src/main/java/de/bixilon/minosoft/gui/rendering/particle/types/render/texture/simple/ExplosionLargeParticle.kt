@@ -18,25 +18,27 @@ import de.bixilon.minosoft.data.mappings.particle.data.ParticleData
 import de.bixilon.minosoft.data.text.RGBColor.Companion.asGray
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.gui.rendering.particle.ParticleRenderer
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
-import de.bixilon.minosoft.util.KUtil.ticks
+import de.bixilon.minosoft.util.KUtil.millis
 import glm_.vec3.Vec3
 
-class ExplosionParticle(connection: PlayConnection, particleRenderer: ParticleRenderer, position: Vec3, data: ParticleData, val power: Float = 1.0f) : SimpleTextureParticle(connection, particleRenderer, position, data) {
+class ExplosionLargeParticle(connection: PlayConnection, particleRenderer: ParticleRenderer, position: Vec3, data: ParticleData, power: Float = 1.0f) : SimpleTextureParticle(connection, particleRenderer, position, Vec3.EMPTY, data) {
 
     init {
-        maxAge = (6 + random.nextInt(4)).ticks
+        movement = false
+        maxAge = (6 + random.nextInt(4)).millis
         val gray = random.nextFloat() * 0.6f + 0.4f
         color = gray.asGray()
         scale = 2.0f * (power - gray * 0.5f)
     }
 
-    companion object : ParticleFactory<ExplosionParticle> {
+    companion object : ParticleFactory<ExplosionLargeParticle> {
         override val RESOURCE_LOCATION: ResourceLocation = "minecraft:explosion".asResourceLocation()
 
-        override fun build(connection: PlayConnection, particleRenderer: ParticleRenderer, position: Vec3, velocity: Vec3, data: ParticleData): ExplosionParticle {
-            return ExplosionParticle(connection, particleRenderer, position, data, velocity.x)
+        override fun build(connection: PlayConnection, particleRenderer: ParticleRenderer, position: Vec3, velocity: Vec3, data: ParticleData): ExplosionLargeParticle {
+            return ExplosionLargeParticle(connection, particleRenderer, position, data, velocity.x)
         }
     }
 }

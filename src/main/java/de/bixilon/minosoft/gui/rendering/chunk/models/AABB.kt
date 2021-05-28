@@ -166,7 +166,13 @@ class AABB {
         return (position.x in min.x..max.x && position.y in min.y..max.y && position.z in min.z..max.z)
     }
 
+    val center: Vec3
+        get() = Vec3((min.x + max.x) / 2.0f, (min.y + max.y) / 2.0f, (min.z + max.z) / 2.0f)
+
     companion object {
+        val EMPTY: AABB
+            get() = AABB(Vec3.EMPTY, Vec3.EMPTY)
+
         private fun getRange(min: Float, max: Float): IntRange {
             return IntRange(glm.floor(min).toInt(), glm.ceil(max).toInt())
         }

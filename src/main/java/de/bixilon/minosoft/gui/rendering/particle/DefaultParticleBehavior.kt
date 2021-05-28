@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.particle
 
 import de.bixilon.minosoft.gui.rendering.particle.types.norender.ExplosionEmitterParticle
-import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.ExplosionParticle
+import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.ExplosionLargeParticle
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.times
 import de.bixilon.minosoft.modding.event.CallbackEventInvoker
 import de.bixilon.minosoft.modding.event.events.ExplosionEvent
@@ -29,14 +29,14 @@ object DefaultParticleBehavior {
 
     fun register(connection: PlayConnection, particleRenderer: ParticleRenderer) {
         val random = java.util.Random()
-        val explosionParticleType = connection.registries.particleTypeRegistry[ExplosionParticle]!!
+        val explosionParticleType = connection.registries.particleTypeRegistry[ExplosionLargeParticle]!!
         val explosionEmitterParticleType = connection.registries.particleTypeRegistry[ExplosionEmitterParticle]!!
         val invokers = listOf(
             CallbackEventInvoker.of<ExplosionEvent> {
                 if (it.power >= 2.0f) {
                     particleRenderer.add(ExplosionEmitterParticle(connection, particleRenderer, it.position, explosionEmitterParticleType.simple()))
                 } else {
-                    particleRenderer.add(ExplosionParticle(connection, particleRenderer, it.position, explosionParticleType.simple()))
+                    particleRenderer.add(ExplosionLargeParticle(connection, particleRenderer, it.position, explosionParticleType.simple()))
                 }
             },
             CallbackEventInvoker.of<ParticleSpawnEvent> {
@@ -54,8 +54,8 @@ object DefaultParticleBehavior {
                     spawn(it.position, velocity)
                 } else {
                     for (i in 0 until it.count) {
-                        val offset = it.offset * { random.nextGaussian() }
-                        val velocity = Vec3(it.speed) * { random.nextGaussian() }
+                        val offset = it.offset * { random.nextGaussian().toFloat() }
+                        val velocity = Vec3(it.speed) * { random.nextGaussian().toFloat() }
 
                         spawn(it.position + offset, velocity)
                     }

@@ -12,8 +12,6 @@
  */
 package de.bixilon.minosoft.data.entities.entities
 
-import de.bixilon.minosoft.data.Axes
-import de.bixilon.minosoft.data.Directions
 import de.bixilon.minosoft.data.entities.EntityMetaDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.Poses
@@ -24,11 +22,9 @@ import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.mappings.effects.StatusEffect
 import de.bixilon.minosoft.data.mappings.entities.EntityType
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.gui.rendering.chunk.VoxelShape
 import de.bixilon.minosoft.gui.rendering.chunk.models.AABB
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.blockPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.chunkPosition
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.inChunkPosition
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
@@ -202,80 +198,9 @@ abstract class Entity(
             forceMove(deltaPosition)
             return
         }
-        val currentAABB = aabb
-        val collisionsToCheck = getCollisionsToCheck(deltaPosition, currentAABB, ignoreUnloadedChunks)
-        val realMovement = collide(deltaPosition, collisionsToCheck, currentAABB)
+        val collisionsToCheck = connection.collisionDetector.getCollisionsToCheck(deltaPosition, aabb, ignoreUnloadedChunks)
+        val realMovement = connection.collisionDetector.collide(this, deltaPosition, collisionsToCheck, aabb)
         forceMove(realMovement)
-    }
-
-    private fun getCollisionsToCheck(deltaPosition: Vec3, originalAABB: AABB, ignoreUnloadedChunks: Boolean = true): VoxelShape {
-        // also look at blocks further down to also cover blocks with a higher than normal hitbox (for example fences)
-        val blockPositions = (originalAABB extend deltaPosition extend Directions.DOWN.directionVector).getBlockPositions()
-        val result = VoxelShape()
-        for (blockPosition in blockPositions) {
-            val chunk = connection.world[blockPosition.chunkPosition]
-            if ((chunk == null || !chunk.isFullyLoaded) && !ignoreUnloadedChunks) {
-                // chunk is not loaded
-                result.add(VoxelShape.FULL + blockPosition)
-                continue
-            }
-            val blockState = chunk?.get(blockPosition.inChunkPosition) ?: continue
-            result.add(blockState.collisionShape + blockPosition)
-        }
-        return result
-    }
-
-    private fun collide(deltaPosition: Vec3, collisionsToCheck: VoxelShape, aabb: AABB): Vec3 {
-        val delta = Vec3(deltaPosition)
-        if (delta.y != 0.0f) {
-            delta.y = collisionsToCheck.computeOffset(aabb, deltaPosition.y, Axes.Y)
-            if (delta.y != deltaPosition.y) {
-                onGround = false
-                velocity.y = 0.0f
-                if (deltaPosition.y < 0) {
-                    onGround = true
-                }
-                aabb += Vec3(0f, delta.y, 0f)
-            } else if (delta.y < 0) {
-                onGround = false
-            }
-        }
-        if ((deltaPosition.x != 0f || deltaPosition.z != 0f)) {
-            val testDelta = Vec3(delta)
-            testDelta.y = STEP_HEIGHT
-            val stepMovementY = collisionsToCheck.computeOffset(aabb + testDelta, -STEP_HEIGHT, Axes.Y)
-            if (stepMovementY < 0 && stepMovementY >= -STEP_HEIGHT) {
-                testDelta.y = STEP_HEIGHT + stepMovementY
-                aabb += Vec3(0f, testDelta.y, 0f)
-                delta.y += testDelta.y
-            }
-        }
-        val xPriority = delta.x > delta.z
-        if (delta.x != 0.0f && xPriority) {
-            delta.x = collisionsToCheck.computeOffset(aabb, deltaPosition.x, Axes.X)
-            aabb += Vec3(delta.x, 0f, 0f)
-            if (delta.x != deltaPosition.x) {
-                velocity.x = 0.0f
-            }
-        }
-        if (delta.z != 0.0f) {
-            delta.z = collisionsToCheck.computeOffset(aabb, deltaPosition.z, Axes.Z)
-            aabb += Vec3(0f, 0f, delta.z)
-            if (delta.z != deltaPosition.z) {
-                velocity.z = 0.0f
-            }
-        }
-        if (delta.x != 0.0f && !xPriority) {
-            delta.x = collisionsToCheck.computeOffset(aabb, deltaPosition.x, Axes.X)
-            // no need to offset the aabb any more, as it won't be used any more
-            if (delta.x != deltaPosition.x) {
-                velocity.x = 0.0f
-            }
-        }
-        if (delta.length() > deltaPosition.length() + STEP_HEIGHT) {
-            return Vec3() // abort all movement if the collision system would move the entity further than wanted
-        }
-        return delta
     }
 
     private fun tickMovement(deltaMillis: Long) {
@@ -312,6 +237,6 @@ abstract class Entity(
 
     companion object {
         private const val HITBOX_MARGIN = 1e-5f
-        private const val STEP_HEIGHT = 0.6f
+        const val STEP_HEIGHT = 0.6f
     }
 }

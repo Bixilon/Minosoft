@@ -22,7 +22,7 @@ import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import glm_.vec3.Vec3
 import kotlin.math.abs
 
-abstract class RenderParticle(connection: PlayConnection, particleRenderer: ParticleRenderer, position: Vec3, data: ParticleData) : Particle(connection, particleRenderer, position, data) {
+abstract class RenderParticle(connection: PlayConnection, particleRenderer: ParticleRenderer, position: Vec3, velocity: Vec3, data: ParticleData) : Particle(connection, particleRenderer, position, velocity, data) {
     protected var scale: Float = 0.1f * (random.nextFloat() * 0.5f + 0.5f) * 2.0f
     protected var color: RGBColor = ChatColors.WHITE
 
