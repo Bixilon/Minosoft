@@ -18,7 +18,6 @@ import glm_.vec3.Vec3
 import org.lwjgl.openal.AL10.*
 
 class SoundListener(position: Vec3 = Vec3.EMPTY) {
-
     var position: Vec3 = position
         set(value) {
             alListener3f(AL_POSITION, value.x, value.y, value.z)
@@ -30,6 +29,10 @@ class SoundListener(position: Vec3 = Vec3.EMPTY) {
             alListener3f(AL_VELOCITY, value.x, value.y, value.z)
             field = value
         }
+
+    var masterVolume: Float
+        get() = alGetListenerf(AL_MAX_GAIN)
+        set(value) = alListenerf(AL_MAX_GAIN, value)
 
     fun setOrientation(look: Vec3, up: Vec3) {
         alListenerfv(AL_ORIENTATION, floatArrayOf(look.x, look.y, look.z, up.x, up.y, up.z))

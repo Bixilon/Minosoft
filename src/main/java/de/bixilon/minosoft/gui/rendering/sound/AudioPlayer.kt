@@ -104,6 +104,8 @@ class AudioPlayer(
 
         listener = SoundListener()
 
+        listener.masterVolume = Minosoft.config.config.game.sound.masterVolume
+
         connection.registerEvent(CallbackEventInvoker.of<CameraPositionChangeEvent> {
             queue += {
                 listener.position = it.newPosition
@@ -176,13 +178,13 @@ class AudioPlayer(
             }
             source.sound = sound
             source.pitch = pitch * sound.pitch
-            source.gain = volume * sound.volume * Minosoft.config.config.game.sound.masterVolume
+            source.gain = volume * sound.volume
             source.play()
         }
     }
 
     fun startLoop() {
-        while (connection.connectionState != ConnectionStates.DISCONNECTING) {
+        while (connection.connectionState != ConnectionStates.DISCONNECTING) { // ToDo: Also kill when disconnected
             queue.work()
             Thread.sleep(1L)
         }

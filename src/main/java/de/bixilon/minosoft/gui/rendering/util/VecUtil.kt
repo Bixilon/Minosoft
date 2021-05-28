@@ -83,6 +83,22 @@ object VecUtil {
         )
     }
 
+    infix operator fun Vec3i.plus(lambda: () -> Int): Vec3i {
+        return Vec3i(
+            x = x + lambda(),
+            y = y + lambda(),
+            z = z + lambda(),
+        )
+    }
+
+    infix operator fun Vec3i.minus(lambda: () -> Int): Vec3i {
+        return Vec3i(
+            x = x - lambda(),
+            y = y - lambda(),
+            z = z - lambda(),
+        )
+    }
+
     infix operator fun Vec3.plusAssign(lambda: () -> Float) {
         this assign this + lambda
     }

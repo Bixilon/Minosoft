@@ -126,4 +126,8 @@ object KUtil {
      */
     val Number.millis: Int
         get() = this.toInt() * ProtocolDefinition.TICK_TIME
+
+    fun Random.chance(intPercent: Int): Boolean {
+        return this.nextInt(100) < intPercent
+    }
 }

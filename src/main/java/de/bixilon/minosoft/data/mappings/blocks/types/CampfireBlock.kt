@@ -26,11 +26,16 @@ import de.bixilon.minosoft.gui.rendering.input.camera.RaycastHit
 import de.bixilon.minosoft.gui.rendering.particle.ParticleRenderer
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.CampfireSmokeParticle
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.util.KUtil.asResourceLocation
+import de.bixilon.minosoft.util.KUtil.chance
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3i
 import kotlin.random.Random
 
-open class CampfireBlock(resourceLocation: ResourceLocation, mappings: Registries, data: JsonObject) : Block(resourceLocation, mappings, data) {
+open class CampfireBlock(resourceLocation: ResourceLocation, registries: Registries, data: JsonObject) : Block(resourceLocation, registries, data) {
+    private val campfireCrackleSoundEvent = registries.soundEventRegistry[CAMPFIRE_CRACKLE_SOUND_RESOURCE_LOCATION]!!
+    private val cosySmokeParticle = registries.particleTypeRegistry[CampfireSmokeParticle.CosySmokeParticleFactory]!!
+    private val signalSmokeParticle = registries.particleTypeRegistry[CampfireSmokeParticle.SignalSmokeParticleFactory]!!
 
     private fun extinguish(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i) {
         val particleRenderer = connection.rendering?.renderWindow?.get(ParticleRenderer) ?: return
@@ -48,17 +53,28 @@ open class CampfireBlock(resourceLocation: ResourceLocation, mappings: Registrie
         )
         val isSignal = blockState.properties[BlockProperties.CAMPFIRE_SIGNAL_FIRE] == true
 
-        val data = connection.registries.particleTypeRegistry[if (isSignal) {
-            CampfireSmokeParticle.SignalSmokeParticleFactory
+        val particleType = if (isSignal) {
+            signalSmokeParticle
         } else {
-            CampfireSmokeParticle.CosySmokeParticleFactory
-        }]!!
+            cosySmokeParticle
+        }
 
-        particleRenderer.add(CampfireSmokeParticle(connection, particleRenderer, position, Vec3(0.0f, 0.07f, 0.0f), data.simple(), isSignal))
+        particleRenderer.add(CampfireSmokeParticle(connection, particleRenderer, position, Vec3(0.0f, 0.07f, 0.0f), particleType.simple(), isSignal))
 
         if (extinguished) {
             // ToDo: Spawn smoke particles
         }
+    }
+
+    override fun randomTick(connection: PlayConnection, particleRenderer: ParticleRenderer?, blockState: BlockState, blockPosition: Vec3i, random: Random) {
+        particleRenderer ?: return
+        if (blockState.properties[BlockProperties.LIT] != true) {
+            return
+        }
+        if (random.chance(10)) {
+            connection.rendering?.audioPlayer?.playSoundEvent(campfireCrackleSoundEvent, blockPosition + Vec3(0.5f), 0.5f + random.nextFloat(), 0.6f + random.nextFloat() * 0.7f)
+        }
+        // ToDo: Spawn Lava particles
     }
 
     override fun onUse(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, raycastHit: RaycastHit, hands: Hands, itemStack: ItemStack?): BlockUsages {
@@ -68,5 +84,9 @@ open class CampfireBlock(resourceLocation: ResourceLocation, mappings: Registrie
         connection.world.setBlockState(blockPosition, blockState.withProperties(BlockProperties.LIT to false))
         extinguish(connection, blockState, blockPosition)
         return BlockUsages.SUCCESS
+    }
+
+    companion object {
+        private val CAMPFIRE_CRACKLE_SOUND_RESOURCE_LOCATION = "minecraft:block.campfire.crackle".asResourceLocation()
     }
 }

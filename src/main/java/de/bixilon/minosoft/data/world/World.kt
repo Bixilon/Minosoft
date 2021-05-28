@@ -21,9 +21,13 @@ import de.bixilon.minosoft.data.mappings.tweaker.VersionTweaker
 import de.bixilon.minosoft.data.world.biome.accessor.BiomeAccessor
 import de.bixilon.minosoft.data.world.biome.accessor.NullBiomeAccessor
 import de.bixilon.minosoft.data.world.light.WorldLightAccessor
+import de.bixilon.minosoft.gui.rendering.particle.ParticleRenderer
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.blockPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.inChunkPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.inChunkSectionPosition
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.minus
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
 import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.modding.event.events.BlockSetEvent
@@ -33,6 +37,7 @@ import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
 import de.bixilon.minosoft.util.KUtil.toSynchronizedMap
 import glm_.vec2.Vec2i
 import glm_.vec3.Vec3i
+import kotlin.random.Random
 
 /**
  * Collection of chunks and more
@@ -51,6 +56,7 @@ class World(
     var biomeAccessor: BiomeAccessor = NullBiomeAccessor
     var time = 0L
     var age = 0L
+    private val random = Random
 
     operator fun get(blockPosition: Vec3i): BlockState? {
         return chunks[blockPosition.chunkPosition]?.get(blockPosition.inChunkPosition)
@@ -160,6 +166,22 @@ class World(
         for ((chunkPosition, chunk) in chunks.toSynchronizedMap()) {
             chunk.realTick(connection, chunkPosition)
         }
+    }
+
+    fun randomTick() {
+        val particleRenderer = connection.rendering?.renderWindow?.get(ParticleRenderer)
+        for (i in 0 until 667) {
+            randomTick(16, particleRenderer)
+            randomTick(32, particleRenderer)
+        }
+    }
+
+    private fun randomTick(radius: Int, particleRenderer: ParticleRenderer?) {
+        val blockPosition = connection.player.entity.position.blockPosition + { random.nextInt(radius) } - { random.nextInt(radius) }
+
+        val blockState = this[blockPosition] ?: return
+
+        blockState.block.randomTick(connection, particleRenderer, blockState, blockPosition, random)
     }
 
     fun getBlocks(start: Vec3i, end: Vec3i): Map<Vec3i, BlockState> {

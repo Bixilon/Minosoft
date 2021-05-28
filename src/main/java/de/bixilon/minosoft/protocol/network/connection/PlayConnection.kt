@@ -78,9 +78,9 @@ class PlayConnection(
     lateinit var player: Player
         private set
 
-    lateinit var velocityHandlerTask: TimeWorkerTask
-    private var velocityHandlerLastExecutionTime: Long = 0L
-    lateinit var worldTickTask: TimeWorkerTask
+    private lateinit var entityTickTask: TimeWorkerTask
+    private lateinit var blockEntityTickTask: TimeWorkerTask
+    private lateinit var randomTickTask: TimeWorkerTask
     val collisionDetector = CollisionDetector(this)
 
     override var connectionState: ConnectionStates = ConnectionStates.DISCONNECTED
@@ -124,8 +124,8 @@ class PlayConnection(
                     if (CLI.getCurrentConnection() == null) {
                         CLI.setCurrentConnection(this)
                     }
-                    velocityHandlerLastExecutionTime = System.currentTimeMillis()
-                    velocityHandlerTask = TimeWorkerTask(ProtocolDefinition.TICK_TIME / 5) {
+                    var velocityHandlerLastExecutionTime = System.currentTimeMillis()
+                    entityTickTask = TimeWorkerTask(ProtocolDefinition.TICK_TIME / 5) {
                         val currentTime = System.currentTimeMillis()
                         val deltaTime = currentTime - velocityHandlerLastExecutionTime
                         if (deltaTime > 0L) {
@@ -136,12 +136,15 @@ class PlayConnection(
                         }
                         velocityHandlerLastExecutionTime = currentTime
                     }
-                    TimeWorker.addTask(velocityHandlerTask)
+                    TimeWorker.addTask(entityTickTask)
 
-                    worldTickTask = TimeWorkerTask(ProtocolDefinition.TICK_TIME, maxDelayTime = ProtocolDefinition.TICK_TIME / 2) {
+                    TimeWorker.addTask(TimeWorkerTask(ProtocolDefinition.TICK_TIME, maxDelayTime = ProtocolDefinition.TICK_TIME / 2) {
                         world.realTick()
-                    }
-                    TimeWorker.addTask(worldTickTask)
+                    })
+
+                    TimeWorker.addTask(TimeWorkerTask(ProtocolDefinition.TICK_TIME, maxDelayTime = ProtocolDefinition.TICK_TIME / 2) {
+                        world.randomTick()
+                    })
 
                     registerEvent(CallbackEventInvoker.of<ChatMessageReceiveEvent> {
                         val additionalPrefix = when (it.position) {
@@ -160,11 +163,14 @@ class PlayConnection(
                         CLI.setCurrentConnection(null)
                         Command.print("Disconnected from current connection!")
                     }
-                    if (this::velocityHandlerTask.isInitialized) {
-                        TimeWorker.removeTask(velocityHandlerTask)
+                    if (this::entityTickTask.isInitialized) {
+                        TimeWorker.removeTask(entityTickTask)
                     }
-                    if (this::worldTickTask.isInitialized) {
-                        TimeWorker.removeTask(worldTickTask)
+                    if (this::blockEntityTickTask.isInitialized) {
+                        TimeWorker.removeTask(blockEntityTickTask)
+                    }
+                    if (this::randomTickTask.isInitialized) {
+                        TimeWorker.removeTask(randomTickTask)
                     }
                 }
                 else -> {
