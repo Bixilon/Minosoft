@@ -22,7 +22,7 @@ RESOURCE_MAPPINGS_INDEX_PATH = "../src/main/resources/assets/minosoft/mapping/re
 RESOURCE_MAPPINGS_INDEX = ujson.load(open(RESOURCE_MAPPINGS_INDEX_PATH))
 VERSION_MANIFEST = ujson.loads(urllib.request.urlopen('https://launchermeta.mojang.com/mc/game/version_manifest.json').read().decode("utf-8"))
 VERBOSE_LOG = False
-SKIP_COMPILE = False
+SKIP_COMPILE = True
 failedVersionIds = []
 partlyFailedVersionIds = []
 
