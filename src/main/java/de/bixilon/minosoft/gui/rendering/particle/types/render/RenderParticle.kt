@@ -20,55 +20,8 @@ import de.bixilon.minosoft.gui.rendering.particle.ParticleRenderer
 import de.bixilon.minosoft.gui.rendering.particle.types.Particle
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import glm_.vec3.Vec3
-import kotlin.math.abs
 
 abstract class RenderParticle(connection: PlayConnection, particleRenderer: ParticleRenderer, position: Vec3, velocity: Vec3, data: ParticleData) : Particle(connection, particleRenderer, position, velocity, data) {
-    protected var scale: Float = 0.1f * (random.nextFloat() * 0.5f + 0.5f) * 2.0f
+    protected open var scale: Float = 0.1f * (random.nextFloat() * 0.5f + 0.5f) * 2.0f
     protected var color: RGBColor = ChatColors.WHITE
-
-    // growing
-    protected var nextScale: Float = scale
-    protected var scalePerMillisecond = Float.NEGATIVE_INFINITY
-
-
-    override fun tick(deltaTime: Int) {
-        super.tick(deltaTime)
-        if (dead) {
-            return
-        }
-        grow(deltaTime)
-    }
-
-    fun grow(scale: Float, time: Long) {
-        nextScale = scale
-        scalePerMillisecond = (scale - this.scale) / time
-    }
-
-    private fun grow(deltaTime: Int) {
-        if (scalePerMillisecond == Float.NEGATIVE_INFINITY) {
-            return
-        }
-        val deltaScale = nextScale - scale
-        if (abs(deltaScale) > GROW_LOWER_LIMIT) {
-            // we need to grow
-            val scaleAdd = scalePerMillisecond * deltaTime
-
-            // checke if the delta gets bigger (aka. we'd grew to much)
-            val nextScale = scale + scaleAdd
-            if (abs(this.nextScale - nextScale) > deltaScale) {
-                // abort scaling and avoid getting called another time
-                scale = nextScale
-                scalePerMillisecond = Float.NEGATIVE_INFINITY
-                return
-            }
-            // we can grow
-            scale = nextScale
-        }
-    }
-
-    companion object {
-        const val GROW_LOWER_LIMIT = 0.001f
-    }
-
-
 }

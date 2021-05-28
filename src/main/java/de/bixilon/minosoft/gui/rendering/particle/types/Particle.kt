@@ -25,7 +25,6 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.plusAssign
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.sqr
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import de.bixilon.minosoft.util.KUtil.millis
 import glm_.vec3.Vec3
 import kotlin.math.abs
 import kotlin.math.sqrt
@@ -45,7 +44,9 @@ abstract class Particle(
     var dead = false
     var age: Int = 0
         protected set
-    var maxAge: Int = (4.0f / (random.nextFloat() * 0.9f + 0.1f)).millis
+    val floatAge: Float
+        get() = age.toFloat()
+    var maxAge: Int = (4.0f / (random.nextFloat() * 0.9f + 0.1f)).toInt()
 
     // moving
     var previousPosition = position
@@ -62,6 +63,7 @@ abstract class Particle(
     var spacing: Vec3 = Vec3.EMPTY
         set(value) {
             if (field == value) {
+                return
             }
             field = value
 
@@ -113,8 +115,6 @@ abstract class Particle(
         }
         previousPosition = Vec3(position)
 
-        velocity.y -= (0.04f * gravityStrength).millis
-
         move(velocity.millis * (deltaTime / 1000.0f))
     }
 
@@ -144,10 +144,8 @@ abstract class Particle(
         lastTickTime = currentTime
     }
 
-    protected fun age(deltaTime: Int) {
-        age += deltaTime
-
-        if (age >= maxAge) {
+    protected fun age() {
+        if (age++ >= maxAge) {
             dead = true
         }
     }
@@ -155,11 +153,6 @@ abstract class Particle(
     open fun tick(deltaTime: Int) {
         check(!dead) { "Cannot tick dead particle!" }
         check(deltaTime >= 0)
-
-        age(deltaTime)
-        if (dead) {
-            return
-        }
     }
 
     open fun postTick(deltaTime: Int) {
@@ -170,6 +163,12 @@ abstract class Particle(
         if (!movement) {
             return
         }
+        age()
+        if (dead) {
+            return
+        }
+
+        velocity.y -= 0.04f * gravityStrength
 
         if (accelerateIfYBlocked && position.y == previousPosition.y) {
             velocity.x *= 1.1f
@@ -180,7 +179,7 @@ abstract class Particle(
 
         if (onGround) {
             velocity.x *= 0.699999988079071f
-            velocity.y *= 0.699999988079071f
+            velocity.z *= 0.699999988079071f
         }
     }
 

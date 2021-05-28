@@ -35,6 +35,7 @@ import glm_.vec2.Vec2
 import glm_.vec2.Vec2i
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3i
+import kotlin.random.Random
 
 object VecUtil {
     val Vec3.Companion.EMPTY: Vec3
@@ -351,4 +352,15 @@ object VecUtil {
             Axes.Z -> this.z
         }
     }
+
+    fun Vec3.Companion.vertical(xz: () -> Float, y: Float): Vec3 {
+        return Vec3(xz(), y, xz())
+    }
+
+    fun Vec3.verticalPlus(xz: () -> Float, y: Float): Vec3 {
+        return Vec3(this.x + xz(), this.y + y, this.z + xz())
+    }
+
+    val Float.noise: Float
+        get() = Random.nextFloat() / this * if (Random.nextBoolean()) 1.0f else -1.0f
 }

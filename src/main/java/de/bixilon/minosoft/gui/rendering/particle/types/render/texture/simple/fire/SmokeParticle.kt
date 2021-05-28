@@ -11,34 +11,25 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple
+package de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.fire
 
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.particle.data.ParticleData
-import de.bixilon.minosoft.data.text.RGBColor.Companion.asGray
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.gui.rendering.particle.ParticleRenderer
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
+import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.AscendingParticle
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
-import de.bixilon.minosoft.util.KUtil.millis
 import glm_.vec3.Vec3
 
-class ExplosionLargeParticle(connection: PlayConnection, particleRenderer: ParticleRenderer, position: Vec3, data: ParticleData, power: Float = 1.0f) : SimpleTextureParticle(connection, particleRenderer, position, Vec3.EMPTY, data) {
+class SmokeParticle(connection: PlayConnection, particleRenderer: ParticleRenderer, position: Vec3, velocity: Vec3, data: ParticleData, scaleMultiplier: Float = 1.0f) : AscendingParticle(connection, particleRenderer, position, velocity, Vec3(0.1f), scaleMultiplier, 0.3f, 8, -0.1f, true, data) {
 
-    init {
-        movement = false
-        maxAge = (6 + random.nextInt(4)).millis
-        val gray = random.nextFloat() * 0.6f + 0.4f
-        color = gray.asGray()
-        scale = 2.0f * (power - gray * 0.5f)
-    }
 
-    companion object : ParticleFactory<ExplosionLargeParticle> {
-        override val RESOURCE_LOCATION: ResourceLocation = "minecraft:explosion".asResourceLocation()
+    companion object : ParticleFactory<SmokeParticle> {
+        override val RESOURCE_LOCATION: ResourceLocation = "minecraft:smoke".asResourceLocation()
 
-        override fun build(connection: PlayConnection, particleRenderer: ParticleRenderer, position: Vec3, velocity: Vec3, data: ParticleData): ExplosionLargeParticle {
-            return ExplosionLargeParticle(connection, particleRenderer, position, data, velocity.x)
+        override fun build(connection: PlayConnection, particleRenderer: ParticleRenderer, position: Vec3, velocity: Vec3, data: ParticleData): SmokeParticle {
+            return SmokeParticle(connection, particleRenderer, position, velocity, data)
         }
     }
 }
