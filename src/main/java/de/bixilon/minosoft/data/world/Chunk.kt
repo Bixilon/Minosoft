@@ -16,8 +16,13 @@ import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.mappings.blocks.BlockState
 import de.bixilon.minosoft.data.world.biome.source.BiomeSource
 import de.bixilon.minosoft.data.world.light.LightAccessor
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.inChunkSectionPosition
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.of
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.util.KUtil.toSynchronizedMap
+import glm_.vec2.Vec2i
 import glm_.vec3.Vec3i
 
 /**
@@ -89,6 +94,18 @@ class Chunk(
             section
         }
     }
+
+    fun realTick(connection: PlayConnection, chunkPosition: Vec2i) {
+        if (!isFullyLoaded) {
+            return
+        }
+        val sections = sections
+        sections ?: return
+        for ((height, section) in sections.toSynchronizedMap()) {
+            section.realTick(connection, Vec3i.of(chunkPosition, height, Vec3i.EMPTY))
+        }
+    }
+
 
     fun getBlockEntity(inChunkPosition: Vec3i): BlockEntity? {
         return sections?.get(inChunkPosition.sectionHeight)?.getBlockEntity(inChunkPosition.inChunkSectionPosition)

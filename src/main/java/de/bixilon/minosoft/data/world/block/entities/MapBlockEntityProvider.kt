@@ -15,10 +15,12 @@ package de.bixilon.minosoft.data.world.block.entities
 
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.world.ChunkSection.Companion.indexPosition
+import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
+import de.bixilon.minosoft.util.KUtil.toSynchronizedMap
 import glm_.vec3.Vec3i
 
 class MapBlockEntityProvider(
-    var blockEntities: MutableMap<Vec3i, BlockEntity> = mutableMapOf(),
+    var blockEntities: MutableMap<Vec3i, BlockEntity> = synchronizedMapOf(),
 ) : BlockEntityProvider {
     override val size: Int
         get() = blockEntities.size
@@ -46,5 +48,11 @@ class MapBlockEntityProvider(
 
     override fun clone(): MapBlockEntityProvider {
         return MapBlockEntityProvider(blockEntities.toMutableMap())
+    }
+
+    override fun forEach(lambda: (entity: BlockEntity, inChunkSectionPosition: Vec3i) -> Unit) {
+        for ((position, blockEntity) in blockEntities.toSynchronizedMap()) {
+            lambda(blockEntity, position)
+        }
     }
 }

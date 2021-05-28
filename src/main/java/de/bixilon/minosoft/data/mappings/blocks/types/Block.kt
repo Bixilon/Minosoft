@@ -81,7 +81,7 @@ open class Block(
         return true
     }
 
-    open fun use(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, raycastHit: RaycastHit, hands: Hands, itemStack: ItemStack?): BlockUsages {
+    open fun onUse(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, raycastHit: RaycastHit, hands: Hands, itemStack: ItemStack?): BlockUsages {
         if (blockEntityType == null) {
             return BlockUsages.PASS
         }
@@ -107,6 +107,7 @@ open class Block(
                 "NoteBlock" -> NoteBlock(resourceLocation, mappings, data)
                 "RepeaterBlock" -> RepeaterBlock(resourceLocation, mappings, data)
                 "ComparatorBlock" -> ComparatorBlock(resourceLocation, mappings, data)
+                "CampfireBlock" -> CampfireBlock(resourceLocation, mappings, data)
                 else -> Block(resourceLocation, mappings, data)
             }
 

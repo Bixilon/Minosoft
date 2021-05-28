@@ -12,16 +12,25 @@ object TimeWorker {
             while (true) {
                 val currentTime = System.currentTimeMillis()
                 for (task in TASKS.toSynchronizedSet()) {
-                    if (!task.getsExecuted && currentTime - task.lastExecution >= task.interval) {
-                        Minosoft.THREAD_POOL.execute {
+                    if (task.getsExecuted) {
+                        continue
+                    }
+                    if (currentTime - task.lastExecution <= task.interval) {
+                        continue
+                    }
+                    Minosoft.THREAD_POOL.execute {
+                        synchronized(task.getsExecuted) {
+                            if (task.getsExecuted) {
+                                return@execute
+                            }
                             task.getsExecuted = true
                             task.runnable.run()
                             task.lastExecution = currentTime
                             task.getsExecuted = false
                         }
-                        if (task.runOnce) {
-                            TASKS -= task
-                        }
+                    }
+                    if (task.runOnce) {
+                        TASKS -= task
                     }
                 }
                 Thread.sleep(1)

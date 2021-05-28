@@ -15,10 +15,16 @@ package de.bixilon.minosoft.data.entities.block
 
 import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.data.mappings.blocks.BlockState
+import de.bixilon.minosoft.data.mappings.blocks.properties.BlockProperties
+import de.bixilon.minosoft.data.mappings.blocks.types.CampfireBlock
 import de.bixilon.minosoft.gui.rendering.RenderConstants
+import de.bixilon.minosoft.gui.rendering.particle.ParticleRenderer
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.util.KUtil.nullCast
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.listCast
+import glm_.vec3.Vec3i
+import kotlin.random.Random
 
 class CampfireBlockEntity(connection: PlayConnection) : BlockEntity(connection) {
     val items: Array<ItemStack?> = arrayOfNulls(RenderConstants.CAMPFIRE_ITEMS)
@@ -35,6 +41,23 @@ class CampfireBlockEntity(connection: PlayConnection) : BlockEntity(connection) 
             )
 
             items[slot["Slot"]?.nullCast<Number>()?.toInt()!!] = itemStack
+        }
+    }
+
+
+    override fun realTick(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i) {
+        val particleRenderer = connection.rendering?.renderWindow?.get(ParticleRenderer) ?: return
+        if (blockState.properties[BlockProperties.LIT] != true) {
+            return
+        }
+        if (blockState.block !is CampfireBlock) {
+            return
+        }
+
+        if (Random.nextFloat() < 0.11f) {
+            for (i in 0 until Random.nextInt(2) + 2) {
+                blockState.block.spawnSmokeParticles(connection, particleRenderer, blockState, blockPosition, false)
+            }
         }
     }
 

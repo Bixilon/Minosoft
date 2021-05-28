@@ -13,11 +13,15 @@
 
 package de.bixilon.minosoft.data.entities.block
 
+import de.bixilon.minosoft.data.mappings.blocks.BlockState
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import glm_.vec3.Vec3i
 
 abstract class BlockEntity(
     val connection: PlayConnection,
 ) {
 
     open fun updateNBT(nbt: Map<String, Any>) {}
+
+    open fun realTick(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i) {}
 }

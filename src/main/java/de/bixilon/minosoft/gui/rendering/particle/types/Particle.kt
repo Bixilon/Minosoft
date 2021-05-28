@@ -62,7 +62,6 @@ abstract class Particle(
     var spacing: Vec3 = Vec3.EMPTY
         set(value) {
             if (field == value) {
-                return
             }
             field = value
 

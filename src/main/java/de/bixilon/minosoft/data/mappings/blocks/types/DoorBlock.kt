@@ -32,7 +32,7 @@ open class DoorBlock(resourceLocation: ResourceLocation, mappings: Registries, d
         TODO()
     }
 
-    override fun use(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, raycastHit: RaycastHit, hands: Hands, itemStack: ItemStack?): BlockUsages {
+    override fun onUse(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, raycastHit: RaycastHit, hands: Hands, itemStack: ItemStack?): BlockUsages {
         if (blockState.material.resourceLocation == DefaultMaterials.METAL) {
             return BlockUsages.CONSUME
         }

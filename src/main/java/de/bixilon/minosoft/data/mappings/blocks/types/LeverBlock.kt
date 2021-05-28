@@ -31,7 +31,7 @@ open class LeverBlock(resourceLocation: ResourceLocation, mappings: Registries, 
         TODO()
     }
 
-    override fun use(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, raycastHit: RaycastHit, hands: Hands, itemStack: ItemStack?): BlockUsages {
+    override fun onUse(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, raycastHit: RaycastHit, hands: Hands, itemStack: ItemStack?): BlockUsages {
         connection.world[blockPosition] = blockState.cycle(BlockProperties.POWERED)
 
         return BlockUsages.SUCCESS

@@ -80,6 +80,7 @@ class PlayConnection(
 
     lateinit var velocityHandlerTask: TimeWorkerTask
     private var velocityHandlerLastExecutionTime: Long = 0L
+    lateinit var worldTickTask: TimeWorkerTask
     val collisionDetector = CollisionDetector(this)
 
     override var connectionState: ConnectionStates = ConnectionStates.DISCONNECTED
@@ -137,6 +138,11 @@ class PlayConnection(
                     }
                     TimeWorker.addTask(velocityHandlerTask)
 
+                    worldTickTask = TimeWorkerTask(ProtocolDefinition.TICK_TIME) {
+                        world.realTick()
+                    }
+                    TimeWorker.addTask(worldTickTask)
+
                     registerEvent(CallbackEventInvoker.of<ChatMessageReceiveEvent> {
                         val additionalPrefix = when (it.position) {
                             ChatTextPositions.SYSTEM_MESSAGE -> "[SYSTEM] "
@@ -156,6 +162,9 @@ class PlayConnection(
                     }
                     if (this::velocityHandlerTask.isInitialized) {
                         TimeWorker.removeTask(velocityHandlerTask)
+                    }
+                    if (this::worldTickTask.isInitialized) {
+                        TimeWorker.removeTask(worldTickTask)
                     }
                 }
                 else -> {

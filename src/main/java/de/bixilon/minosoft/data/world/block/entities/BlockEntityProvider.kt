@@ -25,6 +25,8 @@ interface BlockEntityProvider {
 
     fun clone(): BlockEntityProvider
 
+    fun forEach(lambda: (entity: BlockEntity, inChunkSectionPosition: Vec3i) -> Unit)
+
     companion object {
         const val BLOCK_ENTITY_MAP_LIMIT_UP = 15
         const val BLOCK_ENTITY_MAP_LIMIT_DOWN = 5

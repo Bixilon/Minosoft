@@ -140,33 +140,27 @@ object VecUtil {
         return Pair(Vec2(this[0].asFloat, BlockModelElement.BLOCK_RESOLUTION - this[1].asFloat), Vec2(this[2].asFloat, BlockModelElement.BLOCK_RESOLUTION - this[3].asFloat))
     }
 
-    val Vec3i.chunkPosition: Vec2i
-        get() {
-            val chunkX = if (this.x >= 0) {
-                this.x / ProtocolDefinition.SECTION_WIDTH_X
-            } else {
-                ((this.x + 1) / ProtocolDefinition.SECTION_WIDTH_X) - 1
-            }
-            val chunkY = if (this.z >= 0) {
-                this.z / ProtocolDefinition.SECTION_WIDTH_Z
-            } else {
-                ((this.z + 1) / ProtocolDefinition.SECTION_WIDTH_Z) - 1
-            }
-            return Vec2i(chunkX, chunkY)
+    fun Int.chunkPosition(multiplier: Int): Int {
+        return if (this >= 0) {
+            this / multiplier
+        } else {
+            ((this + 1) / multiplier) - 1
         }
+    }
+
+    val Vec3i.chunkPosition: Vec2i
+        get() = Vec2i(this.x.chunkPosition(ProtocolDefinition.SECTION_WIDTH_X), this.z.chunkPosition(ProtocolDefinition.SECTION_WIDTH_Z))
+
+    fun Int.inChunkPosition(multiplier: Int): Int {
+        var coordinate: Int = this % multiplier
+        if (coordinate < 0) {
+            coordinate += multiplier
+        }
+        return coordinate
+    }
 
     val Vec3i.inChunkPosition: Vec3i
-        get() {
-            var x: Int = this.x % ProtocolDefinition.SECTION_WIDTH_X
-            if (x < 0) {
-                x += ProtocolDefinition.SECTION_WIDTH_X
-            }
-            var z: Int = this.z % ProtocolDefinition.SECTION_WIDTH_Z
-            if (z < 0) {
-                z += ProtocolDefinition.SECTION_WIDTH_Z
-            }
-            return Vec3i(x, y, z)
-        }
+        get() = Vec3i(this.x.inChunkPosition(ProtocolDefinition.SECTION_WIDTH_X), y, this.z.inChunkPosition(ProtocolDefinition.SECTION_WIDTH_Z))
 
     val Vec3i.inChunkSectionPosition: Vec3i
         get() {
@@ -189,20 +183,20 @@ object VecUtil {
         }
 
     val Vec3i.entityPosition: Vec3
-        get() = Vec3(x + 0.5f, y, z + 0.5f) // ToDo
+        get() = Vec3(x + 0.5f, y, z + 0.5f) // ToDo: Confirm
 
     val Vec3.blockPosition: Vec3i
-        get() = Vec3i((x - 0.5f).toInt(), y.toInt(), (z - 0.5f).toInt()) // ToDo
+        get() = Vec3i((x - 0.5f).toInt(), y.toInt(), (z - 0.5f).toInt()) // ToDo: Confirm
 
     val Vec3i.center: Vec3
-        get() = Vec3(x + 0.5f, y + 0.5f, z + 0.5f) // ToDo
+        get() = Vec3(x + 0.5f, y + 0.5f, z + 0.5f) // ToDo: Confirm
 
     fun Vec3i.Companion.of(chunkPosition: Vec2i, sectionHeight: Int, inChunkSectionPosition: Vec3i): Vec3i {
         return Vec3i(
             chunkPosition.x * ProtocolDefinition.SECTION_WIDTH_X + inChunkSectionPosition.x,
             sectionHeight * ProtocolDefinition.SECTION_HEIGHT_Y + inChunkSectionPosition.y,
             chunkPosition.y * ProtocolDefinition.SECTION_WIDTH_Z + inChunkSectionPosition.z
-        ) // ToDo
+        ) // ToDo: Confirm
     }
 
     infix operator fun Vec3i.plus(vec3: Vec3i?): Vec3i {

@@ -43,18 +43,18 @@ class ContainerOpenS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         }
     }
     val title: ChatComponent = buffer.readChatComponent()
-    val slotCount: Int = if (buffer.versionId < V_19W02A || buffer.versionId >= V_19W11A) {
+    val slotCount: Int = if (buffer.versionId <= V_19W11A) { // ToDo: This is completely guessed, it is not present in 1.16.5 (unchecked)
         buffer.readUnsignedByte()
     } else {
         // ToDo: load from pixlyzer
         0
     }
-    val hasTitle: Boolean = if (buffer.versionId > V_14W03B) {
+    val hasTitle: Boolean = if (buffer.versionId > V_14W03B && buffer.versionId <= V_1_16) { // also completely guessed
         buffer.readBoolean()
     } else {
         true
     }
-    var entityId: Int? = if (containerType.resourceLocation == DefaultInventoryTypes.HORSE || buffer.versionId < V_14W03B) {
+    var entityId: Int? = if (containerType.resourceLocation == DefaultInventoryTypes.HORSE || buffer.versionId < V_14W03B) { // ToDo: This was removed at some point
         buffer.readInt()
     } else {
         null

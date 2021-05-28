@@ -30,6 +30,7 @@ import de.bixilon.minosoft.modding.event.events.BlockSetEvent
 import de.bixilon.minosoft.modding.event.events.ChunkUnloadEvent
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
+import de.bixilon.minosoft.util.KUtil.toSynchronizedMap
 import glm_.vec2.Vec2i
 import glm_.vec3.Vec3i
 
@@ -153,6 +154,12 @@ class World(
 
     override fun getBiome(blockPosition: Vec3i): Biome? {
         return biomeAccessor.getBiome(blockPosition)
+    }
+
+    fun realTick() {
+        for ((chunkPosition, chunk) in chunks.toSynchronizedMap()) {
+            chunk.realTick(connection, chunkPosition)
+        }
     }
 
     fun getBlocks(start: Vec3i, end: Vec3i): Map<Vec3i, BlockState> {

@@ -17,6 +17,7 @@ import de.bixilon.minosoft.data.mappings.blocks.BlockState
 import de.bixilon.minosoft.data.world.block.entities.ArrayBlockEntityProvider
 import de.bixilon.minosoft.data.world.block.entities.BlockEntityProvider
 import de.bixilon.minosoft.data.world.block.entities.MapBlockEntityProvider
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import glm_.vec3.Vec3i
 
@@ -52,6 +53,12 @@ class ChunkSection(
             this.blockEntities = ArrayBlockEntityProvider(blockEntities)
         } else if (blockEntities.size <= BlockEntityProvider.BLOCK_ENTITY_MAP_LIMIT_DOWN && blockEntities is ArrayBlockEntityProvider) {
             this.blockEntities = MapBlockEntityProvider(blockEntities)
+        }
+    }
+
+    fun realTick(connection: PlayConnection, chunkSectionPosition: Vec3i) {
+        blockEntities.forEach { entity, inChunkSectionPosition ->
+            entity.realTick(connection, blocks[inChunkSectionPosition.index]!!, chunkSectionPosition + inChunkSectionPosition)
         }
     }
 

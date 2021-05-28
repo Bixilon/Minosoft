@@ -15,6 +15,7 @@ package de.bixilon.minosoft.data.world.block.entities
 
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.world.ChunkSection.Companion.index
+import de.bixilon.minosoft.data.world.ChunkSection.Companion.indexPosition
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import glm_.vec3.Vec3i
 
@@ -46,5 +47,12 @@ class ArrayBlockEntityProvider(
 
     override fun clone(): ArrayBlockEntityProvider {
         return ArrayBlockEntityProvider(blockEntities.clone())
+    }
+
+    override fun forEach(lambda: (entity: BlockEntity, inChunkSectionPosition: Vec3i) -> Unit) {
+        for ((index, blockEntity) in blockEntities.withIndex()) {
+            blockEntity ?: continue
+            lambda(blockEntity, index.indexPosition)
+        }
     }
 }

@@ -54,7 +54,7 @@ class RightClickHandler(
         val usage = if (renderWindow.inputHandler.camera.sneaking) {
             BlockUsages.PASS
         } else {
-            raycastHit.blockState.block.use(renderWindow.connection, raycastHit.blockState, raycastHit.blockPosition, raycastHit, Hands.MAIN_HAND, itemInHand)
+            raycastHit.blockState.block.onUse(renderWindow.connection, raycastHit.blockState, raycastHit.blockPosition, raycastHit, Hands.MAIN_HAND, itemInHand)
         }
 
         if (currentTime - lastInteractionSent < ProtocolDefinition.TICK_TIME) {
