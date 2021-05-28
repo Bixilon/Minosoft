@@ -42,21 +42,19 @@ class CollisionDetector(val connection: PlayConnection) {
         return result
     }
 
-    fun collide(entity: Entity?, deltaPosition: Vec3, collisionsToCheck: VoxelShape, aabb: AABB): Vec3 {
+    fun collide(speedable: Speedable, deltaPosition: Vec3, collisionsToCheck: VoxelShape, aabb: AABB): Vec3 {
         val delta = Vec3(deltaPosition)
         if (delta.y != 0.0f) {
             delta.y = collisionsToCheck.computeOffset(aabb, deltaPosition.y, Axes.Y)
             if (delta.y != deltaPosition.y) {
-                entity?.let {
-                    it.onGround = false
-                    it.velocity.y = 0.0f
-                    if (deltaPosition.y < 0) {
-                        it.onGround = true
-                    }
+                speedable.onGround = false
+                speedable.velocity.y = 0.0f
+                if (deltaPosition.y < 0) {
+                    speedable.onGround = true
                 }
                 aabb += Vec3(0f, delta.y, 0f)
             } else if (delta.y < 0) {
-                entity?.let { it.onGround = false }
+                speedable.onGround = false
             }
         }
         if ((deltaPosition.x != 0f || deltaPosition.z != 0f)) {
@@ -74,21 +72,21 @@ class CollisionDetector(val connection: PlayConnection) {
             delta.x = collisionsToCheck.computeOffset(aabb, deltaPosition.x, Axes.X)
             aabb += Vec3(delta.x, 0f, 0f)
             if (delta.x != deltaPosition.x) {
-                entity?.let { it.velocity.x = 0.0f }
+                speedable.velocity.x = 0.0f
             }
         }
         if (delta.z != 0.0f) {
             delta.z = collisionsToCheck.computeOffset(aabb, deltaPosition.z, Axes.Z)
             aabb += Vec3(0f, 0f, delta.z)
             if (delta.z != deltaPosition.z) {
-                entity?.let { it.velocity.z = 0.0f }
+                speedable.velocity.z = 0.0f
             }
         }
         if (delta.x != 0.0f && !xPriority) {
             delta.x = collisionsToCheck.computeOffset(aabb, deltaPosition.x, Axes.X)
             // no need to offset the aabb any more, as it won't be used any more
             if (delta.x != deltaPosition.x) {
-                entity?.let { it.velocity.x = 0.0f }
+                speedable.velocity.x = 0.0f
             }
         }
         if (delta.length() > deltaPosition.length() + Entity.STEP_HEIGHT) {

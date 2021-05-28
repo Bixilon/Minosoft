@@ -21,8 +21,10 @@ import de.bixilon.minosoft.data.inventory.InventorySlots.EquipmentSlots
 import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.mappings.effects.StatusEffect
 import de.bixilon.minosoft.data.mappings.entities.EntityType
+import de.bixilon.minosoft.data.physics.Speedable
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.gui.rendering.chunk.models.AABB
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.blockPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.chunkPosition
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
@@ -36,9 +38,9 @@ import kotlin.math.pow
 abstract class Entity(
     protected val connection: PlayConnection,
     val entityType: EntityType,
-    var position: Vec3,
+    override var position: Vec3,
     var rotation: EntityRotation,
-) {
+) : Speedable {
     val equipment: MutableMap<EquipmentSlots, ItemStack> = mutableMapOf()
     val activeStatusEffects: MutableMap<StatusEffect, StatusEffectInstance> = synchronizedMapOf()
 
@@ -48,12 +50,12 @@ abstract class Entity(
 
     var entityMetaData: EntityMetaData = EntityMetaData(connection)
 
-    var velocity: Vec3 = Vec3()
+    override var velocity: Vec3 = Vec3.EMPTY
 
     protected open val hasCollisions = true
     protected open val isFlying = false
 
-    var onGround = false
+    override var onGround = false
 
     private val defaultAABB = AABB(
         Vec3(-(entityType.width / 2 + HITBOX_MARGIN), 0, -(entityType.width / 2 + HITBOX_MARGIN)),
