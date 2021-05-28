@@ -43,15 +43,9 @@ class CampfireSmokeParticle(connection: PlayConnection, particleRenderer: Partic
 
         this.velocity assign Vec3(velocity.x, velocity.y + (random.nextFloat() / 500.0f), velocity.z)
         movement = false
+        spriteDisabled = true
+        setRandomSprite()
     }
-
-    override fun tick(deltaTime: Int) {
-        super.tick(deltaTime)
-        if (dead) {
-            return
-        }
-    }
-
 
     override fun realTick() {
         super.realTick()

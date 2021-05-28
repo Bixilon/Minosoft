@@ -21,11 +21,12 @@ import glm_.vec3.Vec3
 
 abstract class SimpleTextureParticle(connection: PlayConnection, particleRenderer: ParticleRenderer, position: Vec3, velocity: Vec3, data: ParticleData) : TextureParticle(connection, particleRenderer, position, velocity, data) {
     override var texture = particleRenderer.renderWindow.textures.allTextures[data.type.textures.first()]!!
+    var spriteDisabled = false
 
 
     private fun checkSpriteTexture() {
         val totalTextures = data.type.textures.size
-        if (totalTextures <= 1) {
+        if (totalTextures <= 1 || spriteDisabled) {
             return
         }
         // calculate next texture
@@ -34,6 +35,10 @@ abstract class SimpleTextureParticle(connection: PlayConnection, particleRendere
             return
         }
         texture = particleRenderer.renderWindow.textures.allTextures[nextTextureResourceLocation]!!
+    }
+
+    fun setRandomSprite() {
+        texture = particleRenderer.renderWindow.textures.allTextures[data.type.textures.random(random)]!!
     }
 
     override fun tick(deltaTime: Int) {

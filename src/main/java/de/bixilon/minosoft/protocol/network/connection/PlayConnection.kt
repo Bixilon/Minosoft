@@ -138,7 +138,7 @@ class PlayConnection(
                     }
                     TimeWorker.addTask(velocityHandlerTask)
 
-                    worldTickTask = TimeWorkerTask(ProtocolDefinition.TICK_TIME) {
+                    worldTickTask = TimeWorkerTask(ProtocolDefinition.TICK_TIME, maxDelayTime = ProtocolDefinition.TICK_TIME / 2) {
                         world.realTick()
                     }
                     TimeWorker.addTask(worldTickTask)

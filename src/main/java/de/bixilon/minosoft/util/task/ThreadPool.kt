@@ -36,9 +36,11 @@ class ThreadPool(
         state = ThreadPoolStates.STARTED
     }
 
+    val pendingCount: Int
+        get() = pending.size
+
     @Synchronized
     private fun checkThreads() {
-
         fun wait() {
             try {
                 availableThreads += Thread.currentThread()

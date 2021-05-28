@@ -23,6 +23,9 @@ object TimeWorker {
                             if (task.getsExecuted) {
                                 return@execute
                             }
+                            if (System.currentTimeMillis() - currentTime >= task.maxDelayTime) {
+                                return@execute
+                            }
                             task.getsExecuted = true
                             task.runnable.run()
                             task.lastExecution = currentTime
