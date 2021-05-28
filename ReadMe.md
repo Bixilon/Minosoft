@@ -43,6 +43,9 @@ Old picture with bugs
 ![Rendering](doc/img/rendering3.png)  
 Picture with hotbar, biomes, biome blending, lighting, fluids, ...
 
+![Rendering](doc/img/rendering4.png)  
+Particles. (ignore the numbers on the campfire, I've used them to debug animations)
+
 ## Starting, etc
 
 There is no "launcher" or anything familiar. Just start Minosoft, and you are practically in the game. You will be greeted with a server list. Once you know what server you want to join, click on it. All data will then be loaded, and the rendering window starts, once everything is done.
