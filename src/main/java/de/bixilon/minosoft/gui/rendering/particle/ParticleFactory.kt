@@ -21,6 +21,6 @@ import glm_.vec3.Vec3
 
 interface ParticleFactory<T : Particle> : CompanionResourceLocation {
 
-    fun build(connection: PlayConnection, particleRenderer: ParticleRenderer = connection.rendering!!.renderWindow[ParticleRenderer]!!, position: Vec3, velocity: Vec3, data: ParticleData = ParticleData(connection.registries.particleTypeRegistry[RESOURCE_LOCATION]!!)): T
+    fun build(connection: PlayConnection, position: Vec3, velocity: Vec3, data: ParticleData = connection.registries.particleTypeRegistry[RESOURCE_LOCATION]!!.default()): T
 
 }

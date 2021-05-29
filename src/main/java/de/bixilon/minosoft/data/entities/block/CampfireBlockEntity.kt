@@ -19,7 +19,6 @@ import de.bixilon.minosoft.data.mappings.blocks.BlockState
 import de.bixilon.minosoft.data.mappings.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.mappings.blocks.types.CampfireBlock
 import de.bixilon.minosoft.gui.rendering.RenderConstants
-import de.bixilon.minosoft.gui.rendering.particle.ParticleRenderer
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.util.KUtil.nullCast
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.listCast
@@ -46,7 +45,6 @@ class CampfireBlockEntity(connection: PlayConnection) : BlockEntity(connection) 
 
 
     override fun realTick(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i) {
-        val particleRenderer = connection.rendering?.renderWindow?.get(ParticleRenderer) ?: return
         if (blockState.properties[BlockProperties.LIT] != true) {
             return
         }
@@ -56,7 +54,7 @@ class CampfireBlockEntity(connection: PlayConnection) : BlockEntity(connection) 
 
         if (Random.nextFloat() < 0.11f) {
             for (i in 0 until Random.nextInt(2) + 2) {
-                blockState.block.spawnSmokeParticles(connection, particleRenderer, blockState, blockPosition, false)
+                blockState.block.spawnSmokeParticles(connection, blockState, blockPosition, false)
             }
         }
     }

@@ -15,17 +15,18 @@ package de.bixilon.minosoft.gui.rendering.particle.types.render.texture
 
 import de.bixilon.minosoft.data.mappings.particle.data.ParticleData
 import de.bixilon.minosoft.gui.rendering.particle.ParticleMesh
-import de.bixilon.minosoft.gui.rendering.particle.ParticleRenderer
 import de.bixilon.minosoft.gui.rendering.particle.types.render.RenderParticle
 import de.bixilon.minosoft.gui.rendering.textures.Texture
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import glm_.vec3.Vec3
 
-abstract class TextureParticle(connection: PlayConnection, particleRenderer: ParticleRenderer, velocity: Vec3, position: Vec3, data: ParticleData) : RenderParticle(connection, particleRenderer, velocity, position, data) {
-    abstract val texture: Texture
+abstract class TextureParticle(connection: PlayConnection, velocity: Vec3, position: Vec3, data: ParticleData? = null) : RenderParticle(connection, velocity, position, data) {
+    abstract val texture: Texture?
 
 
     override fun addVertex(particleMesh: ParticleMesh) {
-        particleMesh.addVertex(position, scale, texture, color)
+        texture?.let {
+            particleMesh.addVertex(position, scale, it, color)
+        }
     }
 }

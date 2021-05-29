@@ -23,7 +23,6 @@ import de.bixilon.minosoft.data.mappings.items.tools.ShovelItem
 import de.bixilon.minosoft.data.mappings.versions.Registries
 import de.bixilon.minosoft.data.player.Hands
 import de.bixilon.minosoft.gui.rendering.input.camera.RaycastHit
-import de.bixilon.minosoft.gui.rendering.particle.ParticleRenderer
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.CampfireSmokeParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.fire.SmokeParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.lava.LavaParticle
@@ -46,13 +45,12 @@ open class CampfireBlock(resourceLocation: ResourceLocation, registries: Registr
     private val smokeParticle = registries.particleTypeRegistry[SmokeParticle]!!
 
     private fun extinguish(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i) {
-        val particleRenderer = connection.rendering?.renderWindow?.get(ParticleRenderer) ?: return
         for (i in 0 until 20) {
-            spawnSmokeParticles(connection, particleRenderer, blockState, blockPosition, true)
+            spawnSmokeParticles(connection, blockState, blockPosition, true)
         }
     }
 
-    fun spawnSmokeParticles(connection: PlayConnection, particleRenderer: ParticleRenderer, blockState: BlockState, blockPosition: Vec3i, extinguished: Boolean) {
+    fun spawnSmokeParticles(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, extinguished: Boolean) {
         let {
             val position = Vec3(blockPosition).verticalPlus(
                 { 0.5f + 3.0f.noise },
@@ -67,7 +65,7 @@ open class CampfireBlock(resourceLocation: ResourceLocation, registries: Registr
                 cosySmokeParticle
             }
 
-            particleRenderer.add(CampfireSmokeParticle(connection, particleRenderer, position, Vec3(0.0f, 0.07f, 0.0f), particleType.simple(), isSignal))
+            connection.world += CampfireSmokeParticle(connection, position, Vec3(0.0f, 0.07f, 0.0f), particleType.default(), isSignal)
         }
 
         if (extinguished) {
@@ -75,23 +73,22 @@ open class CampfireBlock(resourceLocation: ResourceLocation, registries: Registr
                 { 0.5f + 4.0f.noise },
                 0.5f
             )
-            particleRenderer.add(SmokeParticle(connection, particleRenderer, position, Vec3(0.0f, 0.005f, 0.0f), smokeParticle.simple()))
+            connection.world += SmokeParticle(connection, position, Vec3(0.0f, 0.005f, 0.0f), smokeParticle.default())
         }
     }
 
-    override fun randomTick(connection: PlayConnection, particleRenderer: ParticleRenderer?, blockState: BlockState, blockPosition: Vec3i, random: Random) {
-        particleRenderer ?: return
+    override fun randomTick(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, random: Random) {
         if (blockState.properties[BlockProperties.LIT] != true) {
             return
         }
         if (random.chance(10)) {
-            connection.rendering?.audioPlayer?.playSoundEvent(campfireCrackleSoundEvent, blockPosition + Vec3(0.5f), 0.5f + random.nextFloat(), 0.6f + random.nextFloat() * 0.7f)
+            connection.world.playSoundEvent(campfireCrackleSoundEvent, blockPosition + Vec3(0.5f), 0.5f + random.nextFloat(), 0.6f + random.nextFloat() * 0.7f)
         }
 
         if (lavaParticles && random.chance(20)) {
             val position = Vec3(blockPosition) + Vec3(0.5f)
             for (i in 0 until random.nextInt(1) + 1) {
-                particleRenderer.add(LavaParticle(connection, particleRenderer, position, lavaParticle.simple()))
+                connection.world += LavaParticle(connection, position, lavaParticle.default())
             }
         }
     }

@@ -15,13 +15,17 @@ package de.bixilon.minosoft.data.world
 import de.bixilon.minosoft.data.Difficulties
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.mappings.Dimension
+import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.biomes.Biome
 import de.bixilon.minosoft.data.mappings.blocks.BlockState
+import de.bixilon.minosoft.data.mappings.sounds.SoundEvent
 import de.bixilon.minosoft.data.mappings.tweaker.VersionTweaker
 import de.bixilon.minosoft.data.world.biome.accessor.BiomeAccessor
 import de.bixilon.minosoft.data.world.biome.accessor.NullBiomeAccessor
 import de.bixilon.minosoft.data.world.light.WorldLightAccessor
 import de.bixilon.minosoft.gui.rendering.particle.ParticleRenderer
+import de.bixilon.minosoft.gui.rendering.particle.types.Particle
+import de.bixilon.minosoft.gui.rendering.sound.AudioPlayer
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.blockPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.inChunkPosition
@@ -36,6 +40,7 @@ import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
 import de.bixilon.minosoft.util.KUtil.toSynchronizedMap
 import glm_.vec2.Vec2i
+import glm_.vec3.Vec3
 import glm_.vec3.Vec3i
 import kotlin.random.Random
 
@@ -57,6 +62,9 @@ class World(
     var time = 0L
     var age = 0L
     private val random = Random
+
+    var audioPlayer: AudioPlayer? = null
+    var particleRenderer: ParticleRenderer? = null
 
     operator fun get(blockPosition: Vec3i): BlockState? {
         return chunks[blockPosition.chunkPosition]?.get(blockPosition.inChunkPosition)
@@ -169,19 +177,18 @@ class World(
     }
 
     fun randomTick() {
-        val particleRenderer = connection.rendering?.renderWindow?.get(ParticleRenderer)
         for (i in 0 until 667) {
-            randomTick(16, particleRenderer)
-            randomTick(32, particleRenderer)
+            randomTick(16)
+            randomTick(32)
         }
     }
 
-    private fun randomTick(radius: Int, particleRenderer: ParticleRenderer?) {
+    private fun randomTick(radius: Int) {
         val blockPosition = connection.player.entity.position.blockPosition + { random.nextInt(radius) } - { random.nextInt(radius) }
 
         val blockState = this[blockPosition] ?: return
 
-        blockState.block.randomTick(connection, particleRenderer, blockState, blockPosition, random)
+        blockState.block.randomTick(connection, blockState, blockPosition, random)
     }
 
     fun getBlocks(start: Vec3i, end: Vec3i): Map<Vec3i, BlockState> {
@@ -199,5 +206,30 @@ class World(
         }
 
         return blocks.toMap()
+    }
+
+
+    fun playSoundEvent(resourceLocation: ResourceLocation, position: Vec3i? = null, volume: Float = 1.0f, pitch: Float = 1.0f) {
+        audioPlayer?.playSoundEvent(resourceLocation, position, volume, pitch)
+    }
+
+    fun playSoundEvent(resourceLocation: ResourceLocation, position: Vec3? = null, volume: Float = 1.0f, pitch: Float = 1.0f) {
+        audioPlayer?.playSoundEvent(resourceLocation, position, volume, pitch)
+    }
+
+    fun playSoundEvent(soundEvent: SoundEvent, position: Vec3i? = null, volume: Float = 1.0f, pitch: Float = 1.0f) {
+        audioPlayer?.playSoundEvent(soundEvent, position, volume, pitch)
+    }
+
+    fun playSoundEvent(soundEvent: SoundEvent, position: Vec3? = null, volume: Float = 1.0f, pitch: Float = 1.0f) {
+        audioPlayer?.playSoundEvent(soundEvent, position, volume, pitch)
+    }
+
+    fun addParticle(particle: Particle) {
+        particleRenderer?.add(particle)
+    }
+
+    operator fun plusAssign(particle: Particle) {
+        addParticle(particle)
     }
 }

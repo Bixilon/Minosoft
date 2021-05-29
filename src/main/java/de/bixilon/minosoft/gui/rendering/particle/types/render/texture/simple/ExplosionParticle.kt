@@ -17,13 +17,12 @@ import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.particle.data.ParticleData
 import de.bixilon.minosoft.data.text.RGBColor.Companion.asGray
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
-import de.bixilon.minosoft.gui.rendering.particle.ParticleRenderer
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
 import glm_.vec3.Vec3
 
-class ExplosionParticle(connection: PlayConnection, particleRenderer: ParticleRenderer, position: Vec3, data: ParticleData, power: Float = 1.0f) : SimpleTextureParticle(connection, particleRenderer, position, Vec3.EMPTY, data) {
+class ExplosionParticle(connection: PlayConnection, position: Vec3, data: ParticleData? = null, power: Float = 1.0f) : SimpleTextureParticle(connection, position, Vec3.EMPTY, data) {
 
     init {
         movement = false
@@ -36,8 +35,8 @@ class ExplosionParticle(connection: PlayConnection, particleRenderer: ParticleRe
     companion object : ParticleFactory<ExplosionParticle> {
         override val RESOURCE_LOCATION: ResourceLocation = "minecraft:explosion".asResourceLocation()
 
-        override fun build(connection: PlayConnection, particleRenderer: ParticleRenderer, position: Vec3, velocity: Vec3, data: ParticleData): ExplosionParticle {
-            return ExplosionParticle(connection, particleRenderer, position, data, velocity.x)
+        override fun build(connection: PlayConnection, position: Vec3, velocity: Vec3, data: ParticleData): ExplosionParticle {
+            return ExplosionParticle(connection, position, data, velocity.x)
         }
     }
 }

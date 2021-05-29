@@ -68,12 +68,18 @@ class ParticleRenderer(
         particleShader.load()
         renderWindow.textures.use(particleShader)
         renderWindow.textures.animator.use(particleShader)
+
+        connection.world.particleRenderer = this
     }
 
 
     fun add(particle: Particle) {
         check(particles.size < RenderConstants.MAXIMUM_PARTICLE_AMOUNT) { "Can not add particle: Limit reached (${particles.size} > ${RenderConstants.MAXIMUM_PARTICLE_AMOUNT}" }
         particles += particle
+    }
+
+    operator fun plusAssign(particle: Particle) {
+        add(particle)
     }
 
 

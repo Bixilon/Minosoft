@@ -133,7 +133,7 @@ class LeftClickHandler(
             connection.world.setBlockState(raycastHit.blockPosition, null)
 
             raycastHit.blockState.breakSoundEvent?.let {
-                renderWindow.rendering.audioPlayer.playSoundEvent(it, raycastHit.blockPosition, volume = raycastHit.blockState.soundEventVolume, pitch = raycastHit.blockState.soundEventPitch)
+                connection.world.playSoundEvent(it, raycastHit.blockPosition, volume = raycastHit.blockState.soundEventVolume, pitch = raycastHit.blockState.soundEventPitch)
             }
         }
 

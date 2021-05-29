@@ -112,12 +112,13 @@ class AudioPlayer(
             }
         })
 
-        DefaultAudioBehavior.register(connection, this)
+        DefaultAudioBehavior.register(connection)
 
         Log.log(LogMessageType.AUDIO_LOADING, LogLevels.INFO) { "OpenAL loaded!" }
 
 
         initialized = true
+        connection.world.audioPlayer = this
         latch.dec()
     }
 
@@ -132,7 +133,6 @@ class AudioPlayer(
     fun playSoundEvent(soundEvent: SoundEvent, position: Vec3i? = null, volume: Float = 1.0f, pitch: Float = 1.0f) {
         playSoundEvent(soundEvent, position?.center, volume, pitch)
     }
-
 
     fun playSoundEvent(soundEvent: SoundEvent, position: Vec3? = null, volume: Float = 1.0f, pitch: Float = 1.0f) {
         if (!initialized) {

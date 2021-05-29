@@ -16,12 +16,11 @@ package de.bixilon.minosoft.gui.rendering.particle.types.render
 import de.bixilon.minosoft.data.mappings.particle.data.ParticleData
 import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.RGBColor
-import de.bixilon.minosoft.gui.rendering.particle.ParticleRenderer
 import de.bixilon.minosoft.gui.rendering.particle.types.Particle
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import glm_.vec3.Vec3
 
-abstract class RenderParticle(connection: PlayConnection, particleRenderer: ParticleRenderer, position: Vec3, velocity: Vec3, data: ParticleData) : Particle(connection, particleRenderer, position, velocity, data) {
+abstract class RenderParticle(connection: PlayConnection, position: Vec3, velocity: Vec3, data: ParticleData? = null) : Particle(connection, position, velocity, data) {
     protected open var scale: Float = 0.1f * (random.nextFloat() * 0.5f + 0.5f) * 2.0f
     protected var color: RGBColor = ChatColors.WHITE
 }

@@ -34,18 +34,18 @@ object DefaultParticleBehavior {
         val invokers = listOf(
             CallbackEventInvoker.of<ExplosionEvent> {
                 if (it.power >= 2.0f) {
-                    particleRenderer.add(ExplosionEmitterParticle(connection, particleRenderer, it.position, explosionEmitterParticleType.simple()))
+                    particleRenderer += ExplosionEmitterParticle(connection, it.position, explosionEmitterParticleType.default())
                 } else {
-                    particleRenderer.add(ExplosionParticle(connection, particleRenderer, it.position, explosionParticleType.simple()))
+                    particleRenderer += ExplosionParticle(connection, it.position, explosionParticleType.default())
                 }
             },
             CallbackEventInvoker.of<ParticleSpawnEvent> {
                 fun spawn(position: Vec3, velocity: Vec3) {
-                    val particle = it.data.type.factory?.build(connection, particleRenderer, position, velocity, it.data) ?: let { _ ->
+                    val particle = it.data.type.factory?.build(connection, position, velocity, it.data) ?: let { _ ->
                         Log.log(LogMessageType.RENDERING_GENERAL, LogLevels.WARN) { "Can not spawn particle: ${it.data.type}" }
                         return
                     }
-                    particleRenderer.add(particle)
+                    particleRenderer += particle
                 }
                 // ToDo: long distance = always spawn?
                 if (it.count == 0) {

@@ -34,7 +34,7 @@ data class ParticleType(
         return resourceLocation.full
     }
 
-    fun simple(): ParticleData {
+    fun default(): ParticleData {
         return ParticleData(this)
     }
 

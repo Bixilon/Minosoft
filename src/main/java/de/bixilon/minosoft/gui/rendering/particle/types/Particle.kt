@@ -16,8 +16,8 @@ package de.bixilon.minosoft.gui.rendering.particle.types
 import de.bixilon.minosoft.data.mappings.particle.data.ParticleData
 import de.bixilon.minosoft.data.physics.Speedable
 import de.bixilon.minosoft.gui.rendering.chunk.models.AABB
+import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.gui.rendering.particle.ParticleMesh
-import de.bixilon.minosoft.gui.rendering.particle.ParticleRenderer
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.assign
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.millis
@@ -29,14 +29,18 @@ import glm_.vec3.Vec3
 import kotlin.math.abs
 import kotlin.math.sqrt
 import kotlin.random.Random
+import kotlin.reflect.full.companionObjectInstance
 
 abstract class Particle(
     protected val connection: PlayConnection,
-    protected val particleRenderer: ParticleRenderer,
     final override val position: Vec3,
     final override val velocity: Vec3 = Vec3.EMPTY,
-    protected val data: ParticleData,
+    data: ParticleData? = null,
 ) : Speedable {
+    protected val data: ParticleData = data ?: let {
+        val resourceLocation = this::class.companionObjectInstance as ParticleFactory<*>
+        connection.registries.particleTypeRegistry[resourceLocation]!!.default()
+    }
     protected val random = Random
     var lastTickTime = -1L
 

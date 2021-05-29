@@ -63,7 +63,7 @@ open class BlockItem(
         }
 
         placeBlockState.placeSoundEvent?.let {
-            connection.rendering?.audioPlayer?.playSoundEvent(it, placePosition, placeBlockState.soundEventVolume, placeBlockState.soundEventPitch)
+            connection.world.playSoundEvent(it, placePosition, placeBlockState.soundEventVolume, placeBlockState.soundEventPitch)
         }
 
 

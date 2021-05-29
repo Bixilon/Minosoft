@@ -14,13 +14,12 @@
 package de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple
 
 import de.bixilon.minosoft.data.mappings.particle.data.ParticleData
-import de.bixilon.minosoft.gui.rendering.particle.ParticleRenderer
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.TextureParticle
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import glm_.vec3.Vec3
 
-abstract class SimpleTextureParticle(connection: PlayConnection, particleRenderer: ParticleRenderer, position: Vec3, velocity: Vec3, data: ParticleData) : TextureParticle(connection, particleRenderer, position, velocity, data) {
-    override var texture = particleRenderer.renderWindow.textures.allTextures[data.type.textures.first()]!!
+abstract class SimpleTextureParticle(connection: PlayConnection, position: Vec3, velocity: Vec3, data: ParticleData? = null) : TextureParticle(connection, position, velocity, data) {
+    override var texture = connection.rendering?.renderWindow?.textures?.allTextures?.get(this.data.type.textures.first())
     var spriteDisabled = false
 
 
@@ -31,14 +30,14 @@ abstract class SimpleTextureParticle(connection: PlayConnection, particleRendere
         }
         // calculate next texture
         val nextTextureResourceLocation = data.type.textures[age / (maxAge / totalTextures + 1)]
-        if (texture.resourceLocation == nextTextureResourceLocation) {
+        if (texture?.resourceLocation == nextTextureResourceLocation) {
             return
         }
-        texture = particleRenderer.renderWindow.textures.allTextures[nextTextureResourceLocation]!!
+        texture = connection.rendering?.renderWindow?.textures?.allTextures?.get(nextTextureResourceLocation)
     }
 
     fun setRandomSprite() {
-        texture = particleRenderer.renderWindow.textures.allTextures[data.type.textures.random(random)]!!
+        texture = connection.rendering?.renderWindow?.textures?.allTextures?.get(data.type.textures.random(random))
     }
 
     override fun tick(deltaTime: Int) {

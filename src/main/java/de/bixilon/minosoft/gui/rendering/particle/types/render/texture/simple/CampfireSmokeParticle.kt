@@ -16,7 +16,6 @@ package de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.particle.data.ParticleData
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
-import de.bixilon.minosoft.gui.rendering.particle.ParticleRenderer
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.assign
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.millis
@@ -24,7 +23,7 @@ import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
 import glm_.vec3.Vec3
 
-class CampfireSmokeParticle(connection: PlayConnection, particleRenderer: ParticleRenderer, position: Vec3, velocity: Vec3, data: ParticleData, signal: Boolean) : SimpleTextureParticle(connection, particleRenderer, position, Vec3.EMPTY, data) {
+class CampfireSmokeParticle(connection: PlayConnection, position: Vec3, velocity: Vec3, data: ParticleData? = null, signal: Boolean) : SimpleTextureParticle(connection, position, Vec3.EMPTY, data) {
 
     init {
         scale *= 3.0f
@@ -70,8 +69,8 @@ class CampfireSmokeParticle(connection: PlayConnection, particleRenderer: Partic
     object CosyFactory : ParticleFactory<CampfireSmokeParticle> {
         override val RESOURCE_LOCATION: ResourceLocation = "minecraft:campfire_cosy_smoke".asResourceLocation()
 
-        override fun build(connection: PlayConnection, particleRenderer: ParticleRenderer, position: Vec3, velocity: Vec3, data: ParticleData): CampfireSmokeParticle {
-            return CampfireSmokeParticle(connection, particleRenderer, position, velocity, data, false)
+        override fun build(connection: PlayConnection, position: Vec3, velocity: Vec3, data: ParticleData): CampfireSmokeParticle {
+            return CampfireSmokeParticle(connection, position, velocity, data, false)
         }
     }
 
@@ -79,8 +78,8 @@ class CampfireSmokeParticle(connection: PlayConnection, particleRenderer: Partic
     object SignalFactory : ParticleFactory<CampfireSmokeParticle> {
         override val RESOURCE_LOCATION: ResourceLocation = "minecraft:campfire_signal_smoke".asResourceLocation()
 
-        override fun build(connection: PlayConnection, particleRenderer: ParticleRenderer, position: Vec3, velocity: Vec3, data: ParticleData): CampfireSmokeParticle {
-            return CampfireSmokeParticle(connection, particleRenderer, position, velocity, data, true)
+        override fun build(connection: PlayConnection, position: Vec3, velocity: Vec3, data: ParticleData): CampfireSmokeParticle {
+            return CampfireSmokeParticle(connection, position, velocity, data, true)
         }
     }
 }

@@ -30,7 +30,6 @@ import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.TintColorCalculator
 import de.bixilon.minosoft.gui.rendering.chunk.models.renderable.BlockLikeRenderer
 import de.bixilon.minosoft.gui.rendering.input.camera.RaycastHit
-import de.bixilon.minosoft.gui.rendering.particle.ParticleRenderer
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import glm_.vec3.Vec3i
 import kotlin.random.Random
@@ -98,7 +97,7 @@ open class Block(
         return this.defaultState.withProperties(properties)
     }
 
-    open fun randomTick(connection: PlayConnection, particleRenderer: ParticleRenderer?, blockState: BlockState, blockPosition: Vec3i, random: Random) {}
+    open fun randomTick(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, random: Random) {}
 
     companion object : ResourceLocationDeserializer<Block> {
         override fun deserialize(mappings: Registries?, resourceLocation: ResourceLocation, data: JsonObject): Block {

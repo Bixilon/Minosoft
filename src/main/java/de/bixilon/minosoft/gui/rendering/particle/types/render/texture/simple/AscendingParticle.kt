@@ -15,7 +15,6 @@ package de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple
 
 import de.bixilon.minosoft.data.mappings.particle.data.ParticleData
 import de.bixilon.minosoft.data.text.RGBColor.Companion.asGray
-import de.bixilon.minosoft.gui.rendering.particle.ParticleRenderer
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.util.MMath
@@ -23,7 +22,6 @@ import glm_.vec3.Vec3
 
 abstract class AscendingParticle(
     connection: PlayConnection,
-    particleRenderer: ParticleRenderer,
     position: Vec3,
     velocity: Vec3,
     velocityMultiplier: Vec3,
@@ -32,8 +30,8 @@ abstract class AscendingParticle(
     baseAge: Int,
     gravityStrength: Float,
     physics: Boolean,
-    data: ParticleData,
-) : SimpleTextureParticle(connection, particleRenderer, position, Vec3.EMPTY, data) {
+    data: ParticleData? = null,
+) : SimpleTextureParticle(connection, position, Vec3.EMPTY, data) {
 
     override var scale: Float
         get() = super.scale * MMath.clamp(floatAge / maxAge * 32.0f, 0.0f, 1.0f)

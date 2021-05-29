@@ -16,20 +16,19 @@ package de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.f
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.particle.data.ParticleData
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
-import de.bixilon.minosoft.gui.rendering.particle.ParticleRenderer
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.AscendingParticle
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
 import glm_.vec3.Vec3
 
-class SmokeParticle(connection: PlayConnection, particleRenderer: ParticleRenderer, position: Vec3, velocity: Vec3, data: ParticleData, scaleMultiplier: Float = 1.0f) : AscendingParticle(connection, particleRenderer, position, velocity, Vec3(0.1f), scaleMultiplier, 0.3f, 8, -0.1f, true, data) {
+class SmokeParticle(connection: PlayConnection, position: Vec3, velocity: Vec3, data: ParticleData? = null, scaleMultiplier: Float = 1.0f) : AscendingParticle(connection, position, velocity, Vec3(0.1f), scaleMultiplier, 0.3f, 8, -0.1f, true, data) {
 
 
     companion object : ParticleFactory<SmokeParticle> {
         override val RESOURCE_LOCATION: ResourceLocation = "minecraft:smoke".asResourceLocation()
 
-        override fun build(connection: PlayConnection, particleRenderer: ParticleRenderer, position: Vec3, velocity: Vec3, data: ParticleData): SmokeParticle {
-            return SmokeParticle(connection, particleRenderer, position, velocity, data)
+        override fun build(connection: PlayConnection, position: Vec3, velocity: Vec3, data: ParticleData): SmokeParticle {
+            return SmokeParticle(connection, position, velocity, data)
         }
     }
 }

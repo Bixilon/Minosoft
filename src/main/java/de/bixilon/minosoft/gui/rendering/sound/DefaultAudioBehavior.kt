@@ -24,10 +24,11 @@ import kotlin.random.Random
 object DefaultAudioBehavior {
     val ENTITY_GENERIC_EXPLODE = "minecraft:entity.generic.explode".asResourceLocation()
 
-    fun register(connection: PlayConnection, audioPlayer: AudioPlayer) {
+    fun register(connection: PlayConnection) {
+        val world = connection.world
         val invokers = listOf(
-            CallbackEventInvoker.of<PlaySoundEvent> { audioPlayer.playSoundEvent(it.soundEvent, it.position.toVec3, it.volume, it.pitch) },
-            CallbackEventInvoker.of<ExplosionEvent> { audioPlayer.playSoundEvent(ENTITY_GENERIC_EXPLODE, it.position, 4.0f, (1.0f + (Random.nextFloat() - Random.nextFloat()) * 0.2f) * 0.7f) },
+            CallbackEventInvoker.of<PlaySoundEvent> { world.playSoundEvent(it.soundEvent, it.position.toVec3, it.volume, it.pitch) },
+            CallbackEventInvoker.of<ExplosionEvent> { world.playSoundEvent(ENTITY_GENERIC_EXPLODE, it.position, 4.0f, (1.0f + (Random.nextFloat() - Random.nextFloat()) * 0.2f) * 0.7f) },
         )
 
         connection.registerEvents(*invokers.toTypedArray())
