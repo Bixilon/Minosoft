@@ -21,14 +21,15 @@ import de.bixilon.minosoft.util.enum.ValuesEnum
 import glm_.vec2.Vec2i
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3i
+import kotlin.math.abs
 
-enum class Directions(val vector: Vec3i) {
-    DOWN(Vec3i(0, -1, 0)),
-    UP(Vec3i(0, 1, 0)),
-    NORTH(Vec3i(0, 0, -1)),
-    SOUTH(Vec3i(0, 0, 1)),
-    WEST(Vec3i(-1, 0, 0)),
-    EAST(Vec3i(1, 0, 0));
+enum class Directions(val horizontalId: Int, val vector: Vec3i) {
+    DOWN(-1, Vec3i(0, -1, 0)),
+    UP(-1, Vec3i(0, 1, 0)),
+    NORTH(2, Vec3i(0, 0, -1)),
+    SOUTH(0, Vec3i(0, 0, 1)),
+    WEST(1, Vec3i(-1, 0, 0)),
+    EAST(3, Vec3i(1, 0, 0));
 
     val floatDirectionVector = Vec3(vector)
 
@@ -92,11 +93,22 @@ enum class Directions(val vector: Vec3i) {
         return vector[axis]
     }
 
+    fun rotateYC(): Directions {
+        return when (this) {
+            NORTH -> EAST
+            SOUTH -> WEST
+            WEST -> NORTH
+            EAST -> SOUTH
+            else -> TODO()
+        }
+    }
+
 
     companion object : BlockPropertiesSerializer, ValuesEnum<Directions> {
         override val VALUES = values()
         override val NAME_MAP: Map<String, Directions> = KUtil.getEnumValues(VALUES)
         val SIDES = arrayOf(NORTH, SOUTH, WEST, EAST)
+        private val HORIZONTAL = arrayOf(SOUTH, WEST, NORTH, EAST)
 
         override fun deserialize(value: Any): Directions {
             return NAME_MAP[value] ?: throw IllegalArgumentException("No such property: $value")
@@ -122,6 +134,10 @@ enum class Directions(val vector: Vec3i) {
                 }
             }
             return minDirection
+        }
+
+        fun byHorizontal(value: Int): Directions {
+            return HORIZONTAL[abs(value % HORIZONTAL.size)]
         }
 
 

@@ -94,6 +94,7 @@ open class CampfireBlock(resourceLocation: ResourceLocation, registries: Registr
     }
 
     override fun onUse(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, raycastHit: RaycastHit, hands: Hands, itemStack: ItemStack?): BlockUsages {
+        // ToDo: Ignite (flint and steel, etc)
         if (itemStack?.item !is ShovelItem || blockState.properties[BlockProperties.LIT] != true) {
             return super.onUse(connection, blockState, blockPosition, raycastHit, hands, itemStack)
         }
