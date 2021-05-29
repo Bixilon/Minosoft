@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering
 
+import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames
 import de.bixilon.minosoft.data.mappings.ResourceLocation
@@ -114,7 +115,9 @@ class RenderWindow(
         registerRenderer(SkyRenderer)
         registerRenderer(WorldRenderer)
         registerRenderer(BlockOutlineRenderer)
-        registerRenderer(ParticleRenderer)
+        if (Minosoft.config.config.game.graphics.particles.enabled) {
+            registerRenderer(ParticleRenderer)
+        }
         registerRenderer(HUDRenderer)
     }
 

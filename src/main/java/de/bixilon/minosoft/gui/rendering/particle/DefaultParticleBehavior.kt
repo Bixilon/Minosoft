@@ -13,10 +13,12 @@
 
 package de.bixilon.minosoft.gui.rendering.particle
 
+import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.gui.rendering.particle.types.norender.ExplosionEmitterParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.ExplosionParticle
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.times
 import de.bixilon.minosoft.modding.event.CallbackEventInvoker
+import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.modding.event.events.ExplosionEvent
 import de.bixilon.minosoft.modding.event.events.ParticleSpawnEvent
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
@@ -33,6 +35,9 @@ object DefaultParticleBehavior {
         val explosionEmitterParticleType = connection.registries.particleTypeRegistry[ExplosionEmitterParticle]!!
         val invokers = listOf(
             CallbackEventInvoker.of<ExplosionEvent> {
+                if (!Minosoft.config.config.game.graphics.particles.explosions) {
+                    return@of
+                }
                 if (it.power >= 2.0f) {
                     particleRenderer += ExplosionEmitterParticle(connection, it.position, explosionEmitterParticleType.default())
                 } else {
@@ -40,6 +45,9 @@ object DefaultParticleBehavior {
                 }
             },
             CallbackEventInvoker.of<ParticleSpawnEvent> {
+                if (it.initiator == EventInitiators.SERVER && !Minosoft.config.config.game.graphics.particles.byPacket) {
+                    return@of
+                }
                 fun spawn(position: Vec3, velocity: Vec3) {
                     val particle = it.data.type.factory?.build(connection, position, velocity, it.data) ?: let { _ ->
                         Log.log(LogMessageType.RENDERING_GENERAL, LogLevels.WARN) { "Can not spawn particle: ${it.data.type}" }

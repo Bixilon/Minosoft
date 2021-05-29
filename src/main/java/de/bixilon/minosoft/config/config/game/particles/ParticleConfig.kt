@@ -11,13 +11,12 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.config.config.game.graphics
+package de.bixilon.minosoft.config.config.game.particles
 
 import com.squareup.moshi.Json
-import de.bixilon.minosoft.config.config.game.particles.ParticleConfig
 
-data class GraphicsGameConfig(
-    var animations: AnimationsGameConfig = AnimationsGameConfig(),
-    var particles: ParticleConfig = ParticleConfig(),
-    @Json(name = "biome_blend_radius") var biomeBlendRadius: Int = 3,
+data class ParticleConfig(
+    var enabled: Boolean = false,
+    @Json(name = "by_packet") var byPacket: Boolean = true,
+    var explosions: Boolean = true,
 )
