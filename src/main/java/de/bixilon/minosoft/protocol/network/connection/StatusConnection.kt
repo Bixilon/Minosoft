@@ -52,7 +52,7 @@ class StatusConnection(
 
 
     fun resolve() {
-        lastException = null
+        error = null
 
         if (this.addresses == null) {
             this.addresses = DNSUtil.getServerAddresses(address)
@@ -66,8 +66,8 @@ class StatusConnection(
                 resolve()
             } catch (exception: Exception) {
                 Log.log(LogMessageType.NETWORK_RESOLVING) { "Can not resolve $realAddress" }
-                lastException = exception
-                connectionState = ConnectionStates.FAILED_NO_RETRY
+                error = exception
+                disconnect()
                 return@execute
             }
 
@@ -92,8 +92,13 @@ class StatusConnection(
                 ConnectionStates.STATUS -> {
                     network.sendPacket(StatusRequestC2SP())
                 }
-                ConnectionStates.FAILED -> {
-                    if (addresses == null) {
+                ConnectionStates.DISCONNECTED -> {
+                    if (previousConnectionState.connected) {
+                        wasConnected = true
+                        handlePingCallbacks(this.lastPing)
+                        return
+                    }
+                    if (addresses == null || error != null) {
                         handlePingCallbacks(null)
                         return
                     }
@@ -108,9 +113,6 @@ class StatusConnection(
                         // no connection and no servers available anymore... sorry, but you can not play today :(
                         handlePingCallbacks(null)
                     }
-                }
-                ConnectionStates.FAILED_NO_RETRY -> {
-                    handlePingCallbacks(null)
                 }
                 else -> {
                 }
@@ -127,7 +129,7 @@ class StatusConnection(
     }
 
     override fun getPacketById(packetId: Int): PacketTypes.S2C {
-        return Protocol.getPacketById(connectionState, packetId)!!
+        return Protocol.getPacketById(connectionState, packetId) ?: error("Can not find packet $packetId in $connectionState")
     }
 
     override fun handlePacket(packet: S2CPacket) {
@@ -146,19 +148,13 @@ class StatusConnection(
     }
 
     override fun registerEvent(method: EventInvoker) {
-        val wasPingDone = wasPingDone()
-        if (method.eventType.isAssignableFrom(ServerListStatusArriveEvent::class.java) && wasPingDone) {
+        if (method.eventType.isAssignableFrom(ServerListStatusArriveEvent::class.java) && wasConnected) {
             // ping done
             method(ServerListStatusArriveEvent(this, this.lastPing))
-        } else if (method.eventType.isAssignableFrom(ServerListPongEvent::class.java) && wasPingDone && this.pong != null) {
+        } else if (method.eventType.isAssignableFrom(ServerListPongEvent::class.java) && wasConnected && this.pong != null) {
             method(this.pong!!)
         } else {
             super.registerEvent(method)
         }
-    }
-
-
-    private fun wasPingDone(): Boolean {
-        return connectionState == ConnectionStates.FAILED || connectionState == ConnectionStates.FAILED_NO_RETRY || lastPing != null
     }
 }

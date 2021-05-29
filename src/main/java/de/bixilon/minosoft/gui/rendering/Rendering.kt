@@ -16,7 +16,6 @@ package de.bixilon.minosoft.gui.rendering
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.gui.rendering.sound.AudioPlayer
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import de.bixilon.minosoft.protocol.protocol.ConnectionStates
 import de.bixilon.minosoft.util.CountUpAndDownLatch
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -69,10 +68,11 @@ class Rendering(private val connection: PlayConnection) {
                     renderWindow.exit()
                 } catch (ignored: Throwable) {
                 }
-                if (connection.isConnected) {
+                if (connection.connectionState.connected) {
                     connection.disconnect()
                 }
-                connection.connectionState = ConnectionStates.FAILED_NO_RETRY
+                connection.disconnect()
+                connection.error = exception
             }
         }, "Rendering#${connection.connectionId}").start()
     }

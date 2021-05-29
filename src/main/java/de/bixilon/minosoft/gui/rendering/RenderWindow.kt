@@ -32,7 +32,6 @@ import de.bixilon.minosoft.gui.rendering.textures.Texture
 import de.bixilon.minosoft.gui.rendering.textures.TextureArray
 import de.bixilon.minosoft.gui.rendering.util.ScreenshotTaker
 import de.bixilon.minosoft.modding.event.CallbackEventInvoker
-import de.bixilon.minosoft.modding.event.events.ConnectionStateChangeEvent
 import de.bixilon.minosoft.modding.event.events.PacketReceiveEvent
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.play.PositionAndRotationS2CP
@@ -96,13 +95,6 @@ class RenderWindow(
     private var initialPositionReceived = false
 
     init {
-        connection.registerEvent(CallbackEventInvoker.of<ConnectionStateChangeEvent> {
-            if (it.connection.isDisconnected) {
-                queue += {
-                    glfwSetWindowShouldClose(windowId, true)
-                }
-            }
-        })
         connection.registerEvent(CallbackEventInvoker.of<PacketReceiveEvent> {
             val packet = it.packet
             if (packet !is PositionAndRotationS2CP) {
@@ -297,11 +289,11 @@ class RenderWindow(
         inputHandler.registerKeyCallback(KeyBindingsNames.TAKE_SCREENSHOT) { screenshotTaker.takeScreenshot() }
 
         inputHandler.registerKeyCallback(KeyBindingsNames.DEBUG_PAUSE_INCOMING_PACKETS) {
-            sendDebugMessage("Incoming packets: $it")
+            sendDebugMessage("Pausing incoming packets: $it")
             connection.network.pauseReceiving(it)
         }
         inputHandler.registerKeyCallback(KeyBindingsNames.DEBUG_PAUSE_OUTGOING_PACKETS) {
-            sendDebugMessage("Outgoing packets: $it")
+            sendDebugMessage("Pausing outgoing packets: $it")
             connection.network.pauseSending(it)
         }
     }
@@ -309,6 +301,9 @@ class RenderWindow(
     fun startLoop() {
         Log.log(LogMessageType.RENDERING_LOADING) { "Starting loop" }
         while (!glfwWindowShouldClose(windowId)) {
+            if (connection.wasConnected) {
+                break
+            }
             if (renderingState == RenderingStates.PAUSED) {
                 Thread.sleep(100L)
                 glfwPollEvents()

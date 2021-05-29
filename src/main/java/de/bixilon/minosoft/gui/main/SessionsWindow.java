@@ -45,7 +45,7 @@ public class SessionsWindow implements Initializable {
         this.server = server;
         ObservableList<PlayConnection> connections = FXCollections.observableArrayList();
         for (PlayConnection connection : server.getConnections()) {
-            if (!connection.isConnected()) {
+            if (!connection.getConnectionState().getConnected()) {
                 server.getConnections().remove(connection);
             }
             connections.add(connection);

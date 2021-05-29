@@ -31,7 +31,8 @@ abstract class Connection {
     protected val eventListeners = LinkedList<EventInvoker>()
     val connectionId = lastConnectionId++
     abstract var connectionState: ConnectionStates
-    var lastException: Throwable? = null
+    var error: Throwable? = null
+    var wasConnected = false
 
     abstract fun getPacketId(packetType: C2S): Int
     abstract fun getPacketById(packetId: Int): S2C?
@@ -89,13 +90,6 @@ abstract class Connection {
     open fun registerEvents(vararg method: EventInvoker) {
         eventListeners.addAll(method)
     }
-
-    val isDisconnected: Boolean
-        get() = connectionState == ConnectionStates.DISCONNECTING || connectionState == ConnectionStates.DISCONNECTED || connectionState == ConnectionStates.FAILED || connectionState == ConnectionStates.FAILED_NO_RETRY
-
-
-    val isConnected: Boolean
-        get() = connectionState != ConnectionStates.FAILED && connectionState != ConnectionStates.FAILED_NO_RETRY && connectionState != ConnectionStates.DISCONNECTING && connectionState != ConnectionStates.DISCONNECTED && connectionState != ConnectionStates.CONNECTING
 
 
     open fun disconnect() {

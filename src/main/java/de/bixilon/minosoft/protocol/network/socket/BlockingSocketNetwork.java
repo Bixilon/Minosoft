@@ -30,6 +30,7 @@ import de.bixilon.minosoft.util.ServerAddress;
 import de.bixilon.minosoft.util.logging.Log;
 import de.bixilon.minosoft.util.logging.LogLevels;
 import de.bixilon.minosoft.util.logging.LogMessageType;
+import kotlin.jvm.Synchronized;
 import oshi.util.Util;
 
 import javax.crypto.Cipher;
@@ -53,6 +54,7 @@ public class BlockingSocketNetwork extends Network {
     private InputStream inputStream;
     private boolean sendingPaused;
     private boolean receivingPaused;
+    private boolean shouldDisconnect;
 
     public BlockingSocketNetwork(Connection connection) {
         super(connection);
@@ -80,10 +82,10 @@ public class BlockingSocketNetwork extends Network {
 
     @Override
     public void connect(ServerAddress address) {
-        if (this.connection.isConnected() || this.connection.getConnectionState() == ConnectionStates.CONNECTING) {
+        if (this.connection.getConnectionState().getConnected() || this.connection.getConnectionState() == ConnectionStates.CONNECTING) {
             return;
         }
-        this.connection.setLastException(null);
+        this.connection.setError(null);
         this.connection.setConnectionState(ConnectionStates.CONNECTING);
         this.socketReceiveThread = new Thread(() -> {
             try {
@@ -103,7 +105,7 @@ public class BlockingSocketNetwork extends Network {
                 this.socketReceiveThread.setName(String.format("%d/Receiving", this.connection.getConnectionId()));
 
 
-                while (this.connection.getConnectionState() != ConnectionStates.DISCONNECTING) {
+                while (this.connection.getConnectionState() != ConnectionStates.DISCONNECTED && !this.shouldDisconnect) {
                     if (!this.socket.isConnected() || this.socket.isClosed()) {
                         break;
                     }
@@ -120,7 +122,6 @@ public class BlockingSocketNetwork extends Network {
                 this.connection.disconnect();
             } catch (Throwable exception) {
                 // Could not connect
-                this.connection.setConnectionState(ConnectionStates.DISCONNECTING);
                 if (this.socketSendThread != null) {
                     this.socketSendThread.interrupt();
                 }
@@ -129,8 +130,8 @@ public class BlockingSocketNetwork extends Network {
                     return;
                 }
                 Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.WARN, exception);
-                this.connection.setLastException(exception);
-                this.connection.setConnectionState(ConnectionStates.FAILED);
+                this.connection.setError(exception);
+                disconnect();
             }
         }, String.format("%d/Socket", this.connection.getConnectionId()));
         this.socketReceiveThread.start();
@@ -142,12 +143,13 @@ public class BlockingSocketNetwork extends Network {
     }
 
     @Override
+    @Synchronized
     public void disconnect() {
-        if (this.connection.isDisconnected()) {
+        if (!this.connection.getConnectionState().getConnected() || this.shouldDisconnect) {
             // already trying
             return;
         }
-        this.connection.setConnectionState(ConnectionStates.DISCONNECTING);
+        this.shouldDisconnect = true;
         this.queue.clear();
         try {
             this.socket.close();
@@ -183,7 +185,7 @@ public class BlockingSocketNetwork extends Network {
     private void initSendThread() {
         this.socketSendThread = new Thread(() -> {
             try {
-                while (this.connection.getConnectionState() != ConnectionStates.DISCONNECTING) {
+                while (this.connection.getConnectionState() != ConnectionStates.DISCONNECTED && !this.shouldDisconnect) {
                     // wait for data or send until it should disconnect
 
                     // check if still connected

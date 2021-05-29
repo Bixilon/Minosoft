@@ -136,7 +136,7 @@ class ServerListCell : ListCell<Server?>(), Initializable {
                     this.playersField.text = ""
                     this.versionField.text = LocaleManager.translate(Strings.OFFLINE)
                     this.versionField.styleClass.add("version-error")
-                    setErrorMotd(server.lastPing.lastException.toString())
+                    setErrorMotd(server.lastPing.error.toString())
                     this.optionsConnect.isDisable = true
                     this.connectable = false
                     return@runLater
@@ -182,7 +182,7 @@ class ServerListCell : ListCell<Server?>(), Initializable {
                     this.optionsDelete.isDisable = true
                 }
 
-                server.lastPing.lastException?.let { exception ->
+                server.lastPing.error?.let { exception ->
                     // connection failed because of an error in minosoft, but ping was okay
                     this.versionField.style = "-fx-text-fill: red;"
                     this.optionsConnect.isDisable = true
@@ -265,11 +265,12 @@ class ServerListCell : ListCell<Server?>(), Initializable {
                     this.root.styleClass.add(when (connection.connectionState) {
                         ConnectionStates.CONNECTING, ConnectionStates.HANDSHAKING, ConnectionStates.LOGIN -> "list-cell-connecting"
                         ConnectionStates.PLAY -> "list-cell-connected"
-                        ConnectionStates.DISCONNECTING -> "list-cell-disconnecting"
-                        ConnectionStates.FAILED, ConnectionStates.FAILED_NO_RETRY -> "list-cell-failed"
                         else -> ""
                     })
-                    if (connection.isConnected) {
+                    if (connection.error != null) {
+                        this.root.styleClass.add("list-cell-failed")
+                    }
+                    if (connection.connectionState.connected) {
                         optionsConnect.isDisable = Minosoft.getConfig().config.account.selected == connection.account.id
                         optionsSessions.isDisable = false
                         return@runLater

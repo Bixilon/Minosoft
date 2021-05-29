@@ -72,7 +72,7 @@ class SessionListCell : ListCell<PlayConnection?>(), Initializable {
             // the card got recycled
             return
         }
-        if (!connection.isConnected) {
+        if (!connection.connectionState.connected) {
             Platform.runLater {
                 CONNECTION_LIST_VIEW.items.remove(connection)
                 if (CONNECTION_LIST_VIEW.items.isEmpty()) {

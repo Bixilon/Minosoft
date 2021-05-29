@@ -170,7 +170,7 @@ public class Server {
 
     public boolean isConnected() {
         for (PlayConnection connection : this.connections) {
-            if (connection.isConnected()) {
+            if (connection.getConnectionState().getConnected()) {
                 return true;
             }
         }

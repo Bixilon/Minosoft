@@ -28,7 +28,6 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.center
 import de.bixilon.minosoft.modding.event.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import de.bixilon.minosoft.protocol.protocol.ConnectionStates
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.CountUpAndDownLatch
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
@@ -184,7 +183,10 @@ class AudioPlayer(
     }
 
     fun startLoop() {
-        while (connection.connectionState != ConnectionStates.DISCONNECTING) { // ToDo: Also kill when disconnected
+        while (true) {
+            if (connection.wasConnected || connection.error != null) {
+                break
+            }
             queue.work()
             Thread.sleep(1L)
         }

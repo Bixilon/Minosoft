@@ -32,6 +32,7 @@ import de.bixilon.minosoft.util.Pair;
 import de.bixilon.minosoft.util.ServerAddress;
 import de.bixilon.minosoft.util.Util;
 import de.bixilon.minosoft.util.logging.Log;
+import kotlin.jvm.Synchronized;
 
 public abstract class Network {
     protected final Connection connection;
@@ -49,6 +50,7 @@ public abstract class Network {
 
     public abstract void sendPacket(C2SPacket packet);
 
+    @Synchronized
     public abstract void disconnect();
 
     protected Pair<PacketTypes.S2C, S2CPacket> receiveS2CPacket(byte[] bytes) throws PacketParseException {

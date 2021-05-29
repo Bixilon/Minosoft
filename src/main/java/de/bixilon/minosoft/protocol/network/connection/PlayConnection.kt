@@ -82,6 +82,7 @@ class PlayConnection(
     private lateinit var blockEntityTickTask: TimeWorkerTask
     private lateinit var randomTickTask: TimeWorkerTask
     val collisionDetector = CollisionDetector(this)
+    var retry = true
 
     override var connectionState: ConnectionStates = ConnectionStates.DISCONNECTED
         set(value) {
@@ -111,7 +112,6 @@ class PlayConnection(
 
 
                     network.sendPacket(HandshakeC2SP(address, ConnectionStates.LOGIN, version.protocolId))
-                    // after sending it, switch to next state
                     // after sending it, switch to next state
                     connectionState = ConnectionStates.LOGIN
                 }
@@ -156,6 +156,9 @@ class PlayConnection(
                     })
                 }
                 ConnectionStates.DISCONNECTED -> {
+                    if (previousConnectionState.connected) {
+                        wasConnected = true
+                    }
                     // unregister all custom recipes
                     this.recipes.removeCustomRecipes()
                     Minosoft.CONNECTIONS.remove(connectionId)
@@ -198,8 +201,8 @@ class PlayConnection(
             Log.log(LogMessageType.VERSION_LOADING, level = LogLevels.FATAL) { exception }
             Log.log(LogMessageType.VERSION_LOADING, level = LogLevels.FATAL) { "Could not load version $version. This version seems to be unsupported" }
             version.unload()
-            lastException = MappingsLoadingException("Mappings could not be loaded", exception)
-            connectionState = ConnectionStates.FAILED_NO_RETRY
+            error = MappingsLoadingException("Mappings could not be loaded", exception)
+            retry = false
         }
         latch.dec()
     }
@@ -224,7 +227,7 @@ class PlayConnection(
     }
 
     override fun handlePacket(packet: S2CPacket) {
-        if (!isConnected) {
+        if (!connectionState.connected) {
             return
         }
         try {

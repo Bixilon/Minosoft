@@ -53,10 +53,10 @@ public class NonBlockingSocketNetwork extends Network {
 
     @Override
     public void connect(ServerAddress address) {
-        if (this.connection.isConnected() || this.connection.getConnectionState() == ConnectionStates.CONNECTING) {
+        if (this.connection.getConnectionState().getConnected() || this.connection.getConnectionState() == ConnectionStates.CONNECTING) {
             return;
         }
-        this.connection.setLastException(null);
+        this.connection.setError(null);
         this.connection.setConnectionState(ConnectionStates.CONNECTING);
         new Thread(() -> {
             try {
@@ -79,7 +79,7 @@ public class NonBlockingSocketNetwork extends Network {
                 ByteBuffer receiveLengthBuffer = ByteBuffer.allocate(1);
 
 
-                while (this.connection.getConnectionState() != ConnectionStates.DISCONNECTING && this.connection.getConnectionState() != ConnectionStates.DISCONNECTED) {
+                while (this.connection.getConnectionState() != ConnectionStates.DISCONNECTED) {
                     while (!this.queue.isEmpty()) {
                         C2SPacket packet = this.queue.getFirst();
                         this.queue.removeFirst();
@@ -161,8 +161,8 @@ public class NonBlockingSocketNetwork extends Network {
                     return;
                 }
                 Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.WARN, exception);
-                this.connection.setLastException(exception);
-                this.connection.setConnectionState(ConnectionStates.FAILED);
+                this.connection.setError(exception);
+                this.connection.disconnect();
             }
         }, String.format("Network#%d", this.connection.getConnectionId())).start();
     }
@@ -174,10 +174,9 @@ public class NonBlockingSocketNetwork extends Network {
 
     @Override
     public void disconnect() {
-        if (!this.connection.isConnected()) {
+        if (!this.connection.getConnectionState().getConnected()) {
             return;
         }
-        this.connection.setConnectionState(ConnectionStates.DISCONNECTING);
         this.queue.clear();
         try {
             this.socketChannel.close();

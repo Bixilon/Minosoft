@@ -15,20 +15,18 @@ package de.bixilon.minosoft.protocol.protocol
 import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.enum.ValuesEnum
 
-enum class ConnectionStates {
-    HANDSHAKING,
-    STATUS,
-    LOGIN,
-    PLAY,
-    CONNECTING,
-    DISCONNECTING,
-    DISCONNECTED,
-    FAILED,
-    FAILED_NO_RETRY,
+enum class ConnectionStates(val connected: Boolean, val protocolId: Int = -1) {
+    CONNECTING(false),
+    HANDSHAKING(true, 0),
+    STATUS(true, 1),
+    LOGIN(true, 2),
+    PLAY(true, 3),
+    DISCONNECTED(false),
     ;
 
     companion object : ValuesEnum<ConnectionStates> {
         override val VALUES: Array<ConnectionStates> = values()
         override val NAME_MAP: Map<String, ConnectionStates> = KUtil.getEnumValues(VALUES)
+        val PROTOCOL_IDS = arrayOf(HANDSHAKING, STATUS, LOGIN, PLAY)
     }
 }
