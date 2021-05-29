@@ -37,6 +37,8 @@ import glm_.vec3.Vec3i
 import kotlin.random.Random
 
 open class CampfireBlock(resourceLocation: ResourceLocation, registries: Registries, data: JsonObject) : Block(resourceLocation, registries, data) {
+    val lavaParticles = data["lava_particles"]?.asBoolean ?: true
+
     private val campfireCrackleSoundEvent = registries.soundEventRegistry[CAMPFIRE_CRACKLE_SOUND_RESOURCE_LOCATION]!!
     private val cosySmokeParticle = registries.particleTypeRegistry[CampfireSmokeParticle.CosyFactory]!!
     private val signalSmokeParticle = registries.particleTypeRegistry[CampfireSmokeParticle.SignalFactory]!!
@@ -86,7 +88,7 @@ open class CampfireBlock(resourceLocation: ResourceLocation, registries: Registr
             connection.rendering?.audioPlayer?.playSoundEvent(campfireCrackleSoundEvent, blockPosition + Vec3(0.5f), 0.5f + random.nextFloat(), 0.6f + random.nextFloat() * 0.7f)
         }
 
-        if (random.chance(20)) {
+        if (lavaParticles && random.chance(20)) {
             val position = Vec3(blockPosition) + Vec3(0.5f)
             for (i in 0 until random.nextInt(1) + 1) {
                 particleRenderer.add(LavaParticle(connection, particleRenderer, position, lavaParticle.simple()))

@@ -160,11 +160,11 @@ abstract class Particle(
     }
 
     open fun realTick() {
-        if (!movement) {
-            return
-        }
         age()
         if (dead) {
+            return
+        }
+        if (!movement) {
             return
         }
 
