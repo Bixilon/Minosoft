@@ -22,7 +22,7 @@ import glm_.vec2.Vec2i
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3i
 
-enum class Directions(val directionVector: Vec3i) {
+enum class Directions(val vector: Vec3i) {
     DOWN(Vec3i(0, -1, 0)),
     UP(Vec3i(0, 1, 0)),
     NORTH(Vec3i(0, 0, -1)),
@@ -30,7 +30,7 @@ enum class Directions(val directionVector: Vec3i) {
     WEST(Vec3i(-1, 0, 0)),
     EAST(Vec3i(1, 0, 0));
 
-    val floatDirectionVector = Vec3(directionVector)
+    val floatDirectionVector = Vec3(vector)
 
     val axis: Axes get() = Axes.byDirection(this)
 
@@ -75,7 +75,7 @@ enum class Directions(val directionVector: Vec3i) {
     }
 
     private fun isBlockResolutionBorder(start: Vec3, end: Vec3): Boolean {
-        return isCoordinateBorder(directionVector.x, start.x, end.x) || isCoordinateBorder(directionVector.y, start.y, end.y) || isCoordinateBorder(directionVector.z, start.z, end.z)
+        return isCoordinateBorder(vector.x, start.x, end.x) || isCoordinateBorder(vector.y, start.y, end.y) || isCoordinateBorder(vector.z, start.z, end.z)
     }
 
     private fun isCoordinateBorder(directionValue: Int, start: Float, end: Float): Boolean {
@@ -89,7 +89,7 @@ enum class Directions(val directionVector: Vec3i) {
     }
 
     operator fun get(axis: Axes): Int {
-        return directionVector[axis]
+        return vector[axis]
     }
 
 

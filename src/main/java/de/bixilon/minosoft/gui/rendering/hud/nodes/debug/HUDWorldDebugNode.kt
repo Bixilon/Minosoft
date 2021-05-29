@@ -137,7 +137,7 @@ class HUDWorldDebugNode(hudRenderer: HUDRenderer) : DebugScreenNode(hudRenderer)
         val yaw = hudRenderer.renderWindow.inputHandler.camera.playerEntity.rotation.yaw
         val pitch = hudRenderer.renderWindow.inputHandler.camera.playerEntity.rotation.pitch
         val direction = Directions.byDirection(camera.cameraFront)
-        return "${Directions.byDirection(camera.cameraFront).name.lowercase(Locale.getDefault())} ${direction.directionVector} (${formatRotation(yaw.toDouble())} / ${formatRotation(pitch.toDouble())})"
+        return "${Directions.byDirection(camera.cameraFront).name.lowercase(Locale.getDefault())} ${direction.vector} (${formatRotation(yaw.toDouble())} / ${formatRotation(pitch.toDouble())})"
     }
 
     companion object : HUDRenderBuilder<HUDWorldDebugNode> {

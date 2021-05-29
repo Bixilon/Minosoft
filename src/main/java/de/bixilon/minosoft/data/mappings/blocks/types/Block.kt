@@ -21,6 +21,9 @@ import de.bixilon.minosoft.data.mappings.blocks.BlockUsages
 import de.bixilon.minosoft.data.mappings.blocks.RandomOffsetTypes
 import de.bixilon.minosoft.data.mappings.blocks.entites.BlockEntityType
 import de.bixilon.minosoft.data.mappings.blocks.properties.BlockProperties
+import de.bixilon.minosoft.data.mappings.blocks.types.redstone.ComparatorBlock
+import de.bixilon.minosoft.data.mappings.blocks.types.redstone.RepeaterBlock
+import de.bixilon.minosoft.data.mappings.blocks.types.wall.LeverBlock
 import de.bixilon.minosoft.data.mappings.items.Item
 import de.bixilon.minosoft.data.mappings.registry.RegistryItem
 import de.bixilon.minosoft.data.mappings.registry.ResourceLocationDeserializer

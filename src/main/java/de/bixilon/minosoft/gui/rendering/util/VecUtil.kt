@@ -231,7 +231,7 @@ object VecUtil {
     }
 
     infix operator fun Vec3i.plus(direction: Directions?): Vec3i {
-        return this + direction?.directionVector
+        return this + direction?.vector
     }
 
     infix operator fun Vec3i.plus(input: Vec3): Vec3 {
@@ -243,7 +243,7 @@ object VecUtil {
     }
 
     infix operator fun Vec2i.plus(direction: Directions): Vec2i {
-        return this + direction.directionVector
+        return this + direction.vector
     }
 
     fun Vec3i.getWorldOffset(block: Block): Vec3 {

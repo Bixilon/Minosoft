@@ -11,12 +11,11 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.config.config.game.particles
+package de.bixilon.minosoft.data.mappings.blocks.types.redstone
 
-import com.squareup.moshi.Json
+import com.google.gson.JsonObject
+import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.data.mappings.blocks.types.HorizontalFacingBlock
+import de.bixilon.minosoft.data.mappings.versions.Registries
 
-data class ParticleConfig(
-    var enabled: Boolean = true,
-    @Json(name = "by_packet") var byPacket: Boolean = true,
-    var explosions: Boolean = true,
-)
+abstract class RedstoneGateBlock(resourceLocation: ResourceLocation, mappings: Registries, data: JsonObject) : HorizontalFacingBlock(resourceLocation, mappings, data)

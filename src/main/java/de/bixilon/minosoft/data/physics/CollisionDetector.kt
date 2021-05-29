@@ -27,7 +27,7 @@ class CollisionDetector(val connection: PlayConnection) {
 
     fun getCollisionsToCheck(deltaPosition: Vec3, aabb: AABB, ignoreUnloadedChunks: Boolean = true): VoxelShape {
         // also look at blocks further down to also cover blocks with a higher than normal hitbox (for example fences)
-        val blockPositions = (aabb extend deltaPosition extend Directions.DOWN.directionVector).getBlockPositions()
+        val blockPositions = (aabb extend deltaPosition extend Directions.DOWN.vector).getBlockPositions()
         val result = VoxelShape()
         for (blockPosition in blockPositions) {
             val chunk = connection.world[blockPosition.chunkPosition]

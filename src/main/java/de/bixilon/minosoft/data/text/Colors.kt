@@ -11,12 +11,10 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.config.config.game.particles
+package de.bixilon.minosoft.data.text
 
-import com.squareup.moshi.Json
-
-data class ParticleConfig(
-    var enabled: Boolean = true,
-    @Json(name = "by_packet") var byPacket: Boolean = true,
-    var explosions: Boolean = true,
-)
+object Colors {
+    val TRUE_RED = RGBColor(255, 0, 0)
+    val TRUE_GREEN = RGBColor(0, 255, 0)
+    val TRUE_BLUE = RGBColor(0, 0, 255)
+}

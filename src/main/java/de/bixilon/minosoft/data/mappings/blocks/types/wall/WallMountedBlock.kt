@@ -11,29 +11,25 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.mappings.blocks.types
+package de.bixilon.minosoft.data.mappings.blocks.types.wall
 
 import com.google.gson.JsonObject
-import de.bixilon.minosoft.data.inventory.ItemStack
+import de.bixilon.minosoft.data.Directions
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.blocks.BlockState
-import de.bixilon.minosoft.data.mappings.blocks.BlockUsages
+import de.bixilon.minosoft.data.mappings.blocks.properties.Attachments
 import de.bixilon.minosoft.data.mappings.blocks.properties.BlockProperties
+import de.bixilon.minosoft.data.mappings.blocks.types.Block
 import de.bixilon.minosoft.data.mappings.versions.Registries
-import de.bixilon.minosoft.data.player.Hands
-import de.bixilon.minosoft.gui.rendering.input.camera.RaycastHit
-import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import glm_.vec3.Vec3i
 
-open class LeverBlock(resourceLocation: ResourceLocation, mappings: Registries, data: JsonObject) : Block(resourceLocation, mappings, data) {
+abstract class WallMountedBlock(resourceLocation: ResourceLocation, mappings: Registries, data: JsonObject) : Block(resourceLocation, mappings, data) {
 
-    override fun getPlacementState(connection: PlayConnection, raycastHit: RaycastHit): BlockState? {
-        TODO()
+    fun getRealFacing(blockState: BlockState): Directions {
+        return when (blockState.properties[BlockProperties.FACE]) {
+            Attachments.CEILING -> Directions.DOWN
+            Attachments.FLOOR -> Directions.UP
+            else -> blockState.properties[BlockProperties.FACING] as Directions
+        }
     }
 
-    override fun onUse(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, raycastHit: RaycastHit, hands: Hands, itemStack: ItemStack?): BlockUsages {
-        connection.world[blockPosition] = blockState.cycle(BlockProperties.POWERED)
-
-        return BlockUsages.SUCCESS
-    }
 }

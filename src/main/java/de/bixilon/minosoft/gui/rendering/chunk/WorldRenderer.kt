@@ -457,7 +457,7 @@ class WorldRenderer(
             }
 
         private operator fun Int.plus(upOrDown: Directions): Int {
-            return this + upOrDown.directionVector.y
+            return this + upOrDown.vector.y
         }
     }
 }

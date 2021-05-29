@@ -82,7 +82,6 @@ class ParticleRenderer(
         add(particle)
     }
 
-
     override fun draw() {
         particleShader.use()
 
