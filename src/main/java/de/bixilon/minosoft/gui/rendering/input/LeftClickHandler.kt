@@ -91,7 +91,7 @@ class LeftClickHandler(
             return false
         }
 
-        if (!connection.player.entity.gamemode.canBreak) {
+        if (!connection.player.gamemode.canBreak) {
             cancelDigging()
             return false
         }
@@ -140,7 +140,7 @@ class LeftClickHandler(
         val canStartBreaking = currentTime - breakSent >= ProtocolDefinition.TICK_TIME
 
 
-        val canInstantBreak = connection.player.baseAbilities.canInstantBreak || connection.player.entity.gamemode == Gamemodes.CREATIVE
+        val canInstantBreak = connection.player.baseAbilities.canInstantBreak || connection.player.gamemode == Gamemodes.CREATIVE
 
         if (canInstantBreak) {
             if (!canStartBreaking) {
@@ -189,17 +189,17 @@ class LeftClickHandler(
             }
         }
 
-        connection.player.entity.activeStatusEffects[hasteStatusEffect]?.let {
+        connection.player.activeStatusEffects[hasteStatusEffect]?.let {
             speedMultiplier *= (0.2f * it.amplifier) + 1.0f
         }
 
-        connection.player.entity.activeStatusEffects[miningFatigueStatusEffect]?.let {
+        connection.player.activeStatusEffects[miningFatigueStatusEffect]?.let {
             speedMultiplier *= 0.3f.pow(it.amplifier + 1)
         }
 
         // ToDo: Check if is in water
 
-        if (!connection.player.entity.onGround) {
+        if (!connection.player.onGround) {
             speedMultiplier /= 5.0f
         }
 

@@ -41,7 +41,7 @@ class ExplosionS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
             val blockPosition = Vec3i(position + record)
             connection.world.setBlockState(blockPosition, null)
         }
-        connection.player.entity.velocity = connection.player.entity.velocity + velocity
+        connection.player.velocity = connection.player.velocity + velocity
 
         connection.fireEvent(ExplosionEvent(connection, this))
     }

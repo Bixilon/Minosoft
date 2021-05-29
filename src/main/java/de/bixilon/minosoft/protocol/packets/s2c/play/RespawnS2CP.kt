@@ -89,8 +89,8 @@ class RespawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         connection.world.chunks.clear()
         connection.world.dimension = dimension
         connection.player.isSpawnConfirmed = false
-        connection.player.entity.tabListItem.gamemode = gamemode
-        connection.player.entity.velocity = Vec3()
+        connection.player.tabListItem.gamemode = gamemode
+        connection.player.velocity = Vec3()
 
         connection.fireEvent(RespawnEvent(connection, this))
     }

@@ -25,7 +25,7 @@ import de.bixilon.minosoft.data.mappings.recipes.Recipes
 import de.bixilon.minosoft.data.mappings.versions.Registries
 import de.bixilon.minosoft.data.mappings.versions.Version
 import de.bixilon.minosoft.data.physics.CollisionDetector
-import de.bixilon.minosoft.data.player.Player
+import de.bixilon.minosoft.data.player.LocalPlayerEntity
 import de.bixilon.minosoft.data.player.tab.TabList
 import de.bixilon.minosoft.data.scoreboard.ScoreboardManager
 import de.bixilon.minosoft.data.tags.Tag
@@ -75,7 +75,7 @@ class PlayConnection(
 
     var rendering: Rendering? = null
         private set
-    lateinit var player: Player
+    lateinit var player: LocalPlayerEntity
         private set
 
     private lateinit var entityTickTask: TimeWorkerTask
@@ -186,7 +186,7 @@ class PlayConnection(
             version.load(latch) // ToDo: show gui loader
             assetsManager = MultiAssetsManager(version.assetsManager, Minosoft.MINOSOFT_ASSETS_MANAGER, Minosoft.MINECRAFT_FALLBACK_ASSETS_MANAGER)
             registries.parentRegistries = version.registries
-            player = Player(account, this)
+            player = LocalPlayerEntity(account, this)
 
             if (!RenderConstants.DISABLE_RENDERING && !StaticConfiguration.HEADLESS_MODE) {
                 val renderer = Rendering(this)

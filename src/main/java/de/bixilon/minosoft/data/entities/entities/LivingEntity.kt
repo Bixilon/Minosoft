@@ -17,17 +17,25 @@ import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.attributes.DefaultEntityAttributes
 import de.bixilon.minosoft.data.mappings.entities.EntityType
 import de.bixilon.minosoft.data.player.Hands
+import de.bixilon.minosoft.data.text.ChatColors
+import de.bixilon.minosoft.data.text.RGBColor
+import de.bixilon.minosoft.data.text.RGBColor.Companion.asRGBColor
+import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.spell.AmbientEntityEffectParticle
+import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.spell.EntityEffectParticle
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.vertical
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.util.KUtil.chance
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3i
 
 abstract class LivingEntity(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : Entity(connection, entityType, position, rotation) {
+    private val entityEffectParticle = connection.registries.particleTypeRegistry[EntityEffectParticle]
+    private val ambientEntityEffectParticle = connection.registries.particleTypeRegistry[AmbientEntityEffectParticle]
 
     private fun getLivingEntityFlag(bitMask: Int): Boolean {
         return entityMetaData.sets.getBitMask(EntityMetaDataFields.LIVING_ENTITY_FLAGS, bitMask)
     }
 
-    // = isUsingItem
     @get:EntityMetaDataFunction(name = "Is hand active")
     val isHandActive: Boolean
         get() = getLivingEntityFlag(0x01)
@@ -52,8 +60,8 @@ abstract class LivingEntity(connection: PlayConnection, entityType: EntityType, 
         }
 
     @get:EntityMetaDataFunction(name = "Effect color")
-    val effectColor: Int
-        get() = entityMetaData.sets.getInt(EntityMetaDataFields.LIVING_ENTITY_EFFECT_COLOR)
+    val effectColor: RGBColor
+        get() = entityMetaData.sets.getInt(EntityMetaDataFields.LIVING_ENTITY_EFFECT_COLOR).asRGBColor()
 
     @get:EntityMetaDataFunction(name = "Is effect ambient")
     val effectAmbient: Boolean
@@ -70,4 +78,46 @@ abstract class LivingEntity(connection: PlayConnection, entityType: EntityType, 
     @get:EntityMetaDataFunction(name = "Bed location")
     val bedPosition: Vec3i?
         get() = entityMetaData.sets.getBlockPosition(EntityMetaDataFields.LIVING_ENTITY_BED_POSITION)
+
+
+    private fun tickStatusEffects() {
+        if (entityEffectParticle == null && ambientEntityEffectParticle == null) {
+            return
+        }
+        if (effectColor == ChatColors.BLACK) {
+            return
+        }
+        var spawnParticles = if (isInvisible) {
+            random.nextInt(15) == 0
+        } else {
+            random.nextBoolean()
+        }
+
+        if (effectAmbient) {
+            spawnParticles = spawnParticles && random.chance(20)
+        }
+
+        if (!spawnParticles) {
+            return
+        }
+
+        val particlePosition = position + Vec3.vertical(
+            { entityType.width * ((2.0f * random.nextFloat() - 1.0f) * 0.5f) },
+            entityType.height * random.nextFloat()
+        )
+        if (effectAmbient) {
+            ambientEntityEffectParticle ?: return
+            connection.world += AmbientEntityEffectParticle(connection, particlePosition, effectColor, ambientEntityEffectParticle.default())
+        } else {
+            entityEffectParticle ?: return
+            connection.world += EntityEffectParticle(connection, particlePosition, effectColor, entityEffectParticle.default())
+        }
+    }
+
+    override fun realTick() {
+        super.realTick()
+        tickStatusEffects()
+    }
+
+
 }

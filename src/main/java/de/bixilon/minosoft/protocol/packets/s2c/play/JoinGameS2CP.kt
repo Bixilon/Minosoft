@@ -136,7 +136,7 @@ class JoinGameS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         if (connection.fireEvent(JoinGameEvent(connection, this))) {
             return
         }
-        val playerEntity = connection.player.entity
+        val playerEntity = connection.player
         playerEntity.tabListItem.gamemode = gamemode
 
         connection.world.hardcore = isHardcore

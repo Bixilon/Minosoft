@@ -35,7 +35,7 @@ class LoginSuccessS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     override fun handle(connection: PlayConnection) {
         connection.connectionState = ConnectionStates.PLAY
 
-        val playerEntity = connection.player.entity
+        val playerEntity = connection.player
         playerEntity.tabListItem.name = name
         playerEntity.tabListItem.displayName = ChatComponent.of(name)
 

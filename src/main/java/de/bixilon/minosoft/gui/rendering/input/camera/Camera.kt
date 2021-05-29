@@ -61,7 +61,7 @@ class Camera(
     private var lastMouseX = 0.0
     private var lastMouseY = 0.0
     val playerEntity: PlayerEntity
-        get() = connection.player.entity
+        get() = connection.player
     var yaw = 0.0
     var pitch = 0.0
     private var zoom = 0.0f
@@ -222,7 +222,7 @@ class Camera(
         if (renderWindow.inputHandler.currentKeyConsumer != null) { // ToDo
             return
         }
-        var cameraSpeed = if (connection.player.entity.isFlying) {
+        var cameraSpeed = if (connection.player.isFlying) {
             flyingSpeed
         } else {
             walkingSpeed

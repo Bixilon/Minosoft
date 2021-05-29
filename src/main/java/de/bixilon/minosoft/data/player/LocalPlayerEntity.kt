@@ -16,6 +16,7 @@ import de.bixilon.minosoft.data.abilities.ItemCooldown
 import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
+import de.bixilon.minosoft.data.entities.entities.player.RemotePlayerEntity
 import de.bixilon.minosoft.data.mappings.items.Item
 import de.bixilon.minosoft.data.mappings.other.containers.Container
 import de.bixilon.minosoft.data.mappings.other.containers.PlayerInventory
@@ -26,14 +27,13 @@ import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3i
 
-class Player(
+class LocalPlayerEntity(
     account: Account,
     connection: PlayConnection,
-) {
+) : PlayerEntity(connection, connection.registries.entityTypeRegistry[RemotePlayerEntity.RESOURCE_LOCATION]!!, Vec3.EMPTY, EntityRotation(0.0, 0.0), account.username) {
     val healthCondition = PlayerHealthCondition()
     val experienceCondition = PlayerExperienceCondition()
     var spawnPosition: Vec3i = Vec3i.EMPTY
-    val entity: PlayerEntity = PlayerEntity(connection, connection.registries.entityTypeRegistry[PlayerEntity.RESOURCE_LOCATION]!!, Vec3.EMPTY, EntityRotation(0.0, 0.0), account.username)
 
     @Deprecated(message = "Will be replaced with some kind of teleport manager, ...")
     var isSpawnConfirmed = false

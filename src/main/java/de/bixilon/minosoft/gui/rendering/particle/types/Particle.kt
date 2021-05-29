@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.particle.types
 
 import de.bixilon.minosoft.data.mappings.particle.data.ParticleData
-import de.bixilon.minosoft.data.physics.Speedable
+import de.bixilon.minosoft.data.physics.PhysicsEntity
 import de.bixilon.minosoft.gui.rendering.chunk.models.AABB
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.gui.rendering.particle.ParticleMesh
@@ -36,7 +36,7 @@ abstract class Particle(
     final override val position: Vec3,
     final override val velocity: Vec3 = Vec3.EMPTY,
     data: ParticleData? = null,
-) : Speedable {
+) : PhysicsEntity {
     protected val data: ParticleData = data ?: let {
         val resourceLocation = this::class.companionObjectInstance as ParticleFactory<*>
         connection.registries.particleTypeRegistry[resourceLocation]!!.default()

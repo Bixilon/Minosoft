@@ -33,7 +33,7 @@ import de.bixilon.minosoft.data.entities.entities.monster.piglin.PiglinBrute
 import de.bixilon.minosoft.data.entities.entities.monster.raid.*
 import de.bixilon.minosoft.data.entities.entities.npc.villager.Villager
 import de.bixilon.minosoft.data.entities.entities.npc.villager.WanderingTrader
-import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
+import de.bixilon.minosoft.data.entities.entities.player.RemotePlayerEntity
 import de.bixilon.minosoft.data.entities.entities.projectile.*
 import de.bixilon.minosoft.data.entities.entities.vehicle.*
 import de.bixilon.minosoft.data.entities.meta.EntityMetaData
@@ -156,7 +156,7 @@ object DefaultEntityFactories : DefaultFactory<EntityFactory<out Entity>>(
     ZombieVillager,
     ZombiePigman,
     ZombifiedPiglin,
-    PlayerEntity,
+    RemotePlayerEntity,
     FishingHook,
     GlowSquid,
     EvokerFangs,

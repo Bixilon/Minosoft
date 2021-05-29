@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.physics
 
 import glm_.vec3.Vec3
 
-interface Speedable {
+interface PhysicsEntity {
     val position: Vec3
     val velocity: Vec3
     var onGround: Boolean

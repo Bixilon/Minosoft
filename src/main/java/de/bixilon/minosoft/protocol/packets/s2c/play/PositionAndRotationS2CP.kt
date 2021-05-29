@@ -51,7 +51,7 @@ class PositionAndRotationS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     }
 
     override fun handle(connection: PlayConnection) {
-        val entity = connection.player.entity
+        val entity = connection.player
         // correct position with flags (relative position possible)
         if (BitByte.isBitMask(flags, 0x01)) {
             position.x += entity.position.x
@@ -82,6 +82,6 @@ class PositionAndRotationS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     }
 
     override fun log() {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Player position (position=$position, rotation=$rotation, onGround=$isOnGround)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "LocalPlayerEntity position (position=$position, rotation=$rotation, onGround=$isOnGround)" }
     }
 }

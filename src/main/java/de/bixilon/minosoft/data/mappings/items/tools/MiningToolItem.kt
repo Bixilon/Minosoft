@@ -53,7 +53,7 @@ abstract class MiningToolItem(
     }
 
     protected fun interactWithTool(connection: PlayConnection, blockPosition: Vec3i, replace: BlockState?): BlockUsages {
-        if (!connection.player.entity.gamemode.useTools) {
+        if (!connection.player.gamemode.useTools) {
             return BlockUsages.PASS
         }
 

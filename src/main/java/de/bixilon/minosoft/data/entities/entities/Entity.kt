@@ -21,7 +21,7 @@ import de.bixilon.minosoft.data.inventory.InventorySlots.EquipmentSlots
 import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.mappings.effects.StatusEffect
 import de.bixilon.minosoft.data.mappings.entities.EntityType
-import de.bixilon.minosoft.data.physics.Speedable
+import de.bixilon.minosoft.data.physics.PhysicsEntity
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.gui.rendering.chunk.models.AABB
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
@@ -34,13 +34,15 @@ import glm_.vec3.Vec3
 import java.lang.reflect.InvocationTargetException
 import java.util.*
 import kotlin.math.pow
+import kotlin.random.Random
 
 abstract class Entity(
     protected val connection: PlayConnection,
     val entityType: EntityType,
     override var position: Vec3,
     var rotation: EntityRotation,
-) : Speedable {
+) : PhysicsEntity {
+    protected val random = Random
     val equipment: MutableMap<EquipmentSlots, ItemStack> = mutableMapOf()
     val activeStatusEffects: MutableMap<StatusEffect, StatusEffectInstance> = synchronizedMapOf()
 
@@ -61,6 +63,8 @@ abstract class Entity(
         Vec3(-(entityType.width / 2 + HITBOX_MARGIN), 0, -(entityType.width / 2 + HITBOX_MARGIN)),
         Vec3(+(entityType.width / 2 + HITBOX_MARGIN), entityType.height, +(entityType.width / 2 + HITBOX_MARGIN))
     )
+
+    private var lastTickTime = -1L
 
     fun forceMove(deltaPosition: Vec3) {
         position = position + deltaPosition
@@ -232,7 +236,15 @@ abstract class Entity(
         check(deltaMillis > 0L) { "Delta tick time is <= 0: $deltaMillis" }
 
         tickMovement(deltaMillis)
+
+        val currentTime = System.currentTimeMillis()
+        if (currentTime - lastTickTime >= ProtocolDefinition.TICK_TIME) {
+            realTick()
+            lastTickTime = currentTime
+        }
     }
+
+    open fun realTick() {}
 
     private val aabb: AABB
         get() = defaultAABB + position

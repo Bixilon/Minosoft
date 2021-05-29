@@ -158,7 +158,7 @@ class TabListDataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
             } ?: continue
 
 
-            if (entity === connection.player.entity) {
+            if (entity === connection.player) {
                 entity.tabListItem.specialMerge(data)
                 continue
             }

@@ -97,10 +97,15 @@ object MMath {
 
     val Float.ceilInt: Int get() = glm.ceil(this).toInt()
 
-    val Boolean.positiveNegative: Int get() =
-        if (this) {
-            1
-        } else {
-            -1
-        }
+    val Boolean.positiveNegative: Int
+        get() =
+            if (this) {
+                1
+            } else {
+                -1
+            }
+
+    fun lerp(delta: Float, start: Float, end: Float): Float {
+        return start + delta * (end - start)
+    }
 }

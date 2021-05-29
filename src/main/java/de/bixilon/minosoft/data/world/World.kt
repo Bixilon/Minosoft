@@ -184,7 +184,7 @@ class World(
     }
 
     private fun randomTick(radius: Int) {
-        val blockPosition = connection.player.entity.position.blockPosition + { random.nextInt(radius) } - { random.nextInt(radius) }
+        val blockPosition = connection.player.position.blockPosition + { random.nextInt(radius) } - { random.nextInt(radius) }
 
         val blockState = this[blockPosition] ?: return
 

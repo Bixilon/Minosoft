@@ -17,8 +17,6 @@ import de.bixilon.minosoft.data.entities.EntityMetaDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
 import de.bixilon.minosoft.data.entities.entities.LivingEntity
-import de.bixilon.minosoft.data.mappings.ResourceLocation
-import de.bixilon.minosoft.data.mappings.entities.EntityFactory
 import de.bixilon.minosoft.data.mappings.entities.EntityType
 import de.bixilon.minosoft.data.player.Hands
 import de.bixilon.minosoft.data.player.PlayerProperties
@@ -27,7 +25,7 @@ import de.bixilon.minosoft.data.player.tab.TabListItem
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import glm_.vec3.Vec3
 
-class PlayerEntity(
+abstract class PlayerEntity(
     connection: PlayConnection,
     entityType: EntityType,
     position: Vec3 = Vec3(0, 0, 0),
@@ -82,8 +80,4 @@ class PlayerEntity(
     @get:EntityMetaDataFunction(name = "Right shoulder entity data")
     val rightShoulderData: Map<String, Any>?
         get() = entityMetaData.sets.getNBT(EntityMetaDataFields.PLAYER_RIGHT_SHOULDER_DATA)
-
-    companion object : EntityFactory<PlayerEntity> {
-        override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("player")
-    }
 }

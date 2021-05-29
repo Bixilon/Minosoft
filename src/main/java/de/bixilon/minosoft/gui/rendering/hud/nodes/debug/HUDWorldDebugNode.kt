@@ -76,7 +76,7 @@ class HUDWorldDebugNode(hudRenderer: HUDRenderer) : DebugScreenNode(hudRenderer)
 
 
         // ToDo: Prepare on change
-        gamemodeText.sText = "Gamemode: ${hudRenderer.connection.player.entity.gamemode.name.lowercase(Locale.getDefault())}"
+        gamemodeText.sText = "Gamemode: ${hudRenderer.connection.player.gamemode.name.lowercase(Locale.getDefault())}"
         positionText.sText = "XYZ ${getPosition()}"
         blockPositionText.sText = "Block ${getBlockPosition()}"
         chunkPositionText.sText = "Chunk ${getChunkLocation()}"

@@ -21,6 +21,8 @@ import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.Ex
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.dust.DustParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.fire.SmokeParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.lava.LavaParticle
+import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.spell.AmbientEntityEffectParticle
+import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.spell.EntityEffectParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.suspend.DolphinParticle
 
 object DefaultParticleFactory : DefaultFactory<ParticleFactory<out Particle>>(
@@ -32,4 +34,6 @@ object DefaultParticleFactory : DefaultFactory<ParticleFactory<out Particle>>(
     SmokeParticle,
     DolphinParticle,
     DustParticle,
+    EntityEffectParticle,
+    AmbientEntityEffectParticle,
 )

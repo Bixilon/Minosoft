@@ -16,6 +16,7 @@ import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.data.PlayerPropertyData
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
+import de.bixilon.minosoft.data.entities.entities.player.RemotePlayerEntity
 import de.bixilon.minosoft.data.entities.meta.EntityMetaData
 import de.bixilon.minosoft.modding.event.events.EntitySpawnEvent
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
@@ -66,9 +67,9 @@ class PlayerEntitySpawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         if (buffer.versionId < ProtocolVersions.V_19W34A) {
             metaData = buffer.readMetaData()
         }
-        entity = PlayerEntity(
+        entity = RemotePlayerEntity(
             connection = buffer.connection,
-            entityType = buffer.connection.registries.entityTypeRegistry[PlayerEntity.RESOURCE_LOCATION]!!,
+            entityType = buffer.connection.registries.entityTypeRegistry[RemotePlayerEntity.RESOURCE_LOCATION]!!,
             position = position,
             rotation = EntityRotation(yaw.toFloat(), pitch.toFloat(), 0.0f),
             name = name,
@@ -91,6 +92,6 @@ class PlayerEntitySpawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     }
 
     override fun log() {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Player entity spawn (position=${entity.position}, entityId=$entityId, name=${entity.name}, uuid=$entityUUID)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "LocalPlayerEntity entity spawn (position=${entity.position}, entityId=$entityId, name=${entity.name}, uuid=$entityUUID)" }
     }
 }

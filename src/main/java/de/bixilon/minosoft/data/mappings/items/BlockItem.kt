@@ -36,7 +36,7 @@ open class BlockItem(
     val block: Block = registries.blockRegistry[data["block"].asInt]
 
     override fun use(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, raycastHit: RaycastHit, hands: Hands, itemStack: ItemStack): BlockUsages {
-        if (!connection.player.entity.gamemode.canBuild) {
+        if (!connection.player.gamemode.canBuild) {
             return BlockUsages.PASS
         }
 
@@ -57,7 +57,7 @@ open class BlockItem(
 
         connection.world[placePosition] = placeBlockState
 
-        if (connection.player.entity.gamemode != Gamemodes.CREATIVE) {
+        if (connection.player.gamemode != Gamemodes.CREATIVE) {
             itemStack.count--
             connection.player.inventory.validate()
         }
