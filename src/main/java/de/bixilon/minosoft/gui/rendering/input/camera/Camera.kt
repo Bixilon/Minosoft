@@ -163,18 +163,18 @@ class Camera(
         inChunkSectionPosition = blockPosition.inChunkSectionPosition
         // recalculate sky color for current biome
         val skyRenderer = renderWindow[SkyRenderer] ?: return
-        skyRenderer.setSkyColor(connection.world.getBiome(blockPosition)?.skyColor ?: RenderConstants.DEFAULT_SKY_COLOR)
+        skyRenderer.baseColor = connection.world.getBiome(blockPosition)?.skyColor ?: RenderConstants.DEFAULT_SKY_COLOR
 
         frustum.recalculate()
         connection.fireEvent(FrustumChangeEvent(renderWindow, frustum))
 
         connection.world.dimension?.hasSkyLight?.let {
             if (it) {
-                skyRenderer.setSkyColor(currentBiome?.skyColor ?: RenderConstants.DEFAULT_SKY_COLOR)
+                skyRenderer.baseColor = currentBiome?.skyColor ?: RenderConstants.DEFAULT_SKY_COLOR
             } else {
-                skyRenderer.setSkyColor(RenderConstants.BLACK_COLOR)
+                skyRenderer.baseColor = RenderConstants.BLACK_COLOR
             }
-        } ?: skyRenderer.setSkyColor(RenderConstants.DEFAULT_SKY_COLOR)
+        } ?: let { skyRenderer.baseColor = RenderConstants.DEFAULT_SKY_COLOR }
         connection.fireEvent(CameraPositionChangeEvent(renderWindow, cameraPosition))
     }
 

@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.rendering.sky
 
 import de.bixilon.minosoft.data.mappings.ResourceLocation
-import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
@@ -50,8 +49,7 @@ class SkyRenderer(
     private var skySunMesh = SimpleTextureMesh()
     private lateinit var sunTexture: Texture
     private var recalculateSunNextFrame: Boolean = true
-    private var bottomColor = ChatColors.BLACK
-    private var topColor = RenderConstants.DEFAULT_SKY_COLOR
+    var baseColor = RenderConstants.DEFAULT_SKY_COLOR
 
 
     override fun init() {
@@ -118,15 +116,17 @@ class SkyRenderer(
         skySunMesh.draw()
     }
 
-    fun setSkyColor(color: RGBColor) {
-        topColor = color
-        bottomColor = RGBColor(color.red * 8 / 9, color.green * 8 / 9, color.blue * 8 / 9)
+    private fun checkSkyColor() {
+        // ToDo: Calculate correct
+        val brightness = 1.0f
+        val topColor = RGBColor((baseColor.red * brightness).toInt(), (baseColor.green * brightness).toInt(), (baseColor.blue * brightness).toInt())
+        val bottomColor = RGBColor(topColor.red * 8 / 9, topColor.green * 8 / 9, topColor.blue * 8 / 9)
         renderWindow.queue += {
-            updateSkyColor()
+            updateSkyColor(topColor, bottomColor)
         }
     }
 
-    private fun updateSkyColor() {
+    private fun updateSkyColor(topColor: RGBColor, bottomColor: RGBColor) {
         skyboxShader.use()
 
         skyboxShader.setRGBColor("uBottomColor", bottomColor)
@@ -134,6 +134,7 @@ class SkyRenderer(
     }
 
     private fun drawSkybox() {
+        checkSkyColor()
         skyboxShader.use()
         skyboxMesh.draw()
     }

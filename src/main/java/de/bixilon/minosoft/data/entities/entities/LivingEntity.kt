@@ -118,6 +118,4 @@ abstract class LivingEntity(connection: PlayConnection, entityType: EntityType, 
         super.realTick()
         tickStatusEffects()
     }
-
-
 }
