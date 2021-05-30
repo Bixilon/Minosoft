@@ -22,12 +22,10 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.assign
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.millis
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plusAssign
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.sqr
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import glm_.vec3.Vec3
 import kotlin.math.abs
-import kotlin.math.sqrt
 import kotlin.random.Random
 import kotlin.reflect.full.companionObjectInstance
 
@@ -85,7 +83,7 @@ abstract class Particle(
     init {
         velocity += { (random.nextFloat() * 2.0f - 1.0f) * MAGIC_VELOCITY_CONSTANTf }
         val modifier = (random.nextFloat() + random.nextFloat() + 1.0f) * 0.15000000596046448f
-        val divider = sqrt((velocity.x.sqr + velocity.y.sqr + velocity.z.sqr).toDouble()).toFloat()
+        val divider = velocity.length()
 
         velocity assign velocity / divider * modifier * MAGIC_VELOCITY_CONSTANTf
         velocity.y += 0.10000000149011612f

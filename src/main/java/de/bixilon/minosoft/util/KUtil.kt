@@ -130,4 +130,12 @@ object KUtil {
     fun Random.chance(intPercent: Int): Boolean {
         return this.nextInt(100) < intPercent
     }
+
+    fun <T> Boolean.decide(`true`: T, `false`: T): T {
+        return if (this) {
+            `true`
+        } else {
+            `false`
+        }
+    }
 }

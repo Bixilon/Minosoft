@@ -35,9 +35,6 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.inChunkSectionPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
 import de.bixilon.minosoft.modding.event.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import de.bixilon.minosoft.protocol.packets.c2s.play.PositionAndRotationC2SP
-import de.bixilon.minosoft.protocol.packets.c2s.play.PositionC2SP
-import de.bixilon.minosoft.protocol.packets.c2s.play.RotationC2SP
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import glm_.func.cos
 import glm_.func.rad
@@ -162,7 +159,7 @@ class Camera(
         sectionHeight = blockPosition.sectionHeight
         inChunkSectionPosition = blockPosition.inChunkSectionPosition
         // recalculate sky color for current biome
-        val skyRenderer = renderWindow[SkyRenderer] ?: return
+        val skyRenderer = renderWindow[SkyRenderer.Companion] ?: return
         skyRenderer.baseColor = connection.world.getBiome(blockPosition)?.skyColor ?: RenderConstants.DEFAULT_SKY_COLOR
 
         frustum.recalculate()
@@ -210,13 +207,11 @@ class Camera(
         cameraUp = (cameraRight cross cameraFront).normalize()
         recalculateViewProjectionMatrix()
         currentRotationSent = false
-        sendPositionToServer()
     }
 
     fun draw(deltaTime: Double) {
         if (!currentPositionSent || !currentRotationSent) {
             recalculateViewProjectionMatrix()
-            sendPositionToServer()
         }
 
         if (renderWindow.inputHandler.currentKeyConsumer != null) { // ToDo
@@ -272,7 +267,6 @@ class Camera(
             playerEntity.move(deltaMovement, false)
             recalculateViewProjectionMatrix()
             currentPositionSent = false
-            sendPositionToServer()
         }
 
         val lastZoom = zoom
@@ -284,22 +278,6 @@ class Camera(
         if (lastZoom != zoom) {
             recalculateViewProjectionMatrix()
         }
-    }
-
-    private fun sendPositionToServer() {
-        if (System.currentTimeMillis() - lastMovementPacketSent < ProtocolDefinition.TICK_TIME) {
-            return
-        }
-        if (!currentPositionSent && !currentPositionSent) {
-            connection.sendPacket(PositionAndRotationC2SP(playerEntity.position, playerEntity.rotation, playerEntity.onGround))
-        } else if (!currentPositionSent) {
-            connection.sendPacket(PositionC2SP(playerEntity.position, playerEntity.onGround))
-        } else {
-            connection.sendPacket(RotationC2SP(playerEntity.rotation, playerEntity.onGround))
-        }
-        lastMovementPacketSent = System.currentTimeMillis()
-        currentPositionSent = true
-        currentRotationSent = true
     }
 
     fun setPosition(position: Vec3) {
