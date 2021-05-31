@@ -303,7 +303,7 @@ public final class Util {
     public static String mapToUrlQuery(Map<String, String> data) {
         StringBuilder builder = new StringBuilder();
         for (Map.Entry<String, String> entry : data.entrySet()) {
-            if (!builder.isEmpty()) {
+            if (builder.length() != 0) {
                 builder.append("&");
             }
             builder.append(URLEncoder.encode(entry.getKey(), StandardCharsets.UTF_8));
