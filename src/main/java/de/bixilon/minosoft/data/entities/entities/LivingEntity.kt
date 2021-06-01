@@ -14,7 +14,7 @@ package de.bixilon.minosoft.data.entities.entities
 
 import de.bixilon.minosoft.data.entities.EntityMetaDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
-import de.bixilon.minosoft.data.entities.attributes.DefaultEntityAttributes
+import de.bixilon.minosoft.data.mappings.effects.attributes.DefaultStatusEffectAttributeNames
 import de.bixilon.minosoft.data.mappings.entities.EntityType
 import de.bixilon.minosoft.data.player.Hands
 import de.bixilon.minosoft.data.text.ChatColors
@@ -53,7 +53,7 @@ abstract class LivingEntity(connection: PlayConnection, entityType: EntityType, 
         get() {
             val meta = entityMetaData.sets.getFloat(EntityMetaDataFields.LIVING_ENTITY_HEALTH)
             return if (meta == Float.MIN_VALUE) {
-                entityType.attributes[DefaultEntityAttributes.GENERIC_MAX_HEALTH] ?: 1.0f
+                entityType.attributes[DefaultStatusEffectAttributeNames.GENERIC_MAX_HEALTH] ?: 1.0f
             } else {
                 meta
             }
