@@ -10,31 +10,20 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.data.mappings.effects
 
-import com.google.gson.JsonObject
-import de.bixilon.minosoft.util.Util
-import java.util.*
+package de.bixilon.minosoft.data.mappings.effects.attributes
 
-data class StatusEffectAttribute(
-    val name: String,
-    val uuid: UUID,
-    val amount: Float,
-    val operation: StatusEffectOperations,
-) {
+import de.bixilon.minosoft.util.KUtil
+import de.bixilon.minosoft.util.enum.ValuesEnum
 
-    override fun toString(): String {
-        return name
-    }
+enum class StatusEffectOperations {
+    ADDITION,
+    MULTIPLY_BASE,
+    MULTIPLY_TOTAL,
+    ;
 
-    companion object {
-        fun deserialize(data: JsonObject): StatusEffectAttribute {
-            return StatusEffectAttribute(
-                name = data["name"].asString,
-                uuid = Util.getUUIDFromString(data["uuid"].asString),
-                amount = data["amount"].asFloat,
-                operation = StatusEffectOperations.NAME_MAP[data["operation"].asString]!!,
-            )
-        }
+    companion object : ValuesEnum<StatusEffectOperations> {
+        override val VALUES: Array<StatusEffectOperations> = values()
+        override val NAME_MAP: Map<String, StatusEffectOperations> = KUtil.getEnumValues(VALUES)
     }
 }

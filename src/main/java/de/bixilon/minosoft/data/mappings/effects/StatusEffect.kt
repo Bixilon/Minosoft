@@ -14,6 +14,7 @@ package de.bixilon.minosoft.data.mappings.effects
 
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.data.mappings.effects.attributes.StatusEffectAttribute
 import de.bixilon.minosoft.data.mappings.registry.RegistryItem
 import de.bixilon.minosoft.data.mappings.registry.ResourceLocationDeserializer
 import de.bixilon.minosoft.data.mappings.registry.Translatable
@@ -21,6 +22,7 @@ import de.bixilon.minosoft.data.mappings.versions.Registries
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.data.text.RGBColor.Companion.asRGBColor
 import de.bixilon.minosoft.datafixer.EntityAttributeFixer.fix
+import java.util.*
 
 data class StatusEffect(
     override val resourceLocation: ResourceLocation,
@@ -28,6 +30,7 @@ data class StatusEffect(
     override val translationKey: String?,
     val color: RGBColor,
     val attributes: Map<ResourceLocation, StatusEffectAttribute>,
+    val uuidAttributes: Map<UUID, StatusEffectAttribute>,
 ) : RegistryItem, Translatable {
 
     override fun toString(): String {
@@ -37,10 +40,13 @@ data class StatusEffect(
     companion object : ResourceLocationDeserializer<StatusEffect> {
         override fun deserialize(mappings: Registries?, resourceLocation: ResourceLocation, data: JsonObject): StatusEffect {
             val attributes: MutableMap<ResourceLocation, StatusEffectAttribute> = mutableMapOf()
+            val uuidAttributes: MutableMap<UUID, StatusEffectAttribute> = mutableMapOf()
 
             data["attributes"]?.asJsonObject?.let {
                 for ((key, value) in it.entrySet()) {
-                    attributes[ResourceLocation.getResourceLocation(key).fix()] = StatusEffectAttribute.deserialize(value.asJsonObject)
+                    val attribute = StatusEffectAttribute.deserialize(value.asJsonObject)
+                    attributes[ResourceLocation.getResourceLocation(key).fix()] = attribute
+                    uuidAttributes[attribute.uuid] = attribute
                 }
             }
 
@@ -49,7 +55,8 @@ data class StatusEffect(
                 category = StatusEffectCategories.NAME_MAP[data["category"].asString]!!,
                 translationKey = data["translation_key"]?.asString,
                 color = data["color"].asInt.asRGBColor(),
-                attributes.toMap(),
+                attributes = attributes.toMap(),
+                uuidAttributes = uuidAttributes.toMap(),
             )
         }
     }

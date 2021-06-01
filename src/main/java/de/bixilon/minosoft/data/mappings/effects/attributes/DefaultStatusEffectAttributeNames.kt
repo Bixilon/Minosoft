@@ -11,13 +11,11 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.entities.attributes
+package de.bixilon.minosoft.data.mappings.effects.attributes
 
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
 
-object DefaultEntityAttributes {
-    // ToDo: They all had different names before 1.13
-
+object DefaultStatusEffectAttributeNames {
     val GENERIC_MAX_HEALTH = "minecraft:generic.max_health".asResourceLocation()
     val GENERIC_FOLLOW_RANGE = "minecraft:generic.follow_range".asResourceLocation()
     val GENERIC_KNOCKBACK_RESISTANCE = "minecraft:generic.knockback_resistance".asResourceLocation()

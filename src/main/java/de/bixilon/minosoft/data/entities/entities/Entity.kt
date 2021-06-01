@@ -20,6 +20,7 @@ import de.bixilon.minosoft.data.entities.meta.EntityMetaData
 import de.bixilon.minosoft.data.inventory.InventorySlots.EquipmentSlots
 import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.mappings.effects.StatusEffect
+import de.bixilon.minosoft.data.mappings.effects.attributes.StatusEffectAttribute
 import de.bixilon.minosoft.data.mappings.entities.EntityType
 import de.bixilon.minosoft.data.physics.PhysicsEntity
 import de.bixilon.minosoft.data.text.ChatComponent
@@ -45,6 +46,7 @@ abstract class Entity(
     protected val random = Random
     val equipment: MutableMap<EquipmentSlots, ItemStack> = mutableMapOf()
     val activeStatusEffects: MutableMap<StatusEffect, StatusEffectInstance> = synchronizedMapOf()
+    val modifiers: MutableMap<UUID, StatusEffectAttribute> = synchronizedMapOf()
 
     @JvmField
     protected val versionId: Int = connection.version.versionId
@@ -73,6 +75,7 @@ abstract class Entity(
     fun addEffect(effect: StatusEffectInstance) {
         // effect already applied, maybe the duration or the amplifier changed?
         activeStatusEffects[effect.statusEffect] = effect
+        // ToDo: Add status effect modifiers
     }
 
     fun removeEffect(effect: StatusEffect) {

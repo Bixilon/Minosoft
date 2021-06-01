@@ -11,19 +11,10 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.mappings.effects
+package de.bixilon.minosoft.data.mappings.effects.attributes
 
-import de.bixilon.minosoft.util.KUtil
-import de.bixilon.minosoft.util.enum.ValuesEnum
+import de.bixilon.minosoft.util.KUtil.asUUID
 
-enum class StatusEffectOperations {
-    ADDITION,
-    MULTIPLY_BASE,
-    MULTIPLY_TOTAL,
-    ;
-
-    companion object : ValuesEnum<StatusEffectOperations> {
-        override val VALUES: Array<StatusEffectOperations> = values()
-        override val NAME_MAP: Map<String, StatusEffectOperations> = KUtil.getEnumValues(VALUES)
-    }
+object DefaultStatusEffectAttributes {
+    val SPRINT_SPEED_BOOST = StatusEffectAttribute("Sprinting speed boost", "662A6B8D-DA3E-4C1C-8813-96EA6097278D".asUUID(), 0.30000001192092896f, StatusEffectOperations.MULTIPLY_TOTAL)
 }

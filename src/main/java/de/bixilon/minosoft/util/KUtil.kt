@@ -138,4 +138,8 @@ object KUtil {
             `false`
         }
     }
+
+    fun String.asUUID(): UUID {
+        return Util.getUUIDFromString(this)
+    }
 }
