@@ -19,6 +19,7 @@ import de.bixilon.minosoft.util.KUtil.toSynchronizedList
 class Queue {
     private val queue: MutableList<Runnable> = synchronizedListOf()
 
+    @Synchronized
     fun add(runnable: Runnable) {
         queue += runnable
     }

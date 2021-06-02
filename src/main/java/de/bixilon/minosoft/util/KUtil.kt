@@ -17,6 +17,7 @@ import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.util.collections.SynchronizedMap
 import de.bixilon.minosoft.util.enum.AliasableEnum
 import sun.misc.Unsafe
 import java.util.*
@@ -60,8 +61,8 @@ object KUtil {
         return ResourceLocation(this)
     }
 
-    fun <K, V> synchronizedMapOf(vararg pairs: Pair<K, V>): MutableMap<K, V> {
-        return Collections.synchronizedMap(mutableMapOf(*pairs))
+    fun <K, V> synchronizedMapOf(vararg pairs: Pair<K, V>): SynchronizedMap<K, V> {
+        return SynchronizedMap(mutableMapOf(*pairs))
     }
 
     fun <V> synchronizedSetOf(vararg values: V): MutableSet<V> {
@@ -84,11 +85,11 @@ object KUtil {
         return synchronizedCopy { Collections.synchronizedMap(this.toMutableMap()) }
     }
 
-    fun <V> List<V>.toSynchronizedList(): MutableList<V> {
+    fun <V> Collection<V>.toSynchronizedList(): MutableList<V> {
         return synchronizedCopy { Collections.synchronizedList(this.toMutableList()) }
     }
 
-    fun <V> Set<V>.toSynchronizedSet(): MutableSet<V> {
+    fun <V> Collection<V>.toSynchronizedSet(): MutableSet<V> {
         return synchronizedCopy { Collections.synchronizedSet(this.toMutableSet()) }
     }
 

@@ -47,6 +47,7 @@ import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
 import de.bixilon.minosoft.util.KUtil.synchronizedSetOf
 import de.bixilon.minosoft.util.KUtil.toSynchronizedMap
 import de.bixilon.minosoft.util.MMath
+import de.bixilon.minosoft.util.collections.SynchronizedMap
 import de.bixilon.minosoft.util.task.ThreadPoolRunnable
 import glm_.vec2.Vec2i
 import glm_.vec3.Vec3i
@@ -61,10 +62,10 @@ class WorldRenderer(
 
     lateinit var chunkShader: Shader
 
-    val allChunkSections: MutableMap<Vec2i, MutableMap<Int, ChunkMeshCollection>> = synchronizedMapOf()
-    val visibleChunks: MutableMap<Vec2i, MutableMap<Int, ChunkMeshCollection>> = synchronizedMapOf()
+    val allChunkSections: SynchronizedMap<Vec2i, SynchronizedMap<Int, ChunkMeshCollection>> = synchronizedMapOf()
+    val visibleChunks: SynchronizedMap<Vec2i, SynchronizedMap<Int, ChunkMeshCollection>> = synchronizedMapOf()
     val queuedChunks: MutableSet<Vec2i> = synchronizedSetOf()
-    private val preparationTasks: MutableMap<Vec2i, MutableMap<Int, ThreadPoolRunnable>> = synchronizedMapOf()
+    private val preparationTasks: SynchronizedMap<Vec2i, SynchronizedMap<Int, ThreadPoolRunnable>> = synchronizedMapOf()
 
     private var allBlocks: Collection<BlockState>? = null
 
@@ -428,7 +429,7 @@ class WorldRenderer(
     private fun onFrustumChange(frustum: Frustum) {
         visibleChunks.clear()
         for ((chunkLocation, indexMap) in allChunkSections.toSynchronizedMap()) {
-            val visibleIndexMap: MutableMap<Int, ChunkMeshCollection> = synchronizedMapOf()
+            val visibleIndexMap: SynchronizedMap<Int, ChunkMeshCollection> = synchronizedMapOf()
             for ((index, mesh) in indexMap.toSynchronizedMap()) {
                 if (frustum.containsChunk(chunkLocation, mesh.lowestBlockHeight, mesh.highestBlockHeight)) {
                     visibleIndexMap[index] = mesh
