@@ -153,4 +153,8 @@ object KUtil {
         }
         return entities.toSet()
     }
+
+    operator fun <T> List<T>.get(enum: Enum<*>): T {
+        return this[enum.ordinal]
+    }
 }

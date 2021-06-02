@@ -52,7 +52,15 @@ class Camera(
     var cameraRight = Vec3(0.0f, 0.0f, -1.0f)
     private var cameraUp = Vec3(0.0f, 1.0f, 0.0f)
 
-    val frustum: Frustum = Frustum(this)
+    val fov: Float
+        get() {
+            val fov = Minosoft.config.config.game.camera.fov / (zoom + 1.0f)
+
+            if (!Minosoft.config.config.game.camera.dynamicFov) {
+                return fov
+            }
+            return fov * entity.fovMultiplier
+        }
 
 
     var viewMatrix = calculateViewMatrix()
@@ -62,15 +70,8 @@ class Camera(
     var viewProjectionMatrix = projectionMatrix * viewMatrix
         private set
 
-    val fov: Float
-        get() {
-            val fov = Minosoft.config.config.game.camera.fov
 
-            if (!Minosoft.config.config.game.camera.dynamicFov) {
-                return fov
-            }
-            return fov * entity.fovMultiplier
-        }
+    val frustum: Frustum = Frustum(this)
 
 
     fun mouseCallback(xPos: Double, yPos: Double) {
@@ -151,7 +152,7 @@ class Camera(
     }
 
     private fun calculateProjectionMatrix(screenDimensions: Vec2): Mat4 {
-        return glm.perspective((fov / (zoom + 1.0f)).rad, screenDimensions.x / screenDimensions.y, 0.1f, 1000f)
+        return glm.perspective(fov.rad, screenDimensions.x / screenDimensions.y, 0.1f, 1000f)
     }
 
     private fun calculateViewMatrix(): Mat4 {
