@@ -228,21 +228,15 @@ class WorldRenderer(
             return
         }
 
-        val neighborsVec2is: Array<Vec2i> = arrayOf(
-            chunkPosition + Directions.NORTH,
-            chunkPosition + Directions.SOUTH,
-            chunkPosition + Directions.WEST,
-            chunkPosition + Directions.EAST,
-        )
+        if (checkQueued) {
+            checkNeighbours(chunkPosition)
+        }
 
         // ensure all neighbor chunks are loaded
         for (direction in Directions.SIDES) {
             val neighborChunk = world.chunks[chunkPosition + direction]
             if (neighborChunk == null || !neighborChunk.isFullyLoaded) {
                 // neighbors not loaded, doing later
-                if (checkQueued) {
-                    checkQueuedChunks(neighborsVec2is)
-                }
                 queuedChunks.add(chunkPosition)
                 return
             }
@@ -263,11 +257,17 @@ class WorldRenderer(
         if (currentChunks.isNotEmpty()) {
             prepareChunkSections(chunkPosition, currentChunks)
         }
+    }
 
-        if (checkQueued) {
-            checkQueuedChunks(neighborsVec2is)
-        }
+    private fun checkNeighbours(chunkPosition: Vec2i) {
+        val neighborsVec2is: Array<Vec2i> = arrayOf(
+            chunkPosition + Directions.NORTH,
+            chunkPosition + Directions.SOUTH,
+            chunkPosition + Directions.WEST,
+            chunkPosition + Directions.EAST,
+        )
 
+        checkQueuedChunks(neighborsVec2is)
     }
 
     private fun checkQueuedChunks(chunkPositions: Array<Vec2i>) {
