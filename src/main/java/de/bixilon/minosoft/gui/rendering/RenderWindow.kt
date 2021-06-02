@@ -172,7 +172,7 @@ class RenderWindow(
         // Make the OpenGL context current
         glfwMakeContextCurrent(windowId)
         // Enable v-sync
-        glfwSwapInterval(1)
+        glfwSwapInterval(Minosoft.config.config.game.other.swapInterval)
 
 
         // Make the window visible
