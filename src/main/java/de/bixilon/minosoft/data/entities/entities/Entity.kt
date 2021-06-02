@@ -96,7 +96,7 @@ abstract class Entity(
     val realPosition: Vec3
         get() = VecUtil.lerp((System.currentTimeMillis() - lastTickTime) / ProtocolDefinition.TICK_TIMEf, previousPosition, position)
 
-    private var lastTickTime = -1L
+    protected var lastTickTime = -1L
 
     fun forceMove(deltaPosition: Vec3) {
         previousPosition = Vec3(position)

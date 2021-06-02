@@ -34,7 +34,7 @@ class RenderWindowInputHandler(
     val renderWindow: RenderWindow,
 ) {
     val connection: PlayConnection = renderWindow.connection
-    val camera: Camera = Camera(connection, Minosoft.getConfig().config.game.camera.fov, renderWindow)
+    val camera: Camera = Camera(connection, renderWindow)
 
     private val keyBindingCallbacks: MutableMap<ResourceLocation, KeyBindingCallbackPair> = mutableMapOf()
     private val keysDown: MutableList<KeyCodes> = mutableListOf()

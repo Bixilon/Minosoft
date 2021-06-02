@@ -37,6 +37,7 @@ import de.bixilon.minosoft.protocol.packets.c2s.play.*
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.decide
 import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
+import de.bixilon.minosoft.util.MMath
 import glm_.func.cos
 import glm_.func.rad
 import glm_.func.sin
@@ -80,7 +81,7 @@ class LocalPlayerEntity(
 
 
     private var flyingSpeed: Float = 0.02f
-    private val movementSpeed: Float
+    val movementSpeed: Float
         get() = getAttributeValue(DefaultStatusEffectAttributeNames.GENERIC_MOVEMENT_SPEED)
 
     private var horizontalCollision = false
@@ -92,6 +93,12 @@ class LocalPlayerEntity(
     var sidewaysSpeed = 0.0f
     var forwardSpeed = 1.0f
     var fallDistance = 0.0f
+
+    private var lastFovMultiplier = 1.0f
+    private var currentFovMultiplier = 1.0f
+
+    val fovMultiplier: Float
+        get() = MMath.lerp((System.currentTimeMillis() - lastTickTime) / ProtocolDefinition.TICK_TIMEf, lastFovMultiplier, currentFovMultiplier)
 
     override val hasGravity: Boolean
         get() = !baseAbilities.isFlying
@@ -452,5 +459,8 @@ class LocalPlayerEntity(
         tickMovement()
 
         sendMovementPackets()
+
+        lastFovMultiplier = currentFovMultiplier
+        currentFovMultiplier = MMath.clamp(1.0f + movementSpeed, 1.0f, 1.5f)
     }
 }

@@ -18,6 +18,7 @@ import com.squareup.moshi.Json
 data class CameraGameConfig(
     @Json(name = "render_distance") var renderDistance: Int = 10,
     var fov: Float = 60f,
+    @Json(name = "dynamic_fov") var dynamicFov: Boolean = true,
     @Json(name = "mouse_sensitivity") var moseSensitivity: Float = 0.1f,
     @Json(name = "no_clip_movement") var noCipMovement: Boolean = false,
     @Json(name = "disable_movement_sending") var disableMovementSending: Boolean = true, // ToDo: This should get false once the physics are "complete"

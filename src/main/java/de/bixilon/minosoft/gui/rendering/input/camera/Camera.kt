@@ -39,7 +39,6 @@ import glm_.vec3.Vec3
 
 class Camera(
     val connection: PlayConnection,
-    var fov: Float,
     val renderWindow: RenderWindow,
 ) {
     private var mouseSensitivity = Minosoft.getConfig().config.game.camera.moseSensitivity
@@ -62,7 +61,17 @@ class Camera(
         private set
     var viewProjectionMatrix = projectionMatrix * viewMatrix
         private set
-    var lastFlyKeyDown = false
+
+    val fov: Float
+        get() {
+            val fov = Minosoft.config.config.game.camera.fov
+
+            if (!Minosoft.config.config.game.camera.dynamicFov) {
+                return fov
+            }
+            return fov * entity.fovMultiplier
+        }
+
 
     fun mouseCallback(xPos: Double, yPos: Double) {
         var xOffset = xPos - this.lastMouseX
