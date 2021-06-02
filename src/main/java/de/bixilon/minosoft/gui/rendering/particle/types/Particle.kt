@@ -98,8 +98,7 @@ abstract class Particle(
         var newVelocity = Vec3(velocity)
         if (this.physics && newVelocity != Vec3.EMPTY) {
             val aabb = aabb + position
-            val collisions = connection.collisionDetector.getCollisionsToCheck(newVelocity, aabb)
-            newVelocity = connection.collisionDetector.collide(this, newVelocity, collisions, aabb)
+            newVelocity = connection.collisionDetector.collide(this, newVelocity, aabb)
         }
 
         if (newVelocity != Vec3.EMPTY) {

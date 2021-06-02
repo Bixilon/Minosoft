@@ -51,7 +51,7 @@ class RightClickHandler(
         }
         val itemInHand = connection.player.inventory.getHotbarSlot()
 
-        val usage = if (renderWindow.inputHandler.camera.sneaking) {
+        val usage = if (connection.player.isSneaking) {
             BlockUsages.PASS
         } else {
             raycastHit.blockState.block.onUse(renderWindow.connection, raycastHit.blockState, raycastHit.blockPosition, raycastHit, Hands.MAIN_HAND, itemInHand)

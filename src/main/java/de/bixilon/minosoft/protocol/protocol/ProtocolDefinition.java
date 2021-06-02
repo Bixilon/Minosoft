@@ -92,8 +92,9 @@ public final class ProtocolDefinition {
 
     public static final int TICKS_PER_SECOND = 20;
     public static final int TICK_TIME = 1000 / TICKS_PER_SECOND;
+    public static final float TICK_TIMEf = (float) TICK_TIME;
 
-    public static final float VELOCITY_CONSTANT = (float) TICKS_PER_SECOND / 80f;
+    public static final float VELOCITY_CONSTANT = 8000.0f;
 
     public static final float GRAVITY = 32;
     public static final boolean FAST_MOVEMENT = true;

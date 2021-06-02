@@ -28,6 +28,8 @@ import java.util.*
 
 
 class HUDWorldDebugNode(hudRenderer: HUDRenderer) : DebugScreenNode(hudRenderer) {
+    private val connection = hudRenderer.connection
+    private val player = connection.player
     private val camera = hudRenderer.renderWindow.inputHandler.camera
     private val worldRenderer = hudRenderer.renderWindow.rendererMap[WorldRenderer.RESOURCE_LOCATION] as WorldRenderer?
 
@@ -82,7 +84,7 @@ class HUDWorldDebugNode(hudRenderer: HUDRenderer) : DebugScreenNode(hudRenderer)
         chunkPositionText.sText = "Chunk ${getChunkLocation()}"
         facingText.sText = "Facing: ${getFacing()}"
 
-        biomeText.sText = "Biome: ${camera.currentBiome}"
+        biomeText.sText = "Biome: ${player.positionInfo.biome}"
         dimensionText.sText = "Dimension: ${hudRenderer.connection.world.dimension}"
 
         difficultyText.sText = "Difficulty: ${hudRenderer.connection.world.difficulty?.name?.lowercase(Locale.getDefault())}, ${
@@ -93,7 +95,7 @@ class HUDWorldDebugNode(hudRenderer: HUDRenderer) : DebugScreenNode(hudRenderer)
             }
         }"
 
-        lightText.sText = "Client light: sky=${hudRenderer.connection.world.worldLightAccessor.getSkyLight(camera.blockPosition)}, block=${hudRenderer.connection.world.worldLightAccessor.getBlockLight(camera.blockPosition)}"
+        lightText.sText = "Client light: sky=${hudRenderer.connection.world.worldLightAccessor.getSkyLight(player.positionInfo.blockPosition)}, block=${hudRenderer.connection.world.worldLightAccessor.getBlockLight(player.positionInfo.blockPosition)}"
 
 
         lastPrepareTime = System.currentTimeMillis()
@@ -122,20 +124,22 @@ class HUDWorldDebugNode(hudRenderer: HUDRenderer) : DebugScreenNode(hudRenderer)
 
 
     private fun getPosition(): String {
-        return "${formatCoordinate(camera.playerEntity.position.x)} / ${formatCoordinate(camera.playerEntity.position.y)} / ${formatCoordinate(camera.playerEntity.position.z)}"
+        return "${formatCoordinate(camera.entity.position.x)} / ${formatCoordinate(camera.entity.position.y)} / ${formatCoordinate(camera.entity.position.z)}"
     }
 
     private fun getBlockPosition(): String {
-        return "${camera.blockPosition.x} / ${camera.blockPosition.y} / ${camera.blockPosition.z}"
+        val blockPosition = player.positionInfo.blockPosition
+        return "${blockPosition.x} / ${blockPosition.y} / ${blockPosition.z}"
     }
 
     private fun getChunkLocation(): String {
-        return "${camera.inChunkSectionPosition.x} ${camera.inChunkSectionPosition.y} ${camera.inChunkSectionPosition.z} in ${camera.chunkPosition.x} ${camera.sectionHeight} ${camera.chunkPosition.y}"
+        val inChunkSectionPosition = player.positionInfo.inChunkSectionPosition
+        return "${inChunkSectionPosition.x} ${inChunkSectionPosition.y} ${inChunkSectionPosition.z} in ${player.positionInfo.chunkPosition.x} ${player.positionInfo.sectionHeight} ${player.positionInfo.chunkPosition.y}"
     }
 
     private fun getFacing(): String {
-        val yaw = hudRenderer.renderWindow.inputHandler.camera.playerEntity.rotation.yaw
-        val pitch = hudRenderer.renderWindow.inputHandler.camera.playerEntity.rotation.pitch
+        val yaw = hudRenderer.renderWindow.inputHandler.camera.entity.rotation.yaw
+        val pitch = hudRenderer.renderWindow.inputHandler.camera.entity.rotation.pitch
         val direction = Directions.byDirection(camera.cameraFront)
         return "${Directions.byDirection(camera.cameraFront).name.lowercase(Locale.getDefault())} ${direction.vector} (${formatRotation(yaw.toDouble())} / ${formatRotation(pitch.toDouble())})"
     }

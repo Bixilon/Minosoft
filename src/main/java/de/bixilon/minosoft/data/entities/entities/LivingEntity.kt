@@ -14,6 +14,7 @@ package de.bixilon.minosoft.data.entities.entities
 
 import de.bixilon.minosoft.data.entities.EntityMetaDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
+import de.bixilon.minosoft.data.entities.Poses
 import de.bixilon.minosoft.data.mappings.effects.attributes.DefaultStatusEffectAttributeNames
 import de.bixilon.minosoft.data.mappings.entities.EntityType
 import de.bixilon.minosoft.data.player.Hands
@@ -22,7 +23,7 @@ import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.data.text.RGBColor.Companion.asRGBColor
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.spell.AmbientEntityEffectParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.spell.EntityEffectParticle
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.vertical
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.horizontal
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.util.KUtil.chance
 import glm_.vec3.Vec3
@@ -45,7 +46,7 @@ abstract class LivingEntity(connection: PlayConnection, entityType: EntityType, 
         get() = if (getLivingEntityFlag(0x04)) Hands.OFF_HAND else Hands.MAIN_HAND
 
     @get:EntityMetaDataFunction(name = "Is auto spin attack")
-    val isAutoSpinAttack: Boolean
+    val isSpinAttacking: Boolean
         get() = getLivingEntityFlag(0x04)
 
     @get:EntityMetaDataFunction(name = "Health")
@@ -79,6 +80,15 @@ abstract class LivingEntity(connection: PlayConnection, entityType: EntityType, 
     val bedPosition: Vec3i?
         get() = entityMetaData.sets.getBlockPosition(EntityMetaDataFields.LIVING_ENTITY_BED_POSITION)
 
+    open val isSleeping: Boolean
+        get() = bedPosition != null
+
+    override val pose: Poses?
+        get() = when {
+            isSleeping -> Poses.SLEEPING
+            isSpinAttacking -> Poses.SPIN_ATTACK
+            else -> super.pose
+        }
 
     private fun tickStatusEffects() {
         if (entityEffectParticle == null && ambientEntityEffectParticle == null) {
@@ -101,9 +111,9 @@ abstract class LivingEntity(connection: PlayConnection, entityType: EntityType, 
             return
         }
 
-        val particlePosition = position + Vec3.vertical(
-            { entityType.width * ((2.0f * random.nextFloat() - 1.0f) * 0.5f) },
-            entityType.height * random.nextFloat()
+        val particlePosition = position + Vec3.horizontal(
+            { dimensions.x * ((2.0f * random.nextFloat() - 1.0f) * 0.5f) },
+            dimensions.y * random.nextFloat()
         )
         if (effectAmbient) {
             ambientEntityEffectParticle ?: return
@@ -117,5 +127,9 @@ abstract class LivingEntity(connection: PlayConnection, entityType: EntityType, 
     override fun realTick() {
         super.realTick()
         tickStatusEffects()
+
+        if (isSleeping) {
+            rotation = rotation.copy(pitch = 0.0f)
+        }
     }
 }

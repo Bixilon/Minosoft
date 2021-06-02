@@ -16,8 +16,7 @@ package de.bixilon.minosoft.gui.rendering.input.camera
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames
 import de.bixilon.minosoft.data.entities.EntityRotation
-import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
-import de.bixilon.minosoft.data.mappings.biomes.Biome
+import de.bixilon.minosoft.data.player.LocalPlayerEntity
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.modding.events.CameraMatrixChangeEvent
@@ -26,25 +25,17 @@ import de.bixilon.minosoft.gui.rendering.modding.events.FrustumChangeEvent
 import de.bixilon.minosoft.gui.rendering.modding.events.ScreenResizeEvent
 import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
 import de.bixilon.minosoft.gui.rendering.util.VecUtil
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.blockPosition
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.floor
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.getWorldOffset
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.inChunkSectionPosition
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
 import de.bixilon.minosoft.modding.event.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import glm_.func.cos
 import glm_.func.rad
 import glm_.func.sin
 import glm_.glm
 import glm_.mat4x4.Mat4
 import glm_.vec2.Vec2
-import glm_.vec2.Vec2i
 import glm_.vec3.Vec3
-import glm_.vec3.Vec3i
 
 class Camera(
     val connection: PlayConnection,
@@ -52,35 +43,15 @@ class Camera(
     val renderWindow: RenderWindow,
 ) {
     private var mouseSensitivity = Minosoft.getConfig().config.game.camera.moseSensitivity
-    private val walkingSpeed get() = connection.player.baseAbilities.walkingSpeed * ProtocolDefinition.TICKS_PER_SECOND * 2
-    private val flyingSpeed get() = connection.player.baseAbilities.flyingSpeed * ProtocolDefinition.TICKS_PER_SECOND * 2
-    var cameraPosition = Vec3(0.0f, 0.0f, 0.0f)
+    val entity: LocalPlayerEntity
+        get() = connection.player
     private var lastMouseX = 0.0
     private var lastMouseY = 0.0
-    val playerEntity: PlayerEntity
-        get() = connection.player
-    var yaw = 0.0
-    var pitch = 0.0
     private var zoom = 0.0f
-
-    private var lastMovementPacketSent = 0L
-    private var currentPositionSent = false
-    private var currentRotationSent = false
 
     var cameraFront = Vec3(0.0f, 0.0f, -1.0f)
     var cameraRight = Vec3(0.0f, 0.0f, -1.0f)
     private var cameraUp = Vec3(0.0f, 1.0f, 0.0f)
-
-    var blockPosition: Vec3i = Vec3i(0, 0, 0)
-        private set
-    var currentBiome: Biome? = null
-        private set
-    var chunkPosition: Vec2i = Vec2i(0, 0)
-        private set
-    var sectionHeight: Int = 0
-        private set
-    var inChunkSectionPosition: Vec3i = Vec3i(0, 0, 0)
-        private set
 
     val frustum: Frustum = Frustum(this)
 
@@ -91,9 +62,7 @@ class Camera(
         private set
     var viewProjectionMatrix = projectionMatrix * viewMatrix
         private set
-
-    var sneaking: Boolean = false // ToDo: Not yet implemented
-
+    var lastFlyKeyDown = false
 
     fun mouseCallback(xPos: Double, yPos: Double) {
         var xOffset = xPos - this.lastMouseX
@@ -105,14 +74,14 @@ class Camera(
         }
         xOffset *= mouseSensitivity
         yOffset *= mouseSensitivity
-        var yaw = xOffset.toFloat() + playerEntity.rotation.headYaw
+        var yaw = xOffset.toFloat() + entity.rotation.headYaw
         if (yaw > 180) {
             yaw -= 360
         } else if (yaw < -180) {
             yaw += 360
         }
         yaw %= 180
-        val pitch = glm.clamp(yOffset.toFloat() + playerEntity.rotation.pitch, -89.9f, 89.9f)
+        val pitch = glm.clamp(yOffset.toFloat() + entity.rotation.pitch, -89.9f, 89.9f)
         setRotation(yaw, pitch)
     }
 
@@ -127,6 +96,8 @@ class Camera(
             KeyBindingsNames.MOVE_FLY_DOWN,
             KeyBindingsNames.ZOOM,
             KeyBindingsNames.MOVE_JUMP,
+            KeyBindingsNames.MOVE_SNEAK,
+            KeyBindingsNames.MOVE_TOGGLE_FLY,
         )
 
         connection.registerEvent(CallbackEventInvoker.of<ScreenResizeEvent> { recalculateViewProjectionMatrix() })
@@ -149,30 +120,25 @@ class Camera(
                 shader.use().setMat4("uViewProjectionMatrix", viewProjectionMatrix)
             }
         }
-        positionChangeCallback()
     }
 
-    private fun positionChangeCallback() {
-        blockPosition = playerEntity.position.blockPosition
-        currentBiome = connection.world.getBiome(blockPosition)
-        chunkPosition = blockPosition.chunkPosition
-        sectionHeight = blockPosition.sectionHeight
-        inChunkSectionPosition = blockPosition.inChunkSectionPosition
+    private fun onPositionChange() {
+        recalculateViewProjectionMatrix()
         // recalculate sky color for current biome
         val skyRenderer = renderWindow[SkyRenderer.Companion] ?: return
-        skyRenderer.baseColor = connection.world.getBiome(blockPosition)?.skyColor ?: RenderConstants.DEFAULT_SKY_COLOR
+        skyRenderer.baseColor = connection.world.getBiome(entity.positionInfo.blockPosition)?.skyColor ?: RenderConstants.DEFAULT_SKY_COLOR
 
         frustum.recalculate()
         connection.fireEvent(FrustumChangeEvent(renderWindow, frustum))
 
         connection.world.dimension?.hasSkyLight?.let {
             if (it) {
-                skyRenderer.baseColor = currentBiome?.skyColor ?: RenderConstants.DEFAULT_SKY_COLOR
+                skyRenderer.baseColor = entity.positionInfo.biome?.skyColor ?: RenderConstants.DEFAULT_SKY_COLOR
             } else {
                 skyRenderer.baseColor = RenderConstants.BLACK_COLOR
             }
         } ?: let { skyRenderer.baseColor = RenderConstants.DEFAULT_SKY_COLOR }
-        connection.fireEvent(CameraPositionChangeEvent(renderWindow, cameraPosition))
+        connection.fireEvent(CameraPositionChangeEvent(renderWindow, entity.eyePosition))
     }
 
     private fun calculateProjectionMatrix(screenDimensions: Vec2): Mat4 {
@@ -180,22 +146,12 @@ class Camera(
     }
 
     private fun calculateViewMatrix(): Mat4 {
-        cameraPosition = getAbsoluteCameraPosition()
+        val cameraPosition = entity.eyePosition
         return glm.lookAt(cameraPosition, cameraPosition + cameraFront, CAMERA_UP_VEC3)
     }
 
-    private fun getAbsoluteCameraPosition(): Vec3 {
-        return playerEntity.position + Vec3(0, PLAYER_EYE_HEIGHT, 0)
-    }
-
-    fun checkPosition() {
-        if (cameraPosition != getAbsoluteCameraPosition()) {
-            currentPositionSent = false
-        }
-    }
-
     fun setRotation(yaw: Float, pitch: Float) {
-        playerEntity.rotation = EntityRotation(yaw.toDouble(), pitch.toDouble())
+        entity.rotation = EntityRotation(yaw.toDouble(), pitch.toDouble())
 
         cameraFront = Vec3(
             (yaw + 90).rad.cos * (-pitch).rad.cos,
@@ -206,90 +162,40 @@ class Camera(
         cameraRight = (cameraFront cross CAMERA_UP_VEC3).normalize()
         cameraUp = (cameraRight cross cameraFront).normalize()
         recalculateViewProjectionMatrix()
-        currentRotationSent = false
     }
 
-    fun draw(deltaTime: Double) {
-        if (!currentPositionSent || !currentRotationSent) {
-            recalculateViewProjectionMatrix()
-        }
-
-        if (renderWindow.inputHandler.currentKeyConsumer != null) { // ToDo
-            return
-        }
-        var cameraSpeed = if (connection.player.isFlying) {
-            flyingSpeed
+    fun draw() {
+        val input = if (renderWindow.inputHandler.currentKeyConsumer == null) {
+            MovementInput(
+                pressingForward = renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.MOVE_FORWARD),
+                pressingBack = renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.MOVE_BACKWARDS),
+                pressingLeft = renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.MOVE_LEFT),
+                pressingRight = renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.MOVE_RIGHT),
+                jumping = renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.MOVE_JUMP),
+                sneaking = renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.MOVE_SNEAK),
+                sprinting = renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.MOVE_SPRINT),
+                flyDown = renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.MOVE_FLY_DOWN),
+                flyUp = renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.MOVE_FLY_UP),
+                toggleFlyDown = renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.MOVE_TOGGLE_FLY),
+            )
         } else {
-            walkingSpeed
-        } * deltaTime
-        val movementFront = Vec3(cameraFront)
-        if (!Minosoft.getConfig().config.game.camera.noCipMovement) {
-            movementFront.y = 0.0f
-            movementFront.normalizeAssign() // when moving forwards, do not move down
+            MovementInput()
         }
-        if (renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.MOVE_SPRINT)) {
-            cameraSpeed *= PLAYER_SPRINT_SPEED_MODIFIER
-        }
-        if (ProtocolDefinition.FAST_MOVEMENT) {
-            cameraSpeed *= 5
-        }
-        val movementDirection = Vec3()
-        if (renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.MOVE_FORWARD)) {
-            movementDirection += movementFront
-        }
-        if (renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.MOVE_BACKWARDS)) {
-            movementDirection -= movementFront
-        }
-        if (renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.MOVE_LEFT)) {
-            movementDirection -= cameraRight
-        }
-        if (renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.MOVE_RIGHT)) {
-            movementDirection += cameraRight
-        }
-        val deltaMovement = if (movementDirection != Vec3.EMPTY) {
-            movementDirection.normalize() * cameraSpeed
-        } else {
-            movementDirection
-        }
-        if (playerEntity.isFlying) {
-            if (renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.MOVE_FLY_UP)) {
-                deltaMovement += CAMERA_UP_VEC3 * cameraSpeed
-            }
-            if (renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.MOVE_FLY_DOWN)) {
-                deltaMovement -= CAMERA_UP_VEC3 * cameraSpeed
-            }
-        } else if (playerEntity.onGround && renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.MOVE_JUMP)) {
-            // TODO: jump delay, correct jump height
-            playerEntity.velocity.y += 0.75f * ProtocolDefinition.GRAVITY
-            playerEntity.onGround = false
-        }
-        if (deltaMovement != Vec3.EMPTY) {
-            playerEntity.move(deltaMovement, false)
-            recalculateViewProjectionMatrix()
-            currentPositionSent = false
-        }
+        entity.input = input
+        entity.tick() // The thread pool might be busy, we force a tick here to avoid lagging
 
-        val lastZoom = zoom
         zoom = if (renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.ZOOM)) {
             2f
         } else {
             0.0f
         }
-        if (lastZoom != zoom) {
-            recalculateViewProjectionMatrix()
-        }
-    }
-
-    fun setPosition(position: Vec3) {
-        playerEntity.position = position
-        cameraPosition = getAbsoluteCameraPosition()
-        positionChangeCallback()
+        // ToDo: Only update if changed
+        onPositionChange()
     }
 
     fun getTargetBlock(): RaycastHit? {
-        return raycast(cameraPosition, cameraFront)
+        return raycast(entity.eyePosition, cameraFront)
     }
-
 
     private fun raycast(origin: Vec3, direction: Vec3): RaycastHit? {
         val currentPosition = Vec3(origin)
@@ -322,8 +228,6 @@ class Camera(
 
     companion object {
         val CAMERA_UP_VEC3 = Vec3(0.0f, 1.0f, 0.0f)
-        private const val PLAYER_EYE_HEIGHT = 1.3 // player is 1.8 blocks high, the camera is normally at 0.5. 1.8 - 0.5 = 1.3
-        private const val PLAYER_SPRINT_SPEED_MODIFIER = 1.30000001192092896
 
         private const val RAYCAST_MAX_STEPS = 100
     }

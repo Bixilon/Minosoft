@@ -36,6 +36,9 @@ class EntityDestroyS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     override fun handle(connection: PlayConnection) {
         connection.fireEvent(EntityDestroyEvent(connection, this))
         for (entityId in entityIds) {
+            val entity = connection.world.entities[entityId] ?: continue
+            entity.vehicle?.passengers?.remove(entity)
+
             connection.world.entities.remove(entityId)
         }
     }

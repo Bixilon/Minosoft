@@ -33,7 +33,7 @@ class HealthSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
 
     override fun handle(connection: PlayConnection) {
         connection.fireEvent(UpdateHealthEvent(connection, this))
-        connection.player.healthCondition.food = hunger
+        connection.player.healthCondition.hunger = hunger
         connection.player.healthCondition.hp = hp
         connection.player.healthCondition.saturation = saturation
 

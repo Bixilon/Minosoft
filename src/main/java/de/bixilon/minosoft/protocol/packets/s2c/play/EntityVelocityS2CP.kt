@@ -15,7 +15,6 @@ package de.bixilon.minosoft.protocol.packets.s2c.play
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -23,7 +22,7 @@ import glm_.vec3.Vec3
 
 class EntityVelocityS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     val entityId: Int = buffer.readEntityId()
-    val velocity: Vec3 = Vec3(buffer.readShort(), buffer.readShort(), buffer.readShort()) * ProtocolDefinition.VELOCITY_CONSTANT
+    val velocity: Vec3 = buffer.readVelocity()
 
     override fun handle(connection: PlayConnection) {
         val entity = connection.world.entities[entityId] ?: return

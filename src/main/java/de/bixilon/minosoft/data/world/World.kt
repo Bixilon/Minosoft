@@ -232,4 +232,9 @@ class World(
     operator fun plusAssign(particle: Particle) {
         addParticle(particle)
     }
+
+    companion object {
+        const val MAX_SIZE = 29999999
+        const val MAX_SIZEf = MAX_SIZE.toFloat()
+    }
 }

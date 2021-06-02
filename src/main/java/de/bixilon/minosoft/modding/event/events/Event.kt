@@ -13,18 +13,4 @@
 
 package de.bixilon.minosoft.modding.event.events
 
-import de.bixilon.minosoft.data.entities.entities.Entity
-import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-
-abstract class Event {
-
-    companion object {
-        fun List<Int>.entities(connection: PlayConnection): List<Entity> {
-            val entities: MutableList<Entity> = mutableListOf()
-            for (id in this) {
-                entities += connection.world.entities[id] ?: continue
-            }
-            return entities.toList()
-        }
-    }
-}
+abstract class Event

@@ -25,8 +25,10 @@ object KeyBindingsNames {
     val MOVE_LEFT = ResourceLocation("minosoft:move_left")
     val MOVE_RIGHT = ResourceLocation("minosoft:move_right")
     val MOVE_SPRINT = ResourceLocation("minosoft:move_sprint")
+    val MOVE_TOGGLE_FLY = ResourceLocation("minosoft:move_toggle_fly")
     val MOVE_FLY_UP = ResourceLocation("minosoft:move_fly_up")
     val MOVE_FLY_DOWN = ResourceLocation("minosoft:move_fly_down")
+    val MOVE_SNEAK = ResourceLocation("minosoft:move_sneak")
     val MOVE_JUMP = ResourceLocation("minosoft:move_jump")
 
     val DESTROY_BLOCK = ResourceLocation("minosoft:destroy_block")
@@ -102,7 +104,17 @@ object KeyBindingsNames {
                 KeyAction.CHANGE to mutableSetOf(KeyCodes.KEY_SPACE),
             ),
         ),
+        MOVE_TOGGLE_FLY to KeyBinding(
+            mutableMapOf(
+                KeyAction.DOUBLE_PRESS to mutableSetOf(KeyCodes.KEY_SPACE),
+            ),
+        ),
         MOVE_FLY_DOWN to KeyBinding(
+            mutableMapOf(
+                KeyAction.CHANGE to mutableSetOf(KeyCodes.KEY_LEFT_SHIFT),
+            ),
+        ),
+        MOVE_SNEAK to KeyBinding(
             mutableMapOf(
                 KeyAction.CHANGE to mutableSetOf(KeyCodes.KEY_LEFT_SHIFT),
             ),

@@ -37,7 +37,7 @@ class Fox(connection: PlayConnection, entityType: EntityType, position: Vec3, ro
         get() = getFoxFlag(0x01)
 
     @get:EntityMetaDataFunction(name = "Is crouching")
-    override val isCrouching: Boolean
+    override val isSneaking: Boolean
         get() = getFoxFlag(0x04)
 
     @get:EntityMetaDataFunction(name = "Is interested")
@@ -49,7 +49,7 @@ class Fox(connection: PlayConnection, entityType: EntityType, position: Vec3, ro
         get() = getFoxFlag(0x10)
 
     @get:EntityMetaDataFunction(name = "Is sleeping")
-    val isSleeping: Boolean
+    override val isSleeping: Boolean
         get() = getFoxFlag(0x20)
 
     @get:EntityMetaDataFunction(name = "Is faceplanted")

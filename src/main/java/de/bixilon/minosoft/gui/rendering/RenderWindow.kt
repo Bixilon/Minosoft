@@ -105,10 +105,6 @@ class RenderWindow(
                 latch.dec()
                 initialPositionReceived = true
             }
-            queue += {
-                inputHandler.camera.setPosition(packet.position)
-                inputHandler.camera.setRotation(packet.rotation.yaw, packet.rotation.pitch)
-            }
         })
 
         // order dependant (from back to front)

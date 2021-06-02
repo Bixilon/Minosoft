@@ -19,5 +19,4 @@ interface PhysicsEntity {
     val position: Vec3
     val velocity: Vec3
     var onGround: Boolean
-
 }

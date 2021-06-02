@@ -35,6 +35,7 @@ import glm_.vec2.Vec2
 import glm_.vec2.Vec2i
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3i
+import kotlin.math.abs
 import kotlin.random.Random
 
 object VecUtil {
@@ -203,7 +204,7 @@ object VecUtil {
         get() = Vec3(x + 0.5f, y, z + 0.5f) // ToDo: Confirm
 
     val Vec3.blockPosition: Vec3i
-        get() = Vec3i((x - 0.5f).toInt(), y.toInt(), (z - 0.5f).toInt()) // ToDo: Confirm
+        get() = this.floor
 
     val Vec3i.center: Vec3
         get() = Vec3(x + 0.5f, y + 0.5f, z + 0.5f) // ToDo: Confirm
@@ -268,13 +269,16 @@ object VecUtil {
             z = horizontal(positionHash shr 8)).clamp(-maxModelOffset, maxModelOffset)
     }
 
-    private fun Vec3.clamp(min: Float, max: Float): Vec3 {
+    fun Vec3.clamp(min: Float, max: Float): Vec3 {
         return Vec3(
             x = x.clamp(min, max),
             y = y.clamp(min, max),
             z = z.clamp(min, max),
         )
     }
+
+    val Vec3.empty: Boolean
+        get() = this.length() < 0.001
 
     private fun generatePositionHash(x: Int, y: Int, z: Int): Long {
         var hash = (x * 3129871L) xor z.toLong() * 116129781L xor y.toLong()
@@ -353,14 +357,38 @@ object VecUtil {
         }
     }
 
-    fun Vec3.Companion.vertical(xz: () -> Float, y: Float): Vec3 {
+    fun Vec3.Companion.horizontal(xz: () -> Float, y: Float): Vec3 {
         return Vec3(xz(), y, xz())
     }
 
-    fun Vec3.verticalPlus(xz: () -> Float, y: Float): Vec3 {
+    fun Vec3.horizontalPlus(xz: () -> Float, y: Float): Vec3 {
         return Vec3(this.x + xz(), this.y + y, this.z + xz())
     }
 
     val Float.noise: Float
         get() = Random.nextFloat() / this * if (Random.nextBoolean()) 1.0f else -1.0f
+
+    fun lerp(delta: Float, start: Vec3, end: Vec3): Vec3 {
+        return Vec3(
+            lerp(delta, start.x, end.x),
+            lerp(delta, start.y, end.y),
+            lerp(delta, start.z, end.z),
+        )
+    }
+
+    fun lerp(delta: Float, start: Float, end: Float): Float {
+        return start + delta * (end - start)
+    }
+
+    fun Vec3.clearZero() {
+        if (abs(x) < 0.003f) {
+            x = 0.0f
+        }
+        if (abs(y) < 0.003f) {
+            y = 0.0f
+        }
+        if (abs(z) < 0.003f) {
+            z = 0.0f
+        }
+    }
 }

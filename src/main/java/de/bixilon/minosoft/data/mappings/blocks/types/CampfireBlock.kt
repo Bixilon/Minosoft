@@ -26,8 +26,8 @@ import de.bixilon.minosoft.gui.rendering.input.camera.RaycastHit
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.CampfireSmokeParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.fire.SmokeParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.lava.LavaParticle
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.horizontalPlus
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.noise
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.verticalPlus
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
 import de.bixilon.minosoft.util.KUtil.chance
@@ -52,7 +52,7 @@ open class CampfireBlock(resourceLocation: ResourceLocation, registries: Registr
 
     fun spawnSmokeParticles(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, extinguished: Boolean) {
         let {
-            val position = Vec3(blockPosition).verticalPlus(
+            val position = Vec3(blockPosition).horizontalPlus(
                 { 0.5f + 3.0f.noise },
                 Random.nextFloat() + Random.nextFloat() + 0.5f // ToDo: This +0.5f is a temporary fix for not making the particle stuck in ourself
             )
@@ -69,7 +69,7 @@ open class CampfireBlock(resourceLocation: ResourceLocation, registries: Registr
         }
 
         if (extinguished) {
-            val position = Vec3(blockPosition).verticalPlus(
+            val position = Vec3(blockPosition).horizontalPlus(
                 { 0.5f + 4.0f.noise },
                 0.5f
             )

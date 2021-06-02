@@ -15,6 +15,6 @@ package de.bixilon.minosoft.data.player
 
 class PlayerHealthCondition {
     var hp = 0.0f
-    var food = 0
+    var hunger = 0
     var saturation = 0.0f
 }

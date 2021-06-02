@@ -39,6 +39,7 @@ Minosoft is an open source minecraft client, written from scratch in kotlin (and
 - Basic light
 - Block place, break, mining
 - Item and block interaction
+- (almost) Original physics
 
 Works. Still missing many features, but heavily developed.
 

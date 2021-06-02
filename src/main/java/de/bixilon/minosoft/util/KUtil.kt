@@ -13,7 +13,9 @@
 
 package de.bixilon.minosoft.util
 
+import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.enum.AliasableEnum
 import sun.misc.Unsafe
@@ -141,5 +143,13 @@ object KUtil {
 
     fun String.asUUID(): UUID {
         return Util.getUUIDFromString(this)
+    }
+
+    fun Collection<Int>.entities(connection: PlayConnection): Set<Entity> {
+        val entities: MutableList<Entity> = mutableListOf()
+        for (id in this) {
+            entities += connection.world.entities[id] ?: continue
+        }
+        return entities.toSet()
     }
 }

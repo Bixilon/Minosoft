@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2021 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -10,20 +10,10 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.modding.event.events
 
-import de.bixilon.minosoft.data.entities.entities.Entity
-import de.bixilon.minosoft.modding.event.EventInitiators
-import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import de.bixilon.minosoft.protocol.packets.s2c.play.EntityDestroyS2CP
-import de.bixilon.minosoft.util.KUtil.entities
+package de.bixilon.minosoft.data.physics
 
-class EntityDestroyEvent(
-    connection: PlayConnection,
-    initiator: EventInitiators,
-    val entities: Set<Entity>,
-) : PlayConnectionEvent(connection, initiator) {
-
-    constructor(connection: PlayConnection, packet: EntityDestroyS2CP) : this(connection, EventInitiators.SERVER, packet.entityIds.entities(connection))
-
+object PhysicsConstants {
+    const val SPRINT_MINIMUM_HUNGER = 6.0f
+    const val BASE_GRAVITY = 0.08f
 }

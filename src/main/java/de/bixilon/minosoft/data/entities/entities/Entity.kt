@@ -19,67 +19,130 @@ import de.bixilon.minosoft.data.entities.StatusEffectInstance
 import de.bixilon.minosoft.data.entities.meta.EntityMetaData
 import de.bixilon.minosoft.data.inventory.InventorySlots.EquipmentSlots
 import de.bixilon.minosoft.data.inventory.ItemStack
+import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.effects.StatusEffect
 import de.bixilon.minosoft.data.mappings.effects.attributes.StatusEffectAttribute
+import de.bixilon.minosoft.data.mappings.effects.attributes.StatusEffectAttributeInstance
+import de.bixilon.minosoft.data.mappings.effects.attributes.StatusEffectOperations
 import de.bixilon.minosoft.data.mappings.entities.EntityType
 import de.bixilon.minosoft.data.physics.PhysicsEntity
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.gui.rendering.chunk.models.AABB
+import de.bixilon.minosoft.gui.rendering.input.camera.EntityPositionInfo
+import de.bixilon.minosoft.gui.rendering.util.VecUtil
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.blockPosition
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.chunkPosition
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.floor
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
+import de.bixilon.minosoft.util.KUtil.synchronizedSetOf
+import glm_.vec2.Vec2
 import glm_.vec3.Vec3
+import glm_.vec3.Vec3i
 import java.lang.reflect.InvocationTargetException
 import java.util.*
-import kotlin.math.pow
 import kotlin.random.Random
 
 abstract class Entity(
     protected val connection: PlayConnection,
     val entityType: EntityType,
-    override var position: Vec3,
+    position: Vec3,
     var rotation: EntityRotation,
 ) : PhysicsEntity {
     protected val random = Random
     val equipment: MutableMap<EquipmentSlots, ItemStack> = mutableMapOf()
     val activeStatusEffects: MutableMap<StatusEffect, StatusEffectInstance> = synchronizedMapOf()
-    val modifiers: MutableMap<UUID, StatusEffectAttribute> = synchronizedMapOf()
+    val attributes: MutableMap<ResourceLocation, MutableMap<UUID, StatusEffectAttributeInstance>> = synchronizedMapOf()
 
     @JvmField
+    @Deprecated(message = "Use connection.version")
     protected val versionId: Int = connection.version.versionId
     open var attachedEntity: Int? = null
 
     var entityMetaData: EntityMetaData = EntityMetaData(connection)
+    var vehicle: Entity? = null
+    var passengers: MutableSet<Entity> = synchronizedSetOf()
 
     override var velocity: Vec3 = Vec3.EMPTY
+    var velocityMultiplier = Vec3.EMPTY
 
     protected open val hasCollisions = true
-    protected open val isFlying = false
 
     override var onGround = false
 
-    private val defaultAABB = AABB(
-        Vec3(-(entityType.width / 2 + HITBOX_MARGIN), 0, -(entityType.width / 2 + HITBOX_MARGIN)),
-        Vec3(+(entityType.width / 2 + HITBOX_MARGIN), entityType.height, +(entityType.width / 2 + HITBOX_MARGIN))
-    )
+    val defaultAABB: AABB
+        get() = AABB(
+            Vec3(-(dimensions.x / 2 + HITBOX_MARGIN), 0, -(dimensions.x / 2 + HITBOX_MARGIN)),
+            Vec3(+(dimensions.x / 2 + HITBOX_MARGIN), dimensions.y, +(dimensions.x / 2 + HITBOX_MARGIN))
+        )
+
+    open val dimensions = Vec2(entityType.width, entityType.height)
+
+    open val eyeHeight: Float
+        get() = dimensions.y * 0.85f
+
+    private var lastFakeTickTime = -1L
+    var previousPosition: Vec3 = Vec3(position)
+    override var position: Vec3 = position
+        set(value) {
+            field = value
+            positionInfo.update()
+        }
+    open val positionInfo = EntityPositionInfo(connection, this)
+
+    val eyePosition: Vec3
+        get() = realPosition + Vec3(0.0f, eyeHeight, 0.0f)
+
+    val realPosition: Vec3
+        get() = VecUtil.lerp((System.currentTimeMillis() - lastTickTime) / ProtocolDefinition.TICK_TIMEf, previousPosition, position)
 
     private var lastTickTime = -1L
 
     fun forceMove(deltaPosition: Vec3) {
+        previousPosition = Vec3(position)
         position = position + deltaPosition
     }
 
     fun addEffect(effect: StatusEffectInstance) {
         // effect already applied, maybe the duration or the amplifier changed?
+        removeEffect(effect.statusEffect)
         activeStatusEffects[effect.statusEffect] = effect
-        // ToDo: Add status effect modifiers
     }
 
     fun removeEffect(effect: StatusEffect) {
         activeStatusEffects.remove(effect)
+    }
+
+    fun getAttributeValue(attribute: ResourceLocation): Float {
+        // ToDo: Check order and verify value
+        val baseValue = entityType.attributes[attribute] ?: 1.0f
+        var ret = baseValue
+
+        fun addToValue(statusEffectAttribute: StatusEffectAttribute, amplifier: Int) {
+            val instanceValue = statusEffectAttribute.amount * amplifier
+            when (statusEffectAttribute.operation) {
+                StatusEffectOperations.MULTIPLY_TOTAL -> ret *= 1.0f + instanceValue
+                StatusEffectOperations.ADDITION -> ret += instanceValue
+                StatusEffectOperations.MULTIPLY_BASE -> ret += baseValue * (instanceValue + 1.0f)
+            }
+        }
+
+        attributes[attribute]?.let {
+            for (instance in it.values) {
+                addToValue(instance.statusEffectAttribute, instance.amplifier)
+            }
+        }
+
+        for (statusEffect in activeStatusEffects.values) {
+            for ((instanceResourceLocation, instance) in statusEffect.statusEffect.attributes) {
+                if (instanceResourceLocation != attribute) {
+                    continue
+                }
+                addToValue(instance, statusEffect.amplifier)
+            }
+        }
+
+        return ret
     }
 
     fun attachTo(vehicleId: Int?) {
@@ -106,11 +169,12 @@ abstract class Entity(
     val isOnFire: Boolean
         get() = getEntityFlag(0x01)
 
-    open val isCrouching: Boolean
+    @get:EntityMetaDataFunction(name = "Is sneaking")
+    open val isSneaking: Boolean
         get() = getEntityFlag(0x02)
 
     @get:EntityMetaDataFunction(name = "Is sprinting")
-    val isSprinting: Boolean
+    open val isSprinting: Boolean
         get() = getEntityFlag(0x08)
 
     val isSwimming: Boolean
@@ -121,7 +185,7 @@ abstract class Entity(
         get() = getEntityFlag(0x20)
 
     @EntityMetaDataFunction(name = "Has glowing effect")
-    val hasGLowingEffect: Boolean
+    val hasGlowingEffect: Boolean
         get() = getEntityFlag(0x20)
 
     val isFlyingWithElytra: Boolean
@@ -148,12 +212,12 @@ abstract class Entity(
         get() = !entityMetaData.sets.getBoolean(EntityMetaDataFields.ENTITY_NO_GRAVITY)
 
     @get:EntityMetaDataFunction(name = "Pose")
-    val pose: Poses?
+    open val pose: Poses?
         get() {
             return when {
-                isCrouching -> Poses.SNEAKING
-                isSwimming -> Poses.SWIMMING
                 isFlyingWithElytra -> Poses.FLYING
+                isSwimming -> Poses.SWIMMING
+                isSneaking -> Poses.SNEAKING
                 else -> entityMetaData.sets.getPose(EntityMetaDataFields.ENTITY_POSE)
             }
         }
@@ -202,45 +266,31 @@ abstract class Entity(
             return values
         }
 
-    fun move(deltaPosition: Vec3, ignoreUnloadedChunks: Boolean = true) {
-        if (!hasCollisions) {
-            forceMove(deltaPosition)
-            return
-        }
-        val collisionsToCheck = connection.collisionDetector.getCollisionsToCheck(deltaPosition, aabb, ignoreUnloadedChunks)
-        val realMovement = connection.collisionDetector.collide(this, deltaPosition, collisionsToCheck, aabb)
-        forceMove(realMovement)
-    }
+    val canStep: Boolean
+        get() = !isSneaking
 
-    private fun tickMovement(deltaMillis: Long) {
-        if (connection.world[position.blockPosition.chunkPosition]?.isFullyLoaded != true) {
-            return // ignore update if chunk is not loaded yet
+    val belowBlockPosition: Vec3i
+        get() {
+            val position = (position - BELOW_POSITION_MINUS).floor
+            if (connection.world[position] == null) {
+                // ToDo: check for fences
+            }
+            return position
         }
-        val newVelocity = Vec3(velocity)
-        val oldVelocity = Vec3(velocity)
-        val deltaTime = deltaMillis.toFloat() / 1000.0f
-        if (hasGravity && !isFlying) {
-            newVelocity.y -= ProtocolDefinition.GRAVITY * deltaTime
-        }
-        newVelocity *= 0.25f.pow(deltaTime) // apply friction
-        if (newVelocity.length() < 0.05f) {
-            newVelocity *= 0
-        }
-        if (velocity != oldVelocity) {
-            // the velocity has changed
-            tick(deltaMillis)
-            return
-        }
-        velocity = newVelocity
-        move(velocity * deltaTime)
-    }
 
-    fun tick(deltaMillis: Long) {
-        check(deltaMillis > 0L) { "Delta tick time is <= 0: $deltaMillis" }
-
-        tickMovement(deltaMillis)
-
+    @Synchronized
+    fun tick() {
         val currentTime = System.currentTimeMillis()
+        if (lastFakeTickTime == -1L) {
+            lastFakeTickTime = currentTime
+            return
+        }
+        val deltaTime = currentTime - lastFakeTickTime
+        if (deltaTime <= 0) {
+            return
+        }
+
+
         if (currentTime - lastTickTime >= ProtocolDefinition.TICK_TIME) {
             realTick()
             lastTickTime = currentTime
@@ -249,11 +299,12 @@ abstract class Entity(
 
     open fun realTick() {}
 
-    private val aabb: AABB
+    val aabb: AABB
         get() = defaultAABB + position
 
     companion object {
         private const val HITBOX_MARGIN = 1e-5f
-        const val STEP_HEIGHT = 0.6f
+
+        private val BELOW_POSITION_MINUS = Vec3(0, 0.20000000298023224f, 0)
     }
 }

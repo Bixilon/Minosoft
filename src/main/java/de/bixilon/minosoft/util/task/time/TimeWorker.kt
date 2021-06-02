@@ -3,6 +3,7 @@ package de.bixilon.minosoft.util.task.time
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.util.KUtil.synchronizedSetOf
 import de.bixilon.minosoft.util.KUtil.toSynchronizedSet
+import java.util.concurrent.TimeUnit
 
 object TimeWorker {
     private val TASKS: MutableSet<TimeWorkerTask> = synchronizedSetOf()
@@ -19,18 +20,22 @@ object TimeWorker {
                         continue
                     }
                     Minosoft.THREAD_POOL.execute {
-                        synchronized(task.getsExecuted) {
-                            if (task.getsExecuted) {
-                                return@execute
-                            }
-                            if (System.currentTimeMillis() - currentTime >= task.maxDelayTime) {
-                                return@execute
-                            }
-                            task.getsExecuted = true
-                            task.runnable.run()
-                            task.lastExecution = currentTime
-                            task.getsExecuted = false
+                        if (!task.lock.tryLock(100L, TimeUnit.MILLISECONDS)) {
+                            return@execute
                         }
+                        if (task.getsExecuted) {
+                            task.lock.unlock()
+                            return@execute
+                        }
+                        if (System.currentTimeMillis() - currentTime >= task.maxDelayTime) {
+                            task.lock.unlock()
+                            return@execute
+                        }
+                        task.getsExecuted = true
+                        task.runnable.run()
+                        task.lastExecution = currentTime
+                        task.getsExecuted = false
+                        task.lock.unlock()
                     }
                     if (task.runOnce) {
                         TASKS -= task

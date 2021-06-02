@@ -277,7 +277,7 @@ class RenderWindowInputHandler(
     }
 
     fun draw(delta: Double) {
-        camera.draw(delta)
+        camera.draw()
         leftClickHandler.draw(delta)
         rightClickHandler.draw(delta)
     }

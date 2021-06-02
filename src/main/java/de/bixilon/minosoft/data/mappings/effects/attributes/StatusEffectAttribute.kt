@@ -22,7 +22,6 @@ data class StatusEffectAttribute(
     val amount: Float,
     val operation: StatusEffectOperations,
 ) {
-
     override fun toString(): String {
         return name
     }

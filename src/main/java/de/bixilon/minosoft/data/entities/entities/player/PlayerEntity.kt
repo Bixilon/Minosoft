@@ -15,6 +15,7 @@ package de.bixilon.minosoft.data.entities.entities.player
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.entities.EntityMetaDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
+import de.bixilon.minosoft.data.entities.Poses
 import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
 import de.bixilon.minosoft.data.entities.entities.LivingEntity
 import de.bixilon.minosoft.data.mappings.entities.EntityType
@@ -22,7 +23,10 @@ import de.bixilon.minosoft.data.player.Hands
 import de.bixilon.minosoft.data.player.PlayerProperties
 import de.bixilon.minosoft.data.player.PlayerProperty
 import de.bixilon.minosoft.data.player.tab.TabListItem
+import de.bixilon.minosoft.data.world.World
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.clamp
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import glm_.vec2.Vec2
 import glm_.vec3.Vec3
 
 abstract class PlayerEntity(
@@ -34,6 +38,8 @@ abstract class PlayerEntity(
     properties: Map<PlayerProperties, PlayerProperty> = mapOf(),
     var tabListItem: TabListItem = TabListItem(name = name, gamemode = Gamemodes.SURVIVAL, properties = properties),
 ) : LivingEntity(connection, entityType, position, rotation) {
+    override val dimensions: Vec2
+        get() = pose?.let { DIMENSIONS[it] } ?: Vec2(entityType.width, entityType.height)
 
     @get:EntityMetaDataFunction(name = "Gamemode")
     val gamemode: Gamemodes
@@ -42,20 +48,6 @@ abstract class PlayerEntity(
     @get:EntityMetaDataFunction(name = "name")
     val name: String
         get() = tabListItem.name
-
-    override val hasCollisions: Boolean
-        get() = gamemode != Gamemodes.SPECTATOR
-
-    override val hasGravity: Boolean
-        get() {
-            if (gamemode == Gamemodes.SPECTATOR) {
-                return false
-            }
-            return super.hasGravity
-        }
-
-    public override val isFlying: Boolean
-        get() = !hasCollisions || gamemode == Gamemodes.CREATIVE
 
     @get:EntityMetaDataFunction(name = "Absorption hearts")
     val playerAbsorptionHearts: Float
@@ -80,4 +72,29 @@ abstract class PlayerEntity(
     @get:EntityMetaDataFunction(name = "Right shoulder entity data")
     val rightShoulderData: Map<String, Any>?
         get() = entityMetaData.sets.getNBT(EntityMetaDataFields.PLAYER_RIGHT_SHOULDER_DATA)
+
+    override fun realTick() {
+        if (gamemode == Gamemodes.SPECTATOR) {
+            onGround = false
+        }
+        // ToDo: Update water submersion state
+        super.realTick()
+
+        val clampedPosition = position.clamp(-World.MAX_SIZEf, World.MAX_SIZEf)
+        if (clampedPosition != position) {
+            position = clampedPosition
+        }
+    }
+
+    companion object {
+        private val DIMENSIONS: Map<Poses, Vec2> = mapOf(
+            Poses.STANDING to Vec2(0.6f, 1.8f),
+            Poses.SLEEPING to Vec2(0.2f, 0.2f),
+            Poses.FLYING to Vec2(0.6f, 0.6f),
+            Poses.SWIMMING to Vec2(0.6f, 0.6f),
+            Poses.SPIN_ATTACK to Vec2(0.6f, 0.6f),
+            Poses.SNEAKING to Vec2(0.6f, 1.5f), // ToDo: This changed at some time
+            Poses.DYING to Vec2(0.2f, 0.2f),
+        )
+    }
 }

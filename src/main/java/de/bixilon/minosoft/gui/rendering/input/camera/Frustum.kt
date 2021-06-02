@@ -81,7 +81,7 @@ class Frustum(private val camera: Camera) {
                 to.z
             }
 
-            if (normal dot (min - camera.cameraPosition) < 0.0f) {
+            if (normal dot (min - camera.entity.eyePosition) < 0.0f) {
                 return false // region is outside of frustum
             }
         }
