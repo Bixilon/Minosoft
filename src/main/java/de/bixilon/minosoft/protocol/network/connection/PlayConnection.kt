@@ -79,7 +79,7 @@ class PlayConnection(
         private set
 
     private lateinit var entityTickTask: TimeWorkerTask
-    private lateinit var blockEntityTickTask: TimeWorkerTask
+    private lateinit var worldTickTask: TimeWorkerTask
     private lateinit var randomTickTask: TimeWorkerTask
     val collisionDetector = CollisionDetector(this)
     var retry = true
@@ -124,18 +124,17 @@ class PlayConnection(
                     if (CLI.getCurrentConnection() == null) {
                         CLI.setCurrentConnection(this)
                     }
-                    entityTickTask = TimeWorkerTask(ProtocolDefinition.TICK_TIME / 5) {
+                    entityTickTask = TimeWorker.addTask(TimeWorkerTask(ProtocolDefinition.TICK_TIME / 5) {
                         for (entity in world.entities) {
                             entity.tick()
                         }
-                    }
-                    TimeWorker.addTask(entityTickTask)
+                    })
 
-                    TimeWorker.addTask(TimeWorkerTask(ProtocolDefinition.TICK_TIME, maxDelayTime = ProtocolDefinition.TICK_TIME / 2) {
+                    worldTickTask = TimeWorker.addTask(TimeWorkerTask(ProtocolDefinition.TICK_TIME, maxDelayTime = ProtocolDefinition.TICK_TIME / 2) {
                         world.realTick()
                     })
 
-                    TimeWorker.addTask(TimeWorkerTask(ProtocolDefinition.TICK_TIME, maxDelayTime = ProtocolDefinition.TICK_TIME / 2) {
+                    randomTickTask = TimeWorker.addTask(TimeWorkerTask(ProtocolDefinition.TICK_TIME, maxDelayTime = ProtocolDefinition.TICK_TIME / 2) {
                         world.randomTick()
                     })
 
@@ -162,8 +161,8 @@ class PlayConnection(
                     if (this::entityTickTask.isInitialized) {
                         TimeWorker.removeTask(entityTickTask)
                     }
-                    if (this::blockEntityTickTask.isInitialized) {
-                        TimeWorker.removeTask(blockEntityTickTask)
+                    if (this::worldTickTask.isInitialized) {
+                        TimeWorker.removeTask(worldTickTask)
                     }
                     if (this::randomTickTask.isInitialized) {
                         TimeWorker.removeTask(randomTickTask)

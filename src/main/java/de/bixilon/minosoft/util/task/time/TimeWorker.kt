@@ -56,8 +56,9 @@ object TimeWorker {
         TASKS += task
     }
 
-    fun addTask(task: TimeWorkerTask) {
+    fun addTask(task: TimeWorkerTask): TimeWorkerTask {
         TASKS += task
+        return task
     }
 
     fun removeTask(task: TimeWorkerTask) {
