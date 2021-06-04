@@ -12,6 +12,9 @@
  */
 package de.bixilon.minosoft.data.text
 
+import de.bixilon.minosoft.data.text.events.ClickEvent
+import de.bixilon.minosoft.data.text.events.HoverEvent
+
 class MultiChatComponent(
     message: String = "",
     color: RGBColor? = null,

@@ -17,6 +17,8 @@ import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.locale.minecraft.Translator
 import de.bixilon.minosoft.data.text.RGBColor.Companion.asColor
+import de.bixilon.minosoft.data.text.events.ClickEvent
+import de.bixilon.minosoft.data.text.events.HoverEvent
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.font.text.TextGetProperties
 import de.bixilon.minosoft.gui.rendering.font.text.TextSetProperties

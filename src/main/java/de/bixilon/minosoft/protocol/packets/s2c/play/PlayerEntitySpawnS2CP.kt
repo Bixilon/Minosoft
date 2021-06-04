@@ -13,11 +13,11 @@
 package de.bixilon.minosoft.protocol.packets.s2c.play
 
 import de.bixilon.minosoft.config.StaticConfiguration
-import de.bixilon.minosoft.data.PlayerPropertyData
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.data.entities.entities.player.RemotePlayerEntity
 import de.bixilon.minosoft.data.entities.meta.EntityMetaData
+import de.bixilon.minosoft.data.player.PlayerProperty
 import de.bixilon.minosoft.modding.event.events.EntitySpawnEvent
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
@@ -39,13 +39,14 @@ class PlayerEntitySpawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         entityId = buffer.readVarInt()
         var name = "TBA"
 
-        val properties: MutableSet<PlayerPropertyData?> = mutableSetOf()
+        val properties: MutableMap<String, PlayerProperty> = mutableMapOf()
         if (buffer.versionId < ProtocolVersions.V_14W21A) {
             name = buffer.readString()
             entityUUID = Util.getUUIDFromString(buffer.readString())
             val length = buffer.readVarInt()
             for (i in 0 until length) {
-                properties.add(PlayerPropertyData(buffer.readString(), buffer.readString(), buffer.readString()))
+                val property = PlayerProperty(buffer.readString(), buffer.readString(), buffer.readString())
+                properties[property.key] = property
             }
         } else {
             entityUUID = buffer.readUUID()
@@ -73,7 +74,7 @@ class PlayerEntitySpawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
             position = position,
             rotation = EntityRotation(yaw.toFloat(), pitch.toFloat(), 0.0f),
             name = name,
-            // ToDo: properties = properties,
+            properties = properties,
         )
 
         if (metaData != null) {
