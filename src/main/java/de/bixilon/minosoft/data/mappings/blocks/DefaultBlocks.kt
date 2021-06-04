@@ -16,5 +16,7 @@ package de.bixilon.minosoft.data.mappings.blocks
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
 
 object DefaultBlocks {
+    val GRASS_BLOCK = "minecraft:grass_block".asResourceLocation()
+    val MOVING_PISTON = "minecraft:moving_piston".asResourceLocation()
     val COBWEB = "minecraft:cobweb".asResourceLocation()
 }

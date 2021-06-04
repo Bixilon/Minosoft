@@ -80,6 +80,10 @@ class RGBColor(val rgba: Int) : ChatCode {
         return RGBColor(MMath.clamp(red, 0.0f, 1.0f), MMath.clamp(green, 0.0f, 1.0f), MMath.clamp(blue, 0.0f, 1.0f), MMath.clamp(alpha, 0.0f, 1.0f))
     }
 
+    fun mix(vararg colors: RGBColor): RGBColor {
+        return Companion.mix(this, *colors)
+    }
+
     companion object {
         private const val COLOR_FLOAT_DIVIDER = 255.0f
 

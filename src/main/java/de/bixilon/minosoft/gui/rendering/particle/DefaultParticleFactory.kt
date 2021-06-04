@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.particle
 import de.bixilon.minosoft.data.mappings.DefaultFactory
 import de.bixilon.minosoft.gui.rendering.particle.types.Particle
 import de.bixilon.minosoft.gui.rendering.particle.types.norender.ExplosionEmitterParticle
+import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.advanced.block.BlockDustParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.CampfireSmokeParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.ExplosionParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.dust.DustParticle
@@ -36,4 +37,5 @@ object DefaultParticleFactory : DefaultFactory<ParticleFactory<out Particle>>(
     DustParticle,
     EntityEffectParticle,
     AmbientEntityEffectParticle,
+    BlockDustParticle,
 )

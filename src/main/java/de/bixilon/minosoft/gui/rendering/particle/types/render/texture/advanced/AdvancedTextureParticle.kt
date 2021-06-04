@@ -11,16 +11,22 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.particle
+package de.bixilon.minosoft.gui.rendering.particle.types.render.texture.advanced
 
-import de.bixilon.minosoft.data.mappings.CompanionResourceLocation
 import de.bixilon.minosoft.data.mappings.particle.data.ParticleData
-import de.bixilon.minosoft.gui.rendering.particle.types.Particle
+import de.bixilon.minosoft.gui.rendering.particle.ParticleMesh
+import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.SimpleTextureParticle
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import glm_.vec2.Vec2
 import glm_.vec3.Vec3
 
-interface ParticleFactory<T : Particle> : CompanionResourceLocation {
+abstract class AdvancedTextureParticle(connection: PlayConnection, position: Vec3, velocity: Vec3, data: ParticleData? = null) : SimpleTextureParticle(connection, position, velocity, data) {
+    var minUV: Vec2 = Vec2(0.0f, 0.0f)
+    var maxUV: Vec2 = Vec2(1.0f, 1.0f)
 
-    fun build(connection: PlayConnection, position: Vec3, velocity: Vec3, data: ParticleData = connection.registries.particleTypeRegistry[RESOURCE_LOCATION]!!.default()): T?
-
+    override fun addVertex(particleMesh: ParticleMesh) {
+        texture?.let {
+            particleMesh.addVertex(position, scale, it, color, minUV, maxUV)
+        }
+    }
 }

@@ -33,7 +33,7 @@ class BlockRenderer(data: JsonObject, parent: BlockModel) : BlockLikeRenderer {
     private val cullFaces: Array<Directions?> = arrayOfNulls(Directions.VALUES.size)
     val textures: MutableMap<String, String> = mutableMapOf()
     private val elements: MutableSet<ElementRenderer> = mutableSetOf()
-    private val textureMapping: MutableMap<String, Texture> = mutableMapOf()
+    val textureMapping: MutableMap<String, Texture> = mutableMapOf()
     override val faceBorderSizes: Array<Array<FaceSize>?> = arrayOfNulls(Directions.VALUES.size)
     override val transparentFaces: BooleanArray = BooleanArray(Directions.VALUES.size)
     val directionMapping: HashBiMap<Directions, Directions> = HashBiMap.create()

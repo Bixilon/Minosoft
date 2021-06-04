@@ -29,6 +29,7 @@ in Vertex
     uint textureIndex2;
     uint textureLayer2;
     float interpolation;
+    vec2 minUVCoordinates;
     vec2 maxUVCoordinates;
 
     float scale;
@@ -56,18 +57,18 @@ void main()
 
 
     gl_Position = uViewProjectionMatrix * vec4(pointPosition - (uCameraRight - uCameraUp) * ginVertex[0].scale, 1.0);
-    finTextureCoordinates1 = vec3(0.0f, 0.0f, ginVertex[0].textureLayer1);
-    finTextureCoordinates2 = vec3(0.0f, 0.0f, ginVertex[0].textureLayer2);
+    finTextureCoordinates1 = vec3(ginVertex[0].minUVCoordinates.x, ginVertex[0].minUVCoordinates.y, ginVertex[0].textureLayer1);
+    finTextureCoordinates2 = vec3(ginVertex[0].minUVCoordinates.x, ginVertex[0].minUVCoordinates.y, ginVertex[0].textureLayer2);
     EmitVertex();
 
     gl_Position = uViewProjectionMatrix * vec4(pointPosition - (uCameraRight + uCameraUp) * ginVertex[0].scale, 1.0);
-    finTextureCoordinates1 = vec3(0.0f, ginVertex[0].maxUVCoordinates.y, ginVertex[0].textureLayer1);
-    finTextureCoordinates2 = vec3(0.0f, ginVertex[0].maxUVCoordinates.y, ginVertex[0].textureLayer2);
+    finTextureCoordinates1 = vec3(ginVertex[0].minUVCoordinates.x, ginVertex[0].maxUVCoordinates.y, ginVertex[0].textureLayer1);
+    finTextureCoordinates2 = vec3(ginVertex[0].minUVCoordinates.x, ginVertex[0].maxUVCoordinates.y, ginVertex[0].textureLayer2);
     EmitVertex();
 
     gl_Position = uViewProjectionMatrix * vec4(pointPosition + (uCameraRight + uCameraUp) * ginVertex[0].scale, 1.0);
-    finTextureCoordinates1 = vec3(ginVertex[0].maxUVCoordinates.x, 0.0f, ginVertex[0].textureLayer1);
-    finTextureCoordinates2 = vec3(ginVertex[0].maxUVCoordinates.x, 0.0f, ginVertex[0].textureLayer2);
+    finTextureCoordinates1 = vec3(ginVertex[0].maxUVCoordinates.x, ginVertex[0].minUVCoordinates.y, ginVertex[0].textureLayer1);
+    finTextureCoordinates2 = vec3(ginVertex[0].maxUVCoordinates.x, ginVertex[0].minUVCoordinates.y, ginVertex[0].textureLayer2);
     EmitVertex();
 
     gl_Position = uViewProjectionMatrix * vec4(pointPosition + (uCameraRight - uCameraUp) * ginVertex[0].scale, 1.0);

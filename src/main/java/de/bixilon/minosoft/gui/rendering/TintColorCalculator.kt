@@ -71,7 +71,7 @@ class TintColorCalculator(val world: World) {
         return RGBColor((totalRed / count).toInt(), (totalGreen / count).toInt(), (totalBlue / count).toInt())
     }
 
-    private fun getTint(biome: Biome?, blockState: BlockState, blockPosition: Vec3i): RGBColor? {
+    fun getTint(biome: Biome?, blockState: BlockState, blockPosition: Vec3i): RGBColor? {
         return when {
             biome == null -> null
             StaticConfiguration.BIOME_DEBUG_MODE -> RGBColor(biome.hashCode())

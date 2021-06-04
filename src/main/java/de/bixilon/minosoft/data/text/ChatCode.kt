@@ -15,7 +15,6 @@ package de.bixilon.minosoft.data.text
 import de.bixilon.minosoft.util.KUtil.extend
 
 interface ChatCode {
-
     companion object {
         val FORMATTING_CODES: Map<String, ChatCode> = ChatColors.NAME_MAP.extend(
             "dark_grey" to ChatColors.DARK_GRAY,

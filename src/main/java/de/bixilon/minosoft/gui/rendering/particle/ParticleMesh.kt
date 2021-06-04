@@ -26,7 +26,7 @@ import org.lwjgl.opengl.GL15.glDrawArrays
 
 class ParticleMesh : Mesh(ParticleMeshStruct::class) {
 
-    fun addVertex(position: Vec3, scale: Float, texture: Texture, tintColor: RGBColor) {
+    fun addVertex(position: Vec3, scale: Float, texture: Texture, tintColor: RGBColor, uvMin: Vec2 = Vec2(0, 0), uvMax: Vec2 = Vec2(1, 1)) {
         val textureLayer = if (RenderConstants.FORCE_DEBUG_TEXTURE) {
             RenderConstants.DEBUG_TEXTURE_ID
         } else {
@@ -37,8 +37,10 @@ class ParticleMesh : Mesh(ParticleMeshStruct::class) {
             position.x,
             position.y,
             position.z,
-            texture.uvEnd.x,
-            texture.uvEnd.y,
+            uvMin.x,
+            uvMin.y,
+            uvMax.x * texture.uvEnd.x,
+            uvMax.y * texture.uvEnd.y,
             Float.fromBits(textureLayer),
             Float.fromBits(texture.properties.animation?.animationId ?: -1),
             scale,
@@ -55,6 +57,7 @@ class ParticleMesh : Mesh(ParticleMeshStruct::class) {
 
     data class ParticleMeshStruct(
         val position: Vec3,
+        val minUVCoordinates: Vec2,
         val maxUVCoordinates: Vec2,
         val textureLayer: Int,
         val animationId: Int,

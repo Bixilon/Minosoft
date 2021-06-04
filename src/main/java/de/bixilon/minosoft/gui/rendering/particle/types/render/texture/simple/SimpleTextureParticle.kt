@@ -19,7 +19,7 @@ import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import glm_.vec3.Vec3
 
 abstract class SimpleTextureParticle(connection: PlayConnection, position: Vec3, velocity: Vec3, data: ParticleData? = null) : TextureParticle(connection, position, velocity, data) {
-    override var texture = connection.rendering?.renderWindow?.textures?.allTextures?.get(this.data.type.textures.first())
+    override var texture = this.data.type.textures.getOrNull(0)?.let { connection.rendering?.renderWindow?.textures?.allTextures?.get(it) }
     var spriteDisabled = false
 
 

@@ -14,12 +14,13 @@
 #version 330 core
 
 layout (location = 0) in vec3 vinPosition;
-layout (location = 1) in vec2 vinMaxUVCoordinates;
-layout (location = 2) in uint vinTextureLayer;
-layout (location = 3) in int vinAnimationIndex;
+layout (location = 1) in vec2 vinMinUVCoordinates;
+layout (location = 2) in vec2 vinMaxUVCoordinates;
+layout (location = 3) in uint vinTextureLayer;
+layout (location = 4) in int vinAnimationIndex;
 
-layout (location = 4) in float vinScale;
-layout (location = 5) in uint vinTintColor;
+layout (location = 5) in float vinScale;
+layout (location = 6) in uint vinTintColor;
 
 
 layout(std140) uniform uAnimationBuffer
@@ -34,6 +35,7 @@ out Vertex
     uint textureIndex2;
     uint textureLayer2;
     float interpolation;
+    vec2 minUVCoordinates;
     vec2 maxUVCoordinates;
 
     float scale;
@@ -46,6 +48,7 @@ void main() {
     gl_Position = vec4(vinPosition, 1.0f);
 
     ginVertex.maxUVCoordinates = vinMaxUVCoordinates;
+    ginVertex.minUVCoordinates = vinMinUVCoordinates;
 
     ginVertex.scale = vinScale;
     ginVertex.tintColor = getRGBAColor(vinTintColor);
