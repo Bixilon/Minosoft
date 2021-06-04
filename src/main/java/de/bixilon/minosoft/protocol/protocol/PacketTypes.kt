@@ -252,7 +252,7 @@ class PacketTypes {
         PLAY_ITEM_COLLECT_ANIMATION({ ItemCollectAnimationS2CP(it) }),
         PLAY_ENTITY_TELEPORT({ EntityTeleportS2CP(it) }, isThreadSafe = false),
         PLAY_ADVANCEMENTS({ PacketAdvancements(it) }),
-        PLAY_ENTITY_PROPERTIES({ PacketEntityProperties(it) }),
+        PLAY_ENTITY_EFFECT_ATTRIBUTES({ EntityEffectAttributesS2CP(it) }),
         PLAY_ENTITY_STATUS_EFFECT({ EntityStatusEffectS2CP(it) }),
         PLAY_DECLARE_RECIPES({ PacketDeclareRecipes(it) }),
         PLAY_TAGS({ TagsS2CP(it) }),
