@@ -35,7 +35,6 @@ import de.bixilon.minosoft.util.ServerAddress
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
-import java.util.*
 
 class StatusConnection(
     val address: String,
@@ -46,7 +45,7 @@ class StatusConnection(
 
     lateinit var realAddress: ServerAddress
         private set
-    private var addresses: LinkedList<ServerAddress>? = null
+    private var addresses: List<ServerAddress>? = null
 
     var serverVersion: Version? = null
 
@@ -56,7 +55,7 @@ class StatusConnection(
 
         if (this.addresses == null) {
             this.addresses = DNSUtil.getServerAddresses(address)
-            this.realAddress = this.addresses!!.first
+            this.realAddress = this.addresses!!.first()
         }
     }
 

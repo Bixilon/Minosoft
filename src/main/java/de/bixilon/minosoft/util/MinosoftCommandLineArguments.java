@@ -21,6 +21,7 @@ import org.apache.commons.cli.*;
 import javax.annotation.Nullable;
 import java.util.HashMap;
 
+@Deprecated(forRemoval = true)
 public class MinosoftCommandLineArguments {
     private static final HashMap<Option, CommandLineArgumentHandler> OPTION_HASH_MAP = new HashMap<>();
     private static final Options OPTIONS = new Options();
