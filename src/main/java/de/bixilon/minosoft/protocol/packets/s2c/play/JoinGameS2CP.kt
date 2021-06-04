@@ -23,6 +23,7 @@ import de.bixilon.minosoft.modding.event.events.JoinGameEvent
 import de.bixilon.minosoft.protocol.ErrorHandler
 import de.bixilon.minosoft.protocol.network.connection.Connection
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.protocol.packets.c2s.play.ClientSettingsC2SP
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
@@ -34,6 +35,8 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.listCast
+import de.bixilon.minosoft.util.task.time.TimeWorker
+import de.bixilon.minosoft.util.task.time.TimeWorkerTask
 
 class JoinGameS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     val entityId: Int
@@ -150,6 +153,9 @@ class JoinGameS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         } else {
             NoiseBiomeAccessor(connection.world)
         }
+        TimeWorker.addTask(TimeWorkerTask(100, true) { // ToDo: Temp workaround
+            connection.sendPacket(ClientSettingsC2SP("en_us"))
+        })
     }
 
     private fun parseDimensionCodec(nbt: Map<String, Any>, versionId: Int): HashBiMap<ResourceLocation, Dimension> {

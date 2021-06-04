@@ -18,6 +18,7 @@ import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.chunk.models.FaceSize
 import de.bixilon.minosoft.gui.rendering.textures.Texture
 
+@Deprecated(message = "Will be replaced with a normal BlockRenderer and multiple renderers")
 class MultipartRenderer(
     val models: List<BlockLikeRenderer>,
 ) : BlockLikeRenderer {

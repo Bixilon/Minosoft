@@ -22,7 +22,7 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
 class ClientSettingsC2SP(
-    val locale: String = "en_US",
+    val locale: String = "en_us",
     val renderDistance: Int = 10,
     val mainHand: Hands = Hands.MAIN_HAND,
     val disableTextFiltering: Boolean = true,
@@ -40,7 +40,7 @@ class ClientSettingsC2SP(
             buffer.writeByte(0x7F) // ToDo: skin parts
         }
         if (buffer.versionId >= ProtocolVersions.V_15W31A) {
-            buffer.writeVarInt(mainHand.ordinal)
+            buffer.writeVarInt(1) // ToDo
         }
         if (buffer.versionId >= ProtocolVersions.V_21W07A) {
             buffer.writeBoolean(disableTextFiltering)

@@ -10,14 +10,13 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.modding.channels
 
-package de.bixilon.minosoft.modding.channels;
+import de.bixilon.minosoft.data.mappings.ResourceLocation
 
-import de.bixilon.minosoft.data.mappings.ResourceLocation;
-
-public class DefaultPluginChannels {
-    public static final ResourceLocation REGISTER = new ResourceLocation("minecraft:register");
-    public static final ResourceLocation UNREGISTER = new ResourceLocation("minecraft:unregister");
-    public static final ResourceLocation BRAND = new ResourceLocation("minecraft:brand");
-    public static final ResourceLocation STOP_SOUND = new ResourceLocation("minecraft:stop_sound");
+object DefaultPluginChannels {
+    val REGISTER = ResourceLocation("minecraft:register")
+    val UNREGISTER = ResourceLocation("minecraft:unregister")
+    val BRAND = ResourceLocation("minecraft:brand")
+    val STOP_SOUND = ResourceLocation("minecraft:stop_sound")
 }

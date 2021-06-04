@@ -36,6 +36,6 @@ class PluginMessageC2SP(
     }
 
     override fun log() {
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Plugin message (channel=$channel, data=$data)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Plugin message (channel=$channel, data=${data.contentToString()}" }
     }
 }

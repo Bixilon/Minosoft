@@ -22,7 +22,7 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
 class RemoveScoreboardScoreS2CP(val entity: String, buffer: PlayInByteBuffer) : PlayS2CPacket() {
-    val objective = if (buffer.versionId >= ProtocolVersions.V_14W04A) { // ToDo
+    val objective = if (buffer.versionId <= ProtocolVersions.V_14W04A) { // ToDo
         buffer.readString()
     } else {
         null
