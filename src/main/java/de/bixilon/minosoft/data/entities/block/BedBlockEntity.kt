@@ -13,11 +13,13 @@
 
 package de.bixilon.minosoft.data.entities.block
 
+import de.bixilon.minosoft.data.mappings.MultiResourceLocationAble
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.data.text.RGBColor.Companion.asColor
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.util.KUtil.toResourceLocationList
 
 class BedBlockEntity(connection: PlayConnection) : BlockEntity(connection) {
     var color = ChatColors.RED
@@ -58,8 +60,9 @@ class BedBlockEntity(connection: PlayConnection) : BlockEntity(connection) {
         } ?: ChatColors.RED
     }
 
-    companion object : BlockEntityFactory<BedBlockEntity> {
+    companion object : BlockEntityFactory<BedBlockEntity>, MultiResourceLocationAble {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("minecraft:bed")
+        override val ALIASES: Set<ResourceLocation> = setOf("minecraft:Bed").toResourceLocationList()
 
         override fun build(connection: PlayConnection): BedBlockEntity {
             return BedBlockEntity(connection)

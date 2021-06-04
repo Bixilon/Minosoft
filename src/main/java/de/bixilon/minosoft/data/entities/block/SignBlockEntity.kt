@@ -13,11 +13,13 @@
 
 package de.bixilon.minosoft.data.entities.block
 
+import de.bixilon.minosoft.data.mappings.MultiResourceLocationAble
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.nullCast
+import de.bixilon.minosoft.util.KUtil.toResourceLocationList
 
 class SignBlockEntity(connection: PlayConnection) : BlockEntity(connection) {
     var lines: Array<ChatComponent> = Array(ProtocolDefinition.SIGN_LINES) { ChatComponent.of("") }
@@ -31,8 +33,9 @@ class SignBlockEntity(connection: PlayConnection) : BlockEntity(connection) {
         }
     }
 
-    companion object : BlockEntityFactory<SignBlockEntity> {
+    companion object : BlockEntityFactory<SignBlockEntity>, MultiResourceLocationAble {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("minecraft:sign")
+        override val ALIASES: Set<ResourceLocation> = setOf("minecraft:Sign").toResourceLocationList()
 
         override fun build(connection: PlayConnection): SignBlockEntity {
             return SignBlockEntity(connection)

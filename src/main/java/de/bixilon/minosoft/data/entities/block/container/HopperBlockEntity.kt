@@ -14,14 +14,17 @@
 package de.bixilon.minosoft.data.entities.block.container
 
 import de.bixilon.minosoft.data.entities.block.BlockEntityFactory
+import de.bixilon.minosoft.data.mappings.MultiResourceLocationAble
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.util.KUtil.toResourceLocationList
 
 class HopperBlockEntity(connection: PlayConnection) : ContainerBlockEntity(connection) {
 
 
-    companion object : BlockEntityFactory<HopperBlockEntity> {
+    companion object : BlockEntityFactory<HopperBlockEntity>, MultiResourceLocationAble {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("minecraft:hopper")
+        override val ALIASES: Set<ResourceLocation> = setOf("minecraft:Hopper").toResourceLocationList()
 
         override fun build(connection: PlayConnection): HopperBlockEntity {
             return HopperBlockEntity(connection)

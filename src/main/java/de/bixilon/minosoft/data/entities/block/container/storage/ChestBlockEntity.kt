@@ -14,13 +14,16 @@
 package de.bixilon.minosoft.data.entities.block.container.storage
 
 import de.bixilon.minosoft.data.entities.block.BlockEntityFactory
+import de.bixilon.minosoft.data.mappings.MultiResourceLocationAble
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.util.KUtil.toResourceLocationList
 
 class ChestBlockEntity(connection: PlayConnection) : StorageBlockEntity(connection) {
 
-    companion object : BlockEntityFactory<ChestBlockEntity> {
+    companion object : BlockEntityFactory<ChestBlockEntity>, MultiResourceLocationAble {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("minecraft:chest")
+        override val ALIASES: Set<ResourceLocation> = setOf("minecraft:Chest").toResourceLocationList()
 
         override fun build(connection: PlayConnection): ChestBlockEntity {
             return ChestBlockEntity(connection)
