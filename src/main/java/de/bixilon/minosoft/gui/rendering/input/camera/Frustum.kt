@@ -131,6 +131,7 @@ class Frustum(private val camera: Camera) {
                 return false
             }
         }
+
         fun checkPoint(check: (Vec3) -> Boolean): Boolean {
             var out = 0
             for (i in 0 until 8) {

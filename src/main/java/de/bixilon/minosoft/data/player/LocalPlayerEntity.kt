@@ -223,6 +223,15 @@ class LocalPlayerEntity(
         return Vec3(velocity.x * cos - velocity.z * sin, velocity.y, velocity.z * cos + velocity.x * sin)
     }
 
+    fun fall(deltaY: Float) {
+        if (onGround) {
+            // ToDo: On block landing (particles, sounds, etc)
+            this.fallDistance = 0.0f
+            return
+        }
+        this.fallDistance = this.fallDistance - deltaY
+    }
+
 
     fun move(delta: Vec3) {
         if (!hasCollisions) {
@@ -232,16 +241,15 @@ class LocalPlayerEntity(
 
         var movement = Vec3(delta)
 
+        // ToDo: Check for piston movement+
+
         if (!velocityMultiplier.empty) {
             movement = movement * velocityMultiplier
             velocityMultiplier = Vec3.EMPTY
             velocity = Vec3.EMPTY
         }
 
-        // ToDo: Sneaking movement
-
-
-        // ToDo: Check for piston movement
+        movement = connection.collisionDetector.sneak(this, movement)
 
         val collisionMovement = connection.collisionDetector.collide(null, movement, aabb)
 
@@ -249,7 +257,7 @@ class LocalPlayerEntity(
         verticalCollision = collisionMovement.y != movement.y
         this.onGround = verticalCollision && movement.y < 0.0f
 
-        // ToDo: fall
+        fall(collisionMovement.y)
 
         if (movement.x != collisionMovement.x) {
             velocity.x = 0.0f
@@ -262,10 +270,7 @@ class LocalPlayerEntity(
         }
 
 
-
-        if (!collisionMovement.empty) {
-            forceMove(collisionMovement)
-        }
+        forceMove(collisionMovement)
 
         if (onGround && canStep) {
             // ToDo: Play step sound
@@ -449,6 +454,9 @@ class LocalPlayerEntity(
         dirtyVelocity = true
     }
 
+    fun canSneak(): Boolean {
+        return (onGround && fallDistance < PhysicsConstants.STEP_HEIGHT) && !connection.world.isSpaceEmpty(aabb + Vec3(0.0f, fallDistance - PhysicsConstants.STEP_HEIGHT, 0.0f))
+    }
 
     override fun realTick() {
         if (connection.world[positionInfo.blockPosition.chunkPosition] == null) {

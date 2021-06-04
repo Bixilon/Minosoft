@@ -71,10 +71,10 @@ abstract class Entity(
     override var onGround = false
 
     val defaultAABB: AABB
-        get() = AABB(
-            Vec3(-(dimensions.x / 2 + HITBOX_MARGIN), 0, -(dimensions.x / 2 + HITBOX_MARGIN)),
-            Vec3(+(dimensions.x / 2 + HITBOX_MARGIN), dimensions.y, +(dimensions.x / 2 + HITBOX_MARGIN))
-        )
+        get() {
+            val halfWidth = dimensions.x / 2
+            return AABB(Vec3(-halfWidth, 0.0f, -halfWidth), Vec3(halfWidth, dimensions.y, halfWidth)) grow HITBOX_MARGIN
+        }
 
     open val dimensions = Vec2(entityType.width, entityType.height)
 

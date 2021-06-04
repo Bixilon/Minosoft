@@ -63,6 +63,4 @@ class SkyboxMesh : Mesh(PositionOnlyMeshStruct::class, initialCacheSize = 6 * 2 
             +1.0f, -1.0f, +1.0f,
         ))
     }
-
-
 }

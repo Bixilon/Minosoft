@@ -23,6 +23,7 @@ import de.bixilon.minosoft.data.mappings.tweaker.VersionTweaker
 import de.bixilon.minosoft.data.world.biome.accessor.BiomeAccessor
 import de.bixilon.minosoft.data.world.biome.accessor.NullBiomeAccessor
 import de.bixilon.minosoft.data.world.light.WorldLightAccessor
+import de.bixilon.minosoft.gui.rendering.chunk.models.AABB
 import de.bixilon.minosoft.gui.rendering.particle.ParticleRenderer
 import de.bixilon.minosoft.gui.rendering.particle.types.Particle
 import de.bixilon.minosoft.gui.rendering.sound.AudioPlayer
@@ -231,6 +232,19 @@ class World(
 
     operator fun plusAssign(particle: Particle) {
         addParticle(particle)
+    }
+
+    fun isSpaceEmpty(aabb: AABB): Boolean {
+        val positions = aabb.blockPositions
+        for (position in positions) {
+            val block = this[position] ?: continue
+            for (blockAABB in block.collisionShape) {
+                if ((blockAABB + position).intersect(aabb)) {
+                    return false
+                }
+            }
+        }
+        return true
     }
 
     companion object {

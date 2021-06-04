@@ -22,7 +22,7 @@ import de.bixilon.minosoft.util.KUtil.asResourceLocation
 import kotlin.random.Random
 
 object DefaultAudioBehavior {
-    val ENTITY_GENERIC_EXPLODE = "minecraft:entity.generic.explode".asResourceLocation()
+    private val ENTITY_GENERIC_EXPLODE = "minecraft:entity.generic.explode".asResourceLocation()
 
     fun register(connection: PlayConnection) {
         val world = connection.world

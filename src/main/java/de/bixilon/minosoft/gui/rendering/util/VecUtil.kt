@@ -48,11 +48,11 @@ object VecUtil {
     val Vec3.Companion.ONE: Vec3
         get() = Vec3(1, 1, 1)
 
-    fun JsonElement.toVec3(): Vec3 {
+    fun JsonElement.toVec3(default: Vec3? = null): Vec3 {
         return when (this) {
             is JsonArray -> Vec3(this[0].asFloat, this[1].asFloat, this[2].asFloat)
             is JsonObject -> Vec3(this["x"]?.asFloat ?: 0, this["y"]?.asFloat ?: 0, this["z"]?.asFloat ?: 0)
-            else -> throw IllegalArgumentException("Not a Vec3!")
+            else -> default ?: throw IllegalArgumentException("Not a Vec3!")
         }
     }
 
@@ -207,7 +207,7 @@ object VecUtil {
         get() = this.floor
 
     val Vec3i.center: Vec3
-        get() = Vec3(x + 0.5f, y + 0.5f, z + 0.5f) // ToDo: Confirm
+        get() = Vec3(x + 0.5f, y + 0.5f, z + 0.5f)
 
     fun Vec3i.Companion.of(chunkPosition: Vec2i, sectionHeight: Int, inChunkSectionPosition: Vec3i): Vec3i {
         return Vec3i(

@@ -1,38 +1,28 @@
 package de.bixilon.minosoft.gui.rendering.chunk.models
 
-import com.google.gson.JsonArray
-import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.Axes
+import de.bixilon.minosoft.data.Directions
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.ONE
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.get
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3
 import glm_.Java.Companion.glm
+import glm_.func.common.ceil
+import glm_.func.common.floor
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3i
 
 
-class AABB {
-    val min: Vec3
-    val max: Vec3
+class AABB(
+    min: Vec3,
+    max: Vec3,
+) {
+    val min = Vec3(glm.min(min.x, max.x), glm.min(min.y, max.y), glm.min(min.z, max.z))
+    val max = Vec3(glm.max(min.x, max.x), glm.max(min.y, max.y), glm.max(min.z, max.z))
 
-    constructor(jsonData: JsonObject) {
-        min = readPositionFromJson(jsonData["from"], Vec3.EMPTY)
-        max = readPositionFromJson(jsonData["to"], Vec3.ONE)
-    }
+    constructor(jsonData: JsonObject) : this(jsonData["from"].toVec3(Vec3.EMPTY), jsonData["to"].toVec3(Vec3.ONE))
 
-    private fun readPositionFromJson(jsonData: JsonElement, default: Vec3): Vec3 {
-        if (jsonData is JsonArray) {
-            return jsonData.asJsonArray.toVec3()
-        }
-        return default
-    }
-
-    constructor(from: Vec3, to: Vec3) {
-        this.min = from
-        this.max = to
-    }
 
     fun intersect(other: AABB): Boolean {
         return (min.x < other.max.x && max.x > other.min.x) && (min.y < other.max.y && max.y > other.min.y) && (min.z < other.max.z && max.z > other.min.z)
@@ -52,21 +42,22 @@ class AABB {
         return AABB(newMin, newMax)
     }
 
-    fun getBlockPositions(): List<Vec3i> {
-        val xRange = getRange(min.x, max.x)
-        val yRange = getRange(min.y, max.y)
-        val zRange = getRange(min.z, max.z)
+    val blockPositions: List<Vec3i>
+        get() {
+            val xRange = getRange(min.x, max.x)
+            val yRange = getRange(min.y, max.y)
+            val zRange = getRange(min.z, max.z)
 
-        val result = mutableListOf<Vec3i>()
-        for (xPosition in xRange) {
-            for (yPosition in yRange) {
-                for (zPosition in zRange) {
-                    result.add(Vec3i(xPosition, yPosition, zPosition))
+            val result: MutableList<Vec3i> = mutableListOf()
+            for (x in xRange) {
+                for (y in yRange) {
+                    for (z in zRange) {
+                        result += Vec3i(x, y, z)
+                    }
                 }
             }
+            return result.toList()
         }
-        return result
-    }
 
     private fun min(axis: Axes): Float {
         return Axes.choose(axis, min)
@@ -103,6 +94,14 @@ class AABB {
 
     infix fun extend(vec3i: Vec3i): AABB {
         return this extend Vec3(vec3i)
+    }
+
+    infix fun extend(direction: Directions): AABB {
+        return this extend direction.vector
+    }
+
+    infix fun grow(value: Float): AABB {
+        return AABB(min - value, max + value)
     }
 
     fun computeOffset(other: AABB, offset: Float, axis: Axes): Float {
@@ -174,7 +173,7 @@ class AABB {
             get() = AABB(Vec3.EMPTY, Vec3.EMPTY)
 
         private fun getRange(min: Float, max: Float): IntRange {
-            return IntRange(glm.floor(min).toInt(), glm.ceil(max).toInt())
+            return IntRange(min.floor.toInt(), max.ceil.toInt())
         }
     }
 }

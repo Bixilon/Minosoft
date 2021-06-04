@@ -104,6 +104,7 @@ class SkyRenderer(
                 skySunMesh.addVertex(Vec3(start.x, start.y, end.z), texture, Vec2(0.0f, 1.0f), tintColor)
                 skySunMesh.addVertex(Vec3(start.x, start.y, start.z), texture, Vec2(0.0f, 0.0f), tintColor)
             }
+
             addQuad(
                 start = Vec3(-0.15f, 1.0f, -0.15f),
                 end = Vec3(+0.15f, 1.0f, +0.15f),

@@ -15,6 +15,7 @@ package de.bixilon.minosoft.data.physics
 
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.Directions
+import de.bixilon.minosoft.data.player.LocalPlayerEntity
 import de.bixilon.minosoft.gui.rendering.chunk.VoxelShape
 import de.bixilon.minosoft.gui.rendering.chunk.models.AABB
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
@@ -25,9 +26,9 @@ import glm_.vec3.Vec3
 
 class CollisionDetector(val connection: PlayConnection) {
 
-    fun getCollisionsToCheck(deltaPosition: Vec3, aabb: AABB, ignoreUnloadedChunks: Boolean = true): VoxelShape {
+    private fun getCollisionsToCheck(deltaPosition: Vec3, aabb: AABB, ignoreUnloadedChunks: Boolean = true): VoxelShape {
         // also look at blocks further down to also cover blocks with a higher than normal hitbox (for example fences)
-        val blockPositions = (aabb extend deltaPosition extend Directions.DOWN.vector).getBlockPositions()
+        val blockPositions = (aabb extend deltaPosition extend Directions.DOWN).blockPositions
         val result = VoxelShape()
         for (blockPosition in blockPositions) {
             val chunk = connection.world[blockPosition.chunkPosition]
@@ -40,6 +41,46 @@ class CollisionDetector(val connection: PlayConnection) {
             result.add(blockState.collisionShape + blockPosition)
         }
         return result
+    }
+
+    fun sneak(entity: LocalPlayerEntity, deltaPosition: Vec3): Vec3 {
+        if (entity.baseAbilities.isFlying || !entity.isSneaking || !entity.canSneak()) {
+            return deltaPosition
+        }
+
+        val movement = Vec3(deltaPosition)
+
+        fun checkValue(original: Float): Float {
+            var value = original
+            if (value < PhysicsConstants.SNEAK_MOVEMENT_CHECK && value >= -PhysicsConstants.SNEAK_MOVEMENT_CHECK) {
+                value = 0.0f
+            } else if (value > 0.0f) {
+                value -= PhysicsConstants.SNEAK_MOVEMENT_CHECK
+            } else {
+                value += PhysicsConstants.SNEAK_MOVEMENT_CHECK
+            }
+            return value
+        }
+
+        fun checkAxis(original: Float, offsetMethod: (Float) -> Vec3): Float {
+            var value = original
+            while (value != 0.0f && connection.world.isSpaceEmpty(entity.aabb + offsetMethod(value))) {
+                value = checkValue(value)
+            }
+            return value
+        }
+
+        movement.x = checkAxis(movement.x) { Vec3(it, -PhysicsConstants.STEP_HEIGHT, 0.0f) }
+        movement.z = checkAxis(movement.z) { Vec3(0.0f, -PhysicsConstants.STEP_HEIGHT, it) }
+
+
+        while (movement.x != 0.0f && movement.z != 0.0f && connection.world.isSpaceEmpty(entity.aabb + Vec3(movement.x, -PhysicsConstants.STEP_HEIGHT, movement.z))) {
+            movement.x = checkValue(movement.x)
+            movement.z = checkValue(movement.z)
+        }
+
+
+        return movement
     }
 
     fun collide(physicsEntity: PhysicsEntity?, deltaPosition: Vec3, aabb: AABB, collisionsToCheck: VoxelShape = connection.collisionDetector.getCollisionsToCheck(deltaPosition, aabb)): Vec3 {
