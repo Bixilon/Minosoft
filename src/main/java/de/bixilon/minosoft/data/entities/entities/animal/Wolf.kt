@@ -33,7 +33,7 @@ class Wolf(connection: PlayConnection, entityType: EntityType, position: Vec3, r
 
     @get:EntityMetaDataFunction(name = "Collar color")
     val collarColor: RGBColor
-        get() = ChatColors.getColorById(entityMetaData.sets.getInt(EntityMetaDataFields.WOLF_COLLAR_COLOR))
+        get() = ChatColors[entityMetaData.sets.getInt(EntityMetaDataFields.WOLF_COLLAR_COLOR)]
 
     // ToDo
     @get:EntityMetaDataFunction(name = "Anger time")

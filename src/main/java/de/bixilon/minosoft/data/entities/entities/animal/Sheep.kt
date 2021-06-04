@@ -27,7 +27,7 @@ class Sheep(connection: PlayConnection, entityType: EntityType, position: Vec3, 
 
     @get:EntityMetaDataFunction(name = "Color")
     val color: RGBColor
-        get() = ChatColors.getColorById(entityMetaData.sets.getByte(EntityMetaDataFields.SHEEP_FLAGS).toInt() and 0x0F)
+        get() = ChatColors[entityMetaData.sets.getByte(EntityMetaDataFields.SHEEP_FLAGS).toInt() and 0x0F]
 
     @get:EntityMetaDataFunction(name = "Is sheared")
     val isSheared: Boolean

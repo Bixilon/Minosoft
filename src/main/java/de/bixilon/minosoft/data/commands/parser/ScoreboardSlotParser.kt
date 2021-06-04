@@ -16,7 +16,7 @@ import de.bixilon.minosoft.data.commands.CommandStringReader
 import de.bixilon.minosoft.data.commands.parser.exceptions.ColorNotFoundCommandParseException
 import de.bixilon.minosoft.data.commands.parser.exceptions.UnknownOperationCommandParseException
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties
-import de.bixilon.minosoft.data.text.ChatColors
+import de.bixilon.minosoft.data.text.ChatCode
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 
 object ScoreboardSlotParser : CommandParser() {
@@ -28,7 +28,7 @@ object ScoreboardSlotParser : CommandParser() {
         if (slot.startsWith("sidebar.team.")) {
             val color = slot.substring("sidebar.team.".length)
             try {
-                return ChatColors.getChatFormattingByName(color)
+                return ChatCode[color]
             } catch (exception: IllegalArgumentException) {
                 throw ColorNotFoundCommandParseException(stringReader, color)
             }

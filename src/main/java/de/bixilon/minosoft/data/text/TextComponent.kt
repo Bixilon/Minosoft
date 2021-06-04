@@ -84,7 +84,7 @@ open class TextComponent(
         get() {
             val stringBuilder = StringBuilder()
             this.color?.let {
-                stringBuilder.append(ChatColors.getANSIColorByRGBColor(it))
+                stringBuilder.append(it.ansi)
             }
 
             for (formattingCode in this.formatting) {
@@ -99,8 +99,8 @@ open class TextComponent(
         get() {
             val stringBuilder = StringBuilder()
             color?.let {
-                val colorChar = ChatColors.getColorId(it)
-                if (colorChar != null) {
+                val colorChar = ChatCode.FORMATTING_CODES_ID.indexOf(it)
+                if (colorChar != -1) {
                     stringBuilder.append(ProtocolDefinition.TEXT_COMPONENT_SPECIAL_PREFIX_CHAR).append(Integer.toHexString(colorChar))
                 }
             }

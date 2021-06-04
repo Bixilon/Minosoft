@@ -42,7 +42,7 @@ class Shulker(connection: PlayConnection, entityType: EntityType, position: Vec3
 
     @get:EntityMetaDataFunction(name = "Color")
     val color: RGBColor
-        get() = ChatColors.getColorById(entityMetaData.sets.getByte(EntityMetaDataFields.SHULKER_COLOR).toInt())
+        get() = ChatColors[entityMetaData.sets.getByte(EntityMetaDataFields.SHULKER_COLOR).toInt()]
 
 
     companion object : EntityFactory<Shulker> {

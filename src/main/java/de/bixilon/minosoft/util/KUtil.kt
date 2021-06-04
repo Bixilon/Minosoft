@@ -157,4 +157,30 @@ object KUtil {
     operator fun <T> List<T>.get(enum: Enum<*>): T {
         return this[enum.ordinal]
     }
+
+    fun <K, V> Map<K, Any>.extend(vararg pairs: Pair<K, Any>): Map<K, V> {
+        val map: MutableMap<K, V> = mutableMapOf()
+
+        for ((key, value) in this) {
+            map[key] = value as V
+        }
+
+        for (pair in pairs) {
+            map[pair.first] = pair.second as V
+        }
+        return map.toMap()
+    }
+
+    fun <V> Collection<Any>.extend(vararg values: Any): List<V> {
+        val list: MutableList<V> = mutableListOf()
+
+        for (value in this) {
+            list += value as V
+        }
+
+        for (value in values) {
+            list += value as V
+        }
+        return list.toList()
+    }
 }

@@ -10,28 +10,13 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.data.player
 
-package de.bixilon.minosoft.data.player;
-
-public enum PlayerProperties {
-    TEXTURES("textures");
-    // ToDo
-    private final String name;
-
-    PlayerProperties(String name) {
-        this.name = name;
-    }
-
-    public static PlayerProperties byName(String name) {
-        for (PlayerProperties property : values()) {
-            if (property.getName().equals(name)) {
-                return property;
-            }
-        }
-        return null;
-    }
-
-    public String getName() {
-        return this.name;
-    }
+class PlayerProperty(
+    val key: String,
+    val value: String,
+    val signature: String? = null,
+) {
+    val isSigned: Boolean
+        get() = signature != null // ToDo check signature
 }

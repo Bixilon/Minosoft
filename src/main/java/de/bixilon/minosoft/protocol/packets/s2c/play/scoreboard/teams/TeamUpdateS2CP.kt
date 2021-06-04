@@ -16,7 +16,6 @@ package de.bixilon.minosoft.protocol.packets.s2c.play.scoreboard.teams
 import de.bixilon.minosoft.data.scoreboard.NameTagVisibilities
 import de.bixilon.minosoft.data.scoreboard.TeamCollisionRules
 import de.bixilon.minosoft.data.text.ChatCode
-import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
@@ -65,9 +64,9 @@ class TeamUpdateS2CP(val name: String, buffer: PlayInByteBuffer) : PlayS2CPacket
                 this.collisionRule = TeamCollisionRules[buffer.readString()]
             }
             if (buffer.versionId < ProtocolVersions.V_18W01A) {
-                this.formattingCode = ChatColors.getFormattingById(buffer.readByte().toInt())
+                this.formattingCode = ChatCode[buffer.readUnsignedByte()]
             } else {
-                this.formattingCode = ChatColors.getFormattingById(buffer.readVarInt())
+                this.formattingCode = ChatCode[buffer.readVarInt()]
             }
         }
 

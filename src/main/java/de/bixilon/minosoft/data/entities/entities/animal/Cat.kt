@@ -40,7 +40,7 @@ class Cat(connection: PlayConnection, entityType: EntityType, position: Vec3, ro
 
     @get:EntityMetaDataFunction(name = "Collar color")
     val collarColor: RGBColor
-        get() = ChatColors.getColorById(entityMetaData.sets.getInt(EntityMetaDataFields.CAT_GET_COLLAR_COLOR))
+        get() = ChatColors[entityMetaData.sets.getInt(EntityMetaDataFields.CAT_GET_COLLAR_COLOR)]
 
     enum class CatVariants {
         TABBY,

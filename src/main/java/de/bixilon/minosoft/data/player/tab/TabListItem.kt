@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.data.player.tab
 
 import de.bixilon.minosoft.data.abilities.Gamemodes
-import de.bixilon.minosoft.data.player.PlayerProperties
 import de.bixilon.minosoft.data.player.PlayerProperty
 import de.bixilon.minosoft.data.text.ChatComponent
 
@@ -23,7 +22,7 @@ data class TabListItem(
     var ping: Int = -1,
     var gamemode: Gamemodes = Gamemodes.SURVIVAL,
     var displayName: ChatComponent = ChatComponent.of(name),
-    var properties: Map<PlayerProperties, PlayerProperty> = mutableMapOf(),
+    var properties: Map<String, PlayerProperty> = mutableMapOf(),
 ) {
 
     fun merge(data: TabListItemData) {

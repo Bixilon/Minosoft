@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.data.player.tab
 
 import de.bixilon.minosoft.data.abilities.Gamemodes
-import de.bixilon.minosoft.data.player.PlayerProperties
 import de.bixilon.minosoft.data.player.PlayerProperty
 import de.bixilon.minosoft.data.text.ChatComponent
 
@@ -24,6 +23,6 @@ data class TabListItemData(
     var gamemode: Gamemodes? = null,
     var hasDisplayName: Boolean? = null,
     var displayName: ChatComponent? = null,
-    val properties: Map<PlayerProperties, PlayerProperty>? = null,
+    val properties: Map<String, PlayerProperty>? = null,
     var remove: Boolean = false, // used for legacy tab list
 )

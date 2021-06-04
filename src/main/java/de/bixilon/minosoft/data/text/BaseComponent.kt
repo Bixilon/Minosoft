@@ -22,6 +22,7 @@ import de.bixilon.minosoft.gui.rendering.font.text.TextGetProperties
 import de.bixilon.minosoft.gui.rendering.font.text.TextSetProperties
 import de.bixilon.minosoft.gui.rendering.hud.nodes.primitive.LabelNode
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.util.KUtil.nullCast
 import glm_.vec2.Vec2i
 import javafx.collections.ObservableList
 import javafx.scene.Node
@@ -59,9 +60,9 @@ class BaseComponent : ChatComponent {
 
             val formattingChar = iterator.next()
 
-            ChatColors.getColorByFormattingChar(formattingChar)?.let {
+            ChatColors.VALUES.getOrNull(Character.digit(formattingChar, 16))?.let {
                 push()
-                currentColor = it
+                currentColor = it.nullCast<RGBColor>()
             } ?: ChatFormattingCodes.getChatFormattingCodeByChar(formattingChar)?.let {
                 push()
 
@@ -97,7 +98,7 @@ class BaseComponent : ChatComponent {
             if (colorName.startsWith("#")) {
                 colorName.asColor()
             } else {
-                ChatColors.getColorByName(colorName)
+                ChatCode.FORMATTING_CODES[colorName]?.nullCast<RGBColor>()
             }
         } ?: parent?.color
 

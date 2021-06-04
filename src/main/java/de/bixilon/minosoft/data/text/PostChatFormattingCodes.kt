@@ -10,30 +10,16 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.data.text
 
-package de.bixilon.minosoft.data.text;
+enum class PostChatFormattingCodes(
+    override val char: Char,
+    override val ansi: String,
+) : ChatFormattingCode {
+    RESET('r', "\u001b[0m")
+    ;
 
-public enum PostChatFormattingCodes implements ChatFormattingCode {
-    RESET('r', "\u001b[0m");
-    private final char c;
-    private final String ansi;
-
-    PostChatFormattingCodes(char c, String ansi) {
-        this.c = c;
-        this.ansi = ansi;
-    }
-
-    public char getChar() {
-        return this.c;
-    }
-
-    public String getANSI() {
-        return this.ansi;
-    }
-
-    @Override
-    public String toString() {
-        return getANSI();
+    override fun toString(): String {
+        return ansi
     }
 }
-
