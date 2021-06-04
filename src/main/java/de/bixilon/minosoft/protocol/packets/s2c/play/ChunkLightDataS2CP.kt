@@ -13,6 +13,7 @@
 package de.bixilon.minosoft.protocol.packets.s2c.play
 
 
+import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.world.light.ChunkLightAccessor
 import de.bixilon.minosoft.data.world.light.LightAccessor
 import de.bixilon.minosoft.modding.event.EventInitiators
@@ -59,6 +60,9 @@ class ChunkLightDataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     }
 
     override fun log() {
+        if (Minosoft.config.config.general.reduceProtocolLog) {
+            return
+        }
         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Chunk light data (position=$chunkPosition)" }
     }
 

@@ -21,5 +21,6 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 data class GeneralConfig(
     var version: Int = Configuration.LATEST_CONFIG_VERSION,
     @Json(name = "log") var log: MutableMap<LogMessageType, LogLevels> = LogMessageType.DEFAULT_LOG_MAP.toMutableMap(),
+    @Json(name = "reduce_protocol_log") var reduceProtocolLog: Boolean = true,
     var language: String = "en_US",
 )

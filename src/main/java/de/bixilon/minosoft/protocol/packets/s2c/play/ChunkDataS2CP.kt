@@ -12,6 +12,7 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play
 
+import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.tweaker.VersionTweaker
@@ -120,7 +121,6 @@ class ChunkDataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     }
 
     override fun handle(connection: PlayConnection) {
-
         chunkData?.blocks?.let {
             VersionTweaker.transformSections(it, connection.version.versionId)
         }
@@ -136,6 +136,9 @@ class ChunkDataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     }
 
     override fun log() {
+        if (Minosoft.config.config.general.reduceProtocolLog) {
+            return
+        }
         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Chunk data (chunkPosition=$chunkPosition)" }
     }
 }

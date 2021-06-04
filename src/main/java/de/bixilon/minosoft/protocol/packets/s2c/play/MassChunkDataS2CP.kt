@@ -12,6 +12,7 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play
 
+import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.mappings.tweaker.VersionTweaker
 import de.bixilon.minosoft.data.world.ChunkData
 import de.bixilon.minosoft.modding.event.EventInitiators
@@ -89,6 +90,9 @@ class MassChunkDataS2CP() : PlayS2CPacket() {
     }
 
     override fun log() {
+        if (Minosoft.config.config.general.reduceProtocolLog) {
+            return
+        }
         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Mass chunk data (chunks=${data.size})" }
     }
 }
