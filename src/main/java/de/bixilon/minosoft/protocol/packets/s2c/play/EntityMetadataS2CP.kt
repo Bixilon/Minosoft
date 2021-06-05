@@ -12,6 +12,7 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play
 
+import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.entities.meta.EntityMetaData
 import de.bixilon.minosoft.modding.event.events.EntityMetaDataChangeEvent
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
@@ -34,6 +35,9 @@ class EntityMetadataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
 
 
     override fun log() {
+        if (Minosoft.config.config.general.reduceProtocolLog) {
+            return
+        }
         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Entity metadata (entityId=$entityId, metaData=$metaData)" }
     }
 }

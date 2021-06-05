@@ -12,6 +12,7 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play
 
+import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.tags.Tag
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
@@ -59,6 +60,9 @@ class TagsS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     }
 
     override fun log() {
+        if (Minosoft.config.config.general.reduceProtocolLog) {
+            return
+        }
         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Tags (tags=$tags)" }
     }
 

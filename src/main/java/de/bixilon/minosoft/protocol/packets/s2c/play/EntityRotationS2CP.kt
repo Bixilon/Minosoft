@@ -12,6 +12,7 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play
 
+import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
@@ -36,6 +37,9 @@ class EntityRotationS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     }
 
     override fun log() {
+        if (Minosoft.config.config.general.reduceProtocolLog) {
+            return
+        }
         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Entity rotation (entityId=$entityId, yaw=$yaw, pitch=$pitch, onGround=$onGround)" }
     }
 }

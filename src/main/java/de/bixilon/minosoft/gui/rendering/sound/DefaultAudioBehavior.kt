@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.sound
 
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3
 import de.bixilon.minosoft.modding.event.CallbackEventInvoker
 import de.bixilon.minosoft.modding.event.events.ExplosionEvent
 import de.bixilon.minosoft.modding.event.events.PlaySoundEvent
@@ -27,7 +26,7 @@ object DefaultAudioBehavior {
     fun register(connection: PlayConnection) {
         val world = connection.world
         val invokers = listOf(
-            CallbackEventInvoker.of<PlaySoundEvent> { world.playSoundEvent(it.soundEvent, it.position.toVec3, it.volume, it.pitch) },
+            CallbackEventInvoker.of<PlaySoundEvent> { world.playSoundEvent(it.soundEvent, it.position, it.volume, it.pitch) },
             CallbackEventInvoker.of<ExplosionEvent> { world.playSoundEvent(ENTITY_GENERIC_EXPLODE, it.position, 4.0f, (1.0f + (Random.nextFloat() - Random.nextFloat()) * 0.2f) * 0.7f) },
         )
 

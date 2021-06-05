@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.s2c.play.scoreboard.teams
 
+import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.scoreboard.NameTagVisibilities
 import de.bixilon.minosoft.data.scoreboard.TeamCollisionRules
 import de.bixilon.minosoft.data.text.ChatCode
@@ -103,6 +104,9 @@ class TeamUpdateS2CP(val name: String, buffer: PlayInByteBuffer) : PlayS2CPacket
     }
 
     override fun log() {
+        if (Minosoft.config.config.general.reduceProtocolLog) {
+            return
+        }
         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Team update (name=$name, prefix=$prefix, suffix=$suffix, friendlyFire=$friendlyFire, canSeeInvisibleTeam=$canSeeInvisibleTeam, collisionRule=$collisionRule, nameTagVisibility=$nameTagVisibility, formattingCode=$formattingCode)" }
     }
 }

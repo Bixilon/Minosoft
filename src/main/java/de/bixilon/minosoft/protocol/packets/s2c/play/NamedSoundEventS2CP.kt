@@ -12,7 +12,11 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play
 
+import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.SoundCategories
+import de.bixilon.minosoft.data.mappings.sounds.SoundEvent
+import de.bixilon.minosoft.modding.event.events.PlaySoundEvent
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
@@ -23,7 +27,7 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 import glm_.vec3.Vec3
 
 class NamedSoundEventS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
-    val sound: String
+    val soundEvent: SoundEvent?
     val volume: Float
     val pitch: Float
     lateinit var position: Vec3
@@ -35,7 +39,7 @@ class NamedSoundEventS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         if (buffer.versionId >= ProtocolVersions.V_17W15A && buffer.versionId < ProtocolVersions.V_17W18A) {
             this.category = SoundCategories[buffer.readVarInt()]
         }
-        sound = buffer.readString()
+        soundEvent = buffer.connection.registries.soundEventRegistry[buffer.readResourceLocation()]
         if (buffer.versionId >= ProtocolVersions.V_17W15A && buffer.versionId < ProtocolVersions.V_17W18A) {
             buffer.readString() // parrot entity type
         }
@@ -56,7 +60,15 @@ class NamedSoundEventS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         }
     }
 
+    override fun handle(connection: PlayConnection) {
+        soundEvent ?: return
+        if (!Minosoft.config.config.game.sound.enablePacketSounds) {
+            return
+        }
+        connection.fireEvent(PlaySoundEvent(connection, this))
+    }
+
     override fun log() {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Named sound event (sound=$sound, volume=$volume, pitch=$pitch,position=$position, category=$category)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Named sound event (sound=$soundEvent, volume=$volume, pitch=$pitch,position=$position, category=$category)" }
     }
 }

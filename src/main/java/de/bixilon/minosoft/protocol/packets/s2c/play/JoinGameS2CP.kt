@@ -15,17 +15,21 @@ package de.bixilon.minosoft.protocol.packets.s2c.play
 import com.google.common.collect.HashBiMap
 import de.bixilon.minosoft.data.Difficulties
 import de.bixilon.minosoft.data.abilities.Gamemodes
+import de.bixilon.minosoft.data.mappings.DefaultRegistries
 import de.bixilon.minosoft.data.mappings.Dimension
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.world.biome.accessor.BlockBiomeAccessor
 import de.bixilon.minosoft.data.world.biome.accessor.NoiseBiomeAccessor
+import de.bixilon.minosoft.modding.channels.DefaultPluginChannels
 import de.bixilon.minosoft.modding.event.events.JoinGameEvent
 import de.bixilon.minosoft.protocol.ErrorHandler
 import de.bixilon.minosoft.protocol.network.connection.Connection
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.c2s.play.ClientSettingsC2SP
+import de.bixilon.minosoft.protocol.packets.c2s.play.PluginMessageC2SP
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
+import de.bixilon.minosoft.protocol.protocol.PlayOutByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_20W27A
 import de.bixilon.minosoft.util.BitByte
@@ -153,8 +157,13 @@ class JoinGameS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         } else {
             NoiseBiomeAccessor(connection.world)
         }
-        TimeWorker.addTask(TimeWorkerTask(100, true) { // ToDo: Temp workaround
+        TimeWorker.addTask(TimeWorkerTask(150, true) { // ToDo: Temp workaround
             connection.sendPacket(ClientSettingsC2SP("en_us"))
+
+            val brandName = DefaultRegistries.DEFAULT_PLUGIN_CHANNELS_REGISTRY.forVersion(connection.version)[DefaultPluginChannels.BRAND]!!.resourceLocation
+            val buffer = PlayOutByteBuffer(connection)
+            buffer.writeString("vanilla") // ToDo: Remove prefix
+            connection.sendPacket(PluginMessageC2SP(brandName, buffer.toByteArray()))
         })
     }
 

@@ -157,7 +157,7 @@ class HUDWorldDebugNode(hudRenderer: HUDRenderer) : DebugScreenNode(hudRenderer)
         }
 
         fun formatCoordinate(coordinate: Float): String {
-            return "%.3f".format(coordinate)
+            return "%.5f".format(coordinate)
         }
 
         fun formatRotation(rotation: Double): String {

@@ -19,7 +19,6 @@ import de.bixilon.minosoft.data.ChatTextPositions
 import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.data.assets.MultiAssetsManager
 import de.bixilon.minosoft.data.commands.CommandRootNode
-import de.bixilon.minosoft.data.mappings.DefaultRegistries
 import de.bixilon.minosoft.data.mappings.MappingsLoadingException
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.recipes.Recipes
@@ -34,16 +33,13 @@ import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.Rendering
-import de.bixilon.minosoft.modding.channels.DefaultPluginChannels
 import de.bixilon.minosoft.modding.event.CallbackEventInvoker
 import de.bixilon.minosoft.modding.event.EventInvoker
 import de.bixilon.minosoft.modding.event.events.ChatMessageReceiveEvent
 import de.bixilon.minosoft.modding.event.events.ConnectionStateChangeEvent
 import de.bixilon.minosoft.modding.event.events.PacketReceiveEvent
-import de.bixilon.minosoft.modding.event.events.PluginMessageReceiveEvent
 import de.bixilon.minosoft.protocol.packets.c2s.handshaking.HandshakeC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.login.LoginStartC2SP
-import de.bixilon.minosoft.protocol.packets.c2s.play.PluginMessageC2SP
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.packets.s2c.S2CPacket
 import de.bixilon.minosoft.protocol.protocol.*
@@ -149,14 +145,6 @@ class PlayConnection(
                             else -> ""
                         }
                         Log.log(LogMessageType.CHAT_IN, additionalPrefix = ChatComponent.of(additionalPrefix)) { it.message }
-                    })
-                    registerEvent(CallbackEventInvoker.of<PluginMessageReceiveEvent> {
-                        val brandName = DefaultRegistries.DEFAULT_PLUGIN_CHANNELS_REGISTRY.forVersion(version)[DefaultPluginChannels.BRAND]!!.resourceLocation
-                        if (it.channel == brandName) {
-                            val buffer = PlayOutByteBuffer(this)
-                            buffer.writeString("vanilla") // ToDo: Remove prefix
-                            sendPacket(PluginMessageC2SP(brandName, buffer.toByteArray()))
-                        }
                     })
                 }
                 ConnectionStates.DISCONNECTED -> {
