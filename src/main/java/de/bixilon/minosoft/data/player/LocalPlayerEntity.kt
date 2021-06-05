@@ -251,7 +251,7 @@ class LocalPlayerEntity(
 
         movement = connection.collisionDetector.sneak(this, movement)
 
-        val collisionMovement = connection.collisionDetector.collide(null, movement, aabb)
+        val collisionMovement = connection.collisionDetector.collide(null, movement, aabb, true)
 
         horizontalCollision = collisionMovement.x != movement.x || collisionMovement.z != movement.z
         verticalCollision = collisionMovement.y != movement.y
