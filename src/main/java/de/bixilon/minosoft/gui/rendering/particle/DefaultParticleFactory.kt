@@ -21,10 +21,13 @@ import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.Ca
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.ExplosionParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.damage.EnchantedHitParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.dust.DustParticle
+import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.enchant.EnchantParticle
+import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.enchant.NautilusParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.fire.SmokeParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.lava.LavaParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.spell.AmbientEntityEffectParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.spell.EntityEffectParticle
+import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.spell.WitchParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.suspend.DolphinParticle
 
 object DefaultParticleFactory : DefaultFactory<ParticleFactory<out Particle>>(
@@ -40,4 +43,7 @@ object DefaultParticleFactory : DefaultFactory<ParticleFactory<out Particle>>(
     AmbientEntityEffectParticle,
     BlockDustParticle,
     EnchantedHitParticle,
+    WitchParticle,
+    EnchantParticle,
+    NautilusParticle,
 )

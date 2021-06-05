@@ -83,7 +83,8 @@ class CollisionDetector(val connection: PlayConnection) {
         return movement
     }
 
-    fun collide(physicsEntity: PhysicsEntity?, deltaPosition: Vec3, aabb: AABB, collisionsToCheck: VoxelShape = connection.collisionDetector.getCollisionsToCheck(deltaPosition, aabb)): Vec3 {
+    fun collide(physicsEntity: PhysicsEntity?, deltaPosition: Vec3, aabb: AABB, stepping: Boolean = false, collisionsToCheck: VoxelShape = connection.collisionDetector.getCollisionsToCheck(deltaPosition, aabb)): Vec3 {
+        // ToDo: Check world border collision
         val delta = Vec3(deltaPosition)
         if (delta.y != 0.0f) {
             delta.y = collisionsToCheck.computeOffset(aabb, deltaPosition.y, Axes.Y)
@@ -95,22 +96,33 @@ class CollisionDetector(val connection: PlayConnection) {
                         it.onGround = true
                     }
                 }
-                aabb += Vec3(0f, delta.y, 0f)
+                aabb += Vec3(0.0f, delta.y, 0.0f)
             } else if (delta.y < 0) {
                 physicsEntity?.let { it.onGround = false }
             }
         }
+        if (false && stepping && (deltaPosition.x != 0.0f || deltaPosition.z != 0.0f)) {
+            val testDelta = Vec3(delta)
+            testDelta.y = PhysicsConstants.STEP_HEIGHT
+            val stepMovementY = collisionsToCheck.computeOffset(aabb + testDelta, -PhysicsConstants.STEP_HEIGHT, Axes.Y)
+            if (stepMovementY < 0.0f && stepMovementY >= -PhysicsConstants.STEP_HEIGHT) {
+                testDelta.y = PhysicsConstants.STEP_HEIGHT + stepMovementY
+                aabb += Vec3(0.0f, testDelta.y, 0.0f)
+                delta.y += testDelta.y
+            }
+        }
+
         val xPriority = delta.x > delta.z
         if (delta.x != 0.0f && xPriority) {
             delta.x = collisionsToCheck.computeOffset(aabb, deltaPosition.x, Axes.X)
-            aabb += Vec3(delta.x, 0f, 0f)
+            aabb += Vec3(delta.x, 0.0f, 0.0f)
             if (delta.x != deltaPosition.x) {
                 physicsEntity?.let { it.velocity.x = 0.0f }
             }
         }
         if (delta.z != 0.0f) {
             delta.z = collisionsToCheck.computeOffset(aabb, deltaPosition.z, Axes.Z)
-            aabb += Vec3(0f, 0f, delta.z)
+            aabb += Vec3(0.0f, 0.0f, delta.z)
             if (delta.z != deltaPosition.z) {
                 physicsEntity?.let { it.velocity.z = 0.0f }
             }
@@ -122,7 +134,11 @@ class CollisionDetector(val connection: PlayConnection) {
                 physicsEntity?.let { it.velocity.x = 0.0f }
             }
         }
-        if (delta.length() > deltaPosition.length()) {
+        var length = deltaPosition.length()
+        if (stepping) {
+            length += PhysicsConstants.STEP_HEIGHT
+        }
+        if (delta.length() > length) {
             return Vec3.EMPTY // abort all movement if the collision system would move the entity further than wanted
         }
         return delta

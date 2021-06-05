@@ -77,9 +77,8 @@ class PositionAndRotationS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
 
         if (connection.version.versionId >= ProtocolVersions.V_15W42A) {
             connection.sendPacket(TeleportConfirmC2SP(teleportId))
-        } else {
-            connection.sendPacket(PositionAndRotationC2SP(position, rotation, isOnGround))
         }
+        connection.sendPacket(PositionAndRotationC2SP(position, rotation, isOnGround))
     }
 
     override fun log() {
