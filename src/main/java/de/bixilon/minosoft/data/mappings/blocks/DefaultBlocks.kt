@@ -16,7 +16,21 @@ package de.bixilon.minosoft.data.mappings.blocks
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
 
 object DefaultBlocks {
+    val SCAFFOLDING = "minecraft:scaffolding".asResourceLocation()
+    val LADDER = "minecraft:ladder".asResourceLocation()
+    val VINE = "minecraft:vine".asResourceLocation()
+    val WEEPING_VINES = "minecraft:weeping_vines".asResourceLocation()
+    val WEEPING_VINES_PLANT = "minecraft:weeping_vines_plant".asResourceLocation()
+    val TWISTING_VINES = "minecraft:twisting_vines".asResourceLocation()
+    val TWISTING_VINES_PLANT = "minecraft:twisting_vines_plant".asResourceLocation()
+    val CAVE_VINES = "minecraft:cave_vines".asResourceLocation()
+    val CAVE_VINES_PLANT = "minecraft:cave_vines_plant".asResourceLocation()
+
+    val POWDER_SNOW = "minecraft:powder_snow".asResourceLocation()
     val GRASS_BLOCK = "minecraft:grass_block".asResourceLocation()
     val MOVING_PISTON = "minecraft:moving_piston".asResourceLocation()
     val COBWEB = "minecraft:cobweb".asResourceLocation()
+
+    val WATER = "minecraft:water".asResourceLocation()
+    val BUBBLE_COLUMN = "minecraft:bubble_column".asResourceLocation()
 }

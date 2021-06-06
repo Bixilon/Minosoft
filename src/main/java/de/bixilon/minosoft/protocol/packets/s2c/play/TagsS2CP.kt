@@ -30,7 +30,7 @@ class TagsS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     init {
         val tags: MutableMap<ResourceLocation, Map<ResourceLocation, Tag<Any>>> = mutableMapOf()
         if (buffer.versionId < ProtocolVersions.V_20W51A) {
-            tags[BLOCK_TAG_RESOURCE_LOCATION] = buffer.readTagArray { buffer.connection.registries.getBlockState(it)!! }
+            tags[BLOCK_TAG_RESOURCE_LOCATION] = buffer.readTagArray { buffer.connection.registries.blockRegistry[it] }
             tags[ITEM_TAG_RESOURCE_LOCATION] = buffer.readTagArray { buffer.connection.registries.itemRegistry[it] }
             tags[FLUID_TAG_RESOURCE_LOCATION] = buffer.readTagArray { buffer.connection.registries.fluidRegistry[it] } // ToDo: when was this added? Was not available in 18w01
             if (buffer.versionId >= ProtocolVersions.V_18W43A) {

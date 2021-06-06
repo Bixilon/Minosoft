@@ -11,12 +11,10 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.mappings.enchantment
+package de.bixilon.minosoft.data.tags
 
-import de.bixilon.minosoft.util.KUtil.asResourceLocation
+import de.bixilon.minosoft.data.mappings.blocks.DefaultBlocks
 
-object DefaultEnchantments {
-    val SOUL_SPEED = "minecraft:soul_speed".asResourceLocation()
-    val UNBREAKING = "minecraft:unbreaking".asResourceLocation()
-    val EFFICIENCY = "minecraft:efficiency".asResourceLocation()
+object DefaultBlockTags {
+    val CLIMBABLE = setOf(DefaultBlocks.LADDER, DefaultBlocks.VINE, DefaultBlocks.SCAFFOLDING, DefaultBlocks.WEEPING_VINES, DefaultBlocks.WEEPING_VINES_PLANT, DefaultBlocks.TWISTING_VINES, DefaultBlocks.WEEPING_VINES_PLANT, DefaultBlocks.CAVE_VINES, DefaultBlocks.CAVE_VINES_PLANT)
 }

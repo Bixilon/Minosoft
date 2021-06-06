@@ -11,12 +11,10 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.mappings.enchantment
+package de.bixilon.minosoft.data.mappings.items
 
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
 
-object DefaultEnchantments {
-    val SOUL_SPEED = "minecraft:soul_speed".asResourceLocation()
-    val UNBREAKING = "minecraft:unbreaking".asResourceLocation()
-    val EFFICIENCY = "minecraft:efficiency".asResourceLocation()
+object DefaultItems {
+    val LEATHER_BOOTS = "minecraft:leather_boots".asResourceLocation()
 }

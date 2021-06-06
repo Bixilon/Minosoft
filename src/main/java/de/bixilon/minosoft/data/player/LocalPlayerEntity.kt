@@ -19,14 +19,21 @@ import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.data.entities.entities.player.RemotePlayerEntity
+import de.bixilon.minosoft.data.inventory.InventorySlots
+import de.bixilon.minosoft.data.mappings.blocks.DefaultBlocks
+import de.bixilon.minosoft.data.mappings.blocks.types.Block
 import de.bixilon.minosoft.data.mappings.effects.DefaultStatusEffects
 import de.bixilon.minosoft.data.mappings.effects.attributes.DefaultStatusEffectAttributeNames
 import de.bixilon.minosoft.data.mappings.effects.attributes.DefaultStatusEffectAttributes
 import de.bixilon.minosoft.data.mappings.effects.attributes.StatusEffectAttributeInstance
+import de.bixilon.minosoft.data.mappings.enchantment.DefaultEnchantments
+import de.bixilon.minosoft.data.mappings.items.DefaultItems
 import de.bixilon.minosoft.data.mappings.items.Item
 import de.bixilon.minosoft.data.mappings.other.containers.Container
 import de.bixilon.minosoft.data.mappings.other.containers.PlayerInventory
 import de.bixilon.minosoft.data.physics.PhysicsConstants
+import de.bixilon.minosoft.data.tags.DefaultBlockTags
+import de.bixilon.minosoft.data.tags.Tag
 import de.bixilon.minosoft.gui.rendering.input.camera.MovementInput
 import de.bixilon.minosoft.gui.rendering.util.VecUtil
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
@@ -35,8 +42,11 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.clearZero
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.empty
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.c2s.play.*
+import de.bixilon.minosoft.protocol.packets.s2c.play.TagsS2CP
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.util.KUtil.asResourceLocation
 import de.bixilon.minosoft.util.KUtil.decide
+import de.bixilon.minosoft.util.KUtil.nullCast
 import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
 import de.bixilon.minosoft.util.MMath
 import glm_.func.cos
@@ -45,9 +55,8 @@ import glm_.func.sin
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3d
 import glm_.vec3.Vec3i
-import kotlin.math.cos
+import kotlin.math.max
 import kotlin.math.pow
-import kotlin.math.sin
 
 class LocalPlayerEntity(
     account: Account,
@@ -127,11 +136,56 @@ class LocalPlayerEntity(
             field = value
         }
 
-    val canSwimInFluids: Boolean
+    private val canSwimInFluids: Boolean
         get() = !baseAbilities.isFlying
 
     override val isSneaking: Boolean
         get() = input.sneaking
+
+    private val isClimbing: Boolean
+        get() {
+            if (gamemode == Gamemodes.SPECTATOR) {
+                return false
+            }
+            val blockState = connection.world[positionInfo.blockPosition] ?: return false
+
+            connection.tags[TagsS2CP.BLOCK_TAG_RESOURCE_LOCATION]?.get(CLIMBABLE_TAG)?.nullCast<Tag<Block>>()?.let {
+                return it.entries.contains(blockState.block)
+            }
+            return DefaultBlockTags.CLIMBABLE.contains(blockState.block.resourceLocation)
+        }
+
+    private val velocityMultiplier: Double
+        get() {
+            if (isFlyingWithElytra || baseAbilities.isFlying) {
+                return 1.0
+            }
+            val onSoulSpeedBlock = connection.tags[TagsS2CP.BLOCK_TAG_RESOURCE_LOCATION]?.get(SOUL_SPEED_BLOCKS)?.nullCast<Tag<Block>>()?.entries?.contains(connection.world[positionInfo.velocityPosition]?.block) ?: false
+
+            if (onSoulSpeedBlock && getEquipmentEnchant(connection.registries.enchantmentRegistry[DefaultEnchantments.SOUL_SPEED]) > 0) {
+                // ToDo
+                return 1.0
+            }
+
+            val blockStateBelow = connection.world[positionInfo.blockPosition] ?: return 1.0
+
+            if (blockStateBelow.block.resourceLocation == DefaultBlocks.WATER || blockStateBelow.block.resourceLocation == DefaultBlocks.BUBBLE_COLUMN) {
+                if (blockStateBelow.block.velocityMultiplier == 1.0) {
+                    return connection.world[positionInfo.blockPosition]?.block?.velocityMultiplier ?: 1.0
+                }
+            }
+            return blockStateBelow.block.velocityMultiplier
+
+        }
+
+    private val jumpVelocityMultiplier: Double
+        get() {
+            val blockModifier = connection.world[positionInfo.blockPosition]?.block?.jumpVelocityMultiplier ?: 1.0
+            if (blockModifier == 1.0) {
+                return connection.world[positionInfo.velocityPosition]?.block?.jumpVelocityMultiplier ?: 1.0
+            }
+            return blockModifier
+        }
 
     private fun sendMovementPackets() {
         if (Minosoft.config.config.game.camera.disableMovementSending) {
@@ -192,9 +246,9 @@ class LocalPlayerEntity(
         lastOnGround = onGround
     }
 
-    private fun slipperinessToMovementSpeed(slipperiness: Double): Double {
+    private fun frictionToMovement(friction: Double): Double {
         if (onGround) {
-            return walkingSpeed * (0.21600002 / (slipperiness.pow(3)))
+            return walkingSpeed * (0.21600002 / (friction.pow(3)))
         }
         return flyingSpeed
     }
@@ -236,9 +290,9 @@ class LocalPlayerEntity(
 
         // ToDo: Check for piston movement+
 
-        if (!velocityMultiplier.empty) {
-            movement = movement * velocityMultiplier
-            velocityMultiplier = Vec3d.EMPTY
+        if (!movementMultiplier.empty) {
+            movement = movement * movementMultiplier
+            movementMultiplier = Vec3d.EMPTY
             velocity = Vec3d.EMPTY
         }
 
@@ -271,20 +325,43 @@ class LocalPlayerEntity(
         }
 
         // ToDo: Check for move effect
+
+        val velocityMultiplier = velocityMultiplier
+        velocity.x *= velocityMultiplier
+        velocity.z *= velocityMultiplier
+    }
+
+    private fun applyClimbingSpeed(velocity: Vec3d): Vec3d {
+        if (!isClimbing) {
+            return velocity
+        }
+        this.fallDistance = 0.0
+        val returnVelocity = Vec3d(
+            x = MMath.clamp(velocity.x, -CLIMBING_CLAMP_VALUE, CLIMBING_CLAMP_VALUE),
+            y = max(velocity.y, -CLIMBING_CLAMP_VALUE),
+            z = MMath.clamp(velocity.z, -CLIMBING_CLAMP_VALUE, CLIMBING_CLAMP_VALUE)
+        )
+        if (returnVelocity.y < 0.0 && connection.world[positionInfo.blockPosition]?.block?.resourceLocation != DefaultBlocks.SCAFFOLDING && isSneaking) {
+            returnVelocity.y = 0.0
+        }
+        return returnVelocity
     }
 
 
-    private fun move(sidewaysSpeed: Float, forwardSpeed: Float, slipperiness: Double): Vec3d {
-        velocity = velocity + calculateVelocity(sidewaysSpeed, forwardSpeed, slipperinessToMovementSpeed(slipperiness), rotation.headYaw)
+    private fun move(sidewaysSpeed: Float, forwardSpeed: Float, friction: Double): Vec3d {
+        velocity = velocity + calculateVelocity(sidewaysSpeed, forwardSpeed, frictionToMovement(friction), rotation.headYaw)
+
+        velocity = applyClimbingSpeed(velocity)
         move(velocity)
 
         return adjustVelocityForClimbing(velocity)
     }
 
     private fun adjustVelocityForClimbing(velocity: Vec3d): Vec3d {
-        // ToDo: Check climbing or powder snow
+        if ((this.horizontalCollision || isJumping) && (isClimbing || connection.world[positionInfo.blockPosition]?.block == DefaultBlocks.POWDER_SNOW && equipment[InventorySlots.EquipmentSlots.FEET]?.item?.resourceLocation == DefaultItems.LEATHER_BOOTS)) {
+            return Vec3d(velocity.x, 0.2, velocity.z)
+        }
         return velocity
-
     }
 
     private fun travel(sidewaysSpeed: Float, forwardSpeed: Float) {
@@ -319,14 +396,12 @@ class LocalPlayerEntity(
             isFlyingWithElytra -> {
             }
             else -> {
-                val velocityPosition = Vec3i(position.x, position.y + defaultAABB.min.y - 0.5000001f, position.z)
-
-                val slipperiness = /* ToDo: connection.world.connection.world[velocityPosition]?.block?.slipperiness ?: */0.6
+                val friction = connection.world.connection.world[positionInfo.velocityPosition]?.block?.friction ?: 0.6
                 speedMultiplier = 0.91
                 if (onGround) {
-                    speedMultiplier *= slipperiness
+                    speedMultiplier *= friction
                 }
-                val velocity = move(sidewaysSpeed, forwardSpeed, slipperiness)
+                val velocity = move(sidewaysSpeed, forwardSpeed, friction)
 
 
                 activeStatusEffects[connection.registries.statusEffectRegistry[DefaultStatusEffects.LEVITATION]]?.let {
@@ -434,7 +509,7 @@ class LocalPlayerEntity(
 
 
     private fun jump() {
-        var velocity = 0.42 // ToDo: Check for special blocks (e.g. soul sand, slime blocks, honey blocks, etc)
+        var velocity = 0.42 * jumpVelocityMultiplier
 
         activeStatusEffects[connection.registries.statusEffectRegistry[DefaultStatusEffects.JUMP_BOOST]]?.let {
             velocity += 0.1 * (it.amplifier + 1.0)
@@ -443,7 +518,7 @@ class LocalPlayerEntity(
 
         if (isSprinting) {
             val yawRad = rotation.headYaw.rad
-            this.velocity = this.velocity + Vec3(-(sin(yawRad) * 0.2f), 0.0f, cos(yawRad) * 0.2f)
+            this.velocity = this.velocity + Vec3(-(yawRad.sin * 0.2f), 0.0f, yawRad.cos * 0.2f)
         }
         dirtyVelocity = true
     }
@@ -464,5 +539,11 @@ class LocalPlayerEntity(
 
         lastFovMultiplier = currentFovMultiplier
         currentFovMultiplier = MMath.clamp(1.0 + walkingSpeed, 1.0, 1.5)
+    }
+
+    companion object {
+        private val CLIMBABLE_TAG = "minecraft:climbable".asResourceLocation()
+        private val SOUL_SPEED_BLOCKS = "minecraft:soul_speed_blocks".asResourceLocation()
+        private const val CLIMBING_CLAMP_VALUE = 0.15f.toDouble()
     }
 }

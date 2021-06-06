@@ -29,6 +29,8 @@ class EntityPositionInfo(
 ) {
     lateinit var blockPosition: Vec3i
         private set
+    lateinit var velocityPosition: Vec3i
+        private set
     lateinit var chunkPosition: Vec2i
         private set
     lateinit var inChunkSectionPosition: Vec3i
@@ -44,6 +46,7 @@ class EntityPositionInfo(
 
     fun update() {
         blockPosition = entity.position.blockPosition
+        velocityPosition = Vec3i(entity.position.x, entity.position.y + -0.5000001f, entity.position.z)
         chunkPosition = blockPosition.chunkPosition
         inChunkSectionPosition = blockPosition.inChunkSectionPosition
         sectionHeight = blockPosition.sectionHeight

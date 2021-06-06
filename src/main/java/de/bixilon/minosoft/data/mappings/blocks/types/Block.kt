@@ -59,6 +59,9 @@ open class Block(
     open lateinit var item: Item
         protected set
     open lateinit var properties: Map<BlockProperties, List<Any>>
+    open val friction = data["friction"]?.asDouble ?: 0.6
+    open val velocityMultiplier = data["velocity_multiplier"]?.asDouble ?: 1.0 // ToDo: They exist since ~1.15
+    open val jumpVelocityMultiplier = data["jump_velocity_multiplier"]?.asDouble ?: 1.0
 
     override fun postInit(registries: Registries) {
         item = registries.itemRegistry[itemId]

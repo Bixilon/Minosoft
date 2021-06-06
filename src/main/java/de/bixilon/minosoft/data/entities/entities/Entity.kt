@@ -24,6 +24,7 @@ import de.bixilon.minosoft.data.mappings.effects.StatusEffect
 import de.bixilon.minosoft.data.mappings.effects.attributes.StatusEffectAttribute
 import de.bixilon.minosoft.data.mappings.effects.attributes.StatusEffectAttributeInstance
 import de.bixilon.minosoft.data.mappings.effects.attributes.StatusEffectOperations
+import de.bixilon.minosoft.data.mappings.enchantment.Enchantment
 import de.bixilon.minosoft.data.mappings.entities.EntityType
 import de.bixilon.minosoft.data.physics.PhysicsEntity
 import de.bixilon.minosoft.data.text.ChatComponent
@@ -36,6 +37,7 @@ import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
 import de.bixilon.minosoft.util.KUtil.synchronizedSetOf
+import de.bixilon.minosoft.util.KUtil.toSynchronizedMap
 import glm_.vec2.Vec2
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3d
@@ -65,7 +67,7 @@ abstract class Entity(
     var passengers: MutableSet<Entity> = synchronizedSetOf()
 
     override var velocity: Vec3d = Vec3d.EMPTY
-    var velocityMultiplier = Vec3d.EMPTY
+    var movementMultiplier = Vec3d.EMPTY // ToDo: Used in cobwebs, etc
 
     protected open val hasCollisions = true
 
@@ -304,6 +306,19 @@ abstract class Entity(
 
     override val aabb: AABB
         get() = defaultAABB + position
+
+    fun getEquipmentEnchant(enchantment: Enchantment?): Int {
+        enchantment ?: return 0
+        var maxLevel = 0
+        for ((slot, equipment) in this.equipment.toSynchronizedMap()) {
+            equipment.enchantments[enchantment]?.let {
+                if (it > maxLevel) {
+                    maxLevel = it
+                }
+            }
+        }
+        return maxLevel
+    }
 
     companion object {
         private const val HITBOX_MARGIN = 1e-5f
