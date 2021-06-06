@@ -405,7 +405,7 @@ class LocalPlayerEntity(
 
 
                 activeStatusEffects[connection.registries.statusEffectRegistry[DefaultStatusEffects.LEVITATION]]?.let {
-                    velocity.y += (0.05f * (it.amplifier + 1.0f)) * 0.2f
+                    velocity.y += (0.05 * (it.amplifier + 1.0f) - velocity.y) * 0.2 // ToDo: This should be correct, but somehow are we to fast...
                 } ?: let {
                     if (connection.world[positionInfo.chunkPosition] == null) {
                         velocity.y = if (position.y > connection.world.dimension?.minY ?: 0) {
@@ -413,11 +413,9 @@ class LocalPlayerEntity(
                         } else {
                             0.0
                         }
+                    } else if (hasGravity) {
+                        velocity.y -= gravity
                     }
-                    null
-                }
-                if (hasGravity) {
-                    velocity.y -= gravity
                 }
                 this.velocity = velocity * Vec3d(speedMultiplier, 0.9800000190734863, speedMultiplier)
             }
