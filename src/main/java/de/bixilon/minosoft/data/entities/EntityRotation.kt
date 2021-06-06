@@ -12,11 +12,11 @@
  */
 package de.bixilon.minosoft.data.entities
 
-data class EntityRotation(var yaw: Double, var pitch: Double, var headYaw: Double = yaw) {
+data class EntityRotation(var bodyYaw: Double, var pitch: Double, var headYaw: Double = bodyYaw) {
 
-    constructor(yaw: Float, pitch: Float, headYaw: Float = yaw) : this(yaw.toDouble(), pitch.toDouble(), headYaw.toDouble())
+    constructor(bodyYaw: Float, pitch: Float, headYaw: Float = bodyYaw) : this(bodyYaw.toDouble(), pitch.toDouble(), headYaw.toDouble())
 
     override fun toString(): String {
-        return "(yaw=$yaw, pitch=$pitch, headYaw=$headYaw)"
+        return "(bodyYaw=$bodyYaw, pitch=$pitch, headYaw=$headYaw)"
     }
 }

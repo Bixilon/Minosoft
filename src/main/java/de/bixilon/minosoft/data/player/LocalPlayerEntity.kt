@@ -156,7 +156,7 @@ class LocalPlayerEntity(
         val positionChanged = positionDiff.length() > 0.01f || (currentTime - lastPositionPacketSent >= 1000)
 
         val rotation = rotation.copy()
-        val yawDiff = rotation.yaw - lastRotation.yaw
+        val yawDiff = rotation.headYaw - lastRotation.headYaw
         val pitchDiff = rotation.pitch - lastRotation.pitch
         val rotationChanged = yawDiff != 0.0 && pitchDiff != 0.0
 
@@ -275,7 +275,7 @@ class LocalPlayerEntity(
 
 
     private fun move(sidewaysSpeed: Float, forwardSpeed: Float, slipperiness: Double): Vec3d {
-        velocity = velocity + calculateVelocity(sidewaysSpeed, forwardSpeed, slipperinessToMovementSpeed(slipperiness), rotation.yaw)
+        velocity = velocity + calculateVelocity(sidewaysSpeed, forwardSpeed, slipperinessToMovementSpeed(slipperiness), rotation.headYaw)
         move(velocity)
 
         return adjustVelocityForClimbing(velocity)
@@ -442,7 +442,7 @@ class LocalPlayerEntity(
         this.velocity.y = velocity
 
         if (isSprinting) {
-            val yawRad = rotation.yaw.rad
+            val yawRad = rotation.headYaw.rad
             this.velocity = this.velocity + Vec3(-(sin(yawRad) * 0.2f), 0.0f, cos(yawRad) * 0.2f)
         }
         dirtyVelocity = true

@@ -34,7 +34,7 @@ class PositionAndRotationC2SP(
             buffer.writeDouble(position.y - 1.62) // ToDo
         }
         buffer.writeDouble(position.z)
-        buffer.writeFloat(rotation.yaw)
+        buffer.writeFloat(rotation.headYaw)
         buffer.writeFloat(rotation.pitch)
         buffer.writeBoolean(onGround)
     }

@@ -25,7 +25,7 @@ class RotationC2SP(
 ) : PlayC2SPacket {
 
     override fun write(buffer: PlayOutByteBuffer) {
-        buffer.writeFloat(rotation.yaw)
+        buffer.writeFloat(rotation.headYaw)
         buffer.writeFloat(rotation.pitch)
         buffer.writeBoolean(onGround)
     }

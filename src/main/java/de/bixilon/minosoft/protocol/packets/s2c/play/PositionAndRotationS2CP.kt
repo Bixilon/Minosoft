@@ -64,8 +64,9 @@ class PositionAndRotationS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         }
 
         if (BitByte.isBitMask(flags, 0x08)) {
-            rotation.yaw += entity.rotation.yaw
+            rotation.headYaw += entity.rotation.headYaw
         }
+        rotation.bodyYaw = rotation.headYaw
 
         if (BitByte.isBitMask(flags, 0x10)) {
             rotation.pitch += entity.rotation.pitch

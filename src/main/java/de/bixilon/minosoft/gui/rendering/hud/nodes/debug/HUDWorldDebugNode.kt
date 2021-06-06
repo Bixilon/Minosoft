@@ -138,7 +138,7 @@ class HUDWorldDebugNode(hudRenderer: HUDRenderer) : DebugScreenNode(hudRenderer)
     }
 
     private fun getFacing(): String {
-        val yaw = hudRenderer.renderWindow.inputHandler.camera.entity.rotation.yaw
+        val yaw = hudRenderer.renderWindow.inputHandler.camera.entity.rotation.headYaw
         val pitch = hudRenderer.renderWindow.inputHandler.camera.entity.rotation.pitch
         val direction = Directions.byDirection(camera.cameraFront)
         return "${Directions.byDirection(camera.cameraFront).name.lowercase(Locale.getDefault())} ${direction.vector} (${formatRotation(yaw)} / ${formatRotation(pitch)})"
