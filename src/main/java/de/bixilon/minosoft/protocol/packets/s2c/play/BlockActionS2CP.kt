@@ -15,6 +15,7 @@ package de.bixilon.minosoft.protocol.packets.s2c.play
 import de.bixilon.minosoft.data.entities.block.BlockActionEntity
 import de.bixilon.minosoft.data.entities.block.DefaultBlockEntityMetaDataFactory
 import de.bixilon.minosoft.data.mappings.blocks.types.Block
+import de.bixilon.minosoft.datafixer.BlockEntityFixer.fix
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
@@ -36,10 +37,11 @@ class BlockActionS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
 
     override fun handle(connection: PlayConnection) {
         val blockEntity = connection.world.getBlockEntity(position) ?: let {
-            val factory = connection.registries.blockEntityTypeRegistry[block.resourceLocation]?.factory
-                ?: DefaultBlockEntityMetaDataFactory[block.resourceLocation]
+            val fixedResourceLocation = block.resourceLocation.fix()
+            val factory = connection.registries.blockEntityTypeRegistry[fixedResourceLocation]?.factory
+                ?: DefaultBlockEntityMetaDataFactory[fixedResourceLocation]
                 ?: let {
-                    Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.WARN) { "Unknown block entity ${block.resourceLocation}" }
+                    Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.WARN) { "Unknown block entity $fixedResourceLocation" }
                     return
                 }
             val blockEntity = factory.build(connection)

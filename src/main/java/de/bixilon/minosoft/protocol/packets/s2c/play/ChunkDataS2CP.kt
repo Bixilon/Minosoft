@@ -18,6 +18,7 @@ import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.tweaker.VersionTweaker
 import de.bixilon.minosoft.data.world.ChunkData
 import de.bixilon.minosoft.data.world.biome.source.SpatialBiomeArray
+import de.bixilon.minosoft.datafixer.BlockEntityFixer.fix
 import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.modding.event.events.ChunkDataChangeEvent
 import de.bixilon.minosoft.modding.event.events.ChunkUnloadEvent
@@ -107,7 +108,7 @@ class ChunkDataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
                 for (i in 0 until blockEntitiesCount) {
                     val nbt = buffer.readNBT()?.compoundCast()!!
                     val position = Vec3i(nbt["x"]?.nullCast<Int>()!!, nbt["y"]?.nullCast<Int>()!!, nbt["z"]?.nullCast<Int>()!!)
-                    val resourceLocation = ResourceLocation(nbt["id"]?.nullCast<String>()!!)
+                    val resourceLocation = ResourceLocation(nbt["id"]?.nullCast<String>()!!).fix()
                     val type = buffer.connection.registries.blockEntityTypeRegistry[resourceLocation] ?: let {
                         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.WARN) { "Unknown block entity: $resourceLocation" }
                         null
