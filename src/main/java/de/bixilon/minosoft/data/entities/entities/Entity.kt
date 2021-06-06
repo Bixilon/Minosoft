@@ -73,10 +73,10 @@ abstract class Entity(
 
     override var onGround = false
 
-    val defaultAABB: AABB
+    private val defaultAABB: AABB
         get() {
             val halfWidth = dimensions.x / 2
-            return AABB(Vec3(-halfWidth, 0.0f, -halfWidth), Vec3(halfWidth, dimensions.y, halfWidth)) grow HITBOX_MARGIN
+            return AABB(Vec3(-halfWidth, 0.0f, -halfWidth), Vec3(halfWidth, dimensions.y, halfWidth))
         }
 
     open val dimensions = Vec2(entityType.width, entityType.height)
@@ -103,9 +103,6 @@ abstract class Entity(
 
     fun forceMove(deltaPosition: Vec3d) {
         previousPosition = Vec3d(position)
-        if (onGround) {
-            deltaPosition.y -= 0.00001f
-        }
         position = position + deltaPosition
     }
 
@@ -323,8 +320,6 @@ abstract class Entity(
     open fun setObjectData(data: Int) {}
 
     companion object {
-        private const val HITBOX_MARGIN = 1e-5f
-
         private val BELOW_POSITION_MINUS = Vec3(0, 0.20000000298023224f, 0)
     }
 }

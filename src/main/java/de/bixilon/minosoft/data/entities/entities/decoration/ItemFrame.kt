@@ -33,8 +33,7 @@ open class ItemFrame(connection: PlayConnection, entityType: EntityType, positio
     val itemRotation: Int
         get() = entityMetaData.sets.getInt(EntityMetaDataFields.ITEM_FRAME_ROTATION)
 
-
-    @get:EntityMetaDataFunction(name = "Owner")
+    @get:EntityMetaDataFunction(name = "Facing")
     var facing: Directions = Directions.NORTH
 
     override fun setObjectData(data: Int) {
