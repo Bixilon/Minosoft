@@ -13,9 +13,12 @@
 
 package de.bixilon.minosoft.data.world
 
+import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.entities.entities.Entity
+import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
 import de.bixilon.minosoft.util.KUtil.toSynchronizedMap
+import glm_.vec3.Vec3d
 import java.util.*
 
 class WorldEntities : Iterable<Entity> {
@@ -74,5 +77,49 @@ class WorldEntities : Iterable<Entity> {
 
     override fun iterator(): Iterator<Entity> {
         return idEntityMap.toSynchronizedMap().values.iterator()
+    }
+
+    fun getInRadius(position: Vec3d, distance: Double, check: (Entity) -> Boolean): List<Entity> {
+        // ToDo: Improve performance
+        val ret: MutableList<Entity> = mutableListOf()
+        val entities = idEntityMap.toSynchronizedMap().values
+
+        for (entity in entities) {
+            if ((entity.position - position).length() > distance) {
+                continue
+            }
+            if (check(entity)) {
+                ret += entity
+            }
+        }
+        return ret.toList()
+    }
+
+    fun getClosestInRadius(position: Vec3d, distance: Double, check: (Entity) -> Boolean): Entity? {
+        val entities = getInRadius(position, distance, check)
+        var closestDistance = Double.MAX_VALUE
+        var closestEntity: Entity? = null
+
+        for (entity in entities) {
+            val currentDistance = (entity.position - position).length()
+            if (currentDistance < closestDistance) {
+                closestDistance = currentDistance
+                closestEntity = entity
+            }
+        }
+
+        return closestEntity
+    }
+
+    companion object {
+        val CHECK_CLOSEST_PLAYER: (Entity) -> Boolean = check@{
+            if (it !is PlayerEntity) {
+                return@check false
+            }
+            if (it.gamemode == Gamemodes.SPECTATOR) {
+                return@check false
+            }
+            return@check true
+        }
     }
 }

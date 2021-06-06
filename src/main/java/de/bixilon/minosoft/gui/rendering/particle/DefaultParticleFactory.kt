@@ -17,14 +17,19 @@ import de.bixilon.minosoft.data.mappings.DefaultFactory
 import de.bixilon.minosoft.gui.rendering.particle.types.Particle
 import de.bixilon.minosoft.gui.rendering.particle.types.norender.ExplosionEmitterParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.advanced.block.BlockDustParticle
-import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.CampfireSmokeParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.ExplosionParticle
+import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.campfire.CampfireSmokeParticle
+import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.cloud.CloudParticle
+import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.cloud.SneezeParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.damage.EnchantedHitParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.dust.DustParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.enchant.EnchantParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.enchant.NautilusParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.fire.SmokeParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.lava.LavaParticle
+import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.slowing.FlameParticle
+import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.slowing.SmallFlameParticle
+import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.slowing.SoulFireFlameParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.spell.AmbientEntityEffectParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.spell.EntityEffectParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.spell.WitchParticle
@@ -46,4 +51,9 @@ object DefaultParticleFactory : DefaultFactory<ParticleFactory<out Particle>>(
     WitchParticle,
     EnchantParticle,
     NautilusParticle,
+    FlameParticle,
+    SmallFlameParticle,
+    SoulFireFlameParticle,
+    CloudParticle,
+    SneezeParticle,
 )

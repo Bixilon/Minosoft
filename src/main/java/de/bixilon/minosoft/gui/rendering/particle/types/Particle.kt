@@ -33,7 +33,7 @@ import kotlin.reflect.full.companionObjectInstance
 abstract class Particle(
     protected val connection: PlayConnection,
     final override val position: Vec3d,
-    final override val velocity: Vec3d = Vec3d.EMPTY,
+    velocity: Vec3d = Vec3d.EMPTY,
     data: ParticleData? = null,
 ) : PhysicsEntity {
     protected val data: ParticleData = data ?: let {
@@ -52,6 +52,7 @@ abstract class Particle(
     var maxAge: Int = (4.0f / (random.nextFloat() * 0.9f + 0.1f)).toInt()
 
     // moving
+    final override val velocity: Vec3d = Vec3d(velocity)
     var previousPosition = position
     var movement: Boolean = true
     var physics: Boolean = true
@@ -82,12 +83,12 @@ abstract class Particle(
 
 
     init {
-        velocity += { (random.nextDouble() * 2.0 - 1.0) * MAGIC_VELOCITY_CONSTANT }
+        this.velocity += { (random.nextDouble() * 2.0 - 1.0) * MAGIC_VELOCITY_CONSTANT }
         val modifier = (random.nextFloat() + random.nextFloat() + 1.0f) * 0.15000000596046448
-        val divider = velocity.length()
+        val divider = this.velocity.length()
 
-        velocity assign velocity / divider * modifier * MAGIC_VELOCITY_CONSTANTf
-        velocity.y += 0.10000000149011612
+        this.velocity assign this.velocity / divider * modifier * MAGIC_VELOCITY_CONSTANTf
+        this.velocity.y += 0.10000000149011612
 
         spacing = Vec3(0.2)
     }
