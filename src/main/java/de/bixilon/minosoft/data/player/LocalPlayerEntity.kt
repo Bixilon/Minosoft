@@ -83,8 +83,8 @@ class LocalPlayerEntity(
 
 
     private var flyingSpeed = 0.02
-    val movementSpeed: Double
-        get() = getAttributeValue(DefaultStatusEffectAttributeNames.GENERIC_MOVEMENT_SPEED)
+    private val walkingSpeed: Double
+        get() = getAttributeValue(DefaultStatusEffectAttributeNames.GENERIC_MOVEMENT_SPEED, baseAbilities.walkingSpeed)
 
     private var horizontalCollision = false
     private var verticalCollision = false
@@ -103,13 +103,12 @@ class LocalPlayerEntity(
     override val hasGravity: Boolean
         get() = !baseAbilities.isFlying
 
-
     private val slowMovement: Boolean
         get() = isSneaking // ToDo: Or should leave swimming pose
 
     private val isUsingItem = false // ToDo: Not yet implemented
 
-    val canSprint: Boolean
+    private val canSprint: Boolean
         get() = healthCondition.hunger >= PhysicsConstants.SPRINT_MINIMUM_HUNGER || baseAbilities.canFly || (gamemode == Gamemodes.CREATIVE || gamemode == Gamemodes.SPECTATOR)
 
 
@@ -195,7 +194,7 @@ class LocalPlayerEntity(
 
     private fun slipperinessToMovementSpeed(slipperiness: Double): Double {
         if (onGround) {
-            return movementSpeed * (0.21600002 / (slipperiness.pow(3)))
+            return walkingSpeed * (0.21600002 / (slipperiness.pow(3)))
         }
         return flyingSpeed
     }
@@ -464,6 +463,6 @@ class LocalPlayerEntity(
         sendMovementPackets()
 
         lastFovMultiplier = currentFovMultiplier
-        currentFovMultiplier = MMath.clamp(1.0 + movementSpeed, 1.0, 1.5)
+        currentFovMultiplier = MMath.clamp(1.0 + walkingSpeed, 1.0, 1.5)
     }
 }

@@ -117,9 +117,8 @@ abstract class Entity(
         activeStatusEffects.remove(effect)
     }
 
-    fun getAttributeValue(attribute: ResourceLocation): Double {
+    fun getAttributeValue(attribute: ResourceLocation, baseValue: Double = entityType.attributes[attribute] ?: 1.0): Double {
         // ToDo: Check order and verify value
-        val baseValue = entityType.attributes[attribute] ?: 1.0
         var ret = baseValue
 
         fun addToValue(statusEffectAttribute: StatusEffectAttribute, amplifier: Int) {

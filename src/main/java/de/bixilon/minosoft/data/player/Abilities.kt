@@ -19,6 +19,6 @@ data class Abilities(
     var canFly: Boolean = false,
     var canInstantBreak: Boolean = false,
 
-    var flyingSpeed: Double = 1.0,
-    var walkingSpeed: Double = 1.0,
+    var flyingSpeed: Double = 0.05,
+    var walkingSpeed: Double = 0.1,
 )
