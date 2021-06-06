@@ -92,8 +92,6 @@ class LocalPlayerEntity(
     var dirtyVelocity = false
     var jumpingCoolDown = 0
     var isJumping = false
-    var sidewaysSpeed = 0.0f
-    var forwardSpeed = 1.0f
     var fallDistance = 0.0
 
     private var lastFovMultiplier = 1.0
@@ -193,12 +191,6 @@ class LocalPlayerEntity(
             lastRotation = rotation
         }
         lastOnGround = onGround
-    }
-
-    fun setSpeeds() {
-        sidewaysSpeed = input.movementSideways
-        forwardSpeed = input.movementForward
-        isJumping = input.jumping
     }
 
     private fun slipperinessToMovementSpeed(slipperiness: Double): Double {
@@ -405,10 +397,10 @@ class LocalPlayerEntity(
         velocity.clearZero()
         if (health < 0.0f || isSleeping) {
             isJumping = false
-            sidewaysSpeed = 0.0f
-            forwardSpeed = 0.0f
+            movementSideways = 0.0f
+            movementForward = 0.0f
         } else {
-            setSpeeds()
+            isJumping = input.jumping
         }
 
         if (isJumping && canSwimInFluids) {
@@ -422,12 +414,12 @@ class LocalPlayerEntity(
             jumpingCoolDown = 0
         }
 
-        sidewaysSpeed *= 0.98f
-        forwardSpeed *= 0.98f
+        movementSideways *= 0.98f
+        movementForward *= 0.98f
 
         // ToDo: falling
 
-        travel(sidewaysSpeed, forwardSpeed)
+        travel(movementSideways, movementForward)
 
         // ToDo: Frozen ticks
 
