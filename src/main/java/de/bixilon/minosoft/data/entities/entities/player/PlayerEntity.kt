@@ -73,6 +73,9 @@ abstract class PlayerEntity(
     val rightShoulderData: Map<String, Any>?
         get() = entityMetaData.sets.getNBT(EntityMetaDataFields.PLAYER_RIGHT_SHOULDER_DATA)
 
+    override val spawnSprintingParticles: Boolean
+        get() = super.spawnSprintingParticles && gamemode != Gamemodes.SPECTATOR
+
     override fun realTick() {
         if (gamemode == Gamemodes.SPECTATOR) {
             onGround = false

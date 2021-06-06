@@ -187,6 +187,9 @@ class LocalPlayerEntity(
             return blockModifier
         }
 
+    override val spawnSprintingParticles: Boolean
+        get() = super.spawnSprintingParticles && !baseAbilities.isFlying
+
     private fun sendMovementPackets() {
         if (Minosoft.config.config.game.camera.disableMovementSending) {
             return

@@ -90,6 +90,9 @@ abstract class LivingEntity(connection: PlayConnection, entityType: EntityType, 
             else -> super.pose
         }
 
+    override val spawnSprintingParticles: Boolean
+        get() = super.spawnSprintingParticles && health > 0.0
+
     private fun tickStatusEffects() {
         if (entityEffectParticle == null && ambientEntityEffectParticle == null) {
             return

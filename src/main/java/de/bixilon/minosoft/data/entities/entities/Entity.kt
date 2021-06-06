@@ -26,18 +26,22 @@ import de.bixilon.minosoft.data.mappings.effects.attributes.StatusEffectAttribut
 import de.bixilon.minosoft.data.mappings.effects.attributes.StatusEffectOperations
 import de.bixilon.minosoft.data.mappings.enchantment.Enchantment
 import de.bixilon.minosoft.data.mappings.entities.EntityType
+import de.bixilon.minosoft.data.mappings.particle.data.BlockParticleData
 import de.bixilon.minosoft.data.physics.PhysicsEntity
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.gui.rendering.chunk.models.AABB
 import de.bixilon.minosoft.gui.rendering.input.camera.EntityPositionInfo
+import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.advanced.block.BlockDustParticle
 import de.bixilon.minosoft.gui.rendering.util.VecUtil
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.floor
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.horizontal
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
 import de.bixilon.minosoft.util.KUtil.synchronizedSetOf
 import de.bixilon.minosoft.util.KUtil.toSynchronizedMap
+import glm_.func.common.floor
 import glm_.vec2.Vec2
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3d
@@ -98,6 +102,9 @@ abstract class Entity(
 
     val realPosition: Vec3d
         get() = VecUtil.lerp((System.currentTimeMillis() - lastTickTime) / ProtocolDefinition.TICK_TIMEd, previousPosition, position)
+
+    open val spawnSprintingParticles: Boolean
+        get() = isSprinting && !isSneaking // ToDo: Touching fluids
 
     protected var lastTickTime = -1L
 
@@ -228,10 +235,6 @@ abstract class Entity(
     val ticksFrozen: Int
         get() = entityMetaData.sets.getInt(EntityMetaDataFields.ENTITY_TICKS_FROZEN)
 
-    override fun toString(): String {
-        return entityType.toString()
-    }
-
     val entityMetaDataAsString: String
         get() = entityMetaDataFormatted.toString()
 
@@ -280,6 +283,10 @@ abstract class Entity(
             return position
         }
 
+    override val aabb: AABB
+        get() = defaultAABB + position
+
+
     @Synchronized
     fun tick() {
         val currentTime = System.currentTimeMillis()
@@ -299,10 +306,33 @@ abstract class Entity(
         }
     }
 
-    open fun realTick() {}
+    open fun realTick() {
+        if (spawnSprintingParticles) {
+            spawnSprintingParticles()
+        }
+    }
 
-    override val aabb: AABB
-        get() = defaultAABB + position
+    private fun spawnSprintingParticles() {
+        val blockPosition = Vec3i(position.x.floor, (position.y - 0.20000000298023224).floor, position.z.floor)
+        val blockState = connection.world[blockPosition] ?: return
+
+        // ToDo: Don't render particles for invisible blocks
+
+        val velocity = Vec3d(velocity)
+
+        connection.world += BlockDustParticle(
+            connection = connection,
+            position = position + Vec3d.horizontal(
+                { (random.nextDouble() * 0.5) * dimensions.x },
+                0.1
+            ),
+            velocity = Vec3d(velocity.x * -4.0, 1.5, velocity.z * -4.0),
+            data = BlockParticleData(
+                blockState = blockState,
+                type = connection.registries.particleTypeRegistry[BlockDustParticle]!!,
+            )
+        )
+    }
 
     fun getEquipmentEnchant(enchantment: Enchantment?): Int {
         enchantment ?: return 0
@@ -318,6 +348,10 @@ abstract class Entity(
     }
 
     open fun setObjectData(data: Int) {}
+
+    override fun toString(): String {
+        return entityType.toString()
+    }
 
     companion object {
         private val BELOW_POSITION_MINUS = Vec3(0, 0.20000000298023224f, 0)
