@@ -23,6 +23,7 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.inChunkPosition
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import glm_.vec3.Vec3
+import glm_.vec3.Vec3bool
 import glm_.vec3.Vec3d
 import kotlin.math.abs
 
@@ -85,46 +86,86 @@ class CollisionDetector(val connection: PlayConnection) {
         return movement
     }
 
-    fun collide(physicsEntity: PhysicsEntity?, movement: Vec3d, aabb: AABB, stepping: Boolean = false, collisions: VoxelShape = connection.collisionDetector.getCollisionsToCheck(movement, aabb)): Vec3d {
+    fun collide(physicsEntity: PhysicsEntity?, movement: Vec3d, aabb: AABB, stepping: Boolean = false): Vec3d {
+        val collisionMovement = adjustMovementForCollisions(movement, aabb)
 
-        return adjustMovementForCollisions(movement, aabb, collisions)
+        var returnMovement = collisionMovement
+
+        var blocked = Vec3bool(false)
+        var onGround = false
+
+        fun checkBlocked() {
+            blocked = Vec3bool(returnMovement.x != movement.x, returnMovement.y != movement.y, returnMovement.z != movement.z)
+            onGround = blocked.y && movement.y < 0.0
+        }
+        checkBlocked()
+
+        if (stepping && onGround && (blocked.x || blocked.z)) {
+            var stepMovement = adjustMovementForCollisions(Vec3d(movement.x, PhysicsConstants.STEP_HEIGHT, movement.z), aabb)
+            val verticalStepMovement = adjustMovementForCollisions(Vec3d(0.0, PhysicsConstants.STEP_HEIGHT, 0.0), aabb extend Vec3d(movement.x, 0.0, movement.z))
+
+            if (verticalStepMovement.y < PhysicsConstants.STEP_HEIGHT) {
+                val horizontalStepMovement = adjustMovementForCollisions(Vec3d(movement.x, 0.0, movement.z), aabb + verticalStepMovement) + verticalStepMovement
+
+                if (horizontalStepMovement.length() > stepMovement.length()) {
+                    stepMovement = horizontalStepMovement
+                }
+            }
+            if (stepMovement.length() > collisionMovement.length()) {
+                returnMovement = stepMovement + adjustMovementForCollisions(Vec3d(0.0, -stepMovement.y + movement.y, 0.0), aabb + stepMovement)
+            }
+        }
+        checkBlocked()
+        physicsEntity?.let {
+            if (blocked.x) {
+                it.velocity.x = 0.0
+            }
+            if (blocked.y) {
+                it.velocity.y = 0.0
+            }
+            it.onGround = onGround
+            if (blocked.z) {
+                it.velocity.z = 0.0
+            }
+        }
+        return returnMovement
     }
 
-    private fun adjustMovementForCollisions(original: Vec3d, originalAabb: AABB, collisions: VoxelShape): Vec3d {
-        val aabb = AABB(originalAabb)
-        val movement = Vec3d(original)
+    private fun adjustMovementForCollisions(movement: Vec3d, aabb: AABB, collisions: VoxelShape = connection.collisionDetector.getCollisionsToCheck(movement, aabb)): Vec3d {
+        val adjustedAabb = AABB(aabb)
+        val adjusted = Vec3d(movement)
 
         fun checkMovement(axis: Axes, originalValue: Double, offsetAABB: Boolean, offsetMethod: (Double) -> Vec3d): Double {
             var value = originalValue
             if (value == 0.0 || abs(value) < 1.0E-7) {
                 return 0.0
             }
-            value = collisions.computeOffset(aabb, value, axis)
+            value = collisions.computeOffset(adjustedAabb, value, axis)
             if (offsetAABB && value != 0.0) {
-                aabb += offsetMethod(value)
+                adjustedAabb += offsetMethod(value)
             }
             return value
         }
 
-        movement.y = checkMovement(Axes.Y, movement.y, true) { Vec3d(0.0f, it, 0.0f) }
+        adjusted.y = checkMovement(Axes.Y, adjusted.y, true) { Vec3d(0.0f, it, 0.0f) }
 
-        val zPriority = movement.z > movement.x
+        val zPriority = adjusted.z > adjusted.x
 
         if (zPriority) {
-            movement.z = checkMovement(Axes.Z, movement.z, true) { Vec3d(0.0f, 0.0f, it) }
+            adjusted.z = checkMovement(Axes.Z, adjusted.z, true) { Vec3d(0.0f, 0.0f, it) }
         }
 
-        movement.x = checkMovement(Axes.X, movement.x, true) { Vec3d(it, 0.0f, 0.0f) }
+        adjusted.x = checkMovement(Axes.X, adjusted.x, true) { Vec3d(it, 0.0f, 0.0f) }
 
         if (!zPriority) {
-            movement.z = checkMovement(Axes.Z, movement.z, false) { Vec3d(0.0f, 0.0f, 0.0f) }
+            adjusted.z = checkMovement(Axes.Z, adjusted.z, false) { Vec3d(0.0f, 0.0f, 0.0f) }
         }
 
 
-        if (movement.length() > original.length()) {
+        if (adjusted.length() > movement.length()) {
             return Vec3d.EMPTY // abort all movement if the collision system would move the entity further than wanted
         }
 
-        return movement
+        return adjusted
     }
 }
