@@ -157,7 +157,7 @@ object DefaultEntityFactories : DefaultFactory<EntityFactory<out Entity>>(
     ZombiePigman,
     ZombifiedPiglin,
     RemotePlayerEntity,
-    FishingHook,
+    FishingBobber,
     GlowSquid,
     EvokerFangs,
 ) {

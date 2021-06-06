@@ -12,6 +12,7 @@
  */
 package de.bixilon.minosoft.data.entities.entities.decoration
 
+import de.bixilon.minosoft.data.Directions
 import de.bixilon.minosoft.data.entities.EntityMetaDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
@@ -31,6 +32,14 @@ open class ItemFrame(connection: PlayConnection, entityType: EntityType, positio
     @get:EntityMetaDataFunction(name = "Item rotation level")
     val itemRotation: Int
         get() = entityMetaData.sets.getInt(EntityMetaDataFields.ITEM_FRAME_ROTATION)
+
+
+    @get:EntityMetaDataFunction(name = "Owner")
+    var facing: Directions = Directions.NORTH
+
+    override fun setObjectData(data: Int) {
+        facing = Directions[data]
+    }
 
     companion object : EntityFactory<ItemFrame> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("item_frame")

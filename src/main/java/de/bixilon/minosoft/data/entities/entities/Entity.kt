@@ -320,6 +320,8 @@ abstract class Entity(
         return maxLevel
     }
 
+    open fun setObjectData(data: Int) {}
+
     companion object {
         private const val HITBOX_MARGIN = 1e-5f
 

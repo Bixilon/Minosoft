@@ -60,6 +60,7 @@ class EntityObjectSpawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         } else {
             buffer.connection.registries.entityTypeRegistry[type].build(buffer.connection, position, rotation, null, buffer.versionId)!!
         }
+        entity.setObjectData(data)
     }
 
     override fun handle(connection: PlayConnection) {
