@@ -19,9 +19,9 @@ import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.entities.EntityFactory
 import de.bixilon.minosoft.data.mappings.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 
-class Axolotl(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : Animal(connection, entityType, position, rotation) {
+class Axolotl(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : Animal(connection, entityType, position, rotation) {
 
     @get:EntityMetaDataFunction(name = "Axolotl variant")
     val variant: AxolotlVariants
@@ -54,7 +54,7 @@ class Axolotl(connection: PlayConnection, entityType: EntityType, position: Vec3
     companion object : EntityFactory<Axolotl> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("axolotl")
 
-        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation): Axolotl {
+        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation): Axolotl {
             return Axolotl(connection, entityType, position, rotation)
         }
     }

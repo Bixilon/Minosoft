@@ -18,9 +18,9 @@ import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.entities.EntityFactory
 import de.bixilon.minosoft.data.mappings.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 
-class ThrownSnowball(connection: PlayConnection, entityType: EntityType, location: Vec3, rotation: EntityRotation) : ThrowableItemProjectile(connection, entityType, location, rotation) {
+class ThrownSnowball(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : ThrowableItemProjectile(connection, entityType, position, rotation) {
 
     override val defaultItem: ItemStack
         get() = ItemStack(connection.registries.itemRegistry[DEFAULT_ITEM]!!, connection)
@@ -29,7 +29,7 @@ class ThrownSnowball(connection: PlayConnection, entityType: EntityType, locatio
         private val DEFAULT_ITEM = ResourceLocation("snowball")
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("snowball")
 
-        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation): ThrownSnowball {
+        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation): ThrownSnowball {
             return ThrownSnowball(connection, entityType, position, rotation)
         }
     }

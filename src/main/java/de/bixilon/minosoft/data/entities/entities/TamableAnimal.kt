@@ -17,10 +17,10 @@ import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.animal.Animal
 import de.bixilon.minosoft.data.mappings.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 import java.util.*
 
-abstract class TamableAnimal(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : Animal(connection, entityType, position, rotation) {
+abstract class TamableAnimal(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : Animal(connection, entityType, position, rotation) {
 
     private fun getTameableFlag(bitMask: Int): Boolean {
         return entityMetaData.sets.getBitMask(EntityMetaDataFields.TAMABLE_ENTITY_FLAGS, bitMask)

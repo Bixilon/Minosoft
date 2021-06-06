@@ -33,9 +33,9 @@ import glm_.func.cos
 import glm_.func.rad
 import glm_.func.sin
 import glm_.glm
-import glm_.mat4x4.Mat4
+import glm_.mat4x4.Mat4d
 import glm_.vec2.Vec2
-import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 
 class Camera(
     val connection: PlayConnection,
@@ -48,13 +48,13 @@ class Camera(
     private var lastMouseY = 0.0
     private var zoom = 0.0f
 
-    var cameraFront = Vec3(0.0f, 0.0f, -1.0f)
-    var cameraRight = Vec3(0.0f, 0.0f, -1.0f)
-    private var cameraUp = Vec3(0.0f, 1.0f, 0.0f)
+    var cameraFront = Vec3d(0.0, 0.0, -1.0)
+    var cameraRight = Vec3d(0.0, 0.0, -1.0)
+    private var cameraUp = Vec3d(0.0, 1.0, 0.0)
 
-    val fov: Float
+    val fov: Double
         get() {
-            val fov = Minosoft.config.config.game.camera.fov / (zoom + 1.0f)
+            val fov = Minosoft.config.config.game.camera.fov / (zoom + 1.0)
 
             if (!Minosoft.config.config.game.camera.dynamicFov) {
                 return fov
@@ -84,14 +84,14 @@ class Camera(
         }
         xOffset *= mouseSensitivity
         yOffset *= mouseSensitivity
-        var yaw = xOffset.toFloat() + entity.rotation.headYaw
+        var yaw = xOffset + entity.rotation.headYaw
         if (yaw > 180) {
             yaw -= 360
         } else if (yaw < -180) {
             yaw += 360
         }
         yaw %= 180
-        val pitch = glm.clamp(yOffset.toFloat() + entity.rotation.pitch, -89.9f, 89.9f)
+        val pitch = glm.clamp(yOffset + entity.rotation.pitch, -89.9, 89.9)
         setRotation(yaw, pitch)
     }
 
@@ -151,19 +151,19 @@ class Camera(
         connection.fireEvent(CameraPositionChangeEvent(renderWindow, entity.eyePosition))
     }
 
-    private fun calculateProjectionMatrix(screenDimensions: Vec2): Mat4 {
-        return glm.perspective(fov.rad, screenDimensions.x / screenDimensions.y, 0.1f, 1000f)
+    private fun calculateProjectionMatrix(screenDimensions: Vec2): Mat4d {
+        return glm.perspective(fov.rad, screenDimensions.x.toDouble() / screenDimensions.y, 0.1, 1000.0)
     }
 
-    private fun calculateViewMatrix(): Mat4 {
+    private fun calculateViewMatrix(): Mat4d {
         val cameraPosition = entity.eyePosition
         return glm.lookAt(cameraPosition, cameraPosition + cameraFront, CAMERA_UP_VEC3)
     }
 
-    fun setRotation(yaw: Float, pitch: Float) {
-        entity.rotation = EntityRotation(yaw.toDouble(), pitch.toDouble())
+    fun setRotation(yaw: Double, pitch: Double) {
+        entity.rotation = EntityRotation(yaw, pitch)
 
-        cameraFront = Vec3(
+        cameraFront = Vec3d(
             (yaw + 90).rad.cos * (-pitch).rad.cos,
             (-pitch).rad.sin,
             (yaw + 90).rad.sin * (-pitch).rad.cos
@@ -207,10 +207,10 @@ class Camera(
         return raycast(entity.eyePosition, cameraFront)
     }
 
-    private fun raycast(origin: Vec3, direction: Vec3): RaycastHit? {
-        val currentPosition = Vec3(origin)
+    private fun raycast(origin: Vec3d, direction: Vec3d): RaycastHit? {
+        val currentPosition = Vec3d(origin)
 
-        fun getTotalDistance(): Float {
+        fun getTotalDistance(): Double {
             return (origin - currentPosition).length()
         }
 
@@ -237,7 +237,7 @@ class Camera(
     }
 
     companion object {
-        val CAMERA_UP_VEC3 = Vec3(0.0f, 1.0f, 0.0f)
+        val CAMERA_UP_VEC3 = Vec3d(0.0, 1.0, 0.0)
 
         private const val RAYCAST_MAX_STEPS = 100
     }

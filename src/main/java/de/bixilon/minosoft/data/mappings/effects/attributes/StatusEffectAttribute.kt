@@ -19,7 +19,7 @@ import java.util.*
 data class StatusEffectAttribute(
     val name: String,
     val uuid: UUID,
-    val amount: Float,
+    val amount: Double,
     val operation: StatusEffectOperations,
 ) {
     override fun toString(): String {
@@ -31,7 +31,7 @@ data class StatusEffectAttribute(
             return StatusEffectAttribute(
                 name = data["name"].asString,
                 uuid = Util.getUUIDFromString(data["uuid"].asString),
-                amount = data["amount"].asFloat,
+                amount = data["amount"].asDouble,
                 operation = StatusEffectOperations.NAME_MAP[data["operation"].asString]!!,
             )
         }

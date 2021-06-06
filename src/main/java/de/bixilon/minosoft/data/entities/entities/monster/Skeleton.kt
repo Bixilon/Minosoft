@@ -18,9 +18,9 @@ import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.entities.EntityFactory
 import de.bixilon.minosoft.data.mappings.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 
-class Skeleton(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : AbstractSkeleton(connection, entityType, position, rotation) {
+class Skeleton(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : AbstractSkeleton(connection, entityType, position, rotation) {
 
     val isFreezeConverting: Boolean
         get() = entityMetaData.sets[EntityMetaDataFields.SKELETON_STRAY_FREEZE_CONVERTING]
@@ -29,7 +29,7 @@ class Skeleton(connection: PlayConnection, entityType: EntityType, position: Vec
     companion object : EntityFactory<Skeleton> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("skeleton")
 
-        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation): Skeleton {
+        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation): Skeleton {
             return Skeleton(connection, entityType, position, rotation)
         }
     }

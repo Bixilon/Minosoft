@@ -23,15 +23,16 @@ import de.bixilon.minosoft.data.player.Hands
 import de.bixilon.minosoft.data.player.PlayerProperty
 import de.bixilon.minosoft.data.player.tab.TabListItem
 import de.bixilon.minosoft.data.world.World
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.clamp
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import glm_.vec2.Vec2
-import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 
 abstract class PlayerEntity(
     connection: PlayConnection,
     entityType: EntityType,
-    position: Vec3 = Vec3(0, 0, 0),
+    position: Vec3d = Vec3d.EMPTY,
     rotation: EntityRotation = EntityRotation(0.0, 0.0),
     name: String = "TBA",
     properties: Map<String, PlayerProperty> = mapOf(),
@@ -79,7 +80,7 @@ abstract class PlayerEntity(
         // ToDo: Update water submersion state
         super.realTick()
 
-        val clampedPosition = position.clamp(-World.MAX_SIZEf, World.MAX_SIZEf)
+        val clampedPosition = position.clamp(-World.MAX_SIZEd, World.MAX_SIZEd)
         if (clampedPosition != position) {
             position = clampedPosition
         }

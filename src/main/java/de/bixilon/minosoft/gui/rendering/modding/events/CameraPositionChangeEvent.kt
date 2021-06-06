@@ -15,12 +15,12 @@ package de.bixilon.minosoft.gui.rendering.modding.events
 
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.Rendering
-import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 
 class CameraPositionChangeEvent(
     renderWindow: RenderWindow = Rendering.currentContext!!,
-    newPosition: Vec3,
+    newPosition: Vec3d,
 ) : RenderEvent(renderWindow) {
-    val newPosition: Vec3 = newPosition
-        get() = Vec3(field)
+    val newPosition: Vec3d = newPosition
+        get() = Vec3d(field)
 }

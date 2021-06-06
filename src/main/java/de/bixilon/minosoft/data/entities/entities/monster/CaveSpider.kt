@@ -17,14 +17,14 @@ import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.entities.EntityFactory
 import de.bixilon.minosoft.data.mappings.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 
-class CaveSpider(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : Spider(connection, entityType, position, rotation) {
+class CaveSpider(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : Spider(connection, entityType, position, rotation) {
 
     companion object : EntityFactory<CaveSpider> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("cave_spider")
 
-        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation): CaveSpider {
+        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation): CaveSpider {
             return CaveSpider(connection, entityType, position, rotation)
         }
     }

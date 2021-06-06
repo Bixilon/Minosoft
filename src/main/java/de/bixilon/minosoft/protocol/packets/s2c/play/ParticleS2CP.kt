@@ -23,6 +23,7 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 
 class ParticleS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     val type: ParticleType = if (buffer.versionId < ProtocolVersions.V_14W19A) {
@@ -35,12 +36,12 @@ class ParticleS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     } else {
         false
     }
-    val position: Vec3 = if (buffer.versionId < ProtocolVersions.V_1_15_PRE4) {
-        buffer.readFloatPosition()
+    val position: Vec3d = if (buffer.versionId < ProtocolVersions.V_1_15_PRE4) {
+        Vec3d(buffer.readVec3f())
     } else {
-        buffer.readPosition()
+        buffer.readVec3d()
     }
-    val offset: Vec3 = buffer.readFloatPosition()
+    val offset: Vec3 = buffer.readVec3f()
     val speed: Float = buffer.readFloat()
     val count: Int = buffer.readInt()
     val data: ParticleData = buffer.readParticleData(type)

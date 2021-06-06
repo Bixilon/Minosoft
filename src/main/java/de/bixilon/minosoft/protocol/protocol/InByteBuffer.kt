@@ -28,6 +28,7 @@ import de.bixilon.minosoft.util.Util
 import de.bixilon.minosoft.util.nbt.tag.NBTTagTypes
 import glm_.vec2.Vec2i
 import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 import glm_.vec3.Vec3i
 import java.nio.charset.StandardCharsets
 import java.util.*
@@ -98,8 +99,8 @@ open class InByteBuffer {
         return readShort().toInt() and ((1 shl Short.SIZE_BITS) - 1)
     }
 
-    fun readVelocity(): Vec3 {
-        return Vec3(readShort(), readShort(), readShort()) / ProtocolDefinition.VELOCITY_CONSTANT
+    fun readVelocity(): Vec3d {
+        return Vec3d(readShort(), readShort(), readShort()) / ProtocolDefinition.VELOCITY_CONSTANT
     }
 
     fun readInt(): Int {
@@ -278,11 +279,11 @@ open class InByteBuffer {
         return (readByte() * ProtocolDefinition.ANGLE_CALCULATION_CONSTANT).toInt()
     }
 
-    fun readPosition(): Vec3 {
-        return Vec3(readDouble(), readDouble(), readDouble())
+    fun readVec3d(): Vec3d {
+        return Vec3d(readDouble(), readDouble(), readDouble())
     }
 
-    fun readFloatPosition(): Vec3 {
+    fun readVec3f(): Vec3 {
         return Vec3(readFloat(), readFloat(), readFloat())
     }
 

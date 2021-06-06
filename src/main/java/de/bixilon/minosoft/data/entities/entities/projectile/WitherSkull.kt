@@ -19,9 +19,9 @@ import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.entities.EntityFactory
 import de.bixilon.minosoft.data.mappings.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 
-class WitherSkull(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : AbstractHurtingProjectile(connection, entityType, position, rotation) {
+class WitherSkull(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : AbstractHurtingProjectile(connection, entityType, position, rotation) {
 
     @get:EntityMetaDataFunction(name = "Is dangerous")
     val isDangerous: Boolean
@@ -31,7 +31,7 @@ class WitherSkull(connection: PlayConnection, entityType: EntityType, position: 
     companion object : EntityFactory<WitherSkull> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("wither_skull")
 
-        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation): WitherSkull {
+        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation): WitherSkull {
             return WitherSkull(connection, entityType, position, rotation)
         }
     }

@@ -15,6 +15,7 @@ package de.bixilon.minosoft.protocol.packets.s2c.play
 import de.bixilon.minosoft.data.Difficulties
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.mappings.Dimension
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
 import de.bixilon.minosoft.modding.event.events.RespawnEvent
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
@@ -24,7 +25,7 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
-import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 
 class RespawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     lateinit var dimension: Dimension
@@ -90,7 +91,7 @@ class RespawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         connection.world.dimension = dimension
         connection.player.isSpawnConfirmed = false
         connection.player.tabListItem.gamemode = gamemode
-        connection.player.velocity = Vec3()
+        connection.player.velocity = Vec3d.EMPTY
 
         connection.fireEvent(RespawnEvent(connection, this))
     }

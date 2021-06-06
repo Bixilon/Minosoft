@@ -10,6 +10,7 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.ONE
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.getMinDistanceDirection
 import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 import glm_.vec3.Vec3i
 
 class VoxelShape(private val aabbs: MutableList<AABB> = mutableListOf()) : Iterable<AABB> {
@@ -72,7 +73,7 @@ class VoxelShape(private val aabbs: MutableList<AABB> = mutableListOf()) : Itera
         }
     }
 
-    fun computeOffset(other: AABB, offset: Float, axis: Axes): Float {
+    fun computeOffset(other: AABB, offset: Double, axis: Axes): Double {
         var result = offset
         for (aabb in aabbs) {
             result = aabb.computeOffset(other, result, axis)
@@ -80,14 +81,14 @@ class VoxelShape(private val aabbs: MutableList<AABB> = mutableListOf()) : Itera
         return result
     }
 
-    data class VoxelShapeRaycastResult(val hit: Boolean, val distance: Float, val direction: Directions)
+    data class VoxelShapeRaycastResult(val hit: Boolean, val distance: Double, val direction: Directions)
 
-    fun raycast(position: Vec3, direction: Vec3): VoxelShapeRaycastResult {
-        var minDistance = Float.MAX_VALUE
+    fun raycast(position: Vec3d, direction: Vec3d): VoxelShapeRaycastResult {
+        var minDistance = Double.MAX_VALUE
         var minDistanceDirection = Directions.UP
         for (aabb in aabbs) {
             if (position in aabb) {
-                return VoxelShapeRaycastResult(true, 0f, position.getMinDistanceDirection(aabb).inverted)
+                return VoxelShapeRaycastResult(true, 0.0, position.getMinDistanceDirection(aabb).inverted)
             }
             val currentDistance = aabb.raycast(position, direction)
             if (minDistance > currentDistance) {
@@ -95,7 +96,7 @@ class VoxelShape(private val aabbs: MutableList<AABB> = mutableListOf()) : Itera
                 minDistanceDirection = (position + direction * currentDistance).getMinDistanceDirection(aabb)
             }
         }
-        return VoxelShapeRaycastResult(minDistance != Float.MAX_VALUE, minDistance, minDistanceDirection.inverted)
+        return VoxelShapeRaycastResult(minDistance != Double.MAX_VALUE, minDistance, minDistanceDirection.inverted)
     }
 
     companion object {

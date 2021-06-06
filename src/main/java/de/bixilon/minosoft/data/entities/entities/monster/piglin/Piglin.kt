@@ -20,9 +20,9 @@ import de.bixilon.minosoft.data.mappings.entities.EntityFactory
 import de.bixilon.minosoft.data.mappings.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
-import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 
-class Piglin(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : AbstractPiglin(connection, entityType, position, rotation) {
+class Piglin(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : AbstractPiglin(connection, entityType, position, rotation) {
 
     @EntityMetaDataFunction(name = "Is immune to zombification")
     override val isImmuneToZombification: Boolean
@@ -49,7 +49,7 @@ class Piglin(connection: PlayConnection, entityType: EntityType, position: Vec3,
     companion object : EntityFactory<Piglin> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("piglin")
 
-        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation): Piglin {
+        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation): Piglin {
             return Piglin(connection, entityType, position, rotation)
         }
     }

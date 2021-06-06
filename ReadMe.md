@@ -109,7 +109,7 @@ Because we have no releases or tags yet, we don't build any versions ourselves. 
 
 #### Ubuntu / Debian
 
-TBO
+TBD
 
 #### Arch
 
@@ -117,7 +117,7 @@ Thanks to @jugendhacker we are in the arch user repository (AUR): https://aur.ar
 
 ### Windows
 
-TBO
+TBD
 
 ### MacOS
 

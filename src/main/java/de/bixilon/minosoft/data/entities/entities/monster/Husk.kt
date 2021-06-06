@@ -17,14 +17,14 @@ import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.entities.EntityFactory
 import de.bixilon.minosoft.data.mappings.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 
-class Husk(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : Zombie(connection, entityType, position, rotation) {
+class Husk(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : Zombie(connection, entityType, position, rotation) {
 
     companion object : EntityFactory<Husk> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("husk")
 
-        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation): Husk {
+        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation): Husk {
             return Husk(connection, entityType, position, rotation)
         }
     }

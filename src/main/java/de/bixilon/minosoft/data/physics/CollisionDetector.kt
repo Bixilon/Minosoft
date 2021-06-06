@@ -23,10 +23,12 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.inChunkPosition
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
+import kotlin.math.abs
 
 class CollisionDetector(val connection: PlayConnection) {
 
-    private fun getCollisionsToCheck(deltaPosition: Vec3, aabb: AABB, ignoreUnloadedChunks: Boolean = true): VoxelShape {
+    private fun getCollisionsToCheck(deltaPosition: Vec3d, aabb: AABB, ignoreUnloadedChunks: Boolean = true): VoxelShape {
         // also look at blocks further down to also cover blocks with a higher than normal hitbox (for example fences)
         val blockPositions = (aabb extend deltaPosition extend Directions.DOWN).blockPositions
         val result = VoxelShape()
@@ -43,18 +45,18 @@ class CollisionDetector(val connection: PlayConnection) {
         return result
     }
 
-    fun sneak(entity: LocalPlayerEntity, deltaPosition: Vec3): Vec3 {
+    fun sneak(entity: LocalPlayerEntity, deltaPosition: Vec3d): Vec3d {
         if (entity.baseAbilities.isFlying || !entity.isSneaking || !entity.canSneak()) {
             return deltaPosition
         }
 
-        val movement = Vec3(deltaPosition)
+        val movement = Vec3d(deltaPosition)
 
-        fun checkValue(original: Float): Float {
+        fun checkValue(original: Double): Double {
             var value = original
             if (value < PhysicsConstants.SNEAK_MOVEMENT_CHECK && value >= -PhysicsConstants.SNEAK_MOVEMENT_CHECK) {
-                value = 0.0f
-            } else if (value > 0.0f) {
+                value = 0.0
+            } else if (value > 0.0) {
                 value -= PhysicsConstants.SNEAK_MOVEMENT_CHECK
             } else {
                 value += PhysicsConstants.SNEAK_MOVEMENT_CHECK
@@ -62,19 +64,19 @@ class CollisionDetector(val connection: PlayConnection) {
             return value
         }
 
-        fun checkAxis(original: Float, offsetMethod: (Float) -> Vec3): Float {
+        fun checkAxis(original: Double, offsetMethod: (Double) -> Vec3d): Double {
             var value = original
-            while (value != 0.0f && connection.world.isSpaceEmpty(entity.aabb + offsetMethod(value))) {
+            while (value != 0.0 && connection.world.isSpaceEmpty(entity.aabb + offsetMethod(value))) {
                 value = checkValue(value)
             }
             return value
         }
 
-        movement.x = checkAxis(movement.x) { Vec3(it, -PhysicsConstants.STEP_HEIGHT, 0.0f) }
-        movement.z = checkAxis(movement.z) { Vec3(0.0f, -PhysicsConstants.STEP_HEIGHT, it) }
+        movement.x = checkAxis(movement.x) { Vec3d(it, -PhysicsConstants.STEP_HEIGHT, 0.0) }
+        movement.z = checkAxis(movement.z) { Vec3d(0.0, -PhysicsConstants.STEP_HEIGHT, it) }
 
 
-        while (movement.x != 0.0f && movement.z != 0.0f && connection.world.isSpaceEmpty(entity.aabb + Vec3(movement.x, -PhysicsConstants.STEP_HEIGHT, movement.z))) {
+        while (movement.x != 0.0 && movement.z != 0.0 && connection.world.isSpaceEmpty(entity.aabb + Vec3(movement.x, -PhysicsConstants.STEP_HEIGHT, movement.z))) {
             movement.x = checkValue(movement.x)
             movement.z = checkValue(movement.z)
         }
@@ -83,64 +85,46 @@ class CollisionDetector(val connection: PlayConnection) {
         return movement
     }
 
-    fun collide(physicsEntity: PhysicsEntity?, deltaPosition: Vec3, aabb: AABB, stepping: Boolean = false, collisionsToCheck: VoxelShape = connection.collisionDetector.getCollisionsToCheck(deltaPosition, aabb)): Vec3 {
-        // ToDo: Check world border collision
-        val delta = Vec3(deltaPosition)
-        if (delta.y != 0.0f) {
-            delta.y = collisionsToCheck.computeOffset(aabb, deltaPosition.y, Axes.Y)
-            if (delta.y != deltaPosition.y) {
-                physicsEntity?.let {
-                    it.onGround = false
-                    it.velocity.y = 0.0f
-                    if (deltaPosition.y < 0) {
-                        it.onGround = true
-                    }
-                }
-                aabb += Vec3(0.0f, delta.y, 0.0f)
-            } else if (delta.y < 0) {
-                physicsEntity?.let { it.onGround = false }
+    fun collide(physicsEntity: PhysicsEntity?, movement: Vec3d, aabb: AABB, stepping: Boolean = false, collisions: VoxelShape = connection.collisionDetector.getCollisionsToCheck(movement, aabb)): Vec3d {
+
+        return adjustMovementForCollisions(movement, aabb, collisions)
+    }
+
+    private fun adjustMovementForCollisions(original: Vec3d, originalAabb: AABB, collisions: VoxelShape): Vec3d {
+        val aabb = AABB(originalAabb)
+        val movement = Vec3d(original)
+
+        fun checkMovement(axis: Axes, originalValue: Double, offsetAABB: Boolean, offsetMethod: (Double) -> Vec3d): Double {
+            var value = originalValue
+            if (value == 0.0 || abs(value) < 1.0E-7) {
+                return 0.0
             }
-        }
-        if (false && stepping && (deltaPosition.x != 0.0f || deltaPosition.z != 0.0f)) {
-            val testDelta = Vec3(delta)
-            testDelta.y = PhysicsConstants.STEP_HEIGHT
-            val stepMovementY = collisionsToCheck.computeOffset(aabb + testDelta, -PhysicsConstants.STEP_HEIGHT, Axes.Y)
-            if (stepMovementY < 0.0f && stepMovementY >= -PhysicsConstants.STEP_HEIGHT) {
-                testDelta.y = PhysicsConstants.STEP_HEIGHT + stepMovementY
-                aabb += Vec3(0.0f, testDelta.y, 0.0f)
-                delta.y += testDelta.y
+            value = collisions.computeOffset(aabb, value, axis)
+            if (offsetAABB && value != 0.0) {
+                aabb += offsetMethod(value)
             }
+            return value
         }
 
-        val xPriority = delta.x > delta.z
-        if (delta.x != 0.0f && xPriority) {
-            delta.x = collisionsToCheck.computeOffset(aabb, deltaPosition.x, Axes.X)
-            aabb += Vec3(delta.x, 0.0f, 0.0f)
-            if (delta.x != deltaPosition.x) {
-                physicsEntity?.let { it.velocity.x = 0.0f }
-            }
+        movement.y = checkMovement(Axes.Y, movement.y, true) { Vec3d(0.0f, it, 0.0f) }
+
+        val zPriority = movement.z > movement.x
+
+        if (zPriority) {
+            movement.z = checkMovement(Axes.Z, movement.z, true) { Vec3d(0.0f, 0.0f, it) }
         }
-        if (delta.z != 0.0f) {
-            delta.z = collisionsToCheck.computeOffset(aabb, deltaPosition.z, Axes.Z)
-            aabb += Vec3(0.0f, 0.0f, delta.z)
-            if (delta.z != deltaPosition.z) {
-                physicsEntity?.let { it.velocity.z = 0.0f }
-            }
+
+        movement.x = checkMovement(Axes.X, movement.x, true) { Vec3d(it, 0.0f, 0.0f) }
+
+        if (!zPriority) {
+            movement.z = checkMovement(Axes.Z, movement.z, false) { Vec3d(0.0f, 0.0f, 0.0f) }
         }
-        if (delta.x != 0.0f && !xPriority) {
-            delta.x = collisionsToCheck.computeOffset(aabb, deltaPosition.x, Axes.X)
-            // no need to offset the aabb any more, as it won't be used any more
-            if (delta.x != deltaPosition.x) {
-                physicsEntity?.let { it.velocity.x = 0.0f }
-            }
+
+
+        if (movement.length() > original.length()) {
+            return Vec3d.EMPTY // abort all movement if the collision system would move the entity further than wanted
         }
-        var length = deltaPosition.length()
-        if (stepping) {
-            length += PhysicsConstants.STEP_HEIGHT
-        }
-        if (delta.length() > length) {
-            return Vec3.EMPTY // abort all movement if the collision system would move the entity further than wanted
-        }
-        return delta
+
+        return movement
     }
 }

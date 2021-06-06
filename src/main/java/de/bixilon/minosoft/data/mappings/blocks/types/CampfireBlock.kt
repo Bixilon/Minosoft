@@ -32,6 +32,7 @@ import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
 import de.bixilon.minosoft.util.KUtil.chance
 import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 import glm_.vec3.Vec3i
 import kotlin.random.Random
 
@@ -52,9 +53,9 @@ open class CampfireBlock(resourceLocation: ResourceLocation, registries: Registr
 
     fun spawnSmokeParticles(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, extinguished: Boolean) {
         let {
-            val position = Vec3(blockPosition).horizontalPlus(
-                { 0.5f + 3.0f.noise },
-                Random.nextFloat() + Random.nextFloat() + 0.5f // ToDo: This +0.5f is a temporary fix for not making the particle stuck in ourself
+            val position = Vec3d(blockPosition).horizontalPlus(
+                { 0.5 + 3.0.noise },
+                Random.nextDouble() + Random.nextDouble() + 0.5 // ToDo: This +0.5f is a temporary fix for not making the particle stuck in ourself
             )
 
             val isSignal = blockState.properties[BlockProperties.CAMPFIRE_SIGNAL_FIRE] == true
@@ -65,15 +66,15 @@ open class CampfireBlock(resourceLocation: ResourceLocation, registries: Registr
                 cosySmokeParticle
             }
 
-            connection.world += CampfireSmokeParticle(connection, position, Vec3(0.0f, 0.07f, 0.0f), particleType.default(), isSignal)
+            connection.world += CampfireSmokeParticle(connection, position, Vec3d(0.0f, 0.07f, 0.0f), particleType.default(), isSignal)
         }
 
         if (extinguished) {
-            val position = Vec3(blockPosition).horizontalPlus(
-                { 0.5f + 4.0f.noise },
-                0.5f
+            val position = Vec3d(blockPosition).horizontalPlus(
+                { 0.5 + 4.0.noise },
+                0.5
             )
-            connection.world += SmokeParticle(connection, position, Vec3(0.0f, 0.005f, 0.0f), smokeParticle.default())
+            connection.world += SmokeParticle(connection, position, Vec3d(0.0f, 0.005f, 0.0f), smokeParticle.default())
         }
     }
 
@@ -86,7 +87,7 @@ open class CampfireBlock(resourceLocation: ResourceLocation, registries: Registr
         }
 
         if (lavaParticles && random.chance(20)) {
-            val position = Vec3(blockPosition) + Vec3(0.5f)
+            val position = Vec3d(blockPosition) + 0.5
             for (i in 0 until random.nextInt(1) + 1) {
                 connection.world += LavaParticle(connection, position, lavaParticle.default())
             }

@@ -18,9 +18,9 @@ import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.SimpleTextureParticle
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.util.MMath
-import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 
-abstract class AbstractDustParticle(connection: PlayConnection, position: Vec3, velocity: Vec3, data: DustParticleData) : SimpleTextureParticle(connection, position, velocity, data) {
+abstract class AbstractDustParticle(connection: PlayConnection, position: Vec3d, velocity: Vec3d, data: DustParticleData) : SimpleTextureParticle(connection, position, velocity, data) {
 
     override var scale: Float
         get() = super.scale * MMath.clamp(floatAge / maxAge * 32.0f, 0.0f, 1.0f)

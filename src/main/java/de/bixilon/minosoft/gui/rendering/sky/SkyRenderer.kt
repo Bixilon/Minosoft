@@ -29,9 +29,10 @@ import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.MMath
 import glm_.func.rad
-import glm_.mat4x4.Mat4
+import glm_.mat4x4.Mat4d
 import glm_.vec2.Vec2
 import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 import org.lwjgl.opengl.GL11.*
 import kotlin.math.cos
 
@@ -75,12 +76,12 @@ class SkyRenderer(
         sunTexture = renderWindow.textures.allTextures.getOrPut(SUN_TEXTURE_RESOURCE_LOCATION) { Texture(SUN_TEXTURE_RESOURCE_LOCATION) }
     }
 
-    private fun setSunMatrix(projectionViewMatrix: Mat4) {
-        val timeAngle = ((getSkyAngle(connection.world.time).toFloat() * 360.0f) + 180.0f).rad
-        val rotatedMatrix = if (timeAngle == 0.0f) {
+    private fun setSunMatrix(projectionViewMatrix: Mat4d) {
+        val timeAngle = ((getSkyAngle(connection.world.time).toDouble() * 360.0) + 180.0).rad
+        val rotatedMatrix = if (timeAngle == 0.0) {
             projectionViewMatrix
         } else {
-            projectionViewMatrix.rotate(timeAngle, Vec3(0.0f, 0.0f, 1.0f))
+            projectionViewMatrix.rotate(timeAngle, Vec3d(0.0f, 0.0f, 1.0f))
         }
         skySunShader.use().setMat4("uSkyViewProjectionMatrix", rotatedMatrix) // ToDo: 180° is top, not correct yet
     }

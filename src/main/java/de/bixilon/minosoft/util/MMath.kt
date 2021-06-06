@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.util
 
-import glm_.glm
 import glm_.vec2.Vec2i
 import kotlin.math.floor
 
@@ -93,10 +92,6 @@ object MMath {
         return value - floor(value)
     }
 
-    val Float.floorInt: Int get() = glm.floor(this).toInt()
-
-    val Float.ceilInt: Int get() = glm.ceil(this).toInt()
-
     val Boolean.positiveNegative: Int
         get() =
             if (this) {
@@ -104,8 +99,4 @@ object MMath {
             } else {
                 -1
             }
-
-    fun lerp(delta: Float, start: Float, end: Float): Float {
-        return start + delta * (end - start)
-    }
 }

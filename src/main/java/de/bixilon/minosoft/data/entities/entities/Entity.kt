@@ -38,6 +38,7 @@ import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
 import de.bixilon.minosoft.util.KUtil.synchronizedSetOf
 import glm_.vec2.Vec2
 import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 import glm_.vec3.Vec3i
 import java.lang.reflect.InvocationTargetException
 import java.util.*
@@ -46,7 +47,7 @@ import kotlin.random.Random
 abstract class Entity(
     protected val connection: PlayConnection,
     val entityType: EntityType,
-    position: Vec3,
+    position: Vec3d,
     var rotation: EntityRotation,
 ) : PhysicsEntity {
     protected val random = Random
@@ -63,8 +64,8 @@ abstract class Entity(
     var vehicle: Entity? = null
     var passengers: MutableSet<Entity> = synchronizedSetOf()
 
-    override var velocity: Vec3 = Vec3.EMPTY
-    var velocityMultiplier = Vec3.EMPTY
+    override var velocity: Vec3d = Vec3d.EMPTY
+    var velocityMultiplier = Vec3d.EMPTY
 
     protected open val hasCollisions = true
 
@@ -82,24 +83,27 @@ abstract class Entity(
         get() = dimensions.y * 0.85f
 
     private var lastFakeTickTime = -1L
-    var previousPosition: Vec3 = Vec3(position)
-    override var position: Vec3 = position
+    var previousPosition: Vec3d = Vec3d(position)
+    override var position: Vec3d = position
         set(value) {
             field = value
             positionInfo.update()
         }
     open val positionInfo = EntityPositionInfo(connection, this)
 
-    val eyePosition: Vec3
+    val eyePosition: Vec3d
         get() = realPosition + Vec3(0.0f, eyeHeight, 0.0f)
 
-    val realPosition: Vec3
-        get() = VecUtil.lerp((System.currentTimeMillis() - lastTickTime) / ProtocolDefinition.TICK_TIMEf, previousPosition, position)
+    val realPosition: Vec3d
+        get() = VecUtil.lerp((System.currentTimeMillis() - lastTickTime) / ProtocolDefinition.TICK_TIMEd, previousPosition, position)
 
     protected var lastTickTime = -1L
 
-    fun forceMove(deltaPosition: Vec3) {
-        previousPosition = Vec3(position)
+    fun forceMove(deltaPosition: Vec3d) {
+        previousPosition = Vec3d(position)
+        if (onGround) {
+            deltaPosition.y -= 0.00001f
+        }
         position = position + deltaPosition
     }
 
@@ -113,17 +117,17 @@ abstract class Entity(
         activeStatusEffects.remove(effect)
     }
 
-    fun getAttributeValue(attribute: ResourceLocation): Float {
+    fun getAttributeValue(attribute: ResourceLocation): Double {
         // ToDo: Check order and verify value
-        val baseValue = entityType.attributes[attribute] ?: 1.0f
+        val baseValue = entityType.attributes[attribute] ?: 1.0
         var ret = baseValue
 
         fun addToValue(statusEffectAttribute: StatusEffectAttribute, amplifier: Int) {
             val instanceValue = statusEffectAttribute.amount * amplifier
             when (statusEffectAttribute.operation) {
-                StatusEffectOperations.MULTIPLY_TOTAL -> ret *= 1.0f + instanceValue
+                StatusEffectOperations.MULTIPLY_TOTAL -> ret *= 1.0 + instanceValue
                 StatusEffectOperations.ADDITION -> ret += instanceValue
-                StatusEffectOperations.MULTIPLY_BASE -> ret += baseValue * (instanceValue + 1.0f)
+                StatusEffectOperations.MULTIPLY_BASE -> ret += baseValue * (instanceValue + 1.0)
             }
         }
 
@@ -150,7 +154,7 @@ abstract class Entity(
     }
 
     fun setRotation(yaw: Int, pitch: Int) {
-        rotation = EntityRotation(yaw.toFloat(), pitch.toFloat(), rotation.headYaw)
+        rotation = EntityRotation(yaw.toDouble(), pitch.toDouble(), rotation.headYaw)
     }
 
     fun setRotation(yaw: Int, pitch: Int, headYaw: Int) {
@@ -158,7 +162,7 @@ abstract class Entity(
     }
 
     fun setHeadRotation(headYaw: Int) {
-        rotation = EntityRotation(rotation.yaw, rotation.pitch, headYaw.toFloat())
+        rotation = EntityRotation(rotation.yaw, rotation.pitch, headYaw.toDouble())
     }
 
     private fun getEntityFlag(bitMask: Int): Boolean {
@@ -299,7 +303,7 @@ abstract class Entity(
 
     open fun realTick() {}
 
-    val aabb: AABB
+    override val aabb: AABB
         get() = defaultAABB + position
 
     companion object {

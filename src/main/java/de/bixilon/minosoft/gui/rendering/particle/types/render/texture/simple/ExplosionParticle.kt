@@ -20,9 +20,9 @@ import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
-import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 
-class ExplosionParticle(connection: PlayConnection, position: Vec3, data: ParticleData? = null, power: Float = 1.0f) : SimpleTextureParticle(connection, position, Vec3.EMPTY, data) {
+class ExplosionParticle(connection: PlayConnection, position: Vec3d, data: ParticleData? = null, power: Float = 1.0f) : SimpleTextureParticle(connection, position, Vec3d.EMPTY, data) {
 
     init {
         movement = false
@@ -35,8 +35,8 @@ class ExplosionParticle(connection: PlayConnection, position: Vec3, data: Partic
     companion object : ParticleFactory<ExplosionParticle> {
         override val RESOURCE_LOCATION: ResourceLocation = "minecraft:explosion".asResourceLocation()
 
-        override fun build(connection: PlayConnection, position: Vec3, velocity: Vec3, data: ParticleData): ExplosionParticle {
-            return ExplosionParticle(connection, position, data, velocity.x)
+        override fun build(connection: PlayConnection, position: Vec3d, velocity: Vec3d, data: ParticleData): ExplosionParticle {
+            return ExplosionParticle(connection, position, data, velocity.x.toFloat())
         }
     }
 }

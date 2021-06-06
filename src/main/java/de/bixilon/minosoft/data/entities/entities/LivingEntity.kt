@@ -26,10 +26,10 @@ import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.sp
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.horizontal
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.util.KUtil.chance
-import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 import glm_.vec3.Vec3i
 
-abstract class LivingEntity(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : Entity(connection, entityType, position, rotation) {
+abstract class LivingEntity(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : Entity(connection, entityType, position, rotation) {
     private val entityEffectParticle = connection.registries.particleTypeRegistry[EntityEffectParticle]
     private val ambientEntityEffectParticle = connection.registries.particleTypeRegistry[AmbientEntityEffectParticle]
 
@@ -50,13 +50,13 @@ abstract class LivingEntity(connection: PlayConnection, entityType: EntityType, 
         get() = getLivingEntityFlag(0x04)
 
     @get:EntityMetaDataFunction(name = "Health")
-    open val health: Float
+    open val health: Double
         get() {
             val meta = entityMetaData.sets.getFloat(EntityMetaDataFields.LIVING_ENTITY_HEALTH)
             return if (meta == Float.MIN_VALUE) {
-                entityType.attributes[DefaultStatusEffectAttributeNames.GENERIC_MAX_HEALTH] ?: 1.0f
+                entityType.attributes[DefaultStatusEffectAttributeNames.GENERIC_MAX_HEALTH] ?: 1.0
             } else {
-                meta
+                meta.toDouble()
             }
         }
 
@@ -111,9 +111,9 @@ abstract class LivingEntity(connection: PlayConnection, entityType: EntityType, 
             return
         }
 
-        val particlePosition = position + Vec3.horizontal(
-            { dimensions.x * ((2.0f * random.nextFloat() - 1.0f) * 0.5f) },
-            dimensions.y * random.nextFloat()
+        val particlePosition = position + Vec3d.horizontal(
+            { dimensions.x * ((2.0 * random.nextDouble() - 1.0) * 0.5) },
+            dimensions.y * random.nextDouble()
         )
         if (effectAmbient) {
             ambientEntityEffectParticle ?: return
@@ -129,7 +129,7 @@ abstract class LivingEntity(connection: PlayConnection, entityType: EntityType, 
         tickStatusEffects()
 
         if (isSleeping) {
-            rotation = rotation.copy(pitch = 0.0f)
+            rotation = rotation.copy(pitch = 0.0)
         }
     }
 }

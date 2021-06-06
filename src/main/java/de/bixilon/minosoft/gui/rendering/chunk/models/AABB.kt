@@ -11,17 +11,22 @@ import glm_.Java.Companion.glm
 import glm_.func.common.ceil
 import glm_.func.common.floor
 import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 import glm_.vec3.Vec3i
 
 
 class AABB(
-    min: Vec3,
-    max: Vec3,
+    min: Vec3d,
+    max: Vec3d,
 ) {
-    val min = Vec3(glm.min(min.x, max.x), glm.min(min.y, max.y), glm.min(min.z, max.z))
-    val max = Vec3(glm.max(min.x, max.x), glm.max(min.y, max.y), glm.max(min.z, max.z))
+    val min = Vec3d(glm.min(min.x, max.x), glm.min(min.y, max.y), glm.min(min.z, max.z))
+    val max = Vec3d(glm.max(min.x, max.x), glm.max(min.y, max.y), glm.max(min.z, max.z))
 
     constructor(jsonData: JsonObject) : this(jsonData["from"].toVec3(Vec3.EMPTY), jsonData["to"].toVec3(Vec3.ONE))
+
+    constructor(aabb: AABB) : this(aabb.min, aabb.max)
+
+    constructor(min: Vec3, max: Vec3) : this(Vec3d(min), Vec3d(max))
 
 
     fun intersect(other: AABB): Boolean {
@@ -30,6 +35,10 @@ class AABB(
 
     operator fun plus(vec3: Vec3): AABB {
         return AABB(min + vec3, max + vec3)
+    }
+
+    operator fun plus(vec3d: Vec3d): AABB {
+        return AABB(min + vec3d, max + vec3d)
     }
 
     operator fun plus(vec3i: Vec3i): AABB {
@@ -59,17 +68,17 @@ class AABB(
             return result.toList()
         }
 
-    private fun min(axis: Axes): Float {
+    private fun min(axis: Axes): Double {
         return Axes.choose(axis, min)
     }
 
-    private fun max(axis: Axes): Float {
+    private fun max(axis: Axes): Double {
         return Axes.choose(axis, max)
     }
 
-    infix fun extend(vec3: Vec3): AABB {
-        val newMin = Vec3(min)
-        val newMax = Vec3(max)
+    infix fun extend(vec3: Vec3d): AABB {
+        val newMin = Vec3d(min)
+        val newMax = Vec3d(max)
 
         if (vec3.x < 0) {
             newMin.x += vec3.x
@@ -93,7 +102,7 @@ class AABB(
     }
 
     infix fun extend(vec3i: Vec3i): AABB {
-        return this extend Vec3(vec3i)
+        return this extend Vec3d(vec3i)
     }
 
     infix fun extend(direction: Directions): AABB {
@@ -104,7 +113,7 @@ class AABB(
         return AABB(min - value, max + value)
     }
 
-    fun computeOffset(other: AABB, offset: Float, axis: Axes): Float {
+    fun computeOffset(other: AABB, offset: Double, axis: Axes): Double {
         if (!offset(axis, offset).intersect(other)) {
             return offset
         }
@@ -130,20 +139,25 @@ class AABB(
         max += vec3
     }
 
-    fun offset(axis: Axes, offset: Float): AABB {
+    operator fun plusAssign(vec3d: Vec3d) {
+        min += vec3d
+        max += vec3d
+    }
+
+    fun offset(axis: Axes, offset: Double): AABB {
         return when (axis) {
-            Axes.X -> this + Vec3(-offset, 0, 0)
-            Axes.Y -> this + Vec3(0, -offset, 0)
-            Axes.Z -> this + Vec3(0, 0, -offset)
+            Axes.X -> this + Vec3d(-offset, 0, 0)
+            Axes.Y -> this + Vec3d(0, -offset, 0)
+            Axes.Z -> this + Vec3d(0, 0, -offset)
         }
     }
 
-    fun raycast(position: Vec3, direction: Vec3): Float {
-        if (max - min == Vec3.ONE || position in this) {
-            return 0f
+    fun raycast(position: Vec3d, direction: Vec3d): Double {
+        if (max - min == Vec3d.ONE || position in this) {
+            return 0.0
         }
-        var tMin = 0f
-        var tMax = +100f
+        var tMin = 0.0
+        var tMax = +100.0
         for (axis in Axes.VALUES) {
             val t1 = getLengthMultiplier(position, direction, min, axis)
             val t2 = getLengthMultiplier(position, direction, max, axis)
@@ -153,26 +167,26 @@ class AABB(
         return if (tMax > tMin) {
             tMin
         } else {
-            Float.MAX_VALUE
+            Double.MAX_VALUE
         }
     }
 
-    private fun getLengthMultiplier(position: Vec3, direction: Vec3, target: Vec3, axis: Axes): Float {
+    private fun getLengthMultiplier(position: Vec3d, direction: Vec3d, target: Vec3d, axis: Axes): Double {
         return (target[axis] - position[axis]) / direction[axis]
     }
 
-    operator fun contains(position: Vec3): Boolean {
+    operator fun contains(position: Vec3d): Boolean {
         return (position.x in min.x..max.x && position.y in min.y..max.y && position.z in min.z..max.z)
     }
 
-    val center: Vec3
-        get() = Vec3((min.x + max.x) / 2.0f, (min.y + max.y) / 2.0f, (min.z + max.z) / 2.0f)
+    val center: Vec3d
+        get() = Vec3d((min.x + max.x) / 2.0, (min.y + max.y) / 2.0, (min.z + max.z) / 2.0)
 
     companion object {
         val EMPTY: AABB
             get() = AABB(Vec3.EMPTY, Vec3.EMPTY)
 
-        private fun getRange(min: Float, max: Float): IntRange {
+        private fun getRange(min: Double, max: Double): IntRange {
             return IntRange(min.floor.toInt(), max.ceil.toInt())
         }
     }

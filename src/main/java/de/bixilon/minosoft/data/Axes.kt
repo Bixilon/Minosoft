@@ -16,6 +16,7 @@ import de.bixilon.minosoft.data.mappings.blocks.properties.serializer.BlockPrope
 import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.enum.ValuesEnum
 import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 import glm_.vec3.Vec3i
 
 enum class Axes {
@@ -40,11 +41,23 @@ enum class Axes {
             return choose(axis, vec3.x, vec3.y, vec3.z)
         }
 
+        fun choose(axis: Axes, vec3: Vec3d): Double {
+            return choose(axis, vec3.x, vec3.y, vec3.z)
+        }
+
         fun choose(axis: Axes, vec3i: Vec3i): Int {
             return choose(axis, Vec3(vec3i)).toInt()
         }
 
         private fun choose(axis: Axes, x: Float, y: Float, z: Float): Float {
+            return when (axis) {
+                X -> x
+                Y -> y
+                Z -> z
+            }
+        }
+
+        private fun choose(axis: Axes, x: Double, y: Double, z: Double): Double {
             return when (axis) {
                 X -> x
                 Y -> y

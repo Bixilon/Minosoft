@@ -17,9 +17,9 @@ import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
 import de.bixilon.minosoft.data.mappings.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 
-abstract class AbstractChestedHorse(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : AbstractHorse(connection, entityType, position, rotation) {
+abstract class AbstractChestedHorse(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : AbstractHorse(connection, entityType, position, rotation) {
 
     @EntityMetaDataFunction(name = "Has chest")
     fun hasChest(): Boolean {

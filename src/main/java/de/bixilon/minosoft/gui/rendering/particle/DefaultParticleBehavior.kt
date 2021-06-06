@@ -25,7 +25,7 @@ import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
-import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 
 object DefaultParticleBehavior {
 
@@ -39,16 +39,16 @@ object DefaultParticleBehavior {
                     return@of
                 }
                 if (it.power >= 2.0f) {
-                    particleRenderer += ExplosionEmitterParticle(connection, it.position, explosionEmitterParticleType.default())
+                    particleRenderer += ExplosionEmitterParticle(connection, Vec3d(it.position), explosionEmitterParticleType.default())
                 } else {
-                    particleRenderer += ExplosionParticle(connection, it.position, explosionParticleType.default())
+                    particleRenderer += ExplosionParticle(connection, Vec3d(it.position), explosionParticleType.default())
                 }
             },
             CallbackEventInvoker.of<ParticleSpawnEvent> {
                 if (it.initiator == EventInitiators.SERVER && !Minosoft.config.config.game.graphics.particles.byPacket) {
                     return@of
                 }
-                fun spawn(position: Vec3, velocity: Vec3) {
+                fun spawn(position: Vec3d, velocity: Vec3d) {
                     val particle = it.data.type.factory?.build(connection, position, velocity, it.data) ?: let { _ ->
                         Log.log(LogMessageType.RENDERING_GENERAL, LogLevels.WARN) { "Can not spawn particle: ${it.data.type}" }
                         return
@@ -59,11 +59,11 @@ object DefaultParticleBehavior {
                 if (it.count == 0) {
                     val velocity = it.offset * it.speed
 
-                    spawn(it.position, velocity)
+                    spawn(it.position, Vec3d(velocity))
                 } else {
                     for (i in 0 until it.count) {
-                        val offset = it.offset * { random.nextGaussian().toFloat() }
-                        val velocity = Vec3(it.speed) * { random.nextGaussian().toFloat() }
+                        val offset = Vec3d(it.offset) * { random.nextGaussian() }
+                        val velocity = Vec3d(it.speed) * { random.nextGaussian() }
 
                         spawn(it.position + offset, velocity)
                     }

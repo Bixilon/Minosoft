@@ -19,9 +19,9 @@ import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.entities.EntityFactory
 import de.bixilon.minosoft.data.mappings.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 
-class Parrot(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : ShoulderRidingAnimal(connection, entityType, position, rotation) {
+class Parrot(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : ShoulderRidingAnimal(connection, entityType, position, rotation) {
 
     @get:EntityMetaDataFunction(name = "Variant")
     val variant: ParrotVariants
@@ -46,7 +46,7 @@ class Parrot(connection: PlayConnection, entityType: EntityType, position: Vec3,
     companion object : EntityFactory<Parrot> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("parrot")
 
-        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation): Parrot {
+        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation): Parrot {
             return Parrot(connection, entityType, position, rotation)
         }
     }

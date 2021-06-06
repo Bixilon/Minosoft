@@ -17,14 +17,14 @@ import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.entities.EntityFactory
 import de.bixilon.minosoft.data.mappings.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 
-class Stray(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : AbstractSkeleton(connection, entityType, position, rotation) {
+class Stray(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : AbstractSkeleton(connection, entityType, position, rotation) {
 
     companion object : EntityFactory<Stray> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("stray")
 
-        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation): Stray {
+        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation): Stray {
             return Stray(connection, entityType, position, rotation)
         }
     }

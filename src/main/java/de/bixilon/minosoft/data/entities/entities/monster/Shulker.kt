@@ -23,10 +23,10 @@ import de.bixilon.minosoft.data.mappings.entities.EntityType
 import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 import glm_.vec3.Vec3i
 
-class Shulker(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : AbstractGolem(connection, entityType, position, rotation) {
+class Shulker(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : AbstractGolem(connection, entityType, position, rotation) {
 
     @get:EntityMetaDataFunction(name = "Attachment face")
     val attachmentFace: Directions
@@ -48,7 +48,7 @@ class Shulker(connection: PlayConnection, entityType: EntityType, position: Vec3
     companion object : EntityFactory<Shulker> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("shulker")
 
-        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation): Shulker {
+        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation): Shulker {
             return Shulker(connection, entityType, position, rotation)
         }
     }

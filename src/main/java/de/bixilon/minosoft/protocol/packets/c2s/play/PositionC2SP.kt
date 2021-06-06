@@ -18,20 +18,20 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
-import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 
 class PositionC2SP(
-    val position: Vec3,
+    val position: Vec3d,
     val onGround: Boolean,
 ) : PlayC2SPacket {
 
     override fun write(buffer: PlayOutByteBuffer) {
-        buffer.writeDouble(position.x.toDouble())
-        buffer.writeDouble(position.y.toDouble())
+        buffer.writeDouble(position.x)
+        buffer.writeDouble(position.y)
         if (buffer.versionId < ProtocolVersions.V_14W06B) {
             buffer.writeDouble(0.0) // ToDo
         }
-        buffer.writeDouble(position.z.toDouble())
+        buffer.writeDouble(position.z)
         buffer.writeBoolean(onGround)
     }
 

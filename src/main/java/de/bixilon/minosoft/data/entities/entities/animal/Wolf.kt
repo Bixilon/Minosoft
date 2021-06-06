@@ -23,9 +23,9 @@ import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
-import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 
-class Wolf(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : TamableAnimal(connection, entityType, position, rotation) {
+class Wolf(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : TamableAnimal(connection, entityType, position, rotation) {
 
     @get:EntityMetaDataFunction(name = "Is beging")
     val isBegging: Boolean
@@ -45,17 +45,17 @@ class Wolf(connection: PlayConnection, entityType: EntityType, position: Vec3, r
         }
 
     @EntityMetaDataFunction(name = "Health")
-    override val health: Float
+    override val health: Double
         get() = if (versionId > ProtocolVersions.V_19W45B) {
             super.health
         } else {
-            entityMetaData.sets.getFloat(EntityMetaDataFields.WOLF_HEALTH)
+            entityMetaData.sets.getFloat(EntityMetaDataFields.WOLF_HEALTH).toDouble()
         }
 
     companion object : EntityFactory<Wolf> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("wolf")
 
-        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation): Wolf {
+        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation): Wolf {
             return Wolf(connection, entityType, position, rotation)
         }
     }

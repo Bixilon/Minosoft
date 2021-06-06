@@ -15,21 +15,21 @@ package de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.s
 
 import de.bixilon.minosoft.data.mappings.particle.data.ParticleData
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.SimpleTextureParticle
+import de.bixilon.minosoft.gui.rendering.util.VecUtil
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import de.bixilon.minosoft.util.MMath
-import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 import kotlin.random.Random
 
-abstract class SpellParticle(connection: PlayConnection, position: Vec3, velocity: Vec3, data: ParticleData? = null) : SimpleTextureParticle(connection, position, Vec3(0.5f - Random.nextFloat(), velocity.y, 0.5 - Random.nextFloat()), data) {
+abstract class SpellParticle(connection: PlayConnection, position: Vec3d, velocity: Vec3d, data: ParticleData? = null) : SimpleTextureParticle(connection, position, Vec3d(0.5f - Random.nextDouble(), velocity.y, 0.5 - Random.nextDouble()), data) {
 
     init {
         friction = 0.96f
         gravityStrength = -0.1f
         accelerateIfYBlocked = true
-        this.velocity.y *= 0.20000000298023224f
-        if (velocity.x == 0.0f && velocity.z == 0.0f) {
-            this.velocity.x *= 0.10000000149011612f
-            this.velocity.z *= 0.10000000149011612f
+        this.velocity.y *= 0.20000000298023224
+        if (velocity.x == 0.0 && velocity.z == 0.0) {
+            this.velocity.x *= 0.10000000149011612
+            this.velocity.z *= 0.10000000149011612
         }
         super.scale *= 0.75f
         maxAge = (8.0f / (random.nextFloat() * 0.8f + 0.2f)).toInt()
@@ -41,6 +41,6 @@ abstract class SpellParticle(connection: PlayConnection, position: Vec3, velocit
     override fun realTick() {
         super.realTick()
 
-        color = color.with(alpha = MMath.lerp(0.05f, color.floatAlpha, 1.0f))
+        color = color.with(alpha = VecUtil.lerp(0.05f, color.floatAlpha, 1.0f))
     }
 }

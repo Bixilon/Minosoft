@@ -18,9 +18,9 @@ import de.bixilon.minosoft.data.entities.entities.AgeableMob
 import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
 import de.bixilon.minosoft.data.mappings.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 
-abstract class AbstractVillager(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : AgeableMob(connection, entityType, position, rotation) {
+abstract class AbstractVillager(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : AgeableMob(connection, entityType, position, rotation) {
 
     @get:EntityMetaDataFunction(name = "Unhappy timer")
     val unhappyTimer: Int

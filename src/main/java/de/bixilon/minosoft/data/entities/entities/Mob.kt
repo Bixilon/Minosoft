@@ -16,9 +16,9 @@ import de.bixilon.minosoft.data.entities.EntityMetaDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.mappings.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 
-abstract class Mob(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : LivingEntity(connection, entityType, position, rotation) {
+abstract class Mob(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : LivingEntity(connection, entityType, position, rotation) {
 
     private fun getMobFlags(bitMask: Int): Boolean {
         return entityMetaData.sets.getBitMask(EntityMetaDataFields.MOB_FLAGS, bitMask)

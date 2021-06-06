@@ -18,9 +18,9 @@ import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
 import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.mappings.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 
-abstract class Fireball(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : AbstractHurtingProjectile(connection, entityType, position, rotation) {
+abstract class Fireball(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : AbstractHurtingProjectile(connection, entityType, position, rotation) {
 
     @get:EntityMetaDataFunction(name = "Item")
     val item: ItemStack?

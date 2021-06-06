@@ -17,9 +17,9 @@ import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.entities.EntityFactory
 import de.bixilon.minosoft.data.mappings.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 
-class LightningBolt(connection: PlayConnection, entityType: EntityType, position: Vec3) : Entity(connection, entityType, position, EntityRotation(0.0f, 0.0f, 0.0f)) {
+class LightningBolt(connection: PlayConnection, entityType: EntityType, position: Vec3d) : Entity(connection, entityType, position, EntityRotation(0.0f, 0.0f, 0.0f)) {
 
     companion object : EntityFactory<LightningBolt> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("lightning_bolt")

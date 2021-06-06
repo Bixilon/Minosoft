@@ -17,15 +17,15 @@ import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.entities.EntityFactory
 import de.bixilon.minosoft.data.mappings.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 
-class PiglinBrute(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : AbstractPiglin(connection, entityType, position, rotation) {
+class PiglinBrute(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : AbstractPiglin(connection, entityType, position, rotation) {
 
 
     companion object : EntityFactory<PiglinBrute> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("piglin_brute")
 
-        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation): PiglinBrute {
+        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation): PiglinBrute {
             return PiglinBrute(connection, entityType, position, rotation)
         }
     }

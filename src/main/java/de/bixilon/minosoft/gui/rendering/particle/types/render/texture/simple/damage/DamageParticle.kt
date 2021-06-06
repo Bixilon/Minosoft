@@ -19,9 +19,9 @@ import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.Si
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.util.MMath
-import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 
-abstract class DamageParticle(connection: PlayConnection, position: Vec3, velocity: Vec3, data: ParticleData? = null) : SimpleTextureParticle(connection, position, Vec3.EMPTY, data) {
+abstract class DamageParticle(connection: PlayConnection, position: Vec3d, velocity: Vec3d, data: ParticleData? = null) : SimpleTextureParticle(connection, position, Vec3d.EMPTY, data) {
 
     override var scale: Float
         get() = super.scale * MMath.clamp(floatAge / maxAge * 32.0f, 0.0f, 1.0f)
@@ -32,7 +32,7 @@ abstract class DamageParticle(connection: PlayConnection, position: Vec3, veloci
     init {
         friction = 0.7f
         gravityStrength = 0.5f
-        this.velocity *= 0.10000000149011612f
+        this.velocity *= 0.10000000149011612
         this.velocity += velocity * 0.4f
         color = (random.nextFloat() * 0.30000001192092896f + 0.6000000238418579f).asGray()
         super.scale *= 0.75f

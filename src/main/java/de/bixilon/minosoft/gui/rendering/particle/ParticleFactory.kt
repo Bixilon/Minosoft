@@ -17,10 +17,10 @@ import de.bixilon.minosoft.data.mappings.CompanionResourceLocation
 import de.bixilon.minosoft.data.mappings.particle.data.ParticleData
 import de.bixilon.minosoft.gui.rendering.particle.types.Particle
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 
 interface ParticleFactory<T : Particle> : CompanionResourceLocation {
 
-    fun build(connection: PlayConnection, position: Vec3, velocity: Vec3, data: ParticleData = connection.registries.particleTypeRegistry[RESOURCE_LOCATION]!!.default()): T?
+    fun build(connection: PlayConnection, position: Vec3d, velocity: Vec3d, data: ParticleData = connection.registries.particleTypeRegistry[RESOURCE_LOCATION]!!.default()): T?
 
 }

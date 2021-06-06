@@ -16,6 +16,6 @@ import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.AgeableMob
 import de.bixilon.minosoft.data.mappings.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 
-abstract class Animal(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : AgeableMob(connection, entityType, position, rotation)
+abstract class Animal(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : AgeableMob(connection, entityType, position, rotation)

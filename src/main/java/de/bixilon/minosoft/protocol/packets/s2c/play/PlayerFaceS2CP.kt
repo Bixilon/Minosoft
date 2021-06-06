@@ -19,11 +19,11 @@ import de.bixilon.minosoft.util.enum.ValuesEnum
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
-import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 
 class PlayerFaceS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     val face: PlayerFaces = PlayerFaces[buffer.readVarInt()]
-    val position: Vec3 = buffer.readPosition()
+    val position: Vec3d = buffer.readVec3d()
     var entityId: Int? = null
         private set
     var entityFace: PlayerFaces? = null

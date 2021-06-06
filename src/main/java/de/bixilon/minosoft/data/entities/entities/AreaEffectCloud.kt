@@ -19,9 +19,9 @@ import de.bixilon.minosoft.data.mappings.entities.EntityFactory
 import de.bixilon.minosoft.data.mappings.entities.EntityType
 import de.bixilon.minosoft.data.mappings.particle.data.ParticleData
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 
-class AreaEffectCloud(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : Entity(connection, entityType, position, rotation) {
+class AreaEffectCloud(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : Entity(connection, entityType, position, rotation) {
 
     @get:EntityMetaDataFunction(name = "Ignore radius")
     val ignoreRadius: Boolean
@@ -48,7 +48,7 @@ class AreaEffectCloud(connection: PlayConnection, entityType: EntityType, positi
     companion object : EntityFactory<AreaEffectCloud> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("area_effect_cloud")
 
-        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation): AreaEffectCloud {
+        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation): AreaEffectCloud {
             return AreaEffectCloud(connection, entityType, position, rotation)
         }
     }

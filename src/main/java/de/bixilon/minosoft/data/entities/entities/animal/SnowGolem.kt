@@ -19,9 +19,9 @@ import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.entities.EntityFactory
 import de.bixilon.minosoft.data.mappings.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 
-class SnowGolem(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : AbstractGolem(connection, entityType, position, rotation) {
+class SnowGolem(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : AbstractGolem(connection, entityType, position, rotation) {
 
     private fun getPumpkinFlags(bitMask: Int): Boolean {
         return entityMetaData.sets.getBitMask(EntityMetaDataFields.SNOW_GOLEM_FLAGS, bitMask)
@@ -35,7 +35,7 @@ class SnowGolem(connection: PlayConnection, entityType: EntityType, position: Ve
     companion object : EntityFactory<SnowGolem> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("snow_golem")
 
-        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation): SnowGolem {
+        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation): SnowGolem {
             return SnowGolem(connection, entityType, position, rotation)
         }
     }

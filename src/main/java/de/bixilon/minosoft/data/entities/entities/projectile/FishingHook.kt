@@ -19,9 +19,9 @@ import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.entities.EntityFactory
 import de.bixilon.minosoft.data.mappings.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 
-class FishingHook(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : Projectile(connection, entityType, position, rotation) {
+class FishingHook(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : Projectile(connection, entityType, position, rotation) {
 
     @get:EntityMetaDataFunction(name = "Hooked entity id")
     val hookedEntityId: Int
@@ -35,7 +35,7 @@ class FishingHook(connection: PlayConnection, entityType: EntityType, position: 
     companion object : EntityFactory<FishingHook> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("fishing_bobber")
 
-        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation): FishingHook {
+        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation): FishingHook {
             return FishingHook(connection, entityType, position, rotation)
         }
     }

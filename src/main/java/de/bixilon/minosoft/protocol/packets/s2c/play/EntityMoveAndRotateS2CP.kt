@@ -20,14 +20,14 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
-import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 
 class EntityMoveAndRotateS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     val entityId: Int = buffer.readEntityId()
-    var delta: Vec3 = if (buffer.versionId < ProtocolVersions.V_16W06A) {
-        Vec3(buffer.readFixedPointNumberByte(), buffer.readFixedPointNumberByte(), buffer.readFixedPointNumberByte())
+    var delta: Vec3d = if (buffer.versionId < ProtocolVersions.V_16W06A) {
+        Vec3d(buffer.readFixedPointNumberByte(), buffer.readFixedPointNumberByte(), buffer.readFixedPointNumberByte())
     } else {
-        Vec3(buffer.readShort() / 4096f, buffer.readShort() / 4096f, buffer.readShort() / 4096f) // / 128 / 32
+        Vec3d(buffer.readShort() / 4096f, buffer.readShort() / 4096f, buffer.readShort() / 4096f) // / 128 / 32
     }
     val yaw: Int = buffer.readAngle()
     val pitch: Int = buffer.readAngle()

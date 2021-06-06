@@ -20,9 +20,9 @@ import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.entities.EntityFactory
 import de.bixilon.minosoft.data.mappings.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 
-open class ItemFrame(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : HangingEntity(connection, entityType, position, rotation) {
+open class ItemFrame(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : HangingEntity(connection, entityType, position, rotation) {
 
     @get:EntityMetaDataFunction(name = "Item")
     val item: ItemStack?
@@ -35,7 +35,7 @@ open class ItemFrame(connection: PlayConnection, entityType: EntityType, positio
     companion object : EntityFactory<ItemFrame> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("item_frame")
 
-        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation): ItemFrame {
+        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation): ItemFrame {
             return ItemFrame(connection, entityType, position, rotation)
         }
     }

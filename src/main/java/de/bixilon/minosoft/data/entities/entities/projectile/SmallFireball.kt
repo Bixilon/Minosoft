@@ -18,9 +18,9 @@ import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.entities.EntityFactory
 import de.bixilon.minosoft.data.mappings.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 
-class SmallFireball(connection: PlayConnection, entityType: EntityType, location: Vec3, rotation: EntityRotation) : Fireball(connection, entityType, location, rotation) {
+class SmallFireball(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : Fireball(connection, entityType, position, rotation) {
     override val defaultItem: ItemStack
         get() = ItemStack(connection.registries.itemRegistry[DEFAULT_ITEM]!!, connection)
 
@@ -28,7 +28,7 @@ class SmallFireball(connection: PlayConnection, entityType: EntityType, location
         private val DEFAULT_ITEM = ResourceLocation("fire_charge")
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("small_fireball")
 
-        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation): SmallFireball {
+        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation): SmallFireball {
             return SmallFireball(connection, entityType, position, rotation)
         }
     }

@@ -19,9 +19,9 @@ import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.entities.EntityFactory
 import de.bixilon.minosoft.data.mappings.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 
-open class Llama(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : AbstractChestedHorse(connection, entityType, position, rotation) {
+open class Llama(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : AbstractChestedHorse(connection, entityType, position, rotation) {
 
     @get:EntityMetaDataFunction(name = "Strength")
     val strength: Int
@@ -39,7 +39,7 @@ open class Llama(connection: PlayConnection, entityType: EntityType, position: V
     companion object : EntityFactory<Llama> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("llama")
 
-        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation): Llama {
+        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation): Llama {
             return Llama(connection, entityType, position, rotation)
         }
     }

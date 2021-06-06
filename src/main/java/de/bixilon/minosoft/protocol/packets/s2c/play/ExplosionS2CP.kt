@@ -23,10 +23,10 @@ import glm_.vec3.Vec3
 import glm_.vec3.Vec3i
 
 class ExplosionS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
-    val position = buffer.readFloatPosition()
+    val position = buffer.readVec3f()
     val power = buffer.readFloat()
     val explodedBlocks: List<Vec3> = buffer.readArray(buffer.readInt()) { Vec3(buffer.readByte(), buffer.readByte(), buffer.readByte()) }.toList()
-    val velocity = buffer.readFloatPosition()
+    val velocity = buffer.readVec3f()
 
     override fun check(connection: PlayConnection) {
         require(power <= 100.0f) {

@@ -18,9 +18,9 @@ import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.entities.EntityFactory
 import de.bixilon.minosoft.data.mappings.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 
-class ThrownExperienceBottle(connection: PlayConnection, entityType: EntityType, location: Vec3, rotation: EntityRotation) : ThrowableItemProjectile(connection, entityType, location, rotation) {
+class ThrownExperienceBottle(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : ThrowableItemProjectile(connection, entityType, position, rotation) {
     override val defaultItem: ItemStack
         get() = ItemStack(connection.registries.itemRegistry[DEFAULT_ITEM]!!, connection)
 
@@ -28,7 +28,7 @@ class ThrownExperienceBottle(connection: PlayConnection, entityType: EntityType,
         private val DEFAULT_ITEM = ResourceLocation("experience_bottle")
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("experience_bottle")
 
-        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation): ThrownExperienceBottle {
+        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation): ThrownExperienceBottle {
             return ThrownExperienceBottle(connection, entityType, position, rotation)
         }
     }

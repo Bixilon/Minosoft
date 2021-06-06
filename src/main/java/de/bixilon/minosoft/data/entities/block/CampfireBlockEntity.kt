@@ -25,7 +25,7 @@ import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.util.KUtil.chance
 import de.bixilon.minosoft.util.KUtil.nullCast
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.listCast
-import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 import glm_.vec3.Vec3i
 import kotlin.random.Random
 
@@ -81,16 +81,14 @@ class CampfireBlockEntity(connection: PlayConnection) : BlockEntity(connection) 
             }
             val direction = Directions.byHorizontal(Math.floorMod(index + facing, Directions.SIDES.size))
 
-            val a = 0.3125f
-
-            val position = Vec3(blockPosition) + Vec3(
-                0.5f - direction.vector.x * a + direction.rotateYC().vector.x * a,
+            val position = Vec3d(blockPosition) + Vec3d(
+                0.5f - direction.vector.x * DIRECTION_OFFSET + direction.rotateYC().vector.x * DIRECTION_OFFSET,
                 0.5f,
-                0.5f - direction.vector.z * a + direction.rotateYC().vector.z * a,
+                0.5f - direction.vector.z * DIRECTION_OFFSET + direction.rotateYC().vector.z * DIRECTION_OFFSET,
             )
 
             for (i in 0 until 4) {
-                connection.world.addParticle(SmokeParticle(connection, position, Vec3(0.0f, 5.0E-4f, 0.0f)))
+                connection.world.addParticle(SmokeParticle(connection, position, Vec3d(0.0, 5.0E-4, 0.0)))
             }
 
         }
@@ -98,6 +96,8 @@ class CampfireBlockEntity(connection: PlayConnection) : BlockEntity(connection) 
 
     companion object : BlockEntityFactory<CampfireBlockEntity> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("minecraft:campfire")
+        const val DIRECTION_OFFSET = 0.3125
+
 
         override fun build(connection: PlayConnection): CampfireBlockEntity {
             return CampfireBlockEntity(connection)

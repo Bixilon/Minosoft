@@ -28,6 +28,7 @@ import de.bixilon.minosoft.data.mappings.other.containers.Container
 import de.bixilon.minosoft.data.mappings.other.containers.PlayerInventory
 import de.bixilon.minosoft.data.physics.PhysicsConstants
 import de.bixilon.minosoft.gui.rendering.input.camera.MovementInput
+import de.bixilon.minosoft.gui.rendering.util.VecUtil
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.clearZero
@@ -42,6 +43,7 @@ import glm_.func.cos
 import glm_.func.rad
 import glm_.func.sin
 import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 import glm_.vec3.Vec3i
 import kotlin.math.cos
 import kotlin.math.pow
@@ -50,7 +52,7 @@ import kotlin.math.sin
 class LocalPlayerEntity(
     account: Account,
     connection: PlayConnection,
-) : PlayerEntity(connection, connection.registries.entityTypeRegistry[RemotePlayerEntity.RESOURCE_LOCATION]!!, Vec3.EMPTY, EntityRotation(0.0, 0.0), account.username) {
+) : PlayerEntity(connection, connection.registries.entityTypeRegistry[RemotePlayerEntity.RESOURCE_LOCATION]!!, Vec3d.EMPTY, EntityRotation(0.0, 0.0), account.username) {
     val healthCondition = PlayerHealthCondition()
     val experienceCondition = PlayerExperienceCondition()
     var spawnPosition: Vec3i = Vec3i.EMPTY
@@ -73,15 +75,15 @@ class LocalPlayerEntity(
 
     // last state (for updating movement on server)
     private var lastPositionPacketSent = -1L
-    private var lastSentPosition = Vec3.EMPTY
+    private var lastSentPosition = Vec3d.EMPTY
     private var lastRotation = EntityRotation(0.0, 0.0)
     private var lastSprinting = false
     private var lastSneaking = false
     private var lastOnGround = false
 
 
-    private var flyingSpeed: Float = 0.02f
-    val movementSpeed: Float
+    private var flyingSpeed = 0.02
+    val movementSpeed: Double
         get() = getAttributeValue(DefaultStatusEffectAttributeNames.GENERIC_MOVEMENT_SPEED)
 
     private var horizontalCollision = false
@@ -92,13 +94,13 @@ class LocalPlayerEntity(
     var isJumping = false
     var sidewaysSpeed = 0.0f
     var forwardSpeed = 1.0f
-    var fallDistance = 0.0f
+    var fallDistance = 0.0
 
-    private var lastFovMultiplier = 1.0f
-    private var currentFovMultiplier = 1.0f
+    private var lastFovMultiplier = 1.0
+    private var currentFovMultiplier = 1.0
 
-    val fovMultiplier: Float
-        get() = MMath.lerp((System.currentTimeMillis() - lastTickTime) / ProtocolDefinition.TICK_TIMEf, lastFovMultiplier, currentFovMultiplier)
+    val fovMultiplier: Double
+        get() = VecUtil.lerp((System.currentTimeMillis() - lastTickTime) / ProtocolDefinition.TICK_TIMEd, lastFovMultiplier, currentFovMultiplier)
 
     override val hasGravity: Boolean
         get() = !baseAbilities.isFlying
@@ -152,14 +154,14 @@ class LocalPlayerEntity(
         }
 
 
-        val position = Vec3(position)
+        val position = Vec3d(position)
         val positionDiff = position - lastSentPosition
         val positionChanged = positionDiff.length() > 0.01f || (currentTime - lastPositionPacketSent >= 1000)
 
         val rotation = rotation.copy()
         val yawDiff = rotation.yaw - lastRotation.yaw
         val pitchDiff = rotation.pitch - lastRotation.pitch
-        val rotationChanged = yawDiff != 0.0f && pitchDiff != 0.0f
+        val rotationChanged = yawDiff != 0.0 && pitchDiff != 0.0
 
         val onGround = onGround
 
@@ -199,18 +201,18 @@ class LocalPlayerEntity(
         isJumping = input.jumping
     }
 
-    private fun slipperinessToMovementSpeed(slipperiness: Float): Float {
+    private fun slipperinessToMovementSpeed(slipperiness: Double): Double {
         if (onGround) {
-            return movementSpeed * (0.21600002f / (slipperiness.pow(3)))
+            return movementSpeed * (0.21600002 / (slipperiness.pow(3)))
         }
         return flyingSpeed
     }
 
-    private fun calculateVelocity(sidewaysSpeed: Float, forwardSpeed: Float, speed: Float, yaw: Float): Vec3 {
+    private fun calculateVelocity(sidewaysSpeed: Float, forwardSpeed: Float, speed: Double, yaw: Double): Vec3d {
         if (sidewaysSpeed == 0.0f && forwardSpeed == 0.0f) {
-            return Vec3.EMPTY
+            return Vec3d.EMPTY
         }
-        var velocity = Vec3(sidewaysSpeed, 0.0f, forwardSpeed)
+        var velocity = Vec3d(sidewaysSpeed, 0.0f, forwardSpeed)
         if (velocity.dot(velocity) > 1.0f) {
             velocity = velocity.normalize()
         }
@@ -220,33 +222,33 @@ class LocalPlayerEntity(
         val sin = yawRad.sin
         val cos = yawRad.cos
 
-        return Vec3(velocity.x * cos - velocity.z * sin, velocity.y, velocity.z * cos + velocity.x * sin)
+        return Vec3d(velocity.x * cos - velocity.z * sin, velocity.y, velocity.z * cos + velocity.x * sin)
     }
 
-    fun fall(deltaY: Float) {
+    fun fall(deltaY: Double) {
         if (onGround) {
             // ToDo: On block landing (particles, sounds, etc)
-            this.fallDistance = 0.0f
+            this.fallDistance = 0.0
             return
         }
         this.fallDistance = this.fallDistance - deltaY
     }
 
 
-    fun move(delta: Vec3) {
+    fun move(delta: Vec3d) {
         if (!hasCollisions) {
             forceMove(delta)
             return
         }
 
-        var movement = Vec3(delta)
+        var movement = Vec3d(delta)
 
         // ToDo: Check for piston movement+
 
         if (!velocityMultiplier.empty) {
             movement = movement * velocityMultiplier
-            velocityMultiplier = Vec3.EMPTY
-            velocity = Vec3.EMPTY
+            velocityMultiplier = Vec3d.EMPTY
+            velocity = Vec3d.EMPTY
         }
 
         movement = connection.collisionDetector.sneak(this, movement)
@@ -257,16 +259,17 @@ class LocalPlayerEntity(
         verticalCollision = collisionMovement.y != movement.y
         this.onGround = verticalCollision && movement.y < 0.0f
 
+
         fall(collisionMovement.y)
 
         if (movement.x != collisionMovement.x) {
-            velocity.x = 0.0f
+            velocity.x = 0.0
         }
         if (movement.y != collisionMovement.y) {
-            velocity.y = 0.0f
+            velocity.y = 0.0
         }
         if (movement.z != collisionMovement.z) {
-            velocity.z = 0.0f
+            velocity.z = 0.0
         }
 
 
@@ -280,14 +283,14 @@ class LocalPlayerEntity(
     }
 
 
-    private fun move(sidewaysSpeed: Float, forwardSpeed: Float, slipperiness: Float): Vec3 {
+    private fun move(sidewaysSpeed: Float, forwardSpeed: Float, slipperiness: Double): Vec3d {
         velocity = velocity + calculateVelocity(sidewaysSpeed, forwardSpeed, slipperinessToMovementSpeed(slipperiness), rotation.yaw)
         move(velocity)
 
         return adjustVelocityForClimbing(velocity)
     }
 
-    private fun adjustVelocityForClimbing(velocity: Vec3): Vec3 {
+    private fun adjustVelocityForClimbing(velocity: Vec3d): Vec3d {
         // ToDo: Check climbing or powder snow
         return velocity
 
@@ -304,7 +307,7 @@ class LocalPlayerEntity(
             baseTravel(sidewaysSpeed, forwardSpeed)
             velocity.y *= 0.6f
             this.flyingSpeed = previousFlyingSpeed
-            this.fallDistance = 0.0f
+            this.fallDistance = 0.0
             return
         }
         baseTravel(sidewaysSpeed, forwardSpeed)
@@ -316,10 +319,10 @@ class LocalPlayerEntity(
 
         if (falling && activeStatusEffects[connection.registries.statusEffectRegistry[DefaultStatusEffects.SLOW_FALLING]] != null) {
             gravity = 0.01f
-            fallDistance = 0.0f
+            fallDistance = 0.0
         }
 
-        var speedMultiplier: Float
+        var speedMultiplier: Double
         when {
             // ToDo: Handle fluids, elytra flying
             isFlyingWithElytra -> {
@@ -327,8 +330,8 @@ class LocalPlayerEntity(
             else -> {
                 val velocityPosition = Vec3i(position.x, position.y + defaultAABB.min.y - 0.5000001f, position.z)
 
-                val slipperiness = /* ToDo: connection.world.connection.world[velocityPosition]?.block?.slipperiness ?: */0.6f
-                speedMultiplier = 0.91f
+                val slipperiness = /* ToDo: connection.world.connection.world[velocityPosition]?.block?.slipperiness ?: */0.6
+                speedMultiplier = 0.91
                 if (onGround) {
                     speedMultiplier *= slipperiness
                 }
@@ -340,9 +343,9 @@ class LocalPlayerEntity(
                 } ?: let {
                     if (connection.world[positionInfo.chunkPosition] == null) {
                         velocity.y = if (position.y > connection.world.dimension?.minY ?: 0) {
-                            -0.1f
+                            -0.1
                         } else {
-                            0.0f
+                            0.0
                         }
                     }
                     null
@@ -350,7 +353,7 @@ class LocalPlayerEntity(
                 if (hasGravity) {
                     velocity.y -= gravity
                 }
-                this.velocity = velocity * Vec3(speedMultiplier, 0.9800000190734863f, speedMultiplier)
+                this.velocity = velocity * Vec3d(speedMultiplier, 0.9800000190734863, speedMultiplier)
             }
         }
     }
@@ -440,10 +443,10 @@ class LocalPlayerEntity(
 
 
     private fun jump() {
-        var velocity = 0.42f // ToDo: Check for special blocks (e.g. soul sand, slime blocks, honey blocks, etc)
+        var velocity = 0.42 // ToDo: Check for special blocks (e.g. soul sand, slime blocks, honey blocks, etc)
 
         activeStatusEffects[connection.registries.statusEffectRegistry[DefaultStatusEffects.JUMP_BOOST]]?.let {
-            velocity += 0.1f * (it.amplifier + 1.0f)
+            velocity += 0.1 * (it.amplifier + 1.0)
         }
         this.velocity.y = velocity
 
@@ -469,6 +472,6 @@ class LocalPlayerEntity(
         sendMovementPackets()
 
         lastFovMultiplier = currentFovMultiplier
-        currentFovMultiplier = MMath.clamp(1.0f + movementSpeed, 1.0f, 1.5f)
+        currentFovMultiplier = MMath.clamp(1.0 + movementSpeed, 1.0, 1.5)
     }
 }

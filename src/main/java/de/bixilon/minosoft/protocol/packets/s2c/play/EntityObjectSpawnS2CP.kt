@@ -23,7 +23,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
-import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 import java.util.*
 
 class EntityObjectSpawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
@@ -31,7 +31,7 @@ class EntityObjectSpawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     var entityUUID: UUID? = null
         private set
     val entity: Entity
-    var velocity: Vec3? = null
+    var velocity: Vec3d? = null
         private set
 
     init {
@@ -43,10 +43,10 @@ class EntityObjectSpawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         } else {
             buffer.readVarInt()
         }
-        val position: Vec3 = if (buffer.versionId < ProtocolVersions.V_16W06A) {
-            Vec3(buffer.readFixedPointNumberInt(), buffer.readFixedPointNumberInt(), buffer.readFixedPointNumberInt())
+        val position: Vec3d = if (buffer.versionId < ProtocolVersions.V_16W06A) {
+            Vec3d(buffer.readFixedPointNumberInt(), buffer.readFixedPointNumberInt(), buffer.readFixedPointNumberInt())
         } else {
-            buffer.readPosition()
+            buffer.readVec3d()
         }
         val rotation = EntityRotation(buffer.readAngle().toFloat(), buffer.readAngle().toFloat(), 0.0f)
         val data = buffer.readInt()

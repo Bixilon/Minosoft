@@ -22,9 +22,9 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.sqr
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
-import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 
-class LavaParticle(connection: PlayConnection, position: Vec3, data: ParticleData? = null) : SimpleTextureParticle(connection, position, Vec3.EMPTY, data) {
+class LavaParticle(connection: PlayConnection, position: Vec3d, data: ParticleData? = null) : SimpleTextureParticle(connection, position, Vec3d.EMPTY, data) {
 
     override var scale: Float
         get() = super.scale * (1.0f - (floatAge / maxAge).sqr)
@@ -35,9 +35,9 @@ class LavaParticle(connection: PlayConnection, position: Vec3, data: ParticleDat
     init {
         gravityStrength = 0.75f
         friction = 0.999f
-        velocity.x *= 0.800000011920929f
-        velocity.y = random.nextFloat() * 0.4f + 0.05f
-        velocity.z *= 0.800000011920929f
+        velocity.x *= 0.800000011920929
+        velocity.y = random.nextDouble() * 0.4f + 0.05f
+        velocity.z *= 0.800000011920929
         scale *= random.nextFloat() * 2.0f + 0.2f
         maxAge = (16.0f / (random.nextFloat() * 0.8f + 0.2f)).toInt()
     }
@@ -46,14 +46,14 @@ class LavaParticle(connection: PlayConnection, position: Vec3, data: ParticleDat
         super.realTick()
 
         if (random.nextFloat() > (floatAge / maxAge)) {
-            connection.world += SmokeParticle(connection, Vec3(position), Vec3(velocity))
+            connection.world += SmokeParticle(connection, Vec3d(position), Vec3d(velocity))
         }
     }
 
     companion object : ParticleFactory<LavaParticle> {
         override val RESOURCE_LOCATION: ResourceLocation = "minecraft:lava".asResourceLocation()
 
-        override fun build(connection: PlayConnection, position: Vec3, velocity: Vec3, data: ParticleData): LavaParticle {
+        override fun build(connection: PlayConnection, position: Vec3d, velocity: Vec3d, data: ParticleData): LavaParticle {
             return LavaParticle(connection, position, data)
         }
     }

@@ -25,12 +25,12 @@ import glm_.mat3x3.Mat3
 import glm_.vec2.Vec2i
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3i
-import glm_.vec4.Vec4
+import glm_.vec4.Vec4d
 
 // Bit thanks to: https://gist.github.com/podgorskiy/e698d18879588ada9014768e3e82a644
 class Frustum(private val camera: Camera) {
     private var normals: List<Vec3> = listOf()
-    private var planes: List<Vec4> = listOf()
+    private var planes: List<Vec4d> = listOf()
 
     init {
         recalculate()
@@ -112,21 +112,21 @@ class Frustum(private val camera: Camera) {
         synchronized(this.normals) {
             normals = this.normals
         }
-        val planes: List<Vec4>
+        val planes: List<Vec4d>
         synchronized(this.planes) {
             planes = this.planes
         }
 
         for (i in 0 until Planes.VALUES.size) {
             if (
-                (planes[i] dot Vec4(min.x, min.y, min.z, 1.0f)) < 0.0f &&
-                (planes[i] dot Vec4(max.x, min.y, min.z, 1.0f)) < 0.0f &&
-                (planes[i] dot Vec4(min.x, max.y, min.z, 1.0f)) < 0.0f &&
-                (planes[i] dot Vec4(max.x, max.y, min.z, 1.0f)) < 0.0f &&
-                (planes[i] dot Vec4(min.x, min.y, max.z, 1.0f)) < 0.0f &&
-                (planes[i] dot Vec4(max.x, min.y, max.z, 1.0f)) < 0.0f &&
-                (planes[i] dot Vec4(min.x, max.y, max.z, 1.0f)) < 0.0f &&
-                (planes[i] dot Vec4(max.x, max.y, max.z, 1.0f)) < 0.0f
+                (planes[i] dot Vec4d(min.x, min.y, min.z, 1.0f)) < 0.0f &&
+                (planes[i] dot Vec4d(max.x, min.y, min.z, 1.0f)) < 0.0f &&
+                (planes[i] dot Vec4d(min.x, max.y, min.z, 1.0f)) < 0.0f &&
+                (planes[i] dot Vec4d(max.x, max.y, min.z, 1.0f)) < 0.0f &&
+                (planes[i] dot Vec4d(min.x, min.y, max.z, 1.0f)) < 0.0f &&
+                (planes[i] dot Vec4d(max.x, min.y, max.z, 1.0f)) < 0.0f &&
+                (planes[i] dot Vec4d(min.x, max.y, max.z, 1.0f)) < 0.0f &&
+                (planes[i] dot Vec4d(max.x, max.y, max.z, 1.0f)) < 0.0f
             ) {
                 return false
             }

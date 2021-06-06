@@ -250,5 +250,6 @@ class World(
     companion object {
         const val MAX_SIZE = 29999999
         const val MAX_SIZEf = MAX_SIZE.toFloat()
+        const val MAX_SIZEd = MAX_SIZE.toDouble()
     }
 }

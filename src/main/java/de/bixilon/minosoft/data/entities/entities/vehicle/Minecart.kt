@@ -17,14 +17,14 @@ import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.entities.EntityFactory
 import de.bixilon.minosoft.data.mappings.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 
-class Minecart(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : AbstractMinecart(connection, entityType, position, rotation) {
+class Minecart(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : AbstractMinecart(connection, entityType, position, rotation) {
 
     companion object : EntityFactory<Minecart> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("minecart")
 
-        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation): Minecart {
+        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation): Minecart {
             return Minecart(connection, entityType, position, rotation)
         }
     }

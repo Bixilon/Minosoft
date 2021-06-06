@@ -26,7 +26,7 @@ import de.bixilon.minosoft.data.mappings.registry.Translatable
 import de.bixilon.minosoft.data.mappings.versions.Registries
 import de.bixilon.minosoft.datafixer.EntityAttributeFixer.fix
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 import java.util.*
 
 data class EntityType(
@@ -36,11 +36,11 @@ data class EntityType(
     val height: Float,
     val sizeFixed: Boolean,
     val fireImmune: Boolean,
-    val attributes: Map<ResourceLocation, Float>,
+    val attributes: Map<ResourceLocation, Double>,
     val factory: EntityFactory<out Entity>,
 ) : RegistryItem, Translatable {
 
-    fun build(connection: PlayConnection, position: Vec3, rotation: EntityRotation, entityMetaData: EntityMetaData?, versionId: Int): Entity? {
+    fun build(connection: PlayConnection, position: Vec3d, rotation: EntityRotation, entityMetaData: EntityMetaData?, versionId: Int): Entity? {
         return DefaultEntityFactories.buildEntity(factory, connection, position, rotation, entityMetaData, versionId)
     }
 
@@ -59,11 +59,11 @@ data class EntityType(
                 return null
             }
 
-            val attributes: MutableMap<ResourceLocation, Float> = mutableMapOf()
+            val attributes: MutableMap<ResourceLocation, Double> = mutableMapOf()
 
             data["attributes"]?.asJsonObject?.let {
                 for ((attributeResourceLocation, value) in it.entrySet()) {
-                    attributes[ResourceLocation.getResourceLocation(attributeResourceLocation).fix()] = value.asFloat
+                    attributes[ResourceLocation.getResourceLocation(attributeResourceLocation).fix()] = value.asDouble
                 }
             }
 

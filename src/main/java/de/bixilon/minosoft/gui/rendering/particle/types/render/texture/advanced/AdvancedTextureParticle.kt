@@ -18,9 +18,9 @@ import de.bixilon.minosoft.gui.rendering.particle.ParticleMesh
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.SimpleTextureParticle
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import glm_.vec2.Vec2
-import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 
-abstract class AdvancedTextureParticle(connection: PlayConnection, position: Vec3, velocity: Vec3, data: ParticleData? = null) : SimpleTextureParticle(connection, position, velocity, data) {
+abstract class AdvancedTextureParticle(connection: PlayConnection, position: Vec3d, velocity: Vec3d, data: ParticleData? = null) : SimpleTextureParticle(connection, position, velocity, data) {
     var minUV: Vec2 = Vec2(0.0f, 0.0f)
     var maxUV: Vec2 = Vec2(1.0f, 1.0f)
 

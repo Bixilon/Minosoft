@@ -20,10 +20,10 @@ import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.entities.EntityFactory
 import de.bixilon.minosoft.data.mappings.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 import glm_.vec3.Vec3i
 
-class FallingBlock(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : Entity(connection, entityType, position, rotation) {
+class FallingBlock(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : Entity(connection, entityType, position, rotation) {
     @get:EntityMetaDataFunction(name = "Spawn position")
     val spawnPosition: Vec3i?
         get() = entityMetaData.sets.getBlockPosition(EntityMetaDataFields.FALLING_BLOCK_SPAWN_POSITION)
@@ -32,7 +32,7 @@ class FallingBlock(connection: PlayConnection, entityType: EntityType, position:
     companion object : EntityFactory<FallingBlock> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("falling_block")
 
-        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation): FallingBlock {
+        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation): FallingBlock {
             return FallingBlock(connection, entityType, position, rotation)
         }
     }

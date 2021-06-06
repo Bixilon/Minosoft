@@ -20,9 +20,9 @@ import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.entities.EntityFactory
 import de.bixilon.minosoft.data.mappings.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 
-class Phantom(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : FlyingMob(connection, entityType, position, rotation) {
+class Phantom(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : FlyingMob(connection, entityType, position, rotation) {
 
     @get:EntityMetaDataFunction(name = "Size")
     val size: Int
@@ -32,7 +32,7 @@ class Phantom(connection: PlayConnection, entityType: EntityType, position: Vec3
     companion object : EntityFactory<Phantom> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("phantom")
 
-        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation): Phantom {
+        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation): Phantom {
             return Phantom(connection, entityType, position, rotation)
         }
     }

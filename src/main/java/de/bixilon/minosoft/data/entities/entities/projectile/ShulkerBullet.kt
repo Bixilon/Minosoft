@@ -17,14 +17,14 @@ import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.entities.EntityFactory
 import de.bixilon.minosoft.data.mappings.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 
-class ShulkerBullet(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : Projectile(connection, entityType, position, rotation) {
+class ShulkerBullet(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : Projectile(connection, entityType, position, rotation) {
 
     companion object : EntityFactory<ShulkerBullet> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("shulker_bullet")
 
-        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation): ShulkerBullet {
+        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation): ShulkerBullet {
             return ShulkerBullet(connection, entityType, position, rotation)
         }
     }

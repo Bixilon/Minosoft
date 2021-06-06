@@ -18,9 +18,9 @@ import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
 import de.bixilon.minosoft.data.entities.entities.monster.PatrollingMonster
 import de.bixilon.minosoft.data.mappings.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 
-abstract class Raider(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : PatrollingMonster(connection, entityType, position, rotation) {
+abstract class Raider(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : PatrollingMonster(connection, entityType, position, rotation) {
 
     @get:EntityMetaDataFunction(name = "Is celebrating")
     val isCelebrating: Boolean

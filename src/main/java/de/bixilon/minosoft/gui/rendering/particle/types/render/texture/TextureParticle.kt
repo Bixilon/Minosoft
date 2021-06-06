@@ -18,9 +18,9 @@ import de.bixilon.minosoft.gui.rendering.particle.ParticleMesh
 import de.bixilon.minosoft.gui.rendering.particle.types.render.RenderParticle
 import de.bixilon.minosoft.gui.rendering.textures.Texture
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 
-abstract class TextureParticle(connection: PlayConnection, velocity: Vec3, position: Vec3, data: ParticleData? = null) : RenderParticle(connection, velocity, position, data) {
+abstract class TextureParticle(connection: PlayConnection, position: Vec3d, velocity: Vec3d, data: ParticleData? = null) : RenderParticle(connection, position, velocity, data) {
     abstract val texture: Texture?
 
 

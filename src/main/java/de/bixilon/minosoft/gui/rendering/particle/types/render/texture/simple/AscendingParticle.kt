@@ -18,20 +18,20 @@ import de.bixilon.minosoft.data.text.RGBColor.Companion.asGray
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.util.MMath
-import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 
 abstract class AscendingParticle(
     connection: PlayConnection,
-    position: Vec3,
-    velocity: Vec3,
-    velocityMultiplier: Vec3,
+    position: Vec3d,
+    velocity: Vec3d,
+    velocityMultiplier: Vec3d,
     scaleMultiplier: Float,
     colorMultiplier: Float,
     baseAge: Int,
     gravityStrength: Float,
     physics: Boolean,
     data: ParticleData? = null,
-) : SimpleTextureParticle(connection, position, Vec3.EMPTY, data) {
+) : SimpleTextureParticle(connection, position, Vec3d.EMPTY, data) {
 
     override var scale: Float
         get() = super.scale * MMath.clamp(floatAge / maxAge * 32.0f, 0.0f, 1.0f)

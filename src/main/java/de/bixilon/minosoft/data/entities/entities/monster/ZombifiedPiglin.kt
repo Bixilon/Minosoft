@@ -17,14 +17,14 @@ import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.entities.EntityFactory
 import de.bixilon.minosoft.data.mappings.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 
-open class ZombifiedPiglin(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : Zombie(connection, entityType, position, rotation) {
+open class ZombifiedPiglin(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : Zombie(connection, entityType, position, rotation) {
 
     companion object : EntityFactory<ZombifiedPiglin> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("zombified_piglin")
 
-        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation): ZombifiedPiglin {
+        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation): ZombifiedPiglin {
             return ZombifiedPiglin(connection, entityType, position, rotation)
         }
     }

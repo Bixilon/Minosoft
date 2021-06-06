@@ -13,10 +13,12 @@
 
 package de.bixilon.minosoft.data.physics
 
-import glm_.vec3.Vec3
+import de.bixilon.minosoft.gui.rendering.chunk.models.AABB
+import glm_.vec3.Vec3t
 
 interface PhysicsEntity {
-    val position: Vec3
-    val velocity: Vec3
+    val position: Vec3t<*>
+    val velocity: Vec3t<*>
     var onGround: Boolean
+    val aabb: AABB
 }

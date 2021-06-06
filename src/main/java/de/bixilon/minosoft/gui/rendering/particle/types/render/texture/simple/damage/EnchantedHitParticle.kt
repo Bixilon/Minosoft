@@ -18,9 +18,9 @@ import de.bixilon.minosoft.data.mappings.particle.data.ParticleData
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
-import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 
-class EnchantedHitParticle(connection: PlayConnection, position: Vec3, velocity: Vec3, data: ParticleData? = null) : DamageParticle(connection, position, velocity, data) {
+class EnchantedHitParticle(connection: PlayConnection, position: Vec3d, velocity: Vec3d, data: ParticleData? = null) : DamageParticle(connection, position, velocity, data) {
 
     init {
         color = color.with(red = color.floatRed * 0.3f, green = color.floatGreen * 0.8f)
@@ -29,7 +29,7 @@ class EnchantedHitParticle(connection: PlayConnection, position: Vec3, velocity:
     companion object : ParticleFactory<EnchantedHitParticle> {
         override val RESOURCE_LOCATION: ResourceLocation = "minecraft:enchanted_hit".asResourceLocation()
 
-        override fun build(connection: PlayConnection, position: Vec3, velocity: Vec3, data: ParticleData): EnchantedHitParticle {
+        override fun build(connection: PlayConnection, position: Vec3d, velocity: Vec3d, data: ParticleData): EnchantedHitParticle {
             return EnchantedHitParticle(connection, position, velocity, data)
         }
     }

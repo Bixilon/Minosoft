@@ -17,18 +17,19 @@ import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.play.ParticleS2CP
 import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 
 class ParticleSpawnEvent(
     connection: PlayConnection,
     initiator: EventInitiators,
-    position: Vec3,
+    position: Vec3d,
     offset: Vec3,
     val speed: Float,
     val count: Int,
     val data: ParticleData,
 ) : CancelableEvent(connection, initiator) {
-    val position: Vec3 = position
-        get() = Vec3(field)
+    val position: Vec3d = position
+        get() = Vec3d(field)
     val offset: Vec3 = offset
         get() = Vec3(field)
 

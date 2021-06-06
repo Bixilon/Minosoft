@@ -19,13 +19,13 @@ import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.entities.EntityFactory
 import de.bixilon.minosoft.data.mappings.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 
 /**
  * This class is just for the hashmap, it is not used anywhere
  */
 @Deprecated("Replaced with ZombifiedPiglin")
-class ZombiePigman(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : ZombifiedPiglin(connection, entityType, position, rotation) {
+class ZombiePigman(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : ZombifiedPiglin(connection, entityType, position, rotation) {
 
     companion object : EntityFactory<LeashFenceKnotEntity> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("zombie_pigman")

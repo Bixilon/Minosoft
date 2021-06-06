@@ -18,14 +18,15 @@ import de.bixilon.minosoft.data.text.RGBColor.Companion.asGray
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.SimpleTextureParticle
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 
-abstract class SuspendParticle(connection: PlayConnection, position: Vec3, velocity: Vec3, data: ParticleData? = null) : SimpleTextureParticle(connection, position, velocity, data) {
+abstract class SuspendParticle(connection: PlayConnection, position: Vec3d, velocity: Vec3d, data: ParticleData? = null) : SimpleTextureParticle(connection, position, velocity, data) {
 
     init {
         this.color = (random.nextFloat() * 0.1f + 0.2f).asGray()
         spacing = Vec3(0.2f)
-        scale *= random.nextFloat() * 0.6f + 0.5f
-        velocity *= 0.019999999552965164f
+        super.scale *= random.nextFloat() * 0.6f + 0.5f
+        velocity *= 0.019999999552965164
         maxAge = (20 / (random.nextFloat() * 0.8f + 0.2f)).toInt()
         movement = false
     }

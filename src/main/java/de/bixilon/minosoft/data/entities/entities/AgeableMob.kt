@@ -16,9 +16,9 @@ import de.bixilon.minosoft.data.entities.EntityMetaDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.mappings.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 
-abstract class AgeableMob(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : PathfinderMob(connection, entityType, position, rotation) {
+abstract class AgeableMob(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : PathfinderMob(connection, entityType, position, rotation) {
 
     @get:EntityMetaDataFunction(name = "Is baby")
     val isBaby: Boolean

@@ -22,6 +22,7 @@ import de.bixilon.minosoft.protocol.packets.c2s.play.ArmSwingC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.BlockPlaceC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.ItemUseC2SP
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import glm_.vec3.Vec3
 
 class RightClickHandler(
     val renderWindow: RenderWindow,
@@ -72,7 +73,7 @@ class RightClickHandler(
                 connection.sendPacket(BlockPlaceC2SP(
                     position = raycastHit.blockPosition,
                     direction = raycastHit.hitDirection,
-                    cursorPosition = raycastHit.hitPosition,
+                    cursorPosition = Vec3(raycastHit.hitPosition),
                     item = connection.player.inventory.getHotbarSlot(),
                     hand = Hands.MAIN_HAND,
                     insideBlock = false,  // ToDo
@@ -100,7 +101,7 @@ class RightClickHandler(
                         connection.sendPacket(BlockPlaceC2SP(
                             position = raycastHit.blockPosition,
                             direction = raycastHit.hitDirection,
-                            cursorPosition = raycastHit.hitPosition,
+                            cursorPosition = Vec3(raycastHit.hitPosition),
                             item = connection.player.inventory.getHotbarSlot(),
                             hand = Hands.MAIN_HAND,
                             insideBlock = false,  // ToDo

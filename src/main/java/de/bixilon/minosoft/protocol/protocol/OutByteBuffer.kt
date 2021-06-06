@@ -99,6 +99,10 @@ open class OutByteBuffer(open val connection: Connection? = null) {
         writeInt(float.toBits())
     }
 
+    fun writeFloat(float: Double) {
+        writeFloat(float.toFloat())
+    }
+
     fun writeDouble(double: Double) {
         writeLong(double.toBits())
     }

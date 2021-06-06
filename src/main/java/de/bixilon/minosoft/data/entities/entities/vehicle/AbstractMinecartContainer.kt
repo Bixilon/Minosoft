@@ -15,6 +15,6 @@ package de.bixilon.minosoft.data.entities.entities.vehicle
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.mappings.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 
-abstract class AbstractMinecartContainer(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : AbstractMinecart(connection, entityType, position, rotation)
+abstract class AbstractMinecartContainer(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : AbstractMinecart(connection, entityType, position, rotation)

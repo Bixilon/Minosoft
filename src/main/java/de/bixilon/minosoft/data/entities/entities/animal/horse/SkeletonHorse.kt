@@ -17,14 +17,14 @@ import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.entities.EntityFactory
 import de.bixilon.minosoft.data.mappings.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 
-class SkeletonHorse(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : AbstractHorse(connection, entityType, position, rotation) {
+class SkeletonHorse(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : AbstractHorse(connection, entityType, position, rotation) {
 
     companion object : EntityFactory<SkeletonHorse> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("skeleton_horse")
 
-        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation): SkeletonHorse {
+        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation): SkeletonHorse {
             return SkeletonHorse(connection, entityType, position, rotation)
         }
     }

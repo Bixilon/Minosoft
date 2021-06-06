@@ -17,14 +17,14 @@ import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.entities.EntityFactory
 import de.bixilon.minosoft.data.mappings.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 
-class Evoker(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : SpellcasterIllager(connection, entityType, position, rotation) {
+class Evoker(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : SpellcasterIllager(connection, entityType, position, rotation) {
 
     companion object : EntityFactory<Evoker> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("evoker")
 
-        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation): Evoker {
+        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation): Evoker {
             return Evoker(connection, entityType, position, rotation)
         }
     }

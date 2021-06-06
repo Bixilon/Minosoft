@@ -29,7 +29,7 @@ import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.du
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.util.KUtil.chance
-import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 import glm_.vec3.Vec3i
 import kotlin.random.Random
 
@@ -41,9 +41,9 @@ open class LeverBlock(resourceLocation: ResourceLocation, registries: Registries
         val direction = (blockState.properties[BlockProperties.FACING] as Directions).inverted
         val mountDirection = getRealFacing(blockState)
 
-        val position = (Vec3(blockPosition) + 0.5f).plus((direction.vector * 0.1f) + (mountDirection.vector * 0.2f))
+        val position = (Vec3d(blockPosition) + 0.5).plus((direction.vector * 0.1) + (mountDirection.vector * 0.2))
 
-        connection.world += DustParticle(connection, position, Vec3.EMPTY, DustParticleData(Colors.TRUE_RED, scale, dustParticleType))
+        connection.world += DustParticle(connection, position, Vec3d.EMPTY, DustParticleData(Colors.TRUE_RED, scale, dustParticleType))
     }
 
     override fun randomTick(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, random: Random) {

@@ -48,7 +48,7 @@ class EntityEffectAttributesS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
                 val amount: Double = buffer.readDouble()
                 val operation = StatusEffectOperations[buffer.readUnsignedByte()]
                 // ToDo: modifiers
-                attributes[key] = StatusEffectAttribute("", uuid, amount.toFloat(), operation)
+                attributes[key] = StatusEffectAttribute("", uuid, amount, operation)
             }
         }
         this.attributes = attributes.toMap()

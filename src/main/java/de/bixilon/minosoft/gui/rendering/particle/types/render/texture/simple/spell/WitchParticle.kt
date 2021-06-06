@@ -19,9 +19,9 @@ import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
-import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 
-class WitchParticle(connection: PlayConnection, position: Vec3, velocity: Vec3, data: ParticleData? = null) : SpellParticle(connection, position, velocity, data) {
+class WitchParticle(connection: PlayConnection, position: Vec3d, velocity: Vec3d, data: ParticleData? = null) : SpellParticle(connection, position, velocity, data) {
 
     init {
         val randomColor = random.nextFloat() * 0.5f + 0.35f
@@ -31,7 +31,7 @@ class WitchParticle(connection: PlayConnection, position: Vec3, velocity: Vec3, 
     companion object : ParticleFactory<WitchParticle> {
         override val RESOURCE_LOCATION: ResourceLocation = "minecraft:witch".asResourceLocation()
 
-        override fun build(connection: PlayConnection, position: Vec3, velocity: Vec3, data: ParticleData): WitchParticle {
+        override fun build(connection: PlayConnection, position: Vec3d, velocity: Vec3d, data: ParticleData): WitchParticle {
             return WitchParticle(connection, position, velocity, data)
         }
     }

@@ -19,11 +19,11 @@ import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
-import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 
 class EntityVelocityS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     val entityId: Int = buffer.readEntityId()
-    val velocity: Vec3 = buffer.readVelocity()
+    val velocity: Vec3d = buffer.readVelocity()
 
     override fun handle(connection: PlayConnection) {
         val entity = connection.world.entities[entityId] ?: return

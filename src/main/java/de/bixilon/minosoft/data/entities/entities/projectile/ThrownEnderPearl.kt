@@ -18,9 +18,9 @@ import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.entities.EntityFactory
 import de.bixilon.minosoft.data.mappings.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 
-class ThrownEnderPearl(connection: PlayConnection, entityType: EntityType, location: Vec3, rotation: EntityRotation) : ThrowableItemProjectile(connection, entityType, location, rotation) {
+class ThrownEnderPearl(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : ThrowableItemProjectile(connection, entityType, position, rotation) {
     override val defaultItem: ItemStack
         get() = ItemStack(connection.registries.itemRegistry[DEFAULT_ITEM]!!, connection)
 
@@ -28,7 +28,7 @@ class ThrownEnderPearl(connection: PlayConnection, entityType: EntityType, locat
         private val DEFAULT_ITEM = ResourceLocation("ender_pearl")
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("ender_pearl")
 
-        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation): ThrownEnderPearl {
+        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation): ThrownEnderPearl {
             return ThrownEnderPearl(connection, entityType, position, rotation)
         }
     }

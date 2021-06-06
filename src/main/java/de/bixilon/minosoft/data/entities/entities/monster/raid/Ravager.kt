@@ -17,14 +17,14 @@ import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.entities.EntityFactory
 import de.bixilon.minosoft.data.mappings.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 
-class Ravager(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : Raider(connection, entityType, position, rotation) {
+class Ravager(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : Raider(connection, entityType, position, rotation) {
 
     companion object : EntityFactory<Ravager> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("ravager")
 
-        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation): Ravager {
+        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation): Ravager {
             return Ravager(connection, entityType, position, rotation)
         }
     }

@@ -20,13 +20,14 @@ import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
 import glm_.vec2.Vec2
 import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 import org.lwjgl.opengl.ARBVertexArrayObject.glBindVertexArray
 import org.lwjgl.opengl.GL15.GL_POINTS
 import org.lwjgl.opengl.GL15.glDrawArrays
 
 class ParticleMesh : Mesh(ParticleMeshStruct::class) {
 
-    fun addVertex(position: Vec3, scale: Float, texture: Texture, tintColor: RGBColor, uvMin: Vec2 = Vec2(0, 0), uvMax: Vec2 = Vec2(1, 1)) {
+    fun addVertex(position: Vec3d, scale: Float, texture: Texture, tintColor: RGBColor, uvMin: Vec2 = Vec2(0, 0), uvMax: Vec2 = Vec2(1, 1)) {
         val textureLayer = if (RenderConstants.FORCE_DEBUG_TEXTURE) {
             RenderConstants.DEBUG_TEXTURE_ID
         } else {
@@ -34,9 +35,9 @@ class ParticleMesh : Mesh(ParticleMeshStruct::class) {
         }
 
         data.addAll(floatArrayOf(
-            position.x,
-            position.y,
-            position.z,
+            position.x.toFloat(), // ToDo: Use doubles
+            position.y.toFloat(),
+            position.z.toFloat(),
             uvMin.x,
             uvMin.y,
             uvMax.x * texture.uvEnd.x,

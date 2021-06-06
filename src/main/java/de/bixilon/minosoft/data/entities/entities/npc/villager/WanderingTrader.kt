@@ -17,14 +17,14 @@ import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.entities.EntityFactory
 import de.bixilon.minosoft.data.mappings.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 
-class WanderingTrader(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : AbstractVillager(connection, entityType, position, rotation) {
+class WanderingTrader(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : AbstractVillager(connection, entityType, position, rotation) {
 
     companion object : EntityFactory<WanderingTrader> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("wandering_trader")
 
-        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation): WanderingTrader {
+        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation): WanderingTrader {
             return WanderingTrader(connection, entityType, position, rotation)
         }
     }

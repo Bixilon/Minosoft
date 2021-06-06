@@ -17,14 +17,14 @@ import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.entities.EntityFactory
 import de.bixilon.minosoft.data.mappings.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 
-class Drowned(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : Zombie(connection, entityType, position, rotation) {
+class Drowned(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : Zombie(connection, entityType, position, rotation) {
 
     companion object : EntityFactory<Drowned> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("drowned")
 
-        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation): Drowned {
+        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation): Drowned {
             return Drowned(connection, entityType, position, rotation)
         }
     }

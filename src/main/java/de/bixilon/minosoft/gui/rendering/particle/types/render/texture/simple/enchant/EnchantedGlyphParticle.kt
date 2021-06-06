@@ -19,11 +19,11 @@ import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.Si
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.assign
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import glm_.pow
-import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
+import kotlin.math.pow
 
-abstract class EnchantedGlyphParticle(connection: PlayConnection, position: Vec3, velocity: Vec3, data: ParticleData? = null) : SimpleTextureParticle(connection, position, Vec3.EMPTY, data) {
-    private val startPosition = Vec3(position)
+abstract class EnchantedGlyphParticle(connection: PlayConnection, position: Vec3d, velocity: Vec3d, data: ParticleData? = null) : SimpleTextureParticle(connection, position, Vec3d.EMPTY, data) {
+    private val startPosition = Vec3d(position)
 
     init {
         this.velocity assign velocity
@@ -46,8 +46,8 @@ abstract class EnchantedGlyphParticle(connection: PlayConnection, position: Vec3
         if (dead) {
             return
         }
-        val ageDivisor = 1.0f - floatAge / maxAge
-        val ageDivisor2 = (1.0f - ageDivisor).pow(3)
+        val ageDivisor = 1.0 - floatAge / maxAge
+        val ageDivisor2 = (1.0 - ageDivisor).pow(3)
         this.position assign (startPosition + velocity * ageDivisor)
         this.position.y -= ageDivisor2 * 1.2f
     }

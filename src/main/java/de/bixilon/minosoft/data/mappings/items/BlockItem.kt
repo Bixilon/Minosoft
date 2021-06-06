@@ -26,6 +26,7 @@ import de.bixilon.minosoft.gui.rendering.input.camera.RaycastHit
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.c2s.play.BlockPlaceC2SP
+import glm_.vec3.Vec3
 import glm_.vec3.Vec3i
 
 open class BlockItem(
@@ -70,7 +71,7 @@ open class BlockItem(
         connection.sendPacket(BlockPlaceC2SP(
             position = placePosition,
             direction = raycastHit.hitDirection,
-            cursorPosition = raycastHit.hitPosition,
+            cursorPosition = Vec3(raycastHit.hitPosition),
             item = connection.player.inventory.getHotbarSlot(),
             hand = Hands.MAIN_HAND,
             insideBlock = false,  // ToDo

@@ -17,10 +17,10 @@ import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
 import de.bixilon.minosoft.data.mappings.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 import java.util.*
 
-abstract class AbstractArrow(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : Projectile(connection, entityType, position, rotation) {
+abstract class AbstractArrow(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : Projectile(connection, entityType, position, rotation) {
 
     private fun getAbstractArrowFlag(bitMask: Int): Boolean {
         return entityMetaData.sets.getBitMask(EntityMetaDataFields.ABSTRACT_ARROW_FLAGS, bitMask)

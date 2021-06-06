@@ -20,6 +20,7 @@ import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.enum.ValuesEnum
 import glm_.vec2.Vec2i
 import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 import glm_.vec3.Vec3i
 import kotlin.math.abs
 
@@ -31,7 +32,8 @@ enum class Directions(val horizontalId: Int, val vector: Vec3i) {
     WEST(1, Vec3i(-1, 0, 0)),
     EAST(3, Vec3i(1, 0, 0));
 
-    val floatDirectionVector = Vec3(vector)
+    val vectorf = Vec3(vector)
+    val vectord = Vec3d(vector)
 
     val axis: Axes get() = Axes.byDirection(this)
 
@@ -125,7 +127,7 @@ enum class Directions(val horizontalId: Int, val vector: Vec3i) {
             var minDirection = VALUES[0]
             var minError = 2.0f
             for (testDirection in VALUES) {
-                val error = (testDirection.floatDirectionVector - direction).length()
+                val error = (testDirection.vectorf - direction).length()
                 if (error < MIN_ERROR) {
                     return testDirection
                 } else if (error < minError) {
@@ -134,6 +136,10 @@ enum class Directions(val horizontalId: Int, val vector: Vec3i) {
                 }
             }
             return minDirection
+        }
+
+        fun byDirection(direction: Vec3d): Directions {
+            return byDirection(Vec3(direction))
         }
 
         fun byHorizontal(value: Int): Directions {

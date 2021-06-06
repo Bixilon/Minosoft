@@ -19,9 +19,9 @@ import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.entities.EntityFactory
 import de.bixilon.minosoft.data.mappings.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 
-class Goat(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : Animal(connection, entityType, position, rotation) {
+class Goat(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : Animal(connection, entityType, position, rotation) {
 
     @get:EntityMetaDataFunction(name = "Is screaming")
     val isScreaming: Boolean
@@ -30,7 +30,7 @@ class Goat(connection: PlayConnection, entityType: EntityType, position: Vec3, r
     companion object : EntityFactory<Goat> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("goat")
 
-        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation): Goat {
+        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation): Goat {
             return Goat(connection, entityType, position, rotation)
         }
     }

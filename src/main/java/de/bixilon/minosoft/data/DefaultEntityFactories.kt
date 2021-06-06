@@ -41,7 +41,7 @@ import de.bixilon.minosoft.data.mappings.DefaultFactory
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.entities.EntityFactory
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 
 @SuppressWarnings("deprecation")
 object DefaultEntityFactories : DefaultFactory<EntityFactory<out Entity>>(
@@ -161,12 +161,12 @@ object DefaultEntityFactories : DefaultFactory<EntityFactory<out Entity>>(
     GlowSquid,
     EvokerFangs,
 ) {
-    fun buildEntity(resourceLocation: ResourceLocation, connection: PlayConnection, position: Vec3, rotation: EntityRotation, entityMetaData: EntityMetaData?, versionId: Int): Entity? {
+    fun buildEntity(resourceLocation: ResourceLocation, connection: PlayConnection, position: Vec3d, rotation: EntityRotation, entityMetaData: EntityMetaData?, versionId: Int): Entity? {
         val factory = this[resourceLocation] ?: throw UnknownEntityException("Can not find entity type: $resourceLocation")
         return buildEntity(factory, connection, position, rotation, entityMetaData, versionId)
     }
 
-    fun buildEntity(factory: EntityFactory<out Entity>, connection: PlayConnection, position: Vec3, rotation: EntityRotation, entityMetaData: EntityMetaData?, versionId: Int): Entity? {
+    fun buildEntity(factory: EntityFactory<out Entity>, connection: PlayConnection, position: Vec3d, rotation: EntityRotation, entityMetaData: EntityMetaData?, versionId: Int): Entity? {
         val tweakedResourceLocation = factory.tweak(connection, entityMetaData, versionId)
 
         val tweakedFactory = this[tweakedResourceLocation] ?: throw UnknownEntityException("Can not find tweaked entity type: $tweakedResourceLocation for $factory")

@@ -22,6 +22,7 @@ import de.bixilon.minosoft.gui.rendering.Rendering
 import de.bixilon.minosoft.gui.rendering.exceptions.ShaderLoadingException
 import de.bixilon.minosoft.gui.rendering.util.OpenGLUtil
 import glm_.mat4x4.Mat4
+import glm_.mat4x4.Mat4d
 import glm_.vec2.Vec2
 import glm_.vec3.Vec3
 import glm_.vec4.Vec4
@@ -105,6 +106,10 @@ class Shader(
 
     fun setMat4(uniformName: String, mat4: Mat4) {
         glUniformMatrix4fv(getUniformLocation(uniformName), false, mat4 to BufferUtils.createFloatBuffer(16))
+    }
+
+    fun setMat4(uniformName: String, mat4: Mat4d) {
+        setMat4(uniformName, Mat4(mat4))
     }
 
     fun setVec2(uniformName: String, vec2: Vec2) {

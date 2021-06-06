@@ -21,9 +21,9 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
-import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 
-class ExplosionEmitterParticle(connection: PlayConnection, position: Vec3, data: ParticleData? = null) : NoRenderParticle(connection, position, Vec3.EMPTY, data) {
+class ExplosionEmitterParticle(connection: PlayConnection, position: Vec3d, data: ParticleData? = null) : NoRenderParticle(connection, position, Vec3d.EMPTY, data) {
     private val explosionParticleType = connection.registries.particleTypeRegistry[ExplosionParticle]
 
     init {
@@ -38,7 +38,7 @@ class ExplosionEmitterParticle(connection: PlayConnection, position: Vec3, data:
             return
         }
         for (i in 0 until 6) {
-            val position = position + { (random.nextFloat() - random.nextFloat()) * 4.0f }
+            val position = position + { (random.nextDouble() - random.nextDouble()) * 4.0 }
 
             connection.world += ExplosionParticle(connection, position, explosionParticleType.default(), floatAge / MAX_AGE)
         }
@@ -48,7 +48,7 @@ class ExplosionEmitterParticle(connection: PlayConnection, position: Vec3, data:
         override val RESOURCE_LOCATION: ResourceLocation = "minecraft:explosion_emitter".asResourceLocation()
         private const val MAX_AGE = 9
 
-        override fun build(connection: PlayConnection, position: Vec3, velocity: Vec3, data: ParticleData): ExplosionEmitterParticle {
+        override fun build(connection: PlayConnection, position: Vec3d, velocity: Vec3d, data: ParticleData): ExplosionEmitterParticle {
             return ExplosionEmitterParticle(connection, position, data)
         }
     }

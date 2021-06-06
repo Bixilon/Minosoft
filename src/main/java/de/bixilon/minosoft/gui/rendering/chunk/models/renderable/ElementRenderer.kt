@@ -132,7 +132,7 @@ class ElementRenderer(
             if (rotation == Vec3.EMPTY) {
                 return direction
             }
-            var rotatedDirectionVector = direction.floatDirectionVector.rotate(-rotation.x, Axes.X)
+            var rotatedDirectionVector = direction.vectorf.rotate(-rotation.x, Axes.X)
             rotatedDirectionVector = rotatedDirectionVector.rotate(rotation.y, Axes.Y)
             return Directions.byDirection(rotatedDirectionVector.rotate(-rotation.z, Axes.Z))
         }

@@ -19,14 +19,14 @@ import de.bixilon.minosoft.data.mappings.particle.data.ParticleData
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
-import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 
-class DustParticle(connection: PlayConnection, position: Vec3, velocity: Vec3, data: DustParticleData) : AbstractDustParticle(connection, position, velocity, data) {
+class DustParticle(connection: PlayConnection, position: Vec3d, velocity: Vec3d, data: DustParticleData) : AbstractDustParticle(connection, position, velocity, data) {
 
     companion object : ParticleFactory<DustParticle> {
         override val RESOURCE_LOCATION: ResourceLocation = "minecraft:dust".asResourceLocation()
 
-        override fun build(connection: PlayConnection, position: Vec3, velocity: Vec3, data: ParticleData): DustParticle {
+        override fun build(connection: PlayConnection, position: Vec3d, velocity: Vec3d, data: ParticleData): DustParticle {
             return DustParticle(connection, position, velocity, data as DustParticleData)
         }
     }

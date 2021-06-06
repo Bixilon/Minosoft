@@ -27,8 +27,8 @@ class PlayerAbilitiesS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     val canFly: Boolean
     val canInstantBuild: Boolean
 
-    val flyingSpeed: Float
-    val walkingSpeed: Float
+    val flyingSpeed: Double
+    val walkingSpeed: Double
 
     init {
         val flags = buffer.readUnsignedByte()
@@ -41,8 +41,8 @@ class PlayerAbilitiesS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
             canInstantBuild = flags.isBit(0)
             isInvulnerable = flags.isBit(3)
         }
-        flyingSpeed = buffer.readFloat()
-        walkingSpeed = buffer.readFloat()
+        flyingSpeed = buffer.readFloat().toDouble()
+        walkingSpeed = buffer.readFloat().toDouble()
     }
 
     override fun log() {

@@ -25,14 +25,15 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.plusAssign
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 import kotlin.math.abs
 import kotlin.random.Random
 import kotlin.reflect.full.companionObjectInstance
 
 abstract class Particle(
     protected val connection: PlayConnection,
-    final override val position: Vec3,
-    final override val velocity: Vec3 = Vec3.EMPTY,
+    final override val position: Vec3d,
+    final override val velocity: Vec3d = Vec3d.EMPTY,
     data: ParticleData? = null,
 ) : PhysicsEntity {
     protected val data: ParticleData = data ?: let {
@@ -61,7 +62,7 @@ abstract class Particle(
     override var onGround: Boolean = true
     var alreadyCollided = false
     var accelerateIfYBlocked = false
-    var aabb: AABB = AABB.EMPTY
+    override var aabb: AABB = AABB.EMPTY
     var spacing: Vec3 = Vec3.EMPTY
         set(value) {
             if (field == value) {
@@ -70,8 +71,8 @@ abstract class Particle(
             field = value
 
 
-            val x = ((aabb.min.x + aabb.max.x) - spacing.x) / 2.0f
-            val z = ((aabb.min.z + aabb.max.z) - spacing.z) / 2.0f
+            val x = ((aabb.min.x + aabb.max.x) - spacing.x) / 2.0
+            val z = ((aabb.min.z + aabb.max.z) - spacing.z) / 2.0
 
             aabb = AABB(Vec3(x, aabb.min.y, z), Vec3(x + spacing.x, aabb.min.y + spacing.y, z + spacing.z))
         }
@@ -81,27 +82,27 @@ abstract class Particle(
 
 
     init {
-        velocity += { (random.nextFloat() * 2.0f - 1.0f) * MAGIC_VELOCITY_CONSTANTf }
-        val modifier = (random.nextFloat() + random.nextFloat() + 1.0f) * 0.15000000596046448f
+        velocity += { (random.nextDouble() * 2.0 - 1.0) * MAGIC_VELOCITY_CONSTANT }
+        val modifier = (random.nextFloat() + random.nextFloat() + 1.0f) * 0.15000000596046448
         val divider = velocity.length()
 
         velocity assign velocity / divider * modifier * MAGIC_VELOCITY_CONSTANTf
-        velocity.y += 0.10000000149011612f
+        velocity.y += 0.10000000149011612
 
-        spacing = Vec3(0.2f)
+        spacing = Vec3(0.2)
     }
 
-    fun move(velocity: Vec3) {
+    fun move(velocity: Vec3d) {
         if (alreadyCollided) {
             return
         }
-        var newVelocity = Vec3(velocity)
-        if (this.physics && newVelocity != Vec3.EMPTY) {
+        var newVelocity = Vec3d(velocity)
+        if (this.physics && newVelocity != Vec3d.EMPTY) {
             val aabb = aabb + position
             newVelocity = connection.collisionDetector.collide(this, newVelocity, aabb)
         }
 
-        if (newVelocity != Vec3.EMPTY) {
+        if (newVelocity != Vec3d.EMPTY) {
             position += newVelocity
         }
 
@@ -114,7 +115,7 @@ abstract class Particle(
         if (!movement) {
             return
         }
-        previousPosition = Vec3(position)
+        previousPosition = Vec3d(position)
 
         move(velocity.millis * (deltaTime / 1000.0f))
     }

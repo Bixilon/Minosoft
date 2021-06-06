@@ -19,9 +19,9 @@ import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
-import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 
-class AmbientEntityEffectParticle(connection: PlayConnection, position: Vec3, color: RGBColor, data: ParticleData? = null) : SpellParticle(connection, position, Vec3(color.red, color.green, color.blue), data) {
+class AmbientEntityEffectParticle(connection: PlayConnection, position: Vec3d, color: RGBColor, data: ParticleData? = null) : SpellParticle(connection, position, Vec3d(color.red, color.green, color.blue), data) {
 
     init {
         this.color = color.with(alpha = 0.15f)
@@ -30,7 +30,7 @@ class AmbientEntityEffectParticle(connection: PlayConnection, position: Vec3, co
     companion object : ParticleFactory<AmbientEntityEffectParticle> {
         override val RESOURCE_LOCATION: ResourceLocation = "minecraft:ambient_entity_effect".asResourceLocation()
 
-        override fun build(connection: PlayConnection, position: Vec3, velocity: Vec3, data: ParticleData): AmbientEntityEffectParticle {
+        override fun build(connection: PlayConnection, position: Vec3d, velocity: Vec3d, data: ParticleData): AmbientEntityEffectParticle {
             return AmbientEntityEffectParticle(connection, position, color = RGBColor(velocity.x, velocity.y, velocity.z), data)
         }
     }

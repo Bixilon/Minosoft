@@ -26,12 +26,13 @@ import de.bixilon.minosoft.gui.rendering.chunk.models.renderable.ElementRenderer
 import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.getWorldOffset
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3d
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.BitByte.isBit
 import de.bixilon.minosoft.util.MMath.positiveNegative
 import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 import glm_.vec3.Vec3i
 import org.lwjgl.opengl.GL11.*
 
@@ -80,12 +81,12 @@ class BlockOutlineRenderer(
         }
     }
 
-    private fun drawVoxelShape(shape: VoxelShape, blockPosition: Vec3, mesh: BlockOutlineMesh, margin: Float = 0.0f) {
+    private fun drawVoxelShape(shape: VoxelShape, blockPosition: Vec3d, mesh: BlockOutlineMesh, margin: Float = 0.0f) {
         for (aabb in shape) {
             val min = blockPosition + aabb.min - margin
             val max = blockPosition + aabb.max + margin
 
-            fun drawSideQuad(x: Float) {
+            fun drawSideQuad(x: Double) {
                 drawLine(Vec3(x, min.y, min.z), Vec3(x, max.y, min.z), mesh)
                 drawLine(Vec3(x, min.y, min.z), Vec3(x, min.y, max.z), mesh)
                 drawLine(Vec3(x, max.y, min.z), Vec3(x, max.y, max.z), mesh)
@@ -166,7 +167,7 @@ class BlockOutlineRenderer(
         collisionMesh?.unload()
         outlineMesh = BlockOutlineMesh()
 
-        val blockOffset = raycastHit.blockPosition.toVec3 + raycastHit.blockPosition.getWorldOffset(raycastHit.blockState.block)
+        val blockOffset = raycastHit.blockPosition.toVec3d + raycastHit.blockPosition.getWorldOffset(raycastHit.blockState.block)
 
         drawVoxelShape(raycastHit.blockState.outlineShape, blockOffset, outlineMesh)
         outlineMesh.load()

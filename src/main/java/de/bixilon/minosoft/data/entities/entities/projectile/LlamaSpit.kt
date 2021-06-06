@@ -17,14 +17,14 @@ import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.entities.EntityFactory
 import de.bixilon.minosoft.data.mappings.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 
-class LlamaSpit(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : Projectile(connection, entityType, position, rotation) {
+class LlamaSpit(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : Projectile(connection, entityType, position, rotation) {
 
     companion object : EntityFactory<LlamaSpit> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("llama_spit")
 
-        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation): LlamaSpit {
+        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation): LlamaSpit {
             return LlamaSpit(connection, entityType, position, rotation)
         }
     }

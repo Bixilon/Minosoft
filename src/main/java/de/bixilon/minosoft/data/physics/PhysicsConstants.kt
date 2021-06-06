@@ -18,5 +18,5 @@ object PhysicsConstants {
     const val BASE_GRAVITY = 0.08f
     const val STEP_HEIGHT = 0.6f
 
-    const val SNEAK_MOVEMENT_CHECK = 0.05f
+    const val SNEAK_MOVEMENT_CHECK = 0.05
 }

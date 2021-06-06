@@ -18,9 +18,9 @@ import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.entities.EntityFactory
 import de.bixilon.minosoft.data.mappings.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 
-class ThrownEgg(connection: PlayConnection, entityType: EntityType, location: Vec3, rotation: EntityRotation) : ThrowableItemProjectile(connection, entityType, location, rotation) {
+class ThrownEgg(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : ThrowableItemProjectile(connection, entityType, position, rotation) {
     override val defaultItem: ItemStack
         get() = ItemStack(connection.registries.itemRegistry[DEFAULT_ITEM]!!, connection)
 
@@ -28,7 +28,7 @@ class ThrownEgg(connection: PlayConnection, entityType: EntityType, location: Ve
         private val DEFAULT_ITEM = ResourceLocation("egg")
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("egg")
 
-        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation): ThrownEgg {
+        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation): ThrownEgg {
             return ThrownEgg(connection, entityType, position, rotation)
         }
     }

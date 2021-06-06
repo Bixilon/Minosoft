@@ -24,8 +24,7 @@ import de.bixilon.minosoft.data.mappings.blocks.types.Block
 import de.bixilon.minosoft.gui.rendering.chunk.models.AABB
 import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModelElement
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import de.bixilon.minosoft.util.MMath.ceilInt
-import de.bixilon.minosoft.util.MMath.floorInt
+import glm_.func.common.ceil
 import glm_.func.common.clamp
 import glm_.func.common.floor
 import glm_.func.cos
@@ -34,19 +33,26 @@ import glm_.glm
 import glm_.vec2.Vec2
 import glm_.vec2.Vec2i
 import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 import glm_.vec3.Vec3i
 import kotlin.math.abs
 import kotlin.random.Random
 
 object VecUtil {
     val Vec3.Companion.EMPTY: Vec3
-        get() = Vec3(0, 0, 0)
+        get() = Vec3(0.0f, 0.0f, 0.0f)
+
+    val Vec3d.Companion.EMPTY: Vec3d
+        get() = Vec3d(0.0, 0.0, 0.0)
 
     val Vec3i.Companion.EMPTY: Vec3i
-        get() = Vec3i(0, 0, 0)
+        get() = Vec3i(0.0f, 0.0f, 0.0f)
 
     val Vec3.Companion.ONE: Vec3
-        get() = Vec3(1, 1, 1)
+        get() = Vec3(1.0f, 1.0f, 1.0f)
+
+    val Vec3d.Companion.ONE: Vec3d
+        get() = Vec3d(1.0, 1.0, 1.0)
 
     fun JsonElement.toVec3(default: Vec3? = null): Vec3 {
         return when (this) {
@@ -68,17 +74,23 @@ object VecUtil {
         z = vec3.z
     }
 
+    infix fun Vec3d.assign(vec3d: Vec3d) {
+        x = vec3d.x
+        y = vec3d.y
+        z = vec3d.z
+    }
+
     @JvmName(name = "times2")
-    infix operator fun Vec3.times(lambda: () -> Float): Vec3 {
-        return Vec3(
+    infix operator fun Vec3d.times(lambda: () -> Double): Vec3d {
+        return Vec3d(
             x = x * lambda(),
             y = y * lambda(),
             z = z * lambda(),
         )
     }
 
-    infix operator fun Vec3.plus(lambda: () -> Float): Vec3 {
-        return Vec3(
+    infix operator fun Vec3d.plus(lambda: () -> Double): Vec3d {
+        return Vec3d(
             x = x + lambda(),
             y = y + lambda(),
             z = z + lambda(),
@@ -101,11 +113,11 @@ object VecUtil {
         )
     }
 
-    infix operator fun Vec3.plusAssign(lambda: () -> Float) {
+    infix operator fun Vec3d.plusAssign(lambda: () -> Double) {
         this assign this + lambda
     }
 
-    infix operator fun Vec3.timesAssign(lambda: () -> Float) {
+    infix operator fun Vec3d.timesAssign(lambda: () -> Double) {
         this assign this * lambda
     }
 
@@ -116,6 +128,9 @@ object VecUtil {
         get() = this / ProtocolDefinition.TICKS_PER_SECOND
 
     val Vec3.millis: Vec3
+        get() = this * ProtocolDefinition.TICKS_PER_SECOND
+
+    val Vec3d.millis: Vec3d
         get() = this * ProtocolDefinition.TICKS_PER_SECOND
 
     fun getRotatedValues(x: Float, y: Float, sin: Float, cos: Float, rescale: Boolean): Vec2 {
@@ -200,10 +215,13 @@ object VecUtil {
             }
         }
 
-    val Vec3i.entityPosition: Vec3
-        get() = Vec3(x + 0.5f, y, z + 0.5f) // ToDo: Confirm
+    val Vec3i.entityPosition: Vec3d
+        get() = Vec3d(x + 0.5f, y, z + 0.5f) // ToDo: Confirm
 
     val Vec3.blockPosition: Vec3i
+        get() = this.floor
+
+    val Vec3d.blockPosition: Vec3i
         get() = this.floor
 
     val Vec3i.center: Vec3
@@ -277,7 +295,18 @@ object VecUtil {
         )
     }
 
+    fun Vec3d.clamp(min: Double, max: Double): Vec3d {
+        return Vec3d(
+            x = x.clamp(min, max),
+            y = y.clamp(min, max),
+            z = z.clamp(min, max),
+        )
+    }
+
     val Vec3.empty: Boolean
+        get() = this.length() < 0.001f
+
+    val Vec3d.empty: Boolean
         get() = this.length() < 0.001
 
     private fun generatePositionHash(x: Int, y: Int, z: Int): Long {
@@ -286,16 +315,16 @@ object VecUtil {
         return hash shr 16
     }
 
-    fun getDistanceToNextIntegerAxisInDirection(position: Vec3, direction: Vec3): Float {
-        fun getTarget(direction: Vec3, position: Vec3, axis: Axes): Int {
+    fun getDistanceToNextIntegerAxisInDirection(position: Vec3d, direction: Vec3d): Double {
+        fun getTarget(direction: Vec3d, position: Vec3d, axis: Axes): Int {
             return if (direction[axis] > 0) {
-                position[axis].floorInt + 1
+                position[axis].floor.toInt() + 1
             } else {
-                position[axis].ceilInt - 1
+                position[axis].ceil.toInt() - 1
             }
         }
 
-        fun getLengthMultiplier(direction: Vec3, position: Vec3, axis: Axes): Float {
+        fun getLengthMultiplier(direction: Vec3d, position: Vec3d, axis: Axes): Double {
             return (getTarget(direction, position, axis) - position[axis]) / direction[axis]
         }
 
@@ -317,10 +346,13 @@ object VecUtil {
     val Vec3.floor: Vec3i
         get() = Vec3i(this.x.floor, this.y.floor, this.z.floor)
 
-    fun Vec3.getMinDistanceDirection(aabb: AABB): Directions {
-        var minDistance = Float.MAX_VALUE
+    val Vec3d.floor: Vec3i
+        get() = Vec3i(this.x.floor, this.y.floor, this.z.floor)
+
+    fun Vec3d.getMinDistanceDirection(aabb: AABB): Directions {
+        var minDistance = Double.MAX_VALUE
         var minDistanceDirection = Directions.UP
-        fun getDistance(position: Vec3, direction: Directions): Float {
+        fun getDistance(position: Vec3d, direction: Directions): Double {
             val axis = direction.axis
             return (position[axis] - this[axis]) * -direction[axis]
         }
@@ -341,7 +373,18 @@ object VecUtil {
     val Vec3i.toVec3: Vec3
         get() = Vec3(this)
 
+    val Vec3i.toVec3d: Vec3d
+        get() = Vec3d(this)
+
     operator fun Vec3.get(axis: Axes): Float {
+        return when (axis) {
+            Axes.X -> this.x
+            Axes.Y -> this.y
+            Axes.Z -> this.z
+        }
+    }
+
+    operator fun Vec3d.get(axis: Axes): Double {
         return when (axis) {
             Axes.X -> this.x
             Axes.Y -> this.y
@@ -357,16 +400,19 @@ object VecUtil {
         }
     }
 
-    fun Vec3.Companion.horizontal(xz: () -> Float, y: Float): Vec3 {
-        return Vec3(xz(), y, xz())
+    fun Vec3d.Companion.horizontal(xz: () -> Double, y: Double): Vec3d {
+        return Vec3d(xz(), y, xz())
     }
 
-    fun Vec3.horizontalPlus(xz: () -> Float, y: Float): Vec3 {
-        return Vec3(this.x + xz(), this.y + y, this.z + xz())
+    fun Vec3d.horizontalPlus(xz: () -> Double, y: Double): Vec3d {
+        return Vec3d(this.x + xz(), this.y + y, this.z + xz())
     }
 
     val Float.noise: Float
         get() = Random.nextFloat() / this * if (Random.nextBoolean()) 1.0f else -1.0f
+
+    val Double.noise: Double
+        get() = Random.nextDouble() / this * if (Random.nextBoolean()) 1.0 else -1.0
 
     fun lerp(delta: Float, start: Vec3, end: Vec3): Vec3 {
         return Vec3(
@@ -376,7 +422,19 @@ object VecUtil {
         )
     }
 
+    fun lerp(delta: Double, start: Vec3d, end: Vec3d): Vec3d {
+        return Vec3d(
+            lerp(delta, start.x, end.x),
+            lerp(delta, start.y, end.y),
+            lerp(delta, start.z, end.z),
+        )
+    }
+
     fun lerp(delta: Float, start: Float, end: Float): Float {
+        return start + delta * (end - start)
+    }
+
+    fun lerp(delta: Double, start: Double, end: Double): Double {
         return start + delta * (end - start)
     }
 
@@ -389,6 +447,18 @@ object VecUtil {
         }
         if (abs(z) < 0.003f) {
             z = 0.0f
+        }
+    }
+
+    fun Vec3d.clearZero() {
+        if (abs(x) < 0.003) {
+            x = 0.0
+        }
+        if (abs(y) < 0.003) {
+            y = 0.0
+        }
+        if (abs(z) < 0.003) {
+            z = 0.0
         }
     }
 }

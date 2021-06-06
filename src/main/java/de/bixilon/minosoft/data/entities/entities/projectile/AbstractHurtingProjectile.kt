@@ -15,6 +15,6 @@ package de.bixilon.minosoft.data.entities.entities.projectile
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.mappings.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 
-abstract class AbstractHurtingProjectile(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : Projectile(connection, entityType, position, rotation)
+abstract class AbstractHurtingProjectile(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : Projectile(connection, entityType, position, rotation)

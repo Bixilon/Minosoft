@@ -19,9 +19,9 @@ import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.entities.EntityFactory
 import de.bixilon.minosoft.data.mappings.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 
-class GlowSquid(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation) : Squid(connection, entityType, position, rotation) {
+class GlowSquid(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : Squid(connection, entityType, position, rotation) {
 
     @get:EntityMetaDataFunction(name = "Dark ticks remaining")
     val darkTicksRemaining: Int
@@ -31,7 +31,7 @@ class GlowSquid(connection: PlayConnection, entityType: EntityType, position: Ve
     companion object : EntityFactory<GlowSquid> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("glow_squid")
 
-        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3, rotation: EntityRotation): GlowSquid {
+        override fun build(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation): GlowSquid {
             return GlowSquid(connection, entityType, position, rotation)
         }
     }

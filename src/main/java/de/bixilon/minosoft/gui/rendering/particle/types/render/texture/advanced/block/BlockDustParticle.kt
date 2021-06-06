@@ -29,9 +29,9 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.blockPosition
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
 import glm_.vec2.Vec2
-import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 
-class BlockDustParticle(connection: PlayConnection, position: Vec3, velocity: Vec3, data: BlockParticleData) : AdvancedTextureParticle(connection, position, velocity, data) {
+class BlockDustParticle(connection: PlayConnection, position: Vec3d, velocity: Vec3d, data: BlockParticleData) : AdvancedTextureParticle(connection, position, velocity, data) {
 
     init {
         val blockPosition = position.blockPosition
@@ -70,7 +70,7 @@ class BlockDustParticle(connection: PlayConnection, position: Vec3, velocity: Ve
     companion object : ParticleFactory<BlockDustParticle> {
         override val RESOURCE_LOCATION: ResourceLocation = "minecraft:block".asResourceLocation()
 
-        override fun build(connection: PlayConnection, position: Vec3, velocity: Vec3, data: ParticleData): BlockDustParticle? {
+        override fun build(connection: PlayConnection, position: Vec3d, velocity: Vec3d, data: ParticleData): BlockDustParticle? {
             check(data is BlockParticleData)
             if (data.blockState == null || data.blockState.block.resourceLocation == DefaultBlocks.MOVING_PISTON) {
                 return null
