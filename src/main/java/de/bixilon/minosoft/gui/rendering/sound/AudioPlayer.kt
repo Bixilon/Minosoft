@@ -25,7 +25,7 @@ import de.bixilon.minosoft.gui.rendering.modding.events.CameraPositionChangeEven
 import de.bixilon.minosoft.gui.rendering.sound.sounds.Sound
 import de.bixilon.minosoft.gui.rendering.sound.sounds.SoundList
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.center
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.centerf
 import de.bixilon.minosoft.modding.event.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
@@ -123,7 +123,7 @@ class AudioPlayer(
     }
 
     fun playSoundEvent(resourceLocation: ResourceLocation, position: Vec3i? = null, volume: Float = 1.0f, pitch: Float = 1.0f) {
-        connection.registries.soundEventRegistry[resourceLocation]?.let { playSoundEvent(it, position?.center, volume, pitch) }
+        connection.registries.soundEventRegistry[resourceLocation]?.let { playSoundEvent(it, position?.centerf, volume, pitch) }
     }
 
     fun playSoundEvent(resourceLocation: ResourceLocation, position: Vec3? = null, volume: Float = 1.0f, pitch: Float = 1.0f) {
@@ -131,7 +131,7 @@ class AudioPlayer(
     }
 
     fun playSoundEvent(soundEvent: SoundEvent, position: Vec3i? = null, volume: Float = 1.0f, pitch: Float = 1.0f) {
-        playSoundEvent(soundEvent, position?.center, volume, pitch)
+        playSoundEvent(soundEvent, position?.centerf, volume, pitch)
     }
 
     fun playSoundEvent(soundEvent: SoundEvent, position: Vec3? = null, volume: Float = 1.0f, pitch: Float = 1.0f) {

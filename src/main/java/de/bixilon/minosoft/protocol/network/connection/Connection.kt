@@ -24,11 +24,12 @@ import de.bixilon.minosoft.protocol.packets.s2c.S2CPacket
 import de.bixilon.minosoft.protocol.protocol.ConnectionStates
 import de.bixilon.minosoft.protocol.protocol.PacketTypes.C2S
 import de.bixilon.minosoft.protocol.protocol.PacketTypes.S2C
-import java.util.*
+import de.bixilon.minosoft.util.KUtil.synchronizedListOf
+import de.bixilon.minosoft.util.KUtil.toSynchronizedList
 
 abstract class Connection {
     val network = Network.getNetworkInstance(this)
-    protected val eventListeners = LinkedList<EventInvoker>()
+    protected val eventListeners: MutableList<EventInvoker> = synchronizedListOf()
     val connectionId = lastConnectionId++
     abstract var connectionState: ConnectionStates
     var error: Throwable? = null
@@ -56,7 +57,7 @@ abstract class Connection {
             }
         }
 
-        for (eventInvoker in eventListeners) {
+        for (eventInvoker in eventListeners.toSynchronizedList()) {
             if (!eventInvoker.eventType.isAssignableFrom(connectionEvent::class.java)) {
                 continue
             }

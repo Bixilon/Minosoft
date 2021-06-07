@@ -107,6 +107,14 @@ object VecUtil {
         )
     }
 
+    infix fun Vec3i.plusDouble(double: () -> Double): Vec3d {
+        return Vec3d(
+            x = x + double(),
+            y = y + double(),
+            z = z + double(),
+        )
+    }
+
     infix operator fun Vec3i.minus(lambda: () -> Int): Vec3i {
         return Vec3i(
             x = x - lambda(),
@@ -226,8 +234,11 @@ object VecUtil {
     val Vec3d.blockPosition: Vec3i
         get() = this.floor
 
-    val Vec3i.center: Vec3
+    val Vec3i.centerf: Vec3
         get() = Vec3(x + 0.5f, y + 0.5f, z + 0.5f)
+
+    val Vec3i.center: Vec3d
+        get() = Vec3d(x + 0.5, y + 0.5, z + 0.5)
 
     fun Vec3i.Companion.of(chunkPosition: Vec2i, sectionHeight: Int, inChunkSectionPosition: Vec3i): Vec3i {
         return Vec3i(
