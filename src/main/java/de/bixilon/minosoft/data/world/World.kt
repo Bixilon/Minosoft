@@ -230,8 +230,8 @@ class World(
         particleRenderer?.add(particle)
     }
 
-    operator fun plusAssign(particle: Particle) {
-        addParticle(particle)
+    operator fun plusAssign(particle: Particle?) {
+        addParticle(particle ?: return)
     }
 
     fun isSpaceEmpty(aabb: AABB): Boolean {

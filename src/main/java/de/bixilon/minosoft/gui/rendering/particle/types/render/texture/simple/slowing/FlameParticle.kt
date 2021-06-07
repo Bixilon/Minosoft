@@ -29,6 +29,10 @@ open class FlameParticle(connection: PlayConnection, position: Vec3d, velocity: 
             super.scale = value
         }
 
+    override fun move(velocity: Vec3d) {
+        position += velocity
+    }
+
     companion object : ParticleFactory<FlameParticle> {
         override val RESOURCE_LOCATION: ResourceLocation = "minecraft:flame".asResourceLocation()
 

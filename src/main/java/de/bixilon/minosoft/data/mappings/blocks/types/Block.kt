@@ -117,6 +117,7 @@ open class Block(
                 "RepeaterBlock" -> RepeaterBlock(resourceLocation, mappings, data)
                 "ComparatorBlock" -> ComparatorBlock(resourceLocation, mappings, data)
                 "CampfireBlock" -> CampfireBlock(resourceLocation, mappings, data)
+                "TorchBlock" -> TorchBlock(resourceLocation, mappings, data)
                 else -> Block(resourceLocation, mappings, data)
             }
 

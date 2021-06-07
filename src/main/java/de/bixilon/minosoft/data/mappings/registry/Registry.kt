@@ -44,6 +44,18 @@ open class Registry<T : RegistryItem>(
         }
     }
 
+    open operator fun get(any: Any?): T? {
+        return when (any) {
+            null -> null
+            is Number -> get(any.toInt())
+            is JsonElement -> get(any)
+            is ResourceLocation -> get(any)
+            is String -> get(any)
+            is ResourceLocationAble -> get(any.resourceLocation)
+            else -> TODO()
+        }
+    }
+
     open operator fun get(resourceLocation: ResourceLocation): T? {
         return resourceLocationMap[resourceLocation] ?: parentRegistry?.get(resourceLocation)
     }
@@ -55,7 +67,6 @@ open class Registry<T : RegistryItem>(
     open operator fun get(resourceLocation: ResourceLocationAble): T? {
         return get(resourceLocation.resourceLocation)
     }
-
 
     open operator fun get(id: Int): T {
         return idValueMap[id] ?: parentRegistry?.get(id) ?: throw NullPointerException("Can not find item with id $id")

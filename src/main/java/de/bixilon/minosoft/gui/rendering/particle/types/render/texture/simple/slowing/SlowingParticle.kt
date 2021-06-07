@@ -25,7 +25,7 @@ abstract class SlowingParticle(connection: PlayConnection, position: Vec3d, velo
     init {
         friction = 0.96f
         this.velocity assign (this.velocity * 0.009999999776482582 + velocity)
-        this.position += { random.nextDouble() - random.nextDouble() * 0.05 }
+        this.position += { (random.nextDouble() - random.nextDouble()) * 0.05 }
         maxAge = (8.0 / (random.nextDouble() * 0.8 + 0.2)).toInt() + 4
     }
 }

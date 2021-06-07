@@ -52,22 +52,20 @@ open class CampfireBlock(resourceLocation: ResourceLocation, registries: Registr
     }
 
     fun spawnSmokeParticles(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, extinguished: Boolean) {
-        let {
-            val position = Vec3d(blockPosition).horizontalPlus(
-                { 0.5 + 3.0.noise },
-                Random.nextDouble() + Random.nextDouble() + 0.5 // ToDo: This +0.5f is a temporary fix for not making the particle stuck in ourself
-            )
+        val position = Vec3d(blockPosition).horizontalPlus(
+            { 0.5 + 3.0.noise },
+            Random.nextDouble() + Random.nextDouble() + 0.5 // ToDo: This +0.5f is a temporary fix for not making the particle stuck in ourself
+        )
 
-            val isSignal = blockState.properties[BlockProperties.CAMPFIRE_SIGNAL_FIRE] == true
+        val isSignal = blockState.properties[BlockProperties.CAMPFIRE_SIGNAL_FIRE] == true
 
-            val particleType = if (isSignal) {
-                signalSmokeParticle
-            } else {
-                cosySmokeParticle
-            }
-
-            connection.world += CampfireSmokeParticle(connection, position, Vec3d(0.0f, 0.07f, 0.0f), particleType.default(), isSignal)
+        val particleType = if (isSignal) {
+            signalSmokeParticle
+        } else {
+            cosySmokeParticle
         }
+
+        connection.world += CampfireSmokeParticle(connection, position, Vec3d(0.0f, 0.07f, 0.0f), particleType.default(), isSignal)
 
         if (extinguished) {
             val position = Vec3d(blockPosition).horizontalPlus(

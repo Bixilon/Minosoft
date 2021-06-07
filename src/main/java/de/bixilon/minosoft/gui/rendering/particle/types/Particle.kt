@@ -93,7 +93,7 @@ abstract class Particle(
         spacing = Vec3(0.2)
     }
 
-    fun move(velocity: Vec3d) {
+    open fun move(velocity: Vec3d) {
         if (alreadyCollided) {
             return
         }
