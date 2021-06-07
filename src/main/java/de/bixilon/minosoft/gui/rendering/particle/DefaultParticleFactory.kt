@@ -21,6 +21,8 @@ import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.Ex
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.campfire.CampfireSmokeParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.cloud.CloudParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.cloud.SneezeParticle
+import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.damage.CritParticle
+import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.damage.DamageIndicatorParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.damage.EnchantedHitParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.dust.DustParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.enchant.EnchantParticle
@@ -37,6 +39,8 @@ import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.su
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.suspend.DolphinParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.suspend.HappyVillagerParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.suspend.MyceliumParticle
+import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.water.CrimsonSporeParticle
+import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.water.WarpedSporeParticle
 
 object DefaultParticleFactory : DefaultFactory<ParticleFactory<out Particle>>(
     ExplosionEmitterParticle,
@@ -62,4 +66,8 @@ object DefaultParticleFactory : DefaultFactory<ParticleFactory<out Particle>>(
     ComposterParticle,
     HappyVillagerParticle,
     MyceliumParticle,
+    DamageIndicatorParticle,
+    CritParticle,
+    CrimsonSporeParticle,
+    WarpedSporeParticle,
 )

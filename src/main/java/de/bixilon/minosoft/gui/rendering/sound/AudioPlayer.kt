@@ -165,7 +165,7 @@ class AudioPlayer(
             }
             val source = getAvailableSource() ?: let {
                 // ToDo: Queue sound for later (and check a certain delay to not make the game feel laggy)
-                Log.log(LogMessageType.AUDIO_LOADING, LogLevels.WARN) { "Can not play sound: No source available!" }
+                Log.log(LogMessageType.AUDIO_LOADING, LogLevels.WARN) { "Can not play sound: No source available: $sound" }
                 return@add
             }
             position?.let {

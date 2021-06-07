@@ -53,7 +53,7 @@ class MobSpawnerBlockEntity(connection: PlayConnection) : BlockEntity(connection
 
     override fun updateNBT(nbt: Map<String, Any>) {
         nbt["MaxNearbyEntities"]?.let {
-            requiredPlayerRange = nbt["MaxNearbyEntities"]?.nullCast<Short>()?.toInt() ?: 16
+            requiredPlayerRange = nbt["MaxNearbyEntities"]?.nullCast<Number>()?.toInt() ?: 16
         }
         // ToDo: {MaxNearbyEntities: 6s, RequiredPlayerRange: 16s, SpawnCount: 4s, x: -80, y: 4, SpawnData: {id: "minecraft:zombie"}, z: 212, id: "minecraft:mob_spawner", MaxSpawnDelay: 800s, SpawnRange: 4s, Delay: 0s, MinSpawnDelay: 200s}
     }
