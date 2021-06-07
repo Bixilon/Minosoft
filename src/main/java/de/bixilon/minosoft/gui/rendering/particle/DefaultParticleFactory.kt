@@ -33,7 +33,10 @@ import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.sl
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.spell.AmbientEntityEffectParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.spell.EntityEffectParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.spell.WitchParticle
+import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.suspend.ComposterParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.suspend.DolphinParticle
+import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.suspend.HappyVillagerParticle
+import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.suspend.MyceliumParticle
 
 object DefaultParticleFactory : DefaultFactory<ParticleFactory<out Particle>>(
     ExplosionEmitterParticle,
@@ -56,4 +59,7 @@ object DefaultParticleFactory : DefaultFactory<ParticleFactory<out Particle>>(
     SoulFireFlameParticle,
     CloudParticle,
     SneezeParticle,
+    ComposterParticle,
+    HappyVillagerParticle,
+    MyceliumParticle,
 )
