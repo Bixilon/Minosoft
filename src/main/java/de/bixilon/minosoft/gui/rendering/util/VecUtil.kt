@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.util
 import com.google.gson.JsonArray
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
+import com.google.gson.JsonPrimitive
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.Directions
@@ -58,6 +59,7 @@ object VecUtil {
         return when (this) {
             is JsonArray -> Vec3(this[0].asFloat, this[1].asFloat, this[2].asFloat)
             is JsonObject -> Vec3(this["x"]?.asFloat ?: 0, this["y"]?.asFloat ?: 0, this["z"]?.asFloat ?: 0)
+            is JsonPrimitive -> Vec3(this.asFloat)
             else -> default ?: throw IllegalArgumentException("Not a Vec3!")
         }
     }

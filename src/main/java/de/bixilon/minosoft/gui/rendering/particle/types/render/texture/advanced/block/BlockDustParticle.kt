@@ -43,7 +43,7 @@ class BlockDustParticle(connection: PlayConnection, position: Vec3d, velocity: V
 
         texture = when (renderer) {
             is BlockRenderer -> renderer.textureMapping.iterator().next().value
-            is FluidRenderer -> TODO()
+            is FluidRenderer -> renderer.stillTexture // ToDo
             else -> TODO()
         }
 

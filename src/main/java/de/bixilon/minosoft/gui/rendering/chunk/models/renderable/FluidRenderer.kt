@@ -28,8 +28,10 @@ class FluidRenderer(
 ) : BlockLikeRenderer {
     override val faceBorderSizes: Array<Array<FaceSize>?> = arrayOfNulls(Directions.VALUES.size)
     override val transparentFaces: BooleanArray = BooleanArray(Directions.VALUES.size)
-    private lateinit var stillTexture: Texture
-    private lateinit var flowingTexture: Texture
+    lateinit var stillTexture: Texture
+        private set
+    lateinit var flowingTexture: Texture
+        private set
 
     override fun render(context: BlockLikeRenderContext) {
         if (!RenderConstants.RENDER_FLUIDS) {
