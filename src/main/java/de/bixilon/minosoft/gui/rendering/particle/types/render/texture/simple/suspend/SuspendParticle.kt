@@ -26,13 +26,16 @@ abstract class SuspendParticle(connection: PlayConnection, position: Vec3d, velo
         this.color = (random.nextFloat() * 0.1f + 0.2f).asGray()
         spacing = Vec3(0.2f)
         super.scale *= random.nextFloat() * 0.6f + 0.5f
-        velocity *= 0.019999999552965164
+        this.velocity *= 0.019999999552965164
         maxAge = (20 / (random.nextFloat() * 0.8f + 0.2f)).toInt()
         movement = false
     }
 
     override fun realTick() {
         super.realTick()
+        if (dead) {
+            return
+        }
         position += velocity
 
         velocity *= 0.99f
