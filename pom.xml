@@ -338,7 +338,7 @@
         <dependency>
             <groupId>com.github.oshi</groupId>
             <artifactId>oshi-core</artifactId>
-            <version>5.7.3</version>
+            <version>5.7.4</version>
         </dependency>
         <dependency>
             <groupId>com.squareup.moshi</groupId>
