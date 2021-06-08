@@ -52,6 +52,7 @@ object BlockEntityFixer {
         "Airportal" to "minecraft:end_portal",
         "EndGateway" to "minecraft:end_gateway",
         "Banner" to "minecraft:shield",
+        "minecraft:noteblock" to "minecraft:note_block"
     ).asResourceLocationMap()
 
 

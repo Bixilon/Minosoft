@@ -303,6 +303,10 @@ class LocalPlayerEntity(
 
         val collisionMovement = connection.collisionDetector.collide(null, movement, aabb, true)
 
+
+        forceMove(collisionMovement)
+
+
         horizontalCollision = collisionMovement.x != movement.x || collisionMovement.z != movement.z
         verticalCollision = collisionMovement.y != movement.y
         this.onGround = verticalCollision && movement.y < 0.0f
@@ -310,18 +314,34 @@ class LocalPlayerEntity(
 
         fall(collisionMovement.y)
 
-        if (movement.x != collisionMovement.x) {
-            velocity.x = 0.0
-        }
+        var velocityChanged = false
         if (movement.y != collisionMovement.y) {
-            velocity.y = 0.0
+            if (movement.y < 0.0 && collisionMovement.y != 0.0) {
+                val landingPosition = belowBlockPosition
+                val landingBlockState = connection.world[belowBlockPosition]
+
+                val previousVelocity = Vec3d(velocity)
+                landingBlockState?.block?.onEntityLand(connection, this, landingPosition, landingBlockState)
+
+                velocityChanged = velocity != previousVelocity
+            }
+
+            if (!velocityChanged) {
+                velocity.y = 0.0
+            }
         }
-        if (movement.z != collisionMovement.z) {
-            velocity.z = 0.0
+
+        if (!velocityChanged) {
+            if (movement.x != collisionMovement.x) {
+                velocity.x = 0.0
+            }
+
+            if (movement.z != collisionMovement.z) {
+                velocity.z = 0.0
+            }
         }
 
 
-        forceMove(collisionMovement)
 
         if (onGround && canStep) {
             // ToDo: Play step sound

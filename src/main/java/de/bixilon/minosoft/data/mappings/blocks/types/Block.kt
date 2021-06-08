@@ -14,6 +14,7 @@ package de.bixilon.minosoft.data.mappings.blocks.types
 
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.entities.block.BlockEntity
+import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.blocks.BlockState
@@ -105,6 +106,8 @@ open class Block(
 
     open fun randomTick(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, random: Random) {}
 
+    open fun onEntityLand(connection: PlayConnection, entity: Entity, blockPosition: Vec3i, blockState: BlockState) {}
+
     companion object : ResourceLocationDeserializer<Block> {
         override fun deserialize(mappings: Registries?, resourceLocation: ResourceLocation, data: JsonObject): Block {
             check(mappings != null) { "Registries is null!" }
@@ -118,6 +121,7 @@ open class Block(
                 "ComparatorBlock" -> ComparatorBlock(resourceLocation, mappings, data)
                 "CampfireBlock" -> CampfireBlock(resourceLocation, mappings, data)
                 "TorchBlock" -> TorchBlock(resourceLocation, mappings, data)
+                "SlimeBlock" -> SlimeBlock(resourceLocation, mappings, data)
                 else -> Block(resourceLocation, mappings, data)
             }
 
