@@ -18,6 +18,7 @@ import de.bixilon.minosoft.gui.rendering.particle.types.Particle
 import de.bixilon.minosoft.gui.rendering.particle.types.norender.ExplosionEmitterParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.advanced.block.BlockDustParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.ExplosionParticle
+import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.NoteParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.campfire.CampfireSmokeParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.cloud.CloudParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.cloud.SneezeParticle
@@ -70,4 +71,5 @@ object DefaultParticleFactory : DefaultFactory<ParticleFactory<out Particle>>(
     CritParticle,
     CrimsonSporeParticle,
     WarpedSporeParticle,
+    NoteParticle,
 )

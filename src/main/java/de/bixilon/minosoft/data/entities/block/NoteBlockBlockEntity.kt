@@ -15,15 +15,24 @@ package de.bixilon.minosoft.data.entities.block
 
 import de.bixilon.minosoft.data.mappings.MultiResourceLocationAble
 import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.data.mappings.blocks.BlockState
+import de.bixilon.minosoft.data.mappings.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.mappings.blocks.properties.Instruments
+import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.NoteParticle
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3d
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
+import de.bixilon.minosoft.util.KUtil.nullCast
+import glm_.vec3.Vec3d
+import glm_.vec3.Vec3i
 
 class NoteBlockBlockEntity(connection: PlayConnection) : BlockEntity(connection), BlockActionEntity {
+    private val noteParticleType = connection.registries.particleTypeRegistry[NoteParticle]
     var instrument: Instruments? = null
         private set
     var pitch: Int? = null
         private set
+    private var showParticleNextTick = false
 
     override fun setBlockActionData(data1: Byte, data2: Byte) {
         instrument = when (data1.toInt()) {
@@ -36,6 +45,22 @@ class NoteBlockBlockEntity(connection: PlayConnection) : BlockEntity(connection)
         }
 
         pitch = data2.toInt()
+
+        showParticleNextTick = true
+        // ToDo: Play sound?
+    }
+
+    override fun realTick(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i) {
+        super.realTick(connection, blockState, blockPosition)
+        if (!showParticleNextTick) {
+            return
+        }
+        showParticleNextTick = false
+
+
+        noteParticleType?.let {
+            connection.world += NoteParticle(connection, blockPosition.toVec3d + Vec3d(0.5, 1.2, 0.5), (blockState.properties[BlockProperties.NOTE]?.nullCast<Number>()?.toInt() ?: 0) / 24.0f, it.default())
+        }
     }
 
     companion object : BlockEntityFactory<NoteBlockBlockEntity>, MultiResourceLocationAble {
