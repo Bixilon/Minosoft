@@ -74,17 +74,26 @@ class EntityHitBoxRenderer(
         }
         renderWindow.shaderManager.genericColorShader.use()
 
+        fun draw(mesh: EntityHitBoxMesh?) {
+            mesh ?: return
+            // ToDo: Improve this
+            if (!renderWindow.inputHandler.camera.frustum.containsAABB(mesh.aabb)) {
+                return
+            }
+            mesh.draw()
+        }
+
         for ((entity, mesh) in meshes.toSynchronizedMap()) {
             val aabb = entity.aabb
             if (aabb != mesh.aabb) {
                 this.meshes.remove(entity)
                 mesh.unload()
 
-                createMesh(entity)?.draw()
+                draw(createMesh(entity))
                 continue
             }
 
-            mesh.draw()
+            draw(mesh)
         }
 
 
@@ -96,7 +105,7 @@ class EntityHitBoxRenderer(
 
 
     companion object : RendererBuilder<EntityHitBoxRenderer> {
-        override val RESOURCE_LOCATION = ResourceLocation("minosoft:entity_hitbox")
+        override val RESOURCE_LOCATION = ResourceLocation("minosoft:entity_hit_box")
 
         override fun build(connection: PlayConnection, renderWindow: RenderWindow): EntityHitBoxRenderer {
             return EntityHitBoxRenderer(connection, renderWindow)

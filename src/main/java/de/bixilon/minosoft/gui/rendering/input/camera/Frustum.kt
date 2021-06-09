@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.input.camera
 
 
 import de.bixilon.minosoft.gui.rendering.RenderConstants
+import de.bixilon.minosoft.gui.rendering.chunk.models.AABB
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.of
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
@@ -167,6 +168,10 @@ class Frustum(private val camera: Camera) {
         from.y = lowestBlockHeight
         val to = Vec3(from.x + ProtocolDefinition.SECTION_WIDTH_X, highestBlockHeight, from.z + ProtocolDefinition.SECTION_WIDTH_Z)
         return containsRegion(Vec3(from), to)
+    }
+
+    fun containsAABB(aabb: AABB): Boolean {
+        return containsRegion(Vec3(aabb.min), Vec3(aabb.max))
     }
 
     private enum class Planes {
