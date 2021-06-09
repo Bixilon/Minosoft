@@ -35,17 +35,16 @@ class BlockOutlineRenderer(
     private var currentOutlinePosition: Vec3i? = null
     private var currentOutlineBlockState: BlockState? = null
 
-    private var outlineMesh: LineMesh? = null
-    private var collisionMesh: LineMesh? = null
+    private var currentMesh: LineMesh? = null
 
-    private fun draw(outlineMesh: LineMesh, collisionMesh: LineMesh?) {
+    private fun drawMesh() {
+        val currentMesh = currentMesh ?: return
         glDisable(GL_CULL_FACE)
         if (Minosoft.config.config.game.other.blockOutline.disableZBuffer) {
             glDepthFunc(GL_ALWAYS)
         }
         renderWindow.shaderManager.genericColorShader.use()
-        outlineMesh.draw()
-        collisionMesh?.draw()
+        currentMesh.draw()
         glEnable(GL_CULL_FACE)
         if (Minosoft.config.config.game.other.blockOutline.disableZBuffer) {
             glDepthFunc(GL_LESS)
@@ -53,11 +52,9 @@ class BlockOutlineRenderer(
     }
 
     private fun unload() {
-        outlineMesh ?: return
-        outlineMesh?.unload()
-        collisionMesh?.unload()
-        this.outlineMesh = null
-        this.collisionMesh = null
+        currentMesh ?: return
+        currentMesh?.unload()
+        this.currentMesh = null
         this.currentOutlinePosition = null
         this.currentOutlineBlockState = null
     }
@@ -65,8 +62,7 @@ class BlockOutlineRenderer(
     override fun draw() {
         val raycastHit = renderWindow.inputHandler.camera.getTargetBlock()
 
-        var outlineMesh = outlineMesh
-        var collisionMesh = collisionMesh
+        var currentMesh = currentMesh
 
         if (raycastHit == null) {
             unload()
@@ -86,33 +82,29 @@ class BlockOutlineRenderer(
         }
 
         if (raycastHit.blockPosition == currentOutlinePosition && raycastHit.blockState == currentOutlineBlockState) {
-            draw(outlineMesh!!, collisionMesh)
+            drawMesh()
             return
         }
 
-        outlineMesh?.unload()
-        collisionMesh?.unload()
-        outlineMesh = LineMesh(Minosoft.config.config.game.other.blockOutline.outlineColor, LINE_WIDTH)
+        currentMesh?.unload()
+        currentMesh = LineMesh()
 
         val blockOffset = raycastHit.blockPosition.toVec3d + raycastHit.blockPosition.getWorldOffset(raycastHit.blockState.block)
 
-        outlineMesh.drawVoxelShape(raycastHit.blockState.outlineShape, blockOffset, outlineMesh)
-        outlineMesh.load()
+        currentMesh.drawVoxelShape(raycastHit.blockState.outlineShape, blockOffset, LINE_WIDTH, Minosoft.config.config.game.other.blockOutline.outlineColor)
 
 
         if (Minosoft.config.config.game.other.blockOutline.collisionBoxes) {
-            collisionMesh = LineMesh(Minosoft.config.config.game.other.blockOutline.collisionColor, LINE_WIDTH)
-
-            collisionMesh.drawVoxelShape(raycastHit.blockState.collisionShape, blockOffset, collisionMesh, 0.005f)
-            collisionMesh.load()
-            this.collisionMesh = collisionMesh
+            currentMesh.drawVoxelShape(raycastHit.blockState.collisionShape, blockOffset, LINE_WIDTH, Minosoft.config.config.game.other.blockOutline.collisionColor, 0.005f)
         }
+
+        currentMesh.load()
 
 
         this.currentOutlinePosition = raycastHit.blockPosition
         this.currentOutlineBlockState = raycastHit.blockState
-        this.outlineMesh = outlineMesh
-        draw(outlineMesh, collisionMesh)
+        this.currentMesh = currentMesh
+        drawMesh()
     }
 
 

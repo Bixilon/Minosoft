@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.util.mesh
 
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.chunk.VoxelShape
+import de.bixilon.minosoft.gui.rendering.chunk.models.AABB
 import de.bixilon.minosoft.gui.rendering.chunk.models.renderable.ElementRenderer
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
 import de.bixilon.minosoft.util.BitByte.isBit
@@ -22,14 +23,9 @@ import de.bixilon.minosoft.util.MMath.positiveNegative
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3d
 
-class LineMesh(
-    var color: RGBColor,
-    lineWidth: Float = 0.1f,
-) : GenericColorMesh() {
-    private var halfLineWidth = lineWidth / 2.0f
+open class LineMesh : GenericColorMesh() {
 
-
-    fun drawLine(start: Vec3, end: Vec3, mesh: GenericColorMesh) {
+    fun drawLine(start: Vec3, end: Vec3, lineWidth: Float, color: RGBColor) {
         val direction = (end - start).normalize()
         val normal1 = Vec3(direction.z, direction.z, direction.x - direction.y)
         if (normal1 == Vec3.EMPTY) {
@@ -39,11 +35,12 @@ class LineMesh(
         normal1.normalizeAssign()
         val normal2 = (direction cross normal1).normalize()
         for (i in 0..4) {
-            drawLineQuad(mesh, start, end, direction, normal1, normal2, i.isBit(0), i.isBit(1))
+            drawLineQuad(start, end, direction, normal1, normal2, i.isBit(0), i.isBit(1), lineWidth, color)
         }
     }
 
-    fun drawLineQuad(mesh: GenericColorMesh, start: Vec3, end: Vec3, direction: Vec3, normal1: Vec3, normal2: Vec3, invertNormal1: Boolean, invertNormal2: Boolean) {
+    private fun drawLineQuad(start: Vec3, end: Vec3, direction: Vec3, normal1: Vec3, normal2: Vec3, invertNormal1: Boolean, invertNormal2: Boolean, lineWidth: Float, color: RGBColor) {
+        val halfLineWidth = lineWidth / 2
         val normal1Multiplier = invertNormal1.positiveNegative
         val normal2Multiplier = invertNormal2.positiveNegative
         val positions = listOf(
@@ -53,33 +50,37 @@ class LineMesh(
             end + normal2 * normal2Multiplier * halfLineWidth + direction * halfLineWidth,
         )
         for ((_, positionIndex) in ElementRenderer.DRAW_ODER) {
-            mesh.addVertex(positions[positionIndex], color)
+            addVertex(positions[positionIndex], color)
         }
     }
 
-    fun drawVoxelShape(shape: VoxelShape, blockPosition: Vec3d, mesh: GenericColorMesh, margin: Float = 0.0f) {
+    fun drawAABB(aabb: AABB, position: Vec3d, lineWidth: Float, color: RGBColor, margin: Float = 0.0f) {
+        val min = position + aabb.min - margin
+        val max = position + aabb.max + margin
+
+        fun drawSideQuad(x: Double) {
+            drawLine(Vec3(x, min.y, min.z), Vec3(x, max.y, min.z), lineWidth, color)
+            drawLine(Vec3(x, min.y, min.z), Vec3(x, min.y, max.z), lineWidth, color)
+            drawLine(Vec3(x, max.y, min.z), Vec3(x, max.y, max.z), lineWidth, color)
+            drawLine(Vec3(x, min.y, max.z), Vec3(x, max.y, max.z), lineWidth, color)
+        }
+
+        // left quad
+        drawSideQuad(min.x)
+
+        // right quad
+        drawSideQuad(max.x)
+
+        // connections between 2 quads
+        drawLine(Vec3(min.x, min.y, min.z), Vec3(max.x, min.y, min.z), lineWidth, color)
+        drawLine(Vec3(min.x, max.y, min.z), Vec3(max.x, max.y, min.z), lineWidth, color)
+        drawLine(Vec3(min.x, max.y, max.z), Vec3(max.x, max.y, max.z), lineWidth, color)
+        drawLine(Vec3(min.x, min.y, max.z), Vec3(max.x, min.y, max.z), lineWidth, color)
+    }
+
+    fun drawVoxelShape(shape: VoxelShape, position: Vec3d, lineWidth: Float, color: RGBColor, margin: Float = 0.0f) {
         for (aabb in shape) {
-            val min = blockPosition + aabb.min - margin
-            val max = blockPosition + aabb.max + margin
-
-            fun drawSideQuad(x: Double) {
-                drawLine(Vec3(x, min.y, min.z), Vec3(x, max.y, min.z), mesh)
-                drawLine(Vec3(x, min.y, min.z), Vec3(x, min.y, max.z), mesh)
-                drawLine(Vec3(x, max.y, min.z), Vec3(x, max.y, max.z), mesh)
-                drawLine(Vec3(x, min.y, max.z), Vec3(x, max.y, max.z), mesh)
-            }
-
-            // left quad
-            drawSideQuad(min.x)
-
-            // right quad
-            drawSideQuad(max.x)
-
-            // connections between 2 quads
-            drawLine(Vec3(min.x, min.y, min.z), Vec3(max.x, min.y, min.z), mesh)
-            drawLine(Vec3(min.x, max.y, min.z), Vec3(max.x, max.y, min.z), mesh)
-            drawLine(Vec3(min.x, max.y, max.z), Vec3(max.x, max.y, max.z), mesh)
-            drawLine(Vec3(min.x, min.y, max.z), Vec3(max.x, min.y, max.z), mesh)
+            drawAABB(aabb, position, lineWidth, color, margin)
         }
     }
 }

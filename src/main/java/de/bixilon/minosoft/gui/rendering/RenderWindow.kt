@@ -19,6 +19,7 @@ import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.chunk.WorldRenderer
 import de.bixilon.minosoft.gui.rendering.chunk.block.outline.BlockOutlineRenderer
+import de.bixilon.minosoft.gui.rendering.entities.EntityHitBoxRenderer
 import de.bixilon.minosoft.gui.rendering.font.Font
 import de.bixilon.minosoft.gui.rendering.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.hud.atlas.TextureLike
@@ -114,6 +115,9 @@ class RenderWindow(
         registerRenderer(BlockOutlineRenderer)
         if (Minosoft.config.config.game.graphics.particles.enabled) {
             registerRenderer(ParticleRenderer)
+        }
+        if (Minosoft.config.config.game.entities.hitBox.enabled) {
+            registerRenderer(EntityHitBoxRenderer)
         }
         registerRenderer(HUDRenderer)
     }

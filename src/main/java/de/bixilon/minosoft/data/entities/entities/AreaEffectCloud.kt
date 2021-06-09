@@ -19,9 +19,13 @@ import de.bixilon.minosoft.data.mappings.entities.EntityFactory
 import de.bixilon.minosoft.data.mappings.entities.EntityType
 import de.bixilon.minosoft.data.mappings.particle.data.ParticleData
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import glm_.vec2.Vec2
 import glm_.vec3.Vec3d
 
 class AreaEffectCloud(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : Entity(connection, entityType, position, rotation) {
+
+    override val dimensions: Vec2
+        get() = Vec2(radius * 2, super.dimensions.y)
 
     @get:EntityMetaDataFunction(name = "Ignore radius")
     val ignoreRadius: Boolean
