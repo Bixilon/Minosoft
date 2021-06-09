@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,19 +11,19 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.chunk.block.outline
+#version 330 core
 
-import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
-import de.bixilon.minosoft.gui.rendering.util.mesh.PositionOnlyMeshStruct
-import glm_.vec3.Vec3
+layout (location = 0) in vec3 vinPosition;
+layout (location = 1) in uint vinTintColor;
 
-class BlockOutlineMesh : Mesh(PositionOnlyMeshStruct::class) {
+uniform mat4 uViewProjectionMatrix;
 
-    fun addVertex(position: Vec3) {
-        data.addAll(floatArrayOf(
-            position.x,
-            position.y,
-            position.z,
-        ))
-    }
+out vec4 finTintColor;
+
+#include "minosoft:color"
+
+void main() {
+    gl_Position = uViewProjectionMatrix * vec4(vinPosition, 1.0f);
+
+    finTintColor = getRGBAColor(vinTintColor);
 }

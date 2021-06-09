@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2021 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,12 +11,27 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-#version 330 core
+package de.bixilon.minosoft.gui.rendering.util.mesh
 
-layout (location = 0) in vec3 vinPosition;
+import de.bixilon.minosoft.data.text.ChatColors
+import de.bixilon.minosoft.data.text.RGBColor
+import glm_.vec3.Vec3
 
-uniform mat4 uViewProjectionMatrix;
+open class GenericColorMesh : Mesh(GenericColorMeshStruct::class) {
 
-void main() {
-    gl_Position = uViewProjectionMatrix * vec4(vinPosition, 1.0f);
+    fun addVertex(position: Vec3, color: RGBColor?) {
+        data.addAll(floatArrayOf(
+            position.x,
+            position.y,
+            position.z,
+            Float.fromBits((color ?: ChatColors.WHITE).rgba)
+        ))
+    }
+
+    data class GenericColorMeshStruct(
+        val position: Vec3,
+        val color: RGBColor,
+    ) {
+        companion object : MeshStruct(GenericColorMeshStruct::class)
+    }
 }

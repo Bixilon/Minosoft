@@ -21,18 +21,10 @@ import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.Renderer
 import de.bixilon.minosoft.gui.rendering.RendererBuilder
-import de.bixilon.minosoft.gui.rendering.chunk.VoxelShape
-import de.bixilon.minosoft.gui.rendering.chunk.models.renderable.ElementRenderer
-import de.bixilon.minosoft.gui.rendering.shader.Shader
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.getWorldOffset
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3d
+import de.bixilon.minosoft.gui.rendering.util.mesh.LineMesh
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import de.bixilon.minosoft.util.BitByte.isBit
-import de.bixilon.minosoft.util.MMath.positiveNegative
-import glm_.vec3.Vec3
-import glm_.vec3.Vec3d
 import glm_.vec3.Vec3i
 import org.lwjgl.opengl.GL11.*
 
@@ -43,82 +35,17 @@ class BlockOutlineRenderer(
     private var currentOutlinePosition: Vec3i? = null
     private var currentOutlineBlockState: BlockState? = null
 
-    private var outlineMesh: BlockOutlineMesh? = null
-    private var collisionMesh: BlockOutlineMesh? = null
-    private val outlineShader = Shader(
-        resourceLocation = ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "chunk/block/outline"),
-    )
+    private var outlineMesh: LineMesh? = null
+    private var collisionMesh: LineMesh? = null
 
-    override fun init() {
-        outlineShader.load(connection.assetsManager)
-    }
-
-    private fun drawLine(start: Vec3, end: Vec3, mesh: BlockOutlineMesh) {
-        val direction = (end - start).normalize()
-        val normal1 = Vec3(direction.z, direction.z, direction.x - direction.y)
-        if (normal1 == Vec3.EMPTY) {
-            normal1.x = normal1.z
-            normal1.z = direction.z
-        }
-        normal1.normalizeAssign()
-        val normal2 = (direction cross normal1).normalize()
-        for (i in 0..4) {
-            drawLineQuad(mesh, start, end, direction, normal1, normal2, i.isBit(0), i.isBit(1))
-        }
-    }
-
-    private fun drawLineQuad(mesh: BlockOutlineMesh, start: Vec3, end: Vec3, direction: Vec3, normal1: Vec3, normal2: Vec3, invertNormal1: Boolean, invertNormal2: Boolean) {
-        val normal1Multiplier = invertNormal1.positiveNegative
-        val normal2Multiplier = invertNormal2.positiveNegative
-        val positions = listOf(
-            start + normal2 * normal2Multiplier * HALF_LINE_WIDTH - direction * HALF_LINE_WIDTH,
-            start + normal1 * normal1Multiplier * HALF_LINE_WIDTH - direction * HALF_LINE_WIDTH,
-            end + normal1 * normal1Multiplier * HALF_LINE_WIDTH + direction * HALF_LINE_WIDTH,
-            end + normal2 * normal2Multiplier * HALF_LINE_WIDTH + direction * HALF_LINE_WIDTH,
-        )
-        for ((_, positionIndex) in ElementRenderer.DRAW_ODER) {
-            mesh.addVertex(positions[positionIndex])
-        }
-    }
-
-    private fun drawVoxelShape(shape: VoxelShape, blockPosition: Vec3d, mesh: BlockOutlineMesh, margin: Float = 0.0f) {
-        for (aabb in shape) {
-            val min = blockPosition + aabb.min - margin
-            val max = blockPosition + aabb.max + margin
-
-            fun drawSideQuad(x: Double) {
-                drawLine(Vec3(x, min.y, min.z), Vec3(x, max.y, min.z), mesh)
-                drawLine(Vec3(x, min.y, min.z), Vec3(x, min.y, max.z), mesh)
-                drawLine(Vec3(x, max.y, min.z), Vec3(x, max.y, max.z), mesh)
-                drawLine(Vec3(x, min.y, max.z), Vec3(x, max.y, max.z), mesh)
-            }
-
-            // left quad
-            drawSideQuad(min.x)
-
-            // right quad
-            drawSideQuad(max.x)
-
-            // connections between 2 quads
-            drawLine(Vec3(min.x, min.y, min.z), Vec3(max.x, min.y, min.z), mesh)
-            drawLine(Vec3(min.x, max.y, min.z), Vec3(max.x, max.y, min.z), mesh)
-            drawLine(Vec3(min.x, max.y, max.z), Vec3(max.x, max.y, max.z), mesh)
-            drawLine(Vec3(min.x, min.y, max.z), Vec3(max.x, min.y, max.z), mesh)
-        }
-    }
-
-    private fun draw(outlineMesh: BlockOutlineMesh, collisionMesh: BlockOutlineMesh?) {
+    private fun draw(outlineMesh: LineMesh, collisionMesh: LineMesh?) {
         glDisable(GL_CULL_FACE)
         if (Minosoft.config.config.game.other.blockOutline.disableZBuffer) {
             glDepthFunc(GL_ALWAYS)
         }
-        outlineShader.use()
-        outlineShader.setRGBColor("uTintColor", Minosoft.config.config.game.other.blockOutline.outlineColor)
+        renderWindow.shaderManager.genericColorShader.use()
         outlineMesh.draw()
-        collisionMesh?.let {
-            outlineShader.setRGBColor("uTintColor", Minosoft.config.config.game.other.blockOutline.collisionColor)
-            it.draw()
-        }
+        collisionMesh?.draw()
         glEnable(GL_CULL_FACE)
         if (Minosoft.config.config.game.other.blockOutline.disableZBuffer) {
             glDepthFunc(GL_LESS)
@@ -165,18 +92,18 @@ class BlockOutlineRenderer(
 
         outlineMesh?.unload()
         collisionMesh?.unload()
-        outlineMesh = BlockOutlineMesh()
+        outlineMesh = LineMesh(Minosoft.config.config.game.other.blockOutline.outlineColor, LINE_WIDTH)
 
         val blockOffset = raycastHit.blockPosition.toVec3d + raycastHit.blockPosition.getWorldOffset(raycastHit.blockState.block)
 
-        drawVoxelShape(raycastHit.blockState.outlineShape, blockOffset, outlineMesh)
+        outlineMesh.drawVoxelShape(raycastHit.blockState.outlineShape, blockOffset, outlineMesh)
         outlineMesh.load()
 
 
         if (Minosoft.config.config.game.other.blockOutline.collisionBoxes) {
-            collisionMesh = BlockOutlineMesh()
+            collisionMesh = LineMesh(Minosoft.config.config.game.other.blockOutline.collisionColor, LINE_WIDTH)
 
-            drawVoxelShape(raycastHit.blockState.collisionShape, blockOffset, collisionMesh, 0.005f)
+            collisionMesh.drawVoxelShape(raycastHit.blockState.collisionShape, blockOffset, collisionMesh, 0.005f)
             collisionMesh.load()
             this.collisionMesh = collisionMesh
         }
@@ -192,7 +119,6 @@ class BlockOutlineRenderer(
     companion object : RendererBuilder<BlockOutlineRenderer> {
         override val RESOURCE_LOCATION = ResourceLocation("minosoft:block_outline")
         private const val LINE_WIDTH = 1.0f / 128.0f
-        private const val HALF_LINE_WIDTH = LINE_WIDTH / 2.0f
 
         override fun build(connection: PlayConnection, renderWindow: RenderWindow): BlockOutlineRenderer {
             return BlockOutlineRenderer(connection, renderWindow)

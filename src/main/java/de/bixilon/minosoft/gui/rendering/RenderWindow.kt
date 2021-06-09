@@ -86,6 +86,7 @@ class RenderWindow(
 
 
     val shaders: MutableList<Shader> = mutableListOf()
+    val shaderManager = ShaderManager(this)
 
     lateinit var WHITE_TEXTURE: TextureLike
 
@@ -200,6 +201,8 @@ class RenderWindow(
         textures.allTextures.getOrPut(WHITE_TEXTURE.texture.resourceLocation) { WHITE_TEXTURE.texture }
 
         font.load(connection.assetsManager, textures.allTextures)
+
+        shaderManager.init()
 
 
         Log.log(LogMessageType.RENDERING_LOADING) { "Initializing renderer (${stopwatch.labTime()})..." }

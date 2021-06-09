@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2021 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,12 +11,21 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-#version 330 core
+package de.bixilon.minosoft.gui.rendering
 
-out vec4 foutColor;
+import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.gui.rendering.shader.Shader
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
-uniform vec4 uTintColor;
+class ShaderManager(
+    val renderWindow: RenderWindow,
+) {
+    val genericColorShader = Shader(
+        resourceLocation = ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "generic/color"),
+    )
 
-void main() {
-    foutColor = uTintColor;
+
+    fun init() {
+        genericColorShader.load(renderWindow.connection.assetsManager)
+    }
 }
