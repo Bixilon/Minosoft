@@ -98,8 +98,8 @@ See [Credits](Credits.md).
 
 I invested (until now!) a couple of thousand hours in this project: https://www.reddit.com/r/git/comments/np9yo7/finally_i_can_say_that_i_have_no_life/
 
-I'll push a beta, once I think Minosoft is ready. It will still take some time, but I don't want to make a release and get a thousand issues. We know there are a ton of bugs, and I want to solve a couple of them. Also, a big topic is code quality. Before Minosoft, I just had a barely networking experience, no clue about the internals of minecraft, nor of kotlin or opengl. I learned so much and some point much code can be seen as a "first draft". I'll need to do a ton of refactoring, otherwise I
-can't think of PRs (they are still welcome). If you want to get current developer updates, take a look in our telegram channel [@MinosoftDevNews](https://t.me/MinosoftDevNews). I am abusing merge requests as a todo list, so feel free to look at !21.
+I'll push a beta, once I think Minosoft is ready. It will still take some time, but I don't want to make a release and get a thousand issues. We know there are a ton of bugs, and I want to solve at least a couple of them. Also, a big topic is code quality. Before Minosoft, I just had a barely networking experience, no clue about the internals of minecraft, nor of kotlin or opengl. I learned so much, and you can see much code as "first draft". I'll need to do a ton of refactoring, otherwise I
+can't think of PRs (they are still welcome). If you want to get current developer news, take a look in our telegram channel [@MinosoftDevNews](https://t.me/MinosoftDevNews). I am abusing merge requests as a todo list, so feel free to look at !21.
 
 ## Downloads / Installation
 
