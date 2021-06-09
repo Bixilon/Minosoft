@@ -121,6 +121,7 @@ open class Block(
             "SlimeBlock" to { resourceLocation, registries, data -> SlimeBlock(resourceLocation, registries, data) },
             "BedBlock" to { resourceLocation, registries, data -> BedBlock(resourceLocation, registries, data) },
             "BrewingStandBlock" to { resourceLocation, registries, data -> BrewingStandBlock(resourceLocation, registries, data) },
+            "EnderChestBlock" to { resourceLocation, registries, data -> EnderChestBlock(resourceLocation, registries, data) },
         )
 
         override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: JsonObject): Block {
