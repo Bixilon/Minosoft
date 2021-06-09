@@ -45,13 +45,13 @@ data class EntityType(
     }
 
     companion object : ResourceLocationDeserializer<EntityType> {
-        override fun deserialize(mappings: Registries?, resourceLocation: ResourceLocation, data: JsonObject): EntityType? {
-            check(mappings != null) { "Registries is null!" }
+        override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: JsonObject): EntityType? {
+            check(registries != null) { "Registries is null!" }
 
             data["meta"]?.asJsonObject?.let {
                 for ((minosoftFieldName, index) in it.entrySet()) {
                     val minosoftField = EntityMetaDataFields[minosoftFieldName.lowercase(Locale.getDefault())]
-                    mappings.entityMetaIndexMap[minosoftField] = index.asInt
+                    registries.entityMetaIndexMap[minosoftField] = index.asInt
                 }
             }
             if (data["width"] == null) {

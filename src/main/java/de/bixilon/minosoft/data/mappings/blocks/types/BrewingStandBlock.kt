@@ -14,28 +14,31 @@
 package de.bixilon.minosoft.data.mappings.blocks.types
 
 import com.google.gson.JsonObject
-import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.blocks.BlockState
 import de.bixilon.minosoft.data.mappings.versions.Registries
+import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.fire.SmokeParticle
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.horizontal
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3d
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import glm_.vec3.Vec3d
 import glm_.vec3.Vec3i
+import kotlin.random.Random
 
-open class SlimeBlock(resourceLocation: ResourceLocation, registries: Registries, data: JsonObject) : Block(resourceLocation, registries, data) {
+open class BrewingStandBlock(resourceLocation: ResourceLocation, registries: Registries, data: JsonObject) : Block(resourceLocation, registries, data) {
+    private val smokeParticle = registries.particleTypeRegistry[SmokeParticle]
 
-    override fun onEntityLand(connection: PlayConnection, entity: Entity, blockPosition: Vec3i, blockState: BlockState) {
-        super.onEntityLand(connection, entity, blockPosition, blockState)
+    override fun randomTick(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, random: Random) {
+        super.randomTick(connection, blockState, blockPosition, random)
 
-        if (entity.isSneaking) {
-            return
-        }
-
-        bounce(entity)
-    }
-
-    private fun bounce(entity: Entity) {
-        if (entity.velocity.y < 0.0) {
-            entity.velocity.y = -entity.velocity.y
+        smokeParticle?.let {
+            connection.world += SmokeParticle(
+                connection,
+                blockPosition.toVec3d + Vec3d(0.4, 0.7, 0.4) + Vec3d.horizontal({ random.nextDouble() * 0.2 }, random.nextDouble() * 0.3),
+                Vec3d.EMPTY,
+                it.default(),
+            )
         }
     }
 }

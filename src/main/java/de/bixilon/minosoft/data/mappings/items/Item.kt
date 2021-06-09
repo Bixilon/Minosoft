@@ -58,25 +58,25 @@ open class Item(
     companion object : ResourceLocationDeserializer<Item> {
         const val INFINITE_MINING_SPEED_MULTIPLIER = -1.0f
 
-        override fun deserialize(mappings: Registries?, resourceLocation: ResourceLocation, data: JsonObject): Item {
-            check(mappings != null) { "Registries is null!" }
+        override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: JsonObject): Item {
+            check(registries != null) { "Registries is null!" }
             return when (data["class"].asString) {
-                "BlockItem" -> BlockItem(resourceLocation, mappings, data)
-                "ArmorItem" -> ArmorItem(resourceLocation, mappings, data)
-                "SwordItem" -> SwordItem(resourceLocation, mappings, data)
-                "ToolItem" -> ToolItem(resourceLocation, mappings, data)
-                "AxeItem" -> AxeItem(resourceLocation, mappings, data)
-                "BucketItem" -> BucketItem(resourceLocation, mappings, data)
-                "DyeItem" -> DyeItem(resourceLocation, mappings, data)
-                "HorseArmorItem" -> HorseArmorItem(resourceLocation, mappings, data)
-                "SpawnEggItem" -> SpawnEggItem(resourceLocation, mappings, data)
-                "MusicDiscItem" -> MusicDiscItem(resourceLocation, mappings, data)
-                "ShovelItem" -> ShovelItem(resourceLocation, mappings, data)
-                "PickaxeItem" -> PickaxeItem(resourceLocation, mappings, data)
-                "HoeItem" -> HoeItem(resourceLocation, mappings, data)
+                "BlockItem" -> BlockItem(resourceLocation, registries, data)
+                "ArmorItem" -> ArmorItem(resourceLocation, registries, data)
+                "SwordItem" -> SwordItem(resourceLocation, registries, data)
+                "ToolItem" -> ToolItem(resourceLocation, registries, data)
+                "AxeItem" -> AxeItem(resourceLocation, registries, data)
+                "BucketItem" -> BucketItem(resourceLocation, registries, data)
+                "DyeItem" -> DyeItem(resourceLocation, registries, data)
+                "HorseArmorItem" -> HorseArmorItem(resourceLocation, registries, data)
+                "SpawnEggItem" -> SpawnEggItem(resourceLocation, registries, data)
+                "MusicDiscItem" -> MusicDiscItem(resourceLocation, registries, data)
+                "ShovelItem" -> ShovelItem(resourceLocation, registries, data)
+                "PickaxeItem" -> PickaxeItem(resourceLocation, registries, data)
+                "HoeItem" -> HoeItem(resourceLocation, registries, data)
                 //   "Item" -> Item(resourceLocation, data)
                 // else -> TODO("Can not find item class: ${data["class"].asString}")
-                else -> Item(resourceLocation, mappings, data)
+                else -> Item(resourceLocation, registries, data)
             }
         }
     }

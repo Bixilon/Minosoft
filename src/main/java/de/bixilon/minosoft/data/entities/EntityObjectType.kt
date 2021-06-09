@@ -24,7 +24,7 @@ class EntityObjectType(
 ) : RegistryItem {
 
     companion object : ResourceLocationDeserializer<EntityObjectType> {
-        override fun deserialize(mappings: Registries?, resourceLocation: ResourceLocation, data: JsonObject): EntityObjectType {
+        override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: JsonObject): EntityObjectType {
             return EntityObjectType(resourceLocation)
         }
     }

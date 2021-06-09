@@ -27,7 +27,7 @@ data class GameEvent(
     }
 
     companion object : ResourceLocationDeserializer<GameEvent> {
-        override fun deserialize(mappings: Registries?, resourceLocation: ResourceLocation, data: JsonObject): GameEvent {
+        override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: JsonObject): GameEvent {
             return GameEvent(
                 resourceLocation = resourceLocation,
             )

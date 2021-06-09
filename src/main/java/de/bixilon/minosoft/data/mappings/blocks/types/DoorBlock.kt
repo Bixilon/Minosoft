@@ -26,7 +26,7 @@ import de.bixilon.minosoft.gui.rendering.input.camera.RaycastHit
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import glm_.vec3.Vec3i
 
-open class DoorBlock(resourceLocation: ResourceLocation, mappings: Registries, data: JsonObject) : DoubleSizeBlock(resourceLocation, mappings, data) {
+open class DoorBlock(resourceLocation: ResourceLocation, registries: Registries, data: JsonObject) : DoubleSizeBlock(resourceLocation, registries, data) {
 
     override fun getPlacementState(connection: PlayConnection, raycastHit: RaycastHit): BlockState? {
         TODO()

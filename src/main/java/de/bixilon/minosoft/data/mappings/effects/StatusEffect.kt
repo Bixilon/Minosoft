@@ -38,7 +38,7 @@ data class StatusEffect(
     }
 
     companion object : ResourceLocationDeserializer<StatusEffect> {
-        override fun deserialize(mappings: Registries?, resourceLocation: ResourceLocation, data: JsonObject): StatusEffect {
+        override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: JsonObject): StatusEffect {
             val attributes: MutableMap<ResourceLocation, StatusEffectAttribute> = mutableMapOf()
             val uuidAttributes: MutableMap<UUID, StatusEffectAttribute> = mutableMapOf()
 

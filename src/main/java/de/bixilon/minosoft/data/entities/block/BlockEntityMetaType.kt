@@ -25,7 +25,7 @@ class BlockEntityMetaType(
 ) : RegistryItem {
 
     companion object : ResourceLocationDeserializer<BlockEntityMetaType> {
-        override fun deserialize(mappings: Registries?, resourceLocation: ResourceLocation, data: JsonObject): BlockEntityMetaType {
+        override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: JsonObject): BlockEntityMetaType {
             return BlockEntityMetaType(resourceLocation)
         }
     }

@@ -38,12 +38,12 @@ data class Fluid(
     }
 
     companion object : ResourceLocationDeserializer<Fluid> {
-        override fun deserialize(mappings: Registries?, resourceLocation: ResourceLocation, data: JsonObject): Fluid {
-            check(mappings != null) { "Registries is null!" }
+        override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: JsonObject): Fluid {
+            check(registries != null) { "Registries is null!" }
             return Fluid(
                 resourceLocation = resourceLocation,
                 bucketItemId = data["bucket"]?.asInt,
-                dripParticle = data["drip_particle_type"]?.asInt?.let { mappings.particleTypeRegistry[it] },
+                dripParticle = data["drip_particle_type"]?.asInt?.let { registries.particleTypeRegistry[it] },
                 renderTexture = data["render"]?.asJsonObject?.get("texture")?.asString?.let { ResourceLocation(it) },
             )
         }

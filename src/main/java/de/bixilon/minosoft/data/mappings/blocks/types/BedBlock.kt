@@ -11,28 +11,32 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.mappings.entities.villagers
+package de.bixilon.minosoft.data.mappings.blocks.types
 
 import com.google.gson.JsonObject
+import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.mappings.ResourceLocation
-import de.bixilon.minosoft.data.mappings.registry.RegistryItem
-import de.bixilon.minosoft.data.mappings.registry.ResourceLocationDeserializer
+import de.bixilon.minosoft.data.mappings.blocks.BlockState
 import de.bixilon.minosoft.data.mappings.versions.Registries
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import glm_.vec3.Vec3i
 
-data class VillagerProfession(
-    override val resourceLocation: ResourceLocation,
-    // ToDo
-) : RegistryItem {
+open class BedBlock(resourceLocation: ResourceLocation, registries: Registries, data: JsonObject) : Block(resourceLocation, registries, data) {
 
-    override fun toString(): String {
-        return resourceLocation.full
+    override fun onEntityLand(connection: PlayConnection, entity: Entity, blockPosition: Vec3i, blockState: BlockState) {
+        super.onEntityLand(connection, entity, blockPosition, blockState)
+
+        if (entity.isSneaking) {
+            return
+        }
+
+        bounce(entity)
     }
 
-    companion object : ResourceLocationDeserializer<VillagerProfession> {
-        override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: JsonObject): VillagerProfession {
-            return VillagerProfession(
-                resourceLocation = resourceLocation,
-            )
+    private fun bounce(entity: Entity) {
+        if (entity.velocity.y < 0.0) {
+            entity.velocity.y = -entity.velocity.y * 0.66f
         }
     }
 }
+

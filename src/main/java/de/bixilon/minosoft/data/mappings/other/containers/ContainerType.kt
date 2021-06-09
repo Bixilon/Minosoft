@@ -27,7 +27,7 @@ data class ContainerType(
     }
 
     companion object : ResourceLocationDeserializer<ContainerType> {
-        override fun deserialize(mappings: Registries?, resourceLocation: ResourceLocation, data: JsonObject): ContainerType {
+        override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: JsonObject): ContainerType {
             return ContainerType(
                 resourceLocation = resourceLocation,
             )

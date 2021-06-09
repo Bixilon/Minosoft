@@ -109,29 +109,32 @@ open class Block(
     open fun onEntityLand(connection: PlayConnection, entity: Entity, blockPosition: Vec3i, blockState: BlockState) {}
 
     companion object : ResourceLocationDeserializer<Block> {
-        override fun deserialize(mappings: Registries?, resourceLocation: ResourceLocation, data: JsonObject): Block {
-            check(mappings != null) { "Registries is null!" }
+        private val CONSTRUCTORS: Map<String, (resourceLocation: ResourceLocation, registries: Registries, data: JsonObject) -> Block> = mapOf(
+            "FluidBlock" to { resourceLocation, registries, data -> FluidBlock(resourceLocation, registries, data) },
+            "DoorBlock" to { resourceLocation, registries, data -> DoorBlock(resourceLocation, registries, data) },
+            "LeverBlock" to { resourceLocation, registries, data -> LeverBlock(resourceLocation, registries, data) },
+            "NoteBlock" to { resourceLocation, registries, data -> NoteBlock(resourceLocation, registries, data) },
+            "RepeaterBlock" to { resourceLocation, registries, data -> RepeaterBlock(resourceLocation, registries, data) },
+            "ComparatorBlock" to { resourceLocation, registries, data -> ComparatorBlock(resourceLocation, registries, data) },
+            "CampfireBlock" to { resourceLocation, registries, data -> CampfireBlock(resourceLocation, registries, data) },
+            "TorchBlock" to { resourceLocation, registries, data -> TorchBlock(resourceLocation, registries, data) },
+            "SlimeBlock" to { resourceLocation, registries, data -> SlimeBlock(resourceLocation, registries, data) },
+            "BedBlock" to { resourceLocation, registries, data -> BedBlock(resourceLocation, registries, data) },
+            "BrewingStandBlock" to { resourceLocation, registries, data -> BrewingStandBlock(resourceLocation, registries, data) },
+        )
 
-            val block = when (data["class"].asString) {
-                "FluidBlock" -> FluidBlock(resourceLocation, mappings, data)
-                "DoorBlock" -> DoorBlock(resourceLocation, mappings, data)
-                "LeverBlock" -> LeverBlock(resourceLocation, mappings, data)
-                "NoteBlock" -> NoteBlock(resourceLocation, mappings, data)
-                "RepeaterBlock" -> RepeaterBlock(resourceLocation, mappings, data)
-                "ComparatorBlock" -> ComparatorBlock(resourceLocation, mappings, data)
-                "CampfireBlock" -> CampfireBlock(resourceLocation, mappings, data)
-                "TorchBlock" -> TorchBlock(resourceLocation, mappings, data)
-                "SlimeBlock" -> SlimeBlock(resourceLocation, mappings, data)
-                else -> Block(resourceLocation, mappings, data)
-            }
+        override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: JsonObject): Block {
+            check(registries != null) { "Registries is null!" }
+
+            val block = CONSTRUCTORS[data["class"].asString]?.invoke(resourceLocation, registries, data) ?: Block(resourceLocation, registries, data)
 
             val properties: MutableMap<BlockProperties, MutableSet<Any>> = mutableMapOf()
 
             val states: MutableSet<BlockState> = mutableSetOf()
             for ((stateId, stateJson) in data["states"].asJsonObject.entrySet()) {
                 check(stateJson is JsonObject) { "Not a state element!" }
-                val state = BlockState.deserialize(block, mappings, stateJson, mappings.models)
-                mappings.blockStateIdMap[stateId.toInt()] = state
+                val state = BlockState.deserialize(block, registries, stateJson, registries.models)
+                registries.blockStateIdMap[stateId.toInt()] = state
                 states.add(state)
                 for ((property, value) in state.properties) {
                     properties.getOrPut(property) { mutableSetOf() } += value
@@ -145,7 +148,7 @@ open class Block(
             }
 
             block.states = states.toSet()
-            block.defaultState = mappings.blockStateIdMap[data["default_state"].asInt]!!
+            block.defaultState = registries.blockStateIdMap[data["default_state"].asInt]!!
             block.properties = propertiesOut.toMap()
             return block
         }

@@ -59,8 +59,8 @@ data class Biome(
 
     companion object : ResourceLocationDeserializer<Biome> {
         private val TODO_SWAMP_COLOR = "#6A7039".asColor()
-        override fun deserialize(mappings: Registries?, resourceLocation: ResourceLocation, data: JsonObject): Biome {
-            check(mappings != null) { "Registries is null!" }
+        override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: JsonObject): Biome {
+            check(registries != null) { "Registries is null!" }
             return Biome(
                 resourceLocation = resourceLocation,
                 depth = data["depth"]?.asFloat ?: 0.0f,
@@ -69,8 +69,8 @@ data class Biome(
                 downfall = data["downfall"]?.asFloat ?: 0.0f,
                 waterColor = TintColorCalculator.getJsonColor(data["water_color"]?.asInt ?: 0),
                 waterFogColor = TintColorCalculator.getJsonColor(data["water_fog_color"]?.asInt ?: 0),
-                category = mappings.biomeCategoryRegistry[data["category"]?.asInt ?: -1] ?: DEFAULT_CATEGORY,
-                precipitation = mappings.biomePrecipitationRegistry[data["precipitation"]?.asInt ?: -1] ?: DEFAULT_PRECIPITATION,
+                category = registries.biomeCategoryRegistry[data["category"]?.asInt ?: -1] ?: DEFAULT_CATEGORY,
+                precipitation = registries.biomePrecipitationRegistry[data["precipitation"]?.asInt ?: -1] ?: DEFAULT_PRECIPITATION,
                 skyColor = data["sky_color"]?.asInt?.asRGBColor() ?: RenderConstants.GRASS_FAILOVER_COLOR,
                 foliageColorOverride = TintColorCalculator.getJsonColor(data["foliage_color_override"]?.asInt ?: 0),
                 grassColorOverride = TintColorCalculator.getJsonColor(data["grass_color_override"]?.asInt ?: 0),

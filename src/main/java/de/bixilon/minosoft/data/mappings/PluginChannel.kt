@@ -28,7 +28,7 @@ data class PluginChannel(
     }
 
     companion object : ResourceLocationDeserializer<PluginChannel> {
-        override fun deserialize(mappings: Registries?, resourceLocation: ResourceLocation, data: JsonObject): PluginChannel {
+        override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: JsonObject): PluginChannel {
             return PluginChannel(
                 resourceLocation = resourceLocation,
                 name = LegacyResourceLocation(data["name"].asString)

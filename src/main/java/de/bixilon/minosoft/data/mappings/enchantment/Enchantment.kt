@@ -28,7 +28,7 @@ data class Enchantment(
     }
 
     companion object : ResourceLocationDeserializer<Enchantment> {
-        override fun deserialize(mappings: Registries?, resourceLocation: ResourceLocation, data: JsonObject): Enchantment {
+        override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: JsonObject): Enchantment {
             return Enchantment(resourceLocation)
         }
     }

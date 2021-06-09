@@ -75,7 +75,7 @@ data class Dimension(
             )
         }
 
-        override fun deserialize(mappings: Registries?, resourceLocation: ResourceLocation, data: JsonObject): Dimension {
+        override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: JsonObject): Dimension {
             return Dimension(
                 resourceLocation = resourceLocation,
                 piglinSafe = data.get("piglin_safe")?.asBoolean == true,

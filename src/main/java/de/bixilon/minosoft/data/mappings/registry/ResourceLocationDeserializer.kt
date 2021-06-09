@@ -18,5 +18,5 @@ import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.versions.Registries
 
 interface ResourceLocationDeserializer<T> {
-    fun deserialize(mappings: Registries?, resourceLocation: ResourceLocation, data: JsonObject): T?
+    fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: JsonObject): T?
 }

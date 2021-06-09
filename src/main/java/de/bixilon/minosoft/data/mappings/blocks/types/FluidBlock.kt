@@ -20,9 +20,9 @@ import de.bixilon.minosoft.data.mappings.versions.Registries
 import de.bixilon.minosoft.gui.rendering.chunk.models.renderable.BlockLikeRenderer
 import de.bixilon.minosoft.gui.rendering.chunk.models.renderable.FluidRenderer
 
-open class FluidBlock(resourceLocation: ResourceLocation, mappings: Registries, data: JsonObject) : Block(resourceLocation, mappings, data) {
-    open val stillFluid: Fluid = mappings.fluidRegistry[data["still_fluid"].asInt]
-    open val flowingFluid: Fluid = mappings.fluidRegistry[data["flow_fluid"].asInt]
+open class FluidBlock(resourceLocation: ResourceLocation, registries: Registries, data: JsonObject) : Block(resourceLocation, registries, data) {
+    open val stillFluid: Fluid = registries.fluidRegistry[data["still_fluid"].asInt]
+    open val flowingFluid: Fluid = registries.fluidRegistry[data["flow_fluid"].asInt]
 
     val fluidRenderer: FluidRenderer
 

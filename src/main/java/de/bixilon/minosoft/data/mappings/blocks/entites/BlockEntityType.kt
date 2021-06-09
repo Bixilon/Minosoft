@@ -48,7 +48,7 @@ data class BlockEntityType(
     }
 
     companion object : ResourceLocationDeserializer<BlockEntityType> {
-        override fun deserialize(mappings: Registries?, resourceLocation: ResourceLocation, data: JsonObject): BlockEntityType? {
+        override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: JsonObject): BlockEntityType? {
             val factory = DefaultBlockEntityMetaDataFactory[resourceLocation] ?: return null // ToDo
 
             val blockIds: MutableSet<Int> = mutableSetOf()

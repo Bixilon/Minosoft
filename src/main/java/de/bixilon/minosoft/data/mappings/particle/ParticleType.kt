@@ -39,7 +39,7 @@ data class ParticleType(
     }
 
     companion object : ResourceLocationDeserializer<ParticleType> {
-        override fun deserialize(mappings: Registries?, resourceLocation: ResourceLocation, data: JsonObject): ParticleType {
+        override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: JsonObject): ParticleType {
             val textures: MutableList<ResourceLocation> = mutableListOf()
             data["render"]?.asJsonObject?.get("textures")?.asJsonArray?.let {
                 for (texture in it) {

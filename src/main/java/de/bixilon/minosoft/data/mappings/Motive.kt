@@ -28,7 +28,7 @@ data class Motive(
     }
 
     companion object : ResourceLocationDeserializer<Motive> {
-        override fun deserialize(mappings: Registries?, resourceLocation: ResourceLocation, data: JsonObject): Motive {
+        override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: JsonObject): Motive {
             return Motive(
                 resourceLocation = resourceLocation,
                 width = data["width"].asInt,
