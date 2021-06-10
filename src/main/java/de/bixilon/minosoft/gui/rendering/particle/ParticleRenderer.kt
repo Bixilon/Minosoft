@@ -39,6 +39,7 @@ class ParticleRenderer(
 ) : Renderer {
     private lateinit var particleShader: Shader
     private var particleMesh = ParticleMesh()
+    private var transparentParticleMesh = ParticleMesh()
 
     private var particles: MutableSet<Particle> = synchronizedSetOf()
 
@@ -51,6 +52,7 @@ class ParticleRenderer(
             }
         })
         particleMesh.load()
+        transparentParticleMesh.load()
         connection.registries.particleTypeRegistry.forEachItem {
             for (resourceLocation in it.textures) {
                 renderWindow.textures.allTextures[resourceLocation] = Texture(resourceLocation)
@@ -85,7 +87,9 @@ class ParticleRenderer(
         particleShader.use()
 
         particleMesh.unload()
+        transparentParticleMesh.unload()
         particleMesh = ParticleMesh()
+        transparentParticleMesh = ParticleMesh()
 
 
         for (particle in particles.toSynchronizedSet()) {
@@ -94,13 +98,16 @@ class ParticleRenderer(
                 this.particles -= particle
                 continue
             }
-            particle.addVertex(particleMesh)
+            particle.addVertex(transparentParticleMesh, particleMesh)
         }
 
         particleMesh.load()
+        transparentParticleMesh.load()
+
+        particleMesh.draw()
 
         glDepthMask(false)
-        particleMesh.draw()
+        transparentParticleMesh.draw()
         glDepthMask(true)
     }
 

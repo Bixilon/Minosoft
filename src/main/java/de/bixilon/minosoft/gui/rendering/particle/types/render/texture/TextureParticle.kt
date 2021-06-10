@@ -17,6 +17,7 @@ import de.bixilon.minosoft.data.mappings.particle.data.ParticleData
 import de.bixilon.minosoft.gui.rendering.particle.ParticleMesh
 import de.bixilon.minosoft.gui.rendering.particle.types.render.RenderParticle
 import de.bixilon.minosoft.gui.rendering.textures.Texture
+import de.bixilon.minosoft.gui.rendering.textures.TextureTransparencies
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import glm_.vec3.Vec3d
 
@@ -24,9 +25,13 @@ abstract class TextureParticle(connection: PlayConnection, position: Vec3d, velo
     abstract val texture: Texture?
 
 
-    override fun addVertex(particleMesh: ParticleMesh) {
+    override fun addVertex(transparentMesh: ParticleMesh, particleMesh: ParticleMesh) {
         texture?.let {
-            particleMesh.addVertex(cameraPosition, scale, it, color)
+            if (it.transparency == TextureTransparencies.TRANSLUCENT || color.alpha != 255) {
+                transparentMesh
+            } else {
+                particleMesh
+            }.addVertex(cameraPosition, scale, it, color)
         }
     }
 }
