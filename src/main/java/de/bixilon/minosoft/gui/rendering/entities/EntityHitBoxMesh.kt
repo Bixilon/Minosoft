@@ -24,6 +24,8 @@ import glm_.vec3.Vec3d
 class EntityHitBoxMesh(
     val entity: Entity,
 ) : LineMesh() {
+    var needsUpdate = true
+    var visible = false
     val aabb = entity.aabb
 
     init {

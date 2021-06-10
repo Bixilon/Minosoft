@@ -19,6 +19,8 @@ import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.Renderer
 import de.bixilon.minosoft.gui.rendering.RendererBuilder
+import de.bixilon.minosoft.gui.rendering.chunk.models.AABB
+import de.bixilon.minosoft.gui.rendering.modding.events.FrustumChangeEvent
 import de.bixilon.minosoft.modding.event.CallbackEventInvoker
 import de.bixilon.minosoft.modding.event.events.EntityDestroyEvent
 import de.bixilon.minosoft.modding.event.events.EntitySpawnEvent
@@ -35,12 +37,37 @@ class EntityHitBoxRenderer(
     private val meshes: SynchronizedMap<Entity, EntityHitBoxMesh> = synchronizedMapOf()
 
 
-    private fun createMesh(entity: Entity): EntityHitBoxMesh? {
+    private fun updateMesh(entity: Entity, mesh: EntityHitBoxMesh? = meshes[entity]): EntityHitBoxMesh? {
+        val aabb = entity.aabb
+
+        val visible = renderWindow.inputHandler.camera.frustum.containsAABB(aabb)
+        if (!visible) {
+            return mesh
+        }
+
+        var nextMesh = mesh
+
+        if (aabb != mesh?.aabb) {
+            this.meshes.remove(entity)
+            mesh?.unload()
+            nextMesh = createMesh(entity, aabb, visible)
+        }
+        return nextMesh
+    }
+
+    private fun createMesh(entity: Entity, aabb: AABB = entity.aabb, visible: Boolean = renderWindow.inputHandler.camera.frustum.containsAABB(aabb)): EntityHitBoxMesh? {
         if (entity.isInvisible && !Minosoft.config.config.game.entities.hitBox.renderInvisibleEntities) {
             return null
         }
         val mesh = EntityHitBoxMesh(entity)
-        mesh.load()
+
+        if (visible) {
+            mesh.load()
+        }
+        mesh.needsUpdate = !visible
+
+        mesh.visible = visible
+
         this.meshes[entity] = mesh
 
         return mesh
@@ -59,6 +86,12 @@ class EntityHitBoxRenderer(
                 mesh.unload(false)
             }
         })
+
+        connection.registerEvent(CallbackEventInvoker.of<FrustumChangeEvent> {
+            for ((_, mesh) in this.meshes.toSynchronizedMap()) {
+                mesh.visible = renderWindow.inputHandler.camera.frustum.containsAABB(mesh.aabb)
+            }
+        })
     }
 
     override fun draw() {
@@ -70,24 +103,19 @@ class EntityHitBoxRenderer(
 
         fun draw(mesh: EntityHitBoxMesh?) {
             mesh ?: return
-            // ToDo: Improve this
-            if (!renderWindow.inputHandler.camera.frustum.containsAABB(mesh.aabb)) {
+
+            if (!mesh.visible) {
                 return
+            }
+            if (mesh.needsUpdate) {
+                mesh.load()
+                mesh.needsUpdate = false
             }
             mesh.draw()
         }
 
         for ((entity, mesh) in meshes.toSynchronizedMap()) {
-            val aabb = entity.aabb
-            if (aabb != mesh.aabb) {
-                this.meshes.remove(entity)
-                mesh.unload()
-
-                draw(createMesh(entity))
-                continue
-            }
-
-            draw(mesh)
+            draw(updateMesh(entity, mesh))
         }
 
 
