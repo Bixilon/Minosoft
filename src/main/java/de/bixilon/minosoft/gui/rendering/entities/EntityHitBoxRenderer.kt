@@ -53,16 +53,10 @@ class EntityHitBoxRenderer(
             }
         })
         connection.registerEvent(CallbackEventInvoker.of<EntityDestroyEvent> {
-            val meshes: MutableSet<EntityHitBoxMesh> = mutableSetOf()
-            for (entity in it.entities) {
-                val mesh = this.meshes.getAndRemove(entity) ?: continue
-                meshes += mesh
-            }
+            val mesh = this.meshes.getAndRemove(it.entity) ?: return@of
 
             renderWindow.queue += {
-                for (mesh in meshes) {
-                    mesh.unload(false)
-                }
+                mesh.unload(false)
             }
         })
     }

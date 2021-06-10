@@ -15,15 +15,9 @@ package de.bixilon.minosoft.modding.event.events
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import de.bixilon.minosoft.protocol.packets.s2c.play.EntityDestroyS2CP
-import de.bixilon.minosoft.util.KUtil.entities
 
 class EntityDestroyEvent(
-    connection: PlayConnection,
-    initiator: EventInitiators,
-    val entities: Set<Entity>,
-) : PlayConnectionEvent(connection, initiator) {
-
-    constructor(connection: PlayConnection, packet: EntityDestroyS2CP) : this(connection, EventInitiators.SERVER, packet.entityIds.entities(connection))
-
-}
+        connection: PlayConnection,
+        initiator: EventInitiators,
+        val entity: Entity,
+) : PlayConnectionEvent(connection, initiator)

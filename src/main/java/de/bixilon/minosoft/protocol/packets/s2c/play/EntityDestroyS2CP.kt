@@ -13,6 +13,7 @@
 package de.bixilon.minosoft.protocol.packets.s2c.play
 
 import de.bixilon.minosoft.Minosoft
+import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.modding.event.events.EntityDestroyEvent
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
@@ -35,11 +36,11 @@ class EntityDestroyS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
 
 
     override fun handle(connection: PlayConnection) {
-        connection.fireEvent(EntityDestroyEvent(connection, this))
         for (entityId in entityIds) {
             val entity = connection.world.entities[entityId] ?: continue
             entity.vehicle?.passengers?.remove(entity)
 
+            connection.fireEvent(EntityDestroyEvent(connection, EventInitiators.SERVER, entity))
             connection.world.entities.remove(entityId)
         }
     }
