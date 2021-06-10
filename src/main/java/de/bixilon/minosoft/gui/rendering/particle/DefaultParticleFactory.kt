@@ -27,6 +27,8 @@ import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.da
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.damage.DamageIndicatorParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.damage.EnchantedHitParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.dust.DustParticle
+import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.emotion.AngryVillagerParticle
+import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.emotion.HeartParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.enchant.EnchantParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.enchant.NautilusParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.fire.SmokeParticle
@@ -74,4 +76,6 @@ object DefaultParticleFactory : DefaultFactory<ParticleFactory<out Particle>>(
     WarpedSporeParticle,
     NoteParticle,
     PortalParticle,
+    HeartParticle,
+    AngryVillagerParticle,
 )
