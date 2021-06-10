@@ -49,7 +49,9 @@ class EntityHitBoxRenderer(
 
         if (aabb != mesh?.aabb) {
             this.meshes.remove(entity)
-            mesh?.unload()
+            if (mesh?.needsUpdate == true) {
+                mesh.unload()
+            }
             nextMesh = createMesh(entity, aabb, visible)
         }
         return nextMesh
