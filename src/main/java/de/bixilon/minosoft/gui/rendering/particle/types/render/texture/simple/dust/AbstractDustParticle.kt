@@ -49,9 +49,9 @@ abstract class AbstractDustParticle(connection: PlayConnection, position: Vec3d,
         return (random.nextFloat() * 0.2f + 0.8f) * color * brightness
     }
 
-    override fun realTick() {
-        super.realTick()
-        position += velocity
+    override fun tick() {
+        super.tick()
+        forceMove(velocity)
 
         velocity *= 0.99f
     }

@@ -31,12 +31,12 @@ abstract class SuspendParticle(connection: PlayConnection, position: Vec3d, velo
         movement = false
     }
 
-    override fun realTick() {
-        super.realTick()
+    override fun tick() {
+        super.tick()
         if (dead) {
             return
         }
-        position += velocity
+        forceMove(velocity)
 
         velocity *= 0.99f
     }

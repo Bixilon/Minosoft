@@ -40,8 +40,8 @@ open class CloudParticle(connection: PlayConnection, position: Vec3d, velocity: 
         physics = false
     }
 
-    override fun realTick() {
-        super.realTick()
+    override fun tick() {
+        super.tick()
         if (dead) {
             return
         }

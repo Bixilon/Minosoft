@@ -18,9 +18,9 @@ import de.bixilon.minosoft.data.physics.PhysicsEntity
 import de.bixilon.minosoft.gui.rendering.chunk.models.AABB
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.gui.rendering.particle.ParticleMesh
+import de.bixilon.minosoft.gui.rendering.util.VecUtil
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.assign
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.millis
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plusAssign
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
@@ -41,7 +41,7 @@ abstract class Particle(
         connection.registries.particleTypeRegistry[resourceLocation]!!.default()
     }
     protected val random = Random
-    var lastTickTime = -1L
+    private var lastTickTime = -1L
 
     // ageing
     var dead = false
@@ -52,6 +52,9 @@ abstract class Particle(
     var maxAge: Int = (4.0f / (random.nextFloat() * 0.9f + 0.1f)).toInt()
 
     // moving
+    val cameraPosition: Vec3d
+        get() = VecUtil.lerp((System.currentTimeMillis() - lastTickTime) / ProtocolDefinition.TICK_TIMEd, previousPosition, position)
+
     final override val velocity: Vec3d = Vec3d(velocity)
     var previousPosition = position
     var movement: Boolean = true
@@ -79,9 +82,6 @@ abstract class Particle(
         }
 
 
-    private var lastRealTickTime = -1L
-
-
     init {
         this.velocity += { (random.nextDouble() * 2.0 - 1.0) * MAGIC_VELOCITY_CONSTANT }
         val modifier = (random.nextFloat() + random.nextFloat() + 1.0f) * 0.15000000596046448
@@ -91,6 +91,16 @@ abstract class Particle(
         this.velocity.y += 0.10000000149011612
 
         spacing = Vec3(0.2)
+    }
+
+    fun forceMove(delta: Vec3d) {
+        this.previousPosition = Vec3d(position)
+        position += delta
+    }
+
+    fun forceMove(move: () -> Double) {
+        this.previousPosition = Vec3d(position)
+        position += move
     }
 
     open fun move(velocity: Vec3d) {
@@ -104,7 +114,7 @@ abstract class Particle(
         }
 
         if (newVelocity != Vec3d.EMPTY) {
-            position += newVelocity
+            forceMove(newVelocity)
         }
 
         if (abs(newVelocity.y) >= Y_VELOCITY_TO_CHECK && abs(velocity.y) < Y_VELOCITY_TO_CHECK) {
@@ -112,38 +122,31 @@ abstract class Particle(
         }
     }
 
-    private fun move(deltaTime: Int) {
+    private fun move() {
         if (!movement) {
             return
         }
-        previousPosition = Vec3d(position)
 
-        move(velocity.millis * (deltaTime / 1000.0f))
+        forceMove(velocity)
     }
 
-    fun tick() {
+    fun tryTick() {
         val currentTime = System.currentTimeMillis()
-        if (lastTickTime == -1L) {
-            // never ticked before, skip
-            lastTickTime = currentTime
-            return
-        }
-        val deltaTime = (currentTime - lastTickTime).toInt()
-
-        tick(deltaTime)
 
         if (dead) {
             return
         }
 
-        if (lastRealTickTime == -1L) {
-            lastRealTickTime = System.currentTimeMillis()
-        } else if (currentTime - lastRealTickTime >= ProtocolDefinition.TICK_TIME) {
-            realTick()
-            lastRealTickTime = currentTime
+        if (lastTickTime == -1L) {
+            lastTickTime = System.currentTimeMillis()
+            return
         }
-
-        postTick(deltaTime)
+        if (currentTime - lastTickTime < ProtocolDefinition.TICK_TIME) {
+            return
+        }
+        tick()
+        move()
+        postTick()
         lastTickTime = currentTime
     }
 
@@ -153,16 +156,9 @@ abstract class Particle(
         }
     }
 
-    open fun tick(deltaTime: Int) {
-        check(!dead) { "Cannot tick dead particle!" }
-        check(deltaTime >= 0)
-    }
+    open fun postTick() {}
 
-    open fun postTick(deltaTime: Int) {
-        move(deltaTime)
-    }
-
-    open fun realTick() {
+    open fun tick() {
         age()
         if (dead) {
             return

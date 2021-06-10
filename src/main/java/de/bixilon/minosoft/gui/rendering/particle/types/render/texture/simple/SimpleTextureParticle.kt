@@ -40,8 +40,8 @@ abstract class SimpleTextureParticle(connection: PlayConnection, position: Vec3d
         texture = connection.rendering?.renderWindow?.textures?.allTextures?.get(data.type.textures.random(random))
     }
 
-    override fun tick(deltaTime: Int) {
-        super.tick(deltaTime)
+    override fun tick() {
+        super.tick()
         if (dead) {
             return
         }

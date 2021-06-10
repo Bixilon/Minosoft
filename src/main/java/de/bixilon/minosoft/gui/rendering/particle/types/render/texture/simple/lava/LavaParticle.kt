@@ -42,8 +42,8 @@ class LavaParticle(connection: PlayConnection, position: Vec3d, data: ParticleDa
         maxAge = (16.0f / (random.nextFloat() * 0.8f + 0.2f)).toInt()
     }
 
-    override fun realTick() {
-        super.realTick()
+    override fun tick() {
+        super.tick()
 
         if (random.nextFloat() > (floatAge / maxAge)) {
             connection.world += SmokeParticle(connection, Vec3d(position), Vec3d(velocity))

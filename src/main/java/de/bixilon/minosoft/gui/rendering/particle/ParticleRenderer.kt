@@ -89,7 +89,7 @@ class ParticleRenderer(
 
 
         for (particle in particles.toSynchronizedSet()) {
-            particle.tick()
+            particle.tryTick()
             if (particle.dead) {
                 this.particles -= particle
                 continue

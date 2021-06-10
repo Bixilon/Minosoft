@@ -16,7 +16,6 @@ package de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.s
 import de.bixilon.minosoft.data.mappings.particle.data.ParticleData
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.SimpleTextureParticle
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.assign
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.plusAssign
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import glm_.vec3.Vec3d
 
@@ -25,7 +24,7 @@ abstract class SlowingParticle(connection: PlayConnection, position: Vec3d, velo
     init {
         friction = 0.96f
         this.velocity assign (this.velocity * 0.009999999776482582 + velocity)
-        this.position += { (random.nextDouble() - random.nextDouble()) * 0.05 }
+        forceMove { (random.nextDouble() - random.nextDouble()) * 0.05 }
         maxAge = (8.0 / (random.nextDouble() * 0.8 + 0.2)).toInt() + 4
     }
 }

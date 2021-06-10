@@ -19,7 +19,6 @@ import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.SimpleTextureParticle
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.assign
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.millis
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
 import glm_.vec3.Vec3
@@ -47,8 +46,8 @@ class CampfireSmokeParticle(connection: PlayConnection, position: Vec3d, velocit
         setRandomSprite()
     }
 
-    override fun realTick() {
-        super.realTick()
+    override fun tick() {
+        super.tick()
         val horizontal = { (random.nextDouble() / 5000.0f * (if (random.nextBoolean()) 1.0f else -1.0f)) }
         velocity.x += horizontal()
         velocity.y -= gravityStrength
@@ -62,9 +61,9 @@ class CampfireSmokeParticle(connection: PlayConnection, position: Vec3d, velocit
         }
     }
 
-    override fun postTick(deltaTime: Int) {
-        super.postTick(deltaTime)
-        move(velocity.millis * (deltaTime / 1000.0f))
+    override fun postTick() {
+        super.postTick()
+        move(velocity)
     }
 
 

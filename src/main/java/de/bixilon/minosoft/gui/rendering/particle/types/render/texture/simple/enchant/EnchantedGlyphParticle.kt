@@ -41,11 +41,12 @@ abstract class EnchantedGlyphParticle(connection: PlayConnection, position: Vec3
         setRandomSprite()
     }
 
-    override fun postTick(deltaTime: Int) {
-        super.postTick(deltaTime)
+    override fun postTick() {
+        super.postTick()
         if (dead) {
             return
         }
+
         val ageDivisor = 1.0 - floatAge / maxAge
         val ageDivisor2 = (1.0 - ageDivisor).pow(3)
         this.position assign (startPosition + velocity * ageDivisor)

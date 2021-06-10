@@ -38,11 +38,11 @@ abstract class DamageParticle(connection: PlayConnection, position: Vec3d, veloc
         super.scale *= 0.75f
         maxAge = (6.0f / (random.nextFloat() * 0.8f + 0.6f)).toInt().coerceAtLeast(1)
         physics = false
-        realTick()
+        tick()
     }
 
-    final override fun realTick() {
-        super.realTick()
+    final override fun tick() {
+        super.tick()
         color = color.with(green = this.color.floatGreen * 0.96f, blue = this.color.floatBlue * 0.96f)
     }
 }

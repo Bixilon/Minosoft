@@ -26,7 +26,7 @@ abstract class AdvancedTextureParticle(connection: PlayConnection, position: Vec
 
     override fun addVertex(particleMesh: ParticleMesh) {
         texture?.let {
-            particleMesh.addVertex(position, scale, it, color, minUV, maxUV)
+            particleMesh.addVertex(cameraPosition, scale, it, color, minUV, maxUV)
         }
     }
 }

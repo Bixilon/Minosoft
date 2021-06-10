@@ -30,7 +30,7 @@ open class FlameParticle(connection: PlayConnection, position: Vec3d, velocity: 
         }
 
     override fun move(velocity: Vec3d) {
-        position += velocity
+        forceMove(velocity)
     }
 
     companion object : ParticleFactory<FlameParticle> {

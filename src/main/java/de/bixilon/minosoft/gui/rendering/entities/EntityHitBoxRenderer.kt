@@ -21,6 +21,7 @@ import de.bixilon.minosoft.gui.rendering.Renderer
 import de.bixilon.minosoft.gui.rendering.RendererBuilder
 import de.bixilon.minosoft.gui.rendering.chunk.models.AABB
 import de.bixilon.minosoft.gui.rendering.modding.events.FrustumChangeEvent
+import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.modding.event.CallbackEventInvoker
 import de.bixilon.minosoft.modding.event.events.EntityDestroyEvent
 import de.bixilon.minosoft.modding.event.events.EntitySpawnEvent
@@ -49,7 +50,7 @@ class EntityHitBoxRenderer(
 
         if (aabb != mesh?.aabb) {
             this.meshes.remove(entity)
-            if (mesh?.needsUpdate == true) {
+            if (mesh?.state == Mesh.MeshStates.LOADED) {
                 mesh.unload()
             }
             nextMesh = createMesh(entity, aabb, visible)

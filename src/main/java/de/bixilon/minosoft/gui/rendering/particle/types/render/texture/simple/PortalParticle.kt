@@ -48,11 +48,11 @@ class PortalParticle(connection: PlayConnection, position: Vec3d, velocity: Vec3
     }
 
     override fun move(velocity: Vec3d) {
-        this.position += velocity
+        forceMove(velocity)
     }
 
-    override fun realTick() {
-        super.realTick()
+    override fun tick() {
+        super.tick()
         if (dead) {
             return
         }

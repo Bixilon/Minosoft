@@ -38,8 +38,8 @@ abstract class SpellParticle(connection: PlayConnection, position: Vec3d, veloci
         // ToDo: Toggle if using spyglass
     }
 
-    override fun realTick() {
-        super.realTick()
+    override fun tick() {
+        super.tick()
 
         color = color.with(alpha = VecUtil.lerp(0.05f, color.floatAlpha, 1.0f))
     }

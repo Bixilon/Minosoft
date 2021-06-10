@@ -26,7 +26,7 @@ abstract class TextureParticle(connection: PlayConnection, position: Vec3d, velo
 
     override fun addVertex(particleMesh: ParticleMesh) {
         texture?.let {
-            particleMesh.addVertex(position, scale, it, color)
+            particleMesh.addVertex(cameraPosition, scale, it, color)
         }
     }
 }

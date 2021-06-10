@@ -31,8 +31,8 @@ class ExplosionEmitterParticle(connection: PlayConnection, position: Vec3d, data
         movement = false
     }
 
-    override fun realTick() {
-        super.realTick()
+    override fun tick() {
+        super.tick()
         explosionParticleType ?: let {
             dead = true
             return
