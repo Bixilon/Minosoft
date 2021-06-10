@@ -105,6 +105,7 @@ abstract class Particle(
 
     open fun move(velocity: Vec3d) {
         if (alreadyCollided) {
+            this.previousPosition = Vec3d(position)
             return
         }
         var newVelocity = Vec3d(velocity)
@@ -113,9 +114,7 @@ abstract class Particle(
             newVelocity = connection.collisionDetector.collide(this, newVelocity, aabb)
         }
 
-        if (newVelocity != Vec3d.EMPTY) {
-            forceMove(newVelocity)
-        }
+        forceMove(newVelocity)
 
         if (abs(newVelocity.y) >= Y_VELOCITY_TO_CHECK && abs(velocity.y) < Y_VELOCITY_TO_CHECK) {
             this.alreadyCollided = true
