@@ -20,6 +20,7 @@ import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.advanced.
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.ExplosionParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.NoteParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.PortalParticle
+import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.animated.EndRodParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.campfire.CampfireSmokeParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.cloud.CloudParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.cloud.SneezeParticle
@@ -78,4 +79,5 @@ object DefaultParticleFactory : DefaultFactory<ParticleFactory<out Particle>>(
     PortalParticle,
     HeartParticle,
     AngryVillagerParticle,
+    EndRodParticle,
 )
