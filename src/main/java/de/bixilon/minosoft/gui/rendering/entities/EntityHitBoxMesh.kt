@@ -27,14 +27,14 @@ class EntityHitBoxMesh(
     val aabb = entity.aabb
 
     init {
-        val hitboxColor = when {
+        val hitBoxColor = when {
             entity.isInvisible -> Minosoft.config.config.game.entities.hitBox.invisibleEntitiesColor
             else -> Minosoft.config.config.game.entities.hitBox.hitBoxColor
         }
-        drawAABB(entity.aabb, Vec3d.EMPTY, LINE_WIDTH, hitboxColor)
+        drawAABB(entity.aabb, Vec3d.EMPTY, LINE_WIDTH, hitBoxColor)
 
         val halfWidth = entity.dimensions.x / 2
-        val eyeAABB = AABB(Vec3(-halfWidth, entity.eyeHeight - LINE_WIDTH, -halfWidth), Vec3(halfWidth, entity.eyeHeight - LINE_WIDTH, halfWidth))
+        val eyeAABB = AABB(Vec3(-halfWidth, entity.eyeHeight - LINE_WIDTH, -halfWidth), Vec3(halfWidth, entity.eyeHeight - LINE_WIDTH, halfWidth)).hShrink(LINE_WIDTH)
         drawAABB(eyeAABB, entity.position, LINE_WIDTH, Minosoft.config.config.game.entities.hitBox.eyeHeightColor)
     }
 

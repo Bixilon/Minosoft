@@ -179,6 +179,19 @@ class AABB(
         return (position.x in min.x..max.x && position.y in min.y..max.y && position.z in min.z..max.z)
     }
 
+    fun shrink(size: Float): AABB {
+        return AABB(min + size, max - size)
+    }
+
+    fun hShrink(size: Float): AABB {
+        val vec = Vec3d(size, 0.0, size)
+        return AABB(min + vec, max - vec)
+    }
+
+    fun shrink(size: Double): AABB {
+        return AABB(min + size, max - size)
+    }
+
     val center: Vec3d
         get() = Vec3d((min.x + max.x) / 2.0, (min.y + max.y) / 2.0, (min.z + max.z) / 2.0)
 
