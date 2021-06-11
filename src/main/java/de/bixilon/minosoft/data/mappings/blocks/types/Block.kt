@@ -22,6 +22,7 @@ import de.bixilon.minosoft.data.mappings.blocks.BlockUsages
 import de.bixilon.minosoft.data.mappings.blocks.RandomOffsetTypes
 import de.bixilon.minosoft.data.mappings.blocks.entites.BlockEntityType
 import de.bixilon.minosoft.data.mappings.blocks.properties.BlockProperties
+import de.bixilon.minosoft.data.mappings.blocks.types.portal.NetherPortalBlock
 import de.bixilon.minosoft.data.mappings.blocks.types.redstone.ComparatorBlock
 import de.bixilon.minosoft.data.mappings.blocks.types.redstone.RepeaterBlock
 import de.bixilon.minosoft.data.mappings.blocks.types.wall.LeverBlock
@@ -122,6 +123,7 @@ open class Block(
             "BedBlock" to { resourceLocation, registries, data -> BedBlock(resourceLocation, registries, data) },
             "BrewingStandBlock" to { resourceLocation, registries, data -> BrewingStandBlock(resourceLocation, registries, data) },
             "EnderChestBlock" to { resourceLocation, registries, data -> EnderChestBlock(resourceLocation, registries, data) },
+            "NetherPortalBlock" to { resourceLocation, registries, data -> NetherPortalBlock(resourceLocation, registries, data) },
         )
 
         override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: JsonObject): Block {

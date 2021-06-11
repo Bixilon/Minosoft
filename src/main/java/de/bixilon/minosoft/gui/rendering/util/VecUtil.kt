@@ -99,6 +99,14 @@ object VecUtil {
         )
     }
 
+    fun Vec3d.Companion.of(lambda: () -> Double): Vec3d {
+        return Vec3d(
+            x = lambda(),
+            y = lambda(),
+            z = lambda(),
+        )
+    }
+
     infix operator fun Vec3i.plus(lambda: () -> Int): Vec3i {
         return Vec3i(
             x = x + lambda(),
