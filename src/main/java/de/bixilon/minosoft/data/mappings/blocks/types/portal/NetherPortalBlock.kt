@@ -34,24 +34,26 @@ open class NetherPortalBlock(resourceLocation: ResourceLocation, registries: Reg
         super.randomTick(connection, blockState, blockPosition, random)
 
         portalParticleType?.let {
-            val position = Vec3d(blockPosition) + { random.nextDouble() }
-            val velocity = Vec3d.of { (random.nextDouble() - 0.5) * 0.5 }
+            for (i in 0 until 4) {
+                val position = Vec3d(blockPosition) + { random.nextDouble() }
+                val velocity = Vec3d.of { (random.nextDouble() - 0.5) * 0.5 }
 
-            val factor = (random.nextInt(2) * 2 + 1).toDouble()
+                val factor = (random.nextInt(2) * 2 + 1).toDouble()
 
-            if (connection.world[blockPosition + Directions.WEST]?.block != this && connection.world[blockPosition + Directions.EAST]?.block != this) {
-                position.x = blockPosition.x * 0.5 + 0.25 * factor
-                velocity.x = random.nextDouble() * 2.0 * factor
-            } else {
-                position.z = blockPosition.x * 0.5 + 0.25 * factor
-                velocity.z = random.nextDouble() * 2.0 * factor
+                if (connection.world[blockPosition + Directions.WEST]?.block != this && connection.world[blockPosition + Directions.EAST]?.block != this) {
+                    position.x = blockPosition.x + 0.5 + 0.25 * factor
+                    velocity.x = random.nextDouble() * 2.0 * factor
+                } else {
+                    position.z = blockPosition.z + 0.5 + 0.25 * factor
+                    velocity.z = random.nextDouble() * 2.0 * factor
+                }
+                connection.world += PortalParticle(
+                    connection,
+                    position,
+                    velocity,
+                    it.default(),
+                )
             }
-            connection.world += PortalParticle(
-                connection,
-                position,
-                velocity,
-                it.default(),
-            )
         }
     }
 }
