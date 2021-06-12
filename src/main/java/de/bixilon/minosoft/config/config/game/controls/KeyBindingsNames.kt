@@ -16,7 +16,7 @@ package de.bixilon.minosoft.config.config.game.controls
 import de.bixilon.minosoft.config.key.KeyAction
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
-import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.data.registries.ResourceLocation
 
 
 object KeyBindingsNames {

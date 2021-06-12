@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.modding.event.events
 
-import de.bixilon.minosoft.data.mappings.other.game.event.GameEvent
+import de.bixilon.minosoft.data.registries.other.game.event.GameEvent
 import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.play.GameEventS2CP

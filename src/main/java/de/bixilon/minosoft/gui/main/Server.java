@@ -15,7 +15,7 @@ package de.bixilon.minosoft.gui.main;
 
 import com.google.common.collect.Sets;
 import de.bixilon.minosoft.Minosoft;
-import de.bixilon.minosoft.data.mappings.versions.Version;
+import de.bixilon.minosoft.data.registries.versions.Version;
 import de.bixilon.minosoft.data.text.BaseComponent;
 import de.bixilon.minosoft.data.text.ChatComponent;
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection;

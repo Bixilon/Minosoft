@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.entities.block
 
-import de.bixilon.minosoft.data.mappings.CompanionResourceLocation
+import de.bixilon.minosoft.data.registries.CompanionResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 
 interface BlockEntityFactory<T : BlockEntity> : CompanionResourceLocation {

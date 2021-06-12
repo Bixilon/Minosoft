@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.hud
 
 import com.squareup.moshi.Json
-import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.data.registries.ResourceLocation
 import glm_.vec2.Vec2
 
 data class HUDElementProperties(

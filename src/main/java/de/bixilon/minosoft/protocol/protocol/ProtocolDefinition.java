@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.protocol.protocol;
 
-import de.bixilon.minosoft.data.mappings.ResourceLocation;
+import de.bixilon.minosoft.data.registries.ResourceLocation;
 import de.bixilon.minosoft.data.text.ChatColors;
 import de.bixilon.minosoft.data.text.RGBColor;
 

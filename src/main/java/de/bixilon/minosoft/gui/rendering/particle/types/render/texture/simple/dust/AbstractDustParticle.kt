@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.dust
 
-import de.bixilon.minosoft.data.mappings.particle.data.DustParticleData
+import de.bixilon.minosoft.data.registries.particle.data.DustParticleData
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.SimpleTextureParticle
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection

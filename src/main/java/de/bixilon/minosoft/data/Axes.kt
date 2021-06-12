@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.data
 
-import de.bixilon.minosoft.data.mappings.blocks.properties.serializer.BlockPropertiesSerializer
+import de.bixilon.minosoft.data.registries.blocks.properties.serializer.BlockPropertiesSerializer
 import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.enum.ValuesEnum
 import glm_.vec3.Vec3

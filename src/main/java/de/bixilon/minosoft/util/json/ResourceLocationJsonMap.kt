@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.util.json
 
 import com.google.gson.JsonObject
-import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.data.registries.ResourceLocation
 
 object ResourceLocationJsonMap {
 

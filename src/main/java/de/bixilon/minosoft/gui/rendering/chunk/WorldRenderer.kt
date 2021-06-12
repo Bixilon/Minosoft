@@ -16,11 +16,11 @@ package de.bixilon.minosoft.gui.rendering.chunk
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames
 import de.bixilon.minosoft.data.Directions
-import de.bixilon.minosoft.data.mappings.ResourceLocation
-import de.bixilon.minosoft.data.mappings.blocks.BlockState
-import de.bixilon.minosoft.data.mappings.blocks.properties.BlockProperties
-import de.bixilon.minosoft.data.mappings.blocks.types.FluidBlock
-import de.bixilon.minosoft.data.mappings.versions.Registries
+import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.blocks.BlockState
+import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
+import de.bixilon.minosoft.data.registries.blocks.types.FluidBlock
+import de.bixilon.minosoft.data.registries.versions.Registries
 import de.bixilon.minosoft.data.world.Chunk
 import de.bixilon.minosoft.data.world.ChunkSection
 import de.bixilon.minosoft.data.world.ChunkSection.Companion.indexPosition

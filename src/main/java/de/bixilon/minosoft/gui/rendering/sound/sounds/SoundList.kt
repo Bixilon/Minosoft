@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.sound.sounds
 
-import de.bixilon.minosoft.data.mappings.ResourceLocation
-import de.bixilon.minosoft.data.mappings.sounds.SoundEvent
+import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.sounds.SoundEvent
 
 data class SoundList(
     val soundEvent: SoundEvent,

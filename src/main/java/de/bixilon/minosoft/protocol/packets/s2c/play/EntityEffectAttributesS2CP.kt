@@ -12,9 +12,9 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play
 
-import de.bixilon.minosoft.data.mappings.ResourceLocation
-import de.bixilon.minosoft.data.mappings.effects.attributes.StatusEffectAttribute
-import de.bixilon.minosoft.data.mappings.effects.attributes.StatusEffectOperations
+import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.effects.attributes.StatusEffectAttribute
+import de.bixilon.minosoft.data.registries.effects.attributes.StatusEffectOperations
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W04A

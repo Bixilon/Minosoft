@@ -17,9 +17,9 @@ import com.google.common.collect.HashBiMap;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import de.bixilon.minosoft.Minosoft;
-import de.bixilon.minosoft.data.mappings.ResourceLocation;
-import de.bixilon.minosoft.data.mappings.versions.Version;
-import de.bixilon.minosoft.data.mappings.versions.Versions;
+import de.bixilon.minosoft.data.registries.ResourceLocation;
+import de.bixilon.minosoft.data.registries.versions.Version;
+import de.bixilon.minosoft.data.registries.versions.Versions;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 
 import java.io.IOException;

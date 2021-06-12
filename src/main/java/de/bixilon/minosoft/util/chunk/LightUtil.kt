@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.util.chunk
 
-import de.bixilon.minosoft.data.mappings.Dimension
+import de.bixilon.minosoft.data.registries.Dimension
 import de.bixilon.minosoft.data.world.light.ChunkLightAccessor
 import de.bixilon.minosoft.data.world.light.LightAccessor
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer

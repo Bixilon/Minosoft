@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.s2c.play;
 
-import de.bixilon.minosoft.data.mappings.statistics.Statistic;
+import de.bixilon.minosoft.data.registries.statistics.Statistic;
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket;
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 import de.bixilon.minosoft.util.logging.Log;

@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.particle.types.render
 
-import de.bixilon.minosoft.data.mappings.particle.data.ParticleData
+import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.particle.types.Particle

@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.data.entities
 
-import de.bixilon.minosoft.data.mappings.effects.StatusEffect
+import de.bixilon.minosoft.data.registries.effects.StatusEffect
 
 data class StatusEffectInstance(
     val statusEffect: StatusEffect,

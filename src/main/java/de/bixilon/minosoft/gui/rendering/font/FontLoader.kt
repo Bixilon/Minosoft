@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.font
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.assets.AssetsManager
-import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.textures.Texture

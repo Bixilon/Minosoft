@@ -15,10 +15,10 @@ package de.bixilon.minosoft.data.entities.block
 
 import de.bixilon.minosoft.data.Directions
 import de.bixilon.minosoft.data.inventory.ItemStack
-import de.bixilon.minosoft.data.mappings.ResourceLocation
-import de.bixilon.minosoft.data.mappings.blocks.BlockState
-import de.bixilon.minosoft.data.mappings.blocks.properties.BlockProperties
-import de.bixilon.minosoft.data.mappings.blocks.types.CampfireBlock
+import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.blocks.BlockState
+import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
+import de.bixilon.minosoft.data.registries.blocks.types.CampfireBlock
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.fire.SmokeParticle
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection

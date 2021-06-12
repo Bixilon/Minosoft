@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.hud.elements.other
 
-import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.gui.rendering.hud.HUDElementProperties

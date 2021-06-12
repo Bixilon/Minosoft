@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.world.biome.source
 
-import de.bixilon.minosoft.data.mappings.biomes.Biome
+import de.bixilon.minosoft.data.registries.biomes.Biome
 import glm_.vec3.Vec3i
 
 interface BiomeSource {

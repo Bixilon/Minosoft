@@ -15,8 +15,8 @@ package de.bixilon.minosoft.data.locale;
 
 import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.ShutdownReasons;
-import de.bixilon.minosoft.data.mappings.ResourceLocation;
-import de.bixilon.minosoft.data.mappings.versions.Versions;
+import de.bixilon.minosoft.data.registries.ResourceLocation;
+import de.bixilon.minosoft.data.registries.versions.Versions;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import de.bixilon.minosoft.util.logging.Log;
 

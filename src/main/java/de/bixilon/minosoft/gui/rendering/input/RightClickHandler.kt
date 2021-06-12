@@ -14,8 +14,8 @@
 package de.bixilon.minosoft.gui.rendering.input
 
 import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames
-import de.bixilon.minosoft.data.mappings.blocks.BlockUsages
 import de.bixilon.minosoft.data.player.Hands
+import de.bixilon.minosoft.data.registries.blocks.BlockUsages
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.protocol.packets.c2s.play.ArmSwingC2SP

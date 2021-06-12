@@ -20,7 +20,7 @@ import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.config.Configuration;
 import de.bixilon.minosoft.data.assets.MinecraftAssetsManager;
 import de.bixilon.minosoft.data.assets.Resources;
-import de.bixilon.minosoft.data.mappings.versions.Version;
+import de.bixilon.minosoft.data.registries.versions.Version;
 
 import java.io.*;
 import java.util.Collections;

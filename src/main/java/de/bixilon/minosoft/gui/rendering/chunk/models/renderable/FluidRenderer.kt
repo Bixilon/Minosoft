@@ -1,12 +1,12 @@
 package de.bixilon.minosoft.gui.rendering.chunk.models.renderable
 
 import de.bixilon.minosoft.data.Directions
-import de.bixilon.minosoft.data.mappings.ResourceLocation
-import de.bixilon.minosoft.data.mappings.biomes.Biome
-import de.bixilon.minosoft.data.mappings.blocks.BlockState
-import de.bixilon.minosoft.data.mappings.blocks.properties.BlockProperties
-import de.bixilon.minosoft.data.mappings.blocks.types.Block
-import de.bixilon.minosoft.data.mappings.fluid.Fluid
+import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.biomes.Biome
+import de.bixilon.minosoft.data.registries.blocks.BlockState
+import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
+import de.bixilon.minosoft.data.registries.blocks.types.Block
+import de.bixilon.minosoft.data.registries.fluid.Fluid
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.gui.rendering.RenderConstants

@@ -14,10 +14,10 @@
 package de.bixilon.minosoft.data.entities.block
 
 import com.google.gson.JsonObject
-import de.bixilon.minosoft.data.mappings.ResourceLocation
-import de.bixilon.minosoft.data.mappings.registry.RegistryItem
-import de.bixilon.minosoft.data.mappings.registry.ResourceLocationDeserializer
-import de.bixilon.minosoft.data.mappings.versions.Registries
+import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.registry.RegistryItem
+import de.bixilon.minosoft.data.registries.registry.ResourceLocationDeserializer
+import de.bixilon.minosoft.data.registries.versions.Registries
 
 
 class BlockEntityMetaType(

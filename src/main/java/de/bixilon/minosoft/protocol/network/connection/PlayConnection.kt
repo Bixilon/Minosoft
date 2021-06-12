@@ -19,14 +19,14 @@ import de.bixilon.minosoft.data.ChatTextPositions
 import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.data.assets.MultiAssetsManager
 import de.bixilon.minosoft.data.commands.CommandRootNode
-import de.bixilon.minosoft.data.mappings.MappingsLoadingException
-import de.bixilon.minosoft.data.mappings.ResourceLocation
-import de.bixilon.minosoft.data.mappings.recipes.Recipes
-import de.bixilon.minosoft.data.mappings.versions.Registries
-import de.bixilon.minosoft.data.mappings.versions.Version
 import de.bixilon.minosoft.data.physics.CollisionDetector
 import de.bixilon.minosoft.data.player.LocalPlayerEntity
 import de.bixilon.minosoft.data.player.tab.TabList
+import de.bixilon.minosoft.data.registries.RegistriesLoadingException
+import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.recipes.Recipes
+import de.bixilon.minosoft.data.registries.versions.Registries
+import de.bixilon.minosoft.data.registries.versions.Version
 import de.bixilon.minosoft.data.scoreboard.ScoreboardManager
 import de.bixilon.minosoft.data.tags.Tag
 import de.bixilon.minosoft.data.text.ChatComponent
@@ -193,7 +193,7 @@ class PlayConnection(
             Log.log(LogMessageType.VERSION_LOADING, level = LogLevels.FATAL) { exception }
             Log.log(LogMessageType.VERSION_LOADING, level = LogLevels.FATAL) { "Could not load version $version. This version seems to be unsupported" }
             version.unload()
-            error = MappingsLoadingException("Mappings could not be loaded", exception)
+            error = RegistriesLoadingException("Mappings could not be loaded", exception)
             retry = false
         }
         latch.dec()

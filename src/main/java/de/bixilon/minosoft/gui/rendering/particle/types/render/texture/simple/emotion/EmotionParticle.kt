@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.emotion
 
-import de.bixilon.minosoft.data.mappings.particle.data.ParticleData
+import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.SimpleTextureParticle
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection

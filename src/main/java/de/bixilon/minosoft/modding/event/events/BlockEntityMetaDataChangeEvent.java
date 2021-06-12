@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.modding.event.events;
 
-import de.bixilon.minosoft.data.mappings.ResourceLocation;
+import de.bixilon.minosoft.data.registries.ResourceLocation;
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
 import de.bixilon.minosoft.protocol.packets.s2c.play.BlockEntityMetaDataS2CP;
 import glm_.vec3.Vec3i;

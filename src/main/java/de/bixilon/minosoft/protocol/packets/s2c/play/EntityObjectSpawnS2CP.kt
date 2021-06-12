@@ -14,7 +14,7 @@ package de.bixilon.minosoft.protocol.packets.s2c.play
 
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.Entity
-import de.bixilon.minosoft.data.mappings.DefaultRegistries.ENTITY_OBJECT_REGISTRY
+import de.bixilon.minosoft.data.registries.DefaultRegistries.ENTITY_OBJECT_REGISTRY
 import de.bixilon.minosoft.modding.event.events.EntitySpawnEvent
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket

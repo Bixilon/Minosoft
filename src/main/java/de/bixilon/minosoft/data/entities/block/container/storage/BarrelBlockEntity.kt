@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.data.entities.block.container.storage
 
 import de.bixilon.minosoft.data.entities.block.BlockEntityFactory
-import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 
 class BarrelBlockEntity(connection: PlayConnection) : StorageBlockEntity(connection) {

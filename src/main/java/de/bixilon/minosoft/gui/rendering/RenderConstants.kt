@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering
 
-import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.data.text.RGBColor.Companion.asColor
 import de.bixilon.minosoft.data.text.RGBColor.Companion.asRGBColor

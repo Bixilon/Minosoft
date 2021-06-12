@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.damage
 
-import de.bixilon.minosoft.data.mappings.particle.data.ParticleData
+import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.data.text.RGBColor.Companion.asGray
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.SimpleTextureParticle
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY

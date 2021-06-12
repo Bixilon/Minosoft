@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.data
 
-import de.bixilon.minosoft.data.mappings.blocks.properties.serializer.BlockPropertiesSerializer
+import de.bixilon.minosoft.data.registries.blocks.properties.serializer.BlockPropertiesSerializer
 import de.bixilon.minosoft.gui.rendering.chunk.models.FaceSize
 import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModelElement
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.get

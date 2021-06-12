@@ -1,6 +1,6 @@
 package de.bixilon.minosoft.data.world.biome.noise
 
-import de.bixilon.minosoft.data.mappings.biomes.Biome
+import de.bixilon.minosoft.data.registries.biomes.Biome
 
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.util.MMath.square

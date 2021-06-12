@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.protocol.exceptions;
 
-import de.bixilon.minosoft.data.mappings.versions.Version;
+import de.bixilon.minosoft.data.registries.versions.Version;
 import de.bixilon.minosoft.protocol.protocol.ConnectionStates;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketTypes;

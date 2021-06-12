@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.input.camera
 
 import de.bixilon.minosoft.data.entities.entities.Entity
-import de.bixilon.minosoft.data.mappings.biomes.Biome
+import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.blockPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.inChunkSectionPosition

@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.input.camera
 
 import de.bixilon.minosoft.data.Directions
-import de.bixilon.minosoft.data.mappings.blocks.BlockState
+import de.bixilon.minosoft.data.registries.blocks.BlockState
 import glm_.vec3.Vec3d
 import glm_.vec3.Vec3i
 

@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.particle.types.norender
 
-import de.bixilon.minosoft.data.mappings.particle.data.ParticleData
+import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.gui.rendering.particle.ParticleMesh
 import de.bixilon.minosoft.gui.rendering.particle.types.Particle
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection

@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.textures
 
 import de.bixilon.minosoft.data.assets.AssetsManager
-import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.textures.properties.ImageProperties
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition

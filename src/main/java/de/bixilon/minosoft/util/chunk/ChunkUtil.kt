@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.util.chunk
 
-import de.bixilon.minosoft.data.mappings.Dimension
-import de.bixilon.minosoft.data.mappings.biomes.Biome
-import de.bixilon.minosoft.data.mappings.blocks.BlockState
+import de.bixilon.minosoft.data.registries.Dimension
+import de.bixilon.minosoft.data.registries.biomes.Biome
+import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.world.ChunkData
 import de.bixilon.minosoft.data.world.ChunkSection
 import de.bixilon.minosoft.data.world.biome.source.XZBiomeArray

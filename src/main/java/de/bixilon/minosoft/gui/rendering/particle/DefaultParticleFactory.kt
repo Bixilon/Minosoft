@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.particle
 
-import de.bixilon.minosoft.data.mappings.DefaultFactory
+import de.bixilon.minosoft.data.registries.DefaultFactory
 import de.bixilon.minosoft.gui.rendering.particle.types.Particle
 import de.bixilon.minosoft.gui.rendering.particle.types.norender.ExplosionEmitterParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.advanced.block.BlockDustParticle

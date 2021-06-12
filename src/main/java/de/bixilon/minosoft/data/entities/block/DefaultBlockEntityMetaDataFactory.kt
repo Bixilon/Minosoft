@@ -17,7 +17,7 @@ import de.bixilon.minosoft.data.entities.block.container.*
 import de.bixilon.minosoft.data.entities.block.container.storage.*
 import de.bixilon.minosoft.data.entities.block.piston.PistonBlockEntity
 import de.bixilon.minosoft.data.entities.block.piston.StickyPistonBlockEntity
-import de.bixilon.minosoft.data.mappings.DefaultFactory
+import de.bixilon.minosoft.data.registries.DefaultFactory
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 
 object DefaultBlockEntityMetaDataFactory : DefaultFactory<BlockEntityFactory<out BlockEntity>>(

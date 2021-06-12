@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.config.config.game.elements
 
-import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.hud.HUDElementProperties
 
 data class ElementsGameConfig(

@@ -20,8 +20,8 @@ import com.google.gson.JsonPrimitive
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.Directions
-import de.bixilon.minosoft.data.mappings.blocks.RandomOffsetTypes
-import de.bixilon.minosoft.data.mappings.blocks.types.Block
+import de.bixilon.minosoft.data.registries.blocks.RandomOffsetTypes
+import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.gui.rendering.chunk.models.AABB
 import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModelElement
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition

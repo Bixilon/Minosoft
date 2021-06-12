@@ -14,7 +14,7 @@ package de.bixilon.minosoft.protocol.protocol
 
 import com.google.gson.JsonObject
 import com.sun.javafx.geom.Vec3f
-import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.network.connection.Connection
 import de.bixilon.minosoft.util.Util

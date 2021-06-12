@@ -15,7 +15,7 @@ package de.bixilon.minosoft.protocol.packets.s2c.play
 import de.bixilon.minosoft.data.Directions
 import de.bixilon.minosoft.data.Directions.Companion.byId
 import de.bixilon.minosoft.data.entities.entities.decoration.Painting
-import de.bixilon.minosoft.data.mappings.Motive
+import de.bixilon.minosoft.data.registries.Motive
 import de.bixilon.minosoft.modding.event.events.EntitySpawnEvent
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket

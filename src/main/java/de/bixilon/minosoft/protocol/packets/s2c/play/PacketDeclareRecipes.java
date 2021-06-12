@@ -15,10 +15,10 @@ package de.bixilon.minosoft.protocol.packets.s2c.play;
 
 import com.google.common.collect.HashBiMap;
 import de.bixilon.minosoft.data.inventory.ItemStack;
-import de.bixilon.minosoft.data.mappings.ResourceLocation;
-import de.bixilon.minosoft.data.mappings.recipes.Ingredient;
-import de.bixilon.minosoft.data.mappings.recipes.Recipe;
-import de.bixilon.minosoft.data.mappings.recipes.RecipeTypes;
+import de.bixilon.minosoft.data.registries.ResourceLocation;
+import de.bixilon.minosoft.data.registries.recipes.Ingredient;
+import de.bixilon.minosoft.data.registries.recipes.Recipe;
+import de.bixilon.minosoft.data.registries.recipes.RecipeTypes;
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket;
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;

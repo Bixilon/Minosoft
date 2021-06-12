@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.assets
 
-import de.bixilon.minosoft.data.mappings.versions.Version
+import de.bixilon.minosoft.data.registries.versions.Version
 
 data class AssetVersion(
     val version: Version,

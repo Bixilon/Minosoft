@@ -15,10 +15,10 @@ package de.bixilon.minosoft.gui.main
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.locale.LocaleManager
 import de.bixilon.minosoft.data.locale.Strings
-import de.bixilon.minosoft.data.mappings.ResourceLocation
-import de.bixilon.minosoft.data.mappings.versions.Version
-import de.bixilon.minosoft.data.mappings.versions.Versions
 import de.bixilon.minosoft.data.player.tab.PingBars
+import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.versions.Version
+import de.bixilon.minosoft.data.registries.versions.Versions
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.modding.event.CallbackEventInvoker
 import de.bixilon.minosoft.modding.event.events.ConnectionStateChangeEvent

@@ -21,8 +21,8 @@ import de.bixilon.minosoft.data.entities.entities.npc.villager.data.VillagerData
 import de.bixilon.minosoft.data.entities.entities.npc.villager.data.VillagerLevels
 import de.bixilon.minosoft.data.entities.entities.npc.villager.data.VillagerTypes
 import de.bixilon.minosoft.data.inventory.ItemStack
-import de.bixilon.minosoft.data.mappings.blocks.BlockState
-import de.bixilon.minosoft.data.mappings.particle.data.ParticleData
+import de.bixilon.minosoft.data.registries.blocks.BlockState
+import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer

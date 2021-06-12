@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.util
 
 import de.bixilon.minosoft.data.entities.entities.Entity
-import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.collections.SynchronizedMap

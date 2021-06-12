@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.data.entities.entities.npc.villager.data
 
-import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.data.registries.ResourceLocation
 
 data class VillagerData(
     val type: VillagerTypes,

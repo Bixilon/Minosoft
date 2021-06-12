@@ -29,7 +29,7 @@ import de.bixilon.minosoft.data.commands.parser.exceptions.number.LongCommandPar
 import de.bixilon.minosoft.data.commands.parser.exceptions.properties.BadPropertyMapCommandParseException
 import de.bixilon.minosoft.data.commands.parser.exceptions.properties.DuplicatedPropertyKeyCommandParseException
 import de.bixilon.minosoft.data.commands.parser.exceptions.resourcelocation.InvalidResourceLocationCommandParseException
-import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.util.Pair
 import de.bixilon.minosoft.util.Util
 import java.io.StringReader

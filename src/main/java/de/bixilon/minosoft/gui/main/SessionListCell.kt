@@ -15,7 +15,7 @@ package de.bixilon.minosoft.gui.main
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.locale.LocaleManager
 import de.bixilon.minosoft.data.locale.Strings
-import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.modding.event.CallbackEventInvoker
 import de.bixilon.minosoft.modding.event.events.ConnectionStateChangeEvent
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection

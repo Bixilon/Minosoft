@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.datafixer
 
-import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.data.registries.ResourceLocation
 
 object DataFixerUtil {
     fun Map<String, String>.asResourceLocationMap(): Map<ResourceLocation, ResourceLocation> {

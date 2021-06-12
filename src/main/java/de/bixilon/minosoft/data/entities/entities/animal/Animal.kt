@@ -14,7 +14,7 @@ package de.bixilon.minosoft.data.entities.entities.animal
 
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.AgeableMob
-import de.bixilon.minosoft.data.mappings.entities.EntityType
+import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import glm_.vec3.Vec3d
 

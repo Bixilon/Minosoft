@@ -20,7 +20,7 @@ import de.bixilon.minosoft.data.commands.CommandLiteralNode
 import de.bixilon.minosoft.data.commands.CommandNode
 import de.bixilon.minosoft.data.commands.CommandRootNode
 import de.bixilon.minosoft.data.entities.Poses
-import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.tags.Tag
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.network.connection.Connection

@@ -14,7 +14,7 @@ package de.bixilon.minosoft.protocol.packets.s2c.play
 
 import de.bixilon.minosoft.data.Difficulties
 import de.bixilon.minosoft.data.abilities.Gamemodes
-import de.bixilon.minosoft.data.mappings.Dimension
+import de.bixilon.minosoft.data.registries.Dimension
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
 import de.bixilon.minosoft.modding.event.events.RespawnEvent
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection

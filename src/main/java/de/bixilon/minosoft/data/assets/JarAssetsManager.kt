@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.assets
 
-import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.data.registries.ResourceLocation
 import java.io.FileNotFoundException
 import java.io.InputStream
 import java.net.URL

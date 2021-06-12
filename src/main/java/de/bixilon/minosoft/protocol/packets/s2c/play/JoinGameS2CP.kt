@@ -15,9 +15,9 @@ package de.bixilon.minosoft.protocol.packets.s2c.play
 import com.google.common.collect.HashBiMap
 import de.bixilon.minosoft.data.Difficulties
 import de.bixilon.minosoft.data.abilities.Gamemodes
-import de.bixilon.minosoft.data.mappings.DefaultRegistries
-import de.bixilon.minosoft.data.mappings.Dimension
-import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.data.registries.DefaultRegistries
+import de.bixilon.minosoft.data.registries.Dimension
+import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.world.biome.accessor.BlockBiomeAccessor
 import de.bixilon.minosoft.data.world.biome.accessor.NoiseBiomeAccessor
 import de.bixilon.minosoft.modding.channels.DefaultPluginChannels

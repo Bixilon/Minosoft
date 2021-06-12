@@ -13,7 +13,7 @@
 package de.bixilon.minosoft.data.world
 
 import de.bixilon.minosoft.data.entities.block.BlockEntity
-import de.bixilon.minosoft.data.mappings.blocks.BlockState
+import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.world.biome.source.BiomeSource
 import de.bixilon.minosoft.data.world.light.LightAccessor
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY

@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering
 
-import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 

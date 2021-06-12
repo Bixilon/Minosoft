@@ -18,7 +18,7 @@ import de.bixilon.minosoft.ShutdownReasons;
 import de.bixilon.minosoft.data.accounts.Account;
 import de.bixilon.minosoft.data.locale.LocaleManager;
 import de.bixilon.minosoft.data.locale.Strings;
-import de.bixilon.minosoft.data.mappings.ResourceLocation;
+import de.bixilon.minosoft.data.registries.ResourceLocation;
 import de.bixilon.minosoft.gui.main.cells.AccountListCell;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import javafx.collections.FXCollections;

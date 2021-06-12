@@ -17,7 +17,7 @@ import com.google.gson.JsonObject
 import com.google.gson.JsonPrimitive
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.StaticConfiguration
-import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.CountUpAndDownLatch
 import de.bixilon.minosoft.util.Util

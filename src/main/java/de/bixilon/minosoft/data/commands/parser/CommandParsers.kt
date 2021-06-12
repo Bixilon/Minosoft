@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.data.commands.parser
 
 import com.google.common.collect.HashBiMap
-import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.data.registries.ResourceLocation
 import org.checkerframework.checker.nullness.qual.Nullable
 
 object CommandParsers {

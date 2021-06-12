@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.datafixer
 
-import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.datafixer.DataFixerUtil.asResourceLocationMap
 
 object BlockEntityFixer {

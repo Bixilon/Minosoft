@@ -13,7 +13,7 @@
 package de.bixilon.minosoft.data.world
 
 import de.bixilon.minosoft.data.entities.block.BlockEntity
-import de.bixilon.minosoft.data.mappings.blocks.BlockState
+import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.world.block.entities.ArrayBlockEntityProvider
 import de.bixilon.minosoft.data.world.block.entities.BlockEntityProvider
 import de.bixilon.minosoft.data.world.block.entities.MapBlockEntityProvider

@@ -14,13 +14,13 @@ package de.bixilon.minosoft.protocol.protocol
 
 import de.bixilon.minosoft.data.entities.meta.EntityMetaData
 import de.bixilon.minosoft.data.inventory.ItemStack
-import de.bixilon.minosoft.data.mappings.biomes.Biome
-import de.bixilon.minosoft.data.mappings.particle.ParticleType
-import de.bixilon.minosoft.data.mappings.particle.data.BlockParticleData
-import de.bixilon.minosoft.data.mappings.particle.data.DustParticleData
-import de.bixilon.minosoft.data.mappings.particle.data.ItemParticleData
-import de.bixilon.minosoft.data.mappings.particle.data.ParticleData
-import de.bixilon.minosoft.data.mappings.recipes.Ingredient
+import de.bixilon.minosoft.data.registries.biomes.Biome
+import de.bixilon.minosoft.data.registries.particle.ParticleType
+import de.bixilon.minosoft.data.registries.particle.data.BlockParticleData
+import de.bixilon.minosoft.data.registries.particle.data.DustParticleData
+import de.bixilon.minosoft.data.registries.particle.data.ItemParticleData
+import de.bixilon.minosoft.data.registries.particle.data.ParticleData
+import de.bixilon.minosoft.data.registries.recipes.Ingredient
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.ChatComponent.Companion.of
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection

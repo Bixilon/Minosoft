@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.shader
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.assets.AssetsManager
 import de.bixilon.minosoft.data.commands.CommandStringReader
-import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.Rendering
 import de.bixilon.minosoft.gui.rendering.exceptions.ShaderLoadingException

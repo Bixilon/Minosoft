@@ -17,7 +17,7 @@ import de.bixilon.minosoft.data.commands.parser.CommandParser;
 import de.bixilon.minosoft.data.commands.parser.CommandParsers;
 import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException;
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties;
-import de.bixilon.minosoft.data.mappings.ResourceLocation;
+import de.bixilon.minosoft.data.registries.ResourceLocation;
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.terminal.commands.CommandStack;

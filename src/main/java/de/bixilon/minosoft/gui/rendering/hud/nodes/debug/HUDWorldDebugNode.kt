@@ -15,7 +15,7 @@ package de.bixilon.minosoft.gui.rendering.hud.nodes.debug
 
 import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames
 import de.bixilon.minosoft.data.Directions
-import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.chunk.WorldRenderer
 import de.bixilon.minosoft.gui.rendering.hud.HUDElementProperties
 import de.bixilon.minosoft.gui.rendering.hud.HUDRenderBuilder

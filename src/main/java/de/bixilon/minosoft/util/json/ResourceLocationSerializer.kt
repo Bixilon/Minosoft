@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.util.json
 
 import com.squareup.moshi.*
-import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.data.registries.ResourceLocation
 
 object ResourceLocationSerializer : JsonAdapter<ResourceLocation>() {
     @FromJson

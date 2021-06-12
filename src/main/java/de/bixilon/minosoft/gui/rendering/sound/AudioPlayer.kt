@@ -17,8 +17,8 @@ import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.google.gson.JsonPrimitive
 import de.bixilon.minosoft.Minosoft
-import de.bixilon.minosoft.data.mappings.ResourceLocation
-import de.bixilon.minosoft.data.mappings.sounds.SoundEvent
+import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.sounds.SoundEvent
 import de.bixilon.minosoft.gui.rendering.Rendering
 import de.bixilon.minosoft.gui.rendering.input.camera.Camera
 import de.bixilon.minosoft.gui.rendering.modding.events.CameraPositionChangeEvent

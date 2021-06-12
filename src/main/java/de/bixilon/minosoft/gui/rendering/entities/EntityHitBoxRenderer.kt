@@ -15,7 +15,7 @@ package de.bixilon.minosoft.gui.rendering.entities
 
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.entities.entities.Entity
-import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.Renderer
 import de.bixilon.minosoft.gui.rendering.RendererBuilder

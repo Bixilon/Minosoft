@@ -15,7 +15,7 @@ package de.bixilon.minosoft.gui.rendering.hud.nodes.chat
 
 
 import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames
-import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.hud.HUDElementProperties
 import de.bixilon.minosoft.gui.rendering.hud.HUDRenderBuilder
 import de.bixilon.minosoft.gui.rendering.hud.HUDRenderer

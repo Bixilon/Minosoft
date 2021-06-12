@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.sound.sounds
 
 import de.bixilon.minosoft.data.assets.AssetsManager
-import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType

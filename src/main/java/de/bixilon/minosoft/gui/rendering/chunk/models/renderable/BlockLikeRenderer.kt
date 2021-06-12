@@ -1,6 +1,6 @@
 package de.bixilon.minosoft.gui.rendering.chunk.models.renderable
 
-import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.chunk.models.FaceSize
 import de.bixilon.minosoft.gui.rendering.textures.Texture
 

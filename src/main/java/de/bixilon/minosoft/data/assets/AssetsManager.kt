@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.assets
 
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
-import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.util.Util
 import de.matthiasmann.twl.utils.PNGDecoder

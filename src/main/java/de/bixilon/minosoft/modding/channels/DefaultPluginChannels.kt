@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.modding.channels
 
-import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.data.registries.ResourceLocation
 
 object DefaultPluginChannels {
     val REGISTER = ResourceLocation("minecraft:register")

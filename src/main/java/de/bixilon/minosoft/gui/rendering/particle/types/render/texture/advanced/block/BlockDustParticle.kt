@@ -13,10 +13,10 @@
 
 package de.bixilon.minosoft.gui.rendering.particle.types.render.texture.advanced.block
 
-import de.bixilon.minosoft.data.mappings.ResourceLocation
-import de.bixilon.minosoft.data.mappings.blocks.DefaultBlocks
-import de.bixilon.minosoft.data.mappings.particle.data.BlockParticleData
-import de.bixilon.minosoft.data.mappings.particle.data.ParticleData
+import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.blocks.DefaultBlocks
+import de.bixilon.minosoft.data.registries.particle.data.BlockParticleData
+import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.data.text.RGBColor.Companion.asGray
 import de.bixilon.minosoft.gui.rendering.chunk.models.renderable.BlockLikeRenderer

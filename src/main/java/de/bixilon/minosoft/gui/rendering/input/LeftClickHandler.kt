@@ -17,11 +17,11 @@ import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames
 import de.bixilon.minosoft.data.Directions
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.inventory.ItemStack
-import de.bixilon.minosoft.data.mappings.blocks.BlockState
-import de.bixilon.minosoft.data.mappings.effects.DefaultStatusEffects
-import de.bixilon.minosoft.data.mappings.enchantment.DefaultEnchantments
-import de.bixilon.minosoft.data.mappings.items.tools.MiningToolItem
 import de.bixilon.minosoft.data.player.Hands
+import de.bixilon.minosoft.data.registries.blocks.BlockState
+import de.bixilon.minosoft.data.registries.effects.DefaultStatusEffects
+import de.bixilon.minosoft.data.registries.enchantment.DefaultEnchantments
+import de.bixilon.minosoft.data.registries.items.tools.MiningToolItem
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.modding.event.CallbackEventInvoker

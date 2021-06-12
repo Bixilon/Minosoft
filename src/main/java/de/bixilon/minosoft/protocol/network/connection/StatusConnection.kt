@@ -14,8 +14,8 @@
 package de.bixilon.minosoft.protocol.network.connection
 
 import de.bixilon.minosoft.Minosoft
-import de.bixilon.minosoft.data.mappings.versions.Version
-import de.bixilon.minosoft.data.mappings.versions.Versions
+import de.bixilon.minosoft.data.registries.versions.Version
+import de.bixilon.minosoft.data.registries.versions.Versions
 import de.bixilon.minosoft.modding.event.EventInvoker
 import de.bixilon.minosoft.modding.event.events.ConnectionStateChangeEvent
 import de.bixilon.minosoft.modding.event.events.PacketReceiveEvent

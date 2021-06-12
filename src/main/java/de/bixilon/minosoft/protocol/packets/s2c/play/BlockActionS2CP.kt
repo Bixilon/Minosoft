@@ -14,7 +14,7 @@ package de.bixilon.minosoft.protocol.packets.s2c.play
 
 import de.bixilon.minosoft.data.entities.block.BlockActionEntity
 import de.bixilon.minosoft.data.entities.block.DefaultBlockEntityMetaDataFactory
-import de.bixilon.minosoft.data.mappings.blocks.types.Block
+import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.datafixer.BlockEntityFixer.fix
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket

@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.protocol.packets.s2c.status;
 
-import de.bixilon.minosoft.data.mappings.versions.Version;
-import de.bixilon.minosoft.data.mappings.versions.Versions;
+import de.bixilon.minosoft.data.registries.versions.Version;
+import de.bixilon.minosoft.data.registries.versions.Versions;
 import de.bixilon.minosoft.modding.event.events.StatusResponseEvent;
 import de.bixilon.minosoft.protocol.network.connection.StatusConnection;
 import de.bixilon.minosoft.protocol.packets.c2s.status.StatusPingC2SP;

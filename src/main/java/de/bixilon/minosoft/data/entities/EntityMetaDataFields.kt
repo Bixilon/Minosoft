@@ -18,9 +18,9 @@ import de.bixilon.minosoft.data.entities.entities.npc.villager.data.VillagerData
 import de.bixilon.minosoft.data.entities.entities.npc.villager.data.VillagerLevels
 import de.bixilon.minosoft.data.entities.entities.npc.villager.data.VillagerTypes
 import de.bixilon.minosoft.data.entities.entities.vehicle.Boat
-import de.bixilon.minosoft.data.mappings.ResourceLocation
-import de.bixilon.minosoft.data.mappings.particle.ParticleType
-import de.bixilon.minosoft.data.mappings.particle.data.ParticleData
+import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.particle.ParticleType
+import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.data.text.ChatComponent.Companion.of
 import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.enum.ValuesEnum

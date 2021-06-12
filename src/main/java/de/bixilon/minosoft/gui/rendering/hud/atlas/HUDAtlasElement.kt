@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.hud.atlas
 
 import com.google.gson.JsonObject
-import de.bixilon.minosoft.data.mappings.ResourceLocation
+import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.textures.Texture
 import glm_.vec2.Vec2

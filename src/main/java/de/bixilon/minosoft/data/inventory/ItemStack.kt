@@ -23,9 +23,9 @@ import de.bixilon.minosoft.data.inventory.ItemNBTValues.ENCHANTMENT_PRE_FLATTENI
 import de.bixilon.minosoft.data.inventory.ItemNBTValues.HIDE_FLAGS_TAG
 import de.bixilon.minosoft.data.inventory.ItemNBTValues.REPAIR_COST_TAG
 import de.bixilon.minosoft.data.inventory.ItemNBTValues.UNBREAKABLE_TAG
-import de.bixilon.minosoft.data.mappings.ResourceLocation
-import de.bixilon.minosoft.data.mappings.enchantment.Enchantment
-import de.bixilon.minosoft.data.mappings.items.Item
+import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.enchantment.Enchantment
+import de.bixilon.minosoft.data.registries.items.Item
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.util.BitByte.isBit

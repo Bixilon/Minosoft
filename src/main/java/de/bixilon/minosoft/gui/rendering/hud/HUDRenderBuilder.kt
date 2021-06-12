@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.hud
 
-import de.bixilon.minosoft.data.mappings.CompanionResourceLocation
+import de.bixilon.minosoft.data.registries.CompanionResourceLocation
 import de.bixilon.minosoft.gui.rendering.hud.nodes.HUDElement
 
 interface HUDRenderBuilder<T : HUDElement> : CompanionResourceLocation {

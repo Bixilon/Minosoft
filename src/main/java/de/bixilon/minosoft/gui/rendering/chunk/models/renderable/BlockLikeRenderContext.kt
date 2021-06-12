@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.chunk.models.renderable
 
-import de.bixilon.minosoft.data.mappings.blocks.BlockState
+import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.light.LightAccessor
 import de.bixilon.minosoft.gui.rendering.RenderWindow

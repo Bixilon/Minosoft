@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.protocol.network;
 
-import de.bixilon.minosoft.data.mappings.versions.Version;
+import de.bixilon.minosoft.data.registries.versions.Version;
 import de.bixilon.minosoft.protocol.exceptions.PacketNotImplementedException;
 import de.bixilon.minosoft.protocol.exceptions.PacketParseException;
 import de.bixilon.minosoft.protocol.exceptions.UnknownPacketException;

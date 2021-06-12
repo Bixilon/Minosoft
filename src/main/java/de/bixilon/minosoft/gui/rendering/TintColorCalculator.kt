@@ -16,9 +16,9 @@ package de.bixilon.minosoft.gui.rendering
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.data.assets.AssetsManager
-import de.bixilon.minosoft.data.mappings.ResourceLocation
-import de.bixilon.minosoft.data.mappings.biomes.Biome
-import de.bixilon.minosoft.data.mappings.blocks.BlockState
+import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.biomes.Biome
+import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.data.text.RGBColor.Companion.asRGBColor
 import de.bixilon.minosoft.data.world.World

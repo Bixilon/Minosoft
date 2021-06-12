@@ -15,10 +15,10 @@ package de.bixilon.minosoft.data.commands.parser
 import de.bixilon.minosoft.data.commands.CommandStringReader
 import de.bixilon.minosoft.data.commands.parser.exceptions.resourcelocation.ParticleNotFoundCommandParseException
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties
-import de.bixilon.minosoft.data.mappings.particle.data.BlockParticleData
-import de.bixilon.minosoft.data.mappings.particle.data.DustParticleData
-import de.bixilon.minosoft.data.mappings.particle.data.ItemParticleData
-import de.bixilon.minosoft.data.mappings.particle.data.ParticleData
+import de.bixilon.minosoft.data.registries.particle.data.BlockParticleData
+import de.bixilon.minosoft.data.registries.particle.data.DustParticleData
+import de.bixilon.minosoft.data.registries.particle.data.ItemParticleData
+import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 

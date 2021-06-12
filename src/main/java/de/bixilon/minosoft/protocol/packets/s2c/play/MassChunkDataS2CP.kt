@@ -13,7 +13,7 @@
 package de.bixilon.minosoft.protocol.packets.s2c.play
 
 import de.bixilon.minosoft.Minosoft
-import de.bixilon.minosoft.data.mappings.tweaker.VersionTweaker
+import de.bixilon.minosoft.data.registries.tweaker.VersionTweaker
 import de.bixilon.minosoft.data.world.ChunkData
 import de.bixilon.minosoft.modding.event.EventInitiators
 
