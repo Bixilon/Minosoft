@@ -16,28 +16,24 @@ package de.bixilon.minosoft.data.mappings.blocks.types
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.mappings.ResourceLocation
 import de.bixilon.minosoft.data.mappings.blocks.BlockState
+import de.bixilon.minosoft.data.mappings.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.mappings.versions.Registries
-import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.fire.SmokeParticle
-import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.slowing.FlameParticle
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.of
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import glm_.vec3.Vec3d
 import glm_.vec3.Vec3i
 import kotlin.random.Random
 
-open class TorchBlock(resourceLocation: ResourceLocation, registries: Registries, data: JsonObject) : Block(resourceLocation, registries, data) {
-    protected val smokeParticle = registries.particleTypeRegistry[SmokeParticle]
-    protected val flameParticle = registries.particleTypeRegistry[data["flame_particle"] ?: FlameParticle]
+open class RedstoneTorchBlock(resourceLocation: ResourceLocation, registries: Registries, data: JsonObject) : TorchBlock(resourceLocation, registries, data) {
 
-
-    private fun spawnSmokeParticles(connection: PlayConnection, blockPosition: Vec3i) {
-        val particlePosition = Vec3d(0.5, 0.7, 0.5) + blockPosition
-        smokeParticle?.let { connection.world += SmokeParticle(connection, Vec3d(particlePosition), Vec3d.EMPTY) }
-        flameParticle?.let { connection.world += it.factory?.build(connection, Vec3d(particlePosition), Vec3d.EMPTY) }
-    }
 
     override fun randomTick(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, random: Random) {
-        spawnSmokeParticles(connection, blockPosition)
+        if (blockState.properties[BlockProperties.LIT] != true) {
+            return
+        }
+
+        flameParticle?.let { connection.world += it.factory?.build(connection, Vec3d(blockPosition) + Vec3d(0.5, 0.7, 0.5) + (Vec3d.of { random.nextDouble() - 0.5 } * 0.2), Vec3d.EMPTY) }
     }
 
 }

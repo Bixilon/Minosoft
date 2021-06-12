@@ -124,6 +124,7 @@ open class Block(
             "BrewingStandBlock" to { resourceLocation, registries, data -> BrewingStandBlock(resourceLocation, registries, data) },
             "EnderChestBlock" to { resourceLocation, registries, data -> EnderChestBlock(resourceLocation, registries, data) },
             "NetherPortalBlock" to { resourceLocation, registries, data -> NetherPortalBlock(resourceLocation, registries, data) },
+            "RedstoneTorchBlock" to { resourceLocation, registries, data -> RedstoneTorchBlock(resourceLocation, registries, data) },
         )
 
         override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: JsonObject): Block {
