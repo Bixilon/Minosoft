@@ -110,6 +110,7 @@ enum class Directions(val horizontalId: Int, val vector: Vec3i) {
         override val VALUES = values()
         override val NAME_MAP: Map<String, Directions> = KUtil.getEnumValues(VALUES)
         val SIDES = arrayOf(NORTH, SOUTH, WEST, EAST)
+        val PRIORITY_SIDES = arrayOf(WEST, EAST, NORTH, SOUTH)
         private val HORIZONTAL = arrayOf(SOUTH, WEST, NORTH, EAST)
 
         override fun deserialize(value: Any): Directions {

@@ -25,6 +25,34 @@ enum class Axes {
     Z,
     ;
 
+    fun choose(vec3: Vec3): Float {
+        return choose(vec3.x, vec3.y, vec3.z)
+    }
+
+    fun choose(vec3: Vec3d): Double {
+        return choose(vec3.x, vec3.y, vec3.z)
+    }
+
+    fun choose(vec3i: Vec3i): Int {
+        return choose(Vec3(vec3i)).toInt()
+    }
+
+    private fun choose(x: Float, y: Float, z: Float): Float {
+        return when (this) {
+            X -> x
+            Y -> y
+            Z -> z
+        }
+    }
+
+    private fun choose(x: Double, y: Double, z: Double): Double {
+        return when (this) {
+            X -> x
+            Y -> y
+            Z -> z
+        }
+    }
+
     companion object : ValuesEnum<Axes>, BlockPropertiesSerializer {
         override val VALUES: Array<Axes> = values()
         override val NAME_MAP: Map<String, Axes> = KUtil.getEnumValues(VALUES)
@@ -34,34 +62,6 @@ enum class Axes {
                 Directions.EAST, Directions.WEST -> X
                 Directions.UP, Directions.DOWN -> Y
                 Directions.NORTH, Directions.SOUTH -> Z
-            }
-        }
-
-        fun choose(axis: Axes, vec3: Vec3): Float {
-            return choose(axis, vec3.x, vec3.y, vec3.z)
-        }
-
-        fun choose(axis: Axes, vec3: Vec3d): Double {
-            return choose(axis, vec3.x, vec3.y, vec3.z)
-        }
-
-        fun choose(axis: Axes, vec3i: Vec3i): Int {
-            return choose(axis, Vec3(vec3i)).toInt()
-        }
-
-        private fun choose(axis: Axes, x: Float, y: Float, z: Float): Float {
-            return when (axis) {
-                X -> x
-                Y -> y
-                Z -> z
-            }
-        }
-
-        private fun choose(axis: Axes, x: Double, y: Double, z: Double): Double {
-            return when (axis) {
-                X -> x
-                Y -> y
-                Z -> z
             }
         }
 

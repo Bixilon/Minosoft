@@ -26,6 +26,7 @@ import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3bool
 import glm_.vec3.Vec3d
+import glm_.vec3.Vec3i
 import kotlin.math.abs
 
 class CollisionDetector(val connection: PlayConnection) {
@@ -36,7 +37,8 @@ class CollisionDetector(val connection: PlayConnection) {
 
         // check if already in block
         if (!connection.world.isSpaceEmpty(aabb)) {
-            blockPositions.remove(aabb.min.floor)
+            val center = aabb.center.floor
+            blockPositions.remove(Vec3i(center.x, aabb.min.y, center.z))
         }
 
         val result = VoxelShape()
@@ -54,7 +56,7 @@ class CollisionDetector(val connection: PlayConnection) {
     }
 
     fun sneak(entity: LocalPlayerEntity, deltaPosition: Vec3d): Vec3d {
-        if (entity.baseAbilities.isFlying || !entity.isSneaking || !entity.canSneak()) {
+        if (entity.baseAbilities.isFlying || !entity.isSneaking || !entity.canSneak) {
             return deltaPosition
         }
 

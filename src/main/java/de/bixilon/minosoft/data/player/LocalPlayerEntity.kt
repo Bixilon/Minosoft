@@ -13,6 +13,8 @@
 package de.bixilon.minosoft.data.player
 
 import de.bixilon.minosoft.Minosoft
+import de.bixilon.minosoft.data.Axes
+import de.bixilon.minosoft.data.Directions
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.abilities.ItemCooldown
 import de.bixilon.minosoft.data.accounts.Account
@@ -34,12 +36,15 @@ import de.bixilon.minosoft.data.registries.other.containers.Container
 import de.bixilon.minosoft.data.registries.other.containers.PlayerInventory
 import de.bixilon.minosoft.data.tags.DefaultBlockTags
 import de.bixilon.minosoft.data.tags.Tag
+import de.bixilon.minosoft.gui.rendering.chunk.models.AABB
 import de.bixilon.minosoft.gui.rendering.input.camera.MovementInput
 import de.bixilon.minosoft.gui.rendering.util.VecUtil
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.clearZero
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.empty
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.get
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.c2s.play.*
 import de.bixilon.minosoft.protocol.packets.s2c.play.TagsS2CP
@@ -52,6 +57,7 @@ import de.bixilon.minosoft.util.MMath
 import glm_.func.cos
 import glm_.func.rad
 import glm_.func.sin
+import glm_.vec2.Vec2
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3d
 import glm_.vec3.Vec3i
@@ -460,7 +466,13 @@ class LocalPlayerEntity(
             movementSideways *= 0.2f
         }
 
-        // ToDo: Push out of blocks
+        if (gamemode != Gamemodes.SPECTATOR) {
+            // ToDo: Push out of blocks
+            // pushOutOfBlocks(position.x - dimensions.x * 0.35, position.z + dimensions.x * 0.35)
+            // pushOutOfBlocks(position.x - dimensions.x * 0.35, position.z - dimensions.x * 0.35)
+            // pushOutOfBlocks(position.x + dimensions.x * 0.35, position.z - dimensions.x * 0.35)
+            // pushOutOfBlocks(position.x + dimensions.x * 0.35, position.z + dimensions.x * 0.35)
+        }
 
         // ToDo
 
@@ -544,9 +556,44 @@ class LocalPlayerEntity(
         dirtyVelocity = true
     }
 
-    fun canSneak(): Boolean {
-        return (onGround && fallDistance < PhysicsConstants.STEP_HEIGHT) && !connection.world.isSpaceEmpty(aabb + Vec3(0.0f, fallDistance - PhysicsConstants.STEP_HEIGHT, 0.0f))
+    private fun pushOutOfBlocks(x: Double, z: Double) {
+        val blockPosition = Vec3i(x, position.y, z)
+        if (!collidesAt(blockPosition)) {
+            return
+        }
+
+        val decimal = Vec2(x - blockPosition.x, z - blockPosition.z)
+
+        var pushDirection: Directions? = null
+        var minimumDistance = Float.MAX_VALUE
+
+        for (direction in Directions.PRIORITY_SIDES) {
+            val nearestAxisValue = direction.axis.choose(Vec3(decimal.x, 0.0, decimal.y))
+            val movement = (direction.vector[direction.axis] > 0.0).decide(1.0f - nearestAxisValue, nearestAxisValue)
+            if (movement < minimumDistance && !collidesAt(blockPosition + direction)) {
+                minimumDistance = movement
+                pushDirection = direction
+            }
+        }
+
+        pushDirection ?: return
+
+        if (pushDirection.axis == Axes.X) {
+            velocity.x = 0.1 * pushDirection.vectord.x
+        } else {
+            velocity.z = 0.1 * pushDirection.vectord.z
+        }
     }
+
+    private fun collidesAt(position: Vec3i): Boolean {
+        val aabb = aabb
+        val nextAABB = AABB(Vec3(position.x, aabb.min.y, position.z), Vec3(position.x + 1.0, aabb.max.y, position.z + 1.0)).shrink(1.0E-7)
+
+        return !connection.world.isSpaceEmpty(nextAABB)
+    }
+
+    val canSneak: Boolean
+        get() = (onGround && fallDistance < PhysicsConstants.STEP_HEIGHT) && !connection.world.isSpaceEmpty(aabb + Vec3(0.0f, fallDistance - PhysicsConstants.STEP_HEIGHT, 0.0f))
 
     override fun realTick() {
         if (connection.world[positionInfo.blockPosition.chunkPosition] == null) {

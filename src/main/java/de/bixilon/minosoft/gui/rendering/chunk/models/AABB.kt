@@ -69,11 +69,11 @@ class AABB(
         }
 
     private fun min(axis: Axes): Double {
-        return Axes.choose(axis, min)
+        return axis.choose(min)
     }
 
     private fun max(axis: Axes): Double {
-        return Axes.choose(axis, max)
+        return axis.choose(max)
     }
 
     infix fun extend(vec3: Vec3d): AABB {

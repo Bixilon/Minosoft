@@ -58,7 +58,7 @@ class ElementRenderer(
         if (uvLock) {
             for (direction in Directions.VALUES) {
                 val axis = Axes.byDirection(direction)
-                val angle = Axes.choose(axis, rotation) * Axes.choose(axis, direction.vector)
+                val angle = axis.choose(rotation) * axis.choose(direction.vector)
                 faces[direction]?.rotate(-angle)
             }
         }
