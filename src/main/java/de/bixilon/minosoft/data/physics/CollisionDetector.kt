@@ -20,6 +20,7 @@ import de.bixilon.minosoft.gui.rendering.chunk.VoxelShape
 import de.bixilon.minosoft.gui.rendering.chunk.models.AABB
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.chunkPosition
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.floor
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.inChunkPosition
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import glm_.vec3.Vec3
@@ -31,7 +32,13 @@ class CollisionDetector(val connection: PlayConnection) {
 
     private fun getCollisionsToCheck(deltaPosition: Vec3d, aabb: AABB, ignoreUnloadedChunks: Boolean = true): VoxelShape {
         // also look at blocks further down to also cover blocks with a higher than normal hitbox (for example fences)
-        val blockPositions = (aabb extend deltaPosition extend Directions.DOWN grow COLLISION_BOX_MARGIN).blockPositions
+        val blockPositions = (aabb extend deltaPosition extend Directions.DOWN grow COLLISION_BOX_MARGIN).blockPositions.toMutableList()
+
+        // check if already in block
+        if (!connection.world.isSpaceEmpty(aabb)) {
+            blockPositions.remove(aabb.min.floor)
+        }
+
         val result = VoxelShape()
         for (blockPosition in blockPositions) {
             val chunk = connection.world[blockPosition.chunkPosition]

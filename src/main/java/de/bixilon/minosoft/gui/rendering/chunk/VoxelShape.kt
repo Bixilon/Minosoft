@@ -73,6 +73,12 @@ class VoxelShape(private val aabbs: MutableList<AABB> = mutableListOf()) : Itera
         }
     }
 
+    fun remove(voxelShape: VoxelShape) {
+        for (newAABB in voxelShape.aabbs) {
+            aabbs.remove(newAABB)
+        }
+    }
+
     fun computeOffset(other: AABB, offset: Double, axis: Axes): Double {
         var result = offset
         for (aabb in aabbs) {
