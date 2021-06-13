@@ -41,9 +41,11 @@ class SkyRenderer(
     val renderWindow: RenderWindow,
 ) : Renderer {
     private val skyboxShader = Shader(
+        renderWindow = renderWindow,
         resourceLocation = ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "sky/skybox"),
     )
     private val skySunShader = Shader(
+        renderWindow = renderWindow,
         resourceLocation = ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "sky/sun"),
     )
     private val skyboxMesh = SkyboxMesh()

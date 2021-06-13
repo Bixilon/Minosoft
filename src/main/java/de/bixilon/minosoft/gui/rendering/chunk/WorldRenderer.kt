@@ -46,7 +46,6 @@ import de.bixilon.minosoft.util.KUtil.nullCast
 import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
 import de.bixilon.minosoft.util.KUtil.synchronizedSetOf
 import de.bixilon.minosoft.util.KUtil.toSynchronizedMap
-import de.bixilon.minosoft.util.MMath
 import de.bixilon.minosoft.util.collections.SynchronizedMap
 import de.bixilon.minosoft.util.task.ThreadPoolRunnable
 import glm_.vec2.Vec2i
@@ -176,8 +175,8 @@ class WorldRenderer(
     override fun postInit() {
         check(renderWindow.textures.animator.animatedTextures.size < TextureArray.MAX_ANIMATED_TEXTURE) { "Can not have more than ${TextureArray.MAX_ANIMATED_TEXTURE} animated textures!" }
         chunkShader = Shader(
+            renderWindow = renderWindow,
             resourceLocation = ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "chunk"),
-            defines = mapOf("ANIMATED_TEXTURE_COUNT" to MMath.clamp(renderWindow.textures.animator.animatedTextures.size, 1, TextureArray.MAX_ANIMATED_TEXTURE)),
         )
         chunkShader.load()
 

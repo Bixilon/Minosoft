@@ -21,6 +21,7 @@ class ShaderManager(
     val renderWindow: RenderWindow,
 ) {
     val genericColorShader = Shader(
+        renderWindow = renderWindow,
         resourceLocation = ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "generic/color"),
     )
 

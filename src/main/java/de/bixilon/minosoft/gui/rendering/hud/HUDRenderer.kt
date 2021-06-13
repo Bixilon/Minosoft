@@ -42,6 +42,7 @@ class HUDRenderer(val connection: PlayConnection, val renderWindow: RenderWindow
     private val hudElements: MutableMap<ResourceLocation, Pair<HUDElementProperties, HUDElement>> = mutableMapOf()
     private val enabledHUDElement: MutableMap<ResourceLocation, Pair<HUDElementProperties, HUDElement>> = mutableMapOf()
     private val hudShader = Shader(
+        renderWindow = renderWindow,
         resourceLocation = ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "hud"),
     )
     lateinit var hudAtlasElements: Map<ResourceLocation, HUDAtlasElement>

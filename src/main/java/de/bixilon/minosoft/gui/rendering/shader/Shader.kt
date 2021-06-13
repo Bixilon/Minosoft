@@ -18,9 +18,12 @@ import de.bixilon.minosoft.data.assets.AssetsManager
 import de.bixilon.minosoft.data.commands.CommandStringReader
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.RGBColor
+import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.Rendering
 import de.bixilon.minosoft.gui.rendering.exceptions.ShaderLoadingException
+import de.bixilon.minosoft.gui.rendering.textures.TextureArray
 import de.bixilon.minosoft.gui.rendering.util.OpenGLUtil
+import de.bixilon.minosoft.util.MMath
 import glm_.mat4x4.Mat4
 import glm_.mat4x4.Mat4d
 import glm_.vec2.Vec2
@@ -37,6 +40,7 @@ import org.lwjgl.system.MemoryUtil
 import java.io.FileNotFoundException
 
 class Shader(
+    private val renderWindow: RenderWindow,
     private val resourceLocation: ResourceLocation,
     private val defines: Map<String, Any> = mapOf(),
 ) {
@@ -47,9 +51,9 @@ class Shader(
     fun load(assetsManager: AssetsManager = Minosoft.MINOSOFT_ASSETS_MANAGER): Int {
         val uniforms: MutableList<String> = mutableListOf()
         val pathPrefix = "${resourceLocation.namespace}:rendering/shader/${resourceLocation.path}/${resourceLocation.path.replace("/", "_")}"
-        val vertexShader = createShader(assetsManager, ResourceLocation("$pathPrefix.vsh"), GL_VERTEX_SHADER_ARB, defines, uniforms)!!
-        val geometryShader = createShader(assetsManager, ResourceLocation("$pathPrefix.gsh"), GL_GEOMETRY_SHADER_ARB, defines, uniforms)
-        val fragmentShader = createShader(assetsManager, ResourceLocation("$pathPrefix.fsh"), GL_FRAGMENT_SHADER_ARB, defines, uniforms)!!
+        val vertexShader = createShader(assetsManager, renderWindow, ResourceLocation("$pathPrefix.vsh"), GL_VERTEX_SHADER_ARB, defines, uniforms)!!
+        val geometryShader = createShader(assetsManager, renderWindow, ResourceLocation("$pathPrefix.gsh"), GL_GEOMETRY_SHADER_ARB, defines, uniforms)
+        val fragmentShader = createShader(assetsManager, renderWindow, ResourceLocation("$pathPrefix.fsh"), GL_FRAGMENT_SHADER_ARB, defines, uniforms)!!
         this.uniforms = uniforms.toList()
         programId = glCreateProgramObjectARB()
 
@@ -160,9 +164,21 @@ class Shader(
 
 
     companion object {
+        private val DEFAULT_DEFINES: Map<String, (renderWindow: RenderWindow) -> Any?> = mapOf(
+            "__NVIDIA" to {
+                if (glGetString(GL_VENDOR)?.lowercase()?.contains("nvidia") == true) {
+                    ""
+                } else {
+                    null
+                }
+            },
+            "ANIMATED_TEXTURE_COUNT" to {
+                MMath.clamp(it.textures.animator.animatedTextures.size, 1, TextureArray.MAX_ANIMATED_TEXTURE)
+            }
+        )
         private var currentShaderInUse: Shader? = null // ToDo: This is not safe todo
 
-        private fun createShader(assetsManager: AssetsManager = Minosoft.MINOSOFT_ASSETS_MANAGER, resourceLocation: ResourceLocation, shaderType: Int, defines: Map<String, Any>, uniforms: MutableList<String>): Int? {
+        private fun createShader(assetsManager: AssetsManager = Minosoft.MINOSOFT_ASSETS_MANAGER, renderWindow: RenderWindow, resourceLocation: ResourceLocation, shaderType: Int, defines: Map<String, Any>, uniforms: MutableList<String>): Int? {
             val shaderId = glCreateShaderObjectARB(shaderType)
             if (shaderId.toLong() == MemoryUtil.NULL) {
                 throw ShaderLoadingException()
@@ -194,16 +210,25 @@ class Shader(
                 total.append(line)
                 total.append('\n')
 
+
+                fun pushDefine(name: String, value: Any) {
+                    total.append("#define ")
+                    total.append(name)
+                    total.append(' ')
+                    total.append(value)
+                    total.append('\n')
+                }
+
                 when {
                     line.startsWith("#version") -> {
                         // add all defines
                         total.append('\n')
-                        for ((define, value) in defines) {
-                            total.append("#define ")
-                            total.append(define)
-                            total.append(' ')
-                            total.append(value)
-                            total.append('\n')
+                        for ((name, value) in defines) {
+                            pushDefine(name, value)
+                        }
+
+                        for ((name, value) in DEFAULT_DEFINES) {
+                            value(renderWindow)?.let { pushDefine(name, it) }
                         }
                     }
                     line.startsWith("uniform ") -> { // ToDo: Packed in layout
