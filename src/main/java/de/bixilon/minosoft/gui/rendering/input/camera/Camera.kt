@@ -92,6 +92,7 @@ class Camera(
         }
         yaw %= 180
         val pitch = glm.clamp(yOffset + entity.rotation.pitch, -89.9, 89.9)
+        entity.rotation = EntityRotation(yaw, pitch)
         setRotation(yaw, pitch)
     }
 
@@ -160,9 +161,7 @@ class Camera(
         return glm.lookAt(cameraPosition, cameraPosition + cameraFront, CAMERA_UP_VEC3)
     }
 
-    fun setRotation(yaw: Double, pitch: Double) {
-        entity.rotation = EntityRotation(yaw, pitch)
-
+    private fun setRotation(yaw: Double, pitch: Double) {
         cameraFront = Vec3d(
             (yaw + 90).rad.cos * (-pitch).rad.cos,
             (-pitch).rad.sin,

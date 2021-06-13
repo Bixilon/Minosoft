@@ -91,11 +91,11 @@ class BlockOutlineRenderer(
 
         val blockOffset = raycastHit.blockPosition.toVec3d + raycastHit.blockPosition.getWorldOffset(raycastHit.blockState.block)
 
-        currentMesh.drawVoxelShape(raycastHit.blockState.outlineShape, blockOffset, LINE_WIDTH, Minosoft.config.config.game.other.blockOutline.outlineColor)
+        currentMesh.drawVoxelShape(raycastHit.blockState.outlineShape, blockOffset, RenderConstants.DEFAULT_LINE_WIDTH, Minosoft.config.config.game.other.blockOutline.outlineColor)
 
 
         if (Minosoft.config.config.game.other.blockOutline.collisionBoxes) {
-            currentMesh.drawVoxelShape(raycastHit.blockState.collisionShape, blockOffset, LINE_WIDTH, Minosoft.config.config.game.other.blockOutline.collisionColor, 0.005f)
+            currentMesh.drawVoxelShape(raycastHit.blockState.collisionShape, blockOffset, RenderConstants.DEFAULT_LINE_WIDTH, Minosoft.config.config.game.other.blockOutline.collisionColor, 0.005f)
         }
 
         currentMesh.load()
@@ -110,7 +110,6 @@ class BlockOutlineRenderer(
 
     companion object : RendererBuilder<BlockOutlineRenderer> {
         override val RESOURCE_LOCATION = ResourceLocation("minosoft:block_outline")
-        private const val LINE_WIDTH = 1.0f / 128.0f
 
         override fun build(connection: PlayConnection, renderWindow: RenderWindow): BlockOutlineRenderer {
             return BlockOutlineRenderer(connection, renderWindow)

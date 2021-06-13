@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.entities
 
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.entities.entities.Entity
+import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.chunk.models.AABB
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.mesh.LineMesh
@@ -33,15 +34,11 @@ class EntityHitBoxMesh(
             entity.isInvisible -> Minosoft.config.config.game.entities.hitBox.invisibleEntitiesColor
             else -> Minosoft.config.config.game.entities.hitBox.hitBoxColor
         }
-        drawAABB(entity.aabb, Vec3d.EMPTY, LINE_WIDTH, hitBoxColor)
+        drawAABB(entity.aabb, Vec3d.EMPTY, RenderConstants.DEFAULT_LINE_WIDTH, hitBoxColor)
 
         val halfWidth = entity.dimensions.x / 2
-        val eyeAABB = AABB(Vec3(-halfWidth, entity.eyeHeight - LINE_WIDTH, -halfWidth), Vec3(halfWidth, entity.eyeHeight - LINE_WIDTH, halfWidth)).hShrink(LINE_WIDTH)
-        drawAABB(eyeAABB, entity.position, LINE_WIDTH, Minosoft.config.config.game.entities.hitBox.eyeHeightColor)
+        val eyeAABB = AABB(Vec3(-halfWidth, entity.eyeHeight - RenderConstants.DEFAULT_LINE_WIDTH, -halfWidth), Vec3(halfWidth, entity.eyeHeight - RenderConstants.DEFAULT_LINE_WIDTH, halfWidth)).hShrink(RenderConstants.DEFAULT_LINE_WIDTH)
+        drawAABB(eyeAABB, entity.position, RenderConstants.DEFAULT_LINE_WIDTH, Minosoft.config.config.game.entities.hitBox.eyeHeightColor)
     }
 
-
-    companion object {
-        private const val LINE_WIDTH = 1.0f / 128.0f
-    }
 }

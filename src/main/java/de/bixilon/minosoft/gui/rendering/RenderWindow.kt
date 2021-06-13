@@ -17,6 +17,7 @@ import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.gui.rendering.chunk.ChunkBorderRenderer
 import de.bixilon.minosoft.gui.rendering.chunk.WorldRenderer
 import de.bixilon.minosoft.gui.rendering.chunk.block.outline.BlockOutlineRenderer
 import de.bixilon.minosoft.gui.rendering.entities.EntityHitBoxRenderer
@@ -118,6 +119,9 @@ class RenderWindow(
         }
         if (Minosoft.config.config.game.entities.hitBox.enabled) {
             registerRenderer(EntityHitBoxRenderer)
+        }
+        if (Minosoft.config.config.game.world.chunkBorders.enabled) {
+            registerRenderer(ChunkBorderRenderer)
         }
         registerRenderer(HUDRenderer)
     }
