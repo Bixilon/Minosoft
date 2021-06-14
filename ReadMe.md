@@ -67,7 +67,7 @@ I always try to add support for the newest version of minecraft. Mostly it is pr
 
 ### Supported versions
 
-Almost all versions (and snapshots!) between 1.7 and the latest one (21w17a as of writing this, snapshot for 1.17). I plan to maintain Minosoft to at least version 1.20, so stay tuned. Support for older protocols will not be dropped as newer protocols are added. And can still only recommend using the latest stable version, should be the most stable one.
+Almost all versions (and snapshots!) between 1.7 and the latest one (1.17 as of writing this). I plan to maintain Minosoft to at least version 1.20, so stay tuned. Support for older protocols will not be dropped as newer protocols are added. And can still only recommend using the latest stable version, should be the most stable one.
 
 ### Unsupported versions
 
