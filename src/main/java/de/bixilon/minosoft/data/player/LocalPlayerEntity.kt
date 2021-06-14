@@ -44,6 +44,7 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.clearZero
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.empty
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.get
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.inChunkPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.c2s.play.*
@@ -354,6 +355,14 @@ class LocalPlayerEntity(
         }
 
         // ToDo: Check for move effect
+
+        // block collision handling
+        val aabb = aabb.shrink(0.001)
+        for (blockPosition in aabb.blockPositions) {
+            val chunk = connection.world[blockPosition.chunkPosition] ?: continue
+            val blockState = chunk[blockPosition.inChunkPosition] ?: continue
+            blockState.block.onEntityCollision(connection, this, blockState, blockPosition)
+        }
 
         val velocityMultiplier = velocityMultiplier
         velocity.x *= velocityMultiplier

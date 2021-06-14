@@ -109,8 +109,8 @@ class AABB(
         return this extend direction.vector
     }
 
-    infix fun grow(value: Double): AABB {
-        return AABB(min - value, max + value)
+    infix fun grow(size: Double): AABB {
+        return AABB(min - size, max + size)
     }
 
     fun computeOffset(other: AABB, offset: Double, axis: Axes): Double {

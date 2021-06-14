@@ -109,6 +109,8 @@ open class Block(
 
     open fun onEntityLand(connection: PlayConnection, entity: Entity, blockPosition: Vec3i, blockState: BlockState) {}
 
+    open fun onEntityCollision(connection: PlayConnection, entity: Entity, blockState: BlockState, blockPosition: Vec3i) {}
+
     companion object : ResourceLocationDeserializer<Block> {
         private val CONSTRUCTORS: Map<String, (resourceLocation: ResourceLocation, registries: Registries, data: JsonObject) -> Block> = mapOf(
             "FluidBlock" to { resourceLocation, registries, data -> FluidBlock(resourceLocation, registries, data) },
@@ -125,6 +127,7 @@ open class Block(
             "EnderChestBlock" to { resourceLocation, registries, data -> EnderChestBlock(resourceLocation, registries, data) },
             "NetherPortalBlock" to { resourceLocation, registries, data -> NetherPortalBlock(resourceLocation, registries, data) },
             "RedstoneTorchBlock" to { resourceLocation, registries, data -> RedstoneTorchBlock(resourceLocation, registries, data) },
+            "HoneyBlock" to { resourceLocation, registries, data -> HoneyBlock(resourceLocation, registries, data) },
         )
 
         override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: JsonObject): Block {
