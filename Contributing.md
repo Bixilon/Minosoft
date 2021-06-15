@@ -27,7 +27,6 @@ I started this project in mind, that I'll never earn money from it. Just doing i
 ## Contact us
 
 If you want to ask me, the team or whoever in this project a question, you can do the following things:
- - IRC. I am very often in the channel `#mcdevs` on [freenode](https://freenode.net/). You can contact me there, my nickname is - as always - @Bixilon.
  - Issues: Just open an issue if you want to ask it, or suggest something. If it is a really short thing, this is not recommended, but even if, it is no problem.
  - E-mail: You can contact me here: [bixilon@bixilon.de](mailto:bixilon@bixilon.de)
  - TeamSpeak: You can join my teamspeak (bixilon.de) and poke me there.
