@@ -38,7 +38,7 @@ open class ShovelItem(
     val flattenableBlockStates: Map<Block, BlockState>? = data["flattenables_block_states"]?.asJsonObject?.let {
         val entries: MutableMap<Block, BlockState> = mutableMapOf()
         for ((origin, target) in it.entrySet()) {
-            entries[registries.blockRegistry[origin.toInt()]] = registries.getBlockState(target.asInt)!!
+            entries[registries.blockRegistry[origin.toInt()]] = registries.blockStateRegistry[target.asInt]!!
         }
         entries.toMap()
     }

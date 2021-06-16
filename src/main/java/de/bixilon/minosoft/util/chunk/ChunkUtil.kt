@@ -89,7 +89,7 @@ object ChunkUtil {
 
                 blockId = blockId or blockMeta
 
-                blocks[blockNumber] = buffer.connection.registries.getBlockState(blockId) ?: continue
+                blocks[blockNumber] = buffer.connection.registries.blockStateRegistry[blockId] ?: continue
             }
             sectionMap[sectionHeight] = ChunkSection(blocks)
         }
@@ -133,7 +133,7 @@ object ChunkUtil {
             val blocks = arrayOfNulls<BlockState>(ProtocolDefinition.BLOCKS_PER_SECTION)
             for (blockNumber in 0 until ProtocolDefinition.BLOCKS_PER_SECTION) {
                 val blockId = blockData[arrayPos++]
-                val block = buffer.connection.registries.getBlockState(blockId) ?: continue
+                val block = buffer.connection.registries.blockStateRegistry[blockId] ?: continue
                 blocks[blockNumber] = block
             }
             sectionMap[sectionHeight] = ChunkSection(blocks)

@@ -29,7 +29,7 @@ class BlockParticleData(val blockState: BlockState?, type: ParticleType) : Parti
             } else {
                 buffer.readVarInt()
             }
-            return BlockParticleData(buffer.connection.registries.getBlockState(blockStateId), type)
+            return BlockParticleData(buffer.connection.registries.blockStateRegistry[blockStateId], type)
         }
     }
 }

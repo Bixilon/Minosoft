@@ -20,16 +20,25 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.ResourceLocationAble
 import de.bixilon.minosoft.data.registries.versions.Registries
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
-import de.bixilon.minosoft.util.collections.Clearable
+import de.bixilon.minosoft.util.KUtil.nullCast
 import de.bixilon.minosoft.util.json.ResourceLocationJsonMap.toResourceLocationMap
 
 open class Registry<T : RegistryItem>(
-    protected var parentRegistry: Registry<T>? = null,
-) : Iterable<T>, Clearable, Parentable<Registry<T>> {
+    override var parent: AbstractRegistry<T>? = null,
+) : AbstractRegistry<T> {
     private var initialized = false
     protected val idValueMap: MutableMap<Int, T> = mutableMapOf()
     protected val valueIdMap: MutableMap<T, Int> = mutableMapOf()
     protected val resourceLocationMap: MutableMap<ResourceLocation, T> = mutableMapOf()
+
+    override val size: Int
+        get() {
+            val value = valueIdMap.size
+            parent?.let {
+                return value + it.size
+            }
+            return value
+        }
 
     open operator fun get(json: JsonElement?): T? {
         return when (json) {
@@ -45,7 +54,7 @@ open class Registry<T : RegistryItem>(
         }
     }
 
-    open operator fun get(any: Any?): T? {
+    override operator fun get(any: Any?): T? {
         return when (any) {
             null -> null
             is Number -> get(any.toInt())
@@ -58,7 +67,7 @@ open class Registry<T : RegistryItem>(
     }
 
     open operator fun get(resourceLocation: ResourceLocation): T? {
-        return resourceLocationMap[resourceLocation] ?: parentRegistry?.get(resourceLocation)
+        return resourceLocationMap[resourceLocation] ?: parent?.get(resourceLocation)
     }
 
     open operator fun get(resourceLocation: String): T? {
@@ -69,17 +78,12 @@ open class Registry<T : RegistryItem>(
         return get(resourceLocation.resourceLocation)
     }
 
-    open operator fun get(id: Int): T {
-        return idValueMap[id] ?: parentRegistry?.get(id) ?: throw NullPointerException("Can not find item with id $id")
+    override operator fun get(id: Int): T {
+        return idValueMap[id] ?: parent?.get(id) ?: throw NullPointerException("Can not find item with id $id")
     }
 
-    open fun getId(value: T): Int {
-        return valueIdMap[value] ?: parentRegistry?.getId(value)!!
-    }
-
-
-    override fun setParent(parent: Registry<T>?) {
-        this.parentRegistry = parent
+    override fun getId(value: T): Int {
+        return valueIdMap[value] ?: parent?.getId(value)!!
     }
 
     open fun initialize(data: Map<ResourceLocation, JsonObject>?, registries: Registries?, deserializer: ResourceLocationDeserializer<T>, flattened: Boolean = true, metaType: MetaTypes = MetaTypes.NONE, alternative: Registry<T>? = null): Registry<T> {
@@ -87,7 +91,7 @@ open class Registry<T : RegistryItem>(
 
         if (data == null) {
             if (alternative != null) {
-                setParent(alternative)
+                parent = alternative
             }
             return this
         }
@@ -117,7 +121,7 @@ open class Registry<T : RegistryItem>(
             resourceLocationMap[resourceLocation] = item
         }
         if (resourceLocationMap.isEmpty()) {
-            setParent(alternative)
+            parent = alternative
         }
         initialized = true
         return this
@@ -126,7 +130,6 @@ open class Registry<T : RegistryItem>(
     open fun initialize(data: JsonObject?, registries: Registries?, deserializer: ResourceLocationDeserializer<T>, flattened: Boolean = true, metaType: MetaTypes = MetaTypes.NONE, alternative: Registry<T>? = null): Registry<T> {
         return initialize(data?.toResourceLocationMap(), registries, deserializer, flattened, metaType, alternative)
     }
-
 
     open fun postInit(registries: Registries) {
         for ((_, value) in resourceLocationMap) {
@@ -147,7 +150,7 @@ open class Registry<T : RegistryItem>(
         for (item in resourceLocationMap.values) {
             lambda(item)
         }
-        parentRegistry?.forEachItem(lambda)
+        parent?.nullCast<Registry<T>>()?.forEachItem(lambda)
     }
 
     override fun toString(): String {

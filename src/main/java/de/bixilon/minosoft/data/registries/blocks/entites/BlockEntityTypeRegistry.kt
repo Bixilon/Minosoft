@@ -23,7 +23,7 @@ class BlockEntityTypeRegistry(
     private lateinit var blockTypeMap: MutableMap<Block, BlockEntityType>
 
     fun getByBlock(block: Block): BlockEntityType? {
-        val parentRegistry = super.parentRegistry as BlockEntityTypeRegistry?
+        val parentRegistry = super.parent as BlockEntityTypeRegistry?
         return blockTypeMap[block] ?: parentRegistry?.getByBlock(block)
     }
 

@@ -13,7 +13,15 @@
 
 package de.bixilon.minosoft.data.registries.registry
 
-interface Parentable<T> {
+import de.bixilon.minosoft.util.collections.Clearable
 
-    var parent: T?
+interface AbstractRegistry<T> : Iterable<T>, Clearable, Parentable<AbstractRegistry<T>> {
+
+    val size: Int
+
+    operator fun get(any: Any?): T?
+
+    operator fun get(id: Int): T?
+
+    fun getId(value: T): Int
 }

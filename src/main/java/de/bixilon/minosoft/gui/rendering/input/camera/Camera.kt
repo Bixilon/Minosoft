@@ -215,7 +215,7 @@ class Camera(
 
         for (i in 0..RAYCAST_MAX_STEPS) {
             val blockPosition = currentPosition.floor
-            val blockState = connection.world.getBlockState(blockPosition)
+            val blockState = connection.world[blockPosition]
             if (blockState != null) {
                 val voxelShapeRaycastResult = (blockState.outlineShape + blockPosition + blockPosition.getWorldOffset(blockState.block)).raycast(currentPosition, direction)
                 if (voxelShapeRaycastResult.hit) {

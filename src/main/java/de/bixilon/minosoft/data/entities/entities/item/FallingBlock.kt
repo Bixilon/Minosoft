@@ -35,7 +35,7 @@ class FallingBlock(connection: PlayConnection, entityType: EntityType, position:
 
 
     override fun setObjectData(data: Int) {
-        blockState = connection.registries.getBlockState(data)
+        blockState = connection.registries.blockStateRegistry[data]
     }
 
     companion object : EntityFactory<FallingBlock> {

@@ -141,7 +141,7 @@ open class Block(
             for ((stateId, stateJson) in data["states"].asJsonObject.entrySet()) {
                 check(stateJson is JsonObject) { "Not a state element!" }
                 val state = BlockState.deserialize(block, registries, stateJson, registries.models)
-                registries.blockStateIdMap[stateId.toInt()] = state
+                registries.blockStateRegistry[stateId.toInt()] = state
                 states.add(state)
                 for ((property, value) in state.properties) {
                     properties.getOrPut(property) { mutableSetOf() } += value
@@ -155,7 +155,7 @@ open class Block(
             }
 
             block.states = states.toSet()
-            block.defaultState = registries.blockStateIdMap[data["default_state"].asInt]!!
+            block.defaultState = registries.blockStateRegistry.forceGet(data["default_state"].asInt)!!
             block.properties = propertiesOut.toMap()
             return block
         }

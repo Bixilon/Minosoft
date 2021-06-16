@@ -20,8 +20,8 @@ import de.bixilon.minosoft.data.registries.registry.ResourceLocationDeserializer
 import de.bixilon.minosoft.data.registries.versions.Registries
 
 class ItemRegistry(
-    parentRegistry: Registry<Item>? = null,
-) : Registry<Item>(parentRegistry = parentRegistry) {
+    parent: Registry<Item>? = null,
+) : Registry<Item>(parent = parent) {
     private var flattened = false
 
     override fun get(id: Int): Item {

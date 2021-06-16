@@ -26,7 +26,6 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.biomes.BiomeCategory
 import de.bixilon.minosoft.data.registries.biomes.BiomePrecipitation
-import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.entites.BlockEntityType
 import de.bixilon.minosoft.data.registries.blocks.entites.BlockEntityTypeRegistry
 import de.bixilon.minosoft.data.registries.blocks.types.Block
@@ -51,7 +50,6 @@ import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModel
 import de.bixilon.minosoft.protocol.packets.c2s.play.EntityActionC2SP
 import de.bixilon.minosoft.protocol.packets.s2c.play.EntityAnimationS2CP
 import de.bixilon.minosoft.protocol.packets.s2c.play.title.TitleS2CF
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.collections.Clearable
 import de.bixilon.minosoft.util.json.ResourceLocationJsonMap.toResourceLocationMap
 import java.lang.reflect.Field
@@ -91,8 +89,7 @@ class Registries {
     val biomePrecipitationRegistry: FakeEnumRegistry<BiomePrecipitation> = FakeEnumRegistry()
     val biomeCategoryRegistry: FakeEnumRegistry<BiomeCategory> = FakeEnumRegistry()
 
-
-    val blockStateIdMap: MutableMap<Int, BlockState> = mutableMapOf()
+    val blockStateRegistry = BlockStateRegistry(false)
 
     val entityMetaIndexMap: MutableMap<EntityMetaDataFields, Int> = mutableMapOf()
     val entityTypeRegistry: Registry<EntityType> = Registry()
@@ -104,10 +101,6 @@ class Registries {
     val gameEventRegistry: Registry<GameEvent> = Registry()
 
     internal val models: MutableMap<ResourceLocation, BlockModel> = mutableMapOf()
-
-
-    val blockStateCount: Int
-        get() = blockStateIdMap.size + (parentRegistries?.blockStateCount ?: 0)
 
 
     var isFullyLoaded = false
@@ -125,19 +118,6 @@ class Registries {
             }
         }
 
-    fun getBlockState(blockState: Int): BlockState? {
-        if (blockState == ProtocolDefinition.NULL_BLOCK_ID) {
-            return null
-        }
-        return blockStateIdMap[blockState] ?: parentRegistries?.getBlockState(blockState) ?: let {
-            if (isFlattened) {
-                null
-            } else {
-                blockStateIdMap[(blockState shr 4) shl 4] // Remove meta data and test again
-            }
-        }
-    }
-
     fun getEntityMetaDataIndex(field: EntityMetaDataFields): Int? {
         return entityMetaIndexMap[field] ?: parentRegistries?.getEntityMetaDataIndex(field)
     }
@@ -146,12 +126,13 @@ class Registries {
         data?.let {
             registry.initialize(it)
         } ?: let {
-            registry.setParent(alternative.forVersion(version))
+            registry.parent = alternative.forVersion(version)
         }
     }
 
     fun load(version: Version, pixlyzerData: JsonObject) {
         isFlattened = version.isFlattened()
+        blockStateRegistry.flattened = isFlattened
         // pre init stuff
         loadShapes(pixlyzerData["shapes"]?.asJsonObject)
 

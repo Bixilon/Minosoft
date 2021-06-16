@@ -71,17 +71,9 @@ class World(
         return chunks[blockPosition.chunkPosition]?.get(blockPosition.inChunkPosition)
     }
 
-    fun getBlockState(blockPosition: Vec3i): BlockState? {
-        return this[blockPosition]
-    }
-
     @Synchronized
     operator fun get(chunkPosition: Vec2i): Chunk? {
         return chunks[chunkPosition]
-    }
-
-    fun getChunk(chunkPosition: Vec2i): Chunk? {
-        return this[chunkPosition]
     }
 
     @Synchronized

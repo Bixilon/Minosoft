@@ -22,27 +22,21 @@ import de.bixilon.minosoft.util.enum.ValuesEnum
 import java.util.*
 
 class EnumRegistry<T : Enum<*>>(
-    private var parentRegistry: EnumRegistry<T>? = null,
+    override var parent: EnumRegistry<T>? = null,
     var values: ValuesEnum<T>,
     private val mutable: Boolean = true,
 ) : Clearable, Parentable<EnumRegistry<T>> {
+
     private var initialized = false
     private val idValueMap: MutableMap<Int, T> = mutableMapOf()
     private val valueIdMap: MutableMap<T, Int> = mutableMapOf()
 
     operator fun get(id: Int): T? {
-        return idValueMap[id] ?: parentRegistry?.get(id)
+        return idValueMap[id] ?: parent?.get(id)
     }
 
     fun getId(value: T): Int {
-        return valueIdMap[value] ?: parentRegistry?.getId(value)!!
-    }
-
-    override fun setParent(parent: EnumRegistry<T>?) {
-        if (!mutable) {
-            throw IllegalStateException("Registry is immutable!")
-        }
-        this.parentRegistry = parent
+        return valueIdMap[value] ?: parent?.getId(value)!!
     }
 
     private fun getEnum(data: Any): T {

@@ -52,7 +52,7 @@ class MassBlockSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
                     val y = (raw and 0xFF0000 ushr 16)
                     val z = (raw and 0x0F000000 ushr 24)
                     val x = (raw and -0x10000000 ushr 28)
-                    blocks[Vec3i(x, y, z)] = buffer.connection.registries.getBlockState((blockId shl 4) or meta)
+                    blocks[Vec3i(x, y, z)] = buffer.connection.registries.blockStateRegistry[(blockId shl 4) or meta]
                 }
             }
             buffer.versionId < ProtocolVersions.V_20W28A -> {
@@ -62,7 +62,7 @@ class MassBlockSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
                     val position = buffer.readByte().toInt()
                     val y = buffer.readByte()
                     val blockId = buffer.readVarInt()
-                    blocks[Vec3i(position and 0xF0 ushr 4 and 0xF, y.toInt(), position and 0xF)] = buffer.connection.registries.getBlockState(blockId)
+                    blocks[Vec3i(position and 0xF0 ushr 4 and 0xF, y.toInt(), position and 0xF)] = buffer.connection.registries.blockStateRegistry[blockId]
                 }
             }
             else -> {
@@ -73,7 +73,7 @@ class MassBlockSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
                     buffer.readBoolean() // ToDo
                 }
                 for (data in buffer.readVarLongArray()) {
-                    blocks[Vec3i((data shr 8 and 0x0F).toInt(), yOffset + (data and 0x0F).toInt(), (data shr 4 and 0xF).toInt())] = buffer.connection.registries.getBlockState((data ushr 12).toInt())
+                    blocks[Vec3i((data shr 8 and 0x0F).toInt(), yOffset + (data and 0x0F).toInt(), (data shr 4 and 0xF).toInt())] = buffer.connection.registries.blockStateRegistry[(data ushr 12).toInt()]
                 }
             }
         }
