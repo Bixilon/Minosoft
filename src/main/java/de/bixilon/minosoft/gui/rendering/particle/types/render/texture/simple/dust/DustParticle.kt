@@ -16,9 +16,11 @@ package de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.d
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.particle.data.DustParticleData
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
+import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
+import de.bixilon.minosoft.util.KUtil.nullCast
 import glm_.vec3.Vec3d
 
 class DustParticle(connection: PlayConnection, position: Vec3d, velocity: Vec3d, data: DustParticleData) : AbstractDustParticle(connection, position, velocity, data) {
@@ -27,7 +29,7 @@ class DustParticle(connection: PlayConnection, position: Vec3d, velocity: Vec3d,
         override val RESOURCE_LOCATION: ResourceLocation = "minecraft:dust".asResourceLocation()
 
         override fun build(connection: PlayConnection, position: Vec3d, velocity: Vec3d, data: ParticleData): DustParticle {
-            return DustParticle(connection, position, velocity, data as DustParticleData)
+            return DustParticle(connection, position, velocity, data.nullCast<DustParticleData>() ?: DustParticleData(ChatColors.WHITE, 1.0f, data.type))
         }
     }
 }

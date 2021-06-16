@@ -33,7 +33,7 @@ abstract class MiningToolItem(
     val diggableBlocks: Set<Block>? = data["diggable_blocks"]?.asJsonArray?.let {
         val entries: MutableList<Block> = mutableListOf()
         for (id in it) {
-            entries += registries.blockRegistry[id]
+            entries += registries.blockRegistry[id]!!
         }
         entries.toSet()
     }

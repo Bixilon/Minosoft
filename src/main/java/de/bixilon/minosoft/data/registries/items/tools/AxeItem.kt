@@ -36,7 +36,7 @@ open class AxeItem(
     val strippableBlocks: Map<Block, Block>? = data["strippables_blocks"]?.asJsonObject?.let {
         val entries: MutableMap<Block, Block> = mutableMapOf()
         for ((origin, target) in it.entrySet()) {
-            entries[registries.blockRegistry[origin.toInt()]] = registries.blockRegistry[target]
+            entries[registries.blockRegistry[origin.toInt()]] = registries.blockRegistry[target]!!
         }
         entries.toMap()
     }

@@ -17,7 +17,10 @@ import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
+import de.bixilon.minosoft.data.registries.particle.data.DustParticleData
 import de.bixilon.minosoft.data.registries.versions.Registries
+import de.bixilon.minosoft.data.text.Colors
+import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.dust.DustParticle
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.of
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
@@ -26,14 +29,14 @@ import glm_.vec3.Vec3i
 import kotlin.random.Random
 
 open class RedstoneTorchBlock(resourceLocation: ResourceLocation, registries: Registries, data: JsonObject) : TorchBlock(resourceLocation, registries, data) {
-
+    private val redstoneDustParticle = registries.particleTypeRegistry[DustParticle]
 
     override fun randomTick(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, random: Random) {
         if (blockState.properties[BlockProperties.LIT] != true) {
             return
         }
 
-        flameParticle?.let { connection.world += it.factory?.build(connection, Vec3d(blockPosition) + Vec3d(0.5, 0.7, 0.5) + (Vec3d.of { random.nextDouble() - 0.5 } * 0.2), Vec3d.EMPTY) }
+        (flameParticle ?: redstoneDustParticle)?.let { connection.world += it.factory?.build(connection, Vec3d(blockPosition) + Vec3d(0.5, 0.7, 0.5) + (Vec3d.of { random.nextDouble() - 0.5 } * 0.2), Vec3d.EMPTY, DustParticleData(Colors.TRUE_RED, 1.0f, it)) }
     }
 
 }

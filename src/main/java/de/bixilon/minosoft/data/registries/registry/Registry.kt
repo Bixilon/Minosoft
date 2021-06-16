@@ -31,8 +31,9 @@ open class Registry<T : RegistryItem>(
     protected val valueIdMap: MutableMap<T, Int> = mutableMapOf()
     protected val resourceLocationMap: MutableMap<ResourceLocation, T> = mutableMapOf()
 
-    open operator fun get(json: JsonElement): T {
+    open operator fun get(json: JsonElement?): T? {
         return when (json) {
+            null -> return null
             is JsonPrimitive -> {
                 when {
                     json.isString -> get(json.asString.asResourceLocation())!!

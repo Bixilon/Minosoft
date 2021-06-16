@@ -18,7 +18,6 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.versions.Registries
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.fire.SmokeParticle
-import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.slowing.FlameParticle
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import glm_.vec3.Vec3d
@@ -27,7 +26,7 @@ import kotlin.random.Random
 
 open class TorchBlock(resourceLocation: ResourceLocation, registries: Registries, data: JsonObject) : Block(resourceLocation, registries, data) {
     protected val smokeParticle = registries.particleTypeRegistry[SmokeParticle]
-    protected val flameParticle = registries.particleTypeRegistry[data["flame_particle"] ?: FlameParticle]
+    protected val flameParticle = registries.particleTypeRegistry[data["flame_particle"]]
 
 
     private fun spawnSmokeParticles(connection: PlayConnection, blockPosition: Vec3i) {
