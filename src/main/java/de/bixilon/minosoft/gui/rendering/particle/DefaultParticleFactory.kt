@@ -44,6 +44,7 @@ import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.su
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.suspend.DolphinParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.suspend.HappyVillagerParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.suspend.MyceliumParticle
+import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.water.BubbleParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.water.CrimsonSporeParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.water.WarpedSporeParticle
 
@@ -80,4 +81,5 @@ object DefaultParticleFactory : DefaultFactory<ParticleFactory<out Particle>>(
     HeartParticle,
     AngryVillagerParticle,
     EndRodParticle,
+    BubbleParticle,
 )
