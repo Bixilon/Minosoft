@@ -36,6 +36,7 @@ import glm_.vec2.Vec2i
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3d
 import glm_.vec3.Vec3i
+import glm_.vec3.Vec3t
 import kotlin.math.abs
 import kotlin.random.Random
 
@@ -70,16 +71,10 @@ object VecUtil {
         z = 0.0f
     }
 
-    infix fun Vec3.assign(vec3: Vec3) {
-        x = vec3.x
-        y = vec3.y
-        z = vec3.z
-    }
-
-    infix fun Vec3d.assign(vec3d: Vec3d) {
-        x = vec3d.x
-        y = vec3d.y
-        z = vec3d.z
+    infix fun <T : Number> Vec3t<T>.assign(other: Vec3t<T>) {
+        x = other.x
+        y = other.y
+        z = other.z
     }
 
     @JvmName(name = "times2")
@@ -391,29 +386,13 @@ object VecUtil {
         return minDistanceDirection
     }
 
-    val Vec3i.toVec3: Vec3
+    val <T : Number> Vec3t<T>.toVec3: Vec3
         get() = Vec3(this)
 
-    val Vec3i.toVec3d: Vec3d
+    val <T : Number> Vec3t<T>.toVec3d: Vec3d
         get() = Vec3d(this)
 
-    operator fun Vec3.get(axis: Axes): Float {
-        return when (axis) {
-            Axes.X -> this.x
-            Axes.Y -> this.y
-            Axes.Z -> this.z
-        }
-    }
-
-    operator fun Vec3d.get(axis: Axes): Double {
-        return when (axis) {
-            Axes.X -> this.x
-            Axes.Y -> this.y
-            Axes.Z -> this.z
-        }
-    }
-
-    operator fun Vec3i.get(axis: Axes): Int {
+    operator fun <T : Number> Vec3t<T>.get(axis: Axes): T {
         return when (axis) {
             Axes.X -> this.x
             Axes.Y -> this.y
