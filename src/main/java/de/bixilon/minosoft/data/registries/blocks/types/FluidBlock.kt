@@ -21,7 +21,10 @@ import de.bixilon.minosoft.data.registries.fluid.Fluid
 import de.bixilon.minosoft.data.registries.versions.Registries
 import de.bixilon.minosoft.gui.rendering.chunk.models.renderable.BlockLikeRenderer
 import de.bixilon.minosoft.gui.rendering.chunk.models.renderable.FluidRenderer
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.util.KUtil.nullCast
+import glm_.vec3.Vec3i
+import kotlin.random.Random
 
 open class FluidBlock(resourceLocation: ResourceLocation, registries: Registries, data: JsonObject) : Block(resourceLocation, registries, data) {
     open val stillFluid: Fluid = registries.fluidRegistry[data["still_fluid"].asInt]
@@ -40,6 +43,12 @@ open class FluidBlock(resourceLocation: ResourceLocation, registries: Registries
 
     fun getFluidHeight(blockState: BlockState): Float {
         return (blockState.properties[BlockProperties.FLUID_LEVEL]?.nullCast() ?: 0) * FLUID_HEIGHT_CALCULATOR
+    }
+
+    override fun randomTick(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, random: Random) {
+        super.randomTick(connection, blockState, blockPosition, random)
+        // ToDO
+        stillFluid.randomTick(connection, blockState, blockPosition, random)
     }
 
     companion object {

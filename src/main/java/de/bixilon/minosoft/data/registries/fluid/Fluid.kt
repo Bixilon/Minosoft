@@ -14,6 +14,7 @@ package de.bixilon.minosoft.data.registries.fluid
 
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.fluid.lava.FlowingLavaFluid
 import de.bixilon.minosoft.data.registries.fluid.lava.StillLavaFluid
 import de.bixilon.minosoft.data.registries.fluid.water.FlowingWaterFluid
@@ -23,6 +24,9 @@ import de.bixilon.minosoft.data.registries.particle.ParticleType
 import de.bixilon.minosoft.data.registries.registry.RegistryItem
 import de.bixilon.minosoft.data.registries.registry.ResourceLocationDeserializer
 import de.bixilon.minosoft.data.registries.versions.Registries
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import glm_.vec3.Vec3i
+import kotlin.random.Random
 
 open class Fluid(
     override val resourceLocation: ResourceLocation,
@@ -42,6 +46,9 @@ open class Fluid(
     override fun postInit(registries: Registries) {
         bucketItem = bucketItemId?.let { registries.itemRegistry[it] }
     }
+
+
+    open fun randomTick(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, random: Random) {}
 
     companion object : ResourceLocationDeserializer<Fluid> {
         private val CONSTRUCTORS: Map<String, (resourceLocation: ResourceLocation, registries: Registries, data: JsonObject) -> Fluid> = mapOf(
