@@ -184,6 +184,14 @@ class World(
         blockState.block.randomTick(connection, blockState, blockPosition, random)
     }
 
+    operator fun get(aabb: AABB): Map<Vec3i, BlockState> {
+        var ret: MutableMap<Vec3i, BlockState> = mutableMapOf()
+        for (position in aabb.blockPositions) {
+            this[position]?.let { ret[position] = it }
+        }
+        return ret.toMap()
+    }
+
     fun getBlocks(start: Vec3i, end: Vec3i): Map<Vec3i, BlockState> {
         val blocks: MutableMap<Vec3i, BlockState> = mutableMapOf()
 

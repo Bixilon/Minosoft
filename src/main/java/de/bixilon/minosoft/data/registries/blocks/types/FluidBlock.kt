@@ -15,10 +15,13 @@ package de.bixilon.minosoft.data.registries.blocks.types
 
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.blocks.BlockState
+import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.fluid.Fluid
 import de.bixilon.minosoft.data.registries.versions.Registries
 import de.bixilon.minosoft.gui.rendering.chunk.models.renderable.BlockLikeRenderer
 import de.bixilon.minosoft.gui.rendering.chunk.models.renderable.FluidRenderer
+import de.bixilon.minosoft.util.KUtil.nullCast
 
 open class FluidBlock(resourceLocation: ResourceLocation, registries: Registries, data: JsonObject) : Block(resourceLocation, registries, data) {
     open val stillFluid: Fluid = registries.fluidRegistry[data["still_fluid"].asInt]
@@ -29,10 +32,17 @@ open class FluidBlock(resourceLocation: ResourceLocation, registries: Registries
     override val renderOverride: List<BlockLikeRenderer>
 
     init {
-        also {
+        let {
             fluidRenderer = FluidRenderer(it, stillFluid, flowingFluid)
             renderOverride = listOf(fluidRenderer)
         }
     }
 
+    fun getFluidHeight(blockState: BlockState): Float {
+        return (blockState.properties[BlockProperties.FLUID_LEVEL]?.nullCast() ?: 0) * FLUID_HEIGHT_CALCULATOR
+    }
+
+    companion object {
+        private const val FLUID_HEIGHT_CALCULATOR = 1.0f / 16.0f
+    }
 }

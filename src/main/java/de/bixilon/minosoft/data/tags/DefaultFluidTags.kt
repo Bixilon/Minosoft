@@ -11,15 +11,22 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.fluid.water
+package de.bixilon.minosoft.data.tags
 
-import com.google.gson.JsonObject
-import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.fluid.FlowableFluid
-import de.bixilon.minosoft.data.registries.versions.Registries
+import de.bixilon.minosoft.data.registries.fluid.DefaultFluids
+import de.bixilon.minosoft.util.KUtil.asResourceLocation
 
-abstract class WaterFluid(
-    resourceLocation: ResourceLocation,
-    registries: Registries,
-    data: JsonObject,
-) : FlowableFluid(resourceLocation, registries, data)
+object DefaultFluidTags {
+    // ToDo: Improve this
+
+    val WATER_TAG = "minecraft:water".asResourceLocation()
+    val WATER = setOf(DefaultFluids.WATER, DefaultFluids.FLOWING_WATER)
+    val LAVA_TAG = "minecraft:lava".asResourceLocation()
+    val LAVA = setOf(DefaultFluids.LAVA, DefaultFluids.FLOWING_LAVA)
+
+
+    val FLUID_TAGS = mapOf(
+        WATER_TAG to WATER,
+        LAVA_TAG to LAVA,
+    )
+}

@@ -21,25 +21,31 @@ import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.data.entities.entities.player.RemotePlayerEntity
+import de.bixilon.minosoft.data.entities.entities.vehicle.Boat
 import de.bixilon.minosoft.data.inventory.InventorySlots
 import de.bixilon.minosoft.data.physics.PhysicsConstants
+import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.DefaultBlocks
 import de.bixilon.minosoft.data.registries.blocks.types.Block
+import de.bixilon.minosoft.data.registries.blocks.types.FluidBlock
 import de.bixilon.minosoft.data.registries.effects.DefaultStatusEffects
 import de.bixilon.minosoft.data.registries.effects.attributes.DefaultStatusEffectAttributeNames
 import de.bixilon.minosoft.data.registries.effects.attributes.DefaultStatusEffectAttributes
 import de.bixilon.minosoft.data.registries.effects.attributes.StatusEffectAttributeInstance
 import de.bixilon.minosoft.data.registries.enchantment.DefaultEnchantments
+import de.bixilon.minosoft.data.registries.fluid.FlowableFluid
 import de.bixilon.minosoft.data.registries.items.DefaultItems
 import de.bixilon.minosoft.data.registries.items.Item
 import de.bixilon.minosoft.data.registries.other.containers.Container
 import de.bixilon.minosoft.data.registries.other.containers.PlayerInventory
 import de.bixilon.minosoft.data.tags.DefaultBlockTags
+import de.bixilon.minosoft.data.tags.DefaultFluidTags
 import de.bixilon.minosoft.data.tags.Tag
 import de.bixilon.minosoft.gui.rendering.chunk.models.AABB
 import de.bixilon.minosoft.gui.rendering.input.camera.MovementInput
 import de.bixilon.minosoft.gui.rendering.util.VecUtil
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.assign
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.clearZero
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.empty
@@ -62,6 +68,7 @@ import glm_.vec2.Vec2
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3d
 import glm_.vec3.Vec3i
+import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.pow
 
@@ -86,6 +93,9 @@ class LocalPlayerEntity(
 
     val itemCooldown: MutableMap<Item, ItemCooldown> = synchronizedMapOf()
 
+
+    // fluids stuff
+    private val fluidHeights: MutableMap<ResourceLocation, Float> = synchronizedMapOf()
 
     var input = MovementInput()
 
@@ -604,6 +614,86 @@ class LocalPlayerEntity(
     val canSneak: Boolean
         get() = (onGround && fallDistance < PhysicsConstants.STEP_HEIGHT) && !connection.world.isSpaceEmpty(aabb + Vec3(0.0f, fallDistance - PhysicsConstants.STEP_HEIGHT, 0.0f))
 
+
+    private fun updateFluidState(fluidType: ResourceLocation, velocityMultiplier: Float): Boolean {
+        val aabb = aabb.shrink()
+
+        var height = 0.0f
+        var inFluid = false
+        val pushable = !baseAbilities.isFlying
+        val velocity = Vec3d.EMPTY
+        var checks = 0
+
+
+        for ((blockPosition, blockState) in connection.world[aabb]) {
+            if (blockState.block !is FluidBlock) {
+                continue
+            }
+
+            if (!connection.inTag(blockState.block.stillFluid, TagsS2CP.FLUID_TAG_RESOURCE_LOCATION, DefaultFluidTags.WATER_TAG)) { // ToDo: stillFluid
+                continue
+            }
+            val fluidHeight = blockPosition.y + blockState.block.getFluidHeight(blockState)
+
+            if (fluidHeight < aabb.min.y) {
+                continue
+            }
+
+            inFluid = true
+
+            height = max(fluidHeight - aabb.min.y.toFloat(), height)
+
+            if (!pushable) {
+                continue
+            }
+
+            val fluid = blockState.block.stillFluid
+
+            if (fluid !is FlowableFluid) {
+                continue
+            }
+            val fluidVelocity = fluid.getVelocity(connection, blockState, blockPosition)
+
+            if (height < 0.4) {
+                fluidVelocity *= height
+            }
+
+            velocity += fluidVelocity
+            checks++
+        }
+
+        if (velocity.length() > 0.0) {
+            if (checks > 0) {
+                velocity *= 1.0 / checks
+            }
+
+            velocity *= velocityMultiplier
+
+            if (abs(velocity.x) < 0.004 && abs(velocity.z) < 0.003 && velocity.length() < 0.0045000000000000005) {
+                velocity assign velocity.normalize() * 0.0045000000000000005
+            }
+
+            this.velocity assign (this.velocity + velocity)
+        }
+        fluidHeights[fluidType] = height
+        return inFluid
+    }
+
+
+    private fun updateWaterState() {
+        fluidHeights.clear()
+        if (vehicle is Boat) {
+            return // ToDo
+        }
+
+        if (updateFluidState(DefaultFluidTags.WATER_TAG, 0.014f)) {
+            // Log.log(LogMessageType.OTHER, LogLevels.VERBOSE){"In Water: Yes"}
+            return
+            // ToDo
+        }
+        //  Log.log(LogMessageType.OTHER, LogLevels.VERBOSE){"In Water: No"}
+    }
+
     override fun realTick() {
         if (connection.world[positionInfo.blockPosition.chunkPosition] == null) {
             // chunk not loaded, so we don't tick?
@@ -611,6 +701,7 @@ class LocalPlayerEntity(
         }
         super.realTick()
         tickMovement()
+        updateWaterState()
 
         sendMovementPackets()
 

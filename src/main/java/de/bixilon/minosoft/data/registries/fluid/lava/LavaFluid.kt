@@ -15,11 +15,11 @@ package de.bixilon.minosoft.data.registries.fluid.lava
 
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.fluid.Fluid
+import de.bixilon.minosoft.data.registries.fluid.FlowableFluid
 import de.bixilon.minosoft.data.registries.versions.Registries
 
 abstract class LavaFluid(
     resourceLocation: ResourceLocation,
     registries: Registries,
     data: JsonObject,
-) : Fluid(resourceLocation, registries, data)
+) : FlowableFluid(resourceLocation, registries, data)

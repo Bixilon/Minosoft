@@ -188,7 +188,7 @@ class AABB(
         return AABB(min + vec, max - vec)
     }
 
-    fun shrink(size: Double): AABB {
+    fun shrink(size: Double = 1.0E-7): AABB {
         return AABB(min + size, max - size)
     }
 

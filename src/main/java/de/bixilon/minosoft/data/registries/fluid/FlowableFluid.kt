@@ -10,16 +10,26 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-
-package de.bixilon.minosoft.data.registries.fluid.water
+package de.bixilon.minosoft.data.registries.fluid
 
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.fluid.FlowableFluid
+import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.versions.Registries
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import glm_.vec3.Vec3d
+import glm_.vec3.Vec3i
 
-abstract class WaterFluid(
-    resourceLocation: ResourceLocation,
+open class FlowableFluid(
+    override val resourceLocation: ResourceLocation,
     registries: Registries,
     data: JsonObject,
-) : FlowableFluid(resourceLocation, registries, data)
+) : Fluid(resourceLocation, registries, data) {
+
+
+    fun getVelocity(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i): Vec3d {
+        // ToDo
+        return Vec3d.EMPTY
+    }
+}

@@ -24,10 +24,12 @@ import de.bixilon.minosoft.data.player.LocalPlayerEntity
 import de.bixilon.minosoft.data.player.tab.TabList
 import de.bixilon.minosoft.data.registries.RegistriesLoadingException
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.ResourceLocationAble
 import de.bixilon.minosoft.data.registries.recipes.Recipes
 import de.bixilon.minosoft.data.registries.versions.Registries
 import de.bixilon.minosoft.data.registries.versions.Version
 import de.bixilon.minosoft.data.scoreboard.ScoreboardManager
+import de.bixilon.minosoft.data.tags.DefaultTags
 import de.bixilon.minosoft.data.tags.Tag
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.world.World
@@ -233,6 +235,22 @@ class PlayConnection(
             }
         } catch (exception: Throwable) {
             Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.WARN) { exception }
+        }
+    }
+
+    fun inTag(`object`: Any?, tagType: ResourceLocation, tag: ResourceLocation): Boolean {
+
+        fun fallback(): Boolean {
+            if (`object` !is ResourceLocationAble) {
+                return false
+            }
+            return DefaultTags.TAGS[tagType]?.get(tag)?.contains(`object`.resourceLocation) == true
+        }
+
+        (tags[tagType] ?: return fallback()).let { map ->
+            (map[tag] ?: return fallback()).let {
+                return it.entries.contains(`object`)
+            }
         }
     }
 

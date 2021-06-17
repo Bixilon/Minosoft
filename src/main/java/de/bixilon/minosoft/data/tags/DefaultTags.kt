@@ -11,15 +11,12 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.fluid.water
+package de.bixilon.minosoft.data.tags
 
-import com.google.gson.JsonObject
-import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.fluid.FlowableFluid
-import de.bixilon.minosoft.data.registries.versions.Registries
+import de.bixilon.minosoft.protocol.packets.s2c.play.TagsS2CP
 
-abstract class WaterFluid(
-    resourceLocation: ResourceLocation,
-    registries: Registries,
-    data: JsonObject,
-) : FlowableFluid(resourceLocation, registries, data)
+object DefaultTags {
+    val TAGS = mapOf(
+        TagsS2CP.FLUID_TAG_RESOURCE_LOCATION to DefaultFluidTags.FLUID_TAGS,
+    )
+}
