@@ -615,7 +615,7 @@ class LocalPlayerEntity(
         get() = (onGround && fallDistance < PhysicsConstants.STEP_HEIGHT) && !connection.world.isSpaceEmpty(aabb + Vec3(0.0f, fallDistance - PhysicsConstants.STEP_HEIGHT, 0.0f))
 
 
-    private fun updateFluidState(fluidType: ResourceLocation, velocityMultiplier: Float): Boolean {
+    private fun updateFluidState(fluidType: ResourceLocation): Boolean {
         val aabb = aabb.shrink()
 
         var height = 0.0f
@@ -624,13 +624,15 @@ class LocalPlayerEntity(
         val velocity = Vec3d.EMPTY
         var checks = 0
 
+        var velocityMultiplier = 1.0f
 
         for ((blockPosition, blockState) in connection.world[aabb]) {
             if (blockState.block !is FluidBlock) {
                 continue
             }
 
-            if (!connection.inTag(blockState.block.fluid, TagsS2CP.FLUID_TAG_RESOURCE_LOCATION, DefaultFluidTags.WATER_TAG)) { // ToDo: stillFluid
+
+            if (!connection.inTag(blockState.block.fluid, TagsS2CP.FLUID_TAG_RESOURCE_LOCATION, fluidType)) {
                 continue
             }
             val fluidHeight = blockPosition.y + blockState.block.getFluidHeight(blockState)
@@ -652,6 +654,7 @@ class LocalPlayerEntity(
             if (fluid !is FlowableFluid) {
                 continue
             }
+            velocityMultiplier = fluid.getVelocityMultiplier(connection, blockState, blockPosition)
             val fluidVelocity = fluid.getVelocity(connection, blockState, blockPosition)
 
             if (height < 0.4) {
@@ -686,7 +689,7 @@ class LocalPlayerEntity(
             return // ToDo
         }
 
-        if (updateFluidState(DefaultFluidTags.WATER_TAG, 0.014f)) {
+        if (updateFluidState(DefaultFluidTags.WATER_TAG)) {
             // Log.log(LogMessageType.OTHER, LogLevels.VERBOSE){"In Water: Yes"}
             return
             // ToDo

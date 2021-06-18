@@ -15,10 +15,14 @@ package de.bixilon.minosoft.data.registries.fluid.lava
 
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.fluid.FlowableFluid
 import de.bixilon.minosoft.data.registries.fluid.Fluid
 import de.bixilon.minosoft.data.registries.versions.Registries
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
+import de.bixilon.minosoft.util.KUtil.decide
+import glm_.vec3.Vec3i
 
 class LavaFluid(
     resourceLocation: ResourceLocation,
@@ -27,6 +31,10 @@ class LavaFluid(
 ) : FlowableFluid(resourceLocation, registries, data) {
     override val stillTexture: ResourceLocation = "minecraft:block/lava_still".asResourceLocation()
     override val flowingTexture: ResourceLocation = "minecraft:block/lava_flow".asResourceLocation()
+
+    override fun getVelocityMultiplier(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i): Float {
+        return (connection.world.dimension?.ultraWarm == true).decide(0.007f, 0.0023333333333333335f)
+    }
 
     override fun matches(other: Fluid): Boolean {
         return other::class.java.isAssignableFrom(LavaFluid::class.java)

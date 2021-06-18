@@ -6,6 +6,7 @@ import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.types.Block
+import de.bixilon.minosoft.data.registries.fluid.FlowableFluid
 import de.bixilon.minosoft.data.registries.fluid.Fluid
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.data.world.World
@@ -16,6 +17,7 @@ import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModelElement
 import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModelFace
 import de.bixilon.minosoft.gui.rendering.textures.Texture
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
+import de.bixilon.minosoft.util.KUtil.nullCast
 import glm_.glm
 import glm_.vec2.Vec2
 import glm_.vec3.Vec3
@@ -59,7 +61,7 @@ class FluidRenderer(
                 texture = stillTexture ?: return
             }
             val neighbourBlocks = context.neighbourBlocks
-            if (isBlockSameFluid(neighbourBlocks[direction.ordinal]) || neighbourBlocks[direction.ordinal]?.getBlockRenderer(context.blockPosition + direction)?.faceBorderSizes?.let { it[direction.inverted.ordinal] != null } == true && direction != Directions.UP) {
+            if (fluid.matches(neighbourBlocks[direction.ordinal]) || neighbourBlocks[direction.ordinal]?.getBlockRenderer(context.blockPosition + direction)?.faceBorderSizes?.let { it[direction.inverted.ordinal] != null } == true && direction != Directions.UP) {
                 continue
             }
             val positionTemplate = BlockModelElement.FACE_POSITION_MAP_TEMPLATE[direction.ordinal]
@@ -142,7 +144,7 @@ class FluidRenderer(
     }
 
     private fun calculateHeights(neighbourBlocks: Array<BlockState?>, blockState: BlockState, world: World, position: Vec3i): FloatArray {
-        if (isBlockSameFluid(neighbourBlocks[Directions.UP.ordinal])) {
+        if (fluid.matches(neighbourBlocks[Directions.UP.ordinal])) {
             return floatArrayOf(1f, 1f, 1f, 1f)
         }
         val height = getLevel(blockState)
@@ -156,7 +158,7 @@ class FluidRenderer(
     }
 
     private fun handleDirectNeighbours(neighbourBlocks: Array<BlockState?>, direction: Directions, world: World, position: Vec3i, positions: MutableSet<Int>, heights: FloatArray) {
-        if (isBlockSameFluid(neighbourBlocks[direction.ordinal])) {
+        if (fluid.matches(neighbourBlocks[direction.ordinal])) {
             val neighbourLevel = getLevel(neighbourBlocks[direction.ordinal]!!)
             for (heightPosition in positions) {
                 heights[heightPosition] = glm.max(heights[heightPosition], neighbourLevel)
@@ -164,7 +166,7 @@ class FluidRenderer(
         }
         for (altDirection in direction.sidesNextTo(direction)) {
             val bothDirections = setOf(direction, altDirection)
-            if (isBlockSameFluid(world[position + direction + altDirection])) {
+            if (fluid.matches(world[position + direction + altDirection])) {
                 val neighbourLevel = getLevel(world[position + direction + altDirection]!!)
                 for (heightPosition in HEIGHT_POSITIONS) {
                     if (heightPosition.key.containsAll(bothDirections)) {
@@ -176,14 +178,14 @@ class FluidRenderer(
     }
 
     private fun handleUpperBlocks(world: World, position: Vec3i, direction: Directions, positions: MutableSet<Int>, heights: FloatArray) {
-        if (isBlockSameFluid(world[position + Directions.UP + direction])) {
+        if (fluid.matches(world[position + Directions.UP + direction])) {
             for (heightPosition in positions) {
                 heights[heightPosition] = 1.0f
             }
         }
         for (altDirection in direction.sidesNextTo(direction)) {
             val bothDirections = setOf(direction, altDirection)
-            if (isBlockSameFluid(world[position + Directions.UP + direction + altDirection])) {
+            if (fluid.matches(world[position + Directions.UP + direction + altDirection])) {
                 for (heightPosition in HEIGHT_POSITIONS) {
                     if (heightPosition.key.containsAll(bothDirections)) {
                         heights[heightPosition.value] = 1.0f
@@ -210,22 +212,9 @@ class FluidRenderer(
         return 0.8125f
     }
 
-    private fun isBlockSameFluid(blockState: BlockState?): Boolean {
-        if (blockState == null) {
-            return false
-        }
-        if (blockState.properties[BlockProperties.WATERLOGGED] == true) { // ToDo: Lava
-            return true
-        }
-        if (block == blockState.block) {
-            return true
-        }
-        return false
-    }
-
     override fun resolveTextures(textures: MutableMap<ResourceLocation, Texture>) {
         stillTexture = fluid.stillTexture?.let { Texture.getResourceTextureIdentifier(it.namespace, it.path) }?.let { BlockLikeRenderer.resolveTexture(textures, it) }
-        flowingTexture = fluid.flowingTexture?.let { Texture.getResourceTextureIdentifier(it.namespace, it.path) }?.let { BlockLikeRenderer.resolveTexture(textures, it) }
+        flowingTexture = fluid.nullCast<FlowableFluid>()?.flowingTexture?.let { Texture.getResourceTextureIdentifier(it.namespace, it.path) }?.let { BlockLikeRenderer.resolveTexture(textures, it) }
     }
 
     companion object {

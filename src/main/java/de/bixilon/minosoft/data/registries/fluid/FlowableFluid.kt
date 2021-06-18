@@ -21,12 +21,15 @@ import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import glm_.vec3.Vec3d
 import glm_.vec3.Vec3i
 
-open class FlowableFluid(
+abstract class FlowableFluid(
     override val resourceLocation: ResourceLocation,
     registries: Registries,
     data: JsonObject,
 ) : Fluid(resourceLocation, registries, data) {
+    open val flowingTexture: ResourceLocation? = null
 
+
+    abstract fun getVelocityMultiplier(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i): Float
 
     fun getVelocity(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i): Vec3d {
         // ToDo

@@ -35,7 +35,6 @@ open class Fluid(
     private val bucketItemId = data["bucket"]?.asInt
     val dripParticle: ParticleType? = data["drip_particle_type"]?.asInt?.let { registries.particleTypeRegistry[it] }
     open val stillTexture: ResourceLocation? = null
-    open val flowingTexture: ResourceLocation? = null
     var bucketItem: Item? = null
         private set
 
@@ -51,7 +50,8 @@ open class Fluid(
         return other == this
     }
 
-    open fun matches(other: BlockState): Boolean {
+    open fun matches(other: BlockState?): Boolean {
+        other ?: return false
         if (other.block !is FluidBlock) {
             return false
         }
