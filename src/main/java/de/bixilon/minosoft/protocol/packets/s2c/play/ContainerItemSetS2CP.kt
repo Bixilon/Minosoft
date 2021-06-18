@@ -16,12 +16,18 @@ import de.bixilon.minosoft.modding.event.events.ContainerSlotChangeEvent
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_17_1_PRE_1
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
 class ContainerItemSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     val containerId = buffer.readUnsignedByte()
+    val todo1: Int = if (buffer.versionId >= V_1_17_1_PRE_1) {
+        buffer.readVarInt()
+    } else {
+        -1
+    }
     val slot = buffer.readUnsignedShort()
     val itemStack = buffer.readItemStack()
 

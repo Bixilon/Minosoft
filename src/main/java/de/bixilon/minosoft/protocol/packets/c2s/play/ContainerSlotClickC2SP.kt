@@ -16,12 +16,14 @@ import de.bixilon.minosoft.data.inventory.InventoryActions
 import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.protocol.packets.c2s.PlayC2SPacket
 import de.bixilon.minosoft.protocol.protocol.PlayOutByteBuffer
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_17_1_PRE_1
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
 class ContainerSlotClickC2SP(
     val containerId: Byte,
+    val todo1: Int,
     val slot: Int,
     val action: InventoryActions,
     val actionNumber: Int,
@@ -30,6 +32,9 @@ class ContainerSlotClickC2SP(
 
     override fun write(buffer: PlayOutByteBuffer) {
         buffer.writeByte(containerId)
+        if (buffer.versionId >= V_1_17_1_PRE_1) {
+            buffer.writeVarInt(todo1)
+        }
         buffer.writeShort(slot)
         buffer.writeByte(action.button)
         buffer.writeShort(actionNumber)
@@ -38,6 +43,6 @@ class ContainerSlotClickC2SP(
     }
 
     override fun log() {
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Container slot click (containerId=$containerId, slot=$slot, action=$action, actionNumber=$actionNumber, clickedItem=$clickedItem)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Container slot click (containerId=$containerId, todo1=$todo1, slot=$slot, action=$action, actionNumber=$actionNumber, clickedItem=$clickedItem)" }
     }
 }
