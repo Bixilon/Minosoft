@@ -24,7 +24,6 @@ import glm_.vec3.Vec3d
 
 class UnderwaterParticle(connection: PlayConnection, position: Vec3d, data: ParticleData? = null) : WaterSuspendParticle(connection, position, Vec3d.EMPTY, data) {
 
-
     init {
         color = RGBColor(0.4f, 0.4f, 0.7f)
     }
