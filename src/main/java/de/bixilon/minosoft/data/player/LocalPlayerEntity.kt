@@ -630,7 +630,7 @@ class LocalPlayerEntity(
                 continue
             }
 
-            if (!connection.inTag(blockState.block.stillFluid, TagsS2CP.FLUID_TAG_RESOURCE_LOCATION, DefaultFluidTags.WATER_TAG)) { // ToDo: stillFluid
+            if (!connection.inTag(blockState.block.fluid, TagsS2CP.FLUID_TAG_RESOURCE_LOCATION, DefaultFluidTags.WATER_TAG)) { // ToDo: stillFluid
                 continue
             }
             val fluidHeight = blockPosition.y + blockState.block.getFluidHeight(blockState)
@@ -647,7 +647,7 @@ class LocalPlayerEntity(
                 continue
             }
 
-            val fluid = blockState.block.stillFluid
+            val fluid = blockState.block.fluid
 
             if (fluid !is FlowableFluid) {
                 continue

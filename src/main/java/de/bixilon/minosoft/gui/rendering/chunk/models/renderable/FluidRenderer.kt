@@ -23,14 +23,13 @@ import glm_.vec3.Vec3i
 
 class FluidRenderer(
     val block: Block,
-    private val stillFluid: Fluid,
-    private val flowingFluid: Fluid,
+    private val fluid: Fluid,
 ) : BlockLikeRenderer {
     override val faceBorderSizes: Array<Array<FaceSize>?> = arrayOfNulls(Directions.VALUES.size)
     override val transparentFaces: BooleanArray = BooleanArray(Directions.VALUES.size)
-    lateinit var stillTexture: Texture
+    var stillTexture: Texture? = null
         private set
-    lateinit var flowingTexture: Texture
+    var flowingTexture: Texture? = null
         private set
 
     override fun render(context: BlockLikeRenderContext) {
@@ -51,13 +50,13 @@ class FluidRenderer(
             val face = BlockModelFace(positions, direction)
             if (isFlowing || Directions.SIDES.contains(direction)) {
                 face.scale(0.5)
-                texture = flowingTexture
+                texture = flowingTexture ?: return
                 if (!Directions.SIDES.contains(direction)) {
                     val angle = getRotationAngle(heights)
                     face.rotate(angle)
                 }
             } else {
-                texture = stillTexture
+                texture = stillTexture ?: return
             }
             val neighbourBlocks = context.neighbourBlocks
             if (isBlockSameFluid(neighbourBlocks[direction.ordinal]) || neighbourBlocks[direction.ordinal]?.getBlockRenderer(context.blockPosition + direction)?.faceBorderSizes?.let { it[direction.inverted.ordinal] != null } == true && direction != Directions.UP) {
@@ -225,8 +224,8 @@ class FluidRenderer(
     }
 
     override fun resolveTextures(textures: MutableMap<ResourceLocation, Texture>) {
-        stillTexture = BlockLikeRenderer.resolveTexture(textures, Texture.getResourceTextureIdentifier(stillFluid.renderTexture!!.namespace, stillFluid.renderTexture.path))
-        flowingTexture = BlockLikeRenderer.resolveTexture(textures, Texture.getResourceTextureIdentifier(flowingFluid.renderTexture!!.namespace, flowingFluid.renderTexture.path))
+        stillTexture = fluid.stillTexture?.let { Texture.getResourceTextureIdentifier(it.namespace, it.path) }?.let { BlockLikeRenderer.resolveTexture(textures, it) }
+        flowingTexture = fluid.flowingTexture?.let { Texture.getResourceTextureIdentifier(it.namespace, it.path) }?.let { BlockLikeRenderer.resolveTexture(textures, it) }
     }
 
     companion object {

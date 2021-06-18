@@ -16,20 +16,36 @@ package de.bixilon.minosoft.data.registries.fluid.water
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
+import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.fluid.FlowableFluid
+import de.bixilon.minosoft.data.registries.fluid.Fluid
 import de.bixilon.minosoft.data.registries.versions.Registries
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.water.UnderwaterParticle
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3d
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.util.KUtil.asResourceLocation
 import glm_.vec3.Vec3i
 import kotlin.random.Random
 
-abstract class WaterFluid(
+class WaterFluid(
     resourceLocation: ResourceLocation,
     registries: Registries,
     data: JsonObject,
 ) : FlowableFluid(resourceLocation, registries, data) {
+    override val stillTexture: ResourceLocation = "minecraft:block/water_still".asResourceLocation()
+    override val flowingTexture: ResourceLocation = "minecraft:block/water_flow".asResourceLocation()
+
+    override fun matches(other: Fluid): Boolean {
+        return other::class.java.isAssignableFrom(WaterFluid::class.java)
+    }
+
+    override fun matches(other: BlockState): Boolean {
+        if (other.properties[BlockProperties.WATERLOGGED] == true) {
+            return true
+        }
+        return super.matches(other)
+    }
 
 
     override fun randomTick(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, random: Random) {

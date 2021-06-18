@@ -27,8 +27,7 @@ import glm_.vec3.Vec3i
 import kotlin.random.Random
 
 open class FluidBlock(resourceLocation: ResourceLocation, registries: Registries, data: JsonObject) : Block(resourceLocation, registries, data) {
-    open val stillFluid: Fluid = registries.fluidRegistry[data["still_fluid"].asInt]
-    open val flowingFluid: Fluid = registries.fluidRegistry[data["flow_fluid"].asInt]
+    open val fluid: Fluid = registries.fluidRegistry[data["still_fluid"].asInt]
 
     val fluidRenderer: FluidRenderer
 
@@ -36,7 +35,7 @@ open class FluidBlock(resourceLocation: ResourceLocation, registries: Registries
 
     init {
         let {
-            fluidRenderer = FluidRenderer(it, stillFluid, flowingFluid)
+            fluidRenderer = FluidRenderer(it, fluid)
             renderOverride = listOf(fluidRenderer)
         }
     }
@@ -48,7 +47,7 @@ open class FluidBlock(resourceLocation: ResourceLocation, registries: Registries
     override fun randomTick(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, random: Random) {
         super.randomTick(connection, blockState, blockPosition, random)
         // ToDO
-        stillFluid.randomTick(connection, blockState, blockPosition, random)
+        fluid.randomTick(connection, blockState, blockPosition, random)
     }
 
     companion object {

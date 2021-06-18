@@ -15,10 +15,9 @@ package de.bixilon.minosoft.data.registries.fluid
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
-import de.bixilon.minosoft.data.registries.fluid.lava.FlowingLavaFluid
-import de.bixilon.minosoft.data.registries.fluid.lava.StillLavaFluid
-import de.bixilon.minosoft.data.registries.fluid.water.FlowingWaterFluid
-import de.bixilon.minosoft.data.registries.fluid.water.StillWaterFluid
+import de.bixilon.minosoft.data.registries.blocks.types.FluidBlock
+import de.bixilon.minosoft.data.registries.fluid.lava.LavaFluid
+import de.bixilon.minosoft.data.registries.fluid.water.WaterFluid
 import de.bixilon.minosoft.data.registries.items.Item
 import de.bixilon.minosoft.data.registries.particle.ParticleType
 import de.bixilon.minosoft.data.registries.registry.RegistryItem
@@ -35,7 +34,8 @@ open class Fluid(
 ) : RegistryItem {
     private val bucketItemId = data["bucket"]?.asInt
     val dripParticle: ParticleType? = data["drip_particle_type"]?.asInt?.let { registries.particleTypeRegistry[it] }
-    val renderTexture: ResourceLocation? = data["render"]?.asJsonObject?.get("texture")?.asString?.let { ResourceLocation(it) }
+    open val stillTexture: ResourceLocation? = null
+    open val flowingTexture: ResourceLocation? = null
     var bucketItem: Item? = null
         private set
 
@@ -47,16 +47,28 @@ open class Fluid(
         bucketItem = bucketItemId?.let { registries.itemRegistry[it] }
     }
 
+    open fun matches(other: Fluid): Boolean {
+        return other == this
+    }
+
+    open fun matches(other: BlockState): Boolean {
+        if (other.block !is FluidBlock) {
+            return false
+        }
+
+        return matches(other.block.fluid)
+    }
+
 
     open fun randomTick(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, random: Random) {}
 
     companion object : ResourceLocationDeserializer<Fluid> {
         private val CONSTRUCTORS: Map<String, (resourceLocation: ResourceLocation, registries: Registries, data: JsonObject) -> Fluid> = mapOf(
             "EmptyFluid" to { resourceLocation, registries, data -> EmptyFluid(resourceLocation, registries, data) },
-            "WaterFluid\$Flowing" to { resourceLocation, registries, data -> FlowingWaterFluid(resourceLocation, registries, data) },
-            "WaterFluid\$Still" to { resourceLocation, registries, data -> StillWaterFluid(resourceLocation, registries, data) },
-            "LavaFluid\$Flowing" to { resourceLocation, registries, data -> FlowingLavaFluid(resourceLocation, registries, data) },
-            "LavaFluid\$Still" to { resourceLocation, registries, data -> StillLavaFluid(resourceLocation, registries, data) },
+            "WaterFluid\$Flowing" to { resourceLocation, registries, data -> WaterFluid(resourceLocation, registries, data) },
+            "WaterFluid\$Still" to { resourceLocation, registries, data -> WaterFluid(resourceLocation, registries, data) },
+            "LavaFluid\$Flowing" to { resourceLocation, registries, data -> LavaFluid(resourceLocation, registries, data) },
+            "LavaFluid\$Still" to { resourceLocation, registries, data -> LavaFluid(resourceLocation, registries, data) },
         )
 
         override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: JsonObject): Fluid {

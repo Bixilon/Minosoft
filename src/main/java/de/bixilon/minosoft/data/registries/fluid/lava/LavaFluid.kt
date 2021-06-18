@@ -16,10 +16,20 @@ package de.bixilon.minosoft.data.registries.fluid.lava
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.fluid.FlowableFluid
+import de.bixilon.minosoft.data.registries.fluid.Fluid
 import de.bixilon.minosoft.data.registries.versions.Registries
+import de.bixilon.minosoft.util.KUtil.asResourceLocation
 
-abstract class LavaFluid(
+class LavaFluid(
     resourceLocation: ResourceLocation,
     registries: Registries,
     data: JsonObject,
-) : FlowableFluid(resourceLocation, registries, data)
+) : FlowableFluid(resourceLocation, registries, data) {
+    override val stillTexture: ResourceLocation = "minecraft:block/lava_still".asResourceLocation()
+    override val flowingTexture: ResourceLocation = "minecraft:block/lava_flow".asResourceLocation()
+
+    override fun matches(other: Fluid): Boolean {
+        return other::class.java.isAssignableFrom(LavaFluid::class.java)
+    }
+
+}
