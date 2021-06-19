@@ -158,6 +158,7 @@ class HUDRenderer(val connection: PlayConnection, val renderWindow: RenderWindow
         if (!hudEnabled) {
             return
         }
+        renderWindow.renderSystem.reset()
         var needsUpdate = false
         val tempMesh = HUDMesh()
 

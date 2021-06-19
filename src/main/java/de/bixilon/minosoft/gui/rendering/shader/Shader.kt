@@ -21,8 +21,10 @@ import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.Rendering
 import de.bixilon.minosoft.gui.rendering.exceptions.ShaderLoadingException
+import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem
 import de.bixilon.minosoft.gui.rendering.textures.TextureArray
 import de.bixilon.minosoft.gui.rendering.util.OpenGLUtil
+import de.bixilon.minosoft.util.KUtil.unsafeCast
 import de.bixilon.minosoft.util.MMath
 import glm_.mat4x4.Mat4
 import glm_.mat4x4.Mat4d
@@ -85,14 +87,12 @@ class Shader(
 
         val context = Rendering.currentContext!!
         context.shaders.add(this)
+        context.renderSystem.unsafeCast<OpenGLRenderSystem>().shaders[this] = programId
         return programId
     }
 
     fun use(): Shader {
-        if (currentShaderInUse !== this) {
-            glUseProgram(programId)
-            currentShaderInUse = this
-        }
+        renderWindow.renderSystem.shader = this
         return this
     }
 
@@ -180,7 +180,6 @@ class Shader(
                 MMath.clamp(it.textures.animator.animatedTextures.size, 1, TextureArray.MAX_ANIMATED_TEXTURES)
             }
         )
-        private var currentShaderInUse: Shader? = null // ToDo: This is not safe todo
 
         private fun createShader(assetsManager: AssetsManager = Minosoft.MINOSOFT_ASSETS_MANAGER, renderWindow: RenderWindow, resourceLocation: ResourceLocation, shaderType: Int, defines: Map<String, Any>, uniforms: MutableList<String>): Int? {
             val shaderId = glCreateShaderObjectARB(shaderType)

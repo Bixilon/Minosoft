@@ -21,12 +21,12 @@ import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.Renderer
 import de.bixilon.minosoft.gui.rendering.RendererBuilder
+import de.bixilon.minosoft.gui.rendering.system.base.DepthFunctions
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.getWorldOffset
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3d
 import de.bixilon.minosoft.gui.rendering.util.mesh.LineMesh
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import glm_.vec3.Vec3i
-import org.lwjgl.opengl.GL11.*
 
 class BlockOutlineRenderer(
     val connection: PlayConnection,
@@ -39,16 +39,12 @@ class BlockOutlineRenderer(
 
     private fun drawMesh() {
         val currentMesh = currentMesh ?: return
-        glDisable(GL_CULL_FACE)
+        renderWindow.renderSystem.reset(faceCulling = false)
         if (Minosoft.config.config.game.other.blockOutline.disableZBuffer) {
-            glDepthFunc(GL_ALWAYS)
+            renderWindow.renderSystem.depth = DepthFunctions.ALWAYS
         }
         renderWindow.shaderManager.genericColorShader.use()
         currentMesh.draw()
-        glEnable(GL_CULL_FACE)
-        if (Minosoft.config.config.game.other.blockOutline.disableZBuffer) {
-            glDepthFunc(GL_LESS)
-        }
     }
 
     private fun unload() {

@@ -21,6 +21,7 @@ import de.bixilon.minosoft.gui.rendering.Renderer
 import de.bixilon.minosoft.gui.rendering.RendererBuilder
 import de.bixilon.minosoft.gui.rendering.chunk.models.AABB
 import de.bixilon.minosoft.gui.rendering.modding.events.FrustumChangeEvent
+import de.bixilon.minosoft.gui.rendering.system.base.DepthFunctions
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.modding.event.CallbackEventInvoker
 import de.bixilon.minosoft.modding.event.events.EntityDestroyEvent
@@ -29,7 +30,6 @@ import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
 import de.bixilon.minosoft.util.KUtil.toSynchronizedMap
 import de.bixilon.minosoft.util.collections.SynchronizedMap
-import org.lwjgl.opengl.GL11.*
 
 class EntityHitBoxRenderer(
     val connection: PlayConnection,
@@ -98,9 +98,9 @@ class EntityHitBoxRenderer(
     }
 
     override fun draw() {
-        glDisable(GL_CULL_FACE)
+        renderWindow.renderSystem.reset(faceCulling = false)
         if (Minosoft.config.config.game.entities.hitBox.disableZBuffer) {
-            glDepthFunc(GL_ALWAYS)
+            renderWindow.renderSystem.depth = DepthFunctions.ALWAYS
         }
         renderWindow.shaderManager.genericColorShader.use()
 
@@ -119,12 +119,6 @@ class EntityHitBoxRenderer(
 
         for ((entity, mesh) in meshes.toSynchronizedMap()) {
             draw(updateMesh(entity, mesh))
-        }
-
-
-        glEnable(GL_CULL_FACE)
-        if (Minosoft.config.config.game.entities.hitBox.disableZBuffer) {
-            glDepthFunc(GL_LESS)
         }
     }
 

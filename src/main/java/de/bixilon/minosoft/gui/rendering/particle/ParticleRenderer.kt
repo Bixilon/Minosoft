@@ -28,7 +28,6 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.synchronizedSetOf
 import de.bixilon.minosoft.util.KUtil.toSynchronizedSet
 import glm_.vec3.Vec3
-import org.lwjgl.opengl.GL11.glDepthMask
 
 
 class ParticleRenderer(
@@ -82,6 +81,7 @@ class ParticleRenderer(
     }
 
     override fun draw() {
+        renderWindow.renderSystem.reset()
         particleShader.use()
 
         particleMesh.unload()
@@ -104,9 +104,8 @@ class ParticleRenderer(
 
         particleMesh.draw()
 
-        glDepthMask(false)
+        renderWindow.renderSystem.depthMask = false
         transparentParticleMesh.draw()
-        glDepthMask(true)
     }
 
     companion object : RendererBuilder<ParticleRenderer> {

@@ -52,7 +52,6 @@ import de.bixilon.minosoft.util.collections.SynchronizedMap
 import de.bixilon.minosoft.util.task.ThreadPoolRunnable
 import glm_.vec2.Vec2i
 import glm_.vec3.Vec3i
-import org.lwjgl.opengl.GL11.glDepthMask
 
 class WorldRenderer(
     private val connection: PlayConnection,
@@ -196,6 +195,7 @@ class WorldRenderer(
     }
 
     override fun draw() {
+        renderWindow.renderSystem.reset()
         chunkShader.use()
         val visibleChunks = visibleChunks.toSynchronizedMap()
 
@@ -204,14 +204,13 @@ class WorldRenderer(
                 mesh.opaqueSectionArrayMesh.draw()
             }
         }
-        glDepthMask(false)
 
+        renderWindow.renderSystem.depthMask = false
         for (map in visibleChunks.values) {
             for (mesh in map.values) {
                 mesh.transparentSectionArrayMesh?.draw()
             }
         }
-        glDepthMask(true)
     }
 
     private fun resolveBlockTextureIds(blocks: Collection<BlockState>, textures: MutableMap<ResourceLocation, Texture>) {
@@ -263,14 +262,14 @@ class WorldRenderer(
     }
 
     private fun checkNeighbours(chunkPosition: Vec2i) {
-        val neighborsVec2is: Array<Vec2i> = arrayOf(
+        val neighborsPositions: Array<Vec2i> = arrayOf(
             chunkPosition + Directions.NORTH,
             chunkPosition + Directions.SOUTH,
             chunkPosition + Directions.WEST,
             chunkPosition + Directions.EAST,
         )
 
-        checkQueuedChunks(neighborsVec2is)
+        checkQueuedChunks(neighborsPositions)
     }
 
     private fun checkQueuedChunks(chunkPositions: Array<Vec2i>) {

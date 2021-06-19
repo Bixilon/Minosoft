@@ -24,7 +24,6 @@ import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import glm_.vec2.Vec2i
 import glm_.vec3.Vec3
-import org.lwjgl.opengl.GL11.*
 
 class ChunkBorderRenderer(
     val connection: PlayConnection,
@@ -113,10 +112,9 @@ class ChunkBorderRenderer(
     override fun draw() {
         prepare()
         val mesh = lastMesh ?: return
+        renderWindow.renderSystem.reset(faceCulling = false)
         renderWindow.shaderManager.genericColorShader.use()
-        glDisable(GL_CULL_FACE)
         mesh.draw()
-        glEnable(GL_CULL_FACE)
     }
 
 

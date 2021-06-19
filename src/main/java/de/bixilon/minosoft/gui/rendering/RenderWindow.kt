@@ -31,6 +31,8 @@ import de.bixilon.minosoft.gui.rendering.modding.events.ScreenResizeEvent
 import de.bixilon.minosoft.gui.rendering.particle.ParticleRenderer
 import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
+import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
+import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem
 import de.bixilon.minosoft.gui.rendering.textures.Texture
 import de.bixilon.minosoft.gui.rendering.textures.TextureArray
 import de.bixilon.minosoft.gui.rendering.util.ScreenshotTaker
@@ -49,7 +51,6 @@ import glm_.vec2.Vec2
 import glm_.vec2.Vec2i
 import org.lwjgl.glfw.*
 import org.lwjgl.glfw.GLFW.*
-import org.lwjgl.opengl.GL
 import org.lwjgl.opengl.GL11.*
 import org.lwjgl.system.MemoryStack
 import org.lwjgl.system.MemoryUtil
@@ -58,6 +59,7 @@ class RenderWindow(
     val connection: PlayConnection,
     val rendering: Rendering,
 ) {
+    val renderSystem: RenderSystem = OpenGLRenderSystem()
     var initialized = false
         private set
     private lateinit var renderThread: Thread
@@ -183,20 +185,13 @@ class RenderWindow(
         // Enable v-sync
         glfwSwapInterval(Minosoft.config.config.game.other.swapInterval)
 
-
-        // Make the window visible
-        GL.createCapabilities()
+        renderSystem.init()
 
         glClearColor(1.0f, 1.0f, 0.0f, 1.0f)
 
         Log.log(LogMessageType.RENDERING_LOADING) { "Enabling all open gl features (${stopwatch.labTime()})..." }
-        glEnable(GL_DEPTH_TEST)
 
-        glEnable(GL_BLEND)
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
-
-        glEnable(GL_CULL_FACE)
-
+        renderSystem.reset()
 
         Log.log(LogMessageType.RENDERING_LOADING) { "Generating font and gathering textures (${stopwatch.labTime()})..." }
         textures.allTextures.getOrPut(RenderConstants.DEBUG_TEXTURE_RESOURCE_LOCATION) { Texture(RenderConstants.DEBUG_TEXTURE_RESOURCE_LOCATION) }

@@ -21,6 +21,7 @@ import de.bixilon.minosoft.gui.rendering.Renderer
 import de.bixilon.minosoft.gui.rendering.RendererBuilder
 import de.bixilon.minosoft.gui.rendering.modding.events.CameraMatrixChangeEvent
 import de.bixilon.minosoft.gui.rendering.shader.Shader
+import de.bixilon.minosoft.gui.rendering.system.base.DepthFunctions
 import de.bixilon.minosoft.gui.rendering.textures.Texture
 import de.bixilon.minosoft.gui.rendering.util.mesh.SimpleTextureMesh
 import de.bixilon.minosoft.modding.event.CallbackEventInvoker
@@ -33,7 +34,6 @@ import glm_.mat4x4.Mat4d
 import glm_.vec2.Vec2
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3d
-import org.lwjgl.opengl.GL11.*
 import kotlin.math.cos
 
 class SkyRenderer(
@@ -144,12 +144,9 @@ class SkyRenderer(
     }
 
     override fun draw() {
-        glDepthFunc(GL_LEQUAL)
-
+        renderWindow.renderSystem.reset(depth = DepthFunctions.LESS_OR_EQUAL)
         drawSkybox()
         drawSun()
-
-        glDepthFunc(GL_LESS)
     }
 
     companion object : RendererBuilder<SkyRenderer> {
