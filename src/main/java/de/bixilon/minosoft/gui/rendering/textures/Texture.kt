@@ -27,7 +27,7 @@ import java.io.FileNotFoundException
 import java.nio.ByteBuffer
 
 
-class Texture(
+data class Texture(
     val resourceLocation: ResourceLocation,
 ) {
     var arrayId = -1

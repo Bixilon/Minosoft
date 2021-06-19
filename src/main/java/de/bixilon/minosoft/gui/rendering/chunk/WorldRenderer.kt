@@ -175,7 +175,7 @@ class WorldRenderer(
     }
 
     override fun postInit() {
-        check(renderWindow.textures.animator.animatedTextures.size < TextureArray.MAX_ANIMATED_TEXTURE) { "Can not have more than ${TextureArray.MAX_ANIMATED_TEXTURE} animated textures!" }
+        check(renderWindow.textures.animator.animatedTextures.size < TextureArray.MAX_ANIMATED_TEXTURES) { "Can not have more than ${TextureArray.MAX_ANIMATED_TEXTURES} animated textures!" }
         chunkShader = Shader(
             renderWindow = renderWindow,
             resourceLocation = ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "chunk"),

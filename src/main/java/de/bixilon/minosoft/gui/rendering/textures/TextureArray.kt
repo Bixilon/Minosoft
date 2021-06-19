@@ -25,9 +25,7 @@ import de.matthiasmann.twl.utils.PNGDecoder
 import glm_.vec2.Vec2
 import glm_.vec2.Vec2i
 import org.lwjgl.BufferUtils
-import org.lwjgl.opengl.GL30.*
-import org.lwjgl.opengl.GL31.GL_UNIFORM_BUFFER
-import org.lwjgl.opengl.GL31.glBindBuffer
+import org.lwjgl.opengl.GL31.*
 import java.nio.ByteBuffer
 
 class TextureArray(val allTextures: MutableMap<ResourceLocation, Texture>) {
@@ -327,6 +325,7 @@ class TextureArray(val allTextures: MutableMap<ResourceLocation, Texture>) {
             shader.use()
 
             shader.setUniformBuffer(bufferName, 0)
+            glBindBufferBase(GL_UNIFORM_BUFFER, 0, animatedBufferDataId)
         }
 
         private fun uploadAnimatedStorageBuffer() {
@@ -337,7 +336,7 @@ class TextureArray(val allTextures: MutableMap<ResourceLocation, Texture>) {
     }
 
     companion object {
-        const val MAX_ANIMATED_TEXTURE = 4096 // 16kb / 4 (ints per animation)
+        const val MAX_ANIMATED_TEXTURES = 1024 // 16kb / 4 (ints per animation) / 4 bytes per int
         val TEXTURE_RESOLUTION_ID_MAP = arrayOf(16, 32, 64, 128, 256, 512, 1024) // A 12x12 texture will be saved in texture id 0 (in 0 are only 16x16 textures). Animated textures get split
         const val TEXTURE_MAX_RESOLUTION = 1024
         const val MAX_MIPMAP_LEVELS = 5

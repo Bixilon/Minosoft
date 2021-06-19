@@ -15,7 +15,7 @@ package de.bixilon.minosoft.gui.rendering.textures
 
 import de.bixilon.minosoft.gui.rendering.textures.properties.AnimationFrame
 
-class TextureAnimation(
+data class TextureAnimation(
     val texture: Texture,
 ) {
     var currentFrameIndex = 0

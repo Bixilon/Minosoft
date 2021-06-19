@@ -103,6 +103,9 @@ object Log {
                 ChatComponent.of(stringWriter.toString(), ignoreJson = true)
             }
             is String -> {
+                if (message.isBlank()) {
+                    return
+                }
                 if (formatting.isNotEmpty()) {
                     ChatComponent.of(message.format(*formatting), ignoreJson = true)
                 } else {

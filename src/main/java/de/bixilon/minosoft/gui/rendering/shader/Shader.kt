@@ -162,6 +162,10 @@ class Shader(
         glUniformBlockBinding(programId, glGetUniformBlockIndex(programId, uniformName), bindingIndex)
     }
 
+    fun getLog(): String {
+        return glGetShaderInfoLog(programId)
+    }
+
 
     companion object {
         private val DEFAULT_DEFINES: Map<String, (renderWindow: RenderWindow) -> Any?> = mapOf(
@@ -173,7 +177,7 @@ class Shader(
                 }
             },
             "ANIMATED_TEXTURE_COUNT" to {
-                MMath.clamp(it.textures.animator.animatedTextures.size, 1, TextureArray.MAX_ANIMATED_TEXTURE)
+                MMath.clamp(it.textures.animator.animatedTextures.size, 1, TextureArray.MAX_ANIMATED_TEXTURES)
             }
         )
         private var currentShaderInUse: Shader? = null // ToDo: This is not safe todo
