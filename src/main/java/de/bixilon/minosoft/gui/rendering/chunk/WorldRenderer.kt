@@ -20,6 +20,8 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.types.FluidBlock
+import de.bixilon.minosoft.data.registries.blocks.types.FluidFillable
+import de.bixilon.minosoft.data.registries.fluid.DefaultFluids
 import de.bixilon.minosoft.data.registries.versions.Registries
 import de.bixilon.minosoft.data.world.Chunk
 import de.bixilon.minosoft.data.world.ChunkSection
@@ -106,7 +108,7 @@ class WorldRenderer(
                     offset = blockPosition.getWorldOffset(blockState.block),
                 )
 
-                if (blockState.properties[BlockProperties.WATERLOGGED] == true) {
+                if (blockState.properties[BlockProperties.WATERLOGGED] == true || (blockState.block is FluidFillable && blockState.block.fluid == DefaultFluids.WATER)) {
                     waterBlock?.fluidRenderer?.render(context.copy(blockState = waterBlock.defaultState))
                 }
 

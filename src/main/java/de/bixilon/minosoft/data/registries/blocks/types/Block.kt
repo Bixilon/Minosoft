@@ -128,6 +128,7 @@ open class Block(
             "NetherPortalBlock" to { resourceLocation, registries, data -> NetherPortalBlock(resourceLocation, registries, data) },
             "RedstoneTorchBlock" to { resourceLocation, registries, data -> RedstoneTorchBlock(resourceLocation, registries, data) },
             "HoneyBlock" to { resourceLocation, registries, data -> HoneyBlock(resourceLocation, registries, data) },
+            "KelpBlock" to { resourceLocation, registries, data -> KelpBlock(resourceLocation, registries, data) },
         )
 
         override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: JsonObject): Block {
