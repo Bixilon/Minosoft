@@ -41,12 +41,12 @@ class LavaFluid(
     override val stillTexture: ResourceLocation = "minecraft:block/lava_still".asResourceLocation()
     override val flowingTexture: ResourceLocation = "minecraft:block/lava_flow".asResourceLocation()
 
-    override fun getVelocityMultiplier(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i): Float {
-        return (connection.world.dimension?.ultraWarm == true).decide(0.007f, 0.0023333333333333335f)
+    override fun getVelocityMultiplier(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i): Double {
+        return (connection.world.dimension?.ultraWarm == true).decide(0.007, 0.0023333333333333335)
     }
 
     override fun matches(other: Fluid): Boolean {
-        return other::class.java.isAssignableFrom(LavaFluid::class.java)
+        return other is LavaFluid
     }
 
     override fun randomTick(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, random: Random) {

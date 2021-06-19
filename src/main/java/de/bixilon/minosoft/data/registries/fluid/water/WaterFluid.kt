@@ -36,12 +36,12 @@ class WaterFluid(
     override val stillTexture: ResourceLocation = "minecraft:block/water_still".asResourceLocation()
     override val flowingTexture: ResourceLocation = "minecraft:block/water_flow".asResourceLocation()
 
-    override fun getVelocityMultiplier(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i): Float {
+    override fun getVelocityMultiplier(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i): Double {
         return VELOCITY_MULTIPLIER
     }
 
     override fun matches(other: Fluid): Boolean {
-        return other::class.java.isAssignableFrom(WaterFluid::class.java)
+        return other is WaterFluid
     }
 
     override fun matches(other: BlockState?): Boolean {
@@ -61,6 +61,6 @@ class WaterFluid(
     }
 
     companion object {
-        private const val VELOCITY_MULTIPLIER = 0.014f
+        private const val VELOCITY_MULTIPLIER = 0.014
     }
 }

@@ -29,7 +29,7 @@ abstract class FlowableFluid(
     open val flowingTexture: ResourceLocation? = null
 
 
-    abstract fun getVelocityMultiplier(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i): Float
+    abstract fun getVelocityMultiplier(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i): Double
 
     fun getVelocity(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i): Vec3d {
         // ToDo

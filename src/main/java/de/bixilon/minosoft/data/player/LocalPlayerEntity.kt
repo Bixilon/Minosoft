@@ -624,7 +624,7 @@ class LocalPlayerEntity(
         val velocity = Vec3d.EMPTY
         var checks = 0
 
-        var velocityMultiplier = 1.0f
+        var velocityMultiplier = 1.0
 
         for ((blockPosition, blockState) in connection.world[aabb]) {
             if (blockState.block !is FluidBlock) {

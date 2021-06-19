@@ -15,10 +15,25 @@ package de.bixilon.minosoft.data.registries.fluid
 
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.blocks.BlockState
+import de.bixilon.minosoft.data.registries.blocks.types.FluidBlock
 import de.bixilon.minosoft.data.registries.versions.Registries
 
 class EmptyFluid(
     resourceLocation: ResourceLocation,
     registries: Registries,
     data: JsonObject,
-) : Fluid(resourceLocation, registries, data)
+) : Fluid(resourceLocation, registries, data) {
+
+    override fun matches(other: Fluid): Boolean {
+        return other is EmptyFluid
+    }
+
+    override fun matches(other: BlockState?): Boolean {
+        other ?: return true
+        if (other.block !is FluidBlock) {
+            return true
+        }
+        return matches(other.block.fluid)
+    }
+}
