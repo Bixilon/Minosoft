@@ -14,21 +14,30 @@
 package de.bixilon.minosoft.data.registries.fluid.lava
 
 import com.google.gson.JsonObject
+import de.bixilon.minosoft.data.Directions
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.fluid.FlowableFluid
 import de.bixilon.minosoft.data.registries.fluid.Fluid
 import de.bixilon.minosoft.data.registries.versions.Registries
+import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.lava.LavaParticle
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.horizontal
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3d
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
+import de.bixilon.minosoft.util.KUtil.chance
 import de.bixilon.minosoft.util.KUtil.decide
+import glm_.vec3.Vec3d
 import glm_.vec3.Vec3i
+import kotlin.random.Random
 
 class LavaFluid(
     resourceLocation: ResourceLocation,
     registries: Registries,
     data: JsonObject,
 ) : FlowableFluid(resourceLocation, registries, data) {
+    private val lavaParticleType = registries.particleTypeRegistry[LavaParticle]
     override val stillTexture: ResourceLocation = "minecraft:block/lava_still".asResourceLocation()
     override val flowingTexture: ResourceLocation = "minecraft:block/lava_flow".asResourceLocation()
 
@@ -38,6 +47,23 @@ class LavaFluid(
 
     override fun matches(other: Fluid): Boolean {
         return other::class.java.isAssignableFrom(LavaFluid::class.java)
+    }
+
+    override fun randomTick(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, random: Random) {
+        super.randomTick(connection, blockState, blockPosition, random)
+        val above = connection.world[blockPosition + Directions.UP]
+
+        if (above != null) { // ToDo: Or is not a full block
+            return
+        }
+        if (lavaParticleType != null && random.chance(1)) {
+            val position = blockPosition.toVec3d + Vec3d.horizontal(
+                { random.nextDouble() },
+                1.0
+            )
+
+            connection.world += LavaParticle(connection, position, lavaParticleType.default())
+        }
     }
 
 }
