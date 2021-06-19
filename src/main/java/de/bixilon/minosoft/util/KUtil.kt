@@ -81,8 +81,8 @@ object KUtil {
         return ret
     }
 
-    fun <K, V> Map<K, V>.toSynchronizedMap(): MutableMap<K, V> {
-        return synchronizedCopy { Collections.synchronizedMap(this.toMutableMap()) }
+    fun <K, V> Map<K, V>.toSynchronizedMap(): SynchronizedMap<K, V> {
+        return synchronizedCopy { SynchronizedMap(this.toMutableMap()) }
     }
 
     fun <V> Collection<V>.toSynchronizedList(): MutableList<V> {

@@ -150,7 +150,7 @@ class HUDRenderer(val connection: PlayConnection, val renderWindow: RenderWindow
         }
     }
 
-    override fun draw() {
+    override fun postDraw() {
         if (!RenderConstants.RENDER_HUD) {
             return
         }

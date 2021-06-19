@@ -79,7 +79,7 @@ class SkyRenderer(
     }
 
     private fun setSunMatrix(projectionViewMatrix: Mat4d) {
-        val timeAngle = ((getSkyAngle(connection.world.time).toDouble() * 360.0) + 180.0).rad
+        val timeAngle = ((getSkyAngle(connection.world.time) * 360.0) + 180.0).rad
         val rotatedMatrix = if (timeAngle == 0.0) {
             projectionViewMatrix
         } else {

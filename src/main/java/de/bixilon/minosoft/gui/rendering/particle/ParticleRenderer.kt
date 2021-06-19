@@ -80,10 +80,7 @@ class ParticleRenderer(
         add(particle)
     }
 
-    override fun draw() {
-        renderWindow.renderSystem.reset()
-        particleShader.use()
-
+    override fun update() {
         particleMesh.unload()
         transparentParticleMesh.unload()
         particleMesh = ParticleMesh()
@@ -101,10 +98,17 @@ class ParticleRenderer(
 
         particleMesh.load()
         transparentParticleMesh.load()
+    }
 
+    override fun draw() {
+        renderWindow.renderSystem.reset()
+        particleShader.use()
         particleMesh.draw()
+    }
 
-        renderWindow.renderSystem.depthMask = false
+    override fun postDraw() {
+        renderWindow.renderSystem.reset(depthMask = false)
+        particleShader.use()
         transparentParticleMesh.draw()
     }
 

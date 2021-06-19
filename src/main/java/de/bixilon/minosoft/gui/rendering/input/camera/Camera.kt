@@ -135,21 +135,23 @@ class Camera(
 
     private fun onPositionChange() {
         recalculateViewProjectionMatrix()
-        // recalculate sky color for current biome
-        val skyRenderer = renderWindow[SkyRenderer.Companion] ?: return
-        skyRenderer.baseColor = connection.world.getBiome(entity.positionInfo.blockPosition)?.skyColor ?: RenderConstants.DEFAULT_SKY_COLOR
-
         frustum.recalculate()
         connection.fireEvent(FrustumChangeEvent(renderWindow, frustum))
-
-        connection.world.dimension?.hasSkyLight?.let {
-            if (it) {
-                skyRenderer.baseColor = entity.positionInfo.biome?.skyColor ?: RenderConstants.DEFAULT_SKY_COLOR
-            } else {
-                skyRenderer.baseColor = RenderConstants.BLACK_COLOR
-            }
-        } ?: let { skyRenderer.baseColor = RenderConstants.DEFAULT_SKY_COLOR }
         connection.fireEvent(CameraPositionChangeEvent(renderWindow, entity.eyePosition))
+
+        // recalculate sky color for current biome
+        renderWindow[SkyRenderer.Companion]?.let { skyRenderer ->
+            skyRenderer.baseColor = connection.world.getBiome(entity.positionInfo.blockPosition)?.skyColor ?: RenderConstants.DEFAULT_SKY_COLOR
+
+
+            connection.world.dimension?.hasSkyLight?.let {
+                if (it) {
+                    skyRenderer.baseColor = entity.positionInfo.biome?.skyColor ?: RenderConstants.DEFAULT_SKY_COLOR
+                } else {
+                    skyRenderer.baseColor = RenderConstants.BLACK_COLOR
+                }
+            } ?: let { skyRenderer.baseColor = RenderConstants.DEFAULT_SKY_COLOR }
+        }
     }
 
     private fun calculateProjectionMatrix(screenDimensions: Vec2): Mat4d {

@@ -334,7 +334,13 @@ class RenderWindow(
 
 
             for (renderer in rendererMap.values) {
+                renderer.update()
+            }
+            for (renderer in rendererMap.values) {
                 renderer.draw()
+            }
+            for (renderer in rendererMap.values) {
+                renderer.postDraw()
             }
 
             renderStats.endDraw()

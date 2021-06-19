@@ -24,10 +24,10 @@ interface RenderSystem {
         depthTest: Boolean = true,
         blending: Boolean = true,
         faceCulling: Boolean = true,
+        depthMask: Boolean = true,
         sourceAlpha: BlendingFunctions = BlendingFunctions.SOURCE_ALPHA,
         destinationAlpha: BlendingFunctions = BlendingFunctions.ONE_MINUS_SOURCE_ALPHA,
         depth: DepthFunctions = DepthFunctions.LESS,
-        depthMask: Boolean = true,
     ) {
         this[RenderingCapabilities.DEPTH_TEST] = depthTest
         this[RenderingCapabilities.BLENDING] = blending

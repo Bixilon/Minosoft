@@ -64,6 +64,7 @@ class WorldRenderer(
 
     val allChunkSections: SynchronizedMap<Vec2i, SynchronizedMap<Int, ChunkMeshCollection>> = synchronizedMapOf()
     val visibleChunks: SynchronizedMap<Vec2i, SynchronizedMap<Int, ChunkMeshCollection>> = synchronizedMapOf()
+    private var lastVisibleChunks: SynchronizedMap<Vec2i, SynchronizedMap<Int, ChunkMeshCollection>> = synchronizedMapOf()
     val queuedChunks: MutableSet<Vec2i> = synchronizedSetOf()
     private val preparationTasks: SynchronizedMap<Vec2i, SynchronizedMap<Int, ThreadPoolRunnable>> = synchronizedMapOf()
 
@@ -194,19 +195,26 @@ class WorldRenderer(
         allBlocks = null
     }
 
+    override fun update() {
+        lastVisibleChunks = visibleChunks.toSynchronizedMap()
+    }
+
     override fun draw() {
         renderWindow.renderSystem.reset()
         chunkShader.use()
-        val visibleChunks = visibleChunks.toSynchronizedMap()
 
-        for (map in visibleChunks.values) {
+        for (map in lastVisibleChunks.values) {
             for (mesh in map.values) {
                 mesh.opaqueSectionArrayMesh.draw()
             }
         }
+    }
 
-        renderWindow.renderSystem.depthMask = false
-        for (map in visibleChunks.values) {
+    override fun postDraw() {
+        renderWindow.renderSystem.reset(depthMask = false)
+        chunkShader.use()
+
+        for (map in lastVisibleChunks.values) {
             for (mesh in map.values) {
                 mesh.transparentSectionArrayMesh?.draw()
             }
