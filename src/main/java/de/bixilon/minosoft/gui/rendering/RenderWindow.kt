@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.rendering
 
 import de.bixilon.minosoft.Minosoft
-import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.chunk.ChunkBorderRenderer
@@ -27,12 +26,13 @@ import de.bixilon.minosoft.gui.rendering.hud.atlas.TextureLike
 import de.bixilon.minosoft.gui.rendering.hud.atlas.TextureLikeTexture
 import de.bixilon.minosoft.gui.rendering.input.key.RenderWindowInputHandler
 import de.bixilon.minosoft.gui.rendering.modding.events.RenderingStateChangeEvent
-import de.bixilon.minosoft.gui.rendering.modding.events.ScreenResizeEvent
+import de.bixilon.minosoft.gui.rendering.modding.events.ResizeWindowEvent
 import de.bixilon.minosoft.gui.rendering.particle.ParticleRenderer
 import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem
+import de.bixilon.minosoft.gui.rendering.system.window.GLFWWindow
 import de.bixilon.minosoft.gui.rendering.textures.Texture
 import de.bixilon.minosoft.gui.rendering.textures.TextureArray
 import de.bixilon.minosoft.gui.rendering.util.ScreenshotTaker
@@ -49,28 +49,32 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogMessageType
 import glm_.vec2.Vec2
 import glm_.vec2.Vec2i
-import org.lwjgl.glfw.*
+import org.lwjgl.glfw.Callbacks
 import org.lwjgl.glfw.GLFW.*
+import org.lwjgl.glfw.GLFWWindowFocusCallback
+import org.lwjgl.glfw.GLFWWindowIconifyCallback
 import org.lwjgl.opengl.GL11.*
-import org.lwjgl.system.MemoryStack
-import org.lwjgl.system.MemoryUtil
 
 class RenderWindow(
     val connection: PlayConnection,
     val rendering: Rendering,
 ) {
-    val renderSystem: RenderSystem = OpenGLRenderSystem()
+    val window = GLFWWindow(connection)
+    val renderSystem: RenderSystem = OpenGLRenderSystem(this)
     var initialized = false
         private set
     private lateinit var renderThread: Thread
     val renderStats = RenderStats()
-    var screenDimensions = Vec2i(900, 500)
-        private set
-    var screenDimensionsF = Vec2(screenDimensions)
-        private set
+
+    @Deprecated(message = "", replaceWith = ReplaceWith("window.size"))
+    val screenDimensions
+        get() = window.size
+
+    @Deprecated(message = "", replaceWith = ReplaceWith("window.sizef"))
+    val screenDimensionsF: Vec2
+        get() = window.sizef
     val inputHandler = RenderWindowInputHandler(this)
 
-    var windowId = 0L
     private var deltaFrameTime = 0.0
 
     private var lastFrame = 0.0
@@ -132,58 +136,16 @@ class RenderWindow(
         renderThread = Thread.currentThread()
         Log.log(LogMessageType.RENDERING_LOADING) { "Creating window..." }
         val stopwatch = Stopwatch()
-        // Setup an error callback. The default implementation
-        // will print the error message in System.err.
-        GLFWErrorCallback.createPrint(System.err).set()
 
-        // Initialize  Most GLFW functions will not work before doing this.
-        check(glfwInit()) { "Unable to initialize GLFW" }
+        window.init()
 
-        // Configure GLFW
-        glfwDefaultWindowHints() // optional, the current window hints are already the default
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3)
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3)
-        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE)
-        glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE) // the window will stay hidden after creation
-        glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE) // the window will be resizable
-
-        // Create the window
-        windowId = glfwCreateWindow(screenDimensions.x, screenDimensions.y, "Minosoft", MemoryUtil.NULL, MemoryUtil.NULL)
-        if (windowId == MemoryUtil.NULL) {
-            glfwTerminate()
-            throw RuntimeException("Failed to create the GLFW window")
-        }
         inputHandler.camera.init(this)
 
         tintColorCalculator.init(connection.assetsManager)
 
 
 
-        if (!StaticConfiguration.DEBUG_MODE) {
-            glfwSetInputMode(windowId, GLFW_CURSOR, GLFW_CURSOR_DISABLED)
-        }
-        glfwSetWindowSizeLimits(windowId, 100, 100, GLFW_DONT_CARE, GLFW_DONT_CARE)
-
-
-        MemoryStack.stackPush().let { stack ->
-            val pWidth = stack.mallocInt(1)
-            val pHeight = stack.mallocInt(1)
-
-            // Get the window size passed to glfwCreateWindow
-            glfwGetWindowSize(windowId, pWidth, pHeight)
-
-            // Get the resolution of the primary monitor
-            val videoMode = glfwGetVideoMode(glfwGetPrimaryMonitor())!!
-
-            // Center the window
-            glfwSetWindowPos(windowId, (videoMode.width() - pWidth[0]) / 2, (videoMode.height() - pHeight[0]) / 2)
-        }
-
         Log.log(LogMessageType.RENDERING_LOADING) { "Creating context (${stopwatch.labTime()})..." }
-        // Make the OpenGL context current
-        glfwMakeContextCurrent(windowId)
-        // Enable v-sync
-        glfwSwapInterval(Minosoft.config.config.game.other.swapInterval)
 
         renderSystem.init()
 
@@ -213,7 +175,6 @@ class RenderWindow(
             renderer.init()
         }
 
-
         Log.log(LogMessageType.RENDERING_LOADING) { "Preloading textures (${stopwatch.labTime()})..." }
         textures.preLoad(connection.assetsManager)
         font.loadAtlas()
@@ -228,17 +189,8 @@ class RenderWindow(
 
 
         Log.log(LogMessageType.RENDERING_LOADING) { "Registering glfw callbacks (${stopwatch.labTime()})..." }
-        glfwSetWindowSizeCallback(windowId, object : GLFWWindowSizeCallback() {
-            override fun invoke(window: Long, width: Int, height: Int) {
-                glViewport(0, 0, width, height)
-                val previousSize = screenDimensions
-                screenDimensions = Vec2i(width, height)
-                screenDimensionsF = Vec2(screenDimensions)
-                connection.fireEvent(ScreenResizeEvent(previousScreenDimensions = previousSize, screenDimensions = screenDimensions))
-            }
-        })
 
-        glfwSetWindowFocusCallback(windowId, object : GLFWWindowFocusCallback() {
+        glfwSetWindowFocusCallback(window.window, object : GLFWWindowFocusCallback() {
             override fun invoke(window: Long, focused: Boolean) {
                 setRenderStatus(if (focused) {
                     RenderingStates.RUNNING
@@ -248,7 +200,7 @@ class RenderWindow(
             }
         })
 
-        glfwSetWindowIconifyCallback(windowId, object : GLFWWindowIconifyCallback() {
+        glfwSetWindowIconifyCallback(window.window, object : GLFWWindowIconifyCallback() {
             override fun invoke(window: Long, iconified: Boolean) {
                 setRenderStatus(if (iconified) {
                     RenderingStates.PAUSED
@@ -257,18 +209,13 @@ class RenderWindow(
                 })
             }
         })
-        glfwSetKeyCallback(this.windowId, inputHandler::keyInput)
-        glfwSetMouseButtonCallback(this.windowId, inputHandler::mouseKeyInput)
-
-        glfwSetCharCallback(windowId, inputHandler::charInput)
-        glfwSetCursorPosCallback(windowId, inputHandler::mouseMove)
 
 
         inputHandler.init()
         registerGlobalKeyCombinations()
 
 
-        connection.fireEvent(ScreenResizeEvent(previousScreenDimensions = Vec2i(0, 0), screenDimensions = screenDimensions))
+        connection.fireEvent(ResizeWindowEvent(previousSize = Vec2i(0, 0), size = window.size))
 
 
         Log.log(LogMessageType.RENDERING_LOADING) { "Rendering is fully prepared in ${stopwatch.totalTime()}" }
@@ -276,7 +223,7 @@ class RenderWindow(
         latch.dec()
         latch.await()
         this.latch.await()
-        glfwShowWindow(windowId)
+        window.visible = true
         Log.log(LogMessageType.RENDERING_GENERAL) { "Showing window after ${stopwatch.totalTime()}" }
     }
 
@@ -290,7 +237,7 @@ class RenderWindow(
             sendDebugMessage("Toggled polygon mode!")
         }
 
-        inputHandler.registerKeyCallback(KeyBindingsNames.QUIT_RENDERING) { glfwSetWindowShouldClose(windowId, true) }
+        inputHandler.registerKeyCallback(KeyBindingsNames.QUIT_RENDERING) { glfwSetWindowShouldClose(window.window, true) }
         inputHandler.registerKeyCallback(KeyBindingsNames.TAKE_SCREENSHOT) { screenshotTaker.takeScreenshot() }
 
         inputHandler.registerKeyCallback(KeyBindingsNames.DEBUG_PAUSE_INCOMING_PACKETS) {
@@ -305,7 +252,7 @@ class RenderWindow(
 
     fun startLoop() {
         Log.log(LogMessageType.RENDERING_LOADING) { "Starting loop" }
-        while (!glfwWindowShouldClose(windowId)) {
+        while (!glfwWindowShouldClose(window.window)) {
             if (connection.wasConnected) {
                 break
             }
@@ -346,7 +293,7 @@ class RenderWindow(
             renderStats.endDraw()
 
 
-            glfwSwapBuffers(windowId)
+            glfwSwapBuffers(window.window)
             glfwPollEvents()
             inputHandler.draw(deltaFrameTime)
 
@@ -357,12 +304,12 @@ class RenderWindow(
                 RenderingStates.SLOW -> Thread.sleep(100L)
                 RenderingStates.RUNNING, RenderingStates.PAUSED -> {
                 }
-                RenderingStates.STOPPED -> glfwSetWindowShouldClose(windowId, true)
+                RenderingStates.STOPPED -> glfwSetWindowShouldClose(window.window, true)
             }
             renderStats.endFrame()
 
             if (RenderConstants.SHOW_FPS_IN_WINDOW_TITLE) {
-                glfwSetWindowTitle(windowId, "Minosoft | FPS: ${renderStats.fpsLastSecond}")
+                glfwSetWindowTitle(window.window, "Minosoft | FPS: ${renderStats.fpsLastSecond}")
             }
         }
     }
@@ -370,8 +317,8 @@ class RenderWindow(
     fun exit() {
         Log.log(LogMessageType.RENDERING_LOADING) { "Destroying render window..." }
         // Free the window callbacks and destroy the window
-        Callbacks.glfwFreeCallbacks(windowId)
-        glfwDestroyWindow(windowId)
+        Callbacks.glfwFreeCallbacks(window.window)
+        glfwDestroyWindow(window.window)
 
         // Terminate GLFW and free the error callback
         glfwTerminate()
@@ -404,7 +351,7 @@ class RenderWindow(
     }
 
     fun getClipboardText(): String {
-        return glfwGetClipboardString(windowId) ?: ""
+        return glfwGetClipboardString(window.window) ?: ""
     }
 
     fun assertOnRenderThread() {

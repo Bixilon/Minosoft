@@ -17,8 +17,8 @@ import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.Rendering
 import glm_.vec2.Vec2i
 
-class ScreenResizeEvent(
+class ResizeWindowEvent(
     renderWindow: RenderWindow = Rendering.currentContext!!,
-    val previousScreenDimensions: Vec2i,
-    val screenDimensions: Vec2i,
+    val previousSize: Vec2i,
+    val size: Vec2i,
 ) : RenderEvent(renderWindow)

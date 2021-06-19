@@ -17,6 +17,7 @@ import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
+import de.bixilon.minosoft.data.registries.blocks.types.FluidFillable
 import de.bixilon.minosoft.data.registries.fluid.FlowableFluid
 import de.bixilon.minosoft.data.registries.fluid.Fluid
 import de.bixilon.minosoft.data.registries.versions.Registries
@@ -49,6 +50,10 @@ class WaterFluid(
         if (other.properties[BlockProperties.WATERLOGGED] == true) {
             return true
         }
+        if (other.block is FluidFillable && resourceLocation == other.block.fluid) {
+            return true
+        }
+
         return super.matches(other)
     }
 

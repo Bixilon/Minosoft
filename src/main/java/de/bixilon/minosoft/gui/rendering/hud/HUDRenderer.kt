@@ -27,7 +27,7 @@ import de.bixilon.minosoft.gui.rendering.hud.nodes.HUDElement
 import de.bixilon.minosoft.gui.rendering.hud.nodes.chat.ChatBoxHUDElement
 import de.bixilon.minosoft.gui.rendering.hud.nodes.debug.HUDSystemDebugNode
 import de.bixilon.minosoft.gui.rendering.hud.nodes.debug.HUDWorldDebugNode
-import de.bixilon.minosoft.gui.rendering.modding.events.ScreenResizeEvent
+import de.bixilon.minosoft.gui.rendering.modding.events.ResizeWindowEvent
 import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.modding.event.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
@@ -76,8 +76,8 @@ class HUDRenderer(val connection: PlayConnection, val renderWindow: RenderWindow
 
         }
 
-        connection.registerEvent(CallbackEventInvoker.of<ScreenResizeEvent> {
-            orthographicMatrix = glm.ortho(-it.screenDimensions.x / 2.0f, it.screenDimensions.x / 2.0f, -it.screenDimensions.y / 2.0f, it.screenDimensions.y / 2.0f)
+        connection.registerEvent(CallbackEventInvoker.of<ResizeWindowEvent> {
+            orthographicMatrix = glm.ortho(-it.size.x / 2.0f, it.size.x / 2.0f, -it.size.y / 2.0f, it.size.y / 2.0f)
             for ((_, hudElement) in hudElements.values) {
                 hudElement.layout.clearChildrenCache()
             }
@@ -178,7 +178,7 @@ class HUDRenderer(val connection: PlayConnection, val renderWindow: RenderWindow
                 realSize.x = MMath.clamp(realSize.x, hudElement.layout.sizing.minSize.x, hudElement.layout.sizing.maxSize.x)
                 realSize.y = MMath.clamp(realSize.y, hudElement.layout.sizing.minSize.y, hudElement.layout.sizing.maxSize.y)
 
-                val elementStart = getRealPosition(realSize, elementProperties, renderWindow.screenDimensions)
+                val elementStart = getRealPosition(realSize, elementProperties, renderWindow.window.size)
 
                 hudElement.layout.checkCache(elementStart, realScaleFactor, orthographicMatrix, 0)
                 tempMesh.addCacheMesh(hudElement.layout.cache)

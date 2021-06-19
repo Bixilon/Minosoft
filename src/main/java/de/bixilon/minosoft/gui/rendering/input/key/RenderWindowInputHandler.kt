@@ -24,10 +24,12 @@ import de.bixilon.minosoft.gui.rendering.hud.elements.input.KeyConsumer
 import de.bixilon.minosoft.gui.rendering.input.LeftClickHandler
 import de.bixilon.minosoft.gui.rendering.input.RightClickHandler
 import de.bixilon.minosoft.gui.rendering.input.camera.Camera
+import de.bixilon.minosoft.gui.rendering.modding.events.MouseMoveEvent
+import de.bixilon.minosoft.gui.rendering.modding.events.RawCharInputEvent
+import de.bixilon.minosoft.gui.rendering.modding.events.RawKeyInputEvent
+import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
+import de.bixilon.minosoft.modding.event.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import de.bixilon.minosoft.util.logging.Log
-import de.bixilon.minosoft.util.logging.LogLevels
-import de.bixilon.minosoft.util.logging.LogMessageType
 import org.lwjgl.glfw.GLFW.*
 
 class RenderWindowInputHandler(
@@ -53,7 +55,7 @@ class RenderWindowInputHandler(
             } else {
                 GLFW_CURSOR_NORMAL
             }
-            glfwSetInputMode(renderWindow.windowId, GLFW_CURSOR, newCursorMode)
+            glfwSetInputMode(renderWindow.window.window, GLFW_CURSOR, newCursorMode)
             renderWindow.sendDebugMessage("Toggled mouse catch!")
         }
     }
@@ -61,33 +63,26 @@ class RenderWindowInputHandler(
     fun init() {
         rightClickHandler.init()
         leftClickHandler.init()
+
+        connection.registerEvent(CallbackEventInvoker.of<RawCharInputEvent> { charInput(it.char) })
+
+        connection.registerEvent(CallbackEventInvoker.of<RawKeyInputEvent> { keyInput(it.keyCode, it.keyChangeType) })
+
+        connection.registerEvent(CallbackEventInvoker.of<MouseMoveEvent> { camera.mouseCallback(it.position) })
     }
 
 
     var currentKeyConsumer: KeyConsumer? = null
 
-    fun mouseKeyInput(windowId: Long, button: Int, action: Int, modifierKey: Int) {
-        keyInput(windowId, button, 0, action, modifierKey)
-    }
-
-    fun keyInput(windowId: Long, key: Int, char: Int, action: Int, modifierKey: Int) {
-        if (windowId != renderWindow.windowId) {
-            return
-        }
-        val keyCode = KeyCodes.KEY_CODE_GLFW_ID_MAP[key] ?: KeyCodes.KEY_UNKNOWN
-
-        val keyDown = when (action) {
-            GLFW_PRESS -> {
+    private fun keyInput(keyCode: KeyCodes, keyChangeType: KeyChangeTypes) {
+        val keyDown = when (keyChangeType) {
+            KeyChangeTypes.PRESS -> {
                 currentKeyConsumer?.keyInput(keyCode)
                 true
             }
-            GLFW_RELEASE -> false
-            GLFW_REPEAT -> {
+            KeyChangeTypes.RELEASE -> false
+            KeyChangeTypes.REPEAT -> {
                 currentKeyConsumer?.keyInput(keyCode)
-                return
-            }
-            else -> {
-                Log.log(LogMessageType.RENDERING_GENERAL, LogLevels.WARN) { "Unknown glfw action $action" }
                 return
             }
         }
@@ -219,22 +214,12 @@ class RenderWindowInputHandler(
         }
     }
 
-    fun charInput(windowId: Long, char: Int) {
-        if (windowId != renderWindow.windowId) {
-            return
-        }
+    private fun charInput(char: Int) {
         if (skipNextCharPress) {
             skipNextCharPress = false
             return
         }
         currentKeyConsumer?.charInput(char.toChar())
-    }
-
-    fun mouseMove(windowId: Long, xPos: Double, yPos: Double) {
-        if (windowId != renderWindow.windowId) {
-            return
-        }
-        camera.mouseCallback(xPos, yPos)
     }
 
     fun registerKeyCallback(resourceLocation: ResourceLocation, callback: ((keyDown: Boolean) -> Unit)) {

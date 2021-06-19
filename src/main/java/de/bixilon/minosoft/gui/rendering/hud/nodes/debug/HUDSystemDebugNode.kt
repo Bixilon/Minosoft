@@ -19,7 +19,7 @@ import de.bixilon.minosoft.gui.rendering.hud.HUDElementProperties
 import de.bixilon.minosoft.gui.rendering.hud.HUDRenderBuilder
 import de.bixilon.minosoft.gui.rendering.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.hud.nodes.properties.NodeAlignment
-import de.bixilon.minosoft.gui.rendering.modding.events.ScreenResizeEvent
+import de.bixilon.minosoft.gui.rendering.modding.events.ResizeWindowEvent
 import de.bixilon.minosoft.modding.event.CallbackEventInvoker
 import de.bixilon.minosoft.modding.loading.ModLoader
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
@@ -74,7 +74,7 @@ class HUDSystemDebugNode(hudRenderer: HUDRenderer) : DebugScreenNode(hudRenderer
         gpuText.sText = "GPU: " + (glGetString(GL_RENDERER) ?: "unknown")
         gpuVersionText.sText = "Version: " + (glGetString(GL_VERSION) ?: "unknown")
 
-        hudRenderer.connection.registerEvent(CallbackEventInvoker.of<ScreenResizeEvent> {
+        hudRenderer.connection.registerEvent(CallbackEventInvoker.of<ResizeWindowEvent> {
             displayText.sText = "Display: ${getScreenDimensions()}"
         })
     }
@@ -123,7 +123,7 @@ class HUDSystemDebugNode(hudRenderer: HUDRenderer) : DebugScreenNode(hudRenderer
     }
 
     private fun getScreenDimensions(): String {
-        return "${hudRenderer.renderWindow.screenDimensions.x}x${hudRenderer.renderWindow.screenDimensions.y}"
+        return "${hudRenderer.renderWindow.window.size.x}x${hudRenderer.renderWindow.window.size.y}"
     }
 
     companion object : HUDRenderBuilder<HUDSystemDebugNode> {

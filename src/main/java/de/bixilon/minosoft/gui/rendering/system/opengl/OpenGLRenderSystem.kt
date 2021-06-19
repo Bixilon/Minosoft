@@ -13,17 +13,22 @@
 
 package de.bixilon.minosoft.gui.rendering.system.opengl
 
+import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.modding.events.ResizeWindowEvent
 import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.gui.rendering.system.base.BlendingFunctions
 import de.bixilon.minosoft.gui.rendering.system.base.DepthFunctions
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
 import de.bixilon.minosoft.gui.rendering.system.base.RenderingCapabilities
+import de.bixilon.minosoft.modding.event.CallbackEventInvoker
 import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
 import de.bixilon.minosoft.util.KUtil.synchronizedSetOf
 import org.lwjgl.opengl.GL
 import org.lwjgl.opengl.GL20.*
 
-class OpenGLRenderSystem : RenderSystem {
+class OpenGLRenderSystem(
+    private val renderWindow: RenderWindow,
+) : RenderSystem {
     val shaders: MutableMap<Shader, Int> = synchronizedMapOf() // ToDo
     private val capabilities: MutableSet<RenderingCapabilities> = synchronizedSetOf()
     var blendingSource = BlendingFunctions.ONE
@@ -44,6 +49,12 @@ class OpenGLRenderSystem : RenderSystem {
 
     override fun init() {
         GL.createCapabilities()
+
+        renderWindow.connection.registerEvent(CallbackEventInvoker.of<ResizeWindowEvent> {
+            renderWindow.queue += {
+                glViewport(0, 0, it.size.x, it.size.y)
+            }
+        })
     }
 
     override fun enable(capability: RenderingCapabilities) {

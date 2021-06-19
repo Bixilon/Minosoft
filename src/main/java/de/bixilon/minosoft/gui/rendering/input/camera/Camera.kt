@@ -22,7 +22,7 @@ import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.modding.events.CameraMatrixChangeEvent
 import de.bixilon.minosoft.gui.rendering.modding.events.CameraPositionChangeEvent
 import de.bixilon.minosoft.gui.rendering.modding.events.FrustumChangeEvent
-import de.bixilon.minosoft.gui.rendering.modding.events.ScreenResizeEvent
+import de.bixilon.minosoft.gui.rendering.modding.events.ResizeWindowEvent
 import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
 import de.bixilon.minosoft.gui.rendering.util.VecUtil
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.floor
@@ -35,6 +35,7 @@ import glm_.func.sin
 import glm_.glm
 import glm_.mat4x4.Mat4d
 import glm_.vec2.Vec2
+import glm_.vec2.Vec2d
 import glm_.vec3.Vec3d
 
 class Camera(
@@ -44,8 +45,7 @@ class Camera(
     private var mouseSensitivity = Minosoft.getConfig().config.game.camera.moseSensitivity
     val entity: LocalPlayerEntity
         get() = connection.player
-    private var lastMouseX = 0.0
-    private var lastMouseY = 0.0
+    private var lastMousePosition: Vec2d = Vec2d(0.0, 0.0)
     private var zoom = 0.0f
 
     var cameraFront = Vec3d(0.0, 0.0, -1.0)
@@ -65,7 +65,7 @@ class Camera(
 
     var viewMatrix = calculateViewMatrix()
         private set
-    var projectionMatrix = calculateProjectionMatrix(renderWindow.screenDimensionsF)
+    var projectionMatrix = calculateProjectionMatrix(renderWindow.window.sizef)
         private set
     var viewProjectionMatrix = projectionMatrix * viewMatrix
         private set
@@ -74,24 +74,21 @@ class Camera(
     val frustum: Frustum = Frustum(this)
 
 
-    fun mouseCallback(xPos: Double, yPos: Double) {
-        var xOffset = xPos - this.lastMouseX
-        var yOffset = yPos - this.lastMouseY
-        lastMouseX = xPos
-        lastMouseY = yPos
+    fun mouseCallback(position: Vec2d) {
+        val delta = position - lastMousePosition
+        lastMousePosition = position
         if (renderWindow.inputHandler.currentKeyConsumer != null) {
             return
         }
-        xOffset *= mouseSensitivity
-        yOffset *= mouseSensitivity
-        var yaw = xOffset + entity.rotation.headYaw
+        delta *= mouseSensitivity
+        var yaw = delta.x + entity.rotation.headYaw
         if (yaw > 180) {
             yaw -= 360
         } else if (yaw < -180) {
             yaw += 360
         }
         yaw %= 180
-        val pitch = glm.clamp(yOffset + entity.rotation.pitch, -89.9, 89.9)
+        val pitch = glm.clamp(delta.y + entity.rotation.pitch, -89.9, 89.9)
         entity.rotation = EntityRotation(yaw, pitch)
         setRotation(yaw, pitch)
     }
@@ -111,14 +108,14 @@ class Camera(
             KeyBindingsNames.MOVE_TOGGLE_FLY,
         )
 
-        connection.registerEvent(CallbackEventInvoker.of<ScreenResizeEvent> { recalculateViewProjectionMatrix() })
+        connection.registerEvent(CallbackEventInvoker.of<ResizeWindowEvent> { recalculateViewProjectionMatrix() })
         frustum.recalculate()
         connection.fireEvent(FrustumChangeEvent(renderWindow, frustum))
     }
 
     private fun recalculateViewProjectionMatrix() {
         viewMatrix = calculateViewMatrix()
-        projectionMatrix = calculateProjectionMatrix(renderWindow.screenDimensionsF)
+        projectionMatrix = calculateProjectionMatrix(renderWindow.window.sizef)
         viewProjectionMatrix = projectionMatrix * viewMatrix
         connection.fireEvent(CameraMatrixChangeEvent(
             renderWindow = renderWindow,

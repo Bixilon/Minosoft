@@ -15,8 +15,9 @@ package de.bixilon.minosoft.protocol.network.connection
 
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.modding.event.EventInvoker
+import de.bixilon.minosoft.modding.event.EventMaster
 import de.bixilon.minosoft.modding.event.events.CancelableEvent
-import de.bixilon.minosoft.modding.event.events.ConnectionEvent
+import de.bixilon.minosoft.modding.event.events.Event
 import de.bixilon.minosoft.modding.event.events.PacketSendEvent
 import de.bixilon.minosoft.protocol.network.Network
 import de.bixilon.minosoft.protocol.packets.c2s.C2SPacket
@@ -27,7 +28,7 @@ import de.bixilon.minosoft.protocol.protocol.PacketTypes.S2C
 import de.bixilon.minosoft.util.KUtil.synchronizedListOf
 import de.bixilon.minosoft.util.KUtil.toSynchronizedList
 
-abstract class Connection {
+abstract class Connection : EventMaster {
     val network = Network.getNetworkInstance(this)
     protected val eventListeners: MutableList<EventInvoker> = synchronizedListOf()
     val connectionId = lastConnectionId++
@@ -47,24 +48,24 @@ abstract class Connection {
     }
 
     /**
-     * @param connectionEvent The event to fire
+     * @param event The event to fire
      * @return if the event has been cancelled or not
      */
-    fun fireEvent(connectionEvent: ConnectionEvent): Boolean {
+    override fun fireEvent(event: Event): Boolean {
         for (eventManager in Minosoft.EVENT_MANAGERS) {
             for (eventListener in eventManager.globalEventListeners) {
-                eventListener(connectionEvent)
+                eventListener(event)
             }
         }
 
         for (eventInvoker in eventListeners.toSynchronizedList()) {
-            if (!eventInvoker.eventType.isAssignableFrom(connectionEvent::class.java)) {
+            if (!eventInvoker.eventType.isAssignableFrom(event::class.java)) {
                 continue
             }
-            eventInvoker(connectionEvent)
+            eventInvoker(event)
         }
-        if (connectionEvent is CancelableEvent) {
-            return connectionEvent.isCancelled
+        if (event is CancelableEvent) {
+            return event.isCancelled
         }
         return false
     }
@@ -84,11 +85,11 @@ abstract class Connection {
         eventListeners.remove(method)
     }
 
-    open fun registerEvent(method: EventInvoker) {
+    override fun registerEvent(method: EventInvoker) {
         eventListeners.add(method)
     }
 
-    open fun registerEvents(vararg method: EventInvoker) {
+    override fun registerEvents(vararg method: EventInvoker) {
         eventListeners.addAll(method)
     }
 

@@ -111,7 +111,7 @@ data class Version(
         registries.load(this, pixlyzerData)
         latch.dec()
         if (pixlyzerData.size() > 0) {
-            Log.log(LogMessageType.VERSION_LOADING, level = LogLevels.INFO) { "Loaded registries for $this (${versionName} in ${System.currentTimeMillis() - startTime}ms" }
+            Log.log(LogMessageType.VERSION_LOADING, level = LogLevels.INFO) { "Loaded registries for $this $versionName in ${System.currentTimeMillis() - startTime}ms" }
         } else {
             Log.log(LogMessageType.VERSION_LOADING, level = LogLevels.WARN) { "Could not load registries for $this (${versionName}. Some features might not work." }
         }
