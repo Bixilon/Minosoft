@@ -32,7 +32,7 @@ class OpenGLRenderSystem(
 ) : RenderSystem {
     val shaders: MutableMap<Shader, Int> = synchronizedMapOf() // ToDo
     private val capabilities: MutableSet<RenderingCapabilities> = synchronizedSetOf()
-    lateinit var vendor: OpenGLVendor
+    override lateinit var vendor: OpenGLVendor
         private set
 
     var blendingSource = BlendingFunctions.ONE

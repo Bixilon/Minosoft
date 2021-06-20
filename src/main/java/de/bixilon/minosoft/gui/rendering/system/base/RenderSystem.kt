@@ -18,6 +18,7 @@ import glm_.vec2.Vec2i
 import java.nio.ByteBuffer
 
 interface RenderSystem {
+    val vendor: GPUVendor
     var shader: Shader?
 
     fun init()

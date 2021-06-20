@@ -227,10 +227,7 @@ class Shader(
                             value(renderWindow)?.let { pushDefine(name, it) }
                         }
 
-                        // ToDo: Don't do that!
-                        if (renderWindow.renderSystem is OpenGLRenderSystem) {
-                            renderWindow.renderSystem.vendor.define?.let { pushDefine(it, "") }
-                        }
+                        pushDefine(renderWindow.renderSystem.vendor.shaderDefine, "")
                     }
                     line.startsWith("uniform ") -> { // ToDo: Packed in layout
                         reader.readUnquotedString() // "uniform"

@@ -14,5 +14,5 @@
 package de.bixilon.minosoft.gui.rendering.system.opengl.vendor
 
 object OtherOpenGLVendor : OpenGLVendor {
-    override val define: String? = null
+    override val shaderDefine: String = "__OTHER"
 }

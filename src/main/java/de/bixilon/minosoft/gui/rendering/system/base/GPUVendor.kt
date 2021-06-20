@@ -11,14 +11,8 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.system.opengl.vendor
+package de.bixilon.minosoft.gui.rendering.system.base
 
-import org.lwjgl.opengl.ATIMeminfo.GL_VBO_FREE_MEMORY_ATI
-import org.lwjgl.opengl.GL11.glGetInteger
-
-object ATIOpenGLVendor : OpenGLVendor {
-    override val shaderDefine: String = "__ATI"
-
-    override val availableVRAM: Long
-        get() = glGetInteger(GL_VBO_FREE_MEMORY_ATI).toLong() * 1024
+interface GPUVendor {
+    val shaderDefine: String
 }

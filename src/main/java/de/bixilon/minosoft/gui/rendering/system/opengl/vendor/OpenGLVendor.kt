@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.system.opengl.vendor
 
-interface OpenGLVendor {
+import de.bixilon.minosoft.gui.rendering.system.base.GPUVendor
 
-    val define: String?
+interface OpenGLVendor : GPUVendor {
 
     val usedVRAM: Long
         get() = -1L
