@@ -16,6 +16,7 @@ package de.bixilon.minosoft.config.key
 import org.lwjgl.glfw.GLFW.*
 import java.util.*
 
+// ToDo: Replace glfwKeyIds
 enum class KeyCodes(val glfwKeyId: Int) {
     KEY_UNKNOWN(GLFW_KEY_UNKNOWN),
     KEY_SPACE(GLFW_KEY_SPACE),

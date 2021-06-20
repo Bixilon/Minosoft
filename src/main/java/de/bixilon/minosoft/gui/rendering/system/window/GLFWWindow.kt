@@ -14,10 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.system.window
 
 import de.bixilon.minosoft.config.key.KeyCodes
-import de.bixilon.minosoft.gui.rendering.modding.events.MouseMoveEvent
-import de.bixilon.minosoft.gui.rendering.modding.events.RawCharInputEvent
-import de.bixilon.minosoft.gui.rendering.modding.events.RawKeyInputEvent
-import de.bixilon.minosoft.gui.rendering.modding.events.ResizeWindowEvent
+import de.bixilon.minosoft.gui.rendering.modding.events.*
 import de.bixilon.minosoft.gui.rendering.system.window.BaseWindow.Companion.DEFAULT_MAXIMUM_WINDOW_SIZE
 import de.bixilon.minosoft.gui.rendering.system.window.BaseWindow.Companion.DEFAULT_MINIMUM_WINDOW_SIZE
 import de.bixilon.minosoft.gui.rendering.system.window.BaseWindow.Companion.DEFAULT_WINDOW_SIZE
@@ -27,6 +24,7 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import glm_.vec2.Vec2d
 import glm_.vec2.Vec2i
+import org.lwjgl.glfw.Callbacks.glfwFreeCallbacks
 import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.glfw.GLFWErrorCallback
 import org.lwjgl.system.MemoryUtil
@@ -34,8 +32,7 @@ import org.lwjgl.system.MemoryUtil
 class GLFWWindow(
     private val eventMaster: EventMaster,
 ) : BaseWindow {
-    @Deprecated("Will be private soon")
-    var window = -1L
+    private var window = -1L
 
     override var cursorMode: CursorModes = CursorModes.NORMAL
         set(value) {
@@ -97,6 +94,27 @@ class GLFWWindow(
             field = value
         }
 
+    override var clipboardText: String
+        get() = glfwGetClipboardString(window) ?: ""
+        set(value) {
+            glfwSetClipboardString(window, value)
+        }
+
+    override val version: String
+        get() = glfwGetVersionString()
+
+    override val time: Double
+        get() = glfwGetTime()
+
+    override var title: String = "Window"
+        set(value) {
+            if (field == value) {
+                return
+            }
+            glfwSetWindowTitle(window, value)
+            field = value
+        }
+
     override fun init() {
         GLFWErrorCallback.createPrint(System.err).set()
         check(glfwInit()) { "Unable to initialize GLFW" }
@@ -110,7 +128,7 @@ class GLFWWindow(
 
         window = glfwCreateWindow(size.x, size.y, "Minosoft", MemoryUtil.NULL, MemoryUtil.NULL)
         if (window == MemoryUtil.NULL) {
-            close()
+            destroy()
             throw RuntimeException("Failed to create the GLFW window")
         }
 
@@ -130,11 +148,62 @@ class GLFWWindow(
 
         glfwSetWindowSizeCallback(window, this::onResize)
 
+        glfwSetWindowCloseCallback(window, this::onClose)
+        glfwSetWindowFocusCallback(window, this::onFocusChange)
+        glfwSetWindowIconifyCallback(window, this::onIconify)
+
         super.init()
     }
 
-    override fun close() {
+    override fun destroy() {
+        glfwFreeCallbacks(window)
+        glfwDestroyWindow(window)
+
         glfwTerminate()
+        glfwSetErrorCallback(null)!!.free()
+    }
+
+    override fun close() {
+        if (eventMaster.fireEvent(WindowCloseEvent(window = this))) {
+            return
+        }
+
+        glfwSetWindowShouldClose(window, true)
+    }
+
+    override fun swapBuffers() {
+        glfwSwapBuffers(window)
+    }
+
+    override fun pollEvents() {
+        glfwPollEvents()
+    }
+
+    private fun onFocusChange(window: Long, focused: Boolean) {
+        if (window != this.window) {
+            return
+        }
+
+        eventMaster.fireEvent(WindowFocusChangeEvent(window = this, focused = focused))
+    }
+
+    private fun onIconify(window: Long, iconified: Boolean) {
+        if (window != this.window) {
+            return
+        }
+
+        eventMaster.fireEvent(WindowIconifyChangeEvent(window = this, iconified = iconified))
+    }
+
+    private fun onClose(window: Long) {
+        if (window != this.window) {
+            return
+        }
+        val cancelled = eventMaster.fireEvent(WindowCloseEvent(window = this))
+
+        if (cancelled) {
+            glfwSetWindowShouldClose(window, false)
+        }
     }
 
     private fun onResize(window: Long, width: Int, height: Int) {

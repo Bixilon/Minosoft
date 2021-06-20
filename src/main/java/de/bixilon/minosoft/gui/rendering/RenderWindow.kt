@@ -25,13 +25,13 @@ import de.bixilon.minosoft.gui.rendering.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.hud.atlas.TextureLike
 import de.bixilon.minosoft.gui.rendering.hud.atlas.TextureLikeTexture
 import de.bixilon.minosoft.gui.rendering.input.key.RenderWindowInputHandler
-import de.bixilon.minosoft.gui.rendering.modding.events.RenderingStateChangeEvent
-import de.bixilon.minosoft.gui.rendering.modding.events.ResizeWindowEvent
+import de.bixilon.minosoft.gui.rendering.modding.events.*
 import de.bixilon.minosoft.gui.rendering.particle.ParticleRenderer
 import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem
+import de.bixilon.minosoft.gui.rendering.system.window.BaseWindow
 import de.bixilon.minosoft.gui.rendering.system.window.GLFWWindow
 import de.bixilon.minosoft.gui.rendering.textures.Texture
 import de.bixilon.minosoft.gui.rendering.textures.TextureArray
@@ -42,6 +42,7 @@ import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.play.PositionAndRotationS2CP
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.CountUpAndDownLatch
+import de.bixilon.minosoft.util.KUtil.decide
 import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
 import de.bixilon.minosoft.util.Queue
 import de.bixilon.minosoft.util.Stopwatch
@@ -49,17 +50,13 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogMessageType
 import glm_.vec2.Vec2
 import glm_.vec2.Vec2i
-import org.lwjgl.glfw.Callbacks
-import org.lwjgl.glfw.GLFW.*
-import org.lwjgl.glfw.GLFWWindowFocusCallback
-import org.lwjgl.glfw.GLFWWindowIconifyCallback
 import org.lwjgl.opengl.GL11.*
 
 class RenderWindow(
     val connection: PlayConnection,
     val rendering: Rendering,
 ) {
-    val window = GLFWWindow(connection)
+    val window: BaseWindow = GLFWWindow(connection)
     val renderSystem: RenderSystem = OpenGLRenderSystem(this)
     var initialized = false
         private set
@@ -70,9 +67,6 @@ class RenderWindow(
     val screenDimensions
         get() = window.size
 
-    @Deprecated(message = "", replaceWith = ReplaceWith("window.sizef"))
-    val screenDimensionsF: Vec2
-        get() = window.sizef
     val inputHandler = RenderWindowInputHandler(this)
 
     private var deltaFrameTime = 0.0
@@ -144,7 +138,6 @@ class RenderWindow(
         tintColorCalculator.init(connection.assetsManager)
 
 
-
         Log.log(LogMessageType.RENDERING_LOADING) { "Creating context (${stopwatch.labTime()})..." }
 
         renderSystem.init()
@@ -188,26 +181,14 @@ class RenderWindow(
         }
 
 
-        Log.log(LogMessageType.RENDERING_LOADING) { "Registering glfw callbacks (${stopwatch.labTime()})..." }
+        Log.log(LogMessageType.RENDERING_LOADING) { "Registering window callbacks (${stopwatch.labTime()})..." }
 
-        glfwSetWindowFocusCallback(window.window, object : GLFWWindowFocusCallback() {
-            override fun invoke(window: Long, focused: Boolean) {
-                setRenderStatus(if (focused) {
-                    RenderingStates.RUNNING
-                } else {
-                    RenderingStates.SLOW
-                })
-            }
+        connection.registerEvent(CallbackEventInvoker.of<WindowFocusChangeEvent> {
+            setRenderStatus(it.focused.decide(RenderingStates.RUNNING, RenderingStates.SLOW))
         })
 
-        glfwSetWindowIconifyCallback(window.window, object : GLFWWindowIconifyCallback() {
-            override fun invoke(window: Long, iconified: Boolean) {
-                setRenderStatus(if (iconified) {
-                    RenderingStates.PAUSED
-                } else {
-                    RenderingStates.RUNNING
-                })
-            }
+        connection.registerEvent(CallbackEventInvoker.of<WindowIconifyChangeEvent> {
+            setRenderStatus(it.iconified.decide(RenderingStates.PAUSED, RenderingStates.RUNNING))
         })
 
 
@@ -237,7 +218,7 @@ class RenderWindow(
             sendDebugMessage("Toggled polygon mode!")
         }
 
-        inputHandler.registerKeyCallback(KeyBindingsNames.QUIT_RENDERING) { glfwSetWindowShouldClose(window.window, true) }
+        inputHandler.registerKeyCallback(KeyBindingsNames.QUIT_RENDERING) { window.close() }
         inputHandler.registerKeyCallback(KeyBindingsNames.TAKE_SCREENSHOT) { screenshotTaker.takeScreenshot() }
 
         inputHandler.registerKeyCallback(KeyBindingsNames.DEBUG_PAUSE_INCOMING_PACKETS) {
@@ -252,17 +233,22 @@ class RenderWindow(
 
     fun startLoop() {
         Log.log(LogMessageType.RENDERING_LOADING) { "Starting loop" }
-        while (!glfwWindowShouldClose(window.window)) {
-            if (connection.wasConnected) {
+        var closed = false
+        connection.registerEvent(CallbackEventInvoker.of<WindowCloseEvent> {
+            closed = true
+        })
+
+        while (true) {
+            if (connection.wasConnected || closed) {
                 break
             }
             if (renderingState == RenderingStates.PAUSED) {
                 Thread.sleep(100L)
-                glfwPollEvents()
+                window.pollEvents()
                 continue
             }
             renderStats.startFrame()
-            glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT) // clear the framebuffer
+            glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
 
 
             val currentTickTime = System.currentTimeMillis()
@@ -272,7 +258,7 @@ class RenderWindow(
                 this.lastTickTimer = currentTickTime
             }
 
-            val currentFrame = glfwGetTime()
+            val currentFrame = window.time
             deltaFrameTime = currentFrame - lastFrame
             lastFrame = currentFrame
 
@@ -293,8 +279,9 @@ class RenderWindow(
             renderStats.endDraw()
 
 
-            glfwSwapBuffers(window.window)
-            glfwPollEvents()
+            window.swapBuffers()
+            window.pollEvents()
+
             inputHandler.draw(deltaFrameTime)
 
             // handle opengl context tasks, but limit it per frame
@@ -304,26 +291,17 @@ class RenderWindow(
                 RenderingStates.SLOW -> Thread.sleep(100L)
                 RenderingStates.RUNNING, RenderingStates.PAUSED -> {
                 }
-                RenderingStates.STOPPED -> glfwSetWindowShouldClose(window.window, true)
+                RenderingStates.STOPPED -> window.close()
             }
             renderStats.endFrame()
 
             if (RenderConstants.SHOW_FPS_IN_WINDOW_TITLE) {
-                glfwSetWindowTitle(window.window, "Minosoft | FPS: ${renderStats.fpsLastSecond}")
+                window.title = "Minosoft | FPS: ${renderStats.fpsLastSecond}"
             }
         }
-    }
 
-    fun exit() {
         Log.log(LogMessageType.RENDERING_LOADING) { "Destroying render window..." }
-        // Free the window callbacks and destroy the window
-        Callbacks.glfwFreeCallbacks(window.window)
-        glfwDestroyWindow(window.window)
-
-        // Terminate GLFW and free the error callback
-        glfwTerminate()
-        glfwSetErrorCallback(null)!!.free()
-
+        window.destroy()
         Log.log(LogMessageType.RENDERING_LOADING) { "Render window destroyed!" }
         // disconnect
         connection.disconnect()
@@ -350,8 +328,9 @@ class RenderWindow(
         connection.sender.sendFakeChatMessage(RenderConstants.DEBUG_MESSAGES_PREFIX + message)
     }
 
+    @Deprecated(message = "", replaceWith = ReplaceWith("window.clipboardText"))
     fun getClipboardText(): String {
-        return glfwGetClipboardString(window.window) ?: ""
+        return window.clipboardText
     }
 
     fun assertOnRenderThread() {

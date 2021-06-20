@@ -27,10 +27,11 @@ import de.bixilon.minosoft.gui.rendering.input.camera.Camera
 import de.bixilon.minosoft.gui.rendering.modding.events.MouseMoveEvent
 import de.bixilon.minosoft.gui.rendering.modding.events.RawCharInputEvent
 import de.bixilon.minosoft.gui.rendering.modding.events.RawKeyInputEvent
+import de.bixilon.minosoft.gui.rendering.system.window.CursorModes
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import de.bixilon.minosoft.modding.event.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import org.lwjgl.glfw.GLFW.*
+import de.bixilon.minosoft.util.KUtil.decide
 
 class RenderWindowInputHandler(
     val renderWindow: RenderWindow,
@@ -50,12 +51,7 @@ class RenderWindowInputHandler(
 
     init {
         registerKeyCallback(KeyBindingsNames.DEBUG_MOUSE_CATCH) {
-            val newCursorMode = if (it) {
-                GLFW_CURSOR_DISABLED
-            } else {
-                GLFW_CURSOR_NORMAL
-            }
-            glfwSetInputMode(renderWindow.window.window, GLFW_CURSOR, newCursorMode)
+            renderWindow.window.cursorMode = it.decide(CursorModes.DISABLED, CursorModes.NORMAL)
             renderWindow.sendDebugMessage("Toggled mouse catch!")
         }
     }

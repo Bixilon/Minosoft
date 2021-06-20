@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering
 
 import de.bixilon.minosoft.Minosoft
+import de.bixilon.minosoft.gui.rendering.modding.events.WindowCloseEvent
 import de.bixilon.minosoft.gui.rendering.sound.AudioPlayer
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.util.CountUpAndDownLatch
@@ -60,12 +61,11 @@ class Rendering(private val connection: PlayConnection) {
                 CONTEXT_MAP[Thread.currentThread()] = renderWindow
                 renderWindow.init(latch)
                 renderWindow.startLoop()
-                renderWindow.exit()
             } catch (exception: Throwable) {
                 CONTEXT_MAP.remove(Thread.currentThread())
                 exception.printStackTrace()
                 try {
-                    renderWindow.exit()
+                    connection.fireEvent(WindowCloseEvent(window = renderWindow.window))
                 } catch (ignored: Throwable) {
                 }
                 if (connection.connectionState.connected) {

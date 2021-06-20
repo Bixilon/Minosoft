@@ -32,6 +32,13 @@ interface BaseWindow {
 
     var cursorMode: CursorModes
 
+
+    var clipboardText: String
+    var title: String
+    val version: String
+
+    val time: Double
+
     fun init() {
         resizable = true
         swapInterval = Minosoft.config.config.game.other.swapInterval
@@ -44,8 +51,13 @@ interface BaseWindow {
         maxSize = DEFAULT_MAXIMUM_WINDOW_SIZE
     }
 
+    fun destroy()
+
     fun close()
 
+    fun swapBuffers()
+
+    fun pollEvents()
 
     companion object {
         val DEFAULT_WINDOW_SIZE: Vec2i
