@@ -54,6 +54,8 @@ class HUDSystemDebugNode(hudRenderer: HUDRenderer) : DebugScreenNode(hudRenderer
     private val gpuText = text("TBA")
     private val gpuVersionText = text("TBA")
 
+    private val gpuMemoryText = text("TBA")
+
 
     init {
         text()
@@ -65,6 +67,10 @@ class HUDSystemDebugNode(hudRenderer: HUDRenderer) : DebugScreenNode(hudRenderer
             })
         text()
         text("Mods: ${ModLoader.MOD_MAP.size} active, ${hudRenderer.connection.eventListenerSize} listeners")
+    }
+
+    init {
+        text()
     }
 
     private val targetPosition = text("TBA")
@@ -85,6 +91,8 @@ class HUDSystemDebugNode(hudRenderer: HUDRenderer) : DebugScreenNode(hudRenderer
         }
         memoryText.sText = "Memory: ${getUsedMemoryPercent()}% ${getFormattedUsedMemory()}/${SystemInformation.MAX_MEMORY_TEXT}"
         allocatedMemoryText.sText = "Allocated: ${getAllocatedMemoryPercent()}% ${getFormattedAllocatedMemory()}"
+
+        gpuMemoryText.sText = "VRAM: ${UnitFormatter.formatBytes(hudRenderer.renderWindow.renderSystem.usedVRAM)} / ${UnitFormatter.formatBytes(hudRenderer.renderWindow.renderSystem.availableVRAM)} | ${UnitFormatter.formatBytes(hudRenderer.renderWindow.renderSystem.maximumVRAM)}"
 
         val rayCastHit = hudRenderer.renderWindow.inputHandler.camera.getTargetBlock()
         if (rayCastHit == null) {

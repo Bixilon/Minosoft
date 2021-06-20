@@ -19,6 +19,9 @@ object UnitFormatter {
     private val TIME_UNITS = arrayOf("ns", "μs", "ms", "s", "m", "h", "d", "w", "M", "Y")
 
     fun formatBytes(bytes: Long): String {
+        if (bytes < 0) {
+            return "Unknown"
+        }
         return formatUnit(bytes, BYTE_UNITS, 1024L)
     }
 

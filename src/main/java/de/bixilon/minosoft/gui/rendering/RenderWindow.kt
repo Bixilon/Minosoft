@@ -323,7 +323,7 @@ class RenderWindow(
     }
 
     fun assertOnRenderThread() {
-        check(Thread.currentThread() == renderThread) { "Current thread (${Thread.currentThread().name} is not the render thread!" }
+        check(Thread.currentThread() === renderThread) { "Current thread (${Thread.currentThread().name} is not the render thread!" }
     }
 
     operator fun <T : Renderer> get(renderer: RendererBuilder<T>): T? {

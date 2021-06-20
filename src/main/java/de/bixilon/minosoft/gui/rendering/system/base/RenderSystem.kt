@@ -51,5 +51,10 @@ interface RenderSystem {
 
     var polygonMode: PolygonModes
 
+
+    val usedVRAM: Long
+    val availableVRAM: Long
+    val maximumVRAM: Long
+
     fun readPixels(start: Vec2i, end: Vec2i, type: PixelTypes): ByteBuffer
 }

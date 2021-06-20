@@ -17,6 +17,7 @@ import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.modding.events.ResizeWindowEvent
 import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.gui.rendering.system.base.*
+import de.bixilon.minosoft.gui.rendering.system.opengl.vendor.*
 import de.bixilon.minosoft.modding.event.CallbackEventInvoker
 import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
 import de.bixilon.minosoft.util.KUtil.synchronizedSetOf
@@ -31,6 +32,9 @@ class OpenGLRenderSystem(
 ) : RenderSystem {
     val shaders: MutableMap<Shader, Int> = synchronizedMapOf() // ToDo
     private val capabilities: MutableSet<RenderingCapabilities> = synchronizedSetOf()
+    lateinit var vendor: OpenGLVendor
+        private set
+
     var blendingSource = BlendingFunctions.ONE
         private set
     var blendingDestination = BlendingFunctions.ZERO
@@ -49,6 +53,16 @@ class OpenGLRenderSystem(
 
     override fun init() {
         GL.createCapabilities()
+
+        val vendorString = glGetString(GL_VENDOR)?.lowercase()
+
+        vendor = when {
+            vendorString == null -> OtherOpenGLVendor
+            vendorString.contains("nvidia") -> NvidiaOpenGLVendor
+            vendorString.contains("intel") -> MesaOpenGLVendor
+            vendorString.contains("amd") || vendorString.contains("ati") -> ATIOpenGLVendor // ToDo
+            else -> OtherOpenGLVendor
+        }
 
         renderWindow.connection.registerEvent(CallbackEventInvoker.of<ResizeWindowEvent> {
             renderWindow.queue += {
@@ -121,6 +135,15 @@ class OpenGLRenderSystem(
             glPolygonMode(FaceTypes.FRONT_AND_BACK.gl, value.gl)
             field = value
         }
+
+    override val usedVRAM: Long
+        get() = vendor.usedVRAM
+
+    override val availableVRAM: Long
+        get() = vendor.availableVRAM
+
+    override val maximumVRAM: Long
+        get() = vendor.maximumVRAM
 
     override fun readPixels(start: Vec2i, end: Vec2i, type: PixelTypes): ByteBuffer {
         val buffer: ByteBuffer = BufferUtils.createByteBuffer((end.x - start.x) * (end.y - start.y) * type.bytes)

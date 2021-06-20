@@ -169,13 +169,6 @@ class Shader(
 
     companion object {
         private val DEFAULT_DEFINES: Map<String, (renderWindow: RenderWindow) -> Any?> = mapOf(
-            "__NVIDIA" to {
-                if (glGetString(GL_VENDOR)?.lowercase()?.contains("nvidia") == true) {
-                    ""
-                } else {
-                    null
-                }
-            },
             "ANIMATED_TEXTURE_COUNT" to {
                 MMath.clamp(it.textures.animator.animatedTextures.size, 1, TextureArray.MAX_ANIMATED_TEXTURES)
             }
@@ -232,6 +225,11 @@ class Shader(
 
                         for ((name, value) in DEFAULT_DEFINES) {
                             value(renderWindow)?.let { pushDefine(name, it) }
+                        }
+
+                        // ToDo: Don't do that!
+                        if (renderWindow.renderSystem is OpenGLRenderSystem) {
+                            renderWindow.renderSystem.vendor.define?.let { pushDefine(it, "") }
                         }
                     }
                     line.startsWith("uniform ") -> { // ToDo: Packed in layout
