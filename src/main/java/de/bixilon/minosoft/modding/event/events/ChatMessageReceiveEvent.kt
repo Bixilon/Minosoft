@@ -25,7 +25,7 @@ class ChatMessageReceiveEvent(
     val message: ChatComponent,
     val position: ChatTextPositions,
     val sender: UUID?,
-) : CancelableEvent(connection, initiator) {
+) : PlayConnectionEvent(connection, initiator), CancelableEvent {
 
 
     constructor(connection: PlayConnection, packet: ChatMessageS2CP) : this(connection, EventInitiators.SERVER, packet.message, packet.position, packet.sender)

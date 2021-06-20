@@ -21,7 +21,7 @@ class OpenSignEditorEvent(
     connection: PlayConnection,
     initiator: EventInitiators,
     val blockPosition: Vec3i,
-) : CancelableEvent(connection, initiator) {
+) : PlayConnectionEvent(connection, initiator), CancelableEvent {
 
     constructor(connection: PlayConnection, packet: SignEditorOpenS2CP) : this(connection, EventInitiators.SERVER, packet.blockPosition)
 }

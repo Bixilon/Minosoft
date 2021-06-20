@@ -21,7 +21,6 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.world.biome.accessor.BlockBiomeAccessor
 import de.bixilon.minosoft.data.world.biome.accessor.NoiseBiomeAccessor
 import de.bixilon.minosoft.modding.channels.DefaultPluginChannels
-import de.bixilon.minosoft.modding.event.events.JoinGameEvent
 import de.bixilon.minosoft.protocol.ErrorHandler
 import de.bixilon.minosoft.protocol.network.connection.Connection
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
@@ -140,9 +139,6 @@ class JoinGameS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     }
 
     override fun handle(connection: PlayConnection) {
-        if (connection.fireEvent(JoinGameEvent(connection, this))) {
-            return
-        }
         val playerEntity = connection.player
         playerEntity.tabListItem.gamemode = gamemode
 

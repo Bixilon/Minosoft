@@ -12,7 +12,17 @@
  */
 package de.bixilon.minosoft.modding.event.events
 
+import de.bixilon.minosoft.data.player.tab.TabListItemData
 import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.protocol.packets.s2c.play.TabListDataS2CP
+import java.util.*
 
-class ChatMessageSendEvent(connection: PlayConnection, val message: String) : PlayConnectionEvent(connection, EventInitiators.CLIENT), CancelableEvent
+class PlayerListItemChangeEvent(
+    connection: PlayConnection,
+    initiator: EventInitiators,
+    val items: Map<UUID, TabListItemData>,
+) : PlayConnectionEvent(connection, initiator), CancelableEvent {
+
+    constructor(connection: PlayConnection, packet: TabListDataS2CP) : this(connection, EventInitiators.SERVER, packet.items)
+}

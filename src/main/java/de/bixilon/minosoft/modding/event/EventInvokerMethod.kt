@@ -32,7 +32,7 @@ class EventInvokerMethod(
         if (!method.parameters[0].type.isAssignableFrom(event.javaClass)) {
             return
         }
-        if (!this.isIgnoreCancelled && event is CancelableEvent && event.isCancelled) {
+        if (!this.isIgnoreCancelled && event is CancelableEvent && event.cancelled) {
             return
         }
         method(listener, event)

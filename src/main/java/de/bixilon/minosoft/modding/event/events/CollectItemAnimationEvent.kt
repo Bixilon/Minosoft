@@ -25,7 +25,7 @@ class CollectItemAnimationEvent(
     val collectedEntity: Entity,
     val collector: LivingEntity,
     val count: Int,
-) : CancelableEvent(connection, initiator) {
+) : PlayConnectionEvent(connection, initiator), CancelableEvent {
 
     constructor(connection: PlayConnection, packet: ItemCollectAnimationS2CP) : this(connection, EventInitiators.SERVER, connection.world.entities[packet.itemEntityId]!!.unsafeCast<Entity>(), connection.world.entities[packet.collectorEntityId]!!.unsafeCast<LivingEntity>(), packet.count)
 }

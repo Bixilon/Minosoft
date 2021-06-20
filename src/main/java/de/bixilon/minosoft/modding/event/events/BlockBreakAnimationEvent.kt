@@ -14,5 +14,16 @@ package de.bixilon.minosoft.modding.event.events
 
 import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.protocol.packets.s2c.play.BlockBreakAnimationS2CP
+import glm_.vec3.Vec3i
 
-class ChatMessageSendEvent(connection: PlayConnection, val message: String) : PlayConnectionEvent(connection, EventInitiators.CLIENT), CancelableEvent
+class BlockBreakAnimationEvent(
+    connection: PlayConnection,
+    initiator: EventInitiators,
+    val animationId: Int,
+    val blockPosition: Vec3i,
+    val stage: Int,
+) : PlayConnectionEvent(connection, initiator), CancelableEvent {
+
+    constructor(connection: PlayConnection, packet: BlockBreakAnimationS2CP) : this(connection, EventInitiators.SERVER, packet.animationId, packet.blockPosition, packet.stage)
+}

@@ -65,7 +65,9 @@ abstract class Connection : EventMaster {
             eventInvoker(event)
         }
         if (event is CancelableEvent) {
-            return event.isCancelled
+            val cancelled = event.cancelled
+            event.cancelled = false // Cleanup memory
+            return cancelled
         }
         return false
     }

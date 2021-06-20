@@ -23,7 +23,7 @@ class ResourcePackRequestEvent(
     val url: String,
     val hash: String,
     val promptText: ChatComponent?,
-) : CancelableEvent(connection, initiator) {
+) : PlayConnectionEvent(connection, initiator), CancelableEvent {
 
 
     constructor(connection: PlayConnection, packet: ResourcepackRequestS2CP) : this(connection, EventInitiators.SERVER, packet.url, packet.hash, packet.promptText)

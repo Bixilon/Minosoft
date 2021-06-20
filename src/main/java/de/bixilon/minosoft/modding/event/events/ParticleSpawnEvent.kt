@@ -27,7 +27,7 @@ class ParticleSpawnEvent(
     val speed: Float,
     val count: Int,
     val data: ParticleData,
-) : CancelableEvent(connection, initiator) {
+) : PlayConnectionEvent(connection, initiator), CancelableEvent {
     val position: Vec3d = position
         get() = Vec3d(field)
     val offset: Vec3 = offset

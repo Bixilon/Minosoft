@@ -12,12 +12,20 @@
  */
 package de.bixilon.minosoft.modding.event.events
 
-import de.bixilon.minosoft.modding.event.EventInitiators
-import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.util.KUtil.synchronizedSetOf
 
-abstract class CancelableEvent @JvmOverloads constructor(
-    connection: PlayConnection,
-    initiator: EventInitiators = EventInitiators.DEFAULT,
-) : PlayConnectionEvent(connection, initiator) {
-    var isCancelled = false
+interface CancelableEvent {
+    var cancelled: Boolean
+        get() = CANCELLED_EVENTS.contains(this)
+        set(value) {
+            if (value) {
+                CANCELLED_EVENTS -= this
+            } else {
+                CANCELLED_EVENTS += this
+            }
+        }
+
+    private companion object {
+        val CANCELLED_EVENTS: MutableSet<CancelableEvent> = synchronizedSetOf()
+    }
 }

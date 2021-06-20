@@ -24,7 +24,7 @@ class ContainerCloseEvent(
     connection: PlayConnection,
     initiator: EventInitiators,
     val containerId: Int,
-) : CancelableEvent(connection, initiator) {
+) : PlayConnectionEvent(connection, initiator), CancelableEvent {
 
     constructor(connection: PlayConnection, packet: ContainerCloseS2CP) : this(connection, EventInitiators.SERVER, packet.containerId)
 

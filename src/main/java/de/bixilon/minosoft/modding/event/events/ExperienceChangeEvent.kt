@@ -22,7 +22,7 @@ class ExperienceChangeEvent(
     val bar: Float,
     val level: Int,
     val total: Int,
-) : CancelableEvent(connection, initiator) {
+) : PlayConnectionEvent(connection, initiator), CancelableEvent {
 
     constructor(connection: PlayConnection, packet: ExperienceSetS2CP) : this(connection, EventInitiators.SERVER, packet.bar, packet.level, packet.total)
 }

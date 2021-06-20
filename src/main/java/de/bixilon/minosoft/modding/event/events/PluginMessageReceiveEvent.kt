@@ -20,10 +20,10 @@ import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 
 class PluginMessageReceiveEvent(
     connection: PlayConnection,
-    initiators: EventInitiators,
+    initiator: EventInitiators,
     val channel: ResourceLocation,
     data: PlayInByteBuffer,
-) : CancelableEvent(connection, initiators) {
+) : PlayConnectionEvent(connection, initiator), CancelableEvent {
     val data: PlayInByteBuffer = data
         get() = PlayInByteBuffer(field)
 

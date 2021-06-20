@@ -29,7 +29,7 @@ class PlaySoundEvent(
     val soundEvent: SoundEvent,
     val volume: Float,
     val pitch: Float,
-) : CancelableEvent(connection, initiator) {
+) : PlayConnectionEvent(connection, initiator), CancelableEvent {
     val position: Vec3 = position
         get() = Vec3(field)
 
