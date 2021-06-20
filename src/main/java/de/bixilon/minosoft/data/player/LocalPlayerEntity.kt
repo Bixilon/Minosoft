@@ -39,7 +39,6 @@ import de.bixilon.minosoft.data.registries.items.Item
 import de.bixilon.minosoft.data.registries.other.containers.Container
 import de.bixilon.minosoft.data.registries.other.containers.PlayerInventory
 import de.bixilon.minosoft.data.tags.DefaultBlockTags
-import de.bixilon.minosoft.data.tags.DefaultFluidTags
 import de.bixilon.minosoft.data.tags.Tag
 import de.bixilon.minosoft.gui.rendering.chunk.models.AABB
 import de.bixilon.minosoft.gui.rendering.input.camera.MovementInput
@@ -308,7 +307,7 @@ class LocalPlayerEntity(
 
         var movement = Vec3d(delta)
 
-        // ToDo: Check for piston movement+
+        // ToDo: Check for piston movement
 
         if (!movementMultiplier.empty) {
             movement = movement * movementMultiplier
@@ -615,7 +614,7 @@ class LocalPlayerEntity(
         get() = (onGround && fallDistance < PhysicsConstants.STEP_HEIGHT) && !connection.world.isSpaceEmpty(aabb + Vec3(0.0f, fallDistance - PhysicsConstants.STEP_HEIGHT, 0.0f))
 
 
-    private fun updateFluidState(fluidType: ResourceLocation): Boolean {
+    private fun updateFluidState(fluid: ResourceLocation): Boolean {
         val aabb = aabb.shrink()
 
         var height = 0.0f
@@ -624,18 +623,15 @@ class LocalPlayerEntity(
         val velocity = Vec3d.EMPTY
         var checks = 0
 
-        var velocityMultiplier = 1.0
-
         for ((blockPosition, blockState) in connection.world[aabb]) {
             if (blockState.block !is FluidBlock) {
                 continue
             }
 
-
-            if (!connection.inTag(blockState.block.fluid, TagsS2CP.FLUID_TAG_RESOURCE_LOCATION, fluidType)) {
+            if (blockState.block.fluid.resourceLocation != fluid) {
                 continue
             }
-            val fluidHeight = blockPosition.y + blockState.block.getFluidHeight(blockState)
+            val fluidHeight = blockPosition.y + blockState.block.fluid.getHeight(blockState)
 
             if (fluidHeight < aabb.min.y) {
                 continue
@@ -654,47 +650,45 @@ class LocalPlayerEntity(
             if (fluid !is FlowableFluid) {
                 continue
             }
-            velocityMultiplier = fluid.getVelocityMultiplier(connection, blockState, blockPosition)
             val fluidVelocity = fluid.getVelocity(connection, blockState, blockPosition)
 
             if (height < 0.4) {
                 fluidVelocity *= height
             }
 
-            velocity += fluidVelocity
+            velocity += (fluidVelocity * fluid.getVelocityMultiplier(connection, blockState, blockPosition))
             checks++
         }
 
         if (velocity.length() > 0.0) {
             if (checks > 0) {
-                velocity *= 1.0 / checks
+                velocity /= checks
             }
 
             velocity *= velocityMultiplier
 
-            if (abs(velocity.x) < 0.004 && abs(velocity.z) < 0.003 && velocity.length() < 0.0045000000000000005) {
-                velocity assign velocity.normalize() * 0.0045000000000000005
+            if (abs(this.velocity.x) < 0.003 && abs(this.velocity.z) < 0.003 && velocity.length() < 0.0045000000000000005) {
+                velocity assign (velocity.normalize() * 0.0045000000000000005)
             }
 
-            this.velocity assign (this.velocity + velocity)
+            val finalVelocity = this.velocity + velocity
+            this.velocity assign finalVelocity
         }
-        fluidHeights[fluidType] = height
+        fluidHeights[fluid] = height
         return inFluid
     }
 
 
-    private fun updateWaterState() {
+    private fun updateFluidStates() {
         fluidHeights.clear()
         if (vehicle is Boat) {
             return // ToDo
         }
 
-        if (updateFluidState(DefaultFluidTags.WATER_TAG)) {
-            // Log.log(LogMessageType.OTHER, LogLevels.VERBOSE){"In Water: Yes"}
-            return
-            // ToDo
+        connection.registries.fluidRegistry.forEachItem {
+            updateFluidState(it.resourceLocation)
         }
-        //  Log.log(LogMessageType.OTHER, LogLevels.VERBOSE){"In Water: No"}
+
     }
 
     override fun realTick() {
@@ -704,7 +698,7 @@ class LocalPlayerEntity(
         }
         super.realTick()
         tickMovement()
-        updateWaterState()
+        updateFluidStates()
 
         sendMovementPackets()
 

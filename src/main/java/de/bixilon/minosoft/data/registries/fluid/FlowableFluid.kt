@@ -13,10 +13,13 @@
 package de.bixilon.minosoft.data.registries.fluid
 
 import com.google.gson.JsonObject
+import de.bixilon.minosoft.data.Directions
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
+import de.bixilon.minosoft.data.registries.blocks.types.FluidBlock
 import de.bixilon.minosoft.data.registries.versions.Registries
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import glm_.vec3.Vec3d
 import glm_.vec3.Vec3i
@@ -31,8 +34,42 @@ abstract class FlowableFluid(
 
     abstract fun getVelocityMultiplier(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i): Double
 
-    fun getVelocity(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i): Vec3d {
-        // ToDo
-        return Vec3d.EMPTY
+    open fun getVelocity(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i): Vec3d {
+        if (blockState.block !is FluidBlock) {
+            return Vec3d.EMPTY
+        }
+        val thisFluidHeight = blockState.block.fluid.getHeight(blockState)
+
+        val velocity = Vec3d.EMPTY
+
+
+        for (direction in Directions.SIDES) {
+            val neighbourBlockState = connection.world[blockPosition + direction] ?: continue
+            if (neighbourBlockState.block !is FluidBlock) {
+                continue
+            }
+            val fluid = neighbourBlockState.block.fluid
+            if (!matches(fluid)) {
+                continue
+            }
+            val height = neighbourBlockState.block.fluid.getHeight(neighbourBlockState)
+
+            var magic = 0.0f
+
+            if (height == 0.0f) {
+                // ToDo
+            } else {
+                magic = thisFluidHeight - height
+            }
+
+            if (magic != 0.0f) {
+                velocity += (direction.vectord * magic)
+            }
+
+        }
+
+        // ToDo: Falling fluid
+
+        return velocity.normalize() * -1.0
     }
 }

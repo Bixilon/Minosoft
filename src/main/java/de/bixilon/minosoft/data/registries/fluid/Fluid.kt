@@ -15,6 +15,7 @@ package de.bixilon.minosoft.data.registries.fluid
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
+import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.types.FluidBlock
 import de.bixilon.minosoft.data.registries.fluid.lava.LavaFluid
 import de.bixilon.minosoft.data.registries.fluid.water.WaterFluid
@@ -24,6 +25,7 @@ import de.bixilon.minosoft.data.registries.registry.RegistryItem
 import de.bixilon.minosoft.data.registries.registry.ResourceLocationDeserializer
 import de.bixilon.minosoft.data.registries.versions.Registries
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.util.KUtil.unsafeCast
 import glm_.vec3.Vec3i
 import kotlin.random.Random
 
@@ -59,6 +61,9 @@ open class Fluid(
         return matches(other.block.fluid)
     }
 
+    fun getHeight(blockState: BlockState): Float {
+        return (blockState.properties[BlockProperties.FLUID_LEVEL] ?: return 0.0f).unsafeCast<Int>() / 9.0f
+    }
 
     open fun randomTick(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, random: Random) {}
 
