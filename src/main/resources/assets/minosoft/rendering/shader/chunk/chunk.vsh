@@ -31,10 +31,7 @@ out vec4 finTintColor;
 uniform mat4 uViewProjectionMatrix;
 
 
-layout(std140) uniform uAnimationBuffer
-{
-    uvec4 uAnimationData[ANIMATED_TEXTURE_COUNT];
-};
+#include "minosoft:animation"
 
 #include "minosoft:color"
 

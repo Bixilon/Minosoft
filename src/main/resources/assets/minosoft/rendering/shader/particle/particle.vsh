@@ -23,10 +23,7 @@ layout (location = 5) in float vinScale;
 layout (location = 6) in uint vinTintColor;
 
 
-layout(std140) uniform uAnimationBuffer
-{
-    uvec4 uAnimationData[ANIMATED_TEXTURE_COUNT];
-};
+#include "minosoft:animation"
 
 out Vertex
 {
