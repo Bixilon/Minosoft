@@ -29,6 +29,7 @@ import de.bixilon.minosoft.gui.rendering.modding.events.*
 import de.bixilon.minosoft.gui.rendering.particle.ParticleRenderer
 import de.bixilon.minosoft.gui.rendering.shader.Shader
 import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
+import de.bixilon.minosoft.gui.rendering.system.base.PolygonModes
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem
 import de.bixilon.minosoft.gui.rendering.system.window.BaseWindow
@@ -206,12 +207,9 @@ class RenderWindow(
 
     private fun registerGlobalKeyCombinations() {
         inputHandler.registerKeyCallback(KeyBindingsNames.DEBUG_POLYGON) {
-            glPolygonMode(GL_FRONT_AND_BACK, if (it) {
-                GL_LINE
-            } else {
-                GL_FILL
-            })
-            sendDebugMessage("Toggled polygon mode!")
+            val nextMode = it.decide(PolygonModes.LINE, PolygonModes.FILL)
+            renderSystem.polygonMode = nextMode
+            sendDebugMessage("Set polygon to: $nextMode")
         }
 
         inputHandler.registerKeyCallback(KeyBindingsNames.QUIT_RENDERING) { window.close() }

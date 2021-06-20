@@ -49,6 +49,7 @@ interface RenderSystem {
     var depth: DepthFunctions
     var depthMask: Boolean
 
-    fun readPixels(start: Vec2i, end: Vec2i, type: PixelTypes): ByteBuffer
+    var polygonMode: PolygonModes
 
+    fun readPixels(start: Vec2i, end: Vec2i, type: PixelTypes): ByteBuffer
 }

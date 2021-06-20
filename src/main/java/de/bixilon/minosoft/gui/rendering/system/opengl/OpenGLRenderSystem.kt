@@ -113,6 +113,15 @@ class OpenGLRenderSystem(
             field = value
         }
 
+    override var polygonMode: PolygonModes = PolygonModes.FILL
+        set(value) {
+            if (field == value) {
+                return
+            }
+            glPolygonMode(FaceTypes.FRONT_AND_BACK.gl, value.gl)
+            field = value
+        }
+
     override fun readPixels(start: Vec2i, end: Vec2i, type: PixelTypes): ByteBuffer {
         val buffer: ByteBuffer = BufferUtils.createByteBuffer((end.x - start.x) * (end.y - start.y) * type.bytes)
         glReadPixels(start.x, start.y, end.x, end.y, type.gl, GL_UNSIGNED_BYTE, buffer)
@@ -176,6 +185,32 @@ class OpenGLRenderSystem(
                     PixelTypes.RGB -> GL_RGB
                     PixelTypes.RGBA -> GL_RGBA
                     else -> throw IllegalArgumentException("OpenGL does not support pixel type: $this")
+                }
+            }
+
+        private val PolygonModes.gl: Int
+            get() {
+                return when (this) {
+                    PolygonModes.FILL -> GL_FILL
+                    PolygonModes.LINE -> GL_LINE
+                    PolygonModes.POINT -> GL_POINT
+                    else -> throw IllegalArgumentException("OpenGL does not support polygon mode: $this")
+                }
+            }
+
+        private val FaceTypes.gl: Int
+            get() {
+                return when (this) {
+                    FaceTypes.FRONT_LEFT -> GL_FRONT_LEFT
+                    FaceTypes.FRONT_RIGHT -> GL_FRONT_RIGHT
+                    FaceTypes.BACK_LEFT -> GL_BACK_LEFT
+                    FaceTypes.BACK_RIGHT -> GL_BACK_RIGHT
+                    FaceTypes.FRONT -> GL_FRONT
+                    FaceTypes.BACK -> GL_BACK
+                    FaceTypes.LEFT -> GL_LEFT
+                    FaceTypes.RIGHT -> GL_RIGHT
+                    FaceTypes.FRONT_AND_BACK -> GL_FRONT_AND_BACK
+                    else -> throw IllegalArgumentException("OpenGL does not face type: $this")
                 }
             }
     }

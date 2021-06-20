@@ -18,7 +18,6 @@ import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.system.base.PixelTypes
 import de.bixilon.minosoft.util.Util
-import de.bixilon.minosoft.util.logging.Log
 import glm_.vec2.Vec2i
 import java.awt.image.BufferedImage
 import java.io.File
@@ -36,6 +35,10 @@ class ScreenshotTaker(
             var i = 1
             while (File(path).exists()) {
                 path = "${basePath}_${i++}.png"
+                if (i > 10) {
+                    screenshotFail(StackOverflowError())
+                    return
+                }
             }
 
             val width = renderWindow.window.size.x
@@ -63,7 +66,6 @@ class ScreenshotTaker(
 
                     val message = "§aScreenshot saved to §f${file.name}"
                     renderWindow.sendDebugMessage(message)
-                    Log.game(message)
                 } catch (exception: Exception) {
                     screenshotFail(exception)
                 }
@@ -73,7 +75,7 @@ class ScreenshotTaker(
         }
     }
 
-    private fun screenshotFail(exception: Exception?) {
+    private fun screenshotFail(exception: Throwable?) {
         exception?.printStackTrace()
         renderWindow.sendDebugMessage("§cFailed to make a screenshot!")
     }
