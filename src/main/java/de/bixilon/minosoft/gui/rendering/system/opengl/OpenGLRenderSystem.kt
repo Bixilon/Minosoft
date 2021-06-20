@@ -16,15 +16,15 @@ package de.bixilon.minosoft.gui.rendering.system.opengl
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.modding.events.ResizeWindowEvent
 import de.bixilon.minosoft.gui.rendering.shader.Shader
-import de.bixilon.minosoft.gui.rendering.system.base.BlendingFunctions
-import de.bixilon.minosoft.gui.rendering.system.base.DepthFunctions
-import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
-import de.bixilon.minosoft.gui.rendering.system.base.RenderingCapabilities
+import de.bixilon.minosoft.gui.rendering.system.base.*
 import de.bixilon.minosoft.modding.event.CallbackEventInvoker
 import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
 import de.bixilon.minosoft.util.KUtil.synchronizedSetOf
+import glm_.vec2.Vec2i
+import org.lwjgl.BufferUtils
 import org.lwjgl.opengl.GL
 import org.lwjgl.opengl.GL20.*
+import java.nio.ByteBuffer
 
 class OpenGLRenderSystem(
     private val renderWindow: RenderWindow,
@@ -113,6 +113,11 @@ class OpenGLRenderSystem(
             field = value
         }
 
+    override fun readPixels(start: Vec2i, end: Vec2i, type: PixelTypes): ByteBuffer {
+        val buffer: ByteBuffer = BufferUtils.createByteBuffer((end.x - start.x) * (end.y - start.y) * type.bytes)
+        glReadPixels(start.x, start.y, end.x, end.y, type.gl, GL_UNSIGNED_BYTE, buffer)
+        return buffer
+    }
 
     companion object {
         private val RenderingCapabilities.gl: Int
@@ -158,6 +163,19 @@ class OpenGLRenderSystem(
                     DepthFunctions.GREATER_OR_EQUAL -> GL_GEQUAL
                     DepthFunctions.ALWAYS -> GL_ALWAYS
                     else -> throw IllegalArgumentException("OpenGL does not support depth function: $this")
+                }
+            }
+
+        private val PixelTypes.gl: Int
+            get() {
+                return when (this) {
+                    PixelTypes.RED -> GL_RED
+                    PixelTypes.GREEN -> GL_GREEN
+                    PixelTypes.BLUE -> GL_BLUE
+                    PixelTypes.ALPHA -> GL_ALPHA
+                    PixelTypes.RGB -> GL_RGB
+                    PixelTypes.RGBA -> GL_RGBA
+                    else -> throw IllegalArgumentException("OpenGL does not support pixel type: $this")
                 }
             }
     }

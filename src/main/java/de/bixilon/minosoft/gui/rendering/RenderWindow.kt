@@ -63,10 +63,6 @@ class RenderWindow(
     private lateinit var renderThread: Thread
     val renderStats = RenderStats()
 
-    @Deprecated(message = "", replaceWith = ReplaceWith("window.size"))
-    val screenDimensions
-        get() = window.size
-
     val inputHandler = RenderWindowInputHandler(this)
 
     private var deltaFrameTime = 0.0
@@ -326,11 +322,6 @@ class RenderWindow(
 
     fun sendDebugMessage(message: String) {
         connection.sender.sendFakeChatMessage(RenderConstants.DEBUG_MESSAGES_PREFIX + message)
-    }
-
-    @Deprecated(message = "", replaceWith = ReplaceWith("window.clipboardText"))
-    fun getClipboardText(): String {
-        return window.clipboardText
     }
 
     fun assertOnRenderThread() {

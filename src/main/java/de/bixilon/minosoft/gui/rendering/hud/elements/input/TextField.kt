@@ -94,7 +94,7 @@ open class TextField(
             KeyCodes.KEY_V -> {
                 if (renderWindow.inputHandler.isKeyDown(KeyCodes.KEY_LEFT_CONTROL, KeyCodes.KEY_RIGHT_CONTROL)) {
                     // paste
-                    textInput(renderWindow.getClipboardText())
+                    textInput(renderWindow.window.clipboardText)
                 }
             }
             // ToDo: Up and down for line breaks, shift and ctrl modifier, ...

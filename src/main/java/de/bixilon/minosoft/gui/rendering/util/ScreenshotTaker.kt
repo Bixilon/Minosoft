@@ -16,14 +16,12 @@ package de.bixilon.minosoft.gui.rendering.util
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.system.base.PixelTypes
 import de.bixilon.minosoft.util.Util
 import de.bixilon.minosoft.util.logging.Log
-import de.matthiasmann.twl.utils.PNGDecoder
-import org.lwjgl.BufferUtils
-import org.lwjgl.opengl.GL11.*
+import glm_.vec2.Vec2i
 import java.awt.image.BufferedImage
 import java.io.File
-import java.nio.ByteBuffer
 import java.text.SimpleDateFormat
 import javax.imageio.ImageIO
 
@@ -40,10 +38,9 @@ class ScreenshotTaker(
                 path = "${basePath}_${i++}.png"
             }
 
-            val width = renderWindow.screenDimensions.x.toInt()
-            val height = renderWindow.screenDimensions.y.toInt()
-            val buffer: ByteBuffer = BufferUtils.createByteBuffer(width * height * PNGDecoder.Format.RGBA.numComponents)
-            glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, buffer)
+            val width = renderWindow.window.size.x
+            val height = renderWindow.window.size.y
+            val buffer = renderWindow.renderSystem.readPixels(Vec2i(0, 0), Vec2i(width, height), PixelTypes.RGBA)
 
             Minosoft.THREAD_POOL.execute {
                 try {

@@ -14,6 +14,8 @@
 package de.bixilon.minosoft.gui.rendering.system.base
 
 import de.bixilon.minosoft.gui.rendering.shader.Shader
+import glm_.vec2.Vec2i
+import java.nio.ByteBuffer
 
 interface RenderSystem {
     var shader: Shader?
@@ -46,5 +48,7 @@ interface RenderSystem {
 
     var depth: DepthFunctions
     var depthMask: Boolean
+
+    fun readPixels(start: Vec2i, end: Vec2i, type: PixelTypes): ByteBuffer
 
 }
