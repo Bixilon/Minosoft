@@ -193,7 +193,7 @@ class LeftClickHandler(
         }
 
         connection.player.activeStatusEffects[hasteStatusEffect]?.let {
-            speedMultiplier *= (0.2f * it.amplifier) + 1.0f
+            speedMultiplier *= (0.2f * (it.amplifier + 1)) + 1.0f
         }
 
         connection.player.activeStatusEffects[miningFatigueStatusEffect]?.let {
