@@ -62,7 +62,11 @@ open class Fluid(
     }
 
     fun getHeight(blockState: BlockState): Float {
-        return (blockState.properties[BlockProperties.FLUID_LEVEL] ?: return 0.0f).unsafeCast<Int>() / 9.0f
+        val fluidLevel = blockState.properties[BlockProperties.FLUID_LEVEL]?.unsafeCast<Int>() ?: 0
+        if (fluidLevel == 0) {
+            return 1.0f
+        }
+        return fluidLevel / 9.0f
     }
 
     open fun randomTick(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, random: Random) {}

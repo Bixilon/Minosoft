@@ -21,6 +21,7 @@ import de.bixilon.minosoft.data.player.Hands
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.effects.DefaultStatusEffects
 import de.bixilon.minosoft.data.registries.enchantment.DefaultEnchantments
+import de.bixilon.minosoft.data.registries.fluid.DefaultFluids
 import de.bixilon.minosoft.data.registries.items.tools.MiningToolItem
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
@@ -54,6 +55,8 @@ class LeftClickHandler(
     private var acknowledgedBreakStarts: MutableMap<Vec3i, BlockState?> = synchronizedMapOf()
 
     private val efficiencyEnchantment = connection.registries.enchantmentRegistry[DefaultEnchantments.EFFICIENCY]
+    private val aquaAffinityEnchantment = connection.registries.enchantmentRegistry[DefaultEnchantments.AQUA_AFFINITY]
+
     private val hasteStatusEffect = connection.registries.statusEffectRegistry[DefaultStatusEffects.HASTE]
     private val miningFatigueStatusEffect = connection.registries.statusEffectRegistry[DefaultStatusEffects.MINING_FATIGUE]
 
@@ -194,10 +197,17 @@ class LeftClickHandler(
         }
 
         connection.player.activeStatusEffects[miningFatigueStatusEffect]?.let {
-            speedMultiplier *= 0.3f.pow(it.amplifier + 1)
+            speedMultiplier *= when (it.amplifier) {
+                0 -> 0.3f
+                1 -> 0.09f
+                2 -> 0.0027f
+                else -> 8.1E-4f
+            }
         }
 
-        // ToDo: Check if is in water
+        if (connection.player.submgergedFluid?.resourceLocation == DefaultFluids.WATER && connection.player.getEquipmentEnchant(aquaAffinityEnchantment) == 0) {
+            speedMultiplier /= 5.0f
+        }
 
         if (!connection.player.onGround) {
             speedMultiplier /= 5.0f

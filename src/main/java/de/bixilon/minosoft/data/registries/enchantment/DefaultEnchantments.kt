@@ -19,4 +19,5 @@ object DefaultEnchantments {
     val SOUL_SPEED = "minecraft:soul_speed".asResourceLocation()
     val UNBREAKING = "minecraft:unbreaking".asResourceLocation()
     val EFFICIENCY = "minecraft:efficiency".asResourceLocation()
+    val AQUA_AFFINITY = "minecraft:aqua_affinity".asResourceLocation()
 }

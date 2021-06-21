@@ -34,6 +34,7 @@ import de.bixilon.minosoft.data.registries.effects.attributes.DefaultStatusEffec
 import de.bixilon.minosoft.data.registries.effects.attributes.StatusEffectAttributeInstance
 import de.bixilon.minosoft.data.registries.enchantment.DefaultEnchantments
 import de.bixilon.minosoft.data.registries.fluid.FlowableFluid
+import de.bixilon.minosoft.data.registries.fluid.Fluid
 import de.bixilon.minosoft.data.registries.items.DefaultItems
 import de.bixilon.minosoft.data.registries.items.Item
 import de.bixilon.minosoft.data.registries.other.containers.Container
@@ -45,6 +46,7 @@ import de.bixilon.minosoft.gui.rendering.input.camera.MovementInput
 import de.bixilon.minosoft.gui.rendering.util.VecUtil
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.assign
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.blockPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.clearZero
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.empty
@@ -95,6 +97,7 @@ class LocalPlayerEntity(
 
     // fluids stuff
     private val fluidHeights: MutableMap<ResourceLocation, Float> = synchronizedMapOf()
+    var submgergedFluid: Fluid? = null
 
     var input = MovementInput()
 
@@ -645,18 +648,18 @@ class LocalPlayerEntity(
                 continue
             }
 
-            val fluid = blockState.block.fluid
+            val blockFluid = blockState.block.fluid
 
-            if (fluid !is FlowableFluid) {
+            if (blockFluid !is FlowableFluid) {
                 continue
             }
-            val fluidVelocity = fluid.getVelocity(connection, blockState, blockPosition)
+            val fluidVelocity = blockFluid.getVelocity(connection, blockState, blockPosition)
 
             if (height < 0.4) {
                 fluidVelocity *= height
             }
 
-            velocity += (fluidVelocity * fluid.getVelocityMultiplier(connection, blockState, blockPosition))
+            velocity += (fluidVelocity * blockFluid.getVelocityMultiplier(connection, blockState, blockPosition))
             checks++
         }
 
@@ -689,6 +692,20 @@ class LocalPlayerEntity(
             updateFluidState(it.resourceLocation)
         }
 
+        // ToDo: Boat
+        val eyeHeight = eyePosition.y - 0.1111111119389534
+
+        val eyePosition = (Vec3d(position.x, eyeHeight, position.z)).blockPosition
+        submgergedFluid = null
+        val blockState = connection.world[eyePosition] ?: return
+        if (blockState.block !is FluidBlock) {
+            return
+        }
+        val height = eyePosition.y + blockState.block.fluid.getHeight(blockState)
+
+        if (height > eyeHeight) {
+            submgergedFluid = blockState.block.fluid
+        }
     }
 
     override fun realTick() {
