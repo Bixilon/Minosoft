@@ -11,23 +11,25 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.blocks.types
+package de.bixilon.minosoft.gui.rendering.input.camera.hit
 
-import com.google.gson.JsonObject
-import de.bixilon.minosoft.data.inventory.ItemStack
-import de.bixilon.minosoft.data.player.Hands
-import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.Directions
 import de.bixilon.minosoft.data.registries.blocks.BlockState
-import de.bixilon.minosoft.data.registries.blocks.BlockUsages
-import de.bixilon.minosoft.data.registries.versions.Registries
-import de.bixilon.minosoft.gui.rendering.input.camera.hit.RaycastHit
-import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
+import de.bixilon.minosoft.data.registries.fluid.Fluid
+import glm_.vec3.Vec3d
 import glm_.vec3.Vec3i
 
-open class NoteBlock(resourceLocation: ResourceLocation, registries: Registries, data: JsonObject) : Block(resourceLocation, registries, data) {
+class FluidRaycastHit(
+    position: Vec3d,
+    distance: Double,
+    hitDirection: Directions,
+    blockState: BlockState,
+    blockPosition: Vec3i,
+    val fluid: Fluid,
+) : BlockRaycastHit(position, distance, hitDirection, blockState, blockPosition) {
 
-    override fun onUse(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, raycastHit: RaycastHit, hands: Hands, itemStack: ItemStack?): BlockUsages {
-        return BlockUsages.SUCCESS
+    override fun toString(): String {
+        return "$blockPosition: ${fluid.resourceLocation}\n Height: ${fluid.getHeight(blockState)}\n Level: ${blockState.properties[BlockProperties.FLUID_LEVEL]}"
     }
 }
-

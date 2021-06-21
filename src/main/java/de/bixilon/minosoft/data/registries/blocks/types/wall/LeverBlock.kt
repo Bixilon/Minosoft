@@ -24,7 +24,7 @@ import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.particle.data.DustParticleData
 import de.bixilon.minosoft.data.registries.versions.Registries
 import de.bixilon.minosoft.data.text.Colors
-import de.bixilon.minosoft.gui.rendering.input.camera.RaycastHit
+import de.bixilon.minosoft.gui.rendering.input.camera.hit.RaycastHit
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.dust.DustParticle
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection

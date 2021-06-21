@@ -15,6 +15,7 @@ package de.bixilon.minosoft.util
 
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.collections.SynchronizedMap
@@ -182,5 +183,29 @@ object KUtil {
             list += value as V
         }
         return list.toList()
+    }
+
+    fun Any.format(): ChatComponent {
+        return ChatComponent.of(when (this) {
+            is Boolean -> {
+                if (this) {
+                    "§atrue"
+                } else {
+                    "§cfalse"
+                }
+            }
+            is Enum<*> -> {
+                val name = this.name
+                if (name.length == 1) {
+                    name
+                } else {
+                    name.lowercase()
+                }
+            }
+            is Number -> {
+                "§d$this"
+            }
+            else -> this.toString()
+        })
     }
 }

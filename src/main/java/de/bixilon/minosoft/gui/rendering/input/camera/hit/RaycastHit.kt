@@ -11,20 +11,13 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.input.camera
+package de.bixilon.minosoft.gui.rendering.input.camera.hit
 
 import de.bixilon.minosoft.data.Directions
-import de.bixilon.minosoft.data.registries.blocks.BlockState
 import glm_.vec3.Vec3d
-import glm_.vec3.Vec3i
 
-data class RaycastHit(
+abstract class RaycastHit(
     val position: Vec3d,
-    val blockPosition: Vec3i,
     val distance: Double,
-    val blockState: BlockState,
     val hitDirection: Directions,
-    val steps: Int,
-) {
-    val hitPosition = position.minus(blockPosition)
-}
+)

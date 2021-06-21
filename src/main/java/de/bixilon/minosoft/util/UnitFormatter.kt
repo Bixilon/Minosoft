@@ -18,11 +18,11 @@ object UnitFormatter {
     private val UNITS = arrayOf("", "k", "M", "G", "T", "P", "E", "Z", "Y")
     private val TIME_UNITS = arrayOf("ns", "μs", "ms", "s", "m", "h", "d", "w", "M", "Y")
 
-    fun formatBytes(bytes: Long): String {
-        if (bytes < 0) {
+    fun Long.formatBytes(): String {
+        if (this < 0) {
             return "Unknown"
         }
-        return formatUnit(bytes, BYTE_UNITS, 1024L)
+        return formatUnit(this, BYTE_UNITS, 1024L)
     }
 
     fun formatNumber(number: Int): String {

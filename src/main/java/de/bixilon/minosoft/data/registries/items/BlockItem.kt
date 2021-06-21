@@ -18,16 +18,15 @@ import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.player.Hands
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.BlockUsages
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.versions.Registries
-import de.bixilon.minosoft.gui.rendering.input.camera.RaycastHit
+import de.bixilon.minosoft.gui.rendering.input.camera.hit.BlockRaycastHit
+import de.bixilon.minosoft.gui.rendering.input.camera.hit.RaycastHit
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.c2s.play.BlockPlaceC2SP
 import glm_.vec3.Vec3
-import glm_.vec3.Vec3i
 
 open class BlockItem(
     resourceLocation: ResourceLocation,
@@ -36,9 +35,13 @@ open class BlockItem(
 ) : Item(resourceLocation, registries, data) {
     val block: Block = registries.blockRegistry[data["block"].asInt]
 
-    override fun use(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, raycastHit: RaycastHit, hands: Hands, itemStack: ItemStack): BlockUsages {
+    override fun use(connection: PlayConnection, raycastHit: RaycastHit, hands: Hands, itemStack: ItemStack): BlockUsages {
         if (!connection.player.gamemode.canBuild) {
             return BlockUsages.PASS
+        }
+
+        if (raycastHit !is BlockRaycastHit) {
+            return super.use(connection, raycastHit, hands, itemStack)
         }
 
         val placePosition = raycastHit.blockPosition + raycastHit.hitDirection

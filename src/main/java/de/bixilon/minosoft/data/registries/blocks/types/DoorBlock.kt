@@ -22,7 +22,7 @@ import de.bixilon.minosoft.data.registries.blocks.BlockUsages
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.materials.DefaultMaterials
 import de.bixilon.minosoft.data.registries.versions.Registries
-import de.bixilon.minosoft.gui.rendering.input.camera.RaycastHit
+import de.bixilon.minosoft.gui.rendering.input.camera.hit.RaycastHit
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import glm_.vec3.Vec3i
 

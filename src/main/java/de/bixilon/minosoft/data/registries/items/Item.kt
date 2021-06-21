@@ -27,9 +27,8 @@ import de.bixilon.minosoft.data.registries.registry.RegistryItem
 import de.bixilon.minosoft.data.registries.registry.ResourceLocationDeserializer
 import de.bixilon.minosoft.data.registries.registry.Translatable
 import de.bixilon.minosoft.data.registries.versions.Registries
-import de.bixilon.minosoft.gui.rendering.input.camera.RaycastHit
+import de.bixilon.minosoft.gui.rendering.input.camera.hit.RaycastHit
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import glm_.vec3.Vec3i
 
 open class Item(
     override val resourceLocation: ResourceLocation,
@@ -51,7 +50,7 @@ open class Item(
         return 1.0f
     }
 
-    open fun use(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, raycastHit: RaycastHit, hands: Hands, itemStack: ItemStack): BlockUsages {
+    open fun use(connection: PlayConnection, raycastHit: RaycastHit, hands: Hands, itemStack: ItemStack): BlockUsages {
         return BlockUsages.PASS
     }
 

@@ -104,8 +104,8 @@ object GitInfo {
 
             IS_INITIALIZED = true
         } catch (exception: Throwable) {
-            Log.log(LogMessageType.OTHER, level = LogLevels.WARN) { exception }
             Log.log(LogMessageType.OTHER, level = LogLevels.WARN) { "Could not load git information." }
+            Log.log(LogMessageType.OTHER, level = LogLevels.WARN) { exception }
         }
     }
 }

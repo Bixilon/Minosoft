@@ -17,8 +17,13 @@ import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.player.LocalPlayerEntity
+import de.bixilon.minosoft.data.registries.blocks.types.FluidBlock
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.input.camera.hit.BlockRaycastHit
+import de.bixilon.minosoft.gui.rendering.input.camera.hit.EntityRaycastHit
+import de.bixilon.minosoft.gui.rendering.input.camera.hit.FluidRaycastHit
+import de.bixilon.minosoft.gui.rendering.input.camera.hit.RaycastHit
 import de.bixilon.minosoft.gui.rendering.modding.events.CameraMatrixChangeEvent
 import de.bixilon.minosoft.gui.rendering.modding.events.CameraPositionChangeEvent
 import de.bixilon.minosoft.gui.rendering.modding.events.FrustumChangeEvent
@@ -51,6 +56,15 @@ class Camera(
     var cameraFront = Vec3d(0.0, 0.0, -1.0)
     var cameraRight = Vec3d(0.0, 0.0, -1.0)
     private var cameraUp = Vec3d(0.0, 1.0, 0.0)
+
+    var target: RaycastHit? = null
+        private set
+    var blockTarget: BlockRaycastHit? = null
+        private set
+    var fluidTarget: FluidRaycastHit? = null
+        private set
+    var entityTarget: EntityRaycastHit? = null
+        private set
 
     val fov: Double
         get() {
@@ -199,13 +213,20 @@ class Camera(
         }
         // ToDo: Only update if changed
         onPositionChange()
+
+        val eyePosition = entity.eyePosition
+        val cameraFront = cameraFront
+
+        target = raycast(eyePosition, cameraFront, blocks = true, fluids = true, entities = true)
+        blockTarget = raycast(eyePosition, cameraFront, blocks = true, fluids = false, entities = false) as BlockRaycastHit?
+        fluidTarget = raycast(eyePosition, cameraFront, blocks = false, fluids = true, entities = false) as FluidRaycastHit?
+        entityTarget = raycast(eyePosition, cameraFront, blocks = false, fluids = false, entities = true) as EntityRaycastHit?
     }
 
-    fun getTargetBlock(): RaycastHit? {
-        return raycast(entity.eyePosition, cameraFront)
-    }
-
-    private fun raycast(origin: Vec3d, direction: Vec3d): RaycastHit? {
+    private fun raycast(origin: Vec3d, direction: Vec3d, blocks: Boolean, fluids: Boolean, entities: Boolean): RaycastHit? {
+        if (!blocks && !fluids && entities) {
+            return null // ToDo: Raycast entities
+        }
         val currentPosition = Vec3d(origin)
 
         fun getTotalDistance(): Double {
@@ -215,21 +236,44 @@ class Camera(
         for (i in 0..RAYCAST_MAX_STEPS) {
             val blockPosition = currentPosition.floor
             val blockState = connection.world[blockPosition]
-            if (blockState != null) {
-                val voxelShapeRaycastResult = (blockState.outlineShape + blockPosition + blockPosition.getWorldOffset(blockState.block)).raycast(currentPosition, direction)
-                if (voxelShapeRaycastResult.hit) {
-                    currentPosition += direction * voxelShapeRaycastResult.distance
-                    return RaycastHit(
+
+            if (blockState == null) {
+                currentPosition += direction * (VecUtil.getDistanceToNextIntegerAxisInDirection(currentPosition, direction) + 0.001)
+                continue
+            }
+            val voxelShapeRaycastResult = (blockState.block.getOutlineShape(connection, blockState, blockPosition) + blockPosition + blockPosition.getWorldOffset(blockState.block)).raycast(currentPosition, direction)
+            if (voxelShapeRaycastResult.hit) {
+                val distance = getTotalDistance()
+                currentPosition += direction * voxelShapeRaycastResult.distance
+                currentPosition += direction * (VecUtil.getDistanceToNextIntegerAxisInDirection(currentPosition, direction) + 0.001)
+
+                if (blockState.block is FluidBlock) {
+                    if (!fluids) {
+                        continue
+                    }
+                    return FluidRaycastHit(
                         currentPosition,
-                        blockPosition,
-                        getTotalDistance(),
-                        blockState,
+                        distance,
                         voxelShapeRaycastResult.direction,
-                        i,
+                        blockState,
+                        blockPosition,
+                        blockState.block.fluid,
                     )
                 }
+
+                if (!blocks) {
+                    continue
+                }
+                return BlockRaycastHit(
+                    currentPosition,
+                    distance,
+                    voxelShapeRaycastResult.direction,
+                    blockState,
+                    blockPosition,
+                )
+            } else {
+                currentPosition += direction * (VecUtil.getDistanceToNextIntegerAxisInDirection(currentPosition, direction) + 0.001)
             }
-            currentPosition += direction * (VecUtil.getDistanceToNextIntegerAxisInDirection(currentPosition, direction) + 0.001)
         }
         return null
     }

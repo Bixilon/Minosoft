@@ -23,11 +23,11 @@ import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.BlockUsages
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.versions.Registries
-import de.bixilon.minosoft.gui.rendering.input.camera.RaycastHit
+import de.bixilon.minosoft.gui.rendering.input.camera.hit.BlockRaycastHit
+import de.bixilon.minosoft.gui.rendering.input.camera.hit.RaycastHit
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
-import glm_.vec3.Vec3i
 
 open class ShovelItem(
     resourceLocation: ResourceLocation,
@@ -44,16 +44,19 @@ open class ShovelItem(
     }
 
 
-    override fun use(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, raycastHit: RaycastHit, hands: Hands, itemStack: ItemStack): BlockUsages {
+    override fun use(connection: PlayConnection, raycastHit: RaycastHit, hands: Hands, itemStack: ItemStack): BlockUsages {
         if (!Minosoft.config.config.game.controls.enableFlattening) {
             return BlockUsages.CONSUME
         }
+        if (raycastHit !is BlockRaycastHit) {
+            return super.use(connection, raycastHit, hands, itemStack)
+        }
 
-        if (connection.world[blockPosition + Directions.UP] != null) {
+        if (connection.world[raycastHit.blockPosition + Directions.UP] != null) {
             return BlockUsages.PASS
         }
 
-        return super.interactWithTool(connection, blockPosition, flattenableBlockStates?.get(blockState.block))
+        return super.interactWithTool(connection, raycastHit.blockPosition, flattenableBlockStates?.get(raycastHit.blockState.block))
     }
 
 

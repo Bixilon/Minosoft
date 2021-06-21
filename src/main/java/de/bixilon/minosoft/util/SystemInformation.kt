@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.util
 
+import de.bixilon.minosoft.util.UnitFormatter.formatBytes
 import oshi.SystemInfo
 
 object SystemInformation {
@@ -20,7 +21,7 @@ object SystemInformation {
     val SYSTEM_INFO = SystemInfo()
     val HARDWARE_SYSTEM_INFO = SYSTEM_INFO.hardware
 
-    val SYSTEM_MEMORY_TEXT: String = UnitFormatter.formatBytes(HARDWARE_SYSTEM_INFO.memory.total)
+    val SYSTEM_MEMORY_TEXT: String = HARDWARE_SYSTEM_INFO.memory.total.formatBytes()
     val OS_TEXT: String = "${System.getProperty("os.name")}: ${SYSTEM_INFO.operatingSystem.family} ${SYSTEM_INFO.operatingSystem.bitness}bit"
 
     val PROCESSOR_TEXT = " ${RUNTIME.availableProcessors()}x ${HARDWARE_SYSTEM_INFO.processor.processorIdentifier.name.replace("\\s{2,}".toRegex(), "")}"
@@ -34,7 +35,7 @@ object SystemInformation {
     }
 
     private fun getFormattedMaxMemory(): String {
-        return UnitFormatter.formatBytes(getMaxMemory())
+        return getMaxMemory().formatBytes()
     }
 
 }

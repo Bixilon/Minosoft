@@ -33,8 +33,9 @@ import de.bixilon.minosoft.data.registries.registry.ResourceLocationDeserializer
 import de.bixilon.minosoft.data.registries.versions.Registries
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.TintColorCalculator
+import de.bixilon.minosoft.gui.rendering.chunk.VoxelShape
 import de.bixilon.minosoft.gui.rendering.chunk.models.renderable.BlockLikeRenderer
-import de.bixilon.minosoft.gui.rendering.input.camera.RaycastHit
+import de.bixilon.minosoft.gui.rendering.input.camera.hit.RaycastHit
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import glm_.vec3.Vec3i
 import kotlin.random.Random
@@ -110,6 +111,10 @@ open class Block(
     open fun onEntityLand(connection: PlayConnection, entity: Entity, blockPosition: Vec3i, blockState: BlockState) {}
 
     open fun onEntityCollision(connection: PlayConnection, entity: Entity, blockState: BlockState, blockPosition: Vec3i) {}
+
+    open fun getOutlineShape(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i): VoxelShape {
+        return blockState.outlineShape
+    }
 
     companion object : ResourceLocationDeserializer<Block> {
         private val CONSTRUCTORS: Map<String, (resourceLocation: ResourceLocation, registries: Registries, data: JsonObject) -> Block> = mapOf(

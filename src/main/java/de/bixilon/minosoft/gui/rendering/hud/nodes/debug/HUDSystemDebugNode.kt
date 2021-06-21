@@ -18,14 +18,19 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.hud.HUDElementProperties
 import de.bixilon.minosoft.gui.rendering.hud.HUDRenderBuilder
 import de.bixilon.minosoft.gui.rendering.hud.HUDRenderer
+import de.bixilon.minosoft.gui.rendering.hud.nodes.primitive.LabelNode
 import de.bixilon.minosoft.gui.rendering.hud.nodes.properties.NodeAlignment
+import de.bixilon.minosoft.gui.rendering.input.camera.hit.BlockRaycastHit
+import de.bixilon.minosoft.gui.rendering.input.camera.hit.EntityRaycastHit
+import de.bixilon.minosoft.gui.rendering.input.camera.hit.FluidRaycastHit
+import de.bixilon.minosoft.gui.rendering.input.camera.hit.RaycastHit
 import de.bixilon.minosoft.gui.rendering.modding.events.ResizeWindowEvent
 import de.bixilon.minosoft.modding.event.CallbackEventInvoker
 import de.bixilon.minosoft.modding.loading.ModLoader
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.GitInfo
 import de.bixilon.minosoft.util.SystemInformation
-import de.bixilon.minosoft.util.UnitFormatter
+import de.bixilon.minosoft.util.UnitFormatter.formatBytes
 import glm_.vec2.Vec2
 import org.lwjgl.opengl.GL11.*
 
@@ -73,8 +78,25 @@ class HUDSystemDebugNode(hudRenderer: HUDRenderer) : DebugScreenNode(hudRenderer
         text()
     }
 
-    private val targetPosition = text("TBA")
-    private val targetBlockState = text("TBA")
+    private val target = text("TBA")
+
+    init {
+        text()
+    }
+
+    private val targetBlock = text()
+
+    init {
+        text()
+    }
+
+    private val targetFluid = text()
+
+    init {
+        text()
+    }
+
+    private val targetEntity = text()
 
     override fun init() {
         gpuText.sText = "GPU: " + (glGetString(GL_RENDERER) ?: "unknown")
@@ -92,17 +114,36 @@ class HUDSystemDebugNode(hudRenderer: HUDRenderer) : DebugScreenNode(hudRenderer
         memoryText.sText = "Memory: ${getUsedMemoryPercent()}% ${getFormattedUsedMemory()}/${SystemInformation.MAX_MEMORY_TEXT}"
         allocatedMemoryText.sText = "Allocated: ${getAllocatedMemoryPercent()}% ${getFormattedAllocatedMemory()}"
 
-        gpuMemoryText.sText = "VRAM: ${UnitFormatter.formatBytes(hudRenderer.renderWindow.renderSystem.usedVRAM)} / ${UnitFormatter.formatBytes(hudRenderer.renderWindow.renderSystem.availableVRAM)} | ${UnitFormatter.formatBytes(hudRenderer.renderWindow.renderSystem.maximumVRAM)}"
+        gpuMemoryText.sText = "VRAM: ${hudRenderer.renderWindow.renderSystem.usedVRAM.formatBytes()} / ${hudRenderer.renderWindow.renderSystem.availableVRAM.formatBytes()} | ${hudRenderer.renderWindow.renderSystem.maximumVRAM.formatBytes()}"
 
-        val rayCastHit = hudRenderer.renderWindow.inputHandler.camera.getTargetBlock()
-        if (rayCastHit == null) {
-            targetPosition.sText = ""
-            targetBlockState.sText = ""
-        } else {
-            targetPosition.sText = "Target block: ${rayCastHit.blockPosition}"
-            targetBlockState.sText = rayCastHit.blockState.toString()
+
+        val target = hudRenderer.renderWindow.inputHandler.camera.target
+
+        val targetClass = target?.let { it::class.java }
+        this.target.sText = target?.let {
+            val targetType = when (targetClass) {
+                FluidRaycastHit::class.java -> "Fluid"
+                BlockRaycastHit::class.java -> "Block"
+                EntityRaycastHit::class.java -> "Entity"
+                else -> "Unknown"
+            }
+            "Target: $targetType: $it"
+        } ?: "No target!"
+
+        if (target != null) {
+            fun addTarget(labelNode: LabelNode, raycastHit: RaycastHit?, name: String) {
+                labelNode.sText = if (raycastHit != null && targetClass != raycastHit::class.java) {
+                    "$name target: $raycastHit"
+                } else {
+                    ""
+                }
+            }
+
+            val camera = hudRenderer.renderWindow.inputHandler.camera
+            addTarget(this.targetBlock, camera.blockTarget, "Block")
+            addTarget(this.targetFluid, camera.fluidTarget, "Fluid")
+            addTarget(this.targetEntity, camera.entityTarget, "Entity")
         }
-
         lastPrepareTime = System.currentTimeMillis()
     }
 
@@ -111,7 +152,7 @@ class HUDSystemDebugNode(hudRenderer: HUDRenderer) : DebugScreenNode(hudRenderer
     }
 
     private fun getFormattedUsedMemory(): String {
-        return UnitFormatter.formatBytes(getUsedMemory())
+        return getUsedMemory().formatBytes()
     }
 
     private fun getAllocatedMemory(): Long {
@@ -119,7 +160,7 @@ class HUDSystemDebugNode(hudRenderer: HUDRenderer) : DebugScreenNode(hudRenderer
     }
 
     private fun getFormattedAllocatedMemory(): String {
-        return UnitFormatter.formatBytes(getAllocatedMemory())
+        return getAllocatedMemory().formatBytes()
     }
 
     private fun getUsedMemoryPercent(): Long {

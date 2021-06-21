@@ -18,14 +18,13 @@ import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.player.Hands
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.BlockUsages
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.versions.Registries
-import de.bixilon.minosoft.gui.rendering.input.camera.RaycastHit
+import de.bixilon.minosoft.gui.rendering.input.camera.hit.BlockRaycastHit
+import de.bixilon.minosoft.gui.rendering.input.camera.hit.RaycastHit
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
-import glm_.vec3.Vec3i
 
 open class AxeItem(
     resourceLocation: ResourceLocation,
@@ -41,12 +40,15 @@ open class AxeItem(
         entries.toMap()
     }
 
-    override fun use(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, raycastHit: RaycastHit, hands: Hands, itemStack: ItemStack): BlockUsages {
+    override fun use(connection: PlayConnection, raycastHit: RaycastHit, hands: Hands, itemStack: ItemStack): BlockUsages {
         if (!Minosoft.config.config.game.controls.enableStripping) {
             return BlockUsages.CONSUME
         }
+        if (raycastHit !is BlockRaycastHit) {
+            return super.use(connection, raycastHit, hands, itemStack)
+        }
 
-        return super.interactWithTool(connection, blockPosition, strippableBlocks?.get(blockState.block)?.withProperties(blockState.properties))
+        return super.interactWithTool(connection, raycastHit.blockPosition, strippableBlocks?.get(raycastHit.blockState.block)?.withProperties(raycastHit.blockState.properties))
     }
 
     companion object {
