@@ -17,6 +17,7 @@ import de.bixilon.minosoft.config.key.KeyAction
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.util.KUtil.asResourceLocation
 
 
 object KeyBindingsNames {
@@ -32,6 +33,9 @@ object KeyBindingsNames {
     val MOVE_JUMP = ResourceLocation("minosoft:move_jump")
 
     val DESTROY_BLOCK = ResourceLocation("minosoft:destroy_block")
+
+    val DROP_ITEM = "minosoft:drop_item".asResourceLocation()
+    val DROP_ITEM_STACK = "minosoft:drop_item_stack".asResourceLocation()
 
     val ZOOM = ResourceLocation("minosoft:zoom")
 
@@ -242,6 +246,17 @@ object KeyBindingsNames {
                 KeyAction.STICKY to mutableSetOf(KeyCodes.KEY_O),
             ),
             ignoreConsumer = true,
+        ),
+        DROP_ITEM to KeyBinding(
+            mutableMapOf(
+                KeyAction.PRESS to mutableSetOf(KeyCodes.KEY_Q),
+            ),
+        ),
+        DROP_ITEM_STACK to KeyBinding(
+            mutableMapOf(
+                KeyAction.PRESS to mutableSetOf(KeyCodes.KEY_Q),
+                KeyAction.MODIFIER to mutableSetOf(KeyCodes.KEY_LEFT_CONTROL)
+            ),
         ),
     )
 }

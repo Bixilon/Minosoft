@@ -34,6 +34,8 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.floor
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.getWorldOffset
 import de.bixilon.minosoft.modding.event.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.protocol.packets.c2s.play.BlockBreakC2SP
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import glm_.func.cos
 import glm_.func.rad
 import glm_.func.sin
@@ -84,6 +86,7 @@ class Camera(
     var viewProjectionMatrix = projectionMatrix * viewMatrix
         private set
 
+    private var lastDropPacketSent = -1L
 
     val frustum: Frustum = Frustum(this)
 
@@ -123,6 +126,18 @@ class Camera(
         )
 
         connection.registerEvent(CallbackEventInvoker.of<ResizeWindowEvent> { recalculateViewProjectionMatrix() })
+
+        fun dropItem(type: BlockBreakC2SP.BreakType) {
+            val time = System.currentTimeMillis()
+            if (time - lastDropPacketSent < ProtocolDefinition.TICK_TIME) {
+                return
+            }
+            connection.sendPacket(BlockBreakC2SP(type, entity.positionInfo.blockPosition))
+            lastDropPacketSent = time
+        }
+
+        renderWindow.inputHandler.registerKeyCallback(KeyBindingsNames.DROP_ITEM) { dropItem(BlockBreakC2SP.BreakType.DROP_ITEM) }
+        renderWindow.inputHandler.registerKeyCallback(KeyBindingsNames.DROP_ITEM_STACK) { dropItem(BlockBreakC2SP.BreakType.DROP_ITEM_STACK) }
         frustum.recalculate()
         connection.fireEvent(FrustumChangeEvent(renderWindow, frustum))
     }
