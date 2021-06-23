@@ -20,6 +20,7 @@ import de.bixilon.minosoft.data.entities.meta.EntityMetaData
 import de.bixilon.minosoft.data.inventory.InventorySlots.EquipmentSlots
 import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.physics.PhysicsEntity
+import de.bixilon.minosoft.data.player.LocalPlayerEntity
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.effects.StatusEffect
 import de.bixilon.minosoft.data.registries.effects.attributes.StatusEffectAttribute
@@ -34,8 +35,11 @@ import de.bixilon.minosoft.gui.rendering.input.camera.EntityPositionInfo
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.advanced.block.BlockDustParticle
 import de.bixilon.minosoft.gui.rendering.util.VecUtil
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.chunkPosition
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.empty
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.floor
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.horizontal
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.inChunkPosition
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
@@ -77,6 +81,11 @@ abstract class Entity(
 
     override var velocity: Vec3d = Vec3d.EMPTY
     var movementMultiplier = Vec3d.EMPTY // ToDo: Used in cobwebs, etc
+    protected open var velocityMultiplier: Double = 1.0
+
+    protected var horizontalCollision = false
+    protected var verticalCollision = false
+    protected var fallDistance = 0.0
 
     protected open val hasCollisions = true
 
@@ -356,6 +365,102 @@ abstract class Entity(
 
     override fun toString(): String {
         return entityType.toString()
+    }
+
+    fun fall(deltaY: Double) {
+        if (onGround) {
+            // ToDo: On block landing (particles, sounds, etc)
+            this.fallDistance = 0.0
+            return
+        }
+        this.fallDistance = this.fallDistance - deltaY
+    }
+
+    fun move(delta: Vec3d) {
+        if (!hasCollisions) {
+            forceMove(delta)
+            return
+        }
+
+        var movement = Vec3d(delta)
+
+        // ToDo: Check for piston movement
+
+        if (!movementMultiplier.empty) {
+            movement = movement * movementMultiplier
+            movementMultiplier = Vec3d.EMPTY
+            velocity = Vec3d.EMPTY
+        }
+
+        if (this is LocalPlayerEntity) {
+            movement = connection.collisionDetector.sneak(this, movement)
+        }
+
+        val collisionMovement = connection.collisionDetector.collide(null, movement, aabb, true)
+
+
+        forceMove(collisionMovement)
+
+
+        horizontalCollision = collisionMovement.x != movement.x || collisionMovement.z != movement.z
+        verticalCollision = collisionMovement.y != movement.y
+        this.onGround = verticalCollision && movement.y < 0.0f
+
+
+        fall(collisionMovement.y)
+
+        var velocityChanged = false
+        if (movement.y != collisionMovement.y) {
+            if (movement.y < 0.0 && collisionMovement.y != 0.0) {
+                val landingPosition = belowBlockPosition
+                val landingBlockState = connection.world[belowBlockPosition]
+
+                val previousVelocity = Vec3d(velocity)
+                landingBlockState?.block?.onEntityLand(connection, this, landingPosition, landingBlockState)
+
+                velocityChanged = velocity != previousVelocity
+            }
+
+            if (!velocityChanged) {
+                velocity.y = 0.0
+            }
+        }
+
+        if (!velocityChanged) {
+            if (movement.x != collisionMovement.x) {
+                velocity.x = 0.0
+            }
+
+            if (movement.z != collisionMovement.z) {
+                velocity.z = 0.0
+            }
+        }
+
+
+
+        if (onGround && canStep) {
+            // ToDo: Play step sound
+        }
+
+        // ToDo: Check for move effect
+
+        // block collision handling
+        val aabb = aabb.shrink(0.001)
+        for (blockPosition in aabb.blockPositions) {
+            val chunk = connection.world[blockPosition.chunkPosition] ?: continue
+            val blockState = chunk[blockPosition.inChunkPosition] ?: continue
+            blockState.block.onEntityCollision(connection, this, blockState, blockPosition)
+        }
+
+        val velocityMultiplier = velocityMultiplier
+        velocity.x *= velocityMultiplier
+        velocity.z *= velocityMultiplier
+    }
+
+    protected fun applyGravity(force: Boolean = false) {
+        if (hasGravity) {
+            velocity.y += -0.04
+        }
     }
 
     companion object {

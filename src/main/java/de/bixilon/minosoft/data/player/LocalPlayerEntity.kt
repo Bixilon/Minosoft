@@ -49,9 +49,7 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.assign
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.blockPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.clearZero
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.empty
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.get
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.inChunkPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.c2s.play.*
@@ -114,13 +112,8 @@ class LocalPlayerEntity(
     private val walkingSpeed: Double
         get() = getAttributeValue(DefaultStatusEffectAttributeNames.GENERIC_MOVEMENT_SPEED, baseAbilities.walkingSpeed)
 
-    private var horizontalCollision = false
-    private var verticalCollision = false
-
-    var dirtyVelocity = false
     var jumpingCoolDown = 0
     var isJumping = false
-    var fallDistance = 0.0
 
     private var lastFovMultiplier = 1.0
     private var currentFovMultiplier = 1.0
@@ -174,7 +167,8 @@ class LocalPlayerEntity(
             return DefaultBlockTags.CLIMBABLE.contains(blockState.block.resourceLocation)
         }
 
-    private val velocityMultiplier: Double
+    override var velocityMultiplier: Double
+        set(value) {}
         get() {
             if (isFlyingWithElytra || baseAbilities.isFlying) {
                 return 1.0
@@ -194,7 +188,6 @@ class LocalPlayerEntity(
                 }
             }
             return blockStateBelow.block.velocityMultiplier
-
         }
 
     private val jumpVelocityMultiplier: Double
@@ -292,94 +285,6 @@ class LocalPlayerEntity(
         return Vec3d(velocity.x * cos - velocity.z * sin, velocity.y, velocity.z * cos + velocity.x * sin)
     }
 
-    fun fall(deltaY: Double) {
-        if (onGround) {
-            // ToDo: On block landing (particles, sounds, etc)
-            this.fallDistance = 0.0
-            return
-        }
-        this.fallDistance = this.fallDistance - deltaY
-    }
-
-
-    fun move(delta: Vec3d) {
-        if (!hasCollisions) {
-            forceMove(delta)
-            return
-        }
-
-        var movement = Vec3d(delta)
-
-        // ToDo: Check for piston movement
-
-        if (!movementMultiplier.empty) {
-            movement = movement * movementMultiplier
-            movementMultiplier = Vec3d.EMPTY
-            velocity = Vec3d.EMPTY
-        }
-
-        movement = connection.collisionDetector.sneak(this, movement)
-
-        val collisionMovement = connection.collisionDetector.collide(null, movement, aabb, true)
-
-
-        forceMove(collisionMovement)
-
-
-        horizontalCollision = collisionMovement.x != movement.x || collisionMovement.z != movement.z
-        verticalCollision = collisionMovement.y != movement.y
-        this.onGround = verticalCollision && movement.y < 0.0f
-
-
-        fall(collisionMovement.y)
-
-        var velocityChanged = false
-        if (movement.y != collisionMovement.y) {
-            if (movement.y < 0.0 && collisionMovement.y != 0.0) {
-                val landingPosition = belowBlockPosition
-                val landingBlockState = connection.world[belowBlockPosition]
-
-                val previousVelocity = Vec3d(velocity)
-                landingBlockState?.block?.onEntityLand(connection, this, landingPosition, landingBlockState)
-
-                velocityChanged = velocity != previousVelocity
-            }
-
-            if (!velocityChanged) {
-                velocity.y = 0.0
-            }
-        }
-
-        if (!velocityChanged) {
-            if (movement.x != collisionMovement.x) {
-                velocity.x = 0.0
-            }
-
-            if (movement.z != collisionMovement.z) {
-                velocity.z = 0.0
-            }
-        }
-
-
-
-        if (onGround && canStep) {
-            // ToDo: Play step sound
-        }
-
-        // ToDo: Check for move effect
-
-        // block collision handling
-        val aabb = aabb.shrink(0.001)
-        for (blockPosition in aabb.blockPositions) {
-            val chunk = connection.world[blockPosition.chunkPosition] ?: continue
-            val blockState = chunk[blockPosition.inChunkPosition] ?: continue
-            blockState.block.onEntityCollision(connection, this, blockState, blockPosition)
-        }
-
-        val velocityMultiplier = velocityMultiplier
-        velocity.x *= velocityMultiplier
-        velocity.z *= velocityMultiplier
-    }
 
     private fun applyClimbingSpeed(velocity: Vec3d): Vec3d {
         if (!isClimbing) {
@@ -574,7 +479,6 @@ class LocalPlayerEntity(
             val yawRad = rotation.headYaw.rad
             this.velocity = this.velocity + Vec3(-(yawRad.sin * 0.2f), 0.0f, yawRad.cos * 0.2f)
         }
-        dirtyVelocity = true
     }
 
     private fun pushOutOfBlocks(x: Double, z: Double) {
