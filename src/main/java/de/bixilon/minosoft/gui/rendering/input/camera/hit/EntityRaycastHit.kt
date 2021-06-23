@@ -25,6 +25,6 @@ class EntityRaycastHit(
 ) : RaycastHit(position, distance, hitDirection) {
 
     override fun toString(): String {
-        return "$position: ${entity.entityType.resourceLocation}"
+        return "$position: ${entity.entityType.resourceLocation}\n Id: ${entity.id}\n UUID: ${entity.uuid}"
     }
 }

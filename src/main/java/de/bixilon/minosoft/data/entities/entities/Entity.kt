@@ -61,6 +61,11 @@ abstract class Entity(
     val activeStatusEffects: MutableMap<StatusEffect, StatusEffectInstance> = synchronizedMapOf()
     val attributes: MutableMap<ResourceLocation, MutableMap<UUID, StatusEffectAttributeInstance>> = synchronizedMapOf()
 
+    val id: Int?
+        get() = connection.world.entities.getId(this)
+    val uuid: UUID?
+        get() = connection.world.entities.getUUID(this)
+
     @JvmField
     @Deprecated(message = "Use connection.version")
     protected val versionId: Int = connection.version.versionId
