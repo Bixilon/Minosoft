@@ -624,7 +624,7 @@ class LocalPlayerEntity(
         sendMovementPackets()
 
         lastFovMultiplier = currentFovMultiplier
-        currentFovMultiplier = MMath.clamp(1.0 + walkingSpeed, 1.0, 1.5)
+        currentFovMultiplier = MMath.clamp((1.0 + walkingSpeed * 1.5), 1.0, 2.0)
     }
 
     companion object {
