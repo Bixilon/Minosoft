@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.data.physics
 
 import de.bixilon.minosoft.data.Axes
-import de.bixilon.minosoft.data.Directions
+import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.player.LocalPlayerEntity
 import de.bixilon.minosoft.gui.rendering.chunk.VoxelShape
 import de.bixilon.minosoft.gui.rendering.chunk.models.AABB

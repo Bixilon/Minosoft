@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.entities.meta
 
-import de.bixilon.minosoft.data.Directions
+import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.EntityMetaDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.Poses

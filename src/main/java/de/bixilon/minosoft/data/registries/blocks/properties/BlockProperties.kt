@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.data.registries.blocks.properties
 
 import de.bixilon.minosoft.data.Axes
-import de.bixilon.minosoft.data.Directions
+import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.properties.serializer.BlockPropertiesSerializer
 import de.bixilon.minosoft.data.registries.blocks.properties.serializer.BooleanBlockPropertiesSerializer
 import de.bixilon.minosoft.data.registries.blocks.properties.serializer.IntBlockPropertiesSerializer

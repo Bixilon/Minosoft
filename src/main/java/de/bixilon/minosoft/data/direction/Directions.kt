@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2021 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -10,8 +10,9 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.data
+package de.bixilon.minosoft.data.direction
 
+import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.registries.blocks.properties.serializer.BlockPropertiesSerializer
 import de.bixilon.minosoft.gui.rendering.chunk.models.FaceSize
 import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModelElement
@@ -24,7 +25,10 @@ import glm_.vec3.Vec3d
 import glm_.vec3.Vec3i
 import kotlin.math.abs
 
-enum class Directions(val horizontalId: Int, val vector: Vec3i) {
+enum class Directions(
+    val horizontalId: Int,
+    override val vector: Vec3i,
+) : AbstractDirection {
     DOWN(-1, Vec3i(0, -1, 0)),
     UP(-1, Vec3i(0, 1, 0)),
     NORTH(2, Vec3i(0, 0, -1)),
@@ -32,8 +36,8 @@ enum class Directions(val horizontalId: Int, val vector: Vec3i) {
     WEST(1, Vec3i(-1, 0, 0)),
     EAST(3, Vec3i(1, 0, 0));
 
-    val vectorf = Vec3(vector)
-    val vectord = Vec3d(vector)
+    override val vectorf = Vec3(vector)
+    override val vectord = Vec3d(vector)
 
     val axis: Axes get() = Axes.byDirection(this)
 

@@ -14,10 +14,10 @@ package de.bixilon.minosoft.data.player
 
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.Axes
-import de.bixilon.minosoft.data.Directions
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.abilities.ItemCooldown
 import de.bixilon.minosoft.data.accounts.Account
+import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.data.entities.entities.player.RemotePlayerEntity

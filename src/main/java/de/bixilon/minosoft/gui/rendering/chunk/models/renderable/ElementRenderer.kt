@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.chunk.models.renderable
 import com.google.common.collect.HashBiMap
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.Axes
-import de.bixilon.minosoft.data.Directions
+import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.chunk.ChunkMeshCollection
 import de.bixilon.minosoft.gui.rendering.chunk.SectionArrayMesh

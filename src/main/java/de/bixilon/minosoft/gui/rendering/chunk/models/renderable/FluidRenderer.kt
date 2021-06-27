@@ -1,6 +1,6 @@
 package de.bixilon.minosoft.gui.rendering.chunk.models.renderable
 
-import de.bixilon.minosoft.data.Directions
+import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.BlockState

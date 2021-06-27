@@ -2,7 +2,7 @@ package de.bixilon.minosoft.gui.rendering.chunk.models
 
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.Axes
-import de.bixilon.minosoft.data.Directions
+import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.ONE
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.get

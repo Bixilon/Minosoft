@@ -14,11 +14,11 @@ package de.bixilon.minosoft.protocol.protocol
 
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
-import de.bixilon.minosoft.data.Directions
 import de.bixilon.minosoft.data.commands.CommandArgumentNode
 import de.bixilon.minosoft.data.commands.CommandLiteralNode
 import de.bixilon.minosoft.data.commands.CommandNode
 import de.bixilon.minosoft.data.commands.CommandRootNode
+import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.Poses
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.tags.Tag

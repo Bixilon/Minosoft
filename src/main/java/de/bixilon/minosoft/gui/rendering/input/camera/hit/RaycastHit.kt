@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.input.camera.hit
 
-import de.bixilon.minosoft.data.Directions
+import de.bixilon.minosoft.data.direction.Directions
 import glm_.vec3.Vec3d
 
 abstract class RaycastHit(

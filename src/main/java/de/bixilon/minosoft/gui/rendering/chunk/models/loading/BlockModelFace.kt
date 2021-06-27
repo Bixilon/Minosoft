@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.chunk.models.loading
 
 import com.google.gson.JsonObject
-import de.bixilon.minosoft.data.Directions
+import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.gui.rendering.chunk.models.AABB
 import de.bixilon.minosoft.gui.rendering.util.VecUtil
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.readUV

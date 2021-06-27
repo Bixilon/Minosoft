@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.data.entities
 
-import de.bixilon.minosoft.data.Directions
+import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.entities.animal.Axolotl
 import de.bixilon.minosoft.data.entities.entities.npc.villager.data.VillagerData
 import de.bixilon.minosoft.data.entities.entities.npc.villager.data.VillagerLevels

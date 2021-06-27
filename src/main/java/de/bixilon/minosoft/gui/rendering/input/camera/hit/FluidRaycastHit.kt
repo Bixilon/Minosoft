@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.input.camera.hit
 
-import de.bixilon.minosoft.data.Directions
+import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.fluid.Fluid

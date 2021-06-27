@@ -11,20 +11,14 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.input.camera.hit
+package de.bixilon.minosoft.data.direction
 
-import de.bixilon.minosoft.data.direction.Directions
-import de.bixilon.minosoft.data.entities.entities.Entity
+import glm_.vec3.Vec3
 import glm_.vec3.Vec3d
+import glm_.vec3.Vec3i
 
-class EntityRaycastHit(
-    position: Vec3d,
-    distance: Double,
-    hitDirection: Directions,
-    val entity: Entity,
-) : RaycastHit(position, distance, hitDirection) {
-
-    override fun toString(): String {
-        return "$position: ${entity.entityType.resourceLocation}\n Id: ${entity.id}\n UUID: ${entity.uuid}"
-    }
+interface AbstractDirection {
+    val vector: Vec3i
+    val vectorf: Vec3
+    val vectord: Vec3d
 }

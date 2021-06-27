@@ -15,7 +15,7 @@ package de.bixilon.minosoft.gui.rendering.chunk.models.renderable
 
 import com.google.common.collect.HashBiMap
 import com.google.gson.JsonObject
-import de.bixilon.minosoft.data.Directions
+import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.text.RGBColor

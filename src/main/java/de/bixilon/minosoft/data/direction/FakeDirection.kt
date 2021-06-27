@@ -11,20 +11,23 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.input.camera.hit
+package de.bixilon.minosoft.data.direction
 
-import de.bixilon.minosoft.data.direction.Directions
-import de.bixilon.minosoft.data.entities.entities.Entity
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3d
+import glm_.vec3.Vec3
 import glm_.vec3.Vec3d
+import glm_.vec3.Vec3i
 
-class EntityRaycastHit(
-    position: Vec3d,
-    distance: Double,
-    hitDirection: Directions,
-    val entity: Entity,
-) : RaycastHit(position, distance, hitDirection) {
+class FakeDirection(override val vector: Vec3i) : AbstractDirection {
+    override val vectorf: Vec3 = vector.toVec3
+    override val vectord: Vec3d = vector.toVec3d
 
-    override fun toString(): String {
-        return "$position: ${entity.entityType.resourceLocation}\n Id: ${entity.id}\n UUID: ${entity.uuid}"
+    companion object {
+        val NORTH_WEST = FakeDirection(Directions.NORTH + Directions.WEST)
+        val NORTH_EAST = FakeDirection(Directions.NORTH + Directions.EAST)
+        val SOUTH_WEST = FakeDirection(Directions.SOUTH + Directions.WEST)
+        val SOUTH_EAST = FakeDirection(Directions.SOUTH + Directions.WEST)
     }
 }

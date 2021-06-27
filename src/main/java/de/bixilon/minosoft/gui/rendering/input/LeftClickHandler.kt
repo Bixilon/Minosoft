@@ -14,8 +14,8 @@
 package de.bixilon.minosoft.gui.rendering.input
 
 import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames
-import de.bixilon.minosoft.data.Directions
 import de.bixilon.minosoft.data.abilities.Gamemodes
+import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.player.Hands
 import de.bixilon.minosoft.data.registries.blocks.BlockState

@@ -15,7 +15,8 @@ package de.bixilon.minosoft.gui.rendering.chunk
 
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames
-import de.bixilon.minosoft.data.Directions
+import de.bixilon.minosoft.data.direction.Directions
+import de.bixilon.minosoft.data.direction.FakeDirection
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
@@ -243,8 +244,8 @@ class WorldRenderer(
         }
 
         // ensure all neighbor chunks are loaded
-        for (direction in Directions.SIDES) {
-            val neighborChunk = world.chunks[chunkPosition + direction]
+        for (neighbourPosition in chunkPosition.neighbourPositions) {
+            val neighborChunk = world.chunks[neighbourPosition]
             if (neighborChunk == null || !neighborChunk.isFullyLoaded) {
                 // neighbors not loaded, doing later
                 queuedChunks.add(chunkPosition)
@@ -270,17 +271,10 @@ class WorldRenderer(
     }
 
     private fun checkNeighbours(chunkPosition: Vec2i) {
-        val neighborsPositions: Array<Vec2i> = arrayOf(
-            chunkPosition + Directions.NORTH,
-            chunkPosition + Directions.SOUTH,
-            chunkPosition + Directions.WEST,
-            chunkPosition + Directions.EAST,
-        )
-
-        checkQueuedChunks(neighborsPositions)
+        checkQueuedChunks(chunkPosition.neighbourPositions)
     }
 
-    private fun checkQueuedChunks(chunkPositions: Array<Vec2i>) {
+    private fun checkQueuedChunks(chunkPositions: List<Vec2i>) {
         for (position in chunkPositions) {
             if (queuedChunks.contains(position)) {
                 prepareChunk(position, checkQueued = false)
@@ -470,5 +464,19 @@ class WorldRenderer(
         private operator fun Int.plus(upOrDown: Directions): Int {
             return this + upOrDown.vector.y
         }
+
+        val Vec2i.neighbourPositions: List<Vec2i>
+            get() {
+                return listOf(
+                    this + Directions.NORTH,
+                    this + Directions.SOUTH,
+                    this + Directions.WEST,
+                    this + Directions.EAST,
+                    this + FakeDirection.NORTH_WEST,
+                    this + FakeDirection.NORTH_EAST,
+                    this + FakeDirection.SOUTH_WEST,
+                    this + FakeDirection.SOUTH_EAST,
+                )
+            }
     }
 }

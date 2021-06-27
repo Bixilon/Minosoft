@@ -19,7 +19,8 @@ import com.google.gson.JsonObject
 import com.google.gson.JsonPrimitive
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.Axes
-import de.bixilon.minosoft.data.Directions
+import de.bixilon.minosoft.data.direction.AbstractDirection
+import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.RandomOffsetTypes
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.gui.rendering.chunk.models.AABB
@@ -265,7 +266,7 @@ object VecUtil {
         return Vec3i((x + vec2.x), y, (z + vec2.y))
     }
 
-    infix operator fun Vec3i.plus(direction: Directions?): Vec3i {
+    infix operator fun Vec3i.plus(direction: AbstractDirection?): Vec3i {
         return this + direction?.vector
     }
 
@@ -277,7 +278,7 @@ object VecUtil {
         return Vec2i(x + vec3.x, y + vec3.z)
     }
 
-    infix operator fun Vec2i.plus(direction: Directions): Vec2i {
+    infix operator fun Vec2i.plus(direction: AbstractDirection): Vec2i {
         return this + direction.vector
     }
 
@@ -464,5 +465,9 @@ object VecUtil {
         if (abs(z) < 0.003) {
             z = 0.0
         }
+    }
+
+    operator fun AbstractDirection.plus(direction: AbstractDirection): Vec3i {
+        return this.vector + direction.vector
     }
 }
