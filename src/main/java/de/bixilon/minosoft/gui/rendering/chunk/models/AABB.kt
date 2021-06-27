@@ -13,6 +13,7 @@ import glm_.Java.Companion.glm
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3d
 import glm_.vec3.Vec3i
+import glm_.vec3.Vec3t
 
 
 class AABB(
@@ -33,16 +34,8 @@ class AABB(
         return (min.x < other.max.x && max.x > other.min.x) && (min.y < other.max.y && max.y > other.min.y) && (min.z < other.max.z && max.z > other.min.z)
     }
 
-    operator fun plus(vec3: Vec3): AABB {
-        return AABB(min + vec3, max + vec3)
-    }
-
-    operator fun plus(vec3d: Vec3d): AABB {
-        return AABB(min + vec3d, max + vec3d)
-    }
-
-    operator fun plus(vec3i: Vec3i): AABB {
-        return plus(Vec3(vec3i))
+    operator fun plus(other: Vec3t<out Number>): AABB {
+        return AABB(min + other, max + other)
     }
 
     operator fun plus(other: AABB): AABB {
@@ -113,6 +106,10 @@ class AABB(
         return AABB(min - size, max + size)
     }
 
+    infix fun grow(size: Float): AABB {
+        return AABB(min - size, max + size)
+    }
+
     fun computeOffset(other: AABB, offset: Double, axis: Axes): Double {
         if (!offset(axis, offset).intersect(other)) {
             return offset
@@ -180,7 +177,7 @@ class AABB(
     }
 
     fun shrink(size: Float): AABB {
-        return AABB(min + size, max - size)
+        return grow(-size)
     }
 
     fun hShrink(size: Float): AABB {
@@ -189,7 +186,7 @@ class AABB(
     }
 
     fun shrink(size: Double = 1.0E-7): AABB {
-        return AABB(min + size, max - size)
+        return grow(-size)
     }
 
     val center: Vec3d

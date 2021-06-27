@@ -11,7 +11,7 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.ONE
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.getMinDistanceDirection
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3d
-import glm_.vec3.Vec3i
+import glm_.vec3.Vec3t
 
 class VoxelShape(private val aabbs: MutableList<AABB> = mutableListOf()) : Iterable<AABB> {
 
@@ -51,15 +51,7 @@ class VoxelShape(private val aabbs: MutableList<AABB> = mutableListOf()) : Itera
         return false
     }
 
-    operator fun plus(vec3: Vec3): VoxelShape {
-        val result = mutableListOf<AABB>()
-        for (aabb in aabbs) {
-            result.add(aabb + vec3)
-        }
-        return VoxelShape(result)
-    }
-
-    operator fun plus(vec3i: Vec3i): VoxelShape {
+    operator fun plus(vec3i: Vec3t<out Number>): VoxelShape {
         val result = mutableListOf<AABB>()
         for (aabb in aabbs) {
             result.add(aabb + vec3i)

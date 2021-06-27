@@ -60,6 +60,7 @@ import de.bixilon.minosoft.util.KUtil.decide
 import de.bixilon.minosoft.util.KUtil.nullCast
 import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
 import de.bixilon.minosoft.util.MMath
+import de.bixilon.minosoft.util.MMath.floor
 import glm_.func.cos
 import glm_.func.rad
 import glm_.func.sin
@@ -392,12 +393,12 @@ class LocalPlayerEntity(
             movementSideways *= 0.2f
         }
 
-        if (gamemode != Gamemodes.SPECTATOR) {
-            // ToDo: Push out of blocks
-            // pushOutOfBlocks(position.x - dimensions.x * 0.35, position.z + dimensions.x * 0.35)
-            // pushOutOfBlocks(position.x - dimensions.x * 0.35, position.z - dimensions.x * 0.35)
-            // pushOutOfBlocks(position.x + dimensions.x * 0.35, position.z - dimensions.x * 0.35)
-            // pushOutOfBlocks(position.x + dimensions.x * 0.35, position.z + dimensions.x * 0.35)
+        if (gamemode != Gamemodes.SPECTATOR && !connection.world.isSpaceEmpty(aabb)) {
+            val offset = dimensions.x * 0.35
+            pushOutOfBlocks(position.x - offset, position.z + offset)
+            pushOutOfBlocks(position.x - offset, position.z - offset)
+            pushOutOfBlocks(position.x + offset, position.z - offset)
+            pushOutOfBlocks(position.x + offset, position.z + offset)
         }
 
         // ToDo
@@ -482,7 +483,7 @@ class LocalPlayerEntity(
     }
 
     private fun pushOutOfBlocks(x: Double, z: Double) {
-        val blockPosition = Vec3i(x, position.y, z)
+        val blockPosition = Vec3i(x.floor, position.y.floor, z.floor)
         if (!collidesAt(blockPosition)) {
             return
         }
@@ -512,7 +513,7 @@ class LocalPlayerEntity(
 
     private fun collidesAt(position: Vec3i): Boolean {
         val aabb = aabb
-        val nextAABB = AABB(Vec3(position.x, aabb.min.y, position.z), Vec3(position.x + 1.0, aabb.max.y, position.z + 1.0)).shrink(1.0E-7)
+        val nextAABB = AABB(Vec3d(position.x, aabb.min.y, position.z), Vec3d(position.x + 1.0, aabb.max.y, position.z + 1.0)).shrink()
 
         return !connection.world.isSpaceEmpty(nextAABB)
     }

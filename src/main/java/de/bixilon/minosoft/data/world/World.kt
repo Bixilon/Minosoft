@@ -235,13 +235,10 @@ class World(
     }
 
     fun isSpaceEmpty(aabb: AABB): Boolean {
-        val positions = aabb.blockPositions
-        for (position in positions) {
+        for (position in aabb.blockPositions) {
             val block = this[position] ?: continue
-            for (blockAABB in block.collisionShape) {
-                if ((blockAABB + position).intersect(aabb)) {
-                    return false
-                }
+            if ((block.collisionShape + position).intersect(aabb)) {
+                return false
             }
         }
         return true
