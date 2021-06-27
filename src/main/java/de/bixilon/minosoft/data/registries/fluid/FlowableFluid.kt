@@ -35,10 +35,10 @@ abstract class FlowableFluid(
     abstract fun getVelocityMultiplier(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i): Double
 
     open fun getVelocity(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i): Vec3d {
-        if (blockState.block !is FluidBlock) {
+        if (blockState.block !is FluidBlock || !blockState.block.fluid.matches(this)) {
             return Vec3d.EMPTY
         }
-        val thisFluidHeight = blockState.block.fluid.getHeight(blockState)
+        val fluidHeight = getHeight(blockState)
 
         val velocity = Vec3d.EMPTY
 
@@ -54,16 +54,16 @@ abstract class FlowableFluid(
             }
             val height = neighbourBlockState.block.fluid.getHeight(neighbourBlockState)
 
-            var magic = 0.0f
+            var heightDifference = 0.0f
 
             if (height == 0.0f) {
                 // ToDo
             } else {
-                magic = thisFluidHeight - height
+                heightDifference = fluidHeight - height
             }
 
-            if (magic != 0.0f) {
-                velocity += (direction.vectord * magic)
+            if (heightDifference != 0.0f) {
+                velocity += (direction.vectord * heightDifference)
             }
 
         }

@@ -61,7 +61,7 @@ class Camera(
 
     var target: RaycastHit? = null
         private set
-    var blockTarget: BlockRaycastHit? = null
+    var blockTarget: BlockRaycastHit? = null // Block target or if blocked by entity null
         private set
     var fluidTarget: FluidRaycastHit? = null
         private set

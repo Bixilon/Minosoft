@@ -24,10 +24,10 @@ class FluidRaycastHit(
     position: Vec3d,
     distance: Double,
     hitDirection: Directions,
-    blockState: BlockState,
-    blockPosition: Vec3i,
+    val blockState: BlockState,
+    val blockPosition: Vec3i,
     val fluid: Fluid,
-) : BlockRaycastHit(position, distance, hitDirection, blockState, blockPosition) {
+) : RaycastHit(position, distance, hitDirection) {
 
     override fun toString(): String {
         return "$blockPosition: ${fluid.resourceLocation}\n Height: ${fluid.getHeight(blockState)}\n Level: ${blockState.properties[BlockProperties.FLUID_LEVEL]}"

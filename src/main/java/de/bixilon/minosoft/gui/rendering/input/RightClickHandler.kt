@@ -18,12 +18,10 @@ import de.bixilon.minosoft.data.player.Hands
 import de.bixilon.minosoft.data.registries.blocks.BlockUsages
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.input.camera.hit.BlockRaycastHit
 import de.bixilon.minosoft.protocol.packets.c2s.play.ArmSwingC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.BlockPlaceC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.ItemUseC2SP
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import de.bixilon.minosoft.util.KUtil.nullCast
 import glm_.vec3.Vec3
 
 class RightClickHandler(
@@ -47,7 +45,7 @@ class RightClickHandler(
             return
         }
 
-        val raycastHit = renderWindow.inputHandler.camera.target?.nullCast<BlockRaycastHit>() ?: return
+        val raycastHit = renderWindow.inputHandler.camera.blockTarget ?: return
 
         if (raycastHit.distance > RenderConstants.MAX_BLOCK_OUTLINE_RAYCAST_DISTANCE) {
             return

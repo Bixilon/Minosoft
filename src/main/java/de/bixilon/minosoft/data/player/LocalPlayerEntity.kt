@@ -60,9 +60,6 @@ import de.bixilon.minosoft.util.KUtil.decide
 import de.bixilon.minosoft.util.KUtil.nullCast
 import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
 import de.bixilon.minosoft.util.MMath
-import de.bixilon.minosoft.util.logging.Log
-import de.bixilon.minosoft.util.logging.LogLevels
-import de.bixilon.minosoft.util.logging.LogMessageType
 import glm_.func.cos
 import glm_.func.rad
 import glm_.func.sin
@@ -575,14 +572,11 @@ class LocalPlayerEntity(
                 velocity /= checks
             }
 
-            velocity *= velocityMultiplier
-
             if (abs(this.velocity.x) < 0.003 && abs(this.velocity.z) < 0.003 && velocity.length() < 0.0045000000000000005) {
                 velocity assign (velocity.normalize() * 0.0045000000000000005)
             }
 
-            val finalVelocity = this.velocity + velocity
-            this.velocity assign finalVelocity
+            this.velocity assign (this.velocity + velocity)
         }
         fluidHeights[fluid] = height
         return inFluid
@@ -599,11 +593,12 @@ class LocalPlayerEntity(
             updateFluidState(it.resourceLocation)
         }
 
+        submgergedFluid = null
+
         // ToDo: Boat
         val eyeHeight = eyePosition.y - 0.1111111119389534
 
         val eyePosition = (Vec3d(position.x, eyeHeight, position.z)).blockPosition
-        submgergedFluid = null
         val blockState = connection.world[eyePosition] ?: return
         if (blockState.block !is FluidBlock) {
             return
