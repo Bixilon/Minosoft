@@ -7,9 +7,9 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.ONE
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.get
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3
+import de.bixilon.minosoft.util.MMath.ceil
+import de.bixilon.minosoft.util.MMath.floor
 import glm_.Java.Companion.glm
-import glm_.func.common.ceil
-import glm_.func.common.floor
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3d
 import glm_.vec3.Vec3i
@@ -222,7 +222,7 @@ class AABB(
             get() = AABB(Vec3.EMPTY, Vec3.EMPTY)
 
         private fun getRange(min: Double, max: Double): IntRange {
-            return IntRange(min.floor.toInt(), max.ceil.toInt())
+            return IntRange(min.floor, max.ceil - 1)
         }
     }
 }

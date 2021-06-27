@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.util
 
+import de.bixilon.minosoft.util.KUtil.decide
 import glm_.vec2.Vec2i
 import kotlin.math.floor
 
@@ -93,10 +94,21 @@ object MMath {
     }
 
     val Boolean.positiveNegative: Int
-        get() =
-            if (this) {
-                1
-            } else {
-                -1
-            }
+        get() = if (this) {
+            1
+        } else {
+            -1
+        }
+
+    val Double.floor: Int
+        get() {
+            val int = this.toInt()
+            return (this < int).decide(int - 1, int)
+        }
+
+    val Double.ceil: Int
+        get() {
+            val int = this.toInt()
+            return (this > int).decide(int + 1, int)
+        }
 }

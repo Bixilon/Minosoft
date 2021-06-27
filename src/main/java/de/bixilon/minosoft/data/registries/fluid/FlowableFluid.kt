@@ -70,6 +70,6 @@ abstract class FlowableFluid(
 
         // ToDo: Falling fluid
 
-        return velocity.normalize() * -1.0
+        return velocity.normalize()
     }
 }

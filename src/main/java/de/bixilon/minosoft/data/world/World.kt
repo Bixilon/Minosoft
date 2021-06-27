@@ -185,7 +185,7 @@ class World(
     }
 
     operator fun get(aabb: AABB): Map<Vec3i, BlockState> {
-        var ret: MutableMap<Vec3i, BlockState> = mutableMapOf()
+        val ret: MutableMap<Vec3i, BlockState> = mutableMapOf()
         for (position in aabb.blockPositions) {
             this[position]?.let { ret[position] = it }
         }

@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.data.physics
 
 import de.bixilon.minosoft.data.Axes
-import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.player.LocalPlayerEntity
 import de.bixilon.minosoft.gui.rendering.chunk.VoxelShape
 import de.bixilon.minosoft.gui.rendering.chunk.models.AABB
@@ -33,7 +32,7 @@ class CollisionDetector(val connection: PlayConnection) {
 
     private fun getCollisionsToCheck(deltaPosition: Vec3d, aabb: AABB, ignoreUnloadedChunks: Boolean = true): VoxelShape {
         // also look at blocks further down to also cover blocks with a higher than normal hitbox (for example fences)
-        val blockPositions = (aabb extend deltaPosition extend Directions.DOWN grow COLLISION_BOX_MARGIN).blockPositions.toMutableList()
+        val blockPositions = (aabb extend deltaPosition grow 1.0 + COLLISION_BOX_MARGIN).blockPositions.toMutableList()
 
         // check if already in block
         if (!connection.world.isSpaceEmpty(aabb)) {
