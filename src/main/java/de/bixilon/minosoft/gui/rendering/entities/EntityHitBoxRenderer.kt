@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.entities
 
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.entities.entities.Entity
+import de.bixilon.minosoft.data.player.LocalPlayerEntity
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.Renderer
@@ -30,6 +31,9 @@ import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
 import de.bixilon.minosoft.util.KUtil.toSynchronizedMap
 import de.bixilon.minosoft.util.collections.SynchronizedMap
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
 
 class EntityHitBoxRenderer(
     val connection: PlayConnection,
@@ -39,7 +43,8 @@ class EntityHitBoxRenderer(
 
 
     private fun updateMesh(entity: Entity, mesh: EntityHitBoxMesh? = meshes[entity]): EntityHitBoxMesh? {
-        val aabb = entity.aabb
+        entity.tick() // ToDo: Remove
+        val aabb = entity.cameraAABB
 
         val visible = renderWindow.inputHandler.camera.frustum.containsAABB(aabb)
         if (!visible) {
@@ -58,11 +63,11 @@ class EntityHitBoxRenderer(
         return nextMesh
     }
 
-    private fun createMesh(entity: Entity, aabb: AABB = entity.aabb, visible: Boolean = renderWindow.inputHandler.camera.frustum.containsAABB(aabb)): EntityHitBoxMesh? {
+    private fun createMesh(entity: Entity, aabb: AABB = entity.cameraAABB, visible: Boolean = renderWindow.inputHandler.camera.frustum.containsAABB(aabb)): EntityHitBoxMesh? {
         if (entity.isInvisible && !Minosoft.config.config.game.entities.hitBox.renderInvisibleEntities) {
             return null
         }
-        val mesh = EntityHitBoxMesh(entity)
+        val mesh = EntityHitBoxMesh(entity, aabb)
 
         if (visible) {
             mesh.load()
@@ -95,6 +100,10 @@ class EntityHitBoxRenderer(
                 mesh.visible = renderWindow.inputHandler.camera.frustum.containsAABB(mesh.aabb)
             }
         })
+
+        if (Minosoft.config.config.game.entities.hitBox.ownHitBox) {
+            createMesh(connection.player)
+        }
     }
 
     override fun draw() {

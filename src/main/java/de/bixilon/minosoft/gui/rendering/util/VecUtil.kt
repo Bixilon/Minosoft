@@ -423,6 +423,10 @@ object VecUtil {
     }
 
     fun lerp(delta: Double, start: Vec3d, end: Vec3d): Vec3d {
+        when {
+            delta <= 0.0 -> return start
+            delta >= 1.0 -> return end
+        }
         return Vec3d(
             lerp(delta, start.x, end.x),
             lerp(delta, start.y, end.y),

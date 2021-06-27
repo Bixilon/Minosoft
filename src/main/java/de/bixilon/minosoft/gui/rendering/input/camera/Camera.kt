@@ -185,8 +185,8 @@ class Camera(
     }
 
     private fun calculateViewMatrix(): Mat4d {
-        val cameraPosition = entity.eyePosition
-        return glm.lookAt(cameraPosition, cameraPosition + cameraFront, CAMERA_UP_VEC3)
+        val eyePosition = entity.eyePosition
+        return glm.lookAt(eyePosition, eyePosition + cameraFront, CAMERA_UP_VEC3)
     }
 
     private fun setRotation(yaw: Double, pitch: Double) {

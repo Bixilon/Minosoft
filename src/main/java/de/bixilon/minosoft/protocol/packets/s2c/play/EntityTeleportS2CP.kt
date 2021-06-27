@@ -40,7 +40,6 @@ class EntityTeleportS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     override fun handle(connection: PlayConnection) {
         val entity = connection.world.entities[entityId] ?: return
         entity.position = position
-        entity.previousPosition = position
         entity.setRotation(yaw, pitch)
     }
 

@@ -17,28 +17,26 @@ import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.chunk.models.AABB
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.mesh.LineMesh
 import glm_.vec3.Vec3
-import glm_.vec3.Vec3d
 
 class EntityHitBoxMesh(
     val entity: Entity,
+    val aabb: AABB,
 ) : LineMesh() {
     var needsUpdate = true
     var visible = false
-    val aabb = entity.aabb
 
     init {
         val hitBoxColor = when {
             entity.isInvisible -> Minosoft.config.config.game.entities.hitBox.invisibleEntitiesColor
             else -> Minosoft.config.config.game.entities.hitBox.hitBoxColor
         }
-        drawAABB(entity.aabb, Vec3d.EMPTY, RenderConstants.DEFAULT_LINE_WIDTH, hitBoxColor)
+        drawAABB(aabb, RenderConstants.DEFAULT_LINE_WIDTH, hitBoxColor)
 
-        val halfWidth = entity.dimensions.x / 2
-        val eyeAABB = AABB(Vec3(-halfWidth, entity.eyeHeight - RenderConstants.DEFAULT_LINE_WIDTH, -halfWidth), Vec3(halfWidth, entity.eyeHeight - RenderConstants.DEFAULT_LINE_WIDTH, halfWidth)).hShrink(RenderConstants.DEFAULT_LINE_WIDTH)
-        drawAABB(eyeAABB, entity.position, RenderConstants.DEFAULT_LINE_WIDTH, Minosoft.config.config.game.entities.hitBox.eyeHeightColor)
+        val eyeHeight = aabb.min.y + entity.eyeHeight
+        val eyeAABB = AABB(Vec3(aabb.min.x, eyeHeight, aabb.min.z), Vec3(aabb.max.x, eyeHeight, aabb.max.z)).hShrink(RenderConstants.DEFAULT_LINE_WIDTH)
+        drawAABB(eyeAABB, RenderConstants.DEFAULT_LINE_WIDTH, Minosoft.config.config.game.entities.hitBox.eyeHeightColor)
     }
 
 }

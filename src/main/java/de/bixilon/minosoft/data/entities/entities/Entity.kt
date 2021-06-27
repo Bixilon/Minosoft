@@ -40,6 +40,7 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.empty
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.floor
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.horizontal
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.inChunkPosition
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3d
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
@@ -103,19 +104,20 @@ abstract class Entity(
         get() = dimensions.y * 0.85f
 
     private var lastFakeTickTime = -1L
-    var previousPosition: Vec3d = Vec3d(position)
+    private var previousPosition: Vec3d = Vec3d(position)
     override var position: Vec3d = position
         set(value) {
+            previousPosition = field
             field = value
             positionInfo.update()
         }
     open val positionInfo = EntityPositionInfo(connection, this)
 
     val eyePosition: Vec3d
-        get() = realPosition + Vec3(0.0f, eyeHeight, 0.0f)
+        get() = cameraPosition + Vec3(0.0f, eyeHeight, 0.0f)
 
-    val realPosition: Vec3d
-        get() = VecUtil.lerp((System.currentTimeMillis() - lastTickTime) / ProtocolDefinition.TICK_TIMEd, previousPosition, position)
+    var cameraPosition: Vec3d = position.toVec3d
+        private set
 
     open val spawnSprintingParticles: Boolean
         get() = isSprinting && !isSneaking // ToDo: Touching fluids
@@ -123,7 +125,6 @@ abstract class Entity(
     protected var lastTickTime = -1L
 
     fun forceMove(deltaPosition: Vec3d) {
-        previousPosition = Vec3d(position)
         position = position + deltaPosition
     }
 
@@ -301,6 +302,10 @@ abstract class Entity(
         get() = defaultAABB + position
 
 
+    val cameraAABB: AABB
+        get() = defaultAABB + cameraPosition
+
+
     @Synchronized
     fun tick() {
         val currentTime = System.currentTimeMillis()
@@ -318,9 +323,11 @@ abstract class Entity(
             realTick()
             lastTickTime = currentTime
         }
+        cameraPosition = VecUtil.lerp((currentTime - lastTickTime) / ProtocolDefinition.TICK_TIMEd, previousPosition, position)
     }
 
     open fun realTick() {
+        previousPosition = position
         if (spawnSprintingParticles) {
             spawnSprintingParticles()
         }

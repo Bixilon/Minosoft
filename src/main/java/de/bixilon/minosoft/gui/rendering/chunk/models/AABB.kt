@@ -195,6 +195,28 @@ class AABB(
     val center: Vec3d
         get() = Vec3d((min.x + max.x) / 2.0, (min.y + max.y) / 2.0, (min.z + max.z) / 2.0)
 
+
+    override fun hashCode(): Int {
+        return min.hashCode() + max.hashCode()
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) {
+            return true
+        }
+        if (this.hashCode() != other?.hashCode()) {
+            return false
+        }
+        if (other !is AABB) {
+            return false
+        }
+        return min == other.min && max == other.max
+    }
+
+    override fun toString(): String {
+        return "AABB[$min;$max]"
+    }
+
     companion object {
         val EMPTY: AABB
             get() = AABB(Vec3.EMPTY, Vec3.EMPTY)

@@ -55,8 +55,12 @@ open class LineMesh : GenericColorMesh() {
     }
 
     fun drawAABB(aabb: AABB, position: Vec3d, lineWidth: Float, color: RGBColor, margin: Float = 0.0f) {
-        val min = position + aabb.min - margin
-        val max = position + aabb.max + margin
+        drawAABB(aabb + position, lineWidth, color, margin)
+    }
+
+    fun drawAABB(aabb: AABB, lineWidth: Float, color: RGBColor, margin: Float = 0.0f) {
+        val min = aabb.min - margin
+        val max = aabb.max + margin
 
         fun drawSideQuad(x: Double) {
             drawLine(Vec3(x, min.y, min.z), Vec3(x, max.y, min.z), lineWidth, color)

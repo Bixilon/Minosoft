@@ -73,7 +73,6 @@ class PositionAndRotationS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         }
 
         entity.position = position
-        entity.previousPosition = position
         entity.rotation = rotation
 
         if (connection.version.versionId >= ProtocolVersions.V_15W42A) {
