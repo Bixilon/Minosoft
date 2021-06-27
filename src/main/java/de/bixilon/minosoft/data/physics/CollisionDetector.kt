@@ -19,13 +19,11 @@ import de.bixilon.minosoft.gui.rendering.chunk.VoxelShape
 import de.bixilon.minosoft.gui.rendering.chunk.models.AABB
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.chunkPosition
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.floor
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.inChunkPosition
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3bool
 import glm_.vec3.Vec3d
-import glm_.vec3.Vec3i
 import kotlin.math.abs
 
 class CollisionDetector(val connection: PlayConnection) {
@@ -34,11 +32,7 @@ class CollisionDetector(val connection: PlayConnection) {
         // also look at blocks further down to also cover blocks with a higher than normal hitbox (for example fences)
         val blockPositions = (aabb extend deltaPosition grow 1.0 + COLLISION_BOX_MARGIN).blockPositions.toMutableList()
 
-        // check if already in block
-        if (!connection.world.isSpaceEmpty(aabb)) {
-            val center = aabb.center.floor
-            blockPositions.remove(Vec3i(center.x, aabb.min.y, center.z))
-        }
+        val aabbBlockPositions = aabb.shrink().blockPositions
 
         val result = VoxelShape()
         for (blockPosition in blockPositions) {
@@ -49,7 +43,15 @@ class CollisionDetector(val connection: PlayConnection) {
                 continue
             }
             val blockState = chunk?.get(blockPosition.inChunkPosition) ?: continue
-            result.add(blockState.collisionShape + blockPosition)
+            val blockShape = blockState.collisionShape + blockPosition
+
+            // remove position if not already in it and not colliding with it
+            if (blockPosition in aabbBlockPositions) {
+                if (blockShape.intersect(aabb)) {
+                    continue
+                }
+            }
+            result.add(blockShape)
         }
         return result
     }
