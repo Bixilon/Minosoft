@@ -109,8 +109,9 @@ class LocalPlayerEntity(
     private var lastOnGround = false
 
 
-    private var flyingSpeed = 0.02
-    private val walkingSpeed: Double
+    var flyingSpeed = 0.02
+        private set
+    val walkingSpeed: Double
         get() = getAttributeValue(DefaultStatusEffectAttributeNames.GENERIC_MOVEMENT_SPEED, baseAbilities.walkingSpeed)
 
     var jumpingCoolDown = 0
@@ -155,7 +156,7 @@ class LocalPlayerEntity(
     override val isSneaking: Boolean
         get() = input.sneaking
 
-    private val isClimbing: Boolean
+    val isClimbing: Boolean
         get() {
             if (gamemode == Gamemodes.SPECTATOR) {
                 return false
@@ -304,8 +305,17 @@ class LocalPlayerEntity(
     }
 
 
-    private fun move(sidewaysSpeed: Float, forwardSpeed: Float, friction: Double): Vec3d {
-        velocity = velocity + calculateVelocity(sidewaysSpeed, forwardSpeed, frictionToMovement(friction), rotation.headYaw)
+    private fun calculateVelocity(sidewaysSpeed: Float, forwardSpeed: Float, speed: Double) {
+        velocity = velocity + calculateVelocity(sidewaysSpeed, forwardSpeed, speed, rotation.headYaw)
+    }
+
+    fun accelerate(sidewaysSpeed: Float, forwardSpeed: Float, speed: Double) {
+        calculateVelocity(sidewaysSpeed, forwardSpeed, speed)
+        move()
+    }
+
+    fun move(sidewaysSpeed: Float, forwardSpeed: Float, friction: Double): Vec3d {
+        calculateVelocity(sidewaysSpeed, forwardSpeed, frictionToMovement(friction))
 
         velocity = applyClimbingSpeed(velocity)
         move(velocity)
@@ -339,15 +349,24 @@ class LocalPlayerEntity(
 
     private fun baseTravel(sidewaysSpeed: Float, forwardSpeed: Float) {
         var gravity = PhysicsConstants.BASE_GRAVITY
-        val falling = velocity.y <= 0.0f
+        val falling = velocity.y <= 0.0
 
         if (falling && activeStatusEffects[connection.registries.statusEffectRegistry[DefaultStatusEffects.SLOW_FALLING]] != null) {
-            gravity = 0.01f
+            gravity = 0.01
             fallDistance = 0.0
         }
 
         var speedMultiplier: Double
         when {
+            fluidHeights.isNotEmpty() && !baseAbilities.isFlying -> {
+                for ((fluidType, _) in fluidHeights) {
+                    // ToDo: Sort fluids, water has a higher priority than lava
+                    val fluid = connection.registries.fluidRegistry[fluidType] ?: continue
+
+                    fluid.travel(this, sidewaysSpeed, forwardSpeed, gravity, falling)
+                    break
+                }
+            }
             // ToDo: Handle fluids, elytra flying
             isFlyingWithElytra -> {
             }
@@ -393,7 +412,7 @@ class LocalPlayerEntity(
             movementSideways *= 0.2f
         }
 
-        if (gamemode != Gamemodes.SPECTATOR && !connection.world.isSpaceEmpty(aabb)) {
+        if (gamemode != Gamemodes.SPECTATOR && !connection.world.isSpaceEmpty(aabb, false)) {
             val offset = dimensions.x * 0.35
             pushOutOfBlocks(position.x - offset, position.z + offset)
             pushOutOfBlocks(position.x - offset, position.z - offset)
@@ -518,6 +537,10 @@ class LocalPlayerEntity(
         return !connection.world.isSpaceEmpty(nextAABB)
     }
 
+    fun collidesAt(position: Vec3d, checkFluids: Boolean): Boolean {
+        return !connection.world.isSpaceEmpty(AABB(defaultAABB + position).shrink(), checkFluids)
+    }
+
     val canSneak: Boolean
         get() = (onGround && fallDistance < PhysicsConstants.STEP_HEIGHT) && !connection.world.isSpaceEmpty(aabb + Vec3(0.0f, fallDistance - PhysicsConstants.STEP_HEIGHT, 0.0f))
 
@@ -579,7 +602,9 @@ class LocalPlayerEntity(
 
             this.velocity assign (this.velocity + velocity)
         }
-        fluidHeights[fluid] = height
+        if (height > 0.0) {
+            fluidHeights[fluid] = height
+        }
         return inFluid
     }
 

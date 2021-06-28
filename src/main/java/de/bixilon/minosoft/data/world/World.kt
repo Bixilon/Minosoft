@@ -18,6 +18,7 @@ import de.bixilon.minosoft.data.registries.Dimension
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.BlockState
+import de.bixilon.minosoft.data.registries.blocks.types.FluidBlock
 import de.bixilon.minosoft.data.registries.sounds.SoundEvent
 import de.bixilon.minosoft.data.registries.tweaker.VersionTweaker
 import de.bixilon.minosoft.data.world.biome.accessor.BiomeAccessor
@@ -234,10 +235,17 @@ class World(
         addParticle(particle ?: return)
     }
 
-    fun isSpaceEmpty(aabb: AABB): Boolean {
+    fun isSpaceEmpty(aabb: AABB, checkFluids: Boolean = false): Boolean {
         for (position in aabb.blockPositions) {
-            val block = this[position] ?: continue
-            if ((block.collisionShape + position).intersect(aabb)) {
+            val blockState = this[position] ?: continue
+            if ((blockState.collisionShape + position).intersect(aabb)) {
+                return false
+            }
+            if (!checkFluids || blockState.block !is FluidBlock) {
+                continue
+            }
+            val height = blockState.block.fluid.getHeight(blockState)
+            if (position.y + height > aabb.min.y) {
                 return false
             }
         }

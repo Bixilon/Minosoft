@@ -22,4 +22,5 @@ object DefaultStatusEffects {
     val JUMP_BOOST = "minecraft:jump_boost".asResourceLocation()
     val HASTE = "minecraft:haste".asResourceLocation()
     val MINING_FATIGUE = "minecraft:mining_fatigue".asResourceLocation()
+    val DOLPHINS_GRACE = "minecraft:dolphins_grace".asResourceLocation()
 }

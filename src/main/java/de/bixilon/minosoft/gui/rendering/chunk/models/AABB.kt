@@ -102,7 +102,7 @@ class AABB(
         return this extend direction.vector
     }
 
-    infix fun grow(size: Double): AABB {
+    fun grow(size: Double = 1.0E-7): AABB {
         return AABB(min - size, max + size)
     }
 

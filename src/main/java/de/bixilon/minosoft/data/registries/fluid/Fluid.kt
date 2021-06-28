@@ -13,6 +13,8 @@
 package de.bixilon.minosoft.data.registries.fluid
 
 import com.google.gson.JsonObject
+import de.bixilon.minosoft.data.entities.entities.Entity
+import de.bixilon.minosoft.data.player.LocalPlayerEntity
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
@@ -26,7 +28,9 @@ import de.bixilon.minosoft.data.registries.registry.ResourceLocationDeserializer
 import de.bixilon.minosoft.data.registries.versions.Registries
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.util.KUtil.unsafeCast
+import glm_.vec3.Vec3d
 import glm_.vec3.Vec3i
+import kotlin.math.abs
 import kotlin.random.Random
 
 open class Fluid(
@@ -65,7 +69,21 @@ open class Fluid(
         return (8 - ((blockState.properties[BlockProperties.FLUID_LEVEL]?.unsafeCast<Int>()) ?: 8)) / 9.0f
     }
 
+    open fun travel(entity: LocalPlayerEntity, sidewaysSpeed: Float, forwardSpeed: Float, gravity: Double, falling: Boolean) {}
+
     open fun randomTick(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, random: Random) {}
+
+
+    protected fun updateMovement(entity: Entity, gravity: Double, falling: Boolean, velocity: Vec3d): Vec3d {
+        if (entity.hasGravity && !entity.isSprinting) {
+            velocity.y = if (falling && abs(velocity.y - 0.005) >= 0.003 && abs(velocity.y - gravity / 16.0) < 0.003) {
+                -0.003
+            } else {
+                velocity.y - gravity / 16.0
+            }
+        }
+        return velocity
+    }
 
     companion object : ResourceLocationDeserializer<Fluid> {
         private val CONSTRUCTORS: Map<String, (resourceLocation: ResourceLocation, registries: Registries, data: JsonObject) -> Fluid> = mapOf(

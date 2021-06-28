@@ -84,15 +84,17 @@ abstract class Entity(
     var movementMultiplier = Vec3d.EMPTY // ToDo: Used in cobwebs, etc
     protected open var velocityMultiplier: Double = 1.0
 
-    protected var horizontalCollision = false
-    protected var verticalCollision = false
+    var horizontalCollision = false
+        protected set
+    var verticalCollision = false
+        protected set
     protected var fallDistance = 0.0
 
     protected open val hasCollisions = true
 
     override var onGround = false
 
-    private val defaultAABB: AABB
+    protected val defaultAABB: AABB
         get() {
             val halfWidth = dimensions.x / 2
             return AABB(Vec3(-halfWidth, 0.0f, -halfWidth), Vec3(halfWidth, dimensions.y, halfWidth))
@@ -383,7 +385,7 @@ abstract class Entity(
         this.fallDistance = this.fallDistance - deltaY
     }
 
-    fun move(delta: Vec3d) {
+    fun move(delta: Vec3d = velocity) {
         if (!hasCollisions) {
             forceMove(delta)
             return

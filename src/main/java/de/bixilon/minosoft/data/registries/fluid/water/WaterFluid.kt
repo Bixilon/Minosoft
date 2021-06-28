@@ -14,10 +14,13 @@
 package de.bixilon.minosoft.data.registries.fluid.water
 
 import com.google.gson.JsonObject
+import de.bixilon.minosoft.data.player.LocalPlayerEntity
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.types.FluidFillable
+import de.bixilon.minosoft.data.registries.effects.DefaultStatusEffects
+import de.bixilon.minosoft.data.registries.enchantment.DefaultEnchantments
 import de.bixilon.minosoft.data.registries.fluid.FlowableFluid
 import de.bixilon.minosoft.data.registries.fluid.Fluid
 import de.bixilon.minosoft.data.registries.versions.Registries
@@ -26,7 +29,10 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3d
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
+import de.bixilon.minosoft.util.KUtil.decide
+import glm_.vec3.Vec3d
 import glm_.vec3.Vec3i
+import kotlin.math.min
 import kotlin.random.Random
 
 class WaterFluid(
@@ -34,6 +40,8 @@ class WaterFluid(
     registries: Registries,
     data: JsonObject,
 ) : FlowableFluid(resourceLocation, registries, data) {
+    private val depthStriderEnchantment = registries.enchantmentRegistry[DefaultEnchantments.DEPTH_STRIDER]
+    private val dolphinsGraceStatusEffect = registries.statusEffectRegistry[DefaultStatusEffects.DOLPHINS_GRACE]
     override val stillTexture: ResourceLocation = "minecraft:block/water_still".asResourceLocation()
     override val flowingTexture: ResourceLocation = "minecraft:block/water_flow".asResourceLocation()
 
@@ -55,6 +63,45 @@ class WaterFluid(
         }
 
         return super.matches(other)
+    }
+
+    override fun travel(entity: LocalPlayerEntity, sidewaysSpeed: Float, forwardSpeed: Float, gravity: Double, falling: Boolean) {
+        val y = entity.position.y
+        var speedMultiplier = entity.isSprinting.decide(0.9, entity.walkingSpeed)
+
+        var depthStriderLevel = min(entity.getEquipmentEnchant(depthStriderEnchantment), 3).toDouble()
+
+        var speed = 0.02
+
+        if (depthStriderLevel > 0) {
+            if (!entity.onGround) {
+                depthStriderLevel /= 2.0
+            }
+
+            speedMultiplier += (0.54600006 - speedMultiplier) * depthStriderLevel / 3.0
+            speed += (entity.walkingSpeed - speed) * depthStriderLevel / 3.0
+        }
+
+        if (entity.activeStatusEffects[dolphinsGraceStatusEffect] != null) {
+            speedMultiplier *= 0.96
+        }
+
+
+        entity.accelerate(sidewaysSpeed, forwardSpeed, speed)
+
+        val velocity = entity.velocity
+
+        if (entity.horizontalCollision && entity.isClimbing) {
+            velocity.y = 0.2
+        }
+        entity.velocity = velocity * Vec3d(speedMultiplier, 0.800000011920929, speedMultiplier)
+
+        entity.velocity = updateMovement(entity, gravity, falling, entity.velocity)
+
+        // ToDo: Do this magic, but check edged and not jump like a bunny
+        // if (entity.horizontalCollision && !entity.collidesAt(entity.position + Vec3d(entity.velocity.x, entity.velocity.y + 0.6000000238418579 - entity.position.y + y, entity.velocity.z), true)) {
+        //     entity.velocity.y = 0.30000001192092896
+        // }
     }
 
 

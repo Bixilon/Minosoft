@@ -20,4 +20,5 @@ object DefaultEnchantments {
     val UNBREAKING = "minecraft:unbreaking".asResourceLocation()
     val EFFICIENCY = "minecraft:efficiency".asResourceLocation()
     val AQUA_AFFINITY = "minecraft:aqua_affinity".asResourceLocation()
+    val DEPTH_STRIDER = "minecraft:depth_strider".asResourceLocation()
 }
