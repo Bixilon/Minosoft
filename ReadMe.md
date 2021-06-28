@@ -43,6 +43,9 @@ Minosoft is an open source minecraft client, written from scratch in kotlin (and
 
 Works. Still missing many features, but heavily developed.
 
+![Rendering](doc/img/afk_pool.png)  
+AFK Pooling, Hit boxes, particles, ...
+
 ![Rendering](doc/img/rendering1.png)  
 Lighting demo.
 
