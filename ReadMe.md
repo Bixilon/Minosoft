@@ -106,7 +106,7 @@ can't think of PRs (they are still welcome). If you want to get current develope
 
 ## Downloads / Installation
 
-Because we have no releases or tags yet, we don't build any versions ourselves. This will soon™ change.
+Because we have no releases or tags yet, we don't build any versions ourselves. This will change soon™.
 
 ### Linux
 

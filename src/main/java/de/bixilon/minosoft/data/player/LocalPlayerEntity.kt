@@ -357,7 +357,7 @@ class LocalPlayerEntity(
 
         var speedMultiplier: Double
         when {
-            fluidHeights.isNotEmpty() && !baseAbilities.isFlying -> {
+            fluidHeights.isNotEmpty() && canSwimInFluids -> {
                 for ((fluidType, _) in fluidHeights) {
                     // ToDo: Sort fluids, water has a higher priority than lava
                     val fluid = connection.registries.fluidRegistry[fluidType] ?: continue
@@ -456,12 +456,17 @@ class LocalPlayerEntity(
         }
 
         if (isJumping && canSwimInFluids) {
-            // ToDo: Check if in fluids
-            if (onGround && jumpingCoolDown == 0) {
+            var maxHeight = 0.0f
+            for (level in fluidHeights.values) {
+                maxHeight = max(maxHeight, level)
+            }
+            // ToDo: First water, then jumping, then lava?
+            if (maxHeight > 0 && (!onGround || maxHeight > ((eyeHeight < 0.4).decide(0.0, 0.4)))) {
+                this.velocity.y += 0.03999999910593033
+            } else if (onGround && jumpingCoolDown == 0) {
                 jump()
                 jumpingCoolDown = 10
             }
-
         } else {
             jumpingCoolDown = 0
         }
