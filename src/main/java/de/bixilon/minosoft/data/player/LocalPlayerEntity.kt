@@ -45,7 +45,6 @@ import de.bixilon.minosoft.gui.rendering.chunk.models.AABB
 import de.bixilon.minosoft.gui.rendering.input.camera.MovementInput
 import de.bixilon.minosoft.gui.rendering.util.VecUtil
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.assign
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.blockPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.clearZero
@@ -597,11 +596,13 @@ class LocalPlayerEntity(
             }
 
             if (abs(this.velocity.x) < 0.003 && abs(this.velocity.z) < 0.003 && velocity.length() < 0.0045000000000000005) {
-                velocity assign (velocity.normalize() * 0.0045000000000000005)
+                velocity.normalizeAssign()
+                velocity *= 0.0045000000000000005
             }
 
-            this.velocity assign (this.velocity + velocity)
+            this.velocity = (this.velocity + velocity)
         }
+
         if (height > 0.0) {
             fluidHeights[fluid] = height
         }

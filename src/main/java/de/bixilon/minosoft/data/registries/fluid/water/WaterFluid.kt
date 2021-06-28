@@ -67,7 +67,7 @@ class WaterFluid(
 
     override fun travel(entity: LocalPlayerEntity, sidewaysSpeed: Float, forwardSpeed: Float, gravity: Double, falling: Boolean) {
         val y = entity.position.y
-        var speedMultiplier = entity.isSprinting.decide(0.9, entity.walkingSpeed)
+        var speedMultiplier = entity.isSprinting.decide(0.9, 0.8)
 
         var depthStriderLevel = min(entity.getEquipmentEnchant(depthStriderEnchantment), 3).toDouble()
 
