@@ -15,8 +15,10 @@ package de.bixilon.minosoft.data.registries.fluid.lava
 
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.direction.Directions
+import de.bixilon.minosoft.data.player.LocalPlayerEntity
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
+import de.bixilon.minosoft.data.registries.fluid.DefaultFluids
 import de.bixilon.minosoft.data.registries.fluid.FlowableFluid
 import de.bixilon.minosoft.data.registries.fluid.Fluid
 import de.bixilon.minosoft.data.registries.versions.Registries
@@ -47,6 +49,25 @@ class LavaFluid(
 
     override fun matches(other: Fluid): Boolean {
         return other is LavaFluid
+    }
+
+    override fun travel(entity: LocalPlayerEntity, sidewaysSpeed: Float, forwardSpeed: Float, gravity: Double, falling: Boolean) {
+        entity.accelerate(sidewaysSpeed, forwardSpeed, 0.02)
+
+        val fluidHeight = entity.fluidHeights[DefaultFluids.LAVA] ?: 0.0f
+
+        if (fluidHeight <= entity.swimHeight) {
+            entity.velocity = entity.velocity * Vec3d(0.5, 0.800000011920929, 0.5)
+            entity.velocity = updateMovement(entity, gravity, falling, entity.velocity)
+        } else {
+            entity.velocity = entity.velocity * 0.5
+        }
+
+        if (entity.hasGravity) {
+            entity.velocity.y += -gravity / 4.0
+        }
+
+        // ToDo: Same as for water
     }
 
     override fun randomTick(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, random: Random) {

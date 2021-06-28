@@ -69,7 +69,9 @@ open class Fluid(
         return (8 - ((blockState.properties[BlockProperties.FLUID_LEVEL]?.unsafeCast<Int>()) ?: 8)) / 9.0f
     }
 
-    open fun travel(entity: LocalPlayerEntity, sidewaysSpeed: Float, forwardSpeed: Float, gravity: Double, falling: Boolean) {}
+    open fun travel(entity: LocalPlayerEntity, sidewaysSpeed: Float, forwardSpeed: Float, gravity: Double, falling: Boolean) {
+        entity.accelerate(sidewaysSpeed, forwardSpeed, 0.02)
+    }
 
     open fun randomTick(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, random: Random) {}
 

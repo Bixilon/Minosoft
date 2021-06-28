@@ -94,7 +94,7 @@ class LocalPlayerEntity(
 
 
     // fluids stuff
-    private val fluidHeights: MutableMap<ResourceLocation, Float> = synchronizedMapOf()
+    val fluidHeights: MutableMap<ResourceLocation, Float> = synchronizedMapOf()
     var submgergedFluid: Fluid? = null
 
     var input = MovementInput()
@@ -202,6 +202,9 @@ class LocalPlayerEntity(
 
     override val spawnSprintingParticles: Boolean
         get() = super.spawnSprintingParticles && !baseAbilities.isFlying
+
+    val swimHeight: Double
+        get() = (eyeHeight < 0.4).decide(0.0, 0.4)
 
     private fun sendMovementPackets() {
         if (Minosoft.config.config.game.camera.disableMovementSending) {
@@ -461,7 +464,7 @@ class LocalPlayerEntity(
                 maxHeight = max(maxHeight, level)
             }
             // ToDo: First water, then jumping, then lava?
-            if (maxHeight > 0 && (!onGround || maxHeight > ((eyeHeight < 0.4).decide(0.0, 0.4)))) {
+            if (maxHeight > 0 && (!onGround || maxHeight > swimHeight)) {
                 this.velocity.y += 0.03999999910593033
             } else if (onGround && jumpingCoolDown == 0) {
                 jump()
