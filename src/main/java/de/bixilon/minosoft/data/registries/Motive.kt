@@ -21,7 +21,7 @@ data class Motive(
     override val resourceLocation: ResourceLocation,
     val width: Int,
     val height: Int,
-) : RegistryItem {
+) : RegistryItem() {
 
     override fun toString(): String {
         return resourceLocation.full

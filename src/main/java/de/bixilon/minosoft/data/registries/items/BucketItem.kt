@@ -15,6 +15,7 @@ package de.bixilon.minosoft.data.registries.items
 
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.fluid.Fluid
 import de.bixilon.minosoft.data.registries.versions.Registries
 
 
@@ -23,5 +24,9 @@ open class BucketItem(
     registries: Registries,
     data: JsonObject,
 ) : Item(resourceLocation, registries, data) {
-    val fluid = registries.fluidRegistry[data["bucked_fluid_type"].asInt]
+    val fluid: Fluid? = null
+
+    init {
+        this::fluid.inject(data["bucked_fluid_type"])
+    }
 }

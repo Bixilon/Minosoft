@@ -21,7 +21,7 @@ import de.bixilon.minosoft.data.registries.versions.Registries
 
 class EntityObjectType(
     override val resourceLocation: ResourceLocation,
-) : RegistryItem {
+) : RegistryItem() {
 
     companion object : ResourceLocationDeserializer<EntityObjectType> {
         override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: JsonObject): EntityObjectType {

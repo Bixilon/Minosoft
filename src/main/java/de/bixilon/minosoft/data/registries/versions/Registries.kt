@@ -50,9 +50,11 @@ import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModel
 import de.bixilon.minosoft.protocol.packets.c2s.play.EntityActionC2SP
 import de.bixilon.minosoft.protocol.packets.s2c.play.EntityAnimationS2CP
 import de.bixilon.minosoft.protocol.packets.s2c.play.title.TitleS2CF
+import de.bixilon.minosoft.util.KUtil.unsafeCast
 import de.bixilon.minosoft.util.collections.Clearable
 import de.bixilon.minosoft.util.json.ResourceLocationJsonMap.toResourceLocationMap
 import java.lang.reflect.Field
+import java.lang.reflect.ParameterizedType
 
 
 class Registries {
@@ -159,7 +161,6 @@ class Registries {
         containerTypeRegistry.initialize(pixlyzerData["container_types"]?.asJsonObject, this, ContainerType, alternative = DefaultRegistries.CONTAINER_TYPE_REGISTRY.forVersion(version))
         gameEventRegistry.initialize(pixlyzerData["game_events"]?.asJsonObject, this, GameEvent, alternative = DefaultRegistries.GAME_EVENT_REGISTRY.forVersion(version))
 
-        blockEntityTypeRegistry.initialize(pixlyzerData["block_entities"]?.asJsonObject, this, BlockEntityType)
 
         entityTypeRegistry.initialize(pixlyzerData["entities"]?.asJsonObject, this, EntityType)
 
@@ -175,6 +176,8 @@ class Registries {
         blockRegistry.initialize(pixlyzerData["blocks"]?.asJsonObject, this, Block, version.isFlattened(), Registry.MetaTypes.BITS_4)
         itemRegistry.initialize(pixlyzerData["items"]?.asJsonObject, this, Item, version.isFlattened(), Registry.MetaTypes.BITS_16)
 
+        blockEntityTypeRegistry.initialize(pixlyzerData["block_entities"]?.asJsonObject, this, BlockEntityType)
+
         villagerProfessionRegistry.initialize(pixlyzerData["villager_professions"]?.asJsonObject, this, VillagerProfession)
 
 
@@ -182,10 +185,10 @@ class Registries {
 
 
         // post init
-        biomeRegistry.postInit(this)
-        fluidRegistry.postInit(this)
-        blockEntityTypeRegistry.postInit(this)
-        blockRegistry.postInit(this)
+        for (field in TYPE_MAP.values) {
+            val registry = field.get(this) as Registry<*>
+            registry.postInit(this)
+        }
         isFullyLoaded = true
     }
 
@@ -248,9 +251,21 @@ class Registries {
         }
     }
 
+    operator fun <T : RegistryItem> get(type: Class<T>): Registry<T>? {
+        var currentField: Field?
+        var currentClass: Class<*> = type
+        do {
+            currentField = TYPE_MAP[currentClass]
+            currentClass = currentClass.superclass
+        } while (currentField == null && currentClass != Object::class.java)
+        return currentField?.get(this) as Registry<T>?
+    }
+
+
     companion object {
         private val PARENTABLE_FIELDS: List<Field>
         private val PARENTABLE_SET_PARENT_METHOD = Parentable::class.java.getDeclaredMethod("setParent", Any::class.java)
+        private val TYPE_MAP: Map<Class<*>, Field>
 
         init {
             val fields: MutableList<Field> = mutableListOf()
@@ -263,6 +278,38 @@ class Registries {
             }
 
             PARENTABLE_FIELDS = fields.toList()
+        }
+
+        init {
+            val types: MutableMap<Class<*>, Field> = mutableMapOf()
+
+
+            for (field in Registries::class.java.declaredFields) {
+                if (!Registry::class.java.isAssignableFrom(field.type)) {
+                    continue
+                }
+                field.isAccessible = true
+
+                var generic = field.genericType
+
+                if (field.type != Registry::class.java) {
+                    var type = field.type
+                    while (type != Object::class.java) {
+                        if (type.superclass == Registry::class.java) {
+                            generic = type.genericSuperclass
+                            break
+                        }
+                        type = type.superclass
+                    }
+                }
+
+
+                types[generic.unsafeCast<ParameterizedType>().actualTypeArguments.first() as Class<*>] = field
+            }
+
+            types[Item::class.java] = Registries::class.java.getDeclaredField("itemRegistry")
+
+            TYPE_MAP = types.toMap()
         }
     }
 }

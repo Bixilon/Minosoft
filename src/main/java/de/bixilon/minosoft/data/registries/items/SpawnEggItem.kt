@@ -15,6 +15,7 @@ package de.bixilon.minosoft.data.registries.items
 
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.versions.Registries
 import de.bixilon.minosoft.data.text.RGBColor.Companion.asRGBColor
 
@@ -25,5 +26,9 @@ open class SpawnEggItem(
 ) : Item(resourceLocation, registries, data) {
     val color1 = data["spawn_egg_color_1"]?.asInt?.asRGBColor()
     val color2 = data["spawn_egg_color_2"]?.asInt?.asRGBColor()
-    val entityType = data["spawn_egg_entity_type"]?.asInt?.let { registries.entityTypeRegistry[it] }
+    val entityType: EntityType? = null
+
+    init {
+        this::entityType.inject(data["spawn_egg_entity_type"])
+    }
 }

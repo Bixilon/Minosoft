@@ -20,7 +20,7 @@ data class Statistic(
     override val resourceLocation: ResourceLocation,
     override val translationKey: String?,
     val subStatistics: Map<ResourceLocation, SubStatistic>,
-) : RegistryItem, Translatable {
+) : RegistryItem(), Translatable {
 
     override fun toString(): String {
         return resourceLocation.full

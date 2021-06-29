@@ -22,6 +22,7 @@ import de.bixilon.minosoft.data.registries.versions.Registries
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
 import de.bixilon.minosoft.util.KUtil.nullCast
 import de.bixilon.minosoft.util.json.ResourceLocationJsonMap.toResourceLocationMap
+import kotlin.reflect.KClass
 
 open class Registry<T : RegistryItem>(
     override var parent: AbstractRegistry<T>? = null,
@@ -133,6 +134,7 @@ open class Registry<T : RegistryItem>(
 
     open fun postInit(registries: Registries) {
         for ((_, value) in resourceLocationMap) {
+            value.inject(registries)
             value.postInit(registries)
         }
     }

@@ -22,7 +22,7 @@ import de.bixilon.minosoft.data.registries.versions.Registries
 
 class BlockEntityMetaType(
     override val resourceLocation: ResourceLocation,
-) : RegistryItem {
+) : RegistryItem() {
 
     companion object : ResourceLocationDeserializer<BlockEntityMetaType> {
         override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: JsonObject): BlockEntityMetaType {

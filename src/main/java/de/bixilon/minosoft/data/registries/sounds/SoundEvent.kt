@@ -20,7 +20,7 @@ import de.bixilon.minosoft.data.registries.versions.Registries
 
 data class SoundEvent(
     override val resourceLocation: ResourceLocation,
-) : RegistryItem {
+) : RegistryItem() {
 
     companion object : ResourceLocationDeserializer<SoundEvent> {
         override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: JsonObject): SoundEvent {

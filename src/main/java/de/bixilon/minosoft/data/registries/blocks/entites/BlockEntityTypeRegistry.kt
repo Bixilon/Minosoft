@@ -13,27 +13,32 @@
 
 package de.bixilon.minosoft.data.registries.blocks.entites
 
+import com.google.gson.JsonObject
+import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.registry.Registry
+import de.bixilon.minosoft.data.registries.registry.ResourceLocationDeserializer
 import de.bixilon.minosoft.data.registries.versions.Registries
 
 class BlockEntityTypeRegistry(
     parentRegistry: BlockEntityTypeRegistry? = null,
 ) : Registry<BlockEntityType>(parentRegistry) {
-    private lateinit var blockTypeMap: MutableMap<Block, BlockEntityType>
+    private val blockTypeMap: MutableMap<Block, BlockEntityType> = mutableMapOf()
 
-    fun getByBlock(block: Block): BlockEntityType? {
+    operator fun get(block: Block): BlockEntityType? {
         val parentRegistry = super.parent as BlockEntityTypeRegistry?
-        return blockTypeMap[block] ?: parentRegistry?.getByBlock(block)
+        return blockTypeMap[block] ?: parentRegistry?.get(block)
     }
 
-    override fun postInit(registries: Registries) {
-        super.postInit(registries)
-        blockTypeMap = mutableMapOf()
+    override fun initialize(data: Map<ResourceLocation, JsonObject>?, registries: Registries?, deserializer: ResourceLocationDeserializer<BlockEntityType>, flattened: Boolean, metaType: MetaTypes, alternative: Registry<BlockEntityType>?): Registry<BlockEntityType> {
+       super.initialize(data, registries, deserializer, flattened, metaType, alternative)
+
         for ((_, type) in resourceLocationMap) {
             for (block in type.blocks) {
                 blockTypeMap[block] = type
             }
         }
+
+        return this
     }
 }

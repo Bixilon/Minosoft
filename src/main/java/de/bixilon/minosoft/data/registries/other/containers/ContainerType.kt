@@ -20,7 +20,7 @@ import de.bixilon.minosoft.data.registries.versions.Registries
 
 data class ContainerType(
     override val resourceLocation: ResourceLocation,
-) : RegistryItem {
+) : RegistryItem() {
 
     override fun toString(): String {
         return resourceLocation.toString()

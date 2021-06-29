@@ -20,7 +20,9 @@ import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.types.FluidFillable
 import de.bixilon.minosoft.data.registries.effects.DefaultStatusEffects
+import de.bixilon.minosoft.data.registries.effects.StatusEffect
 import de.bixilon.minosoft.data.registries.enchantment.DefaultEnchantments
+import de.bixilon.minosoft.data.registries.enchantment.Enchantment
 import de.bixilon.minosoft.data.registries.fluid.FlowableFluid
 import de.bixilon.minosoft.data.registries.fluid.Fluid
 import de.bixilon.minosoft.data.registries.versions.Registries
@@ -40,10 +42,16 @@ class WaterFluid(
     registries: Registries,
     data: JsonObject,
 ) : FlowableFluid(resourceLocation, registries, data) {
-    private val depthStriderEnchantment = registries.enchantmentRegistry[DefaultEnchantments.DEPTH_STRIDER]
-    private val dolphinsGraceStatusEffect = registries.statusEffectRegistry[DefaultStatusEffects.DOLPHINS_GRACE]
+    private val depthStriderEnchantment: Enchantment? = null
+    private val dolphinsGraceStatusEffect: StatusEffect? = null
     override val stillTexture: ResourceLocation = "minecraft:block/water_still".asResourceLocation()
     override val flowingTexture: ResourceLocation = "minecraft:block/water_flow".asResourceLocation()
+
+
+    init {
+        this::depthStriderEnchantment.inject(DefaultEnchantments.DEPTH_STRIDER)
+        this::dolphinsGraceStatusEffect.inject(DefaultStatusEffects.DOLPHINS_GRACE)
+    }
 
     override fun getVelocityMultiplier(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i): Double {
         return VELOCITY_MULTIPLIER

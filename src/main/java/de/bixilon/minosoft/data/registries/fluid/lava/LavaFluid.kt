@@ -21,6 +21,7 @@ import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.fluid.DefaultFluids
 import de.bixilon.minosoft.data.registries.fluid.FlowableFluid
 import de.bixilon.minosoft.data.registries.fluid.Fluid
+import de.bixilon.minosoft.data.registries.particle.ParticleType
 import de.bixilon.minosoft.data.registries.versions.Registries
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.lava.LavaParticle
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.horizontal
@@ -39,9 +40,13 @@ class LavaFluid(
     registries: Registries,
     data: JsonObject,
 ) : FlowableFluid(resourceLocation, registries, data) {
-    private val lavaParticleType = registries.particleTypeRegistry[LavaParticle]
+    private val lavaParticleType: ParticleType? = null
     override val stillTexture: ResourceLocation = "minecraft:block/lava_still".asResourceLocation()
     override val flowingTexture: ResourceLocation = "minecraft:block/lava_flow".asResourceLocation()
+
+    init {
+        this::lavaParticleType.inject(LavaParticle)
+    }
 
     override fun getVelocityMultiplier(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i): Double {
         return (connection.world.dimension?.ultraWarm == true).decide(0.007, 0.0023333333333333335)

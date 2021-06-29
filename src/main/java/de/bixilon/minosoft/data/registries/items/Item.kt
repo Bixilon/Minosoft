@@ -34,7 +34,7 @@ open class Item(
     override val resourceLocation: ResourceLocation,
     registries: Registries,
     data: JsonObject,
-) : RegistryItem, Translatable {
+) : RegistryItem(), Translatable {
     val rarity: Rarities = data["rarity"]?.asInt?.let { Rarities[it] } ?: Rarities.COMMON
     val maxStackSize: Int = data["max_stack_size"]?.asInt ?: 64
     val maxDamage: Int = data["max_damage"]?.asInt ?: 1

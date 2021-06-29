@@ -37,19 +37,18 @@ open class Fluid(
     override val resourceLocation: ResourceLocation,
     registries: Registries,
     data: JsonObject,
-) : RegistryItem {
-    private val bucketItemId = data["bucket"]?.asInt
-    val dripParticle: ParticleType? = data["drip_particle_type"]?.asInt?.let { registries.particleTypeRegistry[it] }
+) : RegistryItem() {
     open val stillTexture: ResourceLocation? = null
-    var bucketItem: Item? = null
-        private set
+    val dripParticle: ParticleType? = null
+    val bucketItem: Item? = null
+
+    init {
+        this::bucketItem.inject(data["bucket"])
+        this::dripParticle.inject(data["drip_particle_type"])
+    }
 
     override fun toString(): String {
         return resourceLocation.full
-    }
-
-    override fun postInit(registries: Registries) {
-        bucketItem = bucketItemId?.let { registries.itemRegistry[it] }
     }
 
     open fun matches(other: Fluid): Boolean {

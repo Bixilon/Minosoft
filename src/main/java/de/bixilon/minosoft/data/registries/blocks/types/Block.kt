@@ -44,7 +44,7 @@ open class Block(
     final override val resourceLocation: ResourceLocation,
     registries: Registries,
     data: JsonObject,
-) : RegistryItem {
+) : RegistryItem() {
     open val explosionResistance: Float = data["explosion_resistance"]?.asFloat ?: 0.0f
     open val tintColor: RGBColor? = data["tint_color"]?.asInt?.let { TintColorCalculator.getJsonColor(it) }
     open val randomOffsetType: RandomOffsetTypes? = data["offset_type"]?.asString?.let { RandomOffsetTypes[it] }
@@ -53,22 +53,22 @@ open class Block(
     open var blockEntityType: BlockEntityType? = null
         protected set
 
-    private val itemId: Int = data["item"]?.asInt ?: 0
-
     open lateinit var states: Set<BlockState>
         protected set
     open lateinit var defaultState: BlockState
         protected set
-    open lateinit var item: Item
-        protected set
+    val item: Item? = null
     open lateinit var properties: Map<BlockProperties, List<Any>>
     open val friction = data["friction"]?.asDouble ?: 0.6
     open val velocityMultiplier = data["velocity_multiplier"]?.asDouble ?: 1.0 // ToDo: They exist since ~1.15
     open val jumpVelocityMultiplier = data["jump_velocity_multiplier"]?.asDouble ?: 1.0
 
+    init {
+        this::item.inject(data["item"]?.asInt)
+    }
+
     override fun postInit(registries: Registries) {
-        item = registries.itemRegistry[itemId]
-        blockEntityType = registries.blockEntityTypeRegistry.getByBlock(this)
+        blockEntityType = registries.blockEntityTypeRegistry[this]
     }
 
     override fun toString(): String {

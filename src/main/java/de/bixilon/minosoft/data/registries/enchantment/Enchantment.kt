@@ -21,7 +21,7 @@ import de.bixilon.minosoft.data.registries.versions.Registries
 data class Enchantment(
     override val resourceLocation: ResourceLocation,
     // ToDo
-) : RegistryItem {
+) : RegistryItem() {
 
     override fun toString(): String {
         return resourceLocation.full

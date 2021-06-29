@@ -26,22 +26,9 @@ import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 
 data class BlockEntityType(
     override val resourceLocation: ResourceLocation,
-    private var blockIds: Set<Int>?,
+    val blocks: Set<Block>,
     val factory: BlockEntityFactory<out BlockEntity>,
-) : RegistryItem {
-    lateinit var blocks: Set<Block>
-        private set
-
-    override fun postInit(registries: Registries) {
-        val blocks: MutableSet<Block> = mutableSetOf()
-
-        for (blockId in blockIds!!) {
-            blocks += registries.blockRegistry[blockId]
-        }
-        this.blockIds = null
-
-        this.blocks = blocks.toSet()
-    }
+) : RegistryItem() {
 
     fun build(connection: PlayConnection): BlockEntity {
         return DefaultBlockEntityMetaDataFactory.buildBlockEntity(factory, connection)
@@ -49,17 +36,18 @@ data class BlockEntityType(
 
     companion object : ResourceLocationDeserializer<BlockEntityType> {
         override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: JsonObject): BlockEntityType? {
+            check(registries != null)
             val factory = DefaultBlockEntityMetaDataFactory[resourceLocation] ?: return null // ToDo
 
-            val blockIds: MutableSet<Int> = mutableSetOf()
+            val blocks: MutableSet<Block> = mutableSetOf()
 
-            for (blockId in data["blocks"].asJsonArray) {
-                blockIds += blockId.asInt
+            for (block in data["blocks"].asJsonArray) {
+                blocks += registries.blockRegistry[block]?:continue
             }
 
             return BlockEntityType(
                 resourceLocation = resourceLocation,
-                blockIds = blockIds,
+                blocks = blocks,
                 factory = factory,
             )
         }

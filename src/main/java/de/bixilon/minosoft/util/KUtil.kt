@@ -21,6 +21,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.collections.SynchronizedMap
 import de.bixilon.minosoft.util.enum.AliasableEnum
 import sun.misc.Unsafe
+import java.lang.reflect.Field
 import java.util.*
 import kotlin.Pair
 import kotlin.random.Random
@@ -208,4 +209,17 @@ object KUtil {
             else -> this.toString()
         })
     }
+
+
+    fun Field.setValue(instance: Any, value: Any) {
+        this.isAccessible = true
+
+        // ToDo
+        // if (Modifier.isFinal(this.modifiers)) {
+        //     FieldUtils.removeFinalModifier(this)
+        // }
+
+        this.set(instance, value)
+    }
+
 }

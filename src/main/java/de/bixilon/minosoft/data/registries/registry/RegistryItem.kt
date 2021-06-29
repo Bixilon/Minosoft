@@ -14,9 +14,42 @@
 package de.bixilon.minosoft.data.registries.registry
 
 import de.bixilon.minosoft.data.registries.ResourceLocationAble
+import de.bixilon.minosoft.data.registries.blocks.types.Block
+import de.bixilon.minosoft.data.registries.items.BlockItem
 import de.bixilon.minosoft.data.registries.versions.Registries
+import de.bixilon.minosoft.util.KUtil.setValue
+import kotlin.reflect.KProperty
+import kotlin.reflect.jvm.javaField
 
-interface RegistryItem : ResourceLocationAble {
+abstract class RegistryItem : ResourceLocationAble {
+    private val injects: MutableMap<KProperty<RegistryItem?>, List<Any>> = mutableMapOf()
 
-    fun postInit(registries: Registries) {}
+    fun KProperty<RegistryItem?>.inject(vararg keys: Any?) {
+        val keyList: MutableList<Any> = mutableListOf()
+        for (key in keys) {
+            key ?: continue
+            keyList += key
+        }
+        if (keyList.isEmpty()) {
+            return
+        }
+        injects[this] = keyList
+    }
+
+    fun inject(registries: Registries) {
+        for ((field, keys) in injects) {
+            val javaField = field.javaField ?: continue
+            var value: Any? = null
+            for (key in keys) {
+                val currentValue = registries[javaField.type as Class<out RegistryItem>]?.get(key) ?: continue
+                value = currentValue
+                break
+            }
+            value ?: continue
+
+            javaField.setValue(this, value)
+        }
+    }
+
+    open fun postInit(registries: Registries) { }
 }

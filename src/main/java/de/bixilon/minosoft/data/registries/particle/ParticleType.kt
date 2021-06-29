@@ -28,7 +28,7 @@ data class ParticleType(
     val textures: List<ResourceLocation>,
     val overrideLimiter: Boolean = false,
     val factory: ParticleFactory<out Particle>? = null,
-) : RegistryItem {
+) : RegistryItem() {
 
     override fun toString(): String {
         return resourceLocation.full

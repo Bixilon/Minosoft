@@ -33,7 +33,11 @@ open class BlockItem(
     registries: Registries,
     data: JsonObject,
 ) : Item(resourceLocation, registries, data) {
-    val block: Block = registries.blockRegistry[data["block"].asInt]
+    val block: Block? = null
+
+    init {
+        this::block.inject(data["block"])
+    }
 
     override fun use(connection: PlayConnection, raycastHit: RaycastHit, hands: Hands, itemStack: ItemStack): BlockUsages {
         if (!connection.player.gamemode.canBuild) {
@@ -56,7 +60,7 @@ open class BlockItem(
         }
 
 
-        val placeBlockState = block.getPlacementState(connection, raycastHit) ?: return BlockUsages.PASS
+        val placeBlockState = block!!.getPlacementState(connection, raycastHit) ?: return BlockUsages.PASS
 
 
         connection.world[placePosition] = placeBlockState

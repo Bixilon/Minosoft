@@ -31,7 +31,7 @@ data class StatusEffect(
     val color: RGBColor,
     val attributes: Map<ResourceLocation, StatusEffectAttribute>,
     val uuidAttributes: Map<UUID, StatusEffectAttribute>,
-) : RegistryItem, Translatable {
+) : RegistryItem(), Translatable {
 
     override fun toString(): String {
         return resourceLocation.full

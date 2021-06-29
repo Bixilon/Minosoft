@@ -37,7 +37,7 @@ data class Dimension(
     val ultraWarm: Boolean = false,
     val height: Int = 256,
     val supports3DBiomes: Boolean = true,
-) : RegistryItem {
+) : RegistryItem() {
     val lowestSection = if (minY < 0) {
         (minY + 1) / ProtocolDefinition.SECTION_HEIGHT_Y - 1
     } else {

@@ -21,7 +21,7 @@ import de.bixilon.minosoft.data.registries.versions.Registries
 data class PluginChannel(
     override val resourceLocation: ResourceLocation,
     val name: ResourceLocation,
-) : RegistryItem {
+) : RegistryItem() {
 
     override fun toString(): String {
         return resourceLocation.full

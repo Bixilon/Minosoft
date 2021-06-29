@@ -15,6 +15,7 @@ package de.bixilon.minosoft.data.registries.items
 
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.sounds.SoundEvent
 import de.bixilon.minosoft.data.registries.versions.Registries
 
 open class MusicDiscItem(
@@ -23,5 +24,9 @@ open class MusicDiscItem(
     data: JsonObject,
 ) : Item(resourceLocation, registries, data) {
     val analogOutput = data["analog_output"]?.asInt ?: 0
-    val sound = data["sound"]?.asInt?.let { registries.soundEventRegistry[it] }
+    val sound:SoundEvent? = null
+
+    init {
+        this::sound.inject(data["sound"])
+    }
 }

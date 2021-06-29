@@ -41,7 +41,7 @@ data class Biome(
     val grassColorOverride: RGBColor?,
     val descriptionId: String?,
     val grassColorModifier: GrassColorModifiers = GrassColorModifiers.NONE,
-) : RegistryItem {
+) : RegistryItem() {
     val temperatureColorMapCoordinate = getColorMapCoordinate(temperature)
     val downfallColorMapCoordinate = getColorMapCoordinate(downfall * temperature)
 

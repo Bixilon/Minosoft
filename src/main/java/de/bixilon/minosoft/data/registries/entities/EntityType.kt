@@ -38,7 +38,7 @@ data class EntityType(
     val fireImmune: Boolean,
     val attributes: Map<ResourceLocation, Double>,
     val factory: EntityFactory<out Entity>,
-) : RegistryItem, Translatable {
+) : RegistryItem(), Translatable {
 
     fun build(connection: PlayConnection, position: Vec3d, rotation: EntityRotation, entityMetaData: EntityMetaData?, versionId: Int): Entity? {
         return DefaultEntityFactories.buildEntity(factory, connection, position, rotation, entityMetaData, versionId)
