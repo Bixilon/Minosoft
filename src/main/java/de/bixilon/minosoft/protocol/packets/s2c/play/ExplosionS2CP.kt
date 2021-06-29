@@ -16,6 +16,8 @@ import de.bixilon.minosoft.modding.event.events.ExplosionEvent
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_17
+import de.bixilon.minosoft.util.KUtil.decide
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -25,7 +27,7 @@ import glm_.vec3.Vec3i
 class ExplosionS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     val position = buffer.readVec3f()
     val power = buffer.readFloat()
-    val explodedBlocks: List<Vec3> = buffer.readArray(buffer.readInt()) { Vec3(buffer.readByte(), buffer.readByte(), buffer.readByte()) }.toList()
+    val explodedBlocks: List<Vec3> = buffer.readArray((buffer.versionId < V_1_17).decide({ buffer.readInt() }, { buffer.readVarInt() })) { Vec3(buffer.readByte(), buffer.readByte(), buffer.readByte()) }.toList() // ToDo: Find out version
     val velocity = buffer.readVec3f()
 
     override fun check(connection: PlayConnection) {

@@ -144,6 +144,14 @@ object KUtil {
         }
     }
 
+    fun <T> Boolean.decide(`true`: () -> T, `false`: () -> T): T {
+        return if (this) {
+            `true`()
+        } else {
+            `false`()
+        }
+    }
+
     fun String.asUUID(): UUID {
         return Util.getUUIDFromString(this)
     }
