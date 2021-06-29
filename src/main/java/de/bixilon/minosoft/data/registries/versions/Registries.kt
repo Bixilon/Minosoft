@@ -163,17 +163,17 @@ class Registries {
 
         entityTypeRegistry.initialize(pixlyzerData["entities"]?.asJsonObject, this, EntityType)
 
+        motiveRegistry.initialize(pixlyzerData["motives"]?.asJsonObject, this, Motive, version.isFlattened())
         soundEventRegistry.initialize(pixlyzerData["sound_events"]?.asJsonObject, this, SoundEvent)
         particleTypeRegistry.initialize(pixlyzerData["particles"]?.asJsonObject, this, ParticleType)
         materialRegistry.initialize(pixlyzerData["materials"]?.asJsonObject, this, Material)
-        motiveRegistry.initialize(pixlyzerData["motives"]?.asJsonObject, this, Motive, version.isFlattened())
-        fluidRegistry.initialize(pixlyzerData["fluids"]?.asJsonObject, this, Fluid)
-        blockRegistry.initialize(pixlyzerData["blocks"]?.asJsonObject, this, Block, version.isFlattened(), Registry.MetaTypes.BITS_4)
-        itemRegistry.initialize(pixlyzerData["items"]?.asJsonObject, this, Item, version.isFlattened(), Registry.MetaTypes.BITS_16)
         enchantmentRegistry.initialize(pixlyzerData["enchantments"]?.asJsonObject, this, Enchantment)
         statusEffectRegistry.initialize(pixlyzerData["status_effects"]?.asJsonObject, this, StatusEffect)
         biomeRegistry.initialize(pixlyzerData["biomes"]?.asJsonObject, this, Biome)
         dimensionRegistry.initialize(pixlyzerData["dimensions"]?.asJsonObject, this, Dimension)
+        fluidRegistry.initialize(pixlyzerData["fluids"]?.asJsonObject, this, Fluid)
+        blockRegistry.initialize(pixlyzerData["blocks"]?.asJsonObject, this, Block, version.isFlattened(), Registry.MetaTypes.BITS_4)
+        itemRegistry.initialize(pixlyzerData["items"]?.asJsonObject, this, Item, version.isFlattened(), Registry.MetaTypes.BITS_16)
 
         villagerProfessionRegistry.initialize(pixlyzerData["villager_professions"]?.asJsonObject, this, VillagerProfession)
 
