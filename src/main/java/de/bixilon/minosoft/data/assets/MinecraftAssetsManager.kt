@@ -82,7 +82,6 @@ class MinecraftAssetsManager(
         }
 
         Log.log(LogMessageType.ASSETS, LogLevels.INFO) { "Generating client.jar assets for ${assetVersion.version}" }
-        Log.log(LogMessageType.ASSETS, LogLevels.INFO) { "Generating client.jar assets for ${assetVersion.version}" }
         // download jar
         downloadAsset(String.format(ProtocolDefinition.MOJANG_LAUNCHER_URL_PACKAGES, this.assetVersion.clientJarHash, "client.jar"), this.assetVersion.clientJarHash!!, true)
         val clientJarAssetsHashMap = HashMap<String, String>()

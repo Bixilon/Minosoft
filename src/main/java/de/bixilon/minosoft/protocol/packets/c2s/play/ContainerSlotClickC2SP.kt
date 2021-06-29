@@ -23,7 +23,7 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 
 class ContainerSlotClickC2SP(
     val containerId: Byte,
-    val todo1: Int,
+    val revision: Int,
     val slot: Int,
     val action: InventoryActions,
     val actionNumber: Int,
@@ -33,7 +33,7 @@ class ContainerSlotClickC2SP(
     override fun write(buffer: PlayOutByteBuffer) {
         buffer.writeByte(containerId)
         if (buffer.versionId >= V_1_17_1_PRE_1) {
-            buffer.writeVarInt(todo1)
+            buffer.writeVarInt(revision)
         }
         buffer.writeShort(slot)
         buffer.writeByte(action.button)
@@ -43,6 +43,6 @@ class ContainerSlotClickC2SP(
     }
 
     override fun log() {
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Container slot click (containerId=$containerId, todo1=$todo1, slot=$slot, action=$action, actionNumber=$actionNumber, clickedItem=$clickedItem)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Container slot click (containerId=$containerId, todo1=$revision, slot=$slot, action=$action, actionNumber=$actionNumber, clickedItem=$clickedItem)" }
     }
 }

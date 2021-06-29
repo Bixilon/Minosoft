@@ -23,7 +23,7 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 
 class ContainerItemSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     val containerId = buffer.readUnsignedByte()
-    val todo1: Int = if (buffer.versionId >= V_1_17_1_PRE_1) {
+    val revision: Int = if (buffer.versionId >= V_1_17_1_PRE_1) {
         buffer.readVarInt()
     } else {
         -1

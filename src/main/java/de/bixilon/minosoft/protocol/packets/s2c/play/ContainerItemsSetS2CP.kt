@@ -25,7 +25,7 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 
 class ContainerItemsSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     val containerId = buffer.readUnsignedByte()
-    val todo1: Int = if (buffer.versionId >= V_1_17_1_PRE_1) {
+    val revision: Int = if (buffer.versionId >= V_1_17_1_PRE_1) {
         buffer.readVarInt()
     } else {
         -1
@@ -35,7 +35,7 @@ class ContainerItemsSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     } else {
         buffer.readUnsignedShort()
     })
-    val todo2 = if (buffer.versionId >= V_1_17_1_PRE_1) {
+    val cursor = if (buffer.versionId >= V_1_17_1_PRE_1) {
         buffer.readItemStack()
     } else {
         null
