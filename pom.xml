@@ -196,7 +196,7 @@
         <exec.mainClass>de.bixilon.minosoft.Minosoft</exec.mainClass>
         <maven.compiler.source>14</maven.compiler.source>
         <maven.compiler.target>14</maven.compiler.target>
-        <javafx.version>17-ea+11</javafx.version>
+        <javafx.version>17-ea+13</javafx.version>
         <kotlin.version>1.5.10</kotlin.version>
         <lwjgl.version>3.2.3</lwjgl.version>
     </properties>
@@ -224,7 +224,7 @@
         <dependency>
             <groupId>dnsjava</groupId>
             <artifactId>dnsjava</artifactId>
-            <version>3.3.1</version>
+            <version>3.4.0</version>
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
@@ -333,12 +333,12 @@
         <dependency>
             <groupId>com.github.kotlin-graphics</groupId>
             <artifactId>glm</artifactId>
-            <version>0.9.9.1-build-3</version>
+            <version>ed50534307e75b956d637647ead4f7d89bb8db19</version>
         </dependency>
         <dependency>
             <groupId>com.github.oshi</groupId>
             <artifactId>oshi-core</artifactId>
-            <version>5.7.4</version>
+            <version>5.7.5</version>
         </dependency>
         <dependency>
             <groupId>com.squareup.moshi</groupId>
