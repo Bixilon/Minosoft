@@ -333,7 +333,7 @@
         <dependency>
             <groupId>com.github.kotlin-graphics</groupId>
             <artifactId>glm</artifactId>
-            <version>ed50534307e75b956d637647ead4f7d89bb8db19</version>
+            <version>0.9.9.1-build-3</version>
         </dependency>
         <dependency>
             <groupId>com.github.oshi</groupId>
