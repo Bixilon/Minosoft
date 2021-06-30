@@ -19,10 +19,10 @@ import de.bixilon.minosoft.data.registries.particle.data.BlockParticleData
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.data.text.RGBColor.Companion.asGray
-import de.bixilon.minosoft.gui.rendering.block.renderable.BlockRenderer
-import de.bixilon.minosoft.gui.rendering.block.renderable.FluidRenderer
-import de.bixilon.minosoft.gui.rendering.block.renderable.MultipartRenderer
 import de.bixilon.minosoft.gui.rendering.block.renderable.WorldEntryRenderer
+import de.bixilon.minosoft.gui.rendering.block.renderable.block.BlockRenderer
+import de.bixilon.minosoft.gui.rendering.block.renderable.block.MultipartRenderer
+import de.bixilon.minosoft.gui.rendering.block.renderable.fluid.FluidRenderer
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.advanced.AdvancedTextureParticle
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.blockPosition

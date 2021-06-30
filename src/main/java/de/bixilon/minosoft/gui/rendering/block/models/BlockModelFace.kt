@@ -28,7 +28,15 @@ class BlockModelFace {
     val textureName: String?
     val cullFace: Directions?
     val tint: Boolean
-    private val positions: MutableList<Vec2>
+    val positions: List<Vec2>
+
+
+    constructor(textureName: String?, cullFace: Directions?, tint: Boolean, positions: List<Vec2>) {
+        this.textureName = textureName
+        this.cullFace = cullFace
+        this.tint = tint
+        this.positions = positions
+    }
 
     constructor(data: JsonObject, from: Vec3, to: Vec3, direction: Directions) {
         tint = data.has("tintindex")
@@ -37,12 +45,13 @@ class BlockModelFace {
             if (it == "bottom") {
                 Directions.DOWN
             } else {
-                Directions.valueOf(it.uppercase(Locale.getDefault()))
+                Directions[it]
             }
         }
-        positions = calculateTexturePositions(data, from, to, direction)
+        val positions = calculateTexturePositions(data, from, to, direction)
         val rotation = data["rotation"]?.asInt?.div(90) ?: 0
         Collections.rotate(positions, rotation)
+        this.positions = positions.toList()
     }
 
     private fun calculateTexturePositions(data: JsonObject?, from: Vec3, to: Vec3, direction: Directions): MutableList<Vec2> {
@@ -64,21 +73,11 @@ class BlockModelFace {
         }
     }
 
-    constructor(parent: BlockModelFace) {
-        textureName = parent.textureName
-        cullFace = parent.cullFace
-        tint = parent.tint
-        positions = mutableListOf()
-        for (position in parent.positions) {
-            positions.add(Vec2(position))
-        }
-    }
-
-    constructor(from: Vec3, to: Vec3, direction: Directions) {
-        textureName = null
-        cullFace = null
-        tint = false
-        positions = calculateTexturePositions(null, from, to, direction)
+    constructor(other: BlockModelFace) {
+        textureName = other.textureName
+        cullFace = other.cullFace
+        tint = other.tint
+        this.positions = other.positions
     }
 
     constructor(vertexPositions: List<Vec3>, direction: Directions) {
@@ -86,10 +85,11 @@ class BlockModelFace {
         cullFace = null
         tint = false
         val template = BlockModelElement.FACE_POSITION_MAP_TEMPLATE[direction.ordinal]
-        positions = mutableListOf()
+        val positions: MutableList<Vec2> = mutableListOf()
         for (templatePosition in template) {
-            positions.add(calculateTexturePosition(vertexPositions[templatePosition], direction))
+            positions += calculateTexturePosition(vertexPositions[templatePosition], direction)
         }
+        this.positions = positions.toList()
     }
 
     private fun calculateTexturePosition(position: Vec3, direction: Directions): Vec2 {
@@ -102,29 +102,33 @@ class BlockModelFace {
 
     fun getTexturePositionArray(direction: Directions): Array<Vec2?> {
         val template = textureTemplate[direction.ordinal]
-        val result = arrayOfNulls<Vec2>(template.size)
+        val ret: MutableList<Vec2> = mutableListOf()
         for (i in template.indices) {
-            result[i] = positions[template[i]]
+            ret += positions[template[i]]
         }
-        return result
+        return ret.toTypedArray()
     }
 
-    fun rotate(angle: Float) {
+    fun rotate(angle: Float): BlockModelFace {
         if (angle == 0.0f) {
-            return
+            return this
         }
         val sin = angle.sin
         val cos = angle.cos
+        val positions = this.positions.toMutableList()
         for ((i, position) in positions.withIndex()) {
             val offset = position - TEXTURE_MIDDLE
             positions[i] = VecUtil.getRotatedValues(offset.x, offset.y, sin, cos, false) + TEXTURE_MIDDLE
         }
+        return BlockModelFace(textureName, cullFace, tint, positions.toList())
     }
 
-    fun scale(scaleFactor: Double) {
+    fun scale(scaleFactor: Double): BlockModelFace {
+        val positions = positions.toMutableList()
         for ((i, position) in positions.withIndex()) {
             positions[i] = position * scaleFactor
         }
+        return BlockModelFace(textureName, cullFace, tint, positions.toList())
     }
 
     companion object {

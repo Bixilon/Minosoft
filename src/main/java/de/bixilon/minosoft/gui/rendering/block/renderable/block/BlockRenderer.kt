@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger, Lukas Eisenhauer
+ * Copyright (C) 2021 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.block.renderable
+package de.bixilon.minosoft.gui.rendering.block.renderable.block
 
 import com.google.common.collect.HashBiMap
 import com.google.gson.JsonObject
@@ -22,14 +22,16 @@ import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.block.models.BlockModel
 import de.bixilon.minosoft.gui.rendering.block.models.FaceSize
+import de.bixilon.minosoft.gui.rendering.block.renderable.BlockLikeRenderContext
+import de.bixilon.minosoft.gui.rendering.block.renderable.WorldEntryRenderer
 import de.bixilon.minosoft.gui.rendering.textures.Texture
 import de.bixilon.minosoft.gui.rendering.textures.TextureTransparencies
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.rad
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3
-import glm_.glm
 import glm_.vec3.Vec3
 
-class BlockRenderer(data: JsonObject, parent: BlockModel) : WorldEntryRenderer {
+class BlockRenderer(data: JsonObject, model: BlockModel) : WorldEntryRenderer {
     private val cullFaces: Array<Directions?> = arrayOfNulls(Directions.VALUES.size)
     val textures: MutableMap<String, String> = mutableMapOf()
     private val elements: MutableSet<ElementRenderer> = mutableSetOf()
@@ -39,19 +41,16 @@ class BlockRenderer(data: JsonObject, parent: BlockModel) : WorldEntryRenderer {
     val directionMapping: HashBiMap<Directions, Directions> = HashBiMap.create()
 
     init {
-        val rotation = glm.radians(data.toVec3())
+        val rotation = data.toVec3().rad
         createDirectionMapping(rotation)
-        val newElements = ElementRenderer.createElements(data, parent, rotation, directionMapping)
+        val newElements = ElementRenderer.createElements(data, model, rotation, directionMapping)
         this.elements.addAll(newElements.reversed()) // reverse drawing order (for e.g. grass block side overlays
-        textures.putAll(parent.textures)
+        textures.putAll(model.textures)
     }
 
     private fun createDirectionMapping(rotation: Vec3) {
         for (direction in Directions.VALUES) {
-            try {
-                directionMapping[direction] = ElementRenderer.getRotatedDirection(rotation, direction)
-            } catch (_: IllegalArgumentException) {
-            }
+            directionMapping[direction] = ElementRenderer.getRotatedDirection(rotation, direction)
         }
     }
 

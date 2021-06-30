@@ -11,11 +11,13 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.block.renderable
+package de.bixilon.minosoft.gui.rendering.block.renderable.block
 
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.block.models.FaceSize
+import de.bixilon.minosoft.gui.rendering.block.renderable.BlockLikeRenderContext
+import de.bixilon.minosoft.gui.rendering.block.renderable.WorldEntryRenderer
 import de.bixilon.minosoft.gui.rendering.textures.Texture
 
 @Deprecated(message = "Will be replaced with a normal BlockRenderer and multiple renderers")

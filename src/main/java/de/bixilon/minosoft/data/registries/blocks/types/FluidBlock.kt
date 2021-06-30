@@ -20,8 +20,8 @@ import de.bixilon.minosoft.data.registries.VoxelShape
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.fluid.Fluid
 import de.bixilon.minosoft.data.registries.versions.Registries
-import de.bixilon.minosoft.gui.rendering.block.renderable.FluidRenderer
 import de.bixilon.minosoft.gui.rendering.block.renderable.WorldEntryRenderer
+import de.bixilon.minosoft.gui.rendering.block.renderable.fluid.FluidRenderer
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import glm_.vec3.Vec3

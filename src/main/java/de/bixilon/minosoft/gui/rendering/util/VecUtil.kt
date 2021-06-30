@@ -470,4 +470,7 @@ object VecUtil {
     operator fun AbstractDirection.plus(direction: AbstractDirection): Vec3i {
         return this.vector + direction.vector
     }
+
+    val Vec3.rad: Vec3
+        get() = glm.radians(this)
 }

@@ -14,56 +14,43 @@
 package de.bixilon.minosoft.gui.rendering.block.models
 
 import com.google.gson.JsonObject
-import glm_.glm
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.rad
 import glm_.vec3.Vec3
 
-open class BlockModel(val parent: BlockModel? = null, json: JsonObject) {
-    val textures: MutableMap<String, String> = parent?.textures?.toMutableMap() ?: mutableMapOf()
-    var elements: MutableList<BlockModelElement> = parent?.elements?.toMutableList() ?: mutableListOf()
-    var rotation: Vec3
-    private var uvLock = false // ToDo
-    private var rescale = false // ToDo
+open class BlockModel(
+    val parent: BlockModel? = null,
+    data: JsonObject,
+) {
+    val textures: Map<String, String>
+    val elements: List<BlockModelElement>
+    val rotation: Vec3 = Vec3(data["x"]?.asFloat ?: parent?.rotation?.x ?: 0.0f, data["y"]?.asFloat ?: parent?.rotation?.y ?: 0.0f, data["z"]?.asFloat ?: parent?.rotation?.z ?: 0.0f).rad
+    val uvLock: Boolean = data["uvlock"]?.asBoolean ?: parent?.uvLock ?: false
+    val rescale: Boolean = data["rescale"]?.asBoolean ?: parent?.rescale ?: false
+    val ambientOcclusion: Boolean = data["ambientocclusion"]?.asBoolean ?: parent?.ambientOcclusion ?: true
 
     init {
-        json["textures"]?.asJsonObject?.let {
+        textures = data["textures"]?.asJsonObject?.let {
+            val textures: MutableMap<String, String> = parent?.textures?.toMutableMap() ?: mutableMapOf()
             for ((type, value) in it.entrySet()) {
                 textures[type] = value.asString
             }
-        }
-        for ((type, texture) in textures) {
-            getTextureByType(texture).let {
-                textures[type] = it
+            for ((type, texture) in textures) {
+                textures[type] = getTextureByType(textures, texture)
             }
-        }
-        json["elements"]?.let { it ->
-            elements.clear()
-            for (element in it.asJsonArray) {
-                val blockModelElement = BlockModelElement(element.asJsonObject)
-                elements.add(blockModelElement)
+            textures.toMap()
+        } ?: parent?.textures ?: mapOf()
+
+
+        elements = data["elements"]?.asJsonArray?.let {
+            val elements: MutableList<BlockModelElement> = mutableListOf()
+            for (element in it) {
+                elements += BlockModelElement(element.asJsonObject)
             }
-        }
-        var rotateX = parent?.rotation?.x ?: 0.0f
-        var rotateY = parent?.rotation?.y ?: 0.0f
-        var rotateZ = parent?.rotation?.z ?: 0.0f
-        json["x"]?.let {
-            rotateX = it.asFloat
-        }
-        json["y"]?.let {
-            rotateY = it.asFloat
-        }
-        json["z"]?.let {
-            rotateZ = it.asFloat
-        }
-        json["uvlock"]?.let {
-            uvLock = it.asBoolean
-        }
-        json["rescale"]?.let {
-            rescale = it.asBoolean
-        }
-        rotation = glm.radians(Vec3(rotateX, rotateY, rotateZ))
+            elements.toList()
+        } ?: parent?.elements ?: listOf()
     }
 
-    private fun getTextureByType(type: String): String {
+    private fun getTextureByType(textures: Map<String, String>, type: String): String {
         var currentValue: String = type
         while (currentValue.startsWith("#")) {
             textures[currentValue.removePrefix("#")].let {

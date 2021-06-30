@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger, Lukas Eisenhauer
+ * Copyright (C) 2021 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.block.renderable
+package de.bixilon.minosoft.gui.rendering.block.renderable.block
 
 import com.google.common.collect.HashBiMap
 import com.google.gson.JsonObject
@@ -24,6 +24,7 @@ import de.bixilon.minosoft.gui.rendering.block.models.BlockModel
 import de.bixilon.minosoft.gui.rendering.block.models.BlockModelElement
 import de.bixilon.minosoft.gui.rendering.block.models.BlockModelFace
 import de.bixilon.minosoft.gui.rendering.block.models.FaceSize
+import de.bixilon.minosoft.gui.rendering.block.renderable.BlockLikeRenderContext
 import de.bixilon.minosoft.gui.rendering.textures.Texture
 import de.bixilon.minosoft.gui.rendering.textures.TextureTransparencies
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
@@ -33,35 +34,38 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3
 import glm_.vec3.Vec3
 
 class ElementRenderer(
-    parent: BlockModelElement,
+    val model: BlockModel,
+    val element: BlockModelElement,
     val rotation: Vec3,
-    uvLock: Boolean,
-    rescale: Boolean,
+    data: JsonObject,
     private val directionMapping: HashBiMap<Directions, Directions>,
 ) {
     val faceBorderSize: Array<FaceSize?> = arrayOfNulls(Directions.VALUES.size)
-    private val faces: MutableMap<Directions, BlockModelFace> = mutableMapOf()
-    private var transformedPositions: Array<Vec3> = parent.transformedPositions.clone()
-    private val from = parent.from
-    private val to = parent.to
+    private val faces: Map<Directions, BlockModelFace>
+    private var transformedPositions: Array<Vec3> = element.transformedPositions.clone()
 
     init {
-        rotatePositionsAxes(transformedPositions, rotation, rescale)
+        rotatePositionsAxes(transformedPositions, rotation, data["rescale"]?.asBoolean ?: model.rescale)
+
+        val faces: MutableMap<Directions, BlockModelFace> = mutableMapOf()
         for (direction in Directions.VALUES) {
-            direction.getFaceBorderSizes(from, to)?.let {
+
+            direction.getFaceBorderSizes(element.from, element.to)?.let {
                 faceBorderSize[direction.ordinal] = it
             }
-            parent.faces[direction]?.let {
+
+            element.faces[direction]?.let {
                 faces[direction] = BlockModelFace(it)
             }
         }
-        if (uvLock) {
+        if (data["uvlock"]?.asBoolean ?: model.uvLock) {
             for (direction in Directions.VALUES) {
-                val axis = Axes.byDirection(direction)
+                val axis = Axes[direction]
                 val angle = axis.choose(rotation) * axis.choose(direction.vector)
-                faces[direction]?.rotate(-angle)
+                faces[direction] = faces[direction]?.rotate(-angle) ?: continue
             }
         }
+        this.faces = faces.toMap()
     }
 
     fun render(tintColor: RGBColor?, textureMapping: MutableMap<String, Texture>, direction: Directions, context: BlockLikeRenderContext) {
@@ -117,24 +121,24 @@ class ElementRenderer(
             0 to 1,
         )
 
-        fun createElements(state: JsonObject, parent: BlockModel, rotation: Vec3, directionMapping: HashBiMap<Directions, Directions>): MutableList<ElementRenderer> {
-            val uvLock = state["uvlock"]?.asBoolean ?: false
-            val rescale = state["rescale"]?.asBoolean ?: false
-            val parentElements = parent.elements
+        fun createElements(data: JsonObject, model: BlockModel, rotation: Vec3, directionMapping: HashBiMap<Directions, Directions>): List<ElementRenderer> {
             val result: MutableList<ElementRenderer> = mutableListOf()
-            for (parentElement in parentElements) {
-                result.add(ElementRenderer(parentElement, rotation, uvLock, rescale, directionMapping))
+            for (element in model.elements) {
+                result += ElementRenderer(model, element, rotation, data, directionMapping)
             }
-            return result
+            return result.toList()
         }
 
         fun getRotatedDirection(rotation: Vec3, direction: Directions): Directions {
             if (rotation == Vec3.EMPTY) {
                 return direction
             }
-            var rotatedDirectionVector = direction.vectorf.rotate(-rotation.x, Axes.X)
-            rotatedDirectionVector = rotatedDirectionVector.rotate(rotation.y, Axes.Y)
-            return Directions.byDirection(rotatedDirectionVector.rotate(-rotation.z, Axes.Z))
+
+            return Directions.byDirection(
+                direction.vectorf.rotate(-rotation.x, Axes.X)
+                    .rotate(rotation.y, Axes.Y)
+                    .rotate(-rotation.z, Axes.Z)
+            )
         }
 
         fun rotatePositionsAxes(positions: Array<Vec3>, angles: Vec3, rescale: Boolean) {

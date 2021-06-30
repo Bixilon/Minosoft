@@ -21,37 +21,37 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.rotate
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3
 import glm_.func.rad
 import glm_.vec3.Vec3
-import java.util.*
 
-open class BlockModelElement(data: JsonObject) {
-    val faces: MutableMap<Directions, BlockModelFace> = mutableMapOf()
-    var transformedPositions: Array<Vec3>
-    val from: Vec3 = data["from"]?.asJsonArray?.toVec3() ?: Vec3.EMPTY
-    val to: Vec3 = data["to"]?.asJsonArray?.toVec3() ?: Vec3(BLOCK_RESOLUTION)
+open class BlockModelElement(
+    data: JsonObject,
+) {
+    val from: Vec3 = data["from"]?.toVec3() ?: Vec3.EMPTY
+    val to: Vec3 = data["to"]?.toVec3() ?: Vec3(BLOCK_RESOLUTION)
     val shade: Boolean = data["shade"]?.asBoolean ?: true
+    val faces: MutableMap<Directions, BlockModelFace> = mutableMapOf()
+    val transformedPositions: Array<Vec3> = arrayOf(
+        Vec3(from.x, from.y, from.z),
+        Vec3(to.x, from.y, from.z),
+        Vec3(from.x, from.y, to.z),
+        Vec3(to.x, from.y, to.z),
+        Vec3(from.x, to.y, from.z),
+        Vec3(to.x, to.y, from.z),
+        Vec3(from.x, to.y, to.z),
+        Vec3(to.x, to.y, to.z),
+    )
 
     init {
-        transformedPositions = arrayOf(
-            Vec3(from),
-            Vec3(to.x, from.y, from.z),
-            Vec3(from.x, from.y, to.z),
-            Vec3(to.x, from.y, to.z),
-            Vec3(from.x, to.y, from.z),
-            Vec3(to.x, to.y, from.z),
-            Vec3(from.x, to.y, to.z),
-            Vec3(to),
-        )
 
         data["rotation"]?.asJsonObject?.let {
-            val axis = Axes.valueOf(it["axis"].asString.uppercase(Locale.getDefault()))
+            val axis = Axes[it["axis"].asString]
             val angle = it["angle"].asFloat.rad
             val rescale = it["rescale"]?.asBoolean ?: false
-            rotatePositions(transformedPositions, axis, angle, it["origin"].asJsonArray.toVec3(), rescale)
+            rotatePositions(transformedPositions, axis, angle, it["origin"].toVec3(), rescale)
         }
 
         data["faces"]?.asJsonObject?.let {
             for ((directionName, json) in it.entrySet()) {
-                val direction = Directions.valueOf(directionName.uppercase(Locale.getDefault()))
+                val direction = Directions[directionName]
                 faces[direction] = BlockModelFace(json.asJsonObject, from, to, direction)
             }
         }
@@ -88,9 +88,11 @@ open class BlockModelElement(data: JsonObject) {
         }
 
         fun transformPosition(position: Vec3): Vec3 {
+
             fun positionToFloat(uv: Float): Float {
                 return (uv - (BLOCK_RESOLUTION / 2)) / BLOCK_RESOLUTION
             }
+
             return Vec3(positionToFloat(position.x), positionToFloat(position.y), positionToFloat(position.z))
         }
     }

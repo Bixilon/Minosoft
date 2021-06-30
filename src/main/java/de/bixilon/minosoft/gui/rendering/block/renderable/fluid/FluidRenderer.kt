@@ -1,4 +1,17 @@
-package de.bixilon.minosoft.gui.rendering.block.renderable
+/*
+ * Minosoft
+ * Copyright (C) 2021 Moritz Zwerger
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *
+ * This software is not affiliated with Mojang AB, the original developer of Minecraft.
+ */
+
+package de.bixilon.minosoft.gui.rendering.block.renderable.fluid
 
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -15,6 +28,9 @@ import de.bixilon.minosoft.gui.rendering.block.mesh.ChunkSectionMeshCollection
 import de.bixilon.minosoft.gui.rendering.block.models.BlockModelElement
 import de.bixilon.minosoft.gui.rendering.block.models.BlockModelFace
 import de.bixilon.minosoft.gui.rendering.block.models.FaceSize
+import de.bixilon.minosoft.gui.rendering.block.renderable.BlockLikeRenderContext
+import de.bixilon.minosoft.gui.rendering.block.renderable.WorldEntryRenderer
+import de.bixilon.minosoft.gui.rendering.block.renderable.block.ElementRenderer
 import de.bixilon.minosoft.gui.rendering.textures.Texture
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.util.KUtil.nullCast
@@ -49,13 +65,13 @@ class FluidRenderer(
 
         val positions = calculatePositions(heights)
         for (direction in Directions.VALUES) {
-            val face = BlockModelFace(positions, direction)
+            var face = BlockModelFace(positions, direction)
             if (isFlowing || Directions.SIDES.contains(direction)) {
-                face.scale(0.5)
+                face = face.scale(0.5)
                 texture = flowingTexture ?: return
                 if (!Directions.SIDES.contains(direction)) {
                     val angle = getRotationAngle(heights)
-                    face.rotate(angle)
+                    face = face.rotate(angle)
                 }
             } else {
                 texture = stillTexture ?: return

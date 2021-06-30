@@ -39,7 +39,7 @@ enum class Directions(
     override val vectorf = Vec3(vector)
     override val vectord = Vec3d(vector)
 
-    val axis: Axes get() = Axes.byDirection(this)
+    val axis: Axes get() = Axes.get(this)
 
     lateinit var inverted: Directions
         private set

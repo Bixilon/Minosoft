@@ -27,9 +27,9 @@ import de.bixilon.minosoft.data.registries.versions.Registries
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.TintColorCalculator
 import de.bixilon.minosoft.gui.rendering.block.models.BlockModel
-import de.bixilon.minosoft.gui.rendering.block.renderable.BlockRenderer
-import de.bixilon.minosoft.gui.rendering.block.renderable.MultipartRenderer
 import de.bixilon.minosoft.gui.rendering.block.renderable.WorldEntryRenderer
+import de.bixilon.minosoft.gui.rendering.block.renderable.block.BlockRenderer
+import de.bixilon.minosoft.gui.rendering.block.renderable.block.MultipartRenderer
 import glm_.vec3.Vec3i
 import java.util.*
 import kotlin.math.abs

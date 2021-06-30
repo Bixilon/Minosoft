@@ -36,7 +36,7 @@ enum class Axes {
         override val VALUES: Array<Axes> = values()
         override val NAME_MAP: Map<String, Axes> = KUtil.getEnumValues(VALUES)
 
-        fun byDirection(direction: Directions): Axes {
+        operator fun get(direction: Directions): Axes {
             return when (direction) {
                 Directions.EAST, Directions.WEST -> X
                 Directions.UP, Directions.DOWN -> Y
