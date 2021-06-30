@@ -28,6 +28,6 @@ class FakeDirection(override val vector: Vec3i) : AbstractDirection {
         val NORTH_WEST = FakeDirection(Directions.NORTH + Directions.WEST)
         val NORTH_EAST = FakeDirection(Directions.NORTH + Directions.EAST)
         val SOUTH_WEST = FakeDirection(Directions.SOUTH + Directions.WEST)
-        val SOUTH_EAST = FakeDirection(Directions.SOUTH + Directions.WEST)
+        val SOUTH_EAST = FakeDirection(Directions.SOUTH + Directions.EAST)
     }
 }
