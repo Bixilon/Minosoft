@@ -29,6 +29,7 @@ import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.glfw.GLFWErrorCallback
 import org.lwjgl.system.MemoryUtil
 
+
 class GLFWWindow(
     private val eventMaster: EventMaster,
 ) : BaseWindow {
@@ -43,7 +44,7 @@ class GLFWWindow(
             field = value
         }
 
-    private var _size = DEFAULT_WINDOW_SIZE
+    private var _size = Vec2i(DEFAULT_WINDOW_SIZE)
 
     override var size: Vec2i
         get() = _size
@@ -132,12 +133,13 @@ class GLFWWindow(
             throw RuntimeException("Failed to create the GLFW window")
         }
 
+        glfwMakeContextCurrent(window)
+
+        super.init()
 
         val videoMode = glfwGetVideoMode(glfwGetPrimaryMonitor())!!
 
         glfwSetWindowPos(window, (videoMode.width() - size.x) / 2, (videoMode.height() - size.y) / 2)
-
-        glfwMakeContextCurrent(window)
 
 
         glfwSetKeyCallback(window, this::keyInput)
@@ -151,8 +153,6 @@ class GLFWWindow(
         glfwSetWindowCloseCallback(window, this::onClose)
         glfwSetWindowFocusCallback(window, this::onFocusChange)
         glfwSetWindowIconifyCallback(window, this::onIconify)
-
-        super.init()
     }
 
     override fun destroy() {
