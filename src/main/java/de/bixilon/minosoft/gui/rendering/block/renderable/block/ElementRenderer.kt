@@ -17,6 +17,7 @@ import com.google.common.collect.HashBiMap
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.Directions
+import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.block.mesh.ChunkSectionArrayMesh
 import de.bixilon.minosoft.gui.rendering.block.mesh.ChunkSectionMeshCollection
@@ -76,6 +77,23 @@ class ElementRenderer(
 
         val texture = textureMapping[face.textureName] ?: TODO("Unknown texture used ${face.textureName}") // ToDo: can be replaced with RenderConstants.DEBUG_TEXTURE_ID?
 
+        val shadeLevel = when {
+            !element.shade -> 1.0f
+            direction == Directions.UP -> 1.0f
+            direction == Directions.DOWN -> 0.5f
+            direction == Directions.EAST || direction == Directions.WEST -> 0.6f
+            direction == Directions.NORTH || direction == Directions.SOUTH -> 0.8f
+            else -> TODO()
+        }
+
+        var finalColor = if (face.tint && tintColor != null) {
+            tintColor
+        } else {
+            ChatColors.WHITE
+        }
+
+        finalColor = finalColor.with(finalColor.floatRed * shadeLevel, finalColor.floatGreen * shadeLevel, finalColor.floatBlue * shadeLevel)
+
         val lightLevel = context.lightAccessor.getLightLevel(context.blockPosition + face.cullFace?.let { directionMapping[it] }) // ToDo: rotate cullface
 
         val drawPositions = mutableListOf<Vec3>()
@@ -89,15 +107,12 @@ class ElementRenderer(
         for ((drawPositionIndex, texturePositionIndex) in DRAW_ODER) {
             val input = drawPositions[drawPositionIndex]
             val output = context.blockPosition.toVec3 + input + DRAW_OFFSET + context.offset
+
             mesh.addVertex(
                 position = output,
                 textureCoordinates = texturePositions[texturePositionIndex]!!,
                 texture = texture,
-                tintColor = if (face.tint) {
-                    tintColor
-                } else {
-                    null
-                },
+                tintColor = finalColor,
                 lightLevel = lightLevel,
             )
         }
