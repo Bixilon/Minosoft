@@ -68,7 +68,7 @@ class Camera(
     var entityTarget: EntityRaycastHit? = null
         private set
 
-    val fov: Double
+    private val fov: Double
         get() {
             val fov = Minosoft.config.config.game.camera.fov / (zoom + 1.0)
 
@@ -160,6 +160,7 @@ class Camera(
     }
 
     private fun onPositionChange() {
+        setRotation(entity.rotation.headYaw, entity.rotation.pitch)
         recalculateViewProjectionMatrix()
         frustum.recalculate()
         connection.fireEvent(FrustumChangeEvent(renderWindow, frustum))
