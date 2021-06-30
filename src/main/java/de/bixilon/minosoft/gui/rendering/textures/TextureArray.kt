@@ -18,6 +18,7 @@ import de.bixilon.minosoft.data.assets.AssetsManager
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.shader.Shader
+import de.bixilon.minosoft.gui.rendering.system.opengl.IntUniformBuffer
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -105,7 +106,7 @@ class TextureArray(val allTextures: MutableMap<ResourceLocation, Texture>) {
         }
         Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Loaded ${allTextures.size} textures containing ${animator.animatedTextures.size} animated ones, split into $totalLayers layers!" }
 
-        animator.initBuffer()
+        animator.init()
     }
 
     private fun loadResolution(resolutionId: Int) {
@@ -255,25 +256,15 @@ class TextureArray(val allTextures: MutableMap<ResourceLocation, Texture>) {
 
     inner class Animator {
         val animatedTextures: MutableList<TextureAnimation> = mutableListOf()
-        private var animatedBufferDataId = -1
-
+        private val uniformBuffer = IntUniformBuffer()
         var lastRun = 0L
-        private lateinit var animatedData: IntArray
 
         var initialized = false
             private set
 
-        fun initBuffer() {
-            animatedData = IntArray(animatedTextures.size * INTS_PER_ANIMATED_TEXTURE) // 4 data ints per entry
-
-
-            animatedBufferDataId = glGenBuffers()
-            glBindBuffer(GL_UNIFORM_BUFFER, animatedBufferDataId)
-            glBufferData(GL_UNIFORM_BUFFER, animatedData, GL_DYNAMIC_DRAW)
-            glBindBuffer(GL_UNIFORM_BUFFER, 0)
-            glBindBufferRange(GL_UNIFORM_BUFFER, 0, animatedBufferDataId, 0, animatedData.size.toLong())
-
-
+        fun init() {
+            uniformBuffer.data = IntArray(animatedTextures.size * INTS_PER_ANIMATED_TEXTURE)
+            uniformBuffer.init()
             initialized = true
         }
 
@@ -311,27 +302,18 @@ class TextureArray(val allTextures: MutableMap<ResourceLocation, Texture>) {
 
                 val arrayOffset = textureAnimation.animationProperties.animationId * INTS_PER_ANIMATED_TEXTURE
 
-                animatedData[arrayOffset] = baseAnimatedData + currentFrame.index
-                animatedData[arrayOffset + 1] = baseAnimatedData + nextFrame.index
-                animatedData[arrayOffset + 2] = interpolation.toInt()
+                uniformBuffer.data[arrayOffset] = baseAnimatedData + currentFrame.index
+                uniformBuffer.data[arrayOffset + 1] = baseAnimatedData + nextFrame.index
+                uniformBuffer.data[arrayOffset + 2] = interpolation.toInt()
             }
 
 
-            uploadAnimatedStorageBuffer()
+            uniformBuffer.upload()
         }
 
 
         fun use(shader: Shader, bufferName: String = "uAnimationBuffer") {
-            shader.use()
-
-            shader.setUniformBuffer(bufferName, 0)
-            glBindBufferBase(GL_UNIFORM_BUFFER, 0, animatedBufferDataId)
-        }
-
-        private fun uploadAnimatedStorageBuffer() {
-            glBindBuffer(GL_UNIFORM_BUFFER, animatedBufferDataId)
-            glBufferSubData(GL_UNIFORM_BUFFER, 0, animatedData)
-            glBindBuffer(GL_UNIFORM_BUFFER, 0)
+            uniformBuffer.use(shader, bufferName)
         }
     }
 
