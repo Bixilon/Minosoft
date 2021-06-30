@@ -24,12 +24,8 @@ import glm_.vec3.Vec3
 
 class ChunkSectionArrayMesh : Mesh(SectionArrayMeshStruct::class, initialCacheSize = 100000) {
 
-    fun addVertex(position: Vec3, textureCoordinates: Vec2, texture: Texture, tintColor: RGBColor?, lightLevel: Int = 14) {
+    fun addVertex(position: Vec3, textureCoordinates: Vec2, texture: Texture, tintColor: RGBColor?, light: Int) {
         val color = tintColor ?: ChatColors.WHITE
-
-        val lightFactor = (lightLevel + 1) / MAX_LIGHT_LEVEL_FLOAT
-
-        val lightColor = RGBColor((color.red * lightFactor).toInt(), (color.green * lightFactor).toInt(), (color.blue * lightFactor).toInt())
 
         val textureLayer = if (RenderConstants.FORCE_DEBUG_TEXTURE) {
             RenderConstants.DEBUG_TEXTURE_ID
@@ -44,7 +40,8 @@ class ChunkSectionArrayMesh : Mesh(SectionArrayMeshStruct::class, initialCacheSi
             textureCoordinates.y * texture.uvEnd.y,
             Float.fromBits(textureLayer),
             Float.fromBits(texture.properties.animation?.animationId ?: -1),
-            Float.fromBits(lightColor.rgb),
+            Float.fromBits(color.rgb),
+            Float.fromBits(light)
         ))
     }
 
@@ -61,6 +58,7 @@ class ChunkSectionArrayMesh : Mesh(SectionArrayMeshStruct::class, initialCacheSi
         val textureLayer: Int,
         val animationId: Int,
         val tintColor: RGBColor,
+        val light: Int,
     ) {
         companion object : MeshStruct(SectionArrayMeshStruct::class)
     }

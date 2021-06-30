@@ -63,6 +63,7 @@ class WorldRenderer(
     private val waterBlock = connection.registries.blockRegistry[ResourceLocation("minecraft:water")]?.nullCast<FluidBlock>()
 
     lateinit var chunkShader: Shader
+    private val lightMap = LightMap(connection)
 
     val allChunkSections: SynchronizedMap<Vec2i, SynchronizedMap<Int, ChunkSectionMeshCollection>> = synchronizedMapOf()
     val visibleChunks: SynchronizedMap<Vec2i, SynchronizedMap<Int, ChunkSectionMeshCollection>> = synchronizedMapOf()
@@ -182,12 +183,14 @@ class WorldRenderer(
         check(renderWindow.textures.animator.animatedTextures.size < TextureArray.MAX_ANIMATED_TEXTURES) { "Can not have more than ${TextureArray.MAX_ANIMATED_TEXTURES} animated textures!" }
         chunkShader = Shader(
             renderWindow = renderWindow,
-            resourceLocation = ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "chunk"),
+            resourceLocation = ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "world"),
         )
         chunkShader.load()
+        lightMap.init()
 
         renderWindow.textures.use(chunkShader)
-        renderWindow.textures.animator.use(chunkShader, "uAnimationBuffer")
+        renderWindow.textures.animator.use(chunkShader)
+        lightMap.use(chunkShader)
 
         for (blockState in allBlocks!!) {
             for (model in blockState.renderers) {
@@ -199,6 +202,7 @@ class WorldRenderer(
 
     override fun update() {
         lastVisibleChunks = visibleChunks.toSynchronizedMap()
+        lightMap.update()
     }
 
     override fun draw() {

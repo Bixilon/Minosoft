@@ -30,6 +30,9 @@ class WorldLightAccessor(
     }
 
     override fun getBlockLight(blockPosition: Vec3i): Int {
+        if (RenderConstants.DISABLE_LIGHTING) {
+            return 15
+        }
         return world.chunks[blockPosition.chunkPosition]?.lightAccessor?.getBlockLight(blockPosition) ?: 0
     }
 }

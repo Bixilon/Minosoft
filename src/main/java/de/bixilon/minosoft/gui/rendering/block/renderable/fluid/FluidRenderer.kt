@@ -143,7 +143,7 @@ class FluidRenderer(
                 textureCoordinates = texturePositions[vertex.second]!!,
                 texture = texture,
                 tintColor = tintColor,
-                lightLevel = lightLevel,
+                light = lightLevel,
             )
         }
     }

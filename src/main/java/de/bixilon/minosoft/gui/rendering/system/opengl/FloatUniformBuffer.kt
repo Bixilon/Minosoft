@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.system.opengl
 import org.lwjgl.opengl.ARBUniformBufferObject.GL_UNIFORM_BUFFER
 import org.lwjgl.opengl.GL15.*
 
-class IntUniformBuffer(bindingIndex: Int = 0, var data: IntArray = IntArray(0)) : UniformBuffer(bindingIndex) {
+class FloatUniformBuffer(bindingIndex: Int = 0, var data: FloatArray = FloatArray(0)) : UniformBuffer(bindingIndex) {
     override val size: Int
         get() = data.size
 

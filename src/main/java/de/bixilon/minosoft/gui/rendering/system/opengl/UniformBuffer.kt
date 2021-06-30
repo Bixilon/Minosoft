@@ -18,7 +18,7 @@ import org.lwjgl.opengl.ARBUniformBufferObject.*
 import org.lwjgl.opengl.GL15.glBindBuffer
 import org.lwjgl.opengl.GL15.glGenBuffers
 
-abstract class UniformBuffer {
+abstract class UniformBuffer(private val bindingIndex: Int) {
     private var id = -1
     protected abstract val size: Int
     protected var initialSize = -1
@@ -27,7 +27,7 @@ abstract class UniformBuffer {
     fun init() {
         id = glGenBuffers()
         initialUpload()
-        glBindBufferRange(GL_UNIFORM_BUFFER, 0, id, 0, size.toLong())
+        glBindBufferRange(GL_UNIFORM_BUFFER, bindingIndex, id, 0, size.toLong())
         initialSize = size
     }
 
@@ -43,8 +43,8 @@ abstract class UniformBuffer {
     fun use(shader: Shader, bufferName: String) {
         shader.use()
 
-        shader.setUniformBuffer(bufferName, 0)
-        glBindBufferBase(GL_UNIFORM_BUFFER, 0, id)
+        shader.setUniformBuffer(bufferName, bindingIndex)
+        glBindBufferBase(GL_UNIFORM_BUFFER, bindingIndex, id)
     }
 
     protected abstract fun initialUpload()

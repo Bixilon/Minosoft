@@ -57,7 +57,7 @@ object RenderConstants {
 
     const val MAXIMUM_QUEUE_TIME_PER_FRAME = 100L
 
-    const val DISABLE_LIGHTING = true
+    const val DISABLE_LIGHTING = false
 
     const val RENDER_BLOCKS = true
     const val RENDER_FLUIDS = true

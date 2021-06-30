@@ -19,6 +19,7 @@ layout (location = 2) in uint vinTextureLayer;
 
 layout (location = 3) in int vinAnimationIndex;
 layout (location = 4) in uint vinTintColor;
+layout (location = 5) in uint vinLight;
 
 flat out uint finTextureIndex1;
 out vec3 finTextureCoordinates1;
@@ -35,9 +36,11 @@ uniform mat4 uViewProjectionMatrix;
 
 #include "minosoft:color"
 
+#include "minosoft:light"
+
 void main() {
     gl_Position = uViewProjectionMatrix * vec4(vinPosition, 1.0f);
-    finTintColor = getRGBColor(vinTintColor);
+    finTintColor = getRGBColor(vinTintColor) * getLight(vinLight);
 
 
     if (vinAnimationIndex == -1) {
