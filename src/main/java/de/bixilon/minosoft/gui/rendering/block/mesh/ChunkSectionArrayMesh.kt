@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.chunk
+package de.bixilon.minosoft.gui.rendering.block.mesh
 
 import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.RGBColor
@@ -22,7 +22,7 @@ import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
 import glm_.vec2.Vec2
 import glm_.vec3.Vec3
 
-class SectionArrayMesh : Mesh(SectionArrayMeshStruct::class, initialCacheSize = 100000) {
+class ChunkSectionArrayMesh : Mesh(SectionArrayMeshStruct::class, initialCacheSize = 100000) {
 
     fun addVertex(position: Vec3, textureCoordinates: Vec2, texture: Texture, tintColor: RGBColor?, lightLevel: Int = 14) {
         val color = tintColor ?: ChatColors.WHITE

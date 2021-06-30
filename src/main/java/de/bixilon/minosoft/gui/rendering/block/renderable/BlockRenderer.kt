@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.chunk.models.renderable
+package de.bixilon.minosoft.gui.rendering.block.renderable
 
 import com.google.common.collect.HashBiMap
 import com.google.gson.JsonObject
@@ -20,8 +20,8 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderConstants
-import de.bixilon.minosoft.gui.rendering.chunk.models.FaceSize
-import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModel
+import de.bixilon.minosoft.gui.rendering.block.models.BlockModel
+import de.bixilon.minosoft.gui.rendering.block.models.FaceSize
 import de.bixilon.minosoft.gui.rendering.textures.Texture
 import de.bixilon.minosoft.gui.rendering.textures.TextureTransparencies
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
@@ -29,7 +29,7 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3
 import glm_.glm
 import glm_.vec3.Vec3
 
-class BlockRenderer(data: JsonObject, parent: BlockModel) : BlockLikeRenderer {
+class BlockRenderer(data: JsonObject, parent: BlockModel) : WorldEntryRenderer {
     private val cullFaces: Array<Directions?> = arrayOfNulls(Directions.VALUES.size)
     val textures: MutableMap<String, String> = mutableMapOf()
     private val elements: MutableSet<ElementRenderer> = mutableSetOf()
@@ -58,7 +58,7 @@ class BlockRenderer(data: JsonObject, parent: BlockModel) : BlockLikeRenderer {
     override fun resolveTextures(textures: MutableMap<ResourceLocation, Texture>) {
         for ((key, textureName) in this.textures) {
             if (!textureName.startsWith("#")) {
-                textureMapping[key] = BlockLikeRenderer.resolveTexture(textures, textureResourceLocation = Texture.getResourceTextureIdentifier(textureName = textureName))
+                textureMapping[key] = WorldEntryRenderer.resolveTexture(textures, textureResourceLocation = Texture.getResourceTextureIdentifier(textureName = textureName))
             }
         }
     }

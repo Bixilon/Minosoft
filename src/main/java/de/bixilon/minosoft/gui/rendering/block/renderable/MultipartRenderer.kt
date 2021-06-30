@@ -11,17 +11,17 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.chunk.models.renderable
+package de.bixilon.minosoft.gui.rendering.block.renderable
 
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.gui.rendering.chunk.models.FaceSize
+import de.bixilon.minosoft.gui.rendering.block.models.FaceSize
 import de.bixilon.minosoft.gui.rendering.textures.Texture
 
 @Deprecated(message = "Will be replaced with a normal BlockRenderer and multiple renderers")
 class MultipartRenderer(
-    val models: List<BlockLikeRenderer>,
-) : BlockLikeRenderer {
+    val models: List<WorldEntryRenderer>,
+) : WorldEntryRenderer {
     override val faceBorderSizes: Array<Array<FaceSize>?>
     override val transparentFaces: BooleanArray = BooleanArray(Directions.VALUES.size)
 

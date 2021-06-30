@@ -14,14 +14,14 @@
 package de.bixilon.minosoft.data.registries.blocks.types
 
 import com.google.gson.JsonObject
+import de.bixilon.minosoft.data.registries.AABB
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.VoxelShape
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.fluid.Fluid
 import de.bixilon.minosoft.data.registries.versions.Registries
-import de.bixilon.minosoft.gui.rendering.chunk.VoxelShape
-import de.bixilon.minosoft.gui.rendering.chunk.models.AABB
-import de.bixilon.minosoft.gui.rendering.chunk.models.renderable.BlockLikeRenderer
-import de.bixilon.minosoft.gui.rendering.chunk.models.renderable.FluidRenderer
+import de.bixilon.minosoft.gui.rendering.block.renderable.FluidRenderer
+import de.bixilon.minosoft.gui.rendering.block.renderable.WorldEntryRenderer
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import glm_.vec3.Vec3
@@ -33,7 +33,7 @@ open class FluidBlock(resourceLocation: ResourceLocation, registries: Registries
 
     val fluidRenderer: FluidRenderer
 
-    override val renderOverride: List<BlockLikeRenderer>
+    override val renderOverride: List<WorldEntryRenderer>
 
     init {
         let {

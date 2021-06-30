@@ -11,9 +11,8 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.chunk.models
+package de.bixilon.minosoft.gui.rendering.block.models
 
-import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModelElement
 import glm_.vec2.Vec2i
 
 data class FaceSize(

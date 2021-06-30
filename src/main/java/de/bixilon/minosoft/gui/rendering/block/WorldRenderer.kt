@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.chunk
+package de.bixilon.minosoft.gui.rendering.block
 
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames
@@ -29,7 +29,8 @@ import de.bixilon.minosoft.data.world.ChunkSection
 import de.bixilon.minosoft.data.world.ChunkSection.Companion.indexPosition
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.gui.rendering.*
-import de.bixilon.minosoft.gui.rendering.chunk.models.renderable.BlockLikeRenderContext
+import de.bixilon.minosoft.gui.rendering.block.mesh.ChunkSectionMeshCollection
+import de.bixilon.minosoft.gui.rendering.block.renderable.BlockLikeRenderContext
 import de.bixilon.minosoft.gui.rendering.input.camera.Frustum
 import de.bixilon.minosoft.gui.rendering.modding.events.FrustumChangeEvent
 import de.bixilon.minosoft.gui.rendering.modding.events.RenderingStateChangeEvent
@@ -63,9 +64,9 @@ class WorldRenderer(
 
     lateinit var chunkShader: Shader
 
-    val allChunkSections: SynchronizedMap<Vec2i, SynchronizedMap<Int, ChunkMeshCollection>> = synchronizedMapOf()
-    val visibleChunks: SynchronizedMap<Vec2i, SynchronizedMap<Int, ChunkMeshCollection>> = synchronizedMapOf()
-    private var lastVisibleChunks: SynchronizedMap<Vec2i, SynchronizedMap<Int, ChunkMeshCollection>> = synchronizedMapOf()
+    val allChunkSections: SynchronizedMap<Vec2i, SynchronizedMap<Int, ChunkSectionMeshCollection>> = synchronizedMapOf()
+    val visibleChunks: SynchronizedMap<Vec2i, SynchronizedMap<Int, ChunkSectionMeshCollection>> = synchronizedMapOf()
+    private var lastVisibleChunks: SynchronizedMap<Vec2i, SynchronizedMap<Int, ChunkSectionMeshCollection>> = synchronizedMapOf()
     val queuedChunks: MutableSet<Vec2i> = synchronizedSetOf()
     private val preparationTasks: SynchronizedMap<Vec2i, SynchronizedMap<Int, ThreadPoolRunnable>> = synchronizedMapOf()
 
@@ -76,10 +77,10 @@ class WorldRenderer(
     var triangles = 0
         private set
 
-    private fun prepareSections(chunkPosition: Vec2i, sections: Map<Int, ChunkSection>): ChunkMeshCollection {
+    private fun prepareSections(chunkPosition: Vec2i, sections: Map<Int, ChunkSection>): ChunkSectionMeshCollection {
         check(sections.isNotEmpty()) { "Illegal argument!" }
         queuedChunks.remove(chunkPosition)
-        val meshCollection = ChunkMeshCollection()
+        val meshCollection = ChunkSectionMeshCollection()
 
         for ((sectionHeight, section) in sections) {
             for ((index, blockState) in section.blocks.withIndex()) {
@@ -407,7 +408,7 @@ class WorldRenderer(
         renderWindow.queue += { unloadMeshes(chunkMesh.values) }
     }
 
-    private fun unloadMeshes(meshes: Collection<ChunkMeshCollection>) {
+    private fun unloadMeshes(meshes: Collection<ChunkSectionMeshCollection>) {
         renderWindow.assertOnRenderThread()
         for (meshCollection in meshes) {
             meshCollection.opaqueSectionArrayMesh.let {
@@ -433,7 +434,7 @@ class WorldRenderer(
     private fun onFrustumChange(frustum: Frustum) {
         visibleChunks.clear()
         for ((chunkLocation, indexMap) in allChunkSections.toSynchronizedMap()) {
-            val visibleIndexMap: SynchronizedMap<Int, ChunkMeshCollection> = synchronizedMapOf()
+            val visibleIndexMap: SynchronizedMap<Int, ChunkSectionMeshCollection> = synchronizedMapOf()
             for ((index, mesh) in indexMap.toSynchronizedMap()) {
                 if (frustum.containsChunk(chunkLocation, mesh.lowestBlockHeight, mesh.highestBlockHeight)) {
                     visibleIndexMap[index] = mesh

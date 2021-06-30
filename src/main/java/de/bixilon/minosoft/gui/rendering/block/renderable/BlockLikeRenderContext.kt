@@ -11,13 +11,13 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.chunk.models.renderable
+package de.bixilon.minosoft.gui.rendering.block.renderable
 
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.light.LightAccessor
 import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.chunk.ChunkMeshCollection
+import de.bixilon.minosoft.gui.rendering.block.mesh.ChunkSectionMeshCollection
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3i
 
@@ -26,7 +26,7 @@ data class BlockLikeRenderContext(
     val lightAccessor: LightAccessor,
     val renderWindow: RenderWindow,
     val blockPosition: Vec3i,
-    val meshCollection: ChunkMeshCollection,
+    val meshCollection: ChunkSectionMeshCollection,
     val neighbourBlocks: Array<BlockState?>,
     val world: World,
     val offset: Vec3,

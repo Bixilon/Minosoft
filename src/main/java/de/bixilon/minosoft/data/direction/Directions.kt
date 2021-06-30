@@ -14,8 +14,8 @@ package de.bixilon.minosoft.data.direction
 
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.registries.blocks.properties.serializer.BlockPropertiesSerializer
-import de.bixilon.minosoft.gui.rendering.chunk.models.FaceSize
-import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModelElement
+import de.bixilon.minosoft.gui.rendering.block.models.BlockModelElement
+import de.bixilon.minosoft.gui.rendering.block.models.FaceSize
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.get
 import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.enum.ValuesEnum

@@ -11,19 +11,19 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.chunk.models.renderable
+package de.bixilon.minosoft.gui.rendering.block.renderable
 
 import com.google.common.collect.HashBiMap
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.text.RGBColor
-import de.bixilon.minosoft.gui.rendering.chunk.ChunkMeshCollection
-import de.bixilon.minosoft.gui.rendering.chunk.SectionArrayMesh
-import de.bixilon.minosoft.gui.rendering.chunk.models.FaceSize
-import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModel
-import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModelElement
-import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModelFace
+import de.bixilon.minosoft.gui.rendering.block.mesh.ChunkSectionArrayMesh
+import de.bixilon.minosoft.gui.rendering.block.mesh.ChunkSectionMeshCollection
+import de.bixilon.minosoft.gui.rendering.block.models.BlockModel
+import de.bixilon.minosoft.gui.rendering.block.models.BlockModelElement
+import de.bixilon.minosoft.gui.rendering.block.models.BlockModelFace
+import de.bixilon.minosoft.gui.rendering.block.models.FaceSize
 import de.bixilon.minosoft.gui.rendering.textures.Texture
 import de.bixilon.minosoft.gui.rendering.textures.TextureTransparencies
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
@@ -153,7 +153,7 @@ class ElementRenderer(
 
         val DRAW_OFFSET = Vec3(+0.5f, +0.5f, +0.5f)
 
-        fun getMesh(meshCollection: ChunkMeshCollection, textureTransparencies: TextureTransparencies): SectionArrayMesh {
+        fun getMesh(meshCollection: ChunkSectionMeshCollection, textureTransparencies: TextureTransparencies): ChunkSectionArrayMesh {
             return if (textureTransparencies == TextureTransparencies.TRANSLUCENT) {
                 meshCollection.transparentSectionArrayMesh!!
             } else {

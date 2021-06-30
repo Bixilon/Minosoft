@@ -16,10 +16,10 @@ package de.bixilon.minosoft.gui.rendering
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.gui.rendering.chunk.ChunkBorderRenderer
-import de.bixilon.minosoft.gui.rendering.chunk.WorldRenderer
-import de.bixilon.minosoft.gui.rendering.chunk.block.outline.BlockOutlineRenderer
-import de.bixilon.minosoft.gui.rendering.entities.EntityHitBoxRenderer
+import de.bixilon.minosoft.gui.rendering.block.WorldRenderer
+import de.bixilon.minosoft.gui.rendering.block.chunk.ChunkBorderRenderer
+import de.bixilon.minosoft.gui.rendering.block.outline.BlockOutlineRenderer
+import de.bixilon.minosoft.gui.rendering.entity.EntityHitBoxRenderer
 import de.bixilon.minosoft.gui.rendering.font.Font
 import de.bixilon.minosoft.gui.rendering.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.hud.atlas.TextureLike

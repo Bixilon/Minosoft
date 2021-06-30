@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger, Lukas Eisenhauer
+ * Copyright (C) 2021 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.chunk.models.loading
+package de.bixilon.minosoft.gui.rendering.block.models
 
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.Axes
@@ -26,8 +26,9 @@ import java.util.*
 open class BlockModelElement(data: JsonObject) {
     val faces: MutableMap<Directions, BlockModelFace> = mutableMapOf()
     var transformedPositions: Array<Vec3>
-    val from: Vec3 = data["from"]?.asJsonArray?.toVec3() ?: Vec3()
+    val from: Vec3 = data["from"]?.asJsonArray?.toVec3() ?: Vec3.EMPTY
     val to: Vec3 = data["to"]?.asJsonArray?.toVec3() ?: Vec3(BLOCK_RESOLUTION)
+    val shade: Boolean = data["shade"]?.asBoolean ?: true
 
     init {
         transformedPositions = arrayOf(
@@ -63,7 +64,7 @@ open class BlockModelElement(data: JsonObject) {
 
     companion object {
         const val BLOCK_RESOLUTION = 16
-        const val BLOCK_RESOLUTION_FLOAT = 16f
+        const val BLOCK_RESOLUTION_FLOAT = BLOCK_RESOLUTION.toFloat()
 
         val FACE_POSITION_MAP_TEMPLATE = arrayOf(
             intArrayOf(0, 2, 3, 1),

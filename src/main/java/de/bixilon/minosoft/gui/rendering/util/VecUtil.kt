@@ -21,10 +21,10 @@ import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.AbstractDirection
 import de.bixilon.minosoft.data.direction.Directions
+import de.bixilon.minosoft.data.registries.AABB
 import de.bixilon.minosoft.data.registries.blocks.RandomOffsetTypes
 import de.bixilon.minosoft.data.registries.blocks.types.Block
-import de.bixilon.minosoft.gui.rendering.chunk.models.AABB
-import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModelElement
+import de.bixilon.minosoft.gui.rendering.block.models.BlockModelElement
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import glm_.func.common.ceil
 import glm_.func.common.clamp

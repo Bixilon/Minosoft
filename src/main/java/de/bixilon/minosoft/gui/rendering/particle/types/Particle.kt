@@ -14,8 +14,8 @@
 package de.bixilon.minosoft.gui.rendering.particle.types
 
 import de.bixilon.minosoft.data.physics.PhysicsEntity
+import de.bixilon.minosoft.data.registries.AABB
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
-import de.bixilon.minosoft.gui.rendering.chunk.models.AABB
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.gui.rendering.particle.ParticleMesh
 import de.bixilon.minosoft.gui.rendering.util.VecUtil

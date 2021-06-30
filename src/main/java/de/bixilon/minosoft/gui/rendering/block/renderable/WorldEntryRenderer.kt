@@ -1,10 +1,10 @@
-package de.bixilon.minosoft.gui.rendering.chunk.models.renderable
+package de.bixilon.minosoft.gui.rendering.block.renderable
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.gui.rendering.chunk.models.FaceSize
+import de.bixilon.minosoft.gui.rendering.block.models.FaceSize
 import de.bixilon.minosoft.gui.rendering.textures.Texture
 
-interface BlockLikeRenderer {
+interface WorldEntryRenderer {
     val faceBorderSizes: Array<Array<FaceSize>?> // direction indexed
     val transparentFaces: BooleanArray
 

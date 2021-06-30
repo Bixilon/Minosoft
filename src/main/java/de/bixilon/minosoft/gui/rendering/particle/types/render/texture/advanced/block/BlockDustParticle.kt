@@ -19,10 +19,10 @@ import de.bixilon.minosoft.data.registries.particle.data.BlockParticleData
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.data.text.RGBColor.Companion.asGray
-import de.bixilon.minosoft.gui.rendering.chunk.models.renderable.BlockLikeRenderer
-import de.bixilon.minosoft.gui.rendering.chunk.models.renderable.BlockRenderer
-import de.bixilon.minosoft.gui.rendering.chunk.models.renderable.FluidRenderer
-import de.bixilon.minosoft.gui.rendering.chunk.models.renderable.MultipartRenderer
+import de.bixilon.minosoft.gui.rendering.block.renderable.BlockRenderer
+import de.bixilon.minosoft.gui.rendering.block.renderable.FluidRenderer
+import de.bixilon.minosoft.gui.rendering.block.renderable.MultipartRenderer
+import de.bixilon.minosoft.gui.rendering.block.renderable.WorldEntryRenderer
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.advanced.AdvancedTextureParticle
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.blockPosition
@@ -35,7 +35,7 @@ class BlockDustParticle(connection: PlayConnection, position: Vec3d, velocity: V
 
     init {
         val blockPosition = position.blockPosition
-        var renderer: BlockLikeRenderer? = data.blockState!!.getBlockRenderer(blockPosition)
+        var renderer: WorldEntryRenderer? = data.blockState!!.getBlockRenderer(blockPosition)
 
         if (renderer is MultipartRenderer) {
             renderer = renderer.models.getOrNull(0)

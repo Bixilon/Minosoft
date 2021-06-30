@@ -13,10 +13,10 @@
 
 package de.bixilon.minosoft.gui.rendering.util.mesh
 
+import de.bixilon.minosoft.data.registries.AABB
+import de.bixilon.minosoft.data.registries.VoxelShape
 import de.bixilon.minosoft.data.text.RGBColor
-import de.bixilon.minosoft.gui.rendering.chunk.VoxelShape
-import de.bixilon.minosoft.gui.rendering.chunk.models.AABB
-import de.bixilon.minosoft.gui.rendering.chunk.models.renderable.ElementRenderer
+import de.bixilon.minosoft.gui.rendering.block.renderable.ElementRenderer
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
 import de.bixilon.minosoft.util.BitByte.isBit
 import de.bixilon.minosoft.util.MMath.positiveNegative

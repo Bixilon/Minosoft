@@ -18,6 +18,7 @@ import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.player.Hands
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.VoxelShape
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.BlockUsages
 import de.bixilon.minosoft.data.registries.blocks.RandomOffsetTypes
@@ -33,8 +34,7 @@ import de.bixilon.minosoft.data.registries.registry.ResourceLocationDeserializer
 import de.bixilon.minosoft.data.registries.versions.Registries
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.TintColorCalculator
-import de.bixilon.minosoft.gui.rendering.chunk.VoxelShape
-import de.bixilon.minosoft.gui.rendering.chunk.models.renderable.BlockLikeRenderer
+import de.bixilon.minosoft.gui.rendering.block.renderable.WorldEntryRenderer
 import de.bixilon.minosoft.gui.rendering.input.camera.hit.RaycastHit
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import glm_.vec3.Vec3i
@@ -49,7 +49,7 @@ open class Block(
     open val tintColor: RGBColor? = data["tint_color"]?.asInt?.let { TintColorCalculator.getJsonColor(it) }
     open val randomOffsetType: RandomOffsetTypes? = data["offset_type"]?.asString?.let { RandomOffsetTypes[it] }
     open val tint: ResourceLocation? = data["tint"]?.asString?.let { ResourceLocation(it) }
-    open val renderOverride: List<BlockLikeRenderer>? = null
+    open val renderOverride: List<WorldEntryRenderer>? = null
     open var blockEntityType: BlockEntityType? = null
         protected set
 

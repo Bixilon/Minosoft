@@ -1,4 +1,4 @@
-package de.bixilon.minosoft.gui.rendering.chunk.models.renderable
+package de.bixilon.minosoft.gui.rendering.block.renderable
 
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -11,10 +11,10 @@ import de.bixilon.minosoft.data.registries.fluid.Fluid
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.gui.rendering.RenderConstants
-import de.bixilon.minosoft.gui.rendering.chunk.ChunkMeshCollection
-import de.bixilon.minosoft.gui.rendering.chunk.models.FaceSize
-import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModelElement
-import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModelFace
+import de.bixilon.minosoft.gui.rendering.block.mesh.ChunkSectionMeshCollection
+import de.bixilon.minosoft.gui.rendering.block.models.BlockModelElement
+import de.bixilon.minosoft.gui.rendering.block.models.BlockModelFace
+import de.bixilon.minosoft.gui.rendering.block.models.FaceSize
 import de.bixilon.minosoft.gui.rendering.textures.Texture
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.util.KUtil.nullCast
@@ -26,7 +26,7 @@ import glm_.vec3.Vec3i
 class FluidRenderer(
     val block: Block,
     private val fluid: Fluid,
-) : BlockLikeRenderer {
+) : WorldEntryRenderer {
     override val faceBorderSizes: Array<Array<FaceSize>?> = arrayOfNulls(Directions.VALUES.size)
     override val transparentFaces: BooleanArray = BooleanArray(Directions.VALUES.size)
     var stillTexture: Texture? = null
@@ -119,7 +119,7 @@ class FluidRenderer(
         return heights.toSet().size != 1 // liquid is flowing, if not all of the heights are the same
     }
 
-    private fun createQuad(drawPositions: Array<Vec3>, texturePositions: Array<Vec2?>, texture: Texture, blockPosition: Vec3i, meshCollection: ChunkMeshCollection, tintColor: RGBColor?, lightLevel: Int) {
+    private fun createQuad(drawPositions: Array<Vec3>, texturePositions: Array<Vec2?>, texture: Texture, blockPosition: Vec3i, meshCollection: ChunkSectionMeshCollection, tintColor: RGBColor?, lightLevel: Int) {
         val mesh = ElementRenderer.getMesh(meshCollection, texture.transparency)
         for (vertex in ElementRenderer.DRAW_ODER) {
             mesh.addVertex(
@@ -213,8 +213,8 @@ class FluidRenderer(
     }
 
     override fun resolveTextures(textures: MutableMap<ResourceLocation, Texture>) {
-        stillTexture = fluid.stillTexture?.let { Texture.getResourceTextureIdentifier(it.namespace, it.path) }?.let { BlockLikeRenderer.resolveTexture(textures, it) }
-        flowingTexture = fluid.nullCast<FlowableFluid>()?.flowingTexture?.let { Texture.getResourceTextureIdentifier(it.namespace, it.path) }?.let { BlockLikeRenderer.resolveTexture(textures, it) }
+        stillTexture = fluid.stillTexture?.let { Texture.getResourceTextureIdentifier(it.namespace, it.path) }?.let { WorldEntryRenderer.resolveTexture(textures, it) }
+        flowingTexture = fluid.nullCast<FlowableFluid>()?.flowingTexture?.let { Texture.getResourceTextureIdentifier(it.namespace, it.path) }?.let { WorldEntryRenderer.resolveTexture(textures, it) }
     }
 
     companion object {

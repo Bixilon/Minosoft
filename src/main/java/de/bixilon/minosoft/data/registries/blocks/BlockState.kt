@@ -18,6 +18,7 @@ import com.google.gson.JsonObject
 import com.google.gson.JsonPrimitive
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.VoxelShape
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.materials.Material
@@ -25,11 +26,10 @@ import de.bixilon.minosoft.data.registries.sounds.SoundEvent
 import de.bixilon.minosoft.data.registries.versions.Registries
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.TintColorCalculator
-import de.bixilon.minosoft.gui.rendering.chunk.VoxelShape
-import de.bixilon.minosoft.gui.rendering.chunk.models.loading.BlockModel
-import de.bixilon.minosoft.gui.rendering.chunk.models.renderable.BlockLikeRenderer
-import de.bixilon.minosoft.gui.rendering.chunk.models.renderable.BlockRenderer
-import de.bixilon.minosoft.gui.rendering.chunk.models.renderable.MultipartRenderer
+import de.bixilon.minosoft.gui.rendering.block.models.BlockModel
+import de.bixilon.minosoft.gui.rendering.block.renderable.BlockRenderer
+import de.bixilon.minosoft.gui.rendering.block.renderable.MultipartRenderer
+import de.bixilon.minosoft.gui.rendering.block.renderable.WorldEntryRenderer
 import glm_.vec3.Vec3i
 import java.util.*
 import kotlin.math.abs
@@ -38,7 +38,7 @@ import kotlin.random.Random
 data class BlockState(
     val block: Block,
     val properties: Map<BlockProperties, Any> = mapOf(),
-    val renderers: MutableList<BlockLikeRenderer> = mutableListOf(),
+    val renderers: MutableList<WorldEntryRenderer> = mutableListOf(),
     val tintColor: RGBColor? = null,
     val material: Material,
     val collisionShape: VoxelShape,
@@ -111,7 +111,7 @@ data class BlockState(
         return String.format("%s%s", block.resourceLocation, out)
     }
 
-    fun getBlockRenderer(blockPosition: Vec3i): BlockLikeRenderer {
+    fun getBlockRenderer(blockPosition: Vec3i): WorldEntryRenderer {
         if (renderers.isEmpty()) {
             throw IllegalArgumentException("$this has not renderer!")
         }
@@ -129,7 +129,7 @@ data class BlockState(
                 getProperties(it)
             } ?: mutableMapOf()
 
-            val renderers: MutableList<BlockLikeRenderer> = mutableListOf()
+            val renderers: MutableList<WorldEntryRenderer> = mutableListOf()
 
             data["render"]?.let {
                 when (it) {
@@ -140,7 +140,7 @@ data class BlockState(
                                     addBlockModel(model, renderers, models)
                                 }
                                 is JsonArray -> {
-                                    val modelList: MutableList<BlockLikeRenderer> = mutableListOf()
+                                    val modelList: MutableList<WorldEntryRenderer> = mutableListOf()
                                     for (singleModel in model) {
                                         check(singleModel is JsonObject)
                                         addBlockModel(singleModel, modelList, models)
@@ -238,7 +238,7 @@ data class BlockState(
             return properties
         }
 
-        private fun addBlockModel(data: JsonObject, renderer: MutableList<BlockLikeRenderer>, models: Map<ResourceLocation, BlockModel>) {
+        private fun addBlockModel(data: JsonObject, renderer: MutableList<WorldEntryRenderer>, models: Map<ResourceLocation, BlockModel>) {
             val model = models[ResourceLocation(data["model"].asString)] ?: error("Can not find block model ${data["model"]}")
             renderer.add(BlockRenderer(data, model))
         }

@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.physics
 
-import de.bixilon.minosoft.gui.rendering.chunk.models.AABB
+import de.bixilon.minosoft.data.registries.AABB
 import glm_.vec3.Vec3d
 
 interface PhysicsEntity {

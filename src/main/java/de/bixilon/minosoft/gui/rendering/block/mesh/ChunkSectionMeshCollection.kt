@@ -11,11 +11,11 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.chunk
+package de.bixilon.minosoft.gui.rendering.block.mesh
 
-data class ChunkMeshCollection(
-    val opaqueSectionArrayMesh: SectionArrayMesh = SectionArrayMesh(),
-    var transparentSectionArrayMesh: SectionArrayMesh? = SectionArrayMesh(),
+data class ChunkSectionMeshCollection(
+    val opaqueSectionArrayMesh: ChunkSectionArrayMesh = ChunkSectionArrayMesh(),
+    var transparentSectionArrayMesh: ChunkSectionArrayMesh? = ChunkSectionArrayMesh(),
 ) {
     var lowestBlockHeight = 0
     var highestBlockHeight = 0
