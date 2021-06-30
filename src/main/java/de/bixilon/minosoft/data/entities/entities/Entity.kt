@@ -451,7 +451,7 @@ abstract class Entity(
             // ToDo: Play step sound
         }
 
-        // ToDo: Check for move effect
+        // ToDo: Check for move effect (sounds)
 
         // block collision handling
         val aabb = aabb.shrink(0.001)
@@ -467,7 +467,7 @@ abstract class Entity(
     }
 
     protected fun applyGravity(force: Boolean = false) {
-        if (hasGravity) {
+        if (hasGravity || force) {
             velocity.y += -0.04
         }
     }

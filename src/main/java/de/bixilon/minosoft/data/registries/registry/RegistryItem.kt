@@ -14,8 +14,6 @@
 package de.bixilon.minosoft.data.registries.registry
 
 import de.bixilon.minosoft.data.registries.ResourceLocationAble
-import de.bixilon.minosoft.data.registries.blocks.types.Block
-import de.bixilon.minosoft.data.registries.items.BlockItem
 import de.bixilon.minosoft.data.registries.versions.Registries
 import de.bixilon.minosoft.util.KUtil.setValue
 import kotlin.reflect.KProperty
@@ -49,6 +47,8 @@ abstract class RegistryItem : ResourceLocationAble {
 
             javaField.setValue(this, value)
         }
+
+        this::injects.javaField?.setValue(this, null)
     }
 
     open fun postInit(registries: Registries) { }

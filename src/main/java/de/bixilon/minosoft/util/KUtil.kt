@@ -219,7 +219,7 @@ object KUtil {
     }
 
 
-    fun Field.setValue(instance: Any, value: Any) {
+    fun Field.setValue(instance: Any, value: Any?) {
         this.isAccessible = true
 
         // ToDo
