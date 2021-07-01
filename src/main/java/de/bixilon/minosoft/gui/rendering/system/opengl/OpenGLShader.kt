@@ -19,7 +19,6 @@ import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.exceptions.ShaderLoadingException
 import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
 import de.bixilon.minosoft.gui.rendering.system.base.shader.code.glsl.GLSLShaderCode
-import de.bixilon.minosoft.gui.rendering.util.OpenGLUtil
 import glm_.mat4x4.Mat4
 import glm_.vec2.Vec2
 import glm_.vec3.Vec3
@@ -61,7 +60,7 @@ class OpenGLShader(
         glCompileShaderARB(program)
 
         if (glGetObjectParameteriARB(program, GL_OBJECT_COMPILE_STATUS_ARB) == GL_FALSE) {
-            throw ShaderLoadingException(OpenGLUtil.getLogInfo(program))
+            throw ShaderLoadingException(getInfoLog(program))
         }
 
         return program
@@ -97,13 +96,13 @@ class OpenGLShader(
         glLinkProgramARB(shader)
 
         if (glGetObjectParameteriARB(shader, GL_OBJECT_LINK_STATUS_ARB) == GL_FALSE) {
-            throw ShaderLoadingException(OpenGLUtil.getLogInfo(shader))
+            throw ShaderLoadingException(getInfoLog(shader))
         }
 
         glValidateProgramARB(shader)
 
         if (glGetObjectParameteriARB(shader, GL_OBJECT_VALIDATE_STATUS_ARB) == GL_FALSE) {
-            throw ShaderLoadingException(OpenGLUtil.getLogInfo(shader))
+            throw ShaderLoadingException(getInfoLog(shader))
         }
         for (program in programs) {
             glDeleteShader(program)
@@ -143,8 +142,7 @@ class OpenGLShader(
 
     override fun setArray(uniformName: String, array: Array<*>) {
         for ((i, value) in array.withIndex()) {
-            val currentUniformName = "$uniformName[$i]"
-            this[currentUniformName] = value
+            this["$uniformName[$i]"] = value
         }
     }
 
@@ -166,4 +164,11 @@ class OpenGLShader(
 
     override val log: String
         get() = TODO()
+
+    private companion object {
+
+        fun getInfoLog(program: Int): String {
+            return glGetInfoLogARB(program, glGetObjectParameteriARB(program, GL_OBJECT_INFO_LOG_LENGTH_ARB))
+        }
+    }
 }

@@ -19,12 +19,13 @@ import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_17_1_RC1
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
 class EntityDestroyS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
-    val entityIds: List<Int> = if (buffer.versionId < ProtocolVersions.V_21W17A) {
+    val entityIds: List<Int> = if (buffer.versionId < ProtocolVersions.V_21W17A || buffer.versionId >= V_1_17_1_RC1) {
         buffer.readEntityIdArray(if (buffer.versionId < ProtocolVersions.V_14W04A) {
             buffer.readUnsignedByte()
         } else {
