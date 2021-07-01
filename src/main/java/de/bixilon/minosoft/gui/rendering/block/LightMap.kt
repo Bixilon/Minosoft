@@ -38,7 +38,6 @@ class LightMap(private val connection: PlayConnection) {
 
     fun init() {
         uniformBuffer.init()
-
     }
 
     fun use(shader: Shader, bufferName: String = "uLightMapBuffer") {

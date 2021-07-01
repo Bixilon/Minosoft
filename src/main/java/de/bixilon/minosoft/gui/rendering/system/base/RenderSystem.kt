@@ -34,10 +34,10 @@ interface RenderSystem {
         destinationAlpha: BlendingFunctions = BlendingFunctions.ONE_MINUS_SOURCE_ALPHA,
         depth: DepthFunctions = DepthFunctions.LESS,
     ) {
+        setBlendFunc(sourceAlpha, destinationAlpha, BlendingFunctions.ONE, BlendingFunctions.ZERO)
         this[RenderingCapabilities.DEPTH_TEST] = depthTest
         this[RenderingCapabilities.BLENDING] = blending
         this[RenderingCapabilities.FACE_CULLING] = faceCulling
-        this[sourceAlpha] = destinationAlpha
         this.depth = depth
         this.depthMask = depthMask
     }
@@ -48,6 +48,8 @@ interface RenderSystem {
     operator fun get(capability: RenderingCapabilities): Boolean
 
     operator fun set(source: BlendingFunctions, destination: BlendingFunctions)
+
+    fun setBlendFunc(sourceRGB: BlendingFunctions, destinationRGB: BlendingFunctions, sourceAlphaFactor: BlendingFunctions, destinationAlphaFactor: BlendingFunctions)
 
     var depth: DepthFunctions
     var depthMask: Boolean
