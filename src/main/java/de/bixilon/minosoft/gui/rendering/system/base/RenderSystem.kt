@@ -13,11 +13,13 @@
 
 package de.bixilon.minosoft.gui.rendering.system.base
 
+import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
 import glm_.vec2.Vec2i
 import java.nio.ByteBuffer
 
 interface RenderSystem {
+    val shaders: MutableSet<Shader>
     val vendor: GPUVendor
     var shader: Shader?
 
@@ -58,4 +60,7 @@ interface RenderSystem {
     val maximumVRAM: Long
 
     fun readPixels(start: Vec2i, end: Vec2i, type: PixelTypes): ByteBuffer
+
+
+    fun createShader(resourceLocation: ResourceLocation): Shader
 }

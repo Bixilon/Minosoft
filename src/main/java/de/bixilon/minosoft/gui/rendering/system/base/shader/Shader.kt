@@ -13,8 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.system.base.shader
 
-import de.bixilon.minosoft.Minosoft
-import de.bixilon.minosoft.data.assets.AssetsManager
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderWindow
@@ -27,14 +25,14 @@ import glm_.vec3.Vec3
 import glm_.vec4.Vec4
 
 interface Shader {
+    val loaded: Boolean
     val renderWindow: RenderWindow
     val resourceLocation: ResourceLocation
     val uniforms: List<String>
 
     val log: String
 
-
-    fun load(assetsManager: AssetsManager = Minosoft.MINOSOFT_ASSETS_MANAGER)
+    fun load()
 
     fun use(): Shader {
         renderWindow.renderSystem.shader = this

@@ -8,13 +8,7 @@ import de.bixilon.minosoft.gui.rendering.RenderWindow
 
 object GLSLUtil {
 
-    fun readGLSL(
-        assetsManager: AssetsManager = Minosoft.MINOSOFT_ASSETS_MANAGER,
-        renderWindow: RenderWindow,
-        resourceLocation: ResourceLocation,
-        defines: Map<String, Any>,
-        uniforms: MutableList<String>
-    ): String {
+    fun readGLSL(assetsManager: AssetsManager = Minosoft.MINOSOFT_ASSETS_MANAGER, renderWindow: RenderWindow, resourceLocation: ResourceLocation, defines: Map<String, Any>, uniforms: MutableList<String>): String {
         val total = StringBuilder()
         val lines = assetsManager.readStringAsset(resourceLocation).lines()
 

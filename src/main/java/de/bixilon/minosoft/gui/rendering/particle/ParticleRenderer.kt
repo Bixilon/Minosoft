@@ -27,6 +27,7 @@ import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.synchronizedSetOf
 import de.bixilon.minosoft.util.KUtil.toSynchronizedSet
+import glm_.mat4x4.Mat4
 import glm_.vec3.Vec3
 
 
@@ -34,7 +35,7 @@ class ParticleRenderer(
     private val connection: PlayConnection,
     val renderWindow: RenderWindow,
 ) : Renderer {
-    private lateinit var particleShader: Shader
+    private val particleShader: Shader = renderWindow.renderSystem.createShader(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "particle"))
     private var particleMesh = ParticleMesh()
     private var transparentParticleMesh = ParticleMesh()
 
@@ -43,7 +44,7 @@ class ParticleRenderer(
     override fun init() {
         connection.registerEvent(CallbackEventInvoker.of<CameraMatrixChangeEvent> {
             renderWindow.queue += {
-                particleShader.use().setMat4("uViewProjectionMatrix", it.viewProjectionMatrix)
+                particleShader.use().setMat4("uViewProjectionMatrix", Mat4(it.viewProjectionMatrix))
                 particleShader.use().setVec3("uCameraRight", Vec3(it.viewMatrix[0][0], it.viewMatrix[1][0], it.viewMatrix[2][0]))
                 particleShader.use().setVec3("uCameraUp", Vec3(it.viewMatrix[0][1], it.viewMatrix[1][1], it.viewMatrix[2][1]))
             }
@@ -60,10 +61,6 @@ class ParticleRenderer(
     }
 
     override fun postInit() {
-        particleShader = Shader(
-            renderWindow = renderWindow,
-            resourceLocation = ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "particle"),
-        )
         particleShader.load()
         renderWindow.textures.use(particleShader)
         renderWindow.textures.animator.use(particleShader)

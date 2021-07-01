@@ -40,6 +40,7 @@ import glm_.func.cos
 import glm_.func.rad
 import glm_.func.sin
 import glm_.glm
+import glm_.mat4x4.Mat4
 import glm_.mat4x4.Mat4d
 import glm_.vec2.Vec2
 import glm_.vec2.Vec2d
@@ -152,9 +153,9 @@ class Camera(
             projectionMatrix = projectionMatrix,
             viewProjectionMatrix = viewProjectionMatrix,
         ))
-        for (shader in renderWindow.shaders) {
+        for (shader in renderWindow.renderSystem.shaders) {
             if (shader.uniforms.contains("uViewProjectionMatrix")) {
-                shader.use().setMat4("uViewProjectionMatrix", viewProjectionMatrix)
+                shader.use().setMat4("uViewProjectionMatrix", Mat4(viewProjectionMatrix))
             }
         }
     }

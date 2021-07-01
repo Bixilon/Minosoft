@@ -13,17 +13,13 @@
 
 package de.bixilon.minosoft.gui.rendering.system.opengl
 
-import de.bixilon.minosoft.Minosoft
-import de.bixilon.minosoft.data.assets.AssetsManager
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.Rendering
 import de.bixilon.minosoft.gui.rendering.exceptions.ShaderLoadingException
-import de.bixilon.minosoft.gui.rendering.system.base.shader.GLSLUtil
 import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
+import de.bixilon.minosoft.gui.rendering.system.base.shader.code.glsl.GLSLShaderCode
 import de.bixilon.minosoft.gui.rendering.util.OpenGLUtil
-import de.bixilon.minosoft.util.KUtil.unsafeCast
 import glm_.mat4x4.Mat4
 import glm_.vec2.Vec2
 import glm_.vec3.Vec3
@@ -36,31 +32,29 @@ import org.lwjgl.opengl.ARBVertexShader.GL_VERTEX_SHADER_ARB
 import org.lwjgl.opengl.GL11.GL_FALSE
 import org.lwjgl.opengl.GL43.*
 import org.lwjgl.system.MemoryUtil
+import java.io.FileNotFoundException
 
 class OpenGLShader(
     override val renderWindow: RenderWindow,
     override val resourceLocation: ResourceLocation,
-    private val defines: Map<String, Any> = mapOf(),
 ) : Shader {
-    private var program = -1
-    override lateinit var uniforms: List<String>
+    override var loaded: Boolean = false
+        private set
+    val defines: MutableMap<String, Any> = mutableMapOf()
+    private var shader = -1
+    override var uniforms: List<String> = listOf()
         private set
 
+    private fun load(resourceLocation: ResourceLocation, shaderType: Int): Int {
+        val code = GLSLShaderCode(renderWindow, renderWindow.connection.assetsManager.readStringAsset(resourceLocation))
 
-    private fun load(
-        assetsManager: AssetsManager = Minosoft.MINOSOFT_ASSETS_MANAGER,
-        resourceLocation: ResourceLocation,
-        shaderType: Int,
-        defines: Map<String, Any>,
-        uniforms: MutableList<String>
-    ): Int? {
+
         val program = glCreateShaderObjectARB(shaderType)
         if (program.toLong() == MemoryUtil.NULL) {
             throw ShaderLoadingException()
         }
-        val code = GLSLUtil.readGLSL(assetsManager, renderWindow, resourceLocation, defines, uniforms)
 
-        glShaderSourceARB(program, code)
+        glShaderSourceARB(program, code.code)
         glCompileShaderARB(program)
 
         if (glGetObjectParameteriARB(program, GL_OBJECT_COMPILE_STATUS_ARB) == GL_FALSE) {
@@ -70,57 +64,54 @@ class OpenGLShader(
         return program
     }
 
-    override fun load(assetsManager: AssetsManager) {
-        val uniforms: MutableList<String> = mutableListOf()
+    override fun load() {
         val pathPrefix = "${resourceLocation.namespace}:rendering/shader/${resourceLocation.path}/${
             resourceLocation.path.replace(
                 "/",
                 "_"
             )
         }"
-        val vertexShader =
-            load(assetsManager, ResourceLocation("$pathPrefix.vsh"), GL_VERTEX_SHADER_ARB, defines, uniforms)!!
-        val geometryShader =
-            load(assetsManager, ResourceLocation("$pathPrefix.gsh"), GL_GEOMETRY_SHADER_ARB, defines, uniforms)
-        val fragmentShader =
-            load(assetsManager, ResourceLocation("$pathPrefix.fsh"), GL_FRAGMENT_SHADER_ARB, defines, uniforms)!!
-        this.uniforms = uniforms.toList()
+        shader = glCreateProgramObjectARB()
 
-        program = glCreateProgramObjectARB()
-
-        if (program.toLong() == MemoryUtil.NULL) {
+        if (shader.toLong() == MemoryUtil.NULL) {
             throw ShaderLoadingException()
         }
 
-        glAttachObjectARB(program, vertexShader)
-        geometryShader?.let {
-            glAttachObjectARB(program, it)
-        }
-        glAttachObjectARB(program, fragmentShader)
-        glLinkProgramARB(program)
+        val programs: MutableList<Int> = mutableListOf()
 
-        if (glGetObjectParameteriARB(program, GL_OBJECT_LINK_STATUS_ARB) == GL_FALSE) {
-            throw ShaderLoadingException(OpenGLUtil.getLogInfo(program))
+
+        programs += load(ResourceLocation("$pathPrefix.vsh"), GL_VERTEX_SHADER_ARB)
+        try {
+            programs += load(ResourceLocation("$pathPrefix.gsh"), GL_GEOMETRY_SHADER_ARB)
+        } catch (exception: FileNotFoundException) {
+        }
+        programs += load(ResourceLocation("$pathPrefix.fsh"), GL_FRAGMENT_SHADER_ARB)
+
+        for (program in programs) {
+            glAttachObjectARB(shader, program)
         }
 
-        glValidateProgramARB(program)
+        glLinkProgramARB(shader)
 
-        if (glGetObjectParameteriARB(program, GL_OBJECT_VALIDATE_STATUS_ARB) == GL_FALSE) {
-            throw ShaderLoadingException(OpenGLUtil.getLogInfo(program))
+        if (glGetObjectParameteriARB(shader, GL_OBJECT_LINK_STATUS_ARB) == GL_FALSE) {
+            throw ShaderLoadingException(OpenGLUtil.getLogInfo(shader))
         }
-        glDeleteShader(vertexShader)
-        geometryShader?.let {
-            glDeleteShader(it)
-        }
-        glDeleteShader(fragmentShader)
 
-        val context = Rendering.currentContext!!
-        context.shaders.add(this)
-        context.renderSystem.unsafeCast<OpenGLRenderSystem>().shaders[this] = program
+        glValidateProgramARB(shader)
+
+        if (glGetObjectParameteriARB(shader, GL_OBJECT_VALIDATE_STATUS_ARB) == GL_FALSE) {
+            throw ShaderLoadingException(OpenGLUtil.getLogInfo(shader))
+        }
+        for (program in programs) {
+            glDeleteShader(program)
+        }
+        loaded = true
+
+        renderWindow.renderSystem.shaders += this
     }
 
     private fun getUniformLocation(uniformName: String): Int {
-        return glGetUniformLocation(program, uniformName)
+        return glGetUniformLocation(shader, uniformName)
     }
 
     override fun setFloat(uniformName: String, value: Float) {
@@ -163,7 +154,11 @@ class OpenGLShader(
     }
 
     override fun setUniformBuffer(uniformName: String, uniformBuffer: UniformBuffer) {
-        glUniformBlockBinding(program, glGetUniformBlockIndex(program, uniformName), uniformBuffer.bindingIndex)
+        glUniformBlockBinding(shader, glGetUniformBlockIndex(shader, uniformName), uniformBuffer.bindingIndex)
+    }
+
+    fun unsafeUse() {
+        glUseProgram(shader)
     }
 
     override val log: String

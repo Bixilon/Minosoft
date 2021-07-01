@@ -36,7 +36,7 @@ import java.io.StringReader
 import java.util.*
 import java.util.regex.Pattern
 
-class CommandStringReader {
+open class CommandStringReader {
     val string: String
     var cursor = 0
 

@@ -29,6 +29,7 @@ import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.MMath
 import glm_.func.rad
+import glm_.mat4x4.Mat4
 import glm_.mat4x4.Mat4d
 import glm_.vec2.Vec2
 import glm_.vec3.Vec3
@@ -39,14 +40,8 @@ class SkyRenderer(
     private val connection: PlayConnection,
     val renderWindow: RenderWindow,
 ) : Renderer {
-    private val skyboxShader = Shader(
-        renderWindow = renderWindow,
-        resourceLocation = ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "sky/skybox"),
-    )
-    private val skySunShader = Shader(
-        renderWindow = renderWindow,
-        resourceLocation = ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "sky/sun"),
-    )
+    private val skyboxShader = renderWindow.renderSystem.createShader(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "sky/skybox"))
+    private val skySunShader = renderWindow.renderSystem.createShader(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "sky/sun"))
     private val skyboxMesh = SkyboxMesh()
     private var skySunMesh = SimpleTextureMesh()
     private lateinit var sunTexture: Texture
@@ -65,7 +60,7 @@ class SkyRenderer(
         connection.registerEvent(CallbackEventInvoker.of<CameraMatrixChangeEvent> {
             val viewProjectionMatrix = it.projectionMatrix * it.viewMatrix.toMat3().toMat4()
             renderWindow.queue += {
-                skyboxShader.use().setMat4("uSkyViewProjectionMatrix", viewProjectionMatrix)
+                skyboxShader.use().setMat4("uSkyViewProjectionMatrix", Mat4(viewProjectionMatrix))
                 setSunMatrix(viewProjectionMatrix)
             }
         })
@@ -84,7 +79,7 @@ class SkyRenderer(
         } else {
             projectionViewMatrix.rotate(timeAngle, Vec3d(0.0f, 0.0f, 1.0f))
         }
-        skySunShader.use().setMat4("uSkyViewProjectionMatrix", rotatedMatrix) // ToDo: 180° is top, not correct yet
+        skySunShader.use().setMat4("uSkyViewProjectionMatrix", Mat4(rotatedMatrix))
     }
 
     override fun postInit() {

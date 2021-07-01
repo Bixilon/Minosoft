@@ -40,10 +40,7 @@ import glm_.vec2.Vec2i
 class HUDRenderer(val connection: PlayConnection, val renderWindow: RenderWindow) : Renderer {
     private val hudElements: MutableMap<ResourceLocation, Pair<HUDElementProperties, HUDElement>> = mutableMapOf()
     private val enabledHUDElement: MutableMap<ResourceLocation, Pair<HUDElementProperties, HUDElement>> = mutableMapOf()
-    private val hudShader = Shader(
-        renderWindow = renderWindow,
-        resourceLocation = ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "hud"),
-    )
+    private val hudShader = renderWindow.renderSystem.createShader(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "hud"))
     lateinit var hudAtlasElements: Map<ResourceLocation, HUDAtlasElement>
     var orthographicMatrix: Mat4 = Mat4()
         private set
@@ -55,7 +52,7 @@ class HUDRenderer(val connection: PlayConnection, val renderWindow: RenderWindow
 
 
     override fun init() {
-        hudShader.load(Minosoft.MINOSOFT_ASSETS_MANAGER)
+        hudShader.load()
 
         this.hudAtlasElements = HUDAtlasElement.deserialize(Minosoft.MINOSOFT_ASSETS_MANAGER.readJsonAsset(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "mapping/atlas.json")).toResourceLocationMap(), renderWindow.textures.allTextures)
 

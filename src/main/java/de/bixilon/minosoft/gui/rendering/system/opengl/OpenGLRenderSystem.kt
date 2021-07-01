@@ -13,13 +13,13 @@
 
 package de.bixilon.minosoft.gui.rendering.system.opengl
 
+import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.modding.events.ResizeWindowEvent
 import de.bixilon.minosoft.gui.rendering.system.base.*
 import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
 import de.bixilon.minosoft.gui.rendering.system.opengl.vendor.*
 import de.bixilon.minosoft.modding.event.CallbackEventInvoker
-import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
 import de.bixilon.minosoft.util.KUtil.synchronizedSetOf
 import glm_.vec2.Vec2i
 import org.lwjgl.BufferUtils
@@ -30,7 +30,7 @@ import java.nio.ByteBuffer
 class OpenGLRenderSystem(
     private val renderWindow: RenderWindow,
 ) : RenderSystem {
-    val shaders: MutableMap<Shader, Int> = synchronizedMapOf() // ToDo
+    override val shaders: MutableSet<Shader> = mutableSetOf()
     private val capabilities: MutableSet<RenderingCapabilities> = synchronizedSetOf()
     override lateinit var vendor: OpenGLVendor
         private set
@@ -45,8 +45,14 @@ class OpenGLRenderSystem(
             if (value === field) {
                 return
             }
-            val programId = shaders[value] ?: error("Shader not loaded: $value")
-            glUseProgram(programId)
+            value ?: error("Shader is null!")
+
+            check(value is OpenGLShader) { "Can not use non OpenGL shader in OpenGL render system!" }
+            check(value.loaded) { "Shader not loaded!" }
+            check(value in shaders) { "Shader not part of this context!" }
+
+            value.unsafeUse()
+
             field = value
         }
 
@@ -149,6 +155,10 @@ class OpenGLRenderSystem(
         val buffer: ByteBuffer = BufferUtils.createByteBuffer((end.x - start.x) * (end.y - start.y) * type.bytes)
         glReadPixels(start.x, start.y, end.x, end.y, type.gl, GL_UNSIGNED_BYTE, buffer)
         return buffer
+    }
+
+    override fun createShader(resourceLocation: ResourceLocation): OpenGLShader {
+        return OpenGLShader(renderWindow, resourceLocation)
     }
 
     companion object {

@@ -30,7 +30,6 @@ import de.bixilon.minosoft.gui.rendering.particle.ParticleRenderer
 import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
 import de.bixilon.minosoft.gui.rendering.system.base.PolygonModes
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
-import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem
 import de.bixilon.minosoft.gui.rendering.system.window.BaseWindow
 import de.bixilon.minosoft.gui.rendering.system.window.GLFWWindow
@@ -83,8 +82,6 @@ class RenderWindow(
 
     val queue = Queue()
 
-
-    val shaders: MutableList<Shader> = mutableListOf()
     val shaderManager = ShaderManager(this)
 
     lateinit var WHITE_TEXTURE: TextureLike

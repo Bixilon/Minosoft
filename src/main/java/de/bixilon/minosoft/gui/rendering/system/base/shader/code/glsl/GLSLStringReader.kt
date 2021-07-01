@@ -11,18 +11,8 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering
+package de.bixilon.minosoft.gui.rendering.system.base.shader.code.glsl
 
-import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.data.commands.CommandStringReader
 
-class ShaderManager(
-    val renderWindow: RenderWindow,
-) {
-    val genericColorShader = renderWindow.renderSystem.createShader(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "generic/color"))
-
-
-    fun init() {
-        genericColorShader.load()
-    }
-}
+class GLSLStringReader(text: String) : CommandStringReader(text)
