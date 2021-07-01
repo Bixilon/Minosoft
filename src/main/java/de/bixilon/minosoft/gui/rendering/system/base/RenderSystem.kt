@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.system.base
 
-import de.bixilon.minosoft.gui.rendering.shader.Shader
+import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
 import glm_.vec2.Vec2i
 import java.nio.ByteBuffer
 

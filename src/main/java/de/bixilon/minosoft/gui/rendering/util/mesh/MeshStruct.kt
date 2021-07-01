@@ -16,7 +16,11 @@ package de.bixilon.minosoft.gui.rendering.util.mesh
 import de.bixilon.minosoft.data.text.RGBColor
 import glm_.mat4x4.Mat4
 import glm_.vec2.Vec2
+import glm_.vec2.Vec2d
+import glm_.vec2.Vec2i
 import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
+import glm_.vec3.Vec3i
 import kotlin.reflect.KClass
 import kotlin.reflect.KParameter
 import kotlin.reflect.full.primaryConstructor
@@ -43,8 +47,12 @@ abstract class MeshStruct(val struct: KClass<*>) {
             get() {
                 return when (this) {
                     Mat4::class -> 4 * 4 * Float.SIZE_BYTES
+                    Vec3d::class -> 3 * Double.SIZE_BYTES
                     Vec3::class -> 3 * Float.SIZE_BYTES
+                    Vec3i::class -> 2 * Int.SIZE_BYTES
+                    Vec2d::class -> 2 * Double.SIZE_BYTES
                     Vec2::class -> 2 * Float.SIZE_BYTES
+                    Vec2i::class -> 2 * Int.SIZE_BYTES
                     Float::class -> Float.SIZE_BYTES
                     Int::class -> Int.SIZE_BYTES
                     RGBColor::class -> Int.SIZE_BYTES
