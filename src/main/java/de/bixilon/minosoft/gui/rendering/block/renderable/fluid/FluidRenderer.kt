@@ -33,6 +33,7 @@ import de.bixilon.minosoft.gui.rendering.block.renderable.WorldEntryRenderer
 import de.bixilon.minosoft.gui.rendering.block.renderable.block.ElementRenderer
 import de.bixilon.minosoft.gui.rendering.textures.Texture
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
+import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.util.KUtil.nullCast
 import glm_.glm
 import glm_.vec2.Vec2
@@ -140,7 +141,7 @@ class FluidRenderer(
 
     private fun createQuad(drawPositions: Array<Vec3>, texturePositions: Array<Vec2?>, texture: Texture, blockPosition: Vec3i, meshCollection: ChunkSectionMeshCollection, tintColor: RGBColor?, light: Int) {
         val mesh = ElementRenderer.getMesh(meshCollection, texture.transparency)
-        for (vertex in ElementRenderer.DRAW_ODER) {
+        for (vertex in Mesh.QUAD_DRAW_ODER) {
             mesh.addVertex(
                 position = blockPosition plus drawPositions[vertex.first] plus ElementRenderer.DRAW_OFFSET,
                 textureCoordinates = texturePositions[vertex.second]!!,

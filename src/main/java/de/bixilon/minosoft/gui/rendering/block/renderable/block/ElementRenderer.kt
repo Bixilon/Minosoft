@@ -32,6 +32,7 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.rotate
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3
+import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import glm_.vec3.Vec3
 
 class ElementRenderer(
@@ -107,7 +108,7 @@ class ElementRenderer(
         val mesh = getMesh(context.meshCollection, texture.transparency)
         val texturePositions = face.getTexturePositionArray(realDirection)
 
-        for ((drawPositionIndex, texturePositionIndex) in DRAW_ODER) {
+        for ((drawPositionIndex, texturePositionIndex) in Mesh.QUAD_DRAW_ODER) {
             val input = drawPositions[drawPositionIndex]
             val output = context.blockPosition.toVec3 + input + DRAW_OFFSET + context.offset
 
@@ -130,14 +131,6 @@ class ElementRenderer(
     }
 
     companion object {
-        val DRAW_ODER = arrayOf(
-            0 to 1,
-            3 to 2,
-            2 to 3,
-            2 to 3,
-            1 to 0,
-            0 to 1,
-        )
 
         fun createElements(data: JsonObject, model: BlockModel, rotation: Vec3, directionMapping: HashBiMap<Directions, Directions>): List<ElementRenderer> {
             val result: MutableList<ElementRenderer> = mutableListOf()

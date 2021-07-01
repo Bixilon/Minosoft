@@ -32,7 +32,6 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import glm_.func.rad
 import glm_.mat4x4.Mat4
 import glm_.mat4x4.Mat4d
-import glm_.vec2.Vec2
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3d
 
@@ -93,20 +92,18 @@ class SkyRenderer(
 
             skySunMesh = SimpleTextureMesh()
 
-            fun addQuad(start: Vec3, end: Vec3, texture: Texture, tintColor: RGBColor) {
-                skySunMesh.addVertex(Vec3(start.x, start.y, start.z), texture, Vec2(0.0, 0.0), tintColor)
-                skySunMesh.addVertex(Vec3(end.x, end.y, start.z), texture, Vec2(0.0f, 1.0), tintColor)
-                skySunMesh.addVertex(Vec3(end.x, end.y, end.z), texture, Vec2(1.0f, 1.0f), tintColor)
-                skySunMesh.addVertex(Vec3(end.x, end.y, end.z), texture, Vec2(1.0f, 1.0f), tintColor)
-                skySunMesh.addVertex(Vec3(start.x, start.y, end.z), texture, Vec2(0.0f, 1.0f), tintColor)
-                skySunMesh.addVertex(Vec3(start.x, start.y, start.z), texture, Vec2(0.0f, 0.0f), tintColor)
-            }
 
-            addQuad(
+            skySunMesh.addQuad(
                 start = Vec3(-0.15f, 1.0f, -0.15f),
                 end = Vec3(+0.15f, 1.0f, +0.15f),
-                texture = sunTexture,
-                tintColor = ChatColors.WHITE.with(alpha = 1.0f - connection.world.rainGradient), // ToDo: Depends on time
+                vertexConsumer = { position, textureCoordinate ->
+                    skySunMesh.addVertex(
+                        position = position,
+                        texture = sunTexture,
+                        textureCoordinates = textureCoordinate,
+                        tintColor = ChatColors.WHITE.with(alpha = 1.0f - connection.world.rainGradient), // ToDo: Depends on time
+                    )
+                }
             )
             skySunMesh.load()
         }

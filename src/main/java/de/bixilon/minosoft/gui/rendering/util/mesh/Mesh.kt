@@ -17,6 +17,8 @@ import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct.Companion.BYTES
 import de.bixilon.minosoft.util.KUtil.unsafeCast
 import de.bixilon.minosoft.util.Util
 import de.bixilon.minosoft.util.collections.ArrayFloatList
+import glm_.vec2.Vec2
+import glm_.vec3.Vec3
 import org.lwjgl.opengl.GL11.GL_TRIANGLES
 import org.lwjgl.opengl.GL11.glDrawArrays
 import org.lwjgl.opengl.GL30.*
@@ -102,9 +104,38 @@ abstract class Mesh(
         state = MeshStates.UNLOADED
     }
 
+    fun addQuad(start: Vec3, end: Vec3, textureStart: Vec2 = Vec2(0.0f, 0.0f), textureEnd: Vec2 = Vec2(1.0f, 1.0f), vertexConsumer: (position: Vec3, textureCoordinate: Vec2) -> Unit) {
+        val positions = arrayOf(
+            start,
+            Vec3(start.x, start.y, end.z),
+            end,
+            Vec3(end.x, end.y, start.z),
+        )
+        val texturePositions = arrayOf(
+            Vec2(textureEnd.x, textureStart.y),
+            textureStart,
+            Vec2(textureStart.x, textureEnd.y),
+            textureEnd,
+        )
+        for ((vertexIndex, textureIndex) in QUAD_DRAW_ODER) {
+            vertexConsumer.invoke(positions[vertexIndex], texturePositions[textureIndex])
+        }
+    }
+
     enum class MeshStates {
         PREPARING,
         LOADED,
         UNLOADED,
+    }
+
+    companion object {
+        val QUAD_DRAW_ODER = arrayOf(
+            0 to 1,
+            3 to 2,
+            2 to 3,
+            2 to 3,
+            1 to 0,
+            0 to 1,
+        )
     }
 }

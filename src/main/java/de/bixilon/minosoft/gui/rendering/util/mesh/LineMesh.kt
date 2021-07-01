@@ -16,7 +16,6 @@ package de.bixilon.minosoft.gui.rendering.util.mesh
 import de.bixilon.minosoft.data.registries.AABB
 import de.bixilon.minosoft.data.registries.VoxelShape
 import de.bixilon.minosoft.data.text.RGBColor
-import de.bixilon.minosoft.gui.rendering.block.renderable.block.ElementRenderer
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
 import de.bixilon.minosoft.util.BitByte.isBit
 import de.bixilon.minosoft.util.MMath.positiveNegative
@@ -49,7 +48,7 @@ open class LineMesh : GenericColorMesh() {
             end + normal1 * normal1Multiplier * halfLineWidth + direction * halfLineWidth,
             end + normal2 * normal2Multiplier * halfLineWidth + direction * halfLineWidth,
         )
-        for ((_, positionIndex) in ElementRenderer.DRAW_ODER) {
+        for ((_, positionIndex) in Mesh.QUAD_DRAW_ODER) {
             addVertex(positions[positionIndex], color)
         }
     }
