@@ -16,6 +16,7 @@ import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.registries.registry.RegistryItem
 import de.bixilon.minosoft.data.registries.registry.ResourceLocationDeserializer
 import de.bixilon.minosoft.data.registries.versions.Registries
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.lerp
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.nullCast
 
@@ -48,6 +49,18 @@ data class Dimension(
     } else {
         height / ProtocolDefinition.SECTION_HEIGHT_Y
     }
+    val lightLevels = FloatArray(16)
+
+    init {
+        val ambientLight = 0.0f // ToDo: 0.1 in nether
+
+        for (i in lightLevels.indices) {
+            val asFloat = i / 15.0f
+
+            lightLevels[i] = lerp(ambientLight, asFloat / (4.0f - 3.0f * asFloat), 1.0f)
+        }
+    }
+
 
     override fun toString(): String {
         return resourceLocation.full

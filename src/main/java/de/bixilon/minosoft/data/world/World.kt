@@ -39,11 +39,17 @@ import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.modding.event.events.BlockSetEvent
 import de.bixilon.minosoft.modding.event.events.ChunkUnloadEvent
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
 import de.bixilon.minosoft.util.KUtil.toSynchronizedMap
+import de.bixilon.minosoft.util.MMath
+import glm_.func.common.clamp
 import glm_.vec2.Vec2i
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3i
+import kotlin.math.PI
+import kotlin.math.abs
+import kotlin.math.cos
 import kotlin.random.Random
 
 /**
@@ -63,6 +69,9 @@ class World(
     var biomeAccessor: BiomeAccessor = NullBiomeAccessor
     var time = 0L
     var age = 0L
+    var raining = false
+    var rainGradient = 0.0f
+    var thunderGradient = 0.0f
     private val random = Random
 
     var audioPlayer: AudioPlayer? = null
@@ -251,6 +260,24 @@ class World(
         }
         return true
     }
+
+    val skyAngle: Double
+        get() {
+            val fractionalPath = MMath.fractionalPart(abs(time) / ProtocolDefinition.TICKS_PER_DAYf - 0.25)
+            val angle = 0.5 - cos(fractionalPath * Math.PI) / 2.0
+            return (fractionalPath * 2.0 + angle) / 3.0
+        }
+
+    val lightBase: Double
+        get() {
+            var base = 1.0f - (cos(skyAngle * 2.0 * PI) * 2.0 + 0.2)
+            base = base.clamp(0.0, 1.0)
+            base = 1.0 - base
+
+            base *= 1.0 - ((rainGradient * 5.0) / 16.0)
+            base *= 1.0 - (((thunderGradient * rainGradient) * 5.0) / 16.0)
+            return base * 0.8 + 0.2
+        }
 
     companion object {
         const val MAX_SIZE = 29999999

@@ -536,10 +536,10 @@
       "minecraft:arrow_player_hit": {
         "id": 6
       },
-      "minecraft:rain_level_set": {
+      "minecraft:rain_gradient_set": {
         "id": 7
       },
-      "minecraft:thunder_level_Set": {
+      "minecraft:thunder_gradient_set": {
         "id": 8
       },
       "minecraft:pufferfish_sting": {
@@ -571,10 +571,10 @@
       "minecraft:arrow_player_hit": {
         "id": 6
       },
-      "minecraft:rain_level_set": {
+      "minecraft:rain_gradient_set": {
         "id": 7
       },
-      "minecraft:thunder_level_Set": {
+      "minecraft:thunder_gradient_set": {
         "id": 8
       },
       "minecraft:pufferfish_sting": {

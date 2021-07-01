@@ -27,14 +27,12 @@ import de.bixilon.minosoft.modding.event.CallbackEventInvoker
 import de.bixilon.minosoft.modding.event.events.TimeChangeEvent
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import de.bixilon.minosoft.util.MMath
 import glm_.func.rad
 import glm_.mat4x4.Mat4
 import glm_.mat4x4.Mat4d
 import glm_.vec2.Vec2
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3d
-import kotlin.math.cos
 
 class SkyRenderer(
     private val connection: PlayConnection,
@@ -73,7 +71,7 @@ class SkyRenderer(
     }
 
     private fun setSunMatrix(projectionViewMatrix: Mat4d) {
-        val timeAngle = ((getSkyAngle(connection.world.time) * 360.0) + 180.0).rad
+        val timeAngle = (connection.world.skyAngle * 360.0).rad
         val rotatedMatrix = if (timeAngle == 0.0) {
             projectionViewMatrix
         } else {
@@ -150,12 +148,6 @@ class SkyRenderer(
 
         override fun build(connection: PlayConnection, renderWindow: RenderWindow): SkyRenderer {
             return SkyRenderer(connection, renderWindow)
-        }
-
-        fun getSkyAngle(time: Long): Double {
-            val fractionalPath = MMath.fractionalPart(time / ProtocolDefinition.TICKS_PER_DAYf - 0.25)
-            val angle = 0.5 - cos(fractionalPath * Math.PI) / 2.0
-            return (fractionalPath * 2.0 + angle) / 3.0
         }
     }
 }

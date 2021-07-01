@@ -87,6 +87,22 @@ object VecUtil {
         )
     }
 
+    infix operator fun Vec3.times(lambda: () -> Float): Vec3 {
+        return Vec3(
+            x = x * lambda(),
+            y = y * lambda(),
+            z = z * lambda(),
+        )
+    }
+
+    infix fun Vec3.modify(lambda: (Float) -> Float): Vec3 {
+        return Vec3(
+            x = lambda(x),
+            y = lambda(y),
+            z = lambda(z),
+        )
+    }
+
     infix operator fun Vec3d.plus(lambda: () -> Double): Vec3d {
         return Vec3d(
             x = x + lambda(),

@@ -54,7 +54,10 @@ class FluidRenderer(
         if (!RenderConstants.RENDER_FLUIDS) {
             return
         }
-        val lightLevel = context.lightAccessor.getLightLevel(context.blockPosition)
+        val blockLight = context.lightAccessor.getBlockLight(context.blockPosition)
+        val skyLight = context.lightAccessor.getSkyLight(context.blockPosition)
+
+        val light = (skyLight shl 4) or blockLight
         val heights = calculateHeights(context.neighbourBlocks, context.blockState, context.world, context.blockPosition)
         val isFlowing = isLiquidFlowing(heights)
 
@@ -88,7 +91,7 @@ class FluidRenderer(
                 tintColor = context.renderWindow.tintColorCalculator.getAverageTint(biome, context.blockState, context.blockPosition)
             }
 
-            createQuad(drawPositions, face.getTexturePositionArray(direction), texture, context.blockPosition, context.meshCollection, tintColor, lightLevel)
+            createQuad(drawPositions, face.getTexturePositionArray(direction), texture, context.blockPosition, context.meshCollection, tintColor, light)
         }
     }
 
@@ -135,7 +138,7 @@ class FluidRenderer(
         return heights.toSet().size != 1 // liquid is flowing, if not all of the heights are the same
     }
 
-    private fun createQuad(drawPositions: Array<Vec3>, texturePositions: Array<Vec2?>, texture: Texture, blockPosition: Vec3i, meshCollection: ChunkSectionMeshCollection, tintColor: RGBColor?, lightLevel: Int) {
+    private fun createQuad(drawPositions: Array<Vec3>, texturePositions: Array<Vec2?>, texture: Texture, blockPosition: Vec3i, meshCollection: ChunkSectionMeshCollection, tintColor: RGBColor?, light: Int) {
         val mesh = ElementRenderer.getMesh(meshCollection, texture.transparency)
         for (vertex in ElementRenderer.DRAW_ODER) {
             mesh.addVertex(
@@ -143,7 +146,7 @@ class FluidRenderer(
                 textureCoordinates = texturePositions[vertex.second]!!,
                 texture = texture,
                 tintColor = tintColor,
-                light = lightLevel,
+                light = light,
             )
         }
     }

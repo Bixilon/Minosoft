@@ -16,7 +16,15 @@ package de.bixilon.minosoft.data.registries.other.game.event
 import de.bixilon.minosoft.data.registries.DefaultFactory
 import de.bixilon.minosoft.data.registries.other.game.event.handlers.GameEventHandler
 import de.bixilon.minosoft.data.registries.other.game.event.handlers.GameMoveChangeGameEventHandler
+import de.bixilon.minosoft.data.registries.other.game.event.handlers.gradients.RainGradientSetGameEventHandler
+import de.bixilon.minosoft.data.registries.other.game.event.handlers.gradients.ThunderGradientSetGameEventHandler
+import de.bixilon.minosoft.data.registries.other.game.event.handlers.rain.RainStartGameEventHandler
+import de.bixilon.minosoft.data.registries.other.game.event.handlers.rain.RainStopGameEventHandler
 
 object DefaultGameEventHandlers : DefaultFactory<GameEventHandler>(
-    GameMoveChangeGameEventHandler
+    GameMoveChangeGameEventHandler,
+    RainStartGameEventHandler,
+    RainStopGameEventHandler,
+    RainGradientSetGameEventHandler,
+    ThunderGradientSetGameEventHandler,
 )

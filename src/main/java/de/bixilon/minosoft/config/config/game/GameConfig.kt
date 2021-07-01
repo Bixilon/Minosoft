@@ -30,4 +30,5 @@ data class GameConfig(
     var sound: SoundConfig = SoundConfig(),
     var entities: EntitiesConfig = EntitiesConfig(),
     var world: WorldConfig = WorldConfig(),
+    var light: LightConfig = LightConfig(),
 )

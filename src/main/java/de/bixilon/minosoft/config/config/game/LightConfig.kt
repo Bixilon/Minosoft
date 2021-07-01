@@ -11,18 +11,8 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.effects
+package de.bixilon.minosoft.config.config.game
 
-import de.bixilon.minosoft.util.KUtil.asResourceLocation
-
-object DefaultStatusEffects {
-    val BLINDNESS = "minecraft:blindness".asResourceLocation()
-    val SLOW_FALLING = "minecraft:slow_falling".asResourceLocation()
-    val LEVITATION = "minecraft:levitation".asResourceLocation()
-    val JUMP_BOOST = "minecraft:jump_boost".asResourceLocation()
-    val HASTE = "minecraft:haste".asResourceLocation()
-    val MINING_FATIGUE = "minecraft:mining_fatigue".asResourceLocation()
-    val DOLPHINS_GRACE = "minecraft:dolphins_grace".asResourceLocation()
-    val NIGHT_VISION = "minecraft:night_vision".asResourceLocation()
-    val CONDUIT_POWER = "minecraft:conduit_power".asResourceLocation()
-}
+data class LightConfig(
+    var gamma: Float = 1.0f,
+)
