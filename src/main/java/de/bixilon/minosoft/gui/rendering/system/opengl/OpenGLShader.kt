@@ -42,17 +42,20 @@ class OpenGLShader(
         private set
     val defines: MutableMap<String, Any> = mutableMapOf()
     private var shader = -1
-    override var uniforms: List<String> = listOf()
+    override var uniforms: MutableList<String> = mutableListOf()
         private set
 
     private fun load(resourceLocation: ResourceLocation, shaderType: Int): Int {
         val code = GLSLShaderCode(renderWindow, renderWindow.connection.assetsManager.readStringAsset(resourceLocation))
 
+        code.defines += defines
 
         val program = glCreateShaderObjectARB(shaderType)
         if (program.toLong() == MemoryUtil.NULL) {
             throw ShaderLoadingException()
         }
+
+        this.uniforms += code.uniforms
 
         glShaderSourceARB(program, code.code)
         glCompileShaderARB(program)

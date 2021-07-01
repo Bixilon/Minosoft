@@ -32,6 +32,9 @@ class GLSLShaderCode(
                 continue
             }
             val reader = GLSLStringReader(line.removePrefix("uniform "))
+            reader.skipWhitespaces()
+            reader.readUnquotedString() // data type
+            reader.skipWhitespaces()
 
             uniforms += reader.readUnquotedString()
         }

@@ -60,6 +60,10 @@ interface Shader {
             is Vec4 -> setVec4(uniformName, data)
             is Vec3 -> setVec3(uniformName, data)
             is Vec2 -> setVec2(uniformName, data)
+            is RGBColor -> setRGBColor(uniformName, data)
+            is UniformBuffer -> setUniformBuffer(uniformName, data)
+            // ToDo: Texture
+            else -> error("Don't know what todo with uniform type ${data::class.simpleName}!")
         }
     }
 
