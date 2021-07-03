@@ -81,7 +81,7 @@ enum class BlockProperties {
     BAMBOO_LEAVES("leaves", BambooLeaves),
     REPEATER_LOCKED("locked", BooleanBlockPropertiesSerializer),
     REPEATER_DELAY("delay", IntBlockPropertiesSerializer),
-    PORTA_FRAME_EYE("eye", BooleanBlockPropertiesSerializer),
+    PORTAL_FRAME_EYE("eye", BooleanBlockPropertiesSerializer),
     JUKEBOX_HAS_RECORD("has_record", BooleanBlockPropertiesSerializer),
     CAMPFIRE_SIGNAL_FIRE("signal_fire", BooleanBlockPropertiesSerializer),
     TURTLE_EGS_EGGS("eggs", IntBlockPropertiesSerializer),
