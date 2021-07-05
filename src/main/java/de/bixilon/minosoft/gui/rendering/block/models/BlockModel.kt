@@ -26,7 +26,7 @@ open class BlockModel(
 ) {
     val textures: Map<String, String>
     val elements: List<BlockModelElement>
-    val rotation: Vec3 = Vec3(data["x"]?.nullCast<Float>() ?: parent?.rotation?.x ?: 0.0f, data["y"]?.nullCast<Float>() ?: parent?.rotation?.y ?: 0.0f, data["z"]?.nullCast<Float>() ?: parent?.rotation?.z ?: 0.0f).rad
+    val rotation: Vec3 = Vec3(data["x"]?.unsafeCast<Double>() ?: parent?.rotation?.x ?: 0.0f, data["y"]?.unsafeCast<Double>() ?: parent?.rotation?.y ?: 0.0f, data["z"]?.unsafeCast<Double>() ?: parent?.rotation?.z ?: 0.0f).rad
     val uvLock: Boolean = data["uvlock"]?.nullCast<Boolean>() ?: parent?.uvLock ?: false
     val rescale: Boolean = data["rescale"]?.nullCast<Boolean>() ?: parent?.rescale ?: false
     val ambientOcclusion: Boolean = data["ambientocclusion"]?.nullCast<Boolean>() ?: parent?.ambientOcclusion ?: true

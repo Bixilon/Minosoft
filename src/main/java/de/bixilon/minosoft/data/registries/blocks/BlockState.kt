@@ -26,7 +26,7 @@ import de.bixilon.minosoft.gui.rendering.block.models.BlockModel
 import de.bixilon.minosoft.gui.rendering.block.renderable.WorldEntryRenderer
 import de.bixilon.minosoft.gui.rendering.block.renderable.block.BlockRenderer
 import de.bixilon.minosoft.gui.rendering.block.renderable.block.MultipartRenderer
-import de.bixilon.minosoft.util.KUtil.nullCast
+import de.bixilon.minosoft.util.KUtil.toInt
 import de.bixilon.minosoft.util.KUtil.unsafeCast
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.booleanCast
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
@@ -156,7 +156,7 @@ data class BlockState(
                 }
             }
 
-            val tintColor: RGBColor? = data["tint_color"]?.nullCast<Int>()?.let { TintColorCalculator.getJsonColor(it) } ?: block.tintColor
+            val tintColor: RGBColor? = data["tint_color"]?.toInt()?.let { TintColorCalculator.getJsonColor(it) } ?: block.tintColor
 
 
             val material = registries.materialRegistry[ResourceLocation(data["material"]!!.unsafeCast())]!!
@@ -194,15 +194,15 @@ data class BlockState(
                 collisionShape = collisionShape,
                 occlusionShape = occlusionShape,
                 outlineShape = outlineShape,
-                hardness = data["hardness"]?.nullCast<Float>() ?: 1.0f,
+                hardness = data["hardness"]?.unsafeCast<Float>() ?: 1.0f,
                 requiresTool = data["requires_tool"]?.booleanCast() ?: material.soft,
-                breakSoundEvent = data["break_sound_type"]?.nullCast<Int>()?.let { registries.soundEventRegistry[it] },
-                stepSoundEvent = data["step_sound_type"]?.nullCast<Int>()?.let { registries.soundEventRegistry[it] },
-                placeSoundEvent = data["place_sound_type"]?.nullCast<Int>()?.let { registries.soundEventRegistry[it] },
-                hitSoundEvent = data["hit_sound_type"]?.nullCast<Int>()?.let { registries.soundEventRegistry[it] },
-                fallSoundEvent = data["fall_sound_type"]?.nullCast<Int>()?.let { registries.soundEventRegistry[it] },
-                soundEventVolume = data["sound_type_volume"]?.nullCast<Float>() ?: 1.0f,
-                soundEventPitch = data["sound_type_pitch"]?.nullCast<Float>() ?: 1.0f,
+                breakSoundEvent = data["break_sound_type"]?.toInt()?.let { registries.soundEventRegistry[it] },
+                stepSoundEvent = data["step_sound_type"]?.toInt()?.let { registries.soundEventRegistry[it] },
+                placeSoundEvent = data["place_sound_type"]?.toInt()?.let { registries.soundEventRegistry[it] },
+                hitSoundEvent = data["hit_sound_type"]?.toInt()?.let { registries.soundEventRegistry[it] },
+                fallSoundEvent = data["fall_sound_type"]?.toInt()?.let { registries.soundEventRegistry[it] },
+                soundEventVolume = data["sound_type_volume"]?.unsafeCast<Float>() ?: 1.0f,
+                soundEventPitch = data["sound_type_pitch"]?.unsafeCast<Float>() ?: 1.0f,
             )
         }
 

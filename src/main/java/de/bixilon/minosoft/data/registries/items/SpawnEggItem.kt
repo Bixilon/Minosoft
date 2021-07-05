@@ -17,15 +17,15 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.versions.Registries
 import de.bixilon.minosoft.data.text.RGBColor.Companion.asRGBColor
-import de.bixilon.minosoft.util.KUtil.nullCast
+import de.bixilon.minosoft.util.KUtil.toInt
 
 open class SpawnEggItem(
     resourceLocation: ResourceLocation,
     registries: Registries,
     data: Map<String, Any>,
 ) : Item(resourceLocation, registries, data) {
-    val color1 = data["spawn_egg_color_1"]?.nullCast<Int>()?.asRGBColor()
-    val color2 = data["spawn_egg_color_2"]?.nullCast<Int>()?.asRGBColor()
+    val color1 = data["spawn_egg_color_1"]?.toInt()?.asRGBColor()
+    val color2 = data["spawn_egg_color_2"]?.toInt()?.asRGBColor()
     val entityType: EntityType? = null
 
     init {

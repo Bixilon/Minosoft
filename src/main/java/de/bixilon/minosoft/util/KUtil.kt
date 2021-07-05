@@ -261,9 +261,10 @@ object KUtil {
 
     fun Any.toInt(): Int {
         return when (this) {
-            is String -> Integer.valueOf(this)
             is Int -> this
             is Number -> this.toInt()
+            is String -> Integer.valueOf(this)
+            is Long -> this.toInt()
             else -> TODO()
         }
     }

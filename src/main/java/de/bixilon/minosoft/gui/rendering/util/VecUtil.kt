@@ -25,7 +25,7 @@ import de.bixilon.minosoft.data.registries.blocks.RandomOffsetTypes
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.gui.rendering.block.models.BlockModelElement
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import de.bixilon.minosoft.util.KUtil.nullCast
+import de.bixilon.minosoft.util.KUtil.unsafeCast
 import glm_.func.common.ceil
 import glm_.func.common.clamp
 import glm_.func.common.floor
@@ -62,7 +62,7 @@ object VecUtil {
             is List<*> -> Vec3(this[0] as Double, this[1] as Double, this[2] as Double)
             is JsonArray -> Vec3(this[0].asFloat, this[1].asFloat, this[2].asFloat)
             is JsonObject -> Vec3(this["x"]?.asFloat ?: 0, this["y"]?.asFloat ?: 0, this["z"]?.asFloat ?: 0)
-            is Map<*, *> -> Vec3(this["x"]?.nullCast<Float>() ?: 0, this["y"]?.nullCast<Float>() ?: 0, this["z"]?.nullCast<Float>() ?: 0)
+            is Map<*, *> -> Vec3(this["x"]?.unsafeCast<Double>() ?: 0, this["y"]?.unsafeCast<Double>() ?: 0, this["z"]?.unsafeCast<Double>() ?: 0)
             is JsonPrimitive -> Vec3(this.asFloat)
             is Float -> Vec3(this)
             is Double -> Vec3(this)

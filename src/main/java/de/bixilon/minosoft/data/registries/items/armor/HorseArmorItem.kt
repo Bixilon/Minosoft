@@ -17,12 +17,13 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.items.Item
 import de.bixilon.minosoft.data.registries.versions.Registries
 import de.bixilon.minosoft.util.KUtil.nullCast
+import de.bixilon.minosoft.util.KUtil.toInt
 
 open class HorseArmorItem(
     resourceLocation: ResourceLocation,
     registries: Registries,
     data: Map<String, Any>,
 ) : Item(resourceLocation, registries, data) {
-    val horseProtection = data["horse_protection"]?.nullCast<Int>() ?: 0
+    val horseProtection = data["horse_protection"]?.toInt() ?: 0
     val horseTexture = data["horse_texture"]?.nullCast<String>()
 }

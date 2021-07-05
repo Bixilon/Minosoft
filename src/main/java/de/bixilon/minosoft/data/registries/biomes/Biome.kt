@@ -23,6 +23,8 @@ import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.TintColorCalculator
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.nullCast
+import de.bixilon.minosoft.util.KUtil.toInt
+import de.bixilon.minosoft.util.KUtil.unsafeCast
 import de.bixilon.minosoft.util.MMath
 import java.util.*
 
@@ -63,17 +65,17 @@ data class Biome(
             check(registries != null) { "Registries is null!" }
             return Biome(
                 resourceLocation = resourceLocation,
-                depth = data["depth"]?.nullCast<Float>() ?: 0.0f,
-                scale = data["scale"]?.nullCast<Float>() ?: 0.0f,
-                temperature = data["temperature"]?.nullCast<Float>() ?: 0.0f,
-                downfall = data["downfall"]?.nullCast<Float>() ?: 0.0f,
-                waterColor = TintColorCalculator.getJsonColor(data["water_color"]?.nullCast<Int>() ?: 0),
-                waterFogColor = TintColorCalculator.getJsonColor(data["water_fog_color"]?.nullCast<Int>() ?: 0),
-                category = registries.biomeCategoryRegistry[data["category"]?.nullCast<Int>() ?: -1] ?: DEFAULT_CATEGORY,
-                precipitation = registries.biomePrecipitationRegistry[data["precipitation"]?.nullCast<Int>() ?: -1] ?: DEFAULT_PRECIPITATION,
-                skyColor = data["sky_color"]?.nullCast<Int>()?.asRGBColor() ?: RenderConstants.GRASS_FAILOVER_COLOR,
-                foliageColorOverride = TintColorCalculator.getJsonColor(data["foliage_color_override"]?.nullCast<Int>() ?: 0),
-                grassColorOverride = TintColorCalculator.getJsonColor(data["grass_color_override"]?.nullCast<Int>() ?: 0),
+                depth = data["depth"]?.unsafeCast<Float>() ?: 0.0f,
+                scale = data["scale"]?.unsafeCast<Float>() ?: 0.0f,
+                temperature = data["temperature"]?.unsafeCast<Float>() ?: 0.0f,
+                downfall = data["downfall"]?.unsafeCast<Float>() ?: 0.0f,
+                waterColor = TintColorCalculator.getJsonColor(data["water_color"]?.toInt() ?: 0),
+                waterFogColor = TintColorCalculator.getJsonColor(data["water_fog_color"]?.toInt() ?: 0),
+                category = registries.biomeCategoryRegistry[data["category"]?.toInt() ?: -1] ?: DEFAULT_CATEGORY,
+                precipitation = registries.biomePrecipitationRegistry[data["precipitation"]?.toInt() ?: -1] ?: DEFAULT_PRECIPITATION,
+                skyColor = data["sky_color"]?.toInt()?.asRGBColor() ?: RenderConstants.GRASS_FAILOVER_COLOR,
+                foliageColorOverride = TintColorCalculator.getJsonColor(data["foliage_color_override"]?.toInt() ?: 0),
+                grassColorOverride = TintColorCalculator.getJsonColor(data["grass_color_override"]?.toInt() ?: 0),
                 descriptionId = data["water_fog_color"]?.nullCast(),
                 grassColorModifier = data["grass_color_modifier"]?.nullCast<String>()?.uppercase(Locale.getDefault())?.let { GrassColorModifiers.valueOf(it) } ?: when (resourceLocation) {
                     ResourceLocation("minecraft:swamp"), ResourceLocation("minecraft:swamp_hills") -> GrassColorModifiers.SWAMP

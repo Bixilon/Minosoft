@@ -49,8 +49,8 @@ open class Block(
     registries: Registries,
     data: Map<String, Any>,
 ) : RegistryItem() {
-    open val explosionResistance: Float = data["explosion_resistance"]?.nullCast<Float>() ?: 0.0f
-    open val tintColor: RGBColor? = data["tint_color"]?.nullCast<Int>()?.let { TintColorCalculator.getJsonColor(it) }
+    open val explosionResistance: Float = data["explosion_resistance"]?.unsafeCast<Float>() ?: 0.0f
+    open val tintColor: RGBColor? = data["tint_color"]?.toInt()?.let { TintColorCalculator.getJsonColor(it) }
     open val randomOffsetType: RandomOffsetTypes? = data["offset_type"]?.nullCast<String>()?.let { RandomOffsetTypes[it] }
     open val tint: ResourceLocation? = data["tint"]?.nullCast<String>()?.let { ResourceLocation(it) }
     open val renderOverride: List<WorldEntryRenderer>? = null

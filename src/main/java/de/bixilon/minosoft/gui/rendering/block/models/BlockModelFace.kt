@@ -18,6 +18,7 @@ import de.bixilon.minosoft.data.registries.AABB
 import de.bixilon.minosoft.gui.rendering.util.VecUtil
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.readUV
 import de.bixilon.minosoft.util.KUtil.nullCast
+import de.bixilon.minosoft.util.KUtil.toInt
 import de.bixilon.minosoft.util.KUtil.unsafeCast
 import glm_.func.cos
 import glm_.func.sin
@@ -50,7 +51,7 @@ class BlockModelFace {
             }
         }
         val positions = calculateTexturePositions(data, from, to, direction)
-        val rotation = data["rotation"]?.nullCast<Int>()?.div(90) ?: 0
+        val rotation = data["rotation"]?.toInt()?.div(90) ?: 0
         Collections.rotate(positions, rotation)
         this.positions = positions.toList()
     }

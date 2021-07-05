@@ -18,6 +18,8 @@ import de.bixilon.minosoft.data.registries.versions.Registries
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.lerp
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.nullCast
+import de.bixilon.minosoft.util.KUtil.toInt
+import de.bixilon.minosoft.util.KUtil.unsafeCast
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.booleanCast
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.get
 
@@ -73,19 +75,19 @@ data class Dimension(
                 resourceLocation = resourceLocation,
                 piglinSafe = data["piglin_safe"]?.booleanCast() ?: false,
                 natural = data["natural"]?.booleanCast() ?: false,
-                ambientLight = data["ambient_light"]?.nullCast<Float>() ?: 0.0f,
+                ambientLight = data["ambient_light"]?.unsafeCast<Float>() ?: 0.0f,
                 infiniBurn = ResourceLocation(data["infiniburn"]?.nullCast<String>() ?: "infiniburn_overworld"),
                 respawnAnchorWorks = data["respawn_anchor_works"]?.booleanCast() ?: false,
                 hasSkyLight = data["has_skylight", "has_sky_light"]?.booleanCast() ?: false,
                 bedWorks = data["bed_works"]?.booleanCast() ?: false,
                 effects = ResourceLocation(data["effects"]?.nullCast<String>() ?: "overworld"),
                 hasRaids = data["has_raids"]?.booleanCast() ?: false,
-                logicalHeight = data["logical_height"]?.nullCast<Int>() ?: 256,
+                logicalHeight = data["logical_height"]?.toInt() ?: 256,
                 coordinateScale = data["coordinate_scale"]?.nullCast() ?: 0.0,
-                minY = data["min_y"]?.nullCast<Number>()?.toInt() ?: 0,
+                minY = data["min_y"]?.toInt() ?: 0,
                 hasCeiling = data["has_ceiling"]?.booleanCast() ?: false,
                 ultraWarm = data["ultrawarm"]?.booleanCast() ?: false,
-                height = data["height"]?.nullCast<Number>()?.toInt() ?: 256,
+                height = data["height"]?.toInt() ?: 256,
                 supports3DBiomes = data["supports_3d_biomes"]?.booleanCast() ?: false,
             )
         }

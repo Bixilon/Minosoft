@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.data.registries.registry
 
 import de.bixilon.minosoft.data.registries.versions.Registries
-import de.bixilon.minosoft.util.KUtil.nullCast
 import de.bixilon.minosoft.util.KUtil.toInt
 import de.bixilon.minosoft.util.collections.Clearable
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
@@ -51,7 +50,7 @@ class FakeEnumRegistry<T : RegistryFakeEnumerable>(
             var itemId = id.toInt()
 
             val item = deserializer.deserialize(registries, value.compoundCast()!!)
-            value["id"]?.nullCast<Int>()?.let { providedItemId ->
+            value["id"]?.toInt()?.let { providedItemId ->
                 itemId = providedItemId
             }
             idValueMap[itemId] = item

@@ -20,6 +20,7 @@ import de.bixilon.minosoft.data.registries.ResourceLocationAble
 import de.bixilon.minosoft.data.registries.versions.Registries
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
 import de.bixilon.minosoft.util.KUtil.nullCast
+import de.bixilon.minosoft.util.KUtil.toInt
 import de.bixilon.minosoft.util.json.ResourceLocationJsonMap.toResourceLocationMap
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
 
@@ -99,7 +100,7 @@ open class Registry<T : RegistryItem>(
         for ((resourceLocation, value) in data) {
             check(value is Map<*, *>)
             val item = deserializer.deserialize(registries, resourceLocation, value.compoundCast()!!) ?: continue
-            value["id"]?.nullCast<Int>()?.let { id ->
+            value["id"]?.toInt()?.let { id ->
                 var itemId = id
                 if (!flattened) {
                     when (metaType) {
@@ -112,7 +113,7 @@ open class Registry<T : RegistryItem>(
                             itemId = itemId shl 16
                         }
                     }
-                    value["meta"]?.nullCast<Int>()?.let { meta ->
+                    value["meta"]?.toInt()?.let { meta ->
                         itemId = itemId or meta
                     }
                 }

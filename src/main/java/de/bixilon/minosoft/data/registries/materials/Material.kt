@@ -19,6 +19,7 @@ import de.bixilon.minosoft.data.registries.versions.Registries
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.TintColorCalculator
 import de.bixilon.minosoft.util.KUtil.nullCast
+import de.bixilon.minosoft.util.KUtil.toInt
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.booleanCast
 import java.util.*
 
@@ -43,7 +44,7 @@ data class Material(
         override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): Material {
             return Material(
                 resourceLocation = resourceLocation,
-                color = TintColorCalculator.getJsonColor(data["color"]?.nullCast<Int>() ?: 0),
+                color = TintColorCalculator.getJsonColor(data["color"]?.toInt() ?: 0),
                 pushReaction = data["push_reaction"]?.nullCast<String>()?.let { PushReactions.valueOf(it.uppercase(Locale.getDefault())) } ?: PushReactions.NORMAL,
                 blockMotion = data["blocks_motion"]?.booleanCast() ?: false,
                 flammable = data["flammable"]?.booleanCast() ?: false,

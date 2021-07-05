@@ -23,7 +23,7 @@ import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.play.TagsS2CP
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
 import de.bixilon.minosoft.util.KUtil.listCast
-import de.bixilon.minosoft.util.KUtil.nullCast
+import de.bixilon.minosoft.util.KUtil.unsafeCast
 import glm_.vec3.Vec3i
 
 abstract class MiningToolItem(
@@ -38,7 +38,7 @@ abstract class MiningToolItem(
         }
         entries.toSet()
     }
-    override val attackDamage: Float = data["attack_damage"]?.nullCast<Float>() ?: 1.0f
+    override val attackDamage: Float = data["attack_damage"]?.unsafeCast<Float>() ?: 1.0f
 
     abstract val diggableTag: ResourceLocation?
 

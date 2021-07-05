@@ -15,7 +15,7 @@ package de.bixilon.minosoft.config
 import com.squareup.moshi.JsonWriter
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.config.Config
-import de.bixilon.minosoft.util.KUtil.nullCast
+import de.bixilon.minosoft.util.KUtil.toInt
 import de.bixilon.minosoft.util.Util
 import de.bixilon.minosoft.util.json.JSONSerializer
 import de.bixilon.minosoft.util.logging.Log
@@ -37,8 +37,8 @@ class Configuration(private val configName: String = StaticConfiguration.CONFIG_
 
             var wasMigrated = false
             let {
-                val configVersion = config["general"]?.compoundCast()?.get("version")?.nullCast<Int>() ?: return@let
-                if (config["general"]?.compoundCast()?.get("version")?.nullCast<Int>() ?: 0 > LATEST_CONFIG_VERSION) {
+                val configVersion = config["general"]?.compoundCast()?.get("version")?.toInt() ?: return@let
+                if (config["general"]?.compoundCast()?.get("version")?.toInt() ?: 0 > LATEST_CONFIG_VERSION) {
                     throw ConfigMigrationException("Configuration was migrated to newer config format (version=${configVersion}, expected=${LATEST_CONFIG_VERSION}). Downgrading the config file is unsupported!")
                 }
                 if (configVersion < LATEST_CONFIG_VERSION) {

@@ -19,7 +19,7 @@ import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.DefaultBlocks
 import de.bixilon.minosoft.data.registries.versions.Registries
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import de.bixilon.minosoft.util.KUtil.nullCast
+import de.bixilon.minosoft.util.KUtil.unsafeCast
 
 
 open class SwordItem(
@@ -27,7 +27,7 @@ open class SwordItem(
     registries: Registries,
     data: Map<String, Any>,
 ) : ToolItem(resourceLocation, registries, data) {
-    override val attackDamage = data["attack_damage"]?.nullCast<Float>() ?: -1.0f
+    override val attackDamage = data["attack_damage"]?.unsafeCast<Float>() ?: -1.0f
 
     override fun getMiningSpeedMultiplier(connection: PlayConnection, blockState: BlockState, itemStack: ItemStack): Float {
         if (blockState.block.resourceLocation == DefaultBlocks.COBWEB) {

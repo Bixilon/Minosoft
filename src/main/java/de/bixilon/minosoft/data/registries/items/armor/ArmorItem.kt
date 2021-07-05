@@ -17,7 +17,6 @@ import de.bixilon.minosoft.data.inventory.InventorySlots
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.items.Item
 import de.bixilon.minosoft.data.registries.versions.Registries
-import de.bixilon.minosoft.util.KUtil.nullCast
 import de.bixilon.minosoft.util.KUtil.unsafeCast
 
 open class ArmorItem(
@@ -28,5 +27,5 @@ open class ArmorItem(
     val protection = data["defense"]!!.unsafeCast<Float>()
     val toughness = data["toughness"]!!.unsafeCast<Float>()
     val equipmentSlot = data["equipment_slot"]!!.unsafeCast<String>().let { InventorySlots.EquipmentSlots[it] }
-    val knockbackResistance = data["knockback_resistance"]?.nullCast<Float>() ?: 0.0f
+    val knockbackResistance = data["knockback_resistance"]?.unsafeCast<Float>() ?: 0.0f
 }

@@ -16,7 +16,8 @@ package de.bixilon.minosoft.data.registries.items.tools
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.items.Item
 import de.bixilon.minosoft.data.registries.versions.Registries
-import de.bixilon.minosoft.util.KUtil.nullCast
+import de.bixilon.minosoft.util.KUtil.toInt
+import de.bixilon.minosoft.util.KUtil.unsafeCast
 
 
 open class ToolItem(
@@ -24,9 +25,9 @@ open class ToolItem(
     registries: Registries,
     data: Map<String, Any>,
 ) : Item(resourceLocation, registries, data) {
-    val durability = data["uses"]?.nullCast<Int>() ?: 1
-    val speed = data["speed"]?.nullCast<Float>() ?: 1.0f
-    open val attackDamage = data["attack_damage_bonus"]?.nullCast<Float>() ?: 1.0f
-    val miningLevel = data["level"]?.nullCast<Int>() ?: 1
-    val enchantmentValue = data["enchantment_value"]?.nullCast<Int>() ?: 1
+    val durability = data["uses"]?.toInt() ?: 1
+    val speed = data["speed"]?.unsafeCast<Float>() ?: 1.0f
+    open val attackDamage = data["attack_damage_bonus"]?.unsafeCast<Float>() ?: 1.0f
+    val miningLevel = data["level"]?.toInt() ?: 1
+    val enchantmentValue = data["enchantment_value"]?.toInt() ?: 1
 }

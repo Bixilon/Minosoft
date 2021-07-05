@@ -46,7 +46,7 @@ open class BlockModelElement(
 
         data["rotation"]?.compoundCast()?.let {
             val axis = Axes[it["axis"]!!.unsafeCast<String>()]
-            val angle = it["angle"]!!.unsafeCast<Float>().rad
+            val angle = it["angle"]!!.unsafeCast<Double>().toFloat().rad
             val rescale = it["rescale"]?.nullCast<Boolean>() ?: false
             rotatePositions(transformedPositions, axis, angle, it["origin"]!!.toVec3(), rescale)
         }

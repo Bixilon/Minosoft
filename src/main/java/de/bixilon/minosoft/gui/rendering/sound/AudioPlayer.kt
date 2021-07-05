@@ -31,6 +31,7 @@ import de.bixilon.minosoft.util.CountUpAndDownLatch
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
 import de.bixilon.minosoft.util.KUtil.nullCast
 import de.bixilon.minosoft.util.KUtil.synchronizedListOf
+import de.bixilon.minosoft.util.KUtil.toInt
 import de.bixilon.minosoft.util.KUtil.toSynchronizedList
 import de.bixilon.minosoft.util.KUtil.unsafeCast
 import de.bixilon.minosoft.util.Queue
@@ -238,11 +239,11 @@ class AudioPlayer(
                     is Map<*, *> -> {
                         sounds += Sound(
                             path = soundJson["name"]!!.unsafeCast<String>().getSoundLocation(),
-                            volume = soundJson["volume"]?.nullCast<Float>() ?: 1.0f,
-                            pitch = soundJson["pitch"]?.nullCast<Float>() ?: 1.0f,
-                            weight = soundJson["weight"]?.nullCast<Int>() ?: 1,
+                            volume = soundJson["volume"]?.unsafeCast<Double>()?.toFloat() ?: 1.0f,
+                            pitch = soundJson["pitch"]?.unsafeCast<Double>()?.toFloat() ?: 1.0f,
+                            weight = soundJson["weight"]?.toInt() ?: 1,
                             stream = soundJson["stream"]?.booleanCast() ?: false,
-                            attenuationDistance = soundJson["attenuation_distance"]?.nullCast<Int>() ?: 16,
+                            attenuationDistance = soundJson["attenuation_distance"]?.toInt() ?: 16,
                             preload = soundJson["preload"]?.booleanCast() ?: false,
                         )
                     }

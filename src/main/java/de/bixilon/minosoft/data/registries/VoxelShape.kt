@@ -20,8 +20,7 @@ import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.ONE
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.getMinDistanceDirection
-import de.bixilon.minosoft.util.KUtil.nullCast
-import de.bixilon.minosoft.util.KUtil.unsafeCast
+import de.bixilon.minosoft.util.KUtil.toInt
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3d
 import glm_.vec3.Vec3t
@@ -40,7 +39,7 @@ class VoxelShape(private val aabbs: MutableList<AABB> = mutableListOf()) : Itera
             }
             is Collection<*> -> {
                 for (index in data) {
-                    this.aabbs.add(aabbs[index?.nullCast<Int>()!!])
+                    this.aabbs.add(aabbs[index?.toInt()!!])
                 }
             }
             is Int -> {
@@ -54,7 +53,7 @@ class VoxelShape(private val aabbs: MutableList<AABB> = mutableListOf()) : Itera
         when (data) {
             is Collection<*> -> {
                 for (index in data) {
-                    this.aabbs.addAll(voxelShapes[index!!.unsafeCast()].aabbs)
+                    this.aabbs.addAll(voxelShapes[index!!.toInt()].aabbs)
                 }
             }
             is Int -> {
