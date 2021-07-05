@@ -14,8 +14,6 @@
 package de.bixilon.minosoft.gui.rendering.sound
 
 import com.google.gson.JsonArray
-import com.google.gson.JsonObject
-import com.google.gson.JsonPrimitive
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.sounds.SoundEvent
@@ -31,12 +29,16 @@ import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.CountUpAndDownLatch
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
+import de.bixilon.minosoft.util.KUtil.nullCast
 import de.bixilon.minosoft.util.KUtil.synchronizedListOf
 import de.bixilon.minosoft.util.KUtil.toSynchronizedList
+import de.bixilon.minosoft.util.KUtil.unsafeCast
 import de.bixilon.minosoft.util.Queue
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
+import de.bixilon.minosoft.util.nbt.tag.NBTUtil.booleanCast
+import de.bixilon.minosoft.util.nbt.tag.NBTUtil.listCast
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3i
 import org.lwjgl.openal.AL
@@ -218,8 +220,8 @@ class AudioPlayer(
         Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Loading sounds.json" }
         val data = connection.assetsManager.readJsonAsset(SOUNDS_INDEX_FILE)
 
-        for ((soundEventResourceLocation, json) in data.entrySet()) {
-            check(json is JsonObject)
+        for ((soundEventResourceLocation, json) in data) {
+            check(json is Map<*, *>)
             val soundEvent = connection.registries.soundEventRegistry[ResourceLocation(soundEventResourceLocation)]!!
 
             val sounds: MutableSet<Sound> = mutableSetOf()
@@ -228,20 +230,20 @@ class AudioPlayer(
                 return ResourceLocation(ProtocolDefinition.DEFAULT_NAMESPACE, "sounds/${this}".replace('.', '/') + ".ogg") // ToDo: Resource Location
             }
 
-            for (soundJson in json["sounds"].asJsonArray) {
+            for (soundJson in json["sounds"]!!.listCast<Any>()!!) {
                 when (soundJson) {
-                    is JsonPrimitive -> {
-                        sounds += Sound(soundJson.asString.getSoundLocation())
+                    is String -> {
+                        sounds += Sound(soundJson.getSoundLocation())
                     }
-                    is JsonObject -> {
+                    is Map<*, *> -> {
                         sounds += Sound(
-                            path = soundJson["name"].asString.getSoundLocation(),
-                            volume = soundJson["volume"]?.asFloat ?: 1.0f,
-                            pitch = soundJson["pitch"]?.asFloat ?: 1.0f,
-                            weight = soundJson["weight"]?.asInt ?: 1,
-                            stream = soundJson["stream"]?.asBoolean ?: false,
-                            attenuationDistance = soundJson["attenuation_distance"]?.asInt ?: 16,
-                            preload = soundJson["preload"]?.asBoolean ?: false,
+                            path = soundJson["name"]!!.unsafeCast<String>().getSoundLocation(),
+                            volume = soundJson["volume"]?.nullCast<Float>() ?: 1.0f,
+                            pitch = soundJson["pitch"]?.nullCast<Float>() ?: 1.0f,
+                            weight = soundJson["weight"]?.nullCast<Int>() ?: 1,
+                            stream = soundJson["stream"]?.booleanCast() ?: false,
+                            attenuationDistance = soundJson["attenuation_distance"]?.nullCast<Int>() ?: 16,
+                            preload = soundJson["preload"]?.booleanCast() ?: false,
                         )
                     }
                     is JsonArray -> TODO()
@@ -250,7 +252,7 @@ class AudioPlayer(
             this.sounds[soundEvent] = SoundList(
                 soundEvent = soundEvent,
                 sounds = sounds.toSet(),
-                subTitle = json["subtitle"]?.asString?.let { ResourceLocation(ProtocolDefinition.DEFAULT_NAMESPACE, it) },
+                subTitle = json["subtitle"]?.nullCast<String>()?.let { ResourceLocation(ProtocolDefinition.DEFAULT_NAMESPACE, it) },
             )
         }
     }

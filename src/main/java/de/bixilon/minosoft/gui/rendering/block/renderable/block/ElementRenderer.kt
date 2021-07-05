@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.rendering.block.renderable.block
 
 import com.google.common.collect.HashBiMap
-import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.text.ChatColors
@@ -33,13 +32,14 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.rotate
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
+import de.bixilon.minosoft.util.nbt.tag.NBTUtil.booleanCast
 import glm_.vec3.Vec3
 
 class ElementRenderer(
     val model: BlockModel,
     val element: BlockModelElement,
     val rotation: Vec3,
-    data: JsonObject,
+    data: Map<String, Any>,
     private val directionMapping: HashBiMap<Directions, Directions>,
 ) {
     val faceBorderSize: Array<FaceSize?> = arrayOfNulls(Directions.VALUES.size)
@@ -47,7 +47,7 @@ class ElementRenderer(
     private var transformedPositions: Array<Vec3> = element.transformedPositions.clone()
 
     init {
-        rotatePositionsAxes(transformedPositions, rotation, data["rescale"]?.asBoolean ?: model.rescale)
+        rotatePositionsAxes(transformedPositions, rotation, data["rescale"]?.booleanCast() ?: model.rescale)
 
         val faces: MutableMap<Directions, BlockModelFace> = mutableMapOf()
         for (direction in Directions.VALUES) {
@@ -60,7 +60,7 @@ class ElementRenderer(
                 faces[direction] = BlockModelFace(it)
             }
         }
-        if (data["uvlock"]?.asBoolean ?: model.uvLock) {
+        if (data["uvlock"]?.booleanCast() ?: model.uvLock) {
             for (direction in Directions.VALUES) {
                 val axis = Axes[direction]
                 val angle = axis.choose(rotation) * axis.choose(direction.vector)
@@ -132,7 +132,7 @@ class ElementRenderer(
 
     companion object {
 
-        fun createElements(data: JsonObject, model: BlockModel, rotation: Vec3, directionMapping: HashBiMap<Directions, Directions>): List<ElementRenderer> {
+        fun createElements(data: Map<String, Any>, model: BlockModel, rotation: Vec3, directionMapping: HashBiMap<Directions, Directions>): List<ElementRenderer> {
             val result: MutableList<ElementRenderer> = mutableListOf()
             for (element in model.elements) {
                 result += ElementRenderer(model, element, rotation, data, directionMapping)

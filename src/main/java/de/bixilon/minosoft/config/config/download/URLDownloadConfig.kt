@@ -14,5 +14,5 @@
 package de.bixilon.minosoft.config.config.download
 
 data class URLDownloadConfig(
-    var pixlyzer: String = "https://gitlab.com/bixilon/pixlyzer-data/-/raw/master/hash/\${hashPrefix}/\${fullHash}.gz?inline=false",
+    var pixlyzer: String = "https://gitlab.com/bixilon/pixlyzer-data/-/raw/master/hash/\${hashPrefix}/\${fullHash}.mbf?inline=false",
 )

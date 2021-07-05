@@ -30,6 +30,7 @@ object JSONSerializer {
         .add(KotlinJsonAdapterFactory())
         .build()!!
 
+    val ANY_ADAPTER = MOSHI.adapter(Any::class.java)!!
     val CONFIG_ADAPTER = MOSHI.adapter(Config::class.java)!!
     val MAP_ADAPTER: JsonAdapter<MutableMap<String, Any>> = MOSHI.adapter(Types.newParameterizedType(MutableMap::class.java, String::class.java, Any::class.java))
 

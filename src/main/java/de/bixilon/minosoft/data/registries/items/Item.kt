@@ -12,7 +12,6 @@
  */
 package de.bixilon.minosoft.data.registries.items
 
-import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.Rarities
 import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.player.Hands
@@ -29,18 +28,21 @@ import de.bixilon.minosoft.data.registries.registry.Translatable
 import de.bixilon.minosoft.data.registries.versions.Registries
 import de.bixilon.minosoft.gui.rendering.input.camera.hit.RaycastHit
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.util.KUtil.nullCast
+import de.bixilon.minosoft.util.KUtil.unsafeCast
+import de.bixilon.minosoft.util.nbt.tag.NBTUtil.booleanCast
 
 open class Item(
     override val resourceLocation: ResourceLocation,
     registries: Registries,
-    data: JsonObject,
+    data: Map<String, Any>,
 ) : RegistryItem(), Translatable {
-    val rarity: Rarities = data["rarity"]?.asInt?.let { Rarities[it] } ?: Rarities.COMMON
-    val maxStackSize: Int = data["max_stack_size"]?.asInt ?: 64
-    val maxDamage: Int = data["max_damage"]?.asInt ?: 1
-    val isFireResistant: Boolean = data["is_fire_resistant"]?.asBoolean ?: false
-    override val translationKey: String? = data["translation_key"]?.asString
-    val creativeModeTab: CreativeModeTab? = data["category"]?.asInt?.let { registries.creativeModeTabRegistry[it] }
+    val rarity: Rarities = data["rarity"]?.nullCast<Int>()?.let { Rarities[it] } ?: Rarities.COMMON
+    val maxStackSize: Int = data["max_stack_size"]?.nullCast<Int>() ?: 64
+    val maxDamage: Int = data["max_damage"]?.nullCast<Int>() ?: 1
+    val isFireResistant: Boolean = data["is_fire_resistant"]?.booleanCast() ?: false
+    override val translationKey: String? = data["translation_key"]?.nullCast()
+    val creativeModeTab: CreativeModeTab? = data["category"]?.nullCast<Int>()?.let { registries.creativeModeTabRegistry[it] }
 
     override fun toString(): String {
         return resourceLocation.toString()
@@ -57,9 +59,9 @@ open class Item(
     companion object : ResourceLocationDeserializer<Item> {
         const val INFINITE_MINING_SPEED_MULTIPLIER = -1.0f
 
-        override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: JsonObject): Item {
+        override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): Item {
             check(registries != null) { "Registries is null!" }
-            return when (data["class"].asString) {
+            return when (data["class"]!!.unsafeCast<String>()) {
                 "BlockItem" -> BlockItem(resourceLocation, registries, data)
                 "ArmorItem" -> ArmorItem(resourceLocation, registries, data)
                 "SwordItem" -> SwordItem(resourceLocation, registries, data)

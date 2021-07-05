@@ -12,9 +12,6 @@
  */
 package de.bixilon.minosoft.data.registries.versions
 
-import com.google.gson.JsonArray
-import com.google.gson.JsonElement
-import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.entities.EntityMetaDataFields
 import de.bixilon.minosoft.data.entities.block.BlockEntityMetaType
 import de.bixilon.minosoft.data.entities.meta.EntityMetaData
@@ -45,9 +42,13 @@ import de.bixilon.minosoft.gui.rendering.block.models.BlockModel
 import de.bixilon.minosoft.protocol.packets.c2s.play.EntityActionC2SP
 import de.bixilon.minosoft.protocol.packets.s2c.play.EntityAnimationS2CP
 import de.bixilon.minosoft.protocol.packets.s2c.play.title.TitleS2CF
+import de.bixilon.minosoft.util.KUtil.listCast
+import de.bixilon.minosoft.util.KUtil.mapCast
+import de.bixilon.minosoft.util.KUtil.nullCast
 import de.bixilon.minosoft.util.KUtil.unsafeCast
 import de.bixilon.minosoft.util.collections.Clearable
 import de.bixilon.minosoft.util.json.ResourceLocationJsonMap.toResourceLocationMap
+import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
 import java.lang.reflect.Field
 import java.lang.reflect.ParameterizedType
 
@@ -119,7 +120,7 @@ class Registries {
         return entityMetaIndexMap[field] ?: parentRegistries?.getEntityMetaDataIndex(field)
     }
 
-    private fun <T : Enum<*>> loadEnumRegistry(version: Version, data: JsonElement?, registry: EnumRegistry<T>, alternative: PerVersionEnumRegistry<T>) {
+    private fun <T : Enum<*>> loadEnumRegistry(version: Version, data: Any?, registry: EnumRegistry<T>, alternative: PerVersionEnumRegistry<T>) {
         data?.let {
             registry.initialize(it)
         } ?: let {
@@ -127,13 +128,13 @@ class Registries {
         }
     }
 
-    fun load(version: Version, pixlyzerData: JsonObject) {
+    fun load(version: Version, pixlyzerData: MutableMap<String, Any>) {
         isFlattened = version.isFlattened()
         blockStateRegistry.flattened = isFlattened
         // pre init stuff
-        loadShapes(pixlyzerData["shapes"]?.asJsonObject)
+        loadShapes(pixlyzerData["shapes"]?.compoundCast())
 
-        loadBlockModels(pixlyzerData["models"]?.asJsonObject?.toResourceLocationMap() ?: mutableMapOf())
+        loadBlockModels(pixlyzerData["models"]?.mapCast()?.toResourceLocationMap() ?: mutableMapOf())
 
         // enums
         loadEnumRegistry(version, pixlyzerData["equipment_slots"], equipmentSlotRegistry, DefaultRegistries.EQUIPMENT_SLOTS_REGISTRY)
@@ -148,35 +149,35 @@ class Registries {
         loadEnumRegistry(version, pixlyzerData["entity_actions"], entityActionsRegistry, DefaultRegistries.ENTITY_ACTIONS_REGISTRY)
 
         // id stuff
-        biomeCategoryRegistry.initialize(pixlyzerData["biome_categories"]?.asJsonObject, this, BiomeCategory)
-        biomePrecipitationRegistry.initialize(pixlyzerData["biome_precipitations"]?.asJsonObject, this, BiomePrecipitation)
-        creativeModeTabRegistry.initialize(pixlyzerData["creative_inventory_tab"]?.asJsonObject, this, CreativeModeTab)
+        biomeCategoryRegistry.initialize(pixlyzerData["biome_categories"]?.mapCast(), this, BiomeCategory)
+        biomePrecipitationRegistry.initialize(pixlyzerData["biome_precipitations"]?.mapCast(), this, BiomePrecipitation)
+        creativeModeTabRegistry.initialize(pixlyzerData["creative_inventory_tab"]?.mapCast(), this, CreativeModeTab)
 
         // id resource location stuff
-        containerTypeRegistry.initialize(pixlyzerData["container_types"]?.asJsonObject, this, ContainerType, alternative = DefaultRegistries.CONTAINER_TYPE_REGISTRY.forVersion(version))
-        gameEventRegistry.initialize(pixlyzerData["game_events"]?.asJsonObject, this, GameEvent, alternative = DefaultRegistries.GAME_EVENT_REGISTRY.forVersion(version))
+        containerTypeRegistry.rawInitialize(pixlyzerData["container_types"]?.compoundCast(), this, ContainerType, alternative = DefaultRegistries.CONTAINER_TYPE_REGISTRY.forVersion(version))
+        gameEventRegistry.rawInitialize(pixlyzerData["game_events"]?.compoundCast(), this, GameEvent, alternative = DefaultRegistries.GAME_EVENT_REGISTRY.forVersion(version))
 
 
-        entityTypeRegistry.initialize(pixlyzerData["entities"]?.asJsonObject, this, EntityType)
+        entityTypeRegistry.rawInitialize(pixlyzerData["entities"]?.compoundCast(), this, EntityType)
 
-        motiveRegistry.initialize(pixlyzerData["motives"]?.asJsonObject, this, Motive, version.isFlattened())
-        soundEventRegistry.initialize(pixlyzerData["sound_events"]?.asJsonObject, this, SoundEvent)
-        particleTypeRegistry.initialize(pixlyzerData["particles"]?.asJsonObject, this, ParticleType)
-        materialRegistry.initialize(pixlyzerData["materials"]?.asJsonObject, this, Material)
-        enchantmentRegistry.initialize(pixlyzerData["enchantments"]?.asJsonObject, this, Enchantment)
-        statusEffectRegistry.initialize(pixlyzerData["status_effects"]?.asJsonObject, this, StatusEffect)
-        biomeRegistry.initialize(pixlyzerData["biomes"]?.asJsonObject, this, Biome)
-        dimensionRegistry.initialize(pixlyzerData["dimensions"]?.asJsonObject, this, Dimension)
-        fluidRegistry.initialize(pixlyzerData["fluids"]?.asJsonObject, this, Fluid)
-        blockRegistry.initialize(pixlyzerData["blocks"]?.asJsonObject, this, Block, version.isFlattened(), Registry.MetaTypes.BITS_4)
-        itemRegistry.initialize(pixlyzerData["items"]?.asJsonObject, this, Item, version.isFlattened(), Registry.MetaTypes.BITS_16)
+        motiveRegistry.rawInitialize(pixlyzerData["motives"]?.compoundCast(), this, Motive, version.isFlattened())
+        soundEventRegistry.rawInitialize(pixlyzerData["sound_events"]?.compoundCast(), this, SoundEvent)
+        particleTypeRegistry.rawInitialize(pixlyzerData["particles"]?.compoundCast(), this, ParticleType)
+        materialRegistry.rawInitialize(pixlyzerData["materials"]?.compoundCast(), this, Material)
+        enchantmentRegistry.rawInitialize(pixlyzerData["enchantments"]?.compoundCast(), this, Enchantment)
+        statusEffectRegistry.rawInitialize(pixlyzerData["status_effects"]?.compoundCast(), this, StatusEffect)
+        biomeRegistry.rawInitialize(pixlyzerData["biomes"]?.compoundCast(), this, Biome)
+        dimensionRegistry.rawInitialize(pixlyzerData["dimensions"]?.compoundCast(), this, Dimension)
+        fluidRegistry.rawInitialize(pixlyzerData["fluids"]?.compoundCast(), this, Fluid)
+        blockRegistry.rawInitialize(pixlyzerData["blocks"]?.compoundCast(), this, Block, version.isFlattened(), Registry.MetaTypes.BITS_4)
+        itemRegistry.rawInitialize(pixlyzerData["items"]?.compoundCast(), this, Item, version.isFlattened(), Registry.MetaTypes.BITS_16)
 
-        blockEntityTypeRegistry.initialize(pixlyzerData["block_entities"]?.asJsonObject, this, BlockEntityType)
+        blockEntityTypeRegistry.rawInitialize(pixlyzerData["block_entities"]?.compoundCast(), this, BlockEntityType)
 
-        villagerProfessionRegistry.initialize(pixlyzerData["villager_professions"]?.asJsonObject, this, VillagerProfession)
+        villagerProfessionRegistry.rawInitialize(pixlyzerData["villager_professions"]?.compoundCast(), this, VillagerProfession)
 
 
-        blockEntityMetaDataTypeRegistry.initialize(pixlyzerData["block_entity_meta_data_types"]?.asJsonObject, this, BlockEntityMetaType, alternative = DefaultRegistries.BLOCK_ENTITY_META_TYPE_REGISTRY.forVersion(version))
+        blockEntityMetaDataTypeRegistry.rawInitialize(pixlyzerData["block_entity_meta_data_types"]?.compoundCast(), this, BlockEntityMetaType, alternative = DefaultRegistries.BLOCK_ENTITY_META_TYPE_REGISTRY.forVersion(version))
 
 
         // post init
@@ -187,49 +188,49 @@ class Registries {
         isFullyLoaded = true
     }
 
-    private fun loadShapes(pixlyzerData: JsonObject?) {
+    private fun loadShapes(pixlyzerData: Map<String, Any>?) {
         pixlyzerData ?: return
-        val aabbs = loadAABBs(pixlyzerData["aabbs"]?.asJsonArray!!)
-        loadVoxelShapes(pixlyzerData["shapes"].asJsonArray, aabbs)
+        val aabbs = loadAABBs(pixlyzerData["aabbs"]?.nullCast()!!)
+        loadVoxelShapes(pixlyzerData["shapes"]?.listCast()!!, aabbs)
     }
 
-    private fun loadVoxelShapes(pixlyzerData: JsonArray, aabbs: List<AABB>) {
+    private fun loadVoxelShapes(pixlyzerData: Collection<Any>, aabbs: List<AABB>) {
         for (shape in pixlyzerData) {
             shapes.add(VoxelShape(shape, aabbs))
         }
     }
 
-    private fun loadAABBs(pixlyzerData: JsonArray): List<AABB> {
+    private fun loadAABBs(pixlyzerData: Collection<Map<String, Any>>): List<AABB> {
         val aabbs = mutableListOf<AABB>()
         for (data in pixlyzerData) {
-            aabbs.add(AABB(data.asJsonObject))
+            aabbs.add(AABB(data))
         }
         return aabbs
     }
 
-    private fun loadBlockModels(data: Map<ResourceLocation, JsonObject>) {
+    private fun loadBlockModels(data: Map<ResourceLocation, Any>) {
         for ((resourceLocation, model) in data) {
             if (models.containsKey(resourceLocation)) {
                 continue
             }
-            loadBlockModel(resourceLocation, model, data)
+            loadBlockModel(resourceLocation, model.compoundCast()!!, data)
         }
     }
 
-    private fun loadBlockModel(resourceLocation: ResourceLocation, modelData: JsonObject, fullModelData: Map<ResourceLocation, JsonObject>): BlockModel {
+    private fun loadBlockModel(resourceLocation: ResourceLocation, modelData: Map<String, Any>, fullModelData: Map<ResourceLocation, Any>): BlockModel {
         var model = models[resourceLocation]
         model?.let {
             return it
         }
         var parent: BlockModel? = null
-        modelData["parent"]?.asString?.let {
+        modelData["parent"]?.nullCast<String>()?.let {
             val parentResourceLocation = ResourceLocation(it)
             if (parentResourceLocation.path.startsWith("builtin/")) {
                 // ToDo
                 return@let
             }
 
-            parent = loadBlockModel(parentResourceLocation, fullModelData[parentResourceLocation]!!, fullModelData)
+            parent = loadBlockModel(parentResourceLocation, fullModelData[parentResourceLocation]?.compoundCast()!!, fullModelData)
         }
         model = BlockModel(parent, modelData)
 

@@ -12,7 +12,6 @@
  */
 package de.bixilon.minosoft.data.registries.fluid
 
-import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
@@ -27,7 +26,7 @@ import glm_.vec3.Vec3i
 abstract class FlowableFluid(
     override val resourceLocation: ResourceLocation,
     registries: Registries,
-    data: JsonObject,
+    data: Map<String, Any>,
 ) : Fluid(resourceLocation, registries, data) {
     open val flowingTexture: ResourceLocation? = null
 

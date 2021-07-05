@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.data.registries.blocks.types
 
-import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -25,7 +24,7 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import glm_.vec3.Vec3i
 
-abstract class DoubleSizeBlock(resourceLocation: ResourceLocation, registries: Registries, data: JsonObject) : Block(resourceLocation, registries, data) {
+abstract class DoubleSizeBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : Block(resourceLocation, registries, data) {
 
     override fun onBreak(connection: PlayConnection, blockPosition: Vec3i, blockState: BlockState, blockEntity: BlockEntity?) {
         if (blockState.properties[BlockProperties.STAIR_HALF] == Halves.LOWER) {

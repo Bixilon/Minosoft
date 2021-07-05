@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.data.registries.blocks.types
 
-import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.registries.AABB
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.VoxelShape
@@ -28,8 +27,8 @@ import glm_.vec3.Vec3
 import glm_.vec3.Vec3i
 import kotlin.random.Random
 
-open class FluidBlock(resourceLocation: ResourceLocation, registries: Registries, data: JsonObject) : Block(resourceLocation, registries, data) {
-    open val fluid: Fluid = registries.fluidRegistry[data["still_fluid"].asInt]
+open class FluidBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : Block(resourceLocation, registries, data) {
+    open val fluid: Fluid = registries.fluidRegistry[data["still_fluid"]]!!
 
     val fluidRenderer: FluidRenderer
 

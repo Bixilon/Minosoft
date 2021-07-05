@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.data.registries.items
 
-import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.registry.Registry
 import de.bixilon.minosoft.data.registries.registry.ResourceLocationDeserializer
@@ -43,7 +42,7 @@ class ItemRegistry(
         }
     }
 
-    override fun initialize(data: Map<ResourceLocation, JsonObject>?, registries: Registries?, deserializer: ResourceLocationDeserializer<Item>, flattened: Boolean, metaType: MetaTypes, alternative: Registry<Item>?): Registry<Item> {
+    override fun initialize(data: Map<ResourceLocation, Any>?, registries: Registries?, deserializer: ResourceLocationDeserializer<Item>, flattened: Boolean, metaType: MetaTypes, alternative: Registry<Item>?): Registry<Item> {
         this.flattened = flattened
         return super.initialize(data, registries, deserializer, flattened, metaType, alternative)
     }

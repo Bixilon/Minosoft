@@ -20,6 +20,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
+import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
 import java.util.*
 
 class MinecraftLocaleManager(private val version: Version) : Translator {
@@ -32,7 +33,7 @@ class MinecraftLocaleManager(private val version: Version) : Translator {
 
     private fun loadLanguage(version: Version, language: String): MinecraftLanguage {
         return if (version.versionId >= ProtocolVersions.V_18W02A) {
-            MinecraftLanguage(language, this.version.assetsManager.readJsonAsset(ResourceLocation(String.format("lang/%s.json", language.lowercase(Locale.getDefault())))).asJsonObject)
+            MinecraftLanguage(language, this.version.assetsManager.readJsonAsset(ResourceLocation(String.format("lang/%s.json", language.lowercase(Locale.getDefault())))).compoundCast()!!)
         } else {
             MinecraftLanguage(language, this.version.assetsManager.readStringAsset(ResourceLocation(String.format("lang/%s.lang", language.lowercase(Locale.getDefault())))))
         }

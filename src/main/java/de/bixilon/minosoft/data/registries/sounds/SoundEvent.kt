@@ -12,7 +12,6 @@
  */
 package de.bixilon.minosoft.data.registries.sounds
 
-import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.registry.RegistryItem
 import de.bixilon.minosoft.data.registries.registry.ResourceLocationDeserializer
@@ -23,7 +22,7 @@ data class SoundEvent(
 ) : RegistryItem() {
 
     companion object : ResourceLocationDeserializer<SoundEvent> {
-        override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: JsonObject): SoundEvent {
+        override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): SoundEvent {
             return SoundEvent(
                 resourceLocation = resourceLocation,
             )

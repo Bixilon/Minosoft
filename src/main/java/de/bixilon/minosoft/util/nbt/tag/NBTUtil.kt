@@ -43,6 +43,16 @@ object NBTUtil {
         return null
     }
 
+    fun Any.booleanCast(): Boolean {
+        if (this is Number) {
+            return this.toInt() == 0x01
+        }
+        if (this is Boolean) {
+            return this
+        }
+        TODO()
+    }
+
     operator fun Map<String, Any>.get(key1: String, key2: String, vararg keys: String): Any? {
         this[key1]?.let { return it }
         this[key2]?.let { return it }

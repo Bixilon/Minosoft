@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.data.registries.items.tools
 
-import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.versions.Registries
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
@@ -21,7 +20,7 @@ import de.bixilon.minosoft.util.KUtil.asResourceLocation
 open class PickaxeItem(
     resourceLocation: ResourceLocation,
     registries: Registries,
-    data: JsonObject,
+    data: Map<String, Any>,
 ) : MiningToolItem(resourceLocation, registries, data) {
     override val diggableTag: ResourceLocation = PICKAXE_MINEABLE_TAG
 

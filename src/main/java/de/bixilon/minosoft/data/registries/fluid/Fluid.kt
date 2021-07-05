@@ -12,7 +12,6 @@
  */
 package de.bixilon.minosoft.data.registries.fluid
 
-import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.player.LocalPlayerEntity
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -27,6 +26,7 @@ import de.bixilon.minosoft.data.registries.registry.RegistryItem
 import de.bixilon.minosoft.data.registries.registry.ResourceLocationDeserializer
 import de.bixilon.minosoft.data.registries.versions.Registries
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.util.KUtil.nullCast
 import de.bixilon.minosoft.util.KUtil.unsafeCast
 import glm_.vec3.Vec3d
 import glm_.vec3.Vec3i
@@ -36,7 +36,7 @@ import kotlin.random.Random
 open class Fluid(
     override val resourceLocation: ResourceLocation,
     registries: Registries,
-    data: JsonObject,
+    data: Map<String, Any>,
 ) : RegistryItem() {
     open val stillTexture: ResourceLocation? = null
     val dripParticle: ParticleType? = null
@@ -87,7 +87,7 @@ open class Fluid(
     }
 
     companion object : ResourceLocationDeserializer<Fluid> {
-        private val CONSTRUCTORS: Map<String, (resourceLocation: ResourceLocation, registries: Registries, data: JsonObject) -> Fluid> = mapOf(
+        private val CONSTRUCTORS: Map<String, (resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) -> Fluid> = mapOf(
             "EmptyFluid" to { resourceLocation, registries, data -> EmptyFluid(resourceLocation, registries, data) },
             "WaterFluid\$Flowing" to { resourceLocation, registries, data -> WaterFluid(resourceLocation, registries, data) },
             "WaterFluid\$Still" to { resourceLocation, registries, data -> WaterFluid(resourceLocation, registries, data) },
@@ -95,9 +95,9 @@ open class Fluid(
             "LavaFluid\$Still" to { resourceLocation, registries, data -> LavaFluid(resourceLocation, registries, data) },
         )
 
-        override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: JsonObject): Fluid {
+        override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): Fluid {
             check(registries != null) { "Registries is null!" }
-            CONSTRUCTORS[data["class"]?.asString]?.let {
+            CONSTRUCTORS[data["class"]?.nullCast<String>()]?.let {
                 return it.invoke(resourceLocation, registries, data)
             }
 

@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.data.registries.fluid.lava
 
-import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.player.LocalPlayerEntity
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -38,7 +37,7 @@ import kotlin.random.Random
 class LavaFluid(
     resourceLocation: ResourceLocation,
     registries: Registries,
-    data: JsonObject,
+    data: Map<String, Any>,
 ) : FlowableFluid(resourceLocation, registries, data) {
     private val lavaParticleType: ParticleType? = null
     override val stillTexture: ResourceLocation = "minecraft:block/lava_still".asResourceLocation()

@@ -13,10 +13,8 @@
 
 package de.bixilon.minosoft.data.registries.registry
 
-import com.google.gson.JsonArray
-import com.google.gson.JsonElement
-import com.google.gson.JsonObject
 import com.google.gson.JsonPrimitive
+import de.bixilon.minosoft.util.KUtil.unsafeCast
 import de.bixilon.minosoft.util.collections.Clearable
 import de.bixilon.minosoft.util.enum.ValuesEnum
 import java.util.*
@@ -53,15 +51,15 @@ class EnumRegistry<T : Enum<*>>(
         }
     }
 
-    private fun putEnum(data: JsonElement, alternativeIndex: Int) {
+    private fun putEnum(data: Any, alternativeIndex: Int) {
         val id: Int
         val value: T
         when (data) {
-            is JsonObject -> {
-                id = data["id"].asInt
-                value = getEnum(data["value"])
+            is Map<*, *> -> {
+                id = data["id"]!!.unsafeCast()
+                value = getEnum(data["value"]!!)
             }
-            is JsonPrimitive -> {
+            is String -> {
                 id = alternativeIndex
                 value = getEnum(data)
             }
@@ -71,22 +69,20 @@ class EnumRegistry<T : Enum<*>>(
         valueIdMap[value] = id
     }
 
-    fun initialize(data: JsonElement?): EnumRegistry<T> {
+    fun initialize(data: Any?): EnumRegistry<T> {
         check(!initialized) { "Already initialized" }
 
-        if (data == null) {
-            return this
-        }
+        data ?: return this
 
         when (data) {
-            is JsonArray -> {
+            is List<*> -> {
                 for ((index, enum) in data.withIndex()) {
-                    putEnum(enum, index)
+                    putEnum(enum!!, index)
                 }
             }
-            is JsonObject -> {
-                for ((index, enum) in data.entrySet()) {
-                    putEnum(enum, Integer.valueOf(index))
+            is Map<*, *> -> {
+                for ((index, enum) in data) {
+                    putEnum(enum!!, Integer.valueOf(index!!.unsafeCast<String>()))
                 }
             }
             else -> throw IllegalArgumentException("Can not get enum value: $data")

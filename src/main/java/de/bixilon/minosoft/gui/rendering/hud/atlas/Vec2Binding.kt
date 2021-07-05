@@ -13,8 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.hud.atlas
 
-import com.google.gson.JsonElement
-import com.google.gson.JsonObject
+import de.bixilon.minosoft.util.nbt.tag.NBTUtil.listCast
 import glm_.glm
 import glm_.vec2.Vec2i
 
@@ -26,10 +25,10 @@ data class Vec2Binding(
 
     companion object {
 
-        fun deserialize(json: JsonElement): Vec2Binding {
-            check(json is JsonObject)
+        fun deserialize(json: Any): Vec2Binding {
+            check(json is Map<*, *>)
 
-            return Vec2Binding(json["start"].asJsonArray.let { Vec2i(it[0].asInt, it[1].asInt) }, json["end"].asJsonArray.let { Vec2i(it[0].asInt, it[1].asInt) })
+            return Vec2Binding(json["start"]!!.listCast<Int>()!!.let { Vec2i(it[0], it[1]) }, json["end"]!!.listCast<Int>()!!.let { Vec2i(it[0], it[1]) })
         }
     }
 }

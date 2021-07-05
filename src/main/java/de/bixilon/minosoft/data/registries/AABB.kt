@@ -38,6 +38,8 @@ class AABB(
 
     constructor(jsonData: JsonObject) : this(jsonData["from"].toVec3(Vec3.EMPTY), jsonData["to"].toVec3(Vec3.ONE))
 
+    constructor(jsonData: Map<String, Any>) : this(jsonData["from"]!!.toVec3(Vec3.EMPTY), jsonData["to"]!!.toVec3(Vec3.ONE))
+
     constructor(aabb: AABB) : this(aabb.min, aabb.max)
 
     constructor(min: Vec3, max: Vec3) : this(Vec3d(min), Vec3d(max))

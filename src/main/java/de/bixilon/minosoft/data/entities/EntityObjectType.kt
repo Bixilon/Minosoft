@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.data.entities
 
-import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.registry.RegistryItem
 import de.bixilon.minosoft.data.registries.registry.ResourceLocationDeserializer
@@ -24,7 +23,7 @@ class EntityObjectType(
 ) : RegistryItem() {
 
     companion object : ResourceLocationDeserializer<EntityObjectType> {
-        override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: JsonObject): EntityObjectType {
+        override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): EntityObjectType {
             return EntityObjectType(resourceLocation)
         }
     }

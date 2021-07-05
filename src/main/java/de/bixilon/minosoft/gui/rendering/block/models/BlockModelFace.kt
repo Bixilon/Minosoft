@@ -13,11 +13,12 @@
 
 package de.bixilon.minosoft.gui.rendering.block.models
 
-import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.AABB
 import de.bixilon.minosoft.gui.rendering.util.VecUtil
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.readUV
+import de.bixilon.minosoft.util.KUtil.nullCast
+import de.bixilon.minosoft.util.KUtil.unsafeCast
 import glm_.func.cos
 import glm_.func.sin
 import glm_.vec2.Vec2
@@ -38,10 +39,10 @@ class BlockModelFace {
         this.positions = positions
     }
 
-    constructor(data: JsonObject, from: Vec3, to: Vec3, direction: Directions) {
-        tint = data.has("tintindex")
-        textureName = data.get("texture").asString.removePrefix("#")
-        cullFace = data["cullface"]?.asString?.let {
+    constructor(data: Map<String, Any>, from: Vec3, to: Vec3, direction: Directions) {
+        tint = data.containsKey("tintindex")
+        textureName = data["texture"]!!.unsafeCast<String>().removePrefix("#")
+        cullFace = data["cullface"]?.nullCast<String>()?.let {
             if (it == "bottom") {
                 Directions.DOWN
             } else {
@@ -49,13 +50,13 @@ class BlockModelFace {
             }
         }
         val positions = calculateTexturePositions(data, from, to, direction)
-        val rotation = data["rotation"]?.asInt?.div(90) ?: 0
+        val rotation = data["rotation"]?.nullCast<Int>()?.div(90) ?: 0
         Collections.rotate(positions, rotation)
         this.positions = positions.toList()
     }
 
-    private fun calculateTexturePositions(data: JsonObject?, from: Vec3, to: Vec3, direction: Directions): MutableList<Vec2> {
-        val (textureTopLeft: Vec2, textureBottomRight: Vec2) = data?.get("uv")?.asJsonArray?.readUV() ?: getTexturePositionsFromRegion(AABB(from, to), direction)
+    private fun calculateTexturePositions(data: Map<String, Any>?, from: Vec3, to: Vec3, direction: Directions): MutableList<Vec2> {
+        val (textureTopLeft: Vec2, textureBottomRight: Vec2) = data?.get("uv")?.unsafeCast<List<Float>>()?.readUV() ?: getTexturePositionsFromRegion(AABB(from, to), direction)
         return mutableListOf(
             uvToFloat(Vec2(textureTopLeft.x, textureTopLeft.y)),
             uvToFloat(Vec2(textureTopLeft.x, textureBottomRight.y)),

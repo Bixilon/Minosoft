@@ -17,7 +17,9 @@ import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.RGBColor
+import de.bixilon.minosoft.util.KUtil.fromJson
 import de.bixilon.minosoft.util.Util
+import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
 import de.matthiasmann.twl.utils.PNGDecoder
 import org.lwjgl.BufferUtils
 import java.io.BufferedReader
@@ -41,11 +43,16 @@ interface AssetsManager {
         return BufferedReader(InputStreamReader(readAssetAsStream(resourceLocation)))
     }
 
-    fun readJsonAsset(resourceLocation: ResourceLocation): JsonObject {
+    @Deprecated(message = "Will be removed...")
+    fun readLegacyJsonAsset(resourceLocation: ResourceLocation): JsonObject {
         val reader = readAssetAsReader(resourceLocation)
         val json = JsonParser.parseReader(reader).asJsonObject
         reader.close()
         return json
+    }
+
+    fun readJsonAsset(resourceLocation: ResourceLocation): Map<String, Any> {
+        return readStringAsset(resourceLocation).fromJson().compoundCast()!!
     }
 
     fun readStringAsset(resourceLocation: ResourceLocation): String {

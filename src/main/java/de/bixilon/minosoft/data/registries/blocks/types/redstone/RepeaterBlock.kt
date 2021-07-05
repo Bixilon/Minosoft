@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.data.registries.blocks.types.redstone
 
-import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.player.Hands
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -25,7 +24,7 @@ import de.bixilon.minosoft.gui.rendering.input.camera.hit.RaycastHit
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import glm_.vec3.Vec3i
 
-open class RepeaterBlock(resourceLocation: ResourceLocation, registries: Registries, data: JsonObject) : RedstoneGateBlock(resourceLocation, registries, data) {
+open class RepeaterBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : RedstoneGateBlock(resourceLocation, registries, data) {
 
     override fun getPlacementState(connection: PlayConnection, raycastHit: RaycastHit): BlockState? {
         TODO()

@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.data.registries.items.tools
 
-import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
@@ -23,21 +22,23 @@ import de.bixilon.minosoft.data.registries.versions.Registries
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.play.TagsS2CP
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
+import de.bixilon.minosoft.util.KUtil.listCast
+import de.bixilon.minosoft.util.KUtil.nullCast
 import glm_.vec3.Vec3i
 
 abstract class MiningToolItem(
     resourceLocation: ResourceLocation,
     registries: Registries,
-    data: JsonObject,
+    data: Map<String, Any>,
 ) : ToolItem(resourceLocation, registries, data) {
-    val diggableBlocks: Set<Block>? = data["diggable_blocks"]?.asJsonArray?.let {
+    val diggableBlocks: Set<Block>? = data["diggable_blocks"]?.listCast()?.let {
         val entries: MutableList<Block> = mutableListOf()
         for (id in it) {
             entries += registries.blockRegistry[id]!!
         }
         entries.toSet()
     }
-    override val attackDamage: Float = data["attack_damage"]?.asFloat ?: 1.0f
+    override val attackDamage: Float = data["attack_damage"]?.nullCast<Float>() ?: 1.0f
 
     abstract val diggableTag: ResourceLocation?
 

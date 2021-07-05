@@ -29,4 +29,14 @@ object ResourceLocationJsonMap {
 
         return ret
     }
+
+    fun Map<*, *>.toResourceLocationMap(): Map<ResourceLocation, Any> {
+        val ret: MutableMap<ResourceLocation, Any> = mutableMapOf()
+
+        for ((key, value) in this) {
+            ret[ResourceLocation(key as String)] = value as Any
+        }
+
+        return ret
+    }
 }

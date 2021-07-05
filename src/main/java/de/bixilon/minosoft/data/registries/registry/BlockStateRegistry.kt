@@ -39,7 +39,10 @@ class BlockStateRegistry(var flattened: Boolean) : AbstractRegistry<BlockState> 
     }
 
     override fun get(any: Any?): BlockState? {
-        TODO("Not yet implemented")
+        return when (any) {
+            is Int -> get(any)
+            else -> TODO("Not yet implemented")
+        }
     }
 
     internal operator fun set(id: Int, state: BlockState) {

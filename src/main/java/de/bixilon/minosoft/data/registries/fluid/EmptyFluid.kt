@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.data.registries.fluid
 
-import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.FluidBlock
@@ -22,7 +21,7 @@ import de.bixilon.minosoft.data.registries.versions.Registries
 class EmptyFluid(
     resourceLocation: ResourceLocation,
     registries: Registries,
-    data: JsonObject,
+    data: Map<String, Any>,
 ) : Fluid(resourceLocation, registries, data) {
 
     override fun matches(other: Fluid): Boolean {

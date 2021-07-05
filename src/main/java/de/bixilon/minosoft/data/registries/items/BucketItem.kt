@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.data.registries.items
 
-import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.fluid.Fluid
 import de.bixilon.minosoft.data.registries.versions.Registries
@@ -22,7 +21,7 @@ import de.bixilon.minosoft.data.registries.versions.Registries
 open class BucketItem(
     resourceLocation: ResourceLocation,
     registries: Registries,
-    data: JsonObject,
+    data: Map<String, Any>,
 ) : Item(resourceLocation, registries, data) {
     val fluid: Fluid? = null
 

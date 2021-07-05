@@ -12,13 +12,14 @@
  */
 package de.bixilon.minosoft.data.registries.materials
 
-import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.registry.RegistryItem
 import de.bixilon.minosoft.data.registries.registry.ResourceLocationDeserializer
 import de.bixilon.minosoft.data.registries.versions.Registries
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.TintColorCalculator
+import de.bixilon.minosoft.util.KUtil.nullCast
+import de.bixilon.minosoft.util.nbt.tag.NBTUtil.booleanCast
 import java.util.*
 
 data class Material(
@@ -39,18 +40,18 @@ data class Material(
     }
 
     companion object : ResourceLocationDeserializer<Material> {
-        override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: JsonObject): Material {
+        override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): Material {
             return Material(
                 resourceLocation = resourceLocation,
-                color = TintColorCalculator.getJsonColor(data["color"]?.asInt ?: 0),
-                pushReaction = data["push_reaction"]?.asString?.let { PushReactions.valueOf(it.uppercase(Locale.getDefault())) } ?: PushReactions.NORMAL,
-                blockMotion = data["blocks_motion"]?.asBoolean ?: false,
-                flammable = data["flammable"]?.asBoolean ?: false,
-                liquid = data["liquid"]?.asBoolean ?: false,
-                soft = data["is_soft"]?.asBoolean ?: false,
-                solidBlocking = data["solid_blocking"]?.asBoolean ?: false,
-                replaceable = data["replaceable"]?.asBoolean ?: false,
-                solid = data["solid"]?.asBoolean ?: false,
+                color = TintColorCalculator.getJsonColor(data["color"]?.nullCast<Int>() ?: 0),
+                pushReaction = data["push_reaction"]?.nullCast<String>()?.let { PushReactions.valueOf(it.uppercase(Locale.getDefault())) } ?: PushReactions.NORMAL,
+                blockMotion = data["blocks_motion"]?.booleanCast() ?: false,
+                flammable = data["flammable"]?.booleanCast() ?: false,
+                liquid = data["liquid"]?.booleanCast() ?: false,
+                soft = data["is_soft"]?.booleanCast() ?: false,
+                solidBlocking = data["solid_blocking"]?.booleanCast() ?: false,
+                replaceable = data["replaceable"]?.booleanCast() ?: false,
+                solid = data["solid"]?.booleanCast() ?: false,
             )
         }
     }

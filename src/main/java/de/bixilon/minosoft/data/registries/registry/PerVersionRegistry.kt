@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.data.registries.registry
 
-import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.registries.versions.Version
+import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
 import java.util.*
 
 class PerVersionRegistry<T : RegistryItem> {
@@ -31,12 +31,12 @@ class PerVersionRegistry<T : RegistryItem> {
         throw IllegalArgumentException("Can not find a registry for version $version")
     }
 
-    fun initialize(data: JsonObject, deserializer: ResourceLocationDeserializer<T>) {
+    fun initialize(data: Map<String, Any>, deserializer: ResourceLocationDeserializer<T>) {
         check(!this::versions.isInitialized) { "Already initialized!" }
 
         val versions: SortedMap<Int, Registry<T>> = sortedMapOf({ t, t2 -> t2 - t })
-        for ((versionId, json) in data.entrySet()) {
-            versions[Integer.parseInt(versionId)] = Registry<T>().initialize(json as JsonObject, null, deserializer)
+        for ((versionId, json) in data) {
+            versions[Integer.parseInt(versionId)] = Registry<T>().rawInitialize(json.compoundCast(), null, deserializer)
         }
         this.versions = versions.toMap()
     }

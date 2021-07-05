@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.data.registries.blocks.types.portal
 
-import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
@@ -27,7 +26,7 @@ import glm_.vec3.Vec3d
 import glm_.vec3.Vec3i
 import kotlin.random.Random
 
-open class NetherPortalBlock(resourceLocation: ResourceLocation, registries: Registries, data: JsonObject) : Block(resourceLocation, registries, data) {
+open class NetherPortalBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : Block(resourceLocation, registries, data) {
     private val portalParticleType = registries.particleTypeRegistry[PortalParticle]
 
     override fun randomTick(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, random: Random) {

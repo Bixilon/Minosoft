@@ -13,13 +13,15 @@
 
 package de.bixilon.minosoft.gui.rendering.font
 
-import com.google.gson.JsonArray
-import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.assets.AssetsManager
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.textures.Texture
+import de.bixilon.minosoft.util.KUtil.listCast
+import de.bixilon.minosoft.util.KUtil.toInt
+import de.bixilon.minosoft.util.KUtil.unsafeCast
+import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
 import java.io.InputStream
 
 object FontLoader {
@@ -29,10 +31,10 @@ object FontLoader {
     private const val UNICODE_SIZE = 16
     private val MISSING_UNICODE_PAGES = listOf(0x08, 0xD8, 0xD9, 0xDA, 0xDB, 0xDC, 0xDD, 0xDE, 0xDF, 0xE0, 0xE1, 0xE2, 0xE3, 0xE4, 0xE5, 0xE6, 0xE7, 0xE8, 0xE9, 0xEA, 0xEB, 0xEC, 0xEE, 0xED, 0xEE, 0xEF, 0xF0, 0xF1, 0xF2, 0xF2, 0xF3, 0xF4, 0xF5, 0xF6, 0xF7, 0xF8)
 
-    private fun getCharArray(data: JsonArray): List<Char> {
+    private fun getCharArray(data: List<String>): List<Char> {
         val ret: MutableList<Char> = mutableListOf()
         for (string in data) {
-            ret.addAll(string.asString.toCharArray().toList())
+            ret.addAll(string.toCharArray().toList())
         }
         return ret
     }
@@ -114,13 +116,13 @@ object FontLoader {
         return provider
     }
 
-    fun loadFontProvider(data: JsonObject, assetsManager: AssetsManager, textures: MutableMap<ResourceLocation, Texture>): FontProvider {
-        return when (data["type"].asString) {
+    fun loadFontProvider(data: Map<String, Any>, assetsManager: AssetsManager, textures: MutableMap<ResourceLocation, Texture>): FontProvider {
+        return when (data["type"]!!.unsafeCast<String>()) {
             "bitmap" -> {
-                loadBitmapFontProvider(ResourceLocation(data["file"].asString), data["height"]?.asInt, data["ascent"].asInt, getCharArray(data["chars"].asJsonArray), assetsManager, textures)
+                loadBitmapFontProvider(ResourceLocation(data["file"]!!.unsafeCast()), data["height"]?.toInt(), data["ascent"]!!.toInt(), getCharArray(data["chars"]!!.unsafeCast()), assetsManager, textures)
             }
             "legacy_unicode" -> {
-                loadUnicodeFontProvider(ResourceLocation(data["template"].asString), assetsManager.readAssetAsStream(ResourceLocation(data["sizes"].asString)), assetsManager, textures)
+                loadUnicodeFontProvider(ResourceLocation(data["template"]!!.unsafeCast()), assetsManager.readAssetAsStream(ResourceLocation(data["sizes"]!!.unsafeCast())), assetsManager, textures)
             }
             "ttf" -> {
                 TODO("True Type Fonts are not implemented yet")
@@ -132,8 +134,8 @@ object FontLoader {
 
     fun loadFontProviders(assetsManager: AssetsManager, textures: MutableMap<ResourceLocation, Texture>): List<FontProvider> {
         val ret: MutableList<FontProvider> = mutableListOf()
-        for (providerElement in assetsManager.readJsonAsset(FONT_JSON_RESOURCE_LOCATION).asJsonObject["providers"].asJsonArray) {
-            val provider = loadFontProvider(providerElement.asJsonObject, assetsManager, textures)
+        for (providerElement in assetsManager.readJsonAsset(FONT_JSON_RESOURCE_LOCATION).compoundCast()!!["providers"]!!.listCast()!!) {
+            val provider = loadFontProvider(providerElement.compoundCast()!!, assetsManager, textures)
             ret.add(provider)
         }
         return ret

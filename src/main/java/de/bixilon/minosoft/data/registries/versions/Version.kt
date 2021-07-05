@@ -13,7 +13,7 @@
 package de.bixilon.minosoft.data.registries.versions
 
 import com.google.common.collect.HashBiMap
-import com.google.gson.JsonObject
+import de.bixilon.mbf.MBFBinaryReader
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.assets.MinecraftAssetsManager
 import de.bixilon.minosoft.data.assets.Resources
@@ -23,10 +23,10 @@ import de.bixilon.minosoft.protocol.protocol.PacketTypes.C2S
 import de.bixilon.minosoft.protocol.protocol.PacketTypes.S2C
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.CountUpAndDownLatch
-import de.bixilon.minosoft.util.Util
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
+import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
 
 data class Version(
     var versionName: String,
@@ -95,7 +95,7 @@ data class Version(
             registries.parentRegistries = Versions.PRE_FLATTENING_MAPPING
         }
         val pixlyzerData = try {
-            Util.readJsonFromStream(assetsManager.readAssetAsStream(Resources.getPixLyzerDataHashByVersion(this)))
+            MBFBinaryReader(assetsManager.readAssetAsStream(Resources.getPixLyzerDataHashByVersion(this), false)).readMBF().data?.compoundCast()!!
         } catch (exception: Throwable) {
             // should not happen, but if this version is not flattened, we can fallback to the flatten mappings. Some things might not work...
             Log.log(LogMessageType.VERSION_LOADING, level = LogLevels.VERBOSE) { exception }
@@ -105,12 +105,12 @@ data class Version(
             if (versionId == ProtocolDefinition.PRE_FLATTENING_VERSION_ID) {
                 Versions.PRE_FLATTENING_MAPPING = null
             }
-            JsonObject()
+            mutableMapOf()
         }
         latch.inc()
         registries.load(this, pixlyzerData)
         latch.dec()
-        if (pixlyzerData.size() > 0) {
+        if (pixlyzerData.isNotEmpty()) {
             Log.log(LogMessageType.VERSION_LOADING, level = LogLevels.INFO) { "Loaded registries for $versionName in ${System.currentTimeMillis() - startTime}ms" }
         } else {
             Log.log(LogMessageType.VERSION_LOADING, level = LogLevels.WARN) { "Could not load registries for ${versionName}. Some features might not work." }

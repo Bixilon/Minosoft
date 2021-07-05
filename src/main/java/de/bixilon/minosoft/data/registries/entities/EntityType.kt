@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.data.registries.entities
 
-import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.DefaultEntityFactories
 import de.bixilon.minosoft.data.entities.EntityMetaDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
@@ -26,6 +25,10 @@ import de.bixilon.minosoft.data.registries.registry.Translatable
 import de.bixilon.minosoft.data.registries.versions.Registries
 import de.bixilon.minosoft.datafixer.EntityAttributeFixer.fix
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.util.KUtil.nullCast
+import de.bixilon.minosoft.util.KUtil.unsafeCast
+import de.bixilon.minosoft.util.nbt.tag.NBTUtil.booleanCast
+import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
 import glm_.vec3.Vec3d
 import java.util.*
 
@@ -45,13 +48,13 @@ data class EntityType(
     }
 
     companion object : ResourceLocationDeserializer<EntityType> {
-        override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: JsonObject): EntityType? {
+        override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): EntityType? {
             check(registries != null) { "Registries is null!" }
 
-            data["meta"]?.asJsonObject?.let {
-                for ((minosoftFieldName, index) in it.entrySet()) {
+            data["meta"]?.compoundCast()?.let {
+                for ((minosoftFieldName, index) in it) {
                     val minosoftField = EntityMetaDataFields[minosoftFieldName.lowercase(Locale.getDefault())]
-                    registries.entityMetaIndexMap[minosoftField] = index.asInt
+                    registries.entityMetaIndexMap[minosoftField] = index.unsafeCast()
                 }
             }
             if (data["width"] == null) {
@@ -61,19 +64,19 @@ data class EntityType(
 
             val attributes: MutableMap<ResourceLocation, Double> = mutableMapOf()
 
-            data["attributes"]?.asJsonObject?.let {
-                for ((attributeResourceLocation, value) in it.entrySet()) {
-                    attributes[ResourceLocation.getResourceLocation(attributeResourceLocation).fix()] = value.asDouble
+            data["attributes"]?.compoundCast()?.let {
+                for ((attributeResourceLocation, value) in it) {
+                    attributes[ResourceLocation.getResourceLocation(attributeResourceLocation).fix()] = value.unsafeCast()
                 }
             }
 
             return EntityType(
                 resourceLocation = resourceLocation,
-                translationKey = data["translation_key"]?.asString,
-                width = data["width"].asFloat,
-                height = data["height"].asFloat,
-                fireImmune = data["fire_immune"]?.asBoolean ?: false,
-                sizeFixed = data["size_fixed"]?.asBoolean ?: false,
+                translationKey = data["translation_key"]?.nullCast(),
+                width = data["width"]!!.unsafeCast(),
+                height = data["height"]!!.unsafeCast(),
+                fireImmune = data["fire_immune"]?.booleanCast() ?: false,
+                sizeFixed = data["size_fixed"]?.booleanCast() ?: false,
                 attributes = attributes.toMap(),
                 factory = DefaultEntityFactories[resourceLocation] ?: error("Can not find entity factory for $resourceLocation"),
             )

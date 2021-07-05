@@ -63,12 +63,16 @@ class MinecraftAssetsManager(
         return assetsMapping[resourceLocation] ?: throw FileNotFoundException("Can not find asset: $resourceLocation")
     }
 
-    private fun getAssetPath(resourceLocation: ResourceLocation): String {
-        return FileAssetsManager.getAssetDiskPath(getAssetHash(resourceLocation))
+    private fun getAssetPath(resourceLocation: ResourceLocation, compress: Boolean = true): String {
+        return FileAssetsManager.getAssetDiskPath(getAssetHash(resourceLocation), compress)
     }
 
-    fun readAssetAsStream(hash: String): InputStream {
-        return GZIPInputStream(FileInputStream(FileAssetsManager.getAssetDiskPath(hash)))
+    fun readAssetAsStream(hash: String, compressed: Boolean = true): InputStream {
+        var inputStream: InputStream = FileInputStream(FileAssetsManager.getAssetDiskPath(hash, compressed))
+        if (compressed) {
+            inputStream = GZIPInputStream(inputStream)
+        }
+        return inputStream
     }
 
     fun generateJarAssets(): String {
@@ -116,7 +120,7 @@ class MinecraftAssetsManager(
     }
 
     private fun downloadAssetsIndex() {
-        Util.downloadFileAsGz(String.format(ProtocolDefinition.MOJANG_URL_PACKAGES + ".json", assetVersion.indexHash, assetVersion.indexVersion), FileAssetsManager.getAssetDiskPath(assetVersion.indexHash!!))
+        Util.downloadFileAsGz(String.format(ProtocolDefinition.MOJANG_URL_PACKAGES + ".json", assetVersion.indexHash, assetVersion.indexVersion), FileAssetsManager.getAssetDiskPath(assetVersion.indexHash!!, true))
     }
 
     private fun downloadAsset(source: AssetsSource, hash: String) {
@@ -196,8 +200,8 @@ class MinecraftAssetsManager(
         return assetsSizes[hash] ?: -1L // ToDo: Get real size
     }
 
-    override fun getFileAssetSize(hash: String): Long {
-        val file = File(FileAssetsManager.getAssetDiskPath(hash))
+    override fun getFileAssetSize(hash: String, compress: Boolean): Long {
+        val file = File(FileAssetsManager.getAssetDiskPath(hash, compress))
         return if (file.exists()) {
             file.length()
         } else {

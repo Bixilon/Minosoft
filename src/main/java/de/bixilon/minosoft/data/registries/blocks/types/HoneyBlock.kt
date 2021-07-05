@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.data.registries.blocks.types
 
-import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
@@ -22,7 +21,7 @@ import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import glm_.vec3.Vec3i
 import kotlin.math.abs
 
-open class HoneyBlock(resourceLocation: ResourceLocation, registries: Registries, data: JsonObject) : Block(resourceLocation, registries, data) {
+open class HoneyBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : Block(resourceLocation, registries, data) {
 
     override fun onEntityCollision(connection: PlayConnection, entity: Entity, blockState: BlockState, blockPosition: Vec3i) {
         super.onEntityCollision(connection, entity, blockState, blockPosition)

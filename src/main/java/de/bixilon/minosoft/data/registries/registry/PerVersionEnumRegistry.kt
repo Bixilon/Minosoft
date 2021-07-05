@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.data.registries.registry
 
-import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.registries.versions.Version
 import de.bixilon.minosoft.util.enum.ValuesEnum
 import java.util.*
@@ -36,11 +35,11 @@ class PerVersionEnumRegistry<T : Enum<*>>(
         return null
     }
 
-    fun initialize(data: JsonObject) {
+    fun initialize(data: Map<String, Any>) {
         check(!this::versions.isInitialized) { "Already initialized!" }
 
         val versions: SortedMap<Int, EnumRegistry<T>> = sortedMapOf({ t, t2 -> t2 - t })
-        for ((versionId, json) in data.entrySet()) {
+        for ((versionId, json) in data) {
             versions[Integer.parseInt(versionId)] = EnumRegistry(values = values, mutable = false).initialize(json)
         }
         this.versions = versions.toMap()

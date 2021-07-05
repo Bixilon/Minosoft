@@ -12,7 +12,6 @@
  */
 package de.bixilon.minosoft.data.registries.other.containers
 
-import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.registry.RegistryItem
 import de.bixilon.minosoft.data.registries.registry.ResourceLocationDeserializer
@@ -27,7 +26,7 @@ data class ContainerType(
     }
 
     companion object : ResourceLocationDeserializer<ContainerType> {
-        override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: JsonObject): ContainerType {
+        override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): ContainerType {
             return ContainerType(
                 resourceLocation = resourceLocation,
             )

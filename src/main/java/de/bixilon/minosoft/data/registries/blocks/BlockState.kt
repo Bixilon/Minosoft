@@ -12,10 +12,6 @@
  */
 package de.bixilon.minosoft.data.registries.blocks
 
-import com.google.gson.JsonArray
-import com.google.gson.JsonElement
-import com.google.gson.JsonObject
-import com.google.gson.JsonPrimitive
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.VoxelShape
@@ -30,6 +26,10 @@ import de.bixilon.minosoft.gui.rendering.block.models.BlockModel
 import de.bixilon.minosoft.gui.rendering.block.renderable.WorldEntryRenderer
 import de.bixilon.minosoft.gui.rendering.block.renderable.block.BlockRenderer
 import de.bixilon.minosoft.gui.rendering.block.renderable.block.MultipartRenderer
+import de.bixilon.minosoft.util.KUtil.nullCast
+import de.bixilon.minosoft.util.KUtil.unsafeCast
+import de.bixilon.minosoft.util.nbt.tag.NBTUtil.booleanCast
+import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
 import glm_.vec3.Vec3i
 import java.util.*
 import kotlin.math.abs
@@ -124,8 +124,8 @@ data class BlockState(
 
     companion object {
 
-        fun deserialize(block: Block, registries: Registries, data: JsonObject, models: Map<ResourceLocation, BlockModel>): BlockState {
-            val properties = data["properties"]?.asJsonObject?.let {
+        fun deserialize(block: Block, registries: Registries, data: Map<String, Any>, models: Map<ResourceLocation, BlockModel>): BlockState {
+            val properties = data["properties"]?.compoundCast()?.let {
                 getProperties(it)
             } ?: mutableMapOf()
 
@@ -133,46 +133,45 @@ data class BlockState(
 
             data["render"]?.let {
                 when (it) {
-                    is JsonArray -> {
+                    is Collection<*> -> {
                         for (model in it) {
                             when (model) {
-                                is JsonObject -> {
-                                    addBlockModel(model, renderers, models)
+                                is Map<*, *> -> {
+                                    addBlockModel(model.compoundCast()!!, renderers, models)
                                 }
-                                is JsonArray -> {
+                                is Collection<*> -> {
                                     val modelList: MutableList<WorldEntryRenderer> = mutableListOf()
                                     for (singleModel in model) {
-                                        check(singleModel is JsonObject)
-                                        addBlockModel(singleModel, modelList, models)
+                                        addBlockModel(singleModel!!.compoundCast()!!, modelList, models)
                                     }
                                     renderers.add(MultipartRenderer(modelList.toList()))
                                 }
                             }
                         }
                     }
-                    is JsonObject -> {
-                        addBlockModel(it, renderers, models)
+                    is Map<*, *> -> {
+                        addBlockModel(it.compoundCast()!!, renderers, models)
                     }
                     else -> error("Not a render json!")
                 }
             }
 
-            val tintColor: RGBColor? = data["tint_color"]?.asInt?.let { TintColorCalculator.getJsonColor(it) } ?: block.tintColor
+            val tintColor: RGBColor? = data["tint_color"]?.nullCast<Int>()?.let { TintColorCalculator.getJsonColor(it) } ?: block.tintColor
 
 
-            val material = registries.materialRegistry[ResourceLocation(data["material"].asString)]!!
+            val material = registries.materialRegistry[ResourceLocation(data["material"]!!.unsafeCast())]!!
 
 
-            fun JsonElement.asShape(): VoxelShape {
-                return if (this.isJsonPrimitive) {
-                    registries.shapes[this.asInt]
+            fun Any.asShape(): VoxelShape {
+                return if (this is Int) {
+                    registries.shapes[this]
                 } else {
                     VoxelShape(registries.shapes, this)
                 }
             }
 
             val collisionShape = data["collision_shape"]?.asShape()
-                ?: if (data["is_collision_shape_full_block"]?.asBoolean == true) {
+                ?: if (data["is_collision_shape_full_block"]?.booleanCast() == true) {
                     VoxelShape.FULL
                 } else {
                     VoxelShape.EMPTY
@@ -195,15 +194,15 @@ data class BlockState(
                 collisionShape = collisionShape,
                 occlusionShape = occlusionShape,
                 outlineShape = outlineShape,
-                hardness = data["hardness"]?.asFloat ?: 1.0f,
-                requiresTool = data["requires_tool"]?.asBoolean ?: material.soft,
-                breakSoundEvent = data["break_sound_type"]?.asInt?.let { registries.soundEventRegistry[it] },
-                stepSoundEvent = data["step_sound_type"]?.asInt?.let { registries.soundEventRegistry[it] },
-                placeSoundEvent = data["place_sound_type"]?.asInt?.let { registries.soundEventRegistry[it] },
-                hitSoundEvent = data["hit_sound_type"]?.asInt?.let { registries.soundEventRegistry[it] },
-                fallSoundEvent = data["fall_sound_type"]?.asInt?.let { registries.soundEventRegistry[it] },
-                soundEventVolume = data["sound_type_volume"]?.asFloat ?: 1.0f,
-                soundEventPitch = data["sound_type_pitch"]?.asFloat ?: 1.0f,
+                hardness = data["hardness"]?.nullCast<Float>() ?: 1.0f,
+                requiresTool = data["requires_tool"]?.booleanCast() ?: material.soft,
+                breakSoundEvent = data["break_sound_type"]?.nullCast<Int>()?.let { registries.soundEventRegistry[it] },
+                stepSoundEvent = data["step_sound_type"]?.nullCast<Int>()?.let { registries.soundEventRegistry[it] },
+                placeSoundEvent = data["place_sound_type"]?.nullCast<Int>()?.let { registries.soundEventRegistry[it] },
+                hitSoundEvent = data["hit_sound_type"]?.nullCast<Int>()?.let { registries.soundEventRegistry[it] },
+                fallSoundEvent = data["fall_sound_type"]?.nullCast<Int>()?.let { registries.soundEventRegistry[it] },
+                soundEventVolume = data["sound_type_volume"]?.nullCast<Float>() ?: 1.0f,
+                soundEventPitch = data["sound_type_pitch"]?.nullCast<Float>() ?: 1.0f,
             )
         }
 
@@ -213,20 +212,12 @@ data class BlockState(
             return ret shr 16
         }
 
-        private fun getProperties(json: JsonObject): MutableMap<BlockProperties, Any> {
+        private fun getProperties(json: Map<String, Any>): MutableMap<BlockProperties, Any> {
             val properties: MutableMap<BlockProperties, Any> = mutableMapOf()
-            for ((propertyGroup, propertyJsonValue) in json.entrySet()) {
-                check(propertyJsonValue is JsonPrimitive) { "Not a json primitive!" }
-                val propertyValue: Any = when {
-                    propertyJsonValue.isBoolean -> {
-                        propertyJsonValue.asBoolean
-                    }
-                    propertyJsonValue.isNumber -> {
-                        propertyJsonValue.asInt
-                    }
-                    else -> {
-                        propertyJsonValue.asString.lowercase(Locale.getDefault())
-                    }
+            for ((propertyGroup, propertyJsonValue) in json) {
+                val propertyValue: Any = when (propertyJsonValue) {
+                    is String -> propertyJsonValue.lowercase(Locale.getDefault())
+                    else -> propertyJsonValue
                 }
                 try {
                     val (blockProperty, value) = BlockProperties.parseProperty(propertyGroup, propertyValue)
@@ -238,8 +229,8 @@ data class BlockState(
             return properties
         }
 
-        private fun addBlockModel(data: JsonObject, renderer: MutableList<WorldEntryRenderer>, models: Map<ResourceLocation, BlockModel>) {
-            val model = models[ResourceLocation(data["model"].asString)] ?: error("Can not find block model ${data["model"]}")
+        private fun addBlockModel(data: Map<String, Any>, renderer: MutableList<WorldEntryRenderer>, models: Map<ResourceLocation, BlockModel>) {
+            val model = models[ResourceLocation(data["model"]!!.unsafeCast())] ?: error("Can not find block model ${data["model"]}")
             renderer.add(BlockRenderer(data, model))
         }
     }

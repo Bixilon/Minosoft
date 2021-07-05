@@ -13,16 +13,16 @@
 
 package de.bixilon.minosoft.data.registries.items.armor
 
-import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.items.Item
 import de.bixilon.minosoft.data.registries.versions.Registries
+import de.bixilon.minosoft.util.KUtil.nullCast
 
 open class HorseArmorItem(
     resourceLocation: ResourceLocation,
     registries: Registries,
-    data: JsonObject,
+    data: Map<String, Any>,
 ) : Item(resourceLocation, registries, data) {
-    val horseProtection = data["horse_protection"]?.asInt ?: 0
-    val horseTexture = data["horse_texture"]?.asString
+    val horseProtection = data["horse_protection"]?.nullCast<Int>() ?: 0
+    val horseTexture = data["horse_texture"]?.nullCast<String>()
 }

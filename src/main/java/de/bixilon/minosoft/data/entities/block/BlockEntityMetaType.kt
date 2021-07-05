@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.data.entities.block
 
-import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.registry.RegistryItem
 import de.bixilon.minosoft.data.registries.registry.ResourceLocationDeserializer
@@ -25,7 +24,7 @@ class BlockEntityMetaType(
 ) : RegistryItem() {
 
     companion object : ResourceLocationDeserializer<BlockEntityMetaType> {
-        override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: JsonObject): BlockEntityMetaType {
+        override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): BlockEntityMetaType {
             return BlockEntityMetaType(resourceLocation)
         }
     }

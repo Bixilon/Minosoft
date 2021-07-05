@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.rendering.block.renderable.block
 
 import com.google.common.collect.HashBiMap
-import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.biomes.Biome
@@ -31,7 +30,7 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.rad
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3
 import glm_.vec3.Vec3
 
-class BlockRenderer(data: JsonObject, model: BlockModel) : WorldEntryRenderer {
+class BlockRenderer(data: Map<String, Any>, model: BlockModel) : WorldEntryRenderer {
     private val cullFaces: Array<Directions?> = arrayOfNulls(Directions.VALUES.size)
     val textures: MutableMap<String, String> = mutableMapOf()
     private val elements: MutableSet<ElementRenderer> = mutableSetOf()

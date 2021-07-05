@@ -13,9 +13,8 @@
 
 package de.bixilon.minosoft.data.registries.blocks.types.redstone
 
-import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.types.HorizontalFacingBlock
 import de.bixilon.minosoft.data.registries.versions.Registries
 
-abstract class RedstoneGateBlock(resourceLocation: ResourceLocation, registries: Registries, data: JsonObject) : HorizontalFacingBlock(resourceLocation, registries, data)
+abstract class RedstoneGateBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : HorizontalFacingBlock(resourceLocation, registries, data)

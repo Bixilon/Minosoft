@@ -12,10 +12,11 @@
  */
 package de.bixilon.minosoft.data.registries.inventory
 
-import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.registries.registry.IdDeserializer
 import de.bixilon.minosoft.data.registries.registry.RegistryFakeEnumerable
 import de.bixilon.minosoft.data.registries.versions.Registries
+import de.bixilon.minosoft.util.KUtil.unsafeCast
+import de.bixilon.minosoft.util.nbt.tag.NBTUtil.booleanCast
 
 data class CreativeModeTab(
     override val name: String,
@@ -27,13 +28,13 @@ data class CreativeModeTab(
 
 
     companion object : IdDeserializer<CreativeModeTab> {
-        override fun deserialize(registries: Registries, data: JsonObject): CreativeModeTab {
+        override fun deserialize(registries: Registries, data: Map<String, Any>): CreativeModeTab {
             return CreativeModeTab(
-                name = data["language_id"].asString,
-                recipeFolderName = data["recipe_folder_name"].asString,
-                backgroundSuffix = data["background_suffix"].asString,
-                canScroll = data["can_scroll"].asBoolean,
-                showTitle = data["show_title"].asBoolean,
+                name = data["language_id"]!!.unsafeCast(),
+                recipeFolderName = data["recipe_folder_name"]!!.unsafeCast(),
+                backgroundSuffix = data["background_suffix"]!!.unsafeCast(),
+                canScroll = data["can_scroll"]!!.booleanCast(),
+                showTitle = data["show_title"]!!.booleanCast(),
             )
         }
     }

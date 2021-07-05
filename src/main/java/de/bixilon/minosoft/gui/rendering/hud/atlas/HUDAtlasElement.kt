@@ -13,10 +13,11 @@
 
 package de.bixilon.minosoft.gui.rendering.hud.atlas
 
-import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.textures.Texture
+import de.bixilon.minosoft.util.KUtil.nullCast
+import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
 import glm_.vec2.Vec2
 import glm_.vec2.Vec2i
 
@@ -39,32 +40,32 @@ data class HUDAtlasElement(
     }
 
     companion object {
-        fun deserialize(json: Map<ResourceLocation, JsonObject>, textures: MutableMap<ResourceLocation, Texture>): Map<ResourceLocation, HUDAtlasElement> {
+        fun deserialize(json: Map<ResourceLocation, Any>, textures: MutableMap<ResourceLocation, Texture>): Map<ResourceLocation, HUDAtlasElement> {
             val ret: MutableMap<ResourceLocation, HUDAtlasElement> = mutableMapOf()
             for ((resourceLocation, data) in json) {
-                ret[resourceLocation] = deserialize(data, textures)
+                ret[resourceLocation] = deserialize(data.compoundCast()!!, textures)
             }
             return ret
         }
 
-        fun deserialize(json: JsonObject, textures: MutableMap<ResourceLocation, Texture>): HUDAtlasElement {
+        fun deserialize(json: Map<String, Any>, textures: MutableMap<ResourceLocation, Texture>): HUDAtlasElement {
             val keys: MutableSet<Int> = mutableSetOf()
-            var textureResourceLocation: ResourceLocation? = json["texture"]?.asString?.let { ResourceLocation(it) }
-            for (key in json["versions"].asJsonObject.keySet()) {
+            var textureResourceLocation: ResourceLocation? = json["texture"]?.nullCast<String>()?.let { ResourceLocation(it) }
+            for (key in json["versions"]!!.compoundCast()!!.keys) {
                 keys.add(key.toInt())
             }
             // ToDo: Sort and get correct version
-            val imageJson = json["versions"].asJsonObject[keys.iterator().next().toString()].asJsonObject
+            val imageJson = json["versions"]!!.compoundCast()!![keys.iterator().next().toString()]!!.compoundCast()!!
 
-            imageJson["texture"]?.asString?.let { textureResourceLocation = ResourceLocation(it) }
+            imageJson["texture"]?.nullCast<String>()?.let { textureResourceLocation = ResourceLocation(it) }
 
 
             val texture = textures.getOrPut(textureResourceLocation!!) { Texture(textureResourceLocation!!) }
 
             val slots: MutableMap<Int, Vec2Binding> = mutableMapOf()
 
-            imageJson["slots"]?.asJsonObject?.let {
-                for ((id, data) in it.entrySet()) {
+            imageJson["slots"]?.compoundCast()?.let {
+                for ((id, data) in it) {
                     slots[id.toInt()] = Vec2Binding.deserialize(data)
                 }
             }

@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.data.registries.effects.attributes
 
-import com.google.gson.JsonObject
+import de.bixilon.minosoft.util.KUtil.unsafeCast
 import de.bixilon.minosoft.util.Util
 import java.util.*
 
@@ -27,12 +27,12 @@ data class StatusEffectAttribute(
     }
 
     companion object {
-        fun deserialize(data: JsonObject): StatusEffectAttribute {
+        fun deserialize(data: Map<String, Any>): StatusEffectAttribute {
             return StatusEffectAttribute(
-                name = data["name"].asString,
-                uuid = Util.getUUIDFromString(data["uuid"].asString),
-                amount = data["amount"].asDouble,
-                operation = StatusEffectOperations.NAME_MAP[data["operation"].asString]!!,
+                name = data["name"]!!.unsafeCast(),
+                uuid = Util.getUUIDFromString(data["uuid"]!!.unsafeCast()),
+                amount = data["amount"]!!.unsafeCast(),
+                operation = StatusEffectOperations[data["operation"]!!.unsafeCast<String>()],
             )
         }
     }

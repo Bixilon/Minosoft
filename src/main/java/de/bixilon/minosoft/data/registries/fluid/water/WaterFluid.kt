@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.data.registries.fluid.water
 
-import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.player.LocalPlayerEntity
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
@@ -40,7 +39,7 @@ import kotlin.random.Random
 class WaterFluid(
     resourceLocation: ResourceLocation,
     registries: Registries,
-    data: JsonObject,
+    data: Map<String, Any>,
 ) : FlowableFluid(resourceLocation, registries, data) {
     private val depthStriderEnchantment: Enchantment? = null
     private val dolphinsGraceStatusEffect: StatusEffect? = null

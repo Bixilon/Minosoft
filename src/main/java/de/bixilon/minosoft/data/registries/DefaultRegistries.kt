@@ -27,6 +27,7 @@ import de.bixilon.minosoft.protocol.packets.c2s.play.EntityActionC2SP
 import de.bixilon.minosoft.protocol.packets.s2c.play.EntityAnimationS2CP
 import de.bixilon.minosoft.protocol.packets.s2c.play.title.TitleS2CF
 import de.bixilon.minosoft.util.json.ResourceLocationJsonMap.toResourceLocationMap
+import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
 
 object DefaultRegistries {
     private val ENUM_RESOURCE_LOCATION = ResourceLocation("minosoft:mapping/enums.json")
@@ -58,31 +59,31 @@ object DefaultRegistries {
     fun load() {
         check(!initialized) { "Already initialized!" }
 
-        val enumJson = Minosoft.MINOSOFT_ASSETS_MANAGER.readJsonAsset(ENUM_RESOURCE_LOCATION).asJsonObject.toResourceLocationMap()
+        val enumJson = Minosoft.MINOSOFT_ASSETS_MANAGER.readJsonAsset(ENUM_RESOURCE_LOCATION).compoundCast()!!.toResourceLocationMap()
 
-        EQUIPMENT_SLOTS_REGISTRY.initialize(enumJson[ResourceLocation("equipment_slots")]!!)
-        HAND_EQUIPMENT_SLOTS_REGISTRY.initialize(enumJson[ResourceLocation("hand_equipment_slots")]!!)
-        ARMOR_EQUIPMENT_SLOTS_REGISTRY.initialize(enumJson[ResourceLocation("armor_equipment_slots")]!!)
-        ARMOR_STAND_EQUIPMENT_SLOTS_REGISTRY.initialize(enumJson[ResourceLocation("armor_stand_equipment_slots")]!!)
+        EQUIPMENT_SLOTS_REGISTRY.initialize(enumJson[ResourceLocation("equipment_slots")]?.compoundCast()!!)
+        HAND_EQUIPMENT_SLOTS_REGISTRY.initialize(enumJson[ResourceLocation("hand_equipment_slots")]?.compoundCast()!!)
+        ARMOR_EQUIPMENT_SLOTS_REGISTRY.initialize(enumJson[ResourceLocation("armor_equipment_slots")]?.compoundCast()!!)
+        ARMOR_STAND_EQUIPMENT_SLOTS_REGISTRY.initialize(enumJson[ResourceLocation("armor_stand_equipment_slots")]?.compoundCast()!!)
 
-        ENTITY_META_DATA_DATA_TYPES_REGISTRY.initialize(enumJson[ResourceLocation("entity_meta_data_data_types")]!!)
+        ENTITY_META_DATA_DATA_TYPES_REGISTRY.initialize(enumJson[ResourceLocation("entity_meta_data_data_types")]?.compoundCast()!!)
 
-        TITLE_ACTIONS_REGISTRY.initialize(enumJson[ResourceLocation("title_actions")]!!)
+        TITLE_ACTIONS_REGISTRY.initialize(enumJson[ResourceLocation("title_actions")]?.compoundCast()!!)
 
-        ENTITY_ANIMATION_REGISTRY.initialize(enumJson[ResourceLocation("entity_animations")]!!)
-        ENTITY_ACTIONS_REGISTRY.initialize(enumJson[ResourceLocation("entity_actions")]!!)
+        ENTITY_ANIMATION_REGISTRY.initialize(enumJson[ResourceLocation("entity_animations")]?.compoundCast()!!)
+        ENTITY_ACTIONS_REGISTRY.initialize(enumJson[ResourceLocation("entity_actions")]?.compoundCast()!!)
 
 
-        val registriesJson = Minosoft.MINOSOFT_ASSETS_MANAGER.readJsonAsset(REGISTRIES_RESOURCE_LOCATION).asJsonObject.toResourceLocationMap()
+        val registriesJson = Minosoft.MINOSOFT_ASSETS_MANAGER.readJsonAsset(REGISTRIES_RESOURCE_LOCATION).compoundCast()!!.toResourceLocationMap()
 
-        DEFAULT_PLUGIN_CHANNELS_REGISTRY.initialize(registriesJson[ResourceLocation("default_plugin_channels")]!!, PluginChannel)
+        DEFAULT_PLUGIN_CHANNELS_REGISTRY.initialize(registriesJson[ResourceLocation("default_plugin_channels")]?.compoundCast()!!, PluginChannel)
 
-        ENTITY_OBJECT_REGISTRY.initialize(registriesJson[ResourceLocation("entity_objects")]!!, null, EntityObjectType)
+        ENTITY_OBJECT_REGISTRY.rawInitialize(registriesJson[ResourceLocation("entity_objects")]?.compoundCast()!!, null, EntityObjectType)
 
-        BLOCK_ENTITY_META_TYPE_REGISTRY.initialize(registriesJson[ResourceLocation("block_entity_meta_data_types")]!!, BlockEntityMetaType)
+        BLOCK_ENTITY_META_TYPE_REGISTRY.initialize(registriesJson[ResourceLocation("block_entity_meta_data_types")]?.compoundCast()!!, BlockEntityMetaType)
 
-        CONTAINER_TYPE_REGISTRY.initialize(registriesJson[ResourceLocation("container_types")]!!, ContainerType)
-        GAME_EVENT_REGISTRY.initialize(registriesJson[ResourceLocation("game_events")]!!, GameEvent)
+        CONTAINER_TYPE_REGISTRY.initialize(registriesJson[ResourceLocation("container_types")]?.compoundCast()!!, ContainerType)
+        GAME_EVENT_REGISTRY.initialize(registriesJson[ResourceLocation("game_events")]?.compoundCast()!!, GameEvent)
 
         initialized = true
     }

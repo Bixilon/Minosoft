@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.data.registries.blocks.types.wall
 
-import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
@@ -22,7 +21,7 @@ import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.versions.Registries
 
-abstract class WallMountedBlock(resourceLocation: ResourceLocation, registries: Registries, data: JsonObject) : Block(resourceLocation, registries, data) {
+abstract class WallMountedBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : Block(resourceLocation, registries, data) {
 
     fun getRealFacing(blockState: BlockState): Directions {
         return when (blockState.properties[BlockProperties.FACE]) {

@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.util
 
+import com.squareup.moshi.JsonAdapter
+import com.squareup.moshi.JsonWriter
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
@@ -20,6 +22,8 @@ import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.collections.SynchronizedMap
 import de.bixilon.minosoft.util.enum.AliasableEnum
+import de.bixilon.minosoft.util.json.JSONSerializer
+import okio.Buffer
 import sun.misc.Unsafe
 import java.lang.reflect.Field
 import java.util.*
@@ -230,4 +234,37 @@ object KUtil {
         this.set(instance, value)
     }
 
+
+    fun Any.mapCast(): Map<Any, Any>? {
+        return this.nullCast()
+    }
+
+    fun Any.listCast(): Collection<Any>? {
+        return this.nullCast()
+    }
+
+    fun Any.toJson(beautiful: Boolean = false, adapter: JsonAdapter<Any> = JSONSerializer.ANY_ADAPTER): String {
+        val buffer = Buffer()
+        val jsonWriter: JsonWriter = JsonWriter.of(buffer)
+        if (beautiful) {
+            jsonWriter.indent = "  "
+        }
+        synchronized(this) {
+            adapter.toJson(jsonWriter, this)
+        }
+        return buffer.readUtf8()
+    }
+
+    fun String.fromJson(): Any {
+        return JSONSerializer.ANY_ADAPTER.fromJson(this)!!
+    }
+
+    fun Any.toInt(): Int {
+        return when (this) {
+            is String -> Integer.valueOf(this)
+            is Int -> this
+            is Number -> this.toInt()
+            else -> TODO()
+        }
+    }
 }

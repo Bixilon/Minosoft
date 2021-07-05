@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.data.registries.items.tools
 
-import com.google.gson.JsonObject
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.inventory.ItemStack
@@ -28,17 +27,19 @@ import de.bixilon.minosoft.gui.rendering.input.camera.hit.RaycastHit
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
+import de.bixilon.minosoft.util.KUtil.mapCast
+import de.bixilon.minosoft.util.KUtil.toInt
 
 open class HoeItem(
     resourceLocation: ResourceLocation,
     registries: Registries,
-    data: JsonObject,
+    data: Map<String, Any>,
 ) : MiningToolItem(resourceLocation, registries, data) {
     override val diggableTag: ResourceLocation = HOE_MINEABLE_TAG
-    val tillableBlockStates: Map<Block, BlockState>? = data["tillables_block_states"]?.asJsonObject?.let {
+    val tillableBlockStates: Map<Block, BlockState>? = data["tillables_block_states"]?.mapCast()?.let {
         val entries: MutableMap<Block, BlockState> = mutableMapOf()
-        for ((origin, target) in it.entrySet()) {
-            entries[registries.blockRegistry[origin.toInt()]] = registries.blockStateRegistry[target.asInt]!!
+        for ((origin, target) in it) {
+            entries[registries.blockRegistry[origin.toInt()]] = registries.blockStateRegistry[target]!!
         }
         entries.toMap()
     }

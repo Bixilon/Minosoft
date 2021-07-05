@@ -12,7 +12,6 @@
  */
 package de.bixilon.minosoft.data.registries.effects
 
-import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.effects.attributes.StatusEffectAttribute
 import de.bixilon.minosoft.data.registries.registry.RegistryItem
@@ -22,6 +21,8 @@ import de.bixilon.minosoft.data.registries.versions.Registries
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.data.text.RGBColor.Companion.asRGBColor
 import de.bixilon.minosoft.datafixer.EntityAttributeFixer.fix
+import de.bixilon.minosoft.util.KUtil.unsafeCast
+import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
 import java.util.*
 
 data class StatusEffect(
@@ -38,13 +39,13 @@ data class StatusEffect(
     }
 
     companion object : ResourceLocationDeserializer<StatusEffect> {
-        override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: JsonObject): StatusEffect {
+        override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): StatusEffect {
             val attributes: MutableMap<ResourceLocation, StatusEffectAttribute> = mutableMapOf()
             val uuidAttributes: MutableMap<UUID, StatusEffectAttribute> = mutableMapOf()
 
-            data["attributes"]?.asJsonObject?.let {
-                for ((key, value) in it.entrySet()) {
-                    val attribute = StatusEffectAttribute.deserialize(value.asJsonObject)
+            data["attributes"]?.compoundCast()?.let {
+                for ((key, value) in it) {
+                    val attribute = StatusEffectAttribute.deserialize(value.compoundCast()!!)
                     attributes[ResourceLocation.getResourceLocation(key).fix()] = attribute
                     uuidAttributes[attribute.uuid] = attribute
                 }
@@ -52,9 +53,9 @@ data class StatusEffect(
 
             return StatusEffect(
                 resourceLocation = resourceLocation,
-                category = StatusEffectCategories.NAME_MAP[data["category"].asString]!!,
-                translationKey = data["translation_key"]?.asString,
-                color = data["color"].asInt.asRGBColor(),
+                category = StatusEffectCategories[data["category"]!!.unsafeCast<String>()],
+                translationKey = data["translation_key"]?.unsafeCast<String>(),
+                color = data["color"]!!.unsafeCast<Int>().asRGBColor(),
                 attributes = attributes.toMap(),
                 uuidAttributes = uuidAttributes.toMap(),
             )

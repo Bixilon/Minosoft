@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.data.registries.blocks.types
 
-import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
@@ -21,7 +20,7 @@ import de.bixilon.minosoft.data.registries.versions.Registries
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import glm_.vec3.Vec3i
 
-open class SlimeBlock(resourceLocation: ResourceLocation, registries: Registries, data: JsonObject) : Block(resourceLocation, registries, data) {
+open class SlimeBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : Block(resourceLocation, registries, data) {
 
     override fun onEntityLand(connection: PlayConnection, entity: Entity, blockPosition: Vec3i, blockState: BlockState) {
         super.onEntityLand(connection, entity, blockPosition, blockState)

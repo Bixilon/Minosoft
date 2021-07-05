@@ -13,9 +13,11 @@
 
 package de.bixilon.minosoft.data.registries.registry
 
-import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.registries.versions.Registries
+import de.bixilon.minosoft.util.KUtil.nullCast
+import de.bixilon.minosoft.util.KUtil.toInt
 import de.bixilon.minosoft.util.collections.Clearable
+import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
 
 class FakeEnumRegistry<T : RegistryFakeEnumerable>(
     override var parent: FakeEnumRegistry<T>? = null,
@@ -37,19 +39,19 @@ class FakeEnumRegistry<T : RegistryFakeEnumerable>(
         return valueIdMap[value] ?: parent?.getId(value)!!
     }
 
-    fun initialize(data: JsonObject?, registries: Registries, deserializer: IdDeserializer<T>): FakeEnumRegistry<T> {
+    fun initialize(data: Map<Any, Any>?, registries: Registries, deserializer: IdDeserializer<T>): FakeEnumRegistry<T> {
         check(!initialized) { "Already initialized" }
 
         if (data == null) {
             return this
         }
 
-        for ((id, value) in data.entrySet()) {
-            check(value is JsonObject)
+        for ((id, value) in data) {
+            check(value is Map<*, *>)
             var itemId = id.toInt()
 
-            val item = deserializer.deserialize(registries, value)
-            value["id"]?.asInt?.let { providedItemId ->
+            val item = deserializer.deserialize(registries, value.compoundCast()!!)
+            value["id"]?.nullCast<Int>()?.let { providedItemId ->
                 itemId = providedItemId
             }
             idValueMap[itemId] = item

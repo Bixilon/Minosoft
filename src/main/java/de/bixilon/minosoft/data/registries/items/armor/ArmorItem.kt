@@ -13,19 +13,20 @@
 
 package de.bixilon.minosoft.data.registries.items.armor
 
-import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.inventory.InventorySlots
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.items.Item
 import de.bixilon.minosoft.data.registries.versions.Registries
+import de.bixilon.minosoft.util.KUtil.nullCast
+import de.bixilon.minosoft.util.KUtil.unsafeCast
 
 open class ArmorItem(
     resourceLocation: ResourceLocation,
     registries: Registries,
-    data: JsonObject,
+    data: Map<String, Any>,
 ) : Item(resourceLocation, registries, data) {
-    val protection = data["defense"].asFloat
-    val toughness = data["toughness"].asFloat
-    val equipmentSlot = data["equipment_slot"].asString.let { InventorySlots.EquipmentSlots.NAME_MAP[it]!! }
-    val knockbackResistance = data["knockback_resistance"]?.asFloat ?: 0.0f
+    val protection = data["defense"]!!.unsafeCast<Float>()
+    val toughness = data["toughness"]!!.unsafeCast<Float>()
+    val equipmentSlot = data["equipment_slot"]!!.unsafeCast<String>().let { InventorySlots.EquipmentSlots[it] }
+    val knockbackResistance = data["knockback_resistance"]?.nullCast<Float>() ?: 0.0f
 }

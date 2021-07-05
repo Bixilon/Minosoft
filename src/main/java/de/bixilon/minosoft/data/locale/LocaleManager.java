@@ -47,7 +47,7 @@ public class LocaleManager {
     }
 
     private static Language loadLanguage(String language) {
-        return new Language(language, Minosoft.MINOSOFT_ASSETS_MANAGER.readJsonAsset(new ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, String.format("locale/%s.json", language))));
+        return new Language(language, Minosoft.MINOSOFT_ASSETS_MANAGER.readLegacyJsonAsset(new ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, String.format("locale/%s.json", language))));
     }
 
     public static void load(String language) {

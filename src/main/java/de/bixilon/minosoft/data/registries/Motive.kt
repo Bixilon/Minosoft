@@ -12,10 +12,10 @@
  */
 package de.bixilon.minosoft.data.registries
 
-import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.registries.registry.RegistryItem
 import de.bixilon.minosoft.data.registries.registry.ResourceLocationDeserializer
 import de.bixilon.minosoft.data.registries.versions.Registries
+import de.bixilon.minosoft.util.KUtil.unsafeCast
 
 data class Motive(
     override val resourceLocation: ResourceLocation,
@@ -28,11 +28,11 @@ data class Motive(
     }
 
     companion object : ResourceLocationDeserializer<Motive> {
-        override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: JsonObject): Motive {
+        override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): Motive {
             return Motive(
                 resourceLocation = resourceLocation,
-                width = data["width"].asInt,
-                height = data["height"].asInt,
+                width = data["width"]!!.unsafeCast(),
+                height = data["height"]!!.unsafeCast(),
             )
         }
     }

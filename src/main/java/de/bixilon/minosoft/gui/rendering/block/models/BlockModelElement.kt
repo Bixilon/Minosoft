@@ -13,21 +13,23 @@
 
 package de.bixilon.minosoft.gui.rendering.block.models
 
-import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.rotate
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3
+import de.bixilon.minosoft.util.KUtil.nullCast
+import de.bixilon.minosoft.util.KUtil.unsafeCast
+import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
 import glm_.func.rad
 import glm_.vec3.Vec3
 
 open class BlockModelElement(
-    data: JsonObject,
+    data: Map<String, Any>,
 ) {
     val from: Vec3 = data["from"]?.toVec3() ?: Vec3.EMPTY
     val to: Vec3 = data["to"]?.toVec3() ?: Vec3(BLOCK_RESOLUTION)
-    val shade: Boolean = data["shade"]?.asBoolean ?: true
+    val shade: Boolean = data["shade"]?.nullCast<Boolean>() ?: true
     val faces: MutableMap<Directions, BlockModelFace> = mutableMapOf()
     val transformedPositions: Array<Vec3> = arrayOf(
         Vec3(from.x, from.y, from.z),
@@ -42,17 +44,17 @@ open class BlockModelElement(
 
     init {
 
-        data["rotation"]?.asJsonObject?.let {
-            val axis = Axes[it["axis"].asString]
-            val angle = it["angle"].asFloat.rad
-            val rescale = it["rescale"]?.asBoolean ?: false
-            rotatePositions(transformedPositions, axis, angle, it["origin"].toVec3(), rescale)
+        data["rotation"]?.compoundCast()?.let {
+            val axis = Axes[it["axis"]!!.unsafeCast<String>()]
+            val angle = it["angle"]!!.unsafeCast<Float>().rad
+            val rescale = it["rescale"]?.nullCast<Boolean>() ?: false
+            rotatePositions(transformedPositions, axis, angle, it["origin"]!!.toVec3(), rescale)
         }
 
-        data["faces"]?.asJsonObject?.let {
-            for ((directionName, json) in it.entrySet()) {
+        data["faces"]?.compoundCast()?.let {
+            for ((directionName, json) in it) {
                 val direction = Directions[directionName]
-                faces[direction] = BlockModelFace(json.asJsonObject, from, to, direction)
+                faces[direction] = BlockModelFace(json.compoundCast()!!, from, to, direction)
             }
         }
 

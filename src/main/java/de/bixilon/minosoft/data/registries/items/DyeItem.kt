@@ -13,14 +13,14 @@
 
 package de.bixilon.minosoft.data.registries.items
 
-import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.versions.Registries
+import de.bixilon.minosoft.util.KUtil.nullCast
 
 open class DyeItem(
     resourceLocation: ResourceLocation,
     registries: Registries,
-    data: JsonObject,
+    data: Map<String, Any>,
 ) : Item(resourceLocation, registries, data) {
-    val dyeColor = data["dye_color"]?.asString ?: "white"
+    val dyeColor = data["dye_color"]?.nullCast<String>() ?: "white"
 }

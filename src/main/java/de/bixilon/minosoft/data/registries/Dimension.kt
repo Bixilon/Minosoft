@@ -12,13 +12,14 @@
  */
 package de.bixilon.minosoft.data.registries
 
-import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.registries.registry.RegistryItem
 import de.bixilon.minosoft.data.registries.registry.ResourceLocationDeserializer
 import de.bixilon.minosoft.data.registries.versions.Registries
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.lerp
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.nullCast
+import de.bixilon.minosoft.util.nbt.tag.NBTUtil.booleanCast
+import de.bixilon.minosoft.util.nbt.tag.NBTUtil.get
 
 data class Dimension(
     override val resourceLocation: ResourceLocation,
@@ -67,46 +68,25 @@ data class Dimension(
     }
 
     companion object : ResourceLocationDeserializer<Dimension> {
-        fun deserialize(resourceLocation: ResourceLocation, nbt: Map<String, Any>): Dimension {
+        override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): Dimension {
             return Dimension(
                 resourceLocation = resourceLocation,
-                piglinSafe = nbt["piglin_safe"]?.nullCast<Number>()?.toInt() == 0x01,
-                natural = nbt["natural"]?.nullCast<Number>()?.toInt() == 0x01,
-                ambientLight = nbt["ambient_light"]?.nullCast<Float>() ?: 0.0f,
-                infiniBurn = ResourceLocation(nbt["infiniburn"]?.nullCast<String>() ?: "infiniburn_overworld"),
-                respawnAnchorWorks = nbt["respawn_anchor_works"]?.nullCast<Number>()?.toInt() == 0x01,
-                hasSkyLight = nbt["has_skylight"]?.nullCast<Number>()?.toInt() == 0x01,
-                bedWorks = nbt["bed_works"]?.nullCast<Number>()?.toInt() == 0x01,
-                effects = ResourceLocation(nbt["effects"]?.nullCast<String>() ?: "overworld"),
-                hasRaids = nbt["has_raids"]?.nullCast<Number>()?.toInt() == 0x01,
-                logicalHeight = nbt["logical_height"]?.nullCast<Int>() ?: 256,
-                coordinateScale = nbt["coordinate_scale"]?.nullCast() ?: 0.0,
-                minY = nbt["min_y"]?.nullCast<Number>()?.toInt() ?: 0,
-                hasCeiling = nbt["has_ceiling"]?.nullCast<Number>()?.toInt() == 0x01,
-                ultraWarm = nbt["ultrawarm"]?.nullCast<Number>()?.toInt() == 0x01,
-                height = nbt["height"]?.nullCast<Number>()?.toInt() ?: 256,
-            )
-        }
-
-        override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: JsonObject): Dimension {
-            return Dimension(
-                resourceLocation = resourceLocation,
-                piglinSafe = data.get("piglin_safe")?.asBoolean == true,
-                natural = data.get("natural")?.asBoolean == true,
-                ambientLight = data.get("ambient_light")?.asFloat ?: 0.0f,
-                infiniBurn = ResourceLocation(data.get("ambient_light")?.asString ?: "infiniburn_overworld"),
-                respawnAnchorWorks = data.get("respawn_anchor_works")?.asBoolean == true,
-                hasSkyLight = data.get("has_sky_light")?.asBoolean == true,
-                bedWorks = data.get("bed_works")?.asBoolean == true,
-                effects = ResourceLocation(data.get("effects")?.asString ?: "overworld"),
-                hasRaids = data.get("has_raids")?.asBoolean == true,
-                logicalHeight = data.get("logical_height")?.asInt ?: 256,
-                coordinateScale = data.get("coordinate_scale")?.asDouble ?: 0.0,
-                minY = data.get("minimum_y")?.asInt ?: 0,
-                hasCeiling = data.get("has_ceiling")?.asBoolean == true,
-                ultraWarm = data.get("ultrawarm")?.asBoolean == true,
-                height = data.get("height")?.asInt ?: 256,
-                supports3DBiomes = data.get("supports_3d_biomes")?.asBoolean ?: false,
+                piglinSafe = data["piglin_safe"]?.booleanCast() ?: false,
+                natural = data["natural"]?.booleanCast() ?: false,
+                ambientLight = data["ambient_light"]?.nullCast<Float>() ?: 0.0f,
+                infiniBurn = ResourceLocation(data["infiniburn"]?.nullCast<String>() ?: "infiniburn_overworld"),
+                respawnAnchorWorks = data["respawn_anchor_works"]?.booleanCast() ?: false,
+                hasSkyLight = data["has_skylight", "has_sky_light"]?.booleanCast() ?: false,
+                bedWorks = data["bed_works"]?.booleanCast() ?: false,
+                effects = ResourceLocation(data["effects"]?.nullCast<String>() ?: "overworld"),
+                hasRaids = data["has_raids"]?.booleanCast() ?: false,
+                logicalHeight = data["logical_height"]?.nullCast<Int>() ?: 256,
+                coordinateScale = data["coordinate_scale"]?.nullCast() ?: 0.0,
+                minY = data["min_y"]?.nullCast<Number>()?.toInt() ?: 0,
+                hasCeiling = data["has_ceiling"]?.booleanCast() ?: false,
+                ultraWarm = data["ultrawarm"]?.booleanCast() ?: false,
+                height = data["height"]?.nullCast<Number>()?.toInt() ?: 256,
+                supports3DBiomes = data["supports_3d_biomes"]?.booleanCast() ?: false,
             )
         }
     }

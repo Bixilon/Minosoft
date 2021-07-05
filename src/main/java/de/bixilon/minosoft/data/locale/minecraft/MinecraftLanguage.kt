@@ -12,19 +12,19 @@
  */
 package de.bixilon.minosoft.data.locale.minecraft
 
-import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
+import de.bixilon.minosoft.util.KUtil.unsafeCast
 
 open class MinecraftLanguage : Translator {
     val language: String
     private val data = HashMap<String, String>()
 
-    constructor(language: String, json: JsonObject) {
+    constructor(language: String, json: Map<String, Any>) {
         this.language = language
-        for ((key, value) in json.entrySet()) {
-            data[key] = value.asString
+        for ((key, value) in json) {
+            data[key] = value.unsafeCast()
         }
     }
 

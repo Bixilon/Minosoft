@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.data.registries.blocks.types
 
-import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.player.Hands
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -31,13 +30,14 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.noise
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
 import de.bixilon.minosoft.util.KUtil.chance
+import de.bixilon.minosoft.util.nbt.tag.NBTUtil.booleanCast
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3d
 import glm_.vec3.Vec3i
 import kotlin.random.Random
 
-open class CampfireBlock(resourceLocation: ResourceLocation, registries: Registries, data: JsonObject) : Block(resourceLocation, registries, data) {
-    val lavaParticles = data["lava_particles"]?.asBoolean ?: true
+open class CampfireBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : Block(resourceLocation, registries, data) {
+    val lavaParticles = data["lava_particles"]?.booleanCast() ?: true
 
     private val campfireCrackleSoundEvent = registries.soundEventRegistry[CAMPFIRE_CRACKLE_SOUND_RESOURCE_LOCATION]!!
     private val cosySmokeParticle = registries.particleTypeRegistry[CampfireSmokeParticle.CosyFactory]!!

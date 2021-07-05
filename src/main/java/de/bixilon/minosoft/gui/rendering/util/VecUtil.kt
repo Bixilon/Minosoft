@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.rendering.util
 
 import com.google.gson.JsonArray
-import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.google.gson.JsonPrimitive
 import de.bixilon.minosoft.Minosoft
@@ -26,6 +25,7 @@ import de.bixilon.minosoft.data.registries.blocks.RandomOffsetTypes
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.gui.rendering.block.models.BlockModelElement
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.util.KUtil.nullCast
 import glm_.func.common.ceil
 import glm_.func.common.clamp
 import glm_.func.common.floor
@@ -57,11 +57,15 @@ object VecUtil {
     val Vec3d.Companion.ONE: Vec3d
         get() = Vec3d(1.0, 1.0, 1.0)
 
-    fun JsonElement.toVec3(default: Vec3? = null): Vec3 {
+    fun Any.toVec3(default: Vec3? = null): Vec3 {
         return when (this) {
+            is List<*> -> Vec3(this[0] as Double, this[1] as Double, this[2] as Double)
             is JsonArray -> Vec3(this[0].asFloat, this[1].asFloat, this[2].asFloat)
             is JsonObject -> Vec3(this["x"]?.asFloat ?: 0, this["y"]?.asFloat ?: 0, this["z"]?.asFloat ?: 0)
+            is Map<*, *> -> Vec3(this["x"]?.nullCast<Float>() ?: 0, this["y"]?.nullCast<Float>() ?: 0, this["z"]?.nullCast<Float>() ?: 0)
             is JsonPrimitive -> Vec3(this.asFloat)
+            is Float -> Vec3(this)
+            is Double -> Vec3(this)
             else -> default ?: throw IllegalArgumentException("Not a Vec3!")
         }
     }
@@ -199,8 +203,8 @@ object VecUtil {
         return this * cos + (axis cross this) * sin + axis * (axis dot this) * (1 - cos)
     }
 
-    fun JsonArray.readUV(): Pair<Vec2, Vec2> {
-        return Pair(Vec2(this[0].asFloat, BlockModelElement.BLOCK_RESOLUTION - this[1].asFloat), Vec2(this[2].asFloat, BlockModelElement.BLOCK_RESOLUTION - this[3].asFloat))
+    fun List<Float>.readUV(): Pair<Vec2, Vec2> {
+        return Pair(Vec2(this[0], BlockModelElement.BLOCK_RESOLUTION - this[1]), Vec2(this[2], BlockModelElement.BLOCK_RESOLUTION - this[3]))
     }
 
     fun Int.chunkPosition(multiplier: Int): Int {

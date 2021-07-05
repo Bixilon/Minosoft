@@ -14,20 +14,21 @@
 package de.bixilon.minosoft.data.registries
 
 import com.google.gson.JsonArray
-import com.google.gson.JsonElement
 import com.google.gson.JsonPrimitive
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.ONE
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.getMinDistanceDirection
+import de.bixilon.minosoft.util.KUtil.nullCast
+import de.bixilon.minosoft.util.KUtil.unsafeCast
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3d
 import glm_.vec3.Vec3t
 
 class VoxelShape(private val aabbs: MutableList<AABB> = mutableListOf()) : Iterable<AABB> {
 
-    constructor(data: JsonElement, aabbs: List<AABB>) : this() {
+    constructor(data: Any, aabbs: List<AABB>) : this() {
         when (data) {
             is JsonArray -> {
                 for (index in data) {
@@ -37,19 +38,27 @@ class VoxelShape(private val aabbs: MutableList<AABB> = mutableListOf()) : Itera
             is JsonPrimitive -> {
                 this.aabbs.add(aabbs[data.asInt])
             }
+            is Collection<*> -> {
+                for (index in data) {
+                    this.aabbs.add(aabbs[index?.nullCast<Int>()!!])
+                }
+            }
+            is Int -> {
+                this.aabbs.add(aabbs[data])
+            }
         }
     }
 
     // somehow, the kotlin compiler gives an error if both constructors have the "same" signature JsonElement, List<>
-    constructor(voxelShapes: List<VoxelShape>, data: JsonElement) : this() {
+    constructor(voxelShapes: List<VoxelShape>, data: Any) : this() {
         when (data) {
-            is JsonArray -> {
+            is Collection<*> -> {
                 for (index in data) {
-                    this.aabbs.addAll(voxelShapes[index.asInt].aabbs)
+                    this.aabbs.addAll(voxelShapes[index!!.unsafeCast()].aabbs)
                 }
             }
-            is JsonPrimitive -> {
-                this.aabbs.addAll(voxelShapes[data.asInt].aabbs)
+            is Int -> {
+                this.aabbs.addAll(voxelShapes[data].aabbs)
             }
         }
     }

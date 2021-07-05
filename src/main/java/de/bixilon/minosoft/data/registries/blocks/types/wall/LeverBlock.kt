@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.data.registries.blocks.types.wall
 
-import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.player.Hands
@@ -33,7 +32,7 @@ import glm_.vec3.Vec3d
 import glm_.vec3.Vec3i
 import kotlin.random.Random
 
-open class LeverBlock(resourceLocation: ResourceLocation, registries: Registries, data: JsonObject) : WallMountedBlock(resourceLocation, registries, data) {
+open class LeverBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : WallMountedBlock(resourceLocation, registries, data) {
     private val dustParticleType = registries.particleTypeRegistry[DustParticle]
 
     private fun spawnParticles(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, scale: Float) {

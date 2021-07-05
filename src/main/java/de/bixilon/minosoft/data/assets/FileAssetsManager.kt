@@ -29,24 +29,31 @@ interface FileAssetsManager : AssetsManager {
 
     fun getAssetSize(hash: String): Long
 
-    fun getFileAssetSize(hash: String): Long
+    fun getFileAssetSize(hash: String): Long {
+        return getFileAssetSize(hash, true)
+    }
 
-    fun saveAsset(data: ByteArray): String {
+    fun getFileAssetSize(hash: String, compress: Boolean): Long
+
+    fun saveAsset(data: ByteArray, compress: Boolean = true): String {
         val hash = Util.sha1(data)
-        val destination = getAssetDiskPath(hash)
+        val destination = getAssetDiskPath(hash, compress)
         val outFile = File(destination)
         if (outFile.exists() && outFile.length() > 0) {
             return hash
         }
         Util.createParentFolderIfNotExist(destination)
-        val out: OutputStream = GZIPOutputStream(FileOutputStream(destination))
-        out.write(data)
-        out.close()
+        var outputStream: OutputStream = FileOutputStream(destination)
+        if (compress) {
+            outputStream = GZIPOutputStream(outputStream)
+        }
+        outputStream.write(data)
+        outputStream.close()
         return hash
     }
 
     fun verifyAssetHash(hash: String, expectedSize: Long? = null, compressed: Boolean): Boolean {
-        val size = getFileAssetSize(hash)
+        val size = getFileAssetSize(hash, compressed)
         if (size < 0L) {
             // file does not exist
             return false
@@ -62,9 +69,9 @@ interface FileAssetsManager : AssetsManager {
         }
         try {
             return if (compressed) {
-                hash == Util.sha1Gzip(File(getAssetDiskPath(hash)))
+                hash == Util.sha1Gzip(File(getAssetDiskPath(hash, compressed)))
             } else {
-                hash == Util.sha1(File(getAssetDiskPath(hash)))
+                hash == Util.sha1(File(getAssetDiskPath(hash, compressed)))
             }
         } catch (exception: IOException) {
             Log.log(LogMessageType.ASSETS, level = LogLevels.VERBOSE, message = exception)
@@ -85,32 +92,35 @@ interface FileAssetsManager : AssetsManager {
         }
         Log.log(LogMessageType.ASSETS, level = LogLevels.VERBOSE, message = "Downloading %s -> %s", formatting = arrayOf<Any>(url, hash))
         if (compress) {
-            Util.downloadFileAsGz(url, getAssetDiskPath(hash))
+            Util.downloadFileAsGz(url, getAssetDiskPath(hash, compress))
             return
         }
-        Util.downloadFile(url, getAssetDiskPath(hash))
+        Util.downloadFile(url, getAssetDiskPath(hash, compress))
     }
 
-    fun saveAsset(data: InputStream): String {
+    fun saveAsset(data: InputStream, compress: Boolean = true): String {
         var tempDestinationFile: File? = null
         while (tempDestinationFile == null || tempDestinationFile.exists()) { // file exist? lol
             tempDestinationFile = File(StaticConfiguration.TEMPORARY_FOLDER + "minosoft/" + Util.generateRandomString(32))
         }
         Util.createParentFolderIfNotExist(tempDestinationFile)
 
-        val out: OutputStream = GZIPOutputStream(FileOutputStream(tempDestinationFile))
+        var outputStream: OutputStream = FileOutputStream(tempDestinationFile)
+        if (compress) {
+            outputStream = GZIPOutputStream(outputStream)
+        }
         val messageDigest = MessageDigest.getInstance("SHA-1")
         val buffer = ByteArray(ProtocolDefinition.DEFAULT_BUFFER_SIZE)
         var length: Int
         while (data.read(buffer, 0, buffer.size).also { length = it } != -1) {
             messageDigest.update(buffer, 0, length)
-            out.write(buffer, 0, length)
+            outputStream.write(buffer, 0, length)
         }
-        out.close()
+        outputStream.close()
         val hash = Util.byteArrayToHexString(messageDigest.digest())
 
         // move file to desired destination
-        val outputFile = File(getAssetDiskPath(hash))
+        val outputFile = File(getAssetDiskPath(hash, compress))
         Util.createParentFolderIfNotExist(outputFile)
         if (outputFile.exists()) {
             // file is already extracted
@@ -125,11 +135,17 @@ interface FileAssetsManager : AssetsManager {
 
 
     companion object {
-        fun getAssetDiskPath(hash: String): String {
+        fun getAssetDiskPath(hash: String, compress: Boolean): String {
             if (hash.length != 40) {
                 throw IllegalArgumentException("Invalid hash provided: $hash")
             }
-            return StaticConfiguration.HOME_DIRECTORY + String.format("assets/objects/%s/%s.gz", hash.substring(0, 2), hash)
+            var path = StaticConfiguration.HOME_DIRECTORY + "assets/objects/${hash.substring(0, 2)}/$hash"
+
+            if (compress) {
+                path += ".gz"
+            }
+
+            return path
         }
     }
 }

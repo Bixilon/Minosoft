@@ -12,7 +12,6 @@
  */
 package de.bixilon.minosoft.data.registries.biomes
 
-import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.registry.RegistryItem
 import de.bixilon.minosoft.data.registries.registry.ResourceLocationDeserializer
@@ -23,6 +22,7 @@ import de.bixilon.minosoft.data.text.RGBColor.Companion.asRGBColor
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.TintColorCalculator
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.util.KUtil.nullCast
 import de.bixilon.minosoft.util.MMath
 import java.util.*
 
@@ -59,23 +59,23 @@ data class Biome(
 
     companion object : ResourceLocationDeserializer<Biome> {
         private val TODO_SWAMP_COLOR = "#6A7039".asColor()
-        override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: JsonObject): Biome {
+        override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): Biome {
             check(registries != null) { "Registries is null!" }
             return Biome(
                 resourceLocation = resourceLocation,
-                depth = data["depth"]?.asFloat ?: 0.0f,
-                scale = data["scale"]?.asFloat ?: 0.0f,
-                temperature = data["temperature"]?.asFloat ?: 0.0f,
-                downfall = data["downfall"]?.asFloat ?: 0.0f,
-                waterColor = TintColorCalculator.getJsonColor(data["water_color"]?.asInt ?: 0),
-                waterFogColor = TintColorCalculator.getJsonColor(data["water_fog_color"]?.asInt ?: 0),
-                category = registries.biomeCategoryRegistry[data["category"]?.asInt ?: -1] ?: DEFAULT_CATEGORY,
-                precipitation = registries.biomePrecipitationRegistry[data["precipitation"]?.asInt ?: -1] ?: DEFAULT_PRECIPITATION,
-                skyColor = data["sky_color"]?.asInt?.asRGBColor() ?: RenderConstants.GRASS_FAILOVER_COLOR,
-                foliageColorOverride = TintColorCalculator.getJsonColor(data["foliage_color_override"]?.asInt ?: 0),
-                grassColorOverride = TintColorCalculator.getJsonColor(data["grass_color_override"]?.asInt ?: 0),
-                descriptionId = data["water_fog_color"]?.asString,
-                grassColorModifier = data["grass_color_modifier"]?.asString?.uppercase(Locale.getDefault())?.let { GrassColorModifiers.valueOf(it) } ?: when (resourceLocation) {
+                depth = data["depth"]?.nullCast<Float>() ?: 0.0f,
+                scale = data["scale"]?.nullCast<Float>() ?: 0.0f,
+                temperature = data["temperature"]?.nullCast<Float>() ?: 0.0f,
+                downfall = data["downfall"]?.nullCast<Float>() ?: 0.0f,
+                waterColor = TintColorCalculator.getJsonColor(data["water_color"]?.nullCast<Int>() ?: 0),
+                waterFogColor = TintColorCalculator.getJsonColor(data["water_fog_color"]?.nullCast<Int>() ?: 0),
+                category = registries.biomeCategoryRegistry[data["category"]?.nullCast<Int>() ?: -1] ?: DEFAULT_CATEGORY,
+                precipitation = registries.biomePrecipitationRegistry[data["precipitation"]?.nullCast<Int>() ?: -1] ?: DEFAULT_PRECIPITATION,
+                skyColor = data["sky_color"]?.nullCast<Int>()?.asRGBColor() ?: RenderConstants.GRASS_FAILOVER_COLOR,
+                foliageColorOverride = TintColorCalculator.getJsonColor(data["foliage_color_override"]?.nullCast<Int>() ?: 0),
+                grassColorOverride = TintColorCalculator.getJsonColor(data["grass_color_override"]?.nullCast<Int>() ?: 0),
+                descriptionId = data["water_fog_color"]?.nullCast(),
+                grassColorModifier = data["grass_color_modifier"]?.nullCast<String>()?.uppercase(Locale.getDefault())?.let { GrassColorModifiers.valueOf(it) } ?: when (resourceLocation) {
                     ResourceLocation("minecraft:swamp"), ResourceLocation("minecraft:swamp_hills") -> GrassColorModifiers.SWAMP
                     ResourceLocation("minecraft:dark_forest"), ResourceLocation("minecraft:dark_forest_hills") -> GrassColorModifiers.DARK_FOREST
                     else -> GrassColorModifiers.NONE

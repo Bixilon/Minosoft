@@ -12,7 +12,6 @@
  */
 package de.bixilon.minosoft.data.registries.particle
 
-import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.data.registries.registry.RegistryItem
@@ -22,6 +21,9 @@ import de.bixilon.minosoft.gui.rendering.particle.DefaultParticleFactory
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.gui.rendering.particle.types.Particle
 import de.bixilon.minosoft.gui.rendering.textures.Texture
+import de.bixilon.minosoft.util.nbt.tag.NBTUtil.booleanCast
+import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
+import de.bixilon.minosoft.util.nbt.tag.NBTUtil.listCast
 
 data class ParticleType(
     override val resourceLocation: ResourceLocation,
@@ -39,11 +41,11 @@ data class ParticleType(
     }
 
     companion object : ResourceLocationDeserializer<ParticleType> {
-        override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: JsonObject): ParticleType {
+        override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): ParticleType {
             val textures: MutableList<ResourceLocation> = mutableListOf()
-            data["render"]?.asJsonObject?.get("textures")?.asJsonArray?.let {
+            data["render"]?.compoundCast()?.get("textures")?.listCast<String>()?.let {
                 for (texture in it) {
-                    val textureResourceLocation = ResourceLocation(texture.asString)
+                    val textureResourceLocation = ResourceLocation(texture)
                     textures += Texture.getResourceTextureIdentifier(textureResourceLocation.namespace, textureName = "particle/${textureResourceLocation.path}")
                 }
             }
@@ -51,7 +53,7 @@ data class ParticleType(
             return ParticleType(
                 resourceLocation = resourceLocation,
                 textures = textures.toList(),
-                overrideLimiter = data["override_limiter"]?.asBoolean ?: false,
+                overrideLimiter = data["override_limiter"]?.booleanCast() ?: false,
                 factory = factory,
             )
         }

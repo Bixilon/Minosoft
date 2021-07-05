@@ -13,19 +13,19 @@
 
 package de.bixilon.minosoft.data.registries.biomes
 
-import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.registries.registry.IdDeserializer
 import de.bixilon.minosoft.data.registries.registry.RegistryFakeEnumerable
 import de.bixilon.minosoft.data.registries.versions.Registries
+import de.bixilon.minosoft.util.KUtil.unsafeCast
 
 data class BiomeCategory(
     override val name: String,
 ) : RegistryFakeEnumerable {
 
     companion object : IdDeserializer<BiomeCategory> {
-        override fun deserialize(registries: Registries, data: JsonObject): BiomeCategory {
+        override fun deserialize(registries: Registries, data: Map<String, Any>): BiomeCategory {
             return BiomeCategory(
-                name = data["name"].asString
+                name = data["name"]!!.unsafeCast()
             )
         }
 

@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.data.registries.entities.villagers
 
-import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.registry.RegistryItem
 import de.bixilon.minosoft.data.registries.registry.ResourceLocationDeserializer
@@ -29,7 +28,7 @@ data class VillagerProfession(
     }
 
     companion object : ResourceLocationDeserializer<VillagerProfession> {
-        override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: JsonObject): VillagerProfession {
+        override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): VillagerProfession {
             return VillagerProfession(
                 resourceLocation = resourceLocation,
             )

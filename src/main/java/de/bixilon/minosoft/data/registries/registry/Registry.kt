@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.data.registries.registry
 
 import com.google.gson.JsonElement
-import com.google.gson.JsonObject
 import com.google.gson.JsonPrimitive
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.ResourceLocationAble
@@ -22,7 +21,7 @@ import de.bixilon.minosoft.data.registries.versions.Registries
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
 import de.bixilon.minosoft.util.KUtil.nullCast
 import de.bixilon.minosoft.util.json.ResourceLocationJsonMap.toResourceLocationMap
-import kotlin.reflect.KClass
+import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
 
 open class Registry<T : RegistryItem>(
     override var parent: AbstractRegistry<T>? = null,
@@ -87,7 +86,7 @@ open class Registry<T : RegistryItem>(
         return valueIdMap[value] ?: parent?.getId(value)!!
     }
 
-    open fun initialize(data: Map<ResourceLocation, JsonObject>?, registries: Registries?, deserializer: ResourceLocationDeserializer<T>, flattened: Boolean = true, metaType: MetaTypes = MetaTypes.NONE, alternative: Registry<T>? = null): Registry<T> {
+    open fun initialize(data: Map<ResourceLocation, Any>?, registries: Registries?, deserializer: ResourceLocationDeserializer<T>, flattened: Boolean = true, metaType: MetaTypes = MetaTypes.NONE, alternative: Registry<T>? = null): Registry<T> {
         check(!initialized) { "Already initialized" }
 
         if (data == null) {
@@ -98,8 +97,9 @@ open class Registry<T : RegistryItem>(
         }
 
         for ((resourceLocation, value) in data) {
-            val item = deserializer.deserialize(registries, resourceLocation, value) ?: continue
-            value["id"]?.asInt?.let { id ->
+            check(value is Map<*, *>)
+            val item = deserializer.deserialize(registries, resourceLocation, value.compoundCast()!!) ?: continue
+            value["id"]?.nullCast<Int>()?.let { id ->
                 var itemId = id
                 if (!flattened) {
                     when (metaType) {
@@ -112,7 +112,7 @@ open class Registry<T : RegistryItem>(
                             itemId = itemId shl 16
                         }
                     }
-                    value["meta"]?.asInt?.let { meta ->
+                    value["meta"]?.nullCast<Int>()?.let { meta ->
                         itemId = itemId or meta
                     }
                 }
@@ -128,7 +128,7 @@ open class Registry<T : RegistryItem>(
         return this
     }
 
-    open fun initialize(data: JsonObject?, registries: Registries?, deserializer: ResourceLocationDeserializer<T>, flattened: Boolean = true, metaType: MetaTypes = MetaTypes.NONE, alternative: Registry<T>? = null): Registry<T> {
+    open fun rawInitialize(data: Map<String, Any>?, registries: Registries?, deserializer: ResourceLocationDeserializer<T>, flattened: Boolean = true, metaType: MetaTypes = MetaTypes.NONE, alternative: Registry<T>? = null): Registry<T> {
         return initialize(data?.toResourceLocationMap(), registries, deserializer, flattened, metaType, alternative)
     }
 

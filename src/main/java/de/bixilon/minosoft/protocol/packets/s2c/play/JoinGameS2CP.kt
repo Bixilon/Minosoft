@@ -181,7 +181,7 @@ class JoinGameS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
             } else {
                 tag.compoundCast()
             }!!
-            dimensionMap[dimensionResourceLocation] = Dimension.deserialize(dimensionResourceLocation, dimensionPropertyTag)
+            dimensionMap[dimensionResourceLocation] = Dimension.deserialize(null, dimensionResourceLocation, dimensionPropertyTag)
         }
         return dimensionMap
     }

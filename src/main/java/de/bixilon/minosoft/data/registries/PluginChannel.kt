@@ -13,10 +13,10 @@
 
 package de.bixilon.minosoft.data.registries
 
-import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.registries.registry.RegistryItem
 import de.bixilon.minosoft.data.registries.registry.ResourceLocationDeserializer
 import de.bixilon.minosoft.data.registries.versions.Registries
+import de.bixilon.minosoft.util.KUtil.unsafeCast
 
 data class PluginChannel(
     override val resourceLocation: ResourceLocation,
@@ -28,10 +28,10 @@ data class PluginChannel(
     }
 
     companion object : ResourceLocationDeserializer<PluginChannel> {
-        override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: JsonObject): PluginChannel {
+        override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): PluginChannel {
             return PluginChannel(
                 resourceLocation = resourceLocation,
-                name = LegacyResourceLocation(data["name"].asString)
+                name = LegacyResourceLocation(data["name"]!!.unsafeCast())
             )
         }
     }
