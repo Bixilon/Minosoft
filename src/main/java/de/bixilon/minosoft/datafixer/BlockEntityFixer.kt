@@ -19,14 +19,13 @@ import de.bixilon.minosoft.datafixer.DataFixerUtil.asResourceLocationMap
 object BlockEntityFixer {
     private val RENAMES: Map<ResourceLocation, ResourceLocation> = mapOf(
         "Furnace" to "minecraft:furnace",
-        "Furnace" to "minecraft:lit_furnace",
         "Chest" to "minecraft:chest",
-        "Chest" to "minecraft:trapped_chest",
         "EnderChest" to "minecraft:ender_chest",
         "RecordPlayer" to "minecraft:jukebox",
         "Trap" to "minecraft:dispenser",
         "Dropper" to "minecraft:dropper",
         "Sign" to "minecraft:sign",
+        "wall_sign" to "minecraft:sign",
         "MobSpawner" to "minecraft:mob_spawner",
         "Music" to "minecraft:noteblock",
         "Cauldron" to "minecraft:brewing_stand",
@@ -52,7 +51,8 @@ object BlockEntityFixer {
         "Airportal" to "minecraft:end_portal",
         "EndGateway" to "minecraft:end_gateway",
         "Banner" to "minecraft:shield",
-        "minecraft:noteblock" to "minecraft:note_block"
+        "minecraft:noteblock" to "minecraft:note_block",
+        // ToDo: flower_pot
     ).asResourceLocationMap()
 
 
