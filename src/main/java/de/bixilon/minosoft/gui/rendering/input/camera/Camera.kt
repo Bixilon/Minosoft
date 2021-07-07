@@ -80,7 +80,7 @@ class Camera(
             if (!Minosoft.config.config.game.camera.dynamicFov) {
                 return fov
             }
-            return fov * entity.fovMultiplier
+            return fov * entity.fovMultiplier.interpolate()
         }
 
 

@@ -15,8 +15,9 @@ package de.bixilon.minosoft.util
 
 import de.bixilon.minosoft.util.KUtil.synchronizedSetOf
 
-class Previous<T>(value: T) {
+class Previous<T>(value: T, private val interpolator: ((previous: Previous<T>, delta: Long) -> T)? = null) {
     private val changeListeners: MutableSet<(value: T, previous: T) -> Unit> = synchronizedSetOf()
+    private var lastChangeTime = System.currentTimeMillis()
     var value: T = value
         @Synchronized
         set(value) {
@@ -42,5 +43,9 @@ class Previous<T>(value: T) {
 
     fun equals(): Boolean {
         return value == previous
+    }
+
+    fun interpolate(): T {
+        return interpolator!!(this, (System.currentTimeMillis() - lastChangeTime))
     }
 }

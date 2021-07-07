@@ -60,6 +60,7 @@ import de.bixilon.minosoft.util.KUtil.nullCast
 import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
 import de.bixilon.minosoft.util.MMath
 import de.bixilon.minosoft.util.MMath.floor
+import de.bixilon.minosoft.util.Previous
 import glm_.func.cos
 import glm_.func.rad
 import glm_.func.sin
@@ -116,11 +117,7 @@ class LocalPlayerEntity(
     var jumpingCoolDown = 0
     var isJumping = false
 
-    private var lastFovMultiplier = 1.0
-    private var currentFovMultiplier = 1.0
-
-    val fovMultiplier: Double
-        get() = VecUtil.lerp((System.currentTimeMillis() - lastTickTime) / ProtocolDefinition.TICK_TIMEd, lastFovMultiplier, currentFovMultiplier)
+    val fovMultiplier = Previous(1.0) { previous, delta -> VecUtil.lerp(delta / ProtocolDefinition.TICK_TIMEd, previous.previous, previous.value) }
 
     override val hasGravity: Boolean
         get() = !baseAbilities.isFlying
@@ -656,8 +653,7 @@ class LocalPlayerEntity(
 
         sendMovementPackets()
 
-        lastFovMultiplier = currentFovMultiplier
-        currentFovMultiplier = 1.0 + MMath.clamp(walkingSpeed * 1.6, -2.0, 2.0)
+        fovMultiplier.value = 1.0 + MMath.clamp(walkingSpeed * 1.9, -2.0, 2.0)
     }
 
     companion object {
