@@ -19,6 +19,7 @@ import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.player.LocalPlayerEntity
 import de.bixilon.minosoft.data.registries.VoxelShape
 import de.bixilon.minosoft.data.registries.blocks.types.FluidBlock
+import de.bixilon.minosoft.data.registries.fluid.DefaultFluids
 import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
@@ -55,7 +56,7 @@ class Camera(
     val renderWindow: RenderWindow,
 ) {
     var fogColor = Previous(ChatColors.GREEN)
-    private var fogStart = 100.0f
+    var fogStart = 100.0f
     private var mouseSensitivity = Minosoft.getConfig().config.game.camera.moseSensitivity
     val entity: LocalPlayerEntity
         get() = connection.player
@@ -122,8 +123,13 @@ class Camera(
             fogStart = Float.MAX_VALUE
             return
         }
-        val renderDistance = 10 // ToDo: Calculate correct, get real render distance
-        fogStart = (renderDistance * ProtocolDefinition.SECTION_WIDTH_X).toFloat()
+
+        fogStart = if (connection.player.submgergedFluid?.resourceLocation == DefaultFluids.WATER) {
+            10.0f
+        } else {
+            val renderDistance = 10 // ToDo: Calculate correct, get real render distance
+            (renderDistance * ProtocolDefinition.SECTION_WIDTH_X).toFloat()
+        }
     }
 
     private fun applyFog() {
@@ -142,7 +148,6 @@ class Camera(
     }
 
     fun init(renderWindow: RenderWindow) {
-        calculateFogDistance()
         renderWindow.inputHandler.registerCheckCallback(
             KeyBindingsNames.MOVE_SPRINT,
             KeyBindingsNames.MOVE_FORWARD,
@@ -240,6 +245,7 @@ class Camera(
     }
 
     fun draw() {
+        calculateFogDistance()
         if (!fogColor.equals()) {
             applyFog()
         }

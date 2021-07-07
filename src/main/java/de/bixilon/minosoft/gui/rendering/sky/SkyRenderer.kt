@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.sky
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.fluid.DefaultFluids
 import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderConstants
@@ -117,7 +118,11 @@ class SkyRenderer(
         val brightness = 1.0f
         val skyColor = RGBColor((baseColor.red * brightness).toInt(), (baseColor.green * brightness).toInt(), (baseColor.blue * brightness).toInt())
 
-        renderWindow.inputHandler.camera.fogColor.value = skyColor
+        renderWindow.inputHandler.camera.fogColor.value = if (connection.player.submgergedFluid?.resourceLocation == DefaultFluids.WATER) {
+            connection.player.positionInfo.biome?.waterFogColor ?: skyColor
+        } else {
+            skyColor
+        }
 
 
         for (shader in renderWindow.renderSystem.shaders) {

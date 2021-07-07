@@ -63,7 +63,11 @@ open class Fluid(
     }
 
     fun getHeight(blockState: BlockState): Float {
-        return (8 - ((blockState.properties[BlockProperties.FLUID_LEVEL]?.unsafeCast<Int>()) ?: 8)) / 9.0f
+        val level = blockState.properties[BlockProperties.FLUID_LEVEL]?.unsafeCast<Int>() ?: 8
+        if (level < 0 || level >= 8) {
+            return 1.0f
+        }
+        return (8 - level) / 9.0f
     }
 
     open fun travel(entity: LocalPlayerEntity, sidewaysSpeed: Float, forwardSpeed: Float, gravity: Double, falling: Boolean) {
