@@ -15,6 +15,7 @@ package de.bixilon.minosoft.data.registries.blocks.types.portal
 
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.blocks.BlockFactory
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.versions.Registries
@@ -53,6 +54,13 @@ open class NetherPortalBlock(resourceLocation: ResourceLocation, registries: Reg
                     it.default(),
                 )
             }
+        }
+    }
+
+    companion object : BlockFactory<NetherPortalBlock> {
+
+        override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): NetherPortalBlock {
+            return NetherPortalBlock(resourceLocation, registries, data)
         }
     }
 }

@@ -11,19 +11,32 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.blocks.types.button
+package de.bixilon.minosoft.data.registries.factory
 
+import de.bixilon.minosoft.data.registries.CompanionResourceLocation
+import de.bixilon.minosoft.data.registries.MultiResourceLocationAble
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.blocks.BlockFactory
-import de.bixilon.minosoft.data.registries.versions.Registries
 
-open class StoneButtonBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : AbstractButtonBlock(resourceLocation, registries, data) {
+open class DefaultFactory<T : CompanionResourceLocation>(vararg factories: T) {
+    private val factoryMap: Map<ResourceLocation, T>
 
-    companion object : BlockFactory<StoneButtonBlock> {
+    init {
+        val ret: MutableMap<ResourceLocation, T> = mutableMapOf()
 
-        override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): StoneButtonBlock {
-            return StoneButtonBlock(resourceLocation, registries, data)
+
+        for (factory in factories) {
+            ret[factory.RESOURCE_LOCATION] = factory
+            if (factory is MultiResourceLocationAble) {
+                for (resourceLocation in factory.ALIASES) {
+                    ret[resourceLocation] = factory
+                }
+            }
         }
+
+        factoryMap = ret.toMap()
+    }
+
+    operator fun get(resourceLocation: ResourceLocation): T? {
+        return factoryMap[resourceLocation]
     }
 }
-

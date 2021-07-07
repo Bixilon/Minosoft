@@ -35,4 +35,11 @@ class EmptyFluid(
         }
         return matches(other.block.fluid)
     }
+
+    companion object : FluidFactory<EmptyFluid> {
+
+        override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): EmptyFluid {
+            return EmptyFluid(resourceLocation, registries, data)
+        }
+    }
 }

@@ -22,8 +22,10 @@ import de.bixilon.minosoft.data.registries.effects.DefaultStatusEffects
 import de.bixilon.minosoft.data.registries.effects.StatusEffect
 import de.bixilon.minosoft.data.registries.enchantment.DefaultEnchantments
 import de.bixilon.minosoft.data.registries.enchantment.Enchantment
+import de.bixilon.minosoft.data.registries.factory.clazz.MultiClassFactory
 import de.bixilon.minosoft.data.registries.fluid.FlowableFluid
 import de.bixilon.minosoft.data.registries.fluid.Fluid
+import de.bixilon.minosoft.data.registries.fluid.FluidFactory
 import de.bixilon.minosoft.data.registries.versions.Registries
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.water.UnderwaterParticle
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
@@ -119,7 +121,12 @@ class WaterFluid(
         connection.world += UnderwaterParticle(connection, blockPosition.toVec3d + { random.nextDouble() })
     }
 
-    companion object {
+    companion object : FluidFactory<WaterFluid>, MultiClassFactory<WaterFluid> {
         private const val VELOCITY_MULTIPLIER = 0.014
+        override val ALIASES: Set<String> = setOf("WaterFluid\$Flowing", "WaterFluid\$Still")
+
+        override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): WaterFluid {
+            return WaterFluid(resourceLocation, registries, data)
+        }
     }
 }

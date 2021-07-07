@@ -15,6 +15,7 @@ package de.bixilon.minosoft.data.registries.blocks.types
 
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.blocks.BlockFactory
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.versions.Registries
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
@@ -44,6 +45,13 @@ open class HoneyBlock(resourceLocation: ResourceLocation, registries: Registries
         val z = abs(blockPosition.z + 0.5 - entity.position.z) + 1.0E-7
         val minSize = 0.4375 + (entity.dimensions.x / 2.0)
         return x > minSize || z > minSize
+    }
+
+    companion object : BlockFactory<HoneyBlock> {
+
+        override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): HoneyBlock {
+            return HoneyBlock(resourceLocation, registries, data)
+        }
     }
 }
 

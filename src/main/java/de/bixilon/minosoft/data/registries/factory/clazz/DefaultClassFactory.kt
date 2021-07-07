@@ -11,20 +11,25 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries
+package de.bixilon.minosoft.data.registries.factory.clazz
 
-open class DefaultFactory<T : CompanionResourceLocation>(vararg factories: T) {
-    private val factoryMap: Map<ResourceLocation, T>
+import de.bixilon.minosoft.data.registries.blocks.types.Block
+import java.lang.reflect.ParameterizedType
+import kotlin.reflect.jvm.javaType
+
+open class DefaultClassFactory<T : ClassFactory<*>>(vararg factories: T) {
+    private val factoryMap: Map<String, T>
 
     init {
-        val ret: MutableMap<ResourceLocation, T> = mutableMapOf()
+        val ret: MutableMap<String, T> = mutableMapOf()
 
 
-        for (entityFactory in factories) {
-            ret[entityFactory.RESOURCE_LOCATION] = entityFactory
-            if (entityFactory is MultiResourceLocationAble) {
-                for (resourceLocation in entityFactory.ALIASES) {
-                    ret[resourceLocation] = entityFactory
+        for (factory in factories) {
+            val className = ((factory::class.supertypes[0].javaType as ParameterizedType).actualTypeArguments[0] as Class<Block>).simpleName
+            ret[className] = factory
+            if (factory is MultiClassFactory<*>) {
+                for (name in factory.ALIASES) {
+                    ret[name] = factory
                 }
             }
         }
@@ -32,7 +37,7 @@ open class DefaultFactory<T : CompanionResourceLocation>(vararg factories: T) {
         factoryMap = ret.toMap()
     }
 
-    operator fun get(resourceLocation: ResourceLocation): T? {
-        return factoryMap[resourceLocation]
+    operator fun get(`class`: String?): T? {
+        return factoryMap[`class`]
     }
 }

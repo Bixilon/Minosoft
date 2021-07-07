@@ -18,8 +18,6 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.types.FluidBlock
-import de.bixilon.minosoft.data.registries.fluid.lava.LavaFluid
-import de.bixilon.minosoft.data.registries.fluid.water.WaterFluid
 import de.bixilon.minosoft.data.registries.items.Item
 import de.bixilon.minosoft.data.registries.particle.ParticleType
 import de.bixilon.minosoft.data.registries.registry.RegistryItem
@@ -87,18 +85,11 @@ open class Fluid(
     }
 
     companion object : ResourceLocationDeserializer<Fluid> {
-        private val CONSTRUCTORS: Map<String, (resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) -> Fluid> = mapOf(
-            "EmptyFluid" to { resourceLocation, registries, data -> EmptyFluid(resourceLocation, registries, data) },
-            "WaterFluid\$Flowing" to { resourceLocation, registries, data -> WaterFluid(resourceLocation, registries, data) },
-            "WaterFluid\$Still" to { resourceLocation, registries, data -> WaterFluid(resourceLocation, registries, data) },
-            "LavaFluid\$Flowing" to { resourceLocation, registries, data -> LavaFluid(resourceLocation, registries, data) },
-            "LavaFluid\$Still" to { resourceLocation, registries, data -> LavaFluid(resourceLocation, registries, data) },
-        )
 
         override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): Fluid {
             check(registries != null) { "Registries is null!" }
-            CONSTRUCTORS[data["class"]?.nullCast<String>()]?.let {
-                return it.invoke(resourceLocation, registries, data)
+            DefaultFluidFactories[data["class"]?.nullCast<String>()]?.let {
+                return it.build(resourceLocation, registries, data)
             }
 
             return Fluid(resourceLocation, registries, data)

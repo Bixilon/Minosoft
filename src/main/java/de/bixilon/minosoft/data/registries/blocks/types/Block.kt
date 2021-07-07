@@ -18,17 +18,9 @@ import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.player.Hands
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.VoxelShape
-import de.bixilon.minosoft.data.registries.blocks.BlockState
-import de.bixilon.minosoft.data.registries.blocks.BlockUsages
-import de.bixilon.minosoft.data.registries.blocks.RandomOffsetTypes
+import de.bixilon.minosoft.data.registries.blocks.*
 import de.bixilon.minosoft.data.registries.blocks.entites.BlockEntityType
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
-import de.bixilon.minosoft.data.registries.blocks.types.button.StoneButtonBlock
-import de.bixilon.minosoft.data.registries.blocks.types.button.WoodenButtonBlock
-import de.bixilon.minosoft.data.registries.blocks.types.portal.NetherPortalBlock
-import de.bixilon.minosoft.data.registries.blocks.types.redstone.ComparatorBlock
-import de.bixilon.minosoft.data.registries.blocks.types.redstone.RepeaterBlock
-import de.bixilon.minosoft.data.registries.blocks.types.wall.LeverBlock
 import de.bixilon.minosoft.data.registries.items.Item
 import de.bixilon.minosoft.data.registries.registry.RegistryItem
 import de.bixilon.minosoft.data.registries.registry.ResourceLocationDeserializer
@@ -122,32 +114,11 @@ open class Block(
         return blockState.outlineShape
     }
 
-    companion object : ResourceLocationDeserializer<Block> {
-        private val CONSTRUCTORS: Map<String, (resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) -> Block> = mapOf(
-            "FluidBlock" to { resourceLocation, registries, data -> FluidBlock(resourceLocation, registries, data) },
-            "DoorBlock" to { resourceLocation, registries, data -> DoorBlock(resourceLocation, registries, data) },
-            "LeverBlock" to { resourceLocation, registries, data -> LeverBlock(resourceLocation, registries, data) },
-            "NoteBlock" to { resourceLocation, registries, data -> NoteBlock(resourceLocation, registries, data) },
-            "RepeaterBlock" to { resourceLocation, registries, data -> RepeaterBlock(resourceLocation, registries, data) },
-            "ComparatorBlock" to { resourceLocation, registries, data -> ComparatorBlock(resourceLocation, registries, data) },
-            "CampfireBlock" to { resourceLocation, registries, data -> CampfireBlock(resourceLocation, registries, data) },
-            "TorchBlock" to { resourceLocation, registries, data -> TorchBlock(resourceLocation, registries, data) },
-            "SlimeBlock" to { resourceLocation, registries, data -> SlimeBlock(resourceLocation, registries, data) },
-            "BedBlock" to { resourceLocation, registries, data -> BedBlock(resourceLocation, registries, data) },
-            "BrewingStandBlock" to { resourceLocation, registries, data -> BrewingStandBlock(resourceLocation, registries, data) },
-            "EnderChestBlock" to { resourceLocation, registries, data -> EnderChestBlock(resourceLocation, registries, data) },
-            "NetherPortalBlock" to { resourceLocation, registries, data -> NetherPortalBlock(resourceLocation, registries, data) },
-            "RedstoneTorchBlock" to { resourceLocation, registries, data -> RedstoneTorchBlock(resourceLocation, registries, data) },
-            "HoneyBlock" to { resourceLocation, registries, data -> HoneyBlock(resourceLocation, registries, data) },
-            "KelpBlock" to { resourceLocation, registries, data -> KelpBlock(resourceLocation, registries, data) },
-            "StoneButtonBlock" to { resourceLocation, registries, data -> StoneButtonBlock(resourceLocation, registries, data) },
-            "WoodenButtonBlock" to { resourceLocation, registries, data -> WoodenButtonBlock(resourceLocation, registries, data) },
-        )
-
+    companion object : ResourceLocationDeserializer<Block>, BlockFactory<Block> {
         override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): Block {
             check(registries != null) { "Registries is null!" }
 
-            val block = CONSTRUCTORS[data["class"]!!.unsafeCast()]?.invoke(resourceLocation, registries, data) ?: Block(resourceLocation, registries, data)
+            val block = DefaultBlockFactories[data["class"]!!.unsafeCast()]?.build(resourceLocation, registries, data) ?: Block(resourceLocation, registries, data)
 
             val properties: MutableMap<BlockProperties, MutableSet<Any>> = mutableMapOf()
 
@@ -172,6 +143,10 @@ open class Block(
             block.defaultState = registries.blockStateRegistry.forceGet(data["default_state"]!!.unsafeCast())!!
             block.properties = propertiesOut.toMap()
             return block
+        }
+
+        override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): Block {
+            return Block(resourceLocation, registries, data)
         }
     }
 }

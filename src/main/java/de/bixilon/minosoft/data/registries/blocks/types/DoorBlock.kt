@@ -16,6 +16,7 @@ package de.bixilon.minosoft.data.registries.blocks.types
 import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.player.Hands
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.blocks.BlockFactory
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.BlockUsages
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
@@ -39,5 +40,11 @@ open class DoorBlock(resourceLocation: ResourceLocation, registries: Registries,
         connection.world[blockPosition] = blockState.cycle(BlockProperties.DOOR_OPEN)
 
         return BlockUsages.SUCCESS
+    }
+
+    companion object : BlockFactory<DoorBlock> {
+        override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): DoorBlock {
+            return DoorBlock(resourceLocation, registries, data)
+        }
     }
 }

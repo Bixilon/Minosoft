@@ -16,6 +16,7 @@ package de.bixilon.minosoft.data.registries.blocks.types
 import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.player.Hands
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.blocks.BlockFactory
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.BlockUsages
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
@@ -102,7 +103,11 @@ open class CampfireBlock(resourceLocation: ResourceLocation, registries: Registr
         return BlockUsages.SUCCESS
     }
 
-    companion object {
+    companion object : BlockFactory<CampfireBlock> {
         private val CAMPFIRE_CRACKLE_SOUND_RESOURCE_LOCATION = "minecraft:block.campfire.crackle".asResourceLocation()
+
+        override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): CampfireBlock {
+            return CampfireBlock(resourceLocation, registries, data)
+        }
     }
 }

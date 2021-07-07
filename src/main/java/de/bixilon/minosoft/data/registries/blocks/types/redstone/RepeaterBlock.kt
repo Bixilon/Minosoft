@@ -16,6 +16,7 @@ package de.bixilon.minosoft.data.registries.blocks.types.redstone
 import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.player.Hands
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.blocks.BlockFactory
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.BlockUsages
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
@@ -34,5 +35,11 @@ open class RepeaterBlock(resourceLocation: ResourceLocation, registries: Registr
         connection.world[blockPosition] = blockState.cycle(BlockProperties.REPEATER_DELAY)
 
         return BlockUsages.SUCCESS
+    }
+
+    companion object : BlockFactory<RepeaterBlock> {
+        override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): RepeaterBlock {
+            return RepeaterBlock(resourceLocation, registries, data)
+        }
     }
 }

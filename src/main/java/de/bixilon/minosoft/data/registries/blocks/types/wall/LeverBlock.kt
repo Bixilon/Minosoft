@@ -17,6 +17,7 @@ import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.player.Hands
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.blocks.BlockFactory
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.BlockUsages
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
@@ -64,5 +65,11 @@ open class LeverBlock(resourceLocation: ResourceLocation, registries: Registries
         spawnParticles(connection, nextState, blockPosition, 1.0f)
 
         return BlockUsages.SUCCESS
+    }
+
+    companion object : BlockFactory<LeverBlock> {
+        override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): LeverBlock {
+            return LeverBlock(resourceLocation, registries, data)
+        }
     }
 }

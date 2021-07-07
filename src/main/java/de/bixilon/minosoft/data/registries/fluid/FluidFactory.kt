@@ -11,19 +11,12 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.blocks.types.button
+package de.bixilon.minosoft.data.registries.fluid
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.blocks.BlockFactory
+import de.bixilon.minosoft.data.registries.factory.clazz.ClassFactory
 import de.bixilon.minosoft.data.registries.versions.Registries
 
-open class StoneButtonBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : AbstractButtonBlock(resourceLocation, registries, data) {
-
-    companion object : BlockFactory<StoneButtonBlock> {
-
-        override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): StoneButtonBlock {
-            return StoneButtonBlock(resourceLocation, registries, data)
-        }
-    }
+interface FluidFactory<T : Fluid> : ClassFactory<T> {
+    fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): T
 }
-

@@ -16,6 +16,7 @@ package de.bixilon.minosoft.data.registries.blocks.types
 import de.bixilon.minosoft.data.registries.AABB
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.VoxelShape
+import de.bixilon.minosoft.data.registries.blocks.BlockFactory
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.fluid.Fluid
 import de.bixilon.minosoft.data.registries.versions.Registries
@@ -49,5 +50,11 @@ open class FluidBlock(resourceLocation: ResourceLocation, registries: Registries
         super.randomTick(connection, blockState, blockPosition, random)
         // ToDO
         fluid.randomTick(connection, blockState, blockPosition, random)
+    }
+
+    companion object : BlockFactory<FluidBlock> {
+        override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): FluidBlock {
+            return FluidBlock(resourceLocation, registries, data)
+        }
     }
 }

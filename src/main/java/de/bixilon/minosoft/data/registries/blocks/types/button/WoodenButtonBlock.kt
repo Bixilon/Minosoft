@@ -14,7 +14,16 @@
 package de.bixilon.minosoft.data.registries.blocks.types.button
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.blocks.BlockFactory
 import de.bixilon.minosoft.data.registries.versions.Registries
 
-open class WoodenButtonBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : AbstractButtonBlock(resourceLocation, registries, data)
+open class WoodenButtonBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : AbstractButtonBlock(resourceLocation, registries, data) {
+
+    companion object : BlockFactory<WoodenButtonBlock> {
+
+        override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): WoodenButtonBlock {
+            return WoodenButtonBlock(resourceLocation, registries, data)
+        }
+    }
+}
 

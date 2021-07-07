@@ -17,9 +17,11 @@ import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.player.LocalPlayerEntity
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
+import de.bixilon.minosoft.data.registries.factory.clazz.MultiClassFactory
 import de.bixilon.minosoft.data.registries.fluid.DefaultFluids
 import de.bixilon.minosoft.data.registries.fluid.FlowableFluid
 import de.bixilon.minosoft.data.registries.fluid.Fluid
+import de.bixilon.minosoft.data.registries.fluid.FluidFactory
 import de.bixilon.minosoft.data.registries.particle.ParticleType
 import de.bixilon.minosoft.data.registries.versions.Registries
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.lava.LavaParticle
@@ -91,4 +93,11 @@ class LavaFluid(
         }
     }
 
+    companion object : FluidFactory<LavaFluid>, MultiClassFactory<LavaFluid> {
+        override val ALIASES: Set<String> = setOf("LavaFluid\$Flowing", "LavaFluid\$Still")
+
+        override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): LavaFluid {
+            return LavaFluid(resourceLocation, registries, data)
+        }
+    }
 }

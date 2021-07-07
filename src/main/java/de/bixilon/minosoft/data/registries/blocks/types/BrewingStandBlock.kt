@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.registries.blocks.types
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.blocks.BlockFactory
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.versions.Registries
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.fire.SmokeParticle
@@ -38,6 +39,13 @@ open class BrewingStandBlock(resourceLocation: ResourceLocation, registries: Reg
                 Vec3d.EMPTY,
                 it.default(),
             )
+        }
+    }
+
+    companion object : BlockFactory<BrewingStandBlock> {
+
+        override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): BrewingStandBlock {
+            return BrewingStandBlock(resourceLocation, registries, data)
         }
     }
 }

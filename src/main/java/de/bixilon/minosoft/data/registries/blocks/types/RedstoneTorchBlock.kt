@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.registries.blocks.types
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.blocks.BlockFactory
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.particle.data.DustParticleData
@@ -38,4 +39,10 @@ open class RedstoneTorchBlock(resourceLocation: ResourceLocation, registries: Re
         (flameParticle ?: redstoneDustParticle)?.let { connection.world += it.factory?.build(connection, Vec3d(blockPosition) + Vec3d(0.5, 0.7, 0.5) + (Vec3d.of { random.nextDouble() - 0.5 } * 0.2), Vec3d.EMPTY, DustParticleData(Colors.TRUE_RED, 1.0f, it)) }
     }
 
+    companion object : BlockFactory<RedstoneTorchBlock> {
+
+        override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): RedstoneTorchBlock {
+            return RedstoneTorchBlock(resourceLocation, registries, data)
+        }
+    }
 }

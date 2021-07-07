@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.registries.blocks.types
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.blocks.BlockFactory
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.versions.Registries
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.PortalParticle
@@ -44,6 +45,13 @@ open class EnderChestBlock(resourceLocation: ResourceLocation, registries: Regis
             )
 
             connection.world += PortalParticle(connection, position, velocity, portalParticle.default())
+        }
+    }
+
+    companion object : BlockFactory<EnderChestBlock> {
+
+        override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): EnderChestBlock {
+            return EnderChestBlock(resourceLocation, registries, data)
         }
     }
 }

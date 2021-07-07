@@ -15,6 +15,7 @@ package de.bixilon.minosoft.data.registries.blocks.types
 
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.blocks.BlockFactory
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.versions.Registries
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
@@ -35,6 +36,13 @@ open class BedBlock(resourceLocation: ResourceLocation, registries: Registries, 
     private fun bounce(entity: Entity) {
         if (entity.velocity.y < 0.0) {
             entity.velocity.y = -entity.velocity.y * 0.66f
+        }
+    }
+
+    companion object : BlockFactory<BedBlock> {
+
+        override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): BedBlock {
+            return BedBlock(resourceLocation, registries, data)
         }
     }
 }
