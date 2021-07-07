@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.text
 import de.bixilon.minosoft.util.MMath
 import org.checkerframework.common.value.qual.IntRange
 
-class RGBColor(val rgba: Int) : ChatCode {
+class RGBColor(val rgba: Int) : ChatCode, TextFormattable {
     val ansi: String = "\u001b[38;2;$red;$green;${blue}m"
 
     @JvmOverloads
@@ -75,6 +75,10 @@ class RGBColor(val rgba: Int) : ChatCode {
         } else {
             String.format("#%06X", rgb)
         }
+    }
+
+    override fun toText(): Any {
+        return TextComponent(this).color(this)
     }
 
     fun with(red: Int = this.red, green: Int = this.green, blue: Int = this.blue, alpha: Int = this.alpha): RGBColor {

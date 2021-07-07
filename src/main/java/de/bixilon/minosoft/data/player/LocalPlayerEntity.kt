@@ -96,7 +96,7 @@ class LocalPlayerEntity(
 
     // fluids stuff
     val fluidHeights: MutableMap<ResourceLocation, Float> = synchronizedMapOf()
-    var submgergedFluid: Fluid? = null
+    var submergedFluid: Fluid? = null
 
     var input = MovementInput()
 
@@ -129,7 +129,6 @@ class LocalPlayerEntity(
 
     private val canSprint: Boolean
         get() = healthCondition.hunger >= PhysicsConstants.SPRINT_MINIMUM_HUNGER || baseAbilities.canFly || (gamemode == Gamemodes.CREATIVE || gamemode == Gamemodes.SPECTATOR)
-
 
     var lastFlyToggleDown = false
 
@@ -202,6 +201,10 @@ class LocalPlayerEntity(
 
     val swimHeight: Double
         get() = (eyeHeight < 0.4).decide(0.0, 0.4)
+
+
+    val reachDistance: Double
+        get() = (gamemode == Gamemodes.CREATIVE).decide(5.0, 4.5)
 
     private fun sendMovementPackets() {
         if (Minosoft.config.config.game.camera.disableMovementSending) {
@@ -625,7 +628,7 @@ class LocalPlayerEntity(
             updateFluidState(it.resourceLocation)
         }
 
-        submgergedFluid = null
+        submergedFluid = null
 
         // ToDo: Boat
         val eyeHeight = eyePosition.y - 0.1111111119389534
@@ -638,7 +641,7 @@ class LocalPlayerEntity(
         val height = eyePosition.y + blockState.block.fluid.getHeight(blockState)
 
         if (height > eyeHeight) {
-            submgergedFluid = blockState.block.fluid
+            submergedFluid = blockState.block.fluid
         }
     }
 

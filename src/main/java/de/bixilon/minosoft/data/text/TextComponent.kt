@@ -35,10 +35,11 @@ import javafx.util.Duration
 
 
 open class TextComponent(
-    override var message: String = "",
+    message: Any? = "",
     var color: RGBColor? = null,
     var formatting: MutableSet<ChatFormattingCode> = mutableSetOf(),
 ) : ChatComponent {
+    override var message: String = message?.toString() ?: "null"
 
     fun obfuscate(): TextComponent {
         formatting.add(PreChatFormattingCodes.OBFUSCATED)

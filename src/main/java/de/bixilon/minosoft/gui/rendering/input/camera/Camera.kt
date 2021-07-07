@@ -124,7 +124,7 @@ class Camera(
             return
         }
 
-        fogStart = if (connection.player.submgergedFluid?.resourceLocation == DefaultFluids.WATER) {
+        fogStart = if (connection.player.submergedFluid?.resourceLocation == DefaultFluids.WATER) {
             10.0f
         } else {
             val renderDistance = 10 // ToDo: Calculate correct, get real render distance

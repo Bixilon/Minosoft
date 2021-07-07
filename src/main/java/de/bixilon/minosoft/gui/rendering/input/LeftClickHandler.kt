@@ -23,7 +23,6 @@ import de.bixilon.minosoft.data.registries.effects.DefaultStatusEffects
 import de.bixilon.minosoft.data.registries.enchantment.DefaultEnchantments
 import de.bixilon.minosoft.data.registries.fluid.DefaultFluids
 import de.bixilon.minosoft.data.registries.items.tools.MiningToolItem
-import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.modding.event.CallbackEventInvoker
 import de.bixilon.minosoft.modding.event.events.BlockBreakAckEvent
@@ -105,7 +104,7 @@ class LeftClickHandler(
             return false
         }
 
-        if (raycastHit.distance >= RenderConstants.MAX_BLOCK_OUTLINE_RAYCAST_DISTANCE) {
+        if (raycastHit.distance >= connection.player.reachDistance) {
             cancelDigging()
             return false
         }
@@ -205,7 +204,7 @@ class LeftClickHandler(
             }
         }
 
-        if (connection.player.submgergedFluid?.resourceLocation == DefaultFluids.WATER && connection.player.getEquipmentEnchant(aquaAffinityEnchantment) == 0) {
+        if (connection.player.submergedFluid?.resourceLocation == DefaultFluids.WATER && connection.player.getEquipmentEnchant(aquaAffinityEnchantment) == 0) {
             speedMultiplier /= 5.0f
         }
 

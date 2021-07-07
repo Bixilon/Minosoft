@@ -118,7 +118,7 @@ class SkyRenderer(
         val brightness = 1.0f
         val skyColor = RGBColor((baseColor.red * brightness).toInt(), (baseColor.green * brightness).toInt(), (baseColor.blue * brightness).toInt())
 
-        renderWindow.inputHandler.camera.fogColor.value = if (connection.player.submgergedFluid?.resourceLocation == DefaultFluids.WATER) {
+        renderWindow.inputHandler.camera.fogColor.value = if (connection.player.submergedFluid?.resourceLocation == DefaultFluids.WATER) {
             connection.player.positionInfo.biome?.waterFogColor ?: skyColor
         } else {
             skyColor

@@ -67,7 +67,7 @@ class BlockOutlineRenderer(
             return
         }
 
-        if (raycastHit.distance >= RenderConstants.MAX_BLOCK_OUTLINE_RAYCAST_DISTANCE) {
+        if (raycastHit.distance >= connection.player.reachDistance) {
             unload()
             return
         }
