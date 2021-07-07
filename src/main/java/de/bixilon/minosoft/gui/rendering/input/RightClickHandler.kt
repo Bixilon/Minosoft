@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.input
 
 import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames
+import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.player.Hands
 import de.bixilon.minosoft.data.registries.blocks.BlockUsages
 import de.bixilon.minosoft.gui.rendering.RenderConstants
@@ -50,7 +51,24 @@ class RightClickHandler(
         if (raycastHit.distance > RenderConstants.MAX_BLOCK_OUTLINE_RAYCAST_DISTANCE) {
             return
         }
+
+        fun sendInteractionPacket() {
+            connection.sendPacket(BlockPlaceC2SP(
+                position = raycastHit.blockPosition,
+                direction = raycastHit.hitDirection,
+                cursorPosition = Vec3(raycastHit.hitPosition),
+                item = connection.player.inventory.getHotbarSlot(),
+                hand = Hands.MAIN_HAND,
+                insideBlock = false,  // ToDo
+            ))
+        }
+
         val itemInHand = connection.player.inventory.getHotbarSlot()
+
+        if (connection.player.gamemode == Gamemodes.SPECTATOR) {
+            sendInteractionPacket()
+            return
+        }
 
         val usage = if (connection.player.isSneaking) {
             BlockUsages.PASS
@@ -70,14 +88,7 @@ class RightClickHandler(
                 if (usage == BlockUsages.SUCCESS) {
                     connection.sendPacket(ArmSwingC2SP(Hands.MAIN_HAND))
                 }
-                connection.sendPacket(BlockPlaceC2SP(
-                    position = raycastHit.blockPosition,
-                    direction = raycastHit.hitDirection,
-                    cursorPosition = Vec3(raycastHit.hitPosition),
-                    item = connection.player.inventory.getHotbarSlot(),
-                    hand = Hands.MAIN_HAND,
-                    insideBlock = false,  // ToDo
-                ))
+                sendInteractionPacket()
             }
             BlockUsages.PASS -> {
                 // use item or place block

@@ -27,6 +27,9 @@ import glm_.vec3.Vec3t
 
 class VoxelShape(private val aabbs: MutableList<AABB> = mutableListOf()) : Iterable<AABB> {
 
+
+    constructor(vararg aabbs: AABB) : this(aabbs.toMutableList())
+
     constructor(data: Any, aabbs: List<AABB>) : this() {
         when (data) {
             is JsonArray -> {

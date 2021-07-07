@@ -17,6 +17,7 @@ import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.player.LocalPlayerEntity
+import de.bixilon.minosoft.data.registries.VoxelShape
 import de.bixilon.minosoft.data.registries.blocks.types.FluidBlock
 import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.gui.rendering.RenderConstants
@@ -37,6 +38,7 @@ import de.bixilon.minosoft.modding.event.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.c2s.play.BlockBreakC2SP
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.util.KUtil.decide
 import de.bixilon.minosoft.util.Previous
 import glm_.func.cos
 import glm_.func.rad
@@ -277,9 +279,30 @@ class Camera(
         entityTarget = raycast(eyePosition, cameraFront, blocks = false, fluids = false, entities = true) as EntityRaycastHit?
     }
 
+    private fun raycastEntity(origin: Vec3d, direction: Vec3d): EntityRaycastHit? {
+        var currentHit: EntityRaycastHit? = null
+
+        for (entity in connection.world.entities) {
+            if (entity is LocalPlayerEntity) {
+                continue
+            }
+            val hit = VoxelShape(entity.cameraAABB).raycast(origin, direction)
+            if (!hit.hit) {
+                continue
+            }
+            if ((currentHit?.distance ?: Double.MAX_VALUE) < hit.distance) {
+                continue
+            }
+            currentHit = EntityRaycastHit(origin + direction * hit.distance, hit.distance, hit.direction, entity)
+
+        }
+        return currentHit
+    }
+
     private fun raycast(origin: Vec3d, direction: Vec3d, blocks: Boolean, fluids: Boolean, entities: Boolean): RaycastHit? {
         if (!blocks && !fluids && entities) {
-            return null // ToDo: Raycast entities
+            // only raycast entities
+            return raycastEntity(origin, direction)
         }
         val currentPosition = Vec3d(origin)
 
@@ -287,6 +310,7 @@ class Camera(
             return (origin - currentPosition).length()
         }
 
+        var hit: RaycastHit? = null
         for (i in 0..RAYCAST_MAX_STEPS) {
             val blockPosition = currentPosition.floor
             val blockState = connection.world[blockPosition]
@@ -305,7 +329,7 @@ class Camera(
                     if (!fluids) {
                         continue
                     }
-                    return FluidRaycastHit(
+                    hit = FluidRaycastHit(
                         currentPosition,
                         distance,
                         voxelShapeRaycastResult.direction,
@@ -313,23 +337,32 @@ class Camera(
                         blockPosition,
                         blockState.block.fluid,
                     )
+                    break
                 }
 
                 if (!blocks) {
                     continue
                 }
-                return BlockRaycastHit(
+                hit = BlockRaycastHit(
                     currentPosition,
                     distance,
                     voxelShapeRaycastResult.direction,
                     blockState,
                     blockPosition,
                 )
+                break
             } else {
                 currentPosition += direction * (VecUtil.getDistanceToNextIntegerAxisInDirection(currentPosition, direction) + 0.001)
             }
         }
-        return null
+
+        if (entities) {
+            val entityRaycastHit = raycastEntity(origin, direction) ?: return hit
+            hit ?: return null
+            return (entityRaycastHit.distance < hit.distance).decide(entityRaycastHit, hit)
+        }
+
+        return hit
     }
 
     companion object {

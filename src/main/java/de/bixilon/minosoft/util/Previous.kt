@@ -48,4 +48,5 @@ class Previous<T>(value: T, private val interpolator: ((previous: Previous<T>, d
     fun interpolate(): T {
         return interpolator!!(this, (System.currentTimeMillis() - lastChangeTime))
     }
+
 }
