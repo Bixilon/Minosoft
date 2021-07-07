@@ -54,9 +54,11 @@ class OpenGLShader(
             throw ShaderLoadingException()
         }
 
-        this.uniforms += code.uniforms
 
         glShaderSourceARB(program, code.code)
+
+        this.uniforms += code.uniforms
+
         glCompileShaderARB(program)
 
         if (glGetObjectParameteriARB(program, GL_OBJECT_COMPILE_STATUS_ARB) == GL_FALSE) {

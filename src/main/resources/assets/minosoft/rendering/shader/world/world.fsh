@@ -23,9 +23,11 @@ in float finInterpolation;
 
 in vec4 finTintColor;
 
+#define POSTPROCESSING_FOG
+
 #include "minosoft:texture"
 
-void main() {
+void work() {
     vec4 firstTexelColor = getTexture(finTextureIndex1, finTextureCoordinates1);
     if (firstTexelColor.a == 0.0f) {
         discard;
@@ -44,3 +46,5 @@ void main() {
 
     outColor = mix(firstTexelColor, secondTexelColor, finInterpolation) * finTintColor;
 }
+
+    #include "minosoft:postprocessing/fragment"

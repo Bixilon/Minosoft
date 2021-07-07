@@ -82,6 +82,6 @@ class PositionAndRotationS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     }
 
     override fun log() {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "LocalPlayerEntity position (position=$position, rotation=$rotation, onGround=$isOnGround, flags=$flags, teleportId=$teleportId, dismountVehicle=$dismountVehicle)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Player position (position=$position, rotation=$rotation, onGround=$isOnGround, flags=$flags, teleportId=$teleportId, dismountVehicle=$dismountVehicle)" }
     }
 }

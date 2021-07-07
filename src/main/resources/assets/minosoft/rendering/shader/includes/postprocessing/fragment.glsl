@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,14 +11,37 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.config.config.game.graphics
+#ifdef POSTPROCESSING_FOG
+in vec3 finVertexPosition;
+uniform vec3 uCameraPosition;
+uniform float uFogStart;
+uniform float uFogEnd;
+uniform vec4 uFogColor;
 
-import com.squareup.moshi.Json
-import de.bixilon.minosoft.config.config.game.particles.ParticleConfig
 
-data class GraphicsGameConfig(
-    var animations: AnimationsGameConfig = AnimationsGameConfig(),
-    var particles: ParticleConfig = ParticleConfig(),
-    @Json(name = "biome_blend_radius") var biomeBlendRadius: Int = 3,
-    @Json(name = "fog_enabled") var fogEnabled: Boolean = true,
-)
+float getFogFactor(float distance) {
+    if (distance >= uFogEnd) {
+        return 0.0f;
+    }
+    if (distance <= uFogStart) {
+        return 1.0f;
+    }
+
+    // ToDo: Exponential fog
+    return (uFogEnd - distance) / (uFogEnd - uFogStart);
+}
+
+    #endif
+
+
+void main() {
+    work();
+
+    #ifdef POSTPROCESSING_FOG
+    float fogFactor = getFogFactor(distance(uCameraPosition, finVertexPosition));
+
+    if (fogFactor != 1.0f) {
+        outColor = vec4(mix(uFogColor.rgb, outColor.rgb, fogFactor), outColor.a);
+    };
+    #endif
+}

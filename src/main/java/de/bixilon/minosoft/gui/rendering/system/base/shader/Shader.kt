@@ -22,6 +22,7 @@ import de.bixilon.minosoft.util.MMath
 import glm_.mat4x4.Mat4
 import glm_.vec2.Vec2
 import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 import glm_.vec4.Vec4
 
 interface Shader {
@@ -49,6 +50,10 @@ interface Shader {
     fun setRGBColor(uniformName: String, color: RGBColor)
     fun setTexture(uniformName: String, textureId: Int)
     fun setUniformBuffer(uniformName: String, uniformBuffer: UniformBuffer)
+
+    fun setVec3(uniformName: String, vec3: Vec3d) {
+        setVec3(uniformName, Vec3(vec3))
+    }
 
     operator fun set(uniformName: String, data: Any?) {
         data ?: return

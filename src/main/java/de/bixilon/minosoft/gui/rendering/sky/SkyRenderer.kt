@@ -115,18 +115,16 @@ class SkyRenderer(
     private fun checkSkyColor() {
         // ToDo: Calculate correct
         val brightness = 1.0f
-        val topColor = RGBColor((baseColor.red * brightness).toInt(), (baseColor.green * brightness).toInt(), (baseColor.blue * brightness).toInt())
-        val bottomColor = RGBColor(topColor.red * 8 / 9, topColor.green * 8 / 9, topColor.blue * 8 / 9)
-        renderWindow.queue += {
-            updateSkyColor(topColor, bottomColor)
+        val skyColor = RGBColor((baseColor.red * brightness).toInt(), (baseColor.green * brightness).toInt(), (baseColor.blue * brightness).toInt())
+
+        renderWindow.inputHandler.camera.fogColor = skyColor
+
+
+        for (shader in renderWindow.renderSystem.shaders) {
+            if (shader.uniforms.contains("uSkyColor")) {
+                shader.use().setRGBColor("uSkyColor", skyColor)
+            }
         }
-    }
-
-    private fun updateSkyColor(topColor: RGBColor, bottomColor: RGBColor) {
-        skyboxShader.use()
-
-        skyboxShader.setRGBColor("uBottomColor", bottomColor)
-        skyboxShader.setRGBColor("uTopColor", topColor)
     }
 
     private fun drawSkybox() {

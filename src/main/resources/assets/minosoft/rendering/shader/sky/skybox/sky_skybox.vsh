@@ -19,15 +19,10 @@ out vec4 finColor;
 
 uniform mat4 uSkyViewProjectionMatrix;
 
-uniform vec4 uBottomColor;
-uniform vec4 uTopColor;
+uniform vec4 uSkyColor;
 
 void main() {
     gl_Position = (uSkyViewProjectionMatrix * vec4(vinPosition, 1.0)).xyww;
 
-    if (vinPosition.y < 0.5f) {
-        finColor = uBottomColor;
-    } else {
-        finColor = uTopColor;
-    }
+    finColor = uSkyColor;
 }

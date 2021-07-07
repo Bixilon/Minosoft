@@ -18,6 +18,7 @@ import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.player.LocalPlayerEntity
 import de.bixilon.minosoft.data.registries.blocks.types.FluidBlock
+import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.input.camera.hit.BlockRaycastHit
@@ -50,6 +51,9 @@ class Camera(
     val connection: PlayConnection,
     val renderWindow: RenderWindow,
 ) {
+    var fogColor = ChatColors.GREEN
+    private var lastFogColor = fogColor
+    private var fogStart = 100.0f
     private var mouseSensitivity = Minosoft.getConfig().config.game.camera.moseSensitivity
     val entity: LocalPlayerEntity
         get() = connection.player
@@ -111,7 +115,32 @@ class Camera(
         setRotation(yaw, pitch)
     }
 
+    private fun calculateFogDistance() {
+        if (!Minosoft.config.config.game.graphics.fogEnabled) {
+            fogStart = Float.MAX_VALUE
+            return
+        }
+        val renderDistance = 10 // ToDo: Calculate correct, get real render distance
+        fogStart = (renderDistance * ProtocolDefinition.SECTION_WIDTH_X).toFloat()
+    }
+
+    private fun applyFog() {
+        for (shader in renderWindow.renderSystem.shaders) {
+            if (!shader.uniforms.contains("uFogColor")) {
+                continue
+
+            }
+            shader.use()
+
+            shader.setFloat("uFogStart", fogStart)
+            shader.setFloat("uFogEnd", fogStart + 10.0f)
+            shader.setRGBColor("uFogColor", fogColor)
+        }
+        lastFogColor = fogColor
+    }
+
     fun init(renderWindow: RenderWindow) {
+        calculateFogDistance()
         renderWindow.inputHandler.registerCheckCallback(
             KeyBindingsNames.MOVE_SPRINT,
             KeyBindingsNames.MOVE_FORWARD,
@@ -153,10 +182,19 @@ class Camera(
             projectionMatrix = projectionMatrix,
             viewProjectionMatrix = viewProjectionMatrix,
         ))
+
         for (shader in renderWindow.renderSystem.shaders) {
+            shader.use()
             if (shader.uniforms.contains("uViewProjectionMatrix")) {
-                shader.use().setMat4("uViewProjectionMatrix", Mat4(viewProjectionMatrix))
+                shader.setMat4("uViewProjectionMatrix", Mat4(viewProjectionMatrix))
             }
+            if (shader.uniforms.contains("uCameraPosition")) {
+                shader.setVec3("uCameraPosition", entity.cameraPosition)
+            }
+
+            shader.setFloat("uFogStart", fogStart)
+            shader.setFloat("uFogEnd", fogStart + 10.0f)
+            shader.setRGBColor("uFogColor", fogColor)
         }
     }
 
@@ -204,6 +242,9 @@ class Camera(
     }
 
     fun draw() {
+        if (fogColor != lastFogColor) {
+            applyFog()
+        }
         val input = if (renderWindow.inputHandler.currentKeyConsumer == null) {
             MovementInput(
                 pressingForward = renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.MOVE_FORWARD),
