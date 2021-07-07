@@ -23,6 +23,8 @@ import de.bixilon.minosoft.data.registries.blocks.BlockUsages
 import de.bixilon.minosoft.data.registries.blocks.RandomOffsetTypes
 import de.bixilon.minosoft.data.registries.blocks.entites.BlockEntityType
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
+import de.bixilon.minosoft.data.registries.blocks.types.button.StoneButtonBlock
+import de.bixilon.minosoft.data.registries.blocks.types.button.WoodenButtonBlock
 import de.bixilon.minosoft.data.registries.blocks.types.portal.NetherPortalBlock
 import de.bixilon.minosoft.data.registries.blocks.types.redstone.ComparatorBlock
 import de.bixilon.minosoft.data.registries.blocks.types.redstone.RepeaterBlock
@@ -138,6 +140,8 @@ open class Block(
             "RedstoneTorchBlock" to { resourceLocation, registries, data -> RedstoneTorchBlock(resourceLocation, registries, data) },
             "HoneyBlock" to { resourceLocation, registries, data -> HoneyBlock(resourceLocation, registries, data) },
             "KelpBlock" to { resourceLocation, registries, data -> KelpBlock(resourceLocation, registries, data) },
+            "StoneButtonBlock" to { resourceLocation, registries, data -> StoneButtonBlock(resourceLocation, registries, data) },
+            "WoodenButtonBlock" to { resourceLocation, registries, data -> WoodenButtonBlock(resourceLocation, registries, data) },
         )
 
         override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): Block {
