@@ -26,6 +26,7 @@ class RGBColor(val rgba: Int) : ChatCode {
     constructor(red: Float, green: Float, blue: Float, alpha: Float = 1.0f) : this((red * 255.0f).toInt(), (green * COLOR_FLOAT_DIVIDER).toInt(), (blue * COLOR_FLOAT_DIVIDER).toInt(), (alpha * COLOR_FLOAT_DIVIDER).toInt())
 
     constructor(red: Double, green: Double, blue: Double, alpha: Double = 1.0) : this(red.toFloat(), green.toFloat(), blue.toFloat(), alpha.toFloat())
+
     val alpha: @IntRange(from = 0L, to = 255L) Int
         get() = rgba and 0xFF
 
@@ -60,6 +61,9 @@ class RGBColor(val rgba: Int) : ChatCode {
     override fun equals(other: Any?): Boolean {
         if (super.equals(other)) {
             return true
+        }
+        if (other !is RGBColor) {
+            return false
         }
         val their = other as RGBColor? ?: return false
         return rgba == their.rgba

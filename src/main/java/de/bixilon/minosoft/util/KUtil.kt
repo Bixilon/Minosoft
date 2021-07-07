@@ -18,11 +18,14 @@ import com.squareup.moshi.JsonWriter
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.data.text.RGBColor
+import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.collections.SynchronizedMap
 import de.bixilon.minosoft.util.enum.AliasableEnum
 import de.bixilon.minosoft.util.json.JSONSerializer
+import glm_.vec3.Vec3t
 import okio.Buffer
 import sun.misc.Unsafe
 import java.lang.reflect.Field
@@ -198,8 +201,9 @@ object KUtil {
         return list.toList()
     }
 
-    fun Any.format(): ChatComponent {
+    fun Any?.format(): ChatComponent {
         return ChatComponent.of(when (this) {
+            null -> "§4null"
             is Boolean -> {
                 if (this) {
                     "§atrue"
@@ -209,15 +213,19 @@ object KUtil {
             }
             is Enum<*> -> {
                 val name = this.name
-                if (name.length == 1) {
+                "§e" + if (name.length == 1) {
                     name
                 } else {
                     name.lowercase()
                 }
             }
+            is Float -> "§d%.3f".format(this)
+            is Double -> "§d%.4f".format(this)
             is Number -> {
                 "§d$this"
             }
+            is Vec3t<*> -> "(${this.x.format()} ${this.y.format()} ${this.z.format()})"
+            is RGBColor -> TextComponent(this.toString()).color(this)
             else -> this.toString()
         })
     }

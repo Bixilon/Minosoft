@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.input.camera.hit
 
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.entities.Entity
+import de.bixilon.minosoft.util.KUtil.format
 import glm_.vec3.Vec3d
 
 class EntityRaycastHit(
@@ -25,6 +26,25 @@ class EntityRaycastHit(
 ) : RaycastHit(position, distance, hitDirection) {
 
     override fun toString(): String {
-        return "$position: ${entity.entityType.resourceLocation}\n Id: ${entity.id}\n UUID: ${entity.uuid}"
+        val builder = StringBuilder()
+        builder.append(position.format())
+        builder.append(": ")
+        builder.append(entity.entityType.resourceLocation)
+
+        builder.append("\n Id: ")
+        builder.append(entity.id)
+
+        builder.append("\n UUID: ")
+        builder.append(entity.uuid)
+        builder.append("\n")
+
+        for ((key, value) in entity.entityMetaDataFormatted) {
+            builder.append("\n")
+            builder.append(' ')
+            builder.append(key)
+            builder.append(": ")
+            builder.append(value.format())
+        }
+        return builder.toString()
     }
 }
