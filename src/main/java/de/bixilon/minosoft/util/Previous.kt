@@ -23,6 +23,7 @@ class Previous<T>(value: T, private val interpolator: ((previous: Previous<T>, d
         set(value) {
             previous = field
             field = value
+            lastChangeTime = System.currentTimeMillis()
             for (listener in changeListeners) {
                 listener(value, previous)
             }
