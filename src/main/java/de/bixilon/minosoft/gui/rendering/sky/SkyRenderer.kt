@@ -117,7 +117,7 @@ class SkyRenderer(
         val brightness = 1.0f
         val skyColor = RGBColor((baseColor.red * brightness).toInt(), (baseColor.green * brightness).toInt(), (baseColor.blue * brightness).toInt())
 
-        renderWindow.inputHandler.camera.fogColor = skyColor
+        renderWindow.inputHandler.camera.fogColor.value = skyColor
 
 
         for (shader in renderWindow.renderSystem.shaders) {

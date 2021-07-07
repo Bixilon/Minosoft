@@ -19,6 +19,7 @@ import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.system.opengl.UniformBuffer
 import de.bixilon.minosoft.gui.rendering.textures.TextureArray
 import de.bixilon.minosoft.util.MMath
+import de.bixilon.minosoft.util.Previous
 import glm_.mat4x4.Mat4
 import glm_.vec2.Vec2
 import glm_.vec3.Vec3
@@ -58,6 +59,7 @@ interface Shader {
     operator fun set(uniformName: String, data: Any?) {
         data ?: return
         when (data) {
+            is Previous<*> -> this[uniformName] = data.value
             is Array<*> -> setArray(uniformName, data)
             is Int -> setInt(uniformName, data)
             is Float -> setFloat(uniformName, data)

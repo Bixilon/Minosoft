@@ -47,4 +47,4 @@ void work() {
     outColor = mix(firstTexelColor, secondTexelColor, finInterpolation) * finTintColor;
 }
 
-    #include "minosoft:postprocessing/fragment"
+#include "minosoft:postprocessing/fragment"

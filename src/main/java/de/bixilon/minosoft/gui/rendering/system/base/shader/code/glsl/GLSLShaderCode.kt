@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.system.base.shader.code.glsl
 
+import de.bixilon.minosoft.data.commands.CommandStringReader
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
@@ -51,14 +52,18 @@ class GLSLShaderCode(
             val code = StringBuilder()
 
             for (line in rawCode.lines()) {
+                val lineReader = CommandStringReader(line)
+                lineReader.skipWhitespaces()
 
                 fun pushLine() {
                     code.append(line)
                     code.append('\n')
                 }
+
+                val remaining = lineReader.peekRemaining()
                 when {
-                    line.startsWith("#include ") -> {
-                        val reader = GLSLStringReader(line.removePrefix("#include "))
+                    remaining.startsWith("#include ") -> {
+                        val reader = GLSLStringReader(remaining.removePrefix("#include "))
                         reader.skipWhitespaces()
 
                         val include = ResourceLocation(reader.readString())
@@ -70,7 +75,7 @@ class GLSLShaderCode(
                         code.append(includeCode.code)
                         code.append('\n')
                     }
-                    line.startsWith("#version") -> {
+                    remaining.startsWith("#version") -> {
                         pushLine()
 
                         for ((name, value) in defines) {

@@ -37,6 +37,7 @@ import de.bixilon.minosoft.modding.event.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.c2s.play.BlockBreakC2SP
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.util.Previous
 import glm_.func.cos
 import glm_.func.rad
 import glm_.func.sin
@@ -51,8 +52,7 @@ class Camera(
     val connection: PlayConnection,
     val renderWindow: RenderWindow,
 ) {
-    var fogColor = ChatColors.GREEN
-    private var lastFogColor = fogColor
+    var fogColor = Previous(ChatColors.GREEN)
     private var fogStart = 100.0f
     private var mouseSensitivity = Minosoft.getConfig().config.game.camera.moseSensitivity
     val entity: LocalPlayerEntity
@@ -134,9 +134,9 @@ class Camera(
 
             shader.setFloat("uFogStart", fogStart)
             shader.setFloat("uFogEnd", fogStart + 10.0f)
-            shader.setRGBColor("uFogColor", fogColor)
+            shader["uFogColor"] = fogColor
         }
-        lastFogColor = fogColor
+        fogColor.assign()
     }
 
     fun init(renderWindow: RenderWindow) {
@@ -191,10 +191,6 @@ class Camera(
             if (shader.uniforms.contains("uCameraPosition")) {
                 shader.setVec3("uCameraPosition", entity.cameraPosition)
             }
-
-            shader.setFloat("uFogStart", fogStart)
-            shader.setFloat("uFogEnd", fogStart + 10.0f)
-            shader.setRGBColor("uFogColor", fogColor)
         }
     }
 
@@ -242,7 +238,7 @@ class Camera(
     }
 
     fun draw() {
-        if (fogColor != lastFogColor) {
+        if (!fogColor.equals()) {
             applyFog()
         }
         val input = if (renderWindow.inputHandler.currentKeyConsumer == null) {
