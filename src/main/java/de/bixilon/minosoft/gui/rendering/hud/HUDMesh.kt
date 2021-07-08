@@ -13,9 +13,10 @@
 
 package de.bixilon.minosoft.gui.rendering.hud
 
+import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.util.mesh.SimpleTextureMesh
 
-class HUDMesh : SimpleTextureMesh() {
+class HUDMesh(renderWindow: RenderWindow) : SimpleTextureMesh(renderWindow) {
 
     fun addCacheMesh(cacheMesh: HUDCacheMesh) {
         data.addAll(cacheMesh.cache)

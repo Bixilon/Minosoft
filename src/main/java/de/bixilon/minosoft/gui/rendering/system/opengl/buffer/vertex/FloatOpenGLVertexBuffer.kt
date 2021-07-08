@@ -1,7 +1,7 @@
 package de.bixilon.minosoft.gui.rendering.system.opengl.buffer.vertex
 
+import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.FloatVertexBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
-import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.VertexBuffer
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.FloatOpenGLBuffer
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct.Companion.BYTES
@@ -16,8 +16,8 @@ import kotlin.reflect.KClass
 import kotlin.reflect.full.companionObjectInstance
 import kotlin.reflect.full.primaryConstructor
 
-class FloatOpenGLVertexBuffer(override val structure: KClass<*>, data: FloatArray, override val primitiveType: PrimitiveTypes = PrimitiveTypes.TRIANGLE) : FloatOpenGLBuffer(data), VertexBuffer {
-    var vertices = -1
+class FloatOpenGLVertexBuffer(override val structure: KClass<*>, data: FloatArray, override val primitiveType: PrimitiveTypes = PrimitiveTypes.TRIANGLE) : FloatOpenGLBuffer(data), FloatVertexBuffer {
+    override var vertices = -1
         private set
     private var vao = -1
 

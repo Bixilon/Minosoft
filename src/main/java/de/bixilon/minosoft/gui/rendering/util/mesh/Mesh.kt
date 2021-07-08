@@ -13,14 +13,16 @@
 
 package de.bixilon.minosoft.gui.rendering.util.mesh
 
+import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.FloatVertexBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
-import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.vertex.FloatOpenGLVertexBuffer
 import de.bixilon.minosoft.util.collections.ArrayFloatList
 import glm_.vec2.Vec2
 import glm_.vec3.Vec3
 import kotlin.reflect.KClass
 
 abstract class Mesh(
+    val renderWindow: RenderWindow,
     private val struct: KClass<*>,
     private val primitiveType: PrimitiveTypes = PrimitiveTypes.TRIANGLE,
     initialCacheSize: Int = 10000,
@@ -32,7 +34,7 @@ abstract class Mesh(
             _data = value
         }
 
-    protected lateinit var buffer: FloatOpenGLVertexBuffer
+    protected lateinit var buffer: FloatVertexBuffer
 
     var vertices: Int = -1
         protected set
@@ -42,7 +44,7 @@ abstract class Mesh(
 
 
     fun load() {
-        buffer = FloatOpenGLVertexBuffer(struct, data.toArray(), primitiveType)
+        buffer = renderWindow.renderSystem.createVertexBuffer(struct, data.toArray(), primitiveType)
         buffer.init()
         vertices = buffer.vertices
     }

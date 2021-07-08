@@ -16,13 +16,14 @@ package de.bixilon.minosoft.gui.rendering.block.mesh
 import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderConstants
+import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.textures.Texture
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
 import glm_.vec2.Vec2
 import glm_.vec3.Vec3
 
-class ChunkSectionArrayMesh : Mesh(SectionArrayMeshStruct::class, initialCacheSize = 100000) {
+class ChunkSectionArrayMesh(renderWindow: RenderWindow) : Mesh(renderWindow, SectionArrayMeshStruct::class, initialCacheSize = 100000) {
 
     fun addVertex(position: Vec3, textureCoordinates: Vec2, texture: Texture, tintColor: RGBColor?, light: Int) {
         val color = tintColor ?: ChatColors.WHITE
@@ -32,7 +33,8 @@ class ChunkSectionArrayMesh : Mesh(SectionArrayMeshStruct::class, initialCacheSi
         } else {
             (texture.arrayId shl 24) or texture.arrayLayer
         }
-        data.addAll(floatArrayOf(
+        data.addAll(
+            floatArrayOf(
             position.x,
             position.y,
             position.z,
@@ -43,12 +45,6 @@ class ChunkSectionArrayMesh : Mesh(SectionArrayMeshStruct::class, initialCacheSi
             Float.fromBits(color.rgb),
             Float.fromBits(light),
         ))
-    }
-
-
-    companion object {
-        private const val MAX_LIGHT_LEVEL = 17
-        private const val MAX_LIGHT_LEVEL_FLOAT = MAX_LIGHT_LEVEL.toFloat() // Level 0 and 15 kind of does not exist here.
     }
 
 

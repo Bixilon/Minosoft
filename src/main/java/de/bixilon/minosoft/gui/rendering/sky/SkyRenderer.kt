@@ -42,8 +42,8 @@ class SkyRenderer(
 ) : Renderer {
     private val skyboxShader = renderWindow.renderSystem.createShader(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "sky/skybox"))
     private val skySunShader = renderWindow.renderSystem.createShader(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "sky/sun"))
-    private val skyboxMesh = SkyboxMesh()
-    private var skySunMesh = SimpleTextureMesh()
+    private val skyboxMesh = SkyboxMesh(renderWindow)
+    private var skySunMesh = SimpleTextureMesh(renderWindow)
     private lateinit var sunTexture: Texture
     private var recalculateSunNextFrame: Boolean = true
     var baseColor = RenderConstants.DEFAULT_SKY_COLOR
@@ -91,7 +91,7 @@ class SkyRenderer(
             setSunMatrix(renderWindow.inputHandler.camera.projectionMatrix * renderWindow.inputHandler.camera.viewMatrix.toMat3().toMat4())
             skySunMesh.unload()
 
-            skySunMesh = SimpleTextureMesh()
+            skySunMesh = SimpleTextureMesh(renderWindow)
 
 
             skySunMesh.addQuad(

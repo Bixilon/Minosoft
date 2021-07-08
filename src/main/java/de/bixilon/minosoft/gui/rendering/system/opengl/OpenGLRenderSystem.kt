@@ -17,7 +17,14 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.modding.events.ResizeWindowEvent
 import de.bixilon.minosoft.gui.rendering.system.base.*
+import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.FloatUniformBuffer
+import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.IntUniformBuffer
+import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.FloatVertexBuffer
+import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
 import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
+import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.uniform.FloatOpenGLUniformBuffer
+import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.uniform.IntOpenGLUniformBuffer
+import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.vertex.FloatOpenGLVertexBuffer
 import de.bixilon.minosoft.gui.rendering.system.opengl.vendor.*
 import de.bixilon.minosoft.modding.event.CallbackEventInvoker
 import de.bixilon.minosoft.util.KUtil.synchronizedSetOf
@@ -26,6 +33,7 @@ import org.lwjgl.BufferUtils
 import org.lwjgl.opengl.GL
 import org.lwjgl.opengl.GL20.*
 import java.nio.ByteBuffer
+import kotlin.reflect.KClass
 
 class OpenGLRenderSystem(
     private val renderWindow: RenderWindow,
@@ -163,6 +171,18 @@ class OpenGLRenderSystem(
 
     override fun createShader(resourceLocation: ResourceLocation): OpenGLShader {
         return OpenGLShader(renderWindow, resourceLocation)
+    }
+
+    override fun createVertexBuffer(structure: KClass<*>, data: FloatArray, primitiveType: PrimitiveTypes): FloatVertexBuffer {
+        return FloatOpenGLVertexBuffer(structure, data, primitiveType)
+    }
+
+    override fun createFloatUniformBuffer(bindingIndex: Int, data: FloatArray): FloatUniformBuffer {
+        return FloatOpenGLUniformBuffer(bindingIndex, data)
+    }
+
+    override fun createIntUniformBuffer(bindingIndex: Int, data: IntArray): IntUniformBuffer {
+        return IntOpenGLUniformBuffer(bindingIndex, data)
     }
 
     companion object {

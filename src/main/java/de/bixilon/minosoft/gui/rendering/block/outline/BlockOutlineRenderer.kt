@@ -85,7 +85,7 @@ class BlockOutlineRenderer(
         }
 
         currentMesh?.unload()
-        currentMesh = LineMesh()
+        currentMesh = LineMesh(renderWindow)
 
         val blockOffset = raycastHit.blockPosition.toVec3d + raycastHit.blockPosition.getWorldOffset(raycastHit.blockState.block)
 

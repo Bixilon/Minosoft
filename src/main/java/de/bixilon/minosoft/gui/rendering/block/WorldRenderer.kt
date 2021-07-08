@@ -81,7 +81,7 @@ class WorldRenderer(
     private fun prepareSections(chunkPosition: Vec2i, sections: Map<Int, ChunkSection>): ChunkSectionMeshCollection {
         check(sections.isNotEmpty()) { "Illegal argument!" }
         queuedChunks.remove(chunkPosition)
-        val meshCollection = ChunkSectionMeshCollection()
+        val meshCollection = ChunkSectionMeshCollection(renderWindow)
 
         for ((sectionHeight, section) in sections) {
             for ((index, blockState) in section.blocks.withIndex()) {

@@ -36,8 +36,8 @@ class ParticleRenderer(
     val renderWindow: RenderWindow,
 ) : Renderer {
     private val particleShader: Shader = renderWindow.renderSystem.createShader(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "particle"))
-    private var particleMesh = ParticleMesh()
-    private var transparentParticleMesh = ParticleMesh()
+    private var particleMesh = ParticleMesh(renderWindow)
+    private var transparentParticleMesh = ParticleMesh(renderWindow)
 
     private var particles: MutableSet<Particle> = synchronizedSetOf()
 
@@ -80,8 +80,8 @@ class ParticleRenderer(
     override fun update() {
         particleMesh.unload()
         transparentParticleMesh.unload()
-        particleMesh = ParticleMesh()
-        transparentParticleMesh = ParticleMesh()
+        particleMesh = ParticleMesh(renderWindow)
+        transparentParticleMesh = ParticleMesh(renderWindow)
 
 
         for (particle in particles.toSynchronizedSet()) {

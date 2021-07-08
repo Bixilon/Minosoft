@@ -44,7 +44,7 @@ class HUDRenderer(val connection: PlayConnection, val renderWindow: RenderWindow
     lateinit var hudAtlasElements: Map<ResourceLocation, HUDAtlasElement>
     var orthographicMatrix: Mat4 = Mat4()
         private set
-    var currentHUDMesh: HUDMesh = HUDMesh()
+    var currentHUDMesh: HUDMesh = HUDMesh(renderWindow)
 
     private var hudEnabled = true
 
@@ -156,7 +156,7 @@ class HUDRenderer(val connection: PlayConnection, val renderWindow: RenderWindow
         }
         renderWindow.renderSystem.reset()
         var needsUpdate = false
-        val tempMesh = HUDMesh()
+        val tempMesh = HUDMesh(renderWindow)
 
         for ((_, hudElement) in enabledHUDElement.values) {
             hudElement.draw()

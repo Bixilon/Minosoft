@@ -39,7 +39,7 @@ class ChunkBorderRenderer(
             return
         }
         lastMesh?.unload(false)
-        val mesh = LineMesh()
+        val mesh = LineMesh(renderWindow)
 
         val dimension = renderWindow.connection.world.dimension ?: return
         val basePosition = chunkPosition * Vec2i(ProtocolDefinition.SECTION_WIDTH_X, ProtocolDefinition.SECTION_WIDTH_Z)

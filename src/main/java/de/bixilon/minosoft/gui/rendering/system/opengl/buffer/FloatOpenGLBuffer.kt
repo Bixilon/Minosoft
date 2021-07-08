@@ -7,8 +7,11 @@ import org.lwjgl.opengl.GL15.glBufferData
 import org.lwjgl.opengl.GL15.glBufferSubData
 
 open class FloatOpenGLBuffer(protected var _data: FloatArray?) : OpenGLRenderBuffer(RenderBufferTypes.ARRAY_BUFFER), FloatBuffer {
-    override val data: FloatArray
+    override var data: FloatArray
         get() = _data!!
+        set(value) {
+            _data = value
+        }
     override val drawTypes: RenderBufferDrawTypes = RenderBufferDrawTypes.STATIC
 
     override fun initialUpload() {

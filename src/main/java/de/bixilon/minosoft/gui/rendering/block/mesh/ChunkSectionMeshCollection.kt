@@ -13,9 +13,12 @@
 
 package de.bixilon.minosoft.gui.rendering.block.mesh
 
-data class ChunkSectionMeshCollection(
-    val opaqueSectionArrayMesh: ChunkSectionArrayMesh = ChunkSectionArrayMesh(),
-    var transparentSectionArrayMesh: ChunkSectionArrayMesh? = ChunkSectionArrayMesh(),
+import de.bixilon.minosoft.gui.rendering.RenderWindow
+
+class ChunkSectionMeshCollection(
+    renderWindow: RenderWindow,
+    val opaqueSectionArrayMesh: ChunkSectionArrayMesh = ChunkSectionArrayMesh(renderWindow),
+    var transparentSectionArrayMesh: ChunkSectionArrayMesh? = ChunkSectionArrayMesh(renderWindow),
 ) {
     var lowestBlockHeight = 0
     var highestBlockHeight = 0

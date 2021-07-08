@@ -17,13 +17,15 @@ import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.registries.AABB
 import de.bixilon.minosoft.gui.rendering.RenderConstants
+import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.util.mesh.LineMesh
 import glm_.vec3.Vec3
 
 class EntityHitBoxMesh(
+    renderWindow: RenderWindow,
     val entity: Entity,
     val aabb: AABB,
-) : LineMesh() {
+) : LineMesh(renderWindow) {
     var needsUpdate = true
     var visible = false
 

@@ -63,7 +63,7 @@ class EntityHitBoxRenderer(
         if (entity.isInvisible && !Minosoft.config.config.game.entities.hitBox.renderInvisibleEntities) {
             return null
         }
-        val mesh = EntityHitBoxMesh(entity, aabb)
+        val mesh = EntityHitBoxMesh(renderWindow, entity, aabb)
 
         if (visible) {
             mesh.load()

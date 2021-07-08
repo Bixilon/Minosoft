@@ -13,11 +13,11 @@
 
 package de.bixilon.minosoft.gui.rendering.system.opengl.buffer.uniform
 
-import de.bixilon.minosoft.gui.rendering.system.base.buffer.IntBuffer
+import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.IntUniformBuffer
 import org.lwjgl.opengl.GL15.glBufferData
 import org.lwjgl.opengl.GL15.glBufferSubData
 
-class IntOpenGLUniformBuffer(bindingIndex: Int = 0, override var data: IntArray = IntArray(0)) : OpenGLUniformBuffer(bindingIndex), IntBuffer {
+class IntOpenGLUniformBuffer(bindingIndex: Int = 0, override var data: IntArray = IntArray(0)) : OpenGLUniformBuffer(bindingIndex), IntUniformBuffer {
     override val size: Int
         get() = data.size
 

@@ -15,17 +15,20 @@ package de.bixilon.minosoft.gui.rendering.util.mesh
 
 import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.RGBColor
+import de.bixilon.minosoft.gui.rendering.RenderWindow
 import glm_.vec3.Vec3
 
-open class GenericColorMesh : Mesh(GenericColorMeshStruct::class) {
+open class GenericColorMesh(renderWindow: RenderWindow) : Mesh(renderWindow, GenericColorMeshStruct::class) {
 
     fun addVertex(position: Vec3, color: RGBColor?) {
-        data.addAll(floatArrayOf(
-            position.x,
-            position.y,
-            position.z,
-            Float.fromBits((color ?: ChatColors.WHITE).rgba)
-        ))
+        data.addAll(
+            floatArrayOf(
+                position.x,
+                position.y,
+                position.z,
+                Float.fromBits((color ?: ChatColors.WHITE).rgba)
+            )
+        )
     }
 
     data class GenericColorMeshStruct(
