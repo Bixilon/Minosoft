@@ -33,7 +33,7 @@ import glm_.vec3.Vec3
 class BlockRenderer(data: Map<String, Any>, model: BlockModel) : WorldEntryRenderer {
     private val cullFaces: Array<Directions?> = arrayOfNulls(Directions.VALUES.size)
     val textures: MutableMap<String, String> = mutableMapOf()
-    private val elements: MutableSet<ElementRenderer> = mutableSetOf()
+    private val elements: Array<ElementRenderer>
     val textureMapping: MutableMap<String, Texture> = mutableMapOf()
     override val faceBorderSizes: Array<Array<FaceSize>?> = arrayOfNulls(Directions.VALUES.size)
     override val transparentFaces: BooleanArray = BooleanArray(Directions.VALUES.size)
@@ -43,7 +43,7 @@ class BlockRenderer(data: Map<String, Any>, model: BlockModel) : WorldEntryRende
         val rotation = data.toVec3().rad
         createDirectionMapping(rotation)
         val newElements = ElementRenderer.createElements(data, model, rotation, directionMapping)
-        this.elements.addAll(newElements.reversed()) // reverse drawing order (for e.g. grass block side overlays
+        this.elements = (newElements.reversed()).toTypedArray() // reverse drawing order (for e.g. grass block side overlays
         textures.putAll(model.textures)
     }
 
