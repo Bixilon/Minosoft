@@ -87,7 +87,7 @@ class EntityHitBoxRenderer(
             val mesh = this.meshes.getAndRemove(it.entity) ?: return@of
 
             renderWindow.queue += {
-                mesh.unload(false)
+                mesh.unload(true)
             }
         })
 

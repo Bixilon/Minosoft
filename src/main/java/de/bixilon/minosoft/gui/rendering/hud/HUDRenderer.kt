@@ -179,7 +179,7 @@ class HUDRenderer(val connection: PlayConnection, val renderWindow: RenderWindow
                 hudElement.layout.checkCache(elementStart, realScaleFactor, orthographicMatrix, 0)
                 tempMesh.addCacheMesh(hudElement.layout.cache)
             }
-            currentHUDMesh.unload(false)
+            currentHUDMesh.unload(true)
             tempMesh.load()
             currentHUDMesh = tempMesh
         }

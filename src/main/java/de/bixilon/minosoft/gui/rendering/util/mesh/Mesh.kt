@@ -53,8 +53,13 @@ abstract class Mesh(
         buffer.draw()
     }
 
-    fun unload(todo: Boolean = false) {
-        buffer.unload()
+    fun unload(ignoreUnloaded: Boolean = false) {
+        if (!this::buffer.isInitialized && !ignoreUnloaded) {
+            error("")
+        }
+        if (this::buffer.isInitialized) {
+            buffer.unload(ignoreUnloaded)
+        }
     }
 
     fun addQuad(start: Vec3, end: Vec3, textureStart: Vec2 = Vec2(0.0f, 0.0f), textureEnd: Vec2 = Vec2(1.0f, 1.0f), vertexConsumer: (position: Vec3, textureCoordinate: Vec2) -> Unit) {

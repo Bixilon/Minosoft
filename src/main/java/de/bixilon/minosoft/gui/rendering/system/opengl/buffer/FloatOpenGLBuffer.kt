@@ -2,6 +2,7 @@ package de.bixilon.minosoft.gui.rendering.system.opengl.buffer
 
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.FloatBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.RenderBufferDrawTypes
+import de.bixilon.minosoft.gui.rendering.system.base.buffer.RenderBufferStates
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.RenderBufferTypes
 import org.lwjgl.opengl.GL15.glBufferData
 import org.lwjgl.opengl.GL15.glBufferSubData
@@ -18,6 +19,7 @@ open class FloatOpenGLBuffer(protected var _data: FloatArray?) : OpenGLRenderBuf
         bind()
         glBufferData(type.gl, data, drawTypes.gl)
         unbind()
+        state = RenderBufferStates.UPLOADED
     }
 
     override fun upload() {

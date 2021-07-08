@@ -38,7 +38,7 @@ class ChunkBorderRenderer(
         if (chunkPosition == lastChunkPosition && lastMesh != null) {
             return
         }
-        lastMesh?.unload(false)
+        lastMesh?.unload(true)
         val mesh = LineMesh(renderWindow)
 
         val dimension = renderWindow.connection.world.dimension ?: return

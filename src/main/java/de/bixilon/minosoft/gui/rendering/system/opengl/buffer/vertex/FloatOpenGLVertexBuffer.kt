@@ -1,5 +1,6 @@
 package de.bixilon.minosoft.gui.rendering.system.opengl.buffer.vertex
 
+import de.bixilon.minosoft.gui.rendering.system.base.buffer.RenderBufferStates
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.FloatVertexBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.FloatOpenGLBuffer
@@ -10,6 +11,7 @@ import de.bixilon.minosoft.util.Util
 import org.lwjgl.opengl.ARBVertexArrayObject.glBindVertexArray
 import org.lwjgl.opengl.ARBVertexArrayObject.glGenVertexArrays
 import org.lwjgl.opengl.GL11.*
+import org.lwjgl.opengl.GL15.glBufferData
 import org.lwjgl.opengl.GL20.glEnableVertexAttribArray
 import org.lwjgl.opengl.GL20.glVertexAttribPointer
 import kotlin.reflect.KClass
@@ -22,8 +24,6 @@ class FloatOpenGLVertexBuffer(override val structure: KClass<*>, data: FloatArra
     private var vao = -1
 
     override fun init() {
-        super.init()
-
         Util.forceClassInit(structure.java)
 
         val bytesPerVertex = structure.companionObjectInstance!!.unsafeCast<MeshStruct>().BYTES_PER_VERTEX
@@ -32,9 +32,12 @@ class FloatOpenGLVertexBuffer(override val structure: KClass<*>, data: FloatArra
 
         vertices = data.size / floatsPerVertex
         vao = glGenVertexArrays()
-        glBindVertexArray(vao)
         super.init()
-        super.initialUpload()
+        glBindVertexArray(vao)
+
+        bind()
+        glBufferData(type.gl, data, drawTypes.gl)
+        state = RenderBufferStates.UPLOADED
 
         _data = null
 
@@ -61,9 +64,9 @@ class FloatOpenGLVertexBuffer(override val structure: KClass<*>, data: FloatArra
             get() {
                 return when (this) {
                     PrimitiveTypes.POINT -> GL_POINTS
-                    PrimitiveTypes.LINE -> GL_LINE
+                    PrimitiveTypes.LINE -> GL_LINES
                     PrimitiveTypes.TRIANGLE -> GL_TRIANGLES
-                    PrimitiveTypes.QUADS -> GL_QUADS
+                    PrimitiveTypes.QUAD -> GL_QUADS
                 }
             }
     }

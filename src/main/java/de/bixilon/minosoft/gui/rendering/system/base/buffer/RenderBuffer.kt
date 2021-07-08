@@ -1,6 +1,7 @@
 package de.bixilon.minosoft.gui.rendering.system.base.buffer
 
 interface RenderBuffer {
+    val state: RenderBufferStates
     val type: RenderBufferTypes
 
     fun init()
@@ -9,5 +10,5 @@ interface RenderBuffer {
     fun bind()
     fun unbind()
 
-    fun unload()
+    fun unload(ignoreUnloaded: Boolean)
 }

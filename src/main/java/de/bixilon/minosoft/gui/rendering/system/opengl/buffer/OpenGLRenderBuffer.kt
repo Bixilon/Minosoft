@@ -2,11 +2,13 @@ package de.bixilon.minosoft.gui.rendering.system.opengl.buffer
 
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.RenderBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.RenderBufferDrawTypes
+import de.bixilon.minosoft.gui.rendering.system.base.buffer.RenderBufferStates
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.RenderBufferTypes
 import org.lwjgl.opengl.GL15.*
 import org.lwjgl.opengl.GL31.GL_UNIFORM_BUFFER
 
 abstract class OpenGLRenderBuffer(override val type: RenderBufferTypes) : RenderBuffer {
+    override var state: RenderBufferStates = RenderBufferStates.PREPARING
     abstract val drawTypes: RenderBufferDrawTypes
 
     protected var id: Int = -1
@@ -24,8 +26,14 @@ abstract class OpenGLRenderBuffer(override val type: RenderBufferTypes) : Render
         glBindBuffer(type.gl, 0)
     }
 
-    override fun unload() {
-        glDeleteBuffers(id)
+    override fun unload(ignoreUnloaded: Boolean) {
+        if (state != RenderBufferStates.UPLOADED && !ignoreUnloaded) {
+            error("")
+        }
+        if (state != RenderBufferStates.UPLOADED) {
+            state = RenderBufferStates.UNLOADED
+            glDeleteBuffers(id)
+        }
     }
 
 

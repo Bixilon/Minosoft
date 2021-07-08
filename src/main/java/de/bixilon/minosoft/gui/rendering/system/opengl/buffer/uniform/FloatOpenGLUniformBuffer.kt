@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.system.opengl.buffer.uniform
 
+import de.bixilon.minosoft.gui.rendering.system.base.buffer.RenderBufferStates
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.FloatUniformBuffer
 import org.lwjgl.opengl.GL15.glBufferData
 import org.lwjgl.opengl.GL15.glBufferSubData
@@ -25,6 +26,7 @@ class FloatOpenGLUniformBuffer(bindingIndex: Int = 0, override var data: FloatAr
         bind()
         glBufferData(type.gl, data, drawTypes.gl)
         unbind()
+        state = RenderBufferStates.UPLOADED
     }
 
     override fun upload() {
