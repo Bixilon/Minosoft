@@ -27,6 +27,7 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.enchantment.Enchantment
 import de.bixilon.minosoft.data.registries.items.Item
 import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.data.text.TextFormattable
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.util.BitByte.isBit
 import de.bixilon.minosoft.util.KUtil.nullCast
@@ -45,12 +46,17 @@ data class ItemStack(
     var unbreakable: Boolean = false,
     var durability: Int = 0,
     val nbt: MutableMap<String, Any> = mutableMapOf(),
-) {
+) : TextFormattable {
     var hideFlags = 0
 
     init {
         parseNBT(nbt)
     }
+
+    override fun toText(): ChatComponent {
+        return ChatComponent.of("$item {name=${displayName}, count=$count. nbt=$nbt}")
+    }
+
 
     private fun parseNBT(nbt: MutableMap<String, Any>?) {
         if (nbt == null) {
