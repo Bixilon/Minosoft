@@ -19,6 +19,7 @@ import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.exceptions.ShaderLoadingException
 import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
 import de.bixilon.minosoft.gui.rendering.system.base.shader.code.glsl.GLSLShaderCode
+import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.uniform.OpenGLUniformBuffer
 import glm_.mat4x4.Mat4
 import glm_.vec2.Vec2
 import glm_.vec3.Vec3
@@ -156,7 +157,7 @@ class OpenGLShader(
         glUniform1i(getUniformLocation(uniformName), textureId)
     }
 
-    override fun setUniformBuffer(uniformName: String, uniformBuffer: UniformBuffer) {
+    override fun setUniformBuffer(uniformName: String, uniformBuffer: OpenGLUniformBuffer) {
         glUniformBlockBinding(shader, glGetUniformBlockIndex(shader, uniformName), uniformBuffer.bindingIndex)
     }
 

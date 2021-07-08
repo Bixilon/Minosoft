@@ -13,95 +13,46 @@
 
 package de.bixilon.minosoft.gui.rendering.util.mesh
 
-import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct.Companion.BYTES
-import de.bixilon.minosoft.util.KUtil.unsafeCast
-import de.bixilon.minosoft.util.Util
+import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
+import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.vertex.FloatOpenGLVertexBuffer
 import de.bixilon.minosoft.util.collections.ArrayFloatList
 import glm_.vec2.Vec2
 import glm_.vec3.Vec3
-import org.lwjgl.opengl.GL11.GL_TRIANGLES
-import org.lwjgl.opengl.GL11.glDrawArrays
-import org.lwjgl.opengl.GL30.*
 import kotlin.reflect.KClass
-import kotlin.reflect.full.companionObjectInstance
-import kotlin.reflect.full.primaryConstructor
 
 abstract class Mesh(
-    protected val struct: KClass<*>,
+    private val struct: KClass<*>,
+    private val primitiveType: PrimitiveTypes = PrimitiveTypes.TRIANGLE,
     initialCacheSize: Int = 10000,
 ) {
-    protected var _data: ArrayFloatList? = ArrayFloatList(initialCacheSize)
+    private var _data: ArrayFloatList? = ArrayFloatList(initialCacheSize)
     var data: ArrayFloatList
         get() = _data!!
         set(value) {
             _data = value
         }
 
-    protected var vao: Int = -1
-    protected var vbo: Int = -1
-    var primitiveCount: Int = -1
+    protected lateinit var buffer: FloatOpenGLVertexBuffer
+
+    var vertices: Int = -1
         protected set
 
     var state = MeshStates.PREPARING
         protected set
 
 
-    open fun load() {
-        Util.forceClassInit(struct.java)
-
-        val bytesPerVertex = struct.companionObjectInstance!!.unsafeCast<MeshStruct>().BYTES_PER_VERTEX
-
-        initializeBuffers(bytesPerVertex / Float.SIZE_BYTES)
-
-
-        var stride = 0L
-
-        for ((index, parameter) in struct.primaryConstructor!!.parameters.withIndex()) {
-            val bytes = parameter.BYTES
-            glVertexAttribPointer(index, bytes / Float.SIZE_BYTES, GL_FLOAT, false, bytesPerVertex, stride)
-            glEnableVertexAttribArray(index)
-            stride += bytes
-        }
-        unbind()
+    fun load() {
+        buffer = FloatOpenGLVertexBuffer(struct, data.toArray(), primitiveType)
+        buffer.init()
+        vertices = buffer.vertices
     }
 
-
-    protected fun initializeBuffers(floatsPerVertex: Int) {
-        check(state == MeshStates.PREPARING) { "Mesh already loaded: $state" }
-
-        primitiveCount = data.size / floatsPerVertex
-        vao = glGenVertexArrays()
-        vbo = glGenBuffers()
-        glBindVertexArray(vao)
-        glBindBuffer(GL_ARRAY_BUFFER, vbo)
-
-        glBufferData(GL_ARRAY_BUFFER, data.toArray(), GL_STATIC_DRAW)
-
-        state = MeshStates.LOADED
-        _data = null
+    fun draw() {
+        buffer.draw()
     }
 
-    protected fun unbind() {
-        glBindBuffer(GL_ARRAY_BUFFER, 0)
-    }
-
-    open fun draw() {
-        // check(state == MeshStates.LOADED) { "Mesh not loaded: $state" }
-        glBindVertexArray(vao)
-        glDrawArrays(GL_TRIANGLES, 0, primitiveCount)
-    }
-
-    fun unload(checkLoaded: Boolean = true) {
-        if (checkLoaded) {
-            check(state == MeshStates.LOADED) { "Mesh not loaded: $state" }
-        } else {
-            if (state != MeshStates.LOADED) {
-                return
-            }
-        }
-        glDeleteVertexArrays(vao)
-        glDeleteBuffers(vbo)
-        state = MeshStates.UNLOADED
+    fun unload(todo: Boolean = false) {
+        buffer.unload()
     }
 
     fun addQuad(start: Vec3, end: Vec3, textureStart: Vec2 = Vec2(0.0f, 0.0f), textureEnd: Vec2 = Vec2(1.0f, 1.0f), vertexConsumer: (position: Vec3, textureCoordinate: Vec2) -> Unit) {
@@ -117,6 +68,7 @@ abstract class Mesh(
             Vec2(textureStart.x, textureEnd.y),
             textureEnd,
         )
+
         for ((vertexIndex, textureIndex) in QUAD_DRAW_ODER) {
             vertexConsumer.invoke(positions[vertexIndex], texturePositions[textureIndex])
         }

@@ -41,7 +41,7 @@ class ChunkSectionArrayMesh : Mesh(SectionArrayMeshStruct::class, initialCacheSi
             Float.fromBits(textureLayer),
             Float.fromBits(texture.properties.animation?.animationId ?: -1),
             Float.fromBits(color.rgb),
-            Float.fromBits(light)
+            Float.fromBits(light),
         ))
     }
 

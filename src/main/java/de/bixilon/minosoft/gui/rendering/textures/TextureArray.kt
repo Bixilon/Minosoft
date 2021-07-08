@@ -18,7 +18,7 @@ import de.bixilon.minosoft.data.assets.AssetsManager
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
-import de.bixilon.minosoft.gui.rendering.system.opengl.IntUniformBuffer
+import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.uniform.IntOpenGLUniformBuffer
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -256,7 +256,7 @@ class TextureArray(val allTextures: MutableMap<ResourceLocation, Texture>) {
 
     inner class Animator {
         val animatedTextures: MutableList<TextureAnimation> = mutableListOf()
-        private val uniformBuffer = IntUniformBuffer()
+        private val uniformBuffer = IntOpenGLUniformBuffer()
         var lastRun = 0L
 
         var initialized = false

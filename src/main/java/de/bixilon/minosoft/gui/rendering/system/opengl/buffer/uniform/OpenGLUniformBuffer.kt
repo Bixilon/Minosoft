@@ -11,32 +11,26 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.system.opengl
+package de.bixilon.minosoft.gui.rendering.system.opengl.buffer.uniform
 
+import de.bixilon.minosoft.gui.rendering.system.base.buffer.RenderBufferDrawTypes
+import de.bixilon.minosoft.gui.rendering.system.base.buffer.RenderBufferTypes
+import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.UniformBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
+import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.OpenGLRenderBuffer
 import org.lwjgl.opengl.ARBUniformBufferObject.*
-import org.lwjgl.opengl.GL15.glBindBuffer
-import org.lwjgl.opengl.GL15.glGenBuffers
 
-abstract class UniformBuffer(val bindingIndex: Int) {
-    private var id = -1
+abstract class OpenGLUniformBuffer(override val bindingIndex: Int) : OpenGLRenderBuffer(RenderBufferTypes.UNIFORM_BUFFER), UniformBuffer {
+    override val drawTypes: RenderBufferDrawTypes = RenderBufferDrawTypes.DYNAMIC
     protected abstract val size: Int
     protected var initialSize = -1
 
 
-    fun init() {
-        id = glGenBuffers()
+    override fun init() {
+        super.init()
         initialUpload()
         glBindBufferRange(GL_UNIFORM_BUFFER, bindingIndex, id, 0, size.toLong())
         initialSize = size
-    }
-
-    protected fun bind() {
-        glBindBuffer(GL_UNIFORM_BUFFER, id)
-    }
-
-    protected fun unbind() {
-        glBindBuffer(GL_UNIFORM_BUFFER, 0)
     }
 
 
@@ -46,8 +40,4 @@ abstract class UniformBuffer(val bindingIndex: Int) {
         shader[bufferName] = this
         glBindBufferBase(GL_UNIFORM_BUFFER, bindingIndex, id)
     }
-
-    protected abstract fun initialUpload()
-
-    abstract fun upload()
 }

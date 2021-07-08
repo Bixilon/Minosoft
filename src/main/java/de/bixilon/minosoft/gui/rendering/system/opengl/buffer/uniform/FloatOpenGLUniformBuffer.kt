@@ -11,25 +11,26 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.system.opengl
+package de.bixilon.minosoft.gui.rendering.system.opengl.buffer.uniform
 
-import org.lwjgl.opengl.ARBUniformBufferObject.GL_UNIFORM_BUFFER
-import org.lwjgl.opengl.GL15.*
+import de.bixilon.minosoft.gui.rendering.system.base.buffer.FloatBuffer
+import org.lwjgl.opengl.GL15.glBufferData
+import org.lwjgl.opengl.GL15.glBufferSubData
 
-class FloatUniformBuffer(bindingIndex: Int = 0, var data: FloatArray = FloatArray(0)) : UniformBuffer(bindingIndex) {
+class FloatOpenGLUniformBuffer(bindingIndex: Int = 0, override var data: FloatArray = FloatArray(0)) : OpenGLUniformBuffer(bindingIndex), FloatBuffer {
     override val size: Int
         get() = data.size
 
     override fun initialUpload() {
         bind()
-        glBufferData(GL_UNIFORM_BUFFER, data, GL_DYNAMIC_DRAW)
+        glBufferData(type.gl, data, drawTypes.gl)
         unbind()
     }
 
     override fun upload() {
         check(initialSize == size) { "Can not change buffer size!" }
         bind()
-        glBufferSubData(GL_UNIFORM_BUFFER, 0, data)
+        glBufferSubData(type.gl, 0, data)
         unbind()
     }
 

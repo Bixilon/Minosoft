@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.system.base.shader
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.system.opengl.UniformBuffer
+import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.uniform.OpenGLUniformBuffer
 import de.bixilon.minosoft.gui.rendering.textures.TextureArray
 import de.bixilon.minosoft.util.MMath
 import de.bixilon.minosoft.util.Previous
@@ -50,7 +50,7 @@ interface Shader {
     fun setArray(uniformName: String, array: Array<*>)
     fun setRGBColor(uniformName: String, color: RGBColor)
     fun setTexture(uniformName: String, textureId: Int)
-    fun setUniformBuffer(uniformName: String, uniformBuffer: UniformBuffer)
+    fun setUniformBuffer(uniformName: String, uniformBuffer: OpenGLUniformBuffer)
 
     fun setVec3(uniformName: String, vec3: Vec3d) {
         setVec3(uniformName, Vec3(vec3))
@@ -68,7 +68,7 @@ interface Shader {
             is Vec3 -> setVec3(uniformName, data)
             is Vec2 -> setVec2(uniformName, data)
             is RGBColor -> setRGBColor(uniformName, data)
-            is UniformBuffer -> setUniformBuffer(uniformName, data)
+            is OpenGLUniformBuffer -> setUniformBuffer(uniformName, data)
             // ToDo: Texture
             else -> error("Don't know what todo with uniform type ${data::class.simpleName}!")
         }

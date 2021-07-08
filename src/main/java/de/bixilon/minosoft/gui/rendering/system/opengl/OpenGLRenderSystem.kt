@@ -247,7 +247,7 @@ class OpenGLRenderSystem(
                     FaceTypes.LEFT -> GL_LEFT
                     FaceTypes.RIGHT -> GL_RIGHT
                     FaceTypes.FRONT_AND_BACK -> GL_FRONT_AND_BACK
-                    else -> throw IllegalArgumentException("OpenGL does not face type: $this")
+                    else -> throw IllegalArgumentException("OpenGL does not support face type: $this")
                 }
             }
     }
