@@ -277,4 +277,20 @@ object KUtil {
             else -> TODO()
         }
     }
+
+    fun Any.toDouble(): Double {
+        return when (this) {
+            is Double -> this
+            is Number -> this.toDouble()
+            else -> TODO()
+        }
+    }
+
+    fun Any.toFloat(): Float {
+        return when (this) {
+            is Float -> this
+            is Number -> this.toFloat()
+            else -> TODO()
+        }
+    }
 }

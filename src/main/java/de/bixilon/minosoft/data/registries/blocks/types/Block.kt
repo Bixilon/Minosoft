@@ -32,6 +32,7 @@ import de.bixilon.minosoft.gui.rendering.input.camera.hit.RaycastHit
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.util.KUtil.mapCast
 import de.bixilon.minosoft.util.KUtil.nullCast
+import de.bixilon.minosoft.util.KUtil.toDouble
 import de.bixilon.minosoft.util.KUtil.toInt
 import de.bixilon.minosoft.util.KUtil.unsafeCast
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
@@ -57,9 +58,9 @@ open class Block(
         protected set
     val item: Item? = null
     open lateinit var properties: Map<BlockProperties, List<Any>>
-    open val friction = data["friction"]?.nullCast<Double>() ?: 0.6
-    open val velocityMultiplier = data["velocity_multiplier"]?.nullCast<Double>() ?: 1.0 // ToDo: They exist since ~1.15
-    open val jumpVelocityMultiplier = data["jump_velocity_multiplier"]?.nullCast<Double>() ?: 1.0
+    open val friction = data["friction"]?.toDouble() ?: 0.6
+    open val velocityMultiplier = data["velocity_multiplier"]?.toDouble() ?: 1.0 // ToDo: They exist since ~1.15
+    open val jumpVelocityMultiplier = data["jump_velocity_multiplier"]?.toDouble() ?: 1.0
 
     init {
         this::item.inject(data["item"])
