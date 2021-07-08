@@ -15,7 +15,9 @@ package de.bixilon.minosoft.gui.rendering.input.camera.hit
 
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.entities.Entity
-import de.bixilon.minosoft.util.KUtil.format
+import de.bixilon.minosoft.data.text.BaseComponent
+import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.data.text.TextFormattable
 import glm_.vec3.Vec3d
 
 class EntityRaycastHit(
@@ -23,28 +25,32 @@ class EntityRaycastHit(
     distance: Double,
     hitDirection: Directions,
     val entity: Entity,
-) : RaycastHit(position, distance, hitDirection) {
+) : RaycastHit(position, distance, hitDirection), TextFormattable {
 
     override fun toString(): String {
-        val builder = StringBuilder()
-        builder.append(position.format())
-        builder.append(": ")
-        builder.append(entity.entityType.resourceLocation)
+        return toText().legacyText
+    }
 
-        builder.append("\n Id: ")
-        builder.append(entity.id)
+    override fun toText(): ChatComponent {
+        val text = BaseComponent()
 
-        builder.append("\n UUID: ")
-        builder.append(entity.uuid)
-        builder.append("\n")
+        text += position
+        text += (": ")
+        text += entity.entityType.resourceLocation
+
+        text += "\n Id: "
+        text += entity.id
+
+        text += "\n UUID: "
+        text += entity.uuid
+        text += "\n"
 
         for ((key, value) in entity.entityMetaDataFormatted) {
-            builder.append("\n")
-            builder.append(' ')
-            builder.append(key)
-            builder.append(": ")
-            builder.append(value.format())
+            text += "\n "
+            text += key
+            text += ": "
+            text += value
         }
-        return builder.toString()
+        return text
     }
 }

@@ -77,7 +77,7 @@ class RGBColor(val rgba: Int) : ChatCode, TextFormattable {
         }
     }
 
-    override fun toText(): Any {
+    override fun toText(): ChatComponent {
         return TextComponent(this).color(this)
     }
 

@@ -15,6 +15,8 @@ package de.bixilon.minosoft.gui.rendering.hud.nodes.debug
 
 import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.text.BaseComponent
+import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.gui.rendering.hud.HUDElementProperties
 import de.bixilon.minosoft.gui.rendering.hud.HUDRenderBuilder
 import de.bixilon.minosoft.gui.rendering.hud.HUDRenderer
@@ -120,22 +122,22 @@ class HUDSystemDebugNode(hudRenderer: HUDRenderer) : DebugScreenNode(hudRenderer
         val target = hudRenderer.renderWindow.inputHandler.camera.target
 
         val targetClass = target?.let { it::class.java }
-        this.target.sText = target?.let {
+        this.target.text = target?.let {
             val targetType = when (targetClass) {
                 FluidRaycastHit::class.java -> "Fluid"
                 BlockRaycastHit::class.java -> "Block"
                 EntityRaycastHit::class.java -> "Entity"
                 else -> "Unknown"
             }
-            "Target: $targetType: $it"
-        } ?: "No target!"
+            BaseComponent("Target: ", targetType, ": ", it)
+        } ?: ChatComponent.of("No target!")
 
         if (target != null) {
             fun addTarget(labelNode: LabelNode, raycastHit: RaycastHit?, name: String) {
-                labelNode.sText = if (raycastHit != null && targetClass != raycastHit::class.java) {
-                    "$name target: $raycastHit"
+                labelNode.text = if (raycastHit != null && targetClass != raycastHit::class.java) {
+                    BaseComponent("$name target: ", raycastHit)
                 } else {
-                    ""
+                    ChatComponent.of()
                 }
             }
 

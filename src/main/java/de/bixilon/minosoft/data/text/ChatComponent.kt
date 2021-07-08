@@ -67,7 +67,7 @@ interface ChatComponent {
     companion object {
 
         @JvmOverloads
-        fun of(raw: Any?, translator: Translator? = null, parent: TextComponent? = null, ignoreJson: Boolean = false): ChatComponent {
+        fun of(raw: Any? = null, translator: Translator? = null, parent: TextComponent? = null, ignoreJson: Boolean = false): ChatComponent {
             if (raw == null) {
                 return BaseComponent()
             }

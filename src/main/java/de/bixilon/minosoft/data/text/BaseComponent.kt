@@ -24,6 +24,7 @@ import de.bixilon.minosoft.gui.rendering.font.text.TextGetProperties
 import de.bixilon.minosoft.gui.rendering.font.text.TextSetProperties
 import de.bixilon.minosoft.gui.rendering.hud.nodes.primitive.LabelNode
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.util.KUtil.format
 import de.bixilon.minosoft.util.KUtil.nullCast
 import glm_.vec2.Vec2i
 import javafx.collections.ObservableList
@@ -33,6 +34,12 @@ import java.text.StringCharacterIterator
 
 class BaseComponent : ChatComponent {
     val parts: MutableList<ChatComponent> = mutableListOf()
+
+    constructor(vararg parts: Any?) {
+        for (part in parts) {
+            this.parts += part.format()
+        }
+    }
 
     constructor(parent: TextComponent? = null, legacy: String = "") {
         val currentText = StringBuilder()
@@ -195,6 +202,10 @@ class BaseComponent : ChatComponent {
 
     override fun toString(): String {
         return legacyText
+    }
+
+    operator fun plusAssign(text: Any?) {
+        parts += text.format()
     }
 
     private fun <T> MutableSet<T>.addOrRemove(value: T, addOrRemove: Boolean?) {
