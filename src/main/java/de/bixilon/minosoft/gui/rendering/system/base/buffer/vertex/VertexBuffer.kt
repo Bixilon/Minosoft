@@ -1,11 +1,11 @@
 package de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex
 
-import kotlin.reflect.KClass
+import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
 
 interface VertexBuffer {
     val vertices: Int
     val primitiveType: PrimitiveTypes
-    val structure: KClass<*>
+    val structure: MeshStruct
 
     fun draw()
 }

@@ -13,28 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.util.mesh
 
-import de.bixilon.minosoft.data.text.ChatColors
-import de.bixilon.minosoft.data.text.RGBColor
-import de.bixilon.minosoft.gui.rendering.RenderWindow
-import glm_.vec3.Vec3
-
-open class GenericColorMesh(renderWindow: RenderWindow) : Mesh(renderWindow, GenericColorMeshStruct) {
-
-    fun addVertex(position: Vec3, color: RGBColor?) {
-        data.addAll(
-            floatArrayOf(
-                position.x,
-                position.y,
-                position.z,
-                Float.fromBits((color ?: ChatColors.WHITE).rgba)
-            )
-        )
-    }
-
-    data class GenericColorMeshStruct(
-        val position: Vec3,
-        val color: RGBColor,
-    ) {
-        companion object : MeshStruct(GenericColorMeshStruct::class)
-    }
-}
+data class MeshAttribute(
+    val index: Int,
+    val size: Int,
+    val stride: Long,
+)

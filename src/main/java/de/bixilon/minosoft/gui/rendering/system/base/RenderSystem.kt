@@ -19,9 +19,9 @@ import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.IntUniformBu
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.FloatVertexBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
 import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
+import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
 import glm_.vec2.Vec2i
 import java.nio.ByteBuffer
-import kotlin.reflect.KClass
 
 interface RenderSystem {
     val shaders: MutableSet<Shader>
@@ -71,7 +71,7 @@ interface RenderSystem {
 
     fun createShader(resourceLocation: ResourceLocation): Shader
 
-    fun createVertexBuffer(structure: KClass<*>, data: FloatArray, primitiveType: PrimitiveTypes = PrimitiveTypes.TRIANGLE): FloatVertexBuffer
+    fun createVertexBuffer(structure: MeshStruct, data: FloatArray, primitiveType: PrimitiveTypes = PrimitiveTypes.TRIANGLE): FloatVertexBuffer
     fun createIntUniformBuffer(bindingIndex: Int = 0, data: IntArray = IntArray(0)): IntUniformBuffer
     fun createFloatUniformBuffer(bindingIndex: Int = 0, data: FloatArray = FloatArray(0)): FloatUniformBuffer
 }

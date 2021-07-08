@@ -26,6 +26,7 @@ import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.uniform.FloatOpenG
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.uniform.IntOpenGLUniformBuffer
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.vertex.FloatOpenGLVertexBuffer
 import de.bixilon.minosoft.gui.rendering.system.opengl.vendor.*
+import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
 import de.bixilon.minosoft.modding.event.CallbackEventInvoker
 import de.bixilon.minosoft.util.KUtil.synchronizedSetOf
 import glm_.vec2.Vec2i
@@ -33,7 +34,6 @@ import org.lwjgl.BufferUtils
 import org.lwjgl.opengl.GL
 import org.lwjgl.opengl.GL20.*
 import java.nio.ByteBuffer
-import kotlin.reflect.KClass
 
 class OpenGLRenderSystem(
     private val renderWindow: RenderWindow,
@@ -173,7 +173,7 @@ class OpenGLRenderSystem(
         return OpenGLShader(renderWindow, resourceLocation)
     }
 
-    override fun createVertexBuffer(structure: KClass<*>, data: FloatArray, primitiveType: PrimitiveTypes): FloatVertexBuffer {
+    override fun createVertexBuffer(structure: MeshStruct, data: FloatArray, primitiveType: PrimitiveTypes): FloatVertexBuffer {
         return FloatOpenGLVertexBuffer(structure, data, primitiveType)
     }
 

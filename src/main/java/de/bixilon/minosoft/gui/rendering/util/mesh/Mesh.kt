@@ -19,11 +19,10 @@ import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveType
 import de.bixilon.minosoft.util.collections.ArrayFloatList
 import glm_.vec2.Vec2
 import glm_.vec3.Vec3
-import kotlin.reflect.KClass
 
 abstract class Mesh(
     val renderWindow: RenderWindow,
-    private val struct: KClass<*>,
+    private val struct: MeshStruct,
     private val primitiveType: PrimitiveTypes = PrimitiveTypes.TRIANGLE,
     initialCacheSize: Int = 10000,
 ) {

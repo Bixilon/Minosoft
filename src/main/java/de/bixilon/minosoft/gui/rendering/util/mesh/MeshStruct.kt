@@ -28,6 +28,20 @@ import kotlin.reflect.full.primaryConstructor
 abstract class MeshStruct(val struct: KClass<*>) {
     val BYTES_PER_VERTEX: Int = calculateBytesPerVertex(struct)
     val FLOATS_PER_VERTEX: Int = BYTES_PER_VERTEX / Float.SIZE_BYTES
+    val attributes: List<MeshAttribute>
+
+    init {
+        val attributes: MutableList<MeshAttribute> = mutableListOf()
+        var stride = 0L
+
+        for ((index, parameter) in struct.primaryConstructor!!.parameters.withIndex()) {
+            val bytes = parameter.BYTES
+            attributes += MeshAttribute(index, bytes / Float.SIZE_BYTES, stride)
+            stride += bytes
+        }
+
+        this.attributes = attributes.toList()
+    }
 
     companion object {
 
