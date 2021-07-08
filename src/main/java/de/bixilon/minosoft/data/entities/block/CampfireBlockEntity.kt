@@ -23,7 +23,8 @@ import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.fire.SmokeParticle
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.util.KUtil.chance
-import de.bixilon.minosoft.util.KUtil.nullCast
+import de.bixilon.minosoft.util.KUtil.toInt
+import de.bixilon.minosoft.util.KUtil.unsafeCast
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.listCast
 import glm_.vec3.Vec3d
 import glm_.vec3.Vec3i
@@ -48,12 +49,12 @@ class CampfireBlockEntity(connection: PlayConnection) : BlockEntity(connection) 
                 continue
             }
             val itemStack = ItemStack(
-                item = connection.registries.itemRegistry[slot["id"]?.nullCast<String>()!!]!!,
+                item = connection.registries.itemRegistry[slot["id"].unsafeCast<String>()]!!,
                 connection = connection,
-                count = slot["Count"]?.nullCast<Number>()?.toInt() ?: 1,
+                count = slot["Count"]?.toInt() ?: 1,
             )
 
-            items[slot["Slot"]?.nullCast<Number>()?.toInt()!!] = itemStack
+            items[slot["Slot"]!!.toInt()] = itemStack
         }
     }
 
@@ -72,7 +73,7 @@ class CampfireBlockEntity(connection: PlayConnection) : BlockEntity(connection) 
             }
         }
 
-        val facing = (blockState.properties[BlockProperties.FACING] as Directions).horizontalId
+        val facing = blockState.properties[BlockProperties.FACING].unsafeCast<Directions>().horizontalId
 
         for ((index, item) in items.withIndex()) {
             item ?: continue

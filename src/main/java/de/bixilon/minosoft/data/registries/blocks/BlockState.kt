@@ -28,6 +28,7 @@ import de.bixilon.minosoft.gui.rendering.block.renderable.block.BlockRenderer
 import de.bixilon.minosoft.gui.rendering.block.renderable.block.MultipartRenderer
 import de.bixilon.minosoft.util.KUtil.toInt
 import de.bixilon.minosoft.util.KUtil.unsafeCast
+import de.bixilon.minosoft.util.nbt.tag.NBTUtil.asCompound
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.booleanCast
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
 import glm_.vec3.Vec3i
@@ -137,12 +138,12 @@ data class BlockState(
                         for (model in it) {
                             when (model) {
                                 is Map<*, *> -> {
-                                    addBlockModel(model.compoundCast()!!, renderers, models)
+                                    addBlockModel(model.asCompound(), renderers, models)
                                 }
                                 is Collection<*> -> {
                                     val modelList: MutableList<WorldEntryRenderer> = mutableListOf()
                                     for (singleModel in model) {
-                                        addBlockModel(singleModel!!.compoundCast()!!, modelList, models)
+                                        addBlockModel(singleModel!!.asCompound(), modelList, models)
                                     }
                                     renderers.add(MultipartRenderer(modelList.toList()))
                                 }
@@ -150,7 +151,7 @@ data class BlockState(
                         }
                     }
                     is Map<*, *> -> {
-                        addBlockModel(it.compoundCast()!!, renderers, models)
+                        addBlockModel(it.asCompound(), renderers, models)
                     }
                     else -> error("Not a render json!")
                 }
@@ -159,7 +160,7 @@ data class BlockState(
             val tintColor: RGBColor? = data["tint_color"]?.toInt()?.let { TintColorCalculator.getJsonColor(it) } ?: block.tintColor
 
 
-            val material = registries.materialRegistry[ResourceLocation(data["material"]!!.unsafeCast())]!!
+            val material = registries.materialRegistry[ResourceLocation(data["material"].unsafeCast())]!!
 
 
             fun Any.asShape(): VoxelShape {
@@ -230,7 +231,7 @@ data class BlockState(
         }
 
         private fun addBlockModel(data: Map<String, Any>, renderer: MutableList<WorldEntryRenderer>, models: Map<ResourceLocation, BlockModel>) {
-            val model = models[ResourceLocation(data["model"]!!.unsafeCast())] ?: error("Can not find block model ${data["model"]}")
+            val model = models[ResourceLocation(data["model"].unsafeCast())] ?: error("Can not find block model ${data["model"]}")
             renderer.add(BlockRenderer(data, model))
         }
     }

@@ -23,7 +23,7 @@ open class MusicDiscItem(
     registries: Registries,
     data: Map<String, Any>,
 ) : Item(resourceLocation, registries, data) {
-    val analogOutput = data["analog_output"]?.nullCast<Item>() ?: 0
+    val analogOutput = data["analog_output"].nullCast<Item>() ?: 0
     val sound: SoundEvent? = null
 
     init {

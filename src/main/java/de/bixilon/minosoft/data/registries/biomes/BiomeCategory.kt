@@ -25,7 +25,7 @@ data class BiomeCategory(
     companion object : IdDeserializer<BiomeCategory> {
         override fun deserialize(registries: Registries, data: Map<String, Any>): BiomeCategory {
             return BiomeCategory(
-                name = data["name"]!!.unsafeCast()
+                name = data["name"].unsafeCast()
             )
         }
 

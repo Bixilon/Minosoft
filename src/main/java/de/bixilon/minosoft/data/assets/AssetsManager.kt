@@ -19,7 +19,7 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.util.KUtil.fromJson
 import de.bixilon.minosoft.util.Util
-import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
+import de.bixilon.minosoft.util.nbt.tag.NBTUtil.asCompound
 import de.matthiasmann.twl.utils.PNGDecoder
 import org.lwjgl.BufferUtils
 import java.io.BufferedReader
@@ -52,7 +52,7 @@ interface AssetsManager {
     }
 
     fun readJsonAsset(resourceLocation: ResourceLocation): Map<String, Any> {
-        return readStringAsset(resourceLocation).fromJson().compoundCast()!!
+        return readStringAsset(resourceLocation).fromJson().asCompound()
     }
 
     fun readStringAsset(resourceLocation: ResourceLocation): String {

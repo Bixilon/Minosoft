@@ -15,6 +15,7 @@ package de.bixilon.minosoft.util.json
 
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.util.KUtil.unsafeCast
 
 object ResourceLocationJsonMap {
 
@@ -34,7 +35,7 @@ object ResourceLocationJsonMap {
         val ret: MutableMap<ResourceLocation, Any> = mutableMapOf()
 
         for ((key, value) in this) {
-            ret[ResourceLocation(key as String)] = value as Any
+            ret[ResourceLocation(key.unsafeCast<String>())] = value.unsafeCast<Any>()
         }
 
         return ret

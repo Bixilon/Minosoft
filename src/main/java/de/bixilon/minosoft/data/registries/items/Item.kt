@@ -42,7 +42,7 @@ open class Item(
     val maxStackSize: Int = data["max_stack_size"]?.toInt() ?: 64
     val maxDamage: Int = data["max_damage"]?.toInt() ?: 1
     val isFireResistant: Boolean = data["is_fire_resistant"]?.booleanCast() ?: false
-    override val translationKey: String? = data["translation_key"]?.nullCast()
+    override val translationKey: String? = data["translation_key"].nullCast()
     val creativeModeTab: CreativeModeTab? = data["category"]?.toInt()?.let { registries.creativeModeTabRegistry[it] }
 
     override fun toString(): String {
@@ -62,7 +62,7 @@ open class Item(
 
         override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): Item {
             check(registries != null) { "Registries is null!" }
-            return when (data["class"]!!.unsafeCast<String>()) {
+            return when (data["class"].unsafeCast<String>()) {
                 "BlockItem" -> BlockItem(resourceLocation, registries, data)
                 "ArmorItem" -> ArmorItem(resourceLocation, registries, data)
                 "SwordItem" -> SwordItem(resourceLocation, registries, data)

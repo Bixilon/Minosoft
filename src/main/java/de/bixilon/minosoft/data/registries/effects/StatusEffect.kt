@@ -22,6 +22,7 @@ import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.data.text.RGBColor.Companion.asRGBColor
 import de.bixilon.minosoft.datafixer.EntityAttributeFixer.fix
 import de.bixilon.minosoft.util.KUtil.unsafeCast
+import de.bixilon.minosoft.util.nbt.tag.NBTUtil.asCompound
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
 import java.util.*
 
@@ -45,7 +46,7 @@ data class StatusEffect(
 
             data["attributes"]?.compoundCast()?.let {
                 for ((key, value) in it) {
-                    val attribute = StatusEffectAttribute.deserialize(value.compoundCast()!!)
+                    val attribute = StatusEffectAttribute.deserialize(value.asCompound())
                     attributes[ResourceLocation.getResourceLocation(key).fix()] = attribute
                     uuidAttributes[attribute.uuid] = attribute
                 }
@@ -53,9 +54,9 @@ data class StatusEffect(
 
             return StatusEffect(
                 resourceLocation = resourceLocation,
-                category = StatusEffectCategories[data["category"]!!.unsafeCast<String>()],
+                category = StatusEffectCategories[data["category"].unsafeCast<String>()],
                 translationKey = data["translation_key"]?.unsafeCast<String>(),
-                color = data["color"]!!.unsafeCast<Int>().asRGBColor(),
+                color = data["color"].unsafeCast<Int>().asRGBColor(),
                 attributes = attributes.toMap(),
                 uuidAttributes = uuidAttributes.toMap(),
             )

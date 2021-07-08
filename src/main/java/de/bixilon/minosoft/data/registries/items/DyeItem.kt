@@ -22,5 +22,5 @@ open class DyeItem(
     registries: Registries,
     data: Map<String, Any>,
 ) : Item(resourceLocation, registries, data) {
-    val dyeColor = data["dye_color"]?.nullCast<String>() ?: "white"
+    val dyeColor = data["dye_color"].nullCast<String>() ?: "white"
 }

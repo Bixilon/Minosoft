@@ -25,7 +25,7 @@ data class BiomePrecipitation(
     companion object : IdDeserializer<BiomePrecipitation> {
         override fun deserialize(registries: Registries, data: Map<String, Any>): BiomePrecipitation {
             return BiomePrecipitation(
-                name = data["name"]!!.unsafeCast()
+                name = data["name"].unsafeCast()
             )
         }
     }

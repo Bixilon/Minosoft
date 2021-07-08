@@ -35,7 +35,7 @@ import de.bixilon.minosoft.util.KUtil.nullCast
 import de.bixilon.minosoft.util.KUtil.toDouble
 import de.bixilon.minosoft.util.KUtil.toInt
 import de.bixilon.minosoft.util.KUtil.unsafeCast
-import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
+import de.bixilon.minosoft.util.nbt.tag.NBTUtil.asCompound
 import glm_.vec3.Vec3i
 import kotlin.random.Random
 
@@ -46,8 +46,8 @@ open class Block(
 ) : RegistryItem() {
     open val explosionResistance: Float = data["explosion_resistance"]?.unsafeCast<Float>() ?: 0.0f
     open val tintColor: RGBColor? = data["tint_color"]?.toInt()?.let { TintColorCalculator.getJsonColor(it) }
-    open val randomOffsetType: RandomOffsetTypes? = data["offset_type"]?.nullCast<String>()?.let { RandomOffsetTypes[it] }
-    open val tint: ResourceLocation? = data["tint"]?.nullCast<String>()?.let { ResourceLocation(it) }
+    open val randomOffsetType: RandomOffsetTypes? = data["offset_type"].nullCast<String>()?.let { RandomOffsetTypes[it] }
+    open val tint: ResourceLocation? = data["tint"].nullCast<String>()?.let { ResourceLocation(it) }
     open val renderOverride: List<WorldEntryRenderer>? = null
     open var blockEntityType: BlockEntityType? = null
         protected set
@@ -119,14 +119,14 @@ open class Block(
         override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): Block {
             check(registries != null) { "Registries is null!" }
 
-            val block = DefaultBlockFactories[data["class"]!!.unsafeCast()]?.build(resourceLocation, registries, data) ?: Block(resourceLocation, registries, data)
+            val block = DefaultBlockFactories[data["class"].unsafeCast()]?.build(resourceLocation, registries, data) ?: Block(resourceLocation, registries, data)
 
             val properties: MutableMap<BlockProperties, MutableSet<Any>> = mutableMapOf()
 
             val states: MutableSet<BlockState> = mutableSetOf()
             for ((stateId, stateJson) in data["states"]?.mapCast()!!) {
                 check(stateJson is Map<*, *>) { "Not a state element!" }
-                val state = BlockState.deserialize(block, registries, stateJson.compoundCast()!!, registries.models)
+                val state = BlockState.deserialize(block, registries, stateJson.asCompound(), registries.models)
                 registries.blockStateRegistry[stateId.toInt()] = state
                 states.add(state)
                 for ((property, value) in state.properties) {
@@ -141,7 +141,7 @@ open class Block(
             }
 
             block.states = states.toSet()
-            block.defaultState = registries.blockStateRegistry.forceGet(data["default_state"]!!.unsafeCast())!!
+            block.defaultState = registries.blockStateRegistry.forceGet(data["default_state"].unsafeCast())!!
             block.properties = propertiesOut.toMap()
             return block
         }

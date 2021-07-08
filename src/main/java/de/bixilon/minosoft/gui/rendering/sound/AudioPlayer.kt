@@ -238,7 +238,7 @@ class AudioPlayer(
                     }
                     is Map<*, *> -> {
                         sounds += Sound(
-                            path = soundJson["name"]!!.unsafeCast<String>().getSoundLocation(),
+                            path = soundJson["name"].unsafeCast<String>().getSoundLocation(),
                             volume = soundJson["volume"]?.unsafeCast<Double>()?.toFloat() ?: 1.0f,
                             pitch = soundJson["pitch"]?.unsafeCast<Double>()?.toFloat() ?: 1.0f,
                             weight = soundJson["weight"]?.toInt() ?: 1,
@@ -253,7 +253,7 @@ class AudioPlayer(
             this.sounds[soundEvent] = SoundList(
                 soundEvent = soundEvent,
                 sounds = sounds.toSet(),
-                subTitle = json["subtitle"]?.nullCast<String>()?.let { ResourceLocation(ProtocolDefinition.DEFAULT_NAMESPACE, it) },
+                subTitle = json["subtitle"].nullCast<String>()?.let { ResourceLocation(ProtocolDefinition.DEFAULT_NAMESPACE, it) },
             )
         }
     }

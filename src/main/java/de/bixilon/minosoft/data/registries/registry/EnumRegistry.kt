@@ -56,7 +56,7 @@ class EnumRegistry<T : Enum<*>>(
         val value: T
         when (data) {
             is Map<*, *> -> {
-                id = data["id"]!!.unsafeCast()
+                id = data["id"].unsafeCast()
                 value = getEnum(data["value"]!!)
             }
             is String -> {
@@ -82,7 +82,7 @@ class EnumRegistry<T : Enum<*>>(
             }
             is Map<*, *> -> {
                 for ((index, enum) in data) {
-                    putEnum(enum!!, Integer.valueOf(index!!.unsafeCast<String>()))
+                    putEnum(enum!!, Integer.valueOf(index.unsafeCast<String>()))
                 }
             }
             else -> throw IllegalArgumentException("Can not get enum value: $data")

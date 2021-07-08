@@ -20,6 +20,7 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.rotate
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3
 import de.bixilon.minosoft.util.KUtil.nullCast
 import de.bixilon.minosoft.util.KUtil.unsafeCast
+import de.bixilon.minosoft.util.nbt.tag.NBTUtil.asCompound
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
 import glm_.func.rad
 import glm_.vec3.Vec3
@@ -29,7 +30,7 @@ open class BlockModelElement(
 ) {
     val from: Vec3 = data["from"]?.toVec3() ?: Vec3.EMPTY
     val to: Vec3 = data["to"]?.toVec3() ?: Vec3(BLOCK_RESOLUTION)
-    val shade: Boolean = data["shade"]?.nullCast<Boolean>() ?: true
+    val shade: Boolean = data["shade"].nullCast<Boolean>() ?: true
     val faces: MutableMap<Directions, BlockModelFace> = mutableMapOf()
     val transformedPositions: Array<Vec3> = arrayOf(
         Vec3(from.x, from.y, from.z),
@@ -45,16 +46,16 @@ open class BlockModelElement(
     init {
 
         data["rotation"]?.compoundCast()?.let {
-            val axis = Axes[it["axis"]!!.unsafeCast<String>()]
-            val angle = it["angle"]!!.unsafeCast<Double>().toFloat().rad
-            val rescale = it["rescale"]?.nullCast<Boolean>() ?: false
+            val axis = Axes[it["axis"].unsafeCast<String>()]
+            val angle = it["angle"].unsafeCast<Double>().toFloat().rad
+            val rescale = it["rescale"].nullCast<Boolean>() ?: false
             rotatePositions(transformedPositions, axis, angle, it["origin"]!!.toVec3(), rescale)
         }
 
         data["faces"]?.compoundCast()?.let {
             for ((directionName, json) in it) {
                 val direction = Directions[directionName]
-                faces[direction] = BlockModelFace(json.compoundCast()!!, from, to, direction)
+                faces[direction] = BlockModelFace(json.asCompound(), from, to, direction)
             }
         }
 

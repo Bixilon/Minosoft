@@ -42,8 +42,8 @@ class BlockModelFace {
 
     constructor(data: Map<String, Any>, from: Vec3, to: Vec3, direction: Directions) {
         tint = data.containsKey("tintindex")
-        textureName = data["texture"]!!.unsafeCast<String>().removePrefix("#")
-        cullFace = data["cullface"]?.nullCast<String>()?.let {
+        textureName = data["texture"].unsafeCast<String>().removePrefix("#")
+        cullFace = data["cullface"].nullCast<String>()?.let {
             if (it == "bottom") {
                 Directions.DOWN
             } else {

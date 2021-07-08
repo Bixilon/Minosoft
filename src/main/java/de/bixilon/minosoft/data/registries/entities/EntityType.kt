@@ -72,9 +72,9 @@ data class EntityType(
 
             return EntityType(
                 resourceLocation = resourceLocation,
-                translationKey = data["translation_key"]?.nullCast(),
-                width = data["width"]!!.unsafeCast(),
-                height = data["height"]!!.unsafeCast(),
+                translationKey = data["translation_key"].nullCast(),
+                width = data["width"].unsafeCast(),
+                height = data["height"].unsafeCast(),
                 fireImmune = data["fire_immune"]?.booleanCast() ?: false,
                 sizeFixed = data["size_fixed"]?.booleanCast() ?: false,
                 attributes = attributes.toMap(),

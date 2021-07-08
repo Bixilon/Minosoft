@@ -32,10 +32,11 @@ import de.bixilon.minosoft.protocol.protocol.PlayOutByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_20W27A
 import de.bixilon.minosoft.util.BitByte
-import de.bixilon.minosoft.util.KUtil.nullCast
+import de.bixilon.minosoft.util.KUtil.unsafeCast
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
+import de.bixilon.minosoft.util.nbt.tag.NBTUtil.asCompound
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.listCast
 import de.bixilon.minosoft.util.task.time.TimeWorker
@@ -97,7 +98,7 @@ class JoinGameS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
             if (buffer.versionId < ProtocolVersions.V_20W21A) {
                 dimension = buffer.connection.registries.dimensionRegistry[buffer.readInt()]
             } else {
-                val dimensionCodec = buffer.readNBT()?.compoundCast()!!
+                val dimensionCodec = buffer.readNBT().asCompound()
                 dimensions = parseDimensionCodec(dimensionCodec, buffer.versionId)
                 if (buffer.versionId < ProtocolVersions.V_1_16_2_PRE3) {
                     dimension = dimensions[buffer.readResourceLocation()]!!
@@ -175,12 +176,12 @@ class JoinGameS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
                 "key"
             } else {
                 "name"
-            }]?.nullCast<String>()!!)
+            }].unsafeCast<String>())
             val dimensionPropertyTag = if (versionId < ProtocolVersions.V_1_16_PRE3 || versionId >= ProtocolVersions.V_1_16_2_PRE1) {
-                tag["element"]?.compoundCast()!!
+                tag["element"].asCompound()
             } else {
-                tag.compoundCast()
-            }!!
+                tag.asCompound()
+            }
             dimensionMap[dimensionResourceLocation] = Dimension.deserialize(null, dimensionResourceLocation, dimensionPropertyTag)
         }
         return dimensionMap

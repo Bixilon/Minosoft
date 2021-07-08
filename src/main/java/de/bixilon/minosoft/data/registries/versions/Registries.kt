@@ -48,6 +48,7 @@ import de.bixilon.minosoft.util.KUtil.nullCast
 import de.bixilon.minosoft.util.KUtil.unsafeCast
 import de.bixilon.minosoft.util.collections.Clearable
 import de.bixilon.minosoft.util.json.ResourceLocationJsonMap.toResourceLocationMap
+import de.bixilon.minosoft.util.nbt.tag.NBTUtil.asCompound
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
 import java.lang.reflect.Field
 import java.lang.reflect.ParameterizedType
@@ -182,15 +183,14 @@ class Registries {
 
         // post init
         for (field in TYPE_MAP.values) {
-            val registry = field.get(this) as Registry<*>
-            registry.postInit(this)
+            field.get(this).unsafeCast<Registry<*>>().postInit(this)
         }
         isFullyLoaded = true
     }
 
     private fun loadShapes(pixlyzerData: Map<String, Any>?) {
         pixlyzerData ?: return
-        val aabbs = loadAABBs(pixlyzerData["aabbs"]?.nullCast()!!)
+        val aabbs = loadAABBs(pixlyzerData["aabbs"].nullCast()!!)
         loadVoxelShapes(pixlyzerData["shapes"]?.listCast()!!, aabbs)
     }
 
@@ -213,7 +213,7 @@ class Registries {
             if (models.containsKey(resourceLocation)) {
                 continue
             }
-            loadBlockModel(resourceLocation, model.compoundCast()!!, data)
+            loadBlockModel(resourceLocation, model.asCompound(), data)
         }
     }
 
@@ -223,14 +223,14 @@ class Registries {
             return it
         }
         var parent: BlockModel? = null
-        modelData["parent"]?.nullCast<String>()?.let {
+        modelData["parent"].nullCast<String>()?.let {
             val parentResourceLocation = ResourceLocation(it)
             if (parentResourceLocation.path.startsWith("builtin/")) {
                 // ToDo
                 return@let
             }
 
-            parent = loadBlockModel(parentResourceLocation, fullModelData[parentResourceLocation]?.compoundCast()!!, fullModelData)
+            parent = loadBlockModel(parentResourceLocation, fullModelData[parentResourceLocation]!!.asCompound(), fullModelData)
         }
         model = BlockModel(parent, modelData)
 

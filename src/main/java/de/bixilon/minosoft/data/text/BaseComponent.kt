@@ -107,7 +107,7 @@ class BaseComponent : ChatComponent {
             if (colorName.startsWith("#")) {
                 colorName.asColor()
             } else {
-                ChatCode.FORMATTING_CODES[colorName]?.nullCast<RGBColor>()
+                ChatCode.FORMATTING_CODES[colorName].nullCast<RGBColor>()
             }
         } ?: parent?.color
 

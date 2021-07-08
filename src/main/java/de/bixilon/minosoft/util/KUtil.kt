@@ -17,7 +17,9 @@ import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.JsonWriter
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.TextFormattable
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
@@ -55,11 +57,12 @@ object KUtil {
         return BitSet.valueOf(longArrayOf(long))
     }
 
-    fun <T> Any.unsafeCast(): T {
+    @Suppress("UNCHECKED_CAST")
+    fun <T> Any?.unsafeCast(): T {
         return this as T
     }
 
-    inline fun <reified T> Any.nullCast(): T? {
+    inline fun <reified T> Any?.nullCast(): T? {
         if (this is T) {
             return this
         }
@@ -179,11 +182,11 @@ object KUtil {
         val map: MutableMap<K, V> = mutableMapOf()
 
         for ((key, value) in this) {
-            map[key] = value as V
+            map[key] = value.unsafeCast()
         }
 
         for (pair in pairs) {
-            map[pair.first] = pair.second as V
+            map[pair.first] = pair.second.unsafeCast()
         }
         return map.toMap()
     }
@@ -192,39 +195,31 @@ object KUtil {
         val list: MutableList<V> = mutableListOf()
 
         for (value in this) {
-            list += value as V
+            list += value.unsafeCast<V>()
         }
 
         for (value in values) {
-            list += value as V
+            list += value.unsafeCast<V>()
         }
         return list.toList()
     }
 
     fun Any?.format(): ChatComponent {
         return ChatComponent.of(when (this) {
-            null -> "§4null"
+            null -> TextComponent("null").color(ChatColors.DARK_RED)
             is TextFormattable -> this.toText()
-            is Boolean -> {
-                if (this) {
-                    "§atrue"
-                } else {
-                    "§cfalse"
-                }
-            }
+            is Boolean -> TextComponent(this.toString()).color(this.decide(ChatColors.GREEN, ChatColors.RED))
             is Enum<*> -> {
                 val name = this.name
-                "§e" + if (name.length == 1) {
+                TextComponent(if (name.length == 1) {
                     name
                 } else {
                     name.lowercase()
-                }
+                }).color(ChatColors.YELLOW)
             }
             is Float -> "§d%.3f".format(this)
             is Double -> "§d%.4f".format(this)
-            is Number -> {
-                "§d$this"
-            }
+            is Number -> TextComponent(this).color(ChatColors.LIGHT_PURPLE)
             is Vec3t<*> -> "(${this.x.format()} ${this.y.format()} ${this.z.format()})"
             is Vec2t<*> -> "(${this.x.format()} ${this.y.format()})"
             else -> this.toString()

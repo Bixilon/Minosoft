@@ -24,8 +24,8 @@ open class ArmorItem(
     registries: Registries,
     data: Map<String, Any>,
 ) : Item(resourceLocation, registries, data) {
-    val protection = data["defense"]!!.unsafeCast<Float>()
-    val toughness = data["toughness"]!!.unsafeCast<Float>()
-    val equipmentSlot = data["equipment_slot"]!!.unsafeCast<String>().let { InventorySlots.EquipmentSlots[it] }
+    val protection = data["defense"].unsafeCast<Float>()
+    val toughness = data["toughness"].unsafeCast<Float>()
+    val equipmentSlot = data["equipment_slot"].unsafeCast<String>().let { InventorySlots.EquipmentSlots[it] }
     val knockbackResistance = data["knockback_resistance"]?.unsafeCast<Float>() ?: 0.0f
 }

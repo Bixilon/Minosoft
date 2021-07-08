@@ -31,8 +31,8 @@ data class Motive(
         override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): Motive {
             return Motive(
                 resourceLocation = resourceLocation,
-                width = data["width"]!!.unsafeCast(),
-                height = data["height"]!!.unsafeCast(),
+                width = data["width"].unsafeCast(),
+                height = data["height"].unsafeCast(),
             )
         }
     }

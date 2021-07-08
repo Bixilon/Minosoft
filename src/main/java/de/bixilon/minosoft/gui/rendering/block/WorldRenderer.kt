@@ -60,7 +60,7 @@ class WorldRenderer(
     val renderWindow: RenderWindow,
 ) : Renderer {
     private val world: World = connection.world
-    private val waterBlock = connection.registries.blockRegistry[ResourceLocation("minecraft:water")]?.nullCast<FluidBlock>()
+    private val waterBlock = connection.registries.blockRegistry[ResourceLocation("minecraft:water")].nullCast<FluidBlock>()
 
     private val chunkShader: Shader = renderWindow.renderSystem.createShader(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "world"))
     private val lightMap = LightMap(connection)

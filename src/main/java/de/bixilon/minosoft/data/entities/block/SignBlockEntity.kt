@@ -27,7 +27,7 @@ class SignBlockEntity(connection: PlayConnection) : BlockEntity(connection) {
 
     override fun updateNBT(nbt: Map<String, Any>) {
         for (i in 0 until ProtocolDefinition.SIGN_LINES) {
-            val tag = nbt["Text$i"]?.nullCast<String>() ?: continue
+            val tag = nbt["Text$i"].nullCast<String>() ?: continue
 
             lines[i] = ChatComponent.of(tag, translator = connection.version.localeManager)
         }

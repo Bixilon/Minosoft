@@ -26,13 +26,14 @@ import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
-import de.bixilon.minosoft.util.KUtil.nullCast
 import de.bixilon.minosoft.util.KUtil.toInt
+import de.bixilon.minosoft.util.KUtil.unsafeCast
 import de.bixilon.minosoft.util.Util
 import de.bixilon.minosoft.util.chunk.ChunkUtil
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
+import de.bixilon.minosoft.util.nbt.tag.NBTUtil.asCompound
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
 import glm_.vec2.Vec2i
 import glm_.vec3.Vec3i
@@ -107,9 +108,9 @@ class ChunkDataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
             if (buffer.versionId >= ProtocolVersions.V_1_9_4) {
                 val blockEntitiesCount = buffer.readVarInt()
                 for (i in 0 until blockEntitiesCount) {
-                    val nbt = buffer.readNBT()?.compoundCast()!!
-                    val position = Vec3i(nbt["x"]?.toInt()!!, nbt["y"]?.toInt()!!, nbt["z"]?.toInt()!!)
-                    val resourceLocation = ResourceLocation(nbt["id"]?.nullCast<String>()!!).fix()
+                    val nbt = buffer.readNBT().asCompound()
+                    val position = Vec3i(nbt["x"]!!.toInt(), nbt["y"]!!.toInt(), nbt["z"]!!.toInt())
+                    val resourceLocation = ResourceLocation(nbt["id"].unsafeCast<String>()).fix()
                     val type = buffer.connection.registries.blockEntityTypeRegistry[resourceLocation] ?: let {
                         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.WARN) { "Unknown block entity: $resourceLocation" }
                         null

@@ -76,8 +76,8 @@ data class Biome(
                 skyColor = data["sky_color"]?.toInt()?.asRGBColor() ?: RenderConstants.GRASS_FAILOVER_COLOR,
                 foliageColorOverride = TintColorCalculator.getJsonColor(data["foliage_color_override"]?.toInt() ?: 0),
                 grassColorOverride = TintColorCalculator.getJsonColor(data["grass_color_override"]?.toInt() ?: 0),
-                descriptionId = data["water_fog_color"]?.nullCast(),
-                grassColorModifier = data["grass_color_modifier"]?.nullCast<String>()?.uppercase(Locale.getDefault())?.let { GrassColorModifiers.valueOf(it) } ?: when (resourceLocation) {
+                descriptionId = data["water_fog_color"].nullCast(),
+                grassColorModifier = data["grass_color_modifier"].nullCast<String>()?.uppercase(Locale.getDefault())?.let { GrassColorModifiers.valueOf(it) } ?: when (resourceLocation) {
                     ResourceLocation("minecraft:swamp"), ResourceLocation("minecraft:swamp_hills") -> GrassColorModifiers.SWAMP
                     ResourceLocation("minecraft:dark_forest"), ResourceLocation("minecraft:dark_forest_hills") -> GrassColorModifiers.DARK_FOREST
                     else -> GrassColorModifiers.NONE

@@ -21,7 +21,7 @@ import de.bixilon.minosoft.gui.rendering.textures.Texture
 import de.bixilon.minosoft.util.KUtil.listCast
 import de.bixilon.minosoft.util.KUtil.toInt
 import de.bixilon.minosoft.util.KUtil.unsafeCast
-import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
+import de.bixilon.minosoft.util.nbt.tag.NBTUtil.asCompound
 import java.io.InputStream
 
 object FontLoader {
@@ -117,12 +117,12 @@ object FontLoader {
     }
 
     fun loadFontProvider(data: Map<String, Any>, assetsManager: AssetsManager, textures: MutableMap<ResourceLocation, Texture>): FontProvider {
-        return when (data["type"]!!.unsafeCast<String>()) {
+        return when (data["type"].unsafeCast<String>()) {
             "bitmap" -> {
-                loadBitmapFontProvider(ResourceLocation(data["file"]!!.unsafeCast()), data["height"]?.toInt(), data["ascent"]!!.toInt(), getCharArray(data["chars"]!!.unsafeCast()), assetsManager, textures)
+                loadBitmapFontProvider(ResourceLocation(data["file"].unsafeCast()), data["height"]?.toInt(), data["ascent"]!!.toInt(), getCharArray(data["chars"].unsafeCast()), assetsManager, textures)
             }
             "legacy_unicode" -> {
-                loadUnicodeFontProvider(ResourceLocation(data["template"]!!.unsafeCast()), assetsManager.readAssetAsStream(ResourceLocation(data["sizes"]!!.unsafeCast())), assetsManager, textures)
+                loadUnicodeFontProvider(ResourceLocation(data["template"].unsafeCast()), assetsManager.readAssetAsStream(ResourceLocation(data["sizes"].unsafeCast())), assetsManager, textures)
             }
             "ttf" -> {
                 TODO("True Type Fonts are not implemented yet")
@@ -134,8 +134,8 @@ object FontLoader {
 
     fun loadFontProviders(assetsManager: AssetsManager, textures: MutableMap<ResourceLocation, Texture>): List<FontProvider> {
         val ret: MutableList<FontProvider> = mutableListOf()
-        for (providerElement in assetsManager.readJsonAsset(FONT_JSON_RESOURCE_LOCATION).compoundCast()!!["providers"]!!.listCast()!!) {
-            val provider = loadFontProvider(providerElement.compoundCast()!!, assetsManager, textures)
+        for (providerElement in assetsManager.readJsonAsset(FONT_JSON_RESOURCE_LOCATION).asCompound()["providers"]!!.listCast()!!) {
+            val provider = loadFontProvider(providerElement.asCompound(), assetsManager, textures)
             ret.add(provider)
         }
         return ret

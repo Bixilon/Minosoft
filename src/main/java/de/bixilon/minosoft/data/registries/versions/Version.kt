@@ -26,7 +26,7 @@ import de.bixilon.minosoft.util.CountUpAndDownLatch
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
-import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
+import de.bixilon.minosoft.util.nbt.tag.NBTUtil.asCompound
 
 data class Version(
     var versionName: String,
@@ -95,7 +95,7 @@ data class Version(
             registries.parentRegistries = Versions.PRE_FLATTENING_MAPPING
         }
         val pixlyzerData = try {
-            MBFBinaryReader(assetsManager.readAssetAsStream(Resources.getPixLyzerDataHashByVersion(this), false)).readMBF().data?.compoundCast()!!
+            MBFBinaryReader(assetsManager.readAssetAsStream(Resources.getPixLyzerDataHashByVersion(this), false)).readMBF().data.asCompound()
         } catch (exception: Throwable) {
             // should not happen, but if this version is not flattened, we can fallback to the flatten mappings. Some things might not work...
             Log.log(LogMessageType.VERSION_LOADING, level = LogLevels.VERBOSE) { exception }

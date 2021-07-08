@@ -17,11 +17,11 @@ import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
-import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
+import de.bixilon.minosoft.util.nbt.tag.NBTUtil.asCompound
 
 class NBTQueryResponseS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     val transactionId: Int = buffer.readVarInt()
-    val nbt: Map<String, Any> = buffer.readNBT()?.compoundCast()!!
+    val nbt: Map<String, Any> = buffer.readNBT().asCompound()
 
     override fun log() {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "NBT query response (transactionId=$transactionId nbt=$nbt)" }

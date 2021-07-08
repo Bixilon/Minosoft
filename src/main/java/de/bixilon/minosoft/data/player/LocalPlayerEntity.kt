@@ -147,7 +147,7 @@ class LocalPlayerEntity(
             }
             val blockState = connection.world[positionInfo.blockPosition] ?: return false
 
-            connection.tags[TagsS2CP.BLOCK_TAG_RESOURCE_LOCATION]?.get(CLIMBABLE_TAG)?.nullCast<Tag<Block>>()?.let {
+            connection.tags[TagsS2CP.BLOCK_TAG_RESOURCE_LOCATION]?.get(CLIMBABLE_TAG).nullCast<Tag<Block>>()?.let {
                 return it.entries.contains(blockState.block)
             }
             return DefaultBlockTags.CLIMBABLE.contains(blockState.block.resourceLocation)
@@ -159,7 +159,7 @@ class LocalPlayerEntity(
             if (isFlyingWithElytra || baseAbilities.isFlying) {
                 return 1.0
             }
-            val onSoulSpeedBlock = connection.tags[TagsS2CP.BLOCK_TAG_RESOURCE_LOCATION]?.get(SOUL_SPEED_BLOCKS)?.nullCast<Tag<Block>>()?.entries?.contains(connection.world[positionInfo.velocityPosition]?.block) ?: false
+            val onSoulSpeedBlock = connection.tags[TagsS2CP.BLOCK_TAG_RESOURCE_LOCATION]?.get(SOUL_SPEED_BLOCKS).nullCast<Tag<Block>>()?.entries?.contains(connection.world[positionInfo.velocityPosition]?.block) ?: false
 
             if (onSoulSpeedBlock && getEquipmentEnchant(connection.registries.enchantmentRegistry[DefaultEnchantments.SOUL_SPEED]) > 0) {
                 // ToDo

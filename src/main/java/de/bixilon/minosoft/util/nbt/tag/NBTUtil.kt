@@ -27,12 +27,16 @@ object NBTUtil {
         return null
     }
 
-    fun Any.compoundCast(): MutableMap<String, Any>? {
+    fun Any?.compoundCast(): MutableMap<String, Any>? {
         try {
             return this as MutableMap<String, Any>
         } catch (ignored: ClassCastException) {
         }
         return null
+    }
+
+    fun Any?.asCompound(): MutableMap<String, Any> {
+        return this.compoundCast()!!
     }
 
     fun <T> Any.listCast(): MutableList<T>? {
@@ -44,11 +48,11 @@ object NBTUtil {
     }
 
     fun Any.booleanCast(): Boolean {
-        if (this is Number) {
-            return this.toInt() == 0x01
-        }
         if (this is Boolean) {
             return this
+        }
+        if (this is Number) {
+            return this.toInt() == 0x01
         }
         TODO()
     }

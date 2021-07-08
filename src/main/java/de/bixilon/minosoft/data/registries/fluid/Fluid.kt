@@ -92,7 +92,7 @@ open class Fluid(
 
         override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): Fluid {
             check(registries != null) { "Registries is null!" }
-            DefaultFluidFactories[data["class"]?.nullCast<String>()]?.let {
+            DefaultFluidFactories[data["class"].nullCast<String>()]?.let {
                 return it.build(resourceLocation, registries, data)
             }
 

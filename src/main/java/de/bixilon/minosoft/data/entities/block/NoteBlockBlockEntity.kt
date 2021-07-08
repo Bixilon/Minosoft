@@ -22,7 +22,7 @@ import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.No
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3d
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
-import de.bixilon.minosoft.util.KUtil.nullCast
+import de.bixilon.minosoft.util.KUtil.toInt
 import glm_.vec3.Vec3d
 import glm_.vec3.Vec3i
 
@@ -59,7 +59,7 @@ class NoteBlockBlockEntity(connection: PlayConnection) : BlockEntity(connection)
 
 
         noteParticleType?.let {
-            connection.world += NoteParticle(connection, blockPosition.toVec3d + Vec3d(0.5, 1.2, 0.5), (blockState.properties[BlockProperties.NOTE]?.nullCast<Number>()?.toInt() ?: 0) / 24.0f, it.default())
+            connection.world += NoteParticle(connection, blockPosition.toVec3d + Vec3d(0.5, 1.2, 0.5), (blockState.properties[BlockProperties.NOTE]?.toInt() ?: 0) / 24.0f, it.default())
         }
     }
 

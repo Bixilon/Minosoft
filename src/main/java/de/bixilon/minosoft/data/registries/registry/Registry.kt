@@ -22,7 +22,7 @@ import de.bixilon.minosoft.util.KUtil.asResourceLocation
 import de.bixilon.minosoft.util.KUtil.nullCast
 import de.bixilon.minosoft.util.KUtil.toInt
 import de.bixilon.minosoft.util.json.ResourceLocationJsonMap.toResourceLocationMap
-import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
+import de.bixilon.minosoft.util.nbt.tag.NBTUtil.asCompound
 
 open class Registry<T : RegistryItem>(
     override var parent: AbstractRegistry<T>? = null,
@@ -99,7 +99,7 @@ open class Registry<T : RegistryItem>(
 
         for ((resourceLocation, value) in data) {
             check(value is Map<*, *>)
-            val item = deserializer.deserialize(registries, resourceLocation, value.compoundCast()!!) ?: continue
+            val item = deserializer.deserialize(registries, resourceLocation, value.asCompound()) ?: continue
             value["id"]?.toInt()?.let { id ->
                 var itemId = id
                 if (!flattened) {
@@ -153,7 +153,7 @@ open class Registry<T : RegistryItem>(
         for (item in resourceLocationMap.values) {
             lambda(item)
         }
-        parent?.nullCast<Registry<T>>()?.forEachItem(lambda)
+        parent.nullCast<Registry<T>>()?.forEachItem(lambda)
     }
 
     override fun toString(): String {

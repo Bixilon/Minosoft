@@ -45,7 +45,7 @@ data class Material(
             return Material(
                 resourceLocation = resourceLocation,
                 color = TintColorCalculator.getJsonColor(data["color"]?.toInt() ?: 0),
-                pushReaction = data["push_reaction"]?.nullCast<String>()?.let { PushReactions.valueOf(it.uppercase(Locale.getDefault())) } ?: PushReactions.NORMAL,
+                pushReaction = data["push_reaction"].nullCast<String>()?.let { PushReactions.valueOf(it.uppercase(Locale.getDefault())) } ?: PushReactions.NORMAL,
                 blockMotion = data["blocks_motion"]?.booleanCast() ?: false,
                 flammable = data["flammable"]?.booleanCast() ?: false,
                 liquid = data["liquid"]?.booleanCast() ?: false,

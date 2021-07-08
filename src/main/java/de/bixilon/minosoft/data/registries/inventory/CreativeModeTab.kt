@@ -30,9 +30,9 @@ data class CreativeModeTab(
     companion object : IdDeserializer<CreativeModeTab> {
         override fun deserialize(registries: Registries, data: Map<String, Any>): CreativeModeTab {
             return CreativeModeTab(
-                name = data["language_id"]!!.unsafeCast(),
-                recipeFolderName = data["recipe_folder_name"]!!.unsafeCast(),
-                backgroundSuffix = data["background_suffix"]!!.unsafeCast(),
+                name = data["language_id"].unsafeCast(),
+                recipeFolderName = data["recipe_folder_name"].unsafeCast(),
+                backgroundSuffix = data["background_suffix"].unsafeCast(),
                 canScroll = data["can_scroll"]!!.booleanCast(),
                 showTitle = data["show_title"]!!.booleanCast(),
             )

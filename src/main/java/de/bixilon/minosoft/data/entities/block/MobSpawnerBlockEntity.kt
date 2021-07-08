@@ -23,7 +23,7 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.center
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3d
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import de.bixilon.minosoft.util.KUtil.nullCast
+import de.bixilon.minosoft.util.KUtil.toInt
 import glm_.vec3.Vec3d
 import glm_.vec3.Vec3i
 import kotlin.random.Random
@@ -53,7 +53,7 @@ class MobSpawnerBlockEntity(connection: PlayConnection) : BlockEntity(connection
 
     override fun updateNBT(nbt: Map<String, Any>) {
         nbt["MaxNearbyEntities"]?.let {
-            requiredPlayerRange = nbt["MaxNearbyEntities"]?.nullCast<Number>()?.toInt() ?: 16
+            requiredPlayerRange = nbt["MaxNearbyEntities"]?.toInt() ?: 16
         }
         // ToDo: {MaxNearbyEntities: 6s, RequiredPlayerRange: 16s, SpawnCount: 4s, x: -80, y: 4, SpawnData: {id: "minecraft:zombie"}, z: 212, id: "minecraft:mob_spawner", MaxSpawnDelay: 800s, SpawnRange: 4s, Delay: 0s, MinSpawnDelay: 200s}
     }

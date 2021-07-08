@@ -21,7 +21,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
-import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
+import de.bixilon.minosoft.util.nbt.tag.NBTUtil.asCompound
 import glm_.vec3.Vec3i
 
 class BlockEntityMetaDataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
@@ -31,7 +31,7 @@ class BlockEntityMetaDataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         buffer.readBlockPosition()
     }
     val type = buffer.connection.registries.blockEntityMetaDataTypeRegistry[buffer.readUnsignedByte()].resourceLocation
-    val nbt = buffer.readNBT()?.compoundCast()!!
+    val nbt = buffer.readNBT().asCompound()
 
     override fun handle(connection: PlayConnection) {
         connection.fireEvent(BlockEntityMetaDataChangeEvent(connection, this))

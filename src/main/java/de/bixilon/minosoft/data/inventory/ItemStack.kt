@@ -31,6 +31,7 @@ import de.bixilon.minosoft.data.text.TextFormattable
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.util.BitByte.isBit
 import de.bixilon.minosoft.util.KUtil.nullCast
+import de.bixilon.minosoft.util.KUtil.toInt
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.getAndRemove
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.listCast
@@ -63,10 +64,10 @@ data class ItemStack(
             return
         }
 
-        nbt.getAndRemove(REPAIR_COST_TAG)?.nullCast<Number>()?.let { repairCost = it.toInt() }
+        nbt.getAndRemove(REPAIR_COST_TAG).nullCast<Number>()?.let { repairCost = it.toInt() }
 
         nbt.getAndRemove(DISPLAY_TAG)?.compoundCast()?.let {
-            it.getAndRemove(DISPLAY_MAME_TAG)?.nullCast<String>()?.let { nameTag ->
+            it.getAndRemove(DISPLAY_MAME_TAG).nullCast<String>()?.let { nameTag ->
                 customDisplayName = ChatComponent.of(nameTag, translator = connection?.version?.localeManager)
             }
 
@@ -77,15 +78,15 @@ data class ItemStack(
             }
         }
 
-        nbt.getAndRemove(UNBREAKABLE_TAG)?.nullCast<Number>()?.let {
+        nbt.getAndRemove(UNBREAKABLE_TAG).nullCast<Number>()?.let {
             unbreakable = it.toInt() == 0x01
         }
 
-        nbt.getAndRemove(UNBREAKABLE_TAG)?.nullCast<Number>()?.let {
+        nbt.getAndRemove(UNBREAKABLE_TAG).nullCast<Number>()?.let {
             unbreakable = it.toInt() == 0x01
         }
 
-        nbt.getAndRemove(HIDE_FLAGS_TAG)?.nullCast<Number>()?.let {
+        nbt.getAndRemove(HIDE_FLAGS_TAG).nullCast<Number>()?.let {
             hideFlags = it.toInt()
         }
 
@@ -102,7 +103,7 @@ data class ItemStack(
                         else -> TODO()
                     }
                 }!!
-                enchantments[enchantment] = enchantmentTag[ENCHANTMENT_LEVEL_TAG]?.nullCast<Number>()?.toInt()!!
+                enchantments[enchantment] = enchantmentTag[ENCHANTMENT_LEVEL_TAG]!!.toInt()
             }
         }
     }
