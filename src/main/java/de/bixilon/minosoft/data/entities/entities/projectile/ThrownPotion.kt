@@ -24,6 +24,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import glm_.vec3.Vec3d
 
 class ThrownPotion(connection: PlayConnection, entityType: EntityType, position: Vec3d, rotation: EntityRotation) : ThrowableItemProjectile(connection, entityType, position, rotation) {
+    override val gravity: Float = 0.05f
 
     @EntityMetaDataFunction(name = "Item")
     override val item: ItemStack?

@@ -45,7 +45,7 @@ class WorldEntities : Iterable<Entity> {
     }
 
     fun getId(entity: Entity): Int? {
-        return entityIdMap[entity]!!
+        return entityIdMap[entity]
     }
 
     operator fun get(uuid: UUID): Entity? {

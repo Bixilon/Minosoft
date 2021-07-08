@@ -16,6 +16,7 @@ import de.bixilon.minosoft.data.entities.EntityMetaDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.Poses
 import de.bixilon.minosoft.data.entities.StatusEffectInstance
+import de.bixilon.minosoft.data.entities.entities.vehicle.Boat
 import de.bixilon.minosoft.data.entities.meta.EntityMetaData
 import de.bixilon.minosoft.data.inventory.InventorySlots.EquipmentSlots
 import de.bixilon.minosoft.data.inventory.ItemStack
@@ -23,18 +24,22 @@ import de.bixilon.minosoft.data.physics.PhysicsEntity
 import de.bixilon.minosoft.data.player.LocalPlayerEntity
 import de.bixilon.minosoft.data.registries.AABB
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.blocks.types.FluidBlock
 import de.bixilon.minosoft.data.registries.effects.StatusEffect
 import de.bixilon.minosoft.data.registries.effects.attributes.StatusEffectAttribute
 import de.bixilon.minosoft.data.registries.effects.attributes.StatusEffectAttributeInstance
 import de.bixilon.minosoft.data.registries.effects.attributes.StatusEffectOperations
 import de.bixilon.minosoft.data.registries.enchantment.Enchantment
 import de.bixilon.minosoft.data.registries.entities.EntityType
+import de.bixilon.minosoft.data.registries.fluid.FlowableFluid
+import de.bixilon.minosoft.data.registries.fluid.Fluid
 import de.bixilon.minosoft.data.registries.particle.data.BlockParticleData
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.gui.rendering.input.camera.EntityPositionInfo
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.advanced.block.BlockDustParticle
 import de.bixilon.minosoft.gui.rendering.util.VecUtil
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.blockPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.empty
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.floor
@@ -53,6 +58,8 @@ import glm_.vec3.Vec3d
 import glm_.vec3.Vec3i
 import java.lang.reflect.InvocationTargetException
 import java.util.*
+import kotlin.math.abs
+import kotlin.math.max
 import kotlin.random.Random
 
 abstract class Entity(
@@ -125,6 +132,12 @@ abstract class Entity(
         get() = isSprinting && !isSneaking // ToDo: Touching fluids
 
     protected var lastTickTime = -1L
+
+
+    // fluids stuff
+    val fluidHeights: MutableMap<ResourceLocation, Float> = synchronizedMapOf()
+    var submergedFluid: Fluid? = null
+
 
     fun forceMove(deltaPosition: Vec3d) {
         position = position + deltaPosition
@@ -323,16 +336,23 @@ abstract class Entity(
 
         if (currentTime - lastTickTime >= ProtocolDefinition.TICK_TIME) {
             realTick()
+            postTick()
             lastTickTime = currentTime
         }
         cameraPosition = VecUtil.lerp((currentTime - lastTickTime) / ProtocolDefinition.TICK_TIMEd, previousPosition, position)
     }
+
+    open val pushableByFluids: Boolean = false
 
     open fun realTick() {
         previousPosition = position
         if (spawnSprintingParticles) {
             spawnSprintingParticles()
         }
+    }
+
+    open fun postTick() {
+        updateFluidStates()
     }
 
     private fun spawnSprintingParticles() {
@@ -469,6 +489,99 @@ abstract class Entity(
     protected fun applyGravity(force: Boolean = false) {
         if (hasGravity || force) {
             velocity.y += -0.04
+        }
+    }
+
+
+    private fun updateFluidState(fluid: ResourceLocation): Boolean {
+        val aabb = aabb.shrink()
+
+        var height = 0.0f
+        var inFluid = false
+        val velocity = Vec3d.EMPTY
+        var checks = 0
+
+        for ((blockPosition, blockState) in connection.world[aabb]) {
+            if (blockState.block !is FluidBlock) {
+                continue
+            }
+
+            if (blockState.block.fluid.resourceLocation != fluid) {
+                continue
+            }
+            val fluidHeight = blockPosition.y + blockState.block.fluid.getHeight(blockState)
+
+            if (fluidHeight < aabb.min.y) {
+                continue
+            }
+
+            inFluid = true
+
+            height = max(fluidHeight - aabb.min.y.toFloat(), height)
+
+            if (!pushableByFluids) {
+                continue
+            }
+
+            val blockFluid = blockState.block.fluid
+
+            if (blockFluid !is FlowableFluid) {
+                continue
+            }
+            val fluidVelocity = blockFluid.getVelocity(connection, blockState, blockPosition)
+
+            if (height < 0.4) {
+                fluidVelocity *= height
+            }
+
+            velocity += (fluidVelocity * blockFluid.getVelocityMultiplier(connection, blockState, blockPosition))
+            checks++
+        }
+
+        if (velocity.length() > 0.0) {
+            if (checks > 0) {
+                velocity /= checks
+            }
+
+            if (abs(this.velocity.x) < 0.003 && abs(this.velocity.z) < 0.003 && velocity.length() < 0.0045000000000000005) {
+                velocity.normalizeAssign()
+                velocity *= 0.0045000000000000005
+            }
+
+            this.velocity = (this.velocity + velocity)
+        }
+
+        if (height > 0.0) {
+            fluidHeights[fluid] = height
+        }
+        return inFluid
+    }
+
+
+    private fun updateFluidStates() {
+        fluidHeights.clear()
+        if (vehicle is Boat) {
+            return // ToDo
+        }
+
+        connection.registries.fluidRegistry.forEachItem {
+            updateFluidState(it.resourceLocation)
+        }
+
+        submergedFluid = null
+
+        // ToDo: Boat
+        val eyeHeight = eyePosition.y - 0.1111111119389534
+
+        val eyePosition = (Vec3d(position.x, eyeHeight, position.z)).blockPosition
+        val blockState = connection.world[eyePosition] ?: return
+        if (blockState.block !is FluidBlock) {
+            return
+        }
+        val height = eyePosition.y + blockState.block.fluid.getHeight(blockState)
+
+        if (height > eyeHeight) {
+            submergedFluid = blockState.block.fluid
         }
     }
 
