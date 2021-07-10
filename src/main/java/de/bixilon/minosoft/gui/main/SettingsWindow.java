@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.main;
 
-import de.bixilon.minosoft.data.locale.LocaleManager;
-import de.bixilon.minosoft.data.locale.Strings;
+import de.bixilon.minosoft.data.language.deprecated.DLocaleManager;
+import de.bixilon.minosoft.data.language.deprecated.Strings;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Tab;
 import javafx.scene.layout.GridPane;
@@ -30,7 +30,7 @@ public class SettingsWindow implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
-        this.general.setText(LocaleManager.translate(Strings.SETTINGS_GENERAL));
-        this.download.setText(LocaleManager.translate(Strings.SETTINGS_DOWNLOAD));
+        this.general.setText(DLocaleManager.translate(Strings.SETTINGS_GENERAL));
+        this.download.setText(DLocaleManager.translate(Strings.SETTINGS_DOWNLOAD));
     }
 }

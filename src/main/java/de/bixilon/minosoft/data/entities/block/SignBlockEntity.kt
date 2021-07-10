@@ -29,7 +29,7 @@ class SignBlockEntity(connection: PlayConnection) : BlockEntity(connection) {
         for (i in 0 until ProtocolDefinition.SIGN_LINES) {
             val tag = nbt["Text$i"].nullCast<String>() ?: continue
 
-            lines[i] = ChatComponent.of(tag, translator = connection.version.localeManager)
+            lines[i] = ChatComponent.of(tag, translator = connection.version.language)
         }
     }
 

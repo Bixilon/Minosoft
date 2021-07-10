@@ -16,8 +16,8 @@ package de.bixilon.minosoft.gui.main.cells;
 import com.jfoenix.controls.JFXButton;
 import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.data.accounts.Account;
-import de.bixilon.minosoft.data.locale.LocaleManager;
-import de.bixilon.minosoft.data.locale.Strings;
+import de.bixilon.minosoft.data.language.deprecated.DLocaleManager;
+import de.bixilon.minosoft.data.language.deprecated.Strings;
 import de.bixilon.minosoft.data.registries.ResourceLocation;
 import de.bixilon.minosoft.gui.main.GUITools;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
@@ -67,9 +67,9 @@ public class AccountListCell extends ListCell<Account> implements Initializable 
         setGraphic(this.hBox);
 
         // change locale
-        this.selectIcon.setText(LocaleManager.translate(Strings.ACCOUNTS_ACTION_SELECT));
-        this.infoIcon.setText(LocaleManager.translate(Strings.ACCOUNTS_ACTION_INFO));
-        this.logoutIcon.setText(LocaleManager.translate(Strings.ACCOUNTS_ACTION_LOGOUT));
+        this.selectIcon.setText(DLocaleManager.translate(Strings.ACCOUNTS_ACTION_SELECT));
+        this.infoIcon.setText(DLocaleManager.translate(Strings.ACCOUNTS_ACTION_INFO));
+        this.logoutIcon.setText(DLocaleManager.translate(Strings.ACCOUNTS_ACTION_LOGOUT));
 
     }
 

@@ -25,7 +25,7 @@ import de.bixilon.minosoft.data.registries.registry.Translatable
 import de.bixilon.minosoft.data.registries.versions.Registries
 import de.bixilon.minosoft.datafixer.EntityAttributeFixer.fix
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import de.bixilon.minosoft.util.KUtil.nullCast
+import de.bixilon.minosoft.util.KUtil.asResourceLocation
 import de.bixilon.minosoft.util.KUtil.unsafeCast
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.booleanCast
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
@@ -34,7 +34,7 @@ import java.util.*
 
 data class EntityType(
     override val resourceLocation: ResourceLocation,
-    override val translationKey: String?,
+    override val translationKey: ResourceLocation?,
     val width: Float,
     val height: Float,
     val sizeFixed: Boolean,
@@ -72,7 +72,7 @@ data class EntityType(
 
             return EntityType(
                 resourceLocation = resourceLocation,
-                translationKey = data["translation_key"].nullCast(),
+                translationKey = data["translation_key"]?.asResourceLocation(),
                 width = data["width"].unsafeCast(),
                 height = data["height"].unsafeCast(),
                 fireImmune = data["fire_immune"]?.booleanCast() ?: false,

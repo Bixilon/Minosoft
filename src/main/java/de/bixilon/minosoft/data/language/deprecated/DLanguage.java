@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2021 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,18 +11,19 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.locale;
+package de.bixilon.minosoft.data.language.deprecated;
 
 import com.google.gson.JsonObject;
 
 import java.text.MessageFormat;
 import java.util.HashMap;
 
-public class Language {
+@Deprecated
+public class DLanguage {
     private final String language;
     private final HashMap<Strings, String> data = new HashMap<>();
 
-    protected Language(String language, JsonObject json) {
+    protected DLanguage(String language, JsonObject json) {
         this.language = language;
         json.keySet().forEach((key) -> this.data.put(Strings.valueOf(key.toUpperCase()), json.get(key).getAsString()));
     }

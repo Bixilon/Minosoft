@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.main;
 
-import de.bixilon.minosoft.data.locale.LocaleManager;
-import de.bixilon.minosoft.data.locale.Strings;
+import de.bixilon.minosoft.data.language.deprecated.DLocaleManager;
+import de.bixilon.minosoft.data.language.deprecated.Strings;
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -37,8 +37,8 @@ public class SessionsWindow implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         SessionListCell.CONNECTION_LIST_VIEW.setCellFactory((lv) -> SessionListCell.newInstance());
 
-        this.menuDisconnect.setText(LocaleManager.translate(Strings.SESSIONS_MENU_DISCONNECT));
-        this.menuDisconnectFromAll.setText(LocaleManager.translate(Strings.SESSIONS_MENU_DISCONNECT_FROM_ALL));
+        this.menuDisconnect.setText(DLocaleManager.translate(Strings.SESSIONS_MENU_DISCONNECT));
+        this.menuDisconnectFromAll.setText(DLocaleManager.translate(Strings.SESSIONS_MENU_DISCONNECT_FROM_ALL));
     }
 
     public void setServer(Server server) {

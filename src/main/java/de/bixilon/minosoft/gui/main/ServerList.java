@@ -15,8 +15,8 @@ package de.bixilon.minosoft.gui.main;
 
 import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.ShutdownReasons;
-import de.bixilon.minosoft.data.locale.LocaleManager;
-import de.bixilon.minosoft.data.locale.Strings;
+import de.bixilon.minosoft.data.language.deprecated.DLocaleManager;
+import de.bixilon.minosoft.data.language.deprecated.Strings;
 import de.bixilon.minosoft.data.registries.ResourceLocation;
 import de.bixilon.minosoft.data.registries.versions.Version;
 import de.bixilon.minosoft.protocol.protocol.LANServerListener;
@@ -86,7 +86,7 @@ public class ServerList {
             Scene scene = new Scene(root, root.getPrefWidth(), root.getPrefHeight());
             stage.setScene(scene);
 
-            stage.setTitle(LocaleManager.translate(Strings.MAIN_WINDOW_TITLE));
+            stage.setTitle(DLocaleManager.translate(Strings.MAIN_WINDOW_TITLE));
             GUITools.initializeScene(scene);
             stage.setOnCloseRequest(windowEvent -> Minosoft.shutdown(ShutdownReasons.REQUESTED_BY_USER));
             if (exit) {

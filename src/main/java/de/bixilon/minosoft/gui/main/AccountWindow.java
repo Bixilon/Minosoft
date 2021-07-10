@@ -16,8 +16,8 @@ package de.bixilon.minosoft.gui.main;
 import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.ShutdownReasons;
 import de.bixilon.minosoft.data.accounts.Account;
-import de.bixilon.minosoft.data.locale.LocaleManager;
-import de.bixilon.minosoft.data.locale.Strings;
+import de.bixilon.minosoft.data.language.deprecated.DLocaleManager;
+import de.bixilon.minosoft.data.language.deprecated.Strings;
 import de.bixilon.minosoft.data.registries.ResourceLocation;
 import de.bixilon.minosoft.gui.main.cells.AccountListCell;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
@@ -46,14 +46,14 @@ public class AccountWindow implements Initializable {
         AccountListCell.ACCOUNT_LIST_VIEW.setItems(accounts);
         this.accountPane.setCenter(AccountListCell.ACCOUNT_LIST_VIEW);
 
-        this.menuAddMicrosoftAccount.setText(LocaleManager.translate(Strings.ACCOUNT_MODAL_MENU_ADD_MICROSOFT_ACCOUNT));
-        this.menuAddMojangAccount.setText(LocaleManager.translate(Strings.ACCOUNT_MODAL_MENU_ADD_MOJANG_ACCOUNT));
-        this.menuAddOfflineAccount.setText(LocaleManager.translate(Strings.ACCOUNT_MODAL_MENU_ADD_OFFLINE_ACCOUNT));
+        this.menuAddMicrosoftAccount.setText(DLocaleManager.translate(Strings.ACCOUNT_MODAL_MENU_ADD_MICROSOFT_ACCOUNT));
+        this.menuAddMojangAccount.setText(DLocaleManager.translate(Strings.ACCOUNT_MODAL_MENU_ADD_MOJANG_ACCOUNT));
+        this.menuAddOfflineAccount.setText(DLocaleManager.translate(Strings.ACCOUNT_MODAL_MENU_ADD_OFFLINE_ACCOUNT));
     }
 
     public void addMicrosoftAccount() {
         try {
-            GUITools.showPane(new ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "layout/dialogs/login/microsoft.fxml"), Modality.APPLICATION_MODAL, LocaleManager.translate(Strings.LOGIN_MICROSOFT_DIALOG_TITLE));
+            GUITools.showPane(new ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "layout/dialogs/login/microsoft.fxml"), Modality.APPLICATION_MODAL, DLocaleManager.translate(Strings.LOGIN_MICROSOFT_DIALOG_TITLE));
         } catch (IOException e) {
             e.printStackTrace();
             Minosoft.shutdown(e.getMessage(), ShutdownReasons.LAUNCHER_FXML_LOAD_ERROR);
@@ -62,7 +62,7 @@ public class AccountWindow implements Initializable {
 
     public void addMojangAccount() {
         try {
-            GUITools.showPane(new ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "layout/dialogs/login/mojang.fxml"), Modality.APPLICATION_MODAL, LocaleManager.translate(Strings.LOGIN_MOJANG_DIALOG_TITLE));
+            GUITools.showPane(new ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "layout/dialogs/login/mojang.fxml"), Modality.APPLICATION_MODAL, DLocaleManager.translate(Strings.LOGIN_MOJANG_DIALOG_TITLE));
         } catch (IOException e) {
             e.printStackTrace();
             Minosoft.shutdown(e.getMessage(), ShutdownReasons.LAUNCHER_FXML_LOAD_ERROR);
@@ -71,7 +71,7 @@ public class AccountWindow implements Initializable {
 
     public void addOfflineAccount() {
         try {
-            GUITools.showPane(new ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "layout/dialogs/login/offline.fxml"), Modality.APPLICATION_MODAL, LocaleManager.translate(Strings.LOGIN_OFFLINE_DIALOG_TITLE));
+            GUITools.showPane(new ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "layout/dialogs/login/offline.fxml"), Modality.APPLICATION_MODAL, DLocaleManager.translate(Strings.LOGIN_OFFLINE_DIALOG_TITLE));
         } catch (IOException e) {
             e.printStackTrace();
             Minosoft.shutdown(e.getMessage(), ShutdownReasons.LAUNCHER_FXML_LOAD_ERROR);

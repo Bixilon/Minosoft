@@ -13,8 +13,8 @@
 package de.bixilon.minosoft.gui.main
 
 import de.bixilon.minosoft.Minosoft
-import de.bixilon.minosoft.data.locale.LocaleManager
-import de.bixilon.minosoft.data.locale.Strings
+import de.bixilon.minosoft.data.language.deprecated.DLocaleManager
+import de.bixilon.minosoft.data.language.deprecated.Strings
 import de.bixilon.minosoft.data.player.tab.PingBars
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.versions.Version
@@ -82,12 +82,12 @@ class ServerListCell : ListCell<Server?>(), Initializable {
         graphic = this.root
 
         // change locale
-        optionsConnect.text = LocaleManager.translate(Strings.SERVER_ACTION_CONNECT)
-        optionsShowInfo.text = LocaleManager.translate(Strings.SERVER_ACTION_SHOW_INFO)
-        optionsEdit.text = LocaleManager.translate(Strings.SERVER_ACTION_EDIT)
-        optionsRefresh.text = LocaleManager.translate(Strings.SERVER_ACTION_REFRESH)
-        optionsSessions.text = LocaleManager.translate(Strings.SERVER_ACTION_SESSIONS)
-        optionsDelete.text = LocaleManager.translate(Strings.SERVER_ACTION_DELETE)
+        optionsConnect.text = DLocaleManager.translate(Strings.SERVER_ACTION_CONNECT)
+        optionsShowInfo.text = DLocaleManager.translate(Strings.SERVER_ACTION_SHOW_INFO)
+        optionsEdit.text = DLocaleManager.translate(Strings.SERVER_ACTION_EDIT)
+        optionsRefresh.text = DLocaleManager.translate(Strings.SERVER_ACTION_REFRESH)
+        optionsSessions.text = DLocaleManager.translate(Strings.SERVER_ACTION_SESSIONS)
+        optionsDelete.text = DLocaleManager.translate(Strings.SERVER_ACTION_DELETE)
     }
 
     override fun updateItem(server: Server?, empty: Boolean) {
@@ -134,7 +134,7 @@ class ServerListCell : ListCell<Server?>(), Initializable {
                 }
                 if (ping == null) {
                     this.playersField.text = ""
-                    this.versionField.text = LocaleManager.translate(Strings.OFFLINE)
+                    this.versionField.text = DLocaleManager.translate(Strings.OFFLINE)
                     this.versionField.styleClass.add("version-error")
                     setErrorMotd(server.lastPing.error.toString())
                     this.optionsConnect.isDisable = true
@@ -142,7 +142,7 @@ class ServerListCell : ListCell<Server?>(), Initializable {
                     return@runLater
                 }
 
-                this.playersField.text = LocaleManager.translate(Strings.SERVER_INFO_SLOTS_PLAYERS_ONLINE, ping.playerOnline, ping.maxPlayers)
+                this.playersField.text = DLocaleManager.translate(Strings.SERVER_INFO_SLOTS_PLAYERS_ONLINE, ping.playerOnline, ping.maxPlayers)
 
                 val serverVersion: Version
 
@@ -216,7 +216,7 @@ class ServerListCell : ListCell<Server?>(), Initializable {
         brandField.text = ""
         brandField.tooltip = null
         motdField.style = null
-        versionField.text = LocaleManager.translate(Strings.CONNECTING)
+        versionField.text = DLocaleManager.translate(Strings.CONNECTING)
         versionField.styleClass.removeAll("version-error")
         versionField.style = null
         playersField.text = ""
@@ -338,7 +338,7 @@ class ServerListCell : ListCell<Server?>(), Initializable {
     }
 
     fun manageSessions() {
-        val sessionsWindow = GUITools.showPane<SessionsWindow>(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "layout/sessions.fxml"), Modality.APPLICATION_MODAL, LocaleManager.translate(Strings.SESSIONS_DIALOG_TITLE, server!!.name.message))
+        val sessionsWindow = GUITools.showPane<SessionsWindow>(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "layout/sessions.fxml"), Modality.APPLICATION_MODAL, DLocaleManager.translate(Strings.SESSIONS_DIALOG_TITLE, server!!.name.message))
         sessionsWindow.setServer(server)
     }
 

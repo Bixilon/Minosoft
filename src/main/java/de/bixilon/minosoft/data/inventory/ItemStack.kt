@@ -68,12 +68,12 @@ data class ItemStack(
 
         nbt.getAndRemove(DISPLAY_TAG)?.compoundCast()?.let {
             it.getAndRemove(DISPLAY_MAME_TAG).nullCast<String>()?.let { nameTag ->
-                customDisplayName = ChatComponent.of(nameTag, translator = connection?.version?.localeManager)
+                customDisplayName = ChatComponent.of(nameTag, translator = connection?.version?.language)
             }
 
             it.getAndRemove(DISPLAY_LORE_TAG)?.listCast<String>()?.let { loreTag ->
                 for (lore in loreTag) {
-                    this.lore.add(ChatComponent.of(lore, translator = connection?.version?.localeManager))
+                    this.lore.add(ChatComponent.of(lore, translator = connection?.version?.language))
                 }
             }
         }
@@ -168,7 +168,7 @@ data class ItemStack(
     val displayName: ChatComponent
         get() {
             customDisplayName?.let { return it }
-            item.translationKey?.let { connection?.version?.localeManager?.translate(it)?.let { translatedName -> return translatedName } }
+            item.translationKey?.let { connection?.version?.language?.translate(it)?.let { translatedName -> return translatedName } }
             return ChatComponent.of(item.toString())
         }
 

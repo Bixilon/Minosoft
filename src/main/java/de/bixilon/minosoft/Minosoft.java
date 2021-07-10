@@ -21,7 +21,7 @@ import de.bixilon.minosoft.config.StaticConfiguration;
 import de.bixilon.minosoft.data.accounts.Account;
 import de.bixilon.minosoft.data.assets.JarAssetsManager;
 import de.bixilon.minosoft.data.assets.Resources;
-import de.bixilon.minosoft.data.locale.LocaleManager;
+import de.bixilon.minosoft.data.language.deprecated.DLocaleManager;
 import de.bixilon.minosoft.data.registries.DefaultRegistries;
 import de.bixilon.minosoft.data.registries.ResourceLocation;
 import de.bixilon.minosoft.data.registries.versions.Versions;
@@ -123,7 +123,7 @@ public final class Minosoft {
             Log.info(String.format("Loaded config file (version=%s)", config.getConfig().getGeneral().getVersion()));
         }, "Configuration", String.format("Load config file (%s)", StaticConfiguration.CONFIG_FILENAME), Priorities.HIGHEST, TaskImportance.REQUIRED));
 
-        taskWorker.addTask(new Task(progress -> LocaleManager.load(config.getConfig().getGeneral().getLanguage()), "Minosoft Language", "Load minosoft language files", Priorities.HIGH, TaskImportance.REQUIRED, "Configuration"));
+        taskWorker.addTask(new Task(progress -> DLocaleManager.load(config.getConfig().getGeneral().getLanguage()), "Minosoft Language", "Load minosoft language files", Priorities.HIGH, TaskImportance.REQUIRED, "Configuration"));
 
         taskWorker.addTask(new Task(progress -> {
             Log.info("Loading versions.json...");

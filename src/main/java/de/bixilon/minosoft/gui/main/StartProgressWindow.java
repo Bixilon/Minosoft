@@ -17,8 +17,8 @@ import com.jfoenix.controls.JFXAlert;
 import com.jfoenix.controls.JFXDialogLayout;
 import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.ShutdownReasons;
-import de.bixilon.minosoft.data.locale.LocaleManager;
-import de.bixilon.minosoft.data.locale.Strings;
+import de.bixilon.minosoft.data.language.deprecated.DLocaleManager;
+import de.bixilon.minosoft.data.language.deprecated.Strings;
 import de.bixilon.minosoft.util.CountUpAndDownLatch;
 import de.bixilon.minosoft.util.logging.Log;
 import de.bixilon.minosoft.util.logging.LogLevels;
@@ -51,10 +51,10 @@ public class StartProgressWindow extends Application {
             Platform.runLater(() -> {
                 progressDialog = new JFXAlert<>();
                 GUITools.initializePane(progressDialog.getDialogPane());
-                progressDialog.setTitle(LocaleManager.translate(Strings.MINOSOFT_STILL_STARTING_TITLE));
+                progressDialog.setTitle(DLocaleManager.translate(Strings.MINOSOFT_STILL_STARTING_TITLE));
 
                 JFXDialogLayout layout = new JFXDialogLayout();
-                layout.setHeading(new Label(LocaleManager.translate(Strings.MINOSOFT_STILL_STARTING_HEADER)));
+                layout.setHeading(new Label(DLocaleManager.translate(Strings.MINOSOFT_STILL_STARTING_HEADER)));
 
                 progressBar = new ProgressBar();
                 progressBar.setPrefHeight(50);

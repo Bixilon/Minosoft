@@ -17,7 +17,7 @@ import de.bixilon.mbf.MBFBinaryReader
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.assets.MinecraftAssetsManager
 import de.bixilon.minosoft.data.assets.Resources
-import de.bixilon.minosoft.data.locale.minecraft.MinecraftLocaleManager
+import de.bixilon.minosoft.data.language.LanguageManager
 import de.bixilon.minosoft.protocol.protocol.ConnectionStates
 import de.bixilon.minosoft.protocol.protocol.PacketTypes.C2S
 import de.bixilon.minosoft.protocol.protocol.PacketTypes.S2C
@@ -38,7 +38,7 @@ data class Version(
     var isLoaded = false
     val registries: Registries = Registries()
     lateinit var assetsManager: MinecraftAssetsManager
-    lateinit var localeManager: MinecraftLocaleManager
+    lateinit var language: LanguageManager
 
     fun getPacketById(state: ConnectionStates, command: Int): S2C? {
         return s2CPacketMapping[state]?.inverse()?.get(command)
@@ -58,13 +58,12 @@ data class Version(
         }
         if (!isFlattened() && versionId != ProtocolDefinition.PRE_FLATTENING_VERSION_ID) {
             assetsManager = Versions.PRE_FLATTENING_VERSION.assetsManager
-            localeManager = Versions.PRE_FLATTENING_VERSION.localeManager
+            language = Versions.PRE_FLATTENING_VERSION.language
             return
         }
         assetsManager = MinecraftAssetsManager(Resources.getAssetVersionByVersion(this), Resources.getPixLyzerDataHashByVersion(this))
         assetsManager.downloadAllAssets(latch)
-        localeManager = MinecraftLocaleManager(this)
-        localeManager.load(this, Minosoft.getConfig().config.general.language)
+        language = LanguageManager.load(Minosoft.getConfig().config.general.language, this)
     }
 
     @Synchronized

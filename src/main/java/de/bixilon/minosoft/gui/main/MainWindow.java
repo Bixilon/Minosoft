@@ -20,8 +20,8 @@ import com.jfoenix.validation.RequiredFieldValidator;
 import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.ShutdownReasons;
 import de.bixilon.minosoft.data.accounts.Account;
-import de.bixilon.minosoft.data.locale.LocaleManager;
-import de.bixilon.minosoft.data.locale.Strings;
+import de.bixilon.minosoft.data.language.deprecated.DLocaleManager;
+import de.bixilon.minosoft.data.language.deprecated.Strings;
 import de.bixilon.minosoft.data.registries.ResourceLocation;
 import de.bixilon.minosoft.data.registries.versions.Versions;
 import de.bixilon.minosoft.data.text.ChatComponent;
@@ -67,7 +67,7 @@ public class MainWindow implements Initializable {
             Parent parent = new FXMLLoader(Minosoft.MINOSOFT_ASSETS_MANAGER.getAssetURL(new ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "layout/accounts.fxml"))).load();
             Stage stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
-            stage.setTitle(LocaleManager.translate(Strings.MANAGE_ACCOUNTS_NO_ACCOUNT_ERROR_TITLE));
+            stage.setTitle(DLocaleManager.translate(Strings.MANAGE_ACCOUNTS_NO_ACCOUNT_ERROR_TITLE));
             stage.setScene(new Scene(parent));
 
             GUITools.initializeScene(stage.getScene());
@@ -77,10 +77,10 @@ public class MainWindow implements Initializable {
                     event.consume();
                     JFXAlert<?> alert = new JFXAlert<>();
                     GUITools.initializePane(alert.getDialogPane());
-                    alert.setTitle(LocaleManager.translate(Strings.ERROR));
+                    alert.setTitle(DLocaleManager.translate(Strings.ERROR));
                     JFXDialogLayout layout = new JFXDialogLayout();
-                    layout.setHeading(new Label(LocaleManager.translate(Strings.MANAGE_ACCOUNTS_NO_ACCOUNT_ERROR_HEADER)));
-                    layout.setBody(new Label(LocaleManager.translate(Strings.MANAGE_ACCOUNTS_NO_ACCOUNT_ERROR_ERROR)));
+                    layout.setHeading(new Label(DLocaleManager.translate(Strings.MANAGE_ACCOUNTS_NO_ACCOUNT_ERROR_HEADER)));
+                    layout.setBody(new Label(DLocaleManager.translate(Strings.MANAGE_ACCOUNTS_NO_ACCOUNT_ERROR_ERROR)));
 
                     JFXButton cancel = new JFXButton(ButtonType.CANCEL.getText());
                     cancel.setOnAction((actionEvent -> alert.close()));
@@ -118,12 +118,12 @@ public class MainWindow implements Initializable {
         JFXButton submitButton;
 
         TextField serverNameField = new TextField();
-        serverNameField.setPromptText(LocaleManager.translate(Strings.SERVER_NAME));
+        serverNameField.setPromptText(DLocaleManager.translate(Strings.SERVER_NAME));
 
         TextField serverAddressField = new TextField();
-        serverAddressField.setPromptText(LocaleManager.translate(Strings.SERVER_ADDRESS));
+        serverAddressField.setPromptText(DLocaleManager.translate(Strings.SERVER_ADDRESS));
         RequiredFieldValidator serverAddressValidator = new RequiredFieldValidator();
-        serverAddressValidator.setMessage(LocaleManager.translate(Strings.SERVER_ADDRESS_INPUT_REQUIRED));
+        serverAddressValidator.setMessage(DLocaleManager.translate(Strings.SERVER_ADDRESS_INPUT_REQUIRED));
         serverAddressField.setTextFormatter(new TextFormatter<String>((change) -> {
             change.setText(DNSUtil.correctHostName(change.getText()));
             return change;
@@ -133,17 +133,17 @@ public class MainWindow implements Initializable {
 
         if (server == null) {
             // add
-            dialog.setTitle(LocaleManager.translate(Strings.ADD_SERVER_DIALOG_TITLE));
-            layout.setHeading(new Label(LocaleManager.translate(Strings.ADD_SERVER_DIALOG_HEADER)));
+            dialog.setTitle(DLocaleManager.translate(Strings.ADD_SERVER_DIALOG_TITLE));
+            layout.setHeading(new Label(DLocaleManager.translate(Strings.ADD_SERVER_DIALOG_HEADER)));
 
-            submitButton = new JFXButton(LocaleManager.translate(Strings.BUTTON_ADD));
+            submitButton = new JFXButton(DLocaleManager.translate(Strings.BUTTON_ADD));
 
-            serverNameField.setText(LocaleManager.translate(Strings.ADD_SERVER_DIALOG_DEFAULT_SERVER_NAME));
+            serverNameField.setText(DLocaleManager.translate(Strings.ADD_SERVER_DIALOG_DEFAULT_SERVER_NAME));
         } else {
-            dialog.setTitle(LocaleManager.translate(Strings.EDIT_SERVER_DIALOG_TITLE, server.getName().getMessage()));
-            layout.setHeading(new Label(LocaleManager.translate(Strings.EDIT_SERVER_DIALOG_HEADER)));
+            dialog.setTitle(DLocaleManager.translate(Strings.EDIT_SERVER_DIALOG_TITLE, server.getName().getMessage()));
+            layout.setHeading(new Label(DLocaleManager.translate(Strings.EDIT_SERVER_DIALOG_HEADER)));
 
-            submitButton = new JFXButton(LocaleManager.translate(Strings.BUTTON_SAVE));
+            submitButton = new JFXButton(DLocaleManager.translate(Strings.BUTTON_SAVE));
 
             serverNameField.setText(server.getName().getLegacyText());
             serverAddressField.setText(server.getAddress());
@@ -154,11 +154,11 @@ public class MainWindow implements Initializable {
         }
         submitButton.setButtonType(JFXButton.ButtonType.RAISED);
 
-        gridPane.add(new Label(LocaleManager.translate(Strings.SERVER_NAME) + ":"), 0, 0);
+        gridPane.add(new Label(DLocaleManager.translate(Strings.SERVER_NAME) + ":"), 0, 0);
         gridPane.add(serverNameField, 1, 0);
-        gridPane.add(new Label(LocaleManager.translate(Strings.SERVER_ADDRESS) + ":"), 0, 1);
+        gridPane.add(new Label(DLocaleManager.translate(Strings.SERVER_ADDRESS) + ":"), 0, 1);
         gridPane.add(serverAddressField, 1, 1);
-        gridPane.add(new Label(LocaleManager.translate(Strings.VERSION) + ":"), 0, 2);
+        gridPane.add(new Label(DLocaleManager.translate(Strings.VERSION) + ":"), 0, 2);
         gridPane.add(GUITools.VERSION_COMBO_BOX, 1, 2);
 
         layout.setBody(gridPane);
@@ -211,9 +211,9 @@ public class MainWindow implements Initializable {
     public void selectAccount(Account account) {
         Runnable runnable = () -> {
             if (account != null) {
-                MainWindow.this.menuAccount.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_SERVERS_ACCOUNTS_SELECTED, account.getUsername()));
+                MainWindow.this.menuAccount.setText(DLocaleManager.translate(Strings.MAIN_WINDOW_MENU_SERVERS_ACCOUNTS_SELECTED, account.getUsername()));
             } else {
-                MainWindow.this.menuAccount.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_SERVERS_ACCOUNTS));
+                MainWindow.this.menuAccount.setText(DLocaleManager.translate(Strings.MAIN_WINDOW_MENU_SERVERS_ACCOUNTS));
             }
         };
         if (Platform.isFxApplicationThread()) {
@@ -223,9 +223,9 @@ public class MainWindow implements Initializable {
         }
         Platform.runLater(() -> {
             if (account != null) {
-                this.menuAccount.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_SERVERS_ACCOUNTS_SELECTED, account.getUsername()));
+                this.menuAccount.setText(DLocaleManager.translate(Strings.MAIN_WINDOW_MENU_SERVERS_ACCOUNTS_SELECTED, account.getUsername()));
             } else {
-                this.menuAccount.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_SERVERS_ACCOUNTS));
+                this.menuAccount.setText(DLocaleManager.translate(Strings.MAIN_WINDOW_MENU_SERVERS_ACCOUNTS));
             }
         });
     }
@@ -234,15 +234,15 @@ public class MainWindow implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         this.serversPane.setCenter(ServerListCell.SERVER_LIST_VIEW);
 
-        this.menuFile.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_FILE));
-        this.menuFilePreferences.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_FILE_PREFERENCES));
-        this.menuFileQuit.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_FILE_QUIT));
-        this.menuServers.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_SERVERS));
-        this.menuServersAdd.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_SERVERS_ADD));
-        this.menuServerRefresh.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_SERVERS_REFRESH));
-        this.menuHelp.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_SERVERS_HELP));
-        this.menuHelpAbout.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_SERVERS_HELP_ABOUT));
-        this.menuAccountManage.setText(LocaleManager.translate(Strings.MAIN_WINDOW_MENU_SERVERS_ACCOUNTS_MANAGE));
+        this.menuFile.setText(DLocaleManager.translate(Strings.MAIN_WINDOW_MENU_FILE));
+        this.menuFilePreferences.setText(DLocaleManager.translate(Strings.MAIN_WINDOW_MENU_FILE_PREFERENCES));
+        this.menuFileQuit.setText(DLocaleManager.translate(Strings.MAIN_WINDOW_MENU_FILE_QUIT));
+        this.menuServers.setText(DLocaleManager.translate(Strings.MAIN_WINDOW_MENU_SERVERS));
+        this.menuServersAdd.setText(DLocaleManager.translate(Strings.MAIN_WINDOW_MENU_SERVERS_ADD));
+        this.menuServerRefresh.setText(DLocaleManager.translate(Strings.MAIN_WINDOW_MENU_SERVERS_REFRESH));
+        this.menuHelp.setText(DLocaleManager.translate(Strings.MAIN_WINDOW_MENU_SERVERS_HELP));
+        this.menuHelpAbout.setText(DLocaleManager.translate(Strings.MAIN_WINDOW_MENU_SERVERS_HELP_ABOUT));
+        this.menuAccountManage.setText(DLocaleManager.translate(Strings.MAIN_WINDOW_MENU_SERVERS_ACCOUNTS_MANAGE));
         selectAccount(Minosoft.getConfig().getConfig().getAccount().getEntries().get(Minosoft.getConfig().getConfig().getAccount().getSelected()));
     }
 
@@ -282,7 +282,7 @@ public class MainWindow implements Initializable {
             Parent parent = new FXMLLoader(Minosoft.MINOSOFT_ASSETS_MANAGER.getAssetURL(new ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "layout/settings.fxml"))).load();
             Stage stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
-            stage.setTitle(LocaleManager.translate(Strings.SETTINGS_TITLE));
+            stage.setTitle(DLocaleManager.translate(Strings.SETTINGS_TITLE));
             stage.setScene(new Scene(parent));
             GUITools.initializeScene(stage.getScene());
             stage.addEventHandler(KeyEvent.KEY_PRESSED, (KeyEvent event) -> {

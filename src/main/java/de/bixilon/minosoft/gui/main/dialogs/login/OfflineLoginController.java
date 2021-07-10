@@ -16,8 +16,8 @@ package de.bixilon.minosoft.gui.main.dialogs.login;
 import com.jfoenix.controls.JFXButton;
 import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.data.accounts.OfflineAccount;
-import de.bixilon.minosoft.data.locale.LocaleManager;
-import de.bixilon.minosoft.data.locale.Strings;
+import de.bixilon.minosoft.data.language.deprecated.DLocaleManager;
+import de.bixilon.minosoft.data.language.deprecated.Strings;
 import de.bixilon.minosoft.gui.main.cells.AccountListCell;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import de.bixilon.minosoft.util.Util;
@@ -47,10 +47,10 @@ public class OfflineLoginController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         // translate
-        this.header.setText(LocaleManager.translate(Strings.LOGIN_OFFLINE_DIALOG_HEADER));
-        this.usernameLabel.setText(LocaleManager.translate(Strings.LOGIN_OFFLINE_USERNAME));
-        this.uuidLabel.setText(LocaleManager.translate(Strings.LOGIN_OFFLINE_UUID));
-        this.addButton.setText(LocaleManager.translate(Strings.LOGIN_OFFLINE_ADD_BUTTON));
+        this.header.setText(DLocaleManager.translate(Strings.LOGIN_OFFLINE_DIALOG_HEADER));
+        this.usernameLabel.setText(DLocaleManager.translate(Strings.LOGIN_OFFLINE_USERNAME));
+        this.uuidLabel.setText(DLocaleManager.translate(Strings.LOGIN_OFFLINE_UUID));
+        this.addButton.setText(DLocaleManager.translate(Strings.LOGIN_OFFLINE_ADD_BUTTON));
 
 
         this.username.textProperty().addListener(this::checkData);

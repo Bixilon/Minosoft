@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.protocol.ping;
 
 import com.google.gson.JsonObject;
-import de.bixilon.minosoft.data.locale.minecraft.MinecraftLocaleManager;
 import de.bixilon.minosoft.data.text.ChatComponent;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import de.bixilon.minosoft.util.logging.Log;
@@ -30,7 +29,7 @@ public class ServerListPing {
     private final String serverBrand;
     byte[] favicon;
 
-    public ServerListPing(MinecraftLocaleManager localeManager, JsonObject json) {
+    public ServerListPing(JsonObject json) {
         int protocolId = json.getAsJsonObject("version").get("protocol").getAsInt();
         if (protocolId == ProtocolDefinition.QUERY_PROTOCOL_VERSION_ID) {
             // Server did not send us a version, trying 1.8
@@ -45,7 +44,7 @@ public class ServerListPing {
             this.favicon = Base64.getDecoder().decode(json.get("favicon").getAsString().replace("data:image/png;base64,", "").replace("\n", ""));
         }
 
-        this.motd = ChatComponent.Companion.of(json.get("description"), localeManager);
+        this.motd = ChatComponent.Companion.of(json.get("description"));
         this.serverBrand = json.getAsJsonObject("version").get("name").getAsString();
 
         if (json.has("modinfo") && json.getAsJsonObject("modinfo").has("type") && json.getAsJsonObject("modinfo").get("type").getAsString().equals("FML")) {

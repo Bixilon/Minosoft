@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.text
 
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
-import de.bixilon.minosoft.data.locale.minecraft.Translator
+import de.bixilon.minosoft.data.language.Translator
 import de.bixilon.minosoft.data.text.RGBColor.Companion.asColor
 import de.bixilon.minosoft.data.text.events.ClickEvent
 import de.bixilon.minosoft.data.text.events.HoverEvent
@@ -24,6 +24,7 @@ import de.bixilon.minosoft.gui.rendering.font.text.TextGetProperties
 import de.bixilon.minosoft.gui.rendering.font.text.TextSetProperties
 import de.bixilon.minosoft.gui.rendering.hud.nodes.primitive.LabelNode
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.util.KUtil.asResourceLocation
 import de.bixilon.minosoft.util.KUtil.format
 import de.bixilon.minosoft.util.KUtil.nullCast
 import glm_.vec2.Vec2i
@@ -149,7 +150,7 @@ class BaseComponent : ChatComponent {
                     with.add(part)
                 }
             }
-            parts.add(translator?.translate(it, currentParent, *with.toTypedArray()) ?: ChatComponent.of(json["with"], translator, currentParent))
+            parts.add(translator?.translate(it.asResourceLocation(), currentParent, *with.toTypedArray()) ?: ChatComponent.of(json["with"], translator, currentParent))
         }
     }
 

@@ -16,7 +16,7 @@ import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import com.google.gson.JsonPrimitive
-import de.bixilon.minosoft.data.locale.minecraft.Translator
+import de.bixilon.minosoft.data.language.Translator
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.font.text.TextGetProperties
 import de.bixilon.minosoft.gui.rendering.font.text.TextSetProperties

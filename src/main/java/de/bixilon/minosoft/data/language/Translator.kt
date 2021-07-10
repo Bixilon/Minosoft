@@ -11,12 +11,15 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.locale.minecraft
+package de.bixilon.minosoft.data.language
 
+import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
 
 interface Translator {
 
-    fun translate(key: String?, parent: TextComponent? = null, vararg data: Any?): ChatComponent
+    fun canTranslate(key: ResourceLocation?): Boolean
+
+    fun translate(key: ResourceLocation?, parent: TextComponent? = null, vararg data: Any?): ChatComponent
 }

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2021 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -10,40 +10,23 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.data.locale.minecraft
+package de.bixilon.minosoft.data.language
 
+import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
-import de.bixilon.minosoft.util.KUtil.unsafeCast
 
-open class MinecraftLanguage : Translator {
-    val language: String
-    private val data = HashMap<String, String>()
+class Language(
+    val name: String,
+    private val data: Map<ResourceLocation, String>,
+) : Translator {
 
-    constructor(language: String, json: Map<String, Any>) {
-        this.language = language
-        for ((key, value) in json) {
-            data[key] = value.unsafeCast()
-        }
-    }
-
-    constructor(language: String, data: String) {
-        this.language = language
-        for (line in data.lines().toTypedArray()) {
-            if (line.isBlank()) {
-                continue
-            }
-            val splitLine = line.split("=", limit = 2).toTypedArray()
-            this.data[splitLine[0]] = splitLine[1]
-        }
-    }
-
-    fun canTranslate(key: String?): Boolean {
+    override fun canTranslate(key: ResourceLocation?): Boolean {
         return data.containsKey(key)
     }
 
-    override fun translate(key: String?, parent: TextComponent?, vararg data: Any?): ChatComponent {
+    override fun translate(key: ResourceLocation?, parent: TextComponent?, vararg data: Any?): ChatComponent {
         val placeholder = this.data[key] ?: return ChatComponent.of(key.toString() + "->" + data.toString(), null, parent)
 
         val ret = BaseComponent()
@@ -88,7 +71,7 @@ open class MinecraftLanguage : Translator {
     }
 
     override fun toString(): String {
-        return language
+        return name
     }
 
     companion object {

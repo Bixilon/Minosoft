@@ -70,7 +70,7 @@ class PlayInByteBuffer : InByteBuffer {
     }
 
     override fun readChatComponent(): ChatComponent {
-        return of(readString(), connection.version.localeManager, null)
+        return of(readString(), connection.version.language, null)
     }
 
     fun readParticle(): ParticleData {

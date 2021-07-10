@@ -69,8 +69,12 @@ object KUtil {
         return null
     }
 
-    fun String.asResourceLocation(): ResourceLocation {
-        return ResourceLocation(this)
+    fun Any.asResourceLocation(): ResourceLocation {
+        return when (this) {
+            is String -> ResourceLocation(this)
+            is ResourceLocation -> this
+            else -> TODO()
+        }
     }
 
     fun <K, V> synchronizedMapOf(vararg pairs: Pair<K, V>): SynchronizedMap<K, V> {

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2021 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.locale;
+package de.bixilon.minosoft.data.language.deprecated;
 
 import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.ShutdownReasons;
@@ -20,15 +20,16 @@ import de.bixilon.minosoft.data.registries.versions.Versions;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import de.bixilon.minosoft.util.logging.Log;
 
-public class LocaleManager {
-    private static Language fallbackLanguage; // en_US
-    private static Language language;
+@Deprecated
+public class DLocaleManager {
+    private static DLanguage fallbackLanguage; // en_US
+    private static DLanguage language;
 
-    public static Language getLanguage() {
+    public static DLanguage getLanguage() {
         return language;
     }
 
-    public static Language getFallbackLanguage() {
+    public static DLanguage getFallbackLanguage() {
         return fallbackLanguage;
     }
 
@@ -46,8 +47,8 @@ public class LocaleManager {
         return fallbackLanguage.translate(key, data);
     }
 
-    private static Language loadLanguage(String language) {
-        return new Language(language, Minosoft.MINOSOFT_ASSETS_MANAGER.readLegacyJsonAsset(new ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, String.format("locale/%s.json", language))));
+    private static DLanguage loadLanguage(String language) {
+        return new DLanguage(language, Minosoft.MINOSOFT_ASSETS_MANAGER.readLegacyJsonAsset(new ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, String.format("locale/%s.json", language))));
     }
 
     public static void load(String language) {
@@ -62,7 +63,7 @@ public class LocaleManager {
             }
         }
         try {
-            LocaleManager.language = loadLanguage(language);
+            DLocaleManager.language = loadLanguage(language);
         } catch (Exception e) {
             e.printStackTrace();
             Log.warn(String.format("Could not load language file: %s", language));

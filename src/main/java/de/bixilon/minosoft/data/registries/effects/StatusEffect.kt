@@ -21,6 +21,7 @@ import de.bixilon.minosoft.data.registries.versions.Registries
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.data.text.RGBColor.Companion.asRGBColor
 import de.bixilon.minosoft.datafixer.EntityAttributeFixer.fix
+import de.bixilon.minosoft.util.KUtil.asResourceLocation
 import de.bixilon.minosoft.util.KUtil.unsafeCast
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.asCompound
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
@@ -29,7 +30,7 @@ import java.util.*
 data class StatusEffect(
     override val resourceLocation: ResourceLocation,
     val category: StatusEffectCategories,
-    override val translationKey: String?,
+    override val translationKey: ResourceLocation?,
     val color: RGBColor,
     val attributes: Map<ResourceLocation, StatusEffectAttribute>,
     val uuidAttributes: Map<UUID, StatusEffectAttribute>,
@@ -55,7 +56,7 @@ data class StatusEffect(
             return StatusEffect(
                 resourceLocation = resourceLocation,
                 category = StatusEffectCategories[data["category"].unsafeCast<String>()],
-                translationKey = data["translation_key"]?.unsafeCast<String>(),
+                translationKey = data["translation_key"]?.asResourceLocation(),
                 color = data["color"].unsafeCast<Int>().asRGBColor(),
                 attributes = attributes.toMap(),
                 uuidAttributes = uuidAttributes.toMap(),

@@ -13,8 +13,8 @@
 package de.bixilon.minosoft.gui.main
 
 import de.bixilon.minosoft.Minosoft
-import de.bixilon.minosoft.data.locale.LocaleManager
-import de.bixilon.minosoft.data.locale.Strings
+import de.bixilon.minosoft.data.language.deprecated.DLocaleManager
+import de.bixilon.minosoft.data.language.deprecated.Strings
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.modding.event.CallbackEventInvoker
 import de.bixilon.minosoft.modding.event.events.ConnectionStateChangeEvent
@@ -42,7 +42,7 @@ class SessionListCell : ListCell<PlayConnection?>(), Initializable {
     override fun initialize(url: URL, rb: ResourceBundle?) {
         updateSelected(false)
         graphic = this.root
-        optionsDisconnect.text = LocaleManager.translate(Strings.SESSIONS_ACTION_DISCONNECT)
+        optionsDisconnect.text = DLocaleManager.translate(Strings.SESSIONS_ACTION_DISCONNECT)
     }
 
     override fun updateItem(connection: PlayConnection?, empty: Boolean) {

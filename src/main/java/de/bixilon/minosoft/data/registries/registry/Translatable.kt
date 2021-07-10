@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.data.registries.registry
 
+import de.bixilon.minosoft.data.registries.ResourceLocation
+
 interface Translatable {
-    val translationKey: String?
+    val translationKey: ResourceLocation?
 }
