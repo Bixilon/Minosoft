@@ -74,6 +74,7 @@ class OpenGLTextureArray(
         return texture
     }
 
+    @Synchronized
     override fun preLoad() {
         if (state == TextureArrayStates.LOADED || state == TextureArrayStates.PRE_LOADED) {
             return
@@ -127,12 +128,9 @@ class OpenGLTextureArray(
     }
 
 
-    private fun loadResolution(resolutionId: Int) {
-        val resolution = TEXTURE_RESOLUTION_ID_MAP[resolutionId]
-        val textures = texturesByResolution[resolutionId]
-
+    @Synchronized
+    private fun loadSingleArray(resolution: Int, textures: MutableList<AbstractTexture>): Int {
         val textureId = glGenTextures()
-        textureIds[resolutionId] = textureId
         glBindTexture(GL_TEXTURE_2D_ARRAY, textureId)
         glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, GL_REPEAT)
         glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, GL_REPEAT)
@@ -146,26 +144,32 @@ class OpenGLTextureArray(
         }
 
         for (texture in textures) {
-
             val mipMaps = texture.generateMipMaps()
 
             val renderData = texture.renderData as OpenGLTextureData
-            for ((i, data) in mipMaps.withIndex()) {
-                glTexSubImage3D(GL_TEXTURE_2D_ARRAY, i, 0, 0, renderData.index, data.first.x, data.first.y, i + 1, GL_RGBA, GL_UNSIGNED_BYTE, data.second)
+            for ((mipMapLevel, data) in mipMaps.withIndex()) {
+                glTexSubImage3D(GL_TEXTURE_2D_ARRAY, mipMapLevel, 0, 0, renderData.index, data.first.x, data.first.y, mipMapLevel + 1, GL_RGBA, GL_UNSIGNED_BYTE, data.second)
             }
         }
+
+        return textureId
     }
 
 
+    @Synchronized
     override fun load() {
         var totalLayers = 0
         for ((index, textures) in texturesByResolution.withIndex()) {
-            loadResolution(index)
+            if (textures.isEmpty()) {
+                continue
+            }
+            textureIds[index] = loadSingleArray(TEXTURE_RESOLUTION_ID_MAP[index], textures)
             totalLayers += textures.size
         }
         Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Loaded ${textures.size} textures containing ${animator.animations.size} animated ones, split into $totalLayers layers!" }
 
         animator.init()
+        state = TextureArrayStates.LOADED
     }
 
 
@@ -173,6 +177,9 @@ class OpenGLTextureArray(
         shader.use()
 
         for ((index, textureId) in textureIds.withIndex()) {
+            if (textureId == -1) {
+                continue
+            }
             glActiveTexture(GL_TEXTURE0 + index)
             glBindTexture(GL_TEXTURE_2D_ARRAY, textureId)
             shader.setTexture("$arrayName[$index]", index)
