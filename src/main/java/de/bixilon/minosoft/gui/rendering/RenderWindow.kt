@@ -28,6 +28,7 @@ import de.bixilon.minosoft.gui.rendering.input.key.RenderWindowInputHandler
 import de.bixilon.minosoft.gui.rendering.modding.events.*
 import de.bixilon.minosoft.gui.rendering.particle.ParticleRenderer
 import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
+import de.bixilon.minosoft.gui.rendering.system.base.IntegratedBufferTypes
 import de.bixilon.minosoft.gui.rendering.system.base.PolygonModes
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem
@@ -48,7 +49,6 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogMessageType
 import glm_.vec2.Vec2
 import glm_.vec2.Vec2i
-import org.lwjgl.opengl.GL11.*
 
 class RenderWindow(
     val connection: PlayConnection,
@@ -134,8 +134,6 @@ class RenderWindow(
         Log.log(LogMessageType.RENDERING_LOADING) { "Creating context (${stopwatch.labTime()})..." }
 
         renderSystem.init()
-
-        glClearColor(1.0f, 1.0f, 0.0f, 1.0f)
 
         Log.log(LogMessageType.RENDERING_LOADING) { "Enabling all open gl features (${stopwatch.labTime()})..." }
 
@@ -237,7 +235,7 @@ class RenderWindow(
                 continue
             }
             renderStats.startFrame()
-            glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
+            renderSystem.clear(IntegratedBufferTypes.COLOR_BUFFER, IntegratedBufferTypes.DEPTH_BUFFER)
 
 
             val currentTickTime = System.currentTimeMillis()

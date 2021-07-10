@@ -14,6 +14,8 @@
 package de.bixilon.minosoft.gui.rendering.system.opengl
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.text.Colors
+import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.modding.events.ResizeWindowEvent
 import de.bixilon.minosoft.gui.rendering.system.base.*
@@ -70,15 +72,18 @@ class OpenGLRenderSystem(
     override fun init() {
         GL.createCapabilities()
 
-        val vendorString = glGetString(GL_VENDOR)?.lowercase()
+        this.vendorString = glGetString(GL_VENDOR) ?: "UNKNOWN"
+        val vendorString = vendorString.lowercase()
 
         vendor = when {
-            vendorString == null -> OtherOpenGLVendor
             vendorString.contains("nvidia") -> NvidiaOpenGLVendor
             vendorString.contains("intel") -> MesaOpenGLVendor
             vendorString.contains("amd") || vendorString.contains("ati") -> ATIOpenGLVendor // ToDo
             else -> OtherOpenGLVendor
         }
+
+        this.version = glGetString(GL_VERSION) ?: "UNKNOWN"
+        this.gpuType = glGetString(GL_RENDERER) ?: "UNKNOWN"
 
         renderWindow.connection.registerEvent(CallbackEventInvoker.of<ResizeWindowEvent> {
             renderWindow.queue += {
@@ -165,6 +170,13 @@ class OpenGLRenderSystem(
     override val maximumVRAM: Long
         get() = vendor.maximumVRAM
 
+    override lateinit var vendorString: String
+        private set
+    override lateinit var version: String
+        private set
+    override lateinit var gpuType: String
+        private set
+
     override fun readPixels(start: Vec2i, end: Vec2i, type: PixelTypes): ByteBuffer {
         val buffer: ByteBuffer = BufferUtils.createByteBuffer((end.x - start.x) * (end.y - start.y) * type.bytes)
         glReadPixels(start.x, start.y, end.x, end.y, type.gl, GL_UNSIGNED_BYTE, buffer)
@@ -189,6 +201,24 @@ class OpenGLRenderSystem(
 
     override fun createTextureManager(): TextureManager {
         return OpenGLTextureManager(renderWindow)
+    }
+
+    override var clearColor: RGBColor = Colors.TRUE_BLACK
+        set(value) {
+            if (value == field) {
+                return
+            }
+            glClearColor(clearColor.floatRed, clearColor.floatGreen, clearColor.floatBlue, clearColor.floatAlpha)
+
+            field = value
+        }
+
+    override fun clear(vararg buffers: IntegratedBufferTypes) {
+        var bits = 0
+        for (buffer in buffers) {
+            bits = bits or buffer.gl
+        }
+        glClear(bits)
     }
 
     companion object {
@@ -274,6 +304,17 @@ class OpenGLRenderSystem(
                     FaceTypes.RIGHT -> GL_RIGHT
                     FaceTypes.FRONT_AND_BACK -> GL_FRONT_AND_BACK
                     else -> throw IllegalArgumentException("OpenGL does not support face type: $this")
+                }
+            }
+
+        private val IntegratedBufferTypes.gl: Int
+            get() {
+                return when (this) {
+                    IntegratedBufferTypes.DEPTH_BUFFER -> GL_DEPTH_BUFFER_BIT
+                    IntegratedBufferTypes.ACCUM_BUFFER -> GL_ACCUM_BUFFER_BIT
+                    IntegratedBufferTypes.STENCIL_BUFFER -> GL_STENCIL_BUFFER_BIT
+                    IntegratedBufferTypes.COLOR_BUFFER -> GL_COLOR_BUFFER_BIT
+                    else -> throw IllegalArgumentException("OpenGL does not support integrated buffer type: $this")
                 }
             }
     }

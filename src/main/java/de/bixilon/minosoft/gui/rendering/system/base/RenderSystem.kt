@@ -14,6 +14,8 @@
 package de.bixilon.minosoft.gui.rendering.system.base
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.text.Colors
+import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.FloatUniformBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.IntUniformBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.FloatVertexBuffer
@@ -39,6 +41,7 @@ interface RenderSystem {
         sourceAlpha: BlendingFunctions = BlendingFunctions.SOURCE_ALPHA,
         destinationAlpha: BlendingFunctions = BlendingFunctions.ONE_MINUS_SOURCE_ALPHA,
         depth: DepthFunctions = DepthFunctions.LESS,
+        clearColor: RGBColor = Colors.TRUE_YELLOW,
     ) {
         setBlendFunc(sourceAlpha, destinationAlpha, BlendingFunctions.ONE, BlendingFunctions.ZERO)
         this[RenderingCapabilities.DEPTH_TEST] = depthTest
@@ -46,6 +49,7 @@ interface RenderSystem {
         this[RenderingCapabilities.FACE_CULLING] = faceCulling
         this.depth = depth
         this.depthMask = depthMask
+        this.clearColor = clearColor
     }
 
     fun enable(capability: RenderingCapabilities)
@@ -67,6 +71,12 @@ interface RenderSystem {
     val availableVRAM: Long
     val maximumVRAM: Long
 
+    val vendorString: String
+    val version: String
+    val gpuType: String
+
+    var clearColor: RGBColor
+
     fun readPixels(start: Vec2i, end: Vec2i, type: PixelTypes): ByteBuffer
 
 
@@ -77,4 +87,6 @@ interface RenderSystem {
     fun createFloatUniformBuffer(bindingIndex: Int = 0, data: FloatArray = FloatArray(0)): FloatUniformBuffer
 
     fun createTextureManager(): TextureManager
+
+    fun clear(vararg buffers: IntegratedBufferTypes)
 }

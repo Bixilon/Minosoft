@@ -11,14 +11,12 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.text
+package de.bixilon.minosoft.gui.rendering.system.base
 
-object Colors {
-    val TRUE_BLACK = RGBColor(0, 0, 0)
-
-    val TRUE_RED = RGBColor(255, 0, 0)
-    val TRUE_GREEN = RGBColor(0, 255, 0)
-    val TRUE_BLUE = RGBColor(0, 0, 255)
-
-    val TRUE_YELLOW = RGBColor(255, 255, 0)
+enum class IntegratedBufferTypes {
+    DEPTH_BUFFER,
+    ACCUM_BUFFER,
+    STENCIL_BUFFER,
+    COLOR_BUFFER,
+    ;
 }

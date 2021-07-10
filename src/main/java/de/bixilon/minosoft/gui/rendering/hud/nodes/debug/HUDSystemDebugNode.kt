@@ -34,7 +34,6 @@ import de.bixilon.minosoft.util.GitInfo
 import de.bixilon.minosoft.util.SystemInformation
 import de.bixilon.minosoft.util.UnitFormatter.formatBytes
 import glm_.vec2.Vec2
-import org.lwjgl.opengl.GL11.*
 
 
 class HUDSystemDebugNode(hudRenderer: HUDRenderer) : DebugScreenNode(hudRenderer) {
@@ -101,8 +100,8 @@ class HUDSystemDebugNode(hudRenderer: HUDRenderer) : DebugScreenNode(hudRenderer
     private val targetEntity = text()
 
     override fun init() {
-        gpuText.sText = "GPU: " + (glGetString(GL_RENDERER) ?: "unknown")
-        gpuVersionText.sText = "Version: " + (glGetString(GL_VERSION) ?: "unknown")
+        gpuText.sText = "GPU: " + hudRenderer.renderWindow.renderSystem.gpuType
+        gpuVersionText.sText = "Version: " + hudRenderer.renderWindow.renderSystem.version
 
         hudRenderer.connection.registerEvent(CallbackEventInvoker.of<ResizeWindowEvent> {
             displayText.sText = "Display: ${getScreenDimensions()}"
