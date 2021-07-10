@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.data.language
 
+import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.versions.Version
 import de.bixilon.minosoft.data.text.ChatComponent
@@ -47,18 +48,18 @@ class LanguageManager(
     companion object {
 
 
-        fun load(language: String, version: Version): LanguageManager {
+        fun load(language: String, version: Version?, path: ResourceLocation = ResourceLocation("lang/")): LanguageManager {
+            val assetsManager = version?.assetsManager ?: Minosoft.MINOSOFT_ASSETS_MANAGER
 
             fun loadMinecraftLanguage(language: String): Language {
                 val data: MutableMap<ResourceLocation, String> = mutableMapOf()
 
-
-                if (version.versionId >= ProtocolVersions.V_18W02A) {
-                    for ((key, value) in version.assetsManager.readJsonAsset(ResourceLocation("lang/${language.lowercase()}.json")).asCompound()) {
+                if (version?.versionId ?: Int.MIN_VALUE >= ProtocolVersions.V_18W02A) {
+                    for ((key, value) in assetsManager.readJsonAsset(ResourceLocation(path.namespace, path.path + "${language.lowercase()}.json")).asCompound()) {
                         data[ResourceLocation(key)] = value.toString()
                     }
                 } else {
-                    val lines = version.assetsManager.readStringAsset(ResourceLocation("lang/${language.lowercase()}.lang")).lines()
+                    val lines = assetsManager.readStringAsset(ResourceLocation(path.namespace, path.path + "${language.lowercase()}.lang")).lines()
 
                     for (line in lines) {
                         if (line.isBlank()) {
@@ -74,7 +75,9 @@ class LanguageManager(
 
             val languages: MutableList<Language> = mutableListOf()
 
-            languages += loadMinecraftLanguage(language)
+            if (language != "en_US") {
+                languages += loadMinecraftLanguage(language)
+            }
             languages += loadMinecraftLanguage("en_US")
 
             return LanguageManager(languages)

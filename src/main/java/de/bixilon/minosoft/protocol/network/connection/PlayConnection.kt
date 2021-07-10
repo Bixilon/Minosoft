@@ -176,6 +176,7 @@ class PlayConnection(
         }
 
     fun connect(latch: CountUpAndDownLatch) {
+        // Log.log(LogMessageType.OTHER, LogLevels.VERBOSE){TranslatableComponents.HELLO_WORLD(Minosoft.LANGUAGE_MANAGER, "Moritz", 17)}
         try {
             version.load(latch) // ToDo: show gui loader
             assetsManager = MultiAssetsManager(version.assetsManager, Minosoft.MINOSOFT_ASSETS_MANAGER, Minosoft.MINECRAFT_FALLBACK_ASSETS_MANAGER)

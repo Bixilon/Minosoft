@@ -21,6 +21,8 @@ import de.bixilon.minosoft.config.StaticConfiguration;
 import de.bixilon.minosoft.data.accounts.Account;
 import de.bixilon.minosoft.data.assets.JarAssetsManager;
 import de.bixilon.minosoft.data.assets.Resources;
+import de.bixilon.minosoft.data.language.LanguageManager;
+import de.bixilon.minosoft.data.language.MultiLanguageManager;
 import de.bixilon.minosoft.data.language.deprecated.DLocaleManager;
 import de.bixilon.minosoft.data.registries.DefaultRegistries;
 import de.bixilon.minosoft.data.registries.ResourceLocation;
@@ -58,6 +60,7 @@ public final class Minosoft {
     public static final HashSet<EventManager> EVENT_MANAGERS = new HashSet<>();
     public static final HashBiMap<Integer, PlayConnection> CONNECTIONS = HashBiMap.create();
     private static final CountUpAndDownLatch START_STATUS_LATCH = new CountUpAndDownLatch(1);
+    public static final MultiLanguageManager LANGUAGE_MANAGER = new MultiLanguageManager();
     public static Configuration config;
     private static boolean isExiting;
 
@@ -123,7 +126,10 @@ public final class Minosoft {
             Log.info(String.format("Loaded config file (version=%s)", config.getConfig().getGeneral().getVersion()));
         }, "Configuration", String.format("Load config file (%s)", StaticConfiguration.CONFIG_FILENAME), Priorities.HIGHEST, TaskImportance.REQUIRED));
 
-        taskWorker.addTask(new Task(progress -> DLocaleManager.load(config.getConfig().getGeneral().getLanguage()), "Minosoft Language", "Load minosoft language files", Priorities.HIGH, TaskImportance.REQUIRED, "Configuration"));
+        taskWorker.addTask(new Task(progress -> {
+            DLocaleManager.load(config.getConfig().getGeneral().getLanguage());
+            LANGUAGE_MANAGER.getTranslators().put(ProtocolDefinition.MINOSOFT_NAMESPACE, LanguageManager.Companion.load("en_US", null, new ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "language/"))); // ToDo
+        }, "Minosoft Language", "Load minosoft language files", Priorities.HIGH, TaskImportance.REQUIRED, "Configuration"));
 
         taskWorker.addTask(new Task(progress -> {
             Log.info("Loading versions.json...");
