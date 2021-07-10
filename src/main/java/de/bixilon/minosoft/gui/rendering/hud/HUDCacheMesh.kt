@@ -14,7 +14,8 @@
 package de.bixilon.minosoft.gui.rendering.hud
 
 import de.bixilon.minosoft.data.text.RGBColor
-import de.bixilon.minosoft.gui.rendering.textures.Texture
+import de.bixilon.minosoft.gui.rendering.RenderConstants
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.util.collections.ArrayFloatList
 import glm_.vec2.Vec2
 import glm_.vec3.Vec3
@@ -27,14 +28,14 @@ class HUDCacheMesh(
     val cache: ArrayFloatList
         get() = data
 
-    fun addVertex(position: Vec3, textureCoordinates: Vec2, texture: Texture?, tintColor: RGBColor? = null) {
+    fun addVertex(position: Vec3, textureCoordinates: Vec2, texture: AbstractTexture?, tintColor: RGBColor? = null) {
         data.addAll(floatArrayOf(
             position.x,
             position.y,
             position.z,
             textureCoordinates.x,
             textureCoordinates.y,
-            Float.fromBits((texture?.arrayLayer ?: 0) or ((texture?.arrayId ?: 0) shl 24)),
+            Float.fromBits(texture?.renderData?.layer ?: RenderConstants.DEBUG_TEXTURE_ID),
             if (tintColor == null) {
                 0.0f
             } else {

@@ -17,7 +17,7 @@ import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
-import de.bixilon.minosoft.gui.rendering.textures.Texture
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
 import glm_.vec2.Vec2
@@ -26,27 +26,29 @@ import glm_.vec3.Vec3d
 
 class ParticleMesh(renderWindow: RenderWindow) : Mesh(renderWindow, ParticleMeshStruct, PrimitiveTypes.POINT) {
 
-    fun addVertex(position: Vec3d, scale: Float, texture: Texture, tintColor: RGBColor, uvMin: Vec2 = Vec2(0, 0), uvMax: Vec2 = Vec2(1, 1)) {
+    fun addVertex(position: Vec3d, scale: Float, texture: AbstractTexture, tintColor: RGBColor, uvMin: Vec2 = Vec2(0.0f, 0.0f), uvMax: Vec2 = Vec2(1.0f, 1.0f)) {
         val textureLayer = if (RenderConstants.FORCE_DEBUG_TEXTURE) {
             RenderConstants.DEBUG_TEXTURE_ID
         } else {
-            (texture.arrayId shl 24) or texture.arrayLayer
+            texture.renderData?.layer ?: RenderConstants.DEBUG_TEXTURE_ID
         }
 
+        val minTransformedUV = texture.renderData?.transformUV(uvMin) ?: uvMin
+        val maxTransformedUV = texture.renderData?.transformUV(uvMax) ?: uvMax
         data.addAll(
             floatArrayOf(
                 position.x.toFloat(), // ToDo: Use doubles
-            position.y.toFloat(),
-            position.z.toFloat(),
-            uvMin.x,
-            uvMin.y,
-            uvMax.x * texture.uvEnd.x,
-            uvMax.y * texture.uvEnd.y,
-            Float.fromBits(textureLayer),
-            Float.fromBits(texture.properties.animation?.animationId ?: -1),
-            scale,
-            Float.fromBits(tintColor.rgba),
-        ))
+                position.y.toFloat(),
+                position.z.toFloat(),
+                minTransformedUV.x,
+                minTransformedUV.y,
+                maxTransformedUV.x,
+                maxTransformedUV.y,
+                Float.fromBits(textureLayer),
+                Float.fromBits(texture.renderData?.animationData ?: -1),
+                scale,
+                Float.fromBits(tintColor.rgba),
+            ))
     }
 
 

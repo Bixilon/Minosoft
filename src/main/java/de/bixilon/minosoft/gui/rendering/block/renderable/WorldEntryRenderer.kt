@@ -2,7 +2,8 @@ package de.bixilon.minosoft.gui.rendering.block.renderable
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.block.models.FaceSize
-import de.bixilon.minosoft.gui.rendering.textures.Texture
+import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 
 interface WorldEntryRenderer {
     val faceBorderSizes: Array<Array<FaceSize>?> // direction indexed
@@ -10,13 +11,13 @@ interface WorldEntryRenderer {
 
     fun render(context: BlockLikeRenderContext)
 
-    fun resolveTextures(textures: MutableMap<ResourceLocation, Texture>)
+    fun resolveTextures(textureManager: TextureManager)
 
     fun postInit() {}
 
     companion object {
-        fun resolveTexture(textures: MutableMap<ResourceLocation, Texture>, textureResourceLocation: ResourceLocation): Texture {
-            return textures.getOrPut(textureResourceLocation) { Texture(textureResourceLocation) }
+        fun resolveTexture(textureManager: TextureManager, textureResourceLocation: ResourceLocation): AbstractTexture {
+            return textureManager.staticTextures.createTexture(textureResourceLocation)
         }
     }
 }

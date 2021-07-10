@@ -17,7 +17,7 @@ import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.textures.Texture
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
 import glm_.vec2.Vec2
@@ -25,26 +25,27 @@ import glm_.vec3.Vec3
 
 class ChunkSectionArrayMesh(renderWindow: RenderWindow) : Mesh(renderWindow, SectionArrayMeshStruct, initialCacheSize = 100000) {
 
-    fun addVertex(position: Vec3, textureCoordinates: Vec2, texture: Texture, tintColor: RGBColor?, light: Int) {
+    fun addVertex(position: Vec3, uv: Vec2, texture: AbstractTexture, tintColor: RGBColor?, light: Int) {
         val color = tintColor ?: ChatColors.WHITE
 
         val textureLayer = if (RenderConstants.FORCE_DEBUG_TEXTURE) {
             RenderConstants.DEBUG_TEXTURE_ID
         } else {
-            (texture.arrayId shl 24) or texture.arrayLayer
+            texture.renderData?.layer ?: RenderConstants.DEBUG_TEXTURE_ID
         }
+        val transformedUV = texture.renderData?.transformUV(uv) ?: uv
         data.addAll(
             floatArrayOf(
-            position.x,
-            position.y,
-            position.z,
-            textureCoordinates.x * texture.uvEnd.x,
-            textureCoordinates.y * texture.uvEnd.y,
-            Float.fromBits(textureLayer),
-            Float.fromBits(texture.properties.animation?.animationId ?: -1),
-            Float.fromBits(color.rgb),
-            Float.fromBits(light),
-        ))
+                position.x,
+                position.y,
+                position.z,
+                transformedUV.x,
+                transformedUV.y,
+                Float.fromBits(textureLayer),
+                Float.fromBits(texture.renderData?.animationData ?: -1),
+                Float.fromBits(color.rgb),
+                Float.fromBits(light),
+            ))
     }
 
 

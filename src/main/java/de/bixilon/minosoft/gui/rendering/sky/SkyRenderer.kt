@@ -24,7 +24,7 @@ import de.bixilon.minosoft.gui.rendering.RendererBuilder
 import de.bixilon.minosoft.gui.rendering.modding.events.CameraMatrixChangeEvent
 import de.bixilon.minosoft.gui.rendering.system.base.BlendingFunctions
 import de.bixilon.minosoft.gui.rendering.system.base.DepthFunctions
-import de.bixilon.minosoft.gui.rendering.textures.Texture
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.util.mesh.SimpleTextureMesh
 import de.bixilon.minosoft.modding.event.CallbackEventInvoker
 import de.bixilon.minosoft.modding.event.events.TimeChangeEvent
@@ -44,7 +44,7 @@ class SkyRenderer(
     private val skySunShader = renderWindow.renderSystem.createShader(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "sky/sun"))
     private val skyboxMesh = SkyboxMesh(renderWindow)
     private var skySunMesh = SimpleTextureMesh(renderWindow)
-    private lateinit var sunTexture: Texture
+    private lateinit var sunTexture: AbstractTexture
     private var recalculateSunNextFrame: Boolean = true
     var baseColor = RenderConstants.DEFAULT_SKY_COLOR
 
@@ -69,7 +69,7 @@ class SkyRenderer(
                 recalculateSunNextFrame = true
             }
         })
-        sunTexture = renderWindow.textures.allTextures.getOrPut(SUN_TEXTURE_RESOURCE_LOCATION) { Texture(SUN_TEXTURE_RESOURCE_LOCATION) }
+        sunTexture = renderWindow.textureManager.staticTextures.createTexture(SUN_TEXTURE_RESOURCE_LOCATION)
     }
 
     private fun setSunMatrix(projectionViewMatrix: Mat4d) {
@@ -83,7 +83,7 @@ class SkyRenderer(
     }
 
     override fun postInit() {
-        renderWindow.textures.use(skySunShader)
+        renderWindow.textureManager.staticTextures.use(skySunShader)
     }
 
     private fun drawSun() {

@@ -17,6 +17,8 @@ import de.bixilon.minosoft.data.assets.AssetsManager
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderConstants
+import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.textures.Texture
 import de.bixilon.minosoft.util.KUtil.listCast
 import de.bixilon.minosoft.util.KUtil.toInt
@@ -39,7 +41,7 @@ object FontLoader {
         return ret
     }
 
-    private fun loadBitmapFontProvider(atlasPath: ResourceLocation, height: Int? = 8, ascent: Int, chars: List<Char>, assetsManager: AssetsManager, textures: MutableMap<ResourceLocation, Texture>): FontProvider {
+    private fun loadBitmapFontProvider(atlasPath: ResourceLocation, height: Int? = 8, ascent: Int, chars: List<Char>, assetsManager: AssetsManager, textureManager: TextureManager): FontProvider {
         val width = if (ascent == 7) { // ToDo: Why?
             8
         } else {
@@ -47,7 +49,7 @@ object FontLoader {
         }
         val provider = FontProvider(width)
         val atlasResourceLocation = Texture.getResourceTextureIdentifier(atlasPath.namespace, atlasPath.path)
-        val atlasTexture = textures.getOrPut(atlasResourceLocation) { Texture(atlasResourceLocation) }
+        val atlasTexture = textureManager.staticTextures.createTexture(atlasResourceLocation)
         atlasTexture.load(assetsManager)
         val height = height ?: atlasTexture.size.x / FONT_ATLAS_SIZE
         val charsCoordinates: MutableList<MutableList<FontChar>> = mutableListOf() // ToDo: Remove this
@@ -59,11 +61,11 @@ object FontLoader {
             provider.chars[char] = fontChar
             charsCoordinates[i / FONT_ATLAS_SIZE].add(fontChar)
         }
-        atlasTexture.buffer!!.rewind()
+        atlasTexture.data!!.rewind()
         // calculate start and endpixel for every char
         for (y in 0 until atlasTexture.size.y) {
             for (x in 0 until atlasTexture.size.x) {
-                val color = RGBColor(atlasTexture.buffer!!.get(), atlasTexture.buffer!!.get(), atlasTexture.buffer!!.get(), atlasTexture.buffer!!.get())
+                val color = RGBColor(atlasTexture.data!!.get(), atlasTexture.data!!.get(), atlasTexture.data!!.get(), atlasTexture.data!!.get())
                 if (color.alpha == 0) {
                     continue
                 }
@@ -86,15 +88,15 @@ object FontLoader {
             fontChar.size.x = fontChar.endPixel - fontChar.startPixel
 
         }
-        atlasTexture.buffer!!.flip()
+        atlasTexture.data!!.flip()
         return provider
     }
 
 
-    private fun loadUnicodeFontProvider(template: ResourceLocation, sizes: InputStream, assetsManager: AssetsManager, textures: MutableMap<ResourceLocation, Texture>): FontProvider {
+    private fun loadUnicodeFontProvider(template: ResourceLocation, sizes: InputStream, assetsManager: AssetsManager, textureManager: TextureManager): FontProvider {
         val provider = FontProvider(UNICODE_SIZE)
         var i = 0
-        lateinit var currentAtlasTexture: Texture
+        lateinit var currentAtlasTexture: AbstractTexture
         while (sizes.available() > 0) {
 
             if (i % 256 == 0) {
@@ -105,7 +107,7 @@ object FontLoader {
                     // new page (texture)
                     Texture.getResourceTextureIdentifier(template.namespace, template.path.format("%02x".format(i / 256)))
                 }
-                currentAtlasTexture = textures.getOrPut(textureResourceLocation) { Texture(textureResourceLocation) }
+                currentAtlasTexture = textureManager.staticTextures.createTexture(textureResourceLocation)
                 currentAtlasTexture.load(assetsManager)
             }
             val sizeByte = sizes.read()
@@ -116,13 +118,13 @@ object FontLoader {
         return provider
     }
 
-    fun loadFontProvider(data: Map<String, Any>, assetsManager: AssetsManager, textures: MutableMap<ResourceLocation, Texture>): FontProvider {
+    fun loadFontProvider(data: Map<String, Any>, assetsManager: AssetsManager, textureManager: TextureManager): FontProvider {
         return when (data["type"].unsafeCast<String>()) {
             "bitmap" -> {
-                loadBitmapFontProvider(ResourceLocation(data["file"].unsafeCast()), data["height"]?.toInt(), data["ascent"]!!.toInt(), getCharArray(data["chars"].unsafeCast()), assetsManager, textures)
+                loadBitmapFontProvider(ResourceLocation(data["file"].unsafeCast()), data["height"]?.toInt(), data["ascent"]!!.toInt(), getCharArray(data["chars"].unsafeCast()), assetsManager, textureManager)
             }
             "legacy_unicode" -> {
-                loadUnicodeFontProvider(ResourceLocation(data["template"].unsafeCast()), assetsManager.readAssetAsStream(ResourceLocation(data["sizes"].unsafeCast())), assetsManager, textures)
+                loadUnicodeFontProvider(ResourceLocation(data["template"].unsafeCast()), assetsManager.readAssetAsStream(ResourceLocation(data["sizes"].unsafeCast())), assetsManager, textureManager)
             }
             "ttf" -> {
                 TODO("True Type Fonts are not implemented yet")
@@ -132,10 +134,10 @@ object FontLoader {
     }
 
 
-    fun loadFontProviders(assetsManager: AssetsManager, textures: MutableMap<ResourceLocation, Texture>): List<FontProvider> {
+    fun loadFontProviders(assetsManager: AssetsManager, textureManager: TextureManager): List<FontProvider> {
         val ret: MutableList<FontProvider> = mutableListOf()
         for (providerElement in assetsManager.readJsonAsset(FONT_JSON_RESOURCE_LOCATION).asCompound()["providers"]!!.listCast()!!) {
-            val provider = loadFontProvider(providerElement.asCompound(), assetsManager, textures)
+            val provider = loadFontProvider(providerElement.asCompound(), assetsManager, textureManager)
             ret.add(provider)
         }
         return ret

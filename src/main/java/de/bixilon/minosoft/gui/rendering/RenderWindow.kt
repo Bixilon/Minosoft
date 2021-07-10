@@ -33,8 +33,6 @@ import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem
 import de.bixilon.minosoft.gui.rendering.system.window.BaseWindow
 import de.bixilon.minosoft.gui.rendering.system.window.GLFWWindow
-import de.bixilon.minosoft.gui.rendering.textures.Texture
-import de.bixilon.minosoft.gui.rendering.textures.TextureArray
 import de.bixilon.minosoft.gui.rendering.util.ScreenshotTaker
 import de.bixilon.minosoft.modding.event.CallbackEventInvoker
 import de.bixilon.minosoft.modding.event.events.PacketReceiveEvent
@@ -76,7 +74,7 @@ class RenderWindow(
     private val screenshotTaker = ScreenshotTaker(this)
     val tintColorCalculator = TintColorCalculator(connection.world)
     val font = Font()
-    val textures = TextureArray(synchronizedMapOf())
+    val textureManager = renderSystem.createTextureManager()
 
     val rendererMap: MutableMap<ResourceLocation, Renderer> = synchronizedMapOf()
 
@@ -144,16 +142,15 @@ class RenderWindow(
         renderSystem.reset()
 
         Log.log(LogMessageType.RENDERING_LOADING) { "Generating font and gathering textures (${stopwatch.labTime()})..." }
-        textures.allTextures.getOrPut(RenderConstants.DEBUG_TEXTURE_RESOURCE_LOCATION) { Texture(RenderConstants.DEBUG_TEXTURE_RESOURCE_LOCATION) }
+        textureManager.staticTextures.createTexture(RenderConstants.DEBUG_TEXTURE_RESOURCE_LOCATION)
         WHITE_TEXTURE = TextureLikeTexture(
-            texture = Texture(ResourceLocation("minosoft:textures/white.png")),
+            texture = textureManager.staticTextures.createTexture(ResourceLocation("minosoft:textures/white.png")),
             uvStart = Vec2(0, 0),
             uvEnd = Vec2(1.0f, 1.0f),
             size = Vec2i(16, 16)
         )
-        textures.allTextures.getOrPut(WHITE_TEXTURE.texture.resourceLocation) { WHITE_TEXTURE.texture }
 
-        font.load(connection.assetsManager, textures.allTextures)
+        font.load(connection.assetsManager, textureManager)
 
         shaderManager.init()
 
@@ -164,11 +161,11 @@ class RenderWindow(
         }
 
         Log.log(LogMessageType.RENDERING_LOADING) { "Preloading textures (${stopwatch.labTime()})..." }
-        textures.preLoad(connection.assetsManager)
+        textureManager.staticTextures.preLoad()
         font.loadAtlas()
 
         Log.log(LogMessageType.RENDERING_LOADING) { "Loading textures (${stopwatch.labTime()})..." }
-        textures.load()
+        textureManager.staticTextures.load()
 
         Log.log(LogMessageType.RENDERING_LOADING) { "Post loading renderer (${stopwatch.labTime()})..." }
         for (renderer in rendererMap.values) {
@@ -255,7 +252,7 @@ class RenderWindow(
             lastFrame = currentFrame
 
 
-            textures.animator.draw()
+            textureManager.staticTextures.animator.draw()
 
 
             for (renderer in rendererMap.values) {

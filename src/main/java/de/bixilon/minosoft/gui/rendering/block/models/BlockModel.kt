@@ -58,10 +58,7 @@ open class BlockModel(
         var currentValue: String = type
         while (currentValue.startsWith("#")) {
             textures[currentValue.removePrefix("#")].let {
-                if (it == null) {
-                    return currentValue
-                }
-                currentValue = it
+                currentValue = it ?: return currentValue
             }
         }
         return currentValue

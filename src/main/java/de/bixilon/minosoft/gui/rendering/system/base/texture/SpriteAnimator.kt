@@ -11,15 +11,17 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.textures.properties
+package de.bixilon.minosoft.gui.rendering.system.base.texture
 
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
 
-data class AnimationFrame(
-    val index: Int,
-    val time: Int,
-) {
-    val animationTime = time * ProtocolDefinition.TICK_TIME
-    lateinit var texture: AbstractTexture
+interface SpriteAnimator {
+    val size: Int
+
+    fun init()
+
+    fun draw()
+
+
+    fun use(shader: Shader, bufferName: String = "uAnimationBuffer")
 }

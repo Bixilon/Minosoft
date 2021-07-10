@@ -11,19 +11,11 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.textures
+package de.bixilon.minosoft.gui.rendering.system.base.texture
 
-import de.bixilon.minosoft.util.KUtil
-import de.bixilon.minosoft.util.enum.ValuesEnum
-
-enum class TextureTransparencies {
-    OPAQUE,
-    TRANSPARENT,
-    TRANSLUCENT,
+enum class TextureStates {
+    DECLARED,
+    LOADED,
+    UNLOADED,
     ;
-
-    companion object : ValuesEnum<TextureTransparencies> {
-        override val VALUES: Array<TextureTransparencies> = values()
-        override val NAME_MAP: Map<String, TextureTransparencies> = KUtil.getEnumValues(VALUES)
-    }
 }

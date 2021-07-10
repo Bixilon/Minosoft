@@ -35,8 +35,7 @@ import de.bixilon.minosoft.gui.rendering.input.camera.Frustum
 import de.bixilon.minosoft.gui.rendering.modding.events.FrustumChangeEvent
 import de.bixilon.minosoft.gui.rendering.modding.events.RenderingStateChangeEvent
 import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
-import de.bixilon.minosoft.gui.rendering.textures.Texture
-import de.bixilon.minosoft.gui.rendering.textures.TextureArray
+import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.getWorldOffset
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.of
@@ -142,7 +141,7 @@ class WorldRenderer(
 
     override fun init() {
         allBlocks = getAllBlocks(connection.version.registries)
-        resolveBlockTextureIds(allBlocks!!, renderWindow.textures.allTextures)
+        resolveBlockTextureIds(allBlocks!!, renderWindow.textureManager)
 
 
         // register keybindings
@@ -180,12 +179,11 @@ class WorldRenderer(
     }
 
     override fun postInit() {
-        check(renderWindow.textures.animator.animatedTextures.size < TextureArray.MAX_ANIMATED_TEXTURES) { "Can not have more than ${TextureArray.MAX_ANIMATED_TEXTURES} animated textures!" }
         chunkShader.load()
         lightMap.init()
 
-        renderWindow.textures.use(chunkShader)
-        renderWindow.textures.animator.use(chunkShader)
+        renderWindow.textureManager.staticTextures.use(chunkShader)
+        renderWindow.textureManager.staticTextures.animator.use(chunkShader)
         lightMap.use(chunkShader)
 
         for (blockState in allBlocks!!) {
@@ -223,10 +221,11 @@ class WorldRenderer(
         }
     }
 
-    private fun resolveBlockTextureIds(blocks: Collection<BlockState>, textures: MutableMap<ResourceLocation, Texture>) {
+    @Deprecated(message = "TODO")
+    private fun resolveBlockTextureIds(blocks: Collection<BlockState>, textureManager: TextureManager) {
         for (block in blocks) {
             for (model in block.renderers) {
-                model.resolveTextures(textures)
+                model.resolveTextures(textureManager)
             }
         }
     }

@@ -15,7 +15,8 @@ package de.bixilon.minosoft.gui.rendering.hud.atlas
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderConstants
-import de.bixilon.minosoft.gui.rendering.textures.Texture
+import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.util.KUtil.nullCast
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.asCompound
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
@@ -23,7 +24,7 @@ import glm_.vec2.Vec2
 import glm_.vec2.Vec2i
 
 data class HUDAtlasElement(
-    override val texture: Texture,
+    override val texture: AbstractTexture,
     val binding: Vec2Binding,
     val slots: Map<Int, Vec2Binding> = mapOf(),
 ) : TextureLike {
@@ -36,20 +37,20 @@ data class HUDAtlasElement(
 
 
     fun postInit() {
-        uvStart = (Vec2(binding.start) + RenderConstants.PIXEL_UV_PIXEL_ADD) * texture.arraySinglePixelFactor
-        uvEnd = Vec2(binding.end) * texture.arraySinglePixelFactor
+        uvStart = (Vec2(binding.start) + RenderConstants.PIXEL_UV_PIXEL_ADD) * texture.singlePixelSize
+        uvEnd = Vec2(binding.end) * texture.singlePixelSize
     }
 
     companion object {
-        fun deserialize(json: Map<ResourceLocation, Any>, textures: MutableMap<ResourceLocation, Texture>): Map<ResourceLocation, HUDAtlasElement> {
+        fun deserialize(json: Map<ResourceLocation, Any>, textureManager: TextureManager): Map<ResourceLocation, HUDAtlasElement> {
             val ret: MutableMap<ResourceLocation, HUDAtlasElement> = mutableMapOf()
             for ((resourceLocation, data) in json) {
-                ret[resourceLocation] = deserialize(data.asCompound(), textures)
+                ret[resourceLocation] = deserialize(data.asCompound(), textureManager)
             }
             return ret
         }
 
-        fun deserialize(json: Map<String, Any>, textures: MutableMap<ResourceLocation, Texture>): HUDAtlasElement {
+        fun deserialize(json: Map<String, Any>, textureManager: TextureManager): HUDAtlasElement {
             val keys: MutableSet<Int> = mutableSetOf()
             var textureResourceLocation: ResourceLocation? = json["texture"].nullCast<String>()?.let { ResourceLocation(it) }
             for (key in json["versions"]!!.asCompound().keys) {
@@ -61,7 +62,7 @@ data class HUDAtlasElement(
             imageJson["texture"].nullCast<String>()?.let { textureResourceLocation = ResourceLocation(it) }
 
 
-            val texture = textures.getOrPut(textureResourceLocation!!) { Texture(textureResourceLocation!!) }
+            val texture = textureManager.staticTextures.createTexture(textureResourceLocation!!)
 
             val slots: MutableMap<Int, Vec2Binding> = mutableMapOf()
 

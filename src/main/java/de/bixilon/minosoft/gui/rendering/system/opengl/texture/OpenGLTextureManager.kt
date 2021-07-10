@@ -11,15 +11,12 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.textures.properties
+package de.bixilon.minosoft.gui.rendering.system.opengl.texture
 
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.system.base.texture.StaticTextureArray
+import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
 
-data class AnimationFrame(
-    val index: Int,
-    val time: Int,
-) {
-    val animationTime = time * ProtocolDefinition.TICK_TIME
-    lateinit var texture: AbstractTexture
+class OpenGLTextureManager(val renderWindow: RenderWindow) : TextureManager {
+    override var staticTextures: StaticTextureArray = OpenGLTextureArray(renderWindow)
 }

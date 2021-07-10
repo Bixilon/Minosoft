@@ -17,14 +17,13 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.uniform.OpenGLUniformBuffer
-import de.bixilon.minosoft.gui.rendering.textures.TextureArray
-import de.bixilon.minosoft.util.MMath
 import de.bixilon.minosoft.util.Previous
 import glm_.mat4x4.Mat4
 import glm_.vec2.Vec2
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3d
 import glm_.vec4.Vec4
+import kotlin.math.max
 
 interface Shader {
     val loaded: Boolean
@@ -69,7 +68,7 @@ interface Shader {
             is Vec2 -> setVec2(uniformName, data)
             is RGBColor -> setRGBColor(uniformName, data)
             is OpenGLUniformBuffer -> setUniformBuffer(uniformName, data)
-            // ToDo: Texture
+            // ToDo: PNGTexture
             else -> error("Don't know what todo with uniform type ${data::class.simpleName}!")
         }
     }
@@ -77,7 +76,7 @@ interface Shader {
     companion object {
         val DEFAULT_DEFINES: Map<String, (renderWindow: RenderWindow) -> Any?> = mapOf(
             "ANIMATED_TEXTURE_COUNT" to {
-                MMath.clamp(it.textures.animator.animatedTextures.size, 1, TextureArray.MAX_ANIMATED_TEXTURES)
+                max(it.textureManager.staticTextures.animator.size, 1)
             }
         )
     }

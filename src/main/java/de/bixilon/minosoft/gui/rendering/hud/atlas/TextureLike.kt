@@ -13,12 +13,12 @@
 
 package de.bixilon.minosoft.gui.rendering.hud.atlas
 
-import de.bixilon.minosoft.gui.rendering.textures.Texture
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import glm_.vec2.Vec2
 import glm_.vec2.Vec2i
 
 interface TextureLike {
-    val texture: Texture
+    val texture: AbstractTexture
     val uvStart: Vec2
     val uvEnd: Vec2
     val size: Vec2i

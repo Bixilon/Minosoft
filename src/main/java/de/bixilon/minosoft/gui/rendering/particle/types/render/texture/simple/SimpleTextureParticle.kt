@@ -19,7 +19,7 @@ import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import glm_.vec3.Vec3d
 
 abstract class SimpleTextureParticle(connection: PlayConnection, position: Vec3d, velocity: Vec3d, data: ParticleData? = null) : TextureParticle(connection, position, velocity, data) {
-    override var texture = this.data.type.textures.getOrNull(0)?.let { connection.rendering?.renderWindow?.textures?.allTextures?.get(it) }
+    override var texture = this.data.type.textures.getOrNull(0)?.let { connection.rendering?.renderWindow?.textureManager?.staticTextures?.get(it) }
     var spriteDisabled = false
 
 
@@ -33,11 +33,11 @@ abstract class SimpleTextureParticle(connection: PlayConnection, position: Vec3d
         if (texture?.resourceLocation == nextTextureResourceLocation) {
             return
         }
-        texture = connection.rendering?.renderWindow?.textures?.allTextures?.get(nextTextureResourceLocation)
+        texture = connection.rendering?.renderWindow?.textureManager?.staticTextures?.get(nextTextureResourceLocation)
     }
 
     fun setRandomSprite() {
-        texture = connection.rendering?.renderWindow?.textures?.allTextures?.get(data.type.textures.random(random))
+        texture = connection.rendering?.renderWindow?.textureManager?.staticTextures?.get(data.type.textures.random(random))
     }
 
     override fun tick() {

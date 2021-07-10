@@ -22,9 +22,11 @@ import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.IntUniformBu
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.FloatVertexBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
 import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
+import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.uniform.FloatOpenGLUniformBuffer
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.uniform.IntOpenGLUniformBuffer
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.vertex.FloatOpenGLVertexBuffer
+import de.bixilon.minosoft.gui.rendering.system.opengl.texture.OpenGLTextureManager
 import de.bixilon.minosoft.gui.rendering.system.opengl.vendor.*
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
 import de.bixilon.minosoft.modding.event.CallbackEventInvoker
@@ -183,6 +185,10 @@ class OpenGLRenderSystem(
 
     override fun createIntUniformBuffer(bindingIndex: Int, data: IntArray): IntUniformBuffer {
         return IntOpenGLUniformBuffer(bindingIndex, data)
+    }
+
+    override fun createTextureManager(): TextureManager {
+        return OpenGLTextureManager(renderWindow)
     }
 
     companion object {

@@ -25,8 +25,8 @@ import de.bixilon.minosoft.gui.rendering.block.models.BlockModelElement
 import de.bixilon.minosoft.gui.rendering.block.models.BlockModelFace
 import de.bixilon.minosoft.gui.rendering.block.models.FaceSize
 import de.bixilon.minosoft.gui.rendering.block.renderable.BlockLikeRenderContext
-import de.bixilon.minosoft.gui.rendering.textures.Texture
-import de.bixilon.minosoft.gui.rendering.textures.TextureTransparencies
+import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.rotate
@@ -70,7 +70,7 @@ class ElementRenderer(
         this.faces = faces.toMap()
     }
 
-    fun render(tintColor: RGBColor?, textureMapping: MutableMap<String, Texture>, direction: Directions, context: BlockLikeRenderContext) {
+    fun render(tintColor: RGBColor?, textureMapping: MutableMap<String, AbstractTexture>, direction: Directions, context: BlockLikeRenderContext) {
         val realDirection = directionMapping.inverse()[direction]!!
 
         val face = faces[realDirection] ?: return // Not our face
@@ -114,7 +114,7 @@ class ElementRenderer(
 
             mesh.addVertex(
                 position = output,
-                textureCoordinates = texturePositions[texturePositionIndex]!!,
+                uv = texturePositions[texturePositionIndex]!!,
                 texture = texture,
                 tintColor = finalColor,
                 light = light,

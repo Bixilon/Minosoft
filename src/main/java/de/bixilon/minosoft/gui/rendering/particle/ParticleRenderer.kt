@@ -21,7 +21,6 @@ import de.bixilon.minosoft.gui.rendering.RendererBuilder
 import de.bixilon.minosoft.gui.rendering.modding.events.CameraMatrixChangeEvent
 import de.bixilon.minosoft.gui.rendering.particle.types.Particle
 import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
-import de.bixilon.minosoft.gui.rendering.textures.Texture
 import de.bixilon.minosoft.modding.event.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
@@ -53,7 +52,7 @@ class ParticleRenderer(
         transparentParticleMesh.load()
         connection.registries.particleTypeRegistry.forEachItem {
             for (resourceLocation in it.textures) {
-                renderWindow.textures.allTextures[resourceLocation] = Texture(resourceLocation)
+                renderWindow.textureManager.staticTextures.createTexture(resourceLocation)
             }
         }
 
@@ -62,8 +61,8 @@ class ParticleRenderer(
 
     override fun postInit() {
         particleShader.load()
-        renderWindow.textures.use(particleShader)
-        renderWindow.textures.animator.use(particleShader)
+        renderWindow.textureManager.staticTextures.use(particleShader)
+        renderWindow.textureManager.staticTextures.animator.use(particleShader)
 
         connection.world.particleRenderer = this
     }

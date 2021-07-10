@@ -14,15 +14,14 @@
 package de.bixilon.minosoft.gui.rendering.font
 
 import de.bixilon.minosoft.data.assets.AssetsManager
-import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.gui.rendering.textures.Texture
+import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
 
 class Font {
     lateinit var providers: List<FontProvider>
     private var loaded = false
 
-    fun load(assetsManager: AssetsManager, textures: MutableMap<ResourceLocation, Texture>) {
-        providers = FontLoader.loadFontProviders(assetsManager, textures)
+    fun load(assetsManager: AssetsManager, textureManager: TextureManager) {
+        providers = FontLoader.loadFontProviders(assetsManager, textureManager)
     }
 
     fun getChar(char: Char): FontChar {

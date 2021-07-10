@@ -16,29 +16,29 @@ package de.bixilon.minosoft.gui.rendering.util.mesh
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.textures.Texture
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import glm_.vec2.Vec2
 import glm_.vec3.Vec3
 
 open class SimpleTextureMesh(renderWindow: RenderWindow) : Mesh(renderWindow, SimpleTextureMeshStruct, initialCacheSize = 2 * 3 * SimpleTextureMeshStruct.FLOATS_PER_VERTEX) {
 
-    fun addVertex(position: Vec3, texture: Texture, textureCoordinates: Vec2, tintColor: RGBColor) {
+    fun addVertex(position: Vec3, texture: AbstractTexture, textureCoordinates: Vec2, tintColor: RGBColor) {
         val textureLayer = if (RenderConstants.FORCE_DEBUG_TEXTURE) {
             RenderConstants.DEBUG_TEXTURE_ID
         } else {
-            (texture.arrayId shl 24) or texture.arrayLayer
+            texture.renderData?.layer ?: RenderConstants.DEBUG_TEXTURE_ID
         }
 
         data.addAll(
             floatArrayOf(
                 position.x,
-            position.y,
-            position.z,
-            textureCoordinates.x,
-            textureCoordinates.y,
-            Float.fromBits(textureLayer),
-            Float.fromBits(tintColor.rgba),
-        ))
+                position.y,
+                position.z,
+                textureCoordinates.x,
+                textureCoordinates.y,
+                Float.fromBits(textureLayer),
+                Float.fromBits(tintColor.rgba),
+            ))
     }
 
 

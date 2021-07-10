@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.rendering.block.renderable.fluid
 
 import de.bixilon.minosoft.data.direction.Directions
-import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
@@ -31,6 +30,8 @@ import de.bixilon.minosoft.gui.rendering.block.models.FaceSize
 import de.bixilon.minosoft.gui.rendering.block.renderable.BlockLikeRenderContext
 import de.bixilon.minosoft.gui.rendering.block.renderable.WorldEntryRenderer
 import de.bixilon.minosoft.gui.rendering.block.renderable.block.ElementRenderer
+import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.textures.Texture
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
@@ -46,9 +47,9 @@ class FluidRenderer(
 ) : WorldEntryRenderer {
     override val faceBorderSizes: Array<Array<FaceSize>?> = arrayOfNulls(Directions.VALUES.size)
     override val transparentFaces: BooleanArray = BooleanArray(Directions.VALUES.size)
-    var stillTexture: Texture? = null
+    var stillTexture: AbstractTexture? = null
         private set
-    var flowingTexture: Texture? = null
+    var flowingTexture: AbstractTexture? = null
         private set
 
     override fun render(context: BlockLikeRenderContext) {
@@ -62,7 +63,7 @@ class FluidRenderer(
         val heights = calculateHeights(context.neighbourBlocks, context.blockState, context.world, context.blockPosition)
         val isFlowing = isLiquidFlowing(heights)
 
-        var texture: Texture
+        var texture: AbstractTexture
 
         var tintColor: RGBColor? = null
         var biome: Biome? = null
@@ -139,12 +140,12 @@ class FluidRenderer(
         return heights.toSet().size != 1 // liquid is flowing, if not all of the heights are the same
     }
 
-    private fun createQuad(drawPositions: Array<Vec3>, texturePositions: Array<Vec2?>, texture: Texture, blockPosition: Vec3i, meshCollection: ChunkSectionMeshCollection, tintColor: RGBColor?, light: Int) {
+    private fun createQuad(drawPositions: Array<Vec3>, texturePositions: Array<Vec2?>, texture: AbstractTexture, blockPosition: Vec3i, meshCollection: ChunkSectionMeshCollection, tintColor: RGBColor?, light: Int) {
         val mesh = ElementRenderer.getMesh(meshCollection, texture.transparency)
         for (vertex in Mesh.QUAD_DRAW_ODER) {
             mesh.addVertex(
                 position = blockPosition plus drawPositions[vertex.first] plus ElementRenderer.DRAW_OFFSET,
-                textureCoordinates = texturePositions[vertex.second]!!,
+                uv = texturePositions[vertex.second]!!,
                 texture = texture,
                 tintColor = tintColor,
                 light = light,
@@ -232,9 +233,9 @@ class FluidRenderer(
         return 0.8125f
     }
 
-    override fun resolveTextures(textures: MutableMap<ResourceLocation, Texture>) {
-        stillTexture = fluid.stillTexture?.let { Texture.getResourceTextureIdentifier(it.namespace, it.path) }?.let { WorldEntryRenderer.resolveTexture(textures, it) }
-        flowingTexture = fluid.nullCast<FlowableFluid>()?.flowingTexture?.let { Texture.getResourceTextureIdentifier(it.namespace, it.path) }?.let { WorldEntryRenderer.resolveTexture(textures, it) }
+    override fun resolveTextures(textureManager: TextureManager) {
+        stillTexture = fluid.stillTexture?.let { Texture.getResourceTextureIdentifier(it.namespace, it.path) }?.let { WorldEntryRenderer.resolveTexture(textureManager, it) }
+        flowingTexture = fluid.nullCast<FlowableFluid>()?.flowingTexture?.let { Texture.getResourceTextureIdentifier(it.namespace, it.path) }?.let { WorldEntryRenderer.resolveTexture(textureManager, it) }
     }
 
     companion object {

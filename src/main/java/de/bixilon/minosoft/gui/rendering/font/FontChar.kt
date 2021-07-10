@@ -15,12 +15,12 @@ package de.bixilon.minosoft.gui.rendering.font
 
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.hud.atlas.TextureLike
-import de.bixilon.minosoft.gui.rendering.textures.Texture
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import glm_.vec2.Vec2
 import glm_.vec2.Vec2i
 
 data class FontChar(
-    override val texture: Texture,
+    override val texture: AbstractTexture,
     val row: Int,
     val column: Int,
     var startPixel: Int,
@@ -36,7 +36,7 @@ data class FontChar(
 
 
     fun calculateUV(letterWidth: Int) {
-        uvStart = (Vec2(letterWidth * column + startPixel, height * row) + RenderConstants.PIXEL_UV_PIXEL_ADD) * texture.arraySinglePixelFactor
-        uvEnd = Vec2(letterWidth * column + endPixel, height * (row + 1)) * texture.arraySinglePixelFactor
+        uvStart = (Vec2(letterWidth * column + startPixel, height * row) + RenderConstants.PIXEL_UV_PIXEL_ADD) * texture.singlePixelSize
+        uvEnd = Vec2(letterWidth * column + endPixel, height * (row + 1)) * texture.singlePixelSize
     }
 }

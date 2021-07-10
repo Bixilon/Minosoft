@@ -11,15 +11,13 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.textures.properties
+package de.bixilon.minosoft.gui.rendering.system.base.texture.texture
 
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import glm_.vec2.Vec2
 
-data class AnimationFrame(
-    val index: Int,
-    val time: Int,
-) {
-    val animationTime = time * ProtocolDefinition.TICK_TIME
-    lateinit var texture: AbstractTexture
+interface TextureRenderData {
+    val layer: Int
+    val animationData: Int
+
+    fun transformUV(end: Vec2): Vec2
 }

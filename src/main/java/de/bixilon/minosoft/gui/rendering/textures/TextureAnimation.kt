@@ -13,10 +13,11 @@
 
 package de.bixilon.minosoft.gui.rendering.textures
 
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.SpriteTexture
 import de.bixilon.minosoft.gui.rendering.textures.properties.AnimationFrame
 
 data class TextureAnimation(
-    val texture: Texture,
+    val texture: SpriteTexture,
 ) {
     var currentFrameIndex = 0
     var currentTime = 0L

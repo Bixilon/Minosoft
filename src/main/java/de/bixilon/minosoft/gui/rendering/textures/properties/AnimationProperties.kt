@@ -14,7 +14,8 @@
 package de.bixilon.minosoft.gui.rendering.textures.properties
 
 import com.squareup.moshi.Json
-import de.bixilon.minosoft.gui.rendering.textures.Texture
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
+import de.bixilon.minosoft.util.KUtil.toInt
 
 data class AnimationProperties(
     val interpolate: Boolean = false,
@@ -23,16 +24,19 @@ data class AnimationProperties(
     @Json(name = "frametime") private val frameTime: Int = 1,
     @Json(name = "frames") private val _frames: List<Any> = listOf(),
 ) {
+    private var initialized = false
+
     @Transient
     lateinit var frames: Array<AnimationFrame>
         private set
 
-    var animationId = -1
-
     var frameCount = -1
         private set
 
-    fun postInit(texture: Texture) {
+    fun postInit(texture: AbstractTexture) {
+        if (initialized) {
+            error("")
+        }
         if (width == -1) {
             width = texture.size.x
         }
@@ -46,21 +50,21 @@ data class AnimationProperties(
 
         if (_frames.isEmpty()) {
             for (i in 0 until frameCount) {
-                frames.add(AnimationFrame(i, frameTime))
+                frames += AnimationFrame(i, frameTime)
             }
         } else {
             for (frame in _frames) {
                 if (frame is Number) {
-                    frames.add(AnimationFrame(frame.toInt(), frameTime))
+                    frames += AnimationFrame(frame.toInt(), frameTime)
                     continue
                 }
                 check(frame is Map<*, *>) { "Invalid frame: $frame" }
 
-                frames.add(AnimationFrame((frame["index"] as Number).toInt(), (frame["time"] as Number?)?.toInt() ?: frameTime))
+                frames += AnimationFrame(frame["index"]!!.toInt(), frame["time"]?.toInt() ?: frameTime)
             }
         }
 
         this.frames = frames.toTypedArray()
-
+        initialized = true
     }
 }

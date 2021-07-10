@@ -15,7 +15,6 @@ package de.bixilon.minosoft.gui.rendering.block.renderable.block
 
 import com.google.common.collect.HashBiMap
 import de.bixilon.minosoft.data.direction.Directions
-import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderConstants
@@ -23,8 +22,10 @@ import de.bixilon.minosoft.gui.rendering.block.models.BlockModel
 import de.bixilon.minosoft.gui.rendering.block.models.FaceSize
 import de.bixilon.minosoft.gui.rendering.block.renderable.BlockLikeRenderContext
 import de.bixilon.minosoft.gui.rendering.block.renderable.WorldEntryRenderer
+import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
+import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.textures.Texture
-import de.bixilon.minosoft.gui.rendering.textures.TextureTransparencies
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.rad
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3
@@ -34,7 +35,7 @@ class BlockRenderer(data: Map<String, Any>, model: BlockModel) : WorldEntryRende
     private val cullFaces: Array<Directions?> = arrayOfNulls(Directions.VALUES.size)
     val textures: MutableMap<String, String> = mutableMapOf()
     private val elements: Array<ElementRenderer>
-    val textureMapping: MutableMap<String, Texture> = mutableMapOf()
+    val textureMapping: MutableMap<String, AbstractTexture> = mutableMapOf()
     override val faceBorderSizes: Array<Array<FaceSize>?> = arrayOfNulls(Directions.VALUES.size)
     override val transparentFaces: BooleanArray = BooleanArray(Directions.VALUES.size)
     val directionMapping: HashBiMap<Directions, Directions> = HashBiMap.create()
@@ -53,10 +54,10 @@ class BlockRenderer(data: Map<String, Any>, model: BlockModel) : WorldEntryRende
         }
     }
 
-    override fun resolveTextures(textures: MutableMap<ResourceLocation, Texture>) {
+    override fun resolveTextures(textureManager: TextureManager) {
         for ((key, textureName) in this.textures) {
             if (!textureName.startsWith("#")) {
-                textureMapping[key] = WorldEntryRenderer.resolveTexture(textures, textureResourceLocation = Texture.getResourceTextureIdentifier(textureName = textureName))
+                textureMapping[key] = WorldEntryRenderer.resolveTexture(textureManager, textureResourceLocation = Texture.getResourceTextureIdentifier(textureName = textureName))
             }
         }
     }

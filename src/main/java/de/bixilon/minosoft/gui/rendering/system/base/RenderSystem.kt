@@ -19,6 +19,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.IntUniformBu
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.FloatVertexBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
 import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
+import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
 import glm_.vec2.Vec2i
 import java.nio.ByteBuffer
@@ -74,4 +75,6 @@ interface RenderSystem {
     fun createVertexBuffer(structure: MeshStruct, data: FloatArray, primitiveType: PrimitiveTypes = PrimitiveTypes.TRIANGLE): FloatVertexBuffer
     fun createIntUniformBuffer(bindingIndex: Int = 0, data: IntArray = IntArray(0)): IntUniformBuffer
     fun createFloatUniformBuffer(bindingIndex: Int = 0, data: FloatArray = FloatArray(0)): FloatUniformBuffer
+
+    fun createTextureManager(): TextureManager
 }

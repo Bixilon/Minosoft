@@ -14,11 +14,10 @@
 package de.bixilon.minosoft.gui.rendering.block.renderable.block
 
 import de.bixilon.minosoft.data.direction.Directions
-import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.block.models.FaceSize
 import de.bixilon.minosoft.gui.rendering.block.renderable.BlockLikeRenderContext
 import de.bixilon.minosoft.gui.rendering.block.renderable.WorldEntryRenderer
-import de.bixilon.minosoft.gui.rendering.textures.Texture
+import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
 
 @Deprecated(message = "Will be replaced with a normal BlockRenderer and multiple renderers")
 class MultipartRenderer(
@@ -49,9 +48,9 @@ class MultipartRenderer(
         }
     }
 
-    override fun resolveTextures(textures: MutableMap<ResourceLocation, Texture>) {
+    override fun resolveTextures(textureManager: TextureManager) {
         for (model in models) {
-            model.resolveTextures(textures)
+            model.resolveTextures(textureManager)
         }
     }
 }

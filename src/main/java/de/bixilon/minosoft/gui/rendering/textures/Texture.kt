@@ -13,101 +13,29 @@
 
 package de.bixilon.minosoft.gui.rendering.textures
 
-import de.bixilon.minosoft.data.assets.AssetsManager
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.text.RGBColor
-import de.bixilon.minosoft.gui.rendering.textures.properties.ImageProperties
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import de.bixilon.minosoft.util.json.JSONSerializer
-import de.matthiasmann.twl.utils.PNGDecoder
-import glm_.vec2.Vec2
-import glm_.vec2.Vec2i
-import org.lwjgl.BufferUtils
-import java.io.FileNotFoundException
-import java.nio.ByteBuffer
 
+@Deprecated(message = "")
+object Texture {
+    fun getResourceTextureIdentifier(namespace: String = ProtocolDefinition.DEFAULT_NAMESPACE, textureName: String): ResourceLocation {
+        var namespace = namespace
+        var texturePath = textureName
 
-data class Texture(
-    val resourceLocation: ResourceLocation,
-) {
-    var arrayId = -1
-    var arrayLayer = -1
-    lateinit var size: Vec2i
-    lateinit var transparency: TextureTransparencies
-        private set
-    lateinit var uvEnd: Vec2
-
-    lateinit var properties: ImageProperties
-
-    var arraySinglePixelFactor = 1.0f
-
-    var buffer: ByteBuffer? = null
-
-    var isLoaded = false
-        private set
-
-    fun inherit(texture: Texture) {
-        size = texture.size
-        transparency = texture.transparency
-        uvEnd = texture.uvEnd
-        properties = ImageProperties()
-        arraySinglePixelFactor = texture.arraySinglePixelFactor
-        isLoaded = true
-    }
-
-    fun load(assetsManager: AssetsManager) {
-        if (isLoaded) {
-            return
+        if (texturePath.contains(":")) {
+            val split = texturePath.split(":")
+            namespace = split[0]
+            texturePath = split[1]
         }
 
-        val decoder = PNGDecoder(assetsManager.readAssetAsStream(resourceLocation))
-        val buffer = BufferUtils.createByteBuffer(decoder.width * decoder.height * PNGDecoder.Format.RGBA.numComponents)
-        decoder.decode(buffer, decoder.width * PNGDecoder.Format.RGBA.numComponents, PNGDecoder.Format.RGBA)
+        texturePath = texturePath.removePrefix("/")
 
-        size = Vec2i(decoder.width, decoder.height)
-        buffer.rewind()
-        transparency = TextureTransparencies.OPAQUE
-        for (i in 0 until buffer.limit() step 4) {
-            val color = RGBColor(buffer.get(), buffer.get(), buffer.get(), buffer.get())
-            if (color.alpha == 0x00 && transparency != TextureTransparencies.TRANSLUCENT) {
-                transparency = TextureTransparencies.TRANSPARENT
-            } else if (color.alpha < 0xFF) {
-                transparency = TextureTransparencies.TRANSLUCENT
-            }
+        if (!texturePath.startsWith("textures/")) {
+            texturePath = "textures/$texturePath"
         }
-        buffer.flip()
-
-        // load .mcmeta
-        properties = try {
-            JSONSerializer.IMAGE_PROPERTIES_ADAPTER.fromJson(assetsManager.readStringAsset(ResourceLocation("$resourceLocation.mcmeta")))!!
-        } catch (exception: FileNotFoundException) {
-            ImageProperties()
+        if (!texturePath.endsWith(".png")) {
+            texturePath = "$texturePath.png"
         }
-        this.buffer = buffer
-
-        isLoaded = true
-    }
-
-    companion object {
-        fun getResourceTextureIdentifier(namespace: String = ProtocolDefinition.DEFAULT_NAMESPACE, textureName: String): ResourceLocation {
-            var namespace = namespace
-            var texturePath = textureName
-
-            if (texturePath.contains(":")) {
-                val split = texturePath.split(":")
-                namespace = split[0]
-                texturePath = split[1]
-            }
-
-            texturePath = texturePath.removePrefix("/")
-
-            if (!texturePath.startsWith("textures/")) {
-                texturePath = "textures/$texturePath"
-            }
-            if (!texturePath.endsWith(".png")) {
-                texturePath = "$texturePath.png"
-            }
-            return ResourceLocation(namespace, texturePath)
-        }
+        return ResourceLocation(namespace, texturePath)
     }
 }

@@ -11,15 +11,19 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.textures.properties
+package de.bixilon.minosoft.gui.rendering.system.base.texture
 
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.util.KUtil
+import de.bixilon.minosoft.util.enum.ValuesEnum
 
-data class AnimationFrame(
-    val index: Int,
-    val time: Int,
-) {
-    val animationTime = time * ProtocolDefinition.TICK_TIME
-    lateinit var texture: AbstractTexture
+enum class TextureTransparencies {
+    OPAQUE,
+    TRANSPARENT,
+    TRANSLUCENT,
+    ;
+
+    companion object : ValuesEnum<TextureTransparencies> {
+        override val VALUES: Array<TextureTransparencies> = values()
+        override val NAME_MAP: Map<String, TextureTransparencies> = KUtil.getEnumValues(VALUES)
+    }
 }
