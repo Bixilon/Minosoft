@@ -21,6 +21,7 @@ import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.util.KUtil.synchronizedListOf
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.asCompound
+import java.io.FileNotFoundException
 
 class LanguageManager(
     private val languages: MutableList<Language> = synchronizedListOf(),
@@ -51,10 +52,18 @@ class LanguageManager(
         fun load(language: String, version: Version?, path: ResourceLocation = ResourceLocation("lang/")): LanguageManager {
             val assetsManager = version?.assetsManager ?: Minosoft.MINOSOFT_ASSETS_MANAGER
 
+            fun tryLoadMinecraftLanguage(language: String): Language? {
+                return try {
+                    tryLoadMinecraftLanguage(language)
+                } catch (exception: FileNotFoundException) {
+                    null
+                }
+            }
+
             fun loadMinecraftLanguage(language: String): Language {
                 val data: MutableMap<ResourceLocation, String> = mutableMapOf()
 
-                if (version?.versionId ?: Int.MIN_VALUE >= ProtocolVersions.V_18W02A) {
+                if (version != null && version.versionId >= ProtocolVersions.V_18W02A) {
                     for ((key, value) in assetsManager.readJsonAsset(ResourceLocation(path.namespace, path.path + "${language.lowercase()}.json")).asCompound()) {
                         data[ResourceLocation(key)] = value.toString()
                     }
@@ -76,7 +85,7 @@ class LanguageManager(
             val languages: MutableList<Language> = mutableListOf()
 
             if (language != "en_US") {
-                languages += loadMinecraftLanguage(language)
+                tryLoadMinecraftLanguage(language)?.let { languages += it }
             }
             languages += loadMinecraftLanguage("en_US")
 

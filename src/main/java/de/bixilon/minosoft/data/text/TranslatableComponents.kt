@@ -17,5 +17,5 @@ import de.bixilon.minosoft.data.language.Translator
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
 
 object TranslatableComponents {
-    val HELLO_WORLD = { translator: Translator, name: Any, age: Int -> translator.translate("minosoft:hello.world".asResourceLocation(), null, name, age) }
+    val HELLO_WORLD = { translator: Translator, name: String, age: Int -> translator.translate("minosoft:hello.world".asResourceLocation(), null, name, age) }
 }
