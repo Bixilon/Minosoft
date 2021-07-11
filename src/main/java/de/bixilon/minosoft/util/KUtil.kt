@@ -292,4 +292,17 @@ object KUtil {
             else -> TODO()
         }
     }
+
+    fun <T> tryCatch(vararg exceptions: Class<out Throwable> = arrayOf(), executor: () -> T): T? {
+        try {
+            return executor()
+        } catch (thrown: Throwable) {
+            for (exception in exceptions) {
+                if (exception.isAssignableFrom(thrown::class.java)) {
+                    return null
+                }
+            }
+            throw thrown
+        }
+    }
 }

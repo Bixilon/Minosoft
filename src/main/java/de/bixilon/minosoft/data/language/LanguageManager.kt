@@ -20,6 +20,7 @@ import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.util.KUtil.synchronizedListOf
+import de.bixilon.minosoft.util.KUtil.tryCatch
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.asCompound
 import java.io.FileNotFoundException
 
@@ -52,14 +53,6 @@ class LanguageManager(
         fun load(language: String, version: Version?, path: ResourceLocation = ResourceLocation("lang/")): LanguageManager {
             val assetsManager = version?.assetsManager ?: Minosoft.MINOSOFT_ASSETS_MANAGER
 
-            fun tryLoadMinecraftLanguage(language: String): Language? {
-                return try {
-                    tryLoadMinecraftLanguage(language)
-                } catch (exception: FileNotFoundException) {
-                    null
-                }
-            }
-
             fun loadMinecraftLanguage(language: String): Language {
                 val data: MutableMap<ResourceLocation, String> = mutableMapOf()
 
@@ -85,7 +78,7 @@ class LanguageManager(
             val languages: MutableList<Language> = mutableListOf()
 
             if (language != "en_US") {
-                tryLoadMinecraftLanguage(language)?.let { languages += it }
+                tryCatch(FileNotFoundException::class.java, executor = { languages += loadMinecraftLanguage(language) })
             }
             languages += loadMinecraftLanguage("en_US")
 
