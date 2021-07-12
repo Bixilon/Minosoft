@@ -26,7 +26,8 @@ import de.bixilon.minosoft.data.registries.RegistriesLoadingException
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.ResourceLocationAble
 import de.bixilon.minosoft.data.registries.recipes.Recipes
-import de.bixilon.minosoft.data.registries.versions.Registries
+import de.bixilon.minosoft.data.registries.registries.Registries
+import de.bixilon.minosoft.data.registries.versions.MinecraftRegistryFixer
 import de.bixilon.minosoft.data.registries.versions.Version
 import de.bixilon.minosoft.data.scoreboard.ScoreboardManager
 import de.bixilon.minosoft.data.tags.DefaultTags
@@ -40,6 +41,7 @@ import de.bixilon.minosoft.modding.event.EventInvoker
 import de.bixilon.minosoft.modding.event.events.ChatMessageReceiveEvent
 import de.bixilon.minosoft.modding.event.events.ConnectionStateChangeEvent
 import de.bixilon.minosoft.modding.event.events.PacketReceiveEvent
+import de.bixilon.minosoft.modding.event.events.RegistriesLoadEvent
 import de.bixilon.minosoft.protocol.packets.c2s.handshaking.HandshakeC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.login.LoginStartC2SP
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
@@ -85,6 +87,10 @@ class PlayConnection(
     private lateinit var randomTickTask: TimeWorkerTask
     val collisionDetector = CollisionDetector(this)
     var retry = true
+
+    init {
+        MinecraftRegistryFixer(this)
+    }
 
     override var connectionState: ConnectionStates = ConnectionStates.DISCONNECTED
         set(value) {
@@ -178,9 +184,11 @@ class PlayConnection(
     fun connect(latch: CountUpAndDownLatch) {
         // Log.log(LogMessageType.OTHER, LogLevels.VERBOSE){TranslatableComponents.HELLO_WORLD(Minosoft.LANGUAGE_MANAGER, "Moritz", 17)}
         try {
+            fireEvent(RegistriesLoadEvent(this, registries, RegistriesLoadEvent.States.PRE))
             version.load(latch) // ToDo: show gui loader
             assetsManager = MultiAssetsManager(version.assetsManager, Minosoft.MINOSOFT_ASSETS_MANAGER, Minosoft.MINECRAFT_FALLBACK_ASSETS_MANAGER)
             registries.parentRegistries = version.registries
+            fireEvent(RegistriesLoadEvent(this, registries, RegistriesLoadEvent.States.POST))
             player = LocalPlayerEntity(account, this)
 
             if (!RenderConstants.DISABLE_RENDERING && !StaticConfiguration.HEADLESS_MODE) {

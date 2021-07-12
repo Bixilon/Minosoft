@@ -19,7 +19,7 @@ import de.bixilon.minosoft.data.registries.VoxelShape
 import de.bixilon.minosoft.data.registries.blocks.BlockFactory
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.fluid.Fluid
-import de.bixilon.minosoft.data.registries.versions.Registries
+import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.gui.rendering.block.renderable.WorldEntryRenderer
 import de.bixilon.minosoft.gui.rendering.block.renderable.fluid.FluidRenderer
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY

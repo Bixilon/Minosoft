@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.registry
+package de.bixilon.minosoft.data.registries.registries.registry
 
 import com.google.gson.JsonPrimitive
 import de.bixilon.minosoft.util.KUtil.unsafeCast

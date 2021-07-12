@@ -11,9 +11,9 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.registry
+package de.bixilon.minosoft.data.registries.registries.registry
 
-import de.bixilon.minosoft.data.registries.versions.Registries
+import de.bixilon.minosoft.data.registries.registries.Registries
 
 interface IdDeserializer<T> {
     fun deserialize(registries: Registries, data: Map<String, Any>): T

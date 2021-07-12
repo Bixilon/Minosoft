@@ -22,9 +22,9 @@ import de.bixilon.minosoft.data.registries.blocks.*
 import de.bixilon.minosoft.data.registries.blocks.entites.BlockEntityType
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.items.Item
-import de.bixilon.minosoft.data.registries.registry.RegistryItem
-import de.bixilon.minosoft.data.registries.registry.ResourceLocationDeserializer
-import de.bixilon.minosoft.data.registries.versions.Registries
+import de.bixilon.minosoft.data.registries.registries.Registries
+import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
+import de.bixilon.minosoft.data.registries.registries.registry.ResourceLocationDeserializer
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.TintColorCalculator
 import de.bixilon.minosoft.gui.rendering.block.renderable.WorldEntryRenderer

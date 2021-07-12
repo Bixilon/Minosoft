@@ -11,10 +11,19 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.registry
+package de.bixilon.minosoft.data.entities.block
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 
-interface Translatable {
-    val translationKey: ResourceLocation?
+class FlowerPotBlockEntity(connection: PlayConnection) : BlockEntity(connection) {
+
+
+    companion object : BlockEntityFactory<JukeboxBlockEntity> {
+        override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("minecraft:flower_pot")
+
+        override fun build(connection: PlayConnection): JukeboxBlockEntity {
+            return JukeboxBlockEntity(connection)
+        }
+    }
 }

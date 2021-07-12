@@ -11,8 +11,9 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.registry
+package de.bixilon.minosoft.data.registries.registries.registry
 
-interface RegistryFakeEnumerable {
-    val name: String
+interface Parentable<T> {
+
+    var parent: T?
 }

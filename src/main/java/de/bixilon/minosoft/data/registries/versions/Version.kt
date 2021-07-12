@@ -18,6 +18,7 @@ import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.assets.MinecraftAssetsManager
 import de.bixilon.minosoft.data.assets.Resources
 import de.bixilon.minosoft.data.language.LanguageManager
+import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.protocol.protocol.ConnectionStates
 import de.bixilon.minosoft.protocol.protocol.PacketTypes.C2S
 import de.bixilon.minosoft.protocol.protocol.PacketTypes.S2C

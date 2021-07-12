@@ -11,11 +11,17 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.registry
+package de.bixilon.minosoft.data.registries.registries.registry
 
-import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.versions.Registries
+import de.bixilon.minosoft.util.collections.Clearable
 
-interface ResourceLocationDeserializer<T> {
-    fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): T?
+interface AbstractRegistry<T> : Iterable<T>, Clearable, Parentable<AbstractRegistry<T>> {
+
+    val size: Int
+
+    operator fun get(any: Any?): T?
+
+    operator fun get(id: Int): T?
+
+    fun getId(value: T): Int
 }

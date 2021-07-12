@@ -13,9 +13,9 @@
 package de.bixilon.minosoft.data.registries.materials
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.registry.RegistryItem
-import de.bixilon.minosoft.data.registries.registry.ResourceLocationDeserializer
-import de.bixilon.minosoft.data.registries.versions.Registries
+import de.bixilon.minosoft.data.registries.registries.Registries
+import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
+import de.bixilon.minosoft.data.registries.registries.registry.ResourceLocationDeserializer
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.TintColorCalculator
 import de.bixilon.minosoft.util.KUtil.nullCast

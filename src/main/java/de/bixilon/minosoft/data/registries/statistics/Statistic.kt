@@ -13,8 +13,8 @@
 package de.bixilon.minosoft.data.registries.statistics
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.registry.RegistryItem
-import de.bixilon.minosoft.data.registries.registry.Translatable
+import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
+import de.bixilon.minosoft.data.registries.registries.registry.Translatable
 
 data class Statistic(
     override val resourceLocation: ResourceLocation,

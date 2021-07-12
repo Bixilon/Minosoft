@@ -14,9 +14,9 @@
 package de.bixilon.minosoft.data.registries.items
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.registry.Registry
-import de.bixilon.minosoft.data.registries.registry.ResourceLocationDeserializer
-import de.bixilon.minosoft.data.registries.versions.Registries
+import de.bixilon.minosoft.data.registries.registries.Registries
+import de.bixilon.minosoft.data.registries.registries.registry.Registry
+import de.bixilon.minosoft.data.registries.registries.registry.ResourceLocationDeserializer
 
 class ItemRegistry(
     parent: Registry<Item>? = null,

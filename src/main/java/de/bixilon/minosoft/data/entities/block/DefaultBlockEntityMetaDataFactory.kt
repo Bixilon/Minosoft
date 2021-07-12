@@ -55,6 +55,8 @@ object DefaultBlockEntityMetaDataFactory : DefaultFactory<BlockEntityFactory<out
     EndGatewayBlockEntity,
     PistonBlockEntity,
     StickyPistonBlockEntity,
+    FlowerPotBlockEntity,
+    EndPortalBlockEntity,
 ) {
 
     fun buildBlockEntity(factory: BlockEntityFactory<out BlockEntity>, connection: PlayConnection): BlockEntity {

@@ -11,14 +11,10 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.blocks
+package de.bixilon.minosoft.data.registries.registries.registry
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.blocks.types.Block
-import de.bixilon.minosoft.data.registries.factory.clazz.ClassFactory
-import de.bixilon.minosoft.data.registries.registries.Registries
 
-interface BlockFactory<T : Block> : ClassFactory<T> {
-
-    fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): T
+interface Translatable {
+    val translationKey: ResourceLocation?
 }

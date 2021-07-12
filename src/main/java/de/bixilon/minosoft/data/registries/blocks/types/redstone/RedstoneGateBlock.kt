@@ -15,6 +15,6 @@ package de.bixilon.minosoft.data.registries.blocks.types.redstone
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.types.HorizontalFacingBlock
-import de.bixilon.minosoft.data.registries.versions.Registries
+import de.bixilon.minosoft.data.registries.registries.Registries
 
 abstract class RedstoneGateBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : HorizontalFacingBlock(resourceLocation, registries, data)

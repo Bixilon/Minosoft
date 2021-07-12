@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.data.registries.items.tools
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.versions.Registries
+import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
 
 open class PickaxeItem(

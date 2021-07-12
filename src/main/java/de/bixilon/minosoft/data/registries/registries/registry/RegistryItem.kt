@@ -11,10 +11,10 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.registry
+package de.bixilon.minosoft.data.registries.registries.registry
 
 import de.bixilon.minosoft.data.registries.ResourceLocationAble
-import de.bixilon.minosoft.data.registries.versions.Registries
+import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.util.KUtil.setValue
 import kotlin.reflect.KProperty
 import kotlin.reflect.jvm.javaField

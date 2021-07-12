@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2021 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -10,7 +10,7 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.data.registries.versions
+package de.bixilon.minosoft.data.registries.registries
 
 import de.bixilon.minosoft.data.entities.EntityMetaDataFields
 import de.bixilon.minosoft.data.entities.block.BlockEntityMetaType
@@ -35,9 +35,10 @@ import de.bixilon.minosoft.data.registries.materials.Material
 import de.bixilon.minosoft.data.registries.other.containers.ContainerType
 import de.bixilon.minosoft.data.registries.other.game.event.GameEvent
 import de.bixilon.minosoft.data.registries.particle.ParticleType
-import de.bixilon.minosoft.data.registries.registry.*
+import de.bixilon.minosoft.data.registries.registries.registry.*
 import de.bixilon.minosoft.data.registries.sounds.SoundEvent
 import de.bixilon.minosoft.data.registries.statistics.Statistic
+import de.bixilon.minosoft.data.registries.versions.Version
 import de.bixilon.minosoft.gui.rendering.block.models.BlockModel
 import de.bixilon.minosoft.protocol.packets.c2s.play.EntityActionC2SP
 import de.bixilon.minosoft.protocol.packets.s2c.play.EntityAnimationS2CP

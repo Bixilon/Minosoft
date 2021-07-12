@@ -16,6 +16,7 @@ package de.bixilon.minosoft.data.registries.versions;
 import com.google.common.collect.HashBiMap;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import de.bixilon.minosoft.data.registries.registries.Registries;
 import de.bixilon.minosoft.protocol.protocol.ConnectionStates;
 import de.bixilon.minosoft.protocol.protocol.PacketTypes;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;

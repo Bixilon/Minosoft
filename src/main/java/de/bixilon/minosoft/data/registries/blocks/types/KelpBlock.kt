@@ -16,7 +16,7 @@ package de.bixilon.minosoft.data.registries.blocks.types
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockFactory
 import de.bixilon.minosoft.data.registries.fluid.DefaultFluids
-import de.bixilon.minosoft.data.registries.versions.Registries
+import de.bixilon.minosoft.data.registries.registries.Registries
 
 open class KelpBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : Block(resourceLocation, registries, data), FluidFillable {
     override val fluid: ResourceLocation = DefaultFluids.WATER

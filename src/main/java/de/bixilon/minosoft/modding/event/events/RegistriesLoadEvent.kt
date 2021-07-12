@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -10,18 +10,21 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.modding.event.events
 
-package de.bixilon.minosoft.data.registries.registry
+import de.bixilon.minosoft.data.registries.registries.Registries
+import de.bixilon.minosoft.modding.event.EventInitiators
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 
-import de.bixilon.minosoft.util.collections.Clearable
+class RegistriesLoadEvent(
+    connection: PlayConnection,
+    val registries: Registries,
+    val state: States,
+) : PlayConnectionEvent(connection, EventInitiators.CLIENT) {
 
-interface AbstractRegistry<T> : Iterable<T>, Clearable, Parentable<AbstractRegistry<T>> {
-
-    val size: Int
-
-    operator fun get(any: Any?): T?
-
-    operator fun get(id: Int): T?
-
-    fun getId(value: T): Int
+    enum class States {
+        PRE,
+        POST,
+        ;
+    }
 }

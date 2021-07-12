@@ -16,7 +16,7 @@ package de.bixilon.minosoft.data.registries.fluid
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.FluidBlock
-import de.bixilon.minosoft.data.registries.versions.Registries
+import de.bixilon.minosoft.data.registries.registries.Registries
 
 class EmptyFluid(
     resourceLocation: ResourceLocation,

@@ -22,10 +22,10 @@ import de.bixilon.minosoft.data.registries.inventory.CreativeModeTab
 import de.bixilon.minosoft.data.registries.items.armor.ArmorItem
 import de.bixilon.minosoft.data.registries.items.armor.HorseArmorItem
 import de.bixilon.minosoft.data.registries.items.tools.*
-import de.bixilon.minosoft.data.registries.registry.RegistryItem
-import de.bixilon.minosoft.data.registries.registry.ResourceLocationDeserializer
-import de.bixilon.minosoft.data.registries.registry.Translatable
-import de.bixilon.minosoft.data.registries.versions.Registries
+import de.bixilon.minosoft.data.registries.registries.Registries
+import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
+import de.bixilon.minosoft.data.registries.registries.registry.ResourceLocationDeserializer
+import de.bixilon.minosoft.data.registries.registries.registry.Translatable
 import de.bixilon.minosoft.gui.rendering.input.camera.hit.RaycastHit
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.util.KUtil.asResourceLocation

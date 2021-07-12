@@ -20,9 +20,9 @@ import de.bixilon.minosoft.data.entities.meta.EntityMetaData
 import de.bixilon.minosoft.data.inventory.InventorySlots
 import de.bixilon.minosoft.data.registries.other.containers.ContainerType
 import de.bixilon.minosoft.data.registries.other.game.event.GameEvent
-import de.bixilon.minosoft.data.registries.registry.PerVersionEnumRegistry
-import de.bixilon.minosoft.data.registries.registry.PerVersionRegistry
-import de.bixilon.minosoft.data.registries.registry.Registry
+import de.bixilon.minosoft.data.registries.registries.registry.PerVersionEnumRegistry
+import de.bixilon.minosoft.data.registries.registries.registry.PerVersionRegistry
+import de.bixilon.minosoft.data.registries.registries.registry.Registry
 import de.bixilon.minosoft.protocol.packets.c2s.play.EntityActionC2SP
 import de.bixilon.minosoft.protocol.packets.s2c.play.EntityAnimationS2CP
 import de.bixilon.minosoft.protocol.packets.s2c.play.title.TitleS2CF

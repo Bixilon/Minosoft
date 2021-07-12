@@ -11,9 +11,9 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.registry
+package de.bixilon.minosoft.data.registries.registries.registry
 
-import de.bixilon.minosoft.data.registries.versions.Registries
+import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.util.KUtil.toInt
 import de.bixilon.minosoft.util.collections.Clearable
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.asCompound

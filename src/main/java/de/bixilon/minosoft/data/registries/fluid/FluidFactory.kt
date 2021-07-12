@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.registries.fluid
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.factory.clazz.ClassFactory
-import de.bixilon.minosoft.data.registries.versions.Registries
+import de.bixilon.minosoft.data.registries.registries.Registries
 
 interface FluidFactory<T : Fluid> : ClassFactory<T> {
     fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): T

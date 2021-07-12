@@ -14,8 +14,8 @@
 package de.bixilon.minosoft.data.registries.items
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.sounds.SoundEvent
-import de.bixilon.minosoft.data.registries.versions.Registries
 import de.bixilon.minosoft.util.KUtil.nullCast
 
 open class MusicDiscItem(

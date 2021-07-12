@@ -47,7 +47,6 @@ object BlockEntityFixer {
         "EndGateway" to "minecraft:end_gateway",
         "minecraft:noteblock" to "minecraft:note_block",
         "Bed" to "minecraft:bed",
-        // ToDo: flower_pot
     ).asResourceLocationMap()
 
 

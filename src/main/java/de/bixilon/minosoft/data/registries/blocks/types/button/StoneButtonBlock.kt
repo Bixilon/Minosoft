@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.registries.blocks.types.button
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockFactory
-import de.bixilon.minosoft.data.registries.versions.Registries
+import de.bixilon.minosoft.data.registries.registries.Registries
 
 open class StoneButtonBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : AbstractButtonBlock(resourceLocation, registries, data) {
 

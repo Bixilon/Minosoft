@@ -18,8 +18,8 @@ import de.bixilon.minosoft.data.registries.VoxelShape
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.materials.Material
+import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.sounds.SoundEvent
-import de.bixilon.minosoft.data.registries.versions.Registries
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.TintColorCalculator
 import de.bixilon.minosoft.gui.rendering.block.models.BlockModel

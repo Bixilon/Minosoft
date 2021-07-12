@@ -11,14 +11,19 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.blocks
+package de.bixilon.minosoft.data.entities.block
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.blocks.types.Block
-import de.bixilon.minosoft.data.registries.factory.clazz.ClassFactory
-import de.bixilon.minosoft.data.registries.registries.Registries
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 
-interface BlockFactory<T : Block> : ClassFactory<T> {
+class EndPortalBlockEntity(connection: PlayConnection) : BlockEntity(connection) {
 
-    fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): T
+
+    companion object : BlockEntityFactory<JukeboxBlockEntity> {
+        override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("minecraft:end_portal")
+
+        override fun build(connection: PlayConnection): JukeboxBlockEntity {
+            return JukeboxBlockEntity(connection)
+        }
+    }
 }

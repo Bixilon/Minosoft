@@ -11,13 +11,14 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.registry
+package de.bixilon.minosoft.data.registries.registries.registry
 
 import com.google.gson.JsonElement
 import com.google.gson.JsonPrimitive
+import de.bixilon.minosoft.data.registries.MultiResourceLocationAble
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.ResourceLocationAble
-import de.bixilon.minosoft.data.registries.versions.Registries
+import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
 import de.bixilon.minosoft.util.KUtil.nullCast
 import de.bixilon.minosoft.util.KUtil.toInt
@@ -69,6 +70,27 @@ open class Registry<T : RegistryItem>(
 
     open operator fun get(resourceLocation: ResourceLocation): T? {
         return resourceLocationMap[resourceLocation] ?: parent?.get(resourceLocation)
+    }
+
+    open operator fun set(any: Any, value: T) {
+        when (any) {
+            is Int -> {
+                idValueMap[any] = value
+                valueIdMap[value] = any
+            }
+            is ResourceLocation -> {
+                resourceLocationMap[any] = value
+            }
+            is ResourceLocationAble -> {
+                resourceLocationMap[any.resourceLocation] = value
+            }
+            is MultiResourceLocationAble -> {
+                for (resourceLocation in any.ALIASES) {
+                    resourceLocationMap[resourceLocation] = value
+                }
+            }
+            else -> TODO()
+        }
     }
 
     open operator fun get(resourceLocation: String): T? {
