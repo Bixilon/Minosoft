@@ -35,6 +35,7 @@ class Configuration(private val configName: String = StaticConfiguration.CONFIG_
         if (file.exists()) {
             val config = JSONSerializer.MAP_ADAPTER.fromJson(Util.readFile(file.absolutePath))!!
 
+            migrate(config)
             var wasMigrated = false
             let {
                 val configVersion = config["general"]?.compoundCast()?.get("version")?.toInt() ?: return@let
@@ -91,6 +92,15 @@ class Configuration(private val configName: String = StaticConfiguration.CONFIG_
                     }
                 }
                 Files.move(tempFile.toPath(), file.toPath())
+            }
+        }
+    }
+
+    @Deprecated(message = "Will be removed one a release/beta is there")
+    private fun migrate(config: MutableMap<String, Any>) {
+        config["download"]?.compoundCast()?.get("url")?.compoundCast()?.let {
+            if (it["pixlyzer"] == "https://gitlab.com/bixilon/pixlyzer-data/-/raw/master/hash/\${hashPrefix}/\${fullHash}.gz?inline=false") {
+                it["pixlyzer"] = "https://gitlab.com/bixilon/pixlyzer-data/-/raw/master/hash/\${hashPrefix}/\${fullHash}.mbf?inline=false"
             }
         }
     }
