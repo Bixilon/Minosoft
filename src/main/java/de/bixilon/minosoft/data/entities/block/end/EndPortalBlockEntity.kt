@@ -11,18 +11,22 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.entities.block
+package de.bixilon.minosoft.data.entities.block.end
 
+import de.bixilon.minosoft.data.entities.block.BlockEntity
+import de.bixilon.minosoft.data.entities.block.BlockEntityFactory
+import de.bixilon.minosoft.data.entities.block.JukeboxBlockEntity
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 
-class DaylightDetectorBlockEntity(connection: PlayConnection) : BlockEntity(connection) {
+class EndPortalBlockEntity(connection: PlayConnection) : BlockEntity(connection) {
 
-    companion object : BlockEntityFactory<DaylightDetectorBlockEntity> {
-        override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("minecraft:daylight_detector")
 
-        override fun build(connection: PlayConnection): DaylightDetectorBlockEntity {
-            return DaylightDetectorBlockEntity(connection)
+    companion object : BlockEntityFactory<JukeboxBlockEntity> {
+        override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("minecraft:end_portal")
+
+        override fun build(connection: PlayConnection): JukeboxBlockEntity {
+            return JukeboxBlockEntity(connection)
         }
     }
 }

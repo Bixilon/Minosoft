@@ -11,18 +11,20 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.entities.block
+package de.bixilon.minosoft.data.entities.block.redstone
 
+import de.bixilon.minosoft.data.entities.block.BlockEntity
+import de.bixilon.minosoft.data.entities.block.BlockEntityFactory
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 
-class ComparatorBlockEntity(connection: PlayConnection) : BlockEntity(connection) {
+class DaylightDetectorBlockEntity(connection: PlayConnection) : BlockEntity(connection) {
 
-    companion object : BlockEntityFactory<ComparatorBlockEntity> {
-        override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("minecraft:comparator")
+    companion object : BlockEntityFactory<DaylightDetectorBlockEntity> {
+        override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("minecraft:daylight_detector")
 
-        override fun build(connection: PlayConnection): ComparatorBlockEntity {
-            return ComparatorBlockEntity(connection)
+        override fun build(connection: PlayConnection): DaylightDetectorBlockEntity {
+            return DaylightDetectorBlockEntity(connection)
         }
     }
 }
