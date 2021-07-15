@@ -54,7 +54,7 @@ class BaseComponent : ChatComponent {
 
         fun push() {
             if (currentText.isNotEmpty()) {
-                parts.add(TextComponent(message = currentText.toString(), color = currentColor, formatting = currentFormatting.toMutableSet()))
+                parts += TextComponent(message = currentText.toString(), color = currentColor, formatting = currentFormatting.toMutableSet())
                 currentColor = null
                 currentText.clear()
             }
@@ -98,7 +98,7 @@ class BaseComponent : ChatComponent {
         var currentText = ""
         json["text"]?.asString?.let {
             if (it.indexOf(ProtocolDefinition.TEXT_COMPONENT_SPECIAL_PREFIX_CHAR) != -1) {
-                parts.add(ChatComponent.of(it, translator, parent))
+                this += ChatComponent.of(it, translator, parent)
                 return
             }
             currentText = it
@@ -131,14 +131,14 @@ class BaseComponent : ChatComponent {
             hoverEvent = hoverEvent,
         )
         if (currentText.isNotEmpty()) {
-            parts.add(textComponent)
+            parts += textComponent
         }
         currentParent = textComponent
 
 
         json["extra"]?.asJsonArray?.let {
             for (data in it) {
-                parts.add(ChatComponent.of(data, translator, currentParent))
+                parts += ChatComponent.of(data, translator, currentParent)
             }
         }
 
@@ -150,7 +150,7 @@ class BaseComponent : ChatComponent {
                     with.add(part)
                 }
             }
-            parts.add(translator?.translate(it.asResourceLocation(), currentParent, *with.toTypedArray()) ?: ChatComponent.of(json["with"], translator, currentParent))
+            parts += translator?.translate(it.asResourceLocation(), currentParent, *with.toTypedArray()) ?: ChatComponent.of(json["with"], translator, currentParent)
         }
     }
 

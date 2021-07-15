@@ -46,29 +46,29 @@ object Log {
                 try {
                     val message = BaseComponent()
                     val messageColor = messageToSend.logMessageType.colorMap[messageToSend.level] ?: messageToSend.logMessageType.defaultColor
-                    message.parts.add(TextComponent("[${TIME_FORMAT.format(messageToSend.time)}] "))
-                    message.parts.add(TextComponent("[${messageToSend.thread.name}] "))
-                    message.parts.add(TextComponent("[${messageToSend.logMessageType}] ").let {
+                    message += TextComponent("[${TIME_FORMAT.format(messageToSend.time)}] ")
+                    message += TextComponent("[${messageToSend.thread.name}] ")
+                    message += TextComponent("[${messageToSend.logMessageType}] ").let {
                         if (StaticConfiguration.LOG_COLOR_TYPE) {
                             it.color(messageColor)
                         } else {
                             it
                         }
-                    })
-                    message.parts.add(TextComponent("[${messageToSend.level}] ").let {
+                    }
+                    message += TextComponent("[${messageToSend.level}] ").let {
                         if (StaticConfiguration.LOG_COLOR_LEVEL) {
                             it.color(messageToSend.level.levelColors)
                         } else {
                             it
                         }
-                    })
+                    }
                     messageToSend.additionalPrefix?.let {
-                        message.parts.add(it)
+                        message += it
                     }
                     if (StaticConfiguration.LOG_COLOR_MESSAGE) {
                         messageToSend.message.applyDefaultColor(messageColor)
                     }
-                    message.parts.add(messageToSend.message)
+                    message += messageToSend.message
 
                     val stream = if (messageToSend.logMessageType.error) {
                         SYSTEM_ERR_STREAM

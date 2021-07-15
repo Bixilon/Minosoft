@@ -81,7 +81,7 @@ interface ChatComponent {
                 is JsonArray -> {
                     val component = BaseComponent()
                     for (part in raw) {
-                        component.parts.add(of(part, translator, parent))
+                        component += of(part, translator, parent)
                     }
                     return component
                 }

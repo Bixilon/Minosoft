@@ -61,9 +61,9 @@ class Language(
         }
 
         for ((index, part) in splitPlaceholder.withIndex()) {
-            ret.parts.add(ChatComponent.of(part, this, parent))
+            ret += ChatComponent.of(part, this, parent)
             if (index < data.size) {
-                ret.parts.add(ChatComponent.of(arguments[index], this, parent))
+                ret += ChatComponent.of(arguments[index], this, parent)
             }
         }
 
