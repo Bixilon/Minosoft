@@ -43,6 +43,10 @@ data class EntityType(
     val factory: EntityFactory<out Entity>,
 ) : RegistryItem(), Translatable {
 
+    override fun toString(): String {
+        return resourceLocation.toString()
+    }
+
     fun build(connection: PlayConnection, position: Vec3d, rotation: EntityRotation, entityMetaData: EntityMetaData?, versionId: Int): Entity? {
         return DefaultEntityFactories.buildEntity(factory, connection, position, rotation, entityMetaData, versionId)
     }

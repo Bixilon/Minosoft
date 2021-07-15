@@ -13,16 +13,13 @@
 
 package de.bixilon.minosoft.data.entities.block
 
-import de.bixilon.minosoft.data.registries.MultiResourceLocationAble
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.PlayConnection
-import de.bixilon.minosoft.util.KUtil.toResourceLocationList
 
 class SkullBlockEntity(connection: PlayConnection) : BlockEntity(connection) {
 
-    companion object : BlockEntityFactory<SkullBlockEntity>, MultiResourceLocationAble {
+    companion object : BlockEntityFactory<SkullBlockEntity> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("minecraft:skull")
-        override val ALIASES: Set<ResourceLocation> = setOf("minecraft:Skull").toResourceLocationList()
 
         override fun build(connection: PlayConnection): SkullBlockEntity {
             return SkullBlockEntity(connection)
