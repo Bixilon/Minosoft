@@ -18,6 +18,7 @@ import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
+import de.bixilon.minosoft.terminal.RunConfiguration
 import java.io.PrintStream
 import java.io.PrintWriter
 import java.io.StringWriter
@@ -46,21 +47,21 @@ object Log {
                 try {
                     val message = BaseComponent()
                     val messageColor = messageToSend.logMessageType.colorMap[messageToSend.level] ?: messageToSend.logMessageType.defaultColor
-                    message += if (StaticConfiguration.LOG_RELATIVE_TIME) {
+                    message += if (RunConfiguration.LOG_RELATIVE_TIME) {
                         TextComponent("[${System.currentTimeMillis() - MINOSOFT_START_TIME}] ")
                     } else {
                         TextComponent("[${TIME_FORMAT.format(messageToSend.time)}] ")
                     }
                     message += TextComponent("[${messageToSend.thread.name}] ")
                     message += TextComponent("[${messageToSend.logMessageType}] ").let {
-                        if (StaticConfiguration.LOG_COLOR_TYPE) {
+                        if (RunConfiguration.LOG_COLOR_TYPE) {
                             it.color(messageColor)
                         } else {
                             it
                         }
                     }
                     message += TextComponent("[${messageToSend.level}] ").let {
-                        if (StaticConfiguration.LOG_COLOR_LEVEL) {
+                        if (RunConfiguration.LOG_COLOR_LEVEL) {
                             it.color(messageToSend.level.levelColors)
                         } else {
                             it
@@ -69,7 +70,7 @@ object Log {
                     messageToSend.additionalPrefix?.let {
                         message += it
                     }
-                    if (StaticConfiguration.LOG_COLOR_MESSAGE) {
+                    if (RunConfiguration.LOG_COLOR_MESSAGE) {
                         messageToSend.message.applyDefaultColor(messageColor)
                     }
                     message += messageToSend.message

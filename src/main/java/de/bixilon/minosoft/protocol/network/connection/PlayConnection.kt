@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.protocol.network.connection
 
 import de.bixilon.minosoft.Minosoft
-import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.data.ChatTextPositions
 import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.data.assets.MultiAssetsManager
@@ -34,7 +33,6 @@ import de.bixilon.minosoft.data.tags.DefaultTags
 import de.bixilon.minosoft.data.tags.Tag
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.world.World
-import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.Rendering
 import de.bixilon.minosoft.modding.event.CallbackEventInvoker
 import de.bixilon.minosoft.modding.event.EventInvoker
@@ -48,6 +46,7 @@ import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.packets.s2c.S2CPacket
 import de.bixilon.minosoft.protocol.protocol.*
 import de.bixilon.minosoft.terminal.CLI
+import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.terminal.commands.commands.Command
 import de.bixilon.minosoft.util.CountUpAndDownLatch
 import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
@@ -191,7 +190,7 @@ class PlayConnection(
             fireEvent(RegistriesLoadEvent(this, registries, RegistriesLoadEvent.States.POST))
             player = LocalPlayerEntity(account, this)
 
-            if (!RenderConstants.DISABLE_RENDERING && !StaticConfiguration.HEADLESS_MODE) {
+            if (!RunConfiguration.DISABLE_RENDERING) {
                 val renderer = Rendering(this)
                 this.rendering = renderer
                 val renderLatch = CountUpAndDownLatch(0, latch)

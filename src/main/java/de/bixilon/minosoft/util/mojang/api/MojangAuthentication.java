@@ -16,7 +16,6 @@ package de.bixilon.minosoft.util.mojang.api;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import de.bixilon.minosoft.Minosoft;
-import de.bixilon.minosoft.config.StaticConfiguration;
 import de.bixilon.minosoft.data.accounts.MojangAccount;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import de.bixilon.minosoft.util.HTTP;
@@ -69,10 +68,6 @@ public final class MojangAuthentication {
 
 
     public static void joinServer(MojangAccount account, String serverId) throws NoNetworkConnectionException, MojangJoinServerErrorException {
-        if (StaticConfiguration.SKIP_MOJANG_AUTHENTICATION) {
-            return;
-        }
-
         JsonObject payload = new JsonObject();
         payload.addProperty("accessToken", account.getAccessToken());
         payload.addProperty("selectedProfile", account.getUUID().toString().replace("-", ""));
@@ -103,9 +98,6 @@ public final class MojangAuthentication {
     }
 
     public static String refresh(String clientToken, String accessToken) throws NoNetworkConnectionException, AuthenticationException {
-        if (StaticConfiguration.SKIP_MOJANG_AUTHENTICATION) {
-            return clientToken;
-        }
         JsonObject payload = new JsonObject();
         payload.addProperty("accessToken", accessToken);
         payload.addProperty("clientToken", clientToken);

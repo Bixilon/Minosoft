@@ -14,8 +14,8 @@
 package de.bixilon.minosoft.modding.loading;
 
 import de.bixilon.minosoft.Minosoft;
-import de.bixilon.minosoft.config.StaticConfiguration;
 import de.bixilon.minosoft.modding.MinosoftMod;
+import de.bixilon.minosoft.terminal.RunConfiguration;
 import de.bixilon.minosoft.util.CountUpAndDownLatch;
 import de.bixilon.minosoft.util.Util;
 import de.bixilon.minosoft.util.logging.Log;
@@ -44,7 +44,7 @@ public class ModLoader {
         // load all jars, parse the mod.json
         // sort the list and prioritize
         // load all lists and dependencies async
-        File[] files = new File(StaticConfiguration.HOME_DIRECTORY + "mods").listFiles();
+        File[] files = new File(RunConfiguration.INSTANCE.getHOME_DIRECTORY() + "mods").listFiles();
         if (files == null) {
             // no mods to load
             return;

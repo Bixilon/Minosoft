@@ -17,7 +17,6 @@ import com.google.common.collect.HashBiMap;
 import com.jfoenix.controls.JFXAlert;
 import com.jfoenix.controls.JFXDialogLayout;
 import de.bixilon.minosoft.config.Configuration;
-import de.bixilon.minosoft.config.StaticConfiguration;
 import de.bixilon.minosoft.data.accounts.Account;
 import de.bixilon.minosoft.data.assets.JarAssetsManager;
 import de.bixilon.minosoft.data.assets.Resources;
@@ -40,6 +39,7 @@ import de.bixilon.minosoft.protocol.protocol.LANServerListener;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import de.bixilon.minosoft.terminal.CLI;
 import de.bixilon.minosoft.terminal.CommandLineArguments;
+import de.bixilon.minosoft.terminal.RunConfiguration;
 import de.bixilon.minosoft.util.CountUpAndDownLatch;
 import de.bixilon.minosoft.util.GitInfo;
 import de.bixilon.minosoft.util.MMath;
@@ -79,7 +79,7 @@ public final class Minosoft {
 
         taskWorker.setFatalError((exception) -> {
             Log.fatal("Critical error occurred while preparing. Exit");
-            if (StaticConfiguration.HEADLESS_MODE) {
+            if (RunConfiguration.INSTANCE.getDISABLE_SERVER_LIST()) {
                 shutdown(exception.getMessage(), ShutdownReasons.CRITICAL_EXCEPTION);
                 return;
             }
@@ -128,7 +128,7 @@ public final class Minosoft {
                 throw e;
             }
             Log.info(String.format("Loaded config file (version=%s)", config.getConfig().getGeneral().getVersion()));
-        }, "Configuration", String.format("Load config file (%s)", StaticConfiguration.CONFIG_FILENAME), Priorities.HIGHEST, TaskImportance.REQUIRED));
+        }, "Configuration", String.format("Load config file (%s)", RunConfiguration.INSTANCE.getCONFIG_FILENAME()), Priorities.HIGHEST, TaskImportance.REQUIRED));
 
         taskWorker.addTask(new Task(progress -> {
             DLocaleManager.load(config.getConfig().getGeneral().getLanguage());
@@ -164,7 +164,7 @@ public final class Minosoft {
 
         taskWorker.addTask(new Task(progress -> CLI.initialize(), "CLI", "Initialize CLI", Priorities.LOW, TaskImportance.OPTIONAL));
 
-        if (!StaticConfiguration.HEADLESS_MODE) {
+        if (!RunConfiguration.INSTANCE.getDISABLE_SERVER_LIST()) {
             taskWorker.addTask(new Task((progress) -> StartProgressWindow.start(), "JavaFX Toolkit", "Initialize JavaFX", Priorities.HIGHEST));
 
             taskWorker.addTask(new Task((progress) -> StartProgressWindow.show(START_STATUS_LATCH), "Progress Window", "Display progress window", Priorities.HIGH, TaskImportance.OPTIONAL, "JavaFX Toolkit", "Configuration"));
@@ -172,7 +172,7 @@ public final class Minosoft {
         taskWorker.work(START_STATUS_LATCH);
         START_STATUS_LATCH.await();
         Log.info("Everything initialized!");
-        if (StaticConfiguration.HEADLESS_MODE) {
+        if (RunConfiguration.INSTANCE.getDISABLE_SERVER_LIST()) {
             return;
         }
         ServerList.start();

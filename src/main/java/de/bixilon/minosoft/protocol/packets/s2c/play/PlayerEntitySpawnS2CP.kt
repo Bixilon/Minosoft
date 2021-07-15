@@ -12,7 +12,6 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play
 
-import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.data.entities.entities.player.RemotePlayerEntity
@@ -23,6 +22,7 @@ import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
+import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.Util
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -79,7 +79,7 @@ class PlayerEntitySpawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
 
         if (metaData != null) {
             entity.entityMetaData = metaData
-            if (StaticConfiguration.VERBOSE_ENTITY_META_DATA_LOGGING) {
+            if (RunConfiguration.VERBOSE_ENTITY_META_DATA_LOGGING) {
                 Log.log(LogMessageType.OTHER, level = LogLevels.VERBOSE) { "Players metadata of $entity: ${entity.entityMetaData}" }
             }
         }

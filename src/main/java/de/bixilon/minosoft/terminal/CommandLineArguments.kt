@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.terminal
 
-import de.bixilon.minosoft.config.StaticConfiguration
 import net.sourceforge.argparse4j.ArgumentParsers
+import net.sourceforge.argparse4j.impl.Arguments
 import net.sourceforge.argparse4j.inf.ArgumentParserException
 import net.sourceforge.argparse4j.inf.Namespace
 import kotlin.system.exitProcess
@@ -24,10 +24,31 @@ object CommandLineArguments {
         .defaultHelp(true)
         .description("An open source minecraft client written from scratch")) {
 
+
+        addArgument("--disable_log_color_message")
+            .action(Arguments.storeFalse())
+            .help("The message (after all prefixes) should be colored with ANSI color codes")
+        addArgument("--disable_log_color_level")
+            .action(Arguments.storeFalse())
+            .help("The level (e.g. [INFO]) should be colored")
+        addArgument("--disable_log_color_type")
+            .action(Arguments.storeFalse())
+            .help("The type (e.g. [OTHER]) should be colored")
         addArgument("--relative_log")
-            .choices(true, false)
+            .action(Arguments.storeTrue())
             .help("Prefixes all log messages with relative time instead of absolute time")
-            .default = false
+
+        addArgument("--disable_server_list")
+            .action(Arguments.storeTrue())
+            .help("Disables the server list")
+
+        addArgument("--disable_rendering")
+            .action(Arguments.storeTrue())
+            .help("Disables rendering")
+
+        addArgument("--headless")
+            .action(Arguments.storeTrue())
+            .help("Disables the server list and rendering")
 
         this
     }
@@ -41,6 +62,18 @@ object CommandLineArguments {
             exitProcess(1)
         }
 
-        StaticConfiguration.LOG_RELATIVE_TIME = namespace.getBoolean("relative_log")
+        RunConfiguration.LOG_COLOR_MESSAGE = namespace.getBoolean("disable_log_color_message")
+        RunConfiguration.LOG_COLOR_LEVEL = namespace.getBoolean("disable_log_color_level")
+        RunConfiguration.LOG_COLOR_TYPE = namespace.getBoolean("disable_log_color_type")
+        RunConfiguration.LOG_RELATIVE_TIME = namespace.getBoolean("relative_log")
+
+        RunConfiguration.DISABLE_SERVER_LIST = namespace.getBoolean("disable_server_list")
+        RunConfiguration.DISABLE_RENDERING = namespace.getBoolean("disable_rendering")
+
+        if (namespace.getBoolean("headless")) {
+            RunConfiguration.DISABLE_SERVER_LIST = true
+            RunConfiguration.DISABLE_RENDERING = true
+        }
+
     }
 }

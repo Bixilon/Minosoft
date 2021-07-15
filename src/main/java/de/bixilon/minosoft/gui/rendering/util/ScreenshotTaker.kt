@@ -14,9 +14,9 @@
 package de.bixilon.minosoft.gui.rendering.util
 
 import de.bixilon.minosoft.Minosoft
-import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.system.base.PixelTypes
+import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.Util
 import glm_.vec2.Vec2i
 import java.awt.image.BufferedImage
@@ -30,7 +30,7 @@ class ScreenshotTaker(
 ) {
     fun takeScreenshot() {
         try {
-            val basePath = "${StaticConfiguration.HOME_DIRECTORY}/screenshots/${renderWindow.connection.address.hostname}/${DATE_FORMATTER.format(System.currentTimeMillis())}"
+            val basePath = "${RunConfiguration.HOME_DIRECTORY}/screenshots/${renderWindow.connection.address.hostname}/${DATE_FORMATTER.format(System.currentTimeMillis())}"
             var path = "$basePath.png"
             var i = 1
             while (File(path).exists()) {

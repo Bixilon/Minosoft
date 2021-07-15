@@ -16,11 +16,11 @@ package de.bixilon.minosoft.util.microsoft
 import com.google.gson.JsonParser
 import com.jfoenix.controls.JFXAlert
 import com.jfoenix.controls.JFXDialogLayout
-import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.data.accounts.MicrosoftAccount
 import de.bixilon.minosoft.gui.main.GUITools
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.HTTP
 import de.bixilon.minosoft.util.Util
 import de.bixilon.minosoft.util.logging.Log
@@ -50,7 +50,7 @@ object MicrosoftOAuthUtils {
             Log.warn("Can not login into microsoft account")
             exception.printStackTrace()
 
-            if (!StaticConfiguration.HEADLESS_MODE) {
+            if (!RunConfiguration.DISABLE_SERVER_LIST) {
                 var message = "Could not login!"
                 var errorMessage = exception.javaClass.canonicalName + ": " + exception.message
                 if (exception is LoginException) {

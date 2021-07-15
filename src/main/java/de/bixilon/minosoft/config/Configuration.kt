@@ -15,6 +15,7 @@ package de.bixilon.minosoft.config
 import com.squareup.moshi.JsonWriter
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.config.Config
+import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.KUtil.toInt
 import de.bixilon.minosoft.util.Util
 import de.bixilon.minosoft.util.json.JSONSerializer
@@ -26,9 +27,9 @@ import java.io.FileWriter
 import java.io.IOException
 import java.nio.file.Files
 
-class Configuration(private val configName: String = StaticConfiguration.CONFIG_FILENAME) {
+class Configuration(private val configName: String = RunConfiguration.CONFIG_FILENAME) {
     private val saveLock = Object()
-    private val file = File(StaticConfiguration.HOME_DIRECTORY + "config/minosoft/" + configName)
+    private val file = File(RunConfiguration.HOME_DIRECTORY + "config/minosoft/" + configName)
     val config: Config
 
     init {
@@ -65,7 +66,7 @@ class Configuration(private val configName: String = StaticConfiguration.CONFIG_
         Minosoft.THREAD_POOL.execute {
             synchronized(saveLock) {
                 // write config to temp file, delete original config, rename temp file to original file to avoid conflicts if minosoft gets closed while saving the config
-                val tempFile = File(StaticConfiguration.HOME_DIRECTORY + "config/minosoft/" + configName + ".tmp")
+                val tempFile = File(RunConfiguration.HOME_DIRECTORY + "config/minosoft/" + configName + ".tmp")
                 Util.createParentFolderIfNotExist(tempFile)
                 val buffer = Buffer()
                 val jsonWriter: JsonWriter = JsonWriter.of(buffer)

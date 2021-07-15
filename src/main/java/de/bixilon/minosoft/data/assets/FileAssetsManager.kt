@@ -14,8 +14,8 @@
 package de.bixilon.minosoft.data.assets
 
 import de.bixilon.minosoft.Minosoft
-import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.Util
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -101,7 +101,7 @@ interface FileAssetsManager : AssetsManager {
     fun saveAsset(data: InputStream, compress: Boolean = true): String {
         var tempDestinationFile: File? = null
         while (tempDestinationFile == null || tempDestinationFile.exists()) { // file exist? lol
-            tempDestinationFile = File(StaticConfiguration.TEMPORARY_FOLDER + "minosoft/" + Util.generateRandomString(32))
+            tempDestinationFile = File(RunConfiguration.TEMPORARY_FOLDER + "minosoft/" + Util.generateRandomString(32))
         }
         Util.createParentFolderIfNotExist(tempDestinationFile)
 
@@ -139,7 +139,7 @@ interface FileAssetsManager : AssetsManager {
             if (hash.length != 40) {
                 throw IllegalArgumentException("Invalid hash provided: $hash")
             }
-            var path = StaticConfiguration.HOME_DIRECTORY + "assets/objects/${hash.substring(0, 2)}/$hash"
+            var path = RunConfiguration.HOME_DIRECTORY + "assets/objects/${hash.substring(0, 2)}/$hash"
 
             if (compress) {
                 path += ".gz"

@@ -20,8 +20,6 @@ import de.bixilon.minosoft.data.text.RGBColor.Companion.asRGBColor
 import glm_.vec2.Vec2
 
 object RenderConstants {
-    const val DISABLE_RENDERING = false
-
     val DEFAULT_SKY_COLOR = "#ecff89".asColor()
     val WHITE_COLOR = "#ffffff".asColor()
     val BLACK_COLOR = "#000000".asColor()
