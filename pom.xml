@@ -196,7 +196,7 @@
         <exec.mainClass>de.bixilon.minosoft.Minosoft</exec.mainClass>
         <maven.compiler.source>14</maven.compiler.source>
         <maven.compiler.target>14</maven.compiler.target>
-        <javafx.version>17-ea+13</javafx.version>
+        <javafx.version>17-ea+15</javafx.version>
         <kotlin.version>1.5.10</kotlin.version>
         <lwjgl.version>3.2.3</lwjgl.version>
     </properties>
@@ -248,11 +248,6 @@
             <groupId>com.jfoenix</groupId>
             <artifactId>jfoenix</artifactId>
             <version>9.0.10</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-compress</artifactId>
-            <version>1.20</version>
         </dependency>
         <dependency>
             <groupId>org.xeustechnologies</groupId>

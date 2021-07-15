@@ -44,7 +44,7 @@ class BlockRenderer(data: Map<String, Any>, model: BlockModel) : WorldEntryRende
         val rotation = data.toVec3().rad
         createDirectionMapping(rotation)
         val newElements = ElementRenderer.createElements(data, model, rotation, directionMapping)
-        this.elements = (newElements.reversed()).toTypedArray() // reverse drawing order (for e.g. grass block side overlays
+        this.elements = (newElements.reversed()).toTypedArray() // reverse drawing order (for e.g. grass block side overlays)
         textures.putAll(model.textures)
     }
 
