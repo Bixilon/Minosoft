@@ -24,25 +24,36 @@ object StaticConfiguration {
     const val REPLACE_SYSTEM_OUT_STREAMS = true
 
     @JvmField
+    @Deprecated(message = "Not static, will be removed")
     var CONFIG_FILENAME = "minosoft.json" // Filename of minosoft's base configuration (located in AppData/Minosoft/config)
 
     @JvmField
+    @Deprecated(message = "Not static, will be removed")
     var SKIP_MOJANG_AUTHENTICATION = false // disables all connections to mojang
 
+    @Deprecated(message = "Not static, will be removed")
     var LOG_COLOR_MESSAGE = true // The message (after all prefixes) should be colored with ANSI color codes
+
+    @Deprecated(message = "Not static, will be removed")
     var LOG_COLOR_LEVEL = true // The level (e.g. [INFO]) should be colored
+
+    @Deprecated(message = "Not static, will be removed")
     var LOG_COLOR_TYPE = true // The type (e.g. [OTHER]) should be colored
 
     @JvmField
+    @Deprecated(message = "Not static, will be removed")
     var LOG_RELATIVE_TIME = false // prefix all log messages with the relative start time in milliseconds instead of the formatted time
 
     @JvmField
+    @Deprecated(message = "Not static, will be removed")
     var VERBOSE_ENTITY_META_DATA_LOGGING = false // if true, the entity meta data is getting serialized
 
     @JvmField
+    @Deprecated(message = "Not static, will be removed")
     var HEADLESS_MODE = false // if true, no gui, rendering or whatever will be loaded or shown
 
     @JvmField
+    @Deprecated(message = "Not static, will be removed")
     var HOME_DIRECTORY: String = let {
         // Sets Config.homeDir to the correct folder per OS
         var homeDir: String = System.getProperty(StandardSystemProperty.USER_HOME.key())

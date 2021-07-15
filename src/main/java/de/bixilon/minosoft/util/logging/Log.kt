@@ -46,7 +46,11 @@ object Log {
                 try {
                     val message = BaseComponent()
                     val messageColor = messageToSend.logMessageType.colorMap[messageToSend.level] ?: messageToSend.logMessageType.defaultColor
-                    message += TextComponent("[${TIME_FORMAT.format(messageToSend.time)}] ")
+                    message += if (StaticConfiguration.LOG_RELATIVE_TIME) {
+                        TextComponent("[${System.currentTimeMillis() - MINOSOFT_START_TIME}] ")
+                    } else {
+                        TextComponent("[${TIME_FORMAT.format(messageToSend.time)}] ")
+                    }
                     message += TextComponent("[${messageToSend.thread.name}] ")
                     message += TextComponent("[${messageToSend.logMessageType}] ").let {
                         if (StaticConfiguration.LOG_COLOR_TYPE) {

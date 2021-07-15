@@ -39,7 +39,11 @@ import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
 import de.bixilon.minosoft.protocol.protocol.LANServerListener;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import de.bixilon.minosoft.terminal.CLI;
-import de.bixilon.minosoft.util.*;
+import de.bixilon.minosoft.terminal.CommandLineArguments;
+import de.bixilon.minosoft.util.CountUpAndDownLatch;
+import de.bixilon.minosoft.util.GitInfo;
+import de.bixilon.minosoft.util.MMath;
+import de.bixilon.minosoft.util.Util;
 import de.bixilon.minosoft.util.logging.Log;
 import de.bixilon.minosoft.util.task.AsyncTaskWorker;
 import de.bixilon.minosoft.util.task.Task;
@@ -65,7 +69,7 @@ public final class Minosoft {
     private static boolean isExiting;
 
     public static void main(String[] args) {
-        MinosoftCommandLineArguments.parseCommandLineArguments(args);
+        CommandLineArguments.INSTANCE.parse(args);
         Runtime.getRuntime().addShutdownHook(new Thread(() -> shutdown(ShutdownReasons.UNKNOWN), "ShutdownHook"));
         Util.initUtilClasses();
 
