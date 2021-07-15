@@ -36,6 +36,8 @@ data class Sound(
     val preload: Boolean = false,
     // ToDo: type
 ) {
+    var length: Long = -1L
+        private set
     var loaded: Boolean = false
         private set
     var loadFailed: Boolean = false
@@ -79,6 +81,7 @@ data class Sound(
 
             samplesLength = stb_vorbis_stream_length_in_samples(vorbis)
             sampleSeconds = stb_vorbis_stream_length_in_seconds(vorbis)
+            length = (sampleSeconds * 1000).toLong()
 
 
             val pcm = BufferUtils.createShortBuffer(samplesLength)

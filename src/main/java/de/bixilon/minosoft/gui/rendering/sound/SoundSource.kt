@@ -19,6 +19,7 @@ import glm_.vec3.Vec3
 import org.lwjgl.openal.AL10.*
 
 class SoundSource {
+    private var playTime = -1L
     private val source: Int = alGenSources()
 
     var loop: Boolean = false
@@ -72,9 +73,10 @@ class SoundSource {
         get() = alGetSourcei(source, AL_SOURCE_STATE) == AL_PLAYING
 
     val available: Boolean
-        get() = !isPlaying
+        get() = !isPlaying || System.currentTimeMillis() - playTime > sound?.length ?: 0L // ToDo: Allow pause
 
     fun play() {
+        playTime = System.currentTimeMillis()
         alSourcePlay(source)
     }
 
@@ -83,6 +85,7 @@ class SoundSource {
     }
 
     fun stop() {
+        playTime = -1L
         alSourceStop(source)
     }
 
