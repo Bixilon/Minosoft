@@ -2,7 +2,7 @@ variables:
   MAVEN_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository"
   MAVEN_CLI_OPTS: "--errors --fail-at-end --show-version"
 
-image: maven:3-openjdk-15
+image: maven:3-openjdk-16
 
 cache:
   paths:

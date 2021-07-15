@@ -6,7 +6,7 @@
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with this program.If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
@@ -20,7 +20,7 @@ import de.bixilon.minosoft.data.commands.CommandRootNode;
 import de.bixilon.minosoft.data.commands.CommandStringReader;
 import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException;
 import de.bixilon.minosoft.data.commands.parser.exceptions.UnknownCommandParseException;
-import de.bixilon.minosoft.protocol.network.Connection;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
 import de.bixilon.minosoft.terminal.commands.CommandStack;
 import de.bixilon.minosoft.terminal.commands.commands.Command;
 import de.bixilon.minosoft.terminal.commands.exceptions.CLIException;
@@ -38,7 +38,7 @@ import java.lang.reflect.InvocationTargetException;
 
 public class CLI {
     private static final CommandRootNode ROOT_NODE;
-    private static Connection currentConnection;
+    private static PlayConnection currentConnection;
 
     static {
         ROOT_NODE = new CommandRootNode();
@@ -63,11 +63,11 @@ public class CLI {
         }
     }
 
-    public static Connection getCurrentConnection() {
+    public static PlayConnection getCurrentConnection() {
         return currentConnection;
     }
 
-    public static void setCurrentConnection(@Nullable Connection connection) {
+    public static void setCurrentConnection(@Nullable PlayConnection connection) {
         currentConnection = connection;
     }
 
@@ -85,7 +85,7 @@ public class CLI {
                         .build();
 
 
-                latch.countDown();
+                latch.dec();
 
                 while (true) {
                     try {
@@ -118,6 +118,6 @@ public class CLI {
                 e.printStackTrace();
             }
         }, "CLI").start();
-        latch.waitUntilZero();
+        latch.await();
     }
 }

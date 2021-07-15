@@ -6,7 +6,7 @@
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with this program.If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
@@ -14,12 +14,11 @@
 package de.bixilon.minosoft.gui.main.dialogs.login;
 
 import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXPasswordField;
-import com.jfoenix.controls.JFXTextField;
+import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.data.accounts.Account;
 import de.bixilon.minosoft.data.accounts.MojangAccount;
-import de.bixilon.minosoft.data.locale.LocaleManager;
-import de.bixilon.minosoft.data.locale.Strings;
+import de.bixilon.minosoft.data.language.deprecated.DLocaleManager;
+import de.bixilon.minosoft.data.language.deprecated.Strings;
 import de.bixilon.minosoft.util.mojang.api.MojangAuthentication;
 import de.bixilon.minosoft.util.mojang.api.exceptions.AuthenticationException;
 import de.bixilon.minosoft.util.mojang.api.exceptions.NoNetworkConnectionException;
@@ -28,6 +27,8 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
@@ -39,19 +40,19 @@ public class MojangLoginController implements Initializable {
     public HBox hBox;
     public Label header;
     public Label emailLabel;
-    public JFXTextField email;
+    public TextField email;
     public Label passwordLabel;
-    public JFXPasswordField password;
+    public PasswordField password;
     public JFXButton loginButton;
     public Label errorMessage;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         // translate
-        this.header.setText(LocaleManager.translate(Strings.LOGIN_MOJANG_DIALOG_HEADER));
-        this.emailLabel.setText(LocaleManager.translate(Strings.EMAIL));
-        this.passwordLabel.setText(LocaleManager.translate(Strings.PASSWORD));
-        this.loginButton.setText(LocaleManager.translate(Strings.BUTTON_LOGIN));
+        this.header.setText(DLocaleManager.translate(Strings.LOGIN_MOJANG_DIALOG_HEADER));
+        this.emailLabel.setText(DLocaleManager.translate(Strings.EMAIL));
+        this.passwordLabel.setText(DLocaleManager.translate(Strings.PASSWORD));
+        this.loginButton.setText(DLocaleManager.translate(Strings.BUTTON_LOGIN));
 
 
         this.email.textProperty().addListener(this::checkData);
@@ -80,7 +81,7 @@ public class MojangLoginController implements Initializable {
         this.errorMessage.setVisible(false);
 
 
-        new Thread(() -> { // ToDo: recycle thread
+        Minosoft.THREAD_POOL.execute(() -> {
             try {
                 MojangAccount account = MojangAuthentication.login(this.email.getText(), this.password.getText());
                 Account.addAccount(account);
@@ -97,8 +98,7 @@ public class MojangLoginController implements Initializable {
                     this.loginButton.setDisable(true);
                 });
             }
-        }, "AccountLoginThread").start();
-
+        });
     }
 
     private void checkData(ObservableValue<? extends String> observableValue, String oldValue, String newValue) {

@@ -6,22 +6,21 @@
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with this program.If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 package de.bixilon.minosoft.data.commands.parser
 
 import de.bixilon.minosoft.data.commands.CommandStringReader
-import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException
 import de.bixilon.minosoft.data.commands.parser.exceptions.UnknownOperationCommandParseException
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties
-import de.bixilon.minosoft.protocol.network.Connection
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 
-class OperationParser : CommandParser() {
+object OperationParser : CommandParser() {
+    private val OPERATIONS = setOf("=", "+=", "-=", "*=", "/=", "%=", "<", ">", "><")
 
-    @Throws(CommandParseException::class)
-    override fun parse(connection: Connection, properties: ParserProperties?, stringReader: CommandStringReader): Any? {
+    override fun parse(connection: PlayConnection, properties: ParserProperties?, stringReader: CommandStringReader): Any {
         val operation = stringReader.readUnquotedString()
 
         if (!OPERATIONS.contains(operation)) {
@@ -29,10 +28,5 @@ class OperationParser : CommandParser() {
         }
         return operation
 
-    }
-
-    companion object {
-        private val OPERATIONS = setOf("=", "+=", "-=", "*=", "/=", "%=", "<", ">", "><")
-        val OPERATION_PARSER = OperationParser()
     }
 }

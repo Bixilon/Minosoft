@@ -1,0 +1,591 @@
+{
+  "minecraft:default_plugin_channels": {
+    "0": {
+      "minecraft:brand": {
+        "name": "MC|Brand"
+      },
+      "minecraft:stop_sound": {
+        "name": "MC|StopSound"
+      },
+      "minecraft:register": {
+        "name": "REGISTER"
+      },
+      "minecraft:unregister": {
+        "name": "UNREGISTER"
+      }
+    },
+    "385": {
+      "minecraft:brand": {
+        "name": "minecraft:brand"
+      },
+      "minecraft:register": {
+        "name": "minecraft:register"
+      },
+      "minecraft:unregister": {
+        "name": "minecraft:unregister"
+      }
+    }
+  },
+  "minecraft:entity_objects": {
+    "0": {
+      "minecraft:boat": {
+        "id": 1
+      },
+      "minecraft:item": {
+        "id": 2
+      },
+      "minecraft:area_effect_cloud": {
+        "id": 3
+      },
+      "minecraft:minecart": {
+        "id": 10
+      },
+      "minecraft:tnt": {
+        "id": 50
+      },
+      "minecraft:end_crystal": {
+        "id": 51
+      },
+      "minecraft:arrow": {
+        "id": 60
+      },
+      "minecraft:snowball": {
+        "id": 61
+      },
+      "minecraft:egg": {
+        "id": 62
+      },
+      "minecraft:fireball": {
+        "id": 63
+      },
+      "minecraft:small_fireball": {
+        "id": 64
+      },
+      "minecraft:ender_pearl": {
+        "id": 65
+      },
+      "minecraft:wither_skull": {
+        "id": 66
+      },
+      "minecraft:llama_spit": {
+        "id": 67
+      },
+      "minecraft:falling_block": {
+        "id": 70
+      },
+      "minecraft:item_frame": {
+        "id": 71
+      },
+      "minecraft:eye_of_ender": {
+        "id": 72
+      },
+      "minecraft:potion": {
+        "id": 73
+      },
+      "minecraft:experience_bottle": {
+        "id": 75
+      },
+      "minecraft:firework_rocket": {
+        "id": 76
+      },
+      "minecraft:leash_knot": {
+        "id": 77
+      },
+      "minecraft:evoker_fangs": {
+        "id": 78
+      },
+      "minecraft:fishing_bobber": {
+        "id": 90
+      },
+      "minecraft:spectral_arrow": {
+        "id": 91
+      },
+      "minecraft:dragon_fireball": {
+        "id": 93
+      },
+      "minecraft:trident": {
+        "id": 94
+      }
+    }
+  },
+  "minecraft:block_entity_meta_data_types": {
+    "0": {
+      "minecraft:spawner": {
+        "id": 1
+      },
+      "minecraft:command_block": {
+        "id": 2
+      },
+      "minecraft:skull": {
+        "id": 3
+      },
+      "minecraft:flower_pot": {
+        "id": 4
+      }
+    },
+    "30": {
+      "minecraft:spawner": {
+        "id": 1
+      },
+      "minecraft:command_block": {
+        "id": 2
+      },
+      "minecraft:skull": {
+        "id": 3
+      },
+      "minecraft:flower_pot": {
+        "id": 4
+      },
+      "minecraft:banner": {
+        "id": 6
+      }
+    },
+    "33": {
+      "minecraft:spawner": {
+        "id": 1
+      },
+      "minecraft:command_block": {
+        "id": 2
+      },
+      "minecraft:beacon": {
+        "id": 3
+      },
+      "minecraft:skull": {
+        "id": 4
+      },
+      "minecraft:flower_pot": {
+        "id": 5
+      },
+      "minecraft:banner": {
+        "id": 6
+      }
+    },
+    "49": {
+      "minecraft:spawner": {
+        "id": 1
+      },
+      "minecraft:command_block": {
+        "id": 2
+      },
+      "minecraft:beacon": {
+        "id": 3
+      },
+      "minecraft:skull": {
+        "id": 4
+      },
+      "minecraft:flower_pot": {
+        "id": 5
+      },
+      "minecraft:banner": {
+        "id": 6
+      },
+      "minecraft:data_structure": {
+        "id": 7
+      },
+      "minecraft:end_gateway": {
+        "id": 8
+      }
+    },
+    "110": {
+      "minecraft:spawner": {
+        "id": 1
+      },
+      "minecraft:command_block": {
+        "id": 2
+      },
+      "minecraft:beacon": {
+        "id": 3
+      },
+      "minecraft:skull": {
+        "id": 4
+      },
+      "minecraft:flower_pot": {
+        "id": 5
+      },
+      "minecraft:banner": {
+        "id": 6
+      },
+      "minecraft:data_structure": {
+        "id": 7
+      },
+      "minecraft:end_gateway": {
+        "id": 8
+      },
+      "minecraft:sign": {
+        "id": 9
+      }
+    },
+    "307": {
+      "minecraft:spawner": {
+        "id": 1
+      },
+      "minecraft:command_block": {
+        "id": 2
+      },
+      "minecraft:beacon": {
+        "id": 3
+      },
+      "minecraft:skull": {
+        "id": 4
+      },
+      "minecraft:flower_pot": {
+        "id": 5
+      },
+      "minecraft:banner": {
+        "id": 6
+      },
+      "minecraft:data_structure": {
+        "id": 7
+      },
+      "minecraft:end_gateway": {
+        "id": 8
+      },
+      "minecraft:sign": {
+        "id": 9
+      },
+      "minecraft:shulker_box": {
+        "id": 10
+      }
+    },
+    "321": {
+      "minecraft:spawner": {
+        "id": 1
+      },
+      "minecraft:command_block": {
+        "id": 2
+      },
+      "minecraft:beacon": {
+        "id": 3
+      },
+      "minecraft:skull": {
+        "id": 4
+      },
+      "minecraft:flower_pot": {
+        "id": 5
+      },
+      "minecraft:banner": {
+        "id": 6
+      },
+      "minecraft:data_structure": {
+        "id": 7
+      },
+      "minecraft:end_gateway": {
+        "id": 8
+      },
+      "minecraft:sign": {
+        "id": 9
+      },
+      "minecraft:shulker_box": {
+        "id": 10
+      },
+      "minecraft:bed": {
+        "id": 11
+      }
+    },
+    "346": {
+      "minecraft:spawner": {
+        "id": 1
+      },
+      "minecraft:command_block": {
+        "id": 2
+      },
+      "minecraft:beacon": {
+        "id": 3
+      },
+      "minecraft:skull": {
+        "id": 4
+      },
+      "minecraft:banner": {
+        "id": 6
+      },
+      "minecraft:data_structure": {
+        "id": 7
+      },
+      "minecraft:end_gateway": {
+        "id": 8
+      },
+      "minecraft:sign": {
+        "id": 9
+      },
+      "minecraft:shulker_box": {
+        "id": 10
+      },
+      "minecraft:bed": {
+        "id": 11
+      }
+    },
+    "371": {
+      "minecraft:spawner": {
+        "id": 1
+      },
+      "minecraft:command_block": {
+        "id": 2
+      },
+      "minecraft:beacon": {
+        "id": 3
+      },
+      "minecraft:skull": {
+        "id": 4
+      },
+      "minecraft:conduit": {
+        "id": 5
+      },
+      "minecraft:banner": {
+        "id": 6
+      },
+      "minecraft:data_structure": {
+        "id": 7
+      },
+      "minecraft:end_gateway": {
+        "id": 8
+      },
+      "minecraft:sign": {
+        "id": 9
+      },
+      "minecraft:shulker_box": {
+        "id": 10
+      },
+      "minecraft:bed": {
+        "id": 11
+      }
+    },
+    "445": {
+      "minecraft:spawner": {
+        "id": 1
+      },
+      "minecraft:command_block": {
+        "id": 2
+      },
+      "minecraft:beacon": {
+        "id": 3
+      },
+      "minecraft:skull": {
+        "id": 4
+      },
+      "minecraft:conduit": {
+        "id": 5
+      },
+      "minecraft:banner": {
+        "id": 6
+      },
+      "minecraft:data_structure": {
+        "id": 7
+      },
+      "minecraft:end_gateway": {
+        "id": 8
+      },
+      "minecraft:sign": {
+        "id": 9
+      },
+      "minecraft:shulker_box": {
+        "id": 10
+      },
+      "minecraft:bed": {
+        "id": 11
+      },
+      "minecraft:jigsaw": {
+        "id": 12
+      }
+    },
+    "452": {
+      "minecraft:spawner": {
+        "id": 1
+      },
+      "minecraft:command_block": {
+        "id": 2
+      },
+      "minecraft:beacon": {
+        "id": 3
+      },
+      "minecraft:skull": {
+        "id": 4
+      },
+      "minecraft:conduit": {
+        "id": 5
+      },
+      "minecraft:banner": {
+        "id": 6
+      },
+      "minecraft:data_structure": {
+        "id": 7
+      },
+      "minecraft:end_gateway": {
+        "id": 8
+      },
+      "minecraft:sign": {
+        "id": 9
+      },
+      "minecraft:shulker_box": {
+        "id": 10
+      },
+      "minecraft:bed": {
+        "id": 11
+      },
+      "minecraft:jigsaw": {
+        "id": 12
+      },
+      "minecraft:campfire": {
+        "id": 13
+      }
+    },
+    "550": {
+      "minecraft:spawner": {
+        "id": 1
+      },
+      "minecraft:command_block": {
+        "id": 2
+      },
+      "minecraft:beacon": {
+        "id": 3
+      },
+      "minecraft:skull": {
+        "id": 4
+      },
+      "minecraft:conduit": {
+        "id": 5
+      },
+      "minecraft:banner": {
+        "id": 6
+      },
+      "minecraft:data_structure": {
+        "id": 7
+      },
+      "minecraft:end_gateway": {
+        "id": 8
+      },
+      "minecraft:sign": {
+        "id": 9
+      },
+      "minecraft:shulker_box": {
+        "id": 10
+      },
+      "minecraft:bed": {
+        "id": 11
+      },
+      "minecraft:jigsaw": {
+        "id": 12
+      },
+      "minecraft:campfire": {
+        "id": 13
+      },
+      "minecraft:bee_hive": {
+        "id": 14
+      }
+    }
+  },
+  "minecraft:container_types": {
+    "0": {
+      "minecraft:chest": {
+        "id": 0
+      },
+      "minecraft:crafting_table": {
+        "id": 1
+      },
+      "minecraft:furnace": {
+        "id": 2
+      },
+      "minecraft:dispenser": {
+        "id": 3
+      },
+      "minecraft:enchanting_table": {
+        "id": 4
+      },
+      "minecraft:brewing_stand": {
+        "id": 5
+      },
+      "minecraft:villager": {
+        "id": 6
+      },
+      "minecraft:beacon": {
+        "id": 7
+      },
+      "minecraft:anvil": {
+        "id": 8
+      },
+      "minecraft:hopper": {
+        "id": 9
+      },
+      "minecraft:dropper": {
+        "id": 9
+      },
+      "minecraft:EntityHorse": {
+        "id": 9
+      }
+    }
+  },
+  "minecraft:game_events": {
+    "0": {
+      "minecraft:bed_break": {
+        "id": 0
+      },
+      "minecraft:rain_start": {
+        "id": 1
+      },
+      "minecraft:rain_stop": {
+        "id": 2
+      },
+      "minecraft:gamemode_change": {
+        "id": 3
+      },
+      "minecraft:show_credits": {
+        "id": 4
+      },
+      "minecraft:hide_demo_messages": {
+        "id": 5
+      },
+      "minecraft:arrow_player_hit": {
+        "id": 6
+      },
+      "minecraft:rain_gradient_set": {
+        "id": 7
+      },
+      "minecraft:thunder_gradient_set": {
+        "id": 8
+      },
+      "minecraft:pufferfish_sting": {
+        "id": 9
+      },
+      "minecraft:elder_guardian_effect": {
+        "id": 10
+      }
+    },
+    "552": {
+      "minecraft:bed_break": {
+        "id": 0
+      },
+      "minecraft:rain_start": {
+        "id": 1
+      },
+      "minecraft:rain_stop": {
+        "id": 2
+      },
+      "minecraft:gamemode_change": {
+        "id": 3
+      },
+      "minecraft:show_credits": {
+        "id": 4
+      },
+      "minecraft:hide_demo_messages": {
+        "id": 5
+      },
+      "minecraft:arrow_player_hit": {
+        "id": 6
+      },
+      "minecraft:rain_gradient_set": {
+        "id": 7
+      },
+      "minecraft:thunder_gradient_set": {
+        "id": 8
+      },
+      "minecraft:pufferfish_sting": {
+        "id": 9
+      },
+      "minecraft:elder_guardian_effect": {
+        "id": 10
+      },
+      "minecraft:immediate_respawn": {
+        "id": 11
+      }
+    }
+  }
+}

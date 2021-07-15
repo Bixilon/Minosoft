@@ -6,7 +6,7 @@
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with this program.If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
@@ -21,6 +21,7 @@ import org.apache.commons.cli.*;
 import javax.annotation.Nullable;
 import java.util.HashMap;
 
+@Deprecated(forRemoval = true)
 public class MinosoftCommandLineArguments {
     private static final HashMap<Option, CommandLineArgumentHandler> OPTION_HASH_MAP = new HashMap<>();
     private static final Options OPTIONS = new Options();
@@ -59,7 +60,6 @@ public class MinosoftCommandLineArguments {
             Minosoft.shutdown(ShutdownReasons.CLI_HELP);
         }));
         registerCommandLineOption(new Option("home_folder", true, "Home of Minosoft"), (value -> StaticConfiguration.HOME_DIRECTORY = value + "/"));
-        registerCommandLineOption(new Option("colored_log", true, "Should the log be colored"), (value -> StaticConfiguration.COLORED_LOG = Boolean.parseBoolean(value)));
         registerCommandLineOption(new Option("verbose_entity_logging", true, "Should entity meta data be printed"), (value -> StaticConfiguration.VERBOSE_ENTITY_META_DATA_LOGGING = Boolean.parseBoolean(value)));
         registerCommandLineOption(new Option("log_time_relativ", true, "Should time in log timestamp be relative"), (value -> StaticConfiguration.LOG_RELATIVE_TIME = Boolean.parseBoolean(value)));
         registerCommandLineOption(new Option("config_filename", true, "The name of the config file (defaults to config.json)"), (value -> StaticConfiguration.CONFIG_FILENAME = value));

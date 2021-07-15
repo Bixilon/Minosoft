@@ -6,7 +6,7 @@
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with this program.If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
@@ -20,7 +20,7 @@ import de.bixilon.minosoft.data.commands.CommandLiteralNode;
 import de.bixilon.minosoft.data.commands.CommandNode;
 import de.bixilon.minosoft.data.commands.parser.IntegerParser;
 import de.bixilon.minosoft.data.commands.parser.properties.IntegerParserProperties;
-import de.bixilon.minosoft.protocol.network.Connection;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
 import de.bixilon.minosoft.terminal.CLI;
 import de.bixilon.minosoft.terminal.commands.exceptions.ConnectionNotFoundCommandParseException;
 
@@ -36,14 +36,14 @@ public class CommandConnection extends Command {
                             ArrayList<Object[]> tableData = new ArrayList<>();
 
                             for (var entry : Minosoft.CONNECTIONS.entrySet()) {
-                                tableData.add(new Object[]{entry.getKey(), entry.getValue().getAddress(), entry.getValue().getPlayer().getAccount()});
+                                tableData.add(new Object[]{entry.getKey(), entry.getValue().getAddress(), entry.getValue().getAccount()});
                             }
 
                             print(AsciiTable.getTable(new String[]{"ID", "ADDRESS", "ACCOUNT"}, tableData.toArray(new Object[0][0])));
                         }),
                         new CommandLiteralNode("select", new CommandArgumentNode("connectionId", IntegerParser.INTEGER_PARSER, new IntegerParserProperties(0), (stack) -> {
                             int connectionId = stack.getInt(0);
-                            Connection connection = Minosoft.CONNECTIONS.get(connectionId);
+                            PlayConnection connection = Minosoft.CONNECTIONS.get(connectionId);
                             if (connection == null) {
                                 throw new ConnectionNotFoundCommandParseException(stack, connectionId);
                             }
@@ -51,7 +51,7 @@ public class CommandConnection extends Command {
                             print("Current connection changed %s", connection);
                         })),
                         new CommandLiteralNode("current", (stack) -> {
-                            Connection connection = CLI.getCurrentConnection();
+                            PlayConnection connection = CLI.getCurrentConnection();
                             if (connection == null) {
                                 print("No connection selected");
                                 return;

@@ -6,7 +6,7 @@
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with this program.If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
@@ -14,7 +14,7 @@ package de.bixilon.minosoft.util
 
 data class Pair<K, V>(
     val key: K,
-    val value: V
+    val value: V,
 ) {
     override fun toString(): String {
         return "$key=$value"

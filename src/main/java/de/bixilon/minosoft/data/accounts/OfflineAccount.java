@@ -6,17 +6,18 @@
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with this program.If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
 package de.bixilon.minosoft.data.accounts;
 
-import com.google.gson.JsonObject;
 import de.bixilon.minosoft.util.Util;
 
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 public class OfflineAccount extends Account {
@@ -28,16 +29,16 @@ public class OfflineAccount extends Account {
         super(username, uuid);
     }
 
-    public static OfflineAccount deserialize(JsonObject json) {
-        return new OfflineAccount(json.get("username").getAsString(), Util.getUUIDFromString(json.get("uuid").getAsString()));
+    public static OfflineAccount deserialize(Map<String, Object> json) {
+        return new OfflineAccount((String) json.get("username"), Util.getUUIDFromString((String) json.get("uuid")));
     }
 
     @Override
-    public JsonObject serialize() {
-        JsonObject json = new JsonObject();
-        json.addProperty("username", getUsername());
-        json.addProperty("uuid", getUUID().toString());
-        json.addProperty("type", "offline");
+    public Map<String, Object> serialize() {
+        Map<String, Object> json = new HashMap<>();
+        json.put("username", getUsername());
+        json.put("uuid", getUUID().toString());
+        json.put("type", "offline");
         return json;
     }
 

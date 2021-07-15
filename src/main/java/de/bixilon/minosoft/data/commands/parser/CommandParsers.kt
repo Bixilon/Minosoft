@@ -6,7 +6,7 @@
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with this program.If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
@@ -14,62 +14,62 @@
 package de.bixilon.minosoft.data.commands.parser
 
 import com.google.common.collect.HashBiMap
-import de.bixilon.minosoft.data.mappings.ModIdentifier
+import de.bixilon.minosoft.data.registries.ResourceLocation
 import org.checkerframework.checker.nullness.qual.Nullable
 
 object CommandParsers {
-    private val COMMAND_PARSERS: HashBiMap<ModIdentifier, CommandParser> = HashBiMap.create(
+    private val COMMAND_PARSERS: HashBiMap<ResourceLocation, CommandParser> = HashBiMap.create(
         mapOf(
-            ModIdentifier("brigadier:bool") to BooleanParser.BOOLEAN_PARSER,
-            ModIdentifier("brigadier:double") to DoubleParser.DOUBLE_PARSER,
-            ModIdentifier("brigadier:float") to FloatParser.FLOAT_PARSER,
-            ModIdentifier("brigadier:integer") to IntegerParser.INTEGER_PARSER,
-            ModIdentifier("brigadier:string") to StringParser.STRING_PARSER,
-            ModIdentifier("angle") to AngleParser.ANGLE_PARSER,
-            ModIdentifier("entity") to EntityParser.ENTITY_PARSER,
-            ModIdentifier("game_profile") to GameProfileParser.GAME_PROFILE_PARSER,
-            ModIdentifier("block_pos") to BlockPositionParser.BLOCK_POSITION_PARSER,
-            ModIdentifier("column_pos") to ColumnPositionParser.COLUMN_POSITION_PARSER,
-            ModIdentifier("vec3") to Vec3Parser.VEC3_PARSER,
-            ModIdentifier("vec2") to Vec2Parser.VEC2_PARSER,
-            ModIdentifier("block_state") to BlockStateParser.BLOCK_STACK_PARSER,
-            ModIdentifier("block_predicate") to BlockStateParser.BLOCK_PREDICATE_PARSER,
-            ModIdentifier("item_stack") to ItemStackParser.ITEM_STACK_PARSER,
-            ModIdentifier("item_predicate") to ItemStackParser.ITEM_PREDICATE_PARSER,
-            ModIdentifier("color") to ColorParser.COLOR_PARSER,
-            ModIdentifier("component") to ComponentParser.COMPONENT_PARSER,
-            ModIdentifier("message") to MessageParser.MESSAGE_PARSER,
-            ModIdentifier("nbt") to NBTParser.NBT_PARSER,
+            ResourceLocation("brigadier:bool") to BooleanParser.BOOLEAN_PARSER,
+            ResourceLocation("brigadier:double") to DoubleParser.DOUBLE_PARSER,
+            ResourceLocation("brigadier:float") to FloatParser.FLOAT_PARSER,
+            ResourceLocation("brigadier:integer") to IntegerParser.INTEGER_PARSER,
+            ResourceLocation("brigadier:string") to StringParser.STRING_PARSER,
+            ResourceLocation("angle") to AngleParser,
+            ResourceLocation("entity") to EntityParser.ENTITY_PARSER,
+            ResourceLocation("game_profile") to GameProfileParser.GAME_PROFILE_PARSER,
+            ResourceLocation("block_pos") to Vec3iParser,
+            ResourceLocation("column_pos") to ColumnPositionParser,
+            ResourceLocation("vec3") to Vec3Parser,
+            ResourceLocation("vec2") to Vec2Parser,
+            ResourceLocation("block_state") to BlockStateParser.BLOCK_STACK_PARSER,
+            ResourceLocation("block_predicate") to BlockStateParser.BLOCK_PREDICATE_PARSER,
+            ResourceLocation("item_stack") to ItemStackParser.ITEM_STACK_PARSER,
+            ResourceLocation("item_predicate") to ItemStackParser.ITEM_PREDICATE_PARSER,
+            ResourceLocation("color") to ColorParser,
+            ResourceLocation("component") to ComponentParser,
+            ResourceLocation("message") to MessageParser.MESSAGE_PARSER,
+            ResourceLocation("nbt") to NBTParser.NBT_PARSER,
             // ToDo: nbt_path
-            ModIdentifier("objective") to ObjectiveParser.OBJECTIVE_PARSER,
+            ResourceLocation("objective") to ObjectiveParser,
             // ToDo: objective_criteria
-            ModIdentifier("operation") to OperationParser.OPERATION_PARSER,
-            ModIdentifier("particle") to ParticleParser.PARTICLE_PARSER,
-            ModIdentifier("rotation") to RotationParser.ROTATION_PARSER,
-            ModIdentifier("scoreboard_slot") to ScoreboardSlotParser.SCOREBOARD_SLOT_PARSER,
-            ModIdentifier("score_holder") to ScoreHolderParser.SCORE_HOLDER_PARSER,
-            ModIdentifier("swizzle") to SwizzleParser.SWIZZLE_PARSER,
-            ModIdentifier("team") to TeamParser.TEAM_PARSER,
-            ModIdentifier("item_slot") to ItemSlotParser.ITEM_SLOT_PARSER,
-            ModIdentifier("resource_location") to IdentifierParser.IDENTIFIER_PARSER,
-            ModIdentifier("mob_effect") to IdentifierListParser.MOB_EFFECT_PARSER,
+            ResourceLocation("operation") to OperationParser,
+            ResourceLocation("particle") to ParticleParser,
+            ResourceLocation("rotation") to RotationParser,
+            ResourceLocation("scoreboard_slot") to ScoreboardSlotParser,
+            ResourceLocation("score_holder") to ScoreHolderParser,
+            ResourceLocation("swizzle") to SwizzleParser,
+            ResourceLocation("team") to TeamParser,
+            ResourceLocation("item_slot") to ItemSlotParser,
+            ResourceLocation("resource_location") to ResourceLocationParser,
+            ResourceLocation("mob_effect") to ResourceLocationListParser.MOB_EFFECT_PARSER,
             // ToDo: function
             // ToDo: entity_anchor
-            ModIdentifier("range") to RangeParser.RANGE_PARSER,
-            ModIdentifier("int_range") to IntRangeParser.INT_RANGE_PARSER,
-            ModIdentifier("float_range") to FloatRangeParser.FLOAT_RANGE_PARSER,
-            ModIdentifier("item_enchantment") to IdentifierListParser.ENCHANTMENT_PARSER,
-            ModIdentifier("entity_summon") to IdentifierListParser.SUMMONABLE_ENTITY_PARSER,
-            ModIdentifier("dimension") to IdentifierListParser.DIMENSION_EFFECT_PARSER,
-            ModIdentifier("uuid") to UUIDParser.UUID_PARSER,
-            ModIdentifier("nbt_tag") to NBTParser.NBT_TAG_PARSER,
-            ModIdentifier("nbt_compound_tag") to NBTParser.NBT_COMPOUND_PARSER,
-            ModIdentifier("time") to TimeParser.TIME_PARSER
+            ResourceLocation("range") to RangeParser.RANGE_PARSER,
+            ResourceLocation("int_range") to IntRangeParser.INT_RANGE_PARSER,
+            ResourceLocation("float_range") to FloatRangeParser.FLOAT_RANGE_PARSER,
+            ResourceLocation("item_enchantment") to ResourceLocationListParser.ENCHANTMENT_PARSER,
+            ResourceLocation("entity_summon") to ResourceLocationListParser.SUMMONABLE_ENTITY_PARSER,
+            ResourceLocation("dimension") to ResourceLocationListParser.DIMENSION_EFFECT_PARSER,
+            ResourceLocation("uuid") to UUIDParser,
+            ResourceLocation("nbt_tag") to NBTParser.NBT_TAG_PARSER,
+            ResourceLocation("nbt_compound_tag") to NBTParser.NBT_COMPOUND_PARSER,
+            ResourceLocation("time") to TimeParser.TIME_PARSER
         )
     )
 
-    fun getParserInstance(identifier: ModIdentifier): @Nullable CommandParser? {
-        return COMMAND_PARSERS[identifier]
+    fun getParserInstance(resourceLocation: ResourceLocation): @Nullable CommandParser? {
+        return COMMAND_PARSERS[resourceLocation]
     }
 }
 

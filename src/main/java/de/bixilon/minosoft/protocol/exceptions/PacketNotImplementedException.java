@@ -6,20 +6,23 @@
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with this program.If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
 package de.bixilon.minosoft.protocol.exceptions;
 
-import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.protocol.InPacketBuffer;
-import de.bixilon.minosoft.protocol.protocol.Packets;
+import de.bixilon.minosoft.data.registries.versions.Version;
+import de.bixilon.minosoft.protocol.protocol.ConnectionStates;
+import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.protocol.PacketTypes;
+
+import javax.annotation.Nullable;
 
 public class PacketNotImplementedException extends PacketParseException {
 
-    public PacketNotImplementedException(InPacketBuffer buffer, Packets.Clientbound packetType, Connection connection) {
-        super(String.format("Packet not implemented yet (id=0x%x, name=%s, length=%d, dataLength=%d, version=%s, state=%s)", buffer.getCommand(), packetType, buffer.getLength(), buffer.getBytesLeft(), connection.getVersion(), connection.getConnectionState()));
+    public PacketNotImplementedException(InByteBuffer buffer, int packetId, PacketTypes.S2C packetType, @Nullable Version version, ConnectionStates connectionState) {
+        super(String.format("Packet not implemented yet (id=0x%x, name=%s, length=%d, dataLength=%d, version=%s, state=%s)", packetId, packetType, buffer.getSize(), buffer.getBytesLeft(), version, connectionState));
     }
 }

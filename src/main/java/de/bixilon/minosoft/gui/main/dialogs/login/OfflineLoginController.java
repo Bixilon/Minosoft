@@ -6,7 +6,7 @@
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with this program.If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
@@ -14,11 +14,10 @@
 package de.bixilon.minosoft.gui.main.dialogs.login;
 
 import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXTextField;
 import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.data.accounts.OfflineAccount;
-import de.bixilon.minosoft.data.locale.LocaleManager;
-import de.bixilon.minosoft.data.locale.Strings;
+import de.bixilon.minosoft.data.language.deprecated.DLocaleManager;
+import de.bixilon.minosoft.data.language.deprecated.Strings;
 import de.bixilon.minosoft.gui.main.cells.AccountListCell;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import de.bixilon.minosoft.util.Util;
@@ -28,6 +27,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
@@ -39,18 +39,18 @@ public class OfflineLoginController implements Initializable {
     public HBox hBox;
     public Label header;
     public Label usernameLabel;
-    public JFXTextField username;
+    public TextField username;
     public Label uuidLabel;
-    public JFXTextField uuid;
+    public TextField uuid;
     public JFXButton addButton;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         // translate
-        this.header.setText(LocaleManager.translate(Strings.LOGIN_OFFLINE_DIALOG_HEADER));
-        this.usernameLabel.setText(LocaleManager.translate(Strings.LOGIN_OFFLINE_USERNAME));
-        this.uuidLabel.setText(LocaleManager.translate(Strings.LOGIN_OFFLINE_UUID));
-        this.addButton.setText(LocaleManager.translate(Strings.LOGIN_OFFLINE_ADD_BUTTON));
+        this.header.setText(DLocaleManager.translate(Strings.LOGIN_OFFLINE_DIALOG_HEADER));
+        this.usernameLabel.setText(DLocaleManager.translate(Strings.LOGIN_OFFLINE_USERNAME));
+        this.uuidLabel.setText(DLocaleManager.translate(Strings.LOGIN_OFFLINE_UUID));
+        this.addButton.setText(DLocaleManager.translate(Strings.LOGIN_OFFLINE_ADD_BUTTON));
 
 
         this.username.textProperty().addListener(this::checkData);
@@ -80,14 +80,14 @@ public class OfflineLoginController implements Initializable {
             account = new OfflineAccount(this.username.getText(), Util.getUUIDFromString(this.uuid.getText()));
         }
 
-        Minosoft.getConfig().putAccount(account);
+        Minosoft.getConfig().getConfig().getAccount().getEntries().put(account.getId(), account);
         account.saveToConfig();
         Log.info(String.format("Added and saved account (type=offline, username=%s, uuid=%s)", account.getUsername(), account.getUUID()));
         Platform.runLater(() -> {
             AccountListCell.ACCOUNT_LIST_VIEW.getItems().add(account);
             close();
         });
-        if (Minosoft.getConfig().getSelectedAccount() == null) {
+        if (Minosoft.getConfig().getConfig().getAccount().getSelected().isBlank()) {
             // select account
             Minosoft.selectAccount(account);
         }

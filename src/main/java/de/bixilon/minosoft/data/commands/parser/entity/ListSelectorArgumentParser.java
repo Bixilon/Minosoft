@@ -6,24 +6,24 @@
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with this program.If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
 package de.bixilon.minosoft.data.commands.parser.entity;
 
-import de.bixilon.minosoft.data.GameModes;
+import de.bixilon.minosoft.data.abilities.Gamemodes;
 import de.bixilon.minosoft.data.commands.CommandStringReader;
 import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException;
 import de.bixilon.minosoft.data.commands.parser.exceptions.entity.UnknownEnumValueCommandParseException;
-import de.bixilon.minosoft.protocol.network.Connection;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
 
 import java.util.Arrays;
 import java.util.HashSet;
 
 public class ListSelectorArgumentParser extends EntitySelectorArgumentParser {
-    public static final ListSelectorArgumentParser GAMEMODE_SELECTOR_ARGUMENT_PARSER = new ListSelectorArgumentParser(GameModes.values());
+    public static final ListSelectorArgumentParser GAMEMODE_SELECTOR_ARGUMENT_PARSER = new ListSelectorArgumentParser(Gamemodes.values());
     public static final ListSelectorArgumentParser SORT_SELECTOR_ARGUMENT_PARSER = new ListSelectorArgumentParser("arbitrary", "furthest", "nearest", "random");
 
     private final HashSet<String> values;
@@ -44,7 +44,7 @@ public class ListSelectorArgumentParser extends EntitySelectorArgumentParser {
     }
 
     @Override
-    public void isParsable(Connection connection, CommandStringReader stringReader, String value) throws CommandParseException {
+    public void isParsable(PlayConnection connection, CommandStringReader stringReader, String value) throws CommandParseException {
         if (value.startsWith("!")) {
             value = value.substring(1);
         }

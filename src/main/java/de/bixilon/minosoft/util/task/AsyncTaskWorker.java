@@ -6,22 +6,20 @@
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with this program.If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
 package de.bixilon.minosoft.util.task;
 
+import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.util.CountUpAndDownLatch;
-import de.bixilon.minosoft.util.Util;
 import de.bixilon.minosoft.util.logging.Log;
 
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class AsyncTaskWorker {
@@ -65,7 +63,6 @@ public class AsyncTaskWorker {
         });
         ConcurrentLinkedQueue<Task> doing = new ConcurrentLinkedQueue<>(this.tasks);
         CountUpAndDownLatch latch = new CountUpAndDownLatch(doing.size());
-        ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors(), Util.getThreadFactory(this.name));
         while (!doing.isEmpty()) {
             doing.forEach((task -> {
                 AtomicBoolean canStart = new AtomicBoolean(false);
@@ -79,7 +76,7 @@ public class AsyncTaskWorker {
                     if (!canStart.get()) {
                         return;
                     }
-                    executor.execute(() -> {
+                    Minosoft.THREAD_POOL.execute(() -> {
                         try {
                             task.getTask().work(progress);
                         } catch (Exception e) {
@@ -93,18 +90,14 @@ public class AsyncTaskWorker {
                             }
                         }
                         this.jobsDone.add(task.getTaskName());
-                        latch.countDown();
+                        latch.dec();
                     });
                     doing.remove(task);
                 }
             }));
-            try {
-                latch.waitForChange();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            latch.waitForChange();
         }
-        progress.countDown(); // remove initial value of 1
+        progress.dec(); // remove initial value of 1
     }
 
     public boolean isJobDone(String name) {

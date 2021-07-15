@@ -6,28 +6,28 @@
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with this program.If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
 package de.bixilon.minosoft.data.player.advancements;
 
-import de.bixilon.minosoft.data.inventory.Slot;
+import de.bixilon.minosoft.data.inventory.ItemStack;
 import de.bixilon.minosoft.data.text.ChatComponent;
 import de.bixilon.minosoft.util.BitByte;
 
 public class AdvancementDisplay {
     private final ChatComponent title;
     private final ChatComponent description;
-    private final Slot icon;
+    private final ItemStack icon;
     private final AdvancementFrameTypes frameType;
     private final int flags;
     private final String backgroundTexture;
     private final float x;
     private final float y;
 
-    public AdvancementDisplay(ChatComponent title, ChatComponent description, Slot icon, AdvancementFrameTypes frameType, int flags, String backgroundTexture, float x, float y) {
+    public AdvancementDisplay(ChatComponent title, ChatComponent description, ItemStack icon, AdvancementFrameTypes frameType, int flags, String backgroundTexture, float x, float y) {
         this.title = title;
         this.description = description;
         this.icon = icon;
@@ -38,7 +38,7 @@ public class AdvancementDisplay {
         this.y = y;
     }
 
-    public AdvancementDisplay(ChatComponent title, ChatComponent description, Slot icon, AdvancementFrameTypes frameType, int flags, float x, float y) {
+    public AdvancementDisplay(ChatComponent title, ChatComponent description, ItemStack icon, AdvancementFrameTypes frameType, int flags, float x, float y) {
         this.title = title;
         this.description = description;
         this.icon = icon;
@@ -57,7 +57,7 @@ public class AdvancementDisplay {
         return this.description;
     }
 
-    public Slot getIcon() {
+    public ItemStack getIcon() {
         return this.icon;
     }
 

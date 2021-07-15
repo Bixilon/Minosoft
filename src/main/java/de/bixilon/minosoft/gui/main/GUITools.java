@@ -6,7 +6,7 @@
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with this program.If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
@@ -14,9 +14,10 @@
 package de.bixilon.minosoft.gui.main;
 
 import com.jfoenix.controls.JFXComboBox;
-import de.bixilon.minosoft.data.mappings.versions.Version;
-import de.bixilon.minosoft.data.mappings.versions.Versions;
-import de.bixilon.minosoft.util.logging.LogLevels;
+import de.bixilon.minosoft.Minosoft;
+import de.bixilon.minosoft.data.registries.ResourceLocation;
+import de.bixilon.minosoft.data.registries.versions.Version;
+import de.bixilon.minosoft.data.registries.versions.Versions;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
@@ -29,17 +30,15 @@ import javafx.stage.Stage;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Base64;
 
 public class GUITools {
-    public static final Image MINOSOFT_LOGO = new Image(GUITools.class.getResourceAsStream("/icons/windowIcon.png"));
+    public static final Image MINOSOFT_LOGO = new Image(GUITools.class.getResourceAsStream("/assets/minosoft/textures/icons/window_icon.png"));
     public static final ObservableList<Version> VERSIONS = FXCollections.observableArrayList();
-    public static final JFXComboBox<Version> VERSION_COMBO_BOX = new JFXComboBox<>(VERSIONS);
-    public static final ObservableList<LogLevels> LOG_LEVELS = FXCollections.observableList(Arrays.asList(LogLevels.values().clone()));
+    public static final JFXComboBox<Version> VERSION_COMBO_BOX;
 
     static {
-        VERSIONS.add(Versions.LOWEST_VERSION_SUPPORTED);
+        VERSIONS.add(Versions.AUTOMATIC_VERSION);
         Versions.getVersionIdMap().forEach((key, value) -> VERSIONS.add(value));
 
         VERSIONS.sort((a, b) -> {
@@ -48,7 +47,10 @@ public class GUITools {
             }
             return -(a.getVersionId() - b.getVersionId());
         });
+
+        VERSION_COMBO_BOX = new JFXComboBox<>(VERSIONS);
     }
+
 
     public static Image getImageFromBase64(String base64) {
         if (base64 == null) {
@@ -75,9 +77,9 @@ public class GUITools {
     }
 
     public static Scene initializeScene(Scene scene) {
-        scene.getStylesheets().add("/layout/style.css");
-        if (scene.getWindow() instanceof Stage stage) {
-            stage.getIcons().add(MINOSOFT_LOGO);
+        scene.getStylesheets().add("/assets/minosoft/layout/style.css"); // ToDo: Migrate to minosoft assets manager
+        if (scene.getWindow() instanceof Stage) {
+            ((Stage) scene.getWindow()).getIcons().add(MINOSOFT_LOGO);
         }
         return scene;
     }
@@ -87,14 +89,15 @@ public class GUITools {
         return pane;
     }
 
-    public static <T> T showPane(String fxmlPath, Modality modality, String title) throws IOException {
-        FXMLLoader loader = new FXMLLoader(GUITools.class.getResource(fxmlPath));
+    public static <T> T showPane(ResourceLocation fxmlResourceLocation, Modality modality, String title) throws IOException {
+        FXMLLoader loader = new FXMLLoader(Minosoft.MINOSOFT_ASSETS_MANAGER.getAssetURL(fxmlResourceLocation));
         Parent root = loader.load();
         Stage stage = new Stage();
         stage.initModality(modality);
         double width = 600;
         double height = 400;
-        if (root instanceof Pane pane) {
+        if (root instanceof Pane) {
+            Pane pane = (Pane) root;
             width = pane.getPrefWidth();
             height = pane.getPrefHeight();
         }

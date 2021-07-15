@@ -6,49 +6,40 @@
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with this program.If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
 package de.bixilon.minosoft.modding.event.events;
 
-import de.bixilon.minosoft.data.entities.block.BlockEntityMetaData;
-import de.bixilon.minosoft.data.world.BlockPosition;
-import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.clientbound.play.PacketBlockEntityMetadata;
+import de.bixilon.minosoft.data.registries.ResourceLocation;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
+import de.bixilon.minosoft.protocol.packets.s2c.play.BlockEntityMetaDataS2CP;
+import glm_.vec3.Vec3i;
 
-import javax.annotation.Nullable;
+import java.util.Map;
 
-public class BlockEntityMetaDataChangeEvent extends ConnectionEvent {
-    private final BlockPosition position;
-    private final PacketBlockEntityMetadata.BlockEntityActions action;
-    private final BlockEntityMetaData data;
+public class BlockEntityMetaDataChangeEvent extends PlayConnectionEvent {
+    private final Vec3i position;
+    private final ResourceLocation type;
+    private final Map<String, Object> nbt;
 
-    public BlockEntityMetaDataChangeEvent(Connection connection, BlockPosition position, PacketBlockEntityMetadata.BlockEntityActions action, BlockEntityMetaData data) {
+    public BlockEntityMetaDataChangeEvent(PlayConnection connection, Vec3i position, ResourceLocation type, Map<String, Object> nbt) {
         super(connection);
         this.position = position;
-        this.action = action;
-        this.data = data;
+        this.type = type;
+        this.nbt = nbt;
     }
 
-    public BlockEntityMetaDataChangeEvent(Connection connection, PacketBlockEntityMetadata pkg) {
+    public BlockEntityMetaDataChangeEvent(PlayConnection connection, BlockEntityMetaDataS2CP pkg) {
         super(connection);
         this.position = pkg.getPosition();
-        this.action = pkg.getAction();
-        this.data = pkg.getData();
+        this.type = pkg.getType();
+        this.nbt = pkg.getNbt();
     }
 
-    public BlockPosition getPosition() {
+    public Vec3i getPosition() {
         return this.position;
-    }
-
-    @Nullable
-    public PacketBlockEntityMetadata.BlockEntityActions getAction() {
-        return this.action;
-    }
-
-    public BlockEntityMetaData getData() {
-        return this.data;
     }
 }

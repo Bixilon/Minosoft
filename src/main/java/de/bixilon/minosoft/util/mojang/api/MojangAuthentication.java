@@ -6,7 +6,7 @@
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with this program.If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
@@ -16,13 +16,12 @@ package de.bixilon.minosoft.util.mojang.api;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import de.bixilon.minosoft.Minosoft;
-import de.bixilon.minosoft.config.ConfigurationPaths;
 import de.bixilon.minosoft.config.StaticConfiguration;
 import de.bixilon.minosoft.data.accounts.MojangAccount;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import de.bixilon.minosoft.util.HTTP;
 import de.bixilon.minosoft.util.logging.Log;
-import de.bixilon.minosoft.util.logging.LogLevels;
+import de.bixilon.minosoft.util.logging.LogMessageType;
 import de.bixilon.minosoft.util.mojang.api.exceptions.AuthenticationException;
 import de.bixilon.minosoft.util.mojang.api.exceptions.MojangJoinServerErrorException;
 import de.bixilon.minosoft.util.mojang.api.exceptions.NoNetworkConnectionException;
@@ -33,7 +32,7 @@ import java.net.http.HttpResponse;
 public final class MojangAuthentication {
 
     public static MojangAccount login(String username, String password) throws AuthenticationException, NoNetworkConnectionException {
-        return login(Minosoft.getConfig().getString(ConfigurationPaths.StringPaths.CLIENT_TOKEN), username, password);
+        return login(Minosoft.getConfig().getConfig().getAccount().getClientToken(), username, password);
     }
 
     public static MojangAccount login(String clientToken, String username, String password) throws NoNetworkConnectionException, AuthenticationException {
@@ -52,7 +51,7 @@ public final class MojangAuthentication {
         try {
             response = HTTP.postJson(ProtocolDefinition.MOJANG_URL_LOGIN, payload);
         } catch (IOException | InterruptedException e) {
-            Log.printException(e, LogLevels.DEBUG);
+            Log.printException(e, LogMessageType.OTHER);
             throw new NoNetworkConnectionException(e);
         }
         if (response == null) {
@@ -100,7 +99,7 @@ public final class MojangAuthentication {
     }
 
     public static String refresh(String accessToken) throws NoNetworkConnectionException, AuthenticationException {
-        return refresh(Minosoft.getConfig().getString(ConfigurationPaths.StringPaths.CLIENT_TOKEN), accessToken);
+        return refresh(Minosoft.getConfig().getConfig().getAccount().getClientToken(), accessToken);
     }
 
     public static String refresh(String clientToken, String accessToken) throws NoNetworkConnectionException, AuthenticationException {

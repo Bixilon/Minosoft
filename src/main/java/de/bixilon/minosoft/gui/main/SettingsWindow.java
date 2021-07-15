@@ -6,22 +6,16 @@
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with this program.If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
 package de.bixilon.minosoft.gui.main;
 
-import com.jfoenix.controls.JFXComboBox;
-import de.bixilon.minosoft.Minosoft;
-import de.bixilon.minosoft.config.ConfigurationPaths;
-import de.bixilon.minosoft.data.locale.LocaleManager;
-import de.bixilon.minosoft.data.locale.Strings;
-import de.bixilon.minosoft.util.logging.Log;
-import de.bixilon.minosoft.util.logging.LogLevels;
+import de.bixilon.minosoft.data.language.deprecated.DLocaleManager;
+import de.bixilon.minosoft.data.language.deprecated.Strings;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.layout.GridPane;
 
@@ -30,27 +24,13 @@ import java.util.ResourceBundle;
 
 public class SettingsWindow implements Initializable {
     public GridPane tabGeneral;
-    public JFXComboBox<LogLevels> generalLogLevel;
     public Tab general;
     public Tab download;
-    public Label generalLogLevelLabel;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        this.generalLogLevel.setItems(GUITools.LOG_LEVELS);
-        this.generalLogLevel.getSelectionModel().select(Log.getLevel());
-        this.generalLogLevel.setOnAction((actionEvent -> {
-            LogLevels newLevel = this.generalLogLevel.getValue();
-            if (Log.getLevel() == newLevel) {
-                return;
-            }
-            Log.setLevel(newLevel);
-            Minosoft.getConfig().putString(ConfigurationPaths.StringPaths.GENERAL_LOG_LEVEL, newLevel.name());
-            Minosoft.getConfig().saveToFile();
-        }));
 
-        this.general.setText(LocaleManager.translate(Strings.SETTINGS_GENERAL));
-        this.generalLogLevelLabel.setText(LocaleManager.translate(Strings.SETTINGS_GENERAL_LOG_LEVEL));
-        this.download.setText(LocaleManager.translate(Strings.SETTINGS_DOWNLOAD));
+        this.general.setText(DLocaleManager.translate(Strings.SETTINGS_GENERAL));
+        this.download.setText(DLocaleManager.translate(Strings.SETTINGS_DOWNLOAD));
     }
 }

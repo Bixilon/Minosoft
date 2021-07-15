@@ -6,7 +6,7 @@
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with this program.If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
@@ -16,9 +16,11 @@ package de.bixilon.minosoft.gui.main.cells;
 import com.jfoenix.controls.JFXButton;
 import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.data.accounts.Account;
-import de.bixilon.minosoft.data.locale.LocaleManager;
-import de.bixilon.minosoft.data.locale.Strings;
+import de.bixilon.minosoft.data.language.deprecated.DLocaleManager;
+import de.bixilon.minosoft.data.language.deprecated.Strings;
+import de.bixilon.minosoft.data.registries.ResourceLocation;
 import de.bixilon.minosoft.gui.main.GUITools;
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import de.bixilon.minosoft.util.logging.Log;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -49,7 +51,7 @@ public class AccountListCell extends ListCell<Account> implements Initializable 
     private Account account;
 
     public static AccountListCell newInstance() {
-        FXMLLoader loader = new FXMLLoader(AccountListCell.class.getResource("/layout/cells/account.fxml"));
+        FXMLLoader loader = new FXMLLoader(Minosoft.MINOSOFT_ASSETS_MANAGER.getAssetURL(new ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "layout/cells/account.fxml")));
         try {
             loader.load();
             return loader.getController();
@@ -65,9 +67,9 @@ public class AccountListCell extends ListCell<Account> implements Initializable 
         setGraphic(this.hBox);
 
         // change locale
-        this.selectIcon.setText(LocaleManager.translate(Strings.ACCOUNTS_ACTION_SELECT));
-        this.infoIcon.setText(LocaleManager.translate(Strings.ACCOUNTS_ACTION_INFO));
-        this.logoutIcon.setText(LocaleManager.translate(Strings.ACCOUNTS_ACTION_LOGOUT));
+        this.selectIcon.setText(DLocaleManager.translate(Strings.ACCOUNTS_ACTION_SELECT));
+        this.infoIcon.setText(DLocaleManager.translate(Strings.ACCOUNTS_ACTION_INFO));
+        this.logoutIcon.setText(DLocaleManager.translate(Strings.ACCOUNTS_ACTION_LOGOUT));
 
     }
 
@@ -87,7 +89,7 @@ public class AccountListCell extends ListCell<Account> implements Initializable 
         }
 
         resetCell();
-        if (Minosoft.getConfig().getSelectedAccount() == account) {
+        if (this.account != null && Minosoft.getConfig().getConfig().getAccount().getSelected().equals(this.account.getId())) {
             this.hBox.getStyleClass().add("list-cell-selected");
             this.selectIcon.setDisable(true);
         }
@@ -110,7 +112,7 @@ public class AccountListCell extends ListCell<Account> implements Initializable 
     public void select() {
         Minosoft.selectAccount(this.account);
 
-        if (Minosoft.getConfig().getSelectedAccount() == this.account) {
+        if (Minosoft.getConfig().getConfig().getAccount().getSelected().equals(this.account.getId())) {
             // ToDo: Why isn't his working correct?
             this.hBox.getStyleClass().add("list-cell-selected");
             this.selectIcon.setDisable(true);
@@ -119,13 +121,13 @@ public class AccountListCell extends ListCell<Account> implements Initializable 
 
     public void logout() {
         this.account.logout();
-        Minosoft.getConfig().removeAccount(this.account);
+        Minosoft.getConfig().getConfig().getAccount().getEntries().remove(this.account.getId());
         Minosoft.getConfig().saveToFile();
-        if (Minosoft.getConfig().getSelectedAccount() == this.account) {
-            if (Minosoft.getConfig().getAccounts().isEmpty()) {
+        if (Minosoft.getConfig().getConfig().getAccount().getSelected().equals(this.account.getId())) {
+            if (Minosoft.getConfig().getConfig().getAccount().getEntries().isEmpty()) {
                 Minosoft.selectAccount(null);
             } else {
-                Minosoft.selectAccount(Minosoft.getConfig().getAccounts().values().iterator().next());
+                Minosoft.selectAccount(Minosoft.getConfig().getConfig().getAccount().getEntries().values().iterator().next());
             }
             ACCOUNT_LIST_VIEW.refresh();
         }

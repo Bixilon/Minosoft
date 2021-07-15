@@ -6,7 +6,7 @@
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with this program.If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
@@ -18,13 +18,13 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
-import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import de.bixilon.minosoft.util.logging.Log;
 import de.bixilon.minosoft.util.microsoft.MicrosoftOAuthUtils;
-import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
-import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
+import de.bixilon.minosoft.util.task.time.TimeWorker;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
 import java.lang.reflect.Field;
@@ -43,12 +43,10 @@ public final class Util {
     public static final Pattern UUID_FIX_PATTERN = Pattern.compile("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})"); // thanks https://www.spigotmc.org/threads/free-code-easily-convert-between-trimmed-and-full-uuids.165615
     public static final char[] RANDOM_STRING_CHARS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".toCharArray();
     public static final String LINE_SEPARATOR = System.getProperty("line.separator");
+    public static final Gson GSON = new Gson();
     private static final Random THREAD_LOCAL_RANDOM = ThreadLocalRandom.current();
-
     private static final Field JSON_READER_POS_FIELD;
     private static final Field JSON_READER_LINE_START_FIELD;
-
-    public static final Gson GSON = new Gson();
 
     static {
         new JsonReader(new StringReader(""));
@@ -75,8 +73,8 @@ public final class Util {
         throw new IllegalArgumentException(String.format("%s is not a valid UUID String", uuid));
     }
 
-    public static InByteBuffer decompress(byte[] bytes, Connection connection) {
-        return new InByteBuffer(decompress(bytes), connection);
+    public static PlayInByteBuffer decompress(byte[] bytes, PlayConnection connection) {
+        return new PlayInByteBuffer(decompress(bytes), connection);
     }
 
     public static byte[] decompress(byte[] bytes) {
@@ -173,24 +171,7 @@ public final class Util {
         return result.toString();
     }
 
-    public static String sha1(String string) {
-        return sha1(string.getBytes(StandardCharsets.UTF_8));
-    }
-
-    public static HashMap<String, String> readTarGzFile(String fileName) throws IOException {
-        File inputFile = new File(fileName);
-        TarArchiveInputStream tarArchiveInputStream = new TarArchiveInputStream(new GZIPInputStream(new FileInputStream(inputFile)));
-        HashMap<String, String> ret = new HashMap<>();
-        TarArchiveEntry entry;
-        while ((entry = tarArchiveInputStream.getNextTarEntry()) != null) {
-            ret.put(entry.getName(), readFile(new BufferedReader(new InputStreamReader(tarArchiveInputStream)), false));
-        }
-        tarArchiveInputStream.close();
-
-        return ret;
-    }
-
-    public static String readFile(BufferedReader reader, boolean closeStream) throws IOException {
+    public static String readReader(BufferedReader reader, boolean closeStream) throws IOException {
         StringBuilder stringBuilder = new StringBuilder();
         String line;
         while ((line = reader.readLine()) != null) {
@@ -204,33 +185,6 @@ public final class Util {
         return stringBuilder.toString();
     }
 
-    public static HashMap<String, JsonObject> readJsonTarStream(InputStream inputStream) throws IOException {
-        TarArchiveInputStream tarArchiveInputStream = new TarArchiveInputStream(inputStream);
-        HashMap<String, JsonObject> ret = new HashMap<>();
-        TarArchiveEntry entry;
-        while ((entry = tarArchiveInputStream.getNextTarEntry()) != null) {
-            ret.put(entry.getName(), JsonParser.parseReader(new InputStreamReader(tarArchiveInputStream)).getAsJsonObject());
-        }
-        tarArchiveInputStream.close();
-
-        return ret;
-    }
-
-    public static JsonObject readJsonAsset(String path) throws IOException {
-        return readJsonAsset(path, Util.class);
-    }
-
-    public static JsonObject readJsonAsset(String path, Class<?> clazz) throws IOException {
-        InputStreamReader reader = readAsset(path, clazz);
-        JsonObject json = JsonParser.parseReader(reader).getAsJsonObject();
-        reader.close();
-        return json;
-    }
-
-    public static InputStreamReader readAsset(String path, Class<?> clazz) {
-        return new InputStreamReader(clazz.getResourceAsStream("/assets/" + path));
-    }
-
     public static JsonObject readJsonFromZip(String fileName, ZipFile zipFile) throws IOException {
         InputStreamReader reader = getInputSteamFromZip(fileName, zipFile);
         JsonObject json = JsonParser.parseReader(reader).getAsJsonObject();
@@ -242,11 +196,9 @@ public final class Util {
         return new InputStreamReader(zipFile.getInputStream(zipFile.getEntry(fileName)));
     }
 
-    public static JsonObject readJsonFromFile(String fileName) throws IOException {
+    public static String readFile(String fileName) throws IOException {
         FileReader reader = new FileReader(fileName);
-        JsonObject json = JsonParser.parseReader(reader).getAsJsonObject();
-        reader.close();
-        return json;
+        return readReader(new BufferedReader(reader), true);
     }
 
     public static void downloadFile(String url, String destination) throws IOException {
@@ -271,11 +223,10 @@ public final class Util {
 
     public static InputStream getInputStreamByURL(String url) throws IOException {
         return new URL(url).openConnection().getInputStream();
-        // return new BufferedInputStream(new URL(url).openStream());
     }
 
     public static ThreadFactory getThreadFactory(String threadName) {
-        return new ThreadFactoryBuilder().setNameFormat(threadName + "#%d").build();
+        return new ThreadFactoryBuilder().setNameFormat(threadName + "/%d").build();
     }
 
     public static boolean createParentFolderIfNotExist(String file) {
@@ -307,10 +258,6 @@ public final class Util {
         return result.substring(0, result.indexOf(second));
     }
 
-    public static String readAsset(String path) throws IOException {
-        return readFile(new BufferedReader(readAsset(path, Util.class)), true);
-    }
-
     public static boolean doesStringContainsUppercaseLetters(String string) {
         return !string.toLowerCase().equals(string);
     }
@@ -323,10 +270,11 @@ public final class Util {
         }
     }
 
-    public static void checkURL(String url) {
+    public static String checkURL(String url) {
         if (!url.startsWith("http://") && !url.startsWith("https://")) {
             throw new IllegalArgumentException("Not a valid url:" + url);
         }
+        return url;
     }
 
     public static <T> void forceClassInit(Class<T> clazz) {
@@ -340,6 +288,7 @@ public final class Util {
     public static void initUtilClasses() {
         forceClassInit(Log.class);
         forceClassInit(MicrosoftOAuthUtils.class);
+        forceClassInit(TimeWorker.class);
     }
 
     public static Map<String, String> urlQueryToMap(String query) {
@@ -354,7 +303,7 @@ public final class Util {
     public static String mapToUrlQuery(Map<String, String> data) {
         StringBuilder builder = new StringBuilder();
         for (Map.Entry<String, String> entry : data.entrySet()) {
-            if (!builder.isEmpty()) {
+            if (builder.length() != 0) {
                 builder.append("&");
             }
             builder.append(URLEncoder.encode(entry.getKey(), StandardCharsets.UTF_8));
@@ -371,5 +320,21 @@ public final class Util {
             headerList.add(entry.getValue());
         }
         return headerList.toArray(new String[]{});
+    }
+
+    public static String formatString(String string, Map<String, Object> format) {
+        String output = string;
+        for (var entry : format.entrySet()) {
+            output = output.replace("${" + entry.getKey() + "}", entry.getValue().toString());
+        }
+        return output;
+    }
+
+    @NotNull
+    public static JsonObject readJsonFromStream(@NotNull InputStream stream) throws IOException {
+        InputStreamReader reader = new InputStreamReader(stream);
+        JsonObject json = JsonParser.parseReader(reader).getAsJsonObject();
+        reader.close();
+        return json;
     }
 }

@@ -1,20 +1,25 @@
 # Modding
 
+## Disclaimer: This is completely outdated and will be rewritten soon. Just wait with mod writing! Sorry
+
 ## mod.json
+
 In the root folder of your jar file (the mod) must be a file called `mod.json`. It contains metadata for the mod loader.
+
 ### Example
+
 ```json
 {
   "uuid": "1f37a8e0-9ec7-45db-ad2f-40afd2eb5a07",
-  "versionId": 123,
-  "versionName": "1.0",
+  "version_id": 123,
+  "version_name": "1.0",
   "authors": [
     "Example dev"
   ],
   "name": "Example Mod",
-  "moddingAPIVersion": 1,
-  "identifier": "example",
-  "mainClass": "de.example.mod.Main",
+  "modding_api_version": 1,
+  "resource_namespace": "example",
+  "main_class": "de.example.mod.Main",
   "loading": {
     "priority": "NORMAL"
   },
@@ -41,12 +46,13 @@ In the root folder of your jar file (the mod) must be a file called `mod.json`. 
 }
 ```
 ### Explanation
+
 - `uuid` is a unique id for the mod. Generate 1 and keep it in all versions (used for dependencies, etc). **Required**
-- `versionId` like in android there is a numeric version id. It is used to compare between versions (and as identifier). **Required**
-- `versionName`, `authors` and `name` is the classic implementation of metadata. Can be anything, will be displayed in the mod list. **Required**
-- `moddingAPIVersion` Modding API version of minosoft. Currently `1` **Required**
-- `identifier` is the prefix of items (for Minecraft it is `minecraft`). Aka the thing before the `:`.  **Required**
-- `mainClass` the Main class of your mod (self explaining). The main class needs to extent the abstract class `MinosoftMod`. **Required**
+- `version_id` like in android there is a numeric version id. It is used to compare between versions (and as identifier). **Required**
+- `version_name`, `authors` and `name` is the classic implementation of metadata. Can be anything, will be displayed in the mod list. **Required**
+- `modding_api_version` Modding API version of minosoft. Currently `1` **Required**
+- `resource_namespace` is the prefix of items (for Minecraft it is `minecraft`). Aka the thing before the `:`.  **Required**
+- `main_class` the Main class of your mod (self explaining). The main class needs to extent the abstract class `MinosoftMod`. **Required**
 - `loading` Loading attributes. **Optional**
   - `priority` should the mod be loaded at the beginning or at the end. Possible values are `LOWEST`, `LOW`, `NORMAL`, `HIGH`, `HIGHEST` **Optional**
 - `dependencies` Used if you need another mod to work **Optional**
@@ -115,15 +121,18 @@ public class TestMod extends MinosoftMod {
 }
 ```
 Your `mod.json` can look like this
+
 ```json
 {
   "uuid": "1f37a8e0-9ec7-45db-ad2f-40afd2eb5a07",
-  "versionId": 1,
-  "versionName": "1.0",
-  "authors": ["Bixilon"],
+  "version_id": 1,
+  "version_name": "1.0",
+  "authors": [
+    "Bixilon"
+  ],
   "name": "Example Mod",
-  "identifier": "example",
-  "mainClass": "de.bixilon.example.mod.main.TestMod"
+  "resource_namespace": "example",
+  "main_class": "de.bixilon.example.mod.main.TestMod"
 }
 ```
 
@@ -146,30 +155,32 @@ Your event methods need to be annotated by `EventHandler`. `EventHandler` **can*
  - `ignoreCancelled` If it is a cancellable event, your method only gets executed, when all prior listeners (potentially with a higher priority) did not cancel the connectionEvent. Defaults to `false`.
 
 Your XYEventListener class needs to extend `de.bixilon.minosoft.modding.event.EventListener`;
+
 ```java
 import de.bixilon.minosoft.modding.event.EventListener;
+import de.bixilon.minosoft.modding.event.events.ChatMessageReceiveEvent;
 import de.bixilon.minosoft.modding.event.events.ChatMessageReceivingEvent;
-import de.bixilon.minosoft.modding.event.events.ChatMessageSendingEvent;
+import de.bixilon.minosoft.modding.event.events.ChatMessageSendEvent;
 import de.bixilon.minosoft.modding.event.events.annotations.EventHandler;
 import de.bixilon.minosoft.modding.loading.Priorities;
 
 public class ChatEvent extends EventListener {
-    
-    @EventHandler(priority = Priorities.HIGHEST)
-    public void onChatMessageReceiving(ChatMessageReceivingEvent event) {
-        if (event.getMessage().getMessage().contains("Bixilon")) {
-            MinosoftExampleMod.getInstance().getLogger().info("Bixilon wrote a potential bad chat message. Suppressing it!");
-            event.setCancelled(true);
-        }
-    }
 
-    @EventHandler(ignoreCancelled = true)
-    public void onChatMessageSending(ChatMessageSendingEvent event) {
-        if (event.getMessage().contains("jeb_ is stupid")) {
-            event.setCancelled(true);
-            event.getConnection().getSender().sendChatMessage("jeb_ is awesome!");
-        }
+  @EventHandler(priority = Priorities.HIGHEST)
+  public void onChatMessageReceiving(ChatMessageReceiveEvent event) {
+    if (event.getMessage().getMessage().contains("Bixilon")) {
+      MinosoftExampleMod.getInstance().getLogger().info("Bixilon wrote a potential bad chat message. Suppressing it!");
+      event.setCancelled(true);
     }
+  }
+
+  @EventHandler(ignoreCancelled = true)
+  public void onChatMessageSending(ChatMessageSendEvent event) {
+    if (event.getMessage().contains("jeb_ is stupid")) {
+      event.setCancelled(true);
+      event.getConnection().getSender().sendChatMessage("jeb_ is awesome!");
+    }
+  }
 }
 ```
 

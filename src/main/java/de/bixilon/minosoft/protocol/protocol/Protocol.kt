@@ -6,67 +6,54 @@
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with this program.If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 package de.bixilon.minosoft.protocol.protocol
 
 import com.google.common.collect.HashBiMap
-import de.bixilon.minosoft.protocol.protocol.Packets.Clientbound
-import de.bixilon.minosoft.protocol.protocol.Packets.Serverbound
-import java.util.*
+import de.bixilon.minosoft.protocol.protocol.PacketTypes.C2S
+import de.bixilon.minosoft.protocol.protocol.PacketTypes.S2C
 
 object Protocol {
-    private val SERVERBOUND_PACKET_MAPPING = HashMap<ConnectionStates, HashBiMap<Serverbound, Int>>()
-    private val CLIENTBOUND_PACKET_MAPPING = HashMap<ConnectionStates, HashBiMap<Clientbound, Int>>()
+    private val C2S_PACKET_MAPPING: Map<ConnectionStates, HashBiMap<C2S, Int>> = mapOf(
+        ConnectionStates.HANDSHAKING to HashBiMap.create(mapOf(
+            C2S.HANDSHAKING_HANDSHAKE to 0x00
+        )),
+        ConnectionStates.STATUS to HashBiMap.create(mapOf(
+            C2S.STATUS_REQUEST to 0x00,
+            C2S.STATUS_PING to 0x01
+        )),
+        ConnectionStates.LOGIN to HashBiMap.create(mapOf(
+            C2S.LOGIN_LOGIN_START to 0x00,
+            C2S.LOGIN_ENCRYPTION_RESPONSE to 0x01,
+            C2S.LOGIN_PLUGIN_RESPONSE to 0x02
+        ))
+
+    )
+    private val S2C_PACKET_MAPPING: Map<ConnectionStates, HashBiMap<S2C, Int>> = mapOf(
+        ConnectionStates.STATUS to HashBiMap.create(mapOf(
+            S2C.STATUS_RESPONSE to 0x00,
+            S2C.STATUS_PONG to 0x01
+        )),
+        ConnectionStates.LOGIN to HashBiMap.create(mapOf(
+            S2C.LOGIN_KICK to 0x00,
+            S2C.LOGIN_ENCRYPTION_REQUEST to 0x01,
+            S2C.LOGIN_LOGIN_SUCCESS to 0x02,
+            S2C.LOGIN_COMPRESSION_SET to 0x03,
+            S2C.LOGIN_PLUGIN_REQUEST to 0x04
+        )),
+        ConnectionStates.PLAY to HashBiMap.create(),
+    )
 
     @JvmStatic
-    fun getPacketCommand(packet: Serverbound): Int {
-        return SERVERBOUND_PACKET_MAPPING[packet.state]!![packet]!!
+    fun getPacketId(packet: C2S): Int? {
+        return C2S_PACKET_MAPPING[packet.state]?.get(packet)
     }
 
     @JvmStatic
-    fun getPacketByCommand(state: ConnectionStates, command: Int): Clientbound? {
-        return CLIENTBOUND_PACKET_MAPPING[state]?.inverse()?.get(command)
-    }
-
-    init {
-        SERVERBOUND_PACKET_MAPPING[ConnectionStates.HANDSHAKING] = HashBiMap.create(
-            mapOf(
-                Serverbound.HANDSHAKING_HANDSHAKE to 0x00
-            )
-        )
-        SERVERBOUND_PACKET_MAPPING[ConnectionStates.STATUS] = HashBiMap.create(
-            mapOf(
-                Serverbound.STATUS_REQUEST to 0x00,
-                Serverbound.STATUS_PING to 0x01
-            )
-        )
-        SERVERBOUND_PACKET_MAPPING[ConnectionStates.LOGIN] = HashBiMap.create(
-            mapOf(
-                Serverbound.LOGIN_LOGIN_START to 0x00,
-                Serverbound.LOGIN_ENCRYPTION_RESPONSE to 0x01,
-                Serverbound.LOGIN_PLUGIN_RESPONSE to 0x02
-            )
-        )
-
-        // clientbound
-        CLIENTBOUND_PACKET_MAPPING[ConnectionStates.STATUS] = HashBiMap.create(
-            mapOf(
-                Clientbound.STATUS_RESPONSE to 0x00,
-                Clientbound.STATUS_PONG to 0x01
-            )
-        )
-        CLIENTBOUND_PACKET_MAPPING[ConnectionStates.LOGIN] = HashBiMap.create(
-            mapOf(
-                Clientbound.LOGIN_DISCONNECT to 0x00,
-                Clientbound.LOGIN_ENCRYPTION_REQUEST to 0x01,
-                Clientbound.LOGIN_LOGIN_SUCCESS to 0x02,
-                Clientbound.LOGIN_SET_COMPRESSION to 0x03,
-                Clientbound.LOGIN_PLUGIN_REQUEST to 0x04
-            )
-        )
-        CLIENTBOUND_PACKET_MAPPING[ConnectionStates.PLAY] = HashBiMap.create()
+    fun getPacketById(state: ConnectionStates, command: Int): S2C? {
+        return S2C_PACKET_MAPPING[state]?.inverse()?.get(command)
     }
 }

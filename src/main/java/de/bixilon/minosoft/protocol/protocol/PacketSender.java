@@ -6,124 +6,66 @@
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with this program.If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
 package de.bixilon.minosoft.protocol.protocol;
 
-import de.bixilon.minosoft.data.entities.EntityRotation;
-import de.bixilon.minosoft.data.entities.Location;
-import de.bixilon.minosoft.data.mappings.ModIdentifier;
-import de.bixilon.minosoft.data.player.Hands;
-import de.bixilon.minosoft.modding.event.events.ChatMessageSendingEvent;
-import de.bixilon.minosoft.modding.event.events.CloseWindowEvent;
-import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.serverbound.login.PacketLoginPluginResponse;
-import de.bixilon.minosoft.protocol.packets.serverbound.play.*;
-import de.bixilon.minosoft.util.Util;
+import de.bixilon.minosoft.data.ChatTextPositions;
+import de.bixilon.minosoft.data.text.ChatComponent;
+import de.bixilon.minosoft.modding.event.EventInitiators;
+import de.bixilon.minosoft.modding.event.events.ChatMessageReceiveEvent;
+import de.bixilon.minosoft.modding.event.events.ChatMessageSendEvent;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
+import de.bixilon.minosoft.protocol.packets.c2s.play.ChatMessageC2SP;
+import de.bixilon.minosoft.protocol.packets.c2s.play.ClientActionC2SP;
 import de.bixilon.minosoft.util.logging.Log;
+import de.bixilon.minosoft.util.logging.LogMessageType;
 
-import java.util.UUID;
-
+@Deprecated
 public class PacketSender {
-    public static final String[] ILLEGAL_CHAT_CHARS = {"§"};
-    private final Connection connection;
+    public static final char[] ILLEGAL_CHAT_CHARS = {'§'};
+    private final PlayConnection connection;
 
-    public PacketSender(Connection connection) {
+    public PacketSender(PlayConnection connection) {
         this.connection = connection;
     }
 
-    public void setFlyStatus(boolean flying) {
-        this.connection.sendPacket(new PacketPlayerAbilitiesSending(flying));
-    }
-
     public void sendChatMessage(String message) {
-        for (String illegalChar : ILLEGAL_CHAT_CHARS) {
-            if (message.contains(illegalChar)) {
-                throw new IllegalArgumentException(String.format("%s is not allowed in chat", illegalChar));
+        if (message.isBlank()) {
+            // throw new IllegalArgumentException(("Chat message is blank!"));
+            return;
+        }
+        for (char illegalChar : ILLEGAL_CHAT_CHARS) {
+            if (message.indexOf(illegalChar) != -1) {
+                // throw new IllegalArgumentException(String.format("%s is not allowed in chat", illegalChar));
+                return;
             }
         }
-        ChatMessageSendingEvent event = new ChatMessageSendingEvent(this.connection, message);
+        ChatMessageSendEvent event = new ChatMessageSendEvent(this.connection, message);
         if (this.connection.fireEvent(event)) {
             return;
         }
-        Log.game("Sending chat message: %s", message);
-        this.connection.sendPacket(new PacketChatMessageSending(event.getMessage()));
+        Log.log(LogMessageType.CHAT_OUT, message);
+        this.connection.sendPacket(new ChatMessageC2SP(event.getMessage()));
     }
 
-    public void spectateEntity(UUID entityUUID) {
-        this.connection.sendPacket(new PacketSpectate(entityUUID));
-    }
-
-    public void setSlot(int slotId) {
-        this.connection.sendPacket(new PacketHeldItemChangeSending(slotId));
-    }
-
-    public void swingArm(Hands hand) {
-        this.connection.sendPacket(new PacketAnimation(hand));
-    }
-
-    public void swingArm() {
-        this.connection.sendPacket(new PacketAnimation(Hands.MAIN_HAND));
-    }
-
-    public void sendAction(PacketEntityAction.EntityActions action) {
-        this.connection.sendPacket(new PacketEntityAction(this.connection.getPlayer().getEntity().getEntityId(), action));
-    }
-
-    public void jumpWithHorse(int jumpBoost) {
-        this.connection.sendPacket(new PacketEntityAction(this.connection.getPlayer().getEntity().getEntityId(), PacketEntityAction.EntityActions.START_HORSE_JUMP, jumpBoost));
-    }
-
-    public void dropItem() {
-        this.connection.sendPacket(new PacketPlayerDigging(PacketPlayerDigging.DiggingStatus.DROP_ITEM, null, PacketPlayerDigging.DiggingFaces.BOTTOM));
-    }
-
-    public void dropItemStack() {
-        this.connection.sendPacket(new PacketPlayerDigging(PacketPlayerDigging.DiggingStatus.DROP_ITEM_STACK, null, PacketPlayerDigging.DiggingFaces.BOTTOM));
-    }
-
-    public void swapItemInHand() {
-        this.connection.sendPacket(new PacketPlayerDigging(PacketPlayerDigging.DiggingStatus.SWAP_ITEMS_IN_HAND, null, PacketPlayerDigging.DiggingFaces.BOTTOM));
-    }
-
-    public void closeWindow(byte windowId) {
-        CloseWindowEvent event = new CloseWindowEvent(this.connection, windowId, CloseWindowEvent.Initiators.CLIENT);
-        if (this.connection.fireEvent(event)) {
-            return;
-        }
-        this.connection.sendPacket(new PacketCloseWindowSending(windowId));
-    }
 
     public void respawn() {
-        sendClientStatus(PacketClientStatus.ClientStates.PERFORM_RESPAWN);
+        sendClientStatus(ClientActionC2SP.ClientActions.PERFORM_RESPAWN);
     }
 
-    public void sendClientStatus(PacketClientStatus.ClientStates status) {
-        this.connection.sendPacket(new PacketClientStatus(status));
+    public void sendClientStatus(ClientActionC2SP.ClientActions status) {
+        this.connection.sendPacket(new ClientActionC2SP(status));
     }
 
-    public void sendPluginMessageData(String channel, OutByteBuffer toSend) {
-        this.connection.sendPacket(new PacketPluginMessageSending(channel, toSend.toByteArray()));
+    public void sendFakeChatMessage(ChatComponent message, ChatTextPositions position) {
+        this.connection.fireEvent(new ChatMessageReceiveEvent(this.connection, EventInitiators.CLIENT, message, position, null));
     }
 
-    public void sendPluginMessageData(ModIdentifier channel, OutByteBuffer toSend) {
-        String channelName = channel.getFullIdentifier();
-        if (Util.doesStringContainsUppercaseLetters(channelName)) {
-            channelName = channel.getIdentifier();
-        }
-        this.connection.sendPacket(new PacketPluginMessageSending(channelName, toSend.toByteArray()));
-    }
-
-    public void sendLoginPluginMessageResponse(int messageId, OutByteBuffer toSend) {
-        this.connection.sendPacket(new PacketLoginPluginResponse(messageId, toSend.toByteArray()));
-    }
-
-    public void setLocation(Location location, EntityRotation rotation, boolean onGround) {
-        this.connection.sendPacket(new PacketPlayerPositionAndRotationSending(location, rotation, onGround));
-        this.connection.getPlayer().getEntity().setLocation(location);
-        this.connection.getPlayer().getEntity().setRotation(rotation);
+    public void sendFakeChatMessage(String message) {
+        sendFakeChatMessage(ChatComponent.Companion.of(message), ChatTextPositions.CHAT_BOX);
     }
 }

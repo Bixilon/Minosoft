@@ -1,0 +1,269 @@
+{
+  "minecraft:equipment_slots": {
+    "0": [
+      "MAIN_HAND",
+      "FEET",
+      "LEGS",
+      "CHEST",
+      "HEAD"
+    ],
+    "49": [
+      "MAIN_HAND",
+      "OFF_HAND",
+      "FEET",
+      "LEGS",
+      "CHEST",
+      "HEAD"
+    ]
+  },
+  "minecraft:hand_equipment_slots": {
+    "0": [
+      "MAIN_HAND",
+      "OFF_HAND"
+    ]
+  },
+  "minecraft:armor_equipment_slots": {
+    "0": [
+      "FEET",
+      "LEGS",
+      "CHEST",
+      "HEAD"
+    ]
+  },
+  "minecraft:armor_stand_equipment_slots": {
+    "0": [
+      "MAIN_HAND",
+      "FEET",
+      "LEGS",
+      "CHEST",
+      "HEAD",
+      "OFF_HAND"
+    ]
+  },
+  "minecraft:entity_meta_data_data_types": {
+    "0": [
+      "BYTE",
+      "SHORT",
+      "INT",
+      "FLOAT",
+      "STRING",
+      "ITEM_STACK",
+      "VEC3I"
+    ],
+    "46": [
+      "BYTE",
+      "SHORT",
+      "INT",
+      "FLOAT",
+      "STRING",
+      "ITEM_STACK",
+      "ROTATION"
+    ],
+    "57": [
+      "BYTE",
+      "VAR_INT",
+      "FLOAT",
+      "STRING",
+      "CHAT",
+      "ITEM_STACK",
+      "BOOLEAN",
+      "ROTATION",
+      "BLOCK_POSITION",
+      "OPT_BLOCK_POSITION",
+      "DIRECTION",
+      "OPT_UUID"
+    ],
+    "67": [
+      "BYTE",
+      "VAR_INT",
+      "FLOAT",
+      "STRING",
+      "CHAT",
+      "ITEM_STACK",
+      "BOOLEAN",
+      "ROTATION",
+      "BLOCK_POSITION",
+      "OPT_BLOCK_POSITION",
+      "DIRECTION",
+      "OPT_UUID",
+      "BLOCK_ID"
+    ],
+    "210": [
+      "BYTE",
+      "VAR_INT",
+      "FLOAT",
+      "STRING",
+      "CHAT",
+      "ITEM_STACK",
+      "BOOLEAN",
+      "ROTATION",
+      "BLOCK_POSITION",
+      "OPT_BLOCK_POSITION",
+      "DIRECTION",
+      "OPT_UUID",
+      "OPT_BLOCK_ID"
+    ],
+    "318": [
+      "BYTE",
+      "VAR_INT",
+      "FLOAT",
+      "STRING",
+      "CHAT",
+      "ITEM_STACK",
+      "BOOLEAN",
+      "ROTATION",
+      "BLOCK_POSITION",
+      "OPT_BLOCK_POSITION",
+      "DIRECTION",
+      "OPT_UUID",
+      "OPT_BLOCK_ID",
+      "NBT"
+    ],
+    "346": [
+      "BYTE",
+      "VAR_INT",
+      "FLOAT",
+      "STRING",
+      "CHAT",
+      "OPT_CHAT",
+      "ITEM_STACK",
+      "BOOLEAN",
+      "ROTATION",
+      "BLOCK_POSITION",
+      "OPT_BLOCK_POSITION",
+      "DIRECTION",
+      "OPT_UUID",
+      "OPT_BLOCK_ID",
+      "NBT",
+      "PARTICLE"
+    ],
+    "451": [
+      "BYTE",
+      "VAR_INT",
+      "FLOAT",
+      "STRING",
+      "CHAT",
+      "OPT_CHAT",
+      "ITEM_STACK",
+      "BOOLEAN",
+      "ROTATION",
+      "BLOCK_POSITION",
+      "OPT_BLOCK_POSITION",
+      "DIRECTION",
+      "OPT_UUID",
+      "OPT_BLOCK_ID",
+      "NBT",
+      "PARTICLE",
+      "VILLAGER_DATA"
+    ],
+    "459": [
+      "BYTE",
+      "VAR_INT",
+      "FLOAT",
+      "STRING",
+      "CHAT",
+      "OPT_CHAT",
+      "ITEM_STACK",
+      "BOOLEAN",
+      "ROTATION",
+      "BLOCK_POSITION",
+      "OPT_BLOCK_POSITION",
+      "DIRECTION",
+      "OPT_UUID",
+      "OPT_BLOCK_ID",
+      "NBT",
+      "PARTICLE",
+      "VILLAGER_DATA",
+      "OPT_VAR_INT"
+    ],
+    "461": [
+      "BYTE",
+      "VAR_INT",
+      "FLOAT",
+      "STRING",
+      "CHAT",
+      "OPT_CHAT",
+      "ITEM_STACK",
+      "BOOLEAN",
+      "ROTATION",
+      "BLOCK_POSITION",
+      "OPT_BLOCK_POSITION",
+      "DIRECTION",
+      "OPT_UUID",
+      "OPT_BLOCK_ID",
+      "NBT",
+      "PARTICLE",
+      "VILLAGER_DATA",
+      "OPT_VAR_INT",
+      "POSE"
+    ]
+  },
+  "minecraft:title_actions": {
+    "18": [
+      "SET_TITLE",
+      "SET_SUBTITLE",
+      "SET_TIMES_AND_DISPLAY",
+      "HIDE",
+      "RESET"
+    ],
+    "302": [
+      "SET_TITLE",
+      "SET_SUBTITLE",
+      "SET_ACTION_BAR",
+      "SET_TIMES_AND_DISPLAY",
+      "HIDE",
+      "RESET"
+    ]
+  },
+  "minecraft:entity_animations": {
+    "0": {
+      "0": "SWING_MAIN_ARM",
+      "1": "TAKE_DAMAGE",
+      "2": "LEAVE_BED",
+      "3": "EAT_FOOD",
+      "4": "CRITICAL_EFFECT",
+      "5": "MAGIC_CRITICAL_EFFECT",
+      "102": "UNKNOWN_1",
+      "104": "START_SNEAKING",
+      "105": "STOP_SNEAKING"
+    },
+    "47": {
+      "0": "SWING_MAIN_ARM",
+      "1": "TAKE_DAMAGE",
+      "2": "LEAVE_BED",
+      "3": "EAT_FOOD",
+      "4": "CRITICAL_EFFECT",
+      "5": "MAGIC_CRITICAL_EFFECT"
+    },
+    "110": [
+      "SWING_MAIN_ARM",
+      "TAKE_DAMAGE",
+      "LEAVE_BED",
+      "SWING_OFF_ARM",
+      "CRITICAL_EFFECT",
+      "MAGIC_CRITICAL_EFFECT"
+    ]
+  },
+  "minecraft:entity_actions": {
+    "0": [
+      "START_SNEAKING",
+      "STOP_SNEAKING",
+      "LEAVE_BED",
+      "START_SPRINTING",
+      "STOP_SPRINTING",
+      "START_JUMPING_WITH_HORSE",
+      "OPEN_HORSE_INVENTORY"
+    ],
+    "77": [
+      "START_SNEAKING",
+      "STOP_SNEAKING",
+      "LEAVE_BED",
+      "START_SPRINTING",
+      "STOP_SPRINTING",
+      "START_JUMPING_WITH_HORSE",
+      "STOP_JUMPING_WITH_HORSE",
+      "OPEN_HORSE_INVENTORY",
+      "START_ELYTRA_FLYING"
+    ]
+  }
+}

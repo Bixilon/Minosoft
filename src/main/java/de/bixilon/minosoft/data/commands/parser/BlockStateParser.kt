@@ -6,57 +6,60 @@
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with this program.If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 package de.bixilon.minosoft.data.commands.parser
 
 import de.bixilon.minosoft.data.commands.CommandStringReader
-import de.bixilon.minosoft.data.commands.parser.exceptions.*
+import de.bixilon.minosoft.data.commands.parser.exceptions.BlockNotFoundCommandParseException
+import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException
+import de.bixilon.minosoft.data.commands.parser.exceptions.InvalidBlockPredicateCommandParseException
+import de.bixilon.minosoft.data.commands.parser.exceptions.UnknownBlockPropertyCommandParseException
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties
-import de.bixilon.minosoft.data.mappings.blocks.Block
-import de.bixilon.minosoft.data.mappings.blocks.BlockProperties
-import de.bixilon.minosoft.data.mappings.blocks.BlockRotations
-import de.bixilon.minosoft.protocol.network.Connection
+import de.bixilon.minosoft.data.registries.blocks.BlockState
+import de.bixilon.minosoft.data.registries.blocks.WannabeBlockState
+import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 
 class BlockStateParser : CommandParser() {
 
     @Throws(CommandParseException::class)
-    override fun parse(connection: Connection, properties: ParserProperties?, stringReader: CommandStringReader): Block? {
+    override fun parse(connection: PlayConnection, properties: ParserProperties?, stringReader: CommandStringReader): BlockState? {
         if (this == BLOCK_PREDICATE_PARSER) {
             if (stringReader.peek() != '#') {
                 throw InvalidBlockPredicateCommandParseException(stringReader, stringReader.read().toString())
             }
             stringReader.skip()
         }
-        val identifier = stringReader.readModIdentifier() // ToDo: check tags
-        var block = Block(identifier.value.mod, identifier.value.identifier)
-        if (!connection.mapping.doesBlockExist(identifier.value)) {
-            throw BlockNotFoundCommandParseException(stringReader, identifier.key)
-        }
+        val resourceLocation = stringReader.readResourceLocation() // ToDo: check tags
+        val block = connection.registries.blockRegistry[resourceLocation.value] ?: throw BlockNotFoundCommandParseException(stringReader, resourceLocation.key)
+        var blockState: BlockState? = null
+
         if (stringReader.canRead() && stringReader.peek() == '[') {
             val propertyMap = stringReader.readProperties()
 
-            var rotation: BlockRotations? = null
-            val allProperties = HashSet<BlockProperties>()
-            for (pair in propertyMap) {
-
-                if (pair.key == "facing" || pair.key == "rotation" || pair.key == "orientation" || pair.key == "axis") {
-                    if (rotation != null) {
-                        throw BlockPropertyDuplicatedCommandParseException(stringReader, pair.key)
-                    }
-                    rotation = BlockRotations.ROTATION_MAPPING[pair.value]
-                    if (rotation == null) {
-                        throw UnknownBlockPropertyCommandParseException(stringReader, pair.value)
-                    }
-                    continue
+            val allProperties: MutableMap<BlockProperties, Any> = mutableMapOf()
+            for ((groupName, value) in propertyMap) {
+                val (parsedGroup, parsedValue) = try {
+                    BlockProperties.parseProperty(groupName, value)
+                } catch (exception: Throwable) {
+                    throw UnknownBlockPropertyCommandParseException(stringReader, value)
                 }
-                val blockPropertyKey = BlockProperties.PROPERTIES_MAPPING[pair.key] ?: throw UnknownBlockPropertyCommandParseException(stringReader, pair.key)
-                val blockProperty = blockPropertyKey[pair.value] ?: throw UnknownBlockPropertyCommandParseException(stringReader, pair.value)
-                allProperties.add(blockProperty)
+                allProperties[parsedGroup] = parsedValue
             }
-            block = Block(identifier.value.mod, identifier.value.identifier, allProperties, rotation)
+            for (state in block.states) {
+                if (state.equals(WannabeBlockState(block.resourceLocation, allProperties))) {
+                    blockState = state
+                    break
+                }
+            }
+        } else {
+            blockState = block.states.iterator().next()
+        }
+        check(blockState != null) {
+            throw BlockNotFoundCommandParseException(stringReader, resourceLocation.key)
         }
 
         if (this == BLOCK_PREDICATE_PARSER) {
@@ -65,7 +68,7 @@ class BlockStateParser : CommandParser() {
             }
             return null // ToDo
         }
-        return block
+        return blockState
     }
 
     companion object {

@@ -6,15 +6,15 @@
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with this program.If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
 package de.bixilon.minosoft.modding.event.events;
 
-import de.bixilon.minosoft.protocol.network.Connection;
-import de.bixilon.minosoft.protocol.packets.clientbound.status.PacketStatusPong;
+import de.bixilon.minosoft.protocol.network.connection.StatusConnection;
+import de.bixilon.minosoft.protocol.packets.s2c.status.StatusPongS2CP;
 
 /**
  * Fired when the connection status is "STATUS" and the ping gets pack (pong)
@@ -22,12 +22,12 @@ import de.bixilon.minosoft.protocol.packets.clientbound.status.PacketStatusPong;
 public class StatusPongEvent extends ConnectionEvent {
     private final long pongId;
 
-    public StatusPongEvent(Connection connection, long pongId) {
+    public StatusPongEvent(StatusConnection connection, long pongId) {
         super(connection);
         this.pongId = pongId;
     }
 
-    public StatusPongEvent(Connection connection, PacketStatusPong pkg) {
+    public StatusPongEvent(StatusConnection connection, StatusPongS2CP pkg) {
         super(connection);
         this.pongId = pkg.getPingId();
     }

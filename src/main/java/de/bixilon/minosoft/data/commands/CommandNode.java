@@ -6,7 +6,7 @@
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with this program.If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
@@ -19,7 +19,7 @@ import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException
 import de.bixilon.minosoft.data.commands.parser.exceptions.NoConnectionCommandParseException;
 import de.bixilon.minosoft.data.commands.parser.exceptions.RequiresMoreArgumentsCommandParseException;
 import de.bixilon.minosoft.data.commands.parser.exceptions.WrongArgumentCommandParseException;
-import de.bixilon.minosoft.protocol.network.Connection;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.terminal.commands.CommandStack;
 import de.bixilon.minosoft.terminal.commands.exceptions.CLIException;
@@ -41,9 +41,9 @@ public abstract class CommandNode {
     protected int[] childrenIds;
     protected CommandNode redirectNode;
 
-    public CommandNode(byte flags, InByteBuffer buffer) {
+    public CommandNode(int flags, InByteBuffer buffer) {
         this.isExecutable = BitByte.isBitMask(flags, 0x04);
-        this.childrenIds = buffer.readVarIntArray();
+        this.childrenIds = buffer.readVarIntArray(buffer.readVarInt());
         if (BitByte.isBitMask(flags, 0x08)) {
             this.redirectNodeId = buffer.readVarInt();
         } else {
@@ -111,18 +111,18 @@ public abstract class CommandNode {
         return this.childrenIds;
     }
 
-    protected CommandStack parse(Connection connection, CommandStringReader stringReader, CommandStack stack, boolean execute) throws CommandParseException, CLIException {
+    protected CommandStack parse(PlayConnection connection, CommandStringReader stringReader, CommandStack stack, boolean execute) throws CommandParseException, CLIException {
         stringReader.skipWhitespaces();
         if (stringReader.getRemainingLength() == 0) {
             if (this.isExecutable) {
                 if (this.executor != null) {
-                    if (this.executor instanceof CommandExecutor commandExecutor) {
-                        commandExecutor.execute(stack);
-                    } else if (this.executor instanceof CommandConnectionExecutor commandConnectionExecutor) {
+                    if (this.executor instanceof CommandExecutor) {
+                        ((CommandExecutor) this.executor).execute(stack);
+                    } else if (this.executor instanceof CommandConnectionExecutor) {
                         if (connection == null) {
                             throw new NoConnectionCommandParseException(stringReader, stringReader.getString());
                         }
-                        commandConnectionExecutor.execute(connection, stack);
+                        ((CommandConnectionExecutor) this.executor).execute(connection, stack);
                     }
                 }
 
@@ -154,15 +154,15 @@ public abstract class CommandNode {
         throw new WrongArgumentCommandParseException(stringReader, nextArgument);
     }
 
-    public CommandStack parse(Connection connection, CommandStringReader stringReader, CommandStack stack) throws CommandParseException, CLIException {
+    public CommandStack parse(PlayConnection connection, CommandStringReader stringReader, CommandStack stack) throws CommandParseException, CLIException {
         return parse(connection, stringReader, stack, false);
     }
 
-    public CommandStack execute(Connection connection, CommandStringReader stringReader, CommandStack stack) throws CommandParseException, CLIException {
+    public CommandStack execute(PlayConnection connection, CommandStringReader stringReader, CommandStack stack) throws CommandParseException, CLIException {
         return parse(connection, stringReader, stack, true);
     }
 
-    public CommandStack parse(Connection connection, String string) throws CommandParseException, CLIException {
+    public CommandStack parse(PlayConnection connection, String string) throws CommandParseException, CLIException {
         // replace multiple spaces with nothing
         string = string.replaceAll("\\s{2,}", " ");
         CommandStringReader stringReader = new CommandStringReader(string);
@@ -171,11 +171,12 @@ public abstract class CommandNode {
 
     public CommandNode addChildren(Set<CommandNode> children) {
         for (CommandNode child : children) {
-            if (child instanceof CommandArgumentNode argumentNode) {
-                this.argumentsChildren.add(argumentNode);
+            if (child instanceof CommandArgumentNode) {
+                this.argumentsChildren.add(((CommandArgumentNode) child));
                 continue;
             }
-            if (child instanceof CommandLiteralNode literalNode) {
+            if (child instanceof CommandLiteralNode) {
+                CommandLiteralNode literalNode = (CommandLiteralNode) child;
                 this.literalChildren.put(literalNode.getName(), literalNode);
             }
         }

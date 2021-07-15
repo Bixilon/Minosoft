@@ -6,7 +6,7 @@
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with this program.If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
@@ -14,8 +14,6 @@
 package de.bixilon.minosoft.protocol.ping;
 
 import com.google.gson.JsonObject;
-import de.bixilon.minosoft.data.mappings.versions.Version;
-import de.bixilon.minosoft.data.text.BaseComponent;
 import de.bixilon.minosoft.data.text.ChatComponent;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import de.bixilon.minosoft.util.logging.Log;
@@ -31,7 +29,7 @@ public class ServerListPing {
     private final String serverBrand;
     byte[] favicon;
 
-    public ServerListPing(Version version, JsonObject json) {
+    public ServerListPing(JsonObject json) {
         int protocolId = json.getAsJsonObject("version").get("protocol").getAsInt();
         if (protocolId == ProtocolDefinition.QUERY_PROTOCOL_VERSION_ID) {
             // Server did not send us a version, trying 1.8
@@ -46,11 +44,7 @@ public class ServerListPing {
             this.favicon = Base64.getDecoder().decode(json.get("favicon").getAsString().replace("data:image/png;base64,", "").replace("\n", ""));
         }
 
-        if (json.get("description").isJsonPrimitive()) {
-            this.motd = ChatComponent.valueOf(json.get("description").getAsString());
-        } else {
-            this.motd = new BaseComponent(version, json.getAsJsonObject("description"));
-        }
+        this.motd = ChatComponent.Companion.of(json.get("description"));
         this.serverBrand = json.getAsJsonObject("version").get("name").getAsString();
 
         if (json.has("modinfo") && json.getAsJsonObject("modinfo").has("type") && json.getAsJsonObject("modinfo").get("type").getAsString().equals("FML")) {

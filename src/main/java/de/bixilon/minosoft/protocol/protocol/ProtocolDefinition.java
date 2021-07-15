@@ -6,22 +6,26 @@
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with this program.If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
 package de.bixilon.minosoft.protocol.protocol;
 
+import de.bixilon.minosoft.data.registries.ResourceLocation;
+import de.bixilon.minosoft.data.text.ChatColors;
+import de.bixilon.minosoft.data.text.RGBColor;
+
 import java.net.InetAddress;
 import java.util.regex.Pattern;
 
 public final class ProtocolDefinition {
-    public static final int STRING_MAX_LEN = 32767;
+    public static final int STRING_MAX_LENGTH = 32767;
     public static final int DEFAULT_PORT = 25565;
     public static final int SOCKET_CONNECT_TIMEOUT = 5000;
     public static final int SOCKET_TIMEOUT = 30000;
-    public static final int PROTOCOL_PACKET_MAX_SIZE = 1 << 21;
+    public static final int PROTOCOL_PACKET_MAX_SIZE = 1 << 23; // ToDp: This was before 1.17.1-rc2 1 << 21
     public static final float ANGLE_CALCULATION_CONSTANT = 360.0F / 256.0F;
     public static final float PITCH_CALCULATION_CONSTANT = 100.0F / 63.0F;
 
@@ -38,22 +42,25 @@ public final class ProtocolDefinition {
     public static final InetAddress LAN_SERVER_BROADCAST_INET_ADDRESS;
     public static final int LAN_SERVER_MAXIMUM_SERVERS = 100; // maximum number of lan servers, set because otherwise dos attacks would be easy
 
-    public static final String DEFAULT_MOD = "minecraft";
+    public static final String DEFAULT_NAMESPACE = "minecraft";
+    public static final String MINOSOFT_NAMESPACE = "minosoft";
     public static final char TEXT_COMPONENT_SPECIAL_PREFIX_CHAR = '§';
 
     public static final int DEFAULT_BUFFER_SIZE = 4096;
 
     public static final int NULL_BLOCK_ID = 0;
 
-    public static final String COMMAND_SEPARATOR = " ";
 
     public static final Pattern MINECRAFT_NAME_VALIDATOR = Pattern.compile("\\w{3,16}");
-    public static final Pattern IDENTIFIER_PATTERN = Pattern.compile("([a-z_]+:)?[a-z_]+");
+    public static final Pattern RESOURCE_LOCATION_PATTERN = Pattern.compile("([a-z_0-9]+:)?[a-zA-Z_0-9.]+");
     public static final Pattern SCOREBOARD_OBJECTIVE_PATTERN = Pattern.compile("[a-zA-z-.+]{1,16}");
 
     public static final int SECTION_WIDTH_X = 16;
+    public static final int SECTION_MAX_X = SECTION_WIDTH_X - 1;
     public static final int SECTION_WIDTH_Z = 16;
+    public static final int SECTION_MAX_Z = SECTION_WIDTH_Z - 1;
     public static final int SECTION_HEIGHT_Y = 16;
+    public static final int SECTION_MAX_Y = SECTION_HEIGHT_Y - 1;
     public static final int SECTIONS_PER_CHUNK = 16;
     public static final int BLOCKS_PER_SECTION = SECTION_WIDTH_X * SECTION_HEIGHT_Y * SECTION_WIDTH_X;
 
@@ -81,6 +88,33 @@ public final class ProtocolDefinition {
     public static final String MICROSOFT_ACCOUNT_GET_MOJANG_PROFILE_URL = "https://api.minecraftservices.com/minecraft/profile";
 
     public static final char[] OBFUSCATED_CHARS = "!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~".toCharArray();
+
+
+    public static final int TICKS_PER_SECOND = 20;
+    public static final int TICK_TIME = 1000 / TICKS_PER_SECOND;
+    public static final float TICK_TIMEf = (float) TICK_TIME;
+    public static final double TICK_TIMEd = TICK_TIME;
+
+    public static final float VELOCITY_CONSTANT = 8000.0f;
+
+    public static final float GRAVITY = 32;
+    public static final boolean FAST_MOVEMENT = true;
+
+    public static final int SEA_LEVEL_HEIGHT = 62;
+
+    public static final float HEIGHT_SEA_LEVEL_MODIFIER = 0.00166667f;
+
+    public static final ResourceLocation AIR_RESOURCE_LOCATION = new ResourceLocation("air");
+
+    public static final RGBColor DEFAULT_COLOR = ChatColors.WHITE;
+
+    public static final char[] LINE_BREAK_CHARS = {'\n', '\r'};
+
+
+    public static final String[] RELEVANT_MINECRAFT_ASSETS = {"minecraft/lang/", "minecraft/sounds.json", "minecraft/sounds/", "minecraft/textures/", "minecraft/font/"}; // whitelist for all assets we care (we have our own block models, etc)
+
+    public static final int TICKS_PER_DAY = 24000;
+    public static final float TICKS_PER_DAYf = (float) TICKS_PER_DAY;
 
     static {
         // java does (why ever) not allow to directly assign a null

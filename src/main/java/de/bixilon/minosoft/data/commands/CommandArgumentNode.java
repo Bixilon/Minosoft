@@ -6,7 +6,7 @@
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with this program.If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
@@ -17,8 +17,8 @@ import de.bixilon.minosoft.data.commands.parser.CommandParser;
 import de.bixilon.minosoft.data.commands.parser.CommandParsers;
 import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException;
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties;
-import de.bixilon.minosoft.data.mappings.ModIdentifier;
-import de.bixilon.minosoft.protocol.network.Connection;
+import de.bixilon.minosoft.data.registries.ResourceLocation;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.terminal.commands.CommandStack;
 import de.bixilon.minosoft.terminal.commands.exceptions.CLIException;
@@ -34,24 +34,24 @@ public class CommandArgumentNode extends CommandLiteralNode {
     private ParserProperties properties;
     private SuggestionTypes suggestionType;
 
-    public CommandArgumentNode(byte flags, InByteBuffer buffer) {
+    public CommandArgumentNode(int flags, InByteBuffer buffer) {
         super(flags, buffer);
-        ModIdentifier parserIdentifier = buffer.readIdentifier();
-        this.parser = CommandParsers.INSTANCE.getParserInstance(parserIdentifier);
+        ResourceLocation parserResourceLocation = buffer.readResourceLocation();
+        this.parser = CommandParsers.INSTANCE.getParserInstance(parserResourceLocation);
         if (this.parser == null) {
-            Log.verbose("Unknown command parser: %s", parserIdentifier);
+            Log.verbose("Unknown command parser: %s", parserResourceLocation);
         } else {
             this.properties = this.parser.readParserProperties(buffer);
         }
         if (BitByte.isBitMask(flags, 0x10)) {
-            String fullIdentifier = buffer.readIdentifier().getFullIdentifier();
-            this.suggestionType = switch (fullIdentifier) {
+            String resourceLocation = buffer.readResourceLocation().getFull();
+            this.suggestionType = switch (resourceLocation) {
                 case "minecraft:ask_server" -> CommandArgumentNode.SuggestionTypes.ASK_SERVER;
                 case "minecraft:all_recipes" -> CommandArgumentNode.SuggestionTypes.ALL_RECIPES;
                 case "minecraft:available_sounds" -> CommandArgumentNode.SuggestionTypes.AVAILABLE_SOUNDS;
                 case "minecraft:summonable_entities" -> CommandArgumentNode.SuggestionTypes.SUMMONABLE_ENTITIES;
                 case "minecraft:available_biomes" -> CommandArgumentNode.SuggestionTypes.AVAILABLE_BIOMES;
-                default -> throw new IllegalArgumentException("Unexpected value: " + fullIdentifier);
+                default -> throw new IllegalArgumentException("Unexpected value: " + resourceLocation);
             };
         }
     }
@@ -104,7 +104,7 @@ public class CommandArgumentNode extends CommandLiteralNode {
     }
 
     @Override
-    public CommandStack parse(Connection connection, CommandStringReader stringReader, CommandStack stack, boolean execute) throws CommandParseException, CLIException {
+    public CommandStack parse(PlayConnection connection, CommandStringReader stringReader, CommandStack stack, boolean execute) throws CommandParseException, CLIException {
         stack.addArgument(this.parser.parse(connection, this.properties, stringReader));
         return super.parse(connection, stringReader, stack, execute);
     }

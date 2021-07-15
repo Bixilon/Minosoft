@@ -6,16 +6,16 @@
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with this program.If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
 package de.bixilon.minosoft.gui.main;
 
-import de.bixilon.minosoft.data.locale.LocaleManager;
-import de.bixilon.minosoft.data.locale.Strings;
-import de.bixilon.minosoft.protocol.network.Connection;
+import de.bixilon.minosoft.data.language.deprecated.DLocaleManager;
+import de.bixilon.minosoft.data.language.deprecated.Strings;
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.Initializable;
@@ -37,15 +37,15 @@ public class SessionsWindow implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         SessionListCell.CONNECTION_LIST_VIEW.setCellFactory((lv) -> SessionListCell.newInstance());
 
-        this.menuDisconnect.setText(LocaleManager.translate(Strings.SESSIONS_MENU_DISCONNECT));
-        this.menuDisconnectFromAll.setText(LocaleManager.translate(Strings.SESSIONS_MENU_DISCONNECT_FROM_ALL));
+        this.menuDisconnect.setText(DLocaleManager.translate(Strings.SESSIONS_MENU_DISCONNECT));
+        this.menuDisconnectFromAll.setText(DLocaleManager.translate(Strings.SESSIONS_MENU_DISCONNECT_FROM_ALL));
     }
 
     public void setServer(Server server) {
         this.server = server;
-        ObservableList<Connection> connections = FXCollections.observableArrayList();
-        for (Connection connection : server.getConnections()) {
-            if (!connection.isConnected()) {
+        ObservableList<PlayConnection> connections = FXCollections.observableArrayList();
+        for (PlayConnection connection : server.getConnections()) {
+            if (!connection.getConnectionState().getConnected()) {
                 server.getConnections().remove(connection);
             }
             connections.add(connection);
@@ -55,6 +55,6 @@ public class SessionsWindow implements Initializable {
     }
 
     public void disconnectAll() {
-        this.server.getConnections().forEach(Connection::disconnect);
+        this.server.getConnections().forEach(PlayConnection::disconnect);
     }
 }

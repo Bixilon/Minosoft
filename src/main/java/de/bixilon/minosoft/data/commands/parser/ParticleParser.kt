@@ -6,37 +6,32 @@
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with this program.If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 package de.bixilon.minosoft.data.commands.parser
 
 import de.bixilon.minosoft.data.commands.CommandStringReader
-import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException
-import de.bixilon.minosoft.data.commands.parser.exceptions.identifier.ParticleNotFoundCommandParseException
+import de.bixilon.minosoft.data.commands.parser.exceptions.resourcelocation.ParticleNotFoundCommandParseException
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties
-import de.bixilon.minosoft.data.mappings.particle.Particle
-import de.bixilon.minosoft.data.mappings.particle.data.BlockParticleData
-import de.bixilon.minosoft.data.mappings.particle.data.DustParticleData
-import de.bixilon.minosoft.data.mappings.particle.data.ItemParticleData
-import de.bixilon.minosoft.data.mappings.particle.data.ParticleData
-import de.bixilon.minosoft.protocol.network.Connection
+import de.bixilon.minosoft.data.registries.particle.data.BlockParticleData
+import de.bixilon.minosoft.data.registries.particle.data.DustParticleData
+import de.bixilon.minosoft.data.registries.particle.data.ItemParticleData
+import de.bixilon.minosoft.data.registries.particle.data.ParticleData
+import de.bixilon.minosoft.data.text.RGBColor
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 
-class ParticleParser : CommandParser() {
+object ParticleParser : CommandParser() {
 
-    @Throws(CommandParseException::class)
-    override fun parse(connection: Connection, properties: ParserProperties?, stringReader: CommandStringReader): ParticleData {
-        val identifier = stringReader.readModIdentifier()
+    override fun parse(connection: PlayConnection, properties: ParserProperties?, stringReader: CommandStringReader): ParticleData {
+        val resourceLocation = stringReader.readResourceLocation()
 
-        if (!connection.mapping.doesParticleExist(identifier.value)) {
-            throw ParticleNotFoundCommandParseException(stringReader, identifier.key)
-        }
-        val particle = Particle(identifier.value.fullIdentifier)
+        val particle = connection.registries.particleTypeRegistry[resourceLocation.value] ?: throw ParticleNotFoundCommandParseException(stringReader, resourceLocation.key)
 
         stringReader.skipWhitespaces()
 
-        return when (identifier.value.fullIdentifier) {
+        return when (resourceLocation.value.full) {
             "minecraft:block", "minecraft:falling_dust" -> BlockParticleData(BlockStateParser.BLOCK_STACK_PARSER.parse(connection, properties, stringReader), particle)
             "minecraft:dust" -> {
                 val red = stringReader.readFloat()
@@ -47,16 +42,12 @@ class ParticleParser : CommandParser() {
                 stringReader.skipWhitespaces()
                 val scale = stringReader.readFloat()
 
-                DustParticleData(red, green, blue, scale, particle)
+                DustParticleData(RGBColor(red, green, blue), scale, particle)
             }
             "minecraft:item" -> {
                 ItemParticleData(ItemStackParser.ITEM_STACK_PARSER.parse(connection, properties, stringReader), particle)
             }
             else -> ParticleData(particle)
         }
-    }
-
-    companion object {
-        val PARTICLE_PARSER = ParticleParser()
     }
 }

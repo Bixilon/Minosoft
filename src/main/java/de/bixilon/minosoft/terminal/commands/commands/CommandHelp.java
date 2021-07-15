@@ -6,7 +6,7 @@
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with this program.If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
@@ -30,7 +30,7 @@ public class CommandHelp extends Command {
                     print("");
                     print("help -> Get this list");
                     print("connection -> Manage connections");
-                    print("[disconnect]] -> Disconnect from current connection");
+                    print("[disconnect] -> Disconnect from current connection");
                     print("[chat] -> Write a command or chat message");
                     print("[tab] -> Manage tab");
                     print("[entity] -> See all entities");

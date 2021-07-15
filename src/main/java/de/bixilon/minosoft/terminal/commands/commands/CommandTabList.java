@@ -6,7 +6,7 @@
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with this program.If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
@@ -17,7 +17,7 @@ import com.github.freva.asciitable.AsciiTable;
 import de.bixilon.minosoft.data.commands.CommandLiteralNode;
 import de.bixilon.minosoft.data.commands.CommandNode;
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity;
-import de.bixilon.minosoft.data.player.PlayerListItem;
+import de.bixilon.minosoft.data.player.tab.TabListItem;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -29,9 +29,9 @@ public class CommandTabList extends Command {
         parent.addChildren(
                 new CommandLiteralNode("tab",
                         new CommandLiteralNode("list", (connection, stack) -> {
-                            print(connection.getPlayer().getTabHeader().getANSIColoredMessage());
+                            print(connection.getTabList().getHeader().getAnsiColoredMessage());
 
-                            int entries = connection.getPlayer().getPlayerList().size();
+                            int entries = connection.getTabList().getTabListItems().size();
                             int columns = (entries / 20) + 1;
                             if (columns > 4) {
                                 columns = 4;
@@ -43,7 +43,7 @@ public class CommandTabList extends Command {
 
                             ArrayList<Object[]> tableData = new ArrayList<>();
 
-                            Iterator<PlayerListItem> playerListItems = connection.getPlayer().getPlayerList().values().iterator();
+                            Iterator<TabListItem> playerListItems = connection.getTabList().getTabListItems().values().iterator();
                             for (int row = 0; row < rows; row++) {
                                 ArrayList<Object> current = new ArrayList<>();
                                 for (int column = 0; column < columns; column++) {
@@ -61,22 +61,22 @@ public class CommandTabList extends Command {
 
                             print(AsciiTable.getTable(tableData.toArray(new Object[0][0])));
 
-                            print(connection.getPlayer().getTabFooter().getANSIColoredMessage());
+                            print(connection.getTabList().getFooter().getAnsiColoredMessage());
 
                         }, new CommandLiteralNode("all", (connection, stack) -> {
-                            print(connection.getPlayer().getTabHeader().getANSIColoredMessage());
+                            print(connection.getTabList().getHeader().getAnsiColoredMessage());
 
                             ArrayList<Object[]> tableData = new ArrayList<>();
 
-                            for (var entry : connection.getPlayer().getPlayerList().entrySet()) {
-                                PlayerEntity playerEntity = (PlayerEntity) connection.getPlayer().getWorld().getEntity(entry.getValue().getUUID());
-                                Integer entityId = playerEntity != null ? playerEntity.getEntityId() : null;
-                                tableData.add(new Object[]{entry.getKey(), entityId, entry.getValue().getName(), entry.getValue().getDisplayName(), entry.getValue().getGameMode(), entry.getValue().getPing() + "ms"});
+                            for (var entry : connection.getTabList().getTabListItems().entrySet()) {
+                                PlayerEntity playerEntity = (PlayerEntity) connection.getWorld().getEntities().get(entry.getKey());
+                                Integer entityId = playerEntity != null ? connection.getWorld().getEntities().getId(playerEntity) : null;
+                                tableData.add(new Object[]{entry.getKey(), entityId, entry.getValue().getName(), entry.getValue().getDisplayName(), entry.getValue().getGamemode(), entry.getValue().getPing() + "ms"});
                             }
 
                             print(AsciiTable.getTable(new String[]{"UUID", "ENTITY ID", "PLAYER NAME", "DISPLAY NAME", "GAMEMODE", "PING"}, tableData.toArray(new Object[0][0])));
 
-                            print(connection.getPlayer().getTabFooter().getANSIColoredMessage());
+                            print(connection.getTabList().getFooter().getAnsiColoredMessage());
                         }))));
         return parent;
     }

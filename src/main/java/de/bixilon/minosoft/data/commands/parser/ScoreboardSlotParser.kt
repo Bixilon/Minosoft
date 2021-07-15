@@ -6,7 +6,7 @@
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with this program.If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
@@ -14,22 +14,21 @@ package de.bixilon.minosoft.data.commands.parser
 
 import de.bixilon.minosoft.data.commands.CommandStringReader
 import de.bixilon.minosoft.data.commands.parser.exceptions.ColorNotFoundCommandParseException
-import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException
 import de.bixilon.minosoft.data.commands.parser.exceptions.UnknownOperationCommandParseException
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties
-import de.bixilon.minosoft.data.text.ChatColors
-import de.bixilon.minosoft.protocol.network.Connection
+import de.bixilon.minosoft.data.text.ChatCode
+import de.bixilon.minosoft.protocol.network.connection.PlayConnection
 
-class ScoreboardSlotParser : CommandParser() {
+object ScoreboardSlotParser : CommandParser() {
+    private val SCOREBOARD_SLOTS = setOf("list", "sidebar", "belowName")
 
-    @Throws(CommandParseException::class)
-    override fun parse(connection: Connection, properties: ParserProperties?, stringReader: CommandStringReader): Any? {
+    override fun parse(connection: PlayConnection, properties: ParserProperties?, stringReader: CommandStringReader): Any? {
         val slot = stringReader.readUnquotedString()
 
         if (slot.startsWith("sidebar.team.")) {
             val color = slot.substring("sidebar.team.".length)
             try {
-                return ChatColors.getChatFormattingByName(color)
+                return ChatCode[color]
             } catch (exception: IllegalArgumentException) {
                 throw ColorNotFoundCommandParseException(stringReader, color)
             }
@@ -40,10 +39,5 @@ class ScoreboardSlotParser : CommandParser() {
         }
         return slot
 
-    }
-
-    companion object {
-        private val SCOREBOARD_SLOTS = setOf("list", "sidebar", "belowName")
-        val SCOREBOARD_SLOT_PARSER = ScoreboardSlotParser()
     }
 }

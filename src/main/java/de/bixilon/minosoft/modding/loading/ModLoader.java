@@ -6,7 +6,7 @@
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with this program.If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
@@ -19,6 +19,8 @@ import de.bixilon.minosoft.modding.MinosoftMod;
 import de.bixilon.minosoft.util.CountUpAndDownLatch;
 import de.bixilon.minosoft.util.Util;
 import de.bixilon.minosoft.util.logging.Log;
+import de.bixilon.minosoft.util.logging.LogLevels;
+import de.bixilon.minosoft.util.logging.LogMessageType;
 import org.xeustechnologies.jcl.JarClassLoader;
 import org.xeustechnologies.jcl.JclObjectFactory;
 
@@ -29,8 +31,6 @@ import java.util.TreeMap;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.zip.ZipFile;
 
 public class ModLoader {
@@ -39,8 +39,7 @@ public class ModLoader {
 
     public static void loadMods(CountUpAndDownLatch progress) throws Exception {
         final long startTime = System.currentTimeMillis();
-        Log.info("Start loading mods...");
-        ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors(), Util.getThreadFactory("ModLoader"));
+        Log.log(LogMessageType.MOD_LOADING, LogLevels.INFO, () -> "Start loading mods...");
 
         // load all jars, parse the mod.json
         // sort the list and prioritize
@@ -55,10 +54,10 @@ public class ModLoader {
             if (modFile.isDirectory()) {
                 continue;
             }
-            executor.execute(() -> {
+            Minosoft.THREAD_POOL.execute(() -> {
                 MinosoftMod mod = loadMod(progress, modFile);
                 if (mod != null) {
-                    MOD_MAP.put(mod.getInfo().getModIdentifier().getUUID(), mod);
+                    MOD_MAP.put(mod.getInfo().getModVersionIdentifier().getUUID(), mod);
                 }
                 latch.countDown();
             });
@@ -66,11 +65,11 @@ public class ModLoader {
         latch.await();
 
         if (MOD_MAP.isEmpty()) {
-            Log.info("No mods to load.");
+            Log.log(LogMessageType.MOD_LOADING, LogLevels.INFO, () -> "No mods to load.");
             return;
         }
 
-        progress.addCount(MOD_MAP.size() * ModPhases.values().length); // count * mod phases
+        progress.setCount(progress.getCount() + MOD_MAP.size() * ModPhases.values().length); // count * mod phases
 
         // check if all dependencies are available
         modLoop:
@@ -84,12 +83,12 @@ public class ModLoader {
                     MOD_MAP.remove(modEntry.getKey());
                     continue modLoop;
                 }
-                if (dependency.getVersionMinimum() < info.getModIdentifier().getVersionId()) {
+                if (dependency.getVersionMinimum() < info.getModVersionIdentifier().getVersionId()) {
                     Log.warn("Could not satisfy mod dependency for mod %s (Requires %s version > %d)", modEntry.getValue().getInfo(), dependency.getUUID(), dependency.getVersionMinimum());
                     MOD_MAP.remove(modEntry.getKey());
                     continue modLoop;
                 }
-                if (dependency.getVersionMaximum() > info.getModIdentifier().getVersionId()) {
+                if (dependency.getVersionMaximum() > info.getModVersionIdentifier().getVersionId()) {
                     Log.warn("Could not satisfy mod dependency for mod %s (Requires %s version < %d)", modEntry.getValue().getInfo(), dependency.getUUID(), dependency.getVersionMaximum());
                     MOD_MAP.remove(modEntry.getKey());
                     continue modLoop;
@@ -101,11 +100,11 @@ public class ModLoader {
                     Log.warn("Could not satisfy mod soft dependency for mod %s (Requires %s)", modEntry.getValue().getInfo(), dependency.getUUID());
                     continue;
                 }
-                if (dependency.getVersionMinimum() < info.getModIdentifier().getVersionId()) {
+                if (dependency.getVersionMinimum() < info.getModVersionIdentifier().getVersionId()) {
                     Log.warn("Could not satisfy mod dependency for mod %s (Requires %s version > %d)", modEntry.getValue().getInfo(), dependency.getUUID(), dependency.getVersionMinimum());
                     continue;
                 }
-                if (dependency.getVersionMaximum() > info.getModIdentifier().getVersionId()) {
+                if (dependency.getVersionMaximum() > info.getModVersionIdentifier().getVersionId()) {
                     Log.warn("Could not satisfy mod soft dependency for mod %s (Requires %s version < %d)", modEntry.getValue().getInfo(), dependency.getUUID(), dependency.getVersionMaximum());
                 }
             }
@@ -123,26 +122,27 @@ public class ModLoader {
         sortedModMap.putAll(MOD_MAP);
 
         for (ModPhases phase : ModPhases.values()) {
-            Log.verbose(String.format("Mod loading phase changed: %s", phase));
+            Log.log(LogMessageType.MOD_LOADING, LogLevels.VERBOSE, () -> "Mod initializing started in " + phase);
             CountDownLatch modLatch = new CountDownLatch(sortedModMap.size());
             for (Map.Entry<UUID, MinosoftMod> entry : sortedModMap.entrySet()) {
-                executor.execute(() -> {
+                Minosoft.THREAD_POOL.execute(() -> {
                     if (!entry.getValue().isEnabled()) {
                         modLatch.countDown();
-                        progress.countDown();
+                        progress.dec();
                         return;
                     }
+                    Log.log(LogMessageType.MOD_LOADING, LogLevels.VERBOSE, () -> "Loading mod " + entry.getValue().getInfo() + "in " + phase);
                     try {
                         if (!entry.getValue().start(phase)) {
-                            throw new ModLoadingException(String.format("Could not load mod %s", entry.getValue().getInfo()));
+                            Log.log(LogMessageType.MOD_LOADING, LogLevels.WARN, () -> "Loading mod " + entry.getValue().getInfo() + "in " + phase + "failed!");
                         }
                     } catch (Throwable e) {
                         e.printStackTrace();
-                        Log.warn(String.format("An error occurred while loading %s", entry.getValue().getInfo()));
+                        Log.log(LogMessageType.MOD_LOADING, LogLevels.WARN, () -> "Loading mod " + entry.getValue().getInfo() + "in " + phase + "failed!");
                         entry.getValue().setEnabled(false);
                     }
                     modLatch.countDown();
-                    progress.countDown();
+                    progress.dec();
                 });
             }
             modLatch.await();
@@ -155,18 +155,18 @@ public class ModLoader {
                 MOD_MAP.remove(entry.getKey());
             }
         }
-        Log.info("Loading of %d mods finished in %dms!", sortedModMap.size(), (System.currentTimeMillis() - startTime));
+        Log.log(LogMessageType.MOD_LOADING, LogLevels.INFO, () -> "Initialized " + sortedModMap.size() + " in " + (System.currentTimeMillis() - startTime) + "!");
     }
 
     public static MinosoftMod loadMod(CountUpAndDownLatch progress, File file) {
         MinosoftMod instance;
         try {
-            Log.verbose(String.format("[MOD] Loading file %s", file.getAbsolutePath()));
-            progress.countUp();
+            Log.log(LogMessageType.MOD_LOADING, LogLevels.VERBOSE, () -> "Trying to load " + file.getAbsolutePath());
+            progress.inc();
             ZipFile zipFile = new ZipFile(file);
             ModInfo modInfo = new ModInfo(Util.readJsonFromZip("mod.json", zipFile));
             if (isModLoaded(modInfo)) {
-                Log.warn(String.format("Mod %s:%d (uuid=%s) is loaded multiple times! Skipping", modInfo.getName(), modInfo.getModIdentifier().getVersionId(), modInfo.getModIdentifier().getUUID()));
+                Log.warn(String.format("Mod %s:%d (uuid=%s) is loaded multiple times! Skipping", modInfo.getName(), modInfo.getModVersionIdentifier().getVersionId(), modInfo.getModVersionIdentifier().getUUID()));
                 return null;
             }
             JarClassLoader jcl = new JarClassLoader();
@@ -180,9 +180,9 @@ public class ModLoader {
         } catch (Throwable e) {
             instance = null;
             e.printStackTrace();
-            Log.warn(String.format("Could not load mod: %s", file.getAbsolutePath()));
+            Log.log(LogMessageType.MOD_LOADING, LogLevels.WARN, () -> "Could not load " + file.getAbsolutePath());
         }
-        progress.countDown(); // failed
+        progress.dec(); // failed
         return instance;
     }
 
@@ -194,7 +194,7 @@ public class ModLoader {
     }
 
     public static boolean isModLoaded(ModInfo info) {
-        return MOD_MAP.containsKey(info.getModIdentifier().getUUID());
+        return MOD_MAP.containsKey(info.getModVersionIdentifier().getUUID());
     }
 
     @Nullable

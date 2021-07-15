@@ -6,7 +6,7 @@
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with this program.If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
@@ -25,7 +25,7 @@ public class ModInfo {
     private final String name;
     private final String[] authors;
     private final int moddingAPIVersion;
-    private final String identifier;
+    private final String resourceNamespace;
     private final String mainClass;
     private final HashSet<ModDependency> hardDependencies = new HashSet<>();
     private final HashSet<ModDependency> softDependencies = new HashSet<>();
@@ -34,18 +34,18 @@ public class ModInfo {
 
     public ModInfo(JsonObject json) throws ModLoadingException {
         this.modVersionIdentifier = ModVersionIdentifier.serialize(json);
-        this.versionName = json.get("versionName").getAsString();
+        this.versionName = json.get("version_name").getAsString();
         this.name = json.get("name").getAsString();
         JsonArray authors = json.get("authors").getAsJsonArray();
         this.authors = new String[authors.size()];
         AtomicInteger i = new AtomicInteger();
         authors.forEach((authorElement) -> this.authors[i.getAndIncrement()] = authorElement.getAsString());
-        this.moddingAPIVersion = json.get("moddingAPIVersion").getAsInt();
+        this.moddingAPIVersion = json.get("modding_api_version").getAsInt();
         if (this.moddingAPIVersion > ModLoader.CURRENT_MODDING_API_VERSION) {
             throw new ModLoadingException(String.format("Mod was written with for a newer version of minosoft (moddingAPIVersion=%d, expected=%d)", this.moddingAPIVersion, ModLoader.CURRENT_MODDING_API_VERSION));
         }
-        this.identifier = json.get("identifier").getAsString();
-        this.mainClass = json.get("mainClass").getAsString();
+        this.resourceNamespace = json.get("resource_namespace").getAsString();
+        this.mainClass = json.get("main_class").getAsString();
         if (json.has("loading")) {
             JsonObject loading = json.getAsJsonObject("loading");
             this.loadingInfo = new LoadingInfo();
@@ -68,8 +68,8 @@ public class ModInfo {
         return this.authors;
     }
 
-    public String getIdentifier() {
-        return this.identifier;
+    public String getResourceNamespace() {
+        return this.resourceNamespace;
     }
 
     public String getMainClass() {
@@ -90,7 +90,7 @@ public class ModInfo {
         return this.modVersionIdentifier.getVersionId();
     }
 
-    public ModVersionIdentifier getModIdentifier() {
+    public ModVersionIdentifier getModVersionIdentifier() {
         return this.modVersionIdentifier;
     }
 

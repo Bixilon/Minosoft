@@ -6,14 +6,13 @@
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with this program.If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
 package de.bixilon.minosoft.data.accounts;
 
-import com.google.gson.JsonObject;
 import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.gui.main.cells.AccountListCell;
 import de.bixilon.minosoft.util.logging.Log;
@@ -21,6 +20,7 @@ import de.bixilon.minosoft.util.mojang.api.exceptions.MojangJoinServerErrorExcep
 import de.bixilon.minosoft.util.mojang.api.exceptions.NoNetworkConnectionException;
 import javafx.application.Platform;
 
+import java.util.Map;
 import java.util.UUID;
 
 public abstract class Account {
@@ -33,11 +33,11 @@ public abstract class Account {
     }
 
     public static void addAccount(Account account) {
-        Minosoft.getConfig().putAccount(account);
+        Minosoft.getConfig().getConfig().getAccount().getEntries().put(account.getId(), account);
         account.saveToConfig();
         Log.info(String.format("Added and saved account (type=%s, id=%s,  username=%s, uuid=%s)", account.getClass().getSimpleName(), account.getId(), account.getUsername(), account.getUUID()));
         Platform.runLater(() -> AccountListCell.ACCOUNT_LIST_VIEW.getItems().add(account));
-        if (Minosoft.getConfig().getSelectedAccount() == null) {
+        if (Minosoft.getConfig().getConfig().getAccount().getSelected().isBlank()) {
             // select account
             Minosoft.selectAccount(account);
         }
@@ -51,7 +51,7 @@ public abstract class Account {
         return this.uuid;
     }
 
-    public abstract JsonObject serialize();
+    public abstract Map<String, Object> serialize();
 
     public abstract void join(String serverId) throws MojangJoinServerErrorException, NoNetworkConnectionException;
 
@@ -87,7 +87,7 @@ public abstract class Account {
     }
 
     public void saveToConfig() {
-        Minosoft.getConfig().putAccount(this);
+        Minosoft.getConfig().getConfig().getAccount().getEntries().put(this.getId(), this);
         Minosoft.getConfig().saveToFile();
     }
 }

@@ -6,7 +6,7 @@
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along with this program.If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
@@ -15,18 +15,23 @@ package de.bixilon.minosoft.protocol.network.socket;
 
 import de.bixilon.minosoft.protocol.exceptions.PacketParseException;
 import de.bixilon.minosoft.protocol.exceptions.PacketTooLongException;
-import de.bixilon.minosoft.protocol.network.Connection;
 import de.bixilon.minosoft.protocol.network.Network;
-import de.bixilon.minosoft.protocol.packets.ClientboundPacket;
-import de.bixilon.minosoft.protocol.packets.ServerboundPacket;
-import de.bixilon.minosoft.protocol.packets.clientbound.login.PacketEncryptionRequest;
-import de.bixilon.minosoft.protocol.packets.serverbound.login.PacketEncryptionResponse;
+import de.bixilon.minosoft.protocol.network.connection.Connection;
+import de.bixilon.minosoft.protocol.packets.c2s.C2SPacket;
+import de.bixilon.minosoft.protocol.packets.c2s.login.EncryptionResponseC2SP;
+import de.bixilon.minosoft.protocol.packets.s2c.S2CPacket;
+import de.bixilon.minosoft.protocol.packets.s2c.login.EncryptionRequestS2CP;
 import de.bixilon.minosoft.protocol.protocol.ConnectionStates;
 import de.bixilon.minosoft.protocol.protocol.CryptManager;
+import de.bixilon.minosoft.protocol.protocol.PacketTypes;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
+import de.bixilon.minosoft.util.Pair;
 import de.bixilon.minosoft.util.ServerAddress;
 import de.bixilon.minosoft.util.logging.Log;
 import de.bixilon.minosoft.util.logging.LogLevels;
+import de.bixilon.minosoft.util.logging.LogMessageType;
+import kotlin.jvm.Synchronized;
+import oshi.util.Util;
 
 import javax.crypto.Cipher;
 import javax.crypto.CipherInputStream;
@@ -41,12 +46,15 @@ import java.net.SocketException;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class BlockingSocketNetwork extends Network {
-    private final LinkedBlockingQueue<ServerboundPacket> queue = new LinkedBlockingQueue<>();
+    private final LinkedBlockingQueue<C2SPacket> queue = new LinkedBlockingQueue<>();
     private Thread socketReceiveThread;
     private Thread socketSendThread;
     private Socket socket;
     private OutputStream outputStream;
     private InputStream inputStream;
+    private boolean sendingPaused;
+    private boolean receivingPaused;
+    private boolean shouldDisconnect;
 
     public BlockingSocketNetwork(Connection connection) {
         super(connection);
@@ -74,10 +82,10 @@ public class BlockingSocketNetwork extends Network {
 
     @Override
     public void connect(ServerAddress address) {
-        if (this.connection.isConnected() || this.connection.getConnectionState() == ConnectionStates.CONNECTING) {
+        if (this.connection.getConnectionState().getConnected() || this.connection.getConnectionState() == ConnectionStates.CONNECTING) {
             return;
         }
-        this.lastException = null;
+        this.connection.setError(null);
         this.connection.setConnectionState(ConnectionStates.CONNECTING);
         this.socketReceiveThread = new Thread(() -> {
             try {
@@ -94,50 +102,54 @@ public class BlockingSocketNetwork extends Network {
 
                 initSendThread();
 
-                this.socketReceiveThread.setName(String.format("%d/SocketReceive", this.connection.getConnectionId()));
+                this.socketReceiveThread.setName(String.format("%d/Receiving", this.connection.getConnectionId()));
 
 
-                while (this.connection.getConnectionState() != ConnectionStates.DISCONNECTING) {
+                while (this.connection.getConnectionState() != ConnectionStates.DISCONNECTED && !this.shouldDisconnect) {
                     if (!this.socket.isConnected() || this.socket.isClosed()) {
                         break;
                     }
                     try {
-                        handlePacket(receiveClientboundPacket(this.inputStream));
+                        var typeAndPacket = prepareS2CPacket(this.inputStream);
+                        while (this.receivingPaused) {
+                            Util.sleep(1L);
+                        }
+                        handlePacket(typeAndPacket.getKey(), typeAndPacket.getValue());
                     } catch (PacketParseException e) {
-                        Log.printException(e, LogLevels.PROTOCOL);
+                        Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.WARN, e);
                     }
                 }
                 this.connection.disconnect();
-            } catch (Throwable e) {
+            } catch (Throwable exception) {
                 // Could not connect
-                this.connection.setConnectionState(ConnectionStates.DISCONNECTING);
                 if (this.socketSendThread != null) {
                     this.socketSendThread.interrupt();
                 }
-                if (e instanceof SocketException && e.getMessage().equals("Socket closed")) {
+                if (exception instanceof SocketException && exception.getMessage().equals("Socket closed")) {
                     this.connection.setConnectionState(ConnectionStates.DISCONNECTED);
                     return;
                 }
-                Log.printException(e, LogLevels.PROTOCOL);
-                this.lastException = e;
-                this.connection.setConnectionState(ConnectionStates.FAILED);
+                Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.WARN, exception);
+                this.connection.setError(exception);
+                disconnect();
             }
         }, String.format("%d/Socket", this.connection.getConnectionId()));
         this.socketReceiveThread.start();
     }
 
     @Override
-    public void sendPacket(ServerboundPacket packet) {
+    public void sendPacket(C2SPacket packet) {
         this.queue.add(packet);
     }
 
     @Override
+    @Synchronized
     public void disconnect() {
-        if (this.connection.shouldDisconnect()) {
+        if (!this.connection.getConnectionState().getConnected() || this.shouldDisconnect) {
             // already trying
             return;
         }
-        this.connection.setConnectionState(ConnectionStates.DISCONNECTING);
+        this.shouldDisconnect = true;
         this.queue.clear();
         try {
             this.socket.close();
@@ -150,9 +162,9 @@ public class BlockingSocketNetwork extends Network {
     }
 
     @Override
-    protected void handlePacket(ClientboundPacket packet) {
-        super.handlePacket(packet);
-        if (packet instanceof PacketEncryptionRequest) {
+    protected void handlePacket(PacketTypes.S2C packetType, S2CPacket packet) {
+        super.handlePacket(packetType, packet);
+        if (packet instanceof EncryptionRequestS2CP) {
             try {
                 Thread.sleep(Integer.MAX_VALUE);
             } catch (InterruptedException ignored) {
@@ -160,10 +172,20 @@ public class BlockingSocketNetwork extends Network {
         }
     }
 
+    @Override
+    public void pauseSending(boolean pause) {
+        this.sendingPaused = pause;
+    }
+
+    @Override
+    public void pauseReceiving(boolean pause) {
+        this.receivingPaused = pause;
+    }
+
     private void initSendThread() {
         this.socketSendThread = new Thread(() -> {
             try {
-                while (this.connection.getConnectionState() != ConnectionStates.DISCONNECTING) {
+                while (this.connection.getConnectionState() != ConnectionStates.DISCONNECTED && !this.shouldDisconnect) {
                     // wait for data or send until it should disconnect
 
                     // check if still connected
@@ -171,27 +193,28 @@ public class BlockingSocketNetwork extends Network {
                         break;
                     }
 
-                    ServerboundPacket packet = this.queue.take();
-                    if (Log.getLevel().ordinal() >= LogLevels.PROTOCOL.ordinal()) {
-                        packet.log();
+                    C2SPacket packet = this.queue.take();
+                    while (this.sendingPaused) {
+                        Util.sleep(1L);
                     }
+                    packet.log();
 
-                    this.outputStream.write(prepareServerboundPacket(packet));
+                    this.outputStream.write(prepareC2SPacket(packet));
                     this.outputStream.flush();
-                    if (packet instanceof PacketEncryptionResponse packetEncryptionResponse) {
+                    if (packet instanceof EncryptionResponseC2SP) {
                         // enable encryption
-                        enableEncryption(packetEncryptionResponse.getSecretKey());
+                        enableEncryption(((EncryptionResponseC2SP) packet).getSecretKey());
                         // wake up other thread
                         this.socketReceiveThread.interrupt();
                     }
                 }
             } catch (IOException | InterruptedException ignored) {
             }
-        }, String.format("%d/SocketSend", this.connection.getConnectionId()));
+        }, String.format("%d/Sending", this.connection.getConnectionId()));
         this.socketSendThread.start();
     }
 
-    private ClientboundPacket receiveClientboundPacket(InputStream inputStream) throws IOException, PacketParseException {
+    private Pair<PacketTypes.S2C, S2CPacket> prepareS2CPacket(InputStream inputStream) throws IOException, PacketParseException {
         int packetLength = readStreamVarInt(inputStream);
 
         if (packetLength > ProtocolDefinition.PROTOCOL_PACKET_MAX_SIZE) {
@@ -200,7 +223,7 @@ public class BlockingSocketNetwork extends Network {
         }
 
         byte[] bytes = this.inputStream.readNBytes(packetLength);
-        return super.receiveClientboundPacket(bytes);
+        return super.receiveS2CPacket(bytes);
     }
 
     protected void enableEncryption(SecretKey secretKey) {

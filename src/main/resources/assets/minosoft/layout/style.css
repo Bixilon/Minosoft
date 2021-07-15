@@ -1,0 +1,246 @@
+/*
+ * Minosoft
+ * Copyright (C) 2020 Moritz Zwerger
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *
+ * This software is not affiliated with Mojang AB, the original developer of Minecraft.
+ */
+
+* {
+    -primary-color: #448aff;
+    -primary-light-color: #83b9ff;
+    -primary-dark-color: #005ecb;
+    -secondary-color: #2c3746;
+    -secondary-light-color: #566171;
+    -secondary-dark-color: #03111f;
+    -primary-text-color: #000000;
+    -secondary-text-color: #ffffff;
+    -secondary-light-light-color: #868191;
+}
+
+.root {
+    -fx-background-color: -secondary-color;
+    -fx-text-fill: -secondary-text-color;
+}
+
+.jfx-button {
+    -jfx-button-type: RAISED;
+    -fx-background-color: -primary-color;
+    -fx-text-fill: -secondary-text-color;
+}
+
+.jfx-alert-content-container, .jfx-text-field {
+    -fx-background-color: -secondary-color;
+    -fx-text-fill: -secondary-text-color;
+    -fx-prompt-text-fill: -secondary-light-color;
+}
+
+.label {
+    -fx-text-fill: -secondary-text-color;
+}
+
+.jfx-combo-box {
+    -fx-background-color: -secondary-color;
+    -fx-text-fill: -secondary-text-color;
+}
+
+.combo-box .list-cell {
+    -fx-background: -secondary-color;
+    -fx-background-color: transparent;
+    -fx-text-fill: -secondary-text-color;
+}
+
+.combo-box-popup .list-view {
+    -fx-background-color: -secondary-color;
+}
+
+.combo-box-popup .list-view .list-cell:filled:selected, .combo-box-popup .list-view .list-cell:filled:selected:hover {
+    -fx-background: -primary-light-color;
+    -fx-background-color: -secondary-dark-color;
+    -fx-text-fill: -secondary-text-color;
+}
+
+.combo-box-popup .list-view .list-cell:filled:hover {
+    -fx-background-color: -secondary-light-color;
+    -fx-text-fill: -secondary-text-color;
+}
+
+.combo-box-base {
+    -fx-background-color: -secondary-color;
+}
+
+.jfx-progress-bar > .track {
+    -fx-background-color: -secondary-light-color;
+}
+
+.jfx-progress-bar > .bar, .jfx-progress-bar:indeterminate > .bar {
+    -fx-background-color: -primary-color;
+}
+
+.jfx-progress-bar > .secondary-bar,
+.jfx-progress-bar:indeterminate > .secondary-bar {
+    -fx-background-color: -secondary-light-color;
+}
+
+.list-cell {
+    -fx-border-width: 3px;
+    -fx-background-color: -secondary-color;
+}
+
+.list-cell:selected {
+    -fx-background-color: -secondary-color;
+}
+
+.list-cell:filled:hover {
+    -fx-background-color: -secondary-light-color;
+}
+
+.menu-bar {
+    -fx-background-color: -secondary-color;
+}
+
+.menu-item {
+    -fx-background-color: -secondary-color;
+    -fx-text-fill: -secondary-text-color;
+}
+
+.menu-item:selected {
+    -fx-background-color: -primary-color;
+}
+
+.menu-item:hover {
+    -fx-background-color: -primary-dark-color;
+}
+
+.menu-item:disabled {
+    -fx-opacity: 60%;
+}
+
+.menu-button {
+    -fx-background-color: -primary-dark-color;
+    -fx-text-fill: -secondary-text-color;
+}
+
+.menu-bar .menu-button {
+    -fx-background-color: -secondary-color;
+}
+
+.menu-bar .menu-button:hover {
+    -fx-background-color: -secondary-light-color;
+}
+
+.menu-bar {
+    -fx-background-color: -secondary-color;
+}
+
+.context-menu {
+    -fx-background-color: -secondary-color;
+}
+
+.tab-pane, .tab, .tab-header-area .tab-header-background {
+    -fx-background-color: -secondary-color;
+    -fx-text-fill: -secondary-text-color;
+}
+
+.tab:selected {
+    -fx-background-color: -secondary-light-color;
+}
+
+.tab-label {
+    -fx-text-fill: -secondary-text-color;
+}
+
+.vbox {
+    -fx-background-color: -secondary-color;
+    -fx-text-fill: -secondary-text-color;
+}
+
+.anchor-pane {
+    -fx-background-color: -secondary-color;
+}
+
+.scroll-pane {
+    -fx-background-color: -secondary-color;
+}
+
+.scroll-pane:selected {
+    -fx-background-color: -secondary-color;
+}
+
+.jfx-password-field {
+    -fx-text-fill: -secondary-text-color;
+}
+
+.list-view {
+    -fx-background-color: -secondary-color;
+}
+
+.version-error {
+    -fx-text-fill: red;
+}
+
+.list-cell-connected {
+    -fx-border-color: #00aa00;
+    -fx-border-width: 3px;
+}
+
+.list-cell-connecting {
+    -fx-border-color: yellow;
+    -fx-border-width: 3px;
+}
+
+.list-cell-disconnecting {
+    -fx-border-color: orange;
+    -fx-border-width: 3px;
+}
+
+.list-cell-failed {
+    -fx-border-color: red;
+    -fx-border-width: 3px;
+}
+
+.list-cell-selected {
+    -fx-border-color: #00aa00;
+    -fx-border-width: 3px;
+}
+
+.ping-5-bars {
+    -fx-text-fill: greenyellow;
+}
+
+.ping-4-bars {
+    -fx-text-fill: yellowgreen;
+}
+
+.ping-3-bars {
+    -fx-text-fill: yellow;
+}
+
+.ping-2-bars {
+    -fx-text-fill: orange;
+}
+
+.ping-1-bars {
+    -fx-text-fill: orangered;
+}
+
+.ping-no-connection {
+    -fx-text-fill: red;
+}
+
+.obfuscated {
+    -fx-font-family: "Hack";
+}
+
+.error {
+    -fx-text-fill: red;
+}
+
+.account-type {
+    -fx-text-fill: -secondary-light-light-color;
+}
