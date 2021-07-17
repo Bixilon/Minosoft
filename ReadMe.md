@@ -105,7 +105,7 @@ See [Credits](Credits.md).
 I invested (until now!) a couple of thousand hours in this project: https://www.reddit.com/r/git/comments/np9yo7/finally_i_can_say_that_i_have_no_life/
 
 I'll push a beta, once I think Minosoft is ready. It will still take some time, but I don't want to make a release and get a thousand issues. We know there are a ton of bugs, and I want to solve at least a couple of them. Also, a big topic is code quality. Before Minosoft, I just had a barely networking experience, no clue about the internals of minecraft, nor of kotlin or opengl. I learned so much, and you can see much code as "first draft". I'll need to do a ton of refactoring, otherwise I
-can't think of PRs (they are still welcome). If you want to get current developer news, take a look in our telegram channel [@MinosoftDevNews](https://t.me/MinosoftDevNews). I am abusing merge requests as a todo list, so feel free to look at !21.
+can't think of PRs (they are still welcome). If you want to get current developer news, take a look in our telegram channel [@MinosoftDevNews](https://t.me/MinosoftDevNews).
 
 ## Downloads / Installation
 
@@ -135,7 +135,7 @@ Not compatible (yet)
 2. Clone this repo (`git clone https://gitlab.bixilon.de/bixilon/minosoft.git`).
 3. Change directory (`cd minosoft`).
 4. Checkout the branch (`git checkout <branch>`). Eventually `rendering` or `development`.
-5. Build and run Minosoft with `mvn clean verify exec:java`. If any errors occur, feel free to open an issue. In this early stage it might be helpful to delete the app data folder (only of minosoft).
+5. Build and run Minosoft with `mvn clean verify exec:java`. If any errors occur, feel free to open an issue. In this early stage it might be helpful to delete the AppData folder (only of minosoft).
 6. (Optional) Build a fat jar with `mvn package`. You'll find the jar with all dependencies in `target/`. Then you don't need to recompile everytime.
 
 ## Code mirrors
