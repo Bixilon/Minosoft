@@ -27,7 +27,7 @@ object RunConfiguration {
 
     var VERBOSE_ENTITY_META_DATA_LOGGING = false // if true, the entity meta data is getting serialized
 
-    var DISABLE_SERVER_LIST = false // if true, no java fx gui (server list) will be shown
+    var DISABLE_EROS = false // if true, the whole javafx eros part is disabled
     var DISABLE_RENDERING = false // if true, rendering is disabled
 
     var HOME_DIRECTORY: String = let {

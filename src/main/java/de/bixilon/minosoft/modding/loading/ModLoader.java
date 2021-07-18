@@ -33,6 +33,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.zip.ZipFile;
 
+@Deprecated
 public class ModLoader {
     public static final int CURRENT_MODDING_API_VERSION = 1;
     public static final ConcurrentHashMap<UUID, MinosoftMod> MOD_MAP = new ConcurrentHashMap<>();
@@ -150,7 +151,7 @@ public class ModLoader {
 
         for (Map.Entry<UUID, MinosoftMod> entry : sortedModMap.entrySet()) {
             if (entry.getValue().isEnabled()) {
-                Minosoft.EVENT_MANAGERS.add(entry.getValue().getEventManager());
+                // ToDo: Minosoft.EVENT_MANAGERS.add(entry.getValue().getEventManager());
             } else {
                 MOD_MAP.remove(entry.getKey());
             }

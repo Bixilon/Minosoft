@@ -11,11 +11,26 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.config.config.server
+package de.bixilon.minosoft.util.json
 
-import de.bixilon.minosoft.config.server.Server
+import com.squareup.moshi.*
+import de.bixilon.minosoft.data.text.ChatComponent
 
+object ChatComponentSerializer : JsonAdapter<ChatComponent>() {
+    @FromJson
+    override fun fromJson(jsonReader: JsonReader): ChatComponent? {
+        if (jsonReader.peek() == JsonReader.Token.NULL) {
+            return null
+        }
+        return ChatComponent.of(jsonReader.nextString())
+    }
 
-data class ServerConfig(
-    val entries: MutableMap<Int, Server> = mutableMapOf(),
-)
+    @ToJson
+    override fun toJson(jsonWriter: JsonWriter, chatComponent: ChatComponent?) {
+        if (chatComponent == null) {
+            jsonWriter.nullValue()
+            return
+        }
+        jsonWriter.value(chatComponent.legacyText)
+    }
+}

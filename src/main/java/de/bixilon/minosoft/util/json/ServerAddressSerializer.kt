@@ -13,18 +13,25 @@
 
 package de.bixilon.minosoft.util.json
 
-import com.squareup.moshi.FromJson
-import com.squareup.moshi.ToJson
-import de.bixilon.minosoft.gui.main.Server
+import com.squareup.moshi.*
+import de.bixilon.minosoft.util.DNSUtil
+import de.bixilon.minosoft.util.ServerAddress
 
-object ServerSerializer {
+object ServerAddressSerializer : JsonAdapter<ServerAddress>() {
     @FromJson
-    fun fromJson(json: Map<String, Any>): Server {
-        return Server.deserialize(json)
+    override fun fromJson(jsonReader: JsonReader): ServerAddress? {
+        if (jsonReader.peek() == JsonReader.Token.NULL) {
+            return null
+        }
+        return DNSUtil.getServerAddress(jsonReader.nextString())
     }
 
     @ToJson
-    fun toJson(server: Server): Map<String, Any> {
-        return server.serialize()
+    override fun toJson(jsonWriter: JsonWriter, serverAddress: ServerAddress?) {
+        if (serverAddress == null) {
+            jsonWriter.nullValue()
+            return
+        }
+        jsonWriter.value(serverAddress.toString())
     }
 }

@@ -25,7 +25,8 @@ object JSONSerializer {
         .add(RGBColorSerializer)
         .add(Vec2Serializer)
         .add(AccountSerializer)
-        .add(ServerSerializer)
+        .add(ChatComponentSerializer)
+        .add(ServerAddressSerializer)
         .add(ResourceLocationSerializer)
         .add(KotlinJsonAdapterFactory())
         .build()!!

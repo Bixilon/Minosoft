@@ -18,7 +18,6 @@ import com.jfoenix.controls.JFXAlert
 import com.jfoenix.controls.JFXDialogLayout
 import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.data.accounts.MicrosoftAccount
-import de.bixilon.minosoft.gui.main.GUITools
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.HTTP
@@ -50,30 +49,32 @@ object MicrosoftOAuthUtils {
             Log.warn("Can not login into microsoft account")
             exception.printStackTrace()
 
-            if (!RunConfiguration.DISABLE_SERVER_LIST) {
-                var message = "Could not login!"
-                var errorMessage = exception.javaClass.canonicalName + ": " + exception.message
-                if (exception is LoginException) {
-                    message = "${exception.message} (${exception.errorCode})"
-                    errorMessage = exception.errorMessage
-                }
+            if (RunConfiguration.DISABLE_EROS) {
+                return
+            }
 
-                Platform.runLater {
-                    val dialog = JFXAlert<Boolean>()
-                    GUITools.initializePane(dialog.dialogPane)
-                    // Do not translate this, translations might fail to load...
-                    dialog.title = "Login error"
-                    val layout = JFXDialogLayout()
-                    layout.setHeading(Text(message))
-                    val text = TextArea(errorMessage)
-                    text.isEditable = false
-                    text.isWrapText = true
-                    layout.setBody(text)
-                    dialog.dialogPane.content = layout
-                    val stage = dialog.dialogPane.scene.window as Stage
-                    stage.toFront()
-                    dialog.show()
-                }
+            var message = "Could not login!"
+            var errorMessage = exception.javaClass.canonicalName + ": " + exception.message
+            if (exception is LoginException) {
+                message = "${exception.message} (${exception.errorCode})"
+                errorMessage = exception.errorMessage
+            }
+
+            Platform.runLater {
+                val dialog = JFXAlert<Boolean>()
+                // ToDo: GUITools.initializePane(dialog.dialogPane)
+                // Do not translate this, translations might fail to load...
+                dialog.title = "Login error"
+                val layout = JFXDialogLayout()
+                layout.setHeading(Text(message))
+                val text = TextArea(errorMessage)
+                text.isEditable = false
+                text.isWrapText = true
+                layout.setBody(text)
+                dialog.dialogPane.content = layout
+                val stage = dialog.dialogPane.scene.window as Stage
+                stage.toFront()
+                dialog.show()
             }
         }
     }

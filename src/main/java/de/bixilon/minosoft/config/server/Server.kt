@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2021 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,26 +11,27 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.main;
+package de.bixilon.minosoft.config.server
 
-import de.bixilon.minosoft.data.language.deprecated.DLocaleManager;
-import de.bixilon.minosoft.data.language.deprecated.Strings;
-import javafx.fxml.Initializable;
-import javafx.scene.control.Tab;
-import javafx.scene.layout.GridPane;
+import com.squareup.moshi.Json
+import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.util.ServerAddress
 
-import java.net.URL;
-import java.util.ResourceBundle;
+data class Server(
+    val id: Int = nextServerId++,
+    var address: ServerAddress,
+    var name: ChatComponent = ChatComponent.of(address),
+    @Json(name = "version") var desiredVersion: Int = -1,
+    @Json(name = "favicon") var faviconHash: String? = null,
+    var type: ServerTypes = ServerTypes.NORMAL,
+) {
+    init {
+        if (id > nextServerId) {
+            nextServerId = id + 1
+        }
+    }
 
-public class SettingsWindow implements Initializable {
-    public GridPane tabGeneral;
-    public Tab general;
-    public Tab download;
-
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-
-        this.general.setText(DLocaleManager.translate(Strings.SETTINGS_GENERAL));
-        this.download.setText(DLocaleManager.translate(Strings.SETTINGS_DOWNLOAD));
+    companion object {
+        private var nextServerId = 0
     }
 }

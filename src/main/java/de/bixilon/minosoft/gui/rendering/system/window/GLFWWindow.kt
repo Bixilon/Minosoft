@@ -18,7 +18,7 @@ import de.bixilon.minosoft.gui.rendering.modding.events.*
 import de.bixilon.minosoft.gui.rendering.system.window.BaseWindow.Companion.DEFAULT_MAXIMUM_WINDOW_SIZE
 import de.bixilon.minosoft.gui.rendering.system.window.BaseWindow.Companion.DEFAULT_MINIMUM_WINDOW_SIZE
 import de.bixilon.minosoft.gui.rendering.system.window.BaseWindow.Companion.DEFAULT_WINDOW_SIZE
-import de.bixilon.minosoft.modding.event.EventMaster
+import de.bixilon.minosoft.modding.event.master.AbstractEventMaster
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -31,7 +31,7 @@ import org.lwjgl.system.MemoryUtil
 
 
 class GLFWWindow(
-    private val eventMaster: EventMaster,
+    private val eventMaster: AbstractEventMaster,
 ) : BaseWindow {
     private var window = -1L
 

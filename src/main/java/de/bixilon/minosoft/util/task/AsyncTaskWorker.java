@@ -22,6 +22,7 @@ import java.util.LinkedList;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+@Deprecated
 public class AsyncTaskWorker {
     private final LinkedList<Task> tasks;
     private final HashSet<String> jobsDone = new HashSet<>();
@@ -61,10 +62,10 @@ public class AsyncTaskWorker {
             }
             return -(a.getPriority().ordinal() - b.getPriority().ordinal());
         });
-        ConcurrentLinkedQueue<Task> doing = new ConcurrentLinkedQueue<>(this.tasks);
-        CountUpAndDownLatch latch = new CountUpAndDownLatch(doing.size());
-        while (!doing.isEmpty()) {
-            doing.forEach((task -> {
+        ConcurrentLinkedQueue<Task> todo = new ConcurrentLinkedQueue<>(this.tasks);
+        CountUpAndDownLatch latch = new CountUpAndDownLatch(todo.size());
+        while (!todo.isEmpty()) {
+            todo.forEach((task -> {
                 AtomicBoolean canStart = new AtomicBoolean(false);
                 while (!canStart.get()) {
                     canStart.set(true);
@@ -92,11 +93,12 @@ public class AsyncTaskWorker {
                         this.jobsDone.add(task.getTaskName());
                         latch.dec();
                     });
-                    doing.remove(task);
+                    todo.remove(task);
                 }
             }));
             latch.waitForChange();
         }
+        latch.await();
         progress.dec(); // remove initial value of 1
     }
 

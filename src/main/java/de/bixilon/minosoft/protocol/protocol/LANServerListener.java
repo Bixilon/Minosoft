@@ -14,16 +14,12 @@
 package de.bixilon.minosoft.protocol.protocol;
 
 import com.google.common.collect.HashBiMap;
-import de.bixilon.minosoft.gui.main.Server;
-import de.bixilon.minosoft.gui.main.ServerListCell;
-import de.bixilon.minosoft.util.ServerAddress;
+import de.bixilon.minosoft.config.server.Server;
 import de.bixilon.minosoft.util.Util;
 import de.bixilon.minosoft.util.logging.Log;
-import javafx.application.Platform;
 
 import java.net.*;
 import java.nio.charset.StandardCharsets;
-import java.util.HashSet;
 import java.util.concurrent.CountDownLatch;
 
 public class LANServerListener {
@@ -60,7 +56,6 @@ public class LANServerListener {
                             continue;
                         }
                         SERVER_MAP.put(sender, server);
-                        Platform.runLater(() -> ServerListCell.SERVER_LIST_VIEW.getItems().add(server));
                         Log.debug(String.format("Discovered new LAN Server: %s", server));
                     } catch (Exception ignored) {
                     }
@@ -74,20 +69,6 @@ public class LANServerListener {
             Log.warn("Stopping LAN Server Listener Thread");
         }, "LAN Server Listener").start();
         latch.await();
-    }
-
-    public static HashBiMap<InetAddress, Server> getServerMap() {
-        return SERVER_MAP;
-    }
-
-    public static void removeAll() {
-        HashSet<Server> temp = new HashSet<>(SERVER_MAP.values());
-        for (Server server : temp) {
-            if (server.isConnected()) {
-                continue;
-            }
-            SERVER_MAP.inverse().remove(server);
-        }
     }
 
     private static Server getServerByBroadcast(InetAddress address, byte[] broadcast) {
@@ -106,6 +87,7 @@ public class LANServerListener {
         if (port < 0 || port > 65535) {
             throw new IllegalArgumentException(String.format("Invalid port: %d", port));
         }
-        return new Server(new ServerAddress(address.getHostAddress(), port));
+        // return new Server(new ServerAddress(address.getHostAddress(), port));
+        throw new RuntimeException("TODO");
     }
 }

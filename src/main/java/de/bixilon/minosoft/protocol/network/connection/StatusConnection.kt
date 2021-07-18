@@ -54,7 +54,7 @@ class StatusConnection(
         error = null
 
         if (this.addresses == null) {
-            this.addresses = DNSUtil.getServerAddresses(address)
+            this.addresses = DNSUtil.resolveServerAddress(address)
             this.realAddress = this.addresses!!.first()
         }
     }
@@ -146,14 +146,14 @@ class StatusConnection(
         }
     }
 
-    override fun registerEvent(method: EventInvoker) {
-        if (method.eventType.isAssignableFrom(ServerListStatusArriveEvent::class.java) && wasConnected) {
+    override fun registerEvent(invoker: EventInvoker) {
+        if (invoker.eventType.isAssignableFrom(ServerListStatusArriveEvent::class.java) && wasConnected) {
             // ping done
-            method(ServerListStatusArriveEvent(this, this.lastPing))
-        } else if (method.eventType.isAssignableFrom(ServerListPongEvent::class.java) && wasConnected && this.pong != null) {
-            method(this.pong!!)
+            invoker(ServerListStatusArriveEvent(this, this.lastPing))
+        } else if (invoker.eventType.isAssignableFrom(ServerListPongEvent::class.java) && wasConnected && this.pong != null) {
+            invoker(this.pong!!)
         } else {
-            super.registerEvent(method)
+            super.registerEvent(invoker)
         }
     }
 }

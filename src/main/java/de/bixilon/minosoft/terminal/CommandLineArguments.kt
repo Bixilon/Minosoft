@@ -40,9 +40,9 @@ object CommandLineArguments {
             .action(Arguments.storeTrue())
             .help("Prefixes all log messages with relative time instead of absolute time")
 
-        addArgument("--disable_server_list")
+        addArgument("--disable_eros")
             .action(Arguments.storeTrue())
-            .help("Disables the server list")
+            .help("Disables EROS (Launcher like graphical user interface)")
 
         addArgument("--disable_rendering")
             .action(Arguments.storeTrue())
@@ -71,11 +71,11 @@ object CommandLineArguments {
         RunConfiguration.LOG_COLOR_TYPE = namespace.getBoolean("disable_log_color_type")
         RunConfiguration.LOG_RELATIVE_TIME = namespace.getBoolean("relative_log")
 
-        RunConfiguration.DISABLE_SERVER_LIST = namespace.getBoolean("disable_server_list")
+        RunConfiguration.DISABLE_EROS = namespace.getBoolean("disable_eros")
         RunConfiguration.DISABLE_RENDERING = namespace.getBoolean("disable_rendering")
 
         if (namespace.getBoolean("headless")) {
-            RunConfiguration.DISABLE_SERVER_LIST = true
+            RunConfiguration.DISABLE_EROS = true
             RunConfiguration.DISABLE_RENDERING = true
         }
 

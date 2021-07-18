@@ -11,15 +11,12 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.modding.event
+package de.bixilon.minosoft.modding.event.master
 
-import de.bixilon.minosoft.modding.event.events.Event
+import de.bixilon.minosoft.modding.event.EventInvoker
+import de.bixilon.minosoft.modding.event.address.ServerAddressValidator
+import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
 
-interface EventMaster {
-
-    fun fireEvent(event: Event): Boolean
-
-    fun registerEvent(method: EventInvoker)
-
-    fun registerEvents(vararg method: EventInvoker)
+class GlobalEventMaster : EventMaster() {
+    val specificEventInvokers: MutableMap<MutableSet<ServerAddressValidator>, MutableSet<EventInvoker>> = synchronizedMapOf()
 }

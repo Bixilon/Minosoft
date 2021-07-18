@@ -19,7 +19,8 @@ import org.xbill.DNS.Type
 import java.util.*
 
 object DNSUtil {
-    fun getServerAddresses(hostname: String): List<ServerAddress> {
+
+    fun resolveServerAddress(hostname: String): List<ServerAddress> {
         val fallbackAddress = getServerAddress(hostname)
         val addresses: MutableList<ServerAddress> = mutableListOf()
         if (hostname.contains(":")) {
@@ -41,8 +42,8 @@ object DNSUtil {
         return addresses
     }
 
-    private fun getServerAddress(hostname: String): ServerAddress {
-        val splitHostname = hostname.split(":", limit = 2).toTypedArray()
+    fun getServerAddress(hostname: String): ServerAddress {
+        val splitHostname = fixAddress(hostname).split(":", limit = 2).toTypedArray()
         return if (splitHostname.size == 1) {
             ServerAddress(splitHostname[0], ProtocolDefinition.DEFAULT_PORT)
         } else {
@@ -50,8 +51,7 @@ object DNSUtil {
         }
     }
 
-    @JvmStatic
-    fun correctHostName(hostname: String): String {
+    fun fixAddress(hostname: String): String {
         // replaces invalid chars to avoid copy and paste issues (like spaces, ...)
         return hostname.replace("\\s+|((https|http):/{2})+|/".toRegex(), "").lowercase(Locale.ROOT)
     }

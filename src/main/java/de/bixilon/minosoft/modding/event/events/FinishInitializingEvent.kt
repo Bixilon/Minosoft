@@ -10,12 +10,6 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.modding.event.events
 
-package de.bixilon.minosoft.config.config.server
-
-import de.bixilon.minosoft.config.server.Server
-
-
-data class ServerConfig(
-    val entries: MutableMap<Int, Server> = mutableMapOf(),
-)
+class FinishInitializingEvent : Event()

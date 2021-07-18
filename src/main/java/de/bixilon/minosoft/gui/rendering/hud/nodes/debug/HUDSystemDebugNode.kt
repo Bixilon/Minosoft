@@ -72,7 +72,7 @@ class HUDSystemDebugNode(hudRenderer: HUDRenderer) : DebugScreenNode(hudRenderer
                 "GitInfo uninitialized :("
             })
         text()
-        text("Mods: ${ModLoader.MOD_MAP.size} active, ${hudRenderer.connection.eventListenerSize} listeners")
+        text("Mods: ${ModLoader.MOD_MAP.size} active, ${hudRenderer.connection.size} listeners")
     }
 
     init {

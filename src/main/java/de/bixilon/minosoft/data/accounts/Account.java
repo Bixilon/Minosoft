@@ -14,11 +14,9 @@
 package de.bixilon.minosoft.data.accounts;
 
 import de.bixilon.minosoft.Minosoft;
-import de.bixilon.minosoft.gui.main.cells.AccountListCell;
 import de.bixilon.minosoft.util.logging.Log;
 import de.bixilon.minosoft.util.mojang.api.exceptions.MojangJoinServerErrorException;
 import de.bixilon.minosoft.util.mojang.api.exceptions.NoNetworkConnectionException;
-import javafx.application.Platform;
 
 import java.util.Map;
 import java.util.UUID;
@@ -36,11 +34,6 @@ public abstract class Account {
         Minosoft.getConfig().getConfig().getAccount().getEntries().put(account.getId(), account);
         account.saveToConfig();
         Log.info(String.format("Added and saved account (type=%s, id=%s,  username=%s, uuid=%s)", account.getClass().getSimpleName(), account.getId(), account.getUsername(), account.getUUID()));
-        Platform.runLater(() -> AccountListCell.ACCOUNT_LIST_VIEW.getItems().add(account));
-        if (Minosoft.getConfig().getConfig().getAccount().getSelected().isBlank()) {
-            // select account
-            Minosoft.selectAccount(account);
-        }
     }
 
     public String getUsername() {

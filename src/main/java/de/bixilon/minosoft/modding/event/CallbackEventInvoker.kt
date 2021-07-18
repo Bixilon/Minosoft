@@ -12,6 +12,7 @@
  */
 package de.bixilon.minosoft.modding.event
 
+import de.bixilon.minosoft.modding.event.events.CancelableEvent
 import de.bixilon.minosoft.modding.event.events.Event
 import de.bixilon.minosoft.modding.loading.Priorities
 
@@ -22,6 +23,9 @@ class CallbackEventInvoker<E : Event> private constructor(
 ) : EventInvoker(ignoreCancelled, Priorities.NORMAL, null) {
 
     override operator fun invoke(event: Event) {
+        if (!this.isIgnoreCancelled && event is CancelableEvent && event.cancelled) {
+            return
+        }
         callback(event as E)
     }
 

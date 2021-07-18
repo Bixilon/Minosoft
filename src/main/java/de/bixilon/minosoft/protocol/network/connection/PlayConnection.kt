@@ -35,7 +35,6 @@ import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.gui.rendering.Rendering
 import de.bixilon.minosoft.modding.event.CallbackEventInvoker
-import de.bixilon.minosoft.modding.event.EventInvoker
 import de.bixilon.minosoft.modding.event.events.ChatMessageReceiveEvent
 import de.bixilon.minosoft.modding.event.events.ConnectionStateChangeEvent
 import de.bixilon.minosoft.modding.event.events.PacketReceiveEvent
@@ -99,22 +98,17 @@ class PlayConnection(
             fireEvent(ConnectionStateChangeEvent(this, previousConnectionState, connectionState))
             when (value) {
                 ConnectionStates.HANDSHAKING -> {
-                    for (eventManager in Minosoft.EVENT_MANAGERS) {
-                        for ((addresses, specificEventListener) in eventManager.specificEventListeners) {
-                            var valid = false
-                            for (serverAddress in addresses) {
-                                if (serverAddress.check(address)) {
-                                    valid = true
-                                    break
-                                }
-                            }
-                            if (valid) {
-                                eventListeners.addAll(specificEventListener)
+                    for ((validators, invokers) in Minosoft.GLOBAL_EVENT_MASTER.specificEventInvokers) {
+                        var valid = false
+                        for (serverAddress in validators) {
+                            if (serverAddress.check(address)) {
+                                valid = true
+                                break
                             }
                         }
-                    }
-                    eventListeners.sortWith { a: EventInvoker, b: EventInvoker ->
-                        -(b.priority.ordinal - a.priority.ordinal)
+                        if (valid) {
+                            registerEvents(*invokers.toTypedArray())
+                        }
                     }
 
 
@@ -261,7 +255,4 @@ class PlayConnection(
             }
         }
     }
-
-    val eventListenerSize: Int
-        get() = eventListeners.size
 }
