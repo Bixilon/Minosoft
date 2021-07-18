@@ -16,7 +16,7 @@
             <RowConstraints minHeight="10.0" prefHeight="30.0"/>
             <RowConstraints minHeight="10.0" prefHeight="30.0"/>
             <RowConstraints maxHeight="Infinity" minHeight="10.0" prefHeight="503.0" vgrow="ALWAYS"/>
-            <RowConstraints maxHeight="Infinity" minHeight="10.0" prefHeight="37.0" vgrow="ALWAYS"/>
+            <RowConstraints maxHeight="Infinity" minHeight="10.0" prefHeight="37.0" vgrow="NEVER"/>
         </rowConstraints>
         <Text strokeWidth="0.0" text="Minosoft quit unexpectedly">
             <font>
@@ -62,8 +62,8 @@
             <padding>
                 <Insets top="5.0"/>
             </padding>
-            <Button onAction="#exit" maxWidth="Infinity" text="Exit" GridPane.columnIndex="2"/>
-            <Button onAction="#hardCrash" maxWidth="Infinity" text="Hard crash"/>
+            <Button maxWidth="Infinity" onAction="#exit" text="Exit" GridPane.columnIndex="2"/>
+            <Button maxWidth="Infinity" onAction="#hardCrash" text="Hard crash"/>
         </GridPane>
     </GridPane>
     <padding>
