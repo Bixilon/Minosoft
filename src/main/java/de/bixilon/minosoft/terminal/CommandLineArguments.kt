@@ -20,6 +20,8 @@ import net.sourceforge.argparse4j.inf.Namespace
 import kotlin.system.exitProcess
 
 object CommandLineArguments {
+    lateinit var ARGUMENTS: List<String>
+        private set
     private val PARSER = with(ArgumentParsers.newFor("Minosoft").build()
         .defaultHelp(true)
         .description("An open source minecraft client written from scratch")) {
@@ -54,6 +56,8 @@ object CommandLineArguments {
     }
 
     fun parse(args: Array<String>) {
+        check(!this::ARGUMENTS.isInitialized) { "Already initialized!" }
+        this.ARGUMENTS = args.toList()
         val namespace: Namespace
         try {
             namespace = PARSER.parseArgs(args)
