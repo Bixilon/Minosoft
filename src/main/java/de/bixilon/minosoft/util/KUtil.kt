@@ -30,10 +30,13 @@ import glm_.vec2.Vec2t
 import glm_.vec3.Vec3t
 import okio.Buffer
 import sun.misc.Unsafe
+import java.io.PrintWriter
+import java.io.StringWriter
 import java.lang.reflect.Field
 import java.util.*
 import kotlin.Pair
 import kotlin.random.Random
+
 
 object KUtil {
 
@@ -304,5 +307,11 @@ object KUtil {
             }
             throw thrown
         }
+    }
+
+    fun Throwable.toStackTrace(): String {
+        val stringWriter = StringWriter()
+        this.printStackTrace(PrintWriter(stringWriter))
+        return stringWriter.toString()
     }
 }

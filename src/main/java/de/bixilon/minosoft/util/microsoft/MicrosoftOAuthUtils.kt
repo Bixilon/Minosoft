@@ -14,8 +14,6 @@
 package de.bixilon.minosoft.util.microsoft
 
 import com.google.gson.JsonParser
-import com.jfoenix.controls.JFXAlert
-import com.jfoenix.controls.JFXDialogLayout
 import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.data.accounts.MicrosoftAccount
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
@@ -23,10 +21,6 @@ import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.HTTP
 import de.bixilon.minosoft.util.Util
 import de.bixilon.minosoft.util.logging.Log
-import javafx.application.Platform
-import javafx.scene.control.TextArea
-import javafx.scene.text.Text
-import javafx.stage.Stage
 import java.net.URL
 import java.net.URLConnection
 import java.net.URLStreamHandler
@@ -60,22 +54,22 @@ object MicrosoftOAuthUtils {
                 errorMessage = exception.errorMessage
             }
 
-            Platform.runLater {
-                val dialog = JFXAlert<Boolean>()
-                // ToDo: GUITools.initializePane(dialog.dialogPane)
-                // Do not translate this, translations might fail to load...
-                dialog.title = "Login error"
-                val layout = JFXDialogLayout()
-                layout.setHeading(Text(message))
-                val text = TextArea(errorMessage)
-                text.isEditable = false
-                text.isWrapText = true
-                layout.setBody(text)
-                dialog.dialogPane.content = layout
-                val stage = dialog.dialogPane.scene.window as Stage
-                stage.toFront()
-                dialog.show()
-            }
+            //   Platform.runLater {
+            //       val dialog = JFXAlert<Boolean>()
+            //       // ToDo: GUITools.initializePane(dialog.dialogPane)
+            //       // Do not translate this, translations might fail to load...
+            //       dialog.title = "Login error"
+            //       val layout = JFXDialogLayout()
+            //       layout.setHeading(Text(message))
+            //       val text = TextArea(errorMessage)
+            //       text.isEditable = false
+            //       text.isWrapText = true
+            //       layout.setBody(text)
+            //       dialog.dialogPane.content = layout
+            //       val stage = dialog.dialogPane.scene.window as Stage
+            //       stage.toFront()
+            //       dialog.show()
+            //   }
         }
     }
 

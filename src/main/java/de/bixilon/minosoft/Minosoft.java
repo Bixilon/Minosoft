@@ -22,6 +22,7 @@ import de.bixilon.minosoft.data.language.MultiLanguageManager;
 import de.bixilon.minosoft.data.registries.DefaultRegistries;
 import de.bixilon.minosoft.data.registries.ResourceLocation;
 import de.bixilon.minosoft.data.registries.versions.Versions;
+import de.bixilon.minosoft.gui.eros.crash.ErosCrashReport;
 import de.bixilon.minosoft.gui.eros.util.JavaFXInitializer;
 import de.bixilon.minosoft.modding.event.events.FinishInitializingEvent;
 import de.bixilon.minosoft.modding.event.master.GlobalEventMaster;
@@ -68,7 +69,7 @@ public final class Minosoft {
 
         taskWorker.setFatalError((exception) -> {
             Log.fatal("Critical error occurred while preparing. Exit");
-            shutdown(exception.getMessage(), ShutdownReasons.CRITICAL_EXCEPTION);
+            ErosCrashReport.Companion.crash(exception);
         });
         taskWorker.addTask(new Task(progress -> {
             Log.info("Reading config file...");

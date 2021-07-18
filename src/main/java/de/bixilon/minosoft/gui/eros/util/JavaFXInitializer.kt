@@ -26,6 +26,8 @@ class JavaFXInitializer internal constructor() : Application() {
     override fun start(stage: Stage) {
         Platform.setImplicitExit(false)
 
+        JavaFXUtil.HOST_SERVICES = hostServices
+
         Log.log(LogMessageType.JAVAFX, LogLevels.VERBOSE) { "Initialized JavaFX Toolkit!" }
         LATCH.dec()
     }
