@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.util.task.pool
 
 import de.bixilon.minosoft.util.KUtil.synchronizedSetOf
+import de.bixilon.minosoft.util.KUtil.toSynchronizedList
 import de.bixilon.minosoft.util.KUtil.toSynchronizedSet
 import java.util.concurrent.Callable
 import java.util.concurrent.ExecutorService
@@ -85,6 +86,10 @@ open class ThreadPool(
                             if (!runnable.interuptable) {
                                 pending += runnable
                             }
+
+                            if (state == ThreadPoolStates.STOPPING) {
+                                break
+                            }
                         } else {
                             exception.printStackTrace()
                         }
@@ -95,6 +100,7 @@ open class ThreadPool(
                     }
                     wait()
                 }
+                threads -= Thread.currentThread()
             }
             thread.name = name.format(nextThreadId++)
             threads += thread
@@ -129,20 +135,21 @@ open class ThreadPool(
     }
 
     override fun shutdown() {
-        state = ThreadPoolStates.STOPPED
-        synchronized(availableThreads) {
-            for (thread in availableThreads) {
+        state = ThreadPoolStates.STOPPING
+        synchronized(threads) {
+            for (thread in threads.toSynchronizedList()) {
                 thread.interrupt()
             }
         }
         while (threads.isNotEmpty()) {
             Thread.sleep(1L)
         }
-        state = ThreadPoolStates.STOPPING
+        state = ThreadPoolStates.STOPPED
     }
 
     override fun shutdownNow(): MutableList<Runnable> {
-        TODO("Not yet implemented")
+        shutdown()
+        return mutableListOf()
     }
 
     override fun isShutdown(): Boolean {

@@ -300,6 +300,10 @@ object KUtil {
         try {
             return executor()
         } catch (thrown: Throwable) {
+            if (exceptions.isEmpty()) {
+                // Catch all
+                return null
+            }
             for (exception in exceptions) {
                 if (exception.isAssignableFrom(thrown::class.java)) {
                     return null

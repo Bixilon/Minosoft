@@ -64,7 +64,9 @@ class TaskWorker(
                         done += task.identifier
                         taskProgress.dec()
                     } catch (exception: Throwable) {
-                        exception.printStackTrace()
+                        if (exception !is InterruptedException) {
+                            exception.printStackTrace()
+                        }
                         synchronized(changed) { changed = true }
                         if (task.optional) {
                             taskProgress.count = 0

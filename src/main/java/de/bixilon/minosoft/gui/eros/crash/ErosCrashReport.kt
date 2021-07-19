@@ -20,9 +20,11 @@ import de.bixilon.minosoft.terminal.CommandLineArguments
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.*
 import de.bixilon.minosoft.util.KUtil.toStackTrace
+import de.bixilon.minosoft.util.KUtil.tryCatch
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
+import de.bixilon.minosoft.util.task.pool.DefaultThreadPool
 import javafx.application.Platform
 import javafx.fxml.FXML
 import javafx.fxml.FXMLLoader
@@ -33,6 +35,8 @@ import javafx.scene.control.TextArea
 import javafx.scene.text.TextFlow
 import javafx.stage.Modality
 import javafx.stage.Stage
+import java.io.File
+import java.io.FileOutputStream
 import java.lang.management.ManagementFactory
 import java.nio.charset.StandardCharsets
 import java.text.SimpleDateFormat
@@ -60,13 +64,13 @@ class ErosCrashReport : JavaFXController() {
             }
         }
 
-
     var exception: Throwable? = null
+
+    var details: String? = null
         set(value) {
             field = value
-            Platform.runLater { detailsFX.text = createCrashText(exception) }
+            Platform.runLater { detailsFX.text = value }
         }
-
 
     fun exit() {
         ShutdownManager.shutdown(exception?.message, ShutdownReasons.CRITICAL_EXCEPTION)
@@ -92,6 +96,7 @@ class ErosCrashReport : JavaFXController() {
             "This sucks",
             "Chill ur life",
             "Chill your life",
+            "Chill your base",
             "Damn!",
             "Developing is hard.",
             "Please don't kill me for this",
@@ -122,6 +127,27 @@ class ErosCrashReport : JavaFXController() {
 
             JavaFXInitializer.await()
 
+            // Kill some stuff
+            tryCatch(executor = { DefaultThreadPool.shutdownNow() })
+
+            val details = createCrashText(this)
+
+            var crashReportPath: String?
+            try {
+                val crashReportFolder = File(RunConfiguration.HOME_DIRECTORY + "crash-reports")
+                crashReportFolder.mkdirs()
+
+                crashReportPath = "${crashReportFolder.absolutePath}/crash-${SimpleDateFormat("yyyy-MM-dd-HH.mm.ss").format(System.currentTimeMillis())}.txt"
+
+                val stream = FileOutputStream(crashReportPath)
+
+                stream.write(details.toByteArray(StandardCharsets.UTF_8))
+                stream.close()
+            } catch (exception: Throwable) {
+                exception.printStackTrace()
+                crashReportPath = null
+            }
+
             Platform.runLater {
                 val fxmlLoader = FXMLLoader(ErosCrashReport::class.java.getResource("/assets/minosoft/eros/crash/crash_screen.fxml"))
                 val parent = fxmlLoader.load<Parent>()
@@ -132,9 +158,8 @@ class ErosCrashReport : JavaFXController() {
 
                 val crashReport = fxmlLoader.getController<ErosCrashReport>()
                 crashReport.exception = this
-                crashReport.crashReportPath = null
-
-                // ToDo: Save crash report to file
+                crashReport.details = details
+                crashReport.crashReportPath = crashReportPath
 
                 stage.setOnCloseRequest { ShutdownManager.shutdown(this?.message, ShutdownReasons.CRITICAL_EXCEPTION) }
                 stage.show()

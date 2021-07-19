@@ -46,8 +46,8 @@ class JavaFXInitializer internal constructor() : Application() {
         fun start() {
             check(LATCH.count == 2) { "Already initialized!" }
 
-            Log.log(LogMessageType.JAVAFX, LogLevels.VERBOSE) { "Initializing JavaFX Toolkit" }
-            Thread({ Application.launch(JavaFXInitializer::class.java) }, "JavaFX Toolkit Initializing Thread...").start()
+            Log.log(LogMessageType.JAVAFX, LogLevels.VERBOSE) { "Initializing JavaFX Toolkit..." }
+            Thread({ Application.launch(JavaFXInitializer::class.java) }, "JavaFX Toolkit Initializing Thread").start()
             LATCH.dec()
             await()
         }
