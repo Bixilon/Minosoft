@@ -1,8 +1,8 @@
 package de.bixilon.minosoft.util.task.time
 
-import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.util.KUtil.synchronizedSetOf
 import de.bixilon.minosoft.util.KUtil.toSynchronizedSet
+import de.bixilon.minosoft.util.task.pool.DefaultThreadPool
 import java.util.concurrent.TimeUnit
 
 object TimeWorker {
@@ -19,7 +19,7 @@ object TimeWorker {
                     if (currentTime - task.lastExecution <= task.interval) {
                         continue
                     }
-                    Minosoft.THREAD_POOL.execute {
+                    DefaultThreadPool += execute@{
                         if (!task.lock.tryLock(100L, TimeUnit.MILLISECONDS)) {
                             return@execute
                         }

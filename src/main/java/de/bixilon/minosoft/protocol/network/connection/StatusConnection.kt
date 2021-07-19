@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.protocol.network.connection
 
-import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.registries.versions.Version
 import de.bixilon.minosoft.data.registries.versions.Versions
 import de.bixilon.minosoft.modding.event.EventInvoker
@@ -35,6 +34,7 @@ import de.bixilon.minosoft.util.ServerAddress
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
+import de.bixilon.minosoft.util.task.pool.DefaultThreadPool
 
 class StatusConnection(
     val address: String,
@@ -60,7 +60,7 @@ class StatusConnection(
     }
 
     fun ping() {
-        Minosoft.THREAD_POOL.execute {
+        DefaultThreadPool += execute@{
             try {
                 resolve()
             } catch (exception: Exception) {

@@ -38,6 +38,9 @@ class JavaFXInitializer internal constructor() : Application() {
         val initialized: Boolean
             get() = LATCH.count == 0
 
+        val initializing: Boolean
+            get() = LATCH.count == 1
+
         @JvmStatic
         @Synchronized
         fun start() {
@@ -46,6 +49,7 @@ class JavaFXInitializer internal constructor() : Application() {
             Log.log(LogMessageType.JAVAFX, LogLevels.VERBOSE) { "Initializing JavaFX Toolkit" }
             Thread({ Application.launch(JavaFXInitializer::class.java) }, "JavaFX Toolkit Initializing Thread...").start()
             LATCH.dec()
+            await()
         }
 
         fun await() {

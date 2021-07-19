@@ -24,6 +24,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import java.util.HashMap;
 import java.util.Map;
 
+@Deprecated
 public class Versions {
     public static final Version AUTOMATIC_VERSION = new Version("Automatic", -1, -1, Map.of(), Map.of());
     private static final HashBiMap<Integer, Version> VERSION_ID_MAP = HashBiMap.create(500);

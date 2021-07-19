@@ -93,7 +93,7 @@ object Log {
     @JvmOverloads
     @JvmStatic
     fun log(logMessageType: LogMessageType, level: LogLevels = LogLevels.INFO, additionalPrefix: ChatComponent? = null, message: Any, vararg formatting: Any) {
-        if (Minosoft.config != null) {
+        if (Minosoft.configInitialized) {
             Minosoft.config.config.general.log[logMessageType]?.let {
                 if (it.ordinal < level.ordinal) {
                     return
@@ -134,7 +134,7 @@ object Log {
 
     @JvmStatic
     fun log(logMessageType: LogMessageType, level: LogLevels = LogLevels.INFO, additionalPrefix: ChatComponent? = null, messageBuilder: () -> Any) {
-        if (Minosoft.config != null) {
+        if (Minosoft.configInitialized) {
             Minosoft.config.config.general.log[logMessageType]?.let {
                 if (it.ordinal < level.ordinal) {
                     return

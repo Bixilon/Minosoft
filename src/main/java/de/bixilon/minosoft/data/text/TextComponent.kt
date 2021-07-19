@@ -118,14 +118,14 @@ open class TextComponent(
         val text = Text(this.message)
         val color = this.color ?: ProtocolDefinition.DEFAULT_COLOR
         text.fill = Color.WHITE
-        if (Minosoft.getConfig().config.chat.colored) {
+        if (Minosoft.config.config.chat.colored) {
             text.fill = Color.rgb(color.red, color.green, color.blue)
         }
         for (chatFormattingCode in formatting) {
             when (chatFormattingCode) {
                 PreChatFormattingCodes.OBFUSCATED -> {
                     // ToDo: potential memory leak: Stop timeline, when TextComponent isn't shown anymore
-                    val obfuscatedTimeline = if (Minosoft.getConfig().config.chat.obfuscated) {
+                    val obfuscatedTimeline = if (Minosoft.config.config.chat.obfuscated) {
                         Timeline(KeyFrame(Duration.millis(50.0), {
                             val chars = text.text.toCharArray()
                             for (i in chars.indices) {

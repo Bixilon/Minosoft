@@ -91,12 +91,12 @@ class HUDRenderer(val connection: PlayConnection, val renderWindow: RenderWindow
 
     fun addElement(builder: HUDRenderBuilder<*>) {
         var needToSafeConfig = false
-        val properties = Minosoft.getConfig().config.game.elements.entries.getOrPut(builder.RESOURCE_LOCATION) {
+        val properties = Minosoft.config.config.game.elements.entries.getOrPut(builder.RESOURCE_LOCATION) {
             needToSafeConfig = true
             builder.DEFAULT_PROPERTIES
         }
         if (needToSafeConfig) {
-            Minosoft.getConfig().saveToFile()
+            Minosoft.config.saveToFile()
         }
         val hudElement = builder.build(this)
         hudElement.properties = properties
@@ -169,7 +169,7 @@ class HUDRenderer(val connection: PlayConnection, val renderWindow: RenderWindow
 
         if (forcePrepare || needsUpdate) {
             for ((elementProperties, hudElement) in enabledHUDElement.values) {
-                val realScaleFactor = elementProperties.scale * Minosoft.getConfig().config.game.hud.scale
+                val realScaleFactor = elementProperties.scale * Minosoft.config.config.game.hud.scale
                 val realSize = hudElement.layout.sizing.currentSize * realScaleFactor
                 realSize.x = MMath.clamp(realSize.x, hudElement.layout.sizing.minSize.x, hudElement.layout.sizing.maxSize.x)
                 realSize.y = MMath.clamp(realSize.y, hudElement.layout.sizing.minSize.y, hudElement.layout.sizing.maxSize.y)

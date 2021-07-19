@@ -64,7 +64,7 @@ data class Version(
         }
         assetsManager = MinecraftAssetsManager(Resources.getAssetVersionByVersion(this), Resources.getPixLyzerDataHashByVersion(this))
         assetsManager.downloadAllAssets(latch)
-        language = LanguageManager.load(Minosoft.getConfig().config.general.language, this)
+        language = LanguageManager.load(Minosoft.config.config.general.language, this)
     }
 
     @Synchronized

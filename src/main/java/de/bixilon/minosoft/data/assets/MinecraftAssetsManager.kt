@@ -24,6 +24,7 @@ import de.bixilon.minosoft.util.Util
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
+import de.bixilon.minosoft.util.task.pool.DefaultThreadPool
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileNotFoundException
@@ -130,7 +131,7 @@ class MinecraftAssetsManager(
             }
             AssetsSource.PIXLYZER -> {
                 downloadAsset(Util.formatString(
-                    Minosoft.getConfig().config.download.url.pixlyzer,
+                    Minosoft.config.config.download.url.pixlyzer,
                     mapOf(
                         "hashPrefix" to hash.substring(0, 2),
                         "fullHash" to hash
@@ -145,7 +146,7 @@ class MinecraftAssetsManager(
     private fun verifyAssets(source: AssetsSource, latch: CountUpAndDownLatch?, assets: Map<ResourceLocation, String>): Map<ResourceLocation, String> {
         val assetsLatch = CountUpAndDownLatch(assets.size, latch)
         for (hash in assets.values) {
-            Minosoft.THREAD_POOL.execute {
+            DefaultThreadPool += {
                 // Log.log(LogMessageType.ASSETS, LogLevels.VERBOSE){"Assets, total=${assets.size}, latchTotal=${assetsLatch.total}, current=${assetsLatch.count}"}
                 val compressed = source != AssetsSource.PIXLYZER
                 if (StaticConfiguration.DEBUG_SLOW_LOADING) {

@@ -116,7 +116,7 @@ data class BlockState(
         if (renderers.isEmpty()) {
             throw IllegalArgumentException("$this has not renderer!")
         }
-        if (renderers.size == 1 || !Minosoft.getConfig().config.game.other.antiMoirePattern) {
+        if (renderers.size == 1 || !Minosoft.config.config.game.other.antiMoirePattern) {
             return renderers[0]
         }
         val random = Random(getPositionSeed(blockPosition.x, blockPosition.y, blockPosition.z))

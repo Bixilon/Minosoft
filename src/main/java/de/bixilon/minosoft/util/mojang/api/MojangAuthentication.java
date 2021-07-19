@@ -31,7 +31,7 @@ import java.net.http.HttpResponse;
 public final class MojangAuthentication {
 
     public static MojangAccount login(String username, String password) throws AuthenticationException, NoNetworkConnectionException {
-        return login(Minosoft.getConfig().getConfig().getAccount().getClientToken(), username, password);
+        return login(Minosoft.config.getConfig().getAccount().getClientToken(), username, password);
     }
 
     public static MojangAccount login(String clientToken, String username, String password) throws NoNetworkConnectionException, AuthenticationException {
@@ -94,7 +94,7 @@ public final class MojangAuthentication {
     }
 
     public static String refresh(String accessToken) throws NoNetworkConnectionException, AuthenticationException {
-        return refresh(Minosoft.getConfig().getConfig().getAccount().getClientToken(), accessToken);
+        return refresh(Minosoft.config.getConfig().getAccount().getClientToken(), accessToken);
     }
 
     public static String refresh(String clientToken, String accessToken) throws NoNetworkConnectionException, AuthenticationException {

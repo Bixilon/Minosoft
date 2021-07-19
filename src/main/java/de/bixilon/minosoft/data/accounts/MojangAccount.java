@@ -75,8 +75,8 @@ public class MojangAccount extends Account {
 
     @Override
     public void logout() {
-        Minosoft.getConfig().getConfig().getAccount().getEntries().remove(this.getId());
-        Minosoft.getConfig().saveToFile();
+        Minosoft.config.getConfig().getAccount().getEntries().remove(this.getId());
+        Minosoft.config.saveToFile();
     }
 
     @Override

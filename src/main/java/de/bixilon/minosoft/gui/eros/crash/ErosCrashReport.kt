@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.eros.crash
 
-import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.ShutdownReasons
 import de.bixilon.minosoft.gui.eros.JavaFXController
 import de.bixilon.minosoft.gui.eros.util.JavaFXInitializer
@@ -21,6 +20,9 @@ import de.bixilon.minosoft.terminal.CommandLineArguments
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.*
 import de.bixilon.minosoft.util.KUtil.toStackTrace
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
 import javafx.application.Platform
 import javafx.fxml.FXML
 import javafx.fxml.FXMLLoader
@@ -59,7 +61,7 @@ class ErosCrashReport : JavaFXController() {
         }
 
 
-    var exception: Exception? = null
+    var exception: Throwable? = null
         set(value) {
             field = value
             Platform.runLater { detailsFX.text = createCrashText(exception) }
@@ -67,7 +69,7 @@ class ErosCrashReport : JavaFXController() {
 
 
     fun exit() {
-        Minosoft.shutdown(exception?.message, ShutdownReasons.CRITICAL_EXCEPTION)
+        ShutdownManager.shutdown(exception?.message, ShutdownReasons.CRITICAL_EXCEPTION)
     }
 
     fun hardCrash() {
@@ -97,19 +99,31 @@ class ErosCrashReport : JavaFXController() {
             "That happens when you develop while playing games!",
         )
 
+
         /**
          * Kills all connections, closes all windows, creates and saves a crash report
          * Special: Does not use any general functions/translations/..., because when a crash happens, you can't rely on anything.
          */
-        fun crash(exception: Exception? = null) {
+        fun Throwable?.crash() {
             if (RunConfiguration.DISABLE_EROS) {
-                Minosoft.shutdown(exception?.message, ShutdownReasons.CRITICAL_EXCEPTION)
+                ShutdownManager.shutdown(this?.message, ShutdownReasons.CRITICAL_EXCEPTION)
                 return
             }
+
+            if (!JavaFXInitializer.initializing && !JavaFXInitializer.initialized) {
+                try {
+                    JavaFXInitializer.start()
+                } catch (exception: Throwable) {
+                    Log.log(LogMessageType.JAVAFX, LogLevels.WARN) { "Can not show crash report screen!" }
+                    exception.printStackTrace()
+                    return
+                }
+            }
+
             JavaFXInitializer.await()
 
             Platform.runLater {
-                val fxmlLoader = FXMLLoader(this::class.java.getResource("/assets/minosoft/eros/crash/crash_screen.fxml"))
+                val fxmlLoader = FXMLLoader(ErosCrashReport::class.java.getResource("/assets/minosoft/eros/crash/crash_screen.fxml"))
                 val parent = fxmlLoader.load<Parent>()
                 val stage = Stage()
                 stage.initModality(Modality.APPLICATION_MODAL)
@@ -117,17 +131,17 @@ class ErosCrashReport : JavaFXController() {
                 stage.scene = Scene(parent)
 
                 val crashReport = fxmlLoader.getController<ErosCrashReport>()
-                crashReport.exception = exception
+                crashReport.exception = this
                 crashReport.crashReportPath = null
 
                 // ToDo: Save crash report to file
 
-                stage.setOnCloseRequest { Minosoft.shutdown(exception?.message, ShutdownReasons.CRITICAL_EXCEPTION) }
+                stage.setOnCloseRequest { ShutdownManager.shutdown(this?.message, ShutdownReasons.CRITICAL_EXCEPTION) }
                 stage.show()
             }
         }
 
-        private fun createCrashText(exception: Exception?): String {
+        private fun createCrashText(exception: Throwable?): String {
             val stack = """
 ----- Minosoft Crash Report -----
 // ${CRASH_REPORT_COMMENTS.random()}

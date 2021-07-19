@@ -11,22 +11,8 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.hud.nodes
+package de.bixilon.minosoft.util.task.pool
 
-import de.bixilon.minosoft.Minosoft
-import de.bixilon.minosoft.gui.rendering.hud.HUDElementProperties
-import de.bixilon.minosoft.gui.rendering.hud.HUDRenderer
-import de.bixilon.minosoft.gui.rendering.hud.nodes.layout.Layout
+import de.bixilon.minosoft.util.MMath.clamp
 
-abstract class HUDElement(protected val hudRenderer: HUDRenderer) {
-    abstract val layout: Layout
-
-    lateinit var properties: HUDElementProperties
-
-    val scale: Float
-        get() = properties.scale * Minosoft.config.config.game.hud.scale
-
-    open fun init() {}
-    open fun postInit() {}
-    open fun draw() {}
-}
+object DefaultThreadPool : ThreadPool(clamp(Runtime.getRuntime().availableProcessors() - 1, 2, 16))

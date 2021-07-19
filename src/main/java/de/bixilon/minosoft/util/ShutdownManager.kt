@@ -11,22 +11,20 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.hud.nodes
+package de.bixilon.minosoft.util
 
-import de.bixilon.minosoft.Minosoft
-import de.bixilon.minosoft.gui.rendering.hud.HUDElementProperties
-import de.bixilon.minosoft.gui.rendering.hud.HUDRenderer
-import de.bixilon.minosoft.gui.rendering.hud.nodes.layout.Layout
+import de.bixilon.minosoft.ShutdownReasons
 
-abstract class HUDElement(protected val hudRenderer: HUDRenderer) {
-    abstract val layout: Layout
+object ShutdownManager {
+    private var initialized = false
 
-    lateinit var properties: HUDElementProperties
 
-    val scale: Float
-        get() = properties.scale * Minosoft.config.config.game.hud.scale
+    fun shutdown(message: String? = null, reason: ShutdownReasons = ShutdownReasons.UNKNOWN) {
 
-    open fun init() {}
-    open fun postInit() {}
-    open fun draw() {}
+    }
+
+    fun init() {
+        // ToDo
+        initialized = true
+    }
 }

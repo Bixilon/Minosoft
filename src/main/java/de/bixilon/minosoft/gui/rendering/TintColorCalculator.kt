@@ -34,7 +34,7 @@ class TintColorCalculator(val world: World) {
     }
 
     fun getAverageTint(biome: Biome?, blockState: BlockState, blockPosition: Vec3i): RGBColor? {
-        val biomeBlendRadius = Minosoft.getConfig().config.game.graphics.biomeBlendRadius
+        val biomeBlendRadius = Minosoft.config.config.game.graphics.biomeBlendRadius
         val selfTint = getTint(biome, blockState, blockPosition)
 
         if (selfTint == null || biomeBlendRadius == 0) {

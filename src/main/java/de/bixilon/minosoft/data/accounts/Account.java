@@ -31,7 +31,7 @@ public abstract class Account {
     }
 
     public static void addAccount(Account account) {
-        Minosoft.getConfig().getConfig().getAccount().getEntries().put(account.getId(), account);
+        Minosoft.config.getConfig().getAccount().getEntries().put(account.getId(), account);
         account.saveToConfig();
         Log.info(String.format("Added and saved account (type=%s, id=%s,  username=%s, uuid=%s)", account.getClass().getSimpleName(), account.getId(), account.getUsername(), account.getUUID()));
     }
@@ -80,7 +80,7 @@ public abstract class Account {
     }
 
     public void saveToConfig() {
-        Minosoft.getConfig().getConfig().getAccount().getEntries().put(this.getId(), this);
-        Minosoft.getConfig().saveToFile();
+        Minosoft.config.getConfig().getAccount().getEntries().put(this.getId(), this);
+        Minosoft.config.saveToFile();
     }
 }

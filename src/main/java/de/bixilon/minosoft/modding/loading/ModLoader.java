@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.modding.loading;
 
-import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.modding.MinosoftMod;
 import de.bixilon.minosoft.terminal.RunConfiguration;
 import de.bixilon.minosoft.util.CountUpAndDownLatch;
@@ -21,6 +20,7 @@ import de.bixilon.minosoft.util.Util;
 import de.bixilon.minosoft.util.logging.Log;
 import de.bixilon.minosoft.util.logging.LogLevels;
 import de.bixilon.minosoft.util.logging.LogMessageType;
+import de.bixilon.minosoft.util.task.pool.DefaultThreadPool;
 import org.xeustechnologies.jcl.JarClassLoader;
 import org.xeustechnologies.jcl.JclObjectFactory;
 
@@ -55,7 +55,7 @@ public class ModLoader {
             if (modFile.isDirectory()) {
                 continue;
             }
-            Minosoft.THREAD_POOL.execute(() -> {
+            DefaultThreadPool.INSTANCE.execute(() -> {
                 MinosoftMod mod = loadMod(progress, modFile);
                 if (mod != null) {
                     MOD_MAP.put(mod.getInfo().getModVersionIdentifier().getUUID(), mod);
@@ -126,7 +126,7 @@ public class ModLoader {
             Log.log(LogMessageType.MOD_LOADING, LogLevels.VERBOSE, () -> "Mod initializing started in " + phase);
             CountDownLatch modLatch = new CountDownLatch(sortedModMap.size());
             for (Map.Entry<UUID, MinosoftMod> entry : sortedModMap.entrySet()) {
-                Minosoft.THREAD_POOL.execute(() -> {
+                DefaultThreadPool.INSTANCE.execute(() -> {
                     if (!entry.getValue().isEnabled()) {
                         modLatch.countDown();
                         progress.dec();

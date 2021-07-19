@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.util.task
+package de.bixilon.minosoft.util.task.pool
 
 import de.bixilon.minosoft.util.KUtil.synchronizedSetOf
 import de.bixilon.minosoft.util.KUtil.toSynchronizedSet
@@ -20,7 +20,7 @@ import java.util.concurrent.ExecutorService
 import java.util.concurrent.Future
 import java.util.concurrent.TimeUnit
 
-class ThreadPool(
+open class ThreadPool(
     private val threadCount: Int = Runtime.getRuntime().availableProcessors(),
     private val name: String = "Worker#%d",
 ) : ExecutorService {
@@ -118,6 +118,14 @@ class ThreadPool(
         execute(ThreadPoolRunnable(
             runnable = runnable,
         ))
+    }
+
+    operator fun plusAssign(runnable: ThreadPoolRunnable) {
+        execute(runnable)
+    }
+
+    operator fun plusAssign(runnable: Runnable) {
+        execute(runnable)
     }
 
     override fun shutdown() {

@@ -11,20 +11,16 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.util.task
+package de.bixilon.minosoft.util.task.worker.tasks
 
-import de.bixilon.minosoft.util.KUtil
-import de.bixilon.minosoft.util.enum.ValuesEnum
+import de.bixilon.minosoft.util.CountUpAndDownLatch
+import de.bixilon.minosoft.util.task.pool.ThreadPool
+import kotlin.random.Random
 
-enum class ThreadPoolStates {
-    STARTING,
-    STARTED,
-    STOPPING,
-    STOPPED,
-    ;
-
-    companion object : ValuesEnum<ThreadPoolStates> {
-        override val VALUES: Array<ThreadPoolStates> = values()
-        override val NAME_MAP: Map<String, ThreadPoolStates> = KUtil.getEnumValues(VALUES)
-    }
-}
+class Task(
+    val identifier: Any = Random.nextInt(),
+    val optional: Boolean = false,
+    val priority: Int = ThreadPool.NORMAL,
+    vararg val dependencies: Any = arrayOf(),
+    val executor: (progress: CountUpAndDownLatch) -> Unit,
+)

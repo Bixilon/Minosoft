@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2021 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,9 +11,20 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.util.task;
+package de.bixilon.minosoft.util.task.pool
 
-public enum TaskImportance {
-    REQUIRED,
-    OPTIONAL
+import de.bixilon.minosoft.util.KUtil
+import de.bixilon.minosoft.util.enum.ValuesEnum
+
+enum class ThreadPoolStates {
+    STARTING,
+    STARTED,
+    STOPPING,
+    STOPPED,
+    ;
+
+    companion object : ValuesEnum<ThreadPoolStates> {
+        override val VALUES: Array<ThreadPoolStates> = values()
+        override val NAME_MAP: Map<String, ThreadPoolStates> = KUtil.getEnumValues(VALUES)
+    }
 }

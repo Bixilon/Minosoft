@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.terminal.commands.commands;
 
 import com.github.freva.asciitable.AsciiTable;
-import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.data.commands.CommandArgumentNode;
 import de.bixilon.minosoft.data.commands.CommandLiteralNode;
 import de.bixilon.minosoft.data.commands.CommandNode;
@@ -35,15 +34,17 @@ public class CommandConnection extends Command {
                         new CommandLiteralNode("list", (stack) -> {
                             ArrayList<Object[]> tableData = new ArrayList<>();
 
-                            for (var entry : Minosoft.CONNECTIONS.entrySet()) {
-                                tableData.add(new Object[]{entry.getKey(), entry.getValue().getAddress(), entry.getValue().getAccount()});
-                            }
+                            // ToDo
+                            // for (var entry : Minosoft.CONNECTIONS.entrySet()) {
+                            //     tableData.add(new Object[]{entry.getKey(), entry.getValue().getAddress(), entry.getValue().getAccount()});
+                            // }
 
                             print(AsciiTable.getTable(new String[]{"ID", "ADDRESS", "ACCOUNT"}, tableData.toArray(new Object[0][0])));
                         }),
                         new CommandLiteralNode("select", new CommandArgumentNode("connectionId", IntegerParser.INTEGER_PARSER, new IntegerParserProperties(0), (stack) -> {
                             int connectionId = stack.getInt(0);
-                            PlayConnection connection = Minosoft.CONNECTIONS.get(connectionId);
+                            //ToDo PlayConnection connection = Minosoft.CONNECTIONS.get(connectionId);
+                            PlayConnection connection = null;
                             if (connection == null) {
                                 throw new ConnectionNotFoundCommandParseException(stack, connectionId);
                             }

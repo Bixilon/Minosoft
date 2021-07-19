@@ -12,7 +12,9 @@
  */
 package de.bixilon.minosoft.util
 
-// Thanks https://stackoverflow.com/questions/14255019/latch-that-can-be-incremented
+import de.bixilon.minosoft.util.KUtil.toSynchronizedList
+
+
 class CountUpAndDownLatch @JvmOverloads constructor(count: Int, var parent: CountUpAndDownLatch? = null) {
     private val lock = Object()
     private val children: MutableSet<CountUpAndDownLatch> = mutableSetOf()
@@ -23,15 +25,16 @@ class CountUpAndDownLatch @JvmOverloads constructor(count: Int, var parent: Coun
             }
         }
         set(value) {
+            val diff: Int
             synchronized(lock) {
-                val diff = value - field
+                diff = value - field
                 check(value >= 0) { "Can not set count (previous=$field, value=$value)" }
                 if (diff > 0) {
                     total += diff
                 }
                 field = value
-                parent?.plus(diff) ?: notify()
             }
+            parent?.plus(diff) ?: notify()
         }
 
     var total: Int = count
@@ -64,8 +67,8 @@ class CountUpAndDownLatch @JvmOverloads constructor(count: Int, var parent: Coun
 
     @JvmOverloads
     fun await(timeout: Long = 0L) {
-        synchronized(lock) {
-            while (count > 0) {
+        while (count > 0) {
+            synchronized(lock) {
                 lock.wait(timeout)
             }
         }
@@ -75,12 +78,12 @@ class CountUpAndDownLatch @JvmOverloads constructor(count: Int, var parent: Coun
     private fun notify(`this`: CountUpAndDownLatch = this) {
         synchronized(lock) {
             lock.notifyAll()
-            for (child in children) {
-                if (child === `this`) {
-                    continue
-                }
-                child.notify(this)
+        }
+        for (child in children.toSynchronizedList()) {
+            if (child === `this`) {
+                continue
             }
+            child.notify(this)
         }
         if (`this` === parent) {
             return
@@ -99,9 +102,7 @@ class CountUpAndDownLatch @JvmOverloads constructor(count: Int, var parent: Coun
     }
 
     fun plus(value: Int): CountUpAndDownLatch {
-        synchronized(lock) {
-            count += value
-        }
+        count += value
         return this
     }
 
@@ -113,20 +114,18 @@ class CountUpAndDownLatch @JvmOverloads constructor(count: Int, var parent: Coun
     fun waitForChange() {
         val lastCount = count
         val lastTotal = total
-        synchronized(lock) {
-            while (lastCount == count && lastTotal == total) {
+        while (lastCount == count && lastTotal == total) {
+            synchronized(lock) {
                 lock.wait()
             }
         }
     }
 
     fun awaitWithChange() {
-        synchronized(lock) {
-            if (total == 0) {
-                waitForChange()
-            }
-            await()
+        if (total == 0) {
+            waitForChange()
         }
+        await()
     }
 
     override fun toString(): String {

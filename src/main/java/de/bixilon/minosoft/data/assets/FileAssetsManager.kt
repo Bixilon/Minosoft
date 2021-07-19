@@ -58,7 +58,7 @@ interface FileAssetsManager : AssetsManager {
             // file does not exist
             return false
         }
-        if (!Minosoft.getConfig().config.debug.verifyAssets) {
+        if (!Minosoft.config.config.debug.verifyAssets) {
             // file exists AND we should not check the hash of our file
             return true
         }

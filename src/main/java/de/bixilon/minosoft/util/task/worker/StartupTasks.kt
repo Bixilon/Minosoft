@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2021 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,10 +11,15 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.util.task;
+package de.bixilon.minosoft.util.task.worker
 
-import de.bixilon.minosoft.util.CountUpAndDownLatch;
-
-public interface TaskCallable {
-    void work(CountUpAndDownLatch progress) throws Exception;
+enum class StartupTasks {
+    LOAD_CONFIG,
+    LOAD_LANGUAGE_FILES,
+    LOAD_DEFAULT_REGISTRIES,
+    LISTEN_LAN_SERVERS,
+    LOAD_MODS,
+    INITIALIZE_CLI,
+    INITIALIZE_JAVAFX,
+    ;
 }

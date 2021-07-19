@@ -120,7 +120,7 @@ class PlayConnection(
                     this.network.sendPacket(LoginStartC2SP(this.player))
                 }
                 ConnectionStates.PLAY -> {
-                    Minosoft.CONNECTIONS[connectionId] = this
+                    // ToDO: Minosoft.CONNECTIONS[connectionId] = this
 
                     if (CLI.getCurrentConnection() == null) {
                         CLI.setCurrentConnection(this)
@@ -154,7 +154,7 @@ class PlayConnection(
                     }
                     // unregister all custom recipes
                     this.recipes.removeCustomRecipes()
-                    Minosoft.CONNECTIONS.remove(connectionId)
+                    //ToDo: Minosoft.CONNECTIONS.remove(connectionId)
                     if (CLI.getCurrentConnection() == this) {
                         CLI.setCurrentConnection(null)
                         Command.print("Disconnected from current connection!")
