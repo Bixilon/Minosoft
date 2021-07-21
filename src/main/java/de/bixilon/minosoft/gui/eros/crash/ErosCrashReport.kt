@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.eros.crash
 
 import de.bixilon.minosoft.ShutdownReasons
-import de.bixilon.minosoft.gui.eros.JavaFXController
+import de.bixilon.minosoft.gui.eros.controller.JavaFXWindowController
 import de.bixilon.minosoft.gui.eros.util.JavaFXInitializer
 import de.bixilon.minosoft.terminal.CommandLineArguments
 import de.bixilon.minosoft.terminal.RunConfiguration
@@ -42,7 +42,7 @@ import java.nio.charset.StandardCharsets
 import java.text.SimpleDateFormat
 
 
-class ErosCrashReport : JavaFXController() {
+class ErosCrashReport : JavaFXWindowController() {
     @FXML
     private lateinit var crashReportPathDescriptionFX: TextFlow
 
@@ -160,6 +160,7 @@ class ErosCrashReport : JavaFXController() {
                 crashReport.exception = this
                 crashReport.details = details
                 crashReport.crashReportPath = crashReportPath
+                crashReport.stage = stage
 
                 stage.setOnCloseRequest { ShutdownManager.shutdown(this?.message, ShutdownReasons.CRITICAL_EXCEPTION) }
                 stage.show()

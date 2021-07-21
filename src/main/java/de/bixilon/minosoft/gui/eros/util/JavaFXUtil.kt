@@ -13,13 +13,36 @@
 
 package de.bixilon.minosoft.gui.eros.util
 
+import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.gui.eros.controller.JavaFXController
+import de.bixilon.minosoft.gui.eros.controller.JavaFXWindowController
 import javafx.application.HostServices
+import javafx.fxml.FXMLLoader
+import javafx.scene.Parent
+import javafx.scene.Scene
+import javafx.scene.image.Image
+import javafx.stage.Modality
+import javafx.stage.Stage
 
 object JavaFXUtil {
+    lateinit var MINOSOFT_LOGO: Image
     lateinit var HOST_SERVICES: HostServices
 
-    fun openModal(layout: ResourceLocation) {
-        TODO()
+    fun <T : JavaFXController> openModal(title: ResourceLocation, layout: ResourceLocation, modality: Modality = Modality.WINDOW_MODAL): T {
+        val fxmlLoader = FXMLLoader()
+        val parent = fxmlLoader.load<Parent>(Minosoft.MINOSOFT_ASSETS_MANAGER.readAssetAsStream(layout))
+        val stage = Stage()
+        stage.initModality(modality)
+        stage.title = Minosoft.LANGUAGE_MANAGER.translate(title).message
+        stage.scene = Scene(parent)
+
+        val controller = fxmlLoader.getController<T>()
+
+        if (controller is JavaFXWindowController) {
+            controller.stage = stage
+        }
+
+        return controller
     }
 }

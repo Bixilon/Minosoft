@@ -13,17 +13,25 @@
 
 package de.bixilon.minosoft.gui.eros
 
+import de.bixilon.minosoft.Minosoft
+import de.bixilon.minosoft.gui.eros.main.MainErosController
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
-import de.bixilon.minosoft.util.KUtil.nullCast
-import javafx.event.ActionEvent
-import javafx.scene.control.Labeled
+import de.bixilon.minosoft.modding.event.CallbackEventInvoker
+import de.bixilon.minosoft.modding.event.events.FinishInitializingEvent
+import de.bixilon.minosoft.util.KUtil.asResourceLocation
+import javafx.application.Platform
+
+object Eros {
+    private val TITLE = "minosoft:eros_window_title".asResourceLocation()
+    private val LAYOUT = "minosoft:eros/main/main.fxml".asResourceLocation()
 
 
-abstract class JavaFXController {
-
-    fun openURL(actionEvent: ActionEvent) {
-        actionEvent.target?.nullCast<Labeled>()?.text?.let {
-            JavaFXUtil.HOST_SERVICES.showDocument(it)
-        }
+    init {
+        Minosoft.GLOBAL_EVENT_MASTER.registerEvent(CallbackEventInvoker.of<FinishInitializingEvent> {
+            Platform.runLater {
+                val mainErosController = JavaFXUtil.openModal<MainErosController>(TITLE, LAYOUT)
+                mainErosController.stage.show()
+            }
+        })
     }
 }

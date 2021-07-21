@@ -350,5 +350,15 @@
             <artifactId>slf4j-simple</artifactId>
             <version>1.7.31</version>
         </dependency>
+        <dependency>
+            <groupId>org.kordamp.ikonli</groupId>
+            <artifactId>ikonli-javafx</artifactId>
+            <version>12.2.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kordamp.ikonli</groupId>
+            <artifactId>ikonli-fontawesome5-pack</artifactId>
+            <version>12.2.0</version>
+        </dependency>
     </dependencies>
 </project>

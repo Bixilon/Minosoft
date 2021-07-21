@@ -21,6 +21,7 @@ import de.bixilon.minosoft.data.language.MultiLanguageManager
 import de.bixilon.minosoft.data.registries.DefaultRegistries
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.versions.Versions
+import de.bixilon.minosoft.gui.eros.Eros
 import de.bixilon.minosoft.gui.eros.crash.ErosCrashReport.Companion.crash
 import de.bixilon.minosoft.gui.eros.util.JavaFXInitializer
 import de.bixilon.minosoft.modding.event.events.FinishInitializingEvent
@@ -109,6 +110,8 @@ object Minosoft {
             taskWorker += Task(identifier = StartupTasks.INITIALIZE_JAVAFX, executor = { JavaFXInitializer.start() })
 
             // ToDo: Show start up progress window
+
+            Eros // Init class
         }
 
 
