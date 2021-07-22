@@ -18,21 +18,27 @@ import de.bixilon.minosoft.util.KUtil.toSynchronizedList
 class CountUpAndDownLatch @JvmOverloads constructor(count: Int, var parent: CountUpAndDownLatch? = null) {
     private val lock = Object()
     private val children: MutableSet<CountUpAndDownLatch> = mutableSetOf()
-    var count: Int = 0
+    private var rawCount = 0
+        set(value) {
+            val diff = value - field
+            check(value >= 0) { "Can not set count (previous=$rawCount, value=$value)" }
+            if (diff > 0) {
+                total += diff
+            }
+            field = value
+        }
+
+    var count: Int
         get() {
             synchronized(lock) {
-                return field
+                return rawCount
             }
         }
         set(value) {
             val diff: Int
             synchronized(lock) {
-                diff = value - field
-                check(value >= 0) { "Can not set count (previous=$field, value=$value)" }
-                if (diff > 0) {
-                    total += diff
-                }
-                field = value
+                diff = value - rawCount
+                rawCount = value
             }
             parent?.plus(diff) ?: notify()
         }
@@ -67,8 +73,11 @@ class CountUpAndDownLatch @JvmOverloads constructor(count: Int, var parent: Coun
 
     @JvmOverloads
     fun await(timeout: Long = 0L) {
-        while (count > 0) {
+        while (true) {
             synchronized(lock) {
+                if (rawCount == 0) {
+                    return
+                }
                 lock.wait(timeout)
             }
         }
@@ -102,7 +111,10 @@ class CountUpAndDownLatch @JvmOverloads constructor(count: Int, var parent: Coun
     }
 
     fun plus(value: Int): CountUpAndDownLatch {
-        count += value
+        synchronized(lock) {
+            rawCount += value
+        }
+        parent?.plus(value) ?: notify()
         return this
     }
 
