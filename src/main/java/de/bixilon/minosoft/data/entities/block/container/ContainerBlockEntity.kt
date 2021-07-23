@@ -14,6 +14,6 @@
 package de.bixilon.minosoft.data.entities.block.container
 
 import de.bixilon.minosoft.data.entities.block.BlockEntity
-import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 abstract class ContainerBlockEntity(connection: PlayConnection) : BlockEntity(connection)

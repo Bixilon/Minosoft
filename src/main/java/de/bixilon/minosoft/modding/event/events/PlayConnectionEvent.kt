@@ -13,7 +13,7 @@
 package de.bixilon.minosoft.modding.event.events
 
 import de.bixilon.minosoft.modding.event.EventInitiators
-import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 abstract class PlayConnectionEvent @JvmOverloads constructor(
     override val connection: PlayConnection,

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2021 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -10,32 +10,42 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.modding.event
+
+package de.bixilon.minosoft.gui.eros.modding.invoker
 
 import de.bixilon.minosoft.modding.event.events.CancelableEvent
 import de.bixilon.minosoft.modding.event.events.Event
-import de.bixilon.minosoft.modding.event.events.annotations.EventHandler
+import de.bixilon.minosoft.modding.event.invoker.EventInvoker
 import de.bixilon.minosoft.modding.loading.Priorities
-import java.lang.reflect.Method
+import javafx.application.Platform
 
-class EventInvokerMethod(
+/**
+ * Basically a CallbackEventInvoker, bt the callback runs on the java fx ui thread
+ */
+class JavaFXEventInvoker<E : Event> private constructor(
     ignoreCancelled: Boolean,
-    priority: Priorities,
-    listener: EventListener,
-    val method: Method,
-) : EventInvoker(ignoreCancelled, priority, listener) {
-    override val eventType: Class<out Event> = method.parameters[0].type as Class<out Event>
-
-    constructor(annotation: EventHandler, listener: EventListener, method: Method) : this(annotation.ignoreCancelled, annotation.priority, listener, method)
+    private val callback: (E) -> Unit,
+    override val eventType: Class<out Event>,
+) : EventInvoker(ignoreCancelled, Priorities.NORMAL, null) {
 
     override operator fun invoke(event: Event) {
-        if (!method.parameters[0].type.isAssignableFrom(event.javaClass)) {
-            return
-        }
         if (!this.isIgnoreCancelled && event is CancelableEvent && event.cancelled) {
             return
         }
-        method(listener, event)
+        Platform.runLater {
+            callback(event as E)
+        }
     }
 
+    companion object {
+        @JvmOverloads
+        @Suppress("NON_PUBLIC_CALL_FROM_PUBLIC_INLINE")
+        inline fun <reified E : Event> of(ignoreCancelled: Boolean = false, noinline callback: (E) -> Unit): JavaFXEventInvoker<E> {
+            return JavaFXEventInvoker(
+                ignoreCancelled = ignoreCancelled,
+                callback = callback,
+                eventType = E::class.java,
+            )
+        }
+    }
 }

@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.modding.event.master
 
-import de.bixilon.minosoft.modding.event.EventInvoker
 import de.bixilon.minosoft.modding.event.address.ServerAddressValidator
+import de.bixilon.minosoft.modding.event.invoker.EventInvoker
 import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
 
 class GlobalEventMaster : EventMaster() {

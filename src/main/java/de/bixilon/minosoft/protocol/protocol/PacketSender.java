@@ -18,7 +18,7 @@ import de.bixilon.minosoft.data.text.ChatComponent;
 import de.bixilon.minosoft.modding.event.EventInitiators;
 import de.bixilon.minosoft.modding.event.events.ChatMessageReceiveEvent;
 import de.bixilon.minosoft.modding.event.events.ChatMessageSendEvent;
-import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection;
 import de.bixilon.minosoft.protocol.packets.c2s.play.ChatMessageC2SP;
 import de.bixilon.minosoft.protocol.packets.c2s.play.ClientActionC2SP;
 import de.bixilon.minosoft.util.logging.Log;

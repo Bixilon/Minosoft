@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.language
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.registries.registry.Translatable
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
 
@@ -22,4 +23,9 @@ interface Translator {
     fun canTranslate(key: ResourceLocation?): Boolean
 
     fun translate(key: ResourceLocation?, parent: TextComponent? = null, vararg data: Any?): ChatComponent
+
+
+    fun translate(translatable: Translatable?): ChatComponent {
+        return translate(translatable?.translationKey)
+    }
 }

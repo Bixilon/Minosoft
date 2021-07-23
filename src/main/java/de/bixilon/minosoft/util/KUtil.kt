@@ -21,7 +21,7 @@ import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.TextFormattable
-import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.collections.SynchronizedMap
 import de.bixilon.minosoft.util.enum.AliasableEnum
@@ -318,4 +318,11 @@ object KUtil {
         this.printStackTrace(PrintWriter(stringWriter))
         return stringWriter.toString()
     }
+
+    fun Int.thousands(): String {
+        return String.format("%,d", this)
+    }
+
+    val Class<*>.realName: String
+        get() = this.name.removePrefix(this.packageName).removePrefix(".")
 }

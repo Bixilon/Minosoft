@@ -17,7 +17,7 @@ import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.world.block.entities.ArrayBlockEntityProvider
 import de.bixilon.minosoft.data.world.block.entities.BlockEntityProvider
 import de.bixilon.minosoft.data.world.block.entities.MapBlockEntityProvider
-import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import glm_.vec3.Vec3i
 

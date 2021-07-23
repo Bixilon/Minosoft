@@ -34,7 +34,6 @@ public final class ProtocolDefinition {
     public static final int FLATTING_VERSION_ID = ProtocolVersions.V_17W47A;
     public static final int PRE_FLATTENING_VERSION_ID = ProtocolVersions.V_17W46A;
 
-    public static final int FALLBACK_PROTOCOL_VERSION_ID = ProtocolVersions.V_1_8_9; // some servers (like cytooxien.de) send us version id -1.
     public static final int QUERY_PROTOCOL_VERSION_ID = -1;
 
     public static final int LAN_SERVER_BROADCAST_PORT = 4445;

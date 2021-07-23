@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.entities.block
 
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 class BellBlockEntity(connection: PlayConnection) : BlockEntity(connection), BlockActionEntity {
     var shakingDirection: Directions = Directions.NORTH

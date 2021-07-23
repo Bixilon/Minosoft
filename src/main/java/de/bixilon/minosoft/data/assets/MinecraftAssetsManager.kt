@@ -65,11 +65,11 @@ class MinecraftAssetsManager(
     }
 
     private fun getAssetPath(resourceLocation: ResourceLocation, compress: Boolean = true): String {
-        return FileAssetsManager.getAssetDiskPath(getAssetHash(resourceLocation), compress)
+        return AssetsUtil.getAssetDiskPath(getAssetHash(resourceLocation), compress)
     }
 
     fun readAssetAsStream(hash: String, compressed: Boolean = true): InputStream {
-        var inputStream: InputStream = FileInputStream(FileAssetsManager.getAssetDiskPath(hash, compressed))
+        var inputStream: InputStream = FileInputStream(AssetsUtil.getAssetDiskPath(hash, compressed))
         if (compressed) {
             inputStream = GZIPInputStream(inputStream)
         }
@@ -107,7 +107,7 @@ class MinecraftAssetsManager(
             if (!relevant) {
                 continue
             }
-            val hash: String = saveAsset(versionJar)
+            val hash: String = FileAssetsManager.saveAsset(versionJar)
             clientJarAssetsHashMap[currentZipEntry.name.substring("assets/".length)] = hash
         }
         val clientJarAssetsMapping = JsonObject()
@@ -115,13 +115,13 @@ class MinecraftAssetsManager(
             clientJarAssetsMapping.addProperty(path, hash)
         }
         val json = Util.GSON.toJson(clientJarAssetsMapping)
-        val assetHash: String = saveAsset(json.toByteArray())
+        val assetHash: String = FileAssetsManager.saveAsset(json.toByteArray())
         Log.log(LogMessageType.ASSETS, LogLevels.INFO) { "Generated client.jar assets for ${assetVersion.version} in ${System.currentTimeMillis() - startTime}ms (elements=${clientJarAssetsHashMap.size}, hash=$assetHash" }
         return assetHash
     }
 
     private fun downloadAssetsIndex() {
-        Util.downloadFileAsGz(String.format(ProtocolDefinition.MOJANG_URL_PACKAGES + ".json", assetVersion.indexHash, assetVersion.indexVersion), FileAssetsManager.getAssetDiskPath(assetVersion.indexHash!!, true))
+        Util.downloadFileAsGz(String.format(ProtocolDefinition.MOJANG_URL_PACKAGES + ".json", assetVersion.indexHash, assetVersion.indexVersion), AssetsUtil.getAssetDiskPath(assetVersion.indexHash!!, true))
     }
 
     private fun downloadAsset(source: AssetsSource, hash: String) {
@@ -202,7 +202,7 @@ class MinecraftAssetsManager(
     }
 
     override fun getFileAssetSize(hash: String, compress: Boolean): Long {
-        val file = File(FileAssetsManager.getAssetDiskPath(hash, compress))
+        val file = File(AssetsUtil.getAssetDiskPath(hash, compress))
         return if (file.exists()) {
             file.length()
         } else {

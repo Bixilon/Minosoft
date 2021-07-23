@@ -16,7 +16,7 @@ package de.bixilon.minosoft.modding.event.events;
 import de.bixilon.minosoft.data.Difficulties;
 import de.bixilon.minosoft.data.abilities.Gamemodes;
 import de.bixilon.minosoft.data.registries.Dimension;
-import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection;
 import de.bixilon.minosoft.protocol.packets.s2c.play.RespawnS2CP;
 
 public class RespawnEvent extends PlayConnectionEvent {

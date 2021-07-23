@@ -11,24 +11,28 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.protocol.network.connection
+package de.bixilon.minosoft.protocol.network.connection.status
 
 import de.bixilon.minosoft.data.registries.versions.Version
 import de.bixilon.minosoft.data.registries.versions.Versions
-import de.bixilon.minosoft.modding.event.EventInvoker
+import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.modding.event.events.ConnectionStateChangeEvent
 import de.bixilon.minosoft.modding.event.events.PacketReceiveEvent
-import de.bixilon.minosoft.modding.event.events.ServerListPongEvent
-import de.bixilon.minosoft.modding.event.events.ServerListStatusArriveEvent
+import de.bixilon.minosoft.modding.event.events.status.ServerStatusReceiveEvent
+import de.bixilon.minosoft.modding.event.events.status.StatusConnectionErrorEvent
+import de.bixilon.minosoft.modding.event.events.status.StatusConnectionUpdateEvent
+import de.bixilon.minosoft.modding.event.events.status.StatusPongReceiveEvent
+import de.bixilon.minosoft.modding.event.invoker.EventInvoker
+import de.bixilon.minosoft.protocol.network.connection.Connection
 import de.bixilon.minosoft.protocol.packets.c2s.handshaking.HandshakeC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.status.StatusRequestC2SP
 import de.bixilon.minosoft.protocol.packets.s2c.S2CPacket
 import de.bixilon.minosoft.protocol.packets.s2c.StatusS2CPacket
-import de.bixilon.minosoft.protocol.ping.ServerListPing
-import de.bixilon.minosoft.protocol.protocol.ConnectionPing
 import de.bixilon.minosoft.protocol.protocol.ConnectionStates
 import de.bixilon.minosoft.protocol.protocol.PacketTypes
+import de.bixilon.minosoft.protocol.protocol.PingQuery
 import de.bixilon.minosoft.protocol.protocol.Protocol
+import de.bixilon.minosoft.protocol.status.ServerStatus
 import de.bixilon.minosoft.util.DNSUtil
 import de.bixilon.minosoft.util.ServerAddress
 import de.bixilon.minosoft.util.logging.Log
@@ -39,9 +43,14 @@ import de.bixilon.minosoft.util.task.pool.DefaultThreadPool
 class StatusConnection(
     val address: String,
 ) : Connection() {
-    var lastPing: ServerListPing? = null
-    var connectionStatusPing: ConnectionPing? = null
-    var pong: ServerListPongEvent? = null
+    var pingStatus = StatusConnectionStatuses.WAITING
+        set(value) {
+            field = value
+            fireEvent(StatusConnectionUpdateEvent(this, EventInitiators.UNKNOWN, value))
+        }
+    var lastServerStatus: ServerStatus? = null
+    var pingQuery: PingQuery? = null
+    var lastPongEvent: StatusPongReceiveEvent? = null
 
     lateinit var realAddress: ServerAddress
         private set
@@ -49,13 +58,24 @@ class StatusConnection(
 
     var serverVersion: Version? = null
 
+    override var error: Throwable? = super.error
+        set(value) {
+            field = value
+            value?.let {
+                fireEvent(StatusConnectionErrorEvent(this, EventInitiators.UNKNOWN, it))
+            }
+        }
+
 
     fun resolve() {
+        pingStatus = StatusConnectionStatuses.RESOLVING
         error = null
 
-        if (this.addresses == null) {
-            this.addresses = DNSUtil.resolveServerAddress(address)
-            this.realAddress = this.addresses!!.first()
+        var addresses = this.addresses
+        if (addresses == null) {
+            addresses = DNSUtil.resolveServerAddress(address)
+            realAddress = addresses.first()
+            this.addresses = addresses
         }
     }
 
@@ -72,6 +92,7 @@ class StatusConnection(
 
             Log.log(LogMessageType.NETWORK_RESOLVING) { "Trying to ping $realAddress (from $address)" }
 
+            pingStatus = StatusConnectionStatuses.ESTABLISHING
             network.connect(realAddress)
         }
     }
@@ -85,20 +106,20 @@ class StatusConnection(
             fireEvent(ConnectionStateChangeEvent(this, previousConnectionState, connectionState))
             when (value) {
                 ConnectionStates.HANDSHAKING -> {
+                    pingStatus = StatusConnectionStatuses.HANDSHAKING
                     network.sendPacket(HandshakeC2SP(realAddress, ConnectionStates.STATUS, Versions.AUTOMATIC_VERSION.protocolId))
                     connectionState = ConnectionStates.STATUS
                 }
                 ConnectionStates.STATUS -> {
+                    pingStatus = StatusConnectionStatuses.QUERYING_STATUS
                     network.sendPacket(StatusRequestC2SP())
                 }
                 ConnectionStates.DISCONNECTED -> {
                     if (previousConnectionState.connected) {
                         wasConnected = true
-                        handlePingCallbacks(this.lastPing)
                         return
                     }
                     if (addresses == null || error != null) {
-                        handlePingCallbacks(null)
                         return
                     }
 
@@ -110,18 +131,13 @@ class StatusConnection(
                         ping()
                     } else {
                         // no connection and no servers available anymore... sorry, but you can not play today :(
-                        handlePingCallbacks(null)
+                        error = Exception("Tried all hostnames")
                     }
                 }
                 else -> {
                 }
             }
         }
-
-    fun handlePingCallbacks(ping: ServerListPing?) {
-        lastPing = ping
-        fireEvent(ServerListStatusArriveEvent(this, ping))
-    }
 
     override fun getPacketId(packetType: PacketTypes.C2S): Int {
         return Protocol.getPacketId(packetType)!!
@@ -147,13 +163,27 @@ class StatusConnection(
     }
 
     override fun registerEvent(invoker: EventInvoker) {
-        if (invoker.eventType.isAssignableFrom(ServerListStatusArriveEvent::class.java) && wasConnected) {
-            // ping done
-            invoker(ServerListStatusArriveEvent(this, this.lastPing))
-        } else if (invoker.eventType.isAssignableFrom(ServerListPongEvent::class.java) && wasConnected && this.pong != null) {
-            invoker(this.pong!!)
-        } else {
+        if (!invoker.eventType.isAssignableFrom(ServerStatusReceiveEvent::class.java) && !invoker.eventType.isAssignableFrom(StatusConnectionErrorEvent::class.java) && !invoker.eventType.isAssignableFrom(StatusConnectionUpdateEvent::class.java) && !invoker.eventType.isAssignableFrom(StatusPongReceiveEvent::class.java)) {
             super.registerEvent(invoker)
+            return
+        }
+
+
+        when {
+            invoker.eventType.isAssignableFrom(StatusConnectionErrorEvent::class.java) -> {
+                error?.let { invoker.invoke(StatusConnectionErrorEvent(this, EventInitiators.UNKNOWN, it)) } ?: super.registerEvent(invoker)
+            }
+            invoker.eventType.isAssignableFrom(ServerStatusReceiveEvent::class.java) -> {
+                lastServerStatus?.let { invoker.invoke(ServerStatusReceiveEvent(this, EventInitiators.UNKNOWN, it)) } ?: super.registerEvent(invoker)
+            }
+            invoker.eventType.isAssignableFrom(StatusPongReceiveEvent::class.java) -> {
+                lastPongEvent?.let { invoker.invoke(it) } ?: super.registerEvent(invoker)
+            }
+            invoker.eventType.isAssignableFrom(StatusConnectionUpdateEvent::class.java) -> {
+                super.registerEvent(invoker)
+                invoker.invoke(StatusConnectionUpdateEvent(this, EventInitiators.UNKNOWN, pingStatus))
+            }
+            else -> TODO()
         }
     }
 }

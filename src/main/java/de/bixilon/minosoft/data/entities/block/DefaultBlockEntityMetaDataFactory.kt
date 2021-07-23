@@ -22,7 +22,7 @@ import de.bixilon.minosoft.data.entities.block.piston.StickyPistonBlockEntity
 import de.bixilon.minosoft.data.entities.block.redstone.ComparatorBlockEntity
 import de.bixilon.minosoft.data.entities.block.redstone.DaylightDetectorBlockEntity
 import de.bixilon.minosoft.data.registries.factory.DefaultFactory
-import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 object DefaultBlockEntityMetaDataFactory : DefaultFactory<BlockEntityFactory<out BlockEntity>>(
     BedBlockEntity,

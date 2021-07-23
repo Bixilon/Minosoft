@@ -14,17 +14,18 @@
 package de.bixilon.minosoft.util
 
 import de.bixilon.minosoft.ShutdownReasons
+import kotlin.system.exitProcess
 
 object ShutdownManager {
     private var initialized = false
 
 
     fun shutdown(message: String? = null, reason: ShutdownReasons = ShutdownReasons.UNKNOWN) {
-
+        // ToDo
+        exitProcess(reason.exitCode)
     }
 
     fun init() {
-        // ToDo
-        initialized = true
+        initialized = true // ToDo: Shutdown hook
     }
 }

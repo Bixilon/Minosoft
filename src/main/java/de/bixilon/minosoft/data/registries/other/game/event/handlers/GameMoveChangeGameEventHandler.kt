@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.registries.other.game.event.handlers
 
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
 
 object GameMoveChangeGameEventHandler : GameEventHandler {

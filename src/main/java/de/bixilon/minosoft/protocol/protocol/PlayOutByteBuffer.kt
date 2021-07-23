@@ -13,7 +13,7 @@
 package de.bixilon.minosoft.protocol.protocol
 
 import de.bixilon.minosoft.data.inventory.ItemStack
-import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import glm_.vec3.Vec3i
 
 class PlayOutByteBuffer(override val connection: PlayConnection) : OutByteBuffer(connection) {

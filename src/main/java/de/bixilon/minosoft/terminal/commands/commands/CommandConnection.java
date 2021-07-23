@@ -19,7 +19,7 @@ import de.bixilon.minosoft.data.commands.CommandLiteralNode;
 import de.bixilon.minosoft.data.commands.CommandNode;
 import de.bixilon.minosoft.data.commands.parser.IntegerParser;
 import de.bixilon.minosoft.data.commands.parser.properties.IntegerParserProperties;
-import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection;
 import de.bixilon.minosoft.terminal.CLI;
 import de.bixilon.minosoft.terminal.commands.exceptions.ConnectionNotFoundCommandParseException;
 

@@ -17,6 +17,8 @@ import com.google.common.collect.HashBiMap;
 import de.bixilon.minosoft.config.server.Server;
 import de.bixilon.minosoft.util.Util;
 import de.bixilon.minosoft.util.logging.Log;
+import de.bixilon.minosoft.util.logging.LogLevels;
+import de.bixilon.minosoft.util.logging.LogMessageType;
 
 import java.net.*;
 import java.nio.charset.StandardCharsets;
@@ -37,6 +39,7 @@ public class LANServerListener {
                 MulticastSocket socket = new MulticastSocket(ProtocolDefinition.LAN_SERVER_BROADCAST_PORT);
                 socket.joinGroup(new InetSocketAddress(ProtocolDefinition.LAN_SERVER_BROADCAST_INET_ADDRESS, ProtocolDefinition.LAN_SERVER_BROADCAST_PORT), NetworkInterface.getByInetAddress(ProtocolDefinition.LAN_SERVER_BROADCAST_INET_ADDRESS));
                 byte[] buf = new byte[256]; // this should be enough, if the packet is longer, it is probably invalid
+                Log.log(LogMessageType.NETWORK_STATUS, LogLevels.INFO, () -> "Listening for LAN servers");
                 latch.countDown();
                 while (true) {
                     try {

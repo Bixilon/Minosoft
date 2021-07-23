@@ -16,7 +16,7 @@ package de.bixilon.minosoft.modding.event.events
 import de.bixilon.minosoft.data.SoundCategories
 import de.bixilon.minosoft.data.registries.sounds.SoundEvent
 import de.bixilon.minosoft.modding.event.EventInitiators
-import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.play.NamedSoundEventS2CP
 import de.bixilon.minosoft.protocol.packets.s2c.play.SoundEventS2CP
 import glm_.vec3.Vec3

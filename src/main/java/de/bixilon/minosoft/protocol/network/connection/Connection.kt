@@ -14,9 +14,9 @@
 package de.bixilon.minosoft.protocol.network.connection
 
 import de.bixilon.minosoft.Minosoft
-import de.bixilon.minosoft.modding.event.EventInvoker
 import de.bixilon.minosoft.modding.event.events.Event
 import de.bixilon.minosoft.modding.event.events.PacketSendEvent
+import de.bixilon.minosoft.modding.event.invoker.EventInvoker
 import de.bixilon.minosoft.modding.event.master.AbstractEventMaster
 import de.bixilon.minosoft.modding.event.master.EventMaster
 import de.bixilon.minosoft.protocol.network.Network
@@ -32,7 +32,7 @@ abstract class Connection : AbstractEventMaster {
     private val eventMaster = EventMaster(Minosoft.GLOBAL_EVENT_MASTER)
     val connectionId = lastConnectionId++
     abstract var connectionState: ConnectionStates
-    var error: Throwable? = null
+    open var error: Throwable? = null
     var wasConnected = false
 
     abstract fun getPacketId(packetType: C2S): Int

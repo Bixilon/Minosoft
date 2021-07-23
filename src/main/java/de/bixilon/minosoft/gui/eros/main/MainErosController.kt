@@ -13,15 +13,21 @@
 
 package de.bixilon.minosoft.gui.eros.main
 
+import de.bixilon.minosoft.ShutdownReasons
+import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.gui.eros.controller.JavaFXWindowController
+import de.bixilon.minosoft.gui.eros.main.play.PlayMainController
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.util.GitInfo
+import de.bixilon.minosoft.util.KUtil.asResourceLocation
 import de.bixilon.minosoft.util.KUtil.decide
+import de.bixilon.minosoft.util.ShutdownManager
 import javafx.fxml.FXML
 import javafx.scene.image.ImageView
-import javafx.scene.layout.HBox
+import javafx.scene.layout.Pane
 import javafx.scene.paint.Color
 import javafx.scene.text.Text
+import javafx.stage.WindowEvent
 import org.kordamp.ikonli.javafx.FontIcon
 
 
@@ -48,7 +54,7 @@ class MainErosController : JavaFXWindowController() {
     private lateinit var exitIconFX: FontIcon
 
     @FXML
-    private lateinit var contentFX: HBox
+    private lateinit var contentFX: Pane
 
 
     private lateinit var icons: List<FontIcon>
@@ -59,18 +65,30 @@ class MainErosController : JavaFXWindowController() {
             if (icon === iconToSelect) {
                 continue
             }
-            icon.isDisable = true
-            icon.iconColor = Color.GRAY
+            icon.isDisable = false
+            icon.iconColor = Color.BLACK
         }
-        iconToSelect.isDisable = false
-        iconToSelect.iconColor = Color.BLACK
+        iconToSelect.isDisable = true
+        iconToSelect.iconColor = Color.LIGHTBLUE
     }
 
     override fun init() {
         logoFX.image = JavaFXUtil.MINOSOFT_LOGO
-        versionTextFX.text = "Minosoft " + GitInfo.IS_INITIALIZED.decide(GitInfo.GIT_COMMIT_ID, "v?")
+        versionTextFX.text = "Minosoft " + GitInfo.IS_INITIALIZED.decide(GitInfo.GIT_COMMIT_ID, StaticConfiguration.VERSION)
         icons = listOf(playIconFX, settingsIconFX, helpIconFX, aboutIconFX, exitIconFX)
 
         select(playIconFX)
+
+        exitIconFX.setOnMouseClicked {
+            ShutdownManager.shutdown(reason = ShutdownReasons.REQUESTED_BY_USER)
+        }
+
+        contentFX.children.setAll(JavaFXUtil.loadEmbeddedController<PlayMainController>("minosoft:eros/main/play/play.fxml".asResourceLocation()).root)
+    }
+
+    override fun postInit() {
+        stage.scene.window.addEventFilter(WindowEvent.WINDOW_CLOSE_REQUEST) {
+            ShutdownManager.shutdown(reason = ShutdownReasons.REQUESTED_BY_USER)
+        }
     }
 }

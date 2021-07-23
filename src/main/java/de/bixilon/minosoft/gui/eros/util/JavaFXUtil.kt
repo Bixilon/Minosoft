@@ -15,15 +15,21 @@ package de.bixilon.minosoft.gui.eros.util
 
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.gui.eros.controller.EmbeddedJavaFXController
 import de.bixilon.minosoft.gui.eros.controller.JavaFXController
 import de.bixilon.minosoft.gui.eros.controller.JavaFXWindowController
+import de.bixilon.minosoft.util.KUtil.setValue
 import javafx.application.HostServices
 import javafx.fxml.FXMLLoader
 import javafx.scene.Parent
 import javafx.scene.Scene
 import javafx.scene.image.Image
+import javafx.scene.layout.Pane
+import javafx.scene.text.TextFlow
 import javafx.stage.Modality
 import javafx.stage.Stage
+import kotlin.reflect.jvm.javaField
 
 object JavaFXUtil {
     lateinit var MINOSOFT_LOGO: Image
@@ -36,13 +42,32 @@ object JavaFXUtil {
         stage.initModality(modality)
         stage.title = Minosoft.LANGUAGE_MANAGER.translate(title).message
         stage.scene = Scene(parent)
+        stage.icons.setAll(MINOSOFT_LOGO)
 
         val controller = fxmlLoader.getController<T>()
 
         if (controller is JavaFXWindowController) {
             controller.stage = stage
+            controller.postInit()
         }
 
         return controller
     }
+
+    fun <T : EmbeddedJavaFXController<out Pane>> loadEmbeddedController(layout: ResourceLocation): T {
+        val fxmlLoader = FXMLLoader()
+        val pane = fxmlLoader.load<Pane>(Minosoft.MINOSOFT_ASSETS_MANAGER.readAssetAsStream(layout))
+
+        val controller = fxmlLoader.getController<T>()
+
+        controller::root.javaField!!.setValue(controller, pane)
+
+        return controller
+    }
+
+    var TextFlow.text: ChatComponent
+        get() = TODO()
+        set(value) {
+            this.children.setAll(value.javaFXText)
+        }
 }

@@ -13,7 +13,7 @@
 package de.bixilon.minosoft.protocol.packets.s2c.play
 
 import de.bixilon.minosoft.data.entities.EntityRotation
-import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.c2s.play.PositionAndRotationC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.TeleportConfirmC2SP
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket

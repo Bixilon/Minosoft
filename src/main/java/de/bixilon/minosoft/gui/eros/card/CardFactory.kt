@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2021 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,28 +11,21 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.modding.event.events;
+package de.bixilon.minosoft.gui.eros.card
 
-import de.bixilon.minosoft.protocol.network.connection.StatusConnection;
-import de.bixilon.minosoft.protocol.packets.s2c.status.StatusPongS2CP;
+import de.bixilon.minosoft.Minosoft
+import de.bixilon.minosoft.data.registries.ResourceLocation
+import javafx.fxml.FXMLLoader
+import javafx.scene.control.ListCell
 
-/**
- * Fired when the connection status is "STATUS" and the ping gets pack (pong)
- */
-public class StatusPongEvent extends ConnectionEvent {
-    private final long pongId;
+interface CardFactory<T : ListCell<*>> {
+    val FXML: ResourceLocation
 
-    public StatusPongEvent(StatusConnection connection, long pongId) {
-        super(connection);
-        this.pongId = pongId;
-    }
+    fun build(): T {
+        val loader = FXMLLoader()
 
-    public StatusPongEvent(StatusConnection connection, StatusPongS2CP pkg) {
-        super(connection);
-        this.pongId = pkg.getPingId();
-    }
+        loader.load<Any>(Minosoft.MINOSOFT_ASSETS_MANAGER.readAssetAsStream(FXML))
 
-    public long getPongId() {
-        return this.pongId;
+        return loader.getController()
     }
 }

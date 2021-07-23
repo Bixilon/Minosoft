@@ -10,27 +10,11 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.protocol.protocol
 
-package de.bixilon.minosoft.modding.event.events;
+import java.util.concurrent.ThreadLocalRandom
 
-import de.bixilon.minosoft.protocol.network.connection.Connection;
-import de.bixilon.minosoft.protocol.ping.ServerListPing;
-
-import javax.annotation.Nullable;
-
-/**
- * Fired when the status arrives from the server or the status already arrived and the event got registered too late
- */
-public class ServerListStatusArriveEvent extends ConnectionEvent {
-    private final ServerListPing serverListPing;
-
-    public ServerListStatusArriveEvent(Connection connection, ServerListPing serverListPing) {
-        super(connection);
-        this.serverListPing = serverListPing;
-    }
-
-    @Nullable
-    public ServerListPing getServerListPing() {
-        return this.serverListPing;
-    }
-}
+class PingQuery(
+    val pingId: Long = ThreadLocalRandom.current().nextLong(),
+    val time: Long = System.currentTimeMillis(),
+)

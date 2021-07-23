@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2021 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -10,17 +10,15 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.modding.event
 
-import de.bixilon.minosoft.modding.event.events.Event
-import de.bixilon.minosoft.modding.loading.Priorities
+package de.bixilon.minosoft.modding.event.events.status
 
-abstract class EventInvoker(
-    val isIgnoreCancelled: Boolean,
-    val priority: Priorities,
-    protected val listener: EventListener?,
-) {
-    abstract val eventType: Class<out Event?>
+import de.bixilon.minosoft.modding.event.EventInitiators
+import de.bixilon.minosoft.modding.event.events.ConnectionEvent
+import de.bixilon.minosoft.protocol.network.connection.status.StatusConnection
 
-    abstract operator fun invoke(event: Event)
-}
+abstract class StatusConnectionEvent(
+    override val connection: StatusConnection,
+    initiator: EventInitiators = EventInitiators.DEFAULT,
+) : ConnectionEvent(connection, initiator)
+

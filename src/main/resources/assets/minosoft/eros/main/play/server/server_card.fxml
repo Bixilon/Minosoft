@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<HBox xmlns:fx="http://javafx.com/fxml/1" fx:id="root" prefHeight="100.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/16" fx:controller="de.bixilon.minosoft.gui.eros.main.play.server.card.ServerCardController">
+    <GridPane HBox.hgrow="ALWAYS">
+        <columnConstraints>
+            <ColumnConstraints hgrow="NEVER" maxWidth="150.0" minWidth="10.0" prefWidth="150.0"/>
+            <ColumnConstraints hgrow="ALWAYS" maxWidth="Infinity" minWidth="10.0"/>
+        </columnConstraints>
+        <rowConstraints>
+            <RowConstraints maxHeight="-Infinity" minHeight="100.0" prefHeight="100.0" vgrow="NEVER"/>
+        </rowConstraints>
+        <ImageView fx:id="faviconFX" fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true"/>
+        <GridPane GridPane.columnIndex="1">
+            <columnConstraints>
+                <ColumnConstraints hgrow="ALWAYS" maxWidth="Infinity" minWidth="10.0"/>
+                <ColumnConstraints hgrow="NEVER" minWidth="10.0"/>
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+            </rowConstraints>
+            <GridPane>
+                <columnConstraints>
+                    <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0"/>
+                </columnConstraints>
+                <rowConstraints>
+                    <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="50.0" vgrow="NEVER"/>
+                    <RowConstraints maxHeight="Infinity" minHeight="10.0" vgrow="ALWAYS"/>
+                </rowConstraints>
+                <TextFlow fx:id="serverNameFX" prefHeight="200.0" prefWidth="200.0">
+                    <Text text="Servername"/>
+                </TextFlow>
+                <TextFlow fx:id="motdFX" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
+                    <Text text="Dummy motd&#10;2nd line of motd&#10;"/>
+                </TextFlow>
+            </GridPane>
+            <GridPane GridPane.columnIndex="1">
+                <columnConstraints>
+                    <ColumnConstraints halignment="RIGHT" hgrow="NEVER" minWidth="50.0"/>
+                </columnConstraints>
+                <rowConstraints>
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER"/>
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER"/>
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER"/>
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS"/>
+                </rowConstraints>
+                <Text fx:id="pingFX" text="20 ms"/>
+                <Text fx:id="playerCountFX" text="0 / 123.456.789" GridPane.rowIndex="1"/>
+                <Text fx:id="serverVersionFX" text="1.17.1" GridPane.rowIndex="2"/>
+            </GridPane>
+        </GridPane>
+    </GridPane>
+</HBox>

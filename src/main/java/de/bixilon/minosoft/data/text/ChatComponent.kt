@@ -17,6 +17,7 @@ import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import com.google.gson.JsonPrimitive
 import de.bixilon.minosoft.data.language.Translator
+import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.text
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.font.text.TextGetProperties
 import de.bixilon.minosoft.gui.rendering.font.text.TextSetProperties
@@ -25,6 +26,7 @@ import glm_.vec2.Vec2i
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList
 import javafx.scene.Node
+import javafx.scene.text.TextFlow
 
 interface ChatComponent {
     /**
@@ -53,6 +55,13 @@ interface ChatComponent {
     val javaFXText: ObservableList<Node>
         get() = getJavaFXText(FXCollections.observableArrayList())
 
+    val textFlow: TextFlow
+        get() {
+            val textFlow = TextFlow()
+            textFlow.text = this
+            return textFlow
+        }
+
     /**
      * Sets a default color for all elements that don't have a color yet
      */
@@ -65,9 +74,11 @@ interface ChatComponent {
     fun prepareRender(startPosition: Vec2i, offset: Vec2i, renderWindow: RenderWindow, textElement: LabelNode, z: Int, setProperties: TextSetProperties, getProperties: TextGetProperties)
 
     companion object {
+        val EMPTY = ChatComponent.of("")
 
         @JvmOverloads
         fun of(raw: Any? = null, translator: Translator? = null, parent: TextComponent? = null, ignoreJson: Boolean = false): ChatComponent {
+            // ToDo: Remove gson, replace with maps
             if (raw == null) {
                 return BaseComponent()
             }

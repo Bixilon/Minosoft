@@ -20,7 +20,7 @@ import de.bixilon.minosoft.data.commands.parser.exceptions.resourcelocation.Ench
 import de.bixilon.minosoft.data.commands.parser.exceptions.resourcelocation.EntityNotFoundCommandParseException
 import de.bixilon.minosoft.data.commands.parser.exceptions.resourcelocation.MobEffectNotFoundCommandParseException
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties
-import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 class ResourceLocationListParser : CommandParser() {
 

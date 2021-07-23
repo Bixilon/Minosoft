@@ -18,7 +18,7 @@ import de.bixilon.minosoft.data.commands.CommandStringReader;
 import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException;
 import de.bixilon.minosoft.data.commands.parser.exceptions.entity.UnknownEntityCommandParseException;
 import de.bixilon.minosoft.data.registries.ResourceLocation;
-import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection;
 
 public class ResourceLocationSelectorArgumentParser extends EntitySelectorArgumentParser {
     public static final ResourceLocationSelectorArgumentParser ENTITY_TYPE_RESOURCE_LOCATION_SELECTOR_ARGUMENT_PARSER = new ResourceLocationSelectorArgumentParser();

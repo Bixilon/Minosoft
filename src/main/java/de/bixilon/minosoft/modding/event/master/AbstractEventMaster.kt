@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.modding.event.master
 
-import de.bixilon.minosoft.modding.event.EventInvoker
 import de.bixilon.minosoft.modding.event.events.Event
+import de.bixilon.minosoft.modding.event.invoker.EventInvoker
 
 interface AbstractEventMaster : Iterable<EventInvoker> {
     val size: Int

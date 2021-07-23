@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.eros.crash
 import de.bixilon.minosoft.ShutdownReasons
 import de.bixilon.minosoft.gui.eros.controller.JavaFXWindowController
 import de.bixilon.minosoft.gui.eros.util.JavaFXInitializer
+import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.terminal.CommandLineArguments
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.*
@@ -155,6 +156,7 @@ class ErosCrashReport : JavaFXWindowController() {
                 stage.initModality(Modality.APPLICATION_MODAL)
                 stage.title = "Fatal Crash - Minosoft"
                 stage.scene = Scene(parent)
+                stage.icons.setAll(JavaFXUtil.MINOSOFT_LOGO)
 
                 val crashReport = fxmlLoader.getController<ErosCrashReport>()
                 crashReport.exception = this

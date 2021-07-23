@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.layout.*?>
+<HBox xmlns:fx="http://javafx.com/fxml/1" prefHeight="500.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/16" AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" fx:controller="de.bixilon.minosoft.gui.eros.main.play.PlayMainController">
+    <GridPane HBox.hgrow="ALWAYS">
+        <columnConstraints>
+            <ColumnConstraints hgrow="NEVER" minWidth="10.0" prefWidth="150.0"/>
+            <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0" maxWidth="Infinity"/>
+        </columnConstraints>
+        <rowConstraints>
+            <RowConstraints minHeight="10.0" prefHeight="30.0" maxHeight="Infinity" vgrow="ALWAYS"/>
+        </rowConstraints>
+        <AnchorPane fx:id="playTypeContentFX" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS"/>
+        <GridPane prefHeight="400.0" prefWidth="235.0" HBox.hgrow="ALWAYS">
+            <columnConstraints>
+                <ColumnConstraints hgrow="NEVER" maxWidth="160.0" minWidth="10.0" prefWidth="160.0"/>
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints maxHeight="Infinity" minHeight="10.0" prefHeight="420.0" vgrow="ALWAYS"/>
+                <RowConstraints maxHeight="80.0" minHeight="10.0" prefHeight="80.0" vgrow="NEVER"/>
+            </rowConstraints>
+            <GridPane.margin>
+                <Insets right="10.0"/>
+            </GridPane.margin>
+            <ListView fx:id="playTypeListViewFX" maxHeight="Infinity" maxWidth="Infinity" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS"/>
+            <Pane fx:id="refreshPaneFX" GridPane.rowIndex="1"/>
+        </GridPane>
+    </GridPane>
+</HBox>

@@ -25,6 +25,7 @@ import de.bixilon.minosoft.data.tags.Tag
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.network.connection.Connection
 import de.bixilon.minosoft.util.Util
+import de.bixilon.minosoft.util.json.JSONSerializer
 import de.bixilon.minosoft.util.nbt.tag.NBTTagTypes
 import glm_.vec2.Vec2i
 import glm_.vec3.Vec3
@@ -247,12 +248,22 @@ open class InByteBuffer {
         return readArray(length) { readUUID() }
     }
 
-    fun readJson(): JsonObject {
+    fun readJson(): Map<String, Any> {
+        return JSONSerializer.MAP_ADAPTER.fromJson(readString())!!
+    }
+
+    fun readJsonArray(length: Int = readVarInt()): Array<Map<String, Any>> {
+        return readArray(length) { readJson() }
+    }
+
+    @Deprecated(message = "GSON is deprecated")
+    fun readLegacyJson(): JsonObject {
         return JsonParser.parseString(readString()).asJsonObject
     }
 
-    fun readJsonArray(length: Int = readVarInt()): Array<JsonObject> {
-        return readArray(length) { readJson() }
+    @Deprecated(message = "GSON is deprecated")
+    fun readLegacyJsonArray(length: Int = readVarInt()): Array<JsonObject> {
+        return readArray(length) { readLegacyJson() }
     }
 
     open fun readChatComponent(): ChatComponent {

@@ -12,12 +12,13 @@
  */
 package de.bixilon.minosoft.util
 
+import de.bixilon.minosoft.util.KUtil.synchronizedSetOf
 import de.bixilon.minosoft.util.KUtil.toSynchronizedList
 
 
 class CountUpAndDownLatch @JvmOverloads constructor(count: Int, var parent: CountUpAndDownLatch? = null) {
     private val lock = Object()
-    private val children: MutableSet<CountUpAndDownLatch> = mutableSetOf()
+    private val children: MutableSet<CountUpAndDownLatch> = synchronizedSetOf()
     private var rawCount = 0
         set(value) {
             val diff = value - field

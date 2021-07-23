@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c
 
-import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 abstract class PlayS2CPacket : S2CPacket() {
 

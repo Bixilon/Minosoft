@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2021 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,28 +11,14 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.modding.event.events;
+package de.bixilon.minosoft.modding.event.events.status
 
-import de.bixilon.minosoft.protocol.network.connection.Connection;
+import de.bixilon.minosoft.modding.event.EventInitiators
+import de.bixilon.minosoft.protocol.network.connection.status.StatusConnection
+import de.bixilon.minosoft.protocol.network.connection.status.StatusConnectionStatuses
 
-/**
- * Fired when a pong is received from the server or the pong has already arrived and the event got registered too late
- */
-public class ServerListPongEvent extends ConnectionEvent {
-    private final long pingId;
-    private final long latency;
-
-    public ServerListPongEvent(Connection connection, long pingId, long latency) {
-        super(connection);
-        this.pingId = pingId;
-        this.latency = latency;
-    }
-
-    public long getPingId() {
-        return this.pingId;
-    }
-
-    public long getLatency() {
-        return this.latency;
-    }
-}
+class StatusConnectionUpdateEvent(
+    connection: StatusConnection,
+    initiator: EventInitiators,
+    val status: StatusConnectionStatuses,
+) : StatusConnectionEvent(connection, initiator)

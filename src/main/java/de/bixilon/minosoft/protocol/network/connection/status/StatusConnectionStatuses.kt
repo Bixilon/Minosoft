@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2021 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,21 +11,21 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.protocol.ping;
+package de.bixilon.minosoft.protocol.network.connection.status
 
-public class VanillaModInfo implements ServerModInfo {
-    @Override
-    public String getBrand() {
-        return "Vanilla";
-    }
+import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.registries.registry.Translatable
+import de.bixilon.minosoft.util.KUtil.asResourceLocation
 
-    @Override
-    public String getInfo() {
-        return "Not modded Vanilla server";
-    }
+enum class StatusConnectionStatuses : Translatable {
+    WAITING,
+    RESOLVING,
+    ESTABLISHING,
+    HANDSHAKING,
+    QUERYING_STATUS,
+    QUERYING_PING,
+    PING_DONE,
+    ;
 
-    @Override
-    public ServerModTypes getType() {
-        return ServerModTypes.VANILLA;
-    }
+    override val translationKey: ResourceLocation = "minosoft:status.connection.state.${name.lowercase()}".asResourceLocation()
 }

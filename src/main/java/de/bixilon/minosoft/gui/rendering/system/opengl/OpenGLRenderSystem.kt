@@ -31,7 +31,7 @@ import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.vertex.FloatOpenGL
 import de.bixilon.minosoft.gui.rendering.system.opengl.texture.OpenGLTextureManager
 import de.bixilon.minosoft.gui.rendering.system.opengl.vendor.*
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
-import de.bixilon.minosoft.modding.event.CallbackEventInvoker
+import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.util.KUtil.synchronizedSetOf
 import glm_.vec2.Vec2i
 import org.lwjgl.BufferUtils

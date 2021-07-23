@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.data.registries.other.game.event.handlers
 
 import de.bixilon.minosoft.data.registries.CompanionResourceLocation
-import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 interface GameEventHandler : CompanionResourceLocation {
     fun handle(data: Float, connection: PlayConnection)

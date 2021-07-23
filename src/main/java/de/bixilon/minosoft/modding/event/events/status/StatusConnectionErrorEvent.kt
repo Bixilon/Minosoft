@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2021 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -10,21 +10,14 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.modding.event.events
+
+package de.bixilon.minosoft.modding.event.events.status
 
 import de.bixilon.minosoft.modding.event.EventInitiators
-import de.bixilon.minosoft.protocol.network.connection.StatusConnection
-import de.bixilon.minosoft.protocol.packets.s2c.status.PacketStatusResponse
-import de.bixilon.minosoft.protocol.ping.ServerListPing
+import de.bixilon.minosoft.protocol.network.connection.status.StatusConnection
 
-/**
- * Fired when the connection status is "STATUS" and the server send general information such as players online, motd, etc
- */
-class StatusResponseEvent(
+class StatusConnectionErrorEvent(
     connection: StatusConnection,
     initiator: EventInitiators,
-    val response: ServerListPing,
-) : ConnectionEvent(connection, initiator) {
-
-    constructor(connection: StatusConnection, packet: PacketStatusResponse) : this(connection, EventInitiators.SERVER, packet.response)
-}
+    val exception: Throwable,
+) : StatusConnectionEvent(connection, initiator)

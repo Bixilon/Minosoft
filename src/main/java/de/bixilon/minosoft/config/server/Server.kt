@@ -14,21 +14,40 @@
 package de.bixilon.minosoft.config.server
 
 import com.squareup.moshi.Json
+import de.bixilon.minosoft.data.assets.AssetsUtil
+import de.bixilon.minosoft.data.assets.FileAssetsManager
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.util.ServerAddress
+import java.util.*
 
 data class Server(
-    val id: Int = nextServerId++,
-    var address: ServerAddress,
+    val id: Int = nextServerId++, // ToDo: Is duplicated in config (first key, then in value)
+    var address: String,
     var name: ChatComponent = ChatComponent.of(address),
     @Json(name = "version") var desiredVersion: Int = -1,
     @Json(name = "favicon") var faviconHash: String? = null,
     var type: ServerTypes = ServerTypes.NORMAL,
 ) {
+    @Transient
+    var favicon: ByteArray? = null
+        set(value) {
+            if (Arrays.equals(field, value)) {
+                return
+            }
+            field = value
+            faviconHash?.let { AssetsUtil.deleteAsset(it, true) }
+            if (value == null) {
+                faviconHash = null
+                return
+            }
+
+            this.faviconHash = FileAssetsManager.saveAsset(value, true)
+        }
+
     init {
         if (id > nextServerId) {
             nextServerId = id + 1
         }
+        faviconHash?.let { favicon = AssetsUtil.readAsset(it, true) }
     }
 
     companion object {

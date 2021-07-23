@@ -16,7 +16,7 @@ package de.bixilon.minosoft.data.entities.block.container.storage
 import de.bixilon.minosoft.data.entities.block.BlockEntityFactory
 import de.bixilon.minosoft.data.registries.MultiResourceLocationAble
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.toResourceLocationList
 
 class ShulkerBoxBlockEntity(connection: PlayConnection) : StorageBlockEntity(connection) {

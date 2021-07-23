@@ -16,7 +16,7 @@ package de.bixilon.minosoft.data.commands.parser.entity;
 import de.bixilon.minosoft.data.commands.CommandStringReader;
 import de.bixilon.minosoft.data.commands.parser.RangeParser;
 import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException;
-import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection;
 
 public class RangeSelectorArgumentParser extends EntitySelectorArgumentParser {
     public static final RangeSelectorArgumentParser LEVEL_SELECTOR_ARGUMENT_PARSER = new RangeSelectorArgumentParser(0, Integer.MAX_VALUE, false);

@@ -17,7 +17,7 @@ import de.bixilon.minosoft.data.commands.parser.exceptions.ColorNotFoundCommandP
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties
 import de.bixilon.minosoft.data.text.ChatCode
 import de.bixilon.minosoft.data.text.RGBColor
-import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 object ColorParser : CommandParser() {
 
