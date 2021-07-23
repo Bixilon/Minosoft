@@ -20,7 +20,8 @@ class CallbackEventInvoker<E : Event> private constructor(
     ignoreCancelled: Boolean,
     private val callback: (E) -> Unit,
     override val eventType: Class<out Event>,
-) : EventInvoker(ignoreCancelled, Priorities.NORMAL, null) {
+    override val instantFire: Boolean,
+) : EventInvoker(ignoreCancelled, Priorities.NORMAL, null), EventInstantFireable {
 
     override operator fun invoke(event: Event) {
         if (!this.isIgnoreCancelled && event is CancelableEvent && event.cancelled) {
@@ -32,11 +33,12 @@ class CallbackEventInvoker<E : Event> private constructor(
     companion object {
         @JvmOverloads
         @Suppress("NON_PUBLIC_CALL_FROM_PUBLIC_INLINE")
-        inline fun <reified E : Event> of(ignoreCancelled: Boolean = false, noinline callback: (E) -> Unit): CallbackEventInvoker<E> {
+        inline fun <reified E : Event> of(ignoreCancelled: Boolean = false, instantFire: Boolean = true, noinline callback: (E) -> Unit): CallbackEventInvoker<E> {
             return CallbackEventInvoker(
                 ignoreCancelled = ignoreCancelled,
                 callback = callback,
                 eventType = E::class.java,
+                instantFire = instantFire,
             )
         }
     }

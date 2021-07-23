@@ -22,6 +22,7 @@ import de.bixilon.minosoft.modding.event.events.status.ServerStatusReceiveEvent
 import de.bixilon.minosoft.modding.event.events.status.StatusConnectionErrorEvent
 import de.bixilon.minosoft.modding.event.events.status.StatusConnectionUpdateEvent
 import de.bixilon.minosoft.modding.event.events.status.StatusPongReceiveEvent
+import de.bixilon.minosoft.modding.event.invoker.EventInstantFireable
 import de.bixilon.minosoft.modding.event.invoker.EventInvoker
 import de.bixilon.minosoft.protocol.network.connection.Connection
 import de.bixilon.minosoft.protocol.packets.c2s.handshaking.HandshakeC2SP
@@ -64,6 +65,7 @@ class StatusConnection(
             value?.let {
                 fireEvent(StatusConnectionErrorEvent(this, EventInitiators.UNKNOWN, it))
             }
+            pingStatus = StatusConnectionStatuses.ERROR
         }
 
 
@@ -163,9 +165,12 @@ class StatusConnection(
     }
 
     override fun registerEvent(invoker: EventInvoker) {
+        if (invoker is EventInstantFireable && !invoker.instantFire) {
+            return super.registerEvent(invoker)
+        }
+
         if (!invoker.eventType.isAssignableFrom(ServerStatusReceiveEvent::class.java) && !invoker.eventType.isAssignableFrom(StatusConnectionErrorEvent::class.java) && !invoker.eventType.isAssignableFrom(StatusConnectionUpdateEvent::class.java) && !invoker.eventType.isAssignableFrom(StatusPongReceiveEvent::class.java)) {
-            super.registerEvent(invoker)
-            return
+            return super.registerEvent(invoker)
         }
 
 

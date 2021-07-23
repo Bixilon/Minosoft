@@ -11,22 +11,8 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.protocol.network.connection.status
+package de.bixilon.minosoft.modding.event.invoker
 
-import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.registries.registry.Translatable
-import de.bixilon.minosoft.util.KUtil.asResourceLocation
-
-enum class StatusConnectionStatuses : Translatable {
-    WAITING,
-    RESOLVING,
-    ESTABLISHING,
-    HANDSHAKING,
-    QUERYING_STATUS,
-    QUERYING_PING,
-    PING_DONE,
-    ERROR,
-    ;
-
-    override val translationKey: ResourceLocation = "minosoft:status.connection.state.${name.lowercase()}".asResourceLocation()
+interface EventInstantFireable {
+    val instantFire: Boolean
 }

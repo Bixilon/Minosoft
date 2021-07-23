@@ -15,54 +15,47 @@ package de.bixilon.minosoft.gui.eros.main.play.server.card
 
 import de.bixilon.minosoft.config.server.Server
 import de.bixilon.minosoft.modding.event.invoker.EventInvoker
-import de.bixilon.minosoft.protocol.network.connection.status.StatusConnection
 
 class ServerCard(
     val server: Server,
 ) {
-    var ping: StatusConnection? = null
-        private set
-
     var statusReceiveInvoker: EventInvoker? = null
         set(value) {
             field = value
-            ping?.registerEvent(value ?: return)
+            server.ping?.registerEvent(value ?: return)
         }
     var statusUpdateInvoker: EventInvoker? = null
         set(value) {
             field = value
-            ping?.registerEvent(value ?: return)
+            server.ping?.registerEvent(value ?: return)
         }
     var statusErrorInvoker: EventInvoker? = null
         set(value) {
             field = value
-            ping?.registerEvent(value ?: return)
+            server.ping?.registerEvent(value ?: return)
         }
     var pongInvoker: EventInvoker? = null
         set(value) {
             field = value
-            ping?.registerEvent(value ?: return)
+            server.ping?.registerEvent(value ?: return)
         }
+
+    var serverListStatusInvoker: EventInvoker? = null
+        set(value) {
+            field = value
+            server.ping?.registerEvent(value ?: return)
+        }
+
+    init {
+        server.card = this
+    }
 
 
     fun unregister() {
-        val ping = this.ping ?: return
+        val ping = server.ping ?: return
         statusReceiveInvoker?.let { statusReceiveInvoker = null; ping.unregisterEvent(it) }
         statusUpdateInvoker?.let { statusUpdateInvoker = null; ping.unregisterEvent(it) }
         statusErrorInvoker?.let { statusErrorInvoker = null; ping.unregisterEvent(it) }
         pongInvoker?.let { pongInvoker = null; ping.unregisterEvent(it) }
-    }
-
-
-    @Synchronized
-    fun ping(): StatusConnection {
-        var ping = ping
-        if (ping == null) {
-            ping = StatusConnection(server.address)
-            this.ping = ping
-            ping.ping()
-        }
-
-        return ping
     }
 }

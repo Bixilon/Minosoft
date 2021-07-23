@@ -20,6 +20,8 @@ import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.gui.eros.controller.EmbeddedJavaFXController
 import de.bixilon.minosoft.gui.eros.main.play.server.card.ServerCard
 import de.bixilon.minosoft.gui.eros.main.play.server.card.ServerCardController
+import de.bixilon.minosoft.gui.eros.modding.invoker.JavaFXEventInvoker
+import de.bixilon.minosoft.modding.event.events.status.StatusConnectionUpdateEvent
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
 import javafx.fxml.FXML
 import javafx.geometry.HPos
@@ -66,9 +68,39 @@ class ServerListController : EmbeddedJavaFXController<Pane>() {
         serverListViewFX.items.clear()
 
         for (server in Minosoft.config.config.server.entries.values) {
-            // ToDo: Check
-            serverListViewFX.items += ServerCard(server)
+            updateServer(server)
         }
+    }
+
+    private fun updateServer(server: Server) {
+        val card = server.card ?: let {
+            val card = ServerCard(server)
+            card.serverListStatusInvoker = JavaFXEventInvoker.of<StatusConnectionUpdateEvent>(instantFire = false) { updateServer(server) }
+            card
+        }
+        serverListViewFX.items.remove(card)
+
+        server.ping?.let {
+            if (hideOfflineFX.isSelected && it.error != null) {
+                return
+            }
+
+            it.lastServerStatus?.let { status ->
+                val usedSlots = status.usedSlots ?: 0
+                val slots = status.slots ?: 0
+                if (hideFullFX.isSelected && usedSlots >= slots && slots > 0) {
+                    return
+                }
+
+                if (hideEmptyFX.isSelected && usedSlots == 0 && slots > 0) {
+                    return
+                }
+            }
+        }
+
+
+        serverListViewFX.items.add(card)
+        serverListViewFX.items.sortBy { it.server.id } // ToDo (Performance): Do not sort, add before/after other server
     }
 
 

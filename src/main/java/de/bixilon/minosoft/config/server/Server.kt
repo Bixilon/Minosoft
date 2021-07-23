@@ -17,6 +17,8 @@ import com.squareup.moshi.Json
 import de.bixilon.minosoft.data.assets.AssetsUtil
 import de.bixilon.minosoft.data.assets.FileAssetsManager
 import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.gui.eros.main.play.server.card.ServerCard
+import de.bixilon.minosoft.protocol.network.connection.status.StatusConnection
 import java.util.*
 
 data class Server(
@@ -43,11 +45,33 @@ data class Server(
             this.faviconHash = FileAssetsManager.saveAsset(value, true)
         }
 
+    @Transient
+    var ping: StatusConnection? = null
+        private set
+
+    @Transient
+    var card: ServerCard? = null
+
     init {
         if (id > nextServerId) {
             nextServerId = id + 1
         }
         faviconHash?.let { favicon = AssetsUtil.readAsset(it, true) }
+    }
+
+
+    @Synchronized
+    fun ping(): StatusConnection {
+        var ping = ping
+        if (ping == null) {
+            ping = StatusConnection(address)
+            this.ping = ping
+            card?.let { it.serverListStatusInvoker?.let { invoker -> ping.registerEvent(invoker) } }
+            ping.ping()
+        }
+
+
+        return ping
     }
 
     companion object {

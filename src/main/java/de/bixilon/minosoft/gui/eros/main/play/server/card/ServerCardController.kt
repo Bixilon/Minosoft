@@ -79,7 +79,7 @@ class ServerCardController : AbstractCard<ServerCard>() {
 
         serverNameFX.text = card.server.name
 
-        card.ping()
+        card.server.ping()
 
         card.unregister()
 
