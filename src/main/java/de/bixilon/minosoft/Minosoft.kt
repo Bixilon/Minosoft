@@ -71,7 +71,15 @@ object Minosoft {
         val taskWorker = TaskWorker(criticalErrorHandler = { _, exception -> exception.crash() })
 
 
-        taskWorker += Task(identifier = StartupTasks.LOAD_CONFIG, priority = ThreadPool.HIGH, executor = {
+        taskWorker += Task(identifier = StartupTasks.LOAD_VERSIONS, priority = ThreadPool.HIGH, executor = {
+            Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Loading versions..." }
+
+            Versions.loadAvailableVersions(MINOSOFT_ASSETS_MANAGER.readLegacyJsonAsset(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "mapping/versions.json")))
+
+            Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Versions loaded!" }
+        })
+
+        taskWorker += Task(identifier = StartupTasks.LOAD_CONFIG, priority = ThreadPool.HIGH, dependencies = arrayOf(StartupTasks.LOAD_VERSIONS), executor = {
             Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Loading config file..." }
             config = Configuration()
             configInitialized = true
@@ -87,7 +95,6 @@ object Minosoft {
         taskWorker += Task(identifier = StartupTasks.LOAD_DEFAULT_REGISTRIES, dependencies = arrayOf(StartupTasks.LOAD_CONFIG), executor = {
             Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Loading default registries..." }
 
-            Versions.loadAvailableVersions(MINOSOFT_ASSETS_MANAGER.readLegacyJsonAsset(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "mapping/versions.json")))
             Resources.load()
             DefaultRegistries.load()
 

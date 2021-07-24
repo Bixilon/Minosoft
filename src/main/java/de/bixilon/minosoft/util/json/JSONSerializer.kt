@@ -29,6 +29,7 @@ object JSONSerializer {
         .add(ServerAddressSerializer)
         .add(ResourceLocationSerializer)
         .add(UUIDSerializer)
+        .add(VersionSerializer)
         .add(KotlinJsonAdapterFactory())
         .build()!!
 

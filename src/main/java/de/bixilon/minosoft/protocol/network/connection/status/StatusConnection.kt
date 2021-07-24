@@ -59,6 +59,7 @@ class StatusConnection(
 
     var serverVersion: Version? = null
 
+
     override var error: Throwable? = super.error
         set(value) {
             field = value

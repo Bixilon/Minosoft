@@ -16,6 +16,7 @@ package de.bixilon.minosoft.config.server
 import com.squareup.moshi.Json
 import de.bixilon.minosoft.data.assets.AssetsUtil
 import de.bixilon.minosoft.data.assets.FileAssetsManager
+import de.bixilon.minosoft.data.registries.versions.Version
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.gui.eros.main.play.server.card.ServerCard
 import de.bixilon.minosoft.protocol.network.connection.status.StatusConnection
@@ -25,7 +26,7 @@ data class Server(
     val id: Int = nextServerId++, // ToDo: Is duplicated in config (first key, then in value)
     var address: String,
     var name: ChatComponent = ChatComponent.of(address),
-    @Json(name = "version") var forcedVersion: Int? = null,
+    @Json(name = "version") var forcedVersion: Version? = null,
     @Json(name = "favicon") var faviconHash: String? = null,
     var type: ServerTypes = ServerTypes.NORMAL,
 ) {
@@ -55,11 +56,6 @@ data class Server(
     init {
         if (id > nextServerId) {
             nextServerId = id + 1
-        }
-        forcedVersion?.let {
-            if (it < 0) {
-                forcedVersion = null
-            }
         }
         faviconHash?.let { favicon = AssetsUtil.readAsset(it, true) }
     }

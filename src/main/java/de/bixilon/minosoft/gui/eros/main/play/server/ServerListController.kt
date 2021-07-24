@@ -16,7 +16,6 @@ package de.bixilon.minosoft.gui.eros.main.play.server
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.server.Server
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.versions.Versions
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.gui.eros.Eros
 import de.bixilon.minosoft.gui.eros.controller.EmbeddedJavaFXController
@@ -25,6 +24,7 @@ import de.bixilon.minosoft.gui.eros.main.play.server.card.ServerCardController
 import de.bixilon.minosoft.gui.eros.modding.invoker.JavaFXEventInvoker
 import de.bixilon.minosoft.modding.event.events.status.StatusConnectionUpdateEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.connection.status.StatusConnectionStatuses
 import de.bixilon.minosoft.util.DNSUtil
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
 import de.bixilon.minosoft.util.KUtil.decide
@@ -64,7 +64,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>() {
 
         refresh()
 
-        serverListViewFX.selectionModel.selectedItemProperty().addListener { _, _, new ->
+        serverListViewFX.selectionModel.selectedItemProperty().addListener { _, old, new ->
             setServerInfo(new)
         }
     }
@@ -91,6 +91,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>() {
             card.serverListStatusInvoker = JavaFXEventInvoker.of<StatusConnectionUpdateEvent>(instantFire = false) { updateServer(server) }
             card
         }
+        val wasSelected = serverListViewFX.selectionModel.selectedItem === card
         serverListViewFX.items.remove(card)
 
         server.ping?.let {
@@ -114,6 +115,11 @@ class ServerListController : EmbeddedJavaFXController<Pane>() {
 
         serverListViewFX.items.add(card)
         serverListViewFX.items.sortBy { it.server.id } // ToDo (Performance): Do not sort, add before/after other server
+
+
+        if (wasSelected) {
+            serverListViewFX.selectionModel.select(card)
+        }
     }
 
 
@@ -123,6 +129,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>() {
             return
         }
 
+        val ping = serverCard.server.ping
 
         val pane = GridPane()
 
@@ -155,11 +162,17 @@ class ServerListController : EmbeddedJavaFXController<Pane>() {
             it.add(Button("Edit"), 2, 0)
             it.add(Button("Connect").apply {
                 setOnAction {
+                    val pingVersion = ping?.serverVersion ?: return@setOnAction
                     Eros.mainErosController.verifyAccount { account ->
-                        val connection = PlayConnection(serverCard.server.ping?.realAddress ?: DNSUtil.getServerAddress(serverCard.server.address), account, Versions.getVersionById(serverCard.server.forcedVersion!!)) // ToDo: Get ping version
+                        val connection = PlayConnection(
+                            address = serverCard.server.ping?.realAddress ?: DNSUtil.getServerAddress(serverCard.server.address),
+                            account = account,
+                            version = serverCard.server.forcedVersion ?: pingVersion,
+                        )
                         DefaultThreadPool += { connection.connect() }
                     }
                 }
+                isDisable = ping?.pingStatus != StatusConnectionStatuses.PING_DONE || (serverCard.server.forcedVersion ?: ping.serverVersion == null)
             }, 3, 0)
 
 
@@ -178,7 +191,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>() {
         private val SERVER_INFO_PROPERTIES: Map<ResourceLocation, (server: Server) -> Any?> = mapOf(
             "minosoft:server.info.server_name".asResourceLocation() to { it.name },
             "minosoft:server.info.server_address".asResourceLocation() to { it.address },
-            "minosoft:server.info.forced_version".asResourceLocation() to { it.forcedVersion?.let { version -> Versions.getVersionById(version)!! } },
+            "minosoft:server.info.forced_version".asResourceLocation() to { it.forcedVersion },
         )
     }
 }

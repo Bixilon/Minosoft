@@ -16,6 +16,7 @@ package de.bixilon.minosoft.util.task.worker
 enum class StartupTasks {
     LOAD_CONFIG,
     LOAD_LANGUAGE_FILES,
+    LOAD_VERSIONS,
     LOAD_DEFAULT_REGISTRIES,
     LISTEN_LAN_SERVERS,
     LOAD_MODS,

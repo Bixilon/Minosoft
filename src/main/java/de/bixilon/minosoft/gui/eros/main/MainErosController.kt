@@ -26,6 +26,7 @@ import de.bixilon.minosoft.util.GitInfo
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
 import de.bixilon.minosoft.util.KUtil.decide
 import de.bixilon.minosoft.util.ShutdownManager
+import de.bixilon.minosoft.util.task.pool.DefaultThreadPool
 import javafx.fxml.FXML
 import javafx.scene.image.ImageView
 import javafx.scene.layout.Pane
@@ -115,6 +116,14 @@ class MainErosController : JavaFXWindowController() {
             requestAccountSelect()
             return
         }
-        TODO("Not yet implemented")
+
+        DefaultThreadPool += {
+            try {
+                account.verify()
+            } catch (exception: Throwable) {
+                // ToDo: Show account window and do account error handling
+            }
+            onSuccess(account)
+        }
     }
 }
