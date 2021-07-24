@@ -89,6 +89,7 @@ public class BlockingSocketNetwork extends Network {
         this.connection.setProtocolState(ProtocolStates.CONNECTING);
         this.socketReceiveThread = new Thread(() -> {
             try {
+                this.shouldDisconnect = false;
                 this.socket = new Socket();
                 this.socket.setSoTimeout(ProtocolDefinition.SOCKET_CONNECT_TIMEOUT);
                 this.socket.connect(new InetSocketAddress(address.getHostname(), address.getPort()), ProtocolDefinition.SOCKET_CONNECT_TIMEOUT);
@@ -133,6 +134,7 @@ public class BlockingSocketNetwork extends Network {
                 this.connection.setError(exception);
                 disconnect();
             }
+            this.socketReceiveThread = null;
         }, String.format("%d/Socket", this.connection.getConnectionId()));
         this.socketReceiveThread.start();
     }
@@ -210,6 +212,7 @@ public class BlockingSocketNetwork extends Network {
                 }
             } catch (IOException | InterruptedException ignored) {
             }
+            this.socketSendThread = null;
         }, String.format("%d/Sending", this.connection.getConnectionId()));
         this.socketSendThread.start();
     }

@@ -160,10 +160,19 @@ class ServerListController : EmbeddedJavaFXController<Pane>() {
         }
 
         GridPane().let {
+            it.columnConstraints += ColumnConstraints()
+            it.columnConstraints += ColumnConstraints()
             it.columnConstraints += ColumnConstraints(0.0, -1.0, Double.POSITIVE_INFINITY, Priority.ALWAYS, HPos.LEFT, true)
 
             it.add(Button("Delete"), 1, 0)
             it.add(Button("Edit"), 2, 0)
+
+            it.add(Button("Refresh").apply {
+                setOnAction {
+                    serverCard.server.ping().ping()
+                }
+                isDisable = serverCard.server.ping != null && serverCard.server.ping?.state != StatusConnectionStates.PING_DONE && serverCard.server.ping?.state != StatusConnectionStates.ERROR
+            }, 3, 0)
             it.add(Button("Connect").apply {
                 setOnAction {
                     isDisable = true
@@ -193,7 +202,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>() {
                         (serverCard.server.forcedVersion ?: ping.serverVersion == null) ||
                         Minosoft.config.config.account.selected?.connections?.containsKey(serverCard.server) == true
                 // ToDo: Also disable, if currently connecting
-            }, 3, 0)
+            }, 4, 0)
 
 
             it.hgap = 5.0

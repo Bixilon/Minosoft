@@ -32,8 +32,10 @@ object Log {
     private val LOG_QUEUE = LinkedBlockingQueue<MessageToSend>()
     private val SYSTEM_ERR_STREAM = System.err
     private val SYSTEM_OUT_STREAM = System.out
-    private val ERROR_PRINT_STREAM: PrintStream = LogPrintStream(LogMessageType.OTHER, LogLevels.WARN)
-    private val OUT_PRINT_STREAM: PrintStream = LogPrintStream(LogMessageType.OTHER, LogLevels.INFO)
+
+    val FATAL_PRINT_STREAM: PrintStream = LogPrintStream(LogMessageType.OTHER, LogLevels.FATAL)
+    val ERROR_PRINT_STREAM: PrintStream = LogPrintStream(LogMessageType.OTHER, LogLevels.WARN)
+    val OUT_PRINT_STREAM: PrintStream = LogPrintStream(LogMessageType.OTHER, LogLevels.INFO)
 
 
     init {

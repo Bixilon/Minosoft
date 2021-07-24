@@ -50,7 +50,10 @@ class JavaFXInitializer internal constructor() : Application() {
         @Synchronized
         fun start() {
             check(LATCH.count == 2) { "Already initialized!" }
-            Thread.setDefaultUncaughtExceptionHandler { _, exception -> exception.crash() }
+            Thread.setDefaultUncaughtExceptionHandler { _, exception ->
+                exception.printStackTrace(Log.FATAL_PRINT_STREAM)
+                exception.crash()
+            }
 
             Log.log(LogMessageType.JAVAFX, LogLevels.VERBOSE) { "Initializing JavaFX Toolkit..." }
             Thread({ Application.launch(JavaFXInitializer::class.java) }, "JavaFX Toolkit Initializing Thread").start()

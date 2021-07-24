@@ -34,6 +34,7 @@ import de.bixilon.minosoft.util.Util;
 import de.bixilon.minosoft.util.logging.Log;
 import kotlin.jvm.Synchronized;
 
+@Deprecated
 public abstract class Network {
     protected final Connection connection;
     protected int compressionThreshold = -1;

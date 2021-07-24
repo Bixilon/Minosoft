@@ -48,7 +48,7 @@ class StatusConnection(
     var pingQuery: PingQuery? = null
     var lastPongEvent: StatusPongReceiveEvent? = null
 
-    lateinit var realAddress: ServerAddress
+    var realAddress: ServerAddress? = null
         private set
     private var addresses: List<ServerAddress>? = null
 
@@ -64,13 +64,15 @@ class StatusConnection(
         get() = super.error
         set(value) {
             super.error = value
-            value?.let { state = StatusConnectionStates.ERROR }
+            value?.let {
+                state = StatusConnectionStates.ERROR
+                protocolState = ProtocolStates.DISCONNECTED
+            }
         }
 
 
-    fun resolve() {
+    private fun resolve() {
         state = StatusConnectionStates.RESOLVING
-        error = null
 
         var addresses = this.addresses
         if (addresses == null) {
@@ -81,6 +83,19 @@ class StatusConnection(
     }
 
     fun ping() {
+        if (protocolState != ProtocolStates.DISCONNECTED) {
+            error("Already connecting!")
+        }
+
+        realAddress = null
+        this.addresses = null
+        lastServerStatus = null
+        pingQuery = null
+        lastPongEvent = null
+        serverVersion = null
+        error = null
+        state = StatusConnectionStates.WAITING
+
         DefaultThreadPool += execute@{
             try {
                 resolve()
@@ -108,7 +123,7 @@ class StatusConnection(
             when (value) {
                 ProtocolStates.HANDSHAKING -> {
                     state = StatusConnectionStates.HANDSHAKING
-                    network.sendPacket(HandshakeC2SP(realAddress, ProtocolStates.STATUS, Versions.AUTOMATIC_VERSION.protocolId))
+                    network.sendPacket(HandshakeC2SP(realAddress!!, ProtocolStates.STATUS, Versions.AUTOMATIC_VERSION.protocolId))
                     protocolState = ProtocolStates.STATUS
                 }
                 ProtocolStates.STATUS -> {
