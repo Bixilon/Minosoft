@@ -147,8 +147,8 @@ class ServerListController : EmbeddedJavaFXController<Pane>() {
                 it.add(ChatComponent.of(propertyValue).textFlow, 1, row++)
             }
 
-            it.columnConstraints += ColumnConstraints(10.0, 100.0, 150.0)
-            it.columnConstraints += ColumnConstraints(10.0, 150.0, 200.0)
+            it.columnConstraints += ColumnConstraints(10.0, 180.0, 250.0)
+            it.columnConstraints += ColumnConstraints(10.0, 200.0, 300.0)
             it.hgap = 10.0
             it.vgap = 5.0
 
@@ -191,7 +191,10 @@ class ServerListController : EmbeddedJavaFXController<Pane>() {
         private val SERVER_INFO_PROPERTIES: Map<ResourceLocation, (server: Server) -> Any?> = mapOf(
             "minosoft:server.info.server_name".asResourceLocation() to { it.name },
             "minosoft:server.info.server_address".asResourceLocation() to { it.address },
+            "minosoft:server.info.real_server_address".asResourceLocation() to { it.ping?.realAddress },
             "minosoft:server.info.forced_version".asResourceLocation() to { it.forcedVersion },
+            "minosoft:server.info.remote_version".asResourceLocation() to { it.ping?.serverVersion },
+            "minosoft:server.info.remote_brand".asResourceLocation() to { it.ping?.lastServerStatus?.serverBrand },
         )
     }
 }
