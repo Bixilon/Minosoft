@@ -41,6 +41,10 @@ class MicrosoftAccount(
         TODO()
     }
 
+    override fun serialize(): Map<String, Any> {
+        TODO()
+    }
+
     companion object : AccountType(MicrosoftAccount::class) {
         override val RESOURCE_LOCATION: ResourceLocation = "minosoft:microsoft_account".asResourceLocation()
     }

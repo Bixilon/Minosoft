@@ -25,4 +25,8 @@ abstract class Account(
 
     abstract fun logout()
     abstract fun verify()
+
+
+    @Deprecated("Somehow the moshi type adapter is not working")
+    abstract fun serialize(): Map<String, Any>
 }

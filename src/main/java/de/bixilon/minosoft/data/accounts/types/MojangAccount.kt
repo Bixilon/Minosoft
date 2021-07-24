@@ -77,6 +77,16 @@ class MojangAccount(
         refresh()
     }
 
+    override fun serialize(): Map<String, Any> {
+        return mapOf(
+            "username" to username,
+            "uuid" to uuid,
+            "email" to email,
+            "access_token" to accessToken,
+            "type" to type,
+        )
+    }
+
     fun refresh() {
         val response = mutableMapOf(
             "accessToken" to accessToken,

@@ -19,4 +19,5 @@ import kotlin.reflect.KClass
 
 abstract class AccountType(`class`: KClass<out Account>) : CompanionResourceLocation {
     val TYPE = JSONSerializer.MOSHI.adapter(`class`.java)
+
 }

@@ -28,6 +28,13 @@ class OfflineAccount(username: String) : Account(username) {
 
     override fun verify() {}
 
+    override fun serialize(): Map<String, Any> {
+        return mapOf(
+            "username" to username,
+            "type" to type,
+        )
+    }
+
     companion object : AccountType(OfflineAccount::class) {
         override val RESOURCE_LOCATION: ResourceLocation = "minosoft:offline_account".asResourceLocation()
     }

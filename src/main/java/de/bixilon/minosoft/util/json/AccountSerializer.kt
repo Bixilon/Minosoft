@@ -14,13 +14,10 @@
 package de.bixilon.minosoft.util.json
 
 import com.squareup.moshi.FromJson
-import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.ToJson
 import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.data.accounts.AccountTypes
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
-import de.bixilon.minosoft.util.KUtil.unsafeCast
-import de.bixilon.minosoft.util.nbt.tag.NBTUtil.asCompound
 
 object AccountSerializer {
     @FromJson
@@ -30,6 +27,6 @@ object AccountSerializer {
 
     @ToJson
     fun toJson(account: Account): Map<String, Any> {
-        return AccountTypes.ACCOUNT_TYPES[account.type]!!.TYPE.unsafeCast<JsonAdapter<Account>>().toJsonValue(account).asCompound()
+        return account.serialize()
     }
 }
