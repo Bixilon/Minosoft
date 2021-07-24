@@ -19,10 +19,10 @@ import de.bixilon.minosoft.data.assets.MinecraftAssetsManager
 import de.bixilon.minosoft.data.assets.Resources
 import de.bixilon.minosoft.data.language.LanguageManager
 import de.bixilon.minosoft.data.registries.registries.Registries
-import de.bixilon.minosoft.protocol.protocol.ConnectionStates
 import de.bixilon.minosoft.protocol.protocol.PacketTypes.C2S
 import de.bixilon.minosoft.protocol.protocol.PacketTypes.S2C
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.protocol.protocol.ProtocolStates
 import de.bixilon.minosoft.util.CountUpAndDownLatch
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -33,15 +33,15 @@ data class Version(
     var versionName: String,
     val versionId: Int,
     val protocolId: Int,
-    val c2SPacketMapping: Map<ConnectionStates, HashBiMap<C2S, Int>>,
-    val s2CPacketMapping: Map<ConnectionStates, HashBiMap<S2C, Int>>,
+    val c2SPacketMapping: Map<ProtocolStates, HashBiMap<C2S, Int>>,
+    val s2CPacketMapping: Map<ProtocolStates, HashBiMap<S2C, Int>>,
 ) {
     var isLoaded = false
     val registries: Registries = Registries()
     lateinit var assetsManager: MinecraftAssetsManager
     lateinit var language: LanguageManager
 
-    fun getPacketById(state: ConnectionStates, command: Int): S2C? {
+    fun getPacketById(state: ProtocolStates, command: Int): S2C? {
         return s2CPacketMapping[state]?.inverse()?.get(command)
     }
 

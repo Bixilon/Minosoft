@@ -19,9 +19,9 @@ import de.bixilon.minosoft.protocol.network.Network;
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection;
 import de.bixilon.minosoft.protocol.packets.c2s.C2SPacket;
 import de.bixilon.minosoft.protocol.packets.c2s.login.EncryptionResponseC2SP;
-import de.bixilon.minosoft.protocol.protocol.ConnectionStates;
 import de.bixilon.minosoft.protocol.protocol.CryptManager;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
+import de.bixilon.minosoft.protocol.protocol.ProtocolStates;
 import de.bixilon.minosoft.util.ServerAddress;
 import de.bixilon.minosoft.util.logging.Log;
 import de.bixilon.minosoft.util.logging.LogLevels;
@@ -53,11 +53,11 @@ public class NonBlockingSocketNetwork extends Network {
 
     @Override
     public void connect(ServerAddress address) {
-        if (this.connection.getConnectionState().getConnected() || this.connection.getConnectionState() == ConnectionStates.CONNECTING) {
+        if (this.connection.getProtocolState().getConnected() || this.connection.getProtocolState() == ProtocolStates.CONNECTING) {
             return;
         }
         this.connection.setError(null);
-        this.connection.setConnectionState(ConnectionStates.CONNECTING);
+        this.connection.setProtocolState(ProtocolStates.CONNECTING);
         new Thread(() -> {
             try {
                 InetSocketAddress socketAddress = new InetSocketAddress(InetAddress.getByName(address.getHostname()), address.getPort());
@@ -71,7 +71,7 @@ public class NonBlockingSocketNetwork extends Network {
                 while (this.socketChannel.isConnectionPending()) {
                     this.socketChannel.finishConnect();
                 }
-                this.connection.setConnectionState(ConnectionStates.HANDSHAKING);
+                this.connection.setProtocolState(ProtocolStates.HANDSHAKING);
 
                 int readCount = 0;
                 int packetLength = 0;
@@ -79,7 +79,7 @@ public class NonBlockingSocketNetwork extends Network {
                 ByteBuffer receiveLengthBuffer = ByteBuffer.allocate(1);
 
 
-                while (this.connection.getConnectionState() != ConnectionStates.DISCONNECTED) {
+                while (this.connection.getProtocolState() != ProtocolStates.DISCONNECTED) {
                     while (!this.queue.isEmpty()) {
                         C2SPacket packet = this.queue.getFirst();
                         this.queue.removeFirst();
@@ -174,7 +174,7 @@ public class NonBlockingSocketNetwork extends Network {
 
     @Override
     public void disconnect() {
-        if (!this.connection.getConnectionState().getConnected()) {
+        if (!this.connection.getProtocolState().getConnected()) {
             return;
         }
         this.queue.clear();
@@ -183,7 +183,7 @@ public class NonBlockingSocketNetwork extends Network {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        this.connection.setConnectionState(ConnectionStates.DISCONNECTED);
+        this.connection.setProtocolState(ProtocolStates.DISCONNECTED);
     }
 
     @Override

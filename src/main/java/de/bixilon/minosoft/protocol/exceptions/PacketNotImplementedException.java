@@ -14,15 +14,15 @@
 package de.bixilon.minosoft.protocol.exceptions;
 
 import de.bixilon.minosoft.data.registries.versions.Version;
-import de.bixilon.minosoft.protocol.protocol.ConnectionStates;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.PacketTypes;
+import de.bixilon.minosoft.protocol.protocol.ProtocolStates;
 
 import javax.annotation.Nullable;
 
 public class PacketNotImplementedException extends PacketParseException {
 
-    public PacketNotImplementedException(InByteBuffer buffer, int packetId, PacketTypes.S2C packetType, @Nullable Version version, ConnectionStates connectionState) {
+    public PacketNotImplementedException(InByteBuffer buffer, int packetId, PacketTypes.S2C packetType, @Nullable Version version, ProtocolStates connectionState) {
         super(String.format("Packet not implemented yet (id=0x%x, name=%s, length=%d, dataLength=%d, version=%s, state=%s)", packetId, packetType, buffer.getSize(), buffer.getBytesLeft(), version, connectionState));
     }
 }

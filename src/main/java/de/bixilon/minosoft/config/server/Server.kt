@@ -19,7 +19,9 @@ import de.bixilon.minosoft.data.assets.FileAssetsManager
 import de.bixilon.minosoft.data.registries.versions.Version
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.gui.eros.main.play.server.card.ServerCard
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.connection.status.StatusConnection
+import de.bixilon.minosoft.util.KUtil.synchronizedSetOf
 import java.util.*
 
 data class Server(
@@ -45,6 +47,9 @@ data class Server(
 
             this.faviconHash = FileAssetsManager.saveAsset(value, true)
         }
+
+    @Transient
+    val connections: MutableSet<PlayConnection> = synchronizedSetOf()
 
     @Transient
     var ping: StatusConnection? = null

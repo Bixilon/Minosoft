@@ -123,9 +123,8 @@ class TabListDataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
             if (connection.version.versionId < ProtocolVersions.V_14W19A) { // ToDo: 19?
                 val item: TabListItem = if (data.remove) {
                     // add or remove
-                    connection.tabList.tabListItems[uuid]?.let {
+                    connection.tabList.tabListItems[uuid]?.apply {
                         connection.tabList.tabListItems.remove(uuid)
-                        it
                     } ?: let {
                         // add
                         val itemToAdd = TabListItem(name = data.name!!)

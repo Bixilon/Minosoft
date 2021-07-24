@@ -112,7 +112,7 @@ class PacketTypes {
         PLAY_PONG(PongC2SP::class.java)
         ;
 
-        val state: ConnectionStates = ConnectionStates.valueOf(name.split("_".toRegex()).toTypedArray()[0])
+        val state: ProtocolStates = ProtocolStates.valueOf(name.split("_".toRegex()).toTypedArray()[0])
 
         companion object {
             private val MAPPING: Map<Class<out C2SPacket>, C2S>
@@ -284,6 +284,6 @@ class PacketTypes {
         }
 
 
-        val state: ConnectionStates = ConnectionStates.valueOf(name.split("_".toRegex()).toTypedArray()[0])
+        val state: ProtocolStates = ProtocolStates.valueOf(name.split("_".toRegex()).toTypedArray()[0])
     }
 }

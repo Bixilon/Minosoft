@@ -13,13 +13,19 @@
 
 package de.bixilon.minosoft.data.accounts
 
+import de.bixilon.minosoft.config.server.Server
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
 
 abstract class Account(
     val username: String,
 ) {
     abstract val id: String
     abstract val type: ResourceLocation
+
+    @Transient
+    val connections: MutableMap<Server, PlayConnection> = synchronizedMapOf()
 
     abstract fun join(serverId: String)
 

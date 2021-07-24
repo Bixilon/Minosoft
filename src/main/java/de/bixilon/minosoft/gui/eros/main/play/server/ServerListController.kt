@@ -22,13 +22,17 @@ import de.bixilon.minosoft.gui.eros.controller.EmbeddedJavaFXController
 import de.bixilon.minosoft.gui.eros.main.play.server.card.ServerCard
 import de.bixilon.minosoft.gui.eros.main.play.server.card.ServerCardController
 import de.bixilon.minosoft.gui.eros.modding.invoker.JavaFXEventInvoker
+import de.bixilon.minosoft.modding.event.events.ProtocolStateChangeEvent
 import de.bixilon.minosoft.modding.event.events.status.StatusConnectionUpdateEvent
+import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.connection.status.StatusConnectionStatuses
+import de.bixilon.minosoft.protocol.protocol.ProtocolStates
 import de.bixilon.minosoft.util.DNSUtil
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
 import de.bixilon.minosoft.util.KUtil.decide
 import de.bixilon.minosoft.util.task.pool.DefaultThreadPool
+import javafx.application.Platform
 import javafx.fxml.FXML
 import javafx.geometry.HPos
 import javafx.geometry.Insets
@@ -162,17 +166,33 @@ class ServerListController : EmbeddedJavaFXController<Pane>() {
             it.add(Button("Edit"), 2, 0)
             it.add(Button("Connect").apply {
                 setOnAction {
+                    isDisable = true
                     val pingVersion = ping?.serverVersion ?: return@setOnAction
                     Eros.mainErosController.verifyAccount { account ->
-                        val connection = PlayConnection(
-                            address = serverCard.server.ping?.realAddress ?: DNSUtil.getServerAddress(serverCard.server.address),
-                            account = account,
-                            version = serverCard.server.forcedVersion ?: pingVersion,
-                        )
-                        DefaultThreadPool += { connection.connect() }
+                        DefaultThreadPool += {
+                            val connection = PlayConnection(
+                                address = serverCard.server.ping?.realAddress ?: DNSUtil.getServerAddress(serverCard.server.address),
+                                account = account,
+                                version = serverCard.server.forcedVersion ?: pingVersion,
+                            )
+                            account.connections[serverCard.server] = connection
+                            serverCard.server.connections += connection
+
+                            connection.registerEvent(CallbackEventInvoker.of<ProtocolStateChangeEvent> { event ->
+                                if (event.state == ProtocolStates.DISCONNECTED) {
+                                    account.connections -= serverCard.server
+                                    serverCard.server.connections -= connection
+                                }
+                                Platform.runLater { updateServer(serverCard.server) }
+                            })
+                            connection.connect()
+                        }
                     }
                 }
-                isDisable = ping?.pingStatus != StatusConnectionStatuses.PING_DONE || (serverCard.server.forcedVersion ?: ping.serverVersion == null)
+                isDisable = ping?.pingStatus != StatusConnectionStatuses.PING_DONE ||
+                        (serverCard.server.forcedVersion ?: ping.serverVersion == null) ||
+                        Minosoft.config.config.account.selected?.connections?.containsKey(serverCard.server) == true
+                // ToDo: Also disable, if currently connecting
             }, 3, 0)
 
 

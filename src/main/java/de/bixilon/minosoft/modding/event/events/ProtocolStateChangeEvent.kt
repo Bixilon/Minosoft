@@ -14,10 +14,10 @@ package de.bixilon.minosoft.modding.event.events
 
 import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.protocol.network.connection.Connection
-import de.bixilon.minosoft.protocol.protocol.ConnectionStates
+import de.bixilon.minosoft.protocol.protocol.ProtocolStates
 
-class ConnectionStateChangeEvent(
+class ProtocolStateChangeEvent(
     connection: Connection,
-    val previousState: ConnectionStates,
-    val currentState: ConnectionStates,
+    val previousState: ProtocolStates,
+    val state: ProtocolStates,
 ) : ConnectionEvent(connection, EventInitiators.UNKNOWN)

@@ -16,8 +16,8 @@ package de.bixilon.minosoft.protocol.network.connection.status
 import de.bixilon.minosoft.data.registries.versions.Version
 import de.bixilon.minosoft.data.registries.versions.Versions
 import de.bixilon.minosoft.modding.event.EventInitiators
-import de.bixilon.minosoft.modding.event.events.ConnectionStateChangeEvent
 import de.bixilon.minosoft.modding.event.events.PacketReceiveEvent
+import de.bixilon.minosoft.modding.event.events.ProtocolStateChangeEvent
 import de.bixilon.minosoft.modding.event.events.status.ServerStatusReceiveEvent
 import de.bixilon.minosoft.modding.event.events.status.StatusConnectionErrorEvent
 import de.bixilon.minosoft.modding.event.events.status.StatusConnectionUpdateEvent
@@ -29,10 +29,10 @@ import de.bixilon.minosoft.protocol.packets.c2s.handshaking.HandshakeC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.status.StatusRequestC2SP
 import de.bixilon.minosoft.protocol.packets.s2c.S2CPacket
 import de.bixilon.minosoft.protocol.packets.s2c.StatusS2CPacket
-import de.bixilon.minosoft.protocol.protocol.ConnectionStates
 import de.bixilon.minosoft.protocol.protocol.PacketTypes
 import de.bixilon.minosoft.protocol.protocol.PingQuery
 import de.bixilon.minosoft.protocol.protocol.Protocol
+import de.bixilon.minosoft.protocol.protocol.ProtocolStates
 import de.bixilon.minosoft.protocol.status.ServerStatus
 import de.bixilon.minosoft.util.DNSUtil
 import de.bixilon.minosoft.util.ServerAddress
@@ -101,23 +101,23 @@ class StatusConnection(
     }
 
 
-    override var connectionState: ConnectionStates = ConnectionStates.DISCONNECTED
+    override var protocolState: ProtocolStates = ProtocolStates.DISCONNECTED
         set(value) {
-            val previousConnectionState = connectionState
+            val previousConnectionState = protocolState
             field = value
             // handle callbacks
-            fireEvent(ConnectionStateChangeEvent(this, previousConnectionState, connectionState))
+            fireEvent(ProtocolStateChangeEvent(this, previousConnectionState, protocolState))
             when (value) {
-                ConnectionStates.HANDSHAKING -> {
+                ProtocolStates.HANDSHAKING -> {
                     pingStatus = StatusConnectionStatuses.HANDSHAKING
-                    network.sendPacket(HandshakeC2SP(realAddress, ConnectionStates.STATUS, Versions.AUTOMATIC_VERSION.protocolId))
-                    connectionState = ConnectionStates.STATUS
+                    network.sendPacket(HandshakeC2SP(realAddress, ProtocolStates.STATUS, Versions.AUTOMATIC_VERSION.protocolId))
+                    protocolState = ProtocolStates.STATUS
                 }
-                ConnectionStates.STATUS -> {
+                ProtocolStates.STATUS -> {
                     pingStatus = StatusConnectionStatuses.QUERYING_STATUS
                     network.sendPacket(StatusRequestC2SP())
                 }
-                ConnectionStates.DISCONNECTED -> {
+                ProtocolStates.DISCONNECTED -> {
                     if (previousConnectionState.connected) {
                         wasConnected = true
                         return
@@ -147,7 +147,7 @@ class StatusConnection(
     }
 
     override fun getPacketById(packetId: Int): PacketTypes.S2C {
-        return Protocol.getPacketById(connectionState, packetId) ?: error("Can not find packet $packetId in $connectionState")
+        return Protocol.getPacketById(protocolState, packetId) ?: error("Can not find packet $packetId in $protocolState")
     }
 
     override fun handlePacket(packet: S2CPacket) {

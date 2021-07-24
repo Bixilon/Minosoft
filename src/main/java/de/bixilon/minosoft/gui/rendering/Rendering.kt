@@ -68,7 +68,7 @@ class Rendering(private val connection: PlayConnection) {
                     connection.fireEvent(WindowCloseEvent(window = renderWindow.window))
                 } catch (ignored: Throwable) {
                 }
-                if (connection.connectionState.connected) {
+                if (connection.protocolState.connected) {
                     connection.disconnect()
                 }
                 connection.disconnect()

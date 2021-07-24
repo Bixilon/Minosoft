@@ -101,7 +101,7 @@ public final class ProtocolDefinition {
 
     public static final ResourceLocation AIR_RESOURCE_LOCATION = new ResourceLocation("air");
 
-    public static final RGBColor DEFAULT_COLOR = ChatColors.WHITE;
+    public static final RGBColor DEFAULT_COLOR = ChatColors.INSTANCE.getBLACK();
 
     public static final char[] LINE_BREAK_CHARS = {'\n', '\r'};
 

@@ -17,9 +17,9 @@ import com.google.common.collect.HashBiMap;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import de.bixilon.minosoft.data.registries.registries.Registries;
-import de.bixilon.minosoft.protocol.protocol.ConnectionStates;
 import de.bixilon.minosoft.protocol.protocol.PacketTypes;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
+import de.bixilon.minosoft.protocol.protocol.ProtocolStates;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -60,8 +60,8 @@ public class Versions {
             return VERSION_ID_MAP.get(versionId);
         }
 
-        Map<ConnectionStates, HashBiMap<PacketTypes.C2S, Integer>> c2sMapping;
-        Map<ConnectionStates, HashBiMap<PacketTypes.S2C, Integer>> s2cMapping;
+        Map<ProtocolStates, HashBiMap<PacketTypes.C2S, Integer>> c2sMapping;
+        Map<ProtocolStates, HashBiMap<PacketTypes.S2C, Integer>> s2cMapping;
         if (versionJson.get("mapping").isJsonPrimitive()) {
             // inherits or copies mapping from an other version
             Version parent = VERSION_ID_MAP.get(versionJson.get("mapping").getAsInt());

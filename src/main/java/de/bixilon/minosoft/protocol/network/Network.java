@@ -98,7 +98,7 @@ public abstract class Network {
                     }
                     ((StatusS2CPacket) packet).check((StatusConnection) this.connection);
                 } else {
-                    throw new PacketNotImplementedException(data, packetId, packetType, version, this.connection.getConnectionState());
+                    throw new PacketNotImplementedException(data, packetId, packetType, version, this.connection.getProtocolState());
                 }
 
 
@@ -113,7 +113,7 @@ public abstract class Network {
             return new Pair<>(packetType, packet);
         } catch (Throwable e) {
             Log.protocol(String.format("An error occurred while parsing a packet (%s): %s", packetType, e));
-            if (this.connection.getConnectionState() == ConnectionStates.PLAY) {
+            if (this.connection.getProtocolState() == ProtocolStates.PLAY) {
                 throw new PacketParseException(e);
             }
             throw new UnknownPacketException(e);

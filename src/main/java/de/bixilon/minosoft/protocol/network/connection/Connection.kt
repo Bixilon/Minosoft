@@ -22,16 +22,16 @@ import de.bixilon.minosoft.modding.event.master.EventMaster
 import de.bixilon.minosoft.protocol.network.Network
 import de.bixilon.minosoft.protocol.packets.c2s.C2SPacket
 import de.bixilon.minosoft.protocol.packets.s2c.S2CPacket
-import de.bixilon.minosoft.protocol.protocol.ConnectionStates
 import de.bixilon.minosoft.protocol.protocol.PacketTypes.C2S
 import de.bixilon.minosoft.protocol.protocol.PacketTypes.S2C
+import de.bixilon.minosoft.protocol.protocol.ProtocolStates
 import de.bixilon.minosoft.util.task.pool.DefaultThreadPool
 
 abstract class Connection : AbstractEventMaster {
     val network = Network.getNetworkInstance(this)
     private val eventMaster = EventMaster(Minosoft.GLOBAL_EVENT_MASTER)
     val connectionId = lastConnectionId++
-    abstract var connectionState: ConnectionStates
+    abstract var protocolState: ProtocolStates
     open var error: Throwable? = null
     var wasConnected = false
 

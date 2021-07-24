@@ -35,8 +35,8 @@ import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.gui.rendering.Rendering
 import de.bixilon.minosoft.modding.event.events.ChatMessageReceiveEvent
-import de.bixilon.minosoft.modding.event.events.ConnectionStateChangeEvent
 import de.bixilon.minosoft.modding.event.events.PacketReceiveEvent
+import de.bixilon.minosoft.modding.event.events.ProtocolStateChangeEvent
 import de.bixilon.minosoft.modding.event.events.RegistriesLoadEvent
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.Connection
@@ -91,14 +91,14 @@ class PlayConnection(
         MinecraftRegistryFixer(this)
     }
 
-    override var connectionState: ConnectionStates = ConnectionStates.DISCONNECTED
+    override var protocolState: ProtocolStates = ProtocolStates.DISCONNECTED
         set(value) {
-            val previousConnectionState = connectionState
+            val previousConnectionState = protocolState
             field = value
             // handle callbacks
-            fireEvent(ConnectionStateChangeEvent(this, previousConnectionState, connectionState))
+            fireEvent(ProtocolStateChangeEvent(this, previousConnectionState, protocolState))
             when (value) {
-                ConnectionStates.HANDSHAKING -> {
+                ProtocolStates.HANDSHAKING -> {
                     for ((validators, invokers) in Minosoft.GLOBAL_EVENT_MASTER.specificEventInvokers) {
                         var valid = false
                         for (serverAddress in validators) {
@@ -113,14 +113,14 @@ class PlayConnection(
                     }
 
 
-                    network.sendPacket(HandshakeC2SP(address, ConnectionStates.LOGIN, version.protocolId))
+                    network.sendPacket(HandshakeC2SP(address, ProtocolStates.LOGIN, version.protocolId))
                     // after sending it, switch to next state
-                    connectionState = ConnectionStates.LOGIN
+                    protocolState = ProtocolStates.LOGIN
                 }
-                ConnectionStates.LOGIN -> {
+                ProtocolStates.LOGIN -> {
                     this.network.sendPacket(LoginStartC2SP(this.player))
                 }
-                ConnectionStates.PLAY -> {
+                ProtocolStates.PLAY -> {
                     // ToDO: Minosoft.CONNECTIONS[connectionId] = this
 
                     if (CLI.getCurrentConnection() == null) {
@@ -149,7 +149,7 @@ class PlayConnection(
                         Log.log(LogMessageType.CHAT_IN, additionalPrefix = ChatComponent.of(additionalPrefix)) { it.message }
                     })
                 }
-                ConnectionStates.DISCONNECTED -> {
+                ProtocolStates.DISCONNECTED -> {
                     if (previousConnectionState.connected) {
                         wasConnected = true
                     }
@@ -176,6 +176,7 @@ class PlayConnection(
         }
 
     fun connect(latch: CountUpAndDownLatch = CountUpAndDownLatch(1)) {
+        check(!wasConnected) { "Connection was already connected!" }
         // Log.log(LogMessageType.OTHER, LogLevels.VERBOSE){TranslatableComponents.HELLO_WORLD(Minosoft.LANGUAGE_MANAGER, "Moritz", 17)}
         try {
             fireEvent(RegistriesLoadEvent(this, registries, RegistriesLoadEvent.States.PRE))
@@ -210,21 +211,21 @@ class PlayConnection(
     }
 
     override fun getPacketById(packetId: Int): PacketTypes.S2C {
-        return version.getPacketById(connectionState, packetId) ?: Protocol.getPacketById(connectionState, packetId) ?: let {
+        return version.getPacketById(protocolState, packetId) ?: Protocol.getPacketById(protocolState, packetId) ?: let {
             // wtf, notchain sends play disconnect packet in login state...
-            if (connectionState != ConnectionStates.LOGIN) {
+            if (protocolState != ProtocolStates.LOGIN) {
                 return@let null
             }
-            val playPacket = version.getPacketById(ConnectionStates.PLAY, packetId)
+            val playPacket = version.getPacketById(ProtocolStates.PLAY, packetId)
             if (playPacket == PacketTypes.S2C.PLAY_KICK) {
                 return@let playPacket
             }
             null
-        } ?: error("Can not find packet $packetId in $connectionState for $version")
+        } ?: error("Can not find packet $packetId in $protocolState for $version")
     }
 
     override fun handlePacket(packet: S2CPacket) {
-        if (!connectionState.connected) {
+        if (!protocolState.connected) {
             return
         }
         try {
