@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2021 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -10,20 +10,21 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.modding.event.events
+package de.bixilon.minosoft.modding.event.events.connection.status
 
-import de.bixilon.minosoft.data.player.tab.TabListItemData
 import de.bixilon.minosoft.modding.event.EventInitiators
-import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionEvent
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.protocol.packets.s2c.play.TabListDataS2CP
-import java.util.*
+import de.bixilon.minosoft.protocol.network.connection.status.StatusConnection
+import de.bixilon.minosoft.protocol.packets.s2c.status.ServerStatusResponseS2CP
+import de.bixilon.minosoft.protocol.status.ServerStatus
 
-class PlayerListItemChangeEvent(
-    connection: PlayConnection,
+/**
+ * Fired when the connection status is "STATUS" and the server send general information such as players online, motd, etc
+ */
+class ServerStatusReceiveEvent(
+    connection: StatusConnection,
     initiator: EventInitiators,
-    val items: Map<UUID, TabListItemData>,
-) : PlayConnectionEvent(connection, initiator), CancelableEvent {
+    val status: ServerStatus,
+) : StatusConnectionEvent(connection, initiator) {
 
-    constructor(connection: PlayConnection, packet: TabListDataS2CP) : this(connection, EventInitiators.SERVER, packet.items)
+    constructor(connection: StatusConnection, packet: ServerStatusResponseS2CP) : this(connection, EventInitiators.SERVER, packet.status)
 }

@@ -14,8 +14,10 @@
 package de.bixilon.minosoft.protocol.network.connection
 
 import de.bixilon.minosoft.Minosoft
+import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.modding.event.events.Event
 import de.bixilon.minosoft.modding.event.events.PacketSendEvent
+import de.bixilon.minosoft.modding.event.events.connection.ConnectionErrorEvent
 import de.bixilon.minosoft.modding.event.invoker.EventInvoker
 import de.bixilon.minosoft.modding.event.master.AbstractEventMaster
 import de.bixilon.minosoft.modding.event.master.EventMaster
@@ -31,11 +33,17 @@ abstract class Connection : AbstractEventMaster {
     val network = Network.getNetworkInstance(this)
     private val eventMaster = EventMaster(Minosoft.GLOBAL_EVENT_MASTER)
     val connectionId = lastConnectionId++
-    abstract var protocolState: ProtocolStates
-    open var error: Throwable? = null
     var wasConnected = false
+    abstract var protocolState: ProtocolStates
+
+    open var error: Throwable? = null
+        set(value) {
+            field = value
+            value?.let { fireEvent(ConnectionErrorEvent(this, EventInitiators.UNKNOWN, it)) }
+        }
 
     abstract fun getPacketId(packetType: C2S): Int
+
     abstract fun getPacketById(packetId: Int): S2C?
 
     open fun sendPacket(packet: C2SPacket) {

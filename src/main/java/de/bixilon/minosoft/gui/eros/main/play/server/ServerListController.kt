@@ -22,12 +22,12 @@ import de.bixilon.minosoft.gui.eros.controller.EmbeddedJavaFXController
 import de.bixilon.minosoft.gui.eros.main.play.server.card.ServerCard
 import de.bixilon.minosoft.gui.eros.main.play.server.card.ServerCardController
 import de.bixilon.minosoft.gui.eros.modding.invoker.JavaFXEventInvoker
-import de.bixilon.minosoft.modding.event.events.ProtocolStateChangeEvent
-import de.bixilon.minosoft.modding.event.events.status.StatusConnectionUpdateEvent
+import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionStateChangeEvent
+import de.bixilon.minosoft.modding.event.events.connection.status.StatusConnectionStateChangeEvent
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.protocol.network.connection.status.StatusConnectionStatuses
-import de.bixilon.minosoft.protocol.protocol.ProtocolStates
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
+import de.bixilon.minosoft.protocol.network.connection.status.StatusConnectionStates
 import de.bixilon.minosoft.util.DNSUtil
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
 import de.bixilon.minosoft.util.KUtil.decide
@@ -92,7 +92,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>() {
     private fun updateServer(server: Server) {
         val card = server.card ?: let {
             val card = ServerCard(server)
-            card.serverListStatusInvoker = JavaFXEventInvoker.of<StatusConnectionUpdateEvent>(instantFire = false) { updateServer(server) }
+            card.serverListStatusInvoker = JavaFXEventInvoker.of<StatusConnectionStateChangeEvent>(instantFire = false) { updateServer(server) }
             card
         }
         val wasSelected = serverListViewFX.selectionModel.selectedItem === card
@@ -178,8 +178,8 @@ class ServerListController : EmbeddedJavaFXController<Pane>() {
                             account.connections[serverCard.server] = connection
                             serverCard.server.connections += connection
 
-                            connection.registerEvent(CallbackEventInvoker.of<ProtocolStateChangeEvent> { event ->
-                                if (event.state == ProtocolStates.DISCONNECTED) {
+                            connection.registerEvent(CallbackEventInvoker.of<PlayConnectionStateChangeEvent> { event ->
+                                if (event.state === PlayConnectionStates.DISCONNECTED || event.state === PlayConnectionStates.KICKED || event.state === PlayConnectionStates.ERROR) {
                                     account.connections -= serverCard.server
                                     serverCard.server.connections -= connection
                                 }
@@ -189,7 +189,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>() {
                         }
                     }
                 }
-                isDisable = ping?.pingStatus != StatusConnectionStatuses.PING_DONE ||
+                isDisable = ping?.state !== StatusConnectionStates.PING_DONE ||
                         (serverCard.server.forcedVersion ?: ping.serverVersion == null) ||
                         Minosoft.config.config.account.selected?.connections?.containsKey(serverCard.server) == true
                 // ToDo: Also disable, if currently connecting
@@ -215,6 +215,10 @@ class ServerListController : EmbeddedJavaFXController<Pane>() {
             "minosoft:server.info.forced_version".asResourceLocation() to { it.forcedVersion },
             "minosoft:server.info.remote_version".asResourceLocation() to { it.ping?.serverVersion },
             "minosoft:server.info.remote_brand".asResourceLocation() to { it.ping?.lastServerStatus?.serverBrand },
+
+            "minosoft:general.empty".asResourceLocation() to { " " },
+
+            "minosoft:server.info.active_connections".asResourceLocation() to { it.connections.size },
         )
     }
 }

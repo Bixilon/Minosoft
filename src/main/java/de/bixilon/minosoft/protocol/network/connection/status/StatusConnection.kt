@@ -18,10 +18,10 @@ import de.bixilon.minosoft.data.registries.versions.Versions
 import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.modding.event.events.PacketReceiveEvent
 import de.bixilon.minosoft.modding.event.events.ProtocolStateChangeEvent
-import de.bixilon.minosoft.modding.event.events.status.ServerStatusReceiveEvent
-import de.bixilon.minosoft.modding.event.events.status.StatusConnectionErrorEvent
-import de.bixilon.minosoft.modding.event.events.status.StatusConnectionUpdateEvent
-import de.bixilon.minosoft.modding.event.events.status.StatusPongReceiveEvent
+import de.bixilon.minosoft.modding.event.events.connection.ConnectionErrorEvent
+import de.bixilon.minosoft.modding.event.events.connection.status.ServerStatusReceiveEvent
+import de.bixilon.minosoft.modding.event.events.connection.status.StatusConnectionStateChangeEvent
+import de.bixilon.minosoft.modding.event.events.connection.status.StatusPongReceiveEvent
 import de.bixilon.minosoft.modding.event.invoker.EventInstantFireable
 import de.bixilon.minosoft.modding.event.invoker.EventInvoker
 import de.bixilon.minosoft.protocol.network.connection.Connection
@@ -44,11 +44,6 @@ import de.bixilon.minosoft.util.task.pool.DefaultThreadPool
 class StatusConnection(
     val address: String,
 ) : Connection() {
-    var pingStatus = StatusConnectionStatuses.WAITING
-        set(value) {
-            field = value
-            fireEvent(StatusConnectionUpdateEvent(this, EventInitiators.UNKNOWN, value))
-        }
     var lastServerStatus: ServerStatus? = null
     var pingQuery: PingQuery? = null
     var lastPongEvent: StatusPongReceiveEvent? = null
@@ -59,19 +54,22 @@ class StatusConnection(
 
     var serverVersion: Version? = null
 
-
-    override var error: Throwable? = super.error
+    var state = StatusConnectionStates.WAITING
         set(value) {
             field = value
-            value?.let {
-                fireEvent(StatusConnectionErrorEvent(this, EventInitiators.UNKNOWN, it))
-                pingStatus = StatusConnectionStatuses.ERROR
-            }
+            fireEvent(StatusConnectionStateChangeEvent(this, value))
+        }
+
+    override var error: Throwable?
+        get() = super.error
+        set(value) {
+            super.error = value
+            value?.let { state = StatusConnectionStates.ERROR }
         }
 
 
     fun resolve() {
-        pingStatus = StatusConnectionStatuses.RESOLVING
+        state = StatusConnectionStates.RESOLVING
         error = null
 
         var addresses = this.addresses
@@ -95,7 +93,7 @@ class StatusConnection(
 
             Log.log(LogMessageType.NETWORK_RESOLVING) { "Trying to ping $realAddress (from $address)" }
 
-            pingStatus = StatusConnectionStatuses.ESTABLISHING
+            state = StatusConnectionStates.ESTABLISHING
             network.connect(realAddress)
         }
     }
@@ -109,12 +107,12 @@ class StatusConnection(
             fireEvent(ProtocolStateChangeEvent(this, previousConnectionState, protocolState))
             when (value) {
                 ProtocolStates.HANDSHAKING -> {
-                    pingStatus = StatusConnectionStatuses.HANDSHAKING
+                    state = StatusConnectionStates.HANDSHAKING
                     network.sendPacket(HandshakeC2SP(realAddress, ProtocolStates.STATUS, Versions.AUTOMATIC_VERSION.protocolId))
                     protocolState = ProtocolStates.STATUS
                 }
                 ProtocolStates.STATUS -> {
-                    pingStatus = StatusConnectionStatuses.QUERYING_STATUS
+                    state = StatusConnectionStates.QUERYING_STATUS
                     network.sendPacket(StatusRequestC2SP())
                 }
                 ProtocolStates.DISCONNECTED -> {
@@ -170,14 +168,14 @@ class StatusConnection(
             return super.registerEvent(invoker)
         }
 
-        if (!invoker.eventType.isAssignableFrom(ServerStatusReceiveEvent::class.java) && !invoker.eventType.isAssignableFrom(StatusConnectionErrorEvent::class.java) && !invoker.eventType.isAssignableFrom(StatusConnectionUpdateEvent::class.java) && !invoker.eventType.isAssignableFrom(StatusPongReceiveEvent::class.java)) {
+        if (!invoker.eventType.isAssignableFrom(ServerStatusReceiveEvent::class.java) && !invoker.eventType.isAssignableFrom(ConnectionErrorEvent::class.java) && !invoker.eventType.isAssignableFrom(StatusConnectionStateChangeEvent::class.java) && !invoker.eventType.isAssignableFrom(StatusPongReceiveEvent::class.java)) {
             return super.registerEvent(invoker)
         }
 
 
         when {
-            invoker.eventType.isAssignableFrom(StatusConnectionErrorEvent::class.java) -> {
-                error?.let { invoker.invoke(StatusConnectionErrorEvent(this, EventInitiators.UNKNOWN, it)) } ?: super.registerEvent(invoker)
+            invoker.eventType.isAssignableFrom(ConnectionErrorEvent::class.java) -> {
+                error?.let { invoker.invoke(ConnectionErrorEvent(this, EventInitiators.UNKNOWN, it)) } ?: super.registerEvent(invoker)
             }
             invoker.eventType.isAssignableFrom(ServerStatusReceiveEvent::class.java) -> {
                 lastServerStatus?.let { invoker.invoke(ServerStatusReceiveEvent(this, EventInitiators.UNKNOWN, it)) } ?: super.registerEvent(invoker)
@@ -185,9 +183,9 @@ class StatusConnection(
             invoker.eventType.isAssignableFrom(StatusPongReceiveEvent::class.java) -> {
                 lastPongEvent?.let { invoker.invoke(it) } ?: super.registerEvent(invoker)
             }
-            invoker.eventType.isAssignableFrom(StatusConnectionUpdateEvent::class.java) -> {
+            invoker.eventType.isAssignableFrom(StatusConnectionStateChangeEvent::class.java) -> {
                 super.registerEvent(invoker)
-                invoker.invoke(StatusConnectionUpdateEvent(this, EventInitiators.UNKNOWN, pingStatus))
+                invoker.invoke(StatusConnectionStateChangeEvent(this, state))
             }
             else -> TODO()
         }

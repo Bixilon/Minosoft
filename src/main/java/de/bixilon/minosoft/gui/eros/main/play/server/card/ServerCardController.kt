@@ -23,10 +23,10 @@ import de.bixilon.minosoft.gui.eros.card.CardFactory
 import de.bixilon.minosoft.gui.eros.modding.invoker.JavaFXEventInvoker
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.text
-import de.bixilon.minosoft.modding.event.events.status.ServerStatusReceiveEvent
-import de.bixilon.minosoft.modding.event.events.status.StatusConnectionErrorEvent
-import de.bixilon.minosoft.modding.event.events.status.StatusConnectionUpdateEvent
-import de.bixilon.minosoft.modding.event.events.status.StatusPongReceiveEvent
+import de.bixilon.minosoft.modding.event.events.connection.ConnectionErrorEvent
+import de.bixilon.minosoft.modding.event.events.connection.status.ServerStatusReceiveEvent
+import de.bixilon.minosoft.modding.event.events.connection.status.StatusConnectionStateChangeEvent
+import de.bixilon.minosoft.modding.event.events.connection.status.StatusPongReceiveEvent
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
 import de.bixilon.minosoft.util.KUtil.realName
 import de.bixilon.minosoft.util.KUtil.thousands
@@ -102,15 +102,15 @@ class ServerCardController : AbstractCard<ServerCard>() {
             } // ToDo: Should not be part of the gui
         }
 
-        card.statusUpdateInvoker = JavaFXEventInvoker.of<StatusConnectionUpdateEvent> {
+        card.statusUpdateInvoker = JavaFXEventInvoker.of<StatusConnectionStateChangeEvent> {
             if (lastServerCard != card || it.connection.error != null || it.connection.lastServerStatus != null) {
                 // error or motd is already displayed
                 return@of
             }
-            motdFX.text = ChatComponent.of(Minosoft.LANGUAGE_MANAGER.translate(it.status))
+            motdFX.text = ChatComponent.of(Minosoft.LANGUAGE_MANAGER.translate(it.state))
         }
 
-        card.statusErrorInvoker = JavaFXEventInvoker.of<StatusConnectionErrorEvent> {
+        card.statusErrorInvoker = JavaFXEventInvoker.of<ConnectionErrorEvent> {
             if (lastServerCard != card) {
                 return@of
             }

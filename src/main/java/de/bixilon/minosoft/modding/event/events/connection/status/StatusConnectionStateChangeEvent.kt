@@ -11,13 +11,13 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.modding.event.events.status
+package de.bixilon.minosoft.modding.event.events.connection.status
 
 import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.protocol.network.connection.status.StatusConnection
+import de.bixilon.minosoft.protocol.network.connection.status.StatusConnectionStates
 
-class StatusConnectionErrorEvent(
+class StatusConnectionStateChangeEvent(
     connection: StatusConnection,
-    initiator: EventInitiators,
-    val exception: Throwable,
-) : StatusConnectionEvent(connection, initiator)
+    val state: StatusConnectionStates,
+) : StatusConnectionEvent(connection, EventInitiators.UNKNOWN)

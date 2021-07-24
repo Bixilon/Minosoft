@@ -10,21 +10,14 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.modding.event.events.status
+
+package de.bixilon.minosoft.modding.event.events.connection
 
 import de.bixilon.minosoft.modding.event.EventInitiators
-import de.bixilon.minosoft.protocol.network.connection.status.StatusConnection
-import de.bixilon.minosoft.protocol.packets.s2c.status.ServerStatusResponseS2CP
-import de.bixilon.minosoft.protocol.status.ServerStatus
+import de.bixilon.minosoft.protocol.network.connection.Connection
 
-/**
- * Fired when the connection status is "STATUS" and the server send general information such as players online, motd, etc
- */
-class ServerStatusReceiveEvent(
-    connection: StatusConnection,
+class ConnectionErrorEvent(
+    connection: Connection,
     initiator: EventInitiators,
-    val status: ServerStatus,
-) : StatusConnectionEvent(connection, initiator) {
-
-    constructor(connection: StatusConnection, packet: ServerStatusResponseS2CP) : this(connection, EventInitiators.SERVER, packet.status)
-}
+    val exception: Throwable,
+) : ConnectionEvent(connection, initiator)

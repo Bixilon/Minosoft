@@ -14,9 +14,9 @@ package de.bixilon.minosoft.protocol.packets.s2c.status
 
 import de.bixilon.minosoft.data.registries.versions.Version
 import de.bixilon.minosoft.data.registries.versions.Versions
-import de.bixilon.minosoft.modding.event.events.status.ServerStatusReceiveEvent
+import de.bixilon.minosoft.modding.event.events.connection.status.ServerStatusReceiveEvent
 import de.bixilon.minosoft.protocol.network.connection.status.StatusConnection
-import de.bixilon.minosoft.protocol.network.connection.status.StatusConnectionStatuses
+import de.bixilon.minosoft.protocol.network.connection.status.StatusConnectionStates
 import de.bixilon.minosoft.protocol.packets.c2s.status.StatusPingC2SP
 import de.bixilon.minosoft.protocol.packets.s2c.StatusS2CPacket
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer
@@ -42,7 +42,7 @@ class ServerStatusResponseS2CP(buffer: InByteBuffer) : StatusS2CPacket() {
 
         val pingQuery = PingQuery()
         connection.pingQuery = pingQuery
-        connection.pingStatus = StatusConnectionStatuses.QUERYING_PING
+        connection.state = StatusConnectionStates.QUERYING_PING
         connection.sendPacket(StatusPingC2SP(pingQuery.pingId))
     }
 

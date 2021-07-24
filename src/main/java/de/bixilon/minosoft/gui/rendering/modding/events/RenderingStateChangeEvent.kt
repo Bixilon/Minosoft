@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.modding.events
 
 import de.bixilon.minosoft.gui.rendering.RenderingStates
-import de.bixilon.minosoft.modding.event.events.PlayConnectionEvent
+import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 class RenderingStateChangeEvent(

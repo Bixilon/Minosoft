@@ -38,6 +38,7 @@ import de.bixilon.minosoft.modding.event.events.ChatMessageReceiveEvent
 import de.bixilon.minosoft.modding.event.events.PacketReceiveEvent
 import de.bixilon.minosoft.modding.event.events.ProtocolStateChangeEvent
 import de.bixilon.minosoft.modding.event.events.RegistriesLoadEvent
+import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionStateChangeEvent
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.Connection
 import de.bixilon.minosoft.protocol.packets.c2s.handshaking.HandshakeC2SP
@@ -87,6 +88,19 @@ class PlayConnection(
     val collisionDetector = CollisionDetector(this)
     var retry = true
 
+    var state = PlayConnectionStates.WAITING
+        set(value) {
+            field = value
+            fireEvent(PlayConnectionStateChangeEvent(this, value))
+        }
+
+    override var error: Throwable?
+        get() = super.error
+        set(value) {
+            super.error = value
+            value?.let { state = PlayConnectionStates.ERROR }
+        }
+
     init {
         MinecraftRegistryFixer(this)
     }
@@ -99,6 +113,7 @@ class PlayConnection(
             fireEvent(ProtocolStateChangeEvent(this, previousConnectionState, protocolState))
             when (value) {
                 ProtocolStates.HANDSHAKING -> {
+                    state = PlayConnectionStates.HANDSHAKING
                     for ((validators, invokers) in Minosoft.GLOBAL_EVENT_MASTER.specificEventInvokers) {
                         var valid = false
                         for (serverAddress in validators) {
@@ -118,9 +133,11 @@ class PlayConnection(
                     protocolState = ProtocolStates.LOGIN
                 }
                 ProtocolStates.LOGIN -> {
+                    state = PlayConnectionStates.LOGGING_IN
                     this.network.sendPacket(LoginStartC2SP(this.player))
                 }
                 ProtocolStates.PLAY -> {
+                    state = PlayConnectionStates.JOINING
                     // ToDO: Minosoft.CONNECTIONS[connectionId] = this
 
                     if (CLI.getCurrentConnection() == null) {
@@ -169,6 +186,7 @@ class PlayConnection(
                     if (this::randomTickTask.isInitialized) {
                         TimeWorker.removeTask(randomTickTask)
                     }
+                    state = PlayConnectionStates.DISCONNECTED
                 }
                 else -> {
                 }
@@ -179,6 +197,7 @@ class PlayConnection(
         check(!wasConnected) { "Connection was already connected!" }
         // Log.log(LogMessageType.OTHER, LogLevels.VERBOSE){TranslatableComponents.HELLO_WORLD(Minosoft.LANGUAGE_MANAGER, "Moritz", 17)}
         try {
+            state = PlayConnectionStates.LOADING
             fireEvent(RegistriesLoadEvent(this, registries, RegistriesLoadEvent.States.PRE))
             version.load(latch) // ToDo: show gui loader
             assetsManager = MultiAssetsManager(version.assetsManager, Minosoft.MINOSOFT_ASSETS_MANAGER, Minosoft.MINECRAFT_FALLBACK_ASSETS_MANAGER)
@@ -195,6 +214,7 @@ class PlayConnection(
             }
             Log.log(LogMessageType.NETWORK_STATUS, level = LogLevels.INFO) { "Connecting to server: $address" }
             network.connect(address)
+            state = PlayConnectionStates.ESTABLISHING
         } catch (exception: Throwable) {
             Log.log(LogMessageType.VERSION_LOADING, level = LogLevels.FATAL) { exception }
             Log.log(LogMessageType.VERSION_LOADING, level = LogLevels.FATAL) { "Could not load version $version. This version seems to be unsupported" }

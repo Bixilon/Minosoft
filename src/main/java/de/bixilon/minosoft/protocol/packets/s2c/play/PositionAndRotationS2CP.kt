@@ -14,10 +14,12 @@ package de.bixilon.minosoft.protocol.packets.s2c.play
 
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
 import de.bixilon.minosoft.protocol.packets.c2s.play.PositionAndRotationC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.TeleportConfirmC2SP
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
+import de.bixilon.minosoft.protocol.protocol.ProtocolStates
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.util.BitByte
 import de.bixilon.minosoft.util.logging.Log
@@ -79,6 +81,10 @@ class PositionAndRotationS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
             connection.sendPacket(TeleportConfirmC2SP(teleportId))
         }
         connection.sendPacket(PositionAndRotationC2SP(position, rotation, isOnGround))
+
+        if (connection.state != PlayConnectionStates.PLAYING && connection.protocolState != ProtocolStates.DISCONNECTED) {
+            connection.state = PlayConnectionStates.PLAYING
+        }
     }
 
     override fun log() {

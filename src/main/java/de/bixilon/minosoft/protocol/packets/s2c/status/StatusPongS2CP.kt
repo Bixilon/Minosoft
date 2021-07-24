@@ -13,9 +13,9 @@
 package de.bixilon.minosoft.protocol.packets.s2c.status
 
 import de.bixilon.minosoft.modding.event.EventInitiators
-import de.bixilon.minosoft.modding.event.events.status.StatusPongReceiveEvent
+import de.bixilon.minosoft.modding.event.events.connection.status.StatusPongReceiveEvent
 import de.bixilon.minosoft.protocol.network.connection.status.StatusConnection
-import de.bixilon.minosoft.protocol.network.connection.status.StatusConnectionStatuses
+import de.bixilon.minosoft.protocol.network.connection.status.StatusConnectionStates
 import de.bixilon.minosoft.protocol.packets.s2c.StatusS2CPacket
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer
 import de.bixilon.minosoft.util.logging.Log
@@ -37,7 +37,7 @@ class StatusPongS2CP(buffer: InByteBuffer) : StatusS2CPacket() {
         val pongEvent = StatusPongReceiveEvent(connection, EventInitiators.SERVER, pingId, latency)
         connection.lastPongEvent = pongEvent
         connection.fireEvent(pongEvent)
-        connection.pingStatus = StatusConnectionStatuses.PING_DONE
+        connection.state = StatusConnectionStates.PING_DONE
     }
 
     override fun log() {

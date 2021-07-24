@@ -11,14 +11,32 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.modding.event.events.status
+package de.bixilon.minosoft.protocol.network.connection.play
 
-import de.bixilon.minosoft.modding.event.EventInitiators
-import de.bixilon.minosoft.modding.event.events.ConnectionEvent
-import de.bixilon.minosoft.protocol.network.connection.status.StatusConnection
+import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.registries.registry.Translatable
+import de.bixilon.minosoft.util.KUtil.asResourceLocation
 
-abstract class StatusConnectionEvent(
-    override val connection: StatusConnection,
-    initiator: EventInitiators = EventInitiators.DEFAULT,
-) : ConnectionEvent(connection, initiator)
+enum class PlayConnectionStates : Translatable {
+    WAITING,
 
+    LOADING,
+
+    ESTABLISHING,
+    HANDSHAKING,
+
+    LOGGING_IN,
+    JOINING,
+
+    SPAWNING,
+
+    PLAYING,
+
+    DISCONNECTED,
+    KICKED,
+
+    ERROR,
+    ;
+
+    override val translationKey: ResourceLocation = "minosoft:connection.play.state.${name.lowercase()}".asResourceLocation()
+}
