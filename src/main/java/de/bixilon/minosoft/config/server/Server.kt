@@ -25,7 +25,7 @@ data class Server(
     val id: Int = nextServerId++, // ToDo: Is duplicated in config (first key, then in value)
     var address: String,
     var name: ChatComponent = ChatComponent.of(address),
-    @Json(name = "version") var desiredVersion: Int = -1,
+    @Json(name = "version") var forcedVersion: Int? = null,
     @Json(name = "favicon") var faviconHash: String? = null,
     var type: ServerTypes = ServerTypes.NORMAL,
 ) {
@@ -55,6 +55,11 @@ data class Server(
     init {
         if (id > nextServerId) {
             nextServerId = id + 1
+        }
+        forcedVersion?.let {
+            if (it < 0) {
+                forcedVersion = null
+            }
         }
         faviconHash?.let { favicon = AssetsUtil.readAsset(it, true) }
     }

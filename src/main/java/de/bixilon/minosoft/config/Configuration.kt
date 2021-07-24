@@ -34,7 +34,7 @@ class Configuration(private val configName: String = RunConfiguration.CONFIG_FIL
 
     init {
         if (file.exists()) {
-            val config = JSONSerializer.MAP_ADAPTER.fromJson(Util.readFile(file.absolutePath))!!
+            val config = JSONSerializer.MUTABLE_MAP_ADAPTER.fromJson(Util.readFile(file.absolutePath))!!
 
             migrate(config)
             var wasMigrated = false

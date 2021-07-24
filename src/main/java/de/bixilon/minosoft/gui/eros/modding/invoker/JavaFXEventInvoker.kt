@@ -19,6 +19,7 @@ import de.bixilon.minosoft.modding.event.invoker.EventInstantFireable
 import de.bixilon.minosoft.modding.event.invoker.EventInvoker
 import de.bixilon.minosoft.modding.loading.Priorities
 import javafx.application.Platform
+import kotlin.reflect.KClass
 
 /**
  * Basically a CallbackEventInvoker, bt the callback runs on the java fx ui thread
@@ -26,6 +27,7 @@ import javafx.application.Platform
 class JavaFXEventInvoker<E : Event> private constructor(
     ignoreCancelled: Boolean,
     private val callback: (E) -> Unit,
+    override val kEventType: KClass<out Event>,
     override val eventType: Class<out Event>,
     override val instantFire: Boolean,
 ) : EventInvoker(ignoreCancelled, Priorities.NORMAL, null), EventInstantFireable {
@@ -46,6 +48,7 @@ class JavaFXEventInvoker<E : Event> private constructor(
             return JavaFXEventInvoker(
                 ignoreCancelled = ignoreCancelled,
                 callback = callback,
+                kEventType = E::class,
                 eventType = E::class.java,
                 instantFire = instantFire,
             )

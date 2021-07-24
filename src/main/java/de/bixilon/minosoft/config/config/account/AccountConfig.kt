@@ -14,12 +14,22 @@
 package de.bixilon.minosoft.config.config.account
 
 import com.squareup.moshi.Json
+import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.accounts.Account
+import de.bixilon.minosoft.modding.event.events.account.AccountSelectEvent
 import java.util.*
 
 data class AccountConfig(
-    var selected: String = "",
-    @Json(name = "client_token")
-    var clientToken: String = UUID.randomUUID().toString(),
+    @Json(name = "selected") var selectedAccountId: String? = null,
+    @Json(name = "client_token") var clientToken: String = UUID.randomUUID().toString(),
     val entries: MutableMap<String, Account> = mutableMapOf(),
-)
+) {
+    @Transient
+    var selected: Account? = null
+        get() = entries[selectedAccountId]
+        set(value) {
+            Minosoft.GLOBAL_EVENT_MASTER.fireEvent(AccountSelectEvent(selected, value))
+            field // To allow transient for moshi
+            selectedAccountId = value?.id
+        }
+}

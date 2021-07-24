@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Text?>
 <?import org.kordamp.ikonli.javafx.*?>
-<HBox xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1000.0" fx:controller="de.bixilon.minosoft.gui.eros.main.MainErosController">
+<HBox xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/16" fx:controller="de.bixilon.minosoft.gui.eros.main.MainErosController">
     <GridPane HBox.hgrow="ALWAYS">
         <columnConstraints>
             <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0"/>
@@ -77,7 +77,21 @@
                     </GridPane.margin>
                 </FontIcon>
             </GridPane>
-            <Text text="Account" GridPane.columnIndex="3"/>
+            <GridPane GridPane.columnIndex="3">
+                <columnConstraints>
+                    <ColumnConstraints hgrow="NEVER" minWidth="10.0"/>
+                    <ColumnConstraints hgrow="NEVER"/>
+                </columnConstraints>
+                <rowConstraints>
+                    <RowConstraints minHeight="10.0" vgrow="ALWAYS"/>
+                </rowConstraints>
+                <ImageView fx:id="accountImageFX" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
+                    <GridPane.margin>
+                        <Insets right="5.0"/>
+                    </GridPane.margin>
+                </ImageView>
+                <Text fx:id="accountNameFX" text="Account" GridPane.columnIndex="1"/>
+            </GridPane>
             <GridPane.margin>
                 <Insets bottom="3.0" left="5.0" right="5.0" top="3.0"/>
             </GridPane.margin>

@@ -14,8 +14,7 @@
 package de.bixilon.minosoft.util.microsoft
 
 import com.google.gson.JsonParser
-import de.bixilon.minosoft.data.accounts.Account
-import de.bixilon.minosoft.data.accounts.MicrosoftAccount
+import de.bixilon.minosoft.data.accounts.types.MicrosoftAccount
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.HTTP
@@ -38,7 +37,7 @@ object MicrosoftOAuthUtils {
             val xstsToken = getXSTSToken(xboxLiveToken.first)
 
             val microsoftAccount = getMicrosoftAccount(getMinecraftAccessToken(xboxLiveToken.second, xstsToken))
-            Account.addAccount(microsoftAccount)
+            // ToDo: Account.addAccount(microsoftAccount)
         } catch (exception: Exception) {
             Log.warn("Can not login into microsoft account")
             exception.printStackTrace()
@@ -162,7 +161,8 @@ object MicrosoftOAuthUtils {
         }
 
         val body = JsonParser.parseString(response.body()).asJsonObject
-        return MicrosoftAccount(bearerToken, body["id"].asString!!, Util.getUUIDFromString(body["id"].asString!!), body["name"].asString!!)
+        // return MicrosoftAccount(bearerToken, body["id"].asString!!, Util.getUUIDFromString(body["id"].asString!!), body["name"].asString!!)
+        TODO()
     }
 
     init {

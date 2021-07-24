@@ -50,6 +50,8 @@ object Minosoft {
     val GLOBAL_EVENT_MASTER = GlobalEventMaster()
     val LANGUAGE_MANAGER = MultiLanguageManager()
     val START_UP_LATCH = CountUpAndDownLatch(1)
+
+    @Deprecated("Will be singleton interface")
     lateinit var config: Configuration
 
     var initialized: Boolean = false

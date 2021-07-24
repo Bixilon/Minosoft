@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -10,20 +10,9 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.modding.event.invoker
+package de.bixilon.minosoft.util.http.exceptions
 
-import de.bixilon.minosoft.modding.event.EventListener
-import de.bixilon.minosoft.modding.event.events.Event
-import de.bixilon.minosoft.modding.loading.Priorities
-import kotlin.reflect.KClass
-
-abstract class EventInvoker(
-    val isIgnoreCancelled: Boolean,
-    val priority: Priorities,
-    protected val listener: EventListener?,
-) {
-    abstract val kEventType: KClass<out Event>?
-    abstract val eventType: Class<out Event>
-
-    abstract operator fun invoke(event: Event)
-}
+class AuthenticationException(
+    statusCode: Int,
+    message: String? = null,
+) : HTTPException(statusCode, message)

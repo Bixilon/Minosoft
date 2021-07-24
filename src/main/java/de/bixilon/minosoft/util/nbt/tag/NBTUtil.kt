@@ -14,6 +14,11 @@
 package de.bixilon.minosoft.util.nbt.tag
 
 object NBTUtil {
+
+    fun compound(): MutableMap<String, Any> {
+        return mutableMapOf()
+    }
+
     fun MutableMap<String, Any>.getAndRemove(key: String): Any? {
         val value = this[key]
         this.remove(key)

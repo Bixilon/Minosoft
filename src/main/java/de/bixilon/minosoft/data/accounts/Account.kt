@@ -10,20 +10,19 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.modding.event.invoker
 
-import de.bixilon.minosoft.modding.event.EventListener
-import de.bixilon.minosoft.modding.event.events.Event
-import de.bixilon.minosoft.modding.loading.Priorities
-import kotlin.reflect.KClass
+package de.bixilon.minosoft.data.accounts
 
-abstract class EventInvoker(
-    val isIgnoreCancelled: Boolean,
-    val priority: Priorities,
-    protected val listener: EventListener?,
+import de.bixilon.minosoft.data.registries.ResourceLocation
+
+abstract class Account(
+    val username: String,
 ) {
-    abstract val kEventType: KClass<out Event>?
-    abstract val eventType: Class<out Event>
+    abstract val id: String
+    abstract val type: ResourceLocation
 
-    abstract operator fun invoke(event: Event)
+    abstract fun join(serverId: String)
+
+    abstract fun logout()
+    abstract fun verify()
 }

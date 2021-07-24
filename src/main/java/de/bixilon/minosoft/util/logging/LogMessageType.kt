@@ -30,6 +30,8 @@ enum class LogMessageType(
     VERSION_LOADING(ChatColors.YELLOW),
     ASSETS(ChatColors.BLACK),
 
+    AUTHENTICATION(ChatColors.BLACK),
+
     NETWORK_RESOLVING(ChatColors.DARK_GREEN),
     NETWORK_STATUS(ChatColors.DARK_GREEN),
     NETWORK_PACKETS_IN(ChatColors.BLUE, mapOf(

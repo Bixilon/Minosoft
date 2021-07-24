@@ -17,6 +17,7 @@ import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.JsonWriter
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.ResourceLocationAble
 import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
@@ -166,6 +167,22 @@ object KUtil {
             `true`()
         } else {
             `false`()
+        }
+    }
+
+    fun <T> Boolean.decide(`true`: T, `false`: () -> T): T {
+        return if (this) {
+            `true`
+        } else {
+            `false`()
+        }
+    }
+
+    fun <T> Boolean.decide(`true`: () -> T, `false`: T): T {
+        return if (this) {
+            `true`()
+        } else {
+            `false`
         }
     }
 
@@ -325,4 +342,19 @@ object KUtil {
 
     val Class<*>.realName: String
         get() = this.name.removePrefix(this.packageName).removePrefix(".")
+
+    fun UUID.trim(): String {
+        return this.toString().replace("-", "")
+    }
+
+
+    fun <T : ResourceLocationAble> List<T>.asResourceLocationMap(): Map<ResourceLocation, T> {
+        val ret: MutableMap<ResourceLocation, T> = mutableMapOf()
+
+        for (value in this) {
+            ret[value.resourceLocation] = value
+        }
+
+        return ret.toMap()
+    }
 }

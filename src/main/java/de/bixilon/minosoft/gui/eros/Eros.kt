@@ -25,11 +25,13 @@ object Eros {
     private val TITLE = "minosoft:eros_window_title".asResourceLocation()
     private val LAYOUT = "minosoft:eros/main/main.fxml".asResourceLocation()
 
+    lateinit var mainErosController: MainErosController
+
 
     init {
         Minosoft.GLOBAL_EVENT_MASTER.registerEvent(CallbackEventInvoker.of<FinishInitializingEvent> {
             Platform.runLater {
-                val mainErosController = JavaFXUtil.openModal<MainErosController>(TITLE, LAYOUT)
+                mainErosController = JavaFXUtil.openModal<MainErosController>(TITLE, LAYOUT)
                 mainErosController.stage.show()
             }
         })

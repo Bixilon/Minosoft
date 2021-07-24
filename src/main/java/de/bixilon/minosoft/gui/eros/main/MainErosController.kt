@@ -13,11 +13,15 @@
 
 package de.bixilon.minosoft.gui.eros.main
 
+import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.ShutdownReasons
 import de.bixilon.minosoft.config.StaticConfiguration
+import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.gui.eros.controller.JavaFXWindowController
 import de.bixilon.minosoft.gui.eros.main.play.PlayMainController
+import de.bixilon.minosoft.gui.eros.modding.invoker.JavaFXEventInvoker
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
+import de.bixilon.minosoft.modding.event.events.account.AccountSelectEvent
 import de.bixilon.minosoft.util.GitInfo
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
 import de.bixilon.minosoft.util.KUtil.decide
@@ -34,13 +38,11 @@ import org.kordamp.ikonli.javafx.FontIcon
 class MainErosController : JavaFXWindowController() {
     @FXML
     private lateinit var logoFX: ImageView
-
     @FXML
     private lateinit var versionTextFX: Text
 
     @FXML
     private lateinit var playIconFX: FontIcon
-
     @FXML
     private lateinit var settingsIconFX: FontIcon
 
@@ -55,6 +57,12 @@ class MainErosController : JavaFXWindowController() {
 
     @FXML
     private lateinit var contentFX: Pane
+
+    @FXML
+    private lateinit var accountImageFX: ImageView
+
+    @FXML
+    private lateinit var accountNameFX: Text
 
 
     private lateinit var icons: List<FontIcon>
@@ -84,11 +92,29 @@ class MainErosController : JavaFXWindowController() {
         }
 
         contentFX.children.setAll(JavaFXUtil.loadEmbeddedController<PlayMainController>("minosoft:eros/main/play/play.fxml".asResourceLocation()).root)
+
+
+        Minosoft.GLOBAL_EVENT_MASTER.registerEvent(JavaFXEventInvoker.of<AccountSelectEvent> {
+            accountImageFX.image = JavaFXUtil.MINOSOFT_LOGO // ToDo
+            accountNameFX.text = it.account?.username
+        })
     }
 
     override fun postInit() {
         stage.scene.window.addEventFilter(WindowEvent.WINDOW_CLOSE_REQUEST) {
             ShutdownManager.shutdown(reason = ShutdownReasons.REQUESTED_BY_USER)
         }
+    }
+
+    fun requestAccountSelect() {
+        TODO("Not yet implemented")
+    }
+
+    fun verifyAccount(account: Account? = Minosoft.config.config.account.selected, onSuccess: (Account) -> Unit) {
+        if (account == null) {
+            requestAccountSelect()
+            return
+        }
+        TODO("Not yet implemented")
     }
 }

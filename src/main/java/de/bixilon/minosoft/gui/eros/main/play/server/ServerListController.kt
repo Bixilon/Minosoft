@@ -16,13 +16,19 @@ package de.bixilon.minosoft.gui.eros.main.play.server
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.server.Server
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.versions.Versions
 import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.gui.eros.Eros
 import de.bixilon.minosoft.gui.eros.controller.EmbeddedJavaFXController
 import de.bixilon.minosoft.gui.eros.main.play.server.card.ServerCard
 import de.bixilon.minosoft.gui.eros.main.play.server.card.ServerCardController
 import de.bixilon.minosoft.gui.eros.modding.invoker.JavaFXEventInvoker
 import de.bixilon.minosoft.modding.event.events.status.StatusConnectionUpdateEvent
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.util.DNSUtil
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
+import de.bixilon.minosoft.util.KUtil.decide
+import de.bixilon.minosoft.util.task.pool.DefaultThreadPool
 import javafx.fxml.FXML
 import javafx.geometry.HPos
 import javafx.geometry.Insets
@@ -63,13 +69,20 @@ class ServerListController : EmbeddedJavaFXController<Pane>() {
         }
     }
 
+    override fun postInit() {
+        root.setOnKeyPressed { serverListViewFX.selectionModel.select(null) } // ToDo: Only on escape; not working
+    }
+
     @FXML
     fun refresh() {
+        val selected = serverListViewFX.selectionModel.selectedItem
         serverListViewFX.items.clear()
 
         for (server in Minosoft.config.config.server.entries.values) {
             updateServer(server)
         }
+
+        serverListViewFX.selectionModel.select(serverListViewFX.items.contains(selected).decide(selected, null))
     }
 
     private fun updateServer(server: Server) {
@@ -121,8 +134,10 @@ class ServerListController : EmbeddedJavaFXController<Pane>() {
             var row = 0
 
             for ((key, property) in SERVER_INFO_PROPERTIES) {
+                val propertyValue = property(serverCard.server) ?: continue
+
                 it.add(Minosoft.LANGUAGE_MANAGER.translate(key).textFlow, 0, row)
-                it.add(ChatComponent.of(property(serverCard.server)).textFlow, 1, row++)
+                it.add(ChatComponent.of(propertyValue).textFlow, 1, row++)
             }
 
             it.columnConstraints += ColumnConstraints(10.0, 100.0, 150.0)
@@ -138,7 +153,14 @@ class ServerListController : EmbeddedJavaFXController<Pane>() {
 
             it.add(Button("Delete"), 1, 0)
             it.add(Button("Edit"), 2, 0)
-            it.add(Button("Connect"), 3, 0)
+            it.add(Button("Connect").apply {
+                setOnAction {
+                    Eros.mainErosController.verifyAccount { account ->
+                        val connection = PlayConnection(serverCard.server.ping?.realAddress ?: DNSUtil.getServerAddress(serverCard.server.address), account, Versions.getVersionById(serverCard.server.forcedVersion!!)) // ToDo: Get ping version
+                        DefaultThreadPool += { connection.connect() }
+                    }
+                }
+            }, 3, 0)
 
 
             it.hgap = 5.0
@@ -153,9 +175,10 @@ class ServerListController : EmbeddedJavaFXController<Pane>() {
 
 
     private companion object {
-        private val SERVER_INFO_PROPERTIES: Map<ResourceLocation, (server: Server) -> Any> = mapOf(
-            "minosoft:server_name".asResourceLocation() to { it.name },
-            "minosoft:server_address".asResourceLocation() to { it.address },
+        private val SERVER_INFO_PROPERTIES: Map<ResourceLocation, (server: Server) -> Any?> = mapOf(
+            "minosoft:server.info.server_name".asResourceLocation() to { it.name },
+            "minosoft:server.info.server_address".asResourceLocation() to { it.address },
+            "minosoft:server.info.forced_version".asResourceLocation() to { it.forcedVersion?.let { version -> Versions.getVersionById(version)!! } },
         )
     }
 }

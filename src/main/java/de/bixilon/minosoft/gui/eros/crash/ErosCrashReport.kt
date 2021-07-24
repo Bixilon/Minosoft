@@ -82,6 +82,7 @@ class ErosCrashReport : JavaFXWindowController() {
     }
 
     companion object {
+        private var alreadyCrashed = false
         private val CRASH_REPORT_COMMENTS = listOf(
             "Let's blame Bixilon for this",
             "But it worked once",
@@ -111,22 +112,10 @@ class ErosCrashReport : JavaFXWindowController() {
          * Special: Does not use any general functions/translations/..., because when a crash happens, you can't rely on anything.
          */
         fun Throwable?.crash() {
-            if (RunConfiguration.DISABLE_EROS) {
-                ShutdownManager.shutdown(this?.message, ShutdownReasons.CRITICAL_EXCEPTION)
+            if (alreadyCrashed) {
                 return
             }
-
-            if (!JavaFXInitializer.initializing && !JavaFXInitializer.initialized) {
-                try {
-                    JavaFXInitializer.start()
-                } catch (exception: Throwable) {
-                    Log.log(LogMessageType.JAVAFX, LogLevels.WARN) { "Can not show crash report screen!" }
-                    exception.printStackTrace()
-                    return
-                }
-            }
-
-            JavaFXInitializer.await()
+            alreadyCrashed = true
 
             // Kill some stuff
             tryCatch(executor = { DefaultThreadPool.shutdownNow() })
@@ -148,6 +137,23 @@ class ErosCrashReport : JavaFXWindowController() {
                 exception.printStackTrace()
                 crashReportPath = null
             }
+
+            if (RunConfiguration.DISABLE_EROS) {
+                ShutdownManager.shutdown(this?.message, ShutdownReasons.CRITICAL_EXCEPTION)
+                return
+            }
+
+            if (!JavaFXInitializer.initializing && !JavaFXInitializer.initialized) {
+                try {
+                    JavaFXInitializer.start()
+                } catch (exception: Throwable) {
+                    Log.log(LogMessageType.JAVAFX, LogLevels.WARN) { "Can not show crash report screen!" }
+                    exception.printStackTrace()
+                    return
+                }
+            }
+
+            JavaFXInitializer.await()
 
             Platform.runLater {
                 val fxmlLoader = FXMLLoader(ErosCrashReport::class.java.getResource("/assets/minosoft/eros/crash/crash_screen.fxml"))
@@ -175,15 +181,16 @@ class ErosCrashReport : JavaFXWindowController() {
 // ${CRASH_REPORT_COMMENTS.random()}
 
 Time: ${SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(System.currentTimeMillis())} (${System.currentTimeMillis() / 1000L})
+Crash thread: ${Thread.currentThread().name}
 
 ${exception?.toStackTrace() ?: ""}
 
 -- Runtime Details --
     Start arguments: ${CommandLineArguments.ARGUMENTS}
-    JVM Flags: ${ManagementFactory.getRuntimeMXBean().inputArguments}
+    JVM flags: ${ManagementFactory.getRuntimeMXBean().inputArguments}
     Home directory: ${RunConfiguration.HOME_DIRECTORY}
     Disable Eros: ${RunConfiguration.DISABLE_EROS}
-    Disable Rendering: ${RunConfiguration.DISABLE_RENDERING}
+    Disable rendering: ${RunConfiguration.DISABLE_RENDERING}
 
 -- System Details --
     Operating system: ${SystemInformation.OS_TEXT}

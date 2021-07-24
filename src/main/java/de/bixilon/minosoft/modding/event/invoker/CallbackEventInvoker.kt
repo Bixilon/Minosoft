@@ -15,10 +15,12 @@ package de.bixilon.minosoft.modding.event.invoker
 import de.bixilon.minosoft.modding.event.events.CancelableEvent
 import de.bixilon.minosoft.modding.event.events.Event
 import de.bixilon.minosoft.modding.loading.Priorities
+import kotlin.reflect.KClass
 
 class CallbackEventInvoker<E : Event> private constructor(
     ignoreCancelled: Boolean,
     private val callback: (E) -> Unit,
+    override val kEventType: KClass<out Event>,
     override val eventType: Class<out Event>,
     override val instantFire: Boolean,
 ) : EventInvoker(ignoreCancelled, Priorities.NORMAL, null), EventInstantFireable {
@@ -37,6 +39,7 @@ class CallbackEventInvoker<E : Event> private constructor(
             return CallbackEventInvoker(
                 ignoreCancelled = ignoreCancelled,
                 callback = callback,
+                kEventType = E::class,
                 eventType = E::class.java,
                 instantFire = instantFire,
             )

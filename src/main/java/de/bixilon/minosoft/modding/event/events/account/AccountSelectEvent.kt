@@ -10,12 +10,22 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.modding.event.events.account
 
-package de.bixilon.minosoft.util.mojang.api.exceptions;
+import de.bixilon.minosoft.Minosoft
+import de.bixilon.minosoft.data.accounts.Account
+import de.bixilon.minosoft.modding.event.EventInstantFire
+import de.bixilon.minosoft.modding.event.events.Event
 
-public class AuthenticationException extends Exception {
+class AccountSelectEvent(
+    val previous: Account?,
+    val account: Account?,
+) : Event() {
 
-    public AuthenticationException(String message) {
-        super(message);
+    companion object : EventInstantFire<AccountSelectEvent> {
+
+        override fun fire(): AccountSelectEvent {
+            return AccountSelectEvent(null, Minosoft.config.config.account.selected)
+        }
     }
 }

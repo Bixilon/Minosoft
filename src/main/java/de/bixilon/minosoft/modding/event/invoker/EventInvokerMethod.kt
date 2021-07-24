@@ -18,6 +18,7 @@ import de.bixilon.minosoft.modding.event.events.Event
 import de.bixilon.minosoft.modding.event.events.annotations.EventHandler
 import de.bixilon.minosoft.modding.loading.Priorities
 import java.lang.reflect.Method
+import kotlin.reflect.KClass
 
 class EventInvokerMethod(
     ignoreCancelled: Boolean,
@@ -25,6 +26,7 @@ class EventInvokerMethod(
     listener: EventListener,
     val method: Method,
 ) : EventInvoker(ignoreCancelled, priority, listener) {
+    override val kEventType: KClass<out Event>? = null
     override val eventType: Class<out Event> = method.parameters[0].type as Class<out Event>
 
     constructor(annotation: EventHandler, listener: EventListener, method: Method) : this(annotation.ignoreCancelled, annotation.priority, listener, method)

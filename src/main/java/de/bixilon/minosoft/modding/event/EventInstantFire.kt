@@ -10,20 +10,12 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.modding.event.invoker
 
-import de.bixilon.minosoft.modding.event.EventListener
+package de.bixilon.minosoft.modding.event
+
 import de.bixilon.minosoft.modding.event.events.Event
-import de.bixilon.minosoft.modding.loading.Priorities
-import kotlin.reflect.KClass
 
-abstract class EventInvoker(
-    val isIgnoreCancelled: Boolean,
-    val priority: Priorities,
-    protected val listener: EventListener?,
-) {
-    abstract val kEventType: KClass<out Event>?
-    abstract val eventType: Class<out Event>
+interface EventInstantFire<T : Event> {
 
-    abstract operator fun invoke(event: Event)
+    fun fire(): T
 }

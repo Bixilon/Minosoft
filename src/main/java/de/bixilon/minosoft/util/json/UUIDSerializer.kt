@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -10,20 +10,28 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.modding.event.invoker
 
-import de.bixilon.minosoft.modding.event.EventListener
-import de.bixilon.minosoft.modding.event.events.Event
-import de.bixilon.minosoft.modding.loading.Priorities
-import kotlin.reflect.KClass
+package de.bixilon.minosoft.util.json
 
-abstract class EventInvoker(
-    val isIgnoreCancelled: Boolean,
-    val priority: Priorities,
-    protected val listener: EventListener?,
-) {
-    abstract val kEventType: KClass<out Event>?
-    abstract val eventType: Class<out Event>
+import com.squareup.moshi.*
+import de.bixilon.minosoft.util.Util
+import java.util.*
 
-    abstract operator fun invoke(event: Event)
+object UUIDSerializer : JsonAdapter<UUID>() {
+    @FromJson
+    override fun fromJson(jsonReader: JsonReader): UUID? {
+        if (jsonReader.peek() == JsonReader.Token.NULL) {
+            return null
+        }
+        return Util.getUUIDFromString(jsonReader.nextString())
+    }
+
+    @ToJson
+    override fun toJson(jsonWriter: JsonWriter, uuid: UUID?) {
+        if (uuid == null) {
+            jsonWriter.nullValue()
+            return
+        }
+        jsonWriter.value(uuid.toString())
+    }
 }

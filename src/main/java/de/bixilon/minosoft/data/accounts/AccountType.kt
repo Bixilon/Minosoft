@@ -10,20 +10,13 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.modding.event.invoker
 
-import de.bixilon.minosoft.modding.event.EventListener
-import de.bixilon.minosoft.modding.event.events.Event
-import de.bixilon.minosoft.modding.loading.Priorities
+package de.bixilon.minosoft.data.accounts
+
+import de.bixilon.minosoft.data.registries.CompanionResourceLocation
+import de.bixilon.minosoft.util.json.JSONSerializer
 import kotlin.reflect.KClass
 
-abstract class EventInvoker(
-    val isIgnoreCancelled: Boolean,
-    val priority: Priorities,
-    protected val listener: EventListener?,
-) {
-    abstract val kEventType: KClass<out Event>?
-    abstract val eventType: Class<out Event>
-
-    abstract operator fun invoke(event: Event)
+abstract class AccountType(`class`: KClass<out Account>) : CompanionResourceLocation {
+    val TYPE = JSONSerializer.MOSHI.adapter(`class`.java)
 }

@@ -26,7 +26,7 @@ class LoginKickS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
 
     override fun handle(connection: PlayConnection) {
         connection.fireEvent(LoginKickEvent(connection, this))
-        Log.log(LogMessageType.NETWORK_STATUS, level = LogLevels.WARN) { "Kicked from: $reason" }
+        Log.log(LogMessageType.NETWORK_STATUS, level = LogLevels.WARN) { "Kicked from ${connection.address}: $reason" }
         connection.disconnect()
     }
 

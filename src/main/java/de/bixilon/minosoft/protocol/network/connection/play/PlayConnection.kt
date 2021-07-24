@@ -175,7 +175,7 @@ class PlayConnection(
             }
         }
 
-    fun connect(latch: CountUpAndDownLatch) {
+    fun connect(latch: CountUpAndDownLatch = CountUpAndDownLatch(1)) {
         // Log.log(LogMessageType.OTHER, LogLevels.VERBOSE){TranslatableComponents.HELLO_WORLD(Minosoft.LANGUAGE_MANAGER, "Moritz", 17)}
         try {
             fireEvent(RegistriesLoadEvent(this, registries, RegistriesLoadEvent.States.PRE))

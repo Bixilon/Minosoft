@@ -17,7 +17,4 @@ import javafx.stage.Stage
 
 abstract class JavaFXWindowController : JavaFXController() {
     lateinit var stage: Stage
-
-
-    open fun postInit() {}
 }

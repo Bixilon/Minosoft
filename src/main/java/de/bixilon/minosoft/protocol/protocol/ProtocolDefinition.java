@@ -72,10 +72,6 @@ public final class ProtocolDefinition {
     public static final String MOJANG_URL_PACKAGES = "https://launchermeta.mojang.com/v1/packages/%s/%s";
     public static final String MOJANG_LAUNCHER_URL_PACKAGES = "https://launcher.mojang.com/v1/objects/%s/%s";
 
-    public static final String MOJANG_URL_BLOCKED_SERVERS = "https://sessionserver.mojang.com/blockedservers";
-    public static final String MOJANG_URL_LOGIN = "https://authserver.mojang.com/authenticate";
-    public static final String MOJANG_URL_JOIN = "https://sessionserver.mojang.com/session/minecraft/join";
-    public static final String MOJANG_URL_REFRESH = "https://authserver.mojang.com/refresh";
 
     public static final String MICROSOFT_ACCOUNT_APPLICATION_ID = "00000000402b5328"; // ToDo: Should we use our own application id?
     // public static final String MICROSOFT_ACCOUNT_APPLICATION_ID = "fe6f0fbf-3038-486a-9c84-6a28b71e0455";

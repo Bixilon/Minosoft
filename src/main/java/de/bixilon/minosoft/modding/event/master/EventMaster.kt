@@ -13,12 +13,15 @@
 
 package de.bixilon.minosoft.modding.event.master
 
+import de.bixilon.minosoft.modding.event.EventInstantFire
 import de.bixilon.minosoft.modding.event.events.CancelableEvent
 import de.bixilon.minosoft.modding.event.events.Event
+import de.bixilon.minosoft.modding.event.invoker.EventInstantFireable
 import de.bixilon.minosoft.modding.event.invoker.EventInvoker
 import de.bixilon.minosoft.util.KUtil.synchronizedSetOf
 import de.bixilon.minosoft.util.KUtil.toSynchronizedList
 import de.bixilon.minosoft.util.KUtil.toSynchronizedSet
+import kotlin.reflect.full.companionObjectInstance
 
 open class EventMaster(vararg parents: AbstractEventMaster) : AbstractEventMaster {
     val parents: MutableSet<AbstractEventMaster> = synchronizedSetOf(*parents)
@@ -62,10 +65,20 @@ open class EventMaster(vararg parents: AbstractEventMaster) : AbstractEventMaste
 
     override fun registerEvent(invoker: EventInvoker) {
         eventInvokers += invoker
+
+        if (invoker is EventInstantFireable && invoker.instantFire) {
+            val companion = invoker.kEventType?.companionObjectInstance ?: return
+
+            if (companion is EventInstantFire<*>) {
+                invoker.invoke(companion.fire())
+            }
+        }
     }
 
-    override fun registerEvents(vararg invoker: EventInvoker) {
-        eventInvokers += invoker
+    override fun registerEvents(vararg invokers: EventInvoker) {
+        for (invoker in invokers) {
+            registerEvent(invoker)
+        }
     }
 
     override fun iterator(): Iterator<EventInvoker> {

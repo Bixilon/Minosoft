@@ -10,20 +10,25 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.modding.event.invoker
 
-import de.bixilon.minosoft.modding.event.EventListener
-import de.bixilon.minosoft.modding.event.events.Event
-import de.bixilon.minosoft.modding.loading.Priorities
-import kotlin.reflect.KClass
+package de.bixilon.minosoft.data.accounts.types
 
-abstract class EventInvoker(
-    val isIgnoreCancelled: Boolean,
-    val priority: Priorities,
-    protected val listener: EventListener?,
-) {
-    abstract val kEventType: KClass<out Event>?
-    abstract val eventType: Class<out Event>
+import de.bixilon.minosoft.data.accounts.Account
+import de.bixilon.minosoft.data.accounts.AccountType
+import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.util.KUtil.asResourceLocation
 
-    abstract operator fun invoke(event: Event)
+class OfflineAccount(username: String) : Account(username) {
+    override val id: String = username
+    override val type: ResourceLocation = RESOURCE_LOCATION
+
+    override fun join(serverId: String) {}
+
+    override fun logout() {}
+
+    override fun verify() {}
+
+    companion object : AccountType(OfflineAccount::class) {
+        override val RESOURCE_LOCATION: ResourceLocation = "minosoft:offline_account".asResourceLocation()
+    }
 }

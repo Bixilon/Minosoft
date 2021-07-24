@@ -64,8 +64,8 @@ class StatusConnection(
             field = value
             value?.let {
                 fireEvent(StatusConnectionErrorEvent(this, EventInitiators.UNKNOWN, it))
+                pingStatus = StatusConnectionStatuses.ERROR
             }
-            pingStatus = StatusConnectionStatuses.ERROR
         }
 
 

@@ -35,4 +35,6 @@ abstract class JavaFXController : Initializable {
     }
 
     open fun init() {}
+
+    open fun postInit() {}
 }

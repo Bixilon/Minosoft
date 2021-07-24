@@ -249,7 +249,7 @@ open class InByteBuffer {
     }
 
     fun readJson(): Map<String, Any> {
-        return JSONSerializer.MAP_ADAPTER.fromJson(readString())!!
+        return JSONSerializer.MUTABLE_MAP_ADAPTER.fromJson(readString())!!
     }
 
     fun readJsonArray(length: Int = readVarInt()): Array<Map<String, Any>> {

@@ -10,20 +10,19 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.modding.event.invoker
 
-import de.bixilon.minosoft.modding.event.EventListener
-import de.bixilon.minosoft.modding.event.events.Event
-import de.bixilon.minosoft.modding.loading.Priorities
-import kotlin.reflect.KClass
+package de.bixilon.minosoft.data.accounts
 
-abstract class EventInvoker(
-    val isIgnoreCancelled: Boolean,
-    val priority: Priorities,
-    protected val listener: EventListener?,
-) {
-    abstract val kEventType: KClass<out Event>?
-    abstract val eventType: Class<out Event>
+import de.bixilon.minosoft.data.accounts.types.MicrosoftAccount
+import de.bixilon.minosoft.data.accounts.types.MojangAccount
+import de.bixilon.minosoft.data.accounts.types.OfflineAccount
+import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.util.KUtil.asResourceLocationMap
 
-    abstract operator fun invoke(event: Event)
+object AccountTypes {
+    val ACCOUNT_TYPES: Map<ResourceLocation, AccountType> = listOf(
+        MicrosoftAccount,
+        MojangAccount,
+        OfflineAccount,
+    ).asResourceLocationMap()
 }

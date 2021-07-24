@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.eros.util
 
 import de.bixilon.minosoft.Minosoft
+import de.bixilon.minosoft.gui.eros.crash.ErosCrashReport.Companion.crash
 import de.bixilon.minosoft.util.CountUpAndDownLatch
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
 import de.bixilon.minosoft.util.logging.Log
@@ -49,6 +50,7 @@ class JavaFXInitializer internal constructor() : Application() {
         @Synchronized
         fun start() {
             check(LATCH.count == 2) { "Already initialized!" }
+            Thread.setDefaultUncaughtExceptionHandler { _, exception -> exception.crash() }
 
             Log.log(LogMessageType.JAVAFX, LogLevels.VERBOSE) { "Initializing JavaFX Toolkit..." }
             Thread({ Application.launch(JavaFXInitializer::class.java) }, "JavaFX Toolkit Initializing Thread").start()

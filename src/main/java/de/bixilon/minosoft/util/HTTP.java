@@ -24,6 +24,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.HashMap;
 
+@Deprecated
 public final class HTTP {
 
     public static HttpResponse<String> postJson(String url, String json, HashMap<String, String> headers) throws IOException, InterruptedException {
