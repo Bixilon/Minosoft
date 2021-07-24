@@ -31,7 +31,7 @@ object Eros {
     init {
         Minosoft.GLOBAL_EVENT_MASTER.registerEvent(CallbackEventInvoker.of<FinishInitializingEvent> {
             Platform.runLater {
-                mainErosController = JavaFXUtil.openModal<MainErosController>(TITLE, LAYOUT)
+                mainErosController = JavaFXUtil.openModal(TITLE, LAYOUT)
                 mainErosController.stage.show()
             }
         })

@@ -12,6 +12,7 @@
  */
 package de.bixilon.minosoft.data.registries
 
+import de.bixilon.minosoft.data.registries.registries.registry.Translatable
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.Util
 import java.util.*
@@ -19,10 +20,14 @@ import java.util.*
 open class ResourceLocation(
     val namespace: String = ProtocolDefinition.DEFAULT_NAMESPACE,
     val path: String,
-) : Comparable<ResourceLocation> { // compare is for moshi
+) : Comparable<ResourceLocation>, Translatable { // compare is for moshi
     open val full: String = "$namespace:$path"
 
+    override val translationKey: ResourceLocation
+        get() = this
+
     constructor(full: String) : this(full.namespace, full.path)
+
 
     override fun hashCode(): Int {
         return Objects.hash(namespace, path)

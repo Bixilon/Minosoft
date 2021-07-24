@@ -35,16 +35,18 @@ object JavaFXUtil {
     lateinit var MINOSOFT_LOGO: Image
     lateinit var HOST_SERVICES: HostServices
 
-    fun <T : JavaFXController> openModal(title: ResourceLocation, layout: ResourceLocation, modality: Modality = Modality.WINDOW_MODAL): T {
+    fun <T : JavaFXController> openModal(title: Any, layout: ResourceLocation, controller: T? = null, modality: Modality = Modality.WINDOW_MODAL): T {
         val fxmlLoader = FXMLLoader()
-        val parent = fxmlLoader.load<Parent>(Minosoft.MINOSOFT_ASSETS_MANAGER.readAssetAsStream(layout))
+        controller?.apply { fxmlLoader.setController(this) }
+        val parent: Parent = fxmlLoader.load(Minosoft.MINOSOFT_ASSETS_MANAGER.readAssetAsStream(layout))
+
         val stage = Stage()
         stage.initModality(modality)
         stage.title = Minosoft.LANGUAGE_MANAGER.translate(title).message
         stage.scene = Scene(parent)
         stage.icons.setAll(MINOSOFT_LOGO)
 
-        val controller = fxmlLoader.getController<T>()
+        val controller: T = fxmlLoader.getController()
 
         if (controller is JavaFXWindowController) {
             controller.stage = stage

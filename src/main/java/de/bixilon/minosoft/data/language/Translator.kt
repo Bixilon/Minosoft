@@ -25,7 +25,11 @@ interface Translator {
     fun translate(key: ResourceLocation?, parent: TextComponent? = null, vararg data: Any?): ChatComponent
 
 
-    fun translate(translatable: Translatable?): ChatComponent {
-        return translate(translatable?.translationKey)
+    fun translate(translatable: Any?): ChatComponent {
+        return when (translatable) {
+            is ChatComponent -> translatable
+            is Translatable -> translate(translatable.translationKey)
+            else -> ChatComponent.of(translatable)
+        }
     }
 }

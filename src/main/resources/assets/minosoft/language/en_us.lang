@@ -1,14 +1,21 @@
 minosoft:general.empty=
+minosoft:general.cancel=Cancel
+minosoft:general.confirm=Confirm
+minosoft:general.delete=Delete
 
 minosoft:eros_window_title=Minosoft
 
-minosoft:server.info.server_name=Server name
-minosoft:server.info.server_address=Server address
-minosoft:server.info.real_server_address=Real address
-minosoft:server.info.forced_version=Forced version
-minosoft:server.info.remote_version=Remote version
-minosoft:server.info.remote_brand=Remote brand
-minosoft:server.info.active_connections=Active connections
+
+minosoft:server_info.server_name=Server name
+minosoft:server_info.server_address=Server address
+minosoft:server_info.real_server_address=Real address
+minosoft:server_info.forced_version=Forced version
+minosoft:server_info.remote_version=Remote version
+minosoft:server_info.remote_brand=Remote brand
+minosoft:server_info.active_connections=Active connections
+
+minosoft:server_info.delete.dialog.description=Do you really want to delete the server %1$s (%2$s)?
+
 
 minosoft:connection.status.state.waiting=Waiting...
 minosoft:connection.status.state.resolving=Resolving hostname...
@@ -18,3 +25,6 @@ minosoft:connection.status.state.querying_status=Querying motd...
 minosoft:connection.status.state.querying_ping=Calculating ping...
 minosoft:connection.status.state.ping_done=Status fetched!
 minosoft:connection.status.state.error=Error in connection!
+
+
+minosoft:general.dialog.are_you_sure=Are you sure?

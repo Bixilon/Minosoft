@@ -17,8 +17,10 @@ import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.server.Server
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.data.text.TranslatableComponents
 import de.bixilon.minosoft.gui.eros.Eros
 import de.bixilon.minosoft.gui.eros.controller.EmbeddedJavaFXController
+import de.bixilon.minosoft.gui.eros.dialogs.SimpleErosConfirmationDialog
 import de.bixilon.minosoft.gui.eros.main.play.server.card.ServerCard
 import de.bixilon.minosoft.gui.eros.main.play.server.card.ServerCardController
 import de.bixilon.minosoft.gui.eros.modding.invoker.JavaFXEventInvoker
@@ -164,7 +166,20 @@ class ServerListController : EmbeddedJavaFXController<Pane>() {
             it.columnConstraints += ColumnConstraints()
             it.columnConstraints += ColumnConstraints(0.0, -1.0, Double.POSITIVE_INFINITY, Priority.ALWAYS, HPos.LEFT, true)
 
-            it.add(Button("Delete"), 1, 0)
+            it.add(Button("Delete").apply {
+                setOnAction {
+                    val dialog = SimpleErosConfirmationDialog(
+                        confirmButtonText = "minosoft:general.delete".asResourceLocation(),
+                        description = TranslatableComponents.EROS_DELETE_SERVER_CONFIRM_DESCRIPTION(Minosoft.LANGUAGE_MANAGER, serverCard.server.name, serverCard.server.address),
+                        onConfirm = {
+                            Minosoft.config.config.server.entries.remove(serverCard.server.id)
+                            Minosoft.config.saveToFile()
+                            Platform.runLater { refresh() }
+                        }
+                    )
+                    dialog.show()
+                }
+            }, 1, 0)
             it.add(Button("Edit"), 2, 0)
 
             it.add(Button("Refresh").apply {
@@ -218,16 +233,16 @@ class ServerListController : EmbeddedJavaFXController<Pane>() {
 
     private companion object {
         private val SERVER_INFO_PROPERTIES: Map<ResourceLocation, (server: Server) -> Any?> = mapOf(
-            "minosoft:server.info.server_name".asResourceLocation() to { it.name },
-            "minosoft:server.info.server_address".asResourceLocation() to { it.address },
-            "minosoft:server.info.real_server_address".asResourceLocation() to { it.ping?.realAddress },
-            "minosoft:server.info.forced_version".asResourceLocation() to { it.forcedVersion },
-            "minosoft:server.info.remote_version".asResourceLocation() to { it.ping?.serverVersion },
-            "minosoft:server.info.remote_brand".asResourceLocation() to { it.ping?.lastServerStatus?.serverBrand },
+            "minosoft:server_info.server_name".asResourceLocation() to { it.name },
+            "minosoft:server_info.server_address".asResourceLocation() to { it.address },
+            "minosoft:server_info.real_server_address".asResourceLocation() to { it.ping?.realAddress },
+            "minosoft:server_info.forced_version".asResourceLocation() to { it.forcedVersion },
+            "minosoft:server_info.remote_version".asResourceLocation() to { it.ping?.serverVersion },
+            "minosoft:server_info.remote_brand".asResourceLocation() to { it.ping?.lastServerStatus?.serverBrand },
 
             "minosoft:general.empty".asResourceLocation() to { " " },
 
-            "minosoft:server.info.active_connections".asResourceLocation() to { it.connections.size },
+            "minosoft:server_info.active_connections".asResourceLocation() to { it.connections.size },
         )
     }
 }
