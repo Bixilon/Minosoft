@@ -313,6 +313,14 @@ object KUtil {
         }
     }
 
+    fun Any.toBoolean(): Boolean {
+        return when (this) {
+            is Boolean -> this
+            is String -> this.toBooleanStrict()
+            else -> TODO()
+        }
+    }
+
     fun <T> tryCatch(vararg exceptions: Class<out Throwable> = arrayOf(), executor: () -> T): T? {
         try {
             return executor()

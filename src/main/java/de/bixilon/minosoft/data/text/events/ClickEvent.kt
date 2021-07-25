@@ -12,7 +12,6 @@
  */
 package de.bixilon.minosoft.data.text.events
 
-import com.google.gson.JsonObject
 import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.enum.ValuesEnum
 
@@ -20,14 +19,9 @@ class ClickEvent {
     val action: ClickEventActions
     val value: Any
 
-    constructor(json: JsonObject) {
-        action = ClickEventActions[json["action"].asString.lowercase()]
-        val primitive = json["value"].asJsonPrimitive
-        value = if (primitive.isNumber) {
-            primitive.asNumber
-        } else {
-            primitive.asString
-        }
+    constructor(json: Map<String, Any>) {
+        action = ClickEventActions[json["action"].toString().lowercase()]
+        this.value = json["value"]!!
     }
 
     constructor(action: ClickEventActions, value: Any) {

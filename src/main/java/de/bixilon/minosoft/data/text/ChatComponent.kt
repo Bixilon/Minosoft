@@ -12,16 +12,14 @@
  */
 package de.bixilon.minosoft.data.text
 
-import com.google.gson.JsonArray
-import com.google.gson.JsonObject
-import com.google.gson.JsonParser
-import com.google.gson.JsonPrimitive
 import de.bixilon.minosoft.data.language.Translator
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.text
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.font.text.TextGetProperties
 import de.bixilon.minosoft.gui.rendering.font.text.TextSetProperties
 import de.bixilon.minosoft.gui.rendering.hud.nodes.primitive.LabelNode
+import de.bixilon.minosoft.util.KUtil.unsafeCast
+import de.bixilon.minosoft.util.json.JSONSerializer
 import glm_.vec2.Vec2i
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList
@@ -85,23 +83,22 @@ interface ChatComponent {
             if (raw is ChatComponent) {
                 return raw
             }
-            if (raw is JsonObject) {
-                return BaseComponent(translator, parent, raw)
+            if (raw is Map<*, *>) {
+                return BaseComponent(translator, parent, raw.unsafeCast())
             }
             val string = when (raw) {
-                is JsonArray -> {
+                is List<*> -> {
                     val component = BaseComponent()
                     for (part in raw) {
                         component += of(part, translator, parent)
                     }
                     return component
                 }
-                is JsonPrimitive -> raw.asString
                 else -> raw.toString()
             }
-            if (!ignoreJson) {
+            if (!ignoreJson && string.startsWith('{')) {
                 try {
-                    return BaseComponent(translator, parent, JsonParser.parseString(string).asJsonObject)
+                    return BaseComponent(translator, parent, JSONSerializer.MAP_ADAPTER.fromJson(string))
                 } catch (ignored: RuntimeException) {
                 }
             }
