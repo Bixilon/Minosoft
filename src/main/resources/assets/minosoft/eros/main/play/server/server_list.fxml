@@ -23,17 +23,17 @@
             <rowConstraints>
                 <RowConstraints vgrow="NEVER"/>
             </rowConstraints>
-            <CheckBox fx:id="hideOfflineFX" onAction="#refresh" mnemonicParsing="false" text="Hide offline">
+            <CheckBox fx:id="hideOfflineFX" onAction="#refreshList" mnemonicParsing="false" text="Hide offline">
                 <GridPane.margin>
                     <Insets left="5.0" right="5.0"/>
                 </GridPane.margin>
             </CheckBox>
-            <CheckBox fx:id="hideFullFX" onAction="#refresh" mnemonicParsing="false" text="Hide full" GridPane.columnIndex="1">
+            <CheckBox fx:id="hideFullFX" onAction="#refreshList" mnemonicParsing="false" text="Hide full" GridPane.columnIndex="1">
                 <GridPane.margin>
                     <Insets left="5.0" right="5.0"/>
                 </GridPane.margin>
             </CheckBox>
-            <CheckBox fx:id="hideEmptyFX" onAction="#refresh" mnemonicParsing="false" text="Hide empty" GridPane.columnIndex="2">
+            <CheckBox fx:id="hideEmptyFX" onAction="#refreshList" mnemonicParsing="false" text="Hide empty" GridPane.columnIndex="2">
                 <GridPane.margin>
                     <Insets left="5.0" right="5.0"/>
                 </GridPane.margin>

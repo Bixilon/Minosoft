@@ -48,3 +48,7 @@ minosoft:update_server.add.update_button=Add server
 minosoft:update_server.edit.title=Edit server - Minosoft
 minosoft:update_server.edit.description=Please change the server details and click on save
 minosoft:update_server.edit.update_button=Save server
+
+minosoft:server_list.refresh.header=Refresh
+minosoft:server_list.refresh.text1=Get the latest
+minosoft:server_list.refresh.text2=information

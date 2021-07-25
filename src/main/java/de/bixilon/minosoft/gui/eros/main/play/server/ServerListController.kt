@@ -46,7 +46,7 @@ import javafx.scene.control.ListView
 import javafx.scene.layout.*
 
 
-class ServerListController : EmbeddedJavaFXController<Pane>() {
+class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
     @FXML
     private lateinit var hideOfflineFX: CheckBox
 
@@ -70,7 +70,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>() {
     override fun init() {
         serverListViewFX.setCellFactory { ServerCardController.build() }
 
-        refresh()
+        refreshList()
 
         serverListViewFX.selectionModel.selectedItemProperty().addListener { _, old, new ->
             setServerInfo(new)
@@ -82,7 +82,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>() {
     }
 
     @FXML
-    fun refresh() {
+    fun refreshList() {
         val selected = serverListViewFX.selectionModel.selectedItem
         serverListViewFX.items.clear()
 
@@ -176,7 +176,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>() {
                         onConfirm = {
                             Minosoft.config.config.server.entries.remove(serverCard.server.id)
                             Minosoft.config.saveToFile()
-                            Platform.runLater { refresh() }
+                            Platform.runLater { refreshList() }
                         }
                     ).show()
                 }
@@ -201,7 +201,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>() {
                             server.ping()
                         }
                         Minosoft.config.saveToFile()
-                        Platform.runLater { refresh() }
+                        Platform.runLater { refreshList() }
                     }).show()
                 }
             }, 2, 0)
@@ -260,12 +260,25 @@ class ServerListController : EmbeddedJavaFXController<Pane>() {
             val server = Server(name = ChatComponent.of(name), address = address, forcedVersion = focedVersion)
             Minosoft.config.config.server.entries[server.id] = server
             Minosoft.config.saveToFile()
-            Platform.runLater { refresh() }
+            Platform.runLater { refreshList() }
         }).show()
     }
 
+    override fun refresh() {
+        for (serverCard in serverListViewFX.items) {
+            serverCard.server.ping?.let {
+                if (it.state != StatusConnectionStates.PING_DONE && it.state != StatusConnectionStates.ERROR) {
+                    return@let
+                }
+                it.ping()
+            }
+        }
+    }
 
-    private companion object {
+
+    companion object {
+        val LAYOUT = "minosoft:eros/main/play/server/server_list.fxml".asResourceLocation()
+
         private val SERVER_INFO_PROPERTIES: List<Pair<ResourceLocation, (server: Server) -> Any?>> = listOf(
             "minosoft:server_info.server_name".asResourceLocation() to { it.name },
             "minosoft:server_info.server_address".asResourceLocation() to { it.address },

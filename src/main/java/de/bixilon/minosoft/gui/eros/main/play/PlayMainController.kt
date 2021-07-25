@@ -14,11 +14,14 @@
 package de.bixilon.minosoft.gui.eros.main.play
 
 import de.bixilon.minosoft.gui.eros.controller.EmbeddedJavaFXController
+import de.bixilon.minosoft.gui.eros.main.play.server.Refreshable
 import de.bixilon.minosoft.gui.eros.main.play.server.ServerListController
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
+import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.text
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
 import javafx.fxml.FXML
 import javafx.scene.control.ListView
+import javafx.scene.layout.AnchorPane
 import javafx.scene.layout.Pane
 
 class PlayMainController : EmbeddedJavaFXController<Pane>() {
@@ -29,10 +32,34 @@ class PlayMainController : EmbeddedJavaFXController<Pane>() {
     private lateinit var playTypeListViewFX: ListView<*>
 
     @FXML
-    private lateinit var refreshPaneFX: Pane
+    private lateinit var refreshPaneFX: AnchorPane
 
+
+    private lateinit var currentController: EmbeddedJavaFXController<*>
 
     override fun init() {
-        playTypeContentFX.children.setAll(JavaFXUtil.loadEmbeddedController<ServerListController>("minosoft:eros/main/play/server/server_list.fxml".asResourceLocation()).root)
+        currentController = JavaFXUtil.loadEmbeddedController<ServerListController>(ServerListController.LAYOUT)
+        playTypeContentFX.children.setAll(currentController.root)
+
+        JavaFXUtil.loadEmbeddedController<ServerTypeCardController>(ServerTypeCardController.LAYOUT).apply {
+            refreshPaneFX.children.setAll(root)
+            iconFX.iconLiteral = "fas-sync-alt"
+            headerFX.text = REFRESH_HEADER
+            text1FX.text = REFRESH_TEXT1
+            text2FX.text = REFRESH_TEXT2
+
+            root.setOnMouseClicked {
+                val currentController = currentController
+                if (currentController is Refreshable) {
+                    currentController.refresh()
+                }
+            }
+        }
+    }
+
+    companion object {
+        private val REFRESH_HEADER = "minosoft:server_list.refresh.header".asResourceLocation()
+        private val REFRESH_TEXT1 = "minosoft:server_list.refresh.text1".asResourceLocation()
+        private val REFRESH_TEXT2 = "minosoft:server_list.refresh.text2".asResourceLocation()
     }
 }

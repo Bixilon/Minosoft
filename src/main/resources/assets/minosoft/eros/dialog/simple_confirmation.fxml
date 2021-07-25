@@ -6,7 +6,7 @@
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.text.TextFlow?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
-<HBox xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" prefHeight="300.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/16"> <!--fx:controller="de.bixilon.minosoft.gui.eros.dialogs.SimpleErosConfirmationDialog" -->
+<HBox xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" prefHeight="230.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/16"> <!--fx:controller="de.bixilon.minosoft.gui.eros.dialogs.SimpleErosConfirmationDialog" -->
     <GridPane HBox.hgrow="ALWAYS">
         <columnConstraints>
             <ColumnConstraints hgrow="ALWAYS"/>

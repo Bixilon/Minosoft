@@ -29,7 +29,7 @@
                     <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="50.0" vgrow="NEVER"/>
                     <RowConstraints maxHeight="Infinity" minHeight="10.0" vgrow="ALWAYS"/>
                 </rowConstraints>
-                <TextFlow fx:id="serverNameFX" prefHeight="200.0" prefWidth="200.0">
+                <TextFlow fx:id="serverNameFX" style="-fx-font-size: 25;" prefHeight="200.0" prefWidth="200.0">
                     <Text text="Servername"/>
                 </TextFlow>
                 <TextFlow fx:id="motdFX" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
