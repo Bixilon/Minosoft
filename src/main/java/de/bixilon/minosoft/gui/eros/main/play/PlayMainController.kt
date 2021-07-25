@@ -13,23 +13,30 @@
 
 package de.bixilon.minosoft.gui.eros.main.play
 
+import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.gui.eros.controller.EmbeddedJavaFXController
 import de.bixilon.minosoft.gui.eros.main.play.server.Refreshable
 import de.bixilon.minosoft.gui.eros.main.play.server.ServerListController
+import de.bixilon.minosoft.gui.eros.main.play.server.type.ServerType
+import de.bixilon.minosoft.gui.eros.main.play.server.type.ServerTypeCardController
+import de.bixilon.minosoft.gui.eros.modding.invoker.JavaFXEventInvoker
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.text
+import de.bixilon.minosoft.modding.event.events.LANServerDiscoverEvent
+import de.bixilon.minosoft.protocol.protocol.LANServerListener
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
 import javafx.fxml.FXML
 import javafx.scene.control.ListView
 import javafx.scene.layout.AnchorPane
 import javafx.scene.layout.Pane
+import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid
 
 class PlayMainController : EmbeddedJavaFXController<Pane>() {
     @FXML
     private lateinit var playTypeContentFX: Pane
 
     @FXML
-    private lateinit var playTypeListViewFX: ListView<*>
+    private lateinit var playTypeListViewFX: ListView<ServerType>
 
     @FXML
     private lateinit var refreshPaneFX: AnchorPane
@@ -38,12 +45,38 @@ class PlayMainController : EmbeddedJavaFXController<Pane>() {
     private lateinit var currentController: EmbeddedJavaFXController<*>
 
     override fun init() {
-        currentController = JavaFXUtil.loadEmbeddedController<ServerListController>(ServerListController.LAYOUT)
-        playTypeContentFX.children.setAll(currentController.root)
+        playTypeListViewFX.setCellFactory { ServerTypeCardController.build() }
+        playTypeListViewFX.items += ServerType(FontAwesomeSolid.SERVER, "Custom", "0 Servers", "") {
+            return@ServerType JavaFXUtil.loadEmbeddedController<ServerListController>(ServerListController.LAYOUT).apply {
+                servers = Minosoft.config.config.server.entries.values
+                refreshList()
+            }
+        }
+        playTypeListViewFX.items += ServerType(FontAwesomeSolid.NETWORK_WIRED, "LAN", "12 Servers", "") {
+            return@ServerType JavaFXUtil.loadEmbeddedController<ServerListController>(ServerListController.LAYOUT).apply {
+                readOnly = true
+                customRefresh = {
+                    LANServerListener.SERVERS.clear()
+                    refreshList()
+                }
+                servers = LANServerListener.SERVERS.values
+                Minosoft.GLOBAL_EVENT_MASTER.registerEvent(JavaFXEventInvoker.of<LANServerDiscoverEvent> { refreshList() }) // ToDo: Unregister event when hiding pane
+                refreshList()
+            }
+        }
 
-        JavaFXUtil.loadEmbeddedController<ServerTypeCardController>(ServerTypeCardController.LAYOUT).apply {
+        playTypeListViewFX.selectionModel.selectedItemProperty().addListener { _, _, new ->
+            currentController = new.content()
+            playTypeContentFX.children.setAll(currentController.root)
+        }
+
+        playTypeListViewFX.selectionModel.select(0)
+
+        ServerTypeCardController.build().apply {
             refreshPaneFX.children.setAll(root)
             iconFX.iconLiteral = "fas-sync-alt"
+            iconFX.isVisible = true
+
             headerFX.text = REFRESH_HEADER
             text1FX.text = REFRESH_TEXT1
             text2FX.text = REFRESH_TEXT2

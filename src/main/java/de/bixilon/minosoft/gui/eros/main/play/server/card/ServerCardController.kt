@@ -127,6 +127,6 @@ class ServerCardController : AbstractCard<ServerCard>() {
     }
 
     companion object : CardFactory<ServerCardController> {
-        override val FXML: ResourceLocation = "minosoft:eros/main/play/server/server_card.fxml".asResourceLocation()
+        override val LAYOUT: ResourceLocation = "minosoft:eros/main/play/server/server_card.fxml".asResourceLocation()
     }
 }

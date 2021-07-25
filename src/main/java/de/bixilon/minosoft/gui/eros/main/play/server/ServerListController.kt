@@ -66,6 +66,16 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
     @FXML
     private lateinit var serverInfoFX: AnchorPane
 
+    var customRefresh: (() -> Unit)? = null
+
+    var servers: MutableCollection<Server> = mutableListOf()
+
+    var readOnly: Boolean = false
+        set(value) {
+            field = value
+            addServerButtonFX.isVisible = !value
+        }
+
 
     override fun init() {
         serverListViewFX.setCellFactory { ServerCardController.build() }
@@ -86,7 +96,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
         val selected = serverListViewFX.selectionModel.selectedItem
         serverListViewFX.items.clear()
 
-        for (server in Minosoft.config.config.server.entries.values) {
+        for (server in servers) {
             updateServer(server)
         }
 
@@ -168,43 +178,45 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
             it.columnConstraints += ColumnConstraints()
             it.columnConstraints += ColumnConstraints(0.0, -1.0, Double.POSITIVE_INFINITY, Priority.ALWAYS, HPos.LEFT, true)
 
-            it.add(Button("Delete").apply {
-                setOnAction {
-                    SimpleErosConfirmationDialog(
-                        confirmButtonText = "minosoft:general.delete".asResourceLocation(),
-                        description = TranslatableComponents.EROS_DELETE_SERVER_CONFIRM_DESCRIPTION(Minosoft.LANGUAGE_MANAGER, serverCard.server.name, serverCard.server.address),
-                        onConfirm = {
-                            Minosoft.config.config.server.entries.remove(serverCard.server.id)
+            if (!readOnly) {
+                it.add(Button("Delete").apply {
+                    setOnAction {
+                        SimpleErosConfirmationDialog(
+                            confirmButtonText = "minosoft:general.delete".asResourceLocation(),
+                            description = TranslatableComponents.EROS_DELETE_SERVER_CONFIRM_DESCRIPTION(Minosoft.LANGUAGE_MANAGER, serverCard.server.name, serverCard.server.address),
+                            onConfirm = {
+                                Minosoft.config.config.server.entries.remove(serverCard.server.id)
+                                Minosoft.config.saveToFile()
+                                Platform.runLater { refreshList() }
+                            }
+                        ).show()
+                    }
+                }, 1, 0)
+                it.add(Button("Edit").apply {
+                    setOnAction {
+                        val server = serverCard.server
+                        UpdateServerDialog(server = server, onUpdate = { name, address, forcedVersion ->
+                            server.name = ChatComponent.of(name)
+                            server.forcedVersion = forcedVersion
+                            if (server.address != address) {
+                                server.favicon = null
+
+                                server.address = address
+
+                                // disconnect all ping connections, re ping
+                                // ToDo: server.connections.clear()
+
+                                serverCard.unregister()
+                                server.ping?.disconnect()
+                                server.ping = null
+                                server.ping()
+                            }
                             Minosoft.config.saveToFile()
                             Platform.runLater { refreshList() }
-                        }
-                    ).show()
-                }
-            }, 1, 0)
-            it.add(Button("Edit").apply {
-                setOnAction {
-                    val server = serverCard.server
-                    UpdateServerDialog(server = server, onUpdate = { name, address, forcedVersion ->
-                        server.name = ChatComponent.of(name)
-                        server.forcedVersion = forcedVersion
-                        if (server.address != address) {
-                            server.favicon = null
-
-                            server.address = address
-
-                            // disconnect all ping connections, re ping
-                            // ToDo: server.connections.clear()
-
-                            serverCard.unregister()
-                            server.ping?.disconnect()
-                            server.ping = null
-                            server.ping()
-                        }
-                        Minosoft.config.saveToFile()
-                        Platform.runLater { refreshList() }
-                    }).show()
-                }
-            }, 2, 0)
+                        }).show()
+                    }
+                }, 2, 0)
+            }
 
             it.add(Button("Refresh").apply {
                 setOnAction {
@@ -256,15 +268,20 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
 
     @FXML
     fun addServer() {
-        UpdateServerDialog(onUpdate = { name, address, focedVersion ->
-            val server = Server(name = ChatComponent.of(name), address = address, forcedVersion = focedVersion)
-            Minosoft.config.config.server.entries[server.id] = server
+        UpdateServerDialog(onUpdate = { name, address, forcedVersion ->
+            val server = Server(name = ChatComponent.of(name), address = address, forcedVersion = forcedVersion)
+            Minosoft.config.config.server.entries[server.id] = server // ToDo
             Minosoft.config.saveToFile()
             Platform.runLater { refreshList() }
         }).show()
     }
 
     override fun refresh() {
+        customRefresh?.let {
+            it()
+            return
+        }
+
         for (serverCard in serverListViewFX.items) {
             serverCard.server.ping?.let {
                 if (it.state != StatusConnectionStates.PING_DONE && it.state != StatusConnectionStates.ERROR) {

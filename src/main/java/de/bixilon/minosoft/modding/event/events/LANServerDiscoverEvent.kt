@@ -11,28 +11,12 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.eros.card
+package de.bixilon.minosoft.modding.event.events
 
-import javafx.fxml.FXML
-import javafx.fxml.Initializable
-import javafx.scene.control.ListCell
-import javafx.scene.layout.HBox
-import java.net.URL
-import java.util.*
+import de.bixilon.minosoft.config.server.Server
+import java.net.InetAddress
 
-abstract class AbstractCard<T> : ListCell<T>(), Initializable {
-    @FXML
-    lateinit var root: HBox
-
-    override fun initialize(url: URL?, resourceBundle: ResourceBundle?) {
-        this.graphic = root
-        clear()
-    }
-
-    abstract fun clear()
-
-    override fun updateItem(item: T?, empty: Boolean) {
-        super.updateItem(item, empty)
-        clear()
-    }
-}
+class LANServerDiscoverEvent(
+    val remoteAddress: InetAddress,
+    val serer: Server,
+) : Event(), CancelableEvent

@@ -19,12 +19,12 @@ import javafx.fxml.FXMLLoader
 import javafx.scene.control.ListCell
 
 interface CardFactory<T : ListCell<*>> {
-    val FXML: ResourceLocation
+    val LAYOUT: ResourceLocation
 
     fun build(): T {
         val loader = FXMLLoader()
 
-        loader.load<Any>(Minosoft.MINOSOFT_ASSETS_MANAGER.readAssetAsStream(FXML))
+        loader.load<Any>(Minosoft.MINOSOFT_ASSETS_MANAGER.readAssetAsStream(LAYOUT))
 
         return loader.getController()
     }

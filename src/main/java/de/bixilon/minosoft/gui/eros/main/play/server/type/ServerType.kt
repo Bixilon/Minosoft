@@ -11,30 +11,15 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.eros.main.play
+package de.bixilon.minosoft.gui.eros.main.play.server.type
 
 import de.bixilon.minosoft.gui.eros.controller.EmbeddedJavaFXController
-import de.bixilon.minosoft.util.KUtil.asResourceLocation
-import javafx.fxml.FXML
-import javafx.scene.layout.HBox
-import javafx.scene.text.TextFlow
-import org.kordamp.ikonli.javafx.FontIcon
+import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid
 
-class ServerTypeCardController : EmbeddedJavaFXController<HBox>() {
-    @FXML
-    lateinit var iconFX: FontIcon
-
-    @FXML
-    lateinit var headerFX: TextFlow
-
-    @FXML
-    lateinit var text1FX: TextFlow
-
-    @FXML
-    lateinit var text2FX: TextFlow
-
-
-    companion object {
-        val LAYOUT = "minosoft:eros/main/play/server_type_card.fxml".asResourceLocation()
-    }
-}
+data class ServerType(
+    val icon: FontAwesomeSolid,
+    val header: Any?,
+    val text1: Any?,
+    val text2: Any?,
+    val content: () -> EmbeddedJavaFXController<*>,
+)

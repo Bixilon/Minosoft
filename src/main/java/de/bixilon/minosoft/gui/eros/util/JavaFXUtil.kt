@@ -68,19 +68,19 @@ object JavaFXUtil {
         return controller
     }
 
-    var TextFlow.text: Any
+    var TextFlow.text: Any?
         get() = TODO()
         set(value) {
             this.children.setAll(Minosoft.LANGUAGE_MANAGER.translate(value).javaFXText)
         }
 
-    var TextField.placeholder: Any
+    var TextField.placeholder: Any?
         get() = this.promptText
         set(value) {
             this.promptText = Minosoft.LANGUAGE_MANAGER.translate(value).message
         }
 
-    var Labeled.ctext: Any
+    var Labeled.ctext: Any?
         get() = this.text
         set(value) {
             this.text = Minosoft.LANGUAGE_MANAGER.translate(value).message
