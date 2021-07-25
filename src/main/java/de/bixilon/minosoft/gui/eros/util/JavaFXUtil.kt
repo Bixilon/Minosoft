@@ -15,7 +15,6 @@ package de.bixilon.minosoft.gui.eros.util
 
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.gui.eros.controller.EmbeddedJavaFXController
 import de.bixilon.minosoft.gui.eros.controller.JavaFXController
 import de.bixilon.minosoft.gui.eros.controller.JavaFXWindowController
@@ -24,6 +23,8 @@ import javafx.application.HostServices
 import javafx.fxml.FXMLLoader
 import javafx.scene.Parent
 import javafx.scene.Scene
+import javafx.scene.control.Button
+import javafx.scene.control.TextField
 import javafx.scene.image.Image
 import javafx.scene.layout.Pane
 import javafx.scene.text.TextFlow
@@ -67,9 +68,21 @@ object JavaFXUtil {
         return controller
     }
 
-    var TextFlow.text: ChatComponent
+    var TextFlow.text: Any
         get() = TODO()
         set(value) {
-            this.children.setAll(value.javaFXText)
+            this.children.setAll(Minosoft.LANGUAGE_MANAGER.translate(value).javaFXText)
+        }
+
+    var TextField.placeholder: Any
+        get() = this.promptText
+        set(value) {
+            this.promptText = Minosoft.LANGUAGE_MANAGER.translate(value).message
+        }
+
+    var Button.ctext: Any
+        get() = this.text
+        set(value) {
+            this.text = Minosoft.LANGUAGE_MANAGER.translate(value).message
         }
 }

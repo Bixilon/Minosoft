@@ -17,5 +17,10 @@ import de.bixilon.minosoft.data.language.Translator
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
 
 object TranslatableComponents {
+   val GENERAL_EMPTY = "minosoft:general.empty".asResourceLocation()
+   val GENERAL_CANCEL = "minosoft:general.cancel".asResourceLocation()
+   val GENERAL_CONFIRM = "minosoft:general.confirm".asResourceLocation()
+   val GENERAL_DELETE = "minosoft:general.delete".asResourceLocation()
+
    val EROS_DELETE_SERVER_CONFIRM_DESCRIPTION = { translator: Translator, name: ChatComponent, address: String -> translator.translate("minosoft:server_info.delete.dialog.description".asResourceLocation(), null, name, address) }
 }

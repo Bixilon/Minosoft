@@ -30,3 +30,17 @@ minosoft:connection.status.state.error=Error in connection!
 
 
 minosoft:general.dialog.are_you_sure=Are you sure?
+
+
+minosoft:update_server.name.label=Server name
+minosoft:update_server.name.placeholder=A Minosoft server
+minosoft:update_server.address.label=Server address
+minosoft:update_server.address.placeholder=127.0.0.1:25565
+
+minosoft:update_server.add.title=Add server - Minosoft
+minosoft:update_server.add.description=Please enter the server name, their hostname or IP address and select the version in order to add the server
+minosoft:update_server.add.update_button=Add server
+
+minosoft:update_server.edit.title=Edit server - Minosoft
+minosoft:update_server.edit.description=Please change the server details and click on save
+minosoft:update_server.edit.update_button=Save server

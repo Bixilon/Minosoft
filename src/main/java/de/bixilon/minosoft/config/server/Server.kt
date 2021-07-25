@@ -25,12 +25,11 @@ import de.bixilon.minosoft.util.KUtil.synchronizedSetOf
 import java.util.*
 
 data class Server(
-    val id: Int = nextServerId++, // ToDo: Is duplicated in config (first key, then in value)
+    val id: Int = ++nextServerId, // ToDo: Is duplicated in config (first key, then in value)
     var address: String,
     var name: ChatComponent = ChatComponent.of(address),
     @Json(name = "version") var forcedVersion: Version? = null,
     @Json(name = "favicon") var faviconHash: String? = null,
-    var type: ServerTypes = ServerTypes.NORMAL,
 ) {
     @Transient
     var favicon: ByteArray? = null

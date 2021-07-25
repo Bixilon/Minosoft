@@ -14,8 +14,9 @@
 package de.bixilon.minosoft.config.config.server
 
 import de.bixilon.minosoft.config.server.Server
+import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
 
 
 data class ServerConfig(
-    val entries: MutableMap<Int, Server> = mutableMapOf(),
+    val entries: MutableMap<Int, Server> = synchronizedMapOf(),
 )

@@ -32,7 +32,7 @@ class SimpleErosConfirmationDialog(
     val cancelButtonText: Any = DEFAULT_CANCEL_TEXT,
     val confirmButtonText: Any = DEFAULT_CONFIRM_TEXT,
     val onCancel: () -> Unit = {},
-    val onConfirm: () -> Unit = {},
+    val onConfirm: () -> Unit,
 ) : JavaFXWindowController() {
     @FXML
     lateinit var headerFX: TextFlow

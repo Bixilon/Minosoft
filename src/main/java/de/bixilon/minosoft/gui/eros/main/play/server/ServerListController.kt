@@ -21,6 +21,7 @@ import de.bixilon.minosoft.data.text.TranslatableComponents
 import de.bixilon.minosoft.gui.eros.Eros
 import de.bixilon.minosoft.gui.eros.controller.EmbeddedJavaFXController
 import de.bixilon.minosoft.gui.eros.dialogs.SimpleErosConfirmationDialog
+import de.bixilon.minosoft.gui.eros.dialogs.UpdateServerDialog
 import de.bixilon.minosoft.gui.eros.main.play.server.card.ServerCard
 import de.bixilon.minosoft.gui.eros.main.play.server.card.ServerCardController
 import de.bixilon.minosoft.gui.eros.modding.invoker.JavaFXEventInvoker
@@ -168,7 +169,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>() {
 
             it.add(Button("Delete").apply {
                 setOnAction {
-                    val dialog = SimpleErosConfirmationDialog(
+                    SimpleErosConfirmationDialog(
                         confirmButtonText = "minosoft:general.delete".asResourceLocation(),
                         description = TranslatableComponents.EROS_DELETE_SERVER_CONFIRM_DESCRIPTION(Minosoft.LANGUAGE_MANAGER, serverCard.server.name, serverCard.server.address),
                         onConfirm = {
@@ -176,8 +177,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>() {
                             Minosoft.config.saveToFile()
                             Platform.runLater { refresh() }
                         }
-                    )
-                    dialog.show()
+                    ).show()
                 }
             }, 1, 0)
             it.add(Button("Edit"), 2, 0)
@@ -228,6 +228,16 @@ class ServerListController : EmbeddedJavaFXController<Pane>() {
 
 
         serverInfoFX.children.setAll(pane)
+    }
+
+    @FXML
+    fun addServer() {
+        UpdateServerDialog(onUpdate = { name, address ->
+            val server = Server(name = ChatComponent.of(name), address = address)
+            Minosoft.config.config.server.entries[server.id] = server
+            Minosoft.config.saveToFile()
+            Platform.runLater { refresh() }
+        }).show()
     }
 
 

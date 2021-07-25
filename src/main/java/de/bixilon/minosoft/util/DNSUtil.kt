@@ -16,7 +16,6 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import org.xbill.DNS.Lookup
 import org.xbill.DNS.SRVRecord
 import org.xbill.DNS.Type
-import java.util.*
 
 object DNSUtil {
 
@@ -51,8 +50,13 @@ object DNSUtil {
         }
     }
 
+    /**
+     * Replaces invalid chars to avoid copy and paste issues (like spaces, ...)
+     */
     fun fixAddress(hostname: String): String {
-        // replaces invalid chars to avoid copy and paste issues (like spaces, ...)
-        return hostname.replace("\\s+|((https|http):/{2})+|/".toRegex(), "").lowercase(Locale.ROOT)
+        return hostname
+            .replace("\\s+|\"|'|((https|http):/{2})+|/".toRegex(), "")
+            .replace(',', '.')
+            .lowercase()
     }
 }
