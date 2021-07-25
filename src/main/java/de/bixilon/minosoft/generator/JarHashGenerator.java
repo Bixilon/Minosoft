@@ -44,7 +44,7 @@ public class JarHashGenerator {
 
             JsonObject versions = json.getAsJsonObject("versions");
 
-            JsonObject versionJson = versions.getAsJsonObject(version.getVersionName());
+            JsonObject versionJson = versions.getAsJsonObject(version.getName());
 
             Resources.loadVersion(version, versionJson);
 
@@ -59,7 +59,7 @@ public class JarHashGenerator {
 
             json = JsonParser.parseReader(new InputStreamReader(new FileInputStream(RESOURCE_JSON_PATH))).getAsJsonObject();
 
-            json.getAsJsonObject("versions").add(version.getVersionName(), versionJson);
+            json.getAsJsonObject("versions").add(version.getName(), versionJson);
 
             File file = new File(RESOURCE_JSON_PATH);
             FileWriter writer = new FileWriter(file.getAbsoluteFile());

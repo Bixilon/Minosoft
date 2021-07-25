@@ -184,14 +184,15 @@ class ServerListController : EmbeddedJavaFXController<Pane>() {
             it.add(Button("Edit").apply {
                 setOnAction {
                     val server = serverCard.server
-                    UpdateServerDialog(server = server, onUpdate = { name, address ->
+                    UpdateServerDialog(server = server, onUpdate = { name, address, forcedVersion ->
                         server.name = ChatComponent.of(name)
+                        server.forcedVersion = forcedVersion
                         if (server.address != address) {
                             server.favicon = null
 
                             server.address = address
 
-                            // disconnect all ping connections, reping
+                            // disconnect all ping connections, re ping
                             // ToDo: server.connections.clear()
 
                             serverCard.unregister()
@@ -255,8 +256,8 @@ class ServerListController : EmbeddedJavaFXController<Pane>() {
 
     @FXML
     fun addServer() {
-        UpdateServerDialog(onUpdate = { name, address ->
-            val server = Server(name = ChatComponent.of(name), address = address)
+        UpdateServerDialog(onUpdate = { name, address, focedVersion ->
+            val server = Server(name = ChatComponent.of(name), address = address, forcedVersion = focedVersion)
             Minosoft.config.config.server.entries[server.id] = server
             Minosoft.config.saveToFile()
             Platform.runLater { refresh() }

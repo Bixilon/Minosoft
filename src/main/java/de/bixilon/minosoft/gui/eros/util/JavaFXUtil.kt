@@ -23,7 +23,7 @@ import javafx.application.HostServices
 import javafx.fxml.FXMLLoader
 import javafx.scene.Parent
 import javafx.scene.Scene
-import javafx.scene.control.Button
+import javafx.scene.control.Labeled
 import javafx.scene.control.TextField
 import javafx.scene.image.Image
 import javafx.scene.layout.Pane
@@ -80,7 +80,7 @@ object JavaFXUtil {
             this.promptText = Minosoft.LANGUAGE_MANAGER.translate(value).message
         }
 
-    var Button.ctext: Any
+    var Labeled.ctext: Any
         get() = this.text
         set(value) {
             this.text = Minosoft.LANGUAGE_MANAGER.translate(value).message

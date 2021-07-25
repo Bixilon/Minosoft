@@ -27,7 +27,7 @@ import java.util.Map;
 @Deprecated
 public class Versions {
     public static final Version AUTOMATIC_VERSION = new Version("Automatic", -1, -1, Map.of(), Map.of());
-    private static final HashBiMap<Integer, Version> VERSION_ID_MAP = HashBiMap.create(500);
+    public static final HashBiMap<Integer, Version> VERSION_ID_MAP = HashBiMap.create(500);
     private static final HashBiMap<Integer, Version> VERSION_PROTOCOL_ID_MAP = HashBiMap.create(500);
     private static final HashBiMap<String, Version> VERSION_NAME_MAP = HashBiMap.create(500);
     public static Registries PRE_FLATTENING_MAPPING;
@@ -97,14 +97,10 @@ public class Versions {
         Version version = new Version(versionName, versionId, protocolId, c2sMapping, s2cMapping);
         VERSION_ID_MAP.put(version.getVersionId(), version);
         VERSION_PROTOCOL_ID_MAP.put(version.getProtocolId(), version);
-        VERSION_NAME_MAP.put(version.getVersionName(), version);
+        VERSION_NAME_MAP.put(version.getName(), version);
         if (version.getVersionId() == ProtocolDefinition.PRE_FLATTENING_VERSION_ID) {
             PRE_FLATTENING_VERSION = version;
         }
         return version;
-    }
-
-    public static HashBiMap<Integer, Version> getVersionIdMap() {
-        return VERSION_ID_MAP;
     }
 }

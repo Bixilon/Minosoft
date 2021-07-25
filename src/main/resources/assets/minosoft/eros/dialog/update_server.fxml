@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.*?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
-<HBox xmlns:fx="http://javafx.com/fxml/1" prefHeight="200.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/16"> <!--fx:controller="de.bixilon.minosoft.gui.eros.dialogs.UpdateServerDialog" -->
+<HBox xmlns:fx="http://javafx.com/fxml/1" prefHeight="250.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/16"> <!--fx:controller="de.bixilon.minosoft.gui.eros.dialogs.UpdateServerDialog" -->
     <GridPane HBox.hgrow="ALWAYS">
         <columnConstraints>
             <ColumnConstraints hgrow="ALWAYS"/>
@@ -29,6 +28,8 @@
             <rowConstraints>
                 <RowConstraints valignment="CENTER" vgrow="NEVER"/>
                 <RowConstraints valignment="CENTER" vgrow="NEVER"/>
+                <RowConstraints valignment="CENTER" vgrow="NEVER"/>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="NEVER"/>
             </rowConstraints>
             <TextFlow fx:id="serverNameLabelFX">
                 <GridPane.margin>
@@ -41,7 +42,7 @@
                     <Insets left="5.0" right="5.0"/>
                 </GridPane.margin>
             </TextField>
-            <TextFlow GridPane.rowIndex="1" fx:id="serverAddressLabelFX">
+            <TextFlow fx:id="serverAddressLabelFX" GridPane.rowIndex="1">
                 <GridPane.margin>
                     <Insets left="5.0" right="30.0" top="15.0"/>
                 </GridPane.margin>
@@ -52,6 +53,45 @@
                     <Insets left="5.0" right="5.0"/>
                 </GridPane.margin>
             </TextField>
+            <TextFlow fx:id="forcedVersionLabelFX" GridPane.rowIndex="2">
+                <GridPane.margin>
+                    <Insets left="5.0" right="30.0" top="15.0"/>
+                </GridPane.margin>
+                <Text text="Forced version"/>
+            </TextFlow>
+            <GridPane GridPane.columnIndex="1" GridPane.rowIndex="2">
+                <columnConstraints>
+                    <ColumnConstraints hgrow="ALWAYS"/>
+                    <ColumnConstraints hgrow="NEVER"/>
+                </columnConstraints>
+                <rowConstraints>
+                    <RowConstraints vgrow="NEVER"/>
+                </rowConstraints>
+                <ComboBox fx:id="forcedVersionFX" maxWidth="Infinity">
+                    <GridPane.margin>
+                        <Insets left="5.0" right="10.0"/>
+                    </GridPane.margin>
+                </ComboBox>
+                <GridPane GridPane.columnIndex="1">
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="NEVER"/>
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints vgrow="NEVER"/>
+                        <RowConstraints vgrow="NEVER"/>
+                    </rowConstraints>
+                    <CheckBox fx:id="showReleasesFX" text="Releases">
+                        <GridPane.margin>
+                            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                        </GridPane.margin>
+                    </CheckBox>
+                    <CheckBox fx:id="showSnapshotsFX" text="Snapshots" GridPane.rowIndex="1">
+                        <GridPane.margin>
+                            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                        </GridPane.margin>
+                    </CheckBox>
+                </GridPane>
+            </GridPane>
         </GridPane>
         <GridPane GridPane.rowIndex="2">
             <columnConstraints>
@@ -60,14 +100,15 @@
                 <ColumnConstraints hgrow="NEVER"/>
             </columnConstraints>
             <rowConstraints>
+                <RowConstraints/>
                 <RowConstraints vgrow="NEVER"/>
             </rowConstraints>
-            <Button fx:id="updateServerButtonFX" disable="true" text="Update server" GridPane.columnIndex="2" onAction="#update">
+            <Button fx:id="updateServerButtonFX" disable="true" onAction="#update" text="Update server" GridPane.columnIndex="2" GridPane.rowIndex="1">
                 <GridPane.margin>
                     <Insets bottom="10.0" left="5.0" right="10.0" top="5.0"/>
                 </GridPane.margin>
             </Button>
-            <Button fx:id="cancelButtonFX" text="Cancel" GridPane.columnIndex="1" onAction="#cancel">
+            <Button fx:id="cancelButtonFX" onAction="#cancel" text="Cancel" GridPane.columnIndex="1" GridPane.rowIndex="1">
                 <GridPane.margin>
                     <Insets bottom="10.0" left="5.0" right="5.0" top="5.0"/>
                 </GridPane.margin>

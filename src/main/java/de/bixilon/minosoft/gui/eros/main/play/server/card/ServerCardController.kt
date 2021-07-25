@@ -92,7 +92,7 @@ class ServerCardController : AbstractCard<ServerCard>() {
             }
             motdFX.text = it.status.motd ?: ChatComponent.EMPTY
             playerCountFX.text = "${it.status.usedSlots?.thousands()} / ${it.status.slots?.thousands()}"
-            serverVersionFX.text = it.connection.serverVersion?.versionName
+            serverVersionFX.text = it.connection.serverVersion?.name
 
             faviconFX.image = it.status.favicon?.let { favicon -> Image(ByteArrayInputStream(favicon)) } ?: JavaFXUtil.MINOSOFT_LOGO
 

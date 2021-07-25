@@ -36,6 +36,10 @@ minosoft:update_server.name.label=Server name
 minosoft:update_server.name.placeholder=A Minosoft server
 minosoft:update_server.address.label=Server address
 minosoft:update_server.address.placeholder=127.0.0.1:25565
+minosoft:update_server.forced_version.label=Forced version
+minosoft:update_server.forced_version.automatic=Auto detect
+minosoft:update_server.forced_version.releases=Releases
+minosoft:update_server.forced_version.snapshots=Snapshots
 
 minosoft:update_server.add.title=Add server - Minosoft
 minosoft:update_server.add.description=Please enter the server name, their hostname or IP address and select the version in order to add the server
