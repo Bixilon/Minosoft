@@ -232,13 +232,19 @@ class ServerListController : EmbeddedJavaFXController<Pane>() {
 
 
     private companion object {
-        private val SERVER_INFO_PROPERTIES: Map<ResourceLocation, (server: Server) -> Any?> = mapOf(
+        private val SERVER_INFO_PROPERTIES: List<Pair<ResourceLocation, (server: Server) -> Any?>> = listOf(
             "minosoft:server_info.server_name".asResourceLocation() to { it.name },
             "minosoft:server_info.server_address".asResourceLocation() to { it.address },
             "minosoft:server_info.real_server_address".asResourceLocation() to { it.ping?.realAddress },
             "minosoft:server_info.forced_version".asResourceLocation() to { it.forcedVersion },
+
+            "minosoft:general.empty".asResourceLocation() to { " " },
+
             "minosoft:server_info.remote_version".asResourceLocation() to { it.ping?.serverVersion },
             "minosoft:server_info.remote_brand".asResourceLocation() to { it.ping?.lastServerStatus?.serverBrand },
+            "minosoft:server_info.players_online".asResourceLocation() to { it.ping?.lastServerStatus?.let { status -> "${status.usedSlots} / ${status.slots}" } },
+            "minosoft:server_info.ping".asResourceLocation() to { it.ping?.lastPongEvent?.let { pong -> "${pong.latency} ms" } },
+
 
             "minosoft:general.empty".asResourceLocation() to { " " },
 
