@@ -38,7 +38,10 @@ data class Server(
                 return
             }
             field = value
-            faviconHash?.let { AssetsUtil.deleteAsset(it, true) }
+            faviconHash?.let {
+                // ToDo: Check if other server is using favicon
+                AssetsUtil.deleteAsset(it, true)
+            }
             if (value == null) {
                 faviconHash = null
                 return
@@ -60,7 +63,12 @@ data class Server(
         if (id > nextServerId) {
             nextServerId = id + 1
         }
-        faviconHash?.let { favicon = AssetsUtil.readAsset(it, true) }
+        try {
+            faviconHash?.let { favicon = AssetsUtil.readAsset(it, true) }
+        } catch (exception: Exception) {
+            exception.printStackTrace()
+            faviconHash = null
+        }
     }
 
 
