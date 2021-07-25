@@ -34,6 +34,7 @@ import de.bixilon.minosoft.protocol.network.connection.status.StatusConnectionSt
 import de.bixilon.minosoft.util.DNSUtil
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
 import de.bixilon.minosoft.util.KUtil.decide
+import de.bixilon.minosoft.util.KUtil.thousands
 import de.bixilon.minosoft.util.task.pool.DefaultThreadPool
 import javafx.application.Platform
 import javafx.fxml.FXML
@@ -180,7 +181,29 @@ class ServerListController : EmbeddedJavaFXController<Pane>() {
                     ).show()
                 }
             }, 1, 0)
-            it.add(Button("Edit"), 2, 0)
+            it.add(Button("Edit").apply {
+                setOnAction {
+                    val server = serverCard.server
+                    UpdateServerDialog(server = server, onUpdate = { name, address ->
+                        server.name = ChatComponent.of(name)
+                        if (server.address != address) {
+                            server.favicon = null
+
+                            server.address = address
+
+                            // disconnect all ping connections, reping
+                            // ToDo: server.connections.clear()
+
+                            serverCard.unregister()
+                            server.ping?.disconnect()
+                            server.ping = null
+                            server.ping()
+                        }
+                        Minosoft.config.saveToFile()
+                        Platform.runLater { refresh() }
+                    }).show()
+                }
+            }, 2, 0)
 
             it.add(Button("Refresh").apply {
                 setOnAction {
@@ -252,7 +275,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>() {
 
             "minosoft:server_info.remote_version".asResourceLocation() to { it.ping?.serverVersion },
             "minosoft:server_info.remote_brand".asResourceLocation() to { it.ping?.lastServerStatus?.serverBrand },
-            "minosoft:server_info.players_online".asResourceLocation() to { it.ping?.lastServerStatus?.let { status -> "${status.usedSlots} / ${status.slots}" } },
+            "minosoft:server_info.players_online".asResourceLocation() to { it.ping?.lastServerStatus?.let { status -> "${status.usedSlots?.thousands()} / ${status.slots?.thousands()}" } },
             "minosoft:server_info.ping".asResourceLocation() to { it.ping?.lastPongEvent?.let { pong -> "${pong.latency} ms" } },
 
 

@@ -52,7 +52,6 @@ data class Server(
 
     @Transient
     var ping: StatusConnection? = null
-        private set
 
     @Transient
     var card: ServerCard? = null

@@ -82,9 +82,12 @@ class UpdateServerDialog(
             updateServerButtonFX.ctext = ADD_UPDATE_BUTTON
         } else {
             descriptionFX.text = EDIT_DESCRIPTION
-            serverNameFX.text = server.name.legacyText
-            serverAddressFX.text = server.address
             updateServerButtonFX.ctext = EDIT_UPDATE_BUTTON
+
+            serverNameFX.text = server.name.legacyText.removeSuffix("§r")
+            serverAddressFX.text = server.address
+
+            updateServerButtonFX.isDisable = serverAddressFX.text.isBlank()
         }
 
         serverAddressFX.textProperty().addListener { _, _, new ->
