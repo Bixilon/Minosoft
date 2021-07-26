@@ -54,18 +54,27 @@ class PlayMainController : EmbeddedJavaFXController<Pane>() {
         }
         playTypeListViewFX.items += ServerType(FontAwesomeSolid.NETWORK_WIRED, "LAN", "12 Servers", "") {
             return@ServerType JavaFXUtil.loadEmbeddedController<ServerListController>(ServerListController.LAYOUT).apply {
+                val invoker = Minosoft.GLOBAL_EVENT_MASTER.registerEvent(JavaFXEventInvoker.of<LANServerDiscoverEvent> { refreshList() })
                 readOnly = true
                 customRefresh = {
-                    LANServerListener.SERVERS.clear()
+                    LANServerListener.clear()
                     refreshList()
                 }
+                customTerminate = {
+                    Minosoft.GLOBAL_EVENT_MASTER.unregisterEvent(invoker)
+                    LANServerListener.clear()
+                }
+                LANServerListener.clear()
                 servers = LANServerListener.SERVERS.values
-                Minosoft.GLOBAL_EVENT_MASTER.registerEvent(JavaFXEventInvoker.of<LANServerDiscoverEvent> { refreshList() }) // ToDo: Unregister event when hiding pane
+                Minosoft.GLOBAL_EVENT_MASTER.registerEvent(JavaFXEventInvoker.of<LANServerDiscoverEvent> { refreshList() })
                 refreshList()
             }
         }
 
         playTypeListViewFX.selectionModel.selectedItemProperty().addListener { _, _, new ->
+            if (this::currentController.isInitialized) {
+                currentController.terminate()
+            }
             currentController = new.content()
             playTypeContentFX.children.setAll(currentController.root)
         }

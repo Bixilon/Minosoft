@@ -18,6 +18,7 @@ import de.bixilon.minosoft.config.server.Server
 import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.modding.event.events.LANServerDiscoverEvent
+import de.bixilon.minosoft.util.KUtil.toSynchronizedMap
 import de.bixilon.minosoft.util.Util
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -93,5 +94,13 @@ object LANServerListener {
         require(!(port < 0 || port > 65535)) { "Invalid port: $port" }
         val motd = Util.getStringBetween(broadcast, MOTD_START_STRING, MOTD_END_STRING)
         return Server(address = address.hostAddress + ":" + rawAddress, name = BaseComponent("LAN: #${SERVERS.size}: ", ChatComponent.of(motd)))
+    }
+
+
+    fun clear() {
+        for (server in SERVERS.toSynchronizedMap().values) {
+            server.favicon = null
+        }
+        SERVERS.clear()
     }
 }

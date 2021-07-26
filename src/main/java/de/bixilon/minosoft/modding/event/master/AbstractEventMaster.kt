@@ -21,6 +21,6 @@ interface AbstractEventMaster : Iterable<EventInvoker> {
 
     fun fireEvent(event: Event): Boolean
 
-    fun registerEvent(invoker: EventInvoker)
+    fun <T : EventInvoker> registerEvent(invoker: T): T
     fun registerEvents(vararg invoker: EventInvoker)
 }

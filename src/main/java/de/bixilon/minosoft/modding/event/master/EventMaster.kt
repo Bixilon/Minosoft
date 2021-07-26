@@ -63,16 +63,17 @@ open class EventMaster(vararg parents: AbstractEventMaster) : AbstractEventMaste
         eventInvokers -= method ?: return
     }
 
-    override fun registerEvent(invoker: EventInvoker) {
+    override fun <T : EventInvoker> registerEvent(invoker: T): T {
         eventInvokers += invoker
 
         if (invoker is EventInstantFireable && invoker.instantFire) {
-            val companion = invoker.kEventType?.companionObjectInstance ?: return
+            val companion = invoker.kEventType?.companionObjectInstance ?: return invoker
 
             if (companion is EventInstantFire<*>) {
                 invoker.invoke(companion.fire())
             }
         }
+        return invoker
     }
 
     override fun registerEvents(vararg invokers: EventInvoker) {

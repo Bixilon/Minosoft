@@ -178,7 +178,7 @@ class StatusConnection(
         }
     }
 
-    override fun registerEvent(invoker: EventInvoker) {
+    override fun <T : EventInvoker> registerEvent(invoker: T): T {
         if (invoker is EventInstantFireable && !invoker.instantFire) {
             return super.registerEvent(invoker)
         }
@@ -204,5 +204,6 @@ class StatusConnection(
             }
             else -> TODO()
         }
+        return invoker
     }
 }

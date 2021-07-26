@@ -77,8 +77,8 @@ abstract class Connection : AbstractEventMaster {
         eventMaster.unregisterEvent(invoker)
     }
 
-    override fun registerEvent(invoker: EventInvoker) {
-        eventMaster.registerEvent(invoker)
+    override fun <T : EventInvoker> registerEvent(invoker: T): T {
+        return eventMaster.registerEvent(invoker)
     }
 
     override fun registerEvents(vararg invokers: EventInvoker) {
