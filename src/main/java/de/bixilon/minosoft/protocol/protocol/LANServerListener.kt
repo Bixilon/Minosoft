@@ -15,6 +15,8 @@ package de.bixilon.minosoft.protocol.protocol
 import com.google.common.collect.HashBiMap
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.server.Server
+import de.bixilon.minosoft.data.text.BaseComponent
+import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.modding.event.events.LANServerDiscoverEvent
 import de.bixilon.minosoft.util.Util
 import de.bixilon.minosoft.util.logging.Log
@@ -26,11 +28,11 @@ import java.util.concurrent.CountDownLatch
 
 object LANServerListener {
     val SERVERS: HashBiMap<InetAddress, Server> = HashBiMap.create()
-    private const val MOTD_BEGIN_STRING = "[MOTD]"
+    private const val MOTD_START_STRING = "[MOTD]"
     private const val MOTD_END_STRING = "[/MOTD]"
     private const val PORT_START_STRING = "[AD]"
     private const val PORT_END_STRING = "[/AD]"
-    private val BROADCAST_MUST_CONTAIN = arrayOf(MOTD_BEGIN_STRING, MOTD_END_STRING, PORT_START_STRING, PORT_END_STRING)
+    private val BROADCAST_MUST_CONTAIN = arrayOf(MOTD_START_STRING, MOTD_END_STRING, PORT_START_STRING, PORT_END_STRING)
 
     fun listen() {
         val latch = CountDownLatch(1)
@@ -88,7 +90,8 @@ object LANServerListener {
             rawAddress = rawAddress.split(":").toTypedArray()[1]
         }
         val port = rawAddress.toInt()
-        require(!(port < 0 || port > 65535)) { String.format("Invalid port: %d", port) }
-        return Server(address = address.hostAddress + ":" + rawAddress) // ToDo: Name
+        require(!(port < 0 || port > 65535)) { "Invalid port: $port" }
+        val motd = Util.getStringBetween(broadcast, MOTD_START_STRING, MOTD_END_STRING)
+        return Server(address = address.hostAddress + ":" + rawAddress, name = BaseComponent("LAN: #${SERVERS.size}: ", ChatComponent.of(motd)))
     }
 }
