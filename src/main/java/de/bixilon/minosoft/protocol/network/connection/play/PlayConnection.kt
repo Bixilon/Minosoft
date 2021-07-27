@@ -40,6 +40,7 @@ import de.bixilon.minosoft.modding.event.events.ProtocolStateChangeEvent
 import de.bixilon.minosoft.modding.event.events.RegistriesLoadEvent
 import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionStateChangeEvent
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
+import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
 import de.bixilon.minosoft.protocol.network.connection.Connection
 import de.bixilon.minosoft.protocol.packets.c2s.handshaking.HandshakeC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.login.LoginStartC2SP
@@ -114,7 +115,7 @@ class PlayConnection(
             when (value) {
                 ProtocolStates.HANDSHAKING -> {
                     state = PlayConnectionStates.HANDSHAKING
-                    for ((validators, invokers) in Minosoft.GLOBAL_EVENT_MASTER.specificEventInvokers) {
+                    for ((validators, invokers) in GlobalEventMaster.specificEventInvokers) {
                         var valid = false
                         for (serverAddress in validators) {
                             if (serverAddress.check(address)) {

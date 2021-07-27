@@ -68,8 +68,6 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
 
     var customRefresh: (() -> Unit)? = null
 
-    var customTerminate: (() -> Unit)? = null
-
     var servers: MutableCollection<Server> = mutableListOf()
 
     var readOnly: Boolean = false
@@ -292,11 +290,6 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
                 it.ping()
             }
         }
-    }
-
-    override fun terminate() {
-        super.terminate()
-        customTerminate?.invoke()
     }
 
 

@@ -22,6 +22,7 @@ import de.bixilon.minosoft.gui.eros.main.play.PlayMainController
 import de.bixilon.minosoft.gui.eros.modding.invoker.JavaFXEventInvoker
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.modding.event.events.account.AccountSelectEvent
+import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
 import de.bixilon.minosoft.util.GitInfo
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
 import de.bixilon.minosoft.util.KUtil.decide
@@ -95,7 +96,7 @@ class MainErosController : JavaFXWindowController() {
         contentFX.children.setAll(JavaFXUtil.loadEmbeddedController<PlayMainController>("minosoft:eros/main/play/play.fxml".asResourceLocation()).root)
 
 
-        Minosoft.GLOBAL_EVENT_MASTER.registerEvent(JavaFXEventInvoker.of<AccountSelectEvent> {
+        GlobalEventMaster.registerEvent(JavaFXEventInvoker.of<AccountSelectEvent> {
             accountImageFX.image = JavaFXUtil.MINOSOFT_LOGO // ToDo
             accountNameFX.text = it.account?.username
         })

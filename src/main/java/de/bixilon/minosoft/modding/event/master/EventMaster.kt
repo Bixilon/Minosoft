@@ -18,6 +18,7 @@ import de.bixilon.minosoft.modding.event.events.CancelableEvent
 import de.bixilon.minosoft.modding.event.events.Event
 import de.bixilon.minosoft.modding.event.invoker.EventInstantFireable
 import de.bixilon.minosoft.modding.event.invoker.EventInvoker
+import de.bixilon.minosoft.modding.event.invoker.OneShotInvoker
 import de.bixilon.minosoft.util.KUtil.synchronizedSetOf
 import de.bixilon.minosoft.util.KUtil.toSynchronizedList
 import de.bixilon.minosoft.util.KUtil.toSynchronizedSet
@@ -44,12 +45,17 @@ open class EventMaster(vararg parents: AbstractEventMaster) : AbstractEventMaste
             parent.fireEvent(event)
         }
 
-        for (eventInvoker in eventInvokers.toSynchronizedList()) {
-            if (!eventInvoker.eventType.isAssignableFrom(event::class.java)) {
+        for (invoker in eventInvokers.toSynchronizedList()) {
+            if (!invoker.eventType.isAssignableFrom(event::class.java)) {
                 continue
             }
-            eventInvoker(event)
+            invoker(event)
+
+            if (invoker is OneShotInvoker && invoker.oneShot) {
+                eventInvokers -= invoker
+            }
         }
+
 
         if (event is CancelableEvent) {
             val cancelled = event.cancelled
@@ -59,8 +65,8 @@ open class EventMaster(vararg parents: AbstractEventMaster) : AbstractEventMaste
         return false
     }
 
-    fun unregisterEvent(method: EventInvoker?) {
-        eventInvokers -= method ?: return
+    override fun unregisterEvent(invoker: EventInvoker?) {
+        eventInvokers -= invoker ?: return
     }
 
     override fun <T : EventInvoker> registerEvent(invoker: T): T {
@@ -76,11 +82,6 @@ open class EventMaster(vararg parents: AbstractEventMaster) : AbstractEventMaste
         return invoker
     }
 
-    override fun registerEvents(vararg invokers: EventInvoker) {
-        for (invoker in invokers) {
-            registerEvent(invoker)
-        }
-    }
 
     override fun iterator(): Iterator<EventInvoker> {
         return eventInvokers.toSynchronizedList().iterator()

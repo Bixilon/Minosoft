@@ -13,11 +13,11 @@
 package de.bixilon.minosoft.protocol.protocol
 
 import com.google.common.collect.HashBiMap
-import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.server.Server
 import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.modding.event.events.LANServerDiscoverEvent
+import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
 import de.bixilon.minosoft.util.KUtil.toSynchronizedMap
 import de.bixilon.minosoft.util.Util
 import de.bixilon.minosoft.util.logging.Log
@@ -49,7 +49,7 @@ object LANServerListener {
                         val packet = DatagramPacket(buffer, buffer.size)
                         socket.receive(packet)
                         val broadcast = String(buffer, 0, packet.length, StandardCharsets.UTF_8)
-                        Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.INFO) { "Received LAN servers broadcast (${packet.address.hostAddress}:${packet.port}): $broadcast" }
+                        Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.INFO) { "LAN servers broadcast (${packet.address.hostAddress}:${packet.port}): $broadcast" }
                         val sender = packet.address
                         if (SERVERS.containsKey(sender)) {
                             // This guy sent us already a server, maybe just the regular 1.5 second interval, a duplicate or a DOS attack...We don't care
@@ -62,7 +62,7 @@ object LANServerListener {
                         if (SERVERS.size > ProtocolDefinition.LAN_SERVER_MAXIMUM_SERVERS) {
                             continue
                         }
-                        if (Minosoft.GLOBAL_EVENT_MASTER.fireEvent(LANServerDiscoverEvent(packet.address, server))) {
+                        if (GlobalEventMaster.fireEvent(LANServerDiscoverEvent(packet.address, server))) {
                             continue
                         }
                         SERVERS[sender] = server

@@ -47,9 +47,11 @@ import de.bixilon.minosoft.util.task.worker.tasks.Task
 object Minosoft {
     val MINOSOFT_ASSETS_MANAGER = JarAssetsManager(Minosoft::class.java, mutableSetOf("minosoft"))
     val MINECRAFT_FALLBACK_ASSETS_MANAGER = JarAssetsManager(Minosoft::class.java, mutableSetOf("minecraft"))
-    val GLOBAL_EVENT_MASTER = GlobalEventMaster()
     val LANGUAGE_MANAGER = MultiLanguageManager()
     val START_UP_LATCH = CountUpAndDownLatch(1)
+
+    @Deprecated("Use singleton interface!")
+    val GLOBAL_EVENT_MASTER = GlobalEventMaster
 
     @Deprecated("Will be singleton interface")
     lateinit var config: Configuration

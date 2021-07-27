@@ -13,11 +13,11 @@
 
 package de.bixilon.minosoft.gui.eros
 
-import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.gui.eros.main.MainErosController
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.modding.event.events.FinishInitializingEvent
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
+import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
 import javafx.application.Platform
 
@@ -29,7 +29,7 @@ object Eros {
 
 
     init {
-        Minosoft.GLOBAL_EVENT_MASTER.registerEvent(CallbackEventInvoker.of<FinishInitializingEvent> {
+        GlobalEventMaster.registerEvent(CallbackEventInvoker.of<FinishInitializingEvent> {
             Platform.runLater {
                 mainErosController = JavaFXUtil.openModal(TITLE, LAYOUT)
                 mainErosController.stage.show()

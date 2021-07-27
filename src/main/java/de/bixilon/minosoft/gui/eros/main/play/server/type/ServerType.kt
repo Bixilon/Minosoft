@@ -21,5 +21,5 @@ data class ServerType(
     val header: Any?,
     val text1: Any?,
     val text2: Any?,
-    val content: () -> EmbeddedJavaFXController<*>,
+    val content: (ServerType) -> EmbeddedJavaFXController<*>,
 )

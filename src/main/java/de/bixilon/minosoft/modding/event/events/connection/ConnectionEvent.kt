@@ -19,4 +19,4 @@ import de.bixilon.minosoft.protocol.network.connection.Connection
 abstract class ConnectionEvent @JvmOverloads constructor(
     open val connection: Connection,
     val initiator: EventInitiators = EventInitiators.DEFAULT,
-) : Event()
+) : Event

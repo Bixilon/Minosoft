@@ -73,7 +73,7 @@ abstract class Connection : AbstractEventMaster {
 
     abstract fun handlePacket(packet: S2CPacket)
 
-    open fun unregisterEvent(invoker: EventInvoker?) {
+    override fun unregisterEvent(invoker: EventInvoker?) {
         eventMaster.unregisterEvent(invoker)
     }
 

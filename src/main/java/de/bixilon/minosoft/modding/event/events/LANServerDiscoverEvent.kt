@@ -19,4 +19,4 @@ import java.net.InetAddress
 class LANServerDiscoverEvent(
     val remoteAddress: InetAddress,
     val serer: Server,
-) : Event(), CancelableEvent
+) : Event, CancelableEvent

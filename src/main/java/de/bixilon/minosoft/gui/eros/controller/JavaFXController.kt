@@ -13,7 +13,9 @@
 
 package de.bixilon.minosoft.gui.eros.controller
 
+import de.bixilon.minosoft.gui.eros.modding.events.ErosControllerTerminateEvent
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
+import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
 import de.bixilon.minosoft.util.KUtil.nullCast
 import javafx.event.ActionEvent
 import javafx.fxml.Initializable
@@ -38,5 +40,7 @@ abstract class JavaFXController : Initializable {
 
     open fun postInit() {}
 
-    open fun terminate() {}
+    open fun terminate() {
+        GlobalEventMaster.fireEvent(ErosControllerTerminateEvent(this))
+    }
 }

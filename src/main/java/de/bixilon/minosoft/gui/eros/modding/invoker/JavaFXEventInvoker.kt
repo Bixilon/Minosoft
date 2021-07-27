@@ -17,6 +17,7 @@ import de.bixilon.minosoft.modding.event.events.CancelableEvent
 import de.bixilon.minosoft.modding.event.events.Event
 import de.bixilon.minosoft.modding.event.invoker.EventInstantFireable
 import de.bixilon.minosoft.modding.event.invoker.EventInvoker
+import de.bixilon.minosoft.modding.event.invoker.OneShotInvoker
 import de.bixilon.minosoft.modding.loading.Priorities
 import javafx.application.Platform
 import kotlin.reflect.KClass
@@ -27,10 +28,11 @@ import kotlin.reflect.KClass
 class JavaFXEventInvoker<E : Event> private constructor(
     ignoreCancelled: Boolean,
     private val callback: (E) -> Unit,
+    override val oneShot: Boolean,
     override val kEventType: KClass<out Event>,
     override val eventType: Class<out Event>,
     override val instantFire: Boolean,
-) : EventInvoker(ignoreCancelled, Priorities.NORMAL, null), EventInstantFireable {
+) : EventInvoker(ignoreCancelled, Priorities.NORMAL, null), EventInstantFireable, OneShotInvoker {
 
     override operator fun invoke(event: Event) {
         if (!this.isIgnoreCancelled && event is CancelableEvent && event.cancelled) {
@@ -44,10 +46,11 @@ class JavaFXEventInvoker<E : Event> private constructor(
     companion object {
         @JvmOverloads
         @Suppress("NON_PUBLIC_CALL_FROM_PUBLIC_INLINE")
-        inline fun <reified E : Event> of(ignoreCancelled: Boolean = false, instantFire: Boolean = true, noinline callback: (E) -> Unit): JavaFXEventInvoker<E> {
+        inline fun <reified E : Event> of(ignoreCancelled: Boolean = false, instantFire: Boolean = true, oneShot: Boolean = false, noinline callback: (E) -> Unit): JavaFXEventInvoker<E> {
             return JavaFXEventInvoker(
                 ignoreCancelled = ignoreCancelled,
                 callback = callback,
+                oneShot = oneShot,
                 kEventType = E::class,
                 eventType = E::class.java,
                 instantFire = instantFire,

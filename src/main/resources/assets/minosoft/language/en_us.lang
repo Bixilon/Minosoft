@@ -5,6 +5,8 @@ minosoft:general.delete=Delete
 
 minosoft:eros_window_title=Minosoft
 
+minosoft:server_type.custom=Custom
+minosoft:server_type.lan=LAN
 
 minosoft:server_info.server_name=Server name
 minosoft:server_info.server_address=Server address

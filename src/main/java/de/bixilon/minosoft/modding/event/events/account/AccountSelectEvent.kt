@@ -20,7 +20,7 @@ import de.bixilon.minosoft.modding.event.events.Event
 class AccountSelectEvent(
     val previous: Account?,
     val account: Account?,
-) : Event() {
+) : Event {
 
     companion object : EventInstantFire<AccountSelectEvent> {
 
