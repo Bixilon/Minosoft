@@ -12,6 +12,7 @@
  */
 package de.bixilon.minosoft.data.text
 
+import com.squareup.moshi.JsonEncodingException
 import de.bixilon.minosoft.data.language.Translator
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.text
 import de.bixilon.minosoft.gui.rendering.RenderWindow
@@ -98,8 +99,8 @@ interface ChatComponent {
             }
             if (!ignoreJson && string.startsWith('{')) {
                 try {
-                    return BaseComponent(translator, parent, JSONSerializer.MAP_ADAPTER.fromJson(string))
-                } catch (ignored: RuntimeException) {
+                    return BaseComponent(translator, parent, JSONSerializer.MAP_ADAPTER.fromJson(string)!!)
+                } catch (ignored: JsonEncodingException) {
                 }
             }
 

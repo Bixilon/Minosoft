@@ -22,7 +22,6 @@ import de.bixilon.minosoft.data.registries.particle.data.ItemParticleData
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.data.registries.recipes.Ingredient
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.data.text.ChatComponent.Companion.of
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
@@ -70,7 +69,7 @@ class PlayInByteBuffer : InByteBuffer {
     }
 
     override fun readChatComponent(): ChatComponent {
-        return of(readString(), connection.version.language, null)
+        return ChatComponent.of(readString(), connection.version.language, null)
     }
 
     fun readParticle(): ParticleData {
