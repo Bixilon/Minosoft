@@ -12,8 +12,6 @@
  */
 package de.bixilon.minosoft.protocol.protocol
 
-import com.google.gson.JsonObject
-import com.google.gson.JsonParser
 import de.bixilon.minosoft.data.commands.CommandArgumentNode
 import de.bixilon.minosoft.data.commands.CommandLiteralNode
 import de.bixilon.minosoft.data.commands.CommandNode
@@ -254,16 +252,6 @@ open class InByteBuffer {
 
     fun readJsonArray(length: Int = readVarInt()): Array<Map<String, Any>> {
         return readArray(length) { readJson() }
-    }
-
-    @Deprecated(message = "GSON is deprecated")
-    fun readLegacyJson(): JsonObject {
-        return JsonParser.parseString(readString()).asJsonObject
-    }
-
-    @Deprecated(message = "GSON is deprecated")
-    fun readLegacyJsonArray(length: Int = readVarInt()): Array<JsonObject> {
-        return readArray(length) { readLegacyJson() }
     }
 
     open fun readChatComponent(): ChatComponent {
