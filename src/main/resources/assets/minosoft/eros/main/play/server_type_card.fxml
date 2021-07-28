@@ -2,7 +2,8 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.text.TextFlow?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 <HBox xmlns:fx="http://javafx.com/fxml/1" fx:id="root" prefHeight="80.0" prefWidth="190.0" xmlns="http://javafx.com/javafx/16" fx:controller="de.bixilon.minosoft.gui.eros.main.play.server.type.ServerTypeCardController">
     <GridPane HBox.hgrow="ALWAYS">
@@ -20,26 +21,12 @@
                 </GridPane.margin>
                 <Text text="Header"/>
             </TextFlow>
-            <TextFlow fx:id="text1FX" GridPane.rowIndex="1">
+            <TextFlow fx:id="textFX" GridPane.rowIndex="1">
                 <GridPane.margin>
                     <Insets bottom="5.0" right="5.0"/>
                 </GridPane.margin>
                 <Text text="Text 1"/>
             </TextFlow>
-            <TextFlow fx:id="text2FX" GridPane.rowIndex="2">
-                <GridPane.margin>
-                    <Insets bottom="5.0" right="5.0"/>
-                </GridPane.margin>
-                <Text text="Text 2"/>
-            </TextFlow>
-            <columnConstraints>
-                <ColumnConstraints/>
-            </columnConstraints>
-            <rowConstraints>
-                <RowConstraints/>
-                <RowConstraints/>
-                <RowConstraints/>
-            </rowConstraints>
         </GridPane>
         <FontIcon fx:id="iconFX" iconLiteral="fas-exclamation-triangle" iconSize="50">
             <GridPane.margin>

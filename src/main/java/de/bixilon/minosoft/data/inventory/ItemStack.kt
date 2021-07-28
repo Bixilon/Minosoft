@@ -58,6 +58,10 @@ data class ItemStack(
         return ChatComponent.of("$item {name=${displayName}, count=$count. nbt=$nbt}")
     }
 
+    override fun toString(): String {
+        return toText().legacyText
+    }
+
 
     private fun parseNBT(nbt: MutableMap<String, Any>?) {
         if (nbt == null) {

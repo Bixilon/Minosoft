@@ -11,15 +11,26 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.eros.main.play.server.type
+package de.bixilon.minosoft.gui.eros.main.play
 
-import de.bixilon.minosoft.gui.eros.controller.EmbeddedJavaFXController
+import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.registries.registry.Translatable
+import de.bixilon.minosoft.util.KUtil
+import de.bixilon.minosoft.util.KUtil.asResourceLocation
+import de.bixilon.minosoft.util.enum.ValuesEnum
+import org.kordamp.ikonli.Ikon
 import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid
 
-data class ServerType(
-    val icon: FontAwesomeSolid,
-    val header: Any?,
-    val text1: Any?,
-    val text2: Any?,
-    val content: (ServerType) -> EmbeddedJavaFXController<*>,
-)
+enum class ServerTypes(val icon: Ikon) : Translatable {
+    CUSTOM(FontAwesomeSolid.SERVER),
+    LAN(FontAwesomeSolid.NETWORK_WIRED),
+    ;
+
+    override val translationKey: ResourceLocation = "minosoft:server_type.${name.lowercase()}".asResourceLocation()
+
+
+    companion object : ValuesEnum<ServerTypes> {
+        override val VALUES: Array<ServerTypes> = values()
+        override val NAME_MAP: Map<String, ServerTypes> = KUtil.getEnumValues(VALUES)
+    }
+}

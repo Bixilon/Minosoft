@@ -120,15 +120,13 @@ class PlayInByteBuffer : InByteBuffer {
             )
         }
 
-        return if (readBoolean()) {
+        return readOptional {
             ItemStack(
                 item = connection.registries.itemRegistry[readVarInt()],
                 connection = connection,
                 count = readUnsignedByte(),
                 nbt = readNBT()?.compoundCast() ?: mutableMapOf(),
             )
-        } else {
-            null
         }
     }
 

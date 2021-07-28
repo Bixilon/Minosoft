@@ -13,15 +13,17 @@
 
 package de.bixilon.minosoft.gui.eros.main.play.server.type
 
+import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.gui.eros.card.AbstractCard
 import de.bixilon.minosoft.gui.eros.card.CardFactory
+import de.bixilon.minosoft.gui.eros.main.play.ServerTypes
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.text
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
 import javafx.fxml.FXML
 import javafx.scene.text.TextFlow
 import org.kordamp.ikonli.javafx.FontIcon
 
-class ServerTypeCardController : AbstractCard<ServerType>() {
+class ServerTypeCardController : AbstractCard<ServerTypes>() {
     @FXML
     lateinit var iconFX: FontIcon
 
@@ -29,29 +31,26 @@ class ServerTypeCardController : AbstractCard<ServerType>() {
     lateinit var headerFX: TextFlow
 
     @FXML
-    lateinit var text1FX: TextFlow
+    lateinit var textFX: TextFlow
 
-    @FXML
-    lateinit var text2FX: TextFlow
-
-    override fun updateItem(item: ServerType?, empty: Boolean) {
+    override fun updateItem(item: ServerTypes?, empty: Boolean) {
         super.updateItem(item, empty)
         item ?: return
 
 
         iconFX.isVisible = true
+
         iconFX.iconCode = item.icon
-        headerFX.text = item.header
-        text1FX.text = item.text1
-        text2FX.text = item.text2
+        headerFX.text = Minosoft.LANGUAGE_MANAGER.translate(item)
+
+        textFX.text = "? servers"
     }
 
 
     override fun clear() {
         iconFX.isVisible = false
         headerFX.children.clear()
-        text1FX.children.clear()
-        text2FX.children.clear()
+        textFX.children.clear()
     }
 
     companion object : CardFactory<ServerTypeCardController> {
