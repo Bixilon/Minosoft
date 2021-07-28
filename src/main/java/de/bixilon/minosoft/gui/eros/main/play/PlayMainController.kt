@@ -58,7 +58,7 @@ class PlayMainController : EmbeddedJavaFXController<Pane>() {
             if (this::currentController.isInitialized) {
                 currentController.terminate()
             }
-            currentController = when (new) {
+            currentController = when (new!!) {
                 ServerTypes.CUSTOM -> JavaFXUtil.loadEmbeddedController<ServerListController>(ServerListController.LAYOUT).apply {
                     servers = Minosoft.config.config.server.entries.values
                     refreshList()

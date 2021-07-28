@@ -41,29 +41,29 @@ class UpdateServerDialog(
     val onCancel: () -> Unit = {},
     val onUpdate: (name: String, address: String, forcedVersion: Version?) -> Unit,
 ) : JavaFXWindowController() {
-    @FXML lateinit var descriptionFX: TextFlow
+    @FXML private lateinit var descriptionFX: TextFlow
 
-    @FXML lateinit var serverNameLabelFX: TextFlow
+    @FXML private lateinit var serverNameLabelFX: TextFlow
 
-    @FXML lateinit var serverNameFX: TextField
+    @FXML private lateinit var serverNameFX: TextField
 
-    @FXML lateinit var serverAddressLabelFX: TextFlow
+    @FXML private lateinit var serverAddressLabelFX: TextFlow
 
-    @FXML lateinit var serverAddressFX: TextField
-
-
-    @FXML lateinit var forcedVersionLabelFX: TextFlow
-
-    @FXML lateinit var forcedVersionFX: ComboBox<Version>
-
-    @FXML lateinit var showReleasesFX: CheckBox
-
-    @FXML lateinit var showSnapshotsFX: CheckBox
+    @FXML private lateinit var serverAddressFX: TextField
 
 
-    @FXML lateinit var updateServerButtonFX: Button
+    @FXML private lateinit var forcedVersionLabelFX: TextFlow
 
-    @FXML lateinit var cancelButtonFX: Button
+    @FXML private lateinit var forcedVersionFX: ComboBox<Version>
+
+    @FXML private lateinit var showReleasesFX: CheckBox
+
+    @FXML private lateinit var showSnapshotsFX: CheckBox
+
+
+    @FXML private lateinit var updateServerButtonFX: Button
+
+    @FXML private lateinit var cancelButtonFX: Button
 
 
     fun show() {

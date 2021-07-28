@@ -13,21 +13,28 @@
 
 package de.bixilon.minosoft.gui.eros.main.play
 
+import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.registry.Translatable
+import de.bixilon.minosoft.protocol.protocol.LANServerListener
 import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
 import de.bixilon.minosoft.util.enum.ValuesEnum
 import org.kordamp.ikonli.Ikon
 import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid
 
-enum class ServerTypes(val icon: Ikon) : Translatable {
-    CUSTOM(FontAwesomeSolid.SERVER),
-    LAN(FontAwesomeSolid.NETWORK_WIRED),
+enum class ServerTypes(
+    val icon: Ikon,
+    private val countGetter: () -> Int,
+) : Translatable {
+    CUSTOM(FontAwesomeSolid.SERVER, { Minosoft.config.config.server.entries.size }),
+    LAN(FontAwesomeSolid.NETWORK_WIRED, { LANServerListener.SERVERS.size }),
     ;
 
     override val translationKey: ResourceLocation = "minosoft:server_type.${name.lowercase()}".asResourceLocation()
 
+    val count: Int
+        get() = countGetter()
 
     companion object : ValuesEnum<ServerTypes> {
         override val VALUES: Array<ServerTypes> = values()
