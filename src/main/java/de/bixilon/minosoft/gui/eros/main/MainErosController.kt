@@ -17,8 +17,8 @@ import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.ShutdownReasons
 import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.data.accounts.Account
+import de.bixilon.minosoft.gui.eros.controller.EmbeddedJavaFXController
 import de.bixilon.minosoft.gui.eros.controller.JavaFXWindowController
-import de.bixilon.minosoft.gui.eros.main.play.PlayMainController
 import de.bixilon.minosoft.gui.eros.modding.invoker.JavaFXEventInvoker
 import de.bixilon.minosoft.gui.eros.util.JavaFXAccountUtil.avatar
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
@@ -45,11 +45,8 @@ class MainErosController : JavaFXWindowController() {
 
     @FXML private lateinit var playIconFX: FontIcon
     @FXML private lateinit var settingsIconFX: FontIcon
-
     @FXML private lateinit var helpIconFX: FontIcon
-
     @FXML private lateinit var aboutIconFX: FontIcon
-
     @FXML private lateinit var exitIconFX: FontIcon
 
     @FXML private lateinit var contentFX: Pane
@@ -58,40 +55,65 @@ class MainErosController : JavaFXWindowController() {
 
     @FXML private lateinit var accountNameFX: Text
 
+    private lateinit var iconMap: Map<ErosMainActivities, FontIcon>
 
-    private lateinit var icons: List<FontIcon>
 
+    private var activity: ErosMainActivities = ErosMainActivities.ABOUT // other value (not the default)
+        set(value) {
+            field = value
+            contentFX.children.setAll(JavaFXUtil.loadEmbeddedController<EmbeddedJavaFXController<*>>(field.layout).root)
 
-    fun select(iconToSelect: FontIcon) {
-        for (icon in icons) {
+            highlightIcon(iconMap[value])
+        }
+
+    private fun highlightIcon(iconToSelect: FontIcon?) {
+        for (icon in iconMap.values) {
             if (icon === iconToSelect) {
                 continue
             }
             icon.isDisable = false
             icon.iconColor = Color.BLACK
         }
-        iconToSelect.isDisable = true
-        iconToSelect.iconColor = Color.LIGHTBLUE
+        iconToSelect?.apply {
+            isDisable = true
+            iconColor = Color.LIGHTBLUE
+        }
     }
 
     override fun init() {
         logoFX.image = JavaFXUtil.MINOSOFT_LOGO
         versionTextFX.text = "Minosoft " + GitInfo.IS_INITIALIZED.decide(GitInfo.GIT_COMMIT_ID, StaticConfiguration.VERSION)
-        icons = listOf(playIconFX, settingsIconFX, helpIconFX, aboutIconFX, exitIconFX)
+        iconMap = mapOf(
+            ErosMainActivities.PlAY to playIconFX,
+            ErosMainActivities.SETTINGS to settingsIconFX,
+            ErosMainActivities.HELP to helpIconFX,
+            ErosMainActivities.ABOUT to aboutIconFX,
+        )
 
-        select(playIconFX)
+        highlightIcon(playIconFX)
 
+        playIconFX.setOnMouseClicked {
+            activity = ErosMainActivities.PlAY
+        }
+        settingsIconFX.setOnMouseClicked {
+            activity = ErosMainActivities.SETTINGS
+        }
+        helpIconFX.setOnMouseClicked {
+            activity = ErosMainActivities.HELP
+        }
+        aboutIconFX.setOnMouseClicked {
+            activity = ErosMainActivities.ABOUT
+        }
         exitIconFX.setOnMouseClicked {
             ShutdownManager.shutdown(reason = ShutdownReasons.REQUESTED_BY_USER)
         }
-
-        contentFX.children.setAll(JavaFXUtil.loadEmbeddedController<PlayMainController>("minosoft:eros/main/play/play.fxml".asResourceLocation()).root)
-
 
         GlobalEventMaster.registerEvent(JavaFXEventInvoker.of<AccountSelectEvent> {
             accountImageFX.image = it.account?.avatar
             accountNameFX.ctext = it.account?.username ?: NO_ACCOUNT_SELECTED
         })
+
+        activity = ErosMainActivities.PlAY
     }
 
     override fun postInit() {
@@ -100,13 +122,9 @@ class MainErosController : JavaFXWindowController() {
         }
     }
 
-    fun requestAccountSelect() {
-        TODO("Not yet implemented")
-    }
-
     fun verifyAccount(account: Account? = Minosoft.config.config.account.selected, onSuccess: (Account) -> Unit) {
         if (account == null) {
-            requestAccountSelect()
+            activity = ErosMainActivities.ACCOUNT
             return
         }
 
@@ -118,6 +136,12 @@ class MainErosController : JavaFXWindowController() {
             }
             onSuccess(account)
         }
+    }
+
+
+    @FXML
+    fun openAccountActivity() {
+        activity = ErosMainActivities.ACCOUNT
     }
 
     companion object {

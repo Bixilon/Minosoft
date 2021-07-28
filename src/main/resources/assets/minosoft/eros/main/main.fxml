@@ -77,7 +77,7 @@
                     </GridPane.margin>
                 </FontIcon>
             </GridPane>
-            <GridPane GridPane.columnIndex="3">
+            <GridPane onMouseClicked="#openAccountActivity" GridPane.columnIndex="3">
                 <columnConstraints>
                     <ColumnConstraints hgrow="NEVER" minWidth="10.0"/>
                     <ColumnConstraints hgrow="NEVER"/>

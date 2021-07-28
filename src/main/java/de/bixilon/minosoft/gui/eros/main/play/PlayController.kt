@@ -33,7 +33,7 @@ import javafx.scene.layout.GridPane
 import javafx.scene.layout.Pane
 import javafx.scene.text.TextFlow
 
-class PlayMainController : EmbeddedJavaFXController<Pane>() {
+class PlayController : EmbeddedJavaFXController<Pane>() {
     @FXML private lateinit var playTypeContentFX: Pane
 
     @FXML private lateinit var playTypeListViewFX: ListView<ServerTypes>
@@ -103,6 +103,7 @@ class PlayMainController : EmbeddedJavaFXController<Pane>() {
     }
 
     companion object {
+        val LAYOUT = "minosoft:eros/main/play/play.fxml".asResourceLocation()
         private val CUSTOM_SERVER_TYPE = "minosoft:server_type.custom".asResourceLocation()
         private val LAN_SERVER_TYPE = "minosoft:server_type.lan".asResourceLocation()
         private val REFRESH_HEADER = "minosoft:server_list.refresh.header".asResourceLocation()

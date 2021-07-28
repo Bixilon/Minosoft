@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.layout.*?>
+<HBox xmlns:fx="http://javafx.com/fxml/1" prefHeight="500.0" prefWidth="900.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" xmlns="http://javafx.com/javafx/16" fx:controller="de.bixilon.minosoft.gui.eros.main.account.AccountController">
+    <GridPane HBox.hgrow="ALWAYS">
+        <columnConstraints>
+            <ColumnConstraints hgrow="NEVER" maxWidth="190.0" minWidth="10.0" prefWidth="190.0"/>
+            <ColumnConstraints hgrow="ALWAYS" maxWidth="Infinity"/>
+        </columnConstraints>
+        <rowConstraints>
+            <RowConstraints maxHeight="Infinity" minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS"/>
+        </rowConstraints>
+        <GridPane GridPane.columnIndex="1">
+            <ListView fx:id="accountListViewFX" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS"/>
+            <AnchorPane fx:id="accountInfoFX" minHeight="0.0" minWidth="0.0" GridPane.columnIndex="1"/>
+        </GridPane>
+        <ListView fx:id="accountTypeListViewFX" maxHeight="Infinity" maxWidth="Infinity" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS"/>
+    </GridPane>
+</HBox>
