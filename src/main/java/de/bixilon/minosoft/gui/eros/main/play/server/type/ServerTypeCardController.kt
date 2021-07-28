@@ -24,14 +24,11 @@ import javafx.scene.text.TextFlow
 import org.kordamp.ikonli.javafx.FontIcon
 
 class ServerTypeCardController : AbstractCard<ServerTypes>() {
-    @FXML
-    lateinit var iconFX: FontIcon
+    @FXML lateinit var iconFX: FontIcon
 
-    @FXML
-    lateinit var headerFX: TextFlow
+    @FXML lateinit var headerFX: TextFlow
 
-    @FXML
-    lateinit var textFX: TextFlow
+    @FXML lateinit var textFX: TextFlow
 
     override fun updateItem(item: ServerTypes?, empty: Boolean) {
         super.updateItem(item, empty)

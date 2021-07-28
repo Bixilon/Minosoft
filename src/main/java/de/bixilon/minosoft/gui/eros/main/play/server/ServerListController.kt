@@ -47,24 +47,18 @@ import javafx.scene.layout.*
 
 
 class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
-    @FXML
-    private lateinit var hideOfflineFX: CheckBox
+    @FXML private lateinit var hideOfflineFX: CheckBox
 
-    @FXML
-    private lateinit var hideFullFX: CheckBox
+    @FXML private lateinit var hideFullFX: CheckBox
 
-    @FXML
-    private lateinit var hideEmptyFX: CheckBox
+    @FXML private lateinit var hideEmptyFX: CheckBox
 
 
-    @FXML
-    private lateinit var addServerButtonFX: Button
+    @FXML private lateinit var addServerButtonFX: Button
 
-    @FXML
-    private lateinit var serverListViewFX: ListView<ServerCard>
+    @FXML private lateinit var serverListViewFX: ListView<ServerCard>
 
-    @FXML
-    private lateinit var serverInfoFX: AnchorPane
+    @FXML private lateinit var serverInfoFX: AnchorPane
 
     var customRefresh: (() -> Unit)? = null
 

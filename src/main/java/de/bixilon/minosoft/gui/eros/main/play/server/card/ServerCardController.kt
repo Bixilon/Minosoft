@@ -38,23 +38,17 @@ import javafx.scene.text.TextFlow
 import java.io.ByteArrayInputStream
 
 class ServerCardController : AbstractCard<ServerCard>() {
-    @FXML
-    private lateinit var faviconFX: ImageView
+    @FXML private lateinit var faviconFX: ImageView
 
-    @FXML
-    private lateinit var serverNameFX: TextFlow
+    @FXML private lateinit var serverNameFX: TextFlow
 
-    @FXML
-    private lateinit var motdFX: TextFlow
+    @FXML private lateinit var motdFX: TextFlow
 
-    @FXML
-    private lateinit var pingFX: Text
+    @FXML private lateinit var pingFX: Text
 
-    @FXML
-    private lateinit var playerCountFX: Text
+    @FXML private lateinit var playerCountFX: Text
 
-    @FXML
-    private lateinit var serverVersionFX: Text
+    @FXML private lateinit var serverVersionFX: Text
 
 
     private var lastServerCard: ServerCard? = null

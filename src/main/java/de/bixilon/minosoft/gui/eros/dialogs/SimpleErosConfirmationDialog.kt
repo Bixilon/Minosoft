@@ -34,14 +34,10 @@ class SimpleErosConfirmationDialog(
     val onCancel: () -> Unit = {},
     val onConfirm: () -> Unit,
 ) : JavaFXWindowController() {
-    @FXML
-    lateinit var headerFX: TextFlow
-    @FXML
-    lateinit var descriptionFX: TextFlow
-    @FXML
-    lateinit var cancelButtonFX: Button
-    @FXML
-    lateinit var confirmButtonFX: Button
+    @FXML lateinit var headerFX: TextFlow
+    @FXML lateinit var descriptionFX: TextFlow
+    @FXML lateinit var cancelButtonFX: Button
+    @FXML lateinit var confirmButtonFX: Button
 
     fun show() {
         Platform.runLater {

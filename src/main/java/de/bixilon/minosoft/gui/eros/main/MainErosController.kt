@@ -38,33 +38,23 @@ import org.kordamp.ikonli.javafx.FontIcon
 
 
 class MainErosController : JavaFXWindowController() {
-    @FXML
-    private lateinit var logoFX: ImageView
-    @FXML
-    private lateinit var versionTextFX: Text
+    @FXML private lateinit var logoFX: ImageView
+    @FXML private lateinit var versionTextFX: Text
 
-    @FXML
-    private lateinit var playIconFX: FontIcon
-    @FXML
-    private lateinit var settingsIconFX: FontIcon
+    @FXML private lateinit var playIconFX: FontIcon
+    @FXML private lateinit var settingsIconFX: FontIcon
 
-    @FXML
-    private lateinit var helpIconFX: FontIcon
+    @FXML private lateinit var helpIconFX: FontIcon
 
-    @FXML
-    private lateinit var aboutIconFX: FontIcon
+    @FXML private lateinit var aboutIconFX: FontIcon
 
-    @FXML
-    private lateinit var exitIconFX: FontIcon
+    @FXML private lateinit var exitIconFX: FontIcon
 
-    @FXML
-    private lateinit var contentFX: Pane
+    @FXML private lateinit var contentFX: Pane
 
-    @FXML
-    private lateinit var accountImageFX: ImageView
+    @FXML private lateinit var accountImageFX: ImageView
 
-    @FXML
-    private lateinit var accountNameFX: Text
+    @FXML private lateinit var accountNameFX: Text
 
 
     private lateinit var icons: List<FontIcon>

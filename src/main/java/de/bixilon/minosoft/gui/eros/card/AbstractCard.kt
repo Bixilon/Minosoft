@@ -21,8 +21,7 @@ import java.net.URL
 import java.util.*
 
 abstract class AbstractCard<T> : ListCell<T>(), Initializable {
-    @FXML
-    lateinit var root: HBox
+    @FXML lateinit var root: HBox
 
     override fun initialize(url: URL?, resourceBundle: ResourceBundle?) {
         this.graphic = root
