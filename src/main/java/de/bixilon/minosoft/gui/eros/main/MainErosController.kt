@@ -20,7 +20,9 @@ import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.gui.eros.controller.JavaFXWindowController
 import de.bixilon.minosoft.gui.eros.main.play.PlayMainController
 import de.bixilon.minosoft.gui.eros.modding.invoker.JavaFXEventInvoker
+import de.bixilon.minosoft.gui.eros.util.JavaFXAccountUtil.avatar
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
+import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.ctext
 import de.bixilon.minosoft.modding.event.events.account.AccountSelectEvent
 import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
 import de.bixilon.minosoft.util.GitInfo
@@ -87,8 +89,8 @@ class MainErosController : JavaFXWindowController() {
 
 
         GlobalEventMaster.registerEvent(JavaFXEventInvoker.of<AccountSelectEvent> {
-            accountImageFX.image = JavaFXUtil.MINOSOFT_LOGO // ToDo
-            accountNameFX.text = it.account?.username
+            accountImageFX.image = it.account?.avatar
+            accountNameFX.ctext = it.account?.username ?: NO_ACCOUNT_SELECTED
         })
     }
 
@@ -116,5 +118,9 @@ class MainErosController : JavaFXWindowController() {
             }
             onSuccess(account)
         }
+    }
+
+    companion object {
+        private val NO_ACCOUNT_SELECTED = "minosoft:main.account.no_account_selected".asResourceLocation()
     }
 }

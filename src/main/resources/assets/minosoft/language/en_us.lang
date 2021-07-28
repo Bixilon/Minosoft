@@ -54,3 +54,6 @@ minosoft:update_server.edit.update_button=Save server
 minosoft:server_list.refresh.header=Refresh
 minosoft:server_list.refresh.text1=Get the latest
 minosoft:server_list.refresh.text2=information
+
+
+minosoft:main.account.no_account_selected=No account selected

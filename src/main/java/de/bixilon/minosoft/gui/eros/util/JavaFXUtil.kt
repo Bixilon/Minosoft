@@ -27,6 +27,7 @@ import javafx.scene.control.Labeled
 import javafx.scene.control.TextField
 import javafx.scene.image.Image
 import javafx.scene.layout.Pane
+import javafx.scene.text.Text
 import javafx.scene.text.TextFlow
 import javafx.stage.Modality
 import javafx.stage.Stage
@@ -81,6 +82,12 @@ object JavaFXUtil {
         }
 
     var Labeled.ctext: Any?
+        get() = this.text
+        set(value) {
+            this.text = Minosoft.LANGUAGE_MANAGER.translate(value).message
+        }
+
+    var Text.ctext: Any?
         get() = this.text
         set(value) {
             this.text = Minosoft.LANGUAGE_MANAGER.translate(value).message
