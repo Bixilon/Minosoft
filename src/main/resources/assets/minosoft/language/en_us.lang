@@ -56,4 +56,9 @@ minosoft:server_list.refresh.text1=Get the latest
 minosoft:server_list.refresh.text2=information
 
 
+
 minosoft:main.account.no_account_selected=No account selected
+
+minosoft:main.account.type.mojang=Mojang
+minosoft:main.account.type.microsoft=Microsoft
+minosoft:main.account.type.offline=Offline

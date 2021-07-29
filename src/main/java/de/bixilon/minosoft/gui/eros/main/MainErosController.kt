@@ -58,7 +58,7 @@ class MainErosController : JavaFXWindowController() {
     private lateinit var iconMap: Map<ErosMainActivities, FontIcon>
 
 
-    private var activity: ErosMainActivities = ErosMainActivities.ABOUT // other value (not the default)
+    private var activity: ErosMainActivities = ErosMainActivities.ABOUT // other value (just not the default)
         set(value) {
             field = value
             contentFX.children.setAll(JavaFXUtil.loadEmbeddedController<EmbeddedJavaFXController<*>>(field.layout).root)

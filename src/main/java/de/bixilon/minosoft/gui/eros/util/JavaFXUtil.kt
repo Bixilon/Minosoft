@@ -39,7 +39,7 @@ object JavaFXUtil {
 
     fun <T : JavaFXController> openModal(title: Any, layout: ResourceLocation, controller: T? = null, modality: Modality = Modality.WINDOW_MODAL): T {
         val fxmlLoader = FXMLLoader()
-        controller?.apply { fxmlLoader.setController(this) }
+        controller?.let { fxmlLoader.setController(it) }
         val parent: Parent = fxmlLoader.load(Minosoft.MINOSOFT_ASSETS_MANAGER.readAssetAsStream(layout))
 
         val stage = Stage()
