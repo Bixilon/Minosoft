@@ -215,15 +215,26 @@ object KUtil {
         return map.toMap()
     }
 
-    fun <V> Collection<Any>.extend(vararg values: Any): List<V> {
+    fun <V> Collection<V>.extend(vararg values: Any): List<V> {
         val list: MutableList<V> = mutableListOf()
 
         for (value in this) {
             list += value.unsafeCast<V>()
         }
 
+        fun add(value: Any?) {
+            when (value) {
+                is Collection<*> -> {
+                    for (element in value) {
+                        add(element)
+                    }
+                }
+                else -> list += value.unsafeCast<V>()
+            }
+        }
+
         for (value in values) {
-            list += value.unsafeCast<V>()
+            add(value)
         }
         return list.toList()
     }
@@ -337,6 +348,9 @@ object KUtil {
             throw thrown
         }
     }
+
+    val Throwable.text: TextComponent
+        get() = TextComponent(this::class.java.realName + ": " + this.message).color(ChatColors.DARK_RED)
 
     fun Throwable.toStackTrace(): String {
         val stringWriter = StringWriter()

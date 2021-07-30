@@ -15,9 +15,7 @@ package de.bixilon.minosoft.gui.eros.main.play.server.card
 
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.gui.eros.card.AbstractCard
 import de.bixilon.minosoft.gui.eros.card.CardFactory
 import de.bixilon.minosoft.gui.eros.modding.invoker.JavaFXEventInvoker
@@ -28,7 +26,7 @@ import de.bixilon.minosoft.modding.event.events.connection.status.ServerStatusRe
 import de.bixilon.minosoft.modding.event.events.connection.status.StatusConnectionStateChangeEvent
 import de.bixilon.minosoft.modding.event.events.connection.status.StatusPongReceiveEvent
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
-import de.bixilon.minosoft.util.KUtil.realName
+import de.bixilon.minosoft.util.KUtil.text
 import de.bixilon.minosoft.util.KUtil.thousands
 import javafx.fxml.FXML
 import javafx.scene.image.Image
@@ -108,7 +106,7 @@ class ServerCardController : AbstractCard<ServerCard>() {
             if (lastServerCard != card) {
                 return@of
             }
-            motdFX.text = TextComponent(it.exception::class.java.realName + ": " + it.exception.message).color(ChatColors.DARK_RED)
+            motdFX.text = it.exception.text
         }
 
         card.pongInvoker = JavaFXEventInvoker.of<StatusPongReceiveEvent> {

@@ -22,8 +22,10 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.gui.eros.controller.EmbeddedJavaFXController
 import de.bixilon.minosoft.gui.eros.dialogs.SimpleErosConfirmationDialog
+import de.bixilon.minosoft.gui.eros.main.account.add.MojangAddController
 import de.bixilon.minosoft.gui.eros.main.account.add.OfflineAddController
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
+import de.bixilon.minosoft.util.KUtil.extend
 import de.bixilon.minosoft.util.task.pool.DefaultThreadPool
 import javafx.application.Platform
 import javafx.fxml.FXML
@@ -100,7 +102,7 @@ class AccountController : EmbeddedJavaFXController<Pane>() {
         GridPane().let {
             var row = 0
 
-            for ((key, property) in ACCOUNT_INFO_PROPERTIES) { // ToDo
+            for ((key, property) in ACCOUNT_INFO_PROPERTIES.extend(accountTypeListViewFX.selectionModel.selectedItem.additionalDetails)) { // ToDo
                 val propertyValue = property(account) ?: continue
 
                 it.add(Minosoft.LANGUAGE_MANAGER.translate(key).textFlow, 0, row)
@@ -181,14 +183,18 @@ class AccountController : EmbeddedJavaFXController<Pane>() {
             ErosAccountType<MojangAccount>(
                 resourceLocation = MojangAccount.RESOURCE_LOCATION,
                 translationKey = "minosoft:main.account.type.mojang".asResourceLocation(),
+                additionalDetails = listOf(
+                    "minosoft:account.email".asResourceLocation() to { it.email },
+                    "minosoft:account.uuid".asResourceLocation() to { it.uuid },
+                ),
                 icon = FontAwesomeSolid.BUILDING,
-                addHandler = { TODO() }
+                addHandler = { MojangAddController(it).show() },
             ),
             ErosAccountType<OfflineAccount>(
                 resourceLocation = OfflineAccount.RESOURCE_LOCATION,
                 translationKey = "minosoft:main.account.type.offline".asResourceLocation(),
                 icon = FontAwesomeSolid.MAP,
-                addHandler = { OfflineAddController(it).show() }
+                addHandler = { OfflineAddController(it).show() },
             ),
             ErosAccountType<MicrosoftAccount>(
                 resourceLocation = MicrosoftAccount.RESOURCE_LOCATION,
