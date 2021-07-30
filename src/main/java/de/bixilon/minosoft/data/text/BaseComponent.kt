@@ -60,17 +60,21 @@ class BaseComponent : ChatComponent {
             val spaceSplit = currentText.split(' ')
             for ((index, split) in spaceSplit.withIndex()) {
                 var clickEvent: ClickEvent? = null
-                for (protocol in URLProtocols.VALUES) {
-                    if (!split.startsWith(protocol.prefix)) {
-                        continue
-                    }
-                    if (protocol.restricted && restrictedMode) {
+                if (split.isNotBlank()) {
+                    for (protocol in URLProtocols.VALUES) {
+                        if (!split.startsWith(protocol.prefix)) {
+                            continue
+                        }
+                        if (protocol.restricted && restrictedMode) {
+                            break
+                        }
+                        clickEvent = ClickEvent(ClickEvent.ClickEventActions.OPEN_URL, split)
                         break
                     }
-                    clickEvent = ClickEvent(ClickEvent.ClickEventActions.OPEN_URL, split)
-                    break
                 }
-                parts += TextComponent(message = split, color = currentColor, formatting = currentFormatting.toMutableSet(), clickEvent = clickEvent)
+                if (split.isNotEmpty()) {
+                    parts += TextComponent(message = split, color = currentColor, formatting = currentFormatting.toMutableSet(), clickEvent = clickEvent)
+                }
                 if (index != spaceSplit.size - 1) {
                     parts += TextComponent(message = " ", color = currentColor, formatting = currentFormatting.toMutableSet())
                 }
@@ -81,7 +85,6 @@ class BaseComponent : ChatComponent {
         }
 
         while (char != CharacterIterator.DONE) {
-            // ToDo: Parse urls with click event (and respect restrictedMode)
             if (char != ProtocolDefinition.TEXT_COMPONENT_SPECIAL_PREFIX_CHAR) {
                 currentText.append(char)
                 char = iterator.next()

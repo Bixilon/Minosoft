@@ -104,7 +104,7 @@ interface ChatComponent {
                 }
             }
 
-            return BaseComponent(parent, string)
+            return BaseComponent(parent, string, restrictedMode)
         }
 
         fun String.chat(): ChatComponent {
