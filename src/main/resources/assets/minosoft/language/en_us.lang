@@ -65,3 +65,11 @@ minosoft:main.account.type.offline=Offline
 
 
 minosoft:main.account.card.connection_count=%1$s connections
+
+minosoft:main.account.add.offline.title=Add offline account
+minosoft:main.account.add.offline.header=Add offline account
+minosoft:main.account.add.offline.description=Please enter the username of the account you want to add.
+minosoft:main.account.add.offline.username.label=Username
+minosoft:main.account.add.offline.username.placeholder=Username
+minosoft:main.account.add.offline.add_button=Add
+minosoft:main.account.add.offline.cancel_button=Cancel

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<HBox xmlns:fx="http://javafx.com/fxml/1" fx:id="root" prefHeight="200.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/16"> <!--fx:controller="de.bixilon.minosoft.gui.eros.main.account.add.OfflineAddController" -->
+    <GridPane HBox.hgrow="ALWAYS">
+        <columnConstraints>
+            <ColumnConstraints hgrow="ALWAYS"/>
+        </columnConstraints>
+        <rowConstraints>
+            <RowConstraints vgrow="NEVER"/>
+            <RowConstraints vgrow="NEVER"/>
+            <RowConstraints vgrow="NEVER"/>
+            <RowConstraints vgrow="ALWAYS"/>
+            <RowConstraints vgrow="NEVER"/>
+        </rowConstraints>
+        <TextFlow fx:id="headerFX">
+            <GridPane.margin>
+                <Insets bottom="10.0" left="5.0" right="5.0" top="10.0"/>
+            </GridPane.margin>
+            <Text text="Add offline account"/>
+        </TextFlow>
+        <TextFlow fx:id="descriptionFX" GridPane.rowIndex="1">
+            <padding>
+                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+            </padding>
+            <GridPane.margin>
+                <Insets bottom="15.0" right="5.0" top="5.0"/>
+            </GridPane.margin>
+            <Text text="Please enter the username for your account"/>
+        </TextFlow>
+        <GridPane GridPane.rowIndex="2">
+            <columnConstraints>
+                <ColumnConstraints hgrow="NEVER"/>
+                <ColumnConstraints hgrow="ALWAYS"/>
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints valignment="CENTER" vgrow="NEVER"/>
+            </rowConstraints>
+            <TextFlow fx:id="usernameLabelFX">
+                <GridPane.margin>
+                    <Insets bottom="5.0" left="5.0" right="30.0" top="5.0"/>
+                </GridPane.margin>
+                <Text text="Username"/>
+            </TextFlow>
+            <TextField fx:id="usernameFX" promptText="Username" GridPane.columnIndex="1">
+                <GridPane.margin>
+                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                </GridPane.margin>
+            </TextField>
+        </GridPane>
+        <GridPane GridPane.rowIndex="4">
+            <columnConstraints>
+                <ColumnConstraints hgrow="ALWAYS"/>
+                <ColumnConstraints hgrow="NEVER"/>
+                <ColumnConstraints hgrow="NEVER"/>
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints vgrow="NEVER"/>
+            </rowConstraints>
+            <Button fx:id="cancelButtonFX" onAction="#cancel" text="Cancel" GridPane.columnIndex="1">
+                <GridPane.margin>
+                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                </GridPane.margin>
+            </Button>
+            <Button disable="true" onAction="#add" fx:id="addButtonFX" text="Add" GridPane.columnIndex="2">
+                <GridPane.margin>
+                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                </GridPane.margin>
+            </Button>
+        </GridPane>
+    </GridPane>
+</HBox>

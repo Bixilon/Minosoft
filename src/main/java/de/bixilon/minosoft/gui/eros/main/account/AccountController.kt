@@ -22,6 +22,7 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.gui.eros.controller.EmbeddedJavaFXController
 import de.bixilon.minosoft.gui.eros.dialogs.SimpleErosConfirmationDialog
+import de.bixilon.minosoft.gui.eros.main.account.add.OfflineAddController
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
 import de.bixilon.minosoft.util.task.pool.DefaultThreadPool
 import javafx.application.Platform
@@ -187,7 +188,7 @@ class AccountController : EmbeddedJavaFXController<Pane>() {
                 resourceLocation = OfflineAccount.RESOURCE_LOCATION,
                 translationKey = "minosoft:main.account.type.offline".asResourceLocation(),
                 icon = FontAwesomeSolid.MAP,
-                addHandler = { TODO() }
+                addHandler = { OfflineAddController(it).show() }
             ),
             ErosAccountType<MicrosoftAccount>(
                 resourceLocation = MicrosoftAccount.RESOURCE_LOCATION,
