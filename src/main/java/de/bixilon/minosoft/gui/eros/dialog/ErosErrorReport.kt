@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.eros.dialog
 
 import de.bixilon.minosoft.Minosoft
-import de.bixilon.minosoft.gui.eros.controller.JavaFXWindowController
+import de.bixilon.minosoft.gui.eros.controller.DialogController
 import de.bixilon.minosoft.gui.eros.crash.ErosCrashReport.Companion.crash
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.ctext
@@ -30,7 +30,7 @@ import javafx.scene.control.TextArea
 import javafx.scene.text.TextFlow
 
 
-class ErosErrorReport : JavaFXWindowController() {
+class ErosErrorReport : DialogController() {
     @FXML private lateinit var headerFX: TextFlow
     @FXML private lateinit var descriptionFX: TextFlow
     @FXML private lateinit var detailsFX: TextArea

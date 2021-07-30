@@ -15,7 +15,7 @@ package de.bixilon.minosoft.gui.eros.dialog
 
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.gui.eros.controller.JavaFXWindowController
+import de.bixilon.minosoft.gui.eros.controller.DialogController
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.text
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
@@ -23,6 +23,8 @@ import de.bixilon.minosoft.util.task.pool.DefaultThreadPool
 import javafx.application.Platform
 import javafx.fxml.FXML
 import javafx.scene.control.Button
+import javafx.scene.input.KeyCode
+import javafx.scene.input.KeyEvent
 import javafx.scene.text.TextFlow
 
 class SimpleErosConfirmationDialog(
@@ -33,7 +35,7 @@ class SimpleErosConfirmationDialog(
     val confirmButtonText: Any = DEFAULT_CONFIRM_TEXT,
     val onCancel: () -> Unit = {},
     val onConfirm: () -> Unit,
-) : JavaFXWindowController() {
+) : DialogController() {
     @FXML private lateinit var headerFX: TextFlow
     @FXML private lateinit var descriptionFX: TextFlow
     @FXML private lateinit var cancelButtonFX: Button
@@ -53,16 +55,30 @@ class SimpleErosConfirmationDialog(
         confirmButtonFX.text = Minosoft.LANGUAGE_MANAGER.translate(confirmButtonText).message
     }
 
+    override fun postInit() {
+        super.postInit()
+
+        stage.setOnCloseRequest {
+            DefaultThreadPool += onCancel
+        }
+
+        stage.scene.root.addEventFilter(KeyEvent.KEY_PRESSED) {
+            if (it.code == KeyCode.ENTER) {
+                confirm()
+            }
+        }
+    }
+
     @FXML
     fun confirm() {
         DefaultThreadPool += onConfirm
-        stage.hide()
+        stage.close()
     }
 
     @FXML
     fun cancel() {
         DefaultThreadPool += onCancel
-        stage.hide()
+        stage.close()
     }
 
 

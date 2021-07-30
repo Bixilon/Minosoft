@@ -19,7 +19,7 @@ import de.bixilon.minosoft.data.registries.versions.Version
 import de.bixilon.minosoft.data.registries.versions.VersionTypes
 import de.bixilon.minosoft.data.registries.versions.Versions
 import de.bixilon.minosoft.data.text.TranslatableComponents
-import de.bixilon.minosoft.gui.eros.controller.JavaFXWindowController
+import de.bixilon.minosoft.gui.eros.controller.DialogController
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.ctext
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.placeholder
@@ -31,6 +31,8 @@ import de.bixilon.minosoft.util.task.pool.DefaultThreadPool
 import javafx.application.Platform
 import javafx.fxml.FXML
 import javafx.scene.control.*
+import javafx.scene.input.KeyCode
+import javafx.scene.input.KeyEvent
 import javafx.scene.text.TextFlow
 
 /**
@@ -38,9 +40,8 @@ import javafx.scene.text.TextFlow
  */
 class UpdateServerDialog(
     private val server: Server? = null,
-    val onCancel: () -> Unit = {},
     val onUpdate: (name: String, address: String, forcedVersion: Version?) -> Unit,
-) : JavaFXWindowController() {
+) : DialogController() {
     @FXML private lateinit var descriptionFX: TextFlow
 
     @FXML private lateinit var serverNameLabelFX: TextFlow
@@ -165,8 +166,22 @@ class UpdateServerDialog(
         }
     }
 
+    override fun postInit() {
+        super.postInit()
+
+
+        stage.scene.root.addEventFilter(KeyEvent.KEY_PRESSED) {
+            if (it.code == KeyCode.ENTER) {
+                update()
+            }
+        }
+    }
+
     @FXML
     fun update() {
+        if (updateServerButtonFX.isDisable) {
+            return
+        }
         val forcedVersion = (forcedVersionFX.selectionModel.selectedItem == Versions.AUTOMATIC_VERSION).decide(null) { forcedVersionFX.selectionModel.selectedItem }
         DefaultThreadPool += { onUpdate(serverNameFX.text.isBlank().decide({ serverAddressFX.text.toString() }, { serverNameFX.text.trim() }), serverAddressFX.text, forcedVersion) }
         stage.close()
@@ -174,7 +189,6 @@ class UpdateServerDialog(
 
     @FXML
     fun cancel() {
-        DefaultThreadPool += onCancel
         stage.close()
     }
 

@@ -15,7 +15,7 @@ package de.bixilon.minosoft.gui.eros.dialog.connection
 
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.gui.eros.controller.JavaFXWindowController
+import de.bixilon.minosoft.gui.eros.controller.DialogController
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.text
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
@@ -29,7 +29,7 @@ class KickDialog(
     val header: Any,
     val description: Any? = null,
     val reason: ChatComponent,
-) : JavaFXWindowController() {
+) : DialogController() {
     @FXML private lateinit var headerFX: TextFlow
     @FXML private lateinit var descriptionFX: TextFlow
     @FXML private lateinit var reasonFX: TextFlow
