@@ -98,3 +98,9 @@ minosoft:connection.kick.close_button=Close
 minosoft:connection.login_kick.title=Kicked from server
 minosoft:connection.login_kick.header=You got kicked
 minosoft:connection.login_kick.description=You got kicked while logging in from %1$s (connected with: %2$s)
+
+minosoft:error.title=%1$s - Minosoft
+minosoft:error.header=An error occurred!
+minosoft:error.description=An error in minosoft occurred. You can continue like before, but the behavior might not be the expected one. If this error persists, feel free to open an issue here: https://gitlab.bixilon.de/bixilon/minosoft/-/issues/
+minosoft:error.ignore=Ignore
+minosoft:error.fatal_crash=Fatal crash

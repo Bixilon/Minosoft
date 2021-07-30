@@ -255,7 +255,7 @@ open class InByteBuffer {
     }
 
     open fun readChatComponent(): ChatComponent {
-        return ChatComponent.of(readString())
+        return ChatComponent.of(readString(), restrictedMode = true)
     }
 
     fun readChatComponentArray(length: Int = readVarInt()): Array<ChatComponent> {

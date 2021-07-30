@@ -19,10 +19,11 @@ import de.bixilon.minosoft.gui.eros.controller.EmbeddedJavaFXController
 import de.bixilon.minosoft.gui.eros.controller.JavaFXController
 import de.bixilon.minosoft.gui.eros.controller.JavaFXWindowController
 import de.bixilon.minosoft.util.KUtil.setValue
+import de.bixilon.minosoft.util.KUtil.unsafeCast
 import javafx.application.HostServices
+import javafx.css.StyleableProperty
 import javafx.fxml.FXMLLoader
-import javafx.scene.Parent
-import javafx.scene.Scene
+import javafx.scene.*
 import javafx.scene.control.Labeled
 import javafx.scene.control.TextField
 import javafx.scene.image.Image
@@ -92,4 +93,15 @@ object JavaFXUtil {
         set(value) {
             this.text = Minosoft.LANGUAGE_MANAGER.translate(value).message
         }
+
+    fun Text.hyperlink(link: String) {
+        this.setOnMouseClicked { HOST_SERVICES.showDocument(link) }
+        this.accessibleRole = AccessibleRole.HYPERLINK
+        this.styleClass.setAll("hyperlink")
+        this.clickable()
+    }
+
+    fun Node.clickable() {
+        this.cursorProperty().unsafeCast<StyleableProperty<Cursor>>().applyStyle(null, Cursor.HAND)
+    }
 }

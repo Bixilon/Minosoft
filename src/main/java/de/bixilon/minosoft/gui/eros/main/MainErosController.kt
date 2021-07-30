@@ -22,6 +22,7 @@ import de.bixilon.minosoft.gui.eros.controller.JavaFXWindowController
 import de.bixilon.minosoft.gui.eros.modding.invoker.JavaFXEventInvoker
 import de.bixilon.minosoft.gui.eros.util.JavaFXAccountUtil.avatar
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
+import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.clickable
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.ctext
 import de.bixilon.minosoft.modding.event.events.account.AccountSelectEvent
 import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
@@ -90,6 +91,10 @@ class MainErosController : JavaFXWindowController() {
             ErosMainActivities.ABOUT to aboutIconFX,
         )
 
+        for (icon in iconMap) {
+            icon.value.clickable()
+        }
+
         highlightIcon(playIconFX)
 
         playIconFX.setOnMouseClicked {
@@ -104,14 +109,19 @@ class MainErosController : JavaFXWindowController() {
         aboutIconFX.setOnMouseClicked {
             activity = ErosMainActivities.ABOUT
         }
-        exitIconFX.setOnMouseClicked {
-            ShutdownManager.shutdown(reason = ShutdownReasons.REQUESTED_BY_USER)
+        exitIconFX.apply {
+            clickable()
+            setOnMouseClicked {
+                ShutdownManager.shutdown(reason = ShutdownReasons.REQUESTED_BY_USER)
+            }
         }
 
         GlobalEventMaster.registerEvent(JavaFXEventInvoker.of<AccountSelectEvent> {
             accountImageFX.image = it.account?.avatar
             accountNameFX.ctext = it.account?.username ?: NO_ACCOUNT_SELECTED
         })
+        accountImageFX.clickable()
+        accountNameFX.clickable()
 
         activity = ErosMainActivities.PlAY
     }

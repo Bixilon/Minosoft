@@ -13,6 +13,10 @@
 package de.bixilon.minosoft.data.text
 
 import de.bixilon.minosoft.Minosoft
+import de.bixilon.minosoft.data.text.events.ClickEvent
+import de.bixilon.minosoft.data.text.events.HoverEvent
+import de.bixilon.minosoft.gui.eros.dialog.ErosErrorReport.Companion.report
+import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.hyperlink
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.font.Font
@@ -38,6 +42,8 @@ open class TextComponent(
     message: Any? = "",
     var color: RGBColor? = null,
     var formatting: MutableSet<ChatFormattingCode> = mutableSetOf(),
+    var clickEvent: ClickEvent? = null,
+    var hoverEvent: HoverEvent? = null,
 ) : ChatComponent {
     override var message: String = message?.toString() ?: "null"
 
@@ -160,6 +166,26 @@ open class TextComponent(
             }
         }
         nodes.add(text)
+
+        clickEvent?.let { event ->
+            when (event.action) {
+                ClickEvent.ClickEventActions.OPEN_URL -> text.hyperlink(event.value.toString())
+                else -> {
+                    NotImplementedError("Unknown action ${event.action}").report()
+                    return@let
+                }
+            }
+        }
+
+        hoverEvent?.let {
+            when (it.action) {
+                HoverEvent.HoverEventActions.SHOW_TEXT -> text.accessibleText = it.value.toString() // ToDo
+                else -> {
+                    NotImplementedError("Unknown action ${it.action}").report()
+                    return@let
+                }
+            }
+        }
         return nodes
     }
 

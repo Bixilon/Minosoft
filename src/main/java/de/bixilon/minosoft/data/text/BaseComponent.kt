@@ -43,7 +43,7 @@ class BaseComponent : ChatComponent {
         }
     }
 
-    constructor(parent: TextComponent? = null, legacy: String = "") {
+    constructor(parent: TextComponent? = null, legacy: String = "", restrictedMode: Boolean = false) {
         val currentText = StringBuilder()
         var currentColor = parent?.color
         val currentFormatting: MutableSet<ChatFormattingCode> = parent?.formatting?.toMutableSet() ?: mutableSetOf()
@@ -54,15 +54,34 @@ class BaseComponent : ChatComponent {
 
 
         fun push() {
-            if (currentText.isNotEmpty()) {
-                parts += TextComponent(message = currentText.toString(), color = currentColor, formatting = currentFormatting.toMutableSet())
-                currentColor = null
-                currentText.clear()
+            if (currentText.isEmpty()) {
+                return
+            }
+            val spaceSplit = currentText.split(' ')
+            for ((index, split) in spaceSplit.withIndex()) {
+                var clickEvent: ClickEvent? = null
+                for (protocol in URLProtocols.VALUES) {
+                    if (!split.startsWith(protocol.prefix)) {
+                        continue
+                    }
+                    if (protocol.restricted && restrictedMode) {
+                        break
+                    }
+                    clickEvent = ClickEvent(ClickEvent.ClickEventActions.OPEN_URL, split)
+                    break
+                }
+                parts += TextComponent(message = split, color = currentColor, formatting = currentFormatting.toMutableSet(), clickEvent = clickEvent)
+                if (index != spaceSplit.size - 1) {
+                    parts += TextComponent(message = " ", color = currentColor, formatting = currentFormatting.toMutableSet())
+                }
             }
             currentFormatting.clear()
+            currentColor = null
+            currentText.clear()
         }
 
         while (char != CharacterIterator.DONE) {
+            // ToDo: Parse urls with click event (and respect restrictedMode)
             if (char != ProtocolDefinition.TEXT_COMPONENT_SPECIAL_PREFIX_CHAR) {
                 currentText.append(char)
                 char = iterator.next()
@@ -94,7 +113,7 @@ class BaseComponent : ChatComponent {
         push()
     }
 
-    constructor(translator: Translator? = null, parent: TextComponent? = null, json: Map<String, Any>) {
+    constructor(translator: Translator? = null, parent: TextComponent? = null, json: Map<String, Any>, restrictedMode: Boolean = false) {
         val currentParent: TextComponent?
         var currentText = ""
         json["text"]?.nullCast<String>()?.let {
@@ -121,10 +140,10 @@ class BaseComponent : ChatComponent {
         formatting.addOrRemove(PreChatFormattingCodes.STRIKETHROUGH, json["strikethrough"]?.toBoolean())
         formatting.addOrRemove(PreChatFormattingCodes.OBFUSCATED, json["obfuscated"]?.toBoolean())
 
-        val clickEvent = json["clickEvent"]?.compoundCast()?.let { click -> ClickEvent(click) }
+        val clickEvent = json["clickEvent"]?.compoundCast()?.let { click -> ClickEvent(click, restrictedMode) }
         val hoverEvent = json["hoverEvent"]?.compoundCast()?.let { hover -> HoverEvent(hover) }
 
-        val textComponent = MultiChatComponent(
+        val textComponent = TextComponent(
             message = currentText,
             color = color,
             formatting = formatting,

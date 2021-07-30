@@ -76,7 +76,7 @@ interface ChatComponent {
         val EMPTY = ChatComponent.of("")
 
         @JvmOverloads
-        fun of(raw: Any? = null, translator: Translator? = null, parent: TextComponent? = null, ignoreJson: Boolean = false): ChatComponent {
+        fun of(raw: Any? = null, translator: Translator? = null, parent: TextComponent? = null, ignoreJson: Boolean = false, restrictedMode: Boolean = false): ChatComponent {
             // ToDo: Remove gson, replace with maps
             if (raw == null) {
                 return BaseComponent()
@@ -85,13 +85,13 @@ interface ChatComponent {
                 return raw
             }
             if (raw is Map<*, *>) {
-                return BaseComponent(translator, parent, raw.unsafeCast())
+                return BaseComponent(translator, parent, raw.unsafeCast(), restrictedMode)
             }
             val string = when (raw) {
                 is List<*> -> {
                     val component = BaseComponent()
                     for (part in raw) {
-                        component += of(part, translator, parent)
+                        component += of(part, translator, parent, restrictedMode = restrictedMode)
                     }
                     return component
                 }
@@ -99,7 +99,7 @@ interface ChatComponent {
             }
             if (!ignoreJson && string.startsWith('{')) {
                 try {
-                    return BaseComponent(translator, parent, JSONSerializer.MAP_ADAPTER.fromJson(string)!!)
+                    return BaseComponent(translator, parent, JSONSerializer.MAP_ADAPTER.fromJson(string)!!, restrictedMode)
                 } catch (ignored: JsonEncodingException) {
                 }
             }

@@ -13,15 +13,23 @@
 package de.bixilon.minosoft.data.text.events
 
 import de.bixilon.minosoft.util.KUtil
+import de.bixilon.minosoft.util.Util
 import de.bixilon.minosoft.util.enum.ValuesEnum
 
 class ClickEvent {
     val action: ClickEventActions
     val value: Any
 
-    constructor(json: Map<String, Any>) {
+    constructor(json: Map<String, Any>, restrictedMode: Boolean = false) {
         action = ClickEventActions[json["action"].toString().lowercase()]
         this.value = json["value"]!!
+
+        if (!restrictedMode) {
+            return
+        }
+        if (action == ClickEventActions.OPEN_URL) {
+            Util.checkURL(value.toString())
+        }
     }
 
     constructor(action: ClickEventActions, value: Any) {

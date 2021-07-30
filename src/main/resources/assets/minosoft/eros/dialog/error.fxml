@@ -17,12 +17,10 @@
             <RowConstraints maxHeight="Infinity" vgrow="ALWAYS"/>
             <RowConstraints maxHeight="Infinity" vgrow="NEVER"/>
         </rowConstraints>
-        <Text strokeWidth="0.0" text="An error occurred">
-            <font>
-                <Font name="System Bold" size="19.0"/>
-            </font>
-        </Text>
-        <TextFlow GridPane.rowIndex="1">
+        <TextFlow fx:id="headerFX" style="-fx-font-size: 30; -fx-font-weight: bold;">
+            <Text text="An error occurred"/>
+        </TextFlow>
+        <TextFlow fx:id="descriptionFX" GridPane.rowIndex="1">
             <Label text="An error in minosoft occurred. You can continue like before, but the behavior might not be the expected one. If this error persists, feel free to open an issue here: " wrapText="true"/>
             <Hyperlink onAction="#openURL" text="https://gitlab.bixilon.de/bixilon/minosoft/-/issues/" wrapText="true"/>
             <GridPane.margin>
@@ -51,8 +49,8 @@
             <padding>
                 <Insets top="5.0"/>
             </padding>
-            <Button maxWidth="Infinity" onAction="#ignore" text="Ignore" GridPane.columnIndex="2"/>
-            <Button maxWidth="Infinity" onAction="#fatalCrash" text="Fatal crash"/>
+            <Button fx:id="ignoreFX" maxWidth="Infinity" onAction="#ignore" text="Ignore" GridPane.columnIndex="2"/>
+            <Button fx:id="fatalCrashFX" maxWidth="Infinity" onAction="#fatalCrash" text="Fatal crash"/>
         </GridPane>
     </GridPane>
     <padding>

@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2021 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -10,15 +10,20 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+
 package de.bixilon.minosoft.data.text
 
-import de.bixilon.minosoft.data.text.events.ClickEvent
-import de.bixilon.minosoft.data.text.events.HoverEvent
+import de.bixilon.minosoft.util.KUtil
+import de.bixilon.minosoft.util.enum.ValuesEnum
 
-class MultiChatComponent(
-    message: String = "",
-    color: RGBColor? = null,
-    formatting: MutableSet<ChatFormattingCode> = mutableSetOf(),
-    var clickEvent: ClickEvent? = null,
-    var hoverEvent: HoverEvent? = null,
-) : TextComponent(message, color, formatting)
+enum class URLProtocols(val prefix: String, val restricted: Boolean = false) {
+    HTTP("http://"),
+    HTTPS("https://"),
+    FILE("file:", true),
+    ;
+
+    companion object : ValuesEnum<URLProtocols> {
+        override val VALUES: Array<URLProtocols> = values()
+        override val NAME_MAP: Map<String, URLProtocols> = KUtil.getEnumValues(VALUES)
+    }
+}
