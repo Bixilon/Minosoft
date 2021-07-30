@@ -28,6 +28,8 @@ import java.nio.charset.StandardCharsets
 import java.util.concurrent.CountDownLatch
 
 object LANServerListener {
+    var active: Boolean = false
+        private set
     val SERVERS: HashBiMap<InetAddress, Server> = HashBiMap.create()
     private const val MOTD_START_STRING = "[MOTD]"
     private const val MOTD_END_STRING = "[/MOTD]"
@@ -44,6 +46,7 @@ object LANServerListener {
                 val buffer = ByteArray(256) // this should be enough, if the packet is longer, it is probably invalid
                 Log.log(LogMessageType.NETWORK_STATUS, LogLevels.INFO) { "Listening for LAN servers..." }
                 latch.countDown()
+                active = true
                 while (true) {
                     try {
                         val packet = DatagramPacket(buffer, buffer.size)
@@ -75,6 +78,7 @@ object LANServerListener {
                 latch.countDown()
             }
             SERVERS.clear()
+            active = false
             Log.log(LogMessageType.NETWORK_STATUS, LogLevels.INFO) { "Stop listening for LAN servers..." }
         }, "LAN Server Listener").start()
         latch.await()

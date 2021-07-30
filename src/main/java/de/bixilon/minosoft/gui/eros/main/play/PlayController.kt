@@ -51,7 +51,14 @@ class PlayController : EmbeddedJavaFXController<Pane>() {
 
     override fun init() {
         playTypeListViewFX.setCellFactory { ServerTypeCardController.build() }
-        playTypeListViewFX.items += ServerTypes.VALUES
+        for (type in ServerTypes.VALUES) {
+            if (!type.active) {
+                continue
+            }
+            playTypeListViewFX.items += type
+        }
+        // ToDo
+        check(playTypeListViewFX.items.size > 0)
 
 
         playTypeListViewFX.selectionModel.selectedItemProperty().addListener { _, _, new ->

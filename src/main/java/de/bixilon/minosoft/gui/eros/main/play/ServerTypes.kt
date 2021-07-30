@@ -25,16 +25,20 @@ import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid
 
 enum class ServerTypes(
     val icon: Ikon,
+    private val activeSupplier: (() -> Boolean)? = null,
     private val countSupplier: () -> Int,
 ) : Translatable {
-    CUSTOM(FontAwesomeSolid.SERVER, { Minosoft.config.config.server.entries.size }),
-    LAN(FontAwesomeSolid.NETWORK_WIRED, { LANServerListener.SERVERS.size }),
+    CUSTOM(FontAwesomeSolid.SERVER, null, { Minosoft.config.config.server.entries.size }),
+    LAN(FontAwesomeSolid.NETWORK_WIRED, { LANServerListener.active }, { LANServerListener.SERVERS.size }),
     ;
 
     override val translationKey: ResourceLocation = "minosoft:server_type.${name.lowercase()}".asResourceLocation()
 
     val count: Int
         get() = countSupplier()
+    
+    val active: Boolean
+        get() = activeSupplier?.invoke() ?: true
 
     companion object : ValuesEnum<ServerTypes> {
         override val VALUES: Array<ServerTypes> = values()
