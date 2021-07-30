@@ -33,6 +33,7 @@ import de.bixilon.minosoft.data.tags.DefaultTags
 import de.bixilon.minosoft.data.tags.Tag
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.world.World
+import de.bixilon.minosoft.gui.eros.dialog.ErosErrorReport.Companion.report
 import de.bixilon.minosoft.gui.rendering.Rendering
 import de.bixilon.minosoft.modding.event.events.ChatMessageReceiveEvent
 import de.bixilon.minosoft.modding.event.events.PacketReceiveEvent
@@ -100,6 +101,7 @@ class PlayConnection(
         set(value) {
             super.error = value
             value?.let { state = PlayConnectionStates.ERROR }
+            value?.report()
         }
 
     init {

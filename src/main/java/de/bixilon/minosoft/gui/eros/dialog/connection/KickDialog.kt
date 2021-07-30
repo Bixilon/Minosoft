@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.eros.dialogs.connection
+package de.bixilon.minosoft.gui.eros.dialog.connection
 
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.text.ChatComponent

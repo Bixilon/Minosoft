@@ -20,9 +20,9 @@ import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TranslatableComponents
 import de.bixilon.minosoft.gui.eros.Eros
 import de.bixilon.minosoft.gui.eros.controller.EmbeddedJavaFXController
-import de.bixilon.minosoft.gui.eros.dialogs.SimpleErosConfirmationDialog
-import de.bixilon.minosoft.gui.eros.dialogs.UpdateServerDialog
-import de.bixilon.minosoft.gui.eros.dialogs.connection.KickDialog
+import de.bixilon.minosoft.gui.eros.dialog.SimpleErosConfirmationDialog
+import de.bixilon.minosoft.gui.eros.dialog.UpdateServerDialog
+import de.bixilon.minosoft.gui.eros.dialog.connection.KickDialog
 import de.bixilon.minosoft.gui.eros.main.play.server.card.ServerCard
 import de.bixilon.minosoft.gui.eros.main.play.server.card.ServerCardController
 import de.bixilon.minosoft.gui.eros.modding.invoker.JavaFXEventInvoker

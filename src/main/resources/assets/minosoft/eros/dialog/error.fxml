@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<HBox xmlns:fx="http://javafx.com/fxml/1" fx:id="root" prefHeight="700.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/16" fx:controller="de.bixilon.minosoft.gui.eros.dialog.ErosErrorReport">
+    <GridPane HBox.hgrow="ALWAYS">
+        <columnConstraints>
+            <ColumnConstraints hgrow="ALWAYS" maxWidth="Infinity"/>
+        </columnConstraints>
+        <rowConstraints>
+            <RowConstraints/>
+            <RowConstraints vgrow="NEVER"/>
+            <RowConstraints minHeight="6.0" prefHeight="20.0"/>
+            <RowConstraints/>
+            <RowConstraints maxHeight="Infinity" vgrow="ALWAYS"/>
+            <RowConstraints maxHeight="Infinity" vgrow="NEVER"/>
+        </rowConstraints>
+        <Text strokeWidth="0.0" text="An error occurred">
+            <font>
+                <Font name="System Bold" size="19.0"/>
+            </font>
+        </Text>
+        <TextFlow GridPane.rowIndex="1">
+            <Label text="An error in minosoft occurred. You can continue like before, but the behavior might not be the expected one. If this error persists, feel free to open an issue here: " wrapText="true"/>
+            <Hyperlink onAction="#openURL" text="https://gitlab.bixilon.de/bixilon/minosoft/-/issues/" wrapText="true"/>
+            <GridPane.margin>
+                <Insets top="5.0"/>
+            </GridPane.margin>
+        </TextFlow>
+        <Label text="Details:" GridPane.rowIndex="3">
+            <font>
+                <Font size="15.0"/>
+            </font>
+        </Label>
+        <TextArea fx:id="detailsFX" editable="false" prefHeight="200.0" prefWidth="200.0" text="TBA" GridPane.rowIndex="4">
+            <font>
+                <Font name="Monospaced Regular"/>
+            </font>
+        </TextArea>
+        <GridPane GridPane.rowIndex="5">
+            <columnConstraints>
+                <ColumnConstraints hgrow="NEVER" minWidth="10.0" prefWidth="100.0"/>
+                <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0"/>
+                <ColumnConstraints hgrow="NEVER" minWidth="10.0" prefWidth="100.0"/>
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS"/>
+            </rowConstraints>
+            <padding>
+                <Insets top="5.0"/>
+            </padding>
+            <Button maxWidth="Infinity" onAction="#ignore" text="Ignore" GridPane.columnIndex="2"/>
+            <Button maxWidth="Infinity" onAction="#fatalCrash" text="Fatal crash"/>
+        </GridPane>
+    </GridPane>
+    <padding>
+        <Insets bottom="10.0" left="20.0" right="20.0" top="10.0"/>
+    </padding>
+</HBox>

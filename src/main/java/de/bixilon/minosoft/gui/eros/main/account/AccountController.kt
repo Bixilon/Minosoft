@@ -21,7 +21,7 @@ import de.bixilon.minosoft.data.accounts.types.OfflineAccount
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.gui.eros.controller.EmbeddedJavaFXController
-import de.bixilon.minosoft.gui.eros.dialogs.SimpleErosConfirmationDialog
+import de.bixilon.minosoft.gui.eros.dialog.SimpleErosConfirmationDialog
 import de.bixilon.minosoft.gui.eros.main.account.add.MojangAddController
 import de.bixilon.minosoft.gui.eros.main.account.add.OfflineAddController
 import de.bixilon.minosoft.util.KUtil.asResourceLocation

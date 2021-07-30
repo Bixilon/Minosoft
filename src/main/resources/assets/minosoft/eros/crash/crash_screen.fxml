@@ -1,46 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
-<HBox xmlns:fx="http://javafx.com/fxml/1" maxHeight="Infinity" maxWidth="Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/16" fx:controller="de.bixilon.minosoft.gui.eros.crash.ErosCrashReport">
-    <GridPane maxHeight="Infinity" maxWidth="Infinity" HBox.hgrow="ALWAYS">
+<HBox xmlns:fx="http://javafx.com/fxml/1" prefHeight="700.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/16" fx:controller="de.bixilon.minosoft.gui.eros.crash.ErosCrashReport">
+    <GridPane HBox.hgrow="ALWAYS">
         <columnConstraints>
-            <ColumnConstraints hgrow="ALWAYS" maxWidth="Infinity" minWidth="200.0" percentWidth="100.0" prefWidth="200.0"/>
+            <ColumnConstraints hgrow="ALWAYS" maxWidth="Infinity" minWidth="200.0"/>
         </columnConstraints>
         <rowConstraints>
-            <RowConstraints minHeight="10.0" prefHeight="30.0"/>
-            <RowConstraints minHeight="10.0" prefHeight="30.0"/>
-            <RowConstraints minHeight="6.0" prefHeight="20.0"/>
-            <RowConstraints minHeight="10.0" prefHeight="30.0"/>
-            <RowConstraints minHeight="10.0" prefHeight="30.0"/>
-            <RowConstraints maxHeight="Infinity" minHeight="10.0" prefHeight="503.0" vgrow="ALWAYS"/>
-            <RowConstraints maxHeight="Infinity" minHeight="10.0" prefHeight="37.0" vgrow="NEVER"/>
+            <RowConstraints vgrow="NEVER"/>
+            <RowConstraints vgrow="NEVER"/>
+            <RowConstraints vgrow="NEVER"/>
+            <RowConstraints vgrow="NEVER"/>
+            <RowConstraints/>
+            <RowConstraints maxHeight="Infinity" vgrow="ALWAYS"/>
+            <RowConstraints vgrow="NEVER"/>
         </rowConstraints>
-        <Text strokeWidth="0.0" text="Minosoft quit unexpectedly">
+        <Text text="Minosoft quit unexpectedly">
             <font>
                 <Font name="System Bold" size="19.0"/>
             </font>
         </Text>
-        <TextFlow prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1">
-            <opaqueInsets>
-                <Insets/>
-            </opaqueInsets>
+        <TextFlow GridPane.rowIndex="1">
             <Label text="A critical error in minosoft occurred, that forced it it exit. If this error persists, please open an issue here: " wrapText="true"/>
             <Hyperlink onAction="#openURL" text="https://gitlab.bixilon.de/bixilon/minosoft/-/issues/" wrapText="true"/>
             <GridPane.margin>
                 <Insets top="5.0"/>
             </GridPane.margin>
         </TextFlow>
-        <TextFlow fx:id="crashReportPathDescriptionFX" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="3">
+        <TextFlow fx:id="crashReportPathDescriptionFX" GridPane.rowIndex="3">
             <Label text="You can also find the crash report here: " wrapText="true"/>
             <Hyperlink fx:id="crashReportPathFX" onAction="#openURL" text="/home/moritz/.config/minosoft/crash-reports/dummy.txt" wrapText="true"/>
         </TextFlow>
         <Label text="Details:" GridPane.rowIndex="4">
-            <opaqueInsets>
-                <Insets/>
-            </opaqueInsets>
             <font>
                 <Font size="15.0"/>
             </font>
@@ -52,12 +46,12 @@
         </TextArea>
         <GridPane GridPane.rowIndex="6">
             <columnConstraints>
-                <ColumnConstraints hgrow="NEVER" minWidth="10.0" prefWidth="100.0"/>
-                <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0"/>
-                <ColumnConstraints hgrow="NEVER" minWidth="10.0" prefWidth="100.0"/>
+                <ColumnConstraints hgrow="NEVER"/>
+                <ColumnConstraints hgrow="ALWAYS"/>
+                <ColumnConstraints hgrow="NEVER"/>
             </columnConstraints>
             <rowConstraints>
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS"/>
+                <RowConstraints vgrow="ALWAYS"/>
             </rowConstraints>
             <padding>
                 <Insets top="5.0"/>
