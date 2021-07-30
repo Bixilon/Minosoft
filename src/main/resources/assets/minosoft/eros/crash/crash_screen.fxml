@@ -7,7 +7,7 @@
 <HBox xmlns:fx="http://javafx.com/fxml/1" prefHeight="700.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/16" fx:controller="de.bixilon.minosoft.gui.eros.crash.ErosCrashReport">
     <GridPane HBox.hgrow="ALWAYS">
         <columnConstraints>
-            <ColumnConstraints hgrow="ALWAYS" maxWidth="Infinity" minWidth="200.0"/>
+            <ColumnConstraints hgrow="ALWAYS"/>
         </columnConstraints>
         <rowConstraints>
             <RowConstraints vgrow="NEVER"/>
@@ -39,7 +39,7 @@
                 <Font size="15.0"/>
             </font>
         </Label>
-        <TextArea fx:id="detailsFX" editable="false" prefHeight="200.0" prefWidth="200.0" text="TBA" GridPane.rowIndex="5">
+        <TextArea fx:id="detailsFX" editable="false" text="TBA" GridPane.rowIndex="5">
             <font>
                 <Font name="Monospaced Regular"/>
             </font>

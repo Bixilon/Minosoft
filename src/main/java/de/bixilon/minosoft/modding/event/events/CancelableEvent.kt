@@ -19,9 +19,9 @@ interface CancelableEvent {
         get() = CANCELLED_EVENTS.contains(this)
         set(value) {
             if (value) {
-                CANCELLED_EVENTS -= this
-            } else {
                 CANCELLED_EVENTS += this
+            } else {
+                CANCELLED_EVENTS -= this
             }
         }
 
