@@ -139,9 +139,7 @@ class AccountController : EmbeddedJavaFXController<Pane>() {
                     isDisable = true
                     DefaultThreadPool += {
                         account.verify()
-                        Platform.runLater {
-                            refreshList()
-                        }
+                        Platform.runLater { refreshList() }
                     }
                 }
             }, 3, 0)
@@ -153,9 +151,7 @@ class AccountController : EmbeddedJavaFXController<Pane>() {
                         account.verify()
                         Minosoft.config.config.account.selected = account
                         Minosoft.config.saveToFile()
-                        Platform.runLater {
-                            refreshList()
-                        }
+                        Platform.runLater { refreshList() }
                     }
                 }
                 isDisable = Minosoft.config.config.account.selected === account
@@ -176,7 +172,7 @@ class AccountController : EmbeddedJavaFXController<Pane>() {
         val LAYOUT = "minosoft:eros/main/account/account.fxml".asResourceLocation()
 
         private val ACCOUNT_INFO_PROPERTIES: List<Pair<ResourceLocation, (account: Account) -> Any?>> = listOf(
-            "minosoft:account.id".asResourceLocation() to { it.id },
+            "minosoft:main.account.account_info.id".asResourceLocation() to { it.id },
         )
 
         val ACCOUNT_TYPES = listOf(
@@ -184,8 +180,8 @@ class AccountController : EmbeddedJavaFXController<Pane>() {
                 resourceLocation = MojangAccount.RESOURCE_LOCATION,
                 translationKey = "minosoft:main.account.type.mojang".asResourceLocation(),
                 additionalDetails = listOf(
-                    "minosoft:account.email".asResourceLocation() to { it.email },
-                    "minosoft:account.uuid".asResourceLocation() to { it.uuid },
+                    "minosoft:main.account.account_info.email".asResourceLocation() to { it.email },
+                    "minosoft:main.account.account_info.uuid".asResourceLocation() to { it.uuid },
                 ),
                 icon = FontAwesomeSolid.BUILDING,
                 addHandler = { MojangAddController(it).show() },

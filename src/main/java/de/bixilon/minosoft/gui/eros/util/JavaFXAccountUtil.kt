@@ -19,5 +19,5 @@ import javafx.scene.image.Image
 object JavaFXAccountUtil {
 
     val Account.avatar: Image?
-        get() = null // ToDo
+        get() = JavaFXUtil.MINOSOFT_LOGO // ToDo
 }

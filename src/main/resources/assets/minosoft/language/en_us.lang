@@ -66,6 +66,10 @@ minosoft:main.account.type.offline=Offline
 
 minosoft:main.account.card.connection_count=%1$s connections
 
+minosoft:main.account.account_info.id=Id
+minosoft:main.account.account_info.email=E-Mail
+minosoft:main.account.account_info.uuid=UUID
+
 minosoft:main.account.add.offline.title=Add offline account
 minosoft:main.account.add.offline.header=Add offline account
 minosoft:main.account.add.offline.description=Please enter the username of the account you want to add.

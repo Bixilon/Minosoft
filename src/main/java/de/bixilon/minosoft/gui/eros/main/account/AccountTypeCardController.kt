@@ -29,17 +29,25 @@ class AccountTypeCardController : AbstractCard<ErosAccountType<*>>() {
 
     @FXML private lateinit var textFX: TextFlow
 
-    override fun updateItem(item: ErosAccountType<*>?, empty: Boolean) {
-        super.updateItem(item, empty)
-        item ?: return
+    override fun updateItem(type: ErosAccountType<*>?, empty: Boolean) {
+        super.updateItem(type, empty)
+        type ?: return
 
 
         iconFX.isVisible = true
 
-        iconFX.iconCode = item.icon
-        headerFX.text = Minosoft.LANGUAGE_MANAGER.translate(item)
+        iconFX.iconCode = type.icon
+        headerFX.text = Minosoft.LANGUAGE_MANAGER.translate(type)
 
-        textFX.text = "? accounts" // ToDo: Update on the fly
+
+        var count = 0
+        for (account in Minosoft.config.config.account.entries.values) {
+            if (account.type != type.resourceLocation) {
+                continue
+            }
+            count++
+        }
+        textFX.text = "$count accounts" // ToDo: Update on the fly
     }
 
 

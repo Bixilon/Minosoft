@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
-<HBox xmlns:fx="http://javafx.com/fxml/1" fx:id="root" prefHeight="100.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/16" fx:controller="de.bixilon.minosoft.gui.eros.main.account.AccountCardController">
+<HBox xmlns:fx="http://javafx.com/fxml/1" fx:id="root" prefWidth="400.0" xmlns="http://javafx.com/javafx/16" fx:controller="de.bixilon.minosoft.gui.eros.main.account.AccountCardController">
     <GridPane HBox.hgrow="ALWAYS">
         <columnConstraints>
             <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0"/>
