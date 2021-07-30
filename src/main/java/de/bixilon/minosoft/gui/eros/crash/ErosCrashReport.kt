@@ -36,6 +36,7 @@ import javafx.scene.control.TextArea
 import javafx.scene.text.TextFlow
 import javafx.stage.Modality
 import javafx.stage.Stage
+import javafx.stage.Window
 import java.io.File
 import java.io.FileOutputStream
 import java.lang.management.ManagementFactory
@@ -116,6 +117,10 @@ class ErosCrashReport : JavaFXWindowController() {
 
             // Kill some stuff
             tryCatch(executor = { DefaultThreadPool.shutdownNow() })
+
+            for (window in Window.getWindows()) {
+                Platform.runLater { window.hide() }
+            }
 
             val details = createCrashText(this)
 
