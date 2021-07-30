@@ -15,8 +15,10 @@ package de.bixilon.minosoft.gui.eros.main.account
 
 import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.text.TranslatableComponents
 import de.bixilon.minosoft.gui.eros.card.AbstractCard
 import de.bixilon.minosoft.gui.eros.card.CardFactory
+import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.text
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
 import javafx.fxml.FXML
 import javafx.scene.text.TextFlow
@@ -37,9 +39,15 @@ class AccountCardController : AbstractCard<Account>() {
         super.updateItem(account, empty)
 
         root.isVisible = account != null
+
+        account ?: return
+
+        accountNameFX.text = account.username
+        stateFX.text = "Unchecked"
+        connectionCountFX.text = TranslatableComponents.ACCOUNT_CARD_CONNECTION_COUNT(account.connections.size)
     }
 
     companion object : CardFactory<AccountCardController> {
-        override val LAYOUT: ResourceLocation = "minosoft:eros/main/play/account/account_card.fxml".asResourceLocation()
+        override val LAYOUT: ResourceLocation = "minosoft:eros/main/account/account_card.fxml".asResourceLocation()
     }
 }

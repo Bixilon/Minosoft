@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.text
 
-import de.bixilon.minosoft.data.language.Translator
+import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
 
 object TranslatableComponents {
@@ -22,5 +22,6 @@ object TranslatableComponents {
    val GENERAL_CONFIRM = "minosoft:general.confirm".asResourceLocation()
    val GENERAL_DELETE = "minosoft:general.delete".asResourceLocation()
 
-   val EROS_DELETE_SERVER_CONFIRM_DESCRIPTION = { translator: Translator, name: ChatComponent, address: String -> translator.translate("minosoft:server_info.delete.dialog.description".asResourceLocation(), null, name, address) }
+   val EROS_DELETE_SERVER_CONFIRM_DESCRIPTION = { name: ChatComponent, address: String -> Minosoft.LANGUAGE_MANAGER.translate("minosoft:server_info.delete.dialog.description".asResourceLocation(), null, name, address) }
+   val ACCOUNT_CARD_CONNECTION_COUNT = { count: Int -> Minosoft.LANGUAGE_MANAGER.translate("minosoft:main.account.card.connection_count".asResourceLocation(), null, count) }
 }

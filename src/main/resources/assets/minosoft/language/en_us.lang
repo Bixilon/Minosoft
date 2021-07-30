@@ -62,3 +62,6 @@ minosoft:main.account.no_account_selected=No account selected
 minosoft:main.account.type.mojang=Mojang
 minosoft:main.account.type.microsoft=Microsoft
 minosoft:main.account.type.offline=Offline
+
+
+minosoft:main.account.card.connection_count=%1$s connections

@@ -18,12 +18,19 @@ import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.data.accounts.types.MicrosoftAccount
 import de.bixilon.minosoft.data.accounts.types.MojangAccount
 import de.bixilon.minosoft.data.accounts.types.OfflineAccount
+import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.gui.eros.controller.EmbeddedJavaFXController
+import de.bixilon.minosoft.gui.eros.dialogs.SimpleErosConfirmationDialog
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
+import de.bixilon.minosoft.util.task.pool.DefaultThreadPool
+import javafx.application.Platform
 import javafx.fxml.FXML
+import javafx.geometry.HPos
+import javafx.geometry.Insets
+import javafx.scene.control.Button
 import javafx.scene.control.ListView
-import javafx.scene.layout.AnchorPane
-import javafx.scene.layout.Pane
+import javafx.scene.layout.*
 import org.kordamp.ikonli.fontawesome5.FontAwesomeBrands
 import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid
 
@@ -32,6 +39,8 @@ class AccountController : EmbeddedJavaFXController<Pane>() {
 
     @FXML private lateinit var accountListViewFX: ListView<Account>
     @FXML private lateinit var accountInfoFX: AnchorPane
+
+    @FXML private lateinit var addButtonFX: Button
 
 
     override fun init() {
@@ -42,16 +51,130 @@ class AccountController : EmbeddedJavaFXController<Pane>() {
 
         accountTypeListViewFX.selectionModel.select(0)
 
+
+        accountTypeListViewFX.selectionModel.selectedItemProperty().addListener { _, _, new ->
+            refreshList()
+            addButtonFX.isDisable = new.addHandler == null
+        }
+
+
+        accountListViewFX.selectionModel.selectedItemProperty().addListener { _, _, new ->
+            setAccountInfo(new)
+        }
+        addButtonFX.setOnAction {
+            accountTypeListViewFX.selectionModel.selectedItem.addHandler?.invoke(this)
+        }
+    }
+
+    fun refreshList() {
+        val type = accountTypeListViewFX.selectionModel.selectedItem
+        val selected = accountListViewFX.selectionModel.selectedItem
+        accountListViewFX.items.clear()
         for (account in Minosoft.config.config.account.entries.values) {
-            if (account.type != accountTypeListViewFX.selectionModel.selectedItem.resourceLocation) {
+            if (account.type != type.resourceLocation) {
                 continue
             }
             accountListViewFX.items += account
         }
+
+        if (accountListViewFX.items.contains(selected)) {
+            accountListViewFX.selectionModel.select(selected)
+            setAccountInfo(selected)
+        }
+    }
+
+
+    private fun setAccountInfo(account: Account?) {
+        if (account == null) {
+            accountInfoFX.children.clear()
+            return
+        }
+
+        val pane = GridPane()
+
+        AnchorPane.setLeftAnchor(pane, 10.0)
+        AnchorPane.setRightAnchor(pane, 10.0)
+
+
+        GridPane().let {
+            var row = 0
+
+            for ((key, property) in ACCOUNT_INFO_PROPERTIES) { // ToDo
+                val propertyValue = property(account) ?: continue
+
+                it.add(Minosoft.LANGUAGE_MANAGER.translate(key).textFlow, 0, row)
+                it.add(ChatComponent.of(propertyValue).textFlow, 1, row++)
+            }
+
+            it.columnConstraints += ColumnConstraints(10.0, 180.0, 250.0)
+            it.columnConstraints += ColumnConstraints(10.0, 200.0, 300.0)
+            it.hgap = 10.0
+            it.vgap = 5.0
+
+            pane.add(it, 0, 0)
+        }
+
+        GridPane().let {
+            it.columnConstraints += ColumnConstraints()
+            it.columnConstraints += ColumnConstraints()
+            it.columnConstraints += ColumnConstraints(0.0, -1.0, Double.POSITIVE_INFINITY, Priority.ALWAYS, HPos.LEFT, true)
+
+            it.add(Button("Delete").apply {
+                setOnAction {
+                    SimpleErosConfirmationDialog(
+                        onConfirm = {
+                            Minosoft.config.config.account.entries.remove(account.id)
+                            Minosoft.config.saveToFile()
+                            Platform.runLater { refreshList() }
+                        }
+                    ).show()
+                }
+            }, 1, 0)
+
+            it.add(Button("Verify").apply {
+                setOnAction {
+                    isDisable = true
+                    DefaultThreadPool += {
+                        account.verify()
+                        Platform.runLater {
+                            refreshList()
+                        }
+                    }
+                }
+            }, 3, 0)
+            it.add(Button("Use").apply {
+                setOnAction {
+                    isDisable = true
+
+                    DefaultThreadPool += {
+                        account.verify()
+                        Minosoft.config.config.account.selected = account
+                        Minosoft.config.saveToFile()
+                        Platform.runLater {
+                            refreshList()
+                        }
+                    }
+                }
+                isDisable = Minosoft.config.config.account.selected === account
+            }, 4, 0)
+
+
+            it.hgap = 5.0
+            GridPane.setMargin(it, Insets(20.0, 0.0, 0.0, 0.0))
+
+            pane.add(it, 0, 1)
+        }
+
+
+        accountInfoFX.children.setAll(pane)
     }
 
     companion object {
         val LAYOUT = "minosoft:eros/main/account/account.fxml".asResourceLocation()
+
+        private val ACCOUNT_INFO_PROPERTIES: List<Pair<ResourceLocation, (account: Account) -> Any?>> = listOf(
+            "minosoft:account.id".asResourceLocation() to { it.id },
+        )
 
         val ACCOUNT_TYPES = listOf(
             ErosAccountType<MojangAccount>(
@@ -70,7 +193,6 @@ class AccountController : EmbeddedJavaFXController<Pane>() {
                 resourceLocation = MicrosoftAccount.RESOURCE_LOCATION,
                 translationKey = "minosoft:main.account.type.microsoft".asResourceLocation(),
                 icon = FontAwesomeBrands.MICROSOFT,
-                addHandler = { TODO() }
             ),
         )
     }

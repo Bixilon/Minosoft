@@ -177,7 +177,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
                     setOnAction {
                         SimpleErosConfirmationDialog(
                             confirmButtonText = "minosoft:general.delete".asResourceLocation(),
-                            description = TranslatableComponents.EROS_DELETE_SERVER_CONFIRM_DESCRIPTION(Minosoft.LANGUAGE_MANAGER, serverCard.server.name, serverCard.server.address),
+                            description = TranslatableComponents.EROS_DELETE_SERVER_CONFIRM_DESCRIPTION(serverCard.server.name, serverCard.server.address),
                             onConfirm = {
                                 Minosoft.config.config.server.entries.remove(serverCard.server.id)
                                 Minosoft.config.saveToFile()
@@ -244,7 +244,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
                     }
                 }
                 isDisable = ping?.state !== StatusConnectionStates.PING_DONE ||
-                        (serverCard.server.forcedVersion ?: ping.serverVersion == null) ||
+                        ((serverCard.server.forcedVersion ?: ping.serverVersion) == null) ||
                         Minosoft.config.config.account.selected?.connections?.containsKey(serverCard.server) == true
                 // ToDo: Also disable, if currently connecting
             }, 4, 0)
