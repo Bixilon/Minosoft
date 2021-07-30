@@ -18,7 +18,7 @@
             <RowConstraints vgrow="ALWAYS"/>
             <RowConstraints vgrow="NEVER"/>
         </rowConstraints>
-        <TextFlow fx:id="headerFX">
+        <TextFlow style="-fx-font-size: 30;" fx:id="headerFX">
             <GridPane.margin>
                 <Insets bottom="10.0" left="5.0" right="5.0" top="10.0"/>
             </GridPane.margin>

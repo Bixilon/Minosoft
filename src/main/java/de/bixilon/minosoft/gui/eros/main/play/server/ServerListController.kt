@@ -22,9 +22,12 @@ import de.bixilon.minosoft.gui.eros.Eros
 import de.bixilon.minosoft.gui.eros.controller.EmbeddedJavaFXController
 import de.bixilon.minosoft.gui.eros.dialogs.SimpleErosConfirmationDialog
 import de.bixilon.minosoft.gui.eros.dialogs.UpdateServerDialog
+import de.bixilon.minosoft.gui.eros.dialogs.connection.KickDialog
 import de.bixilon.minosoft.gui.eros.main.play.server.card.ServerCard
 import de.bixilon.minosoft.gui.eros.main.play.server.card.ServerCardController
 import de.bixilon.minosoft.gui.eros.modding.invoker.JavaFXEventInvoker
+import de.bixilon.minosoft.modding.event.events.KickEvent
+import de.bixilon.minosoft.modding.event.events.LoginKickEvent
 import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionStateChangeEvent
 import de.bixilon.minosoft.modding.event.events.connection.status.StatusConnectionStateChangeEvent
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
@@ -238,6 +241,23 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
                                     serverCard.server.connections -= connection
                                 }
                                 Platform.runLater { updateServer(serverCard.server) }
+                            })
+
+                            connection.registerEvent(JavaFXEventInvoker.of<KickEvent> { event ->
+                                KickDialog(
+                                    title = "minosoft:connection.kick.title".asResourceLocation(),
+                                    header = "minosoft:connection.kick.header".asResourceLocation(),
+                                    description = TranslatableComponents.CONNECTION_KICK_DESCRIPTION(serverCard.server, account),
+                                    reason = event.reason,
+                                ).show()
+                            })
+                            connection.registerEvent(JavaFXEventInvoker.of<LoginKickEvent> { event ->
+                                KickDialog(
+                                    title = "minosoft:connection.login_kick.title".asResourceLocation(),
+                                    header = "minosoft:connection.login_kick.header".asResourceLocation(),
+                                    description = TranslatableComponents.CONNECTION_LOGIN_KICK_DESCRIPTION(serverCard.server, account),
+                                    reason = event.reason,
+                                ).show()
                             })
                             connection.connect()
                         }
