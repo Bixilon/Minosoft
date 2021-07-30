@@ -47,7 +47,7 @@ public final class ProtocolDefinition {
 
     public static final int DEFAULT_BUFFER_SIZE = 4096;
 
-    public static final int NULL_BLOCK_ID = 0;
+    public static final int AIR_BLOCK_ID = 0;
 
 
     public static final Pattern MINECRAFT_NAME_VALIDATOR = Pattern.compile("\\w{3,16}");
@@ -101,7 +101,7 @@ public final class ProtocolDefinition {
 
     public static final ResourceLocation AIR_RESOURCE_LOCATION = new ResourceLocation("air");
 
-    public static final RGBColor DEFAULT_COLOR = ChatColors.INSTANCE.getBLACK();
+    public static final RGBColor DEFAULT_COLOR = ChatColors.INSTANCE.getWHITE();
 
     public static final char[] LINE_BREAK_CHARS = {'\n', '\r'};
 

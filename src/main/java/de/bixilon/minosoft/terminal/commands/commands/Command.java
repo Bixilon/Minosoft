@@ -18,7 +18,7 @@ import de.bixilon.minosoft.data.text.ChatColors;
 import de.bixilon.minosoft.data.text.PostChatFormattingCodes;
 
 public abstract class Command {
-    private static final String ERROR_MESSAGE_PREFIX = ChatColors.RED.getAnsi();
+    private static final String ERROR_MESSAGE_PREFIX = ChatColors.INSTANCE.getRED().getAnsi();
     private static final String ERROR_MESSAGE_SUFFIX = PostChatFormattingCodes.RESET.getAnsi();
 
     public static void print(String string, Object... format) {

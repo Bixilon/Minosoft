@@ -54,13 +54,13 @@ class BlockStateRegistry(var flattened: Boolean) : AbstractRegistry<BlockState> 
             if (flattened) {
                 null
             } else {
-                idMap[(id shr 4) shl 4] // Remove meta data and test again
+                idMap[(id shr 4) shl 4] // Remove metadata and test again
             }
         }
     }
 
     override fun get(id: Int): BlockState? {
-        if (id == ProtocolDefinition.NULL_BLOCK_ID) {
+        if (id == ProtocolDefinition.AIR_BLOCK_ID) {
             return null
         }
         return forceGet(id)

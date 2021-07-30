@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.util.http
 
+import de.bixilon.minosoft.util.KUtil.decide
 import de.bixilon.minosoft.util.KUtil.extend
 import de.bixilon.minosoft.util.json.JSONSerializer
 import java.net.URI
@@ -51,12 +52,11 @@ object HTTP2 {
             url = url,
             data = this,
             bodyPublisher = { JSONSerializer.MAP_ADAPTER.toJson(it) },
-            bodyBuilder = { JSONSerializer.MAP_ADAPTER.fromJson(it) },
+            bodyBuilder = { it.isBlank().decide(null) { JSONSerializer.MAP_ADAPTER.fromJson(it) } },
             headers = headers.extend(
                 "Content-Type" to "application/json",
                 "Accept" to "application/json",
             )
         )
     }
-
 }

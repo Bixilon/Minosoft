@@ -53,8 +53,8 @@ object JavaFXUtil {
 
         if (controller is JavaFXWindowController) {
             controller.stage = stage
-            controller.postInit()
         }
+        controller.postInit()
 
         return controller
     }

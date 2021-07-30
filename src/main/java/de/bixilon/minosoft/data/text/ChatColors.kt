@@ -26,13 +26,9 @@ object ChatColors {
     val BLUE = RGBColor(85, 85, 255)
     val GREEN = RGBColor(85, 255, 85)
     val AQUA = RGBColor(85, 255, 255)
-
-    @JvmField
     val RED = RGBColor(255, 85, 85)
     val LIGHT_PURPLE = RGBColor(255, 85, 255)
     val YELLOW = RGBColor(255, 255, 85)
-
-    @JvmField
     val WHITE = RGBColor(255, 255, 255)
 
 

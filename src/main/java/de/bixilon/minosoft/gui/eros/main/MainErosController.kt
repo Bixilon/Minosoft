@@ -112,6 +112,7 @@ class MainErosController : JavaFXWindowController() {
         exitIconFX.apply {
             clickable()
             setOnMouseClicked {
+                stage.close()
                 ShutdownManager.shutdown(reason = ShutdownReasons.REQUESTED_BY_USER)
             }
         }
@@ -142,6 +143,7 @@ class MainErosController : JavaFXWindowController() {
             try {
                 account.verify()
             } catch (exception: Throwable) {
+                activity = ErosMainActivities.ACCOUNT
                 // ToDo: Show account window and do account error handling
             }
             onSuccess(account)

@@ -19,6 +19,7 @@ import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.data.accounts.AccountType
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
+import de.bixilon.minosoft.util.KUtil.asUUID
 import de.bixilon.minosoft.util.KUtil.nullCast
 import de.bixilon.minosoft.util.KUtil.trim
 import de.bixilon.minosoft.util.KUtil.unsafeCast
@@ -47,9 +48,9 @@ class MojangAccount(
             "serverId" to serverId,
         ).postJson(MOJANG_URL_JOIN)
 
-        response.body!!
 
         if (response.statusCode != 204) {
+            response.body!!
             throw AuthenticationException(response.statusCode, response.body["errorMessage"]?.nullCast())
         }
 
@@ -79,6 +80,7 @@ class MojangAccount(
 
     override fun serialize(): Map<String, Any> {
         return mapOf(
+            "id" to id,
             "username" to username,
             "uuid" to uuid,
             "email" to email,
@@ -135,7 +137,7 @@ class MojangAccount(
             return MojangAccount(
                 id = response.body["user"].asCompound()["id"].unsafeCast(),
                 username = response.body["selectedProfile"].asCompound()["name"].unsafeCast(),
-                uuid = response.body["selectedProfile"].asCompound()["id"].unsafeCast(),
+                uuid = response.body["selectedProfile"].asCompound()["id"].toString().asUUID(),
                 email = email,
                 accessToken = response.body["accessToken"].unsafeCast(),
             )

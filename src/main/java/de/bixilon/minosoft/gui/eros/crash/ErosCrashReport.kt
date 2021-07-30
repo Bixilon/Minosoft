@@ -102,6 +102,7 @@ class ErosCrashReport : JavaFXWindowController() {
             "Please don't kill me for this",
             "Trying my best",
             "That happens when you develop while playing games!",
+            "Written while driving in a FlixBus",
         )
 
 

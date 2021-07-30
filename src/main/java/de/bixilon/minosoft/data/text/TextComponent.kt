@@ -122,10 +122,11 @@ open class TextComponent(
 
     override fun getJavaFXText(nodes: ObservableList<Node>): ObservableList<Node> {
         val text = Text(this.message)
-        val color = this.color ?: ProtocolDefinition.DEFAULT_COLOR
-        text.fill = Color.WHITE
-        if (Minosoft.config.config.chat.colored) {
-            text.fill = Color.rgb(color.red, color.green, color.blue)
+        this.color?.let {
+            text.fill = Color.WHITE
+            if (Minosoft.config.config.chat.colored) {
+                text.fill = Color.rgb(it.red, it.green, it.blue)
+            }
         }
         for (chatFormattingCode in formatting) {
             when (chatFormattingCode) {
