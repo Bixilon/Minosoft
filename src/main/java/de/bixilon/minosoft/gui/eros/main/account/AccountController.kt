@@ -25,6 +25,7 @@ import de.bixilon.minosoft.gui.eros.dialog.SimpleErosConfirmationDialog
 import de.bixilon.minosoft.gui.eros.main.account.add.MojangAddController
 import de.bixilon.minosoft.gui.eros.main.account.add.OfflineAddController
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
+import de.bixilon.minosoft.util.KUtil.decide
 import de.bixilon.minosoft.util.KUtil.extend
 import de.bixilon.minosoft.util.task.pool.DefaultThreadPool
 import javafx.application.Platform
@@ -80,9 +81,10 @@ class AccountController : EmbeddedJavaFXController<Pane>() {
             accountListViewFX.items += account
         }
 
-        if (accountListViewFX.items.contains(selected)) {
-            accountListViewFX.selectionModel.select(selected)
-            setAccountInfo(selected)
+        accountListViewFX.items.contains(selected).decide(selected, null).let {
+            accountListViewFX.selectionModel.select(it)
+            accountListViewFX.scrollTo(it)
+            setAccountInfo(it)
         }
     }
 

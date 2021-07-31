@@ -97,7 +97,11 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
             updateServer(server)
         }
 
-        serverListViewFX.selectionModel.select(serverListViewFX.items.contains(selected).decide(selected, null))
+        serverListViewFX.items.contains(selected).decide(selected, null).let {
+            serverListViewFX.selectionModel.select(it)
+
+            serverListViewFX.scrollTo(it)
+        }
     }
 
     private fun updateServer(server: Server) {
