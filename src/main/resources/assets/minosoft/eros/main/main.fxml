@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<?import org.kordamp.ikonli.javafx.*?>
+<HBox xmlns:fx="http://javafx.com/fxml/1" prefHeight="600.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/16" fx:controller="de.bixilon.minosoft.gui.eros.main.MainErosController">
+    <GridPane HBox.hgrow="ALWAYS">
+        <columnConstraints>
+            <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0"/>
+        </columnConstraints>
+        <rowConstraints>
+            <RowConstraints maxHeight="Infinity" minHeight="50.0" prefHeight="50.0" vgrow="NEVER"/>
+            <RowConstraints maxHeight="Infinity" minHeight="10.0" vgrow="ALWAYS"/>
+        </rowConstraints>
+        <GridPane>
+            <columnConstraints>
+                <ColumnConstraints hgrow="NEVER"/>
+                <ColumnConstraints hgrow="NEVER"/>
+                <ColumnConstraints hgrow="ALWAYS" maxWidth="Infinity" minWidth="0.0"/>
+                <ColumnConstraints hgrow="NEVER" maxWidth="Infinity" minWidth="10.0"/>
+            </columnConstraints>
+            <GridPane>
+                <columnConstraints>
+                    <ColumnConstraints hgrow="NEVER"/>
+                    <ColumnConstraints hgrow="ALWAYS"/>
+                </columnConstraints>
+                <rowConstraints>
+                    <RowConstraints minHeight="10.0" vgrow="ALWAYS"/>
+                </rowConstraints>
+                <ImageView fx:id="logoFX" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
+                </ImageView>
+                <Label fx:id="versionTextFX" text="Minosoft 0.1" GridPane.columnIndex="1"/>
+                <GridPane.margin>
+                    <Insets right="20.0"/>
+                </GridPane.margin>
+            </GridPane>
+            <GridPane GridPane.columnIndex="1">
+                <columnConstraints>
+                    <ColumnConstraints hgrow="NEVER" minWidth="10.0"/>
+                    <ColumnConstraints hgrow="NEVER" minWidth="10.0"/>
+                    <ColumnConstraints hgrow="NEVER" minWidth="10.0"/>
+                    <ColumnConstraints hgrow="NEVER" minWidth="10.0"/>
+                    <ColumnConstraints hgrow="NEVER" minWidth="10.0"/>
+                    <ColumnConstraints hgrow="NEVER" minWidth="10.0"/>
+                </columnConstraints>
+                <rowConstraints>
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                </rowConstraints>
+                <FontIcon fx:id="playIconFX" accessibleText="Play" iconLiteral="fas-play" iconSize="30" GridPane.columnIndex="1">
+                    <GridPane.margin>
+                        <Insets bottom="2.0" left="5.0" right="5.0" top="2.0"/>
+                    </GridPane.margin>
+                </FontIcon>
+                <FontIcon fx:id="settingsIconFX" accessibleText="Settings" iconLiteral="fas-cogs" iconSize="30" GridPane.columnIndex="2">
+                    <GridPane.margin>
+                        <Insets bottom="2.0" left="5.0" right="5.0" top="2.0"/>
+                    </GridPane.margin>
+                </FontIcon>
+                <FontIcon fx:id="helpIconFX" accessibleText="Help" iconLiteral="fas-life-ring" iconSize="30" GridPane.columnIndex="3">
+                    <GridPane.margin>
+                        <Insets bottom="2.0" left="5.0" right="5.0" top="2.0"/>
+                    </GridPane.margin>
+                </FontIcon>
+                <FontIcon fx:id="aboutIconFX" accessibleText="About" iconLiteral="fas-info" iconSize="30" GridPane.columnIndex="4">
+                    <GridPane.margin>
+                        <Insets bottom="2.0" left="5.0" right="5.0" top="2.0"/>
+                    </GridPane.margin>
+                </FontIcon>
+                <FontIcon fx:id="exitIconFX" accessibleText="Exit" iconLiteral="fas-door-open" iconSize="30" GridPane.columnIndex="5">
+                    <GridPane.margin>
+                        <Insets bottom="2.0" left="5.0" right="5.0" top="2.0"/>
+                    </GridPane.margin>
+                </FontIcon>
+            </GridPane>
+            <GridPane onMouseClicked="#openAccountActivity" styleClass="context-menu" GridPane.columnIndex="3">
+                <columnConstraints>
+                    <ColumnConstraints hgrow="NEVER" minWidth="10.0"/>
+                    <ColumnConstraints hgrow="NEVER"/>
+                </columnConstraints>
+                <rowConstraints>
+                    <RowConstraints minHeight="10.0" vgrow="ALWAYS"/>
+                </rowConstraints>
+                <ImageView fx:id="accountImageFX" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS">
+                    <GridPane.margin>
+                        <Insets right="5.0"/>
+                    </GridPane.margin>
+                </ImageView>
+                <Label fx:id="accountNameFX" text="Account" GridPane.columnIndex="1"/>
+                <padding>
+                    <Insets bottom="4.0" left="4.0" right="4.0" top="4.0"/>
+                </padding>
+            </GridPane>
+            <GridPane.margin>
+                <Insets bottom="3.0" left="5.0" right="5.0" top="3.0"/>
+            </GridPane.margin>
+        </GridPane>
+        <AnchorPane fx:id="contentFX" GridPane.rowIndex="1">
+            <GridPane.margin>
+                <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
+            </GridPane.margin>
+        </AnchorPane>
+    </GridPane>
+</HBox>

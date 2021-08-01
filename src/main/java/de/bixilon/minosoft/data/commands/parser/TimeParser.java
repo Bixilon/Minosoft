@@ -17,7 +17,7 @@ import de.bixilon.minosoft.data.commands.CommandStringReader;
 import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException;
 import de.bixilon.minosoft.data.commands.parser.exceptions.UnknownTimeUnitCommandParseException;
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties;
-import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection;
 
 public class TimeParser extends CommandParser {
     public static final TimeParser TIME_PARSER = new TimeParser();

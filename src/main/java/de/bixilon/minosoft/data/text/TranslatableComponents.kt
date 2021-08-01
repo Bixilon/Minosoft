@@ -13,9 +13,19 @@
 
 package de.bixilon.minosoft.data.text
 
-import de.bixilon.minosoft.data.language.Translator
+import de.bixilon.minosoft.Minosoft
+import de.bixilon.minosoft.config.server.Server
+import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
 
 object TranslatableComponents {
-    val HELLO_WORLD = { translator: Translator, name: String, age: Int -> translator.translate("minosoft:hello.world".asResourceLocation(), null, name, age) }
+    val GENERAL_EMPTY = "minosoft:general.empty".asResourceLocation()
+    val GENERAL_CANCEL = "minosoft:general.cancel".asResourceLocation()
+    val GENERAL_CONFIRM = "minosoft:general.confirm".asResourceLocation()
+    val GENERAL_DELETE = "minosoft:general.delete".asResourceLocation()
+
+    val EROS_DELETE_SERVER_CONFIRM_DESCRIPTION = { name: ChatComponent, address: String -> Minosoft.LANGUAGE_MANAGER.translate("minosoft:server_info.delete.dialog.description".asResourceLocation(), null, name, address) }
+    val ACCOUNT_CARD_CONNECTION_COUNT = { count: Int -> Minosoft.LANGUAGE_MANAGER.translate("minosoft:main.account.card.connection_count".asResourceLocation(), null, count) }
+    val CONNECTION_KICK_DESCRIPTION = { server: Server, account: Account -> Minosoft.LANGUAGE_MANAGER.translate("minosoft:connection.kick.description".asResourceLocation(), null, server.name, account.username) }
+    val CONNECTION_LOGIN_KICK_DESCRIPTION = { server: Server, account: Account -> Minosoft.LANGUAGE_MANAGER.translate("minosoft:connection.login_kick.description".asResourceLocation(), null, server.name, account.username) }
 }

@@ -18,8 +18,8 @@ import de.bixilon.minosoft.protocol.exceptions.PacketNotImplementedException;
 import de.bixilon.minosoft.protocol.exceptions.PacketParseException;
 import de.bixilon.minosoft.protocol.exceptions.UnknownPacketException;
 import de.bixilon.minosoft.protocol.network.connection.Connection;
-import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
-import de.bixilon.minosoft.protocol.network.connection.StatusConnection;
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection;
+import de.bixilon.minosoft.protocol.network.connection.status.StatusConnection;
 import de.bixilon.minosoft.protocol.network.socket.BlockingSocketNetwork;
 import de.bixilon.minosoft.protocol.packets.c2s.AllC2SPacket;
 import de.bixilon.minosoft.protocol.packets.c2s.C2SPacket;
@@ -34,6 +34,7 @@ import de.bixilon.minosoft.util.Util;
 import de.bixilon.minosoft.util.logging.Log;
 import kotlin.jvm.Synchronized;
 
+@Deprecated
 public abstract class Network {
     protected final Connection connection;
     protected int compressionThreshold = -1;
@@ -98,7 +99,7 @@ public abstract class Network {
                     }
                     ((StatusS2CPacket) packet).check((StatusConnection) this.connection);
                 } else {
-                    throw new PacketNotImplementedException(data, packetId, packetType, version, this.connection.getConnectionState());
+                    throw new PacketNotImplementedException(data, packetId, packetType, version, this.connection.getProtocolState());
                 }
 
 
@@ -113,7 +114,7 @@ public abstract class Network {
             return new Pair<>(packetType, packet);
         } catch (Throwable e) {
             Log.protocol(String.format("An error occurred while parsing a packet (%s): %s", packetType, e));
-            if (this.connection.getConnectionState() == ConnectionStates.PLAY) {
+            if (this.connection.getProtocolState() == ProtocolStates.PLAY) {
                 throw new PacketParseException(e);
             }
             throw new UnknownPacketException(e);

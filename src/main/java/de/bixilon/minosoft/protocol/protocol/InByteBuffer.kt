@@ -12,8 +12,6 @@
  */
 package de.bixilon.minosoft.protocol.protocol
 
-import com.google.gson.JsonObject
-import com.google.gson.JsonParser
 import de.bixilon.minosoft.data.commands.CommandArgumentNode
 import de.bixilon.minosoft.data.commands.CommandLiteralNode
 import de.bixilon.minosoft.data.commands.CommandNode
@@ -25,6 +23,7 @@ import de.bixilon.minosoft.data.tags.Tag
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.network.connection.Connection
 import de.bixilon.minosoft.util.Util
+import de.bixilon.minosoft.util.json.JSONSerializer
 import de.bixilon.minosoft.util.nbt.tag.NBTTagTypes
 import glm_.vec2.Vec2i
 import glm_.vec3.Vec3
@@ -247,16 +246,16 @@ open class InByteBuffer {
         return readArray(length) { readUUID() }
     }
 
-    fun readJson(): JsonObject {
-        return JsonParser.parseString(readString()).asJsonObject
+    fun readJson(): Map<String, Any> {
+        return JSONSerializer.MUTABLE_MAP_ADAPTER.fromJson(readString())!!
     }
 
-    fun readJsonArray(length: Int = readVarInt()): Array<JsonObject> {
+    fun readJsonArray(length: Int = readVarInt()): Array<Map<String, Any>> {
         return readArray(length) { readJson() }
     }
 
     open fun readChatComponent(): ChatComponent {
-        return ChatComponent.of(readString())
+        return ChatComponent.of(readString(), restrictedMode = true)
     }
 
     fun readChatComponentArray(length: Int = readVarInt()): Array<ChatComponent> {

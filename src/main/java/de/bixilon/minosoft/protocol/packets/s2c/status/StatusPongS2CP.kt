@@ -12,10 +12,10 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.status
 
-import de.bixilon.minosoft.data.player.tab.PingBars
-import de.bixilon.minosoft.modding.event.events.ServerListPongEvent
-import de.bixilon.minosoft.modding.event.events.StatusPongEvent
-import de.bixilon.minosoft.protocol.network.connection.StatusConnection
+import de.bixilon.minosoft.modding.event.EventInitiators
+import de.bixilon.minosoft.modding.event.events.connection.status.StatusPongReceiveEvent
+import de.bixilon.minosoft.protocol.network.connection.status.StatusConnection
+import de.bixilon.minosoft.protocol.network.connection.status.StatusConnectionStates
 import de.bixilon.minosoft.protocol.packets.s2c.StatusS2CPacket
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer
 import de.bixilon.minosoft.util.logging.Log
@@ -26,19 +26,18 @@ class StatusPongS2CP(buffer: InByteBuffer) : StatusS2CPacket() {
     val pingId: Long = buffer.readLong()
 
     override fun handle(connection: StatusConnection) {
-        connection.fireEvent(StatusPongEvent(connection, this))
-        val ping = connection.connectionStatusPing ?: return
-        if (ping.pingId != pingId) {
-            Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.WARN) { "Unknown status pong (pingId=$pingId, expected=${ping.pingId})" }
+        val pingQuery = connection.pingQuery ?: return
+        if (pingQuery.pingId != pingId) {
+            Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.WARN) { "Unknown status pong (pingId=$pingId, expected=${pingQuery.pingId})" }
             return
         }
-        val pingDeltaTime = System.currentTimeMillis() - ping.sendingTime
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.INFO) { "Status pong (time=$pingDeltaTime, bars=${PingBars.byPing(pingDeltaTime)})" }
+        val latency = System.currentTimeMillis() - pingQuery.time
         connection.disconnect()
         // ToDo: Log.info(String.format("Server is running on version %s (versionId=%d, protocolId=%d), reconnecting...", connection.getVersion().getVersionName(), connection.getVersion().getVersionId(), connection.getVersion().getProtocolId()));
-        val pongEvent = ServerListPongEvent(connection, pingId, pingDeltaTime)
-        connection.pong = pongEvent
+        val pongEvent = StatusPongReceiveEvent(connection, EventInitiators.SERVER, pingId, latency)
+        connection.lastPongEvent = pongEvent
         connection.fireEvent(pongEvent)
+        connection.state = StatusConnectionStates.PING_DONE
     }
 
     override fun log() {

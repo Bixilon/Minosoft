@@ -21,7 +21,7 @@ import de.bixilon.minosoft.data.commands.parser.exceptions.minosoft.InvalidVersi
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties;
 import de.bixilon.minosoft.data.registries.versions.Version;
 import de.bixilon.minosoft.data.registries.versions.Versions;
-import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection;
 
 import javax.annotation.Nullable;
 

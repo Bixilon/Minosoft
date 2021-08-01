@@ -13,11 +13,11 @@
 
 package de.bixilon.minosoft.gui.rendering.util
 
-import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.system.base.PixelTypes
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.Util
+import de.bixilon.minosoft.util.task.pool.DefaultThreadPool
 import glm_.vec2.Vec2i
 import java.awt.image.BufferedImage
 import java.io.File
@@ -45,7 +45,7 @@ class ScreenshotTaker(
             val height = renderWindow.window.size.y
             val buffer = renderWindow.renderSystem.readPixels(Vec2i(0, 0), Vec2i(width, height), PixelTypes.RGBA)
 
-            Minosoft.THREAD_POOL.execute {
+            DefaultThreadPool += {
                 try {
                     val bufferedImage = BufferedImage(width, height, BufferedImage.TYPE_INT_RGB)
 

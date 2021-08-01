@@ -14,17 +14,20 @@
 package de.bixilon.minosoft.terminal;
 
 import com.google.common.reflect.ClassPath;
-import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.ShutdownReasons;
 import de.bixilon.minosoft.data.commands.CommandRootNode;
 import de.bixilon.minosoft.data.commands.CommandStringReader;
 import de.bixilon.minosoft.data.commands.parser.exceptions.CommandParseException;
 import de.bixilon.minosoft.data.commands.parser.exceptions.UnknownCommandParseException;
-import de.bixilon.minosoft.protocol.network.connection.PlayConnection;
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection;
 import de.bixilon.minosoft.terminal.commands.CommandStack;
 import de.bixilon.minosoft.terminal.commands.commands.Command;
 import de.bixilon.minosoft.terminal.commands.exceptions.CLIException;
 import de.bixilon.minosoft.util.CountUpAndDownLatch;
+import de.bixilon.minosoft.util.ShutdownManager;
+import de.bixilon.minosoft.util.logging.Log;
+import de.bixilon.minosoft.util.logging.LogLevels;
+import de.bixilon.minosoft.util.logging.LogMessageType;
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
 import org.jline.reader.UserInterruptException;
@@ -36,6 +39,7 @@ import javax.annotation.Nullable;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
+@Deprecated
 public class CLI {
     private static final CommandRootNode ROOT_NODE;
     private static PlayConnection currentConnection;
@@ -74,6 +78,7 @@ public class CLI {
     public static void initialize() throws InterruptedException {
         CountUpAndDownLatch latch = new CountUpAndDownLatch(1);
         new Thread(() -> {
+            Log.log(LogMessageType.OTHER, LogLevels.INFO, () -> "Initializing CLI...");
             try {
                 TerminalBuilder builder = TerminalBuilder.builder();
 
@@ -93,7 +98,7 @@ public class CLI {
                         try {
                             line = reader.readLine().replaceAll("\\s{2,}", "");
                         } catch (UserInterruptException e) {
-                            Minosoft.shutdown(e.getMessage(), ShutdownReasons.REQUESTED_BY_USER);
+                            ShutdownManager.INSTANCE.shutdown(e.getMessage(), ShutdownReasons.REQUESTED_BY_USER);
                             return;
                         }
                         terminal.flush();
@@ -109,7 +114,7 @@ public class CLI {
                             Command.printError("Type help for a command list!");
                         }
                     } catch (UserInterruptException exception) {
-                        Minosoft.shutdown(exception.getMessage(), ShutdownReasons.REQUESTED_BY_USER);
+                        ShutdownManager.INSTANCE.shutdown(exception.getMessage(), ShutdownReasons.REQUESTED_BY_USER);
                     } catch (Exception exception) {
                         exception.printStackTrace();
                     }

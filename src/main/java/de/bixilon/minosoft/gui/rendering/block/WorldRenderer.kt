@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.block
 
-import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.direction.FakeDirection
@@ -41,16 +40,17 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.getWorldOffset
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.of
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
-import de.bixilon.minosoft.modding.event.CallbackEventInvoker
 import de.bixilon.minosoft.modding.event.events.*
-import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.nullCast
 import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
 import de.bixilon.minosoft.util.KUtil.synchronizedSetOf
 import de.bixilon.minosoft.util.KUtil.toSynchronizedMap
 import de.bixilon.minosoft.util.collections.SynchronizedMap
-import de.bixilon.minosoft.util.task.ThreadPoolRunnable
+import de.bixilon.minosoft.util.task.pool.DefaultThreadPool
+import de.bixilon.minosoft.util.task.pool.ThreadPoolRunnable
 import glm_.vec2.Vec2i
 import glm_.vec3.Vec3i
 
@@ -363,7 +363,7 @@ class WorldRenderer(
             }
         )
         preparationTasks.getOrPut(chunkPosition) { synchronizedMapOf() }[index] = runnable
-        Minosoft.THREAD_POOL.execute(runnable)
+        DefaultThreadPool += runnable
     }
 
     private fun prepareChunkSection(chunkPosition: Vec2i, sectionHeight: Int) {

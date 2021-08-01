@@ -13,6 +13,7 @@
 package de.bixilon.minosoft.config
 
 object StaticConfiguration {
+    const val VERSION = "0.1-pre"
     const val DEBUG_MODE = true // if true, additional checks will be made to validate data, ... Decreases performance
     const val BIOME_DEBUG_MODE = false // colors all biomes according to the biome hashCode
     const val DEBUG_SLOW_LOADING = false // if true, many Thread.sleep will be executed and the start will be delayed (by a lot)

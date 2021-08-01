@@ -12,11 +12,10 @@
  */
 package de.bixilon.minosoft.data.text.events
 
-import com.google.gson.JsonElement
-import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.events.data.EntityHoverData
 import de.bixilon.minosoft.util.KUtil
+import de.bixilon.minosoft.util.KUtil.unsafeCast
 import de.bixilon.minosoft.util.enum.ValuesEnum
 import java.util.*
 
@@ -24,15 +23,12 @@ class HoverEvent {
     val action: HoverEventActions
     val value: Any
 
-    constructor(json: JsonObject) {
-        action = HoverEventActions.valueOf(json["action"].asString.uppercase(Locale.getDefault()))
-        var data: JsonElement = json
-        json["value"]?.let {
-            data = it
-        }
-        json["contents"]?.let {
-            data = it
-        }
+    constructor(json: Map<String, Any>) {
+        action = HoverEventActions.valueOf(json["action"].unsafeCast<String>().uppercase(Locale.getDefault()))
+        var data: Any = json
+        json["value"]?.let { data = it }
+        json["contents"]?.let { data = it }
+
         this.value = when (action) {
             HoverEventActions.SHOW_TEXT -> ChatComponent.of(data)
             HoverEventActions.SHOW_ENTITY -> EntityHoverData.deserialize(data)

@@ -21,10 +21,10 @@ import de.bixilon.minosoft.protocol.packets.c2s.C2SPacket;
 import de.bixilon.minosoft.protocol.packets.c2s.login.EncryptionResponseC2SP;
 import de.bixilon.minosoft.protocol.packets.s2c.S2CPacket;
 import de.bixilon.minosoft.protocol.packets.s2c.login.EncryptionRequestS2CP;
-import de.bixilon.minosoft.protocol.protocol.ConnectionStates;
 import de.bixilon.minosoft.protocol.protocol.CryptManager;
 import de.bixilon.minosoft.protocol.protocol.PacketTypes;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
+import de.bixilon.minosoft.protocol.protocol.ProtocolStates;
 import de.bixilon.minosoft.util.Pair;
 import de.bixilon.minosoft.util.ServerAddress;
 import de.bixilon.minosoft.util.logging.Log;
@@ -82,19 +82,20 @@ public class BlockingSocketNetwork extends Network {
 
     @Override
     public void connect(ServerAddress address) {
-        if (this.connection.getConnectionState().getConnected() || this.connection.getConnectionState() == ConnectionStates.CONNECTING) {
+        if (this.connection.getProtocolState().getConnected() || this.connection.getProtocolState() == ProtocolStates.CONNECTING) {
             return;
         }
         this.connection.setError(null);
-        this.connection.setConnectionState(ConnectionStates.CONNECTING);
+        this.connection.setProtocolState(ProtocolStates.CONNECTING);
         this.socketReceiveThread = new Thread(() -> {
             try {
+                this.shouldDisconnect = false;
                 this.socket = new Socket();
                 this.socket.setSoTimeout(ProtocolDefinition.SOCKET_CONNECT_TIMEOUT);
                 this.socket.connect(new InetSocketAddress(address.getHostname(), address.getPort()), ProtocolDefinition.SOCKET_CONNECT_TIMEOUT);
                 // connected, use minecraft timeout
                 this.socket.setSoTimeout(ProtocolDefinition.SOCKET_TIMEOUT);
-                this.connection.setConnectionState(ConnectionStates.HANDSHAKING);
+                this.connection.setProtocolState(ProtocolStates.HANDSHAKING);
                 this.socket.setKeepAlive(true);
                 this.outputStream = this.socket.getOutputStream();
                 this.inputStream = this.socket.getInputStream();
@@ -105,7 +106,7 @@ public class BlockingSocketNetwork extends Network {
                 this.socketReceiveThread.setName(String.format("%d/Receiving", this.connection.getConnectionId()));
 
 
-                while (this.connection.getConnectionState() != ConnectionStates.DISCONNECTED && !this.shouldDisconnect) {
+                while (this.connection.getProtocolState() != ProtocolStates.DISCONNECTED && !this.shouldDisconnect) {
                     if (!this.socket.isConnected() || this.socket.isClosed()) {
                         break;
                     }
@@ -126,13 +127,14 @@ public class BlockingSocketNetwork extends Network {
                     this.socketSendThread.interrupt();
                 }
                 if (exception instanceof SocketException && exception.getMessage().equals("Socket closed")) {
-                    this.connection.setConnectionState(ConnectionStates.DISCONNECTED);
+                    this.connection.setProtocolState(ProtocolStates.DISCONNECTED);
                     return;
                 }
                 Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.WARN, exception);
                 this.connection.setError(exception);
                 disconnect();
             }
+            this.socketReceiveThread = null;
         }, String.format("%d/Socket", this.connection.getConnectionId()));
         this.socketReceiveThread.start();
     }
@@ -145,7 +147,7 @@ public class BlockingSocketNetwork extends Network {
     @Override
     @Synchronized
     public void disconnect() {
-        if (!this.connection.getConnectionState().getConnected() || this.shouldDisconnect) {
+        if (!this.connection.getProtocolState().getConnected() || this.shouldDisconnect) {
             // already trying
             return;
         }
@@ -158,7 +160,7 @@ public class BlockingSocketNetwork extends Network {
         }
         this.socketReceiveThread.interrupt();
         this.socketSendThread.interrupt();
-        this.connection.setConnectionState(ConnectionStates.DISCONNECTED);
+        this.connection.setProtocolState(ProtocolStates.DISCONNECTED);
     }
 
     @Override
@@ -185,7 +187,7 @@ public class BlockingSocketNetwork extends Network {
     private void initSendThread() {
         this.socketSendThread = new Thread(() -> {
             try {
-                while (this.connection.getConnectionState() != ConnectionStates.DISCONNECTED && !this.shouldDisconnect) {
+                while (this.connection.getProtocolState() != ProtocolStates.DISCONNECTED && !this.shouldDisconnect) {
                     // wait for data or send until it should disconnect
 
                     // check if still connected
@@ -210,6 +212,7 @@ public class BlockingSocketNetwork extends Network {
                 }
             } catch (IOException | InterruptedException ignored) {
             }
+            this.socketSendThread = null;
         }, String.format("%d/Sending", this.connection.getConnectionId()));
         this.socketSendThread.start();
     }

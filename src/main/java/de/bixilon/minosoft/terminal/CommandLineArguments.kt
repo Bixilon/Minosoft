@@ -22,38 +22,35 @@ import kotlin.system.exitProcess
 object CommandLineArguments {
     lateinit var ARGUMENTS: List<String>
         private set
-    private val PARSER = with(ArgumentParsers.newFor("Minosoft").build()
+    private val PARSER = ArgumentParsers.newFor("Minosoft").build()
         .defaultHelp(true)
-        .description("An open source minecraft client written from scratch")) {
+        .description("An open source minecraft client written from scratch")
+        .apply {
+            addArgument("--disable_log_color_message")
+                .action(Arguments.storeFalse())
+                .help("The message (after all prefixes) should be colored with ANSI color codes")
+            addArgument("--disable_log_color_level")
+                .action(Arguments.storeFalse())
+                .help("The level (e.g. [INFO]) should be colored")
+            addArgument("--disable_log_color_type")
+                .action(Arguments.storeFalse())
+                .help("The type (e.g. [OTHER]) should be colored")
+            addArgument("--relative_log")
+                .action(Arguments.storeTrue())
+                .help("Prefixes all log messages with relative time instead of absolute time")
 
+            addArgument("--disable_eros")
+                .action(Arguments.storeTrue())
+                .help("Disables EROS (Launcher like graphical user interface)")
 
-        addArgument("--disable_log_color_message")
-            .action(Arguments.storeFalse())
-            .help("The message (after all prefixes) should be colored with ANSI color codes")
-        addArgument("--disable_log_color_level")
-            .action(Arguments.storeFalse())
-            .help("The level (e.g. [INFO]) should be colored")
-        addArgument("--disable_log_color_type")
-            .action(Arguments.storeFalse())
-            .help("The type (e.g. [OTHER]) should be colored")
-        addArgument("--relative_log")
-            .action(Arguments.storeTrue())
-            .help("Prefixes all log messages with relative time instead of absolute time")
+            addArgument("--disable_rendering")
+                .action(Arguments.storeTrue())
+                .help("Disables rendering")
 
-        addArgument("--disable_server_list")
-            .action(Arguments.storeTrue())
-            .help("Disables the server list")
-
-        addArgument("--disable_rendering")
-            .action(Arguments.storeTrue())
-            .help("Disables rendering")
-
-        addArgument("--headless")
-            .action(Arguments.storeTrue())
-            .help("Disables the server list and rendering")
-
-        this
-    }
+            addArgument("--headless")
+                .action(Arguments.storeTrue())
+                .help("Disables the server list and rendering")
+        }
 
     fun parse(args: Array<String>) {
         check(!this::ARGUMENTS.isInitialized) { "Already initialized!" }
@@ -71,13 +68,12 @@ object CommandLineArguments {
         RunConfiguration.LOG_COLOR_TYPE = namespace.getBoolean("disable_log_color_type")
         RunConfiguration.LOG_RELATIVE_TIME = namespace.getBoolean("relative_log")
 
-        RunConfiguration.DISABLE_SERVER_LIST = namespace.getBoolean("disable_server_list")
+        RunConfiguration.DISABLE_EROS = namespace.getBoolean("disable_eros")
         RunConfiguration.DISABLE_RENDERING = namespace.getBoolean("disable_rendering")
 
         if (namespace.getBoolean("headless")) {
-            RunConfiguration.DISABLE_SERVER_LIST = true
+            RunConfiguration.DISABLE_EROS = true
             RunConfiguration.DISABLE_RENDERING = true
         }
-
     }
 }

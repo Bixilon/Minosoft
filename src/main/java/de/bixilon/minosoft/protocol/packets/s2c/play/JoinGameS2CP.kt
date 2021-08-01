@@ -23,7 +23,8 @@ import de.bixilon.minosoft.data.world.biome.accessor.NoiseBiomeAccessor
 import de.bixilon.minosoft.modding.channels.DefaultPluginChannels
 import de.bixilon.minosoft.protocol.ErrorHandler
 import de.bixilon.minosoft.protocol.network.connection.Connection
-import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
 import de.bixilon.minosoft.protocol.packets.c2s.play.ClientSettingsC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.PluginMessageC2SP
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
@@ -162,6 +163,7 @@ class JoinGameS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
             buffer.writeString("vanilla") // ToDo: Remove prefix
             connection.sendPacket(PluginMessageC2SP(brandName, buffer.toByteArray()))
         })
+        connection.state = PlayConnectionStates.SPAWNING
     }
 
     private fun parseDimensionCodec(nbt: Map<String, Any>, versionId: Int): HashBiMap<ResourceLocation, Dimension> {

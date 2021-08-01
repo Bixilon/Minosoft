@@ -13,12 +13,11 @@
 
 package de.bixilon.minosoft.modding;
 
-import de.bixilon.minosoft.modding.event.EventManager;
 import de.bixilon.minosoft.modding.loading.ModInfo;
 import de.bixilon.minosoft.modding.loading.ModPhases;
 
+@Deprecated
 public abstract class MinosoftMod {
-    private final EventManager eventManager = new EventManager();
     protected boolean enabled = true;
     private ModInfo info;
 
@@ -39,10 +38,6 @@ public abstract class MinosoftMod {
             throw new RuntimeException(String.format("Mod info already set %s vs %s", this.info, info));
         }
         this.info = info;
-    }
-
-    public EventManager getEventManager() {
-        return this.eventManager;
     }
 
     /**

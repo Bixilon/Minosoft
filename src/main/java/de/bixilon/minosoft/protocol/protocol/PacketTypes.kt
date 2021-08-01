@@ -47,7 +47,7 @@ import de.bixilon.minosoft.protocol.packets.s2c.play.scoreboard.objective.Scoreb
 import de.bixilon.minosoft.protocol.packets.s2c.play.scoreboard.score.ScoreboardScoreS2CF
 import de.bixilon.minosoft.protocol.packets.s2c.play.scoreboard.teams.TeamsS2CF
 import de.bixilon.minosoft.protocol.packets.s2c.play.title.*
-import de.bixilon.minosoft.protocol.packets.s2c.status.PacketStatusResponse
+import de.bixilon.minosoft.protocol.packets.s2c.status.ServerStatusResponseS2CP
 import de.bixilon.minosoft.protocol.packets.s2c.status.StatusPongS2CP
 
 class PacketTypes {
@@ -112,7 +112,7 @@ class PacketTypes {
         PLAY_PONG(PongC2SP::class.java)
         ;
 
-        val state: ConnectionStates = ConnectionStates.valueOf(name.split("_".toRegex()).toTypedArray()[0])
+        val state: ProtocolStates = ProtocolStates.valueOf(name.split("_".toRegex()).toTypedArray()[0])
 
         companion object {
             private val MAPPING: Map<Class<out C2SPacket>, C2S>
@@ -151,7 +151,7 @@ class PacketTypes {
         val isThreadSafe: Boolean = true,
         val errorHandler: ErrorHandler? = null,
     ) {
-        STATUS_RESPONSE(statusFactory = { PacketStatusResponse(it) }, isThreadSafe = false),
+        STATUS_RESPONSE(statusFactory = { ServerStatusResponseS2CP(it) }, isThreadSafe = false),
         STATUS_PONG(statusFactory = { StatusPongS2CP(it) }, isThreadSafe = false),
         LOGIN_KICK({ LoginKickS2CP(it) }, isThreadSafe = false),
         LOGIN_ENCRYPTION_REQUEST({ EncryptionRequestS2CP(it) }, isThreadSafe = false, errorHandler = EncryptionRequestS2CP),
@@ -284,6 +284,6 @@ class PacketTypes {
         }
 
 
-        val state: ConnectionStates = ConnectionStates.valueOf(name.split("_".toRegex()).toTypedArray()[0])
+        val state: ProtocolStates = ProtocolStates.valueOf(name.split("_".toRegex()).toTypedArray()[0])
     }
 }

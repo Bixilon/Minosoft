@@ -13,4 +13,4 @@
 
 package de.bixilon.minosoft.modding.event.events
 
-abstract class Event
+interface Event

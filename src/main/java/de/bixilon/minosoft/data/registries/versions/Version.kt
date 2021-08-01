@@ -19,29 +19,33 @@ import de.bixilon.minosoft.data.assets.MinecraftAssetsManager
 import de.bixilon.minosoft.data.assets.Resources
 import de.bixilon.minosoft.data.language.LanguageManager
 import de.bixilon.minosoft.data.registries.registries.Registries
-import de.bixilon.minosoft.protocol.protocol.ConnectionStates
 import de.bixilon.minosoft.protocol.protocol.PacketTypes.C2S
 import de.bixilon.minosoft.protocol.protocol.PacketTypes.S2C
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.protocol.protocol.ProtocolStates
 import de.bixilon.minosoft.util.CountUpAndDownLatch
+import de.bixilon.minosoft.util.KUtil.decide
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.asCompound
 
+@Deprecated(message = "Some refactoring needed")
 data class Version(
-    var versionName: String,
+    var name: String,
     val versionId: Int,
     val protocolId: Int,
-    val c2SPacketMapping: Map<ConnectionStates, HashBiMap<C2S, Int>>,
-    val s2CPacketMapping: Map<ConnectionStates, HashBiMap<S2C, Int>>,
+    val c2SPacketMapping: Map<ProtocolStates, HashBiMap<C2S, Int>>,
+    val s2CPacketMapping: Map<ProtocolStates, HashBiMap<S2C, Int>>,
 ) {
+    val sortingId: Int = (versionId == -1).decide(Int.MAX_VALUE, versionId)
+    val type: VersionTypes = VersionTypes[this]
     var isLoaded = false
     val registries: Registries = Registries()
     lateinit var assetsManager: MinecraftAssetsManager
     lateinit var language: LanguageManager
 
-    fun getPacketById(state: ConnectionStates, command: Int): S2C? {
+    fun getPacketById(state: ProtocolStates, command: Int): S2C? {
         return s2CPacketMapping[state]?.inverse()?.get(command)
     }
 
@@ -64,7 +68,7 @@ data class Version(
         }
         assetsManager = MinecraftAssetsManager(Resources.getAssetVersionByVersion(this), Resources.getPixLyzerDataHashByVersion(this))
         assetsManager.downloadAllAssets(latch)
-        language = LanguageManager.load(Minosoft.getConfig().config.general.language, this)
+        language = LanguageManager.load(Minosoft.config.config.general.language, this)
     }
 
     @Synchronized
@@ -111,9 +115,9 @@ data class Version(
         registries.load(this, pixlyzerData)
         latch.dec()
         if (pixlyzerData.isNotEmpty()) {
-            Log.log(LogMessageType.VERSION_LOADING, level = LogLevels.INFO) { "Loaded registries for $versionName in ${System.currentTimeMillis() - startTime}ms" }
+            Log.log(LogMessageType.VERSION_LOADING, level = LogLevels.INFO) { "Loaded registries for $name in ${System.currentTimeMillis() - startTime}ms" }
         } else {
-            Log.log(LogMessageType.VERSION_LOADING, level = LogLevels.WARN) { "Could not load registries for ${versionName}. Some features might not work." }
+            Log.log(LogMessageType.VERSION_LOADING, level = LogLevels.WARN) { "Could not load registries for ${name}. Some features might not work." }
         }
         isLoaded = true
         latch.dec()
@@ -141,11 +145,11 @@ data class Version(
         return if (hashCode() != other.hashCode()) {
             false
         } else {
-            versionName == versionName
+            name == name
         }
     }
 
     override fun toString(): String {
-        return versionName
+        return name
     }
 }

@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.data.registries.other.containers
 
 import de.bixilon.minosoft.data.inventory.ItemStack
-import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
 
 class PlayerInventory(connection: PlayConnection) : Container(

@@ -29,8 +29,8 @@ import de.bixilon.minosoft.gui.rendering.modding.events.RawCharInputEvent
 import de.bixilon.minosoft.gui.rendering.modding.events.RawKeyInputEvent
 import de.bixilon.minosoft.gui.rendering.system.window.CursorModes
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
-import de.bixilon.minosoft.modding.event.CallbackEventInvoker
-import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.decide
 
 class RenderWindowInputHandler(
@@ -219,7 +219,7 @@ class RenderWindowInputHandler(
     }
 
     fun registerKeyCallback(resourceLocation: ResourceLocation, callback: ((keyDown: Boolean) -> Unit)) {
-        val keyBinding = Minosoft.getConfig().config.game.controls.keyBindings.entries[resourceLocation] ?: return
+        val keyBinding = Minosoft.config.config.game.controls.keyBindings.entries[resourceLocation] ?: return
         val callbackPair = keyBindingCallbacks.getOrPut(resourceLocation) { KeyBindingCallbackPair(keyBinding) }
         if (keyBinding.ignoreConsumer) {
             callbackPair.callback += callback
@@ -235,7 +235,7 @@ class RenderWindowInputHandler(
 
     fun registerCheckCallback(vararg resourceLocations: ResourceLocation) {
         for (resourceLocation in resourceLocations) {
-            val keyBinding = Minosoft.getConfig().config.game.controls.keyBindings.entries[resourceLocation] ?: return
+            val keyBinding = Minosoft.config.config.game.controls.keyBindings.entries[resourceLocation] ?: return
             keyBindingCallbacks.getOrPut(resourceLocation) { KeyBindingCallbackPair(keyBinding) }
         }
     }

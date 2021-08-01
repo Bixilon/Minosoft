@@ -35,8 +35,8 @@ import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
 import de.bixilon.minosoft.gui.rendering.util.VecUtil
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.floor
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.getWorldOffset
-import de.bixilon.minosoft.modding.event.CallbackEventInvoker
-import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.c2s.play.BlockBreakC2SP
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.decide
@@ -57,7 +57,7 @@ class Camera(
 ) {
     var fogColor = Previous(ChatColors.GREEN)
     var fogStart = 100.0f
-    private var mouseSensitivity = Minosoft.getConfig().config.game.camera.moseSensitivity
+    private var mouseSensitivity = Minosoft.config.config.game.camera.moseSensitivity
     val entity: LocalPlayerEntity
         get() = connection.player
     private var lastMousePosition: Vec2d = Vec2d(0.0, 0.0)

@@ -14,29 +14,36 @@
 package de.bixilon.minosoft.protocol.network.connection
 
 import de.bixilon.minosoft.Minosoft
-import de.bixilon.minosoft.modding.event.EventInvoker
-import de.bixilon.minosoft.modding.event.EventMaster
-import de.bixilon.minosoft.modding.event.events.CancelableEvent
+import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.modding.event.events.Event
 import de.bixilon.minosoft.modding.event.events.PacketSendEvent
+import de.bixilon.minosoft.modding.event.events.connection.ConnectionErrorEvent
+import de.bixilon.minosoft.modding.event.invoker.EventInvoker
+import de.bixilon.minosoft.modding.event.master.AbstractEventMaster
+import de.bixilon.minosoft.modding.event.master.EventMaster
 import de.bixilon.minosoft.protocol.network.Network
 import de.bixilon.minosoft.protocol.packets.c2s.C2SPacket
 import de.bixilon.minosoft.protocol.packets.s2c.S2CPacket
-import de.bixilon.minosoft.protocol.protocol.ConnectionStates
 import de.bixilon.minosoft.protocol.protocol.PacketTypes.C2S
 import de.bixilon.minosoft.protocol.protocol.PacketTypes.S2C
-import de.bixilon.minosoft.util.KUtil.synchronizedListOf
-import de.bixilon.minosoft.util.KUtil.toSynchronizedList
+import de.bixilon.minosoft.protocol.protocol.ProtocolStates
+import de.bixilon.minosoft.util.task.pool.DefaultThreadPool
 
-abstract class Connection : EventMaster {
+abstract class Connection : AbstractEventMaster {
     val network = Network.getNetworkInstance(this)
-    protected val eventListeners: MutableList<EventInvoker> = synchronizedListOf()
+    private val eventMaster = EventMaster(Minosoft.GLOBAL_EVENT_MASTER)
     val connectionId = lastConnectionId++
-    abstract var connectionState: ConnectionStates
-    var error: Throwable? = null
     var wasConnected = false
+    abstract var protocolState: ProtocolStates
+
+    open var error: Throwable? = null
+        set(value) {
+            field = value
+            value?.let { fireEvent(ConnectionErrorEvent(this, EventInitiators.UNKNOWN, it)) }
+        }
 
     abstract fun getPacketId(packetType: C2S): Int
+
     abstract fun getPacketById(packetId: Int): S2C?
 
     open fun sendPacket(packet: C2SPacket) {
@@ -52,24 +59,7 @@ abstract class Connection : EventMaster {
      * @return if the event has been cancelled or not
      */
     override fun fireEvent(event: Event): Boolean {
-        for (eventManager in Minosoft.EVENT_MANAGERS) {
-            for (eventListener in eventManager.globalEventListeners) {
-                eventListener(event)
-            }
-        }
-
-        for (eventInvoker in eventListeners.toSynchronizedList()) {
-            if (!eventInvoker.eventType.isAssignableFrom(event::class.java)) {
-                continue
-            }
-            eventInvoker(event)
-        }
-        if (event is CancelableEvent) {
-            val cancelled = event.cancelled
-            event.cancelled = false // Cleanup memory
-            return cancelled
-        }
-        return false
+        return eventMaster.fireEvent(event)
     }
 
     open fun handle(packetType: S2C, packet: S2CPacket) {
@@ -77,28 +67,34 @@ abstract class Connection : EventMaster {
             handlePacket(packet)
             return
         }
-        Minosoft.THREAD_POOL.execute { handlePacket(packet) }
+        DefaultThreadPool += { handlePacket(packet) }
     }
 
 
     abstract fun handlePacket(packet: S2CPacket)
 
-    open fun unregisterEvent(method: EventInvoker?) {
-        eventListeners.remove(method)
+    override fun unregisterEvent(invoker: EventInvoker?) {
+        eventMaster.unregisterEvent(invoker)
     }
 
-    override fun registerEvent(method: EventInvoker) {
-        eventListeners.add(method)
+    override fun <T : EventInvoker> registerEvent(invoker: T): T {
+        return eventMaster.registerEvent(invoker)
     }
 
-    override fun registerEvents(vararg method: EventInvoker) {
-        eventListeners.addAll(method)
+    override fun registerEvents(vararg invokers: EventInvoker) {
+        eventMaster.registerEvents(*invokers)
     }
-
 
     open fun disconnect() {
         network.disconnect()
     }
+
+    override fun iterator(): Iterator<EventInvoker> {
+        return eventMaster.iterator()
+    }
+
+    override val size: Int
+        get() = eventMaster.size
 
     companion object {
         var lastConnectionId: Int = 0

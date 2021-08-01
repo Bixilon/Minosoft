@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering
 
 import de.bixilon.minosoft.data.registries.CompanionResourceLocation
-import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 interface RendererBuilder<T : Renderer> : CompanionResourceLocation {
 

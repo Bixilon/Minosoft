@@ -18,7 +18,7 @@ import de.bixilon.minosoft.data.commands.parser.exceptions.InvalidItemPredicateC
 import de.bixilon.minosoft.data.commands.parser.exceptions.resourcelocation.ItemNotFoundCommandParseException
 import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties
 import de.bixilon.minosoft.data.inventory.ItemStack
-import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 class ItemStackParser : CommandParser() {
 

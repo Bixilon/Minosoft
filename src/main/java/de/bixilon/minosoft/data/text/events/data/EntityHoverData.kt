@@ -12,14 +12,14 @@
  */
 package de.bixilon.minosoft.data.text.events.data
 
-import com.google.gson.JsonElement
-import com.google.gson.JsonObject
-import com.google.gson.JsonParser
-import com.google.gson.JsonPrimitive
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
 import de.bixilon.minosoft.util.KUtil.asUUID
+import de.bixilon.minosoft.util.KUtil.nullCast
+import de.bixilon.minosoft.util.KUtil.unsafeCast
+import de.bixilon.minosoft.util.json.JSONSerializer
+import de.bixilon.minosoft.util.nbt.tag.NBTUtil.asCompound
 import java.util.*
 
 class EntityHoverData(
@@ -29,22 +29,22 @@ class EntityHoverData(
 ) {
 
     companion object {
-        fun deserialize(data: JsonElement): EntityHoverData {
-            var json = if (data is JsonPrimitive) {
-                JsonParser.parseString(data.getAsString()).asJsonObject
+        fun deserialize(data: Any): EntityHoverData {
+            var json: Map<String, Any> = if (data is String) {
+                JSONSerializer.MAP_ADAPTER.fromJson(data)
             } else {
-                data as JsonObject
-            }
+                data
+            }.asCompound()
             json["text"]?.let {
                 // 1.14.3.... lol
-                json = JsonParser.parseString(json["text"].asString).asJsonObject
+                json = JSONSerializer.MAP_ADAPTER.fromJson(it.unsafeCast<String>())!!
             }
             var type: ResourceLocation? = null
-            json["type"]?.asString?.let {
+            json["type"]?.nullCast<String>()?.let {
                 type = it.asResourceLocation()
             }
 
-            return EntityHoverData(json["id"].asString.asUUID(), type, ChatComponent.of(json["name"]))
+            return EntityHoverData(json["id"].unsafeCast<String>().asUUID(), type, ChatComponent.of(json["name"]))
         }
     }
 }

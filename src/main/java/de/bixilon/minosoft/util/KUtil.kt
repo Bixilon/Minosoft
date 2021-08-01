@@ -17,11 +17,12 @@ import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.JsonWriter
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.ResourceLocationAble
 import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.TextFormattable
-import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.collections.SynchronizedMap
 import de.bixilon.minosoft.util.enum.AliasableEnum
@@ -30,10 +31,13 @@ import glm_.vec2.Vec2t
 import glm_.vec3.Vec3t
 import okio.Buffer
 import sun.misc.Unsafe
+import java.io.PrintWriter
+import java.io.StringWriter
 import java.lang.reflect.Field
 import java.util.*
 import kotlin.Pair
 import kotlin.random.Random
+
 
 object KUtil {
 
@@ -166,6 +170,22 @@ object KUtil {
         }
     }
 
+    fun <T> Boolean.decide(`true`: T, `false`: () -> T): T {
+        return if (this) {
+            `true`
+        } else {
+            `false`()
+        }
+    }
+
+    fun <T> Boolean.decide(`true`: () -> T, `false`: T): T {
+        return if (this) {
+            `true`()
+        } else {
+            `false`
+        }
+    }
+
     fun String.asUUID(): UUID {
         return Util.getUUIDFromString(this)
     }
@@ -195,15 +215,26 @@ object KUtil {
         return map.toMap()
     }
 
-    fun <V> Collection<Any>.extend(vararg values: Any): List<V> {
+    fun <V> Collection<V>.extend(vararg values: Any): List<V> {
         val list: MutableList<V> = mutableListOf()
 
         for (value in this) {
             list += value.unsafeCast<V>()
         }
 
+        fun add(value: Any?) {
+            when (value) {
+                is Collection<*> -> {
+                    for (element in value) {
+                        add(element)
+                    }
+                }
+                else -> list += value.unsafeCast<V>()
+            }
+        }
+
         for (value in values) {
-            list += value.unsafeCast<V>()
+            add(value)
         }
         return list.toList()
     }
@@ -293,10 +324,22 @@ object KUtil {
         }
     }
 
+    fun Any.toBoolean(): Boolean {
+        return when (this) {
+            is Boolean -> this
+            is String -> this.toBooleanStrict()
+            else -> TODO()
+        }
+    }
+
     fun <T> tryCatch(vararg exceptions: Class<out Throwable> = arrayOf(), executor: () -> T): T? {
         try {
             return executor()
         } catch (thrown: Throwable) {
+            if (exceptions.isEmpty()) {
+                // Catch all
+                return null
+            }
             for (exception in exceptions) {
                 if (exception.isAssignableFrom(thrown::class.java)) {
                     return null
@@ -304,5 +347,36 @@ object KUtil {
             }
             throw thrown
         }
+    }
+
+    val Throwable.text: TextComponent
+        get() = TextComponent(this::class.java.realName + ": " + this.message).color(ChatColors.DARK_RED)
+
+    fun Throwable.toStackTrace(): String {
+        val stringWriter = StringWriter()
+        this.printStackTrace(PrintWriter(stringWriter))
+        return stringWriter.toString()
+    }
+
+    fun Int.thousands(): String {
+        return String.format("%,d", this)
+    }
+
+    val Class<*>.realName: String
+        get() = this.name.removePrefix(this.packageName).removePrefix(".")
+
+    fun UUID.trim(): String {
+        return this.toString().replace("-", "")
+    }
+
+
+    fun <T : ResourceLocationAble> List<T>.asResourceLocationMap(): Map<ResourceLocation, T> {
+        val ret: MutableMap<ResourceLocation, T> = mutableMapOf()
+
+        for (value in this) {
+            ret[value.resourceLocation] = value
+        }
+
+        return ret.toMap()
     }
 }

@@ -26,12 +26,13 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+@Deprecated
 public class Resources {
     private static final HashBiMap<Version, AssetVersion> ASSETS_VERSIONS = HashBiMap.create();
     private static final HashMap<Version, String> PIXLYZER_VERSIONS = new HashMap<>();
 
     public static void load() throws IOException {
-        JsonObject json = Minosoft.MINOSOFT_ASSETS_MANAGER.readLegacyJsonAsset(new ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "mapping/resources.json"));
+        JsonObject json = Minosoft.INSTANCE.getMINOSOFT_ASSETS_MANAGER().readLegacyJsonAsset(new ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "mapping/resources.json"));
 
         JsonObject versions = json.getAsJsonObject("versions");
         for (Map.Entry<String, JsonElement> versionEntry : versions.entrySet()) {
@@ -44,7 +45,7 @@ public class Resources {
         }
 
         // PixLyzer
-        JsonObject pixlyzerIndex = Minosoft.MINOSOFT_ASSETS_MANAGER.readLegacyJsonAsset(new ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "mapping/pixlyzer_index.json"));
+        JsonObject pixlyzerIndex = Minosoft.INSTANCE.getMINOSOFT_ASSETS_MANAGER().readLegacyJsonAsset(new ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "mapping/pixlyzer_index.json"));
 
         for (Map.Entry<String, JsonElement> versionEntry : pixlyzerIndex.entrySet()) {
 

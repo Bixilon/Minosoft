@@ -13,9 +13,9 @@
 package de.bixilon.minosoft.protocol.packets.c2s.handshaking
 
 import de.bixilon.minosoft.protocol.packets.c2s.AllC2SPacket
-import de.bixilon.minosoft.protocol.protocol.ConnectionStates
 import de.bixilon.minosoft.protocol.protocol.OutByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.protocol.protocol.ProtocolStates
 import de.bixilon.minosoft.util.ServerAddress
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -23,7 +23,7 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 
 class HandshakeC2SP(
     val address: ServerAddress,
-    val nextState: ConnectionStates = ConnectionStates.STATUS,
+    val nextState: ProtocolStates = ProtocolStates.STATUS,
     val protocolId: Int = ProtocolDefinition.QUERY_PROTOCOL_VERSION_ID,
 ) : AllC2SPacket {
 

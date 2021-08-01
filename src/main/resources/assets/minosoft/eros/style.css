@@ -1,0 +1,264 @@
+/*
+ * Minosoft
+ * Copyright (C) 2021 Moritz Zwerger
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *
+ * This software is not affiliated with Mojang AB, the original developer of Minecraft.
+ */
+
+
+/* https://material.io/resources/color/#!/?view.left=0&view.right=1&primary.color=448aff&secondary.color=2c3746 */
+* {
+    -primary-color: #3678e5;
+    -primary-light-color: #76a6ff;
+    -primary-dark-color: #004db2;
+    -secondary-color: #2c3746;
+    -secondary-light-color: #566171;
+    -secondary-dark-color: #03111f;
+    -primary-text-color: #000000;
+    -secondary-text-color: #ffffff;
+    -secondary-light-light-color: #868191;
+}
+
+/* Buttons */
+
+.button {
+    -fx-text-fill: -secondary-text-color;
+    -fx-background-color: -secondary-color;
+    -fx-background-radius: 2px;
+    -fx-border-radius: 2px;
+    -fx-border-width: 1px;
+    -fx-border-color: -secondary-text-color;
+}
+
+.button:hover {
+    -fx-border-color: -primary-light-color;
+}
+
+.button:armed, .button:focused {
+    -fx-border-color: -primary-color;
+    -fx-background-color: -primary-color;
+}
+
+
+/* Check box */
+
+.check-box {
+    -fx-text-fill: -secondary-text-color;
+}
+
+.check-box {
+    -fx-text-fill: -secondary-text-color;
+}
+
+.check-box .box {
+    -fx-background-color: -secondary-color;
+    -fx-background-radius: 2px;
+    -fx-border-radius: 2px;
+    -fx-border-color: -secondary-text-color;
+}
+
+.check-box:selected .box {
+    -fx-border-color: -primary-color;
+    -fx-background-color: -primary-color;
+}
+
+.check-box:hover .box {
+    -fx-border-color: -primary-light-color;
+}
+
+.check-box:selected:hover .box {
+    -fx-border-color: -primary-light-color;
+    -fx-background-color: -primary-light-color;
+}
+
+.check-box:selected .mark {
+    -fx-background-color: -secondary-text-color;
+}
+
+
+/* Text field */
+
+.text-field {
+    -fx-text-fill: -secondary-text-color;
+    -fx-background-color: -secondary-color;
+    -fx-background-radius: 2px;
+    -fx-border-radius: 2px;
+    -fx-border-color: -secondary-text-color;
+}
+
+.text-field:hover {
+    -fx-border-color: -primary-light-color;
+}
+
+.text-field:focused {
+    -fx-border-color: -primary-color;
+}
+
+
+/* Combo box */
+
+.combo-box {
+    -fx-background-color: -secondary-color;
+    -fx-background-radius: 2px;
+    -fx-border-radius: 2px;
+    -fx-border-color: -secondary-text-color;
+}
+
+.combo-box:hover {
+    -fx-border-color: -primary-color;
+}
+
+.combo-box:selected {
+    -fx-background-color: -primary-color;
+}
+
+.combo-box .arrow-button {
+    -fx-background-color: -secondary-color;
+}
+
+.combo-box .arrow {
+    -fx-background-color: -secondary-text-color;
+}
+
+
+/* Scroll bar */
+
+.scroll-bar .track {
+    -fx-background-color: -secondary-color;
+}
+
+.scroll-bar .thumb {
+    -fx-background-color: -secondary-light-color;
+}
+
+.scroll-bar:hover .thumb {
+    -fx-background-color: -secondary-light-light-color;
+}
+
+.scroll-bar .thumb:hover, .scroll-bar .thumb:focused {
+    -fx-background-color: -primary-color;
+}
+
+.scroll-bar:horizontal .increment-button, .scroll-bar:horizontal .decrement-button {
+    -fx-background-color: transparent;
+    -fx-padding: 0 0 10 0;
+}
+
+.scroll-bar:vertical .increment-button, .scroll-bar:vertical .decrement-button {
+    -fx-background-color: transparent;
+    -fx-padding: 0 10 0 0;
+}
+
+.scroll-bar .increment-arrow, .scroll-bar .decrement-arrow {
+    -fx-shape: "";
+    -fx-padding: 0;
+}
+
+
+/* General panes */
+
+.root {
+    -fx-background-color: -secondary-color;
+    -fx-text-fill: -secondary-text-color;
+}
+
+
+/* Label */
+
+.label {
+    -fx-text-fill: -secondary-text-color;
+}
+
+
+/* Text flow */
+
+.text-default-color {
+    -fx-fill: -secondary-text-color;
+}
+
+
+/* Image view */
+
+.image-view {
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.8), 10, 0, 0, 0);
+}
+
+
+/* List view */
+
+.list-view {
+    -fx-background-color: -secondary-color;
+}
+
+.list-cell {
+    -fx-background-color: -secondary-color;
+}
+
+.list-cell:selected {
+    -fx-background-color: -primary-color;
+}
+
+.list-cell:hover {
+    -fx-background-color: -secondary-light-color;
+}
+
+.list-cell:empty {
+    -fx-background-color: -secondary-color;
+}
+
+.list-cell:selected:hover {
+    -fx-background-color: -primary-dark-color;
+}
+
+
+/* icons */
+
+.ikonli-font-icon {
+    -fx-icon-color: -secondary-text-color;
+}
+
+.ikonli-font-icon:hover {
+    -fx-icon-color: -primary-light-color;
+}
+
+.ikonli-font-icon:selected {
+    -fx-icon-color: -primary-color;
+}
+
+.ikonli-font-icon:disabled {
+    -fx-icon-color: -secondary-light-light-color;
+}
+
+/* context menu */
+.context-menu {
+    -fx-background-color: -secondary-color;
+    -fx-border-radius: 2px;
+    -fx-border-width: 1px;
+    -fx-border-color: -secondary-text-color;
+}
+
+
+.context-menu:selected {
+    -fx-background-color: -primary-color;
+}
+
+.context-menu:hover {
+    -fx-background-color: -secondary-light-color;
+}
+
+
+/* Text area */
+
+.text-area {
+    -fx-text-fill: -secondary-text-color;
+}
+
+.text-area .content {
+    -fx-background-color: -secondary-color;
+}

@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.particle.types.norender
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.gui.rendering.particle.ParticleMesh
 import de.bixilon.minosoft.gui.rendering.particle.types.Particle
-import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import glm_.vec3.Vec3d
 
 abstract class NoRenderParticle(connection: PlayConnection, position: Vec3d, velocity: Vec3d, data: ParticleData?) : Particle(connection, position, velocity, data) {

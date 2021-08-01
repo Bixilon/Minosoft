@@ -16,19 +16,13 @@ package de.bixilon.minosoft.util.json
 import com.squareup.moshi.FromJson
 import com.squareup.moshi.ToJson
 import de.bixilon.minosoft.data.accounts.Account
-import de.bixilon.minosoft.data.accounts.MicrosoftAccount
-import de.bixilon.minosoft.data.accounts.MojangAccount
-import de.bixilon.minosoft.data.accounts.OfflineAccount
+import de.bixilon.minosoft.data.accounts.AccountTypes
+import de.bixilon.minosoft.util.KUtil.asResourceLocation
 
 object AccountSerializer {
     @FromJson
     fun fromJson(json: Map<String, Any>): Account {
-        return when (json["type"]!!) {
-            "mojang" -> MojangAccount.deserialize(json)
-            "offline" -> OfflineAccount.deserialize(json)
-            "microsoft" -> MicrosoftAccount.deserialize(json)
-            else -> throw IllegalArgumentException("Invalid account type: ${json["type"]}")
-        }
+        return AccountTypes.ACCOUNT_TYPES[json["type"]!!.asResourceLocation()]!!.TYPE.fromJsonValue(json)!!
     }
 
     @ToJson

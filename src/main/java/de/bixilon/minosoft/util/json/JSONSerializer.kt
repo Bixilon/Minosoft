@@ -21,18 +21,22 @@ import de.bixilon.minosoft.config.config.Config
 import de.bixilon.minosoft.gui.rendering.textures.properties.ImageProperties
 
 object JSONSerializer {
-    private val MOSHI = Moshi.Builder()
+    val MOSHI = Moshi.Builder()
         .add(RGBColorSerializer)
         .add(Vec2Serializer)
         .add(AccountSerializer)
-        .add(ServerSerializer)
+        .add(ChatComponentSerializer)
+        .add(ServerAddressSerializer)
         .add(ResourceLocationSerializer)
+        .add(UUIDSerializer)
+        .add(VersionSerializer)
         .add(KotlinJsonAdapterFactory())
         .build()!!
 
     val ANY_ADAPTER = MOSHI.adapter(Any::class.java)!!
     val CONFIG_ADAPTER = MOSHI.adapter(Config::class.java)!!
-    val MAP_ADAPTER: JsonAdapter<MutableMap<String, Any>> = MOSHI.adapter(Types.newParameterizedType(MutableMap::class.java, String::class.java, Any::class.java))
+    val MUTABLE_MAP_ADAPTER: JsonAdapter<MutableMap<String, Any>> = MOSHI.adapter(Types.newParameterizedType(MutableMap::class.java, String::class.java, Any::class.java))
+    val MAP_ADAPTER: JsonAdapter<Map<String, Any>> = MOSHI.adapter(Types.newParameterizedType(Map::class.java, String::class.java, Any::class.java))
 
     val IMAGE_PROPERTIES_ADAPTER = MOSHI.adapter(ImageProperties::class.java)!!
 }

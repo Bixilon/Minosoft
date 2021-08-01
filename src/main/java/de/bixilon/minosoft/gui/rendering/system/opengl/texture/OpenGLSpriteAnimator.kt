@@ -40,7 +40,7 @@ class OpenGLSpriteAnimator : SpriteAnimator {
         if (!initialized) {
             return
         }
-        if (!Minosoft.getConfig().config.game.graphics.animations.textures) {
+        if (!Minosoft.config.config.game.graphics.animations.textures) {
             return
         }
 

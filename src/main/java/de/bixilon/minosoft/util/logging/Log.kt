@@ -32,8 +32,10 @@ object Log {
     private val LOG_QUEUE = LinkedBlockingQueue<MessageToSend>()
     private val SYSTEM_ERR_STREAM = System.err
     private val SYSTEM_OUT_STREAM = System.out
-    private val ERROR_PRINT_STREAM: PrintStream = LogPrintStream(LogMessageType.OTHER, LogLevels.WARN)
-    private val OUT_PRINT_STREAM: PrintStream = LogPrintStream(LogMessageType.OTHER, LogLevels.INFO)
+
+    val FATAL_PRINT_STREAM: PrintStream = LogPrintStream(LogMessageType.OTHER, LogLevels.FATAL)
+    val ERROR_PRINT_STREAM: PrintStream = LogPrintStream(LogMessageType.OTHER, LogLevels.WARN)
+    val OUT_PRINT_STREAM: PrintStream = LogPrintStream(LogMessageType.OTHER, LogLevels.INFO)
 
 
     init {
@@ -93,7 +95,7 @@ object Log {
     @JvmOverloads
     @JvmStatic
     fun log(logMessageType: LogMessageType, level: LogLevels = LogLevels.INFO, additionalPrefix: ChatComponent? = null, message: Any, vararg formatting: Any) {
-        if (Minosoft.config != null) {
+        if (Minosoft.configInitialized) {
             Minosoft.config.config.general.log[logMessageType]?.let {
                 if (it.ordinal < level.ordinal) {
                     return
@@ -134,7 +136,7 @@ object Log {
 
     @JvmStatic
     fun log(logMessageType: LogMessageType, level: LogLevels = LogLevels.INFO, additionalPrefix: ChatComponent? = null, messageBuilder: () -> Any) {
-        if (Minosoft.config != null) {
+        if (Minosoft.configInitialized) {
             Minosoft.config.config.general.log[logMessageType]?.let {
                 if (it.ordinal < level.ordinal) {
                     return

@@ -110,4 +110,18 @@ object GitInfo {
             Log.log(LogMessageType.OTHER, level = LogLevels.WARN) { exception }
         }
     }
+
+    fun formatForCrashReport(intend: String = "    "): String {
+        if (!IS_INITIALIZED) {
+            return "${intend}Uninitialized :("
+        }
+
+        return """
+${intend}Branch: $GIT_BRANCH
+${intend}Build version: $GIT_BUILD_VERSION
+${intend}Commit: $GIT_COMMIT_ID_DESCRIBE_SHORT
+${intend}Dirty: $GIT_DIRTY
+        """.trimIndent()
+
+    }
 }

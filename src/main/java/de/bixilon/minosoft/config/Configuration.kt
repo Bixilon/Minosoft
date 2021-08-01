@@ -13,7 +13,6 @@
 package de.bixilon.minosoft.config
 
 import com.squareup.moshi.JsonWriter
-import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.config.Config
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.KUtil.toInt
@@ -21,6 +20,7 @@ import de.bixilon.minosoft.util.Util
 import de.bixilon.minosoft.util.json.JSONSerializer
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
+import de.bixilon.minosoft.util.task.pool.DefaultThreadPool
 import okio.Buffer
 import java.io.File
 import java.io.FileWriter
@@ -34,7 +34,7 @@ class Configuration(private val configName: String = RunConfiguration.CONFIG_FIL
 
     init {
         if (file.exists()) {
-            val config = JSONSerializer.MAP_ADAPTER.fromJson(Util.readFile(file.absolutePath))!!
+            val config = JSONSerializer.MUTABLE_MAP_ADAPTER.fromJson(Util.readFile(file.absolutePath))!!
 
             migrate(config)
             var wasMigrated = false
@@ -63,7 +63,7 @@ class Configuration(private val configName: String = RunConfiguration.CONFIG_FIL
 
 
     fun saveToFile() {
-        Minosoft.THREAD_POOL.execute {
+        DefaultThreadPool += execute@{
             synchronized(saveLock) {
                 // write config to temp file, delete original config, rename temp file to original file to avoid conflicts if minosoft gets closed while saving the config
                 val tempFile = File(RunConfiguration.HOME_DIRECTORY + "config/minosoft/" + configName + ".tmp")

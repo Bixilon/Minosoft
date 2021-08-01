@@ -13,6 +13,7 @@
 package de.bixilon.minosoft.modding.event.events
 
 import de.bixilon.minosoft.modding.event.EventInitiators
+import de.bixilon.minosoft.modding.event.events.connection.ConnectionEvent
 import de.bixilon.minosoft.protocol.network.connection.Connection
 import de.bixilon.minosoft.protocol.packets.s2c.S2CPacket
 

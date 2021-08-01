@@ -13,6 +13,10 @@
 package de.bixilon.minosoft.data.text
 
 import de.bixilon.minosoft.Minosoft
+import de.bixilon.minosoft.data.text.events.ClickEvent
+import de.bixilon.minosoft.data.text.events.HoverEvent
+import de.bixilon.minosoft.gui.eros.dialog.ErosErrorReport.Companion.report
+import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.hyperlink
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.font.Font
@@ -38,6 +42,8 @@ open class TextComponent(
     message: Any? = "",
     var color: RGBColor? = null,
     var formatting: MutableSet<ChatFormattingCode> = mutableSetOf(),
+    var clickEvent: ClickEvent? = null,
+    var hoverEvent: HoverEvent? = null,
 ) : ChatComponent {
     override var message: String = message?.toString() ?: "null"
 
@@ -116,16 +122,18 @@ open class TextComponent(
 
     override fun getJavaFXText(nodes: ObservableList<Node>): ObservableList<Node> {
         val text = Text(this.message)
-        val color = this.color ?: ProtocolDefinition.DEFAULT_COLOR
-        text.fill = Color.WHITE
-        if (Minosoft.getConfig().config.chat.colored) {
-            text.fill = Color.rgb(color.red, color.green, color.blue)
+        this.color?.let {
+            if (Minosoft.config.config.chat.colored) {
+                text.fill = Color.rgb(it.red, it.green, it.blue)
+            }
+        } ?: let {
+            text.styleClass += "text-default-color"
         }
         for (chatFormattingCode in formatting) {
             when (chatFormattingCode) {
                 PreChatFormattingCodes.OBFUSCATED -> {
                     // ToDo: potential memory leak: Stop timeline, when TextComponent isn't shown anymore
-                    val obfuscatedTimeline = if (Minosoft.getConfig().config.chat.obfuscated) {
+                    val obfuscatedTimeline = if (Minosoft.config.config.chat.obfuscated) {
                         Timeline(KeyFrame(Duration.millis(50.0), {
                             val chars = text.text.toCharArray()
                             for (i in chars.indices) {
@@ -160,6 +168,26 @@ open class TextComponent(
             }
         }
         nodes.add(text)
+
+        clickEvent?.let { event ->
+            when (event.action) {
+                ClickEvent.ClickEventActions.OPEN_URL -> text.hyperlink(event.value.toString())
+                else -> {
+                    NotImplementedError("Unknown action ${event.action}").report()
+                    return@let
+                }
+            }
+        }
+
+        hoverEvent?.let {
+            when (it.action) {
+                HoverEvent.HoverEventActions.SHOW_TEXT -> text.accessibleText = it.value.toString() // ToDo
+                else -> {
+                    NotImplementedError("Unknown action ${it.action}").report()
+                    return@let
+                }
+            }
+        }
         return nodes
     }
 

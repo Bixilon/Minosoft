@@ -1,1 +1,106 @@
-minosoft:hello.world=§aHi, my name is §e%1$s§a. I am §e%2$s §ayears old and I want to say the following: §cHello world!
+minosoft:general.empty=
+minosoft:general.cancel=Cancel
+minosoft:general.confirm=Confirm
+minosoft:general.delete=Delete
+
+minosoft:eros_window_title=Minosoft
+
+minosoft:server_type.custom=Custom
+minosoft:server_type.lan=LAN
+
+minosoft:server_info.server_name=Server name
+minosoft:server_info.server_address=Server address
+minosoft:server_info.real_server_address=Real address
+minosoft:server_info.forced_version=Forced version
+minosoft:server_info.remote_version=Remote version
+minosoft:server_info.remote_brand=Remote brand
+minosoft:server_info.active_connections=Active connections
+minosoft:server_info.players_online=Players online
+minosoft:server_info.ping=Latency
+
+minosoft:server_info.delete.dialog.description=Do you really want to delete the server %1$s (%2$s)?
+
+
+minosoft:connection.status.state.waiting=Waiting...
+minosoft:connection.status.state.resolving=Resolving hostname...
+minosoft:connection.status.state.establishing=Establishing connection...
+minosoft:connection.status.state.handshaking=Performing handshake with server...
+minosoft:connection.status.state.querying_status=Querying motd...
+minosoft:connection.status.state.querying_ping=Calculating ping...
+minosoft:connection.status.state.ping_done=Status fetched!
+minosoft:connection.status.state.error=Error in connection!
+
+
+minosoft:general.dialog.are_you_sure=Are you sure?
+
+
+minosoft:update_server.name.label=Server name
+minosoft:update_server.name.placeholder=A Minosoft server
+minosoft:update_server.address.label=Server address
+minosoft:update_server.address.placeholder=127.0.0.1:25565
+minosoft:update_server.forced_version.label=Forced version
+minosoft:update_server.forced_version.automatic=Auto detect
+minosoft:update_server.forced_version.releases=Releases
+minosoft:update_server.forced_version.snapshots=Snapshots
+
+minosoft:update_server.add.title=Add server - Minosoft
+minosoft:update_server.add.description=Please enter the server name, their hostname or IP address and select the version in order to add the server
+minosoft:update_server.add.update_button=Add server
+
+minosoft:update_server.edit.title=Edit server - Minosoft
+minosoft:update_server.edit.description=Please change the server details and click on save
+minosoft:update_server.edit.update_button=Save server
+
+minosoft:server_list.refresh.header=Refresh
+minosoft:server_list.refresh.text1=Get the latest
+minosoft:server_list.refresh.text2=information
+
+
+
+minosoft:main.account.no_account_selected=No account selected
+
+minosoft:main.account.type.mojang=Mojang
+minosoft:main.account.type.microsoft=Microsoft
+minosoft:main.account.type.offline=Offline
+
+
+minosoft:main.account.card.connection_count=%1$s connections
+
+minosoft:main.account.account_info.id=Id
+minosoft:main.account.account_info.email=E-Mail
+minosoft:main.account.account_info.uuid=UUID
+
+minosoft:main.account.add.offline.title=Add offline account
+minosoft:main.account.add.offline.header=Add offline account
+minosoft:main.account.add.offline.description=Please enter the username of the account you want to add.
+minosoft:main.account.add.offline.username.label=Username
+minosoft:main.account.add.offline.username.placeholder=Test user
+minosoft:main.account.add.offline.add_button=Add
+minosoft:main.account.add.offline.cancel_button=Cancel
+
+minosoft:main.account.add.mojang.title=Add mojang account
+minosoft:main.account.add.mojang.header=Add mojang account
+minosoft:main.account.add.mojang.description=Please enter your mojang email (or for legacy accounts their username) and your password to continue
+minosoft:main.account.add.mojang.email.label=E-mail
+minosoft:main.account.add.mojang.email.placeholder=user@example.org
+minosoft:main.account.add.mojang.password.label=Password
+minosoft:main.account.add.mojang.password.placeholder=********
+minosoft:main.account.add.mojang.add_button=Add
+minosoft:main.account.add.mojang.cancel_button=Cancel
+
+
+minosoft:connection.kick.title=Kicked from server
+minosoft:connection.kick.header=You got kicked
+minosoft:connection.kick.description=You got kicked from %1$s (connected with: %2$s)
+minosoft:connection.kick.reconnect_button=Reconnect
+minosoft:connection.kick.close_button=Close
+
+minosoft:connection.login_kick.title=Kicked from server
+minosoft:connection.login_kick.header=You got kicked
+minosoft:connection.login_kick.description=You got kicked while logging in from %1$s (connected with: %2$s)
+
+minosoft:error.title=%1$s - Minosoft
+minosoft:error.header=An error occurred!
+minosoft:error.description=An error in minosoft occurred. You can continue like before, but the behavior might not be the expected one. If this error persists, feel free to open an issue here: https://gitlab.bixilon.de/bixilon/minosoft/-/issues/
+minosoft:error.ignore=Ignore
+minosoft:error.fatal_crash=Fatal crash

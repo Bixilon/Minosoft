@@ -24,7 +24,7 @@ abstract class HUDElement(protected val hudRenderer: HUDRenderer) {
     lateinit var properties: HUDElementProperties
 
     val scale: Float
-        get() = properties.scale * Minosoft.getConfig().config.game.hud.scale
+        get() = properties.scale * Minosoft.config.config.game.hud.scale
 
     open fun init() {}
     open fun postInit() {}

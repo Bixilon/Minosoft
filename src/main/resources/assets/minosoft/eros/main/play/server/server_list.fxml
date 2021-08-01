@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<HBox xmlns:fx="http://javafx.com/fxml/1" maxHeight="Infinity" maxWidth="Infinity" prefHeight="500.0" prefWidth="900.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" xmlns="http://javafx.com/javafx/16" fx:controller="de.bixilon.minosoft.gui.eros.main.play.server.ServerListController">
+    <GridPane HBox.hgrow="ALWAYS">
+        <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES"/>
+        </columnConstraints>
+        <rowConstraints>
+            <RowConstraints vgrow="ALWAYS"/>
+            <RowConstraints vgrow="NEVER"/>
+        </rowConstraints>
+        <GridPane GridPane.rowIndex="1">
+            <columnConstraints>
+                <ColumnConstraints hgrow="NEVER"/>
+                <ColumnConstraints hgrow="NEVER"/>
+                <ColumnConstraints hgrow="NEVER"/>
+                <ColumnConstraints hgrow="ALWAYS"/>
+                <ColumnConstraints hgrow="NEVER"/>
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints vgrow="NEVER"/>
+            </rowConstraints>
+            <CheckBox fx:id="hideOfflineFX" onAction="#refreshList" mnemonicParsing="false" text="Hide offline">
+                <GridPane.margin>
+                    <Insets left="5.0" right="5.0"/>
+                </GridPane.margin>
+            </CheckBox>
+            <CheckBox fx:id="hideFullFX" onAction="#refreshList" mnemonicParsing="false" text="Hide full" GridPane.columnIndex="1">
+                <GridPane.margin>
+                    <Insets left="5.0" right="5.0"/>
+                </GridPane.margin>
+            </CheckBox>
+            <CheckBox fx:id="hideEmptyFX" onAction="#refreshList" mnemonicParsing="false" text="Hide empty" GridPane.columnIndex="2">
+                <GridPane.margin>
+                    <Insets left="5.0" right="5.0"/>
+                </GridPane.margin>
+            </CheckBox>
+            <Button fx:id="addServerButtonFX" onAction="#addServer" mnemonicParsing="false" text="Add Server" GridPane.columnIndex="4"/>
+            <GridPane.margin>
+                <Insets top="5.0"/>
+            </GridPane.margin>
+        </GridPane>
+        <GridPane>
+            <ListView fx:id="serverListViewFX" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS"/>
+            <AnchorPane fx:id="serverInfoFX" minHeight="0.0" minWidth="0.0" GridPane.columnIndex="1"/>
+        </GridPane>
+    </GridPane>
+</HBox>

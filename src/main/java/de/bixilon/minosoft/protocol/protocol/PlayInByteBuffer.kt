@@ -22,8 +22,7 @@ import de.bixilon.minosoft.data.registries.particle.data.ItemParticleData
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.data.registries.recipes.Ingredient
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.data.text.ChatComponent.Companion.of
-import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
 import glm_.vec3.Vec3i
@@ -70,7 +69,7 @@ class PlayInByteBuffer : InByteBuffer {
     }
 
     override fun readChatComponent(): ChatComponent {
-        return of(readString(), connection.version.language, null)
+        return ChatComponent.of(readString(), connection.version.language, null)
     }
 
     fun readParticle(): ParticleData {
@@ -121,15 +120,13 @@ class PlayInByteBuffer : InByteBuffer {
             )
         }
 
-        return if (readBoolean()) {
+        return readOptional {
             ItemStack(
                 item = connection.registries.itemRegistry[readVarInt()],
                 connection = connection,
                 count = readUnsignedByte(),
                 nbt = readNBT()?.compoundCast() ?: mutableMapOf(),
             )
-        } else {
-            null
         }
     }
 

@@ -15,7 +15,7 @@ package de.bixilon.minosoft.protocol.packets.s2c.play
 import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.modding.event.events.ContainerSlotChangeEvent
-import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_17_1_PRE_1
@@ -55,6 +55,6 @@ class ContainerItemsSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     }
 
     override fun log() {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Container items set (containerId=$containerId, items=$items)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Container items set (containerId=$containerId, items=${items.contentToString()}" }
     }
 }

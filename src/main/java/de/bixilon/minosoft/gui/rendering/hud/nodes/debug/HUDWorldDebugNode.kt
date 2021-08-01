@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.hud.nodes.debug
 
+import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -37,7 +38,7 @@ class HUDWorldDebugNode(hudRenderer: HUDRenderer) : DebugScreenNode(hudRenderer)
         layout.sizing.forceAlign = NodeAlignment.LEFT
         layout.sizing.padding.left = 2
         layout.sizing.padding.top = 2
-        text("§cMinosoft 0.1-pre1")
+        text("§cMinosoft ${StaticConfiguration.VERSION}")
     }
 
     private val fpsText = text("TBA")

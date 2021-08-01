@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.data.entities.block
 
 import de.bixilon.minosoft.data.registries.CompanionResourceLocation
-import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 interface BlockEntityFactory<T : BlockEntity> : CompanionResourceLocation {
     fun build(connection: PlayConnection): T

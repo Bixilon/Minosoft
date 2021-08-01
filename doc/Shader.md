@@ -12,4 +12,4 @@ followed by `in`. So `vinPosition` is a valid name.
 
 ## Uniforms
 
-Prefixed with u
+Prefixed with `u`

@@ -19,7 +19,7 @@ import de.bixilon.minosoft.data.player.PlayerProperty
 import de.bixilon.minosoft.data.player.tab.TabListItem
 import de.bixilon.minosoft.data.player.tab.TabListItemData
 import de.bixilon.minosoft.modding.event.events.PlayerListItemChangeEvent
-import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
@@ -123,9 +123,8 @@ class TabListDataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
             if (connection.version.versionId < ProtocolVersions.V_14W19A) { // ToDo: 19?
                 val item: TabListItem = if (data.remove) {
                     // add or remove
-                    connection.tabList.tabListItems[uuid]?.let {
+                    connection.tabList.tabListItems[uuid]?.apply {
                         connection.tabList.tabListItems.remove(uuid)
-                        it
                     } ?: let {
                         // add
                         val itemToAdd = TabListItem(name = data.name!!)

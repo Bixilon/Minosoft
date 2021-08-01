@@ -17,16 +17,17 @@ import com.google.common.collect.HashBiMap;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import de.bixilon.minosoft.data.registries.registries.Registries;
-import de.bixilon.minosoft.protocol.protocol.ConnectionStates;
 import de.bixilon.minosoft.protocol.protocol.PacketTypes;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
+import de.bixilon.minosoft.protocol.protocol.ProtocolStates;
 
 import java.util.HashMap;
 import java.util.Map;
 
+@Deprecated
 public class Versions {
     public static final Version AUTOMATIC_VERSION = new Version("Automatic", -1, -1, Map.of(), Map.of());
-    private static final HashBiMap<Integer, Version> VERSION_ID_MAP = HashBiMap.create(500);
+    public static final HashBiMap<Integer, Version> VERSION_ID_MAP = HashBiMap.create(500);
     private static final HashBiMap<Integer, Version> VERSION_PROTOCOL_ID_MAP = HashBiMap.create(500);
     private static final HashBiMap<String, Version> VERSION_NAME_MAP = HashBiMap.create(500);
     public static Registries PRE_FLATTENING_MAPPING;
@@ -59,8 +60,8 @@ public class Versions {
             return VERSION_ID_MAP.get(versionId);
         }
 
-        Map<ConnectionStates, HashBiMap<PacketTypes.C2S, Integer>> c2sMapping;
-        Map<ConnectionStates, HashBiMap<PacketTypes.S2C, Integer>> s2cMapping;
+        Map<ProtocolStates, HashBiMap<PacketTypes.C2S, Integer>> c2sMapping;
+        Map<ProtocolStates, HashBiMap<PacketTypes.S2C, Integer>> s2cMapping;
         if (versionJson.get("mapping").isJsonPrimitive()) {
             // inherits or copies mapping from an other version
             Version parent = VERSION_ID_MAP.get(versionJson.get("mapping").getAsInt());
@@ -96,14 +97,10 @@ public class Versions {
         Version version = new Version(versionName, versionId, protocolId, c2sMapping, s2cMapping);
         VERSION_ID_MAP.put(version.getVersionId(), version);
         VERSION_PROTOCOL_ID_MAP.put(version.getProtocolId(), version);
-        VERSION_NAME_MAP.put(version.getVersionName(), version);
+        VERSION_NAME_MAP.put(version.getName(), version);
         if (version.getVersionId() == ProtocolDefinition.PRE_FLATTENING_VERSION_ID) {
             PRE_FLATTENING_VERSION = version;
         }
         return version;
-    }
-
-    public static HashBiMap<Integer, Version> getVersionIdMap() {
-        return VERSION_ID_MAP;
     }
 }

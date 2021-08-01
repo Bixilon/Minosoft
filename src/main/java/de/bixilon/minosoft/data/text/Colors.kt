@@ -21,4 +21,6 @@ object Colors {
     val TRUE_BLUE = RGBColor(0, 0, 255)
 
     val TRUE_YELLOW = RGBColor(255, 255, 0)
+
+    val DARK_RED = RGBColor(255, 50, 30)
 }

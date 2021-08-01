@@ -24,7 +24,7 @@ import de.bixilon.minosoft.gui.rendering.hud.elements.input.TextFieldProperties
 import de.bixilon.minosoft.gui.rendering.hud.nodes.HUDElement
 import de.bixilon.minosoft.gui.rendering.hud.nodes.layout.AbsoluteLayout
 import de.bixilon.minosoft.gui.rendering.modding.events.ResizeWindowEvent
-import de.bixilon.minosoft.modding.event.CallbackEventInvoker
+import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import glm_.vec2.Vec2
 import glm_.vec2.Vec2i
 

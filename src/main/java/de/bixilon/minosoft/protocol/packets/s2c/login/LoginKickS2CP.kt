@@ -14,7 +14,8 @@ package de.bixilon.minosoft.protocol.packets.s2c.login
 
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.modding.event.events.LoginKickEvent
-import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.util.logging.Log
@@ -26,8 +27,9 @@ class LoginKickS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
 
     override fun handle(connection: PlayConnection) {
         connection.fireEvent(LoginKickEvent(connection, this))
-        Log.log(LogMessageType.NETWORK_STATUS, level = LogLevels.WARN) { "Kicked from: $reason" }
+        Log.log(LogMessageType.NETWORK_STATUS, level = LogLevels.WARN) { "Kicked from ${connection.address}: $reason" }
         connection.disconnect()
+        connection.state = PlayConnectionStates.ERROR
     }
 
     override fun log() {

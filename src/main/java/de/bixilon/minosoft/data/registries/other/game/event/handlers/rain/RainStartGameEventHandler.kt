@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.registries.other.game.event.handlers.rain
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.other.game.event.handlers.GameEventHandler
-import de.bixilon.minosoft.protocol.network.connection.PlayConnection
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
 
 object RainStartGameEventHandler : GameEventHandler {

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<HBox xmlns:fx="http://javafx.com/fxml/1" prefHeight="700.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/16" fx:controller="de.bixilon.minosoft.gui.eros.crash.ErosCrashReport">
+    <GridPane HBox.hgrow="ALWAYS">
+        <columnConstraints>
+            <ColumnConstraints hgrow="ALWAYS"/>
+        </columnConstraints>
+        <rowConstraints>
+            <RowConstraints vgrow="NEVER"/>
+            <RowConstraints vgrow="NEVER"/>
+            <RowConstraints vgrow="NEVER"/>
+            <RowConstraints vgrow="NEVER"/>
+            <RowConstraints/>
+            <RowConstraints maxHeight="Infinity" vgrow="ALWAYS"/>
+            <RowConstraints vgrow="NEVER"/>
+        </rowConstraints>
+        <Label text="Minosoft quit unexpectedly">
+            <font>
+                <Font name="System Bold" size="19.0"/>
+            </font>
+        </Label>
+        <TextFlow GridPane.rowIndex="1">
+            <Label text="A critical error in minosoft occurred, that forced it it exit. If this error persists, please open an issue here: " wrapText="true"/>
+            <Hyperlink onAction="#openURL" text="https://gitlab.bixilon.de/bixilon/minosoft/-/issues/" wrapText="true"/>
+            <GridPane.margin>
+                <Insets top="5.0"/>
+            </GridPane.margin>
+        </TextFlow>
+        <TextFlow fx:id="crashReportPathDescriptionFX" GridPane.rowIndex="3">
+            <Label text="You can also find the crash report here: " wrapText="true"/>
+            <Hyperlink fx:id="crashReportPathFX" onAction="#openURL" text="/home/moritz/.config/minosoft/crash-reports/dummy.txt" wrapText="true"/>
+        </TextFlow>
+        <Label text="Details:" GridPane.rowIndex="4">
+            <font>
+                <Font size="15.0"/>
+            </font>
+        </Label>
+        <TextArea fx:id="detailsFX" editable="false" text="TBA" GridPane.rowIndex="5">
+            <font>
+                <Font name="Monospaced Regular"/>
+            </font>
+        </TextArea>
+        <GridPane GridPane.rowIndex="6">
+            <columnConstraints>
+                <ColumnConstraints hgrow="NEVER"/>
+                <ColumnConstraints hgrow="ALWAYS"/>
+                <ColumnConstraints hgrow="NEVER"/>
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints vgrow="ALWAYS"/>
+            </rowConstraints>
+            <padding>
+                <Insets top="5.0"/>
+            </padding>
+            <Button maxWidth="Infinity" onAction="#exit" text="Exit" GridPane.columnIndex="2"/>
+            <Button maxWidth="Infinity" onAction="#hardCrash" text="Hard crash"/>
+        </GridPane>
+    </GridPane>
+    <padding>
+        <Insets bottom="10.0" left="20.0" right="20.0" top="10.0"/>
+    </padding>
+</HBox>
