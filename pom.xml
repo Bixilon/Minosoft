@@ -197,7 +197,7 @@
         <maven.compiler.source>14</maven.compiler.source>
         <maven.compiler.target>14</maven.compiler.target>
         <javafx.version>17-ea+15</javafx.version>
-        <kotlin.version>1.5.10</kotlin.version>
+        <kotlin.version>1.5.21</kotlin.version>
         <lwjgl.version>3.2.3</lwjgl.version>
     </properties>
 
@@ -328,7 +328,7 @@
         <dependency>
             <groupId>com.github.oshi</groupId>
             <artifactId>oshi-core</artifactId>
-            <version>5.7.5</version>
+            <version>5.8.0</version>
         </dependency>
         <dependency>
             <groupId>com.squareup.moshi</groupId>
@@ -348,7 +348,7 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
-            <version>1.7.31</version>
+            <version>1.7.32</version>
         </dependency>
         <dependency>
             <groupId>org.kordamp.ikonli</groupId>
