@@ -27,6 +27,8 @@ import javafx.application.Platform
 import javafx.fxml.FXML
 import javafx.scene.control.Button
 import javafx.scene.control.TextField
+import javafx.scene.input.KeyCode
+import javafx.scene.input.KeyEvent
 import javafx.scene.text.TextFlow
 import javafx.stage.Modality
 
@@ -64,10 +66,18 @@ class OfflineAddController(
         usernameFX.textProperty().addListener { _, _, new ->
             addButtonFX.isDisable = !ProtocolDefinition.MINECRAFT_NAME_VALIDATOR.matcher(new).matches()
         }
+        stage.scene.root.addEventFilter(KeyEvent.KEY_PRESSED) {
+            if (it.code == KeyCode.ENTER) {
+                add()
+            }
+        }
     }
 
     @FXML
     fun add() {
+        if (addButtonFX.isDisable) {
+            return
+        }
         val account = OfflineAccount(usernameFX.text)
         Minosoft.config.config.account.entries[account.id] = account
         Minosoft.config.saveToFile()

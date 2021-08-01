@@ -97,7 +97,7 @@ class MainErosController : JavaFXWindowController() {
             activity = ErosMainActivities.PlAY
         }
         settingsIconFX.setOnMouseClicked {
-            // activity = ErosMainActivities.SETTINGS
+            // ToDo: activity = ErosMainActivities.SETTINGS
         }
         helpIconFX.setOnMouseClicked {
             // ToDo: activity = ErosMainActivities.HELP

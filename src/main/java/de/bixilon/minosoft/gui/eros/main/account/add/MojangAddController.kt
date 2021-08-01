@@ -29,6 +29,8 @@ import javafx.fxml.FXML
 import javafx.scene.control.Button
 import javafx.scene.control.PasswordField
 import javafx.scene.control.TextField
+import javafx.scene.input.KeyCode
+import javafx.scene.input.KeyEvent
 import javafx.scene.text.TextFlow
 import javafx.stage.Modality
 
@@ -79,6 +81,11 @@ class MojangAddController(
         passwordFX.textProperty().addListener { _, _, _ ->
             validate()
         }
+        stage.scene.root.addEventFilter(KeyEvent.KEY_PRESSED) {
+            if (it.code == KeyCode.ENTER) {
+                login()
+            }
+        }
     }
 
     private fun validate() {
@@ -95,6 +102,9 @@ class MojangAddController(
 
     @FXML
     fun login() {
+        if (loginButtonFX.isDisable) {
+            return
+        }
         loginButtonFX.isDisable = true
         errorFX.isVisible = false
         DefaultThreadPool += {
