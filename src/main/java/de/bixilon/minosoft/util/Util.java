@@ -288,6 +288,7 @@ public final class Util {
 
     public static void initUtilClasses() {
         forceClassInit(Log.class);
+        forceClassInit(ResourceURLHandler.class);
         forceClassInit(MicrosoftOAuthUtils.class);
         forceClassInit(TimeWorker.class);
     }

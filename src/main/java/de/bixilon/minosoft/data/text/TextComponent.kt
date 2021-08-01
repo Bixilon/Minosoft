@@ -123,7 +123,6 @@ open class TextComponent(
     override fun getJavaFXText(nodes: ObservableList<Node>): ObservableList<Node> {
         val text = Text(this.message)
         this.color?.let {
-            text.fill = Color.WHITE
             if (Minosoft.config.config.chat.colored) {
                 text.fill = Color.rgb(it.red, it.green, it.blue)
             }

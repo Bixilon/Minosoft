@@ -20,9 +20,7 @@ import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.HTTP
 import de.bixilon.minosoft.util.Util
 import de.bixilon.minosoft.util.logging.Log
-import java.net.URL
 import java.net.URLConnection
-import java.net.URLStreamHandler
 
 object MicrosoftOAuthUtils {
     val NULL_URL_CONNECTION: URLConnection = object : URLConnection(null) {
@@ -166,16 +164,17 @@ object MicrosoftOAuthUtils {
     }
 
     init {
-        URL.setURLStreamHandlerFactory {
-            if (it == "ms-xal-" + ProtocolDefinition.MICROSOFT_ACCOUNT_APPLICATION_ID) {
-                return@setURLStreamHandlerFactory object : URLStreamHandler() {
-                    override fun openConnection(url: URL): URLConnection {
-                        loginToMicrosoftAccount(Util.urlQueryToMap(url.query)["code"]!!)
-                        return NULL_URL_CONNECTION
-                    }
-                }
-            }
-            return@setURLStreamHandlerFactory null
-        }
+        // ToDo
+//        URL.setURLStreamHandlerFactory {
+//            if (it == "ms-xal-" + ProtocolDefinition.MICROSOFT_ACCOUNT_APPLICATION_ID) {
+//                return@setURLStreamHandlerFactory object : URLStreamHandler() {
+//                    override fun openConnection(url: URL): URLConnection {
+//                        loginToMicrosoftAccount(Util.urlQueryToMap(url.query)["code"]!!)
+//                        return NULL_URL_CONNECTION
+//                    }
+//                }
+//            }
+//            return@setURLStreamHandlerFactory null
+//        }
     }
 }

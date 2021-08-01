@@ -49,6 +49,8 @@ object JavaFXUtil {
         stage.scene = Scene(parent)
         stage.icons.setAll(MINOSOFT_LOGO)
 
+        stage.scene.stylesheets.add("resource:minosoft:eros/style.css")
+
         val controller: T = fxmlLoader.getController()
 
         if (controller is JavaFXWindowController) {
