@@ -166,6 +166,7 @@ class ErosCrashReport : JavaFXWindowController() {
                 stage.title = "Fatal Crash - Minosoft"
                 stage.scene = Scene(parent)
                 stage.icons.setAll(JavaFXUtil.MINOSOFT_LOGO)
+                ErosCrashReport::class.java.getResource("/assets/minosoft/eros/style.css")?.toExternalForm()?.let { stage.scene.stylesheets.add(it) }
 
                 val crashReport = fxmlLoader.getController<ErosCrashReport>()
                 crashReport.exception = this

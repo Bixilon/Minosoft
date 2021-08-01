@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.text.TextFlow?>
 <HBox xmlns:fx="http://javafx.com/fxml/1" fx:id="root" prefHeight="100.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/16" fx:controller="de.bixilon.minosoft.gui.eros.main.play.server.card.ServerCardController">
     <GridPane HBox.hgrow="ALWAYS">
         <columnConstraints>
@@ -46,9 +48,9 @@
                     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER"/>
                     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS"/>
                 </rowConstraints>
-                <Text fx:id="pingFX" text="20 ms"/>
-                <Text fx:id="playerCountFX" text="0 / 123.456.789" GridPane.rowIndex="1"/>
-                <Text fx:id="serverVersionFX" text="1.17.1" GridPane.rowIndex="2"/>
+                <Label fx:id="pingFX" text="20 ms"/>
+                <Label fx:id="playerCountFX" text="0 / 123.456.789" GridPane.rowIndex="1"/>
+                <Label fx:id="serverVersionFX" text="1.17.1" GridPane.rowIndex="2"/>
             </GridPane>
         </GridPane>
     </GridPane>

@@ -126,6 +126,8 @@ open class TextComponent(
             if (Minosoft.config.config.chat.colored) {
                 text.fill = Color.rgb(it.red, it.green, it.blue)
             }
+        } ?: let {
+            text.styleClass += "text-default-color"
         }
         for (chatFormattingCode in formatting) {
             when (chatFormattingCode) {

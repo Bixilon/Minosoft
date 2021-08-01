@@ -20,6 +20,7 @@ import de.bixilon.minosoft.gui.eros.card.AbstractCard
 import de.bixilon.minosoft.gui.eros.card.CardFactory
 import de.bixilon.minosoft.gui.eros.modding.invoker.JavaFXEventInvoker
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
+import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.ctext
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.text
 import de.bixilon.minosoft.modding.event.events.connection.ConnectionErrorEvent
 import de.bixilon.minosoft.modding.event.events.connection.status.ServerStatusReceiveEvent
@@ -29,9 +30,9 @@ import de.bixilon.minosoft.util.KUtil.asResourceLocation
 import de.bixilon.minosoft.util.KUtil.text
 import de.bixilon.minosoft.util.KUtil.thousands
 import javafx.fxml.FXML
+import javafx.scene.control.Label
 import javafx.scene.image.Image
 import javafx.scene.image.ImageView
-import javafx.scene.text.Text
 import javafx.scene.text.TextFlow
 import java.io.ByteArrayInputStream
 
@@ -42,11 +43,11 @@ class ServerCardController : AbstractCard<ServerCard>() {
 
     @FXML private lateinit var motdFX: TextFlow
 
-    @FXML private lateinit var pingFX: Text
+    @FXML private lateinit var pingFX: Label
 
-    @FXML private lateinit var playerCountFX: Text
+    @FXML private lateinit var playerCountFX: Label
 
-    @FXML private lateinit var serverVersionFX: Text
+    @FXML private lateinit var serverVersionFX: Label
 
 
     private var lastServerCard: ServerCard? = null
@@ -57,9 +58,9 @@ class ServerCardController : AbstractCard<ServerCard>() {
 
         serverNameFX.children.clear()
         motdFX.children.clear()
-        pingFX.text = ""
-        playerCountFX.text = ""
-        serverVersionFX.text = ""
+        pingFX.ctext = ""
+        playerCountFX.ctext = ""
+        serverVersionFX.ctext = ""
     }
 
     override fun updateItem(card: ServerCard?, empty: Boolean) {
@@ -83,8 +84,8 @@ class ServerCardController : AbstractCard<ServerCard>() {
                 return@of
             }
             motdFX.text = it.status.motd ?: ChatComponent.EMPTY
-            playerCountFX.text = "${it.status.usedSlots?.thousands()} / ${it.status.slots?.thousands()}"
-            serverVersionFX.text = it.connection.serverVersion?.name
+            playerCountFX.ctext = "${it.status.usedSlots?.thousands()} / ${it.status.slots?.thousands()}"
+            serverVersionFX.ctext = it.connection.serverVersion?.name
 
             faviconFX.image = it.status.favicon?.let { favicon -> Image(ByteArrayInputStream(favicon)) } ?: JavaFXUtil.MINOSOFT_LOGO
 

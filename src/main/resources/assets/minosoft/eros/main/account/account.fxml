@@ -11,7 +11,7 @@
             <ColumnConstraints hgrow="ALWAYS" maxWidth="Infinity"/>
         </columnConstraints>
         <rowConstraints>
-            <RowConstraints maxHeight="Infinity" minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS"/>
+            <RowConstraints maxHeight="Infinity" vgrow="ALWAYS"/>
         </rowConstraints>
         <ListView fx:id="accountTypeListViewFX" maxHeight="Infinity" maxWidth="Infinity" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS"/>
         <GridPane GridPane.columnIndex="1">

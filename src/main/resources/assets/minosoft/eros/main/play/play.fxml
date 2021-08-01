@@ -12,22 +12,22 @@
             <ColumnConstraints hgrow="ALWAYS" maxWidth="Infinity" minWidth="10.0" prefWidth="100.0"/>
         </columnConstraints>
         <rowConstraints>
-            <RowConstraints maxHeight="Infinity" minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS"/>
+            <RowConstraints vgrow="ALWAYS"/>
         </rowConstraints>
         <AnchorPane fx:id="playTypeContentFX" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS"/>
         <GridPane prefHeight="400.0" prefWidth="235.0" HBox.hgrow="ALWAYS">
             <columnConstraints>
-                <ColumnConstraints hgrow="NEVER" maxWidth="190.0" minWidth="10.0" prefWidth="190.0"/>
+                <ColumnConstraints hgrow="NEVER"/>
             </columnConstraints>
             <rowConstraints>
-                <RowConstraints maxHeight="Infinity" minHeight="10.0" prefHeight="420.0" vgrow="ALWAYS"/>
-                <RowConstraints maxHeight="80.0" minHeight="10.0" prefHeight="80.0" vgrow="NEVER"/>
+                <RowConstraints maxHeight="Infinity" vgrow="ALWAYS"/>
+                <RowConstraints vgrow="NEVER"/>
             </rowConstraints>
             <GridPane.margin>
                 <Insets right="10.0"/>
             </GridPane.margin>
             <ListView fx:id="playTypeListViewFX" maxHeight="Infinity" maxWidth="Infinity" GridPane.hgrow="ALWAYS" GridPane.vgrow="ALWAYS"/>
-            <GridPane fx:id="refreshPaneFX" GridPane.rowIndex="1">
+            <GridPane fx:id="refreshPaneFX" styleClass="context-menu" GridPane.rowIndex="1">
                 <columnConstraints>
                     <ColumnConstraints hgrow="NEVER"/>
                     <ColumnConstraints hgrow="ALWAYS"/>
@@ -54,6 +54,14 @@
                         </GridPane.margin>
                         <Text text="Text 2"/>
                     </TextFlow>
+                    <columnConstraints>
+                        <ColumnConstraints/>
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints/>
+                        <RowConstraints/>
+                        <RowConstraints/>
+                    </rowConstraints>
                 </GridPane>
                 <FontIcon iconLiteral="fas-sync-alt" iconSize="50">
                     <GridPane.margin>

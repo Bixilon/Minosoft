@@ -32,17 +32,16 @@ import de.bixilon.minosoft.util.KUtil.decide
 import de.bixilon.minosoft.util.ShutdownManager
 import de.bixilon.minosoft.util.task.pool.DefaultThreadPool
 import javafx.fxml.FXML
+import javafx.scene.control.Label
 import javafx.scene.image.ImageView
 import javafx.scene.layout.Pane
-import javafx.scene.paint.Color
-import javafx.scene.text.Text
 import javafx.stage.WindowEvent
 import org.kordamp.ikonli.javafx.FontIcon
 
 
 class MainErosController : JavaFXWindowController() {
     @FXML private lateinit var logoFX: ImageView
-    @FXML private lateinit var versionTextFX: Text
+    @FXML private lateinit var versionTextFX: Label
 
     @FXML private lateinit var playIconFX: FontIcon
     @FXML private lateinit var settingsIconFX: FontIcon
@@ -54,7 +53,7 @@ class MainErosController : JavaFXWindowController() {
 
     @FXML private lateinit var accountImageFX: ImageView
 
-    @FXML private lateinit var accountNameFX: Text
+    @FXML private lateinit var accountNameFX: Label
 
     private lateinit var iconMap: Map<ErosMainActivities, FontIcon>
 
@@ -72,13 +71,10 @@ class MainErosController : JavaFXWindowController() {
             if (icon === iconToSelect) {
                 continue
             }
+            // ToDo: Set selected
             icon.isDisable = false
-            icon.iconColor = Color.BLACK
         }
-        iconToSelect?.apply {
-            isDisable = true
-            iconColor = Color.LIGHTBLUE
-        }
+        iconToSelect?.apply { isDisable = true }
     }
 
     override fun init() {
@@ -101,13 +97,15 @@ class MainErosController : JavaFXWindowController() {
             activity = ErosMainActivities.PlAY
         }
         settingsIconFX.setOnMouseClicked {
-            activity = ErosMainActivities.SETTINGS
+            // activity = ErosMainActivities.SETTINGS
         }
         helpIconFX.setOnMouseClicked {
-            activity = ErosMainActivities.HELP
+            // ToDo: activity = ErosMainActivities.HELP
+            JavaFXUtil.HOST_SERVICES.showDocument("https://gitlab.bixilon.de/bixilon/minosoft/-/issues/")
         }
         aboutIconFX.setOnMouseClicked {
-            activity = ErosMainActivities.ABOUT
+            // ToDo: activity = ErosMainActivities.ABOUT
+            JavaFXUtil.HOST_SERVICES.showDocument("https://gitlab.bixilon.de/bixilon/minosoft/")
         }
         exitIconFX.apply {
             clickable()
