@@ -53,8 +53,6 @@ class AccountController : EmbeddedJavaFXController<Pane>() {
 
         accountListViewFX.setCellFactory { AccountCardController.build() }
 
-        accountTypeListViewFX.selectionModel.select(0)
-
 
         accountTypeListViewFX.selectionModel.selectedItemProperty().addListener { _, _, new ->
             refreshList()
@@ -65,6 +63,9 @@ class AccountController : EmbeddedJavaFXController<Pane>() {
         accountListViewFX.selectionModel.selectedItemProperty().addListener { _, _, new ->
             setAccountInfo(new)
         }
+
+        accountTypeListViewFX.selectionModel.select(0)
+
         addButtonFX.setOnAction {
             accountTypeListViewFX.selectionModel.selectedItem.addHandler?.invoke(this)
         }

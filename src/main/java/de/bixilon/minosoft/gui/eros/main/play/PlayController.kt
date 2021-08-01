@@ -21,6 +21,7 @@ import de.bixilon.minosoft.gui.eros.main.play.server.type.ServerTypeCardControll
 import de.bixilon.minosoft.gui.eros.modding.events.ErosControllerTerminateEvent
 import de.bixilon.minosoft.gui.eros.modding.invoker.JavaFXEventInvoker
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
+import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.clickable
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.text
 import de.bixilon.minosoft.modding.event.events.LANServerDiscoverEvent
 import de.bixilon.minosoft.modding.event.invoker.EventInvoker
@@ -98,6 +99,7 @@ class PlayController : EmbeddedJavaFXController<Pane>() {
 
         playTypeListViewFX.selectionModel.select(0)
 
+        refreshPaneFX.clickable()
         refreshHeaderFX.text = REFRESH_HEADER
         refreshText1FX.text = REFRESH_TEXT1
         refreshText2FX.text = REFRESH_TEXT2
