@@ -59,4 +59,26 @@ object HTTP2 {
             )
         )
     }
+
+    fun <Response> String.get(bodyBuilder: (String) -> Response, headers: Map<String, Any> = mapOf()): HTTPResponse<Response> {
+        val client = HttpClient.newHttpClient()
+        val request = HttpRequest.newBuilder()
+            .uri(URI.create(this))
+            .GET()
+            .headers(*headers.headers())
+            .build()
+
+        val response = client.send(request, HttpResponse.BodyHandlers.ofString())
+        return HTTPResponse(response.statusCode(), bodyBuilder(response.body()))
+    }
+
+    fun String.getJson(headers: Map<String, Any> = mapOf()): HTTPResponse<Map<String, Any>?> {
+        return this.get(
+            bodyBuilder = { it.isBlank().decide(null) { JSONSerializer.MAP_ADAPTER.fromJson(it) } },
+            headers = headers.extend(
+                "Content-Type" to "application/json",
+                "Accept" to "application/json",
+            )
+        )
+    }
 }

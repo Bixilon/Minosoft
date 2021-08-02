@@ -79,7 +79,7 @@ class MainErosController : JavaFXWindowController() {
 
     override fun init() {
         logoFX.image = JavaFXUtil.MINOSOFT_LOGO
-        versionTextFX.text = "Minosoft " + GitInfo.IS_INITIALIZED.decide(GitInfo.GIT_COMMIT_ID, StaticConfiguration.VERSION)
+        versionTextFX.text = "Minosoft " + GitInfo.IS_INITIALIZED.decide(GitInfo.GIT_COMMIT_ID_ABBREV, StaticConfiguration.VERSION)
         iconMap = mapOf(
             ErosMainActivities.PlAY to playIconFX,
             ErosMainActivities.SETTINGS to settingsIconFX,

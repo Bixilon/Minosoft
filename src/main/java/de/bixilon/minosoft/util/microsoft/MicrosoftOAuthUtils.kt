@@ -13,13 +13,17 @@
 
 package de.bixilon.minosoft.util.microsoft
 
-import com.google.gson.JsonParser
 import de.bixilon.minosoft.data.accounts.types.MicrosoftAccount
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import de.bixilon.minosoft.terminal.RunConfiguration
-import de.bixilon.minosoft.util.HTTP
-import de.bixilon.minosoft.util.Util
+import de.bixilon.minosoft.util.KUtil.asList
+import de.bixilon.minosoft.util.KUtil.toLong
+import de.bixilon.minosoft.util.KUtil.unsafeCast
+import de.bixilon.minosoft.util.http.HTTP2.getJson
+import de.bixilon.minosoft.util.http.HTTP2.postJson
 import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
+import de.bixilon.minosoft.util.nbt.tag.NBTUtil.asCompound
 import java.net.URLConnection
 
 object MicrosoftOAuthUtils {
@@ -27,69 +31,34 @@ object MicrosoftOAuthUtils {
         override fun connect() {}
     }
 
-    fun loginToMicrosoftAccount(authorizationCode: String) {
-        Log.verbose("Logging into microsoft account...")
-        try {
-            val authorizationToken = getAuthorizationToken(authorizationCode)
-            val xboxLiveToken = getXboxLiveToken(authorizationToken)
-            val xstsToken = getXSTSToken(xboxLiveToken.first)
+    fun loginToMicrosoftAccount(authorizationCode: String): MicrosoftAccount {
+        Log.log(LogMessageType.AUTHENTICATION, LogLevels.INFO) { "Logging into microsoft account..." }
+        val authorizationToken = getAuthorizationToken(authorizationCode)
+        val xboxLiveToken = getXboxLiveToken(authorizationToken)
+        val xstsToken = getXSTSToken(xboxLiveToken.first)
 
-            val microsoftAccount = getMicrosoftAccount(getMinecraftAccessToken(xboxLiveToken.second, xstsToken))
-            // ToDo: Account.addAccount(microsoftAccount)
-        } catch (exception: Exception) {
-            Log.warn("Can not login into microsoft account")
-            exception.printStackTrace()
-
-            if (RunConfiguration.DISABLE_EROS) {
-                return
-            }
-
-            var message = "Could not login!"
-            var errorMessage = exception.javaClass.canonicalName + ": " + exception.message
-            if (exception is LoginException) {
-                message = "${exception.message} (${exception.errorCode})"
-                errorMessage = exception.errorMessage
-            }
-
-            //   Platform.runLater {
-            //       val dialog = JFXAlert<Boolean>()
-            //       // ToDo: GUITools.initializePane(dialog.dialogPane)
-            //       // Do not translate this, translations might fail to load...
-            //       dialog.title = "Login error"
-            //       val layout = JFXDialogLayout()
-            //       layout.setHeading(Text(message))
-            //       val text = TextArea(errorMessage)
-            //       text.isEditable = false
-            //       text.isWrapText = true
-            //       layout.setBody(text)
-            //       dialog.dialogPane.content = layout
-            //       val stage = dialog.dialogPane.scene.window as Stage
-            //       stage.toFront()
-            //       dialog.show()
-            //   }
-        }
+        return getMicrosoftAccount(getMinecraftAccessToken(xboxLiveToken.second, xstsToken))
     }
 
     fun getAuthorizationToken(authorizationCode: String): String {
-        val data = mapOf(
+        val response = mapOf(
             "client_id" to ProtocolDefinition.MICROSOFT_ACCOUNT_APPLICATION_ID,
             "code" to authorizationCode,
             "grant_type" to "authorization_code",
             "scope" to "service::user.auth.xboxlive.com::MBI_SSL",
-        )
-        val response = HTTP.postData(ProtocolDefinition.MICROSOFT_ACCOUNT_AUTH_TOKEN_URL, HashMap(data))
-        if (response.statusCode() != 200) {
-            throw LoginException(response.statusCode(), "Could not get authorization token ", response.body())
+        ).postJson(ProtocolDefinition.MICROSOFT_ACCOUNT_AUTH_TOKEN_URL)
+        if (response.statusCode != 200) {
+            throw LoginException(response.statusCode, "Could not get authorization token ", response.body.toString())
         }
-        val body = JsonParser.parseString(response.body()).asJsonObject
-        return body["access_token"]!!.asString
+        response.body!!
+        return response.body["access_token"].unsafeCast()
     }
 
     /**
      * returns A: XBL Token; B: UHS Token
      */
     fun getXboxLiveToken(authorizationToken: String): Pair<String, String> {
-        val payload = mapOf(
+        val response = mapOf(
             "Properties" to mapOf(
                 "AuthMethod" to "RPS",
                 "SiteName" to "user.auth.xboxlive.com",
@@ -97,68 +66,63 @@ object MicrosoftOAuthUtils {
             ),
             "RelyingParty" to "http://auth.xboxlive.com",
             "TokenType" to "JWT",
-        )
-        val response = HTTP.postJson(ProtocolDefinition.MICROSOFT_ACCOUNT_XBOX_LIVE_AUTHENTICATE_URL, Util.GSON.toJson(payload))
+        ).postJson(ProtocolDefinition.MICROSOFT_ACCOUNT_XBOX_LIVE_AUTHENTICATE_URL)
 
-        if (response.statusCode() != 200) {
-            throw LoginException(response.statusCode(), "Could not get authenticate against xbox live ", response.body())
+        response.body!!
+        if (response.statusCode != 200) {
+            throw LoginException(response.statusCode, "Could not get authenticate against xbox live ", response.body.toString())
         }
-        val body = JsonParser.parseString(response.body()).asJsonObject
-        return Pair(body["Token"]!!.asString, body["DisplayClaims"].asJsonObject["xui"].asJsonArray[0].asJsonObject["uhs"].asString)
+        return Pair(response.body["Token"].unsafeCast(), response.body["DisplayClaims"].asCompound()["xui"].asList()[0].asCompound()["uhs"].unsafeCast())
     }
 
     fun getXSTSToken(xBoxLiveToken: String): String {
-        val payload = mapOf(
+        val response = mapOf(
             "Properties" to mapOf(
                 "SandboxId" to "RETAIL",
                 "UserTokens" to listOf(xBoxLiveToken)
             ),
             "RelyingParty" to "rp://api.minecraftservices.com/",
             "TokenType" to "JWT",
-        )
-        val response = HTTP.postJson(ProtocolDefinition.MICROSOFT_ACCOUNT_XSTS_URL, Util.GSON.toJson(payload))
+        ).postJson(ProtocolDefinition.MICROSOFT_ACCOUNT_XSTS_URL)
 
-        if (response.statusCode() != 200) {
-            val error = JsonParser.parseString(response.body()).asJsonObject
-            val errorMessage = when (error["XErr"].asLong) {
+        response.body!!
+        if (response.statusCode != 200) {
+            val errorMessage = when (response.body["XErr"].toLong()) {
                 2148916233 -> "You don't have an XBox account!"
                 2148916238 -> "This account is a child account!"
-                else -> error["Message"].asString
+                else -> response.body["Message"].unsafeCast()
             }
-            throw LoginException(response.statusCode(), "Could not get authenticate against XSTS token ", errorMessage)
+            throw LoginException(response.statusCode, "Could not get authenticate against XSTS token ", errorMessage)
         }
-        val body = JsonParser.parseString(response.body()).asJsonObject
-        return body["Token"].asString!!
+        return response.body["Token"].unsafeCast()
     }
 
     fun getMinecraftAccessToken(uhs: String, xstsToken: String): String {
-        val payload = mapOf(
+        val response = mapOf(
             "identityToken" to "XBL3.0 x=${uhs};${xstsToken}"
-        )
-        val response = HTTP.postJson(ProtocolDefinition.MICROSOFT_ACCOUNT_MINECRAFT_LOGIN_WITH_XBOX_URL, Util.GSON.toJson(payload))
+        ).postJson(ProtocolDefinition.MICROSOFT_ACCOUNT_MINECRAFT_LOGIN_WITH_XBOX_URL)
 
-        if (response.statusCode() != 200) {
-            val error = JsonParser.parseString(response.body()).asJsonObject
-            throw LoginException(response.statusCode(), "Could not get minecraft access token ", error["errorMessage"].asString)
+        response.body!!
+        if (response.statusCode != 200) {
+            throw LoginException(response.statusCode, "Could not get minecraft access token ", response.body["errorMessage"].unsafeCast())
         }
-        val body = JsonParser.parseString(response.body()).asJsonObject
-        return body["access_token"].asString!!
+        return response.body["access_token"].unsafeCast()
     }
 
     fun getMicrosoftAccount(bearerToken: String): MicrosoftAccount {
-        val response = HTTP.get(ProtocolDefinition.MICROSOFT_ACCOUNT_GET_MOJANG_PROFILE_URL, HashMap(mapOf(
+        val response = ProtocolDefinition.MICROSOFT_ACCOUNT_GET_MOJANG_PROFILE_URL.getJson(mapOf(
             "Authorization" to "Bearer $bearerToken"
-        )))
+        ))
 
-        if (response.statusCode() != 200) {
-            val errorMessage = when (response.statusCode()) {
+        response.body!!
+        if (response.statusCode != 200) {
+            val errorMessage = when (response.statusCode) {
                 404 -> "You don't have a copy of minecraft!"
-                else -> JsonParser.parseString(response.body()).asJsonObject["errorMessage"].asString
+                else -> response.body["errorMessage"].unsafeCast()
             }
-            throw LoginException(response.statusCode(), "Could not get minecraft profile", errorMessage)
+            throw LoginException(response.statusCode, "Could not get minecraft profile", errorMessage)
         }
 
-        val body = JsonParser.parseString(response.body()).asJsonObject
         // return MicrosoftAccount(bearerToken, body["id"].asString!!, Util.getUUIDFromString(body["id"].asString!!), body["name"].asString!!)
         TODO()
     }

@@ -282,6 +282,10 @@ object KUtil {
         return this.nullCast()
     }
 
+    fun Any?.asList(): List<Any> {
+        return this.unsafeCast()
+    }
+
     fun Any.toJson(beautiful: Boolean = false, adapter: JsonAdapter<Any> = JSONSerializer.ANY_ADAPTER): String {
         val buffer = Buffer()
         val jsonWriter: JsonWriter = JsonWriter.of(buffer)
@@ -304,6 +308,15 @@ object KUtil {
             is Number -> this.toInt()
             is String -> Integer.valueOf(this)
             is Long -> this.toInt()
+            else -> TODO()
+        }
+    }
+
+    fun Any?.toLong(): Long {
+        return when (this) {
+            is Long -> this
+            is Number -> this.toLong()
+            is Int -> this.toLong()
             else -> TODO()
         }
     }
