@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.util
+package de.bixilon.minosoft.util.url
 
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -19,32 +19,14 @@ import java.io.InputStream
 import java.net.URL
 import java.net.URLConnection
 import java.net.URLStreamHandler
-import java.net.URLStreamHandlerFactory
 
 
-object ResourceURLHandler {
+object ResourceURLHandler : URLStreamHandler() {
 
-    init {
-        URL.setURLStreamHandlerFactory(ResourceURLStreamHandlerFactory)
+    override fun openConnection(url: URL?): URLConnection {
+        return ResourceURLConnection(url)
     }
 
-
-    private object ResourceStreamHandler : URLStreamHandler() {
-        override fun openConnection(url: URL?): URLConnection {
-            return ResourceURLConnection(url)
-        }
-    }
-
-
-    private object ResourceURLStreamHandlerFactory : URLStreamHandlerFactory {
-
-        override fun createURLStreamHandler(protocol: String): URLStreamHandler? {
-            if (protocol == "resource") {
-                return ResourceStreamHandler
-            }
-            return null
-        }
-    }
 
     private class ResourceURLConnection(url: URL?) : URLConnection(url) {
         override fun connect() {

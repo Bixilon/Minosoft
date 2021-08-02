@@ -24,6 +24,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import de.bixilon.minosoft.util.logging.Log;
 import de.bixilon.minosoft.util.microsoft.MicrosoftOAuthUtils;
 import de.bixilon.minosoft.util.task.time.TimeWorker;
+import de.bixilon.minosoft.util.url.URLProtocolStreamHandlers;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
@@ -288,7 +289,7 @@ public final class Util {
 
     public static void initUtilClasses() {
         forceClassInit(Log.class);
-        forceClassInit(ResourceURLHandler.class);
+        forceClassInit(URLProtocolStreamHandlers.class);
         forceClassInit(MicrosoftOAuthUtils.class);
         forceClassInit(TimeWorker.class);
     }

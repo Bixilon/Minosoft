@@ -18,18 +18,19 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.asList
 import de.bixilon.minosoft.util.KUtil.toLong
 import de.bixilon.minosoft.util.KUtil.unsafeCast
+import de.bixilon.minosoft.util.Util
 import de.bixilon.minosoft.util.http.HTTP2.getJson
 import de.bixilon.minosoft.util.http.HTTP2.postJson
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.asCompound
+import de.bixilon.minosoft.util.url.URLProtocolStreamHandlers
+import java.net.URL
 import java.net.URLConnection
+import java.net.URLStreamHandler
 
 object MicrosoftOAuthUtils {
-    val NULL_URL_CONNECTION: URLConnection = object : URLConnection(null) {
-        override fun connect() {}
-    }
 
     fun loginToMicrosoftAccount(authorizationCode: String): MicrosoftAccount {
         Log.log(LogMessageType.AUTHENTICATION, LogLevels.INFO) { "Logging into microsoft account..." }
@@ -70,7 +71,7 @@ object MicrosoftOAuthUtils {
 
         response.body!!
         if (response.statusCode != 200) {
-            throw LoginException(response.statusCode, "Could not get authenticate against xbox live ", response.body.toString())
+            throw LoginException(response.statusCode, "Could not authenticate with xbox live token", response.body.toString())
         }
         return Pair(response.body["Token"].unsafeCast(), response.body["DisplayClaims"].asCompound()["xui"].asList()[0].asCompound()["uhs"].unsafeCast())
     }
@@ -92,7 +93,7 @@ object MicrosoftOAuthUtils {
                 2148916238 -> "This account is a child account!"
                 else -> response.body["Message"].unsafeCast()
             }
-            throw LoginException(response.statusCode, "Could not get authenticate against XSTS token ", errorMessage)
+            throw LoginException(response.statusCode, "Could not get xsts token ", errorMessage)
         }
         return response.body["Token"].unsafeCast()
     }
@@ -128,17 +129,14 @@ object MicrosoftOAuthUtils {
     }
 
     init {
-        // ToDo
-//        URL.setURLStreamHandlerFactory {
-//            if (it == "ms-xal-" + ProtocolDefinition.MICROSOFT_ACCOUNT_APPLICATION_ID) {
-//                return@setURLStreamHandlerFactory object : URLStreamHandler() {
-//                    override fun openConnection(url: URL): URLConnection {
-//                        loginToMicrosoftAccount(Util.urlQueryToMap(url.query)["code"]!!)
-//                        return NULL_URL_CONNECTION
-//                    }
-//                }
-//            }
-//            return@setURLStreamHandlerFactory null
-//        }
+        URLProtocolStreamHandlers.PROTOCOLS["ms-xal-" + ProtocolDefinition.MICROSOFT_ACCOUNT_APPLICATION_ID] = LoginURLHandler
+    }
+
+    private object LoginURLHandler : URLStreamHandler() {
+
+        override fun openConnection(url: URL): URLConnection {
+            loginToMicrosoftAccount(Util.urlQueryToMap(url.query)["code"]!!)
+            return URLProtocolStreamHandlers.NULL_URL_CONNECTION
+        }
     }
 }
