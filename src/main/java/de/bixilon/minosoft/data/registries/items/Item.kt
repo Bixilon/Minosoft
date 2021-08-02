@@ -29,9 +29,9 @@ import de.bixilon.minosoft.data.registries.registries.registry.Translatable
 import de.bixilon.minosoft.gui.rendering.input.camera.hit.RaycastHit
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
+import de.bixilon.minosoft.util.KUtil.toBoolean
 import de.bixilon.minosoft.util.KUtil.toInt
 import de.bixilon.minosoft.util.KUtil.unsafeCast
-import de.bixilon.minosoft.util.nbt.tag.NBTUtil.booleanCast
 
 open class Item(
     override val resourceLocation: ResourceLocation,
@@ -41,7 +41,7 @@ open class Item(
     val rarity: Rarities = data["rarity"]?.toInt()?.let { Rarities[it] } ?: Rarities.COMMON
     val maxStackSize: Int = data["max_stack_size"]?.toInt() ?: 64
     val maxDamage: Int = data["max_damage"]?.toInt() ?: 1
-    val isFireResistant: Boolean = data["is_fire_resistant"]?.booleanCast() ?: false
+    val isFireResistant: Boolean = data["is_fire_resistant"]?.toBoolean() ?: false
     override val translationKey: ResourceLocation? = data["translation_key"]?.asResourceLocation()
     val creativeModeTab: CreativeModeTab? = data["category"]?.toInt()?.let { registries.creativeModeTabRegistry[it] }
 

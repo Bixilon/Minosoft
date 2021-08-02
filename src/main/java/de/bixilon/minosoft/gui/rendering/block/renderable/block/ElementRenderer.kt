@@ -32,7 +32,7 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.rotate
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
-import de.bixilon.minosoft.util.nbt.tag.NBTUtil.booleanCast
+import de.bixilon.minosoft.util.KUtil.toBoolean
 import glm_.vec3.Vec3
 
 class ElementRenderer(
@@ -47,7 +47,7 @@ class ElementRenderer(
     private var transformedPositions: Array<Vec3> = element.transformedPositions.clone()
 
     init {
-        rotatePositionsAxes(transformedPositions, rotation, data["rescale"]?.booleanCast() ?: model.rescale)
+        rotatePositionsAxes(transformedPositions, rotation, data["rescale"]?.toBoolean() ?: model.rescale)
 
         val faces: MutableMap<Directions, BlockModelFace> = mutableMapOf()
         for (direction in Directions.VALUES) {
@@ -60,7 +60,7 @@ class ElementRenderer(
                 faces[direction] = BlockModelFace(it)
             }
         }
-        if (data["uvlock"]?.booleanCast() ?: model.uvLock) {
+        if (data["uvlock"]?.toBoolean() ?: model.uvLock) {
             for (direction in Directions.VALUES) {
                 val axis = Axes[direction]
                 val angle = axis.choose(rotation) * axis.choose(direction.vector)

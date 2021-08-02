@@ -19,8 +19,8 @@ import de.bixilon.minosoft.data.registries.registries.registry.ResourceLocationD
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.TintColorCalculator
 import de.bixilon.minosoft.util.KUtil.nullCast
+import de.bixilon.minosoft.util.KUtil.toBoolean
 import de.bixilon.minosoft.util.KUtil.toInt
-import de.bixilon.minosoft.util.nbt.tag.NBTUtil.booleanCast
 import java.util.*
 
 data class Material(
@@ -46,13 +46,13 @@ data class Material(
                 resourceLocation = resourceLocation,
                 color = TintColorCalculator.getJsonColor(data["color"]?.toInt() ?: 0),
                 pushReaction = data["push_reaction"].nullCast<String>()?.let { PushReactions.valueOf(it.uppercase(Locale.getDefault())) } ?: PushReactions.NORMAL,
-                blockMotion = data["blocks_motion"]?.booleanCast() ?: false,
-                flammable = data["flammable"]?.booleanCast() ?: false,
-                liquid = data["liquid"]?.booleanCast() ?: false,
-                soft = data["is_soft"]?.booleanCast() ?: false,
-                solidBlocking = data["solid_blocking"]?.booleanCast() ?: false,
-                replaceable = data["replaceable"]?.booleanCast() ?: false,
-                solid = data["solid"]?.booleanCast() ?: false,
+                blockMotion = data["blocks_motion"]?.toBoolean() ?: false,
+                flammable = data["flammable"]?.toBoolean() ?: false,
+                liquid = data["liquid"]?.toBoolean() ?: false,
+                soft = data["is_soft"]?.toBoolean() ?: false,
+                solidBlocking = data["solid_blocking"]?.toBoolean() ?: false,
+                replaceable = data["replaceable"]?.toBoolean() ?: false,
+                solid = data["solid"]?.toBoolean() ?: false,
             )
         }
     }

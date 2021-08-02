@@ -26,10 +26,10 @@ import de.bixilon.minosoft.gui.rendering.block.models.BlockModel
 import de.bixilon.minosoft.gui.rendering.block.renderable.WorldEntryRenderer
 import de.bixilon.minosoft.gui.rendering.block.renderable.block.BlockRenderer
 import de.bixilon.minosoft.gui.rendering.block.renderable.block.MultipartRenderer
+import de.bixilon.minosoft.util.KUtil.toBoolean
 import de.bixilon.minosoft.util.KUtil.toInt
 import de.bixilon.minosoft.util.KUtil.unsafeCast
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.asCompound
-import de.bixilon.minosoft.util.nbt.tag.NBTUtil.booleanCast
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
 import glm_.vec3.Vec3i
 import java.util.*
@@ -172,7 +172,7 @@ data class BlockState(
             }
 
             val collisionShape = data["collision_shape"]?.asShape()
-                ?: if (data["is_collision_shape_full_block"]?.booleanCast() == true) {
+                ?: if (data["is_collision_shape_full_block"]?.toBoolean() == true) {
                     VoxelShape.FULL
                 } else {
                     VoxelShape.EMPTY
@@ -196,7 +196,7 @@ data class BlockState(
                 occlusionShape = occlusionShape,
                 outlineShape = outlineShape,
                 hardness = data["hardness"]?.unsafeCast<Float>() ?: 1.0f,
-                requiresTool = data["requires_tool"]?.booleanCast() ?: material.soft,
+                requiresTool = data["requires_tool"]?.toBoolean() ?: material.soft,
                 breakSoundEvent = data["break_sound_type"]?.toInt()?.let { registries.soundEventRegistry[it] },
                 stepSoundEvent = data["step_sound_type"]?.toInt()?.let { registries.soundEventRegistry[it] },
                 placeSoundEvent = data["place_sound_type"]?.toInt()?.let { registries.soundEventRegistry[it] },

@@ -16,11 +16,12 @@ package de.bixilon.minosoft.util
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.util.KUtil.toBoolean
+import de.bixilon.minosoft.util.KUtil.toInt
 import de.bixilon.minosoft.util.KUtil.unsafeCast
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
-import de.bixilon.minosoft.util.nbt.tag.NBTUtil.booleanCast
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 
@@ -94,15 +95,15 @@ object GitInfo {
             GIT_COMMIT_TIME = dateFormat.parse(json["git.commit.time"].unsafeCast()).time
             GIT_COMMIT_USER_EMAIL = json["git.commit.user.email"].unsafeCast()
             GIT_COMMIT_USER_NAME = json["git.commit.user.name"].unsafeCast()
-            GIT_DIRTY = json["git.dirty"]!!.booleanCast()
-            GIT_LOCAL_BRANCH_AHEAD = json["git.local.branch.ahead"].unsafeCast()
-            GIT_LOCAL_BRANCH_BEHIND = json["git.local.branch.behind"].unsafeCast()
+            GIT_DIRTY = json["git.dirty"].toBoolean()
+            GIT_LOCAL_BRANCH_AHEAD = json["git.local.branch.ahead"].toInt()
+            GIT_LOCAL_BRANCH_BEHIND = json["git.local.branch.behind"].toInt()
             GIT_TAGS = if (json["git.tags"].unsafeCast<String>().isBlank()) {
                 0
             } else {
                 json["git.tags"].unsafeCast()
             }
-            GIT_TOTAL_COMMIT_COUNT = json["git.total.commit.count"].unsafeCast()
+            GIT_TOTAL_COMMIT_COUNT = json["git.total.commit.count"].toInt()
 
             IS_INITIALIZED = true
         } catch (exception: Throwable) {

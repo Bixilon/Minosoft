@@ -45,9 +45,6 @@
                     <ColumnConstraints hgrow="NEVER" minWidth="10.0"/>
                     <ColumnConstraints hgrow="NEVER" minWidth="10.0"/>
                 </columnConstraints>
-                <rowConstraints>
-                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
-                </rowConstraints>
                 <FontIcon fx:id="playIconFX" accessibleText="Play" iconLiteral="fas-play" iconSize="30" GridPane.columnIndex="1">
                     <GridPane.margin>
                         <Insets bottom="2.0" left="5.0" right="5.0" top="2.0"/>

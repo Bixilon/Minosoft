@@ -31,14 +31,14 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.noise
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
 import de.bixilon.minosoft.util.KUtil.chance
-import de.bixilon.minosoft.util.nbt.tag.NBTUtil.booleanCast
+import de.bixilon.minosoft.util.KUtil.toBoolean
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3d
 import glm_.vec3.Vec3i
 import kotlin.random.Random
 
 open class CampfireBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : Block(resourceLocation, registries, data) {
-    val lavaParticles = data["lava_particles"]?.booleanCast() ?: true
+    val lavaParticles = data["lava_particles"]?.toBoolean() ?: true
 
     private val campfireCrackleSoundEvent = registries.soundEventRegistry[CAMPFIRE_CRACKLE_SOUND_RESOURCE_LOCATION]!!
     private val cosySmokeParticle = registries.particleTypeRegistry[CampfireSmokeParticle.CosyFactory]!!

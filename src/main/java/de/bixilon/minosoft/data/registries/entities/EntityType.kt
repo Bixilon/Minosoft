@@ -26,8 +26,8 @@ import de.bixilon.minosoft.data.registries.registries.registry.Translatable
 import de.bixilon.minosoft.datafixer.EntityAttributeFixer.fix
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
+import de.bixilon.minosoft.util.KUtil.toBoolean
 import de.bixilon.minosoft.util.KUtil.unsafeCast
-import de.bixilon.minosoft.util.nbt.tag.NBTUtil.booleanCast
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
 import glm_.vec3.Vec3d
 import java.util.*
@@ -79,8 +79,8 @@ data class EntityType(
                 translationKey = data["translation_key"]?.asResourceLocation(),
                 width = data["width"].unsafeCast(),
                 height = data["height"].unsafeCast(),
-                fireImmune = data["fire_immune"]?.booleanCast() ?: false,
-                sizeFixed = data["size_fixed"]?.booleanCast() ?: false,
+                fireImmune = data["fire_immune"]?.toBoolean() ?: false,
+                sizeFixed = data["size_fixed"]?.toBoolean() ?: false,
                 attributes = attributes.toMap(),
                 factory = DefaultEntityFactories[resourceLocation] ?: error("Can not find entity factory for $resourceLocation"),
             )

@@ -298,7 +298,7 @@ object KUtil {
         return JSONSerializer.ANY_ADAPTER.fromJson(this)!!
     }
 
-    fun Any.toInt(): Int {
+    fun Any?.toInt(): Int {
         return when (this) {
             is Int -> this
             is Number -> this.toInt()
@@ -308,7 +308,7 @@ object KUtil {
         }
     }
 
-    fun Any.toDouble(): Double {
+    fun Any?.toDouble(): Double {
         return when (this) {
             is Double -> this
             is Number -> this.toDouble()
@@ -316,7 +316,7 @@ object KUtil {
         }
     }
 
-    fun Any.toFloat(): Float {
+    fun Any?.toFloat(): Float {
         return when (this) {
             is Float -> this
             is Number -> this.toFloat()
@@ -324,11 +324,13 @@ object KUtil {
         }
     }
 
-    fun Any.toBoolean(): Boolean {
+    fun Any?.toBoolean(): Boolean {
         return when (this) {
             is Boolean -> this
-            is String -> this.toBooleanStrict()
-            else -> TODO()
+            is Number -> this.toInt() == 0x01
+            "true" -> true
+            "false" -> false
+            else -> TODO("$this is not a boolean!")
         }
     }
 

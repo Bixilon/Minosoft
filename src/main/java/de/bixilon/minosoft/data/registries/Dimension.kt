@@ -18,9 +18,9 @@ import de.bixilon.minosoft.data.registries.registries.registry.ResourceLocationD
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.lerp
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.nullCast
+import de.bixilon.minosoft.util.KUtil.toBoolean
 import de.bixilon.minosoft.util.KUtil.toInt
 import de.bixilon.minosoft.util.KUtil.unsafeCast
-import de.bixilon.minosoft.util.nbt.tag.NBTUtil.booleanCast
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.get
 
 data class Dimension(
@@ -73,22 +73,22 @@ data class Dimension(
         override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): Dimension {
             return Dimension(
                 resourceLocation = resourceLocation,
-                piglinSafe = data["piglin_safe"]?.booleanCast() ?: false,
-                natural = data["natural"]?.booleanCast() ?: false,
+                piglinSafe = data["piglin_safe"]?.toBoolean() ?: false,
+                natural = data["natural"]?.toBoolean() ?: false,
                 ambientLight = data["ambient_light"]?.unsafeCast<Float>() ?: 0.0f,
                 infiniBurn = ResourceLocation(data["infiniburn"].nullCast<String>() ?: "infiniburn_overworld"),
-                respawnAnchorWorks = data["respawn_anchor_works"]?.booleanCast() ?: false,
-                hasSkyLight = data["has_skylight", "has_sky_light"]?.booleanCast() ?: false,
-                bedWorks = data["bed_works"]?.booleanCast() ?: false,
+                respawnAnchorWorks = data["respawn_anchor_works"]?.toBoolean() ?: false,
+                hasSkyLight = data["has_skylight", "has_sky_light"]?.toBoolean() ?: false,
+                bedWorks = data["bed_works"]?.toBoolean() ?: false,
                 effects = ResourceLocation(data["effects"].nullCast<String>() ?: "overworld"),
-                hasRaids = data["has_raids"]?.booleanCast() ?: false,
+                hasRaids = data["has_raids"]?.toBoolean() ?: false,
                 logicalHeight = data["logical_height"]?.toInt() ?: 256,
                 coordinateScale = data["coordinate_scale"].nullCast() ?: 0.0,
                 minY = data["min_y"]?.toInt() ?: 0,
-                hasCeiling = data["has_ceiling"]?.booleanCast() ?: false,
-                ultraWarm = data["ultrawarm"]?.booleanCast() ?: false,
+                hasCeiling = data["has_ceiling"]?.toBoolean() ?: false,
+                ultraWarm = data["ultrawarm"]?.toBoolean() ?: false,
                 height = data["height"]?.toInt() ?: 256,
-                supports3DBiomes = data["supports_3d_biomes"]?.booleanCast() ?: false,
+                supports3DBiomes = data["supports_3d_biomes"]?.toBoolean() ?: false,
             )
         }
     }

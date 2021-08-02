@@ -33,6 +33,5 @@ class ZombiePigman(connection: PlayConnection, entityType: EntityType, position:
         override fun tweak(connection: PlayConnection, entityMetaData: EntityMetaData?, versionId: Int): ResourceLocation {
             return ZombifiedPiglin.RESOURCE_LOCATION
         }
-
     }
 }

@@ -15,8 +15,8 @@ package de.bixilon.minosoft.data.registries.inventory
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.IdDeserializer
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryFakeEnumerable
+import de.bixilon.minosoft.util.KUtil.toBoolean
 import de.bixilon.minosoft.util.KUtil.unsafeCast
-import de.bixilon.minosoft.util.nbt.tag.NBTUtil.booleanCast
 
 data class CreativeModeTab(
     override val name: String,
@@ -33,8 +33,8 @@ data class CreativeModeTab(
                 name = data["language_id"].unsafeCast(),
                 recipeFolderName = data["recipe_folder_name"].unsafeCast(),
                 backgroundSuffix = data["background_suffix"].unsafeCast(),
-                canScroll = data["can_scroll"]!!.booleanCast(),
-                showTitle = data["show_title"]!!.booleanCast(),
+                canScroll = data["can_scroll"]!!.toBoolean(),
+                showTitle = data["show_title"]!!.toBoolean(),
             )
         }
     }

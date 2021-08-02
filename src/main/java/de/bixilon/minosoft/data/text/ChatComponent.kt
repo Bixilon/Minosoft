@@ -77,7 +77,6 @@ interface ChatComponent {
 
         @JvmOverloads
         fun of(raw: Any? = null, translator: Translator? = null, parent: TextComponent? = null, ignoreJson: Boolean = false, restrictedMode: Boolean = false): ChatComponent {
-            // ToDo: Remove gson, replace with maps
             if (raw == null) {
                 return BaseComponent()
             }

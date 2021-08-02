@@ -43,7 +43,6 @@ class ErosErrorReport : DialogController() {
             detailsFX.text = exception?.toStackTrace()
         }
 
-
     @FXML
     fun ignore() {
         stage.close()
