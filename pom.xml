@@ -352,12 +352,12 @@
         </dependency>
         <dependency>
             <groupId>org.kordamp.ikonli</groupId>
-            <artifactId>ikonli-javafx</artifactId>
+            <artifactId>ikonli-fontawesome5-pack</artifactId>
             <version>12.2.0</version>
         </dependency>
         <dependency>
             <groupId>org.kordamp.ikonli</groupId>
-            <artifactId>ikonli-fontawesome5-pack</artifactId>
+            <artifactId>ikonli-javafx</artifactId>
             <version>12.2.0</version>
         </dependency>
     </dependencies>
