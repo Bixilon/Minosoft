@@ -13,11 +13,16 @@
 
 package de.bixilon.minosoft.gui.eros.main.account.add
 
+import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.gui.eros.controller.JavaFXWindowController
+import de.bixilon.minosoft.gui.eros.dialog.ErosErrorReport.Companion.report
 import de.bixilon.minosoft.gui.eros.main.account.AccountController
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
+import de.bixilon.minosoft.util.Util
+import de.bixilon.minosoft.util.account.microsoft.MicrosoftOAuthUtils
+import de.bixilon.minosoft.util.task.pool.DefaultThreadPool
 import javafx.application.Platform
 import javafx.concurrent.Worker
 import javafx.fxml.FXML
@@ -25,6 +30,7 @@ import javafx.scene.web.WebView
 import javafx.stage.Modality
 import java.net.CookieHandler
 import java.net.CookieManager
+import java.net.URL
 
 
 class MicrosoftAddController(
@@ -50,9 +56,24 @@ class MicrosoftAddController(
         webView.engine.loadContent("Loading...")
         webView.engine.loadWorker.stateProperty().addListener { _, _, new ->
             if (new == Worker.State.SUCCEEDED) {
-                if (webView.engine.location.startsWith("ms-xal-" + ProtocolDefinition.MICROSOFT_ACCOUNT_APPLICATION_ID)) {
-                    // login is being handled by MicrosoftOAuthUtils. We can go now...
-                    stage.scene.window.hide()
+                val location = webView.engine.location
+                if (!location.startsWith("ms-xal-" + ProtocolDefinition.MICROSOFT_ACCOUNT_APPLICATION_ID)) {
+                    return@addListener
+                }
+
+                DefaultThreadPool += {
+                    try {
+                        // ms-xal-00000000402b5328://auth/?code=M.R3_BL2.9c86df10-b29b-480d-9094-d8accb31e4a5
+                        val account = MicrosoftOAuthUtils.loginToMicrosoftAccount(Util.urlQueryToMap(URL(location).query)["code"]!!)
+                        Minosoft.config.config.account.entries[account.id] = account
+                        Minosoft.config.saveToFile()
+                        Platform.runLater { accountController.refreshList() }
+                    } catch (exception: Exception) {
+                        exception.printStackTrace()
+                        exception.report()
+                    }
+
+                    Platform.runLater { stage.scene.window.hide() }
                 }
             }
         }

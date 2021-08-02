@@ -14,13 +14,11 @@
 package de.bixilon.minosoft.util.account.microsoft
 
 import de.bixilon.minosoft.data.accounts.types.MicrosoftAccount
-import de.bixilon.minosoft.gui.eros.dialog.ErosErrorReport.Companion.report
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.asList
 import de.bixilon.minosoft.util.KUtil.asUUID
 import de.bixilon.minosoft.util.KUtil.toLong
 import de.bixilon.minosoft.util.KUtil.unsafeCast
-import de.bixilon.minosoft.util.Util
 import de.bixilon.minosoft.util.http.HTTP2.postData
 import de.bixilon.minosoft.util.http.HTTP2.postJson
 import de.bixilon.minosoft.util.logging.Log
@@ -136,12 +134,6 @@ object MicrosoftOAuthUtils {
     private object LoginURLHandler : URLStreamHandler() {
 
         override fun openConnection(url: URL): URLConnection {
-            try {
-                loginToMicrosoftAccount(Util.urlQueryToMap(url.query)["code"]!!)
-            } catch (exception: Exception) {
-                exception.printStackTrace()
-                exception.report()
-            }
             return URLProtocolStreamHandlers.NULL_URL_CONNECTION
         }
     }
