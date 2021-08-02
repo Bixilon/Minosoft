@@ -199,6 +199,9 @@ class AccountController : EmbeddedJavaFXController<Pane>() {
             ErosAccountType<MicrosoftAccount>(
                 resourceLocation = MicrosoftAccount.RESOURCE_LOCATION,
                 translationKey = "minosoft:main.account.type.microsoft".asResourceLocation(),
+                additionalDetails = listOf(
+                    "minosoft:main.account.account_info.uuid".asResourceLocation() to { it.uuid },
+                ),
                 icon = FontAwesomeBrands.MICROSOFT,
                 addHandler = { MicrosoftAddController(it).show() },
             ),
