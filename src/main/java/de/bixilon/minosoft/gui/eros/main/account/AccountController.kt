@@ -22,6 +22,7 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.gui.eros.controller.EmbeddedJavaFXController
 import de.bixilon.minosoft.gui.eros.dialog.SimpleErosConfirmationDialog
+import de.bixilon.minosoft.gui.eros.main.account.add.MicrosoftAddController
 import de.bixilon.minosoft.gui.eros.main.account.add.MojangAddController
 import de.bixilon.minosoft.gui.eros.main.account.add.OfflineAddController
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
@@ -199,6 +200,7 @@ class AccountController : EmbeddedJavaFXController<Pane>() {
                 resourceLocation = MicrosoftAccount.RESOURCE_LOCATION,
                 translationKey = "minosoft:main.account.type.microsoft".asResourceLocation(),
                 icon = FontAwesomeBrands.MICROSOFT,
+                addHandler = { MicrosoftAddController(it).show() },
             ),
         )
     }

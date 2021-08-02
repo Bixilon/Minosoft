@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.util.microsoft
+package de.bixilon.minosoft.util.account.microsoft
 
 class LoginException(val errorCode: Int, val outMessage: String, val errorMessage: String) : Exception() {
     override val message: String = "$outMessage: $errorMessage"

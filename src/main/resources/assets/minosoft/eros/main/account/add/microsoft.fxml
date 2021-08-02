@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.web.WebView?>
+<HBox xmlns:fx="http://javafx.com/fxml/1" fx:id="root" prefHeight="800.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/16"> <!-- fx:controller="de.bixilon.minosoft.gui.eros.main.account.add.MicrosoftAddController"-->
+    <WebView fx:id="webView" HBox.hgrow="ALWAYS"/>
+</HBox>

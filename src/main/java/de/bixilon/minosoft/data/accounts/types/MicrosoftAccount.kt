@@ -18,31 +18,40 @@ import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.data.accounts.AccountType
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
+import de.bixilon.minosoft.util.account.microsoft.MicrosoftOAuthUtils
 import java.util.*
 
 class MicrosoftAccount(
-    override val id: String,
-    username: String,
     val uuid: UUID,
-    val email: String,
-    @Json(name = "access_token") private var accessToken: String,
+    username: String,
+    @Json(name = "user_hash") private val userHash: String,
+    @Json(name = "xsts_token") private val xstsToken: String,
 ) : Account(username) {
+    @Transient var accessToken: String? = null
+    override val id: String = uuid.toString()
     override val type: ResourceLocation = RESOURCE_LOCATION
 
     override fun join(serverId: String) {
         TODO()
     }
 
-    override fun logout() {
-        TODO()
-    }
+    override fun logout() {}
 
     override fun verify() {
-        TODO()
+        if (accessToken != null) {
+            return
+        }
+        accessToken = MicrosoftOAuthUtils.getMinecraftBearerAccessToken(userHash, xstsToken)
     }
 
     override fun serialize(): Map<String, Any> {
-        TODO()
+        return mapOf(
+            "uuid" to uuid,
+            "username" to username,
+            "user_hash" to userHash,
+            "xsts_token" to xstsToken,
+            "type" to type,
+        )
     }
 
     companion object : AccountType(MicrosoftAccount::class) {

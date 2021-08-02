@@ -11,15 +11,17 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.util.microsoft
+package de.bixilon.minosoft.util.account.microsoft
 
 import de.bixilon.minosoft.data.accounts.types.MicrosoftAccount
+import de.bixilon.minosoft.gui.eros.dialog.ErosErrorReport.Companion.report
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.asList
+import de.bixilon.minosoft.util.KUtil.asUUID
 import de.bixilon.minosoft.util.KUtil.toLong
 import de.bixilon.minosoft.util.KUtil.unsafeCast
 import de.bixilon.minosoft.util.Util
-import de.bixilon.minosoft.util.http.HTTP2.getJson
+import de.bixilon.minosoft.util.http.HTTP2.postData
 import de.bixilon.minosoft.util.http.HTTP2.postJson
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -35,10 +37,25 @@ object MicrosoftOAuthUtils {
     fun loginToMicrosoftAccount(authorizationCode: String): MicrosoftAccount {
         Log.log(LogMessageType.AUTHENTICATION, LogLevels.INFO) { "Logging into microsoft account..." }
         val authorizationToken = getAuthorizationToken(authorizationCode)
-        val xboxLiveToken = getXboxLiveToken(authorizationToken)
-        val xstsToken = getXSTSToken(xboxLiveToken.first)
+        val (xboxLiveToken, userHash) = getXboxLiveToken(authorizationToken)
+        val xstsToken = getXSTSToken(xboxLiveToken)
 
-        return getMicrosoftAccount(getMinecraftAccessToken(xboxLiveToken.second, xstsToken))
+        val accessToken = getMinecraftBearerAccessToken(userHash, xstsToken)
+        val accountInfo = AccountUtil.getMojangAccountInfo(accessToken)
+
+        val account = MicrosoftAccount(
+            uuid = accountInfo.id.asUUID(),
+            username = accountInfo.name,
+            userHash = userHash,
+            xstsToken = xstsToken,
+        )
+
+        account.accessToken = accessToken
+        account.verify()
+
+        Log.log(LogMessageType.AUTHENTICATION, LogLevels.INFO) { "Microsoft account login successful (uuid=${account.uuid})" }
+
+        return account
     }
 
     fun getAuthorizationToken(authorizationCode: String): String {
@@ -47,9 +64,9 @@ object MicrosoftOAuthUtils {
             "code" to authorizationCode,
             "grant_type" to "authorization_code",
             "scope" to "service::user.auth.xboxlive.com::MBI_SSL",
-        ).postJson(ProtocolDefinition.MICROSOFT_ACCOUNT_AUTH_TOKEN_URL)
+        ).postData(ProtocolDefinition.MICROSOFT_ACCOUNT_AUTH_TOKEN_URL)
         if (response.statusCode != 200) {
-            throw LoginException(response.statusCode, "Could not get authorization token ", response.body.toString())
+            throw LoginException(response.statusCode, "Could not get authorization token", response.body.toString())
         }
         response.body!!
         return response.body["access_token"].unsafeCast()
@@ -93,14 +110,15 @@ object MicrosoftOAuthUtils {
                 2148916238 -> "This account is a child account!"
                 else -> response.body["Message"].unsafeCast()
             }
-            throw LoginException(response.statusCode, "Could not get xsts token ", errorMessage)
+            throw LoginException(response.statusCode, "Could not get xsts token", errorMessage)
         }
         return response.body["Token"].unsafeCast()
     }
 
-    fun getMinecraftAccessToken(uhs: String, xstsToken: String): String {
+    fun getMinecraftBearerAccessToken(userHash: String, xstsToken: String): String {
         val response = mapOf(
-            "identityToken" to "XBL3.0 x=${uhs};${xstsToken}"
+            "identityToken" to "XBL3.0 x=${userHash};${xstsToken}",
+            "ensureLegacyEnabled" to true,
         ).postJson(ProtocolDefinition.MICROSOFT_ACCOUNT_MINECRAFT_LOGIN_WITH_XBOX_URL)
 
         response.body!!
@@ -110,23 +128,6 @@ object MicrosoftOAuthUtils {
         return response.body["access_token"].unsafeCast()
     }
 
-    fun getMicrosoftAccount(bearerToken: String): MicrosoftAccount {
-        val response = ProtocolDefinition.MICROSOFT_ACCOUNT_GET_MOJANG_PROFILE_URL.getJson(mapOf(
-            "Authorization" to "Bearer $bearerToken"
-        ))
-
-        response.body!!
-        if (response.statusCode != 200) {
-            val errorMessage = when (response.statusCode) {
-                404 -> "You don't have a copy of minecraft!"
-                else -> response.body["errorMessage"].unsafeCast()
-            }
-            throw LoginException(response.statusCode, "Could not get minecraft profile", errorMessage)
-        }
-
-        // return MicrosoftAccount(bearerToken, body["id"].asString!!, Util.getUUIDFromString(body["id"].asString!!), body["name"].asString!!)
-        TODO()
-    }
 
     init {
         URLProtocolStreamHandlers.PROTOCOLS["ms-xal-" + ProtocolDefinition.MICROSOFT_ACCOUNT_APPLICATION_ID] = LoginURLHandler
@@ -135,7 +136,12 @@ object MicrosoftOAuthUtils {
     private object LoginURLHandler : URLStreamHandler() {
 
         override fun openConnection(url: URL): URLConnection {
-            loginToMicrosoftAccount(Util.urlQueryToMap(url.query)["code"]!!)
+            try {
+                loginToMicrosoftAccount(Util.urlQueryToMap(url.query)["code"]!!)
+            } catch (exception: Exception) {
+                exception.printStackTrace()
+                exception.report()
+            }
             return URLProtocolStreamHandlers.NULL_URL_CONNECTION
         }
     }

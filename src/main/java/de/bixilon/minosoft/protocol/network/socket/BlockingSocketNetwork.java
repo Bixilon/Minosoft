@@ -123,8 +123,9 @@ public class BlockingSocketNetwork extends Network {
                 this.connection.disconnect();
             } catch (Throwable exception) {
                 // Could not connect
-                if (this.socketSendThread != null) {
-                    this.socketSendThread.interrupt();
+                Thread socketSendThread = this.socketSendThread;
+                if (socketSendThread != null) {
+                    socketSendThread.interrupt();
                 }
                 if (exception instanceof SocketException && exception.getMessage().equals("Socket closed")) {
                     this.connection.setProtocolState(ProtocolStates.DISCONNECTED);

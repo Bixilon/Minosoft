@@ -21,8 +21,8 @@ import com.google.gson.stream.JsonReader;
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection;
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
+import de.bixilon.minosoft.util.account.microsoft.MicrosoftOAuthUtils;
 import de.bixilon.minosoft.util.logging.Log;
-import de.bixilon.minosoft.util.microsoft.MicrosoftOAuthUtils;
 import de.bixilon.minosoft.util.task.time.TimeWorker;
 import de.bixilon.minosoft.util.url.URLProtocolStreamHandlers;
 import org.jetbrains.annotations.NotNull;
@@ -303,15 +303,15 @@ public final class Util {
         return map;
     }
 
-    public static String mapToUrlQuery(Map<String, String> data) {
+    public static String mapToUrlQuery(Map<String, Object> data) {
         StringBuilder builder = new StringBuilder();
-        for (Map.Entry<String, String> entry : data.entrySet()) {
+        for (Map.Entry<String, Object> entry : data.entrySet()) {
             if (builder.length() != 0) {
                 builder.append("&");
             }
             builder.append(URLEncoder.encode(entry.getKey(), StandardCharsets.UTF_8));
             builder.append("=");
-            builder.append(URLEncoder.encode(entry.getValue(), StandardCharsets.UTF_8));
+            builder.append(URLEncoder.encode(entry.getValue().toString(), StandardCharsets.UTF_8));
         }
         return builder.toString();
     }

@@ -15,6 +15,7 @@ package de.bixilon.minosoft.util.http
 
 import de.bixilon.minosoft.util.KUtil.decide
 import de.bixilon.minosoft.util.KUtil.extend
+import de.bixilon.minosoft.util.Util
 import de.bixilon.minosoft.util.json.JSONSerializer
 import java.net.URI
 import java.net.http.HttpClient
@@ -56,6 +57,18 @@ object HTTP2 {
             headers = headers.extend(
                 "Content-Type" to "application/json",
                 "Accept" to "application/json",
+            )
+        )
+    }
+
+    fun Map<String, Any>.postData(url: String, headers: Map<String, Any> = mapOf()): HTTPResponse<Map<String, Any>?> {
+        return post(
+            url = url,
+            data = this,
+            bodyPublisher = { Util.mapToUrlQuery(this) },
+            bodyBuilder = { it.isBlank().decide(null) { JSONSerializer.MAP_ADAPTER.fromJson(it) } },
+            headers = headers.extend(
+                "Content-Type" to "application/x-www-form-urlencoded",
             )
         )
     }
