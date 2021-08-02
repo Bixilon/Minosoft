@@ -18,6 +18,7 @@ import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.data.accounts.AccountType
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
+import de.bixilon.minosoft.util.account.microsoft.AccountUtil
 import de.bixilon.minosoft.util.account.microsoft.MicrosoftOAuthUtils
 import java.util.*
 
@@ -32,7 +33,7 @@ class MicrosoftAccount(
     override val type: ResourceLocation = RESOURCE_LOCATION
 
     override fun join(serverId: String) {
-        TODO()
+        AccountUtil.joinMojangServer(username, accessToken!!, uuid, serverId)
     }
 
     override fun logout() {}

@@ -21,8 +21,8 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
 import de.bixilon.minosoft.util.KUtil.asUUID
 import de.bixilon.minosoft.util.KUtil.nullCast
-import de.bixilon.minosoft.util.KUtil.trim
 import de.bixilon.minosoft.util.KUtil.unsafeCast
+import de.bixilon.minosoft.util.account.microsoft.AccountUtil
 import de.bixilon.minosoft.util.http.HTTP2.postJson
 import de.bixilon.minosoft.util.http.exceptions.AuthenticationException
 import de.bixilon.minosoft.util.logging.Log
@@ -42,19 +42,7 @@ class MojangAccount(
     override val type: ResourceLocation = RESOURCE_LOCATION
 
     override fun join(serverId: String) {
-        val response = mutableMapOf(
-            "accessToken" to accessToken,
-            "selectedProfile" to uuid.trim(),
-            "serverId" to serverId,
-        ).postJson(MOJANG_URL_JOIN)
-
-
-        if (response.statusCode != 204) {
-            response.body!!
-            throw AuthenticationException(response.statusCode, response.body["errorMessage"]?.nullCast())
-        }
-
-        Log.log(LogMessageType.AUTHENTICATION, LogLevels.VERBOSE) { "Mojang server join successful (username=$username, serverId=$serverId)" }
+        AccountUtil.joinMojangServer(username, accessToken, uuid, serverId)
     }
 
     override fun logout() {
@@ -109,7 +97,6 @@ class MojangAccount(
 
     companion object : AccountType(MojangAccount::class) {
         private const val MOJANG_URL_LOGIN = "https://authserver.mojang.com/authenticate"
-        private const val MOJANG_URL_JOIN = "https://sessionserver.mojang.com/session/minecraft/join"
         private const val MOJANG_URL_REFRESH = "https://authserver.mojang.com/refresh"
         private const val MOJANG_URL_INVALIDATE = "https://authserver.mojang.com/invalidate"
         override val RESOURCE_LOCATION: ResourceLocation = "minosoft:mojang_account".asResourceLocation()

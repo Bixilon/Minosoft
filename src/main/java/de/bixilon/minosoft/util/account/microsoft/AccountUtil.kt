@@ -15,10 +15,20 @@ package de.bixilon.minosoft.util.account.microsoft
 
 import de.bixilon.minosoft.data.accounts.MojangAccountInfo
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.util.KUtil.nullCast
+import de.bixilon.minosoft.util.KUtil.trim
 import de.bixilon.minosoft.util.KUtil.unsafeCast
 import de.bixilon.minosoft.util.http.HTTP2.getJson
+import de.bixilon.minosoft.util.http.HTTP2.postJson
+import de.bixilon.minosoft.util.http.exceptions.AuthenticationException
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
+import java.util.*
 
 object AccountUtil {
+    private const val MOJANG_URL_JOIN = "https://sessionserver.mojang.com/session/minecraft/join"
+
     fun getMojangAccountInfo(bearerToken: String): MojangAccountInfo {
         val response = ProtocolDefinition.MICROSOFT_ACCOUNT_GET_MOJANG_PROFILE_URL.getJson(mapOf(
             "Authorization" to "Bearer $bearerToken"
@@ -37,5 +47,21 @@ object AccountUtil {
             id = response.body["id"].unsafeCast(),
             name = response.body["name"].unsafeCast(),
         )
+    }
+
+    fun joinMojangServer(username: String, accessToken: String, selectedProfile: UUID, serverId: String) {
+        val response = mutableMapOf(
+            "accessToken" to accessToken,
+            "selectedProfile" to selectedProfile.trim(),
+            "serverId" to serverId,
+        ).postJson(MOJANG_URL_JOIN)
+
+
+        if (response.statusCode != 204) {
+            response.body!!
+            throw AuthenticationException(response.statusCode, response.body["errorMessage"]?.nullCast())
+        }
+
+        Log.log(LogMessageType.AUTHENTICATION, LogLevels.VERBOSE) { "Mojang server join successful (username=$username, serverId=$serverId)" }
     }
 }
