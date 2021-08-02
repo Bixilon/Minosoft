@@ -198,6 +198,7 @@
 
 .list-cell {
     -fx-background-color: -secondary-color;
+    -fx-text-fill: -secondary-text-color;
 }
 
 .list-cell:selected {

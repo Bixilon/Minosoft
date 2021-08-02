@@ -32,6 +32,8 @@ import javafx.scene.text.Text
 import javafx.scene.text.TextFlow
 import javafx.stage.Modality
 import javafx.stage.Stage
+import java.net.CookieHandler
+import java.net.CookieManager
 import kotlin.reflect.jvm.javaField
 
 object JavaFXUtil {
@@ -105,5 +107,13 @@ object JavaFXUtil {
 
     fun Node.clickable() {
         this.cursorProperty().unsafeCast<StyleableProperty<Cursor>>().applyStyle(null, Cursor.HAND)
+    }
+
+    fun resetWebView() {
+        // ToDo
+        CookieManager().apply {
+            CookieHandler.setDefault(this)
+            this.cookieStore.removeAll()
+        }
     }
 }

@@ -28,8 +28,6 @@ import javafx.concurrent.Worker
 import javafx.fxml.FXML
 import javafx.scene.web.WebView
 import javafx.stage.Modality
-import java.net.CookieHandler
-import java.net.CookieManager
 import java.net.URL
 
 
@@ -49,8 +47,7 @@ class MicrosoftAddController(
     override fun init() {
         super.init()
 
-        CookieHandler.setDefault(CookieManager())
-
+        JavaFXUtil.resetWebView()
         webView.engine.isJavaScriptEnabled = true
         webView.isContextMenuEnabled = false
         webView.engine.loadContent("Loading...")
@@ -60,6 +57,7 @@ class MicrosoftAddController(
                 if (!location.startsWith("ms-xal-" + ProtocolDefinition.MICROSOFT_ACCOUNT_APPLICATION_ID)) {
                     return@addListener
                 }
+                JavaFXUtil.resetWebView()
 
                 DefaultThreadPool += {
                     try {
