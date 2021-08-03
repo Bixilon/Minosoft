@@ -31,11 +31,12 @@ import javafx.util.Duration
 
 open class TextComponent(
     message: Any? = "",
-    var color: RGBColor? = null,
-    var formatting: MutableSet<ChatFormattingCode> = mutableSetOf(),
+    override var color: RGBColor? = null,
+    override var outlineColor: RGBColor? = null,
+    override val formatting: MutableSet<ChatFormattingCode> = mutableSetOf(),
     var clickEvent: ClickEvent? = null,
     var hoverEvent: HoverEvent? = null,
-) : ChatComponent {
+) : ChatComponent, TextStyle {
     override var message: String = message?.toString() ?: "null"
 
     fun obfuscate(): TextComponent {
@@ -63,8 +64,18 @@ open class TextComponent(
         return this
     }
 
+    fun shadow(): TextComponent {
+        formatting.add(PreChatFormattingCodes.SHADOWED)
+        return this
+    }
+
     fun color(color: RGBColor): TextComponent {
         this.color = color
+        return this
+    }
+
+    fun outline(color: RGBColor): TextComponent {
+        this.outlineColor = color
         return this
     }
 

@@ -12,7 +12,9 @@
  */
 package de.bixilon.minosoft.data.text
 
+import de.bixilon.minosoft.data.text.RGBColor.Companion.asColor
 import de.bixilon.minosoft.util.KUtil.extend
+import de.bixilon.minosoft.util.KUtil.nullCast
 
 interface ChatCode {
     companion object {
@@ -53,6 +55,13 @@ interface ChatCode {
                 return null
             }
             return "%x".format(index)
+        }
+
+        fun String.toColor(): RGBColor? {
+            if (this.startsWith("#")) {
+                return this.asColor()
+            }
+            return ChatCode.FORMATTING_CODES[this].nullCast<RGBColor>()
         }
     }
 }

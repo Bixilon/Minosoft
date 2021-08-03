@@ -73,6 +73,10 @@ class BitmapFontProvider(
         }
     }
 
+    override fun get(char: Char): CharData? {
+        return chars[char]
+    }
+
     companion object : FontProviderFactory<BitmapFontProvider> {
         private const val CHAR_WIDTH = 8
         override val RESOURCE_LOCATION: ResourceLocation = "minecraft:bitmap".toResourceLocation()

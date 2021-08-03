@@ -19,11 +19,17 @@ class Font(
     val providers: MutableList<FontProvider>,
 ) : FontProvider {
 
-
     override fun postInit() {
         for (provider in providers) {
             provider.postInit()
         }
+    }
+
+    override fun get(char: Char): CharData? {
+        for (provider in providers) {
+            provider[char]?.let { return it }
+        }
+        return null
     }
 
 

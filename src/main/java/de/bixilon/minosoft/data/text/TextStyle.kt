@@ -11,14 +11,10 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.font.provider
+package de.bixilon.minosoft.data.text
 
-import de.bixilon.minosoft.gui.rendering.font.CharData
-
-interface FontProvider {
-
-    fun postInit()
-
-
-    operator fun get(char: Char): CharData?
+interface TextStyle {
+    var outlineColor: RGBColor?
+    var color: RGBColor?
+    val formatting: MutableCollection<ChatFormattingCode>
 }

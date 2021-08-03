@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.data.text
 
 import de.bixilon.minosoft.data.language.Translator
-import de.bixilon.minosoft.data.text.RGBColor.Companion.asColor
+import de.bixilon.minosoft.data.text.ChatCode.Companion.toColor
 import de.bixilon.minosoft.data.text.events.ClickEvent
 import de.bixilon.minosoft.data.text.events.HoverEvent
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
@@ -122,13 +122,9 @@ class BaseComponent : ChatComponent {
             currentText = it
         }
 
-        val color = json["color"]?.nullCast<String>()?.let { colorName ->
-            if (colorName.startsWith("#")) {
-                colorName.asColor()
-            } else {
-                ChatCode.FORMATTING_CODES[colorName].nullCast<RGBColor>()
-            }
-        } ?: parent?.color
+
+        val color = json["color"]?.nullCast<String>()?.toColor() ?: parent?.color
+        val outlineColor = json["outlineColor"]?.nullCast<String>()?.toColor() ?: parent?.outlineColor
 
         val formatting = parent?.formatting?.toMutableSet() ?: mutableSetOf()
 
@@ -137,6 +133,7 @@ class BaseComponent : ChatComponent {
         formatting.addOrRemove(PreChatFormattingCodes.UNDERLINED, json["underlined"]?.toBoolean())
         formatting.addOrRemove(PreChatFormattingCodes.STRIKETHROUGH, json["strikethrough"]?.toBoolean())
         formatting.addOrRemove(PreChatFormattingCodes.OBFUSCATED, json["obfuscated"]?.toBoolean())
+        formatting.addOrRemove(PreChatFormattingCodes.SHADOWED, json["shadowed"]?.toBoolean())
 
         val clickEvent = json["clickEvent"]?.compoundCast()?.let { click -> ClickEvent(click, restrictedMode) }
         val hoverEvent = json["hoverEvent"]?.compoundCast()?.let { hover -> HoverEvent(hover) }
@@ -144,6 +141,7 @@ class BaseComponent : ChatComponent {
         val textComponent = TextComponent(
             message = currentText,
             color = color,
+            outlineColor = outlineColor,
             formatting = formatting,
             clickEvent = clickEvent,
             hoverEvent = hoverEvent,
