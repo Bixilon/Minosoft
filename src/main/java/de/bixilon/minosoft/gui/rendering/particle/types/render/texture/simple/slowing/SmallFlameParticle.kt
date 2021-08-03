@@ -17,7 +17,7 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil.asResourceLocation
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import glm_.vec3.Vec3d
 
 class SmallFlameParticle(connection: PlayConnection, position: Vec3d, velocity: Vec3d, data: ParticleData? = null) : FlameParticle(connection, position, velocity, data) {
@@ -27,7 +27,7 @@ class SmallFlameParticle(connection: PlayConnection, position: Vec3d, velocity: 
     }
 
     companion object : ParticleFactory<SmallFlameParticle> {
-        override val RESOURCE_LOCATION: ResourceLocation = "minecraft:small_flame".asResourceLocation()
+        override val RESOURCE_LOCATION: ResourceLocation = "minecraft:small_flame".toResourceLocation()
 
         override fun build(connection: PlayConnection, position: Vec3d, velocity: Vec3d, data: ParticleData): SmallFlameParticle {
             return SmallFlameParticle(connection, position, velocity, data)

@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.util.account.microsoft
+package de.bixilon.minosoft.util.account
 
 import de.bixilon.minosoft.data.accounts.MojangAccountInfo
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition

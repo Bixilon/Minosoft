@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.data.registries.materials
 
-import de.bixilon.minosoft.util.KUtil.asResourceLocation
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 object DefaultMaterials {
-    val METAL = "minecraft:metal".asResourceLocation()
+    val METAL = "minecraft:metal".toResourceLocation()
 }

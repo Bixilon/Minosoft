@@ -18,7 +18,7 @@ import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.gui.eros.controller.DialogController
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.text
-import de.bixilon.minosoft.util.KUtil.asResourceLocation
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import javafx.application.Platform
 import javafx.fxml.FXML
 import javafx.scene.control.Button
@@ -56,6 +56,6 @@ class KickDialog(
     }
 
     companion object {
-        private val LAYOUT = "minosoft:eros/dialog/connection/kick.fxml".asResourceLocation()
+        private val LAYOUT = "minosoft:eros/dialog/connection/kick.fxml".toResourceLocation()
     }
 }

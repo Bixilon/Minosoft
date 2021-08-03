@@ -21,8 +21,8 @@ import de.bixilon.minosoft.data.registries.blocks.properties.Instruments
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.NoteParticle
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3d
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil.asResourceLocation
 import de.bixilon.minosoft.util.KUtil.toInt
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import glm_.vec3.Vec3d
 import glm_.vec3.Vec3i
 
@@ -66,7 +66,7 @@ class NoteBlockBlockEntity(connection: PlayConnection) : BlockEntity(connection)
     companion object : BlockEntityFactory<NoteBlockBlockEntity>, MultiResourceLocationAble {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("minecraft:note_block")
 
-        override val ALIASES: Set<ResourceLocation> = setOf("minecraft:noteblock".asResourceLocation())
+        override val ALIASES: Set<ResourceLocation> = setOf("minecraft:noteblock".toResourceLocation())
 
         override fun build(connection: PlayConnection): NoteBlockBlockEntity {
             return NoteBlockBlockEntity(connection)

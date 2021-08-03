@@ -28,9 +28,9 @@ import de.bixilon.minosoft.data.registries.registries.registry.ResourceLocationD
 import de.bixilon.minosoft.data.registries.registries.registry.Translatable
 import de.bixilon.minosoft.gui.rendering.input.camera.hit.RaycastHit
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil.asResourceLocation
 import de.bixilon.minosoft.util.KUtil.toBoolean
 import de.bixilon.minosoft.util.KUtil.toInt
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.KUtil.unsafeCast
 
 open class Item(
@@ -42,7 +42,7 @@ open class Item(
     val maxStackSize: Int = data["max_stack_size"]?.toInt() ?: 64
     val maxDamage: Int = data["max_damage"]?.toInt() ?: 1
     val isFireResistant: Boolean = data["is_fire_resistant"]?.toBoolean() ?: false
-    override val translationKey: ResourceLocation? = data["translation_key"]?.asResourceLocation()
+    override val translationKey: ResourceLocation? = data["translation_key"]?.toResourceLocation()
     val creativeModeTab: CreativeModeTab? = data["category"]?.toInt()?.let { registries.creativeModeTabRegistry[it] }
 
     override fun toString(): String {

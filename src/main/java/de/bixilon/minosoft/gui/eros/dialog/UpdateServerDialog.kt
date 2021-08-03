@@ -25,8 +25,8 @@ import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.ctext
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.placeholder
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.text
 import de.bixilon.minosoft.util.DNSUtil
-import de.bixilon.minosoft.util.KUtil.asResourceLocation
 import de.bixilon.minosoft.util.KUtil.decide
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.task.pool.DefaultThreadPool
 import javafx.application.Platform
 import javafx.fxml.FXML
@@ -194,24 +194,24 @@ class UpdateServerDialog(
 
 
     companion object {
-        private val LAYOUT = "minosoft:eros/dialog/update_server.fxml".asResourceLocation()
+        private val LAYOUT = "minosoft:eros/dialog/update_server.fxml".toResourceLocation()
 
-        private val SERVER_NAME_LABEL = "minosoft:update_server.name.label".asResourceLocation()
-        private val SERVER_NAME_PLACEHOLDER = "minosoft:update_server.name.placeholder".asResourceLocation()
-        private val SERVER_ADDRESS_LABEL = "minosoft:update_server.address.label".asResourceLocation()
-        private val SERVER_ADDRESS_PLACEHOLDER = "minosoft:update_server.address.placeholder".asResourceLocation()
-        private val FORCED_VERSION_LABEL = "minosoft:update_server.forced_version.label".asResourceLocation()
-        private val VERSION_AUTOMATIC = "minosoft:update_server.forced_version.automatic".asResourceLocation()
-        private val SHOW_RELEASES = "minosoft:update_server.forced_version.releases".asResourceLocation()
-        private val SHOW_SNAPSHOTS = "minosoft:update_server.forced_version.snapshots".asResourceLocation()
+        private val SERVER_NAME_LABEL = "minosoft:update_server.name.label".toResourceLocation()
+        private val SERVER_NAME_PLACEHOLDER = "minosoft:update_server.name.placeholder".toResourceLocation()
+        private val SERVER_ADDRESS_LABEL = "minosoft:update_server.address.label".toResourceLocation()
+        private val SERVER_ADDRESS_PLACEHOLDER = "minosoft:update_server.address.placeholder".toResourceLocation()
+        private val FORCED_VERSION_LABEL = "minosoft:update_server.forced_version.label".toResourceLocation()
+        private val VERSION_AUTOMATIC = "minosoft:update_server.forced_version.automatic".toResourceLocation()
+        private val SHOW_RELEASES = "minosoft:update_server.forced_version.releases".toResourceLocation()
+        private val SHOW_SNAPSHOTS = "minosoft:update_server.forced_version.snapshots".toResourceLocation()
 
-        private val ADD_TITLE = "minosoft:update_server.add.title".asResourceLocation()
-        private val ADD_DESCRIPTION = "minosoft:update_server.add.description".asResourceLocation()
-        private val ADD_UPDATE_BUTTON = "minosoft:update_server.add.update_button".asResourceLocation()
+        private val ADD_TITLE = "minosoft:update_server.add.title".toResourceLocation()
+        private val ADD_DESCRIPTION = "minosoft:update_server.add.description".toResourceLocation()
+        private val ADD_UPDATE_BUTTON = "minosoft:update_server.add.update_button".toResourceLocation()
 
 
-        private val EDIT_TITLE = "minosoft:update_server.edit.title".asResourceLocation()
-        private val EDIT_DESCRIPTION = "minosoft:update_server.edit.description".asResourceLocation()
-        private val EDIT_UPDATE_BUTTON = "minosoft:update_server.edit.update_button".asResourceLocation()
+        private val EDIT_TITLE = "minosoft:update_server.edit.title".toResourceLocation()
+        private val EDIT_DESCRIPTION = "minosoft:update_server.edit.description".toResourceLocation()
+        private val EDIT_UPDATE_BUTTON = "minosoft:update_server.edit.update_button".toResourceLocation()
     }
 }

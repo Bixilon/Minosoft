@@ -29,9 +29,9 @@ import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.la
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.horizontalPlus
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.noise
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil.asResourceLocation
 import de.bixilon.minosoft.util.KUtil.chance
 import de.bixilon.minosoft.util.KUtil.toBoolean
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3d
 import glm_.vec3.Vec3i
@@ -104,7 +104,7 @@ open class CampfireBlock(resourceLocation: ResourceLocation, registries: Registr
     }
 
     companion object : BlockFactory<CampfireBlock> {
-        private val CAMPFIRE_CRACKLE_SOUND_RESOURCE_LOCATION = "minecraft:block.campfire.crackle".asResourceLocation()
+        private val CAMPFIRE_CRACKLE_SOUND_RESOURCE_LOCATION = "minecraft:block.campfire.crackle".toResourceLocation()
 
         override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): CampfireBlock {
             return CampfireBlock(resourceLocation, registries, data)

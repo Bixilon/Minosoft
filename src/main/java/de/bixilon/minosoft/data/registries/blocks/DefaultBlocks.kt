@@ -13,24 +13,24 @@
 
 package de.bixilon.minosoft.data.registries.blocks
 
-import de.bixilon.minosoft.util.KUtil.asResourceLocation
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 object DefaultBlocks {
-    val SCAFFOLDING = "minecraft:scaffolding".asResourceLocation()
-    val LADDER = "minecraft:ladder".asResourceLocation()
-    val VINE = "minecraft:vine".asResourceLocation()
-    val WEEPING_VINES = "minecraft:weeping_vines".asResourceLocation()
-    val WEEPING_VINES_PLANT = "minecraft:weeping_vines_plant".asResourceLocation()
-    val TWISTING_VINES = "minecraft:twisting_vines".asResourceLocation()
-    val TWISTING_VINES_PLANT = "minecraft:twisting_vines_plant".asResourceLocation()
-    val CAVE_VINES = "minecraft:cave_vines".asResourceLocation()
-    val CAVE_VINES_PLANT = "minecraft:cave_vines_plant".asResourceLocation()
+    val SCAFFOLDING = "minecraft:scaffolding".toResourceLocation()
+    val LADDER = "minecraft:ladder".toResourceLocation()
+    val VINE = "minecraft:vine".toResourceLocation()
+    val WEEPING_VINES = "minecraft:weeping_vines".toResourceLocation()
+    val WEEPING_VINES_PLANT = "minecraft:weeping_vines_plant".toResourceLocation()
+    val TWISTING_VINES = "minecraft:twisting_vines".toResourceLocation()
+    val TWISTING_VINES_PLANT = "minecraft:twisting_vines_plant".toResourceLocation()
+    val CAVE_VINES = "minecraft:cave_vines".toResourceLocation()
+    val CAVE_VINES_PLANT = "minecraft:cave_vines_plant".toResourceLocation()
 
-    val POWDER_SNOW = "minecraft:powder_snow".asResourceLocation()
-    val GRASS_BLOCK = "minecraft:grass_block".asResourceLocation()
-    val MOVING_PISTON = "minecraft:moving_piston".asResourceLocation()
-    val COBWEB = "minecraft:cobweb".asResourceLocation()
+    val POWDER_SNOW = "minecraft:powder_snow".toResourceLocation()
+    val GRASS_BLOCK = "minecraft:grass_block".toResourceLocation()
+    val MOVING_PISTON = "minecraft:moving_piston".toResourceLocation()
+    val COBWEB = "minecraft:cobweb".toResourceLocation()
 
-    val WATER = "minecraft:water".asResourceLocation()
-    val BUBBLE_COLUMN = "minecraft:bubble_column".asResourceLocation()
+    val WATER = "minecraft:water".toResourceLocation()
+    val BUBBLE_COLUMN = "minecraft:bubble_column".toResourceLocation()
 }

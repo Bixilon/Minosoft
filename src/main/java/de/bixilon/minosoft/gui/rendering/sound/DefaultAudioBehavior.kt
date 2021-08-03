@@ -17,11 +17,11 @@ import de.bixilon.minosoft.modding.event.events.ExplosionEvent
 import de.bixilon.minosoft.modding.event.events.PlaySoundEvent
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil.asResourceLocation
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import kotlin.random.Random
 
 object DefaultAudioBehavior {
-    private val ENTITY_GENERIC_EXPLODE = "minecraft:entity.generic.explode".asResourceLocation()
+    private val ENTITY_GENERIC_EXPLODE = "minecraft:entity.generic.explode".toResourceLocation()
 
     fun register(connection: PlayConnection) {
         val world = connection.world

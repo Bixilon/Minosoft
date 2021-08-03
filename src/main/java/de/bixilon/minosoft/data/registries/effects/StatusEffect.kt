@@ -21,7 +21,7 @@ import de.bixilon.minosoft.data.registries.registries.registry.Translatable
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.data.text.RGBColor.Companion.asRGBColor
 import de.bixilon.minosoft.datafixer.EntityAttributeFixer.fix
-import de.bixilon.minosoft.util.KUtil.asResourceLocation
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.KUtil.unsafeCast
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.asCompound
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
@@ -56,7 +56,7 @@ data class StatusEffect(
             return StatusEffect(
                 resourceLocation = resourceLocation,
                 category = StatusEffectCategories[data["category"].unsafeCast<String>()],
-                translationKey = data["translation_key"]?.asResourceLocation(),
+                translationKey = data["translation_key"]?.toResourceLocation(),
                 color = data["color"].unsafeCast<Int>().asRGBColor(),
                 attributes = attributes.toMap(),
                 uuidAttributes = uuidAttributes.toMap(),

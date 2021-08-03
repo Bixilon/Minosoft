@@ -18,7 +18,7 @@ import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil.asResourceLocation
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3d
 import java.util.*
@@ -32,7 +32,7 @@ class WarpedSporeParticle(connection: PlayConnection, position: Vec3d, data: Par
 
 
     companion object : ParticleFactory<WarpedSporeParticle> {
-        override val RESOURCE_LOCATION: ResourceLocation = "minecraft:warped_spore".asResourceLocation()
+        override val RESOURCE_LOCATION: ResourceLocation = "minecraft:warped_spore".toResourceLocation()
         private val random = Random()
 
         override fun build(connection: PlayConnection, position: Vec3d, velocity: Vec3d, data: ParticleData): WarpedSporeParticle {

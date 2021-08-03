@@ -19,7 +19,7 @@ import de.bixilon.minosoft.gui.eros.dialog.ErosErrorReport.Companion.report
 import de.bixilon.minosoft.gui.eros.main.account.AccountController
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import de.bixilon.minosoft.util.KUtil.asResourceLocation
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.Util
 import de.bixilon.minosoft.util.account.microsoft.MicrosoftOAuthUtils
 import de.bixilon.minosoft.util.task.pool.DefaultThreadPool
@@ -83,8 +83,8 @@ class MicrosoftAddController(
     }
 
     companion object {
-        private val LAYOUT = "minosoft:eros/main/account/add/microsoft.fxml".asResourceLocation()
+        private val LAYOUT = "minosoft:eros/main/account/add/microsoft.fxml".toResourceLocation()
 
-        private val TITLE = "minosoft:main.account.add.microsoft.title".asResourceLocation()
+        private val TITLE = "minosoft:main.account.add.microsoft.title".toResourceLocation()
     }
 }

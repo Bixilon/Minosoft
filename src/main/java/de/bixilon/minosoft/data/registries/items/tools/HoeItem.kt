@@ -26,9 +26,9 @@ import de.bixilon.minosoft.gui.rendering.input.camera.hit.BlockRaycastHit
 import de.bixilon.minosoft.gui.rendering.input.camera.hit.RaycastHit
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil.asResourceLocation
 import de.bixilon.minosoft.util.KUtil.mapCast
 import de.bixilon.minosoft.util.KUtil.toInt
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 open class HoeItem(
     resourceLocation: ResourceLocation,
@@ -60,6 +60,6 @@ open class HoeItem(
     }
 
     companion object {
-        val HOE_MINEABLE_TAG = "minecraft:mineable/hoe".asResourceLocation()
+        val HOE_MINEABLE_TAG = "minecraft:mineable/hoe".toResourceLocation()
     }
 }

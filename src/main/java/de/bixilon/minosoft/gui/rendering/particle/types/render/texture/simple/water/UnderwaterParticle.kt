@@ -19,7 +19,7 @@ import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil.asResourceLocation
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import glm_.vec3.Vec3d
 
 class UnderwaterParticle(connection: PlayConnection, position: Vec3d, data: ParticleData? = null) : WaterSuspendParticle(connection, position, Vec3d.EMPTY, data) {
@@ -29,7 +29,7 @@ class UnderwaterParticle(connection: PlayConnection, position: Vec3d, data: Part
     }
 
     companion object : ParticleFactory<UnderwaterParticle> {
-        override val RESOURCE_LOCATION: ResourceLocation = "minecraft:underwater".asResourceLocation()
+        override val RESOURCE_LOCATION: ResourceLocation = "minecraft:underwater".toResourceLocation()
 
         override fun build(connection: PlayConnection, position: Vec3d, velocity: Vec3d, data: ParticleData): UnderwaterParticle {
             return UnderwaterParticle(connection, position, data)

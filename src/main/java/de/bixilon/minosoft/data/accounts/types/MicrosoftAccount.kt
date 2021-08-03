@@ -17,8 +17,8 @@ import com.squareup.moshi.Json
 import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.data.accounts.AccountType
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.util.KUtil.asResourceLocation
-import de.bixilon.minosoft.util.account.microsoft.AccountUtil
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import de.bixilon.minosoft.util.account.AccountUtil
 import de.bixilon.minosoft.util.account.microsoft.MicrosoftOAuthUtils
 import java.util.*
 
@@ -56,6 +56,6 @@ class MicrosoftAccount(
     }
 
     companion object : AccountType(MicrosoftAccount::class) {
-        override val RESOURCE_LOCATION: ResourceLocation = "minosoft:microsoft_account".asResourceLocation()
+        override val RESOURCE_LOCATION: ResourceLocation = "minosoft:microsoft_account".toResourceLocation()
     }
 }

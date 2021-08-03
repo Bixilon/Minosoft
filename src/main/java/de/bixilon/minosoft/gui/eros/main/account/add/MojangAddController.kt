@@ -21,8 +21,8 @@ import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.ctext
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.placeholder
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.text
-import de.bixilon.minosoft.util.KUtil.asResourceLocation
 import de.bixilon.minosoft.util.KUtil.text
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.task.pool.DefaultThreadPool
 import javafx.application.Platform
 import javafx.fxml.FXML
@@ -133,16 +133,16 @@ class MojangAddController(
     }
 
     companion object {
-        private val LAYOUT = "minosoft:eros/main/account/add/mojang.fxml".asResourceLocation()
+        private val LAYOUT = "minosoft:eros/main/account/add/mojang.fxml".toResourceLocation()
 
-        private val TITLE = "minosoft:main.account.add.mojang.title".asResourceLocation()
-        private val HEADER = "minosoft:main.account.add.mojang.header".asResourceLocation()
-        private val DESCRIPTION = "minosoft:main.account.add.mojang.description".asResourceLocation()
-        private val EMAIL_LABEL = "minosoft:main.account.add.mojang.email.label".asResourceLocation()
-        private val EMAIL_PLACEHOLDER = "minosoft:main.account.add.mojang.email.placeholder".asResourceLocation()
-        private val PASSWORD_LABEL = "minosoft:main.account.add.mojang.password.label".asResourceLocation()
-        private val PASSWORD_PLACEHOLDER = "minosoft:main.account.add.mojang.password.placeholder".asResourceLocation()
-        private val ADD_BUTTON = "minosoft:main.account.add.mojang.add_button".asResourceLocation()
-        private val CANCEL_BUTTON = "minosoft:main.account.add.mojang.cancel_button".asResourceLocation()
+        private val TITLE = "minosoft:main.account.add.mojang.title".toResourceLocation()
+        private val HEADER = "minosoft:main.account.add.mojang.header".toResourceLocation()
+        private val DESCRIPTION = "minosoft:main.account.add.mojang.description".toResourceLocation()
+        private val EMAIL_LABEL = "minosoft:main.account.add.mojang.email.label".toResourceLocation()
+        private val EMAIL_PLACEHOLDER = "minosoft:main.account.add.mojang.email.placeholder".toResourceLocation()
+        private val PASSWORD_LABEL = "minosoft:main.account.add.mojang.password.label".toResourceLocation()
+        private val PASSWORD_PLACEHOLDER = "minosoft:main.account.add.mojang.password.placeholder".toResourceLocation()
+        private val ADD_BUTTON = "minosoft:main.account.add.mojang.add_button".toResourceLocation()
+        private val CANCEL_BUTTON = "minosoft:main.account.add.mojang.cancel_button".toResourceLocation()
     }
 }

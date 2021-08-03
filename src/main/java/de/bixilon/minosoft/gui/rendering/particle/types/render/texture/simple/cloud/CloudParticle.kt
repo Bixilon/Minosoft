@@ -21,7 +21,7 @@ import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.SimpleTextureParticle
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil.asResourceLocation
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import glm_.vec3.Vec3d
 import java.lang.Float.max
 
@@ -58,7 +58,7 @@ open class CloudParticle(connection: PlayConnection, position: Vec3d, velocity: 
 
 
     companion object : ParticleFactory<CloudParticle> {
-        override val RESOURCE_LOCATION: ResourceLocation = "minecraft:cloud".asResourceLocation()
+        override val RESOURCE_LOCATION: ResourceLocation = "minecraft:cloud".toResourceLocation()
 
         override fun build(connection: PlayConnection, position: Vec3d, velocity: Vec3d, data: ParticleData): CloudParticle {
             return CloudParticle(connection, position, velocity, data)

@@ -15,12 +15,12 @@ package de.bixilon.minosoft.data.registries.other.containers
 
 import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil.asResourceLocation
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class PlayerInventory(connection: PlayConnection) : Container(
     connection = connection,
     ContainerType(
-        resourceLocation = "TBO".asResourceLocation()
+        resourceLocation = "TBO".toResourceLocation()
     ),
 ) {
 

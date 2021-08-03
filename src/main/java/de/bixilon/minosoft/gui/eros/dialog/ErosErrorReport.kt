@@ -20,8 +20,8 @@ import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.ctext
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.text
 import de.bixilon.minosoft.terminal.RunConfiguration
-import de.bixilon.minosoft.util.KUtil.asResourceLocation
 import de.bixilon.minosoft.util.KUtil.realName
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.KUtil.toStackTrace
 import javafx.application.Platform
 import javafx.fxml.FXML
@@ -65,12 +65,12 @@ class ErosErrorReport : DialogController() {
 
 
     companion object {
-        private val LAYOUT = "minosoft:eros/dialog/error.fxml".asResourceLocation()
-        private val TITLE = { exception: Throwable? -> Minosoft.LANGUAGE_MANAGER.translate("minosoft:error.title".asResourceLocation(), null, exception?.let { it::class.java.realName }) }
-        private val HEADER = "minosoft:error.header".asResourceLocation()
-        private val DESCRIPTION = "minosoft:error.description".asResourceLocation()
-        private val IGNORE = "minosoft:error.ignore".asResourceLocation()
-        private val FATAL_CRASH = "minosoft:error.fatal_crash".asResourceLocation()
+        private val LAYOUT = "minosoft:eros/dialog/error.fxml".toResourceLocation()
+        private val TITLE = { exception: Throwable? -> Minosoft.LANGUAGE_MANAGER.translate("minosoft:error.title".toResourceLocation(), null, exception?.let { it::class.java.realName }) }
+        private val HEADER = "minosoft:error.header".toResourceLocation()
+        private val DESCRIPTION = "minosoft:error.description".toResourceLocation()
+        private val IGNORE = "minosoft:error.ignore".toResourceLocation()
+        private val FATAL_CRASH = "minosoft:error.fatal_crash".toResourceLocation()
 
         fun Throwable?.report() {
             if (RunConfiguration.DISABLE_EROS) {

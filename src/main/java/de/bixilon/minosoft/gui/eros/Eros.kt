@@ -18,12 +18,12 @@ import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.modding.event.events.FinishInitializingEvent
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
-import de.bixilon.minosoft.util.KUtil.asResourceLocation
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import javafx.application.Platform
 
 object Eros {
-    private val TITLE = "minosoft:eros_window_title".asResourceLocation()
-    private val LAYOUT = "minosoft:eros/main/main.fxml".asResourceLocation()
+    private val TITLE = "minosoft:eros_window_title".toResourceLocation()
+    private val LAYOUT = "minosoft:eros/main/main.fxml".toResourceLocation()
 
     lateinit var mainErosController: MainErosController
 

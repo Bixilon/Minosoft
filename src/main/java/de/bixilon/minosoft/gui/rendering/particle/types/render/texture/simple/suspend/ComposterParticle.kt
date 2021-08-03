@@ -18,7 +18,7 @@ import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil.asResourceLocation
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import glm_.vec3.Vec3d
 
 class ComposterParticle(connection: PlayConnection, position: Vec3d, velocity: Vec3d, data: ParticleData? = null) : SuspendParticle(connection, position, velocity, data) {
@@ -29,7 +29,7 @@ class ComposterParticle(connection: PlayConnection, position: Vec3d, velocity: V
     }
 
     companion object : ParticleFactory<ComposterParticle> {
-        override val RESOURCE_LOCATION: ResourceLocation = "minecraft:composter".asResourceLocation()
+        override val RESOURCE_LOCATION: ResourceLocation = "minecraft:composter".toResourceLocation()
 
         override fun build(connection: PlayConnection, position: Vec3d, velocity: Vec3d, data: ParticleData): ComposterParticle {
             return ComposterParticle(connection, position, velocity, data)

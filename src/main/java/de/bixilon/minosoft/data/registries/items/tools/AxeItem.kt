@@ -23,9 +23,9 @@ import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.gui.rendering.input.camera.hit.BlockRaycastHit
 import de.bixilon.minosoft.gui.rendering.input.camera.hit.RaycastHit
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil.asResourceLocation
 import de.bixilon.minosoft.util.KUtil.mapCast
 import de.bixilon.minosoft.util.KUtil.toInt
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 open class AxeItem(
     resourceLocation: ResourceLocation,
@@ -53,6 +53,6 @@ open class AxeItem(
     }
 
     companion object {
-        val AXE_MINEABLE_TAG = "minecraft:mineable/axe".asResourceLocation()
+        val AXE_MINEABLE_TAG = "minecraft:mineable/axe".toResourceLocation()
     }
 }

@@ -26,9 +26,9 @@ import de.bixilon.minosoft.gui.rendering.input.camera.hit.BlockRaycastHit
 import de.bixilon.minosoft.gui.rendering.input.camera.hit.RaycastHit
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil.asResourceLocation
 import de.bixilon.minosoft.util.KUtil.mapCast
 import de.bixilon.minosoft.util.KUtil.toInt
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 open class ShovelItem(
     resourceLocation: ResourceLocation,
@@ -62,6 +62,6 @@ open class ShovelItem(
 
 
     companion object {
-        val SHOVEL_MINEABLE_TAG = "minecraft:mineable/shovel".asResourceLocation()
+        val SHOVEL_MINEABLE_TAG = "minecraft:mineable/shovel".toResourceLocation()
     }
 }

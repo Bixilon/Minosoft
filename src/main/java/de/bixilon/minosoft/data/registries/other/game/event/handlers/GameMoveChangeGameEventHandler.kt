@@ -16,10 +16,10 @@ package de.bixilon.minosoft.data.registries.other.game.event.handlers
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil.asResourceLocation
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 object GameMoveChangeGameEventHandler : GameEventHandler {
-    override val RESOURCE_LOCATION: ResourceLocation = "minecraft:gamemode_change".asResourceLocation()
+    override val RESOURCE_LOCATION: ResourceLocation = "minecraft:gamemode_change".toResourceLocation()
 
     override fun handle(data: Float, connection: PlayConnection) {
         connection.player.tabListItem.gamemode = Gamemodes[data.toInt()]

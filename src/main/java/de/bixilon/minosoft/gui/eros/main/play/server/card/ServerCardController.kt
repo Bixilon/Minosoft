@@ -26,9 +26,9 @@ import de.bixilon.minosoft.modding.event.events.connection.ConnectionErrorEvent
 import de.bixilon.minosoft.modding.event.events.connection.status.ServerStatusReceiveEvent
 import de.bixilon.minosoft.modding.event.events.connection.status.StatusConnectionStateChangeEvent
 import de.bixilon.minosoft.modding.event.events.connection.status.StatusPongReceiveEvent
-import de.bixilon.minosoft.util.KUtil.asResourceLocation
 import de.bixilon.minosoft.util.KUtil.text
 import de.bixilon.minosoft.util.KUtil.thousands
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import javafx.fxml.FXML
 import javafx.scene.control.Label
 import javafx.scene.image.Image
@@ -120,6 +120,6 @@ class ServerCardController : AbstractCard<ServerCard>() {
     }
 
     companion object : CardFactory<ServerCardController> {
-        override val LAYOUT: ResourceLocation = "minosoft:eros/main/play/server/server_card.fxml".asResourceLocation()
+        override val LAYOUT: ResourceLocation = "minosoft:eros/main/play/server/server_card.fxml".toResourceLocation()
     }
 }

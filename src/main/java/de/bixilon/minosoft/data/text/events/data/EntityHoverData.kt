@@ -14,9 +14,9 @@ package de.bixilon.minosoft.data.text.events.data
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.util.KUtil.asResourceLocation
 import de.bixilon.minosoft.util.KUtil.asUUID
 import de.bixilon.minosoft.util.KUtil.nullCast
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.KUtil.unsafeCast
 import de.bixilon.minosoft.util.json.JSONSerializer
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.asCompound
@@ -41,7 +41,7 @@ class EntityHoverData(
             }
             var type: ResourceLocation? = null
             json["type"]?.nullCast<String>()?.let {
-                type = it.asResourceLocation()
+                type = it.toResourceLocation()
             }
 
             return EntityHoverData(json["id"].unsafeCast<String>().asUUID(), type, ChatComponent.of(json["name"]))

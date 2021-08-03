@@ -19,7 +19,7 @@ import de.bixilon.minosoft.data.text.RGBColor.Companion.asGray
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil.asResourceLocation
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import glm_.vec3.Vec3d
 
 class ExplosionParticle(connection: PlayConnection, position: Vec3d, data: ParticleData? = null, power: Float = 1.0f) : SimpleTextureParticle(connection, position, Vec3d.EMPTY, data) {
@@ -33,7 +33,7 @@ class ExplosionParticle(connection: PlayConnection, position: Vec3d, data: Parti
     }
 
     companion object : ParticleFactory<ExplosionParticle> {
-        override val RESOURCE_LOCATION: ResourceLocation = "minecraft:explosion".asResourceLocation()
+        override val RESOURCE_LOCATION: ResourceLocation = "minecraft:explosion".toResourceLocation()
 
         override fun build(connection: PlayConnection, position: Vec3d, velocity: Vec3d, data: ParticleData): ExplosionParticle {
             return ExplosionParticle(connection, position, data, velocity.x.toFloat())

@@ -15,7 +15,7 @@ package de.bixilon.minosoft.protocol.network.connection.status
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.registry.Translatable
-import de.bixilon.minosoft.util.KUtil.asResourceLocation
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 enum class StatusConnectionStates : Translatable {
     WAITING,
@@ -32,5 +32,5 @@ enum class StatusConnectionStates : Translatable {
     ERROR,
     ;
 
-    override val translationKey: ResourceLocation = "minosoft:connection.status.state.${name.lowercase()}".asResourceLocation()
+    override val translationKey: ResourceLocation = "minosoft:connection.status.state.${name.lowercase()}".toResourceLocation()
 }

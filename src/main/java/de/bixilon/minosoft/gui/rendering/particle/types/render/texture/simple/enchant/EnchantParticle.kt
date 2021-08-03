@@ -17,13 +17,13 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil.asResourceLocation
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import glm_.vec3.Vec3d
 
 class EnchantParticle(connection: PlayConnection, position: Vec3d, velocity: Vec3d, data: ParticleData? = null) : EnchantedGlyphParticle(connection, position, velocity, data) {
 
     companion object : ParticleFactory<EnchantParticle> {
-        override val RESOURCE_LOCATION: ResourceLocation = "minecraft:enchant".asResourceLocation()
+        override val RESOURCE_LOCATION: ResourceLocation = "minecraft:enchant".toResourceLocation()
 
         override fun build(connection: PlayConnection, position: Vec3d, velocity: Vec3d, data: ParticleData): EnchantParticle {
             return EnchantParticle(connection, position, velocity, data)

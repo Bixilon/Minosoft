@@ -19,7 +19,7 @@ import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.times
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil.asResourceLocation
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import glm_.vec3.Vec3d
 import java.util.*
 
@@ -31,7 +31,7 @@ class CrimsonSporeParticle(connection: PlayConnection, position: Vec3d, data: Pa
 
 
     companion object : ParticleFactory<CrimsonSporeParticle> {
-        override val RESOURCE_LOCATION: ResourceLocation = "minecraft:crimson_spore".asResourceLocation()
+        override val RESOURCE_LOCATION: ResourceLocation = "minecraft:crimson_spore".toResourceLocation()
         private val random = Random()
 
         override fun build(connection: PlayConnection, position: Vec3d, velocity: Vec3d, data: ParticleData): CrimsonSporeParticle {

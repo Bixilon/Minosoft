@@ -48,10 +48,10 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.c2s.play.*
 import de.bixilon.minosoft.protocol.packets.s2c.play.TagsS2CP
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import de.bixilon.minosoft.util.KUtil.asResourceLocation
 import de.bixilon.minosoft.util.KUtil.decide
 import de.bixilon.minosoft.util.KUtil.nullCast
 import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.MMath
 import de.bixilon.minosoft.util.MMath.floor
 import de.bixilon.minosoft.util.Previous
@@ -558,8 +558,8 @@ class LocalPlayerEntity(
     }
 
     companion object {
-        private val CLIMBABLE_TAG = "minecraft:climbable".asResourceLocation()
-        private val SOUL_SPEED_BLOCKS = "minecraft:soul_speed_blocks".asResourceLocation()
+        private val CLIMBABLE_TAG = "minecraft:climbable".toResourceLocation()
+        private val SOUL_SPEED_BLOCKS = "minecraft:soul_speed_blocks".toResourceLocation()
         private const val CLIMBING_CLAMP_VALUE = 0.15f.toDouble()
     }
 }

@@ -35,9 +35,9 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
 import de.bixilon.minosoft.protocol.network.connection.status.StatusConnectionStates
 import de.bixilon.minosoft.util.DNSUtil
-import de.bixilon.minosoft.util.KUtil.asResourceLocation
 import de.bixilon.minosoft.util.KUtil.decide
 import de.bixilon.minosoft.util.KUtil.thousands
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.task.pool.DefaultThreadPool
 import javafx.application.Platform
 import javafx.fxml.FXML
@@ -183,7 +183,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
                 it.add(Button("Delete").apply {
                     setOnAction {
                         SimpleErosConfirmationDialog(
-                            confirmButtonText = "minosoft:general.delete".asResourceLocation(),
+                            confirmButtonText = "minosoft:general.delete".toResourceLocation(),
                             description = TranslatableComponents.EROS_DELETE_SERVER_CONFIRM_DESCRIPTION(serverCard.server.name, serverCard.server.address),
                             onConfirm = {
                                 Minosoft.config.config.server.entries.remove(serverCard.server.id)
@@ -249,16 +249,16 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
 
                             connection.registerEvent(JavaFXEventInvoker.of<KickEvent> { event ->
                                 KickDialog(
-                                    title = "minosoft:connection.kick.title".asResourceLocation(),
-                                    header = "minosoft:connection.kick.header".asResourceLocation(),
+                                    title = "minosoft:connection.kick.title".toResourceLocation(),
+                                    header = "minosoft:connection.kick.header".toResourceLocation(),
                                     description = TranslatableComponents.CONNECTION_KICK_DESCRIPTION(serverCard.server, account),
                                     reason = event.reason,
                                 ).show()
                             })
                             connection.registerEvent(JavaFXEventInvoker.of<LoginKickEvent> { event ->
                                 KickDialog(
-                                    title = "minosoft:connection.login_kick.title".asResourceLocation(),
-                                    header = "minosoft:connection.login_kick.header".asResourceLocation(),
+                                    title = "minosoft:connection.login_kick.title".toResourceLocation(),
+                                    header = "minosoft:connection.login_kick.header".toResourceLocation(),
                                     description = TranslatableComponents.CONNECTION_LOGIN_KICK_DESCRIPTION(serverCard.server, account),
                                     reason = event.reason,
                                 ).show()
@@ -312,25 +312,25 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
 
 
     companion object {
-        val LAYOUT = "minosoft:eros/main/play/server/server_list.fxml".asResourceLocation()
+        val LAYOUT = "minosoft:eros/main/play/server/server_list.fxml".toResourceLocation()
 
         private val SERVER_INFO_PROPERTIES: List<Pair<ResourceLocation, (server: Server) -> Any?>> = listOf(
-            "minosoft:server_info.server_name".asResourceLocation() to { it.name },
-            "minosoft:server_info.server_address".asResourceLocation() to { it.address },
-            "minosoft:server_info.real_server_address".asResourceLocation() to { it.ping?.realAddress },
-            "minosoft:server_info.forced_version".asResourceLocation() to { it.forcedVersion },
+            "minosoft:server_info.server_name".toResourceLocation() to { it.name },
+            "minosoft:server_info.server_address".toResourceLocation() to { it.address },
+            "minosoft:server_info.real_server_address".toResourceLocation() to { it.ping?.realAddress },
+            "minosoft:server_info.forced_version".toResourceLocation() to { it.forcedVersion },
 
-            "minosoft:general.empty".asResourceLocation() to { " " },
+            "minosoft:general.empty".toResourceLocation() to { " " },
 
-            "minosoft:server_info.remote_version".asResourceLocation() to { it.ping?.serverVersion },
-            "minosoft:server_info.remote_brand".asResourceLocation() to { it.ping?.lastServerStatus?.serverBrand },
-            "minosoft:server_info.players_online".asResourceLocation() to { it.ping?.lastServerStatus?.let { status -> "${status.usedSlots?.thousands()} / ${status.slots?.thousands()}" } },
-            "minosoft:server_info.ping".asResourceLocation() to { it.ping?.lastPongEvent?.let { pong -> "${pong.latency} ms" } },
+            "minosoft:server_info.remote_version".toResourceLocation() to { it.ping?.serverVersion },
+            "minosoft:server_info.remote_brand".toResourceLocation() to { it.ping?.lastServerStatus?.serverBrand },
+            "minosoft:server_info.players_online".toResourceLocation() to { it.ping?.lastServerStatus?.let { status -> "${status.usedSlots?.thousands()} / ${status.slots?.thousands()}" } },
+            "minosoft:server_info.ping".toResourceLocation() to { it.ping?.lastPongEvent?.let { pong -> "${pong.latency} ms" } },
 
 
-            "minosoft:general.empty".asResourceLocation() to { " " },
+            "minosoft:general.empty".toResourceLocation() to { " " },
 
-            "minosoft:server_info.active_connections".asResourceLocation() to { it.connections.size },
+            "minosoft:server_info.active_connections".toResourceLocation() to { it.connections.size },
         )
     }
 }

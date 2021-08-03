@@ -13,12 +13,12 @@
 
 package de.bixilon.minosoft.data.registries.fluid
 
-import de.bixilon.minosoft.util.KUtil.asResourceLocation
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 object DefaultFluids {
-    val EMPTY = "minecraft:empty".asResourceLocation()
-    val FLOWING_WATER = "minecraft:flowing_water".asResourceLocation()
-    val WATER = "minecraft:water".asResourceLocation()
-    val FLOWING_LAVA = "minecraft:flowing_lava".asResourceLocation()
-    val LAVA = "minecraft:lava".asResourceLocation()
+    val EMPTY = "minecraft:empty".toResourceLocation()
+    val FLOWING_WATER = "minecraft:flowing_water".toResourceLocation()
+    val WATER = "minecraft:water".toResourceLocation()
+    val FLOWING_LAVA = "minecraft:flowing_lava".toResourceLocation()
+    val LAVA = "minecraft:lava".toResourceLocation()
 }

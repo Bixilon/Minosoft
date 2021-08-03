@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.registries.items.tools
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
-import de.bixilon.minosoft.util.KUtil.asResourceLocation
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 open class PickaxeItem(
     resourceLocation: ResourceLocation,
@@ -26,6 +26,6 @@ open class PickaxeItem(
 
 
     companion object {
-        val PICKAXE_MINEABLE_TAG = "minecraft:mineable/pickaxe".asResourceLocation()
+        val PICKAXE_MINEABLE_TAG = "minecraft:mineable/pickaxe".toResourceLocation()
     }
 }

@@ -16,16 +16,16 @@ package de.bixilon.minosoft.data.text
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.server.Server
 import de.bixilon.minosoft.data.accounts.Account
-import de.bixilon.minosoft.util.KUtil.asResourceLocation
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 object TranslatableComponents {
-    val GENERAL_EMPTY = "minosoft:general.empty".asResourceLocation()
-    val GENERAL_CANCEL = "minosoft:general.cancel".asResourceLocation()
-    val GENERAL_CONFIRM = "minosoft:general.confirm".asResourceLocation()
-    val GENERAL_DELETE = "minosoft:general.delete".asResourceLocation()
+    val GENERAL_EMPTY = "minosoft:general.empty".toResourceLocation()
+    val GENERAL_CANCEL = "minosoft:general.cancel".toResourceLocation()
+    val GENERAL_CONFIRM = "minosoft:general.confirm".toResourceLocation()
+    val GENERAL_DELETE = "minosoft:general.delete".toResourceLocation()
 
-    val EROS_DELETE_SERVER_CONFIRM_DESCRIPTION = { name: ChatComponent, address: String -> Minosoft.LANGUAGE_MANAGER.translate("minosoft:server_info.delete.dialog.description".asResourceLocation(), null, name, address) }
-    val ACCOUNT_CARD_CONNECTION_COUNT = { count: Int -> Minosoft.LANGUAGE_MANAGER.translate("minosoft:main.account.card.connection_count".asResourceLocation(), null, count) }
-    val CONNECTION_KICK_DESCRIPTION = { server: Server, account: Account -> Minosoft.LANGUAGE_MANAGER.translate("minosoft:connection.kick.description".asResourceLocation(), null, server.name, account.username) }
-    val CONNECTION_LOGIN_KICK_DESCRIPTION = { server: Server, account: Account -> Minosoft.LANGUAGE_MANAGER.translate("minosoft:connection.login_kick.description".asResourceLocation(), null, server.name, account.username) }
+    val EROS_DELETE_SERVER_CONFIRM_DESCRIPTION = { name: ChatComponent, address: String -> Minosoft.LANGUAGE_MANAGER.translate("minosoft:server_info.delete.dialog.description".toResourceLocation(), null, name, address) }
+    val ACCOUNT_CARD_CONNECTION_COUNT = { count: Int -> Minosoft.LANGUAGE_MANAGER.translate("minosoft:main.account.card.connection_count".toResourceLocation(), null, count) }
+    val CONNECTION_KICK_DESCRIPTION = { server: Server, account: Account -> Minosoft.LANGUAGE_MANAGER.translate("minosoft:connection.kick.description".toResourceLocation(), null, server.name, account.username) }
+    val CONNECTION_LOGIN_KICK_DESCRIPTION = { server: Server, account: Account -> Minosoft.LANGUAGE_MANAGER.translate("minosoft:connection.login_kick.description".toResourceLocation(), null, server.name, account.username) }
 }

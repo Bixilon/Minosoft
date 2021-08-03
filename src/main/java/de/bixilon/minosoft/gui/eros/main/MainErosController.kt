@@ -27,8 +27,8 @@ import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.ctext
 import de.bixilon.minosoft.modding.event.events.account.AccountSelectEvent
 import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
 import de.bixilon.minosoft.util.GitInfo
-import de.bixilon.minosoft.util.KUtil.asResourceLocation
 import de.bixilon.minosoft.util.KUtil.decide
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.ShutdownManager
 import de.bixilon.minosoft.util.task.pool.DefaultThreadPool
 import javafx.fxml.FXML
@@ -155,6 +155,6 @@ class MainErosController : JavaFXWindowController() {
     }
 
     companion object {
-        private val NO_ACCOUNT_SELECTED = "minosoft:main.account.no_account_selected".asResourceLocation()
+        private val NO_ACCOUNT_SELECTED = "minosoft:main.account.no_account_selected".toResourceLocation()
     }
 }

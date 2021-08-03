@@ -73,7 +73,7 @@ object KUtil {
         return null
     }
 
-    fun Any.asResourceLocation(): ResourceLocation {
+    fun Any.toResourceLocation(): ResourceLocation {
         return when (this) {
             is String -> ResourceLocation(this)
             is ResourceLocation -> this
@@ -117,7 +117,7 @@ object KUtil {
         val ret: MutableSet<ResourceLocation> = mutableSetOf()
 
         for (resourceLocation in this) {
-            ret += resourceLocation.asResourceLocation()
+            ret += resourceLocation.toResourceLocation()
         }
 
         return ret.toSet()

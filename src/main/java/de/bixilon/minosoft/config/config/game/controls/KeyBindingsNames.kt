@@ -17,7 +17,7 @@ import de.bixilon.minosoft.config.key.KeyAction
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.util.KUtil.asResourceLocation
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 
 object KeyBindingsNames {
@@ -34,8 +34,8 @@ object KeyBindingsNames {
 
     val DESTROY_BLOCK = ResourceLocation("minosoft:destroy_block")
 
-    val DROP_ITEM = "minosoft:drop_item".asResourceLocation()
-    val DROP_ITEM_STACK = "minosoft:drop_item_stack".asResourceLocation()
+    val DROP_ITEM = "minosoft:drop_item".toResourceLocation()
+    val DROP_ITEM_STACK = "minosoft:drop_item_stack".toResourceLocation()
 
     val ZOOM = ResourceLocation("minosoft:zoom")
 

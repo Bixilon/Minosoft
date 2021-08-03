@@ -17,13 +17,13 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil.asResourceLocation
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import glm_.vec3.Vec3d
 
 class HeartParticle(connection: PlayConnection, position: Vec3d, data: ParticleData? = null) : EmotionParticle(connection, position + Vec3d(0.0, 0.5, 0.0), data) {
 
     companion object : ParticleFactory<HeartParticle> {
-        override val RESOURCE_LOCATION: ResourceLocation = "minecraft:heart".asResourceLocation()
+        override val RESOURCE_LOCATION: ResourceLocation = "minecraft:heart".toResourceLocation()
 
         override fun build(connection: PlayConnection, position: Vec3d, velocity: Vec3d, data: ParticleData): HeartParticle {
             return HeartParticle(connection, position, data)

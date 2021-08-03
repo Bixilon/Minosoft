@@ -25,8 +25,8 @@ import de.bixilon.minosoft.data.registries.registries.registry.ResourceLocationD
 import de.bixilon.minosoft.data.registries.registries.registry.Translatable
 import de.bixilon.minosoft.datafixer.EntityAttributeFixer.fix
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil.asResourceLocation
 import de.bixilon.minosoft.util.KUtil.toBoolean
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.KUtil.unsafeCast
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
 import glm_.vec3.Vec3d
@@ -76,7 +76,7 @@ data class EntityType(
 
             return EntityType(
                 resourceLocation = resourceLocation,
-                translationKey = data["translation_key"]?.asResourceLocation(),
+                translationKey = data["translation_key"]?.toResourceLocation(),
                 width = data["width"].unsafeCast(),
                 height = data["height"].unsafeCast(),
                 fireImmune = data["fire_immune"]?.toBoolean() ?: false,

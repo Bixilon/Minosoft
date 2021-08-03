@@ -17,7 +17,7 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil.asResourceLocation
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import glm_.vec3.Vec3d
 
 class DamageIndicatorParticle(connection: PlayConnection, position: Vec3d, velocity: Vec3d, data: ParticleData? = null) : DamageParticle(connection, position, velocity + Vec3d(0.0, 1.0, 0.0), data) {
@@ -27,7 +27,7 @@ class DamageIndicatorParticle(connection: PlayConnection, position: Vec3d, veloc
     }
 
     companion object : ParticleFactory<DamageIndicatorParticle> {
-        override val RESOURCE_LOCATION: ResourceLocation = "minecraft:damage_indicator".asResourceLocation()
+        override val RESOURCE_LOCATION: ResourceLocation = "minecraft:damage_indicator".toResourceLocation()
 
         override fun build(connection: PlayConnection, position: Vec3d, velocity: Vec3d, data: ParticleData): DamageIndicatorParticle {
             return DamageIndicatorParticle(connection, position, velocity, data)

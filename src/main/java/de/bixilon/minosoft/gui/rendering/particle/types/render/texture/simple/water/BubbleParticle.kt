@@ -21,7 +21,7 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.assign
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.of
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil.asResourceLocation
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3d
 
@@ -52,7 +52,7 @@ class BubbleParticle(connection: PlayConnection, position: Vec3d, velocity: Vec3
 
 
     companion object : ParticleFactory<BubbleParticle> {
-        override val RESOURCE_LOCATION: ResourceLocation = "minecraft:bubble".asResourceLocation()
+        override val RESOURCE_LOCATION: ResourceLocation = "minecraft:bubble".toResourceLocation()
 
         override fun build(connection: PlayConnection, position: Vec3d, velocity: Vec3d, data: ParticleData): BubbleParticle {
             return BubbleParticle(connection, position, velocity, data)

@@ -16,10 +16,10 @@ package de.bixilon.minosoft.data.registries.other.game.event.handlers.gradients
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.other.game.event.handlers.GameEventHandler
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil.asResourceLocation
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 object ThunderGradientSetGameEventHandler : GameEventHandler {
-    override val RESOURCE_LOCATION: ResourceLocation = "minecraft:thunder_gradient_set".asResourceLocation()
+    override val RESOURCE_LOCATION: ResourceLocation = "minecraft:thunder_gradient_set".toResourceLocation()
 
     override fun handle(data: Float, connection: PlayConnection) {
         connection.world.thunderGradient = data

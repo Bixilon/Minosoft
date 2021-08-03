@@ -29,4 +29,3 @@
   - Label
   - Checkbox
 
-## Rendering

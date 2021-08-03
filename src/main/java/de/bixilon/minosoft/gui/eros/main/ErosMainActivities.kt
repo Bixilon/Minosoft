@@ -17,16 +17,16 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.eros.main.account.AccountController
 import de.bixilon.minosoft.gui.eros.main.play.PlayController
 import de.bixilon.minosoft.util.KUtil
-import de.bixilon.minosoft.util.KUtil.asResourceLocation
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.enum.ValuesEnum
 
 enum class ErosMainActivities(
     val layout: ResourceLocation,
 ) {
     PlAY(PlayController.LAYOUT),
-    SETTINGS("".asResourceLocation()),
-    HELP("".asResourceLocation()),
-    ABOUT("".asResourceLocation()),
+    SETTINGS("".toResourceLocation()),
+    HELP("".toResourceLocation()),
+    ABOUT("".toResourceLocation()),
 
     ACCOUNT(AccountController.LAYOUT),
     ;
