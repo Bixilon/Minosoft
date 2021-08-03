@@ -24,6 +24,7 @@ import de.bixilon.minosoft.util.KUtil.nullCast
 import de.bixilon.minosoft.util.KUtil.toBoolean
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
+import de.bixilon.minosoft.util.nbt.tag.NBTUtil.get
 import javafx.collections.ObservableList
 import javafx.scene.Node
 import java.text.CharacterIterator
@@ -124,7 +125,7 @@ class BaseComponent : ChatComponent {
 
 
         val color = json["color"]?.nullCast<String>()?.toColor() ?: parent?.color
-        val outlineColor = json["outlineColor"]?.nullCast<String>()?.toColor() ?: parent?.outlineColor
+        val outlineColor = json["outlineColor", "outline_color"]?.nullCast<String>()?.toColor() ?: parent?.outlineColor
 
         val formatting = parent?.formatting?.toMutableSet() ?: mutableSetOf()
 
@@ -135,8 +136,8 @@ class BaseComponent : ChatComponent {
         formatting.addOrRemove(PreChatFormattingCodes.OBFUSCATED, json["obfuscated"]?.toBoolean())
         formatting.addOrRemove(PreChatFormattingCodes.SHADOWED, json["shadowed"]?.toBoolean())
 
-        val clickEvent = json["clickEvent"]?.compoundCast()?.let { click -> ClickEvent(click, restrictedMode) }
-        val hoverEvent = json["hoverEvent"]?.compoundCast()?.let { hover -> HoverEvent(hover) }
+        val clickEvent = json["clickEvent", "click_event"]?.compoundCast()?.let { click -> ClickEvent(click, restrictedMode) }
+        val hoverEvent = json["hoverEvent", "hover_event"]?.compoundCast()?.let { hover -> HoverEvent(hover) }
 
         val textComponent = TextComponent(
             message = currentText,

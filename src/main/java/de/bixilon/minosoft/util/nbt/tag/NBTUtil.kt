@@ -53,9 +53,7 @@ object NBTUtil {
     }
 
 
-    operator fun Map<String, Any>.get(key1: String, key2: String, vararg keys: String): Any? {
-        this[key1]?.let { return it }
-        this[key2]?.let { return it }
+    operator fun Map<String, Any>.get(vararg keys: String): Any? {
         for (key in keys) {
             this[key]?.let { return it }
         }
