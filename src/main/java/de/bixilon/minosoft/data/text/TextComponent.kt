@@ -17,17 +17,8 @@ import de.bixilon.minosoft.data.text.events.ClickEvent
 import de.bixilon.minosoft.data.text.events.HoverEvent
 import de.bixilon.minosoft.gui.eros.dialog.ErosErrorReport.Companion.report
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.hyperlink
-import de.bixilon.minosoft.gui.rendering.RenderConstants
-import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.font.Font
-import de.bixilon.minosoft.gui.rendering.font.text.TextGetProperties
-import de.bixilon.minosoft.gui.rendering.font.text.TextSetProperties
-import de.bixilon.minosoft.gui.rendering.hud.nodes.primitive.ImageNode
-import de.bixilon.minosoft.gui.rendering.hud.nodes.primitive.LabelNode
-import de.bixilon.minosoft.gui.rendering.hud.nodes.properties.NodeSizing
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.Util
-import glm_.vec2.Vec2i
 import javafx.animation.Animation
 import javafx.animation.KeyFrame
 import javafx.animation.Timeline
@@ -189,53 +180,5 @@ open class TextComponent(
             }
         }
         return nodes
-    }
-
-
-    override fun prepareRender(startPosition: Vec2i, offset: Vec2i, renderWindow: RenderWindow, textElement: LabelNode, z: Int, setProperties: TextSetProperties, getProperties: TextGetProperties) {
-        val color = this.color ?: ProtocolDefinition.DEFAULT_COLOR
-
-
-        // bring chars in right order and reverse them if right bound
-        val charArray = this.message.toCharArray().toList()
-
-        fun checkGetSize(charEnd: Vec2i) {
-            if (charEnd.x > getProperties.size.x) {
-                getProperties.size.x = charEnd.x
-            }
-            if (charEnd.y > getProperties.size.y) {
-                getProperties.size.y = charEnd.y
-            }
-        }
-
-        fun pushNewLine() {
-            offset.x = 0
-            offset.y += Font.CHAR_HEIGHT + RenderConstants.TEXT_LINE_PADDING
-
-            checkGetSize(Vec2i(0, 0))
-        }
-
-        // add all chars
-        for (char in charArray) {
-            if (ProtocolDefinition.LINE_BREAK_CHARS.contains(char)) {
-                pushNewLine()
-                continue
-            }
-            val fontChar = renderWindow.font.getChar(char)
-            val charSize = fontChar.size
-
-            var charStart = Vec2i(offset)
-            var charEnd = charStart + charSize
-
-            if (charEnd.x >= setProperties.hardWrap) {
-                pushNewLine()
-                charStart = Vec2i(offset)
-                charEnd = charStart + charSize
-            }
-            textElement.addChild(charStart + startPosition, ImageNode(renderWindow, NodeSizing(minSize = charSize), fontChar, 1, color))
-            offset.x += charSize.x + Font.SPACE_BETWEEN_CHARS
-
-            checkGetSize(charEnd)
-        }
     }
 }

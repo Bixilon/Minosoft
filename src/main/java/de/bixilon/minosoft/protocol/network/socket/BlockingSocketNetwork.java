@@ -160,7 +160,10 @@ public class BlockingSocketNetwork extends Network {
             e.printStackTrace();
         }
         this.socketReceiveThread.interrupt();
-        this.socketSendThread.interrupt();
+        Thread socketSendThread = this.socketSendThread;
+        if (socketSendThread != null) {
+            socketSendThread.interrupt();
+        }
         this.connection.setProtocolState(ProtocolStates.DISCONNECTED);
     }
 

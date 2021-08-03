@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.config.config.game
 
 import de.bixilon.minosoft.config.config.game.controls.ControlsGameConfig
-import de.bixilon.minosoft.config.config.game.elements.ElementsGameConfig
 import de.bixilon.minosoft.config.config.game.entities.EntitiesConfig
 import de.bixilon.minosoft.config.config.game.graphics.GraphicsGameConfig
 import de.bixilon.minosoft.config.config.game.sound.SoundConfig
@@ -25,7 +24,6 @@ data class GameConfig(
     var other: OtherGameConfig = OtherGameConfig(),
     var hud: HUDGameConfig = HUDGameConfig(),
     var controls: ControlsGameConfig = ControlsGameConfig(),
-    var elements: ElementsGameConfig = ElementsGameConfig(),
     var camera: CameraGameConfig = CameraGameConfig(),
     var sound: SoundConfig = SoundConfig(),
     var entities: EntitiesConfig = EntitiesConfig(),

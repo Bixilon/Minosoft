@@ -1,25 +1,32 @@
-- Scaling (configurable)
-- Movable (configurable)
-- Opacity (configurable)
-- Custom Atlas Positions (defined in json files, also for multiple versions)
-- Multi resolution
-- Abstract APIs (easy modding)
-- Overlays (like progress bars)
+# General GUI idea
 
-## GUI Components
+## 2 Main GUI types
 
-- Screen: Blocking modal like things (Inventories, confirmations, etc)
-- Overlays
-- Switch
-- TextBox (with a formatter, etc)
-- Buttons
-- Check boxes
-- Labels
-- Item box
-- Image arrays (for hp, etc)
-- Slider
-- Image
-- Progress bars
-- Text flows
-- Selection list
-- Lists
+- Blocking/GUI (with mouse and keyboard interaction)
+  - Inventories
+  - Escape screen
+  - Confirmation screen
+  - Chat (input)
+  - Command blocks, etc
+- Non-blocking/HUD (~~permanent~~ overlay)
+  - Chat messages
+  - Scoreboard
+  - Boss bar
+  - Title
+  - Hotbar
+  - Debug info
+  - Gadget text (like fps, time, etc)
+
+## GUI components
+
+- General
+  - Text
+  - Items
+  - Container (list with items, the inventory and their positions)
+- GUI
+  - Buttons
+  - TextField
+  - Label
+  - Checkbox
+
+## Rendering

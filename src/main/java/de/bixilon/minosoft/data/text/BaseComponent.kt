@@ -17,10 +17,6 @@ import de.bixilon.minosoft.data.language.Translator
 import de.bixilon.minosoft.data.text.RGBColor.Companion.asColor
 import de.bixilon.minosoft.data.text.events.ClickEvent
 import de.bixilon.minosoft.data.text.events.HoverEvent
-import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.font.text.TextGetProperties
-import de.bixilon.minosoft.gui.rendering.font.text.TextSetProperties
-import de.bixilon.minosoft.gui.rendering.hud.nodes.primitive.LabelNode
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.asResourceLocation
 import de.bixilon.minosoft.util.KUtil.format
@@ -28,7 +24,6 @@ import de.bixilon.minosoft.util.KUtil.listCast
 import de.bixilon.minosoft.util.KUtil.nullCast
 import de.bixilon.minosoft.util.KUtil.toBoolean
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
-import glm_.vec2.Vec2i
 import javafx.collections.ObservableList
 import javafx.scene.Node
 import java.text.CharacterIterator
@@ -210,12 +205,6 @@ class BaseComponent : ChatComponent {
             part.getJavaFXText(nodes)
         }
         return nodes
-    }
-
-    override fun prepareRender(startPosition: Vec2i, offset: Vec2i, renderWindow: RenderWindow, textElement: LabelNode, z: Int, setProperties: TextSetProperties, getProperties: TextGetProperties) {
-        for (part in parts) {
-            part.prepareRender(startPosition, offset, renderWindow, textElement, z, setProperties, getProperties)
-        }
     }
 
     override fun applyDefaultColor(color: RGBColor) {

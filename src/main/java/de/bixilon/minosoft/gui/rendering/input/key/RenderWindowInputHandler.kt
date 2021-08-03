@@ -20,7 +20,6 @@ import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.hud.elements.input.KeyConsumer
 import de.bixilon.minosoft.gui.rendering.input.LeftClickHandler
 import de.bixilon.minosoft.gui.rendering.input.RightClickHandler
 import de.bixilon.minosoft.gui.rendering.input.camera.Camera
@@ -64,21 +63,24 @@ class RenderWindowInputHandler(
 
         connection.registerEvent(CallbackEventInvoker.of<RawKeyInputEvent> { keyInput(it.keyCode, it.keyChangeType) })
 
-        connection.registerEvent(CallbackEventInvoker.of<MouseMoveEvent> { camera.mouseCallback(it.position) })
+        connection.registerEvent(CallbackEventInvoker.of<MouseMoveEvent> {
+            //if (renderWindow.inputHandler.currentKeyConsumer != null) {
+            //   return
+            //}
+            camera.mouseCallback(it.position)
+        })
     }
 
-
-    var currentKeyConsumer: KeyConsumer? = null
 
     private fun keyInput(keyCode: KeyCodes, keyChangeType: KeyChangeTypes) {
         val keyDown = when (keyChangeType) {
             KeyChangeTypes.PRESS -> {
-                currentKeyConsumer?.keyInput(keyCode)
+                //  currentKeyConsumer?.keyInput(keyCode)
                 true
             }
             KeyChangeTypes.RELEASE -> false
             KeyChangeTypes.REPEAT -> {
-                currentKeyConsumer?.keyInput(keyCode)
+                // currentKeyConsumer?.keyInput(keyCode)
                 return
             }
         }
@@ -90,12 +92,12 @@ class RenderWindowInputHandler(
             keysDown -= keyCode
         }
 
-        val previousKeyConsumer = currentKeyConsumer
+        //val previousKeyConsumer = currentKeyConsumer
 
         for ((resourceLocation, pair) in keyBindingCallbacks) {
-            if (currentKeyConsumer != null && !pair.keyBinding.ignoreConsumer) {
-                continue
-            }
+            // if (currentKeyConsumer != null && !pair.keyBinding.ignoreConsumer) {
+            //     continue
+            // }
             var thisKeyBindingDown = keyDown
             var checksRun = 0
             var thisIsChange = true
@@ -205,9 +207,9 @@ class RenderWindowInputHandler(
             keysLastDownTime[keyCode] = currentTime
         }
 
-        if (previousKeyConsumer != currentKeyConsumer) {
-            skipNextCharPress = true
-        }
+        // if (previousKeyConsumer != currentKeyConsumer) {
+        //     skipNextCharPress = true
+        //}
     }
 
     private fun charInput(char: Int) {
@@ -215,7 +217,7 @@ class RenderWindowInputHandler(
             skipNextCharPress = false
             return
         }
-        currentKeyConsumer?.charInput(char.toChar())
+        //currentKeyConsumer?.charInput(char.toChar())
     }
 
     fun registerKeyCallback(resourceLocation: ResourceLocation, callback: ((keyDown: Boolean) -> Unit)) {
@@ -225,9 +227,9 @@ class RenderWindowInputHandler(
             callbackPair.callback += callback
         } else {
             callbackPair.callback += add@{
-                if (currentKeyConsumer != null) {
-                    return@add
-                }
+                //if (currentKeyConsumer != null) {
+                //    return@add
+                //}
                 callback(it)
             }
         }

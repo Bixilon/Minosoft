@@ -30,8 +30,8 @@ class RemoveScoreboardScoreS2CP(val entity: String, buffer: PlayInByteBuffer) : 
 
     override fun handle(connection: PlayConnection) {
         objective?.let {
-            connection.scoreboardManager.objectives[objective]?.scores?.remove(entity)
-        } ?: TODO()
+            connection.scoreboardManager.objectives[it]?.scores?.remove(entity)
+        } ?: TODO("Don't know where to remove null objective (entity=$entity)")
     }
 
 

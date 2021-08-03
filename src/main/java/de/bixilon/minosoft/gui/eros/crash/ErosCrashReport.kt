@@ -199,14 +199,12 @@ ${exception?.toStackTrace() ?: ""}
 -- System Details --
     Operating system: ${SystemInformation.OS_TEXT}
     Detected operating system: ${OSUtil.OS}
-    Java version: Java: ${Runtime.version()} ${System.getProperty("sun.arch.data.model")}bit
+    Java version: ${Runtime.version()} ${System.getProperty("sun.arch.data.model")}bit
     Memory: ${SystemInformation.SYSTEM_MEMORY_TEXT}
     CPU: ${SystemInformation.PROCESSOR_TEXT}
  
 -- Git Info --
-${GitInfo.formatForCrashReport()} 
-
-TODO: Add more data
+${GitInfo.formatForCrashReport()}
             """.trimIndent()
 
             val hash = Util.sha1(stack.toByteArray(StandardCharsets.UTF_8))

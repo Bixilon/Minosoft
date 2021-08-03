@@ -20,8 +20,6 @@ import de.bixilon.minosoft.gui.rendering.block.WorldRenderer
 import de.bixilon.minosoft.gui.rendering.block.chunk.ChunkBorderRenderer
 import de.bixilon.minosoft.gui.rendering.block.outline.BlockOutlineRenderer
 import de.bixilon.minosoft.gui.rendering.entity.EntityHitBoxRenderer
-import de.bixilon.minosoft.gui.rendering.font.Font
-import de.bixilon.minosoft.gui.rendering.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.hud.atlas.TextureLike
 import de.bixilon.minosoft.gui.rendering.hud.atlas.TextureLikeTexture
 import de.bixilon.minosoft.gui.rendering.input.key.RenderWindowInputHandler
@@ -73,7 +71,6 @@ class RenderWindow(
 
     private val screenshotTaker = ScreenshotTaker(this)
     val tintColorCalculator = TintColorCalculator(connection.world)
-    val font = Font()
     val textureManager = renderSystem.createTextureManager()
 
     val rendererMap: MutableMap<ResourceLocation, Renderer> = synchronizedMapOf()
@@ -103,7 +100,7 @@ class RenderWindow(
             }
         })
 
-        // order dependant (from back to front)
+        // order dependent (from back to front)
         registerRenderer(SkyRenderer)
         registerRenderer(WorldRenderer)
         registerRenderer(BlockOutlineRenderer)
@@ -116,7 +113,6 @@ class RenderWindow(
         if (Minosoft.config.config.game.world.chunkBorders.enabled) {
             registerRenderer(ChunkBorderRenderer)
         }
-        registerRenderer(HUDRenderer)
     }
 
     fun init(latch: CountUpAndDownLatch) {
@@ -148,7 +144,6 @@ class RenderWindow(
             size = Vec2i(16, 16)
         )
 
-        font.load(connection.assetsManager, textureManager)
 
         shaderManager.init()
 
@@ -160,7 +155,6 @@ class RenderWindow(
 
         Log.log(LogMessageType.RENDERING_LOADING) { "Preloading textures (${stopwatch.labTime()})..." }
         textureManager.staticTextures.preLoad()
-        font.loadAtlas()
 
         Log.log(LogMessageType.RENDERING_LOADING) { "Loading textures (${stopwatch.labTime()})..." }
         textureManager.staticTextures.load()
@@ -221,9 +215,7 @@ class RenderWindow(
     fun startLoop() {
         Log.log(LogMessageType.RENDERING_LOADING) { "Starting loop" }
         var closed = false
-        connection.registerEvent(CallbackEventInvoker.of<WindowCloseEvent> {
-            closed = true
-        })
+        connection.registerEvent(CallbackEventInvoker.of<WindowCloseEvent> { closed = true })
 
         while (true) {
             if (connection.wasConnected || closed) {
@@ -241,7 +233,7 @@ class RenderWindow(
             val currentTickTime = System.currentTimeMillis()
             if (currentTickTime - this.lastTickTimer > ProtocolDefinition.TICK_TIME) {
                 tickCount++
-                inputHandler.currentKeyConsumer?.tick(tickCount)
+                // inputHandler.currentKeyConsumer?.tick(tickCount)
                 this.lastTickTimer = currentTickTime
             }
 
@@ -252,16 +244,18 @@ class RenderWindow(
 
             textureManager.staticTextures.animator.draw()
 
+            val rendererList = rendererMap.values
 
-            for (renderer in rendererMap.values) {
+            for (renderer in rendererList) {
                 renderer.update()
             }
-            for (renderer in rendererMap.values) {
+            for (renderer in rendererList) {
                 renderer.draw()
             }
-            for (renderer in rendererMap.values) {
+            for (renderer in rendererList) {
                 renderer.postDraw()
             }
+            renderSystem.reset() // Reset to enable depth mask, etc again
 
             renderStats.endDraw()
 

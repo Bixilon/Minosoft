@@ -58,6 +58,8 @@ class Camera(
     var fogColor = Previous(ChatColors.GREEN)
     var fogStart = 100.0f
     private var mouseSensitivity = Minosoft.config.config.game.camera.moseSensitivity
+
+    @Deprecated("", ReplaceWith("connection.player"))
     val entity: LocalPlayerEntity
         get() = connection.player
     private var lastMousePosition: Vec2d = Vec2d(0.0, 0.0)
@@ -83,7 +85,7 @@ class Camera(
             if (!Minosoft.config.config.game.camera.dynamicFov) {
                 return fov
             }
-            return fov * entity.fovMultiplier.interpolate()
+            return fov * connection.player.fovMultiplier.interpolate()
         }
 
 
@@ -102,19 +104,16 @@ class Camera(
     fun mouseCallback(position: Vec2d) {
         val delta = position - lastMousePosition
         lastMousePosition = position
-        if (renderWindow.inputHandler.currentKeyConsumer != null) {
-            return
-        }
         delta *= mouseSensitivity
-        var yaw = delta.x + entity.rotation.headYaw
+        var yaw = delta.x + connection.player.rotation.headYaw
         if (yaw > 180) {
             yaw -= 360
         } else if (yaw < -180) {
             yaw += 360
         }
         yaw %= 180
-        val pitch = glm.clamp(delta.y + entity.rotation.pitch, -89.9, 89.9)
-        entity.rotation = EntityRotation(yaw, pitch)
+        val pitch = glm.clamp(delta.y + connection.player.rotation.pitch, -89.9, 89.9)
+        connection.player.rotation = EntityRotation(yaw, pitch)
         setRotation(yaw, pitch)
     }
 
@@ -169,7 +168,7 @@ class Camera(
             if (time - lastDropPacketSent < ProtocolDefinition.TICK_TIME) {
                 return
             }
-            connection.sendPacket(BlockBreakC2SP(type, entity.positionInfo.blockPosition))
+            connection.sendPacket(BlockBreakC2SP(type, connection.player.positionInfo.blockPosition))
             lastDropPacketSent = time
         }
 
@@ -196,26 +195,26 @@ class Camera(
                 shader.setMat4("uViewProjectionMatrix", Mat4(viewProjectionMatrix))
             }
             if (shader.uniforms.contains("uCameraPosition")) {
-                shader.setVec3("uCameraPosition", entity.cameraPosition)
+                shader.setVec3("uCameraPosition", connection.player.cameraPosition)
             }
         }
     }
 
     private fun onPositionChange() {
-        setRotation(entity.rotation.headYaw, entity.rotation.pitch)
+        setRotation(connection.player.rotation.headYaw, connection.player.rotation.pitch)
         recalculateViewProjectionMatrix()
         frustum.recalculate()
         connection.fireEvent(FrustumChangeEvent(renderWindow, frustum))
-        connection.fireEvent(CameraPositionChangeEvent(renderWindow, entity.eyePosition))
+        connection.fireEvent(CameraPositionChangeEvent(renderWindow, connection.player.eyePosition))
 
         // recalculate sky color for current biome
         renderWindow[SkyRenderer.Companion]?.let { skyRenderer ->
-            skyRenderer.baseColor = connection.world.getBiome(entity.positionInfo.blockPosition)?.skyColor ?: RenderConstants.DEFAULT_SKY_COLOR
+            skyRenderer.baseColor = connection.world.getBiome(connection.player.positionInfo.blockPosition)?.skyColor ?: RenderConstants.DEFAULT_SKY_COLOR
 
 
             connection.world.dimension?.hasSkyLight?.let {
                 if (it) {
-                    skyRenderer.baseColor = entity.positionInfo.biome?.skyColor ?: RenderConstants.DEFAULT_SKY_COLOR
+                    skyRenderer.baseColor = connection.player.positionInfo.biome?.skyColor ?: RenderConstants.DEFAULT_SKY_COLOR
                 } else {
                     skyRenderer.baseColor = RenderConstants.BLACK_COLOR
                 }
@@ -228,7 +227,7 @@ class Camera(
     }
 
     private fun calculateViewMatrix(): Mat4d {
-        val eyePosition = entity.eyePosition
+        val eyePosition = connection.player.eyePosition
         return glm.lookAt(eyePosition, eyePosition + cameraFront, CAMERA_UP_VEC3)
     }
 
@@ -249,24 +248,24 @@ class Camera(
         if (!fogColor.equals()) {
             applyFog()
         }
-        val input = if (renderWindow.inputHandler.currentKeyConsumer == null) {
-            MovementInput(
-                pressingForward = renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.MOVE_FORWARD),
-                pressingBack = renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.MOVE_BACKWARDS),
-                pressingLeft = renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.MOVE_LEFT),
-                pressingRight = renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.MOVE_RIGHT),
-                jumping = renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.MOVE_JUMP),
-                sneaking = renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.MOVE_SNEAK),
-                sprinting = renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.MOVE_SPRINT),
-                flyDown = renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.MOVE_FLY_DOWN),
-                flyUp = renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.MOVE_FLY_UP),
-                toggleFlyDown = renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.MOVE_TOGGLE_FLY),
-            )
-        } else {
-            MovementInput()
-        }
-        entity.input = input
-        entity.tick() // The thread pool might be busy, we force a tick here to avoid lagging
+        //val input = if (renderWindow.inputHandler.currentKeyConsumer == null) {
+        val input = MovementInput(
+            pressingForward = renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.MOVE_FORWARD),
+            pressingBack = renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.MOVE_BACKWARDS),
+            pressingLeft = renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.MOVE_LEFT),
+            pressingRight = renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.MOVE_RIGHT),
+            jumping = renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.MOVE_JUMP),
+            sneaking = renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.MOVE_SNEAK),
+            sprinting = renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.MOVE_SPRINT),
+            flyDown = renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.MOVE_FLY_DOWN),
+            flyUp = renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.MOVE_FLY_UP),
+            toggleFlyDown = renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.MOVE_TOGGLE_FLY),
+        )
+        //} else {
+        //   MovementInput()
+        // }
+        connection.player.input = input
+        connection.player.tick() // The thread pool might be busy, we force a tick here to avoid lagging
 
         zoom = if (renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.ZOOM)) {
             2f
@@ -276,7 +275,7 @@ class Camera(
         // ToDo: Only update if changed
         onPositionChange()
 
-        val eyePosition = entity.eyePosition
+        val eyePosition = connection.player.eyePosition
         val cameraFront = cameraFront
 
         target = raycast(eyePosition, cameraFront, blocks = true, fluids = true, entities = true)
