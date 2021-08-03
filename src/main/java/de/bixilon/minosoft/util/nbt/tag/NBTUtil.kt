@@ -44,7 +44,7 @@ object NBTUtil {
         return this.compoundCast()!!
     }
 
-    fun <T> Any.listCast(): MutableList<T>? {
+    fun <T> Any?.listCast(): MutableList<T>? {
         try {
             return this as MutableList<T>
         } catch (ignored: ClassCastException) {

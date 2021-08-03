@@ -103,6 +103,7 @@ class OpenGLTextureArray(
 
             val uvEnd = Vec2(texture.size) / arrayResolution
             val singlePixelSize = Vec2(1.0f) / arrayResolution
+            val textureArrayUV = Vec2(texture.size) / arrayResolution
 
             if (texture is SpriteTexture) {
                 val animationIndex = lastAnimationIndex++
@@ -121,6 +122,7 @@ class OpenGLTextureArray(
                 texturesByResolution[arrayId] += texture
                 texture.renderData = OpenGLTextureData(arrayId, lastTextureId[arrayId]++, uvEnd, -1)
                 texture.singlePixelSize = singlePixelSize
+                texture.textureArrayUV = textureArrayUV
             }
         }
 

@@ -73,7 +73,7 @@ object KUtil {
         return null
     }
 
-    fun Any.toResourceLocation(): ResourceLocation {
+    fun Any?.toResourceLocation(): ResourceLocation {
         return when (this) {
             is String -> ResourceLocation(this)
             is ResourceLocation -> this
@@ -393,5 +393,12 @@ object KUtil {
         }
 
         return ret.toMap()
+    }
+
+    fun <T> T?.check(message: (() -> Any)? = null): T {
+        if (this == null) {
+            throw NullPointerException(message?.invoke()?.toString() ?: "Null check failed")
+        }
+        return this
     }
 }

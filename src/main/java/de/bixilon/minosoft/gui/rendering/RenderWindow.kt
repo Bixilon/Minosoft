@@ -20,6 +20,8 @@ import de.bixilon.minosoft.gui.rendering.block.WorldRenderer
 import de.bixilon.minosoft.gui.rendering.block.chunk.ChunkBorderRenderer
 import de.bixilon.minosoft.gui.rendering.block.outline.BlockOutlineRenderer
 import de.bixilon.minosoft.gui.rendering.entity.EntityHitBoxRenderer
+import de.bixilon.minosoft.gui.rendering.font.Font
+import de.bixilon.minosoft.gui.rendering.font.FontLoader
 import de.bixilon.minosoft.gui.rendering.hud.atlas.TextureLike
 import de.bixilon.minosoft.gui.rendering.hud.atlas.TextureLikeTexture
 import de.bixilon.minosoft.gui.rendering.input.key.RenderWindowInputHandler
@@ -72,6 +74,7 @@ class RenderWindow(
     private val screenshotTaker = ScreenshotTaker(this)
     val tintColorCalculator = TintColorCalculator(connection.world)
     val textureManager = renderSystem.createTextureManager()
+    lateinit var font: Font
 
     val rendererMap: MutableMap<ResourceLocation, Renderer> = synchronizedMapOf()
 
@@ -143,6 +146,7 @@ class RenderWindow(
             uvEnd = Vec2(1.0f, 1.0f),
             size = Vec2i(16, 16)
         )
+        font = FontLoader.load(this)
 
 
         shaderManager.init()
@@ -158,6 +162,7 @@ class RenderWindow(
 
         Log.log(LogMessageType.RENDERING_LOADING) { "Loading textures (${stopwatch.labTime()})..." }
         textureManager.staticTextures.load()
+        font.postInit()
 
         Log.log(LogMessageType.RENDERING_LOADING) { "Post loading renderer (${stopwatch.labTime()})..." }
         for (renderer in rendererMap.values) {
