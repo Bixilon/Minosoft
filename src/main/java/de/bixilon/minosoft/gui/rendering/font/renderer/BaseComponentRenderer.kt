@@ -20,9 +20,9 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import glm_.vec2.Vec2i
 
 object BaseComponentRenderer : ChatComponentRenderer<BaseComponent> {
-    override fun render(offset: Vec2i, element: LabeledElement, renderWindow: RenderWindow, consumer: GUIVertexConsumer, text: BaseComponent) {
+    override fun render(offset: Vec2i, z: Int, element: LabeledElement, renderWindow: RenderWindow, consumer: GUIVertexConsumer, text: BaseComponent) {
         for (part in text.parts) {
-            ChatComponentRenderer.render(offset, element, renderWindow, consumer, part)
+            ChatComponentRenderer.render(offset, z, element, renderWindow, consumer, part)
         }
     }
 }

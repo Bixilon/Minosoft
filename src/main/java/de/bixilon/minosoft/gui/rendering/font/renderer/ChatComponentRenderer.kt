@@ -23,15 +23,15 @@ import glm_.vec2.Vec2i
 
 interface ChatComponentRenderer<T : ChatComponent> {
 
-    fun render(offset: Vec2i, element: LabeledElement, renderWindow: RenderWindow, consumer: GUIVertexConsumer, text: T)
+    fun render(offset: Vec2i, z: Int, element: LabeledElement, renderWindow: RenderWindow, consumer: GUIVertexConsumer, text: T)
 
 
-    companion object {
+    companion object : ChatComponentRenderer<ChatComponent> {
 
-        fun render(offset: Vec2i, element: LabeledElement, renderWindow: RenderWindow, consumer: GUIVertexConsumer, text: ChatComponent) {
+        override fun render(offset: Vec2i, z: Int, element: LabeledElement, renderWindow: RenderWindow, consumer: GUIVertexConsumer, text: ChatComponent) {
             when (text) {
-                is BaseComponent -> BaseComponentRenderer.render(offset, element, renderWindow, consumer, text)
-                is TextComponent -> TextComponentRenderer.render(offset, element, renderWindow, consumer, text)
+                is BaseComponent -> BaseComponentRenderer.render(offset, z, element, renderWindow, consumer, text)
+                is TextComponent -> TextComponentRenderer.render(offset, z, element, renderWindow, consumer, text)
                 else -> TODO("Don't know how to render ${text::class.java}")
             }
         }

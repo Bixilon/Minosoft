@@ -78,4 +78,7 @@ object RenderConstants {
     const val MAXIMUM_PARTICLE_AMOUNT = 200000
 
     const val DEFAULT_LINE_WIDTH = 1.0f / 128.0f
+
+
+    const val UV_ADD = 0.001f
 }

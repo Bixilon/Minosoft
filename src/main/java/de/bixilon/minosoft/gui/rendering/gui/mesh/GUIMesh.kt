@@ -30,12 +30,12 @@ class GUIMesh(
     val matrix: Mat4,
 ) : Mesh(renderWindow, HUDMeshStruct), GUIVertexConsumer {
 
-    override fun addVertex(position: Vec2t<*>, texture: AbstractTexture, uv: Vec2, tint: RGBColor) {
+    override fun addVertex(position: Vec2t<*>, z: Int, texture: AbstractTexture, uv: Vec2, tint: RGBColor) {
         val outPosition = matrix * Vec4(position.x.toFloat(), position.y.toFloat(), 1.0f, 1.0f)
         data.addAll(floatArrayOf(
             outPosition.x,
             outPosition.y,
-            0.95f,
+            BASE_Z + Z_MULTIPLIER * z,
             uv.x,
             uv.y,
             Float.fromBits(texture.renderData?.layer ?: RenderConstants.DEBUG_TEXTURE_ID),
@@ -50,5 +50,10 @@ class GUIMesh(
         val tintColor: RGBColor,
     ) {
         companion object : MeshStruct(HUDMeshStruct::class)
+    }
+
+    companion object {
+        private const val BASE_Z = 0.95f
+        private const val Z_MULTIPLIER = -0.001f
     }
 }

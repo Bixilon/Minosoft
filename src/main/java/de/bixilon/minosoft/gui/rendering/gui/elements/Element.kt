@@ -24,5 +24,8 @@ abstract class Element {
     open var size: Vec2i = Vec2i()
 
 
-    abstract fun render(offset: Vec2i, consumer: GUIVertexConsumer)
+    /**
+     * @return The number of z layers used
+     */
+    abstract fun render(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int
 }

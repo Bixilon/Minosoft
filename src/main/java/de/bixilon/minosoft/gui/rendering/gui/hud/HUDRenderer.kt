@@ -77,7 +77,7 @@ class HUDRenderer(
         )
 
         if (!text.prepared) {
-            text.render(Vec2i(10, 10), mesh)
+            text.render(Vec2i(10, 10), 0, mesh)
         }
 
         mesh.load()

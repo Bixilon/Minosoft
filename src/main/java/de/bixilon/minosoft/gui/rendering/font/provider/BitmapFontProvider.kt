@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.font.provider
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.font.CharData
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
@@ -70,7 +71,7 @@ class BitmapFontProvider(
                 val xOffset = pixel.x * CHAR_WIDTH * x
 
                 val uvStart = Vec2(
-                    x = xOffset + (pixel.x * xStart[x]),
+                    x = xOffset + (pixel.x * xStart[x]) - RenderConstants.UV_ADD,
                     y = yStart,
                 )
                 val uvEnd = Vec2(

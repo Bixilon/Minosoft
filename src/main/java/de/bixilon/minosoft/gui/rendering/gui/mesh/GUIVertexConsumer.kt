@@ -20,5 +20,5 @@ import glm_.vec2.Vec2t
 
 interface GUIVertexConsumer {
 
-    fun addVertex(position: Vec2t<*>, texture: AbstractTexture, uv: Vec2, tint: RGBColor)
+    fun addVertex(position: Vec2t<*>, z: Int, texture: AbstractTexture, uv: Vec2, tint: RGBColor)
 }

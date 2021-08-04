@@ -37,7 +37,12 @@ class TextElement(
         }
 
 
-    override fun render(offset: Vec2i, consumer: GUIVertexConsumer) {
-        ChatComponentRenderer.render(offset, this, renderWindow, consumer, textComponent)
+    override fun render(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int {
+        ChatComponentRenderer.render(offset, z, this, renderWindow, consumer, textComponent)
+        return LAYERS
+    }
+
+    companion object {
+        const val LAYERS = 4
     }
 }

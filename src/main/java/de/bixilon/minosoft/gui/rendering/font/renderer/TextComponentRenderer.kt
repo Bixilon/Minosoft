@@ -25,7 +25,7 @@ import glm_.vec2.Vec2i
 
 object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
 
-    override fun render(offset: Vec2i, element: LabeledElement, renderWindow: RenderWindow, consumer: GUIVertexConsumer, text: TextComponent) {
+    override fun render(offset: Vec2i, z: Int, element: LabeledElement, renderWindow: RenderWindow, consumer: GUIVertexConsumer, text: TextComponent) {
         var first = true
         for (char in text.message.toCharArray()) {
             if (char == '\n') {
@@ -41,7 +41,7 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
                 offset.x += Font.HORIZONTAL_SPACING
             }
 
-            charData.render(offset, text, consumer)
+            charData.render(offset, z, text, consumer)
 
             offset.x += charData.calculateWidth(text)
         }
