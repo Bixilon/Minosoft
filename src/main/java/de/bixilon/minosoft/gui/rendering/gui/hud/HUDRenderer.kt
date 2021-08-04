@@ -28,6 +28,7 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import glm_.glm
 import glm_.mat4x4.Mat4
+import glm_.vec2.Vec2
 import glm_.vec2.Vec2i
 
 class HUDRenderer(
@@ -36,13 +37,13 @@ class HUDRenderer(
 ) : Renderer {
     private val shader = renderWindow.renderSystem.createShader("minosoft:hud".toResourceLocation())
     private lateinit var mesh: GUIMesh
-    var scaledSize: Vec2i = renderWindow.window.size
+    var scaledSize: Vec2 = renderWindow.window.sizef
     private var matrix: Mat4 = Mat4()
 
     override fun init() {
         connection.registerEvent(CallbackEventInvoker.of<ResizeWindowEvent> {
-            scaledSize = it.size / Minosoft.config.config.game.hud.scale
-            matrix = glm.ortho(0.0f, scaledSize.x.toFloat(), scaledSize.y.toFloat(), 0.0f)
+            scaledSize = Vec2(it.size) / Minosoft.config.config.game.hud.scale
+            matrix = glm.ortho(0.0f, scaledSize.x, scaledSize.y, 0.0f)
         })
     }
 
@@ -52,16 +53,19 @@ class HUDRenderer(
     }
 
     override fun draw() {
-        renderWindow.renderSystem.reset()
+        renderWindow.renderSystem.reset(faceCulling = false)
         if (this::mesh.isInitialized) {
             mesh.unload()
         }
 
         mesh = GUIMesh(renderWindow, matrix)
-        val style = TextComponent("", ChatColors.BLUE, ChatColors.RED, formatting = mutableSetOf(PreChatFormattingCodes.BOLD, PreChatFormattingCodes.SHADOWED, PreChatFormattingCodes.UNDERLINED))
-        renderWindow.font['M']?.render(Vec2i(100, 100), style, mesh)
-        renderWindow.font['o']?.render(Vec2i(108, 100), style, mesh)
-        renderWindow.font['r']?.render(Vec2i(116, 100), style, mesh)
+        val style = TextComponent("", ChatColors.GOLD, ChatColors.RED, formatting = mutableSetOf(PreChatFormattingCodes.BOLD, PreChatFormattingCodes.SHADOWED, PreChatFormattingCodes.UNDERLINED, PreChatFormattingCodes.ITALIC, PreChatFormattingCodes.STRIKETHROUGH, PreChatFormattingCodes.OBFUSCATED))
+        renderWindow.font['M']?.render(Vec2i(10, 10), style, mesh)
+        renderWindow.font['o']?.render(Vec2i(19, 10), style, mesh)
+        renderWindow.font['r']?.render(Vec2i(28, 10), style, mesh)
+        renderWindow.font['i']?.render(Vec2i(37, 10), style, mesh)
+        renderWindow.font['t']?.render(Vec2i(46, 10), style, mesh)
+        renderWindow.font['z']?.render(Vec2i(55, 10), style, mesh)
 
         mesh.load()
 

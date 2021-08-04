@@ -16,11 +16,9 @@ package de.bixilon.minosoft.gui.rendering.gui.mesh
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import glm_.vec2.Vec2
-import glm_.vec2.Vec2i
+import glm_.vec2.Vec2t
 
 interface FontVertexConsumer {
 
-    fun addVertex(position: Vec2i, texture: AbstractTexture, uv: Vec2, tint: RGBColor)
-
-    fun addQuad(start: Vec2i, end: Vec2i, texture: AbstractTexture, uvStart: Vec2, uvEnd: Vec2, tint: RGBColor)
+    fun addVertex(position: Vec2t<*>, texture: AbstractTexture, uv: Vec2, tint: RGBColor)
 }

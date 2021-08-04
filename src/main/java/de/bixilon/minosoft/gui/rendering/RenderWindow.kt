@@ -138,7 +138,7 @@ class RenderWindow(
         WHITE_TEXTURE = TextureLikeTexture(
             texture = textureManager.staticTextures.createTexture(ResourceLocation("minosoft:textures/white.png")),
             uvStart = Vec2(0, 0),
-            uvEnd = Vec2(1.0f, 1.0f),
+            uvEnd = Vec2(0.001f, 0.001f),
             size = Vec2i(16, 16)
         )
         font = FontLoader.load(this)

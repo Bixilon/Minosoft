@@ -63,6 +63,7 @@ class LegacyUnicodeFontProvider(
 
 
                     val charData = CharData(
+                        renderWindow = renderWindow,
                         char = char,
                         texture = texture,
                         width = (charXEnd - charXStart) / (CHAR_SIZE / Font.CHAR_HEIGHT),

@@ -55,6 +55,7 @@ class BitmapFontProvider(
                 )
 
                 val charData = CharData(
+                    renderWindow = renderWindow,
                     char = char,
                     texture = texture,
                     width = charXEnd - charXStart,

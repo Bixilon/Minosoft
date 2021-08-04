@@ -26,10 +26,10 @@ void main() {
 
     //texelColor = vec4(1.0f, 0.0f, 1.0f, 1.0f);
 
-    if (finTintColor.a == 1.0f && texelColor.a == 0) {
+    if (texelColor.a == 0.0f) {
         discard;
     }
-    if (finTintColor.a != 0.0f){
+    if (finTintColor.a != 0.0f) {
         texelColor *= finTintColor;
     }
 
