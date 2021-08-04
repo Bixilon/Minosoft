@@ -71,4 +71,9 @@ class PNGTexture(override val resourceLocation: ResourceLocation) : AbstractText
 
         state = TextureStates.LOADED
     }
+
+
+    override fun toString(): String {
+        return resourceLocation.toString()
+    }
 }

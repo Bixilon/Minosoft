@@ -32,12 +32,15 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
                 offset.y += Font.CHAR_HEIGHT + Font.VERTICAL_SPACING
                 continue
             }
-            if (!first) {
-                offset.x += Font.HORIZONTAL_SPACING
-                first = false
-            }
 
             val charData = renderWindow.font[char] ?: continue
+
+            if (first) {
+                first = false
+            } else {
+                offset.x += Font.HORIZONTAL_SPACING
+            }
+
             charData.render(offset, text, consumer)
 
             offset.x += charData.calculateWidth(text)
@@ -45,9 +48,6 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
 
         if (text.formatting.contains(PreChatFormattingCodes.ITALIC)) {
             offset.x += CharData.ITALIC_OFFSET.ceil
-        }
-        if (text.formatting.contains(PreChatFormattingCodes.BOLD)) {
-            offset.x += CharData.BOLD_OFFSET.ceil
         }
     }
 }

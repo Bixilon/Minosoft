@@ -99,11 +99,11 @@ class CharData(
         }
 
         if (style.formatting.contains(PreChatFormattingCodes.STRIKETHROUGH)) {
-            vertexConsumer.addQuad(startPosition + Vec2(-Font.HORIZONTAL_SPACING / 2.0f, Font.CHAR_HEIGHT / 2.0f + 0.5f), Vec2(endPosition.x + Font.HORIZONTAL_SPACING / 2.0f, startPosition.y + Font.CHAR_HEIGHT / 2.0f + 1.5f), renderWindow.WHITE_TEXTURE.texture, renderWindow.WHITE_TEXTURE.uvStart, renderWindow.WHITE_TEXTURE.uvEnd, italic, color)
+            vertexConsumer.addQuad(startPosition + Vec2(-Font.HORIZONTAL_SPACING, Font.CHAR_HEIGHT / 2.0f + 0.5f), Vec2(endPosition.x + Font.HORIZONTAL_SPACING, startPosition.y + Font.CHAR_HEIGHT / 2.0f + 1.5f), renderWindow.WHITE_TEXTURE.texture, renderWindow.WHITE_TEXTURE.uvStart, renderWindow.WHITE_TEXTURE.uvEnd, italic, color)
         }
 
         if (style.formatting.contains(PreChatFormattingCodes.UNDERLINED)) {
-            vertexConsumer.addQuad(startPosition + Vec2i(-Font.HORIZONTAL_SPACING / 2.0f, Font.CHAR_HEIGHT), Vec2i(endPosition.x + boldOffset, startPosition.y + Font.CHAR_HEIGHT + Font.HORIZONTAL_SPACING / 2.0f), renderWindow.WHITE_TEXTURE.texture, renderWindow.WHITE_TEXTURE.uvStart, renderWindow.WHITE_TEXTURE.uvEnd, italic, color)
+            vertexConsumer.addQuad(startPosition + Vec2i(-Font.HORIZONTAL_SPACING, Font.CHAR_HEIGHT), Vec2i(endPosition.x + boldOffset + Font.HORIZONTAL_SPACING, startPosition.y + Font.CHAR_HEIGHT + Font.VERTICAL_SPACING / 2.0f), renderWindow.WHITE_TEXTURE.texture, renderWindow.WHITE_TEXTURE.uvStart, renderWindow.WHITE_TEXTURE.uvEnd, italic, color)
         }
 
         // ToDo: Obfuscated
@@ -114,7 +114,6 @@ class CharData(
         if (style.formatting.contains(PreChatFormattingCodes.SHADOWED)) {
             width += SHADOW_OFFSET
         }
-
 
         return width.ceil
     }

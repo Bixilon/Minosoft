@@ -35,37 +35,68 @@ class BitmapFontProvider(
     init {
         val texture = renderWindow.textureManager.staticTextures.createTexture(data["file"].toResourceLocation().texture())
         texture.load(renderWindow.connection.assetsManager)
+        val textureData = texture.data!!
         val pixel = Vec2(1.0f) / texture.size
         for ((y, row) in data["chars"].asList().withIndex()) {
+            val xStart = IntArray(CHARS_PER_ROW) { 8 }
+            val xEnd = IntArray(CHARS_PER_ROW) { 0 }
             val yStart = pixel.y * y * height
             val yEnd = pixel.y * (y + 1) * height
-            for ((x, char) in row.unsafeCast<String>().toCharArray().withIndex()) {
-                val charXStart = 0 // ToDo: Calculate dynamically
-                val charXEnd = CHAR_WIDTH // ToDo: Calculate dynamically
 
+
+            for (i in 0 until height * CHAR_WIDTH * CHARS_PER_ROW) {
+                val pixelRow = i % CHAR_WIDTH
+                val charIndex = (i / CHAR_WIDTH) % CHARS_PER_ROW
+
+                val alpha = textureData.get((y * height * CHAR_WIDTH * CHARS_PER_ROW + i) * 4 + 3)
+
+                if (alpha == 0.toByte()) {
+                    continue
+                }
+                // non transparent pixel
+                if (xStart[charIndex] > pixelRow) {
+                    xStart[charIndex] = pixelRow
+                }
+                if (xEnd[charIndex] < pixelRow) {
+                    xEnd[charIndex] = pixelRow
+                }
+            }
+
+            for (i in xEnd.indices) {
+                xEnd[i]++
+            }
+
+            for ((x, char) in row.unsafeCast<String>().codePoints().toArray().withIndex()) {
                 val xOffset = pixel.x * CHAR_WIDTH * x
 
                 val uvStart = Vec2(
-                    x = xOffset + (pixel.x * charXStart),
+                    x = xOffset + (pixel.x * xStart[x]),
                     y = yStart,
                 )
                 val uvEnd = Vec2(
-                    x = xOffset + (pixel.x * charXEnd),
+                    x = xOffset + (pixel.x * xEnd[x]),
                     y = yEnd,
                 )
 
+                var width = xEnd[x] - xStart[x]
+
+                if (width <= 0) {
+                    width = EMPTY_CHAR_WIDTH
+                }
+
                 val charData = CharData(
                     renderWindow = renderWindow,
-                    char = char,
+                    char = char.toChar(),
                     texture = texture,
-                    width = charXEnd - charXStart,
+                    width = width,
                     uvStart = uvStart,
                     uvEnd = uvEnd,
                 )
 
-                chars[char] = charData
+                chars[char.toChar()] = charData
             }
         }
+        textureData.rewind()
     }
 
     override fun postInit() {
@@ -79,6 +110,8 @@ class BitmapFontProvider(
     }
 
     companion object : FontProviderFactory<BitmapFontProvider> {
+        private const val EMPTY_CHAR_WIDTH = 4
+        private const val CHARS_PER_ROW = 16
         private const val CHAR_WIDTH = 8
         override val RESOURCE_LOCATION: ResourceLocation = "minecraft:bitmap".toResourceLocation()
 
