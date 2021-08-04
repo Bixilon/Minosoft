@@ -11,9 +11,14 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.text
+package de.bixilon.minosoft.gui.rendering.gui.mesh
 
-interface TextStyle {
-    var color: RGBColor?
-    val formatting: MutableCollection<ChatFormattingCode>
+import de.bixilon.minosoft.data.text.RGBColor
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
+import glm_.vec2.Vec2
+import glm_.vec2.Vec2t
+
+interface GUIVertexConsumer {
+
+    fun addVertex(position: Vec2t<*>, texture: AbstractTexture, uv: Vec2, tint: RGBColor)
 }

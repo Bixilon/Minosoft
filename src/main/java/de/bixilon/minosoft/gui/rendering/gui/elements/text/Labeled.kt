@@ -11,9 +11,11 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.text
+package de.bixilon.minosoft.gui.rendering.gui.elements.text
 
-interface TextStyle {
-    var color: RGBColor?
-    val formatting: MutableCollection<ChatFormattingCode>
+import de.bixilon.minosoft.data.text.ChatComponent
+
+interface Labeled {
+    var text: Any
+    val textComponent: ChatComponent
 }

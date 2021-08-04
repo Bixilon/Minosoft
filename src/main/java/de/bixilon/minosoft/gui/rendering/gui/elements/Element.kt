@@ -11,9 +11,18 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.text
+package de.bixilon.minosoft.gui.rendering.gui.elements
 
-interface TextStyle {
-    var color: RGBColor?
-    val formatting: MutableCollection<ChatFormattingCode>
+import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
+import glm_.vec2.Vec2i
+
+abstract class Element {
+    open var prepared: Boolean = false
+
+    open var minSize: Vec2i = Vec2i()
+    open var maxSize: Vec2i = Vec2i()
+    open var size: Vec2i = Vec2i()
+
+
+    abstract fun render(offset: Vec2i, consumer: GUIVertexConsumer)
 }

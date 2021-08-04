@@ -125,7 +125,6 @@ class BaseComponent : ChatComponent {
 
 
         val color = json["color"]?.nullCast<String>()?.toColor() ?: parent?.color
-        val outlineColor = json["outlineColor", "outline_color"]?.nullCast<String>()?.toColor() ?: parent?.outlineColor
 
         val formatting = parent?.formatting?.toMutableSet() ?: mutableSetOf()
 
@@ -142,7 +141,6 @@ class BaseComponent : ChatComponent {
         val textComponent = TextComponent(
             message = currentText,
             color = color,
-            outlineColor = outlineColor,
             formatting = formatting,
             clickEvent = clickEvent,
             hoverEvent = hoverEvent,

@@ -106,7 +106,19 @@ object MMath {
             return (this < int).decide(int - 1, int)
         }
 
+    val Float.floor: Int
+        get() {
+            val int = this.toInt()
+            return (this < int).decide(int - 1, int)
+        }
+
     val Double.ceil: Int
+        get() {
+            val int = this.toInt()
+            return (this > int).decide(int + 1, int)
+        }
+
+    val Float.ceil: Int
         get() {
             val int = this.toInt()
             return (this > int).decide(int + 1, int)

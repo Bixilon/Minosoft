@@ -32,7 +32,6 @@ import javafx.util.Duration
 open class TextComponent(
     message: Any? = "",
     override var color: RGBColor? = null,
-    override var outlineColor: RGBColor? = null,
     override val formatting: MutableSet<ChatFormattingCode> = mutableSetOf(),
     var clickEvent: ClickEvent? = null,
     var hoverEvent: HoverEvent? = null,
@@ -71,11 +70,6 @@ open class TextComponent(
 
     fun color(color: RGBColor): TextComponent {
         this.color = color
-        return this
-    }
-
-    fun outline(color: RGBColor): TextComponent {
-        this.outlineColor = color
         return this
     }
 
@@ -156,16 +150,16 @@ open class TextComponent(
                     text.styleClass.add("obfuscated")
                 }
                 PreChatFormattingCodes.BOLD -> {
-                    text.style = "-fx-font-weight: bold;"
+                    text.style += "-fx-font-weight: bold;"
                 }
                 PreChatFormattingCodes.STRIKETHROUGH -> {
-                    text.style = "-fx-strikethrough: true;"
+                    text.style += "-fx-strikethrough: true;"
                 }
                 PreChatFormattingCodes.UNDERLINED -> {
-                    text.style = "-fx-underline: true;"
+                    text.style += "-fx-underline: true;"
                 }
                 PreChatFormattingCodes.ITALIC -> {
-                    text.style = "-fx-font-weight: italic;"
+                    text.style += "-fx-font-weight: italic;"
                 }
             }
         }

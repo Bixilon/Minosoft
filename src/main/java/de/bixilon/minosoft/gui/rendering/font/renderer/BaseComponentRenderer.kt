@@ -11,9 +11,18 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.text
+package de.bixilon.minosoft.gui.rendering.font.renderer
 
-interface TextStyle {
-    var color: RGBColor?
-    val formatting: MutableCollection<ChatFormattingCode>
+import de.bixilon.minosoft.data.text.BaseComponent
+import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.gui.elements.text.LabeledElement
+import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
+import glm_.vec2.Vec2i
+
+object BaseComponentRenderer : ChatComponentRenderer<BaseComponent> {
+    override fun render(offset: Vec2i, element: LabeledElement, renderWindow: RenderWindow, consumer: GUIVertexConsumer, text: BaseComponent) {
+        for (part in text.parts) {
+            ChatComponentRenderer.render(offset, element, renderWindow, consumer, part)
+        }
+    }
 }

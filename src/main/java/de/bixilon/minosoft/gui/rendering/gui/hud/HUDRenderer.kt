@@ -21,6 +21,7 @@ import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.Renderer
 import de.bixilon.minosoft.gui.rendering.RendererBuilder
+import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMesh
 import de.bixilon.minosoft.gui.rendering.modding.events.ResizeWindowEvent
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
@@ -53,19 +54,31 @@ class HUDRenderer(
     }
 
     override fun draw() {
-        renderWindow.renderSystem.reset(faceCulling = false)
+        renderWindow.renderSystem.reset()
         if (this::mesh.isInitialized) {
             mesh.unload()
         }
 
         mesh = GUIMesh(renderWindow, matrix)
-        val style = TextComponent("", ChatColors.GOLD, ChatColors.RED, formatting = mutableSetOf(PreChatFormattingCodes.BOLD, PreChatFormattingCodes.SHADOWED, PreChatFormattingCodes.UNDERLINED, PreChatFormattingCodes.ITALIC, PreChatFormattingCodes.STRIKETHROUGH, PreChatFormattingCodes.OBFUSCATED))
-        renderWindow.font['M']?.render(Vec2i(10, 10), style, mesh)
-        renderWindow.font['o']?.render(Vec2i(19, 10), style, mesh)
-        renderWindow.font['r']?.render(Vec2i(28, 10), style, mesh)
-        renderWindow.font['i']?.render(Vec2i(37, 10), style, mesh)
-        renderWindow.font['t']?.render(Vec2i(46, 10), style, mesh)
-        renderWindow.font['z']?.render(Vec2i(55, 10), style, mesh)
+        val text = TextElement(
+            renderWindow = renderWindow,
+            text = TextComponent(
+                message = "Moritz ist toll!!!",
+                color = ChatColors.RED,
+                formatting = mutableSetOf(
+                    PreChatFormattingCodes.BOLD,
+                    PreChatFormattingCodes.SHADOWED,
+                    PreChatFormattingCodes.UNDERLINED,
+                    PreChatFormattingCodes.ITALIC,
+                    PreChatFormattingCodes.STRIKETHROUGH,
+                    PreChatFormattingCodes.OBFUSCATED
+                ),
+            ),
+        )
+
+        if (!text.prepared) {
+            text.render(Vec2i(10, 10), mesh)
+        }
 
         mesh.load()
 

@@ -11,14 +11,8 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.gui.mesh
+package de.bixilon.minosoft.gui.rendering.gui.elements.text
 
-import de.bixilon.minosoft.data.text.RGBColor
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
-import glm_.vec2.Vec2
-import glm_.vec2.Vec2t
+import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 
-interface FontVertexConsumer {
-
-    fun addVertex(position: Vec2t<*>, texture: AbstractTexture, uv: Vec2, tint: RGBColor)
-}
+abstract class LabeledElement : Element(), Labeled

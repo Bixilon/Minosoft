@@ -18,10 +18,11 @@ import de.bixilon.minosoft.data.text.PreChatFormattingCodes
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.data.text.TextStyle
 import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.gui.mesh.FontVertexConsumer
+import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.util.KUtil.decide
+import de.bixilon.minosoft.util.MMath.ceil
 import glm_.vec2.Vec2
 import glm_.vec2.Vec2i
 import glm_.vec2.Vec2t
@@ -40,15 +41,15 @@ class CharData(
         uvEnd = uvEnd * texture.textureArrayUV
     }
 
-    fun render(position: Vec2i, style: TextStyle, vertexConsumer: FontVertexConsumer) {
+    fun render(position: Vec2i, style: TextStyle, vertexConsumer: GUIVertexConsumer) {
         render(position, false, style, vertexConsumer)
         if (style.formatting.contains(PreChatFormattingCodes.SHADOWED)) {
             render(position, true, style, vertexConsumer)
         }
     }
 
-    private fun FontVertexConsumer.addQuad(start: Vec2t<*>, end: Vec2t<*>, texture: AbstractTexture, uvStart: Vec2, uvEnd: Vec2, italic: Boolean, tint: RGBColor) {
-        val italicOffset = italic.decide(2.5f, 0.0f)
+    private fun GUIVertexConsumer.addQuad(start: Vec2t<*>, end: Vec2t<*>, texture: AbstractTexture, uvStart: Vec2, uvEnd: Vec2, italic: Boolean, tint: RGBColor) {
+        val italicOffset = italic.decide(ITALIC_OFFSET, 0.0f)
         val positions = arrayOf(
             Vec2(start.x.toFloat() + italicOffset, start.y),
             Vec2(end.x.toFloat() + italicOffset, start.y),
@@ -67,20 +68,20 @@ class CharData(
         }
     }
 
-    private fun render(position: Vec2i, shadow: Boolean, style: TextStyle, vertexConsumer: FontVertexConsumer) {
+    private fun render(position: Vec2i, shadow: Boolean, style: TextStyle, vertexConsumer: GUIVertexConsumer) {
         var color = style.color ?: ChatColors.WHITE
 
 
         var shadowOffset = 0.0f
         if (shadow) {
-            shadowOffset = 1.0f
+            shadowOffset = SHADOW_OFFSET
             color *= 0.25f
         }
 
         var boldOffset = 0.0f
 
         if (style.formatting.contains(PreChatFormattingCodes.BOLD)) {
-            boldOffset = 0.5f
+            boldOffset = BOLD_OFFSET
         }
 
 
@@ -98,12 +99,30 @@ class CharData(
         }
 
         if (style.formatting.contains(PreChatFormattingCodes.STRIKETHROUGH)) {
-            vertexConsumer.addQuad(startPosition + Vec2(-1.0f, Font.CHAR_HEIGHT / 2.0f + 0.5f), Vec2(endPosition.x + boldOffset, startPosition.y + Font.CHAR_HEIGHT / 2.0f + 1.5f), renderWindow.WHITE_TEXTURE.texture, renderWindow.WHITE_TEXTURE.uvStart, renderWindow.WHITE_TEXTURE.uvEnd, italic, color)
+            vertexConsumer.addQuad(startPosition + Vec2(-Font.HORIZONTAL_SPACING / 2.0f, Font.CHAR_HEIGHT / 2.0f + 0.5f), Vec2(endPosition.x + Font.HORIZONTAL_SPACING / 2.0f, startPosition.y + Font.CHAR_HEIGHT / 2.0f + 1.5f), renderWindow.WHITE_TEXTURE.texture, renderWindow.WHITE_TEXTURE.uvStart, renderWindow.WHITE_TEXTURE.uvEnd, italic, color)
         }
+
         if (style.formatting.contains(PreChatFormattingCodes.UNDERLINED)) {
-            vertexConsumer.addQuad(startPosition + Vec2i(-1.0f, Font.CHAR_HEIGHT), Vec2i(endPosition.x + boldOffset, startPosition.y + Font.CHAR_HEIGHT + 1.0f), renderWindow.WHITE_TEXTURE.texture, renderWindow.WHITE_TEXTURE.uvStart, renderWindow.WHITE_TEXTURE.uvEnd, italic, color)
+            vertexConsumer.addQuad(startPosition + Vec2i(-Font.HORIZONTAL_SPACING / 2.0f, Font.CHAR_HEIGHT), Vec2i(endPosition.x + boldOffset, startPosition.y + Font.CHAR_HEIGHT + Font.HORIZONTAL_SPACING / 2.0f), renderWindow.WHITE_TEXTURE.texture, renderWindow.WHITE_TEXTURE.uvStart, renderWindow.WHITE_TEXTURE.uvEnd, italic, color)
         }
 
         // ToDo: Obfuscated
+    }
+
+    fun calculateWidth(style: TextStyle): Int {
+        var width = width.toFloat()
+        if (style.formatting.contains(PreChatFormattingCodes.SHADOWED)) {
+            width += SHADOW_OFFSET
+        }
+
+
+        return width.ceil
+    }
+
+
+    companion object {
+        const val ITALIC_OFFSET = 2.5f
+        const val SHADOW_OFFSET = 1.0f
+        const val BOLD_OFFSET = 0.5f
     }
 }

@@ -35,5 +35,7 @@ class Font(
 
     companion object {
         const val CHAR_HEIGHT = 8
+        const val HORIZONTAL_SPACING = 2
+        const val VERTICAL_SPACING = 2
     }
 }
