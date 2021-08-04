@@ -80,6 +80,26 @@ class HUDRenderer(
             text.render(Vec2i(10, 10), 0, mesh)
         }
 
+
+        val text2 = TextElement(
+            renderWindow = renderWindow,
+            text = TextComponent(
+                message = "Moritz\nist toll!!!",
+                color = ChatColors.BLUE,
+                formatting = mutableSetOf(
+                    PreChatFormattingCodes.BOLD,
+                    PreChatFormattingCodes.SHADOWED,
+                    PreChatFormattingCodes.UNDERLINED,
+                    PreChatFormattingCodes.ITALIC,
+                    PreChatFormattingCodes.STRIKETHROUGH,
+                    PreChatFormattingCodes.OBFUSCATED
+                ),
+            ),
+        )
+        if (!text2.prepared) {
+            text2.render(Vec2i(10, 60), 0, mesh)
+        }
+
         mesh.load()
 
 

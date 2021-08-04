@@ -19,8 +19,8 @@ import glm_.vec2.Vec2i
 abstract class Element {
     open var prepared: Boolean = false
 
-    open var minSize: Vec2i = Vec2i()
-    open var maxSize: Vec2i = Vec2i()
+    open var minSize: Vec2i = Vec2i(10, 10)
+    open var maxSize: Vec2i = Vec2i(50, 50)
     open var size: Vec2i = Vec2i()
 
 

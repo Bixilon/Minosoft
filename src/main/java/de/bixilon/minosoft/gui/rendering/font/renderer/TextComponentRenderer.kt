@@ -25,11 +25,53 @@ import glm_.vec2.Vec2i
 
 object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
 
-    override fun render(offset: Vec2i, z: Int, element: LabeledElement, renderWindow: RenderWindow, consumer: GUIVertexConsumer, text: TextComponent) {
+    override fun render(initialOffset: Vec2i, offset: Vec2i, size: Vec2i, z: Int, element: LabeledElement, renderWindow: RenderWindow, consumer: GUIVertexConsumer, text: TextComponent) {
         var first = true
+
+        /**
+         * @return If the text can't fit into the layout anymore
+         */
+        fun wrap(): Boolean {
+            val yAdd = Font.CHAR_HEIGHT + Font.VERTICAL_SPACING
+            if (size.y + yAdd > element.maxSize.y) {
+                return true
+            }
+            offset.x = initialOffset.x
+            offset.y += yAdd
+            size.y += yAdd
+
+            return false
+        }
+
+        /**
+         * @return If the text can't fit into the layout anymore
+         */
+        fun add(x: Int): Boolean {
+            if (offset.x - initialOffset.x + x > element.maxSize.x) {
+                if (wrap()) {
+                    return true
+                }
+            } else {
+                offset.x += x
+            }
+
+            if (size.x < offset.x - initialOffset.x) {
+                size.x += x
+            }
+
+            return false
+        }
+
         for (char in text.message.toCharArray()) {
             if (char == '\n') {
-                offset.y += Font.CHAR_HEIGHT + Font.VERTICAL_SPACING
+                if (wrap()) {
+                    return
+                }
+                continue
+            }
+
+            // skip wrapped spaces
+            if (offset.y != initialOffset.y && offset.x == initialOffset.x && char == ' ') {
                 continue
             }
 
@@ -37,17 +79,26 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
 
             if (first) {
                 first = false
-            } else {
-                offset.x += Font.HORIZONTAL_SPACING
+            } else if (offset.x != initialOffset.x && add(Font.HORIZONTAL_SPACING)) {
+                return
             }
 
+            val width = charData.calculateWidth(text)
+
+            if (offset.x == initialOffset.x && offset.x - initialOffset.x + width > element.maxSize.x) {
+                return
+            }
             charData.render(offset, z, text, consumer)
 
-            offset.x += charData.calculateWidth(text)
+            if (add(width)) {
+                return
+            }
         }
 
         if (text.formatting.contains(PreChatFormattingCodes.ITALIC)) {
-            offset.x += CharData.ITALIC_OFFSET.ceil
+            val italicOffset = CharData.ITALIC_OFFSET.ceil
+            offset.x += italicOffset
+            size.x += italicOffset
         }
     }
 }
