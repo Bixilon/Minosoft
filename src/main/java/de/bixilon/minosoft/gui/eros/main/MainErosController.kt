@@ -31,6 +31,7 @@ import de.bixilon.minosoft.util.KUtil.asResourceLocation
 import de.bixilon.minosoft.util.KUtil.decide
 import de.bixilon.minosoft.util.ShutdownManager
 import de.bixilon.minosoft.util.task.pool.DefaultThreadPool
+import javafx.application.Platform
 import javafx.fxml.FXML
 import javafx.scene.control.Label
 import javafx.scene.image.ImageView
@@ -141,7 +142,7 @@ class MainErosController : JavaFXWindowController() {
             try {
                 account.verify()
             } catch (exception: Throwable) {
-                activity = ErosMainActivities.ACCOUNT
+                Platform.runLater { activity = ErosMainActivities.ACCOUNT }
                 // ToDo: Show account window and do account error handling
             }
             onSuccess(account)
