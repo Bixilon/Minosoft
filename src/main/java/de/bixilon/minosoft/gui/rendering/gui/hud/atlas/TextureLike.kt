@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.hud.atlas
+package de.bixilon.minosoft.gui.rendering.gui.hud.atlas
 
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import glm_.vec2.Vec2

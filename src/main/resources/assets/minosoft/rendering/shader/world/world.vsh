@@ -14,7 +14,7 @@
 #version 330 core
 
 layout (location = 0) in vec3 vinPosition;
-layout (location = 1) in vec2 vinUVCoordinates;
+layout (location = 1) in vec2 vinUV;
 layout (location = 2) in uint vinTextureLayer;
 
 layout (location = 3) in int vinAnimationIndex;
@@ -45,7 +45,7 @@ void work() {
     if (vinAnimationIndex == -1) {
         finTextureIndex1 = vinTextureLayer >> 24u;
 
-        finTextureCoordinates1 = vec3(vinUVCoordinates, (vinTextureLayer & 0xFFFFFFu));
+        finTextureCoordinates1 = vec3(vinUV, (vinTextureLayer & 0xFFFFFFu));
 
         finInterpolation = 0.0f;
         return;
@@ -57,10 +57,10 @@ void work() {
     uint interpolation = data.z;
 
     finTextureIndex1 = firstTexture >> 24u;
-    finTextureCoordinates1 = vec3(vinUVCoordinates, firstTexture & 0xFFFFFFu);
+    finTextureCoordinates1 = vec3(vinUV, firstTexture & 0xFFFFFFu);
 
     finTextureIndex2 = secondTexture >> 24u;
-    finTextureCoordinates2 = vec3(vinUVCoordinates, secondTexture & 0xFFFFFFu);
+    finTextureCoordinates2 = vec3(vinUV, secondTexture & 0xFFFFFFu);
 
     finInterpolation = interpolation / 100.0f;
 }

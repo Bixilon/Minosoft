@@ -13,8 +13,12 @@
 
 package de.bixilon.minosoft.gui.rendering.font
 
+import de.bixilon.minosoft.data.text.ChatColors
+import de.bixilon.minosoft.data.text.TextStyle
+import de.bixilon.minosoft.gui.rendering.gui.mesh.FontVertexConsumer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import glm_.vec2.Vec2
+import glm_.vec2.Vec2i
 
 class CharData(
     val char: Char,
@@ -23,8 +27,13 @@ class CharData(
     var uvStart: Vec2,
     var uvEnd: Vec2,
 ) {
+
     fun postInit() {
         uvStart = uvStart * texture.textureArrayUV
         uvEnd = uvEnd * texture.textureArrayUV
+    }
+
+    fun render(position: Vec2i, style: TextStyle, vertexConsumer: FontVertexConsumer) {
+        vertexConsumer.addQuad(position, position + Vec2i(width, Font.CHAR_HEIGHT), texture, uvStart, uvEnd, style.color ?: ChatColors.WHITE)
     }
 }

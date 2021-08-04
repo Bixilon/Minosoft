@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2021 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,21 +11,16 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
+package de.bixilon.minosoft.gui.rendering.gui.mesh
 
-uniform sampler2DArray uTextures[7];
+import de.bixilon.minosoft.data.text.RGBColor
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
+import glm_.vec2.Vec2
+import glm_.vec2.Vec2i
 
-vec4 getTexture(uint textureId, vec3 uv) { // ToDo: This method is just stupid and workarounds a opengl crash with mesa drivers
-    #ifdef __NVIDIA
-    return texture(uTextures[textureId], uv);
-    #else
-    switch (textureId) {
-        case 1u: return texture(uTextures[1], uv);
-        case 2u: return texture(uTextures[2], uv);
-        case 3u: return texture(uTextures[3], uv);
-        case 4u: return texture(uTextures[4], uv);
-        case 5u: return texture(uTextures[5], uv);
-        case 6u: return texture(uTextures[6], uv);
-    }
-    return texture(uTextures[0], uv);
-    #endif
+interface FontVertexConsumer {
+
+    fun addVertex(position: Vec2i, texture: AbstractTexture, uv: Vec2, tint: RGBColor)
+
+    fun addQuad(start: Vec2i, end: Vec2i, texture: AbstractTexture, uvStart: Vec2, uvEnd: Vec2, tint: RGBColor)
 }

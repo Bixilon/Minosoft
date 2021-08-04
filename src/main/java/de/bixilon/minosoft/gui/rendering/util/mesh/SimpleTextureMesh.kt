@@ -22,7 +22,7 @@ import glm_.vec3.Vec3
 
 open class SimpleTextureMesh(renderWindow: RenderWindow) : Mesh(renderWindow, SimpleTextureMeshStruct, initialCacheSize = 2 * 3 * SimpleTextureMeshStruct.FLOATS_PER_VERTEX) {
 
-    fun addVertex(position: Vec3, texture: AbstractTexture, textureCoordinates: Vec2, tintColor: RGBColor) {
+    fun addVertex(position: Vec3, texture: AbstractTexture, uv: Vec2, tintColor: RGBColor) {
         val textureLayer = if (RenderConstants.FORCE_DEBUG_TEXTURE) {
             RenderConstants.DEBUG_TEXTURE_ID
         } else {
@@ -34,8 +34,8 @@ open class SimpleTextureMesh(renderWindow: RenderWindow) : Mesh(renderWindow, Si
                 position.x,
                 position.y,
                 position.z,
-                textureCoordinates.x,
-                textureCoordinates.y,
+                uv.x,
+                uv.y,
                 Float.fromBits(textureLayer),
                 Float.fromBits(tintColor.rgba),
             ))
@@ -44,7 +44,7 @@ open class SimpleTextureMesh(renderWindow: RenderWindow) : Mesh(renderWindow, Si
 
     data class SimpleTextureMeshStruct(
         val position: Vec3,
-        val uvCoordinates: Vec2,
+        val uv: Vec2,
         val textureLayer: Int,
         val animationId: Int,
     ) {

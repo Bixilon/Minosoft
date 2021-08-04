@@ -25,6 +25,7 @@ import de.bixilon.minosoft.gui.rendering.modding.events.CameraMatrixChangeEvent
 import de.bixilon.minosoft.gui.rendering.system.base.BlendingFunctions
 import de.bixilon.minosoft.gui.rendering.system.base.DepthFunctions
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
+import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.mesh.SimpleTextureMesh
 import de.bixilon.minosoft.modding.event.events.TimeChangeEvent
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
@@ -94,14 +95,14 @@ class SkyRenderer(
             skySunMesh = SimpleTextureMesh(renderWindow)
 
 
-            skySunMesh.addQuad(
+            Mesh.addQuad(
                 start = Vec3(-0.15f, 1.0f, -0.15f),
                 end = Vec3(+0.15f, 1.0f, +0.15f),
-                vertexConsumer = { position, textureCoordinate ->
+                vertexConsumer = { position, uv ->
                     skySunMesh.addVertex(
                         position = position,
                         texture = sunTexture,
-                        textureCoordinates = textureCoordinate,
+                        uv = uv,
                         tintColor = ChatColors.WHITE.with(alpha = 1.0f - connection.world.rainGradient), // ToDo: Depends on time
                     )
                 }

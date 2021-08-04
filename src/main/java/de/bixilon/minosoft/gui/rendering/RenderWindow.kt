@@ -13,21 +13,15 @@
 
 package de.bixilon.minosoft.gui.rendering
 
-import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.gui.rendering.block.WorldRenderer
-import de.bixilon.minosoft.gui.rendering.block.chunk.ChunkBorderRenderer
-import de.bixilon.minosoft.gui.rendering.block.outline.BlockOutlineRenderer
-import de.bixilon.minosoft.gui.rendering.entity.EntityHitBoxRenderer
 import de.bixilon.minosoft.gui.rendering.font.Font
 import de.bixilon.minosoft.gui.rendering.font.FontLoader
-import de.bixilon.minosoft.gui.rendering.hud.atlas.TextureLike
-import de.bixilon.minosoft.gui.rendering.hud.atlas.TextureLikeTexture
+import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
+import de.bixilon.minosoft.gui.rendering.gui.hud.atlas.TextureLike
+import de.bixilon.minosoft.gui.rendering.gui.hud.atlas.TextureLikeTexture
 import de.bixilon.minosoft.gui.rendering.input.key.RenderWindowInputHandler
 import de.bixilon.minosoft.gui.rendering.modding.events.*
-import de.bixilon.minosoft.gui.rendering.particle.ParticleRenderer
-import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
 import de.bixilon.minosoft.gui.rendering.system.base.IntegratedBufferTypes
 import de.bixilon.minosoft.gui.rendering.system.base.PolygonModes
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
@@ -104,7 +98,7 @@ class RenderWindow(
         })
 
         // order dependent (from back to front)
-        registerRenderer(SkyRenderer)
+/*        registerRenderer(SkyRenderer)
         registerRenderer(WorldRenderer)
         registerRenderer(BlockOutlineRenderer)
         if (Minosoft.config.config.game.graphics.particles.enabled) {
@@ -115,7 +109,8 @@ class RenderWindow(
         }
         if (Minosoft.config.config.game.world.chunkBorders.enabled) {
             registerRenderer(ChunkBorderRenderer)
-        }
+        }*/
+        registerRenderer(HUDRenderer)
     }
 
     fun init(latch: CountUpAndDownLatch) {

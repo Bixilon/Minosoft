@@ -61,25 +61,6 @@ abstract class Mesh(
         }
     }
 
-    fun addQuad(start: Vec3, end: Vec3, textureStart: Vec2 = Vec2(0.0f, 0.0f), textureEnd: Vec2 = Vec2(1.0f, 1.0f), vertexConsumer: (position: Vec3, textureCoordinate: Vec2) -> Unit) {
-        val positions = arrayOf(
-            start,
-            Vec3(start.x, start.y, end.z),
-            end,
-            Vec3(end.x, end.y, start.z),
-        )
-        val texturePositions = arrayOf(
-            Vec2(textureEnd.x, textureStart.y),
-            textureStart,
-            Vec2(textureStart.x, textureEnd.y),
-            textureEnd,
-        )
-
-        for ((vertexIndex, textureIndex) in QUAD_DRAW_ODER) {
-            vertexConsumer.invoke(positions[vertexIndex], texturePositions[textureIndex])
-        }
-    }
-
     enum class MeshStates {
         PREPARING,
         LOADED,
@@ -95,5 +76,25 @@ abstract class Mesh(
             1 to 0,
             0 to 1,
         )
+
+
+        fun addQuad(start: Vec3, end: Vec3, uvStart: Vec2 = Vec2(0.0f, 0.0f), uvEnd: Vec2 = Vec2(1.0f, 1.0f), vertexConsumer: (position: Vec3, uv: Vec2) -> Unit) {
+            val positions = arrayOf(
+                start,
+                Vec3(start.x, start.y, end.z),
+                end,
+                Vec3(end.x, end.y, start.z),
+            )
+            val texturePositions = arrayOf(
+                Vec2(uvEnd.x, uvStart.y),
+                uvStart,
+                Vec2(uvStart.x, uvEnd.y),
+                uvEnd,
+            )
+
+            for ((vertexIndex, textureIndex) in QUAD_DRAW_ODER) {
+                vertexConsumer.invoke(positions[vertexIndex], texturePositions[textureIndex])
+            }
+        }
     }
 }
