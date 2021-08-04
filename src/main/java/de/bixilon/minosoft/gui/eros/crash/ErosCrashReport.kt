@@ -104,6 +104,7 @@ class ErosCrashReport : JavaFXWindowController() {
             "That happens when you develop while playing games!",
             "Written while driving in a FlixBus",
             "Coded while traveling in the ICE 272 towards Hamburg-Altona",
+            "Sorry, the ICE 693 drive towards Munich was really long",
         )
 
 
