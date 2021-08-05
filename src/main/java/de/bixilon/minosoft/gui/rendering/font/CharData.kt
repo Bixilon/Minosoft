@@ -99,7 +99,7 @@ class CharData(
         }
 
         if (style.formatting.contains(PreChatFormattingCodes.STRIKETHROUGH)) {
-            vertexConsumer.addQuad(startPosition + Vec2(-Font.HORIZONTAL_SPACING, Font.CHAR_HEIGHT / 2.0f + 0.5f), Vec2(endPosition.x + Font.HORIZONTAL_SPACING, startPosition.y + Font.CHAR_HEIGHT / 2.0f + 1.5f), z + 1, renderWindow.WHITE_TEXTURE.texture, renderWindow.WHITE_TEXTURE.uvStart, renderWindow.WHITE_TEXTURE.uvEnd, italic, color)
+            vertexConsumer.addQuad(startPosition + Vec2(-Font.HORIZONTAL_SPACING, Font.CHAR_HEIGHT / 2.0f), Vec2(endPosition.x + Font.HORIZONTAL_SPACING, startPosition.y + Font.CHAR_HEIGHT / 2.0f + 1.0f), z + 1, renderWindow.WHITE_TEXTURE.texture, renderWindow.WHITE_TEXTURE.uvStart, renderWindow.WHITE_TEXTURE.uvEnd, italic, color)
         }
 
         if (style.formatting.contains(PreChatFormattingCodes.UNDERLINED)) {

@@ -30,19 +30,29 @@ class TextElement(
             prepared = false
         }
 
-    override var textComponent: ChatComponent = ChatComponent.of(text)
+    override var textComponent: ChatComponent = ChatComponent.of("")
         private set(value) {
             size = minSize
+            if (value.message.isNotEmpty()) {
+                val size = Vec2i(0, 0)
+                ChatComponentRenderer.render(Vec2i(0, 0), Vec2i(0, 0), size, 0, this, renderWindow, null, value)
+                this.size = size
+            }
             field = value
         }
+
+    init {
+        textComponent = ChatComponent.of(text)
+    }
 
 
     override fun render(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int {
         ChatComponentRenderer.render(Vec2i(offset), offset, Vec2i(0, 0), z, this, renderWindow, consumer, textComponent)
+        prepared = true
         return LAYERS
     }
 
     companion object {
-        const val LAYERS = 4
+        const val LAYERS = 4 // 1 layer for the text, 1 for strikethrough. * 2 for shadow
     }
 }

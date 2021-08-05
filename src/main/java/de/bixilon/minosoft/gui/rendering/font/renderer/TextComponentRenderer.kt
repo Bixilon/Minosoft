@@ -25,7 +25,7 @@ import glm_.vec2.Vec2i
 
 object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
 
-    override fun render(initialOffset: Vec2i, offset: Vec2i, size: Vec2i, z: Int, element: LabeledElement, renderWindow: RenderWindow, consumer: GUIVertexConsumer, text: TextComponent) {
+    override fun render(initialOffset: Vec2i, offset: Vec2i, size: Vec2i, z: Int, element: LabeledElement, renderWindow: RenderWindow, consumer: GUIVertexConsumer?, text: TextComponent) {
         var first = true
 
         /**
@@ -79,6 +79,11 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
 
             if (first) {
                 first = false
+
+                // Add initial size
+                if (size.y == 0) {
+                    size.y = Font.CHAR_HEIGHT + Font.VERTICAL_SPACING
+                }
             } else if (offset.x != initialOffset.x && add(Font.HORIZONTAL_SPACING)) {
                 return
             }
@@ -88,7 +93,7 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
             if (offset.x == initialOffset.x && offset.x - initialOffset.x + width > element.maxSize.x) {
                 return
             }
-            charData.render(offset, z, text, consumer)
+            consumer?.let { charData.render(offset, z, text, it) }
 
             if (add(width)) {
                 return
