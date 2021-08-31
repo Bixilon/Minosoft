@@ -66,6 +66,11 @@ class OfflineAddController(
         usernameFX.textProperty().addListener { _, _, new ->
             addButtonFX.isDisable = !ProtocolDefinition.MINECRAFT_NAME_VALIDATOR.matcher(new).matches()
         }
+    }
+
+    override fun postInit() {
+        super.postInit()
+
         stage.scene.root.addEventFilter(KeyEvent.KEY_PRESSED) {
             if (it.code == KeyCode.ENTER) {
                 add()
