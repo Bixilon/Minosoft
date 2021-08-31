@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2021 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,14 +11,32 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.config.config.game
+package de.bixilon.minosoft.gui.rendering.stats
 
-import com.squareup.moshi.Json
+import de.bixilon.minosoft.Minosoft
+import de.bixilon.minosoft.util.avg.Average
 
-data class OtherGameConfig(
-    @Json(name = "anti_moire_pattern") var antiMoirePattern: Boolean = true,
-    @Json(name = "flower_random_offset") var flowerRandomOffset: Boolean = true,
-    @Json(name = "block_outline") var blockOutline: BlockOutline = BlockOutline(),
-    @Json(name = "experimental_fps") var experimentalFPS: Boolean = false,
-    @Json(name = "super_dumb_advanced_setting_leave_at_1") var swapInterval: Int = 1,
-)
+interface AbstractRenderStats {
+    val avgFrameTime: Average<Long>
+    val smoothAvgFPS: Double
+
+    val avgFPS: Double
+    val totalFrames: Long
+
+
+    fun startFrame() {}
+    fun endDraw() {}
+    fun endFrame() {}
+
+
+    companion object {
+
+        fun createInstance(): AbstractRenderStats {
+            if (Minosoft.config.config.game.other.experimentalFPS) {
+                return ExperimentalRenderStats()
+            }
+
+            return RenderStats()
+        }
+    }
+}

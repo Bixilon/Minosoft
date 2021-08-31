@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2021 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,14 +11,18 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.config.config.game
+package de.bixilon.minosoft.util.avg
 
-import com.squareup.moshi.Json
+interface Average<T> {
+    val nanos: Long
 
-data class OtherGameConfig(
-    @Json(name = "anti_moire_pattern") var antiMoirePattern: Boolean = true,
-    @Json(name = "flower_random_offset") var flowerRandomOffset: Boolean = true,
-    @Json(name = "block_outline") var blockOutline: BlockOutline = BlockOutline(),
-    @Json(name = "experimental_fps") var experimentalFPS: Boolean = false,
-    @Json(name = "super_dumb_advanced_setting_leave_at_1") var swapInterval: Int = 1,
-)
+    val avg: T
+
+    fun cleanup()
+
+    fun add(value: T)
+
+    operator fun plusAssign(value: T) {
+        add(value)
+    }
+}

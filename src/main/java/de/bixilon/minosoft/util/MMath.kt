@@ -76,6 +76,8 @@ object MMath {
 
     val Float.round10: Float get() = (this * 10).toInt().toFloat() / 10f
 
+    val Double.round10: Double get() = (this * 10).toInt().toDouble() / 10.0
+
     fun round10Up(value: Float): Int {
         val intValue = value.toInt()
         val rest = value / intValue

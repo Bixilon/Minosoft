@@ -22,6 +22,7 @@ import de.bixilon.minosoft.gui.rendering.gui.hud.atlas.TextureLike
 import de.bixilon.minosoft.gui.rendering.gui.hud.atlas.TextureLikeTexture
 import de.bixilon.minosoft.gui.rendering.input.key.RenderWindowInputHandler
 import de.bixilon.minosoft.gui.rendering.modding.events.*
+import de.bixilon.minosoft.gui.rendering.stats.AbstractRenderStats
 import de.bixilon.minosoft.gui.rendering.system.base.IntegratedBufferTypes
 import de.bixilon.minosoft.gui.rendering.system.base.PolygonModes
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
@@ -37,6 +38,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.CountUpAndDownLatch
 import de.bixilon.minosoft.util.KUtil.decide
 import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
+import de.bixilon.minosoft.util.MMath.round10
 import de.bixilon.minosoft.util.Queue
 import de.bixilon.minosoft.util.Stopwatch
 import de.bixilon.minosoft.util.logging.Log
@@ -53,7 +55,7 @@ class RenderWindow(
     var initialized = false
         private set
     private lateinit var renderThread: Thread
-    val renderStats = RenderStats()
+    val renderStats: AbstractRenderStats = AbstractRenderStats.createInstance()
 
     val inputHandler = RenderWindowInputHandler(this)
 
@@ -293,7 +295,7 @@ class RenderWindow(
             renderStats.endFrame()
 
             if (RenderConstants.SHOW_FPS_IN_WINDOW_TITLE) {
-                window.title = "Minosoft | FPS: ${renderStats.fpsLastSecond}"
+                window.title = "Minosoft | FPS: ${renderStats.smoothAvgFPS.round10}"
             }
         }
 

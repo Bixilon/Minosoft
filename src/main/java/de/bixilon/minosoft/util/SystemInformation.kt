@@ -16,6 +16,7 @@ package de.bixilon.minosoft.util
 import de.bixilon.minosoft.util.UnitFormatter.formatBytes
 import oshi.SystemInfo
 
+@Deprecated(message = "Will be refactored")
 object SystemInformation {
     val RUNTIME = Runtime.getRuntime()
     val SYSTEM_INFO = SystemInfo()
