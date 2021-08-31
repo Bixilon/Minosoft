@@ -81,6 +81,11 @@ class MojangAddController(
         passwordFX.textProperty().addListener { _, _, _ ->
             validate()
         }
+    }
+
+    override fun postInit() {
+        super.postInit()
+
         stage.scene.root.addEventFilter(KeyEvent.KEY_PRESSED) {
             if (it.code == KeyCode.ENTER) {
                 login()
