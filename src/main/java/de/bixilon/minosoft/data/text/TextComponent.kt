@@ -128,21 +128,26 @@ open class TextComponent(
         for (chatFormattingCode in formatting) {
             when (chatFormattingCode) {
                 PreChatFormattingCodes.OBFUSCATED -> {
-                    // ToDo: potential memory leak: Stop timeline, when TextComponent isn't shown anymore
+                    // ToDo: potential memory/performance leak: Stop timeline, when TextComponent isn't shown anymore
                     val obfuscatedTimeline = if (Minosoft.config.config.chat.obfuscated) {
-                        Timeline(KeyFrame(Duration.millis(50.0), {
-                            val chars = text.text.toCharArray()
-                            for (i in chars.indices) {
-                                chars[i] = Util.getRandomChar(ProtocolDefinition.OBFUSCATED_CHARS)
-                            }
-                            text.text = String(chars)
-                        }))
+                        Timeline(
+                            KeyFrame(Duration.millis(50.0), {
+                                val chars = text.text.toCharArray()
+                                for (i in chars.indices) {
+                                    chars[i] = Util.getRandomChar(ProtocolDefinition.OBFUSCATED_CHARS)
+                                }
+                                text.text = String(chars)
+                            }),
+                        )
                     } else {
-                        Timeline(KeyFrame(Duration.millis(500.0), {
-                            text.isVisible = false
-                        }), KeyFrame(Duration.millis(1000.0), {
-                            text.isVisible = true
-                        }))
+                        Timeline(
+                            KeyFrame(Duration.millis(500.0), {
+                                text.isVisible = false
+                            }),
+                            KeyFrame(Duration.millis(1000.0), {
+                                text.isVisible = true
+                            }),
+                        )
                     }
 
                     obfuscatedTimeline.cycleCount = Animation.INDEFINITE

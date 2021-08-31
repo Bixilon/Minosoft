@@ -63,6 +63,17 @@ class RenderWindow(
     private val latch = CountUpAndDownLatch(1)
 
     private var renderingState = RenderingStates.RUNNING
+        set(value) {
+            if (field == value) {
+                return
+            }
+            if (field == RenderingStates.PAUSED) {
+                queue.clear()
+            }
+            val previousState = field
+            field = value
+            connection.fireEvent(RenderingStateChangeEvent(connection, previousState, value))
+        }
 
 
     private val screenshotTaker = ScreenshotTaker(this)
@@ -168,11 +179,11 @@ class RenderWindow(
         Log.log(LogMessageType.RENDERING_LOADING) { "Registering window callbacks (${stopwatch.labTime()})..." }
 
         connection.registerEvent(CallbackEventInvoker.of<WindowFocusChangeEvent> {
-            setRenderStatus(it.focused.decide(RenderingStates.RUNNING, RenderingStates.SLOW))
+            renderingState = it.focused.decide(RenderingStates.RUNNING, RenderingStates.SLOW)
         })
 
         connection.registerEvent(CallbackEventInvoker.of<WindowIconifyChangeEvent> {
-            setRenderStatus(it.iconified.decide(RenderingStates.PAUSED, RenderingStates.RUNNING))
+            renderingState = it.iconified.decide(RenderingStates.PAUSED, RenderingStates.RUNNING)
         })
 
 
@@ -221,11 +232,16 @@ class RenderWindow(
             if (connection.wasConnected || closed) {
                 break
             }
+
             if (renderingState == RenderingStates.PAUSED) {
+                window.title = "Minosoft | Paused"
+            }
+
+            while (renderingState == RenderingStates.PAUSED) {
                 Thread.sleep(100L)
                 window.pollEvents()
-                continue
             }
+
             renderStats.startFrame()
             renderSystem.clear(IntegratedBufferTypes.COLOR_BUFFER, IntegratedBufferTypes.DEPTH_BUFFER)
 
@@ -269,9 +285,9 @@ class RenderWindow(
             queue.timeWork(RenderConstants.MAXIMUM_QUEUE_TIME_PER_FRAME)
 
             when (renderingState) {
-                RenderingStates.SLOW -> Thread.sleep(100L)
                 RenderingStates.RUNNING, RenderingStates.PAUSED -> {
                 }
+                RenderingStates.SLOW -> Thread.sleep(100L)
                 RenderingStates.STOPPED -> window.close()
             }
             renderStats.endFrame()
@@ -286,18 +302,6 @@ class RenderWindow(
         Log.log(LogMessageType.RENDERING_LOADING) { "Render window destroyed!" }
         // disconnect
         connection.disconnect()
-    }
-
-    private fun setRenderStatus(renderingStatus: RenderingStates) {
-        if (renderingStatus == this.renderingState) {
-            return
-        }
-        if (this.renderingState == RenderingStates.PAUSED) {
-            queue.clear()
-        }
-        val previousState = this.renderingState
-        this.renderingState = renderingStatus
-        connection.fireEvent(RenderingStateChangeEvent(connection, previousState, renderingState))
     }
 
     fun registerRenderer(rendererBuilder: RendererBuilder<*>) {

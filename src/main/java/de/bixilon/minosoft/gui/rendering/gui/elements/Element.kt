@@ -21,20 +21,20 @@ abstract class Element {
     open var prepared: Boolean = false
 
     open var minSize: Vec2i = Vec2i(10, 10)
-    open var maxSize: Vec2i = Vec2i(50, 50)
+    open var prefMaxSize: Vec2i = Vec2i(50, 50)
     open var size: Vec2i = Vec2i()
 
 
-    open val realMaxSize: Vec2i
+    open val maxSize: Vec2i
         get() {
             val ret = Vec2i()
 
             parent?.let {
-                ret.x = maxSize.x
-                ret.y = maxSize.y
+                ret.x = prefMaxSize.x
+                ret.y = prefMaxSize.y
             }
 
-            val maxSize = maxSize
+            val maxSize = prefMaxSize
 
             if (maxSize.x < ret.x) {
                 ret.x = maxSize.x
