@@ -11,43 +11,20 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.gui.elements
+package de.bixilon.minosoft.gui.rendering.gui.elements.layout
 
+import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
+import de.bixilon.minosoft.util.KUtil.synchronizedListOf
 import glm_.vec2.Vec2i
 
-abstract class Element {
-    open var parent: Element? = null
-    open var prepared: Boolean = false
+/**
+ * A layout, that works from top to bottom, containing other elements, that get wrapped below each other
+ */
+class RowLayout : Layout() {
+    private val children: MutableList<Element> = synchronizedListOf()
 
-    open var minSize: Vec2i = Vec2i(10, 10)
-    open var maxSize: Vec2i = Vec2i(50, 50)
-    open var size: Vec2i = Vec2i()
-
-
-    open val realMaxSize: Vec2i
-        get() {
-            val ret = Vec2i()
-
-            parent?.let {
-                ret.x = maxSize.x
-                ret.y = maxSize.y
-            }
-
-            val maxSize = maxSize
-
-            if (maxSize.x < ret.x) {
-                ret.x = maxSize.x
-            }
-            if (maxSize.y < ret.y) {
-                ret.y = maxSize.y
-            }
-
-            return ret
-        }
-
-    /**
-     * @return The number of z layers used
-     */
-    abstract fun render(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int
+    override fun render(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int {
+        TODO("Not yet implemented")
+    }
 }
