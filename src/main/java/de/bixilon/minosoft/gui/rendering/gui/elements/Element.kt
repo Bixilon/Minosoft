@@ -14,27 +14,29 @@
 package de.bixilon.minosoft.gui.rendering.gui.elements
 
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
+import de.bixilon.minosoft.gui.rendering.util.vec.Vec2Util.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.vec.Vec2Util.MAX
 import glm_.vec2.Vec2i
 
 abstract class Element {
     open var parent: Element? = null
     open var prepared: Boolean = false
 
-    open var minSize: Vec2i = Vec2i(10, 10)
-    open var prefMaxSize: Vec2i = Vec2i(50, 50)
+    open var minSize: Vec2i = Vec2i.EMPTY
+    open var prefMaxSize: Vec2i = Vec2i.MAX
     open var size: Vec2i = Vec2i()
 
 
     open val maxSize: Vec2i
         get() {
-            val ret = Vec2i()
+            val ret = Vec2i.MAX
 
             parent?.let {
-                ret.x = prefMaxSize.x
-                ret.y = prefMaxSize.y
+                ret.x = it.prefMaxSize.x
+                ret.y = it.prefMaxSize.y
             }
 
-            val maxSize = prefMaxSize
+            val maxSize = Vec2i(prefMaxSize)
 
             if (maxSize.x < ret.x) {
                 ret.x = maxSize.x
@@ -50,4 +52,7 @@ abstract class Element {
      * @return The number of z layers used
      */
     abstract fun render(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int
+
+
+    open fun childChange(child: Element) {}
 }

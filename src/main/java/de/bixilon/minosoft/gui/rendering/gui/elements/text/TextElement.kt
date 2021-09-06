@@ -39,6 +39,7 @@ class TextElement(
                 this.size = size
             }
             field = value
+            parent?.childChange(this)
         }
 
     init {

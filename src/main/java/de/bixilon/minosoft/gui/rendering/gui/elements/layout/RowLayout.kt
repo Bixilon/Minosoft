@@ -22,9 +22,47 @@ import glm_.vec2.Vec2i
  * A layout, that works from top to bottom, containing other elements, that get wrapped below each other
  */
 class RowLayout : Layout() {
+    // ToDo: Spacing between elements
     private val children: MutableList<Element> = synchronizedListOf()
 
     override fun render(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int {
-        TODO("Not yet implemented")
+        var childYOffset = 0
+        var totalZ = 0
+        for (child in children) {
+            val childZ = child.render(Vec2i(offset.x, offset.y + childYOffset), z, consumer)
+            if (totalZ < childZ) {
+                totalZ = childZ
+            }
+            childYOffset += child.size.y
+        }
+
+        return totalZ
+    }
+
+    operator fun plusAssign(element: Element) {
+        element.parent = this
+        children += element
+
+        // ToDo: Optimize
+        childChange(element)
+        parent?.childChange(this)
+    }
+
+    override fun childChange(child: Element) {
+        super.childChange(child)
+
+        val size = Vec2i(0, 0)
+
+        for (element in children) {
+            size.y += element.size.y
+
+            if (element.size.x > size.x) {
+                size.x = element.size.x
+            }
+
+            // ToDo: Check max size
+        }
+
+        this.size = size
     }
 }

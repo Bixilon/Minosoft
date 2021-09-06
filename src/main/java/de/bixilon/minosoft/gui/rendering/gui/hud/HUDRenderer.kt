@@ -21,6 +21,7 @@ import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.Renderer
 import de.bixilon.minosoft.gui.rendering.RendererBuilder
+import de.bixilon.minosoft.gui.rendering.gui.elements.layout.RowLayout
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMesh
 import de.bixilon.minosoft.gui.rendering.modding.events.ResizeWindowEvent
@@ -60,7 +61,7 @@ class HUDRenderer(
         }
 
         mesh = GUIMesh(renderWindow, matrix)
-        val text = TextElement(
+        val text1 = TextElement(
             renderWindow = renderWindow,
             text = TextComponent(
                 message = "Moritz ist toll!!!",
@@ -75,10 +76,6 @@ class HUDRenderer(
                 ),
             ),
         )
-
-        if (!text.prepared) {
-            text.render(Vec2i(10, 10), 0, mesh)
-        }
 
 
         val text2 = TextElement(
@@ -96,9 +93,31 @@ class HUDRenderer(
                 ),
             ),
         )
-        if (!text2.prepared) {
-            text2.render(Vec2i(0, 40), 0, mesh)
-        }
+
+
+        val text3 = TextElement(
+            renderWindow = renderWindow,
+            text = TextComponent(
+                message = "Noch viel längerer dummy normaler Text!",
+                color = ChatColors.GREEN,
+                formatting = mutableSetOf(
+                    PreChatFormattingCodes.SHADOWED,
+                    PreChatFormattingCodes.UNDERLINED,
+                ),
+            ),
+        )
+        text3.prefMaxSize = Vec2i(50, Int.MAX_VALUE)
+
+        // ToDo: size > maxSize
+
+        val layout = RowLayout()
+
+        layout += text1
+        layout += text2
+        layout += text3
+
+
+        layout.render(Vec2i(0, 0), 0, mesh)
 
         mesh.load()
 
