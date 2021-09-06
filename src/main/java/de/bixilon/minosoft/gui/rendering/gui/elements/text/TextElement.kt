@@ -18,6 +18,7 @@ import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.font.renderer.ChatComponentRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import glm_.vec2.Vec2i
+import glm_.vec4.Vec4i
 
 class TextElement(
     private val renderWindow: RenderWindow,
@@ -47,6 +48,20 @@ class TextElement(
         get() = super.minSize
         set(value) {
             super.minSize = value
+            checkSize()
+        }
+
+    override var margin: Vec4i
+        get() = super.margin
+        set(value) {
+            super.margin = value
+            checkSize()
+        }
+
+    override var padding: Vec4i
+        get() = super.padding
+        set(value) {
+            super.padding = value
             checkSize()
         }
 

@@ -15,6 +15,10 @@ package de.bixilon.minosoft.gui.rendering.gui.elements.layout
 
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
+import de.bixilon.minosoft.gui.rendering.util.vec.Vec4Util.bottom
+import de.bixilon.minosoft.gui.rendering.util.vec.Vec4Util.horizontal
+import de.bixilon.minosoft.gui.rendering.util.vec.Vec4Util.left
+import de.bixilon.minosoft.gui.rendering.util.vec.Vec4Util.top
 import de.bixilon.minosoft.util.KUtil.synchronizedListOf
 import glm_.vec2.Vec2i
 
@@ -29,11 +33,12 @@ class RowLayout : Layout() {
         var childYOffset = 0
         var totalZ = 0
         for (child in children) {
-            val childZ = child.render(Vec2i(offset.x, offset.y + childYOffset), z, consumer)
+            childYOffset += padding.top + child.margin.top
+            val childZ = child.render(Vec2i(offset.x + padding.left + child.margin.left, offset.y + childYOffset), z, consumer)
             if (totalZ < childZ) {
                 totalZ = childZ
             }
-            childYOffset += child.size.y
+            childYOffset += child.size.y + child.margin.bottom + padding.bottom
         }
 
         return totalZ
@@ -51,17 +56,23 @@ class RowLayout : Layout() {
     override fun childChange(child: Element) {
         super.childChange(child)
 
+        // ToDo: Check max size
+
         val size = Vec2i(0, 0)
+        val xPadding = padding.horizontal
+        size.y += padding.top
 
         for (element in children) {
+            size.y += element.margin.top
             size.y += element.size.y
+            size.y += element.margin.bottom
 
-            if (element.size.x > size.x) {
-                size.x = element.size.x
+            val xSize = xPadding + element.size.x + element.margin.horizontal
+            if (xSize > size.x) {
+                size.x = xSize
             }
-
-            // ToDo: Check max size
         }
+        size.y += padding.bottom
 
         this.size = size
     }

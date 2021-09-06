@@ -32,6 +32,7 @@ import glm_.glm
 import glm_.mat4x4.Mat4
 import glm_.vec2.Vec2
 import glm_.vec2.Vec2i
+import glm_.vec4.Vec4i
 
 class HUDRenderer(
     val connection: PlayConnection,
@@ -130,10 +131,13 @@ class HUDRenderer(
         )
         text3.prefMaxSize = Vec2i(50, Int.MAX_VALUE)
         text4.prefMaxSize = Vec2i(50, Int.MAX_VALUE)
+        text4.margin = Vec4i(10, 0, 5, 10)
 
         // ToDo: size > maxSize
 
         val layout = RowLayout()
+
+        layout.padding = Vec4i(4, 0, 0, 10)
 
         layout += text1
         layout += text2
