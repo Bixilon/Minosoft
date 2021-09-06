@@ -34,10 +34,13 @@ class BitmapFontProvider(
     val ascent = data["ascent"].toDouble()
     private val chars: MutableMap<Char, CharData> = mutableMapOf()
     private val heightScale = Font.CHAR_HEIGHT.toFloat() / height
+    var charWidth = 8
+        private set
 
     init {
         val texture = renderWindow.textureManager.staticTextures.createTexture(data["file"].toResourceLocation().texture())
         texture.load(renderWindow.connection.assetsManager)
+        charWidth = texture.size.x / CHARS_PER_ROW
         val textureData = texture.data!!
         val pixel = Vec2(1.0f) / texture.size
         for ((y, row) in data["chars"].asList().withIndex()) {
@@ -47,11 +50,11 @@ class BitmapFontProvider(
             val yEnd = pixel.y * (y + 1) * height
 
 
-            for (i in 0 until height * CHAR_WIDTH * CHARS_PER_ROW) {
-                val pixelRow = i % CHAR_WIDTH
-                val charIndex = (i / CHAR_WIDTH) % CHARS_PER_ROW
+            for (i in 0 until height * charWidth * CHARS_PER_ROW) {
+                val pixelRow = i % charWidth
+                val charIndex = (i / charWidth) % CHARS_PER_ROW
 
-                val alpha = textureData.get((y * height * CHAR_WIDTH * CHARS_PER_ROW + i) * 4 + 3)
+                val alpha = textureData.get((y * height * charWidth * CHARS_PER_ROW + i) * 4 + 3)
 
                 if (alpha == 0.toByte()) {
                     continue
@@ -70,7 +73,7 @@ class BitmapFontProvider(
             }
 
             for ((x, char) in row.unsafeCast<String>().codePoints().toArray().withIndex()) {
-                val xOffset = pixel.x * CHAR_WIDTH * x
+                val xOffset = pixel.x * charWidth * x
 
                 val uvStart = Vec2(
                     x = xOffset + (pixel.x * xStart[x]) - RenderConstants.UV_ADD,
@@ -118,7 +121,6 @@ class BitmapFontProvider(
     companion object : FontProviderFactory<BitmapFontProvider> {
         private const val EMPTY_CHAR_WIDTH = 4
         private const val CHARS_PER_ROW = 16
-        private const val CHAR_WIDTH = 8
         override val RESOURCE_LOCATION: ResourceLocation = "minecraft:bitmap".toResourceLocation()
 
         override fun build(renderWindow: RenderWindow, data: Map<String, Any>): BitmapFontProvider {

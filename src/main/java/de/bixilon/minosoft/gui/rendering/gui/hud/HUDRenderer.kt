@@ -117,6 +117,17 @@ class HUDRenderer(
                 ),
             ),
         )
+        val text5 = TextElement(
+            renderWindow = renderWindow,
+            text = TextComponent(
+                message = "AäB",
+                color = ChatColors.GREEN,
+                formatting = mutableSetOf(
+                    PreChatFormattingCodes.SHADOWED,
+                    PreChatFormattingCodes.UNDERLINED,
+                ),
+            ),
+        )
         text3.prefMaxSize = Vec2i(50, Int.MAX_VALUE)
         text4.prefMaxSize = Vec2i(50, Int.MAX_VALUE)
 
@@ -128,6 +139,7 @@ class HUDRenderer(
         layout += text2
         layout += text3
         layout += text4
+        layout += text5
 
 
         layout.render(Vec2i(0, 0), 0, mesh)
