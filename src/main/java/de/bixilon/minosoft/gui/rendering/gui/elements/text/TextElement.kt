@@ -32,18 +32,55 @@ class TextElement(
 
     override var textComponent: ChatComponent = ChatComponent.of("")
         private set(value) {
-            size = minSize
-            if (value.message.isNotEmpty()) {
-                val size = Vec2i(0, 0)
-                ChatComponentRenderer.render(Vec2i(0, 0), Vec2i(0, 0), size, 0, this, renderWindow, null, value)
-                this.size = size
-            }
             field = value
-            parent?.childChange(this)
+            prepare(value)
+        }
+
+    override var prefMaxSize: Vec2i
+        get() = super.prefMaxSize
+        set(value) {
+            super.prefMaxSize = value
+            checkSize()
+        }
+
+    override var minSize: Vec2i
+        get() = super.minSize
+        set(value) {
+            super.minSize = value
+            checkSize()
         }
 
     init {
         textComponent = ChatComponent.of(text)
+    }
+
+    private fun prepare(text: ChatComponent = textComponent) {
+        size = minSize
+        if (text.message.isNotEmpty()) {
+            val size = Vec2i(0, 0)
+            ChatComponentRenderer.render(Vec2i(0, 0), Vec2i(0, 0), size, 0, this, renderWindow, null, text)
+            this.size = size
+        }
+        parent?.childChange(this)
+    }
+
+
+    private fun checkSize() {
+        val size = Vec2i(size)
+
+        if (size.x > maxSize.x) {
+            return prepare()
+        }
+        if (size.y > maxSize.y) {
+            return prepare()
+        }
+
+        if (size.x < minSize.x) {
+            return prepare()
+        }
+        if (size.y < minSize.y) {
+            return prepare()
+        }
     }
 
 
@@ -51,6 +88,10 @@ class TextElement(
         ChatComponentRenderer.render(Vec2i(offset), offset, Vec2i(0, 0), z, this, renderWindow, consumer, textComponent)
         prepared = true
         return LAYERS
+    }
+
+    override fun toString(): String {
+        return textComponent.toString()
     }
 
     companion object {

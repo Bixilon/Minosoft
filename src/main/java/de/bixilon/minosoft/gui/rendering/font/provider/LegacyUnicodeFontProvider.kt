@@ -61,12 +61,15 @@ class LegacyUnicodeFontProvider(
                         y = yEnd,
                     )
 
+                    val width = (charXEnd - charXStart)
+                    val scaledWidth = (width * HEIGHT_SCALE).toInt()
 
                     val charData = CharData(
                         renderWindow = renderWindow,
                         char = char,
                         texture = texture,
-                        width = (charXEnd - charXStart) / (CHAR_SIZE / Font.CHAR_HEIGHT),
+                        width = width,
+                        scaledWidth = scaledWidth,
                         uvStart = uvStart,
                         uvEnd = uvEnd,
                     )
@@ -94,6 +97,7 @@ class LegacyUnicodeFontProvider(
         private const val UNICODE_PAGE_SIZE = 256
         private const val UNICODE_PAGES = 256
         private const val CHAR_SIZE = 16
+        private const val HEIGHT_SCALE = Font.CHAR_HEIGHT.toFloat() / CHAR_SIZE
         private val PIXEL = Vec2(1.0f) / UNICODE_PAGE_SIZE
 
         override fun build(renderWindow: RenderWindow, data: Map<String, Any>): LegacyUnicodeFontProvider {

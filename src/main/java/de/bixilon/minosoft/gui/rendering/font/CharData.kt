@@ -32,6 +32,7 @@ class CharData(
     val char: Char,
     val texture: AbstractTexture,
     val width: Int,
+    val scaledWidth: Int,
     var uvStart: Vec2,
     var uvEnd: Vec2,
 ) {
@@ -86,7 +87,7 @@ class CharData(
 
 
         val startPosition = Vec2(position) + shadowOffset
-        val endPosition = startPosition + Vec2(width, Font.CHAR_HEIGHT.toFloat())
+        val endPosition = startPosition + Vec2(scaledWidth, Font.CHAR_HEIGHT.toFloat())
 
 
         val italic = style.formatting.contains(PreChatFormattingCodes.ITALIC)
@@ -110,7 +111,7 @@ class CharData(
     }
 
     fun calculateWidth(style: TextStyle): Int {
-        var width = width.toFloat()
+        var width = scaledWidth.toFloat()
         if (style.formatting.contains(PreChatFormattingCodes.SHADOWED)) {
             width += SHADOW_OFFSET
         }

@@ -98,6 +98,17 @@ class HUDRenderer(
         val text3 = TextElement(
             renderWindow = renderWindow,
             text = TextComponent(
+                message = "!T→E↓S←T~_OÄBÖMÜ",
+                color = ChatColors.YELLOW,
+                formatting = mutableSetOf(
+                    PreChatFormattingCodes.UNDERLINED,
+                ),
+            ),
+        )
+
+        val text4 = TextElement(
+            renderWindow = renderWindow,
+            text = TextComponent(
                 message = "Noch viel längerer dummy normaler Text!",
                 color = ChatColors.GREEN,
                 formatting = mutableSetOf(
@@ -107,6 +118,7 @@ class HUDRenderer(
             ),
         )
         text3.prefMaxSize = Vec2i(50, Int.MAX_VALUE)
+        text4.prefMaxSize = Vec2i(50, Int.MAX_VALUE)
 
         // ToDo: size > maxSize
 
@@ -115,6 +127,7 @@ class HUDRenderer(
         layout += text1
         layout += text2
         layout += text3
+        layout += text4
 
 
         layout.render(Vec2i(0, 0), 0, mesh)

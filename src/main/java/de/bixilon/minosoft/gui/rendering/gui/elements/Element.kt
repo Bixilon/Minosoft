@@ -32,8 +32,8 @@ abstract class Element {
             val ret = Vec2i.MAX
 
             parent?.let {
-                ret.x = it.prefMaxSize.x
-                ret.y = it.prefMaxSize.y
+                ret.x = it.maxSize.x
+                ret.y = it.maxSize.y
             }
 
             val maxSize = Vec2i(prefMaxSize)

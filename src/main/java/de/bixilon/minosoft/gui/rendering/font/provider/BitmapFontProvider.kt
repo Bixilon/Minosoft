@@ -17,6 +17,7 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.font.CharData
+import de.bixilon.minosoft.gui.rendering.font.Font
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.util.KUtil.asList
 import de.bixilon.minosoft.util.KUtil.toDouble
@@ -32,6 +33,7 @@ class BitmapFontProvider(
     val height = data["height"]?.toInt() ?: 8
     val ascent = data["ascent"].toDouble()
     private val chars: MutableMap<Char, CharData> = mutableMapOf()
+    private val heightScale = Font.CHAR_HEIGHT.toFloat() / height
 
     init {
         val texture = renderWindow.textureManager.staticTextures.createTexture(data["file"].toResourceLocation().texture())
@@ -85,11 +87,14 @@ class BitmapFontProvider(
                     width = EMPTY_CHAR_WIDTH
                 }
 
+                val scaledWidth = (width * heightScale).toInt()
+
                 val charData = CharData(
                     renderWindow = renderWindow,
                     char = char.toChar(),
                     texture = texture,
                     width = width,
+                    scaledWidth = scaledWidth,
                     uvStart = uvStart,
                     uvEnd = uvEnd,
                 )

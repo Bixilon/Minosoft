@@ -33,7 +33,7 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
          */
         fun wrap(): Boolean {
             val yAdd = Font.CHAR_HEIGHT + Font.VERTICAL_SPACING
-            if (size.y + yAdd > element.prefMaxSize.y) {
+            if (size.y + yAdd > element.maxSize.y) {
                 return true
             }
             offset.x = initialOffset.x
@@ -47,7 +47,7 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
          * @return If the text can't fit into the layout anymore
          */
         fun add(x: Int): Boolean {
-            if (offset.x - initialOffset.x + x > element.prefMaxSize.x) {
+            if (offset.x - initialOffset.x + x > element.maxSize.x) {
                 if (wrap()) {
                     return true
                 }
@@ -84,13 +84,13 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
                 if (size.y == 0) {
                     size.y = Font.CHAR_HEIGHT + Font.VERTICAL_SPACING
                 }
-            } else if (offset.x != initialOffset.x && add(Font.HORIZONTAL_SPACING)) {
+            } else if (offset.x != initialOffset.x && add(Font.HORIZONTAL_SPACING)) { // ToDo: Only add space when char fits
                 return
             }
 
             val width = charData.calculateWidth(text)
 
-            if (offset.x == initialOffset.x && offset.x - initialOffset.x + width > element.prefMaxSize.x) {
+            if (offset.x == initialOffset.x && offset.x - initialOffset.x + width > element.maxSize.x) {
                 return
             }
             consumer?.let { charData.render(offset, z, text, it) }
