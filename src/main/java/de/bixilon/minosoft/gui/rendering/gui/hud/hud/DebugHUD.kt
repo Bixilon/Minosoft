@@ -18,6 +18,7 @@ import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.block.WorldRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.layout.RowLayout
+import de.bixilon.minosoft.gui.rendering.gui.elements.spacer.LineSpacerElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.AutoTextElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
@@ -43,7 +44,7 @@ class DebugHUD(val hudRenderer: HUDRenderer) : HUD<RowLayout> {
             layout += AutoTextElement(hudRenderer, 1) { "P t=$size" }
         }
 
-        layout += TextElement(hudRenderer, "") // ToDo: Spacer element
+        layout += LineSpacerElement(hudRenderer)
 
 
         renderWindow.connection.player.apply {

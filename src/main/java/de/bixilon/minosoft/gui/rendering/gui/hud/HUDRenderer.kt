@@ -89,7 +89,7 @@ class HUDRenderer(
 
         for (hud in this.hud) {
             val z = 0
-            val offset = Vec2i.EMPTY // ToDo
+            val offset = Vec2i.EMPTY // ToDo: Element positioning
 
             hud.layout?.render(offset, z, mesh)
             hud.draw(offset, z, mesh)
