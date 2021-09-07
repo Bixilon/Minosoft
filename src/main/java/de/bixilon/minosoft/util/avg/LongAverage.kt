@@ -31,6 +31,9 @@ class LongAverage(override val nanos: Long) : Average<Long> {
             }
             cleanup()
             val data = data.toSynchronizedList()
+            if (data.size == 0) {
+                return 0
+            }
 
             var total = 0L
             for ((_, value) in data) {

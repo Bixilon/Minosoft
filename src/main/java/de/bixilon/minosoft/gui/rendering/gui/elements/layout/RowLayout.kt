@@ -14,20 +14,28 @@
 package de.bixilon.minosoft.gui.rendering.gui.elements.layout
 
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
+import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.util.vec.Vec4Util.bottom
 import de.bixilon.minosoft.gui.rendering.util.vec.Vec4Util.horizontal
 import de.bixilon.minosoft.gui.rendering.util.vec.Vec4Util.left
 import de.bixilon.minosoft.gui.rendering.util.vec.Vec4Util.top
 import de.bixilon.minosoft.util.KUtil.synchronizedListOf
+import de.bixilon.minosoft.util.KUtil.toSynchronizedList
 import glm_.vec2.Vec2i
 
 /**
  * A layout, that works from top to bottom, containing other elements, that get wrapped below each other
  */
-class RowLayout : Layout() {
+class RowLayout(hudRenderer: HUDRenderer) : Layout(hudRenderer) {
     // ToDo: Spacing between elements
     private val children: MutableList<Element> = synchronizedListOf()
+
+
+    fun clear() {
+        children.clear()
+    }
+
 
     override fun render(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int {
         var childYOffset = 0
@@ -53,7 +61,7 @@ class RowLayout : Layout() {
         parent?.childChange(this)
     }
 
-    override fun childChange(child: Element) {
+    override fun childChange(child: Element?) {
         super.childChange(child)
 
         // ToDo: Check max size
@@ -75,5 +83,13 @@ class RowLayout : Layout() {
         size.y += padding.bottom
 
         this.size = size
+    }
+
+    override fun tick() {
+        super.tick()
+
+        for (child in children.toSynchronizedList()) {
+            child.tick()
+        }
     }
 }

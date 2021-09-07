@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.elements
 
+import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.util.vec.Vec2Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.Vec2Util.MAX
@@ -20,12 +21,13 @@ import de.bixilon.minosoft.gui.rendering.util.vec.Vec4Util.EMPTY
 import glm_.vec2.Vec2i
 import glm_.vec4.Vec4i
 
-abstract class Element {
+abstract class Element(val hudRenderer: HUDRenderer) {
+    val renderWindow = hudRenderer.renderWindow
     open var parent: Element? = null
     open var prepared: Boolean = false
 
     open var minSize: Vec2i = Vec2i.EMPTY
-    open var prefMaxSize: Vec2i = Vec2i.MAX
+    open var prefMaxSize: Vec2i = Vec2i(-1, -1)
     open var size: Vec2i = Vec2i()
 
     open var margin: Vec4i = Vec4i.EMPTY
@@ -43,6 +45,13 @@ abstract class Element {
 
             val maxSize = Vec2i(prefMaxSize)
 
+            if (maxSize.x < 0) {
+                maxSize.x = hudRenderer.scaledSize.x.toInt()
+            }
+            if (maxSize.y < 0) {
+                maxSize.y = hudRenderer.scaledSize.y.toInt()
+            }
+
             if (maxSize.x < ret.x) {
                 ret.x = maxSize.x
             }
@@ -59,5 +68,7 @@ abstract class Element {
     abstract fun render(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int
 
 
-    open fun childChange(child: Element) {}
+    open fun childChange(child: Element?) {}
+
+    open fun tick() {}
 }

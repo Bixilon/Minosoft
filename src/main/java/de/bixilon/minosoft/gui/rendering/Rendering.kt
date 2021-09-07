@@ -65,6 +65,7 @@ class Rendering(private val connection: PlayConnection) {
                 CONTEXT_MAP.remove(Thread.currentThread())
                 exception.printStackTrace()
                 try {
+                    renderWindow.window.close()
                     connection.fireEvent(WindowCloseEvent(window = renderWindow.window))
                 } catch (ignored: Throwable) {
                 }

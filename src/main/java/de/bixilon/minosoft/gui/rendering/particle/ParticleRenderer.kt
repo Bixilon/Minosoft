@@ -40,6 +40,9 @@ class ParticleRenderer(
 
     private var particles: MutableSet<Particle> = synchronizedSetOf()
 
+    val size: Int
+        get() = particles.size
+
     override fun init() {
         connection.registerEvent(CallbackEventInvoker.of<CameraMatrixChangeEvent> {
             renderWindow.queue += {

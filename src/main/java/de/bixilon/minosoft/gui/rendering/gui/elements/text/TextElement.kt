@@ -14,16 +14,16 @@
 package de.bixilon.minosoft.gui.rendering.gui.elements.text
 
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.font.renderer.ChatComponentRenderer
+import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import glm_.vec2.Vec2i
 import glm_.vec4.Vec4i
 
-class TextElement(
-    private val renderWindow: RenderWindow,
+open class TextElement(
+    hudRenderer: HUDRenderer,
     text: Any,
-) : LabeledElement() {
+) : LabeledElement(hudRenderer) {
     override var text: Any = text
         set(value) {
             textComponent = ChatComponent.of(value)
@@ -32,7 +32,7 @@ class TextElement(
         }
 
     override var textComponent: ChatComponent = ChatComponent.of("")
-        private set(value) {
+        protected set(value) {
             field = value
             prepare(value)
         }

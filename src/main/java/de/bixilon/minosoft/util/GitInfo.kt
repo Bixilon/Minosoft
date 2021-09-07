@@ -16,6 +16,7 @@ package de.bixilon.minosoft.util
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.KUtil.toBoolean
 import de.bixilon.minosoft.util.KUtil.toInt
 import de.bixilon.minosoft.util.KUtil.unsafeCast
@@ -105,6 +106,8 @@ object GitInfo {
             }
             GIT_TOTAL_COMMIT_COUNT = json["git.total.commit.count"].toInt()
 
+
+            RunConfiguration.VERSION_STRING = "Minosoft $GIT_COMMIT_ID_ABBREV"
             IS_INITIALIZED = true
         } catch (exception: Throwable) {
             Log.log(LogMessageType.OTHER, level = LogLevels.WARN) { "Could not load git information." }

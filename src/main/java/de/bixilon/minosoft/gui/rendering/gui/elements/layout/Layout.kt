@@ -14,5 +14,6 @@
 package de.bixilon.minosoft.gui.rendering.gui.elements.layout
 
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
+import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 
-abstract class Layout : Element()
+abstract class Layout(hudRenderer: HUDRenderer) : Element(hudRenderer)

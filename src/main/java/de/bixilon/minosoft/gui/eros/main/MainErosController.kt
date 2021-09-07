@@ -15,7 +15,6 @@ package de.bixilon.minosoft.gui.eros.main
 
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.ShutdownReasons
-import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.gui.eros.controller.EmbeddedJavaFXController
 import de.bixilon.minosoft.gui.eros.controller.JavaFXWindowController
@@ -26,8 +25,7 @@ import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.clickable
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.ctext
 import de.bixilon.minosoft.modding.event.events.account.AccountSelectEvent
 import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
-import de.bixilon.minosoft.util.GitInfo
-import de.bixilon.minosoft.util.KUtil.decide
+import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.ShutdownManager
 import de.bixilon.minosoft.util.task.pool.DefaultThreadPool
@@ -79,7 +77,7 @@ class MainErosController : JavaFXWindowController() {
 
     override fun init() {
         logoFX.image = JavaFXUtil.MINOSOFT_LOGO
-        versionTextFX.text = "Minosoft " + GitInfo.IS_INITIALIZED.decide(GitInfo.GIT_COMMIT_ID_ABBREV, StaticConfiguration.VERSION)
+        versionTextFX.text = RunConfiguration.VERSION_STRING
         iconMap = mapOf(
             ErosMainActivities.PlAY to playIconFX,
             ErosMainActivities.SETTINGS to settingsIconFX,

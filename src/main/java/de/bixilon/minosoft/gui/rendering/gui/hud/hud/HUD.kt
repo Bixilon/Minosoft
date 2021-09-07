@@ -11,9 +11,26 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.gui.elements.text
+package de.bixilon.minosoft.gui.rendering.gui.hud.hud
 
-import de.bixilon.minosoft.gui.rendering.gui.elements.Element
-import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
+import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.gui.elements.layout.Layout
+import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
+import glm_.vec2.Vec2i
 
-abstract class LabeledElement(hudRenderer: HUDRenderer) : Element(hudRenderer), Labeled
+interface HUD<T : Layout> {
+    val renderWindow: RenderWindow
+
+    val layout: T?
+        get() = null
+
+    fun init() {}
+
+    fun postInit() {}
+
+    fun draw(offset: Vec2i, z: Int, consumer: GUIVertexConsumer) {}
+
+    fun tick() {
+        layout?.tick()
+    }
+}

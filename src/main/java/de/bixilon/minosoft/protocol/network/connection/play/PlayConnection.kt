@@ -222,7 +222,7 @@ class PlayConnection(
             Log.log(LogMessageType.VERSION_LOADING, level = LogLevels.FATAL) { exception }
             Log.log(LogMessageType.VERSION_LOADING, level = LogLevels.FATAL) { "Could not load version $version. This version seems to be unsupported" }
             version.unload()
-            error = RegistriesLoadingException("Mappings could not be loaded", exception)
+            error = RegistriesLoadingException("Registries could not be loaded", exception)
             retry = false
         }
         latch.dec()

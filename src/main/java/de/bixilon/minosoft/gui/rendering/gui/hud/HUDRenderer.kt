@@ -15,24 +15,23 @@ package de.bixilon.minosoft.gui.rendering.gui.hud
 
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.text.ChatColors
-import de.bixilon.minosoft.data.text.PreChatFormattingCodes
-import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.Renderer
 import de.bixilon.minosoft.gui.rendering.RendererBuilder
-import de.bixilon.minosoft.gui.rendering.gui.elements.layout.RowLayout
-import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
+import de.bixilon.minosoft.gui.rendering.gui.hud.hud.DebugHUD
+import de.bixilon.minosoft.gui.rendering.gui.hud.hud.HUD
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMesh
 import de.bixilon.minosoft.gui.rendering.modding.events.ResizeWindowEvent
+import de.bixilon.minosoft.gui.rendering.util.vec.Vec2Util.EMPTY
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.util.KUtil.synchronizedListOf
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import glm_.glm
 import glm_.mat4x4.Mat4
 import glm_.vec2.Vec2
 import glm_.vec2.Vec2i
-import glm_.vec4.Vec4i
 
 class HUDRenderer(
     val connection: PlayConnection,
@@ -43,16 +42,30 @@ class HUDRenderer(
     var scaledSize: Vec2 = renderWindow.window.sizef
     private var matrix: Mat4 = Mat4()
 
+    val hud: MutableList<HUD<*>> = synchronizedListOf(
+        DebugHUD(this),
+    )
+
+    private var lastTickTime = 0L
+
     override fun init() {
         connection.registerEvent(CallbackEventInvoker.of<ResizeWindowEvent> {
             scaledSize = Vec2(it.size) / Minosoft.config.config.game.hud.scale
             matrix = glm.ortho(0.0f, scaledSize.x, scaledSize.y, 0.0f)
         })
+
+        for (hud in this.hud) {
+            hud.init()
+        }
     }
 
     override fun postInit() {
         shader.load()
         renderWindow.textureManager.staticTextures.use(shader)
+
+        for (hud in this.hud) {
+            hud.postInit()
+        }
     }
 
     override fun draw() {
@@ -62,94 +75,27 @@ class HUDRenderer(
         }
 
         mesh = GUIMesh(renderWindow, matrix)
-        val text1 = TextElement(
-            renderWindow = renderWindow,
-            text = TextComponent(
-                message = "Moritz ist toll!!!",
-                color = ChatColors.RED,
-                formatting = mutableSetOf(
-                    PreChatFormattingCodes.BOLD,
-                    PreChatFormattingCodes.SHADOWED,
-                    PreChatFormattingCodes.UNDERLINED,
-                    PreChatFormattingCodes.ITALIC,
-                    PreChatFormattingCodes.STRIKETHROUGH,
-                    PreChatFormattingCodes.OBFUSCATED
-                ),
-            ),
-        )
 
+        val time = System.currentTimeMillis()
+        if (time - lastTickTime > ProtocolDefinition.TICK_TIME) {
+            for (hud in this.hud) {
+                hud.tick()
+            }
 
-        val text2 = TextElement(
-            renderWindow = renderWindow,
-            text = TextComponent(
-                message = "Moritz\nist toll!!!",
-                color = ChatColors.BLUE,
-                formatting = mutableSetOf(
-                    PreChatFormattingCodes.BOLD,
-                    PreChatFormattingCodes.SHADOWED,
-                    PreChatFormattingCodes.UNDERLINED,
-                    PreChatFormattingCodes.ITALIC,
-                    PreChatFormattingCodes.STRIKETHROUGH,
-                    PreChatFormattingCodes.OBFUSCATED
-                ),
-            ),
-        )
-
-
-        val text3 = TextElement(
-            renderWindow = renderWindow,
-            text = TextComponent(
-                message = "!T→E↓S←T~_OÄBÖMÜ",
-                color = ChatColors.YELLOW,
-                formatting = mutableSetOf(
-                    PreChatFormattingCodes.UNDERLINED,
-                ),
-            ),
-        )
-
-        val text4 = TextElement(
-            renderWindow = renderWindow,
-            text = TextComponent(
-                message = "Noch viel längerer dummy normaler Text!",
-                color = ChatColors.GREEN,
-                formatting = mutableSetOf(
-                    PreChatFormattingCodes.SHADOWED,
-                    PreChatFormattingCodes.UNDERLINED,
-                ),
-            ),
-        )
-        val text5 = TextElement(
-            renderWindow = renderWindow,
-            text = TextComponent(
-                message = "AäB",
-                color = ChatColors.GREEN,
-                formatting = mutableSetOf(
-                    PreChatFormattingCodes.SHADOWED,
-                    PreChatFormattingCodes.UNDERLINED,
-                ),
-            ),
-        )
-        text3.prefMaxSize = Vec2i(50, Int.MAX_VALUE)
-        text4.prefMaxSize = Vec2i(50, Int.MAX_VALUE)
-        text4.margin = Vec4i(10, 0, 5, 10)
-
+            lastTickTime = time
+        }
         // ToDo: size > maxSize
 
-        val layout = RowLayout()
 
-        layout.padding = Vec4i(4, 0, 0, 10)
+        for (hud in this.hud) {
+            val z = 0
+            val offset = Vec2i.EMPTY // ToDo
 
-        layout += text1
-        layout += text2
-        layout += text3
-        layout += text4
-        layout += text5
-
-
-        layout.render(Vec2i(0, 0), 0, mesh)
+            hud.layout?.render(offset, z, mesh)
+            hud.draw(offset, z, mesh)
+        }
 
         mesh.load()
-
 
 
         shader.use()
