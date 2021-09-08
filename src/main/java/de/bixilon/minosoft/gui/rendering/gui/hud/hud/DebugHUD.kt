@@ -23,7 +23,9 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.spacer.LineSpacerElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.AutoTextElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
+import de.bixilon.minosoft.gui.rendering.modding.events.ResizeWindowEvent
 import de.bixilon.minosoft.gui.rendering.particle.ParticleRenderer
+import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.KUtil.format
 import de.bixilon.minosoft.util.MMath.round10
@@ -64,7 +66,19 @@ class DebugHUD(val hudRenderer: HUDRenderer) : HUD<RowLayout> {
 
     private fun initRight() {
         val layout = RowLayout(hudRenderer)
-        layout += TextElement(hudRenderer, "§a§sThis text§c\nis\nright\n§4aligned§5§s\n.\nThis line must be extra long!", ElementAlignments.RIGHT)
+        layout += TextElement(hudRenderer, "Java ${Runtime.version()} ${System.getProperty("sun.arch.data.model")}bit", ElementAlignments.RIGHT)
+
+        layout += LineSpacerElement(hudRenderer)
+
+        layout += TextElement(hudRenderer, "Display TBA", ElementAlignments.RIGHT).apply {
+            hudRenderer.connection.registerEvent(CallbackEventInvoker.of<ResizeWindowEvent> {
+                text = "Display ${it.size.x}x${it.size.y}"
+            })
+        }
+        renderWindow.renderSystem.apply {
+            layout += TextElement(hudRenderer, "GPU $vendorString")
+            layout += TextElement(hudRenderer, "Version $version")
+        }
 
         this.layout += layout
     }
