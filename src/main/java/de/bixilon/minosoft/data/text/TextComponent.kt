@@ -112,7 +112,7 @@ open class TextComponent(
                 stringBuilder.append(formattingCode.char)
             }
             stringBuilder.append(this.message)
-            stringBuilder.append(ProtocolDefinition.TEXT_COMPONENT_SPECIAL_PREFIX_CHAR).append(PostChatFormattingCodes.RESET.char)
+            stringBuilder.append(ProtocolDefinition.TEXT_COMPONENT_SPECIAL_PREFIX_CHAR).append(PostChatFormattingCodes.RESET.char) // ToDo: This should not always be appended
             return stringBuilder.toString()
         }
 

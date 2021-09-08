@@ -54,6 +54,16 @@ class BaseComponent : ChatComponent {
                 return
             }
             val spaceSplit = currentText.split(' ')
+            var currentMessage = ""
+
+            fun push(clickEvent: ClickEvent?) {
+                if (currentMessage.isEmpty()) {
+                    return
+                }
+                parts += TextComponent(message = currentMessage, color = currentColor, formatting = currentFormatting.toMutableSet(), clickEvent = clickEvent)
+                currentMessage = ""
+            }
+
             for ((index, split) in spaceSplit.withIndex()) {
                 var clickEvent: ClickEvent? = null
                 if (split.isNotBlank()) {
@@ -69,12 +79,22 @@ class BaseComponent : ChatComponent {
                     }
                 }
                 if (split.isNotEmpty()) {
-                    parts += TextComponent(message = split, color = currentColor, formatting = currentFormatting.toMutableSet(), clickEvent = clickEvent)
+                    if (clickEvent != null) {
+                        // push previous
+                        push(null)
+
+                        currentMessage = split
+                        push(clickEvent)
+                    } else {
+                        currentMessage += split
+                    }
                 }
+
                 if (index != spaceSplit.size - 1) {
-                    parts += TextComponent(message = " ", color = currentColor, formatting = currentFormatting.toMutableSet())
+                    currentMessage += " "
                 }
             }
+            push(null)
             currentFormatting.clear()
             currentColor = null
             currentText.clear()
