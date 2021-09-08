@@ -159,7 +159,10 @@ public class BlockingSocketNetwork extends Network {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        this.socketReceiveThread.interrupt();
+        Thread socketReceiveThread = this.socketReceiveThread;
+        if (socketReceiveThread != null) {
+            this.socketReceiveThread.interrupt();
+        }
         Thread socketSendThread = this.socketSendThread;
         if (socketSendThread != null) {
             socketSendThread.interrupt();

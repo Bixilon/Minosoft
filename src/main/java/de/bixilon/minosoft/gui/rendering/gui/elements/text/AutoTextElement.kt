@@ -15,12 +15,16 @@ package de.bixilon.minosoft.gui.rendering.gui.elements.text
 
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 
-open class AutoTextElement(
+class AutoTextElement(
     hudRenderer: HUDRenderer,
     var interval: Int,
     private val updater: () -> Any,
-) : TextElement(hudRenderer, "TBD") {
+) : TextElement(hudRenderer, "") {
     private var remainingTicks = 0
+
+    init {
+        text = updater()
+    }
 
     override fun tick() {
         super.tick()

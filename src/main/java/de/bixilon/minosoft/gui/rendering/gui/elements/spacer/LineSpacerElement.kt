@@ -14,23 +14,18 @@
 package de.bixilon.minosoft.gui.rendering.gui.elements.spacer
 
 import de.bixilon.minosoft.gui.rendering.font.Font
-import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
-import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
+import de.bixilon.minosoft.gui.rendering.util.vec.Vec2Util.EMPTY
 import glm_.vec2.Vec2i
 
 class LineSpacerElement(
     hudRenderer: HUDRenderer,
     var lines: Int = 1,
-) : Element(hudRenderer) {
+) : SpacerElement(hudRenderer, Vec2i.EMPTY) {
 
     override var size: Vec2i
         get() = Vec2i(0, (lines * Font.CHAR_HEIGHT) + ((lines + 1) * Font.VERTICAL_SPACING))
         set(value) {
             TODO("Can not set the size of an FontSpacer! Use a normal spacer instead!")
         }
-
-    override fun render(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int {
-        return 0
-    }
 }

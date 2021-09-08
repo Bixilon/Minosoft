@@ -31,11 +31,9 @@ class RowLayout(hudRenderer: HUDRenderer) : Layout(hudRenderer) {
     // ToDo: Spacing between elements
     private val children: MutableList<Element> = synchronizedListOf()
 
-
     fun clear() {
         children.clear()
     }
-
 
     override fun render(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int {
         var childYOffset = 0

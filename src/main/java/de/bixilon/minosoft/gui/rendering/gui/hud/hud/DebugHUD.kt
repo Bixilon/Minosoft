@@ -17,6 +17,7 @@ import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.block.WorldRenderer
+import de.bixilon.minosoft.gui.rendering.gui.elements.ElementAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.layout.RowLayout
 import de.bixilon.minosoft.gui.rendering.gui.elements.spacer.LineSpacerElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.AutoTextElement
@@ -33,6 +34,12 @@ class DebugHUD(val hudRenderer: HUDRenderer) : HUD<RowLayout> {
 
 
     override fun init() {
+        initLeft()
+        initRight()
+    }
+
+    private fun initLeft() {
+        val layout = RowLayout(hudRenderer)
         layout += TextElement(hudRenderer, TextComponent(RunConfiguration.VERSION_STRING, ChatColors.RED))
         layout += AutoTextElement(hudRenderer, 1) { "FPS ${renderWindow.renderStats.smoothAvgFPS.round10}" }
         renderWindow[WorldRenderer]?.apply {
@@ -51,5 +58,14 @@ class DebugHUD(val hudRenderer: HUDRenderer) : HUD<RowLayout> {
             layout += AutoTextElement(hudRenderer, 1) { with(position) { "XYZ ${x.format()} / ${y.format()} / ${z.format()}" } }
             layout += AutoTextElement(hudRenderer, 1) { with(positionInfo.blockPosition) { "Block $x $y $z" } }
         }
+        layout += LineSpacerElement(hudRenderer)
+        this.layout += layout
+    }
+
+    private fun initRight() {
+        val layout = RowLayout(hudRenderer)
+        layout += TextElement(hudRenderer, "§a§sThis text§c\nis\nright\n§4aligned§5§s\n.\nThis line must be extra long!", ElementAlignments.RIGHT)
+
+        this.layout += layout
     }
 }

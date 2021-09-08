@@ -11,14 +11,9 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.gui.elements.text
+package de.bixilon.minosoft.gui.rendering.font.renderer
 
-import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.gui.rendering.gui.elements.ElementAlignments
-
-interface Labeled {
-    var text: Any
-    val textComponent: ChatComponent
-
-    val fontAlignment: ElementAlignments
-}
+class TextRenderInfo(
+    val lines: MutableList<TextLineInfo> = mutableListOf(),
+    var currentLine: Int = 0,
+)

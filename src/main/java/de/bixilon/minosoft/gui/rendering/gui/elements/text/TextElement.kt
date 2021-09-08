@@ -15,6 +15,8 @@ package de.bixilon.minosoft.gui.rendering.gui.elements.text
 
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.gui.rendering.font.renderer.ChatComponentRenderer
+import de.bixilon.minosoft.gui.rendering.font.renderer.TextRenderInfo
+import de.bixilon.minosoft.gui.rendering.gui.elements.ElementAlignments
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import glm_.vec2.Vec2i
@@ -23,7 +25,10 @@ import glm_.vec4.Vec4i
 open class TextElement(
     hudRenderer: HUDRenderer,
     text: Any,
+    override var fontAlignment: ElementAlignments = ElementAlignments.LEFT,
 ) : LabeledElement(hudRenderer) {
+    private var renderInfo = TextRenderInfo()
+
     override var text: Any = text
         set(value) {
             textComponent = ChatComponent.of(value)
@@ -31,7 +36,7 @@ open class TextElement(
             prepared = false
         }
 
-    override var textComponent: ChatComponent = ChatComponent.of("")
+    final override var textComponent: ChatComponent = ChatComponent.of("")
         protected set(value) {
             field = value
             prepare(value)
@@ -73,7 +78,10 @@ open class TextElement(
         size = minSize
         if (text.message.isNotEmpty()) {
             val size = Vec2i(0, 0)
-            ChatComponentRenderer.render(Vec2i(0, 0), Vec2i(0, 0), size, 0, this, renderWindow, null, text)
+            val renderInfo = TextRenderInfo()
+            ChatComponentRenderer.render(Vec2i(0, 0), Vec2i(0, 0), size, 0, this, renderWindow, null, renderInfo, text)
+            renderInfo.currentLine = 0
+            this.renderInfo = renderInfo
             this.size = size
         }
         parent?.childChange(this)
@@ -100,7 +108,8 @@ open class TextElement(
 
 
     override fun render(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int {
-        ChatComponentRenderer.render(Vec2i(offset), offset, Vec2i(0, 0), z, this, renderWindow, consumer, textComponent)
+        ChatComponentRenderer.render(Vec2i(offset), offset, Vec2i(0, 0), z, this, renderWindow, consumer, renderInfo, textComponent)
+        renderInfo.currentLine = 0
         prepared = true
         return LAYERS
     }

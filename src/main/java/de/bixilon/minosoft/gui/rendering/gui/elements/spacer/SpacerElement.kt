@@ -18,7 +18,7 @@ import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import glm_.vec2.Vec2i
 
-class SpacerElement(hudRenderer: HUDRenderer, override var size: Vec2i) : Element(hudRenderer) {
+open class SpacerElement(hudRenderer: HUDRenderer, override var size: Vec2i) : Element(hudRenderer) {
 
     override fun render(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int {
         return 0
