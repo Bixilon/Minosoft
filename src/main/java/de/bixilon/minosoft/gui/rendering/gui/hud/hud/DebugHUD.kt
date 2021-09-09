@@ -50,15 +50,13 @@ class DebugHUD(val hudRenderer: HUDRenderer) : HUD<GridLayout> {
 
 
     override fun init() {
-        val left = initLeft()
-        val right = initRight()
-
-        layout.add(Vec2i(0, 0), left)
-        layout.add(Vec2i(2, 0), right)
+        layout[Vec2i(0, 0)] = initLeft()
+        layout[Vec2i(2, 0)] = initRight()
     }
 
     private fun initLeft(): Element {
         val layout = RowLayout(hudRenderer)
+        // ToDo: layout.margin = Vec4i(5)
         layout += TextElement(hudRenderer, TextComponent(RunConfiguration.VERSION_STRING, ChatColors.RED))
         layout += AutoTextElement(hudRenderer, 1) { "FPS ${renderWindow.renderStats.smoothAvgFPS.round10}" }
         renderWindow[WorldRenderer]?.apply {
@@ -83,7 +81,8 @@ class DebugHUD(val hudRenderer: HUDRenderer) : HUD<GridLayout> {
 
     private fun initRight(): Element {
         val layout = RowLayout(hudRenderer, ElementAlignments.RIGHT)
-        layout += TextElement(hudRenderer, "Java\n${Runtime.version()} ${System.getProperty("sun.arch.data.model")}bit", ElementAlignments.RIGHT)
+        // ToDo: layout.margin = Vec4i(5)
+        layout += TextElement(hudRenderer, "Java\n${Runtime.version()} ${System.getProperty("sun.arch.data.model")}bit", ElementAlignments.RIGHT) // ToDo: Remove \n
 
         layout += LineSpacerElement(hudRenderer)
 

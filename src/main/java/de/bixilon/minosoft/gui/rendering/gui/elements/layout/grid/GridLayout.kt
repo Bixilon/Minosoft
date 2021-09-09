@@ -20,6 +20,7 @@ import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.util.vec.Vec4Util.offset
 import glm_.vec2.Vec2i
+import java.lang.Integer.min
 import kotlin.math.max
 
 class GridLayout(hudRenderer: HUDRenderer, val grid: Vec2i) : Layout(hudRenderer) {
@@ -29,6 +30,8 @@ class GridLayout(hudRenderer: HUDRenderer, val grid: Vec2i) : Layout(hudRenderer
     private val children: Array<Array<GridCell?>> = Array(grid.x) { Array(grid.y) { null } }
     private var columnStart = IntArray(grid.x)
     private var rowStart = IntArray(grid.y)
+
+    operator fun set(position: Vec2i, element: Element) = add(position, element)
 
     fun add(position: Vec2i, element: Element) {
         children[position.x][position.y]?.parent = null
@@ -51,6 +54,7 @@ class GridLayout(hudRenderer: HUDRenderer, val grid: Vec2i) : Layout(hudRenderer
 
 
     override fun silentApply() {
+        // ToDo: This works with columns, but rows are not yet implemented
 
         /*
         Calculate new grid layout (sizes) with the new size of the child
@@ -65,18 +69,52 @@ class GridLayout(hudRenderer: HUDRenderer, val grid: Vec2i) : Layout(hudRenderer
         for (x in 0 until grid.x) {
             for (y in 0 until grid.y) {
                 val child = children[x][y] ?: continue
-                width[x] = max(width[x], child.prefSize.x)
+                width[x] = min(max(width[x], child.prefSize.x), columnConstraints[x].maxWidth)
             }
         }
 
+        var alwaysGrowColumns = 0
+        // Set the NEVER growing widths
+        var availableWidth = maxSize.x
         for (x in 0 until grid.x) {
-            columnConstraints[x].width = width[x]
+            val constraint = columnConstraints[x]
+            val nextAvailable = availableWidth - width[x]
+            if (constraint.grow == GridGrow.ALWAYS) {
+                alwaysGrowColumns++
+            }
+            if (constraint.grow != GridGrow.NEVER) {
+                continue
+            }
+            if (availableWidth != 0) {
+                if (nextAvailable < 0) {
+                    constraint.width = availableWidth
+                    availableWidth = 0
+                } else {
+                    constraint.width = width[x]
+                    availableWidth -= width[x]
+                }
+            }
+        }
+
+        // set ALWAYS growing widths (and split them)
+        var remainingAlwaysGrowColumns = alwaysGrowColumns
+        if (alwaysGrowColumns > 0) {
+            for (x in 0 until grid.x) {
+                val constraint = columnConstraints[x]
+                if (constraint.grow != GridGrow.ALWAYS) {
+                    continue
+                }
+                val widthFraction = availableWidth / remainingAlwaysGrowColumns--
+                constraint.width = min(widthFraction, constraint.maxWidth)
+                availableWidth -= constraint.width
+            }
         }
 
         // apply the size changes to all children
         applyOnlyChildren()
 
 
+        // ToDo: Respect maxSize?
         val columnStart = IntArray(grid.x)
         // set the start offsets
         for (x in 1 until grid.x) {
@@ -86,7 +124,7 @@ class GridLayout(hudRenderer: HUDRenderer, val grid: Vec2i) : Layout(hudRenderer
         }
         this.columnStart = columnStart
 
-        // ToDo: Set size
+        size = Vec2i(width.sum(), 0)
     }
 
     override fun apply() {
