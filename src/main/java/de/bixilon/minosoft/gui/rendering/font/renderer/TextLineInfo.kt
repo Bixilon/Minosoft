@@ -14,6 +14,6 @@
 package de.bixilon.minosoft.gui.rendering.font.renderer
 
 data class TextLineInfo(
-    val chars: List<Char> = listOf(),
+    val chars: MutableList<Char> = mutableListOf(),
     var width: Int = 0,
 )

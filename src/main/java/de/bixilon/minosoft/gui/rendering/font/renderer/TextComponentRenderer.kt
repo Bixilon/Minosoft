@@ -18,15 +18,18 @@ import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.font.CharData
 import de.bixilon.minosoft.gui.rendering.font.Font
+import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.ElementAlignments
-import de.bixilon.minosoft.gui.rendering.gui.elements.text.LabeledElement
+import de.bixilon.minosoft.gui.rendering.gui.elements.ElementAlignments.Companion.getOffset
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.util.MMath.ceil
 import glm_.vec2.Vec2i
 
 object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
 
-    override fun render(initialOffset: Vec2i, offset: Vec2i, size: Vec2i, z: Int, element: LabeledElement, renderWindow: RenderWindow, consumer: GUIVertexConsumer?, renderInfo: TextRenderInfo, text: TextComponent) {
+    override fun render(initialOffset: Vec2i, offset: Vec2i, size: Vec2i, z: Int, element: Element, fontAlignment: ElementAlignments, renderWindow: RenderWindow, consumer: GUIVertexConsumer?, renderInfo: TextRenderInfo, text: TextComponent) {
+        val elementMaxSize = element.maxSize
+        // ToDo: Only 1 quad for the underline and the strikethrough
         var first = true
 
         var currentLineInfo = renderInfo.lines.getOrElse(renderInfo.currentLine) {
@@ -43,19 +46,11 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
         }
 
         fun updateOffset() {
+            val renderInfo = renderInfo
             offset.x = initialOffset.x
             if (consumer != null) {
                 // set offset of the next line to match the expected alignment
-                when (element.fontAlignment) {
-                    ElementAlignments.LEFT -> {
-                    }
-                    ElementAlignments.RIGHT -> {
-                        offset.x = initialOffset.x + (element.size.x - renderInfo.lines[renderInfo.currentLine].width)
-                    }
-                    ElementAlignments.CENTER -> {
-                        offset.x = initialOffset.x + (element.size.x - renderInfo.lines[renderInfo.currentLine].width) / 2
-                    }
-                }
+                offset.x += fontAlignment.getOffset(element.size.x, renderInfo.lines[renderInfo.currentLine].width)
             }
         }
 
@@ -64,7 +59,7 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
          */
         fun wrap(): Boolean {
             val yAdd = Font.CHAR_HEIGHT + Font.VERTICAL_SPACING
-            if (size.y + yAdd > element.maxSize.y) {
+            if (size.y + yAdd > elementMaxSize.y) {
                 return true
             }
             if (consumer == null) {
@@ -84,7 +79,7 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
          * @return If the text can't fit into the layout anymore
          */
         fun add(x: Int): Boolean {
-            if (offset.x - initialOffset.x + x > element.maxSize.x) {
+            if (offset.x - initialOffset.x + x > elementMaxSize.x) {
                 if (wrap()) {
                     return true
                 }
@@ -139,6 +134,10 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
                 return
             }
             consumer?.let { charData.render(offset, z, text, it) }
+
+            if (consumer != null) {
+                renderInfo.lines[renderInfo.currentLine].chars += char
+            }
 
             if (add(width)) {
                 return

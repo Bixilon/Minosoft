@@ -11,20 +11,18 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.font.renderer
+package de.bixilon.minosoft.gui.rendering.gui.elements.layout.grid
 
-import de.bixilon.minosoft.data.text.BaseComponent
-import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.ElementAlignments
-import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
-import glm_.vec2.Vec2i
+import de.bixilon.minosoft.gui.rendering.gui.elements.layout.ChildAlignable
 
-object BaseComponentRenderer : ChatComponentRenderer<BaseComponent> {
+class GridColumnConstraint(
+    var prefWidth: Int = 0,
+    var maxWidth: Int = Int.MAX_VALUE,
+    var grow: GridGrow = GridGrow.ALWAYS,
+    var alignment: ElementAlignments = ElementAlignments.LEFT,
+) : ChildAlignable {
+    override var childAlignment: ElementAlignments by this::alignment
 
-    override fun render(initialOffset: Vec2i, offset: Vec2i, size: Vec2i, z: Int, element: Element, fontAlignment: ElementAlignments, renderWindow: RenderWindow, consumer: GUIVertexConsumer?, renderInfo: TextRenderInfo, text: BaseComponent) {
-        for (part in text.parts) {
-            ChatComponentRenderer.render(initialOffset, offset, size, z, element, fontAlignment, renderWindow, consumer, renderInfo, part)
-        }
-    }
+    var width: Int = 0
 }

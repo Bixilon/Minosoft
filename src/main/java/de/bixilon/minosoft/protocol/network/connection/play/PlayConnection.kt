@@ -72,6 +72,7 @@ class PlayConnection(
     val scoreboardManager = ScoreboardManager()
     val registries = Registries()
     val sender = PacketSender(this)
+    val serverInfo = ServerInfo()
     lateinit var assetsManager: MultiAssetsManager
         private set
     val tags: MutableMap<ResourceLocation, Map<ResourceLocation, Tag<Any>>> = synchronizedMapOf()
@@ -113,7 +114,7 @@ class PlayConnection(
             val previousConnectionState = protocolState
             field = value
             // handle callbacks
-            fireEvent(ProtocolStateChangeEvent(this, previousConnectionState, protocolState))
+            fireEvent(ProtocolStateChangeEvent(this, previousConnectionState, value))
             when (value) {
                 ProtocolStates.HANDSHAKING -> {
                     state = PlayConnectionStates.HANDSHAKING

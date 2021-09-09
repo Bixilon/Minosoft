@@ -11,20 +11,31 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.font.renderer
+package de.bixilon.minosoft.gui.rendering.gui.elements
 
-import de.bixilon.minosoft.data.text.BaseComponent
-import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.gui.elements.Element
-import de.bixilon.minosoft.gui.rendering.gui.elements.ElementAlignments
+import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
+import de.bixilon.minosoft.gui.rendering.util.vec.Vec2Util.MAX
 import glm_.vec2.Vec2i
 
-object BaseComponentRenderer : ChatComponentRenderer<BaseComponent> {
+class InfiniteSizeElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
+    override var parent: Element?
+        get() = null
+        set(value) {}
 
-    override fun render(initialOffset: Vec2i, offset: Vec2i, size: Vec2i, z: Int, element: Element, fontAlignment: ElementAlignments, renderWindow: RenderWindow, consumer: GUIVertexConsumer?, renderInfo: TextRenderInfo, text: BaseComponent) {
-        for (part in text.parts) {
-            ChatComponentRenderer.render(initialOffset, offset, size, z, element, fontAlignment, renderWindow, consumer, renderInfo, part)
-        }
+    override var maxSize: Vec2i
+        get() = Vec2i.MAX
+        set(value) {}
+
+    override var prefSize: Vec2i
+        get() = Vec2i.MAX
+        set(value) {}
+
+    override fun render(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int {
+        error("Can not render InfiniteSizeElement")
     }
+
+    override fun silentApply() = Unit
+
+    override fun apply() = Unit
 }

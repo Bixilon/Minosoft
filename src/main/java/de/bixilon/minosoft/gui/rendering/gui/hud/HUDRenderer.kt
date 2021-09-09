@@ -39,7 +39,7 @@ class HUDRenderer(
 ) : Renderer {
     private val shader = renderWindow.renderSystem.createShader("minosoft:hud".toResourceLocation())
     private lateinit var mesh: GUIMesh
-    var scaledSize: Vec2 = renderWindow.window.sizef
+    var scaledSize: Vec2i = renderWindow.window.size
     private var matrix: Mat4 = Mat4()
 
     val hud: MutableList<HUD<*>> = synchronizedListOf(
@@ -50,8 +50,12 @@ class HUDRenderer(
 
     override fun init() {
         connection.registerEvent(CallbackEventInvoker.of<ResizeWindowEvent> {
-            scaledSize = Vec2(it.size) / Minosoft.config.config.game.hud.scale
-            matrix = glm.ortho(0.0f, scaledSize.x, scaledSize.y, 0.0f)
+            scaledSize = Vec2i(Vec2(it.size) / Minosoft.config.config.game.hud.scale)
+            matrix = glm.ortho(0.0f, scaledSize.x.toFloat(), scaledSize.y.toFloat(), 0.0f)
+
+            for (hud in hud) {
+                hud.layout?.onParentChange()
+            }
         })
 
         for (hud in this.hud) {

@@ -18,6 +18,7 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.util.vec.Vec2Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.Vec2Util.MAX
 import de.bixilon.minosoft.gui.rendering.util.vec.Vec4Util.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.vec.Vec4Util.spaceSize
 import glm_.vec2.Vec2i
 import glm_.vec4.Vec4i
 
@@ -26,15 +27,16 @@ abstract class Element(val hudRenderer: HUDRenderer) {
     open var parent: Element? = null
     open var prepared: Boolean = false
 
-    open var minSize: Vec2i = Vec2i.EMPTY
-    open var prefMaxSize: Vec2i = Vec2i(-1, -1)
-    open var size: Vec2i = Vec2i()
+    /**
+     * If maxSize was infinity, what size would the element have?
+     */
+    open var prefSize: Vec2i = Vec2i.EMPTY
+        set(value) {
+            field = value
+            apply()
+        }
 
-    open var margin: Vec4i = Vec4i.EMPTY
-    open var padding: Vec4i = Vec4i.EMPTY
-
-
-    open val maxSize: Vec2i
+    open var maxSize: Vec2i = Vec2i(-1, -1)
         get() {
             val ret = Vec2i.MAX
 
@@ -43,13 +45,13 @@ abstract class Element(val hudRenderer: HUDRenderer) {
                 ret.y = it.maxSize.y
             }
 
-            val maxSize = Vec2i(prefMaxSize)
+            val maxSize = Vec2i(field)
 
             if (maxSize.x < 0) {
-                maxSize.x = hudRenderer.scaledSize.x.toInt()
+                maxSize.x = hudRenderer.scaledSize.x
             }
             if (maxSize.y < 0) {
-                maxSize.y = hudRenderer.scaledSize.y.toInt()
+                maxSize.y = hudRenderer.scaledSize.y
             }
 
             if (maxSize.x < ret.x) {
@@ -59,16 +61,68 @@ abstract class Element(val hudRenderer: HUDRenderer) {
                 ret.y = maxSize.y
             }
 
-            return ret
+            return ret - margin.spaceSize
+        }
+        set(value) {
+            field = value
+            apply()
+        }
+
+    open var size: Vec2i = Vec2i.EMPTY
+        get() {
+            val size = Vec2i(field)
+            if (size.x > maxSize.x) {
+                size.x = maxSize.x
+            }
+            if (size.y > maxSize.y) {
+                size.y = maxSize.y
+            }
+            return size
         }
 
     /**
+     * Margin for the element
+     *
+     * The max size already includes the margin, the size not. To get the actual size of an element, add the margin to the element.
+     * For rendering: Every element adds its padding itself
+     */
+    open var margin: Vec4i = Vec4i.EMPTY
+        set(value) {
+            field = value
+            apply()
+        }
+
+    /**
+     * Renders the element to a vertex consumer
+     *
      * @return The number of z layers used
      */
     abstract fun render(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int
 
+    /**
+     * Applied all changes made to any property, but does not notify the parent about the change
+     */
+    abstract fun silentApply()
 
-    open fun childChange(child: Element?) {}
+    /**
+     * Applied all changes made to any property and calls `parent?.onChildChange(this)`
+     */
+    abstract fun apply()
 
+    /**
+     * Calls when any relevant property of the parent changes (e.g. maxSize)
+     */
+    open fun onParentChange() {}
+
+    /**
+     * Called by the child of an element (probably a layout), because the child changed a relevant property (probably size)
+     */
+    open fun onChildChange(child: Element?) {
+        parent?.onChildChange(this)
+    }
+
+    /**
+     * Called every tick to execute time based actions
+     */
     open fun tick() {}
 }

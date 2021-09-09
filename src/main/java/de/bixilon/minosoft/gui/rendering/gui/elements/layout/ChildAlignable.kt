@@ -11,20 +11,10 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.font.renderer
+package de.bixilon.minosoft.gui.rendering.gui.elements.layout
 
-import de.bixilon.minosoft.data.text.BaseComponent
-import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.ElementAlignments
-import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
-import glm_.vec2.Vec2i
 
-object BaseComponentRenderer : ChatComponentRenderer<BaseComponent> {
-
-    override fun render(initialOffset: Vec2i, offset: Vec2i, size: Vec2i, z: Int, element: Element, fontAlignment: ElementAlignments, renderWindow: RenderWindow, consumer: GUIVertexConsumer?, renderInfo: TextRenderInfo, text: BaseComponent) {
-        for (part in text.parts) {
-            ChatComponentRenderer.render(initialOffset, offset, size, z, element, fontAlignment, renderWindow, consumer, renderInfo, part)
-        }
-    }
+interface ChildAlignable {
+    var childAlignment: ElementAlignments
 }

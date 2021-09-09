@@ -53,7 +53,7 @@ class GUIMesh(
     }
 
     companion object {
-        private const val BASE_Z = 0.99f
+        private const val BASE_Z = -0.99f
         private const val Z_MULTIPLIER = -0.00001f
     }
 }

@@ -36,4 +36,26 @@ object Vec2Util {
 
     val Vec2i.Companion.MAX: Vec2i
         get() = Vec2i(Int.MAX_VALUE, Int.MAX_VALUE)
+
+    fun Vec2i.min(other: Vec2i): Vec2i {
+        val min = Vec2i(this)
+        if (other.x < min.x) {
+            min.x = other.x
+        }
+        if (other.y < min.y) {
+            min.y = other.y
+        }
+        return min
+    }
+
+    fun Vec2i.max(other: Vec2i): Vec2i {
+        val max = Vec2i(this)
+        if (other.x > max.x) {
+            max.x = other.x
+        }
+        if (other.y > max.y) {
+            max.y = other.y
+        }
+        return max
+    }
 }

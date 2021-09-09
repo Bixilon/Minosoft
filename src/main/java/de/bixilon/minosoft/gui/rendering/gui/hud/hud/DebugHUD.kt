@@ -17,8 +17,11 @@ import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.block.WorldRenderer
+import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.ElementAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.layout.RowLayout
+import de.bixilon.minosoft.gui.rendering.gui.elements.layout.grid.GridGrow
+import de.bixilon.minosoft.gui.rendering.gui.elements.layout.grid.GridLayout
 import de.bixilon.minosoft.gui.rendering.gui.elements.spacer.LineSpacerElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.AutoTextElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
@@ -29,18 +32,32 @@ import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.KUtil.format
 import de.bixilon.minosoft.util.MMath.round10
+import glm_.vec2.Vec2i
 
-class DebugHUD(val hudRenderer: HUDRenderer) : HUD<RowLayout> {
+class DebugHUD(val hudRenderer: HUDRenderer) : HUD<GridLayout> {
     override val renderWindow: RenderWindow = hudRenderer.renderWindow
-    override val layout = RowLayout(hudRenderer)
+    override val layout = GridLayout(hudRenderer, Vec2i(3, 1)).apply {
+        columnConstraints[0].apply {
+            grow = GridGrow.NEVER
+        }
+        columnConstraints[2].apply {
+            grow = GridGrow.NEVER
+            alignment = ElementAlignments.RIGHT
+        }
+
+        apply()
+    }
 
 
     override fun init() {
-        initLeft()
-        initRight()
+        val left = initLeft()
+        val right = initRight()
+
+        layout.add(Vec2i(0, 0), left)
+        layout.add(Vec2i(2, 0), right)
     }
 
-    private fun initLeft() {
+    private fun initLeft(): Element {
         val layout = RowLayout(hudRenderer)
         layout += TextElement(hudRenderer, TextComponent(RunConfiguration.VERSION_STRING, ChatColors.RED))
         layout += AutoTextElement(hudRenderer, 1) { "FPS ${renderWindow.renderStats.smoothAvgFPS.round10}" }
@@ -61,12 +78,12 @@ class DebugHUD(val hudRenderer: HUDRenderer) : HUD<RowLayout> {
             layout += AutoTextElement(hudRenderer, 1) { with(positionInfo.blockPosition) { "Block $x $y $z" } }
         }
         layout += LineSpacerElement(hudRenderer)
-        this.layout += layout
+        return layout
     }
 
-    private fun initRight() {
-        val layout = RowLayout(hudRenderer)
-        layout += TextElement(hudRenderer, "Java ${Runtime.version()} ${System.getProperty("sun.arch.data.model")}bit", ElementAlignments.RIGHT)
+    private fun initRight(): Element {
+        val layout = RowLayout(hudRenderer, ElementAlignments.RIGHT)
+        layout += TextElement(hudRenderer, "Java\n${Runtime.version()} ${System.getProperty("sun.arch.data.model")}bit", ElementAlignments.RIGHT)
 
         layout += LineSpacerElement(hudRenderer)
 
@@ -79,7 +96,6 @@ class DebugHUD(val hudRenderer: HUDRenderer) : HUD<RowLayout> {
             layout += TextElement(hudRenderer, "GPU $vendorString")
             layout += TextElement(hudRenderer, "Version $version")
         }
-
-        this.layout += layout
+        return layout
     }
 }

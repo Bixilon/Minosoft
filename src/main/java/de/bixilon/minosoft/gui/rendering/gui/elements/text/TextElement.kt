@@ -16,11 +16,14 @@ package de.bixilon.minosoft.gui.rendering.gui.elements.text
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.gui.rendering.font.renderer.ChatComponentRenderer
 import de.bixilon.minosoft.gui.rendering.font.renderer.TextRenderInfo
+import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.ElementAlignments
+import de.bixilon.minosoft.gui.rendering.gui.elements.InfiniteSizeElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
+import de.bixilon.minosoft.gui.rendering.util.vec.Vec2Util.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.vec.Vec4Util.offset
 import glm_.vec2.Vec2i
-import glm_.vec4.Vec4i
 
 open class TextElement(
     hudRenderer: HUDRenderer,
@@ -39,76 +42,56 @@ open class TextElement(
     final override var textComponent: ChatComponent = ChatComponent.of("")
         protected set(value) {
             field = value
-            prepare(value)
+            apply()
         }
 
-    override var prefMaxSize: Vec2i
-        get() = super.prefMaxSize
-        set(value) {
-            super.prefMaxSize = value
-            checkSize()
-        }
-
-    override var minSize: Vec2i
-        get() = super.minSize
-        set(value) {
-            super.minSize = value
-            checkSize()
-        }
-
-    override var margin: Vec4i
-        get() = super.margin
-        set(value) {
-            super.margin = value
-            checkSize()
-        }
-
-    override var padding: Vec4i
-        get() = super.padding
-        set(value) {
-            super.padding = value
-            checkSize()
-        }
+    override var prefSize: Vec2i = Vec2i.EMPTY
 
     init {
         textComponent = ChatComponent.of(text)
     }
 
-    private fun prepare(text: ChatComponent = textComponent) {
-        size = minSize
+    override fun silentApply() {
+        val text = textComponent
+        size = Vec2i.EMPTY
         if (text.message.isNotEmpty()) {
-            val size = Vec2i(0, 0)
+            val size = Vec2i.EMPTY
             val renderInfo = TextRenderInfo()
-            ChatComponentRenderer.render(Vec2i(0, 0), Vec2i(0, 0), size, 0, this, renderWindow, null, renderInfo, text)
+            ChatComponentRenderer.render(Vec2i.EMPTY, Vec2i.EMPTY, size, 0, this, fontAlignment, renderWindow, null, renderInfo, text)
+            val prefSize = Vec2i.EMPTY
+            ChatComponentRenderer.render(Vec2i.EMPTY, Vec2i.EMPTY, prefSize, 0, InfiniteSizeElement(hudRenderer), fontAlignment, renderWindow, null, TextRenderInfo(), text)
+            this.prefSize = prefSize
+
+            // ToDo: Set prefSize
             renderInfo.currentLine = 0
             this.renderInfo = renderInfo
             this.size = size
         }
-        parent?.childChange(this)
     }
 
+    override fun apply() {
+        silentApply()
+        parent?.onChildChange(this)
+    }
 
-    private fun checkSize() {
+    override fun onChildChange(child: Element?) = error("A TextElement can not have a child!")
+
+    override fun onParentChange() {
         val size = Vec2i(size)
+        val maxSize = maxSize
 
         if (size.x > maxSize.x) {
-            return prepare()
+            return silentApply()
         }
         if (size.y > maxSize.y) {
-            return prepare()
-        }
-
-        if (size.x < minSize.x) {
-            return prepare()
-        }
-        if (size.y < minSize.y) {
-            return prepare()
+            return silentApply()
         }
     }
 
 
     override fun render(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int {
-        ChatComponentRenderer.render(Vec2i(offset), offset, Vec2i(0, 0), z, this, renderWindow, consumer, renderInfo, textComponent)
+        val initialOffset = offset + margin.offset
+        ChatComponentRenderer.render(initialOffset, Vec2i(initialOffset), Vec2i.EMPTY, z, this, fontAlignment, renderWindow, consumer, renderInfo, textComponent)
         renderInfo.currentLine = 0
         prepared = true
         return LAYERS

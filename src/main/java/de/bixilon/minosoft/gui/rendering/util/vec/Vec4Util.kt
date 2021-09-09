@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.util.vec
 
+import glm_.vec2.Vec2i
 import glm_.vec4.Vec4
 import glm_.vec4.Vec4i
 
@@ -55,4 +56,10 @@ object Vec4Util {
 
     val Vec4i.vertical: Int
         get() = top + bottom
+
+    val Vec4i.spaceSize: Vec2i
+        get() = Vec2i(horizontal, vertical)
+
+    val Vec4i.offset: Vec2i
+        get() = Vec2i(left, top)
 }

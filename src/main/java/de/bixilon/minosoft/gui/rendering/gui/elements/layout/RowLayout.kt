@@ -14,73 +14,128 @@
 package de.bixilon.minosoft.gui.rendering.gui.elements.layout
 
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
+import de.bixilon.minosoft.gui.rendering.gui.elements.ElementAlignments
+import de.bixilon.minosoft.gui.rendering.gui.elements.ElementAlignments.Companion.getOffset
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
+import de.bixilon.minosoft.gui.rendering.util.vec.Vec2Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.Vec4Util.bottom
 import de.bixilon.minosoft.gui.rendering.util.vec.Vec4Util.horizontal
 import de.bixilon.minosoft.gui.rendering.util.vec.Vec4Util.left
+import de.bixilon.minosoft.gui.rendering.util.vec.Vec4Util.spaceSize
 import de.bixilon.minosoft.gui.rendering.util.vec.Vec4Util.top
 import de.bixilon.minosoft.util.KUtil.synchronizedListOf
 import de.bixilon.minosoft.util.KUtil.toSynchronizedList
 import glm_.vec2.Vec2i
+import java.lang.Integer.max
 
 /**
  * A layout, that works from top to bottom, containing other elements, that get wrapped below each other
  */
-class RowLayout(hudRenderer: HUDRenderer) : Layout(hudRenderer) {
+class RowLayout(
+    hudRenderer: HUDRenderer,
+    override var childAlignment: ElementAlignments = ElementAlignments.LEFT,
+) : Layout(hudRenderer), ChildAlignable {
+    private var _prefSize = Vec2i.EMPTY
+
     // ToDo: Spacing between elements
     private val children: MutableList<Element> = synchronizedListOf()
+
+    override var prefSize: Vec2i
+        get() = _prefSize
+        set(value) {}
 
     fun clear() {
         children.clear()
     }
 
     override fun render(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int {
-        var childYOffset = 0
-        var totalZ = 0
+        // ToDo: Check max size
+
+        var childYOffset = margin.top
+        var maxZ = 0
         for (child in children) {
-            childYOffset += padding.top + child.margin.top
-            val childZ = child.render(Vec2i(offset.x + padding.left + child.margin.left, offset.y + childYOffset), z, consumer)
-            if (totalZ < childZ) {
-                totalZ = childZ
+            val childZ = child.render(Vec2i(offset.x + margin.left + childAlignment.getOffset(size.x, child.size.x), offset.y + childYOffset), z, consumer)
+            if (maxZ < childZ) {
+                maxZ = childZ
             }
-            childYOffset += child.size.y + child.margin.bottom + padding.bottom
+            childYOffset += child.margin.top
+            childYOffset += child.size.y
+            childYOffset += child.margin.bottom
         }
 
-        return totalZ
+        return maxZ
     }
 
-    operator fun plusAssign(element: Element) {
+    operator fun plusAssign(element: Element) = add(element)
+
+    fun add(element: Element) {
         element.parent = this
         children += element
 
-        // ToDo: Optimize
-        childChange(element)
-        parent?.childChange(this)
+
+        element.onParentChange()
+        apply() // ToDo: Optimize
+        parent?.onChildChange(this)
     }
 
-    override fun childChange(child: Element?) {
-        super.childChange(child)
+    override fun apply() {
+        silentApply()
+        parent?.onChildChange(this)
+    }
 
-        // ToDo: Check max size
-
+    override fun silentApply() {
+        val maxSize = maxSize
         val size = Vec2i(0, 0)
-        val xPadding = padding.horizontal
-        size.y += padding.top
+        val prefSize = margin.spaceSize
+        val xMargin = margin.horizontal
 
-        for (element in children) {
-            size.y += element.margin.top
-            size.y += element.size.y
-            size.y += element.margin.bottom
+        for (child in children) {
+            prefSize.x = max(prefSize.x, xMargin + child.prefSize.x)
+            prefSize.y += child.prefSize.y
+        }
 
-            val xSize = xPadding + element.size.x + element.margin.horizontal
+        _prefSize = prefSize
+
+        fun addY(y: Int): Boolean {
+            val available = maxSize.y - size.y
+
+            if (y > available) {
+                return true
+            }
+            size.y += y
+            return false
+        }
+
+        for (child in children) {
+            if (addY(child.margin.top)) {
+                break
+            }
+            if (addY(child.size.y)) {
+                break
+            }
+
+            val xSize = child.size.x
+            if (xSize > maxSize.x) {
+                break
+            }
             if (xSize > size.x) {
                 size.x = xSize
             }
+            if (addY(child.margin.bottom)) {
+                break
+            }
         }
-        size.y += padding.bottom
 
         this.size = size
+    }
+
+    override fun onParentChange() {
+        silentApply()
+
+        for (child in children) {
+            child.onParentChange()
+        }
     }
 
     override fun tick() {

@@ -13,9 +13,25 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.elements
 
+import glm_.vec2.Vec2i
+
 enum class ElementAlignments {
     LEFT,
     CENTER,
     RIGHT,
     ;
+
+    companion object {
+        fun ElementAlignments.getOffset(width: Int, childWidth: Int): Int {
+            return when (this) {
+                LEFT -> 0
+                RIGHT -> width - childWidth
+                CENTER -> (width - childWidth) / 2
+            }
+        }
+
+        fun ElementAlignments.getOffset(size: Vec2i, childSize: Vec2i): Int {
+            return getOffset(size.x, childSize.x)
+        }
+    }
 }

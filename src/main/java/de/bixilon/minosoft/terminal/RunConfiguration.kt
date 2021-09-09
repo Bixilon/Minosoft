@@ -53,5 +53,5 @@ object RunConfiguration {
 
     val TEMPORARY_FOLDER = System.getProperty("java.io.tmpdir", "$HOME_DIRECTORY/tmp/") + "/"
 
-    var VERSION_STRING = "Minosoft $StaticConfiguration.VERSION"
+    var VERSION_STRING = "Minosoft ${StaticConfiguration.VERSION}"
 }

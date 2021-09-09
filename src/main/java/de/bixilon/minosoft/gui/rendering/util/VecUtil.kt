@@ -41,6 +41,7 @@ import glm_.vec3.Vec3t
 import kotlin.math.abs
 import kotlin.random.Random
 
+@Deprecated(message = "Use VecXUtil instead")
 object VecUtil {
     val Vec3.Companion.EMPTY: Vec3
         get() = Vec3(0.0f, 0.0f, 0.0f)

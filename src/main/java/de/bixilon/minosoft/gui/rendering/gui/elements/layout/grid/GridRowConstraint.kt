@@ -11,17 +11,12 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.gui.elements.spacer
+package de.bixilon.minosoft.gui.rendering.gui.elements.layout.grid
 
-import de.bixilon.minosoft.gui.rendering.gui.elements.Element
-import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
-import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
-import glm_.vec2.Vec2i
-
-open class SpacerElement(hudRenderer: HUDRenderer, override var size: Vec2i) : Element(hudRenderer) {
-
-    override fun render(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int = 0
-
-    override fun silentApply() = Unit
-    override fun apply() = Unit
+class GridRowConstraint(
+    var prefHeight: Int = 0,
+    var maxHeight: Int = Int.MAX_VALUE,
+    var grow: GridGrow = GridGrow.ALWAYS,
+) {
+    var height: Int = Int.MAX_VALUE // ToDo
 }
