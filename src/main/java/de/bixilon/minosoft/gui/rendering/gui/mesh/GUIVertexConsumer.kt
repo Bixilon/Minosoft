@@ -14,11 +14,36 @@
 package de.bixilon.minosoft.gui.rendering.gui.mesh
 
 import de.bixilon.minosoft.data.text.RGBColor
+import de.bixilon.minosoft.gui.rendering.gui.hud.atlas.TextureLike
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
+import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import glm_.vec2.Vec2
 import glm_.vec2.Vec2t
 
 interface GUIVertexConsumer {
 
     fun addVertex(position: Vec2t<*>, z: Int, texture: AbstractTexture, uv: Vec2, tint: RGBColor)
+
+    fun addQuad(start: Vec2t<*>, end: Vec2t<*>, z: Int, texture: AbstractTexture, uvStart: Vec2, uvEnd: Vec2, tint: RGBColor) {
+        val positions = arrayOf(
+            Vec2(start.x.toFloat(), start.y),
+            Vec2(end.x.toFloat(), start.y),
+            end,
+            Vec2(start.x, end.y),
+        )
+        val texturePositions = arrayOf(
+            Vec2(uvEnd.x, uvStart.y),
+            uvStart,
+            Vec2(uvStart.x, uvEnd.y),
+            uvEnd,
+        )
+
+        for ((vertexIndex, textureIndex) in Mesh.QUAD_DRAW_ODER) {
+            addVertex(positions[vertexIndex], z, texture, texturePositions[textureIndex], tint)
+        }
+    }
+
+    fun addQuad(start: Vec2t<*>, end: Vec2t<*>, z: Int, texture: TextureLike, tint: RGBColor) {
+        addQuad(start, end, z, texture.texture, texture.uvStart, texture.uvEnd, tint)
+    }
 }

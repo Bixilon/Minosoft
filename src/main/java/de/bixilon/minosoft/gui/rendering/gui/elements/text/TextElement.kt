@@ -14,10 +14,14 @@
 package de.bixilon.minosoft.gui.rendering.gui.elements.text
 
 import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.data.text.RGBColor
+import de.bixilon.minosoft.gui.rendering.RenderConstants
+import de.bixilon.minosoft.gui.rendering.font.Font
 import de.bixilon.minosoft.gui.rendering.font.renderer.ChatComponentRenderer
 import de.bixilon.minosoft.gui.rendering.font.renderer.TextRenderInfo
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.ElementAlignments
+import de.bixilon.minosoft.gui.rendering.gui.elements.ElementAlignments.Companion.getOffset
 import de.bixilon.minosoft.gui.rendering.gui.elements.InfiniteSizeElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
@@ -29,6 +33,8 @@ open class TextElement(
     hudRenderer: HUDRenderer,
     text: Any,
     override var fontAlignment: ElementAlignments = ElementAlignments.LEFT,
+    var background: Boolean = true,
+    var backgroundColor: RGBColor = RenderConstants.TEXT_BACKGROUND_COLOR,
 ) : LabeledElement(hudRenderer) {
     private var preparedSize = Vec2i.EMPTY
     private var renderInfo = TextRenderInfo()
@@ -91,9 +97,18 @@ open class TextElement(
 
     override fun render(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int {
         val initialOffset = offset + margin.offset
-        ChatComponentRenderer.render(initialOffset, Vec2i(initialOffset), Vec2i.EMPTY, z, this, fontAlignment, renderWindow, consumer, renderInfo, textComponent)
+
+        ChatComponentRenderer.render(initialOffset, Vec2i(initialOffset), Vec2i.EMPTY, z + 1, this, fontAlignment, renderWindow, consumer, renderInfo, textComponent)
         renderInfo.currentLine = 0
         prepared = true
+
+        if (background) {
+            for ((line, info) in renderInfo.lines.withIndex()) {
+                val start = initialOffset + Vec2i(fontAlignment.getOffset(size.x, info.width), line * Font.TOTAL_CHAR_HEIGHT)
+                consumer.addQuad(start, start + Vec2i(info.width + Font.CHAR_MARGIN, Font.TOTAL_CHAR_HEIGHT), z, renderWindow.WHITE_TEXTURE, backgroundColor)
+            }
+        }
+
         return LAYERS
     }
 
@@ -102,6 +117,6 @@ open class TextElement(
     }
 
     companion object {
-        const val LAYERS = 4 // 1 layer for the text, 1 for strikethrough. * 2 for shadow
+        const val LAYERS = 5 // 1 layer for the text, 1 for strikethrough, * 2 for shadow, 1 for background
     }
 }

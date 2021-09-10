@@ -23,9 +23,6 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.ElementAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.ElementAlignments.Companion.getOffset
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.util.MMath.ceil
-import de.bixilon.minosoft.util.logging.Log
-import de.bixilon.minosoft.util.logging.LogLevels
-import de.bixilon.minosoft.util.logging.LogMessageType
 import glm_.vec2.Vec2i
 
 object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
@@ -42,7 +39,7 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
 
         fun addY(height: Int): Boolean {
             val nextY = offset.y + height
-            val nextSizeY = nextY - initialOffset.y + Font.CHAR_HEIGHT // add initial height for chars
+            val nextSizeY = nextY - initialOffset.y + Font.TOTAL_CHAR_HEIGHT // add initial height for chars + end margin
             if (nextSizeY >= elementMaxSize.y) {
                 return true
             }
@@ -54,18 +51,15 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
         }
 
         fun wrap(): Boolean {
-            if (addY(Font.CHAR_HEIGHT + Font.VERTICAL_SPACING)) {
+            if (addY(Font.TOTAL_CHAR_HEIGHT)) {
                 return true
             }
             renderInfo.currentLine++
-            offset.x = initialOffset.x
+            offset.x = initialOffset.x + Font.CHAR_MARGIN
             if (consumer == null) {
                 // preparing phase
                 renderInfo.lines += TextLineInfo()
             } else {
-                if (renderInfo.currentLine >= renderInfo.lines.size) {
-                    Log.log(LogMessageType.OTHER, LogLevels.FATAL) { "Crash because of $text (size=$size, maxSize=$elementMaxSize)" }
-                }
                 alignmentXOffset = fontAlignment.getOffset(element.size.x, renderInfo.lines[renderInfo.currentLine].width)
             }
             return false
@@ -73,7 +67,7 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
 
         fun addX(width: Int, wrap: Boolean = true): Boolean {
             val nextX = offset.x + width
-            val nextSizeX = nextX + alignmentXOffset - initialOffset.x
+            val nextSizeX = nextX - initialOffset.x + Font.CHAR_MARGIN // end margin
             if (nextSizeX > elementMaxSize.x) {
                 if (!wrap) {
                     return true
@@ -96,7 +90,7 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
 
         if (size.y == 0) {
             // Add initial height of the letter for the first line
-            val nextSizeY = Font.CHAR_HEIGHT
+            val nextSizeY = Font.TOTAL_CHAR_HEIGHT
             if (nextSizeY > elementMaxSize.y) {
                 return true
             }
@@ -106,6 +100,8 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
                 renderInfo.lines += TextLineInfo() // add line 0
             }
             size.y = nextSizeY
+            size.x += Font.CHAR_MARGIN * 2
+            offset += Font.CHAR_MARGIN
         }
 
 
@@ -119,7 +115,7 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
             }
 
             // skip spaces that are wrapped (because of a line break)
-            if (offset.y != initialOffset.y && offset.x == initialOffset.x && char == ' ') {
+            if (offset.y != initialOffset.y + Font.CHAR_MARGIN && offset.x == initialOffset.x + Font.CHAR_MARGIN && char == ' ') {
                 continue
             }
 
@@ -128,7 +124,7 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
             val charWidth = charData.calculateWidth(text)
             var width = charWidth
 
-            if (offset.x != initialOffset.x) {
+            if (offset.x != initialOffset.x + Font.CHAR_MARGIN) {
                 // add spacing between letters
                 width += Font.HORIZONTAL_SPACING
             }

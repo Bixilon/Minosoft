@@ -24,7 +24,7 @@ class LineSpacerElement(
 ) : SpacerElement(hudRenderer, Vec2i.EMPTY) {
 
     override var size: Vec2i
-        get() = Vec2i(0, (lines * Font.CHAR_HEIGHT) + ((lines + 1) * Font.VERTICAL_SPACING))
+        get() = Vec2i(0, lines * Font.TOTAL_CHAR_HEIGHT)
         set(value) {
             TODO("Can not set the size of an FontSpacer! Use a normal spacer instead!")
         }
