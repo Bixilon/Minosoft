@@ -23,131 +23,142 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.ElementAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.ElementAlignments.Companion.getOffset
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.util.MMath.ceil
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
 import glm_.vec2.Vec2i
 
 object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
 
-    override fun render(initialOffset: Vec2i, offset: Vec2i, size: Vec2i, z: Int, element: Element, fontAlignment: ElementAlignments, renderWindow: RenderWindow, consumer: GUIVertexConsumer?, renderInfo: TextRenderInfo, text: TextComponent) {
+    override fun render(initialOffset: Vec2i, offset: Vec2i, size: Vec2i, z: Int, element: Element, fontAlignment: ElementAlignments, renderWindow: RenderWindow, consumer: GUIVertexConsumer?, renderInfo: TextRenderInfo, text: TextComponent): Boolean {
         val elementMaxSize = element.maxSize
         // ToDo: Only 1 quad for the underline and the strikethrough
-        var first = true
 
-        var currentLineInfo = renderInfo.lines.getOrElse(renderInfo.currentLine) {
-            val lineInfo = TextLineInfo()
-
-            renderInfo.lines += lineInfo
-            lineInfo
+        var alignmentXOffset = 0
+        if (size.x >= elementMaxSize.x || size.y >= elementMaxSize.y) {
+            // The size is already bigger/equals the maximum size
+            return true
         }
 
-        fun pushLine() {
-            renderInfo.currentLine++
-            currentLineInfo = TextLineInfo()
-            renderInfo.lines += currentLineInfo
-        }
-
-        fun updateOffset() {
-            val renderInfo = renderInfo
-            offset.x = initialOffset.x
-            if (consumer != null) {
-                // set offset of the next line to match the expected alignment
-                offset.x += fontAlignment.getOffset(element.size.x, renderInfo.lines[renderInfo.currentLine].width)
-            }
-        }
-
-        /**
-         * @return If the text can't fit into the layout anymore
-         */
-        fun wrap(): Boolean {
-            val yAdd = Font.CHAR_HEIGHT + Font.VERTICAL_SPACING
-            if (size.y + yAdd > elementMaxSize.y) {
+        fun addY(height: Int): Boolean {
+            val nextY = offset.y + height
+            val nextSizeY = nextY - initialOffset.y + Font.CHAR_HEIGHT // add initial height for chars
+            if (nextSizeY >= elementMaxSize.y) {
                 return true
             }
-            if (consumer == null) {
-                pushLine()
-            } else {
-                renderInfo.currentLine++
+            offset.y = nextY
+            if (nextSizeY > size.y) {
+                size.y = nextSizeY
             }
-            updateOffset()
-
-            offset.y += yAdd
-            size.y += yAdd
-
             return false
         }
 
-        /**
-         * @return If the text can't fit into the layout anymore
-         */
-        fun add(x: Int): Boolean {
-            if (offset.x - initialOffset.x + x > elementMaxSize.x) {
+        fun wrap(): Boolean {
+            if (addY(Font.CHAR_HEIGHT + Font.VERTICAL_SPACING)) {
+                return true
+            }
+            renderInfo.currentLine++
+            offset.x = initialOffset.x
+            if (consumer == null) {
+                // preparing phase
+                renderInfo.lines += TextLineInfo()
+            } else {
+                if (renderInfo.currentLine >= renderInfo.lines.size) {
+                    Log.log(LogMessageType.OTHER, LogLevels.FATAL) { "Crash because of $text (size=$size, maxSize=$elementMaxSize)" }
+                }
+                alignmentXOffset = fontAlignment.getOffset(element.size.x, renderInfo.lines[renderInfo.currentLine].width)
+            }
+            return false
+        }
+
+        fun addX(width: Int, wrap: Boolean = true): Boolean {
+            val nextX = offset.x + width
+            val nextSizeX = nextX + alignmentXOffset - initialOffset.x
+            if (nextSizeX > elementMaxSize.x) {
+                if (!wrap) {
+                    return true
+                }
                 if (wrap()) {
                     return true
                 }
-            } else {
-                offset.x += x
-                if (consumer == null) {
-                    currentLineInfo.width += x
-                }
+                return addX(width, false)
             }
-
-            if (size.x < offset.x - initialOffset.x) {
-                size.x += x
+            if (consumer == null) {
+                renderInfo.lines[renderInfo.currentLine].width += width
             }
-
+            offset.x = nextX
+            if (nextSizeX > size.x) {
+                size.x = nextSizeX
+            }
             return false
         }
 
 
-        if (offset.x == initialOffset.x) {
-            updateOffset()
+        if (size.y == 0) {
+            // Add initial height of the letter for the first line
+            val nextSizeY = Font.CHAR_HEIGHT
+            if (nextSizeY > elementMaxSize.y) {
+                return true
+            }
+            if (consumer != null) {
+                alignmentXOffset = fontAlignment.getOffset(element.size.x, renderInfo.lines[renderInfo.currentLine].width)
+            } else {
+                renderInfo.lines += TextLineInfo() // add line 0
+            }
+            size.y = nextSizeY
         }
 
-        for (char in text.message.toCharArray()) {
+
+        for (charCode in text.message.codePoints().toArray()) {
+            val char = charCode.toChar()
             if (char == '\n') {
                 if (wrap()) {
-                    return
+                    return true
                 }
                 continue
             }
 
-            // skip wrapped spaces
+            // skip spaces that are wrapped (because of a line break)
             if (offset.y != initialOffset.y && offset.x == initialOffset.x && char == ' ') {
                 continue
             }
 
             val charData = renderWindow.font[char] ?: continue
 
-            if (first) {
-                first = false
+            val charWidth = charData.calculateWidth(text)
+            var width = charWidth
 
-                // Add initial size
-                if (size.y == 0) {
-                    size.y = Font.CHAR_HEIGHT + Font.VERTICAL_SPACING
-                }
-            } else if (offset.x != initialOffset.x && add(Font.HORIZONTAL_SPACING)) { // ToDo: Only add space when char fits
-                return
+            if (offset.x != initialOffset.x) {
+                // add spacing between letters
+                width += Font.HORIZONTAL_SPACING
+            }
+            val previousY = offset.y
+
+            if (addX(width)) {
+                return true
             }
 
-            val width = charData.calculateWidth(text)
+            val letterOffset = Vec2i(offset.x + alignmentXOffset, offset.y)
 
-            if (offset.x == initialOffset.x && offset.x - initialOffset.x + width > element.maxSize.x) {
-                return
+            // remove width from the offset again
+            letterOffset.x -= charWidth
+
+            if (previousY != offset.y) {
+                // line was wrapped, we want to begin at the offset without the spacing
+                // ToDo: Remove Font.HORIZONTAL_SPACING
             }
-            consumer?.let { charData.render(offset, z, text, it) }
 
-            if (consumer != null) {
+            consumer?.let { charData.render(letterOffset, z, text, it) }
+
+            if (consumer == null) {
                 renderInfo.lines[renderInfo.currentLine].chars += char
-            }
-
-            if (add(width)) {
-                return
             }
         }
 
         if (text.formatting.contains(PreChatFormattingCodes.ITALIC)) {
             val italicOffset = CharData.ITALIC_OFFSET.ceil
-            offset.x += italicOffset
-            size.x += italicOffset
+            addX(italicOffset) // ToDo: Should this be forced?
         }
+        return false
     }
 }

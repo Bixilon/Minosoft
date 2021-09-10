@@ -17,6 +17,7 @@ import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.block.WorldRenderer
+import de.bixilon.minosoft.gui.rendering.font.Font
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.ElementAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.layout.RowLayout
@@ -33,6 +34,7 @@ import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.KUtil.format
 import de.bixilon.minosoft.util.MMath.round10
 import glm_.vec2.Vec2i
+import glm_.vec4.Vec4i
 
 class DebugHUD(val hudRenderer: HUDRenderer) : HUD<GridLayout> {
     override val renderWindow: RenderWindow = hudRenderer.renderWindow
@@ -55,8 +57,8 @@ class DebugHUD(val hudRenderer: HUDRenderer) : HUD<GridLayout> {
     }
 
     private fun initLeft(): Element {
-        val layout = RowLayout(hudRenderer)
-        // ToDo: layout.margin = Vec4i(5)
+        val layout = RowLayout(hudRenderer, spacing = Font.VERTICAL_SPACING)
+        layout.margin = Vec4i(5)
         layout += TextElement(hudRenderer, TextComponent(RunConfiguration.VERSION_STRING, ChatColors.RED))
         layout += AutoTextElement(hudRenderer, 1) { "FPS ${renderWindow.renderStats.smoothAvgFPS.round10}" }
         renderWindow[WorldRenderer]?.apply {
@@ -80,9 +82,9 @@ class DebugHUD(val hudRenderer: HUDRenderer) : HUD<GridLayout> {
     }
 
     private fun initRight(): Element {
-        val layout = RowLayout(hudRenderer, ElementAlignments.RIGHT)
-        // ToDo: layout.margin = Vec4i(5)
-        layout += TextElement(hudRenderer, "Java\n${Runtime.version()} ${System.getProperty("sun.arch.data.model")}bit", ElementAlignments.RIGHT) // ToDo: Remove \n
+        val layout = RowLayout(hudRenderer, ElementAlignments.RIGHT, Font.VERTICAL_SPACING)
+        layout.margin = Vec4i(5)
+        layout += TextElement(hudRenderer, "Java ${Runtime.version()} ${System.getProperty("sun.arch.data.model")}bit", ElementAlignments.RIGHT)
 
         layout += LineSpacerElement(hudRenderer)
 
@@ -92,8 +94,8 @@ class DebugHUD(val hudRenderer: HUDRenderer) : HUD<GridLayout> {
             })
         }
         renderWindow.renderSystem.apply {
-            layout += TextElement(hudRenderer, "GPU $vendorString")
-            layout += TextElement(hudRenderer, "Version $version")
+            layout += TextElement(hudRenderer, "GPU $vendorString", ElementAlignments.RIGHT)
+            layout += TextElement(hudRenderer, "Version $version", ElementAlignments.RIGHT)
         }
         return layout
     }

@@ -24,6 +24,7 @@ class GridCell(
     private val columnConstraint: GridColumnConstraint,
     private val rowConstraint: GridRowConstraint,
     private val child: Element,
+    override var parent: Element?,
 ) : Element(hudRenderer) {
     override var prepared: Boolean by child::prepared
     override var size: Vec2i by child::size

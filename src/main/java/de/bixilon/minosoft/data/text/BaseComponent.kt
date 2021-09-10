@@ -42,7 +42,7 @@ class BaseComponent : ChatComponent {
     constructor(parent: TextComponent? = null, legacy: String = "", restrictedMode: Boolean = false) {
         val currentText = StringBuilder()
         var currentColor = parent?.color
-        val currentFormatting: MutableSet<ChatFormattingCode> = parent?.formatting?.toMutableSet() ?: mutableSetOf()
+        var currentFormatting: MutableSet<ChatFormattingCode> = parent?.formatting?.toMutableSet() ?: TextComponent.DEFAULT_FORMATTING.toMutableSet()
 
         val iterator = StringCharacterIterator(legacy)
 
@@ -95,7 +95,7 @@ class BaseComponent : ChatComponent {
                 }
             }
             push(null)
-            currentFormatting.clear()
+            currentFormatting = TextComponent.DEFAULT_FORMATTING.toMutableSet()
             currentColor = null
             currentText.clear()
         }
@@ -146,7 +146,7 @@ class BaseComponent : ChatComponent {
 
         val color = json["color"]?.nullCast<String>()?.toColor() ?: parent?.color
 
-        val formatting = parent?.formatting?.toMutableSet() ?: mutableSetOf()
+        val formatting = parent?.formatting?.toMutableSet() ?: TextComponent.DEFAULT_FORMATTING.toMutableSet()
 
         formatting.addOrRemove(PreChatFormattingCodes.BOLD, json["bold"]?.toBoolean())
         formatting.addOrRemove(PreChatFormattingCodes.ITALIC, json["italic"]?.toBoolean())

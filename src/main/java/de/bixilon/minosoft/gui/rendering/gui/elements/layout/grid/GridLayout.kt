@@ -36,12 +36,7 @@ class GridLayout(hudRenderer: HUDRenderer, val grid: Vec2i) : Layout(hudRenderer
     fun add(position: Vec2i, element: Element) {
         children[position.x][position.y]?.parent = null
 
-        val cell = GridCell(hudRenderer, columnConstraints[position.x], rowConstraints[position.y], element)
-        cell.parent = this
-
-        // Apply new maxSize
-        element.apply()
-        element.onParentChange()
+        val cell = GridCell(hudRenderer, columnConstraints[position.x], rowConstraints[position.y], element, this)
 
         children[position.x][position.y] = cell
 
@@ -110,6 +105,9 @@ class GridLayout(hudRenderer: HUDRenderer, val grid: Vec2i) : Layout(hudRenderer
             }
         }
 
+
+        size = Vec2i(width.sum(), 0)
+
         // apply the size changes to all children
         applyOnlyChildren()
 
@@ -123,8 +121,6 @@ class GridLayout(hudRenderer: HUDRenderer, val grid: Vec2i) : Layout(hudRenderer
             columnStart[x] = offset + previousWidth
         }
         this.columnStart = columnStart
-
-        size = Vec2i(width.sum(), 0)
     }
 
     override fun apply() {
@@ -138,7 +134,7 @@ class GridLayout(hudRenderer: HUDRenderer, val grid: Vec2i) : Layout(hudRenderer
         for (x in 0 until grid.x) {
             for (y in 0 until grid.y) {
                 val child = children[x][y] ?: continue
-                val childZ = child.render(offset + margin.offset + Vec2i(columnStart[x], rowStart[y]) + columnConstraints[x].alignment.getOffset(columnConstraints[x].width, child.size.x), z, consumer)
+                val childZ = child.render(offset + margin.offset + Vec2i(columnStart[x] + columnConstraints[x].alignment.getOffset(columnConstraints[x].width, child.size.x), rowStart[y]), z, consumer)
                 if (childZ > maxZ) {
                     maxZ = childZ
                 }

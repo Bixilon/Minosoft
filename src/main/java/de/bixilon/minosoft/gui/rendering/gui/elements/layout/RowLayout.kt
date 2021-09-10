@@ -35,6 +35,7 @@ import java.lang.Integer.max
 class RowLayout(
     hudRenderer: HUDRenderer,
     override var childAlignment: ElementAlignments = ElementAlignments.LEFT,
+    spacing: Int = 0,
 ) : Layout(hudRenderer), ChildAlignable {
     private var _prefSize = Vec2i.EMPTY
 
@@ -44,6 +45,12 @@ class RowLayout(
     override var prefSize: Vec2i
         get() = _prefSize
         set(value) {}
+
+    var spacing: Int = spacing
+        set(value) {
+            field = value
+            apply()
+        }
 
     fun clear() {
         children.clear()
@@ -55,13 +62,14 @@ class RowLayout(
         var childYOffset = margin.top
         var maxZ = 0
         for (child in children) {
-            val childZ = child.render(Vec2i(offset.x + margin.left + childAlignment.getOffset(size.x, child.size.x), offset.y + childYOffset), z, consumer)
+            val childZ = child.render(Vec2i(offset.x + margin.left + childAlignment.getOffset(size.x - margin.horizontal, child.size.x), offset.y + childYOffset), z, consumer)
             if (maxZ < childZ) {
                 maxZ = childZ
             }
             childYOffset += child.margin.top
             childYOffset += child.size.y
             childYOffset += child.margin.bottom
+            childYOffset += spacing
         }
 
         return maxZ
@@ -123,6 +131,9 @@ class RowLayout(
                 size.x = xSize
             }
             if (addY(child.margin.bottom)) {
+                break
+            }
+            if (addY(spacing)) { // ToDo: Only add of not the last element
                 break
             }
         }

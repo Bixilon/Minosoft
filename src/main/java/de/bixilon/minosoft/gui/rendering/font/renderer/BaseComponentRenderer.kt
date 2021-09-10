@@ -22,9 +22,12 @@ import glm_.vec2.Vec2i
 
 object BaseComponentRenderer : ChatComponentRenderer<BaseComponent> {
 
-    override fun render(initialOffset: Vec2i, offset: Vec2i, size: Vec2i, z: Int, element: Element, fontAlignment: ElementAlignments, renderWindow: RenderWindow, consumer: GUIVertexConsumer?, renderInfo: TextRenderInfo, text: BaseComponent) {
+    override fun render(initialOffset: Vec2i, offset: Vec2i, size: Vec2i, z: Int, element: Element, fontAlignment: ElementAlignments, renderWindow: RenderWindow, consumer: GUIVertexConsumer?, renderInfo: TextRenderInfo, text: BaseComponent): Boolean {
         for (part in text.parts) {
-            ChatComponentRenderer.render(initialOffset, offset, size, z, element, fontAlignment, renderWindow, consumer, renderInfo, part)
+            if (ChatComponentRenderer.render(initialOffset, offset, size, z, element, fontAlignment, renderWindow, consumer, renderInfo, part)) {
+                return true
+            }
         }
+        return false
     }
 }

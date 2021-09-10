@@ -32,7 +32,7 @@ import javafx.util.Duration
 open class TextComponent(
     message: Any? = "",
     override var color: RGBColor? = null,
-    override val formatting: MutableSet<ChatFormattingCode> = mutableSetOf(),
+    override val formatting: MutableSet<ChatFormattingCode> = DEFAULT_FORMATTING.toMutableSet(),
     var clickEvent: ClickEvent? = null,
     var hoverEvent: HoverEvent? = null,
 ) : ChatComponent, TextStyle {
@@ -190,5 +190,9 @@ open class TextComponent(
             }
         }
         return nodes
+    }
+
+    companion object {
+        val DEFAULT_FORMATTING: Set<ChatFormattingCode> = setOf(PreChatFormattingCodes.SHADOWED)
     }
 }

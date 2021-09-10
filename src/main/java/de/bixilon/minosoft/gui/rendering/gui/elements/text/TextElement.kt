@@ -30,6 +30,7 @@ open class TextElement(
     text: Any,
     override var fontAlignment: ElementAlignments = ElementAlignments.LEFT,
 ) : LabeledElement(hudRenderer) {
+    private var preparedSize = Vec2i.EMPTY
     private var renderInfo = TextRenderInfo()
 
     override var text: Any = text
@@ -42,6 +43,9 @@ open class TextElement(
     final override var textComponent: ChatComponent = ChatComponent.of("")
         protected set(value) {
             field = value
+            val prefSize = Vec2i.EMPTY
+            ChatComponentRenderer.render(Vec2i.EMPTY, Vec2i.EMPTY, prefSize, 0, InfiniteSizeElement(hudRenderer), fontAlignment, renderWindow, null, TextRenderInfo(), value)
+            this.prefSize = prefSize
             apply()
         }
 
@@ -52,20 +56,16 @@ open class TextElement(
     }
 
     override fun silentApply() {
-        val text = textComponent
         size = Vec2i.EMPTY
-        if (text.message.isNotEmpty()) {
+        if (textComponent.message.isNotEmpty()) {
             val size = Vec2i.EMPTY
             val renderInfo = TextRenderInfo()
-            ChatComponentRenderer.render(Vec2i.EMPTY, Vec2i.EMPTY, size, 0, this, fontAlignment, renderWindow, null, renderInfo, text)
-            val prefSize = Vec2i.EMPTY
-            ChatComponentRenderer.render(Vec2i.EMPTY, Vec2i.EMPTY, prefSize, 0, InfiniteSizeElement(hudRenderer), fontAlignment, renderWindow, null, TextRenderInfo(), text)
-            this.prefSize = prefSize
+            ChatComponentRenderer.render(Vec2i.EMPTY, Vec2i.EMPTY, size, 0, this, fontAlignment, renderWindow, null, renderInfo, textComponent)
 
-            // ToDo: Set prefSize
             renderInfo.currentLine = 0
             this.renderInfo = renderInfo
             this.size = size
+            preparedSize = size
         }
     }
 
@@ -77,13 +77,13 @@ open class TextElement(
     override fun onChildChange(child: Element?) = error("A TextElement can not have a child!")
 
     override fun onParentChange() {
-        val size = Vec2i(size)
         val maxSize = maxSize
+        val prefSize = prefSize
 
-        if (size.x > maxSize.x) {
+        if (preparedSize.x < prefSize.x || preparedSize.x > maxSize.x) {
             return silentApply()
         }
-        if (size.y > maxSize.y) {
+        if (preparedSize.y < prefSize.y || preparedSize.y > maxSize.y) {
             return silentApply()
         }
     }

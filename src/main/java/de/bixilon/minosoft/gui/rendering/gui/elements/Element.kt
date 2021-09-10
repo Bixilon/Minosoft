@@ -25,6 +25,10 @@ import glm_.vec4.Vec4i
 abstract class Element(val hudRenderer: HUDRenderer) {
     val renderWindow = hudRenderer.renderWindow
     open var parent: Element? = null
+        set(value) {
+            field = value
+            onParentChange()
+        }
     open var prepared: Boolean = false
 
     /**
