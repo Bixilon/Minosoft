@@ -49,6 +49,7 @@ import de.bixilon.minosoft.util.CountUpAndDownLatch
 import de.bixilon.minosoft.util.KUtil.decide
 import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import de.bixilon.minosoft.util.KUtil.unsafeCast
 import de.bixilon.minosoft.util.MMath.round10
 import de.bixilon.minosoft.util.Queue
 import de.bixilon.minosoft.util.Stopwatch
@@ -219,7 +220,7 @@ class RenderWindow(
     }
 
     private fun registerGlobalKeyCombinations() {
-        inputHandler.registerKeyCallback("minosoft:debug_polygon".toResourceLocation(), KeyBinding(
+        inputHandler.registerKeyCallback("minosoft:enable_debug_polygon".toResourceLocation(), KeyBinding(
             mutableMapOf(
                 KeyAction.MODIFIER to mutableSetOf(KeyCodes.KEY_F4),
                 KeyAction.STICKY to mutableSetOf(KeyCodes.KEY_P),
@@ -361,6 +362,6 @@ class RenderWindow(
     }
 
     operator fun <T : Renderer> get(renderer: RendererBuilder<T>): T? {
-        return rendererMap[renderer.RESOURCE_LOCATION] as T?
+        return rendererMap[renderer.RESOURCE_LOCATION].unsafeCast()
     }
 }

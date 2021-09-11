@@ -13,24 +13,16 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud.hud
 
-import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.gui.elements.layout.Layout
-import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
-import glm_.vec2.Vec2i
+import de.bixilon.minosoft.config.key.KeyBinding
+import de.bixilon.minosoft.data.registries.CompanionResourceLocation
+import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 
-interface HUD<T : Layout> {
-    val renderWindow: RenderWindow
-
-    val layout: T?
+interface HUDBuilder<T : HUDElement<*>> : CompanionResourceLocation {
+    val ENABLE_KEY_BINDING_NAME: ResourceLocation?
+        get() = null
+    val ENABLE_KEY_BINDING: KeyBinding?
         get() = null
 
-    fun init() {}
-
-    fun postInit() {}
-
-    fun draw(offset: Vec2i, z: Int, consumer: GUIVertexConsumer) {}
-
-    fun tick() {
-        layout?.tick()
-    }
+    fun build(hudRenderer: HUDRenderer): T
 }

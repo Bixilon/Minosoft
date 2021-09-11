@@ -14,20 +14,28 @@
 package de.bixilon.minosoft.gui.rendering.gui.hud
 
 import de.bixilon.minosoft.Minosoft
+import de.bixilon.minosoft.config.key.KeyAction
+import de.bixilon.minosoft.config.key.KeyBinding
+import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.Renderer
 import de.bixilon.minosoft.gui.rendering.RendererBuilder
-import de.bixilon.minosoft.gui.rendering.gui.hud.hud.DebugHUD
-import de.bixilon.minosoft.gui.rendering.gui.hud.hud.HUD
+import de.bixilon.minosoft.gui.rendering.gui.hud.hud.DebugHUDElement
+import de.bixilon.minosoft.gui.rendering.gui.hud.hud.HUDBuilder
+import de.bixilon.minosoft.gui.rendering.gui.hud.hud.HUDElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMesh
 import de.bixilon.minosoft.gui.rendering.modding.events.ResizeWindowEvent
 import de.bixilon.minosoft.gui.rendering.util.vec.Vec2Util.EMPTY
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import de.bixilon.minosoft.util.KUtil.synchronizedListOf
+import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import de.bixilon.minosoft.util.KUtil.toSynchronizedMap
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
 import glm_.glm
 import glm_.mat4x4.Mat4
 import glm_.vec2.Vec2
@@ -41,25 +49,50 @@ class HUDRenderer(
     private lateinit var mesh: GUIMesh
     var scaledSize: Vec2i = renderWindow.window.size
     private var matrix: Mat4 = Mat4()
+    private var enabled = true
 
-    val hud: MutableList<HUD<*>> = synchronizedListOf(
-        DebugHUD(this),
-    )
+    private val hudElements: MutableMap<ResourceLocation, HUDElement<*>> = synchronizedMapOf()
 
     private var lastTickTime = 0L
+
+    fun registerElement(hudBuilder: HUDBuilder<*>) {
+        val hudElement = hudBuilder.build(this)
+        hudElements[hudBuilder.RESOURCE_LOCATION] = hudElement
+
+        val toggleKeyBinding = hudBuilder.ENABLE_KEY_BINDING ?: return
+        val toggleKeyBindingName = hudBuilder.ENABLE_KEY_BINDING_NAME ?: return
+
+        // ToDo: Default disabled elements like the debug screen?
+
+        renderWindow.inputHandler.registerKeyCallback(toggleKeyBindingName, toggleKeyBinding) { hudElement.enabled = it }
+    }
+
+    private fun registerDefaultElements() {
+        registerElement(DebugHUDElement)
+    }
 
     override fun init() {
         connection.registerEvent(CallbackEventInvoker.of<ResizeWindowEvent> {
             scaledSize = Vec2i(Vec2(it.size) / Minosoft.config.config.game.hud.scale)
             matrix = glm.ortho(0.0f, scaledSize.x.toFloat(), scaledSize.y.toFloat(), 0.0f)
 
-            for (hud in hud) {
-                hud.layout?.onParentChange()
+            for (element in hudElements.toSynchronizedMap().values) {
+                element.layout?.onParentChange()
             }
         })
+        registerDefaultElements()
 
-        for (hud in this.hud) {
-            hud.init()
+        for (element in this.hudElements.toSynchronizedMap().values) {
+            element.init()
+        }
+
+        renderWindow.inputHandler.registerKeyCallback("minosoft:enable_hud".toResourceLocation(), KeyBinding(
+            mutableMapOf(
+                KeyAction.STICKY_INVERTED to mutableSetOf(KeyCodes.KEY_F1),
+            ),
+        )) {
+            Log.log(LogMessageType.OTHER, LogLevels.INFO) { "Toggled hud: $it" }
+            enabled = it
         }
     }
 
@@ -67,23 +100,30 @@ class HUDRenderer(
         shader.load()
         renderWindow.textureManager.staticTextures.use(shader)
 
-        for (hud in this.hud) {
-            hud.postInit()
+        for (element in this.hudElements.toSynchronizedMap().values) {
+            element.postInit()
         }
     }
 
     override fun draw() {
+        if (!enabled) {
+            return
+        }
         renderWindow.renderSystem.reset()
         if (this::mesh.isInitialized) {
             mesh.unload()
         }
 
         mesh = GUIMesh(renderWindow, matrix)
+        val hudElements = hudElements.toSynchronizedMap().values
 
         val time = System.currentTimeMillis()
         if (time - lastTickTime > ProtocolDefinition.TICK_TIME) {
-            for (hud in this.hud) {
-                hud.tick()
+            for (element in hudElements) {
+                if (!element.enabled) {
+                    continue
+                }
+                element.tick()
             }
 
             lastTickTime = time
@@ -91,12 +131,12 @@ class HUDRenderer(
         // ToDo: size > maxSize
 
 
-        for (hud in this.hud) {
-            val z = 0
-            val offset = Vec2i.EMPTY // ToDo: Element positioning
-
-            hud.layout?.render(offset, z, mesh)
-            hud.draw(offset, z, mesh)
+        for (element in hudElements) {
+            if (!element.enabled) {
+                continue
+            }
+            element.layout?.render(element.layoutOffset ?: Vec2i.EMPTY, 0, mesh)
+            element.draw(mesh)
         }
 
         mesh.load()
@@ -107,7 +147,7 @@ class HUDRenderer(
     }
 
     companion object : RendererBuilder<HUDRenderer> {
-        override val RESOURCE_LOCATION = ResourceLocation("minosoft:hud_renderer")
+        override val RESOURCE_LOCATION = "minosoft:hud_renderer".toResourceLocation()
 
         override fun build(connection: PlayConnection, renderWindow: RenderWindow): HUDRenderer {
             return HUDRenderer(connection, renderWindow)

@@ -39,7 +39,7 @@ enum class KeyAction {
     MODIFIER,
 
     /**
-     * Pressing the key makes it sticky, you have to press it again to make it not pressed anymore
+     * Pressing the key makes it sticky, you have to press it again to make it not pressed anymore. Initially not pressed.
      */
     STICKY,
 

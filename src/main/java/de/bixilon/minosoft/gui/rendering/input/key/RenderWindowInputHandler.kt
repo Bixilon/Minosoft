@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.rendering.input.key
 
 import de.bixilon.minosoft.Minosoft
-import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames
 import de.bixilon.minosoft.config.key.KeyAction
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
@@ -32,6 +31,7 @@ import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.decide
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class RenderWindowInputHandler(
     val renderWindow: RenderWindow,
@@ -50,7 +50,7 @@ class RenderWindowInputHandler(
     val leftClickHandler = LeftClickHandler(renderWindow)
 
     init {
-        registerKeyCallback(KeyBindingsNames.DEBUG_MOUSE_CATCH, KeyBinding(
+        registerKeyCallback("minosoft:debug_mouse_catch".toResourceLocation(), KeyBinding(
             mutableMapOf(
                 KeyAction.MODIFIER to mutableSetOf(KeyCodes.KEY_F4),
                 KeyAction.STICKY to mutableSetOf(KeyCodes.KEY_M),
@@ -142,11 +142,7 @@ class RenderWindowInputHandler(
                 checksRun++
             }
 
-            fun checkSticky(keys: MutableSet<KeyCodes>, invert: Boolean) {
-                var alreadyActive = keyBindingsDown.contains(resourceLocation)
-                if (invert) {
-                    alreadyActive = !alreadyActive
-                }
+            fun checkSticky(keys: MutableSet<KeyCodes>) {
                 checksRun++
                 if (!keys.contains(keyCode)) {
                     thisIsChange = false
@@ -156,15 +152,15 @@ class RenderWindowInputHandler(
                     thisIsChange = false
                     return
                 }
-                thisKeyBindingDown = !alreadyActive
+                thisKeyBindingDown = !keyBindingsDown.contains(resourceLocation)
             }
 
             pair.keyBinding.action[KeyAction.STICKY]?.let {
-                checkSticky(it, false)
+                checkSticky(it)
             }
 
             pair.keyBinding.action[KeyAction.STICKY_INVERTED]?.let {
-                checkSticky(it, true)
+                checkSticky(it)
             }
 
             pair.keyBinding.action[KeyAction.DOUBLE_PRESS]?.let {
@@ -238,6 +234,13 @@ class RenderWindowInputHandler(
                 //}
                 callback(it)
             }
+        }
+        // Instant fire
+        if (keyBinding.action.containsKey(KeyAction.STICKY)) {
+            callback(false)
+        } else if (keyBinding.action.containsKey(KeyAction.STICKY_INVERTED)) {
+            keyBindingsDown += resourceLocation
+            callback(true)
         }
     }
 
