@@ -38,6 +38,7 @@ class Font(
         const val CHAR_MARGIN = 1 // used for background
         const val TOTAL_CHAR_HEIGHT = CHAR_HEIGHT + 2 * CHAR_MARGIN // top and bottom
         const val HORIZONTAL_SPACING = 1
+        const val HORIZONTAL_SPACING_SHADOW = 0
         const val VERTICAL_SPACING = 3
     }
 }

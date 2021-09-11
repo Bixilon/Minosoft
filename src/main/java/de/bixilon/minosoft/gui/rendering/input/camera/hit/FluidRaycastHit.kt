@@ -15,8 +15,10 @@ package de.bixilon.minosoft.gui.rendering.input.camera.hit
 
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.BlockState
-import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.fluid.Fluid
+import de.bixilon.minosoft.data.text.BaseComponent
+import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.data.text.TextFormattable
 import glm_.vec3.Vec3d
 import glm_.vec3.Vec3i
 
@@ -27,9 +29,27 @@ class FluidRaycastHit(
     val blockState: BlockState,
     val blockPosition: Vec3i,
     val fluid: Fluid,
-) : RaycastHit(position, distance, hitDirection) {
+) : RaycastHit(position, distance, hitDirection), TextFormattable {
 
     override fun toString(): String {
-        return "$blockPosition: ${fluid.resourceLocation}\n Height: ${fluid.getHeight(blockState)}\n Level: ${blockState.properties[BlockProperties.FLUID_LEVEL]}"
+        return toText().legacyText
+    }
+
+    override fun toText(): ChatComponent {
+        val text = BaseComponent()
+
+        text += "Fluid target "
+        text += blockPosition
+        text += ": "
+        text += fluid.resourceLocation
+
+        for ((property, value) in blockState.properties) {
+            text += "\n"
+            text += property
+            text += ": "
+            text += value
+        }
+
+        return text
     }
 }

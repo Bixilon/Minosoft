@@ -15,7 +15,9 @@ package de.bixilon.minosoft.gui.rendering.input.camera.hit
 
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.BlockState
-import de.bixilon.minosoft.util.KUtil.format
+import de.bixilon.minosoft.data.text.BaseComponent
+import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.data.text.TextFormattable
 import glm_.vec3.Vec3d
 import glm_.vec3.Vec3i
 
@@ -25,23 +27,29 @@ open class BlockRaycastHit(
     hitDirection: Directions,
     val blockState: BlockState,
     val blockPosition: Vec3i,
-) : RaycastHit(position, distance, hitDirection) {
+) : RaycastHit(position, distance, hitDirection), TextFormattable {
     val hitPosition = position - blockPosition
 
     override fun toString(): String {
-        val ret = StringBuilder()
-        ret.append(blockPosition)
-        ret.append(": ")
-        ret.append(blockState.block.resourceLocation)
+        return toText().legacyText
+    }
 
-        for ((key, value) in blockState.properties) {
-            ret.append('\n')
-            ret.append(' ')
-            ret.append(key.group)
-            ret.append(": ")
-            ret.append(value.format())
+    override fun toText(): ChatComponent {
+        val text = BaseComponent()
+
+        text += "Block target "
+        text += blockPosition
+        text += ": "
+        text += blockState.block.resourceLocation
+
+        for ((property, value) in blockState.properties) {
+            text += "\n"
+            text += property
+            text += ": "
+            text += value
         }
 
-        return ret.toString()
+        return text
     }
+
 }

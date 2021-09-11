@@ -46,11 +46,16 @@ open class TextElement(
             prepared = false
         }
 
+    private var emptyMessage: Boolean = true
+
     final override var textComponent: ChatComponent = ChatComponent.of("")
         protected set(value) {
             field = value
+            emptyMessage = value.message.isEmpty()
             val prefSize = Vec2i.EMPTY
-            ChatComponentRenderer.render(Vec2i.EMPTY, Vec2i.EMPTY, prefSize, 0, InfiniteSizeElement(hudRenderer), fontAlignment, renderWindow, null, TextRenderInfo(), value)
+            if (!emptyMessage) {
+                ChatComponentRenderer.render(Vec2i.EMPTY, Vec2i.EMPTY, prefSize, 0, InfiniteSizeElement(hudRenderer), fontAlignment, renderWindow, null, TextRenderInfo(), value)
+            }
             this.prefSize = prefSize
             apply()
         }
@@ -62,17 +67,16 @@ open class TextElement(
     }
 
     override fun silentApply() {
-        size = Vec2i.EMPTY
-        if (textComponent.message.isNotEmpty()) {
-            val size = Vec2i.EMPTY
+        val size = Vec2i.EMPTY
+        if (!emptyMessage) {
             val renderInfo = TextRenderInfo()
             ChatComponentRenderer.render(Vec2i.EMPTY, Vec2i.EMPTY, size, 0, this, fontAlignment, renderWindow, null, renderInfo, textComponent)
-
-            renderInfo.currentLine = 0
+            renderInfo.currentLineNumber = 0
             this.renderInfo = renderInfo
-            this.size = size
-            preparedSize = size
         }
+
+        this.size = size
+        preparedSize = size
     }
 
     override fun apply() {
@@ -96,10 +100,13 @@ open class TextElement(
 
 
     override fun render(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int {
+        if (emptyMessage) {
+            return 0
+        }
         val initialOffset = offset + margin.offset
 
         ChatComponentRenderer.render(initialOffset, Vec2i(initialOffset), Vec2i.EMPTY, z + 1, this, fontAlignment, renderWindow, consumer, renderInfo, textComponent)
-        renderInfo.currentLine = 0
+        renderInfo.currentLineNumber = 0
         prepared = true
 
         if (background) {

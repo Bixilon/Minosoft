@@ -63,7 +63,7 @@ class DebugHUD(val hudRenderer: HUDRenderer) : HUD<GridLayout> {
 
     private fun initLeft(): Element {
         val layout = RowLayout(hudRenderer)
-        layout.margin = Vec4i(5)
+        layout.margin = Vec4i(2)
         layout += TextElement(hudRenderer, TextComponent(RunConfiguration.VERSION_STRING, ChatColors.RED))
         layout += AutoTextElement(hudRenderer, 1) { "FPS ${renderWindow.renderStats.smoothAvgFPS.round10}" }
         renderWindow[WorldRenderer]?.apply {
@@ -93,7 +93,7 @@ class DebugHUD(val hudRenderer: HUDRenderer) : HUD<GridLayout> {
 
         layout += LineSpacerElement(hudRenderer)
 
-        layout += TextElement(hudRenderer, "Difficulty ${connection.world.difficulty.format()}, ${connection.world.difficultyLocked.decide("locked", "unlocked")}", ElementAlignments.RIGHT).apply {
+        layout += TextElement(hudRenderer, "Difficulty ${connection.world.difficulty.format()}, ${connection.world.difficultyLocked.decide("locked", "unlocked")}").apply {
             connection.registerEvent(CallbackEventInvoker.of<DifficultyChangeEvent> {
                 text = "Difficulty ${it.difficulty.format()}, ${it.locked.decide("locked", "unlocked")}"
             })
@@ -104,7 +104,7 @@ class DebugHUD(val hudRenderer: HUDRenderer) : HUD<GridLayout> {
 
     private fun initRight(): Element {
         val layout = RowLayout(hudRenderer, ElementAlignments.RIGHT)
-        layout.margin = Vec4i(5)
+        layout.margin = Vec4i(2)
         layout += TextElement(hudRenderer, "Java ${Runtime.version()} ${System.getProperty("sun.arch.data.model")}bit", ElementAlignments.RIGHT)
 
         layout += LineSpacerElement(hudRenderer)
@@ -137,6 +137,14 @@ class DebugHUD(val hudRenderer: HUDRenderer) : HUD<GridLayout> {
 
         layout += TextElement(hudRenderer, "Mods ${ModLoader.MOD_MAP.size}x loaded, ${connection.size}x listeners", ElementAlignments.RIGHT)
 
+        layout += LineSpacerElement(hudRenderer)
+
+        renderWindow.inputHandler.camera.apply {
+            layout += AutoTextElement(hudRenderer, 1, ElementAlignments.RIGHT) {
+                // ToDo: Tags
+                target ?: return@AutoTextElement ""
+            }
+        }
         return layout
     }
 }

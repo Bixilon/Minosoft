@@ -69,6 +69,7 @@ class Camera(
     var cameraRight = Vec3d(0.0, 0.0, -1.0)
     private var cameraUp = Vec3d(0.0, 1.0, 0.0)
 
+    // ToDo: They should also be available in headless mode
     var target: RaycastHit? = null
         private set
     var blockTarget: BlockRaycastHit? = null // Block target or if blocked by entity null

@@ -22,19 +22,33 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.ElementAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.ElementAlignments.Companion.getOffset
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
+import de.bixilon.minosoft.util.KUtil.decide
 import de.bixilon.minosoft.util.MMath.ceil
 import glm_.vec2.Vec2i
 
 object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
 
     override fun render(initialOffset: Vec2i, offset: Vec2i, size: Vec2i, z: Int, element: Element, fontAlignment: ElementAlignments, renderWindow: RenderWindow, consumer: GUIVertexConsumer?, renderInfo: TextRenderInfo, text: TextComponent): Boolean {
+        if (text.message.isEmpty()) {
+            return false
+        }
         val elementMaxSize = element.maxSize
+        val shadow = text.formatting.contains(PreChatFormattingCodes.SHADOWED)
         // ToDo: Only 1 quad for the underline and the strikethrough
 
         var alignmentXOffset = 0
-        if (size.x >= elementMaxSize.x || size.y >= elementMaxSize.y) {
+        if (size.x > elementMaxSize.x || size.y > elementMaxSize.y) {
             // The size is already bigger/equals the maximum size
             return true
+        }
+
+        fun applyOffset() {
+            if (consumer == null) {
+                // preparing phase
+                renderInfo.lines += TextLineInfo()
+            } else {
+                alignmentXOffset = fontAlignment.getOffset(element.size.x, renderInfo.currentLine.width)
+            }
         }
 
         fun addY(height: Int): Boolean {
@@ -54,14 +68,9 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
             if (addY(Font.TOTAL_CHAR_HEIGHT)) {
                 return true
             }
-            renderInfo.currentLine++
+            renderInfo.currentLineNumber++
             offset.x = initialOffset.x + Font.CHAR_MARGIN
-            if (consumer == null) {
-                // preparing phase
-                renderInfo.lines += TextLineInfo()
-            } else {
-                alignmentXOffset = fontAlignment.getOffset(element.size.x, renderInfo.lines[renderInfo.currentLine].width)
-            }
+            applyOffset()
             return false
         }
 
@@ -78,7 +87,7 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
                 return addX(width, false)
             }
             if (consumer == null) {
-                renderInfo.lines[renderInfo.currentLine].width += width
+                renderInfo.currentLine.width += width
             }
             offset.x = nextX
             if (nextSizeX > size.x) {
@@ -94,15 +103,11 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
             if (nextSizeY > elementMaxSize.y) {
                 return true
             }
-            if (consumer != null) {
-                alignmentXOffset = fontAlignment.getOffset(element.size.x, renderInfo.lines[renderInfo.currentLine].width)
-            } else {
-                renderInfo.lines += TextLineInfo() // add line 0
-            }
             size.y = nextSizeY
             size.x += Font.CHAR_MARGIN * 2
             offset += Font.CHAR_MARGIN
         }
+        applyOffset()
 
 
         for (charCode in text.message.codePoints().toArray()) {
@@ -126,7 +131,7 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
 
             if (offset.x != initialOffset.x + Font.CHAR_MARGIN) {
                 // add spacing between letters
-                width += Font.HORIZONTAL_SPACING
+                width += shadow.decide(Font.HORIZONTAL_SPACING_SHADOW, Font.HORIZONTAL_SPACING)
             }
             val previousY = offset.y
 
@@ -147,7 +152,7 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
             consumer?.let { charData.render(letterOffset, z, text, it) }
 
             if (consumer == null) {
-                renderInfo.lines[renderInfo.currentLine].chars += char
+                renderInfo.currentLine.chars += char
             }
         }
 

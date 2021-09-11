@@ -34,20 +34,25 @@ class EntityRaycastHit(
     override fun toText(): ChatComponent {
         val text = BaseComponent()
 
+        text += "Entity target "
         text += position
-        text += (": ")
+        text += ": "
         text += entity.entityType.resourceLocation
 
-        text += "\n Id: "
-        text += entity.id
-
-        text += "\n UUID: "
-        text += entity.uuid
         text += "\n"
+        text += "Id: ${entity.id}"
+        text += "\n"
+        text += "UUID: ${entity.uuid}"
 
-        for ((key, value) in entity.entityMetaDataFormatted) {
-            text += "\n "
-            text += key
+
+        val metaData = entity.entityMetaDataFormatted
+        if (metaData.isNotEmpty()) {
+            text += "\n"
+        }
+
+        for ((property, value) in metaData) {
+            text += "\n"
+            text += property
             text += ": "
             text += value
         }

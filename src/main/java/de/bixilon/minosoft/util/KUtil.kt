@@ -29,6 +29,7 @@ import de.bixilon.minosoft.util.enum.AliasableEnum
 import de.bixilon.minosoft.util.json.JSONSerializer
 import glm_.vec2.Vec2t
 import glm_.vec3.Vec3t
+import glm_.vec4.Vec4t
 import okio.Buffer
 import sun.misc.Unsafe
 import java.io.PrintWriter
@@ -255,6 +256,8 @@ object KUtil {
             is Float -> "§d%.3f".format(this)
             is Double -> "§d%.4f".format(this)
             is Number -> TextComponent(this).color(ChatColors.LIGHT_PURPLE)
+            is ResourceLocation -> TextComponent(this.toString()).color(ChatColors.GOLD)
+            is Vec4t<*> -> "(${this.x.format()} ${this.y.format()} ${this.z.format()} ${this.w.format()})"
             is Vec3t<*> -> "(${this.x.format()} ${this.y.format()} ${this.z.format()})"
             is Vec2t<*> -> "(${this.x.format()} ${this.y.format()})"
             else -> this.toString()

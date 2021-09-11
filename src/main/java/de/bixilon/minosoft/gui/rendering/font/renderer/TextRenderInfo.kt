@@ -15,5 +15,8 @@ package de.bixilon.minosoft.gui.rendering.font.renderer
 
 class TextRenderInfo(
     val lines: MutableList<TextLineInfo> = mutableListOf(),
-    var currentLine: Int = 0,
-)
+    var currentLineNumber: Int = 0,
+) {
+    val currentLine: TextLineInfo
+        get() = lines[currentLineNumber]
+}
