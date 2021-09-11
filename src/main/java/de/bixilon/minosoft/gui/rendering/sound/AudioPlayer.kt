@@ -67,6 +67,22 @@ class AudioPlayer(
     private lateinit var listener: SoundListener
     private val sources: MutableList<SoundSource> = synchronizedListOf()
 
+    val availableSources: Int
+        get() {
+            val sources = sources.toSynchronizedList()
+            var available = 0
+
+            for (source in sources) {
+                if (source.available) {
+                    available++
+                }
+            }
+
+            return available
+        }
+    val sourcesCount: Int
+        get() = sources.size
+
 
     private fun preloadSounds() {
         Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Preloading sounds..." }

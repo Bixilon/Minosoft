@@ -22,7 +22,7 @@ object SystemInformation {
     val SYSTEM_INFO = SystemInfo()
     val HARDWARE_SYSTEM_INFO = SYSTEM_INFO.hardware
 
-    val SYSTEM_MEMORY_TEXT: String = HARDWARE_SYSTEM_INFO.memory.total.formatBytes()
+    val SYSTEM_MEMORY = HARDWARE_SYSTEM_INFO.memory.total
     val OS_TEXT: String = "${System.getProperty("os.name")}: ${SYSTEM_INFO.operatingSystem.family} ${SYSTEM_INFO.operatingSystem.bitness}bit"
 
     val PROCESSOR_TEXT = " ${RUNTIME.availableProcessors()}x ${HARDWARE_SYSTEM_INFO.processor.processorIdentifier.name.replace("\\s{2,}".toRegex(), "")}"

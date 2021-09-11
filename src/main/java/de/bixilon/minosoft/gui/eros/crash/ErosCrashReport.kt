@@ -22,6 +22,7 @@ import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.*
 import de.bixilon.minosoft.util.KUtil.toStackTrace
 import de.bixilon.minosoft.util.KUtil.tryCatch
+import de.bixilon.minosoft.util.UnitFormatter.formatBytes
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -202,7 +203,7 @@ ${exception?.toStackTrace() ?: ""}
     Operating system: ${SystemInformation.OS_TEXT}
     Detected operating system: ${OSUtil.OS}
     Java version: ${Runtime.version()} ${System.getProperty("sun.arch.data.model")}bit
-    Memory: ${SystemInformation.SYSTEM_MEMORY_TEXT}
+    Memory: ${SystemInformation.SYSTEM_MEMORY.formatBytes()}
     CPU: ${SystemInformation.PROCESSOR_TEXT}
  
 -- Git Info --

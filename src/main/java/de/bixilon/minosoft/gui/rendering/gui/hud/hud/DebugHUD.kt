@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud.hud
 
+import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.other.game.event.handlers.GameMoveChangeGameEventHandler
@@ -35,15 +36,19 @@ import de.bixilon.minosoft.gui.rendering.modding.events.ResizeWindowEvent
 import de.bixilon.minosoft.gui.rendering.particle.ParticleRenderer
 import de.bixilon.minosoft.modding.event.events.DifficultyChangeEvent
 import de.bixilon.minosoft.modding.event.events.GameEventChangeEvent
+import de.bixilon.minosoft.modding.event.events.TimeChangeEvent
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.modding.loading.ModLoader
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.GitInfo
 import de.bixilon.minosoft.util.KUtil.format
 import de.bixilon.minosoft.util.MMath.round10
 import de.bixilon.minosoft.util.SystemInformation
+import de.bixilon.minosoft.util.UnitFormatter.formatBytes
 import glm_.vec2.Vec2i
 import glm_.vec4.Vec4i
+import kotlin.math.abs
 
 class DebugHUD(val hudRenderer: HUDRenderer) : HUD<GridLayout> {
     override val renderWindow: RenderWindow = hudRenderer.renderWindow
@@ -80,6 +85,20 @@ class DebugHUD(val hudRenderer: HUDRenderer) : HUD<GridLayout> {
             layout += AutoTextElement(hudRenderer, 1) { "P t=$size" }
         }
 
+        if (Minosoft.config.config.game.sound.enabled) {
+            layout += AutoTextElement(hudRenderer, 1) {
+                BaseComponent().apply {
+                    this += "S "
+
+                    val audioPlayer = renderWindow.rendering.audioPlayer
+
+                    this += audioPlayer.availableSources
+                    this += " / "
+                    this += audioPlayer.sourcesCount
+                }
+            }
+        }
+
         layout += LineSpacerElement(hudRenderer)
 
         layout += TextElement(hudRenderer, BaseComponent("Account ", connection.account.username))
@@ -91,7 +110,7 @@ class DebugHUD(val hudRenderer: HUDRenderer) : HUD<GridLayout> {
 
 
         connection.player.apply {
-            // ToDo: Only update when the position changes
+            // ToDo: Only update when the position changesEntityMoveAndRotateS2CP
             layout += AutoTextElement(hudRenderer, 1) { with(position) { "XYZ ${x.format()} / ${y.format()} / ${z.format()}" } }
             layout += AutoTextElement(hudRenderer, 1) { with(positionInfo.blockPosition) { "Block $x $y $z" } }
             layout += AutoTextElement(hudRenderer, 1) { with(positionInfo) { "Chunk $inChunkSectionPosition in (${chunkPosition.x} $sectionHeight ${chunkPosition.y})" } }
@@ -141,6 +160,12 @@ class DebugHUD(val hudRenderer: HUDRenderer) : HUD<GridLayout> {
             })
         }
 
+        layout += TextElement(hudRenderer, "Time TBA").apply {
+            connection.registerEvent(CallbackEventInvoker.of<TimeChangeEvent> {
+                text = BaseComponent("Time ", abs(it.time % ProtocolDefinition.TICKS_PER_DAY), ", moving=", it.time >= 0, ", day=", abs(it.age) / ProtocolDefinition.TICKS_PER_DAY)
+            })
+        }
+
         return layout
     }
 
@@ -148,11 +173,28 @@ class DebugHUD(val hudRenderer: HUDRenderer) : HUD<GridLayout> {
         val layout = RowLayout(hudRenderer, ElementAlignments.RIGHT)
         layout.margin = Vec4i(2)
         layout += TextElement(hudRenderer, "Java ${Runtime.version()} ${System.getProperty("sun.arch.data.model")}bit", ElementAlignments.RIGHT)
+        layout += TextElement(hudRenderer, "OS ${SystemInformation.OS_TEXT}", ElementAlignments.RIGHT)
 
         layout += LineSpacerElement(hudRenderer)
 
-        layout += TextElement(hudRenderer, "OS ${SystemInformation.OS_TEXT}", ElementAlignments.RIGHT)
+        SystemInformation.RUNTIME.apply {
+            layout += AutoTextElement(hudRenderer, 1) {
+                val total = maxMemory()
+                val used = totalMemory() - freeMemory()
+                "Memory ${(used * 100.0 / total).round10}% ${used.formatBytes()} / ${total.formatBytes()}"
+            }
+            layout += AutoTextElement(hudRenderer, 1) {
+                val total = maxMemory()
+                val allocated = totalMemory()
+                "Allocated ${(allocated * 100.0 / total).round10}% ${allocated.formatBytes()} / ${total.formatBytes()}"
+            }
+        }
+
+        layout += LineSpacerElement(hudRenderer)
+
         layout += TextElement(hudRenderer, "CPU ${SystemInformation.PROCESSOR_TEXT}", ElementAlignments.RIGHT)
+        layout += TextElement(hudRenderer, "Memory ${SystemInformation.SYSTEM_MEMORY.formatBytes()}")
+
 
         layout += LineSpacerElement(hudRenderer)
 
