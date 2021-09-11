@@ -15,7 +15,9 @@ package de.bixilon.minosoft.gui.rendering
 
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.StaticConfiguration
-import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames
+import de.bixilon.minosoft.config.key.KeyAction
+import de.bixilon.minosoft.config.key.KeyBinding
+import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.block.WorldRenderer
 import de.bixilon.minosoft.gui.rendering.block.chunk.ChunkBorderRenderer
@@ -46,6 +48,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.CountUpAndDownLatch
 import de.bixilon.minosoft.util.KUtil.decide
 import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.MMath.round10
 import de.bixilon.minosoft.util.Queue
 import de.bixilon.minosoft.util.Stopwatch
@@ -216,20 +219,48 @@ class RenderWindow(
     }
 
     private fun registerGlobalKeyCombinations() {
-        inputHandler.registerKeyCallback(KeyBindingsNames.DEBUG_POLYGON) {
+        inputHandler.registerKeyCallback("minosoft:debug_polygon".toResourceLocation(), KeyBinding(
+            mutableMapOf(
+                KeyAction.MODIFIER to mutableSetOf(KeyCodes.KEY_F4),
+                KeyAction.STICKY to mutableSetOf(KeyCodes.KEY_P),
+            ),
+        )) {
             val nextMode = it.decide(PolygonModes.LINE, PolygonModes.FILL)
             renderSystem.polygonMode = nextMode
             sendDebugMessage("Set polygon to: $nextMode")
         }
 
-        inputHandler.registerKeyCallback(KeyBindingsNames.QUIT_RENDERING) { window.close() }
-        inputHandler.registerKeyCallback(KeyBindingsNames.TAKE_SCREENSHOT) { screenshotTaker.takeScreenshot() }
+        inputHandler.registerKeyCallback("minosoft:quit_rendering".toResourceLocation(), KeyBinding(
+            mutableMapOf(
+                KeyAction.RELEASE to mutableSetOf(KeyCodes.KEY_ESCAPE),
+            ),
+        )) { window.close() }
 
-        inputHandler.registerKeyCallback(KeyBindingsNames.DEBUG_PAUSE_INCOMING_PACKETS) {
+        inputHandler.registerKeyCallback("minosoft:take_screenshot".toResourceLocation(), KeyBinding(
+            mutableMapOf(
+                KeyAction.PRESS to mutableSetOf(KeyCodes.KEY_F2),
+            ),
+            ignoreConsumer = true,
+        )) { screenshotTaker.takeScreenshot() }
+
+        inputHandler.registerKeyCallback("minosoft:pause_incoming_packets".toResourceLocation(), KeyBinding(
+            mutableMapOf(
+                KeyAction.MODIFIER to mutableSetOf(KeyCodes.KEY_F4),
+                KeyAction.STICKY to mutableSetOf(KeyCodes.KEY_I),
+            ),
+            ignoreConsumer = true,
+        )) {
             sendDebugMessage("Pausing incoming packets: $it")
             connection.network.pauseReceiving(it)
         }
-        inputHandler.registerKeyCallback(KeyBindingsNames.DEBUG_PAUSE_OUTGOING_PACKETS) {
+
+        inputHandler.registerKeyCallback("minosoft:pause_outgoing_packets".toResourceLocation(), KeyBinding(
+            mutableMapOf(
+                KeyAction.MODIFIER to mutableSetOf(KeyCodes.KEY_F4),
+                KeyAction.STICKY to mutableSetOf(KeyCodes.KEY_O),
+            ),
+            ignoreConsumer = true,
+        )) {
             sendDebugMessage("Pausing outgoing packets: $it")
             connection.network.pauseSending(it)
         }

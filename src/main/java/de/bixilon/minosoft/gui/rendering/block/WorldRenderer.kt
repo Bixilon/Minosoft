@@ -13,7 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.block
 
-import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames
+import de.bixilon.minosoft.config.key.KeyAction
+import de.bixilon.minosoft.config.key.KeyBinding
+import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.direction.FakeDirection
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -47,6 +49,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.nullCast
 import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
 import de.bixilon.minosoft.util.KUtil.synchronizedSetOf
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.KUtil.toSynchronizedMap
 import de.bixilon.minosoft.util.collections.SynchronizedMap
 import de.bixilon.minosoft.util.task.pool.DefaultThreadPool
@@ -145,7 +148,12 @@ class WorldRenderer(
 
 
         // register keybindings
-        renderWindow.inputHandler.registerKeyCallback(KeyBindingsNames.DEBUG_CLEAR_CHUNK_CACHE) {
+        renderWindow.inputHandler.registerKeyCallback("minosoft:debug_clear_chunk_cache".toResourceLocation(), KeyBinding(
+            mutableMapOf(
+                KeyAction.MODIFIER to mutableSetOf(KeyCodes.KEY_F3),
+                KeyAction.PRESS to mutableSetOf(KeyCodes.KEY_A),
+            ),
+        )) {
             clearChunkCache()
             renderWindow.sendDebugMessage("Cleared chunk cache!")
             prepareWorld(world)

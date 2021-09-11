@@ -13,7 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.input
 
-import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames
+import de.bixilon.minosoft.config.key.KeyAction
+import de.bixilon.minosoft.config.key.KeyBinding
+import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.inventory.ItemStack
@@ -30,6 +32,7 @@ import de.bixilon.minosoft.protocol.packets.c2s.play.ArmSwingC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.BlockBreakC2SP
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import glm_.pow
 import glm_.vec3.Vec3i
 
@@ -243,7 +246,11 @@ class LeftClickHandler(
     }
 
     fun init() {
-        renderWindow.inputHandler.registerCheckCallback(KeyBindingsNames.DESTROY_BLOCK)
+        renderWindow.inputHandler.registerCheckCallback(DESTROY_BLOCK_KEYBINDING to KeyBinding(
+            mutableMapOf(
+                KeyAction.CHANGE to mutableSetOf(KeyCodes.MOUSE_BUTTON_LEFT),
+            ),
+        ))
 
         connection.registerEvent(CallbackEventInvoker.of<BlockBreakAckEvent> {
             when (it.breakType) {
@@ -269,7 +276,7 @@ class LeftClickHandler(
     }
 
     fun draw(deltaTime: Double) {
-        val isKeyDown = renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.DESTROY_BLOCK)
+        val isKeyDown = renderWindow.inputHandler.isKeyBindingDown(DESTROY_BLOCK_KEYBINDING)
         // ToDo: Entity attacking
         val consumed = checkBreaking(isKeyDown, deltaTime)
 
@@ -280,5 +287,9 @@ class LeftClickHandler(
             return
         }
         swingArm()
+    }
+
+    companion object {
+        private val DESTROY_BLOCK_KEYBINDING = "minosoft:destroy_block".toResourceLocation()
     }
 }

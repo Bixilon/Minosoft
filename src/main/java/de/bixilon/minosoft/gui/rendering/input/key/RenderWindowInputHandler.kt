@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.input.key
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames
 import de.bixilon.minosoft.config.key.KeyAction
+import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderConstants
@@ -49,7 +50,12 @@ class RenderWindowInputHandler(
     val leftClickHandler = LeftClickHandler(renderWindow)
 
     init {
-        registerKeyCallback(KeyBindingsNames.DEBUG_MOUSE_CATCH) {
+        registerKeyCallback(KeyBindingsNames.DEBUG_MOUSE_CATCH, KeyBinding(
+            mutableMapOf(
+                KeyAction.MODIFIER to mutableSetOf(KeyCodes.KEY_F4),
+                KeyAction.STICKY to mutableSetOf(KeyCodes.KEY_M),
+            ),
+        )) {
             renderWindow.window.cursorMode = it.decide(CursorModes.DISABLED, CursorModes.NORMAL)
             renderWindow.sendDebugMessage("Toggled mouse catch!")
         }
@@ -220,8 +226,8 @@ class RenderWindowInputHandler(
         //currentKeyConsumer?.charInput(char.toChar())
     }
 
-    fun registerKeyCallback(resourceLocation: ResourceLocation, callback: ((keyDown: Boolean) -> Unit)) {
-        val keyBinding = Minosoft.config.config.game.controls.keyBindings.entries[resourceLocation] ?: return
+    fun registerKeyCallback(resourceLocation: ResourceLocation, defaultKeyBinding: KeyBinding, callback: ((keyDown: Boolean) -> Unit)) {
+        val keyBinding = Minosoft.config.config.game.controls.keyBindings.entries.getOrPut(resourceLocation) { defaultKeyBinding } // ToDo (Performance): Should the defaultKeyBinding be a lambda parameter?
         val callbackPair = keyBindingCallbacks.getOrPut(resourceLocation) { KeyBindingCallbackPair(keyBinding) }
         if (keyBinding.ignoreConsumer) {
             callbackPair.callback += callback
@@ -235,10 +241,9 @@ class RenderWindowInputHandler(
         }
     }
 
-    fun registerCheckCallback(vararg resourceLocations: ResourceLocation) {
-        for (resourceLocation in resourceLocations) {
-            val keyBinding = Minosoft.config.config.game.controls.keyBindings.entries[resourceLocation] ?: return
-            keyBindingCallbacks.getOrPut(resourceLocation) { KeyBindingCallbackPair(keyBinding) }
+    fun registerCheckCallback(vararg checks: Pair<ResourceLocation, KeyBinding>) {
+        for ((resourceLocation, defaultKeyBinding) in checks) {
+            keyBindingCallbacks.getOrPut(resourceLocation) { KeyBindingCallbackPair(Minosoft.config.config.game.controls.keyBindings.entries.getOrPut(resourceLocation) { defaultKeyBinding }) }
         }
     }
 

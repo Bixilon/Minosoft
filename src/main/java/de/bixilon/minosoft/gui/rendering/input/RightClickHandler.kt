@@ -13,7 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.input
 
-import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames
+import de.bixilon.minosoft.config.key.KeyAction
+import de.bixilon.minosoft.config.key.KeyBinding
+import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.player.Hands
 import de.bixilon.minosoft.data.registries.blocks.BlockUsages
@@ -22,6 +24,7 @@ import de.bixilon.minosoft.protocol.packets.c2s.play.ArmSwingC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.BlockPlaceC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.ItemUseC2SP
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import glm_.vec3.Vec3
 
 class RightClickHandler(
@@ -32,7 +35,11 @@ class RightClickHandler(
     private var lastInteractionSent = 0L
 
     fun init() {
-        renderWindow.inputHandler.registerCheckCallback(KeyBindingsNames.BLOCK_INTERACT)
+        renderWindow.inputHandler.registerCheckCallback(BLOCK_INTERACT_KEYBINDING to KeyBinding(
+            mutableMapOf(
+                KeyAction.CHANGE to mutableSetOf(KeyCodes.MOUSE_BUTTON_RIGHT),
+            ),
+        ))
     }
 
     private fun checkInteraction(isKeyDown: Boolean) {
@@ -132,6 +139,10 @@ class RightClickHandler(
 
     fun draw(deltaTime: Double) {
         // ToDo: Entity interaction, shield/sword blocking, etc
-        checkInteraction(renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.BLOCK_INTERACT))
+        checkInteraction(renderWindow.inputHandler.isKeyBindingDown(BLOCK_INTERACT_KEYBINDING))
+    }
+
+    companion object {
+        private val BLOCK_INTERACT_KEYBINDING = "minosoft:interact_block".toResourceLocation()
     }
 }

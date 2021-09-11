@@ -14,7 +14,9 @@
 package de.bixilon.minosoft.gui.rendering.input.camera
 
 import de.bixilon.minosoft.Minosoft
-import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames
+import de.bixilon.minosoft.config.key.KeyAction
+import de.bixilon.minosoft.config.key.KeyBinding
+import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.player.LocalPlayerEntity
 import de.bixilon.minosoft.data.registries.VoxelShape
@@ -40,6 +42,7 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.c2s.play.BlockBreakC2SP
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.decide
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.Previous
 import glm_.func.cos
 import glm_.func.rad
@@ -149,17 +152,61 @@ class Camera(
 
     fun init(renderWindow: RenderWindow) {
         renderWindow.inputHandler.registerCheckCallback(
-            KeyBindingsNames.MOVE_SPRINT,
-            KeyBindingsNames.MOVE_FORWARD,
-            KeyBindingsNames.MOVE_BACKWARDS,
-            KeyBindingsNames.MOVE_LEFT,
-            KeyBindingsNames.MOVE_RIGHT,
-            KeyBindingsNames.MOVE_FLY_UP,
-            KeyBindingsNames.MOVE_FLY_DOWN,
-            KeyBindingsNames.ZOOM,
-            KeyBindingsNames.MOVE_JUMP,
-            KeyBindingsNames.MOVE_SNEAK,
-            KeyBindingsNames.MOVE_TOGGLE_FLY,
+            MOVE_SPRINT_KEYBINDING to KeyBinding(
+                mutableMapOf(
+                    KeyAction.CHANGE to mutableSetOf(KeyCodes.KEY_LEFT_CONTROL),
+                ),
+            ),
+            MOVE_FORWARDS_KEYBINDING to KeyBinding(
+                mutableMapOf(
+                    KeyAction.CHANGE to mutableSetOf(KeyCodes.KEY_W),
+                ),
+            ),
+            MOVE_BACKWARDS_KEYBINDING to KeyBinding(
+                mutableMapOf(
+                    KeyAction.CHANGE to mutableSetOf(KeyCodes.KEY_S),
+                ),
+            ),
+            MOVE_LEFT_KEYBINDING to KeyBinding(
+                mutableMapOf(
+                    KeyAction.CHANGE to mutableSetOf(KeyCodes.KEY_A),
+                ),
+            ),
+            MOVE_RIGHT_KEYBINDING to KeyBinding(
+                mutableMapOf(
+                    KeyAction.CHANGE to mutableSetOf(KeyCodes.KEY_D),
+                ),
+            ),
+            FLY_UP_KEYBINDING to KeyBinding(
+                mutableMapOf(
+                    KeyAction.CHANGE to mutableSetOf(KeyCodes.KEY_SPACE),
+                ),
+            ),
+            FLY_DOWN_KEYBINDING to KeyBinding(
+                mutableMapOf(
+                    KeyAction.CHANGE to mutableSetOf(KeyCodes.KEY_LEFT_SHIFT),
+                ),
+            ),
+            ZOOM_KEYBINDING to KeyBinding(
+                mutableMapOf(
+                    KeyAction.CHANGE to mutableSetOf(KeyCodes.KEY_C),
+                ),
+            ),
+            JUMP_KEYBINDING to KeyBinding(
+                mutableMapOf(
+                    KeyAction.CHANGE to mutableSetOf(KeyCodes.KEY_SPACE),
+                ),
+            ),
+            SNEAK_KEYBINDING to KeyBinding(
+                mutableMapOf(
+                    KeyAction.CHANGE to mutableSetOf(KeyCodes.KEY_LEFT_SHIFT),
+                ),
+            ),
+            TOGGLE_FLY_KEYBINDING to KeyBinding(
+                mutableMapOf(
+                    KeyAction.DOUBLE_PRESS to mutableSetOf(KeyCodes.KEY_SPACE),
+                ),
+            ),
         )
 
         connection.registerEvent(CallbackEventInvoker.of<ResizeWindowEvent> { recalculateViewProjectionMatrix() })
@@ -173,8 +220,18 @@ class Camera(
             lastDropPacketSent = time
         }
 
-        renderWindow.inputHandler.registerKeyCallback(KeyBindingsNames.DROP_ITEM) { dropItem(BlockBreakC2SP.BreakType.DROP_ITEM) }
-        renderWindow.inputHandler.registerKeyCallback(KeyBindingsNames.DROP_ITEM_STACK) { dropItem(BlockBreakC2SP.BreakType.DROP_ITEM_STACK) }
+        // ToDo: This has nothing todo with the camera, should be in the interaction manager
+        renderWindow.inputHandler.registerKeyCallback(DROP_ITEM_KEYBINDING, KeyBinding(
+            mutableMapOf(
+                KeyAction.PRESS to mutableSetOf(KeyCodes.KEY_Q),
+            ),
+        )) { dropItem(BlockBreakC2SP.BreakType.DROP_ITEM) }
+        renderWindow.inputHandler.registerKeyCallback(DROP_ITEM_STACK_KEYBINDING, KeyBinding(
+            mutableMapOf(
+                KeyAction.PRESS to mutableSetOf(KeyCodes.KEY_Q),
+                KeyAction.MODIFIER to mutableSetOf(KeyCodes.KEY_LEFT_CONTROL)
+            ),
+        )) { dropItem(BlockBreakC2SP.BreakType.DROP_ITEM_STACK) }
         frustum.recalculate()
         connection.fireEvent(FrustumChangeEvent(renderWindow, frustum))
     }
@@ -251,16 +308,16 @@ class Camera(
         }
         //val input = if (renderWindow.inputHandler.currentKeyConsumer == null) {
         val input = MovementInput(
-            pressingForward = renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.MOVE_FORWARD),
-            pressingBack = renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.MOVE_BACKWARDS),
-            pressingLeft = renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.MOVE_LEFT),
-            pressingRight = renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.MOVE_RIGHT),
-            jumping = renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.MOVE_JUMP),
-            sneaking = renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.MOVE_SNEAK),
-            sprinting = renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.MOVE_SPRINT),
-            flyDown = renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.MOVE_FLY_DOWN),
-            flyUp = renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.MOVE_FLY_UP),
-            toggleFlyDown = renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.MOVE_TOGGLE_FLY),
+            pressingForward = renderWindow.inputHandler.isKeyBindingDown(MOVE_FORWARDS_KEYBINDING),
+            pressingBack = renderWindow.inputHandler.isKeyBindingDown(MOVE_BACKWARDS_KEYBINDING),
+            pressingLeft = renderWindow.inputHandler.isKeyBindingDown(MOVE_LEFT_KEYBINDING),
+            pressingRight = renderWindow.inputHandler.isKeyBindingDown(MOVE_RIGHT_KEYBINDING),
+            jumping = renderWindow.inputHandler.isKeyBindingDown(JUMP_KEYBINDING),
+            sneaking = renderWindow.inputHandler.isKeyBindingDown(SNEAK_KEYBINDING),
+            sprinting = renderWindow.inputHandler.isKeyBindingDown(MOVE_SPRINT_KEYBINDING),
+            flyDown = renderWindow.inputHandler.isKeyBindingDown(FLY_DOWN_KEYBINDING),
+            flyUp = renderWindow.inputHandler.isKeyBindingDown(FLY_UP_KEYBINDING),
+            toggleFlyDown = renderWindow.inputHandler.isKeyBindingDown(TOGGLE_FLY_KEYBINDING),
         )
         //} else {
         //   MovementInput()
@@ -268,7 +325,7 @@ class Camera(
         connection.player.input = input
         connection.player.tick() // The thread pool might be busy, we force a tick here to avoid lagging
 
-        zoom = if (renderWindow.inputHandler.isKeyBindingDown(KeyBindingsNames.ZOOM)) {
+        zoom = if (renderWindow.inputHandler.isKeyBindingDown(ZOOM_KEYBINDING)) {
             2f
         } else {
             0.0f
@@ -375,5 +432,24 @@ class Camera(
         val CAMERA_UP_VEC3 = Vec3d(0.0, 1.0, 0.0)
 
         private const val RAYCAST_MAX_STEPS = 100
+
+        private val MOVE_SPRINT_KEYBINDING = "minosoft:move_sprint".toResourceLocation()
+        private val MOVE_FORWARDS_KEYBINDING = "minosoft:move_forward".toResourceLocation()
+        private val MOVE_BACKWARDS_KEYBINDING = "minosoft:move_backwards".toResourceLocation()
+        private val MOVE_LEFT_KEYBINDING = "minosoft:move_left".toResourceLocation()
+        private val MOVE_RIGHT_KEYBINDING = "minosoft:move_right".toResourceLocation()
+
+        private val SNEAK_KEYBINDING = "minosoft:move_sneak".toResourceLocation()
+        private val JUMP_KEYBINDING = "minosoft:move_jump".toResourceLocation()
+
+        private val TOGGLE_FLY_KEYBINDING = "minosoft:move_toggle_fly".toResourceLocation()
+        private val FLY_UP_KEYBINDING = "minosoft:move_fly_up".toResourceLocation()
+        private val FLY_DOWN_KEYBINDING = "minosoft:move_fly_down".toResourceLocation()
+
+        private val ZOOM_KEYBINDING = "minosoft:zoom".toResourceLocation()
+
+
+        private val DROP_ITEM_KEYBINDING = "minosoft:drop_item".toResourceLocation()
+        private val DROP_ITEM_STACK_KEYBINDING = "minosoft:drop_item_stack".toResourceLocation()
     }
 }
