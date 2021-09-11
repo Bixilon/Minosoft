@@ -32,7 +32,7 @@ import java.lang.Integer.max
 /**
  * A layout, that works from top to bottom, containing other elements, that get wrapped below each other
  */
-class RowLayout(
+open class RowLayout(
     hudRenderer: HUDRenderer,
     override var childAlignment: ElementAlignments = ElementAlignments.LEFT,
     spacing: Int = 0,

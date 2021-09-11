@@ -43,7 +43,7 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
         }
 
         fun applyOffset() {
-            if (consumer == null) {
+            if (consumer == null && offset.x == initialOffset.x + Font.CHAR_MARGIN) {
                 // preparing phase
                 renderInfo.lines += TextLineInfo()
             } else {

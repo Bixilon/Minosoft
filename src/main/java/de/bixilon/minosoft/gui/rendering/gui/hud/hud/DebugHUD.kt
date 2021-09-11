@@ -13,8 +13,13 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud.hud
 
+import de.bixilon.minosoft.data.abilities.Gamemodes
+import de.bixilon.minosoft.data.direction.Directions
+import de.bixilon.minosoft.data.registries.other.game.event.handlers.GameMoveChangeGameEventHandler
+import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.TextComponent
+import de.bixilon.minosoft.data.world.Chunk
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.block.WorldRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
@@ -29,11 +34,11 @@ import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.modding.events.ResizeWindowEvent
 import de.bixilon.minosoft.gui.rendering.particle.ParticleRenderer
 import de.bixilon.minosoft.modding.event.events.DifficultyChangeEvent
+import de.bixilon.minosoft.modding.event.events.GameEventChangeEvent
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.modding.loading.ModLoader
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.GitInfo
-import de.bixilon.minosoft.util.KUtil.decide
 import de.bixilon.minosoft.util.KUtil.format
 import de.bixilon.minosoft.util.MMath.round10
 import de.bixilon.minosoft.util.SystemInformation
@@ -77,10 +82,37 @@ class DebugHUD(val hudRenderer: HUDRenderer) : HUD<GridLayout> {
 
         layout += LineSpacerElement(hudRenderer)
 
+        layout += TextElement(hudRenderer, BaseComponent("Account ", connection.account.username))
+        layout += TextElement(hudRenderer, BaseComponent("Address ", connection.address))
+        layout += TextElement(hudRenderer, BaseComponent("Network version ", connection.version))
+        layout += TextElement(hudRenderer, BaseComponent("Server brand ", connection.serverInfo.brand))
+
+        layout += LineSpacerElement(hudRenderer)
+
 
         connection.player.apply {
+            // ToDo: Only update when the position changes
             layout += AutoTextElement(hudRenderer, 1) { with(position) { "XYZ ${x.format()} / ${y.format()} / ${z.format()}" } }
             layout += AutoTextElement(hudRenderer, 1) { with(positionInfo.blockPosition) { "Block $x $y $z" } }
+            layout += AutoTextElement(hudRenderer, 1) { with(positionInfo) { "Chunk $inChunkSectionPosition in (${chunkPosition.x} $sectionHeight ${chunkPosition.y})" } }
+            layout += AutoTextElement(hudRenderer, 1) {
+                val text = BaseComponent("Facing ")
+
+                Directions.byDirection(hudRenderer.renderWindow.inputHandler.camera.cameraFront).apply {
+                    text += this
+                    text += " "
+                    text += vector
+                }
+
+                hudRenderer.renderWindow.connection.player.rotation.apply {
+                    text += " yaw="
+                    text += headYaw.round10
+                    text += ", pitch="
+                    text += pitch.round10
+                }
+
+                text
+            }
         }
 
         layout += LineSpacerElement(hudRenderer)
@@ -88,14 +120,24 @@ class DebugHUD(val hudRenderer: HUDRenderer) : HUD<GridLayout> {
         val chunk = connection.world[connection.player.positionInfo.chunkPosition]
 
         if (chunk == null) {
-            layout += TextElement(hudRenderer, "Waiting for chunk...") // ToDo
+            layout += DebugWorldInfo(hudRenderer)
         }
 
         layout += LineSpacerElement(hudRenderer)
 
-        layout += TextElement(hudRenderer, "Difficulty ${connection.world.difficulty.format()}, ${connection.world.difficultyLocked.decide("locked", "unlocked")}").apply {
+        layout += TextElement(hudRenderer, BaseComponent("Gamemode ", connection.player.gamemode)).apply {
+            connection.registerEvent(CallbackEventInvoker.of<GameEventChangeEvent> {
+                if (it.event.resourceLocation != GameMoveChangeGameEventHandler.RESOURCE_LOCATION) {
+                    return@of
+                }
+                // ToDo: Improve game mode change event
+                text = BaseComponent("Gamemode ", Gamemodes[it.data.toInt()])
+            })
+        }
+
+        layout += TextElement(hudRenderer, BaseComponent("Difficulty ", connection.world.difficulty, ", locked=", connection.world.difficultyLocked)).apply {
             connection.registerEvent(CallbackEventInvoker.of<DifficultyChangeEvent> {
-                text = "Difficulty ${it.difficulty.format()}, ${it.locked.decide("locked", "unlocked")}"
+                text = BaseComponent("Difficulty ", it.difficulty, ", locked=", it.locked)
             })
         }
 
@@ -146,5 +188,50 @@ class DebugHUD(val hudRenderer: HUDRenderer) : HUD<GridLayout> {
             }
         }
         return layout
+    }
+
+    private class DebugWorldInfo(hudRenderer: HUDRenderer) : RowLayout(hudRenderer) {
+        private var lastChunk: Chunk? = null
+        private val world = hudRenderer.connection.world
+        private val entity = hudRenderer.connection.player
+
+        init {
+            showWait()
+        }
+
+        private fun showWait() {
+            clear()
+            this += TextElement(hudRenderer, "Waiting for chunk...")
+        }
+
+        private fun updateInformation() {
+            entity.positionInfo.apply {
+                val chunk = world[chunkPosition]
+
+                if ((chunk == null && lastChunk == null) || (chunk != null && lastChunk != null)) {
+                    // No update, elements will update themselves
+                    return
+                }
+                if (chunk == null) {
+                    lastChunk = null
+                    showWait()
+                    return
+                }
+                clear()
+
+                this@DebugWorldInfo += AutoTextElement(hudRenderer, 1) { BaseComponent("Dimension ", connection.world.dimension?.resourceLocation) }
+                this@DebugWorldInfo += AutoTextElement(hudRenderer, 1) { BaseComponent("Biome ", connection.world.getBiome(blockPosition)) }
+                this@DebugWorldInfo += AutoTextElement(hudRenderer, 1) { with(connection.world.worldLightAccessor) { BaseComponent("Light block=", getBlockLight(blockPosition), ", sky=", getSkyLight(blockPosition)) } }
+
+                lastChunk = chunk
+            }
+        }
+
+        override fun tick() {
+            // ToDo: Make event driven
+            updateInformation()
+
+            super.tick()
+        }
     }
 }

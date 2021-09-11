@@ -19,4 +19,8 @@ object StaticConfiguration {
     const val DEBUG_SLOW_LOADING = false // if true, many Thread.sleep will be executed and the start will be delayed (by a lot)
     const val SHOW_LOG_MESSAGES_IN_CHAT = true // prints all console messages in the chat box
     const val REPLACE_SYSTEM_OUT_STREAMS = true
+
+
+    @Deprecated(message = "Just for hud development purposes")
+    const val HUD_ONLY = false
 }

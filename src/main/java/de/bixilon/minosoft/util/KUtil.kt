@@ -257,6 +257,7 @@ object KUtil {
             is Double -> "§d%.4f".format(this)
             is Number -> TextComponent(this).color(ChatColors.LIGHT_PURPLE)
             is ResourceLocation -> TextComponent(this.toString()).color(ChatColors.GOLD)
+            is ResourceLocationAble -> resourceLocation.format()
             is Vec4t<*> -> "(${this.x.format()} ${this.y.format()} ${this.z.format()} ${this.w.format()})"
             is Vec3t<*> -> "(${this.x.format()} ${this.y.format()} ${this.z.format()})"
             is Vec2t<*> -> "(${this.x.format()} ${this.y.format()})"

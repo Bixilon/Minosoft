@@ -107,7 +107,6 @@ open class TextElement(
 
         ChatComponentRenderer.render(initialOffset, Vec2i(initialOffset), Vec2i.EMPTY, z + 1, this, fontAlignment, renderWindow, consumer, renderInfo, textComponent)
         renderInfo.currentLineNumber = 0
-        prepared = true
 
         if (background) {
             for ((line, info) in renderInfo.lines.withIndex()) {
