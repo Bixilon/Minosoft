@@ -5,7 +5,7 @@ First, thank you for visiting this page and for even thinking about contributing
 ## Things you can do
 
 ### Issues
-If you find a bug (in master **AND** in development), feel free to follow these steps:
+If you find a bug (in **master**), feel free to follow these steps:
 1. Check if this bug is a bug and can be recreated.
 2. Check if this bug is already reported (use the issue search or google).
 3. Open the issue and describe the problem as much as needed (not as you can!)
