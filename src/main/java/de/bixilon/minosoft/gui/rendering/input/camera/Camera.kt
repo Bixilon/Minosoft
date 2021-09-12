@@ -100,6 +100,11 @@ class Camera(
     var viewProjectionMatrix = projectionMatrix * viewMatrix
         private set
 
+
+    var previousPosition = Vec3d(connection.player.position)
+    var previousRotation = connection.player.rotation.copy()
+    var previousZoom = zoom
+
     private var lastDropPacketSent = -1L
 
     val frustum: Frustum = Frustum(this)
@@ -265,7 +270,14 @@ class Camera(
         connection.fireEvent(FrustumChangeEvent(renderWindow, frustum))
         connection.fireEvent(CameraPositionChangeEvent(renderWindow, connection.player.eyePosition))
 
-        // recalculate sky color for current biome
+        previousPosition = Vec3d(connection.player.position)
+        previousRotation = connection.player.rotation.copy()
+        previousZoom = zoom
+
+        setSkyColor()
+    }
+
+    private fun setSkyColor() {
         renderWindow[SkyRenderer.Companion]?.let { skyRenderer ->
             skyRenderer.baseColor = connection.world.getBiome(connection.player.positionInfo.blockPosition)?.skyColor ?: RenderConstants.DEFAULT_SKY_COLOR
 
@@ -330,8 +342,12 @@ class Camera(
         } else {
             0.0f
         }
-        // ToDo: Only update if changed
-        onPositionChange()
+
+        if (previousPosition != connection.player.position || previousRotation != connection.player.rotation || zoom != previousZoom) {
+            onPositionChange()
+        } else {
+            setSkyColor()
+        }
 
         val eyePosition = connection.player.eyePosition
         val cameraFront = cameraFront

@@ -24,9 +24,9 @@ import glm_.vec4.Vec4
 
 class GUIMeshCache(
     val matrix: Mat4,
-    initialCahceSize: Int = 1000,
+    initialCacheSize: Int = 1000,
 ) : GUIVertexConsumer {
-    val data: ArrayFloatList = ArrayFloatList(initialCahceSize)
+    val data: ArrayFloatList = ArrayFloatList(initialCacheSize)
 
     override fun addVertex(position: Vec2t<*>, z: Int, texture: AbstractTexture, uv: Vec2, tint: RGBColor) {
         val outPosition = matrix * Vec4(position.x.toFloat(), position.y.toFloat(), 1.0f, 1.0f)
