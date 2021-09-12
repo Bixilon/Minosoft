@@ -112,7 +112,7 @@ public class BlockingSocketNetwork extends Network {
                     }
                     try {
                         var typeAndPacket = prepareS2CPacket(this.inputStream);
-                        while (this.receivingPaused) {
+                        while (this.receivingPaused && this.connection.getProtocolState() != ProtocolStates.DISCONNECTED && !this.shouldDisconnect) {
                             Util.sleep(1L);
                         }
                         handlePacket(typeAndPacket.getKey(), typeAndPacket.getValue());
@@ -203,7 +203,7 @@ public class BlockingSocketNetwork extends Network {
                     }
 
                     C2SPacket packet = this.queue.take();
-                    while (this.sendingPaused) {
+                    while (this.sendingPaused && this.connection.getProtocolState() != ProtocolStates.DISCONNECTED && !this.shouldDisconnect) {
                         Util.sleep(1L);
                     }
                     packet.log();
