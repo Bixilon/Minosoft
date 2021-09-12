@@ -26,7 +26,7 @@ class GridCell(
     private val child: Element,
     override var parent: Element?,
 ) : Element(hudRenderer) {
-    override var prepared: Boolean by child::prepared
+    override var cacheUpToDate: Boolean by child::cacheUpToDate
     override var size: Vec2i by child::size
     override var margin: Vec4i by child::margin
     override var prefSize: Vec2i by child::prefSize

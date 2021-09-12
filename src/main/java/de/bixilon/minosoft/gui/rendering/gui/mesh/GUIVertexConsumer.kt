@@ -46,4 +46,6 @@ interface GUIVertexConsumer {
     fun addQuad(start: Vec2t<*>, end: Vec2t<*>, z: Int, texture: TextureLike, tint: RGBColor) {
         addQuad(start, end, z, texture.texture, texture.uvStart, texture.uvEnd, tint)
     }
+
+    fun addCache(cache: GUIMeshCache)
 }

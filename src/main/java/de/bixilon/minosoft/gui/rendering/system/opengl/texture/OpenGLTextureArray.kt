@@ -152,6 +152,8 @@ class OpenGLTextureArray(
             for ((mipMapLevel, data) in mipMaps.withIndex()) {
                 glTexSubImage3D(GL_TEXTURE_2D_ARRAY, mipMapLevel, 0, 0, renderData.index, data.first.x, data.first.y, mipMapLevel + 1, GL_RGBA, GL_UNSIGNED_BYTE, data.second)
             }
+
+            texture.data = null
         }
 
         return textureId

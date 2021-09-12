@@ -15,27 +15,25 @@ package de.bixilon.minosoft.gui.rendering.gui.mesh
 
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderConstants
-import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
-import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
-import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
+import de.bixilon.minosoft.util.collections.ArrayFloatList
 import glm_.mat4x4.Mat4
 import glm_.vec2.Vec2
 import glm_.vec2.Vec2t
-import glm_.vec3.Vec3
 import glm_.vec4.Vec4
 
-class GUIMesh(
-    renderWindow: RenderWindow,
+class GUIMeshCache(
     val matrix: Mat4,
-) : Mesh(renderWindow, HUDMeshStruct, initialCacheSize = 40000), GUIVertexConsumer {
+    initialCahceSize: Int = 1000,
+) : GUIVertexConsumer {
+    val data: ArrayFloatList = ArrayFloatList(initialCahceSize)
 
     override fun addVertex(position: Vec2t<*>, z: Int, texture: AbstractTexture, uv: Vec2, tint: RGBColor) {
         val outPosition = matrix * Vec4(position.x.toFloat(), position.y.toFloat(), 1.0f, 1.0f)
         data.addAll(floatArrayOf(
             outPosition.x,
             outPosition.y,
-            BASE_Z + Z_MULTIPLIER * z,
+            GUIMesh.BASE_Z + GUIMesh.Z_MULTIPLIER * z,
             uv.x,
             uv.y,
             Float.fromBits(texture.renderData?.layer ?: RenderConstants.DEBUG_TEXTURE_ID),
@@ -45,19 +43,5 @@ class GUIMesh(
 
     override fun addCache(cache: GUIMeshCache) {
         data.addAll(cache.data)
-    }
-
-    data class HUDMeshStruct(
-        val position: Vec3,
-        val uv: Vec2,
-        val textureLayer: Int,
-        val tintColor: RGBColor,
-    ) {
-        companion object : MeshStruct(HUDMeshStruct::class)
-    }
-
-    companion object {
-        const val BASE_Z = -0.99f
-        const val Z_MULTIPLIER = -0.00001f
     }
 }

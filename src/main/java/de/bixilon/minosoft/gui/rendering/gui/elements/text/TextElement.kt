@@ -24,6 +24,7 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.ElementAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.ElementAlignments.Companion.getOffset
 import de.bixilon.minosoft.gui.rendering.gui.elements.InfiniteSizeElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
+import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMeshCache
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.util.vec.Vec2Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.Vec4Util.offset
@@ -36,6 +37,9 @@ open class TextElement(
     var background: Boolean = true,
     var backgroundColor: RGBColor = RenderConstants.TEXT_BACKGROUND_COLOR,
 ) : LabeledElement(hudRenderer) {
+    private var previousOffset = Vec2i.EMPTY
+    private var previousMatrix = hudRenderer.matrix
+
     private var preparedSize = Vec2i.EMPTY
     private var renderInfo = TextRenderInfo()
 
@@ -43,7 +47,7 @@ open class TextElement(
         set(value) {
             textComponent = ChatComponent.of(value)
             field = value
-            prepared = false
+            cacheUpToDate = false
         }
 
     private var emptyMessage: Boolean = true
@@ -75,6 +79,7 @@ open class TextElement(
             this.renderInfo = renderInfo
         }
 
+        this.cacheUpToDate = false
         this.size = size
         preparedSize = size
     }
@@ -103,17 +108,31 @@ open class TextElement(
         if (emptyMessage) {
             return 0
         }
+        if (previousOffset != offset || previousMatrix != hudRenderer.matrix) {
+            cacheUpToDate = false
+        }
+        if (cacheUpToDate) {
+            consumer.addCache(cache)
+            return LAYERS
+        }
+        val cache = GUIMeshCache(hudRenderer.matrix)
         val initialOffset = offset + margin.offset
 
-        ChatComponentRenderer.render(initialOffset, Vec2i(initialOffset), Vec2i.EMPTY, z + 1, this, fontAlignment, renderWindow, consumer, renderInfo, textComponent)
+        ChatComponentRenderer.render(initialOffset, Vec2i(initialOffset), Vec2i.EMPTY, z + 1, this, fontAlignment, renderWindow, cache, renderInfo, textComponent)
         renderInfo.currentLineNumber = 0
 
         if (background) {
             for ((line, info) in renderInfo.lines.withIndex()) {
                 val start = initialOffset + Vec2i(fontAlignment.getOffset(size.x, info.width), line * Font.TOTAL_CHAR_HEIGHT)
-                consumer.addQuad(start, start + Vec2i(info.width + Font.CHAR_MARGIN, Font.TOTAL_CHAR_HEIGHT), z, renderWindow.WHITE_TEXTURE, backgroundColor)
+                cache.addQuad(start, start + Vec2i(info.width + Font.CHAR_MARGIN, Font.TOTAL_CHAR_HEIGHT), z, renderWindow.WHITE_TEXTURE, backgroundColor)
             }
         }
+
+        consumer.addCache(cache)
+        this.cache = cache
+        this.previousOffset = offset
+        this.previousMatrix = hudRenderer.matrix
+        this.cacheUpToDate = true
 
         return LAYERS
     }

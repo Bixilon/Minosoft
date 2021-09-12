@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.gui.elements
 
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
+import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMeshCache
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.util.vec.Vec2Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.Vec2Util.MAX
@@ -29,7 +30,8 @@ abstract class Element(val hudRenderer: HUDRenderer) {
             field = value
             onParentChange()
         }
-    open var prepared: Boolean = false
+    protected var cache = GUIMeshCache(hudRenderer.matrix)
+    open var cacheUpToDate: Boolean = false
 
     /**
      * If maxSize was infinity, what size would the element have?
