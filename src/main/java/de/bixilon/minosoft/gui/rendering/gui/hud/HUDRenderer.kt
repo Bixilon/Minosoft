@@ -21,9 +21,11 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.Renderer
 import de.bixilon.minosoft.gui.rendering.RendererBuilder
-import de.bixilon.minosoft.gui.rendering.gui.hud.hud.DebugHUDElement
-import de.bixilon.minosoft.gui.rendering.gui.hud.hud.HUDBuilder
-import de.bixilon.minosoft.gui.rendering.gui.hud.hud.HUDElement
+import de.bixilon.minosoft.gui.rendering.gui.hud.atlas.HUDAtlasManager
+import de.bixilon.minosoft.gui.rendering.gui.hud.elements.CrosshairHUDElement
+import de.bixilon.minosoft.gui.rendering.gui.hud.elements.DebugHUDElement
+import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
+import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMesh
 import de.bixilon.minosoft.gui.rendering.modding.events.ResizeWindowEvent
 import de.bixilon.minosoft.gui.rendering.util.vec.Vec2Util.EMPTY
@@ -33,9 +35,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.KUtil.toSynchronizedMap
-import de.bixilon.minosoft.util.logging.Log
-import de.bixilon.minosoft.util.logging.LogLevels
-import de.bixilon.minosoft.util.logging.LogMessageType
+import de.bixilon.minosoft.util.KUtil.unsafeCast
 import glm_.glm
 import glm_.mat4x4.Mat4
 import glm_.vec2.Vec2
@@ -45,15 +45,17 @@ class HUDRenderer(
     val connection: PlayConnection,
     val renderWindow: RenderWindow,
 ) : Renderer {
-    private val shader = renderWindow.renderSystem.createShader("minosoft:hud".toResourceLocation())
+    val shader = renderWindow.renderSystem.createShader("minosoft:hud".toResourceLocation())
     private lateinit var mesh: GUIMesh
     var scaledSize: Vec2i = renderWindow.window.size
-    private var matrix: Mat4 = Mat4()
+    var matrix: Mat4 = Mat4()
     private var enabled = true
 
     private val hudElements: MutableMap<ResourceLocation, HUDElement<*>> = synchronizedMapOf()
 
     private var lastTickTime = 0L
+
+    val atlasManager = HUDAtlasManager(this)
 
     fun registerElement(hudBuilder: HUDBuilder<*>) {
         val hudElement = hudBuilder.build(this)
@@ -69,6 +71,7 @@ class HUDRenderer(
 
     private fun registerDefaultElements() {
         registerElement(DebugHUDElement)
+        registerElement(CrosshairHUDElement)
     }
 
     override fun init() {
@@ -78,8 +81,11 @@ class HUDRenderer(
 
             for (element in hudElements.toSynchronizedMap().values) {
                 element.layout?.onParentChange()
+                element.apply()
             }
         })
+        atlasManager.init()
+
         registerDefaultElements()
 
         for (element in this.hudElements.toSynchronizedMap().values) {
@@ -90,13 +96,11 @@ class HUDRenderer(
             mutableMapOf(
                 KeyAction.STICKY_INVERTED to mutableSetOf(KeyCodes.KEY_F1),
             ),
-        )) {
-            Log.log(LogMessageType.OTHER, LogLevels.INFO) { "Toggled hud: $it" }
-            enabled = it
-        }
+        )) { enabled = it }
     }
 
     override fun postInit() {
+        atlasManager.postInit()
         shader.load()
         renderWindow.textureManager.staticTextures.use(shader)
 
@@ -109,7 +113,6 @@ class HUDRenderer(
         if (!enabled) {
             return
         }
-        renderWindow.renderSystem.reset()
         if (this::mesh.isInitialized) {
             mesh.unload()
         }
@@ -136,14 +139,20 @@ class HUDRenderer(
                 continue
             }
             element.layout?.render(element.layoutOffset ?: Vec2i.EMPTY, 0, mesh)
-            element.draw(mesh)
+            element.draw()
         }
 
+
+        renderWindow.renderSystem.reset()
         mesh.load()
 
 
         shader.use()
         mesh.draw()
+    }
+
+    operator fun <T : HUDElement<*>> get(hudBuilder: HUDBuilder<*>): T? {
+        return hudElements[hudBuilder.RESOURCE_LOCATION].unsafeCast()
     }
 
     companion object : RendererBuilder<HUDRenderer> {

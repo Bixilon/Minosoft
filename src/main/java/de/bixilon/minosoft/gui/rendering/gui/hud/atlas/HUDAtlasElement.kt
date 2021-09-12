@@ -11,31 +11,19 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.gui.hud.hud
+package de.bixilon.minosoft.gui.rendering.gui.hud.atlas
 
-import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.gui.elements.layout.Layout
-import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
-import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
+import glm_.vec2.Vec2
 import glm_.vec2.Vec2i
 
-abstract class HUDElement<T : Layout>(val hudRenderer: HUDRenderer) {
-    val renderWindow: RenderWindow = hudRenderer.renderWindow
-    var enabled = true
-
-    open val layout: T?
-        get() = null
-
-    open val layoutOffset: Vec2i?
-        get() = null
-
-    open fun init() {}
-
-    open fun postInit() {}
-
-    open fun draw(consumer: GUIVertexConsumer) {}
-
-    open fun tick() {
-        layout?.tick()
-    }
+class HUDAtlasElement(
+    override val texture: AbstractTexture,
+    val start: Vec2i,
+    val end: Vec2i,
+    val slots: Map<Int, Vec2Binding<Int>>, // ToDo: Use an array?
+) : TextureLike {
+    override val size: Vec2i = start - end
+    override lateinit var uvStart: Vec2
+    override lateinit var uvEnd: Vec2
 }

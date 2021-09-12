@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.util.vec
 
+import de.bixilon.minosoft.util.KUtil.toInt
 import glm_.vec2.Vec2
 import glm_.vec2.Vec2i
 
@@ -57,5 +58,15 @@ object Vec2Util {
             max.y = other.y
         }
         return max
+    }
+
+
+    fun Any?.toVec2i(default: Vec2i? = null): Vec2i {
+        return when (this) {
+            is List<*> -> Vec2i(this[0].toInt(), this[1].toInt())
+            is Map<*, *> -> Vec2i(this["x"]?.toInt() ?: 0, this["y"]?.toInt() ?: 0)
+            is Number -> Vec2i(this.toInt())
+            else -> default ?: throw IllegalArgumentException("Not a Vec2i!")
+        }
     }
 }

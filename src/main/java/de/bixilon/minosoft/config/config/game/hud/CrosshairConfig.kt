@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2021 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -11,8 +11,14 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.config.config.game
+package de.bixilon.minosoft.config.config.game.hud
 
-data class HUDGameConfig(
-    var scale: Float = 2.0f,
+import com.squareup.moshi.Json
+import de.bixilon.minosoft.data.text.ChatColors
+import de.bixilon.minosoft.data.text.RGBColor
+
+data class CrosshairConfig(
+    var enabled: Boolean = true,
+    @Json(name = "complementary_color") var complementaryColor: Boolean = true,
+    var color: RGBColor = ChatColors.WHITE,
 )

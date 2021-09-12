@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.gui.hud.hud
+package de.bixilon.minosoft.gui.rendering.gui.hud.elements
 
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.data.registries.CompanionResourceLocation

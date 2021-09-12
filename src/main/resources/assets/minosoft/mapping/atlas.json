@@ -1,127 +1,109 @@
 {
   "minecraft:hotbar_base": {
-    "texture": "minecraft:textures/gui/widgets.png",
-    "versions": {
-      "567": {
-        "start": [0, 0],
-        "end": [182, 22],
-        "slots": {
-          "0": {
-            "start": [3, 3],
-            "end": [19, 19]
-          },
-          "1": {
-            "start": [23, 3],
-            "end": [39, 19]
-          },
-          "2": {
-            "start": [43, 3],
-            "end": [59, 19]
-          },
-          "3": {
-            "start": [63, 3],
-            "end": [79, 19]
-          },
-          "4": {
-            "start": [83, 3],
-            "end": [99, 19]
-          },
-          "5": {
-            "start": [103, 3],
-            "end": [119, 19]
-          },
-          "6": {
-            "start": [123, 3],
-            "end": [139, 19]
-          },
-          "7": {
-            "start": [143, 3],
-            "end": [159, 19]
-          },
-          "8": {
-            "start": [163, 3],
-            "end": [179, 19]
-          }
+    "567": {
+      "texture": "minecraft:textures/gui/widgets.png",
+      "start": [0, 0],
+      "end": [182, 22],
+      "slots": {
+        "0": {
+          "start": [3, 3],
+          "end": [19, 19]
+        },
+        "1": {
+          "start": [23, 3],
+          "end": [39, 19]
+        },
+        "2": {
+          "start": [43, 3],
+          "end": [59, 19]
+        },
+        "3": {
+          "start": [63, 3],
+          "end": [79, 19]
+        },
+        "4": {
+          "start": [83, 3],
+          "end": [99, 19]
+        },
+        "5": {
+          "start": [103, 3],
+          "end": [119, 19]
+        },
+        "6": {
+          "start": [123, 3],
+          "end": [139, 19]
+        },
+        "7": {
+          "start": [143, 3],
+          "end": [159, 19]
+        },
+        "8": {
+          "start": [163, 3],
+          "end": [179, 19]
         }
       }
     }
   },
   "minecraft:hotbar_selected_slot_frame": {
-    "texture": "minecraft:textures/gui/widgets.png",
-    "versions": {
-      "567": {
-        "start": [0, 22],
-        "end": [24, 46],
-        "slots": {
-          "0": {
-            "start": [5, 5],
-            "end": [21, 21]
-          }
+    "567": {
+      "texture": "minecraft:textures/gui/widgets.png",
+      "start": [0, 22],
+      "end": [24, 46],
+      "slots": {
+        "0": {
+          "start": [5, 5],
+          "end": [21, 21]
         }
       }
     }
   },
   "minecraft:crosshair": {
-    "texture": "minecraft:textures/gui/icons.png",
-    "versions": {
-      "0": {
-        "start": [0, 0],
-        "end": [16, 16]
-      }
+    "0": {
+      "texture": "minecraft:textures/gui/icons.png",
+      "start": [0, 0],
+      "end": [16, 16]
     }
   },
   "minecraft:experience_bar_empty": {
-    "texture": "minecraft:textures/gui/icons.png",
-    "versions": {
-      "0": {
-        "start": [0, 64],
-        "end": [182, 69]
-      }
+    "0": {
+      "texture": "minecraft:textures/gui/icons.png",
+      "start": [0, 64],
+      "end": [182, 69]
     }
   },
   "minecraft:experience_bar_full": {
-    "texture": "minecraft:textures/gui/icons.png",
-    "versions": {
-      "0": {
-        "start": [0, 69],
-        "end": [182, 74]
-      }
+    "0": {
+      "texture": "minecraft:textures/gui/icons.png",
+      "start": [0, 69],
+      "end": [182, 74]
     }
   },
   "minecraft:black_heart_container": {
-    "texture": "minecraft:textures/gui/icons.png",
-    "versions": {
-      "0": {
-        "start": [16, 0],
-        "end": [25, 9]
-      }
+    "0": {
+      "texture": "minecraft:textures/gui/icons.png",
+      "start": [16, 0],
+      "end": [25, 9]
     }
   },
   "minecraft:white_heart_container": {
-    "texture": "minecraft:textures/gui/icons.png",
-    "versions": {
-      "0": {
-        "start": [25, 0],
-        "end": [34, 9]
-      }
+    "0": {
+      "texture": "minecraft:textures/gui/icons.png",
+      "start": [25, 0],
+      "end": [34, 9]
     }
   },
   "minecraft:full_red_heart": {
-    "texture": "minecraft:textures/gui/icons.png",
-    "versions": {
-      "0": {
-        "start": [52, 0],
-        "end": [61, 9]
-      }
+    "0": {
+      "texture": "minecraft:textures/gui/icons.png",
+      "start": [52, 0],
+      "end": [61, 9]
     }
   },
   "minecraft:half_red_heart": {
-    "texture": "minecraft:textures/gui/icons.png",
-    "versions": {
-      "0": {
-        "start": [61, 0],
-        "end": [70, 9]
-      }
+    "0": {
+      "texture": "minecraft:textures/gui/icons.png",
+      "start": [61, 0],
+      "end": [70, 9]
     }
   }
 }

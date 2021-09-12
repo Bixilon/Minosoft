@@ -16,6 +16,7 @@ package de.bixilon.minosoft.config.config.game
 import de.bixilon.minosoft.config.config.game.controls.ControlsGameConfig
 import de.bixilon.minosoft.config.config.game.entities.EntitiesConfig
 import de.bixilon.minosoft.config.config.game.graphics.GraphicsGameConfig
+import de.bixilon.minosoft.config.config.game.hud.HUDGameConfig
 import de.bixilon.minosoft.config.config.game.sound.SoundConfig
 import de.bixilon.minosoft.config.config.game.world.WorldConfig
 

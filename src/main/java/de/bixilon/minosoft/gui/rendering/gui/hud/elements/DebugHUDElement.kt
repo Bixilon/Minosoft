@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.gui.hud.hud
+package de.bixilon.minosoft.gui.rendering.gui.hud.elements
 
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.key.KeyAction
@@ -113,7 +113,7 @@ class DebugHUDElement(hudRenderer: HUDRenderer) : HUDElement<GridLayout>(hudRend
 
 
         connection.player.apply {
-            // ToDo: Only update when the position changesEntityMoveAndRotateS2CP
+            // ToDo: Only update when the position changes
             layout += AutoTextElement(hudRenderer, 1) { with(position) { "XYZ ${x.format()} / ${y.format()} / ${z.format()}" } }
             layout += AutoTextElement(hudRenderer, 1) { with(positionInfo.blockPosition) { "Block $x $y $z" } }
             layout += AutoTextElement(hudRenderer, 1) { with(positionInfo) { "Chunk $inChunkSectionPosition in (${chunkPosition.x} $sectionHeight ${chunkPosition.y})" } }
@@ -127,10 +127,7 @@ class DebugHUDElement(hudRenderer: HUDRenderer) : HUDElement<GridLayout>(hudRend
                 }
 
                 hudRenderer.renderWindow.connection.player.rotation.apply {
-                    text += " yaw="
-                    text += headYaw.round10
-                    text += ", pitch="
-                    text += pitch.round10
+                    text += " yaw=${headYaw.round10}, pitch=${pitch.round10}"
                 }
 
                 text
