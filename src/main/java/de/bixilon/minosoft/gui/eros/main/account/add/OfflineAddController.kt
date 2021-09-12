@@ -23,7 +23,6 @@ import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.placeholder
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.text
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
-import javafx.application.Platform
 import javafx.fxml.FXML
 import javafx.scene.control.Button
 import javafx.scene.control.TextField
@@ -46,7 +45,7 @@ class OfflineAddController(
 
 
     fun show() {
-        Platform.runLater {
+        JavaFXUtil.runLater {
             JavaFXUtil.openModal(TITLE, LAYOUT, this, modality = Modality.APPLICATION_MODAL)
             stage.show()
         }

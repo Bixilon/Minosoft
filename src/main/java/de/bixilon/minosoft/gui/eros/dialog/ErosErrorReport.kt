@@ -23,7 +23,6 @@ import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.KUtil.realName
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.KUtil.toStackTrace
-import javafx.application.Platform
 import javafx.fxml.FXML
 import javafx.scene.control.Button
 import javafx.scene.control.TextArea
@@ -77,7 +76,7 @@ class ErosErrorReport : DialogController() {
                 return
             }
 
-            Platform.runLater {
+            JavaFXUtil.runLater {
                 val controller = JavaFXUtil.openModal<ErosErrorReport>(TITLE(this), LAYOUT)
                 controller.exception = this
                 controller.stage.show()

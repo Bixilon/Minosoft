@@ -13,13 +13,13 @@
 
 package de.bixilon.minosoft.gui.eros.modding.invoker
 
+import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.modding.event.events.CancelableEvent
 import de.bixilon.minosoft.modding.event.events.Event
 import de.bixilon.minosoft.modding.event.invoker.EventInstantFireable
 import de.bixilon.minosoft.modding.event.invoker.EventInvoker
 import de.bixilon.minosoft.modding.event.invoker.OneShotInvoker
 import de.bixilon.minosoft.modding.loading.Priorities
-import javafx.application.Platform
 import kotlin.reflect.KClass
 
 /**
@@ -38,7 +38,7 @@ class JavaFXEventInvoker<E : Event> private constructor(
         if (!this.isIgnoreCancelled && event is CancelableEvent && event.cancelled) {
             return
         }
-        Platform.runLater {
+        JavaFXUtil.runLater {
             callback(event as E)
         }
     }

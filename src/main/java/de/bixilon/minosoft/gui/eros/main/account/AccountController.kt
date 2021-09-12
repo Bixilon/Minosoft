@@ -25,11 +25,11 @@ import de.bixilon.minosoft.gui.eros.dialog.SimpleErosConfirmationDialog
 import de.bixilon.minosoft.gui.eros.main.account.add.MicrosoftAddController
 import de.bixilon.minosoft.gui.eros.main.account.add.MojangAddController
 import de.bixilon.minosoft.gui.eros.main.account.add.OfflineAddController
+import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.util.KUtil.decide
 import de.bixilon.minosoft.util.KUtil.extend
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.task.pool.DefaultThreadPool
-import javafx.application.Platform
 import javafx.fxml.FXML
 import javafx.geometry.HPos
 import javafx.geometry.Insets
@@ -132,7 +132,7 @@ class AccountController : EmbeddedJavaFXController<Pane>() {
                         onConfirm = {
                             Minosoft.config.config.account.entries.remove(account.id)
                             Minosoft.config.saveToFile()
-                            Platform.runLater { refreshList() }
+                            JavaFXUtil.runLater { refreshList() }
                         }
                     ).show()
                 }
@@ -143,7 +143,7 @@ class AccountController : EmbeddedJavaFXController<Pane>() {
                     isDisable = true
                     DefaultThreadPool += {
                         account.verify()
-                        Platform.runLater { refreshList() }
+                        JavaFXUtil.runLater { refreshList() }
                     }
                 }
             }, 3, 0)
@@ -155,7 +155,7 @@ class AccountController : EmbeddedJavaFXController<Pane>() {
                         account.verify()
                         Minosoft.config.config.account.selected = account
                         Minosoft.config.saveToFile()
-                        Platform.runLater { refreshList() }
+                        JavaFXUtil.runLater { refreshList() }
                     }
                 }
                 isDisable = Minosoft.config.config.account.selected === account

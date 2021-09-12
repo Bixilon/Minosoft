@@ -26,6 +26,7 @@ import de.bixilon.minosoft.gui.eros.dialog.connection.KickDialog
 import de.bixilon.minosoft.gui.eros.main.play.server.card.ServerCard
 import de.bixilon.minosoft.gui.eros.main.play.server.card.ServerCardController
 import de.bixilon.minosoft.gui.eros.modding.invoker.JavaFXEventInvoker
+import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.modding.event.events.KickEvent
 import de.bixilon.minosoft.modding.event.events.LoginKickEvent
 import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionStateChangeEvent
@@ -39,7 +40,6 @@ import de.bixilon.minosoft.util.KUtil.decide
 import de.bixilon.minosoft.util.KUtil.thousands
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.task.pool.DefaultThreadPool
-import javafx.application.Platform
 import javafx.fxml.FXML
 import javafx.geometry.HPos
 import javafx.geometry.Insets
@@ -111,7 +111,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
             card
         }
         val wasSelected = serverListViewFX.selectionModel.selectedItem === card
-        serverListViewFX.items.remove(card)
+        // Platform.runLater {serverListViewFX.items.remove(card)}
 
         server.ping?.let {
             if (hideOfflineFX.isSelected && it.error != null) {
@@ -131,8 +131,9 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
             }
         }
 
-
-        serverListViewFX.items.add(card)
+        if (!serverListViewFX.items.contains(card)) {
+            serverListViewFX.items.add(card)
+        }
         serverListViewFX.items.sortBy { it.server.id } // ToDo (Performance): Do not sort, add before/after other server
 
 
@@ -188,7 +189,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
                             onConfirm = {
                                 Minosoft.config.config.server.entries.remove(serverCard.server.id)
                                 Minosoft.config.saveToFile()
-                                Platform.runLater { refreshList() }
+                                JavaFXUtil.runLater { refreshList() }
                             }
                         ).show()
                     }
@@ -213,7 +214,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
                                 server.ping()
                             }
                             Minosoft.config.saveToFile()
-                            Platform.runLater { refreshList() }
+                            JavaFXUtil.runLater { refreshList() }
                         }).show()
                     }
                 }, 2, 0)
@@ -244,7 +245,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
                                     account.connections -= serverCard.server
                                     serverCard.server.connections -= connection
                                 }
-                                Platform.runLater { updateServer(serverCard.server) }
+                                JavaFXUtil.runLater { updateServer(serverCard.server) }
                             })
 
                             connection.registerEvent(JavaFXEventInvoker.of<KickEvent> { event ->
@@ -290,7 +291,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
             val server = Server(name = ChatComponent.of(name), address = address, forcedVersion = forcedVersion)
             Minosoft.config.config.server.entries[server.id] = server // ToDo
             Minosoft.config.saveToFile()
-            Platform.runLater { refreshList() }
+            JavaFXUtil.runLater { refreshList() }
         }).show()
     }
 

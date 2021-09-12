@@ -19,7 +19,6 @@ import de.bixilon.minosoft.gui.eros.controller.DialogController
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.text
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
-import javafx.application.Platform
 import javafx.fxml.FXML
 import javafx.scene.control.Button
 import javafx.scene.text.TextFlow
@@ -37,7 +36,7 @@ class KickDialog(
     @FXML private lateinit var closeButtonFX: Button
 
     fun show() {
-        Platform.runLater {
+        JavaFXUtil.runLater {
             JavaFXUtil.openModal(title, LAYOUT, this)
             stage.show()
         }

@@ -19,7 +19,6 @@ import de.bixilon.minosoft.modding.event.events.FinishInitializingEvent
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
-import javafx.application.Platform
 
 object Eros {
     private val TITLE = "minosoft:eros_window_title".toResourceLocation()
@@ -30,7 +29,7 @@ object Eros {
 
     init {
         GlobalEventMaster.registerEvent(CallbackEventInvoker.of<FinishInitializingEvent> {
-            Platform.runLater {
+            JavaFXUtil.runLater {
                 mainErosController = JavaFXUtil.openModal(TITLE, LAYOUT)
                 mainErosController.stage.show()
             }

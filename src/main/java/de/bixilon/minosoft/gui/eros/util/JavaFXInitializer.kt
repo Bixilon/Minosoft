@@ -30,6 +30,7 @@ class JavaFXInitializer internal constructor() : Application() {
     override fun start(stage: Stage) {
         Platform.setImplicitExit(false)
 
+        JavaFXUtil.JAVA_FX_THREAD = Thread.currentThread()
         JavaFXUtil.HOST_SERVICES = hostServices
         JavaFXUtil.MINOSOFT_LOGO = Image(Minosoft.MINOSOFT_ASSETS_MANAGER.readAssetAsStream("minosoft:textures/icons/window_icon.png".toResourceLocation()))
 

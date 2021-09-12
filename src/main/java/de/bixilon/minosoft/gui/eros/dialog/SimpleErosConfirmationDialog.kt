@@ -20,7 +20,6 @@ import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.text
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.task.pool.DefaultThreadPool
-import javafx.application.Platform
 import javafx.fxml.FXML
 import javafx.scene.control.Button
 import javafx.scene.input.KeyCode
@@ -42,7 +41,7 @@ class SimpleErosConfirmationDialog(
     @FXML private lateinit var confirmButtonFX: Button
 
     fun show() {
-        Platform.runLater {
+        JavaFXUtil.runLater {
             JavaFXUtil.openModal(title, LAYOUT, this)
             stage.show()
         }

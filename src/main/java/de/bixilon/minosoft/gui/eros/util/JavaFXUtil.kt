@@ -21,6 +21,7 @@ import de.bixilon.minosoft.gui.eros.controller.JavaFXWindowController
 import de.bixilon.minosoft.util.KUtil.setValue
 import de.bixilon.minosoft.util.KUtil.unsafeCast
 import javafx.application.HostServices
+import javafx.application.Platform
 import javafx.css.StyleableProperty
 import javafx.fxml.FXMLLoader
 import javafx.scene.*
@@ -37,6 +38,7 @@ import java.net.CookieManager
 import kotlin.reflect.jvm.javaField
 
 object JavaFXUtil {
+    lateinit var JAVA_FX_THREAD: Thread
     lateinit var MINOSOFT_LOGO: Image
     lateinit var HOST_SERVICES: HostServices
 
@@ -115,5 +117,14 @@ object JavaFXUtil {
             CookieHandler.setDefault(this)
             this.cookieStore.removeAll()
         }
+    }
+
+    fun runLater(runnable: Runnable) {
+        if (Thread.currentThread() === JAVA_FX_THREAD) {
+            runnable.run()
+            return
+        }
+
+        Platform.runLater(runnable)
     }
 }

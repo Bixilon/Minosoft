@@ -27,7 +27,6 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import de.bixilon.minosoft.util.task.pool.DefaultThreadPool
-import javafx.application.Platform
 import javafx.fxml.FXML
 import javafx.fxml.FXMLLoader
 import javafx.scene.Parent
@@ -56,7 +55,7 @@ class ErosCrashReport : JavaFXWindowController() {
     var crashReportPath: String? = null
         set(value) {
             field = value
-            Platform.runLater {
+            JavaFXUtil.runLater {
                 crashReportPathDescriptionFX.isVisible = value != null
                 if (value != null) {
                     crashReportPathFX.text = value
@@ -69,7 +68,7 @@ class ErosCrashReport : JavaFXWindowController() {
     var details: String? = null
         set(value) {
             field = value
-            Platform.runLater { detailsFX.text = value }
+            JavaFXUtil.runLater { detailsFX.text = value }
         }
 
     fun exit() {
@@ -122,8 +121,12 @@ class ErosCrashReport : JavaFXWindowController() {
             // Kill some stuff
             tryCatch(executor = { DefaultThreadPool.shutdownNow() })
 
-            for (window in Window.getWindows()) {
-                Platform.runLater { window.hide() }
+            try {
+                for (window in Window.getWindows()) {
+                    JavaFXUtil.runLater { window.hide() }
+                }
+            } catch (exception: Exception) {
+                exception.printStackTrace()
             }
 
             val details = createCrashText(this)
@@ -161,7 +164,7 @@ class ErosCrashReport : JavaFXWindowController() {
 
             JavaFXInitializer.await()
 
-            Platform.runLater {
+            JavaFXUtil.runLater {
                 val fxmlLoader = FXMLLoader(ErosCrashReport::class.java.getResource("/assets/minosoft/eros/crash/crash_screen.fxml"))
                 val parent = fxmlLoader.load<Parent>()
                 val stage = Stage()

@@ -24,7 +24,6 @@ import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.text
 import de.bixilon.minosoft.util.KUtil.text
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.task.pool.DefaultThreadPool
-import javafx.application.Platform
 import javafx.fxml.FXML
 import javafx.scene.control.Button
 import javafx.scene.control.PasswordField
@@ -53,7 +52,7 @@ class MojangAddController(
 
 
     fun show() {
-        Platform.runLater {
+        JavaFXUtil.runLater {
             JavaFXUtil.openModal(TITLE, LAYOUT, this, modality = Modality.APPLICATION_MODAL)
             stage.show()
         }
@@ -117,12 +116,12 @@ class MojangAddController(
                 val account = MojangAccount.login(email = emailFX.text, password = passwordFX.text)
                 Minosoft.config.config.account.entries[account.id] = account
                 Minosoft.config.saveToFile()
-                Platform.runLater {
+                JavaFXUtil.runLater {
                     accountController.refreshList()
                     stage.hide()
                 }
             } catch (exception: Exception) {
-                Platform.runLater {
+                JavaFXUtil.runLater {
                     exception.printStackTrace()
                     errorFX.text = exception.text
                     errorFX.isVisible = true
