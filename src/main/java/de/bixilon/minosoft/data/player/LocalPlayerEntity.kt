@@ -106,6 +106,12 @@ class LocalPlayerEntity(
     var jumpingCoolDown = 0
     var isJumping = false
 
+    public override var previousPosition: Vec3d
+        get() = super.previousPosition
+        set(value) {
+            super.previousPosition = value
+        }
+
     val fovMultiplier = Previous(1.0) { previous, delta -> VecUtil.lerp(delta / ProtocolDefinition.TICK_TIMEd, previous.previous, previous.value) }
 
     override val hasGravity: Boolean

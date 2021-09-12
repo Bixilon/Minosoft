@@ -101,7 +101,7 @@ class Camera(
         private set
 
 
-    var previousPosition = Vec3d(connection.player.position)
+    var previousEyePosition = Vec3d(connection.player.position)
     var previousRotation = connection.player.rotation.copy()
     var previousZoom = zoom
 
@@ -270,7 +270,7 @@ class Camera(
         connection.fireEvent(FrustumChangeEvent(renderWindow, frustum))
         connection.fireEvent(CameraPositionChangeEvent(renderWindow, connection.player.eyePosition))
 
-        previousPosition = Vec3d(connection.player.position)
+        previousEyePosition = Vec3d(connection.player.eyePosition)
         previousRotation = connection.player.rotation.copy()
         previousZoom = zoom
 
@@ -343,13 +343,14 @@ class Camera(
             0.0f
         }
 
-        if (previousPosition != connection.player.position || previousRotation != connection.player.rotation || zoom != previousZoom) {
+        val eyePosition = connection.player.eyePosition
+
+        if (previousEyePosition != eyePosition || previousRotation != connection.player.rotation || zoom != previousZoom) {
             onPositionChange()
         } else {
             setSkyColor()
         }
 
-        val eyePosition = connection.player.eyePosition
         val cameraFront = cameraFront
 
         target = raycast(eyePosition, cameraFront, blocks = true, fluids = true, entities = true)

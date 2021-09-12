@@ -113,7 +113,7 @@ abstract class Entity(
         get() = dimensions.y * 0.85f
 
     private var lastFakeTickTime = -1L
-    private var previousPosition: Vec3d = Vec3d(position)
+    protected open var previousPosition: Vec3d = Vec3d(position)
     override var position: Vec3d = position
         set(value) {
             previousPosition = field
