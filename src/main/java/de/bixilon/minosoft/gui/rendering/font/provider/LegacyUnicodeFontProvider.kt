@@ -38,6 +38,7 @@ class LegacyUnicodeFontProvider(
                 // This page somehow does not exist, but we are fine with it
                 // ToDo: Check if it really exist
                 sizes.skip(UNICODE_PAGE_SIZE.toLong()) // skip the sizes to not mess up
+                char += UNICODE_PAGE_SIZE
                 continue
             }
             val texture = renderWindow.textureManager.staticTextures.createTexture(template.format("%02x".format(page)).toResourceLocation().texture())
@@ -46,8 +47,8 @@ class LegacyUnicodeFontProvider(
                 val yEnd = PIXEL.y * (y + 1) * CHAR_SIZE
                 for (x in 0 until UNICODE_PAGE_SIZE / CHAR_SIZE) {
                     val widthByte = sizes.read()
-                    val charXStart = (widthByte shr 4) and 0x0F
-                    val charXEnd = widthByte and 0x0F
+                    val charXStart = ((widthByte shr 4) and 0x0F) - 1
+                    val charXEnd = (widthByte and 0x0F) + 1
 
                     val xOffset = PIXEL.x * CHAR_SIZE * x
 
@@ -74,7 +75,8 @@ class LegacyUnicodeFontProvider(
                         uvEnd = uvEnd,
                     )
 
-                    chars[(char++).code] = charData
+                    chars[char.code] = charData
+                    char++
                 }
             }
         }
