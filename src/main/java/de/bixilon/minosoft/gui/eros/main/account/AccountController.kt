@@ -152,7 +152,7 @@ class AccountController : EmbeddedJavaFXController<Pane>() {
                     isDisable = true
 
                     DefaultThreadPool += {
-                        account.verify()
+                        account.verify() // ToDo: Show error
                         Minosoft.config.config.account.selected = account
                         Minosoft.config.saveToFile()
                         JavaFXUtil.runLater { refreshList() }

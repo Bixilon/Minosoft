@@ -47,7 +47,6 @@ open class TextElement(
         set(value) {
             textComponent = ChatComponent.of(value)
             field = value
-            cacheUpToDate = false
         }
 
     private var emptyMessage: Boolean = true
@@ -61,6 +60,7 @@ open class TextElement(
                 ChatComponentRenderer.render(Vec2i.EMPTY, Vec2i.EMPTY, prefSize, 0, InfiniteSizeElement(hudRenderer), fontAlignment, renderWindow, null, TextRenderInfo(), value)
             }
             this.prefSize = prefSize
+            cacheUpToDate = false
             apply()
         }
 

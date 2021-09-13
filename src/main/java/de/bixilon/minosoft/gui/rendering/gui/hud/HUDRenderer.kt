@@ -22,10 +22,7 @@ import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.Renderer
 import de.bixilon.minosoft.gui.rendering.RendererBuilder
 import de.bixilon.minosoft.gui.rendering.gui.hud.atlas.HUDAtlasManager
-import de.bixilon.minosoft.gui.rendering.gui.hud.elements.CrosshairHUDElement
-import de.bixilon.minosoft.gui.rendering.gui.hud.elements.DebugHUDElement
-import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
-import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDElement
+import de.bixilon.minosoft.gui.rendering.gui.hud.elements.*
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMesh
 import de.bixilon.minosoft.gui.rendering.modding.events.ResizeWindowEvent
 import de.bixilon.minosoft.gui.rendering.util.vec.Vec2Util.EMPTY
@@ -109,7 +106,7 @@ class HUDRenderer(
         }
     }
 
-    override fun draw() {
+    override fun postDraw() {
         if (!enabled) {
             return
         }

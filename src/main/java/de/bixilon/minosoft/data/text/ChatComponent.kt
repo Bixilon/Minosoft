@@ -39,12 +39,12 @@ interface ChatComponent {
     val message: String
 
     /**
-     * @return Returns the a list of Nodes, drawable in JavaFX (TextFlow)
+     * @return Returns a list of Nodes, drawable in JavaFX (TextFlow)
      */
     fun getJavaFXText(nodes: ObservableList<Node>): ObservableList<Node>
 
     /**
-     * @return Returns the a list of Nodes, drawable in JavaFX (TextFlow)
+     * @return Returns a list of Nodes, drawable in JavaFX (TextFlow)
      */
     val javaFXText: ObservableList<Node>
         get() = getJavaFXText(FXCollections.observableArrayList())

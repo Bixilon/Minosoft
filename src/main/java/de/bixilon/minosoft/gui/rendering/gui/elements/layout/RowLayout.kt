@@ -22,8 +22,10 @@ import de.bixilon.minosoft.gui.rendering.util.vec.Vec2Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.Vec4Util.bottom
 import de.bixilon.minosoft.gui.rendering.util.vec.Vec4Util.horizontal
 import de.bixilon.minosoft.gui.rendering.util.vec.Vec4Util.left
+import de.bixilon.minosoft.gui.rendering.util.vec.Vec4Util.offset
 import de.bixilon.minosoft.gui.rendering.util.vec.Vec4Util.spaceSize
 import de.bixilon.minosoft.gui.rendering.util.vec.Vec4Util.top
+import de.bixilon.minosoft.gui.rendering.util.vec.Vec4Util.vertical
 import de.bixilon.minosoft.util.KUtil.synchronizedListOf
 import de.bixilon.minosoft.util.KUtil.toSynchronizedList
 import glm_.vec2.Vec2i
@@ -38,8 +40,6 @@ open class RowLayout(
     spacing: Int = 0,
 ) : Layout(hudRenderer), ChildAlignable {
     private var _prefSize = Vec2i.EMPTY
-
-    // ToDo: Spacing between elements
     private val children: MutableList<Element> = synchronizedListOf()
 
     override var prefSize: Vec2i
@@ -57,19 +57,39 @@ open class RowLayout(
     }
 
     override fun render(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int {
-        // ToDo: Check max size
-
-        var childYOffset = margin.top
+        var childYOffset = 0
         var maxZ = 0
-        for (child in children) {
-            val childZ = child.render(Vec2i(offset.x + margin.left + childAlignment.getOffset(size.x - margin.horizontal, child.size.x), offset.y + childYOffset), z, consumer)
+
+        fun exceedsY(y: Int): Boolean {
+            return childYOffset + y > size.y
+        }
+
+        fun addY(y: Int): Boolean {
+            if (exceedsY(y)) {
+                return true
+            }
+            childYOffset += y
+            return false
+        }
+
+        if (addY(margin.top)) {
+            return maxZ
+        }
+
+        for (child in children.toSynchronizedList()) {
+            val childSize = child.size
+            if (exceedsY(childSize.y)) {
+                break
+            }
+            val childZ = child.render(Vec2i(offset.x + margin.left + childAlignment.getOffset(size.x - margin.horizontal, childSize.x), offset.y + childYOffset), z, consumer)
             if (maxZ < childZ) {
                 maxZ = childZ
             }
-            childYOffset += child.margin.top
-            childYOffset += child.size.y
-            childYOffset += child.margin.bottom
-            childYOffset += spacing
+            childYOffset += childSize.y
+
+            if (addY(child.margin.vertical + spacing)) {
+                break
+            }
         }
 
         return maxZ
@@ -92,11 +112,15 @@ open class RowLayout(
         parent?.onChildChange(this)
     }
 
+    @Synchronized
     override fun silentApply() {
         val maxSize = maxSize
-        val size = Vec2i(0, 0)
+        val size = margin.offset
         val prefSize = margin.spaceSize
         val xMargin = margin.horizontal
+
+        val children = children.toSynchronizedList()
+        val lastIndex = children.size - 1
 
         for (child in children) {
             prefSize.x = max(prefSize.x, xMargin + child.prefSize.x)
@@ -115,15 +139,17 @@ open class RowLayout(
             return false
         }
 
-        for (child in children) {
+        for ((index, child) in children.withIndex()) {
             if (addY(child.margin.top)) {
                 break
             }
-            if (addY(child.size.y)) {
+
+            val childSize = child.size
+            if (addY(childSize.y)) {
                 break
             }
 
-            val xSize = child.size.x
+            val xSize = childSize.x
             if (xSize > maxSize.x) {
                 break
             }
@@ -133,7 +159,7 @@ open class RowLayout(
             if (addY(child.margin.bottom)) {
                 break
             }
-            if (addY(spacing)) { // ToDo: Only add of not the last element
+            if (index != lastIndex && addY(spacing)) {
                 break
             }
         }
@@ -152,6 +178,7 @@ open class RowLayout(
     override fun tick() {
         super.tick()
 
+        // ToDo: Just tick visible elements?
         for (child in children.toSynchronizedList()) {
             child.tick()
         }

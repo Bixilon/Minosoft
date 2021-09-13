@@ -226,7 +226,7 @@ class DebugHUDElement(hudRenderer: HUDRenderer) : HUDElement<GridLayout>(hudRend
         renderWindow.inputHandler.camera.apply {
             layout += AutoTextElement(hudRenderer, 1, ElementAlignments.RIGHT) {
                 // ToDo: Tags
-                target ?: return@AutoTextElement ""
+                target ?: "No target"
             }
         }
         return layout

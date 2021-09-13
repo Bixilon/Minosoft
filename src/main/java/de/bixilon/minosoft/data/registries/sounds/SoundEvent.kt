@@ -21,6 +21,10 @@ data class SoundEvent(
     override val resourceLocation: ResourceLocation,
 ) : RegistryItem() {
 
+    override fun toString(): String {
+        return resourceLocation.toString()
+    }
+
     companion object : ResourceLocationDeserializer<SoundEvent> {
         override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): SoundEvent {
             return SoundEvent(

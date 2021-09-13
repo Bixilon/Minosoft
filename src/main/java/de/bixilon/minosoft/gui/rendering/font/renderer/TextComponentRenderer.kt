@@ -22,7 +22,6 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.ElementAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.ElementAlignments.Companion.getOffset
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
-import de.bixilon.minosoft.util.KUtil.decide
 import de.bixilon.minosoft.util.MMath.ceil
 import glm_.vec2.Vec2i
 
@@ -34,6 +33,7 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
         }
         val elementMaxSize = element.maxSize
         val shadow = text.formatting.contains(PreChatFormattingCodes.SHADOWED)
+        val bold = text.formatting.contains(PreChatFormattingCodes.BOLD)
         // ToDo: Only 1 quad for the underline and the strikethrough
 
         var alignmentXOffset = 0
@@ -131,7 +131,13 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
 
             if (offset.x != initialOffset.x + Font.CHAR_MARGIN) {
                 // add spacing between letters
-                width += shadow.decide(Font.HORIZONTAL_SPACING_SHADOW, Font.HORIZONTAL_SPACING)
+                width += if (bold) {
+                    Font.HORIZONTAL_SPACING_BOLD
+                } else if (shadow) {
+                    Font.HORIZONTAL_SPACING_SHADOW
+                } else {
+                    Font.HORIZONTAL_SPACING
+                }
             }
             val previousY = offset.y
 
