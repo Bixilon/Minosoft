@@ -69,6 +69,7 @@ class HUDRenderer(
     private fun registerDefaultElements() {
         registerElement(DebugHUDElement)
         registerElement(CrosshairHUDElement)
+        registerElement(ChatHUDElement)
     }
 
     override fun init() {

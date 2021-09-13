@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2021 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -10,19 +10,18 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.modding.event.events
 
-import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.modding.event.EventInitiators
-import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionEvent
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.protocol.packets.s2c.play.KickS2CP
+package de.bixilon.minosoft.gui.rendering.gui.elements.primitive
 
-open class KickEvent(
-    connection: PlayConnection,
-    initiator: EventInitiators,
-    val reason: ChatComponent,
-) : PlayConnectionEvent(connection, initiator) {
+import de.bixilon.minosoft.data.text.ChatColors
+import de.bixilon.minosoft.data.text.RGBColor
+import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
+import glm_.vec2.Vec2i
 
-    constructor(connection: PlayConnection, packet: KickS2CP) : this(connection, EventInitiators.SERVER, packet.reason)
+class ColorElement(
+    hudRenderer: HUDRenderer,
+    size: Vec2i,
+    color: RGBColor = ChatColors.WHITE,
+) : ImageElement(hudRenderer, hudRenderer.renderWindow.WHITE_TEXTURE, size, color) {
+    var color by this::tint
 }

@@ -13,7 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.font.renderer
 
+import de.bixilon.minosoft.data.text.BaseComponent
+
 data class TextLineInfo(
-    val chars: MutableList<Char> = mutableListOf(),
+    val text: BaseComponent = BaseComponent(),
     var width: Int = 0,
 )

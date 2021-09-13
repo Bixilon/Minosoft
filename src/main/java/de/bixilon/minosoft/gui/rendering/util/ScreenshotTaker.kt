@@ -13,6 +13,11 @@
 
 package de.bixilon.minosoft.gui.rendering.util
 
+import de.bixilon.minosoft.data.text.BaseComponent
+import de.bixilon.minosoft.data.text.ChatColors
+import de.bixilon.minosoft.data.text.TextComponent
+import de.bixilon.minosoft.data.text.events.ClickEvent
+import de.bixilon.minosoft.data.text.events.HoverEvent
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.system.base.PixelTypes
 import de.bixilon.minosoft.terminal.RunConfiguration
@@ -64,8 +69,24 @@ class ScreenshotTaker(
 
                     ImageIO.write(bufferedImage, "png", file)
 
-                    val message = "§aScreenshot saved to §f${file.name}"
-                    renderWindow.sendDebugMessage(message)
+                    renderWindow.sendDebugMessage(BaseComponent(
+                        "§aScreenshot saved to ",
+                        TextComponent(file.name).apply {
+                            color = ChatColors.WHITE
+                            underline()
+                            clickEvent = ClickEvent(ClickEvent.ClickEventActions.OPEN_URL, "file:${file.absolutePath}")
+                            hoverEvent = HoverEvent(HoverEvent.HoverEventActions.SHOW_TEXT, "Click to open")
+                        },
+                        // "\n",
+                        // TextComponent("[DELETE]").apply {
+                        //     color = ChatColors.RED
+                        //     bold()
+                        //     clickEvent = ClickEvent(ClickEvent.ClickEventActions.OPEN_CONFIRMATION, {
+                        //         TODO()
+                        //     })
+                        //     hoverEvent = HoverEvent(HoverEvent.HoverEventActions.SHOW_TEXT, "Click to delete screenshot")
+                        // },
+                    ))
                 } catch (exception: Exception) {
                     screenshotFail(exception)
                 }

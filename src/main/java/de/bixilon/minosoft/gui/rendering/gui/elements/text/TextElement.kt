@@ -41,7 +41,7 @@ open class TextElement(
     private var previousMatrix = hudRenderer.matrix
 
     private var preparedSize = Vec2i.EMPTY
-    private var renderInfo = TextRenderInfo()
+    var renderInfo = TextRenderInfo()
 
     override var text: Any = text
         set(value) {

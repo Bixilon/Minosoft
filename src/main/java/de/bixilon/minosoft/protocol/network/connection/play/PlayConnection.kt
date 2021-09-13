@@ -71,6 +71,8 @@ class PlayConnection(
     val tabList = TabList()
     val scoreboardManager = ScoreboardManager()
     val registries = Registries()
+
+    @Deprecated(message = "PacketSender is deprecated")
     val sender = PacketSender(this)
     val serverInfo = ServerInfo()
     lateinit var assetsManager: MultiAssetsManager
@@ -199,7 +201,6 @@ class PlayConnection(
 
     fun connect(latch: CountUpAndDownLatch = CountUpAndDownLatch(1)) {
         check(!wasConnected) { "Connection was already connected!" }
-        // Log.log(LogMessageType.OTHER, LogLevels.VERBOSE){TranslatableComponents.HELLO_WORLD(Minosoft.LANGUAGE_MANAGER, "Moritz", 17)}
         try {
             state = PlayConnectionStates.LOADING
             fireEvent(RegistriesLoadEvent(this, registries, RegistriesLoadEvent.States.PRE))

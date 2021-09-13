@@ -144,6 +144,11 @@ abstract class Particle(
             return
         }
         tick()
+
+        if (dead) {
+            return
+        }
+
         move()
         postTick()
         lastTickTime = currentTime

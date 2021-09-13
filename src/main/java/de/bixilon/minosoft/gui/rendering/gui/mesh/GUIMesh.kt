@@ -28,7 +28,7 @@ import glm_.vec4.Vec4
 class GUIMesh(
     renderWindow: RenderWindow,
     val matrix: Mat4,
-) : Mesh(renderWindow, HUDMeshStruct, initialCacheSize = 40000), GUIVertexConsumer {
+) : Mesh(renderWindow, GUIMeshStruct, initialCacheSize = 40000), GUIVertexConsumer {
 
     override fun addVertex(position: Vec2t<*>, z: Int, texture: AbstractTexture, uv: Vec2, tint: RGBColor) {
         val outPosition = matrix * Vec4(position.x.toFloat(), position.y.toFloat(), 1.0f, 1.0f)
@@ -47,13 +47,13 @@ class GUIMesh(
         data.addAll(cache.data)
     }
 
-    data class HUDMeshStruct(
+    data class GUIMeshStruct(
         val position: Vec3,
         val uv: Vec2,
         val textureLayer: Int,
         val tintColor: RGBColor,
     ) {
-        companion object : MeshStruct(HUDMeshStruct::class)
+        companion object : MeshStruct(GUIMeshStruct::class)
     }
 
     companion object {

@@ -37,9 +37,18 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
         // ToDo: Only 1 quad for the underline and the strikethrough
 
         var alignmentXOffset = 0
+        var currentLineText = ""
         if (size.x > elementMaxSize.x || size.y > elementMaxSize.y) {
             // The size is already bigger/equals the maximum size
             return true
+        }
+
+        fun pushLine() {
+            if (consumer != null || currentLineText.isEmpty()) {
+                return
+            }
+            renderInfo.currentLine.text += text.copy(message = currentLineText)
+            currentLineText = ""
         }
 
         fun applyOffset() {
@@ -68,6 +77,7 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
             if (addY(Font.TOTAL_CHAR_HEIGHT)) {
                 return true
             }
+            pushLine()
             renderInfo.currentLineNumber++
             offset.x = initialOffset.x + Font.CHAR_MARGIN
             applyOffset()
@@ -158,9 +168,11 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
             consumer?.let { charData.render(letterOffset, z, text, it) }
 
             if (consumer == null) {
-                renderInfo.currentLine.chars += char
+                currentLineText += char
             }
         }
+
+        pushLine()
 
         if (text.formatting.contains(PreChatFormattingCodes.ITALIC)) {
             val italicOffset = CharData.ITALIC_OFFSET.ceil

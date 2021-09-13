@@ -19,6 +19,9 @@ import de.bixilon.minosoft.config.key.KeyAction
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.text.BaseComponent
+import de.bixilon.minosoft.data.text.ChatColors
+import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.gui.rendering.block.WorldRenderer
 import de.bixilon.minosoft.gui.rendering.block.chunk.ChunkBorderRenderer
 import de.bixilon.minosoft.gui.rendering.block.outline.BlockOutlineRenderer
@@ -353,8 +356,8 @@ class RenderWindow(
         rendererMap[rendererBuilder.RESOURCE_LOCATION] = renderer
     }
 
-    fun sendDebugMessage(message: String) {
-        connection.sender.sendFakeChatMessage(RenderConstants.DEBUG_MESSAGES_PREFIX + message)
+    fun sendDebugMessage(message: Any) {
+        connection.sender.sendFakeChatMessage(BaseComponent(RenderConstants.DEBUG_MESSAGES_PREFIX, ChatComponent.of(message).apply { applyDefaultColor(ChatColors.BLUE) }))
     }
 
     fun assertOnRenderThread() {

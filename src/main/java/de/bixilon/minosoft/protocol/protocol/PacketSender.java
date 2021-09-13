@@ -65,7 +65,7 @@ public class PacketSender {
         this.connection.fireEvent(new ChatMessageReceiveEvent(this.connection, EventInitiators.CLIENT, message, position, null));
     }
 
-    public void sendFakeChatMessage(String message) {
+    public void sendFakeChatMessage(Object message) {
         sendFakeChatMessage(ChatComponent.Companion.of(message), ChatTextPositions.CHAT_BOX);
     }
 }

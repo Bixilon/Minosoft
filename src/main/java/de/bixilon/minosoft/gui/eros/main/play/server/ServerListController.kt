@@ -323,7 +323,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
 
             "minosoft:general.empty".toResourceLocation() to { " " },
 
-            "minosoft:server_info.remote_version".toResourceLocation() to { it.ping?.serverVersion },
+            "minosoft:server_info.remote_version".toResourceLocation() to { it.ping?.serverVersion ?: "unknown" },
             "minosoft:server_info.remote_brand".toResourceLocation() to { it.ping?.lastServerStatus?.serverBrand },
             "minosoft:server_info.players_online".toResourceLocation() to { it.ping?.lastServerStatus?.let { status -> "${status.usedSlots?.thousands()} / ${status.slots?.thousands()}" } },
             "minosoft:server_info.ping".toResourceLocation() to { it.ping?.lastPongEvent?.let { pong -> "${pong.latency} ms" } },

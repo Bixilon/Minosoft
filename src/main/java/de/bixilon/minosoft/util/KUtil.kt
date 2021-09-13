@@ -405,4 +405,8 @@ object KUtil {
         }
         return this
     }
+
+    fun ByteArray.toBase64(): String {
+        return Base64.getEncoder().encodeToString(this)
+    }
 }

@@ -220,6 +220,6 @@ public class NonBlockingSocketNetwork extends Network {
     protected void enableEncryption(SecretKey secretKey) {
         this.decryptCipher = CryptManager.createNetCipherInstance(Cipher.DECRYPT_MODE, secretKey);
         this.encryptCipher = CryptManager.createNetCipherInstance(Cipher.ENCRYPT_MODE, secretKey);
-        Log.debug("Encryption enabled!");
+        Log.log(LogMessageType.NETWORK_STATUS, LogLevels.VERBOSE, () -> "Enabled protocol encryption");
     }
 }

@@ -239,6 +239,6 @@ public class BlockingSocketNetwork extends Network {
     protected void enableEncryption(SecretKey secretKey) {
         this.inputStream = new CipherInputStream(this.inputStream, CryptManager.createNetCipherInstance(Cipher.DECRYPT_MODE, secretKey));
         this.outputStream = new CipherOutputStream(this.outputStream, CryptManager.createNetCipherInstance(Cipher.ENCRYPT_MODE, secretKey));
-        Log.debug("Encryption enabled!");
+        Log.log(LogMessageType.NETWORK_STATUS, LogLevels.VERBOSE, () -> "Enabled protocol encryption");
     }
 }

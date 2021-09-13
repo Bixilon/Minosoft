@@ -18,6 +18,7 @@ import de.bixilon.minosoft.data.text.events.HoverEvent
 import de.bixilon.minosoft.gui.eros.dialog.ErosErrorReport.Companion.report
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.hyperlink
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.util.KUtil.toSynchronizedSet
 import de.bixilon.minosoft.util.Util
 import javafx.animation.Animation
 import javafx.animation.KeyFrame
@@ -66,6 +67,14 @@ open class TextComponent(
     fun shadow(): TextComponent {
         formatting.add(PreChatFormattingCodes.SHADOWED)
         return this
+    }
+
+    fun clickEvent(clickEvent: ClickEvent?) {
+        this.clickEvent = clickEvent
+    }
+
+    fun hoverEvent(hoverEvent: HoverEvent?) {
+        this.hoverEvent = hoverEvent
     }
 
     fun color(color: RGBColor): TextComponent {
@@ -190,6 +199,16 @@ open class TextComponent(
             }
         }
         return nodes
+    }
+
+    fun copy(message: Any? = this.message, color: RGBColor? = this.color, formatting: MutableSet<ChatFormattingCode> = this.formatting.toSynchronizedSet(), clickEvent: ClickEvent? = this.clickEvent, hoverEvent: HoverEvent? = this.hoverEvent): TextComponent {
+        return TextComponent(
+            message = message,
+            color = color,
+            formatting = formatting,
+            clickEvent = clickEvent,
+            hoverEvent = hoverEvent
+        )
     }
 
     companion object {
