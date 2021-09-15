@@ -138,7 +138,8 @@ class TextFlowElement(
     }
 
     override fun onParentChange() {
-        if (maxSize.x >= textSize.x && maxSize.y >= textSize.y) {
+        val maxSize = maxSize
+        if (maxSize.x >= prefMaxSize.x && maxSize.y >= prefMaxSize.y) {
             // Size did not change, skip
             return
         }

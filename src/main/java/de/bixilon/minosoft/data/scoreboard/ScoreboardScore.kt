@@ -12,4 +12,8 @@
  */
 package de.bixilon.minosoft.data.scoreboard
 
-class ScoreboardScore(val entity: String, var objective: String, var score: Int)
+class ScoreboardScore(
+    val entity: String,
+    var objective: String,
+    var score: Int,
+)

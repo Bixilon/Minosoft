@@ -31,7 +31,7 @@ class GridCell(
     override var margin: Vec4i by child::margin
     override var prefSize: Vec2i by child::prefSize
 
-    override var maxSize: Vec2i
+    override val maxSize: Vec2i
         get() {
             val maxSize = Vec2i(super.maxSize)
 
@@ -43,9 +43,6 @@ class GridCell(
             }
 
             return maxSize
-        }
-        set(value) {
-            super.maxSize = value
         }
 
     init {

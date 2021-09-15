@@ -68,8 +68,15 @@ class HUDRenderer(
 
     private fun registerDefaultElements() {
         registerElement(DebugHUDElement)
-        registerElement(CrosshairHUDElement)
-        registerElement(ChatHUDElement)
+        if (Minosoft.config.config.game.hud.crosshair.enabled) {
+            registerElement(CrosshairHUDElement)
+        }
+        if (Minosoft.config.config.game.hud.chat.enabled) {
+            registerElement(ChatHUDElement)
+        }
+        if (Minosoft.config.config.game.hud.internalMessages.enabled) {
+            registerElement(InternalMessagesHUDElement)
+        }
     }
 
     override fun init() {

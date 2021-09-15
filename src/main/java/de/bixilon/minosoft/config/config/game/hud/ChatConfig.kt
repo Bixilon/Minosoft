@@ -13,11 +13,8 @@
 
 package de.bixilon.minosoft.config.config.game.hud
 
-import com.squareup.moshi.Json
-
-data class HUDGameConfig(
-    var scale: Float = 2.0f,
-    var crosshair: CrosshairConfig = CrosshairConfig(),
-    var chat: ChatConfig = ChatConfig(),
-    @Json(name = "internal_messages") var internalMessages: InternalMessagesConfig = InternalMessagesConfig(),
+data class ChatConfig(
+    var enabled: Boolean = true,
+    var width: Int = 320,
+    var height: Int = 200,
 )

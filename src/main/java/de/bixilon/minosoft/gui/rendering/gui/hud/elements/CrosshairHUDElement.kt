@@ -60,9 +60,6 @@ class CrosshairHUDElement(hudRenderer: HUDRenderer) : HUDElement<GridLayout>(hud
 
         val config = Minosoft.config.config.game.hud.crosshair
 
-        if (!config.enabled) {
-            return
-        }
 
         val mesh = GUIMesh(renderWindow, hudRenderer.matrix)
 

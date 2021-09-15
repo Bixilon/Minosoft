@@ -17,7 +17,8 @@ import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMeshCache
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.util.vec.Vec2Util.EMPTY
-import de.bixilon.minosoft.gui.rendering.util.vec.Vec2Util.MAX
+import de.bixilon.minosoft.gui.rendering.util.vec.Vec2Util.max
+import de.bixilon.minosoft.gui.rendering.util.vec.Vec2Util.min
 import de.bixilon.minosoft.gui.rendering.util.vec.Vec4Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.Vec4Util.spaceSize
 import glm_.vec2.Vec2i
@@ -42,16 +43,15 @@ abstract class Element(val hudRenderer: HUDRenderer) {
             apply()
         }
 
-    open var maxSize: Vec2i = Vec2i(-1, -1)
+    open var prefMaxSize: Vec2i = Vec2i(-1, -1)
+        set(value) {
+            field = value
+            apply()
+        }
+
+    open val maxSize: Vec2i
         get() {
-            val ret = Vec2i.MAX
-
-            parent?.let {
-                ret.x = it.maxSize.x
-                ret.y = it.maxSize.y
-            }
-
-            val maxSize = Vec2i(field)
+            var maxSize = Vec2i(prefMaxSize)
 
             if (maxSize.x < 0) {
                 maxSize.x = hudRenderer.scaledSize.x
@@ -60,30 +60,17 @@ abstract class Element(val hudRenderer: HUDRenderer) {
                 maxSize.y = hudRenderer.scaledSize.y
             }
 
-            if (maxSize.x < ret.x) {
-                ret.x = maxSize.x
-            }
-            if (maxSize.y < ret.y) {
-                ret.y = maxSize.y
+
+            (parent?.maxSize ?: hudRenderer.scaledSize).let {
+                maxSize = maxSize.min(it)
             }
 
-            return ret - margin.spaceSize
-        }
-        set(value) {
-            field = value
-            apply()
+            return Vec2i.EMPTY.max(maxSize - margin.spaceSize)
         }
 
     open var size: Vec2i = Vec2i.EMPTY
         get() {
-            val size = Vec2i(field)
-            if (size.x > maxSize.x) {
-                size.x = maxSize.x
-            }
-            if (size.y > maxSize.y) {
-                size.y = maxSize.y
-            }
-            return size
+            return field.min(maxSize)
         }
 
     /**

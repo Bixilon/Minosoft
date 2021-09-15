@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -10,14 +10,14 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.modding.event.events
 
-package de.bixilon.minosoft.config.config.game.hud
+import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.modding.event.EventInitiators
+import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionEvent
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
-import com.squareup.moshi.Json
-
-data class HUDGameConfig(
-    var scale: Float = 2.0f,
-    var crosshair: CrosshairConfig = CrosshairConfig(),
-    var chat: ChatConfig = ChatConfig(),
-    @Json(name = "internal_messages") var internalMessages: InternalMessagesConfig = InternalMessagesConfig(),
-)
+class InternalMessageReceiveEvent(
+    connection: PlayConnection,
+    val message: ChatComponent,
+) : PlayConnectionEvent(connection, EventInitiators.CLIENT), CancelableEvent
