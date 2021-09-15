@@ -24,8 +24,6 @@ import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import de.bixilon.minosoft.util.KUtil.synchronizedSetOf
-import de.bixilon.minosoft.util.KUtil.toSynchronizedSet
 import glm_.mat4x4.Mat4
 import glm_.vec3.Vec3
 
@@ -35,13 +33,14 @@ class ParticleRenderer(
     val renderWindow: RenderWindow,
 ) : Renderer {
     private val particleShader: Shader = renderWindow.renderSystem.createShader(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "particle"))
-    private var particleMesh = ParticleMesh(renderWindow)
-    private var transparentParticleMesh = ParticleMesh(renderWindow)
+    private var particleMesh = ParticleMesh(renderWindow, 0)
+    private var transparentParticleMesh = ParticleMesh(renderWindow, 0)
 
-    private var particles: MutableSet<Particle> = synchronizedSetOf()
+    private var particles: MutableSet<Particle> = mutableSetOf()
+    private var particleQueue: MutableSet<Particle> = mutableSetOf()
 
     val size: Int
-        get() = particles.size
+        get() = particles.size + particleQueue.size
 
     override fun init() {
         connection.registerEvent(CallbackEventInvoker.of<CameraMatrixChangeEvent> {
@@ -71,8 +70,11 @@ class ParticleRenderer(
     }
 
     fun add(particle: Particle) {
-        check(particles.size < RenderConstants.MAXIMUM_PARTICLE_AMOUNT) { "Can not add particle: Limit reached (${particles.size} > ${RenderConstants.MAXIMUM_PARTICLE_AMOUNT}" }
-        particles += particle
+        val particleCount = particles.size + particleQueue.size
+        check(particleCount < RenderConstants.MAXIMUM_PARTICLE_AMOUNT) { "Can not add particle: Limit reached (${particleCount} > ${RenderConstants.MAXIMUM_PARTICLE_AMOUNT}" }
+        synchronized(particleQueue) {
+            particleQueue += particle
+        }
     }
 
     operator fun plusAssign(particle: Particle) {
@@ -82,18 +84,26 @@ class ParticleRenderer(
     override fun update() {
         particleMesh.unload()
         transparentParticleMesh.unload()
-        particleMesh = ParticleMesh(renderWindow)
-        transparentParticleMesh = ParticleMesh(renderWindow)
+        particleMesh = ParticleMesh(renderWindow, particles.size)
+        transparentParticleMesh = ParticleMesh(renderWindow, 500)
+
+        val toRemove: MutableSet<Particle> = mutableSetOf()
 
 
-        for (particle in particles.toSynchronizedSet()) {
+        synchronized(particleQueue) {
+            particles += particleQueue
+            particleQueue.clear()
+        }
+
+        for (particle in particles) {
             particle.tryTick()
             if (particle.dead) {
-                this.particles -= particle
+                toRemove += particle
                 continue
             }
             particle.addVertex(transparentParticleMesh, particleMesh)
         }
+        particles -= toRemove
 
         particleMesh.load()
         transparentParticleMesh.load()

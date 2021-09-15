@@ -14,13 +14,16 @@
 package de.bixilon.minosoft.data.physics
 
 import de.bixilon.minosoft.data.Axes
+import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.player.LocalPlayerEntity
 import de.bixilon.minosoft.data.registries.AABB
 import de.bixilon.minosoft.data.registries.VoxelShape
+import de.bixilon.minosoft.data.world.Chunk
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.inChunkPosition
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import glm_.vec2.Vec2i
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3bool
 import glm_.vec3.Vec3d
@@ -30,26 +33,32 @@ class CollisionDetector(val connection: PlayConnection) {
 
     private fun getCollisionsToCheck(deltaPosition: Vec3d, aabb: AABB, ignoreUnloadedChunks: Boolean = true): VoxelShape {
         // also look at blocks further down to also cover blocks with a higher than normal hitbox (for example fences)
-        val blockPositions = ((aabb extend deltaPosition).grow(1.0 + COLLISION_BOX_MARGIN)).blockPositions.toMutableList()
+        val blockPositions = aabb.offset(deltaPosition).grow(COLLISION_BOX_MARGIN).extend(Directions.DOWN).blockPositions
 
         val aabbBlockPositions = aabb.shrink().blockPositions
 
         val result = VoxelShape()
+        var chunk: Chunk? = null
+        var lastChunkPosition: Vec2i? = null
         for (blockPosition in blockPositions) {
-            val chunk = connection.world[blockPosition.chunkPosition]
-            if ((chunk == null || !chunk.isFullyLoaded) && !ignoreUnloadedChunks) {
+            val chunkPosition = blockPosition.chunkPosition
+            if (lastChunkPosition != chunkPosition) {
+                lastChunkPosition = chunkPosition
+                chunk = connection.world[blockPosition.chunkPosition]
+            }
+            if (chunk == null || !chunk.isFullyLoaded) {
                 // chunk is not loaded
-                result.add(VoxelShape.FULL + blockPosition)
+                if (!ignoreUnloadedChunks) {
+                    result += AABB.BLOCK + blockPosition
+                }
                 continue
             }
-            val blockState = chunk?.get(blockPosition.inChunkPosition) ?: continue
+            val blockState = chunk[blockPosition.inChunkPosition] ?: continue
             val blockShape = blockState.collisionShape + blockPosition
 
             // remove position if not already in it and not colliding with it
-            if (blockPosition in aabbBlockPositions) {
-                if (blockShape.intersect(aabb)) {
-                    continue
-                }
+            if (blockPosition in aabbBlockPositions && blockShape.intersect(aabb)) {
+                continue
             }
             result.add(blockShape)
         }
@@ -112,7 +121,7 @@ class CollisionDetector(val connection: PlayConnection) {
 
         if (stepping && onGround && (blocked.x || blocked.z)) {
             var stepMovement = adjustMovementForCollisions(Vec3d(movement.x, PhysicsConstants.STEP_HEIGHT, movement.z), aabb)
-            val verticalStepMovement = adjustMovementForCollisions(Vec3d(0.0, PhysicsConstants.STEP_HEIGHT, 0.0), aabb extend Vec3d(movement.x, 0.0, movement.z))
+            val verticalStepMovement = adjustMovementForCollisions(Vec3d(0.0, PhysicsConstants.STEP_HEIGHT, 0.0), aabb.extend(Vec3d(movement.x, 0.0, movement.z)))
 
             if (verticalStepMovement.y < PhysicsConstants.STEP_HEIGHT) {
                 val horizontalStepMovement = adjustMovementForCollisions(Vec3d(movement.x, 0.0, movement.z), aabb + verticalStepMovement) + verticalStepMovement
@@ -124,8 +133,8 @@ class CollisionDetector(val connection: PlayConnection) {
             if (stepMovement.length() > collisionMovement.length()) {
                 returnMovement = stepMovement + adjustMovementForCollisions(Vec3d(0.0, -stepMovement.y + movement.y, 0.0), aabb + stepMovement)
             }
+            checkBlocked()
         }
-        checkBlocked()
         physicsEntity?.let {
             if (blocked.x) {
                 it.velocity.x = 0.0
