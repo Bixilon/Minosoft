@@ -36,6 +36,7 @@ open class TextElement(
     override var fontAlignment: ElementAlignments = ElementAlignments.LEFT,
     var background: Boolean = true,
     var backgroundColor: RGBColor = RenderConstants.TEXT_BACKGROUND_COLOR,
+    parent: Element? = null,
 ) : LabeledElement(hudRenderer) {
     private var previousOffset = Vec2i.EMPTY
     private var previousMatrix = hudRenderer.matrix
@@ -67,6 +68,7 @@ open class TextElement(
     override var prefSize: Vec2i = Vec2i.EMPTY
 
     init {
+        this.parent = parent
         textComponent = ChatComponent.of(text)
     }
 
@@ -82,11 +84,6 @@ open class TextElement(
         this.cacheUpToDate = false
         this.size = size
         preparedSize = size
-    }
-
-    override fun apply() {
-        silentApply()
-        parent?.onChildChange(this)
     }
 
     override fun onChildChange(child: Element?) = error("A TextElement can not have a child!")

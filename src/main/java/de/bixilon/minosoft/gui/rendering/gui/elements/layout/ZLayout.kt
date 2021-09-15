@@ -24,7 +24,7 @@ import de.bixilon.minosoft.util.KUtil.synchronizedListOf
 import de.bixilon.minosoft.util.KUtil.toSynchronizedList
 import glm_.vec2.Vec2i
 
-class ZLayout(hudRenderer: HUDRenderer) : Layout(hudRenderer) {
+class ZLayout(hudRenderer: HUDRenderer) : Element(hudRenderer) {
     private val children: MutableList<Element> = synchronizedListOf()
 
     override fun render(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int {
@@ -42,11 +42,6 @@ class ZLayout(hudRenderer: HUDRenderer) : Layout(hudRenderer) {
             size = size.max(child.size)
         }
         this.size = size + margin.spaceSize
-    }
-
-    override fun apply() {
-        silentApply()
-        parent?.onChildChange(this)
     }
 
     fun append(child: Element) {

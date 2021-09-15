@@ -15,7 +15,6 @@ package de.bixilon.minosoft.gui.rendering.gui.elements.layout.grid
 
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.ElementAlignments.Companion.getOffset
-import de.bixilon.minosoft.gui.rendering.gui.elements.layout.Layout
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.util.vec.Vec4Util.offset
@@ -23,7 +22,7 @@ import glm_.vec2.Vec2i
 import java.lang.Integer.min
 import kotlin.math.max
 
-class GridLayout(hudRenderer: HUDRenderer, val grid: Vec2i) : Layout(hudRenderer) {
+class GridLayout(hudRenderer: HUDRenderer, val grid: Vec2i) : Element(hudRenderer) {
     val columnConstraints: Array<GridColumnConstraint> = Array(grid.x) { GridColumnConstraint() }
     val rowConstraints: Array<GridRowConstraint> = Array(grid.y) { GridRowConstraint() }
 
@@ -121,11 +120,6 @@ class GridLayout(hudRenderer: HUDRenderer, val grid: Vec2i) : Layout(hudRenderer
             columnStart[x] = offset + previousWidth
         }
         this.columnStart = columnStart
-    }
-
-    override fun apply() {
-        silentApply()
-        parent?.onChildChange(this)
     }
 
 

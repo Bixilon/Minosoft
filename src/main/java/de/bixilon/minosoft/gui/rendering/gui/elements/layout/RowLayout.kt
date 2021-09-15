@@ -38,7 +38,7 @@ open class RowLayout(
     hudRenderer: HUDRenderer,
     override var childAlignment: ElementAlignments = ElementAlignments.LEFT,
     spacing: Int = 0,
-) : Layout(hudRenderer), ChildAlignable {
+) : Element(hudRenderer), ChildAlignable {
     private var _prefSize = Vec2i.EMPTY
     private val children: MutableList<Element> = synchronizedListOf()
 
@@ -104,11 +104,6 @@ open class RowLayout(
 
         element.onParentChange()
         apply() // ToDo: Optimize
-        parent?.onChildChange(this)
-    }
-
-    override fun apply() {
-        silentApply()
         parent?.onChildChange(this)
     }
 

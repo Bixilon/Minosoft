@@ -113,7 +113,10 @@ abstract class Element(val hudRenderer: HUDRenderer) {
     /**
      * Applied all changes made to any property and calls `parent?.onChildChange(this)`
      */
-    abstract fun apply()
+    open fun apply() {
+        silentApply()
+        parent?.onChildChange(this)
+    }
 
     /**
      * Calls when any relevant property of the parent changes (e.g. maxSize)
