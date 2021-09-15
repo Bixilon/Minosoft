@@ -16,5 +16,5 @@ package de.bixilon.minosoft.config.config.game.hud
 data class ChatConfig(
     var enabled: Boolean = true,
     var width: Int = 320,
-    var height: Int = 200,
+    var height: Int = 180,
 )

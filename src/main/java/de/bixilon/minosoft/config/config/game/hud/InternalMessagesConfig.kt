@@ -15,6 +15,6 @@ package de.bixilon.minosoft.config.config.game.hud
 
 data class InternalMessagesConfig(
     var enabled: Boolean = true,
-    var width: Int = 250,
+    var width: Int = 320,
     var height: Int = 120,
 )

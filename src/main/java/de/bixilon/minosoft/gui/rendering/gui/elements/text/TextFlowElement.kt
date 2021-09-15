@@ -79,7 +79,7 @@ class TextFlowElement(
             }
 
             // ToDo: Cache lines
-            val textElement = TextElement(hudRenderer, message.text, parent = this)
+            val textElement = TextElement(hudRenderer, message.text, background = false, parent = this)
             val lines = textElement.renderInfo.lines
 
             val lineIterator = lines.reversed().iterator()
@@ -99,7 +99,7 @@ class TextFlowElement(
                 if (visibleLines.size >= maxLines) {
                     break
                 }
-                val lineElement = TextElement(hudRenderer, line.text, parent = this)
+                val lineElement = TextElement(hudRenderer, line.text, background = false, parent = this)
                 textSize = textSize.max(lineElement.size)
                 visibleLines += TextFlowLineElement(lineElement, message)
             }
