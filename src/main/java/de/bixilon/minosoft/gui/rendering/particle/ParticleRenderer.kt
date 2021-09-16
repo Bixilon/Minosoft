@@ -84,8 +84,6 @@ class ParticleRenderer(
     override fun update() {
         particleMesh.unload()
         transparentParticleMesh.unload()
-        particleMesh = ParticleMesh(renderWindow, particles.size)
-        transparentParticleMesh = ParticleMesh(renderWindow, 500)
 
         val toRemove: MutableSet<Particle> = mutableSetOf()
 
@@ -94,6 +92,9 @@ class ParticleRenderer(
             particles += particleQueue
             particleQueue.clear()
         }
+
+        particleMesh = ParticleMesh(renderWindow, particles.size)
+        transparentParticleMesh = ParticleMesh(renderWindow, 500)
 
         for (particle in particles) {
             particle.tryTick()

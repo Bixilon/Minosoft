@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.util.collections
 
 class ArrayFloatList(
-    private val initialSize: Int = 1000,
+    private val initialSize: Int = DEFAULT_INITIAL_SIZE,
 ) {
     private var data: FloatArray = FloatArray(initialSize)
     val limit: Int
@@ -23,6 +23,12 @@ class ArrayFloatList(
         private set
     val isEmpty: Boolean
         get() = size == 0
+
+    private val nextGrowStep = when {
+        initialSize <= 0 -> DEFAULT_INITIAL_SIZE
+        initialSize <= 50 -> 50
+        else -> initialSize
+    }
 
     private var output: FloatArray = FloatArray(0)
     private var outputUpToDate = false
@@ -39,7 +45,7 @@ class ArrayFloatList(
         }
         var newSize = data.size
         while (newSize - size < needed) {
-            newSize += initialSize
+            newSize += nextGrowStep
         }
         val oldData = data
         data = FloatArray(newSize)
@@ -77,5 +83,10 @@ class ArrayFloatList(
     fun toArray(): FloatArray {
         checkOutputArray()
         return output
+    }
+
+
+    private companion object {
+        private const val DEFAULT_INITIAL_SIZE = 1000
     }
 }
