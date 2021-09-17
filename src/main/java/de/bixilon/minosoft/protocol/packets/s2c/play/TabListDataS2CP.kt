@@ -24,6 +24,7 @@ import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.util.KUtil
+import de.bixilon.minosoft.util.KUtil.toSynchronizedMap
 import de.bixilon.minosoft.util.enum.ValuesEnum
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -123,36 +124,47 @@ class TabListDataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
             if (connection.version.versionId < ProtocolVersions.V_14W19A) { // ToDo: 19?
                 val item: TabListItem = if (data.remove) {
                     // add or remove
-                    connection.tabList.tabListItems[uuid]?.apply {
-                        connection.tabList.tabListItems.remove(uuid)
-                    } ?: let {
+                    connection.tabList.tabListItemsByUUID[uuid]?.apply {
+                        connection.tabList.tabListItemsByUUID.remove(uuid)
+                        connection.tabList.tabListItemsByName.remove(data.name)
+                    } ?: TabListItem(name = data.name!!).apply {
                         // add
-                        val itemToAdd = TabListItem(name = data.name!!)
-                        connection.tabList.tabListItems[uuid] = itemToAdd
-                        itemToAdd
+                        connection.tabList.tabListItemsByUUID[uuid] = this
+                        connection.tabList.tabListItemsByName[data.name] = this
                     }
                 } else {
-                    connection.tabList.tabListItems[uuid]!!
+                    connection.tabList.tabListItemsByUUID[uuid]!!
                 }
 
                 item.merge(data)
                 continue
             }
             if (data.remove) {
-                connection.tabList.tabListItems.remove(uuid)
+                val item = connection.tabList.tabListItemsByUUID.remove(uuid) ?: continue
+                connection.tabList.tabListItemsByName.remove(item.name)
                 continue
             }
 
             val entity = connection.world.entities[uuid]
 
 
-            val tabListItem = connection.tabList.tabListItems[uuid] ?: run {
+            val tabListItem = connection.tabList.tabListItemsByUUID[uuid] ?: run {
                 if (data.name == null) {
                     // item not yet created
                     return@run null
                 }
                 val item = TabListItem(name = data.name)
-                connection.tabList.tabListItems[uuid] = item
+                connection.tabList.tabListItemsByUUID[uuid] = item
+                connection.tabList.tabListItemsByName[data.name] = item
+
+                // set team
+
+                for (team in connection.scoreboardManager.teams.toSynchronizedMap().values) {
+                    if (team.members.contains(data.name)) {
+                        item.team = team
+                        break
+                    }
+                }
                 item
             } ?: continue
 

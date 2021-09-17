@@ -17,7 +17,8 @@ import de.bixilon.minosoft.data.text.ChatComponent
 import java.util.*
 
 class TabList {
-    val tabListItems: MutableMap<UUID, TabListItem> = mutableMapOf()
+    val tabListItemsByUUID: MutableMap<UUID, TabListItem> = mutableMapOf()
+    val tabListItemsByName: MutableMap<String, TabListItem> = mutableMapOf()
     var header = ChatComponent.of("")
     var footer = ChatComponent.of("")
 }

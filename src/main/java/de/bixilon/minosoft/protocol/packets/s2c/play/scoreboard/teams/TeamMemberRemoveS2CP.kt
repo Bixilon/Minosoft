@@ -31,7 +31,16 @@ class TeamMemberRemoveS2CP(val name: String, buffer: PlayInByteBuffer) : PlayS2C
 
 
     override fun handle(connection: PlayConnection) {
-        connection.scoreboardManager.teams[name]?.members?.removeAll(members)
+        val team = connection.scoreboardManager.teams[name] ?: return
+        team.members -= members
+
+        for (member in members) {
+            val item = connection.tabList.tabListItemsByName[member] ?: continue
+            if (item.team != team) {
+                continue
+            }
+            item.team = team
+        }
     }
 
     override fun log() {

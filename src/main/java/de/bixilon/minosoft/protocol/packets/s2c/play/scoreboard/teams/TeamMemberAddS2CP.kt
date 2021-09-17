@@ -32,7 +32,12 @@ class TeamMemberAddS2CP(val name: String, buffer: PlayInByteBuffer) : PlayS2CPac
 
 
     override fun handle(connection: PlayConnection) {
-        connection.scoreboardManager.teams[name]?.members?.addAll(members)
+        val team = connection.scoreboardManager.teams[name] ?: return
+        team.members += members
+
+        for (member in members) {
+            connection.tabList.tabListItemsByName[member]?.team = team
+        }
     }
 
     override fun log() {

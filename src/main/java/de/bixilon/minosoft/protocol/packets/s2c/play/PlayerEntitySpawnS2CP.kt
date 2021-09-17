@@ -86,7 +86,7 @@ class PlayerEntitySpawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     }
 
     override fun handle(connection: PlayConnection) {
-        connection.tabList.tabListItems[entityUUID]?.let { entity.tabListItem = it }
+        // connection.tabList.tabListItemsByUUID[entityUUID]?.let { entity.tabListItem = it }
 
         connection.fireEvent(EntitySpawnEvent(connection, this))
         connection.world.entities.add(entityId, entityUUID, entity)

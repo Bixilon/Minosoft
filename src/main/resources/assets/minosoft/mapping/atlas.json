@@ -64,6 +64,48 @@
       "end": [16, 16]
     }
   },
+  "minecraft:tab_list_ping_5": {
+    "0": {
+      "texture": "minecraft:textures/gui/icons.png",
+      "start": [0, 16],
+      "end": [10, 23]
+    }
+  },
+  "minecraft:tab_list_ping_4": {
+    "0": {
+      "texture": "minecraft:textures/gui/icons.png",
+      "start": [0, 24],
+      "end": [10, 31]
+    }
+  },
+  "minecraft:tab_list_ping_3": {
+    "0": {
+      "texture": "minecraft:textures/gui/icons.png",
+      "start": [0, 32],
+      "end": [10, 39]
+    }
+  },
+  "minecraft:tab_list_ping_2": {
+    "0": {
+      "texture": "minecraft:textures/gui/icons.png",
+      "start": [0, 40],
+      "end": [10, 47]
+    }
+  },
+  "minecraft:tab_list_ping_1": {
+    "0": {
+      "texture": "minecraft:textures/gui/icons.png",
+      "start": [0, 48],
+      "end": [10, 55]
+    }
+  },
+  "minecraft:tab_list_ping_0": {
+    "0": {
+      "texture": "minecraft:textures/gui/icons.png",
+      "start": [0, 56],
+      "end": [10, 63]
+    }
+  },
   "minecraft:experience_bar_empty": {
     "0": {
       "texture": "minecraft:textures/gui/icons.png",

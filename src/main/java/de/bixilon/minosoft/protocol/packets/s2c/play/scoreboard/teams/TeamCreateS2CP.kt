@@ -101,7 +101,7 @@ class TeamCreateS2CP(val name: String, buffer: PlayInByteBuffer) : PlayS2CPacket
 
 
     override fun handle(connection: PlayConnection) {
-        connection.scoreboardManager.teams[name] = Team(
+        val team = Team(
             name = name,
             displayName = displayName,
             prefix = prefix,
@@ -113,6 +113,11 @@ class TeamCreateS2CP(val name: String, buffer: PlayInByteBuffer) : PlayS2CPacket
             formattingCode = formattingCode,
             members = members.toMutableSet(),
         )
+        connection.scoreboardManager.teams[name] = team
+
+        for (member in members) {
+            connection.tabList.tabListItemsByName[member]?.team = team
+        }
     }
 
     override fun log() {

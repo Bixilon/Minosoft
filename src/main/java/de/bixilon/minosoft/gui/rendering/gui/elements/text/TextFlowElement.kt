@@ -56,7 +56,7 @@ class TextFlowElement(
             yOffset += Font.TOTAL_CHAR_HEIGHT
         }
 
-        background.render(offset, z, consumer)
+        background.render(Vec2i(offset), z, consumer)
         return LAYERS
     }
 
@@ -159,6 +159,6 @@ class TextFlowElement(
     companion object {
         const val LAYERS = TextElement.LAYERS
 
-        const val MAX_TOTAL_MESSAGES = 500 // ToDo: Used for scrolling
+        const val MAX_TOTAL_MESSAGES = 500
     }
 }

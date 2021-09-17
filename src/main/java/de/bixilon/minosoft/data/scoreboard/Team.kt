@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.scoreboard
 import de.bixilon.minosoft.data.text.ChatCode
 import de.bixilon.minosoft.data.text.ChatComponent
 
-class Team(
+data class Team(
     val name: String,
     var displayName: ChatComponent,
     var prefix: ChatComponent,
@@ -26,4 +26,8 @@ class Team(
     var nameTagVisibility: NameTagVisibilities,
     var formattingCode: ChatCode?,
     val members: MutableSet<String>,
-)
+) {
+    override fun toString(): String {
+        return name
+    }
+}

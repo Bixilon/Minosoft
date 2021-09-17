@@ -18,7 +18,7 @@ import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionEv
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.play.TabListTextSetS2CP
 
-class PlayerListInfoChangeEvent(
+class TabListInfoChangeEvent(
     connection: PlayConnection,
     initiator: EventInitiators,
     val header: ChatComponent,

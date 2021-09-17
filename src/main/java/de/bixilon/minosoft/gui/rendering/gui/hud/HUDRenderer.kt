@@ -23,6 +23,7 @@ import de.bixilon.minosoft.gui.rendering.Renderer
 import de.bixilon.minosoft.gui.rendering.RendererBuilder
 import de.bixilon.minosoft.gui.rendering.gui.hud.atlas.HUDAtlasManager
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.*
+import de.bixilon.minosoft.gui.rendering.gui.hud.elements.tab.TabListHUDElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMesh
 import de.bixilon.minosoft.gui.rendering.modding.events.ResizeWindowEvent
 import de.bixilon.minosoft.gui.rendering.util.vec.Vec2Util.EMPTY
@@ -77,6 +78,7 @@ class HUDRenderer(
         if (Minosoft.config.config.game.hud.internalMessages.enabled) {
             registerElement(InternalMessagesHUDElement)
         }
+        registerElement(TabListHUDElement)
     }
 
     override fun init() {

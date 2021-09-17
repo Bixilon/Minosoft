@@ -19,4 +19,8 @@ class PlayerProperty(
 ) {
     val isSigned: Boolean
         get() = signature != null // ToDo check signature
+
+    override fun toString(): String {
+        return "$key: $value"
+    }
 }

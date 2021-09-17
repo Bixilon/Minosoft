@@ -57,6 +57,13 @@ open class ImageElement(
             super.size = value
             cacheUpToDate = false
         }
+
+    override var prefSize: Vec2i
+        get() = size
+        set(value) {
+            size = value
+        }
+
     var tint: RGBColor = tint
         set(value) {
             field = value

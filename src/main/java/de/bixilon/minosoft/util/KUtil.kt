@@ -409,4 +409,14 @@ object KUtil {
     fun ByteArray.toBase64(): String {
         return Base64.getEncoder().encodeToString(this)
     }
+
+
+    fun String?.nullCompare(other: String?): Int? {
+        (this ?: "").compareTo(other ?: "").let {
+            if (it != 0) {
+                return it
+            }
+        }
+        return null
+    }
 }

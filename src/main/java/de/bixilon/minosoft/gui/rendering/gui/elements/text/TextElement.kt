@@ -41,6 +41,7 @@ open class TextElement(
     private var previousOffset = Vec2i.EMPTY
     private var previousMatrix = hudRenderer.matrix
 
+    private var previousMaxSize = Vec2i.EMPTY
     private var preparedSize = Vec2i.EMPTY
     var renderInfo = TextRenderInfo()
 
@@ -73,6 +74,7 @@ open class TextElement(
     }
 
     override fun silentApply() {
+        val maxSize = maxSize
         val size = Vec2i.EMPTY
         if (!emptyMessage) {
             val renderInfo = TextRenderInfo()
@@ -81,6 +83,8 @@ open class TextElement(
             this.renderInfo = renderInfo
         }
 
+
+        this.previousMaxSize = maxSize
         this.cacheUpToDate = false
         this.size = size
         preparedSize = size
@@ -90,6 +94,10 @@ open class TextElement(
 
     override fun onParentChange() {
         val maxSize = maxSize
+        if (previousMaxSize == maxSize) {
+            // no change in size
+            return
+        }
         val prefSize = prefSize
 
         if (preparedSize.x < prefSize.x || preparedSize.x > maxSize.x) {
