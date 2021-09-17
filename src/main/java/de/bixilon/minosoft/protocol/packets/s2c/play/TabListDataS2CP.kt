@@ -19,6 +19,7 @@ import de.bixilon.minosoft.data.player.PlayerProperty
 import de.bixilon.minosoft.data.player.tab.TabListItem
 import de.bixilon.minosoft.data.player.tab.TabListItemData
 import de.bixilon.minosoft.modding.event.events.PlayerListItemChangeEvent
+import de.bixilon.minosoft.modding.event.events.TabListEntryChangeEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
@@ -181,6 +182,7 @@ class TabListDataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
 
             entity.tabListItem = tabListItem
         }
+        connection.fireEvent(TabListEntryChangeEvent(connection, this))
     }
 
     override fun log() {

@@ -17,6 +17,7 @@ import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.player.PlayerProperty
 import de.bixilon.minosoft.data.scoreboard.Team
 import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.util.KUtil.nullCompare
 
 data class TabListItem(
     var name: String,
@@ -25,7 +26,7 @@ data class TabListItem(
     var displayName: ChatComponent = ChatComponent.of(name),
     var properties: Map<String, PlayerProperty> = mutableMapOf(),
     var team: Team? = null,
-) {
+) : Comparable<TabListItem> {
 
     fun merge(data: TabListItemData) {
         specialMerge(data)
@@ -49,5 +50,22 @@ data class TabListItem(
             this.team = null
         }
         data.team?.let { team = it }
+    }
+
+    override fun compareTo(other: TabListItem): Int {
+        if (this.gamemode != other.gamemode) {
+            if (this.gamemode == Gamemodes.SPECTATOR) {
+                return -1
+            }
+            if (other.gamemode == Gamemodes.SPECTATOR) {
+                return 1
+            }
+        }
+
+        this.team?.name?.nullCompare(other.team?.name)?.let { return it }
+
+        this.name.lowercase().nullCompare(other.name.lowercase())?.let { return it }
+
+        return 0
     }
 }

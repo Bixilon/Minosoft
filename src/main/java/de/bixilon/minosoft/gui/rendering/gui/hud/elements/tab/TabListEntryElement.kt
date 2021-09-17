@@ -35,6 +35,10 @@ class TabListEntryElement(
     val item: TabListItem,
     width: Int,
 ) : Element(hudRenderer) {
+    init {
+        parent = tabList
+    }
+
     // ToDo: Skin
     private val background: ColorElement
 
@@ -53,8 +57,12 @@ class TabListEntryElement(
         set(value) {}
 
     private var forcePrepare = true
+
     var width: Int = width
         set(value) {
+            if (value == field) {
+                return
+            }
             field = value
             forcePrepare = true
             apply()
@@ -77,7 +85,7 @@ class TabListEntryElement(
         val ping = item.ping
 
         if (forcePrepare || ping != lastPing) {
-            pingElement = ImageElement(hudRenderer, tabList.PING_BARS[when {
+            pingElement = ImageElement(hudRenderer, tabList.pingBarsAtlasElements[when {
                 ping < 0 -> 0
                 ping < 150 -> 5
                 ping < 300 -> 4

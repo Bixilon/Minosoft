@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.tab
 
-import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.ElementAlignments
@@ -25,21 +24,24 @@ import de.bixilon.minosoft.gui.rendering.gui.hud.atlas.HUDAtlasElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.util.vec.Vec2Util.EMPTY
 import de.bixilon.minosoft.util.KUtil.decide
-import de.bixilon.minosoft.util.KUtil.nullCompare
+import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.KUtil.toSynchronizedMap
 import glm_.vec2.Vec2i
 import java.lang.Integer.max
+import java.util.*
 
 class TabListElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
     val header = TextElement(hudRenderer, "", background = false, fontAlignment = ElementAlignments.CENTER, parent = this)
     val footer = TextElement(hudRenderer, "", background = false, fontAlignment = ElementAlignments.CENTER, parent = this)
 
     private val background = ColorElement(hudRenderer, Vec2i.EMPTY, color = RGBColor(0, 0, 0, 120))
-    private var entriesSize = Vec2i.EMPTY
-    private var entries: List<TabListEntryElement> = listOf()
 
-    val PING_BARS: Array<HUDAtlasElement> = arrayOf(
+    private var entriesSize = Vec2i.EMPTY
+    val entries: MutableMap<UUID, TabListEntryElement> = synchronizedMapOf()
+    private var toRender: List<TabListEntryElement> = listOf()
+
+    val pingBarsAtlasElements: Array<HUDAtlasElement> = arrayOf(
         hudRenderer.atlasManager["minecraft:tab_list_ping_0".toResourceLocation()]!!,
         hudRenderer.atlasManager["minecraft:tab_list_ping_1".toResourceLocation()]!!,
         hudRenderer.atlasManager["minecraft:tab_list_ping_2".toResourceLocation()]!!,
@@ -49,7 +51,6 @@ class TabListElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
     )
 
     override fun render(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int {
-        silentApply()
         background.render(Vec2i(offset), z, consumer)
         val size = size
 
@@ -62,12 +63,12 @@ class TabListElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
         val offsetBefore = Vec2i(offset)
         offset.x += ElementAlignments.CENTER.getOffset(size.x, entriesSize.x)
 
-        var columns = entries.size / ENTRIES_PER_COLUMN
-        if (entries.size % ENTRIES_PER_COLUMN > 0) {
+        var columns = toRender.size / ENTRIES_PER_COLUMN
+        if (toRender.size % ENTRIES_PER_COLUMN > 0) {
             columns++
         }
 
-        for ((index, entry) in entries.withIndex()) {
+        for ((index, entry) in toRender.withIndex()) {
             entry.render(Vec2i(offset), z + 1, consumer)
             offset.y += TabListEntryElement.HEIGHT + ENTRY_VERTICAL_SPACING
             if ((index + 1) % ENTRIES_PER_COLUMN == 0) {
@@ -76,7 +77,7 @@ class TabListElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
             }
         }
         offset.x = offsetBefore.x
-        offset.y = offsetBefore.y + (columns > 1).decide(ENTRIES_PER_COLUMN, entries.size) * (TabListEntryElement.HEIGHT + ENTRY_VERTICAL_SPACING)
+        offset.y = offsetBefore.y + (columns > 1).decide(ENTRIES_PER_COLUMN, toRender.size) * (TabListEntryElement.HEIGHT + ENTRY_VERTICAL_SPACING)
 
 
         footer.size.let {
@@ -88,33 +89,13 @@ class TabListElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
     }
 
     override fun silentApply() {
-        val maxSize = maxSize
         val size = Vec2i.EMPTY
-
-
-        header.onParentChange()
-        footer.onParentChange()
 
         size.y += header.size.y
 
-        val entries: MutableList<TabListEntryElement> = mutableListOf()
+        val toRender: MutableList<TabListEntryElement> = mutableListOf()
 
-        val tabListItems = hudRenderer.connection.tabList.tabListItemsByUUID.toSynchronizedMap().values.sortedWith { a, b ->
-            if (a.gamemode != b.gamemode) {
-                if (a.gamemode == Gamemodes.SPECTATOR) {
-                    return@sortedWith -1
-                }
-                if (b.gamemode == Gamemodes.SPECTATOR) {
-                    return@sortedWith 1
-                }
-            }
-
-            a.team?.name?.nullCompare(b.team?.name)?.let { return@sortedWith it }
-
-            a.name.nullCompare(b?.name)?.let { return@sortedWith it } // ToDo: Case?
-
-            return@sortedWith 0
-        }
+        val tabListItems = hudRenderer.connection.tabList.tabListItemsByUUID.toSynchronizedMap().entries.sortedWith { a, b -> a.value.compareTo(b.value) }
 
         val previousSize = Vec2i(size)
         var columns = tabListItems.size / ENTRIES_PER_COLUMN
@@ -128,9 +109,10 @@ class TabListElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
         var totalEntriesWidth = 0
 
         // Check width
-        for ((index, item) in tabListItems.withIndex()) {
-            val entry = TabListEntryElement(hudRenderer, this, item, 0)
-            entries += entry
+        var index = 0
+        for ((uuid, item) in tabListItems) {
+            val entry = entries.getOrPut(uuid) { TabListEntryElement(hudRenderer, this, item, 0) }
+            toRender += entry
             val prefWidth = entry.prefSize
 
             currentMaxPrefWidth = max(currentMaxPrefWidth, prefWidth.x)
@@ -140,20 +122,21 @@ class TabListElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
                 currentMaxPrefWidth = 0
                 column++
             }
+            index++
         }
         if (currentMaxPrefWidth != 0) {
             widths[column] = currentMaxPrefWidth
             totalEntriesWidth += currentMaxPrefWidth
         }
         size.x = max(size.x, totalEntriesWidth)
-        size.y += (columns > 1).decide(ENTRIES_PER_COLUMN, entries.size) * (TabListEntryElement.HEIGHT + ENTRY_VERTICAL_SPACING)
+        size.y += (columns > 1).decide(ENTRIES_PER_COLUMN, toRender.size) * (TabListEntryElement.HEIGHT + ENTRY_VERTICAL_SPACING)
 
         this.entriesSize = Vec2i(totalEntriesWidth, size.y - previousSize.y)
 
 
         // apply width to every cell
         column = 0
-        for ((index, entry) in entries.withIndex()) {
+        for ((index, entry) in toRender.withIndex()) {
             entry.width = widths[column]
             if ((index + 1) % ENTRIES_PER_COLUMN == 0) {
                 column++
@@ -164,7 +147,7 @@ class TabListElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
             size.x += (columns - 1) * ENTRY_HORIZONTAL_SPACING
         }
 
-        this.entries = entries
+        this.toRender = toRender
 
         size.y += footer.size.y
 

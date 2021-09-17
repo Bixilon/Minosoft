@@ -13,10 +13,14 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.tab
 
+import de.bixilon.minosoft.config.key.KeyAction
+import de.bixilon.minosoft.config.key.KeyBinding
+import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDElement
+import de.bixilon.minosoft.modding.event.events.TabListEntryChangeEvent
 import de.bixilon.minosoft.modding.event.events.TabListInfoChangeEvent
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
@@ -31,6 +35,7 @@ class TabListHUDElement(hudRenderer: HUDRenderer) : HUDElement<TabListElement>(h
         get() = Vec2i((hudRenderer.scaledSize.x - layout.size.x) / 2, 20)
 
     init {
+        enabled = false
         layout.prefMaxSize = Vec2i(-1, -1)
     }
 
@@ -39,12 +44,31 @@ class TabListHUDElement(hudRenderer: HUDRenderer) : HUDElement<TabListElement>(h
         connection.registerEvent(CallbackEventInvoker.of<TabListInfoChangeEvent> {
             layout.header.text = it.header
             layout.footer.text = it.footer
+            layout.apply()
+        })
+        connection.registerEvent(CallbackEventInvoker.of<TabListEntryChangeEvent> {
+            for ((uuid, entry) in it.items) {
+                if (entry.remove) {
+                    layout.entries.remove(uuid)
+                    continue
+                }
+                val element = layout.entries[uuid] ?: continue
+                element.apply()
+            }
+            // ToDo: Cache more?
+            layout.apply()
         })
     }
 
 
     companion object : HUDBuilder<TabListHUDElement> {
         override val RESOURCE_LOCATION: ResourceLocation = "minosoft:tab_list".toResourceLocation()
+        override val ENABLE_KEY_BINDING_NAME: ResourceLocation = "minosoft:enable_tab_list".toResourceLocation()
+        override val ENABLE_KEY_BINDING: KeyBinding = KeyBinding(
+            mutableMapOf(
+                KeyAction.STICKY to mutableSetOf(KeyCodes.KEY_TAB),
+            ),
+        )
 
         override fun build(hudRenderer: HUDRenderer): TabListHUDElement {
             return TabListHUDElement(hudRenderer)
