@@ -95,6 +95,7 @@ class TabListElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
 
         val toRender: MutableList<TabListEntryElement> = mutableListOf()
 
+        // ToDo: Sorting isn't working correct:  java.lang.IllegalArgumentException: Comparison method violates its general contract!
         val tabListItems = hudRenderer.connection.tabList.tabListItemsByUUID.toSynchronizedMap().entries.sortedWith { a, b -> a.value.compareTo(b.value) }
 
         val previousSize = Vec2i(size)

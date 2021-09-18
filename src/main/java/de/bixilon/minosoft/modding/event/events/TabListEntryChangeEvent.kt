@@ -23,7 +23,7 @@ class TabListEntryChangeEvent(
     connection: PlayConnection,
     initiator: EventInitiators,
     val items: Map<UUID, TabListItemData>,
-) : PlayConnectionEvent(connection, initiator), CancelableEvent {
+) : PlayConnectionEvent(connection, initiator) {
 
     constructor(connection: PlayConnection, packet: TabListDataS2CP) : this(connection, EventInitiators.SERVER, packet.items)
 }

@@ -18,7 +18,6 @@ import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.data.player.PlayerProperty
 import de.bixilon.minosoft.data.player.tab.TabListItem
 import de.bixilon.minosoft.data.player.tab.TabListItemData
-import de.bixilon.minosoft.modding.event.events.PlayerListItemChangeEvent
 import de.bixilon.minosoft.modding.event.events.TabListEntryChangeEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
@@ -116,9 +115,6 @@ class TabListDataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     }
 
     override fun handle(connection: PlayConnection) {
-        if (connection.fireEvent(PlayerListItemChangeEvent(connection, this))) {
-            return
-        }
         for ((uuid, data) in items) {
             // legacy
 

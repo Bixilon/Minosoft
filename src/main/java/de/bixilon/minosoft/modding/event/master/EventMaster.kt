@@ -49,7 +49,11 @@ open class EventMaster(vararg parents: AbstractEventMaster) : AbstractEventMaste
             if (!invoker.eventType.isAssignableFrom(event::class.java)) {
                 continue
             }
-            invoker(event)
+            try {
+                invoker(event)
+            } catch (exception: Throwable) {
+                exception.printStackTrace()
+            }
 
             if (invoker is OneShotInvoker && invoker.oneShot) {
                 eventInvokers -= invoker

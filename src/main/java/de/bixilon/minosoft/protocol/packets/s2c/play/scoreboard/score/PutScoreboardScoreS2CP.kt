@@ -36,6 +36,6 @@ class PutScoreboardScoreS2CP(val entity: String, buffer: PlayInByteBuffer) : Pla
 
 
     override fun log() {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Put scoreboard score (entity=$entity, objective=$objective, score=$score)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Put scoreboard score (entity=$entity§r, objective=$objective§r, score=$score)" }
     }
 }
