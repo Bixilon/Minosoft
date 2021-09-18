@@ -286,7 +286,7 @@ class LeftClickHandler(
         if (consumed) {
             return
         }
-        swingArm()
+        swingArm() // ToDo: Only once
     }
 
     companion object {

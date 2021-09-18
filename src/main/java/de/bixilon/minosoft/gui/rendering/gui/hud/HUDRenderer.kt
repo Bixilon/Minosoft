@@ -79,6 +79,7 @@ class HUDRenderer(
             registerElement(InternalMessagesHUDElement)
         }
         registerElement(TabListHUDElement)
+        registerElement(BreakProgressHUDElement)
     }
 
     override fun init() {

@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.gui.hud.elements
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.gui.rendering.gui.elements.layout.grid.GridLayout
+import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.hud.atlas.HUDAtlasElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMesh
@@ -25,7 +25,7 @@ import de.bixilon.minosoft.gui.rendering.input.camera.hit.EntityRaycastHit
 import de.bixilon.minosoft.gui.rendering.system.base.BlendingFunctions
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
-class CrosshairHUDElement(hudRenderer: HUDRenderer) : HUDElement<GridLayout>(hudRenderer) {
+class CrosshairHUDElement(hudRenderer: HUDRenderer) : HUDElement<Element>(hudRenderer) {
     private lateinit var crosshairAtlasElement: HUDAtlasElement
     private var mesh: GUIMesh? = null
     private var previousDebugEnabled: Boolean? = true
@@ -91,7 +91,7 @@ class CrosshairHUDElement(hudRenderer: HUDRenderer) : HUDElement<GridLayout>(hud
 
 
     companion object : HUDBuilder<CrosshairHUDElement> {
-        private const val CROSSHAIR_SIZE = 16
+        const val CROSSHAIR_SIZE = 16
         override val RESOURCE_LOCATION: ResourceLocation = "minosoft:crosshair".toResourceLocation()
 
         private val ATLAS_NAME = "minecraft:crosshair".toResourceLocation()
