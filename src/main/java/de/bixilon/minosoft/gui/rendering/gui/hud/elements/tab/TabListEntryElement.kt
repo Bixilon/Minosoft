@@ -121,6 +121,10 @@ class TabListEntryElement(
         forcePrepare = false
     }
 
+    override fun onParentChange() {
+        forcePrepare = true
+    }
+
 
     companion object {
         const val HEIGHT = 10

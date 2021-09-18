@@ -159,6 +159,12 @@ class TabListElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
         background.size = size
     }
 
+    override fun onParentChange() {
+        for (element in toRender) {
+            element.onParentChange()
+        }
+    }
+
 
     companion object {
         private const val ENTRIES_PER_COLUMN = 20
