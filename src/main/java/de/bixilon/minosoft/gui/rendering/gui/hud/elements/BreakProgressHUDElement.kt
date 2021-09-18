@@ -24,16 +24,23 @@ import glm_.vec2.Vec2i
 class BreakProgressHUDElement(hudRenderer: HUDRenderer) : HUDElement<TextElement>(hudRenderer) {
     override val layout: TextElement = TextElement(hudRenderer, "")
     private val leftClickHandler = hudRenderer.renderWindow.inputHandler.leftClickHandler
+
     override val layoutOffset: Vec2i
         get() = Vec2i((hudRenderer.scaledSize.x / 2) + CrosshairHUDElement.CROSSHAIR_SIZE / 2 + 5, (hudRenderer.scaledSize.y - layout.size.y) / 2)
+
+    private var lastPercent = -1
 
     override fun draw() {
         val breakProgress = leftClickHandler.breakProgress
         if (breakProgress <= 0 || breakProgress >= 1.0) {
             layout.text = ""
+            lastPercent = -1
             return
         }
         val percent = (leftClickHandler.breakProgress * 100).toInt()
+        if (percent == lastPercent) {
+            return
+        }
         val text = TextComponent("$percent%")
         text.color = when {
             percent <= 30 -> ChatColors.RED
@@ -41,6 +48,7 @@ class BreakProgressHUDElement(hudRenderer: HUDRenderer) : HUDElement<TextElement
             else -> ChatColors.GREEN
         }
         layout.text = text
+        lastPercent = percent
     }
 
     companion object : HUDBuilder<BreakProgressHUDElement> {

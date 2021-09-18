@@ -35,7 +35,7 @@ class EntityRaycastHit(
         val text = BaseComponent()
 
         text += "Entity target "
-        text += position
+        text += entity.position
         text += ": "
         text += entity.entityType.resourceLocation
 
