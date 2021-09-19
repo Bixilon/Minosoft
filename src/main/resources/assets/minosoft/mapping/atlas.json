@@ -44,17 +44,11 @@
       }
     }
   },
-  "minecraft:hotbar_selected_slot_frame": {
+  "minecraft:hotbar_frame": {
     "567": {
       "texture": "minecraft:textures/gui/widgets.png",
       "start": [0, 22],
-      "end": [24, 46],
-      "slots": {
-        "0": {
-          "start": [5, 5],
-          "end": [21, 21]
-        }
-      }
+      "end": [24, 46]
     }
   },
   "minecraft:crosshair": {
@@ -134,18 +128,228 @@
       "end": [34, 9]
     }
   },
-  "minecraft:full_red_heart": {
+  "minecraft:normal_heart": {
     "0": {
       "texture": "minecraft:textures/gui/icons.png",
       "start": [52, 0],
       "end": [61, 9]
     }
   },
-  "minecraft:half_red_heart": {
+  "minecraft:half_normal_heart": {
     "0": {
       "texture": "minecraft:textures/gui/icons.png",
       "start": [61, 0],
       "end": [70, 9]
+    }
+  },
+  "minecraft:normal_damage_heart": {
+    "0": {
+      "texture": "minecraft:textures/gui/icons.png",
+      "start": [70, 0],
+      "end": [79, 9]
+    }
+  },
+  "minecraft:half_normal_damage_heart": {
+    "0": {
+      "texture": "minecraft:textures/gui/icons.png",
+      "start": [79, 0],
+      "end": [88, 9]
+    }
+  },
+  "minecraft:poison_heart": {
+    "0": {
+      "texture": "minecraft:textures/gui/icons.png",
+      "start": [88, 0],
+      "end": [97, 9]
+    }
+  },
+  "minecraft:half_poison_heart": {
+    "0": {
+      "texture": "minecraft:textures/gui/icons.png",
+      "start": [97, 0],
+      "end": [106, 9]
+    }
+  },
+  "minecraft:poison_damage_heart": {
+    "0": {
+      "texture": "minecraft:textures/gui/icons.png",
+      "start": [106, 0],
+      "end": [115, 9]
+    }
+  },
+  "minecraft:half_poison_damage_heart": {
+    "0": {
+      "texture": "minecraft:textures/gui/icons.png",
+      "start": [115, 0],
+      "end": [124, 9]
+    }
+  },
+  "minecraft:wither_heart": {
+    "0": {
+      "texture": "minecraft:textures/gui/icons.png",
+      "start": [124, 0],
+      "end": [133, 9]
+    }
+  },
+  "minecraft:half_wither_heart": {
+    "0": {
+      "texture": "minecraft:textures/gui/icons.png",
+      "start": [133, 0],
+      "end": [142, 9]
+    }
+  },
+  "minecraft:wither_damage_heart": {
+    "0": {
+      "texture": "minecraft:textures/gui/icons.png",
+      "start": [142, 0],
+      "end": [151, 9]
+    }
+  },
+  "minecraft:half_wither_damage_heart": {
+    "0": {
+      "texture": "minecraft:textures/gui/icons.png",
+      "start": [151, 0],
+      "end": [160, 9]
+    }
+  },
+  "minecraft:absorption_heart": {
+    "0": {
+      "texture": "minecraft:textures/gui/icons.png",
+      "start": [160, 0],
+      "end": [169, 9]
+    }
+  },
+  "minecraft:half_absorption_heart": {
+    "0": {
+      "texture": "minecraft:textures/gui/icons.png",
+      "start": [169, 0],
+      "end": [178, 9]
+    }
+  },
+  "minecraft:frozen_heart": {
+    "0": {
+      "texture": "minecraft:textures/gui/icons.png",
+      "start": [178, 0],
+      "end": [187, 9]
+    }
+  },
+  "minecraft:half_frozen_heart": {
+    "0": {
+      "texture": "minecraft:textures/gui/icons.png",
+      "start": [187, 0],
+      "end": [196, 9]
+    }
+  },
+  "minecraft:hardcore_normal_heart": {
+    "0": {
+      "texture": "minecraft:textures/gui/icons.png",
+      "start": [52, 45],
+      "end": [61, 54]
+    }
+  },
+  "minecraft:hardcore_half_normal_heart": {
+    "0": {
+      "texture": "minecraft:textures/gui/icons.png",
+      "start": [61, 45],
+      "end": [70, 54]
+    }
+  },
+  "minecraft:hardcore_normal_damage_heart": {
+    "0": {
+      "texture": "minecraft:textures/gui/icons.png",
+      "start": [70, 45],
+      "end": [79, 54]
+    }
+  },
+  "minecraft:hardcore_half_normal_damage_heart": {
+    "0": {
+      "texture": "minecraft:textures/gui/icons.png",
+      "start": [79, 45],
+      "end": [88, 54]
+    }
+  },
+  "minecraft:hardcore_poison_heart": {
+    "0": {
+      "texture": "minecraft:textures/gui/icons.png",
+      "start": [88, 45],
+      "end": [97, 54]
+    }
+  },
+  "minecraft:hardcore_half_poison_heart": {
+    "0": {
+      "texture": "minecraft:textures/gui/icons.png",
+      "start": [97, 45],
+      "end": [106, 54]
+    }
+  },
+  "minecraft:hardcore_poison_damage_heart": {
+    "0": {
+      "texture": "minecraft:textures/gui/icons.png",
+      "start": [106, 45],
+      "end": [115, 54]
+    }
+  },
+  "minecraft:hardcore_half_poison_damage_heart": {
+    "0": {
+      "texture": "minecraft:textures/gui/icons.png",
+      "start": [115, 45],
+      "end": [124, 54]
+    }
+  },
+  "minecraft:hardcore_wither_heart": {
+    "0": {
+      "texture": "minecraft:textures/gui/icons.png",
+      "start": [124, 45],
+      "end": [133, 54]
+    }
+  },
+  "minecraft:hardcore_half_wither_heart": {
+    "0": {
+      "texture": "minecraft:textures/gui/icons.png",
+      "start": [133, 45],
+      "end": [142, 54]
+    }
+  },
+  "minecraft:hardcore_wither_damage_heart": {
+    "0": {
+      "texture": "minecraft:textures/gui/icons.png",
+      "start": [142, 45],
+      "end": [151, 54]
+    }
+  },
+  "minecraft:hardcore_half_wither_damage_heart": {
+    "0": {
+      "texture": "minecraft:textures/gui/icons.png",
+      "start": [151, 45],
+      "end": [160, 54]
+    }
+  },
+  "minecraft:hardcore_absorption_heart": {
+    "0": {
+      "texture": "minecraft:textures/gui/icons.png",
+      "start": [160, 45],
+      "end": [169, 54]
+    }
+  },
+  "minecraft:hardcore_half_absorption_heart": {
+    "0": {
+      "texture": "minecraft:textures/gui/icons.png",
+      "start": [169, 45],
+      "end": [178, 54]
+    }
+  },
+  "minecraft:hardcore_frozen_heart": {
+    "0": {
+      "texture": "minecraft:textures/gui/icons.png",
+      "start": [178, 45],
+      "end": [187, 54]
+    }
+  },
+  "minecraft:hardcore_half_frozen_heart": {
+    "0": {
+      "texture": "minecraft:textures/gui/icons.png",
+      "start": [187, 45],
+      "end": [196, 54]
     }
   }
 }
