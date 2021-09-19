@@ -563,6 +563,9 @@ class LocalPlayerEntity(
         fovMultiplier.value = 1.0 + MMath.clamp(walkingSpeed * 1.9, -2.0, 2.0)
     }
 
+    override val health: Double
+        get() = healthCondition.hp.toDouble()
+
     companion object {
         private val CLIMBABLE_TAG = "minecraft:climbable".toResourceLocation()
         private val SOUL_SPEED_BLOCKS = "minecraft:soul_speed_blocks".toResourceLocation()

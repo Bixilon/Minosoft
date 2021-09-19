@@ -25,4 +25,6 @@ object DefaultStatusEffects {
     val DOLPHINS_GRACE = "minecraft:dolphins_grace".toResourceLocation()
     val NIGHT_VISION = "minecraft:night_vision".toResourceLocation()
     val CONDUIT_POWER = "minecraft:conduit_power".toResourceLocation()
+    val WITHER = "minecraft:wither".toResourceLocation()
+    val POISON = "minecraft:poison".toResourceLocation()
 }

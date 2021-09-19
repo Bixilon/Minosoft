@@ -71,6 +71,8 @@ open class ImageElement(
         }
 
     private var matrix: Mat4 = hudRenderer.matrix
+    private var lastOffset: Vec2i = Vec2i(-1, -1)
+
 
     init {
         this.size = size
@@ -82,13 +84,14 @@ open class ImageElement(
 
     override fun render(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int {
         val matrix = hudRenderer.matrix
-        if (matrix == this.matrix && cacheUpToDate) {
+        if (offset == lastOffset && matrix == this.matrix && cacheUpToDate) {
             consumer.addCache(cache)
             return 1
         }
         val cache = GUIMeshCache(matrix, GUIMesh.GUIMeshStruct.FLOATS_PER_VERTEX * 6)
         cache.addQuad(offset, offset + size, z, texture, uvStart, uvEnd, tint)
 
+        this.lastOffset = offset
         this.matrix = matrix
         this.cache = cache
         this.cacheUpToDate = true

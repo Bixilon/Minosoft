@@ -51,12 +51,12 @@ class HUDAtlasManager(private val hudRenderer: HUDRenderer) {
             val texture = hudRenderer.renderWindow.textureManager.staticTextures.createTexture(versionData["texture"].toResourceLocation())
             val start = versionData["start"].toVec2i()
             val end = versionData["end"].toVec2i()
-            val slots: MutableMap<Int, Vec2Binding<Int>> = mutableMapOf()
+            val slots: MutableMap<Int, Vec2iBinding> = mutableMapOf()
 
             versionData["slots"]?.mapCast()?.let {
                 for ((slotId, slotData) in it) {
                     val slot = slotData.mapCast()!!
-                    slots[slotId.toInt()] = Vec2Binding(
+                    slots[slotId.toInt()] = Vec2iBinding(
                         start = slot["start"].toVec2i(),
                         end = slot["end"].toVec2i(),
                     )
@@ -85,6 +85,10 @@ class HUDAtlasManager(private val hudRenderer: HUDRenderer) {
 
     operator fun get(resourceLocation: ResourceLocation): HUDAtlasElement? {
         return elements[resourceLocation]
+    }
+
+    operator fun get(resourceLocation: String): HUDAtlasElement? {
+        return elements[resourceLocation.toResourceLocation()]
     }
 
     companion object {

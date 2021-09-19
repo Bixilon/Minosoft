@@ -168,7 +168,7 @@ class RenderWindow(
         textureManager.staticTextures.createTexture(RenderConstants.DEBUG_TEXTURE_RESOURCE_LOCATION)
         WHITE_TEXTURE = TextureLikeTexture(
             texture = textureManager.staticTextures.createTexture(ResourceLocation("minosoft:textures/white.png")),
-            uvStart = Vec2(0, 0),
+            uvStart = Vec2(0.0f, 0.0f),
             uvEnd = Vec2(0.001f, 0.001f),
             size = Vec2i(16, 16)
         )

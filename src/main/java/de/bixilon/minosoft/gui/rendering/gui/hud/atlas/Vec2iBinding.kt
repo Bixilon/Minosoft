@@ -13,9 +13,11 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud.atlas
 
-import glm_.vec2.Vec2t
+import glm_.vec2.Vec2i
 
-data class Vec2Binding<T : Number>(
-    val start: Vec2t<T>,
-    val end: Vec2t<T>,
-)
+data class Vec2iBinding(
+    val start: Vec2i,
+    val end: Vec2i,
+) {
+    val size = end - start
+}

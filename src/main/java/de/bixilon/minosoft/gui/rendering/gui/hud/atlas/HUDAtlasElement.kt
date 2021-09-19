@@ -21,7 +21,7 @@ class HUDAtlasElement(
     override val texture: AbstractTexture,
     val start: Vec2i,
     val end: Vec2i,
-    val slots: Map<Int, Vec2Binding<Int>>, // ToDo: Use an array?
+    val slots: Map<Int, Vec2iBinding>, // ToDo: Use an array?
 ) : TextureLike {
     override val size: Vec2i = end - start
     override lateinit var uvStart: Vec2

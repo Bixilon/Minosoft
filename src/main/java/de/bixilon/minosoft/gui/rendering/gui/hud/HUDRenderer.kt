@@ -23,6 +23,7 @@ import de.bixilon.minosoft.gui.rendering.Renderer
 import de.bixilon.minosoft.gui.rendering.RendererBuilder
 import de.bixilon.minosoft.gui.rendering.gui.hud.atlas.HUDAtlasManager
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.*
+import de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar.HotbarHUDElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.tab.TabListHUDElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMesh
 import de.bixilon.minosoft.gui.rendering.modding.events.ResizeWindowEvent
@@ -80,6 +81,7 @@ class HUDRenderer(
         }
         registerElement(TabListHUDElement)
         registerElement(BreakProgressHUDElement)
+        registerElement(HotbarHUDElement)
     }
 
     override fun init() {
