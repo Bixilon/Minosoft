@@ -169,7 +169,7 @@ class HotbarHealthElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
             val column = heart % HEARTS_PER_ROW
 
 
-            var selectArray: Array<*>? = null
+            var selectArray: Array<*>?
 
             var normalHeart = false
 

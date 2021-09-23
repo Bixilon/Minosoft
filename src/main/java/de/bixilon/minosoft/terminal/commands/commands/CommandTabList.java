@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 public class CommandTabList extends Command {
-
     @Override
     public CommandNode build(CommandNode parent) {
         parent.addChildren(

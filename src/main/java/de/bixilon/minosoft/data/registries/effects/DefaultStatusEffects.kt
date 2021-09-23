@@ -27,4 +27,5 @@ object DefaultStatusEffects {
     val CONDUIT_POWER = "minecraft:conduit_power".toResourceLocation()
     val WITHER = "minecraft:wither".toResourceLocation()
     val POISON = "minecraft:poison".toResourceLocation()
+    val HUNGER = "minecraft:hunger".toResourceLocation()
 }

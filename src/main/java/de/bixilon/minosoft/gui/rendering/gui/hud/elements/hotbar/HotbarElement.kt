@@ -14,6 +14,8 @@
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar
 
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
+import de.bixilon.minosoft.gui.rendering.gui.elements.ElementAlignments
+import de.bixilon.minosoft.gui.rendering.gui.elements.ElementAlignments.Companion.getOffset
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import glm_.vec2.Vec2i
@@ -22,7 +24,14 @@ import java.lang.Integer.max
 class HotbarElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
     private val base = HotbarBaseElement(hudRenderer)
     private val health = HotbarHealthElement(hudRenderer)
+    private val hunger = HotbarHungerElement(hudRenderer)
 
+
+    private var elements = setOf(
+        base,
+        health,
+        hunger,
+    )
 
     init {
         silentApply()
@@ -33,6 +42,7 @@ class HotbarElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
         val initialOffset = Vec2i(offset)
         var maxZ = 0
         maxZ = max(maxZ, health.render(offset, z, consumer))
+        hunger.render(offset + Vec2i(ElementAlignments.RIGHT.getOffset(size.x, hunger.size.x), 0), z, consumer) // ToDo
         offset.y += health.size.y
         maxZ = max(maxZ, base.render(offset, z, consumer))
 
@@ -40,9 +50,18 @@ class HotbarElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
     }
 
     override fun silentApply() {
-        base.silentApply()
-        health.silentApply()
+        for (element in elements) {
+            element.silentApply()
+        }
 
         size = base.size + Vec2i(0, health.size.y)
+    }
+
+    override fun tick() {
+        super.tick()
+
+        for (element in elements) {
+            element.tick()
+        }
     }
 }
