@@ -1,6 +1,6 @@
 {
   "minecraft:hotbar_base": {
-    "567": {
+    "0": {
       "texture": "minecraft:textures/gui/widgets.png",
       "start": [0, 0],
       "end": [182, 22],
@@ -45,7 +45,7 @@
     }
   },
   "minecraft:hotbar_frame": {
-    "567": {
+    "0": {
       "texture": "minecraft:textures/gui/widgets.png",
       "start": [0, 22],
       "end": [24, 46]
