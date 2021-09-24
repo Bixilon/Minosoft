@@ -26,8 +26,9 @@ import glm_.vec2.Vec2i
 
 class ZLayout(hudRenderer: HUDRenderer) : Element(hudRenderer) {
     private val children: MutableList<Element> = synchronizedListOf()
+    override var cacheEnabled: Boolean = false // ToDo: Cache
 
-    override fun render(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int {
+    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int {
         var zOffset = 0
         for (child in children.toSynchronizedList()) {
             zOffset += child.render(margin.offset + offset, z + zOffset, consumer)

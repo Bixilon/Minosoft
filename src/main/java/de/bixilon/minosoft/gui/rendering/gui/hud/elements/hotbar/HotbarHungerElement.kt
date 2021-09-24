@@ -54,6 +54,12 @@ class HotbarHungerElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
         )
     )
 
+    override var cacheEnabled: Boolean
+        get() = super.cacheUpToDate && !animate
+        set(value) {
+            super.cacheEnabled = value
+        }
+
     private var hungerEffect = false
     private var animate = true
 
@@ -65,9 +71,7 @@ class HotbarHungerElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
         size = Vec2i(HUNGER_CONTAINERS, 1) * HUNGER_SIZE
     }
 
-    override fun render(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int {
-        // ToDo: Cache
-
+    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int {
         var hungerLeft = hunger
         var saturationLeft = saturation.toInt()
 
@@ -123,12 +127,14 @@ class HotbarHungerElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
     }
 
     override fun silentApply() {
+        // ToDo: Check changes
         val healthCondition = hudRenderer.connection.player.healthCondition
 
         hunger = healthCondition.hunger
         saturation = healthCondition.saturation
 
         hungerEffect = hudRenderer.connection.player.activeStatusEffects.contains(hungerStatusEffect)
+        cacheUpToDate = false
     }
 
     override fun tick() {

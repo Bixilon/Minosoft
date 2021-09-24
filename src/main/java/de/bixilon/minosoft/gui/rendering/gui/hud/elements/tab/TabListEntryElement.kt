@@ -73,7 +73,7 @@ class TabListEntryElement(
         silentApply()
     }
 
-    override fun render(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int {
+    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int {
         background.render(Vec2i(offset), z, consumer)
         nameElement.render(Vec2i(offset), z, consumer)
         pingElement.render(offset + Vec2i(ElementAlignments.RIGHT.getOffset(maxSize.x, pingElement.size.x + PADDING), PADDING), z + 1, consumer)
@@ -119,6 +119,7 @@ class TabListEntryElement(
         this.prefSize = Vec2i((PADDING * 2) + nameElement.prefSize.x + INNER_MARGIN + pingElement.prefSize.x, HEIGHT)
         background.size = size
         forcePrepare = false
+        cacheUpToDate = false
     }
 
     override fun onParentChange() {

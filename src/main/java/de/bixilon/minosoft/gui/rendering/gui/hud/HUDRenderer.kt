@@ -49,6 +49,8 @@ class HUDRenderer(
     var scaledSize: Vec2i = renderWindow.window.size
     var matrix: Mat4 = Mat4()
     private var enabled = true
+    var matrixChange = true
+        private set
 
     private val hudElements: MutableMap<ResourceLocation, HUDElement<*>> = synchronizedMapOf()
 
@@ -88,6 +90,7 @@ class HUDRenderer(
         connection.registerEvent(CallbackEventInvoker.of<ResizeWindowEvent> {
             scaledSize = Vec2i(Vec2(it.size) / Minosoft.config.config.game.hud.scale)
             matrix = glm.ortho(0.0f, scaledSize.x.toFloat(), scaledSize.y.toFloat(), 0.0f)
+            matrixChange = true
 
             for (element in hudElements.toSynchronizedMap().values) {
                 element.layout?.onParentChange()
@@ -159,6 +162,10 @@ class HUDRenderer(
 
         shader.use()
         mesh.draw()
+
+        if (matrixChange) {
+            matrixChange = false
+        }
     }
 
     operator fun <T : HUDElement<*>> get(hudBuilder: HUDBuilder<*>): T? {

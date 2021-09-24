@@ -127,8 +127,8 @@ class HotbarHealthElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
             atlasManager["minecraft:hardcore_half_frozen_heart"],
         ),
     )
-    private val whiteHeartContainer = atlasManager["minecraft:white_heart_container"]
-    private val blackHeartContainer = atlasManager["minecraft:black_heart_container"]
+    private val whiteHeartContainer = atlasManager["minecraft:white_heart_container"]!!
+    private val blackHeartContainer = atlasManager["minecraft:black_heart_container"]!!
 
     private var hardcode = false
     private var poison = false
@@ -145,10 +145,7 @@ class HotbarHealthElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
     private var totalMaxHearts = 0
     private var rows = 0
 
-    override fun render(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int {
-        blackHeartContainer ?: return 0
-        whiteHeartContainer ?: return 0
-
+    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int {
         // ToDo: Damage animation, regeneration, caching
         for (heart in 0 until totalMaxHearts) {
             val row = heart / HEARTS_PER_ROW
@@ -213,8 +210,7 @@ class HotbarHealthElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
     }
 
     override fun silentApply() {
-        blackHeartContainer ?: return
-        whiteHeartContainer ?: return
+        // ToDo: Check if something changed
 
         val player = hudRenderer.connection.player
 
@@ -238,6 +234,7 @@ class HotbarHealthElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
         }
 
         size = Vec2i(HEARTS_PER_ROW, rows) * HEART_SIZE
+        cacheUpToDate = false
     }
 
 

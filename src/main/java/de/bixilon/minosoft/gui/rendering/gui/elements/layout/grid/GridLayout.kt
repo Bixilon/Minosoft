@@ -30,6 +30,8 @@ class GridLayout(hudRenderer: HUDRenderer, val grid: Vec2i) : Element(hudRendere
     private var columnStart = IntArray(grid.x)
     private var rowStart = IntArray(grid.y)
 
+    override var cacheEnabled: Boolean = false // ToDo: Cache
+
     operator fun set(position: Vec2i, element: Element) = add(position, element)
 
     fun add(position: Vec2i, element: Element) {
@@ -123,7 +125,7 @@ class GridLayout(hudRenderer: HUDRenderer, val grid: Vec2i) : Element(hudRendere
     }
 
 
-    override fun render(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int {
+    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int {
         var maxZ = 0
         for (x in 0 until grid.x) {
             for (y in 0 until grid.y) {

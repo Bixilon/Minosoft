@@ -43,9 +43,10 @@ class TextFlowElement(
         get() = maxSize
         set(value) {}
 
+    override var cacheEnabled: Boolean = false // ToDo: Cache
     private var textSize = Vec2i.EMPTY
 
-    override fun render(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int {
+    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int {
         val visibleLines = visibleLines
         if (visibleLines.isEmpty()) {
             return 0

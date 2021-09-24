@@ -50,7 +50,7 @@ class TabListElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
         hudRenderer.atlasManager["minecraft:tab_list_ping_5".toResourceLocation()]!!,
     )
 
-    override fun render(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int {
+    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int {
         background.render(Vec2i(offset), z, consumer)
         val size = size
 
@@ -158,6 +158,7 @@ class TabListElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
         this.size = size
 
         background.size = size
+        cacheUpToDate = false
     }
 
     override fun onParentChange() {

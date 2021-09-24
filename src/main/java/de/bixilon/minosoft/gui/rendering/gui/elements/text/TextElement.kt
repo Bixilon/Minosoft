@@ -24,7 +24,6 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.ElementAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.ElementAlignments.Companion.getOffset
 import de.bixilon.minosoft.gui.rendering.gui.elements.InfiniteSizeElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
-import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMeshCache
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.util.vec.Vec2Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.Vec4Util.offset
@@ -38,9 +37,6 @@ open class TextElement(
     var backgroundColor: RGBColor = RenderConstants.TEXT_BACKGROUND_COLOR,
     parent: Element? = null,
 ) : LabeledElement(hudRenderer) {
-    private var previousOffset = Vec2i.EMPTY
-    private var previousMatrix = hudRenderer.matrix
-
     private var previousMaxSize = Vec2i.EMPTY
     private var preparedSize = Vec2i.EMPTY
     var renderInfo = TextRenderInfo()
@@ -109,18 +105,10 @@ open class TextElement(
     }
 
 
-    override fun render(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int {
+    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int {
         if (emptyMessage) {
             return 0
         }
-        if (previousOffset != offset || previousMatrix != hudRenderer.matrix) {
-            cacheUpToDate = false
-        }
-        if (cacheUpToDate) {
-            consumer.addCache(cache)
-            return LAYERS
-        }
-        val cache = GUIMeshCache(hudRenderer.matrix)
         val initialOffset = offset + margin.offset
 
         ChatComponentRenderer.render(initialOffset, Vec2i(initialOffset), Vec2i.EMPTY, z + 1, this, fontAlignment, renderWindow, cache, renderInfo, textComponent)
@@ -132,12 +120,6 @@ open class TextElement(
                 cache.addQuad(start, start + Vec2i(info.width + Font.CHAR_MARGIN, Font.TOTAL_CHAR_HEIGHT), z, renderWindow.WHITE_TEXTURE, backgroundColor)
             }
         }
-
-        consumer.addCache(cache)
-        this.cache = cache
-        this.previousOffset = offset
-        this.previousMatrix = hudRenderer.matrix
-        this.cacheUpToDate = true
 
         return LAYERS
     }

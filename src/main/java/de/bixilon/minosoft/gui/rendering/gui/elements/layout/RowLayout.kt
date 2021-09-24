@@ -42,6 +42,8 @@ open class RowLayout(
     private var _prefSize = Vec2i.EMPTY
     private val children: MutableList<Element> = synchronizedListOf()
 
+    override var cacheEnabled: Boolean = false // ToDo: Cache
+
     override var prefSize: Vec2i
         get() = _prefSize
         set(value) {}
@@ -56,7 +58,7 @@ open class RowLayout(
         children.clear()
     }
 
-    override fun render(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int {
+    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int {
         var childYOffset = 0
         var maxZ = 0
 

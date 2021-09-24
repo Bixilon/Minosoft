@@ -16,9 +16,11 @@ package de.bixilon.minosoft.gui.rendering.gui.mesh
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
+import de.bixilon.minosoft.gui.rendering.util.vec.Vec2Util.EMPTY
 import de.bixilon.minosoft.util.collections.ArrayFloatList
 import glm_.mat4x4.Mat4
 import glm_.vec2.Vec2
+import glm_.vec2.Vec2i
 import glm_.vec2.Vec2t
 import glm_.vec4.Vec4
 
@@ -27,6 +29,9 @@ class GUIMeshCache(
     initialCacheSize: Int = 1000,
 ) : GUIVertexConsumer {
     val data: ArrayFloatList = ArrayFloatList(initialCacheSize)
+    var offset: Vec2i = Vec2i.EMPTY
+    var z: Int = 0
+    var maxZ: Int = 0
 
     override fun addVertex(position: Vec2t<*>, z: Int, texture: AbstractTexture, uv: Vec2, tint: RGBColor) {
         val outPosition = matrix * Vec4(position.x.toFloat(), position.y.toFloat(), 1.0f, 1.0f)

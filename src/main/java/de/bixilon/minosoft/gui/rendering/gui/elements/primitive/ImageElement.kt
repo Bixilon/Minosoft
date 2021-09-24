@@ -19,11 +19,9 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.hud.atlas.TextureLike
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMesh
-import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMeshCache
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.util.vec.Vec2Util.EMPTY
-import glm_.mat4x4.Mat4
 import glm_.vec2.Vec2
 import glm_.vec2.Vec2i
 
@@ -35,6 +33,7 @@ open class ImageElement(
     size: Vec2i = texture.size,
     tint: RGBColor = ChatColors.WHITE,
 ) : Element(hudRenderer) {
+    override var initialCacheSize: Int = GUIMesh.GUIMeshStruct.FLOATS_PER_VERTEX * 6
     var texture: AbstractTexture = texture
         set(value) {
             field = value
@@ -70,10 +69,6 @@ open class ImageElement(
             cacheUpToDate = false
         }
 
-    private var matrix: Mat4 = hudRenderer.matrix
-    private var lastOffset: Vec2i = Vec2i(-1, -1)
-
-
     init {
         this.size = size
     }
@@ -82,20 +77,8 @@ open class ImageElement(
 
     constructor(hudRenderer: HUDRenderer, texture: AbstractTexture, uvStart: Vec2i, uvEnd: Vec2i, size: Vec2i = texture.size, tint: RGBColor = ChatColors.WHITE) : this(hudRenderer, texture, Vec2(uvStart) * texture.singlePixelSize, Vec2(uvEnd) * texture.singlePixelSize, size, tint)
 
-    override fun render(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int {
-        val matrix = hudRenderer.matrix
-        if (offset == lastOffset && matrix == this.matrix && cacheUpToDate) {
-            consumer.addCache(cache)
-            return 1
-        }
-        val cache = GUIMeshCache(matrix, GUIMesh.GUIMeshStruct.FLOATS_PER_VERTEX * 6)
-        cache.addQuad(offset, offset + size, z, texture, uvStart, uvEnd, tint)
-
-        this.lastOffset = offset
-        this.matrix = matrix
-        this.cache = cache
-        this.cacheUpToDate = true
-        consumer.addCache(cache)
+    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int {
+        consumer.addQuad(offset, offset + size, z, texture, uvStart, uvEnd, tint)
         return 1
     }
 

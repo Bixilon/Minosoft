@@ -25,7 +25,7 @@ class HotbarBaseElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
     private val base = ImageElement(hudRenderer, baseAtlasElement)
     private val frame = ImageElement(hudRenderer, hudRenderer.atlasManager[FRAME]!!, size = Vec2i(FRAME_SIZE))
 
-    override fun render(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int {
+    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int {
         base.render(offset + HORIZONTAL_MARGIN, z, consumer)
 
         baseAtlasElement.slots[hudRenderer.connection.player.selectedHotbarSlot]?.let {
@@ -37,6 +37,7 @@ class HotbarBaseElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
 
     override fun silentApply() {
         size = HOTBAR_BASE_SIZE + Vec2i(HORIZONTAL_MARGIN * 2, 1) // offset left and right; offset for the frame is just on top, not on the bottom
+        cacheUpToDate = false // ToDo: Check changes
     }
 
 

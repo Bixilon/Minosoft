@@ -33,11 +33,13 @@ class HotbarElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
         hunger,
     )
 
+    override var cacheEnabled: Boolean = false
+
     init {
         silentApply()
     }
 
-    override fun render(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int {
+    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int {
         silentApply()
         val initialOffset = Vec2i(offset)
         var maxZ = 0

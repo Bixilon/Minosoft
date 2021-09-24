@@ -20,7 +20,7 @@ import glm_.vec2.Vec2i
 
 open class SpacerElement(hudRenderer: HUDRenderer, override var size: Vec2i) : Element(hudRenderer) {
 
-    override fun render(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int = 0
+    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int = 0
 
     override fun silentApply() = Unit
     override fun apply() = Unit

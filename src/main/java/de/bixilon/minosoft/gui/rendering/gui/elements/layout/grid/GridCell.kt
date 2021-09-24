@@ -27,6 +27,9 @@ class GridCell(
     override var parent: Element?,
 ) : Element(hudRenderer) {
     override var cacheUpToDate: Boolean by child::cacheUpToDate
+    override var cacheEnabled: Boolean by child::cacheEnabled
+    override var initialCacheSize: Int by child::initialCacheSize
+    override var prefMaxSize: Vec2i by child::prefMaxSize
     override var size: Vec2i by child::size
     override var margin: Vec4i by child::margin
     override var prefSize: Vec2i by child::prefSize
@@ -49,7 +52,7 @@ class GridCell(
         child.parent = this
     }
 
-    override fun render(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int {
+    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int {
         return child.render(offset, z, consumer)
     }
 

@@ -31,7 +31,9 @@ abstract class Element(val hudRenderer: HUDRenderer) {
             field = value
             onParentChange()
         }
-    protected var cache = GUIMeshCache(hudRenderer.matrix)
+    protected var cache = GUIMeshCache(hudRenderer.matrix, 0)
+    open var cacheEnabled: Boolean = true
+    open var initialCacheSize: Int = 100
     open var cacheUpToDate: Boolean = false
 
     /**
@@ -86,11 +88,33 @@ abstract class Element(val hudRenderer: HUDRenderer) {
         }
 
     /**
-     * Renders the element to a vertex consumer
+     * Renders the element (eventually from a cache) to a vertex consumer
      *
      * @return The number of z layers used
      */
-    abstract fun render(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int
+    fun render(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int {
+        if (!cacheEnabled) {
+            return forceRender(offset, z, consumer)
+        }
+        if (!cacheUpToDate || cache.offset != offset || hudRenderer.matrixChange || cache.matrix != hudRenderer.matrix || z != cache.z) {
+            val cache = GUIMeshCache(hudRenderer.matrix)
+            cache.offset = offset
+            cache.z = z
+            val maxZ = forceRender(offset, z, cache)
+            cache.maxZ = maxZ
+            cacheUpToDate = true
+        }
+
+        consumer.addCache(cache)
+        return cache.maxZ
+    }
+
+    /**
+     * Force renders the element to the cache/vertex consumer
+     *
+     * @return The number of z layers used
+     */
+    abstract fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int
 
     /**
      * Applied all changes made to any property, but does not notify the parent about the change

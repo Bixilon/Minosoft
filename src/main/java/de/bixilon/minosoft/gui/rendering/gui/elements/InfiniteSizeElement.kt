@@ -31,7 +31,7 @@ class InfiniteSizeElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
         get() = Vec2i.MAX
         set(value) {}
 
-    override fun render(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int {
+    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int {
         error("Can not render InfiniteSizeElement")
     }
 
