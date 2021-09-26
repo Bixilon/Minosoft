@@ -292,6 +292,7 @@ public final class Util {
         forceClassInit(URLProtocolStreamHandlers.class);
         forceClassInit(MicrosoftOAuthUtils.class);
         forceClassInit(TimeWorker.class);
+        forceClassInit(ShutdownManager.class);
     }
 
     public static Map<String, String> urlQueryToMap(String query) {

@@ -33,7 +33,7 @@ import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionSt
 import de.bixilon.minosoft.modding.event.events.connection.status.StatusConnectionStateChangeEvent
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates.Companion.disconnected
 import de.bixilon.minosoft.protocol.network.connection.status.StatusConnectionStates
 import de.bixilon.minosoft.util.DNSUtil
 import de.bixilon.minosoft.util.KUtil.decide
@@ -241,7 +241,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
                             serverCard.server.connections += connection
 
                             connection.registerEvent(CallbackEventInvoker.of<PlayConnectionStateChangeEvent> { event ->
-                                if (event.state === PlayConnectionStates.DISCONNECTED || event.state === PlayConnectionStates.KICKED || event.state === PlayConnectionStates.ERROR) {
+                                if (event.state.disconnected) {
                                     account.connections -= serverCard.server
                                     serverCard.server.connections -= connection
                                 }

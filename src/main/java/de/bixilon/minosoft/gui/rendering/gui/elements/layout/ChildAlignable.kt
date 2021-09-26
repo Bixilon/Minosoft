@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.elements.layout
 
-import de.bixilon.minosoft.gui.rendering.gui.elements.ElementAlignments
+import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 
 interface ChildAlignable {
-    var childAlignment: ElementAlignments
+    var childAlignment: HorizontalAlignments
 }

@@ -78,7 +78,7 @@ class OpenGLRenderSystem(
         vendor = when {
             vendorString.contains("nvidia") -> NvidiaOpenGLVendor
             vendorString.contains("intel") -> MesaOpenGLVendor
-            vendorString.contains("amd") || vendorString.contains("ati") -> ATIOpenGLVendor // ToDo
+            vendorString.contains("amd") || vendorString.contains("ati") -> ATIOpenGLVendor // ToDo: Find out exact value, I don't have any AMD gpu
             else -> OtherOpenGLVendor
         }
 

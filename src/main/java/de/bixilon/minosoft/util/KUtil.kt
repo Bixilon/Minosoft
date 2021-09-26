@@ -78,7 +78,7 @@ object KUtil {
         return when (this) {
             is String -> ResourceLocation(this)
             is ResourceLocation -> this
-            else -> TODO()
+            else -> TODO("Don't know how to turn $this into a resource location!")
         }
     }
 

@@ -77,7 +77,7 @@ object JavaFXUtil {
     }
 
     var TextFlow.text: Any?
-        get() = TODO()
+        get() = TODO("Can not get the text of a TextFlow (yet)")
         set(value) {
             this.children.setAll(Minosoft.LANGUAGE_MANAGER.translate(value).javaFXText)
         }

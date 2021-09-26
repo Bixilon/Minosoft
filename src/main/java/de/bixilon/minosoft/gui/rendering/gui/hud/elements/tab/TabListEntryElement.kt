@@ -18,8 +18,8 @@ import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
-import de.bixilon.minosoft.gui.rendering.gui.elements.ElementAlignments
-import de.bixilon.minosoft.gui.rendering.gui.elements.ElementAlignments.Companion.getOffset
+import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
+import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ColorElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ImageElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
@@ -76,7 +76,7 @@ class TabListEntryElement(
     override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int {
         background.render(Vec2i(offset), z, consumer)
         nameElement.render(Vec2i(offset), z, consumer)
-        pingElement.render(offset + Vec2i(ElementAlignments.RIGHT.getOffset(maxSize.x, pingElement.size.x + PADDING), PADDING), z + 1, consumer)
+        pingElement.render(offset + Vec2i(HorizontalAlignments.RIGHT.getOffset(maxSize.x, pingElement.size.x + PADDING), PADDING), z + 1, consumer)
 
         return TextElement.LAYERS
     }

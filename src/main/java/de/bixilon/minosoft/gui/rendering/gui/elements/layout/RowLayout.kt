@@ -14,8 +14,8 @@
 package de.bixilon.minosoft.gui.rendering.gui.elements.layout
 
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
-import de.bixilon.minosoft.gui.rendering.gui.elements.ElementAlignments
-import de.bixilon.minosoft.gui.rendering.gui.elements.ElementAlignments.Companion.getOffset
+import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
+import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.util.vec.Vec2Util.EMPTY
@@ -36,7 +36,7 @@ import java.lang.Integer.max
  */
 open class RowLayout(
     hudRenderer: HUDRenderer,
-    override var childAlignment: ElementAlignments = ElementAlignments.LEFT,
+    override var childAlignment: HorizontalAlignments = HorizontalAlignments.LEFT,
     spacing: Int = 0,
 ) : Element(hudRenderer), ChildAlignable {
     private var _prefSize = Vec2i.EMPTY

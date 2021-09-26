@@ -55,7 +55,7 @@ class HotbarHungerElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
     )
 
     override var cacheEnabled: Boolean
-        get() = super.cacheUpToDate && !animate
+        get() = super.cacheEnabled && !animate
         set(value) {
             super.cacheEnabled = value
         }
@@ -127,14 +127,23 @@ class HotbarHungerElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
     }
 
     override fun silentApply() {
-        // ToDo: Check changes
         val healthCondition = hudRenderer.connection.player.healthCondition
 
-        hunger = healthCondition.hunger
-        saturation = healthCondition.saturation
+        if (hunger != healthCondition.hunger) {
+            hunger = healthCondition.hunger
+            cacheUpToDate = false
+        }
 
-        hungerEffect = hudRenderer.connection.player.activeStatusEffects.contains(hungerStatusEffect)
-        cacheUpToDate = false
+        if (saturation != healthCondition.saturation) {
+            saturation = healthCondition.saturation
+            cacheUpToDate = false
+        }
+
+        val hungerEffect = hudRenderer.connection.player.activeStatusEffects.contains(hungerStatusEffect)
+        if (this.hungerEffect != hungerEffect) {
+            this.hungerEffect = hungerEffect
+            cacheUpToDate = false
+        }
     }
 
     override fun tick() {
@@ -143,6 +152,10 @@ class HotbarHungerElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
         val healthCondition = hudRenderer.connection.player.healthCondition
 
         animate = healthCondition.saturation <= 0.0f && ticks++ % (healthCondition.hunger * 3 + 1) == 0
+    }
+
+    override fun onParentChange() {
+        silentApply()
     }
 
     companion object {

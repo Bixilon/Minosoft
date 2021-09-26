@@ -11,14 +11,27 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.gui.elements.text
+package de.bixilon.minosoft.gui.rendering.gui.elements
 
-import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
+import glm_.vec2.Vec2i
 
-interface Labeled {
-    var text: Any
-    val textComponent: ChatComponent
+enum class HorizontalAlignments {
+    LEFT,
+    CENTER,
+    RIGHT,
+    ;
 
-    val fontAlignment: HorizontalAlignments
+    companion object {
+        fun HorizontalAlignments.getOffset(width: Int, childWidth: Int): Int {
+            return when (this) {
+                LEFT -> 0
+                RIGHT -> width - childWidth
+                CENTER -> (width - childWidth) / 2
+            }
+        }
+
+        fun HorizontalAlignments.getOffset(size: Vec2i, childSize: Vec2i): Int {
+            return getOffset(size.x, childSize.x)
+        }
+    }
 }

@@ -14,18 +14,37 @@
 package de.bixilon.minosoft.util
 
 import de.bixilon.minosoft.ShutdownReasons
+import de.bixilon.minosoft.protocol.network.connection.Connection
+import de.bixilon.minosoft.util.KUtil.toSynchronizedSet
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
+import de.bixilon.minosoft.util.task.pool.DefaultThreadPool
 import kotlin.system.exitProcess
 
 object ShutdownManager {
     private var initialized = false
+    private var exiting = false
 
 
     fun shutdown(message: String? = null, reason: ShutdownReasons = ShutdownReasons.UNKNOWN) {
-        // ToDo
+        Log.log(LogMessageType.GENERAL, LogLevels.INFO) { "Shutting down..." }
+        for (connection in Connection.CONNECTIONS.toSynchronizedSet()) {
+            connection.disconnect()
+        }
+        DefaultThreadPool.shutdown()
         exitProcess(reason.exitCode)
     }
 
     fun init() {
-        initialized = true // ToDo: Shutdown hook
+        Runtime.getRuntime().addShutdownHook(Thread({
+            if (exiting) {
+                return@Thread
+            }
+            exiting = true
+
+            shutdown()
+        }, "Shutdown Hook"))
+        initialized = true
     }
 }

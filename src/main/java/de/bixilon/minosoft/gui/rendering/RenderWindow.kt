@@ -120,7 +120,6 @@ class RenderWindow(
                 return@of
             }
             if (!initialPositionReceived) {
-                // ToDo: Set previous position
                 latch.dec()
                 initialPositionReceived = true
             }

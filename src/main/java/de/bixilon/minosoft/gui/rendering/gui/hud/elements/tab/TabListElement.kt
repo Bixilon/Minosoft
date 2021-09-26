@@ -15,8 +15,8 @@ package de.bixilon.minosoft.gui.rendering.gui.hud.elements.tab
 
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
-import de.bixilon.minosoft.gui.rendering.gui.elements.ElementAlignments
-import de.bixilon.minosoft.gui.rendering.gui.elements.ElementAlignments.Companion.getOffset
+import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
+import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ColorElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
@@ -32,8 +32,8 @@ import java.lang.Integer.max
 import java.util.*
 
 class TabListElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
-    val header = TextElement(hudRenderer, "", background = false, fontAlignment = ElementAlignments.CENTER, parent = this)
-    val footer = TextElement(hudRenderer, "", background = false, fontAlignment = ElementAlignments.CENTER, parent = this)
+    val header = TextElement(hudRenderer, "", background = false, fontAlignment = HorizontalAlignments.CENTER, parent = this)
+    val footer = TextElement(hudRenderer, "", background = false, fontAlignment = HorizontalAlignments.CENTER, parent = this)
 
     private val background = ColorElement(hudRenderer, Vec2i.EMPTY, color = RGBColor(0, 0, 0, 120))
 
@@ -56,12 +56,12 @@ class TabListElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
 
         header.size.let {
             header.onParentChange()
-            header.render(offset + Vec2i(ElementAlignments.CENTER.getOffset(size.x, it.x), 0), z, consumer)
+            header.render(offset + Vec2i(HorizontalAlignments.CENTER.getOffset(size.x, it.x), 0), z, consumer)
             offset.y += it.y
         }
 
         val offsetBefore = Vec2i(offset)
-        offset.x += ElementAlignments.CENTER.getOffset(size.x, entriesSize.x)
+        offset.x += HorizontalAlignments.CENTER.getOffset(size.x, entriesSize.x)
 
         var columns = toRender.size / ENTRIES_PER_COLUMN
         if (toRender.size % ENTRIES_PER_COLUMN > 0) {
@@ -81,7 +81,7 @@ class TabListElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
 
 
         footer.size.let {
-            footer.render(offset + Vec2i(ElementAlignments.CENTER.getOffset(size.x, it.x), 0), z, consumer)
+            footer.render(offset + Vec2i(HorizontalAlignments.CENTER.getOffset(size.x, it.x), 0), z, consumer)
             offset.y += it.y
         }
 

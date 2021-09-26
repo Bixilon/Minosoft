@@ -25,6 +25,11 @@ class HotbarBaseElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
     private val base = ImageElement(hudRenderer, baseAtlasElement)
     private val frame = ImageElement(hudRenderer, hudRenderer.atlasManager[FRAME]!!, size = Vec2i(FRAME_SIZE))
 
+    init {
+        size = HOTBAR_BASE_SIZE + Vec2i(HORIZONTAL_MARGIN * 2, 1) // offset left and right; offset for the frame is just on top, not on the bottom
+        cacheUpToDate = false // ToDo: Check changes
+    }
+
     override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int {
         base.render(offset + HORIZONTAL_MARGIN, z, consumer)
 
@@ -35,11 +40,7 @@ class HotbarBaseElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
         return 2 // bar + frame ToDo: Item rendering
     }
 
-    override fun silentApply() {
-        size = HOTBAR_BASE_SIZE + Vec2i(HORIZONTAL_MARGIN * 2, 1) // offset left and right; offset for the frame is just on top, not on the bottom
-        cacheUpToDate = false // ToDo: Check changes
-    }
-
+    override fun silentApply() {}
 
     companion object {
         private val BASE = "minecraft:hotbar_base".toResourceLocation()

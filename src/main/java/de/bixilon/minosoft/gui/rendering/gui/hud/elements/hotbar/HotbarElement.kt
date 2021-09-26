@@ -14,10 +14,14 @@
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar
 
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
-import de.bixilon.minosoft.gui.rendering.gui.elements.ElementAlignments
-import de.bixilon.minosoft.gui.rendering.gui.elements.ElementAlignments.Companion.getOffset
+import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
+import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
+import de.bixilon.minosoft.gui.rendering.gui.elements.VerticalAlignments
+import de.bixilon.minosoft.gui.rendering.gui.elements.VerticalAlignments.Companion.getOffset
+import de.bixilon.minosoft.gui.rendering.gui.elements.layout.RowLayout
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
+import de.bixilon.minosoft.gui.rendering.util.vec.Vec2Util.max
 import glm_.vec2.Vec2i
 import java.lang.Integer.max
 
@@ -27,42 +31,55 @@ class HotbarElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
     private val hunger = HotbarHungerElement(hudRenderer)
 
 
-    private var elements = setOf(
+    private val topLeft = RowLayout(hudRenderer, HorizontalAlignments.LEFT, 1) // contains health, armor, etc
+    private val topRight = RowLayout(hudRenderer, HorizontalAlignments.RIGHT, 1) // contains hunger, air
+
+    private var renderElements = setOf(
         base,
-        health,
-        hunger,
+        topLeft,
+        topRight,
     )
 
-    override var cacheEnabled: Boolean = false
+    override var cacheEnabled: Boolean = false // ToDo: Cache correctly
 
     init {
+        topLeft += health
+        topLeft.parent = this
+
+        topRight += hunger
+        topRight.parent = this
+
         silentApply()
     }
 
     override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int {
+        // ToDo: Do not apply every frame
         silentApply()
-        val initialOffset = Vec2i(offset)
         var maxZ = 0
-        maxZ = max(maxZ, health.render(offset, z, consumer))
-        hunger.render(offset + Vec2i(ElementAlignments.RIGHT.getOffset(size.x, hunger.size.x), 0), z, consumer) // ToDo
-        offset.y += health.size.y
+
+        val topSize = topLeft.size.max(topRight.size)
+
+        maxZ = max(maxZ, topLeft.render(offset + Vec2i(0, HorizontalAlignments.LEFT.getOffset(topSize.y, topLeft.size.y)), z, consumer))
+        maxZ = max(maxZ, topRight.render(offset + Vec2i(HorizontalAlignments.RIGHT.getOffset(size.x, topRight.size.x), VerticalAlignments.BOTTOM.getOffset(topSize.y, topRight.size.y)), z, consumer))
+        offset.y += topSize.y
+
         maxZ = max(maxZ, base.render(offset, z, consumer))
 
         return maxZ
     }
 
     override fun silentApply() {
-        for (element in elements) {
-            element.silentApply()
+        for (element in renderElements) {
+            element.onParentChange()
         }
 
-        size = base.size + Vec2i(0, health.size.y)
+        size = base.size + Vec2i(0, max(topLeft.size.y, topRight.size.y))
     }
 
     override fun tick() {
         super.tick()
 
-        for (element in elements) {
+        for (element in renderElements) {
             element.tick()
         }
     }

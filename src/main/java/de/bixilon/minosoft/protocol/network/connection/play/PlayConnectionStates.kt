@@ -39,4 +39,11 @@ enum class PlayConnectionStates : Translatable {
     ;
 
     override val translationKey: ResourceLocation = "minosoft:connection.play.state.${name.lowercase()}".toResourceLocation()
+
+
+    companion object {
+
+        val PlayConnectionStates.disconnected
+            get() = this == PlayConnectionStates.DISCONNECTED || this == PlayConnectionStates.KICKED || this == PlayConnectionStates.ERROR
+    }
 }

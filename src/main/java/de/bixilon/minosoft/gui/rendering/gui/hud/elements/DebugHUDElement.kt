@@ -27,7 +27,7 @@ import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.world.Chunk
 import de.bixilon.minosoft.gui.rendering.block.WorldRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
-import de.bixilon.minosoft.gui.rendering.gui.elements.ElementAlignments
+import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.layout.RowLayout
 import de.bixilon.minosoft.gui.rendering.gui.elements.layout.grid.GridGrow
 import de.bixilon.minosoft.gui.rendering.gui.elements.layout.grid.GridLayout
@@ -62,7 +62,7 @@ class DebugHUDElement(hudRenderer: HUDRenderer) : HUDElement<GridLayout>(hudRend
         }
         columnConstraints[2].apply {
             grow = GridGrow.NEVER
-            alignment = ElementAlignments.RIGHT
+            alignment = HorizontalAlignments.RIGHT
         }
 
         apply()
@@ -170,10 +170,10 @@ class DebugHUDElement(hudRenderer: HUDRenderer) : HUDElement<GridLayout>(hudRend
     }
 
     private fun initRight(): Element {
-        val layout = RowLayout(hudRenderer, ElementAlignments.RIGHT)
+        val layout = RowLayout(hudRenderer, HorizontalAlignments.RIGHT)
         layout.margin = Vec4i(2)
-        layout += TextElement(hudRenderer, "Java ${Runtime.version()} ${System.getProperty("sun.arch.data.model")}bit", ElementAlignments.RIGHT)
-        layout += TextElement(hudRenderer, "OS ${SystemInformation.OS_TEXT}", ElementAlignments.RIGHT)
+        layout += TextElement(hudRenderer, "Java ${Runtime.version()} ${System.getProperty("sun.arch.data.model")}bit", HorizontalAlignments.RIGHT)
+        layout += TextElement(hudRenderer, "OS ${SystemInformation.OS_TEXT}", HorizontalAlignments.RIGHT)
 
         layout += LineSpacerElement(hudRenderer)
 
@@ -192,39 +192,39 @@ class DebugHUDElement(hudRenderer: HUDRenderer) : HUDElement<GridLayout>(hudRend
 
         layout += LineSpacerElement(hudRenderer)
 
-        layout += TextElement(hudRenderer, "CPU ${SystemInformation.PROCESSOR_TEXT}", ElementAlignments.RIGHT)
+        layout += TextElement(hudRenderer, "CPU ${SystemInformation.PROCESSOR_TEXT}", HorizontalAlignments.RIGHT)
         layout += TextElement(hudRenderer, "Memory ${SystemInformation.SYSTEM_MEMORY.formatBytes()}")
 
 
         layout += LineSpacerElement(hudRenderer)
 
-        layout += TextElement(hudRenderer, "Display TBA", ElementAlignments.RIGHT).apply {
+        layout += TextElement(hudRenderer, "Display TBA", HorizontalAlignments.RIGHT).apply {
             hudRenderer.connection.registerEvent(CallbackEventInvoker.of<ResizeWindowEvent> {
                 text = "Display ${it.size.x}x${it.size.y}"
             })
         }
 
         renderWindow.renderSystem.apply {
-            layout += TextElement(hudRenderer, "GPU $gpuType", ElementAlignments.RIGHT)
-            layout += TextElement(hudRenderer, "Version $version", ElementAlignments.RIGHT)
+            layout += TextElement(hudRenderer, "GPU $gpuType", HorizontalAlignments.RIGHT)
+            layout += TextElement(hudRenderer, "Version $version", HorizontalAlignments.RIGHT)
         }
 
         if (GitInfo.IS_INITIALIZED) {
             layout += LineSpacerElement(hudRenderer)
 
             GitInfo.apply {
-                layout += TextElement(hudRenderer, "Git $GIT_COMMIT_ID_ABBREV: $GIT_COMMIT_MESSAGE_SHORT", ElementAlignments.RIGHT)
+                layout += TextElement(hudRenderer, "Git $GIT_COMMIT_ID_ABBREV: $GIT_COMMIT_MESSAGE_SHORT", HorizontalAlignments.RIGHT)
             }
         }
 
         layout += LineSpacerElement(hudRenderer)
 
-        layout += TextElement(hudRenderer, "Mods ${ModLoader.MOD_MAP.size}x loaded, ${connection.size}x listeners", ElementAlignments.RIGHT)
+        layout += TextElement(hudRenderer, "Mods ${ModLoader.MOD_MAP.size}x loaded, ${connection.size}x listeners", HorizontalAlignments.RIGHT)
 
         layout += LineSpacerElement(hudRenderer)
 
         renderWindow.inputHandler.camera.apply {
-            layout += AutoTextElement(hudRenderer, 1, ElementAlignments.RIGHT) {
+            layout += AutoTextElement(hudRenderer, 1, HorizontalAlignments.RIGHT) {
                 // ToDo: Tags
                 target ?: "No target"
             }

@@ -20,12 +20,15 @@ import glm_.vec2.Vec2i
 
 class LineSpacerElement(
     hudRenderer: HUDRenderer,
-    var lines: Int = 1,
+    lines: Int = 1,
 ) : SpacerElement(hudRenderer, Vec2i.EMPTY) {
-
-    override var size: Vec2i
-        get() = Vec2i(0, lines * Font.TOTAL_CHAR_HEIGHT)
+    var lines: Int = 0
         set(value) {
-            TODO("Can not set the size of an FontSpacer! Use a normal spacer instead!")
+            field = value
+            size = Vec2i(0, lines * Font.TOTAL_CHAR_HEIGHT)
         }
+
+    init {
+        this.lines = lines
+    }
 }

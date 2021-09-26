@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.elements
 
+import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMeshCache
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
@@ -93,7 +94,7 @@ abstract class Element(val hudRenderer: HUDRenderer) {
      * @return The number of z layers used
      */
     fun render(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int {
-        if (!cacheEnabled) {
+        if (RenderConstants.DISABLE_GUI_CACHE || !cacheEnabled) {
             return forceRender(offset, z, consumer)
         }
         if (!cacheUpToDate || cache.offset != offset || hudRenderer.matrixChange || cache.matrix != hudRenderer.matrix || z != cache.z) {
@@ -102,6 +103,7 @@ abstract class Element(val hudRenderer: HUDRenderer) {
             cache.z = z
             val maxZ = forceRender(offset, z, cache)
             cache.maxZ = maxZ
+            this.cache = cache
             cacheUpToDate = true
         }
 

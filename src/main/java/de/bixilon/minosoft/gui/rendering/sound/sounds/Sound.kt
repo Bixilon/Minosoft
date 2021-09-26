@@ -75,7 +75,7 @@ data class Sound(
             val format = when (channels) {
                 1 -> AL_FORMAT_MONO16
                 2 -> AL_FORMAT_STEREO16
-                else -> TODO("Channels: $channels")
+                else -> error("Don't know vorbis channels: $channels")
             }
             sampleRate = info.sample_rate()
 

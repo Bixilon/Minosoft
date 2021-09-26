@@ -212,6 +212,8 @@ class HotbarHealthElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
     override fun silentApply() {
         // ToDo: Check if something changed
 
+        // ToDo: Notify parent?
+
         val player = hudRenderer.connection.player
 
         hardcode = hudRenderer.connection.world.hardcore
@@ -235,6 +237,10 @@ class HotbarHealthElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
 
         size = Vec2i(HEARTS_PER_ROW, rows) * HEART_SIZE
         cacheUpToDate = false
+    }
+
+    override fun onParentChange() {
+        silentApply()
     }
 
 

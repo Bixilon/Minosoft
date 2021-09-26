@@ -53,7 +53,7 @@ class TextFlowElement(
         }
         var yOffset = 0
         for (message in visibleLines.reversed()) {
-            message.textElement.render(offset + Vec2i(0, yOffset), 0, consumer)
+            message.textElement.render(offset + Vec2i(0, yOffset), z, consumer)
             yOffset += Font.TOTAL_CHAR_HEIGHT
         }
 
