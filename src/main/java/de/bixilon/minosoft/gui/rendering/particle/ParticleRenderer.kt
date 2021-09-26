@@ -21,9 +21,14 @@ import de.bixilon.minosoft.gui.rendering.RendererBuilder
 import de.bixilon.minosoft.gui.rendering.modding.events.CameraMatrixChangeEvent
 import de.bixilon.minosoft.gui.rendering.particle.types.Particle
 import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
+import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionStateChangeEvent
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates.Companion.disconnected
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.util.KUtil.toSynchronizedSet
+import de.bixilon.minosoft.util.task.time.TimeWorker
+import de.bixilon.minosoft.util.task.time.TimeWorkerTask
 import glm_.mat4x4.Mat4
 import glm_.vec3.Vec3
 
@@ -38,6 +43,9 @@ class ParticleRenderer(
 
     private var particles: MutableSet<Particle> = mutableSetOf()
     private var particleQueue: MutableSet<Particle> = mutableSetOf()
+
+
+    private lateinit var particleTask: TimeWorkerTask
 
     val size: Int
         get() = particles.size + particleQueue.size
@@ -67,6 +75,19 @@ class ParticleRenderer(
         renderWindow.textureManager.staticTextures.animator.use(particleShader)
 
         connection.world.particleRenderer = this
+
+        particleTask = TimeWorker.addTask(TimeWorkerTask(ProtocolDefinition.TICK_TIME, maxDelayTime = ProtocolDefinition.TICK_TIME / 2) {
+            for (particle in particles.toSynchronizedSet()) {
+                particle.tryTick()
+            }
+        })
+
+        connection.registerEvent(CallbackEventInvoker.of<PlayConnectionStateChangeEvent> {
+            if (!it.state.disconnected) {
+                return@of
+            }
+            TimeWorker.removeTask(particleTask)
+        })
     }
 
     fun add(particle: Particle) {
@@ -97,7 +118,6 @@ class ParticleRenderer(
         transparentParticleMesh = ParticleMesh(renderWindow, 500)
 
         for (particle in particles) {
-            particle.tryTick()
             if (particle.dead) {
                 toRemove += particle
                 continue
