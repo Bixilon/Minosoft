@@ -26,7 +26,9 @@ import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates.Companion.disconnected
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import de.bixilon.minosoft.util.KUtil.toSynchronizedSet
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
 import de.bixilon.minosoft.util.task.time.TimeWorker
 import de.bixilon.minosoft.util.task.time.TimeWorkerTask
 import glm_.mat4x4.Mat4
@@ -77,8 +79,10 @@ class ParticleRenderer(
         connection.world.particleRenderer = this
 
         particleTask = TimeWorker.addTask(TimeWorkerTask(ProtocolDefinition.TICK_TIME, maxDelayTime = ProtocolDefinition.TICK_TIME / 2) {
-            for (particle in particles.toSynchronizedSet()) {
-                particle.tryTick()
+            synchronized(particles) {
+                for (particle in particles) {
+                    particle.tryTick()
+                }
             }
         })
 
@@ -92,7 +96,10 @@ class ParticleRenderer(
 
     fun add(particle: Particle) {
         val particleCount = particles.size + particleQueue.size
-        check(particleCount < RenderConstants.MAXIMUM_PARTICLE_AMOUNT) { "Can not add particle: Limit reached (${particleCount} > ${RenderConstants.MAXIMUM_PARTICLE_AMOUNT}" }
+        if (particleCount >= RenderConstants.MAXIMUM_PARTICLE_AMOUNT) {
+            Log.log(LogMessageType.RENDERING_GENERAL, LogLevels.WARN) { "Can not add particle: Limit reached (${particleCount} > ${RenderConstants.MAXIMUM_PARTICLE_AMOUNT}" }
+            return
+        }
         synchronized(particleQueue) {
             particleQueue += particle
         }
@@ -109,22 +116,24 @@ class ParticleRenderer(
         val toRemove: MutableSet<Particle> = mutableSetOf()
 
 
-        synchronized(particleQueue) {
-            particles += particleQueue
-            particleQueue.clear()
-        }
-
-        particleMesh = ParticleMesh(renderWindow, particles.size)
+        particleMesh = ParticleMesh(renderWindow, particles.size + particleQueue.size)
         transparentParticleMesh = ParticleMesh(renderWindow, 500)
 
-        for (particle in particles) {
-            if (particle.dead) {
-                toRemove += particle
-                continue
+        synchronized(particles) {
+            synchronized(particleQueue) {
+                particles += particleQueue
+                particleQueue.clear()
             }
-            particle.addVertex(transparentParticleMesh, particleMesh)
+
+            for (particle in particles) {
+                if (particle.dead) {
+                    toRemove += particle
+                    continue
+                }
+                particle.addVertex(transparentParticleMesh, particleMesh)
+            }
+            particles -= toRemove
         }
-        particles -= toRemove
 
         particleMesh.load()
         transparentParticleMesh.load()
