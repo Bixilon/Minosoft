@@ -67,19 +67,9 @@ class AudioPlayer(
     private lateinit var listener: SoundListener
     private val sources: MutableList<SoundSource> = synchronizedListOf()
 
-    val availableSources: Int
-        get() {
-            val sources = sources.toSynchronizedList()
-            var available = 0
+    var availableSources: Int = 0
+        private set
 
-            for (source in sources) {
-                if (source.available) {
-                    available++
-                }
-            }
-
-            return available
-        }
     val sourcesCount: Int
         get() = sources.size
 
@@ -207,6 +197,15 @@ class AudioPlayer(
                 break
             }
             queue.work()
+
+            var availableSources = 0
+            for (source in sources) {
+                if (source.available) {
+                    availableSources++
+                }
+            }
+            this.availableSources = availableSources
+
             Thread.sleep(1L)
         }
     }

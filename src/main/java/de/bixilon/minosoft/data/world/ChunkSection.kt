@@ -58,7 +58,8 @@ class ChunkSection(
 
     fun realTick(connection: PlayConnection, chunkSectionPosition: Vec3i) {
         blockEntities.forEach { entity, inChunkSectionPosition ->
-            entity.realTick(connection, blocks[inChunkSectionPosition.index]!!, chunkSectionPosition + inChunkSectionPosition)
+            val block = blocks[inChunkSectionPosition.index] ?: return@forEach // maybe block already got destroyed
+            entity.realTick(connection, block, chunkSectionPosition + inChunkSectionPosition)
         }
     }
 
