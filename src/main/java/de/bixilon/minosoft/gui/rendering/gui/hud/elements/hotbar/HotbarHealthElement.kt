@@ -146,7 +146,7 @@ class HotbarHealthElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
     private var rows = 0
 
     override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int {
-        // ToDo: Damage animation, regeneration, caching
+        // ToDo: Damage animation, regeneration, caching, stacking
         for (heart in 0 until totalMaxHearts) {
             val row = heart / HEARTS_PER_ROW
             val column = heart % HEARTS_PER_ROW

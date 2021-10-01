@@ -30,6 +30,7 @@ class HotbarElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
     private val experience = HotbarExperienceBarElement(hudRenderer)
     private val health = HotbarHealthElement(hudRenderer)
     private val hunger = HotbarHungerElement(hudRenderer)
+    private val protection = HotbarProtectionElement(hudRenderer)
 
     private val topLeft = RowLayout(hudRenderer, HorizontalAlignments.LEFT, 1) // contains health, armor, etc
     private val topRight = RowLayout(hudRenderer, HorizontalAlignments.RIGHT, 1) // contains hunger, air
@@ -43,11 +44,13 @@ class HotbarElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
     override var cacheEnabled: Boolean = false // ToDo: Cache correctly
 
     init {
-        topLeft += health
         topLeft.parent = this
+        topRight.parent = this
+
+        topLeft += protection
+        topLeft += health
 
         topRight += hunger
-        topRight.parent = this
 
         silentApply()
     }

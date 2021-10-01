@@ -435,5 +435,26 @@
       "start": [0, 89],
       "end": [182, 94]
     }
+  },
+  "minecraft:empty_protection": {
+    "0": {
+      "texture": "minecraft:textures/gui/icons.png",
+      "start": [16, 9],
+      "end": [25, 18]
+    }
+  },
+  "minecraft:half_protection": {
+    "0": {
+      "texture": "minecraft:textures/gui/icons.png",
+      "start": [25, 9],
+      "end": [34, 18]
+    }
+  },
+  "minecraft:full_protection": {
+    "0": {
+      "texture": "minecraft:textures/gui/icons.png",
+      "start": [34, 9],
+      "end": [43, 18]
+    }
   }
 }

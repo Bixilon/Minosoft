@@ -33,6 +33,7 @@ import de.bixilon.minosoft.data.registries.enchantment.Enchantment
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.fluid.FlowableFluid
 import de.bixilon.minosoft.data.registries.fluid.Fluid
+import de.bixilon.minosoft.data.registries.items.armor.ArmorItem
 import de.bixilon.minosoft.data.registries.particle.data.BlockParticleData
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.gui.rendering.input.camera.EntityPositionInfo
@@ -584,6 +585,22 @@ abstract class Entity(
             submergedFluid = blockState.block.fluid
         }
     }
+
+    val protectionLevel: Float
+        get() {
+            var protectionLevel = 0.0f
+
+            for (equipment in equipment.toSynchronizedMap().values) {
+                val item = equipment.item
+
+                if (item is ArmorItem) {
+                    // could also be a pumpkin or just trash
+                    protectionLevel += item.protection
+                }
+            }
+
+            return protectionLevel
+        }
 
     companion object {
         private val BELOW_POSITION_MINUS = Vec3(0, 0.20000000298023224f, 0)
