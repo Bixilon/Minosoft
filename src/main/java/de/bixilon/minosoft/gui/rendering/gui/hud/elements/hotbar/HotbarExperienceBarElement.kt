@@ -54,19 +54,22 @@ class HotbarExperienceBarElement(hudRenderer: HUDRenderer) : Element(hudRenderer
     override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int {
         val bars = atlasElements[barIndex]
 
-        ImageElement(hudRenderer, bars[0].texture).render(offset, z, consumer)
+        // background
+        ImageElement(hudRenderer, bars[0]).render(offset, z, consumer)
 
         val progressAtlasElement = bars[1]
 
-        val progress = ImageElement(hudRenderer, progressAtlasElement.texture, uvStart = progressAtlasElement.uvStart, uvEnd = lerp(progress, progressAtlasElement.uvStart, progressAtlasElement.uvEnd), size = Vec2i(lerp(progress, 0.0f, progressAtlasElement.size.x.toFloat()).toInt(), SIZE.y))
+        // foreground
+        val progress = ImageElement(hudRenderer, progressAtlasElement.texture, uvStart = progressAtlasElement.uvStart, uvEnd = lerp(progress, progressAtlasElement.uvStart, progressAtlasElement.uvEnd), size = Vec2i((progressAtlasElement.size.x * progress).toInt(), SIZE.y))
 
         progress.render(offset, z + 1, consumer)
 
+        // level
         val text = TextElement(hudRenderer, TextComponent(level).apply { color = RenderConstants.EXPERIENCE_BAR_LEVEL_COLOR }, fontAlignment = HorizontalAlignments.CENTER, true)
 
         text.render(offset + Vec2i(-5, HorizontalAlignments.CENTER.getOffset(size.y, text.size.y)), z + 2, consumer)
 
-        return 2 + TextElement.LAYERS // background / foreground + text(level)
+        return 2 + TextElement.LAYERS // background + foreground + text(level)
     }
 
     override fun silentApply() {
