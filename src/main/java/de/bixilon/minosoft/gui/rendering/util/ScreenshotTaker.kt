@@ -35,20 +35,19 @@ class ScreenshotTaker(
 ) {
     fun takeScreenshot() {
         try {
+            val width = renderWindow.window.size.x
+            val height = renderWindow.window.size.y
+            val buffer = renderWindow.renderSystem.readPixels(Vec2i(0, 0), Vec2i(width, height), PixelTypes.RGBA)
+
             val basePath = "${RunConfiguration.HOME_DIRECTORY}/screenshots/${renderWindow.connection.address.hostname}/${DATE_FORMATTER.format(System.currentTimeMillis())}"
             var path = "$basePath.png"
             var i = 1
             while (File(path).exists()) {
                 path = "${basePath}_${i++}.png"
-                if (i > 10) {
-                    screenshotFail(StackOverflowError())
-                    return
+                if (i > MAX_FILES_CHECK) {
+                    throw StackOverflowError("There are already > $MAX_FILES_CHECK screenshots with this date! Please try again!")
                 }
             }
-
-            val width = renderWindow.window.size.x
-            val height = renderWindow.window.size.y
-            val buffer = renderWindow.renderSystem.readPixels(Vec2i(0, 0), Vec2i(width, height), PixelTypes.RGBA)
 
             DefaultThreadPool += {
                 try {
@@ -88,20 +87,21 @@ class ScreenshotTaker(
                         // },
                     ))
                 } catch (exception: Exception) {
-                    screenshotFail(exception)
+                    exception.fail()
                 }
             }
         } catch (exception: Exception) {
-            screenshotFail(exception)
+            exception.fail()
         }
     }
 
-    private fun screenshotFail(exception: Throwable?) {
-        exception?.printStackTrace()
+    private fun Throwable?.fail() {
+        this?.printStackTrace()
         renderWindow.sendDebugMessage("§cFailed to make a screenshot!")
     }
 
     companion object {
         private val DATE_FORMATTER = SimpleDateFormat("yyyy-MM-dd_HH.mm.ss")
+        private const val MAX_FILES_CHECK = 10
     }
 }
