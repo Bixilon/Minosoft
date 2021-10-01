@@ -444,6 +444,13 @@ object VecUtil {
         )
     }
 
+    fun lerp(delta: Float, start: Vec2, end: Vec2): Vec2 {
+        return Vec2(
+            lerp(delta, start.x, end.x),
+            lerp(delta, start.y, end.y),
+        )
+    }
+
     fun lerp(delta: Double, start: Vec3d, end: Vec3d): Vec3d {
         when {
             delta <= 0.0 -> return start

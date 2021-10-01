@@ -27,9 +27,9 @@ import java.lang.Integer.max
 
 class HotbarElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
     private val base = HotbarBaseElement(hudRenderer)
+    private val experience = HotbarExperienceBarElement(hudRenderer)
     private val health = HotbarHealthElement(hudRenderer)
     private val hunger = HotbarHungerElement(hudRenderer)
-
 
     private val topLeft = RowLayout(hudRenderer, HorizontalAlignments.LEFT, 1) // contains health, armor, etc
     private val topRight = RowLayout(hudRenderer, HorizontalAlignments.RIGHT, 1) // contains hunger, air
@@ -57,12 +57,14 @@ class HotbarElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
         silentApply()
         var maxZ = 0
 
-        val topSize = topLeft.size.max(topRight.size)
+        val maxSize = topLeft.size.max(topRight.size)
 
-        maxZ = max(maxZ, topLeft.render(offset + Vec2i(0, HorizontalAlignments.LEFT.getOffset(topSize.y, topLeft.size.y)), z, consumer))
-        maxZ = max(maxZ, topRight.render(offset + Vec2i(HorizontalAlignments.RIGHT.getOffset(size.x, topRight.size.x), VerticalAlignments.BOTTOM.getOffset(topSize.y, topRight.size.y)), z, consumer))
-        offset.y += topSize.y
+        maxZ = max(maxZ, topLeft.render(offset + Vec2i(0, VerticalAlignments.TOP.getOffset(maxSize.y, topLeft.size.y)), z, consumer))
+        maxZ = max(maxZ, topRight.render(offset + Vec2i(HorizontalAlignments.RIGHT.getOffset(size.x, topRight.size.x), VerticalAlignments.BOTTOM.getOffset(maxSize.y, topRight.size.y)), z, consumer))
+        offset.y += maxSize.y
 
+        maxZ = max(maxZ, experience.render(offset + Vec2i(HorizontalAlignments.CENTER.getOffset(maxSize.y, experience.size.y), 0), z, consumer))
+        offset.y += experience.size.y
         maxZ = max(maxZ, base.render(offset, z, consumer))
 
         return maxZ
@@ -73,7 +75,7 @@ class HotbarElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
             element.onParentChange()
         }
 
-        size = base.size + Vec2i(0, max(topLeft.size.y, topRight.size.y))
+        size = base.size + Vec2i(0, max(topLeft.size.y, topRight.size.y)) + Vec2i(0, experience.size.y)
     }
 
     override fun tick() {

@@ -407,5 +407,33 @@
       "start": [97, 27],
       "end": [106, 36]
     }
+  },
+  "minecraft:empty_experience_bar": {
+    "0": {
+      "texture": "minecraft:textures/gui/icons.png",
+      "start": [0, 64],
+      "end": [182, 69]
+    }
+  },
+  "minecraft:full_experience_bar": {
+    "0": {
+      "texture": "minecraft:textures/gui/icons.png",
+      "start": [0, 69],
+      "end": [182, 74]
+    }
+  },
+  "minecraft:empty_horse_jump_bar": {
+    "0": {
+      "texture": "minecraft:textures/gui/icons.png",
+      "start": [0, 84],
+      "end": [182, 89]
+    }
+  },
+  "minecraft:full_horse_jump_bar": {
+    "0": {
+      "texture": "minecraft:textures/gui/icons.png",
+      "start": [0, 89],
+      "end": [182, 94]
+    }
   }
 }
