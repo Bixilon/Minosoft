@@ -13,10 +13,12 @@
 
 package de.bixilon.minosoft.data.registries.other.containers
 
+import de.bixilon.minosoft.data.inventory.InventorySlots
 import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
+// https://c4k3.github.io/wiki.vg/images/1/13/Inventory-slots.png
 class PlayerInventory(connection: PlayConnection) : Container(
     connection = connection,
     ContainerType(
@@ -24,7 +26,31 @@ class PlayerInventory(connection: PlayConnection) : Container(
     ),
 ) {
 
+    val equipment: MutableMap<InventorySlots.EquipmentSlots, ItemStack>
+        get() {
+            val equipment: MutableMap<InventorySlots.EquipmentSlots, ItemStack> = mutableMapOf()
+
+            for (slot in InventorySlots.EquipmentSlots.ARMOR_SLOTS) {
+                equipment[slot] = this[slot] ?: continue
+            }
+
+            return equipment
+        }
+
     fun getHotbarSlot(hotbarSlot: Int = connection.player.selectedHotbarSlot): ItemStack? {
+        check(hotbarSlot in 0..9) { "Hotbar slot out of bounds!" }
         return slots[hotbarSlot + 36] // ToDo
+    }
+
+    operator fun get(slot: InventorySlots.EquipmentSlots): ItemStack? {
+        return this[when (slot) {
+            InventorySlots.EquipmentSlots.HEAD -> 5
+            InventorySlots.EquipmentSlots.CHEST -> 6
+            InventorySlots.EquipmentSlots.LEGS -> 7
+            InventorySlots.EquipmentSlots.FEET -> 8
+
+            InventorySlots.EquipmentSlots.MAIN_HAND -> connection.player.selectedHotbarSlot + 36
+            InventorySlots.EquipmentSlots.OFF_HAND -> 45
+        }]
     }
 }

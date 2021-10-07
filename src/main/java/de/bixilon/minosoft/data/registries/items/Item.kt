@@ -20,6 +20,7 @@ import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.BlockUsages
 import de.bixilon.minosoft.data.registries.inventory.CreativeModeTab
 import de.bixilon.minosoft.data.registries.items.armor.ArmorItem
+import de.bixilon.minosoft.data.registries.items.armor.DyeableArmorItem
 import de.bixilon.minosoft.data.registries.items.armor.HorseArmorItem
 import de.bixilon.minosoft.data.registries.items.tools.*
 import de.bixilon.minosoft.data.registries.registries.Registries
@@ -76,6 +77,7 @@ open class Item(
                 "ShovelItem" -> ShovelItem(resourceLocation, registries, data)
                 "PickaxeItem" -> PickaxeItem(resourceLocation, registries, data)
                 "HoeItem" -> HoeItem(resourceLocation, registries, data)
+                "DyeableArmorItem" -> DyeableArmorItem(resourceLocation, registries, data)
                 //   "Item" -> Item(resourceLocation, data)
                 // else -> TODO("Can not find item class: ${data["class"].asString}")
                 else -> Item(resourceLocation, registries, data)

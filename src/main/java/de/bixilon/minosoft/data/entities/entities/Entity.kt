@@ -70,7 +70,7 @@ abstract class Entity(
     var rotation: EntityRotation,
 ) : PhysicsEntity {
     protected val random = Random
-    val equipment: MutableMap<EquipmentSlots, ItemStack> = mutableMapOf()
+    open val equipment: MutableMap<EquipmentSlots, ItemStack> = mutableMapOf()
     val activeStatusEffects: MutableMap<StatusEffect, StatusEffectInstance> = synchronizedMapOf()
     val attributes: MutableMap<ResourceLocation, MutableMap<UUID, StatusEffectAttributeInstance>> = synchronizedMapOf()
 

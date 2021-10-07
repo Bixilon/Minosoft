@@ -86,6 +86,10 @@ class HotbarExperienceBarElement(hudRenderer: HUDRenderer) : Element(hudRenderer
         }
     }
 
+    override fun onParentChange() {
+        silentApply()
+    }
+
     companion object {
         private val SIZE = Vec2i(182, 5)
     }

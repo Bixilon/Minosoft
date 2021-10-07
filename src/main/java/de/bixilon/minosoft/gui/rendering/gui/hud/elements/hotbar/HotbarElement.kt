@@ -32,7 +32,7 @@ class HotbarElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
     private val hunger = HotbarHungerElement(hudRenderer)
     private val protection = HotbarProtectionElement(hudRenderer)
 
-    private val topLeft = RowLayout(hudRenderer, HorizontalAlignments.LEFT, 1) // contains health, armor, etc
+    private val topLeft = RowLayout(hudRenderer, HorizontalAlignments.LEFT, 1) // contains health, protection, etc
     private val topRight = RowLayout(hudRenderer, HorizontalAlignments.RIGHT, 1) // contains hunger, air
 
     private var renderElements = setOf(

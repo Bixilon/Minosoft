@@ -40,8 +40,8 @@ class HotbarProtectionElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
 
         for (i in 0 until 10) {
             val atlasElement = when {
-                protectionLeft <= 0.0f -> emptyProtection
-                protectionLeft < 1.0f -> halfProtection
+                protectionLeft < 1.0f -> emptyProtection
+                protectionLeft < 2.0f -> halfProtection
                 else -> fullProtection
             }
 
@@ -49,10 +49,14 @@ class HotbarProtectionElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
 
             image.render(offset + Vec2i(i * ARMOR_SIZE.x, 0), z, consumer)
 
-            protectionLeft -= 1.0f
+            protectionLeft -= 2.0f
         }
 
         return 1
+    }
+
+    override fun onParentChange() {
+        silentApply()
     }
 
     override fun silentApply() {
@@ -67,6 +71,7 @@ class HotbarProtectionElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
         } else {
             SIZE
         }
+        this.protection = protection
         cacheUpToDate = false
     }
 

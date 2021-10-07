@@ -34,4 +34,8 @@ open class Container(
             }
         }
     }
+
+    operator fun get(slotId: Int): ItemStack? {
+        return slots[slotId]
+    }
 }

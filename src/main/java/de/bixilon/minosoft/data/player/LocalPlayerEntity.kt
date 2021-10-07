@@ -22,6 +22,7 @@ import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.data.entities.entities.player.RemotePlayerEntity
 import de.bixilon.minosoft.data.inventory.InventorySlots
+import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.physics.PhysicsConstants
 import de.bixilon.minosoft.data.registries.AABB
 import de.bixilon.minosoft.data.registries.blocks.DefaultBlocks
@@ -200,6 +201,9 @@ class LocalPlayerEntity(
 
     val reachDistance: Double
         get() = (gamemode == Gamemodes.CREATIVE).decide(5.0, 4.5)
+
+    override val equipment: MutableMap<InventorySlots.EquipmentSlots, ItemStack>
+        get() = inventory.equipment
 
     private fun sendMovementPackets() {
         if (Minosoft.config.config.game.camera.disableMovementSending) {
