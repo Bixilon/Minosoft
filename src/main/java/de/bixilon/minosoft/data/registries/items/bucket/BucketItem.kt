@@ -11,13 +11,22 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.items.armor
+package de.bixilon.minosoft.data.registries.items.bucket
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.fluid.Fluid
+import de.bixilon.minosoft.data.registries.items.Item
 import de.bixilon.minosoft.data.registries.registries.Registries
 
-open class DyeableArmorItem(
+
+open class BucketItem(
     resourceLocation: ResourceLocation,
     registries: Registries,
     data: Map<String, Any>,
-) : ArmorItem(resourceLocation, registries, data)
+) : Item(resourceLocation, registries, data) {
+    val fluid: Fluid? = null
+
+    init {
+        this::fluid.inject(data["bucked_fluid_type"])
+    }
+}

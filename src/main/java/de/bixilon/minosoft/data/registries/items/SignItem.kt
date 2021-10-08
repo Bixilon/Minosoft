@@ -14,18 +14,10 @@
 package de.bixilon.minosoft.data.registries.items
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.fluid.Fluid
 import de.bixilon.minosoft.data.registries.registries.Registries
 
-
-open class BucketItem(
+open class SignItem(
     resourceLocation: ResourceLocation,
     registries: Registries,
     data: Map<String, Any>,
-) : Item(resourceLocation, registries, data) {
-    val fluid: Fluid? = null
-
-    init {
-        this::fluid.inject(data["bucked_fluid_type"])
-    }
-}
+) : Item(resourceLocation, registries, data)

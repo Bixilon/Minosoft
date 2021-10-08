@@ -11,13 +11,14 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.items.armor
+package de.bixilon.minosoft.data.registries.items.map
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.items.Item
 import de.bixilon.minosoft.data.registries.registries.Registries
 
-open class DyeableArmorItem(
+open class FilledMapItem(
     resourceLocation: ResourceLocation,
     registries: Registries,
     data: Map<String, Any>,
-) : ArmorItem(resourceLocation, registries, data)
+) : Item(resourceLocation, registries, data)
