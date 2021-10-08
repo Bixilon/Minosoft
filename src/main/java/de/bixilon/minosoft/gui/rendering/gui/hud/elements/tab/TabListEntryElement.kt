@@ -122,7 +122,7 @@ class TabListEntryElement(
         cacheUpToDate = false
     }
 
-    override fun onParentChange() {
+    override fun checkSilentApply() {
         forcePrepare = true
     }
 

@@ -55,7 +55,7 @@ class TabListElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
         val size = size
 
         header.size.let {
-            header.onParentChange()
+            header.checkSilentApply()
             header.render(offset + Vec2i(HorizontalAlignments.CENTER.getOffset(size.x, it.x), 0), z, consumer)
             offset.y += it.y
         }
@@ -161,9 +161,9 @@ class TabListElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
         cacheUpToDate = false
     }
 
-    override fun onParentChange() {
+    override fun checkSilentApply() {
         for (element in toRender) {
-            element.onParentChange()
+            element.checkSilentApply()
         }
     }
 

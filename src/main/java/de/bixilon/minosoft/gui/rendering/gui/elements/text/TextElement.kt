@@ -49,7 +49,7 @@ open class TextElement(
 
     private var emptyMessage: Boolean = true
 
-    final override var textComponent: ChatComponent = ChatComponent.of("")
+    override var textComponent: ChatComponent = ChatComponent.of("")
         protected set(value) {
             field = value
             emptyMessage = value.message.isEmpty()
@@ -88,7 +88,7 @@ open class TextElement(
 
     override fun onChildChange(child: Element?) = error("A TextElement can not have a child!")
 
-    override fun onParentChange() {
+    override fun checkSilentApply() {
         val maxSize = maxSize
         if (previousMaxSize == maxSize) {
             // no change in size

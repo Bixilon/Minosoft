@@ -150,7 +150,7 @@ class GridLayout(hudRenderer: HUDRenderer, val grid: Vec2i) : Element(hudRendere
         }
     }
 
-    override fun onParentChange() {
+    override fun checkSilentApply() {
         apply()
         applyOnlyChildren()
     }
@@ -158,7 +158,7 @@ class GridLayout(hudRenderer: HUDRenderer, val grid: Vec2i) : Element(hudRendere
     private fun applyOnlyChildren() {
         for (x in 0 until grid.x) {
             for (y in 0 until grid.y) {
-                children[x][y]?.onParentChange()
+                children[x][y]?.checkSilentApply()
             }
         }
     }

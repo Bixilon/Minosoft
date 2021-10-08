@@ -60,8 +60,8 @@ class GridCell(
         child.tick()
     }
 
-    override fun onParentChange() {
-        child.onParentChange()
+    override fun checkSilentApply() {
+        child.checkSilentApply()
     }
 
     override fun silentApply() {

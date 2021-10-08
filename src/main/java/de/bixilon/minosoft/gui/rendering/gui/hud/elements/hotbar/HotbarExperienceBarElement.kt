@@ -86,7 +86,7 @@ class HotbarExperienceBarElement(hudRenderer: HUDRenderer) : Element(hudRenderer
         }
     }
 
-    override fun onParentChange() {
+    override fun checkSilentApply() {
         silentApply()
     }
 

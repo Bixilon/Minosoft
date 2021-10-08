@@ -39,7 +39,7 @@ class ZLayout(hudRenderer: HUDRenderer) : Element(hudRenderer) {
     override fun silentApply() {
         var size = Vec2i.EMPTY
         for (child in children.toSynchronizedList()) {
-            child.onParentChange()
+            child.checkSilentApply()
             size = size.max(child.size)
         }
         this.size = size + margin.spaceSize

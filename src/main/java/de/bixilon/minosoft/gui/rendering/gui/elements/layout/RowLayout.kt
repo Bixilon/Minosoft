@@ -104,7 +104,7 @@ open class RowLayout(
         children += element
 
 
-        element.onParentChange()
+        element.checkSilentApply()
         apply() // ToDo: Optimize
         parent?.onChildChange(this)
     }
@@ -164,11 +164,11 @@ open class RowLayout(
         this.size = size
     }
 
-    override fun onParentChange() {
+    override fun checkSilentApply() {
         silentApply()
 
         for (child in children) {
-            child.onParentChange()
+            child.checkSilentApply()
         }
     }
 

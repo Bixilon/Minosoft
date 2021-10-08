@@ -30,7 +30,7 @@ abstract class Element(val hudRenderer: HUDRenderer) {
     open var parent: Element? = null
         set(value) {
             field = value
-            onParentChange()
+            checkSilentApply()
         }
     protected var cache = GUIMeshCache(hudRenderer.matrix, 0)
     open var cacheEnabled: Boolean = true
@@ -127,14 +127,18 @@ abstract class Element(val hudRenderer: HUDRenderer) {
      * Applied all changes made to any property and calls `parent?.onChildChange(this)`
      */
     open fun apply() {
-        silentApply()
+        checkSilentApply()
         parent?.onChildChange(this)
     }
 
     /**
-     * Calls when any relevant property of the parent changes (e.g. maxSize)
+     * Calls when the client needs to check if it needs to re-prepare (maybe the parent changed?)
+     * Otherwise, silentApplies.
+     * Can be used to improve the performance
      */
-    open fun onParentChange() {}
+    open fun checkSilentApply() {
+        silentApply()
+    }
 
     /**
      * Called by the child of an element (probably a layout), because the child changed a relevant property (probably size)

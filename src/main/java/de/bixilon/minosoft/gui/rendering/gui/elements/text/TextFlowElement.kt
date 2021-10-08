@@ -138,7 +138,7 @@ class TextFlowElement(
         checkExpiredLines()
     }
 
-    override fun onParentChange() {
+    override fun checkSilentApply() {
         val maxSize = maxSize
         if (maxSize.x >= prefMaxSize.x && maxSize.y >= prefMaxSize.y) {
             // Size did not change, skip

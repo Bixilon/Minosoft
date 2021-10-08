@@ -239,7 +239,7 @@ class HotbarHealthElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
         cacheUpToDate = false
     }
 
-    override fun onParentChange() {
+    override fun checkSilentApply() {
         silentApply()
     }
 

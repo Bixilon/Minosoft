@@ -55,7 +55,7 @@ class HotbarProtectionElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
         return 1
     }
 
-    override fun onParentChange() {
+    override fun checkSilentApply() {
         silentApply()
     }
 

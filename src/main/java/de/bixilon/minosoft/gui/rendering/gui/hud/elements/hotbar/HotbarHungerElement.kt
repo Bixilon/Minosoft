@@ -154,7 +154,7 @@ class HotbarHungerElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
         animate = healthCondition.saturation <= 0.0f && ticks++ % (healthCondition.hunger * 3 + 1) == 0
     }
 
-    override fun onParentChange() {
+    override fun checkSilentApply() {
         silentApply()
     }
 

@@ -93,7 +93,7 @@ class HUDRenderer(
             matrixChange = true
 
             for (element in hudElements.toSynchronizedMap().values) {
-                element.layout?.onParentChange()
+                element.layout?.checkSilentApply()
                 element.apply()
             }
         })

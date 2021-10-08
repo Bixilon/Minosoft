@@ -75,7 +75,7 @@ class HotbarElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
 
     override fun silentApply() {
         for (element in renderElements) {
-            element.onParentChange()
+            element.checkSilentApply()
         }
 
         size = base.size + Vec2i(0, max(topLeft.size.y, topRight.size.y)) + Vec2i(0, experience.size.y)
