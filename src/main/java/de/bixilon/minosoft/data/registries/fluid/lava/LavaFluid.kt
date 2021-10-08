@@ -63,7 +63,7 @@ class LavaFluid(
         val fluidHeight = entity.fluidHeights[DefaultFluids.LAVA] ?: 0.0f
 
         if (fluidHeight <= entity.swimHeight) {
-            entity.velocity = entity.velocity * Vec3d(0.5, 0.800000011920929, 0.5)
+            entity.velocity = entity.velocity * Vec3d(0.5, 0.8, 0.5)
             entity.velocity = updateMovement(entity, gravity, falling, entity.velocity)
         } else {
             entity.velocity = entity.velocity * 0.5

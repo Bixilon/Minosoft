@@ -84,11 +84,11 @@ abstract class Particle(
 
     init {
         this.velocity += { (random.nextDouble() * 2.0 - 1.0) * MAGIC_VELOCITY_CONSTANT }
-        val modifier = (random.nextFloat() + random.nextFloat() + 1.0f) * 0.15000000596046448
+        val modifier = (random.nextFloat() + random.nextFloat() + 1.0f) * 0.15
         val divider = this.velocity.length()
 
         this.velocity assign this.velocity / divider * modifier * MAGIC_VELOCITY_CONSTANTf
-        this.velocity.y += 0.10000000149011612
+        this.velocity.y += 0.1
 
         spacing = Vec3(0.2)
     }
@@ -189,7 +189,7 @@ abstract class Particle(
     abstract fun addVertex(transparentMesh: ParticleMesh, particleMesh: ParticleMesh)
 
     companion object {
-        private const val MAGIC_VELOCITY_CONSTANT = 0.4000000059604645
+        private const val MAGIC_VELOCITY_CONSTANT = 0.4
         private const val MAGIC_VELOCITY_CONSTANTf = MAGIC_VELOCITY_CONSTANT.toFloat()
         private const val Y_VELOCITY_TO_CHECK = 9.999999747378752E-6f
     }

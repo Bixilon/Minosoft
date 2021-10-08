@@ -357,7 +357,7 @@ abstract class Entity(
     }
 
     private fun spawnSprintingParticles() {
-        val blockPosition = Vec3i(position.x.floor, (position.y - 0.20000000298023224).floor, position.z.floor)
+        val blockPosition = Vec3i(position.x.floor, (position.y - 0.2).floor, position.z.floor)
         val blockState = connection.world[blockPosition] ?: return
 
         // ToDo: Don't render particles for invisible blocks
@@ -544,9 +544,9 @@ abstract class Entity(
                 velocity /= checks
             }
 
-            if (abs(this.velocity.x) < 0.003 && abs(this.velocity.z) < 0.003 && velocity.length() < 0.0045000000000000005) {
+            if (abs(this.velocity.x) < 0.003 && abs(this.velocity.z) < 0.003 && velocity.length() < 0.0045) {
                 velocity.normalizeAssign()
-                velocity *= 0.0045000000000000005
+                velocity *= 0.0045
             }
 
             this.velocity = (this.velocity + velocity)
@@ -603,6 +603,6 @@ abstract class Entity(
         }
 
     companion object {
-        private val BELOW_POSITION_MINUS = Vec3(0, 0.20000000298023224f, 0)
+        private val BELOW_POSITION_MINUS = Vec3(0, 0.2f, 0)
     }
 }

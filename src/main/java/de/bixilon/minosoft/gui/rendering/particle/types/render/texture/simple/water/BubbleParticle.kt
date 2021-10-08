@@ -32,7 +32,7 @@ class BubbleParticle(connection: PlayConnection, position: Vec3d, velocity: Vec3
 
         this.scale *= random.nextFloat() * 0.6f + 0.2f
 
-        this.velocity assign (velocity * 0.20000000298023224) + (Vec3d.of { random.nextDouble() * 2.0 - 1.0 } * 0.019999999552965164)
+        this.velocity assign (velocity * 0.2) + (Vec3d.of { random.nextDouble() * 2.0 - 1.0 } * 0.02)
         this.maxAge = (8.0f / random.nextFloat() * 0.8f + 0.2f).toInt()
 
         movement = false
@@ -45,7 +45,7 @@ class BubbleParticle(connection: PlayConnection, position: Vec3d, velocity: Vec3
         }
         this.velocity.y += 0.002
         forceMove(velocity)
-        velocity *= 0.8500000238418579
+        velocity *= 0.85
 
         // ToDo: Check if in water: Kill particle
     }

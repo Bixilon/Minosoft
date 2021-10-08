@@ -35,9 +35,9 @@ class LavaParticle(connection: PlayConnection, position: Vec3d, data: ParticleDa
     init {
         gravityStrength = 0.75f
         friction = 0.999f
-        velocity.x *= 0.800000011920929
+        velocity.x *= 0.8
         velocity.y = random.nextDouble() * 0.4f + 0.05f
-        velocity.z *= 0.800000011920929
+        velocity.z *= 0.8
         scale *= random.nextFloat() * 2.0f + 0.2f
         maxAge = (16.0f / (random.nextFloat() * 0.8f + 0.2f)).toInt()
     }

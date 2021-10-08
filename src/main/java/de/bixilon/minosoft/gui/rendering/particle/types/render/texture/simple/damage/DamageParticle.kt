@@ -32,9 +32,9 @@ abstract class DamageParticle(connection: PlayConnection, position: Vec3d, veloc
     init {
         friction = 0.7f
         gravityStrength = 0.5f
-        this.velocity *= 0.10000000149011612
+        this.velocity *= 0.1
         this.velocity += velocity * 0.4f
-        color = (random.nextFloat() * 0.30000001192092896f + 0.6000000238418579f).asGray()
+        color = (random.nextFloat() * 0.3 + 0.6).asGray()
         super.scale *= 0.75f
         maxAge = (6.0f / (random.nextFloat() * 0.8f + 0.6f)).toInt().coerceAtLeast(1)
         physics = false

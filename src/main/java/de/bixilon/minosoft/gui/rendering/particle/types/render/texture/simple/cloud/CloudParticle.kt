@@ -29,10 +29,10 @@ open class CloudParticle(connection: PlayConnection, position: Vec3d, velocity: 
 
     init {
         friction = 0.96f
-        this.velocity *= 0.10000000149011612
+        this.velocity *= 0.1
         this.velocity += velocity
 
-        this.color = (1.0f - random.nextFloat() * 0.30000001192092896f).asGray()
+        this.color = (1.0f - random.nextFloat() * 0.3).asGray()
 
         super.scale *= 1.875f
 

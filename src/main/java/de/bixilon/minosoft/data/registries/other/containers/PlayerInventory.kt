@@ -38,19 +38,25 @@ class PlayerInventory(connection: PlayConnection) : Container(
         }
 
     fun getHotbarSlot(hotbarSlot: Int = connection.player.selectedHotbarSlot): ItemStack? {
-        check(hotbarSlot in 0..9) { "Hotbar slot out of bounds!" }
-        return slots[hotbarSlot + 36] // ToDo
+        check(hotbarSlot in 0..HOTBAR_SLOTS) { "Hotbar slot out of bounds!" }
+        return slots[hotbarSlot + HOTBAR_OFFSET] // ToDo
     }
 
     operator fun get(slot: InventorySlots.EquipmentSlots): ItemStack? {
         return this[when (slot) {
-            InventorySlots.EquipmentSlots.HEAD -> 5
-            InventorySlots.EquipmentSlots.CHEST -> 6
-            InventorySlots.EquipmentSlots.LEGS -> 7
-            InventorySlots.EquipmentSlots.FEET -> 8
+            InventorySlots.EquipmentSlots.HEAD -> ARMOR_OFFSET + 0
+            InventorySlots.EquipmentSlots.CHEST -> ARMOR_OFFSET + 1
+            InventorySlots.EquipmentSlots.LEGS -> ARMOR_OFFSET + 2
+            InventorySlots.EquipmentSlots.FEET -> ARMOR_OFFSET + 3
 
-            InventorySlots.EquipmentSlots.MAIN_HAND -> connection.player.selectedHotbarSlot + 36
+            InventorySlots.EquipmentSlots.MAIN_HAND -> connection.player.selectedHotbarSlot + HOTBAR_OFFSET
             InventorySlots.EquipmentSlots.OFF_HAND -> 45
         }]
+    }
+
+    companion object {
+        private const val HOTBAR_OFFSET = 36
+        private const val ARMOR_OFFSET = 5
+        const val HOTBAR_SLOTS = 9
     }
 }

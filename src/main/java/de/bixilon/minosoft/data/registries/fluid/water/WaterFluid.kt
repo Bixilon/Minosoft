@@ -103,7 +103,7 @@ class WaterFluid(
         if (entity.horizontalCollision && entity.isClimbing) {
             velocity.y = 0.2
         }
-        entity.velocity = velocity * Vec3d(speedMultiplier, 0.800000011920929, speedMultiplier)
+        entity.velocity = velocity * Vec3d(speedMultiplier, 0.8, speedMultiplier)
 
         entity.velocity = updateMovement(entity, gravity, falling, entity.velocity)
 

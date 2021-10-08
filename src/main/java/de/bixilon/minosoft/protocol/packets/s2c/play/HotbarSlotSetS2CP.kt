@@ -12,6 +12,7 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play
 
+import de.bixilon.minosoft.data.registries.other.containers.PlayerInventory
 import de.bixilon.minosoft.modding.event.events.SelectHotbarSlotEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
@@ -23,11 +24,17 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 class HotbarSlotSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     val slot: Int = buffer.readUnsignedByte()
 
+
+    override fun check(connection: PlayConnection) {
+        check(slot in 0..PlayerInventory.HOTBAR_SLOTS)
+    }
+
     override fun handle(connection: PlayConnection) {
         connection.fireEvent(SelectHotbarSlotEvent(connection, this))
 
         connection.player.selectedHotbarSlot = slot
     }
+
 
     override fun log() {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Hotbar slot set (slot=$slot)" }
