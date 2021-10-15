@@ -60,13 +60,13 @@ class HotbarElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
         forceSilentApply()
         var maxZ = 0
 
-        val maxSize = topLeft.size.max(topRight.size)
+        val topMaxSize = topLeft.size.max(topRight.size)
 
-        maxZ = max(maxZ, topLeft.render(offset + Vec2i(0, VerticalAlignments.TOP.getOffset(maxSize.y, topLeft.size.y)), z, consumer))
-        maxZ = max(maxZ, topRight.render(offset + Vec2i(HorizontalAlignments.RIGHT.getOffset(size.x, topRight.size.x), VerticalAlignments.BOTTOM.getOffset(maxSize.y, topRight.size.y)), z, consumer))
-        offset.y += maxSize.y
+        maxZ = max(maxZ, topLeft.render(offset + Vec2i(0, VerticalAlignments.BOTTOM.getOffset(topMaxSize.y, topLeft.size.y)), z, consumer))
+        maxZ = max(maxZ, topRight.render(offset + Vec2i(HorizontalAlignments.RIGHT.getOffset(size.x, topRight.size.x), VerticalAlignments.BOTTOM.getOffset(topMaxSize.y, topRight.size.y)), z, consumer))
+        offset.y += topMaxSize.y
 
-        maxZ = max(maxZ, experience.render(offset + Vec2i(HorizontalAlignments.CENTER.getOffset(maxSize.y, experience.size.y), 0), z, consumer))
+        maxZ = max(maxZ, experience.render(offset + Vec2i(HorizontalAlignments.CENTER.getOffset(size.x, experience.size.x), 0), z, consumer))
         offset.y += experience.size.y
         maxZ = max(maxZ, base.render(offset, z, consumer))
 

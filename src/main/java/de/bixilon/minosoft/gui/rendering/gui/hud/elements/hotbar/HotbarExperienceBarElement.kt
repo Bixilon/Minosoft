@@ -64,10 +64,12 @@ class HotbarExperienceBarElement(hudRenderer: HUDRenderer) : Element(hudRenderer
 
         progress.render(offset, z + 1, consumer)
 
-        // level
-        val text = TextElement(hudRenderer, TextComponent(level).apply { color = RenderConstants.EXPERIENCE_BAR_LEVEL_COLOR }, fontAlignment = HorizontalAlignments.CENTER, true)
+        if (level > 0) {
+            // level
+            val text = TextElement(hudRenderer, TextComponent(level).apply { color = RenderConstants.EXPERIENCE_BAR_LEVEL_COLOR }, fontAlignment = HorizontalAlignments.CENTER, true)
 
-        text.render(offset + Vec2i(HorizontalAlignments.CENTER.getOffset(size.x, text.size.x), -5), z + 2, consumer)
+            text.render(offset + Vec2i(HorizontalAlignments.CENTER.getOffset(size.x, text.size.x), -5), z + 2, consumer)
+        }
 
         return 2 + TextElement.LAYERS // background + foreground + text(level)
     }

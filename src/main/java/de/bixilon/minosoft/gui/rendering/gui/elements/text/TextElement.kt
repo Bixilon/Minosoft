@@ -37,7 +37,6 @@ open class TextElement(
     var backgroundColor: RGBColor = RenderConstants.TEXT_BACKGROUND_COLOR,
     parent: Element? = null,
 ) : LabeledElement(hudRenderer) {
-    private var previousMaxSize = Vec2i.EMPTY
     var renderInfo = TextRenderInfo()
 
     override var text: Any = text
@@ -57,7 +56,6 @@ open class TextElement(
                 ChatComponentRenderer.render(Vec2i.EMPTY, Vec2i.EMPTY, prefSize, 0, InfiniteSizeElement(hudRenderer), fontAlignment, renderWindow, null, TextRenderInfo(), value)
             }
             _prefSize = prefSize
-            cacheUpToDate = false
             forceApply()
         }
 
@@ -67,7 +65,6 @@ open class TextElement(
     }
 
     override fun forceSilentApply() {
-        val maxSize = maxSize
         val size = Vec2i.EMPTY
         if (!emptyMessage) {
             val renderInfo = TextRenderInfo()
@@ -76,15 +73,11 @@ open class TextElement(
             this.renderInfo = renderInfo
         }
 
-
-        this.previousMaxSize = maxSize
         this.cacheUpToDate = false
         _size = size
     }
 
     override fun onChildChange(child: Element?) = error("A TextElement can not have a child!")
-
-
 
     override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int {
         if (emptyMessage) {
