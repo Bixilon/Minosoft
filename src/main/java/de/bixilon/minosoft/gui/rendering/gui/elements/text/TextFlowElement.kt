@@ -108,7 +108,7 @@ class TextFlowElement(
 
 
         this.textSize = textSize
-        size = Vec2i(maxSize.x, visibleLines.size * Font.TOTAL_CHAR_HEIGHT)
+        _size = Vec2i(maxSize.x, visibleLines.size * Font.TOTAL_CHAR_HEIGHT)
         background.size = size
         this.visibleLines = visibleLines
     }

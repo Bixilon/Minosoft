@@ -79,7 +79,7 @@ open class TextElement(
 
         this.previousMaxSize = maxSize
         this.cacheUpToDate = false
-        this.size = size
+        _size = size
     }
 
     override fun onChildChange(child: Element?) = error("A TextElement can not have a child!")

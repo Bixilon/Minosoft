@@ -13,10 +13,23 @@
 
 package de.bixilon.minosoft.gui.rendering.font.renderer
 
+import de.bixilon.minosoft.config.StaticConfiguration
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
+
 class TextRenderInfo(
     val lines: MutableList<TextLineInfo> = mutableListOf(),
     var currentLineNumber: Int = 0,
 ) {
     val currentLine: TextLineInfo
-        get() = lines[currentLineNumber]
+        get() {
+            if (StaticConfiguration.DEBUG_MODE) {
+                if (currentLineNumber >= lines.size) {
+                    Log.log(LogMessageType.RENDERING_GENERAL, LogLevels.WARN) { "Out of lines! Did you apply?: $lines ($currentLineNumber)" }
+                    return TextLineInfo()
+                }
+            }
+            return lines[currentLineNumber]
+        }
 }

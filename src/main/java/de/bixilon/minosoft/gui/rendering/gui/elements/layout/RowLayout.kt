@@ -167,7 +167,7 @@ open class RowLayout(
             }
         }
 
-        this.size = size
+        _size = size
     }
 
 

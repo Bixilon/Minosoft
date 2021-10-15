@@ -155,7 +155,6 @@ class GridLayout(hudRenderer: HUDRenderer, val grid: Vec2i) : Element(hudRendere
     override fun silentApply(): Boolean {
         // ToDo: Check
         forceSilentApply()
-        applyOnlyChildren()
         return true
     }
 

@@ -18,6 +18,7 @@ import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMeshCache
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.util.vec.Vec2Util.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.vec.Vec2Util.isGreater
 import de.bixilon.minosoft.gui.rendering.util.vec.Vec2Util.isSmaller
 import de.bixilon.minosoft.gui.rendering.util.vec.Vec2Util.max
 import de.bixilon.minosoft.gui.rendering.util.vec.Vec2Util.min
@@ -173,12 +174,12 @@ abstract class Element(val hudRenderer: HUDRenderer) {
     @Suppress("DEPRECATION")
     open fun silentApply(): Boolean {
         val maxSize = maxSize
-        if (previousMaxSize != maxSize && (maxSize isSmaller size || maxSize isSmaller prefMaxSize)) {
+        if (previousMaxSize != maxSize && (maxSize isSmaller _size || maxSize isSmaller _prefMaxSize || (maxSize isGreater previousMaxSize && _size isSmaller _prefSize))) {
             forceSilentApply()
             previousMaxSize = maxSize
             return true
         }
-        return true
+        return false
     }
 
     /**
