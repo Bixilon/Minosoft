@@ -109,7 +109,7 @@ class GridLayout(hudRenderer: HUDRenderer, val grid: Vec2i) : Element(hudRendere
         }
 
 
-        size = Vec2i(width.sum(), 0)
+        _size = Vec2i(width.sum(), 0)
 
         // apply the size changes to all children
         applyOnlyChildren()

@@ -56,16 +56,14 @@ open class TextElement(
             if (!emptyMessage) {
                 ChatComponentRenderer.render(Vec2i.EMPTY, Vec2i.EMPTY, prefSize, 0, InfiniteSizeElement(hudRenderer), fontAlignment, renderWindow, null, TextRenderInfo(), value)
             }
-            this.prefSize = prefSize
+            _prefSize = prefSize
             cacheUpToDate = false
-            apply()
+            forceApply()
         }
-
-    override var prefSize: Vec2i = Vec2i.EMPTY
 
     init {
         this.parent = parent
-        textComponent = ChatComponent.of(text)
+        this.textComponent = ChatComponent.of(text)
     }
 
     override fun forceSilentApply() {

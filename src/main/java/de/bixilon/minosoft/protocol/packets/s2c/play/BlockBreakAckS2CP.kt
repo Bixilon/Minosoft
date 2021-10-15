@@ -30,12 +30,11 @@ class BlockBreakAckS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     val successful: Boolean = buffer.readBoolean()
 
     override fun handle(connection: PlayConnection) {
-        connection.fireEvent(BlockBreakAckEvent(connection, this))
         if (breakType == BreakType.FINISHED_DIGGING && !successful) {
             // never happens?
             connection.world[blockPosition] = blockState
         }
-
+        connection.fireEvent(BlockBreakAckEvent(connection, this))
     }
 
     override fun log() {

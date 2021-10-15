@@ -25,7 +25,6 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.util.vec.Vec2Util.EMPTY
 import de.bixilon.minosoft.util.KUtil.decide
 import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.KUtil.toSynchronizedMap
 import glm_.vec2.Vec2i
 import java.lang.Integer.max
@@ -42,12 +41,12 @@ class TabListElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
     private var toRender: List<TabListEntryElement> = listOf()
 
     val pingBarsAtlasElements: Array<HUDAtlasElement> = arrayOf(
-        hudRenderer.atlasManager["minecraft:tab_list_ping_0".toResourceLocation()]!!,
-        hudRenderer.atlasManager["minecraft:tab_list_ping_1".toResourceLocation()]!!,
-        hudRenderer.atlasManager["minecraft:tab_list_ping_2".toResourceLocation()]!!,
-        hudRenderer.atlasManager["minecraft:tab_list_ping_3".toResourceLocation()]!!,
-        hudRenderer.atlasManager["minecraft:tab_list_ping_4".toResourceLocation()]!!,
-        hudRenderer.atlasManager["minecraft:tab_list_ping_5".toResourceLocation()]!!,
+        hudRenderer.atlasManager["minecraft:tab_list_ping_0"]!!,
+        hudRenderer.atlasManager["minecraft:tab_list_ping_1"]!!,
+        hudRenderer.atlasManager["minecraft:tab_list_ping_2"]!!,
+        hudRenderer.atlasManager["minecraft:tab_list_ping_3"]!!,
+        hudRenderer.atlasManager["minecraft:tab_list_ping_4"]!!,
+        hudRenderer.atlasManager["minecraft:tab_list_ping_5"]!!,
     )
 
     override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int {

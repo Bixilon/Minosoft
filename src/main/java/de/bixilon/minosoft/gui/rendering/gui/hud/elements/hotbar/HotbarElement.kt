@@ -26,11 +26,11 @@ import glm_.vec2.Vec2i
 import java.lang.Integer.max
 
 class HotbarElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
-    private val base = HotbarBaseElement(hudRenderer)
-    private val experience = HotbarExperienceBarElement(hudRenderer)
-    private val health = HotbarHealthElement(hudRenderer)
-    private val hunger = HotbarHungerElement(hudRenderer)
-    private val protection = HotbarProtectionElement(hudRenderer)
+    val base = HotbarBaseElement(hudRenderer)
+    val experience = HotbarExperienceBarElement(hudRenderer)
+    val health = HotbarHealthElement(hudRenderer)
+    val hunger = HotbarHungerElement(hudRenderer)
+    val protection = HotbarProtectionElement(hudRenderer)
 
     private val topLeft = RowLayout(hudRenderer, HorizontalAlignments.LEFT, 1) // contains health, protection, etc
     private val topRight = RowLayout(hudRenderer, HorizontalAlignments.RIGHT, 1) // contains hunger, air

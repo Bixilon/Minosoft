@@ -32,8 +32,6 @@ class ContainerItemSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     val itemStack = buffer.readItemStack()
 
     override fun handle(connection: PlayConnection) {
-        connection.fireEvent(ContainerSlotChangeEvent(connection, this))
-
         connection.player.containers[containerId]?.slots?.let {
             if (itemStack == null) {
                 it.remove(slot)
@@ -41,6 +39,8 @@ class ContainerItemSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
                 it[slot] = itemStack
             }
         }
+
+        connection.fireEvent(ContainerSlotChangeEvent(connection, this))
     }
 
     override fun log() {

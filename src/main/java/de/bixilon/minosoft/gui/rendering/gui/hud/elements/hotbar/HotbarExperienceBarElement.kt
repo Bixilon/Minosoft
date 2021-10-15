@@ -82,7 +82,7 @@ class HotbarExperienceBarElement(hudRenderer: HUDRenderer) : Element(hudRenderer
         if (!jumping) {
             val experienceCondition = hudRenderer.connection.player.experienceCondition
             if (this.jumping != jumping || progress != experienceCondition.experienceBarProgress) {
-                progress = experienceCondition.experienceBarProgress
+                this.progress = experienceCondition.experienceBarProgress
                 this.jumping = jumping
                 this.level = experienceCondition.level
                 cacheUpToDate = false

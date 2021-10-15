@@ -32,11 +32,12 @@ class HealthSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     val saturation: Float = buffer.readFloat()
 
     override fun handle(connection: PlayConnection) {
-        connection.fireEvent(UpdateHealthEvent(connection, this))
         connection.player.healthCondition.hunger = hunger
         connection.player.healthCondition.hp = hp
         connection.player.healthCondition.saturation = saturation
 
+
+        connection.fireEvent(UpdateHealthEvent(connection, this))
         if (hp == 0.0f) {
             // do respawn
             connection.sender.respawn()

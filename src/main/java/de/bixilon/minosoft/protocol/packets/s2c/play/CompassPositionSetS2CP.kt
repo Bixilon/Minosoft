@@ -35,8 +35,9 @@ class CompassPositionSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     }
 
     override fun handle(connection: PlayConnection) {
-        connection.fireEvent(CompassPositionChangeEvent(connection, this))
         connection.player.spawnPosition = spawnPosition
+
+        connection.fireEvent(CompassPositionChangeEvent(connection, this))
     }
 
     override fun log() {
