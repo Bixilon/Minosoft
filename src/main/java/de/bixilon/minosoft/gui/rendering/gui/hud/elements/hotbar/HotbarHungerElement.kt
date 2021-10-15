@@ -126,24 +126,8 @@ class HotbarHungerElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
         return 2
     }
 
-    override fun silentApply() {
-        val healthCondition = hudRenderer.connection.player.healthCondition
-
-        if (hunger != healthCondition.hunger) {
-            hunger = healthCondition.hunger
-            cacheUpToDate = false
-        }
-
-        if (saturation != healthCondition.saturation) {
-            saturation = healthCondition.saturation
-            cacheUpToDate = false
-        }
-
-        val hungerEffect = hudRenderer.connection.player.activeStatusEffects.contains(hungerStatusEffect)
-        if (this.hungerEffect != hungerEffect) {
-            this.hungerEffect = hungerEffect
-            cacheUpToDate = false
-        }
+    override fun forceSilentApply() {
+        cacheUpToDate = false
     }
 
     override fun tick() {
@@ -154,8 +138,24 @@ class HotbarHungerElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
         animate = healthCondition.saturation <= 0.0f && ticks++ % (healthCondition.hunger * 3 + 1) == 0
     }
 
-    override fun checkSilentApply() {
-        silentApply()
+    override fun silentApply(): Boolean {
+        val healthCondition = hudRenderer.connection.player.healthCondition
+
+        val hunger = healthCondition.hunger
+        val saturation = healthCondition.saturation
+
+        val hungerEffect = hudRenderer.connection.player.activeStatusEffects.contains(hungerStatusEffect)
+
+        if (this.hunger == hunger && this.saturation == saturation && this.hungerEffect == hungerEffect) {
+            return false
+        }
+
+        this.hunger = hunger
+        this.saturation = saturation
+        this.hungerEffect = hungerEffect
+
+        forceSilentApply()
+        return true
     }
 
     companion object {

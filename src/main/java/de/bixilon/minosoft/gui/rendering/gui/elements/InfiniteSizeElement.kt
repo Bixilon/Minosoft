@@ -35,7 +35,8 @@ class InfiniteSizeElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
         error("Can not render InfiniteSizeElement")
     }
 
-    override fun silentApply() = Unit
+    override fun forceSilentApply() = Unit
+    override fun silentApply(): Boolean = false
 
     override fun apply() = Unit
 }

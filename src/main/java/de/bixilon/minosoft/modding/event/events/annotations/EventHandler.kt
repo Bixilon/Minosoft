@@ -14,6 +14,7 @@ package de.bixilon.minosoft.modding.event.events.annotations
 
 import de.bixilon.minosoft.modding.loading.Priorities
 
+@Target(AnnotationTarget.FUNCTION)
 @Retention(AnnotationRetention.RUNTIME)
 annotation class EventHandler(
     val ignoreCancelled: Boolean = false,

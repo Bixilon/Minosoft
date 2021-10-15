@@ -209,23 +209,9 @@ class HotbarHealthElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
         return 2
     }
 
-    override fun silentApply() {
-        // ToDo: Check if something changed
-
-        // ToDo: Notify parent?
-
-        val player = hudRenderer.connection.player
-
-        hardcode = hudRenderer.connection.world.hardcore
-        poison = poisonStatusEffect?.let { player.activeStatusEffects[it] != null } ?: false
-        wither = witherStatusEffect?.let { player.activeStatusEffects[it] != null } ?: false
-        frozen = player.ticksFrozen > 0
-
-        health = player.healthCondition.hp
-        absorptionsAmount = player.playerAbsorptionHearts // ToDo: This is (probably) calculated as effect instance
+    override fun forceSilentApply() {
         totalHealth = health + absorptionsAmount
 
-        maxHealth = player.getAttributeValue(DefaultStatusEffectAttributeNames.GENERIC_MAX_HEALTH).toFloat()
         totalMaxHealth = maxHealth + absorptionsAmount
 
         totalMaxHearts = (totalMaxHealth / 2).ceil
@@ -239,10 +225,34 @@ class HotbarHealthElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
         cacheUpToDate = false
     }
 
-    override fun checkSilentApply() {
-        silentApply()
-    }
+    override fun silentApply(): Boolean {
+        val player = hudRenderer.connection.player
+        val hardcode = hudRenderer.connection.world.hardcore
+        val poison = poisonStatusEffect?.let { player.activeStatusEffects[it] != null } ?: false
+        val wither = witherStatusEffect?.let { player.activeStatusEffects[it] != null } ?: false
+        val frozen = player.ticksFrozen > 0
 
+        val health = player.healthCondition.hp
+        val absorptionsAmount = player.playerAbsorptionHearts // ToDo: This is (probably) calculated as effect instance
+
+        val maxHealth = player.getAttributeValue(DefaultStatusEffectAttributeNames.GENERIC_MAX_HEALTH).toFloat()
+
+        if (this.hardcode == hardcode && this.poison == poison && this.wither == wither && this.frozen == frozen && this.health == health && this.absorptionsAmount == absorptionsAmount && this.maxHealth == maxHealth) {
+            return false
+        }
+
+        this.hardcode = hardcode
+        this.poison = poison
+        this.wither = wither
+        this.frozen = frozen
+        this.health = health
+        this.absorptionsAmount = absorptionsAmount
+        this.maxHealth = maxHealth
+
+
+        forceSilentApply()
+        return true
+    }
 
     companion object {
         private const val HP_PER_ROW = 20

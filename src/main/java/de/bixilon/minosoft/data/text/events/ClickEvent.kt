@@ -38,6 +38,16 @@ class ClickEvent {
         this.value = value
     }
 
+    override fun equals(other: Any?): Boolean {
+        if (other === this) {
+            return true
+        }
+        if (other !is ClickEvent) {
+            return false
+        }
+        return action == other.action && value == other.value
+    }
+
     enum class ClickEventActions {
         OPEN_URL,
         RUN_COMMAND,

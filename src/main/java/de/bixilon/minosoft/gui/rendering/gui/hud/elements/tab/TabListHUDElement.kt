@@ -58,6 +58,8 @@ class TabListHUDElement(hudRenderer: HUDRenderer) : HUDElement<TabListElement>(h
             // ToDo: Cache more?
             layout.apply()
         })
+
+        // ToDo: Also check team changes, scoreboard changes, etc
     }
 
 

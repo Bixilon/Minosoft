@@ -60,12 +60,13 @@ class GridCell(
         child.tick()
     }
 
-    override fun checkSilentApply() {
-        child.checkSilentApply()
+    override fun silentApply(): Boolean {
+        return child.silentApply()
     }
 
-    override fun silentApply() {
-        child.silentApply()
+    @Suppress("DEPRECATION")
+    override fun forceSilentApply() {
+        child.forceSilentApply()
     }
 
     override fun apply() {

@@ -18,7 +18,6 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
-import de.bixilon.minosoft.gui.rendering.util.vec.Vec2Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.Vec4Util.bottom
 import de.bixilon.minosoft.gui.rendering.util.vec.Vec4Util.horizontal
 import de.bixilon.minosoft.gui.rendering.util.vec.Vec4Util.left
@@ -39,7 +38,6 @@ open class RowLayout(
     override var childAlignment: HorizontalAlignments = HorizontalAlignments.LEFT,
     spacing: Int = 0,
 ) : Element(hudRenderer), ChildAlignable {
-    private var _prefSize = Vec2i.EMPTY
     private val children: MutableList<Element> = synchronizedListOf()
 
     override var cacheEnabled: Boolean = false // ToDo: Cache
@@ -51,11 +49,18 @@ open class RowLayout(
     var spacing: Int = spacing
         set(value) {
             field = value
-            apply()
+            if (children.size <= 1) {
+                return
+            }
+            forceApply()
         }
 
     fun clear() {
+        if (children.size == 0) {
+            return
+        }
         children.clear()
+        forceApply()
     }
 
     override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int {
@@ -103,14 +108,15 @@ open class RowLayout(
         element.parent = this
         children += element
 
-
-        element.checkSilentApply()
-        apply() // ToDo: Optimize
-        parent?.onChildChange(this)
+        forceApply() // ToDo: Optimize: Keep current layout, just add the element without redoing stuff
     }
 
     @Synchronized
-    override fun silentApply() {
+    override fun forceSilentApply() {
+        for (child in children) {
+            child.silentApply()
+        }
+
         val maxSize = maxSize
         val size = margin.offset
         val prefSize = margin.spaceSize
@@ -164,13 +170,6 @@ open class RowLayout(
         this.size = size
     }
 
-    override fun checkSilentApply() {
-        silentApply()
-
-        for (child in children) {
-            child.checkSilentApply()
-        }
-    }
 
     override fun tick() {
         super.tick()

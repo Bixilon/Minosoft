@@ -16,7 +16,9 @@ package de.bixilon.minosoft.data.player.tab
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.player.PlayerProperty
 import de.bixilon.minosoft.data.scoreboard.Team
+import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.util.KUtil.nullCompare
 
 data class TabListItem(
@@ -27,6 +29,24 @@ data class TabListItem(
     var properties: Map<String, PlayerProperty> = mutableMapOf(),
     var team: Team? = null,
 ) : Comparable<TabListItem> {
+    val tabDisplayName: ChatComponent
+        get() {
+            val displayName = BaseComponent()
+            team?.prefix?.let {
+                displayName += it
+            }
+            displayName += displayName.apply {
+                // ToDo: Set correct formatting code
+                val color = team?.formattingCode
+                if (color is RGBColor) {
+                    applyDefaultColor(color)
+                }
+            }
+            team?.suffix?.let {
+                displayName += it
+            }
+            return displayName
+        }
 
     fun merge(data: TabListItemData) {
         specialMerge(data)

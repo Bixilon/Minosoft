@@ -41,6 +41,17 @@ class HoverEvent {
         this.value = value
     }
 
+
+    override fun equals(other: Any?): Boolean {
+        if (other === this) {
+            return true
+        }
+        if (other !is HoverEvent) {
+            return false
+        }
+        return action == other.action && value == other.value
+    }
+
     enum class HoverEventActions {
         SHOW_TEXT,
         SHOW_ITEM,

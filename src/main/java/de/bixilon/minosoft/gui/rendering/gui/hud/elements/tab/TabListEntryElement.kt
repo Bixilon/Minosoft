@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.tab
 
 import de.bixilon.minosoft.data.player.tab.TabListItem
-import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
@@ -45,8 +44,8 @@ class TabListEntryElement(
     private val nameElement = TextElement(hudRenderer, "", background = false, parent = this)
     private lateinit var pingElement: ImageElement
 
-    private var lastDisplayName: ChatComponent? = null
-    private var lastPing = -1
+    private var displayName: ChatComponent = ChatComponent.EMPTY
+    private var ping = -1
 
     override var prefSize: Vec2i = Vec2i.EMPTY
     override var prefMaxSize: Vec2i
@@ -56,21 +55,18 @@ class TabListEntryElement(
         get() = maxSize
         set(value) {}
 
-    private var forcePrepare = true
-
     var width: Int = width
         set(value) {
             if (value == field) {
                 return
             }
             field = value
-            forcePrepare = true
-            apply()
+            forceApply()
         }
 
     init {
         background = ColorElement(hudRenderer, size, RGBColor(80, 80, 80, 130))
-        silentApply()
+        forceSilentApply()
     }
 
     override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int {
@@ -81,49 +77,38 @@ class TabListEntryElement(
         return TextElement.LAYERS
     }
 
-    override fun silentApply() {
-        val ping = item.ping
+    override fun forceSilentApply() {
+        // ToDo (Performance): If something changed, should we just prepare the changed
+        pingElement = ImageElement(hudRenderer, tabList.pingBarsAtlasElements[when {
+            ping < 0 -> 0
+            ping < 150 -> 5
+            ping < 300 -> 4
+            ping < 600 -> 3
+            ping < 1000 -> 2
+            else -> 1
+        }])
+        nameElement.prefMaxSize = Vec2i(max(0, maxSize.x - pingElement.size.x), HEIGHT)
 
-        if (forcePrepare || ping != lastPing) {
-            pingElement = ImageElement(hudRenderer, tabList.pingBarsAtlasElements[when {
-                ping < 0 -> 0
-                ping < 150 -> 5
-                ping < 300 -> 4
-                ping < 600 -> 3
-                ping < 1000 -> 2
-                else -> 1
-            }])
-            nameElement.prefMaxSize = Vec2i(max(0, maxSize.x - pingElement.size.x), HEIGHT)
-            lastPing = ping
-        }
-        val displayName = BaseComponent()
-        item.team?.prefix?.let {
-            displayName += it
-        }
-        displayName += item.displayName.apply {
-            // ToDo: Set correct formatting code
-            val color = item.team?.formattingCode
-            if (color is RGBColor) {
-                applyDefaultColor(color)
-            }
-        }
-        item.team?.suffix?.let {
-            displayName += it
-        }
-
-        if (forcePrepare || displayName !== lastDisplayName) {
-            nameElement.text = displayName
-            lastDisplayName = displayName
-        }
+        nameElement.text = displayName
 
         this.prefSize = Vec2i((PADDING * 2) + nameElement.prefSize.x + INNER_MARGIN + pingElement.prefSize.x, HEIGHT)
         background.size = size
-        forcePrepare = false
         cacheUpToDate = false
     }
 
-    override fun checkSilentApply() {
-        forcePrepare = true
+    override fun silentApply(): Boolean {
+        val ping = item.ping
+        val displayName = item.tabDisplayName
+
+        if (this.ping == ping && this.displayName == displayName) {
+            return false
+        }
+
+        this.ping = ping
+        this.displayName = displayName
+
+        forceSilentApply()
+        return true
     }
 
 

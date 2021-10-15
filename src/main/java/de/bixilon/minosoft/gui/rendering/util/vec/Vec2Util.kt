@@ -60,6 +60,14 @@ object Vec2Util {
         return max
     }
 
+    infix fun Vec2i.isSmaller(other: Vec2i): Boolean {
+        return this.x < other.x || this.y < other.y
+    }
+
+    infix fun Vec2i.isGreater(other: Vec2i): Boolean {
+        return this.x > other.x || this.y > other.y
+    }
+
 
     fun Any?.toVec2i(default: Vec2i? = null): Vec2i {
         return when (this) {

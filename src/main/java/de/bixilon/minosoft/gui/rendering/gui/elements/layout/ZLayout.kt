@@ -36,10 +36,10 @@ class ZLayout(hudRenderer: HUDRenderer) : Element(hudRenderer) {
         return zOffset
     }
 
-    override fun silentApply() {
+    override fun forceSilentApply() {
         var size = Vec2i.EMPTY
         for (child in children.toSynchronizedList()) {
-            child.checkSilentApply()
+            child.silentApply()
             size = size.max(child.size)
         }
         this.size = size + margin.spaceSize
@@ -47,12 +47,12 @@ class ZLayout(hudRenderer: HUDRenderer) : Element(hudRenderer) {
 
     fun append(child: Element) {
         children += child
-        silentApply()
+        forceApply()
     }
 
     fun add(index: Int, child: Element) {
         children.add(index, child)
-        silentApply()
+        forceApply()
     }
 
     operator fun plusAssign(child: Element) = append(child)

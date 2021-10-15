@@ -82,6 +82,6 @@ open class ImageElement(
         return 1
     }
 
-    override fun silentApply() = Unit
-    override fun apply() = Unit
+    override fun forceSilentApply() = Unit
+    override fun silentApply(): Boolean = false
 }

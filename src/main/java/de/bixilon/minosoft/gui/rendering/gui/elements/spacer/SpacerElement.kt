@@ -22,6 +22,6 @@ open class SpacerElement(hudRenderer: HUDRenderer, override var size: Vec2i) : E
 
     override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int = 0
 
-    override fun silentApply() = Unit
-    override fun apply() = Unit
+    override fun silentApply(): Boolean = false
+    override fun forceSilentApply() = Unit
 }

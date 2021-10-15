@@ -248,4 +248,14 @@ class BaseComponent : ChatComponent {
             this.remove(value)
         }
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (other === this) {
+            return true
+        }
+        if (other !is BaseComponent) {
+            return false
+        }
+        return parts == other.parts
+    }
 }

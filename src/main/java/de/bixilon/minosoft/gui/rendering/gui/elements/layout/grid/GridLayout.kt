@@ -49,8 +49,10 @@ class GridLayout(hudRenderer: HUDRenderer, val grid: Vec2i) : Element(hudRendere
     }
 
 
-    override fun silentApply() {
+    override fun forceSilentApply() {
         // ToDo: This works with columns, but rows are not yet implemented
+
+        // ToDo: Balance width of the columns
 
         /*
         Calculate new grid layout (sizes) with the new size of the child
@@ -150,15 +152,17 @@ class GridLayout(hudRenderer: HUDRenderer, val grid: Vec2i) : Element(hudRendere
         }
     }
 
-    override fun checkSilentApply() {
-        apply()
+    override fun silentApply(): Boolean {
+        // ToDo: Check
+        forceSilentApply()
         applyOnlyChildren()
+        return true
     }
 
     private fun applyOnlyChildren() {
         for (x in 0 until grid.x) {
             for (y in 0 until grid.y) {
-                children[x][y]?.checkSilentApply()
+                children[x][y]?.silentApply()
             }
         }
     }

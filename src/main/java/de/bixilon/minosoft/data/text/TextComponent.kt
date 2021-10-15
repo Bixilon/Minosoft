@@ -211,6 +211,17 @@ open class TextComponent(
         )
     }
 
+    override fun equals(other: Any?): Boolean {
+        if (other === this) {
+            return true
+        }
+        if (other !is TextComponent) {
+            return false
+        }
+        return message == other.message && color == other.color && formatting == other.formatting && clickEvent == other.clickEvent && hoverEvent == other.hoverEvent
+    }
+
+
     companion object {
         val DEFAULT_FORMATTING: Set<ChatFormattingCode> = setOf(PreChatFormattingCodes.SHADOWED)
     }

@@ -55,7 +55,7 @@ class TabListElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
         val size = size
 
         header.size.let {
-            header.checkSilentApply()
+            header.silentApply()
             header.render(offset + Vec2i(HorizontalAlignments.CENTER.getOffset(size.x, it.x), 0), z, consumer)
             offset.y += it.y
         }
@@ -88,7 +88,8 @@ class TabListElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
         return TextElement.LAYERS + 1 // ToDo
     }
 
-    override fun silentApply() {
+    override fun forceSilentApply() {
+        // ToDo: There are still some items shown, that don't even exist (anymore?)
         val size = Vec2i.EMPTY
 
         size.y += header.size.y
@@ -96,6 +97,7 @@ class TabListElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
         val toRender: MutableList<TabListEntryElement> = mutableListOf()
 
         // ToDo: Sorting isn't working correct:  java.lang.IllegalArgumentException: Comparison method violates its general contract!
+        // Probably a threading issue
         val tabListItems = hudRenderer.connection.tabList.tabListItemsByUUID.toSynchronizedMap().entries.sortedWith { a, b -> a.value.compareTo(b.value) }
 
         val previousSize = Vec2i(size)
@@ -161,10 +163,12 @@ class TabListElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
         cacheUpToDate = false
     }
 
-    override fun checkSilentApply() {
+    override fun silentApply(): Boolean {
+        // ToDo: Check for changes
         for (element in toRender) {
-            element.checkSilentApply()
+            element.silentApply()
         }
+        return true
     }
 
 

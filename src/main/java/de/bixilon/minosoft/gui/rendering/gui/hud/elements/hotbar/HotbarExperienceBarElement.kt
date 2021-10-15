@@ -72,7 +72,11 @@ class HotbarExperienceBarElement(hudRenderer: HUDRenderer) : Element(hudRenderer
         return 2 + TextElement.LAYERS // background + foreground + text(level)
     }
 
-    override fun silentApply() {
+    override fun forceSilentApply() {
+        silentApply()
+    }
+
+    override fun silentApply(): Boolean {
         val jumping = false // ToDo
 
         if (!jumping) {
@@ -82,12 +86,10 @@ class HotbarExperienceBarElement(hudRenderer: HUDRenderer) : Element(hudRenderer
                 this.jumping = jumping
                 this.level = experienceCondition.level
                 cacheUpToDate = false
+                return true
             }
         }
-    }
-
-    override fun checkSilentApply() {
-        silentApply()
+        return false
     }
 
     companion object {

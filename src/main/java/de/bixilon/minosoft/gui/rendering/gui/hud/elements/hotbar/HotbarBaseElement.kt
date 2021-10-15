@@ -37,10 +37,14 @@ class HotbarBaseElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
             frame.render(offset + it.start - HORIZONTAL_MARGIN + FRAME_OFFSET, z + 1, consumer)
         }
 
-        return 2 // bar + frame ToDo: Item rendering
+        // ToDo: Item rendering
+
+        return 2 // bar + frame
     }
 
-    override fun silentApply() {}
+    // No need to apply anything, has always the same size
+    override fun silentApply(): Boolean = false
+    override fun forceSilentApply() {}
 
     companion object {
         private val BASE = "minecraft:hotbar_base".toResourceLocation()

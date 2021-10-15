@@ -18,6 +18,7 @@ import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMeshCache
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.util.vec.Vec2Util.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.vec.Vec2Util.isSmaller
 import de.bixilon.minosoft.gui.rendering.util.vec.Vec2Util.max
 import de.bixilon.minosoft.gui.rendering.util.vec.Vec2Util.min
 import de.bixilon.minosoft.gui.rendering.util.vec.Vec4Util.EMPTY
@@ -27,28 +28,38 @@ import glm_.vec4.Vec4i
 
 abstract class Element(val hudRenderer: HUDRenderer) {
     val renderWindow = hudRenderer.renderWindow
-    open var parent: Element? = null
+
+    protected open var _parent: Element? = null
+    open var parent: Element?
+        get() = _parent
         set(value) {
-            field = value
-            checkSilentApply()
+            _parent = value
+            silentApply()
         }
     protected var cache = GUIMeshCache(hudRenderer.matrix, 0)
     open var cacheEnabled: Boolean = true
     open var initialCacheSize: Int = 100
     open var cacheUpToDate: Boolean = false
 
+    private var previousMaxSize = Vec2i.EMPTY
+
+    protected open var _prefSize: Vec2i = Vec2i.EMPTY
+
     /**
      * If maxSize was infinity, what size would the element have?
      */
-    open var prefSize: Vec2i = Vec2i.EMPTY
+    open var prefSize: Vec2i
+        get() = _prefSize
         set(value) {
-            field = value
+            _prefSize = value
             apply()
         }
 
-    open var prefMaxSize: Vec2i = Vec2i(-1, -1)
+    protected open var _prefMaxSize: Vec2i = Vec2i(-1, -1)
+    open var prefMaxSize: Vec2i
+        get() = _prefMaxSize
         set(value) {
-            field = value
+            _prefMaxSize = value
             apply()
         }
 
@@ -71,10 +82,17 @@ abstract class Element(val hudRenderer: HUDRenderer) {
             return Vec2i.EMPTY.max(maxSize - margin.spaceSize)
         }
 
-    open var size: Vec2i = Vec2i.EMPTY
+    protected open var _size: Vec2i = Vec2i.EMPTY
+    open var size: Vec2i
         get() {
-            return field.min(maxSize)
+            return _size.min(maxSize)
         }
+        set(value) {
+            _size = value
+            apply()
+        }
+
+    protected open var _margin: Vec4i = Vec4i.EMPTY
 
     /**
      * Margin for the element
@@ -82,9 +100,10 @@ abstract class Element(val hudRenderer: HUDRenderer) {
      * The max size already includes the margin, the size not. To get the actual size of an element, add the margin to the element.
      * For rendering: Every element adds its padding itself
      */
-    open var margin: Vec4i = Vec4i.EMPTY
+    open var margin: Vec4i
+        get() = _margin
         set(value) {
-            field = value
+            _margin = value
             apply()
         }
 
@@ -119,25 +138,47 @@ abstract class Element(val hudRenderer: HUDRenderer) {
     abstract fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int
 
     /**
-     * Applied all changes made to any property, but does not notify the parent about the change
+     * Force applies all changes made to any property, but does not notify the parent about the change
+     *
      */
-    abstract fun silentApply()
+    @Deprecated("Generally a bad idea to call")
+    abstract fun forceSilentApply()
+
+    /**
+     * Force applied all changes made to any property and calls `parent?.onChildChange(this)`
+     */
+    @Deprecated("Generally a bad idea to call")
+    open fun forceApply() {
+        forceSilentApply()
+        parent?.onChildChange(this)
+    }
 
     /**
      * Applied all changes made to any property and calls `parent?.onChildChange(this)`
      */
     open fun apply() {
-        checkSilentApply()
+        if (!silentApply()) {
+            return
+        }
         parent?.onChildChange(this)
     }
 
     /**
-     * Calls when the client needs to check if it needs to re-prepare (maybe the parent changed?)
-     * Otherwise, silentApplies.
+     * Calls when the client needs to check if it needs to apply (maybe the parent changed?) changes
+     * Otherwise, force silent applies.
      * Can be used to improve the performance
+     *
+     * @return if applied
      */
-    open fun checkSilentApply() {
-        silentApply()
+    @Suppress("DEPRECATION")
+    open fun silentApply(): Boolean {
+        val maxSize = maxSize
+        if (previousMaxSize != maxSize && (maxSize isSmaller size || maxSize isSmaller prefMaxSize)) {
+            forceSilentApply()
+            previousMaxSize = maxSize
+            return true
+        }
+        return true
     }
 
     /**

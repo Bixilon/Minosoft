@@ -62,7 +62,7 @@ class TextFlowElement(
     }
 
     @Synchronized
-    override fun silentApply() {
+    override fun forceSilentApply() {
         val visibleLines: MutableList<TextFlowLineElement> = mutableListOf()
         val maxSize = maxSize
         val maxLines = maxSize.y / Font.TOTAL_CHAR_HEIGHT
@@ -118,7 +118,7 @@ class TextFlowElement(
             messages.removeLast()
         }
         messages.add(0, TextFlowTextElement(message))
-        apply()
+        forceApply()
     }
 
     operator fun plusAssign(message: ChatComponent) = addMessage(message)
@@ -128,7 +128,7 @@ class TextFlowElement(
 
         for (line in visibleLines) {
             if (currentTime - line.text.addTime > messageExpireTime) {
-                apply()
+                forceApply()
                 return
             }
         }
@@ -136,15 +136,6 @@ class TextFlowElement(
 
     override fun tick() {
         checkExpiredLines()
-    }
-
-    override fun checkSilentApply() {
-        val maxSize = maxSize
-        if (maxSize.x >= prefMaxSize.x && maxSize.y >= prefMaxSize.y) {
-            // Size did not change, skip
-            return
-        }
-        silentApply()
     }
 
     private data class TextFlowTextElement(

@@ -26,7 +26,7 @@ class HotbarProtectionElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
     private val fullProtection = hudRenderer.atlasManager["minecraft:full_protection"]!!
 
     init {
-        silentApply()
+        forceSilentApply()
     }
 
     private var protection = 0.0f
@@ -55,23 +55,27 @@ class HotbarProtectionElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
         return 1
     }
 
-    override fun checkSilentApply() {
-        silentApply()
-    }
-
-    override fun silentApply() {
+    override fun silentApply(): Boolean {
         val protection = hudRenderer.connection.player.protectionLevel // ToDo: Check for equipment change
 
+
         if (this.protection == protection) {
-            return
+            return false
         }
 
-        size = if (protection <= 0.0f) {
+        this.protection = protection
+
+        forceSilentApply()
+
+        return true
+    }
+
+    override fun forceSilentApply() {
+        size = if (protection <= 0.0f) { // ToDo: This notifies the parent, should we really notify it in silentApply?
             Vec2i.EMPTY
         } else {
             SIZE
         }
-        this.protection = protection
         cacheUpToDate = false
     }
 
