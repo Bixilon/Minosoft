@@ -131,11 +131,11 @@ class HotbarHungerElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
     }
 
     override fun tick() {
-        super.tick()
-
         val healthCondition = hudRenderer.connection.player.healthCondition
 
         animate = healthCondition.saturation <= 0.0f && ticks++ % (healthCondition.hunger * 3 + 1) == 0
+
+        apply()
     }
 
     override fun silentApply(): Boolean {

@@ -18,7 +18,6 @@ import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDElement
 import de.bixilon.minosoft.modding.event.events.ExperienceChangeEvent
-import de.bixilon.minosoft.modding.event.events.UpdateHealthEvent
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import glm_.vec2.Vec2i
@@ -39,10 +38,6 @@ class HotbarHUDElement(hudRenderer: HUDRenderer) : HUDElement<HotbarElement>(hud
         layout = HotbarElement(hudRenderer)
         layout.prefMaxSize = Vec2i(-1, -1)
 
-        connection.registerEvent(CallbackEventInvoker.of<UpdateHealthEvent> {
-            layout.health.apply()
-            layout.hunger.apply()
-        })
         connection.registerEvent(CallbackEventInvoker.of<ExperienceChangeEvent> {
             layout.experience.apply()
         })

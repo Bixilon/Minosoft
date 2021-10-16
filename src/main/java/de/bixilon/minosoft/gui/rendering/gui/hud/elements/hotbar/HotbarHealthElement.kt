@@ -161,7 +161,7 @@ class HotbarHealthElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
         var healthLeft = totalHealth
         var heart = 0
 
-        while (healthLeft > 0.5f) {
+        while (healthLeft >= 0.5f) {
             val row = heart / HEARTS_PER_ROW
             val column = heart % HEARTS_PER_ROW
 
@@ -232,7 +232,10 @@ class HotbarHealthElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
         val wither = witherStatusEffect?.let { player.activeStatusEffects[it] != null } ?: false
         val frozen = player.ticksFrozen > 0
 
-        val health = player.healthCondition.hp
+        var health = player.healthCondition.hp
+        if (health > 0.0f && health < 0.5f) {
+            health = 0.5f
+        }
         val absorptionsAmount = player.playerAbsorptionHearts // ToDo: This is (probably) calculated as effect instance
 
         val maxHealth = player.getAttributeValue(DefaultStatusEffectAttributeNames.GENERIC_MAX_HEALTH).toFloat()
@@ -252,6 +255,10 @@ class HotbarHealthElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
 
         forceSilentApply()
         return true
+    }
+
+    override fun tick() {
+        apply()
     }
 
     companion object {

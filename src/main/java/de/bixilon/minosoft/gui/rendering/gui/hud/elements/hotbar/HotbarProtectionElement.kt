@@ -79,6 +79,10 @@ class HotbarProtectionElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
         cacheUpToDate = false
     }
 
+    override fun tick() {
+        apply()
+    }
+
     companion object {
         private val ARMOR_SIZE = Vec2i(8, 9)
         private val SIZE = Vec2i(10 * ARMOR_SIZE.x, ARMOR_SIZE.y)

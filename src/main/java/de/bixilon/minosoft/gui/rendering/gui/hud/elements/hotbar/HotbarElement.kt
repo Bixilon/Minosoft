@@ -56,8 +56,6 @@ class HotbarElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
     }
 
     override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int {
-        // ToDo: Do not apply every frame
-        forceSilentApply()
         var maxZ = 0
 
         val topMaxSize = topLeft.size.max(topRight.size)
@@ -78,7 +76,17 @@ class HotbarElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
             element.silentApply()
         }
 
-        size = base.size + Vec2i(0, max(topLeft.size.y, topRight.size.y)) + Vec2i(0, experience.size.y)
+        _size = base.size + Vec2i(0, max(topLeft.size.y, topRight.size.y)) + Vec2i(0, experience.size.y)
+    }
+
+    override fun silentApply(): Boolean {
+        forceSilentApply()
+        return true
+    }
+
+    override fun onChildChange(child: Element) {
+        silentApply() // ToDo: Check
+        parent?.onChildChange(this)
     }
 
     override fun tick() {
