@@ -47,7 +47,7 @@ abstract class Element(val hudRenderer: HUDRenderer) {
     protected open var _prefSize: Vec2i = Vec2i.EMPTY
 
     /**
-     * If maxSize was infinity, what size would the element have?
+     * If maxSize was infinity, what size would the element have? (Excluded margin!)
      */
     open var prefSize: Vec2i
         get() = _prefSize
@@ -185,7 +185,7 @@ abstract class Element(val hudRenderer: HUDRenderer) {
     /**
      * Called by the child of an element (probably a layout), because the child changed a relevant property (probably size)
      */
-    open fun onChildChange(child: Element?) {
+    open fun onChildChange(child: Element) {
         parent?.onChildChange(this)
     }
 

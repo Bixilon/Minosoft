@@ -66,6 +66,10 @@ open class TextElement(
 
     override fun forceSilentApply() {
         val size = Vec2i.EMPTY
+        if (textComponent.message.contains("pitch=")) {
+            val a = maxSize
+            var b = 1
+        }
         if (!emptyMessage) {
             val renderInfo = TextRenderInfo()
             ChatComponentRenderer.render(Vec2i.EMPTY, Vec2i.EMPTY, size, 0, this, fontAlignment, renderWindow, null, renderInfo, textComponent)
@@ -77,7 +81,7 @@ open class TextElement(
         _size = size
     }
 
-    override fun onChildChange(child: Element?) = error("A TextElement can not have a child!")
+    override fun onChildChange(child: Element) = error("A TextElement can not have a child!")
 
     override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int {
         if (emptyMessage) {

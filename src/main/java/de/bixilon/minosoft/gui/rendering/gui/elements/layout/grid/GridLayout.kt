@@ -17,6 +17,7 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
+import de.bixilon.minosoft.gui.rendering.util.vec.Vec4Util.horizontal
 import de.bixilon.minosoft.gui.rendering.util.vec.Vec4Util.offset
 import glm_.vec2.Vec2i
 import java.lang.Integer.min
@@ -67,7 +68,7 @@ class GridLayout(hudRenderer: HUDRenderer, val grid: Vec2i) : Element(hudRendere
         for (x in 0 until grid.x) {
             for (y in 0 until grid.y) {
                 val child = children[x][y] ?: continue
-                width[x] = min(max(width[x], child.prefSize.x), columnConstraints[x].maxWidth)
+                width[x] = min(max(width[x], child.prefSize.x + child.margin.horizontal), columnConstraints[x].maxWidth)
             }
         }
 
@@ -166,7 +167,7 @@ class GridLayout(hudRenderer: HUDRenderer, val grid: Vec2i) : Element(hudRendere
         }
     }
 
-    override fun onChildChange(child: Element?) {
+    override fun onChildChange(child: Element) {
         apply()
         parent?.onChildChange(this)
     }

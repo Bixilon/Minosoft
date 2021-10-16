@@ -217,7 +217,7 @@ class HotbarHealthElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
         totalMaxHearts = (totalMaxHealth / 2).ceil
 
         rows = totalMaxHearts / HEARTS_PER_ROW
-        if (totalMaxHearts % HP_PER_ROW != 0) {
+        if (totalMaxHearts % HEARTS_PER_ROW != 0) {
             rows++
         }
 

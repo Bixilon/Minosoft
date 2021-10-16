@@ -170,6 +170,9 @@ open class RowLayout(
         _size = size
     }
 
+    override fun onChildChange(child: Element) {
+        forceApply() // ToDo (Performance): Check if the size, prefSize or whatever changed
+    }
 
     override fun tick() {
         super.tick()

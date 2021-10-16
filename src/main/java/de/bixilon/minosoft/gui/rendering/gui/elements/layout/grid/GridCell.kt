@@ -24,7 +24,7 @@ class GridCell(
     private val columnConstraint: GridColumnConstraint,
     private val rowConstraint: GridRowConstraint,
     private val child: Element,
-    override var parent: Element?,
+    parent: Element?,
 ) : Element(hudRenderer) {
     override var cacheUpToDate: Boolean by child::cacheUpToDate
     override var cacheEnabled: Boolean by child::cacheEnabled
@@ -33,6 +33,10 @@ class GridCell(
     override var size: Vec2i by child::size
     override var margin: Vec4i by child::margin
     override var prefSize: Vec2i by child::prefSize
+
+    init {
+        _parent = parent
+    }
 
     override val maxSize: Vec2i
         get() {
@@ -71,5 +75,13 @@ class GridCell(
 
     override fun apply() {
         child.apply()
+    }
+
+    override fun forceApply() {
+        child.forceApply()
+    }
+
+    override fun onChildChange(child: Element) {
+        super.onChildChange(this)
     }
 }
