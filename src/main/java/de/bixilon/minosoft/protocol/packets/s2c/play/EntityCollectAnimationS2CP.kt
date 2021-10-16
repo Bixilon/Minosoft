@@ -21,7 +21,7 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-class ItemCollectAnimationS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
+class EntityCollectAnimationS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     val itemEntityId: Int = buffer.readEntityId()
     var collectorEntityId: Int = if (buffer.versionId < ProtocolVersions.V_14W04A) {
         buffer.readInt()
@@ -41,6 +41,6 @@ class ItemCollectAnimationS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     }
 
     override fun log() {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Item collect animation (itemEntityId=$itemEntityId, collectorEntityId=$collectorEntityId, count=$collectorEntityId)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Entity collect animation (itemEntityId=$itemEntityId, collectorEntityId=$collectorEntityId, count=$collectorEntityId)" }
     }
 }

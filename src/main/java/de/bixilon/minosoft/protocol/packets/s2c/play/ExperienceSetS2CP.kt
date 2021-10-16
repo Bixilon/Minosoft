@@ -43,12 +43,11 @@ class ExperienceSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     }
 
     override fun handle(connection: PlayConnection) {
-        if (connection.fireEvent(ExperienceChangeEvent(connection, this))) {
-            return
-        }
         connection.player.experienceCondition.level = level
         connection.player.experienceCondition.experienceBarProgress = bar
         connection.player.experienceCondition.totalExperience = total
+
+        connection.fireEvent(ExperienceChangeEvent(connection, this))
     }
 
     override fun log() {

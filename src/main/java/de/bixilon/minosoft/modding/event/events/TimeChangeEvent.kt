@@ -22,7 +22,7 @@ class TimeChangeEvent(
     initiator: EventInitiators,
     val age: Long,
     val time: Long,
-) : PlayConnectionEvent(connection, initiator), CancelableEvent {
+) : PlayConnectionEvent(connection, initiator) {
 
 
     constructor(connection: PlayConnection, packet: WorldTimeSetS2CP) : this(connection, EventInitiators.SERVER, packet.age, packet.time)

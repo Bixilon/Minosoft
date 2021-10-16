@@ -189,12 +189,4 @@ class SynchronizedMap<K, V>(
             return original.replace(key, oldValue, newValue)
         }
     }
-
-    fun getAndRemove(key: K): V? {
-        synchronized(lock) {
-            val value = this[key] ?: return null
-            this.remove(key)
-            return value
-        }
-    }
 }

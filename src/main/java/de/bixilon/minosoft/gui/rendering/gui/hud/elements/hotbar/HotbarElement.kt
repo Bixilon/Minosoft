@@ -44,8 +44,14 @@ class HotbarElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
     override var cacheEnabled: Boolean = false // ToDo: Cache correctly
 
     init {
-        topLeft.parent = this
-        topRight.parent = this
+        topLeft.apply {
+            parent = this@HotbarElement
+            spacing = VERTICAL_SPACING
+        }
+        topRight.apply {
+            parent = this@HotbarElement
+            spacing = VERTICAL_SPACING
+        }
 
         topLeft += protection
         topLeft += health
@@ -62,10 +68,10 @@ class HotbarElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
 
         maxZ = max(maxZ, topLeft.render(offset + Vec2i(0, VerticalAlignments.BOTTOM.getOffset(topMaxSize.y, topLeft.size.y)), z, consumer))
         maxZ = max(maxZ, topRight.render(offset + Vec2i(HorizontalAlignments.RIGHT.getOffset(size.x, topRight.size.x), VerticalAlignments.BOTTOM.getOffset(topMaxSize.y, topRight.size.y)), z, consumer))
-        offset.y += topMaxSize.y
+        offset.y += topMaxSize.y + VERTICAL_SPACING
 
         maxZ = max(maxZ, experience.render(offset + Vec2i(HorizontalAlignments.CENTER.getOffset(size.x, experience.size.x), 0), z, consumer))
-        offset.y += experience.size.y
+        offset.y += experience.size.y + VERTICAL_SPACING
         maxZ = max(maxZ, base.render(offset, z, consumer))
 
         return maxZ
@@ -76,7 +82,12 @@ class HotbarElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
             element.silentApply()
         }
 
-        _size = base.size + Vec2i(0, max(topLeft.size.y, topRight.size.y)) + Vec2i(0, experience.size.y)
+        val size = Vec2i(base.size)
+
+        size.y += max(topLeft.size.y, topRight.size.y) + VERTICAL_SPACING
+        size.y += experience.size.y + VERTICAL_SPACING
+
+        _size = size
     }
 
     override fun silentApply(): Boolean {
@@ -95,5 +106,9 @@ class HotbarElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
         for (element in renderElements) {
             element.tick()
         }
+    }
+
+    companion object {
+        private const val VERTICAL_SPACING = 1
     }
 }

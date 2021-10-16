@@ -35,7 +35,7 @@ data class TabListItem(
             team?.prefix?.let {
                 displayName += it
             }
-            displayName += displayName.apply {
+            displayName += this.displayName.apply {
                 // ToDo: Set correct formatting code
                 val color = team?.formattingCode
                 if (color is RGBColor) {

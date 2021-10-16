@@ -23,7 +23,7 @@ class TabListInfoChangeEvent(
     initiator: EventInitiators,
     val header: ChatComponent,
     val footer: ChatComponent,
-) : PlayConnectionEvent(connection, initiator), CancelableEvent {
+) : PlayConnectionEvent(connection, initiator) {
 
     constructor(connection: PlayConnection, packet: TabListTextSetS2CP) : this(connection, EventInitiators.SERVER, packet.header, packet.footer)
 }

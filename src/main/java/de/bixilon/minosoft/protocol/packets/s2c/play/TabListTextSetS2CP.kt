@@ -26,11 +26,10 @@ class TabListTextSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     val footer: ChatComponent = buffer.readChatComponent()
 
     override fun handle(connection: PlayConnection) {
-        if (connection.fireEvent(TabListInfoChangeEvent(connection, this))) {
-            return
-        }
         connection.tabList.header = header
         connection.tabList.footer = footer
+
+        connection.fireEvent(TabListInfoChangeEvent(connection, this))
     }
 
     override fun log() {

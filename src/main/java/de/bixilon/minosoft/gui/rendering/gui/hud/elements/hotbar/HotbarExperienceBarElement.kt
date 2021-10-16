@@ -23,6 +23,7 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.lerp
+import glm_.vec2.Vec2
 import glm_.vec2.Vec2i
 
 class HotbarExperienceBarElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
@@ -60,7 +61,7 @@ class HotbarExperienceBarElement(hudRenderer: HUDRenderer) : Element(hudRenderer
         val progressAtlasElement = bars[1]
 
         // foreground
-        val progress = ImageElement(hudRenderer, progressAtlasElement.texture, uvStart = progressAtlasElement.uvStart, uvEnd = lerp(progress, progressAtlasElement.uvStart, progressAtlasElement.uvEnd), size = Vec2i((progressAtlasElement.size.x * progress).toInt(), SIZE.y))
+        val progress = ImageElement(hudRenderer, progressAtlasElement.texture, uvStart = progressAtlasElement.uvStart, uvEnd = Vec2(lerp(progress, progressAtlasElement.uvStart.x, progressAtlasElement.uvEnd.x), progressAtlasElement.uvEnd.y), size = Vec2i((progressAtlasElement.size.x * progress).toInt(), SIZE.y))
 
         progress.render(offset, z + 1, consumer)
 

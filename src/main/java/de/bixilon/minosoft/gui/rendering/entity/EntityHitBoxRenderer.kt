@@ -84,7 +84,7 @@ class EntityHitBoxRenderer(
             }
         })
         connection.registerEvent(CallbackEventInvoker.of<EntityDestroyEvent> {
-            val mesh = this.meshes.getAndRemove(it.entity) ?: return@of
+            val mesh = this.meshes.remove(it.entity) ?: return@of
 
             renderWindow.queue += {
                 mesh.unload(true)

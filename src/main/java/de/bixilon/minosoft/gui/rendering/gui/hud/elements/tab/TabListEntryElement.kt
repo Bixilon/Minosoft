@@ -35,7 +35,7 @@ class TabListEntryElement(
     width: Int,
 ) : Element(hudRenderer) {
     init {
-        parent = tabList
+        _parent = tabList
     }
 
     // ToDo: Skin
@@ -65,7 +65,7 @@ class TabListEntryElement(
         }
 
     init {
-        background = ColorElement(hudRenderer, size, RGBColor(80, 80, 80, 130))
+        background = ColorElement(hudRenderer, size, RGBColor(120, 120, 120, 130))
         forceSilentApply()
     }
 

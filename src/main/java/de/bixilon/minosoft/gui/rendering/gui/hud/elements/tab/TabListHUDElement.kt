@@ -44,7 +44,7 @@ class TabListHUDElement(hudRenderer: HUDRenderer) : HUDElement<TabListElement>(h
         connection.registerEvent(CallbackEventInvoker.of<TabListInfoChangeEvent> {
             layout.header.text = it.header
             layout.footer.text = it.footer
-            layout.apply()
+            layout.forceApply()
         })
         connection.registerEvent(CallbackEventInvoker.of<TabListEntryChangeEvent> {
             for ((uuid, entry) in it.items) {
@@ -53,13 +53,15 @@ class TabListHUDElement(hudRenderer: HUDRenderer) : HUDElement<TabListElement>(h
                     continue
                 }
                 val element = layout.entries[uuid] ?: continue
-                element.apply()
+                element.forceApply()
             }
             // ToDo: Cache more?
-            layout.apply()
+            layout.forceApply()
         })
 
         // ToDo: Also check team changes, scoreboard changes, etc
+
+        // ToDo: Just forceApply when visible
     }
 
 

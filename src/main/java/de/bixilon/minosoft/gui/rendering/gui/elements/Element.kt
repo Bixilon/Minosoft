@@ -34,6 +34,7 @@ abstract class Element(val hudRenderer: HUDRenderer) {
     open var parent: Element?
         get() = _parent
         set(value) {
+            check(value !== this) { "Can not self as parent!" }
             _parent = value
             silentApply()
         }

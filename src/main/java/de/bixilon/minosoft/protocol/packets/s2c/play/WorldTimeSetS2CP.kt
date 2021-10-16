@@ -25,11 +25,10 @@ class WorldTimeSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     val time = buffer.readLong()
 
     override fun handle(connection: PlayConnection) {
-        if (connection.fireEvent(TimeChangeEvent(connection, this))) {
-            return
-        }
         connection.world.age = age
         connection.world.time = time
+
+        connection.fireEvent(TimeChangeEvent(connection, this))
     }
 
     override fun log() {

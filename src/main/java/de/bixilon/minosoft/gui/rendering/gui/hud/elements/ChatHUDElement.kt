@@ -29,7 +29,7 @@ class ChatHUDElement(hudRenderer: HUDRenderer) : HUDElement<TextFlowElement>(hud
 
 
     override val layoutOffset: Vec2i
-        get() = Vec2i(0, hudRenderer.scaledSize.y - layout.size.y - BOTTOM_OFFSET)
+        get() = Vec2i(2, hudRenderer.scaledSize.y - layout.size.y - BOTTOM_OFFSET)
 
     init {
         val config = Minosoft.config.config.game.hud.chat
