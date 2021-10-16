@@ -267,7 +267,7 @@ class PacketTypes {
         PLAY_HOTBAR_TEXT_SET({ HotbarTextSetS2CP(it) }),
         PLAY_SUB_TITLE_SET({ SubTitleSetS2CP(it) }),
         PLAY_TITLE_SET({ TitleSetS2CP(it) }),
-        PLAY_TIMES_SET({ TitleTimesSetS2CP(it) }),
+        PLAY_TITLE_TIMES_SET({ TitleTimesSetS2CP(it) }),
         PLAY_EMPTY_ENTITY_MOVE({ EmptyEntityMoveS2CP(it) }, isThreadSafe = false),
         PLAY_COMPRESSION_SET({ CompressionSetS2CP(it) }, isThreadSafe = false),
         PLAY_ADVANCEMENT_PROGRESS({ TODO() }),
