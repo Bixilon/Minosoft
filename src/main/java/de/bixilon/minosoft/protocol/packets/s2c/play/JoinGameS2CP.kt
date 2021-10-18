@@ -16,8 +16,9 @@ import com.google.common.collect.HashBiMap
 import de.bixilon.minosoft.data.Difficulties
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.registries.DefaultRegistries
-import de.bixilon.minosoft.data.registries.Dimension
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.dimension.Dimension
+import de.bixilon.minosoft.data.registries.dimension.DimensionType
 import de.bixilon.minosoft.data.world.biome.accessor.BlockBiomeAccessor
 import de.bixilon.minosoft.data.world.biome.accessor.NoiseBiomeAccessor
 import de.bixilon.minosoft.modding.channels.DefaultPluginChannels
@@ -47,7 +48,7 @@ class JoinGameS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     val entityId: Int
     val isHardcore: Boolean
     val gamemode: Gamemodes
-    var dimension: Dimension
+    var dimensionType: DimensionType
         private set
     var difficulty: Difficulties = Difficulties.NORMAL
         private set
@@ -65,6 +66,10 @@ class JoinGameS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         private set
     var dimensions: HashBiMap<ResourceLocation, Dimension> = HashBiMap.create()
         private set
+    var worlds: Array<ResourceLocation>? = null
+        private set
+    var world: ResourceLocation? = null
+        private set
 
     init {
         entityId = buffer.readInt()
@@ -80,7 +85,7 @@ class JoinGameS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         }
 
         if (buffer.versionId < ProtocolVersions.V_1_9_1) {
-            dimension = buffer.connection.registries.dimensionRegistry[buffer.readByte().toInt()]
+            dimensionType = buffer.connection.registries.dimensionRegistry[buffer.readByte().toInt()].type
             difficulty = Difficulties[buffer.readUnsignedByte()]
             maxPlayers = buffer.readByte().toInt()
             if (buffer.versionId >= ProtocolVersions.V_13W42B) {
@@ -94,20 +99,19 @@ class JoinGameS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
                 buffer.readByte() // previous game mode
             }
             if (buffer.versionId >= ProtocolVersions.V_20W22A) {
-                buffer.readStringArray() // dimensions
+                worlds = buffer.readArray { buffer.readResourceLocation() }
             }
             if (buffer.versionId < ProtocolVersions.V_20W21A) {
-                dimension = buffer.connection.registries.dimensionRegistry[buffer.readInt()]
+                dimensionType = buffer.connection.registries.dimensionRegistry[buffer.readInt()].type
             } else {
                 val dimensionCodec = buffer.readNBT().asCompound()
                 dimensions = parseDimensionCodec(dimensionCodec, buffer.versionId)
-                if (buffer.versionId < ProtocolVersions.V_1_16_2_PRE3) {
-                    dimension = dimensions[buffer.readResourceLocation()]!!
+                dimensionType = if (buffer.versionId < ProtocolVersions.V_1_16_2_PRE3) {
+                    dimensions[buffer.readResourceLocation()]!!.type
                 } else {
-                    buffer.readNBT()!!.compoundCast() // dimension tag
+                    DimensionType.deserialize(buffer.readNBT().asCompound())
                 }
-                val currentDimension = buffer.readResourceLocation()
-                dimension = dimensions[currentDimension] ?: buffer.connection.registries.dimensionRegistry[currentDimension]!!
+                world = buffer.readResourceLocation()
             }
 
             if (buffer.versionId >= ProtocolVersions.V_19W36A) {
@@ -146,7 +150,7 @@ class JoinGameS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
 
         connection.world.hardcore = isHardcore
         connection.registries.dimensionRegistry.setData(dimensions)
-        connection.world.dimension = dimension
+        connection.world.dimension = dimensionType
 
         connection.world.entities.add(entityId, null, playerEntity)
         connection.world.hashedSeed = hashedSeed
@@ -178,7 +182,7 @@ class JoinGameS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
                 "key"
             } else {
                 "name"
-            }].unsafeCast<String>())
+            }].unsafeCast())
             val dimensionPropertyTag = if (versionId < ProtocolVersions.V_1_16_PRE3 || versionId >= ProtocolVersions.V_1_16_2_PRE1) {
                 tag["element"].asCompound()
             } else {
@@ -190,7 +194,7 @@ class JoinGameS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     }
 
     override fun log() {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Join game (entityId=$entityId, gamemode=$gamemode, dimension=$dimension, difficulty=$difficulty, hardcore=$isHardcore, viewDistance=$viewDistance)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Join game (entityId=$entityId, gamemode=$gamemode, dimensionType=$dimensionType, difficulty=$difficulty, hardcore=$isHardcore, viewDistance=$viewDistance)" }
     }
 
     companion object : ErrorHandler {

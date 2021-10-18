@@ -261,7 +261,7 @@ class DebugHUDElement(hudRenderer: HUDRenderer) : HUDElement<GridLayout>(hudRend
                 }
                 clear()
 
-                this@DebugWorldInfo += AutoTextElement(hudRenderer, 1) { BaseComponent("Dimension ", connection.world.dimension?.resourceLocation) }
+                this@DebugWorldInfo += AutoTextElement(hudRenderer, 1) { BaseComponent("Sky properties ", connection.world.dimension?.skyProperties) }
                 this@DebugWorldInfo += AutoTextElement(hudRenderer, 1) { BaseComponent("Biome ", connection.world.getBiome(blockPosition)) }
                 this@DebugWorldInfo += AutoTextElement(hudRenderer, 1) { with(connection.world.worldLightAccessor) { BaseComponent("Light block=", getBlockLight(blockPosition), ", sky=", getSkyLight(blockPosition)) } }
 

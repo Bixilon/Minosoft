@@ -29,7 +29,7 @@ class StatusPongS2CP(buffer: InByteBuffer) : StatusS2CPacket() {
         val pingQuery = connection.pingQuery ?: return
         if (pingQuery.pingId != pingId) {
             Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.WARN) { "Unknown status pong (pingId=$pingId, expected=${pingQuery.pingId})" }
-            return
+           // return ToDo: feather-rs is sending a wrong ping id back
         }
         val latency = System.currentTimeMillis() - pingQuery.time
         connection.disconnect()

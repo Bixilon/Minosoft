@@ -114,7 +114,7 @@ open class Item(
                 "PowderSnowBucketItem" -> PowderSnowBucketItem(resourceLocation, registries, data)
                 "SnowballItem" -> SnowballItem(resourceLocation, registries, data)
                 "MilkBucketItem" -> MilkBucketItem(resourceLocation, registries, data)
-                "EntityBucketItem" -> EntityBucketItem(resourceLocation, registries, data)
+                "FishBucketItem", "EntityBucketItem" -> EntityBucketItem(resourceLocation, registries, data)
                 "BookItem" -> BookItem(resourceLocation, registries, data)
                 "EggItem" -> EggItem(resourceLocation, registries, data)
                 "CompassItem" -> CompassItem(resourceLocation, registries, data)

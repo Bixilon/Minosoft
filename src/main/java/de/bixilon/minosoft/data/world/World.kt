@@ -15,11 +15,11 @@ package de.bixilon.minosoft.data.world
 import de.bixilon.minosoft.data.Difficulties
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.registries.AABB
-import de.bixilon.minosoft.data.registries.Dimension
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.FluidBlock
+import de.bixilon.minosoft.data.registries.dimension.DimensionType
 import de.bixilon.minosoft.data.registries.sounds.SoundEvent
 import de.bixilon.minosoft.data.registries.tweaker.VersionTweaker
 import de.bixilon.minosoft.data.world.biome.accessor.BiomeAccessor
@@ -61,7 +61,7 @@ class World(
     val chunks: MutableMap<Vec2i, Chunk> = synchronizedMapOf()
     val entities = WorldEntities()
     var hardcore = false
-    var dimension: Dimension? = null
+    var dimension: DimensionType? = null
     var difficulty: Difficulties? = null
     var difficultyLocked = false
     val worldLightAccessor = WorldLightAccessor(this)

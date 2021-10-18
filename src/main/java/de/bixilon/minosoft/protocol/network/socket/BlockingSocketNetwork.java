@@ -128,6 +128,7 @@ public class BlockingSocketNetwork extends Network {
                     socketSendThread.interrupt();
                 }
                 if (exception instanceof SocketException && exception.getMessage().equals("Socket closed")) {
+                    Log.log(LogMessageType.NETWORK_STATUS, LogLevels.INFO, "Socket closed, disconnecting...");
                     this.connection.setProtocolState(ProtocolStates.DISCONNECTED);
                     return;
                 }

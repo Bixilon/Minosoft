@@ -15,27 +15,28 @@ package de.bixilon.minosoft.modding.event.events;
 
 import de.bixilon.minosoft.data.Difficulties;
 import de.bixilon.minosoft.data.abilities.Gamemodes;
-import de.bixilon.minosoft.data.registries.Dimension;
+import de.bixilon.minosoft.data.registries.dimension.DimensionType;
 import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionEvent;
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection;
 import de.bixilon.minosoft.protocol.packets.s2c.play.RespawnS2CP;
 
+@Deprecated
 public class RespawnEvent extends PlayConnectionEvent {
     private final Gamemodes gamemode;
-    private final Dimension dimension;
+    private final DimensionType dimensionType;
     private final Difficulties difficulty;
 
-    public RespawnEvent(PlayConnection connection, Gamemodes gamemode, Dimension dimension, Difficulties difficulty) {
+    public RespawnEvent(PlayConnection connection, Gamemodes gamemode, DimensionType dimensionType, Difficulties difficulty) {
         super(connection);
         this.gamemode = gamemode;
-        this.dimension = dimension;
+        this.dimensionType = dimensionType;
         this.difficulty = difficulty;
     }
 
     public RespawnEvent(PlayConnection connection, RespawnS2CP pkg) {
         super(connection);
         this.gamemode = pkg.getGamemode();
-        this.dimension = pkg.getDimension();
+        this.dimensionType = pkg.getDimension();
         this.difficulty = pkg.getDifficulty();
     }
 
@@ -43,8 +44,8 @@ public class RespawnEvent extends PlayConnectionEvent {
         return this.gamemode;
     }
 
-    public Dimension getDimension() {
-        return this.dimension;
+    public DimensionType getDimensionType() {
+        return this.dimensionType;
     }
 
     public Difficulties getDifficulty() {
