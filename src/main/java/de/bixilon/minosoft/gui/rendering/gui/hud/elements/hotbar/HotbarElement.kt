@@ -35,6 +35,9 @@ class HotbarElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
     private val topLeft = RowLayout(hudRenderer, HorizontalAlignments.LEFT, 1) // contains health, protection, etc
     private val topRight = RowLayout(hudRenderer, HorizontalAlignments.RIGHT, 1) // contains hunger, air
 
+
+    private var gamemode = hudRenderer.connection.player.tabListItem.gamemode
+
     private var renderElements = setOf(
         base,
         topLeft,
@@ -64,14 +67,17 @@ class HotbarElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
     override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int {
         var maxZ = 0
 
-        val topMaxSize = topLeft.size.max(topRight.size)
 
-        maxZ = max(maxZ, topLeft.render(offset + Vec2i(0, VerticalAlignments.BOTTOM.getOffset(topMaxSize.y, topLeft.size.y)), z, consumer))
-        maxZ = max(maxZ, topRight.render(offset + Vec2i(HorizontalAlignments.RIGHT.getOffset(size.x, topRight.size.x), VerticalAlignments.BOTTOM.getOffset(topMaxSize.y, topRight.size.y)), z, consumer))
-        offset.y += topMaxSize.y + VERTICAL_SPACING
+        if (gamemode.survival) {
+            val topMaxSize = topLeft.size.max(topRight.size)
+            maxZ = max(maxZ, topLeft.render(offset + Vec2i(0, VerticalAlignments.BOTTOM.getOffset(topMaxSize.y, topLeft.size.y)), z, consumer))
+            maxZ = max(maxZ, topRight.render(offset + Vec2i(HorizontalAlignments.RIGHT.getOffset(size.x, topRight.size.x), VerticalAlignments.BOTTOM.getOffset(topMaxSize.y, topRight.size.y)), z, consumer))
+            offset.y += topMaxSize.y + VERTICAL_SPACING
 
-        maxZ = max(maxZ, experience.render(offset + Vec2i(HorizontalAlignments.CENTER.getOffset(size.x, experience.size.x), 0), z, consumer))
-        offset.y += experience.size.y + VERTICAL_SPACING
+            maxZ = max(maxZ, experience.render(offset + Vec2i(HorizontalAlignments.CENTER.getOffset(size.x, experience.size.x), 0), z, consumer))
+            offset.y += experience.size.y + VERTICAL_SPACING
+        }
+
         maxZ = max(maxZ, base.render(offset, z, consumer))
 
         return maxZ
@@ -84,10 +90,15 @@ class HotbarElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
 
         val size = Vec2i(base.size)
 
-        size.y += max(topLeft.size.y, topRight.size.y) + VERTICAL_SPACING
-        size.y += experience.size.y + VERTICAL_SPACING
+        gamemode = hudRenderer.connection.player.tabListItem.gamemode
+        if (gamemode.survival) {
+            size.y += max(topLeft.size.y, topRight.size.y) + VERTICAL_SPACING
+
+            size.y += experience.size.y + VERTICAL_SPACING
+        }
 
         _size = size
+        cacheUpToDate = false
     }
 
     override fun silentApply(): Boolean {

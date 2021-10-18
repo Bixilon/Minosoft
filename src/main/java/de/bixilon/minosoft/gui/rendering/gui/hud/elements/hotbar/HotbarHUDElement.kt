@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.other.game.event.handlers.gamemode.GamemodeChangeEvent
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDElement
@@ -40,6 +41,10 @@ class HotbarHUDElement(hudRenderer: HUDRenderer) : HUDElement<HotbarElement>(hud
 
         connection.registerEvent(CallbackEventInvoker.of<ExperienceChangeEvent> {
             layout.experience.apply()
+        })
+
+        connection.registerEvent(CallbackEventInvoker.of<GamemodeChangeEvent> {
+            layout.forceApply()
         })
     }
 

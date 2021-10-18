@@ -29,7 +29,7 @@ import de.bixilon.minosoft.util.nbt.tag.NBTUtil.asCompound
 import glm_.vec3.Vec3d
 
 class RespawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
-    lateinit var dimension: DimensionType
+    var dimension: DimensionType
         private set
     var difficulty: Difficulties = Difficulties.NORMAL
         private set
@@ -48,19 +48,19 @@ class RespawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         private set
 
     init {
-        when {
+        dimension = when {
             buffer.versionId < ProtocolVersions.V_20W21A -> {
-                dimension = buffer.connection.registries.dimensionRegistry[if (buffer.versionId < ProtocolVersions.V_1_8_9) { // ToDo: this should be 108 but wiki.vg is wrong. In 1.8 it is an int.
+                buffer.connection.registries.dimensionRegistry[if (buffer.versionId < ProtocolVersions.V_1_8_9) { // ToDo: this should be 108 but wiki.vg is wrong. In 1.8 it is an int.
                     buffer.readByte().toInt()
                 } else {
                     buffer.readInt()
                 }].type
             }
             buffer.versionId < ProtocolVersions.V_1_16_2_PRE3 -> {
-                dimension = buffer.connection.registries.dimensionRegistry[buffer.readResourceLocation()]!!.type
+                buffer.connection.registries.dimensionRegistry[buffer.readResourceLocation()]!!.type
             }
             else -> {
-                dimension = DimensionType.deserialize(buffer.readNBT().asCompound()) // current dimension data
+                DimensionType.deserialize(buffer.readNBT().asCompound()) // current dimension data
             }
         }
         if (buffer.versionId < ProtocolVersions.V_19W11A) {

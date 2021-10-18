@@ -20,7 +20,7 @@ import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.other.game.event.handlers.GameMoveChangeGameEventHandler
+import de.bixilon.minosoft.data.registries.other.game.event.handlers.gamemode.GamemodeChangeGameEventHandler
 import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.TextComponent
@@ -146,7 +146,7 @@ class DebugHUDElement(hudRenderer: HUDRenderer) : HUDElement<GridLayout>(hudRend
 
         layout += TextElement(hudRenderer, BaseComponent("Gamemode ", connection.player.gamemode)).apply {
             connection.registerEvent(CallbackEventInvoker.of<GameEventChangeEvent> {
-                if (it.event.resourceLocation != GameMoveChangeGameEventHandler.RESOURCE_LOCATION) {
+                if (it.event.resourceLocation != GamemodeChangeGameEventHandler.RESOURCE_LOCATION) {
                     return@of
                 }
                 // ToDo: Improve game mode change event

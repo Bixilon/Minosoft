@@ -19,9 +19,11 @@ import de.bixilon.minosoft.data.registries.DefaultRegistries
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.dimension.Dimension
 import de.bixilon.minosoft.data.registries.dimension.DimensionType
+import de.bixilon.minosoft.data.registries.other.game.event.handlers.gamemode.GamemodeChangeEvent
 import de.bixilon.minosoft.data.world.biome.accessor.BlockBiomeAccessor
 import de.bixilon.minosoft.data.world.biome.accessor.NoiseBiomeAccessor
 import de.bixilon.minosoft.modding.channels.DefaultPluginChannels
+import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.protocol.ErrorHandler
 import de.bixilon.minosoft.protocol.network.connection.Connection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -146,7 +148,13 @@ class JoinGameS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
 
     override fun handle(connection: PlayConnection) {
         val playerEntity = connection.player
-        playerEntity.tabListItem.gamemode = gamemode
+        val previousGamemode = playerEntity.tabListItem.gamemode
+
+        if (previousGamemode != gamemode) {
+            playerEntity.tabListItem.gamemode = gamemode
+
+            connection.fireEvent(GamemodeChangeEvent(connection, EventInitiators.SERVER, previousGamemode, gamemode))
+        }
 
         connection.world.hardcore = isHardcore
         connection.registries.dimensionRegistry.setData(dimensions)
