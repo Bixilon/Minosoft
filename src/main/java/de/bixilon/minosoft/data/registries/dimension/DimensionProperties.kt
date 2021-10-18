@@ -9,7 +9,7 @@ import de.bixilon.minosoft.util.KUtil.toInt
 import de.bixilon.minosoft.util.KUtil.unsafeCast
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.get
 
-data class DimensionType(
+data class DimensionProperties(
     val piglinSafe: Boolean = false,
     val natural: Boolean = true,
     val ambientLight: Float = 0.0f,
@@ -51,8 +51,8 @@ data class DimensionType(
 
 
     companion object {
-        fun deserialize(data: Map<String, Any>): DimensionType {
-            return DimensionType(
+        fun deserialize(data: Map<String, Any>): DimensionProperties {
+            return DimensionProperties(
                 piglinSafe = data["piglin_safe"]?.toBoolean() ?: false,
                 natural = data["natural"]?.toBoolean() ?: false,
                 ambientLight = data["ambient_light"]?.unsafeCast<Float>() ?: 0.0f,

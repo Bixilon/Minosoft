@@ -246,6 +246,15 @@ open class InByteBuffer {
         return readArray(length) { readUUID() }
     }
 
+    fun readUUIDString(): UUID {
+        return Util.getUUIDFromString(readString())
+    }
+
+    fun readUUIDStringArray(length: Int = readVarInt()): Array<UUID> {
+        return readArray(length) { readUUIDString() }
+    }
+
+
     fun readJson(): Map<String, Any> {
         return JSONSerializer.MUTABLE_MAP_ADAPTER.fromJson(readString())!!
     }

@@ -18,18 +18,14 @@ import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolStates
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
-import de.bixilon.minosoft.util.Util
+import de.bixilon.minosoft.util.KUtil.decide
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import java.util.*
 
 class LoginSuccessS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
-    val uuid: UUID = if (buffer.versionId < ProtocolVersions.V_20W12A) {
-        Util.getUUIDFromString(buffer.readString())
-    } else {
-        buffer.readUUID()
-    }
+    val uuid: UUID = (buffer.versionId < ProtocolVersions.V_20W12A).decide({ buffer.readUUIDString() }, { buffer.readUUID() })
     val name: String = buffer.readString()
 
     override fun handle(connection: PlayConnection) {
