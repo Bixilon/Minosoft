@@ -31,6 +31,7 @@ class HotbarElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
     val health = HotbarHealthElement(hudRenderer)
     val hunger = HotbarHungerElement(hudRenderer)
     val protection = HotbarProtectionElement(hudRenderer)
+    val air = HotbarAirElement(hudRenderer)
 
     private val topLeft = RowLayout(hudRenderer, HorizontalAlignments.LEFT, 1) // contains health, protection, etc
     private val topRight = RowLayout(hudRenderer, HorizontalAlignments.RIGHT, 1) // contains hunger, air
@@ -59,6 +60,7 @@ class HotbarElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
         topLeft += protection
         topLeft += health
 
+        topRight += air
         topRight += hunger
 
         forceSilentApply()

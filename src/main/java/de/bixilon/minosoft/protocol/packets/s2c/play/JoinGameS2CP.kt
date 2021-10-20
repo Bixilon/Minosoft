@@ -83,7 +83,8 @@ class JoinGameS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
             gamemode = Gamemodes[(gamemodeRaw and (0x8.inv()))]
         } else {
             isHardcore = buffer.readBoolean()
-            gamemode = Gamemodes[buffer.readUnsignedByte()]
+            buffer.readUnsignedByte()
+            gamemode = Gamemodes.SURVIVAL
         }
 
         if (buffer.versionId < ProtocolVersions.V_1_9_1) {

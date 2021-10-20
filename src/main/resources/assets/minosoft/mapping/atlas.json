@@ -456,5 +456,19 @@
       "start": [34, 9],
       "end": [43, 18]
     }
+  },
+  "minecraft:air_bubble": {
+    "0": {
+      "texture": "minecraft:textures/gui/icons.png",
+      "start": [16, 18],
+      "end": [25, 27]
+    }
+  },
+  "minecraft:popping_air_bubble": {
+    "0": {
+      "texture": "minecraft:textures/gui/icons.png",
+      "start": [25, 18],
+      "end": [34, 27]
+    }
   }
 }
