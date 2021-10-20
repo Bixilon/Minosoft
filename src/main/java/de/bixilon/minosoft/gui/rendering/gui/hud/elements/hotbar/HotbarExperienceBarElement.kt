@@ -19,6 +19,7 @@ import de.bixilon.minosoft.gui.rendering.font.Font
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
+import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ImageElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
@@ -27,7 +28,7 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.lerp
 import glm_.vec2.Vec2
 import glm_.vec2.Vec2i
 
-class HotbarExperienceBarElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
+class HotbarExperienceBarElement(hudRenderer: HUDRenderer) : Element(hudRenderer), Pollable {
 
     /**
      * [experience|horse_jump][full|empty]
@@ -77,10 +78,10 @@ class HotbarExperienceBarElement(hudRenderer: HUDRenderer) : Element(hudRenderer
     }
 
     override fun forceSilentApply() {
-        silentApply()
+        cacheUpToDate = false
     }
 
-    override fun silentApply(): Boolean {
+    override fun poll(): Boolean {
         val jumping = false // ToDo
 
         if (!jumping) {
@@ -89,7 +90,6 @@ class HotbarExperienceBarElement(hudRenderer: HUDRenderer) : Element(hudRenderer
                 this.progress = experienceCondition.experienceBarProgress
                 this.jumping = jumping
                 this.level = experienceCondition.level
-                cacheUpToDate = false
                 return true
             }
         }

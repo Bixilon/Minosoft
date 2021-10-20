@@ -19,6 +19,7 @@ import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
+import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ColorElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ImageElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
@@ -33,7 +34,7 @@ class TabListEntryElement(
     val tabList: TabListElement,
     val item: TabListItem,
     width: Int,
-) : Element(hudRenderer) {
+) : Element(hudRenderer), Pollable {
     init {
         _parent = tabList
     }
@@ -96,7 +97,7 @@ class TabListEntryElement(
         cacheUpToDate = false
     }
 
-    override fun silentApply(): Boolean {
+    override fun poll(): Boolean {
         val ping = item.ping
         val displayName = item.tabDisplayName
 
@@ -107,7 +108,6 @@ class TabListEntryElement(
         this.ping = ping
         this.displayName = displayName
 
-        forceSilentApply()
         return true
     }
 

@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar
 
 import de.bixilon.minosoft.data.registries.effects.DefaultStatusEffects
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
+import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ImageElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.hud.atlas.HUDAtlasElement
@@ -22,7 +23,7 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import glm_.vec2.Vec2i
 import java.util.concurrent.ThreadLocalRandom
 
-class HotbarHungerElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
+class HotbarHungerElement(hudRenderer: HUDRenderer) : Element(hudRenderer), Pollable {
     private val random = ThreadLocalRandom.current()
     private var ticks = 0
     private val hungerStatusEffect = hudRenderer.connection.registries.statusEffectRegistry[DefaultStatusEffects.HUNGER]
@@ -138,7 +139,7 @@ class HotbarHungerElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
         apply()
     }
 
-    override fun silentApply(): Boolean {
+    override fun poll(): Boolean {
         val healthCondition = hudRenderer.connection.player.healthCondition
 
         val hunger = healthCondition.hunger
@@ -154,7 +155,6 @@ class HotbarHungerElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
         this.saturation = saturation
         this.hungerEffect = hungerEffect
 
-        forceSilentApply()
         return true
     }
 

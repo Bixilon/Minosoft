@@ -15,13 +15,14 @@ package de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar
 
 import de.bixilon.minosoft.data.registries.fluid.DefaultFluids
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
+import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ImageElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.util.vec.Vec2Util.EMPTY
 import glm_.vec2.Vec2i
 
-class HotbarAirElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
+class HotbarAirElement(hudRenderer: HUDRenderer) : Element(hudRenderer), Pollable {
     private val water = hudRenderer.connection.registries.fluidRegistry[DefaultFluids.WATER]!!
     private val airBubble = hudRenderer.atlasManager["minecraft:air_bubble"]!!
     private val poppingAirBubble = hudRenderer.atlasManager["minecraft:popping_air_bubble"]!!
@@ -52,31 +53,28 @@ class HotbarAirElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
         return 1
     }
 
-    override fun silentApply(): Boolean {
+    override fun poll(): Boolean {
         val player = hudRenderer.connection.player
 
         val submergedFluid = player.submergedFluid
 
-        var bubbles = 0
 
         if (submergedFluid == water) {
             bubbles = 10 // ToDo: Get air and check time, etc
         }
 
+        var bubbles = 0
 
-        if (this.bubbles == bubbles) {
+        if (this.bubbles != bubbles) {
+            this.bubbles = bubbles
             return false
         }
-
-        this.bubbles = bubbles
-
-        forceSilentApply()
 
         return true
     }
 
     override fun forceSilentApply() {
-        size = if (bubbles <= 0.0f) { // ToDo: This notifies the parent, should we really notify it in silentApply?
+        _size = if (bubbles <= 0.0f) { // ToDo: This notifies the parent, should we really notify it in silentApply?
             Vec2i.EMPTY
         } else {
             Vec2i(BUBBLE_SIZE.x * bubbles, BUBBLE_SIZE.y)

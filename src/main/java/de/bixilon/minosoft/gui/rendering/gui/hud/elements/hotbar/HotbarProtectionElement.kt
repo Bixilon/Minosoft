@@ -14,13 +14,14 @@
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar
 
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
+import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ImageElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.util.vec.Vec2Util.EMPTY
 import glm_.vec2.Vec2i
 
-class HotbarProtectionElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
+class HotbarProtectionElement(hudRenderer: HUDRenderer) : Element(hudRenderer), Pollable {
     private val emptyProtection = hudRenderer.atlasManager["minecraft:empty_protection"]!!
     private val halfProtection = hudRenderer.atlasManager["minecraft:half_protection"]!!
     private val fullProtection = hudRenderer.atlasManager["minecraft:full_protection"]!!
@@ -55,7 +56,7 @@ class HotbarProtectionElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
         return 1
     }
 
-    override fun silentApply(): Boolean {
+    override fun poll(): Boolean {
         val protection = hudRenderer.connection.player.protectionLevel // ToDo: Check for equipment change
 
 
@@ -65,13 +66,11 @@ class HotbarProtectionElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
 
         this.protection = protection
 
-        forceSilentApply()
-
         return true
     }
 
     override fun forceSilentApply() {
-        size = if (protection <= 0.0f) { // ToDo: This notifies the parent, should we really notify it in silentApply?
+        _size = if (protection <= 0.0f) { // ToDo: This notifies the parent, should we really notify it in silentApply?
             Vec2i.EMPTY
         } else {
             SIZE

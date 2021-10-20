@@ -141,7 +141,17 @@ abstract class Element(val hudRenderer: HUDRenderer) {
 
     /**
      * Force applies all changes made to any property, but does not notify the parent about the change
-     *
+     */
+    @Deprecated("Generally a bad idea to call")
+    protected fun forceSilentApply(poll: Boolean) {
+        if (poll && this is Pollable) {
+            poll()
+        }
+        forceSilentApply()
+    }
+
+    /**
+     * Force applies all changes made to any property, but does not notify the parent about the change
      */
     @Deprecated("Generally a bad idea to call")
     abstract fun forceSilentApply()
@@ -175,8 +185,8 @@ abstract class Element(val hudRenderer: HUDRenderer) {
     @Suppress("DEPRECATION")
     open fun silentApply(): Boolean {
         val maxSize = maxSize
-        if (previousMaxSize != maxSize && (maxSize isSmaller _size || maxSize isSmaller _prefMaxSize || (maxSize isGreater previousMaxSize && _size isSmaller _prefSize))) {
-            forceSilentApply()
+        if (this is Pollable && this.poll() || (previousMaxSize != maxSize && (maxSize isSmaller _size || maxSize isSmaller _prefMaxSize || (maxSize isGreater previousMaxSize && _size isSmaller _prefSize)))) {
+            forceSilentApply(false)
             previousMaxSize = maxSize
             return true
         }

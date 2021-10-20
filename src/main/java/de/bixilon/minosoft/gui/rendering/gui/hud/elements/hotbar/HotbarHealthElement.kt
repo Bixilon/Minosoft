@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar
 import de.bixilon.minosoft.data.registries.effects.DefaultStatusEffects
 import de.bixilon.minosoft.data.registries.effects.attributes.DefaultStatusEffectAttributeNames
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
+import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ImageElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.hud.atlas.HUDAtlasElement
@@ -25,7 +26,7 @@ import de.bixilon.minosoft.util.KUtil.unsafeCast
 import de.bixilon.minosoft.util.MMath.ceil
 import glm_.vec2.Vec2i
 
-class HotbarHealthElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
+class HotbarHealthElement(hudRenderer: HUDRenderer) : Element(hudRenderer), Pollable {
     private val witherStatusEffect = hudRenderer.connection.registries.statusEffectRegistry[DefaultStatusEffects.WITHER]
     private val poisonStatusEffect = hudRenderer.connection.registries.statusEffectRegistry[DefaultStatusEffects.POISON]
     private val atlasManager = hudRenderer.atlasManager
@@ -221,11 +222,11 @@ class HotbarHealthElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
             rows++
         }
 
-        size = Vec2i(HEARTS_PER_ROW, rows) * HEART_SIZE
+        _size = Vec2i(HEARTS_PER_ROW, rows) * HEART_SIZE
         cacheUpToDate = false
     }
 
-    override fun silentApply(): Boolean {
+    override fun poll(): Boolean {
         val player = hudRenderer.connection.player
         val hardcode = hudRenderer.connection.world.hardcore
         val poison = poisonStatusEffect?.let { player.activeStatusEffects[it] != null } ?: false
@@ -252,8 +253,6 @@ class HotbarHealthElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
         this.absorptionsAmount = absorptionsAmount
         this.maxHealth = maxHealth
 
-
-        forceSilentApply()
         return true
     }
 
