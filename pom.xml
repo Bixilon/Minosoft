@@ -41,7 +41,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <jvmTarget>14</jvmTarget>
+                    <jvmTarget>${maven.compiler.target}</jvmTarget>
                 </configuration>
             </plugin>
             <plugin>
@@ -73,8 +73,8 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <source>14</source>
-                    <target>14</target>
+                    <source>${maven.compiler.source}</source>
+                    <target>${maven.compiler.target}</target>
                 </configuration>
             </plugin>
             <plugin>
@@ -194,8 +194,8 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <exec.mainClass>de.bixilon.minosoft.Minosoft</exec.mainClass>
-        <maven.compiler.source>14</maven.compiler.source>
-        <maven.compiler.target>14</maven.compiler.target>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>${maven.compiler.source}</maven.compiler.target>
         <javafx.version>18-ea+4</javafx.version>
         <kotlin.version>1.5.21</kotlin.version>
         <lwjgl.version>3.2.3</lwjgl.version>

@@ -32,11 +32,20 @@ public class StringParser extends CommandParser {
     @Override
     public Object parse(PlayConnection connection, ParserProperties properties, CommandStringReader stringReader) throws CommandParseException {
         StringParserProperties stringParserProperties = ((StringParserProperties) properties);
-        String string = switch (stringParserProperties.getSetting()) {
-            case SINGLE_WORD -> stringReader.readUnquotedString();
-            case QUOTABLE_PHRASE -> stringReader.readString();
-            case GREEDY_PHRASE -> stringReader.readRemaining();
-        };
+        String string;
+        switch (stringParserProperties.getSetting()) {
+            case SINGLE_WORD:
+                string = stringReader.readUnquotedString();
+                break;
+            case QUOTABLE_PHRASE:
+                string = stringReader.readString();
+                break;
+            case GREEDY_PHRASE:
+                string = stringReader.readRemaining();
+                break;
+            default:
+                throw new IllegalStateException();
+        }
 
         if (!stringParserProperties.isAllowEmptyString() && string.isBlank()) {
             throw new BlankStringCommandParseException(stringReader, string);

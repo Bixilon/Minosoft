@@ -18,6 +18,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import de.bixilon.minosoft.Minosoft;
 import de.bixilon.minosoft.config.Configuration;
+import de.bixilon.minosoft.data.assets.AssetVersion;
 import de.bixilon.minosoft.data.assets.MinecraftAssetsManager;
 import de.bixilon.minosoft.data.assets.Resources;
 import de.bixilon.minosoft.data.registries.versions.Version;
@@ -48,7 +49,7 @@ public class JarHashGenerator {
 
             Resources.loadVersion(version, versionJson);
 
-            var resource = Resources.getAssetVersionByVersion(version);
+            AssetVersion resource = Resources.getAssetVersionByVersion(version);
             MinecraftAssetsManager assetsManager = new MinecraftAssetsManager(resource, "dummy");
             String jarAssetsHash = assetsManager.generateJarAssets();
 

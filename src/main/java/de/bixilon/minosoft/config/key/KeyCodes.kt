@@ -17,7 +17,10 @@ import org.lwjgl.glfw.GLFW.*
 import java.util.*
 
 // ToDo: Replace glfwKeyIds
-enum class KeyCodes(val glfwKeyId: Int) {
+enum class KeyCodes(
+    @Deprecated("GLFW specific -> abstraction layer")
+    val glfwKeyId: Int,
+) {
     KEY_UNKNOWN(GLFW_KEY_UNKNOWN),
     KEY_SPACE(GLFW_KEY_SPACE),
     KEY_APOSTROPHE(GLFW_KEY_APOSTROPHE),

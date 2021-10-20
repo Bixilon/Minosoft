@@ -31,7 +31,7 @@ public class PacketStatistics extends PlayS2CPacket {
             if (buffer.getVersionId() < V_17W47A) { // ToDo
                 this.statistics.put(buffer.getConnection().getRegistries().getStatisticRegistry().get(buffer.readResourceLocation()), buffer.readVarInt());
             } else {
-                var category = buffer.getConnection().getRegistries().getStatisticRegistry().get(buffer.readVarInt()); // category before?
+                Statistic category = buffer.getConnection().getRegistries().getStatisticRegistry().get(buffer.readVarInt()); // category before?
                 this.statistics.put(buffer.getConnection().getRegistries().getStatisticRegistry().get(buffer.readVarInt()), buffer.readVarInt());
             }
         }

@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.protocol.network;
 
 import de.bixilon.minosoft.data.registries.versions.Version;
+import de.bixilon.minosoft.protocol.ErrorHandler;
 import de.bixilon.minosoft.protocol.exceptions.PacketNotImplementedException;
 import de.bixilon.minosoft.protocol.exceptions.PacketParseException;
 import de.bixilon.minosoft.protocol.exceptions.UnknownPacketException;
@@ -65,8 +66,8 @@ public abstract class Network {
                 bytes = Util.decompress(bytes);
             }
         }
-        var data = new InByteBuffer(bytes, this.connection);
-        var packetId = data.readVarInt();
+        InByteBuffer data = new InByteBuffer(bytes, this.connection);
+        int packetId = data.readVarInt();
 
         PacketTypes.S2C packetType = null;
 
@@ -85,14 +86,14 @@ public abstract class Network {
             S2CPacket packet;
             try {
                 if (packetType.getPlayFactory() != null) {
-                    var playData = new PlayInByteBuffer(data.readRest(), ((PlayConnection) this.connection));
+                    PlayInByteBuffer playData = new PlayInByteBuffer(data.readRest(), ((PlayConnection) this.connection));
                     packet = packetType.getPlayFactory().invoke(playData);
                     if (playData.getBytesLeft() > 0) {
                         throw new PacketParseException(String.format("Could not parse packet %s (used=%d, available=%d, total=%d)", packetType, playData.getPointer(), playData.getBytesLeft(), playData.getSize()));
                     }
                     ((PlayS2CPacket) packet).check(((PlayConnection) this.connection));
                 } else if (packetType.getStatusFactory() != null) {
-                    var statusData = new InByteBuffer(data);
+                    InByteBuffer statusData = new InByteBuffer(data);
                     packet = packetType.getStatusFactory().invoke(statusData);
                     if (statusData.getBytesLeft() > 0) {
                         throw new PacketParseException(String.format("Could not parse packet %s (used=%d, available=%d, total=%d)", packetType, statusData.getPointer(), statusData.getBytesLeft(), statusData.getSize()));
@@ -104,7 +105,7 @@ public abstract class Network {
 
 
             } catch (Throwable exception) {
-                var errorHandler = packetType.getErrorHandler();
+                ErrorHandler errorHandler = packetType.getErrorHandler();
                 if (errorHandler != null) {
                     errorHandler.onError(this.connection);
                 }
@@ -124,11 +125,11 @@ public abstract class Network {
     protected byte[] prepareC2SPacket(C2SPacket packet) {
         byte[] data;
         if (packet instanceof PlayC2SPacket) {
-            var buffer = new PlayOutByteBuffer((PlayConnection) this.connection);
+            PlayOutByteBuffer buffer = new PlayOutByteBuffer((PlayConnection) this.connection);
             ((PlayC2SPacket) packet).write(buffer);
             data = buffer.toByteArray();
         } else if (packet instanceof AllC2SPacket) {
-            var buffer = new OutByteBuffer(this.connection);
+            OutByteBuffer buffer = new OutByteBuffer(this.connection);
             ((AllC2SPacket) packet).write(buffer);
             data = buffer.toByteArray();
         } else {

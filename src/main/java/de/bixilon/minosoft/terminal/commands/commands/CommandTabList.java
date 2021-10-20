@@ -21,6 +21,8 @@ import de.bixilon.minosoft.data.player.tab.TabListItem;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.UUID;
 
 public class CommandTabList extends Command {
     @Override
@@ -67,7 +69,7 @@ public class CommandTabList extends Command {
 
                             ArrayList<Object[]> tableData = new ArrayList<>();
 
-                            for (var entry : connection.getTabList().getTabListItemsByUUID().entrySet()) {
+                            for (Map.Entry<UUID, TabListItem> entry : connection.getTabList().getTabListItemsByUUID().entrySet()) {
                                 PlayerEntity playerEntity = (PlayerEntity) connection.getWorld().getEntities().get(entry.getKey());
                                 Integer entityId = playerEntity != null ? connection.getWorld().getEntities().getId(playerEntity) : null;
                                 tableData.add(new Object[]{entry.getKey(), entityId, entry.getValue().getName(), entry.getValue().getDisplayName(), entry.getValue().getGamemode(), entry.getValue().getPing() + "ms"});

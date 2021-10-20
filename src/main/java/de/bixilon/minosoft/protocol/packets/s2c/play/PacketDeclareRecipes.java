@@ -44,41 +44,51 @@ public class PacketDeclareRecipes extends PlayS2CPacket {
             }
             RecipeTypes type = RecipeTypes.byName(typeName);
             switch (type) {
-                case SHAPELESS -> {
+                case SHAPELESS: {
                     String group = buffer.readString();
                     Ingredient[] ingredients = buffer.readIngredientArray();
                     ItemStack result = buffer.readItemStack();
                     recipe = new Recipe(type, group, ingredients, result);
+                    break;
                 }
-                case SHAPED -> {
+                case SHAPED: {
                     int width = buffer.readVarInt();
                     int height = buffer.readVarInt();
                     String group = buffer.readString();
                     Ingredient[] ingredients = buffer.readIngredientArray(width * height);
                     ItemStack result = buffer.readItemStack();
                     recipe = new Recipe(width, height, type, group, ingredients, result);
+                    break;
                 }
-                case SMELTING, BLASTING, SMOKING, CAMPFIRE -> {
+                case SMELTING:
+                case BLASTING:
+                case SMOKING:
+                case CAMPFIRE: {
                     String group = buffer.readString();
                     Ingredient ingredient = buffer.readIngredient();
                     ItemStack result = buffer.readItemStack();
                     float experience = buffer.readFloat();
                     int cookingTime = buffer.readVarInt();
                     recipe = new Recipe(type, group, ingredient, result, experience, cookingTime);
+                    break;
                 }
-                case STONE_CUTTING -> {
+                case STONE_CUTTING: {
                     String group = buffer.readString();
                     Ingredient ingredient = buffer.readIngredient();
                     ItemStack result = buffer.readItemStack();
                     recipe = new Recipe(type, group, ingredient, result);
+                    break;
                 }
-                case SMITHING -> {
+                case SMITHING: {
                     Ingredient base = buffer.readIngredient();
                     Ingredient addition = buffer.readIngredient();
                     ItemStack result = buffer.readItemStack();
                     recipe = new Recipe(type, base, addition, result);
+                    break;
                 }
-                default -> recipe = new Recipe(type);
+                default:
+                    recipe = new Recipe(type);
+                    break;
             }
             this.recipes.put(resourceLocation, recipe);
         }

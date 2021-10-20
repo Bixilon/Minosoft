@@ -111,7 +111,7 @@ public class BlockingSocketNetwork extends Network {
                         break;
                     }
                     try {
-                        var typeAndPacket = prepareS2CPacket(this.inputStream);
+                        Pair<PacketTypes.S2C, S2CPacket> typeAndPacket = prepareS2CPacket(this.inputStream);
                         while (this.receivingPaused && this.connection.getProtocolState() != ProtocolStates.DISCONNECTED && !this.shouldDisconnect) {
                             Util.sleep(1L);
                         }
