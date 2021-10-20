@@ -20,6 +20,7 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ImageElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.util.vec.Vec2Util.EMPTY
+import de.bixilon.minosoft.util.MMath.ceil
 import glm_.vec2.Vec2i
 
 class HotbarAirElement(hudRenderer: HUDRenderer) : Element(hudRenderer), Pollable {
@@ -31,17 +32,18 @@ class HotbarAirElement(hudRenderer: HUDRenderer) : Element(hudRenderer), Pollabl
         forceSilentApply()
     }
 
+    private var previousBubbles = 0
     private var bubbles = 0
-    private var lastBubblePopping = false
+    private var poppingCount = 0
 
     override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int {
-        if (bubbles <= 0) {
+        if (bubbles + poppingCount <= 0) {
             return 0
         }
 
-        for (i in bubbles - 1 downTo 0) {
+        for (i in bubbles + poppingCount - 1 downTo 0) {
             var atlasElement = airBubble
-            if (i == 0 && lastBubblePopping) {
+            if (i < poppingCount) {
                 atlasElement = poppingAirBubble
             }
 
@@ -61,9 +63,10 @@ class HotbarAirElement(hudRenderer: HUDRenderer) : Element(hudRenderer), Pollabl
         val submergedFluid = player.submergedFluid
 
         var bubbles = 0
+        var poppingCount = 0
 
         if (submergedFluid == water || (air in 1 until FULL_AIR)) {
-            bubbles = (air + AIR_PER_BUBBLE - 1) / AIR_PER_BUBBLE // 299 are 9 bubbles, should be 1ß
+            bubbles = ((air - 2) / AIR_PER_BUBBLE.toFloat()).ceil // 2 ticks for the popping "animation"
 
 
             if (bubbles < 0) {
@@ -71,22 +74,26 @@ class HotbarAirElement(hudRenderer: HUDRenderer) : Element(hudRenderer), Pollabl
             } else if (bubbles > MAX_BUBBLES) {
                 bubbles = MAX_BUBBLES
             }
+
+            poppingCount = (air / AIR_PER_BUBBLE.toFloat()).ceil - bubbles
         }
 
 
-        if (this.bubbles != bubbles) {
+        if (this.bubbles != bubbles || this.poppingCount != poppingCount) {
+            previousBubbles = this.bubbles
             this.bubbles = bubbles
-            return false
+            this.poppingCount = poppingCount
+            return true
         }
 
-        return true
+        return false
     }
 
     override fun forceSilentApply() {
-        _size = if (bubbles <= 0.0f) {
+        _size = if (bubbles + poppingCount <= 0) {
             Vec2i.EMPTY
         } else {
-            Vec2i(BUBBLE_SIZE.x * bubbles, BUBBLE_SIZE.y)
+            Vec2i(BUBBLE_SIZE.x * (bubbles + poppingCount), BUBBLE_SIZE.y)
         }
         cacheUpToDate = false
     }
