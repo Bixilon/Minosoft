@@ -23,6 +23,7 @@ import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.input.LeftClickHandler
 import de.bixilon.minosoft.gui.rendering.input.RightClickHandler
 import de.bixilon.minosoft.gui.rendering.input.camera.Camera
+import de.bixilon.minosoft.gui.rendering.input.interaction.InteractionManager
 import de.bixilon.minosoft.gui.rendering.modding.events.MouseMoveEvent
 import de.bixilon.minosoft.gui.rendering.modding.events.RawCharInputEvent
 import de.bixilon.minosoft.gui.rendering.modding.events.RawKeyInputEvent
@@ -46,6 +47,7 @@ class RenderWindowInputHandler(
 
     private var skipNextCharPress = false
 
+    val interactionManager = InteractionManager(renderWindow)
     val rightClickHandler = RightClickHandler(renderWindow)
     val leftClickHandler = LeftClickHandler(renderWindow)
 
@@ -64,6 +66,7 @@ class RenderWindowInputHandler(
     fun init() {
         rightClickHandler.init()
         leftClickHandler.init()
+        interactionManager.init()
 
         connection.registerEvent(CallbackEventInvoker.of<RawCharInputEvent> { charInput(it.char) })
 

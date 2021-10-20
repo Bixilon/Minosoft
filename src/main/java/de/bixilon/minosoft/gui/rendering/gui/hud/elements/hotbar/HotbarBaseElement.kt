@@ -14,16 +14,19 @@
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar
 
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
+import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ImageElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import glm_.vec2.Vec2i
 
-class HotbarBaseElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
+class HotbarBaseElement(hudRenderer: HUDRenderer) : Element(hudRenderer), Pollable {
     private val baseAtlasElement = hudRenderer.atlasManager[BASE]!!
     private val base = ImageElement(hudRenderer, baseAtlasElement)
     private val frame = ImageElement(hudRenderer, hudRenderer.atlasManager[FRAME]!!, size = Vec2i(FRAME_SIZE))
+
+    private var selectedSlot = 0
 
     init {
         size = HOTBAR_BASE_SIZE + Vec2i(HORIZONTAL_MARGIN * 2, 1) // offset left and right; offset for the frame is just on top, not on the bottom
@@ -33,7 +36,7 @@ class HotbarBaseElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
     override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int {
         base.render(offset + HORIZONTAL_MARGIN, z, consumer)
 
-        baseAtlasElement.slots[hudRenderer.connection.player.selectedHotbarSlot]?.let {
+        baseAtlasElement.slots[selectedSlot]?.let {
             frame.render(offset + it.start - HORIZONTAL_MARGIN + FRAME_OFFSET, z + 1, consumer)
         }
 
@@ -42,9 +45,24 @@ class HotbarBaseElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
         return 2 // bar + frame
     }
 
-    // No need to apply anything, has always the same size
-    override fun silentApply(): Boolean = false
-    override fun forceSilentApply() {}
+    override fun poll(): Boolean {
+        val selectedSlot = hudRenderer.connection.player.selectedHotbarSlot
+
+        if (this.selectedSlot != selectedSlot) {
+            this.selectedSlot = selectedSlot
+            return true
+        }
+
+        return false
+    }
+
+    override fun forceSilentApply() {
+        cacheUpToDate = false
+    }
+
+    override fun tick() {
+        apply()
+    }
 
     companion object {
         private val BASE = "minecraft:hotbar_base".toResourceLocation()

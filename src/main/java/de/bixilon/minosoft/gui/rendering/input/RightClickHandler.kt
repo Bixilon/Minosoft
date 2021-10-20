@@ -27,6 +27,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import glm_.vec3.Vec3
 
+@Deprecated("Will be integrated in the InteractionManager")
 class RightClickHandler(
     val renderWindow: RenderWindow,
 ) {

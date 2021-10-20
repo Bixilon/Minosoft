@@ -36,6 +36,7 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import glm_.pow
 import glm_.vec3.Vec3i
 
+@Deprecated("Will be integrated in the InteractionManager")
 class LeftClickHandler(
     val renderWindow: RenderWindow,
 ) {
