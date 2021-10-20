@@ -24,9 +24,9 @@ import de.bixilon.minosoft.gui.rendering.input.LeftClickHandler
 import de.bixilon.minosoft.gui.rendering.input.RightClickHandler
 import de.bixilon.minosoft.gui.rendering.input.camera.Camera
 import de.bixilon.minosoft.gui.rendering.input.interaction.InteractionManager
-import de.bixilon.minosoft.gui.rendering.modding.events.MouseMoveEvent
-import de.bixilon.minosoft.gui.rendering.modding.events.RawCharInputEvent
-import de.bixilon.minosoft.gui.rendering.modding.events.RawKeyInputEvent
+import de.bixilon.minosoft.gui.rendering.modding.events.input.MouseMoveEvent
+import de.bixilon.minosoft.gui.rendering.modding.events.input.RawCharInputEvent
+import de.bixilon.minosoft.gui.rendering.modding.events.input.RawKeyInputEvent
 import de.bixilon.minosoft.gui.rendering.system.window.CursorModes
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker

@@ -22,5 +22,5 @@ object StaticConfiguration {
 
 
     @Deprecated(message = "Just for hud development purposes")
-    const val HUD_ONLY = true
+    const val HUD_ONLY = false
 }

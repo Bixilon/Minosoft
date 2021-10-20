@@ -13,11 +13,16 @@
 
 package de.bixilon.minosoft.gui.rendering.input.interaction
 
+import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.key.KeyAction
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.registries.other.containers.PlayerInventory
 import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.modding.events.input.MouseScrollEvent
+import de.bixilon.minosoft.modding.event.EventInitiators
+import de.bixilon.minosoft.modding.event.events.SelectHotbarSlotEvent
+import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.packets.c2s.play.HotbarSlotSetC2SP
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
@@ -25,6 +30,8 @@ class HotbarInteractionHandler(
     val renderWindow: RenderWindow,
 ) {
     private val connection = renderWindow.connection
+
+    private var currentScrollOffset = 0.0
 
 
     fun selectSlot(slot: Int) {
@@ -34,6 +41,7 @@ class HotbarInteractionHandler(
         }
         connection.player.selectedHotbarSlot = slot
         connection.sendPacket(HotbarSlotSetC2SP(slot))
+        connection.fireEvent(SelectHotbarSlotEvent(connection, EventInitiators.CLIENT, slot))
     }
 
 
@@ -47,5 +55,27 @@ class HotbarInteractionHandler(
                 selectSlot(i - 1)
             }
         }
+
+        connection.registerEvent(CallbackEventInvoker.of<MouseScrollEvent> {
+            currentScrollOffset += it.offset.y
+
+            val limit = Minosoft.config.config.game.controls.hotbarScrollSensitivity
+            var nextSlot = connection.player.selectedHotbarSlot
+            if (currentScrollOffset >= limit && currentScrollOffset > 0) {
+                nextSlot--
+            } else if (currentScrollOffset <= -limit && currentScrollOffset < 0) {
+                nextSlot++
+            } else {
+                return@of
+            }
+            currentScrollOffset = 0.0
+            if (nextSlot < 0) {
+                nextSlot = PlayerInventory.HOTBAR_SLOTS - 1
+            } else if (nextSlot > PlayerInventory.HOTBAR_SLOTS - 1) {
+                nextSlot = 0
+            }
+
+            selectSlot(nextSlot)
+        })
     }
 }

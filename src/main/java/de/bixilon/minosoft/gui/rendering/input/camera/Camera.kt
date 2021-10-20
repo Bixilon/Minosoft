@@ -60,7 +60,7 @@ class Camera(
 ) {
     var fogColor = Previous(ChatColors.GREEN)
     var fogStart = 100.0f
-    private var mouseSensitivity = Minosoft.config.config.game.camera.moseSensitivity
+    private var mouseSensitivity = Minosoft.config.config.game.controls.moseSensitivity
 
     @Deprecated("", ReplaceWith("connection.player"))
     val entity: LocalPlayerEntity

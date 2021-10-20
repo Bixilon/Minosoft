@@ -11,12 +11,17 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.modding.events
+package de.bixilon.minosoft.gui.rendering.modding.events.input
 
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.Rendering
+import de.bixilon.minosoft.gui.rendering.modding.events.RenderEvent
+import glm_.vec2.Vec2d
 
-class RawCharInputEvent(
+class MouseMoveEvent(
     renderWindow: RenderWindow = Rendering.currentContext!!,
-    val char: Int,
-) : RenderEvent(renderWindow)
+    position: Vec2d,
+) : RenderEvent(renderWindow) {
+    val position: Vec2d = position
+        get() = Vec2d(field)
+}
