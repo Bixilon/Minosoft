@@ -56,14 +56,23 @@ class HotbarAirElement(hudRenderer: HUDRenderer) : Element(hudRenderer), Pollabl
     override fun poll(): Boolean {
         val player = hudRenderer.connection.player
 
+        val air = player.airSupply
+
         val submergedFluid = player.submergedFluid
 
+        var bubbles = 0
 
-        if (submergedFluid == water) {
-            bubbles = 10 // ToDo: Get air and check time, etc
+        if (submergedFluid == water || (air in 1 until FULL_AIR)) {
+            bubbles = (air + AIR_PER_BUBBLE - 1) / AIR_PER_BUBBLE // 299 are 9 bubbles, should be 1ß
+
+
+            if (bubbles < 0) {
+                bubbles = 0
+            } else if (bubbles > MAX_BUBBLES) {
+                bubbles = MAX_BUBBLES
+            }
         }
 
-        var bubbles = 0
 
         if (this.bubbles != bubbles) {
             this.bubbles = bubbles
@@ -74,7 +83,7 @@ class HotbarAirElement(hudRenderer: HUDRenderer) : Element(hudRenderer), Pollabl
     }
 
     override fun forceSilentApply() {
-        _size = if (bubbles <= 0.0f) { // ToDo: This notifies the parent, should we really notify it in silentApply?
+        _size = if (bubbles <= 0.0f) {
             Vec2i.EMPTY
         } else {
             Vec2i(BUBBLE_SIZE.x * bubbles, BUBBLE_SIZE.y)
@@ -88,5 +97,8 @@ class HotbarAirElement(hudRenderer: HUDRenderer) : Element(hudRenderer), Pollabl
 
     companion object {
         private val BUBBLE_SIZE = Vec2i(8, 9)
+        private const val FULL_AIR = 300
+        private const val MAX_BUBBLES = 10
+        private const val AIR_PER_BUBBLE = FULL_AIR / MAX_BUBBLES
     }
 }

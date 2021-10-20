@@ -114,10 +114,11 @@ class HotbarElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
     }
 
     override fun tick() {
-        super.tick()
+        base.tick()
 
-        for (element in renderElements) {
-            element.tick()
+        if (gamemode.survival) {
+            topLeft.tick()
+            topRight.tick()
         }
     }
 
