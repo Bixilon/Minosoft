@@ -69,7 +69,7 @@ class HotbarHungerElement(hudRenderer: HUDRenderer) : Element(hudRenderer), Poll
 
 
     init {
-        size = Vec2i(HUNGER_CONTAINERS, 1) * HUNGER_SIZE
+        _size = Vec2i(HUNGER_CONTAINERS, 1) * HUNGER_SIZE + Vec2i(1, 0) // 1 pixel is overlapping per hunger, so one more
     }
 
     override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int {

@@ -222,7 +222,7 @@ class HotbarHealthElement(hudRenderer: HUDRenderer) : Element(hudRenderer), Poll
             rows++
         }
 
-        _size = Vec2i(HEARTS_PER_ROW, rows) * HEART_SIZE
+        _size = Vec2i(HEARTS_PER_ROW, rows) * HEART_SIZE + Vec2i(1, 0) // 1 pixel is overlapping, so we have one more for the heart
         cacheUpToDate = false
     }
 

@@ -62,4 +62,9 @@ object Vec4Util {
 
     val Vec4i.offset: Vec2i
         get() = Vec2i(left, top)
+
+
+    fun Vec4i.copy(top: Int = this.top, right: Int = this.right, bottom: Int = this.bottom, left: Int = this.left): Vec4i {
+        return Vec4i(top, right, bottom, left)
+    }
 }

@@ -22,6 +22,7 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.layout.RowLayout
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.util.vec.Vec2Util.max
+import de.bixilon.minosoft.gui.rendering.util.vec.Vec4Util.copy
 import glm_.vec2.Vec2i
 import java.lang.Integer.max
 
@@ -51,10 +52,12 @@ class HotbarElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
         topLeft.apply {
             parent = this@HotbarElement
             spacing = VERTICAL_SPACING
+            margin = margin.copy(left = HotbarBaseElement.HORIZONTAL_MARGIN)
         }
         topRight.apply {
             parent = this@HotbarElement
             spacing = VERTICAL_SPACING
+            margin = margin.copy(right = HotbarBaseElement.HORIZONTAL_MARGIN)
         }
 
         topLeft += protection

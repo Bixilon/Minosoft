@@ -76,7 +76,7 @@ class HotbarBaseElement(hudRenderer: HUDRenderer) : Element(hudRenderer), Pollab
 
         private val HOTBAR_BASE_SIZE = Vec2i(182, 22)
         private const val FRAME_SIZE = 24
-        private const val HORIZONTAL_MARGIN = 1
+        const val HORIZONTAL_MARGIN = 1
         private const val FRAME_OFFSET = -2 // FRAME_SIZE - HOTBAR_BASE_SIZE.y
     }
 }

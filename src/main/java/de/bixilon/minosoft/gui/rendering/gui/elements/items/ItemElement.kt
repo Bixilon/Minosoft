@@ -51,6 +51,7 @@ class ItemElement(
         countText.text = when {
             count < 0 -> TextComponent((count < -99).decide({ "-∞" }, { count }), color = ChatColors.RED) // No clue why I do this...
             count == 0 -> TextComponent("0", color = ChatColors.YELLOW)
+            count == 1 -> TextComponent("")
             count > ProtocolDefinition.ITEM_STACK_MAX_SIZE -> TextComponent((count > 99).decide({ "∞" }, { count }), color = ChatColors.RED)
             else -> TextComponent(count)
         }
