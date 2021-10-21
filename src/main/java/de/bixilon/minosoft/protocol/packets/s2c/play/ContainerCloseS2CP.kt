@@ -30,7 +30,7 @@ class ContainerCloseS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
             return
         }
 
-        if (containerId == ProtocolDefinition.PLAYER_INVENTORY_ID) {
+        if (containerId == ProtocolDefinition.PLAYER_CONTAINER_ID) {
             return
         }
 

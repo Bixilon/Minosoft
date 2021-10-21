@@ -183,7 +183,7 @@ abstract class Element(val hudRenderer: HUDRenderer) {
      * Otherwise, force silent applies.
      * Can be used to improve the performance
      *
-     * @return if applied
+     * @return true, if force applied
      */
     @Suppress("DEPRECATION")
     open fun silentApply(): Boolean {

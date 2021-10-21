@@ -42,14 +42,11 @@ class ContainerItemsSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     }
 
     override fun handle(connection: PlayConnection) {
-        connection.player.containers[containerId]?.let {
-            it.slots.clear()
+        connection.player.containers[containerId]?.let { container ->
+            container.slots.clear()
             for ((slot, itemStack) in items.withIndex()) {
+                itemStack?.let { container.slots[slot] = itemStack }
                 connection.fireEvent(ContainerSlotChangeEvent(connection, EventInitiators.SERVER, containerId, slot, itemStack))
-                if (itemStack == null) {
-                    continue
-                }
-                it.slots[slot] = itemStack
             }
         }
     }

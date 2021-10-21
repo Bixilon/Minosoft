@@ -81,7 +81,7 @@ class LocalPlayerEntity(
 
     val inventory = PlayerInventory(connection)
     val containers: MutableMap<Int, Container> = synchronizedMapOf(
-        ProtocolDefinition.PLAYER_INVENTORY_ID to inventory,
+        ProtocolDefinition.PLAYER_CONTAINER_ID to inventory,
     )
     var selectedHotbarSlot: Int = 0
 

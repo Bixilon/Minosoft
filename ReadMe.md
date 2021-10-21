@@ -128,7 +128,7 @@ Not compatible (yet)
 
 ## Building
 
-1. Install Maven and java 14+ (On Ubuntu based distributions: `sudo apt install maven openjdk-14-jdk`). For Windows users, download and install java from oracle or openjdk. Also download maven and follow along
+1. Install Maven and java 11+ (On Ubuntu based distributions: `sudo apt install maven openjdk-11-jdk`). For Windows users, download and install java from oracle or openjdk. Also download maven and follow along
 2. Clone this repository (`git clone https://gitlab.bixilon.de/bixilon/minosoft.git`)
 3. Change directory (`cd minosoft`)
 4. Optional: Checkout the branch of the feature you want to test (`git checkout <branch>`)

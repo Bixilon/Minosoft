@@ -35,6 +35,10 @@ class HotbarBaseElement(hudRenderer: HUDRenderer) : Element(hudRenderer), Pollab
     init {
         size = HOTBAR_BASE_SIZE + Vec2i(HORIZONTAL_MARGIN * 2, 1) // offset left and right; offset for the frame is just on top, not on the bottom
         cacheUpToDate = false // ToDo: Check changes
+
+        base.parent = this
+        frame.parent = this
+        inventoryElement.parent = this
     }
 
     override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int {
@@ -54,7 +58,7 @@ class HotbarBaseElement(hudRenderer: HUDRenderer) : Element(hudRenderer), Pollab
     override fun poll(): Boolean {
         val selectedSlot = hudRenderer.connection.player.selectedHotbarSlot
 
-        if (this.selectedSlot != selectedSlot) {
+        if (this.selectedSlot != selectedSlot || inventoryElement.silentApply()) {
             this.selectedSlot = selectedSlot
             return true
         }
@@ -63,6 +67,7 @@ class HotbarBaseElement(hudRenderer: HUDRenderer) : Element(hudRenderer), Pollab
     }
 
     override fun forceSilentApply() {
+        inventoryElement.silentApply()
         cacheUpToDate = false
     }
 

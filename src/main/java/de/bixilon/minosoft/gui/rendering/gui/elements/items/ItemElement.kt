@@ -19,10 +19,20 @@ import glm_.vec2.Vec2i
 class ItemElement(
     hudRenderer: HUDRenderer,
     size: Vec2i,
-    val item: ItemStack,
+    item: ItemStack?,
 ) : Element(hudRenderer), Pollable {
     private var count = -1
     private var countText = TextElement(hudRenderer, "", background = false, noBorder = true)
+
+    var item: ItemStack? = item
+        set(value) {
+            if (field == value) {
+                return
+            }
+            field = value
+            apply()
+            cacheUpToDate = false
+        }
 
     init {
         _size = size
@@ -30,14 +40,19 @@ class ItemElement(
     }
 
     override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int {
+        if (item == null) {
+            return 0
+        }
         val size = size
         val countSize = countText.size
         countText.render(offset + Vec2i(HorizontalAlignments.RIGHT.getOffset(size.x, countSize.x), VerticalAlignments.BOTTOM.getOffset(size.y, countSize.y)), z + 1, consumer)
 
+        // ToDo: Render model
         return 2
     }
 
     override fun poll(): Boolean {
+        val item = item ?: return false
         val count = item.count
         if (this.count != count) {
             this.count = count
@@ -55,5 +70,11 @@ class ItemElement(
             count > ProtocolDefinition.ITEM_STACK_MAX_SIZE -> TextComponent((count > 99).decide({ "∞" }, { count }), color = ChatColors.RED)
             else -> TextComponent(count)
         }
+
+        cacheUpToDate = false
+    }
+
+    override fun toString(): String {
+        return item.toString()
     }
 }

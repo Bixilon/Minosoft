@@ -14,13 +14,16 @@
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.other.containers.PlayerInventory
 import de.bixilon.minosoft.data.registries.other.game.event.handlers.gamemode.GamemodeChangeEvent
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDElement
+import de.bixilon.minosoft.modding.event.events.ContainerSlotChangeEvent
 import de.bixilon.minosoft.modding.event.events.ExperienceChangeEvent
 import de.bixilon.minosoft.modding.event.events.SelectHotbarSlotEvent
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import glm_.vec2.Vec2i
 
@@ -49,6 +52,16 @@ class HotbarHUDElement(hudRenderer: HUDRenderer) : HUDElement<HotbarElement>(hud
         })
 
         connection.registerEvent(CallbackEventInvoker.of<SelectHotbarSlotEvent> {
+            layout.base.apply()
+        })
+
+        connection.registerEvent(CallbackEventInvoker.of<ContainerSlotChangeEvent> {
+            if (it.containerId != ProtocolDefinition.PLAYER_CONTAINER_ID) {
+                return@of
+            }
+            if (it.slot !in PlayerInventory.HOTBAR_OFFSET..PlayerInventory.HOTBAR_OFFSET + PlayerInventory.HOTBAR_SLOTS) {
+                return@of
+            }
             layout.base.apply()
         })
     }

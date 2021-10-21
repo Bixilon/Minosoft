@@ -61,7 +61,7 @@ class ContainerOpenS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     }
 
     override fun handle(connection: PlayConnection) {
-        if (containerId == ProtocolDefinition.PLAYER_INVENTORY_ID) {
+        if (containerId == ProtocolDefinition.PLAYER_CONTAINER_ID) {
             return
         }
         connection.player.containers[containerId] = Container(
