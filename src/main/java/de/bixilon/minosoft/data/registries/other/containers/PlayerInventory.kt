@@ -55,8 +55,8 @@ class PlayerInventory(connection: PlayConnection) : Container(
     }
 
     companion object {
-        private const val HOTBAR_OFFSET = 36
-        private const val ARMOR_OFFSET = 5
+        const val HOTBAR_OFFSET = 36
+        const val ARMOR_OFFSET = 5
         const val HOTBAR_SLOTS = 9
     }
 }

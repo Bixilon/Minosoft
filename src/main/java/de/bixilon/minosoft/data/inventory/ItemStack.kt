@@ -39,7 +39,7 @@ import de.bixilon.minosoft.util.nbt.tag.NBTUtil.listCast
 data class ItemStack(
     val item: Item,
     private val connection: PlayConnection? = null,
-    var count: Int = 0,
+    var count: Int = 1,
     val enchantments: MutableMap<Enchantment, Int> = mutableMapOf(),
     val lore: MutableList<ChatComponent> = mutableListOf(),
     var repairCost: Int = 0,

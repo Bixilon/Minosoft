@@ -161,6 +161,9 @@ abstract class Element(val hudRenderer: HUDRenderer) {
      */
     @Deprecated("Generally a bad idea to call")
     open fun forceApply() {
+        if (this is Pollable) {
+            poll()
+        }
         forceSilentApply()
         parent?.onChildChange(this)
     }

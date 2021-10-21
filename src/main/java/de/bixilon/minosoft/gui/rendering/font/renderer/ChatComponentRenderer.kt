@@ -18,7 +18,6 @@ import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
-import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import glm_.vec2.Vec2i
 
@@ -27,15 +26,15 @@ interface ChatComponentRenderer<T : ChatComponent> {
     /**
      * Returns true if the text exceeded the maximum size
      */
-    fun render(initialOffset: Vec2i, offset: Vec2i, size: Vec2i, z: Int, element: Element, fontAlignment: HorizontalAlignments, renderWindow: RenderWindow, consumer: GUIVertexConsumer?, renderInfo: TextRenderInfo, text: T): Boolean
+    fun render(initialOffset: Vec2i, offset: Vec2i, size: Vec2i, z: Int, element: Element, renderWindow: RenderWindow, consumer: GUIVertexConsumer?, renderInfo: TextRenderInfo, text: T): Boolean
 
 
     companion object : ChatComponentRenderer<ChatComponent> {
 
-        override fun render(initialOffset: Vec2i, offset: Vec2i, size: Vec2i, z: Int, element: Element, fontAlignment: HorizontalAlignments, renderWindow: RenderWindow, consumer: GUIVertexConsumer?, renderInfo: TextRenderInfo, text: ChatComponent): Boolean {
+        override fun render(initialOffset: Vec2i, offset: Vec2i, size: Vec2i, z: Int, element: Element, renderWindow: RenderWindow, consumer: GUIVertexConsumer?, renderInfo: TextRenderInfo, text: ChatComponent): Boolean {
             return when (text) {
-                is BaseComponent -> BaseComponentRenderer.render(initialOffset, offset, size, z, element, fontAlignment, renderWindow, consumer, renderInfo, text)
-                is TextComponent -> TextComponentRenderer.render(initialOffset, offset, size, z, element, fontAlignment, renderWindow, consumer, renderInfo, text)
+                is BaseComponent -> BaseComponentRenderer.render(initialOffset, offset, size, z, element, renderWindow, consumer, renderInfo, text)
+                is TextComponent -> TextComponentRenderer.render(initialOffset, offset, size, z, element, renderWindow, consumer, renderInfo, text)
                 else -> TODO("Don't know how to render ${text::class.java}")
             }
         }

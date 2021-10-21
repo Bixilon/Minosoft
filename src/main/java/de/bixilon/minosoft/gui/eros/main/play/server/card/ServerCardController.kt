@@ -38,15 +38,10 @@ import java.io.ByteArrayInputStream
 
 class ServerCardController : AbstractCard<ServerCard>() {
     @FXML private lateinit var faviconFX: ImageView
-
     @FXML private lateinit var serverNameFX: TextFlow
-
     @FXML private lateinit var motdFX: TextFlow
-
     @FXML private lateinit var pingFX: Label
-
     @FXML private lateinit var playerCountFX: Label
-
     @FXML private lateinit var serverVersionFX: Label
 
 

@@ -17,7 +17,7 @@ data class Abilities(
     var isInvulnerable: Boolean = false,
     var isFlying: Boolean = false,
     var canFly: Boolean = false,
-    var canInstantBreak: Boolean = false,
+    var canInstantBreak: Boolean = false, // ToDo: This is the check if we are in creative mode, but no exactly sure...
 
     var flyingSpeed: Double = 0.05,
     var walkingSpeed: Double = 0.1,

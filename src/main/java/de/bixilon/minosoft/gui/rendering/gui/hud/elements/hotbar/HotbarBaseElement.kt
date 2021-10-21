@@ -13,8 +13,10 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar
 
+import de.bixilon.minosoft.data.registries.other.containers.PlayerInventory
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
+import de.bixilon.minosoft.gui.rendering.gui.elements.items.ContainerItemsElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ImageElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
@@ -26,6 +28,8 @@ class HotbarBaseElement(hudRenderer: HUDRenderer) : Element(hudRenderer), Pollab
     private val base = ImageElement(hudRenderer, baseAtlasElement)
     private val frame = ImageElement(hudRenderer, hudRenderer.atlasManager[FRAME]!!, size = Vec2i(FRAME_SIZE))
 
+    private val inventoryElement = ContainerItemsElement(hudRenderer, hudRenderer.connection.player.inventory, baseAtlasElement.slots)
+
     private var selectedSlot = 0
 
     init {
@@ -36,9 +40,11 @@ class HotbarBaseElement(hudRenderer: HUDRenderer) : Element(hudRenderer), Pollab
     override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int {
         base.render(offset + HORIZONTAL_MARGIN, z, consumer)
 
-        baseAtlasElement.slots[selectedSlot]?.let {
-            frame.render(offset + it.start - HORIZONTAL_MARGIN + FRAME_OFFSET, z + 1, consumer)
+        baseAtlasElement.slots[selectedSlot + PlayerInventory.HOTBAR_OFFSET]?.let {
+            frame.render(offset + it.start - HORIZONTAL_MARGIN + FRAME_OFFSET, z + 2, consumer)
         }
+
+        inventoryElement.render(offset, z, consumer)
 
         // ToDo: Item rendering
 

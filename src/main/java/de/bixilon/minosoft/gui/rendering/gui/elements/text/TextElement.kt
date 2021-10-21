@@ -27,6 +27,7 @@ import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.util.vec.Vec2Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.Vec4Util.offset
+import de.bixilon.minosoft.util.KUtil.decide
 import glm_.vec2.Vec2i
 
 open class TextElement(
@@ -35,9 +36,23 @@ open class TextElement(
     override var fontAlignment: HorizontalAlignments = HorizontalAlignments.LEFT,
     var background: Boolean = true,
     var backgroundColor: RGBColor = RenderConstants.TEXT_BACKGROUND_COLOR,
+    noBorder: Boolean = false,
     parent: Element? = null,
 ) : LabeledElement(hudRenderer) {
-    var renderInfo = TextRenderInfo()
+    lateinit var renderInfo: TextRenderInfo
+        private set
+
+    var noBorder: Boolean = noBorder
+        @Synchronized set(value) {
+            field = value
+            charHeight = value.decide(Font.CHAR_HEIGHT, Font.TOTAL_CHAR_HEIGHT)
+            charMargin = value.decide(0, Font.CHAR_MARGIN)
+            forceApply()
+        }
+    var charHeight: Int = 0
+        private set
+    var charMargin: Int = 0
+        private set
 
     override var text: Any = text
         set(value) {
@@ -53,7 +68,12 @@ open class TextElement(
             emptyMessage = value.message.isEmpty()
             val prefSize = Vec2i.EMPTY
             if (!emptyMessage) {
-                ChatComponentRenderer.render(Vec2i.EMPTY, Vec2i.EMPTY, prefSize, 0, InfiniteSizeElement(hudRenderer), fontAlignment, renderWindow, null, TextRenderInfo(), value)
+                val renderInfo = TextRenderInfo(
+                    fontAlignment = fontAlignment,
+                    charHeight = charHeight,
+                    charMargin = charMargin,
+                )
+                ChatComponentRenderer.render(Vec2i.EMPTY, Vec2i.EMPTY, prefSize, 0, InfiniteSizeElement(hudRenderer), renderWindow, null, renderInfo, value)
             }
             _prefSize = prefSize
             forceApply()
@@ -62,6 +82,7 @@ open class TextElement(
     init {
         this.parent = parent
         this.textComponent = ChatComponent.of(text)
+        this.noBorder = noBorder
     }
 
     override fun forceSilentApply() {
@@ -71,8 +92,12 @@ open class TextElement(
             var b = 1
         }
         if (!emptyMessage) {
-            val renderInfo = TextRenderInfo()
-            ChatComponentRenderer.render(Vec2i.EMPTY, Vec2i.EMPTY, size, 0, this, fontAlignment, renderWindow, null, renderInfo, textComponent)
+            val renderInfo = TextRenderInfo(
+                fontAlignment = fontAlignment,
+                charHeight = charHeight,
+                charMargin = charMargin,
+            )
+            ChatComponentRenderer.render(Vec2i.EMPTY, Vec2i.EMPTY, size, 0, this, renderWindow, null, renderInfo, textComponent)
             renderInfo.currentLineNumber = 0
             this.renderInfo = renderInfo
         }
@@ -89,13 +114,13 @@ open class TextElement(
         }
         val initialOffset = offset + margin.offset
 
-        ChatComponentRenderer.render(initialOffset, Vec2i(initialOffset), Vec2i.EMPTY, z + 1, this, fontAlignment, renderWindow, consumer, renderInfo, textComponent)
+        ChatComponentRenderer.render(initialOffset, Vec2i(initialOffset), Vec2i.EMPTY, z + 1, this, renderWindow, consumer, renderInfo, textComponent)
         renderInfo.currentLineNumber = 0
 
         if (background) {
             for ((line, info) in renderInfo.lines.withIndex()) {
-                val start = initialOffset + Vec2i(fontAlignment.getOffset(size.x, info.width), line * Font.TOTAL_CHAR_HEIGHT)
-                consumer.addQuad(start, start + Vec2i(info.width + Font.CHAR_MARGIN, Font.TOTAL_CHAR_HEIGHT), z, renderWindow.WHITE_TEXTURE, backgroundColor)
+                val start = initialOffset + Vec2i(fontAlignment.getOffset(size.x, info.width), line * charHeight)
+                consumer.addQuad(start, start + Vec2i(info.width + charMargin, charHeight), z, renderWindow.WHITE_TEXTURE, backgroundColor)
             }
         }
 

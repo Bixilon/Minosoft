@@ -14,11 +14,15 @@
 package de.bixilon.minosoft.gui.rendering.font.renderer
 
 import de.bixilon.minosoft.config.StaticConfiguration
+import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
 class TextRenderInfo(
+    val fontAlignment: HorizontalAlignments,
+    val charHeight: Int,
+    val charMargin: Int,
     val lines: MutableList<TextLineInfo> = mutableListOf(),
     var currentLineNumber: Int = 0,
 ) {
