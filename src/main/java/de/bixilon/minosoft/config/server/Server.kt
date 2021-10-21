@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.config.server
 
 import com.squareup.moshi.Json
+import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.assets.AssetsUtil
 import de.bixilon.minosoft.data.assets.FileAssetsManager
 import de.bixilon.minosoft.data.registries.versions.Version
@@ -21,6 +22,7 @@ import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.gui.eros.main.play.server.card.ServerCard
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.connection.status.StatusConnection
+import de.bixilon.minosoft.protocol.network.connection.status.StatusConnectionStates
 import de.bixilon.minosoft.util.KUtil.synchronizedSetOf
 import java.util.*
 
@@ -58,6 +60,11 @@ data class Server(
 
     @Transient
     var card: ServerCard? = null
+
+    val canConnect: Boolean
+        get() = ping?.state === StatusConnectionStates.PING_DONE
+                && ((forcedVersion ?: ping?.serverVersion) != null)
+                && Minosoft.config.config.account.selected?.connections?.containsKey(this) == false
 
     init {
         if (id > nextServerId) {

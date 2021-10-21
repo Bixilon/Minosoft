@@ -50,8 +50,8 @@ class ServerCardController : AbstractCard<ServerCard>() {
     @FXML private lateinit var serverVersionFX: Label
 
 
-    private var lastServerCard: ServerCard? = null
-
+    var lastServerCard: ServerCard? = null
+        private set
 
     override fun clear() {
         faviconFX.image = JavaFXUtil.MINOSOFT_LOGO

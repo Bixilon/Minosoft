@@ -34,6 +34,7 @@ import de.bixilon.minosoft.modding.event.events.connection.status.StatusConnecti
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates.Companion.disconnected
+import de.bixilon.minosoft.protocol.network.connection.status.StatusConnection
 import de.bixilon.minosoft.protocol.network.connection.status.StatusConnectionStates
 import de.bixilon.minosoft.util.DNSUtil
 import de.bixilon.minosoft.util.KUtil.decide
@@ -73,14 +74,69 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
             addServerButtonFX.isVisible = !value
         }
 
-
     override fun init() {
-        serverListViewFX.setCellFactory { ServerCardController.build() }
+        serverListViewFX.setCellFactory {
+            val controller = ServerCardController.build()
+
+            controller.root.setOnMouseClicked {
+                if (it.clickCount != 2) {
+                    return@setOnMouseClicked
+                }
+                val server = controller.lastServerCard?.server ?: return@setOnMouseClicked
+                if (!server.canConnect) {
+                    return@setOnMouseClicked
+                }
+
+                connect(server)
+            }
+            return@setCellFactory controller
+        }
 
         refreshList()
 
         serverListViewFX.selectionModel.selectedItemProperty().addListener { _, old, new ->
             setServerInfo(new)
+        }
+    }
+
+    fun connect(server: Server, ping: StatusConnection? = server.ping) {
+        val pingVersion = ping?.serverVersion ?: return
+        Eros.mainErosController.verifyAccount { account ->
+            DefaultThreadPool += {
+                val connection = PlayConnection(
+                    address = server.ping?.realAddress ?: DNSUtil.getServerAddress(server.address),
+                    account = account,
+                    version = server.forcedVersion ?: pingVersion,
+                )
+                account.connections[server] = connection
+                server.connections += connection
+
+                connection.registerEvent(CallbackEventInvoker.of<PlayConnectionStateChangeEvent> { event ->
+                    if (event.state.disconnected) {
+                        account.connections -= server
+                        server.connections -= connection
+                    }
+                    JavaFXUtil.runLater { updateServer(server) }
+                })
+
+                connection.registerEvent(JavaFXEventInvoker.of<KickEvent> { event ->
+                    KickDialog(
+                        title = "minosoft:connection.kick.title".toResourceLocation(),
+                        header = "minosoft:connection.kick.header".toResourceLocation(),
+                        description = TranslatableComponents.CONNECTION_KICK_DESCRIPTION(server, account),
+                        reason = event.reason,
+                    ).show()
+                })
+                connection.registerEvent(JavaFXEventInvoker.of<LoginKickEvent> { event ->
+                    KickDialog(
+                        title = "minosoft:connection.login_kick.title".toResourceLocation(),
+                        header = "minosoft:connection.login_kick.header".toResourceLocation(),
+                        description = TranslatableComponents.CONNECTION_LOGIN_KICK_DESCRIPTION(server, account),
+                        reason = event.reason,
+                    ).show()
+                })
+                connection.connect()
+            }
         }
     }
 
@@ -229,48 +285,9 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
             it.add(Button("Connect").apply {
                 setOnAction {
                     isDisable = true
-                    val pingVersion = ping?.serverVersion ?: return@setOnAction
-                    Eros.mainErosController.verifyAccount { account ->
-                        DefaultThreadPool += {
-                            val connection = PlayConnection(
-                                address = serverCard.server.ping?.realAddress ?: DNSUtil.getServerAddress(serverCard.server.address),
-                                account = account,
-                                version = serverCard.server.forcedVersion ?: pingVersion,
-                            )
-                            account.connections[serverCard.server] = connection
-                            serverCard.server.connections += connection
-
-                            connection.registerEvent(CallbackEventInvoker.of<PlayConnectionStateChangeEvent> { event ->
-                                if (event.state.disconnected) {
-                                    account.connections -= serverCard.server
-                                    serverCard.server.connections -= connection
-                                }
-                                JavaFXUtil.runLater { updateServer(serverCard.server) }
-                            })
-
-                            connection.registerEvent(JavaFXEventInvoker.of<KickEvent> { event ->
-                                KickDialog(
-                                    title = "minosoft:connection.kick.title".toResourceLocation(),
-                                    header = "minosoft:connection.kick.header".toResourceLocation(),
-                                    description = TranslatableComponents.CONNECTION_KICK_DESCRIPTION(serverCard.server, account),
-                                    reason = event.reason,
-                                ).show()
-                            })
-                            connection.registerEvent(JavaFXEventInvoker.of<LoginKickEvent> { event ->
-                                KickDialog(
-                                    title = "minosoft:connection.login_kick.title".toResourceLocation(),
-                                    header = "minosoft:connection.login_kick.header".toResourceLocation(),
-                                    description = TranslatableComponents.CONNECTION_LOGIN_KICK_DESCRIPTION(serverCard.server, account),
-                                    reason = event.reason,
-                                ).show()
-                            })
-                            connection.connect()
-                        }
-                    }
+                    connect(serverCard.server, ping)
                 }
-                isDisable = ping?.state !== StatusConnectionStates.PING_DONE ||
-                        ((serverCard.server.forcedVersion ?: ping.serverVersion) == null) ||
-                        Minosoft.config.config.account.selected?.connections?.containsKey(serverCard.server) == true
+                isDisable = !serverCard.server.canConnect
                 // ToDo: Also disable, if currently connecting
             }, 4, 0)
 
