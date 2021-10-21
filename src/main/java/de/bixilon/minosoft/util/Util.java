@@ -310,9 +310,13 @@ public final class Util {
             if (builder.length() != 0) {
                 builder.append("&");
             }
-            builder.append(URLEncoder.encode(entry.getKey(), StandardCharsets.UTF_8));
-            builder.append("=");
-            builder.append(URLEncoder.encode(entry.getValue().toString(), StandardCharsets.UTF_8));
+            try {
+                builder.append(URLEncoder.encode(entry.getKey(), StandardCharsets.UTF_8.name()));
+                builder.append("=");
+                builder.append(URLEncoder.encode(entry.getValue().toString(), StandardCharsets.UTF_8.name()));
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
         }
         return builder.toString();
     }

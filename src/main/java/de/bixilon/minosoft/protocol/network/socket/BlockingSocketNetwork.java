@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.protocol.network.socket;
 
+import de.bixilon.minosoft.gui.rendering.util.JavaBackport;
 import de.bixilon.minosoft.protocol.exceptions.PacketParseException;
 import de.bixilon.minosoft.protocol.exceptions.PacketTooLongException;
 import de.bixilon.minosoft.protocol.network.Network;
@@ -233,7 +234,7 @@ public class BlockingSocketNetwork extends Network {
             throw new PacketTooLongException(packetLength);
         }
 
-        byte[] bytes = this.inputStream.readNBytes(packetLength);
+        byte[] bytes = JavaBackport.readNBytes(inputStream, packetLength);
         return super.receiveS2CPacket(bytes);
     }
 

@@ -23,6 +23,7 @@ import de.bixilon.minosoft.protocol.packets.c2s.play.ChatMessageC2SP;
 import de.bixilon.minosoft.protocol.packets.c2s.play.ClientActionC2SP;
 import de.bixilon.minosoft.util.logging.Log;
 import de.bixilon.minosoft.util.logging.LogMessageType;
+import org.apache.commons.lang3.StringUtils;
 
 @Deprecated
 public class PacketSender {
@@ -34,7 +35,7 @@ public class PacketSender {
     }
 
     public void sendChatMessage(String message) {
-        if (message.isBlank()) {
+        if (StringUtils.isBlank(message)) {
             // throw new IllegalArgumentException(("Chat message is blank!"));
             return;
         }

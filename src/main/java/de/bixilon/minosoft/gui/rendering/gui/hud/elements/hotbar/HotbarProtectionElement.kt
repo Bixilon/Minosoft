@@ -70,7 +70,7 @@ class HotbarProtectionElement(hudRenderer: HUDRenderer) : Element(hudRenderer), 
     }
 
     override fun forceSilentApply() {
-        _size = if (protection <= 0.0f) { // ToDo: This notifies the parent, should we really notify it in silentApply?
+        _size = if (protection <= 0.0f) {
             Vec2i.EMPTY
         } else {
             SIZE

@@ -26,7 +26,7 @@ import java.util.Map;
 
 @Deprecated
 public class Versions {
-    public static final Version AUTOMATIC_VERSION = new Version("Automatic", -1, -1, Map.of(), Map.of());
+    public static final Version AUTOMATIC_VERSION = new Version("Automatic", -1, -1, new HashMap<>(), new HashMap<>());
     public static final HashBiMap<Integer, Version> VERSION_ID_MAP = HashBiMap.create(500);
     private static final HashBiMap<Integer, Version> VERSION_PROTOCOL_ID_MAP = HashBiMap.create(500);
     private static final HashBiMap<String, Version> VERSION_NAME_MAP = HashBiMap.create(500);
