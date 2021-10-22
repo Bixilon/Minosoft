@@ -16,6 +16,7 @@ class ContainerItemsElement(
 ) : Element(hudRenderer) {
     private val itemElements: MutableMap<Int, ItemElementData> = synchronizedMapOf()
     override var cacheEnabled: Boolean = false
+    private var revision = -1L
 
     init {
         silentApply()
@@ -30,9 +31,13 @@ class ContainerItemsElement(
     }
 
     override fun silentApply(): Boolean {
+        if (this.revision == container.revision) {
+            return false
+        }
+
         var changes = false
         for ((slot, binding) in slots) {
-            val item = container.slots[slot]
+            val item = container[slot]
             val data = itemElements[slot]
 
             if (data == null) {

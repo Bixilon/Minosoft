@@ -16,6 +16,7 @@ package de.bixilon.minosoft.util
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.JsonWriter
 import de.bixilon.minosoft.data.entities.entities.Entity
+import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.ResourceLocationAble
 import de.bixilon.minosoft.data.text.ChatColors
@@ -112,6 +113,44 @@ object KUtil {
 
     fun <V> Collection<V>.toSynchronizedSet(): MutableSet<V> {
         return synchronizedCopy { Collections.synchronizedSet(this.toMutableSet()) }
+    }
+
+    fun <T> T.synchronizedDeepCopy(): T? {
+        return when (this) {
+            is Map<*, *> -> {
+                val map: MutableMap<Any?, Any?> = synchronizedMapOf()
+
+                for ((key, value) in this) {
+                    map[key.synchronizedDeepCopy()] = value.synchronizedDeepCopy()
+                }
+                map.unsafeCast()
+            }
+            is List<*> -> {
+                val list: MutableList<Any?> = synchronizedListOf()
+
+                for (key in this) {
+                    list += key.synchronizedDeepCopy()
+                }
+
+                list.unsafeCast()
+            }
+            is Set<*> -> {
+                val set: MutableSet<Any?> = synchronizedSetOf()
+
+                for (key in this) {
+                    set += key.synchronizedDeepCopy()
+                }
+
+                set.unsafeCast()
+            }
+            is ItemStack -> this.copy().unsafeCast()
+            is ChatComponent -> this
+            is String -> this
+            is Number -> this
+            is Boolean -> this
+            null -> null
+            else -> TODO("Don't know how to copy ${(this as T)!!::class.java.name}")
+        }
     }
 
     fun Set<String>.toResourceLocationList(): Set<ResourceLocation> {

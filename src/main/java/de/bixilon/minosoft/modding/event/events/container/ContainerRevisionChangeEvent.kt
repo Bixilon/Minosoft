@@ -10,21 +10,16 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.modding.event.events
+package de.bixilon.minosoft.modding.event.events.container
 
-import de.bixilon.minosoft.data.inventory.ItemStack
+import de.bixilon.minosoft.data.registries.other.containers.Container
 import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.protocol.packets.s2c.play.ContainerItemSetS2CP
 
-class ContainerSlotChangeEvent(
+class ContainerRevisionChangeEvent(
     connection: PlayConnection,
     initiator: EventInitiators,
-    val containerId: Int,
-    val slot: Int,
-    val itemStack: ItemStack?,
-) : PlayConnectionEvent(connection, initiator) {
-
-    constructor(connection: PlayConnection, packet: ContainerItemSetS2CP) : this(connection, EventInitiators.SERVER, packet.containerId, packet.slot, packet.itemStack)
-}
+    val container: Container,
+    val revision: Long,
+) : PlayConnectionEvent(connection, initiator)

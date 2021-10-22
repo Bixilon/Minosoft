@@ -67,7 +67,6 @@ open class BlockItem(
 
         if (connection.player.gamemode != Gamemodes.CREATIVE) {
             itemStack.count--
-            connection.player.inventory.validate()
         }
 
         placeBlockState.placeSoundEvent?.let {

@@ -22,6 +22,9 @@ import javafx.collections.ObservableList
 import javafx.scene.Node
 import javafx.scene.text.TextFlow
 
+/**
+ * Chat components are generally mutable while creating. Once you use it somewhere it is considered as non-mutable.
+ */
 interface ChatComponent {
     /**
      * @return Returns the message formatted with ANSI Formatting codes
