@@ -51,9 +51,7 @@ class BlockPlaceC2SP(
                 buffer.writeVarInt(hand.ordinal)
             }
         }
-        if (buffer.versionId >= ProtocolVersions.V_19W03A) {
-            buffer.writeBoolean(insideBlock)
-        }
+
         if (buffer.versionId < ProtocolVersions.V_16W39C) {
             buffer.writeByte((cursorPosition.x * 15.0f).toInt())
             buffer.writeByte((cursorPosition.y * 15.0f).toInt())
@@ -62,6 +60,10 @@ class BlockPlaceC2SP(
             buffer.writeFloat(cursorPosition.x)
             buffer.writeFloat(cursorPosition.y)
             buffer.writeFloat(cursorPosition.z)
+        }
+
+        if (buffer.versionId >= ProtocolVersions.V_19W03A) {
+            buffer.writeBoolean(insideBlock)
         }
     }
 
