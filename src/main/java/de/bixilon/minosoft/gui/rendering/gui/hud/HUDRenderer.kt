@@ -84,6 +84,7 @@ class HUDRenderer(
         registerElement(TabListHUDElement)
         registerElement(BreakProgressHUDElement)
         registerElement(HotbarHUDElement)
+        registerElement(WorldInfoHUDElement)
     }
 
     override fun init() {
