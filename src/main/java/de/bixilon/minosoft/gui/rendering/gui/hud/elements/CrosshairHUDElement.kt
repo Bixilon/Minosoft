@@ -80,7 +80,7 @@ class CrosshairHUDElement(hudRenderer: HUDRenderer) : HUDElement<Element>(hudRen
 
         val start = (hudRenderer.scaledSize - CROSSHAIR_SIZE) / 2
 
-        mesh.addQuad(start, start + CROSSHAIR_SIZE, 0, crosshairAtlasElement, config.color)
+        mesh.addQuad(start, start + CROSSHAIR_SIZE, 0, crosshairAtlasElement, config.color, null)
 
 
         // ToDo: Attack indicator

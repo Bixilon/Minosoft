@@ -17,6 +17,7 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
+import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.Vec4Util.horizontal
 import de.bixilon.minosoft.gui.rendering.util.vec.Vec4Util.offset
 import glm_.vec2.Vec2i
@@ -128,12 +129,12 @@ class GridLayout(hudRenderer: HUDRenderer, val grid: Vec2i) : Element(hudRendere
     }
 
 
-    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int {
+    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
         var maxZ = 0
         for (x in 0 until grid.x) {
             for (y in 0 until grid.y) {
                 val child = children[x][y] ?: continue
-                val childZ = child.render(offset + margin.offset + Vec2i(columnStart[x] + columnConstraints[x].alignment.getOffset(columnConstraints[x].width, child.size.x), rowStart[y]), z, consumer)
+                val childZ = child.render(offset + margin.offset + Vec2i(columnStart[x] + columnConstraints[x].alignment.getOffset(columnConstraints[x].width, child.size.x), rowStart[y]), z, consumer, options)
                 if (childZ > maxZ) {
                     maxZ = childZ
                 }

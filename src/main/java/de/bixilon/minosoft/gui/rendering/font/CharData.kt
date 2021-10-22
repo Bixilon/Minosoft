@@ -19,6 +19,7 @@ import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.data.text.TextStyle
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
+import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.util.KUtil.decide
@@ -42,14 +43,14 @@ class CharData(
         uvEnd = uvEnd * texture.textureArrayUV
     }
 
-    fun render(position: Vec2i, z: Int, style: TextStyle, vertexConsumer: GUIVertexConsumer) {
-        render(position, z + 2, false, style, vertexConsumer)
+    fun render(position: Vec2i, z: Int, style: TextStyle, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+        render(position, z + 2, false, style, consumer, options)
         if (style.formatting.contains(PreChatFormattingCodes.SHADOWED)) {
-            render(position, z, true, style, vertexConsumer)
+            render(position, z, true, style, consumer, options)
         }
     }
 
-    private fun GUIVertexConsumer.addQuad(start: Vec2t<*>, end: Vec2t<*>, z: Int, texture: AbstractTexture, uvStart: Vec2, uvEnd: Vec2, italic: Boolean, tint: RGBColor) {
+    private fun GUIVertexConsumer.addQuad(start: Vec2t<*>, end: Vec2t<*>, z: Int, texture: AbstractTexture, uvStart: Vec2, uvEnd: Vec2, italic: Boolean, tint: RGBColor, options: GUIVertexOptions?) {
         val italicOffset = italic.decide({ (end.y.toFloat() - start.y.toFloat()) / Font.CHAR_HEIGHT.toFloat() * ITALIC_OFFSET }, 0.0f)
         val positions = arrayOf(
             Vec2(start.x.toFloat() + italicOffset, start.y),
@@ -65,11 +66,11 @@ class CharData(
         )
 
         for ((vertexIndex, textureIndex) in Mesh.QUAD_DRAW_ODER) {
-            addVertex(positions[vertexIndex], z, texture, texturePositions[textureIndex], tint)
+            addVertex(positions[vertexIndex], z, texture, texturePositions[textureIndex], tint, options)
         }
     }
 
-    private fun render(position: Vec2i, z: Int, shadow: Boolean, style: TextStyle, vertexConsumer: GUIVertexConsumer) {
+    private fun render(position: Vec2i, z: Int, shadow: Boolean, style: TextStyle, vertexConsumer: GUIVertexConsumer, options: GUIVertexOptions?) {
         var color = style.color ?: ChatColors.WHITE
 
 
@@ -93,18 +94,18 @@ class CharData(
         val italic = style.formatting.contains(PreChatFormattingCodes.ITALIC)
 
 
-        vertexConsumer.addQuad(startPosition, endPosition, z, texture, uvStart, uvEnd, italic, color)
+        vertexConsumer.addQuad(startPosition, endPosition, z, texture, uvStart, uvEnd, italic, color, options)
 
         if (style.formatting.contains(PreChatFormattingCodes.BOLD)) {
-            vertexConsumer.addQuad(startPosition + Vec2(boldOffset, 0.0f), endPosition + Vec2(boldOffset, 0.0f), z, texture, uvStart, uvEnd, italic, color)
+            vertexConsumer.addQuad(startPosition + Vec2(boldOffset, 0.0f), endPosition + Vec2(boldOffset, 0.0f), z, texture, uvStart, uvEnd, italic, color, options)
         }
 
         if (style.formatting.contains(PreChatFormattingCodes.STRIKETHROUGH)) {
-            vertexConsumer.addQuad(startPosition + Vec2(-Font.HORIZONTAL_SPACING, Font.CHAR_HEIGHT / 2.0f), Vec2(endPosition.x + Font.HORIZONTAL_SPACING, startPosition.y + Font.CHAR_HEIGHT / 2.0f + 1.0f), z + 1, renderWindow.WHITE_TEXTURE.texture, renderWindow.WHITE_TEXTURE.uvStart, renderWindow.WHITE_TEXTURE.uvEnd, italic, color)
+            vertexConsumer.addQuad(startPosition + Vec2(-Font.HORIZONTAL_SPACING, Font.CHAR_HEIGHT / 2.0f), Vec2(endPosition.x + Font.HORIZONTAL_SPACING, startPosition.y + Font.CHAR_HEIGHT / 2.0f + 1.0f), z + 1, renderWindow.WHITE_TEXTURE.texture, renderWindow.WHITE_TEXTURE.uvStart, renderWindow.WHITE_TEXTURE.uvEnd, italic, color, options)
         }
 
         if (style.formatting.contains(PreChatFormattingCodes.UNDERLINED)) {
-            vertexConsumer.addQuad(startPosition + Vec2i(-Font.HORIZONTAL_SPACING, Font.CHAR_HEIGHT), Vec2i(endPosition.x + boldOffset + Font.HORIZONTAL_SPACING, startPosition.y + Font.CHAR_HEIGHT + Font.VERTICAL_SPACING / 2.0f), z, renderWindow.WHITE_TEXTURE.texture, renderWindow.WHITE_TEXTURE.uvStart, renderWindow.WHITE_TEXTURE.uvEnd, italic, color)
+            vertexConsumer.addQuad(startPosition + Vec2i(-Font.HORIZONTAL_SPACING, Font.CHAR_HEIGHT), Vec2i(endPosition.x + boldOffset + Font.HORIZONTAL_SPACING, startPosition.y + Font.CHAR_HEIGHT + Font.VERTICAL_SPACING / 2.0f), z, renderWindow.WHITE_TEXTURE.texture, renderWindow.WHITE_TEXTURE.uvStart, renderWindow.WHITE_TEXTURE.uvEnd, italic, color, options)
         }
 
         // ToDo: Obfuscated

@@ -18,6 +18,7 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ImageElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
+import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.Vec2Util.EMPTY
 import glm_.vec2.Vec2i
 
@@ -32,7 +33,7 @@ class HotbarProtectionElement(hudRenderer: HUDRenderer) : Element(hudRenderer), 
 
     private var protection = 0.0f
 
-    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int {
+    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
         if (protection <= 0.0f) {
             return 0
         }
@@ -48,7 +49,7 @@ class HotbarProtectionElement(hudRenderer: HUDRenderer) : Element(hudRenderer), 
 
             val image = ImageElement(hudRenderer, atlasElement)
 
-            image.render(offset + Vec2i(i * ARMOR_SIZE.x, 0), z, consumer)
+            image.render(offset + Vec2i(i * ARMOR_SIZE.x, 0), z, consumer, options)
 
             protectionLeft -= 2.0f
         }

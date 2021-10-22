@@ -152,8 +152,8 @@ class HUDRenderer(
             if (!element.enabled) {
                 continue
             }
-            element.layout?.render(element.layoutOffset ?: Vec2i.EMPTY, 0, mesh)
             element.draw()
+            element.layout?.render(element.layoutOffset ?: Vec2i.EMPTY, 0, mesh, null)
         }
 
 

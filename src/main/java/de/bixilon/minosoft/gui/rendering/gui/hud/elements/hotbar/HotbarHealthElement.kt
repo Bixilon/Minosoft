@@ -21,6 +21,7 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ImageElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.hud.atlas.HUDAtlasElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
+import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.util.KUtil.decide
 import de.bixilon.minosoft.util.KUtil.unsafeCast
 import de.bixilon.minosoft.util.MMath.ceil
@@ -146,7 +147,7 @@ class HotbarHealthElement(hudRenderer: HUDRenderer) : Element(hudRenderer), Poll
     private var totalMaxHearts = 0
     private var rows = 0
 
-    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int {
+    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
         // ToDo: Damage animation, regeneration, caching, stacking
         for (heart in 0 until totalMaxHearts) {
             val row = heart / HEARTS_PER_ROW
@@ -154,7 +155,7 @@ class HotbarHealthElement(hudRenderer: HUDRenderer) : Element(hudRenderer), Poll
 
             val image = ImageElement(hudRenderer, blackHeartContainer)
 
-            image.render(offset + Vec2i(column, (rows - 1) - row) * HEART_SIZE, z, consumer)
+            image.render(offset + Vec2i(column, (rows - 1) - row) * HEART_SIZE, z, consumer, options)
         }
 
         val hardcoreIndex = hardcode.decide(1, 0)
@@ -201,7 +202,7 @@ class HotbarHealthElement(hudRenderer: HUDRenderer) : Element(hudRenderer), Poll
                 else -> selectArray.unsafeCast<Array<HUDAtlasElement?>>()[0]?.let { ImageElement(hudRenderer, it) }
             }
 
-            image?.render(offset + Vec2i(column, (rows - 1) - row) * HEART_SIZE, z + 1, consumer)
+            image?.render(offset + Vec2i(column, (rows - 1) - row) * HEART_SIZE, z + 1, consumer, options)
 
             heart++
             healthLeft -= halfHeart.decide(1.0f, 2.0f)

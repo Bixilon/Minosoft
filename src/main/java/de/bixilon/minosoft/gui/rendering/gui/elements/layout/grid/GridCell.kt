@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.gui.elements.layout.grid
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
+import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import glm_.vec2.Vec2i
 import glm_.vec4.Vec4i
 
@@ -56,8 +57,8 @@ class GridCell(
         child.parent = this
     }
 
-    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int {
-        return child.render(offset, z, consumer)
+    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
+        return child.render(offset, z, consumer, options)
     }
 
     override fun tick() {

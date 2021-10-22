@@ -25,6 +25,7 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Compa
 import de.bixilon.minosoft.gui.rendering.gui.elements.InfiniteSizeElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
+import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.Vec2Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.Vec4Util.offset
 import de.bixilon.minosoft.util.KUtil.decide
@@ -34,7 +35,7 @@ open class TextElement(
     hudRenderer: HUDRenderer,
     text: Any,
     override var fontAlignment: HorizontalAlignments = HorizontalAlignments.LEFT,
-    var background: Boolean = true,
+    background: Boolean = true,
     var backgroundColor: RGBColor = RenderConstants.TEXT_BACKGROUND_COLOR,
     noBorder: Boolean = false,
     parent: Element? = null,
@@ -42,8 +43,20 @@ open class TextElement(
     lateinit var renderInfo: TextRenderInfo
         private set
 
-    var noBorder: Boolean = noBorder
+    // ToDo: Reapply if backgroundColor or fontAlignment changes
+    var background: Boolean = background
+        set(value) {
+            if (field == value) {
+                return
+            }
+            field = value
+            cacheUpToDate = false
+        }
+    var noBorder: Boolean = !noBorder
         @Synchronized set(value) {
+            if (field == value) {
+                return
+            }
             field = value
             charHeight = value.decide(Font.CHAR_HEIGHT, Font.TOTAL_CHAR_HEIGHT)
             charMargin = value.decide(0, Font.CHAR_MARGIN)
@@ -56,13 +69,13 @@ open class TextElement(
 
     override var text: Any = text
         set(value) {
-            textComponent = ChatComponent.of(value)
+            chatComponent = ChatComponent.of(value)
             field = value
         }
 
     private var emptyMessage: Boolean = true
 
-    override var textComponent: ChatComponent = ChatComponent.of("")
+    override var chatComponent: ChatComponent = ChatComponent.of("")
         protected set(value) {
             field = value
             emptyMessage = value.message.isEmpty()
@@ -73,7 +86,7 @@ open class TextElement(
                     charHeight = charHeight,
                     charMargin = charMargin,
                 )
-                ChatComponentRenderer.render(Vec2i.EMPTY, Vec2i.EMPTY, prefSize, 0, InfiniteSizeElement(hudRenderer), renderWindow, null, renderInfo, value)
+                ChatComponentRenderer.render(Vec2i.EMPTY, Vec2i.EMPTY, prefSize, 0, InfiniteSizeElement(hudRenderer), renderWindow, null, null, renderInfo, value)
             }
             _prefSize = prefSize
             forceApply()
@@ -81,13 +94,13 @@ open class TextElement(
 
     init {
         this.parent = parent
-        this.textComponent = ChatComponent.of(text)
+        this.chatComponent = ChatComponent.of(text)
         this.noBorder = noBorder
     }
 
     override fun forceSilentApply() {
         val size = Vec2i.EMPTY
-        if (textComponent.message.contains("pitch=")) {
+        if (chatComponent.message.contains("pitch=")) {
             val a = maxSize
             var b = 1
         }
@@ -97,7 +110,7 @@ open class TextElement(
                 charHeight = charHeight,
                 charMargin = charMargin,
             )
-            ChatComponentRenderer.render(Vec2i.EMPTY, Vec2i.EMPTY, size, 0, this, renderWindow, null, renderInfo, textComponent)
+            ChatComponentRenderer.render(Vec2i.EMPTY, Vec2i.EMPTY, size, 0, this, renderWindow, null, null, renderInfo, chatComponent)
             renderInfo.currentLineNumber = 0
             this.renderInfo = renderInfo
         }
@@ -108,19 +121,19 @@ open class TextElement(
 
     override fun onChildChange(child: Element) = error("A TextElement can not have a child!")
 
-    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int {
+    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
         if (emptyMessage) {
             return 0
         }
         val initialOffset = offset + margin.offset
 
-        ChatComponentRenderer.render(initialOffset, Vec2i(initialOffset), Vec2i.EMPTY, z + 1, this, renderWindow, consumer, renderInfo, textComponent)
+        ChatComponentRenderer.render(initialOffset, Vec2i(initialOffset), Vec2i.EMPTY, z + 1, this, renderWindow, consumer, options, renderInfo, chatComponent)
         renderInfo.currentLineNumber = 0
 
         if (background) {
             for ((line, info) in renderInfo.lines.withIndex()) {
                 val start = initialOffset + Vec2i(fontAlignment.getOffset(size.x, info.width), line * charHeight)
-                consumer.addQuad(start, start + Vec2i(info.width + charMargin, charHeight), z, renderWindow.WHITE_TEXTURE, backgroundColor)
+                consumer.addQuad(start, start + Vec2i(info.width + charMargin, charHeight), z, renderWindow.WHITE_TEXTURE, backgroundColor, options)
             }
         }
 
@@ -128,7 +141,7 @@ open class TextElement(
     }
 
     override fun toString(): String {
-        return textComponent.toString()
+        return chatComponent.toString()
     }
 
     companion object {

@@ -17,6 +17,7 @@ import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMeshCache
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
+import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.Vec2Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.Vec2Util.isGreater
 import de.bixilon.minosoft.gui.rendering.util.vec.Vec2Util.isSmaller
@@ -114,15 +115,15 @@ abstract class Element(val hudRenderer: HUDRenderer) {
      *
      * @return The number of z layers used
      */
-    fun render(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int {
+    fun render(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
         if (RenderConstants.DISABLE_GUI_CACHE || !cacheEnabled) {
-            return forceRender(offset, z, consumer)
+            return forceRender(offset, z, consumer, options)
         }
         if (!cacheUpToDate || cache.offset != offset || hudRenderer.matrixChange || cache.matrix != hudRenderer.matrix || z != cache.z) {
             val cache = GUIMeshCache(hudRenderer.matrix)
             cache.offset = offset
             cache.z = z
-            val maxZ = forceRender(offset, z, cache)
+            val maxZ = forceRender(offset, z, cache, options)
             cache.maxZ = maxZ
             this.cache = cache
             cacheUpToDate = true
@@ -137,7 +138,7 @@ abstract class Element(val hudRenderer: HUDRenderer) {
      *
      * @return The number of z layers used
      */
-    abstract fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int
+    abstract fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int
 
     /**
      * Force applies all changes made to any property, but does not notify the parent about the change

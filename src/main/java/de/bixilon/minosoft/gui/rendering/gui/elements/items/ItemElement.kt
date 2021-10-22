@@ -12,6 +12,7 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.VerticalAlignments.Compani
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
+import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.decide
 import glm_.vec2.Vec2i
@@ -39,13 +40,13 @@ class ItemElement(
         forceApply()
     }
 
-    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int {
+    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
         if (item == null) {
             return 0
         }
         val size = size
         val countSize = countText.size
-        countText.render(offset + Vec2i(HorizontalAlignments.RIGHT.getOffset(size.x, countSize.x), VerticalAlignments.BOTTOM.getOffset(size.y, countSize.y)), z + 1, consumer)
+        countText.render(offset + Vec2i(HorizontalAlignments.RIGHT.getOffset(size.x, countSize.x), VerticalAlignments.BOTTOM.getOffset(size.y, countSize.y)), z + 1, consumer, options)
 
         // ToDo: Render model
         return 2

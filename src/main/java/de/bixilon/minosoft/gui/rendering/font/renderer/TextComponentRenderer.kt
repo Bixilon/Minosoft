@@ -21,12 +21,13 @@ import de.bixilon.minosoft.gui.rendering.font.Font
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
+import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.util.MMath.ceil
 import glm_.vec2.Vec2i
 
 object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
 
-    override fun render(initialOffset: Vec2i, offset: Vec2i, size: Vec2i, z: Int, element: Element, renderWindow: RenderWindow, consumer: GUIVertexConsumer?, renderInfo: TextRenderInfo, text: TextComponent): Boolean {
+    override fun render(initialOffset: Vec2i, offset: Vec2i, size: Vec2i, z: Int, element: Element, renderWindow: RenderWindow, consumer: GUIVertexConsumer?, options: GUIVertexOptions?, renderInfo: TextRenderInfo, text: TextComponent): Boolean {
         if (text.message.isEmpty()) {
             return false
         }
@@ -164,7 +165,7 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
                 // ToDo: Remove Font.HORIZONTAL_SPACING
             }
 
-            consumer?.let { charData.render(letterOffset, z, text, it) }
+            consumer?.let { charData.render(letterOffset, z, text, it, options) }
 
             if (consumer == null) {
                 currentLineText += char

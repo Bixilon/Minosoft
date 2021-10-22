@@ -5,6 +5,7 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.hud.atlas.Vec2iBinding
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
+import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
 import de.bixilon.minosoft.util.KUtil.toSynchronizedMap
 import glm_.vec2.Vec2i
@@ -22,9 +23,9 @@ class ContainerItemsElement(
         silentApply()
     }
 
-    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int {
+    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
         for ((_, data) in itemElements.toSynchronizedMap()) {
-            data.element.render(offset + data.offset, z, consumer)
+            data.element.render(offset + data.offset, z, consumer, options)
         }
 
         return 2

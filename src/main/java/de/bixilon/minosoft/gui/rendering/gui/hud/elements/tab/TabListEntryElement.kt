@@ -25,6 +25,7 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ImageElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
+import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.Vec2Util.EMPTY
 import glm_.vec2.Vec2i
 import java.lang.Integer.max
@@ -70,10 +71,10 @@ class TabListEntryElement(
         forceSilentApply()
     }
 
-    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int {
-        background.render(Vec2i(offset), z, consumer)
-        nameElement.render(Vec2i(offset), z, consumer)
-        pingElement.render(offset + Vec2i(HorizontalAlignments.RIGHT.getOffset(maxSize.x, pingElement.size.x + PADDING), PADDING), z + 1, consumer)
+    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
+        background.render(Vec2i(offset), z, consumer, options)
+        nameElement.render(Vec2i(offset), z, consumer, options)
+        pingElement.render(offset + Vec2i(HorizontalAlignments.RIGHT.getOffset(maxSize.x, pingElement.size.x + PADDING), PADDING), z + 1, consumer, options)
 
         return TextElement.LAYERS
     }

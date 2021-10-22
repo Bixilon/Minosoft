@@ -20,9 +20,10 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Compa
 import de.bixilon.minosoft.gui.rendering.gui.elements.VerticalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.VerticalAlignments.Companion.getOffset
 import de.bixilon.minosoft.gui.rendering.gui.elements.layout.RowLayout
-import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
+import de.bixilon.minosoft.gui.rendering.gui.elements.text.FadingTextElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
+import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.Vec2Util.max
 import de.bixilon.minosoft.gui.rendering.util.vec.Vec4Util.copy
 import glm_.vec2.Vec2i
@@ -40,11 +41,10 @@ class HotbarElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
     private val topRight = RowLayout(hudRenderer, HorizontalAlignments.RIGHT, 1) // contains hunger, air
 
 
-    private val currentItemText = TextElement(hudRenderer, "", background = false, noBorder = true)
-    private var nameShown = false
-    private var nameShowTime = 0L
+    private val itemText = FadingTextElement(hudRenderer, text = "", fadeInTime = 300, stayTime = 1500, fadeOutTime = 500, background = false, noBorder = true)
     private var lastItemStackNameShown: ItemStack? = null
     private var lastItemSlot = -1
+    private var itemTextShown = true
 
 
     private var gamemode = hudRenderer.connection.player.tabListItem.gamemode
@@ -78,28 +78,29 @@ class HotbarElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
 
         base.parent = this
         experience.parent = this
+        itemText.parent = this
         forceSilentApply()
     }
 
-    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int {
+    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
         var maxZ = 0
 
-        if (nameShown) {
-            currentItemText.render(offset + Vec2i(HorizontalAlignments.CENTER.getOffset(size.x, currentItemText.size.x), 0), z, consumer)
-            offset.y += currentItemText.size.y + ITEM_NAME_OFFSET
+        if (itemTextShown) {
+            itemText.render(offset + Vec2i(HorizontalAlignments.CENTER.getOffset(size.x, itemText.size.x), 0), z, consumer, options)
+            offset.y += itemText.size.y + ITEM_NAME_OFFSET
         }
 
         if (gamemode.survival) {
             val topMaxSize = topLeft.size.max(topRight.size)
-            maxZ = max(maxZ, topLeft.render(offset + Vec2i(0, VerticalAlignments.BOTTOM.getOffset(topMaxSize.y, topLeft.size.y)), z, consumer))
-            maxZ = max(maxZ, topRight.render(offset + Vec2i(HorizontalAlignments.RIGHT.getOffset(size.x, topRight.size.x), VerticalAlignments.BOTTOM.getOffset(topMaxSize.y, topRight.size.y)), z, consumer))
+            maxZ = max(maxZ, topLeft.render(offset + Vec2i(0, VerticalAlignments.BOTTOM.getOffset(topMaxSize.y, topLeft.size.y)), z, consumer, options))
+            maxZ = max(maxZ, topRight.render(offset + Vec2i(HorizontalAlignments.RIGHT.getOffset(size.x, topRight.size.x), VerticalAlignments.BOTTOM.getOffset(topMaxSize.y, topRight.size.y)), z, consumer, options))
             offset.y += topMaxSize.y + VERTICAL_SPACING
 
-            maxZ = max(maxZ, experience.render(offset + Vec2i(HorizontalAlignments.CENTER.getOffset(size.x, experience.size.x), 0), z, consumer))
+            maxZ = max(maxZ, experience.render(offset + Vec2i(HorizontalAlignments.CENTER.getOffset(size.x, experience.size.x), 0), z, consumer, options))
             offset.y += experience.size.y + VERTICAL_SPACING
         }
 
-        maxZ = max(maxZ, base.render(offset, z, consumer))
+        maxZ = max(maxZ, base.render(offset, z, consumer, options))
 
         return maxZ
     }
@@ -118,9 +119,10 @@ class HotbarElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
             size.y += experience.size.y + VERTICAL_SPACING
         }
 
-        if (nameShown) {
-            size.y += currentItemText.size.y + ITEM_NAME_OFFSET
-            size.x = max(size.x, currentItemText.size.x)
+        itemTextShown = !itemText.hidden
+        if (itemTextShown) {
+            size.y += itemText.size.y + ITEM_NAME_OFFSET
+            size.x = max(size.x, itemText.size.x)
         }
 
         _size = size
@@ -130,17 +132,11 @@ class HotbarElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
     override fun silentApply(): Boolean {
         val itemSlot = hudRenderer.connection.player.selectedHotbarSlot
         val currentItem = hudRenderer.connection.player.inventory.getHotbarSlot(itemSlot)
-        val time = System.currentTimeMillis()
         if (currentItem != lastItemStackNameShown || itemSlot != lastItemSlot) {
-            currentItemText.text = hudRenderer.connection.player.inventory.getHotbarSlot()?.displayName ?: ""
-            nameShowTime = time
             lastItemStackNameShown = currentItem
             lastItemSlot = itemSlot
-            nameShown = true
-        } else if (currentItem != null) {
-            if (time - nameShowTime > 2500) {
-                nameShown = false
-            }
+            itemText.text = hudRenderer.connection.player.inventory.getHotbarSlot()?.displayName ?: "" // ToDo: This calls silentApply again...
+            itemText.show()
         }
 
         forceSilentApply() // ToDo: Check stuff
@@ -154,6 +150,7 @@ class HotbarElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
 
     override fun tick() {
         silentApply()
+        itemText.tick()
         base.tick()
 
         if (gamemode.survival) {

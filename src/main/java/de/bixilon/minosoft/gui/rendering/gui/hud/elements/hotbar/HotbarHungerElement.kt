@@ -20,6 +20,7 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ImageElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.hud.atlas.HUDAtlasElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
+import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import glm_.vec2.Vec2i
 import java.util.concurrent.ThreadLocalRandom
 
@@ -72,7 +73,7 @@ class HotbarHungerElement(hudRenderer: HUDRenderer) : Element(hudRenderer), Poll
         _size = Vec2i(HUNGER_CONTAINERS, 1) * HUNGER_SIZE + Vec2i(1, 0) // 1 pixel is overlapping per hunger, so one more
     }
 
-    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int {
+    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
         var hungerLeft = hunger
         var saturationLeft = saturation.toInt()
 
@@ -97,7 +98,7 @@ class HotbarHungerElement(hudRenderer: HUDRenderer) : Element(hudRenderer), Poll
                 }
                 else -> normalHungerContainer
             }
-            ImageElement(hudRenderer, container).render(hungerOffset, z, consumer)
+            ImageElement(hudRenderer, container).render(hungerOffset, z, consumer, options)
 
 
             val selectArray: Array<*> = if (hungerEffect) {
@@ -120,7 +121,7 @@ class HotbarHungerElement(hudRenderer: HUDRenderer) : Element(hudRenderer), Poll
                 hungerElement = selectArray[0] as HUDAtlasElement
             }
 
-            ImageElement(hudRenderer, hungerElement).render(hungerOffset, z + 1, consumer)
+            ImageElement(hudRenderer, hungerElement).render(hungerOffset, z + 1, consumer, options)
         }
 
 

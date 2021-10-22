@@ -30,17 +30,8 @@ class GUIMesh(
     val matrix: Mat4,
 ) : Mesh(renderWindow, GUIMeshStruct, initialCacheSize = 40000), GUIVertexConsumer {
 
-    override fun addVertex(position: Vec2t<*>, z: Int, texture: AbstractTexture, uv: Vec2, tint: RGBColor) {
-        val outPosition = matrix * Vec4(position.x.toFloat(), position.y.toFloat(), 1.0f, 1.0f)
-        data.addAll(floatArrayOf(
-            outPosition.x,
-            outPosition.y,
-            BASE_Z + Z_MULTIPLIER * z,
-            uv.x,
-            uv.y,
-            Float.fromBits(texture.renderData?.layer ?: RenderConstants.DEBUG_TEXTURE_ID),
-            Float.fromBits(tint.rgba),
-        ))
+    override fun addVertex(position: Vec2t<*>, z: Int, texture: AbstractTexture, uv: Vec2, tint: RGBColor, options: GUIVertexOptions?) {
+        data.addAll(createVertex(matrix, position, z, texture, uv, tint, options))
     }
 
     override fun addCache(cache: GUIMeshCache) {
@@ -59,5 +50,27 @@ class GUIMesh(
     companion object {
         const val BASE_Z = -0.99f
         const val Z_MULTIPLIER = -0.00001f
+
+        fun createVertex(matrix: Mat4, position: Vec2t<*>, z: Int, texture: AbstractTexture, uv: Vec2, tint: RGBColor, options: GUIVertexOptions?): FloatArray {
+            val outPosition = matrix * Vec4(position.x.toFloat(), position.y.toFloat(), 1.0f, 1.0f)
+            var color = tint
+
+            options?.let { _ ->
+                options.tintColor?.let { color = color.mix(it) }
+
+                if (options.alpha != 1.0f) {
+                    color = color.with(alpha = color.floatAlpha * options.alpha)
+                }
+            }
+            return floatArrayOf(
+                outPosition.x,
+                outPosition.y,
+                BASE_Z + Z_MULTIPLIER * z,
+                uv.x,
+                uv.y,
+                Float.fromBits(texture.renderData?.layer ?: RenderConstants.DEBUG_TEXTURE_ID),
+                Float.fromBits(color.rgba),
+            )
+        }
     }
 }

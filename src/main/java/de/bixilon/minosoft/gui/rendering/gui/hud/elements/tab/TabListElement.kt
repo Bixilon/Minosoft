@@ -22,6 +22,7 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.hud.atlas.HUDAtlasElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
+import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.Vec2Util.EMPTY
 import de.bixilon.minosoft.util.KUtil.decide
 import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
@@ -49,15 +50,15 @@ class TabListElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
         hudRenderer.atlasManager["minecraft:tab_list_ping_5"]!!,
     )
 
-    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int {
-        background.render(Vec2i(offset), z, consumer)
+    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
+        background.render(Vec2i(offset), z, consumer, options)
         offset += BACKGROUND_PADDING
 
         val size = size
 
         header.size.let {
             header.silentApply()
-            header.render(offset + Vec2i(HorizontalAlignments.CENTER.getOffset(size.x, it.x), 0), z, consumer)
+            header.render(offset + Vec2i(HorizontalAlignments.CENTER.getOffset(size.x, it.x), 0), z, consumer, options)
             offset.y += it.y
         }
 
@@ -70,7 +71,7 @@ class TabListElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
         }
 
         for ((index, entry) in toRender.withIndex()) {
-            entry.render(Vec2i(offset), z + 1, consumer)
+            entry.render(Vec2i(offset), z + 1, consumer, options)
             offset.y += TabListEntryElement.HEIGHT + ENTRY_VERTICAL_SPACING
             if ((index + 1) % ENTRIES_PER_COLUMN == 0) {
                 offset.x += entry.width + ENTRY_HORIZONTAL_SPACING
@@ -82,7 +83,7 @@ class TabListElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
 
 
         footer.size.let {
-            footer.render(offset + Vec2i(HorizontalAlignments.CENTER.getOffset(size.x, it.x), 0), z, consumer)
+            footer.render(offset + Vec2i(HorizontalAlignments.CENTER.getOffset(size.x, it.x), 0), z, consumer, options)
             offset.y += it.y
         }
 

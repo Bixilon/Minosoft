@@ -20,6 +20,7 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.items.ContainerItemsElemen
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ImageElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
+import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import glm_.vec2.Vec2i
 
@@ -41,14 +42,14 @@ class HotbarBaseElement(hudRenderer: HUDRenderer) : Element(hudRenderer), Pollab
         inventoryElement.parent = this
     }
 
-    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int {
-        base.render(offset + HORIZONTAL_MARGIN, z, consumer)
+    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
+        base.render(offset + HORIZONTAL_MARGIN, z, consumer, options)
 
         baseAtlasElement.slots[selectedSlot + PlayerInventory.HOTBAR_OFFSET]?.let {
-            frame.render(offset + it.start - HORIZONTAL_MARGIN + FRAME_OFFSET, z + 2, consumer)
+            frame.render(offset + it.start - HORIZONTAL_MARGIN + FRAME_OFFSET, z + 2, consumer, options)
         }
 
-        inventoryElement.render(offset, z, consumer)
+        inventoryElement.render(offset, z, consumer, options)
 
         // ToDo: Item rendering
 

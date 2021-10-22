@@ -24,6 +24,7 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ImageElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
+import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.lerp
 import glm_.vec2.Vec2
 import glm_.vec2.Vec2i
@@ -54,24 +55,24 @@ class HotbarExperienceBarElement(hudRenderer: HUDRenderer) : Element(hudRenderer
     private var progress = 0.0f
     private var level = 0
 
-    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int {
+    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
         val bars = atlasElements[barIndex]
 
         // background
-        ImageElement(hudRenderer, bars[0]).render(offset, z, consumer)
+        ImageElement(hudRenderer, bars[0]).render(offset, z, consumer, options)
 
         val progressAtlasElement = bars[1]
 
         // foreground
         val progress = ImageElement(hudRenderer, progressAtlasElement.texture, uvStart = progressAtlasElement.uvStart, uvEnd = Vec2(lerp(progress, progressAtlasElement.uvStart.x, progressAtlasElement.uvEnd.x), progressAtlasElement.uvEnd.y), size = Vec2i((progressAtlasElement.size.x * progress).toInt(), SIZE.y))
 
-        progress.render(offset, z + 1, consumer)
+        progress.render(offset, z + 1, consumer, options)
 
         if (level > 0) {
             // level
             val text = TextElement(hudRenderer, TextComponent(level).apply { color = RenderConstants.EXPERIENCE_BAR_LEVEL_COLOR }, fontAlignment = HorizontalAlignments.CENTER, false)
 
-            text.render(offset + Vec2i(HorizontalAlignments.CENTER.getOffset(size.x, text.size.x), -Font.CHAR_HEIGHT + 1), z + 2, consumer)
+            text.render(offset + Vec2i(HorizontalAlignments.CENTER.getOffset(size.x, text.size.x), -Font.CHAR_HEIGHT + 1), z + 2, consumer, options)
         }
 
         return 2 + TextElement.LAYERS // background + foreground + text(level)

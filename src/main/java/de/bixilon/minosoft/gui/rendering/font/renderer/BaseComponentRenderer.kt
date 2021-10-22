@@ -17,13 +17,14 @@ import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
+import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import glm_.vec2.Vec2i
 
 object BaseComponentRenderer : ChatComponentRenderer<BaseComponent> {
 
-    override fun render(initialOffset: Vec2i, offset: Vec2i, size: Vec2i, z: Int, element: Element, renderWindow: RenderWindow, consumer: GUIVertexConsumer?, renderInfo: TextRenderInfo, text: BaseComponent): Boolean {
+    override fun render(initialOffset: Vec2i, offset: Vec2i, size: Vec2i, z: Int, element: Element, renderWindow: RenderWindow, consumer: GUIVertexConsumer?, options: GUIVertexOptions?, renderInfo: TextRenderInfo, text: BaseComponent): Boolean {
         for (part in text.parts) {
-            if (ChatComponentRenderer.render(initialOffset, offset, size, z, element, renderWindow, consumer, renderInfo, part)) {
+            if (ChatComponentRenderer.render(initialOffset, offset, size, z, element, renderWindow, consumer, options, renderInfo, part)) {
                 return true
             }
         }

@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.gui.elements.layout
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
+import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.Vec2Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.Vec2Util.max
 import de.bixilon.minosoft.gui.rendering.util.vec.Vec4Util.offset
@@ -28,10 +29,10 @@ class ZLayout(hudRenderer: HUDRenderer) : Element(hudRenderer) {
     private val children: MutableList<Element> = synchronizedListOf()
     override var cacheEnabled: Boolean = false // ToDo: Cache
 
-    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int {
+    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
         var zOffset = 0
         for (child in children.toSynchronizedList()) {
-            zOffset += child.render(margin.offset + offset, z + zOffset, consumer)
+            zOffset += child.render(margin.offset + offset, z + zOffset, consumer, options)
         }
         return zOffset
     }

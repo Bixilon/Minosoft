@@ -20,6 +20,7 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ColorElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
+import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.Vec2Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.Vec2Util.max
 import de.bixilon.minosoft.util.KUtil.synchronizedListOf
@@ -46,18 +47,18 @@ class TextFlowElement(
     override var cacheEnabled: Boolean = false // ToDo: Cache
     private var textSize = Vec2i.EMPTY
 
-    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int {
+    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
         val visibleLines = visibleLines
         if (visibleLines.isEmpty()) {
             return 0
         }
         var yOffset = 0
         for (message in visibleLines.reversed()) {
-            message.textElement.render(offset + Vec2i(0, yOffset), z, consumer)
+            message.textElement.render(offset + Vec2i(0, yOffset), z, consumer, options)
             yOffset += Font.TOTAL_CHAR_HEIGHT
         }
 
-        background.render(Vec2i(offset), z, consumer)
+        background.render(Vec2i(offset), z, consumer, options)
         return LAYERS
     }
 

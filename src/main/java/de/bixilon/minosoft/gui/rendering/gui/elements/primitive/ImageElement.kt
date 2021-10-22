@@ -20,6 +20,7 @@ import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.hud.atlas.TextureLike
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMesh
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
+import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.util.vec.Vec2Util.EMPTY
 import glm_.vec2.Vec2
@@ -77,8 +78,8 @@ open class ImageElement(
 
     constructor(hudRenderer: HUDRenderer, texture: AbstractTexture, uvStart: Vec2i, uvEnd: Vec2i, size: Vec2i = texture.size, tint: RGBColor = ChatColors.WHITE) : this(hudRenderer, texture, Vec2(uvStart) * texture.singlePixelSize, Vec2(uvEnd) * texture.singlePixelSize, size, tint)
 
-    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int {
-        consumer.addQuad(offset, offset + size, z, texture, uvStart, uvEnd, tint)
+    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
+        consumer.addQuad(offset, offset + size, z, texture, uvStart, uvEnd, tint, options)
         return 1
     }
 

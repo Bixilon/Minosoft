@@ -18,6 +18,7 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
+import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.Vec4Util.bottom
 import de.bixilon.minosoft.gui.rendering.util.vec.Vec4Util.horizontal
 import de.bixilon.minosoft.gui.rendering.util.vec.Vec4Util.left
@@ -63,7 +64,7 @@ open class RowLayout(
         forceApply()
     }
 
-    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer): Int {
+    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
         var childYOffset = 0
         var maxZ = 0
 
@@ -88,7 +89,7 @@ open class RowLayout(
             if (exceedsY(childSize.y)) {
                 break
             }
-            val childZ = child.render(Vec2i(offset.x + margin.left + childAlignment.getOffset(size.x - margin.horizontal, childSize.x), offset.y + childYOffset), z, consumer)
+            val childZ = child.render(Vec2i(offset.x + margin.left + childAlignment.getOffset(size.x - margin.horizontal, childSize.x), offset.y + childYOffset), z, consumer, options)
             if (maxZ < childZ) {
                 maxZ = childZ
             }
