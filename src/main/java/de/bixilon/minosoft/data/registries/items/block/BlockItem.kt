@@ -60,6 +60,18 @@ open class BlockItem(
 
         val placeBlockState = block!!.getPlacementState(connection, raycastHit) ?: return BlockUsages.PASS
 
+        val collisionShape = placeBlockState.collisionShape + placePosition
+        for (entity in connection.world.entities) {
+            if (entity.isInvisible) {
+                continue
+            }
+            val aabb = entity.aabb
+
+            if (collisionShape.intersect(aabb)) {
+                return BlockUsages.CONSUME
+            }
+        }
+
 
         connection.world[placePosition] = placeBlockState
 
