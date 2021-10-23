@@ -41,6 +41,7 @@ open class Container(
         for ((slot, itemStack) in slots.toSynchronizedMap()) {
             if (itemStack.count <= 0 || itemStack.durability < 0) {
                 slots.remove(slot)
+                itemStack.container = null
                 changes = true
             }
         }
@@ -53,13 +54,29 @@ open class Container(
         return slots[slotId]
     }
 
-    operator fun set(slotId: Int, itemStack: ItemStack?) {
-        if (itemStack == null) {
-            slots.remove(slotId) ?: return
-        } else {
-            slots[slotId] = itemStack // ToDo: Check for changes
-        }
+    fun remove(slotId: Int): ItemStack? {
+        val itemStack = slots.remove(slotId) ?: return null
+        itemStack.container = null
         revision++
+        return itemStack
+    }
+
+    /**
+     *  @return The previous item
+     */
+    operator fun set(slotId: Int, itemStack: ItemStack?): ItemStack? {
+        if (itemStack == null) {
+            return remove(slotId)
+        }
+        val previous = slots[slotId]
+        if (previous == itemStack) {
+            return previous
+        }
+        slots[slotId] = itemStack // ToDo: Check for changes
+        itemStack.container = this
+
+        revision++
+        return previous
     }
 
     fun clear() {

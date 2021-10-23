@@ -9,6 +9,7 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
 import de.bixilon.minosoft.util.KUtil.toSynchronizedMap
 import glm_.vec2.Vec2i
+import java.lang.Integer.max
 
 class ContainerItemsElement(
     hudRenderer: HUDRenderer,
@@ -24,17 +25,20 @@ class ContainerItemsElement(
     }
 
     override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
+        var maxZ = 0
         for ((_, data) in itemElements.toSynchronizedMap()) {
-            data.element.render(offset + data.offset, z, consumer, options)
+            maxZ = max(maxZ, data.element.render(offset + data.offset, z, consumer, options))
         }
 
-        return 2
+        return maxZ
     }
 
     override fun silentApply(): Boolean {
-        if (this.revision == container.revision) {
+        val revision = container.revision
+        if (this.revision == revision) {
             return false
         }
+        this.revision = revision
 
         var changes = false
         for ((slot, binding) in slots) {
@@ -56,7 +60,7 @@ class ContainerItemsElement(
                 changes = true
             } else {
                 if (data.element.item == item) {
-                    if (data.element.poll()) {
+                    if (data.element.silentApply()) {
                         changes = true
                     }
                 } else {

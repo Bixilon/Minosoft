@@ -1,6 +1,7 @@
 package de.bixilon.minosoft.gui.rendering.gui.elements.items
 
 import de.bixilon.minosoft.data.inventory.ItemStack
+import de.bixilon.minosoft.data.registries.items.block.BlockItem
 import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
@@ -9,6 +10,7 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Compa
 import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
 import de.bixilon.minosoft.gui.rendering.gui.elements.VerticalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.VerticalAlignments.Companion.getOffset
+import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ColorElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
@@ -41,15 +43,22 @@ class ItemElement(
     }
 
     override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
-        if (item == null) {
-            return 0
-        }
+        val item = item ?: return 0
         val size = size
         val countSize = countText.size
         countText.render(offset + Vec2i(HorizontalAlignments.RIGHT.getOffset(size.x, countSize.x), VerticalAlignments.BOTTOM.getOffset(size.y, countSize.y)), z + 1, consumer, options)
 
+        var color = ChatColors.WHITE
+        if (item.item is BlockItem) {
+            item.item.block?.defaultState?.material?.color?.let { color = it }
+        }
+
+        val image = ColorElement(hudRenderer, _size, color)
+
+        image.render(offset, z + 1, consumer, options)
+
         // ToDo: Render model
-        return 2
+        return TextElement.LAYERS + 1
     }
 
     override fun poll(): Boolean {

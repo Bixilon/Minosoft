@@ -34,10 +34,11 @@ class ContainerItemSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     override fun handle(connection: PlayConnection) {
         connection.player.containers[containerId]?.set(slot, itemStack)
 
+        // ToDo: Check for changes
         connection.fireEvent(ContainerSlotChangeEvent(connection, this))
     }
 
     override fun log() {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Container item set (containerId=$containerId, slot=$slot, itemStack=$itemStack)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Container item set (containerId=$containerId, revision=$revision, slot=$slot, itemStack=$itemStack)" }
     }
 }

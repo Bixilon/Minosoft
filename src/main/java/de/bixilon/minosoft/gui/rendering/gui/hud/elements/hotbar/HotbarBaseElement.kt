@@ -46,14 +46,14 @@ class HotbarBaseElement(hudRenderer: HUDRenderer) : Element(hudRenderer), Pollab
         base.render(offset + HORIZONTAL_MARGIN, z, consumer, options)
 
         baseAtlasElement.slots[selectedSlot + PlayerInventory.HOTBAR_OFFSET]?.let {
-            frame.render(offset + it.start - HORIZONTAL_MARGIN + FRAME_OFFSET, z + 2, consumer, options)
+            frame.render(offset + it.start - HORIZONTAL_MARGIN + FRAME_OFFSET, z + 1, consumer, options)
         }
 
-        inventoryElement.render(offset, z, consumer, options)
+        val inventoryZ = inventoryElement.render(offset, z + 2, consumer, options)
 
         // ToDo: Item rendering
 
-        return 2 // bar + frame
+        return 2 + inventoryZ// bar + frame
     }
 
     override fun poll(): Boolean {

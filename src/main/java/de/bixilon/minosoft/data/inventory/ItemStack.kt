@@ -42,6 +42,7 @@ import de.bixilon.minosoft.util.KUtil.toSynchronizedMap
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.getAndRemove
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.listCast
+import java.util.*
 
 class ItemStack(
     val item: Item,
@@ -54,7 +55,7 @@ class ItemStack(
     unbreakable: Boolean = false,
     durability: Int = 0,
     val nbt: MutableMap<String, Any> = synchronizedMapOf(),
-    val container: Container? = null,
+    container: Container? = null,
     hideFlags: Int = 0,
 ) : TextFormattable {
     var count = count
@@ -100,6 +101,17 @@ class ItemStack(
     var hideFlags = hideFlags
         set(value) {
             if (field == value) {
+                return
+            }
+            field = value
+            apply()
+        }
+    var container = container
+        set(value) {
+            if (field != null && value != null) {
+                throw IllegalStateException("Item already in a different container!")
+            }
+            if (field === value) {
                 return
             }
             field = value
@@ -318,6 +330,33 @@ class ItemStack(
 
     val damageable: Boolean
         get() = item.maxDamage > 0 || !unbreakable
+
+
+    override fun hashCode(): Int {
+        return Objects.hash(item, count, durability, nbt)
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) {
+            return true
+        }
+        if (other !is ItemStack) {
+            return false
+        }
+        if (hashCode() != other.hashCode()) {
+            return false
+        }
+        return item == other.item
+                && count == other.count
+                && durability == other.durability
+                && enchantments == other.enchantments
+                && nbt == other.nbt
+                && lore == other.lore
+                && customDisplayName == other.customDisplayName
+                && repairCost == other.repairCost
+                && unbreakable == other.unbreakable
+                && hideFlags == other.hideFlags
+    }
 
     companion object {
         private const val HIDE_ENCHANTMENT_BIT = 0

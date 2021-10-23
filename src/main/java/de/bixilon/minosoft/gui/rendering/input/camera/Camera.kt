@@ -216,10 +216,19 @@ class Camera(
 
         connection.registerEvent(CallbackEventInvoker.of<ResizeWindowEvent> { recalculateViewProjectionMatrix() })
 
-        fun dropItem(type: BlockBreakC2SP.BreakType) {
+        fun dropItem(stack: Boolean) {
             val time = System.currentTimeMillis()
             if (time - lastDropPacketSent < ProtocolDefinition.TICK_TIME) {
                 return
+            }
+            val type = if (stack) {
+                connection.player.inventory.getHotbarSlot()?.count = 0
+                BlockBreakC2SP.BreakType.DROP_ITEM_STACK
+            } else {
+                connection.player.inventory.getHotbarSlot()?.let {
+                    it.count--
+                }
+                BlockBreakC2SP.BreakType.DROP_ITEM
             }
             connection.sendPacket(BlockBreakC2SP(type, connection.player.positionInfo.blockPosition))
             lastDropPacketSent = time
@@ -230,13 +239,13 @@ class Camera(
             mutableMapOf(
                 KeyAction.PRESS to mutableSetOf(KeyCodes.KEY_Q),
             ),
-        )) { dropItem(BlockBreakC2SP.BreakType.DROP_ITEM) }
+        )) { dropItem(false) }
         renderWindow.inputHandler.registerKeyCallback(DROP_ITEM_STACK_KEYBINDING, KeyBinding(
             mutableMapOf(
                 KeyAction.PRESS to mutableSetOf(KeyCodes.KEY_Q),
                 KeyAction.MODIFIER to mutableSetOf(KeyCodes.KEY_LEFT_CONTROL)
             ),
-        )) { dropItem(BlockBreakC2SP.BreakType.DROP_ITEM_STACK) }
+        )) { dropItem(true) }
         frustum.recalculate()
         connection.fireEvent(FrustumChangeEvent(renderWindow, frustum))
     }
