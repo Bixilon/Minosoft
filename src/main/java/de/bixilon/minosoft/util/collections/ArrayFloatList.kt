@@ -17,6 +17,8 @@ class ArrayFloatList(
     private val initialSize: Int = DEFAULT_INITIAL_SIZE,
 ) {
     private var data: FloatArray = FloatArray(initialSize)
+    var finalized: Boolean = false
+        private set
     val limit: Int
         get() = data.size
     var size = 0
@@ -33,13 +35,21 @@ class ArrayFloatList(
     private var output: FloatArray = FloatArray(0)
     private var outputUpToDate = false
 
+    private fun checkFinalized() {
+        if (finalized) {
+            throw IllegalStateException("ArrayFloatList is already finalized!")
+        }
+    }
+
     fun clear() {
+        checkFinalized()
         size = 0
         outputUpToDate = false
         output = FloatArray(0)
     }
 
     private fun ensureSize(needed: Int) {
+        checkFinalized()
         if (limit - size >= needed) {
             return
         }
@@ -65,10 +75,15 @@ class ArrayFloatList(
         outputUpToDate = false
     }
 
-    fun addAll(floats: ArrayFloatList) {
-        ensureSize(floats.size)
-        System.arraycopy(floats.data, 0, data, size, floats.size)
-        size += floats.size
+    fun addAll(floatList: ArrayFloatList) {
+        ensureSize(floatList.size)
+        val source = if (floatList.finalized) {
+            floatList.output
+        } else {
+            floatList.data
+        }
+        System.arraycopy(source, 0, data, size, floatList.size)
+        size += floatList.size
     }
 
     private fun checkOutputArray() {
@@ -83,6 +98,12 @@ class ArrayFloatList(
     fun toArray(): FloatArray {
         checkOutputArray()
         return output
+    }
+
+    fun finalize() {
+        finalized = true
+        checkOutputArray()
+        data = FloatArray(0)
     }
 
 
