@@ -100,20 +100,16 @@ open class TextElement(
 
     override fun forceSilentApply() {
         val size = Vec2i.EMPTY
-        if (chatComponent.message.contains("pitch=")) {
-            val a = maxSize
-            var b = 1
-        }
+        val renderInfo = TextRenderInfo(
+            fontAlignment = fontAlignment,
+            charHeight = charHeight,
+            charMargin = charMargin,
+        )
         if (!emptyMessage) {
-            val renderInfo = TextRenderInfo(
-                fontAlignment = fontAlignment,
-                charHeight = charHeight,
-                charMargin = charMargin,
-            )
             ChatComponentRenderer.render(Vec2i.EMPTY, Vec2i.EMPTY, size, 0, this, renderWindow, null, null, renderInfo, chatComponent)
             renderInfo.currentLineNumber = 0
-            this.renderInfo = renderInfo
         }
+        this.renderInfo = renderInfo
 
         this.cacheUpToDate = false
         _size = size

@@ -119,7 +119,7 @@ abstract class Element(val hudRenderer: HUDRenderer) {
         if (RenderConstants.DISABLE_GUI_CACHE || !cacheEnabled) {
             return forceRender(offset, z, consumer, options)
         }
-        if (!cacheUpToDate || cache.offset != offset || hudRenderer.matrixChange || cache.matrix != hudRenderer.matrix || z != cache.z) {
+        if (!cacheUpToDate || cache.offset != offset || hudRenderer.matrixChange || cache.matrix !== hudRenderer.matrix || z != cache.z) {
             val cache = GUIMeshCache(hudRenderer.matrix)
             cache.offset = offset
             cache.z = z

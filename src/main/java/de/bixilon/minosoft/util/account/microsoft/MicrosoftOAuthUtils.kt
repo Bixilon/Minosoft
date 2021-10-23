@@ -123,7 +123,7 @@ object MicrosoftOAuthUtils {
 
         response.body!!
         if (response.statusCode != 200) {
-            throw LoginException(response.statusCode, "Could not get minecraft access token ", response.body["errorMessage"].unsafeCast())
+            throw LoginException(response.statusCode, "Could not get minecraft access token ", (response.body["errorMessage"] ?: response.body["error"] ?: "unknown").unsafeCast())
         }
         return response.body["access_token"].unsafeCast()
     }

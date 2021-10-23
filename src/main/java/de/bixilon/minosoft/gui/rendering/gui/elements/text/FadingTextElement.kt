@@ -39,11 +39,11 @@ class FadingTextElement(
 ) : TextElement(hudRenderer = hudRenderer, text = text, fontAlignment = fontAlignment, background = background, backgroundColor = backgroundColor, noBorder = noBorder, parent), Pollable {
     override var cacheEnabled: Boolean
         get() {
-            if (!super.cacheEnabled || hidden) {
-                return true
+            if (hidden || !super.cacheEnabled) {
+                return false
             }
             val time = System.currentTimeMillis()
-            return !((time < fadeInEndTime) || (time in (fadeInEndTime + 1) until fadeOutEndTime))
+            return (time >= fadeInEndTime) && (time < fadeOutStartTime)
         }
         set(value) {
             super.cacheEnabled = value
@@ -76,12 +76,25 @@ class FadingTextElement(
     }
 
     fun show() {
+        // ToDo: Check if already showing
         val time = System.currentTimeMillis()
         fadeInStartTime = time
         fadeInEndTime = fadeInStartTime + fadeInTime
         fadeOutStartTime = fadeInEndTime + stayTime
         fadeOutEndTime = fadeOutStartTime + fadeOutTime
         hidden = false
+    }
+
+    fun hide() {
+        if (hidden) {
+            return
+        }
+        // ToDo: Eventually fade out when fading in
+        val time = System.currentTimeMillis()
+        fadeInStartTime = -1L
+        fadeInEndTime = -1L
+        fadeOutStartTime = time
+        fadeOutEndTime = fadeOutStartTime + fadeOutTime
     }
 
     fun forceHide() {
@@ -104,8 +117,11 @@ class FadingTextElement(
         if (hidden) {
             return 0
         }
-
         val time = System.currentTimeMillis()
+        if (time > fadeOutEndTime) {
+            return 0
+        }
+
         alpha = 1.0f
 
         if (time < fadeInEndTime) {
@@ -116,7 +132,6 @@ class FadingTextElement(
         } else if (time < fadeOutEndTime) {
             alpha = (fadeOutEndTime - time) / fadeOutTime.toFloat()
         } else {
-            alpha = 0.0f
             return 0
         }
 

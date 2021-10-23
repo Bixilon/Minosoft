@@ -41,6 +41,9 @@ class HotbarElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
     private val topRight = RowLayout(hudRenderer, HorizontalAlignments.RIGHT, 1) // contains hunger, air
 
 
+    val hoverText = FadingTextElement(hudRenderer, text = "", fadeInTime = 300, stayTime = 3000, fadeOutTime = 500, background = false, noBorder = true)
+    private var hoverTextShown = false
+
     private val itemText = FadingTextElement(hudRenderer, text = "", fadeInTime = 300, stayTime = 1500, fadeOutTime = 500, background = false, noBorder = true)
     private var lastItemStackNameShown: ItemStack? = null
     private var lastItemSlot = -1
@@ -51,8 +54,11 @@ class HotbarElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
 
     private var renderElements = setOf(
         base,
+        experience,
         topLeft,
         topRight,
+        itemText,
+        hoverText,
     )
 
     override var cacheEnabled: Boolean = false // ToDo: Cache correctly
@@ -79,12 +85,17 @@ class HotbarElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
         base.parent = this
         experience.parent = this
         itemText.parent = this
+        hoverText.parent = this
         forceSilentApply()
     }
 
     override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
         var maxZ = 0
 
+        if (hoverTextShown) {
+            hoverText.render(offset + Vec2i(HorizontalAlignments.CENTER.getOffset(size.x, hoverText.size.x), 0), z, consumer, options)
+            offset.y += hoverText.size.y + HOVER_TEXT_OFFSET
+        }
         if (itemTextShown) {
             itemText.render(offset + Vec2i(HorizontalAlignments.CENTER.getOffset(size.x, itemText.size.x), 0), z, consumer, options)
             offset.y += itemText.size.y + ITEM_NAME_OFFSET
@@ -125,6 +136,12 @@ class HotbarElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
             size.x = max(size.x, itemText.size.x)
         }
 
+        hoverTextShown = !hoverText.hidden
+        if (hoverTextShown) {
+            size.y += hoverText.size.y + HOVER_TEXT_OFFSET
+            size.x = max(size.x, hoverText.size.x)
+        }
+
         _size = size
         cacheUpToDate = false
     }
@@ -135,8 +152,12 @@ class HotbarElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
         if (currentItem != lastItemStackNameShown || itemSlot != lastItemSlot) {
             lastItemStackNameShown = currentItem
             lastItemSlot = itemSlot
-            itemText.text = hudRenderer.connection.player.inventory.getHotbarSlot()?.displayName ?: "" // ToDo: This calls silentApply again...
-            itemText.show()
+            currentItem?.displayName?.let { itemText.text = it } // ToDo: This calls silentApply again...
+            if (currentItem == null) {
+                itemText.hide()
+            } else {
+                itemText.show()
+            }
         }
 
         forceSilentApply() // ToDo: Check stuff
@@ -150,16 +171,19 @@ class HotbarElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
 
     override fun tick() {
         silentApply()
+        hoverText.tick()
         itemText.tick()
-        base.tick()
 
         if (gamemode.survival) {
             topLeft.tick()
             topRight.tick()
         }
+        experience.tick()
+        base.tick()
     }
 
     companion object {
+        private const val HOVER_TEXT_OFFSET = 15
         private const val ITEM_NAME_OFFSET = 5
         private const val VERTICAL_SPACING = 1
     }

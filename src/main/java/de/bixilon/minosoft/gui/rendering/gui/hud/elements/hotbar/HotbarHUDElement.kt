@@ -13,11 +13,13 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar
 
+import de.bixilon.minosoft.data.ChatTextPositions
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.other.game.event.handlers.gamemode.GamemodeChangeEvent
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDElement
+import de.bixilon.minosoft.modding.event.events.ChatMessageReceiveEvent
 import de.bixilon.minosoft.modding.event.events.ExperienceChangeEvent
 import de.bixilon.minosoft.modding.event.events.SelectHotbarSlotEvent
 import de.bixilon.minosoft.modding.event.events.container.ContainerRevisionChangeEvent
@@ -58,6 +60,14 @@ class HotbarHUDElement(hudRenderer: HUDRenderer) : HUDElement<HotbarElement>(hud
                 return@of
             }
             layout.base.apply()
+        })
+
+        connection.registerEvent(CallbackEventInvoker.of<ChatMessageReceiveEvent> {
+            if (it.position != ChatTextPositions.ABOVE_HOTBAR) {
+                return@of
+            }
+            layout.hoverText.text = it.message
+            layout.hoverText.show()
         })
     }
 

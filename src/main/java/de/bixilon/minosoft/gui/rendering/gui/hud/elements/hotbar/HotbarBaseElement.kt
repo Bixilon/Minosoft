@@ -49,11 +49,9 @@ class HotbarBaseElement(hudRenderer: HUDRenderer) : Element(hudRenderer), Pollab
             frame.render(offset + it.start - HORIZONTAL_MARGIN + FRAME_OFFSET, z + 1, consumer, options)
         }
 
-        val inventoryZ = inventoryElement.render(offset, z + 2, consumer, options)
+        val inventoryZ = inventoryElement.render(offset + HORIZONTAL_MARGIN, z + 2, consumer, options)
 
-        // ToDo: Item rendering
-
-        return 2 + inventoryZ// bar + frame
+        return 2 + inventoryZ // bar + frame
     }
 
     override fun poll(): Boolean {
