@@ -16,13 +16,11 @@ package de.bixilon.minosoft.gui.rendering.font.renderer
 import de.bixilon.minosoft.data.text.PreChatFormattingCodes
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.font.CharData
 import de.bixilon.minosoft.gui.rendering.font.Font
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.util.MMath.ceil
 import glm_.vec2.Vec2i
 
 object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
@@ -173,11 +171,6 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
         }
 
         pushLine()
-
-        if (text.formatting.contains(PreChatFormattingCodes.ITALIC)) {
-            val italicOffset = CharData.ITALIC_OFFSET.ceil
-            addX(italicOffset) // ToDo: Should this be forced?
-        }
         return false
     }
 }
