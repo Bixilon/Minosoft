@@ -106,12 +106,11 @@ class World(
                 VersionTweaker.transformBlock(blockState, sections, blockPosition.inChunkSectionPosition, blockPosition.sectionHeight)
             }
             val inChunkPosition = blockPosition.inChunkPosition
-            if (it[inChunkPosition] == blockState) {
+            val previousBlock = it[inChunkPosition]
+            if (previousBlock == transformedBlockState) {
                 return
             }
-            it[inChunkPosition]?.let { oldBlockState ->
-                oldBlockState.block.onBreak(connection, blockPosition, oldBlockState, it.getBlockEntity(inChunkPosition))
-            }
+            previousBlock?.block?.onBreak(connection, blockPosition, previousBlock, it.getBlockEntity(inChunkPosition))
             blockState?.block?.onPlace(connection, blockPosition, blockState)
             it[inChunkPosition] = transformedBlockState
             connection.fireEvent(BlockSetEvent(
