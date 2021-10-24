@@ -23,6 +23,7 @@ class TextRenderInfo(
     val fontAlignment: HorizontalAlignments,
     val charHeight: Int,
     val charMargin: Int,
+    val scale: Float,
     val lines: MutableList<TextLineInfo> = mutableListOf(),
     var currentLineNumber: Int = 0,
 ) {

@@ -72,7 +72,7 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
         }
 
         fun wrap(): Boolean {
-            if (addY(Font.TOTAL_CHAR_HEIGHT)) {
+            if (addY(renderInfo.charHeight)) {
                 return true
             }
             pushLine()
@@ -134,18 +134,18 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
 
             val charData = renderWindow.font[char] ?: continue
 
-            val charWidth = charData.calculateWidth(text)
+            val charWidth = charData.calculateWidth(text, renderInfo.scale)
             var width = charWidth
 
             if (offset.x != initialOffset.x + renderInfo.charMargin) {
                 // add spacing between letters
-                width += if (bold) {
+                width += (if (bold) {
                     Font.HORIZONTAL_SPACING_BOLD
                 } else if (shadow) {
                     Font.HORIZONTAL_SPACING_SHADOW
                 } else {
                     Font.HORIZONTAL_SPACING
-                }
+                } * renderInfo.scale).toInt()
             }
             val previousY = offset.y
 
@@ -163,7 +163,7 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
                 // ToDo: Remove Font.HORIZONTAL_SPACING
             }
 
-            consumer?.let { charData.render(letterOffset, z, text, it, options) }
+            consumer?.let { charData.render(letterOffset, z, text, it, options, renderInfo.scale) }
 
             if (consumer == null) {
                 currentLineText += char

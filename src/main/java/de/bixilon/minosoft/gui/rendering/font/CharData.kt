@@ -43,10 +43,10 @@ class CharData(
         uvEnd = uvEnd * texture.textureArrayUV
     }
 
-    fun render(position: Vec2i, z: Int, style: TextStyle, consumer: GUIVertexConsumer, options: GUIVertexOptions?) {
-        render(position, z + 2, false, style, consumer, options)
+    fun render(position: Vec2i, z: Int, style: TextStyle, consumer: GUIVertexConsumer, options: GUIVertexOptions?, scale: Float) {
+        render(position, z + 2, false, style, consumer, options, scale)
         if (style.formatting.contains(PreChatFormattingCodes.SHADOWED)) {
-            render(position, z, true, style, consumer, options)
+            render(position, z, true, style, consumer, options, scale)
         }
     }
 
@@ -70,7 +70,7 @@ class CharData(
         }
     }
 
-    private fun render(position: Vec2i, z: Int, shadow: Boolean, style: TextStyle, vertexConsumer: GUIVertexConsumer, options: GUIVertexOptions?) {
+    private fun render(position: Vec2i, z: Int, shadow: Boolean, style: TextStyle, vertexConsumer: GUIVertexConsumer, options: GUIVertexOptions?, scale: Float) {
         var color = style.color ?: ChatColors.WHITE
 
 
@@ -83,12 +83,15 @@ class CharData(
         var boldOffset = 0.0f
 
         if (style.formatting.contains(PreChatFormattingCodes.BOLD)) {
-            boldOffset = BOLD_OFFSET
+            boldOffset = BOLD_OFFSET * scale
         }
+        val charHeight = Font.CHAR_HEIGHT * scale
+        val horizontalSpacing = Font.HORIZONTAL_SPACING * scale
+        val verticalSpacing = Font.VERTICAL_SPACING * scale
 
 
-        val startPosition = Vec2(position) + shadowOffset
-        val endPosition = startPosition + Vec2(scaledWidth, Font.CHAR_HEIGHT.toFloat())
+        val startPosition = Vec2(position) + (shadowOffset * scale)
+        val endPosition = startPosition + (Vec2(scaledWidth * scale, charHeight))
 
 
         val italic = style.formatting.contains(PreChatFormattingCodes.ITALIC)
@@ -101,23 +104,23 @@ class CharData(
         }
 
         if (style.formatting.contains(PreChatFormattingCodes.STRIKETHROUGH)) {
-            vertexConsumer.addQuad(startPosition + Vec2(-Font.HORIZONTAL_SPACING, Font.CHAR_HEIGHT / 2.0f), Vec2(endPosition.x + Font.HORIZONTAL_SPACING, startPosition.y + Font.CHAR_HEIGHT / 2.0f + 1.0f), z + 1, renderWindow.WHITE_TEXTURE.texture, renderWindow.WHITE_TEXTURE.uvStart, renderWindow.WHITE_TEXTURE.uvEnd, italic, color, options)
+            vertexConsumer.addQuad(startPosition + Vec2(-horizontalSpacing, charHeight / 2.0f - scale / 2), Vec2(endPosition.x + horizontalSpacing, startPosition.y + charHeight / 2.0f + scale / 2), z + 1, renderWindow.WHITE_TEXTURE.texture, renderWindow.WHITE_TEXTURE.uvStart, renderWindow.WHITE_TEXTURE.uvEnd, italic, color, options)
         }
 
         if (style.formatting.contains(PreChatFormattingCodes.UNDERLINED)) {
-            vertexConsumer.addQuad(startPosition + Vec2i(-Font.HORIZONTAL_SPACING, Font.CHAR_HEIGHT), Vec2i(endPosition.x + boldOffset + Font.HORIZONTAL_SPACING, startPosition.y + Font.CHAR_HEIGHT + Font.VERTICAL_SPACING / 2.0f), z, renderWindow.WHITE_TEXTURE.texture, renderWindow.WHITE_TEXTURE.uvStart, renderWindow.WHITE_TEXTURE.uvEnd, italic, color, options)
+            vertexConsumer.addQuad(startPosition + Vec2i(-horizontalSpacing, charHeight), Vec2i(endPosition.x + boldOffset + horizontalSpacing, startPosition.y + charHeight + verticalSpacing / 2.0f), z, renderWindow.WHITE_TEXTURE.texture, renderWindow.WHITE_TEXTURE.uvStart, renderWindow.WHITE_TEXTURE.uvEnd, italic, color, options)
         }
 
         // ToDo: Obfuscated
     }
 
-    fun calculateWidth(style: TextStyle): Int {
+    fun calculateWidth(style: TextStyle, scale: Float): Int {
         var width = scaledWidth.toFloat()
         if (style.formatting.contains(PreChatFormattingCodes.SHADOWED)) {
             width += SHADOW_OFFSET
         }
 
-        return width.ceil
+        return (width * scale).ceil
     }
 
 

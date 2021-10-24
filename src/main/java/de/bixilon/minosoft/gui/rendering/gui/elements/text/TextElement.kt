@@ -39,11 +39,21 @@ open class TextElement(
     var backgroundColor: RGBColor = RenderConstants.TEXT_BACKGROUND_COLOR,
     noBorder: Boolean = false,
     parent: Element? = null,
+    scale: Float = 1.0f,
 ) : LabeledElement(hudRenderer) {
     lateinit var renderInfo: TextRenderInfo
         private set
 
     // ToDo: Reapply if backgroundColor or fontAlignment changes
+
+    var scale: Float = scale
+        set(value) {
+            if (field == value) {
+                return
+            }
+            field = value
+            cacheUpToDate = false
+        }
     var background: Boolean = background
         set(value) {
             if (field == value) {
@@ -58,8 +68,8 @@ open class TextElement(
                 return
             }
             field = value
-            charHeight = value.decide(Font.CHAR_HEIGHT, Font.TOTAL_CHAR_HEIGHT)
-            charMargin = value.decide(0, Font.CHAR_MARGIN)
+            charHeight = (value.decide(Font.CHAR_HEIGHT, Font.TOTAL_CHAR_HEIGHT) * scale).toInt()
+            charMargin = (value.decide(0, Font.CHAR_MARGIN) * scale).toInt()
             forceApply()
         }
     var charHeight: Int = 0
@@ -88,6 +98,7 @@ open class TextElement(
                     fontAlignment = fontAlignment,
                     charHeight = charHeight,
                     charMargin = charMargin,
+                    scale = scale,
                 )
                 ChatComponentRenderer.render(Vec2i.EMPTY, Vec2i.EMPTY, prefSize, 0, InfiniteSizeElement(hudRenderer), renderWindow, null, null, renderInfo, value)
             }
@@ -107,6 +118,7 @@ open class TextElement(
             fontAlignment = fontAlignment,
             charHeight = charHeight,
             charMargin = charMargin,
+            scale = scale,
         )
         if (!emptyMessage) {
             ChatComponentRenderer.render(Vec2i.EMPTY, Vec2i.EMPTY, size, 0, this, renderWindow, null, null, renderInfo, chatComponent)

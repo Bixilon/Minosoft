@@ -22,7 +22,7 @@ import de.bixilon.minosoft.util.MMath.round10
 import glm_.vec2.Vec2i
 
 class WorldInfoHUDElement(hudRenderer: HUDRenderer) : HUDElement<TextElement>(hudRenderer), Pollable {
-    override val layout: TextElement = TextElement(hudRenderer, "")
+    override val layout: TextElement = TextElement(hudRenderer, "", scale = 3.0f)
 
     override val layoutOffset: Vec2i = Vec2i(2, 2)
 
@@ -53,7 +53,7 @@ class WorldInfoHUDElement(hudRenderer: HUDRenderer) : HUDElement<TextElement>(hu
         layout.text = if (hide) {
             ""
         } else {
-            "FPS $fps"
+            "§aFPS $fps"
         }
     }
 
