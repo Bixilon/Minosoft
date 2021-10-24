@@ -76,11 +76,14 @@ class FadingTextElement(
     }
 
     fun show() {
-        // ToDo: Check if already showing
         val time = System.currentTimeMillis()
-        fadeInStartTime = time
-        fadeInEndTime = fadeInStartTime + fadeInTime
-        fadeOutStartTime = fadeInEndTime + stayTime
+        if (time in (fadeInEndTime + 1) until fadeOutStartTime) {
+            fadeOutStartTime = time + stayTime
+        } else {
+            fadeInStartTime = time
+            fadeInEndTime = fadeInStartTime + fadeInTime
+            fadeOutStartTime = fadeInEndTime + stayTime
+        }
         fadeOutEndTime = fadeOutStartTime + fadeOutTime
         hidden = false
     }

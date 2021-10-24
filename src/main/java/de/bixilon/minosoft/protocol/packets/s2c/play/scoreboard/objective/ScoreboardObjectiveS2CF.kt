@@ -31,7 +31,7 @@ object ScoreboardObjectiveS2CF {
         }
         return when (ScoreboardScoreActions[buffer.readUnsignedByte()]) {
             ScoreboardScoreActions.CREATE -> CreateScoreboardObjectiveS2CP(objective, displayName, buffer)
-            ScoreboardScoreActions.REMOVE -> RemoveScoreboardScoreS2CP(objective, buffer)
+            ScoreboardScoreActions.REMOVE -> RemoveScoreboardScoreS2CP(objective, null) // ToDo: Null
             ScoreboardScoreActions.UPDATE -> UpdateScoreboardObjectiveS2CP(objective, displayName, buffer)
         }
     }

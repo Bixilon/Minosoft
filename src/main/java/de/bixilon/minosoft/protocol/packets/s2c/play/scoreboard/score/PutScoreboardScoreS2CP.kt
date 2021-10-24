@@ -22,8 +22,7 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-class PutScoreboardScoreS2CP(val entity: String, buffer: PlayInByteBuffer) : PlayS2CPacket() {
-    val objective = buffer.readString()
+class PutScoreboardScoreS2CP(val entity: String, val objective: String?, buffer: PlayInByteBuffer) : PlayS2CPacket() {
     val score: Int = if (buffer.versionId < ProtocolVersions.V_14W04A) { // ToDo
         buffer.readInt()
     } else {
@@ -31,6 +30,7 @@ class PutScoreboardScoreS2CP(val entity: String, buffer: PlayInByteBuffer) : Pla
     }
 
     override fun handle(connection: PlayConnection) {
+        check(objective != null) { "Can not update null objective!" }
         connection.scoreboardManager.objectives[objective]?.scores?.put(entity, ScoreboardScore(entity, objective, score))
     }
 

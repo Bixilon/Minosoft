@@ -77,6 +77,9 @@ open class TextElement(
 
     override var chatComponent: ChatComponent = ChatComponent.of("")
         protected set(value) {
+            if (value == field) {
+                return
+            }
             field = value
             emptyMessage = value.message.isEmpty()
             val prefSize = Vec2i.EMPTY

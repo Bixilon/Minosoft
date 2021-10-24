@@ -44,7 +44,7 @@ class HotbarHUDElement(hudRenderer: HUDRenderer) : HUDElement<HotbarElement>(hud
         layout.prefMaxSize = Vec2i(-1, -1)
 
         connection.registerEvent(CallbackEventInvoker.of<ExperienceChangeEvent> {
-            layout.experience.apply()
+            layout.core.experience.apply()
         })
 
         connection.registerEvent(CallbackEventInvoker.of<GamemodeChangeEvent> {
@@ -52,14 +52,14 @@ class HotbarHUDElement(hudRenderer: HUDRenderer) : HUDElement<HotbarElement>(hud
         })
 
         connection.registerEvent(CallbackEventInvoker.of<SelectHotbarSlotEvent> {
-            layout.base.apply()
+            layout.core.base.apply()
         })
 
         connection.registerEvent(CallbackEventInvoker.of<ContainerRevisionChangeEvent> {
             if (it.container != connection.player.inventory) {
                 return@of
             }
-            layout.base.apply()
+            layout.core.base.apply()
         })
 
         connection.registerEvent(CallbackEventInvoker.of<ChatMessageReceiveEvent> {

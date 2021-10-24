@@ -238,6 +238,15 @@ open class InByteBuffer {
         return readArray(length) { readString() }
     }
 
+    @JvmOverloads
+    fun readNullString(length: Int = readVarInt()): String? {
+        val string = readString(length)
+        if (string.isBlank()) {
+            return null
+        }
+        return string
+    }
+
     fun readUUID(): UUID {
         return UUID(readLong(), readLong())
     }

@@ -192,9 +192,9 @@ abstract class Element(val hudRenderer: HUDRenderer) {
         val maxSize = maxSize
         if (this is Pollable && this.poll() || (previousMaxSize != maxSize && (maxSize isSmaller _size || maxSize isSmaller _prefMaxSize || (maxSize isGreater previousMaxSize && _size isSmaller _prefSize)))) {
             forceSilentApply(false)
-            previousMaxSize = maxSize
             return true
         }
+        previousMaxSize = maxSize
         return false
     }
 

@@ -31,7 +31,7 @@ open class Container(
     var revision = 0L // ToDo: This has nothing todo with minecraft (1.17+)
         @Synchronized set(value) {
             if (++field != value) {
-                error("Can not set a custom revision!")
+                error("Can not set a custom revision!: $value, required: $field")
             }
             connection.fireEvent(ContainerRevisionChangeEvent(connection, EventInitiators.UNKNOWN, this, value))
         }
