@@ -35,7 +35,7 @@ class Font(
 
     companion object {
         const val CHAR_HEIGHT = 8
-        const val CHAR_MARGIN = 1 // used for background
+        const val CHAR_MARGIN = 1 // used for background ToDo: Set to 2, because underline does not match!
         const val TOTAL_CHAR_HEIGHT = CHAR_HEIGHT + 2 * CHAR_MARGIN // top and bottom
         const val HORIZONTAL_SPACING = 1
         const val HORIZONTAL_SPACING_SHADOW = 0

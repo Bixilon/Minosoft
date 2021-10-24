@@ -27,6 +27,7 @@ import de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar.HotbarHUDElemen
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.tab.TabListHUDElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMesh
 import de.bixilon.minosoft.gui.rendering.modding.events.ResizeWindowEvent
+import de.bixilon.minosoft.gui.rendering.system.base.IntegratedBufferTypes
 import de.bixilon.minosoft.gui.rendering.util.vec.Vec2Util.EMPTY
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -148,16 +149,18 @@ class HUDRenderer(
         // ToDo: size > maxSize
 
 
+        var z = 0
         for (element in hudElements) {
             if (!element.enabled) {
                 continue
             }
             element.draw()
-            element.layout?.render(element.layoutOffset ?: Vec2i.EMPTY, 0, mesh, null)
+            z += element.layout?.render(element.layoutOffset ?: Vec2i.EMPTY, z, mesh, null) ?: 0
         }
 
 
         renderWindow.renderSystem.reset()
+        renderWindow.renderSystem.clear(IntegratedBufferTypes.DEPTH_BUFFER)
         mesh.load()
 
 

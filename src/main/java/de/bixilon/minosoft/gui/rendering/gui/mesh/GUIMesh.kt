@@ -48,7 +48,7 @@ class GUIMesh(
     }
 
     companion object {
-        const val BASE_Z = -0.99f
+        const val BASE_Z = -0.0f
         const val Z_MULTIPLIER = -0.00001f
 
         fun createVertex(matrix: Mat4, position: Vec2t<*>, z: Int, texture: AbstractTexture, uv: Vec2, tint: RGBColor, options: GUIVertexOptions?): FloatArray {
