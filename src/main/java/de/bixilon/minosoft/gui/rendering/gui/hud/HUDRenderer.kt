@@ -34,6 +34,7 @@ import de.bixilon.minosoft.gui.rendering.gui.hud.elements.other.CrosshairHUDElem
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.other.DebugHUDElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.other.WorldInfoHUDElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.tab.TabListHUDElement
+import de.bixilon.minosoft.gui.rendering.gui.hud.elements.title.TitleHUDElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMesh
 import de.bixilon.minosoft.gui.rendering.modding.events.ResizeWindowEvent
 import de.bixilon.minosoft.gui.rendering.system.base.IntegratedBufferTypes
@@ -94,6 +95,7 @@ class HUDRenderer(
         registerElement(BreakProgressHUDElement)
         registerElement(HotbarHUDElement)
         registerElement(WorldInfoHUDElement)
+        registerElement(TitleHUDElement)
     }
 
     override fun init() {

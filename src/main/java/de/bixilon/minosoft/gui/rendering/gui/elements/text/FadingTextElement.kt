@@ -36,7 +36,8 @@ class FadingTextElement(
     backgroundColor: RGBColor = RenderConstants.TEXT_BACKGROUND_COLOR,
     noBorder: Boolean = false,
     parent: Element? = null,
-) : TextElement(hudRenderer = hudRenderer, text = text, fontAlignment = fontAlignment, background = background, backgroundColor = backgroundColor, noBorder = noBorder, parent), Pollable {
+    scale: Float = 1.0f,
+) : TextElement(hudRenderer = hudRenderer, text = text, fontAlignment = fontAlignment, background = background, backgroundColor = backgroundColor, noBorder = noBorder, parent, scale), Pollable {
     override var cacheEnabled: Boolean
         get() {
             if (hidden || !super.cacheEnabled) {
