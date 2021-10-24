@@ -131,7 +131,6 @@ class HotbarHealthElement(hudRenderer: HUDRenderer) : Element(hudRenderer), Poll
             atlasManager["minecraft:hardcore_half_frozen_heart"],
         ),
     )
-    private val whiteHeartContainer = atlasManager["minecraft:white_heart_container"]!!
     private val blackHeartContainer = atlasManager["minecraft:black_heart_container"]!!
 
     private var hardcode = false
@@ -150,7 +149,7 @@ class HotbarHealthElement(hudRenderer: HUDRenderer) : Element(hudRenderer), Poll
     private var rows = 0
 
     override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
-        // ToDo: Damage animation, regeneration, caching, stacking
+        // ToDo: Damage animation, regeneration, caching, stacking (and eventual text replace)
         for (heart in 0 until totalMaxHearts) {
             val row = heart / HEARTS_PER_ROW
             val column = heart % HEARTS_PER_ROW

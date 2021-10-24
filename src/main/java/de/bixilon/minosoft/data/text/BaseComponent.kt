@@ -133,11 +133,21 @@ class BaseComponent : ChatComponent {
     }
 
     constructor(translator: Translator? = null, parent: TextComponent? = null, json: Map<String, Any>, restrictedMode: Boolean = false) {
-        val currentParent: TextComponent?
+        var currentParent: TextComponent? = null
         var currentText = ""
+
+        fun parseExtra() {
+            json["extra"]?.listCast()?.let {
+                for (data in it) {
+                    parts += ChatComponent.of(data, translator, currentParent)
+                }
+            }
+        }
+
         json["text"]?.nullCast<String>()?.let {
             if (it.indexOf(ProtocolDefinition.TEXT_COMPONENT_SPECIAL_PREFIX_CHAR) != -1) {
                 this += ChatComponent.of(it, translator, parent)
+                parseExtra()
                 return
             }
             currentText = it
@@ -170,13 +180,7 @@ class BaseComponent : ChatComponent {
         }
         currentParent = textComponent
 
-
-        json["extra"]?.listCast()?.let {
-            for (data in it) {
-                parts += ChatComponent.of(data, translator, currentParent)
-            }
-        }
-
+        parseExtra()
 
         json["translate"]?.nullCast<String>()?.let {
             val with: MutableList<Any> = mutableListOf()

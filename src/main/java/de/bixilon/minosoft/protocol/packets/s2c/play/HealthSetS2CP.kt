@@ -44,6 +44,11 @@ class HealthSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         }
     }
 
+    override fun check(connection: PlayConnection) {
+        check(hunger in 0..20)
+        check(saturation in 0.0..20.0)
+    }
+
     override fun log() {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Health set (hp=$hp, hunger=$hunger, saturation=$saturation)" }
     }
