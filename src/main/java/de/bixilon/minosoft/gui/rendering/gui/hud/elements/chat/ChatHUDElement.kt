@@ -11,44 +11,50 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.gui.hud.elements
+package de.bixilon.minosoft.gui.rendering.gui.hud.elements.chat
 
 import de.bixilon.minosoft.Minosoft
+import de.bixilon.minosoft.data.ChatTextPositions
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextFlowElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
-import de.bixilon.minosoft.modding.event.events.InternalMessageReceiveEvent
+import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
+import de.bixilon.minosoft.gui.rendering.gui.hud.elements.LayoutedHUDElement
+import de.bixilon.minosoft.modding.event.events.ChatMessageReceiveEvent
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import glm_.vec2.Vec2i
 
-class InternalMessagesHUDElement(hudRenderer: HUDRenderer) : HUDElement<TextFlowElement>(hudRenderer) {
+class ChatHUDElement(hudRenderer: HUDRenderer) : LayoutedHUDElement<TextFlowElement>(hudRenderer) {
     private val connection = renderWindow.connection
-    override val layout = TextFlowElement(hudRenderer, 15000)
+    override val layout = TextFlowElement(hudRenderer, 20000)
 
 
     override val layoutOffset: Vec2i
-        get() = hudRenderer.scaledSize - Vec2i(layout.size.x, layout.size.y + BOTTOM_OFFSET)
+        get() = Vec2i(2, hudRenderer.scaledSize.y - layout.size.y - BOTTOM_OFFSET)
 
     init {
-        val config = Minosoft.config.config.game.hud.internalMessages
+        val config = Minosoft.config.config.game.hud.chat
         layout.prefMaxSize = Vec2i(config.width, config.height)
     }
 
 
     override fun init() {
-        connection.registerEvent(CallbackEventInvoker.of<InternalMessageReceiveEvent> {
+        connection.registerEvent(CallbackEventInvoker.of<ChatMessageReceiveEvent> {
+            if (it.position == ChatTextPositions.ABOVE_HOTBAR) {
+                return@of
+            }
             layout += it.message
         })
     }
 
 
-    companion object : HUDBuilder<InternalMessagesHUDElement> {
-        override val RESOURCE_LOCATION: ResourceLocation = "minosoft:internal_messages_hud".toResourceLocation()
+    companion object : HUDBuilder<ChatHUDElement> {
+        override val RESOURCE_LOCATION: ResourceLocation = "minosoft:chat_hud".toResourceLocation()
         private const val BOTTOM_OFFSET = 30
 
-        override fun build(hudRenderer: HUDRenderer): InternalMessagesHUDElement {
-            return InternalMessagesHUDElement(hudRenderer)
+        override fun build(hudRenderer: HUDRenderer): ChatHUDElement {
+            return ChatHUDElement(hudRenderer)
         }
     }
 }

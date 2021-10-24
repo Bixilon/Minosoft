@@ -11,44 +11,47 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.gui.hud.elements
+package de.bixilon.minosoft.gui.rendering.gui.hud.elements.other
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.TextComponent
+import de.bixilon.minosoft.gui.rendering.Drawable
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
+import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
+import de.bixilon.minosoft.gui.rendering.gui.hud.elements.LayoutedHUDElement
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import glm_.vec2.Vec2i
 
-class BreakProgressHUDElement(hudRenderer: HUDRenderer) : HUDElement<TextElement>(hudRenderer) {
+class BreakProgressHUDElement(hudRenderer: HUDRenderer) : LayoutedHUDElement<TextElement>(hudRenderer), Drawable {
     override val layout: TextElement = TextElement(hudRenderer, "")
     private val leftClickHandler = hudRenderer.renderWindow.inputHandler.leftClickHandler
 
     override val layoutOffset: Vec2i
         get() = Vec2i((hudRenderer.scaledSize.x / 2) + CrosshairHUDElement.CROSSHAIR_SIZE / 2 + 5, (hudRenderer.scaledSize.y - layout.size.y) / 2)
 
-    private var lastPercent = -1
+    private var percent = -1
 
     override fun draw() {
         val breakProgress = leftClickHandler.breakProgress
         if (breakProgress <= 0 || breakProgress >= 1.0) {
             layout.text = ""
-            lastPercent = -1
+            this.percent = -1
             return
         }
         val percent = (leftClickHandler.breakProgress * 100).toInt()
-        if (percent == lastPercent) {
+        if (percent == this.percent) {
             return
         }
-        val text = TextComponent("$percent%")
-        text.color = when {
-            percent <= 30 -> ChatColors.RED
-            percent <= 70 -> ChatColors.YELLOW
-            else -> ChatColors.GREEN
+        layout.text = TextComponent("$percent%").apply {
+            color = when {
+                percent <= 30 -> ChatColors.RED
+                percent <= 70 -> ChatColors.YELLOW
+                else -> ChatColors.GREEN
+            }
         }
-        layout.text = text
-        lastPercent = percent
+        this.percent = percent
     }
 
     companion object : HUDBuilder<BreakProgressHUDElement> {

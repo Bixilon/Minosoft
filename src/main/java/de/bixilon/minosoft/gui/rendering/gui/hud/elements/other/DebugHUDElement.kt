@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.gui.hud.elements
+package de.bixilon.minosoft.gui.rendering.gui.hud.elements.other
 
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.key.KeyAction
@@ -35,8 +35,11 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.spacer.LineSpacerElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.AutoTextElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
+import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
+import de.bixilon.minosoft.gui.rendering.gui.hud.elements.LayoutedHUDElement
 import de.bixilon.minosoft.gui.rendering.modding.events.ResizeWindowEvent
 import de.bixilon.minosoft.gui.rendering.particle.ParticleRenderer
+import de.bixilon.minosoft.gui.rendering.util.vec.Vec2Util.EMPTY
 import de.bixilon.minosoft.modding.event.events.DifficultyChangeEvent
 import de.bixilon.minosoft.modding.event.events.GameEventChangeEvent
 import de.bixilon.minosoft.modding.event.events.TimeChangeEvent
@@ -54,8 +57,9 @@ import glm_.vec2.Vec2i
 import glm_.vec4.Vec4i
 import kotlin.math.abs
 
-class DebugHUDElement(hudRenderer: HUDRenderer) : HUDElement<GridLayout>(hudRenderer) {
+class DebugHUDElement(hudRenderer: HUDRenderer) : LayoutedHUDElement<GridLayout>(hudRenderer) {
     private val connection = renderWindow.connection
+    override val layoutOffset: Vec2i = Vec2i.EMPTY
     override val layout = GridLayout(hudRenderer, Vec2i(3, 1)).apply {
         columnConstraints[0].apply {
             grow = GridGrow.NEVER

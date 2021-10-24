@@ -18,17 +18,25 @@ import de.bixilon.minosoft.config.key.KeyAction
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.gui.rendering.Drawable
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.Renderer
 import de.bixilon.minosoft.gui.rendering.RendererBuilder
+import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
 import de.bixilon.minosoft.gui.rendering.gui.hud.atlas.HUDAtlasManager
-import de.bixilon.minosoft.gui.rendering.gui.hud.elements.*
+import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
+import de.bixilon.minosoft.gui.rendering.gui.hud.elements.LayoutedHUDElement
+import de.bixilon.minosoft.gui.rendering.gui.hud.elements.chat.ChatHUDElement
+import de.bixilon.minosoft.gui.rendering.gui.hud.elements.chat.InternalMessagesHUDElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar.HotbarHUDElement
+import de.bixilon.minosoft.gui.rendering.gui.hud.elements.other.BreakProgressHUDElement
+import de.bixilon.minosoft.gui.rendering.gui.hud.elements.other.CrosshairHUDElement
+import de.bixilon.minosoft.gui.rendering.gui.hud.elements.other.DebugHUDElement
+import de.bixilon.minosoft.gui.rendering.gui.hud.elements.other.WorldInfoHUDElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.tab.TabListHUDElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMesh
 import de.bixilon.minosoft.gui.rendering.modding.events.ResizeWindowEvent
 import de.bixilon.minosoft.gui.rendering.system.base.IntegratedBufferTypes
-import de.bixilon.minosoft.gui.rendering.util.vec.Vec2Util.EMPTY
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
@@ -53,7 +61,7 @@ class HUDRenderer(
     var matrixChange = true
         private set
 
-    private val hudElements: MutableMap<ResourceLocation, HUDElement<*>> = synchronizedMapOf()
+    private val hudElements: MutableMap<ResourceLocation, HUDElement> = synchronizedMapOf()
 
     private var lastTickTime = 0L
 
@@ -95,7 +103,9 @@ class HUDRenderer(
             matrixChange = true
 
             for (element in hudElements.toSynchronizedMap().values) {
-                element.layout?.silentApply()
+                if (element is LayoutedHUDElement<*>) {
+                    element.layout.silentApply()
+                }
                 element.apply()
             }
         })
@@ -142,28 +152,37 @@ class HUDRenderer(
                     continue
                 }
                 element.tick()
+                if (element is Pollable) {
+                    if (element.poll()) {
+                        element.apply()
+                    }
+                }
             }
 
             lastTickTime = time
         }
-        // ToDo: size > maxSize
 
+        renderWindow.renderSystem.reset()
+        renderWindow.renderSystem.clear(IntegratedBufferTypes.DEPTH_BUFFER)
 
         var z = 0
         for (element in hudElements) {
             if (!element.enabled) {
                 continue
             }
-            element.draw()
-            z += element.layout?.render(element.layoutOffset ?: Vec2i.EMPTY, z, mesh, null) ?: 0
+            if (element is Drawable) {
+                element.draw()
+            }
+            if (element is LayoutedHUDElement<*>) {
+                z += element.layout.render(element.layoutOffset, z, mesh, null)
+            }
         }
 
 
         renderWindow.renderSystem.reset()
         renderWindow.renderSystem.clear(IntegratedBufferTypes.DEPTH_BUFFER)
+
         mesh.load()
-
-
         shader.use()
         mesh.draw()
 
@@ -172,7 +191,7 @@ class HUDRenderer(
         }
     }
 
-    operator fun <T : HUDElement<*>> get(hudBuilder: HUDBuilder<*>): T? {
+    operator fun <T : LayoutedHUDElement<*>> get(hudBuilder: HUDBuilder<*>): T? {
         return hudElements[hudBuilder.RESOURCE_LOCATION].unsafeCast()
     }
 

@@ -11,32 +11,11 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.gui.hud.elements
+package de.bixilon.minosoft.gui.rendering
 
-import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.gui.elements.Element
-import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
-import glm_.vec2.Vec2i
-
-abstract class HUDElement<T : Element>(val hudRenderer: HUDRenderer) {
-    val renderWindow: RenderWindow = hudRenderer.renderWindow
-    var enabled = true
-
-    open val layout: T?
-        get() = null
-
-    open val layoutOffset: Vec2i?
-        get() = null
-
-    open fun init() {}
-
-    open fun postInit() {}
-
-    open fun draw() {}
-
-    open fun tick() {
-        layout?.tick()
-    }
-
-    open fun apply() {}
+interface Drawable {
+    /**
+     * Functions gets called every frame
+     */
+    fun draw()
 }

@@ -18,7 +18,7 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.other.game.event.handlers.gamemode.GamemodeChangeEvent
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
-import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDElement
+import de.bixilon.minosoft.gui.rendering.gui.hud.elements.LayoutedHUDElement
 import de.bixilon.minosoft.modding.event.events.ChatMessageReceiveEvent
 import de.bixilon.minosoft.modding.event.events.ExperienceChangeEvent
 import de.bixilon.minosoft.modding.event.events.SelectHotbarSlotEvent
@@ -27,7 +27,7 @@ import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import glm_.vec2.Vec2i
 
-class HotbarHUDElement(hudRenderer: HUDRenderer) : HUDElement<HotbarElement>(hudRenderer) {
+class HotbarHUDElement(hudRenderer: HUDRenderer) : LayoutedHUDElement<HotbarElement>(hudRenderer) {
     private val connection = renderWindow.connection
     override lateinit var layout: HotbarElement
 

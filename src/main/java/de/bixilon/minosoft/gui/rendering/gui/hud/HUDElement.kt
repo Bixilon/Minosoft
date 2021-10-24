@@ -11,19 +11,35 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.gui.hud.elements
+package de.bixilon.minosoft.gui.rendering.gui.hud
 
-import de.bixilon.minosoft.config.key.KeyBinding
-import de.bixilon.minosoft.data.registries.CompanionResourceLocation
-import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.gui.rendering.gui.hud.HUDElement
-import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
+import de.bixilon.minosoft.gui.rendering.RenderWindow
 
-interface HUDBuilder<T : HUDElement> : CompanionResourceLocation {
-    val ENABLE_KEY_BINDING_NAME: ResourceLocation?
-        get() = null
-    val ENABLE_KEY_BINDING: KeyBinding?
-        get() = null
+interface HUDElement {
+    val hudRenderer: HUDRenderer
+    val renderWindow: RenderWindow
+    var enabled: Boolean
 
-    fun build(hudRenderer: HUDRenderer): T
+    /**
+     * Initializes the element (e.g. getting atlas elements, creating shaders, creating textures, etc)
+     */
+    fun init() {}
+
+    /**
+     * Phase after everything is initialized. May be used to load shaders, ...
+     * Can not be used to load static textures
+     */
+    fun postInit() {}
+
+    /**
+     * Functions that gets called every tick
+     */
+    fun tick() {}
+
+
+    /**
+     * Functions that sets new texts, changes data in the element
+     * May be used to poll data (see Pollable)
+     */
+    fun apply() {}
 }

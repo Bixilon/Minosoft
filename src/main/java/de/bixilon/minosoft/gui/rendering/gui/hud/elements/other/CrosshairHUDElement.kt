@@ -11,21 +11,22 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.gui.hud.elements
+package de.bixilon.minosoft.gui.rendering.gui.hud.elements.other
 
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.hud.atlas.HUDAtlasElement
+import de.bixilon.minosoft.gui.rendering.gui.hud.elements.CustomHUDElement
+import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMesh
 import de.bixilon.minosoft.gui.rendering.input.camera.hit.BlockRaycastHit
 import de.bixilon.minosoft.gui.rendering.input.camera.hit.EntityRaycastHit
 import de.bixilon.minosoft.gui.rendering.system.base.BlendingFunctions
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
-class CrosshairHUDElement(hudRenderer: HUDRenderer) : HUDElement<Element>(hudRenderer) {
+class CrosshairHUDElement(hudRenderer: HUDRenderer) : CustomHUDElement(hudRenderer) {
     private lateinit var crosshairAtlasElement: HUDAtlasElement
     private var mesh: GUIMesh? = null
     private var previousDebugEnabled: Boolean? = true

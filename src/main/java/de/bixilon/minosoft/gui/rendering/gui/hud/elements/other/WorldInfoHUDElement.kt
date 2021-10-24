@@ -11,23 +11,22 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.gui.hud.elements
+package de.bixilon.minosoft.gui.rendering.gui.hud.elements.other
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
+import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
+import de.bixilon.minosoft.gui.rendering.gui.hud.elements.LayoutedHUDElement
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.MMath.round10
 import glm_.vec2.Vec2i
 
-class WorldInfoHUDElement(hudRenderer: HUDRenderer) : HUDElement<TextElement>(hudRenderer), Pollable {
-    override val layout: TextElement = TextElement(hudRenderer, "", scale = 3.0f)
-
+class WorldInfoHUDElement(hudRenderer: HUDRenderer) : LayoutedHUDElement<TextElement>(hudRenderer), Pollable {
+    override val layout: TextElement = TextElement(hudRenderer, "")
     override val layoutOffset: Vec2i = Vec2i(2, 2)
-
     private var fps = -1.0
-
     private var hide: Boolean = false
 
     override fun tick() {
@@ -41,10 +40,13 @@ class WorldInfoHUDElement(hudRenderer: HUDRenderer) : HUDElement<TextElement>(hu
     }
 
     override fun poll(): Boolean {
+        val debugHUDElement: DebugHUDElement? = hudRenderer[DebugHUDElement]
+        val hide = debugHUDElement?.enabled == true
         val fps = hudRenderer.renderWindow.renderStats.smoothAvgFPS.round10
-        if (this.fps == fps) {
+        if (this.hide == hide && this.fps == fps) {
             return false
         }
+        this.hide = hide
         this.fps = fps
         return true
     }
@@ -54,17 +56,6 @@ class WorldInfoHUDElement(hudRenderer: HUDRenderer) : HUDElement<TextElement>(hu
             ""
         } else {
             "§aFPS $fps"
-        }
-    }
-
-    override fun draw() {
-        val debugHUDElement: DebugHUDElement? = hudRenderer[DebugHUDElement]
-
-        val debugEnabled = debugHUDElement?.enabled == true
-        if (this.hide != debugEnabled) {
-            this.hide = debugEnabled
-            poll()
-            apply()
         }
     }
 

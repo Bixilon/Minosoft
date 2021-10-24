@@ -13,17 +13,20 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements
 
-import de.bixilon.minosoft.config.key.KeyBinding
-import de.bixilon.minosoft.data.registries.CompanionResourceLocation
-import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
+import glm_.vec2.Vec2i
 
-interface HUDBuilder<T : HUDElement> : CompanionResourceLocation {
-    val ENABLE_KEY_BINDING_NAME: ResourceLocation?
-        get() = null
-    val ENABLE_KEY_BINDING: KeyBinding?
-        get() = null
+abstract class LayoutedHUDElement<T : Element>(final override val hudRenderer: HUDRenderer) : HUDElement {
+    override val renderWindow: RenderWindow = hudRenderer.renderWindow
+    override var enabled = true
 
-    fun build(hudRenderer: HUDRenderer): T
+    abstract val layout: T
+    abstract val layoutOffset: Vec2i
+
+    override fun tick() {
+        layout.tick()
+    }
 }

@@ -13,17 +13,18 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements
 
-import de.bixilon.minosoft.config.key.KeyBinding
-import de.bixilon.minosoft.data.registries.CompanionResourceLocation
-import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.gui.rendering.Drawable
+import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 
-interface HUDBuilder<T : HUDElement> : CompanionResourceLocation {
-    val ENABLE_KEY_BINDING_NAME: ResourceLocation?
-        get() = null
-    val ENABLE_KEY_BINDING: KeyBinding?
-        get() = null
+abstract class CustomHUDElement(final override val hudRenderer: HUDRenderer) : HUDElement, Drawable {
+    override val renderWindow: RenderWindow = hudRenderer.renderWindow
+    override var enabled = true
 
-    fun build(hudRenderer: HUDRenderer): T
+    /**
+     * Function to draw the custom content.
+     * May create buffers, changes shaders, resets the render system, etc
+     */
+    override fun draw() {}
 }

@@ -19,14 +19,14 @@ import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
-import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDElement
+import de.bixilon.minosoft.gui.rendering.gui.hud.elements.LayoutedHUDElement
 import de.bixilon.minosoft.modding.event.events.TabListEntryChangeEvent
 import de.bixilon.minosoft.modding.event.events.TabListInfoChangeEvent
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import glm_.vec2.Vec2i
 
-class TabListHUDElement(hudRenderer: HUDRenderer) : HUDElement<TabListElement>(hudRenderer) {
+class TabListHUDElement(hudRenderer: HUDRenderer) : LayoutedHUDElement<TabListElement>(hudRenderer) {
     private val connection = renderWindow.connection
     override val layout = TabListElement(hudRenderer)
 
