@@ -10,30 +10,20 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+
 package de.bixilon.minosoft.data.registries.effects.attributes
 
-import de.bixilon.minosoft.util.KUtil.unsafeCast
-import de.bixilon.minosoft.util.Util
+import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
 import java.util.*
 
-data class StatusEffectAttribute(
-    val name: String,
-    val uuid: UUID,
-    val amount: Double,
-    val operation: StatusEffectOperations,
+data class EntityAttribute(
+    var baseValue: Double = 1.0,
+    val modifiers: MutableMap<UUID, EntityAttributeModifier> = synchronizedMapOf(),
 ) {
-    override fun toString(): String {
-        return name
-    }
-
-    companion object {
-        fun deserialize(data: Map<String, Any>): StatusEffectAttribute {
-            return StatusEffectAttribute(
-                name = data["name"].unsafeCast(),
-                uuid = Util.getUUIDFromString(data["uuid"].unsafeCast()),
-                amount = data["amount"].unsafeCast(),
-                operation = StatusEffectOperations[data["operation"].unsafeCast<String>()],
-            )
+    fun merge(other: EntityAttribute) {
+        baseValue = other.baseValue
+        for ((key, modifier) in other.modifiers) {
+            modifiers[key] = modifier
         }
     }
 }

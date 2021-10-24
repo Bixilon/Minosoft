@@ -26,6 +26,8 @@ import de.bixilon.minosoft.util.KUtil.decide
 import de.bixilon.minosoft.util.KUtil.unsafeCast
 import de.bixilon.minosoft.util.MMath.ceil
 import glm_.vec2.Vec2i
+import java.lang.Float.max
+import java.lang.Float.min
 
 class HotbarHealthElement(hudRenderer: HUDRenderer) : Element(hudRenderer), Pollable {
     private val witherStatusEffect = hudRenderer.connection.registries.statusEffectRegistry[DefaultStatusEffects.WITHER]
@@ -234,13 +236,15 @@ class HotbarHealthElement(hudRenderer: HUDRenderer) : Element(hudRenderer), Poll
         val wither = witherStatusEffect?.let { player.activeStatusEffects[it] != null } ?: false
         val frozen = player.ticksFrozen > 0
 
+        val absorptionsAmount = max(0.0f, player.playerAbsorptionHearts) // ToDo: This is (probably) calculated as effect instance
+
+        val maxHealth = max(0.0f, player.getAttributeValue(DefaultStatusEffectAttributeNames.GENERIC_MAX_HEALTH).toFloat())
+
         var health = player.healthCondition.hp
         if (health > 0.0f && health < 0.5f) {
             health = 0.5f
         }
-        val absorptionsAmount = player.playerAbsorptionHearts // ToDo: This is (probably) calculated as effect instance
-
-        val maxHealth = player.getAttributeValue(DefaultStatusEffectAttributeNames.GENERIC_MAX_HEALTH).toFloat()
+        health = min(health, maxHealth)
 
         if (this.hardcode == hardcode && this.poison == poison && this.wither == wither && this.frozen == frozen && this.health == health && this.absorptionsAmount == absorptionsAmount && this.maxHealth == maxHealth) {
             return false

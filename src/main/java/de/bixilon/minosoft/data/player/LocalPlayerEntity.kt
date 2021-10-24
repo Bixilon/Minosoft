@@ -30,7 +30,7 @@ import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.effects.DefaultStatusEffects
 import de.bixilon.minosoft.data.registries.effects.attributes.DefaultStatusEffectAttributeNames
 import de.bixilon.minosoft.data.registries.effects.attributes.DefaultStatusEffectAttributes
-import de.bixilon.minosoft.data.registries.effects.attributes.StatusEffectAttributeInstance
+import de.bixilon.minosoft.data.registries.effects.attributes.EntityAttribute
 import de.bixilon.minosoft.data.registries.enchantment.DefaultEnchantments
 import de.bixilon.minosoft.data.registries.items.DefaultItems
 import de.bixilon.minosoft.data.registries.items.Item
@@ -133,10 +133,10 @@ class LocalPlayerEntity(
             if (value == field) {
                 return
             }
-            attributes[DefaultStatusEffectAttributeNames.GENERIC_MOVEMENT_SPEED]?.remove(DefaultStatusEffectAttributes.SPRINT_SPEED_BOOST.uuid)
+            attributes[DefaultStatusEffectAttributeNames.GENERIC_MOVEMENT_SPEED]?.modifiers?.remove(DefaultStatusEffectAttributes.SPRINT_SPEED_BOOST.uuid)
 
             if (value) {
-                attributes.getOrPut(DefaultStatusEffectAttributeNames.GENERIC_MOVEMENT_SPEED) { synchronizedMapOf() }[DefaultStatusEffectAttributes.SPRINT_SPEED_BOOST.uuid] = StatusEffectAttributeInstance(DefaultStatusEffectAttributes.SPRINT_SPEED_BOOST, 1)
+                attributes.getOrPut(DefaultStatusEffectAttributeNames.GENERIC_MOVEMENT_SPEED) { EntityAttribute() }.modifiers[DefaultStatusEffectAttributes.SPRINT_SPEED_BOOST.uuid] = DefaultStatusEffectAttributes.SPRINT_SPEED_BOOST
             }
             field = value
         }

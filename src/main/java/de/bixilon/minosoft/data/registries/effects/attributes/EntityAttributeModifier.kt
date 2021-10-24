@@ -10,10 +10,30 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-
 package de.bixilon.minosoft.data.registries.effects.attributes
 
-class StatusEffectAttributeInstance(
-    val statusEffectAttribute: StatusEffectAttribute,
-    val amplifier: Int,
-)
+import de.bixilon.minosoft.util.KUtil.unsafeCast
+import de.bixilon.minosoft.util.Util
+import java.util.*
+
+data class EntityAttributeModifier(
+    val name: String,
+    val uuid: UUID,
+    val amount: Double,
+    val operation: StatusEffectOperations,
+) {
+    override fun toString(): String {
+        return name
+    }
+
+    companion object {
+        fun deserialize(data: Map<String, Any>): EntityAttributeModifier {
+            return EntityAttributeModifier(
+                name = data["name"].unsafeCast(),
+                uuid = Util.getUUIDFromString(data["uuid"].unsafeCast()),
+                amount = data["amount"].unsafeCast(),
+                operation = StatusEffectOperations[data["operation"].unsafeCast<String>()],
+            )
+        }
+    }
+}

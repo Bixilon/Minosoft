@@ -26,8 +26,8 @@ import de.bixilon.minosoft.data.registries.AABB
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.types.FluidBlock
 import de.bixilon.minosoft.data.registries.effects.StatusEffect
-import de.bixilon.minosoft.data.registries.effects.attributes.StatusEffectAttribute
-import de.bixilon.minosoft.data.registries.effects.attributes.StatusEffectAttributeInstance
+import de.bixilon.minosoft.data.registries.effects.attributes.EntityAttribute
+import de.bixilon.minosoft.data.registries.effects.attributes.EntityAttributeModifier
 import de.bixilon.minosoft.data.registries.effects.attributes.StatusEffectOperations
 import de.bixilon.minosoft.data.registries.enchantment.Enchantment
 import de.bixilon.minosoft.data.registries.entities.EntityType
@@ -72,7 +72,7 @@ abstract class Entity(
     protected val random = Random
     open val equipment: MutableMap<EquipmentSlots, ItemStack> = mutableMapOf()
     val activeStatusEffects: MutableMap<StatusEffect, StatusEffectInstance> = synchronizedMapOf()
-    val attributes: MutableMap<ResourceLocation, MutableMap<UUID, StatusEffectAttributeInstance>> = synchronizedMapOf()
+    val attributes: MutableMap<ResourceLocation, EntityAttribute> = synchronizedMapOf()
 
     val id: Int?
         get() = connection.world.entities.getId(this)
@@ -154,28 +154,30 @@ abstract class Entity(
         activeStatusEffects.remove(effect)
     }
 
-    fun getAttributeValue(attribute: ResourceLocation, baseValue: Double = entityType.attributes[attribute] ?: 1.0): Double {
+    fun getAttributeValue(name: ResourceLocation, baseValue: Double? = null): Double {
         // ToDo: Check order and verify value
-        var ret = baseValue
+        val attribute = attributes[name]
+        val realBaseValue = baseValue ?: attribute?.baseValue ?: 1.0
+        var ret = realBaseValue
 
-        fun addToValue(statusEffectAttribute: StatusEffectAttribute, amplifier: Int) {
-            val instanceValue = statusEffectAttribute.amount * amplifier
-            when (statusEffectAttribute.operation) {
+        fun addToValue(modifier: EntityAttributeModifier, amplifier: Int) {
+            val instanceValue = modifier.amount * amplifier
+            when (modifier.operation) {
                 StatusEffectOperations.MULTIPLY_TOTAL -> ret *= 1.0 + instanceValue
                 StatusEffectOperations.ADDITION -> ret += instanceValue
-                StatusEffectOperations.MULTIPLY_BASE -> ret += baseValue * (instanceValue + 1.0)
+                StatusEffectOperations.MULTIPLY_BASE -> ret += realBaseValue * (instanceValue + 1.0)
             }
         }
 
-        attributes[attribute]?.let {
-            for (instance in it.values) {
-                addToValue(instance.statusEffectAttribute, instance.amplifier)
+        attribute?.let {
+            for (instance in it.modifiers.values) {
+                addToValue(instance, 1)
             }
         }
 
         for (statusEffect in activeStatusEffects.values) {
             for ((instanceResourceLocation, instance) in statusEffect.statusEffect.attributes) {
-                if (instanceResourceLocation != attribute) {
+                if (instanceResourceLocation != name) {
                     continue
                 }
                 addToValue(instance, statusEffect.amplifier)

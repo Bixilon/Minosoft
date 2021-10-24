@@ -13,8 +13,10 @@
 package de.bixilon.minosoft.protocol.packets.s2c.play
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.effects.attributes.StatusEffectAttribute
+import de.bixilon.minosoft.data.registries.effects.attributes.EntityAttribute
+import de.bixilon.minosoft.data.registries.effects.attributes.EntityAttributeModifier
 import de.bixilon.minosoft.data.registries.effects.attributes.StatusEffectOperations
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_14W04A
@@ -26,32 +28,42 @@ import java.util.*
 
 class EntityEffectAttributesS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     val entityId: Int = buffer.readEntityId()
-    val attributes: Map<ResourceLocation, StatusEffectAttribute>
+    val attributes: Map<ResourceLocation, EntityAttribute>
 
     init {
-        val attributes: MutableMap<ResourceLocation, StatusEffectAttribute> = mutableMapOf()
-        val count: Int = if (buffer.versionId < V_21W08A) {
+        val attributes: MutableMap<ResourceLocation, EntityAttribute> = mutableMapOf()
+        val attributeCount: Int = if (buffer.versionId < V_21W08A) {
             buffer.readInt()
         } else {
             buffer.readVarInt()
         }
-        for (i in 0 until count) {
+        for (i in 0 until attributeCount) {
             val key: ResourceLocation = buffer.readResourceLocation()
-            val value: Double = buffer.readDouble() // ToDo: For what is this?
-            val listLength: Int = if (buffer.versionId < V_14W04A) {
+            val baseValue: Double = buffer.readDouble()
+            val attribute = EntityAttribute(baseValue = baseValue)
+            val modifierCount: Int = if (buffer.versionId < V_14W04A) {
                 buffer.readUnsignedShort()
             } else {
                 buffer.readVarInt()
             }
-            for (ii in 0 until listLength) {
+            for (ii in 0 until modifierCount) {
                 val uuid: UUID = buffer.readUUID()
                 val amount: Double = buffer.readDouble()
                 val operation = StatusEffectOperations[buffer.readUnsignedByte()]
-                // ToDo: modifiers
-                attributes[key] = StatusEffectAttribute("", uuid, amount, operation)
+                attribute.modifiers[uuid] = EntityAttributeModifier(key.toString(), uuid, amount, operation)
             }
+            attributes[key] = attribute
         }
         this.attributes = attributes.toMap()
+    }
+
+    override fun handle(connection: PlayConnection) {
+        connection.world.entities[entityId]?.let {
+            for ((key, attribute) in this.attributes) {
+                it.attributes.getOrPut(key) { EntityAttribute(baseValue = it.entityType.attributes[key] ?: 1.0) }.merge(attribute)
+
+            }
+        }
     }
 
     override fun log() {
