@@ -68,7 +68,7 @@ object RenderConstants {
 
     const val CAMPFIRE_ITEMS = 4
 
-    const val DOUBLE_PRESS_KEY_PRESS_MAX_DELAY = 200
+    const val DOUBLE_PRESS_KEY_PRESS_MAX_DELAY = 300
     const val DOUBLE_PRESS_DELAY_BETWEEN_PRESSED = 500
 
     const val MAXIMUM_PARTICLE_AMOUNT = 200000

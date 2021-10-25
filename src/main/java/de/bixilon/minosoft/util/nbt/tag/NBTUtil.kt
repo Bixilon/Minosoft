@@ -59,4 +59,24 @@ object NBTUtil {
         }
         return null
     }
+
+    val Any?.type: NBTTagTypes
+        get() {
+            return when (this) {
+                null -> NBTTagTypes.END
+                is Byte -> NBTTagTypes.BYTE
+                is Short -> NBTTagTypes.SHORT
+                is Int -> NBTTagTypes.INT
+                is Long -> NBTTagTypes.LONG
+                is Float -> NBTTagTypes.FLOAT
+                is Double -> NBTTagTypes.DOUBLE
+                is ByteArray -> NBTTagTypes.BYTE_ARRAY
+                is CharSequence -> NBTTagTypes.STRING
+                is Collection<*> -> NBTTagTypes.LIST
+                is Map<*, *> -> NBTTagTypes.COMPOUND
+                is IntArray -> NBTTagTypes.INT_ARRAY
+                is LongArray -> NBTTagTypes.LONG_ARRAY
+                else -> throw  IllegalArgumentException("NBT does not support ${type::class.java.name}")
+            }
+        }
 }
