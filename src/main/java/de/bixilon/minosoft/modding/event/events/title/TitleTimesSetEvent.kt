@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -10,23 +10,21 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.modding.event.events.title
 
-package de.bixilon.minosoft.protocol.packets.s2c.play.title
-
-import de.bixilon.minosoft.modding.event.events.title.TitleResetEvent
+import de.bixilon.minosoft.modding.event.EventInitiators
+import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
-import de.bixilon.minosoft.util.logging.Log
-import de.bixilon.minosoft.util.logging.LogLevels
-import de.bixilon.minosoft.util.logging.LogMessageType
+import de.bixilon.minosoft.protocol.packets.s2c.play.title.TitleTimesSetS2CP
 
-class TitleResetS2CP : PlayS2CPacket() {
+class TitleTimesSetEvent(
+    connection: PlayConnection,
+    initiator: EventInitiators,
+    val fadeInTime: Int,
+    val stayTime: Int,
+    val fadeOutTime: Int,
+) : PlayConnectionEvent(connection, initiator) {
 
-    override fun handle(connection: PlayConnection) {
-        connection.fireEvent(TitleResetEvent(connection, this))
-    }
+    constructor(connection: PlayConnection, packet: TitleTimesSetS2CP) : this(connection, EventInitiators.SERVER, packet.fadeInTime, packet.stayTime, packet.fadeOutTime)
 
-    override fun log() {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Title reset" }
-    }
 }

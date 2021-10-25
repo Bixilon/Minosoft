@@ -265,7 +265,7 @@ class PacketTypes {
         PLAY_TITLE({ TitleS2CF.createPacket(it) }, isThreadSafe = false),
         PLAY_TITLE_CLEAR({ TitleS2CF.createClearTitlePacket(it) }, isThreadSafe = false),
         PLAY_HOTBAR_TEXT_SET({ HotbarTextSetS2CP(it) }),
-        PLAY_SUB_TITLE_SET({ SubTitleSetS2CP(it) }, isThreadSafe = false),
+        PLAY_TITLE_SUBTITLE_SET({ TitleSubtitleSetS2CP(it) }, isThreadSafe = false),
         PLAY_TITLE_SET({ TitleSetS2CP(it) }, isThreadSafe = false),
         PLAY_TITLE_TIMES_SET({ TitleTimesSetS2CP(it) }, isThreadSafe = false),
         PLAY_EMPTY_ENTITY_MOVE({ EmptyEntityMoveS2CP(it) }, isThreadSafe = false),
