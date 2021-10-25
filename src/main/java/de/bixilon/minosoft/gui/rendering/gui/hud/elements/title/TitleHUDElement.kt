@@ -17,13 +17,50 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.LayoutedHUDElement
+import de.bixilon.minosoft.gui.rendering.util.vec.Vec2Util.EMPTY
+import de.bixilon.minosoft.modding.event.events.title.*
+import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import glm_.vec2.Vec2i
 
 class TitleHUDElement(hudRenderer: HUDRenderer) : LayoutedHUDElement<TitleElement>(hudRenderer) {
     override val layout: TitleElement = TitleElement(hudRenderer)
     override val layoutOffset: Vec2i
-        get() = TODO("Not yet implemented")
+        get() {
+            val layoutOffset = Vec2i.EMPTY
+
+            val scaledSize = hudRenderer.scaledSize
+
+            layoutOffset.x = (scaledSize.x - layout.size.x / 2) / 2
+            layoutOffset.y = (scaledSize.y - layout.title.size.y) / 2
+
+            return layoutOffset
+        }
+
+    override fun init() {
+        val connection = hudRenderer.connection
+
+        connection.registerEvent(CallbackEventInvoker.of<TitleResetEvent> {
+            layout.reset()
+        })
+        connection.registerEvent(CallbackEventInvoker.of<TitleHideEvent> {
+            layout.hide()
+        })
+        connection.registerEvent(CallbackEventInvoker.of<TitleSetEvent> {
+            layout.title.text = it.title
+            layout.show()
+        })
+        connection.registerEvent(CallbackEventInvoker.of<TitleSubtitleSetEvent> {
+            layout.subtitle.text = it.subtitle
+            // layout.show() // non vanilla behavior
+        })
+        connection.registerEvent(CallbackEventInvoker.of<TitleTimesSetEvent> {
+            layout.fadeInTime = it.fadeInTime * ProtocolDefinition.TICK_TIME.toLong()
+            layout.stayTime = it.stayTime * ProtocolDefinition.TICK_TIME.toLong()
+            layout.fadeOutTime = it.fadeOutTime * ProtocolDefinition.TICK_TIME.toLong()
+        })
+    }
 
 
     companion object : HUDBuilder<TitleHUDElement> {
