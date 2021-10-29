@@ -15,18 +15,17 @@ package de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar
 
 import de.bixilon.minosoft.data.entities.entities.LivingEntity
 import de.bixilon.minosoft.data.registries.effects.attributes.DefaultStatusEffectAttributeNames
+import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ImageElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.util.KUtil.decide
+import de.bixilon.minosoft.util.MMath.round10
 import glm_.vec2.Vec2i
-import java.lang.Float
-import kotlin.Boolean
-import kotlin.Int
-import kotlin.arrayOf
-import kotlin.let
+import java.lang.Float.max
 
 class HotbarVehicleHealthElement(hudRenderer: HUDRenderer) : AbstractHotbarHealthElement(hudRenderer), Pollable {
     private val atlasManager = hudRenderer.atlasManager
@@ -45,7 +44,9 @@ class HotbarVehicleHealthElement(hudRenderer: HUDRenderer) : AbstractHotbarHealt
     override var totalMaxHealth = 0.0f
 
     override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
-        // ToDo: Eventual text replace
+        if (text) {
+            return super.forceRender(offset, z, consumer, options)
+        }
         drawCanisters(offset, z, consumer, options, vehicleHeartContainer)
 
         var healthLeft = totalHealth
@@ -82,7 +83,7 @@ class HotbarVehicleHealthElement(hudRenderer: HUDRenderer) : AbstractHotbarHealt
         }
 
         val health = riddenEntity.health.toFloat()
-        val maxHealth = Float.max(0.0f, riddenEntity.getAttributeValue(DefaultStatusEffectAttributeNames.GENERIC_MAX_HEALTH).toFloat())
+        val maxHealth = max(0.0f, riddenEntity.getAttributeValue(DefaultStatusEffectAttributeNames.GENERIC_MAX_HEALTH).toFloat())
 
         if (health == this.totalHealth && this.totalMaxHealth == maxHealth) {
             return false
@@ -91,6 +92,10 @@ class HotbarVehicleHealthElement(hudRenderer: HUDRenderer) : AbstractHotbarHealt
         this.totalMaxHealth = maxHealth
 
         return true
+    }
+
+    override fun createText(): ChatComponent {
+        return TextComponent("${totalHealth.round10} / ${totalMaxHealth.round10}").color(NORMAL_TEXT_COLOR)
     }
 
     override fun tick() {

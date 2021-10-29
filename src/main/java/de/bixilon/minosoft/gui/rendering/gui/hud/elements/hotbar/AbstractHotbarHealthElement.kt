@@ -1,7 +1,10 @@
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar
 
+import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.data.text.RGBColor.Companion.asColor
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ImageElement
+import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.hud.atlas.HUDAtlasElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
@@ -14,17 +17,27 @@ abstract class AbstractHotbarHealthElement(hudRenderer: HUDRenderer) : Element(h
     abstract val totalMaxHealth: Float
     var totalMaxHearts = 0
     var rows = 0
+    var text = false
+    private var textElement = TextElement(hudRenderer, "", parent = this)
 
 
     override fun forceSilentApply() {
         totalMaxHearts = (totalMaxHealth / 2).ceil
 
-        rows = totalMaxHearts / HEARTS_PER_ROW
-        if (totalMaxHearts % HEARTS_PER_ROW != 0) {
-            rows++
+        text = totalMaxHearts > HP_TEXT_LIMIT
+        if (text) {
+            textElement.text = createText()
+
+            _size = textElement.size
+        } else {
+            rows = totalMaxHearts / HEARTS_PER_ROW
+            if (totalMaxHearts % HEARTS_PER_ROW != 0) {
+                rows++
+            }
+
+            _size = Vec2i(HEARTS_PER_ROW, rows) * HEART_SIZE + Vec2i(1, 0) // 1 pixel is overlapping, so we have one more for the heart
         }
 
-        _size = Vec2i(HEARTS_PER_ROW, rows) * HEART_SIZE + Vec2i(1, 0) // 1 pixel is overlapping, so we have one more for the heart
         cacheUpToDate = false
     }
 
@@ -39,11 +52,19 @@ abstract class AbstractHotbarHealthElement(hudRenderer: HUDRenderer) : Element(h
         }
     }
 
+    override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
+        return textElement.render(offset, z, consumer, options)
+    }
+
+    abstract fun createText(): ChatComponent
+
 
     companion object {
-        const val LAYERS = 2
+        val NORMAL_TEXT_COLOR = "#ff1313".asColor()
         private const val HP_PER_ROW = 20
         const val HEARTS_PER_ROW = HP_PER_ROW / 2
         val HEART_SIZE = Vec2i(8, 9)
+        const val LAYERS = 2
+        const val HP_TEXT_LIMIT = 40
     }
 }

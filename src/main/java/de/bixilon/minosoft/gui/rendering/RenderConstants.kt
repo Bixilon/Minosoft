@@ -33,7 +33,6 @@ object RenderConstants {
 
 
     val EXPERIENCE_BAR_LEVEL_COLOR = "#80ff20".asColor()
-    val HP_TEXT_COLOR = "#ff1313".asColor()
 
     const val COLORMAP_SIZE = 255
 

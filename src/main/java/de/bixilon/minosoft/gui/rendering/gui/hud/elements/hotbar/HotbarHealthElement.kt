@@ -15,6 +15,10 @@ package de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar
 
 import de.bixilon.minosoft.data.registries.effects.DefaultStatusEffects
 import de.bixilon.minosoft.data.registries.effects.attributes.DefaultStatusEffectAttributeNames
+import de.bixilon.minosoft.data.text.BaseComponent
+import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.data.text.RGBColor.Companion.asColor
+import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ImageElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
@@ -23,6 +27,7 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.util.KUtil.decide
 import de.bixilon.minosoft.util.KUtil.unsafeCast
+import de.bixilon.minosoft.util.MMath.round10
 import glm_.vec2.Vec2i
 import java.lang.Float.max
 import java.lang.Float.min
@@ -144,7 +149,10 @@ class HotbarHealthElement(hudRenderer: HUDRenderer) : AbstractHotbarHealthElemen
     override var totalMaxHealth = 0.0f
 
     override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
-        // ToDo: Damage animation, regeneration, caching, stacking (and eventual text replace)
+        if (text) {
+            return super.forceRender(offset, z, consumer, options)
+        }
+        // ToDo: Damage animation, regeneration, caching, stacking
         drawCanisters(offset, z, consumer, options, blackHeartContainer)
 
         val hardcoreIndex = hardcode.decide(1, 0)
@@ -239,7 +247,36 @@ class HotbarHealthElement(hudRenderer: HUDRenderer) : AbstractHotbarHealthElemen
         return true
     }
 
+    override fun createText(): ChatComponent {
+        val text = BaseComponent()
+
+        text += TextComponent(totalHealth.round10).apply {
+            color = when {
+                poison -> POISON_TEXT_COLOR
+                wither -> WITHER_TEXT_COLOR
+                frozen -> FROZEN_TEXT_COLOR
+                else -> NORMAL_TEXT_COLOR
+            }
+        }
+        text += TextComponent("/")
+        text += TextComponent(totalMaxHealth.round10).apply {
+            color = when {
+                absorptionsAmount > 0.0f -> ABSORPTION_TEXT_COLOR
+                else -> NORMAL_TEXT_COLOR
+            }
+        }
+
+        return text
+    }
+
     override fun tick() {
         apply()
+    }
+
+    companion object {
+        val POISON_TEXT_COLOR = "#602020".asColor()
+        val WITHER_TEXT_COLOR = "#2b2b2b".asColor()
+        val FROZEN_TEXT_COLOR = "#a8f7ff".asColor()
+        val ABSORPTION_TEXT_COLOR = "#d4af37".asColor()
     }
 }
