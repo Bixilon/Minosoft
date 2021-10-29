@@ -281,6 +281,7 @@ object KUtil {
 
     fun Any?.format(): ChatComponent {
         return ChatComponent.of(when (this) {
+            is ChatComponent -> return this
             null -> TextComponent("null").color(ChatColors.DARK_RED)
             is TextFormattable -> this.toText()
             is Boolean -> TextComponent(this.toString()).color(this.decide(ChatColors.GREEN, ChatColors.RED))
