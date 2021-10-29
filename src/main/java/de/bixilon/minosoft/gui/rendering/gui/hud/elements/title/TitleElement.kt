@@ -25,9 +25,10 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import glm_.vec2.Vec2i
 import java.lang.Integer.max
 
+// ToDo: Remove subtitle when hidden
 class TitleElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
     val title = FadingTextElement(hudRenderer, "", background = false, scale = 4.0f, parent = this)
-    val subtitle = FadingTextElement(hudRenderer, "", background = false, parent = this)
+    val subtitle = FadingTextElement(hudRenderer, "", background = false, scale = 2.0f, parent = this)
     var fadeInTime = 0L
         set(value) {
             title.fadeInTime = value
