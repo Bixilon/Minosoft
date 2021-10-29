@@ -470,5 +470,26 @@
       "start": [25, 18],
       "end": [34, 27]
     }
+  },
+  "minecraft:vehicle_heart_container": {
+    "0": {
+      "texture": "minecraft:textures/gui/icons.png",
+      "start": [52, 9],
+      "end": [61, 18]
+    }
+  },
+  "minecraft:vehicle_heart": {
+    "0": {
+      "texture": "minecraft:textures/gui/icons.png",
+      "start": [97, 9],
+      "end": [106, 18]
+    }
+  },
+  "minecraft:vehicle_half_heart": {
+    "0": {
+      "texture": "minecraft:textures/gui/icons.png",
+      "start": [88, 9],
+      "end": [97, 18]
+    }
   }
 }

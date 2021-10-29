@@ -26,8 +26,8 @@ import glm_.vec2.Vec2i
 import java.lang.Integer.max
 
 class TitleElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
-    val title = FadingTextElement(hudRenderer, "", scale = 4.0f, parent = this)
-    val subtitle = FadingTextElement(hudRenderer, "", parent = this)
+    val title = FadingTextElement(hudRenderer, "", background = false, scale = 4.0f, parent = this)
+    val subtitle = FadingTextElement(hudRenderer, "", background = false, parent = this)
     var fadeInTime = 0L
         set(value) {
             title.fadeInTime = value
@@ -45,6 +45,16 @@ class TitleElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
             title.fadeOutTime = value
             subtitle.fadeOutTime = value
             field = value
+        }
+    override var cacheEnabled: Boolean
+        get() = super.cacheEnabled && title.cacheEnabled && subtitle.cacheEnabled
+        set(value) {
+            super.cacheEnabled = value
+        }
+    override var cacheUpToDate: Boolean
+        get() = super.cacheUpToDate && title.cacheUpToDate && subtitle.cacheUpToDate
+        set(value) {
+            super.cacheEnabled = value
         }
 
     init {

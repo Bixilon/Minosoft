@@ -34,6 +34,7 @@ class HotbarCoreElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
     val hunger = HotbarHungerElement(hudRenderer)
     val protection = HotbarProtectionElement(hudRenderer)
     val air = HotbarAirElement(hudRenderer)
+    val vehicleHealth = HotbarVehicleHealthElement(hudRenderer)
 
     private val topLeft = RowLayout(hudRenderer, HorizontalAlignments.LEFT, 1) // contains health, protection, etc
     private val topRight = RowLayout(hudRenderer, HorizontalAlignments.RIGHT, 1) // contains hunger, air
@@ -67,6 +68,7 @@ class HotbarCoreElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
 
         topRight += air
         topRight += hunger
+        topRight += vehicleHealth // non notchain, but better imho
 
 
         base.parent = this

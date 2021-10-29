@@ -23,5 +23,4 @@ class TitleHideEvent(
 ) : PlayConnectionEvent(connection, initiator) {
 
     constructor(connection: PlayConnection, packet: TitleHideS2CP) : this(connection, EventInitiators.SERVER)
-
 }

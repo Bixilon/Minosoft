@@ -15,7 +15,6 @@ package de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar
 
 import de.bixilon.minosoft.data.registries.effects.DefaultStatusEffects
 import de.bixilon.minosoft.data.registries.effects.attributes.DefaultStatusEffectAttributeNames
-import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ImageElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
@@ -24,18 +23,17 @@ import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.util.KUtil.decide
 import de.bixilon.minosoft.util.KUtil.unsafeCast
-import de.bixilon.minosoft.util.MMath.ceil
 import glm_.vec2.Vec2i
 import java.lang.Float.max
 import java.lang.Float.min
 
-class HotbarHealthElement(hudRenderer: HUDRenderer) : Element(hudRenderer), Pollable {
+class HotbarHealthElement(hudRenderer: HUDRenderer) : AbstractHotbarHealthElement(hudRenderer), Pollable {
     private val witherStatusEffect = hudRenderer.connection.registries.statusEffectRegistry[DefaultStatusEffects.WITHER]
     private val poisonStatusEffect = hudRenderer.connection.registries.statusEffectRegistry[DefaultStatusEffects.POISON]
     private val atlasManager = hudRenderer.atlasManager
 
     /**
-     *  [normal|hardcore][normal|poison|wither][normal|damage][full|half]
+     *  [normal|hardcore] [normal|poison|wither] [normal|damage] [full|half]
      */
     private val hearts = arrayOf(
         arrayOf(
@@ -140,24 +138,14 @@ class HotbarHealthElement(hudRenderer: HUDRenderer) : Element(hudRenderer), Poll
 
     private var health = 0.0f
     private var absorptionsAmount = 0.0f
-    private var totalHealth = 0.0f
+    override var totalHealth = 0.0f
 
     private var maxHealth = 0.0f
-    private var totalMaxHealth = 0.0f
-
-    private var totalMaxHearts = 0
-    private var rows = 0
+    override var totalMaxHealth = 0.0f
 
     override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
         // ToDo: Damage animation, regeneration, caching, stacking (and eventual text replace)
-        for (heart in 0 until totalMaxHearts) {
-            val row = heart / HEARTS_PER_ROW
-            val column = heart % HEARTS_PER_ROW
-
-            val image = ImageElement(hudRenderer, blackHeartContainer)
-
-            image.render(offset + Vec2i(column, (rows - 1) - row) * HEART_SIZE, z, consumer, options)
-        }
+        drawCanisters(offset, z, consumer, options, blackHeartContainer)
 
         val hardcoreIndex = hardcode.decide(1, 0)
 
@@ -198,10 +186,10 @@ class HotbarHealthElement(hudRenderer: HUDRenderer) : Element(hudRenderer), Poll
 
 
             val halfHeart = healthLeft < 1.5f
-            val image = when {
-                halfHeart -> selectArray.unsafeCast<Array<HUDAtlasElement?>>()[1]?.let { ImageElement(hudRenderer, it) }
-                else -> selectArray.unsafeCast<Array<HUDAtlasElement?>>()[0]?.let { ImageElement(hudRenderer, it) }
-            }
+            val image = selectArray.unsafeCast<Array<HUDAtlasElement?>>()[when {
+                halfHeart -> 1
+                else -> 0
+            }]?.let { ImageElement(hudRenderer, it) }
 
             image?.render(offset + Vec2i(column, (rows - 1) - row) * HEART_SIZE, z + 1, consumer, options)
 
@@ -209,23 +197,14 @@ class HotbarHealthElement(hudRenderer: HUDRenderer) : Element(hudRenderer), Poll
             healthLeft -= halfHeart.decide(1.0f, 2.0f)
         }
 
-        return 2
+        return LAYERS
     }
 
     override fun forceSilentApply() {
         totalHealth = health + absorptionsAmount
 
         totalMaxHealth = maxHealth + absorptionsAmount
-
-        totalMaxHearts = (totalMaxHealth / 2).ceil
-
-        rows = totalMaxHearts / HEARTS_PER_ROW
-        if (totalMaxHearts % HEARTS_PER_ROW != 0) {
-            rows++
-        }
-
-        _size = Vec2i(HEARTS_PER_ROW, rows) * HEART_SIZE + Vec2i(1, 0) // 1 pixel is overlapping, so we have one more for the heart
-        cacheUpToDate = false
+        super.forceSilentApply()
     }
 
     override fun poll(): Boolean {
@@ -262,11 +241,5 @@ class HotbarHealthElement(hudRenderer: HUDRenderer) : Element(hudRenderer), Poll
 
     override fun tick() {
         apply()
-    }
-
-    companion object {
-        private const val HP_PER_ROW = 20
-        private const val HEARTS_PER_ROW = HP_PER_ROW / 2
-        private val HEART_SIZE = Vec2i(8, 9)
     }
 }
