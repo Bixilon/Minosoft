@@ -51,7 +51,7 @@ class Horse(connection: PlayConnection, entityType: EntityType, position: Vec3d,
                 1 -> LEGACY_IRON_ARMOR
                 2 -> LEGACY_GOLD_ARMOR
                 3 -> LEGACY_DIAMOND_ARMOR
-                else -> error("Invalid armor set")
+                else -> null
             }]
         }
 

@@ -253,6 +253,10 @@ class BaseComponent : ChatComponent {
         }
     }
 
+    override fun hashCode(): Int {
+        return parts.hashCode()
+    }
+
     override fun equals(other: Any?): Boolean {
         if (other === this) {
             return true

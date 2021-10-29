@@ -211,6 +211,11 @@ open class TextComponent(
         )
     }
 
+    override fun hashCode(): Int {
+        return message.hashCode()
+    }
+
+
     override fun equals(other: Any?): Boolean {
         if (other === this) {
             return true

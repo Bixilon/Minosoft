@@ -428,7 +428,6 @@ object KUtil {
         return this.toString().replace("-", "")
     }
 
-
     fun <T : ResourceLocationAble> List<T>.asResourceLocationMap(): Map<ResourceLocation, T> {
         val ret: MutableMap<ResourceLocation, T> = mutableMapOf()
 
@@ -449,7 +448,6 @@ object KUtil {
     fun ByteArray.toBase64(): String {
         return Base64.getEncoder().encodeToString(this)
     }
-
 
     fun String?.nullCompare(other: String?): Int? {
         (this ?: "").compareTo(other ?: "").let {

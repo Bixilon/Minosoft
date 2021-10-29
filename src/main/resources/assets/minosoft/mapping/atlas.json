@@ -478,14 +478,14 @@
       "end": [61, 18]
     }
   },
-  "minecraft:vehicle_heart": {
+  "minecraft:vehicle_half_heart": {
     "0": {
       "texture": "minecraft:textures/gui/icons.png",
       "start": [97, 9],
       "end": [106, 18]
     }
   },
-  "minecraft:vehicle_half_heart": {
+  "minecraft:vehicle_heart": {
     "0": {
       "texture": "minecraft:textures/gui/icons.png",
       "start": [88, 9],

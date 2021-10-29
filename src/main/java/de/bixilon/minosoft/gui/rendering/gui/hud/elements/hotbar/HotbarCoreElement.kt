@@ -66,9 +66,9 @@ class HotbarCoreElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
         topLeft += protection
         topLeft += health
 
+        topRight += vehicleHealth // ToDo: Also show in creative
         topRight += air
         topRight += hunger
-        topRight += vehicleHealth // non notchain, but better imho
 
 
         base.parent = this
