@@ -17,6 +17,8 @@
   - Lightmap
 - Transparency
   - Sort faces
+  - 2 render modes: Fast/Default
+    - No block transparency
 - water logged & FluidFillable properties
 - Force interrupt preparing if needed (e.g. new block change; light change; more important task in thread pool)
 - "Resolving" of block models

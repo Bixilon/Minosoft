@@ -31,5 +31,4 @@ class MassBlockSetEvent(
 ) : PlayConnectionEvent(connection, initiator) {
 
     constructor(connection: PlayConnection, packet: MassBlockSetS2CP) : this(connection, EventInitiators.SERVER, packet.blocks, packet.chunkPosition)
-
 }
