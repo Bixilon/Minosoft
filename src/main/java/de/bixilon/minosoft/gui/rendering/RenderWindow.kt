@@ -274,7 +274,6 @@ class RenderWindow(
         Log.log(LogMessageType.RENDERING_LOADING) { "Starting loop" }
         var closed = false
         connection.registerEvent(CallbackEventInvoker.of<WindowCloseEvent> { closed = true })
-
         while (true) {
             if (connection.wasConnected || closed) {
                 break

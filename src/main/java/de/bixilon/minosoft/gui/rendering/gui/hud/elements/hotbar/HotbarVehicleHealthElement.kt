@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar
 import de.bixilon.minosoft.data.entities.entities.LivingEntity
 import de.bixilon.minosoft.data.registries.effects.attributes.DefaultStatusEffectAttributeNames
 import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.data.text.RGBColor.Companion.asColor
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
 import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ImageElement
@@ -100,5 +101,9 @@ class HotbarVehicleHealthElement(hudRenderer: HUDRenderer) : AbstractHotbarHealt
 
     override fun tick() {
         apply()
+    }
+
+    companion object {
+        private val NORMAL_TEXT_COLOR = "#da662c".asColor()
     }
 }

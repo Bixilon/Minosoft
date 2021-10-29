@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+@Deprecated
 public class JavaBackport {
     /**
      * The maximum size of array to allocate.

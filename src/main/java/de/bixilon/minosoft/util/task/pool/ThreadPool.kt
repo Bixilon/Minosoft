@@ -193,10 +193,12 @@ open class ThreadPool(
     }
 
     companion object Priorities {
-        const val HIGHEST = 500
+        const val HIGHEST = Int.MAX_VALUE
+        const val HIGHER = 500
         const val HIGH = 100
         const val NORMAL = 0
         const val LOW = -HIGH
-        const val LOWEST = -HIGHEST
+        const val LOWER = -HIGHER
+        const val LOWEST = Int.MIN_VALUE
     }
 }

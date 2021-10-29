@@ -23,6 +23,8 @@ import de.bixilon.minosoft.gui.rendering.system.base.PixelTypes
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.Util
 import de.bixilon.minosoft.util.task.pool.DefaultThreadPool
+import de.bixilon.minosoft.util.task.pool.ThreadPool
+import de.bixilon.minosoft.util.task.pool.ThreadPoolRunnable
 import glm_.vec2.Vec2i
 import java.awt.image.BufferedImage
 import java.io.File
@@ -49,7 +51,7 @@ class ScreenshotTaker(
                 }
             }
 
-            DefaultThreadPool += {
+            DefaultThreadPool += ThreadPoolRunnable(priority = ThreadPool.HIGHER) {
                 try {
                     val bufferedImage = BufferedImage(width, height, BufferedImage.TYPE_INT_RGB)
 
@@ -97,7 +99,7 @@ class ScreenshotTaker(
 
     private fun Throwable?.fail() {
         this?.printStackTrace()
-        renderWindow.sendDebugMessage("§cFailed to make a screenshot!")
+        renderWindow.sendDebugMessage("§cFailed to make a screenshot: ${this?.message}")
     }
 
     companion object {

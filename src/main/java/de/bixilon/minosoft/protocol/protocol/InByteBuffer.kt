@@ -99,7 +99,7 @@ open class InByteBuffer {
     }
 
     fun readVelocity(): Vec3d {
-        return Vec3d(readShort(), readShort(), readShort()) / ProtocolDefinition.VELOCITY_CONSTANT
+        return Vec3d(readShort(), readShort(), readShort()) / ProtocolDefinition.VELOCITY_NETWORK_DIVIDER
     }
 
     fun readInt(): Int {

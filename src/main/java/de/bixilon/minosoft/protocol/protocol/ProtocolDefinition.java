@@ -90,7 +90,7 @@ public final class ProtocolDefinition {
     public static final float TICK_TIMEf = (float) TICK_TIME;
     public static final double TICK_TIMEd = TICK_TIME;
 
-    public static final float VELOCITY_CONSTANT = 8000.0f;
+    public static final float VELOCITY_NETWORK_DIVIDER = 8000.0f;
 
     public static final float GRAVITY = 32;
     public static final boolean FAST_MOVEMENT = true;

@@ -274,9 +274,9 @@ class HotbarHealthElement(hudRenderer: HUDRenderer) : AbstractHotbarHealthElemen
     }
 
     companion object {
-        val POISON_TEXT_COLOR = "#602020".asColor()
-        val WITHER_TEXT_COLOR = "#2b2b2b".asColor()
-        val FROZEN_TEXT_COLOR = "#a8f7ff".asColor()
-        val ABSORPTION_TEXT_COLOR = "#d4af37".asColor()
+        private val POISON_TEXT_COLOR = "#602020".asColor()
+        private val WITHER_TEXT_COLOR = "#2b2b2b".asColor()
+        private val FROZEN_TEXT_COLOR = "#a8f7ff".asColor()
+        private val ABSORPTION_TEXT_COLOR = "#d4af37".asColor()
     }
 }
