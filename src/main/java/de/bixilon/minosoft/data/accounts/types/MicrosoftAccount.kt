@@ -25,8 +25,7 @@ import java.util.*
 class MicrosoftAccount(
     val uuid: UUID,
     username: String,
-    @Json(name = "user_hash") private val userHash: String,
-    @Json(name = "xsts_token") private val xstsToken: String,
+    @Json(name = "authorization_token") private val authorizationToken: String,
 ) : Account(username) {
     @Transient var accessToken: String? = null
     override val id: String = uuid.toString()
@@ -42,6 +41,9 @@ class MicrosoftAccount(
         if (accessToken != null) {
             return
         }
+        val (xboxLiveToken, userHash) = MicrosoftOAuthUtils.getXboxLiveToken(authorizationToken)
+        val xstsToken = MicrosoftOAuthUtils.getXSTSToken(xboxLiveToken)
+
         accessToken = MicrosoftOAuthUtils.getMinecraftBearerAccessToken(userHash, xstsToken)
     }
 
@@ -49,8 +51,7 @@ class MicrosoftAccount(
         return mapOf(
             "uuid" to uuid,
             "username" to username,
-            "user_hash" to userHash,
-            "xsts_token" to xstsToken,
+            "authorization_token" to authorizationToken,
             "type" to type,
         )
     }

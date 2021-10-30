@@ -46,9 +46,10 @@ class BossbarElement(
     }
 
     override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
+        val size = size
         val titleSize = titleElement.size
         titleElement.render(offset + Vec2i(HorizontalAlignments.CENTER.getOffset(size.x, titleSize.x), 0), z, consumer, options)
-        progress.render(offset + Vec2i(0, titleSize.y), z, consumer, options)
+        progress.render(offset + Vec2i(HorizontalAlignments.CENTER.getOffset(size.x, progress.size.x), titleSize.y), z, consumer, options)
 
         return TextElement.LAYERS
     }

@@ -33,7 +33,7 @@ class TitleHUDElement(hudRenderer: HUDRenderer) : LayoutedHUDElement<TitleElemen
             val scaledSize = hudRenderer.scaledSize
 
             layoutOffset.x = (scaledSize.x - layout.size.x / 2) / 2
-            layoutOffset.y = (scaledSize.y - layout.title.size.y) / 2
+            layoutOffset.y = (scaledSize.y / 2 - layout.title.size.y)
 
             return layoutOffset
         }

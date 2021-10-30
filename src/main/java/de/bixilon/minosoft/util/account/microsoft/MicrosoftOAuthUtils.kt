@@ -46,8 +46,7 @@ object MicrosoftOAuthUtils {
         val account = MicrosoftAccount(
             uuid = accountInfo.id.asUUID(),
             username = accountInfo.name,
-            userHash = userHash,
-            xstsToken = xstsToken,
+            authorizationToken = authorizationToken,
         )
 
         account.accessToken = accessToken
