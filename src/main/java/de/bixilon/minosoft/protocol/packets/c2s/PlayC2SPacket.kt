@@ -17,5 +17,5 @@ import de.bixilon.minosoft.protocol.protocol.PlayOutByteBuffer
 // packet to send to server
 interface PlayC2SPacket : C2SPacket {
 
-    fun write(buffer: PlayOutByteBuffer) {}
+    fun write(buffer: PlayOutByteBuffer) = Unit
 }

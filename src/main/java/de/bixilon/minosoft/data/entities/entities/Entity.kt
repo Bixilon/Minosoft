@@ -393,7 +393,7 @@ abstract class Entity(
         return maxLevel
     }
 
-    open fun setObjectData(data: Int) {}
+    open fun setObjectData(data: Int) = Unit
 
     override fun toString(): String {
         return entityType.toString()

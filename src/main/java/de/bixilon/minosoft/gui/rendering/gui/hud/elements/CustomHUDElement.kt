@@ -26,5 +26,5 @@ abstract class CustomHUDElement(final override val hudRenderer: HUDRenderer) : H
      * Function to draw the custom content.
      * May create buffers, changes shaders, resets the render system, etc
      */
-    override fun draw() {}
+    override fun draw() = Unit
 }

@@ -29,7 +29,7 @@ class HotbarBaseElement(hudRenderer: HUDRenderer) : Element(hudRenderer), Pollab
     private val base = ImageElement(hudRenderer, baseAtlasElement)
     private val frame = ImageElement(hudRenderer, hudRenderer.atlasManager[FRAME]!!, size = Vec2i(FRAME_SIZE))
 
-    private val inventoryElement = ContainerItemsElement(hudRenderer, hudRenderer.connection.player.inventory, baseAtlasElement.slots)
+    private val containerElement = ContainerItemsElement(hudRenderer, hudRenderer.connection.player.inventory, baseAtlasElement.slots)
 
     private var selectedSlot = 0
 
@@ -39,7 +39,7 @@ class HotbarBaseElement(hudRenderer: HUDRenderer) : Element(hudRenderer), Pollab
 
         base.parent = this
         frame.parent = this
-        inventoryElement.parent = this
+        containerElement.parent = this
     }
 
     override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
@@ -49,7 +49,7 @@ class HotbarBaseElement(hudRenderer: HUDRenderer) : Element(hudRenderer), Pollab
             frame.render(offset + it.start - HORIZONTAL_MARGIN + FRAME_OFFSET, z + 1, consumer, options)
         }
 
-        val inventoryZ = inventoryElement.render(offset + HORIZONTAL_MARGIN, z + 2, consumer, options)
+        val inventoryZ = containerElement.render(offset + HORIZONTAL_MARGIN, z + 2, consumer, options)
 
         return 2 + inventoryZ // bar + frame
     }
@@ -57,7 +57,7 @@ class HotbarBaseElement(hudRenderer: HUDRenderer) : Element(hudRenderer), Pollab
     override fun poll(): Boolean {
         val selectedSlot = hudRenderer.connection.player.selectedHotbarSlot
 
-        if (this.selectedSlot != selectedSlot || inventoryElement.silentApply()) {
+        if (this.selectedSlot != selectedSlot || containerElement.silentApply()) {
             this.selectedSlot = selectedSlot
             return true
         }
@@ -66,14 +66,9 @@ class HotbarBaseElement(hudRenderer: HUDRenderer) : Element(hudRenderer), Pollab
     }
 
     override fun forceSilentApply() {
-        inventoryElement.silentApply()
+        containerElement.silentApply()
         cacheUpToDate = false
     }
-
-    override fun tick() {
-        apply()
-    }
-
     companion object {
         private val BASE = "minecraft:hotbar_base".toResourceLocation()
         private val FRAME = "minecraft:hotbar_frame".toResourceLocation()

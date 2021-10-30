@@ -17,7 +17,6 @@ class ContainerItemsElement(
     val slots: Map<Int, Vec2iBinding>, // ToDo: Use an array?
 ) : Element(hudRenderer) {
     private val itemElements: MutableMap<Int, ItemElementData> = synchronizedMapOf()
-    override var cacheEnabled: Boolean = false
     private var revision = -1L
 
     init {

@@ -15,13 +15,13 @@ package de.bixilon.minosoft.gui.rendering
 
 interface Renderer {
 
-    fun init() {}
+    fun init() = Unit
 
-    fun postInit() {}
+    fun postInit() = Unit
 
-    fun update() {}
+    fun update() = Unit
 
-    fun draw() {}
+    fun draw() = Unit
 
-    fun postDraw() {}
+    fun postDraw() = Unit
 }

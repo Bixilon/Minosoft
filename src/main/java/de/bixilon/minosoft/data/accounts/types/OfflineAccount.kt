@@ -22,11 +22,11 @@ class OfflineAccount(username: String) : Account(username) {
     override val id: String = username
     override val type: ResourceLocation = RESOURCE_LOCATION
 
-    override fun join(serverId: String) {}
+    override fun join(serverId: String) = Unit
 
-    override fun logout() {}
+    override fun logout() = Unit
 
-    override fun verify() {}
+    override fun verify() = Unit
 
     override fun serialize(): Map<String, Any> {
         return mapOf(

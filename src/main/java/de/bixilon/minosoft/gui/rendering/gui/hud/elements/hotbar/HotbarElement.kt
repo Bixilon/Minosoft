@@ -13,7 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar
 
+import de.bixilon.minosoft.data.inventory.InventorySlots
 import de.bixilon.minosoft.data.inventory.ItemStack
+import de.bixilon.minosoft.data.player.Arms
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
@@ -21,11 +23,17 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.text.FadingTextElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
+import de.bixilon.minosoft.gui.rendering.util.vec.Vec2Util.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.vec.Vec4Util.left
+import de.bixilon.minosoft.gui.rendering.util.vec.Vec4Util.right
 import glm_.vec2.Vec2i
 import java.lang.Integer.max
 
 class HotbarElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
     val core = HotbarCoreElement(hudRenderer)
+
+    val offhand = HotbarOffhandElement(hudRenderer)
+    private var renderOffhand = false
 
     val hoverText = FadingTextElement(hudRenderer, text = "", fadeInTime = 300, stayTime = 3000, fadeOutTime = 500, background = false, noBorder = true)
     private var hoverTextShown = false
@@ -34,9 +42,6 @@ class HotbarElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
     private var lastItemStackNameShown: ItemStack? = null
     private var lastItemSlot = -1
     private var itemTextShown = true
-
-
-    private var gamemode = hudRenderer.connection.player.tabListItem.gamemode
 
     private var renderElements = setOf(
         itemText,
@@ -49,12 +54,14 @@ class HotbarElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
         core.parent = this
         itemText.parent = this
         hoverText.parent = this
+        offhand.parent = this
         forceSilentApply()
     }
 
     override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
         val size = size
         var maxZ = 0
+
 
         if (hoverTextShown) {
             hoverText.render(offset + Vec2i(HorizontalAlignments.CENTER.getOffset(size.x, hoverText.size.x), 0), z, consumer, options)
@@ -65,7 +72,20 @@ class HotbarElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
             offset.y += itemText.size.y + ITEM_NAME_OFFSET
         }
 
-        maxZ = max(maxZ, core.render(offset + Vec2i(HorizontalAlignments.CENTER.getOffset(size.x, core.size.x), 0), z, consumer, options))
+        val coreOffset = offset + Vec2i(HorizontalAlignments.CENTER.getOffset(size.x, core.size.x), 0)
+
+        if (renderOffhand) {
+            val offhandOffset = Vec2i.EMPTY
+            if (offhand.arm == Arms.LEFT) {
+                offhandOffset.x = -offhand.size.x - offhand.margin.right
+            } else {
+                offhandOffset.x = core.size.x + offhand.margin.left
+            }
+            offhandOffset.y = core.size.y - offhand.size.y
+            maxZ = max(maxZ, offhand.render(coreOffset + offhandOffset, z, consumer, options))
+        }
+
+        maxZ = max(maxZ, core.render(coreOffset, z, consumer, options))
 
         return maxZ
     }
@@ -77,6 +97,12 @@ class HotbarElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
 
         val size = Vec2i(core.size)
 
+        renderOffhand = hudRenderer.connection.player.inventory[InventorySlots.EquipmentSlots.OFF_HAND] != null
+
+        if (renderOffhand) {
+            size.x += offhand.size.x
+            size.y = max(size.y, offhand.size.y)
+        }
 
         itemTextShown = !itemText.hidden
         if (itemTextShown) {
@@ -122,6 +148,7 @@ class HotbarElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
         hoverText.tick()
         itemText.tick()
         core.tick()
+        offhand.tick()
     }
 
     companion object {

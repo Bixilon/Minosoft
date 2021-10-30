@@ -18,7 +18,7 @@ import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.Poses
 import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
 import de.bixilon.minosoft.data.entities.entities.LivingEntity
-import de.bixilon.minosoft.data.player.Hands
+import de.bixilon.minosoft.data.player.Arms
 import de.bixilon.minosoft.data.player.PlayerProperty
 import de.bixilon.minosoft.data.player.tab.TabListItem
 import de.bixilon.minosoft.data.registries.entities.EntityType
@@ -61,9 +61,9 @@ abstract class PlayerEntity(
         return entityMetaData.sets.getBitMask(EntityMetaDataFields.PLAYER_SKIN_PARTS_FLAGS, bitMask)
     }
 
-    @get:EntityMetaDataFunction(name = "Main hand")
-    override val mainHand: Hands
-        get() = if (entityMetaData.sets.getByte(EntityMetaDataFields.PLAYER_SKIN_MAIN_HAND).toInt() == 0x01) Hands.OFF_HAND else Hands.MAIN_HAND
+    @get:EntityMetaDataFunction(name = "Main arm")
+    open val mainArm: Arms
+        get() = if (entityMetaData.sets.getByte(EntityMetaDataFields.PLAYER_SKIN_MAIN_HAND).toInt() == 0x01) Arms.RIGHT else Arms.LEFT
 
     @get:EntityMetaDataFunction(name = "Left shoulder entity data")
     val leftShoulderData: Map<String, Any>?

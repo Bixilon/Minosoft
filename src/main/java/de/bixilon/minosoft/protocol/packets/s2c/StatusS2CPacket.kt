@@ -16,7 +16,7 @@ import de.bixilon.minosoft.protocol.network.connection.status.StatusConnection
 
 abstract class StatusS2CPacket : S2CPacket() {
 
-    open fun handle(connection: StatusConnection) {}
+    open fun handle(connection: StatusConnection) = Unit
 
-    open fun check(connection: StatusConnection) {}
+    open fun check(connection: StatusConnection) = Unit
 }

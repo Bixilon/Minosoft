@@ -35,7 +35,7 @@ class MicrosoftAccount(
         AccountUtil.joinMojangServer(username, accessToken!!, uuid, serverId)
     }
 
-    override fun logout() {}
+    override fun logout() = Unit
 
     override fun verify() {
         if (accessToken != null) {

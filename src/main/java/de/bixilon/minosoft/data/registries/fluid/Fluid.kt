@@ -74,7 +74,7 @@ open class Fluid(
         entity.accelerate(sidewaysSpeed, forwardSpeed, 0.02)
     }
 
-    open fun randomTick(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, random: Random) {}
+    open fun randomTick(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, random: Random) = Unit
 
 
     protected fun updateMovement(entity: Entity, gravity: Double, falling: Boolean, velocity: Vec3d): Vec3d {

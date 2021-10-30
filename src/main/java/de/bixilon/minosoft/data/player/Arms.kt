@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -10,29 +10,26 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.data.player
 
-package de.bixilon.minosoft.util.url
+import de.bixilon.minosoft.util.KUtil
+import de.bixilon.minosoft.util.enum.ValuesEnum
 
-import java.net.URL
-import java.net.URLConnection
-import java.net.URLStreamHandler
-import java.net.URLStreamHandlerFactory
+enum class Arms {
+    LEFT,
+    RIGHT,
+    ;
 
-object URLProtocolStreamHandlers : URLStreamHandlerFactory {
-    val PROTOCOLS: MutableMap<String, URLStreamHandler> = mutableMapOf(
-        "resource" to ResourceURLHandler,
-    )
+    companion object : ValuesEnum<Arms> {
+        override val VALUES: Array<Arms> = values()
+        override val NAME_MAP: Map<String, Arms> = KUtil.getEnumValues(VALUES)
 
-    init {
-        URL.setURLStreamHandlerFactory(this)
-    }
-
-    override fun createURLStreamHandler(protocol: String?): URLStreamHandler? {
-        return PROTOCOLS[protocol]
-    }
-
-
-    val NULL_URL_CONNECTION: URLConnection = object : URLConnection(null) {
-        override fun connect() = Unit
+        val Arms.opposite: Arms
+            get() {
+                return when (this) {
+                    LEFT -> RIGHT
+                    RIGHT -> LEFT
+                }
+            }
     }
 }

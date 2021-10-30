@@ -22,15 +22,15 @@ import glm_.vec2.Vec2i
 class InfiniteSizeElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
     override var parent: Element?
         get() = null
-        set(value) {}
+        set(value) = Unit
 
     override var maxSize: Vec2i
         get() = Vec2i.MAX
-        set(value) {}
+        set(value) = Unit
 
     override var prefSize: Vec2i
         get() = Vec2i.MAX
-        set(value) {}
+        set(value) = Unit
 
     override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
         error("Can not render InfiniteSizeElement")

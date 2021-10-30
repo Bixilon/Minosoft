@@ -23,23 +23,23 @@ interface HUDElement {
     /**
      * Initializes the element (e.g. getting atlas elements, creating shaders, creating textures, etc)
      */
-    fun init() {}
+    fun init() = Unit
 
     /**
      * Phase after everything is initialized. May be used to load shaders, ...
      * Can not be used to load static textures
      */
-    fun postInit() {}
+    fun postInit() = Unit
 
     /**
      * Functions that gets called every tick
      */
-    fun tick() {}
+    fun tick() = Unit
 
 
     /**
      * Functions that sets new texts, changes data in the element
      * May be used to poll data (see Pollable)
      */
-    fun apply() {}
+    fun apply() = Unit
 }

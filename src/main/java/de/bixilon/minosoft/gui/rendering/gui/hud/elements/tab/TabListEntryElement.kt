@@ -52,10 +52,10 @@ class TabListEntryElement(
     override var prefSize: Vec2i = Vec2i.EMPTY
     override var prefMaxSize: Vec2i
         get() = Vec2i(width, HEIGHT)
-        set(value) {}
+        set(value) = Unit
     override var size: Vec2i
         get() = maxSize
-        set(value) {}
+        set(value) = Unit
 
     var width: Int = width
         set(value) {

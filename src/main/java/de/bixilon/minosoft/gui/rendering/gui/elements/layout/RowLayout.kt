@@ -45,7 +45,7 @@ open class RowLayout(
 
     override var prefSize: Vec2i
         get() = _prefSize
-        set(value) {}
+        set(value) = Unit
 
     var spacing: Int = spacing
         set(value) {

@@ -65,7 +65,7 @@ class RightClickHandler(
                 direction = raycastHit.hitDirection,
                 cursorPosition = Vec3(raycastHit.hitPosition),
                 item = connection.player.inventory.getHotbarSlot(),
-                hand = Hands.MAIN_HAND,
+                hand = Hands.MAIN,
                 insideBlock = false,  // ToDo
             ))
         }
@@ -80,7 +80,7 @@ class RightClickHandler(
         val usage = if (connection.player.isSneaking) {
             BlockUsages.PASS
         } else {
-            raycastHit.blockState.block.onUse(renderWindow.connection, raycastHit.blockState, raycastHit.blockPosition, raycastHit, Hands.MAIN_HAND, itemInHand)
+            raycastHit.blockState.block.onUse(renderWindow.connection, raycastHit.blockState, raycastHit.blockPosition, raycastHit, Hands.MAIN, itemInHand)
         }
 
         if (currentTime - lastInteractionSent < ProtocolDefinition.TICK_TIME) {
@@ -93,7 +93,7 @@ class RightClickHandler(
         when (usage) {
             BlockUsages.CONSUME, BlockUsages.SUCCESS -> {
                 if (usage == BlockUsages.SUCCESS) {
-                    connection.sendPacket(ArmSwingC2SP(Hands.MAIN_HAND))
+                    connection.sendPacket(ArmSwingC2SP(Hands.MAIN))
                 }
                 sendInteractionPacket()
             }
@@ -112,16 +112,16 @@ class RightClickHandler(
                 }
 
 
-                when (itemInHand.item.use(connection, raycastHit, Hands.MAIN_HAND, itemInHand)) {
+                when (itemInHand.item.use(connection, raycastHit, Hands.MAIN, itemInHand)) {
                     BlockUsages.SUCCESS -> {
-                        connection.sendPacket(ArmSwingC2SP(Hands.MAIN_HAND))
+                        connection.sendPacket(ArmSwingC2SP(Hands.MAIN))
 
                         connection.sendPacket(BlockPlaceC2SP(
                             position = raycastHit.blockPosition,
                             direction = raycastHit.hitDirection,
                             cursorPosition = Vec3(raycastHit.hitPosition),
                             item = connection.player.inventory.getHotbarSlot(),
-                            hand = Hands.MAIN_HAND,
+                            hand = Hands.MAIN,
                             insideBlock = false,  // ToDo
                         ))
                     }
@@ -132,7 +132,7 @@ class RightClickHandler(
                     }
                 }
                 // ToDo: Before 1.9
-                connection.sendPacket(ItemUseC2SP(Hands.MAIN_HAND))
+                connection.sendPacket(ItemUseC2SP(Hands.MAIN))
             }
         }
 

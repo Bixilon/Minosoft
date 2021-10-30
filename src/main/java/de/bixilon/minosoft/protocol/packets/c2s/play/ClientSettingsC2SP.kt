@@ -28,7 +28,7 @@ class ClientSettingsC2SP(
     val renderDistance: Int = 10,
     val chatMode: ChatModes = ChatModes.EVERYTHING,
     val skinParts: Set<SkinParts> = setOf(*SkinParts.VALUES),
-    val mainHand: Hands = Hands.MAIN_HAND,
+    val mainHand: Hands = Hands.MAIN,
     val disableTextFiltering: Boolean = true,
 ) : PlayC2SPacket {
 

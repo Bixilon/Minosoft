@@ -161,7 +161,7 @@ class LocalPlayerEntity(
         }
 
     override var velocityMultiplier: Double
-        set(value) {}
+        set(value) = Unit
         get() {
             if (isFlyingWithElytra || baseAbilities.isFlying) {
                 return 1.0
@@ -569,6 +569,9 @@ class LocalPlayerEntity(
 
     override val health: Double
         get() = healthCondition.hp.toDouble()
+
+    override val mainArm: Arms
+        get() = Minosoft.config.config.game.skin.mainArm
 
     companion object {
         private val CLIMBABLE_TAG = "minecraft:climbable".toResourceLocation()

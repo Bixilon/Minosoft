@@ -30,4 +30,5 @@ data class GameConfig(
     var entities: EntitiesConfig = EntitiesConfig(),
     var world: WorldConfig = WorldConfig(),
     var light: LightConfig = LightConfig(),
+    var skin: SkinConfig = SkinConfig(),
 )

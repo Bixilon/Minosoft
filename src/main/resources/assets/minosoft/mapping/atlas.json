@@ -659,5 +659,31 @@
       "start": [0, 115],
       "end": [182, 120]
     }
+  },
+  "minecraft:offhand_left_arm_frame": {
+    "0": {
+      "texture": "minecraft:textures/gui/widgets.png",
+      "start": [24, 23],
+      "end": [46, 45],
+      "slots": {
+        "45": {
+          "start": [3, 3],
+          "end": [19, 19]
+        }
+      }
+    }
+  },
+  "minecraft:offhand_right_arm_frame": {
+    "0": {
+      "texture": "minecraft:textures/gui/widgets.png",
+      "start": [60, 23],
+      "end": [82, 45],
+      "slots": {
+        "45": {
+          "start": [3, 3],
+          "end": [19, 19]
+        }
+      }
+    }
   }
 }

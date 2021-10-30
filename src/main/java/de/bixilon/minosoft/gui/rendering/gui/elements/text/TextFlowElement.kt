@@ -42,7 +42,7 @@ class TextFlowElement(
 
     override var prefSize: Vec2i
         get() = maxSize
-        set(value) {}
+        set(value) = Unit
 
     override var cacheEnabled: Boolean = false // ToDo: Cache
     private var textSize = Vec2i.EMPTY

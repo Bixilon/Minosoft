@@ -85,7 +85,7 @@ class LeftClickHandler(
             return
         }
         lastSwing = currentTime
-        connection.sendPacket(ArmSwingC2SP(Hands.MAIN_HAND))
+        connection.sendPacket(ArmSwingC2SP(Hands.MAIN))
     }
 
     private fun checkBreaking(isKeyDown: Boolean, deltaTime: Double): Boolean {

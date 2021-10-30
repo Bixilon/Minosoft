@@ -36,9 +36,9 @@ abstract class JavaFXController : Initializable {
         init()
     }
 
-    open fun init() {}
+    open fun init() = Unit
 
-    open fun postInit() {}
+    open fun postInit() = Unit
 
     open fun terminate() {
         GlobalEventMaster.fireEvent(ErosControllerTerminateEvent(this))

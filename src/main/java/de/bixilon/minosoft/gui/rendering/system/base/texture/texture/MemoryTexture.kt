@@ -67,5 +67,5 @@ class MemoryTexture(
     override val state: TextureStates = TextureStates.LOADED
 
 
-    override fun load(assetsManager: AssetsManager) {}
+    override fun load(assetsManager: AssetsManager) = Unit
 }

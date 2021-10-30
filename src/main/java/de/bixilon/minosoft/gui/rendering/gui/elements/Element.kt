@@ -208,5 +208,5 @@ abstract class Element(val hudRenderer: HUDRenderer) {
     /**
      * Called every tick to execute time based actions
      */
-    open fun tick() {}
+    open fun tick() = Unit
 }

@@ -56,6 +56,7 @@ class HotbarHUDElement(hudRenderer: HUDRenderer) : LayoutedHUDElement<HotbarElem
                 return@of
             }
             layout.core.base.apply()
+            layout.offhand.apply()
         })
 
         connection.registerEvent(CallbackEventInvoker.of<ChatMessageReceiveEvent> {

@@ -11,28 +11,11 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.util.url
+package de.bixilon.minosoft.config.config.game
 
-import java.net.URL
-import java.net.URLConnection
-import java.net.URLStreamHandler
-import java.net.URLStreamHandlerFactory
+import com.squareup.moshi.Json
+import de.bixilon.minosoft.data.player.Arms
 
-object URLProtocolStreamHandlers : URLStreamHandlerFactory {
-    val PROTOCOLS: MutableMap<String, URLStreamHandler> = mutableMapOf(
-        "resource" to ResourceURLHandler,
-    )
-
-    init {
-        URL.setURLStreamHandlerFactory(this)
-    }
-
-    override fun createURLStreamHandler(protocol: String?): URLStreamHandler? {
-        return PROTOCOLS[protocol]
-    }
-
-
-    val NULL_URL_CONNECTION: URLConnection = object : URLConnection(null) {
-        override fun connect() = Unit
-    }
-}
+data class SkinConfig(
+    @Json(name = "main_arm") val mainArm: Arms = Arms.RIGHT,
+)

@@ -21,13 +21,12 @@ import de.bixilon.minosoft.util.KUtil.decide
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
-import glm_.vec3.Vec3
 import glm_.vec3.Vec3i
 
 class ExplosionS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     val position = buffer.readVec3f()
     val power = buffer.readFloat()
-    val explodedBlocks: List<Vec3> = buffer.readArray((buffer.versionId < V_1_17).decide({ buffer.readInt() }, { buffer.readVarInt() })) { Vec3(buffer.readByte(), buffer.readByte(), buffer.readByte()) }.toList() // ToDo: Find out version
+    val explodedBlocks: List<Vec3i> = buffer.readArray((buffer.versionId < V_1_17).decide({ buffer.readInt() }, { buffer.readVarInt() })) { Vec3i(buffer.readByte(), buffer.readByte(), buffer.readByte()) }.toList() // ToDo: Find out version
     val velocity = buffer.readVec3f()
 
     override fun check(connection: PlayConnection) {
@@ -40,8 +39,9 @@ class ExplosionS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
 
     override fun handle(connection: PlayConnection) {
         for (record in explodedBlocks) {
-            val blockPosition = Vec3i(position + record)
+            val blockPosition = Vec3i(position) + record
             connection.world.setBlockState(blockPosition, null)
+            // ToDo: Mass set blocks
         }
         connection.player.velocity = connection.player.velocity + velocity
 

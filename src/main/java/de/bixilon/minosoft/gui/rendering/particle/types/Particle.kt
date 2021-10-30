@@ -160,7 +160,7 @@ abstract class Particle(
         }
     }
 
-    open fun postTick() {}
+    open fun postTick() = Unit
 
     open fun tick() {
         age()

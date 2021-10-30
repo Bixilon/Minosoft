@@ -108,7 +108,7 @@ class BossbarElement(
         cacheUpToDate = false
     }
 
-    override fun onChildChange(child: Element) {}
+    override fun onChildChange(child: Element) = Unit
 
 
     companion object {

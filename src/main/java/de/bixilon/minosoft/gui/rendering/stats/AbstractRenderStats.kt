@@ -24,9 +24,9 @@ interface AbstractRenderStats {
     val totalFrames: Long
 
 
-    fun startFrame() {}
-    fun endDraw() {}
-    fun endFrame() {}
+    fun startFrame() = Unit
+    fun endDraw() = Unit
+    fun endFrame() = Unit
 
 
     companion object {
