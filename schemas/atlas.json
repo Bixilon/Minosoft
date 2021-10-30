@@ -1,0 +1,74 @@
+{
+  "type": "object",
+  "definitions": {
+    "vec2i": {
+      "type": "array",
+      "items": [
+        {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4096
+        },
+        {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4096
+        }
+      ],
+      "additionalItems": false
+    }
+  },
+  "patternProperties": {
+    "": {
+      "type": "object",
+      "patternProperties": {
+        "[0-9]+": {
+          "type": "object",
+          "properties": {
+            "texture": {
+              "type": "string",
+              "pattern": "\\w+:.+\\.png"
+            },
+            "start": {
+              "$ref": "#/definitions/vec2i"
+            },
+            "end": {
+              "$ref": "#/definitions/vec2i"
+            },
+            "slots": {
+              "type": "object",
+              "patternProperties": {
+                "[0-9]+": {
+                  "properties": {
+                    "start": {
+                      "$ref": "#/definitions/vec2i"
+                    },
+                    "end": {
+                      "$ref": "#/definitions/vec2i"
+                    }
+                  },
+                  "required": [
+                    "start",
+                    "end"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "required": [
+            "texture",
+            "start",
+            "end"
+          ],
+          "optional": [
+            "slots"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
