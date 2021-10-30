@@ -25,8 +25,8 @@ object BossbarS2CPF {
         return when (BossBarActions[buffer.readVarInt()]) {
             BossBarActions.ADD -> BossbarAddS2CP(uuid, buffer)
             BossBarActions.REMOVE -> BossbarRemoveS2CP(uuid)
-            BossBarActions.SET_HEALTH -> BossbarHealthSetS2CP(uuid, buffer)
-            BossBarActions.SET_NAME -> BossbarNameSetS2CP(uuid, buffer)
+            BossBarActions.SET_VALUE -> BossbarValueSetS2CP(uuid, buffer)
+            BossBarActions.SET_TITLE -> BossbarTitleSetS2CP(uuid, buffer)
             BossBarActions.SET_STYLE -> BossbarStyleSetS2CP(uuid, buffer)
             BossBarActions.SET_FLAGS -> BossbarFlagSetS2CP(uuid, buffer)
         }
@@ -35,8 +35,8 @@ object BossbarS2CPF {
     enum class BossBarActions {
         ADD,
         REMOVE,
-        SET_HEALTH,
-        SET_NAME,
+        SET_VALUE,
+        SET_TITLE,
         SET_STYLE,
         SET_FLAGS,
         ;

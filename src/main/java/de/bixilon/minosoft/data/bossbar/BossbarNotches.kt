@@ -10,23 +10,21 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.protocol.packets.s2c.play.bossbar
+package de.bixilon.minosoft.data.bossbar
 
 import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.enum.ValuesEnum
 
-enum class BossbarColors {
-    PINK,
-    BLUE,
-    RED,
-    GREEN,
-    YELLOW,
-    PURPLE,
-    WHITE,
+enum class BossbarNotches {
+    NO_NOTCHES,
+    NOTCHES_6,
+    NOTCHES_10,
+    NOTCHES_12,
+    NOTCHES_20,
     ;
 
-    companion object : ValuesEnum<BossbarColors> {
-        override val VALUES: Array<BossbarColors> = values()
-        override val NAME_MAP: Map<String, BossbarColors> = KUtil.getEnumValues(VALUES)
+    companion object : ValuesEnum<BossbarNotches> {
+        override val VALUES: Array<BossbarNotches> = values()
+        override val NAME_MAP: Map<String, BossbarNotches> = KUtil.getEnumValues(VALUES)
     }
 }

@@ -10,11 +10,16 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.data.scoreboard
+package de.bixilon.minosoft.modding.event.events.bossbar
 
-import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
+import de.bixilon.minosoft.data.bossbar.Bossbar
+import de.bixilon.minosoft.modding.event.EventInitiators
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import java.util.*
 
-class ScoreboardManager {
-    val teams: MutableMap<String, Team> = synchronizedMapOf()
-    val objectives: MutableMap<String, ScoreboardObjective> = synchronizedMapOf()
-}
+class BossbarTitleSetEvent(
+    connection: PlayConnection,
+    initiator: EventInitiators,
+    uuid: UUID,
+    bossbar: Bossbar,
+) : BossbarEvent(connection, initiator, uuid, bossbar)

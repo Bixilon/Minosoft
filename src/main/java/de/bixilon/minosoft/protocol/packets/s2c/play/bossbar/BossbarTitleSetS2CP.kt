@@ -14,6 +14,9 @@
 package de.bixilon.minosoft.protocol.packets.s2c.play.bossbar
 
 import de.bixilon.minosoft.Minosoft
+import de.bixilon.minosoft.modding.event.EventInitiators
+import de.bixilon.minosoft.modding.event.events.bossbar.BossbarTitleSetEvent
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer
 import de.bixilon.minosoft.util.logging.Log
@@ -21,16 +24,28 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import java.util.*
 
-class BossbarNameSetS2CP(
+class BossbarTitleSetS2CP(
     val uuid: UUID,
     buffer: InByteBuffer,
 ) : PlayS2CPacket() {
-    val name = buffer.readChatComponent()
+    val title = buffer.readChatComponent()
+
+    override fun handle(connection: PlayConnection) {
+        val bossbar = connection.bossbarManager.bossbars[uuid] ?: return
+
+        if (bossbar.title == title) {
+            return
+        }
+        bossbar.title = title
+
+        connection.fireEvent(BossbarTitleSetEvent(connection, EventInitiators.SERVER, uuid, bossbar))
+    }
 
     override fun log() {
         if (Minosoft.config.config.general.reduceProtocolLog) {
+            // servers have sometimes "animated" bossbars
             return
         }
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.VERBOSE) { "Bossbar name set (uuid=$uuid, name=\"$name\")" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.VERBOSE) { "Bossbar name set (uuid=$uuid, title=\"$title\")" }
     }
 }

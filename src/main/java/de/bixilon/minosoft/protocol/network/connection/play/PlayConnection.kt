@@ -17,6 +17,7 @@ import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.ChatTextPositions
 import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.data.assets.MultiAssetsManager
+import de.bixilon.minosoft.data.bossbar.BossbarManager
 import de.bixilon.minosoft.data.commands.CommandRootNode
 import de.bixilon.minosoft.data.physics.CollisionDetector
 import de.bixilon.minosoft.data.player.LocalPlayerEntity
@@ -66,11 +67,12 @@ class PlayConnection(
     val account: Account,
     val version: Version,
 ) : Connection() {
+    val registries = Registries()
     val recipes = Recipes()
     val world = World(this)
     val tabList = TabList()
     val scoreboardManager = ScoreboardManager()
-    val registries = Registries()
+    val bossbarManager = BossbarManager()
 
     @Deprecated(message = "PacketSender is deprecated")
     val sender = PacketSender(this)

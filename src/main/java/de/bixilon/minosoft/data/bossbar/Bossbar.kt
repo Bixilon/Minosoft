@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2021 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -10,11 +10,17 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.data.scoreboard
 
-import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
+package de.bixilon.minosoft.data.bossbar
 
-class ScoreboardManager {
-    val teams: MutableMap<String, Team> = synchronizedMapOf()
-    val objectives: MutableMap<String, ScoreboardObjective> = synchronizedMapOf()
-}
+import de.bixilon.minosoft.data.text.ChatComponent
+
+data class Bossbar(
+    var title: ChatComponent = ChatComponent.EMPTY,
+    var value: Float = 0.0f,
+    var color: BossbarColors = BossbarColors.PINK,
+    var notches: BossbarNotches = BossbarNotches.NO_NOTCHES,
+    var shouldDarkenSky: Boolean = false,
+    var dragonBar: Boolean = false,
+    var fog: Boolean = false,
+)

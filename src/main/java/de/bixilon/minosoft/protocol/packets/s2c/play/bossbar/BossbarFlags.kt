@@ -10,21 +10,11 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+
 package de.bixilon.minosoft.protocol.packets.s2c.play.bossbar
 
-import de.bixilon.minosoft.util.KUtil
-import de.bixilon.minosoft.util.enum.ValuesEnum
-
-enum class BossbarNotches {
-    NO_NOTCHES,
-    NOTCHES_6,
-    NOTCHES_10,
-    NOTCHES_12,
-    NOTCHES_20,
-    ;
-
-    companion object : ValuesEnum<BossbarNotches> {
-        override val VALUES: Array<BossbarNotches> = values()
-        override val NAME_MAP: Map<String, BossbarNotches> = KUtil.getEnumValues(VALUES)
-    }
+object BossbarFlags {
+    const val SHOULD_DARKEN_SKY_MASK = 0x01
+    const val DRAGON_BAR_MASK = 0x02
+    const val FOG_MASK = 0x04
 }
