@@ -33,7 +33,7 @@ import javafx.util.Duration
 open class TextComponent(
     message: Any? = "",
     override var color: RGBColor? = null,
-    override val formatting: MutableSet<ChatFormattingCode> = DEFAULT_FORMATTING.toMutableSet(),
+    override val formatting: MutableSet<ChatFormattingCode> = DEFAULT_FORMATTING.toSynchronizedSet(),
     var clickEvent: ClickEvent? = null,
     var hoverEvent: HoverEvent? = null,
 ) : ChatComponent, TextStyle {
@@ -117,6 +117,9 @@ open class TextComponent(
                 }
             }
             for (formattingCode in this.formatting) {
+                if (formattingCode == PreChatFormattingCodes.SHADOWED) {
+                    continue
+                }
                 stringBuilder.append(ProtocolDefinition.TEXT_COMPONENT_SPECIAL_PREFIX_CHAR)
                 stringBuilder.append(formattingCode.char)
             }
