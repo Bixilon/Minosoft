@@ -491,5 +491,173 @@
       "start": [88, 9],
       "end": [97, 18]
     }
+  },
+  "minecraft:wither_bar_empty": {
+    "0": {
+      "texture": "minecraft:textures/gui/icons.png",
+      "start": [0, 74],
+      "end": [182, 79]
+    }
+  },
+  "minecraft:wither_bar_full": {
+    "0": {
+      "texture": "minecraft:textures/gui/icons.png",
+      "start": [0, 79],
+      "end": [182, 84]
+    }
+  },
+  "minecraft:bossbar_pink_empty": {
+    "0": {
+      "texture": "minecraft:textures/gui/bars.png",
+      "start": [0, 0],
+      "end": [182, 5]
+    }
+  },
+  "minecraft:bossbar_pink_full": {
+    "0": {
+      "texture": "minecraft:textures/gui/bars.png",
+      "start": [0, 5],
+      "end": [182, 10]
+    }
+  },
+  "minecraft:bossbar_blue_empty": {
+    "0": {
+      "texture": "minecraft:textures/gui/bars.png",
+      "start": [0, 10],
+      "end": [182, 15]
+    }
+  },
+  "minecraft:bossbar_blue_full": {
+    "0": {
+      "texture": "minecraft:textures/gui/bars.png",
+      "start": [0, 15],
+      "end": [182, 20]
+    }
+  },
+  "minecraft:bossbar_red_empty": {
+    "0": {
+      "texture": "minecraft:textures/gui/bars.png",
+      "start": [0, 20],
+      "end": [182, 25]
+    }
+  },
+  "minecraft:bossbar_red_full": {
+    "0": {
+      "texture": "minecraft:textures/gui/bars.png",
+      "start": [0, 25],
+      "end": [182, 30]
+    }
+  },
+  "minecraft:bossbar_green_empty": {
+    "0": {
+      "texture": "minecraft:textures/gui/bars.png",
+      "start": [0, 30],
+      "end": [182, 35]
+    }
+  },
+  "minecraft:bossbar_green_full": {
+    "0": {
+      "texture": "minecraft:textures/gui/bars.png",
+      "start": [0, 35],
+      "end": [182, 40]
+    }
+  },
+  "minecraft:bossbar_yellow_empty": {
+    "0": {
+      "texture": "minecraft:textures/gui/bars.png",
+      "start": [0, 40],
+      "end": [182, 45]
+    }
+  },
+  "minecraft:bossbar_yellow_full": {
+    "0": {
+      "texture": "minecraft:textures/gui/bars.png",
+      "start": [0, 45],
+      "end": [182, 50]
+    }
+  },
+  "minecraft:bossbar_purple_empty": {
+    "0": {
+      "texture": "minecraft:textures/gui/bars.png",
+      "start": [0, 50],
+      "end": [182, 55]
+    }
+  },
+  "minecraft:bossbar_purple_full": {
+    "0": {
+      "texture": "minecraft:textures/gui/bars.png",
+      "start": [0, 55],
+      "end": [182, 60]
+    }
+  },
+  "minecraft:bossbar_white_empty": {
+    "0": {
+      "texture": "minecraft:textures/gui/bars.png",
+      "start": [0, 60],
+      "end": [182, 65]
+    }
+  },
+  "minecraft:bossbar_white_full": {
+    "0": {
+      "texture": "minecraft:textures/gui/bars.png",
+      "start": [0, 65],
+      "end": [182, 70]
+    }
+  },
+  "minecraft:bossbar_notches_6_empty": {
+    "0": {
+      "texture": "minecraft:textures/gui/bars.png",
+      "start": [0, 80],
+      "end": [182, 85]
+    }
+  },
+  "minecraft:bossbar_notches_6_full": {
+    "0": {
+      "texture": "minecraft:textures/gui/bars.png",
+      "start": [0, 85],
+      "end": [182, 90]
+    }
+  },
+  "minecraft:bossbar_notches_10_empty": {
+    "0": {
+      "texture": "minecraft:textures/gui/bars.png",
+      "start": [0, 90],
+      "end": [182, 95]
+    }
+  },
+  "minecraft:bossbar_notches_10_full": {
+    "0": {
+      "texture": "minecraft:textures/gui/bars.png",
+      "start": [0, 95],
+      "end": [182, 100]
+    }
+  },
+  "minecraft:bossbar_notches_12_empty": {
+    "0": {
+      "texture": "minecraft:textures/gui/bars.png",
+      "start": [0, 100],
+      "end": [182, 105]
+    }
+  },
+  "minecraft:bossbar_notches_12_full": {
+    "0": {
+      "texture": "minecraft:textures/gui/bars.png",
+      "start": [0, 105],
+      "end": [182, 110]
+    }
+  },
+  "minecraft:bossbar_notches_20_empty": {
+    "0": {
+      "texture": "minecraft:textures/gui/bars.png",
+      "start": [0, 110],
+      "end": [182, 115]
+    }
+  },
+  "minecraft:bossbar_notches_20_full": {
+    "0": {
+      "texture": "minecraft:textures/gui/bars.png",
+      "start": [0, 115],
+      "end": [182, 120]
+    }
   }
 }

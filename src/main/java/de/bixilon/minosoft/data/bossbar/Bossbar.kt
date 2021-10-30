@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.bossbar
 
 import de.bixilon.minosoft.data.text.ChatComponent
 
-data class Bossbar(
+class Bossbar(
     var title: ChatComponent = ChatComponent.EMPTY,
     var value: Float = 0.0f,
     var color: BossbarColors = BossbarColors.PINK,

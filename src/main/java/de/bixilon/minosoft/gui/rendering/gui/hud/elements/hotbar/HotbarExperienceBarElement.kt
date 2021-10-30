@@ -20,13 +20,11 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Companion.getOffset
 import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
-import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ImageElement
 import de.bixilon.minosoft.gui.rendering.gui.elements.text.TextElement
+import de.bixilon.minosoft.gui.rendering.gui.elements.util.ProgressElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.lerp
-import glm_.vec2.Vec2
 import glm_.vec2.Vec2i
 
 class HotbarExperienceBarElement(hudRenderer: HUDRenderer) : Element(hudRenderer), Pollable {
@@ -58,15 +56,8 @@ class HotbarExperienceBarElement(hudRenderer: HUDRenderer) : Element(hudRenderer
     override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
         val bars = atlasElements[barIndex]
 
-        // background
-        ImageElement(hudRenderer, bars[0]).render(offset, z, consumer, options)
-
-        val progressAtlasElement = bars[1]
-
-        // foreground
-        val progress = ImageElement(hudRenderer, progressAtlasElement.texture, uvStart = progressAtlasElement.uvStart, uvEnd = Vec2(lerp(progress, progressAtlasElement.uvStart.x, progressAtlasElement.uvEnd.x), progressAtlasElement.uvEnd.y), size = Vec2i((progressAtlasElement.size.x * progress).toInt(), SIZE.y))
-
-        progress.render(offset, z + 1, consumer, options)
+        val progress = ProgressElement(hudRenderer, bars, progress)
+        progress.render(offset, z, consumer, options)
 
         if (level > 0) {
             // level
@@ -75,7 +66,7 @@ class HotbarExperienceBarElement(hudRenderer: HUDRenderer) : Element(hudRenderer
             text.render(offset + Vec2i(HorizontalAlignments.CENTER.getOffset(size.x, text.size.x), -Font.CHAR_HEIGHT + 1), z + 2, consumer, options)
         }
 
-        return 2 + TextElement.LAYERS // background + foreground + text(level)
+        return ProgressElement.LAYERS + TextElement.LAYERS // background + foreground + text(level)
     }
 
     override fun forceSilentApply() {

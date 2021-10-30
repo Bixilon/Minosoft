@@ -57,9 +57,7 @@ class BlockPlaceC2SP(
             buffer.writeByte((cursorPosition.y * 15.0f).toInt())
             buffer.writeByte((cursorPosition.z * 15.0f).toInt())
         } else {
-            buffer.writeFloat(cursorPosition.x)
-            buffer.writeFloat(cursorPosition.y)
-            buffer.writeFloat(cursorPosition.z)
+            buffer.writeVec3f(cursorPosition)
         }
 
         if (buffer.versionId >= ProtocolVersions.V_19W03A) {
@@ -68,6 +66,6 @@ class BlockPlaceC2SP(
     }
 
     override fun log() {
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Place block (position=$position, direction=$direction, item=$item, cursor=$cursorPosition, hand=$hand, insideBlock=$insideBlock)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Place block (position=$position, direction=$direction, cursor=$cursorPosition, hand=$hand, insideBlock=$insideBlock)" }
     }
 }

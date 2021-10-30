@@ -26,6 +26,7 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.Pollable
 import de.bixilon.minosoft.gui.rendering.gui.hud.atlas.HUDAtlasManager
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.LayoutedHUDElement
+import de.bixilon.minosoft.gui.rendering.gui.hud.elements.bossbar.BossbarHUDElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.chat.ChatHUDElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.chat.InternalMessagesHUDElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.hotbar.HotbarHUDElement
@@ -85,14 +86,15 @@ class HUDRenderer(
         if (Minosoft.config.config.game.hud.crosshair.enabled) {
             registerElement(CrosshairHUDElement)
         }
+        registerElement(BossbarHUDElement)
         if (Minosoft.config.config.game.hud.chat.enabled) {
             registerElement(ChatHUDElement)
         }
         if (Minosoft.config.config.game.hud.internalMessages.enabled) {
             registerElement(InternalMessagesHUDElement)
         }
-        registerElement(TabListHUDElement)
         registerElement(BreakProgressHUDElement)
+        registerElement(TabListHUDElement)
         registerElement(HotbarHUDElement)
         registerElement(WorldInfoHUDElement)
         registerElement(TitleHUDElement)

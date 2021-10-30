@@ -35,12 +35,8 @@ class HotbarHUDElement(hudRenderer: HUDRenderer) : LayoutedHUDElement<HotbarElem
     override val layoutOffset: Vec2i
         get() = Vec2i((hudRenderer.scaledSize.x - layout.size.x) / 2, hudRenderer.scaledSize.y - layout.size.y)
 
-
-    override fun init() {
-    }
-
     override fun postInit() {
-        layout = HotbarElement(hudRenderer)
+        layout = HotbarElement(hudRenderer) // ToDo: The base uses image elements, that are available after init stage
         layout.prefMaxSize = Vec2i(-1, -1)
 
         connection.registerEvent(CallbackEventInvoker.of<ExperienceChangeEvent> {

@@ -112,6 +112,19 @@ open class RowLayout(
         forceApply() // ToDo: Optimize: Keep current layout, just add the element without redoing stuff
     }
 
+    operator fun minusAssign(element: Element) = remove(element)
+
+    fun remove(element: Element) {
+        val index = children.indexOf(element)
+        if (index < 0) {
+            return
+        }
+        element.parent = null
+        children.removeAt(index)
+
+        forceApply() // ToDo: Optimize: Keep current layout, just add the element without redoing stuff
+    }
+
     @Synchronized
     override fun forceSilentApply() {
         for (child in children) {
