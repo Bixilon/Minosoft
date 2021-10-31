@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.util
 
+import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.ShutdownReasons
 import de.bixilon.minosoft.protocol.network.connection.Connection
 import de.bixilon.minosoft.util.KUtil.toSynchronizedSet
@@ -32,6 +33,7 @@ object ShutdownManager {
         for (connection in Connection.CONNECTIONS.toSynchronizedSet()) {
             connection.disconnect()
         }
+        Minosoft.config.saveToFile()
         DefaultThreadPool.shutdown()
         exitProcess(reason.exitCode)
     }

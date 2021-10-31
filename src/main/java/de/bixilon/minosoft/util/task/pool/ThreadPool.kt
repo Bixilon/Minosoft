@@ -136,6 +136,14 @@ open class ThreadPool(
 
     override fun shutdown() {
         state = ThreadPoolStates.STOPPING
+        while (threads.isNotEmpty()) {
+            Thread.sleep(1L)
+        }
+        state = ThreadPoolStates.STOPPED
+    }
+
+    override fun shutdownNow(): MutableList<Runnable> {
+        state = ThreadPoolStates.STOPPING
         synchronized(threads) {
             for (thread in threads.toSynchronizedList()) {
                 thread.interrupt()
@@ -145,11 +153,8 @@ open class ThreadPool(
             Thread.sleep(1L)
         }
         state = ThreadPoolStates.STOPPED
-    }
 
-    override fun shutdownNow(): MutableList<Runnable> {
-        shutdown()
-        return mutableListOf()
+        return mutableListOf() // ToDo
     }
 
     override fun isShutdown(): Boolean {
