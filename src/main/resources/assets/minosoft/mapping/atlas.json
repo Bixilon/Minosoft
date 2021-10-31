@@ -1,5 +1,4 @@
 {
-  "$schema": "https://gitlab.bixilon.de/bixilon/minosoft/-/raw/hud/schemas/atlas.json",
   "minecraft:hotbar_base": {
     "0": {
       "texture": "minecraft:textures/gui/widgets.png",

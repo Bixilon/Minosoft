@@ -30,10 +30,6 @@ class HUDAtlasManager(private val hudRenderer: HUDRenderer) {
         val elements: MutableMap<ResourceLocation, HUDAtlasElement> = mutableMapOf()
 
         for ((resourceLocationString, versions) in data) {
-            if (resourceLocationString.startsWith("$")) {
-                // json schema
-                continue
-            }
             val resourceLocation = resourceLocationString.toResourceLocation()
             check(versions is Map<*, *>)
 

@@ -33,7 +33,9 @@ object ShutdownManager {
         for (connection in Connection.CONNECTIONS.toSynchronizedSet()) {
             connection.disconnect()
         }
-        Minosoft.config.saveToFile()
+        if (Minosoft.configInitialized) {
+            Minosoft.config.saveToFile()
+        }
         DefaultThreadPool.shutdown()
         exitProcess(reason.exitCode)
     }
