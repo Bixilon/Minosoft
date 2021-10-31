@@ -274,5 +274,7 @@ class RenderWindowInputHandler(
         camera.draw()
         leftClickHandler.draw(delta)
         rightClickHandler.draw(delta)
+
+        interactionManager.draw(delta)
     }
 }

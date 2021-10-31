@@ -23,4 +23,8 @@ class InteractionManager(
     fun init() {
         hotbar.init()
     }
+
+    fun draw(delta: Double) {
+        hotbar.draw(delta)
+    }
 }
