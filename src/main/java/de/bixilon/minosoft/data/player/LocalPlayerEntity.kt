@@ -121,7 +121,13 @@ class LocalPlayerEntity(
     private val slowMovement: Boolean
         get() = isSneaking // ToDo: Or should leave swimming pose
 
-    private val isUsingItem = false // ToDo: Not yet implemented
+    var isUsingItem = false
+    override var activeHand: Hands? = null
+
+    fun useItem(hand: Hands) {
+        isUsingItem = true
+        activeHand = hand
+    }
 
     private val canSprint: Boolean
         get() = healthCondition.hunger >= PhysicsConstants.SPRINT_MINIMUM_HUNGER || baseAbilities.canFly || (gamemode == Gamemodes.CREATIVE || gamemode == Gamemodes.SPECTATOR)

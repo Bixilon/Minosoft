@@ -15,6 +15,7 @@ package de.bixilon.minosoft.data.registries.other.containers
 
 import de.bixilon.minosoft.data.inventory.InventorySlots
 import de.bixilon.minosoft.data.inventory.ItemStack
+import de.bixilon.minosoft.data.player.Hands
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
@@ -49,6 +50,13 @@ class PlayerInventory(connection: PlayConnection) : Container(
 
     operator fun set(slot: InventorySlots.EquipmentSlots, itemStack: ItemStack?) {
         this[slot.slot] = itemStack
+    }
+
+    operator fun get(hand: Hands): ItemStack? {
+        return get(when (hand) {
+            Hands.MAIN -> InventorySlots.EquipmentSlots.MAIN_HAND
+            Hands.OFF -> InventorySlots.EquipmentSlots.OFF_HAND
+        })
     }
 
     @JvmName("setEquipment")

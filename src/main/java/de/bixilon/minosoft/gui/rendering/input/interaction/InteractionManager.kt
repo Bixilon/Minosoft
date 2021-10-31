@@ -13,21 +13,52 @@
 
 package de.bixilon.minosoft.gui.rendering.input.interaction
 
+import de.bixilon.minosoft.data.player.Hands
+import de.bixilon.minosoft.data.registries.items.Item
 import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.protocol.RateLimiter
+import de.bixilon.minosoft.protocol.packets.c2s.play.ArmSwingC2SP
 
 class InteractionManager(
     val renderWindow: RenderWindow,
 ) {
+    private val connection = renderWindow.connection
     val hotbar = HotbarInteractionHandler(renderWindow)
     val pick = ItemPickInteractionHandler(renderWindow, this)
+    val attack = AttackInteractionHandler(renderWindow)
+    val use = InteractInteractionHandler(renderWindow, this)
+
+    private val swingArmRateLimiter = RateLimiter()
+
+    // val equipProgress = floatArrayOf(0.0f, 0.0f) // for both hands; used in item rendering (animation up when equipping)
 
     fun init() {
         hotbar.init()
         pick.init()
+        use.init()
     }
 
     fun draw(delta: Double) {
         hotbar.draw(delta)
         pick.draw(delta)
+        // attack.draw(delta)
+        use.draw(delta)
+
+        swingArmRateLimiter.work()
+    }
+
+    fun swingHand(hand: Hands) {
+        swingArmRateLimiter += { connection.sendPacket(ArmSwingC2SP(hand)) }
+    }
+
+    fun isCoolingDown(item: Item): Boolean {
+        connection.player.itemCooldown[item]?.let {
+            if (it.ended) {
+                connection.player.itemCooldown.remove(item)
+            } else {
+                return true
+            }
+        }
+        return false
     }
 }

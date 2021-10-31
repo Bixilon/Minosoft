@@ -101,7 +101,7 @@ class PacketTypes {
         PLAY_SIGN_TEXT_SET(SignTextSetC2SP::class.java),
         PLAY_ARM_SWING(ArmSwingC2SP::class.java),
         PLAY_ENTITY_SPECTATE(EntitySpectateC2SP::class.java),
-        PLAY_BLOCK_PLACE(BlockPlaceC2SP::class.java),
+        PLAY_BLOCK_INTERACT(BlockInteractC2SP::class.java),
         PLAY_ITEM_USE(ItemUseC2SP::class.java),
         PLAY_MINECART_COMMAND_BLOCK_SET(MinecartCommandBlockSetC2SP::class.java),
         PLAY_GENERATE_STRUCTURE(StructureGenerateC2SP::class.java),

@@ -73,6 +73,8 @@ class Camera(
     private var cameraUp = Vec3d(0.0, 1.0, 0.0)
 
     // ToDo: They should also be available in headless mode
+    var nonFluidTarget: RaycastHit? = null
+        private set
     var target: RaycastHit? = null
         private set
     var blockTarget: BlockRaycastHit? = null // Block target or if blocked by entity null
@@ -363,6 +365,7 @@ class Camera(
         val cameraFront = cameraFront
 
         target = raycast(eyePosition, cameraFront, blocks = true, fluids = true, entities = true)
+        nonFluidTarget = raycast(eyePosition, cameraFront, blocks = true, fluids = false, entities = true)
         blockTarget = raycast(eyePosition, cameraFront, blocks = true, fluids = false, entities = false) as BlockRaycastHit?
         fluidTarget = raycast(eyePosition, cameraFront, blocks = false, fluids = true, entities = false) as FluidRaycastHit?
         entityTarget = raycast(eyePosition, cameraFront, blocks = false, fluids = false, entities = true) as EntityRaycastHit?

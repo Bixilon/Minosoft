@@ -16,9 +16,9 @@ package de.bixilon.minosoft.data.registries.items.tools
 import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
-import de.bixilon.minosoft.data.registries.blocks.BlockUsages
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.registries.Registries
+import de.bixilon.minosoft.gui.rendering.input.interaction.InteractionResults
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.play.TagsS2CP
 import de.bixilon.minosoft.util.KUtil.listCast
@@ -53,16 +53,16 @@ abstract class MiningToolItem(
         }
     }
 
-    protected fun interactWithTool(connection: PlayConnection, blockPosition: Vec3i, replace: BlockState?): BlockUsages {
+    protected fun interactWithTool(connection: PlayConnection, blockPosition: Vec3i, replace: BlockState?): InteractionResults {
         if (!connection.player.gamemode.useTools) {
-            return BlockUsages.PASS
+            return InteractionResults.PASS
         }
 
-        replace ?: return BlockUsages.PASS
+        replace ?: return InteractionResults.PASS
 
 
         connection.world[blockPosition] = replace
-        return BlockUsages.SUCCESS
+        return InteractionResults.SUCCESS
     }
 
 

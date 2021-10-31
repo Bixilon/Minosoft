@@ -17,7 +17,6 @@ import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.player.Hands
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
-import de.bixilon.minosoft.data.registries.blocks.BlockUsages
 import de.bixilon.minosoft.data.registries.inventory.CreativeModeTab
 import de.bixilon.minosoft.data.registries.items.armor.*
 import de.bixilon.minosoft.data.registries.items.arrow.ArrowItem
@@ -41,7 +40,9 @@ import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
 import de.bixilon.minosoft.data.registries.registries.registry.ResourceLocationDeserializer
 import de.bixilon.minosoft.data.registries.registries.registry.Translatable
-import de.bixilon.minosoft.gui.rendering.input.camera.hit.RaycastHit
+import de.bixilon.minosoft.gui.rendering.input.camera.hit.BlockRaycastHit
+import de.bixilon.minosoft.gui.rendering.input.camera.hit.EntityRaycastHit
+import de.bixilon.minosoft.gui.rendering.input.interaction.InteractionResults
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.toBoolean
 import de.bixilon.minosoft.util.KUtil.toInt
@@ -68,8 +69,20 @@ open class Item(
         return 1.0f
     }
 
-    open fun use(connection: PlayConnection, raycastHit: RaycastHit, hands: Hands, itemStack: ItemStack): BlockUsages {
-        return BlockUsages.PASS
+    open fun interactBlock(connection: PlayConnection, raycastHit: BlockRaycastHit, hand: Hands, itemStack: ItemStack): InteractionResults {
+        return InteractionResults.PASS
+    }
+
+    open fun interactEntity(connection: PlayConnection, raycastHit: EntityRaycastHit, hand: Hands, itemStack: ItemStack): InteractionResults {
+        return InteractionResults.PASS
+    }
+
+    open fun interactEntityAt(connection: PlayConnection, raycastHit: EntityRaycastHit, hand: Hands, itemStack: ItemStack): InteractionResults {
+        return InteractionResults.PASS
+    }
+
+    open fun interactItem(connection: PlayConnection, hand: Hands, itemStack: ItemStack, ticks: Int): InteractionResults {
+        return InteractionResults.PASS
     }
 
     companion object : ResourceLocationDeserializer<Item> {

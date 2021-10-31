@@ -21,7 +21,6 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.input.LeftClickHandler
-import de.bixilon.minosoft.gui.rendering.input.RightClickHandler
 import de.bixilon.minosoft.gui.rendering.input.camera.Camera
 import de.bixilon.minosoft.gui.rendering.input.interaction.InteractionManager
 import de.bixilon.minosoft.gui.rendering.modding.events.input.MouseMoveEvent
@@ -48,7 +47,6 @@ class RenderWindowInputHandler(
     private var skipNextCharPress = false
 
     val interactionManager = InteractionManager(renderWindow)
-    val rightClickHandler = RightClickHandler(renderWindow)
     val leftClickHandler = LeftClickHandler(renderWindow)
 
     init {
@@ -64,7 +62,6 @@ class RenderWindowInputHandler(
     }
 
     fun init() {
-        rightClickHandler.init()
         leftClickHandler.init()
         interactionManager.init()
 
@@ -273,7 +270,6 @@ class RenderWindowInputHandler(
     fun draw(delta: Double) {
         camera.draw()
         leftClickHandler.draw(delta)
-        rightClickHandler.draw(delta)
 
         interactionManager.draw(delta)
     }

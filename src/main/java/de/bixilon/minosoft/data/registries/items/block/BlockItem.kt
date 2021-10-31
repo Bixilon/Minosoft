@@ -17,12 +17,11 @@ import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.player.Hands
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.blocks.BlockUsages
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.items.Item
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.gui.rendering.input.camera.hit.BlockRaycastHit
-import de.bixilon.minosoft.gui.rendering.input.camera.hit.RaycastHit
+import de.bixilon.minosoft.gui.rendering.input.interaction.InteractionResults
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
@@ -37,28 +36,27 @@ open class BlockItem(
         this::block.inject(data["block"])
     }
 
-    override fun use(connection: PlayConnection, raycastHit: RaycastHit, hands: Hands, itemStack: ItemStack): BlockUsages {
+    override fun interactBlock(connection: PlayConnection, raycastHit: BlockRaycastHit, hand: Hands, itemStack: ItemStack): InteractionResults {
         if (!connection.player.gamemode.canBuild) {
-            return BlockUsages.PASS
-        }
-
-        if (raycastHit !is BlockRaycastHit) {
-            return super.use(connection, raycastHit, hands, itemStack)
+            return InteractionResults.PASS
         }
 
         val placePosition = raycastHit.blockPosition + raycastHit.hitDirection
         if (!connection.world.isPositionChangeable(placePosition)) {
-            return BlockUsages.PASS
+            return InteractionResults.PASS
         }
 
         connection.world[placePosition]?.let {
             if (!it.material.replaceable) {
-                return BlockUsages.PASS
+                return InteractionResults.PASS
             }
+        }
+        if (connection.world.getBlockEntity(placePosition) != null && !connection.player.isSneaking) {
+            return InteractionResults.PASS
         }
 
 
-        val placeBlockState = block!!.getPlacementState(connection, raycastHit) ?: return BlockUsages.PASS
+        val placeBlockState = block!!.getPlacementState(connection, raycastHit) ?: return InteractionResults.PASS
 
         val collisionShape = placeBlockState.collisionShape + placePosition
         for (entity in connection.world.entities) {
@@ -68,7 +66,7 @@ open class BlockItem(
             val aabb = entity.aabb
 
             if (collisionShape.intersect(aabb)) {
-                return BlockUsages.CONSUME
+                return InteractionResults.CONSUME
             }
         }
 
@@ -82,6 +80,6 @@ open class BlockItem(
         placeBlockState.placeSoundEvent?.let {
             connection.world.playSoundEvent(it, placePosition, placeBlockState.soundEventVolume, placeBlockState.soundEventPitch)
         }
-        return BlockUsages.SUCCESS
+        return InteractionResults.SUCCESS
     }
 }

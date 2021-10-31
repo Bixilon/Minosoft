@@ -604,6 +604,7 @@ abstract class Entity(
             return protectionLevel
         }
 
+
     companion object {
         private val BELOW_POSITION_MINUS = Vec3(0, 0.2f, 0)
     }

@@ -13,11 +13,21 @@
 
 package de.bixilon.minosoft.data.registries.items
 
+import de.bixilon.minosoft.data.inventory.ItemStack
+import de.bixilon.minosoft.data.player.Hands
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
+import de.bixilon.minosoft.gui.rendering.input.interaction.InteractionResults
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 open class ShieldItem(
     resourceLocation: ResourceLocation,
     registries: Registries,
     data: Map<String, Any>,
-) : Item(resourceLocation, registries, data)
+) : Item(resourceLocation, registries, data) {
+
+    override fun interactItem(connection: PlayConnection, hand: Hands, itemStack: ItemStack, ticks: Int): InteractionResults {
+        connection.player.useItem(hand)
+        return InteractionResults.CONSUME
+    }
+}

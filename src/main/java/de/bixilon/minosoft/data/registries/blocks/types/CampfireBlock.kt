@@ -18,11 +18,11 @@ import de.bixilon.minosoft.data.player.Hands
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockFactory
 import de.bixilon.minosoft.data.registries.blocks.BlockState
-import de.bixilon.minosoft.data.registries.blocks.BlockUsages
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.items.tools.ShovelItem
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.gui.rendering.input.camera.hit.RaycastHit
+import de.bixilon.minosoft.gui.rendering.input.interaction.InteractionResults
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.campfire.CampfireSmokeParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.fire.SmokeParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.lava.LavaParticle
@@ -93,14 +93,14 @@ open class CampfireBlock(resourceLocation: ResourceLocation, registries: Registr
         }
     }
 
-    override fun onUse(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, raycastHit: RaycastHit, hands: Hands, itemStack: ItemStack?): BlockUsages {
+    override fun onUse(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, raycastHit: RaycastHit, hand: Hands, itemStack: ItemStack?): InteractionResults {
         // ToDo: Ignite (flint and steel, etc)
         if (itemStack?.item !is ShovelItem || blockState.properties[BlockProperties.LIT] != true) {
-            return super.onUse(connection, blockState, blockPosition, raycastHit, hands, itemStack)
+            return super.onUse(connection, blockState, blockPosition, raycastHit, hand, itemStack)
         }
         connection.world.setBlockState(blockPosition, blockState.withProperties(BlockProperties.LIT to false))
         extinguish(connection, blockState, blockPosition)
-        return BlockUsages.SUCCESS
+        return InteractionResults.SUCCESS
     }
 
     companion object : BlockFactory<CampfireBlock> {

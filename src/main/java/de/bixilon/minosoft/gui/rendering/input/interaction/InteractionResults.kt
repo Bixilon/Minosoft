@@ -11,9 +11,9 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.blocks
+package de.bixilon.minosoft.gui.rendering.input.interaction
 
-enum class BlockUsages {
+enum class InteractionResults {
     /**
      * Usage get consumed (like trying to open an iron door) without animation
      */

@@ -24,7 +24,7 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3i
 
-class BlockPlaceC2SP(
+class BlockInteractC2SP(
     val position: Vec3i,
     val direction: Directions,
     val cursorPosition: Vec3,
@@ -66,6 +66,6 @@ class BlockPlaceC2SP(
     }
 
     override fun log() {
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Place block (position=$position, direction=$direction, cursor=$cursorPosition, hand=$hand, insideBlock=$insideBlock)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Block interact (position=$position, direction=$direction, cursor=$cursorPosition, hand=$hand, insideBlock=$insideBlock)" }
     }
 }
