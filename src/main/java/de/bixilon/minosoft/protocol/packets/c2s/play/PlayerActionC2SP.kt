@@ -23,17 +23,17 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import glm_.vec3.Vec3i
 
-class BlockBreakC2SP(
-    val type: BreakType,
+class PlayerActionC2SP(
+    val action: Actions,
     val position: Vec3i?,
     val direction: Directions? = null,
 ) : PlayC2SPacket {
 
     override fun write(buffer: PlayOutByteBuffer) {
         if (buffer.versionId < ProtocolVersions.V_15W31A) { // ToDo
-            buffer.writeByte(type.ordinal)
+            buffer.writeByte(action.ordinal)
         } else {
-            buffer.writeVarInt(type.ordinal)
+            buffer.writeVarInt(action.ordinal)
         }
         if (buffer.versionId < ProtocolVersions.V_14W04A) {
             buffer.writeByteBlockPosition(position)
@@ -44,22 +44,26 @@ class BlockBreakC2SP(
     }
 
     override fun log() {
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Block break (type=$type, position=$position, direction=$direction)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Player action (action=$action, position=$position, direction=$direction)" }
     }
 
-    enum class BreakType {
+    enum class Actions {
         START_DIGGING,
         CANCELLED_DIGGING,
         FINISHED_DIGGING,
         DROP_ITEM_STACK,
         DROP_ITEM,
-        SHOOT_ARROW_FINISH_EATING,
+
+        /**
+         * e.g. use a shield and then not use it anymore (or eat, shoot arrow, etc)
+         */
+        RELEASE_ITEM,
         SWAP_ITEMS_IN_HAND,
         ;
 
-        companion object : ValuesEnum<BreakType> {
-            override val VALUES: Array<BreakType> = values()
-            override val NAME_MAP: Map<String, BreakType> = KUtil.getEnumValues(VALUES)
+        companion object : ValuesEnum<Actions> {
+            override val VALUES: Array<Actions> = values()
+            override val NAME_MAP: Map<String, Actions> = KUtil.getEnumValues(VALUES)
         }
     }
 }

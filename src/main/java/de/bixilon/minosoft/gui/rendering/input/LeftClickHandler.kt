@@ -29,7 +29,7 @@ import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.modding.event.events.BlockBreakAckEvent
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.packets.c2s.play.ArmSwingC2SP
-import de.bixilon.minosoft.protocol.packets.c2s.play.BlockBreakC2SP
+import de.bixilon.minosoft.protocol.packets.c2s.play.PlayerActionC2SP
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
@@ -74,7 +74,7 @@ class LeftClickHandler(
 
     private fun cancelDigging() {
         breakPosition?.let {
-            connection.sendPacket(BlockBreakC2SP(BlockBreakC2SP.BreakType.CANCELLED_DIGGING, breakPosition, Directions.UP)) // ToDo: Direction?
+            connection.sendPacket(PlayerActionC2SP(PlayerActionC2SP.Actions.CANCELLED_DIGGING, breakPosition, Directions.UP)) // ToDo: Direction?
             clearDigging()
         }
     }
@@ -123,7 +123,7 @@ class LeftClickHandler(
             if (breakPosition != null) {
                 return
             }
-            connection.sendPacket(BlockBreakC2SP(BlockBreakC2SP.BreakType.START_DIGGING, raycastHit.blockPosition, raycastHit.hitDirection))
+            connection.sendPacket(PlayerActionC2SP(PlayerActionC2SP.Actions.START_DIGGING, raycastHit.blockPosition, raycastHit.hitDirection))
 
             breakPosition = raycastHit.blockPosition
             breakBlockState = raycastHit.blockState
@@ -134,7 +134,7 @@ class LeftClickHandler(
         }
 
         fun finishDigging() {
-            connection.sendPacket(BlockBreakC2SP(BlockBreakC2SP.BreakType.FINISHED_DIGGING, raycastHit.blockPosition, raycastHit.hitDirection))
+            connection.sendPacket(PlayerActionC2SP(PlayerActionC2SP.Actions.FINISHED_DIGGING, raycastHit.blockPosition, raycastHit.hitDirection))
             clearDigging()
             connection.world.setBlockState(raycastHit.blockPosition, null)
 
@@ -254,8 +254,8 @@ class LeftClickHandler(
         ))
 
         connection.registerEvent(CallbackEventInvoker.of<BlockBreakAckEvent> {
-            when (it.breakType) {
-                BlockBreakC2SP.BreakType.START_DIGGING -> {
+            when (it.actions) {
+                PlayerActionC2SP.Actions.START_DIGGING -> {
                     if (it.successful) {
                         acknowledgedBreakStarts[it.blockPosition] = it.blockState
                     } else {
@@ -265,7 +265,7 @@ class LeftClickHandler(
                         breakProgress = Double.NEGATIVE_INFINITY
                     }
                 }
-                BlockBreakC2SP.BreakType.FINISHED_DIGGING -> {
+                PlayerActionC2SP.Actions.FINISHED_DIGGING -> {
                     if (acknowledgedBreakStarts[it.blockPosition] == null) {
                         // start was not acknowledged, undoing
                         connection.world[it.blockPosition] = it.blockState

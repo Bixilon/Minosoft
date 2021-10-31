@@ -21,10 +21,10 @@ import glm_.vec3.Vec3i
 class BlockBreakAnimationEvent(
     connection: PlayConnection,
     initiator: EventInitiators,
-    val animationId: Int,
+    val entityId: Int,
     val blockPosition: Vec3i,
     val stage: Int,
 ) : PlayConnectionEvent(connection, initiator), CancelableEvent {
 
-    constructor(connection: PlayConnection, packet: BlockBreakAnimationS2CP) : this(connection, EventInitiators.SERVER, packet.animationId, packet.blockPosition, packet.stage)
+    constructor(connection: PlayConnection, packet: BlockBreakAnimationS2CP) : this(connection, EventInitiators.SERVER, packet.entityId, packet.blockPosition, packet.stage)
 }

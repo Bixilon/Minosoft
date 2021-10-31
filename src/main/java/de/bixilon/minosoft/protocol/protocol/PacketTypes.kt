@@ -84,7 +84,7 @@ class PacketTypes {
         PLAY_PICK_ITEM,
         PLAY_CRAFTING_RECIPE_REQUEST(CraftingRecipeRequestC2SP::class.java),
         PLAY_FLY_TOGGLE(FlyToggleC2SP::class.java),
-        PLAY_PLAYER_DIGGING(BlockBreakC2SP::class.java),
+        PLAY_PLAYER_ACTION(PlayerActionC2SP::class.java),
         PLAY_ENTITY_ACTION(EntityActionC2SP::class.java),
         PLAY_VEHICLE_STEER(VehicleSteerC2SP::class.java),
         PLAY_RECIPE_BOOK_STATE(RecipeBookStateC2SP::class.java),

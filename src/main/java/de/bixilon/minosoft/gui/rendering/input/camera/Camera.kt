@@ -39,7 +39,7 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.floor
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.getWorldOffset
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.protocol.packets.c2s.play.BlockBreakC2SP
+import de.bixilon.minosoft.protocol.packets.c2s.play.PlayerActionC2SP
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.decide
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
@@ -223,14 +223,14 @@ class Camera(
             }
             val type = if (stack) {
                 connection.player.inventory.getHotbarSlot()?.count = 0
-                BlockBreakC2SP.BreakType.DROP_ITEM_STACK
+                PlayerActionC2SP.Actions.DROP_ITEM_STACK
             } else {
                 connection.player.inventory.getHotbarSlot()?.let {
                     it.count--
                 }
-                BlockBreakC2SP.BreakType.DROP_ITEM
+                PlayerActionC2SP.Actions.DROP_ITEM
             }
-            connection.sendPacket(BlockBreakC2SP(type, connection.player.positionInfo.blockPosition))
+            connection.sendPacket(PlayerActionC2SP(type, connection.player.positionInfo.blockPosition))
             lastDropPacketSent = time
         }
 
