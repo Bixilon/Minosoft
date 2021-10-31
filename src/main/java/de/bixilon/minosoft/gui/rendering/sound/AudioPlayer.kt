@@ -75,7 +75,7 @@ class AudioPlayer(
 
 
     private fun preloadSounds() {
-        Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Preloading sounds..." }
+        Log.log(LogMessageType.AUDIO_LOADING, LogLevels.VERBOSE) { "Preloading sounds..." }
         if (SoundConstants.DISABLE_PRELOADING) {
             return
         }
@@ -233,7 +233,7 @@ class AudioPlayer(
     }
 
     private fun loadSounds() {
-        Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Loading sounds.json" }
+        Log.log(LogMessageType.AUDIO_LOADING, LogLevels.VERBOSE) { "Loading sounds.json" }
         val data = connection.assetsManager.readJsonAsset(SOUNDS_INDEX_FILE)
 
         for ((soundEventResourceLocation, json) in data) {

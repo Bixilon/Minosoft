@@ -240,10 +240,11 @@ class ItemStack(
                 nbt[HIDE_FLAGS_TAG] = hideFlags
             }
             if (enchantments.isNotEmpty()) {
+                val connection = connection!!
                 val enchantmentList: MutableList<Map<String, Any>> = mutableListOf()
                 for ((enchantment, level) in enchantments) {
                     val enchantmentTag: MutableMap<String, Any> = mutableMapOf()
-                    enchantmentTag[ENCHANTMENT_ID_TAG] = if (connection!!.version.isFlattened()) {
+                    enchantmentTag[ENCHANTMENT_ID_TAG] = if (connection.version.isFlattened()) {
                         enchantment.resourceLocation.full
                     } else {
                         connection.registries.enchantmentRegistry.getId(enchantment)
@@ -254,8 +255,9 @@ class ItemStack(
                     } else {
                         level.toShort()
                     }
+                    enchantmentList += enchantmentTag
                 }
-                if (connection!!.version.isFlattened()) {
+                if (connection.version.isFlattened()) {
                     nbt[ENCHANTMENT_FLATTENING_TAG] = enchantmentList
                 } else {
                     nbt[ENCHANTMENT_PRE_FLATTENING_TAG] = enchantmentList

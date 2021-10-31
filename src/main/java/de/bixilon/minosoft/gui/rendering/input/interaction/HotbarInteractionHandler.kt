@@ -35,8 +35,8 @@ class HotbarInteractionHandler(
     val renderWindow: RenderWindow,
 ) {
     private val connection = renderWindow.connection
-    private val slotLimiter = RateLimiter()
-    private val swapLimiter = RateLimiter(dependencies = synchronizedSetOf(slotLimiter)) // we don't want to swap wrong items
+    val slotLimiter = RateLimiter()
+    val swapLimiter = RateLimiter(dependencies = synchronizedSetOf(slotLimiter)) // we don't want to swap wrong items
 
     private var currentScrollOffset = 0.0
 
@@ -54,7 +54,7 @@ class HotbarInteractionHandler(
     }
 
     fun swapItems() {
-        if (connection.player.gamemode == Gamemodes.SPECTATOR) {
+        if (!connection.version.hasOffhand || connection.player.gamemode == Gamemodes.SPECTATOR) {
             return
         }
         val inventory = connection.player.inventory
@@ -62,6 +62,7 @@ class HotbarInteractionHandler(
         val off = inventory[InventorySlots.EquipmentSlots.OFF_HAND]
 
         if (main == null && off == null) {
+            // ToDo: Forbid swap if both are equals?
             // both are air, we can't swap
             return
         }

@@ -40,7 +40,7 @@ class PlayerInventory(connection: PlayConnection) : Container(
 
     fun getHotbarSlot(hotbarSlot: Int = connection.player.selectedHotbarSlot): ItemStack? {
         check(hotbarSlot in 0..HOTBAR_SLOTS) { "Hotbar slot out of bounds!" }
-        return slots[hotbarSlot + HOTBAR_OFFSET] // ToDo
+        return slots[hotbarSlot + HOTBAR_OFFSET]
     }
 
     operator fun get(slot: InventorySlots.EquipmentSlots): ItemStack? {

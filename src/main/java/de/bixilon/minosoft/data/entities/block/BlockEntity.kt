@@ -20,6 +20,7 @@ import glm_.vec3.Vec3i
 abstract class BlockEntity(
     val connection: PlayConnection,
 ) {
+    open val nbt: Map<String, Any> = mapOf()
 
     open fun updateNBT(nbt: Map<String, Any>) = Unit
 

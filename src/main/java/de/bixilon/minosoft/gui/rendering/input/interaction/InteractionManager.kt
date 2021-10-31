@@ -19,12 +19,15 @@ class InteractionManager(
     val renderWindow: RenderWindow,
 ) {
     val hotbar = HotbarInteractionHandler(renderWindow)
+    val pick = ItemPickInteractionHandler(renderWindow, this)
 
     fun init() {
         hotbar.init()
+        pick.init()
     }
 
     fun draw(delta: Double) {
         hotbar.draw(delta)
+        pick.draw(delta)
     }
 }

@@ -198,7 +198,6 @@ class LocalPlayerEntity(
     val swimHeight: Double
         get() = (eyeHeight < 0.4).decide(0.0, 0.4)
 
-
     val reachDistance: Double
         get() = (gamemode == Gamemodes.CREATIVE).decide(5.0, 4.5)
 

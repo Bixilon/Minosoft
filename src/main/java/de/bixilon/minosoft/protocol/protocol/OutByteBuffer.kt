@@ -154,18 +154,18 @@ open class OutByteBuffer(open val connection: Connection? = null) {
         writeByte(type.ordinal)
     }
 
-    fun writeNBT(nbt: Any?, compressed: Boolean) {
+    fun writeNBT(nbt: Any?, compressed: Boolean = false) {
         if (compressed) {
             TODO("Can not write compressed NBT yet!")
-        }
-        if (nbt is Collection<*> && nbt.isEmpty()) {
-            return writeNBTTag(null)
         }
         if (nbt is Map<*, *>) {
             if (nbt.isEmpty()) {
                 return writeNBTTag(null)
             }
+            writeNBTTagType(NBTTagTypes.COMPOUND)
             writeShort(0) // Length of compound tag name
+            writeNBTTag(nbt, false)
+            return
         }
         writeNBTTag(nbt)
     }
@@ -203,13 +203,12 @@ open class OutByteBuffer(open val connection: Connection? = null) {
                 writeUnprefixedByteArray(bytes)
             }
             is Collection<*> -> {
-                val collectionType: NBTTagTypes = if (tag.isEmpty()) {
+                this.writeNBTTagType(if (tag.isEmpty()) {
                     NBTTagTypes.END
                 } else {
                     tag.iterator().next().type
-                }
-                this.writeNBTTagType(collectionType)
-                // write Type
+                })
+
                 writeInt(tag.size)
 
                 for (element in tag) {
@@ -217,22 +216,16 @@ open class OutByteBuffer(open val connection: Connection? = null) {
                 }
             }
             is Map<*, *> -> {
-                val size = tag.size
-                var index = 0
                 for ((key, value) in tag) {
                     val valueType = value.type
                     if (valueType == NBTTagTypes.END) {
-                        break
+                        error("NBT does not support null as value in a compound tag!")
                     }
                     this.writeNBTTagType(valueType)
                     writeNBTTag(key?.toString() ?: "", false)
-                    writeNBTTag(value, true)
-                    index++
+                    writeNBTTag(value, false)
                 }
-                if (index - 1 != size) {
-                    error("NBT does not support null as value in a compound tag!")
-                }
-                writeNBTTagType(NBTTagTypes.END)
+                this.writeNBTTagType(NBTTagTypes.END)
             }
             is IntArray -> {
                 writeInt(tag.size)

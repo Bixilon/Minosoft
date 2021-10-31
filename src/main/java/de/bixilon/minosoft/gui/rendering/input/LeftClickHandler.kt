@@ -145,7 +145,7 @@ class LeftClickHandler(
         val canStartBreaking = currentTime - breakSent >= ProtocolDefinition.TICK_TIME
 
 
-        val canInstantBreak = connection.player.baseAbilities.canInstantBreak || connection.player.gamemode == Gamemodes.CREATIVE
+        val canInstantBreak = connection.player.baseAbilities.creative || connection.player.gamemode == Gamemodes.CREATIVE
 
         if (canInstantBreak) {
             if (!canStartBreaking) {
