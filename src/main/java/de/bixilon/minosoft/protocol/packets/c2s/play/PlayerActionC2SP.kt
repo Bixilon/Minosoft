@@ -13,6 +13,7 @@
 package de.bixilon.minosoft.protocol.packets.c2s.play
 
 import de.bixilon.minosoft.data.direction.Directions
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
 import de.bixilon.minosoft.protocol.packets.c2s.PlayC2SPacket
 import de.bixilon.minosoft.protocol.protocol.PlayOutByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
@@ -25,8 +26,8 @@ import glm_.vec3.Vec3i
 
 class PlayerActionC2SP(
     val action: Actions,
-    val position: Vec3i?,
-    val direction: Directions? = null,
+    val position: Vec3i = Vec3i.EMPTY,
+    val direction: Directions = Directions.DOWN,
 ) : PlayC2SPacket {
 
     override fun write(buffer: PlayOutByteBuffer) {
@@ -40,7 +41,7 @@ class PlayerActionC2SP(
         } else {
             buffer.writePosition(position)
         }
-        buffer.writeByte(direction?.ordinal ?: 0x00)
+        buffer.writeByte(direction.ordinal)
     }
 
     override fun log() {

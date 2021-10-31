@@ -230,7 +230,7 @@ class Camera(
                 }
                 PlayerActionC2SP.Actions.DROP_ITEM
             }
-            connection.sendPacket(PlayerActionC2SP(type, connection.player.positionInfo.blockPosition))
+            connection.sendPacket(PlayerActionC2SP(type))
             lastDropPacketSent = time
         }
 

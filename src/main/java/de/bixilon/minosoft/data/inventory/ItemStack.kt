@@ -108,11 +108,11 @@ class ItemStack(
         }
     var container = container
         set(value) {
-            if (field != null && value != null) {
-                throw IllegalStateException("Item already in a different container!")
-            }
             if (field === value) {
                 return
+            }
+            if (field != null && value != null) {
+                throw IllegalStateException("Item already in a different container!")
             }
             field = value
             apply()

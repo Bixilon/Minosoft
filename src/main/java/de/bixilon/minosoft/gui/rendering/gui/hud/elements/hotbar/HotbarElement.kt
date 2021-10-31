@@ -76,7 +76,7 @@ class HotbarElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
 
         if (renderOffhand) {
             val offhandOffset = Vec2i.EMPTY
-            if (offhand.arm == Arms.LEFT) {
+            if (offhand.offArm == Arms.LEFT) {
                 offhandOffset.x = -offhand.size.x - offhand.margin.right
             } else {
                 offhandOffset.x = core.size.x + offhand.margin.left

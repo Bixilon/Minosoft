@@ -28,6 +28,7 @@ class PlayerInventory(connection: PlayConnection) : Container(
 
     val equipment: MutableMap<InventorySlots.EquipmentSlots, ItemStack>
         get() {
+            // ToDo: Optimize
             val equipment: MutableMap<InventorySlots.EquipmentSlots, ItemStack> = mutableMapOf()
 
             for (slot in InventorySlots.EquipmentSlots.ARMOR_SLOTS) {
@@ -43,16 +44,36 @@ class PlayerInventory(connection: PlayConnection) : Container(
     }
 
     operator fun get(slot: InventorySlots.EquipmentSlots): ItemStack? {
-        return this[when (slot) {
-            InventorySlots.EquipmentSlots.HEAD -> ARMOR_OFFSET + 0
-            InventorySlots.EquipmentSlots.CHEST -> ARMOR_OFFSET + 1
-            InventorySlots.EquipmentSlots.LEGS -> ARMOR_OFFSET + 2
-            InventorySlots.EquipmentSlots.FEET -> ARMOR_OFFSET + 3
-
-            InventorySlots.EquipmentSlots.MAIN_HAND -> connection.player.selectedHotbarSlot + HOTBAR_OFFSET
-            InventorySlots.EquipmentSlots.OFF_HAND -> 45
-        }]
+        return this[slot.slot]
     }
+
+    operator fun set(slot: InventorySlots.EquipmentSlots, itemStack: ItemStack?) {
+        this[slot.slot] = itemStack
+    }
+
+    @JvmName("setEquipment")
+    fun set(vararg slots: Pair<InventorySlots.EquipmentSlots, ItemStack?>) {
+        val realSlots: MutableList<Pair<Int, ItemStack?>> = mutableListOf()
+
+        for ((slot, itemStack) in slots) {
+            realSlots += Pair(slot.slot, itemStack)
+        }
+
+        super.set(*realSlots.toTypedArray())
+    }
+
+    val InventorySlots.EquipmentSlots.slot: Int
+        get() {
+            return when (this) {
+                InventorySlots.EquipmentSlots.HEAD -> ARMOR_OFFSET + 0
+                InventorySlots.EquipmentSlots.CHEST -> ARMOR_OFFSET + 1
+                InventorySlots.EquipmentSlots.LEGS -> ARMOR_OFFSET + 2
+                InventorySlots.EquipmentSlots.FEET -> ARMOR_OFFSET + 3
+
+                InventorySlots.EquipmentSlots.MAIN_HAND -> connection.player.selectedHotbarSlot + HOTBAR_OFFSET
+                InventorySlots.EquipmentSlots.OFF_HAND -> 45
+            }
+        }
 
     companion object {
         const val HOTBAR_OFFSET = 36

@@ -17,6 +17,8 @@ import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.key.KeyAction
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
+import de.bixilon.minosoft.data.abilities.Gamemodes
+import de.bixilon.minosoft.data.inventory.InventorySlots
 import de.bixilon.minosoft.data.registries.other.containers.PlayerInventory
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.modding.events.input.MouseScrollEvent
@@ -25,24 +27,50 @@ import de.bixilon.minosoft.modding.event.events.SelectHotbarSlotEvent
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.RateLimiter
 import de.bixilon.minosoft.protocol.packets.c2s.play.HotbarSlotSetC2SP
+import de.bixilon.minosoft.protocol.packets.c2s.play.PlayerActionC2SP
+import de.bixilon.minosoft.util.KUtil.synchronizedSetOf
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class HotbarInteractionHandler(
     val renderWindow: RenderWindow,
 ) {
     private val connection = renderWindow.connection
-    private val rateLimiter = RateLimiter()
+    private val slotLimiter = RateLimiter()
+    private val swapLimiter = RateLimiter(dependencies = synchronizedSetOf(slotLimiter)) // we don't want to swap wrong items
 
     private var currentScrollOffset = 0.0
 
 
     fun selectSlot(slot: Int) {
+        if (connection.player.gamemode == Gamemodes.SPECTATOR) {
+            return
+        }
         if (connection.player.selectedHotbarSlot == slot) {
             return
         }
         connection.player.selectedHotbarSlot = slot
-        rateLimiter += { connection.sendPacket(HotbarSlotSetC2SP(slot)) }
+        slotLimiter += { connection.sendPacket(HotbarSlotSetC2SP(slot)) }
         connection.fireEvent(SelectHotbarSlotEvent(connection, EventInitiators.CLIENT, slot))
+    }
+
+    fun swapItems() {
+        if (connection.player.gamemode == Gamemodes.SPECTATOR) {
+            return
+        }
+        val inventory = connection.player.inventory
+        val main = inventory[InventorySlots.EquipmentSlots.MAIN_HAND]
+        val off = inventory[InventorySlots.EquipmentSlots.OFF_HAND]
+
+        if (main == null && off == null) {
+            // both are air, we can't swap
+            return
+        }
+
+        inventory.set(
+            InventorySlots.EquipmentSlots.MAIN_HAND to off,
+            InventorySlots.EquipmentSlots.OFF_HAND to main,
+        )
+        swapLimiter += { connection.sendPacket(PlayerActionC2SP(PlayerActionC2SP.Actions.SWAP_ITEMS_IN_HAND)) }
     }
 
 
@@ -78,9 +106,19 @@ class HotbarInteractionHandler(
 
             selectSlot(nextSlot)
         })
+
+
+        renderWindow.inputHandler.registerKeyCallback("minosoft:swap_items".toResourceLocation(), KeyBinding(
+            mutableMapOf(
+                KeyAction.PRESS to mutableSetOf(KeyCodes.KEY_F),
+            ),
+        )) {
+            swapItems()
+        }
     }
 
     fun draw(delta: Double) {
-        rateLimiter.work()
+        slotLimiter.work()
+        swapLimiter.work()
     }
 }

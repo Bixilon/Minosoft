@@ -61,22 +61,42 @@ open class Container(
         return itemStack
     }
 
-    /**
-     *  @return The previous item
-     */
-    operator fun set(slotId: Int, itemStack: ItemStack?): ItemStack? {
-        if (itemStack == null) {
-            return remove(slotId)
+    operator fun set(slotId: Int, itemStack: ItemStack?) {
+        if (!internalSet(slotId, itemStack)) {
+            return
         }
+
+        revision++
+    }
+
+    private fun internalSet(slotId: Int, itemStack: ItemStack?): Boolean {
         val previous = slots[slotId]
+        if (itemStack == null) {
+            if (previous == null) {
+                return false
+            }
+            remove(slotId)
+            return true
+        }
         if (previous == itemStack) {
-            return previous
+            return false
         }
         slots[slotId] = itemStack // ToDo: Check for changes
         itemStack.container = this
 
-        revision++
-        return previous
+        return true
+    }
+
+    fun set(vararg slots: Pair<Int, ItemStack?>) {
+        var changes = 0
+        for ((slotId, itemStack) in slots) {
+            if (internalSet(slotId, itemStack)) {
+                changes++
+            }
+        }
+        if (changes > 0) {
+            revision++
+        }
     }
 
     fun clear() {

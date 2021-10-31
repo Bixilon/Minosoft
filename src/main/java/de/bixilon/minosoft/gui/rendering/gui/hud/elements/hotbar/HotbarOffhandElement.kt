@@ -31,15 +31,15 @@ class HotbarOffhandElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
         hudRenderer.atlasManager["minecraft:offhand_left_arm_frame"],
     )
 
-    val arm = hudRenderer.connection.player.mainArm.opposite // ToDo: Support arm change
-    private val frame = frames[arm.ordinal]!!
+    val offArm = hudRenderer.connection.player.mainArm.opposite // ToDo: Support arm change
+    private val frame = frames[offArm.ordinal]!!
 
     private var frameImage = ImageElement(hudRenderer, frame)
     private val containerElement = ContainerItemsElement(hudRenderer, hudRenderer.connection.player.inventory, frame.slots)
 
     init {
         _size = frame.size
-        val margin = if (arm == Arms.LEFT) {
+        val margin = if (offArm == Arms.LEFT) {
             marginOf(right = 5)
         } else {
             marginOf(left = 5)
@@ -56,7 +56,16 @@ class HotbarOffhandElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
     }
 
     override fun silentApply(): Boolean {
-        return containerElement.silentApply()
+        val container = containerElement.silentApply()
+
+        if (super.silentApply()) {
+            return true
+        }
+        if (container) {
+            forceSilentApply()
+            return true
+        }
+        return false
     }
 
     override fun forceSilentApply() {
