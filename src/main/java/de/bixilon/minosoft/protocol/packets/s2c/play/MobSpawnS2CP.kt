@@ -59,7 +59,7 @@ class MobSpawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         entity = entityType.build(buffer.connection, position, rotation, metaData, buffer.versionId)!!
         entity.velocity = velocity
         metaData?.let {
-            entity.entityMetaData = it
+            entity.entityMetaData.sets.putAll(it.sets)
             if (RunConfiguration.VERBOSE_ENTITY_META_DATA_LOGGING) {
                 Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Entity meta data(entityId=$entityId): ${entity.entityMetaDataAsString}" }
             }

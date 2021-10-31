@@ -77,7 +77,7 @@ class PlayerEntitySpawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         )
 
         if (metaData != null) {
-            entity.entityMetaData = metaData
+            entity.entityMetaData.sets.putAll(metaData.sets)
             if (RunConfiguration.VERBOSE_ENTITY_META_DATA_LOGGING) {
                 Log.log(LogMessageType.OTHER, level = LogLevels.VERBOSE) { "Players metadata of $entity: ${entity.entityMetaData}" }
             }

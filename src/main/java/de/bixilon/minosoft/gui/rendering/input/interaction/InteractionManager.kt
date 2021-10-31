@@ -26,6 +26,7 @@ class InteractionManager(
     val hotbar = HotbarInteractionHandler(renderWindow)
     val pick = ItemPickInteractionHandler(renderWindow, this)
     val attack = AttackInteractionHandler(renderWindow)
+    val `break` = BreakInteractionHandler(renderWindow)
     val use = InteractInteractionHandler(renderWindow, this)
 
     private val swingArmRateLimiter = RateLimiter()
@@ -35,6 +36,7 @@ class InteractionManager(
     fun init() {
         hotbar.init()
         pick.init()
+        `break`.init()
         use.init()
     }
 
@@ -42,6 +44,7 @@ class InteractionManager(
         hotbar.draw(delta)
         pick.draw(delta)
         // attack.draw(delta)
+        `break`.draw(delta)
         use.draw(delta)
 
         swingArmRateLimiter.work()

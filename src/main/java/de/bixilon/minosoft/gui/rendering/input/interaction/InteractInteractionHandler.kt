@@ -19,6 +19,7 @@ import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.player.Hands
+import de.bixilon.minosoft.data.registries.items.UsableItem
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.input.camera.hit.BlockRaycastHit
 import de.bixilon.minosoft.gui.rendering.input.camera.hit.EntityRaycastHit
@@ -41,7 +42,7 @@ class InteractInteractionHandler(
 
     private var interactingItem: ItemStack? = null
     private var interactingSlot: Int = -1
-    private var interactingTicks = 0
+    private var interactingTicksLeft = 0
 
     private var previousDown = false
     private var autoInteractionDelay = 0
@@ -66,7 +67,7 @@ class InteractInteractionHandler(
         connection.sendPacket(PlayerActionC2SP(PlayerActionC2SP.Actions.RELEASE_ITEM))
         interactingItem = null
         interactingSlot = -1
-        interactingTicks = 0
+        interactingTicksLeft = 0
     }
 
     fun interactBlock(hit: BlockRaycastHit, item: ItemStack?, hand: Hands): InteractionResults {
@@ -118,7 +119,7 @@ class InteractInteractionHandler(
         return InteractionResults.PASS
     }
 
-    fun interactItem(item: ItemStack, hand: Hands, ticks: Int): InteractionResults {
+    fun interactItem(item: ItemStack, hand: Hands): InteractionResults {
         if (connection.player.gamemode == Gamemodes.SPECTATOR) {
             return InteractionResults.SUCCESS
         }
@@ -133,11 +134,11 @@ class InteractInteractionHandler(
         }
 
 
-        return item.item.interactItem(connection, hand, item, ticks)
+        return item.item.interactItem(connection, hand, item)
     }
 
     fun useItem() {
-        if (interactionManager.attack.isBreakingBlock) {
+        if (interactionManager.`break`.breakingBlock) {
             return
         }
 
@@ -180,14 +181,19 @@ class InteractInteractionHandler(
             if (item != interactingItem || interactingSlot != selectedSlot) {
                 interactingItem = item
                 interactingSlot = selectedSlot
-                interactingTicks = 0
+                val itemType = item?.item
+                interactingTicksLeft = if (itemType is UsableItem) {
+                    itemType.maxUseTime
+                } else {
+                    0
+                }
             }
 
             if (item == null) {
                 continue
             }
 
-            val result = interactItem(item, hand, interactingTicks++)
+            val result = interactItem(item, hand)
 
             if (result == InteractionResults.SUCCESS) {
                 interactionManager.swingHand(hand)
@@ -209,11 +215,22 @@ class InteractInteractionHandler(
         val keyDown = renderWindow.inputHandler.isKeyBindingDown(USE_ITEM_KEYBINDING)
         if (keyDown) {
             autoInteractionDelay++
+
+            val interactingItem = interactingItem
+            val item = interactingItem?.item
+            if (item is UsableItem) {
+                interactingTicksLeft--
+                if (interactingTicksLeft < 0) {
+                    item.finishUsing(connection, interactingItem)
+                    stopUsingItem()
+                }
+            }
         } else {
+            interactingTicksLeft = 0
             autoInteractionDelay = 0
             stopUsingItem()
         }
-        if (keyDown && (!previousDown || autoInteractionDelay >= 5)) {
+        if (keyDown && (!previousDown || (autoInteractionDelay >= 5 && interactingTicksLeft <= 0))) {
             useItem()
             autoInteractionDelay = 0
         }

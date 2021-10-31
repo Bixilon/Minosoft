@@ -14,21 +14,10 @@
 package de.bixilon.minosoft.data.registries.items
 
 import de.bixilon.minosoft.data.inventory.ItemStack
-import de.bixilon.minosoft.data.player.Hands
-import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.registries.Registries
-import de.bixilon.minosoft.gui.rendering.input.interaction.InteractionResults
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
-open class ShieldItem(
-    resourceLocation: ResourceLocation,
-    registries: Registries,
-    data: Map<String, Any>,
-) : Item(resourceLocation, registries, data), UsableItem {
-    override val maxUseTime: Int = Int.MAX_VALUE
+interface UsableItem {
+    val maxUseTime: Int
 
-    override fun interactItem(connection: PlayConnection, hand: Hands, itemStack: ItemStack): InteractionResults {
-        connection.player.useItem(hand)
-        return InteractionResults.CONSUME
-    }
+    fun finishUsing(connection: PlayConnection, itemStack: ItemStack) {}
 }

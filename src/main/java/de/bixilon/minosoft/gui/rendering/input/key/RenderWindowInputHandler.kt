@@ -20,7 +20,6 @@ import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.input.LeftClickHandler
 import de.bixilon.minosoft.gui.rendering.input.camera.Camera
 import de.bixilon.minosoft.gui.rendering.input.interaction.InteractionManager
 import de.bixilon.minosoft.gui.rendering.modding.events.input.MouseMoveEvent
@@ -47,7 +46,6 @@ class RenderWindowInputHandler(
     private var skipNextCharPress = false
 
     val interactionManager = InteractionManager(renderWindow)
-    val leftClickHandler = LeftClickHandler(renderWindow)
 
     init {
         registerKeyCallback("minosoft:debug_mouse_catch".toResourceLocation(), KeyBinding(
@@ -62,7 +60,6 @@ class RenderWindowInputHandler(
     }
 
     fun init() {
-        leftClickHandler.init()
         interactionManager.init()
 
         connection.registerEvent(CallbackEventInvoker.of<RawCharInputEvent> { charInput(it.char) })
@@ -269,7 +266,6 @@ class RenderWindowInputHandler(
 
     fun draw(delta: Double) {
         camera.draw()
-        leftClickHandler.draw(delta)
 
         interactionManager.draw(delta)
     }

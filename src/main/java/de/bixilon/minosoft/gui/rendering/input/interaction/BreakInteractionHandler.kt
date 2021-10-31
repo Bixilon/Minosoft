@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.input
+package de.bixilon.minosoft.gui.rendering.input.interaction
 
 import de.bixilon.minosoft.config.key.KeyAction
 import de.bixilon.minosoft.config.key.KeyBinding
@@ -35,8 +35,7 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import glm_.pow
 import glm_.vec3.Vec3i
 
-@Deprecated("Will be integrated in the InteractionManager")
-class LeftClickHandler(
+class BreakInteractionHandler(
     val renderWindow: RenderWindow,
 ) {
     private val connection = renderWindow.connection
@@ -45,7 +44,8 @@ class LeftClickHandler(
     private var breakBlockState: BlockState? = null
     var breakProgress = Double.NEGATIVE_INFINITY
         private set
-
+    val breakingBlock: Boolean
+        get() = breakPosition != null
 
     private var breakSelectedSlot: Int = -1
     private var breakItemInHand: ItemStack? = null

@@ -81,7 +81,7 @@ open class Item(
         return InteractionResults.PASS
     }
 
-    open fun interactItem(connection: PlayConnection, hand: Hands, itemStack: ItemStack, ticks: Int): InteractionResults {
+    open fun interactItem(connection: PlayConnection, hand: Hands, itemStack: ItemStack): InteractionResults {
         return InteractionResults.PASS
     }
 
@@ -90,6 +90,9 @@ open class Item(
 
         override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): Item {
             check(registries != null) { "Registries is null!" }
+            if (data["food_properties"] != null) {
+                return FoodItem(resourceLocation, registries, data)
+            }
             return when (val `class` = data["class"].unsafeCast<String>()) {
                 "BlockItem" -> BlockItem(resourceLocation, registries, data)
                 "Item", "AirBlockItem" -> Item(resourceLocation, registries, data)

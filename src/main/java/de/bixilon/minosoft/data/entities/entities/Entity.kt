@@ -84,7 +84,7 @@ abstract class Entity(
     protected val versionId: Int = connection.version.versionId
     open var attachedEntity: Int? = null
 
-    var entityMetaData: EntityMetaData = EntityMetaData(connection)
+    val entityMetaData: EntityMetaData = EntityMetaData(connection)
     var vehicle: Entity? = null
     var passengers: MutableSet<Entity> = synchronizedSetOf()
 

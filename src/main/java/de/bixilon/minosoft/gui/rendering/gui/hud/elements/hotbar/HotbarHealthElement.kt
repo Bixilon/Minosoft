@@ -222,7 +222,7 @@ class HotbarHealthElement(hudRenderer: HUDRenderer) : AbstractHotbarHealthElemen
         val wither = witherStatusEffect?.let { player.activeStatusEffects[it] != null } ?: false
         val frozen = player.ticksFrozen > 0
 
-        val absorptionsAmount = max(0.0f, player.playerAbsorptionHearts) // ToDo: This is (probably) calculated as effect instance
+        val absorptionsAmount = max(0.0f, player.playerAbsorptionHearts)
 
         val maxHealth = max(0.0f, player.getAttributeValue(DefaultStatusEffectAttributeNames.GENERIC_MAX_HEALTH).toFloat())
 

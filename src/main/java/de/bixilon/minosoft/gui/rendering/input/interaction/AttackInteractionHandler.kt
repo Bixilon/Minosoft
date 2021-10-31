@@ -18,6 +18,4 @@ import de.bixilon.minosoft.gui.rendering.RenderWindow
 @Deprecated("TODO")
 class AttackInteractionHandler(
     val renderWindow: RenderWindow,
-) {
-    val isBreakingBlock: Boolean = false
-}
+)

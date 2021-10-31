@@ -26,7 +26,7 @@ import glm_.vec2.Vec2i
 
 class BreakProgressHUDElement(hudRenderer: HUDRenderer) : LayoutedHUDElement<TextElement>(hudRenderer), Drawable {
     override val layout: TextElement = TextElement(hudRenderer, "")
-    private val leftClickHandler = hudRenderer.renderWindow.inputHandler.leftClickHandler
+    private val breakInteractionHandler = hudRenderer.renderWindow.inputHandler.interactionManager.`break`
 
     override val layoutOffset: Vec2i
         get() = Vec2i((hudRenderer.scaledSize.x / 2) + CrosshairHUDElement.CROSSHAIR_SIZE / 2 + 5, (hudRenderer.scaledSize.y - layout.size.y) / 2)
@@ -34,13 +34,13 @@ class BreakProgressHUDElement(hudRenderer: HUDRenderer) : LayoutedHUDElement<Tex
     private var percent = -1
 
     override fun draw() {
-        val breakProgress = leftClickHandler.breakProgress
+        val breakProgress = breakInteractionHandler.breakProgress
         if (breakProgress <= 0 || breakProgress >= 1.0) {
             layout.text = ""
             this.percent = -1
             return
         }
-        val percent = (leftClickHandler.breakProgress * 100).toInt()
+        val percent = (breakInteractionHandler.breakProgress * 100).toInt()
         if (percent == this.percent) {
             return
         }
