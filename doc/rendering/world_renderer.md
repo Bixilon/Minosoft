@@ -6,12 +6,11 @@
     - -> If yes (or no; depends on algo) use complex one to check
   - extreme chunk section values (most east[…] block; highest block; lowest block)
   - "Cave algorithm"
-- 2 Meshes per section (opaque; transparent)
+- 3 Meshes per section (opaque; transparent; translucent)
 - Preparing in nearer to further away order
   - unload meshes if block changed and not in frustum
   - only prepare if chunk is in frustum
   - don't prepare empty chunks
-  -
 - Light
   - Client side light engine
   - Lightmap
@@ -37,3 +36,5 @@
 - Improved biome blending
 - Performance optimizations
   - Don't render bedrock on y == dimension::minHeight
+- Meshing
+  - Greedy meshing
