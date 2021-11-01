@@ -41,7 +41,7 @@ void main() {
     float fogFactor = getFogFactor(distance(uCameraPosition, finVertexPosition));
 
     if (fogFactor != 1.0f) {
-        outColor = vec4(mix(uFogColor.rgb, outColor.rgb, fogFactor), outColor.a);
+        foutColor = vec4(mix(uFogColor.rgb, foutColor.rgb, fogFactor), foutColor.a);
     };
     #endif
 }

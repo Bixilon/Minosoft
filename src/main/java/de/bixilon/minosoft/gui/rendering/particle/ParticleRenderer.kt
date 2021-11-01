@@ -20,6 +20,9 @@ import de.bixilon.minosoft.gui.rendering.Renderer
 import de.bixilon.minosoft.gui.rendering.RendererBuilder
 import de.bixilon.minosoft.gui.rendering.modding.events.CameraMatrixChangeEvent
 import de.bixilon.minosoft.gui.rendering.particle.types.Particle
+import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
+import de.bixilon.minosoft.gui.rendering.system.base.phases.TranslucentDrawable
+import de.bixilon.minosoft.gui.rendering.system.base.phases.TransparentDrawable
 import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
 import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionStateChangeEvent
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
@@ -37,11 +40,15 @@ import glm_.vec3.Vec3
 
 class ParticleRenderer(
     private val connection: PlayConnection,
-    val renderWindow: RenderWindow,
-) : Renderer {
-    private val particleShader: Shader = renderWindow.renderSystem.createShader(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "particle"))
-    private var particleMesh = ParticleMesh(renderWindow, 0)
-    private var transparentParticleMesh = ParticleMesh(renderWindow, 0)
+    override val renderWindow: RenderWindow,
+) : Renderer, TransparentDrawable, TranslucentDrawable {
+    override val renderSystem: RenderSystem = renderWindow.renderSystem
+    private val transparentShader: Shader = renderSystem.createShader(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "particle"))
+    private val translucentShader: Shader = renderSystem.createShader(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "particle"))
+
+    // There is no opaque mesh because it is simply not needed (every particle has transparency)
+    private var transparentMesh = ParticleMesh(renderWindow, 0)
+    private var translucentMesh = ParticleMesh(renderWindow, 0)
 
     private var particles: MutableSet<Particle> = mutableSetOf()
     private var particleQueue: MutableSet<Particle> = mutableSetOf()
@@ -55,13 +62,22 @@ class ParticleRenderer(
     override fun init() {
         connection.registerEvent(CallbackEventInvoker.of<CameraMatrixChangeEvent> {
             renderWindow.queue += {
-                particleShader.use().setMat4("uViewProjectionMatrix", Mat4(it.viewProjectionMatrix))
-                particleShader.use().setVec3("uCameraRight", Vec3(it.viewMatrix[0][0], it.viewMatrix[1][0], it.viewMatrix[2][0]))
-                particleShader.use().setVec3("uCameraUp", Vec3(it.viewMatrix[0][1], it.viewMatrix[1][1], it.viewMatrix[2][1]))
+                fun applyToShader(shader: Shader) {
+                    shader.apply {
+                        use()
+                        setMat4("uViewProjectionMatrix", Mat4(it.viewProjectionMatrix))
+                        setVec3("uCameraRight", Vec3(it.viewMatrix[0][0], it.viewMatrix[1][0], it.viewMatrix[2][0]))
+                        setVec3("uCameraUp", Vec3(it.viewMatrix[0][1], it.viewMatrix[1][1], it.viewMatrix[2][1]))
+                    }
+                }
+
+                applyToShader(transparentShader)
+                applyToShader(translucentShader)
             }
         })
-        particleMesh.load()
-        transparentParticleMesh.load()
+
+        transparentMesh.load()
+        translucentMesh.load()
         connection.registries.particleTypeRegistry.forEachItem {
             for (resourceLocation in it.textures) {
                 renderWindow.textureManager.staticTextures.createTexture(resourceLocation)
@@ -72,9 +88,15 @@ class ParticleRenderer(
     }
 
     override fun postInit() {
-        particleShader.load()
-        renderWindow.textureManager.staticTextures.use(particleShader)
-        renderWindow.textureManager.staticTextures.animator.use(particleShader)
+        transparentShader.defines[Shader.TRANSPARENT_DEFINE] = ""
+        transparentShader.load()
+        renderWindow.textureManager.staticTextures.use(transparentShader)
+        renderWindow.textureManager.staticTextures.animator.use(transparentShader)
+
+        translucentShader.load()
+        renderWindow.textureManager.staticTextures.use(translucentShader)
+        renderWindow.textureManager.staticTextures.animator.use(translucentShader)
+
 
         connection.world.particleRenderer = this
 
@@ -109,15 +131,16 @@ class ParticleRenderer(
         add(particle)
     }
 
-    override fun update() {
-        particleMesh.unload()
-        transparentParticleMesh.unload()
+    override fun prepareDraw() {
+        transparentMesh.unload()
+        translucentMesh.unload()
 
         val toRemove: MutableSet<Particle> = mutableSetOf()
 
 
-        particleMesh = ParticleMesh(renderWindow, particles.size + particleQueue.size)
-        transparentParticleMesh = ParticleMesh(renderWindow, 500)
+        transparentMesh = ParticleMesh(renderWindow, 500)
+        translucentMesh = ParticleMesh(renderWindow, particles.size + particleQueue.size)
+
 
         synchronized(particles) {
             synchronized(particleQueue) {
@@ -131,26 +154,33 @@ class ParticleRenderer(
                     toRemove += particle
                     continue
                 }
-                particle.addVertex(transparentParticleMesh, particleMesh, time)
+                particle.addVertex(transparentMesh, translucentMesh, time)
             }
             particles -= toRemove
         }
 
-        particleMesh.load()
-        transparentParticleMesh.load()
+        transparentMesh.load()
+        translucentMesh.load()
     }
 
-    override fun draw() {
-        renderWindow.renderSystem.reset()
-        particleShader.use()
-        particleMesh.draw()
+    override fun setupTransparent() {
+        super.setupTransparent()
+        transparentShader.use()
     }
 
-    override fun postDraw() {
-        renderWindow.renderSystem.reset(depthMask = false)
-        particleShader.use()
-        transparentParticleMesh.draw()
+    override fun drawTransparent() {
+        transparentMesh.draw()
     }
+
+    override fun setupTranslucent() {
+        super.setupTranslucent()
+        translucentShader.use()
+    }
+
+    override fun drawTranslucent() {
+        translucentMesh.draw()
+    }
+
 
     companion object : RendererBuilder<ParticleRenderer> {
         override val RESOURCE_LOCATION = ResourceLocation("minosoft:particle")

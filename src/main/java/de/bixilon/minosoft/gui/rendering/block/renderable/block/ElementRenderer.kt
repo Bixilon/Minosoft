@@ -168,11 +168,11 @@ class ElementRenderer(
 
         val DRAW_OFFSET = Vec3(+0.5f, +0.5f, +0.5f)
 
-        fun getMesh(meshCollection: ChunkSectionMeshCollection, textureTransparencies: TextureTransparencies): ChunkSectionArrayMesh {
-            return if (textureTransparencies == TextureTransparencies.TRANSLUCENT) {
-                meshCollection.transparentSectionArrayMesh!!
-            } else {
-                meshCollection.opaqueSectionArrayMesh
+        fun getMesh(meshCollection: ChunkSectionMeshCollection, transparency: TextureTransparencies): ChunkSectionArrayMesh {
+            return when (transparency) {
+                TextureTransparencies.OPAQUE -> meshCollection.opaqueMesh
+                TextureTransparencies.TRANSPARENT -> meshCollection.transparentMesh!!
+                TextureTransparencies.TRANSLUCENT -> meshCollection.translucentMesh!!
             }
         }
     }

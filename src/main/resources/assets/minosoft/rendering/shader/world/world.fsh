@@ -13,7 +13,7 @@
 
 #version 330 core
 
-out vec4 outColor;
+out vec4 foutColor;
 
 flat in uint finTextureIndex1;
 in vec3 finTextureCoordinates1;
@@ -34,17 +34,28 @@ void work() {
     }
 
     if (finInterpolation == 0.0f) {
-        outColor = firstTexelColor * finTintColor;
+        foutColor = firstTexelColor * finTintColor;
+        #ifdef TRANSPARENT
+        if (foutColor.a < 0.3f){
+            discard;
+        }
+            #endif
         return;
     }
 
-    vec4 secondTexelColor =  getTexture(finTextureIndex2, finTextureCoordinates2);
+    vec4 secondTexelColor = getTexture(finTextureIndex2, finTextureCoordinates2);
 
     if (secondTexelColor.a == 0.0f) {
         discard;
     }
 
-    outColor = mix(firstTexelColor, secondTexelColor, finInterpolation) * finTintColor;
+    foutColor = mix(firstTexelColor, secondTexelColor, finInterpolation) * finTintColor;
+
+    #ifdef TRANSPARENT
+    if (foutColor.a < 0.3f) {
+        discard;
+    }
+        #endif
 }
 
-#include "minosoft:postprocessing/fragment"
+    #include "minosoft:postprocessing/fragment"

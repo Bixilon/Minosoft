@@ -39,6 +39,8 @@ import de.bixilon.minosoft.gui.rendering.gui.hud.elements.title.TitleHUDElement
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMesh
 import de.bixilon.minosoft.gui.rendering.modding.events.ResizeWindowEvent
 import de.bixilon.minosoft.gui.rendering.system.base.IntegratedBufferTypes
+import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
+import de.bixilon.minosoft.gui.rendering.system.base.phases.OtherDrawable
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
@@ -53,8 +55,9 @@ import glm_.vec2.Vec2i
 
 class HUDRenderer(
     val connection: PlayConnection,
-    val renderWindow: RenderWindow,
-) : Renderer {
+    override val renderWindow: RenderWindow,
+) : Renderer, OtherDrawable {
+    override val renderSystem: RenderSystem = renderWindow.renderSystem
     val shader = renderWindow.renderSystem.createShader("minosoft:hud".toResourceLocation())
     private lateinit var mesh: GUIMesh
     var scaledSize: Vec2i = renderWindow.window.size
@@ -138,7 +141,9 @@ class HUDRenderer(
         }
     }
 
-    override fun postDraw() {
+    override fun setupOther() = Unit
+
+    override fun drawOther() {
         if (!enabled) {
             return
         }

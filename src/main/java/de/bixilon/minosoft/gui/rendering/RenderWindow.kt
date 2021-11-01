@@ -39,6 +39,7 @@ import de.bixilon.minosoft.gui.rendering.stats.AbstractRenderStats
 import de.bixilon.minosoft.gui.rendering.system.base.IntegratedBufferTypes
 import de.bixilon.minosoft.gui.rendering.system.base.PolygonModes
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
+import de.bixilon.minosoft.gui.rendering.system.base.phases.RenderPhases
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem
 import de.bixilon.minosoft.gui.rendering.system.window.BaseWindow
 import de.bixilon.minosoft.gui.rendering.system.window.GLFWWindow
@@ -309,13 +310,17 @@ class RenderWindow(
             val rendererList = rendererMap.values
 
             for (renderer in rendererList) {
-                renderer.update()
+                renderer.prepareDraw()
             }
+
             for (renderer in rendererList) {
-                renderer.draw()
-            }
-            for (renderer in rendererList) {
-                renderer.postDraw()
+                for (phase in RenderPhases.VALUES) {
+                    if (!phase.type.java.isAssignableFrom(renderer::class.java)) {
+                        continue
+                    }
+                    phase.invokeSetup(renderer)
+                    phase.invokeDraw(renderer)
+                }
             }
             renderSystem.reset() // Reset to enable depth mask, etc again
 

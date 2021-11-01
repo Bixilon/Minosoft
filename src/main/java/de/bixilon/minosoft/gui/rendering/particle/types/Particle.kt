@@ -190,7 +190,7 @@ abstract class Particle(
         }
     }
 
-    abstract fun addVertex(transparentMesh: ParticleMesh, particleMesh: ParticleMesh, time: Long)
+    abstract fun addVertex(transparentMesh: ParticleMesh, particleMesh: ParticleMesh, time:Long)
 
     companion object {
         private const val MAGIC_VELOCITY_CONSTANT = 0.4

@@ -13,15 +13,15 @@
 
 package de.bixilon.minosoft.gui.rendering
 
+import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
+
 interface Renderer {
+    val renderWindow: RenderWindow
+    val renderSystem: RenderSystem
 
     fun init() = Unit
 
     fun postInit() = Unit
 
-    fun update() = Unit
-
-    fun draw() = Unit
-
-    fun postDraw() = Unit
+    fun prepareDraw() = Unit
 }
