@@ -136,6 +136,13 @@ open class ThreadPool(
 
     override fun shutdown() {
         state = ThreadPoolStates.STOPPING
+        synchronized(threads) {
+            for (thread in threads.toSynchronizedList()) {
+                if (thread.state == Thread.State.TIMED_WAITING) {
+                    thread.interrupt()
+                }
+            }
+        }
         while (threads.isNotEmpty()) {
             Thread.sleep(1L)
         }
