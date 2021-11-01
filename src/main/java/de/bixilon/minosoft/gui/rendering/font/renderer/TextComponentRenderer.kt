@@ -60,7 +60,7 @@ object TextComponentRenderer : ChatComponentRenderer<TextComponent> {
 
         fun addY(height: Int): Boolean {
             val nextY = offset.y + height
-            val nextSizeY = nextY - initialOffset.y + renderInfo.charMargin // add initial height for chars + end margin
+            val nextSizeY = nextY - initialOffset.y + renderInfo.charHeight // add initial height for chars + end margin
             if (nextSizeY >= elementMaxSize.y) {
                 return true
             }
