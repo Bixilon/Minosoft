@@ -29,6 +29,7 @@ import glm_.vec2.Vec2i
 import glm_.vec4.Vec4i
 
 abstract class Element(val hudRenderer: HUDRenderer) {
+    var ignoreDisplaySize = false
     val renderWindow = hudRenderer.renderWindow
 
     protected open var _parent: Element? = null
@@ -70,15 +71,19 @@ abstract class Element(val hudRenderer: HUDRenderer) {
         get() {
             var maxSize = Vec2i(prefMaxSize)
 
+            var parentMaxSize = parent?.maxSize
+            if (parentMaxSize == null && !ignoreDisplaySize) {
+                parentMaxSize = hudRenderer.scaledSize
+            }
+
             if (maxSize.x < 0) {
-                maxSize.x = hudRenderer.scaledSize.x
+                maxSize.x = parentMaxSize?.x ?: hudRenderer.scaledSize.x
             }
             if (maxSize.y < 0) {
-                maxSize.y = hudRenderer.scaledSize.y
+                maxSize.y = parentMaxSize?.y ?: hudRenderer.scaledSize.y
             }
 
-
-            (parent?.maxSize ?: hudRenderer.scaledSize).let {
+            parentMaxSize?.let {
                 maxSize = maxSize.min(it)
             }
 

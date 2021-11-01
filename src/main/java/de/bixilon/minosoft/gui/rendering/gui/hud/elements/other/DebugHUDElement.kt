@@ -76,6 +76,9 @@ class DebugHUDElement(hudRenderer: HUDRenderer) : LayoutedHUDElement<GridLayout>
     override fun init() {
         layout[Vec2i(0, 0)] = initLeft()
         layout[Vec2i(2, 0)] = initRight()
+
+        layout.prefMaxSize = Vec2i(-1, Int.MAX_VALUE)
+        layout.ignoreDisplaySize = true
     }
 
     private fun initLeft(): Element {
