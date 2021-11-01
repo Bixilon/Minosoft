@@ -15,11 +15,11 @@ package de.bixilon.minosoft.gui.rendering.system.base.texture.texture
 
 import de.bixilon.minosoft.data.assets.AssetsManager
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureStates
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
 import de.bixilon.minosoft.gui.rendering.system.opengl.texture.OpenGLTextureArray
 import de.bixilon.minosoft.gui.rendering.textures.properties.ImageProperties
+import example.jonathan2520.SRGBAverager
 import glm_.vec2.Vec2
 import glm_.vec2.Vec2i
 import org.lwjgl.BufferUtils
@@ -41,119 +41,54 @@ interface AbstractTexture {
     fun load(assetsManager: AssetsManager)
 
 
-    fun generateMipMaps(): Array<Pair<Vec2i, ByteBuffer>> {
-        val ret: MutableList<Pair<Vec2i, ByteBuffer>> = mutableListOf()
-        var lastBuffer = data!!
-        var lastSize = size
-        for (i in 0 until OpenGLTextureArray.MAX_MIPMAP_LEVELS) {
-            val size = Vec2i(size.x shr i, size.y shr i)
-            if (i != 0 && size.x != 0 && size.y != 0) {
-                lastBuffer = generateMipmap(lastBuffer, lastSize, size)
-                lastSize = size
+    fun generateMipMaps(): Array<ByteBuffer> {
+        val images: MutableList<ByteBuffer> = mutableListOf()
+
+        var data = data!!
+
+        images += data
+
+        for (i in 1 until OpenGLTextureArray.MAX_MIPMAP_LEVELS) {
+            val mipMapSize = Vec2i(size.x shr i, size.y shr i)
+            if (mipMapSize.x <= 0 || mipMapSize.y <= 0) {
+                break
             }
-            ret += Pair(size, lastBuffer)
+            data = generateMipmap(data, Vec2i(size.x shr (i - 1), size.y shr (i - 1)))
+            images += data
         }
 
-        return ret.toTypedArray()
+        return images.toTypedArray()
     }
 
+    private fun generateMipmap(origin: ByteBuffer, oldSize: Vec2i): ByteBuffer {
+        // No Vec2i: performance reasons
+        val oldSizeX = oldSize.x
+        val newSizeX = oldSizeX shr 1
 
-    private fun ByteBuffer.getRGB(start: Int): RGBColor {
-        return RGBColor(get(start), get(start + 1), get(start + 2), get(start + 3))
-    }
-
-    private fun ByteBuffer.setRGB(start: Int, color: RGBColor) {
-        put(start, color.red.toByte())
-        put(start + 1, color.green.toByte())
-        put(start + 2, color.blue.toByte())
-        put(start + 3, color.alpha.toByte())
-    }
-
-    @Deprecated(message = "This is garbage, will be improved soon...")
-    private fun generateMipmap(biggerBuffer: ByteBuffer, oldSize: Vec2i, newSize: Vec2i): ByteBuffer {
-        val sizeFactor = oldSize / newSize
-        val buffer = BufferUtils.createByteBuffer(biggerBuffer.capacity() shr 1)
+        val buffer = BufferUtils.createByteBuffer(origin.capacity() shr 1)
         buffer.limit(buffer.capacity())
 
-        fun getRGB(x: Int, y: Int): RGBColor {
-            return biggerBuffer.getRGB((y * oldSize.x + x) * 4)
+        fun getRGB(x: Int, y: Int): Int {
+            return origin.getInt((y * oldSizeX + x) * 4)
         }
 
-        fun setRGB(x: Int, y: Int, color: RGBColor) {
-            buffer.setRGB((y * newSize.x + x) * 4, color)
+        fun setRGB(x: Int, y: Int, color: Int) {
+            buffer.putInt((y * newSizeX + x) * 4, color)
         }
 
-        for (y in 0 until newSize.y) {
-            for (x in 0 until newSize.x) {
+        for (y in 0 until (oldSize.y shr 1)) {
+            for (x in 0 until newSizeX) {
+                val xOffset = x * 2
+                val yOffset = y * 2
 
-                // check what is the most used transparency
-                val transparencyPixelCount = IntArray(TextureTransparencies.VALUES.size)
-                for (mixY in 0 until sizeFactor.y) {
-                    for (mixX in 0 until sizeFactor.x) {
-                        val color = getRGB(x * sizeFactor.x + mixX, y * sizeFactor.y + mixY)
-                        when (color.alpha) {
-                            255 -> transparencyPixelCount[TextureTransparencies.OPAQUE.ordinal]++
-                            0 -> transparencyPixelCount[TextureTransparencies.TRANSPARENT.ordinal]++
-                            else -> transparencyPixelCount[TextureTransparencies.TRANSLUCENT.ordinal]++
-                        }
-                    }
-                }
-                var largest = 0
-                for (count in transparencyPixelCount) {
-                    if (count > largest) {
-                        largest = count
-                    }
-                }
-                var transparency: TextureTransparencies = TextureTransparencies.OPAQUE
-                for ((index, count) in transparencyPixelCount.withIndex()) {
-                    if (count >= largest) {
-                        transparency = TextureTransparencies[index]
-                        break
-                    }
-                }
+                val output = SRGBAverager.average(
+                    getRGB(xOffset + 0, yOffset + 0),
+                    getRGB(xOffset + 1, yOffset + 0),
+                    getRGB(xOffset + 0, yOffset + 1),
+                    getRGB(xOffset + 1, yOffset + 1),
+                )
 
-                var count = 0
-                var red = 0
-                var green = 0
-                var blue = 0
-                var alpha = 0
-
-                // make magic for the most used transparency
-                for (mixY in 0 until sizeFactor.y) {
-                    for (mixX in 0 until sizeFactor.x) {
-                        val color = getRGB(x * sizeFactor.x + mixX, y * sizeFactor.y + mixY)
-                        when (transparency) {
-                            TextureTransparencies.OPAQUE -> {
-                                if (color.alpha != 0xFF) {
-                                    continue
-                                }
-                                red += color.red
-                                green += color.green
-                                blue += color.blue
-                                alpha += color.alpha
-                                count++
-                            }
-                            TextureTransparencies.TRANSPARENT -> {
-                            }
-                            TextureTransparencies.TRANSLUCENT -> {
-                                red += color.red
-                                green += color.green
-                                blue += color.blue
-                                alpha += color.alpha
-                                count++
-                            }
-                        }
-                    }
-                }
-
-
-
-
-
-                if (count == 0) {
-                    count++
-                }
-                setRGB(x, y, RGBColor(red / count, green / count, blue / count, alpha / count))
+                setRGB(x, y, output)
             }
         }
 

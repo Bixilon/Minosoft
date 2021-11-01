@@ -135,20 +135,21 @@ class OpenGLTextureArray(
         glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, GL_REPEAT)
         glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, GL_REPEAT)
         // glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
-        glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST)
+        glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR)
         glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
         glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAX_LEVEL, MAX_MIPMAP_LEVELS - 1)
 
-        for (i in 0 until MAX_MIPMAP_LEVELS) {
-            glTexImage3D(GL_TEXTURE_2D_ARRAY, i, GL_RGBA, resolution shr i, resolution shr i, textures.size, 0, GL_RGBA, GL_UNSIGNED_BYTE, null as ByteBuffer?)
+        for (level in 0 until MAX_MIPMAP_LEVELS) {
+            glTexImage3D(GL_TEXTURE_2D_ARRAY, level, GL_RGBA, resolution shr level, resolution shr level, textures.size, 0, GL_RGBA, GL_UNSIGNED_BYTE, null as ByteBuffer?)
         }
 
         for (texture in textures) {
             val mipMaps = texture.generateMipMaps()
 
             val renderData = texture.renderData as OpenGLTextureData
-            for ((mipMapLevel, data) in mipMaps.withIndex()) {
-                glTexSubImage3D(GL_TEXTURE_2D_ARRAY, mipMapLevel, 0, 0, renderData.index, data.first.x, data.first.y, mipMapLevel + 1, GL_RGBA, GL_UNSIGNED_BYTE, data.second)
+            for ((level, data) in mipMaps.withIndex()) {
+                val size = texture.size shr level
+                glTexSubImage3D(GL_TEXTURE_2D_ARRAY, level, 0, 0, renderData.index, size.x, size.y, level + 1, GL_RGBA, GL_UNSIGNED_BYTE, data)
             }
         }
 
