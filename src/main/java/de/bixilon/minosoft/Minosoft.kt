@@ -46,7 +46,6 @@ import de.bixilon.minosoft.util.task.worker.tasks.Task
 
 object Minosoft {
     val MINOSOFT_ASSETS_MANAGER = JarAssetsManager(Minosoft::class.java, mutableSetOf("minosoft"))
-    val MINECRAFT_FALLBACK_ASSETS_MANAGER = JarAssetsManager(Minosoft::class.java, mutableSetOf("minecraft"))
     val LANGUAGE_MANAGER = MultiLanguageManager()
     val START_UP_LATCH = CountUpAndDownLatch(1)
 
