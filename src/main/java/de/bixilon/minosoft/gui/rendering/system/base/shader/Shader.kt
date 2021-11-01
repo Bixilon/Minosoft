@@ -30,6 +30,7 @@ interface Shader {
     val renderWindow: RenderWindow
     val resourceLocation: ResourceLocation
     val uniforms: List<String>
+    val defines: MutableMap<String, Any>
 
     val log: String
 
@@ -74,6 +75,7 @@ interface Shader {
     }
 
     companion object {
+        const val TRANSPARENT_DEFINE = "TRANSPARENT"
         val DEFAULT_DEFINES: Map<String, (renderWindow: RenderWindow) -> Any?> = mapOf(
             "ANIMATED_TEXTURE_COUNT" to {
                 max(it.textureManager.staticTextures.animator.size, 1)

@@ -23,6 +23,7 @@ import de.bixilon.minosoft.gui.rendering.Renderer
 import de.bixilon.minosoft.gui.rendering.RendererBuilder
 import de.bixilon.minosoft.gui.rendering.input.camera.hit.BlockRaycastHit
 import de.bixilon.minosoft.gui.rendering.system.base.DepthFunctions
+import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.getWorldOffset
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3d
 import de.bixilon.minosoft.gui.rendering.util.mesh.LineMesh
@@ -32,12 +33,14 @@ import glm_.vec3.Vec3i
 
 class BlockOutlineRenderer(
     val connection: PlayConnection,
-    val renderWindow: RenderWindow,
+    override val renderWindow: RenderWindow,
 ) : Renderer {
+    override val renderSystem: RenderSystem = renderWindow.renderSystem
     private var currentOutlinePosition: Vec3i? = null
     private var currentOutlineBlockState: BlockState? = null
 
     private var currentMesh: LineMesh? = null
+
 
     private fun drawMesh() {
         val currentMesh = currentMesh ?: return
@@ -47,6 +50,7 @@ class BlockOutlineRenderer(
         }
         renderWindow.shaderManager.genericColorShader.use()
         currentMesh.draw()
+        draw()
     }
 
     private fun unload() {
@@ -57,7 +61,8 @@ class BlockOutlineRenderer(
         this.currentOutlineBlockState = null
     }
 
-    override fun draw() {
+    @Deprecated("TODO")
+    private fun draw() {
         val raycastHit = renderWindow.inputHandler.camera.target.nullCast<BlockRaycastHit>()
 
         var currentMesh = currentMesh

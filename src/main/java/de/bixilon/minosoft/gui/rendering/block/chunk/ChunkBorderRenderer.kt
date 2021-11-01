@@ -19,6 +19,8 @@ import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.Renderer
 import de.bixilon.minosoft.gui.rendering.RendererBuilder
+import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
+import de.bixilon.minosoft.gui.rendering.system.base.phases.OpaqueDrawable
 import de.bixilon.minosoft.gui.rendering.util.mesh.LineMesh
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
@@ -27,13 +29,14 @@ import glm_.vec3.Vec3
 
 class ChunkBorderRenderer(
     val connection: PlayConnection,
-    val renderWindow: RenderWindow,
-) : Renderer {
+    override val renderWindow: RenderWindow,
+) : Renderer, OpaqueDrawable {
+    override val renderSystem: RenderSystem = renderWindow.renderSystem
     private var lastChunkPosition: Vec2i? = null
     private var lastMesh: LineMesh? = null
 
 
-    private fun prepare() {
+    override fun prepareDraw() {
         val chunkPosition = renderWindow.connection.player.positionInfo.chunkPosition
         if (chunkPosition == lastChunkPosition && lastMesh != null) {
             return
@@ -109,11 +112,13 @@ class ChunkBorderRenderer(
         this.lastChunkPosition = chunkPosition
     }
 
-    override fun draw() {
-        prepare()
-        val mesh = lastMesh ?: return
+    override fun setupOpaque() {
         renderWindow.renderSystem.reset(faceCulling = false)
         renderWindow.shaderManager.genericColorShader.use()
+    }
+
+    override fun drawOpaque() {
+        val mesh = lastMesh ?: return
         mesh.draw()
     }
 

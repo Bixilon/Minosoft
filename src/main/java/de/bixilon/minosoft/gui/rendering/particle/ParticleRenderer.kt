@@ -20,6 +20,9 @@ import de.bixilon.minosoft.gui.rendering.Renderer
 import de.bixilon.minosoft.gui.rendering.RendererBuilder
 import de.bixilon.minosoft.gui.rendering.modding.events.CameraMatrixChangeEvent
 import de.bixilon.minosoft.gui.rendering.particle.types.Particle
+import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
+import de.bixilon.minosoft.gui.rendering.system.base.phases.TranslucentDrawable
+import de.bixilon.minosoft.gui.rendering.system.base.phases.TransparentDrawable
 import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -32,24 +35,38 @@ import glm_.vec3.Vec3
 
 class ParticleRenderer(
     private val connection: PlayConnection,
-    val renderWindow: RenderWindow,
-) : Renderer {
-    private val particleShader: Shader = renderWindow.renderSystem.createShader(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "particle"))
-    private var particleMesh = ParticleMesh(renderWindow)
-    private var transparentParticleMesh = ParticleMesh(renderWindow)
+    override val renderWindow: RenderWindow,
+) : Renderer, TransparentDrawable, TranslucentDrawable {
+    override val renderSystem: RenderSystem = renderWindow.renderSystem
+    private val transparentShader: Shader = renderSystem.createShader(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "particle"))
+    private val translucentShader: Shader = renderSystem.createShader(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "particle"))
+
+    // There is no opaque mesh because it is simply not needed (every particle has transparency)
+    private var transparentMesh = ParticleMesh(renderWindow)
+    private var translucentMesh = ParticleMesh(renderWindow)
 
     private var particles: MutableSet<Particle> = synchronizedSetOf()
 
     override fun init() {
         connection.registerEvent(CallbackEventInvoker.of<CameraMatrixChangeEvent> {
             renderWindow.queue += {
-                particleShader.use().setMat4("uViewProjectionMatrix", Mat4(it.viewProjectionMatrix))
-                particleShader.use().setVec3("uCameraRight", Vec3(it.viewMatrix[0][0], it.viewMatrix[1][0], it.viewMatrix[2][0]))
-                particleShader.use().setVec3("uCameraUp", Vec3(it.viewMatrix[0][1], it.viewMatrix[1][1], it.viewMatrix[2][1]))
+
+                fun applyToShader(shader: Shader) {
+                    shader.apply {
+                        use()
+                        setMat4("uViewProjectionMatrix", Mat4(it.viewProjectionMatrix))
+                        setVec3("uCameraRight", Vec3(it.viewMatrix[0][0], it.viewMatrix[1][0], it.viewMatrix[2][0]))
+                        setVec3("uCameraUp", Vec3(it.viewMatrix[0][1], it.viewMatrix[1][1], it.viewMatrix[2][1]))
+                    }
+                }
+
+                applyToShader(transparentShader)
+                applyToShader(translucentShader)
             }
         })
-        particleMesh.load()
-        transparentParticleMesh.load()
+        transparentMesh.load()
+        translucentMesh.load()
+
         connection.registries.particleTypeRegistry.forEachItem {
             for (resourceLocation in it.textures) {
                 renderWindow.textureManager.staticTextures.createTexture(resourceLocation)
@@ -60,9 +77,15 @@ class ParticleRenderer(
     }
 
     override fun postInit() {
-        particleShader.load()
-        renderWindow.textureManager.staticTextures.use(particleShader)
-        renderWindow.textureManager.staticTextures.animator.use(particleShader)
+        transparentShader.defines[Shader.TRANSPARENT_DEFINE] = ""
+        transparentShader.load()
+        renderWindow.textureManager.staticTextures.use(transparentShader)
+        renderWindow.textureManager.staticTextures.animator.use(transparentShader)
+
+        translucentShader.load()
+        renderWindow.textureManager.staticTextures.use(translucentShader)
+        renderWindow.textureManager.staticTextures.animator.use(translucentShader)
+
 
         connection.world.particleRenderer = this
     }
@@ -76,11 +99,11 @@ class ParticleRenderer(
         add(particle)
     }
 
-    override fun update() {
-        particleMesh.unload()
-        transparentParticleMesh.unload()
-        particleMesh = ParticleMesh(renderWindow)
-        transparentParticleMesh = ParticleMesh(renderWindow)
+    override fun prepareDraw() {
+        transparentMesh.unload()
+        translucentMesh.unload()
+        transparentMesh = ParticleMesh(renderWindow)
+        translucentMesh = ParticleMesh(renderWindow)
 
 
         for (particle in particles.toSynchronizedSet()) {
@@ -89,23 +112,29 @@ class ParticleRenderer(
                 this.particles -= particle
                 continue
             }
-            particle.addVertex(transparentParticleMesh, particleMesh)
+            particle.addVertex(transparentMesh, translucentMesh)
         }
 
-        particleMesh.load()
-        transparentParticleMesh.load()
+        transparentMesh.load()
+        translucentMesh.load()
     }
 
-    override fun draw() {
-        renderWindow.renderSystem.reset()
-        particleShader.use()
-        particleMesh.draw()
+    override fun setupTransparent() {
+        super.setupTransparent()
+        transparentShader.use()
     }
 
-    override fun postDraw() {
-        renderWindow.renderSystem.reset(depthMask = false)
-        particleShader.use()
-        transparentParticleMesh.draw()
+    override fun drawTransparent() {
+        transparentMesh.draw()
+    }
+
+    override fun setupTranslucent() {
+        super.setupTranslucent()
+        translucentShader.use()
+    }
+
+    override fun drawTranslucent() {
+        translucentMesh.draw()
     }
 
     companion object : RendererBuilder<ParticleRenderer> {

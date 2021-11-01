@@ -33,14 +33,26 @@ void main() {
 
     if (finInterpolation == 0.0f) {
         foutColor = texelColor1 * finTintColor;
+        #ifdef TRANSPARENT
+        if (foutColor.a < 0.3f){
+            discard;
+        }
+            #endif
         return;
     }
 
-    vec4 texelColor2 =  getTexture(finTextureIndex2, finTextureCoordinates2);
+    vec4 texelColor2 = getTexture(finTextureIndex2, finTextureCoordinates2);
 
     if (texelColor2.a == 0.0f) {
         discard;
     }
 
     foutColor = mix(texelColor1, texelColor2, finInterpolation) * finTintColor;
+
+
+    #ifdef TRANSPARENT
+    if (foutColor.a < 0.3f){
+        discard;
+    }
+        #endif
 }

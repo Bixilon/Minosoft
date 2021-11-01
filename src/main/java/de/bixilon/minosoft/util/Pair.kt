@@ -12,6 +12,7 @@
  */
 package de.bixilon.minosoft.util
 
+@Deprecated("Java only")
 data class Pair<K, V>(
     val key: K,
     val value: V,

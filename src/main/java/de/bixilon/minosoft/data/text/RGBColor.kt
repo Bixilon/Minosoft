@@ -27,6 +27,12 @@ class RGBColor(val rgba: Int) : ChatCode, TextFormattable {
 
     constructor(red: Double, green: Double, blue: Double, alpha: Double = 1.0) : this(red.toFloat(), green.toFloat(), blue.toFloat(), alpha.toFloat())
 
+    val argb: Int
+        get() = (alpha shl 24) or (red shl 16) or (green shl 8) or blue
+
+    val abgr: Int
+        get() = (alpha shl 24) or (blue shl 16) or (green shl 8) or red
+
     val alpha: @IntRange(from = 0L, to = 255L) Int
         get() = rgba and 0xFF
 
