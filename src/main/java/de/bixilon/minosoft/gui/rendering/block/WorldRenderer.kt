@@ -191,12 +191,12 @@ class WorldRenderer(
     override fun postInit() {
         lightMap.init()
         chunkShader.load()
+        renderWindow.textureManager.staticTextures.use(chunkShader)
         renderWindow.textureManager.staticTextures.animator.use(chunkShader)
         lightMap.use(chunkShader)
 
         transparentShader.defines[Shader.TRANSPARENT_DEFINE] = ""
         transparentShader.load()
-        renderWindow.textureManager.staticTextures.use(chunkShader)
         renderWindow.textureManager.staticTextures.use(transparentShader)
         renderWindow.textureManager.staticTextures.animator.use(transparentShader)
         lightMap.use(transparentShader)

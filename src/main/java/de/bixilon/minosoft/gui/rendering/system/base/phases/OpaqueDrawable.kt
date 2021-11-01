@@ -5,7 +5,7 @@ import de.bixilon.minosoft.gui.rendering.Renderer
 interface OpaqueDrawable : Renderer {
 
     fun setupOpaque() {
-        renderSystem.reset()
+        renderSystem.reset(blending = false)
     }
 
     fun drawOpaque()
