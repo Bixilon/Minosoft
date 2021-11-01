@@ -45,6 +45,12 @@ void work() {
     }
 
     outColor = mix(firstTexelColor, secondTexelColor, finInterpolation) * finTintColor;
+
+    #ifndef TRANSPARENT
+    if (outColor.a < 0.5){
+        discard;
+    }
+        #endif
 }
 
-#include "minosoft:postprocessing/fragment"
+    #include "minosoft:postprocessing/fragment"

@@ -23,5 +23,5 @@ interface SpriteAnimator {
     fun draw()
 
 
-    fun use(shader: Shader, bufferName: String = "uAnimationBuffer")
+    fun use(shader: Shader, bufferName: String = "uSpriteBuffer")
 }

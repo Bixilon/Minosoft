@@ -11,16 +11,10 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.block.mesh
+package de.bixilon.minosoft.gui.rendering.system.base
 
-import de.bixilon.minosoft.gui.rendering.RenderWindow
-
-class ChunkSectionMeshCollection(
-    renderWindow: RenderWindow,
-    val opaqueMesh: ChunkSectionArrayMesh = ChunkSectionArrayMesh(renderWindow),
-    var translucentMesh: ChunkSectionArrayMesh? = ChunkSectionArrayMesh(renderWindow),
-    var transparentMesh: ChunkSectionArrayMesh? = ChunkSectionArrayMesh(renderWindow),
-) {
-    var lowestBlockHeight = 0
-    var highestBlockHeight = 0
+enum class RenderModes {
+    DEFAULT,
+    TRANSLUCENT,
+    ;
 }

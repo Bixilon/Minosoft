@@ -33,8 +33,10 @@ import de.bixilon.minosoft.gui.rendering.block.renderable.BlockLikeRenderContext
 import de.bixilon.minosoft.gui.rendering.input.camera.Frustum
 import de.bixilon.minosoft.gui.rendering.modding.events.FrustumChangeEvent
 import de.bixilon.minosoft.gui.rendering.modding.events.RenderingStateChangeEvent
+import de.bixilon.minosoft.gui.rendering.system.base.RenderModes
 import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
+import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLShader
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.getWorldOffset
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.of
@@ -62,6 +64,7 @@ class WorldRenderer(
     private val waterBlock = connection.registries.blockRegistry[ResourceLocation("minecraft:water")].nullCast<FluidBlock>()
 
     private val chunkShader: Shader = renderWindow.renderSystem.createShader(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "world"))
+    private val transparentShader: Shader = renderWindow.renderSystem.createShader(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "world"))
     private val lightMap = LightMap(connection)
 
     val allChunkSections: SynchronizedMap<Vec2i, SynchronizedMap<Int, ChunkSectionMeshCollection>> = synchronizedMapOf()
@@ -118,8 +121,12 @@ class WorldRenderer(
             }
         }
 
-        if (meshCollection.transparentSectionArrayMesh!!.data.isEmpty) {
-            meshCollection.transparentSectionArrayMesh = null
+        if (meshCollection.translucentMesh!!.data.isEmpty) {
+            meshCollection.translucentMesh = null
+        }
+
+        if (meshCollection.transparentMesh!!.data.isEmpty) {
+            meshCollection.transparentMesh = null
         }
         return meshCollection
     }
@@ -180,11 +187,15 @@ class WorldRenderer(
 
     override fun postInit() {
         chunkShader.load()
+        (transparentShader as OpenGLShader).defines["TRANSPARENT"] = "" // ToDo
+        transparentShader.load()
         lightMap.init()
 
         renderWindow.textureManager.staticTextures.use(chunkShader)
+        renderWindow.textureManager.staticTextures.use(transparentShader)
         renderWindow.textureManager.staticTextures.animator.use(chunkShader)
         lightMap.use(chunkShader)
+        lightMap.use(transparentShader)
 
         for (blockState in allBlocks!!) {
             for (model in blockState.renderers) {
@@ -205,18 +216,28 @@ class WorldRenderer(
 
         for (map in lastVisibleChunks.values) {
             for (mesh in map.values) {
-                mesh.opaqueSectionArrayMesh.draw()
+                mesh.opaqueMesh.draw()
             }
         }
     }
 
     override fun postDraw() {
-        renderWindow.renderSystem.reset(depthMask = false)
-        chunkShader.use()
+        renderWindow.renderSystem.reset()
+        transparentShader.use()
+
 
         for (map in lastVisibleChunks.values) {
             for (mesh in map.values) {
-                mesh.transparentSectionArrayMesh?.draw()
+                mesh.transparentMesh?.draw()
+            }
+        }
+
+        chunkShader.use()
+        renderWindow.renderSystem.renderMode(RenderModes.TRANSLUCENT)
+
+        for (map in lastVisibleChunks.values) {
+            for (mesh in map.values) {
+                mesh.translucentMesh?.draw()
             }
         }
     }
@@ -329,23 +350,33 @@ class WorldRenderer(
                     val sectionMap = allChunkSections.getOrPut(chunkPosition) { synchronizedMapOf() }
 
                     sectionMap[index]?.let {
-                        it.opaqueSectionArrayMesh.unload()
+                        it.opaqueMesh.unload()
                         meshes--
-                        triangles -= it.opaqueSectionArrayMesh.vertices
+                        triangles -= it.opaqueMesh.vertices
 
-                        it.transparentSectionArrayMesh?.let {
+                        it.translucentMesh?.let {
+                            it.unload()
+                            meshes--
+                            triangles -= it.vertices
+                        }
+                        it.transparentMesh?.let {
                             it.unload()
                             meshes--
                             triangles -= it.vertices
                         }
                     }
 
-                    meshCollection.opaqueSectionArrayMesh.let {
+                    meshCollection.opaqueMesh.let {
                         it.load()
                         meshes++
                         triangles += it.vertices
                     }
-                    meshCollection.transparentSectionArrayMesh?.let {
+                    meshCollection.translucentMesh?.let {
+                        it.load()
+                        meshes++
+                        triangles += it.vertices
+                    }
+                    meshCollection.transparentMesh?.let {
                         it.load()
                         meshes++
                         triangles += it.vertices
@@ -410,12 +441,17 @@ class WorldRenderer(
     private fun unloadMeshes(meshes: Collection<ChunkSectionMeshCollection>) {
         renderWindow.assertOnRenderThread()
         for (meshCollection in meshes) {
-            meshCollection.opaqueSectionArrayMesh.let {
+            meshCollection.opaqueMesh.let {
                 it.unload()
                 this.meshes--
                 triangles -= it.vertices
             }
-            meshCollection.transparentSectionArrayMesh?.let {
+            meshCollection.translucentMesh?.let {
+                it.unload()
+                this.meshes--
+                triangles -= it.vertices
+            }
+            meshCollection.transparentMesh?.let {
                 it.unload()
                 this.meshes--
                 triangles -= it.vertices

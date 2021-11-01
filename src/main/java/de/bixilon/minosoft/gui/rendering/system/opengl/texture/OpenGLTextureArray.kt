@@ -189,7 +189,7 @@ class OpenGLTextureArray(
 
 
     companion object {
-        val TEXTURE_RESOLUTION_ID_MAP = arrayOf(16, 32, 64, 128, 256, 512, 1024) // A 12x12 texture will be saved in texture id 0 (in 0 are only 16x16 textures). Animated textures get split
+        val TEXTURE_RESOLUTION_ID_MAP = intArrayOf(16, 32, 64, 128, 256, 512, 1024) // A 12x12 texture will be saved in texture id 0 (in 0 are only 16x16 textures). Animated textures get split
         const val TEXTURE_MAX_RESOLUTION = 1024
         const val MAX_MIPMAP_LEVELS = 5
     }

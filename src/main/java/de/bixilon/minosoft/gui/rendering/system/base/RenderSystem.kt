@@ -89,4 +89,14 @@ interface RenderSystem {
     fun createTextureManager(): TextureManager
 
     fun clear(vararg buffers: IntegratedBufferTypes)
+
+
+    fun renderMode(mode: RenderModes) {
+        when (mode) {
+            RenderModes.TRANSLUCENT -> {
+                depthMask = false
+                setBlendFunc(BlendingFunctions.SOURCE_ALPHA, BlendingFunctions.ONE_MINUS_SOURCE_ALPHA, BlendingFunctions.ONE, BlendingFunctions.ONE_MINUS_SOURCE_ALPHA)
+            }
+        }
+    }
 }
