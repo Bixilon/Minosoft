@@ -1,3 +1,5 @@
+// Source: https://bugs.mojang.com/browse/MC-114265
+
 // Offers fast sRGB encoding and decoding.
 
 // Decoding is a straightforward table look-up.
@@ -25,14 +27,14 @@ public class SRGBTable {
         this(new SRGBCalculator(), 3295.5F);
     }
 
-    public SRGBTable(SRGBCalculator calc, float scale) {
+    public SRGBTable(SRGBCalculator calculator, float scale) {
         this.scale = scale;
         to_float = new float[256];
         threshold = new float[256];
         to_int = new byte[(int) scale + 1];
         for (int i = 0; i < 255; ++i) {
-            to_float[i] = (float) calc.decode(i / 255.0);
-            double dthresh = calc.decode((i + 0.5) / 255.0);
+            to_float[i] = (float) calculator.decode(i / 255.0);
+            double dthresh = calculator.decode((i + 0.5) / 255.0);
             float fthresh = (float) dthresh;
             if (fthresh >= dthresh)
                 fthresh = Math.nextAfter(fthresh, -1);

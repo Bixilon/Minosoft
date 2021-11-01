@@ -1,3 +1,5 @@
+// Source: https://bugs.mojang.com/browse/MC-114265
+
 // Offers very precise sRGB encoding and decoding.
 
 // The actual values defining sRGB are alpha = 0.055 and gamma = 2.4.
