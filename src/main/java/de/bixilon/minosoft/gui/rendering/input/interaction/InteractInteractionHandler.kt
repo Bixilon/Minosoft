@@ -218,7 +218,7 @@ class InteractInteractionHandler(
 
             val interactingItem = interactingItem
             val item = interactingItem?.item
-            if (item is UsableItem) {
+            if (item is UsableItem && connection.player.isUsingItem) {
                 interactingTicksLeft--
                 if (interactingTicksLeft < 0) {
                     item.finishUsing(connection, interactingItem)

@@ -45,6 +45,9 @@ class HotbarVehicleHealthElement(hudRenderer: HUDRenderer) : AbstractHotbarHealt
     override var totalMaxHealth = 0.0f
 
     override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
+        if (!shown) {
+            return 0
+        }
         if (text) {
             return super.forceRender(offset, z, consumer, options)
         }
@@ -77,6 +80,8 @@ class HotbarVehicleHealthElement(hudRenderer: HUDRenderer) : AbstractHotbarHealt
         val riddenEntity = hudRenderer.connection.player.vehicle
         if (riddenEntity == null || riddenEntity !is LivingEntity) {
             if (this.shown) {
+                totalHealth = 0.0f
+                totalMaxHealth = 0.0f
                 this.shown = false
                 return true
             }

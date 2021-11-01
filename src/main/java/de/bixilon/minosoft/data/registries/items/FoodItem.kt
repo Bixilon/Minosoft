@@ -25,9 +25,6 @@ import de.bixilon.minosoft.util.KUtil.decide
 import de.bixilon.minosoft.util.KUtil.toBoolean
 import de.bixilon.minosoft.util.KUtil.toFloat
 import de.bixilon.minosoft.util.KUtil.toInt
-import de.bixilon.minosoft.util.logging.Log
-import de.bixilon.minosoft.util.logging.LogLevels
-import de.bixilon.minosoft.util.logging.LogMessageType
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.asCompound
 
 open class FoodItem(
@@ -61,7 +58,6 @@ open class FoodItem(
     }
 
     override fun finishUsing(connection: PlayConnection, itemStack: ItemStack) {
-        Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Finished eating: $timeToEat" }
         if (connection.player.gamemode != Gamemodes.CREATIVE) {
             itemStack.count--
         }
