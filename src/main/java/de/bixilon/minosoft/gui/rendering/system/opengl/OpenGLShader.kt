@@ -40,7 +40,7 @@ class OpenGLShader(
 ) : Shader {
     override var loaded: Boolean = false
         private set
-    val defines: MutableMap<String, Any> = mutableMapOf()
+    override val defines: MutableMap<String, Any> = mutableMapOf()
     private var shader = -1
     override var uniforms: MutableList<String> = mutableListOf()
         private set

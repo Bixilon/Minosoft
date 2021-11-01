@@ -43,4 +43,11 @@ void main() {
     }
 
     foutColor = mix(texelColor1, texelColor2, finInterpolation) * finTintColor;
+
+
+    #ifndef TRANSPARENT
+    if (foutColor.a < 0.5){
+        discard;
+    }
+        #endif
 }

@@ -22,6 +22,8 @@ import de.bixilon.minosoft.gui.rendering.Renderer
 import de.bixilon.minosoft.gui.rendering.RendererBuilder
 import de.bixilon.minosoft.gui.rendering.modding.events.FrustumChangeEvent
 import de.bixilon.minosoft.gui.rendering.system.base.DepthFunctions
+import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
+import de.bixilon.minosoft.gui.rendering.system.base.phases.OpaqueDrawable
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.modding.event.events.EntityDestroyEvent
 import de.bixilon.minosoft.modding.event.events.EntitySpawnEvent
@@ -33,8 +35,9 @@ import de.bixilon.minosoft.util.collections.SynchronizedMap
 
 class EntityHitBoxRenderer(
     val connection: PlayConnection,
-    val renderWindow: RenderWindow,
-) : Renderer {
+    override val renderWindow: RenderWindow,
+) : Renderer, OpaqueDrawable {
+    override val renderSystem: RenderSystem = renderWindow.renderSystem
     private val meshes: SynchronizedMap<Entity, EntityHitBoxMesh> = synchronizedMapOf()
 
 
@@ -102,13 +105,15 @@ class EntityHitBoxRenderer(
         }
     }
 
-    override fun draw() {
-        renderWindow.renderSystem.reset(faceCulling = false)
+    override fun setupOpaque() {
+        renderWindow.renderSystem.reset(faceCulling = false) // ToDo?
         if (Minosoft.config.config.game.entities.hitBox.disableZBuffer) {
             renderWindow.renderSystem.depth = DepthFunctions.ALWAYS
         }
         renderWindow.shaderManager.genericColorShader.use()
+    }
 
+    override fun drawOpaque() {
         fun draw(mesh: EntityHitBoxMesh?) {
             mesh ?: return
 

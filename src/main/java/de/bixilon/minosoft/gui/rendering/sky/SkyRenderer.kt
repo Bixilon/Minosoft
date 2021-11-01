@@ -24,6 +24,8 @@ import de.bixilon.minosoft.gui.rendering.RendererBuilder
 import de.bixilon.minosoft.gui.rendering.modding.events.CameraMatrixChangeEvent
 import de.bixilon.minosoft.gui.rendering.system.base.BlendingFunctions
 import de.bixilon.minosoft.gui.rendering.system.base.DepthFunctions
+import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
+import de.bixilon.minosoft.gui.rendering.system.base.phases.CustomDrawable
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.util.mesh.SimpleTextureMesh
 import de.bixilon.minosoft.modding.event.events.TimeChangeEvent
@@ -38,10 +40,11 @@ import glm_.vec3.Vec3d
 
 class SkyRenderer(
     private val connection: PlayConnection,
-    val renderWindow: RenderWindow,
-) : Renderer {
-    private val skyboxShader = renderWindow.renderSystem.createShader(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "sky/skybox"))
-    private val skySunShader = renderWindow.renderSystem.createShader(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "sky/sun"))
+    override val renderWindow: RenderWindow,
+) : Renderer, CustomDrawable {
+    override val renderSystem: RenderSystem = renderWindow.renderSystem
+    private val skyboxShader = renderSystem.createShader(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "sky/skybox"))
+    private val skySunShader = renderSystem.createShader(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "sky/sun"))
     private val skyboxMesh = SkyboxMesh(renderWindow)
     private var skySunMesh = SimpleTextureMesh(renderWindow)
     private lateinit var sunTexture: AbstractTexture
@@ -138,7 +141,7 @@ class SkyRenderer(
         skyboxMesh.draw()
     }
 
-    override fun draw() {
+    override fun drawCustom() {
         renderWindow.renderSystem.reset(depth = DepthFunctions.LESS_OR_EQUAL)
         drawSkybox()
         drawSun()

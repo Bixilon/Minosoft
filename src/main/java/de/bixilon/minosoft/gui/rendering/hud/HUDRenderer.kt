@@ -28,6 +28,8 @@ import de.bixilon.minosoft.gui.rendering.hud.nodes.chat.ChatBoxHUDElement
 import de.bixilon.minosoft.gui.rendering.hud.nodes.debug.HUDSystemDebugNode
 import de.bixilon.minosoft.gui.rendering.hud.nodes.debug.HUDWorldDebugNode
 import de.bixilon.minosoft.gui.rendering.modding.events.ResizeWindowEvent
+import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
+import de.bixilon.minosoft.gui.rendering.system.base.phases.OtherDrawable
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
@@ -37,10 +39,14 @@ import glm_.glm
 import glm_.mat4x4.Mat4
 import glm_.vec2.Vec2i
 
-class HUDRenderer(val connection: PlayConnection, val renderWindow: RenderWindow) : Renderer {
+class HUDRenderer(
+    val connection: PlayConnection,
+    override val renderWindow: RenderWindow,
+) : Renderer, OtherDrawable {
+    override val renderSystem: RenderSystem = renderWindow.renderSystem
     private val hudElements: MutableMap<ResourceLocation, Pair<HUDElementProperties, HUDElement>> = mutableMapOf()
     private val enabledHUDElement: MutableMap<ResourceLocation, Pair<HUDElementProperties, HUDElement>> = mutableMapOf()
-    private val hudShader = renderWindow.renderSystem.createShader(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "hud"))
+    private val hudShader = renderSystem.createShader(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "hud"))
     lateinit var hudAtlasElements: Map<ResourceLocation, HUDAtlasElement>
     var orthographicMatrix: Mat4 = Mat4()
         private set
@@ -146,7 +152,18 @@ class HUDRenderer(val connection: PlayConnection, val renderWindow: RenderWindow
         }
     }
 
-    override fun postDraw() {
+    override fun setupOther() {
+        if (!RenderConstants.RENDER_HUD) {
+            return
+        }
+        if (!hudEnabled) {
+            return
+        }
+        super.setupOther()
+        hudShader.use()
+    }
+
+    override fun drawOther() {
         if (!RenderConstants.RENDER_HUD) {
             return
         }
@@ -154,7 +171,6 @@ class HUDRenderer(val connection: PlayConnection, val renderWindow: RenderWindow
         if (!hudEnabled) {
             return
         }
-        renderWindow.renderSystem.reset()
         var needsUpdate = false
         val tempMesh = HUDMesh(renderWindow)
 
@@ -183,7 +199,6 @@ class HUDRenderer(val connection: PlayConnection, val renderWindow: RenderWindow
             tempMesh.load()
             currentHUDMesh = tempMesh
         }
-        hudShader.use()
         currentHUDMesh.draw()
     }
 

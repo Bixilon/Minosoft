@@ -181,10 +181,10 @@ abstract class Particle(
         }
     }
 
-    abstract fun addVertex(transparentMesh: ParticleMesh, particleMesh: ParticleMesh)
+    abstract fun addVertex(transparentMesh: ParticleMesh, translucentMesh: ParticleMesh)
 
     companion object {
-        private const val MAGIC_VELOCITY_CONSTANT = 0.4000000059604645
+        private const val MAGIC_VELOCITY_CONSTANT = 0.4
         private const val MAGIC_VELOCITY_CONSTANTf = MAGIC_VELOCITY_CONSTANT.toFloat()
         private const val Y_VELOCITY_TO_CHECK = 9.999999747378752E-6f
     }

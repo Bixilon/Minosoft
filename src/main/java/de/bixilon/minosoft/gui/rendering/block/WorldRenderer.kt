@@ -33,10 +33,12 @@ import de.bixilon.minosoft.gui.rendering.block.renderable.BlockLikeRenderContext
 import de.bixilon.minosoft.gui.rendering.input.camera.Frustum
 import de.bixilon.minosoft.gui.rendering.modding.events.FrustumChangeEvent
 import de.bixilon.minosoft.gui.rendering.modding.events.RenderingStateChangeEvent
-import de.bixilon.minosoft.gui.rendering.system.base.RenderModes
+import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
+import de.bixilon.minosoft.gui.rendering.system.base.phases.OpaqueDrawable
+import de.bixilon.minosoft.gui.rendering.system.base.phases.TranslucentDrawable
+import de.bixilon.minosoft.gui.rendering.system.base.phases.TransparentDrawable
 import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
-import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLShader
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.getWorldOffset
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.of
@@ -58,13 +60,14 @@ import glm_.vec3.Vec3i
 
 class WorldRenderer(
     private val connection: PlayConnection,
-    val renderWindow: RenderWindow,
-) : Renderer {
+    override val renderWindow: RenderWindow,
+) : Renderer, OpaqueDrawable, TransparentDrawable, TranslucentDrawable {
+    override val renderSystem: RenderSystem = renderWindow.renderSystem
     private val world: World = connection.world
     private val waterBlock = connection.registries.blockRegistry[ResourceLocation("minecraft:water")].nullCast<FluidBlock>()
 
-    private val chunkShader: Shader = renderWindow.renderSystem.createShader(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "world"))
-    private val transparentShader: Shader = renderWindow.renderSystem.createShader(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "world"))
+    private val chunkShader: Shader = renderSystem.createShader(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "world"))
+    private val transparentShader: Shader = renderSystem.createShader(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "world"))
     private val lightMap = LightMap(connection)
 
     val allChunkSections: SynchronizedMap<Vec2i, SynchronizedMap<Int, ChunkSectionMeshCollection>> = synchronizedMapOf()
@@ -186,15 +189,16 @@ class WorldRenderer(
     }
 
     override fun postInit() {
-        chunkShader.load()
-        (transparentShader as OpenGLShader).defines["TRANSPARENT"] = "" // ToDo
-        transparentShader.load()
         lightMap.init()
-
-        renderWindow.textureManager.staticTextures.use(chunkShader)
-        renderWindow.textureManager.staticTextures.use(transparentShader)
+        chunkShader.load()
         renderWindow.textureManager.staticTextures.animator.use(chunkShader)
         lightMap.use(chunkShader)
+
+        transparentShader.defines[Shader.TRANSPARENT_DEFINE] = ""
+        transparentShader.load()
+        renderWindow.textureManager.staticTextures.use(chunkShader)
+        renderWindow.textureManager.staticTextures.use(transparentShader)
+        renderWindow.textureManager.staticTextures.animator.use(transparentShader)
         lightMap.use(transparentShader)
 
         for (blockState in allBlocks!!) {
@@ -205,15 +209,17 @@ class WorldRenderer(
         allBlocks = null
     }
 
-    override fun update() {
+    override fun prepareDraw() {
         lastVisibleChunks = visibleChunks.toSynchronizedMap()
         lightMap.update()
     }
 
-    override fun draw() {
-        renderWindow.renderSystem.reset()
+    override fun setupOpaque() {
+        super.setupOpaque()
         chunkShader.use()
+    }
 
+    override fun drawOpaque() {
         for (map in lastVisibleChunks.values) {
             for (mesh in map.values) {
                 mesh.opaqueMesh.draw()
@@ -221,20 +227,25 @@ class WorldRenderer(
         }
     }
 
-    override fun postDraw() {
-        renderWindow.renderSystem.reset()
+    override fun setupTransparent() {
+        super.setupTransparent()
         transparentShader.use()
+    }
 
-
+    override fun drawTransparent() {
         for (map in lastVisibleChunks.values) {
             for (mesh in map.values) {
                 mesh.transparentMesh?.draw()
             }
         }
+    }
 
+    override fun setupTranslucent() {
+        super.setupTranslucent()
         chunkShader.use()
-        renderWindow.renderSystem.renderMode(RenderModes.TRANSLUCENT)
+    }
 
+    override fun drawTranslucent() {
         for (map in lastVisibleChunks.values) {
             for (mesh in map.values) {
                 mesh.translucentMesh?.draw()

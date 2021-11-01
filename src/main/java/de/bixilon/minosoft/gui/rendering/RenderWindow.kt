@@ -31,6 +31,7 @@ import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
 import de.bixilon.minosoft.gui.rendering.system.base.IntegratedBufferTypes
 import de.bixilon.minosoft.gui.rendering.system.base.PolygonModes
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
+import de.bixilon.minosoft.gui.rendering.system.base.phases.RenderPhases
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem
 import de.bixilon.minosoft.gui.rendering.system.window.BaseWindow
 import de.bixilon.minosoft.gui.rendering.system.window.GLFWWindow
@@ -254,13 +255,17 @@ class RenderWindow(
 
 
             for (renderer in rendererMap.values) {
-                renderer.update()
+                renderer.prepareDraw()
             }
+
             for (renderer in rendererMap.values) {
-                renderer.draw()
-            }
-            for (renderer in rendererMap.values) {
-                renderer.postDraw()
+                for (phase in RenderPhases.VALUES) {
+                    if (!phase.type.java.isAssignableFrom(renderer::class.java)) {
+                        continue
+                    }
+                    phase.invokeSetup(renderer)
+                    phase.invokeDraw(renderer)
+                }
             }
 
             renderStats.endDraw()

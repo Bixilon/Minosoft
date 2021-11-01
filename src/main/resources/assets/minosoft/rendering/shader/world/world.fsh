@@ -13,7 +13,7 @@
 
 #version 330 core
 
-out vec4 outColor;
+out vec4 foutColor;
 
 flat in uint finTextureIndex1;
 in vec3 finTextureCoordinates1;
@@ -34,7 +34,7 @@ void work() {
     }
 
     if (finInterpolation == 0.0f) {
-        outColor = firstTexelColor * finTintColor;
+        foutColor = firstTexelColor * finTintColor;
         return;
     }
 
@@ -44,10 +44,10 @@ void work() {
         discard;
     }
 
-    outColor = mix(firstTexelColor, secondTexelColor, finInterpolation) * finTintColor;
+    foutColor = mix(firstTexelColor, secondTexelColor, finInterpolation) * finTintColor;
 
     #ifndef TRANSPARENT
-    if (outColor.a < 0.5){
+    if (foutColor.a < 0.5){
         discard;
     }
         #endif
