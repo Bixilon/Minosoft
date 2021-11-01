@@ -53,7 +53,7 @@ abstract class Particle(
 
     // moving
     val cameraPosition: Vec3d
-        get() = VecUtil.lerp((System.currentTimeMillis() - lastTickTime) / ProtocolDefinition.TICK_TIMEd, previousPosition, position)
+        get() = getCameraPosition(System.currentTimeMillis())
 
     final override val velocity: Vec3d = Vec3d(velocity)
     var previousPosition = position
@@ -91,6 +91,10 @@ abstract class Particle(
         this.velocity.y += 0.1
 
         spacing = Vec3(0.2)
+    }
+
+    fun getCameraPosition(time: Long): Vec3d {
+        return VecUtil.lerp((time - lastTickTime) / ProtocolDefinition.TICK_TIMEd, previousPosition, position)
     }
 
     fun forceMove(delta: Vec3d) {
@@ -186,7 +190,7 @@ abstract class Particle(
         }
     }
 
-    abstract fun addVertex(transparentMesh: ParticleMesh, particleMesh: ParticleMesh)
+    abstract fun addVertex(transparentMesh: ParticleMesh, particleMesh: ParticleMesh, time: Long)
 
     companion object {
         private const val MAGIC_VELOCITY_CONSTANT = 0.4

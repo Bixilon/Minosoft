@@ -25,13 +25,13 @@ abstract class TextureParticle(connection: PlayConnection, position: Vec3d, velo
     abstract val texture: AbstractTexture?
 
 
-    override fun addVertex(transparentMesh: ParticleMesh, particleMesh: ParticleMesh) {
+    override fun addVertex(transparentMesh: ParticleMesh, particleMesh: ParticleMesh, time: Long) {
         texture?.let {
             if (it.transparency == TextureTransparencies.TRANSLUCENT || color.alpha != 255) {
                 transparentMesh
             } else {
                 particleMesh
-            }.addVertex(cameraPosition, scale, it, color)
+            }.addVertex(getCameraPosition(time), scale, it, color)
         }
     }
 }

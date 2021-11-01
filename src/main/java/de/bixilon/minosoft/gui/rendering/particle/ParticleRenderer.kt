@@ -125,12 +125,13 @@ class ParticleRenderer(
                 particleQueue.clear()
             }
 
+            val time = System.currentTimeMillis()
             for (particle in particles) {
                 if (particle.dead) {
                     toRemove += particle
                     continue
                 }
-                particle.addVertex(transparentParticleMesh, particleMesh)
+                particle.addVertex(transparentParticleMesh, particleMesh, time)
             }
             particles -= toRemove
         }
