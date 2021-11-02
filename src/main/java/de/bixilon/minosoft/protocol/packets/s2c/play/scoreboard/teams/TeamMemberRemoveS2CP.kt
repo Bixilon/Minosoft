@@ -41,6 +41,8 @@ class TeamMemberRemoveS2CP(val name: String, buffer: PlayInByteBuffer) : PlayS2C
             }
             item.team = team
         }
+
+        connection.scoreboardManager.updateScoreTeams(team, members, true)
     }
 
     override fun log() {

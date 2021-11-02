@@ -14,6 +14,7 @@ package de.bixilon.minosoft.data.scoreboard
 
 class ScoreboardScore(
     val entity: String,
-    var objective: String,
-    var score: Int,
+    var objective: ScoreboardObjective,
+    val teams: MutableSet<Team>,
+    var value: Int,
 )

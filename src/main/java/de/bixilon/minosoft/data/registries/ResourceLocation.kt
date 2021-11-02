@@ -21,6 +21,7 @@ open class ResourceLocation(
     val namespace: String = ProtocolDefinition.DEFAULT_NAMESPACE,
     val path: String,
 ) : Comparable<ResourceLocation>, Translatable { // compare is for moshi
+    private val hashCode = Objects.hash(namespace, path)
     open val full: String = "$namespace:$path"
 
     override val translationKey: ResourceLocation
@@ -30,7 +31,7 @@ open class ResourceLocation(
 
 
     override fun hashCode(): Int {
-        return Objects.hash(namespace, path)
+        return hashCode
     }
 
     override fun equals(other: Any?): Boolean {

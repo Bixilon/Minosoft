@@ -12,6 +12,7 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play.scoreboard
 
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.util.KUtil
@@ -22,10 +23,19 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 
 class ScoreboardPositionSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     private val position: ScoreboardPositions = ScoreboardPositions[buffer.readUnsignedByte()]
-    private val score: String = buffer.readString()
+    private val objective: String? = buffer.readNullString()
+
+    override fun handle(connection: PlayConnection) {
+        val scoreboardManager = connection.scoreboardManager
+        if (objective == null) {
+            scoreboardManager.positions -= position
+            return
+        }
+        scoreboardManager.positions[position] = scoreboardManager.objectives[objective] ?: return
+    }
 
     override fun log() {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Scoreboard position set (position=$position, score=$score)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Scoreboard position set (position=$position, objective=$objective)" }
     }
 
     enum class ScoreboardPositions {

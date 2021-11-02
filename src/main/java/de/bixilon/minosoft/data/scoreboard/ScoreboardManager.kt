@@ -12,9 +12,40 @@
  */
 package de.bixilon.minosoft.data.scoreboard
 
+import de.bixilon.minosoft.protocol.packets.s2c.play.scoreboard.ScoreboardPositionSetS2CP
 import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
 
 class ScoreboardManager {
     val teams: MutableMap<String, Team> = synchronizedMapOf()
     val objectives: MutableMap<String, ScoreboardObjective> = synchronizedMapOf()
+
+    val positions: MutableMap<ScoreboardPositionSetS2CP.ScoreboardPositions, ScoreboardObjective> = synchronizedMapOf()
+
+
+    fun getTeamsOf(member: String): Set<Team> {
+        val teams: MutableSet<Team> = mutableSetOf()
+
+        for ((name, team) in this.teams) {
+            if (!team.members.contains(member)) {
+                continue
+            }
+            teams += team
+        }
+
+        return teams
+    }
+
+    fun updateScoreTeams(team: Team, members: Set<String>, remove: Boolean = false) {
+        for ((_, objective) in objectives) {
+            for ((_, score) in objective.scores) {
+                if (score.entity in members) {
+                    if (remove) {
+                        score.teams -= team
+                    } else {
+                        score.teams += team
+                    }
+                }
+            }
+        }
+    }
 }

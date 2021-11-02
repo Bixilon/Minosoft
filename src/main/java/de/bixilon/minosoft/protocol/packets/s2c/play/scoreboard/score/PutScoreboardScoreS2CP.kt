@@ -18,12 +18,13 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
+import de.bixilon.minosoft.util.KUtil.toSynchronizedSet
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
 class PutScoreboardScoreS2CP(val entity: String, val objective: String?, buffer: PlayInByteBuffer) : PlayS2CPacket() {
-    val score: Int = if (buffer.versionId < ProtocolVersions.V_14W04A) { // ToDo
+    val value: Int = if (buffer.versionId < ProtocolVersions.V_14W04A) { // ToDo
         buffer.readInt()
     } else {
         buffer.readVarInt()
@@ -31,11 +32,12 @@ class PutScoreboardScoreS2CP(val entity: String, val objective: String?, buffer:
 
     override fun handle(connection: PlayConnection) {
         check(objective != null) { "Can not update null objective!" }
-        connection.scoreboardManager.objectives[objective]?.scores?.put(entity, ScoreboardScore(entity, objective, score))
+        val objective = connection.scoreboardManager.objectives[objective] ?: return
+        objective.scores[entity] = ScoreboardScore(entity, objective, connection.scoreboardManager.getTeamsOf(entity).toSynchronizedSet(), value)
     }
 
 
     override fun log() {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Put scoreboard score (entity=$entity§r, objective=$objective§r, score=$score)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Put scoreboard score (entity=$entity§r, objective=$objective§r, value=$value)" }
     }
 }

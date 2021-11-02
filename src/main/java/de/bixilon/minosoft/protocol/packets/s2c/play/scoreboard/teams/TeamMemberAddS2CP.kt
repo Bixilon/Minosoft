@@ -38,6 +38,8 @@ class TeamMemberAddS2CP(val name: String, buffer: PlayInByteBuffer) : PlayS2CPac
         for (member in members) {
             connection.tabList.tabListItemsByName[member]?.team = team
         }
+
+        connection.scoreboardManager.updateScoreTeams(team, members)
     }
 
     override fun log() {

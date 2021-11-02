@@ -24,6 +24,7 @@ import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.util.BitByte.isBitMask
+import de.bixilon.minosoft.util.KUtil.toSynchronizedSet
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -111,13 +112,15 @@ class TeamCreateS2CP(val name: String, buffer: PlayInByteBuffer) : PlayS2CPacket
             collisionRule = collisionRule,
             nameTagVisibility = nameTagVisibility,
             formattingCode = formattingCode,
-            members = members.toMutableSet(),
+            members = members.toSynchronizedSet(),
         )
         connection.scoreboardManager.teams[name] = team
 
         for (member in members) {
             connection.tabList.tabListItemsByName[member]?.team = team
         }
+
+        connection.scoreboardManager.updateScoreTeams(team, members)
     }
 
     override fun log() {
