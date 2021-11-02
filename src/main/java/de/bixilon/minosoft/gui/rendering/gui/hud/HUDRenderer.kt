@@ -72,6 +72,9 @@ class HUDRenderer(
 
     val atlasManager = HUDAtlasManager(this)
 
+    override val skipOther: Boolean
+        get() = !enabled
+
     fun registerElement(hudBuilder: HUDBuilder<*>) {
         val hudElement = hudBuilder.build(this)
         hudElements[hudBuilder.RESOURCE_LOCATION] = hudElement
@@ -141,12 +144,13 @@ class HUDRenderer(
         }
     }
 
-    override fun setupOther() = Unit
+    private fun setup() {
+        renderWindow.renderSystem.reset()
+        renderWindow.renderSystem.clear(IntegratedBufferTypes.DEPTH_BUFFER)
+        shader.use()
+    }
 
     override fun drawOther() {
-        if (!enabled) {
-            return
-        }
         if (this::mesh.isInitialized) {
             mesh.unload()
         }
@@ -171,9 +175,7 @@ class HUDRenderer(
             lastTickTime = time
         }
 
-        renderWindow.renderSystem.reset()
         renderWindow.renderSystem.clear(IntegratedBufferTypes.DEPTH_BUFFER)
-
         var z = 0
         for (element in hudElements) {
             if (!element.enabled) {
@@ -187,12 +189,8 @@ class HUDRenderer(
             }
         }
 
-
-        renderWindow.renderSystem.reset()
-        renderWindow.renderSystem.clear(IntegratedBufferTypes.DEPTH_BUFFER)
-
+        setup()
         mesh.load()
-        shader.use()
         mesh.draw()
 
         if (matrixChange) {

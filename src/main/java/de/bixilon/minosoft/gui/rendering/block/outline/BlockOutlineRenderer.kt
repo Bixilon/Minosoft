@@ -24,6 +24,7 @@ import de.bixilon.minosoft.gui.rendering.RendererBuilder
 import de.bixilon.minosoft.gui.rendering.input.camera.hit.BlockRaycastHit
 import de.bixilon.minosoft.gui.rendering.system.base.DepthFunctions
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
+import de.bixilon.minosoft.gui.rendering.system.base.phases.OtherDrawable
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.getWorldOffset
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3d
 import de.bixilon.minosoft.gui.rendering.util.mesh.LineMesh
@@ -34,23 +35,27 @@ import glm_.vec3.Vec3i
 class BlockOutlineRenderer(
     val connection: PlayConnection,
     override val renderWindow: RenderWindow,
-) : Renderer {
+) : Renderer, OtherDrawable {
     override val renderSystem: RenderSystem = renderWindow.renderSystem
     private var currentOutlinePosition: Vec3i? = null
     private var currentOutlineBlockState: BlockState? = null
 
     private var currentMesh: LineMesh? = null
+    override val skipOther: Boolean
+        get() = currentMesh == null
 
 
-    private fun drawMesh() {
+    override fun drawOther() {
         val currentMesh = currentMesh ?: return
+        currentMesh.draw()
+    }
+
+    override fun setupOther() {
         renderWindow.renderSystem.reset(faceCulling = false)
         if (Minosoft.config.config.game.other.blockOutline.disableZBuffer) {
             renderWindow.renderSystem.depth = DepthFunctions.ALWAYS
         }
         renderWindow.shaderManager.genericColorShader.use()
-        currentMesh.draw()
-        draw()
     }
 
     private fun unload() {
@@ -61,8 +66,7 @@ class BlockOutlineRenderer(
         this.currentOutlineBlockState = null
     }
 
-    @Deprecated("TODO")
-    private fun draw() {
+    override fun prepareDraw() {
         val raycastHit = renderWindow.inputHandler.camera.target.nullCast<BlockRaycastHit>()
 
         var currentMesh = currentMesh
@@ -85,7 +89,6 @@ class BlockOutlineRenderer(
         }
 
         if (raycastHit.blockPosition == currentOutlinePosition && raycastHit.blockState == currentOutlineBlockState) {
-            drawMesh()
             return
         }
 
@@ -107,7 +110,6 @@ class BlockOutlineRenderer(
         this.currentOutlinePosition = raycastHit.blockPosition
         this.currentOutlineBlockState = raycastHit.blockState
         this.currentMesh = currentMesh
-        drawMesh()
     }
 
 

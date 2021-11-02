@@ -57,7 +57,11 @@ class OpenGLRenderSystem(
             if (value === field) {
                 return
             }
-            value ?: error("Shader is null!")
+            if (value == null) {
+                glUseProgram(0)
+                field = value
+                return
+            }
 
             check(value is OpenGLShader) { "Can not use non OpenGL shader in OpenGL render system!" }
             check(value.loaded) { "Shader not loaded!" }

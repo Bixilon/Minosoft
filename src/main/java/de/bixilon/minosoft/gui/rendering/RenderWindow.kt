@@ -40,6 +40,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.IntegratedBufferTypes
 import de.bixilon.minosoft.gui.rendering.system.base.PolygonModes
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
 import de.bixilon.minosoft.gui.rendering.system.base.phases.RenderPhases
+import de.bixilon.minosoft.gui.rendering.system.base.phases.SkipAll
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem
 import de.bixilon.minosoft.gui.rendering.system.window.BaseWindow
 import de.bixilon.minosoft.gui.rendering.system.window.GLFWWindow
@@ -314,8 +315,14 @@ class RenderWindow(
             }
 
             for (renderer in rendererList) {
+                if (renderer is SkipAll && renderer.skipAll) {
+                    continue
+                }
                 for (phase in RenderPhases.VALUES) {
                     if (!phase.type.java.isAssignableFrom(renderer::class.java)) {
+                        continue
+                    }
+                    if (phase.invokeSkip(renderer)) {
                         continue
                     }
                     phase.invokeSetup(renderer)

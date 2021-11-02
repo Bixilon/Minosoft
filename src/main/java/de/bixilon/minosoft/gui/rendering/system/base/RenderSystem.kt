@@ -50,6 +50,7 @@ interface RenderSystem {
         this.depth = depth
         this.depthMask = depthMask
         this.clearColor = clearColor
+        shader = null
     }
 
     fun enable(capability: RenderingCapabilities)
