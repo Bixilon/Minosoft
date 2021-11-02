@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.protocol.packets.s2c.play.scoreboard.score
 
 import de.bixilon.minosoft.data.scoreboard.ScoreboardScore
+import de.bixilon.minosoft.modding.event.events.scoreboard.ScoreboardScorePutEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
@@ -33,7 +34,10 @@ class PutScoreboardScoreS2CP(val entity: String, val objective: String?, buffer:
     override fun handle(connection: PlayConnection) {
         check(objective != null) { "Can not update null objective!" }
         val objective = connection.scoreboardManager.objectives[objective] ?: return
-        objective.scores[entity] = ScoreboardScore(entity, objective, connection.scoreboardManager.getTeamsOf(entity).toSynchronizedSet(), value)
+        val score = ScoreboardScore(entity, objective, connection.scoreboardManager.getTeamsOf(entity).toSynchronizedSet(), value)
+        objective.scores[entity] = score
+
+        connection.fireEvent(ScoreboardScorePutEvent(connection, score))
     }
 
 

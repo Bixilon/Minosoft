@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.s2c.play.scoreboard.teams
 
+import de.bixilon.minosoft.modding.event.events.scoreboard.ScoreboardTeamMemberRemoveEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
@@ -43,6 +44,7 @@ class TeamMemberRemoveS2CP(val name: String, buffer: PlayInByteBuffer) : PlayS2C
         }
 
         connection.scoreboardManager.updateScoreTeams(team, members, true)
+        connection.fireEvent(ScoreboardTeamMemberRemoveEvent(connection, team, members))
     }
 
     override fun log() {

@@ -26,7 +26,7 @@ object ScoreboardScoreS2CF {
         val objective = buffer.readNullString()
         return when (action) {
             ScoreboardScoreActions.PUT -> PutScoreboardScoreS2CP(entity, objective, buffer)
-            ScoreboardScoreActions.REMOVE -> RemoveScoreboardScoreS2CP(entity, objective) // ToDo: This crashes on some servers
+            ScoreboardScoreActions.REMOVE -> RemoveScoreboardScoreS2CP(entity, objective, buffer)
         }
     }
 

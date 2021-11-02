@@ -13,16 +13,21 @@
 
 package de.bixilon.minosoft.protocol.packets.s2c.play.scoreboard.score
 
+import de.bixilon.minosoft.modding.event.events.scoreboard.ScoreboardScoreRemoveEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-class RemoveScoreboardScoreS2CP(val entity: String, val objective: String?) : PlayS2CPacket() {
+class RemoveScoreboardScoreS2CP(val entity: String, val objective: String?, buffer: PlayInByteBuffer) : PlayS2CPacket() {
 
     override fun handle(connection: PlayConnection) {
-        connection.scoreboardManager.objectives[objective]?.scores?.remove(entity)
+        val objective = connection.scoreboardManager.objectives[objective] ?: return
+        val score = objective.scores.remove(entity) ?: return
+
+        connection.fireEvent(ScoreboardScoreRemoveEvent(connection, score))
     }
 
 

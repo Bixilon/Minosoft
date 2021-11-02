@@ -37,5 +37,4 @@ class RemoveScoreboardObjectiveS2CP(val objective: String, buffer: PlayInByteBuf
             connection.scoreboardManager.positions -= position
         }
     }
-
 }

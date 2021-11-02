@@ -42,7 +42,7 @@ import de.bixilon.minosoft.protocol.packets.s2c.play.combat.CombatEventEndS2CP
 import de.bixilon.minosoft.protocol.packets.s2c.play.combat.CombatEventEnterS2CP
 import de.bixilon.minosoft.protocol.packets.s2c.play.combat.CombatEventKillS2CP
 import de.bixilon.minosoft.protocol.packets.s2c.play.combat.CombatEventS2CF
-import de.bixilon.minosoft.protocol.packets.s2c.play.scoreboard.ScoreboardPositionSetS2CP
+import de.bixilon.minosoft.protocol.packets.s2c.play.scoreboard.ObjectivePositionSetS2CP
 import de.bixilon.minosoft.protocol.packets.s2c.play.scoreboard.objective.ScoreboardObjectiveS2CF
 import de.bixilon.minosoft.protocol.packets.s2c.play.scoreboard.score.ScoreboardScoreS2CF
 import de.bixilon.minosoft.protocol.packets.s2c.play.scoreboard.teams.TeamsS2CF
@@ -231,7 +231,7 @@ class PacketTypes {
         PLAY_CAMERA({ CameraS2CP(it) }),
         PLAY_HOTBAR_SLOT_SET({ HotbarSlotSetS2CP(it) }),
         PLAY_CHUNK_CENTER_SET({ ChunkCenterSetS2CP(it) }),
-        PLAY_SCOREBOARD_POSITION_SET({ ScoreboardPositionSetS2CP(it) }),
+        PLAY_OBJECTIVE_POSITION_SET({ ObjectivePositionSetS2CP(it) }),
         PLAY_ENTITY_METADATA({ EntityMetadataS2CP(it) }, isThreadSafe = false),
         PLAY_ENTITY_ATTACH({ EntityAttachS2CP(it) }),
         PLAY_ENTITY_VELOCITY({ EntityVelocityS2CP(it) }),
