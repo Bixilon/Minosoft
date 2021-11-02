@@ -138,5 +138,6 @@ Not compatible (yet)
 ## Code mirrors
 
 - [GitLab](https://gitlab.com/Bixilon/minosoft)
+- [GitHub](https://github.com/Bixilon/Minosoft/)
 
 This project/readme is work in progress, things may change over time.
