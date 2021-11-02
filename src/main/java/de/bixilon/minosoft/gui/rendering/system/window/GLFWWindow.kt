@@ -144,9 +144,12 @@ class GLFWWindow(
 
         super.init()
 
-        val videoMode = glfwGetVideoMode(glfwGetPrimaryMonitor())!!
-
-        glfwSetWindowPos(window, (videoMode.width() - size.x) / 2, (videoMode.height() - size.y) / 2)
+        val primaryMonitor = glfwGetPrimaryMonitor()
+        if (primaryMonitor != 0L) {
+            glfwGetVideoMode(primaryMonitor)?.let {
+                glfwSetWindowPos(window, (it.width() - size.x) / 2, (it.height() - size.y) / 2)
+            }
+        }
 
 
         glfwSetKeyCallback(window, this::keyInput)
