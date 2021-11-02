@@ -21,7 +21,6 @@ import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.FluidBlock
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.registries.sounds.SoundEvent
-import de.bixilon.minosoft.data.registries.tweaker.VersionTweaker
 import de.bixilon.minosoft.data.world.biome.accessor.BiomeAccessor
 import de.bixilon.minosoft.data.world.biome.accessor.NullBiomeAccessor
 import de.bixilon.minosoft.data.world.light.WorldLightAccessor
@@ -31,10 +30,8 @@ import de.bixilon.minosoft.gui.rendering.sound.AudioPlayer
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.blockPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.inChunkPosition
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.inChunkSectionPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.minus
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
 import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.modding.event.events.BlockSetEvent
 import de.bixilon.minosoft.modding.event.events.ChunkUnloadEvent
@@ -98,25 +95,18 @@ class World(
     operator fun set(blockPosition: Vec3i, blockState: BlockState?) {
         val chunkPosition = blockPosition.chunkPosition
         chunks[chunkPosition]?.let {
-            val sections = it.sections ?: return
-
-            val transformedBlockState = if (connection.version.isFlattened()) {
-                blockState
-            } else {
-                VersionTweaker.transformBlock(blockState, sections, blockPosition.inChunkSectionPosition, blockPosition.sectionHeight)
-            }
             val inChunkPosition = blockPosition.inChunkPosition
             val previousBlock = it[inChunkPosition]
-            if (previousBlock == transformedBlockState) {
+            if (previousBlock == blockState) {
                 return
             }
             previousBlock?.block?.onBreak(connection, blockPosition, previousBlock, it.getBlockEntity(inChunkPosition))
             blockState?.block?.onPlace(connection, blockPosition, blockState)
-            it[inChunkPosition] = transformedBlockState
+            it[inChunkPosition] = blockState
             connection.fireEvent(BlockSetEvent(
                 connection = connection,
                 blockPosition = blockPosition,
-                blockState = transformedBlockState,
+                blockState = blockState,
             ))
         }
     }

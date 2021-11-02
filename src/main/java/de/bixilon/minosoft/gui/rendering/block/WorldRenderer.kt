@@ -20,14 +20,16 @@ import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.Renderer
 import de.bixilon.minosoft.gui.rendering.RendererBuilder
+import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import glm_.vec2.Vec2i
 
 class WorldRenderer(
     private val connection: PlayConnection,
-    val renderWindow: RenderWindow,
+    override val renderWindow: RenderWindow,
 ) : Renderer {
+    override val renderSystem: RenderSystem = renderWindow.renderSystem
     private val world: World = connection.world
 
 

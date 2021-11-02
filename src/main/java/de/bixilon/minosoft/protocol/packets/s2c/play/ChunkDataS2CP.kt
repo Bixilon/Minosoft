@@ -15,7 +15,6 @@ package de.bixilon.minosoft.protocol.packets.s2c.play
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.tweaker.VersionTweaker
 import de.bixilon.minosoft.data.world.ChunkData
 import de.bixilon.minosoft.data.world.biome.source.SpatialBiomeArray
 import de.bixilon.minosoft.datafixer.BlockEntityFixer.fix
@@ -124,9 +123,6 @@ class ChunkDataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     }
 
     override fun handle(connection: PlayConnection) {
-        chunkData?.blocks?.let {
-            VersionTweaker.transformSections(it, connection.version.versionId)
-        }
         chunkData?.let {
             val chunk = connection.world.getOrCreateChunk(chunkPosition)
             chunk.setData(chunkData!!)

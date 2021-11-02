@@ -38,3 +38,5 @@
   - Don't render bedrock on y == dimension::minHeight
 - Meshing
   - Greedy meshing
+- Model deciding (for pre flattening versions)
+- Assets manager: Create file from jar with all models inside and load models from there (make them moddable)

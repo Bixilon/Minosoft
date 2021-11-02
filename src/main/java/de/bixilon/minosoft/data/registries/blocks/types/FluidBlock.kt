@@ -20,8 +20,6 @@ import de.bixilon.minosoft.data.registries.blocks.BlockFactory
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.fluid.Fluid
 import de.bixilon.minosoft.data.registries.registries.Registries
-import de.bixilon.minosoft.gui.rendering.block.renderable.WorldEntryRenderer
-import de.bixilon.minosoft.gui.rendering.block.renderable.fluid.FluidRenderer
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import glm_.vec3.Vec3
@@ -31,24 +29,13 @@ import kotlin.random.Random
 open class FluidBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : Block(resourceLocation, registries, data) {
     open val fluid: Fluid = registries.fluidRegistry[data["still_fluid"]]!!
 
-    val fluidRenderer: FluidRenderer
-
-    override val renderOverride: List<WorldEntryRenderer>
-
-    init {
-        let {
-            fluidRenderer = FluidRenderer(it, fluid)
-            renderOverride = listOf(fluidRenderer)
-        }
-    }
-
     override fun getOutlineShape(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i): VoxelShape {
         return VoxelShape(mutableListOf(AABB(Vec3.EMPTY, Vec3(1.0f, fluid.getHeight(blockState), 1.0f))))
     }
 
     override fun randomTick(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, random: Random) {
         super.randomTick(connection, blockState, blockPosition, random)
-        // ToDO
+        // ToDo
         fluid.randomTick(connection, blockState, blockPosition, random)
     }
 

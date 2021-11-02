@@ -30,7 +30,6 @@ import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
 import de.bixilon.minosoft.data.registries.registries.registry.ResourceLocationDeserializer
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.TintColorCalculator
-import de.bixilon.minosoft.gui.rendering.block.renderable.WorldEntryRenderer
 import de.bixilon.minosoft.gui.rendering.input.camera.hit.RaycastHit
 import de.bixilon.minosoft.gui.rendering.input.interaction.InteractionResults
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -52,7 +51,6 @@ open class Block(
     open val tintColor: RGBColor? = data["tint_color"]?.toInt()?.let { TintColorCalculator.getJsonColor(it) }
     open val randomOffsetType: RandomOffsetTypes? = data["offset_type"].nullCast<String>()?.let { RandomOffsetTypes[it] }
     open val tint: ResourceLocation? = data["tint"].nullCast<String>()?.let { ResourceLocation(it) }
-    open val renderOverride: List<WorldEntryRenderer>? = null
     open var blockEntityType: BlockEntityType? = null
         protected set
 
@@ -130,7 +128,7 @@ open class Block(
             val states: MutableSet<BlockState> = mutableSetOf()
             for ((stateId, stateJson) in data["states"]?.mapCast()!!) {
                 check(stateJson is Map<*, *>) { "Not a state element!" }
-                val state = BlockState.deserialize(block, registries, stateJson.asCompound(), registries.models)
+                val state = BlockState.deserialize(block, registries, stateJson.asCompound())
                 registries.blockStateRegistry[stateId.toInt()] = state
                 states.add(state)
                 for ((property, value) in state.properties) {

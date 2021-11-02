@@ -20,8 +20,6 @@ import de.bixilon.minosoft.data.entities.entities.vehicle.*
 import de.bixilon.minosoft.data.entities.meta.EntityMetaData
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.world.ChunkSection
-import de.bixilon.minosoft.data.world.ChunkSection.Companion.indexPosition
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import glm_.vec3.Vec3i
 
@@ -86,38 +84,6 @@ object VersionTweaker {
             }
         }
         return fakeClass
-    }
-
-    @JvmStatic
-    fun transformSections(sections: Map<Int, ChunkSection>, versionId: Int) {
-        // some blocks need to be tweaked. eg. Grass with a snow block on top becomes snowy grass block
-        if (versionId >= ProtocolDefinition.FLATTING_VERSION_ID) {
-            return
-        }
-        for ((sectionHeight, section) in sections) {
-            for ((index, blockState) in section.blocks.withIndex()) {
-                if (blockState == null) {
-                    continue
-                }
-                val location = index.indexPosition
-                val newBlock = transformBlock(blockState, sections, location, sectionHeight)
-                if (newBlock === blockState) {
-                    continue
-                }
-                if (newBlock == null) {
-                    section.setBlockState(location, null)
-                    continue
-                }
-                section.setBlockState(location, newBlock)
-            }
-        }
-    }
-
-
-    @JvmStatic
-    fun transformBlock(originalBlock: BlockState?, sections: Map<Int, ChunkSection>, inChunkSectionPositions: Vec3i, sectionHeight: Int): BlockState? {
-        // ToDo: Broken
-        return originalBlock
     }
 
     private fun getBlockAbove(sections: Map<Int, ChunkSection>, inChunkSectionPositions: Vec3i, sectionHeight: Int): BlockState? {

@@ -19,10 +19,6 @@ import de.bixilon.minosoft.data.registries.particle.data.BlockParticleData
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.data.text.RGBColor.Companion.asGray
-import de.bixilon.minosoft.gui.rendering.block.renderable.WorldEntryRenderer
-import de.bixilon.minosoft.gui.rendering.block.renderable.block.BlockRenderer
-import de.bixilon.minosoft.gui.rendering.block.renderable.block.MultipartRenderer
-import de.bixilon.minosoft.gui.rendering.block.renderable.fluid.FluidRenderer
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.advanced.AdvancedTextureParticle
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.blockPosition
@@ -35,17 +31,8 @@ class BlockDustParticle(connection: PlayConnection, position: Vec3d, velocity: V
 
     init {
         val blockPosition = position.blockPosition
-        var renderer: WorldEntryRenderer? = data.blockState!!.getBlockRenderer(blockPosition)
-
-        if (renderer is MultipartRenderer) {
-            renderer = renderer.models.getOrNull(0)
-        }
-
-        texture = when (renderer) {
-            is BlockRenderer -> renderer.textureMapping.iterator().next().value // ToDo: If this is empty the rendering crashes
-            is FluidRenderer -> renderer.stillTexture // ToDo
-            else -> TODO()
-        }
+        check(data.blockState != null)
+        // ToDo: Texture
 
         gravityStrength = 1.0f
         color = 0.6f.asGray()

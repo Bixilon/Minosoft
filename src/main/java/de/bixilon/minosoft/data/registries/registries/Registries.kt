@@ -16,7 +16,10 @@ import de.bixilon.minosoft.data.entities.EntityMetaDataFields
 import de.bixilon.minosoft.data.entities.block.BlockEntityMetaType
 import de.bixilon.minosoft.data.entities.meta.EntityMetaData
 import de.bixilon.minosoft.data.inventory.InventorySlots
-import de.bixilon.minosoft.data.registries.*
+import de.bixilon.minosoft.data.registries.AABB
+import de.bixilon.minosoft.data.registries.DefaultRegistries
+import de.bixilon.minosoft.data.registries.Motive
+import de.bixilon.minosoft.data.registries.VoxelShape
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.biomes.BiomeCategory
 import de.bixilon.minosoft.data.registries.biomes.BiomePrecipitation
@@ -40,7 +43,6 @@ import de.bixilon.minosoft.data.registries.registries.registry.*
 import de.bixilon.minosoft.data.registries.sounds.SoundEvent
 import de.bixilon.minosoft.data.registries.statistics.Statistic
 import de.bixilon.minosoft.data.registries.versions.Version
-import de.bixilon.minosoft.gui.rendering.block.models.BlockModel
 import de.bixilon.minosoft.protocol.packets.c2s.play.EntityActionC2SP
 import de.bixilon.minosoft.protocol.packets.s2c.play.EntityAnimationS2CP
 import de.bixilon.minosoft.protocol.packets.s2c.play.title.TitleS2CF
@@ -49,8 +51,6 @@ import de.bixilon.minosoft.util.KUtil.mapCast
 import de.bixilon.minosoft.util.KUtil.nullCast
 import de.bixilon.minosoft.util.KUtil.unsafeCast
 import de.bixilon.minosoft.util.collections.Clearable
-import de.bixilon.minosoft.util.json.ResourceLocationJsonMap.toResourceLocationMap
-import de.bixilon.minosoft.util.nbt.tag.NBTUtil.asCompound
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
 import java.lang.reflect.Field
 import java.lang.reflect.ParameterizedType
@@ -101,9 +101,6 @@ class Registries {
     val containerTypeRegistry: Registry<ContainerType> = Registry()
     val gameEventRegistry: Registry<GameEvent> = Registry()
 
-    internal val models: MutableMap<ResourceLocation, BlockModel> = mutableMapOf()
-
-
     var isFullyLoaded = false
         private set
 
@@ -136,8 +133,6 @@ class Registries {
         blockStateRegistry.flattened = isFlattened
         // pre init stuff
         loadShapes(pixlyzerData["shapes"]?.compoundCast())
-
-        loadBlockModels(pixlyzerData["models"]?.mapCast()?.toResourceLocationMap() ?: mutableMapOf())
 
         // enums
         loadEnumRegistry(version, pixlyzerData["equipment_slots"], equipmentSlotRegistry, DefaultRegistries.EQUIPMENT_SLOTS_REGISTRY)
@@ -208,36 +203,6 @@ class Registries {
             aabbs.add(AABB(data))
         }
         return aabbs
-    }
-
-    private fun loadBlockModels(data: Map<ResourceLocation, Any>) {
-        for ((resourceLocation, model) in data) {
-            if (models.containsKey(resourceLocation)) {
-                continue
-            }
-            loadBlockModel(resourceLocation, model.asCompound(), data)
-        }
-    }
-
-    private fun loadBlockModel(resourceLocation: ResourceLocation, modelData: Map<String, Any>, fullModelData: Map<ResourceLocation, Any>): BlockModel {
-        var model = models[resourceLocation]
-        model?.let {
-            return it
-        }
-        var parent: BlockModel? = null
-        modelData["parent"].nullCast<String>()?.let {
-            val parentResourceLocation = ResourceLocation(it)
-            if (parentResourceLocation.path.startsWith("builtin/")) {
-                // ToDo
-                return@let
-            }
-
-            parent = loadBlockModel(parentResourceLocation, fullModelData[parentResourceLocation]!!.asCompound(), fullModelData)
-        }
-        model = BlockModel(parent, modelData)
-
-        models[resourceLocation] = model
-        return model
     }
 
     fun clear() {

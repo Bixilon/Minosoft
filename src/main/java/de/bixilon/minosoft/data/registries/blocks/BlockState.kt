@@ -12,7 +12,6 @@
  */
 package de.bixilon.minosoft.data.registries.blocks
 
-import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.VoxelShape
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
@@ -22,24 +21,15 @@ import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.sounds.SoundEvent
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.TintColorCalculator
-import de.bixilon.minosoft.gui.rendering.block.models.BlockModel
-import de.bixilon.minosoft.gui.rendering.block.renderable.WorldEntryRenderer
-import de.bixilon.minosoft.gui.rendering.block.renderable.block.BlockRenderer
-import de.bixilon.minosoft.gui.rendering.block.renderable.block.MultipartRenderer
 import de.bixilon.minosoft.util.KUtil.toBoolean
 import de.bixilon.minosoft.util.KUtil.toInt
 import de.bixilon.minosoft.util.KUtil.unsafeCast
-import de.bixilon.minosoft.util.nbt.tag.NBTUtil.asCompound
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
-import glm_.vec3.Vec3i
 import java.util.*
-import kotlin.math.abs
-import kotlin.random.Random
 
 data class BlockState(
     val block: Block,
     val properties: Map<BlockProperties, Any> = mapOf(),
-    val renderers: MutableList<WorldEntryRenderer> = mutableListOf(),
     val tintColor: RGBColor? = null,
     val material: Material,
     val collisionShape: VoxelShape,
@@ -112,50 +102,13 @@ data class BlockState(
         return String.format("%s%s", block.resourceLocation, out)
     }
 
-    fun getBlockRenderer(blockPosition: Vec3i): WorldEntryRenderer {
-        if (renderers.isEmpty()) {
-            throw IllegalArgumentException("$this has not renderer!")
-        }
-        if (renderers.size == 1 || !Minosoft.config.config.game.other.antiMoirePattern) {
-            return renderers[0]
-        }
-        val random = Random(getPositionSeed(blockPosition.x, blockPosition.y, blockPosition.z))
-        return renderers[abs(random.nextLong().toInt() % renderers.size)]
-    }
-
     companion object {
 
-        fun deserialize(block: Block, registries: Registries, data: Map<String, Any>, models: Map<ResourceLocation, BlockModel>): BlockState {
+        fun deserialize(block: Block, registries: Registries, data: Map<String, Any>): BlockState {
             val properties = data["properties"]?.compoundCast()?.let {
                 getProperties(it)
             } ?: mutableMapOf()
 
-            val renderers: MutableList<WorldEntryRenderer> = mutableListOf()
-
-            data["render"]?.let {
-                when (it) {
-                    is Collection<*> -> {
-                        for (model in it) {
-                            when (model) {
-                                is Map<*, *> -> {
-                                    addBlockModel(model.asCompound(), renderers, models)
-                                }
-                                is Collection<*> -> {
-                                    val modelList: MutableList<WorldEntryRenderer> = mutableListOf()
-                                    for (singleModel in model) {
-                                        addBlockModel(singleModel!!.asCompound(), modelList, models)
-                                    }
-                                    renderers.add(MultipartRenderer(modelList.toList()))
-                                }
-                            }
-                        }
-                    }
-                    is Map<*, *> -> {
-                        addBlockModel(it.asCompound(), renderers, models)
-                    }
-                    else -> error("Not a render json!")
-                }
-            }
 
             val tintColor: RGBColor? = data["tint_color"]?.toInt()?.let { TintColorCalculator.getJsonColor(it) } ?: block.tintColor
 
@@ -181,15 +134,10 @@ data class BlockState(
             val occlusionShape = data["occlusion_shapes"]?.asShape() ?: VoxelShape.EMPTY
             val outlineShape = data["outline_shape"]?.asShape() ?: VoxelShape.EMPTY
 
-            block.renderOverride?.let {
-                renderers.clear()
-                renderers.addAll(it)
-            }
 
             return BlockState(
                 block = block,
                 properties = properties.toMap(),
-                renderers = renderers,
                 tintColor = tintColor,
                 material = material,
                 collisionShape = collisionShape,
@@ -228,11 +176,6 @@ data class BlockState(
                 }
             }
             return properties
-        }
-
-        private fun addBlockModel(data: Map<String, Any>, renderer: MutableList<WorldEntryRenderer>, models: Map<ResourceLocation, BlockModel>) {
-            val model = models[ResourceLocation(data["model"].unsafeCast())] ?: error("Can not find block model ${data["model"]}")
-            renderer.add(BlockRenderer(data, model))
         }
     }
 
