@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.s2c.play.scoreboard.objective
 
+import de.bixilon.minosoft.modding.event.events.scoreboard.ObjectivePositionSetEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
@@ -35,6 +36,7 @@ class RemoveScoreboardObjectiveS2CP(val objective: String, buffer: PlayInByteBuf
                 continue
             }
             connection.scoreboardManager.positions -= position
+            connection.fireEvent(ObjectivePositionSetEvent(connection, position, null))
         }
     }
 }

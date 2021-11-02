@@ -95,16 +95,21 @@ object KUtil {
         return Collections.synchronizedList(mutableListOf(*values))
     }
 
-    private fun <K> Any.synchronizedCopy(copier: () -> K): K {
+    private fun <K> Any.synchronizedCopy(lock: Object? = null, copier: () -> K): K {
         val ret: K
-        synchronized(this) {
+        synchronized(lock ?: this) {
             ret = copier()
         }
         return ret
     }
 
     fun <K, V> Map<K, V>.toSynchronizedMap(): SynchronizedMap<K, V> {
-        return synchronizedCopy { SynchronizedMap(this.toMutableMap()) }
+        val lock = if (this is SynchronizedMap<*, *>) {
+            this.lock
+        } else {
+            null
+        }
+        return synchronizedCopy(lock) { SynchronizedMap(this.toMutableMap()) }
     }
 
     fun <V> Collection<V>.toSynchronizedList(): MutableList<V> {

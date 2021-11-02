@@ -58,7 +58,7 @@ class TextFlowElement(
             yOffset += Font.TOTAL_CHAR_HEIGHT
         }
 
-        background.render(Vec2i(offset), z, consumer, options)
+        background.render(offset, z, consumer, options)
         return LAYERS
     }
 

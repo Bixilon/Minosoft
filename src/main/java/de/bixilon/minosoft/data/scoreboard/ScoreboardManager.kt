@@ -12,9 +12,12 @@
  */
 package de.bixilon.minosoft.data.scoreboard
 
+import de.bixilon.minosoft.modding.event.events.scoreboard.ScoreTeamChangeEvent
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
+import de.bixilon.minosoft.util.KUtil.toSynchronizedMap
 
-class ScoreboardManager {
+class ScoreboardManager(private val connection: PlayConnection) {
     val teams: MutableMap<String, Team> = synchronizedMapOf()
     val objectives: MutableMap<String, ScoreboardObjective> = synchronizedMapOf()
 
@@ -24,7 +27,7 @@ class ScoreboardManager {
     fun getTeamsOf(member: String): Set<Team> {
         val teams: MutableSet<Team> = mutableSetOf()
 
-        for ((name, team) in this.teams) {
+        for ((_, team) in this.teams) {
             if (!team.members.contains(member)) {
                 continue
             }
@@ -34,15 +37,19 @@ class ScoreboardManager {
         return teams
     }
 
-    fun updateScoreTeams(team: Team, members: Set<String>, remove: Boolean = false) {
-        for ((_, objective) in objectives) {
-            for ((_, score) in objective.scores) {
+    fun updateScoreTeams(team: Team, members: Set<String>, remove: Boolean = false, fireEvent: Boolean = true) {
+        for ((_, objective) in objectives.toSynchronizedMap()) {
+            for ((_, score) in objective.scores.toSynchronizedMap()) {
                 if (score.entity in members) {
                     if (remove) {
                         score.teams -= team
                     } else {
                         score.teams += team
                     }
+                    if (!fireEvent) {
+                        continue
+                    }
+                    connection.fireEvent(ScoreTeamChangeEvent(connection, objective, score, team, remove))
                 }
             }
         }

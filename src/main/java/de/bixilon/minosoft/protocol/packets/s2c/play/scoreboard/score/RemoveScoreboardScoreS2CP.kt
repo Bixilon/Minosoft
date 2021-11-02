@@ -17,6 +17,7 @@ import de.bixilon.minosoft.modding.event.events.scoreboard.ScoreboardScoreRemove
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
+import de.bixilon.minosoft.util.KUtil.toSynchronizedMap
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -24,7 +25,14 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 class RemoveScoreboardScoreS2CP(val entity: String, val objective: String?, buffer: PlayInByteBuffer) : PlayS2CPacket() {
 
     override fun handle(connection: PlayConnection) {
-        val objective = connection.scoreboardManager.objectives[objective] ?: return
+        val objective = connection.scoreboardManager.objectives[objective] ?: let {
+            for ((_, objective) in connection.scoreboardManager.objectives.toSynchronizedMap()) {
+                val score = objective.scores.remove(entity) ?: continue
+
+                connection.fireEvent(ScoreboardScoreRemoveEvent(connection, score))
+            }
+            return
+        }
         val score = objective.scores.remove(entity) ?: return
 
         connection.fireEvent(ScoreboardScoreRemoveEvent(connection, score))

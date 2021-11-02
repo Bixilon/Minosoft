@@ -89,7 +89,7 @@ open class RowLayout(
             if (exceedsY(childSize.y)) {
                 break
             }
-            val childZ = child.render(Vec2i(offset.x + margin.left + childAlignment.getOffset(size.x - margin.horizontal, childSize.x), offset.y + childYOffset), z, consumer, options)
+            val childZ = child.render(offset + Vec2i(margin.left + childAlignment.getOffset(size.x - margin.horizontal, childSize.x), childYOffset), z, consumer, options)
             if (maxZ < childZ) {
                 maxZ = childZ
             }

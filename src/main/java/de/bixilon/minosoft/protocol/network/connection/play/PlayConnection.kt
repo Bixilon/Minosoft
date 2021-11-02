@@ -71,7 +71,7 @@ class PlayConnection(
     val recipes = Recipes()
     val world = World(this)
     val tabList = TabList()
-    val scoreboardManager = ScoreboardManager()
+    val scoreboardManager = ScoreboardManager(this)
     val bossbarManager = BossbarManager()
 
     @Deprecated(message = "PacketSender is deprecated")

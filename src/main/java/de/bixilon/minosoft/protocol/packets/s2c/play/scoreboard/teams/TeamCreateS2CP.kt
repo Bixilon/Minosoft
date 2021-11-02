@@ -19,7 +19,7 @@ import de.bixilon.minosoft.data.scoreboard.Team
 import de.bixilon.minosoft.data.scoreboard.TeamCollisionRules
 import de.bixilon.minosoft.data.text.ChatCode
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.modding.event.events.scoreboard.ScoreboardTeamCreateEvent
+import de.bixilon.minosoft.modding.event.events.scoreboard.team.TeamCreateEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
@@ -123,7 +123,7 @@ class TeamCreateS2CP(val name: String, buffer: PlayInByteBuffer) : PlayS2CPacket
 
         connection.scoreboardManager.updateScoreTeams(team, members)
 
-        connection.fireEvent(ScoreboardTeamCreateEvent(connection, team))
+        connection.fireEvent(TeamCreateEvent(connection, team))
     }
 
     override fun log() {

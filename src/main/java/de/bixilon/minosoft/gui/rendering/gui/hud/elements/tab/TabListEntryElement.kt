@@ -72,8 +72,8 @@ class TabListEntryElement(
     }
 
     override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
-        background.render(Vec2i(offset), z, consumer, options)
-        nameElement.render(Vec2i(offset), z, consumer, options)
+        background.render(offset, z, consumer, options)
+        nameElement.render(offset, z, consumer, options)
         pingElement.render(offset + Vec2i(HorizontalAlignments.RIGHT.getOffset(maxSize.x, pingElement.size.x + PADDING), PADDING), z + 1, consumer, options)
 
         return TextElement.LAYERS

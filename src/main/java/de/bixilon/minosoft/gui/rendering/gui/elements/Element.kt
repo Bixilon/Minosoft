@@ -121,12 +121,13 @@ abstract class Element(val hudRenderer: HUDRenderer) {
      * @return The number of z layers used
      */
     fun render(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
+        val offset = Vec2i(offset)
         if (RenderConstants.DISABLE_GUI_CACHE || !cacheEnabled) {
             return forceRender(offset, z, consumer, options)
         }
         if (!cacheUpToDate || cache.offset != offset || hudRenderer.matrixChange || cache.matrix !== hudRenderer.matrix || z != cache.z) {
             val cache = GUIMeshCache(hudRenderer.matrix)
-            cache.offset = offset
+            cache.offset = Vec2i(offset)
             cache.z = z
             val maxZ = forceRender(offset, z, cache, options)
             cache.maxZ = maxZ

@@ -51,7 +51,7 @@ class TabListElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
     )
 
     override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
-        background.render(Vec2i(offset), z, consumer, options)
+        background.render(offset, z, consumer, options)
         offset += BACKGROUND_PADDING
 
         val size = size
@@ -71,7 +71,7 @@ class TabListElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
         }
 
         for ((index, entry) in toRender.withIndex()) {
-            entry.render(Vec2i(offset), z + 1, consumer, options)
+            entry.render(offset, z + 1, consumer, options)
             offset.y += TabListEntryElement.HEIGHT + ENTRY_VERTICAL_SPACING
             if ((index + 1) % ENTRIES_PER_COLUMN == 0) {
                 offset.x += entry.width + ENTRY_HORIZONTAL_SPACING

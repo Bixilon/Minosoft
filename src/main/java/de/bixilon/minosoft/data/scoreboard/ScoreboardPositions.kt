@@ -4,9 +4,10 @@ import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.enum.ValuesEnum
 
 enum class ScoreboardPositions {
-    LIST,
+    TAB_LIST,
     SIDEBAR,
     BELOW_NAME,
+
     TEAM_BLACK,
     TEAM_DARK_BLUE,
     TEAM_DARK_GREEN,
