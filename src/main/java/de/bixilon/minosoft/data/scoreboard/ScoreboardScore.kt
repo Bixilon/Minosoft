@@ -15,9 +15,10 @@ package de.bixilon.minosoft.data.scoreboard
 class ScoreboardScore(
     val entity: String,
     var objective: ScoreboardObjective,
-    val teams: MutableSet<Team>,
+    var team: Team?,
     var value: Int,
 ) : Comparable<ScoreboardScore> {
+
     override fun toString(): String {
         return "$entity=$value"
     }

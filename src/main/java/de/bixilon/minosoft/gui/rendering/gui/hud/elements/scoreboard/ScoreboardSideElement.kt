@@ -34,6 +34,11 @@ class ScoreboardSideElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
             forceSilentApply()
         }
 
+    init {
+        _prefMaxSize = Vec2i(MAX_SCOREBOARD_WIDTH, -1)
+        forceSilentApply()
+    }
+
     override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
         recalculateSize()
         backgroundElement.render(offset, z, consumer, options)
@@ -120,5 +125,6 @@ class ScoreboardSideElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
         const val MAX_SCORES = 15
         const val MIN_WIDTH = 30
         const val SCORE_HEIGHT = Font.TOTAL_CHAR_HEIGHT
+        const val MAX_SCOREBOARD_WIDTH = 200
     }
 }

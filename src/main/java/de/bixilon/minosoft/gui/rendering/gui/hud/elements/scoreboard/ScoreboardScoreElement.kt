@@ -1,7 +1,6 @@
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.scoreboard
 
 import de.bixilon.minosoft.data.scoreboard.ScoreboardScore
-import de.bixilon.minosoft.data.scoreboard.Team
 import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextComponent
@@ -43,16 +42,8 @@ class ScoreboardScoreElement(
     }
 
     override fun forceSilentApply() {
-        // ToDo: Can a score (entity; whatever) can have multiple teams?
-        var team: Team? = null
-        score.teams.iterator().apply {
-            if (!hasNext()) {
-                return@apply
-            }
-            team = next()
-        }
         val entityName = ChatComponent.of(score.entity)
-        nameElement.text = team?.decorateName(entityName) ?: entityName
+        nameElement.text = score.team?.decorateName(entityName) ?: entityName
 
         scoreElement.text = TextComponent(score.value).color(ChatColors.RED)
 

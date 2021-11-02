@@ -157,7 +157,7 @@ abstract class Entity(
     fun getAttributeValue(name: ResourceLocation, baseValue: Double? = null): Double {
         // ToDo: Check order and verify value
         val attribute = attributes[name]
-        val realBaseValue = baseValue ?: attribute?.baseValue ?: 1.0
+        val realBaseValue = baseValue ?: attribute?.baseValue ?: entityType.attributes[name] ?: 1.0
         var ret = realBaseValue
 
         fun addToValue(modifier: EntityAttributeModifier, amplifier: Int) {

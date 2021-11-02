@@ -30,6 +30,7 @@ open class Container(
     protected val slots: MutableMap<Int, ItemStack> = synchronizedMapOf()
     var revision = 0L // ToDo: This has nothing todo with minecraft (1.17+)
         @Synchronized set(value) {
+            // ToDo: Proper synchronize
             if (++field != value) {
                 error("Can not set a custom revision!: $value, required: $field")
             }

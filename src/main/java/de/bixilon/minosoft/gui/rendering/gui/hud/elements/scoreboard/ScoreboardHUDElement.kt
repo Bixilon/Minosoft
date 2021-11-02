@@ -45,13 +45,13 @@ class ScoreboardHUDElement(hudRenderer: HUDRenderer) : LayoutedHUDElement<Scoreb
             layout.updateScore(it.score)
         })
         connection.registerEvent(CallbackEventInvoker.of<ScoreTeamChangeEvent> {
-            val objective = layout.objective ?: return@of
+            layout.objective ?: return@of
             layout.updateScore(it.score)
         })
         connection.registerEvent(CallbackEventInvoker.of<TeamUpdateEvent> {
             val objective = layout.objective ?: return@of
             for ((_, score) in objective.scores) {
-                if (it.team !in score.teams) {
+                if (it.team != score.team) {
                     continue
                 }
                 layout.updateScore(score)
