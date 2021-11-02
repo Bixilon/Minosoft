@@ -8,7 +8,7 @@ interface TranslucentDrawable : Renderer {
         get() = false
 
     fun setupTranslucent() {
-        renderSystem.reset(depthMask = false) // ToDo: This is just a translucent workaround
+        renderSystem.reset(depthMask = false, blending = true) // ToDo: This is just a translucent workaround
         renderSystem.setBlendFunc(BlendingFunctions.SOURCE_ALPHA, BlendingFunctions.ONE_MINUS_SOURCE_ALPHA, BlendingFunctions.ONE, BlendingFunctions.ONE_MINUS_SOURCE_ALPHA)
     }
 

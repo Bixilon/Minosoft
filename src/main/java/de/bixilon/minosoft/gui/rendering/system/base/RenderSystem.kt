@@ -35,7 +35,7 @@ interface RenderSystem {
 
     fun reset(
         depthTest: Boolean = true,
-        blending: Boolean = true,
+        blending: Boolean = false,
         faceCulling: Boolean = true,
         depthMask: Boolean = true,
         sourceAlpha: BlendingFunctions = BlendingFunctions.SOURCE_ALPHA,

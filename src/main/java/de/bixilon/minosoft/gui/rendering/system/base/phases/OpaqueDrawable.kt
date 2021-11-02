@@ -7,7 +7,7 @@ interface OpaqueDrawable : Renderer {
         get() = false
 
     fun setupOpaque() {
-        renderSystem.reset(blending = false)
+        renderSystem.reset()
     }
 
     fun drawOpaque()

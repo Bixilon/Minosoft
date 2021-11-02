@@ -7,7 +7,7 @@ interface TransparentDrawable : Renderer {
         get() = false
 
     fun setupTransparent() {
-        renderSystem.reset(blending = false)
+        renderSystem.reset()
     }
 
     fun drawTransparent()

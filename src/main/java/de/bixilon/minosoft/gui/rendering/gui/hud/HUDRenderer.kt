@@ -145,7 +145,7 @@ class HUDRenderer(
     }
 
     private fun setup() {
-        renderWindow.renderSystem.reset()
+        renderWindow.renderSystem.reset(blending = true)
         renderWindow.renderSystem.clear(IntegratedBufferTypes.DEPTH_BUFFER)
         shader.use()
     }
