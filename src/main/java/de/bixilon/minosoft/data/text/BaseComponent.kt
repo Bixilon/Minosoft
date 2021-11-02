@@ -121,11 +121,13 @@ class BaseComponent : ChatComponent {
                     currentFormatting.add(it)
                 }
             } ?: let {
-                // just append it as special char
-                currentText.append(char)
-                currentText.append(formattingChar)
+                // ignore and ignore next char
+                char = iterator.next()
             }
-
+            // check because of above
+            if (char == CharacterIterator.DONE) {
+                break
+            }
             char = iterator.next()
         }
 

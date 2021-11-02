@@ -17,4 +17,27 @@ class ScoreboardScore(
     var objective: ScoreboardObjective,
     val teams: MutableSet<Team>,
     var value: Int,
-)
+) : Comparable<ScoreboardScore> {
+    override fun toString(): String {
+        return "$entity=$value"
+    }
+
+    override fun hashCode(): Int {
+        return entity.hashCode()
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (other !is ScoreboardScore) {
+            return false
+        }
+        return entity == other.entity // ToDo: Compare all?
+    }
+
+    override fun compareTo(other: ScoreboardScore): Int {
+        val difference = other.value - value
+        if (difference != 0) {
+            return difference
+        }
+        return entity.compareTo(other.entity) // ToDo
+    }
+}

@@ -42,10 +42,15 @@ class ScoreboardSideElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
         nameElement.render(offset + Vec2i(HorizontalAlignments.CENTER.getOffset(size.x, nameElement.size.x), 0), z + 2, consumer, options)
         offset.y += Font.TOTAL_CHAR_HEIGHT
 
-        val scores = scores.toSynchronizedMap().toSortedMap { a, b -> b.value - a.value }
+        val scores = scores.toSynchronizedMap().entries.sortedWith { a, b -> a.key.compareTo(b.key) }
+        var index = 0
         for ((_, score) in scores) {
             score.render(offset, z + 2, consumer, options)
             offset.y += score.size.y
+
+            if (++index >= MAX_SCORES) {
+                break
+            }
         }
 
         return TextElement.LAYERS + 2 // 2 backgrounds
@@ -77,7 +82,7 @@ class ScoreboardSideElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
             size.x = maxOf(size.x, element.prefSize.x)
         }
 
-        size.y += SCORE_HEIGHT * scores.size
+        size.y += SCORE_HEIGHT * minOf(MAX_SCORES, scores.size)
 
 
 
@@ -112,6 +117,7 @@ class ScoreboardSideElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
     }
 
     companion object {
+        const val MAX_SCORES = 15
         const val MIN_WIDTH = 30
         const val SCORE_HEIGHT = Font.TOTAL_CHAR_HEIGHT
     }

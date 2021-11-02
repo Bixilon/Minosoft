@@ -12,8 +12,10 @@
  */
 package de.bixilon.minosoft.data.scoreboard
 
+import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatCode
 import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.data.text.RGBColor
 
 data class Team(
     val name: String,
@@ -29,5 +31,19 @@ data class Team(
 ) {
     override fun toString(): String {
         return name
+    }
+
+    fun decorateName(name: ChatComponent): ChatComponent {
+        val displayName = BaseComponent()
+        prefix.let { displayName += it }
+        displayName += name.apply {
+            // ToDo: Set correct formatting code
+            val color = formattingCode
+            if (color is RGBColor) {
+                applyDefaultColor(color)
+            }
+        }
+        suffix.let { displayName += it }
+        return displayName
     }
 }
