@@ -45,21 +45,21 @@ class TabListDataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
                 buffer.readVarInt()
             }
             val action = if (buffer.readBoolean()) {
-                PlayerListItemActions.UPDATE_LATENCY
+                TabListItemActions.UPDATE_LATENCY
             } else {
-                PlayerListItemActions.REMOVE_PLAYER
+                TabListItemActions.REMOVE_PLAYER
             }
             val uuid: UUID = UUID.nameUUIDFromBytes(name.toByteArray(StandardCharsets.UTF_8))
-            val item = TabListItemData(name = name, ping = ping, remove = action == PlayerListItemActions.REMOVE_PLAYER)
+            val item = TabListItemData(name = name, ping = ping, remove = action == TabListItemActions.REMOVE_PLAYER)
             items[uuid] = item
         } else {
-            val action = PlayerListItemActions[buffer.readVarInt()]
+            val action = TabListItemActions[buffer.readVarInt()]
             val count: Int = buffer.readVarInt()
             for (i in 0 until count) {
                 val uuid: UUID = buffer.readUUID()
                 val data: TabListItemData
                 when (action) {
-                    PlayerListItemActions.ADD -> {
+                    TabListItemActions.ADD -> {
                         val name = buffer.readString()
                         val playerProperties: MutableMap<String, PlayerProperty> = mutableMapOf()
                         for (index in 0 until buffer.readVarInt()) {
@@ -87,13 +87,13 @@ class TabListDataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
                             displayName = displayName,
                         )
                     }
-                    PlayerListItemActions.UPDATE_GAMEMODE -> {
+                    TabListItemActions.UPDATE_GAMEMODE -> {
                         data = TabListItemData(gamemode = Gamemodes[buffer.readVarInt()])
                     }
-                    PlayerListItemActions.UPDATE_LATENCY -> {
+                    TabListItemActions.UPDATE_LATENCY -> {
                         data = TabListItemData(ping = buffer.readVarInt())
                     }
-                    PlayerListItemActions.UPDATE_DISPLAY_NAME -> {
+                    TabListItemActions.UPDATE_DISPLAY_NAME -> {
                         val hasDisplayName = buffer.readBoolean()
                         val displayName = if (hasDisplayName) {
                             buffer.readChatComponent()
@@ -105,7 +105,7 @@ class TabListDataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
                             displayName = displayName,
                         )
                     }
-                    PlayerListItemActions.REMOVE_PLAYER -> {
+                    TabListItemActions.REMOVE_PLAYER -> {
                         data = TabListItemData(remove = true)
                     }
                 }
@@ -165,16 +165,16 @@ class TabListDataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
                 item
             } ?: continue
 
-
-            if (entity === connection.player) {
-                entity.tabListItem.specialMerge(data)
-                continue
-            }
-
-            tabListItem.merge(data)
             if (entity == null || entity !is PlayerEntity) {
                 continue
             }
+
+            if (entity === connection.player) {
+                entity.tabListItem.specialMerge(data)
+            } else {
+                tabListItem.merge(data)
+            }
+
 
             entity.tabListItem = tabListItem
         }
@@ -189,7 +189,7 @@ class TabListDataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     }
 
 
-    enum class PlayerListItemActions {
+    enum class TabListItemActions {
         ADD,
         UPDATE_GAMEMODE,
         UPDATE_LATENCY,
@@ -197,9 +197,9 @@ class TabListDataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         REMOVE_PLAYER,
         ;
 
-        companion object : ValuesEnum<PlayerListItemActions> {
+        companion object : ValuesEnum<TabListItemActions> {
             override val VALUES = values()
-            override val NAME_MAP: Map<String, PlayerListItemActions> = KUtil.getEnumValues(VALUES)
+            override val NAME_MAP: Map<String, TabListItemActions> = KUtil.getEnumValues(VALUES)
         }
     }
 }
