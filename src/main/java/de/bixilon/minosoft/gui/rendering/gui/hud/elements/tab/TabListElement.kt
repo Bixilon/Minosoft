@@ -56,7 +56,8 @@ class TabListElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
 
     override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
         background.render(offset, z, consumer, options)
-        offset += BACKGROUND_PADDING
+
+        offset.y += BACKGROUND_PADDING // No need for x, this is done with the CENTER offset calculation
 
         val size = size
 
@@ -81,7 +82,7 @@ class TabListElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
 
 
         footer.size.let {
-            footer.render(offset + Vec2i(HorizontalAlignments.CENTER.getOffset(size.x, it.x), 0), z, consumer, options)
+            footer.render(offset + Vec2i(HorizontalAlignments.CENTER.getOffset(size.x, it.x)), z, consumer, options)
             offset.y += it.y
         }
 
@@ -164,10 +165,10 @@ class TabListElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
 
 
         this.columns = columns
-        size += 2 * BACKGROUND_PADDING
+        size += (BACKGROUND_PADDING * 2)
         this.size = size
-
         background.size = size
+
         cacheUpToDate = false
         needsApply = false
     }
