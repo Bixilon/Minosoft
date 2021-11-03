@@ -13,9 +13,11 @@
 
 package de.bixilon.minosoft.protocol.packets.s2c.play.scoreboard.objective
 
+import de.bixilon.minosoft.modding.event.events.scoreboard.ObjectivePositionSetEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
+import de.bixilon.minosoft.util.KUtil.toSynchronizedMap
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -28,6 +30,13 @@ class RemoveScoreboardObjectiveS2CP(val objective: String, buffer: PlayInByteBuf
 
     override fun handle(connection: PlayConnection) {
         connection.scoreboardManager.objectives.remove(objective)
-    }
 
+        for ((position, objective) in connection.scoreboardManager.positions.toSynchronizedMap()) {
+            if (objective.name != this.objective) {
+                continue
+            }
+            connection.scoreboardManager.positions -= position
+            connection.fireEvent(ObjectivePositionSetEvent(connection, position, null))
+        }
+    }
 }

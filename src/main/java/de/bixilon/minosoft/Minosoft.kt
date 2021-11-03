@@ -30,7 +30,7 @@ import de.bixilon.minosoft.modding.loading.ModLoader
 import de.bixilon.minosoft.protocol.protocol.LANServerListener
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.terminal.CLI
-import de.bixilon.minosoft.terminal.CommandLineArguments.parse
+import de.bixilon.minosoft.terminal.CommandLineArguments
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.CountUpAndDownLatch
 import de.bixilon.minosoft.util.GitInfo
@@ -46,11 +46,10 @@ import de.bixilon.minosoft.util.task.worker.tasks.Task
 
 object Minosoft {
     val MINOSOFT_ASSETS_MANAGER = JarAssetsManager(Minosoft::class.java, mutableSetOf("minosoft"))
-    val MINECRAFT_FALLBACK_ASSETS_MANAGER = JarAssetsManager(Minosoft::class.java, mutableSetOf("minecraft"))
     val LANGUAGE_MANAGER = MultiLanguageManager()
     val START_UP_LATCH = CountUpAndDownLatch(1)
 
-    @Deprecated("Use singleton interface!")
+    @Deprecated("Use singleton interface!", ReplaceWith("GlobalEventMaster", "de.bixilon.minosoft.modding.event.master.GlobalEventMaster"))
     val GLOBAL_EVENT_MASTER = GlobalEventMaster
 
     @Deprecated("Will be singleton interface")
@@ -64,7 +63,7 @@ object Minosoft {
 
     @JvmStatic
     fun main(args: Array<String>) {
-        parse(args)
+        CommandLineArguments.parse(args)
         Util.initUtilClasses()
 
         Log.log(LogMessageType.OTHER, LogLevels.INFO) { "Starting minosoft" }
@@ -133,6 +132,6 @@ object Minosoft {
         initialized = true
         Log.log(LogMessageType.OTHER, LogLevels.INFO) { "All startup tasks executed!" }
 
-        GLOBAL_EVENT_MASTER.fireEvent(FinishInitializingEvent())
+        GlobalEventMaster.fireEvent(FinishInitializingEvent())
     }
 }

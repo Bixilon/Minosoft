@@ -48,12 +48,13 @@ public class PacketMapData extends PlayS2CPacket {
             // read action
             this.dataData = PacketMapDataDataActions.byId(buffer.readUnsignedByte());
             switch (this.dataData) {
-                case START -> {
+                case START: {
                     this.xStart = buffer.readByte();
                     this.yStart = buffer.readByte();
                     this.colors = buffer.readByteArray(length - 3); // 3: dataData(1) + xStart (1) + yStart (1)
+                    break;
                 }
-                case PLAYERS -> {
+                case PLAYERS: {
                     this.pins = new ArrayList<>();
                     length--; // minus the dataData
                     for (int i = 0; i < length / 3; i++) { // loop over all sets ( 1 set: 3 bytes)
@@ -62,8 +63,11 @@ public class PacketMapData extends PlayS2CPacket {
                         byte z = buffer.readByte();
                         this.pins.add(new MapPinSet(MapPinTypes.byId(directionAndType & 0xF), directionAndType >>> 4, x, z));
                     }
+                    break;
                 }
-                case SCALE -> this.scale = buffer.readByte();
+                case SCALE:
+                    this.scale = buffer.readByte();
+                    break;
             }
             return;
         }

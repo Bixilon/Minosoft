@@ -17,20 +17,36 @@ import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.player.Hands
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
-import de.bixilon.minosoft.data.registries.blocks.BlockUsages
 import de.bixilon.minosoft.data.registries.inventory.CreativeModeTab
-import de.bixilon.minosoft.data.registries.items.armor.ArmorItem
-import de.bixilon.minosoft.data.registries.items.armor.HorseArmorItem
+import de.bixilon.minosoft.data.registries.items.armor.*
+import de.bixilon.minosoft.data.registries.items.arrow.ArrowItem
+import de.bixilon.minosoft.data.registries.items.arrow.SpectralArrowItem
+import de.bixilon.minosoft.data.registries.items.arrow.TippedArrowItem
+import de.bixilon.minosoft.data.registries.items.block.*
+import de.bixilon.minosoft.data.registries.items.book.BookItem
+import de.bixilon.minosoft.data.registries.items.book.EnchantedBookItem
+import de.bixilon.minosoft.data.registries.items.book.WritableBookItem
+import de.bixilon.minosoft.data.registries.items.book.WrittenBookItem
+import de.bixilon.minosoft.data.registries.items.bucket.BucketItem
+import de.bixilon.minosoft.data.registries.items.bucket.EntityBucketItem
+import de.bixilon.minosoft.data.registries.items.bucket.MilkBucketItem
+import de.bixilon.minosoft.data.registries.items.map.EmptyMapItem
+import de.bixilon.minosoft.data.registries.items.map.FilledMapItem
+import de.bixilon.minosoft.data.registries.items.throwable.*
+import de.bixilon.minosoft.data.registries.items.throwable.potion.LingeringPotionItem
+import de.bixilon.minosoft.data.registries.items.throwable.potion.PotionItem
 import de.bixilon.minosoft.data.registries.items.tools.*
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
 import de.bixilon.minosoft.data.registries.registries.registry.ResourceLocationDeserializer
 import de.bixilon.minosoft.data.registries.registries.registry.Translatable
-import de.bixilon.minosoft.gui.rendering.input.camera.hit.RaycastHit
+import de.bixilon.minosoft.gui.rendering.input.camera.hit.BlockRaycastHit
+import de.bixilon.minosoft.gui.rendering.input.camera.hit.EntityRaycastHit
+import de.bixilon.minosoft.gui.rendering.input.interaction.InteractionResults
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil.asResourceLocation
 import de.bixilon.minosoft.util.KUtil.toBoolean
 import de.bixilon.minosoft.util.KUtil.toInt
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.KUtil.unsafeCast
 
 open class Item(
@@ -42,7 +58,7 @@ open class Item(
     val maxStackSize: Int = data["max_stack_size"]?.toInt() ?: 64
     val maxDamage: Int = data["max_damage"]?.toInt() ?: 1
     val isFireResistant: Boolean = data["is_fire_resistant"]?.toBoolean() ?: false
-    override val translationKey: ResourceLocation? = data["translation_key"]?.asResourceLocation()
+    override val translationKey: ResourceLocation? = data["translation_key"]?.toResourceLocation()
     val creativeModeTab: CreativeModeTab? = data["category"]?.toInt()?.let { registries.creativeModeTabRegistry[it] }
 
     override fun toString(): String {
@@ -53,8 +69,20 @@ open class Item(
         return 1.0f
     }
 
-    open fun use(connection: PlayConnection, raycastHit: RaycastHit, hands: Hands, itemStack: ItemStack): BlockUsages {
-        return BlockUsages.PASS
+    open fun interactBlock(connection: PlayConnection, raycastHit: BlockRaycastHit, hand: Hands, itemStack: ItemStack): InteractionResults {
+        return InteractionResults.PASS
+    }
+
+    open fun interactEntity(connection: PlayConnection, raycastHit: EntityRaycastHit, hand: Hands, itemStack: ItemStack): InteractionResults {
+        return InteractionResults.PASS
+    }
+
+    open fun interactEntityAt(connection: PlayConnection, raycastHit: EntityRaycastHit, hand: Hands, itemStack: ItemStack): InteractionResults {
+        return InteractionResults.PASS
+    }
+
+    open fun interactItem(connection: PlayConnection, hand: Hands, itemStack: ItemStack): InteractionResults {
+        return InteractionResults.PASS
     }
 
     companion object : ResourceLocationDeserializer<Item> {
@@ -62,8 +90,12 @@ open class Item(
 
         override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): Item {
             check(registries != null) { "Registries is null!" }
-            return when (data["class"].unsafeCast<String>()) {
+            if (data["food_properties"] != null) {
+                return FoodItem(resourceLocation, registries, data)
+            }
+            return when (val `class` = data["class"].unsafeCast<String>()) {
                 "BlockItem" -> BlockItem(resourceLocation, registries, data)
+                "Item", "AirBlockItem" -> Item(resourceLocation, registries, data)
                 "ArmorItem" -> ArmorItem(resourceLocation, registries, data)
                 "SwordItem" -> SwordItem(resourceLocation, registries, data)
                 "ToolItem" -> ToolItem(resourceLocation, registries, data)
@@ -76,9 +108,76 @@ open class Item(
                 "ShovelItem" -> ShovelItem(resourceLocation, registries, data)
                 "PickaxeItem" -> PickaxeItem(resourceLocation, registries, data)
                 "HoeItem" -> HoeItem(resourceLocation, registries, data)
-                //   "Item" -> Item(resourceLocation, data)
-                // else -> TODO("Can not find item class: ${data["class"].asString}")
-                else -> Item(resourceLocation, registries, data)
+                "DyeableArmorItem" -> DyeableArmorItem(resourceLocation, registries, data)
+                "TallBlockItem" -> TallBlockItem(resourceLocation, registries, data)
+                "WallStandingBlockItem" -> WallStandingBlockItem(resourceLocation, registries, data)
+                "LilyPadItem" -> LilyPadItem(resourceLocation, registries, data)
+                "CommandBlockItem" -> CommandBlockItem(resourceLocation, registries, data)
+                "ScaffoldingItem" -> ScaffoldingItem(resourceLocation, registries, data)
+                "AliasedBlockItem" -> AliasedBlockItem(resourceLocation, registries, data)
+                "SaddleItem" -> SaddleItem(resourceLocation, registries, data)
+                "MinecartItem" -> MinecartItem(resourceLocation, registries, data)
+                "OnAStickItem" -> OnAStickItem(resourceLocation, registries, data)
+                "ElytraItem" -> ElytraItem(resourceLocation, registries, data)
+                "BoatItem" -> BoatItem(resourceLocation, registries, data)
+                "FlintAndSteelItem" -> FlintAndSteelItem(resourceLocation, registries, data)
+                "BowItem" -> BowItem(resourceLocation, registries, data)
+                "ArrowItem" -> ArrowItem(resourceLocation, registries, data)
+                "MushroomStewItem" -> MushroomStewItem(resourceLocation, registries, data)
+                "DecorationItem" -> DecorationItem(resourceLocation, registries, data)
+                "EnchantedGoldenAppleItem" -> EnchantedGoldenAppleItem(resourceLocation, registries, data)
+                "SignItem" -> SignItem(resourceLocation, registries, data)
+                "PowderSnowBucketItem" -> PowderSnowBucketItem(resourceLocation, registries, data)
+                "SnowballItem" -> SnowballItem(resourceLocation, registries, data)
+                "MilkBucketItem" -> MilkBucketItem(resourceLocation, registries, data)
+                "FishBucketItem", "EntityBucketItem" -> EntityBucketItem(resourceLocation, registries, data)
+                "BookItem" -> BookItem(resourceLocation, registries, data)
+                "EggItem" -> EggItem(resourceLocation, registries, data)
+                "CompassItem" -> CompassItem(resourceLocation, registries, data)
+                "BundleItem" -> BundleItem(resourceLocation, registries, data)
+                "FishingRodItem" -> FishingRodItem(resourceLocation, registries, data)
+                "SpyglassItem" -> SpyglassItem(resourceLocation, registries, data)
+                "BoneMealItem" -> BoneMealItem(resourceLocation, registries, data)
+                "BedItem" -> BedItem(resourceLocation, registries, data)
+                "FilledMapItem" -> FilledMapItem(resourceLocation, registries, data)
+                "ShearsItem" -> ShearsItem(resourceLocation, registries, data)
+                "EnderPearlItem" -> EnderPearlItem(resourceLocation, registries, data)
+                "PotionItem" -> PotionItem(resourceLocation, registries, data)
+                "GlassBottleItem" -> GlassBottleItem(resourceLocation, registries, data)
+                "EnderEyeItem" -> EnderEyeItem(resourceLocation, registries, data)
+                "ExperienceBottleItem" -> ExperienceBottleItem(resourceLocation, registries, data)
+                "FireChargeItem" -> FireChargeItem(resourceLocation, registries, data)
+                "WritableBookItem" -> WritableBookItem(resourceLocation, registries, data)
+                "WrittenBookItem" -> WrittenBookItem(resourceLocation, registries, data)
+                "ItemFrameItem" -> ItemFrameItem(resourceLocation, registries, data)
+                "EmptyMapItem" -> EmptyMapItem(resourceLocation, registries, data)
+                "SkullItem" -> SkullItem(resourceLocation, registries, data)
+                "NetherStarItem" -> NetherStarItem(resourceLocation, registries, data)
+                "FireworkItem" -> FireworkItem(resourceLocation, registries, data)
+                "FireworkChargeItem" -> FireworkChargeItem(resourceLocation, registries, data)
+                "EnchantedBookItem" -> EnchantedBookItem(resourceLocation, registries, data)
+                "ArmorStandItem" -> ArmorStandItem(resourceLocation, registries, data)
+                "DyeableHorseArmorItem" -> DyeableHorseArmorItem(resourceLocation, registries, data)
+                "LeadItem" -> LeadItem(resourceLocation, registries, data)
+                "NameTagItem" -> NameTagItem(resourceLocation, registries, data)
+                "BannerItem" -> BannerItem(resourceLocation, registries, data)
+                "EndCrystalItem" -> EndCrystalItem(resourceLocation, registries, data)
+                "ChorusFruitItem" -> ChorusFruitItem(resourceLocation, registries, data)
+                "SplashPotionItem" -> SplashPotionItem(resourceLocation, registries, data)
+                "SpectralArrowItem" -> SpectralArrowItem(resourceLocation, registries, data)
+                "TippedArrowItem" -> TippedArrowItem(resourceLocation, registries, data)
+                "LingeringPotionItem" -> LingeringPotionItem(resourceLocation, registries, data)
+                "ShieldItem" -> ShieldItem(resourceLocation, registries, data)
+                "KnowledgeBookItem" -> KnowledgeBookItem(resourceLocation, registries, data)
+                "DebugStickItem" -> DebugStickItem(resourceLocation, registries, data)
+                "TridentItem" -> TridentItem(resourceLocation, registries, data)
+                "CrossbowItem" -> CrossbowItem(resourceLocation, registries, data)
+                "SuspiciousStewItem" -> SuspiciousStewItem(resourceLocation, registries, data)
+                "BannerPatternItem" -> BannerPatternItem(resourceLocation, registries, data)
+                "HoneycombItem" -> HoneycombItem(resourceLocation, registries, data)
+                "HoneyBottleItem" -> HoneyBottleItem(resourceLocation, registries, data)
+                else -> TODO("Can not find item class (resourceLocation=$resourceLocation, $`class`)")
+                //else -> Item(resourceLocation, registries, data)
             }
         }
     }

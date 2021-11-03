@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.protocol.packets.s2c.play.scoreboard.teams
 
 import de.bixilon.minosoft.Minosoft
+import de.bixilon.minosoft.modding.event.events.scoreboard.team.TeamMemberAddEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
@@ -32,7 +33,15 @@ class TeamMemberAddS2CP(val name: String, buffer: PlayInByteBuffer) : PlayS2CPac
 
 
     override fun handle(connection: PlayConnection) {
-        connection.scoreboardManager.teams[name]?.members?.addAll(members)
+        val team = connection.scoreboardManager.teams[name] ?: return
+        team.members += members
+
+        for (member in members) {
+            connection.tabList.tabListItemsByName[member]?.team = team
+        }
+
+        connection.scoreboardManager.updateScoreTeams(team, members)
+        connection.fireEvent(TeamMemberAddEvent(connection, team, members))
     }
 
     override fun log() {

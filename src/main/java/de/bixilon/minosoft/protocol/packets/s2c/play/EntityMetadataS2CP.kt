@@ -29,7 +29,7 @@ class EntityMetadataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     override fun handle(connection: PlayConnection) {
         val entity = connection.world.entities[entityId] ?: return
 
-        entity.entityMetaData = metaData
+        entity.entityMetaData.sets.putAll(metaData.sets)
         connection.fireEvent(EntityMetaDataChangeEvent(connection, this))
     }
 

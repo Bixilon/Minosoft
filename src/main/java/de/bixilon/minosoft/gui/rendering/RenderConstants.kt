@@ -33,15 +33,10 @@ object RenderConstants {
 
 
     val EXPERIENCE_BAR_LEVEL_COLOR = "#80ff20".asColor()
-    val HP_TEXT_COLOR = "#ff1313".asColor()
 
     const val COLORMAP_SIZE = 255
 
-    const val DEBUG_MESSAGES_PREFIX = "§f[§e§lDEBUG§f] §9"
-
-
-    const val HUD_Z_COORDINATE = -0.9996f
-    const val HUD_Z_COORDINATE_Z_FACTOR = -0.000001f
+    const val DEBUG_MESSAGES_PREFIX = "§f[§e§lDEBUG§f] "
 
     val TEXT_BACKGROUND_COLOR = RGBColor(0, 0, 0, 80)
 
@@ -72,10 +67,15 @@ object RenderConstants {
 
     const val CAMPFIRE_ITEMS = 4
 
-    const val DOUBLE_PRESS_KEY_PRESS_MAX_DELAY = 200
+    const val DOUBLE_PRESS_KEY_PRESS_MAX_DELAY = 300
     const val DOUBLE_PRESS_DELAY_BETWEEN_PRESSED = 500
 
     const val MAXIMUM_PARTICLE_AMOUNT = 200000
 
     const val DEFAULT_LINE_WIDTH = 1.0f / 128.0f
+
+
+    const val UV_ADD = 0.001f
+
+    const val DISABLE_GUI_CACHE = false
 }

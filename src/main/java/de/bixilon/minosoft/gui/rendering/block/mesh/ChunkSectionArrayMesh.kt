@@ -51,7 +51,7 @@ class ChunkSectionArrayMesh(renderWindow: RenderWindow) : Mesh(renderWindow, Sec
 
     data class SectionArrayMeshStruct(
         val position: Vec3,
-        val uvCoordinates: Vec2,
+        val uv: Vec2,
         val textureLayer: Int,
         val animationId: Int,
         val tintColor: RGBColor,

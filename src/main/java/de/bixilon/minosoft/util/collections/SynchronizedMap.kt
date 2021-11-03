@@ -22,7 +22,7 @@ import java.util.function.Function
 class SynchronizedMap<K, V>(
     private val original: MutableMap<K, V>,
 ) : MutableMap<K, V> {
-    private val lock = Object()
+    internal val lock = Object()
     override val size: Int
         get() = synchronized(lock) { original.size }
 
@@ -187,14 +187,6 @@ class SynchronizedMap<K, V>(
     override fun replace(key: K, oldValue: V, newValue: V): Boolean {
         synchronized(lock) {
             return original.replace(key, oldValue, newValue)
-        }
-    }
-
-    fun getAndRemove(key: K): V? {
-        synchronized(lock) {
-            val value = this[key] ?: return null
-            this.remove(key)
-            return value
         }
     }
 }

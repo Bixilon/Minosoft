@@ -19,12 +19,12 @@ import de.bixilon.minosoft.data.player.Hands
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockFactory
 import de.bixilon.minosoft.data.registries.blocks.BlockState
-import de.bixilon.minosoft.data.registries.blocks.BlockUsages
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.particle.data.DustParticleData
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.text.Colors
 import de.bixilon.minosoft.gui.rendering.input.camera.hit.RaycastHit
+import de.bixilon.minosoft.gui.rendering.input.interaction.InteractionResults
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.dust.DustParticle
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -59,12 +59,12 @@ open class LeverBlock(resourceLocation: ResourceLocation, registries: Registries
         TODO()
     }
 
-    override fun onUse(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, raycastHit: RaycastHit, hands: Hands, itemStack: ItemStack?): BlockUsages {
+    override fun onUse(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, raycastHit: RaycastHit, hand: Hands, itemStack: ItemStack?): InteractionResults {
         val nextState = blockState.cycle(BlockProperties.POWERED)
         connection.world[blockPosition] = nextState
         spawnParticles(connection, nextState, blockPosition, 1.0f)
 
-        return BlockUsages.SUCCESS
+        return InteractionResults.SUCCESS
     }
 
     companion object : BlockFactory<LeverBlock> {

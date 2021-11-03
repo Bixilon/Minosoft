@@ -41,6 +41,7 @@ import glm_.vec3.Vec3t
 import kotlin.math.abs
 import kotlin.random.Random
 
+@Deprecated(message = "Use VecXUtil instead")
 object VecUtil {
     val Vec3.Companion.EMPTY: Vec3
         get() = Vec3(0.0f, 0.0f, 0.0f)
@@ -440,6 +441,13 @@ object VecUtil {
             lerp(delta, start.x, end.x),
             lerp(delta, start.y, end.y),
             lerp(delta, start.z, end.z),
+        )
+    }
+
+    fun lerp(delta: Float, start: Vec2, end: Vec2): Vec2 {
+        return Vec2(
+            lerp(delta, start.x, end.x),
+            lerp(delta, start.y, end.y),
         )
     }
 

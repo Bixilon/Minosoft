@@ -31,6 +31,7 @@ class MemoryTexture(
     override var properties: ImageProperties = ImageProperties(),
     generator: ((x: Int, y: Int) -> RGBColor)? = null,
 ) : AbstractTexture {
+    override lateinit var textureArrayUV: Vec2
     override lateinit var singlePixelSize: Vec2
     override var renderData: TextureRenderData? = null
     override var transparency: TextureTransparencies = TextureTransparencies.OPAQUE
@@ -66,5 +67,5 @@ class MemoryTexture(
     override val state: TextureStates = TextureStates.LOADED
 
 
-    override fun load(assetsManager: AssetsManager) {}
+    override fun load(assetsManager: AssetsManager) = Unit
 }

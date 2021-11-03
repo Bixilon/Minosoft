@@ -42,10 +42,10 @@ abstract class LivingEntity(connection: PlayConnection, entityType: EntityType, 
         get() = getLivingEntityFlag(0x01)
 
     @get:EntityMetaDataFunction(name = "Main hand")
-    open val mainHand: Hands?
-        get() = if (getLivingEntityFlag(0x04)) Hands.OFF_HAND else Hands.MAIN_HAND
+    open val activeHand: Hands?
+        get() = if (getLivingEntityFlag(0x02)) Hands.OFF else Hands.MAIN
 
-    @get:EntityMetaDataFunction(name = "Is auto spin attack")
+    @get:EntityMetaDataFunction(name = "Is auto spin attack") // aka using riptide
     val isSpinAttacking: Boolean
         get() = getLivingEntityFlag(0x04)
 

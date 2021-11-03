@@ -26,13 +26,14 @@ import de.bixilon.minosoft.data.registries.AABB
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.types.FluidBlock
 import de.bixilon.minosoft.data.registries.effects.StatusEffect
-import de.bixilon.minosoft.data.registries.effects.attributes.StatusEffectAttribute
-import de.bixilon.minosoft.data.registries.effects.attributes.StatusEffectAttributeInstance
+import de.bixilon.minosoft.data.registries.effects.attributes.EntityAttribute
+import de.bixilon.minosoft.data.registries.effects.attributes.EntityAttributeModifier
 import de.bixilon.minosoft.data.registries.effects.attributes.StatusEffectOperations
 import de.bixilon.minosoft.data.registries.enchantment.Enchantment
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.fluid.FlowableFluid
 import de.bixilon.minosoft.data.registries.fluid.Fluid
+import de.bixilon.minosoft.data.registries.items.armor.ArmorItem
 import de.bixilon.minosoft.data.registries.particle.data.BlockParticleData
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.gui.rendering.input.camera.EntityPositionInfo
@@ -69,9 +70,9 @@ abstract class Entity(
     var rotation: EntityRotation,
 ) : PhysicsEntity {
     protected val random = Random
-    val equipment: MutableMap<EquipmentSlots, ItemStack> = mutableMapOf()
+    open val equipment: MutableMap<EquipmentSlots, ItemStack> = mutableMapOf()
     val activeStatusEffects: MutableMap<StatusEffect, StatusEffectInstance> = synchronizedMapOf()
-    val attributes: MutableMap<ResourceLocation, MutableMap<UUID, StatusEffectAttributeInstance>> = synchronizedMapOf()
+    val attributes: MutableMap<ResourceLocation, EntityAttribute> = synchronizedMapOf()
 
     val id: Int?
         get() = connection.world.entities.getId(this)
@@ -83,7 +84,7 @@ abstract class Entity(
     protected val versionId: Int = connection.version.versionId
     open var attachedEntity: Int? = null
 
-    var entityMetaData: EntityMetaData = EntityMetaData(connection)
+    val entityMetaData: EntityMetaData = EntityMetaData(connection)
     var vehicle: Entity? = null
     var passengers: MutableSet<Entity> = synchronizedSetOf()
 
@@ -113,7 +114,7 @@ abstract class Entity(
         get() = dimensions.y * 0.85f
 
     private var lastFakeTickTime = -1L
-    private var previousPosition: Vec3d = Vec3d(position)
+    protected open var previousPosition: Vec3d = Vec3d(position)
     override var position: Vec3d = position
         set(value) {
             previousPosition = field
@@ -153,28 +154,30 @@ abstract class Entity(
         activeStatusEffects.remove(effect)
     }
 
-    fun getAttributeValue(attribute: ResourceLocation, baseValue: Double = entityType.attributes[attribute] ?: 1.0): Double {
+    fun getAttributeValue(name: ResourceLocation, baseValue: Double? = null): Double {
         // ToDo: Check order and verify value
-        var ret = baseValue
+        val attribute = attributes[name]
+        val realBaseValue = baseValue ?: attribute?.baseValue ?: entityType.attributes[name] ?: 1.0
+        var ret = realBaseValue
 
-        fun addToValue(statusEffectAttribute: StatusEffectAttribute, amplifier: Int) {
-            val instanceValue = statusEffectAttribute.amount * amplifier
-            when (statusEffectAttribute.operation) {
+        fun addToValue(modifier: EntityAttributeModifier, amplifier: Int) {
+            val instanceValue = modifier.amount * amplifier
+            when (modifier.operation) {
                 StatusEffectOperations.MULTIPLY_TOTAL -> ret *= 1.0 + instanceValue
                 StatusEffectOperations.ADDITION -> ret += instanceValue
-                StatusEffectOperations.MULTIPLY_BASE -> ret += baseValue * (instanceValue + 1.0)
+                StatusEffectOperations.MULTIPLY_BASE -> ret += realBaseValue * (instanceValue + 1.0)
             }
         }
 
-        attributes[attribute]?.let {
-            for (instance in it.values) {
-                addToValue(instance.statusEffectAttribute, instance.amplifier)
+        attribute?.let {
+            for (instance in it.modifiers.values) {
+                addToValue(instance, 1)
             }
         }
 
         for (statusEffect in activeStatusEffects.values) {
             for ((instanceResourceLocation, instance) in statusEffect.statusEffect.attributes) {
-                if (instanceResourceLocation != attribute) {
+                if (instanceResourceLocation != name) {
                     continue
                 }
                 addToValue(instance, statusEffect.amplifier)
@@ -356,7 +359,7 @@ abstract class Entity(
     }
 
     private fun spawnSprintingParticles() {
-        val blockPosition = Vec3i(position.x.floor, (position.y - 0.20000000298023224).floor, position.z.floor)
+        val blockPosition = Vec3i(position.x.floor, (position.y - 0.2).floor, position.z.floor)
         val blockState = connection.world[blockPosition] ?: return
 
         // ToDo: Don't render particles for invisible blocks
@@ -390,7 +393,7 @@ abstract class Entity(
         return maxLevel
     }
 
-    open fun setObjectData(data: Int) {}
+    open fun setObjectData(data: Int) = Unit
 
     override fun toString(): String {
         return entityType.toString()
@@ -543,9 +546,9 @@ abstract class Entity(
                 velocity /= checks
             }
 
-            if (abs(this.velocity.x) < 0.003 && abs(this.velocity.z) < 0.003 && velocity.length() < 0.0045000000000000005) {
+            if (abs(this.velocity.x) < 0.003 && abs(this.velocity.z) < 0.003 && velocity.length() < 0.0045) {
                 velocity.normalizeAssign()
-                velocity *= 0.0045000000000000005
+                velocity *= 0.0045
             }
 
             this.velocity = (this.velocity + velocity)
@@ -585,7 +588,24 @@ abstract class Entity(
         }
     }
 
+    val protectionLevel: Float
+        get() {
+            var protectionLevel = 0.0f
+
+            for (equipment in equipment.toSynchronizedMap().values) {
+                val item = equipment.item
+
+                if (item is ArmorItem) {
+                    // could also be a pumpkin or just trash
+                    protectionLevel += item.protection
+                }
+            }
+
+            return protectionLevel
+        }
+
+
     companion object {
-        private val BELOW_POSITION_MINUS = Vec3(0, 0.20000000298023224f, 0)
+        private val BELOW_POSITION_MINUS = Vec3(0, 0.2f, 0)
     }
 }

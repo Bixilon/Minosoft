@@ -17,13 +17,13 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil.asResourceLocation
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import glm_.vec3.Vec3d
 
 class MyceliumParticle(connection: PlayConnection, position: Vec3d, velocity: Vec3d, data: ParticleData? = null) : SuspendParticle(connection, position, velocity, data) {
 
     companion object : ParticleFactory<MyceliumParticle> {
-        override val RESOURCE_LOCATION: ResourceLocation = "minecraft:mycelium".asResourceLocation()
+        override val RESOURCE_LOCATION: ResourceLocation = "minecraft:mycelium".toResourceLocation()
 
         override fun build(connection: PlayConnection, position: Vec3d, velocity: Vec3d, data: ParticleData): MyceliumParticle {
             return MyceliumParticle(connection, position, velocity, data)

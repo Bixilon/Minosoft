@@ -21,7 +21,7 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.assign
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.of
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil.asResourceLocation
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3d
 
@@ -32,7 +32,7 @@ class BubbleParticle(connection: PlayConnection, position: Vec3d, velocity: Vec3
 
         this.scale *= random.nextFloat() * 0.6f + 0.2f
 
-        this.velocity assign (velocity * 0.20000000298023224) + (Vec3d.of { random.nextDouble() * 2.0 - 1.0 } * 0.019999999552965164)
+        this.velocity assign (velocity * 0.2) + (Vec3d.of { random.nextDouble() * 2.0 - 1.0 } * 0.02)
         this.maxAge = (8.0f / random.nextFloat() * 0.8f + 0.2f).toInt()
 
         movement = false
@@ -45,14 +45,14 @@ class BubbleParticle(connection: PlayConnection, position: Vec3d, velocity: Vec3
         }
         this.velocity.y += 0.002
         forceMove(velocity)
-        velocity *= 0.8500000238418579
+        velocity *= 0.85
 
         // ToDo: Check if in water: Kill particle
     }
 
 
     companion object : ParticleFactory<BubbleParticle> {
-        override val RESOURCE_LOCATION: ResourceLocation = "minecraft:bubble".asResourceLocation()
+        override val RESOURCE_LOCATION: ResourceLocation = "minecraft:bubble".toResourceLocation()
 
         override fun build(connection: PlayConnection, position: Vec3d, velocity: Vec3d, data: ParticleData): BubbleParticle {
             return BubbleParticle(connection, position, velocity, data)

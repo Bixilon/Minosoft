@@ -12,6 +12,7 @@
  */
 package de.bixilon.minosoft.data.inventory
 
+import de.bixilon.minosoft.data.Rarities
 import de.bixilon.minosoft.data.inventory.ItemNBTValues.DISPLAY_LORE_TAG
 import de.bixilon.minosoft.data.inventory.ItemNBTValues.DISPLAY_MAME_TAG
 import de.bixilon.minosoft.data.inventory.ItemNBTValues.DISPLAY_TAG
@@ -26,32 +27,140 @@ import de.bixilon.minosoft.data.inventory.ItemNBTValues.UNBREAKABLE_TAG
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.enchantment.Enchantment
 import de.bixilon.minosoft.data.registries.items.Item
+import de.bixilon.minosoft.data.registries.other.containers.Container
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.TextFormattable
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.BitByte.isBit
 import de.bixilon.minosoft.util.KUtil.nullCast
+import de.bixilon.minosoft.util.KUtil.synchronizedDeepCopy
+import de.bixilon.minosoft.util.KUtil.synchronizedListOf
+import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
 import de.bixilon.minosoft.util.KUtil.toInt
+import de.bixilon.minosoft.util.KUtil.toSynchronizedList
+import de.bixilon.minosoft.util.KUtil.toSynchronizedMap
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.getAndRemove
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.listCast
+import java.util.*
 
-data class ItemStack(
+class ItemStack(
     val item: Item,
     private val connection: PlayConnection? = null,
-    var count: Int = 0,
-    val enchantments: MutableMap<Enchantment, Int> = mutableMapOf(),
-    val lore: MutableList<ChatComponent> = mutableListOf(),
-    var repairCost: Int = 0,
-    var customDisplayName: ChatComponent? = null,
-    var unbreakable: Boolean = false,
-    var durability: Int = 0,
-    val nbt: MutableMap<String, Any> = mutableMapOf(),
+    count: Int = 1,
+    val enchantments: MutableMap<Enchantment, Int> = synchronizedMapOf(),
+    val lore: MutableList<ChatComponent> = synchronizedListOf(),
+    repairCost: Int = 0,
+    customDisplayName: ChatComponent? = null,
+    unbreakable: Boolean = false,
+    durability: Int = 0,
+    val nbt: MutableMap<String, Any> = synchronizedMapOf(),
+    container: Container? = null,
+    hideFlags: Int = 0,
 ) : TextFormattable {
-    var hideFlags = 0
+    var count = count
+        set(value) {
+            if (field == value) {
+                return
+            }
+            field = value
+            apply()
+        }
+    var repairCost = repairCost
+        set(value) {
+            if (field == value) {
+                return
+            }
+            field = value
+            apply()
+        }
+    var customDisplayName = customDisplayName
+        set(value) {
+            if (field == value) {
+                return
+            }
+            field = value
+            apply()
+        }
+    var unbreakable = unbreakable
+        set(value) {
+            if (field == value) {
+                return
+            }
+            field = value
+            apply()
+        }
+    var durability = durability
+        set(value) {
+            if (field == value) {
+                return
+            }
+            field = value
+            apply()
+        }
+    var hideFlags = hideFlags
+        set(value) {
+            if (field == value) {
+                return
+            }
+            field = value
+            apply()
+        }
+    var container = container
+        set(value) {
+            if (field === value) {
+                return
+            }
+            if (field != null && value != null) {
+                throw IllegalStateException("Item already in a different container!")
+            }
+            field = value
+            apply()
+        }
+
+    // ToDo: Apply if enchantments, lore or nbt changes
 
     init {
         parseNBT(nbt)
+    }
+
+    fun copy(
+        item: Item = this.item,
+        connection: PlayConnection? = this.connection,
+        count: Int = this.count,
+        enchantments: MutableMap<Enchantment, Int> = this.enchantments.toSynchronizedMap(),
+        lore: MutableList<ChatComponent> = this.lore.toSynchronizedList(),
+        repairCost: Int = this.repairCost,
+        customDisplayName: ChatComponent? = this.customDisplayName,
+        unbreakable: Boolean = this.unbreakable,
+        durability: Int = this.durability,
+        nbt: MutableMap<String, Any> = this.nbt.synchronizedDeepCopy()!!,
+        container: Container? = this.container,
+        hideFlags: Int = this.hideFlags,
+    ): ItemStack {
+        return ItemStack(
+            item = item,
+            connection = connection,
+            count = count,
+            enchantments = enchantments,
+            lore = lore,
+            repairCost = repairCost,
+            customDisplayName = customDisplayName,
+            unbreakable = unbreakable,
+            durability = durability,
+            nbt = nbt,
+            container = container,
+            hideFlags = hideFlags,
+        )
+    }
+
+    fun apply() {
+        val container = container ?: return
+        val previousRevision = container.revision
+        container.validate()
+        if (previousRevision <= container.revision) {
+            container.revision++
+        }
     }
 
     override fun toText(): ChatComponent {
@@ -62,11 +171,8 @@ data class ItemStack(
         return toText().legacyText
     }
 
-
     private fun parseNBT(nbt: MutableMap<String, Any>?) {
-        if (nbt == null) {
-            return
-        }
+        nbt ?: return
 
         nbt.getAndRemove(REPAIR_COST_TAG).nullCast<Number>()?.let { repairCost = it.toInt() }
 
@@ -82,28 +188,17 @@ data class ItemStack(
             }
         }
 
-        nbt.getAndRemove(UNBREAKABLE_TAG).nullCast<Number>()?.let {
-            unbreakable = it.toInt() == 0x01
-        }
+        nbt.getAndRemove(UNBREAKABLE_TAG).nullCast<Number>()?.let { unbreakable = it.toInt() == 0x01 }
 
-        nbt.getAndRemove(UNBREAKABLE_TAG).nullCast<Number>()?.let {
-            unbreakable = it.toInt() == 0x01
-        }
-
-        nbt.getAndRemove(HIDE_FLAGS_TAG).nullCast<Number>()?.let {
-            hideFlags = it.toInt()
-        }
+        nbt.getAndRemove(HIDE_FLAGS_TAG).nullCast<Number>()?.let { hideFlags = it.toInt() }
 
         nbt.getAndRemove(*ENCHANTMENTS_TAG)?.listCast<Map<String, Any>>()?.let {
+            val enchantmentRegistry = connection!!.registries.enchantmentRegistry
             for (enchantmentTag in it) {
                 val enchantment = enchantmentTag[ENCHANTMENT_ID_TAG]?.let { enchantmentId ->
                     when (enchantmentId) {
-                        is Number -> {
-                            connection!!.registries.enchantmentRegistry[enchantmentId.toInt()]
-                        }
-                        is String -> {
-                            connection!!.registries.enchantmentRegistry[ResourceLocation.getPathResourceLocation(enchantmentId)]
-                        }
+                        is Number -> enchantmentRegistry[enchantmentId.toInt()]
+                        is String -> enchantmentRegistry[ResourceLocation.getPathResourceLocation(enchantmentId)]
                         else -> TODO()
                     }
                 }!!
@@ -145,13 +240,14 @@ data class ItemStack(
                 nbt[HIDE_FLAGS_TAG] = hideFlags
             }
             if (enchantments.isNotEmpty()) {
+                val connection = connection!!
                 val enchantmentList: MutableList<Map<String, Any>> = mutableListOf()
                 for ((enchantment, level) in enchantments) {
                     val enchantmentTag: MutableMap<String, Any> = mutableMapOf()
-                    if (connection!!.version.isFlattened()) {
-                        enchantmentTag[ENCHANTMENT_ID_TAG] = enchantment.resourceLocation.full
+                    enchantmentTag[ENCHANTMENT_ID_TAG] = if (connection.version.isFlattened()) {
+                        enchantment.resourceLocation.full
                     } else {
-                        enchantmentTag[ENCHANTMENT_ID_TAG] = connection.registries.enchantmentRegistry.getId(enchantment)
+                        connection.registries.enchantmentRegistry.getId(enchantment)
                     }
 
                     enchantmentTag[ENCHANTMENT_LEVEL_TAG] = if (connection.version.isFlattened()) {
@@ -159,8 +255,9 @@ data class ItemStack(
                     } else {
                         level.toShort()
                     }
+                    enchantmentList += enchantmentTag
                 }
-                if (connection!!.version.isFlattened()) {
+                if (connection.version.isFlattened()) {
                     nbt[ENCHANTMENT_FLATTENING_TAG] = enchantmentList
                 } else {
                     nbt[ENCHANTMENT_PRE_FLATTENING_TAG] = enchantmentList
@@ -172,7 +269,12 @@ data class ItemStack(
     val displayName: ChatComponent
         get() {
             customDisplayName?.let { return it }
-            item.translationKey?.let { connection?.version?.language?.translate(it)?.let { translatedName -> return translatedName } }
+            item.translationKey?.let {
+                connection?.version?.language?.translate(it)?.let { translatedName ->
+                    translatedName.applyDefaultColor(rarity.color)
+                    return translatedName
+                }
+            }
             return ChatComponent.of(item.toString())
         }
 
@@ -217,8 +319,46 @@ data class ItemStack(
         }
     }
 
+    val rarity: Rarities
+        get() {
+            if (enchantments.isEmpty()) {
+                return item.rarity
+            }
+            return when (item.rarity) {
+                Rarities.COMMON, Rarities.UNCOMMON -> Rarities.RARE
+                Rarities.RARE, Rarities.EPIC -> Rarities.EPIC
+            }
+        }
+
     val damageable: Boolean
         get() = item.maxDamage > 0 || !unbreakable
+
+
+    override fun hashCode(): Int {
+        return Objects.hash(item, count, durability, nbt)
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) {
+            return true
+        }
+        if (other !is ItemStack) {
+            return false
+        }
+        if (hashCode() != other.hashCode()) {
+            return false
+        }
+        return item == other.item
+                && count == other.count
+                && durability == other.durability
+                && enchantments == other.enchantments
+                && nbt == other.nbt
+                && lore == other.lore
+                && customDisplayName == other.customDisplayName
+                && repairCost == other.repairCost
+                && unbreakable == other.unbreakable
+                && hideFlags == other.hideFlags
+    }
 
     companion object {
         private const val HIDE_ENCHANTMENT_BIT = 0

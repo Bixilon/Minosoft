@@ -263,3 +263,7 @@
 .text-area .content {
     -fx-background-color: -secondary-color;
 }
+
+.obfuscated {
+    -fx-font-family: 'monospaced';
+}

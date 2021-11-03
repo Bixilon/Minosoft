@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.s2c.play.title
 
+import de.bixilon.minosoft.modding.event.events.ChatMessageReceiveEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
@@ -29,5 +30,6 @@ class HotbarTextSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
 
     override fun handle(connection: PlayConnection) {
         Log.log(LogMessageType.CHAT_IN) { "[HOTBAR] $text" }
+        connection.fireEvent(ChatMessageReceiveEvent(connection, this))
     }
 }

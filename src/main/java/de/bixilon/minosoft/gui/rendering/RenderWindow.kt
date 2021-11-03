@@ -14,28 +14,37 @@
 package de.bixilon.minosoft.gui.rendering
 
 import de.bixilon.minosoft.Minosoft
-import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames
+import de.bixilon.minosoft.config.key.KeyAction
+import de.bixilon.minosoft.config.key.KeyBinding
+import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.text.BaseComponent
+import de.bixilon.minosoft.data.text.ChatColors
+import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.gui.rendering.block.WorldRenderer
 import de.bixilon.minosoft.gui.rendering.block.chunk.ChunkBorderRenderer
 import de.bixilon.minosoft.gui.rendering.block.outline.BlockOutlineRenderer
 import de.bixilon.minosoft.gui.rendering.entity.EntityHitBoxRenderer
 import de.bixilon.minosoft.gui.rendering.font.Font
-import de.bixilon.minosoft.gui.rendering.hud.HUDRenderer
-import de.bixilon.minosoft.gui.rendering.hud.atlas.TextureLike
-import de.bixilon.minosoft.gui.rendering.hud.atlas.TextureLikeTexture
+import de.bixilon.minosoft.gui.rendering.font.FontLoader
+import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
+import de.bixilon.minosoft.gui.rendering.gui.hud.atlas.TextureLike
+import de.bixilon.minosoft.gui.rendering.gui.hud.atlas.TextureLikeTexture
 import de.bixilon.minosoft.gui.rendering.input.key.RenderWindowInputHandler
 import de.bixilon.minosoft.gui.rendering.modding.events.*
 import de.bixilon.minosoft.gui.rendering.particle.ParticleRenderer
 import de.bixilon.minosoft.gui.rendering.sky.SkyRenderer
+import de.bixilon.minosoft.gui.rendering.stats.AbstractRenderStats
 import de.bixilon.minosoft.gui.rendering.system.base.IntegratedBufferTypes
 import de.bixilon.minosoft.gui.rendering.system.base.PolygonModes
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
 import de.bixilon.minosoft.gui.rendering.system.base.phases.RenderPhases
+import de.bixilon.minosoft.gui.rendering.system.base.phases.SkipAll
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem
 import de.bixilon.minosoft.gui.rendering.system.window.BaseWindow
 import de.bixilon.minosoft.gui.rendering.system.window.GLFWWindow
 import de.bixilon.minosoft.gui.rendering.util.ScreenshotTaker
+import de.bixilon.minosoft.modding.event.events.InternalMessageReceiveEvent
 import de.bixilon.minosoft.modding.event.events.PacketReceiveEvent
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -44,6 +53,9 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.CountUpAndDownLatch
 import de.bixilon.minosoft.util.KUtil.decide
 import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import de.bixilon.minosoft.util.KUtil.unsafeCast
+import de.bixilon.minosoft.util.MMath.round10
 import de.bixilon.minosoft.util.Queue
 import de.bixilon.minosoft.util.Stopwatch
 import de.bixilon.minosoft.util.logging.Log
@@ -60,7 +72,7 @@ class RenderWindow(
     var initialized = false
         private set
     private lateinit var renderThread: Thread
-    val renderStats = RenderStats()
+    val renderStats: AbstractRenderStats = AbstractRenderStats.createInstance()
 
     val inputHandler = RenderWindowInputHandler(this)
 
@@ -70,12 +82,23 @@ class RenderWindow(
     private val latch = CountUpAndDownLatch(1)
 
     private var renderingState = RenderingStates.RUNNING
+        set(value) {
+            if (field == value) {
+                return
+            }
+            if (field == RenderingStates.PAUSED) {
+                queue.clear()
+            }
+            val previousState = field
+            field = value
+            connection.fireEvent(RenderingStateChangeEvent(connection, previousState, value))
+        }
 
 
     private val screenshotTaker = ScreenshotTaker(this)
     val tintColorCalculator = TintColorCalculator(connection.world)
-    val font = Font()
     val textureManager = renderSystem.createTextureManager()
+    lateinit var font: Font
 
     val rendererMap: MutableMap<ResourceLocation, Renderer> = synchronizedMapOf()
 
@@ -98,13 +121,12 @@ class RenderWindow(
                 return@of
             }
             if (!initialPositionReceived) {
-                // ToDo: Set previous position
                 latch.dec()
                 initialPositionReceived = true
             }
         })
 
-        // order dependant (from back to front)
+        // order dependent (from back to front)
         registerRenderer(SkyRenderer)
         registerRenderer(WorldRenderer)
         registerRenderer(BlockOutlineRenderer)
@@ -144,12 +166,12 @@ class RenderWindow(
         textureManager.staticTextures.createTexture(RenderConstants.DEBUG_TEXTURE_RESOURCE_LOCATION)
         WHITE_TEXTURE = TextureLikeTexture(
             texture = textureManager.staticTextures.createTexture(ResourceLocation("minosoft:textures/white.png")),
-            uvStart = Vec2(0, 0),
-            uvEnd = Vec2(1.0f, 1.0f),
+            uvStart = Vec2(0.0f, 0.0f),
+            uvEnd = Vec2(0.001f, 0.001f),
             size = Vec2i(16, 16)
         )
+        font = FontLoader.load(this)
 
-        font.load(connection.assetsManager, textureManager)
 
         shaderManager.init()
 
@@ -161,10 +183,10 @@ class RenderWindow(
 
         Log.log(LogMessageType.RENDERING_LOADING) { "Preloading textures (${stopwatch.labTime()})..." }
         textureManager.staticTextures.preLoad()
-        font.loadAtlas()
 
         Log.log(LogMessageType.RENDERING_LOADING) { "Loading textures (${stopwatch.labTime()})..." }
         textureManager.staticTextures.load()
+        font.postInit()
 
         Log.log(LogMessageType.RENDERING_LOADING) { "Post loading renderer (${stopwatch.labTime()})..." }
         for (renderer in rendererMap.values) {
@@ -175,11 +197,11 @@ class RenderWindow(
         Log.log(LogMessageType.RENDERING_LOADING) { "Registering window callbacks (${stopwatch.labTime()})..." }
 
         connection.registerEvent(CallbackEventInvoker.of<WindowFocusChangeEvent> {
-            setRenderStatus(it.focused.decide(RenderingStates.RUNNING, RenderingStates.SLOW))
+            renderingState = it.focused.decide(RenderingStates.RUNNING, RenderingStates.SLOW)
         })
 
         connection.registerEvent(CallbackEventInvoker.of<WindowIconifyChangeEvent> {
-            setRenderStatus(it.iconified.decide(RenderingStates.PAUSED, RenderingStates.RUNNING))
+            renderingState = it.iconified.decide(RenderingStates.PAUSED, RenderingStates.RUNNING)
         })
 
 
@@ -200,20 +222,48 @@ class RenderWindow(
     }
 
     private fun registerGlobalKeyCombinations() {
-        inputHandler.registerKeyCallback(KeyBindingsNames.DEBUG_POLYGON) {
+        inputHandler.registerKeyCallback("minosoft:enable_debug_polygon".toResourceLocation(), KeyBinding(
+            mutableMapOf(
+                KeyAction.MODIFIER to mutableSetOf(KeyCodes.KEY_F4),
+                KeyAction.STICKY to mutableSetOf(KeyCodes.KEY_P),
+            ),
+        )) {
             val nextMode = it.decide(PolygonModes.LINE, PolygonModes.FILL)
             renderSystem.polygonMode = nextMode
             sendDebugMessage("Set polygon to: $nextMode")
         }
 
-        inputHandler.registerKeyCallback(KeyBindingsNames.QUIT_RENDERING) { window.close() }
-        inputHandler.registerKeyCallback(KeyBindingsNames.TAKE_SCREENSHOT) { screenshotTaker.takeScreenshot() }
+        inputHandler.registerKeyCallback("minosoft:quit_rendering".toResourceLocation(), KeyBinding(
+            mutableMapOf(
+                KeyAction.RELEASE to mutableSetOf(KeyCodes.KEY_ESCAPE),
+            ),
+        )) { window.close() }
 
-        inputHandler.registerKeyCallback(KeyBindingsNames.DEBUG_PAUSE_INCOMING_PACKETS) {
+        inputHandler.registerKeyCallback("minosoft:take_screenshot".toResourceLocation(), KeyBinding(
+            mutableMapOf(
+                KeyAction.PRESS to mutableSetOf(KeyCodes.KEY_F2),
+            ),
+            ignoreConsumer = true,
+        )) { screenshotTaker.takeScreenshot() }
+
+        inputHandler.registerKeyCallback("minosoft:pause_incoming_packets".toResourceLocation(), KeyBinding(
+            mutableMapOf(
+                KeyAction.MODIFIER to mutableSetOf(KeyCodes.KEY_F4),
+                KeyAction.STICKY to mutableSetOf(KeyCodes.KEY_I),
+            ),
+            ignoreConsumer = true,
+        )) {
             sendDebugMessage("Pausing incoming packets: $it")
             connection.network.pauseReceiving(it)
         }
-        inputHandler.registerKeyCallback(KeyBindingsNames.DEBUG_PAUSE_OUTGOING_PACKETS) {
+
+        inputHandler.registerKeyCallback("minosoft:pause_outgoing_packets".toResourceLocation(), KeyBinding(
+            mutableMapOf(
+                KeyAction.MODIFIER to mutableSetOf(KeyCodes.KEY_F4),
+                KeyAction.STICKY to mutableSetOf(KeyCodes.KEY_O),
+            ),
+            ignoreConsumer = true,
+        )) {
             sendDebugMessage("Pausing outgoing packets: $it")
             connection.network.pauseSending(it)
         }
@@ -222,19 +272,21 @@ class RenderWindow(
     fun startLoop() {
         Log.log(LogMessageType.RENDERING_LOADING) { "Starting loop" }
         var closed = false
-        connection.registerEvent(CallbackEventInvoker.of<WindowCloseEvent> {
-            closed = true
-        })
-
+        connection.registerEvent(CallbackEventInvoker.of<WindowCloseEvent> { closed = true })
         while (true) {
             if (connection.wasConnected || closed) {
                 break
             }
+
             if (renderingState == RenderingStates.PAUSED) {
+                window.title = "Minosoft | Paused"
+            }
+
+            while (renderingState == RenderingStates.PAUSED) {
                 Thread.sleep(100L)
                 window.pollEvents()
-                continue
             }
+
             renderStats.startFrame()
             renderSystem.clear(IntegratedBufferTypes.COLOR_BUFFER, IntegratedBufferTypes.DEPTH_BUFFER)
 
@@ -242,7 +294,7 @@ class RenderWindow(
             val currentTickTime = System.currentTimeMillis()
             if (currentTickTime - this.lastTickTimer > ProtocolDefinition.TICK_TIME) {
                 tickCount++
-                inputHandler.currentKeyConsumer?.tick(tickCount)
+                // inputHandler.currentKeyConsumer?.tick(tickCount)
                 this.lastTickTimer = currentTickTime
             }
 
@@ -253,20 +305,28 @@ class RenderWindow(
 
             textureManager.staticTextures.animator.draw()
 
+            val rendererList = rendererMap.values
 
-            for (renderer in rendererMap.values) {
+            for (renderer in rendererList) {
                 renderer.prepareDraw()
             }
 
-            for (renderer in rendererMap.values) {
+            for (renderer in rendererList) {
+                if (renderer is SkipAll && renderer.skipAll) {
+                    continue
+                }
                 for (phase in RenderPhases.VALUES) {
                     if (!phase.type.java.isAssignableFrom(renderer::class.java)) {
+                        continue
+                    }
+                    if (phase.invokeSkip(renderer)) {
                         continue
                     }
                     phase.invokeSetup(renderer)
                     phase.invokeDraw(renderer)
                 }
             }
+            renderSystem.reset() // Reset to enable depth mask, etc again
 
             renderStats.endDraw()
 
@@ -280,15 +340,15 @@ class RenderWindow(
             queue.timeWork(RenderConstants.MAXIMUM_QUEUE_TIME_PER_FRAME)
 
             when (renderingState) {
-                RenderingStates.SLOW -> Thread.sleep(100L)
                 RenderingStates.RUNNING, RenderingStates.PAUSED -> {
                 }
+                RenderingStates.SLOW -> Thread.sleep(100L)
                 RenderingStates.STOPPED -> window.close()
             }
             renderStats.endFrame()
 
             if (RenderConstants.SHOW_FPS_IN_WINDOW_TITLE) {
-                window.title = "Minosoft | FPS: ${renderStats.fpsLastSecond}"
+                window.title = "Minosoft | FPS: ${renderStats.smoothAvgFPS.round10}"
             }
         }
 
@@ -299,25 +359,13 @@ class RenderWindow(
         connection.disconnect()
     }
 
-    private fun setRenderStatus(renderingStatus: RenderingStates) {
-        if (renderingStatus == this.renderingState) {
-            return
-        }
-        if (this.renderingState == RenderingStates.PAUSED) {
-            queue.clear()
-        }
-        val previousState = this.renderingState
-        this.renderingState = renderingStatus
-        connection.fireEvent(RenderingStateChangeEvent(connection, previousState, renderingState))
-    }
-
     fun registerRenderer(rendererBuilder: RendererBuilder<*>) {
         val renderer = rendererBuilder.build(connection, this)
         rendererMap[rendererBuilder.RESOURCE_LOCATION] = renderer
     }
 
-    fun sendDebugMessage(message: String) {
-        connection.sender.sendFakeChatMessage(RenderConstants.DEBUG_MESSAGES_PREFIX + message)
+    fun sendDebugMessage(message: Any) {
+        connection.fireEvent(InternalMessageReceiveEvent(connection, BaseComponent(RenderConstants.DEBUG_MESSAGES_PREFIX, ChatComponent.of(message).apply { applyDefaultColor(ChatColors.BLUE) })))
     }
 
     fun assertOnRenderThread() {
@@ -325,6 +373,6 @@ class RenderWindow(
     }
 
     operator fun <T : Renderer> get(renderer: RendererBuilder<T>): T? {
-        return rendererMap[renderer.RESOURCE_LOCATION] as T?
+        return rendererMap[renderer.RESOURCE_LOCATION].unsafeCast()
     }
 }

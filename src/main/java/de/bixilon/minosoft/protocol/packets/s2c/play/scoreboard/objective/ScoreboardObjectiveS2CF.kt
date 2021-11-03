@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.protocol.packets.s2c.play.scoreboard.objective
 
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
-import de.bixilon.minosoft.protocol.packets.s2c.play.scoreboard.score.RemoveScoreboardScoreS2CP
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.util.KUtil
@@ -31,7 +30,7 @@ object ScoreboardObjectiveS2CF {
         }
         return when (ScoreboardScoreActions[buffer.readUnsignedByte()]) {
             ScoreboardScoreActions.CREATE -> CreateScoreboardObjectiveS2CP(objective, displayName, buffer)
-            ScoreboardScoreActions.REMOVE -> RemoveScoreboardScoreS2CP(objective, buffer)
+            ScoreboardScoreActions.REMOVE -> RemoveScoreboardObjectiveS2CP(objective, buffer)
             ScoreboardScoreActions.UPDATE -> UpdateScoreboardObjectiveS2CP(objective, displayName, buffer)
         }
     }

@@ -17,15 +17,14 @@ import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.player.Hands
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.blocks.BlockUsages
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.gui.rendering.input.camera.hit.BlockRaycastHit
-import de.bixilon.minosoft.gui.rendering.input.camera.hit.RaycastHit
+import de.bixilon.minosoft.gui.rendering.input.interaction.InteractionResults
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil.asResourceLocation
 import de.bixilon.minosoft.util.KUtil.mapCast
 import de.bixilon.minosoft.util.KUtil.toInt
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 open class AxeItem(
     resourceLocation: ResourceLocation,
@@ -41,18 +40,15 @@ open class AxeItem(
         entries.toMap()
     }
 
-    override fun use(connection: PlayConnection, raycastHit: RaycastHit, hands: Hands, itemStack: ItemStack): BlockUsages {
+    override fun interactBlock(connection: PlayConnection, raycastHit: BlockRaycastHit, hand: Hands, itemStack: ItemStack): InteractionResults {
         if (!Minosoft.config.config.game.controls.enableStripping) {
-            return BlockUsages.CONSUME
-        }
-        if (raycastHit !is BlockRaycastHit) {
-            return super.use(connection, raycastHit, hands, itemStack)
+            return InteractionResults.CONSUME
         }
 
         return super.interactWithTool(connection, raycastHit.blockPosition, strippableBlocks?.get(raycastHit.blockState.block)?.withProperties(raycastHit.blockState.properties))
     }
 
     companion object {
-        val AXE_MINEABLE_TAG = "minecraft:mineable/axe".asResourceLocation()
+        val AXE_MINEABLE_TAG = "minecraft:mineable/axe".toResourceLocation()
     }
 }

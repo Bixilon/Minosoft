@@ -18,11 +18,11 @@ import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.data.accounts.AccountType
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.util.KUtil.asResourceLocation
 import de.bixilon.minosoft.util.KUtil.asUUID
 import de.bixilon.minosoft.util.KUtil.nullCast
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.KUtil.unsafeCast
-import de.bixilon.minosoft.util.account.microsoft.AccountUtil
+import de.bixilon.minosoft.util.account.AccountUtil
 import de.bixilon.minosoft.util.http.HTTP2.postJson
 import de.bixilon.minosoft.util.http.exceptions.AuthenticationException
 import de.bixilon.minosoft.util.logging.Log
@@ -99,7 +99,7 @@ class MojangAccount(
         private const val MOJANG_URL_LOGIN = "https://authserver.mojang.com/authenticate"
         private const val MOJANG_URL_REFRESH = "https://authserver.mojang.com/refresh"
         private const val MOJANG_URL_INVALIDATE = "https://authserver.mojang.com/invalidate"
-        override val RESOURCE_LOCATION: ResourceLocation = "minosoft:mojang_account".asResourceLocation()
+        override val RESOURCE_LOCATION: ResourceLocation = "minosoft:mojang_account".toResourceLocation()
 
         fun login(clientToken: String = Minosoft.config.config.account.clientToken, email: String, password: String): MojangAccount {
             val response = mutableMapOf(

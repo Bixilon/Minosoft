@@ -17,7 +17,7 @@ import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.gui.eros.card.AbstractCard
 import de.bixilon.minosoft.gui.eros.card.CardFactory
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.text
-import de.bixilon.minosoft.util.KUtil.asResourceLocation
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import javafx.fxml.FXML
 import javafx.scene.text.TextFlow
 import org.kordamp.ikonli.javafx.FontIcon
@@ -58,6 +58,6 @@ class AccountTypeCardController : AbstractCard<ErosAccountType<*>>() {
     }
 
     companion object : CardFactory<AccountTypeCardController> {
-        override val LAYOUT = "minosoft:eros/main/account/account_type_card.fxml".asResourceLocation()
+        override val LAYOUT = "minosoft:eros/main/account/account_type_card.fxml".toResourceLocation()
     }
 }

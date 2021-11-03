@@ -20,4 +20,7 @@ data class ControlsGameConfig(
     @Json(name = "enable_flattening") var enableFlattening: Boolean = true,
     @Json(name = "enable_stripping") var enableStripping: Boolean = true,
     @Json(name = "enable_tilling") var enableTilling: Boolean = true,
+
+    @Json(name = "mouse_sensitivity") var moseSensitivity: Float = 0.1f,
+    @Json(name = "hotbar_scroll_sensitivity") var hotbarScrollSensitivity: Double = 1.0,
 )

@@ -15,6 +15,7 @@ package de.bixilon.minosoft.modding.event.invoker
 import de.bixilon.minosoft.modding.event.events.CancelableEvent
 import de.bixilon.minosoft.modding.event.events.Event
 import de.bixilon.minosoft.modding.loading.Priorities
+import de.bixilon.minosoft.util.KUtil.unsafeCast
 import kotlin.reflect.KClass
 
 class CallbackEventInvoker<E : Event> private constructor(
@@ -29,7 +30,7 @@ class CallbackEventInvoker<E : Event> private constructor(
         if (!this.isIgnoreCancelled && event is CancelableEvent && event.cancelled) {
             return
         }
-        callback(event as E)
+        callback(event.unsafeCast())
     }
 
     companion object {

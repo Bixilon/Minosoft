@@ -28,11 +28,11 @@ import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.CountUpAndDownLatch
-import de.bixilon.minosoft.util.KUtil.asResourceLocation
 import de.bixilon.minosoft.util.KUtil.nullCast
 import de.bixilon.minosoft.util.KUtil.synchronizedListOf
 import de.bixilon.minosoft.util.KUtil.toBoolean
 import de.bixilon.minosoft.util.KUtil.toInt
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.KUtil.toSynchronizedList
 import de.bixilon.minosoft.util.KUtil.unsafeCast
 import de.bixilon.minosoft.util.Queue
@@ -67,9 +67,15 @@ class AudioPlayer(
     private lateinit var listener: SoundListener
     private val sources: MutableList<SoundSource> = synchronizedListOf()
 
+    var availableSources: Int = 0
+        private set
+
+    val sourcesCount: Int
+        get() = sources.size
+
 
     private fun preloadSounds() {
-        Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Preloading sounds..." }
+        Log.log(LogMessageType.AUDIO_LOADING, LogLevels.VERBOSE) { "Preloading sounds..." }
         if (SoundConstants.DISABLE_PRELOADING) {
             return
         }
@@ -191,6 +197,15 @@ class AudioPlayer(
                 break
             }
             queue.work()
+
+            var availableSources = 0
+            for (source in sources) {
+                if (source.available) {
+                    availableSources++
+                }
+            }
+            this.availableSources = availableSources
+
             Thread.sleep(1L)
         }
     }
@@ -218,7 +233,7 @@ class AudioPlayer(
     }
 
     private fun loadSounds() {
-        Log.log(LogMessageType.RENDERING_LOADING, LogLevels.VERBOSE) { "Loading sounds.json" }
+        Log.log(LogMessageType.AUDIO_LOADING, LogLevels.VERBOSE) { "Loading sounds.json" }
         val data = connection.assetsManager.readJsonAsset(SOUNDS_INDEX_FILE)
 
         for ((soundEventResourceLocation, json) in data) {
@@ -260,6 +275,6 @@ class AudioPlayer(
 
 
     companion object {
-        private val SOUNDS_INDEX_FILE = "minecraft:sounds.json".asResourceLocation()
+        private val SOUNDS_INDEX_FILE = "minecraft:sounds.json".toResourceLocation()
     }
 }

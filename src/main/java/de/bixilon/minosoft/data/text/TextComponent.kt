@@ -17,17 +17,9 @@ import de.bixilon.minosoft.data.text.events.ClickEvent
 import de.bixilon.minosoft.data.text.events.HoverEvent
 import de.bixilon.minosoft.gui.eros.dialog.ErosErrorReport.Companion.report
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.hyperlink
-import de.bixilon.minosoft.gui.rendering.RenderConstants
-import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.font.Font
-import de.bixilon.minosoft.gui.rendering.font.text.TextGetProperties
-import de.bixilon.minosoft.gui.rendering.font.text.TextSetProperties
-import de.bixilon.minosoft.gui.rendering.hud.nodes.primitive.ImageNode
-import de.bixilon.minosoft.gui.rendering.hud.nodes.primitive.LabelNode
-import de.bixilon.minosoft.gui.rendering.hud.nodes.properties.NodeSizing
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.util.KUtil.toSynchronizedSet
 import de.bixilon.minosoft.util.Util
-import glm_.vec2.Vec2i
 import javafx.animation.Animation
 import javafx.animation.KeyFrame
 import javafx.animation.Timeline
@@ -40,12 +32,12 @@ import javafx.util.Duration
 
 open class TextComponent(
     message: Any? = "",
-    var color: RGBColor? = null,
-    var formatting: MutableSet<ChatFormattingCode> = mutableSetOf(),
+    override var color: RGBColor? = null,
+    override val formatting: MutableSet<ChatFormattingCode> = DEFAULT_FORMATTING.toSynchronizedSet(),
     var clickEvent: ClickEvent? = null,
     var hoverEvent: HoverEvent? = null,
-) : ChatComponent {
-    override var message: String = message?.toString() ?: "null"
+) : ChatComponent, TextStyle {
+    override var message: String = message?.toString()?.replace(ProtocolDefinition.TEXT_COMPONENT_SPECIAL_PREFIX_CHAR, '&') ?: "null"
 
     fun obfuscate(): TextComponent {
         formatting.add(PreChatFormattingCodes.OBFUSCATED)
@@ -70,6 +62,19 @@ open class TextComponent(
     fun italic(): TextComponent {
         formatting.add(PreChatFormattingCodes.ITALIC)
         return this
+    }
+
+    fun shadow(): TextComponent {
+        formatting.add(PreChatFormattingCodes.SHADOWED)
+        return this
+    }
+
+    fun clickEvent(clickEvent: ClickEvent?) {
+        this.clickEvent = clickEvent
+    }
+
+    fun hoverEvent(hoverEvent: HoverEvent?) {
+        this.hoverEvent = hoverEvent
     }
 
     fun color(color: RGBColor): TextComponent {
@@ -112,11 +117,14 @@ open class TextComponent(
                 }
             }
             for (formattingCode in this.formatting) {
+                if (formattingCode == PreChatFormattingCodes.SHADOWED) {
+                    continue
+                }
                 stringBuilder.append(ProtocolDefinition.TEXT_COMPONENT_SPECIAL_PREFIX_CHAR)
                 stringBuilder.append(formattingCode.char)
             }
             stringBuilder.append(this.message)
-            stringBuilder.append(ProtocolDefinition.TEXT_COMPONENT_SPECIAL_PREFIX_CHAR).append(PostChatFormattingCodes.RESET.char)
+            stringBuilder.append(ProtocolDefinition.TEXT_COMPONENT_SPECIAL_PREFIX_CHAR).append(PostChatFormattingCodes.RESET.char) // ToDo: This should not always be appended
             return stringBuilder.toString()
         }
 
@@ -132,21 +140,26 @@ open class TextComponent(
         for (chatFormattingCode in formatting) {
             when (chatFormattingCode) {
                 PreChatFormattingCodes.OBFUSCATED -> {
-                    // ToDo: potential memory leak: Stop timeline, when TextComponent isn't shown anymore
+                    // ToDo: potential memory/performance leak: Stop timeline, when TextComponent isn't shown anymore
                     val obfuscatedTimeline = if (Minosoft.config.config.chat.obfuscated) {
-                        Timeline(KeyFrame(Duration.millis(50.0), {
-                            val chars = text.text.toCharArray()
-                            for (i in chars.indices) {
-                                chars[i] = Util.getRandomChar(ProtocolDefinition.OBFUSCATED_CHARS)
-                            }
-                            text.text = String(chars)
-                        }))
+                        Timeline(
+                            KeyFrame(Duration.millis(50.0), {
+                                val chars = text.text.toCharArray()
+                                for (i in chars.indices) {
+                                    chars[i] = Util.getRandomChar(ProtocolDefinition.OBFUSCATED_CHARS)
+                                }
+                                text.text = String(chars)
+                            }),
+                        )
                     } else {
-                        Timeline(KeyFrame(Duration.millis(500.0), {
-                            text.isVisible = false
-                        }), KeyFrame(Duration.millis(1000.0), {
-                            text.isVisible = true
-                        }))
+                        Timeline(
+                            KeyFrame(Duration.millis(500.0), {
+                                text.isVisible = false
+                            }),
+                            KeyFrame(Duration.millis(1000.0), {
+                                text.isVisible = true
+                            }),
+                        )
                     }
 
                     obfuscatedTimeline.cycleCount = Animation.INDEFINITE
@@ -154,16 +167,16 @@ open class TextComponent(
                     text.styleClass.add("obfuscated")
                 }
                 PreChatFormattingCodes.BOLD -> {
-                    text.style = "-fx-font-weight: bold;"
+                    text.style += "-fx-font-weight: bold;"
                 }
                 PreChatFormattingCodes.STRIKETHROUGH -> {
-                    text.style = "-fx-strikethrough: true;"
+                    text.style += "-fx-strikethrough: true;"
                 }
                 PreChatFormattingCodes.UNDERLINED -> {
-                    text.style = "-fx-underline: true;"
+                    text.style += "-fx-underline: true;"
                 }
                 PreChatFormattingCodes.ITALIC -> {
-                    text.style = "-fx-font-weight: italic;"
+                    text.style += "-fx-font-weight: italic;"
                 }
             }
         }
@@ -191,51 +204,33 @@ open class TextComponent(
         return nodes
     }
 
+    fun copy(message: Any? = this.message, color: RGBColor? = this.color, formatting: MutableSet<ChatFormattingCode> = this.formatting.toSynchronizedSet(), clickEvent: ClickEvent? = this.clickEvent, hoverEvent: HoverEvent? = this.hoverEvent): TextComponent {
+        return TextComponent(
+            message = message,
+            color = color,
+            formatting = formatting,
+            clickEvent = clickEvent,
+            hoverEvent = hoverEvent
+        )
+    }
 
-    override fun prepareRender(startPosition: Vec2i, offset: Vec2i, renderWindow: RenderWindow, textElement: LabelNode, z: Int, setProperties: TextSetProperties, getProperties: TextGetProperties) {
-        val color = this.color ?: ProtocolDefinition.DEFAULT_COLOR
+    override fun hashCode(): Int {
+        return message.hashCode()
+    }
 
 
-        // bring chars in right order and reverse them if right bound
-        val charArray = this.message.toCharArray().toList()
-
-        fun checkGetSize(charEnd: Vec2i) {
-            if (charEnd.x > getProperties.size.x) {
-                getProperties.size.x = charEnd.x
-            }
-            if (charEnd.y > getProperties.size.y) {
-                getProperties.size.y = charEnd.y
-            }
+    override fun equals(other: Any?): Boolean {
+        if (other === this) {
+            return true
         }
-
-        fun pushNewLine() {
-            offset.x = 0
-            offset.y += Font.CHAR_HEIGHT + RenderConstants.TEXT_LINE_PADDING
-
-            checkGetSize(Vec2i(0, 0))
+        if (other !is TextComponent) {
+            return false
         }
+        return message == other.message && color == other.color && formatting == other.formatting && clickEvent == other.clickEvent && hoverEvent == other.hoverEvent
+    }
 
-        // add all chars
-        for (char in charArray) {
-            if (ProtocolDefinition.LINE_BREAK_CHARS.contains(char)) {
-                pushNewLine()
-                continue
-            }
-            val fontChar = renderWindow.font.getChar(char)
-            val charSize = fontChar.size
 
-            var charStart = Vec2i(offset)
-            var charEnd = charStart + charSize
-
-            if (charEnd.x >= setProperties.hardWrap) {
-                pushNewLine()
-                charStart = Vec2i(offset)
-                charEnd = charStart + charSize
-            }
-            textElement.addChild(charStart + startPosition, ImageNode(renderWindow, NodeSizing(minSize = charSize), fontChar, 1, color))
-            offset.x += charSize.x + Font.SPACE_BETWEEN_CHARS
-
-            checkGetSize(charEnd)
-        }
+    companion object {
+        val DEFAULT_FORMATTING: Set<ChatFormattingCode> = setOf(PreChatFormattingCodes.SHADOWED)
     }
 }

@@ -45,14 +45,25 @@ public class CommandArgumentNode extends CommandLiteralNode {
         }
         if (BitByte.isBitMask(flags, 0x10)) {
             String resourceLocation = buffer.readResourceLocation().getFull();
-            this.suggestionType = switch (resourceLocation) {
-                case "minecraft:ask_server" -> CommandArgumentNode.SuggestionTypes.ASK_SERVER;
-                case "minecraft:all_recipes" -> CommandArgumentNode.SuggestionTypes.ALL_RECIPES;
-                case "minecraft:available_sounds" -> CommandArgumentNode.SuggestionTypes.AVAILABLE_SOUNDS;
-                case "minecraft:summonable_entities" -> CommandArgumentNode.SuggestionTypes.SUMMONABLE_ENTITIES;
-                case "minecraft:available_biomes" -> CommandArgumentNode.SuggestionTypes.AVAILABLE_BIOMES;
-                default -> throw new IllegalArgumentException("Unexpected value: " + resourceLocation);
-            };
+            switch (resourceLocation) {
+                case "minecraft:ask_server":
+                    this.suggestionType = CommandArgumentNode.SuggestionTypes.ASK_SERVER;
+                    break;
+                case "minecraft:all_recipes":
+                    this.suggestionType = CommandArgumentNode.SuggestionTypes.ALL_RECIPES;
+                    break;
+                case "minecraft:available_sounds":
+                    this.suggestionType = CommandArgumentNode.SuggestionTypes.AVAILABLE_SOUNDS;
+                    break;
+                case "minecraft:summonable_entities":
+                    this.suggestionType = CommandArgumentNode.SuggestionTypes.SUMMONABLE_ENTITIES;
+                    break;
+                case "minecraft:available_biomes":
+                    this.suggestionType = CommandArgumentNode.SuggestionTypes.AVAILABLE_BIOMES;
+                    break;
+                default:
+                    throw new IllegalArgumentException("Unexpected value: " + resourceLocation);
+            }
         }
     }
 

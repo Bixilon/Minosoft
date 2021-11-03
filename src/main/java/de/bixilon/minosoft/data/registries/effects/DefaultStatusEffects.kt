@@ -13,16 +13,19 @@
 
 package de.bixilon.minosoft.data.registries.effects
 
-import de.bixilon.minosoft.util.KUtil.asResourceLocation
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 object DefaultStatusEffects {
-    val BLINDNESS = "minecraft:blindness".asResourceLocation()
-    val SLOW_FALLING = "minecraft:slow_falling".asResourceLocation()
-    val LEVITATION = "minecraft:levitation".asResourceLocation()
-    val JUMP_BOOST = "minecraft:jump_boost".asResourceLocation()
-    val HASTE = "minecraft:haste".asResourceLocation()
-    val MINING_FATIGUE = "minecraft:mining_fatigue".asResourceLocation()
-    val DOLPHINS_GRACE = "minecraft:dolphins_grace".asResourceLocation()
-    val NIGHT_VISION = "minecraft:night_vision".asResourceLocation()
-    val CONDUIT_POWER = "minecraft:conduit_power".asResourceLocation()
+    val BLINDNESS = "minecraft:blindness".toResourceLocation()
+    val SLOW_FALLING = "minecraft:slow_falling".toResourceLocation()
+    val LEVITATION = "minecraft:levitation".toResourceLocation()
+    val JUMP_BOOST = "minecraft:jump_boost".toResourceLocation()
+    val HASTE = "minecraft:haste".toResourceLocation()
+    val MINING_FATIGUE = "minecraft:mining_fatigue".toResourceLocation()
+    val DOLPHINS_GRACE = "minecraft:dolphins_grace".toResourceLocation()
+    val NIGHT_VISION = "minecraft:night_vision".toResourceLocation()
+    val CONDUIT_POWER = "minecraft:conduit_power".toResourceLocation()
+    val WITHER = "minecraft:wither".toResourceLocation()
+    val POISON = "minecraft:poison".toResourceLocation()
+    val HUNGER = "minecraft:hunger".toResourceLocation()
 }

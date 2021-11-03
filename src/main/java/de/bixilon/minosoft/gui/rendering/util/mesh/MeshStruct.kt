@@ -25,7 +25,7 @@ import kotlin.reflect.KClass
 import kotlin.reflect.KParameter
 import kotlin.reflect.full.primaryConstructor
 
-abstract class MeshStruct(val struct: KClass<*>) {
+abstract class MeshStruct(struct: KClass<*>) {
     val BYTES_PER_VERTEX: Int = calculateBytesPerVertex(struct)
     val FLOATS_PER_VERTEX: Int = BYTES_PER_VERTEX / Float.SIZE_BYTES
     val attributes: List<MeshAttribute>

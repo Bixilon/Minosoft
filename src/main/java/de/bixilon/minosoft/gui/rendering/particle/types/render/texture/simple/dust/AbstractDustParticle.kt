@@ -30,7 +30,7 @@ abstract class AbstractDustParticle(connection: PlayConnection, position: Vec3d,
 
     init {
         this.friction = 0.96f
-        this.velocity *= 0.10000000149011612f
+        this.velocity *= 0.1f
 
         val brightness = random.nextFloat() * 0.4f + 0.6f
         this.color = RGBColor(

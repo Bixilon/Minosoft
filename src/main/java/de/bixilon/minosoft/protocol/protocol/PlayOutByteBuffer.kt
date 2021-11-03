@@ -69,4 +69,8 @@ class PlayOutByteBuffer(override val connection: PlayConnection) : OutByteBuffer
             writeVarInt(entityId)
         }
     }
+
+    fun writeNBT(nbt: Any?) {
+        return writeNBT(nbt, versionId < ProtocolVersions.V_14W28B)
+    }
 }

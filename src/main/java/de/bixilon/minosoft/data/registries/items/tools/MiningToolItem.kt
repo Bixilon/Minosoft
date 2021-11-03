@@ -16,13 +16,13 @@ package de.bixilon.minosoft.data.registries.items.tools
 import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
-import de.bixilon.minosoft.data.registries.blocks.BlockUsages
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.registries.Registries
+import de.bixilon.minosoft.gui.rendering.input.interaction.InteractionResults
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.play.TagsS2CP
-import de.bixilon.minosoft.util.KUtil.asResourceLocation
 import de.bixilon.minosoft.util.KUtil.listCast
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.KUtil.unsafeCast
 import glm_.vec3.Vec3i
 
@@ -53,16 +53,16 @@ abstract class MiningToolItem(
         }
     }
 
-    protected fun interactWithTool(connection: PlayConnection, blockPosition: Vec3i, replace: BlockState?): BlockUsages {
+    protected fun interactWithTool(connection: PlayConnection, blockPosition: Vec3i, replace: BlockState?): InteractionResults {
         if (!connection.player.gamemode.useTools) {
-            return BlockUsages.PASS
+            return InteractionResults.PASS
         }
 
-        replace ?: return BlockUsages.PASS
+        replace ?: return InteractionResults.PASS
 
 
         connection.world[blockPosition] = replace
-        return BlockUsages.SUCCESS
+        return InteractionResults.SUCCESS
     }
 
 
@@ -78,9 +78,9 @@ abstract class MiningToolItem(
         const val IRON_MINING_LEVEL = 2
         const val STONE_MINING_LEVEL = 1
 
-        val NEED_DIAMOND_TOOL_TAG = "minecraft:needs_diamond_tool".asResourceLocation()
-        val NEED_IRON_TOOL_TAG = "minecraft:needs_iron_tool".asResourceLocation()
-        val NEED_STONE_TOOL_TAG = "minecraft:needs_stone_tool".asResourceLocation()
+        val NEED_DIAMOND_TOOL_TAG = "minecraft:needs_diamond_tool".toResourceLocation()
+        val NEED_IRON_TOOL_TAG = "minecraft:needs_iron_tool".toResourceLocation()
+        val NEED_STONE_TOOL_TAG = "minecraft:needs_stone_tool".toResourceLocation()
     }
 
 }

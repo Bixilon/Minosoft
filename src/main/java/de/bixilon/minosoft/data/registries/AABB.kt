@@ -29,12 +29,9 @@ import glm_.vec3.Vec3i
 import glm_.vec3.Vec3t
 
 
-class AABB(
-    min: Vec3d,
-    max: Vec3d,
-) {
-    val min = Vec3d(glm.min(min.x, max.x), glm.min(min.y, max.y), glm.min(min.z, max.z))
-    val max = Vec3d(glm.max(min.x, max.x), glm.max(min.y, max.y), glm.max(min.z, max.z))
+class AABB {
+    val min: Vec3d
+    val max: Vec3d
 
     constructor(jsonData: JsonObject) : this(jsonData["from"].toVec3(Vec3.EMPTY), jsonData["to"].toVec3(Vec3.ONE))
 
@@ -44,19 +41,30 @@ class AABB(
 
     constructor(min: Vec3, max: Vec3) : this(Vec3d(min), Vec3d(max))
 
+    constructor(min: Vec3d, max: Vec3d) {
+        this.min = Vec3d(glm.min(min.x, max.x), glm.min(min.y, max.y), glm.min(min.z, max.z))
+        this.max = Vec3d(glm.max(min.x, max.x), glm.max(min.y, max.y), glm.max(min.z, max.z))
+    }
+
+    private constructor(unsafe: Boolean, min: Vec3d, max: Vec3d) {
+        this.min = min
+        this.max = max
+    }
 
     fun intersect(other: AABB): Boolean {
         return (min.x < other.max.x && max.x > other.min.x) && (min.y < other.max.y && max.y > other.min.y) && (min.z < other.max.z && max.z > other.min.z)
     }
 
-    operator fun plus(other: Vec3t<out Number>): AABB {
-        return AABB(min + other, max + other)
+    operator fun plus(other: Vec3t<out Number>): AABB = offset(other)
+
+    fun offset(other: Vec3t<out Number>): AABB {
+        return AABB(true, min + other, max + other)
     }
 
     operator fun plus(other: AABB): AABB {
-        val newMin = Vec3(glm.min(min.x, other.min.x), glm.min(min.y, other.min.y), glm.min(min.z, other.min.z))
-        val newMax = Vec3(glm.max(max.x, other.max.x), glm.max(max.y, other.max.y), glm.max(max.z, other.max.z))
-        return AABB(newMin, newMax)
+        val newMin = Vec3d(glm.min(min.x, other.min.x), glm.min(min.y, other.min.y), glm.min(min.z, other.min.z))
+        val newMax = Vec3d(glm.max(max.x, other.max.x), glm.max(max.y, other.max.y), glm.max(max.z, other.max.z))
+        return AABB(true, newMin, newMax)
     }
 
     val blockPositions: List<Vec3i>
@@ -84,7 +92,8 @@ class AABB(
         return axis.choose(max)
     }
 
-    infix fun extend(vec3: Vec3d): AABB {
+
+    fun extend(vec3: Vec3d): AABB {
         val newMin = Vec3d(min)
         val newMax = Vec3d(max)
 
@@ -106,22 +115,22 @@ class AABB(
             newMax.z += vec3.z
         }
 
-        return AABB(newMin, newMax)
+        return AABB(true, newMin, newMax)
     }
 
-    infix fun extend(vec3i: Vec3i): AABB {
-        return this extend Vec3d(vec3i)
+    fun extend(vec3i: Vec3i): AABB {
+        return this.extend(Vec3d(vec3i))
     }
 
-    infix fun extend(direction: Directions): AABB {
-        return this extend direction.vector
+    fun extend(direction: Directions): AABB {
+        return this.extend(direction.vectord)
     }
 
     fun grow(size: Double = 1.0E-7): AABB {
         return AABB(min - size, max + size)
     }
 
-    infix fun grow(size: Float): AABB {
+    fun grow(size: Float): AABB {
         return AABB(min - size, max + size)
     }
 
@@ -230,8 +239,8 @@ class AABB(
     }
 
     companion object {
-        val EMPTY: AABB
-            get() = AABB(Vec3.EMPTY, Vec3.EMPTY)
+        val BLOCK: AABB = AABB(Vec3.EMPTY, Vec3.ONE)
+        val EMPTY: AABB = AABB(Vec3.EMPTY, Vec3.EMPTY)
 
         private fun getRange(min: Double, max: Double): IntRange {
             return IntRange(min.floor, max.ceil - 1)

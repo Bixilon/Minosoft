@@ -20,6 +20,7 @@ import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties;
 import de.bixilon.minosoft.data.commands.parser.properties.StringParserProperties;
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import org.apache.commons.lang3.StringUtils;
 
 public class StringParser extends CommandParser {
     public static final StringParser STRING_PARSER = new StringParser();
@@ -32,13 +33,22 @@ public class StringParser extends CommandParser {
     @Override
     public Object parse(PlayConnection connection, ParserProperties properties, CommandStringReader stringReader) throws CommandParseException {
         StringParserProperties stringParserProperties = ((StringParserProperties) properties);
-        String string = switch (stringParserProperties.getSetting()) {
-            case SINGLE_WORD -> stringReader.readUnquotedString();
-            case QUOTABLE_PHRASE -> stringReader.readString();
-            case GREEDY_PHRASE -> stringReader.readRemaining();
-        };
+        String string;
+        switch (stringParserProperties.getSetting()) {
+            case SINGLE_WORD:
+                string = stringReader.readUnquotedString();
+                break;
+            case QUOTABLE_PHRASE:
+                string = stringReader.readString();
+                break;
+            case GREEDY_PHRASE:
+                string = stringReader.readRemaining();
+                break;
+            default:
+                throw new IllegalStateException();
+        }
 
-        if (!stringParserProperties.isAllowEmptyString() && string.isBlank()) {
+        if (!stringParserProperties.isAllowEmptyString() && StringUtils.isBlank(string)) {
             throw new BlankStringCommandParseException(stringReader, string);
         }
         return string;

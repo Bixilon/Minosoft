@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.protocol.packets.s2c.play.title
 
+import de.bixilon.minosoft.modding.event.events.title.TitleTimesSetEvent
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.util.logging.Log
@@ -23,6 +25,10 @@ class TitleTimesSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     val fadeInTime = buffer.readInt()
     val stayTime = buffer.readInt()
     val fadeOutTime = buffer.readInt()
+
+    override fun handle(connection: PlayConnection) {
+        connection.fireEvent(TitleTimesSetEvent(connection, this))
+    }
 
     override fun log() {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Title times set (fadeInTime=$fadeInTime, stayTime=$stayTime, fadeOutTime=$fadeOutTime)" }

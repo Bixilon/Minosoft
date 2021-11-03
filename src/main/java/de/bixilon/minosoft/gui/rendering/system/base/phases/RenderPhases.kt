@@ -19,9 +19,14 @@ import kotlin.reflect.KClass
 
 class RenderPhases<T : Renderer>(
     val type: KClass<T>,
+    val skip: (T) -> Boolean,
     val setup: (T) -> Unit,
     val draw: (T) -> Unit,
 ) {
+
+    fun invokeSkip(renderer: Renderer): Boolean {
+        return skip.invoke(renderer.unsafeCast())
+    }
 
     fun invokeSetup(renderer: Renderer) {
         setup.invoke(renderer.unsafeCast())
@@ -32,11 +37,11 @@ class RenderPhases<T : Renderer>(
     }
 
     companion object {
-        val OTHER = RenderPhases(OtherDrawable::class, { it.setupOther() }, { it.drawOther() })
-        val CUSTOM = RenderPhases(CustomDrawable::class, { }, { it.drawCustom() })
-        val OPAQUE = RenderPhases(OpaqueDrawable::class, { it.setupOpaque() }, { it.drawOpaque() })
-        val TRANSPARENT = RenderPhases(TransparentDrawable::class, { it.setupTransparent() }, { it.drawTransparent() })
-        val TRANSLUCENT = RenderPhases(TranslucentDrawable::class, { it.setupTranslucent() }, { it.drawTranslucent() })
+        val OTHER = RenderPhases(OtherDrawable::class, { it.skipOther }, { it.setupOther() }, { it.drawOther() })
+        val CUSTOM = RenderPhases(CustomDrawable::class, { it.skipCustom }, { }, { it.drawCustom() })
+        val OPAQUE = RenderPhases(OpaqueDrawable::class, { it.skipOpaque }, { it.setupOpaque() }, { it.drawOpaque() })
+        val TRANSPARENT = RenderPhases(TransparentDrawable::class, { it.skipTransparent }, { it.setupTransparent() }, { it.drawTransparent() })
+        val TRANSLUCENT = RenderPhases(TranslucentDrawable::class, { it.skipTranslucent }, { it.setupTranslucent() }, { it.drawTranslucent() })
 
 
         val VALUES = arrayOf(OTHER, CUSTOM, OPAQUE, TRANSPARENT, TRANSLUCENT)

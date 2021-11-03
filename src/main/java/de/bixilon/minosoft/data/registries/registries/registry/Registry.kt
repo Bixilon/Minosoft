@@ -19,9 +19,9 @@ import de.bixilon.minosoft.data.registries.MultiResourceLocationAble
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.ResourceLocationAble
 import de.bixilon.minosoft.data.registries.registries.Registries
-import de.bixilon.minosoft.util.KUtil.asResourceLocation
 import de.bixilon.minosoft.util.KUtil.nullCast
 import de.bixilon.minosoft.util.KUtil.toInt
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.json.ResourceLocationJsonMap.toResourceLocationMap
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.asCompound
 
@@ -47,7 +47,7 @@ open class Registry<T : RegistryItem>(
             null -> return null
             is JsonPrimitive -> {
                 when {
-                    json.isString -> get(json.asString.asResourceLocation())!!
+                    json.isString -> get(json.asString.toResourceLocation())!!
                     json.isNumber -> get(json.asInt)
                     else -> TODO()
                 }

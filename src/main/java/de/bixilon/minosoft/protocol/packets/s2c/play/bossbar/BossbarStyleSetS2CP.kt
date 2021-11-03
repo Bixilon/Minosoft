@@ -13,6 +13,11 @@
 
 package de.bixilon.minosoft.protocol.packets.s2c.play.bossbar
 
+import de.bixilon.minosoft.data.bossbar.BossbarColors
+import de.bixilon.minosoft.data.bossbar.BossbarNotches
+import de.bixilon.minosoft.modding.event.EventInitiators
+import de.bixilon.minosoft.modding.event.events.bossbar.BossbarStyleSetEvent
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer
 import de.bixilon.minosoft.util.logging.Log
@@ -26,6 +31,26 @@ class BossbarStyleSetS2CP(
 ) : PlayS2CPacket() {
     val color = BossbarColors[buffer.readVarInt()]
     val notches = BossbarNotches[buffer.readVarInt()]
+
+    override fun handle(connection: PlayConnection) {
+        val bossbar = connection.bossbarManager.bossbars[uuid] ?: return
+
+        var changes = 0
+
+        if (bossbar.color != color) {
+            bossbar.color = color
+            changes++
+        }
+        if (bossbar.notches != notches) {
+            bossbar.notches = notches
+            changes++
+        }
+        if (changes == 0) {
+            return
+        }
+
+        connection.fireEvent(BossbarStyleSetEvent(connection, EventInitiators.SERVER, uuid, bossbar))
+    }
 
     override fun log() {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.VERBOSE) { "Bossbar style set (uuid=$uuid, color=$color, notches=$notches)" }

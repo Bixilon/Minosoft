@@ -13,19 +13,9 @@
 
 package de.bixilon.minosoft.config.config.game.controls
 
-import de.bixilon.minosoft.config.config.game.controls.KeyBindingsNames.DEFAULT_KEY_BINDINGS
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.data.registries.ResourceLocation
 
 data class KeyBindingsGameConfig(
     val entries: MutableMap<ResourceLocation, KeyBinding> = mutableMapOf(),
-) {
-    init {
-        for ((resourceLocation, keyBinding) in DEFAULT_KEY_BINDINGS) {
-            if (!entries.containsKey(resourceLocation)) {
-                // add key binding
-                entries[resourceLocation] = KeyBinding(keyBinding)
-            }
-        }
-    }
-}
+)

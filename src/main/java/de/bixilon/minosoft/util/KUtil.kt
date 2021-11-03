@@ -16,6 +16,7 @@ package de.bixilon.minosoft.util
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.JsonWriter
 import de.bixilon.minosoft.data.entities.entities.Entity
+import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.ResourceLocationAble
 import de.bixilon.minosoft.data.text.ChatColors
@@ -29,6 +30,7 @@ import de.bixilon.minosoft.util.enum.AliasableEnum
 import de.bixilon.minosoft.util.json.JSONSerializer
 import glm_.vec2.Vec2t
 import glm_.vec3.Vec3t
+import glm_.vec4.Vec4t
 import okio.Buffer
 import sun.misc.Unsafe
 import java.io.PrintWriter
@@ -73,11 +75,11 @@ object KUtil {
         return null
     }
 
-    fun Any.asResourceLocation(): ResourceLocation {
+    fun Any?.toResourceLocation(): ResourceLocation {
         return when (this) {
             is String -> ResourceLocation(this)
             is ResourceLocation -> this
-            else -> TODO()
+            else -> TODO("Don't know how to turn $this into a resource location!")
         }
     }
 
@@ -93,16 +95,21 @@ object KUtil {
         return Collections.synchronizedList(mutableListOf(*values))
     }
 
-    private fun <K> Any.synchronizedCopy(copier: () -> K): K {
+    private fun <K> Any.synchronizedCopy(lock: Object? = null, copier: () -> K): K {
         val ret: K
-        synchronized(this) {
+        synchronized(lock ?: this) {
             ret = copier()
         }
         return ret
     }
 
     fun <K, V> Map<K, V>.toSynchronizedMap(): SynchronizedMap<K, V> {
-        return synchronizedCopy { SynchronizedMap(this.toMutableMap()) }
+        val lock = if (this is SynchronizedMap<*, *>) {
+            this.lock
+        } else {
+            null
+        }
+        return synchronizedCopy(lock) { SynchronizedMap(this.toMutableMap()) }
     }
 
     fun <V> Collection<V>.toSynchronizedList(): MutableList<V> {
@@ -113,11 +120,49 @@ object KUtil {
         return synchronizedCopy { Collections.synchronizedSet(this.toMutableSet()) }
     }
 
+    fun <T> T.synchronizedDeepCopy(): T? {
+        return when (this) {
+            is Map<*, *> -> {
+                val map: MutableMap<Any?, Any?> = synchronizedMapOf()
+
+                for ((key, value) in this) {
+                    map[key.synchronizedDeepCopy()] = value.synchronizedDeepCopy()
+                }
+                map.unsafeCast()
+            }
+            is List<*> -> {
+                val list: MutableList<Any?> = synchronizedListOf()
+
+                for (key in this) {
+                    list += key.synchronizedDeepCopy()
+                }
+
+                list.unsafeCast()
+            }
+            is Set<*> -> {
+                val set: MutableSet<Any?> = synchronizedSetOf()
+
+                for (key in this) {
+                    set += key.synchronizedDeepCopy()
+                }
+
+                set.unsafeCast()
+            }
+            is ItemStack -> this.copy().unsafeCast()
+            is ChatComponent -> this
+            is String -> this
+            is Number -> this
+            is Boolean -> this
+            null -> null
+            else -> TODO("Don't know how to copy ${(this as T)!!::class.java.name}")
+        }
+    }
+
     fun Set<String>.toResourceLocationList(): Set<ResourceLocation> {
         val ret: MutableSet<ResourceLocation> = mutableSetOf()
 
         for (resourceLocation in this) {
-            ret += resourceLocation.asResourceLocation()
+            ret += resourceLocation.toResourceLocation()
         }
 
         return ret.toSet()
@@ -241,6 +286,7 @@ object KUtil {
 
     fun Any?.format(): ChatComponent {
         return ChatComponent.of(when (this) {
+            is ChatComponent -> return this
             null -> TextComponent("null").color(ChatColors.DARK_RED)
             is TextFormattable -> this.toText()
             is Boolean -> TextComponent(this.toString()).color(this.decide(ChatColors.GREEN, ChatColors.RED))
@@ -255,6 +301,9 @@ object KUtil {
             is Float -> "§d%.3f".format(this)
             is Double -> "§d%.4f".format(this)
             is Number -> TextComponent(this).color(ChatColors.LIGHT_PURPLE)
+            is ResourceLocation -> TextComponent(this.toString()).color(ChatColors.GOLD)
+            is ResourceLocationAble -> resourceLocation.format()
+            is Vec4t<*> -> "(${this.x.format()} ${this.y.format()} ${this.z.format()} ${this.w.format()})"
             is Vec3t<*> -> "(${this.x.format()} ${this.y.format()} ${this.z.format()})"
             is Vec2t<*> -> "(${this.x.format()} ${this.y.format()})"
             else -> this.toString()
@@ -384,7 +433,6 @@ object KUtil {
         return this.toString().replace("-", "")
     }
 
-
     fun <T : ResourceLocationAble> List<T>.asResourceLocationMap(): Map<ResourceLocation, T> {
         val ret: MutableMap<ResourceLocation, T> = mutableMapOf()
 
@@ -393,5 +441,28 @@ object KUtil {
         }
 
         return ret.toMap()
+    }
+
+    fun <T> T?.check(message: (() -> Any)? = null): T {
+        if (this == null) {
+            throw NullPointerException(message?.invoke()?.toString() ?: "Null check failed")
+        }
+        return this
+    }
+
+    fun ByteArray.toBase64(): String {
+        return Base64.getEncoder().encodeToString(this)
+    }
+
+    fun String?.nullCompare(other: String?): Int? {
+        if (this == null || other == null) {
+            return null
+        }
+        this.compareTo(other).let {
+            if (it != 0) {
+                return it
+            }
+        }
+        return null
     }
 }

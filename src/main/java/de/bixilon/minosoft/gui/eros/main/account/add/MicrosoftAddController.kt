@@ -19,11 +19,10 @@ import de.bixilon.minosoft.gui.eros.dialog.ErosErrorReport.Companion.report
 import de.bixilon.minosoft.gui.eros.main.account.AccountController
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import de.bixilon.minosoft.util.KUtil.asResourceLocation
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.Util
 import de.bixilon.minosoft.util.account.microsoft.MicrosoftOAuthUtils
 import de.bixilon.minosoft.util.task.pool.DefaultThreadPool
-import javafx.application.Platform
 import javafx.concurrent.Worker
 import javafx.fxml.FXML
 import javafx.scene.web.WebView
@@ -38,7 +37,7 @@ class MicrosoftAddController(
 
 
     fun show() {
-        Platform.runLater {
+        JavaFXUtil.runLater {
             JavaFXUtil.openModal(TITLE, LAYOUT, this, modality = Modality.APPLICATION_MODAL)
             stage.show()
         }
@@ -65,13 +64,13 @@ class MicrosoftAddController(
                         val account = MicrosoftOAuthUtils.loginToMicrosoftAccount(Util.urlQueryToMap(URL(location).query)["code"]!!)
                         Minosoft.config.config.account.entries[account.id] = account
                         Minosoft.config.saveToFile()
-                        Platform.runLater { accountController.refreshList() }
+                        JavaFXUtil.runLater { accountController.refreshList() }
                     } catch (exception: Exception) {
                         exception.printStackTrace()
                         exception.report()
                     }
 
-                    Platform.runLater { stage.scene.window.hide() }
+                    JavaFXUtil.runLater { stage.scene.window.hide() }
                 }
             }
         }
@@ -83,8 +82,8 @@ class MicrosoftAddController(
     }
 
     companion object {
-        private val LAYOUT = "minosoft:eros/main/account/add/microsoft.fxml".asResourceLocation()
+        private val LAYOUT = "minosoft:eros/main/account/add/microsoft.fxml".toResourceLocation()
 
-        private val TITLE = "minosoft:main.account.add.microsoft.title".asResourceLocation()
+        private val TITLE = "minosoft:main.account.add.microsoft.title".toResourceLocation()
     }
 }

@@ -110,7 +110,7 @@ class ChunkDataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
                 for (i in 0 until blockEntitiesCount) {
                     val nbt = buffer.readNBT().asCompound()
                     val position = Vec3i(nbt["x"]!!.toInt(), nbt["y"]!!.toInt(), nbt["z"]!!.toInt())
-                    val resourceLocation = ResourceLocation(nbt["id"].unsafeCast<String>()).fix()
+                    val resourceLocation = ResourceLocation(nbt["id"].unsafeCast()).fix()
                     val type = buffer.connection.registries.blockEntityTypeRegistry[resourceLocation] ?: let {
                         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.WARN) { "Unknown block entity: $resourceLocation" }
                         null

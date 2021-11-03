@@ -24,7 +24,7 @@ import glm_.vec2.Vec2
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3d
 
-class ParticleMesh(renderWindow: RenderWindow) : Mesh(renderWindow, ParticleMeshStruct, PrimitiveTypes.POINT) {
+class ParticleMesh(renderWindow: RenderWindow, initialCacheSize: Int) : Mesh(renderWindow, ParticleMeshStruct, PrimitiveTypes.POINT, initialCacheSize) {
 
     fun addVertex(position: Vec3d, scale: Float, texture: AbstractTexture, tintColor: RGBColor, uvMin: Vec2 = Vec2(0.0f, 0.0f), uvMax: Vec2 = Vec2(1.0f, 1.0f)) {
         val textureLayer = if (RenderConstants.FORCE_DEBUG_TEXTURE) {

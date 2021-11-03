@@ -21,7 +21,7 @@ import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.fi
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.sqr
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil.asResourceLocation
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import glm_.vec3.Vec3d
 
 class LavaParticle(connection: PlayConnection, position: Vec3d, data: ParticleData? = null) : SimpleTextureParticle(connection, position, Vec3d.EMPTY, data) {
@@ -35,9 +35,9 @@ class LavaParticle(connection: PlayConnection, position: Vec3d, data: ParticleDa
     init {
         gravityStrength = 0.75f
         friction = 0.999f
-        velocity.x *= 0.800000011920929
+        velocity.x *= 0.8
         velocity.y = random.nextDouble() * 0.4f + 0.05f
-        velocity.z *= 0.800000011920929
+        velocity.z *= 0.8
         scale *= random.nextFloat() * 2.0f + 0.2f
         maxAge = (16.0f / (random.nextFloat() * 0.8f + 0.2f)).toInt()
     }
@@ -51,7 +51,7 @@ class LavaParticle(connection: PlayConnection, position: Vec3d, data: ParticleDa
     }
 
     companion object : ParticleFactory<LavaParticle> {
-        override val RESOURCE_LOCATION: ResourceLocation = "minecraft:lava".asResourceLocation()
+        override val RESOURCE_LOCATION: ResourceLocation = "minecraft:lava".toResourceLocation()
 
         override fun build(connection: PlayConnection, position: Vec3d, velocity: Vec3d, data: ParticleData): LavaParticle {
             return LavaParticle(connection, position, data)

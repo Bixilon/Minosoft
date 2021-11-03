@@ -39,9 +39,9 @@ class GlobalEntitySpawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     }
 
     override fun handle(connection: PlayConnection) {
-        connection.fireEvent(EntitySpawnEvent(connection, this))
-
         connection.world.entities.add(entityId, null, entity)
+
+        connection.fireEvent(EntitySpawnEvent(connection, this))
     }
 
     override fun log() {

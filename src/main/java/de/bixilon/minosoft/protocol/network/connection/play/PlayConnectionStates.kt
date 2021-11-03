@@ -15,7 +15,7 @@ package de.bixilon.minosoft.protocol.network.connection.play
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.registry.Translatable
-import de.bixilon.minosoft.util.KUtil.asResourceLocation
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 enum class PlayConnectionStates : Translatable {
     WAITING,
@@ -38,5 +38,12 @@ enum class PlayConnectionStates : Translatable {
     ERROR,
     ;
 
-    override val translationKey: ResourceLocation = "minosoft:connection.play.state.${name.lowercase()}".asResourceLocation()
+    override val translationKey: ResourceLocation = "minosoft:connection.play.state.${name.lowercase()}".toResourceLocation()
+
+
+    companion object {
+
+        val PlayConnectionStates.disconnected
+            get() = this == PlayConnectionStates.DISCONNECTED || this == PlayConnectionStates.KICKED || this == PlayConnectionStates.ERROR
+    }
 }

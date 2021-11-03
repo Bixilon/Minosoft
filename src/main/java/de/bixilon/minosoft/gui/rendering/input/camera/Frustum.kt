@@ -120,14 +120,14 @@ class Frustum(private val camera: Camera) {
 
         for (i in 0 until Planes.VALUES.size) {
             if (
-                (planes[i] dot Vec4d(min.x, min.y, min.z, 1.0f)) < 0.0f &&
-                (planes[i] dot Vec4d(max.x, min.y, min.z, 1.0f)) < 0.0f &&
-                (planes[i] dot Vec4d(min.x, max.y, min.z, 1.0f)) < 0.0f &&
-                (planes[i] dot Vec4d(max.x, max.y, min.z, 1.0f)) < 0.0f &&
-                (planes[i] dot Vec4d(min.x, min.y, max.z, 1.0f)) < 0.0f &&
-                (planes[i] dot Vec4d(max.x, min.y, max.z, 1.0f)) < 0.0f &&
-                (planes[i] dot Vec4d(min.x, max.y, max.z, 1.0f)) < 0.0f &&
-                (planes[i] dot Vec4d(max.x, max.y, max.z, 1.0f)) < 0.0f
+                (planes[i] dot Vec4d(min.x, min.y, min.z, 1.0f)) < 0.0f
+                && (planes[i] dot Vec4d(max.x, min.y, min.z, 1.0f)) < 0.0f
+                && (planes[i] dot Vec4d(min.x, max.y, min.z, 1.0f)) < 0.0f
+                && (planes[i] dot Vec4d(max.x, max.y, min.z, 1.0f)) < 0.0f
+                && (planes[i] dot Vec4d(min.x, min.y, max.z, 1.0f)) < 0.0f
+                && (planes[i] dot Vec4d(max.x, min.y, max.z, 1.0f)) < 0.0f
+                && (planes[i] dot Vec4d(min.x, max.y, max.z, 1.0f)) < 0.0f
+                && (planes[i] dot Vec4d(max.x, max.y, max.z, 1.0f)) < 0.0f
             ) {
                 return false
             }

@@ -37,9 +37,7 @@ class EntityInteractAtC2SP(
 
         if (buffer.versionId >= ProtocolVersions.V_14W32A) {
             // position
-            buffer.writeFloat(this.position.x)
-            buffer.writeFloat(this.position.y)
-            buffer.writeFloat(this.position.z)
+            buffer.writeVec3f(position)
 
             if (buffer.versionId >= ProtocolVersions.V_15W31A) {
                 buffer.writeVarInt(hand.ordinal)

@@ -20,7 +20,9 @@ enum class PreChatFormattingCodes(
     BOLD('l', "\u001b[1m"),
     STRIKETHROUGH('m', "\u001b[9m"),
     UNDERLINED('n', "\u001b[4m"),
-    ITALIC('o', "\u001b[3m")
+    ITALIC('o', "\u001b[3m"),
+
+    SHADOWED('s', ""),
     ;
 
     override fun toString(): String {

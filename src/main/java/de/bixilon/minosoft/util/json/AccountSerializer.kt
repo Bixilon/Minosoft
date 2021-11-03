@@ -17,12 +17,12 @@ import com.squareup.moshi.FromJson
 import com.squareup.moshi.ToJson
 import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.data.accounts.AccountTypes
-import de.bixilon.minosoft.util.KUtil.asResourceLocation
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 object AccountSerializer {
     @FromJson
     fun fromJson(json: Map<String, Any>): Account {
-        return AccountTypes.ACCOUNT_TYPES[json["type"]!!.asResourceLocation()]!!.TYPE.fromJsonValue(json)!!
+        return AccountTypes.ACCOUNT_TYPES[json["type"]!!.toResourceLocation()]!!.TYPE.fromJsonValue(json)!!
     }
 
     @ToJson

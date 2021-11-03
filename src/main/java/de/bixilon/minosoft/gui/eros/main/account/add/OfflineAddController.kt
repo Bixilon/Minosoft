@@ -22,8 +22,7 @@ import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.ctext
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.placeholder
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.text
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import de.bixilon.minosoft.util.KUtil.asResourceLocation
-import javafx.application.Platform
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import javafx.fxml.FXML
 import javafx.scene.control.Button
 import javafx.scene.control.TextField
@@ -46,7 +45,7 @@ class OfflineAddController(
 
 
     fun show() {
-        Platform.runLater {
+        JavaFXUtil.runLater {
             JavaFXUtil.openModal(TITLE, LAYOUT, this, modality = Modality.APPLICATION_MODAL)
             stage.show()
         }
@@ -97,14 +96,14 @@ class OfflineAddController(
     }
 
     companion object {
-        private val LAYOUT = "minosoft:eros/main/account/add/offline.fxml".asResourceLocation()
+        private val LAYOUT = "minosoft:eros/main/account/add/offline.fxml".toResourceLocation()
 
-        private val TITLE = "minosoft:main.account.add.offline.title".asResourceLocation()
-        private val HEADER = "minosoft:main.account.add.offline.header".asResourceLocation()
-        private val DESCRIPTION = "minosoft:main.account.add.offline.description".asResourceLocation()
-        private val USERNAME_LABEL = "minosoft:main.account.add.offline.username.label".asResourceLocation()
-        private val USERNAME_PLACEHOLDER = "minosoft:main.account.add.offline.username.placeholder".asResourceLocation()
-        private val ADD_BUTTON = "minosoft:main.account.add.offline.add_button".asResourceLocation()
-        private val CANCEL_BUTTON = "minosoft:main.account.add.offline.cancel_button".asResourceLocation()
+        private val TITLE = "minosoft:main.account.add.offline.title".toResourceLocation()
+        private val HEADER = "minosoft:main.account.add.offline.header".toResourceLocation()
+        private val DESCRIPTION = "minosoft:main.account.add.offline.description".toResourceLocation()
+        private val USERNAME_LABEL = "minosoft:main.account.add.offline.username.label".toResourceLocation()
+        private val USERNAME_PLACEHOLDER = "minosoft:main.account.add.offline.username.placeholder".toResourceLocation()
+        private val ADD_BUTTON = "minosoft:main.account.add.offline.add_button".toResourceLocation()
+        private val CANCEL_BUTTON = "minosoft:main.account.add.offline.cancel_button".toResourceLocation()
     }
 }

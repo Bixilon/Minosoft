@@ -29,7 +29,7 @@ interface AbstractEventMaster : Iterable<EventInvoker> {
         }
     }
 
-    fun unregisterEvent(invoker: EventInvoker?) {}
+    fun unregisterEvent(invoker: EventInvoker?) = Unit
 
     fun unregisterEvents(vararg invokers: EventInvoker?) {
         for (invoker in invokers) {

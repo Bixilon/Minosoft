@@ -31,8 +31,8 @@ import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.wa
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3d
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil.asResourceLocation
 import de.bixilon.minosoft.util.KUtil.decide
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import glm_.vec3.Vec3d
 import glm_.vec3.Vec3i
 import kotlin.math.min
@@ -45,8 +45,8 @@ class WaterFluid(
 ) : FlowableFluid(resourceLocation, registries, data) {
     private val depthStriderEnchantment: Enchantment? = null
     private val dolphinsGraceStatusEffect: StatusEffect? = null
-    override val stillTexture: ResourceLocation = "minecraft:block/water_still".asResourceLocation()
-    override val flowingTexture: ResourceLocation = "minecraft:block/water_flow".asResourceLocation()
+    override val stillTexture: ResourceLocation = "minecraft:block/water_still".toResourceLocation()
+    override val flowingTexture: ResourceLocation = "minecraft:block/water_flow".toResourceLocation()
 
 
     init {
@@ -103,7 +103,7 @@ class WaterFluid(
         if (entity.horizontalCollision && entity.isClimbing) {
             velocity.y = 0.2
         }
-        entity.velocity = velocity * Vec3d(speedMultiplier, 0.800000011920929, speedMultiplier)
+        entity.velocity = velocity * Vec3d(speedMultiplier, 0.8, speedMultiplier)
 
         entity.velocity = updateMovement(entity, gravity, falling, entity.velocity)
 

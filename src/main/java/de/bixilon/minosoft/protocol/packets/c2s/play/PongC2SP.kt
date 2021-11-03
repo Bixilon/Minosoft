@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.protocol.packets.c2s.play
 
+import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.protocol.packets.c2s.PlayC2SPacket
 import de.bixilon.minosoft.protocol.protocol.PlayOutByteBuffer
 import de.bixilon.minosoft.util.logging.Log
@@ -26,6 +27,9 @@ class PongC2SP(val id: Int) : PlayC2SPacket {
     }
 
     override fun log() {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.VERBOSE) { "Pong (id=$id)" }
+        if (Minosoft.config.config.general.reduceProtocolLog) {
+            return
+        }
+        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Pong (id=$id)" }
     }
 }

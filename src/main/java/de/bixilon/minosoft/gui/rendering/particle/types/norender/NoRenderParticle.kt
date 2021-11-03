@@ -21,5 +21,5 @@ import glm_.vec3.Vec3d
 
 abstract class NoRenderParticle(connection: PlayConnection, position: Vec3d, velocity: Vec3d, data: ParticleData?) : Particle(connection, position, velocity, data) {
 
-    override fun addVertex(transparentMesh: ParticleMesh, translucentMesh: ParticleMesh) {}
+    override fun addVertex(transparentMesh: ParticleMesh, particleMesh: ParticleMesh, time: Long) = Unit
 }

@@ -23,6 +23,7 @@ import de.bixilon.minosoft.data.registries.biomes.BiomePrecipitation
 import de.bixilon.minosoft.data.registries.blocks.entites.BlockEntityType
 import de.bixilon.minosoft.data.registries.blocks.entites.BlockEntityTypeRegistry
 import de.bixilon.minosoft.data.registries.blocks.types.Block
+import de.bixilon.minosoft.data.registries.dimension.Dimension
 import de.bixilon.minosoft.data.registries.effects.StatusEffect
 import de.bixilon.minosoft.data.registries.enchantment.Enchantment
 import de.bixilon.minosoft.data.registries.entities.EntityType

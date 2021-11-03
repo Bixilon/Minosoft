@@ -18,12 +18,13 @@ import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.data.player.PlayerProperty
 import de.bixilon.minosoft.data.player.tab.TabListItem
 import de.bixilon.minosoft.data.player.tab.TabListItemData
-import de.bixilon.minosoft.modding.event.events.PlayerListItemChangeEvent
+import de.bixilon.minosoft.modding.event.events.TabListEntryChangeEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.util.KUtil
+import de.bixilon.minosoft.util.KUtil.toSynchronizedMap
 import de.bixilon.minosoft.util.enum.ValuesEnum
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -44,21 +45,21 @@ class TabListDataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
                 buffer.readVarInt()
             }
             val action = if (buffer.readBoolean()) {
-                PlayerListItemActions.UPDATE_LATENCY
+                TabListItemActions.UPDATE_LATENCY
             } else {
-                PlayerListItemActions.REMOVE_PLAYER
+                TabListItemActions.REMOVE_PLAYER
             }
             val uuid: UUID = UUID.nameUUIDFromBytes(name.toByteArray(StandardCharsets.UTF_8))
-            val item = TabListItemData(name = name, ping = ping, remove = action == PlayerListItemActions.REMOVE_PLAYER)
+            val item = TabListItemData(name = name, ping = ping, remove = action == TabListItemActions.REMOVE_PLAYER)
             items[uuid] = item
         } else {
-            val action = PlayerListItemActions[buffer.readVarInt()]
+            val action = TabListItemActions[buffer.readVarInt()]
             val count: Int = buffer.readVarInt()
             for (i in 0 until count) {
                 val uuid: UUID = buffer.readUUID()
                 val data: TabListItemData
                 when (action) {
-                    PlayerListItemActions.ADD -> {
+                    TabListItemActions.ADD -> {
                         val name = buffer.readString()
                         val playerProperties: MutableMap<String, PlayerProperty> = mutableMapOf()
                         for (index in 0 until buffer.readVarInt()) {
@@ -86,13 +87,13 @@ class TabListDataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
                             displayName = displayName,
                         )
                     }
-                    PlayerListItemActions.UPDATE_GAMEMODE -> {
+                    TabListItemActions.UPDATE_GAMEMODE -> {
                         data = TabListItemData(gamemode = Gamemodes[buffer.readVarInt()])
                     }
-                    PlayerListItemActions.UPDATE_LATENCY -> {
+                    TabListItemActions.UPDATE_LATENCY -> {
                         data = TabListItemData(ping = buffer.readVarInt())
                     }
-                    PlayerListItemActions.UPDATE_DISPLAY_NAME -> {
+                    TabListItemActions.UPDATE_DISPLAY_NAME -> {
                         val hasDisplayName = buffer.readBoolean()
                         val displayName = if (hasDisplayName) {
                             buffer.readChatComponent()
@@ -104,7 +105,7 @@ class TabListDataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
                             displayName = displayName,
                         )
                     }
-                    PlayerListItemActions.REMOVE_PLAYER -> {
+                    TabListItemActions.REMOVE_PLAYER -> {
                         data = TabListItemData(remove = true)
                     }
                 }
@@ -114,61 +115,70 @@ class TabListDataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     }
 
     override fun handle(connection: PlayConnection) {
-        if (connection.fireEvent(PlayerListItemChangeEvent(connection, this))) {
-            return
-        }
         for ((uuid, data) in items) {
             // legacy
 
             if (connection.version.versionId < ProtocolVersions.V_14W19A) { // ToDo: 19?
                 val item: TabListItem = if (data.remove) {
                     // add or remove
-                    connection.tabList.tabListItems[uuid]?.apply {
-                        connection.tabList.tabListItems.remove(uuid)
-                    } ?: let {
+                    connection.tabList.tabListItemsByUUID[uuid]?.apply {
+                        connection.tabList.tabListItemsByUUID.remove(uuid)
+                        connection.tabList.tabListItemsByName.remove(data.name)
+                    } ?: TabListItem(name = data.name!!).apply {
                         // add
-                        val itemToAdd = TabListItem(name = data.name!!)
-                        connection.tabList.tabListItems[uuid] = itemToAdd
-                        itemToAdd
+                        connection.tabList.tabListItemsByUUID[uuid] = this
+                        connection.tabList.tabListItemsByName[data.name] = this
                     }
                 } else {
-                    connection.tabList.tabListItems[uuid]!!
+                    connection.tabList.tabListItemsByUUID[uuid]!!
                 }
 
                 item.merge(data)
                 continue
             }
             if (data.remove) {
-                connection.tabList.tabListItems.remove(uuid)
+                val item = connection.tabList.tabListItemsByUUID.remove(uuid) ?: continue
+                connection.tabList.tabListItemsByName.remove(item.name)
                 continue
             }
 
             val entity = connection.world.entities[uuid]
 
 
-            val tabListItem = connection.tabList.tabListItems[uuid] ?: run {
+            val tabListItem = connection.tabList.tabListItemsByUUID[uuid] ?: run {
                 if (data.name == null) {
                     // item not yet created
                     return@run null
                 }
                 val item = TabListItem(name = data.name)
-                connection.tabList.tabListItems[uuid] = item
+                connection.tabList.tabListItemsByUUID[uuid] = item
+                connection.tabList.tabListItemsByName[data.name] = item
+
+                // set team
+
+                for (team in connection.scoreboardManager.teams.toSynchronizedMap().values) {
+                    if (team.members.contains(data.name)) {
+                        item.team = team
+                        break
+                    }
+                }
                 item
             } ?: continue
 
-
-            if (entity === connection.player) {
-                entity.tabListItem.specialMerge(data)
-                continue
-            }
-
-            tabListItem.merge(data)
             if (entity == null || entity !is PlayerEntity) {
                 continue
             }
 
+            if (entity === connection.player) {
+                entity.tabListItem.specialMerge(data)
+            } else {
+                tabListItem.merge(data)
+            }
+
+
             entity.tabListItem = tabListItem
         }
+        connection.fireEvent(TabListEntryChangeEvent(connection, this))
     }
 
     override fun log() {
@@ -179,7 +189,7 @@ class TabListDataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     }
 
 
-    enum class PlayerListItemActions {
+    enum class TabListItemActions {
         ADD,
         UPDATE_GAMEMODE,
         UPDATE_LATENCY,
@@ -187,9 +197,9 @@ class TabListDataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         REMOVE_PLAYER,
         ;
 
-        companion object : ValuesEnum<PlayerListItemActions> {
+        companion object : ValuesEnum<TabListItemActions> {
             override val VALUES = values()
-            override val NAME_MAP: Map<String, PlayerListItemActions> = KUtil.getEnumValues(VALUES)
+            override val NAME_MAP: Map<String, TabListItemActions> = KUtil.getEnumValues(VALUES)
         }
     }
 }

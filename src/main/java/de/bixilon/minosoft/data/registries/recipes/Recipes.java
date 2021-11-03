@@ -20,6 +20,7 @@ import de.bixilon.minosoft.data.registries.ResourceLocation;
 import java.util.Arrays;
 import java.util.HashSet;
 
+@Deprecated
 public class Recipes {
     private final HashSet<Recipe> recipeList = new HashSet<>();
     private final HashBiMap<Integer, Recipe> recipeIdMap = HashBiMap.create(); // ids for version <= VERSION_1_12_2

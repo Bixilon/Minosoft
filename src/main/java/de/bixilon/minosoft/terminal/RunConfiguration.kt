@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.terminal
 
 import com.google.common.base.StandardSystemProperty
+import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.util.OSUtil
 import java.io.File
 
@@ -49,5 +50,8 @@ object RunConfiguration {
         }
         folder.absolutePath + "/"
     }
+
     val TEMPORARY_FOLDER = System.getProperty("java.io.tmpdir", "$HOME_DIRECTORY/tmp/") + "/"
+
+    var VERSION_STRING = "Minosoft ${StaticConfiguration.VERSION}"
 }

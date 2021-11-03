@@ -19,11 +19,13 @@ import de.bixilon.minosoft.data.scoreboard.Team
 import de.bixilon.minosoft.data.scoreboard.TeamCollisionRules
 import de.bixilon.minosoft.data.text.ChatCode
 import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.modding.event.events.scoreboard.team.TeamCreateEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.util.BitByte.isBitMask
+import de.bixilon.minosoft.util.KUtil.toSynchronizedSet
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -101,7 +103,7 @@ class TeamCreateS2CP(val name: String, buffer: PlayInByteBuffer) : PlayS2CPacket
 
 
     override fun handle(connection: PlayConnection) {
-        connection.scoreboardManager.teams[name] = Team(
+        val team = Team(
             name = name,
             displayName = displayName,
             prefix = prefix,
@@ -111,8 +113,17 @@ class TeamCreateS2CP(val name: String, buffer: PlayInByteBuffer) : PlayS2CPacket
             collisionRule = collisionRule,
             nameTagVisibility = nameTagVisibility,
             formattingCode = formattingCode,
-            members = members.toMutableSet(),
+            members = members.toSynchronizedSet(),
         )
+        connection.scoreboardManager.teams[name] = team
+
+        for (member in members) {
+            connection.tabList.tabListItemsByName[member]?.team = team
+        }
+
+        connection.scoreboardManager.updateScoreTeams(team, members)
+
+        connection.fireEvent(TeamCreateEvent(connection, team))
     }
 
     override fun log() {

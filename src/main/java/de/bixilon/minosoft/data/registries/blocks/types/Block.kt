@@ -18,7 +18,10 @@ import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.player.Hands
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.VoxelShape
-import de.bixilon.minosoft.data.registries.blocks.*
+import de.bixilon.minosoft.data.registries.blocks.BlockFactory
+import de.bixilon.minosoft.data.registries.blocks.BlockState
+import de.bixilon.minosoft.data.registries.blocks.DefaultBlockFactories
+import de.bixilon.minosoft.data.registries.blocks.RandomOffsetTypes
 import de.bixilon.minosoft.data.registries.blocks.entites.BlockEntityType
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.items.Item
@@ -29,6 +32,7 @@ import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.TintColorCalculator
 import de.bixilon.minosoft.gui.rendering.block.renderable.WorldEntryRenderer
 import de.bixilon.minosoft.gui.rendering.input.camera.hit.RaycastHit
+import de.bixilon.minosoft.gui.rendering.input.interaction.InteractionResults
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.mapCast
 import de.bixilon.minosoft.util.KUtil.nullCast
@@ -90,11 +94,11 @@ open class Block(
         return true
     }
 
-    open fun onUse(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, raycastHit: RaycastHit, hands: Hands, itemStack: ItemStack?): BlockUsages {
+    open fun onUse(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, raycastHit: RaycastHit, hand: Hands, itemStack: ItemStack?): InteractionResults {
         if (blockEntityType == null) {
-            return BlockUsages.PASS
+            return InteractionResults.PASS
         }
-        return BlockUsages.SUCCESS
+        return InteractionResults.SUCCESS
     }
 
     fun withProperties(vararg properties: Pair<BlockProperties, Any>): BlockState {
@@ -105,11 +109,11 @@ open class Block(
         return this.defaultState.withProperties(properties)
     }
 
-    open fun randomTick(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, random: Random) {}
+    open fun randomTick(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, random: Random) = Unit
 
-    open fun onEntityLand(connection: PlayConnection, entity: Entity, blockPosition: Vec3i, blockState: BlockState) {}
+    open fun onEntityLand(connection: PlayConnection, entity: Entity, blockPosition: Vec3i, blockState: BlockState) = Unit
 
-    open fun onEntityCollision(connection: PlayConnection, entity: Entity, blockState: BlockState, blockPosition: Vec3i) {}
+    open fun onEntityCollision(connection: PlayConnection, entity: Entity, blockState: BlockState, blockPosition: Vec3i) = Unit
 
     open fun getOutlineShape(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i): VoxelShape {
         return blockState.outlineShape

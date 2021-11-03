@@ -19,7 +19,7 @@ import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil.asResourceLocation
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import glm_.glm
 import glm_.vec3.Vec3d
 import kotlin.math.max
@@ -49,7 +49,7 @@ class NoteParticle(connection: PlayConnection, position: Vec3d, colorModifier: F
 
 
     companion object : ParticleFactory<NoteParticle> {
-        override val RESOURCE_LOCATION: ResourceLocation = "minecraft:note".asResourceLocation()
+        override val RESOURCE_LOCATION: ResourceLocation = "minecraft:note".toResourceLocation()
         private const val ONE_THIRD = 1.0f / 3
         private const val TWO_THIRD = ONE_THIRD * 2
 

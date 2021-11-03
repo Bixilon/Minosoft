@@ -13,12 +13,18 @@
 
 package de.bixilon.minosoft.protocol.packets.s2c.play.title
 
+import de.bixilon.minosoft.modding.event.events.title.TitleResetEvent
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
 class TitleResetS2CP : PlayS2CPacket() {
+
+    override fun handle(connection: PlayConnection) {
+        connection.fireEvent(TitleResetEvent(connection, this))
+    }
 
     override fun log() {
         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Title reset" }

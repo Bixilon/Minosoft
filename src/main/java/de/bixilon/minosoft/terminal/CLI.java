@@ -28,6 +28,7 @@ import de.bixilon.minosoft.util.ShutdownManager;
 import de.bixilon.minosoft.util.logging.Log;
 import de.bixilon.minosoft.util.logging.LogLevels;
 import de.bixilon.minosoft.util.logging.LogMessageType;
+import org.apache.commons.lang3.StringUtils;
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
 import org.jline.reader.UserInterruptException;
@@ -49,7 +50,7 @@ public class CLI {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         try {
             for (ClassPath.ClassInfo info : ClassPath.from(classLoader).getTopLevelClasses()) {
-                if (!info.getName().startsWith(Command.class.getPackageName())) {
+                if (!info.getName().startsWith(Command.class.getPackage().getName())) {
                     continue;
                 }
                 Class<?> clazz = info.load();
@@ -102,7 +103,7 @@ public class CLI {
                             return;
                         }
                         terminal.flush();
-                        if (line.isBlank()) {
+                        if (StringUtils.isBlank(line)) {
                             continue;
                         }
                         ROOT_NODE.execute(currentConnection, new CommandStringReader(line), new CommandStack());

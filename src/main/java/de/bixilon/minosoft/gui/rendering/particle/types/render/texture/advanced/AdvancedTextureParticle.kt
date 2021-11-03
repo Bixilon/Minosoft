@@ -25,11 +25,11 @@ abstract class AdvancedTextureParticle(connection: PlayConnection, position: Vec
     var minUV: Vec2 = Vec2(0.0f, 0.0f)
     var maxUV: Vec2 = Vec2(1.0f, 1.0f)
 
-    override fun addVertex(transparentMesh: ParticleMesh, translucentMesh: ParticleMesh) {
+    override fun addVertex(transparentMesh: ParticleMesh, translucentMesh: ParticleMesh, time:Long) {
         val texture = texture ?: return
         when {
             texture.transparency == TextureTransparencies.TRANSLUCENT || color.alpha != 255 -> translucentMesh
             else -> transparentMesh
-        }.addVertex(cameraPosition, scale, texture, color, minUV, maxUV)
+        }.addVertex(getCameraPosition(time), scale, texture, color, minUV, maxUV)
     }
 }

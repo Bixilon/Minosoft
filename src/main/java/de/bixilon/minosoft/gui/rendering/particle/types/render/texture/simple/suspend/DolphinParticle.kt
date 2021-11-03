@@ -18,7 +18,7 @@ import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil.asResourceLocation
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import glm_.vec3.Vec3d
 
 class DolphinParticle(connection: PlayConnection, position: Vec3d, velocity: Vec3d, data: ParticleData? = null) : SuspendParticle(connection, position, velocity, data) {
@@ -29,7 +29,7 @@ class DolphinParticle(connection: PlayConnection, position: Vec3d, velocity: Vec
     }
 
     companion object : ParticleFactory<DolphinParticle> {
-        override val RESOURCE_LOCATION: ResourceLocation = "minecraft:dolphin".asResourceLocation()
+        override val RESOURCE_LOCATION: ResourceLocation = "minecraft:dolphin".toResourceLocation()
 
         override fun build(connection: PlayConnection, position: Vec3d, velocity: Vec3d, data: ParticleData): DolphinParticle {
             return DolphinParticle(connection, position, velocity, data)

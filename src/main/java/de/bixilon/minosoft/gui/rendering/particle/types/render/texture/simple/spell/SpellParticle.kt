@@ -26,10 +26,10 @@ abstract class SpellParticle(connection: PlayConnection, position: Vec3d, veloci
         friction = 0.96f
         gravityStrength = -0.1f
         accelerateIfYBlocked = true
-        this.velocity.y *= 0.20000000298023224
+        this.velocity.y *= 0.2
         if (velocity.x == 0.0 && velocity.z == 0.0) {
-            this.velocity.x *= 0.10000000149011612
-            this.velocity.z *= 0.10000000149011612
+            this.velocity.x *= 0.1
+            this.velocity.z *= 0.1
         }
         super.scale *= 0.75f
         maxAge = (8.0f / (random.nextFloat() * 0.8f + 0.2f)).toInt()

@@ -13,14 +13,14 @@
 
 package de.bixilon.minosoft.data.registries.effects.attributes
 
-import de.bixilon.minosoft.util.KUtil.asResourceLocation
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 object DefaultStatusEffectAttributeNames {
-    val GENERIC_MAX_HEALTH = "minecraft:generic.max_health".asResourceLocation()
-    val GENERIC_FOLLOW_RANGE = "minecraft:generic.follow_range".asResourceLocation()
-    val GENERIC_KNOCKBACK_RESISTANCE = "minecraft:generic.knockback_resistance".asResourceLocation()
-    val GENERIC_MOVEMENT_SPEED = "minecraft:generic.movement_speed".asResourceLocation()
-    val GENERIC_ATTACK_KNOCKBACK = "minecraft:generic.attack_knockback".asResourceLocation()
-    val GENERIC_ARMOR = "minecraft:generic.armor".asResourceLocation()
-    val GENERIC_ARMOR_TOUGHNESS = "minecraft:generic.armor_toughness".asResourceLocation()
+    val GENERIC_MAX_HEALTH = "minecraft:generic.max_health".toResourceLocation()
+    val GENERIC_FOLLOW_RANGE = "minecraft:generic.follow_range".toResourceLocation()
+    val GENERIC_KNOCKBACK_RESISTANCE = "minecraft:generic.knockback_resistance".toResourceLocation()
+    val GENERIC_MOVEMENT_SPEED = "minecraft:generic.movement_speed".toResourceLocation()
+    val GENERIC_ATTACK_KNOCKBACK = "minecraft:generic.attack_knockback".toResourceLocation()
+    val GENERIC_ARMOR = "minecraft:generic.armor".toResourceLocation()
+    val GENERIC_ARMOR_TOUGHNESS = "minecraft:generic.armor_toughness".toResourceLocation()
 }

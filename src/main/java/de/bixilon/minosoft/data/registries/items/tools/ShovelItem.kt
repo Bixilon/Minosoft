@@ -19,16 +19,15 @@ import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.player.Hands
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
-import de.bixilon.minosoft.data.registries.blocks.BlockUsages
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.gui.rendering.input.camera.hit.BlockRaycastHit
-import de.bixilon.minosoft.gui.rendering.input.camera.hit.RaycastHit
+import de.bixilon.minosoft.gui.rendering.input.interaction.InteractionResults
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil.asResourceLocation
 import de.bixilon.minosoft.util.KUtil.mapCast
 import de.bixilon.minosoft.util.KUtil.toInt
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 open class ShovelItem(
     resourceLocation: ResourceLocation,
@@ -45,16 +44,13 @@ open class ShovelItem(
     }
 
 
-    override fun use(connection: PlayConnection, raycastHit: RaycastHit, hands: Hands, itemStack: ItemStack): BlockUsages {
+    override fun interactBlock(connection: PlayConnection, raycastHit: BlockRaycastHit, hand: Hands, itemStack: ItemStack): InteractionResults {
         if (!Minosoft.config.config.game.controls.enableFlattening) {
-            return BlockUsages.CONSUME
-        }
-        if (raycastHit !is BlockRaycastHit) {
-            return super.use(connection, raycastHit, hands, itemStack)
+            return InteractionResults.CONSUME
         }
 
         if (connection.world[raycastHit.blockPosition + Directions.UP] != null) {
-            return BlockUsages.PASS
+            return InteractionResults.PASS
         }
 
         return super.interactWithTool(connection, raycastHit.blockPosition, flattenableBlockStates?.get(raycastHit.blockState.block))
@@ -62,6 +58,6 @@ open class ShovelItem(
 
 
     companion object {
-        val SHOVEL_MINEABLE_TAG = "minecraft:mineable/shovel".asResourceLocation()
+        val SHOVEL_MINEABLE_TAG = "minecraft:mineable/shovel".toResourceLocation()
     }
 }

@@ -22,28 +22,28 @@ object BossbarS2CPF {
 
     fun createPacket(buffer: PlayInByteBuffer): PlayS2CPacket {
         val uuid = buffer.readUUID()
-        return when (BossBarActions[buffer.readVarInt()]) {
-            BossBarActions.ADD -> BossbarAddS2CP(uuid, buffer)
-            BossBarActions.REMOVE -> BossbarRemoveS2CP(uuid)
-            BossBarActions.SET_HEALTH -> BossbarHealthSetS2CP(uuid, buffer)
-            BossBarActions.SET_NAME -> BossbarNameSetS2CP(uuid, buffer)
-            BossBarActions.SET_STYLE -> BossbarStyleSetS2CP(uuid, buffer)
-            BossBarActions.SET_FLAGS -> BossbarFlagSetS2CP(uuid, buffer)
+        return when (BossbarActions[buffer.readVarInt()]) {
+            BossbarActions.ADD -> BossbarAddS2CP(uuid, buffer)
+            BossbarActions.REMOVE -> BossbarRemoveS2CP(uuid)
+            BossbarActions.SET_VALUE -> BossbarValueSetS2CP(uuid, buffer)
+            BossbarActions.SET_TITLE -> BossbarTitleSetS2CP(uuid, buffer)
+            BossbarActions.SET_STYLE -> BossbarStyleSetS2CP(uuid, buffer)
+            BossbarActions.SET_FLAGS -> BossbarFlagSetS2CP(uuid, buffer)
         }
     }
 
-    enum class BossBarActions {
+    enum class BossbarActions {
         ADD,
         REMOVE,
-        SET_HEALTH,
-        SET_NAME,
+        SET_VALUE,
+        SET_TITLE,
         SET_STYLE,
         SET_FLAGS,
         ;
 
-        companion object : ValuesEnum<BossBarActions> {
+        companion object : ValuesEnum<BossbarActions> {
             override val VALUES = values()
-            override val NAME_MAP: Map<String, BossBarActions> = KUtil.getEnumValues(VALUES)
+            override val NAME_MAP: Map<String, BossbarActions> = KUtil.getEnumValues(VALUES)
         }
     }
 }

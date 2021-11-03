@@ -19,9 +19,12 @@ import de.bixilon.minosoft.protocol.network.Network;
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection;
 import de.bixilon.minosoft.protocol.packets.c2s.C2SPacket;
 import de.bixilon.minosoft.protocol.packets.c2s.login.EncryptionResponseC2SP;
+import de.bixilon.minosoft.protocol.packets.s2c.S2CPacket;
 import de.bixilon.minosoft.protocol.protocol.CryptManager;
+import de.bixilon.minosoft.protocol.protocol.PacketTypes;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import de.bixilon.minosoft.protocol.protocol.ProtocolStates;
+import de.bixilon.minosoft.util.Pair;
 import de.bixilon.minosoft.util.ServerAddress;
 import de.bixilon.minosoft.util.logging.Log;
 import de.bixilon.minosoft.util.logging.LogLevels;
@@ -138,7 +141,7 @@ public class NonBlockingSocketNetwork extends Network {
                         if (!currentPacketBuffer.hasRemaining()) {
                             currentPacketBuffer.flip();
                             try {
-                                var typeAndPacket = receiveS2CPacket(decryptData(currentPacketBuffer.array()));
+                                Pair<PacketTypes.S2C, S2CPacket> typeAndPacket = receiveS2CPacket(decryptData(currentPacketBuffer.array()));
                                 handlePacket(typeAndPacket.getKey(), typeAndPacket.getValue());
                             } catch (PacketParseException e) {
                                 Log.log(LogMessageType.NETWORK_PACKETS_IN, LogLevels.WARN, e);
@@ -220,6 +223,6 @@ public class NonBlockingSocketNetwork extends Network {
     protected void enableEncryption(SecretKey secretKey) {
         this.decryptCipher = CryptManager.createNetCipherInstance(Cipher.DECRYPT_MODE, secretKey);
         this.encryptCipher = CryptManager.createNetCipherInstance(Cipher.ENCRYPT_MODE, secretKey);
-        Log.debug("Encryption enabled!");
+        Log.log(LogMessageType.NETWORK_STATUS, LogLevels.VERBOSE, () -> "Enabled protocol encryption");
     }
 }

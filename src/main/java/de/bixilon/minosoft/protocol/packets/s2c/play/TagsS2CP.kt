@@ -19,7 +19,7 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
-import de.bixilon.minosoft.util.KUtil.asResourceLocation
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -67,10 +67,10 @@ class TagsS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     }
 
     companion object {
-        val BLOCK_TAG_RESOURCE_LOCATION = "minecraft:block".asResourceLocation()
-        val ITEM_TAG_RESOURCE_LOCATION = "minecraft:item".asResourceLocation()
-        val FLUID_TAG_RESOURCE_LOCATION = "minecraft:fluid".asResourceLocation()
-        val ENTITY_TYPE_TAG_RESOURCE_LOCATION = "minecraft:entity_type".asResourceLocation()
-        val GAME_EVENT_TAG_RESOURCE_LOCATION = "minecraft:game_event".asResourceLocation()
+        val BLOCK_TAG_RESOURCE_LOCATION = "minecraft:block".toResourceLocation()
+        val ITEM_TAG_RESOURCE_LOCATION = "minecraft:item".toResourceLocation()
+        val FLUID_TAG_RESOURCE_LOCATION = "minecraft:fluid".toResourceLocation()
+        val ENTITY_TYPE_TAG_RESOURCE_LOCATION = "minecraft:entity_type".toResourceLocation()
+        val GAME_EVENT_TAG_RESOURCE_LOCATION = "minecraft:game_event".toResourceLocation()
     }
 }

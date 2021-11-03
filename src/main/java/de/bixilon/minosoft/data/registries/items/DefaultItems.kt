@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.data.registries.items
 
-import de.bixilon.minosoft.util.KUtil.asResourceLocation
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 object DefaultItems {
-    val LEATHER_BOOTS = "minecraft:leather_boots".asResourceLocation()
+    val LEATHER_BOOTS = "minecraft:leather_boots".toResourceLocation()
 }

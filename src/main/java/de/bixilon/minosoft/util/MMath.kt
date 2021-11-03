@@ -19,13 +19,6 @@ import kotlin.math.floor
 
 object MMath {
 
-    fun minClamp(value: Int, min: Int): Int {
-        if (value < min) {
-            return min
-        }
-        return value
-    }
-
     fun clamp(value: Vec2i, min: Vec2i, max: Vec2i): Vec2i {
         value.x = clamp(value.x, min.x, max.x)
         value.y = clamp(value.y, min.y, max.y)
@@ -76,6 +69,8 @@ object MMath {
 
     val Float.round10: Float get() = (this * 10).toInt().toFloat() / 10f
 
+    val Double.round10: Double get() = (this * 10).toInt().toDouble() / 10.0
+
     fun round10Up(value: Float): Int {
         val intValue = value.toInt()
         val rest = value / intValue
@@ -106,7 +101,19 @@ object MMath {
             return (this < int).decide(int - 1, int)
         }
 
+    val Float.floor: Int
+        get() {
+            val int = this.toInt()
+            return (this < int).decide(int - 1, int)
+        }
+
     val Double.ceil: Int
+        get() {
+            val int = this.toInt()
+            return (this > int).decide(int + 1, int)
+        }
+
+    val Float.ceil: Int
         get() {
             val int = this.toInt()
             return (this > int).decide(int + 1, int)

@@ -36,6 +36,7 @@ data class BlockEntityType(
 
     companion object : ResourceLocationDeserializer<BlockEntityType> {
         override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): BlockEntityType? {
+            // ToDo: Fix resource location
             check(registries != null)
             val factory = DefaultBlockEntityMetaDataFactory[resourceLocation] ?: return null // ToDo
 

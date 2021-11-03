@@ -24,10 +24,12 @@ in vec4 finTintColor;
 void main() {
     vec4 texelColor = getTexture(finTextureIndex, finTextureCoordinates);
 
-    if (finTintColor.a == 1.0f && texelColor.a == 0) {
+    //texelColor = vec4(1.0f, 0.0f, 1.0f, 1.0f);
+
+    if (texelColor.a == 0.0f) {
         discard;
     }
-    if (finTintColor.a != 0.0f){
+    if (finTintColor.a != 0.0f) {
         texelColor *= finTintColor;
     }
 

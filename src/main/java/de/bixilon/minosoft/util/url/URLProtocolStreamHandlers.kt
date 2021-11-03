@@ -33,6 +33,6 @@ object URLProtocolStreamHandlers : URLStreamHandlerFactory {
 
 
     val NULL_URL_CONNECTION: URLConnection = object : URLConnection(null) {
-        override fun connect() {}
+        override fun connect() = Unit
     }
 }

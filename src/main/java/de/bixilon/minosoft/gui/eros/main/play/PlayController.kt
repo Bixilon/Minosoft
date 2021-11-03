@@ -27,7 +27,7 @@ import de.bixilon.minosoft.modding.event.events.LANServerDiscoverEvent
 import de.bixilon.minosoft.modding.event.invoker.EventInvoker
 import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
 import de.bixilon.minosoft.protocol.protocol.LANServerListener
-import de.bixilon.minosoft.util.KUtil.asResourceLocation
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import javafx.fxml.FXML
 import javafx.scene.control.ListView
 import javafx.scene.layout.GridPane
@@ -112,11 +112,11 @@ class PlayController : EmbeddedJavaFXController<Pane>() {
     }
 
     companion object {
-        val LAYOUT = "minosoft:eros/main/play/play.fxml".asResourceLocation()
-        private val CUSTOM_SERVER_TYPE = "minosoft:server_type.custom".asResourceLocation()
-        private val LAN_SERVER_TYPE = "minosoft:server_type.lan".asResourceLocation()
-        private val REFRESH_HEADER = "minosoft:server_list.refresh.header".asResourceLocation()
-        private val REFRESH_TEXT1 = "minosoft:server_list.refresh.text1".asResourceLocation()
-        private val REFRESH_TEXT2 = "minosoft:server_list.refresh.text2".asResourceLocation()
+        val LAYOUT = "minosoft:eros/main/play/play.fxml".toResourceLocation()
+        private val CUSTOM_SERVER_TYPE = "minosoft:server_type.custom".toResourceLocation()
+        private val LAN_SERVER_TYPE = "minosoft:server_type.lan".toResourceLocation()
+        private val REFRESH_HEADER = "minosoft:server_list.refresh.header".toResourceLocation()
+        private val REFRESH_TEXT1 = "minosoft:server_list.refresh.text1".toResourceLocation()
+        private val REFRESH_TEXT2 = "minosoft:server_list.refresh.text2".toResourceLocation()
     }
 }

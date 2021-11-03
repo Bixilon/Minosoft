@@ -1,12 +1,10 @@
 # Development
-Generally I'd say TBA, but some basic rules are here. Feel free to contact us first, before developing huge things. May be better.
+Generally I'd say TBA, but some basic rules are here. Feel free to contact me first, before developing huge things. May be better.
 
 ## Git Rules
-- Small Features in `development`.
 - `master` must always be stable and functional.
 - No force pushes (or modifying the git history) in protected branches (aka. `master`).
 - Bigger features on own branches. Merge only via Merge Request.
-- No commits directly in `master`
 
 ## Git access
 
@@ -29,24 +27,16 @@ Generally I'd say TBA, but some basic rules are here. Feel free to contact us fi
 
 - This is a non-profit project, so don't include anything that violates open source rules.
 - No connections to other servers than mojang or resources (aka this or another git repo).
-- No remote code execution or similar (You know what I mean).
+- No ads, no data collection, nothing in this direction.
 - No copyright protected content.
 - Server specific support (Consider writing a [mod](/doc/Modding.md)).
 
-## How to start (small features)
+## How to start
 
-1. Clone the repository
-2. Implement a feature (feel free to ask if you have questions)
-3. Test and check for impacts
-4. Submit **P**ull **R**equest (target branch should be `master`)
-5. Wait for merge
-
-## How to start (big features)
-
-1. Clone the repository
-2. Start implementing features
-3. Once you have something (minimal) to show, open a draft merge request (Start title with `WIP`) and write (short or long) what you have and want to implement (consider looking at other PRs)
-3. Test fix all bugs (or discuss them)
-4. Let other people test
-6. Mark PR as ready
+1. Fork the repository
+2. Clone your fork
+3. Create a branch and start developing there
+4. Implement a feature (feel free to ask if you have questions)
+5. Test and check for impacts
+6. Submit **P**ull **R**equest (target branch should be `master`)
 7. Wait for merge

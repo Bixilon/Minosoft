@@ -61,6 +61,6 @@ class ServerStatus(
     }
 
     override fun toString(): String {
-        return "ServerStatus{protocolId=$protocolId, usedSlots=$usedSlots, slots=$slots)"
+        return "ServerStatus(protocolId=$protocolId, usedSlots=$usedSlots, slots=$slots)"
     }
 }

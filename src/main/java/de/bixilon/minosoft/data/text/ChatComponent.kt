@@ -15,18 +15,16 @@ package de.bixilon.minosoft.data.text
 import com.squareup.moshi.JsonEncodingException
 import de.bixilon.minosoft.data.language.Translator
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.text
-import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.font.text.TextGetProperties
-import de.bixilon.minosoft.gui.rendering.font.text.TextSetProperties
-import de.bixilon.minosoft.gui.rendering.hud.nodes.primitive.LabelNode
 import de.bixilon.minosoft.util.KUtil.unsafeCast
 import de.bixilon.minosoft.util.json.JSONSerializer
-import glm_.vec2.Vec2i
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList
 import javafx.scene.Node
 import javafx.scene.text.TextFlow
 
+/**
+ * Chat components are generally mutable while creating. Once you use it somewhere it is considered as non-mutable.
+ */
 interface ChatComponent {
     /**
      * @return Returns the message formatted with ANSI Formatting codes
@@ -44,12 +42,12 @@ interface ChatComponent {
     val message: String
 
     /**
-     * @return Returns the a list of Nodes, drawable in JavaFX (TextFlow)
+     * @return Returns a list of Nodes, drawable in JavaFX (TextFlow)
      */
     fun getJavaFXText(nodes: ObservableList<Node>): ObservableList<Node>
 
     /**
-     * @return Returns the a list of Nodes, drawable in JavaFX (TextFlow)
+     * @return Returns a list of Nodes, drawable in JavaFX (TextFlow)
      */
     val javaFXText: ObservableList<Node>
         get() = getJavaFXText(FXCollections.observableArrayList())
@@ -66,11 +64,6 @@ interface ChatComponent {
      */
     fun applyDefaultColor(color: RGBColor)
 
-
-    /**
-     * Prepares the chat component for rendering (used in opengl)
-     */
-    fun prepareRender(startPosition: Vec2i, offset: Vec2i, renderWindow: RenderWindow, textElement: LabelNode, z: Int, setProperties: TextSetProperties, getProperties: TextGetProperties)
 
     companion object {
         val EMPTY = ChatComponent.of("")

@@ -27,6 +27,9 @@ class WorldEntities : Iterable<Entity> {
     private val entityUUIDMap: MutableMap<Entity, UUID> = synchronizedMapOf()
     private val uuidEntityMap: MutableMap<UUID, Entity> = synchronizedMapOf()
 
+    val size: Int
+        get() = idEntityMap.size
+
 
     fun add(entityId: Int?, entityUUID: UUID?, entity: Entity) {
         check(entityId != null || entityUUID != null) { "Entity id and UUID is null!" }

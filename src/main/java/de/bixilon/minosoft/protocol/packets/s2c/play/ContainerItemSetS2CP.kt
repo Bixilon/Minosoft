@@ -12,7 +12,7 @@
  */
 package de.bixilon.minosoft.protocol.packets.s2c.play
 
-import de.bixilon.minosoft.modding.event.events.ContainerSlotChangeEvent
+import de.bixilon.minosoft.modding.event.events.container.ContainerSlotChangeEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
@@ -32,18 +32,13 @@ class ContainerItemSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     val itemStack = buffer.readItemStack()
 
     override fun handle(connection: PlayConnection) {
-        connection.fireEvent(ContainerSlotChangeEvent(connection, this))
+        connection.player.containers[containerId]?.set(slot, itemStack)
 
-        connection.player.containers[containerId]?.slots?.let {
-            if (itemStack == null) {
-                it.remove(slot)
-            } else {
-                it[slot] = itemStack
-            }
-        }
+        // ToDo: Check for changes
+        connection.fireEvent(ContainerSlotChangeEvent(connection, this))
     }
 
     override fun log() {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Container item set (containerId=$containerId, slot=$slot, itemStack=$itemStack)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Container item set (containerId=$containerId, revision=$revision, slot=$slot, itemStack=$itemStack)" }
     }
 }

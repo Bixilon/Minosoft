@@ -17,7 +17,7 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil.asResourceLocation
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import glm_.vec3.Vec3d
 import kotlin.math.pow
 
@@ -34,7 +34,7 @@ open class FlameParticle(connection: PlayConnection, position: Vec3d, velocity: 
     }
 
     companion object : ParticleFactory<FlameParticle> {
-        override val RESOURCE_LOCATION: ResourceLocation = "minecraft:flame".asResourceLocation()
+        override val RESOURCE_LOCATION: ResourceLocation = "minecraft:flame".toResourceLocation()
 
         override fun build(connection: PlayConnection, position: Vec3d, velocity: Vec3d, data: ParticleData): FlameParticle {
             return FlameParticle(connection, position, velocity, data)

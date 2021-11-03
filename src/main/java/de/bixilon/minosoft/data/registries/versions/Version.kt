@@ -23,6 +23,7 @@ import de.bixilon.minosoft.protocol.protocol.PacketTypes.C2S
 import de.bixilon.minosoft.protocol.protocol.PacketTypes.S2C
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.protocol.protocol.ProtocolStates
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_15W31A
 import de.bixilon.minosoft.util.CountUpAndDownLatch
 import de.bixilon.minosoft.util.KUtil.decide
 import de.bixilon.minosoft.util.logging.Log
@@ -152,4 +153,6 @@ data class Version(
     override fun toString(): String {
         return name
     }
+
+    val hasOffhand = versionId >= V_15W31A
 }

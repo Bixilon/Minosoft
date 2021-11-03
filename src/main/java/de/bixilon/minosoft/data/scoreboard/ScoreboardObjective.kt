@@ -14,11 +14,17 @@ package de.bixilon.minosoft.data.scoreboard
 
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.packets.s2c.play.scoreboard.objective.CreateScoreboardObjectiveS2CP
+import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
 
 class ScoreboardObjective(
     val name: String,
     var displayName: ChatComponent,
     var unit: CreateScoreboardObjectiveS2CP.ObjectiveUnits,
 ) {
-    val scores: MutableMap<String, ScoreboardScore> = mutableMapOf()
+    val scores: MutableMap<String, ScoreboardScore> = synchronizedMapOf()
+
+
+    override fun toString(): String {
+        return name
+    }
 }

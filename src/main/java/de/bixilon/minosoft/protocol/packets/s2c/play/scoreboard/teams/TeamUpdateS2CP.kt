@@ -18,6 +18,7 @@ import de.bixilon.minosoft.data.scoreboard.NameTagVisibilities
 import de.bixilon.minosoft.data.scoreboard.TeamCollisionRules
 import de.bixilon.minosoft.data.text.ChatCode
 import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.modding.event.events.scoreboard.team.TeamUpdateEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
@@ -91,16 +92,18 @@ class TeamUpdateS2CP(val name: String, buffer: PlayInByteBuffer) : PlayS2CPacket
 
 
     override fun handle(connection: PlayConnection) {
-        connection.scoreboardManager.teams[name]?.let {
-            it.displayName = displayName
-            it.prefix = prefix
-            it.suffix = suffix
-            it.friendlyFire = friendlyFire
-            it.canSeeInvisibleTeam = canSeeInvisibleTeam
-            it.collisionRule = collisionRule
-            it.nameTagVisibility = nameTagVisibility
-            it.formattingCode = formattingCode
-        }
+        val team = connection.scoreboardManager.teams[name] ?: return
+
+        team.displayName = displayName
+        team.prefix = prefix
+        team.suffix = suffix
+        team.friendlyFire = friendlyFire
+        team.canSeeInvisibleTeam = canSeeInvisibleTeam
+        team.collisionRule = collisionRule
+        team.nameTagVisibility = nameTagVisibility
+        team.formattingCode = formattingCode
+
+        connection.fireEvent(TeamUpdateEvent(connection, team))
     }
 
     override fun log() {

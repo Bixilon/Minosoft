@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.protocol.network.connection
 
-import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.modding.event.events.Event
 import de.bixilon.minosoft.modding.event.events.PacketSendEvent
@@ -21,20 +20,26 @@ import de.bixilon.minosoft.modding.event.events.connection.ConnectionErrorEvent
 import de.bixilon.minosoft.modding.event.invoker.EventInvoker
 import de.bixilon.minosoft.modding.event.master.AbstractEventMaster
 import de.bixilon.minosoft.modding.event.master.EventMaster
+import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
 import de.bixilon.minosoft.protocol.network.Network
 import de.bixilon.minosoft.protocol.packets.c2s.C2SPacket
 import de.bixilon.minosoft.protocol.packets.s2c.S2CPacket
 import de.bixilon.minosoft.protocol.protocol.PacketTypes.C2S
 import de.bixilon.minosoft.protocol.protocol.PacketTypes.S2C
 import de.bixilon.minosoft.protocol.protocol.ProtocolStates
+import de.bixilon.minosoft.util.KUtil.synchronizedSetOf
 import de.bixilon.minosoft.util.task.pool.DefaultThreadPool
 
 abstract class Connection : AbstractEventMaster {
     val network = Network.getNetworkInstance(this)
-    private val eventMaster = EventMaster(Minosoft.GLOBAL_EVENT_MASTER)
+    private val eventMaster = EventMaster(GlobalEventMaster)
     val connectionId = lastConnectionId++
     var wasConnected = false
     abstract var protocolState: ProtocolStates
+
+    init {
+        CONNECTIONS += this
+    }
 
     open var error: Throwable? = null
         set(value) {
@@ -98,6 +103,7 @@ abstract class Connection : AbstractEventMaster {
 
     companion object {
         var lastConnectionId: Int = 0
-    }
 
+        val CONNECTIONS: MutableSet<Connection> = synchronizedSetOf() // ToDo: Only connected connections?
+    }
 }

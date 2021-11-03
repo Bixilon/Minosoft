@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.eros.util
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.gui.eros.crash.ErosCrashReport.Companion.crash
 import de.bixilon.minosoft.util.CountUpAndDownLatch
-import de.bixilon.minosoft.util.KUtil.asResourceLocation
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -30,8 +30,9 @@ class JavaFXInitializer internal constructor() : Application() {
     override fun start(stage: Stage) {
         Platform.setImplicitExit(false)
 
+        JavaFXUtil.JAVA_FX_THREAD = Thread.currentThread()
         JavaFXUtil.HOST_SERVICES = hostServices
-        JavaFXUtil.MINOSOFT_LOGO = Image(Minosoft.MINOSOFT_ASSETS_MANAGER.readAssetAsStream("minosoft:textures/icons/window_icon.png".asResourceLocation()))
+        JavaFXUtil.MINOSOFT_LOGO = Image(Minosoft.MINOSOFT_ASSETS_MANAGER.readAssetAsStream("minosoft:textures/icons/window_icon.png".toResourceLocation()))
 
         Log.log(LogMessageType.JAVAFX, LogLevels.VERBOSE) { "Initialized JavaFX Toolkit!" }
         LATCH.dec()

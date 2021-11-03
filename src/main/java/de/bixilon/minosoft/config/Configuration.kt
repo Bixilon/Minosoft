@@ -27,6 +27,7 @@ import java.io.FileWriter
 import java.io.IOException
 import java.nio.file.Files
 
+// ToDo: Periodically check if config was changed
 class Configuration(private val configName: String = RunConfiguration.CONFIG_FILENAME) {
     private val saveLock = Object()
     private val file = File(RunConfiguration.HOME_DIRECTORY + "config/minosoft/" + configName)
@@ -40,7 +41,7 @@ class Configuration(private val configName: String = RunConfiguration.CONFIG_FIL
             var wasMigrated = false
             let {
                 val configVersion = config["general"]?.compoundCast()?.get("version")?.toInt() ?: return@let
-                if (config["general"]?.compoundCast()?.get("version")?.toInt() ?: 0 > LATEST_CONFIG_VERSION) {
+                if ((config["general"]?.compoundCast()?.get("version")?.toInt() ?: 0) > LATEST_CONFIG_VERSION) {
                     throw ConfigMigrationException("Configuration was migrated to newer config format (version=${configVersion}, expected=${LATEST_CONFIG_VERSION}). Downgrading the config file is unsupported!")
                 }
                 if (configVersion < LATEST_CONFIG_VERSION) {
@@ -97,7 +98,7 @@ class Configuration(private val configName: String = RunConfiguration.CONFIG_FIL
         }
     }
 
-    @Deprecated(message = "Will be removed one a release/beta is there")
+    @Deprecated(message = "Will be removed once a release/beta is there") // (This is generally replacing the config, without touching the version id)
     private fun migrate(config: MutableMap<String, Any>) {
         config["download"]?.compoundCast()?.get("url")?.compoundCast()?.let {
             if (it["pixlyzer"] == "https://gitlab.com/bixilon/pixlyzer-data/-/raw/master/hash/\${hashPrefix}/\${fullHash}.gz?inline=false") {

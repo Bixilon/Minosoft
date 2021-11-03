@@ -13,7 +13,9 @@
 
 package de.bixilon.minosoft.protocol.packets.s2c.play.scoreboard.objective
 
+import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.modding.event.events.scoreboard.ScoreboardObjectiveUpdateEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
@@ -47,13 +49,18 @@ class UpdateScoreboardObjectiveS2CP(val objective: String, private var _displayN
     }
 
     override fun log() {
+        if (Minosoft.config.config.general.reduceProtocolLog) {
+            return
+        }
         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Update scoreboard objective (objective=$objective, displayName=$displayName, unit=$unit)" }
     }
 
     override fun handle(connection: PlayConnection) {
-        connection.scoreboardManager.objectives[objective]?.let {
-            it.displayName = displayName
-            it.unit = unit
-        }
+        val objective = connection.scoreboardManager.objectives[objective] ?: return
+
+        objective.displayName = displayName
+        objective.unit = unit
+
+        connection.fireEvent(ScoreboardObjectiveUpdateEvent(connection, objective))
     }
 }

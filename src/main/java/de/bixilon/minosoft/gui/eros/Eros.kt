@@ -18,19 +18,18 @@ import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.modding.event.events.FinishInitializingEvent
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
-import de.bixilon.minosoft.util.KUtil.asResourceLocation
-import javafx.application.Platform
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 object Eros {
-    private val TITLE = "minosoft:eros_window_title".asResourceLocation()
-    private val LAYOUT = "minosoft:eros/main/main.fxml".asResourceLocation()
+    private val TITLE = "minosoft:eros_window_title".toResourceLocation()
+    private val LAYOUT = "minosoft:eros/main/main.fxml".toResourceLocation()
 
     lateinit var mainErosController: MainErosController
 
 
     init {
         GlobalEventMaster.registerEvent(CallbackEventInvoker.of<FinishInitializingEvent> {
-            Platform.runLater {
+            JavaFXUtil.runLater {
                 mainErosController = JavaFXUtil.openModal(TITLE, LAYOUT)
                 mainErosController.stage.show()
             }

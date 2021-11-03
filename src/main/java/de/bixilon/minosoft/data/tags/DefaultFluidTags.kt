@@ -14,14 +14,14 @@
 package de.bixilon.minosoft.data.tags
 
 import de.bixilon.minosoft.data.registries.fluid.DefaultFluids
-import de.bixilon.minosoft.util.KUtil.asResourceLocation
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 object DefaultFluidTags {
     // ToDo: Improve this
 
-    val WATER_TAG = "minecraft:water".asResourceLocation()
+    val WATER_TAG = "minecraft:water".toResourceLocation()
     val WATER = setOf(DefaultFluids.WATER, DefaultFluids.FLOWING_WATER)
-    val LAVA_TAG = "minecraft:lava".asResourceLocation()
+    val LAVA_TAG = "minecraft:lava".toResourceLocation()
     val LAVA = setOf(DefaultFluids.LAVA, DefaultFluids.FLOWING_LAVA)
 
 

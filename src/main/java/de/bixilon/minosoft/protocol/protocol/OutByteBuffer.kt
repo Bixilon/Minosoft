@@ -18,6 +18,8 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.protocol.network.connection.Connection
 import de.bixilon.minosoft.util.Util
+import de.bixilon.minosoft.util.nbt.tag.NBTTagTypes
+import de.bixilon.minosoft.util.nbt.tag.NBTUtil.type
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3d
 import glm_.vec3.Vec3i
@@ -26,6 +28,7 @@ import java.nio.charset.StandardCharsets
 import java.util.*
 
 open class OutByteBuffer(open val connection: Connection? = null) {
+    @Deprecated("Will be replaced with a thing like the ArrayFloatList")
     val bytes: MutableList<Byte> = mutableListOf()
 
 
@@ -147,8 +150,92 @@ open class OutByteBuffer(open val connection: Connection? = null) {
         } while (value != 0)
     }
 
-    fun writeNBT(nbt: Any) {
-        TODO()
+    protected fun writeNBTTagType(type: NBTTagTypes) {
+        writeByte(type.ordinal)
+    }
+
+    fun writeNBT(nbt: Any?, compressed: Boolean = false) {
+        if (compressed) {
+            TODO("Can not write compressed NBT yet!")
+        }
+        if (nbt is Map<*, *>) {
+            if (nbt.isEmpty()) {
+                return writeNBTTag(null)
+            }
+            writeNBTTagType(NBTTagTypes.COMPOUND)
+            writeShort(0) // Length of compound tag name
+            writeNBTTag(nbt, false)
+            return
+        }
+        writeNBTTag(nbt)
+    }
+
+    fun writeNBTTag(tag: Any?, writeType: Boolean = true) {
+        fun writeNBTTagType(type: NBTTagTypes) {
+            if (!writeType) {
+                return
+            }
+            this.writeNBTTagType(type)
+        }
+
+        val type = tag.type
+        writeNBTTagType(type)
+        if (type == NBTTagTypes.END) {
+            return
+        }
+        when (tag) {
+            is Byte -> writeByte(tag)
+            is Short -> writeShort(tag)
+            is Int -> writeInt(tag)
+            is Long -> writeLong(tag)
+            is Float -> writeFloat(tag)
+            is Double -> writeDouble(tag)
+            is ByteArray -> {
+                writeInt(tag.size)
+                writeUnprefixedByteArray(tag)
+            }
+            is CharSequence -> {
+                val bytes = tag.toString().toByteArray(Charsets.UTF_8)
+                if (bytes.size > Short.MAX_VALUE * 2) {
+                    error("String exceeds max length!")
+                }
+                writeShort(bytes.size)
+                writeUnprefixedByteArray(bytes)
+            }
+            is Collection<*> -> {
+                this.writeNBTTagType(if (tag.isEmpty()) {
+                    NBTTagTypes.END
+                } else {
+                    tag.iterator().next().type
+                })
+
+                writeInt(tag.size)
+
+                for (element in tag) {
+                    writeNBTTag(element, false)
+                }
+            }
+            is Map<*, *> -> {
+                for ((key, value) in tag) {
+                    val valueType = value.type
+                    if (valueType == NBTTagTypes.END) {
+                        error("NBT does not support null as value in a compound tag!")
+                    }
+                    this.writeNBTTagType(valueType)
+                    writeNBTTag(key?.toString() ?: "", false)
+                    writeNBTTag(value, false)
+                }
+                this.writeNBTTagType(NBTTagTypes.END)
+            }
+            is IntArray -> {
+                writeInt(tag.size)
+                writeUnprefixedIntArray(tag)
+            }
+            is LongArray -> {
+                writeInt(tag.size)
+                writeUnprefixedLongArray(tag)
+            }
+        }
     }
 
     fun writeBoolean(value: Boolean) {
@@ -173,16 +260,26 @@ open class OutByteBuffer(open val connection: Connection? = null) {
         return bytes.toByteArray()
     }
 
-    fun writeIntArray(data: IntArray) {
+    fun writeUnprefixedIntArray(data: IntArray) {
         for (i in data) {
             writeInt(i)
         }
     }
 
-    fun writeLongArray(data: LongArray) {
+    fun writeIntArray(data: IntArray) {
+        writeVarInt(data.size)
+        writeUnprefixedIntArray(data)
+    }
+
+    fun writeUnprefixedLongArray(data: LongArray) {
         for (l in data) {
             writeLong(l)
         }
+    }
+
+    fun writeLongArray(data: LongArray) {
+        writeVarInt(data.size)
+        writeUnprefixedLongArray(data)
     }
 
     fun writeTo(buffer: ByteBuffer) {

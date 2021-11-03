@@ -44,7 +44,7 @@ object NBTUtil {
         return this.compoundCast()!!
     }
 
-    fun <T> Any.listCast(): MutableList<T>? {
+    fun <T> Any?.listCast(): MutableList<T>? {
         try {
             return this as MutableList<T>
         } catch (ignored: ClassCastException) {
@@ -53,12 +53,30 @@ object NBTUtil {
     }
 
 
-    operator fun Map<String, Any>.get(key1: String, key2: String, vararg keys: String): Any? {
-        this[key1]?.let { return it }
-        this[key2]?.let { return it }
+    operator fun Map<String, Any>.get(vararg keys: String): Any? {
         for (key in keys) {
             this[key]?.let { return it }
         }
         return null
     }
+
+    val Any?.type: NBTTagTypes
+        get() {
+            return when (this) {
+                null -> NBTTagTypes.END
+                is Byte -> NBTTagTypes.BYTE
+                is Short -> NBTTagTypes.SHORT
+                is Int -> NBTTagTypes.INT
+                is Long -> NBTTagTypes.LONG
+                is Float -> NBTTagTypes.FLOAT
+                is Double -> NBTTagTypes.DOUBLE
+                is ByteArray -> NBTTagTypes.BYTE_ARRAY
+                is CharSequence -> NBTTagTypes.STRING
+                is Collection<*> -> NBTTagTypes.LIST
+                is Map<*, *> -> NBTTagTypes.COMPOUND
+                is IntArray -> NBTTagTypes.INT_ARRAY
+                is LongArray -> NBTTagTypes.LONG_ARRAY
+                else -> throw  IllegalArgumentException("NBT does not support ${type::class.java.name}")
+            }
+        }
 }

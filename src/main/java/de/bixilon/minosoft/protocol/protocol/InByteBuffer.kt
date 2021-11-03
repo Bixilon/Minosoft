@@ -99,7 +99,7 @@ open class InByteBuffer {
     }
 
     fun readVelocity(): Vec3d {
-        return Vec3d(readShort(), readShort(), readShort()) / ProtocolDefinition.VELOCITY_CONSTANT
+        return Vec3d(readShort(), readShort(), readShort()) / ProtocolDefinition.VELOCITY_NETWORK_DIVIDER
     }
 
     fun readInt(): Int {
@@ -238,6 +238,15 @@ open class InByteBuffer {
         return readArray(length) { readString() }
     }
 
+    @JvmOverloads
+    fun readNullString(length: Int = readVarInt()): String? {
+        val string = readString(length)
+        if (string.isBlank()) {
+            return null
+        }
+        return string
+    }
+
     fun readUUID(): UUID {
         return UUID(readLong(), readLong())
     }
@@ -245,6 +254,15 @@ open class InByteBuffer {
     fun readUUIDArray(length: Int = readVarInt()): Array<UUID> {
         return readArray(length) { readUUID() }
     }
+
+    fun readUUIDString(): UUID {
+        return Util.getUUIDFromString(readString())
+    }
+
+    fun readUUIDStringArray(length: Int = readVarInt()): Array<UUID> {
+        return readArray(length) { readUUIDString() }
+    }
+
 
     fun readJson(): Map<String, Any> {
         return JSONSerializer.MUTABLE_MAP_ADAPTER.fromJson(readString())!!

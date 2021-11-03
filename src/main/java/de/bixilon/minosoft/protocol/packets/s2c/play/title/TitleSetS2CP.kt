@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.protocol.packets.s2c.play.title
 
+import de.bixilon.minosoft.modding.event.events.title.TitleSetEvent
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.util.logging.Log
@@ -20,9 +22,13 @@ import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
 class TitleSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
-    val text = buffer.readChatComponent()
+    val title = buffer.readChatComponent()
+
+    override fun handle(connection: PlayConnection) {
+        connection.fireEvent(TitleSetEvent(connection, this))
+    }
 
     override fun log() {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Title set (text=$text)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Title set (title=$title)" }
     }
 }

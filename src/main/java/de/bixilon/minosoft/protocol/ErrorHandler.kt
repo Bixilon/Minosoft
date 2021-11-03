@@ -17,5 +17,5 @@ import de.bixilon.minosoft.protocol.network.connection.Connection
 
 interface ErrorHandler {
 
-    fun onError(connection: Connection) {}
+    fun onError(connection: Connection) = Unit
 }

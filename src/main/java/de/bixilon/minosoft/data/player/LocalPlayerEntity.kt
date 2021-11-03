@@ -22,6 +22,7 @@ import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.data.entities.entities.player.RemotePlayerEntity
 import de.bixilon.minosoft.data.inventory.InventorySlots
+import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.physics.PhysicsConstants
 import de.bixilon.minosoft.data.registries.AABB
 import de.bixilon.minosoft.data.registries.blocks.DefaultBlocks
@@ -29,7 +30,7 @@ import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.effects.DefaultStatusEffects
 import de.bixilon.minosoft.data.registries.effects.attributes.DefaultStatusEffectAttributeNames
 import de.bixilon.minosoft.data.registries.effects.attributes.DefaultStatusEffectAttributes
-import de.bixilon.minosoft.data.registries.effects.attributes.StatusEffectAttributeInstance
+import de.bixilon.minosoft.data.registries.effects.attributes.EntityAttribute
 import de.bixilon.minosoft.data.registries.enchantment.DefaultEnchantments
 import de.bixilon.minosoft.data.registries.items.DefaultItems
 import de.bixilon.minosoft.data.registries.items.Item
@@ -48,10 +49,10 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.c2s.play.*
 import de.bixilon.minosoft.protocol.packets.s2c.play.TagsS2CP
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import de.bixilon.minosoft.util.KUtil.asResourceLocation
 import de.bixilon.minosoft.util.KUtil.decide
 import de.bixilon.minosoft.util.KUtil.nullCast
 import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.MMath
 import de.bixilon.minosoft.util.MMath.floor
 import de.bixilon.minosoft.util.Previous
@@ -80,7 +81,7 @@ class LocalPlayerEntity(
 
     val inventory = PlayerInventory(connection)
     val containers: MutableMap<Int, Container> = synchronizedMapOf(
-        ProtocolDefinition.PLAYER_INVENTORY_ID to inventory,
+        ProtocolDefinition.PLAYER_CONTAINER_ID to inventory,
     )
     var selectedHotbarSlot: Int = 0
 
@@ -106,6 +107,12 @@ class LocalPlayerEntity(
     var jumpingCoolDown = 0
     var isJumping = false
 
+    public override var previousPosition: Vec3d
+        get() = super.previousPosition
+        set(value) {
+            super.previousPosition = value
+        }
+
     val fovMultiplier = Previous(1.0) { previous, delta -> VecUtil.lerp(delta / ProtocolDefinition.TICK_TIMEd, previous.previous, previous.value) }
 
     override val hasGravity: Boolean
@@ -114,7 +121,13 @@ class LocalPlayerEntity(
     private val slowMovement: Boolean
         get() = isSneaking // ToDo: Or should leave swimming pose
 
-    private val isUsingItem = false // ToDo: Not yet implemented
+    var isUsingItem = false
+    override var activeHand: Hands? = null
+
+    fun useItem(hand: Hands) {
+        isUsingItem = true
+        activeHand = hand
+    }
 
     private val canSprint: Boolean
         get() = healthCondition.hunger >= PhysicsConstants.SPRINT_MINIMUM_HUNGER || baseAbilities.canFly || (gamemode == Gamemodes.CREATIVE || gamemode == Gamemodes.SPECTATOR)
@@ -126,10 +139,10 @@ class LocalPlayerEntity(
             if (value == field) {
                 return
             }
-            attributes[DefaultStatusEffectAttributeNames.GENERIC_MOVEMENT_SPEED]?.remove(DefaultStatusEffectAttributes.SPRINT_SPEED_BOOST.uuid)
+            attributes[DefaultStatusEffectAttributeNames.GENERIC_MOVEMENT_SPEED]?.modifiers?.remove(DefaultStatusEffectAttributes.SPRINT_SPEED_BOOST.uuid)
 
             if (value) {
-                attributes.getOrPut(DefaultStatusEffectAttributeNames.GENERIC_MOVEMENT_SPEED) { synchronizedMapOf() }[DefaultStatusEffectAttributes.SPRINT_SPEED_BOOST.uuid] = StatusEffectAttributeInstance(DefaultStatusEffectAttributes.SPRINT_SPEED_BOOST, 1)
+                attributes.getOrPut(DefaultStatusEffectAttributeNames.GENERIC_MOVEMENT_SPEED) { EntityAttribute() }.modifiers[DefaultStatusEffectAttributes.SPRINT_SPEED_BOOST.uuid] = DefaultStatusEffectAttributes.SPRINT_SPEED_BOOST
             }
             field = value
         }
@@ -154,7 +167,7 @@ class LocalPlayerEntity(
         }
 
     override var velocityMultiplier: Double
-        set(value) {}
+        set(value) = Unit
         get() {
             if (isFlyingWithElytra || baseAbilities.isFlying) {
                 return 1.0
@@ -191,9 +204,11 @@ class LocalPlayerEntity(
     val swimHeight: Double
         get() = (eyeHeight < 0.4).decide(0.0, 0.4)
 
-
     val reachDistance: Double
         get() = (gamemode == Gamemodes.CREATIVE).decide(5.0, 4.5)
+
+    override val equipment: MutableMap<InventorySlots.EquipmentSlots, ItemStack>
+        get() = inventory.equipment
 
     private fun sendMovementPackets() {
         if (Minosoft.config.config.game.camera.disableMovementSending) {
@@ -374,7 +389,7 @@ class LocalPlayerEntity(
                     velocity.y += (0.05 * (it.amplifier + 1.0f) - velocity.y) * 0.2 // ToDo: This should be correct, but somehow are we to fast...
                 } ?: let {
                     if (connection.world[positionInfo.chunkPosition] == null) {
-                        velocity.y = if (position.y > connection.world.dimension?.minY ?: 0) {
+                        velocity.y = if (position.y > (connection.world.dimension?.minY ?: 0)) {
                             -0.1
                         } else {
                             0.0
@@ -383,7 +398,7 @@ class LocalPlayerEntity(
                         velocity.y -= gravity
                     }
                 }
-                this.velocity = velocity * Vec3d(speedMultiplier, 0.9800000190734863, speedMultiplier)
+                this.velocity = velocity * Vec3d(speedMultiplier, 0.98, speedMultiplier)
             }
         }
     }
@@ -557,9 +572,15 @@ class LocalPlayerEntity(
         fovMultiplier.value = 1.0 + MMath.clamp(walkingSpeed * 1.9, -2.0, 2.0)
     }
 
+    override val health: Double
+        get() = healthCondition.hp.toDouble()
+
+    override val mainArm: Arms
+        get() = Minosoft.config.config.game.skin.mainArm
+
     companion object {
-        private val CLIMBABLE_TAG = "minecraft:climbable".asResourceLocation()
-        private val SOUL_SPEED_BLOCKS = "minecraft:soul_speed_blocks".asResourceLocation()
+        private val CLIMBABLE_TAG = "minecraft:climbable".toResourceLocation()
+        private val SOUL_SPEED_BLOCKS = "minecraft:soul_speed_blocks".toResourceLocation()
         private const val CLIMBING_CLAMP_VALUE = 0.15f.toDouble()
     }
 }

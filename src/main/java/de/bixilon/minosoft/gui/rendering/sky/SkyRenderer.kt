@@ -27,6 +27,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.DepthFunctions
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
 import de.bixilon.minosoft.gui.rendering.system.base.phases.CustomDrawable
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
+import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.mesh.SimpleTextureMesh
 import de.bixilon.minosoft.modding.event.events.TimeChangeEvent
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
@@ -48,7 +49,7 @@ class SkyRenderer(
     private val skyboxMesh = SkyboxMesh(renderWindow)
     private var skySunMesh = SimpleTextureMesh(renderWindow)
     private lateinit var sunTexture: AbstractTexture
-    private var recalculateSunNextFrame: Boolean = true
+    private var sunMatrixUpToDate: Boolean = true
     var baseColor = RenderConstants.DEFAULT_SKY_COLOR
 
 
@@ -69,7 +70,7 @@ class SkyRenderer(
         })
         connection.registerEvent(CallbackEventInvoker.of<TimeChangeEvent> {
             if (connection.world.time != it.time) {
-                recalculateSunNextFrame = true
+                sunMatrixUpToDate = true
             }
         })
         sunTexture = renderWindow.textureManager.staticTextures.createTexture(SUN_TEXTURE_RESOURCE_LOCATION)
@@ -83,6 +84,7 @@ class SkyRenderer(
             projectionViewMatrix.rotate(timeAngle, Vec3d(0.0f, 0.0f, 1.0f))
         }
         skySunShader.use().setMat4("uSkyViewProjectionMatrix", Mat4(rotatedMatrix))
+        sunMatrixUpToDate = false
     }
 
     override fun postInit() {
@@ -90,21 +92,21 @@ class SkyRenderer(
     }
 
     private fun drawSun() {
-        if (recalculateSunNextFrame) {
+        if (sunMatrixUpToDate) {
             setSunMatrix(renderWindow.inputHandler.camera.projectionMatrix * renderWindow.inputHandler.camera.viewMatrix.toMat3().toMat4())
             skySunMesh.unload()
 
             skySunMesh = SimpleTextureMesh(renderWindow)
 
 
-            skySunMesh.addQuad(
+            Mesh.addQuad(
                 start = Vec3(-0.15f, 1.0f, -0.15f),
                 end = Vec3(+0.15f, 1.0f, +0.15f),
-                vertexConsumer = { position, textureCoordinate ->
+                vertexConsumer = { position, uv ->
                     skySunMesh.addVertex(
                         position = position,
                         texture = sunTexture,
-                        textureCoordinates = textureCoordinate,
+                        uv = uv,
                         tintColor = ChatColors.WHITE.with(alpha = 1.0f - connection.world.rainGradient), // ToDo: Depends on time
                     )
                 }

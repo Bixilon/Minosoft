@@ -17,13 +17,14 @@ import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionEv
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.play.ExplosionS2CP
 import glm_.vec3.Vec3
+import glm_.vec3.Vec3i
 
 class ExplosionEvent(
     connection: PlayConnection,
     initiator: EventInitiators,
     val position: Vec3,
     val power: Float,
-    val explodedBlocks: List<Vec3>,
+    val explodedBlocks: List<Vec3i>,
     val velocity: Vec3,
 ) : PlayConnectionEvent(connection) {
 

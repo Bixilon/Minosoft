@@ -17,6 +17,9 @@ import de.bixilon.minosoft.data.text.events.data.EntityHoverData
 import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.KUtil.unsafeCast
 import de.bixilon.minosoft.util.enum.ValuesEnum
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
 import java.util.*
 
 class HoverEvent {
@@ -32,13 +35,24 @@ class HoverEvent {
         this.value = when (action) {
             HoverEventActions.SHOW_TEXT -> ChatComponent.of(data)
             HoverEventActions.SHOW_ENTITY -> EntityHoverData.deserialize(data)
-            else -> TODO("Don't know what todo with $action: $data")
+            else -> Log.log(LogMessageType.OTHER, LogLevels.WARN) { "Don't know what todo with $action: $data" }
         }
     }
 
     constructor(action: HoverEventActions, value: Any) {
         this.action = action
         this.value = value
+    }
+
+
+    override fun equals(other: Any?): Boolean {
+        if (other === this) {
+            return true
+        }
+        if (other !is HoverEvent) {
+            return false
+        }
+        return action == other.action && value == other.value
     }
 
     enum class HoverEventActions {

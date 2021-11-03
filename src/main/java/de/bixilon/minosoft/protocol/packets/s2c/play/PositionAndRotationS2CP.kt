@@ -74,7 +74,9 @@ class PositionAndRotationS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
             rotation.pitch += entity.rotation.pitch
         }
 
+
         entity.position = position
+        entity.previousPosition = position // Prevent interpolating between 2 positions
         entity.rotation = rotation
 
         if (connection.version.versionId >= ProtocolVersions.V_15W42A) {

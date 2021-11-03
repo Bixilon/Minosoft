@@ -19,6 +19,8 @@ import de.bixilon.minosoft.util.KUtil.asList
 import de.bixilon.minosoft.util.KUtil.asUUID
 import de.bixilon.minosoft.util.KUtil.toLong
 import de.bixilon.minosoft.util.KUtil.unsafeCast
+import de.bixilon.minosoft.util.account.AccountUtil
+import de.bixilon.minosoft.util.account.LoginException
 import de.bixilon.minosoft.util.http.HTTP2.postData
 import de.bixilon.minosoft.util.http.HTTP2.postJson
 import de.bixilon.minosoft.util.logging.Log
@@ -44,8 +46,7 @@ object MicrosoftOAuthUtils {
         val account = MicrosoftAccount(
             uuid = accountInfo.id.asUUID(),
             username = accountInfo.name,
-            userHash = userHash,
-            xstsToken = xstsToken,
+            authorizationToken = authorizationToken,
         )
 
         account.accessToken = accessToken
@@ -121,7 +122,7 @@ object MicrosoftOAuthUtils {
 
         response.body!!
         if (response.statusCode != 200) {
-            throw LoginException(response.statusCode, "Could not get minecraft access token ", response.body["errorMessage"].unsafeCast())
+            throw LoginException(response.statusCode, "Could not get minecraft access token ", (response.body["errorMessage"] ?: response.body["error"] ?: "unknown").unsafeCast())
         }
         return response.body["access_token"].unsafeCast()
     }

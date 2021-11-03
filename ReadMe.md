@@ -19,16 +19,16 @@ Minosoft is an open source minecraft client, written from scratch in kotlin (and
 - Multi threading and asynchronous loading
 - Debugging on protocol layer
 - LAN servers
-- Independent, We'd accept almost all types of patches (except explicit server support)
+- Independent, I'd accept almost all types of patches (except explicit server support)
 - Way more stuff
 
 ## System requirements
 
 - CPU: Minosoft works mostly asynchronous, so multiple cores are good. For FPS more clock speed is better.
-- RAM: ~500Mib. With overhead, etc 2Gib recommended
-- Disk space: Minosoft itself is pretty small (2-3 Mib), the libraries are a bit bigger. You also need to have the "normal" minecraft assets (~ 300 MB for one version).
-- GPU: OpenGL 3.3+. Every moden GPU works and is recommended.
-- Java 14+, 16 recommended (This is really important, we use features that are only available in this version. Java 8 is currently **not** supported).
+- RAM: Minimum 300 MiB, 1 GiB recommended
+- Disk space: Minosoft itself is pretty small (2-3 MiB), the libraries are a bit bigger (~80 MiB). You also need to have the "normal" minecraft assets (~ 300 MiB per minecraft version).
+- GPU: OpenGL 3.3+. Every modern GPU works and is recommended.
+- Java 11+, newest version recommended (This is really important, we use features that are only available in this version. Java 8 is currently **not** supported).
 
 ## Rendering
 
@@ -42,6 +42,9 @@ Minosoft is an open source minecraft client, written from scratch in kotlin (and
 - (almost) Original physics
 
 Works. Still missing many features, but heavily developed.
+
+![Rendering](doc/img/rendering5.png)  
+New hud system: full hotbar, scoreboard, bossbar, chat (+ better mipmaps)
 
 ![Rendering](doc/img/hypixel_skyblock.png)  
 The Hypixel skyblock hub
@@ -87,7 +90,7 @@ On the ToDo List
 
 ## Contribution or helping out
 
-You're welcome, but feel free to take a look at [Contributing.md](/Contributing.md).
+I'd love it. Currently, it is pretty much work for me, so please help out if you can and want :). Feel free to take a look at [Contributing.md](/Contributing.md).
 
 ## Tools and generators
 
@@ -112,7 +115,7 @@ Because we have no releases or tags yet, we don't build any versions ourselves. 
 
 #### Ubuntu / Debian
 
-TBD
+TBA
 
 #### Arch
 
@@ -120,7 +123,7 @@ Thanks to @jugendhacker we are in the arch user repository (AUR): https://aur.ar
 
 ### Windows
 
-TBD
+TBA
 
 ### MacOS
 
@@ -128,15 +131,16 @@ Not compatible (yet)
 
 ## Building
 
-1. Install Maven and java 14+ (On Ubuntu based distributions: `sudo apt install maven openjdk-14-jdk`). For Windows users, download and install java from oracle or openjdk. Also download maven and follow along.
-2. Clone this repo (`git clone https://gitlab.bixilon.de/bixilon/minosoft.git`).
-3. Change directory (`cd minosoft`).
-4. Checkout the branch (`git checkout <branch>`). Eventually `rendering` or `development`.
-5. Build and run Minosoft with `mvn clean verify exec:java`. If any errors occur, feel free to open an issue. In this early stage it might be helpful to delete the AppData folder (only of minosoft).
-6. (Optional) Build a fat jar with `mvn package`. You'll find the jar with all dependencies in `target/`. Then you don't need to recompile everytime.
+1. Install Maven and java 11+ (On Ubuntu based distributions: `sudo apt install maven openjdk-11-jdk`). For Windows users, download and install java from oracle or openjdk. Also download maven and follow along
+2. Clone this repository (`git clone https://gitlab.bixilon.de/bixilon/minosoft.git`)
+3. Change directory (`cd minosoft`)
+4. Optional: Checkout the branch of the feature you want to test (`git checkout <branch>`)
+5. Build and run Minosoft with `mvn clean verify exec:java`. If any errors occur, feel free to open an issue. In this early stage it might be helpful to delete the config file
+6. (Optional) Build a fat jar with `mvn package`. You'll find the jar with all dependencies in `target/`. Then you don't need to recompile everytime
 
 ## Code mirrors
-
+- [gitlab.bixilon.de](https://gitlab.bixilon.de/bixilon/minosoft/) (Main repository)
 - [GitLab](https://gitlab.com/Bixilon/minosoft)
+- [GitHub](https://github.com/Bixilon/Minosoft/)
 
-This readme is work in progress, things may change over time.
+This project/readme is work in progress, things may change over time.

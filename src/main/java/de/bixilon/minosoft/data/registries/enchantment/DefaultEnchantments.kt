@@ -13,12 +13,12 @@
 
 package de.bixilon.minosoft.data.registries.enchantment
 
-import de.bixilon.minosoft.util.KUtil.asResourceLocation
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 object DefaultEnchantments {
-    val SOUL_SPEED = "minecraft:soul_speed".asResourceLocation()
-    val UNBREAKING = "minecraft:unbreaking".asResourceLocation()
-    val EFFICIENCY = "minecraft:efficiency".asResourceLocation()
-    val AQUA_AFFINITY = "minecraft:aqua_affinity".asResourceLocation()
-    val DEPTH_STRIDER = "minecraft:depth_strider".asResourceLocation()
+    val SOUL_SPEED = "minecraft:soul_speed".toResourceLocation()
+    val UNBREAKING = "minecraft:unbreaking".toResourceLocation()
+    val EFFICIENCY = "minecraft:efficiency".toResourceLocation()
+    val AQUA_AFFINITY = "minecraft:aqua_affinity".toResourceLocation()
+    val DEPTH_STRIDER = "minecraft:depth_strider".toResourceLocation()
 }

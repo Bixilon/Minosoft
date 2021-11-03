@@ -16,7 +16,7 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 abstract class PlayS2CPacket : S2CPacket() {
 
-    open fun handle(connection: PlayConnection) {}
+    open fun handle(connection: PlayConnection) = Unit
 
-    open fun check(connection: PlayConnection) {}
+    open fun check(connection: PlayConnection) = Unit
 }

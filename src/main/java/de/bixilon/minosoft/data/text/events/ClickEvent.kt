@@ -30,6 +30,7 @@ class ClickEvent {
         if (action == ClickEventActions.OPEN_URL) {
             Util.checkURL(value.toString())
         }
+        check(action != ClickEventActions.OPEN_CONFIRMATION) { "Can not use OPEN_CONFIRMATION in restricted mode!" }
     }
 
     constructor(action: ClickEventActions, value: Any) {
@@ -37,11 +38,22 @@ class ClickEvent {
         this.value = value
     }
 
+    override fun equals(other: Any?): Boolean {
+        if (other === this) {
+            return true
+        }
+        if (other !is ClickEvent) {
+            return false
+        }
+        return action == other.action && value == other.value
+    }
+
     enum class ClickEventActions {
         OPEN_URL,
         RUN_COMMAND,
         SUGGEST_COMMAND,
         CHANGE_PAGE,
+        OPEN_CONFIRMATION,
         ;
 
         companion object : ValuesEnum<ClickEventActions> {

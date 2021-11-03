@@ -24,11 +24,16 @@ import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
 import de.bixilon.minosoft.gui.rendering.system.base.phases.TranslucentDrawable
 import de.bixilon.minosoft.gui.rendering.system.base.phases.TransparentDrawable
 import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
+import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionStateChangeEvent
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates.Companion.disconnected
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import de.bixilon.minosoft.util.KUtil.synchronizedSetOf
-import de.bixilon.minosoft.util.KUtil.toSynchronizedSet
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
+import de.bixilon.minosoft.util.task.time.TimeWorker
+import de.bixilon.minosoft.util.task.time.TimeWorkerTask
 import glm_.mat4x4.Mat4
 import glm_.vec3.Vec3
 
@@ -42,15 +47,21 @@ class ParticleRenderer(
     private val translucentShader: Shader = renderSystem.createShader(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "particle"))
 
     // There is no opaque mesh because it is simply not needed (every particle has transparency)
-    private var transparentMesh = ParticleMesh(renderWindow)
-    private var translucentMesh = ParticleMesh(renderWindow)
+    private var transparentMesh = ParticleMesh(renderWindow, 0)
+    private var translucentMesh = ParticleMesh(renderWindow, 0)
 
-    private var particles: MutableSet<Particle> = synchronizedSetOf()
+    private var particles: MutableSet<Particle> = mutableSetOf()
+    private var particleQueue: MutableSet<Particle> = mutableSetOf()
+
+
+    private lateinit var particleTask: TimeWorkerTask
+
+    val size: Int
+        get() = particles.size + particleQueue.size
 
     override fun init() {
         connection.registerEvent(CallbackEventInvoker.of<CameraMatrixChangeEvent> {
             renderWindow.queue += {
-
                 fun applyToShader(shader: Shader) {
                     shader.apply {
                         use()
@@ -64,9 +75,9 @@ class ParticleRenderer(
                 applyToShader(translucentShader)
             }
         })
+
         transparentMesh.load()
         translucentMesh.load()
-
         connection.registries.particleTypeRegistry.forEachItem {
             for (resourceLocation in it.textures) {
                 renderWindow.textureManager.staticTextures.createTexture(resourceLocation)
@@ -88,11 +99,32 @@ class ParticleRenderer(
 
 
         connection.world.particleRenderer = this
+
+        particleTask = TimeWorker.addTask(TimeWorkerTask(ProtocolDefinition.TICK_TIME, maxDelayTime = ProtocolDefinition.TICK_TIME / 2) {
+            synchronized(particles) {
+                for (particle in particles) {
+                    particle.tryTick()
+                }
+            }
+        })
+
+        connection.registerEvent(CallbackEventInvoker.of<PlayConnectionStateChangeEvent> {
+            if (!it.state.disconnected) {
+                return@of
+            }
+            TimeWorker.removeTask(particleTask)
+        })
     }
 
     fun add(particle: Particle) {
-        check(particles.size < RenderConstants.MAXIMUM_PARTICLE_AMOUNT) { "Can not add particle: Limit reached (${particles.size} > ${RenderConstants.MAXIMUM_PARTICLE_AMOUNT}" }
-        particles += particle
+        val particleCount = particles.size + particleQueue.size
+        if (particleCount >= RenderConstants.MAXIMUM_PARTICLE_AMOUNT) {
+            Log.log(LogMessageType.RENDERING_GENERAL, LogLevels.WARN) { "Can not add particle: Limit reached (${particleCount} > ${RenderConstants.MAXIMUM_PARTICLE_AMOUNT}" }
+            return
+        }
+        synchronized(particleQueue) {
+            particleQueue += particle
+        }
     }
 
     operator fun plusAssign(particle: Particle) {
@@ -102,17 +134,29 @@ class ParticleRenderer(
     override fun prepareDraw() {
         transparentMesh.unload()
         translucentMesh.unload()
-        transparentMesh = ParticleMesh(renderWindow)
-        translucentMesh = ParticleMesh(renderWindow)
+
+        val toRemove: MutableSet<Particle> = mutableSetOf()
 
 
-        for (particle in particles.toSynchronizedSet()) {
-            particle.tryTick()
-            if (particle.dead) {
-                this.particles -= particle
-                continue
+        transparentMesh = ParticleMesh(renderWindow, 500)
+        translucentMesh = ParticleMesh(renderWindow, particles.size + particleQueue.size)
+
+
+        synchronized(particles) {
+            synchronized(particleQueue) {
+                particles += particleQueue
+                particleQueue.clear()
             }
-            particle.addVertex(transparentMesh, translucentMesh)
+
+            val time = System.currentTimeMillis()
+            for (particle in particles) {
+                if (particle.dead) {
+                    toRemove += particle
+                    continue
+                }
+                particle.addVertex(transparentMesh, translucentMesh, time)
+            }
+            particles -= toRemove
         }
 
         transparentMesh.load()
@@ -136,6 +180,7 @@ class ParticleRenderer(
     override fun drawTranslucent() {
         translucentMesh.draw()
     }
+
 
     companion object : RendererBuilder<ParticleRenderer> {
         override val RESOURCE_LOCATION = ResourceLocation("minosoft:particle")

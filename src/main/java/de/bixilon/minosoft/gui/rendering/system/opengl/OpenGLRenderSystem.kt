@@ -57,7 +57,11 @@ class OpenGLRenderSystem(
             if (value === field) {
                 return
             }
-            value ?: error("Shader is null!")
+            if (value == null) {
+                glUseProgram(0)
+                field = value
+                return
+            }
 
             check(value is OpenGLShader) { "Can not use non OpenGL shader in OpenGL render system!" }
             check(value.loaded) { "Shader not loaded!" }
@@ -78,7 +82,7 @@ class OpenGLRenderSystem(
         vendor = when {
             vendorString.contains("nvidia") -> NvidiaOpenGLVendor
             vendorString.contains("intel") -> MesaOpenGLVendor
-            vendorString.contains("amd") || vendorString.contains("ati") -> ATIOpenGLVendor // ToDo
+            vendorString.contains("amd") || vendorString.contains("ati") -> ATIOpenGLVendor // ToDo: Find out exact value, I don't have any AMD gpu
             else -> OtherOpenGLVendor
         }
 

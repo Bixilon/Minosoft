@@ -17,16 +17,15 @@ import com.squareup.moshi.Json
 import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.data.accounts.AccountType
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.util.KUtil.asResourceLocation
-import de.bixilon.minosoft.util.account.microsoft.AccountUtil
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import de.bixilon.minosoft.util.account.AccountUtil
 import de.bixilon.minosoft.util.account.microsoft.MicrosoftOAuthUtils
 import java.util.*
 
 class MicrosoftAccount(
     val uuid: UUID,
     username: String,
-    @Json(name = "user_hash") private val userHash: String,
-    @Json(name = "xsts_token") private val xstsToken: String,
+    @Json(name = "authorization_token") private val authorizationToken: String,
 ) : Account(username) {
     @Transient var accessToken: String? = null
     override val id: String = uuid.toString()
@@ -36,12 +35,15 @@ class MicrosoftAccount(
         AccountUtil.joinMojangServer(username, accessToken!!, uuid, serverId)
     }
 
-    override fun logout() {}
+    override fun logout() = Unit
 
     override fun verify() {
         if (accessToken != null) {
             return
         }
+        val (xboxLiveToken, userHash) = MicrosoftOAuthUtils.getXboxLiveToken(authorizationToken)
+        val xstsToken = MicrosoftOAuthUtils.getXSTSToken(xboxLiveToken)
+
         accessToken = MicrosoftOAuthUtils.getMinecraftBearerAccessToken(userHash, xstsToken)
     }
 
@@ -49,13 +51,12 @@ class MicrosoftAccount(
         return mapOf(
             "uuid" to uuid,
             "username" to username,
-            "user_hash" to userHash,
-            "xsts_token" to xstsToken,
+            "authorization_token" to authorizationToken,
             "type" to type,
         )
     }
 
     companion object : AccountType(MicrosoftAccount::class) {
-        override val RESOURCE_LOCATION: ResourceLocation = "minosoft:microsoft_account".asResourceLocation()
+        override val RESOURCE_LOCATION: ResourceLocation = "minosoft:microsoft_account".toResourceLocation()
     }
 }

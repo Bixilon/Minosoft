@@ -20,30 +20,35 @@ enum class Gamemodes(
     val canBreak: Boolean,
     val useTools: Boolean,
     val canInteract: InteractionAbilities,
+    val survival: Boolean,
 ) {
     SURVIVAL(
         canBuild = true,
         canBreak = true,
         useTools = true,
         canInteract = InteractionAbilities.EVERYTHING,
+        survival = true,
     ),
     CREATIVE(
         canBuild = true,
         canBreak = true,
         useTools = true,
         canInteract = InteractionAbilities.EVERYTHING,
+        survival = false,
     ),
     ADVENTURE(
         canBuild = false,
         canBreak = false,
         useTools = false,
         canInteract = InteractionAbilities.ONLY_ENTITIES,
+        survival = true,
     ),
     SPECTATOR(
         canBuild = false,
         canBreak = false,
         useTools = false,
         canInteract = InteractionAbilities.ONLY_ENTITIES,
+        survival = false,
     ),
     ;
 

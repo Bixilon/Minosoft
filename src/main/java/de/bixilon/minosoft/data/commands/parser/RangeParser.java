@@ -22,6 +22,7 @@ import de.bixilon.minosoft.data.commands.parser.properties.ParserProperties;
 import de.bixilon.minosoft.data.commands.parser.properties.RangeParserProperties;
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection;
 import de.bixilon.minosoft.protocol.protocol.InByteBuffer;
+import org.apache.commons.lang3.StringUtils;
 
 public class RangeParser extends CommandParser {
     public static final RangeParser RANGE_PARSER = new RangeParser();
@@ -35,12 +36,12 @@ public class RangeParser extends CommandParser {
             }
             double from;
             double to;
-            if (split[0].isBlank()) {
+            if (StringUtils.isBlank(split[0])) {
                 from = minValue;
             } else {
                 from = parseValue(stringReader, argument, split[0], allowDecimal);
             }
-            if (split[1].isBlank()) {
+            if (StringUtils.isBlank(split[1])) {
                 to = maxValue;
             } else {
                 to = parseValue(stringReader, argument, split[1], allowDecimal);

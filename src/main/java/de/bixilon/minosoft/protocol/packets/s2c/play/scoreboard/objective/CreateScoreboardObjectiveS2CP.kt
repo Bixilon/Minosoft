@@ -15,6 +15,7 @@ package de.bixilon.minosoft.protocol.packets.s2c.play.scoreboard.objective
 
 import de.bixilon.minosoft.data.scoreboard.ScoreboardObjective
 import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.modding.event.events.scoreboard.ScoreboardObjectiveCreateEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
@@ -25,7 +26,7 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 
-class CreateScoreboardObjectiveS2CP(val objective: String, private var _displayName: ChatComponent?, buffer: PlayInByteBuffer) : PlayS2CPacket() {
+class CreateScoreboardObjectiveS2CP(val name: String, private var _displayName: ChatComponent?, buffer: PlayInByteBuffer) : PlayS2CPacket() {
     val displayName: ChatComponent
         get() = _displayName!!
     var unit: ObjectiveUnits = ObjectiveUnits.INTEGER
@@ -50,11 +51,15 @@ class CreateScoreboardObjectiveS2CP(val objective: String, private var _displayN
     }
 
     override fun log() {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Create scoreboard objective (objective=$objective, displayName=$displayName, unit=$unit)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Create scoreboard objective (name=$name, displayName=$displayName, unit=$unit)" }
     }
 
     override fun handle(connection: PlayConnection) {
-        connection.scoreboardManager.objectives[objective] = ScoreboardObjective(objective, displayName, unit)
+        val objective = ScoreboardObjective(name, displayName, unit)
+
+        connection.scoreboardManager.objectives[name] = objective
+
+        connection.fireEvent(ScoreboardObjectiveCreateEvent(connection, objective))
     }
 
     enum class ObjectiveUnits {

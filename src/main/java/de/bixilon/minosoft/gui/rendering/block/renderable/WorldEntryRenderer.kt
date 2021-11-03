@@ -13,7 +13,7 @@ interface WorldEntryRenderer {
 
     fun resolveTextures(textureManager: TextureManager)
 
-    fun postInit() {}
+    fun postInit() = Unit
 
     companion object {
         fun resolveTexture(textureManager: TextureManager, textureResourceLocation: ResourceLocation): AbstractTexture {

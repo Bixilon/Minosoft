@@ -19,14 +19,16 @@ import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.entities.meta.EntityMetaData
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.items.SpawnEggItem
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
 import de.bixilon.minosoft.data.registries.registries.registry.ResourceLocationDeserializer
 import de.bixilon.minosoft.data.registries.registries.registry.Translatable
 import de.bixilon.minosoft.datafixer.EntityAttributeFixer.fix
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil.asResourceLocation
+import de.bixilon.minosoft.util.KUtil.nullCast
 import de.bixilon.minosoft.util.KUtil.toBoolean
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.KUtil.unsafeCast
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
 import glm_.vec3.Vec3d
@@ -41,7 +43,9 @@ data class EntityType(
     val fireImmune: Boolean,
     val attributes: Map<ResourceLocation, Double>,
     val factory: EntityFactory<out Entity>,
+    val spawnEgg: SpawnEggItem?,
 ) : RegistryItem(), Translatable {
+
 
     override fun toString(): String {
         return resourceLocation.toString()
@@ -76,13 +80,14 @@ data class EntityType(
 
             return EntityType(
                 resourceLocation = resourceLocation,
-                translationKey = data["translation_key"]?.asResourceLocation(),
+                translationKey = data["translation_key"]?.toResourceLocation(),
                 width = data["width"].unsafeCast(),
                 height = data["height"].unsafeCast(),
                 fireImmune = data["fire_immune"]?.toBoolean() ?: false,
                 sizeFixed = data["size_fixed"]?.toBoolean() ?: false,
                 attributes = attributes.toMap(),
                 factory = DefaultEntityFactories[resourceLocation] ?: error("Can not find entity factory for $resourceLocation"),
+                spawnEgg = registries.itemRegistry[data["spawn_egg_item"]]?.nullCast(), // ToDo: Not yet in PixLyzer
             )
         }
     }

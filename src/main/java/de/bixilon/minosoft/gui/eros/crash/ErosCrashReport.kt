@@ -22,11 +22,11 @@ import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.*
 import de.bixilon.minosoft.util.KUtil.toStackTrace
 import de.bixilon.minosoft.util.KUtil.tryCatch
+import de.bixilon.minosoft.util.UnitFormatter.formatBytes
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import de.bixilon.minosoft.util.task.pool.DefaultThreadPool
-import javafx.application.Platform
 import javafx.fxml.FXML
 import javafx.fxml.FXMLLoader
 import javafx.scene.Parent
@@ -55,7 +55,7 @@ class ErosCrashReport : JavaFXWindowController() {
     var crashReportPath: String? = null
         set(value) {
             field = value
-            Platform.runLater {
+            JavaFXUtil.runLater {
                 crashReportPathDescriptionFX.isVisible = value != null
                 if (value != null) {
                     crashReportPathFX.text = value
@@ -68,7 +68,7 @@ class ErosCrashReport : JavaFXWindowController() {
     var details: String? = null
         set(value) {
             field = value
-            Platform.runLater { detailsFX.text = value }
+            JavaFXUtil.runLater { detailsFX.text = value }
         }
 
     fun exit() {
@@ -103,6 +103,8 @@ class ErosCrashReport : JavaFXWindowController() {
             "Trying my best",
             "That happens when you develop while playing games!",
             "Written while driving in a FlixBus",
+            "Coded while traveling in the ICE 272 towards Hamburg-Altona",
+            "Sorry, the ICE 693 drive towards Munich was really long",
         )
 
 
@@ -119,8 +121,12 @@ class ErosCrashReport : JavaFXWindowController() {
             // Kill some stuff
             tryCatch(executor = { DefaultThreadPool.shutdownNow() })
 
-            for (window in Window.getWindows()) {
-                Platform.runLater { window.hide() }
+            try {
+                for (window in Window.getWindows()) {
+                    JavaFXUtil.runLater { window.hide() }
+                }
+            } catch (exception: Exception) {
+                exception.printStackTrace()
             }
 
             val details = createCrashText(this)
@@ -158,7 +164,7 @@ class ErosCrashReport : JavaFXWindowController() {
 
             JavaFXInitializer.await()
 
-            Platform.runLater {
+            JavaFXUtil.runLater {
                 val fxmlLoader = FXMLLoader(ErosCrashReport::class.java.getResource("/assets/minosoft/eros/crash/crash_screen.fxml"))
                 val parent = fxmlLoader.load<Parent>()
                 val stage = Stage()
@@ -199,14 +205,12 @@ ${exception?.toStackTrace() ?: ""}
 -- System Details --
     Operating system: ${SystemInformation.OS_TEXT}
     Detected operating system: ${OSUtil.OS}
-    Java version: Java: ${Runtime.version()} ${System.getProperty("sun.arch.data.model")}bit
-    Memory: ${SystemInformation.SYSTEM_MEMORY_TEXT}
+    Java version: ${Runtime.version()} ${System.getProperty("sun.arch.data.model")}bit
+    Memory: ${SystemInformation.SYSTEM_MEMORY.formatBytes()}
     CPU: ${SystemInformation.PROCESSOR_TEXT}
  
 -- Git Info --
-${GitInfo.formatForCrashReport()} 
-
-TODO: Add more data
+${GitInfo.formatForCrashReport()}
             """.trimIndent()
 
             val hash = Util.sha1(stack.toByteArray(StandardCharsets.UTF_8))

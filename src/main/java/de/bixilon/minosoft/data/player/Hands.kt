@@ -16,8 +16,8 @@ import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.enum.ValuesEnum
 
 enum class Hands {
-    MAIN_HAND,
-    OFF_HAND,  // left
+    MAIN,
+    OFF,
     ;
 
     companion object : ValuesEnum<Hands> {

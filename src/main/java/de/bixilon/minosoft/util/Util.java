@@ -292,6 +292,7 @@ public final class Util {
         forceClassInit(URLProtocolStreamHandlers.class);
         forceClassInit(MicrosoftOAuthUtils.class);
         forceClassInit(TimeWorker.class);
+        forceClassInit(ShutdownManager.class);
     }
 
     public static Map<String, String> urlQueryToMap(String query) {
@@ -309,16 +310,20 @@ public final class Util {
             if (builder.length() != 0) {
                 builder.append("&");
             }
-            builder.append(URLEncoder.encode(entry.getKey(), StandardCharsets.UTF_8));
-            builder.append("=");
-            builder.append(URLEncoder.encode(entry.getValue().toString(), StandardCharsets.UTF_8));
+            try {
+                builder.append(URLEncoder.encode(entry.getKey(), StandardCharsets.UTF_8.name()));
+                builder.append("=");
+                builder.append(URLEncoder.encode(entry.getValue().toString(), StandardCharsets.UTF_8.name()));
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
         }
         return builder.toString();
     }
 
     public static String[] headersMapToArray(Map<String, String> headers) {
         List<String> headerList = new ArrayList<>();
-        for (var entry : headers.entrySet()) {
+        for (Map.Entry<String, String> entry : headers.entrySet()) {
             headerList.add(entry.getKey());
             headerList.add(entry.getValue());
         }
@@ -327,7 +332,7 @@ public final class Util {
 
     public static String formatString(String string, Map<String, Object> format) {
         String output = string;
-        for (var entry : format.entrySet()) {
+        for (Map.Entry<String, Object> entry : format.entrySet()) {
             output = output.replace("${" + entry.getKey() + "}", entry.getValue().toString());
         }
         return output;

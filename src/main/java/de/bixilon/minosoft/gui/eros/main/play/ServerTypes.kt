@@ -18,7 +18,7 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.registry.Translatable
 import de.bixilon.minosoft.protocol.protocol.LANServerListener
 import de.bixilon.minosoft.util.KUtil
-import de.bixilon.minosoft.util.KUtil.asResourceLocation
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.enum.ValuesEnum
 import org.kordamp.ikonli.Ikon
 import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid
@@ -32,7 +32,7 @@ enum class ServerTypes(
     LAN(FontAwesomeSolid.NETWORK_WIRED, { LANServerListener.active }, { LANServerListener.SERVERS.size }),
     ;
 
-    override val translationKey: ResourceLocation = "minosoft:server_type.${name.lowercase()}".asResourceLocation()
+    override val translationKey: ResourceLocation = "minosoft:server_type.${name.lowercase()}".toResourceLocation()
 
     val count: Int
         get() = countSupplier()

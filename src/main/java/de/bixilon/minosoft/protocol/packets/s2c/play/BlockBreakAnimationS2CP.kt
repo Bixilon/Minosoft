@@ -23,7 +23,10 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 import glm_.vec3.Vec3i
 
 class BlockBreakAnimationS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
-    val animationId: Int = buffer.readVarInt()
+    /**
+     * Entity id of the entity who is breaking the block
+     */
+    val entityId: Int = buffer.readVarInt()
     var blockPosition: Vec3i = if (buffer.versionId < ProtocolVersions.V_14W03B) {
         buffer.readIntBlockPosition()
     } else {
@@ -46,6 +49,6 @@ class BlockBreakAnimationS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     }
 
     override fun log() {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Block break animation (animationId=$animationId, blockPosition=$blockPosition, stage=$stage" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Block break animation (entityId=$entityId, blockPosition=$blockPosition, stage=$stage)" }
     }
 }

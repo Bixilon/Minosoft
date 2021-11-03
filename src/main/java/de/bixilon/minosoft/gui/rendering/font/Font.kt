@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2020 Moritz Zwerger
+ * Copyright (C) 2021 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -13,39 +13,33 @@
 
 package de.bixilon.minosoft.gui.rendering.font
 
-import de.bixilon.minosoft.data.assets.AssetsManager
-import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
+import de.bixilon.minosoft.gui.rendering.font.provider.FontProvider
 
-class Font {
-    lateinit var providers: List<FontProvider>
-    private var loaded = false
+class Font(
+    val providers: MutableList<FontProvider>,
+) : FontProvider {
 
-    fun load(assetsManager: AssetsManager, textureManager: TextureManager) {
-        providers = FontLoader.loadFontProviders(assetsManager, textureManager)
-    }
-
-    fun getChar(char: Char): FontChar {
+    override fun postInit() {
         for (provider in providers) {
-            provider.chars[char]?.let {
-                return it
-            }
+            provider.postInit()
         }
-        throw IllegalStateException("$char can not be rendered!")
     }
 
-    fun loadAtlas() {
-        check(!loaded) { "Font has already a atlas texture!" }
-
+    override fun get(char: Char): CharData? {
         for (provider in providers) {
-            for (char in provider.chars.values) {
-                char.calculateUV(provider.width) // ToDo: Unicode: With should pe plus 1
-            }
+            provider[char]?.let { return it }
         }
-        loaded = true
+        return null
     }
+
 
     companion object {
         const val CHAR_HEIGHT = 8
-        const val SPACE_BETWEEN_CHARS = 1
+        const val CHAR_MARGIN = 1 // used for background ToDo: Set to 2, because underline does not match!
+        const val TOTAL_CHAR_HEIGHT = CHAR_HEIGHT + 2 * CHAR_MARGIN // top and bottom
+        const val HORIZONTAL_SPACING = 1
+        const val HORIZONTAL_SPACING_SHADOW = 0
+        const val HORIZONTAL_SPACING_BOLD = 1
+        const val VERTICAL_SPACING = 3
     }
 }

@@ -99,6 +99,10 @@ class RGBColor(val rgba: Int) : ChatCode, TextFormattable {
         return Companion.mix(this, *colors)
     }
 
+    operator fun times(value: Float): RGBColor {
+        return this.with(red = floatRed * value, green = floatGreen * value, blue = floatBlue * value)
+    }
+
     companion object {
         private const val COLOR_FLOAT_DIVIDER = 255.0f
 

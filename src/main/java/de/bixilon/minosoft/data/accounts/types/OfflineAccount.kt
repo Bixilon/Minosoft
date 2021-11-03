@@ -16,17 +16,17 @@ package de.bixilon.minosoft.data.accounts.types
 import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.data.accounts.AccountType
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.util.KUtil.asResourceLocation
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class OfflineAccount(username: String) : Account(username) {
     override val id: String = username
     override val type: ResourceLocation = RESOURCE_LOCATION
 
-    override fun join(serverId: String) {}
+    override fun join(serverId: String) = Unit
 
-    override fun logout() {}
+    override fun logout() = Unit
 
-    override fun verify() {}
+    override fun verify() = Unit
 
     override fun serialize(): Map<String, Any> {
         return mapOf(
@@ -36,6 +36,6 @@ class OfflineAccount(username: String) : Account(username) {
     }
 
     companion object : AccountType(OfflineAccount::class) {
-        override val RESOURCE_LOCATION: ResourceLocation = "minosoft:offline_account".asResourceLocation()
+        override val RESOURCE_LOCATION: ResourceLocation = "minosoft:offline_account".toResourceLocation()
     }
 }

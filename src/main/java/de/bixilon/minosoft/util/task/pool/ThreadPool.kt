@@ -138,7 +138,9 @@ open class ThreadPool(
         state = ThreadPoolStates.STOPPING
         synchronized(threads) {
             for (thread in threads.toSynchronizedList()) {
-                thread.interrupt()
+                if (thread.state == Thread.State.TIMED_WAITING) {
+                    thread.interrupt()
+                }
             }
         }
         while (threads.isNotEmpty()) {
@@ -148,8 +150,18 @@ open class ThreadPool(
     }
 
     override fun shutdownNow(): MutableList<Runnable> {
-        shutdown()
-        return mutableListOf()
+        state = ThreadPoolStates.STOPPING
+        synchronized(threads) {
+            for (thread in threads.toSynchronizedList()) {
+                thread.interrupt()
+            }
+        }
+        while (threads.isNotEmpty()) {
+            Thread.sleep(1L)
+        }
+        state = ThreadPoolStates.STOPPED
+
+        return mutableListOf() // ToDo
     }
 
     override fun isShutdown(): Boolean {
@@ -193,10 +205,12 @@ open class ThreadPool(
     }
 
     companion object Priorities {
-        const val HIGHEST = 500
+        const val HIGHEST = Int.MAX_VALUE
+        const val HIGHER = 500
         const val HIGH = 100
         const val NORMAL = 0
         const val LOW = -HIGH
-        const val LOWEST = -HIGHEST
+        const val LOWER = -HIGHER
+        const val LOWEST = Int.MIN_VALUE
     }
 }

@@ -15,6 +15,7 @@ package de.bixilon.minosoft.protocol.packets.c2s.login
 import de.bixilon.minosoft.protocol.packets.c2s.PlayC2SPacket
 import de.bixilon.minosoft.protocol.protocol.CryptManager
 import de.bixilon.minosoft.protocol.protocol.PlayOutByteBuffer
+import de.bixilon.minosoft.util.KUtil.toBase64
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -22,7 +23,7 @@ import java.security.PublicKey
 import javax.crypto.SecretKey
 
 class EncryptionResponseC2SP(
-    val secretKey: SecretKey,
+    @Deprecated(message = "This is used for enabling encryption in the socket. But it should not be part of the packet") val secretKey: SecretKey,
     val secret: ByteArray,
     val token: ByteArray,
 ) : PlayC2SPacket {
@@ -35,6 +36,6 @@ class EncryptionResponseC2SP(
     }
 
     override fun log() {
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Encryption response" }
+        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Encryption response (secret=${secret.toBase64()}, token=${token.toBase64()})" }
     }
 }

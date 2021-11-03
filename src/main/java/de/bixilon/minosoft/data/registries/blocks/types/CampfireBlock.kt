@@ -18,20 +18,20 @@ import de.bixilon.minosoft.data.player.Hands
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockFactory
 import de.bixilon.minosoft.data.registries.blocks.BlockState
-import de.bixilon.minosoft.data.registries.blocks.BlockUsages
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.items.tools.ShovelItem
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.gui.rendering.input.camera.hit.RaycastHit
+import de.bixilon.minosoft.gui.rendering.input.interaction.InteractionResults
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.campfire.CampfireSmokeParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.fire.SmokeParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.lava.LavaParticle
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.horizontalPlus
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.noise
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil.asResourceLocation
 import de.bixilon.minosoft.util.KUtil.chance
 import de.bixilon.minosoft.util.KUtil.toBoolean
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3d
 import glm_.vec3.Vec3i
@@ -93,18 +93,18 @@ open class CampfireBlock(resourceLocation: ResourceLocation, registries: Registr
         }
     }
 
-    override fun onUse(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, raycastHit: RaycastHit, hands: Hands, itemStack: ItemStack?): BlockUsages {
+    override fun onUse(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, raycastHit: RaycastHit, hand: Hands, itemStack: ItemStack?): InteractionResults {
         // ToDo: Ignite (flint and steel, etc)
         if (itemStack?.item !is ShovelItem || blockState.properties[BlockProperties.LIT] != true) {
-            return super.onUse(connection, blockState, blockPosition, raycastHit, hands, itemStack)
+            return super.onUse(connection, blockState, blockPosition, raycastHit, hand, itemStack)
         }
         connection.world.setBlockState(blockPosition, blockState.withProperties(BlockProperties.LIT to false))
         extinguish(connection, blockState, blockPosition)
-        return BlockUsages.SUCCESS
+        return InteractionResults.SUCCESS
     }
 
     companion object : BlockFactory<CampfireBlock> {
-        private val CAMPFIRE_CRACKLE_SOUND_RESOURCE_LOCATION = "minecraft:block.campfire.crackle".asResourceLocation()
+        private val CAMPFIRE_CRACKLE_SOUND_RESOURCE_LOCATION = "minecraft:block.campfire.crackle".toResourceLocation()
 
         override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): CampfireBlock {
             return CampfireBlock(resourceLocation, registries, data)

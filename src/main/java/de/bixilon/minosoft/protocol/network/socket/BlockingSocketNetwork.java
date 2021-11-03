@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.protocol.network.socket;
 
+import de.bixilon.minosoft.gui.rendering.util.JavaBackport;
 import de.bixilon.minosoft.protocol.exceptions.PacketParseException;
 import de.bixilon.minosoft.protocol.exceptions.PacketTooLongException;
 import de.bixilon.minosoft.protocol.network.Network;
@@ -111,8 +112,8 @@ public class BlockingSocketNetwork extends Network {
                         break;
                     }
                     try {
-                        var typeAndPacket = prepareS2CPacket(this.inputStream);
-                        while (this.receivingPaused) {
+                        Pair<PacketTypes.S2C, S2CPacket> typeAndPacket = prepareS2CPacket(this.inputStream);
+                        while (this.receivingPaused && this.connection.getProtocolState() != ProtocolStates.DISCONNECTED && !this.shouldDisconnect) {
                             Util.sleep(1L);
                         }
                         handlePacket(typeAndPacket.getKey(), typeAndPacket.getValue());
@@ -128,6 +129,7 @@ public class BlockingSocketNetwork extends Network {
                     socketSendThread.interrupt();
                 }
                 if (exception instanceof SocketException && exception.getMessage().equals("Socket closed")) {
+                    Log.log(LogMessageType.NETWORK_STATUS, LogLevels.INFO, "Socket closed, disconnecting...");
                     this.connection.setProtocolState(ProtocolStates.DISCONNECTED);
                     return;
                 }
@@ -159,8 +161,14 @@ public class BlockingSocketNetwork extends Network {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        this.socketReceiveThread.interrupt();
-        this.socketSendThread.interrupt();
+        Thread socketReceiveThread = this.socketReceiveThread;
+        if (socketReceiveThread != null) {
+            this.socketReceiveThread.interrupt();
+        }
+        Thread socketSendThread = this.socketSendThread;
+        if (socketSendThread != null) {
+            socketSendThread.interrupt();
+        }
         this.connection.setProtocolState(ProtocolStates.DISCONNECTED);
     }
 
@@ -197,7 +205,7 @@ public class BlockingSocketNetwork extends Network {
                     }
 
                     C2SPacket packet = this.queue.take();
-                    while (this.sendingPaused) {
+                    while (this.sendingPaused && this.connection.getProtocolState() != ProtocolStates.DISCONNECTED && !this.shouldDisconnect) {
                         Util.sleep(1L);
                     }
                     packet.log();
@@ -226,13 +234,13 @@ public class BlockingSocketNetwork extends Network {
             throw new PacketTooLongException(packetLength);
         }
 
-        byte[] bytes = this.inputStream.readNBytes(packetLength);
+        byte[] bytes = JavaBackport.readNBytes(inputStream, packetLength);
         return super.receiveS2CPacket(bytes);
     }
 
     protected void enableEncryption(SecretKey secretKey) {
         this.inputStream = new CipherInputStream(this.inputStream, CryptManager.createNetCipherInstance(Cipher.DECRYPT_MODE, secretKey));
         this.outputStream = new CipherOutputStream(this.outputStream, CryptManager.createNetCipherInstance(Cipher.ENCRYPT_MODE, secretKey));
-        Log.debug("Encryption enabled!");
+        Log.log(LogMessageType.NETWORK_STATUS, LogLevels.VERBOSE, () -> "Enabled protocol encryption");
     }
 }

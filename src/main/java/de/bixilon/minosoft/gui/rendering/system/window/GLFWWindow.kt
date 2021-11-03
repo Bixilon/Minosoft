@@ -14,7 +14,14 @@
 package de.bixilon.minosoft.gui.rendering.system.window
 
 import de.bixilon.minosoft.config.key.KeyCodes
-import de.bixilon.minosoft.gui.rendering.modding.events.*
+import de.bixilon.minosoft.gui.rendering.modding.events.ResizeWindowEvent
+import de.bixilon.minosoft.gui.rendering.modding.events.WindowCloseEvent
+import de.bixilon.minosoft.gui.rendering.modding.events.WindowFocusChangeEvent
+import de.bixilon.minosoft.gui.rendering.modding.events.WindowIconifyChangeEvent
+import de.bixilon.minosoft.gui.rendering.modding.events.input.MouseMoveEvent
+import de.bixilon.minosoft.gui.rendering.modding.events.input.MouseScrollEvent
+import de.bixilon.minosoft.gui.rendering.modding.events.input.RawCharInputEvent
+import de.bixilon.minosoft.gui.rendering.modding.events.input.RawKeyInputEvent
 import de.bixilon.minosoft.gui.rendering.system.window.BaseWindow.Companion.DEFAULT_MAXIMUM_WINDOW_SIZE
 import de.bixilon.minosoft.gui.rendering.system.window.BaseWindow.Companion.DEFAULT_MINIMUM_WINDOW_SIZE
 import de.bixilon.minosoft.gui.rendering.system.window.BaseWindow.Companion.DEFAULT_WINDOW_SIZE
@@ -137,9 +144,12 @@ class GLFWWindow(
 
         super.init()
 
-        val videoMode = glfwGetVideoMode(glfwGetPrimaryMonitor())!!
-
-        glfwSetWindowPos(window, (videoMode.width() - size.x) / 2, (videoMode.height() - size.y) / 2)
+        val primaryMonitor = glfwGetPrimaryMonitor()
+        if (primaryMonitor != 0L) {
+            glfwGetVideoMode(primaryMonitor)?.let {
+                glfwSetWindowPos(window, (it.width() - size.x) / 2, (it.height() - size.y) / 2)
+            }
+        }
 
 
         glfwSetKeyCallback(window, this::keyInput)
@@ -153,6 +163,7 @@ class GLFWWindow(
         glfwSetWindowCloseCallback(window, this::onClose)
         glfwSetWindowFocusCallback(window, this::onFocusChange)
         glfwSetWindowIconifyCallback(window, this::onIconify)
+        glfwSetScrollCallback(window, this::onScroll)
     }
 
     override fun destroy() {
@@ -250,6 +261,14 @@ class GLFWWindow(
             return
         }
         eventMaster.fireEvent(MouseMoveEvent(position = Vec2d(x, y)))
+    }
+
+    private fun onScroll(window: Long, xOffset: Double, yOffset: Double) {
+        if (window != this.window) {
+            return
+        }
+
+        eventMaster.fireEvent(MouseScrollEvent(offset = Vec2d(xOffset, yOffset)))
     }
 
     companion object {

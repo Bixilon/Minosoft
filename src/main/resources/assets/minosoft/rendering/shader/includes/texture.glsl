@@ -14,18 +14,18 @@
 
 uniform sampler2DArray uTextures[7];
 
-vec4 getTexture(uint textureId, vec3 textureCoordinates) { // ToDo: This method is just stupid and workarounds a opengl crash with mesa drivers
+vec4 getTexture(uint textureId, vec3 uv) { // ToDo: This method is just stupid and workarounds a opengl crash with mesa drivers
     #ifdef __NVIDIA
-    return texture(uTextures[textureId], textureCoordinates);
+    return texture(uTextures[textureId], uv);
     #else
     switch (textureId) {
-        case 1u: return texture(uTextures[1], textureCoordinates);
-        case 2u: return texture(uTextures[2], textureCoordinates);
-        case 3u: return texture(uTextures[3], textureCoordinates);
-        case 4u: return texture(uTextures[4], textureCoordinates);
-        case 5u: return texture(uTextures[5], textureCoordinates);
-        case 6u: return texture(uTextures[6], textureCoordinates);
+        case 1u: return texture(uTextures[1], uv);
+        case 2u: return texture(uTextures[2], uv);
+        case 3u: return texture(uTextures[3], uv);
+        case 4u: return texture(uTextures[4], uv);
+        case 5u: return texture(uTextures[5], uv);
+        case 6u: return texture(uTextures[6], uv);
     }
-    return texture(uTextures[0], textureCoordinates);
+    return texture(uTextures[0], uv);
     #endif
 }

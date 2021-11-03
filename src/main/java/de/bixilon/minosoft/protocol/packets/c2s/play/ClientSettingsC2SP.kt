@@ -17,6 +17,8 @@ import de.bixilon.minosoft.data.player.Hands
 import de.bixilon.minosoft.protocol.packets.c2s.PlayC2SPacket
 import de.bixilon.minosoft.protocol.protocol.PlayOutByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
+import de.bixilon.minosoft.util.KUtil
+import de.bixilon.minosoft.util.enum.ValuesEnum
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -24,23 +26,29 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 class ClientSettingsC2SP(
     val locale: String = "en_us",
     val renderDistance: Int = 10,
-    val mainHand: Hands = Hands.MAIN_HAND,
+    val chatMode: ChatModes = ChatModes.EVERYTHING,
+    val skinParts: Set<SkinParts> = setOf(*SkinParts.VALUES),
+    val mainHand: Hands = Hands.MAIN,
     val disableTextFiltering: Boolean = true,
 ) : PlayC2SPacket {
 
     override fun write(buffer: PlayOutByteBuffer) {
         buffer.writeString(locale) // locale
         buffer.writeByte(renderDistance) // render Distance
-        buffer.writeByte(0x00) // chat settings (nobody uses them)
+        buffer.writeByte(chatMode.ordinal) // chat settings
         buffer.writeBoolean(true) // chat colors
         if (buffer.versionId < ProtocolVersions.V_14W03B) {
             buffer.writeByte(Difficulties.NORMAL.ordinal.toByte()) // difficulty
             buffer.writeBoolean(true) // cape
         } else {
-            buffer.writeByte(0x7F) // ToDo: skin parts
+            var skinParts = 0
+            for (skinPart in this.skinParts) {
+                skinParts = skinParts or skinPart.bitmask
+            }
+            buffer.writeByte(skinParts)
         }
         if (buffer.versionId >= ProtocolVersions.V_15W31A) {
-            buffer.writeVarInt(1) // ToDo
+            buffer.writeVarInt(mainHand.ordinal)
         }
         if (buffer.versionId >= ProtocolVersions.V_21W07A) {
             buffer.writeBoolean(disableTextFiltering)
@@ -49,5 +57,36 @@ class ClientSettingsC2SP(
 
     override fun log() {
         Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Client settings (locale=$locale, renderDistance=$renderDistance)" }
+    }
+
+    enum class SkinParts {
+        CAPE,
+        JACKET,
+        LEFT_SLEEVE,
+        RIGHT_SLEEVE,
+        LEFT_PANTS,
+        RIGHT_PANTS,
+        HAT,
+        ;
+
+        val bitmask = 1 shl ordinal
+
+
+        companion object : ValuesEnum<SkinParts> {
+            override val VALUES: Array<SkinParts> = values()
+            override val NAME_MAP: Map<String, SkinParts> = KUtil.getEnumValues(VALUES)
+        }
+    }
+
+    enum class ChatModes {
+        EVERYTHING,
+        COMMANDS_ONLY,
+        NOTHING,
+        ;
+
+        companion object : ValuesEnum<ChatModes> {
+            override val VALUES: Array<ChatModes> = values()
+            override val NAME_MAP: Map<String, ChatModes> = KUtil.getEnumValues(VALUES)
+        }
     }
 }

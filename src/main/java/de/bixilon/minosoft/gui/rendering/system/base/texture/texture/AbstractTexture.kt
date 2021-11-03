@@ -28,6 +28,7 @@ import java.nio.ByteBuffer
 interface AbstractTexture {
     val resourceLocation: ResourceLocation
 
+    var textureArrayUV: Vec2
     var singlePixelSize: Vec2
     val state: TextureStates
     val size: Vec2i

@@ -63,7 +63,7 @@ interface BaseWindow {
         val DEFAULT_WINDOW_SIZE: Vec2i
             get() = Vec2i(900, 500)
         val DEFAULT_MINIMUM_WINDOW_SIZE: Vec2i
-            get() = Vec2i(100, 100)
+            get() = Vec2i(300, 100)
         val DEFAULT_MAXIMUM_WINDOW_SIZE: Vec2i
             get() = Vec2i(-1, -1)
     }

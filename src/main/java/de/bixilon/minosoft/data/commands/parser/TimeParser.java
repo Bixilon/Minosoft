@@ -29,16 +29,22 @@ public class TimeParser extends CommandParser {
 
         if (stringReader.canRead()) {
             char unit = stringReader.read();
-            time *= switch (unit) {
-                case 'd' -> 24000;
-                case 's' -> 20;
-                case 't' -> 1;
-                case ' ' -> {
+            switch (unit) {
+                case 'd':
+                    time *= 24000;
+                    break;
+                case 's':
+                    time *= 20;
+                    break;
+                case 't':
+                    time *= 1;
+                    break;
+                case ' ':
                     stringReader.skip(-1);
-                    yield 1;
-                }
-                default -> throw new UnknownTimeUnitCommandParseException(stringReader, String.valueOf(unit));
-            };
+                    break;
+                default:
+                    throw new UnknownTimeUnitCommandParseException(stringReader, String.valueOf(unit));
+            }
         }
         return time;
     }

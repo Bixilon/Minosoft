@@ -29,6 +29,7 @@ import java.nio.ByteBuffer
 class PNGTexture(override val resourceLocation: ResourceLocation) : AbstractTexture {
     override var renderData: TextureRenderData? = null
 
+    override lateinit var textureArrayUV: Vec2
     override lateinit var singlePixelSize: Vec2
     override var state: TextureStates = TextureStates.DECLARED
         private set
@@ -69,5 +70,10 @@ class PNGTexture(override val resourceLocation: ResourceLocation) : AbstractText
         properties.postInit(this)
 
         state = TextureStates.LOADED
+    }
+
+
+    override fun toString(): String {
+        return resourceLocation.toString()
     }
 }

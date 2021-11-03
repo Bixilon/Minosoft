@@ -20,7 +20,7 @@ import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.assign
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil.asResourceLocation
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import glm_.pow
 import glm_.vec3.Vec3d
 
@@ -66,7 +66,7 @@ class PortalParticle(connection: PlayConnection, position: Vec3d, velocity: Vec3
 
 
     companion object : ParticleFactory<PortalParticle> {
-        override val RESOURCE_LOCATION: ResourceLocation = "minecraft:portal".asResourceLocation()
+        override val RESOURCE_LOCATION: ResourceLocation = "minecraft:portal".toResourceLocation()
 
         override fun build(connection: PlayConnection, position: Vec3d, velocity: Vec3d, data: ParticleData): PortalParticle {
             return PortalParticle(connection, position, velocity, data)

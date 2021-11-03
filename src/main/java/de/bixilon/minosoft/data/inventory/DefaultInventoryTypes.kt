@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.data.inventory
 
-import de.bixilon.minosoft.util.KUtil.asResourceLocation
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 object DefaultInventoryTypes {
-    val CHEST = "minecraft:chest".asResourceLocation()
-    val HORSE = "minecraft:EntityHorse".asResourceLocation()
+    val CHEST = "minecraft:chest".toResourceLocation()
+    val HORSE = "minecraft:EntityHorse".toResourceLocation()
 }

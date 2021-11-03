@@ -20,8 +20,9 @@ import glm_.vec3.Vec3i
 abstract class BlockEntity(
     val connection: PlayConnection,
 ) {
+    open val nbt: Map<String, Any> = mapOf()
 
-    open fun updateNBT(nbt: Map<String, Any>) {}
+    open fun updateNBT(nbt: Map<String, Any>) = Unit
 
-    open fun realTick(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i) {}
+    open fun realTick(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i) = Unit
 }

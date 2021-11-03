@@ -18,7 +18,7 @@ import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionEv
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.play.KickS2CP
 
-class KickEvent(
+open class KickEvent(
     connection: PlayConnection,
     initiator: EventInitiators,
     val reason: ChatComponent,

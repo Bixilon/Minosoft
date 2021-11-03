@@ -13,11 +13,18 @@
 
 package de.bixilon.minosoft.gui.rendering.util
 
+import de.bixilon.minosoft.data.text.BaseComponent
+import de.bixilon.minosoft.data.text.ChatColors
+import de.bixilon.minosoft.data.text.TextComponent
+import de.bixilon.minosoft.data.text.events.ClickEvent
+import de.bixilon.minosoft.data.text.events.HoverEvent
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.system.base.PixelTypes
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.Util
 import de.bixilon.minosoft.util.task.pool.DefaultThreadPool
+import de.bixilon.minosoft.util.task.pool.ThreadPool
+import de.bixilon.minosoft.util.task.pool.ThreadPoolRunnable
 import glm_.vec2.Vec2i
 import java.awt.image.BufferedImage
 import java.io.File
@@ -30,22 +37,21 @@ class ScreenshotTaker(
 ) {
     fun takeScreenshot() {
         try {
+            val width = renderWindow.window.size.x
+            val height = renderWindow.window.size.y
+            val buffer = renderWindow.renderSystem.readPixels(Vec2i(0, 0), Vec2i(width, height), PixelTypes.RGBA)
+
             val basePath = "${RunConfiguration.HOME_DIRECTORY}/screenshots/${renderWindow.connection.address.hostname}/${DATE_FORMATTER.format(System.currentTimeMillis())}"
             var path = "$basePath.png"
             var i = 1
             while (File(path).exists()) {
                 path = "${basePath}_${i++}.png"
-                if (i > 10) {
-                    screenshotFail(StackOverflowError())
-                    return
+                if (i > MAX_FILES_CHECK) {
+                    throw StackOverflowError("There are already > $MAX_FILES_CHECK screenshots with this date! Please try again!")
                 }
             }
 
-            val width = renderWindow.window.size.x
-            val height = renderWindow.window.size.y
-            val buffer = renderWindow.renderSystem.readPixels(Vec2i(0, 0), Vec2i(width, height), PixelTypes.RGBA)
-
-            DefaultThreadPool += {
+            DefaultThreadPool += ThreadPoolRunnable(priority = ThreadPool.HIGHER) {
                 try {
                     val bufferedImage = BufferedImage(width, height, BufferedImage.TYPE_INT_RGB)
 
@@ -64,23 +70,40 @@ class ScreenshotTaker(
 
                     ImageIO.write(bufferedImage, "png", file)
 
-                    val message = "§aScreenshot saved to §f${file.name}"
-                    renderWindow.sendDebugMessage(message)
+                    renderWindow.sendDebugMessage(BaseComponent(
+                        "§aScreenshot saved to ",
+                        TextComponent(file.name).apply {
+                            color = ChatColors.WHITE
+                            underline()
+                            clickEvent = ClickEvent(ClickEvent.ClickEventActions.OPEN_URL, "file:${file.absolutePath}")
+                            hoverEvent = HoverEvent(HoverEvent.HoverEventActions.SHOW_TEXT, "Click to open")
+                        },
+                        // "\n",
+                        // TextComponent("[DELETE]").apply {
+                        //     color = ChatColors.RED
+                        //     bold()
+                        //     clickEvent = ClickEvent(ClickEvent.ClickEventActions.OPEN_CONFIRMATION, {
+                        //         TODO()
+                        //     })
+                        //     hoverEvent = HoverEvent(HoverEvent.HoverEventActions.SHOW_TEXT, "Click to delete screenshot")
+                        // },
+                    ))
                 } catch (exception: Exception) {
-                    screenshotFail(exception)
+                    exception.fail()
                 }
             }
         } catch (exception: Exception) {
-            screenshotFail(exception)
+            exception.fail()
         }
     }
 
-    private fun screenshotFail(exception: Throwable?) {
-        exception?.printStackTrace()
-        renderWindow.sendDebugMessage("§cFailed to make a screenshot!")
+    private fun Throwable?.fail() {
+        this?.printStackTrace()
+        renderWindow.sendDebugMessage("§cFailed to make a screenshot: ${this?.message}")
     }
 
     companion object {
         private val DATE_FORMATTER = SimpleDateFormat("yyyy-MM-dd_HH.mm.ss")
+        private const val MAX_FILES_CHECK = 10
     }
 }

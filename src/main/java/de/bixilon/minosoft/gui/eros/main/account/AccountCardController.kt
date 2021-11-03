@@ -19,7 +19,7 @@ import de.bixilon.minosoft.data.text.TranslatableComponents
 import de.bixilon.minosoft.gui.eros.card.AbstractCard
 import de.bixilon.minosoft.gui.eros.card.CardFactory
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.text
-import de.bixilon.minosoft.util.KUtil.asResourceLocation
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import javafx.fxml.FXML
 import javafx.scene.text.TextFlow
 
@@ -48,6 +48,6 @@ class AccountCardController : AbstractCard<Account>() {
     }
 
     companion object : CardFactory<AccountCardController> {
-        override val LAYOUT: ResourceLocation = "minosoft:eros/main/account/account_card.fxml".asResourceLocation()
+        override val LAYOUT: ResourceLocation = "minosoft:eros/main/account/account_card.fxml".toResourceLocation()
     }
 }

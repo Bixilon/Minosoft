@@ -19,9 +19,9 @@ interface Renderer {
     val renderWindow: RenderWindow
     val renderSystem: RenderSystem
 
-    fun init() {}
+    fun init() = Unit
 
-    fun postInit() {}
+    fun postInit() = Unit
 
-    fun prepareDraw() {}
+    fun prepareDraw() = Unit
 }

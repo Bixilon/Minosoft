@@ -14,7 +14,8 @@ package de.bixilon.minosoft.protocol.packets.s2c.play
 
 import de.bixilon.minosoft.data.Difficulties
 import de.bixilon.minosoft.data.abilities.Gamemodes
-import de.bixilon.minosoft.data.registries.Dimension
+import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
 import de.bixilon.minosoft.modding.event.events.RespawnEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -24,11 +25,11 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
-import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
+import de.bixilon.minosoft.util.nbt.tag.NBTUtil.asCompound
 import glm_.vec3.Vec3d
 
 class RespawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
-    lateinit var dimension: Dimension
+    var dimension: DimensionProperties
         private set
     var difficulty: Difficulties = Difficulties.NORMAL
         private set
@@ -43,28 +44,30 @@ class RespawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         private set
     var copyMetaData = false
         private set
+    var world: ResourceLocation? = null
+        private set
 
     init {
-        when {
+        dimension = when {
             buffer.versionId < ProtocolVersions.V_20W21A -> {
-                dimension = buffer.connection.registries.dimensionRegistry[if (buffer.versionId < ProtocolVersions.V_1_8_9) { // ToDo: this should be 108 but wiki.vg is wrong. In 1.8 it is an int.
+                buffer.connection.registries.dimensionRegistry[if (buffer.versionId < ProtocolVersions.V_1_8_9) { // ToDo: this should be 108 but wiki.vg is wrong. In 1.8 it is an int.
                     buffer.readByte().toInt()
                 } else {
                     buffer.readInt()
-                }]
+                }].type
             }
             buffer.versionId < ProtocolVersions.V_1_16_2_PRE3 -> {
-                dimension = buffer.connection.registries.dimensionRegistry[buffer.readResourceLocation()]!!
+                buffer.connection.registries.dimensionRegistry[buffer.readResourceLocation()]!!.type
             }
             else -> {
-                buffer.readNBT()?.compoundCast() // current dimension data
+                DimensionProperties.deserialize(buffer.readNBT().asCompound()) // current dimension data
             }
         }
         if (buffer.versionId < ProtocolVersions.V_19W11A) {
             difficulty = Difficulties[buffer.readUnsignedByte()]
         }
         if (buffer.versionId >= ProtocolVersions.V_20W22A) {
-            dimension = buffer.connection.registries.dimensionRegistry[buffer.readResourceLocation()]!!
+            world = buffer.readResourceLocation()
         }
         if (buffer.versionId >= ProtocolVersions.V_19W36A) {
             hashedSeed = buffer.readLong()

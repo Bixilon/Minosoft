@@ -27,7 +27,7 @@ import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.advanced.AdvancedTextureParticle
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.blockPosition
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil.asResourceLocation
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import glm_.vec2.Vec2
 import glm_.vec3.Vec3d
 
@@ -42,7 +42,7 @@ class BlockDustParticle(connection: PlayConnection, position: Vec3d, velocity: V
         }
 
         texture = when (renderer) {
-            is BlockRenderer -> renderer.textureMapping.iterator().next().value
+            is BlockRenderer -> renderer.textureMapping.iterator().next().value // ToDo: If this is empty the rendering crashes
             is FluidRenderer -> renderer.stillTexture // ToDo
             else -> TODO()
         }
@@ -68,7 +68,7 @@ class BlockDustParticle(connection: PlayConnection, position: Vec3d, velocity: V
 
 
     companion object : ParticleFactory<BlockDustParticle> {
-        override val RESOURCE_LOCATION: ResourceLocation = "minecraft:block".asResourceLocation()
+        override val RESOURCE_LOCATION: ResourceLocation = "minecraft:block".toResourceLocation()
 
         override fun build(connection: PlayConnection, position: Vec3d, velocity: Vec3d, data: ParticleData): BlockDustParticle? {
             check(data is BlockParticleData)

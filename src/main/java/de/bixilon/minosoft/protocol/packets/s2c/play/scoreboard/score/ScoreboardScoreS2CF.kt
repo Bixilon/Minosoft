@@ -22,9 +22,11 @@ object ScoreboardScoreS2CF {
 
     fun createPacket(buffer: PlayInByteBuffer): PlayS2CPacket {
         val entity = buffer.readString()
-        return when (ScoreboardScoreActions[buffer.readUnsignedByte()]) {
-            ScoreboardScoreActions.PUT -> PutScoreboardScoreS2CP(entity, buffer)
-            ScoreboardScoreActions.REMOVE -> RemoveScoreboardScoreS2CP(entity, buffer)
+        val action = ScoreboardScoreActions[buffer.readVarInt()]
+        val objective = buffer.readNullString()
+        return when (action) {
+            ScoreboardScoreActions.PUT -> PutScoreboardScoreS2CP(entity, objective, buffer)
+            ScoreboardScoreActions.REMOVE -> RemoveScoreboardScoreS2CP(entity, objective, buffer)
         }
     }
 

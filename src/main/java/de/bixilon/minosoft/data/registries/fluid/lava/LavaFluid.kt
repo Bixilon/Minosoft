@@ -29,9 +29,9 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.horizontal
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3d
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil.asResourceLocation
 import de.bixilon.minosoft.util.KUtil.chance
 import de.bixilon.minosoft.util.KUtil.decide
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import glm_.vec3.Vec3d
 import glm_.vec3.Vec3i
 import kotlin.random.Random
@@ -42,8 +42,8 @@ class LavaFluid(
     data: Map<String, Any>,
 ) : FlowableFluid(resourceLocation, registries, data) {
     private val lavaParticleType: ParticleType? = null
-    override val stillTexture: ResourceLocation = "minecraft:block/lava_still".asResourceLocation()
-    override val flowingTexture: ResourceLocation = "minecraft:block/lava_flow".asResourceLocation()
+    override val stillTexture: ResourceLocation = "minecraft:block/lava_still".toResourceLocation()
+    override val flowingTexture: ResourceLocation = "minecraft:block/lava_flow".toResourceLocation()
 
     init {
         this::lavaParticleType.inject(LavaParticle)
@@ -63,7 +63,7 @@ class LavaFluid(
         val fluidHeight = entity.fluidHeights[DefaultFluids.LAVA] ?: 0.0f
 
         if (fluidHeight <= entity.swimHeight) {
-            entity.velocity = entity.velocity * Vec3d(0.5, 0.800000011920929, 0.5)
+            entity.velocity = entity.velocity * Vec3d(0.5, 0.8, 0.5)
             entity.velocity = updateMovement(entity, gravity, falling, entity.velocity)
         } else {
             entity.velocity = entity.velocity * 0.5

@@ -21,16 +21,14 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
-import glm_.vec3.Vec3
 
 class EntityInteractC2SP(
     entityId: Int,
-    val position: Vec3,
     val hand: Hands,
     override val sneaking: Boolean,
 ) : BaseInteractEntityC2SP(entityId, EntityInteractionActions.INTERACT) {
 
-    constructor(connection: PlayConnection, entity: Entity, position: Vec3, hand: Hands, sneaking: Boolean) : this(connection.world.entities.getId(entity)!!, position, hand, sneaking)
+    constructor(connection: PlayConnection, entity: Entity, hand: Hands, sneaking: Boolean) : this(connection.world.entities.getId(entity)!!, hand, sneaking)
 
     override fun write(buffer: PlayOutByteBuffer) {
         super.write(buffer)

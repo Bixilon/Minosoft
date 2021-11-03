@@ -13,7 +13,7 @@
 package de.bixilon.minosoft.data.registries.effects
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.effects.attributes.StatusEffectAttribute
+import de.bixilon.minosoft.data.registries.effects.attributes.EntityAttributeModifier
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
 import de.bixilon.minosoft.data.registries.registries.registry.ResourceLocationDeserializer
@@ -21,7 +21,7 @@ import de.bixilon.minosoft.data.registries.registries.registry.Translatable
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.data.text.RGBColor.Companion.asRGBColor
 import de.bixilon.minosoft.datafixer.EntityAttributeFixer.fix
-import de.bixilon.minosoft.util.KUtil.asResourceLocation
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.KUtil.unsafeCast
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.asCompound
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
@@ -32,8 +32,8 @@ data class StatusEffect(
     val category: StatusEffectCategories,
     override val translationKey: ResourceLocation?,
     val color: RGBColor,
-    val attributes: Map<ResourceLocation, StatusEffectAttribute>,
-    val uuidAttributes: Map<UUID, StatusEffectAttribute>,
+    val attributes: Map<ResourceLocation, EntityAttributeModifier>,
+    val uuidAttributes: Map<UUID, EntityAttributeModifier>,
 ) : RegistryItem(), Translatable {
 
     override fun toString(): String {
@@ -42,12 +42,12 @@ data class StatusEffect(
 
     companion object : ResourceLocationDeserializer<StatusEffect> {
         override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): StatusEffect {
-            val attributes: MutableMap<ResourceLocation, StatusEffectAttribute> = mutableMapOf()
-            val uuidAttributes: MutableMap<UUID, StatusEffectAttribute> = mutableMapOf()
+            val attributes: MutableMap<ResourceLocation, EntityAttributeModifier> = mutableMapOf()
+            val uuidAttributes: MutableMap<UUID, EntityAttributeModifier> = mutableMapOf()
 
             data["attributes"]?.compoundCast()?.let {
                 for ((key, value) in it) {
-                    val attribute = StatusEffectAttribute.deserialize(value.asCompound())
+                    val attribute = EntityAttributeModifier.deserialize(value.asCompound())
                     attributes[ResourceLocation.getResourceLocation(key).fix()] = attribute
                     uuidAttributes[attribute.uuid] = attribute
                 }
@@ -56,7 +56,7 @@ data class StatusEffect(
             return StatusEffect(
                 resourceLocation = resourceLocation,
                 category = StatusEffectCategories[data["category"].unsafeCast<String>()],
-                translationKey = data["translation_key"]?.asResourceLocation(),
+                translationKey = data["translation_key"]?.toResourceLocation(),
                 color = data["color"].unsafeCast<Int>().asRGBColor(),
                 attributes = attributes.toMap(),
                 uuidAttributes = uuidAttributes.toMap(),

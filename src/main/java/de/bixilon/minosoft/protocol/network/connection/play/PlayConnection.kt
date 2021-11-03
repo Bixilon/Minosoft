@@ -17,6 +17,7 @@ import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.ChatTextPositions
 import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.data.assets.MultiAssetsManager
+import de.bixilon.minosoft.data.bossbar.BossbarManager
 import de.bixilon.minosoft.data.commands.CommandRootNode
 import de.bixilon.minosoft.data.physics.CollisionDetector
 import de.bixilon.minosoft.data.player.LocalPlayerEntity
@@ -66,12 +67,16 @@ class PlayConnection(
     val account: Account,
     val version: Version,
 ) : Connection() {
+    val registries = Registries()
     val recipes = Recipes()
     val world = World(this)
     val tabList = TabList()
-    val scoreboardManager = ScoreboardManager()
-    val registries = Registries()
+    val scoreboardManager = ScoreboardManager(this)
+    val bossbarManager = BossbarManager()
+
+    @Deprecated(message = "PacketSender is deprecated")
     val sender = PacketSender(this)
+    val serverInfo = ServerInfo()
     lateinit var assetsManager: MultiAssetsManager
         private set
     val tags: MutableMap<ResourceLocation, Map<ResourceLocation, Tag<Any>>> = synchronizedMapOf()
@@ -113,7 +118,7 @@ class PlayConnection(
             val previousConnectionState = protocolState
             field = value
             // handle callbacks
-            fireEvent(ProtocolStateChangeEvent(this, previousConnectionState, protocolState))
+            fireEvent(ProtocolStateChangeEvent(this, previousConnectionState, value))
             when (value) {
                 ProtocolStates.HANDSHAKING -> {
                     state = PlayConnectionStates.HANDSHAKING
@@ -198,12 +203,11 @@ class PlayConnection(
 
     fun connect(latch: CountUpAndDownLatch = CountUpAndDownLatch(1)) {
         check(!wasConnected) { "Connection was already connected!" }
-        // Log.log(LogMessageType.OTHER, LogLevels.VERBOSE){TranslatableComponents.HELLO_WORLD(Minosoft.LANGUAGE_MANAGER, "Moritz", 17)}
         try {
             state = PlayConnectionStates.LOADING
             fireEvent(RegistriesLoadEvent(this, registries, RegistriesLoadEvent.States.PRE))
             version.load(latch) // ToDo: show gui loader
-            assetsManager = MultiAssetsManager(version.assetsManager, Minosoft.MINOSOFT_ASSETS_MANAGER, Minosoft.MINECRAFT_FALLBACK_ASSETS_MANAGER)
+            assetsManager = MultiAssetsManager(version.assetsManager, Minosoft.MINOSOFT_ASSETS_MANAGER)
             registries.parentRegistries = version.registries
             fireEvent(RegistriesLoadEvent(this, registries, RegistriesLoadEvent.States.POST))
             player = LocalPlayerEntity(account, this)
@@ -222,7 +226,7 @@ class PlayConnection(
             Log.log(LogMessageType.VERSION_LOADING, level = LogLevels.FATAL) { exception }
             Log.log(LogMessageType.VERSION_LOADING, level = LogLevels.FATAL) { "Could not load version $version. This version seems to be unsupported" }
             version.unload()
-            error = RegistriesLoadingException("Mappings could not be loaded", exception)
+            error = RegistriesLoadingException("Registries could not be loaded", exception)
             retry = false
         }
         latch.dec()

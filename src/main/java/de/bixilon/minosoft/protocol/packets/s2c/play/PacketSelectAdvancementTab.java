@@ -48,7 +48,7 @@ public class PacketSelectAdvancementTab extends PlayS2CPacket {
         public static final HashMap<ResourceLocation, AdvancementTabs> VALUES = new HashMap<>();
 
         static {
-            for (var tab : values()) {
+            for (AdvancementTabs tab : values()) {
                 VALUES.put(tab.resourceLocation, tab);
             }
         }

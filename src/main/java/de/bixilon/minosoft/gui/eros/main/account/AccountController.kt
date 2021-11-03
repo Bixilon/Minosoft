@@ -25,11 +25,11 @@ import de.bixilon.minosoft.gui.eros.dialog.SimpleErosConfirmationDialog
 import de.bixilon.minosoft.gui.eros.main.account.add.MicrosoftAddController
 import de.bixilon.minosoft.gui.eros.main.account.add.MojangAddController
 import de.bixilon.minosoft.gui.eros.main.account.add.OfflineAddController
-import de.bixilon.minosoft.util.KUtil.asResourceLocation
+import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.util.KUtil.decide
 import de.bixilon.minosoft.util.KUtil.extend
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.task.pool.DefaultThreadPool
-import javafx.application.Platform
 import javafx.fxml.FXML
 import javafx.geometry.HPos
 import javafx.geometry.Insets
@@ -132,7 +132,7 @@ class AccountController : EmbeddedJavaFXController<Pane>() {
                         onConfirm = {
                             Minosoft.config.config.account.entries.remove(account.id)
                             Minosoft.config.saveToFile()
-                            Platform.runLater { refreshList() }
+                            JavaFXUtil.runLater { refreshList() }
                         }
                     ).show()
                 }
@@ -143,7 +143,7 @@ class AccountController : EmbeddedJavaFXController<Pane>() {
                     isDisable = true
                     DefaultThreadPool += {
                         account.verify()
-                        Platform.runLater { refreshList() }
+                        JavaFXUtil.runLater { refreshList() }
                     }
                 }
             }, 3, 0)
@@ -152,10 +152,10 @@ class AccountController : EmbeddedJavaFXController<Pane>() {
                     isDisable = true
 
                     DefaultThreadPool += {
-                        account.verify()
+                        account.verify() // ToDo: Show error
                         Minosoft.config.config.account.selected = account
                         Minosoft.config.saveToFile()
-                        Platform.runLater { refreshList() }
+                        JavaFXUtil.runLater { refreshList() }
                     }
                 }
                 isDisable = Minosoft.config.config.account.selected === account
@@ -173,34 +173,34 @@ class AccountController : EmbeddedJavaFXController<Pane>() {
     }
 
     companion object {
-        val LAYOUT = "minosoft:eros/main/account/account.fxml".asResourceLocation()
+        val LAYOUT = "minosoft:eros/main/account/account.fxml".toResourceLocation()
 
         private val ACCOUNT_INFO_PROPERTIES: List<Pair<ResourceLocation, (account: Account) -> Any?>> = listOf(
-            "minosoft:main.account.account_info.id".asResourceLocation() to { it.id },
+            "minosoft:main.account.account_info.id".toResourceLocation() to { it.id },
         )
 
         val ACCOUNT_TYPES = listOf(
             ErosAccountType<MojangAccount>(
                 resourceLocation = MojangAccount.RESOURCE_LOCATION,
-                translationKey = "minosoft:main.account.type.mojang".asResourceLocation(),
+                translationKey = "minosoft:main.account.type.mojang".toResourceLocation(),
                 additionalDetails = listOf(
-                    "minosoft:main.account.account_info.email".asResourceLocation() to { it.email },
-                    "minosoft:main.account.account_info.uuid".asResourceLocation() to { it.uuid },
+                    "minosoft:main.account.account_info.email".toResourceLocation() to { it.email },
+                    "minosoft:main.account.account_info.uuid".toResourceLocation() to { it.uuid },
                 ),
                 icon = FontAwesomeSolid.BUILDING,
                 addHandler = { MojangAddController(it).show() },
             ),
             ErosAccountType<OfflineAccount>(
                 resourceLocation = OfflineAccount.RESOURCE_LOCATION,
-                translationKey = "minosoft:main.account.type.offline".asResourceLocation(),
+                translationKey = "minosoft:main.account.type.offline".toResourceLocation(),
                 icon = FontAwesomeSolid.MAP,
                 addHandler = { OfflineAddController(it).show() },
             ),
             ErosAccountType<MicrosoftAccount>(
                 resourceLocation = MicrosoftAccount.RESOURCE_LOCATION,
-                translationKey = "minosoft:main.account.type.microsoft".asResourceLocation(),
+                translationKey = "minosoft:main.account.type.microsoft".toResourceLocation(),
                 additionalDetails = listOf(
-                    "minosoft:main.account.account_info.uuid".asResourceLocation() to { it.uuid },
+                    "minosoft:main.account.account_info.uuid".toResourceLocation() to { it.uuid },
                 ),
                 icon = FontAwesomeBrands.MICROSOFT,
                 addHandler = { MicrosoftAddController(it).show() },

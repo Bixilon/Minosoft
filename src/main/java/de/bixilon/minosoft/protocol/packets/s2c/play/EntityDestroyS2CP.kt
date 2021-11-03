@@ -41,14 +41,14 @@ class EntityDestroyS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
             val entity = connection.world.entities[entityId] ?: continue
             entity.vehicle?.passengers?.remove(entity)
 
-            connection.fireEvent(EntityDestroyEvent(connection, EventInitiators.SERVER, entity))
             connection.world.entities.remove(entityId)
+            connection.fireEvent(EntityDestroyEvent(connection, EventInitiators.SERVER, entity))
         }
     }
 
     override fun log() {
         if (Minosoft.config.config.general.reduceProtocolLog) {
-            return
+            //   return
         }
         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Entity destroy (entityIds=$entityIds)" }
     }
