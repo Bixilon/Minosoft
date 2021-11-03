@@ -165,16 +165,15 @@ class TabListDataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
                 item
             } ?: continue
 
-            if (entity == null || entity !is PlayerEntity) {
-                continue
-            }
-
             if (entity === connection.player) {
                 entity.tabListItem.specialMerge(data)
             } else {
                 tabListItem.merge(data)
             }
-
+            
+            if (entity == null || entity !is PlayerEntity) {
+                continue
+            }
 
             entity.tabListItem = tabListItem
         }
