@@ -28,8 +28,8 @@ import de.bixilon.minosoft.util.KUtil.decide
 import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
 import de.bixilon.minosoft.util.KUtil.toSynchronizedMap
 import glm_.vec2.Vec2i
-import java.lang.Integer.max
 import java.util.*
+import java.util.concurrent.locks.ReentrantLock
 
 class TabListElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
     val header = TextElement(hudRenderer, "", background = false, fontAlignment = HorizontalAlignments.CENTER, parent = this)
@@ -38,8 +38,11 @@ class TabListElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
     private val background = ColorElement(hudRenderer, Vec2i.EMPTY, color = RGBColor(0, 0, 0, 120))
 
     private var entriesSize = Vec2i.EMPTY
-    val entries: MutableMap<UUID, TabListEntryElement> = synchronizedMapOf()
+    private val entries: MutableMap<UUID, TabListEntryElement> = synchronizedMapOf()
     private var toRender: List<TabListEntryElement> = listOf()
+    private val lock = ReentrantLock()
+    var needsApply = false
+        private set
 
     val pingBarsAtlasElements: Array<HUDAtlasElement> = arrayOf(
         hudRenderer.atlasManager["minecraft:tab_list_ping_0"]!!,
@@ -57,7 +60,6 @@ class TabListElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
         val size = size
 
         header.size.let {
-            header.silentApply()
             header.render(offset + Vec2i(HorizontalAlignments.CENTER.getOffset(size.x, it.x), 0), z, consumer, options)
             offset.y += it.y
         }
@@ -96,15 +98,13 @@ class TabListElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
 
         size.y += header.size.y
 
-        val toRender: MutableList<TabListEntryElement> = mutableListOf()
+        var toRender: MutableList<TabListEntryElement> = mutableListOf()
+        toRender += entries.toSynchronizedMap().values
 
-        // ToDo: Sorting isn't working correct:  java.lang.IllegalArgumentException: Comparison method violates its general contract!
-        // Probably a threading issue
-        val tabListItems = hudRenderer.connection.tabList.tabListItemsByUUID.toSynchronizedMap().entries.sortedWith { a, b -> a.value.compareTo(b.value) }
 
         val previousSize = Vec2i(size)
-        var columns = tabListItems.size / ENTRIES_PER_COLUMN
-        if (tabListItems.size % ENTRIES_PER_COLUMN > 0) {
+        var columns = toRender.size / ENTRIES_PER_COLUMN
+        if (toRender.size % ENTRIES_PER_COLUMN > 0) {
             columns++
         }
 
@@ -113,32 +113,47 @@ class TabListElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
         var currentMaxPrefWidth = 0
         var totalEntriesWidth = 0
 
+
+        // ToDo: Still sometimes crashing
+        lock.lock()
+        try {
+            toRender.sort()
+        } catch (exception: Exception) {
+            exception.printStackTrace()
+        }
+        lock.unlock()
+        // Minecraft limits it to 80 items. Imho this is removing a feature, but some servers use a custom tab list plugin and then players are duplicated, etc
+        // ToDo: Detect custom tab list, e.g. check player names for non valid chars, etc
+        toRender = toRender.subList(0, minOf(toRender.size, MAX_ENTRIES))
+
         // Check width
-        var index = 0
-        for ((uuid, item) in tabListItems) {
-            val entry = entries.getOrPut(uuid) { TabListEntryElement(hudRenderer, this, item, 0) }
-            toRender += entry
+        for ((index, entry) in toRender.withIndex()) {
             val prefWidth = entry.prefSize
 
-            currentMaxPrefWidth = max(currentMaxPrefWidth, prefWidth.x)
+            currentMaxPrefWidth = maxOf(currentMaxPrefWidth, prefWidth.x)
             if ((index + 1) % ENTRIES_PER_COLUMN == 0) {
                 widths[column] = currentMaxPrefWidth
                 totalEntriesWidth += currentMaxPrefWidth
                 currentMaxPrefWidth = 0
                 column++
             }
-            index++
         }
         if (currentMaxPrefWidth != 0) {
             widths[column] = currentMaxPrefWidth
             totalEntriesWidth += currentMaxPrefWidth
         }
-        size.x = max(size.x, totalEntriesWidth)
         size.y += (columns > 1).decide(ENTRIES_PER_COLUMN, toRender.size) * (TabListEntryElement.HEIGHT + ENTRY_VERTICAL_SPACING)
 
         size.y -= ENTRY_VERTICAL_SPACING // Remove already added space again
 
+
+        // add horizontal spacing to columns
+        if (columns >= 2) {
+            totalEntriesWidth += (columns - 1) * ENTRY_HORIZONTAL_SPACING
+        }
+
         this.entriesSize = Vec2i(totalEntriesWidth, size.y - previousSize.y)
+        size.x = maxOf(size.x, totalEntriesWidth)
 
 
         // apply width to every cell
@@ -150,21 +165,18 @@ class TabListElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
             }
         }
 
-        if (columns >= 2) {
-            size.x += (columns - 1) * ENTRY_HORIZONTAL_SPACING
-        }
-
         this.toRender = toRender
 
         size.y += footer.size.y
 
-        size.x = max(max(size.x, header.size.x), footer.size.x)
+        size.x = maxOf(size.x, header.size.x, footer.size.x)
 
 
-        this.size = size
+        this.size = size + 2 * BACKGROUND_PADDING
 
-        background.size = size + 2 * BACKGROUND_PADDING
+        background.size = size
         cacheUpToDate = false
+        needsApply = false
     }
 
     override fun silentApply(): Boolean {
@@ -175,11 +187,30 @@ class TabListElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
         return true
     }
 
+    fun update(uuid: UUID) {
+        val item = hudRenderer.connection.tabList.tabListItemsByUUID[uuid] ?: return
+        val entry = entries.getOrPut(uuid) { TabListEntryElement(hudRenderer, this, item, 0) }
+        lock.lock()
+        entry.silentApply()
+        lock.unlock()
+        needsApply = true
+    }
+
+    fun remove(uuid: UUID) {
+        entries -= uuid
+        needsApply = true
+    }
+
+    override fun onChildChange(child: Element) {
+        needsApply = true
+    }
+
 
     companion object {
         private const val ENTRIES_PER_COLUMN = 20
         private const val ENTRY_HORIZONTAL_SPACING = 5
         private const val ENTRY_VERTICAL_SPACING = 1
-        private const val BACKGROUND_PADDING = 1
+        private const val BACKGROUND_PADDING = 3
+        private const val MAX_ENTRIES = 80
     }
 }

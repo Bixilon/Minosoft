@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.tab
 
+import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.player.tab.TabListItem
 import de.bixilon.minosoft.data.text.ChatComponent
 import de.bixilon.minosoft.data.text.RGBColor
@@ -27,6 +28,7 @@ import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.Vec2Util.EMPTY
+import de.bixilon.minosoft.util.KUtil.nullCompare
 import glm_.vec2.Vec2i
 import java.lang.Integer.max
 
@@ -35,7 +37,7 @@ class TabListEntryElement(
     val tabList: TabListElement,
     val item: TabListItem,
     width: Int,
-) : Element(hudRenderer), Pollable {
+) : Element(hudRenderer), Pollable, Comparable<TabListEntryElement> {
     init {
         _parent = tabList
     }
@@ -46,8 +48,11 @@ class TabListEntryElement(
     private val nameElement = TextElement(hudRenderer, "", background = false, parent = this)
     private lateinit var pingElement: ImageElement
 
-    private var displayName: ChatComponent = ChatComponent.EMPTY
-    private var ping = -1
+    private var displayName: ChatComponent = item.displayName
+    private var ping = item.ping
+    private var gamemode: Gamemodes = item.gamemode
+    private var name: String = item.name
+    private var teamName = item.team?.name
 
     override var prefSize: Vec2i = Vec2i.EMPTY
     override var prefMaxSize: Vec2i
@@ -99,19 +104,45 @@ class TabListEntryElement(
     }
 
     override fun poll(): Boolean {
-        val ping = item.ping
         val displayName = item.tabDisplayName
+        val ping = item.ping
+        val gamemode = item.gamemode
+        val name = item.name
+        val teamName = item.team?.name
 
-        if (this.ping == ping && this.displayName == displayName) {
+        if (this.ping == ping && this.displayName == displayName && this.gamemode == gamemode && this.name == name && this.teamName == teamName) {
             return false
         }
 
         this.ping = ping
         this.displayName = displayName
+        this.gamemode = gamemode
+        this.name = name
+        this.teamName = teamName
 
         return true
     }
 
+    override fun compareTo(other: TabListEntryElement): Int {
+        if (this.gamemode != other.gamemode) {
+            if (this.gamemode == Gamemodes.SPECTATOR) {
+                return -1
+            }
+            if (other.gamemode == Gamemodes.SPECTATOR) {
+                return 1
+            }
+        }
+
+        this.teamName?.nullCompare(other.teamName)?.let { return it }
+
+        this.name.lowercase().nullCompare(other.name.lowercase())?.let { return it }
+
+        return 0
+    }
+
+    override fun toString(): String {
+        return displayName.legacyText
+    }
 
     companion object {
         const val HEIGHT = 10

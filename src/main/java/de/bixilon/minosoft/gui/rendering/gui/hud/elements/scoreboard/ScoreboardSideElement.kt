@@ -40,7 +40,6 @@ class ScoreboardSideElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
     }
 
     override fun forceRender(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
-        recalculateSize()
         backgroundElement.render(offset, z, consumer, options)
         nameBackgroundElement.render(offset, z + 1, consumer, options)
 
@@ -75,7 +74,7 @@ class ScoreboardSideElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
         queueSizeRecalculation()
     }
 
-    private fun recalculateSize() {
+    fun recalculateSize() {
         val size = Vec2i(MIN_WIDTH, Font.TOTAL_CHAR_HEIGHT)
         size.x = maxOf(size.x, nameElement.size.x)
 

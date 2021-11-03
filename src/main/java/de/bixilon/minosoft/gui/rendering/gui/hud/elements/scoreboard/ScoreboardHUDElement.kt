@@ -2,6 +2,7 @@ package de.bixilon.minosoft.gui.rendering.gui.hud.elements.scoreboard
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.scoreboard.ScoreboardPositions
+import de.bixilon.minosoft.gui.rendering.Drawable
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.LayoutedHUDElement
@@ -11,7 +12,7 @@ import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import glm_.vec2.Vec2i
 
-class ScoreboardHUDElement(hudRenderer: HUDRenderer) : LayoutedHUDElement<ScoreboardSideElement>(hudRenderer) {
+class ScoreboardHUDElement(hudRenderer: HUDRenderer) : LayoutedHUDElement<ScoreboardSideElement>(hudRenderer), Drawable {
     private val connection = hudRenderer.connection
     override val layout = ScoreboardSideElement(hudRenderer)
 
@@ -57,6 +58,13 @@ class ScoreboardHUDElement(hudRenderer: HUDRenderer) : LayoutedHUDElement<Scoreb
                 layout.updateScore(score)
             }
         })
+    }
+
+    override fun draw() {
+        // check if content was changed, and we need to re-prepare before drawing
+        if (!layout.cacheUpToDate) {
+            layout.recalculateSize()
+        }
     }
 
     companion object : HUDBuilder<ScoreboardHUDElement> {

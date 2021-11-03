@@ -17,6 +17,7 @@ import de.bixilon.minosoft.config.key.KeyAction
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.gui.rendering.Drawable
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.LayoutedHUDElement
@@ -26,10 +27,9 @@ import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import glm_.vec2.Vec2i
 
-class TabListHUDElement(hudRenderer: HUDRenderer) : LayoutedHUDElement<TabListElement>(hudRenderer) {
+class TabListHUDElement(hudRenderer: HUDRenderer) : LayoutedHUDElement<TabListElement>(hudRenderer), Drawable {
     private val connection = renderWindow.connection
     override val layout = TabListElement(hudRenderer)
-
 
     override val layoutOffset: Vec2i
         get() = Vec2i((hudRenderer.scaledSize.x - layout.size.x) / 2, 20)
@@ -44,24 +44,27 @@ class TabListHUDElement(hudRenderer: HUDRenderer) : LayoutedHUDElement<TabListEl
         connection.registerEvent(CallbackEventInvoker.of<TabListInfoChangeEvent> {
             layout.header.text = it.header
             layout.footer.text = it.footer
-            layout.forceApply()
         })
         connection.registerEvent(CallbackEventInvoker.of<TabListEntryChangeEvent> {
             for ((uuid, entry) in it.items) {
                 if (entry.remove) {
-                    layout.entries.remove(uuid)
+                    layout.remove(uuid)
                     continue
                 }
-                val element = layout.entries[uuid] ?: continue
-                element.forceApply()
+                layout.update(uuid)
             }
-            // ToDo: Cache more?
-            layout.forceApply()
         })
 
         // ToDo: Also check team changes, scoreboard changes, etc
 
         // ToDo: Just forceApply when visible
+    }
+
+    override fun draw() {
+        // check if content was changed, and we need to re-prepare before drawing
+        if (layout.needsApply) {
+            layout.forceApply()
+        }
     }
 
 
