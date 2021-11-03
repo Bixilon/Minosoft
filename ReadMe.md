@@ -43,6 +43,9 @@ Minosoft is an open source minecraft client, written from scratch in kotlin (and
 
 Works. Still missing many features, but heavily developed.
 
+![Rendering](doc/img/rendering5.png)  
+New hud system: full hotbar, scoreboard, bossbar, chat (+ better mipmaps)
+
 ![Rendering](doc/img/hypixel_skyblock.png)  
 The Hypixel skyblock hub
 
