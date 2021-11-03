@@ -56,8 +56,6 @@ class TabListHUDElement(hudRenderer: HUDRenderer) : LayoutedHUDElement<TabListEl
         })
 
         // ToDo: Also check team changes, scoreboard changes, etc
-
-        // ToDo: Just forceApply when visible
     }
 
     override fun draw() {

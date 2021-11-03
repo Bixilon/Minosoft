@@ -136,7 +136,7 @@ Not compatible (yet)
 6. (Optional) Build a fat jar with `mvn package`. You'll find the jar with all dependencies in `target/`. Then you don't need to recompile everytime
 
 ## Code mirrors
-
+- [gitlab.bixilon.de](https://gitlab.bixilon.de/bixilon/minosoft/) (Main repository)
 - [GitLab](https://gitlab.com/Bixilon/minosoft)
 - [GitHub](https://github.com/Bixilon/Minosoft/)
 

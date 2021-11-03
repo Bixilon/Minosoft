@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.rendering
 
 import de.bixilon.minosoft.Minosoft
-import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.config.key.KeyAction
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
@@ -127,20 +126,18 @@ class RenderWindow(
             }
         })
 
-        if (!StaticConfiguration.HUD_ONLY) {
-            // order dependent (from back to front)
-            registerRenderer(SkyRenderer)
-            registerRenderer(WorldRenderer)
-            registerRenderer(BlockOutlineRenderer)
-            if (Minosoft.config.config.game.graphics.particles.enabled) {
-                registerRenderer(ParticleRenderer)
-            }
-            if (Minosoft.config.config.game.entities.hitBox.enabled) {
-                registerRenderer(EntityHitBoxRenderer)
-            }
-            if (Minosoft.config.config.game.world.chunkBorders.enabled) {
-                registerRenderer(ChunkBorderRenderer)
-            }
+        // order dependent (from back to front)
+        registerRenderer(SkyRenderer)
+        registerRenderer(WorldRenderer)
+        registerRenderer(BlockOutlineRenderer)
+        if (Minosoft.config.config.game.graphics.particles.enabled) {
+            registerRenderer(ParticleRenderer)
+        }
+        if (Minosoft.config.config.game.entities.hitBox.enabled) {
+            registerRenderer(EntityHitBoxRenderer)
+        }
+        if (Minosoft.config.config.game.world.chunkBorders.enabled) {
+            registerRenderer(ChunkBorderRenderer)
         }
         registerRenderer(HUDRenderer)
     }
