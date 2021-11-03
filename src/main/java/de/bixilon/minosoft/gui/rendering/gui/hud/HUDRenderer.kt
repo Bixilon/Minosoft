@@ -183,7 +183,7 @@ class HUDRenderer(
             if (!element.enabled) {
                 continue
             }
-            if (element is Drawable) {
+            if (element is Drawable && !element.skipDraw) {
                 element.draw()
             }
             if (element is LayoutedHUDElement<*>) {

@@ -75,6 +75,11 @@ class ScoreboardSideElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
     }
 
     fun recalculateSize() {
+        val objective = objective
+        if (objective == null) {
+            _size = Vec2i.EMPTY
+            return
+        }
         val size = Vec2i(MIN_WIDTH, Font.TOTAL_CHAR_HEIGHT)
         size.x = maxOf(size.x, nameElement.size.x)
 

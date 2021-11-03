@@ -455,7 +455,10 @@ object KUtil {
     }
 
     fun String?.nullCompare(other: String?): Int? {
-        (this ?: "").compareTo(other ?: "").let {
+        if (this == null || other == null) {
+            return null
+        }
+        this.compareTo(other).let {
             if (it != 0) {
                 return it
             }

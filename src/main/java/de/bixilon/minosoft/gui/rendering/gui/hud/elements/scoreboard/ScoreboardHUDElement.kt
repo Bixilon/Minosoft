@@ -19,6 +19,9 @@ class ScoreboardHUDElement(hudRenderer: HUDRenderer) : LayoutedHUDElement<Scoreb
     override val layoutOffset: Vec2i
         get() = Vec2i(hudRenderer.scaledSize.x - layout.size.x, (hudRenderer.scaledSize.y - layout.size.y) / 2)
 
+    override val skipDraw: Boolean
+        get() = layout.objective == null
+
     override fun init() {
         connection.registerEvent(CallbackEventInvoker.of<ObjectivePositionSetEvent> {
             if (it.position != ScoreboardPositions.SIDEBAR) {
@@ -46,7 +49,9 @@ class ScoreboardHUDElement(hudRenderer: HUDRenderer) : LayoutedHUDElement<Scoreb
             layout.updateScore(it.score)
         })
         connection.registerEvent(CallbackEventInvoker.of<ScoreTeamChangeEvent> {
-            layout.objective ?: return@of
+            if (it.score.objective != layout.objective) {
+                return@of
+            }
             layout.updateScore(it.score)
         })
         connection.registerEvent(CallbackEventInvoker.of<TeamUpdateEvent> {

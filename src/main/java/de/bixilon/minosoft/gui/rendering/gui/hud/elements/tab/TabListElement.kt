@@ -43,6 +43,7 @@ class TabListElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
     private val lock = ReentrantLock()
     var needsApply = false
         private set
+    private var columns = 0
 
     val pingBarsAtlasElements: Array<HUDAtlasElement> = arrayOf(
         hudRenderer.atlasManager["minecraft:tab_list_ping_0"]!!,
@@ -67,11 +68,6 @@ class TabListElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
         val offsetBefore = Vec2i(offset)
         offset.x += HorizontalAlignments.CENTER.getOffset(size.x, entriesSize.x)
 
-        var columns = toRender.size / ENTRIES_PER_COLUMN
-        if (toRender.size % ENTRIES_PER_COLUMN > 0) {
-            columns++
-        }
-
         for ((index, entry) in toRender.withIndex()) {
             entry.render(offset, z + 1, consumer, options)
             offset.y += TabListEntryElement.HEIGHT + ENTRY_VERTICAL_SPACING
@@ -93,13 +89,20 @@ class TabListElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
     }
 
     override fun forceSilentApply() {
-        // ToDo: There are still some items shown, that don't even exist (anymore?)
         val size = Vec2i.EMPTY
 
         size.y += header.size.y
 
         var toRender: MutableList<TabListEntryElement> = mutableListOf()
         toRender += entries.toSynchronizedMap().values
+
+        lock.lock()
+        toRender.sort()
+        lock.unlock()
+
+        // Minecraft limits it to 80 items. Imho this is removing a feature, but some servers use a custom tab list plugin and then players are duplicated, etc
+        // ToDo: Detect custom tab list, e.g. check player names for non valid chars, etc
+        toRender = toRender.subList(0, minOf(toRender.size, MAX_ENTRIES))
 
 
         val previousSize = Vec2i(size)
@@ -113,18 +116,6 @@ class TabListElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
         var currentMaxPrefWidth = 0
         var totalEntriesWidth = 0
 
-
-        // ToDo: Still sometimes crashing
-        lock.lock()
-        try {
-            toRender.sort()
-        } catch (exception: Exception) {
-            exception.printStackTrace()
-        }
-        lock.unlock()
-        // Minecraft limits it to 80 items. Imho this is removing a feature, but some servers use a custom tab list plugin and then players are duplicated, etc
-        // ToDo: Detect custom tab list, e.g. check player names for non valid chars, etc
-        toRender = toRender.subList(0, minOf(toRender.size, MAX_ENTRIES))
 
         // Check width
         for ((index, entry) in toRender.withIndex()) {
@@ -172,7 +163,9 @@ class TabListElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {
         size.x = maxOf(size.x, header.size.x, footer.size.x)
 
 
-        this.size = size + 2 * BACKGROUND_PADDING
+        this.columns = columns
+        size += 2 * BACKGROUND_PADDING
+        this.size = size
 
         background.size = size
         cacheUpToDate = false

@@ -14,6 +14,9 @@
 package de.bixilon.minosoft.gui.rendering
 
 interface Drawable {
+    val skipDraw: Boolean
+        get() = false
+
     /**
      * Functions gets called every frame
      */
