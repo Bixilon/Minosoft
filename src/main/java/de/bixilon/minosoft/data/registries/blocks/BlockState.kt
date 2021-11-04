@@ -21,6 +21,7 @@ import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.sounds.SoundEvent
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.TintColorCalculator
+import de.bixilon.minosoft.gui.rendering.models.baked.block.BakedBlockModel
 import de.bixilon.minosoft.util.KUtil.toBoolean
 import de.bixilon.minosoft.util.KUtil.toInt
 import de.bixilon.minosoft.util.KUtil.unsafeCast
@@ -45,6 +46,7 @@ data class BlockState(
     val soundEventVolume: Float = 1.0f,
     val soundEventPitch: Float = 1.0f,
 ) {
+    var model: BakedBlockModel? = null
 
     override fun hashCode(): Int {
         return Objects.hash(block, properties)

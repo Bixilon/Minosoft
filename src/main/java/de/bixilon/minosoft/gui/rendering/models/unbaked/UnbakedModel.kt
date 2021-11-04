@@ -13,56 +13,10 @@
 
 package de.bixilon.minosoft.gui.rendering.models.unbaked
 
-import de.bixilon.minosoft.gui.rendering.models.display.ModelDisplay
-import de.bixilon.minosoft.gui.rendering.models.display.ModelDisplayPositions
-import de.bixilon.minosoft.gui.rendering.models.unbaked.element.UnbakedElement
-import de.bixilon.minosoft.util.KUtil.unsafeCast
-import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
-import de.bixilon.minosoft.util.nbt.tag.NBTUtil.listCast
+import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.models.baked.BakedModel
 
-abstract class UnbakedModel(
-    parent: UnbakedModel?,
-    json: Map<String, Any>,
-) : Model {
-    val display: Map<ModelDisplayPositions, ModelDisplay>
-    val elements: Set<UnbakedElement>
+interface UnbakedModel : Model {
 
-
-    init {
-        val display = parent?.display?.toMutableMap() ?: mutableMapOf()
-
-        json["display"]?.compoundCast()?.let {
-            for ((name, value) in it) {
-                display[ModelDisplayPositions[name]] = ModelDisplay(data = value.unsafeCast())
-            }
-        }
-
-        this.display = display
-    }
-
-    val textures: Map<String, String>
-
-    init {
-        val textures = parent?.textures?.toMutableMap() ?: mutableMapOf()
-
-        json["textures"]?.compoundCast()?.let {
-            for ((name, value) in it) {
-                textures[name] = value.toString()
-            }
-        }
-
-        this.textures = textures
-    }
-
-    init {
-        val elements = parent?.elements?.toMutableSet() ?: mutableSetOf()
-
-        json["elements"]?.listCast<Map<String, Any>>()?.let {
-            for (element in it) {
-                elements += UnbakedElement(data = element)
-            }
-        }
-
-        this.elements = elements
-    }
+    fun bake(renderWindow: RenderWindow): BakedModel
 }

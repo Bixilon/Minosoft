@@ -14,10 +14,13 @@
 package de.bixilon.minosoft.gui.rendering.models
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.registries.Registries
+import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.models.builtin.BuiltinModels
+import de.bixilon.minosoft.gui.rendering.models.unbaked.GenericUnbakedModel
 import de.bixilon.minosoft.gui.rendering.models.unbaked.UnbakedBlockModel
 import de.bixilon.minosoft.gui.rendering.models.unbaked.UnbakedItemModel
-import de.bixilon.minosoft.gui.rendering.models.unbaked.UnbakedModel
+import de.bixilon.minosoft.gui.rendering.models.unbaked.block.RootModel
 import de.bixilon.minosoft.util.KUtil.fromJson
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.KUtil.unsafeCast
@@ -33,10 +36,14 @@ import java.util.zip.ZipInputStream
 
 class ModelLoader(
     val jar: ZipInputStream,
+    val renderWindow: RenderWindow,
 ) {
-    private val unbakedBlockModels: MutableMap<ResourceLocation, UnbakedModel> = BuiltinModels.BUILTIN_MODELS.toMutableMap()
+    private val unbakedBlockModels: MutableMap<ResourceLocation, GenericUnbakedModel> = BuiltinModels.BUILTIN_MODELS.toMutableMap()
+    private val unbakedBlockStateModels: MutableMap<ResourceLocation, RootModel> = mutableMapOf()
     private val blockStateJsons: MutableMap<ResourceLocation, Map<String, Any>> = mutableMapOf()
     private val modelJsons: MutableMap<ResourceLocation, Map<String, Any>> = mutableMapOf()
+
+    private val registry: Registries = renderWindow.connection.registries
 
     private fun loadJsons() {
         // ToDo: Integrate in assets manager
@@ -61,45 +68,77 @@ class ModelLoader(
         }
     }
 
-    fun load() {
-        loadJsons()
-        Log.log(LogMessageType.VERSION_LOADING, LogLevels.VERBOSE) { "Loaded ${blockStateJsons.size} block states and ${modelJsons.size} model jsons!" }
+    private fun cleanup() {
+        modelJsons.clear()
+        blockStateJsons.clear()
+    }
 
+    private fun loadBlockModel(name: ResourceLocation, data: Map<String, Any>? = null): GenericUnbakedModel {
+        unbakedBlockModels[name]?.let { return it.unsafeCast() }
+        val data = data ?: modelJsons[name] ?: error("Can not find json: $name")
 
-        fun loadBlockModel(name: ResourceLocation, json: Map<String, Any>? = null): UnbakedModel {
-            unbakedBlockModels[name]?.let { return it.unsafeCast() }
-            val data = json ?: modelJsons[name] ?: error("Can not find json: $name")
+        val parent = data["parent"]?.toResourceLocation()?.let { loadBlockModel(it) }
 
-            val parent = data["parent"]?.toResourceLocation()?.let { loadBlockModel(it) }
+        val model = UnbakedBlockModel(parent, data)
 
-            val model = UnbakedBlockModel(parent, data)
+        unbakedBlockModels[name] = model
+        return model
+    }
 
-            unbakedBlockModels[name] = model
-            return model
-        }
+    private fun loadItemModel(name: ResourceLocation, data: Map<String, Any>? = null): GenericUnbakedModel {
+        unbakedBlockModels[name]?.let { return it.unsafeCast() }
+        val data = data ?: modelJsons[name] ?: error("Can not find json: $name")
 
+        val parent = data["parent"]?.toResourceLocation()?.let { loadItemModel(it) }
 
-        fun loadItemModel(name: ResourceLocation, json: Map<String, Any>? = null): UnbakedModel {
-            unbakedBlockModels[name]?.let { return it.unsafeCast() }
-            val data = json ?: modelJsons[name] ?: error("Can not find json: $name")
+        val model = UnbakedItemModel(parent, data)
 
-            val parent = data["parent"]?.toResourceLocation()?.let { loadItemModel(it) }
+        unbakedBlockModels[name] = model
+        return model
+    }
 
-            val model = UnbakedItemModel(parent, data)
-
-            unbakedBlockModels[name] = model
-            return model
-        }
-
-        for ((name, json) in modelJsons) {
+    private fun loadModels() {
+        for ((name, data) in modelJsons) {
             if (name.path.startsWith("block/")) {
-                loadBlockModel(name, json)
+                loadBlockModel(name, data)
             } else if (name.path.startsWith("item/")) {
-                loadItemModel(name, json)
+                loadItemModel(name, data)
             } else {
                 TODO("Unknown block model type: $name")
             }
         }
-        Log.log(LogMessageType.VERSION_LOADING, LogLevels.VERBOSE) { "Done loading models!" }
+    }
+
+    private fun loadBlockStates() {
+        for ((name, data) in blockStateJsons) {
+            val model = RootModel(unbakedBlockModels, data) ?: continue
+            unbakedBlockStateModels[name] = model
+        }
+    }
+
+    private fun bakeModels() {
+        for ((name, model) in unbakedBlockStateModels) {
+            val block = registry.blockRegistry[name] ?: continue
+
+            for (state in block.states) {
+                state.model = model.getModelForState(state).bake(renderWindow).unsafeCast()
+            }
+        }
+    }
+
+    fun load() {
+        loadJsons()
+        Log.log(LogMessageType.VERSION_LOADING, LogLevels.VERBOSE) { "Loaded ${blockStateJsons.size} block states and ${modelJsons.size} model jsons!" }
+
+        loadModels()
+        Log.log(LogMessageType.VERSION_LOADING, LogLevels.VERBOSE) { "Done loading unbaked models!" }
+
+        loadBlockStates()
+        Log.log(LogMessageType.VERSION_LOADING, LogLevels.VERBOSE) { "Done loading block states!" }
+
+        bakeModels()
+        Log.log(LogMessageType.VERSION_LOADING, LogLevels.VERBOSE) { "Done baking models!" }
+
+        cleanup()
     }
 }

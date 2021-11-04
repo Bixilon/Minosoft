@@ -465,4 +465,28 @@ object KUtil {
         }
         return null
     }
+
+    fun Any?.autoType(): Any? {
+        if (this == null) {
+            return this
+        }
+        if (this is Number) {
+            return this
+        }
+        val string = this.toString()
+
+        if (string == "true") {
+            return true
+        }
+        if (string == "false") {
+            return false
+        }
+
+        // ToDo: Optimize
+        if (string.matches("\\d+".toRegex())) {
+            return string.toInt()
+        }
+
+        return string
+    }
 }

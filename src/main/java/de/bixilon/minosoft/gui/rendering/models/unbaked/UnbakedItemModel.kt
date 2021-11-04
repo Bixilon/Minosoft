@@ -13,13 +13,19 @@
 
 package de.bixilon.minosoft.gui.rendering.models.unbaked
 
+import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.models.GUILights
+import de.bixilon.minosoft.gui.rendering.models.baked.BakedModel
 
 class UnbakedItemModel(
-    parent: UnbakedModel?,
+    parent: GenericUnbakedModel?,
     json: Map<String, Any>,
-) : UnbakedModel(parent, json) {
+) : GenericUnbakedModel(parent, json) {
     val guiLight: GUILights = json["gui_light"]?.toString()?.let { GUILights[it] } ?: parent?.let { return@let if (parent is UnbakedItemModel) parent.guiLight else null } ?: GUILights.SIDE
 
     // ToDo: Overrides (predicates)
+
+    override fun bake(renderWindow: RenderWindow): BakedModel {
+        return object : BakedModel {} // ToDo
+    }
 }

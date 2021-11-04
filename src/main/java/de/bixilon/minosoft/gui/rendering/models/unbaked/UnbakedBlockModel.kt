@@ -13,11 +13,17 @@
 
 package de.bixilon.minosoft.gui.rendering.models.unbaked
 
+import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.models.baked.BakedModel
 import de.bixilon.minosoft.util.KUtil.toBoolean
 
 class UnbakedBlockModel(
-    parent: UnbakedModel?,
+    parent: GenericUnbakedModel?,
     json: Map<String, Any>,
-) : UnbakedModel(parent, json) {
+) : GenericUnbakedModel(parent, json) {
     val ambientOcclusion: Boolean = json["ambientocclusion"]?.toBoolean() ?: parent?.let { return@let if (parent is UnbakedBlockModel) parent.ambientOcclusion else null } ?: true
+
+    override fun bake(renderWindow: RenderWindow): BakedModel {
+        return object : BakedModel {} // ToDo
+    }
 }

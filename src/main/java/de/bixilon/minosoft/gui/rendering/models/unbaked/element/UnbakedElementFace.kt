@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.models.unbaked.element
 
 import de.bixilon.minosoft.data.direction.Directions
+import de.bixilon.minosoft.gui.rendering.models.unbaked.element.UnbakedElement.Companion.BLOCK_RESOLUTION
 import de.bixilon.minosoft.util.KUtil.toInt
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.listCast
 import glm_.vec2.Vec2
@@ -30,8 +31,8 @@ data class UnbakedElementFace(
     companion object {
         operator fun invoke(direction: Directions, data: Map<String, Any>): UnbakedElementFace {
             val uv = data["uv"]?.listCast<Number>()
-            val uvStart = Vec2(uv?.get(0) ?: 0.0f, uv?.get(2) ?: 0.0f)
-            val uvEnd = Vec2(uv?.get(1) ?: 16.0f, uv?.get(3) ?: 16.0f)
+            val uvStart = Vec2(uv?.get(0) ?: 0.0f, uv?.get(2) ?: 0.0f) / BLOCK_RESOLUTION
+            val uvEnd = Vec2(uv?.get(1) ?: 16.0f, uv?.get(3) ?: 16.0f) / BLOCK_RESOLUTION
 
             return UnbakedElementFace(
                 direction = direction,

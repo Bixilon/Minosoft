@@ -30,6 +30,8 @@ data class UnbakedElement(
 ) {
 
     companion object {
+        const val BLOCK_RESOLUTION = 16.0f
+
         operator fun invoke(data: Map<String, Any>): UnbakedElement {
             val faces: MutableSet<UnbakedElementFace> = mutableSetOf()
 
@@ -40,8 +42,8 @@ data class UnbakedElement(
             }
 
             return UnbakedElement(
-                from = data["from"].toVec3(),
-                to = data["to"].toVec3(),
+                from = data["from"].toVec3() / BLOCK_RESOLUTION,
+                to = data["to"].toVec3() / BLOCK_RESOLUTION,
                 rotation = data["rotation"]?.compoundCast()?.let { return@let UnbakedElementRotation(data = it) },
                 shade = data["shade"]?.toBoolean() ?: true,
                 faces = faces,

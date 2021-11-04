@@ -113,6 +113,10 @@ enum class BlockProperties {
     ROTATION("rotation", IntBlockPropertiesSerializer),
     ORIENTATION("orientation", Orientations),
 
+
+    // ToDo: used in models
+    MAP("map", BooleanBlockPropertiesSerializer),
+
     ;
 
     val group: String

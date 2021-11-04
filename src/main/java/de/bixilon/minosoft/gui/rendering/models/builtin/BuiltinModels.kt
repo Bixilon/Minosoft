@@ -14,10 +14,10 @@
 package de.bixilon.minosoft.gui.rendering.models.builtin
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.gui.rendering.models.unbaked.UnbakedModel
+import de.bixilon.minosoft.gui.rendering.models.unbaked.GenericUnbakedModel
 
 object BuiltinModels {
-    val BUILTIN_MODELS: Map<ResourceLocation, UnbakedModel> = mapOf(
+    val BUILTIN_MODELS: Map<ResourceLocation, GenericUnbakedModel> = mapOf(
         UnbakedBlockEntityModel.RESOURCE_LOCATION to UnbakedBlockEntityModel,
         UnbakedGeneratedModel.RESOURCE_LOCATION to UnbakedGeneratedModel,
     )

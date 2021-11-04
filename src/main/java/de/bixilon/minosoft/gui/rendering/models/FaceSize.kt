@@ -11,21 +11,11 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.models.builtin
+package de.bixilon.minosoft.gui.rendering.models
 
-import de.bixilon.minosoft.data.registries.CompanionResourceLocation
-import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.models.baked.BakedModel
-import de.bixilon.minosoft.gui.rendering.models.unbaked.GenericUnbakedModel
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import glm_.vec3.Vec3
 
-@Deprecated("TODO")
-object UnbakedGeneratedModel : GenericUnbakedModel(null, mapOf()), CompanionResourceLocation {
-    override val RESOURCE_LOCATION: ResourceLocation = "minecraft:builtin/generated".toResourceLocation()
-
-    override fun bake(renderWindow: RenderWindow): BakedModel {
-        TODO("Not yet implemented")
-    }
-
-}
+class FaceSize(
+    val start: Vec3,
+    val end: Vec3,
+)

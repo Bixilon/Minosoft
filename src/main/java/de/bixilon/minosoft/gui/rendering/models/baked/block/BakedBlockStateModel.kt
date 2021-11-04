@@ -11,35 +11,33 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.block
+package de.bixilon.minosoft.gui.rendering.models.baked.block
 
-import de.bixilon.minosoft.data.world.ChunkSection
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.data.direction.Directions
+import de.bixilon.minosoft.data.world.light.LightAccessor
 import de.bixilon.minosoft.gui.rendering.block.mesh.ChunkSectionMesh
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.gui.rendering.models.FaceSize
 import glm_.vec3.Vec3i
 import java.util.*
 
-class SectionPreparer(
-    val renderWindow: RenderWindow,
-) {
+class BakedBlockStateModel(
+    val faces: Array<Array<BakedFace>>,
+    val sizes: Array<Array<FaceSize>>,
+) : BakedBlockModel {
 
+    override fun getFaceSize(direction: Directions, random: Random): Array<FaceSize> {
+        return sizes[direction.ordinal]
+    }
 
-    fun prepare(section: ChunkSection): ChunkSectionMesh {
-        val mesh = ChunkSectionMesh(renderWindow)
-
-        for (x in 0 until ProtocolDefinition.SECTION_MAX_X) {
-            for (y in 0 until ProtocolDefinition.SECTION_MAX_Y) {
-                for (z in 0 until ProtocolDefinition.SECTION_MAX_Z) {
-                    val block = section.blocks[ChunkSection.getIndex(x, y, z)]
-
-                    block?.model?.singleRender(Vec3i(x, y, z), mesh, Random(0L), 0xFF, intArrayOf(0xF, 0xF, 0xF, 0xF))
-                }
+    override fun singleRender(position: Vec3i, mesh: ChunkSectionMesh, random: Random, light: Int, ambientLight: IntArray) {
+        for (direction in faces) {
+            for (face in direction) {
+                face.singleRender(position, mesh, light, ambientLight)
             }
         }
+    }
 
-
-
-        return mesh
+    override fun getLight(position: Vec3i, random: Random, side: Directions, lightAccessor: LightAccessor): Int {
+        TODO("Not yet implemented")
     }
 }

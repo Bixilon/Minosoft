@@ -14,7 +14,6 @@
 package de.bixilon.minosoft.gui.rendering.util.vec.vec3
 
 import de.bixilon.minosoft.util.KUtil.toInt
-import glm_.vec3.Vec3
 import glm_.vec3.Vec3i
 
 object Vec3iUtil {
@@ -22,10 +21,10 @@ object Vec3iUtil {
     val Vec3i.Companion.MIN: Vec3i
         get() = Vec3i(Int.MIN_VALUE, Int.MIN_VALUE, Int.MIN_VALUE)
 
-    val Vec3.Companion.EMPTY: Vec3i
+    val Vec3i.Companion.EMPTY: Vec3i
         get() = Vec3i(0, 0, 0)
 
-    val Vec3.Companion.MAX: Vec3i
+    val Vec3i.Companion.MAX: Vec3i
         get() = Vec3i(Int.MAX_VALUE, Int.MAX_VALUE, Int.MAX_VALUE)
 
 
@@ -35,6 +34,15 @@ object Vec3iUtil {
             is Map<*, *> -> Vec3i(this["x"]?.toInt() ?: 0.0f, this["y"]?.toInt() ?: 0.0f, this["z"]?.toInt() ?: 0.0f)
             is Number -> Vec3i(this.toInt())
             else -> default ?: throw IllegalArgumentException("Not a Vec3i: $this")
+        }
+    }
+
+    fun Any?.toVec3iN(default: Vec3i? = null): Vec3i? {
+        return when (this) {
+            is List<*> -> Vec3i(this[0].toInt(), this[1].toInt(), this[2].toInt())
+            is Map<*, *> -> Vec3i(this["x"]?.toInt() ?: 0.0f, this["y"]?.toInt() ?: 0.0f, this["z"]?.toInt() ?: 0.0f)
+            is Number -> Vec3i(this.toInt())
+            else -> default
         }
     }
 }

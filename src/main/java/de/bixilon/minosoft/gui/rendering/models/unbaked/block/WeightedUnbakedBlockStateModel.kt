@@ -11,21 +11,39 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.models.builtin
+package de.bixilon.minosoft.gui.rendering.models.unbaked.block
 
-import de.bixilon.minosoft.data.registries.CompanionResourceLocation
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.models.baked.BakedModel
+import de.bixilon.minosoft.gui.rendering.models.baked.WeightedBakedModel
+import de.bixilon.minosoft.gui.rendering.models.baked.block.BakedBlockModel
 import de.bixilon.minosoft.gui.rendering.models.unbaked.GenericUnbakedModel
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import de.bixilon.minosoft.gui.rendering.models.unbaked.UnbakedModel
 
-@Deprecated("TODO")
-object UnbakedGeneratedModel : GenericUnbakedModel(null, mapOf()), CompanionResourceLocation {
-    override val RESOURCE_LOCATION: ResourceLocation = "minecraft:builtin/generated".toResourceLocation()
+class WeightedUnbakedBlockStateModel(
+    val models: List<UnbakedBlockStateModel>,
+) : UnbakedModel {
 
     override fun bake(renderWindow: RenderWindow): BakedModel {
-        TODO("Not yet implemented")
+        val baked: MutableMap<BakedBlockModel, Int> = mutableMapOf()
+
+        for (model in models) {
+            baked[model.bake(renderWindow)] = model.weight
+        }
+
+        return WeightedBakedModel(baked)
     }
 
+    companion object {
+        operator fun invoke(models: Map<ResourceLocation, GenericUnbakedModel>, data: List<Map<String, Any>>): WeightedUnbakedBlockStateModel {
+            val weightedModels: MutableList<UnbakedBlockStateModel> = mutableListOf()
+
+            for (entry in data) {
+                weightedModels += UnbakedBlockStateModel(models, entry)
+            }
+
+            return WeightedUnbakedBlockStateModel(weightedModels)
+        }
+    }
 }

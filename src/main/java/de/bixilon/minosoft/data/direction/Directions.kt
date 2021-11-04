@@ -36,7 +36,7 @@ enum class Directions(
     override val vectorf = Vec3(vector)
     override val vectord = Vec3d(vector)
 
-    val axis: Axes get() = Axes.get(this)
+    val axis: Axes get() = Axes[this] // ToDo
 
     lateinit var inverted: Directions
         private set
@@ -61,6 +61,17 @@ enum class Directions(
             WEST -> NORTH
             EAST -> SOUTH
             else -> TODO()
+        }
+    }
+
+    fun getPositions(from: Vec3, to: Vec3): Array<Vec3> {
+        return when (this) {
+            DOWN -> arrayOf(from, Vec3(to.x, from.y, from.y), Vec3(from.x, from.y, to.z), Vec3(to.x, from.y, to.z))
+            UP -> arrayOf(to, Vec3(to.x, to.y, from.y), Vec3(from.x, to.y, to.z), Vec3(from.x, to.y, from.z))
+            NORTH -> arrayOf(Vec3(to.x, to.y, from.y), Vec3(to.x, from.y, from.y), Vec3(from.x, to.y, from.z), from)
+            SOUTH -> arrayOf(Vec3(from.x, from.y, to.z), Vec3(to.x, from.y, to.y), Vec3(from.x, to.y, to.z), to)
+            WEST -> arrayOf(Vec3(from.x, to.y, to.z), Vec3(from.x, to.y, from.y), Vec3(from.x, from.y, to.z), from)
+            EAST -> arrayOf(Vec3(to.x, from.y, from.z), Vec3(to.x, to.y, from.y), Vec3(to.x, from.y, to.z), to)
         }
     }
 

@@ -11,35 +11,40 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.block
+package de.bixilon.minosoft.gui.rendering.models.baked.block
 
-import de.bixilon.minosoft.data.world.ChunkSection
-import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.gui.rendering.block.mesh.ChunkSectionMesh
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
+import glm_.vec2.Vec2
+import glm_.vec3.Vec3
 import glm_.vec3.Vec3i
-import java.util.*
 
-class SectionPreparer(
-    val renderWindow: RenderWindow,
+class BakedFace(
+    val positions: Array<Vec3>,
+    val uv: Array<Vec2>,
+    val shade: Boolean,
+    val tintIndex: Int,
+    val cullFace: Directions?,
+    val texture: AbstractTexture,
 ) {
+    fun singleRender(position: Vec3i, mesh: ChunkSectionMesh, light: Int, ambientLight: IntArray) {
+        val floatPosition = Vec3(position)
 
-
-    fun prepare(section: ChunkSection): ChunkSectionMesh {
-        val mesh = ChunkSectionMesh(renderWindow)
-
-        for (x in 0 until ProtocolDefinition.SECTION_MAX_X) {
-            for (y in 0 until ProtocolDefinition.SECTION_MAX_Y) {
-                for (z in 0 until ProtocolDefinition.SECTION_MAX_Z) {
-                    val block = section.blocks[ChunkSection.getIndex(x, y, z)]
-
-                    block?.model?.singleRender(Vec3i(x, y, z), mesh, Random(0L), 0xFF, intArrayOf(0xF, 0xF, 0xF, 0xF))
-                }
-            }
+        for (index in DRAW_ORDER) {
+            mesh.addVertex(positions[index] + floatPosition, uv[index], texture, null, light)
         }
+    }
 
 
-
-        return mesh
+    companion object {
+        private val DRAW_ORDER = intArrayOf(
+            0,
+            1,
+            3,
+            3,
+            2,
+            0,
+        )
     }
 }

@@ -15,11 +15,17 @@ package de.bixilon.minosoft.gui.rendering.models.builtin
 
 import de.bixilon.minosoft.data.registries.CompanionResourceLocation
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.gui.rendering.models.unbaked.UnbakedModel
+import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.models.baked.BakedModel
+import de.bixilon.minosoft.gui.rendering.models.unbaked.GenericUnbakedModel
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 @Deprecated("TODO")
-object UnbakedBlockEntityModel : UnbakedModel(null, mapOf()), CompanionResourceLocation {
+object UnbakedBlockEntityModel : GenericUnbakedModel(null, mapOf()), CompanionResourceLocation {
     override val RESOURCE_LOCATION: ResourceLocation = "minecraft:builtin/entity".toResourceLocation()
+
+    override fun bake(renderWindow: RenderWindow): BakedModel {
+        TODO("Not yet implemented")
+    }
 
 }

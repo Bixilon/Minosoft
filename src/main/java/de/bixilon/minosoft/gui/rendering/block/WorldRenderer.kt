@@ -43,25 +43,30 @@ class WorldRenderer(
     private val shader = renderSystem.createShader("minosoft:world".toResourceLocation())
     private val world: World = connection.world
     private val sectionPreparer = SectionPreparer(renderWindow)
+    private val lightMap = LightMap(connection)
     private lateinit var mesh: ChunkSectionMesh
 
 
     override fun init() {
         val asset = Resources.getAssetVersionByVersion(connection.version)
         val zip = ZipInputStream(GZIPInputStream(FileInputStream(AssetsUtil.getAssetDiskPath(asset.clientJarHash!!, true))))
-        val modelLoader = ModelLoader(zip)
+        val modelLoader = ModelLoader(zip, renderWindow)
         modelLoader.load()
-
-        val dirt = connection.registries.blockRegistry["dirt"]?.defaultState
-        val chunk = ChunkSection(Array(4096) { dirt })
-        mesh = sectionPreparer.prepare(chunk)
-        mesh.load()
     }
 
     override fun postInit() {
+        lightMap.init()
+
         shader.load()
         renderWindow.textureManager.staticTextures.use(shader)
         renderWindow.textureManager.staticTextures.animator.use(shader)
+        lightMap.use(shader)
+
+
+        val blockState = connection.registries.blockRegistry["dispenser"]?.defaultState
+        val chunk = ChunkSection(Array(4096) { if (it < 1) blockState else null })
+        mesh = sectionPreparer.prepare(chunk)
+        mesh.load()
     }
 
     override fun setupOpaque() {

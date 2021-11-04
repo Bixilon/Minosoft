@@ -11,21 +11,15 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.models.builtin
+package de.bixilon.minosoft.gui.rendering.models.baked.block
 
-import de.bixilon.minosoft.data.registries.CompanionResourceLocation
-import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.models.baked.BakedModel
-import de.bixilon.minosoft.gui.rendering.models.unbaked.GenericUnbakedModel
-import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import de.bixilon.minosoft.data.direction.Directions
+import de.bixilon.minosoft.gui.rendering.block.mesh.ChunkSectionMesh
+import glm_.vec3.Vec3i
 
-@Deprecated("TODO")
-object UnbakedGeneratedModel : GenericUnbakedModel(null, mapOf()), CompanionResourceLocation {
-    override val RESOURCE_LOCATION: ResourceLocation = "minecraft:builtin/generated".toResourceLocation()
+interface GreedyBakedBlockModel {
+    val canGreedyMesh: Boolean
 
-    override fun bake(renderWindow: RenderWindow): BakedModel {
-        TODO("Not yet implemented")
-    }
-
+    // ToDo: Tint
+    fun greedyRender(start: Vec3i, end: Vec3i, side: Directions, mesh: ChunkSectionMesh, light: Int)
 }
