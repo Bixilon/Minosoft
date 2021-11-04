@@ -11,11 +11,22 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.block.models
+package de.bixilon.minosoft.gui.rendering.block
 
-import glm_.vec2.Vec2i
+import de.bixilon.minosoft.data.world.ChunkSection
+import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.block.mesh.ChunkSectionMesh
 
-data class FaceSize(
-    val start: Vec2i = Vec2i(0, 0),
-    val end: Vec2i = Vec2i(BlockModelElement.BLOCK_RESOLUTION, BlockModelElement.BLOCK_RESOLUTION),
-)
+class SectionPreparer(
+    val renderWindow: RenderWindow,
+) {
+
+
+    fun prepare(section: ChunkSection): ChunkSectionMesh {
+        val mesh = ChunkSectionMesh(renderWindow)
+
+
+
+        return mesh
+    }
+}

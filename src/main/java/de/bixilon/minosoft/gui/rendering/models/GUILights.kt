@@ -11,25 +11,19 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.util.enum
+package de.bixilon.minosoft.gui.rendering.models
 
-interface ValuesEnum<T : Enum<*>> {
-    val VALUES: Array<T>
-    val NAME_MAP: Map<String, T>
+import de.bixilon.minosoft.util.KUtil
+import de.bixilon.minosoft.util.enum.ValuesEnum
 
-    operator fun get(ordinal: Int): T {
-        return VALUES[ordinal]
-    }
+enum class GUILights {
+    FRONT,
+    SIDE,
+    ;
 
-    operator fun get(name: String): T {
-        return NAME_MAP[name] ?: throw IllegalArgumentException("Can not find enum value: $name")
-    }
+    companion object : ValuesEnum<GUILights> {
+        override val VALUES: Array<GUILights> = values()
+        override val NAME_MAP: Map<String, GUILights> = KUtil.getEnumValues(VALUES)
 
-    fun next(current: T): T {
-        val ordinal = current.ordinal
-        if (ordinal + 1 > VALUES.size) {
-            return VALUES[0]
-        }
-        return VALUES[ordinal + 1]
     }
 }

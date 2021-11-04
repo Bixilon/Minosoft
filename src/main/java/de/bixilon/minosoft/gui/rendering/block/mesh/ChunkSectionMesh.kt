@@ -23,7 +23,7 @@ import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
 import glm_.vec2.Vec2
 import glm_.vec3.Vec3
 
-class ChunkSectionArrayMesh(renderWindow: RenderWindow) : Mesh(renderWindow, SectionArrayMeshStruct, initialCacheSize = 100000) {
+class ChunkSectionMesh(renderWindow: RenderWindow) : Mesh(renderWindow, SectionArrayMeshStruct, initialCacheSize = 100000) {
 
     fun addVertex(position: Vec3, uv: Vec2, texture: AbstractTexture, tintColor: RGBColor?, light: Int) {
         val color = tintColor ?: ChatColors.WHITE

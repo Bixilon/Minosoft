@@ -74,7 +74,7 @@ object Vec2Util {
             is List<*> -> Vec2i(this[0].toInt(), this[1].toInt())
             is Map<*, *> -> Vec2i(this["x"]?.toInt() ?: 0, this["y"]?.toInt() ?: 0)
             is Number -> Vec2i(this.toInt())
-            else -> default ?: throw IllegalArgumentException("Not a Vec2i!")
+            else -> default ?: throw IllegalArgumentException("Not a Vec2i: $this")
         }
     }
 }

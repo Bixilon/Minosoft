@@ -11,25 +11,13 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.util.enum
+package de.bixilon.minosoft.gui.rendering.models.unbaked
 
-interface ValuesEnum<T : Enum<*>> {
-    val VALUES: Array<T>
-    val NAME_MAP: Map<String, T>
+import de.bixilon.minosoft.util.KUtil.toBoolean
 
-    operator fun get(ordinal: Int): T {
-        return VALUES[ordinal]
-    }
-
-    operator fun get(name: String): T {
-        return NAME_MAP[name] ?: throw IllegalArgumentException("Can not find enum value: $name")
-    }
-
-    fun next(current: T): T {
-        val ordinal = current.ordinal
-        if (ordinal + 1 > VALUES.size) {
-            return VALUES[0]
-        }
-        return VALUES[ordinal + 1]
-    }
+class UnbakedBlockModel(
+    parent: UnbakedModel?,
+    json: Map<String, Any>,
+) : UnbakedModel(parent, json) {
+    val ambientOcclusion: Boolean = json["ambientocclusion"]?.toBoolean() ?: parent?.let { return@let if (parent is UnbakedBlockModel) parent.ambientOcclusion else null } ?: true
 }

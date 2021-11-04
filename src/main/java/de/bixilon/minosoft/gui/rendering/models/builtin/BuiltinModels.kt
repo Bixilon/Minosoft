@@ -11,25 +11,14 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.util.enum
+package de.bixilon.minosoft.gui.rendering.models.builtin
 
-interface ValuesEnum<T : Enum<*>> {
-    val VALUES: Array<T>
-    val NAME_MAP: Map<String, T>
+import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.gui.rendering.models.unbaked.UnbakedModel
 
-    operator fun get(ordinal: Int): T {
-        return VALUES[ordinal]
-    }
-
-    operator fun get(name: String): T {
-        return NAME_MAP[name] ?: throw IllegalArgumentException("Can not find enum value: $name")
-    }
-
-    fun next(current: T): T {
-        val ordinal = current.ordinal
-        if (ordinal + 1 > VALUES.size) {
-            return VALUES[0]
-        }
-        return VALUES[ordinal + 1]
-    }
+object BuiltinModels {
+    val BUILTIN_MODELS: Map<ResourceLocation, UnbakedModel> = mapOf(
+        UnbakedBlockEntityModel.RESOURCE_LOCATION to UnbakedBlockEntityModel,
+        UnbakedGeneratedModel.RESOURCE_LOCATION to UnbakedGeneratedModel,
+    )
 }

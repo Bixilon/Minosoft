@@ -11,25 +11,22 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.util.enum
+package de.bixilon.minosoft.gui.rendering.block.mesh
 
-interface ValuesEnum<T : Enum<*>> {
-    val VALUES: Array<T>
-    val NAME_MAP: Map<String, T>
+import de.bixilon.minosoft.data.registries.AABB
+import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
+import glm_.vec3.Vec3i
 
-    operator fun get(ordinal: Int): T {
-        return VALUES[ordinal]
-    }
+class ChunkSectionMeshes(
+    renderWindow: RenderWindow,
+    val opaqueMesh: ChunkSectionMesh = ChunkSectionMesh(renderWindow),
+    var translucentMesh: ChunkSectionMesh? = ChunkSectionMesh(renderWindow),
+    var transparentMesh: ChunkSectionMesh? = ChunkSectionMesh(renderWindow),
+) {
+    val minPosition = Vec3i.EMPTY
+    val maxPosition = Vec3i.EMPTY
 
-    operator fun get(name: String): T {
-        return NAME_MAP[name] ?: throw IllegalArgumentException("Can not find enum value: $name")
-    }
-
-    fun next(current: T): T {
-        val ordinal = current.ordinal
-        if (ordinal + 1 > VALUES.size) {
-            return VALUES[0]
-        }
-        return VALUES[ordinal + 1]
-    }
+    lateinit var aabb: AABB
+        private set
 }
