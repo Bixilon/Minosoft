@@ -16,8 +16,8 @@ package de.bixilon.minosoft.gui.rendering.input.camera
 
 import de.bixilon.minosoft.data.registries.AABB
 import de.bixilon.minosoft.gui.rendering.RenderConstants
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.of
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.KUtil.get

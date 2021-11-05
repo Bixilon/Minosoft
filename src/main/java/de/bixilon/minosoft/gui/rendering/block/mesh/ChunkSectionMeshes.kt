@@ -15,7 +15,7 @@ package de.bixilon.minosoft.gui.rendering.block.mesh
 
 import de.bixilon.minosoft.data.registries.AABB
 import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
 import glm_.vec3.Vec3i
 
 class ChunkSectionMeshes(

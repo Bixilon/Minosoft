@@ -23,9 +23,9 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.text.FadingTextElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.gui.rendering.util.vec.Vec4Util.left
-import de.bixilon.minosoft.gui.rendering.util.vec.Vec4Util.right
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4iUtil.left
+import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4iUtil.right
 import glm_.vec2.Vec2i
 import java.lang.Integer.max
 

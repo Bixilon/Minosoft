@@ -18,13 +18,13 @@ import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMeshCache
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.gui.rendering.util.vec.Vec4Util.EMPTY
-import de.bixilon.minosoft.gui.rendering.util.vec.Vec4Util.spaceSize
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.isGreater
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.isSmaller
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.max
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.min
+import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4iUtil.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4iUtil.spaceSize
 import glm_.vec2.Vec2i
 import glm_.vec4.Vec4i
 

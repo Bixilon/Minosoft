@@ -11,23 +11,12 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.util.vec
+package de.bixilon.minosoft.gui.rendering.util.vec.vec4
 
 import glm_.vec2.Vec2i
-import glm_.vec4.Vec4
 import glm_.vec4.Vec4i
 
-object Vec4Util {
-
-    val Vec4.Companion.MIN: Vec4
-        get() = Vec4(Float.MIN_VALUE, Float.MIN_VALUE, Float.MIN_VALUE, Float.MIN_VALUE)
-
-    val Vec4.Companion.EMPTY: Vec4
-        get() = Vec4(0.0f, 0.0f, 0.0f, 0.0f)
-
-    val Vec4.Companion.MAX: Vec4
-        get() = Vec4(Float.MAX_VALUE, Float.MAX_VALUE, Float.MAX_VALUE, Float.MAX_VALUE)
-
+object Vec4iUtil {
 
     val Vec4i.Companion.MIN: Vec4i
         get() = Vec4i(Int.MIN_VALUE, Int.MIN_VALUE, Int.MIN_VALUE, Int.MIN_VALUE)

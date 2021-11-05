@@ -47,7 +47,8 @@ class WeightedBakedModel(
                 return model
             }
         }
-        TODO("Should never happen!")
+
+        throw IllegalStateException("Could not find a model: This should never happen!")
     }
 
     override fun getFaceSize(direction: Directions, random: Random): Array<FaceSize> {

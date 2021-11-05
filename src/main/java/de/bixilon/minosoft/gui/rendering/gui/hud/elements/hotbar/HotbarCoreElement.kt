@@ -22,8 +22,8 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.layout.RowLayout
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.gui.rendering.util.vec.Vec4Util.copy
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.max
+import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4iUtil.copy
 import glm_.vec2.Vec2i
 import java.lang.Integer.max
 

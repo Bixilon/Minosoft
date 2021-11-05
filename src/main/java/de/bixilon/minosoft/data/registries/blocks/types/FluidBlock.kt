@@ -20,7 +20,7 @@ import de.bixilon.minosoft.data.registries.blocks.BlockFactory
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.fluid.Fluid
 import de.bixilon.minosoft.data.registries.registries.Registries
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3i

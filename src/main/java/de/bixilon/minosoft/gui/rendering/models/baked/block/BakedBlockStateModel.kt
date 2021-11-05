@@ -17,22 +17,23 @@ import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.world.light.LightAccessor
 import de.bixilon.minosoft.gui.rendering.block.mesh.ChunkSectionMesh
 import de.bixilon.minosoft.gui.rendering.models.FaceSize
+import glm_.vec3.Vec3
 import glm_.vec3.Vec3i
 import java.util.*
 
 class BakedBlockStateModel(
     val faces: Array<Array<BakedFace>>,
-    val sizes: Array<Array<FaceSize>>,
-) : BakedBlockModel {
+) : BakedBlockModel { // ToDo: Greedy meshable
 
     override fun getFaceSize(direction: Directions, random: Random): Array<FaceSize> {
-        return sizes[direction.ordinal]
+        return arrayOf() // ToDo
     }
 
     override fun singleRender(position: Vec3i, mesh: ChunkSectionMesh, random: Random, light: Int, ambientLight: IntArray) {
+        val floatPosition = Vec3(position)
         for (direction in faces) {
             for (face in direction) {
-                face.singleRender(position, mesh, light, ambientLight)
+                face.singleRender(floatPosition, mesh, light, ambientLight)
             }
         }
     }

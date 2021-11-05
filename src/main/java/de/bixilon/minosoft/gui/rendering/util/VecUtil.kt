@@ -20,12 +20,11 @@ import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.AABB
 import de.bixilon.minosoft.data.registries.blocks.RandomOffsetTypes
 import de.bixilon.minosoft.data.registries.blocks.types.Block
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import glm_.func.common.ceil
 import glm_.func.common.clamp
 import glm_.func.common.floor
-import glm_.func.cos
-import glm_.func.sin
 import glm_.glm
 import glm_.vec2.Vec2
 import glm_.vec2.Vec2i
@@ -38,20 +37,6 @@ import kotlin.random.Random
 
 @Deprecated(message = "Use VecXUtil instead")
 object VecUtil {
-    val Vec3.Companion.EMPTY: Vec3
-        get() = Vec3(0.0f, 0.0f, 0.0f)
-
-    val Vec3d.Companion.EMPTY: Vec3d
-        get() = Vec3d(0.0, 0.0, 0.0)
-
-    val Vec3i.Companion.EMPTY: Vec3i
-        get() = Vec3i(0.0f, 0.0f, 0.0f)
-
-    val Vec3.Companion.ONE: Vec3
-        get() = Vec3(1.0f, 1.0f, 1.0f)
-
-    val Vec3d.Companion.ONE: Vec3d
-        get() = Vec3d(1.0, 1.0, 1.0)
 
     fun Vec3.clear() {
         x = 0.0f
@@ -150,37 +135,6 @@ object VecUtil {
     val Vec3d.millis: Vec3d
         get() = this * ProtocolDefinition.TICKS_PER_SECOND
 
-    fun getRotatedValues(x: Float, y: Float, sin: Float, cos: Float, rescale: Boolean): Vec2 {
-        val result = Vec2(x * cos - y * sin, x * sin + y * cos)
-        if (rescale) {
-            return result / cos
-        }
-        return result
-    }
-
-    fun Vec3.rotate(angle: Float, axis: Axes): Vec3 {
-        return this.rotate(angle, axis, false)
-    }
-
-    fun Vec3.rotate(angle: Float, axis: Axes, rescale: Boolean): Vec3 {
-        if (angle == 0.0f) {
-            return this
-        }
-        return when (axis) {
-            Axes.X -> {
-                val rotatedValues = getRotatedValues(this.y, this.z, angle.sin, angle.cos, rescale)
-                Vec3(this.x, rotatedValues)
-            }
-            Axes.Y -> {
-                val rotatedValues = getRotatedValues(this.x, this.z, angle.sin, angle.cos, rescale)
-                Vec3(rotatedValues.x, this.y, rotatedValues.y)
-            }
-            Axes.Z -> {
-                val rotatedValues = getRotatedValues(this.x, this.y, angle.sin, angle.cos, rescale)
-                Vec3(rotatedValues.x, rotatedValues.y, this.z)
-            }
-        }
-    }
 
     fun Vec3.rotate(axis: Vec3, sin: Float, cos: Float): Vec3 {
         return this * cos + (axis cross this) * sin + axis * (axis dot this) * (1 - cos)

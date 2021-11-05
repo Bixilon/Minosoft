@@ -11,25 +11,22 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.models.display
+package de.bixilon.minosoft.gui.rendering.util.vec.vec3
 
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.toVec3
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.toVec3i
-import glm_.vec3.Vec3
-import glm_.vec3.Vec3i
+import glm_.vec3.Vec3d
 
-data class ModelDisplay(
-    val rotation: Vec3i?,
-    val translation: Vec3i?,
-    val scale: Vec3?,
-) {
-    companion object {
-        operator fun invoke(data: Map<String, Any>): ModelDisplay {
-            return ModelDisplay(
-                rotation = data["rotation"]?.toVec3i(),
-                translation = data["translation"]?.toVec3i(),
-                scale = data["scale"]?.toVec3(),
-            )
-        }
-    }
+object Vec3dUtil {
+
+    val Vec3d.Companion.MIN: Vec3d
+        get() = Vec3d(Double.MIN_VALUE, Double.MIN_VALUE, Double.MIN_VALUE)
+
+    val Vec3d.Companion.EMPTY: Vec3d
+        get() = Vec3d(0.0, 0.0, 0.0)
+
+    val Vec3d.Companion.ONE: Vec3d
+        get() = Vec3d(1.0, 1.0, 1.0)
+
+    val Vec3d.Companion.MAX: Vec3d
+        get() = Vec3d(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE)
+
 }

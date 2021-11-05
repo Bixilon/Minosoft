@@ -14,12 +14,16 @@ package de.bixilon.minosoft.data.direction
 
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.registries.blocks.properties.serializer.BlockPropertiesSerializer
+import de.bixilon.minosoft.gui.rendering.models.FaceSize
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.get
 import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.enum.ValuesEnum
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3d
 import glm_.vec3.Vec3i
+import glm_.vec3.swizzle.xy
+import glm_.vec3.swizzle.xz
+import glm_.vec3.swizzle.yz
 import kotlin.math.abs
 
 enum class Directions(
@@ -66,12 +70,20 @@ enum class Directions(
 
     fun getPositions(from: Vec3, to: Vec3): Array<Vec3> {
         return when (this) {
-            DOWN -> arrayOf(from, Vec3(to.x, from.y, from.y), Vec3(from.x, from.y, to.z), Vec3(to.x, from.y, to.z))
-            UP -> arrayOf(to, Vec3(to.x, to.y, from.y), Vec3(from.x, to.y, to.z), Vec3(from.x, to.y, from.z))
-            NORTH -> arrayOf(Vec3(to.x, to.y, from.y), Vec3(to.x, from.y, from.y), Vec3(from.x, to.y, from.z), from)
-            SOUTH -> arrayOf(Vec3(from.x, from.y, to.z), Vec3(to.x, from.y, to.y), Vec3(from.x, to.y, to.z), to)
-            WEST -> arrayOf(Vec3(from.x, to.y, to.z), Vec3(from.x, to.y, from.y), Vec3(from.x, from.y, to.z), from)
-            EAST -> arrayOf(Vec3(to.x, from.y, from.z), Vec3(to.x, to.y, from.y), Vec3(to.x, from.y, to.z), to)
+            DOWN -> arrayOf(from, Vec3(from.x, from.y, to.z), Vec3(to.x, from.y, to.z), Vec3(to.x, from.y, from.y))
+            UP -> arrayOf(to, Vec3(from.x, to.y, to.z), Vec3(from.x, to.y, from.z), Vec3(to.x, to.y, from.y))
+            NORTH -> arrayOf(Vec3(to.x, to.y, from.y), Vec3(from.x, to.y, from.z), from, Vec3(to.x, from.y, from.y))
+            SOUTH -> arrayOf(Vec3(from.x, from.y, to.z), Vec3(from.x, to.y, to.z), to, Vec3(to.x, from.y, to.y))
+            WEST -> arrayOf(Vec3(from.x, to.y, to.z), Vec3(from.x, from.y, to.z), from, Vec3(from.x, to.y, from.y))
+            EAST -> arrayOf(Vec3(to.x, from.y, from.z), Vec3(to.x, from.y, to.z), to, Vec3(to.x, to.y, from.y))
+        }
+    }
+
+    fun getSize(from: Vec3, to: Vec3): FaceSize {
+        return when (this) {
+            DOWN, UP -> FaceSize(from.xz, to.xz)
+            NORTH, SOUTH -> FaceSize(from.xy, to.xy)
+            WEST, EAST -> FaceSize(from.yz, to.yz)
         }
     }
 

@@ -11,25 +11,18 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.models.display
+package de.bixilon.minosoft.gui.rendering.util.vec.vec4
 
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.toVec3
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.toVec3i
-import glm_.vec3.Vec3
-import glm_.vec3.Vec3i
+import glm_.vec4.Vec4
 
-data class ModelDisplay(
-    val rotation: Vec3i?,
-    val translation: Vec3i?,
-    val scale: Vec3?,
-) {
-    companion object {
-        operator fun invoke(data: Map<String, Any>): ModelDisplay {
-            return ModelDisplay(
-                rotation = data["rotation"]?.toVec3i(),
-                translation = data["translation"]?.toVec3i(),
-                scale = data["scale"]?.toVec3(),
-            )
-        }
-    }
+object Vec4Util {
+
+    val Vec4.Companion.MIN: Vec4
+        get() = Vec4(Float.MIN_VALUE, Float.MIN_VALUE, Float.MIN_VALUE, Float.MIN_VALUE)
+
+    val Vec4.Companion.EMPTY: Vec4
+        get() = Vec4(0.0f, 0.0f, 0.0f, 0.0f)
+
+    val Vec4.Companion.MAX: Vec4
+        get() = Vec4(Float.MAX_VALUE, Float.MAX_VALUE, Float.MAX_VALUE, Float.MAX_VALUE)
 }

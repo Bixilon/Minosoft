@@ -13,7 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.sound
 
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3d
 import org.lwjgl.openal.AL10.*

@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.sound
 
 import de.bixilon.minosoft.gui.rendering.sound.sounds.Sound
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import glm_.vec3.Vec3
 import org.lwjgl.openal.AL10.*
 

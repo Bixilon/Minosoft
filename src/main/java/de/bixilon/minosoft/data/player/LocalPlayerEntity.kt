@@ -40,11 +40,12 @@ import de.bixilon.minosoft.data.tags.DefaultBlockTags
 import de.bixilon.minosoft.data.tags.Tag
 import de.bixilon.minosoft.gui.rendering.input.camera.MovementInput
 import de.bixilon.minosoft.gui.rendering.util.VecUtil
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.clearZero
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.get
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.c2s.play.*
 import de.bixilon.minosoft.protocol.packets.s2c.play.TagsS2CP

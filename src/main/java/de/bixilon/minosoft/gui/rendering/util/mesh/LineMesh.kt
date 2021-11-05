@@ -17,7 +17,7 @@ import de.bixilon.minosoft.data.registries.AABB
 import de.bixilon.minosoft.data.registries.VoxelShape
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import de.bixilon.minosoft.util.BitByte.isBit
 import de.bixilon.minosoft.util.MMath.positiveNegative
 import glm_.vec3.Vec3

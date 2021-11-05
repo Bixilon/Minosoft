@@ -17,11 +17,11 @@ import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.registries.effects.DefaultStatusEffects
 import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.uniform.FloatOpenGLUniformBuffer
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.ONE
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.clamp
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.lerp
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.modify
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.ONE
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import glm_.glm
 import glm_.vec3.Vec3

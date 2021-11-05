@@ -13,9 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.models
 
-import glm_.vec3.Vec3
+import glm_.vec2.Vec2
 
 class FaceSize(
-    val start: Vec3,
-    val end: Vec3,
+    val start: Vec2,
+    val end: Vec2,
 )

@@ -19,9 +19,9 @@ import de.bixilon.minosoft.data.player.LocalPlayerEntity
 import de.bixilon.minosoft.data.registries.AABB
 import de.bixilon.minosoft.data.registries.VoxelShape
 import de.bixilon.minosoft.data.world.Chunk
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.inChunkPosition
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import glm_.vec2.Vec2i
 import glm_.vec3.Vec3

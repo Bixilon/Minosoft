@@ -16,7 +16,6 @@ package de.bixilon.minosoft.gui.rendering.models.unbaked.block
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.models.FaceSize
 import de.bixilon.minosoft.gui.rendering.models.baked.block.BakedBlockModel
 import de.bixilon.minosoft.gui.rendering.models.baked.block.BakedBlockStateModel
 import de.bixilon.minosoft.gui.rendering.models.baked.block.BakedFace
@@ -70,21 +69,23 @@ data class UnbakedBlockStateModel(
 
 
         val faces: Array<MutableList<BakedFace>> = Array(Directions.VALUES.size) { mutableListOf() }
-        val sizes: Array<MutableList<FaceSize>> = Array(Directions.VALUES.size) { mutableListOf() }
 
         for (element in model.elements) {
+            val rescale = element.rotation?.rescale ?: false
             for (face in element.faces) {
                 val texture = resolvedTextures[face.texture.removePrefix("#")]!! // ToDo: Allow direct texture names?
                 val positions = face.direction.getPositions(element.from, element.to)
 
+
                 val texturePositions = arrayOf(
+                    Vec2(face.uvEnd.x, face.uvStart.y),
                     face.uvStart,
                     Vec2(face.uvStart.x, face.uvEnd.y),
-                    Vec2(face.uvEnd.x, face.uvStart.y),
                     face.uvEnd,
                 )
 
                 faces[face.direction.ordinal] += BakedFace(
+                    faceSize = face.direction.getSize(element.from, element.to),
                     positions = positions,
                     uv = texturePositions,
                     shade = element.shade,
@@ -101,13 +102,7 @@ data class UnbakedBlockStateModel(
             finalFaces[index] = faceArray.toTypedArray()
         }
 
-        val finalSizes: Array<Array<FaceSize>?> = Array(sizes.size) { null }
-
-        for ((index, sizeArray) in sizes.withIndex()) {
-            finalSizes[index] = sizeArray.toTypedArray()
-        }
-
-        return BakedBlockStateModel(finalFaces.unsafeCast(), finalSizes.unsafeCast())
+        return BakedBlockStateModel(finalFaces.unsafeCast())
     }
 
     companion object {

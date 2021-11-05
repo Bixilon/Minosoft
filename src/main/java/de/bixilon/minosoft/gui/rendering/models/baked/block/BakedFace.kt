@@ -15,12 +15,14 @@ package de.bixilon.minosoft.gui.rendering.models.baked.block
 
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.gui.rendering.block.mesh.ChunkSectionMesh
+import de.bixilon.minosoft.gui.rendering.models.FaceSize
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
+import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import glm_.vec2.Vec2
 import glm_.vec3.Vec3
-import glm_.vec3.Vec3i
 
 class BakedFace(
+    val faceSize: FaceSize,
     val positions: Array<Vec3>,
     val uv: Array<Vec2>,
     val shade: Boolean,
@@ -28,23 +30,10 @@ class BakedFace(
     val cullFace: Directions?,
     val texture: AbstractTexture,
 ) {
-    fun singleRender(position: Vec3i, mesh: ChunkSectionMesh, light: Int, ambientLight: IntArray) {
-        val floatPosition = Vec3(position)
-
-        for (index in DRAW_ORDER) {
-            mesh.addVertex(positions[index] + floatPosition, uv[index], texture, null, light)
+    fun singleRender(position: Vec3, mesh: ChunkSectionMesh, light: Int, ambientLight: IntArray) {
+        // ToDo: Ambient light
+        for ((index, textureIndex) in Mesh.QUAD_DRAW_ODER) {
+            mesh.addVertex(positions[index] + position, uv[textureIndex], texture, null, light)
         }
-    }
-
-
-    companion object {
-        private val DRAW_ORDER = intArrayOf(
-            0,
-            1,
-            3,
-            3,
-            2,
-            0,
-        )
     }
 }

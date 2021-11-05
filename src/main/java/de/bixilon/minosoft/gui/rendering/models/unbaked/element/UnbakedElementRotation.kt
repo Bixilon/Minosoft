@@ -14,14 +14,13 @@
 package de.bixilon.minosoft.gui.rendering.models.unbaked.element
 
 import de.bixilon.minosoft.data.Axes
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.toVec3
 import de.bixilon.minosoft.util.KUtil.toBoolean
 import de.bixilon.minosoft.util.KUtil.toFloat
 import glm_.vec3.Vec3
 
 data class UnbakedElementRotation(
-    val origin: Vec3,
+    val origin: Vec3?,
     val axis: Axes,
     val angle: Float,
     val rescale: Boolean,
@@ -30,7 +29,7 @@ data class UnbakedElementRotation(
 
         operator fun invoke(data: Map<String, Any>): UnbakedElementRotation {
             return UnbakedElementRotation(
-                origin = data["origin"]?.toVec3() ?: Vec3.EMPTY,
+                origin = data["origin"]?.toVec3(),
                 axis = Axes[data["axis"].toString()],
                 angle = data["angle"].toFloat(),
                 rescale = data["rescale"]?.toBoolean() ?: false,
