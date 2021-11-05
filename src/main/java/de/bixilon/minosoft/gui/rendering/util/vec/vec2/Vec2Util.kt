@@ -11,32 +11,32 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.util.vec.vec3
+package de.bixilon.minosoft.gui.rendering.util.vec.vec2
 
-import de.bixilon.minosoft.util.KUtil.toInt
-import glm_.vec3.Vec3i
+import de.bixilon.minosoft.util.KUtil.toFloat
+import glm_.vec2.Vec2
 
-object Vec3iUtil {
+object Vec2Util {
 
-    val Vec3i.Companion.MIN: Vec3i
-        get() = Vec3i(Int.MIN_VALUE, Int.MIN_VALUE, Int.MIN_VALUE)
+    val Vec2.Companion.MIN: Vec2
+        get() = Vec2(Float.MIN_VALUE, Float.MIN_VALUE)
 
-    val Vec3i.Companion.EMPTY: Vec3i
-        get() = Vec3i(0, 0, 0)
+    val Vec2.Companion.EMPTY: Vec2
+        get() = Vec2(0.0f, 0.0f)
 
-    val Vec3i.Companion.MAX: Vec3i
-        get() = Vec3i(Int.MAX_VALUE, Int.MAX_VALUE, Int.MAX_VALUE)
+    val Vec2.Companion.MAX: Vec2
+        get() = Vec2(Float.MAX_VALUE, Float.MAX_VALUE)
 
 
-    fun Any?.toVec3i(default: Vec3i? = null): Vec3i {
-        return toVec3iN() ?: default ?: throw IllegalArgumentException("Not a Vec3i: $this")
+    fun Any?.toVec2(default: Vec2? = null): Vec2 {
+        return toVec2N() ?: default ?: throw IllegalArgumentException("Not a Vec2: $this")
     }
 
-    fun Any?.toVec3iN(): Vec3i? {
+    fun Any?.toVec2N(): Vec2? {
         return when (this) {
-            is List<*> -> Vec3i(this[0].toInt(), this[1].toInt(), this[2].toInt())
-            is Map<*, *> -> Vec3i(this["x"]?.toInt() ?: 0.0f, this["y"]?.toInt() ?: 0.0f, this["z"]?.toInt() ?: 0.0f)
-            is Number -> Vec3i(this.toInt())
+            is List<*> -> Vec2(this[0].toFloat(), this[1].toFloat())
+            is Map<*, *> -> Vec2(this["x"]?.toFloat() ?: 0.0f, this["y"]?.toFloat() ?: 0.0f)
+            is Number -> Vec2(this.toFloat())
             else -> null
         }
     }

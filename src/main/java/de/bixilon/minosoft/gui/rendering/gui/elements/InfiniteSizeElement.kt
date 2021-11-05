@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.gui.elements
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.gui.rendering.util.vec.Vec2Util.MAX
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.MAX
 import glm_.vec2.Vec2i
 
 class InfiniteSizeElement(hudRenderer: HUDRenderer) : Element(hudRenderer) {

@@ -17,10 +17,10 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.gui.rendering.util.vec.Vec2Util.EMPTY
-import de.bixilon.minosoft.gui.rendering.util.vec.Vec2Util.max
 import de.bixilon.minosoft.gui.rendering.util.vec.Vec4Util.offset
 import de.bixilon.minosoft.gui.rendering.util.vec.Vec4Util.spaceSize
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.max
 import de.bixilon.minosoft.util.KUtil.synchronizedListOf
 import de.bixilon.minosoft.util.KUtil.toSynchronizedList
 import glm_.vec2.Vec2i

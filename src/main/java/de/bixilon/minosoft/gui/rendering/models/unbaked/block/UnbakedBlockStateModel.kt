@@ -25,17 +25,16 @@ import de.bixilon.minosoft.gui.rendering.models.unbaked.UnbakedBlockModel
 import de.bixilon.minosoft.gui.rendering.models.unbaked.UnbakedModel
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.toVec3iN
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.toVec2N
 import de.bixilon.minosoft.util.KUtil.toBoolean
 import de.bixilon.minosoft.util.KUtil.toInt
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.KUtil.unsafeCast
 import glm_.vec2.Vec2
-import glm_.vec3.Vec3i
 
 data class UnbakedBlockStateModel(
     val model: UnbakedBlockModel,
-    val rotation: Vec3i?,
+    val rotation: Vec2?,
     val uvLock: Boolean,
     val weight: Int,
 ) : UnbakedModel {
@@ -115,7 +114,7 @@ data class UnbakedBlockStateModel(
         operator fun invoke(models: Map<ResourceLocation, GenericUnbakedModel>, data: Map<String, Any>): UnbakedBlockStateModel {
             return UnbakedBlockStateModel(
                 model = models[data["model"].toResourceLocation()].unsafeCast(),
-                rotation = data.toVec3iN(),
+                rotation = data.toVec2N(),
                 uvLock = data["uvlock"]?.toBoolean() ?: false,
                 weight = data["weight"]?.toInt() ?: 1,
             )

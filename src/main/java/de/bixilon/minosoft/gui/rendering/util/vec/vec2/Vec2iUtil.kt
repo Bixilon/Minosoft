@@ -11,23 +11,12 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.util.vec
+package de.bixilon.minosoft.gui.rendering.util.vec.vec2
 
 import de.bixilon.minosoft.util.KUtil.toInt
-import glm_.vec2.Vec2
 import glm_.vec2.Vec2i
 
-object Vec2Util {
-
-    val Vec2.Companion.MIN: Vec2
-        get() = Vec2(Float.MIN_VALUE, Float.MIN_VALUE)
-
-    val Vec2.Companion.EMPTY: Vec2
-        get() = Vec2(0.0f, 0.0f)
-
-    val Vec2.Companion.MAX: Vec2
-        get() = Vec2(Float.MAX_VALUE, Float.MAX_VALUE)
-
+object Vec2iUtil {
 
     val Vec2i.Companion.MIN: Vec2i
         get() = Vec2i(Int.MIN_VALUE, Int.MIN_VALUE)
@@ -68,13 +57,16 @@ object Vec2Util {
         return this.x > other.x || this.y > other.y
     }
 
-
     fun Any?.toVec2i(default: Vec2i? = null): Vec2i {
+        return toVec2iN() ?: default ?: throw IllegalArgumentException("Not a Vec2i: $this")
+    }
+
+    fun Any?.toVec2iN(): Vec2i? {
         return when (this) {
             is List<*> -> Vec2i(this[0].toInt(), this[1].toInt())
             is Map<*, *> -> Vec2i(this["x"]?.toInt() ?: 0, this["y"]?.toInt() ?: 0)
             is Number -> Vec2i(this.toInt())
-            else -> default ?: throw IllegalArgumentException("Not a Vec2i: $this")
+            else -> null
         }
     }
 }
