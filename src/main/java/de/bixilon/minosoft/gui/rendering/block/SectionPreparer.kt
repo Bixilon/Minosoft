@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.block
 
+import de.bixilon.minosoft.data.direction.Directions
+import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.world.ChunkSection
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.block.mesh.ChunkSectionMesh
@@ -28,12 +30,46 @@ class SectionPreparer(
     fun prepare(section: ChunkSection): ChunkSectionMesh {
         val mesh = ChunkSectionMesh(renderWindow)
 
-        for (x in 0 until ProtocolDefinition.SECTION_MAX_X) {
-            for (y in 0 until ProtocolDefinition.SECTION_MAX_Y) {
-                for (z in 0 until ProtocolDefinition.SECTION_MAX_Z) {
+        for (x in 0 until ProtocolDefinition.SECTION_WIDTH_X) {
+            for (y in 0 until ProtocolDefinition.SECTION_HEIGHT_Y) {
+                for (z in 0 until ProtocolDefinition.SECTION_WIDTH_Z) {
                     val block = section.blocks[ChunkSection.getIndex(x, y, z)]
 
-                    block?.model?.singleRender(Vec3i(x, y, z), mesh, Random(0L), 0xFF, intArrayOf(0xF, 0xF, 0xF, 0xF))
+                    val neighbours: Array<BlockState?> = arrayOfNulls(Directions.VALUES.size)
+
+                    // ToDo: Chunk borders
+                    neighbours[Directions.DOWN.ordinal] = if (y == 0) {
+                        null
+                    } else {
+                        section.blocks[ChunkSection.getIndex(x, y - 1, z)]
+                    }
+                    neighbours[Directions.UP.ordinal] = if (y == ProtocolDefinition.SECTION_MAX_Y) {
+                        null
+                    } else {
+                        section.blocks[ChunkSection.getIndex(x, y + 1, z)]
+                    }
+                    neighbours[Directions.NORTH.ordinal] = if (z == 0) {
+                        null
+                    } else {
+                        section.blocks[ChunkSection.getIndex(x, y, z - 1)]
+                    }
+                    neighbours[Directions.SOUTH.ordinal] = if (z == ProtocolDefinition.SECTION_MAX_Z) {
+                        null
+                    } else {
+                        section.blocks[ChunkSection.getIndex(x, y, z + 1)]
+                    }
+                    neighbours[Directions.WEST.ordinal] = if (x == 0) {
+                        null
+                    } else {
+                        section.blocks[ChunkSection.getIndex(x - 1, y, z)]
+                    }
+                    neighbours[Directions.EAST.ordinal] = if (x == ProtocolDefinition.SECTION_MAX_X) {
+                        null
+                    } else {
+                        section.blocks[ChunkSection.getIndex(x + 1, y, z)]
+                    }
+
+                    block?.model?.singleRender(Vec3i(x, y, z), mesh, Random(0L), neighbours, 0xFF, intArrayOf(0xF, 0xF, 0xF, 0xF))
                 }
             }
         }

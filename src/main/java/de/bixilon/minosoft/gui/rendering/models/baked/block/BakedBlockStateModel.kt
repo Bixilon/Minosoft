@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.models.baked.block
 
 import de.bixilon.minosoft.data.direction.Directions
+import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.world.light.LightAccessor
 import de.bixilon.minosoft.gui.rendering.block.mesh.ChunkSectionMesh
 import de.bixilon.minosoft.gui.rendering.models.FaceSize
@@ -29,11 +30,15 @@ class BakedBlockStateModel(
         return arrayOf() // ToDo
     }
 
-    override fun singleRender(position: Vec3i, mesh: ChunkSectionMesh, random: Random, light: Int, ambientLight: IntArray) {
+    override fun singleRender(position: Vec3i, mesh: ChunkSectionMesh, random: Random, neighbours: Array<BlockState?>, light: Int, ambientLight: IntArray) {
         val floatPosition = Vec3(position)
-        for (direction in faces) {
+        for ((index, direction) in faces.withIndex()) {
+            val neighbour = neighbours[index]
+            if (neighbour != null) {
+                continue
+            }
             for (face in direction) {
-                face.singleRender(floatPosition, mesh, light, ambientLight)
+                face.singleRender(floatPosition, mesh, neighbour, light, ambientLight)
             }
         }
     }

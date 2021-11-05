@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.models.baked
 
 import de.bixilon.minosoft.data.direction.Directions
+import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.world.light.LightAccessor
 import de.bixilon.minosoft.gui.rendering.block.mesh.ChunkSectionMesh
 import de.bixilon.minosoft.gui.rendering.models.FaceSize
@@ -59,8 +60,8 @@ class WeightedBakedModel(
         return getModel(random).getLight(position, random, side, lightAccessor)
     }
 
-    override fun singleRender(position: Vec3i, mesh: ChunkSectionMesh, random: Random, light: Int, ambientLight: IntArray) {
-        getModel(random).singleRender(position, mesh, random, light, ambientLight)
+    override fun singleRender(position: Vec3i, mesh: ChunkSectionMesh, random: Random, neighbours: Array<BlockState?>, light: Int, ambientLight: IntArray) {
+        getModel(random).singleRender(position, mesh, random, neighbours, light, ambientLight)
     }
 
 }

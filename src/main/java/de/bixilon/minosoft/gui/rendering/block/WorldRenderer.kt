@@ -63,8 +63,8 @@ class WorldRenderer(
         lightMap.use(shader)
 
 
-        val blockState = connection.registries.blockRegistry["dispenser"]?.defaultState
-        val chunk = ChunkSection(Array(4096) { if (it < 1) blockState else null })
+        val blockState = connection.registries.blockRegistry["diamond_block"]?.defaultState
+        val chunk = ChunkSection(Array(4096) { if (it < 4096) blockState else null })
         mesh = sectionPreparer.prepare(chunk)
         mesh.load()
     }
