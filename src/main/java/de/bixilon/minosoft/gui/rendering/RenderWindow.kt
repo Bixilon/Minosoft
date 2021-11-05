@@ -50,6 +50,7 @@ import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.play.PositionAndRotationS2CP
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.CountUpAndDownLatch
 import de.bixilon.minosoft.util.KUtil.decide
 import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
@@ -360,8 +361,12 @@ class RenderWindow(
     }
 
     fun registerRenderer(rendererBuilder: RendererBuilder<*>) {
+        val resourceLocation = rendererBuilder.RESOURCE_LOCATION
+        if (resourceLocation in RunConfiguration.SKIP_RENDERERS) {
+            return
+        }
         val renderer = rendererBuilder.build(connection, this)
-        rendererMap[rendererBuilder.RESOURCE_LOCATION] = renderer
+        rendererMap[resourceLocation] = renderer
     }
 
     fun sendDebugMessage(message: Any) {
