@@ -19,6 +19,9 @@ import de.bixilon.minosoft.data.world.ChunkSection
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.block.mesh.ChunkSectionMesh
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
 import glm_.vec3.Vec3i
 import java.util.*
 
@@ -28,12 +31,14 @@ class SectionPreparer(
 
 
     fun prepare(section: ChunkSection): ChunkSectionMesh {
+        val startTime = System.nanoTime()
         val mesh = ChunkSectionMesh(renderWindow)
 
+        val random = Random(0L)
         for (x in 0 until ProtocolDefinition.SECTION_WIDTH_X) {
             for (y in 0 until ProtocolDefinition.SECTION_HEIGHT_Y) {
                 for (z in 0 until ProtocolDefinition.SECTION_WIDTH_Z) {
-                    val block = section.blocks[ChunkSection.getIndex(x, y, z)]
+                    val block = section.blocks[ChunkSection.getIndex(x, y, z)] ?: continue
 
                     val neighbours: Array<BlockState?> = arrayOfNulls(Directions.VALUES.size)
 
@@ -68,13 +73,18 @@ class SectionPreparer(
                     } else {
                         section.blocks[ChunkSection.getIndex(x + 1, y, z)]
                     }
+                    val model = block.model
 
-                    block?.model?.singleRender(Vec3i(x, y, z), mesh, Random(0L), neighbours, 0xFF, intArrayOf(0xF, 0xF, 0xF, 0xF))
+                    random.setSeed(0L)
+                    model?.singleRender(Vec3i(x, y, z), mesh, random, neighbours, 0xFF, intArrayOf(0xF, 0xF, 0xF, 0xF))
                 }
             }
         }
 
 
+        val time = System.nanoTime()
+        val delta = time - startTime
+        Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Preparing took ${delta}ns, ${delta / 1000}µs, ${delta / 1000000}ms" }
 
         return mesh
     }

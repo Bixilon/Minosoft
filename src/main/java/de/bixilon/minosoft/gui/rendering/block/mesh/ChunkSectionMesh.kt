@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.block.mesh
 
-import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
@@ -26,8 +25,6 @@ import glm_.vec3.Vec3
 class ChunkSectionMesh(renderWindow: RenderWindow) : Mesh(renderWindow, SectionArrayMeshStruct, initialCacheSize = 100000) {
 
     fun addVertex(position: Vec3, uv: Vec2, texture: AbstractTexture, tintColor: RGBColor?, light: Int) {
-        val color = tintColor ?: ChatColors.WHITE
-
         val textureLayer = if (RenderConstants.FORCE_DEBUG_TEXTURE) {
             RenderConstants.DEBUG_TEXTURE_ID
         } else {
@@ -43,7 +40,7 @@ class ChunkSectionMesh(renderWindow: RenderWindow) : Mesh(renderWindow, SectionA
                 transformedUV.y,
                 Float.fromBits(textureLayer),
                 Float.fromBits(texture.renderData?.animationData ?: -1),
-                Float.fromBits(color.rgb),
+                Float.fromBits(tintColor?.rgb ?: 0xFFFFFF), // white
                 Float.fromBits(light),
             ))
     }

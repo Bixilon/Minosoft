@@ -65,6 +65,7 @@ class WorldRenderer(
 
         val blockState = connection.registries.blockRegistry["diamond_block"]?.defaultState
         val chunk = ChunkSection(Array(4096) { if (it < 4096) blockState else null })
+        // for(i in 0 until 100000)
         mesh = sectionPreparer.prepare(chunk)
         mesh.load()
     }

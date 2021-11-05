@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.util.vec.vec3
 
 import de.bixilon.minosoft.util.KUtil.toInt
+import glm_.vec3.Vec3
 import glm_.vec3.Vec3i
 
 object Vec3iUtil {
@@ -27,6 +28,11 @@ object Vec3iUtil {
     val Vec3i.Companion.MAX: Vec3i
         get() = Vec3i(Int.MAX_VALUE, Int.MAX_VALUE, Int.MAX_VALUE)
 
+
+    fun Vec3i.toVec3(): Vec3 {
+        val array = array
+        return Vec3(floatArrayOf(array[0].toFloat(), array[1].toFloat(), array[2].toFloat()))
+    }
 
     fun Any?.toVec3i(default: Vec3i? = null): Vec3i {
         return toVec3iN() ?: default ?: throw IllegalArgumentException("Not a Vec3i: $this")
