@@ -13,11 +13,13 @@
 
 package de.bixilon.minosoft.gui.rendering.models.baked.block
 
+import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.gui.rendering.block.mesh.ChunkSectionMesh
 import de.bixilon.minosoft.gui.rendering.models.FaceSize
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.get
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import glm_.vec2.Vec2
 import glm_.vec3.Vec3
@@ -35,6 +37,35 @@ class BakedFace(
         // ToDo: Ambient light
         for ((index, textureIndex) in Mesh.QUAD_DRAW_ODER) {
             mesh.addVertex(positions[index] + position, uv[textureIndex], texture, null, light)
+        }
+    }
+
+    fun greedyRender(start: Vec3, end: Vec3, side: Directions, mesh: ChunkSectionMesh, light: Int) {
+        val multiplier = end - start
+        val positions = arrayOf(
+            (positions[0] * multiplier) + start,
+            (positions[1] * multiplier) + start,
+            (positions[2] * multiplier) + start,
+            (positions[3] * multiplier) + start,
+        )
+        val fixPosition = this.positions[0][side.axis]
+        for (position in positions) {
+            when (side.axis) {
+                Axes.X -> position.x = start.x + fixPosition
+                Axes.Y -> position.y = start.y + fixPosition
+                Axes.Z -> position.z = start.z + fixPosition
+            }
+        }
+
+        val uvMultiplier = side.getUVMultiplier(start, end)
+        val uv = arrayOf(
+            uv[0] * uvMultiplier,
+            uv[1] * uvMultiplier,
+            uv[2] * uvMultiplier,
+            uv[3] * uvMultiplier,
+        )
+        for ((index, textureIndex) in Mesh.QUAD_DRAW_ODER) {
+            mesh.addVertex(positions[index], uv[textureIndex], texture, null, light)
         }
     }
 }

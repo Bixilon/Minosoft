@@ -14,16 +14,16 @@ package de.bixilon.minosoft.data.direction
 
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.registries.blocks.properties.serializer.BlockPropertiesSerializer
+import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.gui.rendering.models.FaceSize
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.get
 import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.enum.ValuesEnum
+import glm_.vec2.Vec2
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3d
 import glm_.vec3.Vec3i
-import glm_.vec3.swizzle.xy
-import glm_.vec3.swizzle.xz
-import glm_.vec3.swizzle.yz
+import glm_.vec3.swizzle.*
 import kotlin.math.abs
 
 enum class Directions(
@@ -41,6 +41,7 @@ enum class Directions(
     override val vectord = Vec3d(vector)
 
     val axis: Axes get() = Axes[this] // ToDo
+    val debugColor = ChatColors[ordinal]
 
     lateinit var inverted: Directions
         private set
@@ -84,6 +85,17 @@ enum class Directions(
             DOWN, UP -> FaceSize(from.xz, to.xz)
             NORTH, SOUTH -> FaceSize(from.xy, to.xy)
             WEST, EAST -> FaceSize(from.yz, to.yz)
+        }
+    }
+
+    fun getUVMultiplier(from: Vec3, to: Vec3): Vec2 {
+        return when (this) {
+            DOWN -> from.zx - to.zx
+            UP -> from.xz - to.xz
+            NORTH -> from.xy - to.xy
+            SOUTH -> from.yx - to.yx
+            EAST -> from.zy - to.zy
+            WEST -> from.yz - to.yz
         }
     }
 

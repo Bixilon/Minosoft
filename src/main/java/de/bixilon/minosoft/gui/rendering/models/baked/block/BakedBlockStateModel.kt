@@ -24,7 +24,8 @@ import java.util.*
 
 class BakedBlockStateModel(
     val faces: Array<Array<BakedFace>>,
-) : BakedBlockModel { // ToDo: Greedy meshable
+) : BakedBlockModel, GreedyBakedBlockModel { // ToDo: Greedy meshable
+    override val canGreedyMesh: Boolean = true
 
     override fun getFaceSize(direction: Directions, random: Random): Array<FaceSize> {
         return arrayOf() // ToDo
@@ -40,6 +41,14 @@ class BakedBlockStateModel(
             for (face in direction) {
                 face.singleRender(floatPosition, mesh, neighbour, light, ambientLight)
             }
+        }
+    }
+
+    override fun greedyRender(start: Vec3i, end: Vec3i, side: Directions, mesh: ChunkSectionMesh, light: Int) {
+        val floatStart = start.toVec3()
+        val floatEnd = end.toVec3()
+        for (face in faces[side.ordinal]) {
+            face.greedyRender(floatStart, floatEnd, side, mesh, light)
         }
     }
 

@@ -34,6 +34,7 @@ import glm_.vec2.Vec2i
 import java.io.FileInputStream
 import java.util.zip.GZIPInputStream
 import java.util.zip.ZipInputStream
+import kotlin.random.Random
 
 class WorldRenderer(
     private val connection: PlayConnection,
@@ -63,10 +64,11 @@ class WorldRenderer(
         lightMap.use(shader)
 
 
+        val random = Random(0L)
         val blockState = connection.registries.blockRegistry["diamond_block"]?.defaultState
-        val chunk = ChunkSection(Array(4096) { if (it < 4096) blockState else null })
-        // for(i in 0 until 100000)
-        mesh = sectionPreparer.prepare(chunk)
+        val chunk = ChunkSection(Array(4096) { if (random.nextBoolean()) blockState else null })
+        for (i in 0 until 1000)
+            mesh = sectionPreparer.prepare(chunk)
         mesh.load()
     }
 

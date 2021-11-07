@@ -25,6 +25,7 @@ import glm_.vec3.Vec3
 class ChunkSectionMesh(renderWindow: RenderWindow) : Mesh(renderWindow, SectionArrayMeshStruct, initialCacheSize = 100000) {
 
     fun addVertex(position: Vec3, uv: Vec2, texture: AbstractTexture, tintColor: RGBColor?, light: Int) {
+        //val texture = renderWindow.WHITE_TEXTURE.texture
         val textureLayer = if (RenderConstants.FORCE_DEBUG_TEXTURE) {
             RenderConstants.DEBUG_TEXTURE_ID
         } else {

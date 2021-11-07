@@ -14,20 +14,26 @@
 package de.bixilon.minosoft.gui.rendering.block
 
 import de.bixilon.minosoft.data.direction.Directions
-import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.world.ChunkSection
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.block.mesh.ChunkSectionMesh
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.gui.rendering.models.baked.block.GreedyBakedBlockModel
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition.SECTION_SIZE
+import de.bixilon.minosoft.util.KUtil.decide
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import glm_.vec3.Vec3i
 import java.util.*
 
+
 class SectionPreparer(
     val renderWindow: RenderWindow,
 ) {
+
+    private fun renderNormal(position: Vec3i, section: ChunkSection, mesh: ChunkSectionMesh, random: Random) {
+        // ToDo
+    }
 
 
     fun prepare(section: ChunkSection): ChunkSectionMesh {
@@ -35,48 +41,149 @@ class SectionPreparer(
         val mesh = ChunkSectionMesh(renderWindow)
 
         val random = Random(0L)
-        for (x in 0 until ProtocolDefinition.SECTION_WIDTH_X) {
-            for (y in 0 until ProtocolDefinition.SECTION_HEIGHT_Y) {
-                for (z in 0 until ProtocolDefinition.SECTION_WIDTH_Z) {
-                    val block = section.blocks[ChunkSection.getIndex(x, y, z)] ?: continue
 
-                    val neighbours: Array<BlockState?> = arrayOfNulls(Directions.VALUES.size)
 
-                    // ToDo: Chunk borders
-                    neighbours[Directions.DOWN.ordinal] = if (y == 0) {
-                        null
-                    } else {
-                        section.blocks[ChunkSection.getIndex(x, y - 1, z)]
-                    }
-                    neighbours[Directions.UP.ordinal] = if (y == ProtocolDefinition.SECTION_MAX_Y) {
-                        null
-                    } else {
-                        section.blocks[ChunkSection.getIndex(x, y + 1, z)]
-                    }
-                    neighbours[Directions.NORTH.ordinal] = if (z == 0) {
-                        null
-                    } else {
-                        section.blocks[ChunkSection.getIndex(x, y, z - 1)]
-                    }
-                    neighbours[Directions.SOUTH.ordinal] = if (z == ProtocolDefinition.SECTION_MAX_Z) {
-                        null
-                    } else {
-                        section.blocks[ChunkSection.getIndex(x, y, z + 1)]
-                    }
-                    neighbours[Directions.WEST.ordinal] = if (x == 0) {
-                        null
-                    } else {
-                        section.blocks[ChunkSection.getIndex(x - 1, y, z)]
-                    }
-                    neighbours[Directions.EAST.ordinal] = if (x == ProtocolDefinition.SECTION_MAX_X) {
-                        null
-                    } else {
-                        section.blocks[ChunkSection.getIndex(x + 1, y, z)]
-                    }
-                    val model = block.model
+        for (direction in Directions.VALUES) {
+            // Sweep over each axis (X, Y and Z)
+            val backFace = direction.ordinal % 2 == 0
+            val axis = direction.axis.ordinal
+            var i: Int
+            var j: Int
+            var k: Int
+            var l: Int
+            var w: Int
+            var h: Int
+            val nextAxis = (axis + 1) % 3
+            val nextNextAxis = (axis + 2) % 3
+            val position = IntArray(3)
+            val checkOffset = IntArray(3)
+            val mask = BooleanArray(SECTION_SIZE * SECTION_SIZE)
+            checkOffset[axis] = 1
 
-                    random.setSeed(0L)
-                    model?.singleRender(Vec3i(x, y, z), mesh, random, neighbours, 0xFF, intArrayOf(0xF, 0xF, 0xF, 0xF))
+            val offsetCheck = backFace.decide(-1, 1)
+
+            // Check each slice of the chunk one at a time
+
+            position[axis] = -1
+            while (position[axis] < SECTION_SIZE) {
+
+                // Compute the mask
+                var n = 0
+                position[nextNextAxis] = 0
+                while (position[nextNextAxis] < SECTION_SIZE) {
+                    position[nextAxis] = 0
+                    while (position[nextAxis] < SECTION_SIZE) {
+                        // checkOffset determines the direction (X, Y or Z) that we are searching
+                        // m.IsBlockAt(x,y,z) takes global map positions and returns true if a block exists there
+                        if ((offsetCheck == 1 && position[axis] < 0) || (offsetCheck == -1 && position[axis] > SECTION_SIZE)) {
+                            ++position[nextAxis]
+                            n++
+                            continue
+                        }
+                        val currentBlock = if (position[axis] >= 0) section.blocks[ChunkSection.getIndex(position[0], position[1], position[2])] else null
+                        val compareBlock = if (position[axis] < SECTION_SIZE - 1) section.blocks[ChunkSection.getIndex(position[0] + checkOffset[0], position[1] + checkOffset[1], position[2] + checkOffset[2])] else null
+
+                        // The mask is set to true if there is a visible face between two blocks,
+                        //   i.e. both aren't empty and both aren't blocks
+                        val primaryBlock = if (backFace) {
+                            compareBlock
+                        } else {
+                            currentBlock
+                        }
+
+                        mask[n++] = primaryBlock != null && currentBlock != compareBlock
+                        ++position[nextAxis]
+                    }
+                    ++position[nextNextAxis]
+                }
+                ++position[axis]
+                n = 0
+
+                // Generate a mesh from the mask using lexicographic ordering,
+                //   by looping over each block in this slice of the chunk
+                j = 0
+                while (j < SECTION_SIZE) {
+                    i = 0
+                    while (i < SECTION_SIZE) {
+                        if (mask[n]) {
+                            // Compute the width of this quad and store it in w
+                            //   This is done by searching along the current axis until mask[n + w] is false
+                            w = 1
+                            while (i + w < SECTION_SIZE && mask[n + w]) {
+                                w++
+                            }
+
+
+                            // Compute the height of this quad and store it in h
+                            //   This is done by checking if every block next to this row (range 0 to w) is also part of the mask.
+                            //   For example, if w is 5 we currently have a quad of dimensions 1 x 5. To reduce triangle count,
+                            //   greedy meshing will attempt to expand this quad out to CHUNK_SIZE x 5, but will stop if it reaches a hole in the mask
+                            var done = false
+
+                            h = 1
+                            while (j + h < SECTION_SIZE) {
+                                k = 0
+                                while (k < w) {
+                                    if (!mask[n + k + h * SECTION_SIZE]) {
+                                        done = true
+                                        break
+                                    }
+                                    k++
+                                }
+                                if (done) {
+                                    break
+                                }
+                                h++
+                            }
+
+                            position[nextAxis] = i
+                            position[nextNextAxis] = j
+
+                            // du and dv determine the size and orientation of this face
+                            val du = IntArray(3)
+                            du[nextAxis] = w
+                            val dv = IntArray(3)
+                            dv[nextNextAxis] = h
+
+
+                            if (!backFace) {
+                                position[axis] -= offsetCheck
+                            }
+
+                            val start = Vec3i(position[0], position[1], position[2])
+
+
+                            val end = Vec3i(position[0] + du[0] + dv[0], position[1] + du[1] + dv[1], position[2] + du[2] + dv[2])
+
+
+                            val block = section.blocks[ChunkSection.getIndex(position[0], position[1], position[2])]!!
+                            (block.model as GreedyBakedBlockModel).greedyRender(start, end, direction, mesh, 0xFF)
+
+
+                            if (!backFace) {
+                                position[axis] += offsetCheck
+                            }
+
+                            // Clear this part of the mask, so we don't add duplicate faces
+                            l = 0
+                            while (l < h) {
+                                k = 0
+                                while (k < w) {
+                                    mask[n + k + l * SECTION_SIZE] = false
+                                    ++k
+                                }
+                                ++l
+                            }
+
+                            // Increment counters and continue
+                            i += w
+                            n += w
+                        } else {
+                            i++
+                            n++
+                        }
+                    }
+                    ++j
                 }
             }
         }
