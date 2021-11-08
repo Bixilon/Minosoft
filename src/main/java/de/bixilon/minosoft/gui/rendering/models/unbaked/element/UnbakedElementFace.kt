@@ -31,8 +31,8 @@ data class UnbakedElementFace(
     companion object {
         operator fun invoke(direction: Directions, data: Map<String, Any>): UnbakedElementFace {
             val uv = data["uv"]?.listCast<Number>()
-            val uvStart = Vec2(uv?.get(0) ?: 0.0f, uv?.get(2) ?: 0.0f) / BLOCK_RESOLUTION
-            val uvEnd = Vec2(uv?.get(1) ?: 16.0f, uv?.get(3) ?: 16.0f) / BLOCK_RESOLUTION
+            val uvStart = Vec2(uv?.get(0) ?: 0.0f, uv?.get(1) ?: 0.0f) / BLOCK_RESOLUTION
+            val uvEnd = Vec2(uv?.get(2) ?: 16.0f, uv?.get(3) ?: 16.0f) / BLOCK_RESOLUTION
 
             return UnbakedElementFace(
                 direction = direction,

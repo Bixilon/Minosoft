@@ -72,8 +72,9 @@ class WorldRenderer(
 
 
         val random = Random(0L)
-        val blockState = connection.registries.blockRegistry["diamond_block"]?.defaultState
+        val blockState = connection.registries.blockRegistry["end_portal_frame"]?.defaultState
         val section = ChunkSection(Array(4096) { if (random.nextBoolean()) blockState else null })
+        //val section = ChunkSection(Array(4096) { if (it < 1) blockState else null })
 
         mesh = sectionPreparer.prepare(section)
         /*

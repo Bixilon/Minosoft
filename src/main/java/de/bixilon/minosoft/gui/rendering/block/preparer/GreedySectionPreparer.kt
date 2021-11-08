@@ -29,11 +29,12 @@ class GreedySectionPreparer(
     val renderWindow: RenderWindow,
 ) : AbstractSectionPreparer {
 
-    private fun renderNormal(position: Vec3i, section: ChunkSection, mesh: ChunkSectionMesh, random: Random) {
-        // ToDo
+    private fun renderNormal(block: BlockState, directions: Directions?, position: Vec3i, section: ChunkSection, mesh: ChunkSectionMesh, random: Random) {
+        val neighbour = section.blocks[ChunkSection.getIndex(position.x, position.y, position.z)]
     }
 
 
+    // base taken from https://0fps.net/2012/06/30/meshing-in-a-minecraft-game/
     override fun prepare(section: ChunkSection): ChunkSectionMesh {
         val mesh = ChunkSectionMesh(renderWindow)
 
@@ -44,24 +45,27 @@ class GreedySectionPreparer(
         var start: Vec3i
         var end: Vec3i
 
+        var i: Int
+        var j: Int
+        var k: Int
+        var l: Int
+        var w: Int
+        var h: Int
+        val mask = BooleanArray(SECTION_SIZE * SECTION_SIZE)
+        val endOffset = IntArray(3)
+
         for (direction in Directions.VALUES) {
-            // Sweep over each axis (X, Y and Z)
-            val backFace = direction.ordinal % 2 == 0
+            // Sweep over each direction
+            val negative = direction.negative
             val axis = direction.axis.ordinal
-            var i: Int
-            var j: Int
-            var k: Int
-            var l: Int
-            var w: Int
-            var h: Int
             val nextAxis = (axis + 1) % 3
             val nextNextAxis = (axis + 2) % 3
             val position = IntArray(3)
             val checkOffset = IntArray(3)
-            val mask = BooleanArray(SECTION_SIZE * SECTION_SIZE)
+
             checkOffset[axis] = 1
 
-            val offsetCheck = backFace.decide(-1, 1)
+            val offsetCheck = negative.decide(-1, 1)
 
             // Check each slice of the chunk one at a time
 
@@ -74,8 +78,6 @@ class GreedySectionPreparer(
                 while (position[nextNextAxis] < SECTION_SIZE) {
                     position[nextAxis] = 0
                     while (position[nextAxis] < SECTION_SIZE) {
-                        // checkOffset determines the direction (X, Y or Z) that we are searching
-                        // m.IsBlockAt(x,y,z) takes global map positions and returns true if a block exists there
                         if ((offsetCheck == 1 && position[axis] < 0) || (offsetCheck == -1 && position[axis] > SECTION_SIZE)) {
                             ++position[nextAxis]
                             n++
@@ -84,13 +86,14 @@ class GreedySectionPreparer(
                         currentBlock = if (position[axis] >= 0) section.blocks[ChunkSection.getIndex(position[0], position[1], position[2])] else null
                         compareBlock = if (position[axis] < SECTION_SIZE - 1) section.blocks[ChunkSection.getIndex(position[0] + checkOffset[0], position[1] + checkOffset[1], position[2] + checkOffset[2])] else null
 
-                        // The mask is set to true if there is a visible face between two blocks,
-                        //   i.e. both aren't empty and both aren't blocks
-                        val primaryBlock = if (backFace) {
+                        // The mask is set to true if there is a visible face between those two blocks
+                        val primaryBlock = if (negative) {
                             compareBlock
                         } else {
                             currentBlock
                         }
+
+
 
                         mask[n++] = primaryBlock != null && currentBlock != compareBlock
                         ++position[nextAxis]
@@ -101,14 +104,14 @@ class GreedySectionPreparer(
                 n = 0
 
                 // Generate a mesh from the mask using lexicographic ordering,
-                //   by looping over each block in this slice of the chunk
+                // by looping over each block in this slice of the chunk
                 j = 0
                 while (j < SECTION_SIZE) {
                     i = 0
                     while (i < SECTION_SIZE) {
                         if (mask[n]) {
                             // Compute the width of this quad and store it in w
-                            //   This is done by searching along the current axis until mask[n + w] is false
+                            // This is done by searching along the current axis until mask[n + w] is false
                             w = 1
                             while (i + w < SECTION_SIZE && mask[n + w]) {
                                 w++
@@ -116,9 +119,9 @@ class GreedySectionPreparer(
 
 
                             // Compute the height of this quad and store it in h
-                            //   This is done by checking if every block next to this row (range 0 to w) is also part of the mask.
-                            //   For example, if w is 5 we currently have a quad of dimensions 1 x 5. To reduce triangle count,
-                            //   greedy meshing will attempt to expand this quad out to CHUNK_SIZE x 5, but will stop if it reaches a hole in the mask
+                            // This is done by checking if every block next to this row (range 0 to w) is also part of the mask.
+                            // For example, if w is 5 we currently have a quad of dimensions 1 x 5. To reduce triangle count,
+                            // greedy meshing will attempt to expand this quad out to CHUNK_SIZE x 5, but will stop if it reaches a hole in the mask
                             var done = false
 
                             h = 1
@@ -146,22 +149,35 @@ class GreedySectionPreparer(
                             val dv = IntArray(3)
                             dv[nextNextAxis] = h
 
+                            endOffset[0] = du[0] + dv[0]
+                            endOffset[1] = du[1] + dv[1]
+                            endOffset[2] = du[2] + dv[2]
 
-                            if (!backFace) {
+
+                            if (!negative) {
                                 position[axis] -= offsetCheck
                             }
 
-                            start = Vec3i(position[0], position[1], position[2])
-
-
-                            end = Vec3i(position[0] + du[0] + dv[0], position[1] + du[1] + dv[1], position[2] + du[2] + dv[2])
-
+                            start = Vec3i(position)
 
                             currentBlock = section.blocks[ChunkSection.getIndex(position[0], position[1], position[2])]!!
-                            (currentBlock.model as GreedyBakedBlockModel).greedyRender(start, end, direction, mesh, 0xFF)
+
+                            if (endOffset[0] == 0 && endOffset[1] == 0 && endOffset[2] == 0) {
+                                // single render
+                                renderNormal(currentBlock, direction, start, section, mesh, random)
+                            } else {
+                                endOffset[0] += position[0]
+                                endOffset[1] += position[1]
+                                endOffset[2] += position[2]
+
+                                end = Vec3i(endOffset)
 
 
-                            if (!backFace) {
+                                (currentBlock.model as GreedyBakedBlockModel).greedyRender(start, end, direction, mesh, 0xFF)
+                            }
+
+
+                            if (!negative) {
                                 position[axis] += offsetCheck
                             }
 

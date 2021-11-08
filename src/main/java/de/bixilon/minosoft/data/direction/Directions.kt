@@ -37,6 +37,8 @@ enum class Directions(
     WEST(1, Vec3i(-1, 0, 0)),
     EAST(3, Vec3i(1, 0, 0));
 
+    val negative = ordinal % 2 == 0
+
     override val vectorf = Vec3(vector)
     override val vectord = Vec3d(vector)
 
@@ -71,12 +73,12 @@ enum class Directions(
 
     fun getPositions(from: Vec3, to: Vec3): Array<Vec3> {
         return when (this) {
-            DOWN -> arrayOf(from, Vec3(from.x, from.y, to.z), Vec3(to.x, from.y, to.z), Vec3(to.x, from.y, from.y))
-            UP -> arrayOf(to, Vec3(from.x, to.y, to.z), Vec3(from.x, to.y, from.z), Vec3(to.x, to.y, from.y))
-            NORTH -> arrayOf(Vec3(to.x, to.y, from.y), Vec3(from.x, to.y, from.z), from, Vec3(to.x, from.y, from.y))
-            SOUTH -> arrayOf(Vec3(from.x, from.y, to.z), Vec3(from.x, to.y, to.z), to, Vec3(to.x, from.y, to.y))
-            WEST -> arrayOf(Vec3(from.x, to.y, to.z), Vec3(from.x, from.y, to.z), from, Vec3(from.x, to.y, from.y))
-            EAST -> arrayOf(Vec3(to.x, from.y, from.z), Vec3(to.x, from.y, to.z), to, Vec3(to.x, to.y, from.y))
+            DOWN -> arrayOf(from, Vec3(from.x, from.y, to.z), Vec3(to.x, from.y, to.z), Vec3(to.x, from.y, from.z))
+            UP -> arrayOf(to, Vec3(from.x, to.y, to.z), Vec3(from.x, to.y, from.z), Vec3(to.x, to.y, from.z))
+            NORTH -> arrayOf(Vec3(to.x, to.y, from.y), Vec3(from.x, to.y, from.z), from, Vec3(to.x, from.y, from.z))
+            SOUTH -> arrayOf(Vec3(from.x, from.y, to.z), Vec3(from.x, to.y, to.z), to, Vec3(to.x, from.y, to.z))
+            WEST -> arrayOf(Vec3(from.x, to.y, to.z), Vec3(from.x, from.y, to.z), from, Vec3(from.x, to.y, from.z))
+            EAST -> arrayOf(Vec3(to.x, from.y, from.z), Vec3(to.x, from.y, to.z), to, Vec3(to.x, to.y, from.z))
         }
     }
 
