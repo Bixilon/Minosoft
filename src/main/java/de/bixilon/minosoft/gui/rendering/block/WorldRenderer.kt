@@ -24,6 +24,10 @@ import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.Renderer
 import de.bixilon.minosoft.gui.rendering.RendererBuilder
 import de.bixilon.minosoft.gui.rendering.block.mesh.ChunkSectionMesh
+import de.bixilon.minosoft.gui.rendering.block.preparer.AbstractSectionPreparer
+import de.bixilon.minosoft.gui.rendering.block.preparer.CullSectionPreparer
+import de.bixilon.minosoft.gui.rendering.block.preparer.GenericSectionPreparer
+import de.bixilon.minosoft.gui.rendering.block.preparer.GreedySectionPreparer
 import de.bixilon.minosoft.gui.rendering.models.ModelLoader
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
 import de.bixilon.minosoft.gui.rendering.system.base.phases.OpaqueDrawable
@@ -43,9 +47,12 @@ class WorldRenderer(
     override val renderSystem: RenderSystem = renderWindow.renderSystem
     private val shader = renderSystem.createShader("minosoft:world".toResourceLocation())
     private val world: World = connection.world
-    private val sectionPreparer = SectionPreparer(renderWindow)
+    private val sectionPreparer: AbstractSectionPreparer = GenericSectionPreparer(renderWindow)
     private val lightMap = LightMap(connection)
     private lateinit var mesh: ChunkSectionMesh
+
+    private val culledPreparer = GenericSectionPreparer(renderWindow, CullSectionPreparer(renderWindow))
+    private val greedyPreparer = GenericSectionPreparer(renderWindow, GreedySectionPreparer(renderWindow))
 
 
     override fun init() {
@@ -66,9 +73,24 @@ class WorldRenderer(
 
         val random = Random(0L)
         val blockState = connection.registries.blockRegistry["diamond_block"]?.defaultState
-        val chunk = ChunkSection(Array(4096) { if (random.nextBoolean()) blockState else null })
+        val section = ChunkSection(Array(4096) { if (random.nextBoolean()) blockState else null })
+
+        mesh = sectionPreparer.prepare(section)
+        /*
         for (i in 0 until 1000)
-            mesh = sectionPreparer.prepare(chunk)
+            mesh = sectionPreparer.prepare(section)
+
+        Log.log(LogMessageType.OTHER, LogLevels.WARN){"Culling now..."}
+
+        val culledMesh = culledPreparer.prepare(section)
+        for (i in 0 until 1000){
+            culledPreparer.prepare(section)
+        }
+        val greedyMesh = greedyPreparer.prepare(section)
+
+        Log.log(LogMessageType.OTHER,LogLevels.INFO){"Culling has ${culledMesh.data.size / ChunkSectionMesh.SectionArrayMeshStruct.FLOATS_PER_VERTEX}, greedy meshed has  ${greedyMesh.data.size / ChunkSectionMesh.SectionArrayMeshStruct.FLOATS_PER_VERTEX}."}
+
+         */
         mesh.load()
     }
 

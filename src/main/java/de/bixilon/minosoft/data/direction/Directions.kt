@@ -101,6 +101,7 @@ enum class Directions(
 
 
     companion object : BlockPropertiesSerializer, ValuesEnum<Directions> {
+        const val SIZE = 6
         override val VALUES = values()
         override val NAME_MAP: Map<String, Directions> = KUtil.getEnumValues(VALUES)
         val SIDES = arrayOf(NORTH, SOUTH, WEST, EAST)

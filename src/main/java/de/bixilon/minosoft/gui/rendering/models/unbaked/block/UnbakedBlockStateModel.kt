@@ -68,7 +68,7 @@ data class UnbakedBlockStateModel(
         }
 
 
-        val faces: Array<MutableList<BakedFace>> = Array(Directions.VALUES.size) { mutableListOf() }
+        val faces: Array<MutableList<BakedFace>> = Array(Directions.SIZE) { mutableListOf() }
 
         for (element in model.elements) {
             val rescale = element.rotation?.rescale ?: false

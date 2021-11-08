@@ -11,37 +11,38 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.block
+package de.bixilon.minosoft.gui.rendering.block.preparer
 
 import de.bixilon.minosoft.data.direction.Directions
+import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.world.ChunkSection
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.block.mesh.ChunkSectionMesh
 import de.bixilon.minosoft.gui.rendering.models.baked.block.GreedyBakedBlockModel
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition.SECTION_SIZE
 import de.bixilon.minosoft.util.KUtil.decide
-import de.bixilon.minosoft.util.logging.Log
-import de.bixilon.minosoft.util.logging.LogLevels
-import de.bixilon.minosoft.util.logging.LogMessageType
 import glm_.vec3.Vec3i
 import java.util.*
 
 
-class SectionPreparer(
+class GreedySectionPreparer(
     val renderWindow: RenderWindow,
-) {
+) : AbstractSectionPreparer {
 
     private fun renderNormal(position: Vec3i, section: ChunkSection, mesh: ChunkSectionMesh, random: Random) {
         // ToDo
     }
 
 
-    fun prepare(section: ChunkSection): ChunkSectionMesh {
-        val startTime = System.nanoTime()
+    override fun prepare(section: ChunkSection): ChunkSectionMesh {
         val mesh = ChunkSectionMesh(renderWindow)
 
         val random = Random(0L)
 
+        var currentBlock: BlockState?
+        var compareBlock: BlockState?
+        var start: Vec3i
+        var end: Vec3i
 
         for (direction in Directions.VALUES) {
             // Sweep over each axis (X, Y and Z)
@@ -80,8 +81,8 @@ class SectionPreparer(
                             n++
                             continue
                         }
-                        val currentBlock = if (position[axis] >= 0) section.blocks[ChunkSection.getIndex(position[0], position[1], position[2])] else null
-                        val compareBlock = if (position[axis] < SECTION_SIZE - 1) section.blocks[ChunkSection.getIndex(position[0] + checkOffset[0], position[1] + checkOffset[1], position[2] + checkOffset[2])] else null
+                        currentBlock = if (position[axis] >= 0) section.blocks[ChunkSection.getIndex(position[0], position[1], position[2])] else null
+                        compareBlock = if (position[axis] < SECTION_SIZE - 1) section.blocks[ChunkSection.getIndex(position[0] + checkOffset[0], position[1] + checkOffset[1], position[2] + checkOffset[2])] else null
 
                         // The mask is set to true if there is a visible face between two blocks,
                         //   i.e. both aren't empty and both aren't blocks
@@ -150,14 +151,14 @@ class SectionPreparer(
                                 position[axis] -= offsetCheck
                             }
 
-                            val start = Vec3i(position[0], position[1], position[2])
+                            start = Vec3i(position[0], position[1], position[2])
 
 
-                            val end = Vec3i(position[0] + du[0] + dv[0], position[1] + du[1] + dv[1], position[2] + du[2] + dv[2])
+                            end = Vec3i(position[0] + du[0] + dv[0], position[1] + du[1] + dv[1], position[2] + du[2] + dv[2])
 
 
-                            val block = section.blocks[ChunkSection.getIndex(position[0], position[1], position[2])]!!
-                            (block.model as GreedyBakedBlockModel).greedyRender(start, end, direction, mesh, 0xFF)
+                            currentBlock = section.blocks[ChunkSection.getIndex(position[0], position[1], position[2])]!!
+                            (currentBlock.model as GreedyBakedBlockModel).greedyRender(start, end, direction, mesh, 0xFF)
 
 
                             if (!backFace) {
@@ -187,11 +188,6 @@ class SectionPreparer(
                 }
             }
         }
-
-
-        val time = System.nanoTime()
-        val delta = time - startTime
-        Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Preparing took ${delta}ns, ${delta / 1000}µs, ${delta / 1000000}ms" }
 
         return mesh
     }
