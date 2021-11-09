@@ -21,6 +21,7 @@ import de.bixilon.minosoft.data.registries.AABB
 import de.bixilon.minosoft.data.registries.blocks.RandomOffsetTypes
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.get
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import glm_.func.common.ceil
 import glm_.func.common.clamp
@@ -346,13 +347,6 @@ object VecUtil {
     val <T : Number> Vec3t<T>.toVec3d: Vec3d
         get() = Vec3d(this)
 
-    operator fun <T : Number> Vec3t<T>.get(axis: Axes): T {
-        return when (axis) {
-            Axes.X -> this.x
-            Axes.Y -> this.y
-            Axes.Z -> this.z
-        }
-    }
 
     fun Vec3d.Companion.horizontal(xz: () -> Double, y: Double): Vec3d {
         return Vec3d(xz(), y, xz())

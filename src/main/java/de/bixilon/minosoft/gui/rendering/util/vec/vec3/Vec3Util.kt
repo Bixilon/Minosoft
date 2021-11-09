@@ -19,6 +19,7 @@ import glm_.func.cos
 import glm_.func.sin
 import glm_.vec2.Vec2
 import glm_.vec3.Vec3
+import glm_.vec3.Vec3t
 import glm_.vec3.swizzle.xy
 import glm_.vec3.swizzle.xz
 import glm_.vec3.swizzle.yz
@@ -55,6 +56,23 @@ object Vec3Util {
             Axes.X -> this.yz = rotate(this.y, this.z, angle.sin, angle.cos, rescale)
             Axes.Y -> this.xz = rotate(this.x, this.z, angle.sin, angle.cos, rescale)
             Axes.Z -> this.xy = rotate(this.x, this.y, angle.sin, angle.cos, rescale)
+        }
+    }
+
+
+    operator fun <T : Number> Vec3t<T>.get(axis: Axes): T {
+        return when (axis) {
+            Axes.X -> x
+            Axes.Y -> y
+            Axes.Z -> z
+        }
+    }
+
+    operator fun <T : Number> Vec3t<T>.set(axis: Axes, value: T) {
+        when (axis) {
+            Axes.X -> x = value
+            Axes.Y -> y = value
+            Axes.Z -> z = value
         }
     }
 

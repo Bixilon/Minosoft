@@ -25,11 +25,18 @@ import de.bixilon.minosoft.gui.rendering.models.unbaked.UnbakedModel
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.toVec2N
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.set
 import de.bixilon.minosoft.util.KUtil.toBoolean
 import de.bixilon.minosoft.util.KUtil.toInt
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.KUtil.unsafeCast
+import glm_.func.rad
+import glm_.mat4x4.Mat4
 import glm_.vec2.Vec2
+import glm_.vec3.Vec3
+import glm_.vec4.Vec4
+import glm_.vec4.swizzle.xyz
 
 data class UnbakedBlockStateModel(
     val model: UnbakedBlockModel,
@@ -74,17 +81,34 @@ data class UnbakedBlockStateModel(
             val rescale = element.rotation?.rescale ?: false
             for (face in element.faces) {
                 val texture = resolvedTextures[face.texture.removePrefix("#")]!! // ToDo: Allow direct texture names?
+                if (texture.resourceLocation.path.contains("carved_pumpkin")) {
+                    var a = 1
+                }
                 val positions = face.direction.getPositions(element.from, element.to)
+                val rotationMatrix = Mat4()
+                element.rotation?.let {
+                    rotationMatrix.rotateAssign(it.angle.rad, Vec3.EMPTY.apply { this[it.axis] = 1.0f })
+                }
+                rotation?.let {
+                    rotationMatrix.rotateAssign(-rotation.y.rad, Vec3(0.0f, 1.0f, 0.0f))
+                    rotationMatrix.rotateAssign(-rotation.x.rad, Vec3(1.0f, 0.0f, 0.0f))
+                }
 
+                val direction = Directions.byDirection((rotationMatrix * Vec4(face.direction.vectorf, 1.0f)).xyz)
+
+                for ((index, position) in positions.withIndex()) {
+                    positions[index] = (rotationMatrix * Vec4(position, 1.0f)).xyz
+                }
 
                 val texturePositions = arrayOf(
                     Vec2(face.uvEnd.x, face.uvStart.y),
                     face.uvStart,
                     Vec2(face.uvStart.x, face.uvEnd.y),
                     face.uvEnd,
-                )
+                ).rotateLeft((face.rotation % 360) / 90).toTypedArray()
 
-                faces[face.direction.ordinal] += BakedFace(
+
+                faces[direction.ordinal] += BakedFace(
                     faceSize = face.direction.getSize(element.from, element.to),
                     positions = positions,
                     uv = texturePositions,
@@ -114,5 +138,8 @@ data class UnbakedBlockStateModel(
                 weight = data["weight"]?.toInt() ?: 1,
             )
         }
+
+        fun <T> Array<T>.rotateLeft(n: Int) = drop(n) + take(n)
+        fun <T> Array<T>.rotateRight(n: Int) = takeLast(n) + dropLast(n)
     }
 }

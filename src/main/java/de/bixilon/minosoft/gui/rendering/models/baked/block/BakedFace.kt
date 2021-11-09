@@ -19,8 +19,8 @@ import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.gui.rendering.block.mesh.ChunkSectionMesh
 import de.bixilon.minosoft.gui.rendering.models.FaceSize
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.get
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.get
 import glm_.vec2.Vec2
 import glm_.vec3.Vec3
 

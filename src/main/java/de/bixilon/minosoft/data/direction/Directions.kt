@@ -16,7 +16,7 @@ import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.registries.blocks.properties.serializer.BlockPropertiesSerializer
 import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.gui.rendering.models.FaceSize
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.get
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.get
 import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.enum.ValuesEnum
 import glm_.vec2.Vec2

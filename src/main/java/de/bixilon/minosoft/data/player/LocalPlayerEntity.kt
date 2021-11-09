@@ -42,8 +42,8 @@ import de.bixilon.minosoft.gui.rendering.input.camera.MovementInput
 import de.bixilon.minosoft.gui.rendering.util.VecUtil
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.clearZero
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.get
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.get
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -525,7 +525,7 @@ class LocalPlayerEntity(
         var minimumDistance = Float.MAX_VALUE
 
         for (direction in Directions.PRIORITY_SIDES) {
-            val nearestAxisValue = direction.axis.choose(Vec3(decimal.x, 0.0, decimal.y))
+            val nearestAxisValue = Vec3(decimal.x, 0.0, decimal.y)[direction.axis]
             val movement = (direction.vector[direction.axis] > 0.0).decide(1.0f - nearestAxisValue, nearestAxisValue)
             if (movement < minimumDistance && !collidesAt(blockPosition + direction)) {
                 minimumDistance = movement
