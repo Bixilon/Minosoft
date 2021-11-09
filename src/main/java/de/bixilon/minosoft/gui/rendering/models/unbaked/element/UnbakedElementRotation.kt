@@ -20,7 +20,7 @@ import de.bixilon.minosoft.util.KUtil.toFloat
 import glm_.vec3.Vec3
 
 data class UnbakedElementRotation(
-    val origin: Vec3?,
+    val origin: Vec3,
     val axis: Axes,
     val angle: Float,
     val rescale: Boolean,
@@ -29,7 +29,7 @@ data class UnbakedElementRotation(
 
         operator fun invoke(data: Map<String, Any>): UnbakedElementRotation {
             return UnbakedElementRotation(
-                origin = data["origin"]?.toVec3(),
+                origin = data["origin"]?.toVec3()?.apply { this /= UnbakedElement.BLOCK_RESOLUTION } ?: Vec3(0.5f), // default: center
                 axis = Axes[data["axis"].toString()],
                 angle = data["angle"].toFloat(),
                 rescale = data["rescale"]?.toBoolean() ?: false,

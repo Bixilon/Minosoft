@@ -39,7 +39,7 @@ object Vec3Util {
         get() = Vec3(Float.MAX_VALUE, Float.MAX_VALUE, Float.MAX_VALUE)
 
 
-    fun rotate(x: Float, y: Float, sin: Float, cos: Float, rescale: Boolean): Vec2 {
+    fun rotateAssign(x: Float, y: Float, sin: Float, cos: Float, rescale: Boolean): Vec2 {
         val result = Vec2(x * cos - y * sin, x * sin + y * cos)
         if (rescale) {
             return result / cos
@@ -48,17 +48,27 @@ object Vec3Util {
     }
 
 
-    fun Vec3.rotate(angle: Float, axis: Axes, rescale: Boolean = false) {
+    fun Vec3.rotateAssign(angle: Float, axis: Axes, rescale: Boolean = false) {
         if (angle == 0.0f) {
             return
         }
         when (axis) {
-            Axes.X -> this.yz = rotate(this.y, this.z, angle.sin, angle.cos, rescale)
-            Axes.Y -> this.xz = rotate(this.x, this.z, angle.sin, angle.cos, rescale)
-            Axes.Z -> this.xy = rotate(this.x, this.y, angle.sin, angle.cos, rescale)
+            Axes.X -> this.yz = rotateAssign(this.y, this.z, angle.sin, angle.cos, rescale)
+            Axes.Y -> this.xz = rotateAssign(this.x, this.z, angle.sin, angle.cos, rescale)
+            Axes.Z -> this.xy = rotateAssign(this.x, this.y, angle.sin, angle.cos, rescale)
         }
     }
 
+    fun Vec3.rotateAssign(rotation: Vec2) {
+        rotateAssign(rotation.y, Axes.Y)
+        rotateAssign(rotation.x, Axes.X)
+    }
+
+    fun Vec3.rotateAssign(angle: Float, axis: Axes, origin: Vec3, rescale: Boolean) {
+        this -= origin
+        rotateAssign(angle, axis, rescale)
+        this += origin
+    }
 
     operator fun <T : Number> Vec3t<T>.get(axis: Axes): T {
         return when (axis) {

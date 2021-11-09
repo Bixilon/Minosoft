@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.models.unbaked.block
 
+import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderWindow
@@ -24,22 +25,34 @@ import de.bixilon.minosoft.gui.rendering.models.unbaked.UnbakedBlockModel
 import de.bixilon.minosoft.gui.rendering.models.unbaked.UnbakedModel
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.get
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.rad
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.toVec2iN
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.get
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.set
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.rotateAssign
 import de.bixilon.minosoft.util.KUtil.toBoolean
 import de.bixilon.minosoft.util.KUtil.toInt
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.KUtil.unsafeCast
 import glm_.func.rad
-import glm_.mat4x4.Mat4
 import glm_.vec2.Vec2
 import glm_.vec2.Vec2i
 import glm_.vec3.Vec3
-import glm_.vec4.Vec4
-import glm_.vec4.swizzle.xyz
-import glm_.vec4.swizzle.xz
+import glm_.vec3.swizzle.xz
+import kotlin.collections.Map
+import kotlin.collections.MutableList
+import kotlin.collections.MutableMap
+import kotlin.collections.component1
+import kotlin.collections.component2
+import kotlin.collections.drop
+import kotlin.collections.iterator
+import kotlin.collections.mutableListOf
+import kotlin.collections.mutableMapOf
+import kotlin.collections.plus
+import kotlin.collections.plusAssign
+import kotlin.collections.set
+import kotlin.collections.take
+import kotlin.collections.toTypedArray
+import kotlin.collections.withIndex
 
 data class UnbakedBlockStateModel(
     val model: UnbakedBlockModel,
@@ -47,8 +60,10 @@ data class UnbakedBlockStateModel(
     val uvLock: Boolean,
     val weight: Int,
 ) : UnbakedModel {
+    var baked: BakedBlockModel? = null
 
     override fun bake(renderWindow: RenderWindow): BakedBlockModel {
+        baked?.let { return it }
         val textureArray = renderWindow.textureManager.staticTextures
 
         val resolvedTextures: MutableMap<String, AbstractTexture> = mutableMapOf()
@@ -85,37 +100,41 @@ data class UnbakedBlockStateModel(
             for (face in element.faces) {
                 val texture = resolvedTextures[face.texture.removePrefix("#")]!! // ToDo: Allow direct texture names?
                 val positions = face.direction.getPositions(element.from, element.to)
-                val rotationMatrix = Mat4()
+
                 element.rotation?.let {
-                    rotationMatrix.rotateAssign(it.angle.rad, Vec3.EMPTY.apply { this[it.axis] = 1.0f })
+                    val rad = it.angle.rad
+                    for ((index, position) in positions.withIndex()) {
+                        positions[index] = Vec3(position).apply { rotateAssign(rad, it.axis, it.origin, it.rescale) }
+                    }
                 }
+
+                var direction = face.direction
                 rotation?.let {
-                    rotationMatrix.rotateAssign(-rotation.y.rad, Vec3(0.0f, 1.0f, 0.0f))
-                    rotationMatrix.rotateAssign(-rotation.x.rad, Vec3(1.0f, 0.0f, 0.0f))
+                    val rad = it.rad
+
+                    direction = Directions.byDirection(Vec3(face.direction.vectorf).apply { rotateAssign(rad) })
+                    for ((index, position) in positions.withIndex()) {
+                        positions[index] = Vec3(position).apply { rotateAssign(rad) }
+                    }
                 }
 
-                val direction = Directions.byDirection((rotationMatrix * Vec4(face.direction.vectorf, 1.0f)).xyz)
-
-                for ((index, position) in positions.withIndex()) {
-                    positions[index] = (rotationMatrix * Vec4(position - 0.5f, 1.0f)).xyz + 0.5f
-                }
-
-                val texturePositions = arrayOf(
+                var texturePositions = arrayOf(
                     Vec2(face.uvEnd.x, face.uvStart.y),
                     face.uvStart,
                     Vec2(face.uvStart.x, face.uvEnd.y),
                     face.uvEnd,
-                ).rotateLeft((face.rotation % 360) / 90).toTypedArray()
+                )
+                if (face.rotation != 0) {
+                    texturePositions = texturePositions.rotateLeft((face.rotation % 360) / 90).toTypedArray()
+                }
 
-                if (this.uvLock && this.rotation != null) {
-                    val matrix = Mat4()
-                    //matrix.rotateAssign(this.rotation.x.rad, Vec3(1,0,0))
-                    val rotationVec3 = Vec3(this.rotation, 0.0f)
-                    val angle = rotationVec3[face.direction.axis]
-                    matrix.rotateAssign(-angle.rad, direction.vectorf)
-                    //matrix.rotateAssign(this.rotation.x.rad, Vec3(0,1,0))
+                if (this.uvLock && this.rotation != null && face.direction.axis != Axes.Z) {
+                    var rad = this.rotation[face.direction.axis].rad
+                    if (direction.negative) {
+                        rad = -rad
+                    }
                     for ((index, position) in texturePositions.withIndex()) {
-                        texturePositions[index] = (matrix * Vec4(position.x - 0.5f, 0.0f, position.y - 0.5f, 0.0f)).xz + 0.5f
+                        texturePositions[index] = (Vec3(position.x - 0.5f, 0.0f, position.y - 0.5f).apply { rotateAssign(rad, direction.axis) }).xz + 0.5f
                     }
                 }
 
@@ -138,7 +157,9 @@ data class UnbakedBlockStateModel(
             finalFaces[index] = faceArray.toTypedArray()
         }
 
-        return BakedBlockStateModel(finalFaces.unsafeCast())
+        val baked = BakedBlockStateModel(finalFaces.unsafeCast())
+        this.baked = baked
+        return baked
     }
 
     companion object {
@@ -152,6 +173,5 @@ data class UnbakedBlockStateModel(
         }
 
         fun <T> Array<T>.rotateLeft(n: Int) = drop(n) + take(n)
-        fun <T> Array<T>.rotateRight(n: Int) = takeLast(n) + dropLast(n)
     }
 }

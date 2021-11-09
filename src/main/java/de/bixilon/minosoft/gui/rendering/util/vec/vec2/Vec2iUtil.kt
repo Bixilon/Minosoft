@@ -13,7 +13,10 @@
 
 package de.bixilon.minosoft.gui.rendering.util.vec.vec2
 
+import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.util.KUtil.toInt
+import glm_.func.rad
+import glm_.vec2.Vec2
 import glm_.vec2.Vec2i
 
 object Vec2iUtil {
@@ -55,6 +58,17 @@ object Vec2iUtil {
 
     infix fun Vec2i.isGreater(other: Vec2i): Boolean {
         return this.x > other.x || this.y > other.y
+    }
+
+    val Vec2i.rad: Vec2
+        get() = Vec2(x.rad, y.rad)
+
+    operator fun Vec2i.get(axis: Axes): Int {
+        return when (axis) {
+            Axes.X -> x
+            Axes.Y -> y
+            Axes.Z -> throw IllegalArgumentException("A Vec2i has no Z coordinate!")
+        }
     }
 
     fun Any?.toVec2i(default: Vec2i? = null): Vec2i {
