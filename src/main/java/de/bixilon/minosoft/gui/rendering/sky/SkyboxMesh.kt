@@ -20,14 +20,13 @@ import de.bixilon.minosoft.gui.rendering.util.mesh.PositionOnlyMeshStruct
 class SkyboxMesh(renderWindow: RenderWindow) : Mesh(renderWindow, PositionOnlyMeshStruct, initialCacheSize = 6 * 2 * 3 * PositionOnlyMeshStruct.FLOATS_PER_VERTEX) {
 
     init {
-        data.addAll(
-            floatArrayOf(
-                -1.0f, +1.0f, -1.0f,
-                -1.0f, -1.0f, -1.0f,
-                +1.0f, -1.0f, -1.0f,
-                +1.0f, -1.0f, -1.0f,
-                +1.0f, +1.0f, -1.0f,
-                -1.0f, +1.0f, -1.0f,
+        data.addAll(floatArrayOf(
+            -1.0f, +1.0f, -1.0f,
+            -1.0f, -1.0f, -1.0f,
+            +1.0f, -1.0f, -1.0f,
+            +1.0f, -1.0f, -1.0f,
+            +1.0f, +1.0f, -1.0f,
+            -1.0f, +1.0f, -1.0f,
 
             -1.0f, -1.0f, +1.0f,
             -1.0f, -1.0f, -1.0f,

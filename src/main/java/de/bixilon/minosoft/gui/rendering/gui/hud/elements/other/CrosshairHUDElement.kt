@@ -46,7 +46,7 @@ class CrosshairHUDElement(hudRenderer: HUDRenderer) : CustomHUDElement(hudRender
         val mesh = mesh ?: return
 
         if (Minosoft.config.config.game.hud.crosshair.complementaryColor) {
-            renderWindow.renderSystem.reset(sourceAlpha = BlendingFunctions.ONE_MINUS_DESTINATION_COLOR, destinationAlpha = BlendingFunctions.ONE_MINUS_SOURCE_COLOR)
+            renderWindow.renderSystem.reset(blending = true, sourceAlpha = BlendingFunctions.ONE_MINUS_DESTINATION_COLOR, destinationAlpha = BlendingFunctions.ONE_MINUS_SOURCE_COLOR)
         } else {
             renderWindow.renderSystem.reset()
         }
