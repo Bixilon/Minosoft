@@ -23,7 +23,7 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 
 class GenericSectionPreparer(
     val renderWindow: RenderWindow,
-    private val preparer: AbstractSectionPreparer = GreedySectionPreparer(renderWindow),
+    private val preparer: AbstractSectionPreparer = CullSectionPreparer(renderWindow),
 ) : AbstractSectionPreparer {
 
     override fun prepare(section: ChunkSection): ChunkSectionMesh {
@@ -33,7 +33,7 @@ class GenericSectionPreparer(
 
         val time = System.nanoTime()
         val delta = time - startTime
-        Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Preparing took ${delta}ns, ${delta / 1000}µs, ${delta / 1000000}ms" }
+        Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Preparing took ${delta}ns, ${delta / 1000}µs, ${delta / 1000_000}ms" }
 
         return mesh
     }

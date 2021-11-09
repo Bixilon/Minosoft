@@ -79,7 +79,7 @@ data class BlockState(
             return false
         }
         if (other is BlockState) {
-            return block.resourceLocation == other.block.resourceLocation && properties == other.properties && block.resourceLocation.namespace == other.block.resourceLocation.namespace
+            return block.resourceLocation.path == other.block.resourceLocation.path && properties == other.properties && block.resourceLocation.namespace == other.block.resourceLocation.namespace
         }
         if (other is ResourceLocation) {
             return super.equals(other)

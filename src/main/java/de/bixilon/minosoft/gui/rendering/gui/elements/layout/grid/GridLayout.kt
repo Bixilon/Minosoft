@@ -28,7 +28,7 @@ class GridLayout(hudRenderer: HUDRenderer, val grid: Vec2i) : Element(hudRendere
     val columnConstraints: Array<GridColumnConstraint> = Array(grid.x) { GridColumnConstraint() }
     val rowConstraints: Array<GridRowConstraint> = Array(grid.y) { GridRowConstraint() }
 
-    private val children: Array<Array<GridCell?>> = Array(grid.x) { Array(grid.y) { null } }
+    private val children: Array<Array<GridCell?>> = Array(grid.x) { arrayOfNulls(grid.y) }
     private var columnStart = IntArray(grid.x)
     private var rowStart = IntArray(grid.y)
 

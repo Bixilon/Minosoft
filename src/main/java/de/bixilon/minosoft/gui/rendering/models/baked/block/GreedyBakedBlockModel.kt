@@ -19,6 +19,7 @@ import glm_.vec3.Vec3i
 
 interface GreedyBakedBlockModel {
     val canGreedyMesh: Boolean
+    val greedyMeshableFaces: BooleanArray
 
     // ToDo: Tint
     fun greedyRender(start: Vec3i, end: Vec3i, side: Directions, mesh: ChunkSectionMesh, light: Int)

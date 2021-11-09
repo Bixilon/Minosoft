@@ -51,7 +51,8 @@ class GreedySectionPreparer(
         var l: Int
         var w: Int
         var h: Int
-        val mask = BooleanArray(SECTION_SIZE * SECTION_SIZE)
+        val stateMask: Array<BlockState?> = arrayOfNulls(SECTION_SIZE * SECTION_SIZE)
+        val meshableMask = BooleanArray(SECTION_SIZE * SECTION_SIZE) { true }
         val endOffset = IntArray(3)
 
         for (direction in Directions.VALUES) {
@@ -92,10 +93,27 @@ class GreedySectionPreparer(
                         } else {
                             currentBlock
                         }
+                        val model = primaryBlock?.model
+
+                        val meshable = model is GreedyBakedBlockModel
+                                && model.canGreedyMesh
+                                && model.greedyMeshableFaces[direction.ordinal]
 
 
+                        val face = currentBlock == null
+                                || compareBlock == null
+                                || currentBlock != compareBlock
+                                || !meshable
 
-                        mask[n++] = primaryBlock != null && currentBlock != compareBlock
+                        if (!meshable) {
+                            meshableMask[n] = false
+                        }
+
+                        if (face) {
+                            stateMask[n] = primaryBlock
+                        }
+                        n++
+
                         ++position[nextAxis]
                     }
                     ++position[nextNextAxis]
@@ -109,11 +127,11 @@ class GreedySectionPreparer(
                 while (j < SECTION_SIZE) {
                     i = 0
                     while (i < SECTION_SIZE) {
-                        if (mask[n]) {
+                        if (stateMask[n] != null) {
                             // Compute the width of this quad and store it in w
                             // This is done by searching along the current axis until mask[n + w] is false
                             w = 1
-                            while (i + w < SECTION_SIZE && mask[n + w]) {
+                            while (i + w < SECTION_SIZE && stateMask[n + w] == stateMask[n]) {
                                 w++
                             }
 
@@ -128,9 +146,9 @@ class GreedySectionPreparer(
                             while (j + h < SECTION_SIZE) {
                                 k = 0
                                 while (k < w) {
-                                    if (!mask[n + k + h * SECTION_SIZE]) {
+                                    val compareIndex = n + k + h * SECTION_SIZE
+                                    if (stateMask[compareIndex] != stateMask[n] || !meshableMask[compareIndex]) {
                                         done = true
-                                        break
                                     }
                                     k++
                                 }
@@ -172,8 +190,11 @@ class GreedySectionPreparer(
 
                                 end = Vec3i(endOffset)
 
+                                val model = currentBlock.model
+                                model as GreedyBakedBlockModel
 
-                                (currentBlock.model as GreedyBakedBlockModel).greedyRender(start, end, direction, mesh, 0xFF)
+
+                                model.greedyRender(start, end, direction, mesh, 0xFF)
                             }
 
 
@@ -186,7 +207,9 @@ class GreedySectionPreparer(
                             while (l < h) {
                                 k = 0
                                 while (k < w) {
-                                    mask[n + k + l * SECTION_SIZE] = false
+                                    val index = n + k + l * SECTION_SIZE
+                                    stateMask[index] = null
+                                    meshableMask[index] = true
                                     ++k
                                 }
                                 ++l

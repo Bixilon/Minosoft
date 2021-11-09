@@ -26,6 +26,7 @@ class BakedBlockStateModel(
     val faces: Array<Array<BakedFace>>,
 ) : BakedBlockModel, GreedyBakedBlockModel { // ToDo: Greedy meshable
     override val canGreedyMesh: Boolean = true
+    override val greedyMeshableFaces: BooleanArray = booleanArrayOf(true, false, true, true, true, true)
 
     override fun getFaceSize(direction: Directions, random: Random): Array<FaceSize> {
         return arrayOf() // ToDo
