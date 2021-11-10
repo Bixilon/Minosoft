@@ -55,6 +55,13 @@ class ChunkSectionMeshes(
         }
     }
 
+    @Synchronized
+    fun unload() {
+        opaqueMesh?.unload()
+        translucentMesh?.unload()
+        transparentMesh?.unload()
+    }
+
     fun addBlock(x: Int, y: Int, z: Int) {
         if (x < minPosition.x) {
             minPosition.x = x

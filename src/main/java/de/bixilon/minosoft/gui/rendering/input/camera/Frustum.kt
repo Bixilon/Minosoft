@@ -17,8 +17,6 @@ package de.bixilon.minosoft.gui.rendering.input.camera
 import de.bixilon.minosoft.data.registries.AABB
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.of
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.KUtil.get
 import de.bixilon.minosoft.util.enum.ValuesEnum
@@ -163,11 +161,10 @@ class Frustum(private val camera: Camera) {
         return true
     }
 
-    fun containsChunk(chunkPosition: Vec2i, lowestBlockHeight: Int, highestBlockHeight: Int): Boolean {
-        val from = Vec3i.of(chunkPosition, 0, Vec3i.EMPTY)
-        from.y = lowestBlockHeight
-        val to = Vec3(from.x + ProtocolDefinition.SECTION_WIDTH_X, highestBlockHeight, from.z + ProtocolDefinition.SECTION_WIDTH_Z)
-        return containsRegion(Vec3(from), to)
+    fun containsChunk(chunkPosition: Vec2i, sectionHeight: Int, minPosition: Vec3i, maxPosition: Vec3i): Boolean {
+        val from = Vec3i.of(chunkPosition, sectionHeight, minPosition)
+        val to = Vec3i.of(chunkPosition, sectionHeight, maxPosition)
+        return containsRegion(Vec3(from), Vec3(to))
     }
 
     fun containsAABB(aabb: AABB): Boolean {

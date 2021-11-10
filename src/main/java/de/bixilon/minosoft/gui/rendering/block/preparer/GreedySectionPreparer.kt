@@ -22,6 +22,7 @@ import de.bixilon.minosoft.gui.rendering.block.mesh.ChunkSectionMeshes
 import de.bixilon.minosoft.gui.rendering.models.baked.block.GreedyBakedBlockModel
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition.SECTION_SIZE
 import de.bixilon.minosoft.util.KUtil.decide
+import glm_.vec2.Vec2i
 import glm_.vec3.Vec3i
 import java.util.*
 
@@ -36,7 +37,7 @@ class GreedySectionPreparer(
 
 
     // base taken from https://0fps.net/2012/06/30/meshing-in-a-minecraft-game/
-    override fun prepare(section: ChunkSection): ChunkSectionMeshes {
+    override fun prepare(chunkPosition: Vec2i, sectionHeight: Int, section: ChunkSection, neighbours: Array<ChunkSection?>): ChunkSectionMeshes {
         val mesh = ChunkSectionMesh(renderWindow)
 
         val random = Random(0L)

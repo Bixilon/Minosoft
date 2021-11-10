@@ -23,20 +23,26 @@ import de.bixilon.minosoft.gui.rendering.Renderer
 import de.bixilon.minosoft.gui.rendering.RendererBuilder
 import de.bixilon.minosoft.gui.rendering.block.mesh.ChunkSectionMeshes
 import de.bixilon.minosoft.gui.rendering.block.preparer.AbstractSectionPreparer
-import de.bixilon.minosoft.gui.rendering.block.preparer.CullSectionPreparer
 import de.bixilon.minosoft.gui.rendering.block.preparer.GenericSectionPreparer
-import de.bixilon.minosoft.gui.rendering.block.preparer.GreedySectionPreparer
+import de.bixilon.minosoft.gui.rendering.input.camera.Frustum
+import de.bixilon.minosoft.gui.rendering.modding.events.FrustumChangeEvent
 import de.bixilon.minosoft.gui.rendering.models.ModelLoader
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
 import de.bixilon.minosoft.gui.rendering.system.base.phases.OpaqueDrawable
 import de.bixilon.minosoft.gui.rendering.system.base.phases.TranslucentDrawable
 import de.bixilon.minosoft.gui.rendering.system.base.phases.TransparentDrawable
+import de.bixilon.minosoft.modding.event.events.ChunkDataChangeEvent
+import de.bixilon.minosoft.modding.event.events.ChunkUnloadEvent
+import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import de.bixilon.minosoft.util.KUtil.toSynchronizedMap
+import de.bixilon.minosoft.util.collections.SynchronizedMap
+import glm_.vec2.Vec2i
 import java.io.FileInputStream
 import java.util.zip.GZIPInputStream
 import java.util.zip.ZipInputStream
-import kotlin.random.Random
 
 class WorldRenderer(
     private val connection: PlayConnection,
@@ -48,11 +54,14 @@ class WorldRenderer(
     private val world: World = connection.world
     private val sectionPreparer: AbstractSectionPreparer = GenericSectionPreparer(renderWindow)
     private val lightMap = LightMap(connection)
-    private lateinit var mesh: ChunkSectionMeshes
+    private val meshes: SynchronizedMap<Vec2i, SynchronizedMap<Int, ChunkSectionMeshes>> = synchronizedMapOf()
+    private var visibleMeshes: MutableSet<ChunkSectionMeshes> = mutableSetOf() // ToDo: Split in opaque, transparent, translucent meshes
 
-    private val culledPreparer = GenericSectionPreparer(renderWindow, CullSectionPreparer(renderWindow))
-    private val greedyPreparer = GenericSectionPreparer(renderWindow, GreedySectionPreparer(renderWindow))
 
+    val visibleSize: Int
+        get() = visibleMeshes.size
+    val preparedSize: Int
+        get() = visibleMeshes.size
 
     override fun init() {
         val asset = Resources.getAssetVersionByVersion(connection.version)
@@ -75,37 +84,49 @@ class WorldRenderer(
         renderWindow.textureManager.staticTextures.animator.use(transparentShader)
         lightMap.use(transparentShader)
 
+        connection.registerEvent(CallbackEventInvoker.of<FrustumChangeEvent> { onFrustumChange(it.frustum) })
 
-        val random = Random(0L)
-        val blockState1 = connection.registries.blockRegistry["grass_block"]?.defaultState
-        val blockState2 = connection.registries.blockRegistry["diamond_block"]!!.defaultState//.withProperties(BlockProperties.MULTIPART_SOUTH to MultipartDirectionParser.SIDE, BlockProperties.MULTIPART_NORTH to MultipartDirectionParser.SIDE, BlockProperties.MULTIPART_EAST to MultipartDirectionParser.SIDE, BlockProperties.MULTIPART_WEST to MultipartDirectionParser.SIDE)
-        val section = ChunkSection(Array(4096) {
-            when (random.nextInt(3)) {
-                1 -> blockState1
-                2 -> blockState2
-                else -> null
+
+        connection.registerEvent(CallbackEventInvoker.of<ChunkDataChangeEvent> {
+            val sections = it.chunk.sections ?: return@of
+            for ((sectionHeight, section) in sections) {
+                prepareSection(it.chunkPosition, sectionHeight, section)
             }
         })
-        //val section = ChunkSection(Array(4096) { if (it < 1) blockState else null })
 
-        mesh = sectionPreparer.prepare(section)
+        connection.registerEvent(CallbackEventInvoker.of<ChunkUnloadEvent> {
+            val meshes = this.meshes.remove(it.chunkPosition)?.values ?: return@of
 
-        for (i in 0 until 1000)
-            mesh = sectionPreparer.prepare(section)
+            renderWindow.queue += {
+                for (mesh in meshes) {
+                    mesh.unload()
+                    this.visibleMeshes -= mesh
+                }
+            }
+        })
+    }
 
-        /*
-        Log.log(LogMessageType.OTHER, LogLevels.WARN){"Culling now..."}
-
-        val culledMesh = culledPreparer.prepare(section)
-        for (i in 0 until 1000){
-            culledPreparer.prepare(section)
+    @Synchronized
+    private fun prepareSection(chunkPosition: Vec2i, sectionHeight: Int, section: ChunkSection? = world[chunkPosition]?.sections?.get(sectionHeight)) {
+        if (section == null) {
+            return
         }
-        val greedyMesh = greedyPreparer.prepare(section)
 
-        Log.log(LogMessageType.OTHER,LogLevels.INFO){"Culling has ${culledMesh.data.size / ChunkSectionMesh.SectionArrayMeshStruct.FLOATS_PER_VERTEX}, greedy meshed has  ${greedyMesh.data.size / ChunkSectionMesh.SectionArrayMeshStruct.FLOATS_PER_VERTEX}."}
+        val mesh = sectionPreparer.prepare(chunkPosition, sectionHeight, section, arrayOfNulls(6))
 
-         */
-        mesh.load()
+        val meshes = this.meshes.getOrPut(chunkPosition) { synchronizedMapOf() }
+        val currentMesh = meshes.remove(sectionHeight)
+
+        renderWindow.queue += {
+            if (currentMesh != null) {
+                currentMesh.unload()
+                this.visibleMeshes -= currentMesh
+            }
+
+            mesh.load()
+            meshes[sectionHeight] = mesh
+            this.visibleMeshes += mesh
+        }
     }
 
     override fun setupOpaque() {
@@ -114,7 +135,9 @@ class WorldRenderer(
     }
 
     override fun drawOpaque() {
-        mesh.opaqueMesh?.draw()
+        for (mesh in visibleMeshes) {
+            mesh.opaqueMesh?.draw()
+        }
     }
 
     override fun setupTranslucent() {
@@ -123,7 +146,9 @@ class WorldRenderer(
     }
 
     override fun drawTranslucent() {
-        mesh.translucentMesh?.draw()
+        for (mesh in visibleMeshes) {
+            mesh.translucentMesh?.draw()
+        }
     }
 
     override fun setupTransparent() {
@@ -132,7 +157,25 @@ class WorldRenderer(
     }
 
     override fun drawTransparent() {
-        mesh.transparentMesh?.draw()
+        for (mesh in visibleMeshes) {
+            mesh.transparentMesh?.draw()
+        }
+    }
+
+    private fun onFrustumChange(frustum: Frustum) {
+        val visible: MutableSet<ChunkSectionMeshes> = mutableSetOf()
+
+        // ToDo
+        for ((chunkPosition, meshes) in this.meshes.toSynchronizedMap()) {
+            for ((sectionHeight, mesh) in meshes) {
+                if (!frustum.containsChunk(chunkPosition, sectionHeight, mesh.minPosition, mesh.maxPosition)) {
+                    continue
+                }
+                visible += mesh
+            }
+        }
+
+        this.visibleMeshes = visible
     }
 
 

@@ -19,6 +19,7 @@ import de.bixilon.minosoft.gui.rendering.block.mesh.ChunkSectionMeshes
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
+import glm_.vec2.Vec2i
 
 
 class GenericSectionPreparer(
@@ -26,10 +27,10 @@ class GenericSectionPreparer(
     private val preparer: AbstractSectionPreparer = CullSectionPreparer(renderWindow),
 ) : AbstractSectionPreparer {
 
-    override fun prepare(section: ChunkSection): ChunkSectionMeshes {
+    override fun prepare(chunkPosition: Vec2i, sectionHeight: Int, section: ChunkSection, neighbours: Array<ChunkSection?>): ChunkSectionMeshes {
         val startTime = System.nanoTime()
 
-        val mesh = preparer.prepare(section)
+        val mesh = preparer.prepare(chunkPosition, sectionHeight, section, neighbours)
 
         val time = System.nanoTime()
         val delta = time - startTime
