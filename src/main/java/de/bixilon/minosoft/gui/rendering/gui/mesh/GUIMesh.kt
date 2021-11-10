@@ -42,7 +42,7 @@ class GUIMesh(
     data class GUIMeshStruct(
         val position: Vec3,
         val uv: Vec2,
-        val textureLayer: Int,
+        val indexLayerAnimation: Int,
         val tintColor: RGBColor,
     ) {
         companion object : MeshStruct(GUIMeshStruct::class)
@@ -69,7 +69,7 @@ class GUIMesh(
                 BASE_Z + Z_MULTIPLIER * z,
                 uv.x,
                 uv.y,
-                Float.fromBits(texture.renderData?.layer ?: RenderConstants.DEBUG_TEXTURE_ID),
+                Float.fromBits(texture.renderData?.shaderTextureId ?: RenderConstants.DEBUG_TEXTURE_ID),
                 Float.fromBits(color.rgba),
             )
         }

@@ -23,38 +23,27 @@ import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
 import glm_.vec2.Vec2
 import glm_.vec3.Vec3
 
-class ChunkSectionMesh(renderWindow: RenderWindow) : Mesh(renderWindow, SectionArrayMeshStruct, PrimitiveTypes.QUAD, initialCacheSize = 100000) {
+class ChunkSectionMesh(renderWindow: RenderWindow) : Mesh(renderWindow, SectionArrayMeshStruct, PrimitiveTypes.QUAD, initialCacheSize = 200000) {
 
     fun addVertex(position: FloatArray, uv: Vec2, texture: AbstractTexture, tintColor: RGBColor?, light: Int) {
-        //val texture = renderWindow.WHITE_TEXTURE.texture
-        val textureLayer = if (RenderConstants.FORCE_DEBUG_TEXTURE) {
-            RenderConstants.DEBUG_TEXTURE_ID
-        } else {
-            texture.renderData?.layer ?: RenderConstants.DEBUG_TEXTURE_ID
-        }
         val transformedUV = texture.renderData?.transformUV(uv) ?: uv
-        data.addAll(
-            floatArrayOf(
-                position[0],
-                position[1],
-                position[2],
-                transformedUV.x,
-                transformedUV.y,
-                Float.fromBits(textureLayer),
-                Float.fromBits(texture.renderData?.animationData ?: -1),
-                Float.fromBits(tintColor?.rgb ?: 0xFFFFFF), // white
-                Float.fromBits(light),
-            ))
+        data.addAll(floatArrayOf(
+            position[0],
+            position[1],
+            position[2],
+            transformedUV.x,
+            transformedUV.y,
+            Float.fromBits(texture.renderData?.shaderTextureId ?: RenderConstants.DEBUG_TEXTURE_ID),
+            Float.fromBits((tintColor?.rgb ?: 0xFFFFFF) or (light shl 24)), // white
+        ))
     }
 
 
     data class SectionArrayMeshStruct(
         val position: Vec3,
         val uv: Vec2,
-        val textureLayer: Int,
-        val animationId: Int,
-        val tintColor: RGBColor,
-        val light: Int,
+        val indexLayerAnimation: Int,
+        val tintLight: Int,
     ) {
         companion object : MeshStruct(SectionArrayMeshStruct::class)
     }

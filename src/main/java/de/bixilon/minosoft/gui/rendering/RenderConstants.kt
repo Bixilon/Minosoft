@@ -60,8 +60,6 @@ object RenderConstants {
     val DEBUG_TEXTURE_RESOURCE_LOCATION = ResourceLocation("minosoft:textures/debug.png")
     const val DEBUG_TEXTURE_ID = 0 // always add the debug texture to the texture array first to ensure the id is 0
 
-    const val FORCE_DEBUG_TEXTURE = false
-
 
     val PIXEL_UV_PIXEL_ADD = Vec2(0, 0.1f)
 
