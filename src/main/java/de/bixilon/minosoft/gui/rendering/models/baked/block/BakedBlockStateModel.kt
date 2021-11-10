@@ -35,8 +35,9 @@ class BakedBlockStateModel(
         return sizes[direction.ordinal]
     }
 
-    override fun singleRender(position: Vec3i, mesh: ChunkSectionMeshes, random: Random, neighbours: Array<BlockState?>, light: Int, ambientLight: FloatArray) {
+    override fun singleRender(position: Vec3i, mesh: ChunkSectionMeshes, random: Random, neighbours: Array<BlockState?>, light: Int, ambientLight: FloatArray): Boolean {
         val floatPosition = position.toVec3().array
+        var rendered = false
         for ((index, faces) in faces.withIndex()) {
             val direction = Directions.VALUES[index]
             val neighbour = neighbours[index]?.model
@@ -50,8 +51,12 @@ class BakedBlockStateModel(
                     continue
                 }
                 face.singleRender(floatPosition, mesh, light, ambientLight)
+                if (!rendered) {
+                    rendered = true
+                }
             }
         }
+        return rendered
     }
 
     override fun greedyRender(start: Vec3i, end: Vec3i, side: Directions, mesh: ChunkSectionMesh, light: Int) {

@@ -13,9 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.block.mesh
 
-import de.bixilon.minosoft.data.registries.AABB
 import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
 import glm_.vec3.Vec3i
 
 class ChunkSectionMeshes(
@@ -28,11 +26,9 @@ class ChunkSectionMeshes(
     var transparentMesh: ChunkSectionMesh? = ChunkSectionMesh(renderWindow)
         private set
 
-    val minPosition = Vec3i.EMPTY
-    val maxPosition = Vec3i.EMPTY
-
-    lateinit var aabb: AABB
-        private set
+    // used for frustum culling
+    val minPosition = Vec3i(16)
+    val maxPosition = Vec3i(0)
 
     @Synchronized
     fun load() {
@@ -56,6 +52,28 @@ class ChunkSectionMeshes(
             this.transparentMesh = null
         } else {
             mesh.load()
+        }
+    }
+
+    fun addBlock(x: Int, y: Int, z: Int) {
+        if (x < minPosition.x) {
+            minPosition.x = x
+        }
+        if (y < minPosition.y) {
+            minPosition.y = y
+        }
+        if (z < minPosition.z) {
+            minPosition.z = z
+        }
+
+        if (x > maxPosition.x) {
+            maxPosition.x = x
+        }
+        if (y > maxPosition.y) {
+            maxPosition.y = y
+        }
+        if (z > maxPosition.z) {
+            maxPosition.z = z
         }
     }
 }

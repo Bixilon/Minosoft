@@ -27,7 +27,7 @@ interface BakedBlockModel : BakedModel {
     fun getSize(random: Random, direction: Directions): Array<FaceSize>
 
     // ToDo: Tint
-    fun singleRender(position: Vec3i, mesh: ChunkSectionMeshes, random: Random, neighbours: Array<BlockState?>, light: Int, ambientLight: FloatArray)
+    fun singleRender(position: Vec3i, mesh: ChunkSectionMeshes, random: Random, neighbours: Array<BlockState?>, light: Int, ambientLight: FloatArray): Boolean
 
     // ToDo: Get ambient light
     fun getLight(position: Vec3i, random: Random, side: Directions, lightAccessor: LightAccessor): Int

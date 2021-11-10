@@ -60,8 +60,8 @@ class WeightedBakedModel(
         return getModel(random).getLight(position, random, side, lightAccessor)
     }
 
-    override fun singleRender(position: Vec3i, mesh: ChunkSectionMeshes, random: Random, neighbours: Array<BlockState?>, light: Int, ambientLight: FloatArray) {
-        getModel(random).singleRender(position, mesh, random, neighbours, light, ambientLight)
+    override fun singleRender(position: Vec3i, mesh: ChunkSectionMeshes, random: Random, neighbours: Array<BlockState?>, light: Int, ambientLight: FloatArray): Boolean {
+        return getModel(random).singleRender(position, mesh, random, neighbours, light, ambientLight)
     }
 
 }

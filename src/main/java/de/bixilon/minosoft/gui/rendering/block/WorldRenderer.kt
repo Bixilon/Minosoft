@@ -90,7 +90,7 @@ class WorldRenderer(
 
         mesh = sectionPreparer.prepare(section)
 
-        // for (i in 0 until 1000)
+        for (i in 0 until 1000)
             mesh = sectionPreparer.prepare(section)
 
         /*

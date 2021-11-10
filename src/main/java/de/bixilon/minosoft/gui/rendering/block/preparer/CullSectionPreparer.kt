@@ -25,6 +25,7 @@ class CullSectionPreparer(
             for (y in 0 until ProtocolDefinition.SECTION_HEIGHT_Y) {
                 for (z in 0 until ProtocolDefinition.SECTION_WIDTH_Z) {
                     block = section.blocks[ChunkSection.getIndex(x, y, z)]
+                    val model = block?.model ?: continue
 
                     // ToDo: Chunk borders
                     neighbours[Directions.DOWN.ordinal] = if (y == 0) {
@@ -59,7 +60,10 @@ class CullSectionPreparer(
                     }
 
                     random.setSeed(VecUtil.generatePositionHash(x, y, z))
-                    block?.model?.singleRender(Vec3i(x, y, z), mesh, random, neighbours, 0xFF, floatArrayOf(1.0f, 1.0f, 1.0f, 1.0f))
+                    val rendered = model.singleRender(Vec3i(x, y, z), mesh, random, neighbours, 0xFF, floatArrayOf(1.0f, 1.0f, 1.0f, 1.0f))
+                    if (rendered) {
+                        mesh.addBlock(x, y, z)
+                    }
                 }
             }
         }
