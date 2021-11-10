@@ -69,13 +69,19 @@ abstract class Mesh(
     }
 
     companion object {
-        val QUAD_DRAW_ODER = arrayOf(
+        val TRIANGLE_TO_QUAD_ORDER = arrayOf(
             0 to 1,
             3 to 2,
             2 to 3,
             2 to 3,
             1 to 0,
             0 to 1,
+        )
+        val QUAD_TO_QUAD_ORDER = arrayOf(
+            0 to 1,
+            3 to 2,
+            2 to 3,
+            1 to 0,
         )
 
 
@@ -93,7 +99,7 @@ abstract class Mesh(
                 uvEnd,
             )
 
-            for ((vertexIndex, textureIndex) in QUAD_DRAW_ODER) {
+            for ((vertexIndex, textureIndex) in TRIANGLE_TO_QUAD_ORDER) {
                 vertexConsumer.invoke(positions[vertexIndex], texturePositions[textureIndex])
             }
         }

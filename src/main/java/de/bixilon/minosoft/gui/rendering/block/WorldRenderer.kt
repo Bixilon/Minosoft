@@ -77,7 +77,7 @@ class WorldRenderer(
         val blockState1 = connection.registries.blockRegistry["grass_block"]?.defaultState
         val blockState2 = connection.registries.blockRegistry["oak_fence"]!!.defaultState.withProperties(BlockProperties.MULTIPART_SOUTH to MultipartDirectionParser.SIDE, BlockProperties.MULTIPART_NORTH to MultipartDirectionParser.SIDE, BlockProperties.MULTIPART_EAST to MultipartDirectionParser.SIDE, BlockProperties.MULTIPART_WEST to MultipartDirectionParser.SIDE)
         val section = ChunkSection(Array(4096) {
-            if (it < 256) return@Array blockState2 else return@Array null
+            if (it < 4096) return@Array blockState2 else return@Array null
             when (random.nextInt(3)) {
                 1 -> blockState1
                 2 -> blockState2
@@ -87,10 +87,11 @@ class WorldRenderer(
         //val section = ChunkSection(Array(4096) { if (it < 1) blockState else null })
 
         mesh = sectionPreparer.prepare(section)
-        /*
-        for (i in 0 until 1000)
-            mesh = sectionPreparer.prepare(section)
 
+        // for (i in 0 until 1000)
+        mesh = sectionPreparer.prepare(section)
+
+        /*
         Log.log(LogMessageType.OTHER, LogLevels.WARN){"Culling now..."}
 
         val culledMesh = culledPreparer.prepare(section)

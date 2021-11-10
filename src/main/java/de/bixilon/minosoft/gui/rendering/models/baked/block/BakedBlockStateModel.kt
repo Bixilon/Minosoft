@@ -35,7 +35,7 @@ class BakedBlockStateModel(
     }
 
     override fun singleRender(position: Vec3i, mesh: ChunkSectionMesh, random: Random, neighbours: Array<BlockState?>, light: Int, ambientLight: FloatArray) {
-        val floatPosition = position.toVec3()
+        val floatPosition = position.toVec3().array
         for ((index, faces) in faces.withIndex()) {
             val direction = Directions.VALUES[index]
             val neighbour = neighbours[index]?.model

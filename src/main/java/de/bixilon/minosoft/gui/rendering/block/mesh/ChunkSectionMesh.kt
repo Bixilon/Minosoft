@@ -16,15 +16,16 @@ package de.bixilon.minosoft.gui.rendering.block.mesh
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
 import glm_.vec2.Vec2
 import glm_.vec3.Vec3
 
-class ChunkSectionMesh(renderWindow: RenderWindow) : Mesh(renderWindow, SectionArrayMeshStruct, initialCacheSize = 100000) {
+class ChunkSectionMesh(renderWindow: RenderWindow) : Mesh(renderWindow, SectionArrayMeshStruct, PrimitiveTypes.QUAD, initialCacheSize = 100000) {
 
-    fun addVertex(position: Vec3, uv: Vec2, texture: AbstractTexture, tintColor: RGBColor?, light: Int) {
+    fun addVertex(position: FloatArray, uv: Vec2, texture: AbstractTexture, tintColor: RGBColor?, light: Int) {
         //val texture = renderWindow.WHITE_TEXTURE.texture
         val textureLayer = if (RenderConstants.FORCE_DEBUG_TEXTURE) {
             RenderConstants.DEBUG_TEXTURE_ID
@@ -34,9 +35,9 @@ class ChunkSectionMesh(renderWindow: RenderWindow) : Mesh(renderWindow, SectionA
         val transformedUV = texture.renderData?.transformUV(uv) ?: uv
         data.addAll(
             floatArrayOf(
-                position.x,
-                position.y,
-                position.z,
+                position[0],
+                position[1],
+                position[2],
                 transformedUV.x,
                 transformedUV.y,
                 Float.fromBits(textureLayer),

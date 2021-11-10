@@ -33,10 +33,11 @@ class BakedFace(
     val texture: AbstractTexture,
     val touching: Boolean,
 ) {
-    fun singleRender(position: Vec3, mesh: ChunkSectionMesh, light: Int, ambientLight: FloatArray) {
+    fun singleRender(position: FloatArray, mesh: ChunkSectionMesh, light: Int, ambientLight: FloatArray) {
         // ToDo: Ambient light
-        for ((index, textureIndex) in Mesh.QUAD_DRAW_ODER) {
-            mesh.addVertex(positions[index] + position, uv[textureIndex], texture, null, light)
+        for ((index, textureIndex) in Mesh.QUAD_TO_QUAD_ORDER) {
+            val indexPosition = positions[index].array
+            mesh.addVertex(floatArrayOf(indexPosition[0] + position[0], indexPosition[1] + position[1], indexPosition[2] + position[2]), uv[textureIndex], texture, null, light)
         }
     }
 
@@ -64,8 +65,9 @@ class BakedFace(
             uv[2] * uvMultiplier,
             uv[3] * uvMultiplier,
         )
-        for ((index, textureIndex) in Mesh.QUAD_DRAW_ODER) {
-            mesh.addVertex(positions[index], uv[textureIndex], texture, null, light)
+        for ((index, textureIndex) in Mesh.QUAD_TO_QUAD_ORDER) {
+            // ToDo
+            mesh.addVertex(positions[index].array, uv[textureIndex], texture, null, light)
         }
     }
 }

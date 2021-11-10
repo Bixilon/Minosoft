@@ -17,13 +17,14 @@ import de.bixilon.minosoft.data.registries.AABB
 import de.bixilon.minosoft.data.registries.VoxelShape
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import de.bixilon.minosoft.util.BitByte.isBit
 import de.bixilon.minosoft.util.MMath.positiveNegative
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3d
 
-open class LineMesh(renderWindow: RenderWindow) : GenericColorMesh(renderWindow) {
+open class LineMesh(renderWindow: RenderWindow) : GenericColorMesh(renderWindow, PrimitiveTypes.QUAD) {
 
     fun drawLine(start: Vec3, end: Vec3, lineWidth: Float, color: RGBColor) {
         val direction = (end - start).normalize()
@@ -43,13 +44,13 @@ open class LineMesh(renderWindow: RenderWindow) : GenericColorMesh(renderWindow)
         val halfLineWidth = lineWidth / 2
         val normal1Multiplier = invertNormal1.positiveNegative
         val normal2Multiplier = invertNormal2.positiveNegative
-        val positions = listOf(
+        val positions = arrayOf(
             start + normal2 * normal2Multiplier * halfLineWidth - direction * halfLineWidth,
             start + normal1 * normal1Multiplier * halfLineWidth - direction * halfLineWidth,
             end + normal1 * normal1Multiplier * halfLineWidth + direction * halfLineWidth,
             end + normal2 * normal2Multiplier * halfLineWidth + direction * halfLineWidth,
         )
-        for ((_, positionIndex) in Mesh.QUAD_DRAW_ODER) {
+        for ((_, positionIndex) in QUAD_TO_QUAD_ORDER) {
             addVertex(positions[positionIndex], color)
         }
     }

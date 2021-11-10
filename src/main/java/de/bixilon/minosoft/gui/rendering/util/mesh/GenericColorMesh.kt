@@ -16,9 +16,10 @@ package de.bixilon.minosoft.gui.rendering.util.mesh
 import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
 import glm_.vec3.Vec3
 
-open class GenericColorMesh(renderWindow: RenderWindow) : Mesh(renderWindow, GenericColorMeshStruct) {
+open class GenericColorMesh(renderWindow: RenderWindow, primitiveType: PrimitiveTypes = PrimitiveTypes.TRIANGLE) : Mesh(renderWindow, GenericColorMeshStruct, primitiveType) {
 
     fun addVertex(position: Vec3, color: RGBColor?) {
         data.addAll(

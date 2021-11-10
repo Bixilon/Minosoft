@@ -26,8 +26,8 @@ interface GUIVertexConsumer {
 
     fun addQuad(start: Vec2t<*>, end: Vec2t<*>, z: Int, texture: AbstractTexture, uvStart: Vec2, uvEnd: Vec2, tint: RGBColor, options: GUIVertexOptions?) {
         val positions = arrayOf(
-            Vec2(start.x.toFloat(), start.y),
-            Vec2(end.x.toFloat(), start.y),
+            start,
+            Vec2(end.x, start.y),
             end,
             Vec2(start.x, end.y),
         )
@@ -38,7 +38,7 @@ interface GUIVertexConsumer {
             uvEnd,
         )
 
-        for ((vertexIndex, textureIndex) in Mesh.QUAD_DRAW_ODER) {
+        for ((vertexIndex, textureIndex) in Mesh.QUAD_TO_QUAD_ORDER) {
             addVertex(positions[vertexIndex], z, texture, texturePositions[textureIndex], tint, options)
         }
     }

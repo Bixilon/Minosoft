@@ -65,7 +65,7 @@ class CharData(
             uvEnd,
         )
 
-        for ((vertexIndex, textureIndex) in Mesh.QUAD_DRAW_ODER) {
+        for ((vertexIndex, textureIndex) in Mesh.QUAD_TO_QUAD_ORDER) {
             addVertex(positions[vertexIndex], z, texture, texturePositions[textureIndex], tint, options)
         }
     }
