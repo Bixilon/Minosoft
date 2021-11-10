@@ -13,6 +13,8 @@
 package de.bixilon.minosoft.data.text
 
 import de.bixilon.minosoft.util.MMath
+import glm_.vec3.Vec3
+import glm_.vec4.Vec4
 import org.checkerframework.common.value.qual.IntRange
 
 class RGBColor(val rgba: Int) : ChatCode, TextFormattable {
@@ -103,8 +105,16 @@ class RGBColor(val rgba: Int) : ChatCode, TextFormattable {
         return this.with(red = floatRed * value, green = floatGreen * value, blue = floatBlue * value)
     }
 
+    fun toVec4(): Vec4 {
+        return Vec4(floatRed, floatGreen, floatBlue, floatAlpha)
+    }
+
+    fun toVec3(): Vec3 {
+        return Vec3(floatRed, floatGreen, floatBlue)
+    }
+
     companion object {
-        private const val COLOR_FLOAT_DIVIDER = 255.0f
+        const val COLOR_FLOAT_DIVIDER = 255.0f
 
         fun String.asColor(): RGBColor {
             return RGBColor(let {

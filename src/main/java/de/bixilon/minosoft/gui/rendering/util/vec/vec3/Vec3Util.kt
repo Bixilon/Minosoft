@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.util.vec.vec3
 
 import de.bixilon.minosoft.data.Axes
+import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.util.KUtil.toFloat
 import glm_.func.cos
 import glm_.func.sin
@@ -38,6 +39,8 @@ object Vec3Util {
     val Vec3.Companion.MAX: Vec3
         get() = Vec3(Float.MAX_VALUE, Float.MAX_VALUE, Float.MAX_VALUE)
 
+    val Vec3.rgb: Int
+        get() = ((r * RGBColor.COLOR_FLOAT_DIVIDER).toInt() shl 16) or ((g * RGBColor.COLOR_FLOAT_DIVIDER).toInt() shl 8) or (b * RGBColor.COLOR_FLOAT_DIVIDER).toInt()
 
     fun rotateAssign(x: Float, y: Float, sin: Float, cos: Float, rescale: Boolean): Vec2 {
         val result = Vec2(x * cos - y * sin, x * sin + y * cos)
@@ -97,6 +100,7 @@ object Vec3Util {
     fun Any?.toVec3(default: Vec3? = null): Vec3 {
         return toVec3N() ?: default ?: throw IllegalArgumentException("Not a Vec3: $this")
     }
+
 
     fun Any?.toVec3N(): Vec3? {
         return when (this) {

@@ -134,11 +134,20 @@ data class UnbakedBlockStateModel(
                 if (touching) {
                     sizes[direction.ordinal] += size
                 }
+                var shade = 1.0f
+                if (element.shade) {
+                    shade = when (direction) {
+                        Directions.DOWN -> 0.5f
+                        Directions.UP -> 1.0f
+                        Directions.NORTH, Directions.SOUTH -> 0.8f
+                        Directions.WEST, Directions.EAST -> 0.6f
+                    }
+                }
                 faces[direction.ordinal] += BakedFace(
                     faceSize = size,
                     positions = positions,
                     uv = texturePositions,
-                    shade = element.shade,
+                    shade = shade,
                     tintIndex = face.tintIndex,
                     cullFace = face.cullFace,
                     texture = texture,

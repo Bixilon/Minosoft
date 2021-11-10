@@ -20,6 +20,7 @@ import de.bixilon.minosoft.gui.rendering.models.FaceSize
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.get
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.rgb
 import glm_.vec2.Vec2
 import glm_.vec3.Vec3
 
@@ -27,7 +28,7 @@ class BakedFace(
     val faceSize: FaceSize,
     val positions: Array<Vec3>,
     val uv: Array<Vec2>,
-    val shade: Boolean,
+    val shade: Float,
     val tintIndex: Int,
     val cullFace: Directions?,
     val texture: AbstractTexture,
@@ -35,9 +36,10 @@ class BakedFace(
 ) {
     fun singleRender(position: FloatArray, mesh: ChunkSectionMesh, light: Int, ambientLight: FloatArray) {
         // ToDo: Ambient light
+        val color = Vec3(shade)
         for ((index, textureIndex) in Mesh.QUAD_TO_QUAD_ORDER) {
             val indexPosition = positions[index].array
-            mesh.addVertex(floatArrayOf(indexPosition[0] + position[0], indexPosition[1] + position[1], indexPosition[2] + position[2]), uv[textureIndex], texture, null, light)
+            mesh.addVertex(floatArrayOf(indexPosition[0] + position[0], indexPosition[1] + position[1], indexPosition[2] + position[2]), uv[textureIndex], texture, color.rgb, light)
         }
     }
 
@@ -67,7 +69,7 @@ class BakedFace(
         )
         for ((index, textureIndex) in Mesh.QUAD_TO_QUAD_ORDER) {
             // ToDo
-            mesh.addVertex(positions[index].array, uv[textureIndex], texture, null, light)
+            mesh.addVertex(positions[index].array, uv[textureIndex], texture, 0xFFFFFF, light)
         }
     }
 }

@@ -72,7 +72,7 @@ class WorldRenderer(
 
 
         val random = Random(0L)
-        val blockState1 = connection.registries.blockRegistry["redstone_block"]?.defaultState
+        val blockState1 = connection.registries.blockRegistry["grass_block"]?.defaultState
         val blockState2 = connection.registries.blockRegistry["diamond_block"]!!.defaultState//.withProperties(BlockProperties.MULTIPART_SOUTH to MultipartDirectionParser.SIDE, BlockProperties.MULTIPART_NORTH to MultipartDirectionParser.SIDE, BlockProperties.MULTIPART_EAST to MultipartDirectionParser.SIDE, BlockProperties.MULTIPART_WEST to MultipartDirectionParser.SIDE)
         val section = ChunkSection(Array(4096) {
             when (random.nextInt(3)) {

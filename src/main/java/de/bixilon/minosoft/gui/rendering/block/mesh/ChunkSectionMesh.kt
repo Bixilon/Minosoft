@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.block.mesh
 
-import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
@@ -25,7 +24,7 @@ import glm_.vec3.Vec3
 
 class ChunkSectionMesh(renderWindow: RenderWindow) : Mesh(renderWindow, SectionArrayMeshStruct, PrimitiveTypes.QUAD, initialCacheSize = 200000) {
 
-    fun addVertex(position: FloatArray, uv: Vec2, texture: AbstractTexture, tintColor: RGBColor?, light: Int) {
+    fun addVertex(position: FloatArray, uv: Vec2, texture: AbstractTexture, tintColor: Int, light: Int) {
         val transformedUV = texture.renderData?.transformUV(uv) ?: uv
         data.addAll(floatArrayOf(
             position[0],
@@ -34,7 +33,7 @@ class ChunkSectionMesh(renderWindow: RenderWindow) : Mesh(renderWindow, SectionA
             transformedUV.x,
             transformedUV.y,
             Float.fromBits(texture.renderData?.shaderTextureId ?: RenderConstants.DEBUG_TEXTURE_ID),
-            Float.fromBits((tintColor?.rgb ?: 0xFFFFFF) or (light shl 24)), // white
+            Float.fromBits(tintColor or (light shl 24)), // white
         ))
     }
 
