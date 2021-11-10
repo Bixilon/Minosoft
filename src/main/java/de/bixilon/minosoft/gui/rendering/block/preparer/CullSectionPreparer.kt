@@ -59,7 +59,7 @@ class CullSectionPreparer(
                     }
 
                     random.setSeed(VecUtil.generatePositionHash(x, y, z))
-                    block?.model?.singleRender(Vec3i(x, y, z), mesh, random, neighbours, 0xFF, intArrayOf(0xF, 0xF, 0xF, 0xF))
+                    block?.model?.singleRender(Vec3i(x, y, z), mesh, random, neighbours, 0xFF, floatArrayOf(1.0f, 1.0f, 1.0f, 1.0f))
                 }
             }
         }

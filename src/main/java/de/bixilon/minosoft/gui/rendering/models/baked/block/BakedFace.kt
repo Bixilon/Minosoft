@@ -15,7 +15,6 @@ package de.bixilon.minosoft.gui.rendering.models.baked.block
 
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.Directions
-import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.gui.rendering.block.mesh.ChunkSectionMesh
 import de.bixilon.minosoft.gui.rendering.models.FaceSize
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
@@ -32,8 +31,9 @@ class BakedFace(
     val tintIndex: Int,
     val cullFace: Directions?,
     val texture: AbstractTexture,
+    val touching: Boolean,
 ) {
-    fun singleRender(position: Vec3, mesh: ChunkSectionMesh, neighbour: BlockState?, light: Int, ambientLight: IntArray) {
+    fun singleRender(position: Vec3, mesh: ChunkSectionMesh, light: Int, ambientLight: FloatArray) {
         // ToDo: Ambient light
         for ((index, textureIndex) in Mesh.QUAD_DRAW_ODER) {
             mesh.addVertex(positions[index] + position, uv[textureIndex], texture, null, light)

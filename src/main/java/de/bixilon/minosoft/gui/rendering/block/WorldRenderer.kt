@@ -18,6 +18,8 @@ import de.bixilon.minosoft.data.assets.Resources
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.direction.FakeDirection
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
+import de.bixilon.minosoft.data.registries.blocks.properties.MultipartDirectionParser
 import de.bixilon.minosoft.data.world.ChunkSection
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.gui.rendering.RenderWindow
@@ -72,14 +74,14 @@ class WorldRenderer(
 
 
         val random = Random(0L)
-        val blockState1 = connection.registries.blockRegistry["end_portal_frame"]?.defaultState
-        val blockState2 = connection.registries.blockRegistry["oak_fence"]!!.defaultState//.withProperties(BlockProperties.FACING to Directions.SOUTH)
+        val blockState1 = connection.registries.blockRegistry["grass_block"]?.defaultState
+        val blockState2 = connection.registries.blockRegistry["oak_fence"]!!.defaultState.withProperties(BlockProperties.MULTIPART_SOUTH to MultipartDirectionParser.SIDE, BlockProperties.MULTIPART_NORTH to MultipartDirectionParser.SIDE, BlockProperties.MULTIPART_EAST to MultipartDirectionParser.SIDE, BlockProperties.MULTIPART_WEST to MultipartDirectionParser.SIDE)
         val section = ChunkSection(Array(4096) {
             if (it < 256) return@Array blockState2 else return@Array null
             when (random.nextInt(3)) {
-                1 -> blockState2
+                1 -> blockState1
                 2 -> blockState2
-                else -> blockState2
+                else -> null
             }
         })
         //val section = ChunkSection(Array(4096) { if (it < 1) blockState else null })

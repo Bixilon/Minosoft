@@ -17,25 +17,38 @@ import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.world.light.LightAccessor
 import de.bixilon.minosoft.gui.rendering.block.mesh.ChunkSectionMesh
+import de.bixilon.minosoft.gui.rendering.models.CullUtil.canCull
+import de.bixilon.minosoft.gui.rendering.models.FaceSize
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.toVec3
 import glm_.vec3.Vec3i
 import java.util.*
 
 class BakedBlockStateModel(
     val faces: Array<Array<BakedFace>>,
+    val sizes: Array<Array<FaceSize>>,
 ) : BakedBlockModel, GreedyBakedBlockModel { // ToDo: Greedy meshable
     override val canGreedyMesh: Boolean = true
     override val greedyMeshableFaces: BooleanArray = booleanArrayOf(true, false, true, true, true, true)
 
-    override fun singleRender(position: Vec3i, mesh: ChunkSectionMesh, random: Random, neighbours: Array<BlockState?>, light: Int, ambientLight: IntArray) {
+    override fun getSize(random: Random, direction: Directions): Array<FaceSize> {
+        return sizes[direction.ordinal]
+    }
+
+    override fun singleRender(position: Vec3i, mesh: ChunkSectionMesh, random: Random, neighbours: Array<BlockState?>, light: Int, ambientLight: FloatArray) {
         val floatPosition = position.toVec3()
-        for ((index, direction) in faces.withIndex()) {
-            val neighbour = neighbours[index]
+        for ((index, faces) in faces.withIndex()) {
+            val direction = Directions.VALUES[index]
+            val neighbour = neighbours[index]?.model
+            var neighbourSize: Array<FaceSize>? = null
             if (neighbour != null) {
-               // continue
+                random.setSeed(0L) // ToDo
+                neighbourSize = neighbour.getSize(random, direction.inverted)
             }
-            for (face in direction) {
-                face.singleRender(floatPosition, mesh, neighbour, light, ambientLight)
+            for (face in faces) {
+                if (face.touching && neighbourSize != null && neighbourSize.isNotEmpty() && neighbourSize.canCull(face.faceSize)) {
+                    continue
+                }
+                face.singleRender(floatPosition, mesh, light, ambientLight)
             }
         }
     }

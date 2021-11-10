@@ -17,6 +17,7 @@ import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.models.FaceSize
 import de.bixilon.minosoft.gui.rendering.models.baked.block.BakedBlockModel
 import de.bixilon.minosoft.gui.rendering.models.baked.block.BakedBlockStateModel
 import de.bixilon.minosoft.gui.rendering.models.baked.block.BakedFace
@@ -28,6 +29,7 @@ import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.get
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.rad
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.toVec2iN
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.get
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.rotateAssign
 import de.bixilon.minosoft.util.KUtil.toBoolean
 import de.bixilon.minosoft.util.KUtil.toInt
@@ -82,6 +84,7 @@ data class UnbakedBlockStateModel(
 
 
         val faces: Array<MutableList<BakedFace>> = Array(Directions.SIZE) { mutableListOf() }
+        val sizes: Array<MutableList<FaceSize>> = Array(Directions.SIZE) { mutableListOf() }
 
         for (element in model.elements) {
             val rescale = element.rotation?.rescale ?: false
@@ -126,15 +129,20 @@ data class UnbakedBlockStateModel(
                     }
                 }
 
-
+                val size = face.direction.getSize(element.from, element.to)
+                val touching = (if (face.direction.negative) element.from[face.direction.axis] else element.to[face.direction.axis] - 1.0f) == 0.0f
+                if (touching) {
+                    sizes[direction.ordinal] += size
+                }
                 faces[direction.ordinal] += BakedFace(
-                    faceSize = face.direction.getSize(element.from, element.to),
+                    faceSize = size,
                     positions = positions,
                     uv = texturePositions,
                     shade = element.shade,
                     tintIndex = face.tintIndex,
                     cullFace = face.cullFace,
                     texture = texture,
+                    touching = touching,
                 )
             }
         }
@@ -142,10 +150,15 @@ data class UnbakedBlockStateModel(
         val finalFaces: Array<Array<BakedFace>?> = arrayOfNulls(faces.size)
 
         for ((index, faceArray) in faces.withIndex()) {
-            finalFaces[index] = faceArray.toTypedArray()
+            finalFaces[index] = faceArray.reversed().toTypedArray()
+        }
+        val finalSizes: Array<Array<FaceSize>?> = arrayOfNulls(faces.size)
+
+        for ((index, sizeArray) in sizes.withIndex()) {
+            finalSizes[index] = sizeArray.toTypedArray()
         }
 
-        val baked = BakedBlockStateModel(finalFaces.unsafeCast())
+        val baked = BakedBlockStateModel(finalFaces.unsafeCast(), finalSizes.unsafeCast())
         this.baked = baked
         return baked
     }
