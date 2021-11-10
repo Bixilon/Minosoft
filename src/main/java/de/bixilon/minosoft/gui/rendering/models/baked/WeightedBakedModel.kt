@@ -17,7 +17,6 @@ import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.world.light.LightAccessor
 import de.bixilon.minosoft.gui.rendering.block.mesh.ChunkSectionMesh
-import de.bixilon.minosoft.gui.rendering.models.FaceSize
 import de.bixilon.minosoft.gui.rendering.models.baked.block.BakedBlockModel
 import glm_.vec3.Vec3i
 import java.util.*
@@ -50,10 +49,6 @@ class WeightedBakedModel(
         }
 
         throw IllegalStateException("Could not find a model: This should never happen!")
-    }
-
-    override fun getFaceSize(direction: Directions, random: Random): Array<FaceSize> {
-        return getModel(random).getFaceSize(direction, random)
     }
 
     override fun getLight(position: Vec3i, random: Random, side: Directions, lightAccessor: LightAccessor): Int {

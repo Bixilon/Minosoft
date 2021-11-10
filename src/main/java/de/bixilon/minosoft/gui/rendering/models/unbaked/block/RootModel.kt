@@ -28,10 +28,8 @@ interface RootModel {
             val variants = data["variants"]
             val multipart = data["multipart"]
             return when {
-                // ToDo: Single?
                 variants != null -> SimpleRootModel(models, variants.unsafeCast())
-                // ToDo: multipart != null -> MultipartUnbakedBlockStateModel(models, multipart.unsafeCast())
-                multipart != null -> null
+                multipart != null -> MultipartRootModel(models, multipart.unsafeCast())
                 else -> TODO("Don't know what type of block state model to choose: $data")
             }
         }

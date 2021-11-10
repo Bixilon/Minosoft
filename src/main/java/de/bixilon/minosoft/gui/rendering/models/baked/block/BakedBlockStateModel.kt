@@ -17,7 +17,6 @@ import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.world.light.LightAccessor
 import de.bixilon.minosoft.gui.rendering.block.mesh.ChunkSectionMesh
-import de.bixilon.minosoft.gui.rendering.models.FaceSize
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.toVec3
 import glm_.vec3.Vec3i
 import java.util.*
@@ -28,16 +27,12 @@ class BakedBlockStateModel(
     override val canGreedyMesh: Boolean = true
     override val greedyMeshableFaces: BooleanArray = booleanArrayOf(true, false, true, true, true, true)
 
-    override fun getFaceSize(direction: Directions, random: Random): Array<FaceSize> {
-        return arrayOf() // ToDo
-    }
-
     override fun singleRender(position: Vec3i, mesh: ChunkSectionMesh, random: Random, neighbours: Array<BlockState?>, light: Int, ambientLight: IntArray) {
         val floatPosition = position.toVec3()
         for ((index, direction) in faces.withIndex()) {
             val neighbour = neighbours[index]
             if (neighbour != null) {
-                continue
+               // continue
             }
             for (face in direction) {
                 face.singleRender(floatPosition, mesh, neighbour, light, ambientLight)

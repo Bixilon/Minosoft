@@ -59,9 +59,17 @@ object Vec3Util {
         }
     }
 
-    fun Vec3.rotateAssign(rotation: Vec2) {
+    fun Vec3.rotateAssign(rotation: Vec2, centerBlock: Boolean = false) {
+        if (centerBlock) {
+            this -= 0.5f
+        }
+
         rotateAssign(rotation.y, Axes.Y)
         rotateAssign(rotation.x, Axes.X)
+
+        if (centerBlock) {
+            this += 0.5f
+        }
     }
 
     fun Vec3.rotateAssign(angle: Float, axis: Axes, origin: Vec3, rescale: Boolean) {

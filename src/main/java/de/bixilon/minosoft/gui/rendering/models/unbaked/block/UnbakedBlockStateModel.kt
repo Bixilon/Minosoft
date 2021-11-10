@@ -38,21 +38,9 @@ import glm_.vec2.Vec2
 import glm_.vec2.Vec2i
 import glm_.vec3.Vec3
 import glm_.vec3.swizzle.xz
-import kotlin.collections.Map
-import kotlin.collections.MutableList
-import kotlin.collections.MutableMap
 import kotlin.collections.component1
 import kotlin.collections.component2
-import kotlin.collections.drop
-import kotlin.collections.iterator
-import kotlin.collections.mutableListOf
-import kotlin.collections.mutableMapOf
-import kotlin.collections.plus
-import kotlin.collections.plusAssign
 import kotlin.collections.set
-import kotlin.collections.take
-import kotlin.collections.toTypedArray
-import kotlin.collections.withIndex
 
 data class UnbakedBlockStateModel(
     val model: UnbakedBlockModel,
@@ -114,7 +102,7 @@ data class UnbakedBlockStateModel(
 
                     direction = Directions.byDirection(Vec3(face.direction.vectorf).apply { rotateAssign(rad) })
                     for ((index, position) in positions.withIndex()) {
-                        positions[index] = Vec3(position).apply { rotateAssign(rad) }
+                        positions[index] = Vec3(position).apply { rotateAssign(rad, true) }
                     }
                 }
 

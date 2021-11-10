@@ -11,21 +11,27 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.models.baked.block
+package de.bixilon.minosoft.gui.rendering.models.baked
 
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.world.light.LightAccessor
 import de.bixilon.minosoft.gui.rendering.block.mesh.ChunkSectionMesh
-import de.bixilon.minosoft.gui.rendering.models.baked.BakedModel
+import de.bixilon.minosoft.gui.rendering.models.baked.block.BakedBlockModel
 import glm_.vec3.Vec3i
 import java.util.*
 
-interface BakedBlockModel : BakedModel {
+class MultipartBakedModel(
+    val models: Array<BakedBlockModel>,
+) : BakedBlockModel {
 
-    // ToDo: Tint
-    fun singleRender(position: Vec3i, mesh: ChunkSectionMesh, random: Random, neighbours: Array<BlockState?>, light: Int, ambientLight: IntArray)
+    override fun getLight(position: Vec3i, random: Random, side: Directions, lightAccessor: LightAccessor): Int {
+        return 0xFF
+    }
 
-    // ToDo: Get ambient light
-    fun getLight(position: Vec3i, random: Random, side: Directions, lightAccessor: LightAccessor): Int
+    override fun singleRender(position: Vec3i, mesh: ChunkSectionMesh, random: Random, neighbours: Array<BlockState?>, light: Int, ambientLight: IntArray) {
+        for (model in models) {
+            model.singleRender(position, mesh, random, neighbours, light, ambientLight)
+        }
+    }
 }

@@ -73,8 +73,9 @@ class WorldRenderer(
 
         val random = Random(0L)
         val blockState1 = connection.registries.blockRegistry["end_portal_frame"]?.defaultState
-        val blockState2 = connection.registries.blockRegistry["carved_pumpkin"]?.defaultState
+        val blockState2 = connection.registries.blockRegistry["oak_fence"]!!.defaultState//.withProperties(BlockProperties.FACING to Directions.SOUTH)
         val section = ChunkSection(Array(4096) {
+            if (it < 256) return@Array blockState2 else return@Array null
             when (random.nextInt(3)) {
                 1 -> blockState2
                 2 -> blockState2
