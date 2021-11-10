@@ -4,7 +4,7 @@ import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.world.ChunkSection
 import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.block.mesh.ChunkSectionMesh
+import de.bixilon.minosoft.gui.rendering.block.mesh.ChunkSectionMeshes
 import de.bixilon.minosoft.gui.rendering.util.VecUtil
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import glm_.vec3.Vec3i
@@ -14,8 +14,8 @@ class CullSectionPreparer(
     val renderWindow: RenderWindow,
 ) : AbstractSectionPreparer {
 
-    override fun prepare(section: ChunkSection): ChunkSectionMesh {
-        val mesh = ChunkSectionMesh(renderWindow)
+    override fun prepare(section: ChunkSection): ChunkSectionMeshes {
+        val mesh = ChunkSectionMeshes(renderWindow)
         val random = Random(0L)
 
         var block: BlockState?

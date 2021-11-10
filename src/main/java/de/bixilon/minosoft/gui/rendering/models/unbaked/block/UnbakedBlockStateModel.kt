@@ -159,7 +159,7 @@ data class UnbakedBlockStateModel(
         val finalFaces: Array<Array<BakedFace>?> = arrayOfNulls(faces.size)
 
         for ((index, faceArray) in faces.withIndex()) {
-            finalFaces[index] = faceArray.reversed().toTypedArray()
+            finalFaces[index] = faceArray.toTypedArray()
         }
         val finalSizes: Array<Array<FaceSize>?> = arrayOfNulls(faces.size)
 

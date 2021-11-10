@@ -17,6 +17,7 @@ import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.world.light.LightAccessor
 import de.bixilon.minosoft.gui.rendering.block.mesh.ChunkSectionMesh
+import de.bixilon.minosoft.gui.rendering.block.mesh.ChunkSectionMeshes
 import de.bixilon.minosoft.gui.rendering.models.CullUtil.canCull
 import de.bixilon.minosoft.gui.rendering.models.FaceSize
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.toVec3
@@ -34,7 +35,7 @@ class BakedBlockStateModel(
         return sizes[direction.ordinal]
     }
 
-    override fun singleRender(position: Vec3i, mesh: ChunkSectionMesh, random: Random, neighbours: Array<BlockState?>, light: Int, ambientLight: FloatArray) {
+    override fun singleRender(position: Vec3i, mesh: ChunkSectionMeshes, random: Random, neighbours: Array<BlockState?>, light: Int, ambientLight: FloatArray) {
         val floatPosition = position.toVec3().array
         for ((index, faces) in faces.withIndex()) {
             val direction = Directions.VALUES[index]

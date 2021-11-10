@@ -15,7 +15,6 @@ package de.bixilon.minosoft.gui.rendering.system.base.texture.texture
 
 import de.bixilon.minosoft.data.assets.AssetsManager
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureStates
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
 import de.bixilon.minosoft.gui.rendering.textures.properties.ImageProperties
@@ -53,14 +52,14 @@ class PNGTexture(override val resourceLocation: ResourceLocation) : AbstractText
         decoder.decode(data, decoder.width * PNGDecoder.Format.RGBA.numComponents, PNGDecoder.Format.RGBA)
 
         size = Vec2i(decoder.width, decoder.height)
-        data.rewind()
         transparency = TextureTransparencies.OPAQUE
-        for (i in 0 until data.limit() step 4) {
-            val color = RGBColor(data.get(), data.get(), data.get(), data.get())
-            if (color.alpha == 0x00 && transparency != TextureTransparencies.TRANSLUCENT) {
+        for (i in 0 until data.limit() / 4) {
+            val alpha = data[i * 4 + 3].toInt() and 0xFF
+            if (alpha == 0x00) {
                 transparency = TextureTransparencies.TRANSPARENT
-            } else if (color.alpha < 0xFF) {
+            } else if (alpha < 0xFF) {
                 transparency = TextureTransparencies.TRANSLUCENT
+                break
             }
         }
         data.flip()

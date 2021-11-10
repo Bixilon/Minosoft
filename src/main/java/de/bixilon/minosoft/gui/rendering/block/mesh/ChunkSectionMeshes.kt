@@ -20,13 +20,42 @@ import glm_.vec3.Vec3i
 
 class ChunkSectionMeshes(
     renderWindow: RenderWindow,
-    val opaqueMesh: ChunkSectionMesh = ChunkSectionMesh(renderWindow),
-    var translucentMesh: ChunkSectionMesh? = ChunkSectionMesh(renderWindow),
-    var transparentMesh: ChunkSectionMesh? = ChunkSectionMesh(renderWindow),
 ) {
+    var opaqueMesh: ChunkSectionMesh? = ChunkSectionMesh(renderWindow)
+        private set
+    var translucentMesh: ChunkSectionMesh? = ChunkSectionMesh(renderWindow)
+        private set
+    var transparentMesh: ChunkSectionMesh? = ChunkSectionMesh(renderWindow)
+        private set
+
     val minPosition = Vec3i.EMPTY
     val maxPosition = Vec3i.EMPTY
 
     lateinit var aabb: AABB
         private set
+
+    @Synchronized
+    fun load() {
+        var mesh = this.opaqueMesh!!
+        if (mesh.data.isEmpty) {
+            this.opaqueMesh = null
+        } else {
+            mesh.load()
+        }
+
+
+        mesh = this.translucentMesh!!
+        if (mesh.data.isEmpty) {
+            this.translucentMesh = null
+        } else {
+            mesh.load()
+        }
+
+        mesh = this.transparentMesh!!
+        if (mesh.data.isEmpty) {
+            this.transparentMesh = null
+        } else {
+            mesh.load()
+        }
+    }
 }

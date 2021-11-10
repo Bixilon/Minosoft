@@ -15,7 +15,7 @@ package de.bixilon.minosoft.gui.rendering.block.preparer
 
 import de.bixilon.minosoft.data.world.ChunkSection
 import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.block.mesh.ChunkSectionMesh
+import de.bixilon.minosoft.gui.rendering.block.mesh.ChunkSectionMeshes
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -26,7 +26,7 @@ class GenericSectionPreparer(
     private val preparer: AbstractSectionPreparer = CullSectionPreparer(renderWindow),
 ) : AbstractSectionPreparer {
 
-    override fun prepare(section: ChunkSection): ChunkSectionMesh {
+    override fun prepare(section: ChunkSection): ChunkSectionMeshes {
         val startTime = System.nanoTime()
 
         val mesh = preparer.prepare(section)

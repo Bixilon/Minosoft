@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.models.baked
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.world.light.LightAccessor
-import de.bixilon.minosoft.gui.rendering.block.mesh.ChunkSectionMesh
+import de.bixilon.minosoft.gui.rendering.block.mesh.ChunkSectionMeshes
 import de.bixilon.minosoft.gui.rendering.models.FaceSize
 import de.bixilon.minosoft.gui.rendering.models.baked.block.BakedBlockModel
 import glm_.vec3.Vec3i
@@ -35,7 +35,7 @@ class MultipartBakedModel(
         return 0xFF
     }
 
-    override fun singleRender(position: Vec3i, mesh: ChunkSectionMesh, random: Random, neighbours: Array<BlockState?>, light: Int, ambientLight: FloatArray) {
+    override fun singleRender(position: Vec3i, mesh: ChunkSectionMeshes, random: Random, neighbours: Array<BlockState?>, light: Int, ambientLight: FloatArray) {
         for (model in models) {
             model.singleRender(position, mesh, random, neighbours, light, ambientLight)
         }

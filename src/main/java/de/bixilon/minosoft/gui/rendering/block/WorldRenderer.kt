@@ -15,15 +15,13 @@ package de.bixilon.minosoft.gui.rendering.block
 
 import de.bixilon.minosoft.data.assets.AssetsUtil
 import de.bixilon.minosoft.data.assets.Resources
-import de.bixilon.minosoft.data.direction.Directions
-import de.bixilon.minosoft.data.direction.FakeDirection
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.world.ChunkSection
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.Renderer
 import de.bixilon.minosoft.gui.rendering.RendererBuilder
-import de.bixilon.minosoft.gui.rendering.block.mesh.ChunkSectionMesh
+import de.bixilon.minosoft.gui.rendering.block.mesh.ChunkSectionMeshes
 import de.bixilon.minosoft.gui.rendering.block.preparer.AbstractSectionPreparer
 import de.bixilon.minosoft.gui.rendering.block.preparer.CullSectionPreparer
 import de.bixilon.minosoft.gui.rendering.block.preparer.GenericSectionPreparer
@@ -31,10 +29,10 @@ import de.bixilon.minosoft.gui.rendering.block.preparer.GreedySectionPreparer
 import de.bixilon.minosoft.gui.rendering.models.ModelLoader
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
 import de.bixilon.minosoft.gui.rendering.system.base.phases.OpaqueDrawable
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
+import de.bixilon.minosoft.gui.rendering.system.base.phases.TranslucentDrawable
+import de.bixilon.minosoft.gui.rendering.system.base.phases.TransparentDrawable
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
-import glm_.vec2.Vec2i
 import java.io.FileInputStream
 import java.util.zip.GZIPInputStream
 import java.util.zip.ZipInputStream
@@ -43,13 +41,14 @@ import kotlin.random.Random
 class WorldRenderer(
     private val connection: PlayConnection,
     override val renderWindow: RenderWindow,
-) : Renderer, OpaqueDrawable {
+) : Renderer, OpaqueDrawable, TranslucentDrawable, TransparentDrawable {
     override val renderSystem: RenderSystem = renderWindow.renderSystem
     private val shader = renderSystem.createShader("minosoft:world".toResourceLocation())
+    private val transparentShader = renderSystem.createShader("minosoft:world".toResourceLocation())
     private val world: World = connection.world
     private val sectionPreparer: AbstractSectionPreparer = GenericSectionPreparer(renderWindow)
     private val lightMap = LightMap(connection)
-    private lateinit var mesh: ChunkSectionMesh
+    private lateinit var mesh: ChunkSectionMeshes
 
     private val culledPreparer = GenericSectionPreparer(renderWindow, CullSectionPreparer(renderWindow))
     private val greedyPreparer = GenericSectionPreparer(renderWindow, GreedySectionPreparer(renderWindow))
@@ -70,6 +69,12 @@ class WorldRenderer(
         renderWindow.textureManager.staticTextures.animator.use(shader)
         lightMap.use(shader)
 
+        transparentShader.defines["TRANSPARENT"] = ""
+        transparentShader.load()
+        renderWindow.textureManager.staticTextures.use(transparentShader)
+        renderWindow.textureManager.staticTextures.animator.use(transparentShader)
+        lightMap.use(transparentShader)
+
 
         val random = Random(0L)
         val blockState1 = connection.registries.blockRegistry["grass_block"]?.defaultState
@@ -85,7 +90,7 @@ class WorldRenderer(
 
         mesh = sectionPreparer.prepare(section)
 
-        for (i in 0 until 1000)
+        // for (i in 0 until 1000)
             mesh = sectionPreparer.prepare(section)
 
         /*
@@ -109,7 +114,25 @@ class WorldRenderer(
     }
 
     override fun drawOpaque() {
-        mesh.draw()
+        mesh.opaqueMesh?.draw()
+    }
+
+    override fun setupTranslucent() {
+        super.setupTranslucent()
+        shader.use()
+    }
+
+    override fun drawTranslucent() {
+        mesh.translucentMesh?.draw()
+    }
+
+    override fun setupTransparent() {
+        super.setupTransparent()
+        transparentShader.use()
+    }
+
+    override fun drawTransparent() {
+        mesh.transparentMesh?.draw()
     }
 
 
@@ -119,19 +142,5 @@ class WorldRenderer(
         override fun build(connection: PlayConnection, renderWindow: RenderWindow): WorldRenderer {
             return WorldRenderer(connection, renderWindow)
         }
-
-        val Vec2i.neighbourPositions: List<Vec2i>
-            get() {
-                return listOf(
-                    this + Directions.NORTH,
-                    this + Directions.SOUTH,
-                    this + Directions.WEST,
-                    this + Directions.EAST,
-                    this + FakeDirection.NORTH_WEST,
-                    this + FakeDirection.NORTH_EAST,
-                    this + FakeDirection.SOUTH_WEST,
-                    this + FakeDirection.SOUTH_EAST,
-                )
-            }
     }
 }
