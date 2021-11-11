@@ -37,9 +37,9 @@ data class DimensionProperties(
     } else {
         height / ProtocolDefinition.SECTION_HEIGHT_Y
     }
-    val sections = highestSection - lowestSection
 
     val lightLevels = FloatArray(16)
+    val sections = highestSection - lowestSection
 
     init {
         val ambientLight = 0.0f // ToDo: 0.1 in nether
