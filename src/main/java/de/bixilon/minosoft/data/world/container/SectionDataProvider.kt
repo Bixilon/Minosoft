@@ -61,6 +61,7 @@ open class SectionDataProvider<T>(
         val previous = data[index]
         if (value == null) {
             if (previous == null) {
+                unlock()
                 return
             }
             count--

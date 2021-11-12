@@ -128,7 +128,7 @@ class ChunkDataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     override fun handle(connection: PlayConnection) {
         chunkData?.let {
             val chunk = connection.world.getOrCreateChunk(chunkPosition)
-            chunk.setData(chunkData!!)
+            chunk.setData(chunkData!!, !isFullChunk)
             for ((position, blockEntity) in blockEntities) {
                 chunk.setBlockEntity(position, blockEntity)
             }

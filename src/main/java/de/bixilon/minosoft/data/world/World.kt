@@ -23,7 +23,6 @@ import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.registries.sounds.SoundEvent
 import de.bixilon.minosoft.data.world.biome.accessor.BiomeAccessor
 import de.bixilon.minosoft.data.world.biome.accessor.NullBiomeAccessor
-import de.bixilon.minosoft.data.world.light.WorldLightAccessor
 import de.bixilon.minosoft.gui.rendering.particle.ParticleRenderer
 import de.bixilon.minosoft.gui.rendering.particle.types.Particle
 import de.bixilon.minosoft.gui.rendering.sound.AudioPlayer
@@ -62,7 +61,6 @@ class World(
     var dimension: DimensionProperties? = null
     var difficulty: Difficulties? = null
     var difficultyLocked = false
-    val worldLightAccessor = WorldLightAccessor(this)
     var hashedSeed = 0L
     var biomeAccessor: BiomeAccessor = NullBiomeAccessor
     var time = 0L
@@ -213,6 +211,10 @@ class World(
             }
         }
         return true
+    }
+
+    fun getLight(blockPosition: Vec3i): Int {
+        return get(blockPosition.chunkPosition)?.getLight(blockPosition.inChunkPosition) ?: 0xFF
     }
 
     val skyAngle: Double

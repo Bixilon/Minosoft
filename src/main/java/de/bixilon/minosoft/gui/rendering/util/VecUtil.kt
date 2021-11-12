@@ -219,16 +219,8 @@ object VecUtil {
     val Vec3i.chunkPosition: Vec2i
         get() = Vec2i(this.x.chunkPosition(ProtocolDefinition.SECTION_WIDTH_X), this.z.chunkPosition(ProtocolDefinition.SECTION_WIDTH_Z))
 
-    fun Int.inChunkPosition(multiplier: Int): Int {
-        var coordinate: Int = this % multiplier
-        if (coordinate < 0) {
-            coordinate += multiplier
-        }
-        return coordinate
-    }
-
     val Vec3i.inChunkPosition: Vec3i
-        get() = Vec3i(this.x.inChunkPosition(ProtocolDefinition.SECTION_WIDTH_X), y, this.z.inChunkPosition(ProtocolDefinition.SECTION_WIDTH_Z))
+        get() = Vec3i(x and 0x0F, y, this.z and 0x0F)
 
     val Vec3i.inChunkSectionPosition: Vec3i
         get() {

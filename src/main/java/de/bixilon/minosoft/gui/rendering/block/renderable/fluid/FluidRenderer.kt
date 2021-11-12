@@ -56,10 +56,8 @@ class FluidRenderer(
         if (!RenderConstants.RENDER_FLUIDS) {
             return
         }
-        val blockLight = context.lightAccessor.getBlockLight(context.blockPosition)
-        val skyLight = context.lightAccessor.getSkyLight(context.blockPosition)
+        val light = context.world.getLight(context.blockPosition)
 
-        val light = (skyLight shl 4) or blockLight
         val heights = calculateHeights(context.neighbourBlocks, context.blockState, context.world, context.blockPosition)
         val isFlowing = isLiquidFlowing(heights)
 

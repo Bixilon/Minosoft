@@ -14,43 +14,91 @@
 package de.bixilon.minosoft.util.chunk
 
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
-import de.bixilon.minosoft.data.world.light.ChunkLightAccessor
-import de.bixilon.minosoft.data.world.light.LightAccessor
+import de.bixilon.minosoft.data.world.ChunkData
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_16
 import java.util.*
 
 object LightUtil {
 
-    fun readLightPacket(buffer: PlayInByteBuffer, skyLightMask: BitSet, blockLightMask: BitSet, dimension: DimensionProperties): LightAccessor {
+    fun readLightPacket(buffer: PlayInByteBuffer, skyLightMask: BitSet, blockLightMask: BitSet, dimension: DimensionProperties): ChunkData {
         // ToDo
         val skyLight = if (dimension.hasSkyLight || buffer.versionId > V_1_16) { // ToDo: find out version
             readLightArray(buffer, skyLightMask, dimension)
         } else {
-            mutableMapOf()
+            null
         }
         val blockLight = readLightArray(buffer, blockLightMask, dimension)
-        return ChunkLightAccessor(blockLight, skyLight)
+
+        val chunkData = ChunkData()
+        val light: Array<IntArray?> = arrayOfNulls(dimension.sections)
+
+        for (i in light.indices) {
+            var sectionBlockLight = blockLight.first.getOrNull(i)
+            val sectionSkyLight = skyLight?.first?.getOrNull(i)
+            if (sectionBlockLight == null && sectionSkyLight == null) {
+                continue
+            }
+            sectionBlockLight = ByteArray(ProtocolDefinition.BLOCKS_PER_SECTION / 2)
+            light[i] = mergeLight(sectionBlockLight, sectionSkyLight)
+        }
+        chunkData.light = light
+
+        blockLight.second?.let { chunkData.bottomLight = mergeLight(it, blockLight.second) }
+        blockLight.third?.let { chunkData.topLight = mergeLight(it, blockLight.third) }
+        return chunkData
     }
 
-    private fun readLightArray(buffer: PlayInByteBuffer, lightMask: BitSet, dimension: DimensionProperties): MutableMap<Int, ByteArray> {
-        var highestSectionIndex = dimension.highestSection + 1
-        val lowesSectionIndex = dimension.lowestSection - 1
+    private fun readLightArray(buffer: PlayInByteBuffer, lightMask: BitSet, dimension: DimensionProperties): Triple<Array<ByteArray?>, ByteArray?, ByteArray?> {
+        var highestSectionIndex = dimension.highestSection
+        val lowesSectionIndex = dimension.lowestSection
         if (buffer.versionId >= ProtocolVersions.V_20W49A) {
             buffer.readVarInt() // section count
             highestSectionIndex = lightMask.length()
         }
 
-        val lightLevels: MutableMap<Int, ByteArray> = mutableMapOf()
+        val light: Array<ByteArray?> = arrayOfNulls(highestSectionIndex - lowesSectionIndex)
 
+        val bottomLight = if (lightMask[0]) {
+            buffer.readByteArray(buffer.readVarInt())
+        } else {
+            null
+        }
 
-        for ((arrayIndex, sectionHeight) in (lowesSectionIndex until highestSectionIndex).withIndex()) { // light sections
-            if (!lightMask[arrayIndex]) {
+        for (sectionIndex in 0 until highestSectionIndex - 1) { // light sections
+            if (!lightMask[sectionIndex + 1]) {
                 continue
             }
-            lightLevels[sectionHeight] = buffer.readByteArray(buffer.readVarInt())
+
+            light[sectionIndex] = buffer.readByteArray(buffer.readVarInt())
         }
-        return lightLevels
+
+
+        val topLight = if (lightMask[highestSectionIndex]) {
+            buffer.readByteArray(buffer.readVarInt())
+        } else {
+            null
+        }
+
+        return Triple(light, bottomLight, topLight)
+    }
+
+    fun mergeLight(blockLightArray: ByteArray, skyLightArray: ByteArray?): IntArray {
+        check(skyLightArray == null || blockLightArray.size == skyLightArray.size)
+        val light = IntArray(blockLightArray.size * 2)
+
+        var skyLight: Int
+        var blockLight: Int
+
+        for (index in blockLightArray.indices) {
+            blockLight = blockLightArray[index].toInt()
+            skyLight = skyLightArray?.get(index)?.toInt() ?: 0x00
+            light[index * 2] = (blockLight and 0x0F) or ((skyLight and 0x0F) shl 4)
+            light[index * 2 + 1] = ((blockLight and 0xF0) ushr 4) or (skyLight and 0xF0)
+        }
+
+        return light
     }
 }

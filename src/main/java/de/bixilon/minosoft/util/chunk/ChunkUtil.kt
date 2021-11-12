@@ -17,13 +17,13 @@ import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.world.ChunkData
-import de.bixilon.minosoft.data.world.ChunkSection
 import de.bixilon.minosoft.data.world.biome.source.XZBiomeArray
-import de.bixilon.minosoft.data.world.light.DummyLightAccessor
+import de.bixilon.minosoft.data.world.container.RegistrySectionDataProvider
 import de.bixilon.minosoft.data.world.palette.Palette.Companion.choosePalette
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*
+import de.bixilon.minosoft.util.KUtil.unsafeCast
 import java.util.*
 
 
@@ -38,7 +38,7 @@ object ChunkUtil {
 
     private fun readLegacyChunkWithAddBitSet(buffer: PlayInByteBuffer, dimension: DimensionProperties, sectionBitMask: BitSet, addBitMask: BitSet, isFullChunk: Boolean, containsSkyLight: Boolean): ChunkData {
         val chunkData = ChunkData()
-        chunkData.lightAccessor = DummyLightAccessor // ToDo
+        // ToDo chunkData.lightAccessor = DummyLightAccessor
 
         val totalBytes = ProtocolDefinition.BLOCKS_PER_SECTION * sectionBitMask.cardinality()
         val halfBytes = totalBytes / 2
@@ -58,7 +58,7 @@ object ChunkUtil {
 
         // parse data
         var arrayPosition = 0
-        val sections: Array<ChunkSection?> = arrayOfNulls(dimension.sections)
+        val sectionBlocks: Array<RegistrySectionDataProvider<BlockState?>?> = arrayOfNulls(dimension.sections)
         for ((sectionIndex, sectionHeight) in (dimension.lowestSection until dimension.highestSection).withIndex()) {
             if (!sectionBitMask[sectionIndex]) {
                 continue
@@ -90,9 +90,9 @@ object ChunkUtil {
 
                 blocks[blockNumber] = buffer.connection.registries.blockStateRegistry[blockId] ?: continue
             }
-            sections[sectionHeight - dimension.lowestSection] = ChunkSection(buffer.connection.registries, blocks)
+            sectionBlocks[sectionHeight] = RegistrySectionDataProvider(buffer.connection.registries.blockStateRegistry.unsafeCast(), blocks.unsafeCast())
         }
-        chunkData.blocks = sections
+        chunkData.blocks = sectionBlocks
         return chunkData
     }
 
@@ -106,7 +106,7 @@ object ChunkUtil {
             return readLegacyChunkWithAddBitSet(buffer, dimension, sectionBitMask, addBitMask!!, isFullChunk, containsSkyLight)
         }
         val chunkData = ChunkData()
-        chunkData.lightAccessor = DummyLightAccessor
+        // ToDo: chunkData.lightAccessor = DummyLightAccessor
 
         val totalEntries: Int = ProtocolDefinition.BLOCKS_PER_SECTION * sectionBitMask.cardinality()
         val totalHalfEntries = totalEntries / 2
@@ -124,7 +124,7 @@ object ChunkUtil {
         }
 
         var arrayPos = 0
-        val sections: Array<ChunkSection?> = arrayOfNulls(dimension.sections)
+        val sectionBlocks: Array<RegistrySectionDataProvider<BlockState?>?> = arrayOfNulls(dimension.sections)
         for ((sectionIndex, sectionHeight) in (dimension.lowestSection until dimension.highestSection).withIndex()) { // max sections per chunks in chunk column
             if (!sectionBitMask[sectionIndex]) {
                 continue
@@ -135,15 +135,17 @@ object ChunkUtil {
                 val block = buffer.connection.registries.blockStateRegistry[blockId] ?: continue
                 blocks[blockNumber] = block
             }
-            sections[sectionHeight] = ChunkSection(buffer.connection.registries, blocks)
+            sectionBlocks[sectionHeight] = RegistrySectionDataProvider(buffer.connection.registries.blockStateRegistry.unsafeCast(), blocks.unsafeCast())
         }
-        chunkData.blocks = sections
+        chunkData.blocks = sectionBlocks
         return chunkData
     }
 
     fun readPaletteChunk(buffer: PlayInByteBuffer, dimension: DimensionProperties, sectionBitMask: BitSet, isFullChunk: Boolean, containsSkyLight: Boolean = false): ChunkData {
         val chunkData = ChunkData()
-        val sections: Array<ChunkSection?> = arrayOfNulls(dimension.sections)
+        val sectionBlocks: Array<RegistrySectionDataProvider<BlockState?>?> = arrayOfNulls(dimension.sections)
+        val light: Array<IntArray?> = arrayOfNulls(dimension.sections)
+        var lightReceived = 0
 
         for ((sectionIndex, sectionHeight) in (dimension.lowestSection until sectionBitMask.length()).withIndex()) { // max sections per chunks in chunk column
             if (!sectionBitMask[sectionIndex]) {
@@ -185,17 +187,21 @@ object ChunkUtil {
             }
 
             if (buffer.versionId < V_18W43A) {
-                val light = buffer.readByteArray(ProtocolDefinition.BLOCKS_PER_SECTION / 2)
+                val blockLight = buffer.readByteArray(ProtocolDefinition.BLOCKS_PER_SECTION / 2)
+                var skyLight: ByteArray? = null
                 if (containsSkyLight) {
-                    val skyLight = buffer.readByteArray(ProtocolDefinition.BLOCKS_PER_SECTION / 2)
+                    skyLight = buffer.readByteArray(ProtocolDefinition.BLOCKS_PER_SECTION / 2)
                 }
-                // ToDo
-                chunkData.lightAccessor = DummyLightAccessor
+                light[sectionHeight - dimension.lowestSection] = LightUtil.mergeLight(blockLight, skyLight)
+                lightReceived++
             }
-            sections[sectionHeight - dimension.lowestSection] = ChunkSection(buffer.connection.registries, blocks)
+            sectionBlocks[sectionHeight - dimension.lowestSection] = RegistrySectionDataProvider(buffer.connection.registries.blockStateRegistry.unsafeCast(), blocks.unsafeCast())
         }
 
-        chunkData.blocks = sections
+        chunkData.blocks = sectionBlocks
+        if (lightReceived > 0) {
+            chunkData.light = light
+        }
         if (buffer.versionId < V_19W36A && isFullChunk) {
             chunkData.biomeSource = readLegacyBiomeArray(buffer)
         }

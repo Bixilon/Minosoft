@@ -14,8 +14,9 @@ package de.bixilon.minosoft.data.world
 
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.registries.blocks.BlockState
+import de.bixilon.minosoft.data.world.ChunkSection.Companion.index
 import de.bixilon.minosoft.data.world.biome.source.BiomeSource
-import de.bixilon.minosoft.data.world.light.LightAccessor
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.inChunkSectionPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
@@ -29,16 +30,16 @@ class Chunk(
     private val connection: PlayConnection,
     private var sections: Array<ChunkSection?>? = null,
     var biomeSource: BiomeSource? = null,
-    var lightAccessor: LightAccessor? = null,
 ) : Iterable<ChunkSection?> {
+    var bottomLight: IntArray? = null
+    var topLight: IntArray? = null
     val lowestSection = connection.world.dimension!!.lowestSection
+    val highestSection = connection.world.dimension!!.highestSection
 
-    val blocksInitialized: Boolean
-        get() = sections != null
+    var blocksInitialized: Boolean = false
     val biomesInitialized
         get() = biomeSource != null
-    val lightInitialized
-        get() = lightAccessor != null
+    var lightInitialized = false
 
     val isFullyLoaded: Boolean
         get() = blocksInitialized && biomesInitialized && lightInitialized
@@ -77,28 +78,47 @@ class Chunk(
 
     fun setBlockEntity(position: Vec3i, blockEntity: BlockEntity?) = setBlockEntity(position.x, position.y, position.z, blockEntity)
 
-    fun setData(data: ChunkData, merge: Boolean = false) {
-        data.blocks?.let {
-            var sections = this.sections
-            if (sections == null || !merge) {
-                sections = arrayOfNulls(connection.world.dimension!!.sections)
-                this.sections = sections
-            }
-
-            // replace all chunk sections
-            for ((index, section) in it.withIndex()) {
-                section ?: continue
-                sections[index] = section
-            }
-        }
-        data.biomeSource?.let {
-            this.biomeSource = it
-        }
-        data.lightAccessor?.let {
-            this.lightAccessor = it
-        }
+    @Synchronized
+    private fun initialize(): Array<ChunkSection?> {
+        val sections: Array<ChunkSection?> = arrayOfNulls(connection.world.dimension!!.sections)
+        this.sections = sections
+        return sections
     }
 
+
+    @Synchronized
+    fun setData(data: ChunkData, merge: Boolean = true) {
+        if (sections == null || !merge) {
+            initialize()
+        }
+        data.blocks?.let {
+            for ((index, blocks) in it.withIndex()) {
+                blocks ?: continue
+                val section = getOrPut(index - lowestSection)
+                section.blocks = blocks
+            }
+            blocksInitialized = true
+        }
+        data.light?.let {
+            for ((index, light) in it.withIndex()) {
+                light ?: continue
+                val section = getOrPut(index - lowestSection)
+                section.light = light
+            }
+            lightInitialized = true
+        }
+        data.bottomLight?.let {
+            bottomLight = it
+            lightInitialized = true
+        }
+        data.topLight?.let {
+            topLight = it
+            lightInitialized = true
+        }
+        data.biomeSource?.let { this.biomeSource = it }
+    }
+
+    @Synchronized
     private fun getOrPut(sectionHeight: Int): ChunkSection {
         val sections = sections ?: throw NullPointerException("Sections not initialized yet!")
         val sectionIndex = sectionHeight - lowestSection
@@ -120,6 +140,18 @@ class Chunk(
             section ?: continue
             section.tick(connection, chunkPosition, index - lowestSection)
         }
+    }
+
+    fun getLight(position: Vec3i): Int {
+        val sectionHeight = position.sectionHeight
+        val index = position.inChunkSectionPosition.index
+        if (sectionHeight == lowestSection - 1) {
+            return bottomLight?.get(index) ?: 0xFF
+        }
+        if (sectionHeight == highestSection + 1) {
+            return topLight?.get(index) ?: 0xFF
+        }
+        return get(position.sectionHeight)?.light?.get(index) ?: 0xFF
     }
 
     override fun iterator(): Iterator<ChunkSection?> {

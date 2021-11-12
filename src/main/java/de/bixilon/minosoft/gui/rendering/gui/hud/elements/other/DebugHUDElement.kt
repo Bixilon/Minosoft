@@ -270,7 +270,7 @@ class DebugHUDElement(hudRenderer: HUDRenderer) : LayoutedHUDElement<GridLayout>
 
                 this@DebugWorldInfo += AutoTextElement(hudRenderer, 1) { BaseComponent("Sky properties ", connection.world.dimension?.skyProperties) }
                 this@DebugWorldInfo += AutoTextElement(hudRenderer, 1) { BaseComponent("Biome ", connection.world.getBiome(blockPosition)) }
-                this@DebugWorldInfo += AutoTextElement(hudRenderer, 1) { with(connection.world.worldLightAccessor) { BaseComponent("Light block=", getBlockLight(blockPosition), ", sky=", getSkyLight(blockPosition)) } }
+                this@DebugWorldInfo += AutoTextElement(hudRenderer, 1) { with(connection.world.getLight(blockPosition)) { BaseComponent("Light block=", (this and 0x0F), ", sky=", (this ushr 4)) } }
 
                 lastChunk = chunk
             }

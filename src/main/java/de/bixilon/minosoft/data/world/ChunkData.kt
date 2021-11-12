@@ -13,18 +13,24 @@
 
 package de.bixilon.minosoft.data.world
 
+import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.world.biome.source.BiomeSource
-import de.bixilon.minosoft.data.world.light.LightAccessor
+import de.bixilon.minosoft.data.world.container.RegistrySectionDataProvider
 
-data class ChunkData(
-    var blocks: Array<ChunkSection?>? = null,
+class ChunkData(
+    var blocks: Array<RegistrySectionDataProvider<BlockState?>?>? = null,
     var biomeSource: BiomeSource? = null,
-    var lightAccessor: LightAccessor? = null,
+    var light: Array<IntArray?>? = null,
+    var bottomLight: IntArray? = null,
+    var topLight: IntArray? = null,
 ) {
 
+    @Synchronized
     fun replace(data: ChunkData) {
         data.blocks?.let { this.blocks = it }
         data.biomeSource?.let { this.biomeSource = it }
-        data.lightAccessor?.let { this.lightAccessor = it }
+        data.light?.let { this.light = it }
+        data.bottomLight?.let { this.bottomLight = it }
+        data.topLight?.let { this.topLight = it }
     }
 }

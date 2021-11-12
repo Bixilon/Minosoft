@@ -113,7 +113,6 @@ class WorldRenderer(
 
                 val context = BlockLikeRenderContext(
                     blockState = blockState,
-                    lightAccessor = world.worldLightAccessor,
                     renderWindow = renderWindow,
                     blockPosition = blockPosition,
                     meshCollection = meshCollection,

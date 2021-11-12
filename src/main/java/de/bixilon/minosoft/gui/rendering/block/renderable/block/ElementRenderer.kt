@@ -96,10 +96,8 @@ class ElementRenderer(
         finalColor = finalColor.with(finalColor.floatRed * shadeLevel, finalColor.floatGreen * shadeLevel, finalColor.floatBlue * shadeLevel)
 
         val lightPosition = context.blockPosition + face.cullFace?.let { directionMapping[it] }// ToDo: rotate cullface
-        val blockLight = context.lightAccessor.getBlockLight(lightPosition)
-        val skyLight = context.lightAccessor.getSkyLight(lightPosition)
+        val light = context.world.getLight(lightPosition)
 
-        val light = (skyLight shl 4) or blockLight
         val drawPositions = mutableListOf<Vec3>()
         for (position in positionTemplate) {
             drawPositions += transformedPositions[position]

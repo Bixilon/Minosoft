@@ -29,19 +29,14 @@ import glm_.vec3.Vec3i
  * Collection of 16x16x16 blocks
  */
 class ChunkSection(
-    val blocks: RegistrySectionDataProvider<BlockState?>,
+    var blocks: RegistrySectionDataProvider<BlockState?>,
     @Deprecated("TODO")
-    val biomes: RegistrySectionDataProvider<Biome>,
-    val blockEntities: SectionDataProvider<BlockEntity?>,
-    @Deprecated("TODO")
-    val light: ByteArray, // packed (skyLight: 0xF0, blockLight: 0x0F)
+    var biomes: RegistrySectionDataProvider<Biome>,
+    var blockEntities: SectionDataProvider<BlockEntity?>,
+    var light: IntArray, // packed (skyLight: 0xF0, blockLight: 0x0F)
 ) {
 
-    constructor(registries: Registries, blocks: Array<BlockState?>? = null) : this(RegistrySectionDataProvider<BlockState?>(registries.blockStateRegistry.unsafeCast()), RegistrySectionDataProvider(registries.biomeRegistry), SectionDataProvider(), ByteArray(ProtocolDefinition.BLOCKS_PER_SECTION)) {
-        if (blocks != null) {
-            this.blocks.setData(blocks)
-        }
-    }
+    constructor(registries: Registries) : this(RegistrySectionDataProvider<BlockState?>(registries.blockStateRegistry.unsafeCast()), RegistrySectionDataProvider(registries.biomeRegistry), SectionDataProvider(), IntArray(ProtocolDefinition.BLOCKS_PER_SECTION))
 
     fun tick(connection: PlayConnection, chunkPosition: Vec2i, sectionHeight: Int) {
         acquire()
@@ -83,9 +78,7 @@ class ChunkSection(
             get() = getIndex(x, y, z)
 
         val Int.indexPosition: Vec3i
-            get() {
-                return Vec3i(this and 0x0F, (this shr 8) and 0x0F, (this shr 4) and 0x0F)
-            }
+            get() = Vec3i(this and 0x0F, (this shr 8) and 0x0F, (this shr 4) and 0x0F)
 
         fun getIndex(x: Int, y: Int, z: Int): Int {
             return y shl 8 or (z shl 4) or x
