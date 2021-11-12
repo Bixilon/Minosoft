@@ -50,8 +50,8 @@ class NoteBlockBlockEntity(connection: PlayConnection) : BlockEntity(connection)
         // ToDo: Play sound?
     }
 
-    override fun realTick(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i) {
-        super.realTick(connection, blockState, blockPosition)
+    override fun tick(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i) {
+        super.tick(connection, blockState, blockPosition)
         if (!showParticleNextTick) {
             return
         }

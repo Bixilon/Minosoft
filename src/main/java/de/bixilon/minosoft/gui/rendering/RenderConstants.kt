@@ -43,8 +43,6 @@ object RenderConstants {
     const val TEXT_LINE_PADDING = 2
     val WORD_SEPARATORS = arrayOf(' ', '.', ',', '!', '-', '?')
 
-    const val CHUNK_SECTIONS_PER_MESH = 1
-
     const val FRUSTUM_CULLING_ENABLED = true
     const val SHOW_FPS_IN_WINDOW_TITLE = true
 

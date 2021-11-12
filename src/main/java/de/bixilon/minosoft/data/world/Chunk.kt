@@ -16,102 +16,113 @@ import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.world.biome.source.BiomeSource
 import de.bixilon.minosoft.data.world.light.LightAccessor
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.inChunkSectionPosition
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.of
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil.toSynchronizedMap
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import glm_.vec2.Vec2i
 import glm_.vec3.Vec3i
 
 /**
- * Collection of chunks sections (allocated in y)
+ * Collection of chunks sections (from the lowest section to the highest section in y axis)
  */
 class Chunk(
-    var sections: MutableMap<Int, ChunkSection>? = null,
+    private val connection: PlayConnection,
+    private var sections: Array<ChunkSection?>? = null,
     var biomeSource: BiomeSource? = null,
     var lightAccessor: LightAccessor? = null,
-) {
-    private val lock = Object()
+) : Iterable<ChunkSection?> {
+    val lowestSection = connection.world.dimension!!.lowestSection
+
+    val blocksInitialized: Boolean
+        get() = sections != null
+    val biomesInitialized
+        get() = biomeSource != null
+    val lightInitialized
+        get() = lightAccessor != null
+
     val isFullyLoaded: Boolean
-        get() {
-            return sections != null && biomeSource != null && lightAccessor != null
-        }
+        get() = blocksInitialized && biomesInitialized && lightInitialized
 
-    operator fun get(inChunkPosition: Vec3i): BlockState? {
-        return sections?.get(inChunkPosition.sectionHeight)?.getBlockState(inChunkPosition.inChunkSectionPosition)
+    operator fun get(sectionHeight: Int): ChunkSection? = sections?.getOrNull(sectionHeight - lowestSection)
+
+    fun get(x: Int, y: Int, z: Int): BlockState? {
+        return this[y.sectionHeight]?.blocks?.get(x, y % ProtocolDefinition.SECTION_HEIGHT_Y, z)
     }
 
-    operator fun get(x: Int, y: Int, z: Int): BlockState? {
-        return get(Vec3i(x, y, z))
+    operator fun get(position: Vec3i): BlockState? = get(position.x, position.y, position.z)
+
+    fun set(x: Int, y: Int, z: Int, blockState: BlockState?, blockEntity: BlockEntity? = null) {
+        val section = getOrPut(y.sectionHeight)
+        section.blocks[x, y % ProtocolDefinition.SECTION_HEIGHT_Y, z] = blockState
+        section.blockEntities[x, y % ProtocolDefinition.SECTION_HEIGHT_Y, z] = blockEntity // ToDo
     }
+
+    operator fun set(position: Vec3i, blockState: BlockState?) = set(position.x, position.y, position.z, blockState)
 
     fun setBlocks(blocks: Map<Vec3i, BlockState?>) {
-        for ((location, blockInfo) in blocks) {
-            set(location, blockInfo)
+        for ((location, blockState) in blocks) {
+            set(location, blockState)
         }
     }
+
+    fun getBlockEntity(x: Int, y: Int, z: Int): BlockEntity? {
+        return this[y.sectionHeight]?.blockEntities?.get(x, y % ProtocolDefinition.SECTION_HEIGHT_Y, z)
+    }
+
+    fun getBlockEntity(position: Vec3i): BlockEntity? = getBlockEntity(position.x, position.y, position.z)
+
+    fun setBlockEntity(x: Int, y: Int, z: Int, blockEntity: BlockEntity?) {
+        getOrPut(y.sectionHeight).blockEntities[x, y % ProtocolDefinition.SECTION_HEIGHT_Y, z] = blockEntity
+    }
+
+    fun setBlockEntity(position: Vec3i, blockEntity: BlockEntity?) = setBlockEntity(position.x, position.y, position.z, blockEntity)
 
     fun setData(data: ChunkData, merge: Boolean = false) {
-        synchronized(lock) {
-            data.blocks?.let {
-                if (sections == null) {
-                    sections = mutableMapOf()
-                }
-                if (!merge) {
-                    sections?.clear()
-                }
-                // replace all chunk sections
-                for ((sectionHeight, chunkSection) in it) {
-                    getOrPut(sectionHeight).setData(chunkSection)
-                }
+        data.blocks?.let {
+            var sections = this.sections
+            if (sections == null || !merge) {
+                sections = arrayOfNulls(connection.world.dimension!!.sections)
+                this.sections = sections
             }
-            data.biomeSource?.let {
-                this.biomeSource = it
-            }
-            data.lightAccessor?.let {
-                this.lightAccessor = it
+
+            // replace all chunk sections
+            for ((index, section) in it.withIndex()) {
+                section ?: continue
+                sections[index] = section
             }
         }
-    }
-
-
-    operator fun set(inChunkPosition: Vec3i, blockState: BlockState?) {
-        getOrPut(inChunkPosition.sectionHeight).setBlockState(inChunkPosition.inChunkSectionPosition, blockState)
+        data.biomeSource?.let {
+            this.biomeSource = it
+        }
+        data.lightAccessor?.let {
+            this.lightAccessor = it
+        }
     }
 
     private fun getOrPut(sectionHeight: Int): ChunkSection {
-        if (sections == null) {
-            throw IllegalStateException("Chunk not received/initialized yet!")
+        val sections = sections ?: throw NullPointerException("Sections not initialized yet!")
+        val sectionIndex = sectionHeight - lowestSection
+
+        var section = sections[sectionIndex]
+        if (section == null) {
+            section = ChunkSection(connection.registries)
+            sections[sectionIndex] = section
         }
-        return sections!![sectionHeight].let {
-            var section = it
-            if (section == null) {
-                section = ChunkSection()
-                sections!![sectionHeight] = section
-            }
-            section
-        }
+        return section
     }
 
-    fun realTick(connection: PlayConnection, chunkPosition: Vec2i) {
+    fun tick(connection: PlayConnection, chunkPosition: Vec2i) {
         if (!isFullyLoaded) {
             return
         }
-        val sections = sections
-        sections ?: return
-        for ((height, section) in sections.toSynchronizedMap()) {
-            section.realTick(connection, Vec3i.of(chunkPosition, height, Vec3i.EMPTY))
+        val sections = sections!!
+        for ((index, section) in sections.withIndex()) {
+            section ?: continue
+            section.tick(connection, chunkPosition, index - lowestSection)
         }
     }
 
-
-    fun getBlockEntity(inChunkPosition: Vec3i): BlockEntity? {
-        return sections?.get(inChunkPosition.sectionHeight)?.getBlockEntity(inChunkPosition.inChunkSectionPosition)
-    }
-
-    operator fun set(inChunkPosition: Vec3i, blockEntity: BlockEntity?) {
-        sections?.get(inChunkPosition.sectionHeight)?.setBlockEntity(inChunkPosition.inChunkSectionPosition, blockEntity)
+    override fun iterator(): Iterator<ChunkSection?> {
+        return sections!!.iterator()
     }
 }

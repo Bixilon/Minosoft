@@ -45,7 +45,7 @@ class BlockActionS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
                     return
                 }
             val blockEntity = factory.build(connection)
-            connection.world[position] = blockEntity
+            connection.world.setBlockEntity(position, blockEntity)
             blockEntity
         }
 

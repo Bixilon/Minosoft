@@ -17,20 +17,14 @@ import de.bixilon.minosoft.data.world.biome.source.BiomeSource
 import de.bixilon.minosoft.data.world.light.LightAccessor
 
 data class ChunkData(
-    var blocks: Map<Int, ChunkSection>? = null,
+    var blocks: Array<ChunkSection?>? = null,
     var biomeSource: BiomeSource? = null,
     var lightAccessor: LightAccessor? = null,
 ) {
 
     fun replace(data: ChunkData) {
-        data.blocks?.let {
-            this.blocks = it
-        }
-        data.biomeSource?.let {
-            this.biomeSource = it
-        }
-        data.lightAccessor?.let {
-            this.lightAccessor = it
-        }
+        data.blocks?.let { this.blocks = it }
+        data.biomeSource?.let { this.biomeSource = it }
+        data.lightAccessor?.let { this.lightAccessor = it }
     }
 }

@@ -15,10 +15,11 @@ package de.bixilon.minosoft.protocol.packets.s2c.play
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.tweaker.VersionTweaker
 import de.bixilon.minosoft.data.world.ChunkData
 import de.bixilon.minosoft.data.world.biome.source.SpatialBiomeArray
 import de.bixilon.minosoft.datafixer.BlockEntityFixer.fix
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.of
 import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.modding.event.events.ChunkDataChangeEvent
 import de.bixilon.minosoft.modding.event.events.ChunkUnloadEvent
@@ -106,10 +107,11 @@ class ChunkDataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
                 buffer.pointer = size + lastPos
             }
             if (buffer.versionId >= ProtocolVersions.V_1_9_4) {
+                val positionOffset = Vec3i.of(chunkPosition, dimension.lowestSection, Vec3i.EMPTY)
                 val blockEntitiesCount = buffer.readVarInt()
                 for (i in 0 until blockEntitiesCount) {
                     val nbt = buffer.readNBT().asCompound()
-                    val position = Vec3i(nbt["x"]!!.toInt(), nbt["y"]!!.toInt(), nbt["z"]!!.toInt())
+                    val position = Vec3i(nbt["x"]!!.toInt(), nbt["y"]!!.toInt(), nbt["z"]!!.toInt()) - positionOffset
                     val resourceLocation = ResourceLocation(nbt["id"].unsafeCast()).fix()
                     val type = buffer.connection.registries.blockEntityTypeRegistry[resourceLocation] ?: let {
                         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.WARN) { "Unknown block entity: $resourceLocation" }
@@ -124,13 +126,12 @@ class ChunkDataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     }
 
     override fun handle(connection: PlayConnection) {
-        chunkData?.blocks?.let {
-            VersionTweaker.transformSections(it, connection.version.versionId)
-        }
         chunkData?.let {
             val chunk = connection.world.getOrCreateChunk(chunkPosition)
             chunk.setData(chunkData!!)
-            connection.world.setBlockEntities(blockEntities)
+            for ((position, blockEntity) in blockEntities) {
+                chunk.setBlockEntity(position, blockEntity)
+            }
             connection.fireEvent(ChunkDataChangeEvent(connection, this))
         } ?: let {
             connection.world.unloadChunk(chunkPosition)

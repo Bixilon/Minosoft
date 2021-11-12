@@ -11,18 +11,26 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.entities.block
+package de.bixilon.minosoft.data.world.container
 
-import de.bixilon.minosoft.data.registries.blocks.BlockState
-import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import glm_.vec3.Vec3i
+import java.util.concurrent.Semaphore
 
-abstract class BlockEntity(
-    val connection: PlayConnection,
-) {
-    open val nbt: Map<String, Any> = mapOf()
+class SemaphoreLock {
+    private val semaphore = Semaphore(Int.MAX_VALUE)
 
-    open fun updateNBT(nbt: Map<String, Any>) = Unit
+    fun acquire() {
+        semaphore.acquire()
+    }
 
-    open fun tick(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i) = Unit
+    fun release() {
+        semaphore.release()
+    }
+
+    fun lock() {
+        semaphore.acquire(Int.MAX_VALUE)
+    }
+
+    fun unlock() {
+        semaphore.release(Int.MAX_VALUE)
+    }
 }

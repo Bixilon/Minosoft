@@ -21,7 +21,6 @@ import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.FluidBlock
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.registries.sounds.SoundEvent
-import de.bixilon.minosoft.data.registries.tweaker.VersionTweaker
 import de.bixilon.minosoft.data.world.biome.accessor.BiomeAccessor
 import de.bixilon.minosoft.data.world.biome.accessor.NullBiomeAccessor
 import de.bixilon.minosoft.data.world.light.WorldLightAccessor
@@ -31,10 +30,8 @@ import de.bixilon.minosoft.gui.rendering.sound.AudioPlayer
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.blockPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.inChunkPosition
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.inChunkSectionPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.minus
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
 import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.modding.event.events.BlockSetEvent
 import de.bixilon.minosoft.modding.event.events.ChunkUnloadEvent
@@ -43,6 +40,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
 import de.bixilon.minosoft.util.KUtil.toSynchronizedMap
 import de.bixilon.minosoft.util.MMath
+import de.bixilon.minosoft.util.collections.SynchronizedMap
 import glm_.func.common.clamp
 import glm_.vec2.Vec2i
 import glm_.vec3.Vec3
@@ -58,7 +56,7 @@ import kotlin.random.Random
 class World(
     val connection: PlayConnection,
 ) : BiomeAccessor {
-    val chunks: MutableMap<Vec2i, Chunk> = synchronizedMapOf()
+    val chunks: SynchronizedMap<Vec2i, Chunk> = synchronizedMapOf()
     val entities = WorldEntities()
     var hardcore = false
     var dimension: DimensionProperties? = null
@@ -81,14 +79,12 @@ class World(
         return chunks[blockPosition.chunkPosition]?.get(blockPosition.inChunkPosition)
     }
 
-    @Synchronized
     operator fun get(chunkPosition: Vec2i): Chunk? {
         return chunks[chunkPosition]
     }
 
-    @Synchronized
     fun getOrCreateChunk(chunkPosition: Vec2i): Chunk {
-        return chunks.getOrPut(chunkPosition) { Chunk() }
+        return chunks.getOrPut(chunkPosition) { Chunk(connection) }
     }
 
     fun setBlockState(blockPosition: Vec3i, blockState: BlockState?) {
@@ -96,32 +92,24 @@ class World(
     }
 
     operator fun set(blockPosition: Vec3i, blockState: BlockState?) {
-        val chunkPosition = blockPosition.chunkPosition
-        chunks[chunkPosition]?.let {
-            val sections = it.sections ?: return
-
-            val transformedBlockState = if (connection.version.isFlattened()) {
-                blockState
-            } else {
-                VersionTweaker.transformBlock(blockState, sections, blockPosition.inChunkSectionPosition, blockPosition.sectionHeight)
-            }
-            val inChunkPosition = blockPosition.inChunkPosition
-            val previousBlock = it[inChunkPosition]
-            if (previousBlock == transformedBlockState) {
-                return
-            }
-            previousBlock?.block?.onBreak(connection, blockPosition, previousBlock, it.getBlockEntity(inChunkPosition))
-            blockState?.block?.onPlace(connection, blockPosition, blockState)
-            it[inChunkPosition] = transformedBlockState
-            connection.fireEvent(BlockSetEvent(
-                connection = connection,
-                blockPosition = blockPosition,
-                blockState = transformedBlockState,
-            ))
+        val chunk = chunks[blockPosition.chunkPosition] ?: return
+        val inChunkPosition = blockPosition.inChunkPosition
+        val previousBlock = chunk[inChunkPosition]
+        if (previousBlock == blockState) {
+            return
         }
+        previousBlock?.block?.onBreak(connection, blockPosition, previousBlock, chunk.getBlockEntity(inChunkPosition))
+        blockState?.block?.onPlace(connection, blockPosition, blockState)
+        chunk[inChunkPosition] = blockState
+        connection.fireEvent(BlockSetEvent(
+            connection = connection,
+            blockPosition = blockPosition,
+            blockState = blockState,
+        ))
     }
 
     fun isPositionChangeable(blockPosition: Vec3i): Boolean {
+        // ToDo: World border
         val dimension = connection.world.dimension!!
         return (blockPosition.y >= dimension.minY || blockPosition.y < dimension.height)
     }
@@ -134,37 +122,22 @@ class World(
     }
 
     fun unloadChunk(chunkPosition: Vec2i) {
-        chunks.remove(chunkPosition)?.let {
-            connection.fireEvent(ChunkUnloadEvent(connection, EventInitiators.UNKNOWN, chunkPosition))
-        }
-    }
-
-    fun replaceChunk(position: Vec2i, chunk: Chunk) {
-        chunks[position] = chunk
-    }
-
-    fun replaceChunks(chunkMap: HashMap<Vec2i, Chunk>) {
-        for ((chunkLocation, chunk) in chunkMap) {
-            chunks[chunkLocation] = chunk
-        }
+        chunks.remove(chunkPosition) ?: return
+        connection.fireEvent(ChunkUnloadEvent(connection, EventInitiators.UNKNOWN, chunkPosition))
     }
 
     fun getBlockEntity(blockPosition: Vec3i): BlockEntity? {
         return get(blockPosition.chunkPosition)?.getBlockEntity(blockPosition.inChunkPosition)
     }
 
-    operator fun set(blockPosition: Vec3i, blockEntity: BlockEntity?) {
-        get(blockPosition.chunkPosition)?.set(blockPosition.inChunkPosition, blockEntity)
-    }
-
     fun setBlockEntity(blockPosition: Vec3i, blockEntity: BlockEntity?) {
-        this[blockPosition] = blockEntity
+        get(blockPosition.chunkPosition)?.setBlockEntity(blockPosition.inChunkPosition, blockEntity)
     }
 
 
     fun setBlockEntities(blockEntities: Map<Vec3i, BlockEntity>) {
-        for ((blockPosition, entityMetaData) in blockEntities) {
-            set(blockPosition, entityMetaData)
+        for ((blockPosition, blockEntity) in blockEntities) {
+            setBlockEntity(blockPosition, blockEntity)
         }
     }
 
@@ -172,9 +145,9 @@ class World(
         return biomeAccessor.getBiome(blockPosition)
     }
 
-    fun realTick() {
+    fun tick() {
         for ((chunkPosition, chunk) in chunks.toSynchronizedMap()) {
-            chunk.realTick(connection, chunkPosition)
+            chunk.tick(connection, chunkPosition)
         }
     }
 
@@ -200,24 +173,6 @@ class World(
         }
         return ret.toMap()
     }
-
-    fun getBlocks(start: Vec3i, end: Vec3i): Map<Vec3i, BlockState> {
-        val blocks: MutableMap<Vec3i, BlockState> = mutableMapOf()
-
-        for (z in start.z..end.z) {
-            for (y in start.y..end.y) {
-                for (x in start.x..end.x) {
-                    val blockPosition = Vec3i(x, y, z)
-                    this[blockPosition]?.let {
-                        blocks[blockPosition] = it
-                    }
-                }
-            }
-        }
-
-        return blocks.toMap()
-    }
-
 
     fun playSoundEvent(resourceLocation: ResourceLocation, position: Vec3i? = null, volume: Float = 1.0f, pitch: Float = 1.0f) {
         audioPlayer?.playSoundEvent(resourceLocation, position, volume, pitch)

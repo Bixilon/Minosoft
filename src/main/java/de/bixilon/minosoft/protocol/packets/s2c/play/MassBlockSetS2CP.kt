@@ -14,9 +14,6 @@ package de.bixilon.minosoft.protocol.packets.s2c.play
 
 
 import de.bixilon.minosoft.data.registries.blocks.BlockState
-import de.bixilon.minosoft.data.registries.tweaker.VersionTweaker
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.inChunkSectionPosition
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
 import de.bixilon.minosoft.modding.event.events.MassBlockSetEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
@@ -81,21 +78,11 @@ class MassBlockSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
 
     override fun handle(connection: PlayConnection) {
         val chunk = connection.world[chunkPosition] ?: return // thanks mojang
-        if (chunk.sections == null) {
+        if (!chunk.blocksInitialized) {
             return
         }
         chunk.setBlocks(blocks)
 
-        // tweak
-        if (!connection.version.isFlattened()) {
-            for ((key, value) in blocks) {
-                val block = VersionTweaker.transformBlock(value, chunk.sections!!, key.inChunkSectionPosition, key.sectionHeight)
-                if (block === value) {
-                    continue
-                }
-                chunk[key] = block
-            }
-        }
         connection.fireEvent(MassBlockSetEvent(connection, this))
     }
 

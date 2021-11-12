@@ -24,7 +24,6 @@ import de.bixilon.minosoft.data.world.palette.Palette.Companion.choosePalette
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*
-import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
 import java.util.*
 
 
@@ -59,7 +58,7 @@ object ChunkUtil {
 
         // parse data
         var arrayPosition = 0
-        val sectionMap: MutableMap<Int, ChunkSection> = synchronizedMapOf()
+        val sections: Array<ChunkSection?> = arrayOfNulls(dimension.sections)
         for ((sectionIndex, sectionHeight) in (dimension.lowestSection until dimension.highestSection).withIndex()) {
             if (!sectionBitMask[sectionIndex]) {
                 continue
@@ -91,9 +90,9 @@ object ChunkUtil {
 
                 blocks[blockNumber] = buffer.connection.registries.blockStateRegistry[blockId] ?: continue
             }
-            sectionMap[sectionHeight] = ChunkSection(blocks)
+            sections[sectionHeight - dimension.lowestSection] = ChunkSection(buffer.connection.registries, blocks)
         }
-        chunkData.blocks = sectionMap
+        chunkData.blocks = sections
         return chunkData
     }
 
@@ -125,7 +124,7 @@ object ChunkUtil {
         }
 
         var arrayPos = 0
-        val sectionMap: MutableMap<Int, ChunkSection> = synchronizedMapOf()
+        val sections: Array<ChunkSection?> = arrayOfNulls(dimension.sections)
         for ((sectionIndex, sectionHeight) in (dimension.lowestSection until dimension.highestSection).withIndex()) { // max sections per chunks in chunk column
             if (!sectionBitMask[sectionIndex]) {
                 continue
@@ -136,15 +135,15 @@ object ChunkUtil {
                 val block = buffer.connection.registries.blockStateRegistry[blockId] ?: continue
                 blocks[blockNumber] = block
             }
-            sectionMap[sectionHeight] = ChunkSection(blocks)
+            sections[sectionHeight] = ChunkSection(buffer.connection.registries, blocks)
         }
-        chunkData.blocks = sectionMap
+        chunkData.blocks = sections
         return chunkData
     }
 
     fun readPaletteChunk(buffer: PlayInByteBuffer, dimension: DimensionProperties, sectionBitMask: BitSet, isFullChunk: Boolean, containsSkyLight: Boolean = false): ChunkData {
         val chunkData = ChunkData()
-        val sectionMap: MutableMap<Int, ChunkSection> = synchronizedMapOf()
+        val sections: Array<ChunkSection?> = arrayOfNulls(dimension.sections)
 
         for ((sectionIndex, sectionHeight) in (dimension.lowestSection until sectionBitMask.length()).withIndex()) { // max sections per chunks in chunk column
             if (!sectionBitMask[sectionIndex]) {
@@ -193,10 +192,10 @@ object ChunkUtil {
                 // ToDo
                 chunkData.lightAccessor = DummyLightAccessor
             }
-            sectionMap[sectionHeight] = ChunkSection(blocks)
+            sections[sectionHeight - dimension.lowestSection] = ChunkSection(buffer.connection.registries, blocks)
         }
 
-        chunkData.blocks = sectionMap
+        chunkData.blocks = sections
         if (buffer.versionId < V_19W36A && isFullChunk) {
             chunkData.biomeSource = readLegacyBiomeArray(buffer)
         }

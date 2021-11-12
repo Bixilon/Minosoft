@@ -158,7 +158,7 @@ class PlayConnection(
                     })
 
                     worldTickTask = TimeWorker.addTask(TimeWorkerTask(ProtocolDefinition.TICK_TIME, maxDelayTime = ProtocolDefinition.TICK_TIME / 2) {
-                        world.realTick()
+                        world.tick()
                     })
 
                     randomTickTask = TimeWorker.addTask(TimeWorkerTask(ProtocolDefinition.TICK_TIME, maxDelayTime = ProtocolDefinition.TICK_TIME / 2) {
