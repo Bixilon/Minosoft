@@ -15,6 +15,7 @@ package de.bixilon.minosoft.util.collections
 
 import de.bixilon.minosoft.util.KUtil.toSynchronizedList
 import de.bixilon.minosoft.util.KUtil.toSynchronizedSet
+import de.bixilon.minosoft.util.SemaphoreLock
 import java.util.function.BiConsumer
 import java.util.function.BiFunction
 import java.util.function.Function
@@ -22,171 +23,201 @@ import java.util.function.Function
 class SynchronizedMap<K, V>(
     private val original: MutableMap<K, V>,
 ) : MutableMap<K, V> {
-    internal val lock = Object()
+    internal val lock = SemaphoreLock()
     override val size: Int
-        get() = synchronized(lock) { original.size }
+        get() {
+            lock.acquire()
+            val returnValue = original.size
+            lock.release()
+            return returnValue
+        }
 
     override fun containsKey(key: K): Boolean {
-        synchronized(lock) {
-            return original.containsKey(key)
-        }
+        lock.acquire()
+        val returnValue = original.containsKey(key)
+        lock.release()
+        return returnValue
     }
 
     override fun containsValue(value: V): Boolean {
-        synchronized(lock) {
-            return original.containsValue(value)
-        }
+        lock.acquire()
+        val returnValue = original.containsValue(value)
+        lock.release()
+        return returnValue
     }
 
     override fun get(key: K): V? {
-        synchronized(lock) {
-            return original[key]
-        }
+        lock.acquire()
+        val returnValue = original[key]
+        lock.release()
+        return returnValue
     }
 
     override fun isEmpty(): Boolean {
-        synchronized(lock) {
-            return original.isEmpty()
-        }
+        lock.acquire()
+        val returnValue = original.isEmpty()
+        lock.release()
+        return returnValue
     }
 
     override val entries: MutableSet<MutableMap.MutableEntry<K, V>>
         get() {
-            synchronized(lock) {
-                return original.entries.toSynchronizedSet()
-            }
+            lock.acquire()
+            val returnValue = original.entries.toSynchronizedSet()
+            lock.release()
+            return returnValue
         }
     override val keys: MutableSet<K>
         get() {
-            synchronized(lock) {
-                return original.keys.toSynchronizedSet()
-            }
+            lock.acquire()
+            val returnValue = original.keys.toSynchronizedSet()
+            lock.release()
+            return returnValue
         }
     override val values: MutableCollection<V>
         get() {
-            synchronized(lock) {
-                return original.values.toSynchronizedList()
-            }
+            lock.acquire()
+            val returnValue = original.values.toSynchronizedList()
+            lock.release()
+            return returnValue
         }
 
     override fun clear() {
-        synchronized(lock) {
-            original.clear()
-        }
+        lock.lock()
+        original.clear()
+        lock.unlock()
     }
 
     override fun put(key: K, value: V): V? {
-        synchronized(lock) {
-            return original.put(key, value)
-        }
+        lock.lock()
+        val returnValue = original.put(key, value)
+        lock.unlock()
+        return returnValue
     }
 
     override fun putAll(from: Map<out K, V>) {
-        synchronized(lock) {
-            return original.putAll(from)
-        }
+        lock.lock()
+        val returnValue = original.putAll(from)
+        lock.unlock()
+        return returnValue
     }
 
     override fun remove(key: K): V? {
-        synchronized(lock) {
-            return original.remove(key)
-        }
+        lock.lock()
+        val returnValue = original.remove(key)
+        lock.unlock()
+        return returnValue
     }
 
     override fun hashCode(): Int {
-        synchronized(lock) {
-            return original.hashCode()
-        }
+        lock.acquire()
+        val returnValue = original.hashCode()
+        lock.release()
+        return returnValue
     }
 
     override fun toString(): String {
-        synchronized(lock) {
-            return original.toString()
-        }
+        lock.acquire()
+        val returnValue = original.toString()
+        lock.release()
+        return returnValue
     }
 
     override fun putIfAbsent(key: K, value: V): V? {
-        synchronized(lock) {
-            return original.putIfAbsent(key, value)
-        }
+        lock.lock()
+        val returnValue = original.putIfAbsent(key, value)
+        lock.unlock()
+        return returnValue
     }
 
     override fun forEach(action: BiConsumer<in K, in V>) {
-        synchronized(lock) {
-            return original.forEach(action)
-        }
+        lock.acquire()
+        val returnValue = original.forEach(action)
+        lock.release()
+        return returnValue
     }
 
     override fun getOrDefault(key: K, defaultValue: V): V {
-        synchronized(lock) {
-            return original.getOrDefault(key, defaultValue)
-        }
+        lock.acquire()
+        val returnValue = original.getOrDefault(key, defaultValue)
+        lock.release()
+        return returnValue
     }
 
     fun getOrPut(key: K, defaultValue: () -> V): V {
-        synchronized(lock) {
-            var value = get(key)
-            return if (value == null) {
-                value = defaultValue()
-                put(key, value)
-                value
-            } else {
-                value
-            }
+        lock.lock()
+        var value = original[key]
+        val returnValue = if (value == null) {
+            value = defaultValue()
+            original[key] = value
+            value
+        } else {
+            value
         }
+        lock.unlock()
+        return returnValue
     }
 
     override fun remove(key: K, value: V): Boolean {
-        synchronized(lock) {
-            return original.remove(key, value)
-        }
+        lock.lock()
+        val returnValue = original.remove(key, value)
+        lock.unlock()
+        return returnValue
     }
 
     override fun equals(other: Any?): Boolean {
-        synchronized(lock) {
-            return original == other
-        }
+        lock.acquire()
+        val returnValue = original == other
+        lock.release()
+        return returnValue
     }
 
     override fun replaceAll(function: BiFunction<in K, in V, out V>) {
-        synchronized(lock) {
-            return original.replaceAll(function)
-        }
+        lock.lock()
+        val returnValue = original.replaceAll(function)
+        lock.unlock()
+        return returnValue
     }
 
     override fun compute(key: K, remappingFunction: BiFunction<in K, in V?, out V?>): V? {
-        synchronized(lock) {
-            return original.compute(key, remappingFunction)
-        }
+        lock.acquire()
+        val returnValue = original.compute(key, remappingFunction)
+        lock.release()
+        return returnValue
     }
 
     override fun computeIfAbsent(key: K, mappingFunction: Function<in K, out V>): V {
-        synchronized(lock) {
-            return original.computeIfAbsent(key, mappingFunction)
-        }
+        lock.acquire()
+        val returnValue = original.computeIfAbsent(key, mappingFunction)
+        lock.release()
+        return returnValue
     }
 
     override fun computeIfPresent(key: K, remappingFunction: BiFunction<in K, in V, out V?>): V? {
-        synchronized(lock) {
-            return original.computeIfPresent(key, remappingFunction)
-        }
+        lock.acquire()
+        val returnValue = original.computeIfPresent(key, remappingFunction)
+        lock.release()
+        return returnValue
     }
 
     override fun replace(key: K, value: V): V? {
-        synchronized(lock) {
-            return original.replace(key, value)
-        }
+        lock.lock()
+        val returnValue = original.replace(key, value)
+        lock.unlock()
+        return returnValue
     }
 
     override fun merge(key: K, value: V, remappingFunction: BiFunction<in V, in V, out V?>): V? {
-        synchronized(lock) {
-            return original.merge(key, value, remappingFunction)
-        }
+        lock.lock()
+        val returnValue = original.merge(key, value, remappingFunction)
+        lock.unlock()
+        return returnValue
     }
 
     override fun replace(key: K, oldValue: V, newValue: V): Boolean {
-        synchronized(lock) {
-            return original.replace(key, oldValue, newValue)
-        }
+        lock.lock()
+        val returnValue = original.replace(key, oldValue, newValue)
+        lock.unlock()
+        return returnValue
     }
 }

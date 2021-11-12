@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.data.world.container
 
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.util.SemaphoreLock
 
 open class SectionDataProvider<T>(
     data: Array<Any?> = arrayOfNulls(ProtocolDefinition.BLOCKS_PER_SECTION),

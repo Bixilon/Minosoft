@@ -104,12 +104,14 @@ object KUtil {
     }
 
     fun <K, V> Map<K, V>.toSynchronizedMap(): SynchronizedMap<K, V> {
-        val lock = if (this is SynchronizedMap<*, *>) {
-            this.lock
+        return if (this is SynchronizedMap<*, *>) {
+            lock.acquire()
+            val map: SynchronizedMap<K, V> = SynchronizedMap(this.toMutableMap()).unsafeCast()
+            lock.release()
+            map
         } else {
-            null
+            synchronizedCopy { SynchronizedMap(this.toMutableMap()) }
         }
-        return synchronizedCopy(lock) { SynchronizedMap(this.toMutableMap()) }
     }
 
     fun <V> Collection<V>.toSynchronizedList(): MutableList<V> {
