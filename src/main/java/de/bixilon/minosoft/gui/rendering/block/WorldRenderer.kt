@@ -75,7 +75,7 @@ class WorldRenderer(
     val visibleSize: Int
         get() = visibleMeshes.size
     val preparedSize: Int
-        get() = visibleMeshes.size
+        get() = meshes.size
     val queuedSize: Int
         get() = queue.size
     val incompleteSize: Int
@@ -121,7 +121,23 @@ class WorldRenderer(
     }
 
     private fun unloadChunk(chunkPosition: Vec2i) {
-        TODO()
+        incomplete -= chunkPosition
+        queue.remove(chunkPosition)
+        for (neighbourPosition in getChunkNeighbourPositions(chunkPosition)) {
+            queue.remove(neighbourPosition)
+            world[neighbourPosition] ?: continue // if chunk is not loaded, we don't need to add it to incomplete
+            incomplete += neighbourPosition
+        }
+        val meshes = this.meshes.remove(chunkPosition) ?: return
+        visibleMeshes -= meshes.values
+        if (meshes.isEmpty()) {
+            return
+        }
+        renderWindow.queue += {
+            for (mesh in meshes.values) {
+                mesh.unload()
+            }
+        }
     }
 
     /**
