@@ -27,7 +27,7 @@ Minosoft is an open source minecraft client, written from scratch in kotlin (and
 - CPU: Minosoft works mostly asynchronous, so multiple cores are good. For FPS more clock speed is better.
 - RAM: Minimum 300 MiB, 1 GiB recommended
 - Disk space: Minosoft itself is pretty small (2-3 MiB), the libraries are a bit bigger (~80 MiB). You also need to have the "normal" minecraft assets (~ 300 MiB per minecraft version).
-- GPU: OpenGL 3.3+. Every modern GPU works and is recommended.
+- GPU: OpenGL 3.0+. Every modern GPU works and is recommended.
 - Java 11+, newest version recommended (This is really important, we use features that are only available in this version. Java 8 is currently **not** supported).
 
 ## Rendering

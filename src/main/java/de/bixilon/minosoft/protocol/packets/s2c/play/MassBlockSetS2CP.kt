@@ -53,7 +53,7 @@ class MassBlockSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
                 }
             }
             buffer.versionId < ProtocolVersions.V_20W28A -> {
-                chunkPosition = Vec2i(buffer.readInt(), buffer.readInt())
+                chunkPosition = buffer.readChunkPosition()
                 val count = buffer.readVarInt()
                 for (i in 0 until count) {
                     val position = buffer.readByte().toInt()
@@ -77,18 +77,15 @@ class MassBlockSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     }
 
     override fun handle(connection: PlayConnection) {
+        if (blocks.isEmpty()) {
+            return
+        }
         val chunk = connection.world[chunkPosition] ?: return // thanks mojang
         if (chunk.sections == null) {
             return
         }
         chunk.setBlocks(blocks)
 
-        // tweak
-        if (!connection.version.isFlattened()) {
-            for ((position, blockState) in blocks) {
-                chunk[position] = blockState
-            }
-        }
         connection.fireEvent(MassBlockSetEvent(connection, this))
     }
 

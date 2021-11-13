@@ -20,9 +20,6 @@ import de.bixilon.minosoft.protocol.packets.s2c.play.MassBlockSetS2CP
 import glm_.vec2.Vec2i
 import glm_.vec3.Vec3i
 
-/**
- * Fired when at least block is changed
- */
 class MassBlockSetEvent(
     connection: PlayConnection,
     initiator: EventInitiators,

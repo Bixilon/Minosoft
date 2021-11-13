@@ -53,6 +53,7 @@ class ChunkSectionMeshes(
         } else {
             mesh.load()
         }
+        maxPosition += 1
     }
 
     @Synchronized
