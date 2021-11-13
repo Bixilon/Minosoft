@@ -168,7 +168,7 @@ class JoinGameS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
             NoiseBiomeAccessor(connection.world)
         }
         TimeWorker.addTask(TimeWorkerTask(150, true) { // ToDo: Temp workaround
-            connection.sendPacket(ClientSettingsC2SP("en_us"))
+            connection.sendPacket(ClientSettingsC2SP())
 
             val brandName = DefaultRegistries.DEFAULT_PLUGIN_CHANNELS_REGISTRY.forVersion(connection.version)[DefaultPluginChannels.BRAND]!!.resourceLocation
             val buffer = PlayOutByteBuffer(connection)

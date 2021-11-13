@@ -18,9 +18,7 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.world.ChunkData
 import de.bixilon.minosoft.data.world.biome.source.SpatialBiomeArray
 import de.bixilon.minosoft.datafixer.BlockEntityFixer.fix
-import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.modding.event.events.ChunkDataChangeEvent
-import de.bixilon.minosoft.modding.event.events.ChunkUnloadEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
@@ -41,7 +39,8 @@ import java.util.*
 class ChunkDataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     val blockEntities: MutableMap<Vec3i, BlockEntity> = mutableMapOf()
     val chunkPosition: Vec2i
-    var chunkData: ChunkData? = ChunkData()
+    val chunkData: ChunkData = ChunkData()
+    var unloadChunk: Boolean = false
         private set
     var heightMap: Map<String, Any>? = null
         private set
@@ -63,11 +62,11 @@ class ChunkDataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
             } else {
                 buffer
             }
-            ChunkUtil.readChunkPacket(decompressed, dimension, sectionBitMask, addBitMask, !isFullChunk, dimension.hasSkyLight)?.let {
-                chunkData!!.replace(it)
-            } ?: let {
-                // unload chunk
-                chunkData = null
+            val chunkData = ChunkUtil.readChunkPacket(decompressed, dimension, sectionBitMask, addBitMask, !isFullChunk, dimension.hasSkyLight)
+            if (chunkData == null) {
+                unloadChunk = true
+            } else {
+                this.chunkData.replace(chunkData)
             }
         } else {
             if (buffer.versionId >= ProtocolVersions.V_1_16_PRE7 && buffer.versionId < ProtocolVersions.V_1_16_2_PRE2) {
@@ -91,19 +90,18 @@ class ChunkDataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
                 heightMap = buffer.readNBT()?.compoundCast()
             }
             if (!isFullChunk) {
-                chunkData!!.biomeSource = SpatialBiomeArray(buffer.readBiomeArray())
+                chunkData.biomeSource = SpatialBiomeArray(buffer.readBiomeArray())
             }
             val size = buffer.readVarInt()
             val lastPos = buffer.pointer
-            if (size > 0) {
-                ChunkUtil.readChunkPacket(buffer, dimension, sectionBitMask, null, !isFullChunk, dimension.hasSkyLight)?.let {
-                    chunkData!!.replace(it)
-                } ?: let {
-                    chunkData = null
-                }
-                // set position of the byte buffer, because of some reasons HyPixel makes some weird stuff and sends way to much 0 bytes. (~ 190k), thanks @pokechu22
-                buffer.pointer = size + lastPos
+            val chunkData = ChunkUtil.readChunkPacket(buffer, dimension, sectionBitMask, null, !isFullChunk, dimension.hasSkyLight)
+            if (chunkData == null) {
+                unloadChunk = true
+            } else {
+                this.chunkData.replace(chunkData)
             }
+            // set position of the byte buffer, because of some reasons HyPixel makes some weird stuff and sends way to much 0 bytes. (~ 190k), thanks @pokechu22
+            buffer.pointer = size + lastPos
             if (buffer.versionId >= ProtocolVersions.V_1_9_4) {
                 val blockEntitiesCount = buffer.readVarInt()
                 for (i in 0 until blockEntitiesCount) {
@@ -123,15 +121,14 @@ class ChunkDataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     }
 
     override fun handle(connection: PlayConnection) {
-        chunkData?.let {
-            val chunk = connection.world.getOrCreateChunk(chunkPosition)
-            chunk.setData(chunkData!!)
-            connection.world.setBlockEntities(blockEntities)
-            connection.fireEvent(ChunkDataChangeEvent(connection, this))
-        } ?: let {
+        if (unloadChunk) {
             connection.world.unloadChunk(chunkPosition)
-            connection.fireEvent(ChunkUnloadEvent(connection, EventInitiators.SERVER, chunkPosition))
+            return
         }
+        val chunk = connection.world.getOrCreateChunk(chunkPosition)
+        chunk.setData(chunkData)
+        connection.world.setBlockEntities(blockEntities)
+        connection.fireEvent(ChunkDataChangeEvent(connection, this))
     }
 
     override fun log() {

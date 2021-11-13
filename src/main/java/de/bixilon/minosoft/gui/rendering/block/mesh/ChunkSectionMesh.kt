@@ -33,7 +33,7 @@ class ChunkSectionMesh(renderWindow: RenderWindow, initialCacheSize: Int, val ce
             transformedUV.x,
             transformedUV.y,
             Float.fromBits(texture.renderData?.shaderTextureId ?: RenderConstants.DEBUG_TEXTURE_ID),
-            Float.fromBits(tintColor or (light shl 24)), // white
+            Float.fromBits(tintColor or (light shl 24)),
         ))
     }
 

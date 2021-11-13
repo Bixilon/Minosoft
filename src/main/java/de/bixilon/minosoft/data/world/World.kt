@@ -124,9 +124,8 @@ class World(
     }
 
     fun unloadChunk(chunkPosition: Vec2i) {
-        chunks.remove(chunkPosition)?.let {
-            connection.fireEvent(ChunkUnloadEvent(connection, EventInitiators.UNKNOWN, chunkPosition))
-        }
+        val chunk = chunks.remove(chunkPosition) ?: return
+        connection.fireEvent(ChunkUnloadEvent(connection, EventInitiators.UNKNOWN, chunkPosition, chunk))
     }
 
     fun replaceChunk(position: Vec2i, chunk: Chunk) {

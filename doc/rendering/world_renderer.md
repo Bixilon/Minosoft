@@ -25,12 +25,12 @@
   - Respawn
 - texture animations
 - require neighbour chunks loaded
-  - Also don't load if block changes in chunk (e.g. when movement is disabled and walking to chunk border)
+  - Also don't load if block changes in chunk (e.g. when movement is disabled and walking to chunk border and destroying block)
 - View distance
   - Server side
   - Client side
 - Rewrite renderers
-- Check neighbor positions
+- Check neighbour positions
 - Cache biomes
 - "Fast biome" in 19w36a+
 - Improved biome blending

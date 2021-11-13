@@ -44,9 +44,10 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
 import de.bixilon.minosoft.util.KUtil.synchronizedSetOf
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
-import de.bixilon.minosoft.util.KUtil.toSynchronizedMap
 import de.bixilon.minosoft.util.KUtil.unsafeCast
-import de.bixilon.minosoft.util.collections.SynchronizedMap
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
 import de.bixilon.minosoft.util.task.pool.DefaultThreadPool
 import de.bixilon.minosoft.util.task.pool.ThreadPool.Priorities.LOW
 import de.bixilon.minosoft.util.task.pool.ThreadPoolRunnable
@@ -67,18 +68,22 @@ class WorldRenderer(
     private val world: World = connection.world
     private val sectionPreparer: AbstractSectionPreparer = GenericSectionPreparer(renderWindow)
     private val lightMap = LightMap(connection)
-    private val meshes: SynchronizedMap<Vec2i, SynchronizedMap<Int, ChunkSectionMeshes>> = synchronizedMapOf() // all prepared (and up to date) meshes
-    private var incomplete: MutableSet<Vec2i> = synchronizedSetOf() // Queue of chunk positions that can not be rendered yet (data not complete or neighbours not completed yet)
-    private var queue: MutableMap<Vec2i, MutableSet<Int>> = synchronizedMapOf() // Chunk sections that can be prepared or have changed, but are not required to get rendered yet (i.e. culled chunks)
+    private val meshes: MutableMap<Vec2i, MutableMap<Int, ChunkSectionMeshes>> = mutableMapOf() // all prepared (and up to date) meshes
+    private val incomplete: MutableSet<Vec2i> = synchronizedSetOf() // Queue of chunk positions that can not be rendered yet (data not complete or neighbours not completed yet)
+    private val queue: MutableMap<Vec2i, MutableSet<Int>> = mutableMapOf() // Chunk sections that can be prepared or have changed, but are not required to get rendered yet (i.e. culled chunks)
+    //   private val preparingTasks: SynchronizedMap<Vec2i, SynchronizedMap<Int, ThreadPoolRunnable>> = synchronizedMapOf()
 
     private var visibleOpaque: MutableList<ChunkSectionMesh> = mutableListOf()
     private var visibleTranslucent: MutableList<ChunkSectionMesh> = mutableListOf()
     private var visibleTransparent: MutableList<ChunkSectionMesh> = mutableListOf()
 
 
-    val visibleOpaqueSize: Int by visibleOpaque::size
-    val visibleTranslucentSize: Int by visibleTranslucent::size
-    val visibleTransparentSize: Int by visibleTransparent::size
+    val visibleOpaqueSize: Int
+        get() = visibleOpaque.size
+    val visibleTranslucentSize: Int
+        get() = visibleTranslucent.size
+    val visibleTransparentSize: Int
+        get() = visibleTransparent.size
     val preparedSize: Int by meshes::size
     val queuedSize: Int by queue::size
     val incompleteSize: Int by incomplete::size
@@ -117,13 +122,15 @@ class WorldRenderer(
             if (!neighbourChunks.fullyLoaded) {
                 return@of
             }
-            val meshes = meshes.getOrPut(it.chunkPosition) { synchronizedMapOf() }
             val sectionHeights: MutableSet<Int> = mutableSetOf()
             for (blockPosition in it.blocks.keys) {
                 sectionHeights += blockPosition.sectionHeight
             }
-            for (sectionHeight in sectionHeights) {
-                updateSection(it.chunkPosition, sectionHeight, chunk, neighbourChunks.unsafeCast(), meshes)
+            renderWindow.queue += {
+                val meshes = meshes.getOrPut(it.chunkPosition) { synchronizedMapOf() }
+                for (sectionHeight in sectionHeights) {
+                    updateSection(it.chunkPosition, sectionHeight, chunk, neighbourChunks.unsafeCast(), meshes)
+                }
             }
         })
         connection.registerEvent(CallbackEventInvoker.of<ChunkUnloadEvent> { unloadChunk(it.chunkPosition) })
@@ -131,17 +138,18 @@ class WorldRenderer(
 
     private fun unloadChunk(chunkPosition: Vec2i) {
         incomplete -= chunkPosition
-        queue.remove(chunkPosition)
+        renderWindow.queue += { queue.remove(chunkPosition) }
         for (neighbourPosition in getChunkNeighbourPositions(chunkPosition)) {
-            queue.remove(neighbourPosition)
+            renderWindow.queue += { queue.remove(neighbourPosition) }
             world[neighbourPosition] ?: continue // if chunk is not loaded, we don't need to add it to incomplete
             incomplete += neighbourPosition
         }
-        val meshes = this.meshes.remove(chunkPosition) ?: return
-        if (meshes.isEmpty()) {
-            return
-        }
-        renderWindow.queue += {
+        renderWindow.queue += add@{
+            val meshes = this.meshes.remove(chunkPosition) ?: return@add
+            if (meshes.isEmpty()) {
+                return@add
+            }
+
             for (mesh in meshes.values) {
                 removeMesh(mesh)
                 mesh.unload()
@@ -240,21 +248,30 @@ class WorldRenderer(
             return
         }
         incomplete -= chunkPosition
-        val meshes = this.meshes.getOrPut(chunkPosition) { synchronizedMapOf() }
+        renderWindow.queue += {
+            val meshes = this.meshes.getOrPut(chunkPosition) { synchronizedMapOf() }
 
-        for ((sectionHeight, section) in chunk.sections!!) {
-            updateSection(chunkPosition, sectionHeight, chunk, neighbourChunks.unsafeCast(), meshes)
+            for (sectionHeight in chunk.sections!!.keys) {
+                updateSection(chunkPosition, sectionHeight, chunk, neighbourChunks.unsafeCast(), meshes)
+            }
         }
     }
 
-    private fun updateSection(chunkPosition: Vec2i, sectionHeight: Int, chunk: Chunk = world[chunkPosition]!!, neighbourChunks: Array<Chunk> = getChunkNeighbours(getChunkNeighbourPositions(chunkPosition)).unsafeCast(), meshes: SynchronizedMap<Int, ChunkSectionMeshes> = this.meshes.getOrPut(chunkPosition) { synchronizedMapOf() }) {
-        val task = ThreadPoolRunnable(priority = LOW) {
-            updateSectionSync(chunkPosition, sectionHeight, chunk, neighbourChunks, meshes)
+    private fun updateSection(chunkPosition: Vec2i, sectionHeight: Int, chunk: Chunk = world[chunkPosition]!!, neighbourChunks: Array<Chunk> = getChunkNeighbours(getChunkNeighbourPositions(chunkPosition)).unsafeCast(), meshes: MutableMap<Int, ChunkSectionMeshes>? = null) {
+        // val chunkTasks = preparingTasks.getOrPut(chunkPosition) { synchronizedMapOf() }
+        // chunkTasks.remove(sectionHeight)?.interrupt()
+        val task = ThreadPoolRunnable(priority = LOW, interuptable = false) {
+            try {
+                updateSectionSync(chunkPosition, sectionHeight, chunk, neighbourChunks, meshes)
+            } catch (exception: InterruptedException) {
+                Log.log(LogMessageType.RENDERING_GENERAL, LogLevels.WARN) { exception.message!! }
+            }
         }
+        // chunkTasks[sectionHeight] = task
         DefaultThreadPool += task
     }
 
-    private fun updateSectionSync(chunkPosition: Vec2i, sectionHeight: Int, chunk: Chunk, neighbourChunks: Array<Chunk>, meshes: SynchronizedMap<Int, ChunkSectionMeshes>) {
+    private fun updateSectionSync(chunkPosition: Vec2i, sectionHeight: Int, chunk: Chunk, neighbourChunks: Array<Chunk>, meshes: MutableMap<Int, ChunkSectionMeshes>? = null) {
         if (!chunk.isFullyLoaded || chunkPosition in incomplete) {
             // chunk not loaded and/or neighbours also not fully loaded
             return
@@ -262,29 +279,31 @@ class WorldRenderer(
         val section = chunk.sections!![sectionHeight] ?: return
 
         val visible = isChunkVisible(chunkPosition, sectionHeight, Vec3i.EMPTY, Vec3i(16, 16, 16)) // ToDo: min/maxPosition
-        val previousMesh = meshes[sectionHeight]
 
-        if (previousMesh != null && !visible) {
-            meshes.remove(sectionHeight)
-            renderWindow.queue += {
+        renderWindow.queue += {
+            val meshes = meshes ?: this.meshes.getOrPut(chunkPosition) { synchronizedMapOf() }
+            val previousMesh = meshes[sectionHeight]
+            if (previousMesh != null && !visible) {
+                meshes.remove(sectionHeight)
                 removeMesh(previousMesh)
                 previousMesh.unload()
             }
         }
 
         if (visible) {
-            // ToDo: Possible threading issue
-            val sectionQueue = queue[chunkPosition]
-            if (sectionQueue != null) {
-                sectionQueue -= sectionHeight
-                if (sectionQueue.isEmpty()) {
-                    queue.remove(chunkPosition)
+            renderWindow.queue += {
+                val sectionQueue = queue[chunkPosition]
+                if (sectionQueue != null) {
+                    sectionQueue -= sectionHeight
+                    if (sectionQueue.isEmpty()) {
+                        queue.remove(chunkPosition)
+                    }
                 }
             }
             val neighbours = getSectionNeighbours(neighbourChunks, chunk, sectionHeight)
             prepareSection(chunkPosition, sectionHeight, section, neighbours, meshes)
         } else {
-            queue.getOrPut(chunkPosition) { synchronizedSetOf() } += sectionHeight
+            renderWindow.queue += { queue.getOrPut(chunkPosition) { mutableSetOf() } += sectionHeight }
         }
     }
 
@@ -292,12 +311,12 @@ class WorldRenderer(
     /**
      * Preparse a chunk section, loads in (in the renderQueue) and stores it in the meshes. Should run on another thread
      */
-    private fun prepareSection(chunkPosition: Vec2i, sectionHeight: Int, section: ChunkSection, neighbours: Array<ChunkSection?>, meshes: SynchronizedMap<Int, ChunkSectionMeshes> = this.meshes.getOrPut(chunkPosition) { synchronizedMapOf() }) {
+    private fun prepareSection(chunkPosition: Vec2i, sectionHeight: Int, section: ChunkSection, neighbours: Array<ChunkSection?>, meshes: MutableMap<Int, ChunkSectionMeshes>? = null) {
         val mesh = sectionPreparer.prepare(chunkPosition, sectionHeight, section, neighbours)
 
-        val previousMesh = meshes.remove(sectionHeight)
-
         renderWindow.queue += {
+            val meshes = meshes ?: this.meshes.getOrPut(chunkPosition) { synchronizedMapOf() }
+            val previousMesh = meshes.remove(sectionHeight)
             if (previousMesh != null) {
                 removeMesh(previousMesh)
             }
@@ -353,7 +372,7 @@ class WorldRenderer(
         val visibleTranslucent: MutableList<ChunkSectionMesh> = mutableListOf()
         val visibleTransparent: MutableList<ChunkSectionMesh> = mutableListOf()
 
-        for ((chunkPosition, meshes) in this.meshes.toSynchronizedMap()) {
+        for ((chunkPosition, meshes) in this.meshes) {
             for ((sectionHeight, mesh) in meshes) {
                 if (!isChunkVisible(chunkPosition, sectionHeight, mesh.minPosition, mesh.maxPosition)) {
                     continue
@@ -364,10 +383,11 @@ class WorldRenderer(
             }
         }
 
-        for ((chunkPosition, sectionHeights) in this.queue.toSynchronizedMap()) {
+        val removeFromQueue: MutableSet<Vec2i> = mutableSetOf()
+        for ((chunkPosition, sectionHeights) in this.queue) {
             val chunk = world[chunkPosition]
             if (chunk == null || !chunk.isFullyLoaded || chunkPosition in incomplete) {
-                this.queue.remove(chunkPosition)
+                removeFromQueue += chunkPosition
                 continue
             }
             val neighbours = getChunkNeighbours(getChunkNeighbourPositions(chunkPosition))
@@ -376,6 +396,8 @@ class WorldRenderer(
                 updateSection(chunkPosition, sectionHeight, chunk, neighbours.unsafeCast(), meshes)
             }
         }
+        this.queue -= removeFromQueue
+
         val cameraPositionLength = connection.player.cameraPosition.length2()
 
         visibleOpaque.sortBy { it.centerLength - cameraPositionLength }
