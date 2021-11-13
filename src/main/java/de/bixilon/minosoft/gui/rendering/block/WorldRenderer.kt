@@ -35,10 +35,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.phases.TransparentDrawable
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
-import de.bixilon.minosoft.modding.event.events.BlockSetEvent
-import de.bixilon.minosoft.modding.event.events.ChunkDataChangeEvent
-import de.bixilon.minosoft.modding.event.events.ChunkUnloadEvent
-import de.bixilon.minosoft.modding.event.events.MassBlockSetEvent
+import de.bixilon.minosoft.modding.event.events.*
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
@@ -111,6 +108,7 @@ class WorldRenderer(
 
         connection.registerEvent(CallbackEventInvoker.of<FrustumChangeEvent> { onFrustumChange() })
 
+        connection.registerEvent(CallbackEventInvoker.of<RespawnEvent> { unloadWorld() })
         connection.registerEvent(CallbackEventInvoker.of<ChunkDataChangeEvent> { updateChunk(it.chunkPosition, it.chunk, true) })
         connection.registerEvent(CallbackEventInvoker.of<BlockSetEvent> { updateSection(it.blockPosition.chunkPosition, it.blockPosition.sectionHeight) })
         connection.registerEvent(CallbackEventInvoker.of<MassBlockSetEvent> {
@@ -134,6 +132,22 @@ class WorldRenderer(
             }
         })
         connection.registerEvent(CallbackEventInvoker.of<ChunkUnloadEvent> { unloadChunk(it.chunkPosition) })
+    }
+
+    private fun unloadWorld() {
+        renderWindow.queue += {
+            for (sections in meshes.values) {
+                for (mesh in sections.values) {
+                    mesh.unload()
+                }
+            }
+            meshes.clear()
+            incomplete.clear()
+            queue.clear()
+            visibleOpaque.clear()
+            visibleTranslucent.clear()
+            visibleTransparent.clear()
+        }
     }
 
     private fun unloadChunk(chunkPosition: Vec2i) {
