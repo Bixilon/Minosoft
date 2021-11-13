@@ -59,7 +59,7 @@ class Camera(
     val renderWindow: RenderWindow,
 ) {
     var fogColor = Previous(ChatColors.GREEN)
-    var fogStart = 100.0f
+    var fogStart = 1000.0f
     private var mouseSensitivity = Minosoft.config.config.game.controls.moseSensitivity
 
     @Deprecated("", ReplaceWith("connection.player"))

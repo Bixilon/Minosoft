@@ -51,7 +51,7 @@ class CullSectionPreparer(
                         blocks[ChunkSection.getIndex(x, y, z - 1)]
                     }
                     neighbourBlocks[Directions.SOUTH.ordinal] = if (z == ProtocolDefinition.SECTION_MAX_Z) {
-                        neighbours[Directions.NORTH.ordinal]?.blocks?.get(ChunkSection.getIndex(x, y, 0))
+                        neighbours[Directions.SOUTH.ordinal]?.blocks?.get(ChunkSection.getIndex(x, y, 0))
                     } else {
                         blocks[ChunkSection.getIndex(x, y, z + 1)]
                     }
@@ -62,7 +62,7 @@ class CullSectionPreparer(
                         blocks[ChunkSection.getIndex(x - 1, y, z)]
                     }
                     neighbourBlocks[Directions.EAST.ordinal] = if (x == ProtocolDefinition.SECTION_MAX_X) {
-                        neighbours[Directions.WEST.ordinal]?.blocks?.get(ChunkSection.getIndex(0, y, z))
+                        neighbours[Directions.EAST.ordinal]?.blocks?.get(ChunkSection.getIndex(0, y, z))
                     } else {
                         blocks[ChunkSection.getIndex(x + 1, y, z)]
                     }

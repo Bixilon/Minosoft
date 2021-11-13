@@ -147,7 +147,6 @@ class JoinGameS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     }
 
     override fun handle(connection: PlayConnection) {
-        val gamemode = Gamemodes.SPECTATOR
         val playerEntity = connection.player
         val previousGamemode = playerEntity.tabListItem.gamemode
 
