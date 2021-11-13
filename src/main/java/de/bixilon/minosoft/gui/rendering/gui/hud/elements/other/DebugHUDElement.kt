@@ -17,10 +17,9 @@ import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.key.KeyAction
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
-import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.other.game.event.handlers.gamemode.GamemodeChangeGameEventHandler
+import de.bixilon.minosoft.data.registries.other.game.event.handlers.gamemode.GamemodeChangeEvent
 import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.TextComponent
@@ -41,7 +40,6 @@ import de.bixilon.minosoft.gui.rendering.modding.events.ResizeWindowEvent
 import de.bixilon.minosoft.gui.rendering.particle.ParticleRenderer
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import de.bixilon.minosoft.modding.event.events.DifficultyChangeEvent
-import de.bixilon.minosoft.modding.event.events.GameEventChangeEvent
 import de.bixilon.minosoft.modding.event.events.TimeChangeEvent
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.modding.loading.ModLoader
@@ -152,12 +150,8 @@ class DebugHUDElement(hudRenderer: HUDRenderer) : LayoutedHUDElement<GridLayout>
         layout += LineSpacerElement(hudRenderer)
 
         layout += TextElement(hudRenderer, BaseComponent("Gamemode ", connection.player.gamemode)).apply {
-            connection.registerEvent(CallbackEventInvoker.of<GameEventChangeEvent> {
-                if (it.event.resourceLocation != GamemodeChangeGameEventHandler.RESOURCE_LOCATION) {
-                    return@of
-                }
-                // ToDo: Improve game mode change event
-                text = BaseComponent("Gamemode ", Gamemodes[it.data.toInt()])
+            connection.registerEvent(CallbackEventInvoker.of<GamemodeChangeEvent> {
+                text = BaseComponent("Gamemode ", it.gamemode)
             })
         }
 

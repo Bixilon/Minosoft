@@ -231,7 +231,7 @@ class WorldRenderer(
     }
 
     private fun updateSectionSync(chunkPosition: Vec2i, sectionHeight: Int, chunk: Chunk, meshes: SynchronizedMap<Int, ChunkSectionMeshes>) {
-        if (!chunk.isFullyLoaded || incomplete.contains(chunkPosition)) {
+        if (!chunk.isFullyLoaded || chunkPosition in incomplete) {
             // chunk not loaded and/or neighbours also not fully loaded
             return
         }
@@ -339,7 +339,7 @@ class WorldRenderer(
 
         for ((chunkPosition, sectionHeights) in this.queue.toSynchronizedMap()) {
             val chunk = world[chunkPosition]
-            if (chunk == null) {
+            if (chunk == null || !chunk.isFullyLoaded || chunkPosition in incomplete) {
                 this.queue.remove(chunkPosition)
                 continue
             }
