@@ -85,7 +85,7 @@ class DebugHUDElement(hudRenderer: HUDRenderer) : LayoutedHUDElement<GridLayout>
         layout += TextElement(hudRenderer, TextComponent(RunConfiguration.VERSION_STRING, ChatColors.RED))
         layout += AutoTextElement(hudRenderer, 1) { "FPS ${renderWindow.renderStats.smoothAvgFPS.round10}" }
         renderWindow[WorldRenderer]?.apply {
-            layout += AutoTextElement(hudRenderer, 1) { "C v=$visibleSize, p=$preparedSize, q=$queuedSize, i=$incompleteSize, t=${connection.world.chunks.size}" }
+            layout += AutoTextElement(hudRenderer, 1) { "C vO=$visibleOpaqueSize, vP=$visibleTransparentSize, vL=$visibleTranslucentSize, p=$preparedSize, q=$queuedSize, i=$incompleteSize, t=${connection.world.chunks.size}" }
         }
         layout += AutoTextElement(hudRenderer, 1) { "E t=${connection.world.entities.size}" }
 

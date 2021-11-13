@@ -16,7 +16,7 @@ class CullSectionPreparer(
 ) : AbstractSectionPreparer {
 
     override fun prepare(chunkPosition: Vec2i, sectionHeight: Int, section: ChunkSection, neighbours: Array<ChunkSection?>): ChunkSectionMeshes {
-        val mesh = ChunkSectionMeshes(renderWindow)
+        val mesh = ChunkSectionMeshes(renderWindow, chunkPosition, sectionHeight)
         val random = Random(0L)
 
         val blocks = section.blocks

@@ -22,6 +22,7 @@ import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.Renderer
 import de.bixilon.minosoft.gui.rendering.RendererBuilder
+import de.bixilon.minosoft.gui.rendering.block.mesh.ChunkSectionMesh
 import de.bixilon.minosoft.gui.rendering.block.mesh.ChunkSectionMeshes
 import de.bixilon.minosoft.gui.rendering.block.preparer.AbstractSectionPreparer
 import de.bixilon.minosoft.gui.rendering.block.preparer.GenericSectionPreparer
@@ -67,19 +68,20 @@ class WorldRenderer(
     private val sectionPreparer: AbstractSectionPreparer = GenericSectionPreparer(renderWindow)
     private val lightMap = LightMap(connection)
     private val meshes: SynchronizedMap<Vec2i, SynchronizedMap<Int, ChunkSectionMeshes>> = synchronizedMapOf() // all prepared (and up to date) meshes
-    private var visibleMeshes: MutableSet<ChunkSectionMeshes> = mutableSetOf() // ToDo: Split in opaque, transparent, translucent meshes and sort (opaque and transparent front to back, translucent back to front)
     private var incomplete: MutableSet<Vec2i> = synchronizedSetOf() // Queue of chunk positions that can not be rendered yet (data not complete or neighbours not completed yet)
     private var queue: MutableMap<Vec2i, MutableSet<Int>> = synchronizedMapOf() // Chunk sections that can be prepared or have changed, but are not required to get rendered yet (i.e. culled chunks)
 
+    private var visibleOpaque: MutableList<ChunkSectionMesh> = mutableListOf()
+    private var visibleTranslucent: MutableList<ChunkSectionMesh> = mutableListOf()
+    private var visibleTransparent: MutableList<ChunkSectionMesh> = mutableListOf()
 
-    val visibleSize: Int
-        get() = visibleMeshes.size
-    val preparedSize: Int
-        get() = meshes.size
-    val queuedSize: Int
-        get() = queue.size
-    val incompleteSize: Int
-        get() = incomplete.size
+
+    val visibleOpaqueSize: Int by visibleOpaque::size
+    val visibleTranslucentSize: Int by visibleTranslucent::size
+    val visibleTransparentSize: Int by visibleTransparent::size
+    val preparedSize: Int by meshes::size
+    val queuedSize: Int by queue::size
+    val incompleteSize: Int by incomplete::size
 
     override fun init() {
         val asset = Resources.getAssetVersionByVersion(connection.version)
@@ -136,15 +138,27 @@ class WorldRenderer(
             incomplete += neighbourPosition
         }
         val meshes = this.meshes.remove(chunkPosition) ?: return
-        visibleMeshes -= meshes.values
         if (meshes.isEmpty()) {
             return
         }
         renderWindow.queue += {
             for (mesh in meshes.values) {
+                removeMesh(mesh)
                 mesh.unload()
             }
         }
+    }
+
+    private fun removeMesh(mesh: ChunkSectionMeshes) {
+        mesh.opaqueMesh?.let { visibleOpaque -= it }
+        mesh.translucentMesh?.let { visibleTranslucent -= it }
+        mesh.transparentMesh?.let { visibleTransparent -= it }
+    }
+
+    private fun addMesh(mesh: ChunkSectionMeshes) {
+        mesh.opaqueMesh?.let { visibleOpaque += it }
+        mesh.translucentMesh?.let { visibleTranslucent += it }
+        mesh.transparentMesh?.let { visibleTransparent += it }
     }
 
     /**
@@ -186,7 +200,7 @@ class WorldRenderer(
             neighbourChunks[3].sections!![sectionHeight],
             neighbourChunks[4].sections!![sectionHeight],
             neighbourChunks[1].sections!![sectionHeight],
-            neighbourChunks[7].sections!![sectionHeight],
+            neighbourChunks[6].sections!![sectionHeight],
         )
     }
 
@@ -253,7 +267,7 @@ class WorldRenderer(
         if (previousMesh != null && !visible) {
             meshes.remove(sectionHeight)
             renderWindow.queue += {
-                visibleMeshes -= previousMesh
+                removeMesh(previousMesh)
                 previousMesh.unload()
             }
         }
@@ -281,18 +295,17 @@ class WorldRenderer(
     private fun prepareSection(chunkPosition: Vec2i, sectionHeight: Int, section: ChunkSection, neighbours: Array<ChunkSection?>, meshes: SynchronizedMap<Int, ChunkSectionMeshes> = this.meshes.getOrPut(chunkPosition) { synchronizedMapOf() }) {
         val mesh = sectionPreparer.prepare(chunkPosition, sectionHeight, section, neighbours)
 
-        val currentMesh = meshes.remove(sectionHeight)
+        val previousMesh = meshes.remove(sectionHeight)
 
         renderWindow.queue += {
-            if (currentMesh != null) {
-                currentMesh.unload()
-                this.visibleMeshes -= currentMesh
+            if (previousMesh != null) {
+                removeMesh(previousMesh)
             }
 
             mesh.load()
             meshes[sectionHeight] = mesh
             if (isChunkVisible(chunkPosition, sectionHeight, mesh.minPosition, mesh.maxPosition)) {
-                this.visibleMeshes += mesh
+                addMesh(mesh)
             }
         }
     }
@@ -303,8 +316,8 @@ class WorldRenderer(
     }
 
     override fun drawOpaque() {
-        for (mesh in visibleMeshes) {
-            mesh.opaqueMesh?.draw()
+        for (mesh in visibleOpaque) {
+            mesh.draw()
         }
     }
 
@@ -314,8 +327,8 @@ class WorldRenderer(
     }
 
     override fun drawTranslucent() {
-        for (mesh in visibleMeshes) {
-            mesh.translucentMesh?.draw()
+        for (mesh in visibleTranslucent) {
+            mesh.draw()
         }
     }
 
@@ -325,8 +338,8 @@ class WorldRenderer(
     }
 
     override fun drawTransparent() {
-        for (mesh in visibleMeshes) {
-            mesh.transparentMesh?.draw()
+        for (mesh in visibleTransparent) {
+            mesh.draw()
         }
     }
 
@@ -336,14 +349,18 @@ class WorldRenderer(
     }
 
     private fun onFrustumChange() {
-        val visible: MutableSet<ChunkSectionMeshes> = mutableSetOf()
+        val visibleOpaque: MutableList<ChunkSectionMesh> = mutableListOf()
+        val visibleTranslucent: MutableList<ChunkSectionMesh> = mutableListOf()
+        val visibleTransparent: MutableList<ChunkSectionMesh> = mutableListOf()
 
         for ((chunkPosition, meshes) in this.meshes.toSynchronizedMap()) {
             for ((sectionHeight, mesh) in meshes) {
                 if (!isChunkVisible(chunkPosition, sectionHeight, mesh.minPosition, mesh.maxPosition)) {
                     continue
                 }
-                visible += mesh
+                mesh.opaqueMesh?.let { visibleOpaque += it }
+                mesh.translucentMesh?.let { visibleTranslucent += it }
+                mesh.transparentMesh?.let { visibleTransparent += it }
             }
         }
 
@@ -359,8 +376,16 @@ class WorldRenderer(
                 updateSection(chunkPosition, sectionHeight, chunk, neighbours.unsafeCast(), meshes)
             }
         }
+        val cameraPositionLength = connection.player.cameraPosition.length2()
 
-        this.visibleMeshes = visible
+        visibleOpaque.sortBy { it.centerLength - cameraPositionLength }
+        this.visibleOpaque = visibleOpaque
+
+        visibleTranslucent.sortBy { cameraPositionLength - it.centerLength }
+        this.visibleTranslucent = visibleTranslucent
+
+        visibleTransparent.sortBy { it.centerLength - cameraPositionLength }
+        this.visibleTransparent = visibleTransparent
     }
 
 

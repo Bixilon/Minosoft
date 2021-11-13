@@ -14,16 +14,22 @@
 package de.bixilon.minosoft.gui.rendering.block.mesh
 
 import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.of
+import glm_.vec2.Vec2i
+import glm_.vec3.Vec3d
 import glm_.vec3.Vec3i
 
 class ChunkSectionMeshes(
     renderWindow: RenderWindow,
+    chunkPosition: Vec2i,
+    sectionHeight: Int,
 ) {
-    var opaqueMesh: ChunkSectionMesh? = ChunkSectionMesh(renderWindow)
+    private val centerLength = Vec3d(Vec3i.of(chunkPosition, sectionHeight, Vec3i(8, 8, 8))).length2()
+    var opaqueMesh: ChunkSectionMesh? = ChunkSectionMesh(renderWindow, 200000, centerLength)
         private set
-    var translucentMesh: ChunkSectionMesh? = ChunkSectionMesh(renderWindow)
+    var translucentMesh: ChunkSectionMesh? = ChunkSectionMesh(renderWindow, 100000, centerLength)
         private set
-    var transparentMesh: ChunkSectionMesh? = ChunkSectionMesh(renderWindow)
+    var transparentMesh: ChunkSectionMesh? = ChunkSectionMesh(renderWindow, 100000, centerLength)
         private set
 
     // used for frustum culling

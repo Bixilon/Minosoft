@@ -37,8 +37,9 @@ class GreedySectionPreparer(
 
 
     // base taken from https://0fps.net/2012/06/30/meshing-in-a-minecraft-game/
+    @Deprecated("TODO")
     override fun prepare(chunkPosition: Vec2i, sectionHeight: Int, section: ChunkSection, neighbours: Array<ChunkSection?>): ChunkSectionMeshes {
-        val mesh = ChunkSectionMesh(renderWindow)
+        val mesh = ChunkSectionMesh(renderWindow, 20000, 0.0)
 
         val random = Random(0L)
 
