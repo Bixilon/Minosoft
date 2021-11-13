@@ -69,6 +69,8 @@ class ModelLoader(
     }
 
     private fun cleanup() {
+        unbakedBlockModels.clear()
+        unbakedBlockStateModels.clear()
         modelJsons.clear()
         blockStateJsons.clear()
     }

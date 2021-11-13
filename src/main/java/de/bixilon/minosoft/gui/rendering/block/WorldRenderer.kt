@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.block
 
+import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.assets.AssetsUtil
 import de.bixilon.minosoft.data.assets.Resources
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -34,6 +35,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.phases.TranslucentDrawable
 import de.bixilon.minosoft.gui.rendering.system.base.phases.TransparentDrawable
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.abs
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
 import de.bixilon.minosoft.modding.event.events.*
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
@@ -377,6 +379,13 @@ class WorldRenderer(
     }
 
     private fun isChunkVisible(chunkPosition: Vec2i, sectionHeight: Int, minPosition: Vec3i, maxPosition: Vec3i): Boolean {
+        val viewDistance = Minosoft.config.config.game.camera.viewDistance
+        val cameraChunkPosition = renderWindow.connection.player.positionInfo.chunkPosition
+        val delta = (chunkPosition - cameraChunkPosition).abs
+
+        if (delta.x >= viewDistance || delta.y >= viewDistance) {
+            return false
+        }
         // ToDo: Cave culling, frustum clipping, improve performance
         return frustum.containsChunk(chunkPosition, sectionHeight, minPosition, maxPosition)
     }

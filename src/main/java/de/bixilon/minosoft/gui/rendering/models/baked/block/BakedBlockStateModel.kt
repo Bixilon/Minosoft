@@ -20,6 +20,8 @@ import de.bixilon.minosoft.gui.rendering.block.mesh.ChunkSectionMesh
 import de.bixilon.minosoft.gui.rendering.block.mesh.ChunkSectionMeshes
 import de.bixilon.minosoft.gui.rendering.models.CullUtil.canCull
 import de.bixilon.minosoft.gui.rendering.models.FaceProperties
+import de.bixilon.minosoft.gui.rendering.util.VecUtil
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.getWorldOffset
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.toVec3
 import glm_.vec3.Vec3i
 import java.util.*
@@ -36,7 +38,11 @@ class BakedBlockStateModel(
     }
 
     override fun singleRender(position: Vec3i, mesh: ChunkSectionMeshes, random: Random, blockState: BlockState, neighbours: Array<BlockState?>, light: Int, ambientLight: FloatArray): Boolean {
-        val floatPosition = position.toVec3().array
+        val floatPosition = position.toVec3()
+        blockState.block.randomOffsetType?.let {
+            floatPosition += position.getWorldOffset(blockState.block)
+        }
+        val positionArray = floatPosition.array
         var rendered = false
         for ((index, faces) in faces.withIndex()) {
             val direction = Directions.VALUES[index]
@@ -44,14 +50,14 @@ class BakedBlockStateModel(
             val neighboursModel = neighbour?.model
             var neighbourProperties: Array<FaceProperties>? = null
             if (neighboursModel != null) {
-                random.setSeed(0L) // ToDo
+                random.setSeed(VecUtil.generatePositionHash(position.x + direction.vector.x, position.y + direction.vector.y, position.z + direction.vector.z))
                 neighbourProperties = neighboursModel.getTouchingFaceProperties(random, direction.inverted)
             }
             for (face in faces) {
                 if (face.touching && neighbourProperties != null && neighbourProperties.isNotEmpty() && neighbourProperties.canCull(face, blockState == neighbour)) {
                     continue
                 }
-                face.singleRender(floatPosition, mesh, light, ambientLight)
+                face.singleRender(positionArray, mesh, light, ambientLight)
                 if (!rendered) {
                     rendered = true
                 }

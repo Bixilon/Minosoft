@@ -16,7 +16,7 @@ package de.bixilon.minosoft.config.config.game
 import com.squareup.moshi.Json
 
 data class CameraGameConfig(
-    @Json(name = "render_distance") var renderDistance: Int = 10,
+    @Json(name = "view_distance") var viewDistance: Int = 10,
     var fov: Double = 60.0,
     @Json(name = "dynamic_fov") var dynamicFov: Boolean = true,
     @Json(name = "no_clip_movement") var noCipMovement: Boolean = false,

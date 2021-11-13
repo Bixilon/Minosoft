@@ -13,6 +13,7 @@
 package de.bixilon.minosoft.protocol.packets.s2c.play
 
 import com.google.common.collect.HashBiMap
+import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.Difficulties
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.registries.DefaultRegistries
@@ -168,7 +169,7 @@ class JoinGameS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
             NoiseBiomeAccessor(connection.world)
         }
         TimeWorker.addTask(TimeWorkerTask(150, true) { // ToDo: Temp workaround
-            connection.sendPacket(ClientSettingsC2SP())
+            connection.sendPacket(ClientSettingsC2SP(viewDistance = Minosoft.config.config.game.camera.viewDistance))
 
             val brandName = DefaultRegistries.DEFAULT_PLUGIN_CHANNELS_REGISTRY.forVersion(connection.version)[DefaultPluginChannels.BRAND]!!.resourceLocation
             val buffer = PlayOutByteBuffer(connection)

@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.particle
 
+import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
@@ -101,8 +102,12 @@ class ParticleRenderer(
         connection.world.particleRenderer = this
 
         particleTask = TimeWorker.addTask(TimeWorkerTask(ProtocolDefinition.TICK_TIME, maxDelayTime = ProtocolDefinition.TICK_TIME / 2) {
+            val cameraLength = connection.player.position.length()
             synchronized(particles) {
                 for (particle in particles) {
+                    if (particle.position.length() - cameraLength >= Minosoft.config.config.game.camera.viewDistance * ProtocolDefinition.SECTION_WIDTH_X) {
+                        particle.dead = true
+                    }
                     particle.tryTick()
                 }
             }
@@ -122,6 +127,13 @@ class ParticleRenderer(
             Log.log(LogMessageType.RENDERING_GENERAL, LogLevels.WARN) { "Can not add particle: Limit reached (${particleCount} > ${RenderConstants.MAXIMUM_PARTICLE_AMOUNT}" }
             return
         }
+        val cameraLength = connection.player.position.length()
+
+        if (particle.position.length() - cameraLength >= Minosoft.config.config.game.camera.viewDistance * ProtocolDefinition.SECTION_WIDTH_X) {
+            particle.dead = true
+            return
+        }
+
         synchronized(particleQueue) {
             particleQueue += particle
         }

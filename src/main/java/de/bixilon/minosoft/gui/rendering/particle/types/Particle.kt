@@ -135,11 +135,11 @@ abstract class Particle(
     }
 
     fun tryTick() {
-        val currentTime = System.currentTimeMillis()
-
         if (dead) {
             return
         }
+
+        val currentTime = System.currentTimeMillis()
 
         if (lastTickTime == -1L) {
             lastTickTime = System.currentTimeMillis()

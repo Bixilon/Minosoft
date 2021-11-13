@@ -63,6 +63,9 @@ object Vec2iUtil {
     val Vec2i.rad: Vec2
         get() = Vec2(x.rad, y.rad)
 
+    val Vec2i.abs: Vec2i
+        get() = Vec2i(kotlin.math.abs(x), kotlin.math.abs(y))
+
     operator fun Vec2i.get(axis: Axes): Int {
         return when (axis) {
             Axes.X -> x

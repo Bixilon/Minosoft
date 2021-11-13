@@ -59,7 +59,7 @@ class Camera(
     val renderWindow: RenderWindow,
 ) {
     var fogColor = Previous(ChatColors.GREEN)
-    var fogStart = 100.0f
+    var fogStart = Minosoft.config.config.game.camera.viewDistance * ProtocolDefinition.SECTION_WIDTH_X.toFloat() // ToDo
     private var mouseSensitivity = Minosoft.config.config.game.controls.moseSensitivity
 
     @Deprecated("", ReplaceWith("connection.player"))
@@ -137,8 +137,7 @@ class Camera(
         fogStart = if (connection.player.submergedFluid?.resourceLocation == DefaultFluids.WATER) {
             10.0f
         } else {
-            val renderDistance = 10 // ToDo: Calculate correct, get real render distance
-            (renderDistance * ProtocolDefinition.SECTION_WIDTH_X).toFloat()
+            Minosoft.config.config.game.camera.viewDistance * ProtocolDefinition.SECTION_WIDTH_X.toFloat() // ToDO
         }
     }
 
@@ -304,7 +303,7 @@ class Camera(
     }
 
     private fun calculateProjectionMatrix(screenDimensions: Vec2): Mat4d {
-        return glm.perspective(fov.rad, screenDimensions.x.toDouble() / screenDimensions.y, 0.1, 1000.0)
+        return glm.perspective(fov.rad, screenDimensions.x.toDouble() / screenDimensions.y, 0.01, 10000.0)
     }
 
     private fun calculateViewMatrix(): Mat4d {
