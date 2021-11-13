@@ -15,7 +15,6 @@ package de.bixilon.minosoft.data.direction
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.registries.blocks.properties.serializer.BlockPropertiesSerializer
 import de.bixilon.minosoft.data.text.ChatColors
-import de.bixilon.minosoft.gui.rendering.models.FaceSize
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.get
 import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.enum.ValuesEnum
@@ -82,11 +81,11 @@ enum class Directions(
         }
     }
 
-    fun getSize(from: Vec3, to: Vec3): FaceSize {
+    fun getSize(from: Vec3, to: Vec3): Pair<Vec2, Vec2> {
         return when (this) {
-            DOWN, UP -> FaceSize(from.xz, to.xz)
-            NORTH, SOUTH -> FaceSize(from.xy, to.xy)
-            WEST, EAST -> FaceSize(from.yz, to.yz)
+            DOWN, UP -> Pair(from.xz, to.xz)
+            NORTH, SOUTH -> Pair(from.xy, to.xy)
+            WEST, EAST -> Pair(from.yz, to.yz)
         }
     }
 

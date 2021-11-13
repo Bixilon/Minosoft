@@ -1,14 +1,18 @@
 package de.bixilon.minosoft.gui.rendering.models
 
+import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
+
 object CullUtil {
 
-    fun Array<FaceSize>.canCull(size: FaceSize): Boolean {
-        for (faceSize in this) {
+    fun Array<FaceProperties>.canCull(properties: FaceProperties, sameBlock: Boolean): Boolean {
+        for (property in this) {
             if (
-                faceSize.start.x <= size.start.x
-                && faceSize.start.y <= size.start.y
-                && faceSize.end.x >= size.end.x
-                && faceSize.end.y >= size.end.y
+                property.sizeStart.x <= properties.sizeStart.x
+                && property.sizeStart.y <= properties.sizeStart.y
+                && property.sizeEnd.x >= properties.sizeEnd.x
+                && property.sizeEnd.y >= properties.sizeEnd.y
+                && !((properties.transparency == TextureTransparencies.OPAQUE && property.transparency != TextureTransparencies.OPAQUE)
+                        || (properties.transparency != TextureTransparencies.OPAQUE && property.transparency == properties.transparency && !sameBlock))
             ) {
                 return true
             }

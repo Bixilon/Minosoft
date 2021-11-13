@@ -2,7 +2,7 @@ package de.bixilon.minosoft.gui.rendering.models.unbaked.block
 
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.models.FaceSize
+import de.bixilon.minosoft.gui.rendering.models.FaceProperties
 import de.bixilon.minosoft.gui.rendering.models.baked.BakedModel
 import de.bixilon.minosoft.gui.rendering.models.baked.MultipartBakedModel
 import de.bixilon.minosoft.gui.rendering.models.baked.block.BakedBlockModel
@@ -16,16 +16,16 @@ class UnbakedMultipartModel(
 
     override fun bake(renderWindow: RenderWindow): BakedModel {
         val baked: Array<BakedBlockModel?> = arrayOfNulls(this.models.size)
-        val sizes: Array<MutableList<FaceSize>> = Array(Directions.SIZE) { mutableListOf() }
+        val sizes: Array<MutableList<FaceProperties>> = Array(Directions.SIZE) { mutableListOf() }
 
         for ((index, model) in this.models.withIndex()) {
             val bakedModel = model.bake(renderWindow)
             for (direction in Directions.VALUES) {
-                sizes[direction.ordinal] += bakedModel.getSize(RANDOM, direction) // There is no random here!
+                sizes[direction.ordinal] += bakedModel.getTouchingFaceProperties(RANDOM, direction) // There is no random here!
             }
             baked[index] = bakedModel
         }
-        val finalFaces: Array<Array<FaceSize>?> = arrayOfNulls(Directions.SIZE)
+        val finalFaces: Array<Array<FaceProperties>?> = arrayOfNulls(Directions.SIZE)
         for (index in 0 until Directions.SIZE) {
             finalFaces[index] = sizes[index].toTypedArray()
         }

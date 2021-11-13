@@ -17,17 +17,17 @@ import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.world.light.LightAccessor
 import de.bixilon.minosoft.gui.rendering.block.mesh.ChunkSectionMeshes
-import de.bixilon.minosoft.gui.rendering.models.FaceSize
+import de.bixilon.minosoft.gui.rendering.models.FaceProperties
 import de.bixilon.minosoft.gui.rendering.models.baked.block.BakedBlockModel
 import glm_.vec3.Vec3i
 import java.util.*
 
 class MultipartBakedModel(
     val models: Array<BakedBlockModel>,
-    val sizes: Array<Array<FaceSize>>,
+    val sizes: Array<Array<FaceProperties>>,
 ) : BakedBlockModel {
 
-    override fun getSize(random: Random, direction: Directions): Array<FaceSize> {
+    override fun getTouchingFaceProperties(random: Random, direction: Directions): Array<FaceProperties> {
         return sizes[direction.ordinal]
     }
 
@@ -35,10 +35,10 @@ class MultipartBakedModel(
         return 0xFF
     }
 
-    override fun singleRender(position: Vec3i, mesh: ChunkSectionMeshes, random: Random, neighbours: Array<BlockState?>, light: Int, ambientLight: FloatArray): Boolean {
+    override fun singleRender(position: Vec3i, mesh: ChunkSectionMeshes, random: Random, blockState: BlockState, neighbours: Array<BlockState?>, light: Int, ambientLight: FloatArray): Boolean {
         var rendered = false
         for (model in models) {
-            if (model.singleRender(position, mesh, random, neighbours, light, ambientLight) && !rendered) {
+            if (model.singleRender(position, mesh, random, blockState, neighbours, light, ambientLight) && !rendered) {
                 rendered = true
             }
         }

@@ -13,9 +13,11 @@
 
 package de.bixilon.minosoft.gui.rendering.models
 
+import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
 import glm_.vec2.Vec2
 
-class FaceSize(
-    val start: Vec2,
-    val end: Vec2,
-)
+interface FaceProperties {
+    val sizeStart: Vec2
+    val sizeEnd: Vec2
+    val transparency: TextureTransparencies
+}

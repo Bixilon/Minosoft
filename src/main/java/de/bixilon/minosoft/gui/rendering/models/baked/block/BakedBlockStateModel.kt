@@ -19,35 +19,36 @@ import de.bixilon.minosoft.data.world.light.LightAccessor
 import de.bixilon.minosoft.gui.rendering.block.mesh.ChunkSectionMesh
 import de.bixilon.minosoft.gui.rendering.block.mesh.ChunkSectionMeshes
 import de.bixilon.minosoft.gui.rendering.models.CullUtil.canCull
-import de.bixilon.minosoft.gui.rendering.models.FaceSize
+import de.bixilon.minosoft.gui.rendering.models.FaceProperties
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.toVec3
 import glm_.vec3.Vec3i
 import java.util.*
 
 class BakedBlockStateModel(
-    val faces: Array<Array<BakedFace>>,
-    val sizes: Array<Array<FaceSize>>,
+    private val faces: Array<Array<BakedFace>>,
+    private val touchingFaceProperties: Array<Array<FaceProperties>>,
 ) : BakedBlockModel, GreedyBakedBlockModel { // ToDo: Greedy meshable
     override val canGreedyMesh: Boolean = true
     override val greedyMeshableFaces: BooleanArray = booleanArrayOf(true, false, true, true, true, true)
 
-    override fun getSize(random: Random, direction: Directions): Array<FaceSize> {
-        return sizes[direction.ordinal]
+    override fun getTouchingFaceProperties(random: Random, direction: Directions): Array<FaceProperties> {
+        return touchingFaceProperties[direction.ordinal]
     }
 
-    override fun singleRender(position: Vec3i, mesh: ChunkSectionMeshes, random: Random, neighbours: Array<BlockState?>, light: Int, ambientLight: FloatArray): Boolean {
+    override fun singleRender(position: Vec3i, mesh: ChunkSectionMeshes, random: Random, blockState: BlockState, neighbours: Array<BlockState?>, light: Int, ambientLight: FloatArray): Boolean {
         val floatPosition = position.toVec3().array
         var rendered = false
         for ((index, faces) in faces.withIndex()) {
             val direction = Directions.VALUES[index]
-            val neighbour = neighbours[index]?.model
-            var neighbourSize: Array<FaceSize>? = null
-            if (neighbour != null) {
+            val neighbour = neighbours[index]
+            val neighboursModel = neighbour?.model
+            var neighbourProperties: Array<FaceProperties>? = null
+            if (neighboursModel != null) {
                 random.setSeed(0L) // ToDo
-                neighbourSize = neighbour.getSize(random, direction.inverted)
+                neighbourProperties = neighboursModel.getTouchingFaceProperties(random, direction.inverted)
             }
             for (face in faces) {
-                if (face.touching && neighbourSize != null && neighbourSize.isNotEmpty() && neighbourSize.canCull(face.faceSize)) {
+                if (face.touching && neighbourProperties != null && neighbourProperties.isNotEmpty() && neighbourProperties.canCull(face, blockState == neighbour)) {
                     continue
                 }
                 face.singleRender(floatPosition, mesh, light, ambientLight)

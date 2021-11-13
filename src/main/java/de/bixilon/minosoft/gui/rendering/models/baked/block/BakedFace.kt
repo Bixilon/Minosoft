@@ -17,7 +17,7 @@ import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.gui.rendering.block.mesh.ChunkSectionMesh
 import de.bixilon.minosoft.gui.rendering.block.mesh.ChunkSectionMeshes
-import de.bixilon.minosoft.gui.rendering.models.FaceSize
+import de.bixilon.minosoft.gui.rendering.models.FaceProperties
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
@@ -27,7 +27,8 @@ import glm_.vec2.Vec2
 import glm_.vec3.Vec3
 
 class BakedFace(
-    val faceSize: FaceSize,
+    override val sizeStart: Vec2,
+    override val sizeEnd: Vec2,
     val positions: Array<Vec3>,
     val uv: Array<Vec2>,
     val shade: Float,
@@ -35,7 +36,10 @@ class BakedFace(
     val cullFace: Directions?,
     val texture: AbstractTexture,
     val touching: Boolean,
-) {
+) : FaceProperties {
+    override val transparency: TextureTransparencies
+        get() = texture.transparency // ToDo
+
     fun singleRender(position: FloatArray, mesh: ChunkSectionMeshes, light: Int, ambientLight: FloatArray) {
         val meshToUse = when (texture.transparency) {
             TextureTransparencies.OPAQUE -> mesh.opaqueMesh

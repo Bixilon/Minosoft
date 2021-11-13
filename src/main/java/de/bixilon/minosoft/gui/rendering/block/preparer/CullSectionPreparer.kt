@@ -14,6 +14,7 @@ import java.util.*
 class CullSectionPreparer(
     val renderWindow: RenderWindow,
 ) : AbstractSectionPreparer {
+    private val ambientLight = floatArrayOf(1.0f, 1.0f, 1.0f, 1.0f)
 
     override fun prepare(chunkPosition: Vec2i, sectionHeight: Int, section: ChunkSection, neighbours: Array<ChunkSection?>): ChunkSectionMeshes {
         val mesh = ChunkSectionMeshes(renderWindow, chunkPosition, sectionHeight)
@@ -69,7 +70,7 @@ class CullSectionPreparer(
 
                     val position = Vec3i(offsetX + x, offsetY + y, offsetZ + z)
                     random.setSeed(VecUtil.generatePositionHash(position.x, position.y, position.z))
-                    val rendered = model.singleRender(position, mesh, random, neighbourBlocks, 0xFF, floatArrayOf(1.0f, 1.0f, 1.0f, 1.0f))
+                    val rendered = model.singleRender(position, mesh, random, block, neighbourBlocks, 0xFF, ambientLight)
                     if (rendered) {
                         mesh.addBlock(x, y, z)
                     }

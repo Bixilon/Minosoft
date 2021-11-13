@@ -17,7 +17,7 @@ import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.models.FaceSize
+import de.bixilon.minosoft.gui.rendering.models.FaceProperties
 import de.bixilon.minosoft.gui.rendering.models.baked.block.BakedBlockModel
 import de.bixilon.minosoft.gui.rendering.models.baked.block.BakedBlockStateModel
 import de.bixilon.minosoft.gui.rendering.models.baked.block.BakedFace
@@ -84,7 +84,7 @@ data class UnbakedBlockStateModel(
 
 
         val faces: Array<MutableList<BakedFace>> = Array(Directions.SIZE) { mutableListOf() }
-        val sizes: Array<MutableList<FaceSize>> = Array(Directions.SIZE) { mutableListOf() }
+        val touchingFaceProperties: Array<MutableList<FaceProperties>> = Array(Directions.SIZE) { mutableListOf() }
 
         for (element in model.elements) {
             val rescale = element.rotation?.rescale ?: false
@@ -129,11 +129,8 @@ data class UnbakedBlockStateModel(
                     }
                 }
 
-                val size = face.direction.getSize(element.from, element.to)
+                val (sizeStart, sizeEnd) = face.direction.getSize(element.from, element.to)
                 val touching = (if (face.direction.negative) element.from[face.direction.axis] else element.to[face.direction.axis] - 1.0f) == 0.0f
-                if (touching) {
-                    sizes[direction.ordinal] += size
-                }
                 var shade = 1.0f
                 if (element.shade) {
                     shade = when (direction) {
@@ -143,8 +140,9 @@ data class UnbakedBlockStateModel(
                         Directions.WEST, Directions.EAST -> 0.6f
                     }
                 }
-                faces[direction.ordinal] += BakedFace(
-                    faceSize = size,
+                val bakedFace = BakedFace(
+                    sizeStart = sizeStart,
+                    sizeEnd = sizeEnd,
                     positions = positions,
                     uv = texturePositions,
                     shade = shade,
@@ -153,21 +151,25 @@ data class UnbakedBlockStateModel(
                     texture = texture,
                     touching = touching,
                 )
+
+                faces[direction.ordinal] += bakedFace
+                if (touching) {
+                    touchingFaceProperties[direction.ordinal] += bakedFace
+                }
             }
         }
 
         val finalFaces: Array<Array<BakedFace>?> = arrayOfNulls(faces.size)
-
         for ((index, faceArray) in faces.withIndex()) {
             finalFaces[index] = faceArray.toTypedArray()
         }
-        val finalSizes: Array<Array<FaceSize>?> = arrayOfNulls(faces.size)
 
-        for ((index, sizeArray) in sizes.withIndex()) {
-            finalSizes[index] = sizeArray.toTypedArray()
+        val finalTouchingProperties: Array<Array<FaceProperties>?> = arrayOfNulls(faces.size)
+        for ((index, sizeArray) in touchingFaceProperties.withIndex()) {
+            finalTouchingProperties[index] = sizeArray.toTypedArray()
         }
 
-        val baked = BakedBlockStateModel(finalFaces.unsafeCast(), finalSizes.unsafeCast())
+        val baked = BakedBlockStateModel(finalFaces.unsafeCast(), finalTouchingProperties.unsafeCast())
         this.baked = baked
         return baked
     }

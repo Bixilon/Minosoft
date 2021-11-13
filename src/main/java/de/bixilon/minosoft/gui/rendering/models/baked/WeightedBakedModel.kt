@@ -17,7 +17,7 @@ import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.world.light.LightAccessor
 import de.bixilon.minosoft.gui.rendering.block.mesh.ChunkSectionMeshes
-import de.bixilon.minosoft.gui.rendering.models.FaceSize
+import de.bixilon.minosoft.gui.rendering.models.FaceProperties
 import de.bixilon.minosoft.gui.rendering.models.baked.block.BakedBlockModel
 import glm_.vec3.Vec3i
 import java.util.*
@@ -37,8 +37,8 @@ class WeightedBakedModel(
         this.totalWeight = totalWeight
     }
 
-    override fun getSize(random: Random, direction: Directions): Array<FaceSize> {
-        return getModel(random).getSize(random, direction)
+    override fun getTouchingFaceProperties(random: Random, direction: Directions): Array<FaceProperties> {
+        return getModel(random).getTouchingFaceProperties(random, direction)
     }
 
     private fun getModel(random: Random): BakedBlockModel {
@@ -60,8 +60,8 @@ class WeightedBakedModel(
         return getModel(random).getLight(position, random, side, lightAccessor)
     }
 
-    override fun singleRender(position: Vec3i, mesh: ChunkSectionMeshes, random: Random, neighbours: Array<BlockState?>, light: Int, ambientLight: FloatArray): Boolean {
-        return getModel(random).singleRender(position, mesh, random, neighbours, light, ambientLight)
+    override fun singleRender(position: Vec3i, mesh: ChunkSectionMeshes, random: Random, blockState: BlockState, neighbours: Array<BlockState?>, light: Int, ambientLight: FloatArray): Boolean {
+        return getModel(random).singleRender(position, mesh, random, blockState, neighbours, light, ambientLight)
     }
 
 }
