@@ -29,10 +29,10 @@ data class UnbakedElementFace(
     val tintIndex: Int,
 ) {
     companion object {
-        operator fun invoke(direction: Directions, data: Map<String, Any>): UnbakedElementFace {
+        operator fun invoke(direction: Directions, data: Map<String, Any>, fallbackUvStart: Vec2, fallbackUvEnd: Vec2): UnbakedElementFace {
             val uv = data["uv"]?.listCast<Number>()
-            val uvStart = Vec2(uv?.get(0) ?: 0.0f, uv?.get(1) ?: 0.0f) / BLOCK_RESOLUTION
-            val uvEnd = Vec2(uv?.get(2) ?: 16.0f, uv?.get(3) ?: 16.0f) / BLOCK_RESOLUTION
+            val uvStart = uv?.let { Vec2(it[0], it[1]) / BLOCK_RESOLUTION } ?: fallbackUvStart
+            val uvEnd = uv?.let { Vec2(it[2], it[3]) / BLOCK_RESOLUTION } ?: fallbackUvEnd
 
             return UnbakedElementFace(
                 direction = direction,

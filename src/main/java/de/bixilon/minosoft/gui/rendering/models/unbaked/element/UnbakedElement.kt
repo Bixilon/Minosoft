@@ -34,16 +34,20 @@ data class UnbakedElement(
 
         operator fun invoke(data: Map<String, Any>): UnbakedElement {
             val faces: MutableSet<UnbakedElementFace> = mutableSetOf()
+            val from = data["from"].toVec3() / BLOCK_RESOLUTION
+            val to = data["to"].toVec3() / BLOCK_RESOLUTION
 
             data["faces"].asCompound().let {
-                for ((direction, faceData) in it) {
-                    faces += UnbakedElementFace(direction = Directions[direction], data = faceData.unsafeCast())
+                for ((directionString, faceData) in it) {
+                    val direction = Directions[directionString]
+                    val (fallbackUVStart, fallbackUVEnd) = direction.getSize(from, to)
+                    faces += UnbakedElementFace(direction, faceData.unsafeCast(), fallbackUVStart, fallbackUVEnd)
                 }
             }
 
             return UnbakedElement(
-                from = data["from"].toVec3() / BLOCK_RESOLUTION,
-                to = data["to"].toVec3() / BLOCK_RESOLUTION,
+                from = from,
+                to = to,
                 rotation = data["rotation"]?.compoundCast()?.let { return@let UnbakedElementRotation(data = it) },
                 shade = data["shade"]?.toBoolean() ?: true,
                 faces = faces,
