@@ -15,7 +15,6 @@ package de.bixilon.minosoft.data.world.biome.source
 
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import glm_.vec3.Vec3i
 
 class XZBiomeArray(private val biomes: Array<Biome>) : BiomeSource {
 
@@ -23,7 +22,7 @@ class XZBiomeArray(private val biomes: Array<Biome>) : BiomeSource {
         check(biomes.size == ProtocolDefinition.SECTION_WIDTH_X * ProtocolDefinition.SECTION_WIDTH_Z) { "Biome array size does not match the xz block count!" }
     }
 
-    override fun getBiome(position: Vec3i): Biome {
-        return biomes[(position.x and 0x0F) or ((position.z and 0x0F) shl 4)]
+    override fun getBiome(x: Int, y: Int, z: Int): Biome {
+        return biomes[(x and 0x0F) or ((z and 0x0F) shl 4)]
     }
 }

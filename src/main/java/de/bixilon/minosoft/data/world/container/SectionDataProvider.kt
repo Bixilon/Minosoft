@@ -24,6 +24,8 @@ open class SectionDataProvider<T>(
     protected val lock = SemaphoreLock() // lock while reading (blocks writing)
     var count: Int = 0
         private set
+    val isEmpty: Boolean
+        get() = count == 0
 
     init {
         recalculateCount()

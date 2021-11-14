@@ -258,6 +258,14 @@ object VecUtil {
     val Vec3i.center: Vec3d
         get() = Vec3d(x + 0.5, y + 0.5, z + 0.5)
 
+    fun Vec3i.Companion.of(chunkPosition: Vec2i, sectionHeight: Int): Vec3i {
+        return Vec3i(
+            chunkPosition.x * ProtocolDefinition.SECTION_WIDTH_X,
+            sectionHeight * ProtocolDefinition.SECTION_HEIGHT_Y,
+            chunkPosition.y * ProtocolDefinition.SECTION_WIDTH_Z
+        ) // ToDo: Confirm
+    }
+
     fun Vec3i.Companion.of(chunkPosition: Vec2i, sectionHeight: Int, inChunkSectionPosition: Vec3i): Vec3i {
         return Vec3i(
             chunkPosition.x * ProtocolDefinition.SECTION_WIDTH_X + inChunkSectionPosition.x,

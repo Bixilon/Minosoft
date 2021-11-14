@@ -169,6 +169,7 @@ class Chunk(
 
     fun buildBiomeCache() {
         val cacheBiomeAccessor = connection.world.cacheBiomeAccessor ?: return
+        check(!biomesInitialized) { "Biome cache already initialized!" }
         check(neighboursLoaded)
         // val neighbours = connection.world.getChunkNeighbours(chunkPosition)
         for ((sectionIndex, section) in sections!!.withIndex()) {
@@ -186,8 +187,17 @@ class Chunk(
 
     override fun getBiome(blockPosition: Vec3i): Biome? {
         if (connection.world.cacheBiomeAccessor != null) {
-            return get(blockPosition.sectionHeight)?.biomes?.get(blockPosition.x, blockPosition.sectionHeight, blockPosition.z)
+            val sectionHeight = blockPosition.sectionHeight
+            return get(sectionHeight)?.biomes?.get(blockPosition.x, sectionHeight, blockPosition.z)
         }
         return biomeSource?.getBiome(blockPosition.inChunkPosition)
+    }
+
+    override fun getBiome(x: Int, y: Int, z: Int): Biome? {
+        if (connection.world.cacheBiomeAccessor != null) {
+            val sectionHeight = y.sectionHeight
+            return get(sectionHeight)?.biomes?.get(x, sectionHeight, z)
+        }
+        return biomeSource?.getBiome(x and 0x0F, y, z and 0x0F)
     }
 }

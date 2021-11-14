@@ -21,6 +21,10 @@ import glm_.vec3.Vec3i
 
 class WorldBiomeAccessor(val world: World) : BiomeAccessor {
 
+    override fun getBiome(x: Int, y: Int, z: Int): Biome? {
+        return getBiome(Vec3i(x, y, z)) // ToDo
+    }
+
     override fun getBiome(blockPosition: Vec3i): Biome? {
         return world[blockPosition.chunkPosition]?.getBiome(blockPosition.inChunkPosition)
     }

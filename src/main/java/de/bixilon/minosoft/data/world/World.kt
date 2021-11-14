@@ -149,6 +149,10 @@ class World(
         return biomeAccessor.getBiome(blockPosition)
     }
 
+    override fun getBiome(x: Int, y: Int, z: Int): Biome? {
+        return biomeAccessor.getBiome(x, y, z)
+    }
+
     fun tick() {
         for ((chunkPosition, chunk) in chunks.toSynchronizedMap()) {
             chunk.tick(connection, chunkPosition)

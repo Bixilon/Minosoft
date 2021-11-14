@@ -39,9 +39,13 @@ class ChunkSection(
     constructor(registries: Registries) : this(RegistrySectionDataProvider<BlockState?>(registries.blockStateRegistry.unsafeCast()), RegistrySectionDataProvider(registries.biomeRegistry), SectionDataProvider(), IntArray(ProtocolDefinition.BLOCKS_PER_SECTION))
 
     fun tick(connection: PlayConnection, chunkPosition: Vec2i, sectionHeight: Int) {
+        if (blockEntities.isEmpty) {
+            return
+        }
         acquire()
-        for ((index, blockEntity) in blockEntities.withIndex()) {
-            blockEntity ?: continue
+        var blockEntity: BlockEntity?
+        for (index in 0 until ProtocolDefinition.BLOCKS_PER_SECTION) {
+            blockEntity = blockEntities[index] ?: continue
             val position = Vec3i.of(chunkPosition, sectionHeight, index.indexPosition)
             val blockState = blocks[index] ?: continue
             blockEntity.tick(connection, blockState, position)
@@ -86,8 +90,14 @@ class ChunkSection(
     }
 
     fun buildBiomeCache(chunkPosition: Vec2i, sectionHeight: Int, biomeAccessor: BiomeAccessor) {
-        for (blockIndex in 0 until ProtocolDefinition.BLOCKS_PER_SECTION) {
-            biomes[blockIndex] = biomeAccessor.getBiome(Vec3i.of(chunkPosition, sectionHeight, blockIndex.indexPosition))!!
+        val blockOffset = Vec3i.of(chunkPosition, sectionHeight)
+        val x = blockOffset.x
+        val y = blockOffset.y
+        val z = blockOffset.z
+        val biomes: Array<Biome?> = arrayOfNulls(ProtocolDefinition.BLOCKS_PER_SECTION)
+        for (index in 0 until ProtocolDefinition.BLOCKS_PER_SECTION) {
+            biomes[index] = biomeAccessor.getBiome(x + (index and 0x0F), y + ((index shr 8) and 0x0F), z + ((index shr 4) and 0x0F)) //!!
         }
+        this.biomes.setData(biomes.unsafeCast())
     }
 }

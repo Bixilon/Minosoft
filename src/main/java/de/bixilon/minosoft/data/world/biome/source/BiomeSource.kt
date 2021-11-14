@@ -18,5 +18,9 @@ import glm_.vec3.Vec3i
 
 interface BiomeSource {
 
-    fun getBiome(position: Vec3i): Biome?
+    fun getBiome(position: Vec3i): Biome? {
+        return getBiome(position.x, position.y, position.z)
+    }
+
+    fun getBiome(x: Int, y: Int, z: Int): Biome?
 }

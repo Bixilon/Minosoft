@@ -25,6 +25,7 @@ import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.TextFormattable
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.util.collections.SemaphoreMap
 import de.bixilon.minosoft.util.collections.SynchronizedMap
 import de.bixilon.minosoft.util.enum.AliasableEnum
 import de.bixilon.minosoft.util.json.JSONSerializer
@@ -104,10 +105,16 @@ object KUtil {
     }
 
     fun <K, V> Map<K, V>.toSynchronizedMap(): SynchronizedMap<K, V> {
-        return if (this is SynchronizedMap<*, *>) {
+        return if (this is SemaphoreMap<*, *>) {
             lock.acquire()
             val map: SynchronizedMap<K, V> = SynchronizedMap(this.toMutableMap()).unsafeCast()
             lock.release()
+            map
+        } else if (this is SynchronizedMap<*, *>) {
+            val map: SynchronizedMap<K, V>
+            synchronized(this.lock) {
+                map = SynchronizedMap(this.toMutableMap()).unsafeCast()
+            }
             map
         } else {
             synchronizedCopy { SynchronizedMap(this.toMutableMap()) }
