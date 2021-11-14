@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.util.collections
 
+import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.KUtil.clean
 import org.lwjgl.system.MemoryUtil.memAllocFloat
 import java.nio.FloatBuffer
@@ -64,8 +65,14 @@ class ArrayFloatList(
         }
         val oldBuffer = buffer
         buffer = memAllocFloat(newSize)
-        buffer.put(0, oldBuffer, 0, oldBuffer.position())
-        buffer.position(oldBuffer.position())
+        if (FLOAT_PUT_METHOD == null) { // Java < 16
+            for (i in 0 until oldBuffer.position()) {
+                buffer.put(oldBuffer.get(i))
+            }
+        } else {
+            FLOAT_PUT_METHOD.invoke(buffer, 0, oldBuffer, 0, oldBuffer.position())
+            buffer.position(oldBuffer.position())
+        }
         oldBuffer.clean()
     }
 
@@ -83,16 +90,25 @@ class ArrayFloatList(
 
     fun addAll(floatList: ArrayFloatList) {
         ensureSize(floatList.size)
-        buffer.put(buffer.position(), floatList.buffer, 0, floatList.buffer.position())
-        buffer.position(buffer.position() + floatList.buffer.position())
+        if (FLOAT_PUT_METHOD == null) { // Java < 16
+            for (i in 0 until floatList.buffer.position()) {
+                buffer.put(floatList.buffer.get(i))
+            }
+        } else {
+            FLOAT_PUT_METHOD.invoke(buffer, buffer.position(), floatList.buffer, 0, floatList.buffer.position())
+            buffer.position(buffer.position() + floatList.buffer.position())
+        }
     }
 
     private fun checkOutputArray() {
         if (outputUpToDate) {
             return
         }
-        output = FloatArray(size)
-        buffer.get(output, 0, buffer.position())
+        val position = buffer.position()
+        output = FloatArray(position)
+        buffer.position(0)
+        buffer.get(output, 0, position)
+        buffer.position(position)
         outputUpToDate = true
     }
 
@@ -105,13 +121,20 @@ class ArrayFloatList(
         finalized = true
         val oldBuffer = buffer
         buffer = memAllocFloat(oldBuffer.position())
-        buffer.put(0, oldBuffer, 0, oldBuffer.position())
-        buffer.position(buffer.limit())
+        if (FLOAT_PUT_METHOD == null) { // Java < 16
+            for (i in 0 until oldBuffer.position()) {
+                buffer.put(oldBuffer.get(i))
+            }
+        } else {
+            FLOAT_PUT_METHOD.invoke(buffer, 0, oldBuffer, 0, oldBuffer.position())
+            buffer.position(buffer.limit())
+        }
         oldBuffer.clean()
     }
 
 
     private companion object {
+        private val FLOAT_PUT_METHOD = KUtil.tryCatch { FloatBuffer::class.java.getMethod("put", Int::class.java, FloatBuffer::class.java, Int::class.java, Int::class.java) }
         private const val DEFAULT_INITIAL_SIZE = 1000
     }
 }

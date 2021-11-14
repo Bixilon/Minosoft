@@ -28,7 +28,7 @@ Minosoft is an open source minecraft client, written from scratch in kotlin (and
 - RAM: Minimum 300 MiB, 1 GiB recommended
 - Disk space: Minosoft itself is pretty small (2-3 MiB), the libraries are a bit bigger (~80 MiB). You also need to have the "normal" minecraft assets (~ 300 MiB per minecraft version).
 - GPU: OpenGL 3.0+. Every modern GPU works and is recommended.
-- Java 11+, newest version recommended (This is really important, we use features that are only available in this version. Java 8 is currently **not** supported).
+- Java 11+, 16+ recommended (This is really important, we use features that are only available in this version. Java 8 is currently **not** supported).
 
 ## Rendering
 
@@ -73,7 +73,7 @@ I always try to add support for the newest version of minecraft. Mostly it is pr
 
 ### Supported versions
 
-Almost all versions (and snapshots!) between 1.7 and the latest one (1.17 as of writing this). I plan to maintain Minosoft to at least version 1.20, so stay tuned. Support for older protocols will not be dropped as newer protocols are added. And can still only recommend using the latest stable version, should be the most stable one.
+Almost all versions (and snapshots!) between 1.7 and the latest one (1.17 as of writing this). I plan to maintain Minosoft to at least version 1.20, so stay tuned. Support for older protocols will not be dropped as newer protocols are added. It is still recommended using the latest stable version.
 
 ### Unsupported versions
 
