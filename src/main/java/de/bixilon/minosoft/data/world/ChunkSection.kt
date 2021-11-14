@@ -16,6 +16,7 @@ import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.registries.Registries
+import de.bixilon.minosoft.data.world.biome.accessor.BiomeAccessor
 import de.bixilon.minosoft.data.world.container.RegistrySectionDataProvider
 import de.bixilon.minosoft.data.world.container.SectionDataProvider
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.of
@@ -30,7 +31,6 @@ import glm_.vec3.Vec3i
  */
 class ChunkSection(
     var blocks: RegistrySectionDataProvider<BlockState?>,
-    @Deprecated("TODO")
     var biomes: RegistrySectionDataProvider<Biome>,
     var blockEntities: SectionDataProvider<BlockEntity?>,
     var light: IntArray, // packed (skyLight: 0xF0, blockLight: 0x0F)
@@ -82,6 +82,12 @@ class ChunkSection(
 
         fun getIndex(x: Int, y: Int, z: Int): Int {
             return y shl 8 or (z shl 4) or x
+        }
+    }
+
+    fun buildBiomeCache(chunkPosition: Vec2i, sectionHeight: Int, biomeAccessor: BiomeAccessor) {
+        for (blockIndex in 0 until ProtocolDefinition.BLOCKS_PER_SECTION) {
+            biomes[blockIndex] = biomeAccessor.getBiome(Vec3i.of(chunkPosition, sectionHeight, blockIndex.indexPosition))!!
         }
     }
 }

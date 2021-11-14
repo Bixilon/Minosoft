@@ -20,7 +20,6 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.dimension.Dimension
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.registries.other.game.event.handlers.gamemode.GamemodeChangeEvent
-import de.bixilon.minosoft.data.world.biome.accessor.BlockBiomeAccessor
 import de.bixilon.minosoft.data.world.biome.accessor.NoiseBiomeAccessor
 import de.bixilon.minosoft.modding.channels.DefaultPluginChannels
 import de.bixilon.minosoft.modding.event.EventInitiators
@@ -162,10 +161,8 @@ class JoinGameS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
 
         connection.world.entities.add(entityId, null, playerEntity)
         connection.world.hashedSeed = hashedSeed
-        connection.world.biomeAccessor = if (connection.version.versionId < ProtocolVersions.V_19W36A) {
-            BlockBiomeAccessor(connection.world)
-        } else {
-            NoiseBiomeAccessor(connection.world)
+        if (connection.version.versionId >= ProtocolVersions.V_19W36A) {
+            connection.world.cacheBiomeAccessor = NoiseBiomeAccessor(connection.world)
         }
         TimeWorker.addTask(TimeWorkerTask(150, true) { // ToDo: Temp workaround
             connection.sendPacket(ClientSettingsC2SP("en_us"))

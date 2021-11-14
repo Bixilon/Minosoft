@@ -14,16 +14,14 @@
 package de.bixilon.minosoft.data.world.biome.accessor
 
 import de.bixilon.minosoft.data.registries.biomes.Biome
-
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.inChunkPosition
 import glm_.vec3.Vec3i
 
-class BlockBiomeAccessor(private val world: World) : BiomeAccessor {
+class WorldBiomeAccessor(val world: World) : BiomeAccessor {
 
     override fun getBiome(blockPosition: Vec3i): Biome? {
-        val biomePosition = blockPosition.inChunkPosition
-        return world[blockPosition.chunkPosition]?.biomeSource?.getBiome(biomePosition)
+        return world[blockPosition.chunkPosition]?.getBiome(blockPosition.inChunkPosition)
     }
 }

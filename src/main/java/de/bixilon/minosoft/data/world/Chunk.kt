@@ -13,11 +13,16 @@
 package de.bixilon.minosoft.data.world
 
 import de.bixilon.minosoft.data.entities.block.BlockEntity
+import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.world.ChunkSection.Companion.index
+import de.bixilon.minosoft.data.world.biome.accessor.BiomeAccessor
 import de.bixilon.minosoft.data.world.biome.source.BiomeSource
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.inChunkPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.inChunkSectionPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
+import de.bixilon.minosoft.modding.event.EventInitiators
+import de.bixilon.minosoft.modding.event.events.ChunkDataChangeEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import glm_.vec2.Vec2i
@@ -28,21 +33,22 @@ import glm_.vec3.Vec3i
  */
 class Chunk(
     private val connection: PlayConnection,
+    private val chunkPosition: Vec2i,
     private var sections: Array<ChunkSection?>? = null,
     var biomeSource: BiomeSource? = null,
-) : Iterable<ChunkSection?> {
+) : Iterable<ChunkSection?>, BiomeAccessor {
     var bottomLight: IntArray? = null
     var topLight: IntArray? = null
     val lowestSection = connection.world.dimension!!.lowestSection
     val highestSection = connection.world.dimension!!.highestSection
 
-    var blocksInitialized: Boolean = false
-    val biomesInitialized
-        get() = biomeSource != null
+    var blocksInitialized = false // All block data was received
+    var biomesInitialized = false // All biome data is initialized (aka. cache built, or similar)
     var lightInitialized = false
+    var neighboursLoaded = false
 
     val isFullyLoaded: Boolean
-        get() = blocksInitialized && biomesInitialized && lightInitialized
+        get() = blocksInitialized && biomesInitialized && lightInitialized && neighboursLoaded
 
     operator fun get(sectionHeight: Int): ChunkSection? = sections?.getOrNull(sectionHeight - lowestSection)
 
@@ -115,7 +121,10 @@ class Chunk(
             topLight = it
             lightInitialized = true
         }
-        data.biomeSource?.let { this.biomeSource = it }
+        data.biomeSource?.let {
+            this.biomeSource = it
+        }
+        connection.world.onChunkUpdate(chunkPosition, this)
     }
 
     @Synchronized
@@ -126,6 +135,10 @@ class Chunk(
         var section = sections[sectionIndex]
         if (section == null) {
             section = ChunkSection(connection.registries)
+            val cacheBiomeAccessor = connection.world.cacheBiomeAccessor
+            if (cacheBiomeAccessor != null && biomesInitialized && neighboursLoaded) {
+                section.buildBiomeCache(chunkPosition, sectionHeight, cacheBiomeAccessor)
+            }
             sections[sectionIndex] = section
         }
         return section
@@ -154,7 +167,27 @@ class Chunk(
         return get(position.sectionHeight)?.light?.get(index) ?: 0xFF
     }
 
+    fun buildBiomeCache() {
+        val cacheBiomeAccessor = connection.world.cacheBiomeAccessor ?: return
+        check(neighboursLoaded)
+        // val neighbours = connection.world.getChunkNeighbours(chunkPosition)
+        for ((sectionIndex, section) in sections!!.withIndex()) {
+            section ?: continue
+            val sectionHeight = sectionIndex + lowestSection
+            section.buildBiomeCache(chunkPosition, sectionHeight, cacheBiomeAccessor)
+        }
+        biomesInitialized = true
+        connection.fireEvent(ChunkDataChangeEvent(connection, EventInitiators.UNKNOWN, chunkPosition, this))
+    }
+
     override fun iterator(): Iterator<ChunkSection?> {
         return sections!!.iterator()
+    }
+
+    override fun getBiome(blockPosition: Vec3i): Biome? {
+        if (connection.world.cacheBiomeAccessor != null) {
+            return get(blockPosition.sectionHeight)?.biomes?.get(blockPosition.x, blockPosition.sectionHeight, blockPosition.z)
+        }
+        return biomeSource?.getBiome(blockPosition.inChunkPosition)
     }
 }

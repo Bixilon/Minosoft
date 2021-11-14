@@ -22,7 +22,7 @@ import de.bixilon.minosoft.data.registries.blocks.types.FluidBlock
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.registries.sounds.SoundEvent
 import de.bixilon.minosoft.data.world.biome.accessor.BiomeAccessor
-import de.bixilon.minosoft.data.world.biome.accessor.NullBiomeAccessor
+import de.bixilon.minosoft.data.world.biome.accessor.WorldBiomeAccessor
 import de.bixilon.minosoft.gui.rendering.particle.ParticleRenderer
 import de.bixilon.minosoft.gui.rendering.particle.types.Particle
 import de.bixilon.minosoft.gui.rendering.sound.AudioPlayer
@@ -39,6 +39,8 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
 import de.bixilon.minosoft.util.KUtil.toSynchronizedMap
 import de.bixilon.minosoft.util.MMath
+import de.bixilon.minosoft.util.chunk.ChunkUtil
+import de.bixilon.minosoft.util.chunk.ChunkUtil.fullyLoaded
 import de.bixilon.minosoft.util.collections.SynchronizedMap
 import glm_.func.common.clamp
 import glm_.vec2.Vec2i
@@ -55,6 +57,7 @@ import kotlin.random.Random
 class World(
     val connection: PlayConnection,
 ) : BiomeAccessor {
+    var cacheBiomeAccessor: BiomeAccessor? = null
     val chunks: SynchronizedMap<Vec2i, Chunk> = synchronizedMapOf()
     val entities = WorldEntities()
     var hardcore = false
@@ -62,7 +65,7 @@ class World(
     var difficulty: Difficulties? = null
     var difficultyLocked = false
     var hashedSeed = 0L
-    var biomeAccessor: BiomeAccessor = NullBiomeAccessor
+    val biomeAccessor: BiomeAccessor = WorldBiomeAccessor(this)
     var time = 0L
     var age = 0L
     var raining = false
@@ -82,7 +85,7 @@ class World(
     }
 
     fun getOrCreateChunk(chunkPosition: Vec2i): Chunk {
-        return chunks.getOrPut(chunkPosition) { Chunk(connection) }
+        return chunks.getOrPut(chunkPosition) { Chunk(connection, chunkPosition) }
     }
 
     fun setBlockState(blockPosition: Vec3i, blockState: BlockState?) {
@@ -121,6 +124,9 @@ class World(
 
     fun unloadChunk(chunkPosition: Vec2i) {
         chunks.remove(chunkPosition) ?: return
+        for (neighbour in getChunkNeighbours(chunkPosition)) {
+            neighbour?.neighboursLoaded = false
+        }
         connection.fireEvent(ChunkUnloadEvent(connection, EventInitiators.UNKNOWN, chunkPosition))
     }
 
@@ -234,6 +240,56 @@ class World(
             base *= 1.0 - (((thunderGradient * rainGradient) * 5.0) / 16.0)
             return base * 0.8 + 0.2
         }
+
+
+    /**
+     * @return All 8  neighbour chunks
+     */
+    fun getChunkNeighbours(neighbourPositions: Array<Vec2i>): Array<Chunk?> {
+        val chunks: Array<Chunk?> = arrayOfNulls(neighbourPositions.size)
+        for ((index, neighbourPosition) in neighbourPositions.withIndex()) {
+            chunks[index] = this[neighbourPosition] ?: continue
+        }
+        return chunks
+    }
+
+    fun getChunkNeighbours(chunkPosition: Vec2i): Array<Chunk?> {
+        return getChunkNeighbours(ChunkUtil.getChunkNeighbourPositions(chunkPosition))
+    }
+
+    fun onChunkUpdate(chunkPosition: Vec2i, chunk: Chunk = get(chunkPosition)!!) {
+        val neighbourPositions = ChunkUtil.getChunkNeighbourPositions(chunkPosition)
+        val neighbours = getChunkNeighbours(neighbourPositions)
+        if (chunk.neighboursLoaded) {
+            return
+        }
+        if (neighbours.fullyLoaded) {
+            chunk.neighboursLoaded = true
+            chunk.buildBiomeCache()
+        }
+        for ((index, neighbourPosition) in neighbourPositions.withIndex()) {
+            if (neighbourPosition == chunkPosition) {
+                continue
+            }
+            val neighbourChunk = neighbours[index] ?: continue
+
+            if (neighbourChunk.neighboursLoaded) {
+                continue
+            }
+            var biomeSourceLoaded = true
+            for (neighbourNeighbourChunk in getChunkNeighbours(neighbourPosition)) {
+                if (neighbourNeighbourChunk?.biomeSource == null) {
+                    biomeSourceLoaded = false
+                    break
+                }
+            }
+            if (biomeSourceLoaded) {
+                neighbourChunk.neighboursLoaded = true
+                neighbourChunk.buildBiomeCache()
+            }
+        }
+    }
+
 
     companion object {
         const val MAX_SIZE = 29999999

@@ -18,6 +18,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import glm_.vec3.Vec3i
 
 class XZBiomeArray(private val biomes: Array<Biome>) : BiomeSource {
+
     init {
         check(biomes.size == ProtocolDefinition.SECTION_WIDTH_X * ProtocolDefinition.SECTION_WIDTH_Z) { "Biome array size does not match the xz block count!" }
     }

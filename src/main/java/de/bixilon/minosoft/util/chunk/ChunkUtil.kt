@@ -16,7 +16,9 @@ package de.bixilon.minosoft.util.chunk
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
+import de.bixilon.minosoft.data.world.Chunk
 import de.bixilon.minosoft.data.world.ChunkData
+import de.bixilon.minosoft.data.world.ChunkSection
 import de.bixilon.minosoft.data.world.biome.source.XZBiomeArray
 import de.bixilon.minosoft.data.world.container.RegistrySectionDataProvider
 import de.bixilon.minosoft.data.world.palette.Palette.Companion.choosePalette
@@ -24,6 +26,7 @@ import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*
 import de.bixilon.minosoft.util.KUtil.unsafeCast
+import glm_.vec2.Vec2i
 import java.util.*
 
 
@@ -221,4 +224,44 @@ object ChunkUtil {
         }
         return XZBiomeArray(biomes.toTypedArray())
     }
+
+    val Array<Chunk?>.fullyLoaded: Boolean
+        get() {
+            for (neighbour in this) {
+                if (neighbour?.isFullyLoaded != true) {
+                    return false
+                }
+            }
+            return true
+        }
+
+
+    fun getChunkNeighbourPositions(chunkPosition: Vec2i): Array<Vec2i> {
+        return arrayOf(
+            chunkPosition + Vec2i(-1, -1),
+            chunkPosition + Vec2i(-1, 0),
+            chunkPosition + Vec2i(-1, 1),
+            chunkPosition + Vec2i(0, -1),
+            chunkPosition + Vec2i(0, 1),
+            chunkPosition + Vec2i(1, -1),
+            chunkPosition + Vec2i(1, 0),
+            chunkPosition + Vec2i(1, 1),
+        )
+    }
+
+    /**
+     * @param neighbourChunks: **Fully loaded** neighbour chunks
+     */
+    private fun getSectionNeighbours(neighbourChunks: Array<Chunk>, chunk: Chunk, sectionHeight: Int): Array<ChunkSection?> {
+        return arrayOf(
+            chunk[sectionHeight - 1],
+            chunk[sectionHeight + 1],
+            neighbourChunks[3][sectionHeight],
+            neighbourChunks[4][sectionHeight],
+            neighbourChunks[1][sectionHeight],
+            neighbourChunks[6][sectionHeight],
+        )
+    }
+
+
 }

@@ -70,7 +70,7 @@ data class DimensionProperties(
                 hasCeiling = data["has_ceiling"]?.toBoolean() ?: false,
                 ultraWarm = data["ultrawarm"]?.toBoolean() ?: false,
                 height = data["height"]?.toInt() ?: 256,
-                supports3DBiomes = data["supports_3d_biomes"]?.toBoolean() ?: false,
+                supports3DBiomes = data["supports_3d_biomes"]?.toBoolean() ?: true,
             )
         }
     }
