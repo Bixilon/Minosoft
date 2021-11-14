@@ -34,6 +34,7 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.minus
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.modding.event.events.BlockSetEvent
+import de.bixilon.minosoft.modding.event.events.ChunkDataChangeEvent
 import de.bixilon.minosoft.modding.event.events.ChunkUnloadEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
@@ -125,8 +126,11 @@ class World(
 
     fun unloadChunk(chunkPosition: Vec2i) {
         chunks.remove(chunkPosition) ?: return
-        for (neighbour in getChunkNeighbours(chunkPosition)) {
-            neighbour?.neighboursLoaded = false
+        val neighbourPositions = ChunkUtil.getChunkNeighbourPositions(chunkPosition)
+        for (neighbourPosition in neighbourPositions) {
+            val neighbour = this[neighbourPosition] ?: continue
+            neighbour.neighboursLoaded = false
+            connection.fireEvent(ChunkDataChangeEvent(connection, EventInitiators.UNKNOWN, neighbourPosition, neighbour))
         }
         connection.fireEvent(ChunkUnloadEvent(connection, EventInitiators.UNKNOWN, chunkPosition))
     }
@@ -248,7 +252,7 @@ class World(
 
 
     /**
-     * @return All 8  neighbour chunks
+     * @return All 8 neighbour chunks
      */
     fun getChunkNeighbours(neighbourPositions: Array<Vec2i>): Array<Chunk?> {
         val chunks: Array<Chunk?> = arrayOfNulls(neighbourPositions.size)
@@ -270,7 +274,9 @@ class World(
         }
         if (neighbours.fullyLoaded) {
             chunk.neighboursLoaded = true
-            chunk.buildBiomeCache()
+            if (cacheBiomeAccessor != null) {
+                chunk.buildBiomeCache()
+            }
         }
         for ((index, neighbourPosition) in neighbourPositions.withIndex()) {
             if (neighbourPosition == chunkPosition) {
@@ -289,8 +295,12 @@ class World(
                 }
             }
             if (biomeSourceLoaded) {
-                neighbourChunk.neighboursLoaded = true
-                neighbourChunk.buildBiomeCache()
+                neighbourChunk.neighboursLoaded = true // ToDo: only if fully loaded not just biomes
+
+                if (cacheBiomeAccessor != null) {
+                    neighbourChunk.buildBiomeCache()
+                }
+                connection.fireEvent(ChunkDataChangeEvent(connection, EventInitiators.UNKNOWN, neighbourPosition, neighbourChunk))
             }
         }
     }

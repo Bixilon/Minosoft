@@ -13,12 +13,15 @@
 
 package de.bixilon.minosoft.data.world
 
+import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.world.biome.source.BiomeSource
 import de.bixilon.minosoft.data.world.container.RegistrySectionDataProvider
+import glm_.vec3.Vec3i
 
 class ChunkData(
     var blocks: Array<RegistrySectionDataProvider<BlockState?>?>? = null,
+    var blockEntities: Map<Vec3i, BlockEntity>? = null,
     var biomeSource: BiomeSource? = null,
     var light: Array<IntArray?>? = null,
     var bottomLight: IntArray? = null,
@@ -28,6 +31,7 @@ class ChunkData(
     @Synchronized
     fun replace(data: ChunkData) {
         data.blocks?.let { this.blocks = it }
+        data.blockEntities?.let { this.blockEntities = it }
         data.biomeSource?.let { this.biomeSource = it }
         data.light?.let { this.light = it }
         data.bottomLight?.let { this.bottomLight = it }

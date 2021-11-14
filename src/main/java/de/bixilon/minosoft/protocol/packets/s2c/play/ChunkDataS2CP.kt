@@ -21,7 +21,6 @@ import de.bixilon.minosoft.datafixer.BlockEntityFixer.fix
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.of
 import de.bixilon.minosoft.modding.event.EventInitiators
-import de.bixilon.minosoft.modding.event.events.ChunkDataChangeEvent
 import de.bixilon.minosoft.modding.event.events.ChunkUnloadEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
@@ -41,7 +40,6 @@ import glm_.vec3.Vec3i
 import java.util.*
 
 class ChunkDataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
-    val blockEntities: MutableMap<Vec3i, BlockEntity> = mutableMapOf()
     val chunkPosition: Vec2i
     var chunkData: ChunkData? = ChunkData()
         private set
@@ -107,6 +105,7 @@ class ChunkDataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
                 buffer.pointer = size + lastPos
             }
             if (buffer.versionId >= ProtocolVersions.V_1_9_4) {
+                val blockEntities: MutableMap<Vec3i, BlockEntity> = mutableMapOf()
                 val positionOffset = Vec3i.of(chunkPosition, dimension.lowestSection, Vec3i.EMPTY)
                 val blockEntitiesCount = buffer.readVarInt()
                 for (i in 0 until blockEntitiesCount) {
@@ -121,6 +120,7 @@ class ChunkDataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
                     entity.updateNBT(nbt)
                     blockEntities[position] = entity
                 }
+                chunkData!!.blockEntities = blockEntities
             }
         }
     }
@@ -129,10 +129,6 @@ class ChunkDataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         chunkData?.let {
             val chunk = connection.world.getOrCreateChunk(chunkPosition)
             chunk.setData(chunkData!!, !isFullChunk)
-            for ((position, blockEntity) in blockEntities) {
-                chunk.setBlockEntity(position, blockEntity)
-            }
-            connection.fireEvent(ChunkDataChangeEvent(connection, this))
         } ?: let {
             connection.world.unloadChunk(chunkPosition)
             connection.fireEvent(ChunkUnloadEvent(connection, EventInitiators.SERVER, chunkPosition))

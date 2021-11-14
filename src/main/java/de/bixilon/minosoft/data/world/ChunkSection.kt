@@ -45,9 +45,9 @@ class ChunkSection(
         acquire()
         var blockEntity: BlockEntity?
         for (index in 0 until ProtocolDefinition.BLOCKS_PER_SECTION) {
-            blockEntity = blockEntities[index] ?: continue
+            blockEntity = blockEntities.unsafeGet(index) ?: continue
             val position = Vec3i.of(chunkPosition, sectionHeight, index.indexPosition)
-            val blockState = blocks[index] ?: continue
+            val blockState = blocks.unsafeGet(index) ?: continue
             blockEntity.tick(connection, blockState, position)
         }
         release()

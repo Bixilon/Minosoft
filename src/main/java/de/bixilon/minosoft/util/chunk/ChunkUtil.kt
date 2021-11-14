@@ -262,6 +262,4 @@ object ChunkUtil {
             neighbourChunks[6][sectionHeight],
         )
     }
-
-
 }

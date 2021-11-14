@@ -39,6 +39,16 @@ open class SectionDataProvider<T>(
         return value
     }
 
+    @Suppress("UNCHECKED_CAST")
+    fun unsafeGet(index: Int): T {
+        return data[index] as T
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    fun unsafeGet(x: Int, y: Int, z: Int): T {
+        return data[y shl 8 or (z shl 4) or x] as T
+    }
+
     private fun recalculateCount() {
         var count = 0
         for (value in data) {
