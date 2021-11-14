@@ -32,6 +32,7 @@ import glm_.vec2.Vec2t
 import glm_.vec3.Vec3t
 import glm_.vec4.Vec4t
 import okio.Buffer
+import org.lwjgl.system.MemoryUtil.memFree
 import sun.misc.Unsafe
 import java.io.PrintWriter
 import java.io.StringWriter
@@ -495,5 +496,9 @@ object KUtil {
         val array = ByteArray(this.remaining())
         this.get(array)
         return array
+    }
+
+    fun java.nio.Buffer.clean() {
+        memFree(this)
     }
 }

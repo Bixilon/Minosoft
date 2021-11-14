@@ -131,7 +131,7 @@ abstract class Element(val hudRenderer: HUDRenderer) {
             cache.z = z
             val maxZ = forceRender(offset, z, cache, options)
             cache.maxZ = maxZ
-            cache.data.finalize()
+            cache.data.finish()
             this.cache = cache
             cacheUpToDate = true
         }

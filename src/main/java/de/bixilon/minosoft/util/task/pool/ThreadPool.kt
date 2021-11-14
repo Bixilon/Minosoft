@@ -22,7 +22,7 @@ import java.util.concurrent.Future
 import java.util.concurrent.TimeUnit
 
 open class ThreadPool(
-    private val threadCount: Int = Runtime.getRuntime().availableProcessors(),
+    val threadCount: Int = Runtime.getRuntime().availableProcessors(),
     private val name: String = "Worker#%d",
 ) : ExecutorService {
     private var state = ThreadPoolStates.STARTING

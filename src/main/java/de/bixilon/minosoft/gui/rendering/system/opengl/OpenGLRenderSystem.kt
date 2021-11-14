@@ -38,6 +38,7 @@ import org.lwjgl.BufferUtils
 import org.lwjgl.opengl.GL
 import org.lwjgl.opengl.GL20.*
 import java.nio.ByteBuffer
+import java.nio.FloatBuffer
 
 class OpenGLRenderSystem(
     private val renderWindow: RenderWindow,
@@ -191,11 +192,11 @@ class OpenGLRenderSystem(
         return OpenGLShader(renderWindow, resourceLocation)
     }
 
-    override fun createVertexBuffer(structure: MeshStruct, data: FloatArray, primitiveType: PrimitiveTypes): FloatVertexBuffer {
+    override fun createVertexBuffer(structure: MeshStruct, data: FloatBuffer, primitiveType: PrimitiveTypes): FloatVertexBuffer {
         return FloatOpenGLVertexBuffer(structure, data, primitiveType)
     }
 
-    override fun createFloatUniformBuffer(bindingIndex: Int, data: FloatArray): FloatUniformBuffer {
+    override fun createFloatUniformBuffer(bindingIndex: Int, data: FloatBuffer): FloatUniformBuffer {
         return FloatOpenGLUniformBuffer(bindingIndex, data)
     }
 

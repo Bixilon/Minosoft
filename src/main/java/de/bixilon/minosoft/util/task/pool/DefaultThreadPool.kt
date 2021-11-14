@@ -15,4 +15,4 @@ package de.bixilon.minosoft.util.task.pool
 
 import de.bixilon.minosoft.util.MMath.clamp
 
-object DefaultThreadPool : ThreadPool(clamp(Runtime.getRuntime().availableProcessors() - 1, 2, 16))
+object DefaultThreadPool : ThreadPool(clamp(Runtime.getRuntime().availableProcessors() - 1, 2, 32))

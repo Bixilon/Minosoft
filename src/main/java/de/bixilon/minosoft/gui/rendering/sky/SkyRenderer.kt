@@ -15,7 +15,6 @@ package de.bixilon.minosoft.gui.rendering.sky
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.fluid.DefaultFluids
-import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
@@ -28,8 +27,6 @@ import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
 import de.bixilon.minosoft.gui.rendering.system.base.RenderingCapabilities
 import de.bixilon.minosoft.gui.rendering.system.base.phases.CustomDrawable
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
-import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
-import de.bixilon.minosoft.gui.rendering.util.mesh.SimpleTextureMesh
 import de.bixilon.minosoft.modding.event.events.TimeChangeEvent
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -37,7 +34,6 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import glm_.func.rad
 import glm_.mat4x4.Mat4
 import glm_.mat4x4.Mat4d
-import glm_.vec3.Vec3
 import glm_.vec3.Vec3d
 
 class SkyRenderer(
@@ -48,7 +44,7 @@ class SkyRenderer(
     private val skyboxShader = renderSystem.createShader(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "sky/skybox"))
     private val skySunShader = renderSystem.createShader(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "sky/sun"))
     private val skyboxMesh = SkyboxMesh(renderWindow)
-    private var skySunMesh = SimpleTextureMesh(renderWindow)
+  //  private var skySunMesh = SimpleTextureMesh(renderWindow)
     private lateinit var sunTexture: AbstractTexture
     private var sunMatrixUpToDate: Boolean = true
     var baseColor = RenderConstants.DEFAULT_SKY_COLOR
@@ -59,7 +55,7 @@ class SkyRenderer(
         skyboxMesh.load()
 
         skySunShader.load()
-        skySunMesh.load()
+//        skySunMesh.load()
 
 
         connection.registerEvent(CallbackEventInvoker.of<CameraMatrixChangeEvent> {
@@ -93,12 +89,13 @@ class SkyRenderer(
     }
 
     private fun drawSun() {
+        return
         if (sunMatrixUpToDate) {
             setSunMatrix(renderWindow.inputHandler.camera.projectionMatrix * renderWindow.inputHandler.camera.viewMatrix.toMat3().toMat4())
-            skySunMesh.unload()
+            //         skySunMesh.unload()
 
-            skySunMesh = SimpleTextureMesh(renderWindow)
-
+            //         skySunMesh = SimpleTextureMesh(renderWindow)
+/*
 
             Mesh.addQuad(
                 start = Vec3(-0.15f, 1.0f, -0.15f),
@@ -113,11 +110,13 @@ class SkyRenderer(
                 }
             )
             skySunMesh.load()
+
+ */
         }
         renderSystem.enable(RenderingCapabilities.BLENDING)
         renderSystem.setBlendFunc(BlendingFunctions.SOURCE_ALPHA, BlendingFunctions.ONE, BlendingFunctions.ONE, BlendingFunctions.ZERO)
         skySunShader.use()
-        skySunMesh.draw()
+        //   skySunMesh.draw()
     }
 
     private fun checkSkyColor() {

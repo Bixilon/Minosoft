@@ -25,6 +25,7 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.ONE
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import glm_.glm
 import glm_.vec3.Vec3
+import org.lwjgl.system.MemoryUtil.memAllocFloat
 import kotlin.math.max
 import kotlin.math.pow
 import kotlin.math.sin
@@ -33,7 +34,7 @@ import kotlin.math.sin
 class LightMap(private val connection: PlayConnection) {
     private val nightVisionStatusEffect = connection.registries.statusEffectRegistry[DefaultStatusEffects.NIGHT_VISION]
     private val conduitPowerStatusEffect = connection.registries.statusEffectRegistry[DefaultStatusEffects.CONDUIT_POWER]
-    private val uniformBuffer = FloatOpenGLUniformBuffer(1, FloatArray(16 * 16 * 4) { 1.0f })
+    private val uniformBuffer = FloatOpenGLUniformBuffer(1, memAllocFloat(16 * 16 * 4))
 
 
     fun init() {
@@ -105,9 +106,9 @@ class LightMap(private val connection: PlayConnection) {
                 color = color.clamp(0.0f, 1.0f)
 
 
-                uniformBuffer.data[index + 0] = color.x
-                uniformBuffer.data[index + 1] = color.y
-                uniformBuffer.data[index + 2] = color.z
+                uniformBuffer.buffer.put(index + 0, color.x)
+                uniformBuffer.buffer.put(index + 1, color.y)
+                uniformBuffer.buffer.put(index + 2, color.z)
             }
         }
         uniformBuffer.upload()

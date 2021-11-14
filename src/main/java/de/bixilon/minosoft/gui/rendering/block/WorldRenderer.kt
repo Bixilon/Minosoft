@@ -26,7 +26,7 @@ import de.bixilon.minosoft.gui.rendering.RendererBuilder
 import de.bixilon.minosoft.gui.rendering.block.mesh.ChunkSectionMesh
 import de.bixilon.minosoft.gui.rendering.block.mesh.ChunkSectionMeshes
 import de.bixilon.minosoft.gui.rendering.block.preparer.AbstractSectionPreparer
-import de.bixilon.minosoft.gui.rendering.block.preparer.GenericSectionPreparer
+import de.bixilon.minosoft.gui.rendering.block.preparer.CullSectionPreparer
 import de.bixilon.minosoft.gui.rendering.modding.events.FrustumChangeEvent
 import de.bixilon.minosoft.gui.rendering.models.ModelLoader
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
@@ -40,7 +40,6 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
 import de.bixilon.minosoft.modding.event.events.*
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
 import de.bixilon.minosoft.util.KUtil.synchronizedSetOf
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.KUtil.unsafeCast
@@ -65,7 +64,7 @@ class WorldRenderer(
     private val shader = renderSystem.createShader("minosoft:world".toResourceLocation())
     private val transparentShader = renderSystem.createShader("minosoft:world".toResourceLocation())
     private val world: World = connection.world
-    private val sectionPreparer: AbstractSectionPreparer = GenericSectionPreparer(renderWindow)
+    private val sectionPreparer: AbstractSectionPreparer = CullSectionPreparer(renderWindow)
     private val lightMap = LightMap(connection)
     private val meshes: MutableMap<Vec2i, MutableMap<Int, ChunkSectionMeshes>> = mutableMapOf() // all prepared (and up to date) meshes
     private val incomplete: MutableSet<Vec2i> = synchronizedSetOf() // Queue of chunk positions that can not be rendered yet (data not complete or neighbours not completed yet)
@@ -127,7 +126,7 @@ class WorldRenderer(
                 sectionHeights += blockPosition.sectionHeight
             }
             renderWindow.queue += {
-                val meshes = meshes.getOrPut(it.chunkPosition) { synchronizedMapOf() }
+                val meshes = meshes.getOrPut(it.chunkPosition) { mutableMapOf() }
                 for (sectionHeight in sectionHeights) {
                     updateSection(it.chunkPosition, sectionHeight, chunk, neighbourChunks.unsafeCast(), meshes)
                 }
@@ -149,6 +148,7 @@ class WorldRenderer(
             visibleOpaque.clear()
             visibleTranslucent.clear()
             visibleTransparent.clear()
+            // ToDo: Interrupt tasks
         }
     }
 
@@ -265,7 +265,7 @@ class WorldRenderer(
         }
         incomplete -= chunkPosition
         renderWindow.queue += {
-            val meshes = this.meshes.getOrPut(chunkPosition) { synchronizedMapOf() }
+            val meshes = this.meshes.getOrPut(chunkPosition) { mutableMapOf() }
 
             for (sectionHeight in chunk.sections!!.keys) {
                 updateSection(chunkPosition, sectionHeight, chunk, neighbourChunks.unsafeCast(), meshes)
@@ -273,12 +273,11 @@ class WorldRenderer(
         }
     }
 
-    private fun updateSection(chunkPosition: Vec2i, sectionHeight: Int, chunk: Chunk = world[chunkPosition]!!, neighbourChunks: Array<Chunk> = getChunkNeighbours(getChunkNeighbourPositions(chunkPosition)).unsafeCast(), meshes: MutableMap<Int, ChunkSectionMeshes>? = null) {
-        // val chunkTasks = preparingTasks.getOrPut(chunkPosition) { synchronizedMapOf() }
-        // chunkTasks.remove(sectionHeight)?.interrupt()
+    private fun updateSection(chunkPosition: Vec2i, sectionHeight: Int, chunk: Chunk = world[chunkPosition]!!, neighbourChunks: Array<Chunk>? = null, meshes: MutableMap<Int, ChunkSectionMeshes>? = null) {
+
         val task = ThreadPoolRunnable(priority = LOW, interuptable = false) {
             try {
-                updateSectionSync(chunkPosition, sectionHeight, chunk, neighbourChunks, meshes)
+                updateSectionSync(chunkPosition, sectionHeight, chunk, neighbourChunks ?: getChunkNeighbours(getChunkNeighbourPositions(chunkPosition)).unsafeCast(), meshes)
             } catch (exception: InterruptedException) {
                 Log.log(LogMessageType.RENDERING_GENERAL, LogLevels.WARN) { exception.message!! }
             }
@@ -297,7 +296,7 @@ class WorldRenderer(
         val visible = isChunkVisible(chunkPosition, sectionHeight, Vec3i.EMPTY, Vec3i(16, 16, 16)) // ToDo: min/maxPosition
 
         renderWindow.queue += {
-            val meshes = meshes ?: this.meshes.getOrPut(chunkPosition) { synchronizedMapOf() }
+            val meshes = meshes ?: this.meshes.getOrPut(chunkPosition) { mutableMapOf() }
             val previousMesh = meshes[sectionHeight]
             if (previousMesh != null && !visible) {
                 meshes.remove(sectionHeight)
@@ -331,7 +330,7 @@ class WorldRenderer(
         val mesh = sectionPreparer.prepare(chunkPosition, sectionHeight, section, neighbours)
 
         renderWindow.queue += {
-            val meshes = meshes ?: this.meshes.getOrPut(chunkPosition) { synchronizedMapOf() }
+            val meshes = meshes ?: this.meshes.getOrPut(chunkPosition) { mutableMapOf() }
             val previousMesh = meshes.remove(sectionHeight)
             if (previousMesh != null) {
                 removeMesh(previousMesh)
@@ -343,6 +342,10 @@ class WorldRenderer(
                 addMesh(mesh)
             }
         }
+    }
+
+    override fun prepareDraw() {
+        lightMap.update() // ToDo
     }
 
     override fun setupOpaque() {
@@ -414,7 +417,7 @@ class WorldRenderer(
                 continue
             }
             val neighbours = getChunkNeighbours(getChunkNeighbourPositions(chunkPosition))
-            val meshes = this.meshes.getOrPut(chunkPosition) { synchronizedMapOf() }
+            val meshes = this.meshes.getOrPut(chunkPosition) { mutableMapOf() }
             for (sectionHeight in sectionHeights) {
                 updateSection(chunkPosition, sectionHeight, chunk, neighbours.unsafeCast(), meshes)
             }

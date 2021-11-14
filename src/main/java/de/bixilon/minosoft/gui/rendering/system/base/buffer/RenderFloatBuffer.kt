@@ -13,6 +13,8 @@
 
 package de.bixilon.minosoft.gui.rendering.system.base.buffer
 
-interface FloatBuffer {
-    var data: FloatArray
+import java.nio.FloatBuffer
+
+interface RenderFloatBuffer {
+    var buffer: FloatBuffer
 }

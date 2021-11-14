@@ -17,14 +17,17 @@ import de.bixilon.minosoft.gui.rendering.system.base.buffer.RenderBufferStates
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.FloatUniformBuffer
 import org.lwjgl.opengl.GL15.glBufferData
 import org.lwjgl.opengl.GL15.glBufferSubData
+import org.lwjgl.system.MemoryUtil.memAllocFloat
+import java.nio.FloatBuffer
 
-class FloatOpenGLUniformBuffer(bindingIndex: Int = 0, override var data: FloatArray = FloatArray(0)) : OpenGLUniformBuffer(bindingIndex), FloatUniformBuffer {
+class FloatOpenGLUniformBuffer(bindingIndex: Int = 0, override var buffer: FloatBuffer = memAllocFloat(0)) : OpenGLUniformBuffer(bindingIndex), FloatUniformBuffer {
     override val size: Int
-        get() = data.size
+        get() = buffer.limit()
 
     override fun initialUpload() {
         bind()
-        glBufferData(type.gl, data, drawTypes.gl)
+        buffer.position(0)
+        glBufferData(type.gl, buffer, drawTypes.gl)
         unbind()
         state = RenderBufferStates.UPLOADED
     }
@@ -32,7 +35,8 @@ class FloatOpenGLUniformBuffer(bindingIndex: Int = 0, override var data: FloatAr
     override fun upload() {
         check(initialSize == size) { "Can not change buffer size!" }
         bind()
-        glBufferSubData(type.gl, 0, data)
+        buffer.position(0)
+        glBufferSubData(type.gl, 0, buffer)
         unbind()
     }
 

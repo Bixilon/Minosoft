@@ -13,16 +13,21 @@
 
 package de.bixilon.minosoft.util.collections
 
+import de.bixilon.minosoft.util.KUtil.clean
+import org.lwjgl.system.MemoryUtil.memAllocFloat
+import java.nio.FloatBuffer
+
 class ArrayFloatList(
-    private val initialSize: Int = DEFAULT_INITIAL_SIZE,
+    initialSize: Int = DEFAULT_INITIAL_SIZE,
 ) {
-    private var data: FloatArray = FloatArray(initialSize)
+    var buffer: FloatBuffer = memAllocFloat(initialSize) // ToDo: Clear when disconnected
+        private set
     var finalized: Boolean = false
         private set
-    val limit: Int
-        get() = data.size
-    var size = 0
-        private set
+    val capacity: Int
+        get() = buffer.capacity()
+    val size: Int
+        get() = buffer.position()
     val isEmpty: Boolean
         get() = size == 0
 
@@ -43,47 +48,43 @@ class ArrayFloatList(
 
     fun clear() {
         checkFinalized()
-        size = 0
+        buffer.clean()
         outputUpToDate = false
         output = FloatArray(0)
     }
 
     private fun ensureSize(needed: Int) {
         checkFinalized()
-        if (limit - size >= needed) {
+        if (capacity - size >= needed) {
             return
         }
-        var newSize = data.size
+        var newSize = capacity
         while (newSize - size < needed) {
             newSize += nextGrowStep
         }
-        val oldData = data
-        data = FloatArray(newSize)
-        System.arraycopy(oldData, 0, data, 0, oldData.size)
+        val oldBuffer = buffer
+        buffer = memAllocFloat(newSize)
+        buffer.put(0, oldBuffer, 0, oldBuffer.position())
+        buffer.position(oldBuffer.position())
+        oldBuffer.clean()
     }
 
     fun add(float: Float) {
         ensureSize(1)
-        data[size++] = float
+        buffer.put(float)
         outputUpToDate = false
     }
 
     fun addAll(floats: FloatArray) {
         ensureSize(floats.size)
-        System.arraycopy(floats, 0, data, size, floats.size)
-        size += floats.size
+        buffer.put(floats)
         outputUpToDate = false
     }
 
     fun addAll(floatList: ArrayFloatList) {
         ensureSize(floatList.size)
-        val source = if (floatList.finalized) {
-            floatList.output
-        } else {
-            floatList.data
-        }
-        System.arraycopy(source, 0, data, size, floatList.size)
-        size += floatList.size
+        buffer.put(buffer.position(), floatList.buffer, 0, floatList.buffer.position())
+        buffer.position(buffer.position() + floatList.buffer.position())
     }
 
     private fun checkOutputArray() {
@@ -91,7 +92,7 @@ class ArrayFloatList(
             return
         }
         output = FloatArray(size)
-        System.arraycopy(data, 0, output, 0, size)
+        buffer.get(output, 0, buffer.position())
         outputUpToDate = true
     }
 
@@ -100,10 +101,13 @@ class ArrayFloatList(
         return output
     }
 
-    fun finalize() {
+    fun finish() {
         finalized = true
-        checkOutputArray()
-        data = FloatArray(0)
+        val oldBuffer = buffer
+        buffer = memAllocFloat(oldBuffer.position())
+        buffer.put(0, oldBuffer, 0, oldBuffer.position())
+        buffer.position(buffer.limit())
+        oldBuffer.clean()
     }
 
 

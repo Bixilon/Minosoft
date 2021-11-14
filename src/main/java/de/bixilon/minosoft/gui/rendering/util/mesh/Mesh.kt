@@ -43,7 +43,7 @@ abstract class Mesh(
 
 
     fun load() {
-        buffer = renderWindow.renderSystem.createVertexBuffer(struct, data.toArray(), primitiveType)
+        buffer = renderWindow.renderSystem.createVertexBuffer(struct, data.buffer, primitiveType)
         _data = null
         buffer.init()
         vertices = buffer.vertices
