@@ -22,6 +22,7 @@ import de.bixilon.minosoft.data.registries.blocks.types.FluidBlock
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.registries.sounds.SoundEvent
 import de.bixilon.minosoft.data.world.biome.accessor.BiomeAccessor
+import de.bixilon.minosoft.data.world.biome.accessor.NoiseBiomeAccessor
 import de.bixilon.minosoft.data.world.biome.accessor.WorldBiomeAccessor
 import de.bixilon.minosoft.gui.rendering.particle.ParticleRenderer
 import de.bixilon.minosoft.gui.rendering.particle.types.Particle
@@ -57,7 +58,7 @@ import kotlin.random.Random
 class World(
     val connection: PlayConnection,
 ) : BiomeAccessor {
-    var cacheBiomeAccessor: BiomeAccessor? = null
+    var cacheBiomeAccessor: NoiseBiomeAccessor? = null
     val chunks: SynchronizedMap<Vec2i, Chunk> = synchronizedMapOf()
     val entities = WorldEntities()
     var hardcore = false

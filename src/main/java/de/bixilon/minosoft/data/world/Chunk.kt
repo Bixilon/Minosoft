@@ -25,6 +25,7 @@ import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.modding.event.events.ChunkDataChangeEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.util.KUtil.unsafeCast
 import glm_.vec2.Vec2i
 import glm_.vec3.Vec3i
 
@@ -135,9 +136,10 @@ class Chunk(
         var section = sections[sectionIndex]
         if (section == null) {
             section = ChunkSection(connection.registries)
+            val neighbours: Array<Chunk> = connection.world.getChunkNeighbours(chunkPosition).unsafeCast()
             val cacheBiomeAccessor = connection.world.cacheBiomeAccessor
             if (cacheBiomeAccessor != null && biomesInitialized && neighboursLoaded) {
-                section.buildBiomeCache(chunkPosition, sectionHeight, cacheBiomeAccessor)
+                section.buildBiomeCache(chunkPosition, sectionHeight, this, neighbours, cacheBiomeAccessor)
             }
             sections[sectionIndex] = section
         }
@@ -171,11 +173,14 @@ class Chunk(
         val cacheBiomeAccessor = connection.world.cacheBiomeAccessor ?: return
         check(!biomesInitialized) { "Biome cache already initialized!" }
         check(neighboursLoaded)
-        // val neighbours = connection.world.getChunkNeighbours(chunkPosition)
+
+        // isEmpty
+
+        val neighbours: Array<Chunk> = connection.world.getChunkNeighbours(chunkPosition).unsafeCast()
         for ((sectionIndex, section) in sections!!.withIndex()) {
             section ?: continue
             val sectionHeight = sectionIndex + lowestSection
-            section.buildBiomeCache(chunkPosition, sectionHeight, cacheBiomeAccessor)
+            section.buildBiomeCache(chunkPosition, sectionHeight, this, neighbours, cacheBiomeAccessor)
         }
         biomesInitialized = true
         connection.fireEvent(ChunkDataChangeEvent(connection, EventInitiators.UNKNOWN, chunkPosition, this))

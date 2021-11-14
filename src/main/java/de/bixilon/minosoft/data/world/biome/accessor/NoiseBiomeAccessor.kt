@@ -13,33 +13,33 @@
 
 package de.bixilon.minosoft.data.world.biome.accessor
 
+import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.registries.biomes.Biome
+import de.bixilon.minosoft.data.world.Chunk
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.biome.noise.FuzzyNoiseBiomeCalculator
+import de.bixilon.minosoft.data.world.biome.source.SpatialBiomeArray
 
-class NoiseBiomeAccessor(private val world: World) : BiomeAccessor {
+class NoiseBiomeAccessor(private val world: World) {
 
-    override fun getBiome(x: Int, y: Int, z: Int): Biome? {
+    fun getBiome(x: Int, y: Int, z: Int, chunkPositionX: Int, chunkPositionZ: Int, chunk: Chunk, neighbours: Array<Chunk>): Biome? {
         val biomeY = if (world.dimension?.supports3DBiomes == true) {
             y
         } else {
             0
         }
-        /*
+
         if (Minosoft.config.config.game.graphics.fastBiomeNoise) {
-            world[blockPosition.chunkPosition]?.biomeSource?.let {
+            chunk.biomeSource?.let {
                 if (it !is SpatialBiomeArray) {
                     return null
                 }
-                val x: Int = (blockPosition.x and 0x0F) / 4
-                val z: Int = (blockPosition.z and 0x0F) / 4
 
-                return it.data[(biomeY / 4) * 16 + (z * 4 + x)]
+                return it.data[(biomeY / 4) * 16 + (((z and 0x0F) / 4) * 4 + ((x and 0x0F) / 4))]
             }
             return null
         }
 
-         */
-        return FuzzyNoiseBiomeCalculator.getBiome(world.hashedSeed, x, biomeY, z, world)
+        return FuzzyNoiseBiomeCalculator.getBiome(world.hashedSeed, x, biomeY, z, chunkPositionX, chunkPositionZ, chunk, neighbours)
     }
 }

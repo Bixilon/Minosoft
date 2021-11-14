@@ -1,13 +1,12 @@
 package de.bixilon.minosoft.data.world.biome.noise
 
 import de.bixilon.minosoft.data.registries.biomes.Biome
-import de.bixilon.minosoft.data.world.World
+import de.bixilon.minosoft.data.world.Chunk
 import de.bixilon.minosoft.util.MMath.square
-import glm_.vec2.Vec2i
 
 object FuzzyNoiseBiomeCalculator {
 
-    fun getBiome(seed: Long, x: Int, y: Int, z: Int, world: World): Biome? {
+    fun getBiome(seed: Long, x: Int, y: Int, z: Int, chunkPositionX: Int, chunkPositionZ: Int, chunk: Chunk, neighbours: Array<Chunk>): Biome? {
         val m = x - 2
         val n = y - 2
         val o = z - 2
@@ -66,7 +65,32 @@ object FuzzyNoiseBiomeCalculator {
             biomeZ++
         }
 
-        return world[Vec2i(biomeX shr 2, biomeZ shr 2)]?.biomeSource?.getBiome(biomeX, biomeY, biomeZ)
+        var biomeChunk: Chunk? = null
+        val biomeChunkX = biomeX shr 2
+        val biomeChunkZ = biomeZ shr 2
+
+        val deltaChunkX = biomeChunkX - chunkPositionX
+        val deltaChunkZ = biomeChunkZ - chunkPositionZ
+
+        when (deltaChunkX) {
+            0 -> when (deltaChunkZ) {
+                0 -> biomeChunk = chunk
+                -1 -> biomeChunk = neighbours[3]
+                1 -> biomeChunk = neighbours[4]
+            }
+            -1 -> when (deltaChunkZ) {
+                0 -> biomeChunk = neighbours[1]
+                -1 -> biomeChunk = neighbours[0]
+                1 -> biomeChunk = neighbours[2]
+            }
+            1 -> when (deltaChunkZ) {
+                0 -> biomeChunk = neighbours[6]
+                -1 -> biomeChunk = neighbours[5]
+                1 -> biomeChunk = neighbours[7]
+            }
+        }
+
+        return biomeChunk?.biomeSource?.getBiome(biomeX, biomeY, biomeZ)
     }
 
     private fun calculateFiddle(seed: Long, x: Int, y: Int, z: Int, xFraction: Double, yFraction: Double, zFraction: Double): Double {
