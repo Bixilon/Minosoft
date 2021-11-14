@@ -13,10 +13,12 @@
 
 package de.bixilon.minosoft.data.world.biome.accessor
 
+import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.registries.biomes.Biome
-
 import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.data.world.biome.noise.FuzzyNoiseBiomeCalculator
+import de.bixilon.minosoft.data.world.biome.source.SpatialBiomeArray
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.chunkPosition
 import glm_.vec3.Vec3i
 
 class NoiseBiomeAccessor(private val world: World) : BiomeAccessor {
@@ -26,6 +28,18 @@ class NoiseBiomeAccessor(private val world: World) : BiomeAccessor {
             blockPosition.y
         } else {
             0
+        }
+        if (Minosoft.config.config.game.graphics.fastBiomeNoise) {
+            world[blockPosition.chunkPosition]?.biomeSource?.let {
+                if (it !is SpatialBiomeArray) {
+                    return null
+                }
+                val x: Int = (blockPosition.x and 0x0F) / 4
+                val z: Int = (blockPosition.z and 0x0F) / 4
+
+                return it.data[(y / 4) * 16 + (z * 4 + x)]
+            }
+            return null
         }
         return FuzzyNoiseBiomeCalculator.getBiome(world.hashedSeed, blockPosition.x, y, blockPosition.z, world)
     }

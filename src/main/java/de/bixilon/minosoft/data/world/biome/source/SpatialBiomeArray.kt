@@ -17,7 +17,7 @@ import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.util.MMath
 import glm_.vec3.Vec3i
 
-class SpatialBiomeArray(private val data: Array<Biome>) : BiomeSource {
+class SpatialBiomeArray(val data: Array<Biome>) : BiomeSource {
 
     override fun getBiome(position: Vec3i): Biome {
         val index = (MMath.clamp(position.y, 0, Y_BIT_MASK)) shl X_SECTION_COUNT + X_SECTION_COUNT or
