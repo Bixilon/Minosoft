@@ -51,8 +51,11 @@ class Chunk(
     var lightInitialized = false
     var neighboursLoaded = false
 
+    val isLoaded: Boolean
+        get() = blocksInitialized && biomesInitialized && lightInitialized
+
     val isFullyLoaded: Boolean
-        get() = blocksInitialized && biomesInitialized && lightInitialized && neighboursLoaded
+        get() = isLoaded && neighboursLoaded
 
     operator fun get(sectionHeight: Int): ChunkSection? = sections?.getOrNull(sectionHeight - lowestSection)
 

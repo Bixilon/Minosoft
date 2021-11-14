@@ -235,6 +235,16 @@ object ChunkUtil {
             return true
         }
 
+    val Array<Chunk?>.loaded: Boolean
+        get() {
+            for (neighbour in this) {
+                if (neighbour?.isLoaded != true) {
+                    return false
+                }
+            }
+            return true
+        }
+
 
     fun getChunkNeighbourPositions(chunkPosition: Vec2i): Array<Vec2i> {
         return arrayOf(

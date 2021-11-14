@@ -52,7 +52,7 @@ object LightUtil {
     }
 
     private fun readLightArray(buffer: PlayInByteBuffer, lightMask: BitSet, dimension: DimensionProperties): Triple<Array<ByteArray?>, ByteArray?, ByteArray?> {
-        var highestSectionIndex = dimension.highestSection
+        var highestSectionIndex = dimension.highestSection + 1
         val lowesSectionIndex = dimension.lowestSection
         if (buffer.versionId >= ProtocolVersions.V_20W49A) {
             buffer.readVarInt() // section count

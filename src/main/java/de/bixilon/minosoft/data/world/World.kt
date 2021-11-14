@@ -42,7 +42,7 @@ import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
 import de.bixilon.minosoft.util.KUtil.toSynchronizedMap
 import de.bixilon.minosoft.util.MMath
 import de.bixilon.minosoft.util.chunk.ChunkUtil
-import de.bixilon.minosoft.util.chunk.ChunkUtil.fullyLoaded
+import de.bixilon.minosoft.util.chunk.ChunkUtil.loaded
 import de.bixilon.minosoft.util.collections.SynchronizedMap
 import glm_.func.common.clamp
 import glm_.vec2.Vec2i
@@ -266,19 +266,21 @@ class World(
         return getChunkNeighbours(ChunkUtil.getChunkNeighbourPositions(chunkPosition))
     }
 
-    fun onChunkUpdate(chunkPosition: Vec2i, chunk: Chunk = get(chunkPosition)!!) {
+
+    fun onChunkUpdate(chunkPosition: Vec2i, chunk: Chunk = this[chunkPosition]!!) {
+        if (chunk.neighboursLoaded) {
+            // return  ToDo: Causes some chunks not have neighboursLoaded=true, but they should
+        }
         val neighbourPositions = ChunkUtil.getChunkNeighbourPositions(chunkPosition)
         val neighbours = getChunkNeighbours(neighbourPositions)
-        if (chunk.neighboursLoaded) {
-            return
-        }
-        if (neighbours.fullyLoaded) {
+        if (neighbours.loaded) {
             chunk.neighboursLoaded = true
             if (cacheBiomeAccessor != null) {
                 chunk.buildBiomeCache()
             }
         }
-        for ((index, neighbourPosition) in neighbourPositions.withIndex()) {
+        for (index in 0 until 8) {
+            val neighbourPosition = neighbourPositions[index]
             if (neighbourPosition == chunkPosition) {
                 continue
             }
@@ -287,21 +289,22 @@ class World(
             if (neighbourChunk.neighboursLoaded) {
                 continue
             }
-            var biomeSourceLoaded = true
+            var neighbourLoaded = true
             for (neighbourNeighbourChunk in getChunkNeighbours(neighbourPosition)) {
-                if (neighbourNeighbourChunk?.biomeSource == null) {
-                    biomeSourceLoaded = false
+                if ((neighbourNeighbourChunk?.biomeSource == null && neighbourNeighbourChunk?.biomesInitialized != true) || !neighbourNeighbourChunk.blocksInitialized || !neighbourNeighbourChunk.lightInitialized) {
+                    neighbourLoaded = false
                     break
                 }
             }
-            if (biomeSourceLoaded) {
-                neighbourChunk.neighboursLoaded = true // ToDo: only if fully loaded not just biomes
-
-                if (cacheBiomeAccessor != null) {
-                    neighbourChunk.buildBiomeCache()
-                }
-                connection.fireEvent(ChunkDataChangeEvent(connection, EventInitiators.UNKNOWN, neighbourPosition, neighbourChunk))
+            if (!neighbourLoaded) {
+                continue
             }
+            neighbourChunk.neighboursLoaded = true
+
+            if (cacheBiomeAccessor != null) {
+                neighbourChunk.buildBiomeCache()
+            }
+            connection.fireEvent(ChunkDataChangeEvent(connection, EventInitiators.UNKNOWN, neighbourPosition, neighbourChunk))
         }
     }
 
