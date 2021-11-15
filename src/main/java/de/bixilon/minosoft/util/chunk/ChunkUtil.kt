@@ -272,4 +272,16 @@ object ChunkUtil {
             neighbourChunks[6][sectionHeight],
         )
     }
+
+    fun Array<ChunkSection?>.acquire() {
+        for (section in this) {
+            section?.acquire()
+        }
+    }
+
+    fun Array<ChunkSection?>.release() {
+        for (section in this) {
+            section?.release()
+        }
+    }
 }

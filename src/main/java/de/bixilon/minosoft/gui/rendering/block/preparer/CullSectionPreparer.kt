@@ -7,6 +7,8 @@ import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.block.mesh.ChunkSectionMeshes
 import de.bixilon.minosoft.gui.rendering.util.VecUtil
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.util.chunk.ChunkUtil.acquire
+import de.bixilon.minosoft.util.chunk.ChunkUtil.release
 import glm_.vec2.Vec2i
 import glm_.vec3.Vec3i
 import java.util.*
@@ -21,6 +23,8 @@ class CullSectionPreparer(
         val random = Random(0L)
 
         val blocks = section.blocks
+        section.acquire()
+        neighbours.acquire()
         var block: BlockState?
         val neighbourBlocks: Array<BlockState?> = arrayOfNulls(Directions.SIZE)
 
@@ -31,41 +35,41 @@ class CullSectionPreparer(
         for (x in 0 until ProtocolDefinition.SECTION_WIDTH_X) {
             for (y in 0 until ProtocolDefinition.SECTION_HEIGHT_Y) {
                 for (z in 0 until ProtocolDefinition.SECTION_WIDTH_Z) {
-                    block = blocks[ChunkSection.getIndex(x, y, z)]
+                    block = blocks.unsafeGet(x, y, z)
                     val model = block?.model ?: continue
 
                     // ToDo: Chunk borders
                     neighbourBlocks[Directions.DOWN.ordinal] = if (y == 0) {
-                        neighbours[Directions.DOWN.ordinal]?.blocks?.get(ChunkSection.getIndex(x, ProtocolDefinition.SECTION_MAX_Y, z))
+                        neighbours[Directions.DOWN.ordinal]?.blocks?.unsafeGet(x, ProtocolDefinition.SECTION_MAX_Y, z)
                     } else {
-                        blocks[ChunkSection.getIndex(x, y - 1, z)]
+                        blocks.unsafeGet(x, y - 1, z)
                     }
                     neighbourBlocks[Directions.UP.ordinal] = if (y == ProtocolDefinition.SECTION_MAX_Y) {
-                        neighbours[Directions.UP.ordinal]?.blocks?.get(ChunkSection.getIndex(x, 0, z))
+                        neighbours[Directions.UP.ordinal]?.blocks?.unsafeGet(x, 0, z)
                     } else {
-                        blocks[ChunkSection.getIndex(x, y + 1, z)]
+                        blocks.unsafeGet(x, y + 1, z)
                     }
 
                     neighbourBlocks[Directions.NORTH.ordinal] = if (z == 0) {
-                        neighbours[Directions.NORTH.ordinal]?.blocks?.get(ChunkSection.getIndex(x, y, ProtocolDefinition.SECTION_MAX_Z))
+                        neighbours[Directions.NORTH.ordinal]?.blocks?.unsafeGet(x, y, ProtocolDefinition.SECTION_MAX_Z)
                     } else {
-                        blocks[ChunkSection.getIndex(x, y, z - 1)]
+                        blocks.unsafeGet(x, y, z - 1)
                     }
                     neighbourBlocks[Directions.SOUTH.ordinal] = if (z == ProtocolDefinition.SECTION_MAX_Z) {
-                        neighbours[Directions.SOUTH.ordinal]?.blocks?.get(ChunkSection.getIndex(x, y, 0))
+                        neighbours[Directions.SOUTH.ordinal]?.blocks?.unsafeGet(x, y, 0)
                     } else {
-                        blocks[ChunkSection.getIndex(x, y, z + 1)]
+                        blocks.unsafeGet(x, y, z + 1)
                     }
 
                     neighbourBlocks[Directions.WEST.ordinal] = if (x == 0) {
-                        neighbours[Directions.WEST.ordinal]?.blocks?.get(ChunkSection.getIndex(ProtocolDefinition.SECTION_MAX_X, y, z))
+                        neighbours[Directions.WEST.ordinal]?.blocks?.unsafeGet(ProtocolDefinition.SECTION_MAX_X, y, z)
                     } else {
-                        blocks[ChunkSection.getIndex(x - 1, y, z)]
+                        blocks.unsafeGet(x - 1, y, z)
                     }
                     neighbourBlocks[Directions.EAST.ordinal] = if (x == ProtocolDefinition.SECTION_MAX_X) {
-                        neighbours[Directions.EAST.ordinal]?.blocks?.get(ChunkSection.getIndex(0, y, z))
+                        neighbours[Directions.EAST.ordinal]?.blocks?.unsafeGet(0, y, z)
                     } else {
-                        blocks[ChunkSection.getIndex(x + 1, y, z)]
+                        blocks.unsafeGet(x + 1, y, z)
                     }
 
                     val position = Vec3i(offsetX + x, offsetY + y, offsetZ + z)
@@ -77,6 +81,8 @@ class CullSectionPreparer(
                 }
             }
         }
+        section.release()
+        neighbours.release()
 
 
         return mesh

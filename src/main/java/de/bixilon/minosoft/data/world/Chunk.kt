@@ -153,7 +153,7 @@ class Chunk(
             val neighbours: Array<Chunk> = world.getChunkNeighbours(chunkPosition).unsafeCast()
             val cacheBiomeAccessor = world.cacheBiomeAccessor
             if (cacheBiomeAccessor != null && biomesInitialized && neighboursLoaded) {
-                section.buildBiomeCache(chunkPosition, sectionHeight, this, neighbours, cacheBiomeAccessor, world)
+                section.buildBiomeCache(chunkPosition, sectionHeight, this, neighbours, cacheBiomeAccessor)
             }
             sections[sectionIndex] = section
         }
@@ -195,7 +195,7 @@ class Chunk(
         for ((sectionIndex, section) in sections!!.withIndex()) {
             section ?: continue
             val sectionHeight = sectionIndex + lowestSection
-            section.buildBiomeCache(chunkPosition, sectionHeight, this, neighbours, cacheBiomeAccessor, world)
+            section.buildBiomeCache(chunkPosition, sectionHeight, this, neighbours, cacheBiomeAccessor)
         }
         biomesInitialized = true
     }
@@ -211,7 +211,7 @@ class Chunk(
             if (section == null) {
                 // ToDo: Faster
                 val chunkPosition = Vec3i(x, y, z).chunkPosition
-                return connection.world.cacheBiomeAccessor?.getBiome(x, y, z, chunkPosition.x, chunkPosition.y, this, null, world)
+                return connection.world.cacheBiomeAccessor?.getBiome(x, y, z, chunkPosition.x, chunkPosition.y, this, null)
             }
             return section.biomes[x, y % ProtocolDefinition.SECTION_HEIGHT_Y, z]
         }

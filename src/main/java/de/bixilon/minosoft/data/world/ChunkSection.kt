@@ -89,7 +89,7 @@ class ChunkSection(
         }
     }
 
-    fun buildBiomeCache(chunkPosition: Vec2i, sectionHeight: Int, chunk: Chunk, neighbours: Array<Chunk>, biomeAccessor: NoiseBiomeAccessor, world: World) {
+    fun buildBiomeCache(chunkPosition: Vec2i, sectionHeight: Int, chunk: Chunk, neighbours: Array<Chunk>, biomeAccessor: NoiseBiomeAccessor) {
         val chunkPositionX = chunkPosition.x
         val chunkPositionZ = chunkPosition.y
         val blockOffset = Vec3i.of(chunkPosition, sectionHeight)
@@ -98,7 +98,7 @@ class ChunkSection(
         val z = blockOffset.z
         val biomes: Array<Biome?> = arrayOfNulls(ProtocolDefinition.BLOCKS_PER_SECTION)
         for (index in 0 until ProtocolDefinition.BLOCKS_PER_SECTION) {
-            biomes[index] = biomeAccessor.getBiome(x + (index and 0x0F), y + ((index shr 8) and 0x0F), z + ((index shr 4) and 0x0F), chunkPositionX, chunkPositionZ, chunk, neighbours, world) //!!
+            biomes[index] = biomeAccessor.getBiome(x + (index and 0x0F), y + ((index shr 8) and 0x0F), z + ((index shr 4) and 0x0F), chunkPositionX, chunkPositionZ, chunk, neighbours) //!!
         }
         this.biomes.setData(biomes.unsafeCast())
     }
