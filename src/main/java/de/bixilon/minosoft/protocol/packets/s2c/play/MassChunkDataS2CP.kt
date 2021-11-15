@@ -75,7 +75,6 @@ class MassChunkDataS2CP() : PlayS2CPacket() {
             } else {
                 val chunk = connection.world.getOrCreateChunk(chunkPosition)
                 chunk.setData(data)
-                connection.fireEvent(ChunkDataChangeEvent(connection, EventInitiators.SERVER, chunkPosition, chunk))
             }
         }
     }

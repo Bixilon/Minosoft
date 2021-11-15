@@ -26,7 +26,7 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 import glm_.vec3.Vec3i
 
 class SignTextSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
-    val signPosition: Vec3i = if (buffer.versionId < ProtocolVersions.V_14W04A) {
+    val position: Vec3i = if (buffer.versionId < ProtocolVersions.V_14W04A) {
         buffer.readShortBlockPosition()
     } else {
         buffer.readBlockPosition()
@@ -43,16 +43,14 @@ class SignTextSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     }
 
     override fun handle(connection: PlayConnection) {
-        val signBlockEntity = connection.world.getBlockEntity(signPosition)?.unsafeCast<SignBlockEntity>() ?: let {
-            val blockEntity = SignBlockEntity(connection)
-            connection.world[signPosition] = blockEntity
-            blockEntity
+        val signBlockEntity = connection.world.getBlockEntity(position)?.unsafeCast<SignBlockEntity>() ?: SignBlockEntity(connection).apply {
+            connection.world.setBlockEntity(position, this)
         }
 
         signBlockEntity.lines = lines
     }
 
     override fun log() {
-        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Sign text set (position=$signPosition, lines=$lines" }
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Sign text set (position=$position, lines=$lines" }
     }
 }

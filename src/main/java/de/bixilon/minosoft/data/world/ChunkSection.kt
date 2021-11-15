@@ -13,54 +13,68 @@
 package de.bixilon.minosoft.data.world
 
 import de.bixilon.minosoft.data.entities.block.BlockEntity
+import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.BlockState
-import de.bixilon.minosoft.data.world.block.entities.ArrayBlockEntityProvider
-import de.bixilon.minosoft.data.world.block.entities.BlockEntityProvider
-import de.bixilon.minosoft.data.world.block.entities.MapBlockEntityProvider
+import de.bixilon.minosoft.data.registries.registries.Registries
+import de.bixilon.minosoft.data.world.biome.accessor.NoiseBiomeAccessor
+import de.bixilon.minosoft.data.world.container.RegistrySectionDataProvider
+import de.bixilon.minosoft.data.world.container.SectionDataProvider
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.of
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.util.KUtil.unsafeCast
+import glm_.vec2.Vec2i
 import glm_.vec3.Vec3i
 
 /**
  * Collection of 16x16x16 blocks
  */
 class ChunkSection(
-    var blocks: Array<BlockState?> = arrayOfNulls(ProtocolDefinition.BLOCKS_PER_SECTION),
-    private var blockEntities: BlockEntityProvider = MapBlockEntityProvider(),
+    var blocks: RegistrySectionDataProvider<BlockState?>,
+    var biomes: RegistrySectionDataProvider<Biome>,
+    var blockEntities: SectionDataProvider<BlockEntity?>,
+    var light: IntArray, // packed (skyLight: 0xF0, blockLight: 0x0F)
 ) {
 
-    fun getBlockState(inChunkSectionPositions: Vec3i): BlockState? {
-        return blocks[inChunkSectionPositions.index]
-    }
+    constructor(registries: Registries) : this(RegistrySectionDataProvider<BlockState?>(registries.blockStateRegistry.unsafeCast(), checkSize = true), RegistrySectionDataProvider(registries.biomeRegistry, checkSize = false), SectionDataProvider(checkSize = true), IntArray(ProtocolDefinition.BLOCKS_PER_SECTION))
 
-    fun setBlockState(inChunkSectionPositions: Vec3i, blockState: BlockState?) {
-        blocks[inChunkSectionPositions.index] = blockState
-    }
-
-    fun setData(chunkSection: ChunkSection) {
-        blocks = chunkSection.blocks.clone()
-        blockEntities = chunkSection.blockEntities.clone()
-    }
-
-    fun getBlockEntity(inChunkSectionPositions: Vec3i): BlockEntity? {
-        return blockEntities[inChunkSectionPositions]
-    }
-
-    fun setBlockEntity(inChunkSectionPositions: Vec3i, blockEntity: BlockEntity?) {
-        blockEntities[inChunkSectionPositions] = blockEntity
-        val blockEntities = blockEntities
-        if (blockEntities.size > BlockEntityProvider.BLOCK_ENTITY_MAP_LIMIT_UP && blockEntities is MapBlockEntityProvider) {
-            this.blockEntities = ArrayBlockEntityProvider(blockEntities)
-        } else if (blockEntities.size <= BlockEntityProvider.BLOCK_ENTITY_MAP_LIMIT_DOWN && blockEntities is ArrayBlockEntityProvider) {
-            this.blockEntities = MapBlockEntityProvider(blockEntities)
+    fun tick(connection: PlayConnection, chunkPosition: Vec2i, sectionHeight: Int) {
+        if (blockEntities.isEmpty) {
+            return
         }
+        acquire()
+        var blockEntity: BlockEntity?
+        for (index in 0 until ProtocolDefinition.BLOCKS_PER_SECTION) {
+            blockEntity = blockEntities.unsafeGet(index) ?: continue
+            val position = Vec3i.of(chunkPosition, sectionHeight, index.indexPosition)
+            val blockState = blocks.unsafeGet(index) ?: continue
+            blockEntity.tick(connection, blockState, position)
+        }
+        release()
     }
 
-    fun realTick(connection: PlayConnection, chunkSectionPosition: Vec3i) {
-        blockEntities.forEach { entity, inChunkSectionPosition ->
-            val block = blocks[inChunkSectionPosition.index] ?: return@forEach // maybe block already got destroyed
-            entity.realTick(connection, block, chunkSectionPosition + inChunkSectionPosition)
-        }
+    fun acquire() {
+        blocks.acquire()
+        biomes.acquire()
+        blockEntities.acquire()
+    }
+
+    fun release() {
+        blocks.release()
+        biomes.release()
+        blockEntities.release()
+    }
+
+    fun lock() {
+        blocks.lock()
+        biomes.lock()
+        blockEntities.lock()
+    }
+
+    fun unlock() {
+        blocks.unlock()
+        biomes.unlock()
+        blockEntities.unlock()
     }
 
     companion object {
@@ -68,12 +82,24 @@ class ChunkSection(
             get() = getIndex(x, y, z)
 
         val Int.indexPosition: Vec3i
-            get() {
-                return Vec3i(this and 0x0F, (this shr 8) and 0x0F, (this shr 4) and 0x0F)
-            }
+            get() = Vec3i(this and 0x0F, (this shr 8) and 0x0F, (this shr 4) and 0x0F)
 
         fun getIndex(x: Int, y: Int, z: Int): Int {
             return y shl 8 or (z shl 4) or x
         }
+    }
+
+    fun buildBiomeCache(chunkPosition: Vec2i, sectionHeight: Int, chunk: Chunk, neighbours: Array<Chunk>, biomeAccessor: NoiseBiomeAccessor) {
+        val chunkPositionX = chunkPosition.x
+        val chunkPositionZ = chunkPosition.y
+        val blockOffset = Vec3i.of(chunkPosition, sectionHeight)
+        val x = blockOffset.x
+        val y = blockOffset.y
+        val z = blockOffset.z
+        val biomes: Array<Biome?> = arrayOfNulls(ProtocolDefinition.BLOCKS_PER_SECTION)
+        for (index in 0 until ProtocolDefinition.BLOCKS_PER_SECTION) {
+            biomes[index] = biomeAccessor.getBiome(x + (index and 0x0F), y + ((index shr 8) and 0x0F), z + ((index shr 4) and 0x0F), chunkPositionX, chunkPositionZ, chunk, neighbours) //!!
+        }
+        this.biomes.setData(biomes.unsafeCast())
     }
 }

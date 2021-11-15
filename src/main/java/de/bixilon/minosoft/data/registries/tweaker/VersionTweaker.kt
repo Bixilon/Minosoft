@@ -85,8 +85,4 @@ object VersionTweaker {
         }
         return fakeClass
     }
-
-    private fun getBlockAbove(sections: Map<Int, ChunkSection>, inChunkSectionPositions: Vec3i, sectionHeight: Int): BlockState? {
-        return sections[sectionHeight]?.getBlockState(inChunkSectionPositions)
-    }
 }

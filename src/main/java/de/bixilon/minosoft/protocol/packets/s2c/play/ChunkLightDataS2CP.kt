@@ -14,10 +14,7 @@ package de.bixilon.minosoft.protocol.packets.s2c.play
 
 
 import de.bixilon.minosoft.Minosoft
-import de.bixilon.minosoft.data.world.light.ChunkLightAccessor
-import de.bixilon.minosoft.data.world.light.LightAccessor
-import de.bixilon.minosoft.modding.event.EventInitiators
-import de.bixilon.minosoft.modding.event.events.ChunkDataChangeEvent
+import de.bixilon.minosoft.data.world.ChunkData
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
@@ -34,7 +31,7 @@ class ChunkLightDataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     val chunkPosition: Vec2i = Vec2i(buffer.readVarInt(), buffer.readVarInt())
     var trustEdges: Boolean = false
         private set
-    val lightAccessor: LightAccessor
+    val chunkData: ChunkData
 
     init {
         if (buffer.versionId >= ProtocolVersions.V_1_16_PRE3) {
@@ -56,7 +53,7 @@ class ChunkLightDataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
             buffer.readLongArray() // emptyBlockLightMask
         }
 
-        lightAccessor = readLightPacket(buffer, skyLightMask, blockLightMask, buffer.connection.world.dimension!!)
+        chunkData = readLightPacket(buffer, skyLightMask, blockLightMask, buffer.connection.world.dimension!!)
     }
 
     override fun log() {
@@ -68,11 +65,6 @@ class ChunkLightDataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
 
     override fun handle(connection: PlayConnection) {
         val chunk = connection.world.getOrCreateChunk(chunkPosition)
-        if (chunk.lightAccessor != null && chunk.lightAccessor is ChunkLightAccessor && lightAccessor is ChunkLightAccessor) {
-            (chunk.lightAccessor as ChunkLightAccessor).merge(lightAccessor)
-        } else {
-            chunk.lightAccessor = lightAccessor
-        }
-        connection.fireEvent(ChunkDataChangeEvent(connection, EventInitiators.SERVER, chunkPosition, chunk))
+        chunk.setData(chunkData)
     }
 }

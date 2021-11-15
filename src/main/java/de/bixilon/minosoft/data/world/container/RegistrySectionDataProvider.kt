@@ -11,18 +11,34 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.world.biome.source
+package de.bixilon.minosoft.data.world.container
 
-import de.bixilon.minosoft.data.registries.biomes.Biome
+import de.bixilon.minosoft.data.registries.registries.registry.AbstractRegistry
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
-class XZBiomeArray(private val biomes: Array<Biome>) : BiomeSource {
+class RegistrySectionDataProvider<T>(
+    val registry: AbstractRegistry<T>,
+    data: Array<Any?> = arrayOfNulls(ProtocolDefinition.BLOCKS_PER_SECTION),
+    checkSize: Boolean = false,
+) : SectionDataProvider<T>(data, checkSize = checkSize) {
 
-    init {
-        check(biomes.size == ProtocolDefinition.SECTION_WIDTH_X * ProtocolDefinition.SECTION_WIDTH_Z) { "Biome array size does not match the xz block count!" }
+    @Suppress("UNCHECKED_CAST")
+    fun setIdData(ids: Array<Int>) {
+        val data: Array<Any?> = arrayOfNulls(ProtocolDefinition.BLOCKS_PER_SECTION)
+
+        for ((index, id) in ids.withIndex()) {
+            data[index] = registry[id]
+        }
+
+        setData(data as Array<T>)
     }
 
-    override fun getBiome(x: Int, y: Int, z: Int): Biome {
-        return biomes[(x and 0x0F) or ((z and 0x0F) shl 4)]
+
+    override fun copy(): RegistrySectionDataProvider<T> {
+        acquire()
+        val clone = RegistrySectionDataProvider(registry, data.clone())
+        release()
+
+        return clone
     }
 }

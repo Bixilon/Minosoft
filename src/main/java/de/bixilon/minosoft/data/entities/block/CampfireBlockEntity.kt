@@ -59,7 +59,7 @@ class CampfireBlockEntity(connection: PlayConnection) : BlockEntity(connection) 
     }
 
 
-    override fun realTick(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i) {
+    override fun tick(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i) {
         if (blockState.properties[BlockProperties.LIT] != true) {
             return
         }

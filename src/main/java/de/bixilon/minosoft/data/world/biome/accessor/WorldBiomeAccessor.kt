@@ -11,28 +11,21 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.world.light
+package de.bixilon.minosoft.data.world.biome.accessor
 
-
+import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.world.World
-import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.chunkPosition
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.inChunkPosition
 import glm_.vec3.Vec3i
 
-class WorldLightAccessor(
-    private val world: World,
-) : LightAccessor {
-    override fun getSkyLight(blockPosition: Vec3i): Int {
-        if (RenderConstants.DISABLE_LIGHTING) {
-            return 15
-        }
-        return world.chunks[blockPosition.chunkPosition]?.lightAccessor?.getSkyLight(blockPosition) ?: 0
+class WorldBiomeAccessor(val world: World) : BiomeAccessor {
+
+    override fun getBiome(x: Int, y: Int, z: Int): Biome? {
+        return getBiome(Vec3i(x, y, z)) // ToDo
     }
 
-    override fun getBlockLight(blockPosition: Vec3i): Int {
-        if (RenderConstants.DISABLE_LIGHTING) {
-            return 15
-        }
-        return world.chunks[blockPosition.chunkPosition]?.lightAccessor?.getBlockLight(blockPosition) ?: 0
+    override fun getBiome(blockPosition: Vec3i): Biome? {
+        return world[blockPosition.chunkPosition]?.getBiome(blockPosition.inChunkPosition)
     }
 }

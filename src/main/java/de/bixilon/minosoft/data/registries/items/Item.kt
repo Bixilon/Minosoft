@@ -176,8 +176,8 @@ open class Item(
                 "BannerPatternItem" -> BannerPatternItem(resourceLocation, registries, data)
                 "HoneycombItem" -> HoneycombItem(resourceLocation, registries, data)
                 "HoneyBottleItem" -> HoneyBottleItem(resourceLocation, registries, data)
-                else -> TODO("Can not find item class (resourceLocation=$resourceLocation, $`class`)")
-                //else -> Item(resourceLocation, registries, data)
+//                else -> TODO("Can not find item class (resourceLocation=$resourceLocation, $`class`)")
+                else -> Item(resourceLocation, registries, data)
             }
         }
     }

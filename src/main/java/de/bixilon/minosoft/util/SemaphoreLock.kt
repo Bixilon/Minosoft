@@ -11,21 +11,26 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.world.light
+package de.bixilon.minosoft.util
 
+import java.util.concurrent.Semaphore
 
-import glm_.glm
-import glm_.vec3.Vec3i
+class SemaphoreLock {
+    private val semaphore = Semaphore(Int.MAX_VALUE)
 
-interface LightAccessor {
+    fun acquire() {
+        semaphore.acquire()
+    }
 
-    fun getSkyLight(blockPosition: Vec3i): Int
+    fun release() {
+        semaphore.release()
+    }
 
-    fun getBlockLight(blockPosition: Vec3i): Int
+    fun lock() {
+        semaphore.acquire(Int.MAX_VALUE)
+    }
 
-    fun getLightLevel(blockPosition: Vec3i): Int {
-        val blockLight = getBlockLight(blockPosition)
-        val skyLight = getSkyLight(blockPosition)
-        return glm.max(blockLight, skyLight)
+    fun unlock() {
+        semaphore.release(Int.MAX_VALUE)
     }
 }

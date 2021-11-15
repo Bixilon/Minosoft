@@ -81,7 +81,7 @@ class MassBlockSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
             return
         }
         val chunk = connection.world[chunkPosition] ?: return // thanks mojang
-        if (chunk.sections == null) {
+        if (!chunk.blocksInitialized) {
             return
         }
         chunk.setBlocks(blocks)

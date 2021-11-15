@@ -22,4 +22,8 @@ object NullBiomeAccessor : BiomeAccessor {
     override fun getBiome(blockPosition: Vec3i): Biome? {
         return null
     }
+
+    override fun getBiome(x: Int, y: Int, z: Int): Biome? {
+        return null
+    }
 }

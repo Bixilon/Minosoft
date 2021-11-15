@@ -152,16 +152,8 @@ object VecUtil {
     val Vec3i.chunkPosition: Vec2i
         get() = Vec2i(this.x.chunkPosition(ProtocolDefinition.SECTION_WIDTH_X), this.z.chunkPosition(ProtocolDefinition.SECTION_WIDTH_Z))
 
-    fun Int.inChunkPosition(multiplier: Int): Int {
-        var coordinate: Int = this % multiplier
-        if (coordinate < 0) {
-            coordinate += multiplier
-        }
-        return coordinate
-    }
-
     val Vec3i.inChunkPosition: Vec3i
-        get() = Vec3i(this.x.inChunkPosition(ProtocolDefinition.SECTION_WIDTH_X), y, this.z.inChunkPosition(ProtocolDefinition.SECTION_WIDTH_Z))
+        get() = Vec3i(x and 0x0F, y, this.z and 0x0F)
 
     val Vec3i.inChunkSectionPosition: Vec3i
         get() {
@@ -174,14 +166,15 @@ object VecUtil {
             return Vec3i(inVec2i.x, y, inVec2i.z)
         }
 
-    val Vec3i.sectionHeight: Int
-        get() {
-            return if (y < 0) {
-                (y + 1) / ProtocolDefinition.SECTION_HEIGHT_Y - 1
-            } else {
-                y / ProtocolDefinition.SECTION_HEIGHT_Y
-            }
+    val Int.sectionHeight: Int
+        get() = if (this < 0) {
+            (this + 1) / ProtocolDefinition.SECTION_HEIGHT_Y - 1
+        } else {
+            this / ProtocolDefinition.SECTION_HEIGHT_Y
         }
+
+    val Vec3i.sectionHeight: Int
+        get() = y.sectionHeight
 
     val Vec3i.entityPosition: Vec3d
         get() = Vec3d(x + 0.5f, y, z + 0.5f) // ToDo: Confirm
@@ -197,6 +190,14 @@ object VecUtil {
 
     val Vec3i.center: Vec3d
         get() = Vec3d(x + 0.5, y + 0.5, z + 0.5)
+
+    fun Vec3i.Companion.of(chunkPosition: Vec2i, sectionHeight: Int): Vec3i {
+        return Vec3i(
+            chunkPosition.x * ProtocolDefinition.SECTION_WIDTH_X,
+            sectionHeight * ProtocolDefinition.SECTION_HEIGHT_Y,
+            chunkPosition.y * ProtocolDefinition.SECTION_WIDTH_Z
+        ) // ToDo: Confirm
+    }
 
     fun Vec3i.Companion.of(chunkPosition: Vec2i, sectionHeight: Int, inChunkSectionPosition: Vec3i): Vec3i {
         return Vec3i(

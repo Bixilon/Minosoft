@@ -52,6 +52,7 @@ import de.bixilon.minosoft.protocol.packets.s2c.status.StatusPongS2CP
 
 class PacketTypes {
 
+    @Suppress("UNUSED")
     enum class C2S(val clazz: Class<out C2SPacket>? = null) {
         HANDSHAKING_HANDSHAKE(HandshakeC2SP::class.java),
         STATUS_PING(StatusPingC2SP::class.java),
@@ -145,6 +146,7 @@ class PacketTypes {
     }
 
 
+    @Suppress("UNUSED")
     enum class S2C(
         val playFactory: ((buffer: PlayInByteBuffer) -> PlayS2CPacket)? = null,
         val statusFactory: ((buffer: InByteBuffer) -> StatusS2CPacket)? = null,

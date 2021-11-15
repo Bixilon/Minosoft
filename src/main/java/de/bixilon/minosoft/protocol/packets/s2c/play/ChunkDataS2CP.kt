@@ -18,6 +18,10 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.world.ChunkData
 import de.bixilon.minosoft.data.world.biome.source.SpatialBiomeArray
 import de.bixilon.minosoft.datafixer.BlockEntityFixer.fix
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.of
+import de.bixilon.minosoft.modding.event.EventInitiators
+import de.bixilon.minosoft.modding.event.events.ChunkUnloadEvent
 import de.bixilon.minosoft.modding.event.events.ChunkDataChangeEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
@@ -37,7 +41,6 @@ import glm_.vec3.Vec3i
 import java.util.*
 
 class ChunkDataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
-    val blockEntities: MutableMap<Vec3i, BlockEntity> = mutableMapOf()
     val chunkPosition: Vec2i
     val chunkData: ChunkData = ChunkData()
     var unloadChunk: Boolean = false
@@ -103,10 +106,12 @@ class ChunkDataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
             // set position of the byte buffer, because of some reasons HyPixel makes some weird stuff and sends way to much 0 bytes. (~ 190k), thanks @pokechu22
             buffer.pointer = size + lastPos
             if (buffer.versionId >= ProtocolVersions.V_1_9_4) {
+                val blockEntities: MutableMap<Vec3i, BlockEntity> = mutableMapOf()
+                val positionOffset = Vec3i.of(chunkPosition, dimension.lowestSection, Vec3i.EMPTY)
                 val blockEntitiesCount = buffer.readVarInt()
                 for (i in 0 until blockEntitiesCount) {
                     val nbt = buffer.readNBT().asCompound()
-                    val position = Vec3i(nbt["x"]!!.toInt(), nbt["y"]!!.toInt(), nbt["z"]!!.toInt())
+                    val position = Vec3i(nbt["x"]!!.toInt(), nbt["y"]!!.toInt(), nbt["z"]!!.toInt()) - positionOffset
                     val resourceLocation = ResourceLocation(nbt["id"].unsafeCast()).fix()
                     val type = buffer.connection.registries.blockEntityTypeRegistry[resourceLocation] ?: let {
                         Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.WARN) { "Unknown block entity: $resourceLocation" }
@@ -116,6 +121,7 @@ class ChunkDataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
                     entity.updateNBT(nbt)
                     blockEntities[position] = entity
                 }
+                chunkData.blockEntities = blockEntities
             }
         }
     }
@@ -126,8 +132,7 @@ class ChunkDataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
             return
         }
         val chunk = connection.world.getOrCreateChunk(chunkPosition)
-        chunk.setData(chunkData)
-        connection.world.setBlockEntities(blockEntities)
+        chunk.setData(chunkData, isFullChunk)
         connection.fireEvent(ChunkDataChangeEvent(connection, this))
     }
 
