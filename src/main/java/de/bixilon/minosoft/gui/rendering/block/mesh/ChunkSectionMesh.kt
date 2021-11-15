@@ -20,8 +20,9 @@ import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
 import glm_.vec2.Vec2
 import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 
-class ChunkSectionMesh(renderWindow: RenderWindow, initialCacheSize: Int, val centerLength: Double) : Mesh(renderWindow, SectionArrayMeshStruct, initialCacheSize = initialCacheSize) {
+class ChunkSectionMesh(renderWindow: RenderWindow, initialCacheSize: Int, val center: Vec3d) : Mesh(renderWindow, SectionArrayMeshStruct, initialCacheSize = initialCacheSize) {
 
     fun addVertex(position: FloatArray, uv: Vec2, texture: AbstractTexture, tintColor: Int, light: Int) {
         val transformedUV = texture.renderData?.transformUV(uv) ?: uv

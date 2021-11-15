@@ -34,10 +34,14 @@ import kotlin.math.sin
 class LightMap(private val connection: PlayConnection) {
     private val nightVisionStatusEffect = connection.registries.statusEffectRegistry[DefaultStatusEffects.NIGHT_VISION]
     private val conduitPowerStatusEffect = connection.registries.statusEffectRegistry[DefaultStatusEffects.CONDUIT_POWER]
-    private val uniformBuffer = FloatOpenGLUniformBuffer(1, memAllocFloat(16 * 16 * 4))
+    private val uniformBuffer = FloatOpenGLUniformBuffer(1, memAllocFloat(UNIFORM_BUFFER_SIZE))
 
 
     fun init() {
+        // Set Alpha for all of them
+        for (i in 0 until UNIFORM_BUFFER_SIZE / 4) {
+            uniformBuffer.buffer.put(i * 4 + 3, 1.0f)
+        }
         uniformBuffer.init()
     }
 
@@ -112,5 +116,9 @@ class LightMap(private val connection: PlayConnection) {
             }
         }
         uniformBuffer.upload()
+    }
+
+    private companion object {
+        private const val UNIFORM_BUFFER_SIZE = 16 * 16 * 4 // skyLight * blockLight * RGBA
     }
 }

@@ -24,12 +24,11 @@ class ChunkSectionMeshes(
     chunkPosition: Vec2i,
     sectionHeight: Int,
 ) {
-    private val centerLength = Vec3d(Vec3i.of(chunkPosition, sectionHeight, Vec3i(8, 8, 8))).length2()
-    var opaqueMesh: ChunkSectionMesh? = ChunkSectionMesh(renderWindow, 100000, centerLength)
+    var opaqueMesh: ChunkSectionMesh? = ChunkSectionMesh(renderWindow, 100000, Vec3d(Vec3i.of(chunkPosition, sectionHeight, Vec3i(8, 8, 8))))
         private set
-    var translucentMesh: ChunkSectionMesh? = ChunkSectionMesh(renderWindow, 10000, centerLength)
+    var translucentMesh: ChunkSectionMesh? = ChunkSectionMesh(renderWindow, 10000, Vec3d(Vec3i.of(chunkPosition, sectionHeight, Vec3i(8, 8, 8))))
         private set
-    var transparentMesh: ChunkSectionMesh? = ChunkSectionMesh(renderWindow, 20000, centerLength)
+    var transparentMesh: ChunkSectionMesh? = ChunkSectionMesh(renderWindow, 20000, Vec3d(Vec3i.of(chunkPosition, sectionHeight, Vec3i(8, 8, 8))))
         private set
 
     // used for frustum culling

@@ -375,15 +375,15 @@ class WorldRenderer(
         }
         this.queue -= removeFromQueue
 
-        val cameraPositionLength = connection.player.cameraPosition.length2()
+        val cameraPosition = connection.player.cameraPosition
 
-        visibleOpaque.sortBy { it.centerLength - cameraPositionLength }
+        visibleOpaque.sortBy { (it.center - cameraPosition).length2() }
         this.visibleOpaque = visibleOpaque
 
-        visibleTranslucent.sortBy { cameraPositionLength - it.centerLength }
+        visibleTranslucent.sortBy { -(it.center - cameraPosition).length2() }
         this.visibleTranslucent = visibleTranslucent
 
-        visibleTransparent.sortBy { it.centerLength - cameraPositionLength }
+        visibleTransparent.sortBy { (it.center - cameraPosition).length2() }
         this.visibleTransparent = visibleTransparent
     }
 
