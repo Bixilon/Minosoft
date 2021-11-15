@@ -15,7 +15,6 @@ package de.bixilon.minosoft.gui.rendering.models.baked.block
 
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.BlockState
-import de.bixilon.minosoft.data.world.light.LightAccessor
 import de.bixilon.minosoft.gui.rendering.block.mesh.ChunkSectionMeshes
 import de.bixilon.minosoft.gui.rendering.models.FaceProperties
 import de.bixilon.minosoft.gui.rendering.models.baked.BakedModel
@@ -28,7 +27,4 @@ interface BakedBlockModel : BakedModel {
 
     // ToDo: Tint
     fun singleRender(position: Vec3i, mesh: ChunkSectionMeshes, random: Random, blockState: BlockState, neighbours: Array<BlockState?>, light: Int, ambientLight: FloatArray): Boolean
-
-    // ToDo: Get ambient light
-    fun getLight(position: Vec3i, random: Random, side: Directions, lightAccessor: LightAccessor): Int
 }

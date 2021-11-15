@@ -18,10 +18,8 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.world.ChunkData
 import de.bixilon.minosoft.data.world.biome.source.SpatialBiomeArray
 import de.bixilon.minosoft.datafixer.BlockEntityFixer.fix
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.of
-import de.bixilon.minosoft.modding.event.EventInitiators
-import de.bixilon.minosoft.modding.event.events.ChunkUnloadEvent
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
 import de.bixilon.minosoft.modding.event.events.ChunkDataChangeEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
@@ -93,7 +91,7 @@ class ChunkDataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
                 heightMap = buffer.readNBT()?.compoundCast()
             }
             if (!isFullChunk) {
-                chunkData.biomeSource = SpatialBiomeArray(buffer.readBiomeArray())
+                this.chunkData.biomeSource = SpatialBiomeArray(buffer.readBiomeArray())
             }
             val size = buffer.readVarInt()
             val lastPos = buffer.pointer
@@ -121,7 +119,7 @@ class ChunkDataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
                     entity.updateNBT(nbt)
                     blockEntities[position] = entity
                 }
-                chunkData.blockEntities = blockEntities
+                this.chunkData.blockEntities = blockEntities
             }
         }
     }

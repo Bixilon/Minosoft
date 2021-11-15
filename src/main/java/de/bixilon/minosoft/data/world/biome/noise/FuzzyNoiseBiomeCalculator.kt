@@ -2,11 +2,13 @@ package de.bixilon.minosoft.data.world.biome.noise
 
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.world.Chunk
+import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.util.MMath.square
+import glm_.vec2.Vec2i
 
 object FuzzyNoiseBiomeCalculator {
 
-    fun getBiome(seed: Long, x: Int, y: Int, z: Int, chunkPositionX: Int, chunkPositionZ: Int, chunk: Chunk, neighbours: Array<Chunk>): Biome? {
+    fun getBiome(seed: Long, x: Int, y: Int, z: Int, chunkPositionX: Int, chunkPositionZ: Int, chunk: Chunk, neighbours: Array<Chunk>?, world: World): Biome? {
         val m = x - 2
         val n = y - 2
         val o = z - 2
@@ -68,6 +70,10 @@ object FuzzyNoiseBiomeCalculator {
         var biomeChunk: Chunk? = null
         val biomeChunkX = biomeX shr 2
         val biomeChunkZ = biomeZ shr 2
+
+        if (neighbours == null) {
+            return world[Vec2i(biomeChunkX, biomeChunkZ)]?.biomeSource?.getBiome(biomeX, biomeY, biomeZ)
+        }
 
         val deltaChunkX = biomeChunkX - chunkPositionX
         val deltaChunkZ = biomeChunkZ - chunkPositionZ

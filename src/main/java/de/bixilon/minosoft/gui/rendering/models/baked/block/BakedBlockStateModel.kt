@@ -15,7 +15,6 @@ package de.bixilon.minosoft.gui.rendering.models.baked.block
 
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.BlockState
-import de.bixilon.minosoft.data.world.light.LightAccessor
 import de.bixilon.minosoft.gui.rendering.block.mesh.ChunkSectionMesh
 import de.bixilon.minosoft.gui.rendering.block.mesh.ChunkSectionMeshes
 import de.bixilon.minosoft.gui.rendering.models.CullUtil.canCull
@@ -72,9 +71,5 @@ class BakedBlockStateModel(
         for (face in faces[side.ordinal]) {
             face.greedyRender(floatStart, floatEnd, side, mesh, light)
         }
-    }
-
-    override fun getLight(position: Vec3i, random: Random, side: Directions, lightAccessor: LightAccessor): Int {
-        TODO("Not yet implemented")
     }
 }

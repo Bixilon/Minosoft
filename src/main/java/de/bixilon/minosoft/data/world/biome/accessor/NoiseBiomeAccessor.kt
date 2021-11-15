@@ -22,7 +22,7 @@ import de.bixilon.minosoft.data.world.biome.source.SpatialBiomeArray
 
 class NoiseBiomeAccessor(private val world: World) {
 
-    fun getBiome(x: Int, y: Int, z: Int, chunkPositionX: Int, chunkPositionZ: Int, chunk: Chunk, neighbours: Array<Chunk>): Biome? {
+    fun getBiome(x: Int, y: Int, z: Int, chunkPositionX: Int, chunkPositionZ: Int, chunk: Chunk, neighbours: Array<Chunk>?, world: World): Biome? {
         val biomeY = if (world.dimension?.supports3DBiomes == true) {
             y
         } else {
@@ -40,6 +40,6 @@ class NoiseBiomeAccessor(private val world: World) {
             return null
         }
 
-        return FuzzyNoiseBiomeCalculator.getBiome(world.hashedSeed, x, biomeY, z, chunkPositionX, chunkPositionZ, chunk, neighbours)
+        return FuzzyNoiseBiomeCalculator.getBiome(world.hashedSeed, x, biomeY, z, chunkPositionX, chunkPositionZ, chunk, neighbours, world)
     }
 }

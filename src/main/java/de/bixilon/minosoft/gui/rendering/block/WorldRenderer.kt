@@ -43,6 +43,8 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.synchronizedSetOf
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.KUtil.unsafeCast
+import de.bixilon.minosoft.util.chunk.ChunkUtil
+import de.bixilon.minosoft.util.chunk.ChunkUtil.fullyLoaded
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -117,7 +119,7 @@ class WorldRenderer(
             if (!chunk.isFullyLoaded || it.chunkPosition in incomplete) {
                 return@of
             }
-            val neighbourChunks = getChunkNeighbours(getChunkNeighbourPositions(it.chunkPosition))
+            val neighbourChunks = world.getChunkNeighbours(it.chunkPosition)
             if (!neighbourChunks.fullyLoaded) {
                 return@of
             }
@@ -155,7 +157,7 @@ class WorldRenderer(
     private fun unloadChunk(chunkPosition: Vec2i) {
         incomplete -= chunkPosition
         renderWindow.queue += { queue.remove(chunkPosition) }
-        for (neighbourPosition in getChunkNeighbourPositions(chunkPosition)) {
+        for (neighbourPosition in ChunkUtil.getChunkNeighbourPositions(chunkPosition)) {
             renderWindow.queue += { queue.remove(neighbourPosition) }
             world[neighbourPosition] ?: continue // if chunk is not loaded, we don't need to add it to incomplete
             incomplete += neighbourPosition
@@ -185,58 +187,6 @@ class WorldRenderer(
         mesh.transparentMesh?.let { visibleTransparent += it }
     }
 
-    /**
-     * @return All 8 fully loaded neighbour chunks or null
-     */
-    private fun getChunkNeighbours(neighbourPositions: Array<Vec2i>): Array<Chunk?> {
-        val chunks: Array<Chunk?> = arrayOfNulls(neighbourPositions.size)
-        for ((index, neighbourPosition) in neighbourPositions.withIndex()) {
-            val chunk = world[neighbourPosition] ?: continue
-            if (!chunk.isFullyLoaded) {
-                continue
-            }
-            chunks[index] = chunk
-        }
-        return chunks
-    }
-
-    private fun getChunkNeighbourPositions(chunkPosition: Vec2i): Array<Vec2i> {
-        return arrayOf(
-            chunkPosition + Vec2i(-1, -1),
-            chunkPosition + Vec2i(-1, 0),
-            chunkPosition + Vec2i(-1, 1),
-            chunkPosition + Vec2i(0, -1),
-            chunkPosition + Vec2i(0, 1),
-            chunkPosition + Vec2i(1, -1),
-            chunkPosition + Vec2i(1, 0),
-            chunkPosition + Vec2i(1, 1),
-        )
-    }
-
-    /**
-     * @param neighbourChunks: **Fully loaded** neighbour chunks
-     */
-    private fun getSectionNeighbours(neighbourChunks: Array<Chunk>, chunk: Chunk, sectionHeight: Int): Array<ChunkSection?> {
-        val sections = chunk.sections!!
-        return arrayOf(
-            sections[sectionHeight - 1],
-            sections[sectionHeight + 1],
-            neighbourChunks[3].sections!![sectionHeight],
-            neighbourChunks[4].sections!![sectionHeight],
-            neighbourChunks[1].sections!![sectionHeight],
-            neighbourChunks[6].sections!![sectionHeight],
-        )
-    }
-
-    private val Array<Chunk?>.fullyLoaded: Boolean
-        get() {
-            for (neighbour in this) {
-                if (neighbour?.isFullyLoaded != true) {
-                    return false
-                }
-            }
-            return true
-        }
 
     /**
      * Called when chunk data changes
@@ -246,8 +196,8 @@ class WorldRenderer(
         if (!chunk.isFullyLoaded) {
             return
         }
-        val neighbourPositions = getChunkNeighbourPositions(chunkPosition)
-        val neighbourChunks = getChunkNeighbours(neighbourPositions)
+        val neighbourPositions = ChunkUtil.getChunkNeighbourPositions(chunkPosition)
+        val neighbourChunks = world.getChunkNeighbours(neighbourPositions)
 
         if (checkQueue) {
             for ((index, neighbourPosition) in neighbourPositions.withIndex()) {
@@ -267,7 +217,8 @@ class WorldRenderer(
         renderWindow.queue += {
             val meshes = this.meshes.getOrPut(chunkPosition) { mutableMapOf() }
 
-            for (sectionHeight in chunk.sections!!.keys) {
+            for (sectionHeight in chunk.lowestSection until chunk.highestSection) {
+                chunk[sectionHeight] ?: continue
                 updateSection(chunkPosition, sectionHeight, chunk, neighbourChunks.unsafeCast(), meshes)
             }
         }
@@ -277,7 +228,7 @@ class WorldRenderer(
 
         val task = ThreadPoolRunnable(priority = LOW, interuptable = false) {
             try {
-                updateSectionSync(chunkPosition, sectionHeight, chunk, neighbourChunks ?: getChunkNeighbours(getChunkNeighbourPositions(chunkPosition)).unsafeCast(), meshes)
+                updateSectionSync(chunkPosition, sectionHeight, chunk, neighbourChunks ?: world.getChunkNeighbours(chunkPosition).unsafeCast(), meshes)
             } catch (exception: InterruptedException) {
                 Log.log(LogMessageType.RENDERING_GENERAL, LogLevels.WARN) { exception.message!! }
             }
@@ -291,7 +242,7 @@ class WorldRenderer(
             // chunk not loaded and/or neighbours also not fully loaded
             return
         }
-        val section = chunk.sections!![sectionHeight] ?: return
+        val section = chunk[sectionHeight] ?: return
 
         val visible = isChunkVisible(chunkPosition, sectionHeight, Vec3i.EMPTY, Vec3i(16, 16, 16)) // ToDo: min/maxPosition
 
@@ -315,7 +266,7 @@ class WorldRenderer(
                     }
                 }
             }
-            val neighbours = getSectionNeighbours(neighbourChunks, chunk, sectionHeight)
+            val neighbours = ChunkUtil.getSectionNeighbours(neighbourChunks, chunk, sectionHeight)
             prepareSection(chunkPosition, sectionHeight, section, neighbours, meshes)
         } else {
             renderWindow.queue += { queue.getOrPut(chunkPosition) { mutableSetOf() } += sectionHeight }
@@ -416,7 +367,7 @@ class WorldRenderer(
                 removeFromQueue += chunkPosition
                 continue
             }
-            val neighbours = getChunkNeighbours(getChunkNeighbourPositions(chunkPosition))
+            val neighbours = world.getChunkNeighbours(chunkPosition)
             val meshes = this.meshes.getOrPut(chunkPosition) { mutableMapOf() }
             for (sectionHeight in sectionHeights) {
                 updateSection(chunkPosition, sectionHeight, chunk, neighbours.unsafeCast(), meshes)

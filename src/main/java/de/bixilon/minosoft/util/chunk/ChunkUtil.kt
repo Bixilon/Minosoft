@@ -262,7 +262,7 @@ object ChunkUtil {
     /**
      * @param neighbourChunks: **Fully loaded** neighbour chunks
      */
-    private fun getSectionNeighbours(neighbourChunks: Array<Chunk>, chunk: Chunk, sectionHeight: Int): Array<ChunkSection?> {
+    fun getSectionNeighbours(neighbourChunks: Array<Chunk>, chunk: Chunk, sectionHeight: Int): Array<ChunkSection?> {
         return arrayOf(
             chunk[sectionHeight - 1],
             chunk[sectionHeight + 1],

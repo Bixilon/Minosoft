@@ -15,7 +15,6 @@ package de.bixilon.minosoft.gui.rendering.models.baked
 
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.BlockState
-import de.bixilon.minosoft.data.world.light.LightAccessor
 import de.bixilon.minosoft.gui.rendering.block.mesh.ChunkSectionMeshes
 import de.bixilon.minosoft.gui.rendering.models.FaceProperties
 import de.bixilon.minosoft.gui.rendering.models.baked.block.BakedBlockModel
@@ -29,10 +28,6 @@ class MultipartBakedModel(
 
     override fun getTouchingFaceProperties(random: Random, direction: Directions): Array<FaceProperties> {
         return sizes[direction.ordinal]
-    }
-
-    override fun getLight(position: Vec3i, random: Random, side: Directions, lightAccessor: LightAccessor): Int {
-        return 0xFF
     }
 
     override fun singleRender(position: Vec3i, mesh: ChunkSectionMeshes, random: Random, blockState: BlockState, neighbours: Array<BlockState?>, light: Int, ambientLight: FloatArray): Boolean {
