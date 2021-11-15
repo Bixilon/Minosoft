@@ -14,7 +14,7 @@ import org.lwjgl.opengl.GL20.glEnableVertexAttribArray
 import org.lwjgl.opengl.GL20.glVertexAttribPointer
 import java.nio.FloatBuffer
 
-class FloatOpenGLVertexBuffer(override val structure: MeshStruct, data: FloatBuffer, override val primitiveType: PrimitiveTypes = PrimitiveTypes.TRIANGLE) : FloatOpenGLBuffer(data), FloatVertexBuffer {
+class FloatOpenGLVertexBuffer(override val structure: MeshStruct, data: FloatBuffer, override val primitiveType: PrimitiveTypes) : FloatOpenGLBuffer(data), FloatVertexBuffer {
     override var vertices = -1
         private set
     private var vao = -1

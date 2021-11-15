@@ -21,7 +21,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTex
 import glm_.vec2.Vec2
 import glm_.vec3.Vec3
 
-open class SimpleTextureMesh(renderWindow: RenderWindow, primitiveType: PrimitiveTypes) : Mesh(renderWindow, SimpleTextureMeshStruct, primitiveType, initialCacheSize = 2 * 3 * SimpleTextureMeshStruct.FLOATS_PER_VERTEX) {
+open class SimpleTextureMesh(renderWindow: RenderWindow, primitiveType: PrimitiveTypes = renderWindow.renderSystem.preferredPrimitiveType) : Mesh(renderWindow, SimpleTextureMeshStruct, primitiveType, initialCacheSize = 2 * 3 * SimpleTextureMeshStruct.FLOATS_PER_VERTEX) {
 
     fun addVertex(position: Vec3, texture: AbstractTexture, uv: Vec2, tintColor: RGBColor) {
         data.addAll(
@@ -32,6 +32,7 @@ open class SimpleTextureMesh(renderWindow: RenderWindow, primitiveType: Primitiv
                 uv.x,
                 uv.y,
                 Float.fromBits(texture.renderData?.shaderTextureId ?: RenderConstants.DEBUG_TEXTURE_ID),
+                Float.fromBits(tintColor.rgba)
             ))
     }
 
@@ -40,6 +41,7 @@ open class SimpleTextureMesh(renderWindow: RenderWindow, primitiveType: Primitiv
         val position: Vec3,
         val uv: Vec2,
         val indexLayerAnimation: Int,
+        val tint: RGBColor,
     ) {
         companion object : MeshStruct(SimpleTextureMeshStruct::class)
     }
