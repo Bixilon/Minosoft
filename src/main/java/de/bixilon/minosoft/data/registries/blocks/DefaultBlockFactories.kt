@@ -16,6 +16,7 @@ package de.bixilon.minosoft.data.registries.blocks
 import de.bixilon.minosoft.data.registries.blocks.types.*
 import de.bixilon.minosoft.data.registries.blocks.types.button.StoneButtonBlock
 import de.bixilon.minosoft.data.registries.blocks.types.button.WoodenButtonBlock
+import de.bixilon.minosoft.data.registries.blocks.types.leaves.LeavesBlock
 import de.bixilon.minosoft.data.registries.blocks.types.portal.NetherPortalBlock
 import de.bixilon.minosoft.data.registries.blocks.types.redstone.ComparatorBlock
 import de.bixilon.minosoft.data.registries.blocks.types.redstone.RepeaterBlock
@@ -41,4 +42,5 @@ object DefaultBlockFactories : DefaultClassFactory<BlockFactory<*>>(
     KelpBlock,
     StoneButtonBlock,
     WoodenButtonBlock,
+    LeavesBlock,
 )

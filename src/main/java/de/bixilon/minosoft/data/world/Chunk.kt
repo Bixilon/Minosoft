@@ -18,13 +18,12 @@ import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.world.ChunkSection.Companion.index
 import de.bixilon.minosoft.data.world.biome.accessor.BiomeAccessor
 import de.bixilon.minosoft.data.world.biome.source.BiomeSource
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.inChunkSectionPosition
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.inSectionHeight
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
 import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.modding.event.events.ChunkDataChangeEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.unsafeCast
 import glm_.vec2.Vec2i
 import glm_.vec3.Vec3i
@@ -59,15 +58,15 @@ class Chunk(
     operator fun get(sectionHeight: Int): ChunkSection? = sections?.getOrNull(sectionHeight - lowestSection)
 
     fun get(x: Int, y: Int, z: Int): BlockState? {
-        return this[y.sectionHeight]?.blocks?.get(x, y % ProtocolDefinition.SECTION_HEIGHT_Y, z)
+        return this[y.sectionHeight]?.blocks?.get(x, y.inSectionHeight, z)
     }
 
     operator fun get(position: Vec3i): BlockState? = get(position.x, position.y, position.z)
 
     fun set(x: Int, y: Int, z: Int, blockState: BlockState?, blockEntity: BlockEntity? = null) {
         val section = getOrPut(y.sectionHeight)
-        section.blocks[x, y % ProtocolDefinition.SECTION_HEIGHT_Y, z] = blockState
-        section.blockEntities[x, y % ProtocolDefinition.SECTION_HEIGHT_Y, z] = blockEntity // ToDo
+        section.blocks[x, y.inSectionHeight, z] = blockState
+        section.blockEntities[x, y.inSectionHeight, z] = blockEntity // ToDo
     }
 
     operator fun set(position: Vec3i, blockState: BlockState?) = set(position.x, position.y, position.z, blockState)
@@ -79,13 +78,13 @@ class Chunk(
     }
 
     fun getBlockEntity(x: Int, y: Int, z: Int): BlockEntity? {
-        return this[y.sectionHeight]?.blockEntities?.get(x, y % ProtocolDefinition.SECTION_HEIGHT_Y, z)
+        return this[y.sectionHeight]?.blockEntities?.get(x, y.inSectionHeight, z)
     }
 
     fun getBlockEntity(position: Vec3i): BlockEntity? = getBlockEntity(position.x, position.y, position.z)
 
     fun setBlockEntity(x: Int, y: Int, z: Int, blockEntity: BlockEntity?) {
-        getOrPut(y.sectionHeight).blockEntities[x, y % ProtocolDefinition.SECTION_HEIGHT_Y, z] = blockEntity
+        getOrPut(y.sectionHeight).blockEntities[x, y.inSectionHeight, z] = blockEntity
     }
 
     fun setBlockEntity(position: Vec3i, blockEntity: BlockEntity?) = setBlockEntity(position.x, position.y, position.z, blockEntity)
@@ -206,14 +205,8 @@ class Chunk(
 
     override fun getBiome(x: Int, y: Int, z: Int): Biome? {
         if (cacheBiomes) {
-            val sectionHeight = y.sectionHeight
-            val section = this[sectionHeight]
-            if (section == null) {
-                // ToDo: Faster
-                val chunkPosition = Vec3i(x, y, z).chunkPosition
-                return connection.world.cacheBiomeAccessor?.getBiome(x, y, z, chunkPosition.x, chunkPosition.y, this, null)
-            }
-            return section.biomes[x, y % ProtocolDefinition.SECTION_HEIGHT_Y, z]
+            val section = this[y.sectionHeight] ?: return connection.world.cacheBiomeAccessor?.getBiome((chunkPosition.x shl 4) or x, y, (chunkPosition.y shl 4) or z, chunkPosition.x, chunkPosition.y, this, null)
+            return section.biomes[x, y.inSectionHeight, z]
         }
         return biomeSource?.getBiome(x and 0x0F, y, z and 0x0F)
     }

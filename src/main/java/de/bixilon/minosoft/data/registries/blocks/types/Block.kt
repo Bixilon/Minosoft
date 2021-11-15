@@ -117,6 +117,8 @@ open class Block(
         return blockState.outlineShape
     }
 
+    open fun canCull(blockState: BlockState, other: BlockState): Boolean = true
+
     companion object : ResourceLocationDeserializer<Block>, BlockFactory<Block> {
         override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): Block {
             check(registries != null) { "Registries is null!" }

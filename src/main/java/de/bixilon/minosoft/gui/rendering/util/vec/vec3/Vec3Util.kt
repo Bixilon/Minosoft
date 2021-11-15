@@ -67,8 +67,8 @@ object Vec3Util {
             this -= 0.5f
         }
 
+        rotateAssign(-rotation.x, Axes.X)
         rotateAssign(rotation.y, Axes.Y)
-        rotateAssign(rotation.x, Axes.X)
 
         if (centerBlock) {
             this += 0.5f

@@ -4,7 +4,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparenci
 
 object CullUtil {
 
-    fun Array<FaceProperties>.canCull(properties: FaceProperties, sameBlock: Boolean): Boolean {
+    fun Array<FaceProperties>.canCull(properties: FaceProperties, blockCull: Boolean): Boolean {
         val sizeStartX = properties.sizeStart.x
         val sizeStartY = properties.sizeStart.y
         val sizeEndX = properties.sizeEnd.x
@@ -16,7 +16,7 @@ object CullUtil {
                 && property.sizeEnd.x >= sizeEndX
                 && property.sizeEnd.y >= sizeEndY
                 && !((properties.transparency == TextureTransparencies.OPAQUE && property.transparency != TextureTransparencies.OPAQUE)
-                        || (properties.transparency != TextureTransparencies.OPAQUE && property.transparency == properties.transparency && !sameBlock)
+                        || (properties.transparency != TextureTransparencies.OPAQUE && property.transparency == properties.transparency && !blockCull)
                         || (properties.transparency == TextureTransparencies.TRANSPARENT && property.transparency == TextureTransparencies.TRANSLUCENT))
             ) {
                 return true

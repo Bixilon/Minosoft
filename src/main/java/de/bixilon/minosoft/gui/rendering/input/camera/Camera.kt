@@ -62,9 +62,6 @@ class Camera(
     var fogStart = Minosoft.config.config.game.camera.viewDistance * ProtocolDefinition.SECTION_WIDTH_X.toFloat() // ToDo
     private var mouseSensitivity = Minosoft.config.config.game.controls.moseSensitivity
 
-    @Deprecated("", ReplaceWith("connection.player"))
-    val entity: LocalPlayerEntity
-        get() = connection.player
     private var lastMousePosition: Vec2d = Vec2d(0.0, 0.0)
     private var zoom = 0.0f
 
@@ -288,7 +285,7 @@ class Camera(
     }
 
     private fun setSkyColor() {
-        renderWindow[SkyRenderer.Companion]?.let { skyRenderer ->
+        renderWindow[SkyRenderer]?.let { skyRenderer ->
             skyRenderer.baseColor = connection.world.getBiome(connection.player.positionInfo.blockPosition)?.skyColor ?: RenderConstants.DEFAULT_SKY_COLOR
 
 

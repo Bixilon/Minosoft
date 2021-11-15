@@ -87,7 +87,6 @@ data class UnbakedBlockStateModel(
         val touchingFaceProperties: Array<MutableList<FaceProperties>> = Array(Directions.SIZE) { mutableListOf() }
 
         for (element in model.elements) {
-            val rescale = element.rotation?.rescale ?: false
             for (face in element.faces) {
                 val texture = resolvedTextures[face.texture.removePrefix("#")]!! // ToDo: Allow direct texture names?
                 val positions = face.direction.getPositions(element.from, element.to)
@@ -119,13 +118,14 @@ data class UnbakedBlockStateModel(
                     texturePositions = texturePositions.rotateLeft((face.rotation % 360) / 90).toTypedArray()
                 }
 
-                if (this.uvLock && this.rotation != null && face.direction.axis != Axes.Z) {
-                    var rad = this.rotation[face.direction.axis].rad
-                    if (direction.negative) {
-                        rad = -rad
+                if (this.uvLock && this.rotation != null) {
+                    val axis = when (face.direction) {
+                        Directions.UP, Directions.DOWN -> Axes.Y
+                        else -> Axes.X
                     }
+                    val rad = this.rotation[axis].rad
                     for ((index, position) in texturePositions.withIndex()) {
-                        texturePositions[index] = (Vec3(position.x - 0.5f, 0.0f, position.y - 0.5f).apply { rotateAssign(rad, direction.axis) }).xz + 0.5f
+                        texturePositions[index] = (Vec3(position.x - 0.5f, 0.0f, position.y - 0.5f).apply { rotateAssign(rad, axis) }).xz + 0.5f
                     }
                 }
 

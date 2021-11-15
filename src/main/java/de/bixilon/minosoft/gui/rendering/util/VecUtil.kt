@@ -141,37 +141,24 @@ object VecUtil {
         return this * cos + (axis cross this) * sin + axis * (axis dot this) * (1 - cos)
     }
 
-    fun Int.chunkPosition(multiplier: Int): Int {
-        return if (this >= 0) {
-            this / multiplier
-        } else {
-            ((this + 1) / multiplier) - 1
-        }
-    }
-
     val Vec3i.chunkPosition: Vec2i
-        get() = Vec2i(this.x.chunkPosition(ProtocolDefinition.SECTION_WIDTH_X), this.z.chunkPosition(ProtocolDefinition.SECTION_WIDTH_Z))
+        get() = Vec2i(x shr 4, z shr 4)
 
     val Vec3i.inChunkPosition: Vec3i
         get() = Vec3i(x and 0x0F, y, this.z and 0x0F)
 
     val Vec3i.inChunkSectionPosition: Vec3i
-        get() {
-            val inVec2i = inChunkPosition
-            val y = if (y < 0) {
-                ((ProtocolDefinition.SECTION_HEIGHT_Y + (y % ProtocolDefinition.SECTION_HEIGHT_Y))) % ProtocolDefinition.SECTION_HEIGHT_Y
-            } else {
-                y % ProtocolDefinition.SECTION_HEIGHT_Y
-            }
-            return Vec3i(inVec2i.x, y, inVec2i.z)
+        get() = Vec3i(x and 0x0F, y.inSectionHeight, z and 0x0F)
+
+    val Int.inSectionHeight: Int
+        get() = if (this < 0) {
+            ((ProtocolDefinition.SECTION_HEIGHT_Y + (this % ProtocolDefinition.SECTION_HEIGHT_Y))) % ProtocolDefinition.SECTION_HEIGHT_Y
+        } else {
+            this % ProtocolDefinition.SECTION_HEIGHT_Y
         }
 
     val Int.sectionHeight: Int
-        get() = if (this < 0) {
-            (this + 1) / ProtocolDefinition.SECTION_HEIGHT_Y - 1
-        } else {
-            this / ProtocolDefinition.SECTION_HEIGHT_Y
-        }
+        get() = this shr 4
 
     val Vec3i.sectionHeight: Int
         get() = y.sectionHeight

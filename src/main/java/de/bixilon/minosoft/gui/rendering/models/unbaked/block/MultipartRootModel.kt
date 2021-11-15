@@ -22,22 +22,22 @@ import de.bixilon.minosoft.util.KUtil.unsafeCast
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
 
 class MultipartRootModel(
-    private val conditions: MutableMap<MutableSet<Set<Map<BlockProperties, Any>>>, Set<UnbakedBlockStateModel>>,
+    private val conditions: MutableMap<MutableSet<Map<BlockProperties, Set<Any>>>, MutableSet<UnbakedBlockStateModel>>,
 ) : RootModel {
 
-    private fun Set<Map<BlockProperties, Any>>.matches(blockState: BlockState): Boolean {
-        var matches = false
+    private fun Map<BlockProperties, Set<Any>>.matches(blockState: BlockState): Boolean {
+        var matches = true
 
-        for (propertyMap in this) {
+        for ((property, values) in this) {
             var singleMatches = false
-            for ((property, value) in propertyMap) {
+            for (value in values) {
                 if (blockState.properties[property] == value) {
                     singleMatches = true
                     break
                 }
             }
-            if (singleMatches) {
-                matches = true
+            if (!singleMatches) {
+                matches = false
                 break
             }
         }
@@ -45,13 +45,15 @@ class MultipartRootModel(
         return matches
     }
 
-    private fun MutableSet<Set<Map<BlockProperties, Any>>>.matchesAny(blockState: BlockState): Boolean {
+    private fun Set<Map<BlockProperties, Set<Any>>>.matchesAny(blockState: BlockState): Boolean {
         var matches = true
         for (or in this) {
             if (!or.matches(blockState)) {
                 matches = false
-                break
+                continue
             }
+            matches = true
+            break
         }
         return matches
     }
@@ -70,26 +72,31 @@ class MultipartRootModel(
 
     companion object {
 
-        private fun getCondition(data: MutableMap<String, Any>): MutableSet<Map<BlockProperties, Any>> {
-            val singleCondition: MutableSet<Map<BlockProperties, Any>> = mutableSetOf()
+        private fun getCondition(data: MutableMap<String, Any>): MutableMap<BlockProperties, Set<Any>> {
+            val condition: MutableMap<BlockProperties, Set<Any>> = mutableMapOf()
             for ((propertyName, value) in data) {
-                val properties: MutableMap<BlockProperties, Any> = mutableMapOf()
+                var property: BlockProperties? = null
+                val values: MutableSet<Any> = mutableSetOf()
 
                 for (propertyValue in value.toString().split("|")) {
-                    properties += BlockProperties.parseProperty(propertyName, propertyValue)
+                    val (parsedProperty, parsedValue) = BlockProperties.parseProperty(propertyName, propertyValue)
+                    if (property == null) {
+                        property = parsedProperty
+                    }
+                    values += parsedValue
                 }
-                singleCondition += properties
+                condition[property!!] = values
             }
-            return singleCondition
+            return condition
         }
 
         operator fun invoke(models: Map<ResourceLocation, GenericUnbakedModel>, data: List<Any>): MultipartRootModel {
-            val conditions: MutableMap<MutableSet<Set<Map<BlockProperties, Any>>>, Set<UnbakedBlockStateModel>> = mutableMapOf()
+            val conditions: MutableMap<MutableSet<Map<BlockProperties, Set<Any>>>, MutableSet<UnbakedBlockStateModel>> = mutableMapOf()
 
 
             for (modelData in data) {
                 check(modelData is Map<*, *>)
-                val condition: MutableSet<Set<Map<BlockProperties, Any>>> = mutableSetOf()
+                val condition: MutableSet<Map<BlockProperties, Set<Any>>> = mutableSetOf()
                 val applyData = modelData["apply"]!!
                 val apply: MutableSet<UnbakedBlockStateModel> = mutableSetOf()
                 if (applyData is Map<*, *>) {
@@ -113,7 +120,7 @@ class MultipartRootModel(
 
 
 
-                conditions[condition] = apply
+                conditions.getOrPut(condition) { mutableSetOf() } += apply
             }
 
             return MultipartRootModel(conditions)

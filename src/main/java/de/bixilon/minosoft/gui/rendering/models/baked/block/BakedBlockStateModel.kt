@@ -53,7 +53,7 @@ class BakedBlockStateModel(
                 neighbourProperties = neighboursModel.getTouchingFaceProperties(random, direction.inverted)
             }
             for (face in faces) {
-                if (face.touching && neighbourProperties != null && neighbourProperties.isNotEmpty() && neighbourProperties.canCull(face, blockState == neighbour)) {
+                if (face.touching && neighbourProperties != null && neighbourProperties.isNotEmpty() && neighbourProperties.canCull(face, neighbour != null && blockState.block.canCull(blockState, neighbour))) {
                     continue
                 }
                 face.singleRender(positionArray, mesh, light, ambientLight)

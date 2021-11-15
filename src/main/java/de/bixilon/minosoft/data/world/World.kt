@@ -23,7 +23,6 @@ import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.registries.sounds.SoundEvent
 import de.bixilon.minosoft.data.world.biome.accessor.BiomeAccessor
 import de.bixilon.minosoft.data.world.biome.accessor.NoiseBiomeAccessor
-import de.bixilon.minosoft.data.world.biome.accessor.WorldBiomeAccessor
 import de.bixilon.minosoft.gui.rendering.particle.ParticleRenderer
 import de.bixilon.minosoft.gui.rendering.particle.types.Particle
 import de.bixilon.minosoft.gui.rendering.sound.AudioPlayer
@@ -67,7 +66,6 @@ class World(
     var difficulty: Difficulties? = null
     var difficultyLocked = false
     var hashedSeed = 0L
-    val biomeAccessor: BiomeAccessor = WorldBiomeAccessor(this)
     var time = 0L
     var age = 0L
     var raining = false
@@ -151,11 +149,11 @@ class World(
     }
 
     override fun getBiome(blockPosition: Vec3i): Biome? {
-        return biomeAccessor.getBiome(blockPosition)
+        return this[blockPosition.chunkPosition]?.getBiome(blockPosition.inChunkPosition)
     }
 
     override fun getBiome(x: Int, y: Int, z: Int): Biome? {
-        return biomeAccessor.getBiome(x, y, z)
+        return this[Vec2i(x shr 4, z shr 4)]?.getBiome(x and 0x0F, y, z and 0x0F)
     }
 
     fun tick() {
