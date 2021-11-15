@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.util.mesh
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.FloatVertexBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
-import de.bixilon.minosoft.util.collections.ArrayFloatList
+import de.bixilon.minosoft.util.collections.DirectArrayFloatList
 import glm_.vec2.Vec2
 import glm_.vec3.Vec3
 
@@ -27,8 +27,8 @@ abstract class Mesh(
     initialCacheSize: Int = 10000,
 ) {
     val order = renderWindow.renderSystem.primitiveMeshOrder
-    private var _data: ArrayFloatList? = ArrayFloatList(initialCacheSize)
-    var data: ArrayFloatList
+    private var _data: DirectArrayFloatList? = DirectArrayFloatList(initialCacheSize)
+    var data: DirectArrayFloatList
         get() = _data!!
         set(value) {
             _data = value
@@ -45,8 +45,9 @@ abstract class Mesh(
 
     fun load() {
         buffer = renderWindow.renderSystem.createVertexBuffer(struct, data.buffer, primitiveType)
-        _data = null
         buffer.init()
+        data.unload()
+        _data = null
         vertices = buffer.vertices
     }
 

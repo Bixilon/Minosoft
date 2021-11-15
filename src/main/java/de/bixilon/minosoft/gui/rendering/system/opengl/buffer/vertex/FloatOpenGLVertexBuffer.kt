@@ -5,7 +5,6 @@ import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.FloatVertexBu
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.FloatOpenGLBuffer
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
-import de.bixilon.minosoft.util.KUtil.clean
 import org.lwjgl.opengl.ARBVertexArrayObject.glBindVertexArray
 import org.lwjgl.opengl.ARBVertexArrayObject.glGenVertexArrays
 import org.lwjgl.opengl.GL11.*
@@ -33,7 +32,6 @@ class FloatOpenGLVertexBuffer(override val structure: MeshStruct, data: FloatBuf
         glBufferData(type.gl, buffer, drawTypes.gl)
         state = RenderBufferStates.UPLOADED
 
-        buffer.clean()
         _data = null
 
 
