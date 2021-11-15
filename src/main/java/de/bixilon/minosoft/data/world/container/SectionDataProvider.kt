@@ -13,15 +13,16 @@
 
 package de.bixilon.minosoft.data.world.container
 
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.SemaphoreLock
 import glm_.vec3.Vec3i
 
 open class SectionDataProvider<T>(
-    data: Array<Any?> = arrayOfNulls(ProtocolDefinition.BLOCKS_PER_SECTION),
+    data: Array<Any?>? = null,
     val checkSize: Boolean = false,
 ) : Iterable<T> {
-    protected var data = data
+    protected var data = data ?: arrayOfNulls(ProtocolDefinition.BLOCKS_PER_SECTION)
         private set
     protected val lock = SemaphoreLock() // lock while reading (blocks writing)
     var count: Int = 0
@@ -34,7 +35,12 @@ open class SectionDataProvider<T>(
         private set
 
     init {
-        recalculate()
+        if (data != null) {
+            recalculate()
+        } else {
+            minPosition = Vec3i.EMPTY
+            maxPosition = Vec3i.EMPTY
+        }
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -55,9 +61,9 @@ open class SectionDataProvider<T>(
         return data[y shl 8 or (z shl 4) or x] as T
     }
 
+
     private fun recalculate() {
         var count = 0
-        var value: Any?
 
         var minX = 16
         var minY = 16

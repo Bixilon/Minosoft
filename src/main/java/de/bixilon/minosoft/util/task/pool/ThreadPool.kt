@@ -13,22 +13,17 @@
 
 package de.bixilon.minosoft.util.task.pool
 
-import de.bixilon.minosoft.util.KUtil.synchronizedSetOf
+import de.bixilon.minosoft.util.KUtil.synchronizedListOf
 import de.bixilon.minosoft.util.KUtil.toSynchronizedList
-import de.bixilon.minosoft.util.KUtil.toSynchronizedSet
-import java.util.concurrent.Callable
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.Future
-import java.util.concurrent.TimeUnit
+import java.util.concurrent.*
 
 open class ThreadPool(
     val threadCount: Int = Runtime.getRuntime().availableProcessors(),
     private val name: String = "Worker#%d",
 ) : ExecutorService {
     private var state = ThreadPoolStates.STARTING
-    private val threads: MutableSet<Thread> = synchronizedSetOf()
-    private val availableThreads: MutableSet<Thread> = synchronizedSetOf()
-    private var pending: MutableSet<ThreadPoolRunnable> = sortedSetOf<ThreadPoolRunnable>({ a, b -> a.priority - b.priority }).toSynchronizedSet()
+    private var threads: MutableList<Thread> = synchronizedListOf()
+    private var queue: PriorityBlockingQueue<ThreadPoolRunnable> = PriorityBlockingQueue()
     private var nextThreadId = 0
 
     init {
@@ -37,43 +32,24 @@ open class ThreadPool(
         state = ThreadPoolStates.STARTED
     }
 
-    val pendingCount: Int
-        get() = pending.size
+    val queueSize: Int
+        get() = queue.size
 
     @Synchronized
     private fun checkThreads() {
-        fun wait() {
-            try {
-                availableThreads += Thread.currentThread()
-                Thread.sleep(Long.MAX_VALUE)
-            } catch (exception: InterruptedException) {
-                // Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Thread (${Thread.currentThread()} sleeping got interrupted" }
-            }
-            availableThreads -= Thread.currentThread()
-        }
-
         for (i in 0 until threadCount - threads.size) {
+            var runnable: ThreadPoolRunnable
             val thread = Thread {
                 while (true) {
                     if (state == ThreadPoolStates.STOPPING) {
                         break
                     }
-                    if (pending.isEmpty()) {
-                        wait()
+                    try {
+                        runnable = queue.take()
+                    } catch (exception: InterruptedException) {
+                        break
                     }
 
-                    val runnable: ThreadPoolRunnable?
-                    synchronized(pending) {
-                        if (pending.isNotEmpty()) {
-                            runnable = pending.iterator().next()
-                            pending.remove(runnable)
-                        } else {
-                            runnable = null
-                        }
-                    }
-                    if (runnable == null) {
-                        continue
-                    }
                     try {
                         runnable.thread = Thread.currentThread()
                         runnable.runnable.run()
@@ -83,9 +59,7 @@ open class ThreadPool(
                         if (exception is InterruptedException) {
                             // Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Thread ${Thread.currentThread()} was interrupted" }
                             runnable.wasInterrupted = true
-                            if (!runnable.interuptable) {
-                                pending += runnable
-                            }
+                            queue += runnable
 
                             if (state == ThreadPoolStates.STOPPING) {
                                 break
@@ -94,30 +68,18 @@ open class ThreadPool(
                             exception.printStackTrace()
                         }
                     }
-
-                    if (pending.isNotEmpty()) {
-                        continue
-                    }
-                    wait()
                 }
                 threads -= Thread.currentThread()
             }
             thread.name = name.format(nextThreadId++)
-            threads += thread
             thread.start()
+            threads += thread
         }
     }
 
+    @Synchronized
     fun execute(runnable: ThreadPoolRunnable) {
-        pending += runnable
-        synchronized(availableThreads) {
-            if (availableThreads.isNotEmpty()) {
-                val thread = availableThreads.iterator().next()
-                availableThreads.remove(thread)
-                thread.interrupt()
-                // Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Interrupting thread $thread" }
-            }
-        }
+        queue += runnable
     }
 
     override fun execute(runnable: Runnable) {
@@ -138,9 +100,7 @@ open class ThreadPool(
         state = ThreadPoolStates.STOPPING
         synchronized(threads) {
             for (thread in threads.toSynchronizedList()) {
-                if (thread.state == Thread.State.TIMED_WAITING) {
-                    thread.interrupt()
-                }
+                thread.interrupt()
             }
         }
         while (threads.isNotEmpty()) {
@@ -156,12 +116,8 @@ open class ThreadPool(
                 thread.interrupt()
             }
         }
-        while (threads.isNotEmpty()) {
-            Thread.sleep(1L)
-        }
         state = ThreadPoolStates.STOPPED
-
-        return mutableListOf() // ToDo
+        return mutableListOf()
     }
 
     override fun isShutdown(): Boolean {

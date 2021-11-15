@@ -17,7 +17,7 @@ class ThreadPoolRunnable(
     val priority: Int = ThreadPool.NORMAL,
     var interuptable: Boolean = false,
     val runnable: Runnable,
-) {
+) : Comparable<ThreadPoolRunnable> {
     var wasInterrupted = false
     var thread: Thread? = null
 
@@ -26,5 +26,9 @@ class ThreadPoolRunnable(
             it.interrupt()
             // Log.log(LogMessageType.OTHER, LogLevels.VERBOSE){"Interrupting runnable in thread $thread"}
         }
+    }
+
+    override fun compareTo(other: ThreadPoolRunnable): Int {
+        return priority - other.priority
     }
 }

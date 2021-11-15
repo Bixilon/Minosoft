@@ -18,7 +18,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 
 class RegistrySectionDataProvider<T>(
     val registry: AbstractRegistry<T>,
-    data: Array<Any?> = arrayOfNulls(ProtocolDefinition.BLOCKS_PER_SECTION),
+    data: Array<Any?>? = null,
     checkSize: Boolean = false,
 ) : SectionDataProvider<T>(data, checkSize = checkSize) {
 
