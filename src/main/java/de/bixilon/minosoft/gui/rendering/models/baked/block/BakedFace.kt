@@ -20,7 +20,6 @@ import de.bixilon.minosoft.gui.rendering.block.mesh.ChunkSectionMeshes
 import de.bixilon.minosoft.gui.rendering.models.FaceProperties
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
-import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.get
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.rgb
 import glm_.vec2.Vec2
@@ -48,7 +47,7 @@ class BakedFace(
         }!!
         // ToDo: Ambient light
         val color = Vec3(shade)
-        for ((index, textureIndex) in Mesh.QUAD_TO_QUAD_ORDER) {
+        for ((index, textureIndex) in meshToUse.order) {
             val indexPosition = positions[index].array
             meshToUse.addVertex(floatArrayOf(indexPosition[0] + position[0], indexPosition[1] + position[1], indexPosition[2] + position[2]), uv[textureIndex], texture, color.rgb, light)
         }
@@ -78,7 +77,7 @@ class BakedFace(
             uv[2] * uvMultiplier,
             uv[3] * uvMultiplier,
         )
-        for ((index, textureIndex) in Mesh.QUAD_TO_QUAD_ORDER) {
+        for ((index, textureIndex) in mesh.order) {
             // ToDo
             mesh.addVertex(positions[index].array, uv[textureIndex], texture, 0xFFFFFF, light)
         }

@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.system.window
 
+import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.gui.rendering.modding.events.ResizeWindowEvent
 import de.bixilon.minosoft.gui.rendering.modding.events.WindowCloseEvent
@@ -128,9 +129,11 @@ class GLFWWindow(
         check(glfwInit()) { "Unable to initialize GLFW" }
 
         glfwDefaultWindowHints()
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3)
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0)
-        // glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE)
+        if (Minosoft.config.config.game.graphics.preferQuads) {
+            setOpenGLVersion(3, 0, false)
+        } else {
+            setOpenGLVersion(3, 3, true)
+        }
         glfwWindowHint(GLFW_VISIBLE, false.glfw)
 
 
@@ -188,6 +191,12 @@ class GLFWWindow(
 
     override fun pollEvents() {
         glfwPollEvents()
+    }
+
+    override fun setOpenGLVersion(major: Int, minor: Int, coreProfile: Boolean) {
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, major)
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, minor)
+        glfwWindowHint(GLFW_OPENGL_PROFILE, if (coreProfile) GLFW_OPENGL_CORE_PROFILE else GLFW_OPENGL_ANY_PROFILE)
     }
 
     private fun onFocusChange(window: Long, focused: Boolean) {

@@ -80,6 +80,9 @@ interface RenderSystem {
 
     var clearColor: RGBColor
 
+    var preferredPrimitiveType: PrimitiveTypes
+    var primitiveMeshOrder: Array<Pair<Int, Int>>
+
     fun readPixels(start: Vec2i, end: Vec2i, type: PixelTypes): ByteBuffer
 
 

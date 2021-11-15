@@ -16,11 +16,12 @@ package de.bixilon.minosoft.gui.rendering.util.mesh
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import glm_.vec2.Vec2
 import glm_.vec3.Vec3
 
-open class SimpleTextureMesh(renderWindow: RenderWindow) : Mesh(renderWindow, SimpleTextureMeshStruct, initialCacheSize = 2 * 3 * SimpleTextureMeshStruct.FLOATS_PER_VERTEX) {
+open class SimpleTextureMesh(renderWindow: RenderWindow, primitiveType: PrimitiveTypes) : Mesh(renderWindow, SimpleTextureMeshStruct, primitiveType, initialCacheSize = 2 * 3 * SimpleTextureMeshStruct.FLOATS_PER_VERTEX) {
 
     fun addVertex(position: Vec3, texture: AbstractTexture, uv: Vec2, tintColor: RGBColor) {
         data.addAll(

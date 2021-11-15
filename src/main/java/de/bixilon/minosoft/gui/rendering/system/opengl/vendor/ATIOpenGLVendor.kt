@@ -17,6 +17,7 @@ import org.lwjgl.opengl.ATIMeminfo.GL_VBO_FREE_MEMORY_ATI
 import org.lwjgl.opengl.GL11.glGetInteger
 
 object ATIOpenGLVendor : OpenGLVendor {
+    override val strictSpecification: Boolean = false
     override val shaderDefine: String = "__ATI"
 
     override val availableVRAM: Long

@@ -59,6 +59,8 @@ interface BaseWindow {
 
     fun pollEvents()
 
+    fun setOpenGLVersion(major: Int, minor: Int, coreProfile: Boolean)
+
     companion object {
         val DEFAULT_WINDOW_SIZE: Vec2i
             get() = Vec2i(900, 500)

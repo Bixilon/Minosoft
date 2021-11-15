@@ -21,7 +21,6 @@ import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
-import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.util.KUtil.decide
 import de.bixilon.minosoft.util.MMath.ceil
 import glm_.vec2.Vec2
@@ -65,7 +64,7 @@ class CharData(
             uvEnd,
         )
 
-        for ((vertexIndex, textureIndex) in Mesh.QUAD_TO_QUAD_ORDER) {
+        for ((vertexIndex, textureIndex) in this.order) {
             addVertex(positions[vertexIndex], z, texture, texturePositions[textureIndex], tint, options)
         }
     }

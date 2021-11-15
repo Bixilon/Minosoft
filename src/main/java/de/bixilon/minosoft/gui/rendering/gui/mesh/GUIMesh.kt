@@ -16,7 +16,6 @@ package de.bixilon.minosoft.gui.rendering.gui.mesh
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
@@ -29,7 +28,7 @@ import glm_.vec4.Vec4
 class GUIMesh(
     renderWindow: RenderWindow,
     val matrix: Mat4,
-) : Mesh(renderWindow, GUIMeshStruct, PrimitiveTypes.QUAD, initialCacheSize = 40000), GUIVertexConsumer {
+) : Mesh(renderWindow, GUIMeshStruct, initialCacheSize = 40000), GUIVertexConsumer {
 
     override fun addVertex(position: Vec2t<*>, z: Int, texture: AbstractTexture, uv: Vec2, tint: RGBColor, options: GUIVertexOptions?) {
         data.addAll(createVertex(matrix, position, z, texture, uv, tint, options))

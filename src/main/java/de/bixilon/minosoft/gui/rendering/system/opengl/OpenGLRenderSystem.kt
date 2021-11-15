@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.system.opengl
 
+import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.Colors
 import de.bixilon.minosoft.data.text.RGBColor
@@ -30,6 +31,7 @@ import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.uniform.IntOpenGLU
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.vertex.FloatOpenGLVertexBuffer
 import de.bixilon.minosoft.gui.rendering.system.opengl.texture.OpenGLTextureManager
 import de.bixilon.minosoft.gui.rendering.system.opengl.vendor.*
+import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.util.KUtil.synchronizedSetOf
@@ -53,6 +55,13 @@ class OpenGLRenderSystem(
     var blendingDestination = BlendingFunctions.ZERO
         private set
 
+    override var preferredPrimitiveType: PrimitiveTypes = if (Minosoft.config.config.game.graphics.preferQuads) {
+        PrimitiveTypes.QUAD
+    } else {
+        PrimitiveTypes.TRIANGLE
+    }
+    override var primitiveMeshOrder: Array<Pair<Int, Int>> = if (preferredPrimitiveType == PrimitiveTypes.QUAD) Mesh.QUAD_TO_QUAD_ORDER else Mesh.TRIANGLE_TO_QUAD_ORDER
+
     override var shader: Shader? = null
         set(value) {
             if (value === field) {
@@ -60,7 +69,7 @@ class OpenGLRenderSystem(
             }
             if (value == null) {
                 glUseProgram(0)
-                field = value
+                field = null
                 return
             }
 
@@ -85,6 +94,9 @@ class OpenGLRenderSystem(
             vendorString.contains("intel") -> MesaOpenGLVendor
             vendorString.contains("amd") || vendorString.contains("ati") -> ATIOpenGLVendor // ToDo: Find out exact value, I don't have any AMD gpu
             else -> OtherOpenGLVendor
+        }
+        if (Minosoft.config.config.game.graphics.preferQuads && vendor.strictSpecification) {
+            throw IllegalStateException("Your GPU driver strictly follows the open gl specification. The setting `preferQuads` is not working!")
         }
 
         this.version = glGetString(GL_VERSION) ?: "UNKNOWN"

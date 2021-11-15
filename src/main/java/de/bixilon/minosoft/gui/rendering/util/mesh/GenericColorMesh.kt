@@ -19,7 +19,7 @@ import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
 import glm_.vec3.Vec3
 
-open class GenericColorMesh(renderWindow: RenderWindow, primitiveType: PrimitiveTypes = PrimitiveTypes.TRIANGLE) : Mesh(renderWindow, GenericColorMeshStruct, primitiveType) {
+open class GenericColorMesh(renderWindow: RenderWindow, primitiveType: PrimitiveTypes = renderWindow.renderSystem.preferredPrimitiveType) : Mesh(renderWindow, GenericColorMeshStruct, primitiveType) {
 
     fun addVertex(position: Vec3, color: RGBColor?) {
         data.addAll(

@@ -24,6 +24,7 @@ import glm_.vec2.Vec2t
 
 class GUIMeshCache(
     val matrix: Mat4,
+    override val order: Array<Pair<Int, Int>>,
     initialCacheSize: Int = 1000,
 ) : GUIVertexConsumer {
     val data: ArrayFloatList = ArrayFloatList(initialCacheSize)

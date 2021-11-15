@@ -15,14 +15,13 @@ package de.bixilon.minosoft.gui.rendering.block.mesh
 
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
 import glm_.vec2.Vec2
 import glm_.vec3.Vec3
 
-class ChunkSectionMesh(renderWindow: RenderWindow, initialCacheSize: Int, val centerLength: Double) : Mesh(renderWindow, SectionArrayMeshStruct, PrimitiveTypes.QUAD, initialCacheSize = initialCacheSize) {
+class ChunkSectionMesh(renderWindow: RenderWindow, initialCacheSize: Int, val centerLength: Double) : Mesh(renderWindow, SectionArrayMeshStruct, initialCacheSize = initialCacheSize) {
 
     fun addVertex(position: FloatArray, uv: Vec2, texture: AbstractTexture, tintColor: Int, light: Int) {
         val transformedUV = texture.renderData?.transformUV(uv) ?: uv

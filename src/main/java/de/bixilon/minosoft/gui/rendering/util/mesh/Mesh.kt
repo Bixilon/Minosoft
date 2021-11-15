@@ -23,9 +23,10 @@ import glm_.vec3.Vec3
 abstract class Mesh(
     val renderWindow: RenderWindow,
     private val struct: MeshStruct,
-    private val primitiveType: PrimitiveTypes = PrimitiveTypes.TRIANGLE,
+    private val primitiveType: PrimitiveTypes = renderWindow.renderSystem.preferredPrimitiveType,
     initialCacheSize: Int = 10000,
 ) {
+    val order = renderWindow.renderSystem.primitiveMeshOrder
     private var _data: ArrayFloatList? = ArrayFloatList(initialCacheSize)
     var data: ArrayFloatList
         get() = _data!!

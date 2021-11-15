@@ -18,6 +18,7 @@ import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMeshCache
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
+import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.isGreater
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.isSmaller
@@ -40,7 +41,7 @@ abstract class Element(val hudRenderer: HUDRenderer) {
             _parent = value
             silentApply()
         }
-    protected var cache = GUIMeshCache(hudRenderer.matrix, 0)
+    protected var cache = GUIMeshCache(hudRenderer.matrix, Mesh.TRIANGLE_TO_QUAD_ORDER, 0)
     open var cacheEnabled: Boolean = true
     open var initialCacheSize: Int = 100
     open var cacheUpToDate: Boolean = false
@@ -126,7 +127,7 @@ abstract class Element(val hudRenderer: HUDRenderer) {
             return forceRender(offset, z, consumer, options)
         }
         if (!cacheUpToDate || cache.offset != offset || hudRenderer.matrixChange || cache.matrix !== hudRenderer.matrix || z != cache.z) {
-            val cache = GUIMeshCache(hudRenderer.matrix)
+            val cache = GUIMeshCache(hudRenderer.matrix, renderWindow.renderSystem.primitiveMeshOrder)
             cache.offset = Vec2i(offset)
             cache.z = z
             val maxZ = forceRender(offset, z, cache, options)
