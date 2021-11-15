@@ -93,7 +93,7 @@ object ChunkUtil {
 
                 blocks[blockNumber] = buffer.connection.registries.blockStateRegistry[blockId] ?: continue
             }
-            sectionBlocks[sectionHeight] = RegistrySectionDataProvider(buffer.connection.registries.blockStateRegistry.unsafeCast(), blocks.unsafeCast())
+            sectionBlocks[sectionHeight] = RegistrySectionDataProvider(buffer.connection.registries.blockStateRegistry.unsafeCast(), blocks.unsafeCast(), true)
         }
         chunkData.blocks = sectionBlocks
         return chunkData
@@ -138,7 +138,7 @@ object ChunkUtil {
                 val block = buffer.connection.registries.blockStateRegistry[blockId] ?: continue
                 blocks[blockNumber] = block
             }
-            sectionBlocks[sectionHeight] = RegistrySectionDataProvider(buffer.connection.registries.blockStateRegistry.unsafeCast(), blocks.unsafeCast())
+            sectionBlocks[sectionHeight] = RegistrySectionDataProvider(buffer.connection.registries.blockStateRegistry.unsafeCast(), blocks.unsafeCast(), true)
         }
         chunkData.blocks = sectionBlocks
         return chunkData
@@ -198,7 +198,7 @@ object ChunkUtil {
                 light[sectionHeight - dimension.lowestSection] = LightUtil.mergeLight(blockLight, skyLight)
                 lightReceived++
             }
-            sectionBlocks[sectionHeight - dimension.lowestSection] = RegistrySectionDataProvider(buffer.connection.registries.blockStateRegistry.unsafeCast(), blocks.unsafeCast())
+            sectionBlocks[sectionHeight - dimension.lowestSection] = RegistrySectionDataProvider(buffer.connection.registries.blockStateRegistry.unsafeCast(), blocks.unsafeCast(), true)
         }
 
         chunkData.blocks = sectionBlocks

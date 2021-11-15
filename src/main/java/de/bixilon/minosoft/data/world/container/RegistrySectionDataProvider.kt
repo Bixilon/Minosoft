@@ -19,7 +19,8 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 class RegistrySectionDataProvider<T>(
     val registry: AbstractRegistry<T>,
     data: Array<Any?> = arrayOfNulls(ProtocolDefinition.BLOCKS_PER_SECTION),
-) : SectionDataProvider<T>(data) {
+    checkSize: Boolean = false,
+) : SectionDataProvider<T>(data, checkSize = checkSize) {
 
     @Suppress("UNCHECKED_CAST")
     fun setIdData(ids: Array<Int>) {

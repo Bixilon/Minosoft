@@ -36,7 +36,7 @@ class ChunkSection(
     var light: IntArray, // packed (skyLight: 0xF0, blockLight: 0x0F)
 ) {
 
-    constructor(registries: Registries) : this(RegistrySectionDataProvider<BlockState?>(registries.blockStateRegistry.unsafeCast()), RegistrySectionDataProvider(registries.biomeRegistry), SectionDataProvider(), IntArray(ProtocolDefinition.BLOCKS_PER_SECTION))
+    constructor(registries: Registries) : this(RegistrySectionDataProvider<BlockState?>(registries.blockStateRegistry.unsafeCast(), checkSize = true), RegistrySectionDataProvider(registries.biomeRegistry, checkSize = false), SectionDataProvider(checkSize = true), IntArray(ProtocolDefinition.BLOCKS_PER_SECTION))
 
     fun tick(connection: PlayConnection, chunkPosition: Vec2i, sectionHeight: Int) {
         if (blockEntities.isEmpty) {
