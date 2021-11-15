@@ -9,7 +9,7 @@
 - 3 Meshes per section (opaque; transparent; translucent)
 - Preparing in nearer to further away order
   - unload meshes if block changed and not in frustum
-  - only prepare if chunk is in frustum
+  - only prepare if chunk is in frust
   - don't prepare empty chunks
 - Light
   - Client side light engine
@@ -40,3 +40,9 @@
   - Greedy meshing
 - Model deciding (for pre flattening versions)
 - Assets manager: Create file from jar with all models inside and load models from there (make them moddable)
+
+
+- ToDo:
+  - Unshelve
+  - Thread safety
+  - Build biome cache only in render distance

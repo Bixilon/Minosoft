@@ -36,7 +36,7 @@ class NoiseBiomeAccessor(private val world: World) {
                     return null
                 }
 
-                return it.data[(biomeY / 4) * 16 + (((z and 0x0F) / 4) * 4 + ((x and 0x0F) / 4))]
+                return it.data[(biomeY and 0x0F) shr 2 and 0x3F shl 4 or ((z and 0x0F) shr 2 and 0x03 shl 2) or ((x and 0x0F) shr 2 and 0x03)]
             }
             return null
         }
