@@ -37,7 +37,7 @@ class BlockEntityMetaDataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         connection.world.getBlockEntity(position)?.updateNBT(nbt) ?: let {
             val blockEntity = DefaultBlockEntityMetaDataFactory.buildBlockEntity(DefaultBlockEntityMetaDataFactory[type]!!, connection)
             blockEntity.updateNBT(nbt)
-            connection.world[position] = blockEntity
+            connection.world.setBlockEntity(position, blockEntity)
         }
         connection.fireEvent(BlockEntityMetaDataChangeEvent(connection, this))
     }

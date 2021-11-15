@@ -24,5 +24,5 @@ abstract class BlockEntity(
 
     open fun updateNBT(nbt: Map<String, Any>) = Unit
 
-    open fun realTick(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i) = Unit
+    open fun tick(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i) = Unit
 }

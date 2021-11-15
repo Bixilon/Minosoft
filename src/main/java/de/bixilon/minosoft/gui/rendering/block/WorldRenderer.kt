@@ -29,7 +29,10 @@ import de.bixilon.minosoft.data.world.Chunk
 import de.bixilon.minosoft.data.world.ChunkSection
 import de.bixilon.minosoft.data.world.ChunkSection.Companion.indexPosition
 import de.bixilon.minosoft.data.world.World
-import de.bixilon.minosoft.gui.rendering.*
+import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.Renderer
+import de.bixilon.minosoft.gui.rendering.RendererBuilder
+import de.bixilon.minosoft.gui.rendering.RenderingStates
 import de.bixilon.minosoft.gui.rendering.block.mesh.ChunkSectionMeshCollection
 import de.bixilon.minosoft.gui.rendering.block.renderable.BlockLikeRenderContext
 import de.bixilon.minosoft.gui.rendering.input.camera.Frustum
@@ -110,7 +113,6 @@ class WorldRenderer(
 
                 val context = BlockLikeRenderContext(
                     blockState = blockState,
-                    lightAccessor = world.worldLightAccessor,
                     renderWindow = renderWindow,
                     blockPosition = blockPosition,
                     meshCollection = meshCollection,
@@ -171,7 +173,7 @@ class WorldRenderer(
 
         connection.registerEvent(CallbackEventInvoker.of<ChunkUnloadEvent> { unloadChunk(it.chunkPosition) })
 
-        connection.registerEvent(CallbackEventInvoker.of<ChunkDataChangeEvent> { prepareChunk(it.chunkPosition) })
+        connection.registerEvent(CallbackEventInvoker.of<ChunkDataChangeEvent> { prepareChunk(it.chunkPosition, it.chunk) })
 
         connection.registerEvent(CallbackEventInvoker.of<BlockSetEvent> { prepareChunkSection(it.blockPosition.chunkPosition, it.blockPosition.sectionHeight) })
 
@@ -297,7 +299,9 @@ class WorldRenderer(
 
         var currentChunks: MutableMap<Int, ChunkSection> = synchronizedMapOf()
         var currentIndex = 0
-        for ((sectionHeight, section) in chunk.sections!!) {
+        for ((index, section) in chunk.withIndex()) {
+            section ?: continue
+            val sectionHeight = index - chunk.lowestSection
             if (sectionHeight.sectionIndex != currentIndex) {
                 prepareChunkSections(chunkPosition, currentChunks)
                 currentChunks = synchronizedMapOf()
@@ -419,9 +423,8 @@ class WorldRenderer(
     private fun prepareChunkSection(chunkPosition: Vec2i, sectionHeight: Int) {
         val sections: MutableMap<Int, ChunkSection> = synchronizedMapOf()
         val chunk = world[chunkPosition]!!
-        val lowestSectionHeight = sectionHeight.sectionIndex * RenderConstants.CHUNK_SECTIONS_PER_MESH
-        for (i in lowestSectionHeight until lowestSectionHeight + RenderConstants.CHUNK_SECTIONS_PER_MESH) {
-            sections[i] = chunk.sections?.get(i) ?: continue
+        for ((index, section) in chunk.withIndex()) {
+            sections[index - chunk.lowestSection] = section ?: continue
         }
         prepareChunkSections(chunkPosition, sections)
     }
@@ -508,13 +511,7 @@ class WorldRenderer(
         }
 
         val Int.sectionIndex: Int
-            get() {
-                val divided = this / RenderConstants.CHUNK_SECTIONS_PER_MESH
-                if (this < 0) {
-                    return divided - 1
-                }
-                return divided
-            }
+            get() = this
 
         private operator fun Int.plus(upOrDown: Directions): Int {
             return this + upOrDown.vector.y

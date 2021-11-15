@@ -58,7 +58,7 @@ class MobSpawnerBlockEntity(connection: PlayConnection) : BlockEntity(connection
         // ToDo: {MaxNearbyEntities: 6s, RequiredPlayerRange: 16s, SpawnCount: 4s, x: -80, y: 4, SpawnData: {id: "minecraft:zombie"}, z: 212, id: "minecraft:mob_spawner", MaxSpawnDelay: 800s, SpawnRange: 4s, Delay: 0s, MinSpawnDelay: 200s}
     }
 
-    override fun realTick(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i) {
+    override fun tick(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i) {
         spawnParticles(blockPosition)
     }
 

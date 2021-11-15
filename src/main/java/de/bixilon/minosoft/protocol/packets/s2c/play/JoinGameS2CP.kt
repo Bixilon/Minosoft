@@ -13,6 +13,7 @@
 package de.bixilon.minosoft.protocol.packets.s2c.play
 
 import com.google.common.collect.HashBiMap
+import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.Difficulties
 import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.registries.DefaultRegistries
@@ -20,7 +21,6 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.dimension.Dimension
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.registries.other.game.event.handlers.gamemode.GamemodeChangeEvent
-import de.bixilon.minosoft.data.world.biome.accessor.BlockBiomeAccessor
 import de.bixilon.minosoft.data.world.biome.accessor.NoiseBiomeAccessor
 import de.bixilon.minosoft.modding.channels.DefaultPluginChannels
 import de.bixilon.minosoft.modding.event.EventInitiators
@@ -162,10 +162,8 @@ class JoinGameS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
 
         connection.world.entities.add(entityId, null, playerEntity)
         connection.world.hashedSeed = hashedSeed
-        connection.world.biomeAccessor = if (connection.version.versionId < ProtocolVersions.V_19W36A) {
-            BlockBiomeAccessor(connection.world)
-        } else {
-            NoiseBiomeAccessor(connection.world)
+        if (connection.version.versionId >= ProtocolVersions.V_19W36A && !Minosoft.config.config.game.graphics.fastBiomeNoise) {
+            connection.world.cacheBiomeAccessor = NoiseBiomeAccessor(connection.world)
         }
         TimeWorker.addTask(TimeWorkerTask(150, true) { // ToDo: Temp workaround
             connection.sendPacket(ClientSettingsC2SP("en_us"))

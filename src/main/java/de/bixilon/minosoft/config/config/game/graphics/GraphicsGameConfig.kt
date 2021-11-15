@@ -20,5 +20,6 @@ data class GraphicsGameConfig(
     var animations: AnimationsGameConfig = AnimationsGameConfig(),
     var particles: ParticleConfig = ParticleConfig(),
     @Json(name = "biome_blend_radius") var biomeBlendRadius: Int = 3,
+    @Json(name = "fast_biome_noise") var fastBiomeNoise: Boolean = false,
     @Json(name = "fog_enabled") var fogEnabled: Boolean = true,
 )

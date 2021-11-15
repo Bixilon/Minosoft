@@ -1,15 +1,12 @@
 package de.bixilon.minosoft.data.world.biome.noise
 
 import de.bixilon.minosoft.data.registries.biomes.Biome
-
-import de.bixilon.minosoft.data.world.World
+import de.bixilon.minosoft.data.world.Chunk
 import de.bixilon.minosoft.util.MMath.square
-import glm_.vec2.Vec2i
-import glm_.vec3.Vec3i
 
 object FuzzyNoiseBiomeCalculator {
 
-    fun getBiome(seed: Long, x: Int, y: Int, z: Int, world: World): Biome? {
+    fun getBiome(seed: Long, x: Int, y: Int, z: Int, chunkPositionX: Int, chunkPositionZ: Int, chunk: Chunk, neighbours: Array<Chunk>): Biome? {
         val m = x - 2
         val n = y - 2
         val o = z - 2
@@ -25,27 +22,27 @@ object FuzzyNoiseBiomeCalculator {
         var s = 0
         var g = Double.POSITIVE_INFINITY
 
-        fun calculateFraction(a: Int, mask: Int, first: Int, second: Double): Pair<Int, Double> {
-            (a and mask == 0).let {
-                return Pair(
-                    if (it) first else first + 1,
-                    if (it) second else second - 1.0
-                )
-            }
-        }
-
-        fun checkMask(mask: Int, value: Int): Int {
-            return if (s and mask == 0) {
-                value
-            } else {
-                value + 1
-            }
-        }
-
         for (i in 0 until 8) {
-            val (u, xFraction) = calculateFraction(i, 0x04, p, d)
-            val (v, yFraction) = calculateFraction(i, 0x02, q, e)
-            val (w, zFraction) = calculateFraction(i, 0x01, r, f)
+            var u = p
+            var xFraction = d
+            if (i and 0x04 != 0) {
+                u++
+                xFraction -= 1.0
+            }
+
+            var v = q
+            var yFraction = e
+            if (i and 0x02 != 0) {
+                v++
+                yFraction -= 1.0
+            }
+
+            var w = r
+            var zFraction = f
+            if (i and 0x01 != 0) {
+                w++
+                zFraction -= 1.0
+            }
 
 
             val d3 = calculateFiddle(seed, u, v, w, xFraction, yFraction, zFraction)
@@ -55,11 +52,45 @@ object FuzzyNoiseBiomeCalculator {
             }
         }
 
-        val biomeX = checkMask(0x04, p)
-        val biomeY = checkMask(0x02, q)
-        val biomeZ = checkMask(0x01, r)
+        var biomeX = p
+        if (s and 0x04 != 0) {
+            biomeX++
+        }
+        var biomeY = q
+        if (s and 0x02 != 0) {
+            biomeY++
+        }
+        var biomeZ = r
+        if (s and 0x01 != 0) {
+            biomeZ++
+        }
 
-        return world[Vec2i(biomeX shr 2, biomeZ shr 2)]?.biomeSource?.getBiome(Vec3i(biomeX, biomeY, biomeZ))
+        var biomeChunk: Chunk? = null
+        val biomeChunkX = biomeX shr 2
+        val biomeChunkZ = biomeZ shr 2
+
+        val deltaChunkX = biomeChunkX - chunkPositionX
+        val deltaChunkZ = biomeChunkZ - chunkPositionZ
+
+        when (deltaChunkX) {
+            0 -> when (deltaChunkZ) {
+                0 -> biomeChunk = chunk
+                -1 -> biomeChunk = neighbours[3]
+                1 -> biomeChunk = neighbours[4]
+            }
+            -1 -> when (deltaChunkZ) {
+                0 -> biomeChunk = neighbours[1]
+                -1 -> biomeChunk = neighbours[0]
+                1 -> biomeChunk = neighbours[2]
+            }
+            1 -> when (deltaChunkZ) {
+                0 -> biomeChunk = neighbours[6]
+                -1 -> biomeChunk = neighbours[5]
+                1 -> biomeChunk = neighbours[7]
+            }
+        }
+
+        return biomeChunk?.biomeSource?.getBiome(biomeX, biomeY, biomeZ)
     }
 
     private fun calculateFiddle(seed: Long, x: Int, y: Int, z: Int, xFraction: Double, yFraction: Double, zFraction: Double): Double {
