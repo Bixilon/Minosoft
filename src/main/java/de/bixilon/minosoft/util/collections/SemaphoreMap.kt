@@ -15,7 +15,7 @@ package de.bixilon.minosoft.util.collections
 
 import de.bixilon.minosoft.util.KUtil.toSynchronizedList
 import de.bixilon.minosoft.util.KUtil.toSynchronizedSet
-import de.bixilon.minosoft.util.SemaphoreLock
+import de.bixilon.minosoft.util.ReadWriteLock
 import java.util.function.BiConsumer
 import java.util.function.BiFunction
 import java.util.function.Function
@@ -23,7 +23,7 @@ import java.util.function.Function
 class SemaphoreMap<K, V>(
     private val original: MutableMap<K, V>,
 ) : MutableMap<K, V> {
-    val lock = SemaphoreLock()
+    val lock = ReadWriteLock()
     override val size: Int
         get() {
             lock.acquire()

@@ -52,7 +52,7 @@ open class ThreadPool(
 
                     try {
                         runnable.thread = Thread.currentThread()
-                        runnable.runnable.run()
+                        runnable.runnable?.run()
                         runnable.thread = null
                     } catch (exception: Throwable) {
                         runnable.thread = null

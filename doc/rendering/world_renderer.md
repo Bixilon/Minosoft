@@ -9,7 +9,7 @@
 - 3 Meshes per section (opaque; transparent; translucent)
 - Preparing in nearer to further away order
   - unload meshes if block changed and not in frustum
-  - only prepare if chunk is in frust
+  - only prepare if chunk is in frustum
   - don't prepare empty chunks
 - Light
   - Client side light engine
@@ -43,6 +43,11 @@
 
 
 - ToDo:
-  - Unshelve
   - Thread safety
   - Build biome cache only in render distance
+  - Update neighbour chunks if needed
+  - Reduce memory usage
+  - Limit preparing tasks (to loaded chunks per frame, or similar)
+  - Unload on minimize
+  - Biomes: Check if chunk is single biome
+  - Texture rotation in hopper

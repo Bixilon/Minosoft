@@ -284,17 +284,17 @@ class World(
             }
             val neighbourChunk = neighbours[index] ?: continue
 
-            if (neighbourChunk.neighboursLoaded) {
+            if (neighbourChunk.biomesInitialized || neighbourChunk.neighboursLoaded) {
                 continue
             }
-            var neighbourLoaded = true
+            var neighboursLoaded = true
             for (neighbourNeighbourChunk in getChunkNeighbours(neighbourPosition)) {
                 if ((neighbourNeighbourChunk?.biomeSource == null && neighbourNeighbourChunk?.biomesInitialized != true) || !neighbourNeighbourChunk.blocksInitialized || !neighbourNeighbourChunk.lightInitialized) {
-                    neighbourLoaded = false
+                    neighboursLoaded = false
                     break
                 }
             }
-            if (!neighbourLoaded) {
+            if (!neighboursLoaded) {
                 continue
             }
             neighbourChunk.neighboursLoaded = true

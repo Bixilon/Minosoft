@@ -34,23 +34,35 @@ import de.bixilon.minosoft.gui.rendering.system.base.phases.OpaqueDrawable
 import de.bixilon.minosoft.gui.rendering.system.base.phases.TranslucentDrawable
 import de.bixilon.minosoft.gui.rendering.system.base.phases.TransparentDrawable
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.chunkPosition
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.empty
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.inChunkSectionPosition
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.of
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.abs
-import de.bixilon.minosoft.modding.event.events.*
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.toVec3
+import de.bixilon.minosoft.modding.event.events.BlockSetEvent
+import de.bixilon.minosoft.modding.event.events.ChunkDataChangeEvent
+import de.bixilon.minosoft.modding.event.events.ChunkUnloadEvent
+import de.bixilon.minosoft.modding.event.events.RespawnEvent
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.util.KUtil.synchronizedListOf
 import de.bixilon.minosoft.util.KUtil.synchronizedSetOf
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.KUtil.unsafeCast
+import de.bixilon.minosoft.util.ReadWriteLock
 import de.bixilon.minosoft.util.chunk.ChunkUtil
-import de.bixilon.minosoft.util.chunk.ChunkUtil.fullyLoaded
-import de.bixilon.minosoft.util.logging.Log
-import de.bixilon.minosoft.util.logging.LogLevels
-import de.bixilon.minosoft.util.logging.LogMessageType
 import de.bixilon.minosoft.util.task.pool.DefaultThreadPool
+import de.bixilon.minosoft.util.task.pool.ThreadPool.Priorities.HIGH
 import de.bixilon.minosoft.util.task.pool.ThreadPool.Priorities.LOW
 import de.bixilon.minosoft.util.task.pool.ThreadPoolRunnable
 import glm_.vec2.Vec2i
+import glm_.vec3.Vec3
 import glm_.vec3.Vec3i
 import java.io.FileInputStream
 import java.util.zip.GZIPInputStream
@@ -67,15 +79,33 @@ class WorldRenderer(
     private val world: World = connection.world
     private val sectionPreparer: AbstractSectionPreparer = CullSectionPreparer(renderWindow)
     private val lightMap = LightMap(connection)
-    private val meshes: MutableMap<Vec2i, MutableMap<Int, ChunkSectionMeshes>> = mutableMapOf() // all prepared (and up to date) meshes
-    private val incomplete: MutableSet<Vec2i> = synchronizedSetOf() // Queue of chunk positions that can not be rendered yet (data not complete or neighbours not completed yet)
-    private val queue: MutableMap<Vec2i, MutableSet<Int>> = mutableMapOf() // Chunk sections that can be prepared or have changed, but are not required to get rendered yet (i.e. culled chunks)
-    //   private val preparingTasks: SynchronizedMap<Vec2i, SynchronizedMap<Int, ThreadPoolRunnable>> = synchronizedMapOf()
 
+    private val loadedMeshes: MutableMap<Vec2i, MutableMap<Int, ChunkSectionMeshes>> = mutableMapOf() // all prepared (and up to date) meshes
+    private val loadedMeshesLock = ReadWriteLock()
+
+    val maxPreparingTasks = maxOf(DefaultThreadPool.threadCount - 1, 1)
+    private val preparingTasks: MutableSet<SectionPrepareTask> = synchronizedSetOf() // current running section preparing tasks
+
+    private val queue: MutableList<WorldQueueItem> = synchronizedListOf() // queue, that is visible, and should be rendered
+    private val queueLock = ReadWriteLock()
+    private val culledQueue: MutableMap<Vec2i, MutableSet<Int>> = mutableMapOf() // Chunk sections that can be prepared or have changed, but are not required to get rendered yet (i.e. culled chunks)
+    private val culledQueueLock = ReadWriteLock(true)
+
+    val maxMeshesToLoad = 100 // ToDo: Should depend on the system memory and other factors.
+    private val meshesToLoad: MutableList<WorldQueueItem> = synchronizedListOf() // prepared meshes, that can be loaded in the (next) frame
+    private val meshesToLoadLock = ReadWriteLock()
+    private val meshesToUnload: MutableList<ChunkSectionMeshes> = synchronizedListOf() // prepared meshes, that can be loaded in the (next) frame
+    private val meshesToUnloadLock = ReadWriteLock()
+
+    // all meshes that will be rendered in the next frame (might be changed, when the frustum changes or a chunk gets loaded, ...)
+    private var clearVisibleNextFrame = false
     private var visibleOpaque: MutableList<ChunkSectionMesh> = mutableListOf()
     private var visibleTranslucent: MutableList<ChunkSectionMesh> = mutableListOf()
     private var visibleTransparent: MutableList<ChunkSectionMesh> = mutableListOf()
 
+
+    private var cameraPosition = Vec3.EMPTY
+    private var cameraChunkPosition = Vec2i.EMPTY
 
     val visibleOpaqueSize: Int
         get() = visibleOpaque.size
@@ -83,9 +113,11 @@ class WorldRenderer(
         get() = visibleTranslucent.size
     val visibleTransparentSize: Int
         get() = visibleTransparent.size
-    val preparedSize: Int by meshes::size
-    val queuedSize: Int by queue::size
-    val incompleteSize: Int by incomplete::size
+    val loadedMeshesSize: Int by loadedMeshes::size
+    val culledQueuedSize: Int by culledQueue::size
+    val meshesToLoadSize: Int by meshesToLoad::size
+    val queueSize: Int by queue::size
+    val preparingTasksSize: Int by preparingTasks::size
 
     override fun init() {
         val asset = Resources.getAssetVersionByVersion(connection.version)
@@ -108,11 +140,37 @@ class WorldRenderer(
         renderWindow.textureManager.staticTextures.animator.use(transparentShader)
         lightMap.use(transparentShader)
 
+
+        lightMap.update()
+
         connection.registerEvent(CallbackEventInvoker.of<FrustumChangeEvent> { onFrustumChange() })
 
         connection.registerEvent(CallbackEventInvoker.of<RespawnEvent> { unloadWorld() })
-        connection.registerEvent(CallbackEventInvoker.of<ChunkDataChangeEvent> { updateChunk(it.chunkPosition, it.chunk, true) })
-        connection.registerEvent(CallbackEventInvoker.of<BlockSetEvent> { updateSection(it.blockPosition.chunkPosition, it.blockPosition.sectionHeight) })
+        connection.registerEvent(CallbackEventInvoker.of<ChunkDataChangeEvent> { queueChunk(it.chunkPosition, it.chunk) })
+        connection.registerEvent(CallbackEventInvoker.of<BlockSetEvent> {
+            val chunkPosition = it.blockPosition.chunkPosition
+            val sectionHeight = it.blockPosition.sectionHeight
+            val chunk = world[chunkPosition] ?: return@of
+            queueSection(chunkPosition, sectionHeight, chunk)
+            val inChunkSectionPosition = it.blockPosition.inChunkSectionPosition
+
+            if (inChunkSectionPosition.y == 0) {
+                queueSection(chunkPosition, sectionHeight - 1, chunk)
+            } else if (inChunkSectionPosition.y == ProtocolDefinition.SECTION_MAX_Y) {
+                queueSection(chunkPosition, sectionHeight + 1, chunk)
+            }
+            if (inChunkSectionPosition.z == 0) {
+                queueSection(Vec2i(chunkPosition.x, chunkPosition.y - 1), sectionHeight)
+            } else if (inChunkSectionPosition.z == ProtocolDefinition.SECTION_MAX_Z) {
+                queueSection(Vec2i(chunkPosition.x, chunkPosition.y + 1), sectionHeight)
+            }
+            if (inChunkSectionPosition.x == 0) {
+                queueSection(Vec2i(chunkPosition.x - 1, chunkPosition.y), sectionHeight)
+            } else if (inChunkSectionPosition.x == ProtocolDefinition.SECTION_MAX_X) {
+                queueSection(Vec2i(chunkPosition.x + 1, chunkPosition.y), sectionHeight)
+            }
+        })
+        /*
         connection.registerEvent(CallbackEventInvoker.of<MassBlockSetEvent> {
             val chunk = world[it.chunkPosition] ?: return@of
             if (!chunk.isFullyLoaded || it.chunkPosition in incomplete) {
@@ -127,51 +185,73 @@ class WorldRenderer(
                 sectionHeights += blockPosition.sectionHeight
             }
             renderWindow.queue += {
-                val meshes = meshes.getOrPut(it.chunkPosition) { mutableMapOf() }
+                val meshes = loadedMeshes.getOrPut(it.chunkPosition) { mutableMapOf() }
                 for (sectionHeight in sectionHeights) {
-                    updateSection(it.chunkPosition, sectionHeight, chunk, neighbourChunks.unsafeCast(), meshes)
+                    //   updateSection(it.chunkPosition, sectionHeight, chunk, neighbourChunks.unsafeCast(), meshes)
                 }
             }
         })
+         */
         connection.registerEvent(CallbackEventInvoker.of<ChunkUnloadEvent> { unloadChunk(it.chunkPosition) })
     }
 
     private fun unloadWorld() {
-        renderWindow.queue += {
-            for (sections in meshes.values) {
-                for (mesh in sections.values) {
-                    mesh.unload()
-                }
-            }
-            meshes.clear()
-            incomplete.clear()
-            queue.clear()
-            visibleOpaque.clear()
-            visibleTranslucent.clear()
-            visibleTransparent.clear()
-            // ToDo: Interrupt tasks
+        queueLock.lock()
+        culledQueueLock.lock()
+        meshesToLoadLock.lock()
+        loadedMeshesLock.lock()
+
+        meshesToUnloadLock.lock()
+        for (sections in loadedMeshes.values) {
+            meshesToUnload += sections.values
         }
+        meshesToUnloadLock.unlock()
+
+        culledQueue.clear()
+        loadedMeshes.clear()
+        queue.clear()
+        meshesToLoad.clear()
+
+        clearVisibleNextFrame = true
+
+        for (task in preparingTasks.toMutableSet()) {
+            task.runnable.interrupt()
+        }
+
+        loadedMeshesLock.unlock()
+        queueLock.unlock()
+        culledQueueLock.unlock()
+        meshesToLoadLock.unlock()
     }
 
     private fun unloadChunk(chunkPosition: Vec2i) {
-        incomplete -= chunkPosition
-        renderWindow.queue += { queue.remove(chunkPosition) }
-        for (neighbourPosition in ChunkUtil.getChunkNeighbourPositions(chunkPosition)) {
-            renderWindow.queue += { queue.remove(neighbourPosition) }
-            world[neighbourPosition] ?: continue // if chunk is not loaded, we don't need to add it to incomplete
-            incomplete += neighbourPosition
-        }
-        renderWindow.queue += add@{
-            val meshes = this.meshes.remove(chunkPosition) ?: return@add
-            if (meshes.isEmpty()) {
-                return@add
-            }
+        queueLock.lock()
+        culledQueueLock.lock()
+        meshesToLoadLock.lock()
+        meshesToUnloadLock.lock()
+        loadedMeshesLock.lock()
+        val meshes = loadedMeshes.remove(chunkPosition)
 
-            for (mesh in meshes.values) {
-                removeMesh(mesh)
-                mesh.unload()
+        culledQueue.remove(chunkPosition)
+
+        queue.removeAll { it.chunkPosition == chunkPosition }
+
+        meshesToLoad.removeAll { it.chunkPosition == chunkPosition }
+
+        for (task in preparingTasks.toMutableSet()) {
+            if (task.chunkPosition == chunkPosition) {
+                task.runnable.interrupt()
             }
         }
+        if (meshes != null) {
+            meshesToUnload += meshes.values
+        }
+
+        loadedMeshesLock.unlock()
+        queueLock.unlock()
+        culledQueueLock.unlock()
+        meshesToLoadLock.unlock()
+        meshesToUnloadLock.unlock()
     }
 
     private fun removeMesh(mesh: ChunkSectionMeshes) {
@@ -180,122 +260,185 @@ class WorldRenderer(
         mesh.transparentMesh?.let { visibleTransparent -= it }
     }
 
-    private fun addMesh(mesh: ChunkSectionMeshes) {
-        mesh.opaqueMesh?.let { visibleOpaque += it }
-        mesh.translucentMesh?.let { visibleTranslucent += it }
-        mesh.transparentMesh?.let { visibleTransparent += it }
+    private fun sortQueue() {
+        queueLock.lock()
+        queue.sortBy { (it.center - cameraPosition).length2() }
+        queueLock.unlock()
     }
 
+    private fun workQueue() {
+        // ToDo: Prepare some of the culledChunks if nothing todo
+        val size = preparingTasks.size
+        if (size >= maxPreparingTasks && queue.isNotEmpty() || meshesToLoad.size >= maxMeshesToLoad) {
+            return
+        }
+        val items: MutableList<WorldQueueItem> = mutableListOf()
+        queueLock.lock()
+        for (i in 0 until maxPreparingTasks - size) {
+            if (queue.size == 0) {
+                break
+            }
+            items += queue.removeAt(0)
+        }
+        queueLock.unlock()
+        for (item in items) {
+            val task = SectionPrepareTask(item.chunkPosition, ThreadPoolRunnable(if (item.chunkPosition == cameraChunkPosition) HIGH else LOW)) // Our own chunk is the most important one ToDo: Also make neighbour chunks important
+            task.runnable.runnable = Runnable {
 
-    /**
-     * Called when chunk data changes
-     * Checks if the chunk is visible and if so, updates the mesh. If not visible, unloads the current mesh and queues it for loading
-     */
-    private fun updateChunk(chunkPosition: Vec2i, chunk: Chunk = world.chunks[chunkPosition]!!, checkQueue: Boolean) {
+                fun end() {
+                    preparingTasks -= task
+                    workQueue()
+                }
+
+                var locked = false
+                try {
+                    val chunk = item.chunk ?: world[item.chunkPosition] ?: return@Runnable end()
+                    val section = chunk[item.sectionHeight] ?: return@Runnable end()
+                    val neighbours = item.neighbours ?: ChunkUtil.getSectionNeighbours(world.getChunkNeighbours(item.chunkPosition).unsafeCast(), chunk, item.sectionHeight)
+                    item.mesh = sectionPreparer.prepare(item.chunkPosition, item.sectionHeight, section, neighbours)
+                    meshesToLoadLock.lock()
+                    locked = true
+                    meshesToLoad.removeAll { it == item } // Remove duplicates
+                    if (item.chunkPosition == cameraChunkPosition) {
+                        // still higher priority
+                        meshesToLoad.add(0, item)
+                    } else {
+                        meshesToLoad += item
+                    }
+                    meshesToLoadLock.unlock()
+                } catch (exception: Throwable) {
+                    if (locked) {
+                        meshesToLoadLock.unlock()
+                    }
+                    if (exception is InterruptedException) {
+                        // task got interrupted (probably because of chunk unload)
+                        preparingTasks -= task
+                        return@Runnable
+                    }
+                    throw exception
+                }
+                end()
+            }
+            preparingTasks += task
+            DefaultThreadPool += task.runnable
+        }
+    }
+
+    private fun internalQueueSection(chunkPosition: Vec2i, sectionHeight: Int, chunk: Chunk, section: ChunkSection, ignoreFrustum: Boolean): Boolean {
+        if (!chunk.isFullyLoaded || section.blocks.isEmpty) {
+            return false
+        }
+
+        val visible = ignoreFrustum || isChunkVisible(chunkPosition, sectionHeight, section.blocks.minPosition, section.blocks.maxPosition)
+        if (visible) {
+            val item = WorldQueueItem(chunkPosition, sectionHeight, chunk, section, Vec3i.of(chunkPosition, sectionHeight, Vec3i(8, 8, 8)).toVec3(), null)
+            queueLock.lock()
+            queue.removeAll { it == item } // Prevent duplicated entries (to not prepare the same chunk twice (if it changed and was not prepared yet or ...)
+            if (chunkPosition == cameraChunkPosition) {
+                queue.add(0, item)
+            } else {
+                queue += item
+            }
+            queueLock.unlock()
+            return true
+        } else {
+            culledQueueLock.lock()
+            culledQueue.getOrPut(chunkPosition) { mutableSetOf() } += sectionHeight
+            culledQueueLock.unlock()
+        }
+        return false
+    }
+
+    private fun queueSection(chunkPosition: Vec2i, sectionHeight: Int, chunk: Chunk? = world.chunks[chunkPosition], section: ChunkSection? = chunk?.get(sectionHeight), ignoreFrustum: Boolean = false) {
+        if (chunk == null || section == null) {
+            return
+        }
+        val queued = internalQueueSection(chunkPosition, sectionHeight, chunk, section, ignoreFrustum)
+
+        if (queued) {
+            sortQueue()
+            workQueue()
+        }
+    }
+
+    private fun queueChunk(chunkPosition: Vec2i, chunk: Chunk = world.chunks[chunkPosition]!!) {
         if (!chunk.isFullyLoaded) {
             return
         }
-        val neighbourPositions = ChunkUtil.getChunkNeighbourPositions(chunkPosition)
-        val neighbourChunks = world.getChunkNeighbours(neighbourPositions)
 
-        if (checkQueue) {
-            for ((index, neighbourPosition) in neighbourPositions.withIndex()) {
-                if (neighbourPosition !in incomplete) {
-                    continue
-                }
-                val neighbourChunk = neighbourChunks[index] ?: continue
-                updateChunk(neighbourPosition, neighbourChunk, false)
+        var queueChanges = 0
+        for (sectionHeight in chunk.lowestSection until chunk.highestSection) {
+            val section = chunk[sectionHeight] ?: continue
+            val queued = internalQueueSection(chunkPosition, sectionHeight, chunk, section, false)
+            if (queued) {
+                queueChanges++
             }
         }
+        if (queueChanges > 0) {
+            sortQueue()
+            workQueue()
+        }
+    }
 
-        if (!neighbourChunks.fullyLoaded) {
-            incomplete += chunkPosition
+    private fun loadMeshes() {
+        meshesToLoadLock.acquire()
+        if (meshesToLoad.isEmpty()) {
+            meshesToLoadLock.release()
             return
         }
-        incomplete -= chunkPosition
-        renderWindow.queue += {
-            val meshes = this.meshes.getOrPut(chunkPosition) { mutableMapOf() }
 
-            for (sectionHeight in chunk.lowestSection until chunk.highestSection) {
-                chunk[sectionHeight] ?: continue
-                updateSection(chunkPosition, sectionHeight, chunk, neighbourChunks.unsafeCast(), meshes)
-            }
-        }
-    }
+        val time = System.currentTimeMillis()
+        val maxTime = if (connection.player.velocity.empty) 50L else 20L // If the player is still, then we can load more chunks (to not cause lags)
 
-    private fun updateSection(chunkPosition: Vec2i, sectionHeight: Int, chunk: Chunk = world[chunkPosition]!!, neighbourChunks: Array<Chunk>? = null, meshes: MutableMap<Int, ChunkSectionMeshes>? = null) {
-
-        val task = ThreadPoolRunnable(priority = LOW, interuptable = false) {
-            try {
-                updateSectionSync(chunkPosition, sectionHeight, chunk, neighbourChunks ?: world.getChunkNeighbours(chunkPosition).unsafeCast(), meshes)
-            } catch (exception: InterruptedException) {
-                Log.log(LogMessageType.RENDERING_GENERAL, LogLevels.WARN) { exception.message!! }
-            }
-        }
-        // chunkTasks[sectionHeight] = task
-        DefaultThreadPool += task
-    }
-
-    private fun updateSectionSync(chunkPosition: Vec2i, sectionHeight: Int, chunk: Chunk, neighbourChunks: Array<Chunk>, meshes: MutableMap<Int, ChunkSectionMeshes>? = null) {
-        if (!chunk.isFullyLoaded || chunkPosition in incomplete) {
-            // chunk not loaded and/or neighbours also not fully loaded
-            return
-        }
-        val section = chunk[sectionHeight] ?: return
-
-        val visible = isChunkVisible(chunkPosition, sectionHeight, section.blocks.minPosition, section.blocks.maxPosition)
-
-        renderWindow.queue += {
-            val meshes = meshes ?: this.meshes.getOrPut(chunkPosition) { mutableMapOf() }
-            val previousMesh = meshes[sectionHeight]
-            if (previousMesh != null && !visible) {
-                meshes.remove(sectionHeight)
-                removeMesh(previousMesh)
-                previousMesh.unload()
-            }
-        }
-
-        if (visible) {
-            renderWindow.queue += {
-                val sectionQueue = queue[chunkPosition]
-                if (sectionQueue != null) {
-                    sectionQueue -= sectionHeight
-                    if (sectionQueue.isEmpty()) {
-                        queue.remove(chunkPosition)
-                    }
-                }
-            }
-            val neighbours = ChunkUtil.getSectionNeighbours(neighbourChunks, chunk, sectionHeight)
-            prepareSection(chunkPosition, sectionHeight, section, neighbours, meshes)
-        } else {
-            renderWindow.queue += { queue.getOrPut(chunkPosition) { mutableSetOf() } += sectionHeight }
-        }
-    }
-
-
-    /**
-     * Preparse a chunk section, loads in (in the renderQueue) and stores it in the meshes. Should run on another thread
-     */
-    private fun prepareSection(chunkPosition: Vec2i, sectionHeight: Int, section: ChunkSection, neighbours: Array<ChunkSection?>, meshes: MutableMap<Int, ChunkSectionMeshes>? = null) {
-        val mesh = sectionPreparer.prepare(chunkPosition, sectionHeight, section, neighbours)
-
-        renderWindow.queue += {
-            val meshes = meshes ?: this.meshes.getOrPut(chunkPosition) { mutableMapOf() }
-            val previousMesh = meshes.remove(sectionHeight)
-            if (previousMesh != null) {
-                removeMesh(previousMesh)
-            }
-
+        while ((System.currentTimeMillis() - time < maxTime) && meshesToLoad.isNotEmpty()) {
+            val item = meshesToLoad.removeAt(0)
+            val mesh = item.mesh ?: throw IllegalStateException("Mesh of queued item is null!")
             mesh.load()
-            meshes[sectionHeight] = mesh
-            if (isChunkVisible(chunkPosition, sectionHeight, mesh.minPosition, mesh.maxPosition)) {
-                addMesh(mesh)
+            val visible = isChunkVisible(item.chunkPosition, item.sectionHeight, mesh.minPosition, mesh.maxPosition)
+            if (visible) {
+                mesh.opaqueMesh?.let { visibleOpaque += it }
+                mesh.translucentMesh?.let { visibleTranslucent += it }
+                mesh.transparentMesh?.let { visibleTransparent += it }
             }
+            loadedMeshesLock.lock()
+            val meshes = loadedMeshes.getOrPut(item.chunkPosition) { mutableMapOf() }
+
+            meshes.put(item.sectionHeight, mesh)?.let {
+                removeMesh(it)
+                it.unload()
+            }
+            loadedMeshesLock.unlock()
         }
+        meshesToLoadLock.release()
+    }
+
+    private fun unloadMeshes() {
+        meshesToUnloadLock.acquire()
+        if (meshesToUnload.isEmpty()) {
+            meshesToUnloadLock.release()
+            return
+        }
+
+        val time = System.currentTimeMillis()
+        val maxTime = if (connection.player.velocity.empty) 50L else 20L // If the player is still, then we can load more chunks (to not cause lags)
+
+        while ((System.currentTimeMillis() - time < maxTime) && meshesToUnload.isNotEmpty()) {
+            val mesh = meshesToUnload.removeAt(0)
+            removeMesh(mesh)
+            mesh.unload()
+        }
+        meshesToUnloadLock.release()
     }
 
     override fun prepareDraw() {
-        lightMap.update() // ToDo
+        if (clearVisibleNextFrame) {
+            visibleOpaque.clear()
+            visibleTranslucent.clear()
+            visibleTransparent.clear()
+            clearVisibleNextFrame = false
+        }
+        unloadMeshes()
+        loadMeshes()
     }
 
     override fun setupOpaque() {
@@ -348,7 +491,8 @@ class WorldRenderer(
         val visibleTranslucent: MutableList<ChunkSectionMesh> = mutableListOf()
         val visibleTransparent: MutableList<ChunkSectionMesh> = mutableListOf()
 
-        for ((chunkPosition, meshes) in this.meshes) {
+        loadedMeshesLock.acquire()
+        for ((chunkPosition, meshes) in this.loadedMeshes) {
             for ((sectionHeight, mesh) in meshes) {
                 if (!isChunkVisible(chunkPosition, sectionHeight, mesh.minPosition, mesh.maxPosition)) {
                     continue
@@ -358,23 +502,47 @@ class WorldRenderer(
                 mesh.transparentMesh?.let { visibleTransparent += it }
             }
         }
+        loadedMeshesLock.release()
 
-        val removeFromQueue: MutableSet<Vec2i> = mutableSetOf()
-        for ((chunkPosition, sectionHeights) in this.queue) {
-            val chunk = world[chunkPosition]
-            if (chunk == null || !chunk.isFullyLoaded || chunkPosition in incomplete) {
-                removeFromQueue += chunkPosition
-                continue
-            }
-            val neighbours = world.getChunkNeighbours(chunkPosition)
-            val meshes = this.meshes.getOrPut(chunkPosition) { mutableMapOf() }
+        culledQueueLock.acquire()
+        val queue: MutableMap<Vec2i, MutableSet<Int>> = mutableMapOf() // The queue method needs the full lock of the culledQueue
+        for ((chunkPosition, sectionHeights) in this.culledQueue) {
+            var chunkQueue: MutableSet<Int>? = null
             for (sectionHeight in sectionHeights) {
-                updateSection(chunkPosition, sectionHeight, chunk, neighbours.unsafeCast(), meshes)
+                if (!isChunkVisible(chunkPosition, sectionHeight, Vec3i.EMPTY, Vec3i(16))) {
+                    continue
+                }
+                if (chunkQueue == null) {
+                    chunkQueue = queue.getOrPut(chunkPosition) { mutableSetOf() }
+                }
+                chunkQueue += sectionHeight
             }
         }
-        this.queue -= removeFromQueue
+        culledQueueLock.release()
 
-        val cameraPosition = connection.player.cameraPosition
+
+        for ((chunkPosition, sectionHeights) in queue) {
+            for (sectionHeight in sectionHeights) {
+                queueSection(chunkPosition, sectionHeight, ignoreFrustum = true)
+            }
+        }
+        if (queue.isNotEmpty()) {
+            sortQueue()
+            workQueue()
+        }
+
+        culledQueueLock.acquire()
+        for ((chunkPosition, sectionHeights) in queue) {
+            val originalSectionHeight = this.culledQueue[chunkPosition] ?: continue
+            originalSectionHeight -= sectionHeights
+            if (originalSectionHeight.isEmpty()) {
+                this.culledQueue -= chunkPosition
+            }
+        }
+        culledQueueLock.release()
+
+
+        val cameraPosition = connection.player.cameraPosition.toVec3
 
         visibleOpaque.sortBy { (it.center - cameraPosition).length2() }
         this.visibleOpaque = visibleOpaque
@@ -384,6 +552,12 @@ class WorldRenderer(
 
         visibleTransparent.sortBy { (it.center - cameraPosition).length2() }
         this.visibleTransparent = visibleTransparent
+
+        if (this.cameraPosition != cameraPosition) {
+            this.cameraPosition = cameraPosition
+            this.cameraChunkPosition = connection.player.positionInfo.chunkPosition
+            sortQueue()
+        }
     }
 
 

@@ -13,24 +13,42 @@
 
 package de.bixilon.minosoft.util
 
-import java.util.concurrent.Semaphore
-
-class SemaphoreLock {
-    private val semaphore = Semaphore(Int.MAX_VALUE)
+class ReadWriteLock(val debug: Boolean = false) {
+    private val lock = Object()
+    private var readers = 0
+    private var writing = false
 
     fun acquire() {
-        semaphore.acquire()
+        synchronized(lock) {
+            while (writing) {
+                lock.wait()
+            }
+            readers++
+            lock.notifyAll()
+        }
     }
 
     fun release() {
-        semaphore.release()
+        synchronized(lock) {
+            readers--
+            lock.notifyAll()
+        }
     }
 
     fun lock() {
-        semaphore.acquire(Int.MAX_VALUE)
+        synchronized(lock) {
+            while (writing || readers > 0) {
+                lock.wait()
+            }
+            writing = true
+            lock.notifyAll()
+        }
     }
 
     fun unlock() {
-        semaphore.release(Int.MAX_VALUE)
+        synchronized(lock) {
+            writing = false
+            lock.notifyAll()
+        }
     }
 }

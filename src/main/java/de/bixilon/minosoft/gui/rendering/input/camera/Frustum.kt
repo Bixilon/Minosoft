@@ -163,7 +163,7 @@ class Frustum(private val camera: Camera) {
 
     fun containsChunk(chunkPosition: Vec2i, sectionHeight: Int, minPosition: Vec3i, maxPosition: Vec3i): Boolean {
         val from = Vec3i.of(chunkPosition, sectionHeight, minPosition)
-        val to = Vec3i.of(chunkPosition, sectionHeight, maxPosition)
+        val to = Vec3i.of(chunkPosition, sectionHeight, maxPosition + 1)
         return containsRegion(Vec3(from), Vec3(to))
     }
 

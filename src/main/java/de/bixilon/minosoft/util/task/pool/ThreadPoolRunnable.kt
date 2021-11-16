@@ -16,7 +16,7 @@ package de.bixilon.minosoft.util.task.pool
 class ThreadPoolRunnable(
     val priority: Int = ThreadPool.NORMAL,
     var interuptable: Boolean = false,
-    val runnable: Runnable,
+    var runnable: Runnable? = null,
 ) : Comparable<ThreadPoolRunnable> {
     var wasInterrupted = false
     var thread: Thread? = null

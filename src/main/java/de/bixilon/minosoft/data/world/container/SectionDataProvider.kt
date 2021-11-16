@@ -15,7 +15,7 @@ package de.bixilon.minosoft.data.world.container
 
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import de.bixilon.minosoft.util.SemaphoreLock
+import de.bixilon.minosoft.util.ReadWriteLock
 import glm_.vec3.Vec3i
 
 open class SectionDataProvider<T>(
@@ -24,7 +24,7 @@ open class SectionDataProvider<T>(
 ) : Iterable<T> {
     protected var data = data
         private set
-    protected val lock = SemaphoreLock() // lock while reading (blocks writing)
+    protected val lock = ReadWriteLock() // lock while reading (blocks writing)
     var count: Int = 0
         private set
     val isEmpty: Boolean
@@ -101,7 +101,7 @@ open class SectionDataProvider<T>(
                 minZ = z
             }
 
-            if (x < maxX) {
+            if (x > maxX) {
                 maxX = x
             }
             if (y > maxY) {
