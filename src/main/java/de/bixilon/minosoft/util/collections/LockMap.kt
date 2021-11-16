@@ -20,7 +20,7 @@ import java.util.function.BiConsumer
 import java.util.function.BiFunction
 import java.util.function.Function
 
-class SemaphoreMap<K, V>(
+class LockMap<K, V>(
     private val original: MutableMap<K, V>,
 ) : MutableMap<K, V> {
     val lock = ReadWriteLock()

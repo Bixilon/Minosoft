@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.util.chunk
 
+import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
@@ -22,6 +23,7 @@ import de.bixilon.minosoft.data.world.ChunkSection
 import de.bixilon.minosoft.data.world.biome.source.XZBiomeArray
 import de.bixilon.minosoft.data.world.container.RegistrySectionDataProvider
 import de.bixilon.minosoft.data.world.palette.Palette.Companion.choosePalette
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.abs
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*
@@ -245,6 +247,26 @@ object ChunkUtil {
             return true
         }
 
+    val Array<Chunk?>.received: Boolean
+        get() {
+            for (neighbour in this) {
+                if (neighbour?.blocksInitialized != true && neighbour?.lightInitialized != true) {
+                    return false
+                }
+            }
+            return true
+        }
+
+    val Array<Chunk?>.canBuildBiomeCache: Boolean
+        get() {
+            for (neighbour in this) {
+                if (neighbour?.biomeSource == null || !neighbour.cacheBiomes) {
+                    return false
+                }
+            }
+            return true
+        }
+
 
     fun getChunkNeighbourPositions(chunkPosition: Vec2i): Array<Vec2i> {
         return arrayOf(
@@ -283,5 +305,12 @@ object ChunkUtil {
         for (section in this) {
             section?.release()
         }
+    }
+
+    fun Vec2i.isInRenderDistance(cameraPosition: Vec2i): Boolean {
+        val viewDistance = Minosoft.config.config.game.camera.viewDistance
+        val delta = (this - cameraPosition).abs
+
+        return delta.x < viewDistance || delta.y < viewDistance
     }
 }

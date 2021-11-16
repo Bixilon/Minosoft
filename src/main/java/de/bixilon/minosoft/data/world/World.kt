@@ -40,8 +40,9 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
 import de.bixilon.minosoft.util.KUtil.toSynchronizedMap
 import de.bixilon.minosoft.util.MMath
-import de.bixilon.minosoft.util.chunk.ChunkUtil
-import de.bixilon.minosoft.util.chunk.ChunkUtil.loaded
+import de.bixilon.minosoft.util.chunk.ChunkUtil.canBuildBiomeCache
+import de.bixilon.minosoft.util.chunk.ChunkUtil.getChunkNeighbourPositions
+import de.bixilon.minosoft.util.chunk.ChunkUtil.received
 import de.bixilon.minosoft.util.collections.SynchronizedMap
 import glm_.func.common.clamp
 import glm_.vec2.Vec2i
@@ -124,7 +125,7 @@ class World(
 
     fun unloadChunk(chunkPosition: Vec2i) {
         val chunk = chunks.remove(chunkPosition) ?: return
-        val neighbourPositions = ChunkUtil.getChunkNeighbourPositions(chunkPosition)
+        val neighbourPositions = getChunkNeighbourPositions(chunkPosition)
         for (neighbourPosition in neighbourPositions) {
             val neighbour = this[neighbourPosition] ?: continue
             neighbour.neighboursLoaded = false
@@ -261,51 +262,37 @@ class World(
     }
 
     fun getChunkNeighbours(chunkPosition: Vec2i): Array<Chunk?> {
-        return getChunkNeighbours(ChunkUtil.getChunkNeighbourPositions(chunkPosition))
+        return getChunkNeighbours(getChunkNeighbourPositions(chunkPosition))
     }
 
-
-    fun onChunkUpdate(chunkPosition: Vec2i, chunk: Chunk = this[chunkPosition]!!) {
-        if (chunk.neighboursLoaded) {
-            // return  ToDo: Causes some chunks not have neighboursLoaded=true, but they should
+    fun onChunkUpdate(chunkPosition: Vec2i, chunk: Chunk, checkNeighbours: Boolean = true) {
+        if (chunk.isFullyLoaded) {
+            return
         }
-        val neighbourPositions = ChunkUtil.getChunkNeighbourPositions(chunkPosition)
-        val neighbours = getChunkNeighbours(neighbourPositions)
-        if (neighbours.loaded) {
+
+
+        val neighboursPositions = getChunkNeighbourPositions(chunkPosition)
+        val neighbours = getChunkNeighbours(neighboursPositions)
+
+        if (neighbours.received) {
             chunk.neighboursLoaded = true
-            if (cacheBiomeAccessor != null) {
+
+            if (!chunk.biomesInitialized && cacheBiomeAccessor != null && chunk.biomeSource != null && neighbours.canBuildBiomeCache) {
                 chunk.buildBiomeCache()
             }
+            connection.fireEvent(ChunkDataChangeEvent(connection, EventInitiators.UNKNOWN, chunkPosition, chunk))
         }
+
+
+        if (!checkNeighbours) {
+            return
+        }
+
         for (index in 0 until 8) {
-            val neighbourPosition = neighbourPositions[index]
-            if (neighbourPosition == chunkPosition) {
-                continue
-            }
-            val neighbourChunk = neighbours[index] ?: continue
-
-            if (neighbourChunk.biomesInitialized || neighbourChunk.neighboursLoaded) {
-                continue
-            }
-            var neighboursLoaded = true
-            for (neighbourNeighbourChunk in getChunkNeighbours(neighbourPosition)) {
-                if ((neighbourNeighbourChunk?.biomeSource == null && neighbourNeighbourChunk?.biomesInitialized != true) || !neighbourNeighbourChunk.blocksInitialized || !neighbourNeighbourChunk.lightInitialized) {
-                    neighboursLoaded = false
-                    break
-                }
-            }
-            if (!neighboursLoaded) {
-                continue
-            }
-            neighbourChunk.neighboursLoaded = true
-
-            if (cacheBiomeAccessor != null) {
-                neighbourChunk.buildBiomeCache()
-            }
-            connection.fireEvent(ChunkDataChangeEvent(connection, EventInitiators.UNKNOWN, neighbourPosition, neighbourChunk))
+            val neighbour = neighbours[index] ?: continue
+            onChunkUpdate(neighboursPositions[index], neighbour, false)
         }
     }
-
 
     companion object {
         const val MAX_SIZE = 29999999

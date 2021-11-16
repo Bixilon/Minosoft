@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.block
 
-import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.assets.AssetsUtil
 import de.bixilon.minosoft.data.assets.Resources
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -40,7 +39,6 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.of
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
-import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.abs
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.toVec3
@@ -57,6 +55,7 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.KUtil.unsafeCast
 import de.bixilon.minosoft.util.ReadWriteLock
 import de.bixilon.minosoft.util.chunk.ChunkUtil
+import de.bixilon.minosoft.util.chunk.ChunkUtil.isInRenderDistance
 import de.bixilon.minosoft.util.task.pool.DefaultThreadPool
 import de.bixilon.minosoft.util.task.pool.ThreadPool.Priorities.HIGH
 import de.bixilon.minosoft.util.task.pool.ThreadPool.Priorities.LOW
@@ -89,7 +88,7 @@ class WorldRenderer(
     private val queue: MutableList<WorldQueueItem> = synchronizedListOf() // queue, that is visible, and should be rendered
     private val queueLock = ReadWriteLock()
     private val culledQueue: MutableMap<Vec2i, MutableSet<Int>> = mutableMapOf() // Chunk sections that can be prepared or have changed, but are not required to get rendered yet (i.e. culled chunks)
-    private val culledQueueLock = ReadWriteLock(true)
+    private val culledQueueLock = ReadWriteLock()
 
     val maxMeshesToLoad = 100 // ToDo: Should depend on the system memory and other factors.
     private val meshesToLoad: MutableList<WorldQueueItem> = synchronizedListOf() // prepared meshes, that can be loaded in the (next) frame
@@ -475,11 +474,7 @@ class WorldRenderer(
     }
 
     private fun isChunkVisible(chunkPosition: Vec2i, sectionHeight: Int, minPosition: Vec3i, maxPosition: Vec3i): Boolean {
-        val viewDistance = Minosoft.config.config.game.camera.viewDistance
-        val cameraChunkPosition = renderWindow.connection.player.positionInfo.chunkPosition
-        val delta = (chunkPosition - cameraChunkPosition).abs
-
-        if (delta.x >= viewDistance || delta.y >= viewDistance) {
+        if (!chunkPosition.isInRenderDistance(cameraChunkPosition)) {
             return false
         }
         // ToDo: Cave culling, frustum clipping, improve performance

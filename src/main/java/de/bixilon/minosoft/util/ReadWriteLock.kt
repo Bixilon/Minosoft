@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.util
 
-class ReadWriteLock(val debug: Boolean = false) {
+class ReadWriteLock {
     private val lock = Object()
     private var readers = 0
     private var writing = false
