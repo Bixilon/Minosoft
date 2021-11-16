@@ -36,7 +36,7 @@ class RegistrySectionDataProvider<T>(
 
     override fun copy(): RegistrySectionDataProvider<T> {
         acquire()
-        val clone = RegistrySectionDataProvider(registry, data.clone())
+        val clone = RegistrySectionDataProvider(registry, data?.clone())
         release()
 
         return clone

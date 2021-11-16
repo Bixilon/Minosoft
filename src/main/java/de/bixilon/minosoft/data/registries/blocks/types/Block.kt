@@ -76,21 +76,13 @@ open class Block(
         return resourceLocation.full
     }
 
-    open fun getPlacementState(connection: PlayConnection, raycastHit: RaycastHit): BlockState? {
-        return defaultState
-    }
+    open fun getPlacementState(connection: PlayConnection, raycastHit: RaycastHit): BlockState? = defaultState
 
-    open fun onBreak(connection: PlayConnection, blockPosition: Vec3i, blockState: BlockState, blockEntity: BlockEntity?) {
+    open fun onBreak(connection: PlayConnection, blockPosition: Vec3i, blockState: BlockState, blockEntity: BlockEntity?) = Unit
 
-    }
+    open fun onPlace(connection: PlayConnection, blockPosition: Vec3i, blockState: BlockState) = Unit
 
-    open fun onPlace(connection: PlayConnection, blockPosition: Vec3i, blockState: BlockState) {
-
-    }
-
-    open fun canPlaceAt(connection: PlayConnection, blockPosition: Vec3i, blockState: BlockState): Boolean {
-        return true
-    }
+    open fun canPlaceAt(connection: PlayConnection, blockPosition: Vec3i, blockState: BlockState): Boolean = true
 
     open fun onUse(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, raycastHit: RaycastHit, hand: Hands, itemStack: ItemStack?): InteractionResults {
         if (blockEntityType == null) {

@@ -147,7 +147,7 @@ object ChunkUtil {
     fun readPaletteChunk(buffer: PlayInByteBuffer, dimension: DimensionProperties, sectionBitMask: BitSet, isFullChunk: Boolean, containsSkyLight: Boolean = false): ChunkData {
         val chunkData = ChunkData()
         val sectionBlocks: Array<RegistrySectionDataProvider<BlockState?>?> = arrayOfNulls(dimension.sections)
-        val light: Array<IntArray?> = arrayOfNulls(dimension.sections)
+        val light: Array<ByteArray?> = arrayOfNulls(dimension.sections)
         var lightReceived = 0
 
         for ((sectionIndex, sectionHeight) in (dimension.lowestSection until sectionBitMask.length()).withIndex()) { // max sections per chunks in chunk column

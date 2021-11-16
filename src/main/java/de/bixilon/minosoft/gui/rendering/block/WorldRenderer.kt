@@ -36,7 +36,6 @@ import de.bixilon.minosoft.gui.rendering.system.base.phases.TransparentDrawable
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.abs
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
 import de.bixilon.minosoft.modding.event.events.*
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -244,7 +243,7 @@ class WorldRenderer(
         }
         val section = chunk[sectionHeight] ?: return
 
-        val visible = isChunkVisible(chunkPosition, sectionHeight, Vec3i.EMPTY, Vec3i(16, 16, 16)) // ToDo: min/maxPosition
+        val visible = isChunkVisible(chunkPosition, sectionHeight, section.blocks.minPosition, section.blocks.maxPosition)
 
         renderWindow.queue += {
             val meshes = meshes ?: this.meshes.getOrPut(chunkPosition) { mutableMapOf() }

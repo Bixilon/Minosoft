@@ -22,7 +22,7 @@ open class SectionDataProvider<T>(
     data: Array<Any?>? = null,
     val checkSize: Boolean = false,
 ) : Iterable<T> {
-    protected var data = data ?: arrayOfNulls(ProtocolDefinition.BLOCKS_PER_SECTION)
+    protected var data = data
         private set
     protected val lock = SemaphoreLock() // lock while reading (blocks writing)
     var count: Int = 0
@@ -46,23 +46,28 @@ open class SectionDataProvider<T>(
     @Suppress("UNCHECKED_CAST")
     operator fun get(index: Int): T {
         lock.acquire()
-        val value = data[index] as T
+        val value = data?.get(index) as T
         lock.release()
         return value
     }
 
     @Suppress("UNCHECKED_CAST")
     fun unsafeGet(index: Int): T {
-        return data[index] as T
+        return data?.get(index) as T
     }
 
     @Suppress("UNCHECKED_CAST")
     fun unsafeGet(x: Int, y: Int, z: Int): T {
-        return data[y shl 8 or (z shl 4) or x] as T
+        return data?.get(y shl 8 or (z shl 4) or x) as T
     }
 
 
     private fun recalculate() {
+        val data = data
+        if (data == null) {
+            count = 0
+            return
+        }
         var count = 0
 
         var minX = 16
@@ -110,6 +115,9 @@ open class SectionDataProvider<T>(
         this.minPosition = Vec3i(minX, minY, minZ)
         this.maxPosition = Vec3i(maxX, maxY, maxZ)
         this.count = count
+        if (count == 0) {
+            this.data = null
+        }
     }
 
     operator fun get(x: Int, y: Int, z: Int): T {
@@ -122,15 +130,25 @@ open class SectionDataProvider<T>(
 
     operator fun set(index: Int, value: T) {
         lock()
-        val previous = data[index]
+        var data = data
+        val previous = data?.get(index)
         if (value == null) {
             if (previous == null) {
                 unlock()
                 return
             }
             count--
+            if (count == 0) {
+                this.data = null
+                unlock()
+                return
+            }
         } else if (previous == null) {
             count++
+        }
+        if (data == null) {
+            data = arrayOfNulls(ProtocolDefinition.BLOCKS_PER_SECTION)
+            this.data = data
         }
         data[index] = value
 
@@ -175,7 +193,7 @@ open class SectionDataProvider<T>(
 
     open fun copy(): SectionDataProvider<T> {
         acquire()
-        val clone = SectionDataProvider<T>(data.clone())
+        val clone = SectionDataProvider<T>(data?.clone())
         release()
 
         return clone
@@ -183,6 +201,11 @@ open class SectionDataProvider<T>(
 
     @Suppress("UNCHECKED_CAST")
     override fun iterator(): Iterator<T> {
-        return data.iterator() as Iterator<T>
+        return (data?.iterator() ?: EMPTY_ITERATOR) as Iterator<T>
+    }
+
+
+    companion object {
+        private val EMPTY_ITERATOR = listOf<Any>().iterator()
     }
 }

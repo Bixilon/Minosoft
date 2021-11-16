@@ -157,12 +157,6 @@ data class BlockState(
             )
         }
 
-        fun getPositionSeed(x: Int, y: Int, z: Int): Long {
-            var ret = (x * 3129871L) xor z * 116129781L xor y.toLong()
-            ret = ret * ret * 42317861L + ret * 11L
-            return ret shr 16
-        }
-
         private fun getProperties(json: Map<String, Any>): MutableMap<BlockProperties, Any> {
             val properties: MutableMap<BlockProperties, Any> = mutableMapOf()
             for ((propertyGroup, propertyJsonValue) in json) {

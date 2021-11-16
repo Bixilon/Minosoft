@@ -38,8 +38,8 @@ class Chunk(
     var biomeSource: BiomeSource? = null,
 ) : Iterable<ChunkSection?>, BiomeAccessor {
     private val world = connection.world
-    var bottomLight: IntArray? = null
-    var topLight: IntArray? = null
+    var bottomLight: ByteArray? = null
+    var topLight: ByteArray? = null
     val lowestSection = world.dimension!!.lowestSection
     val highestSection = world.dimension!!.highestSection
     val cacheBiomes = world.cacheBiomeAccessor != null
@@ -174,12 +174,12 @@ class Chunk(
         val sectionHeight = position.sectionHeight
         val index = position.inChunkSectionPosition.index
         if (sectionHeight == lowestSection - 1) {
-            return bottomLight?.get(index) ?: 0xFF
+            return bottomLight?.get(index)?.toInt() ?: 0xFF
         }
         if (sectionHeight == highestSection + 1) {
-            return topLight?.get(index) ?: 0xFF
+            return topLight?.get(index)?.toInt() ?: 0xFF
         }
-        return get(position.sectionHeight)?.light?.get(index) ?: 0xFF
+        return get(position.sectionHeight)?.light?.get(index)?.toInt() ?: 0xFF
     }
 
     fun buildBiomeCache() {

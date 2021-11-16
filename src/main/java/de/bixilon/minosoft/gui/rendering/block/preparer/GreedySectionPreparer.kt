@@ -28,6 +28,7 @@ import glm_.vec3.Vec3i
 import java.util.*
 
 
+@Deprecated("TODO")
 class GreedySectionPreparer(
     val renderWindow: RenderWindow,
 ) : AbstractSectionPreparer {

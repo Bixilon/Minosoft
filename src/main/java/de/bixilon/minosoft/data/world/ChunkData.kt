@@ -23,9 +23,9 @@ class ChunkData(
     var blocks: Array<RegistrySectionDataProvider<BlockState?>?>? = null,
     var blockEntities: Map<Vec3i, BlockEntity>? = null,
     var biomeSource: BiomeSource? = null,
-    var light: Array<IntArray?>? = null,
-    var bottomLight: IntArray? = null,
-    var topLight: IntArray? = null,
+    var light: Array<ByteArray?>? = null,
+    var bottomLight: ByteArray? = null,
+    var topLight: ByteArray? = null,
 ) {
 
     @Synchronized

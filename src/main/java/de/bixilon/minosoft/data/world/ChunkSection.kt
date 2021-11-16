@@ -33,10 +33,10 @@ class ChunkSection(
     var blocks: RegistrySectionDataProvider<BlockState?>,
     var biomes: RegistrySectionDataProvider<Biome>,
     var blockEntities: SectionDataProvider<BlockEntity?>,
-    var light: IntArray, // packed (skyLight: 0xF0, blockLight: 0x0F)
+    var light: ByteArray, // packed (skyLight: 0xF0, blockLight: 0x0F)
 ) {
 
-    constructor(registries: Registries) : this(RegistrySectionDataProvider<BlockState?>(registries.blockStateRegistry.unsafeCast(), checkSize = true), RegistrySectionDataProvider(registries.biomeRegistry, checkSize = false), SectionDataProvider(checkSize = false), IntArray(ProtocolDefinition.BLOCKS_PER_SECTION))
+    constructor(registries: Registries) : this(RegistrySectionDataProvider<BlockState?>(registries.blockStateRegistry.unsafeCast(), checkSize = true), RegistrySectionDataProvider(registries.biomeRegistry, checkSize = false), SectionDataProvider(checkSize = false), ByteArray(ProtocolDefinition.BLOCKS_PER_SECTION))
 
     fun tick(connection: PlayConnection, chunkPosition: Vec2i, sectionHeight: Int) {
         if (blockEntities.isEmpty) {

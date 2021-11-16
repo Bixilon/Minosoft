@@ -32,7 +32,7 @@ object LightUtil {
         val blockLight = readLightArray(buffer, blockLightMask, dimension)
 
         val chunkData = ChunkData()
-        val light: Array<IntArray?> = arrayOfNulls(dimension.sections)
+        val light: Array<ByteArray?> = arrayOfNulls(dimension.sections)
 
         for (i in light.indices) {
             var sectionBlockLight = blockLight.first.getOrNull(i)
@@ -84,9 +84,9 @@ object LightUtil {
         return Triple(light, bottomLight, topLight)
     }
 
-    fun mergeLight(blockLightArray: ByteArray, skyLightArray: ByteArray?): IntArray {
+    fun mergeLight(blockLightArray: ByteArray, skyLightArray: ByteArray?): ByteArray {
         check(skyLightArray == null || blockLightArray.size == skyLightArray.size)
-        val light = IntArray(blockLightArray.size * 2)
+        val light = ByteArray(blockLightArray.size * 2)
 
         var skyLight: Int
         var blockLight: Int
@@ -94,8 +94,8 @@ object LightUtil {
         for (index in blockLightArray.indices) {
             blockLight = blockLightArray[index].toInt()
             skyLight = skyLightArray?.get(index)?.toInt() ?: 0x00
-            light[index * 2] = (blockLight and 0x0F) or ((skyLight and 0x0F) shl 4)
-            light[index * 2 + 1] = ((blockLight and 0xF0) ushr 4) or (skyLight and 0xF0)
+            light[index * 2] = ((blockLight and 0x0F) or ((skyLight and 0x0F) shl 4)).toByte()
+            light[index * 2 + 1] = (((blockLight and 0xF0) ushr 4) or (skyLight and 0xF0)).toByte()
         }
 
         return light
