@@ -25,7 +25,7 @@ import de.bixilon.minosoft.data.inventory.InventorySlots
 import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.physics.PhysicsConstants
 import de.bixilon.minosoft.data.registries.AABB
-import de.bixilon.minosoft.data.registries.blocks.DefaultBlocks
+import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.effects.DefaultStatusEffects
 import de.bixilon.minosoft.data.registries.effects.attributes.DefaultStatusEffectAttributeNames
@@ -185,7 +185,7 @@ class LocalPlayerEntity(
 
             val blockStateBelow = connection.world[positionInfo.blockPosition] ?: return 1.0
 
-            if (blockStateBelow.block.resourceLocation == DefaultBlocks.WATER || blockStateBelow.block.resourceLocation == DefaultBlocks.BUBBLE_COLUMN) {
+            if (blockStateBelow.block.resourceLocation == MinecraftBlocks.WATER || blockStateBelow.block.resourceLocation == MinecraftBlocks.BUBBLE_COLUMN) {
                 if (blockStateBelow.block.velocityMultiplier == 1.0) {
                     return connection.world[positionInfo.blockPosition]?.block?.velocityMultiplier ?: 1.0
                 }
@@ -308,7 +308,7 @@ class LocalPlayerEntity(
             y = max(velocity.y, -CLIMBING_CLAMP_VALUE),
             z = MMath.clamp(velocity.z, -CLIMBING_CLAMP_VALUE, CLIMBING_CLAMP_VALUE)
         )
-        if (returnVelocity.y < 0.0 && connection.world[positionInfo.blockPosition]?.block?.resourceLocation != DefaultBlocks.SCAFFOLDING && isSneaking) {
+        if (returnVelocity.y < 0.0 && connection.world[positionInfo.blockPosition]?.block?.resourceLocation != MinecraftBlocks.SCAFFOLDING && isSneaking) {
             returnVelocity.y = 0.0
         }
         return returnVelocity
@@ -334,7 +334,7 @@ class LocalPlayerEntity(
     }
 
     private fun adjustVelocityForClimbing(velocity: Vec3d): Vec3d {
-        if ((this.horizontalCollision || isJumping) && (isClimbing || connection.world[positionInfo.blockPosition]?.block == DefaultBlocks.POWDER_SNOW && equipment[InventorySlots.EquipmentSlots.FEET]?.item?.resourceLocation == DefaultItems.LEATHER_BOOTS)) {
+        if ((this.horizontalCollision || isJumping) && (isClimbing || connection.world[positionInfo.blockPosition]?.block == MinecraftBlocks.POWDER_SNOW && equipment[InventorySlots.EquipmentSlots.FEET]?.item?.resourceLocation == DefaultItems.LEATHER_BOOTS)) {
             return Vec3d(velocity.x, 0.2, velocity.z)
         }
         return velocity

@@ -58,7 +58,7 @@ interface AssetsManager {
         return Util.readReader(readAssetAsReader(resourceLocation), true)
     }
 
-    fun readAGBArrayAsset(resourceLocation: ResourceLocation): IntArray {
+    fun readRGBArrayAsset(resourceLocation: ResourceLocation): IntArray {
         val decoder = PNGDecoder(readAssetAsStream(resourceLocation))
 
         val buffer = BufferUtils.createByteBuffer(decoder.width * decoder.height * PNGDecoder.Format.RGB.numComponents)

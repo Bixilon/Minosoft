@@ -7,11 +7,10 @@ import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class GrassTintCalculator : TintProvider {
-    override val indices: Int = 1
     private lateinit var colorMap: IntArray
 
     fun init(assetsManager: AssetsManager) {
-        colorMap = assetsManager.readAGBArrayAsset("minecraft:colormap/grass".toResourceLocation().texture())
+        colorMap = assetsManager.readRGBArrayAsset("minecraft:colormap/grass".toResourceLocation().texture())
     }
 
     fun getColor(downfall: Int, temperature: Int): Int {
@@ -27,7 +26,7 @@ class GrassTintCalculator : TintProvider {
         return color
     }
 
-    override fun getColor(blockState: BlockState, biome: Biome?, x: Int, y: Int, z: Int, tintIndex: Int): Int {
+    override fun getColor(blockState: BlockState?, biome: Biome?, x: Int, y: Int, z: Int, tintIndex: Int): Int {
         if (biome == null) {
             return getColor(127, 127)
         }

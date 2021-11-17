@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.particle.types.render.texture.advanced.block
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.blocks.DefaultBlocks
+import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
 import de.bixilon.minosoft.data.registries.particle.data.BlockParticleData
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.data.text.RGBColor
@@ -38,7 +38,7 @@ class BlockDustParticle(connection: PlayConnection, position: Vec3d, velocity: V
         gravityStrength = 1.0f
         color = 0.6f.asGray()
 
-        if (data.blockState.block.resourceLocation != DefaultBlocks.GRASS_BLOCK) {
+        if (data.blockState.block.resourceLocation != MinecraftBlocks.GRASS_BLOCK) {
             val tintColor = connection.rendering!!.renderWindow.tintManager.getTint(data.blockState, null, blockPosition)?.asRGBColor()
 
             tintColor?.let {
@@ -60,7 +60,7 @@ class BlockDustParticle(connection: PlayConnection, position: Vec3d, velocity: V
 
         override fun build(connection: PlayConnection, position: Vec3d, velocity: Vec3d, data: ParticleData): BlockDustParticle? {
             check(data is BlockParticleData)
-            if (data.blockState == null || data.blockState.block.resourceLocation == DefaultBlocks.MOVING_PISTON) {
+            if (data.blockState == null || data.blockState.block.resourceLocation == MinecraftBlocks.MOVING_PISTON) {
                 return null
             }
             return BlockDustParticle(connection, position, velocity, data)
