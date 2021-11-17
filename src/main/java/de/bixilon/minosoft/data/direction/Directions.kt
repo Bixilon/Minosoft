@@ -89,6 +89,14 @@ enum class Directions(
         }
     }
 
+    fun getFallbackUV(from: Vec3, to: Vec3): Pair<Vec2, Vec2> {
+        return when (this) {
+            DOWN, UP -> Pair(from.xz, to.xz)
+            SOUTH, NORTH -> Pair(Vec2(1) - to.xy, Vec2(1) - from.xy)
+            WEST, EAST -> Pair(Vec2(1) - to.zy, Vec2(1) - from.zy)
+        }
+    }
+
     fun getUVMultiplier(from: Vec3, to: Vec3): Vec2 {
         return when (this) {
             DOWN -> from.zx - to.zx

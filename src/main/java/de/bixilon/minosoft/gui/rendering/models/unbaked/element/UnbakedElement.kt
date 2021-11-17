@@ -40,7 +40,7 @@ data class UnbakedElement(
             data["faces"].asCompound().let {
                 for ((directionString, faceData) in it) {
                     val direction = Directions[directionString]
-                    val (fallbackUVStart, fallbackUVEnd) = direction.getSize(from, to)
+                    val (fallbackUVStart, fallbackUVEnd) = direction.getFallbackUV(from, to)
                     faces += UnbakedElementFace(direction, faceData.unsafeCast(), fallbackUVStart, fallbackUVEnd)
                 }
             }
