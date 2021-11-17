@@ -5,7 +5,7 @@
     - Fast one (old one): Only tell if it could be in the frustum
     - -> If yes (or no; depends on algo) use complex one to check
   - extreme chunk section values (most east[…] block; highest block; lowest block)
-  - "Cave algorithm"
+  - "Cave algorithm" (Occlusion culling)
 - 3 Meshes per section (opaque; transparent; translucent)
 - Preparing in nearer to further away order
   - unload meshes if block changed and not in frustum
@@ -17,7 +17,7 @@
 - Transparency
   - Sort faces
   - 2 render modes: Fast/Default
-    - No block transparency
+    - No block translucency
 - water logged & FluidFillable properties
 - Force interrupt preparing if needed (e.g. new block change; light change; more important task in thread pool)
 - "Resolving" of block models
@@ -46,7 +46,6 @@
   - Build biome cache only in render distance
   - Update neighbour chunks if needed
   - Reduce memory usage
-  - Limit preparing tasks (to loaded chunks per frame, or similar)
   - Unload on minimize
   - Biomes: Check if chunk is single biome
   - Texture rotation in hopper

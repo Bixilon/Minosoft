@@ -43,6 +43,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.phases.SkipAll
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem
 import de.bixilon.minosoft.gui.rendering.system.window.BaseWindow
 import de.bixilon.minosoft.gui.rendering.system.window.GLFWWindow
+import de.bixilon.minosoft.gui.rendering.tint.TintManager
 import de.bixilon.minosoft.gui.rendering.util.ScreenshotTaker
 import de.bixilon.minosoft.modding.event.events.InternalMessageReceiveEvent
 import de.bixilon.minosoft.modding.event.events.PacketReceiveEvent
@@ -97,7 +98,7 @@ class RenderWindow(
 
 
     private val screenshotTaker = ScreenshotTaker(this)
-    val tintColorCalculator = TintColorCalculator(connection.world)
+    val tintManager = TintManager(connection)
     val textureManager = renderSystem.createTextureManager()
     lateinit var font: Font
 
@@ -152,7 +153,7 @@ class RenderWindow(
 
         inputHandler.camera.init(this)
 
-        tintColorCalculator.init(connection.assetsManager)
+        tintManager.init(connection.assetsManager)
 
 
         Log.log(LogMessageType.RENDERING_LOADING) { "Creating context (${stopwatch.labTime()})..." }

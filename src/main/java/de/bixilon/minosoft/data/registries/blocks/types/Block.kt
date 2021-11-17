@@ -28,10 +28,9 @@ import de.bixilon.minosoft.data.registries.items.Item
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
 import de.bixilon.minosoft.data.registries.registries.registry.ResourceLocationDeserializer
-import de.bixilon.minosoft.data.text.RGBColor
-import de.bixilon.minosoft.gui.rendering.TintColorCalculator
 import de.bixilon.minosoft.gui.rendering.input.camera.hit.RaycastHit
 import de.bixilon.minosoft.gui.rendering.input.interaction.InteractionResults
+import de.bixilon.minosoft.gui.rendering.tint.TintProvider
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.mapCast
 import de.bixilon.minosoft.util.KUtil.nullCast
@@ -48,7 +47,6 @@ open class Block(
     data: Map<String, Any>,
 ) : RegistryItem() {
     open val explosionResistance: Float = data["explosion_resistance"]?.unsafeCast<Float>() ?: 0.0f
-    open val tintColor: RGBColor? = data["tint_color"]?.toInt()?.let { TintColorCalculator.getJsonColor(it) }
     open val randomOffsetType: RandomOffsetTypes? = data["offset_type"].nullCast<String>()?.let { RandomOffsetTypes[it] }
     open val tint: ResourceLocation? = data["tint"].nullCast<String>()?.let { ResourceLocation(it) }
     open var blockEntityType: BlockEntityType? = null
@@ -63,6 +61,7 @@ open class Block(
     open val friction = data["friction"]?.toDouble() ?: 0.6
     open val velocityMultiplier = data["velocity_multiplier"]?.toDouble() ?: 1.0 // ToDo: They exist since ~1.15
     open val jumpVelocityMultiplier = data["jump_velocity_multiplier"]?.toDouble() ?: 1.0
+    var tintProvider: TintProvider? = null
 
     init {
         this::item.inject(data["item"])

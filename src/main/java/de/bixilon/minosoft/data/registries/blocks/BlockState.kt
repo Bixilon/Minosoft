@@ -19,8 +19,6 @@ import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.materials.Material
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.sounds.SoundEvent
-import de.bixilon.minosoft.data.text.RGBColor
-import de.bixilon.minosoft.gui.rendering.TintColorCalculator
 import de.bixilon.minosoft.gui.rendering.models.baked.block.BakedBlockModel
 import de.bixilon.minosoft.util.KUtil.toBoolean
 import de.bixilon.minosoft.util.KUtil.toInt
@@ -31,7 +29,6 @@ import java.util.*
 data class BlockState(
     val block: Block,
     val properties: Map<BlockProperties, Any> = mapOf(),
-    val tintColor: RGBColor? = null,
     val material: Material,
     val collisionShape: VoxelShape,
     val occlusionShape: VoxelShape,
@@ -112,8 +109,6 @@ data class BlockState(
             } ?: mutableMapOf()
 
 
-            val tintColor: RGBColor? = data["tint_color"]?.toInt()?.let { TintColorCalculator.getJsonColor(it) } ?: block.tintColor
-
 
             val material = registries.materialRegistry[ResourceLocation(data["material"].unsafeCast())]!!
 
@@ -140,7 +135,6 @@ data class BlockState(
             return BlockState(
                 block = block,
                 properties = properties.toMap(),
-                tintColor = tintColor,
                 material = material,
                 collisionShape = collisionShape,
                 occlusionShape = occlusionShape,

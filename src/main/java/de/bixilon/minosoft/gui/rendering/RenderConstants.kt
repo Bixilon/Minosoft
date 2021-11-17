@@ -16,7 +16,6 @@ package de.bixilon.minosoft.gui.rendering
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.data.text.RGBColor.Companion.asColor
-import de.bixilon.minosoft.data.text.RGBColor.Companion.asRGBColor
 import glm_.vec2.Vec2
 
 object RenderConstants {
@@ -25,8 +24,6 @@ object RenderConstants {
     val BLACK_COLOR = "#000000".asColor()
 
     val GRASS_FAILOVER_COLOR = "#48B518".asColor()
-
-    val GRASS_OUT_OF_BOUNDS_COLOR = (-65281).asRGBColor()
 
     val LILY_PAD_INVENTORY_COLOR = "#71C35C".asColor()
     val LILY_PAD_BLOCK_COLOR = "#208030".asColor()

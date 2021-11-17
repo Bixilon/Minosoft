@@ -30,10 +30,10 @@ class MultipartBakedModel(
         return sizes[direction.ordinal]
     }
 
-    override fun singleRender(position: Vec3i, mesh: ChunkSectionMeshes, random: Random, blockState: BlockState, neighbours: Array<BlockState?>, light: Int, ambientLight: FloatArray): Boolean {
+    override fun singleRender(position: Vec3i, mesh: ChunkSectionMeshes, random: Random, blockState: BlockState, neighbours: Array<BlockState?>, light: Int, ambientLight: FloatArray, tints: IntArray?): Boolean {
         var rendered = false
         for (model in models) {
-            if (model.singleRender(position, mesh, random, blockState, neighbours, light, ambientLight) && !rendered) {
+            if (model.singleRender(position, mesh, random, blockState, neighbours, light, ambientLight, tints) && !rendered) {
                 rendered = true
             }
         }

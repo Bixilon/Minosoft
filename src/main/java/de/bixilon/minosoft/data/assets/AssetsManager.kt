@@ -16,7 +16,6 @@ package de.bixilon.minosoft.data.assets
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.util.KUtil.fromJson
 import de.bixilon.minosoft.util.Util
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.asCompound
@@ -59,18 +58,19 @@ interface AssetsManager {
         return Util.readReader(readAssetAsReader(resourceLocation), true)
     }
 
-    fun readPixelArrayAsset(resourceLocation: ResourceLocation): Array<RGBColor> {
+    fun readAGBArrayAsset(resourceLocation: ResourceLocation): IntArray {
         val decoder = PNGDecoder(readAssetAsStream(resourceLocation))
 
-        val buffer = BufferUtils.createByteBuffer(decoder.width * decoder.height * PNGDecoder.Format.RGBA.numComponents)
-        decoder.decode(buffer, decoder.width * PNGDecoder.Format.RGBA.numComponents, PNGDecoder.Format.RGBA)
-        buffer.rewind()
+        val buffer = BufferUtils.createByteBuffer(decoder.width * decoder.height * PNGDecoder.Format.RGB.numComponents)
+        decoder.decode(buffer, decoder.width * PNGDecoder.Format.RGB.numComponents, PNGDecoder.Format.RGB)
+        buffer.flip()
+        val colors = IntArray(decoder.width * decoder.height)
 
-        val colors: MutableList<RGBColor> = mutableListOf()
-        while (buffer.hasRemaining()) {
-            colors.add(RGBColor(buffer.get(), buffer.get(), buffer.get(), buffer.get()))
+        for (i in colors.indices) {
+            colors[i] = ((buffer.get().toInt() and 0xFF) shl 16) or ((buffer.get().toInt() and 0xFF) shl 8) or (buffer.get().toInt() and 0xFF)
         }
-        return colors.toTypedArray()
+
+        return colors
     }
 
     fun readByteAsset(resourceLocation: ResourceLocation): ByteBuffer {

@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.block.preparer
 
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.BlockState
+import de.bixilon.minosoft.data.world.Chunk
 import de.bixilon.minosoft.data.world.ChunkSection
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.block.mesh.ChunkSectionMesh
@@ -39,7 +40,7 @@ class GreedySectionPreparer(
 
     // base taken from https://0fps.net/2012/06/30/meshing-in-a-minecraft-game/
     @Deprecated("TODO")
-    override fun prepare(chunkPosition: Vec2i, sectionHeight: Int, section: ChunkSection, neighbours: Array<ChunkSection?>): ChunkSectionMeshes {
+    override fun prepare(chunkPosition: Vec2i, sectionHeight: Int, chunk: Chunk, section: ChunkSection, neighbours: Array<ChunkSection?>, neighbourChunks: Array<Chunk>): ChunkSectionMeshes {
         val mesh = ChunkSectionMesh(renderWindow, 20000)
 
         val random = Random(0L)

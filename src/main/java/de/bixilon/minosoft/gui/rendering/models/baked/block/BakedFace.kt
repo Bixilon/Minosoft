@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.models.baked.block
 
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.Directions
+import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.block.mesh.ChunkSectionMesh
 import de.bixilon.minosoft.gui.rendering.block.mesh.ChunkSectionMeshes
 import de.bixilon.minosoft.gui.rendering.models.FaceProperties
@@ -39,7 +40,7 @@ class BakedFace(
     override val transparency: TextureTransparencies
         get() = texture.transparency // ToDo
 
-    fun singleRender(position: FloatArray, mesh: ChunkSectionMeshes, light: Int, ambientLight: FloatArray) {
+    fun singleRender(position: FloatArray, mesh: ChunkSectionMeshes, light: Int, ambientLight: FloatArray, tint: Int) {
         val meshToUse = when (texture.transparency) {
             TextureTransparencies.OPAQUE -> mesh.opaqueMesh
             TextureTransparencies.TRANSLUCENT -> mesh.translucentMesh
@@ -47,6 +48,11 @@ class BakedFace(
         }!!
         // ToDo: Ambient light
         val color = Vec3(shade)
+        if (tint >= 0) {
+            color.r *= (tint shr 16) / RGBColor.COLOR_FLOAT_DIVIDER
+            color.g *= ((tint shr 8) and 0xFF) / RGBColor.COLOR_FLOAT_DIVIDER
+            color.b *= (tint and 0xFF) / RGBColor.COLOR_FLOAT_DIVIDER
+        }
         for ((index, textureIndex) in meshToUse.order) {
             val indexPosition = positions[index].array
             meshToUse.addVertex(floatArrayOf(indexPosition[0] + position[0], indexPosition[1] + position[1], indexPosition[2] + position[2]), uv[textureIndex], texture, color.rgb, light)

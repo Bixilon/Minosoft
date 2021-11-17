@@ -2,6 +2,7 @@ package de.bixilon.minosoft.gui.rendering.block.preparer
 
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.BlockState
+import de.bixilon.minosoft.data.world.Chunk
 import de.bixilon.minosoft.data.world.ChunkSection
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.block.mesh.ChunkSectionMeshes
@@ -16,16 +17,18 @@ import java.util.*
 class CullSectionPreparer(
     val renderWindow: RenderWindow,
 ) : AbstractSectionPreparer {
+    private val tintColorCalculator = renderWindow.tintManager
     private val ambientLight = floatArrayOf(1.0f, 1.0f, 1.0f, 1.0f)
 
-    override fun prepare(chunkPosition: Vec2i, sectionHeight: Int, section: ChunkSection, neighbours: Array<ChunkSection?>): ChunkSectionMeshes {
+    override fun prepare(chunkPosition: Vec2i, sectionHeight: Int, chunk: Chunk, section: ChunkSection, neighbours: Array<ChunkSection?>, neighbourChunks: Array<Chunk>): ChunkSectionMeshes {
         val mesh = ChunkSectionMeshes(renderWindow, chunkPosition, sectionHeight)
         val random = Random(0L)
 
         val blocks = section.blocks
         section.acquire()
         neighbours.acquire()
-        var block: BlockState?
+        var blockState: BlockState?
+        var position: Vec3i
         val neighbourBlocks: Array<BlockState?> = arrayOfNulls(Directions.SIZE)
 
         val offsetX = chunkPosition.x * ProtocolDefinition.SECTION_WIDTH_X
@@ -35,8 +38,8 @@ class CullSectionPreparer(
         for (x in 0 until ProtocolDefinition.SECTION_WIDTH_X) {
             for (y in 0 until ProtocolDefinition.SECTION_HEIGHT_Y) {
                 for (z in 0 until ProtocolDefinition.SECTION_WIDTH_Z) {
-                    block = blocks.unsafeGet(x, y, z)
-                    val model = block?.model ?: continue
+                    blockState = blocks.unsafeGet(x, y, z)
+                    val model = blockState?.model ?: continue
 
                     // ToDo: Chunk borders
                     neighbourBlocks[Directions.DOWN.ordinal] = if (y == 0) {
@@ -72,9 +75,10 @@ class CullSectionPreparer(
                         blocks.unsafeGet(x + 1, y, z)
                     }
 
-                    val position = Vec3i(offsetX + x, offsetY + y, offsetZ + z)
+                    position = Vec3i(offsetX + x, offsetY + y, offsetZ + z)
                     random.setSeed(VecUtil.generatePositionHash(position.x, position.y, position.z))
-                    val rendered = model.singleRender(position, mesh, random, block, neighbourBlocks, 0xFF, ambientLight)
+                    val tints: IntArray? = tintColorCalculator.getAverageTint(chunk, neighbourChunks, blockState, x, y, z)
+                    val rendered = model.singleRender(position, mesh, random, blockState, neighbourBlocks, 0xFF, ambientLight, tints)
                     if (rendered) {
                         mesh.addBlock(x, y, z)
                     }

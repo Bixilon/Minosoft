@@ -17,7 +17,7 @@ import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
 import de.bixilon.minosoft.data.registries.registries.registry.ResourceLocationDeserializer
 import de.bixilon.minosoft.data.text.RGBColor
-import de.bixilon.minosoft.gui.rendering.TintColorCalculator
+import de.bixilon.minosoft.gui.rendering.tint.TintManager
 import de.bixilon.minosoft.util.KUtil.nullCast
 import de.bixilon.minosoft.util.KUtil.toBoolean
 import de.bixilon.minosoft.util.KUtil.toInt
@@ -44,7 +44,7 @@ data class Material(
         override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): Material {
             return Material(
                 resourceLocation = resourceLocation,
-                color = TintColorCalculator.getJsonColor(data["color"]?.toInt() ?: 0),
+                color = TintManager.getJsonColor(data["color"]?.toInt() ?: 0),
                 pushReaction = data["push_reaction"].nullCast<String>()?.let { PushReactions.valueOf(it.uppercase(Locale.getDefault())) } ?: PushReactions.NORMAL,
                 blockMotion = data["blocks_motion"]?.toBoolean() ?: false,
                 flammable = data["flammable"]?.toBoolean() ?: false,

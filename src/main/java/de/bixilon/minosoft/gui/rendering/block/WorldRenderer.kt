@@ -45,8 +45,10 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.toVec3
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.toVec3
 import de.bixilon.minosoft.modding.event.events.*
+import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionStateChangeEvent
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.synchronizedListOf
 import de.bixilon.minosoft.util.KUtil.synchronizedSetOf
@@ -219,6 +221,7 @@ class WorldRenderer(
         })
 
         connection.registerEvent(CallbackEventInvoker.of<ChunkUnloadEvent> { unloadChunk(it.chunkPosition) })
+        connection.registerEvent(CallbackEventInvoker.of<PlayConnectionStateChangeEvent> { if (it.state == PlayConnectionStates.DISCONNECTED) unloadWorld() })
     }
 
     private fun unloadWorld() {
@@ -342,8 +345,9 @@ class WorldRenderer(
                 try {
                     val chunk = item.chunk ?: world[item.chunkPosition] ?: return@Runnable end()
                     val section = chunk[item.sectionHeight] ?: return@Runnable end()
-                    val neighbours = item.neighbours ?: ChunkUtil.getSectionNeighbours(world.getChunkNeighbours(item.chunkPosition).unsafeCast(), chunk, item.sectionHeight)
-                    item.mesh = sectionPreparer.prepare(item.chunkPosition, item.sectionHeight, section, neighbours)
+                    val neighbourChunks: Array<Chunk> = world.getChunkNeighbours(item.chunkPosition).unsafeCast()
+                    val neighbours = item.neighbours ?: ChunkUtil.getSectionNeighbours(neighbourChunks, chunk, item.sectionHeight)
+                    item.mesh = sectionPreparer.prepare(item.chunkPosition, item.sectionHeight, chunk, section, neighbours, neighbourChunks)
                     meshesToLoadLock.lock()
                     locked = true
                     meshesToLoad.removeAll { it == item } // Remove duplicates

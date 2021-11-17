@@ -55,8 +55,8 @@ class WeightedBakedModel(
         throw IllegalStateException("Could not find a model: This should never happen!")
     }
 
-    override fun singleRender(position: Vec3i, mesh: ChunkSectionMeshes, random: Random, blockState: BlockState, neighbours: Array<BlockState?>, light: Int, ambientLight: FloatArray): Boolean {
-        return getModel(random).singleRender(position, mesh, random, blockState, neighbours, light, ambientLight)
+    override fun singleRender(position: Vec3i, mesh: ChunkSectionMeshes, random: Random, blockState: BlockState, neighbours: Array<BlockState?>, light: Int, ambientLight: FloatArray, tints: IntArray?): Boolean {
+        return getModel(random).singleRender(position, mesh, random, blockState, neighbours, light, ambientLight, tints)
     }
 
 }

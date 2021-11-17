@@ -19,6 +19,7 @@ import de.bixilon.minosoft.data.registries.particle.data.BlockParticleData
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.data.text.RGBColor.Companion.asGray
+import de.bixilon.minosoft.data.text.RGBColor.Companion.asRGBColor
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.advanced.AdvancedTextureParticle
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.blockPosition
@@ -38,7 +39,7 @@ class BlockDustParticle(connection: PlayConnection, position: Vec3d, velocity: V
         color = 0.6f.asGray()
 
         if (data.blockState.block.resourceLocation != DefaultBlocks.GRASS_BLOCK) {
-            val tintColor = connection.rendering!!.renderWindow.tintColorCalculator.getTint(connection.world.getBiome(blockPosition), data.blockState, blockPosition)
+            val tintColor = connection.rendering!!.renderWindow.tintManager.getTint(data.blockState, null, blockPosition)?.asRGBColor()
 
             tintColor?.let {
                 color = RGBColor(color.floatRed * tintColor.floatRed, color.floatGreen * tintColor.floatGreen, color.floatBlue * tintColor.floatBlue)

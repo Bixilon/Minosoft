@@ -25,6 +25,5 @@ interface BakedBlockModel : BakedModel {
 
     fun getTouchingFaceProperties(random: Random, direction: Directions): Array<FaceProperties>
 
-    // ToDo: Tint
-    fun singleRender(position: Vec3i, mesh: ChunkSectionMeshes, random: Random, blockState: BlockState, neighbours: Array<BlockState?>, light: Int, ambientLight: FloatArray): Boolean
+    fun singleRender(position: Vec3i, mesh: ChunkSectionMeshes, random: Random, blockState: BlockState, neighbours: Array<BlockState?>, light: Int, ambientLight: FloatArray, tints: IntArray?): Boolean
 }
