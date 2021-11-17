@@ -21,7 +21,8 @@ import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
 import glm_.vec2.Vec2
 import glm_.vec3.Vec3
 
-class ChunkSectionMesh(renderWindow: RenderWindow, initialCacheSize: Int, val center: Vec3) : Mesh(renderWindow, SectionArrayMeshStruct, initialCacheSize = initialCacheSize) {
+class ChunkSectionMesh(renderWindow: RenderWindow, initialCacheSize: Int) : Mesh(renderWindow, SectionArrayMeshStruct, initialCacheSize = initialCacheSize) {
+    var distance: Float = 0.0f // Used for sorting
 
     fun addVertex(position: FloatArray, uv: Vec2, texture: AbstractTexture, tintColor: Int, light: Int) {
         val transformedUV = texture.renderData?.transformUV(uv) ?: uv

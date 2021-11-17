@@ -11,33 +11,35 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.input.camera
+package de.bixilon.minosoft.gui.rendering.input.camera.frustum
 
 
 import de.bixilon.minosoft.data.registries.AABB
 import de.bixilon.minosoft.gui.rendering.RenderConstants
+import de.bixilon.minosoft.gui.rendering.input.camera.Camera
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.of
+import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4Util.dot
 import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.KUtil.get
 import de.bixilon.minosoft.util.enum.ValuesEnum
 import glm_.mat3x3.Mat3
+import glm_.mat4x4.Mat4
 import glm_.vec2.Vec2i
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3i
-import glm_.vec4.Vec4d
+import glm_.vec4.Vec4
 
-// Bit thanks to: https://gist.github.com/podgorskiy/e698d18879588ada9014768e3e82a644
+// Big thanks to: https://gist.github.com/podgorskiy/e698d18879588ada9014768e3e82a644
 class Frustum(private val camera: Camera) {
-    private var normals: List<Vec3> = listOf()
-    private var planes: List<Vec4d> = listOf()
+    private lateinit var data: FrustumData
 
     init {
         recalculate()
     }
 
     fun recalculate() {
-        val matrix = camera.viewProjectionMatrix.transpose()
-        val planes = listOf(
+        val matrix = Mat4(camera.viewProjectionMatrix).transpose()
+        val planes = arrayOf(
             matrix[3] + matrix[0],
             matrix[3] - matrix[0],
 
@@ -48,7 +50,7 @@ class Frustum(private val camera: Camera) {
             matrix[3] - matrix[2],
         )
 
-        val crosses = listOf(
+        val crosses = arrayOf(
             Vec3(planes[Planes.LEFT]) cross Vec3(planes[Planes.RIGHT]),
             Vec3(planes[Planes.LEFT]) cross Vec3(planes[Planes.BOTTOM]),
             Vec3(planes[Planes.LEFT]) cross Vec3(planes[Planes.TOP]),
@@ -80,7 +82,7 @@ class Frustum(private val camera: Camera) {
             return res * (-1.0f / d)
         }
 
-        val normals: List<Vec3> = listOf(
+        val normals = arrayOf(
             intersections(Planes.LEFT, Planes.BOTTOM, Planes.NEAR),
             intersections(Planes.LEFT, Planes.TOP, Planes.NEAR),
             intersections(Planes.RIGHT, Planes.BOTTOM, Planes.NEAR),
@@ -92,13 +94,7 @@ class Frustum(private val camera: Camera) {
             intersections(Planes.RIGHT, Planes.TOP, Planes.FAR),
         )
 
-        synchronized(this.normals) {
-            this.normals = normals
-        }
-
-        synchronized(this.planes) {
-            this.planes = planes
-        }
+        this.data = FrustumData(normals, planes)
     }
 
 
@@ -106,42 +102,36 @@ class Frustum(private val camera: Camera) {
         if (!RenderConstants.FRUSTUM_CULLING_ENABLED) {
             return true
         }
+        val (normals, planes) = this.data
+        val minArray = min.array
+        val maxArray = max.array
 
-        val normals: List<Vec3>
-        synchronized(this.normals) {
-            normals = this.normals
-        }
-        val planes: List<Vec4d>
-        synchronized(this.planes) {
-            planes = this.planes
-        }
-
-        for (i in 0 until Planes.VALUES.size) {
-            if (
-                (planes[i] dot Vec4d(min.x, min.y, min.z, 1.0f)) < 0.0f
-                && (planes[i] dot Vec4d(max.x, min.y, min.z, 1.0f)) < 0.0f
-                && (planes[i] dot Vec4d(min.x, max.y, min.z, 1.0f)) < 0.0f
-                && (planes[i] dot Vec4d(max.x, max.y, min.z, 1.0f)) < 0.0f
-                && (planes[i] dot Vec4d(min.x, min.y, max.z, 1.0f)) < 0.0f
-                && (planes[i] dot Vec4d(max.x, min.y, max.z, 1.0f)) < 0.0f
-                && (planes[i] dot Vec4d(min.x, max.y, max.z, 1.0f)) < 0.0f
-                && (planes[i] dot Vec4d(max.x, max.y, max.z, 1.0f)) < 0.0f
+        for (i in 0 until Planes.SIZE) {
+            val plane = planes[i].array
+            if (plane.dot(minArray[0], minArray[1], minArray[2]) < 0.0f
+                && plane.dot(maxArray[0], minArray[1], minArray[2]) < 0.0f
+                && plane.dot(minArray[0], maxArray[1], minArray[2]) < 0.0f
+                && plane.dot(maxArray[0], maxArray[1], minArray[2]) < 0.0f
+                && plane.dot(minArray[0], minArray[1], maxArray[2]) < 0.0f
+                && plane.dot(maxArray[0], minArray[1], maxArray[2]) < 0.0f
+                && plane.dot(minArray[0], maxArray[1], maxArray[2]) < 0.0f
+                && plane.dot(maxArray[0], maxArray[1], maxArray[2]) < 0.0f
             ) {
                 return false
             }
         }
 
         fun checkPoint(check: (Vec3) -> Boolean): Boolean {
-            var out = 0
+            var successFullChecks = 0
             for (i in 0 until 8) {
                 if (check(normals[i])) {
-                    out++
+                    successFullChecks++
                 }
             }
-            return out == 8
+            return successFullChecks == 8
         }
 
-        val checks: List<(Vec3) -> Boolean> = listOf(
+        val checks: Array<(Vec3) -> Boolean> = arrayOf(
             { it.x > max.x },
             { it.x < min.x },
 
@@ -171,6 +161,8 @@ class Frustum(private val camera: Camera) {
         return containsRegion(Vec3(aabb.min), Vec3(aabb.max))
     }
 
+    private data class FrustumData(val normals: Array<Vec3>, val planes: Array<Vec4>)
+
     private enum class Planes {
         LEFT,
         RIGHT,
@@ -181,6 +173,7 @@ class Frustum(private val camera: Camera) {
         ;
 
         companion object : ValuesEnum<Planes> {
+            const val SIZE = 6
             override val VALUES: Array<Planes> = values()
             override val NAME_MAP: Map<String, Planes> = KUtil.getEnumValues(VALUES)
         }

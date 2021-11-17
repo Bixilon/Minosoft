@@ -259,6 +259,10 @@ object KUtil {
         return this[enum.ordinal]
     }
 
+    operator fun <T> Array<T>.get(enum: Enum<*>): T {
+        return this[enum.ordinal]
+    }
+
     fun <K, V> Map<K, Any>.extend(vararg pairs: Pair<K, Any>): Map<K, V> {
         val map: MutableMap<K, V> = mutableMapOf()
 

@@ -43,7 +43,6 @@
 
 
 - ToDo:
-  - Thread safety
   - Build biome cache only in render distance
   - Update neighbour chunks if needed
   - Reduce memory usage

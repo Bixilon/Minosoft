@@ -25,4 +25,6 @@ object Vec4Util {
 
     val Vec4.Companion.MAX: Vec4
         get() = Vec4(Float.MAX_VALUE, Float.MAX_VALUE, Float.MAX_VALUE, Float.MAX_VALUE)
+
+    fun FloatArray.dot(x: Float, y: Float, z: Float) = this[0] * x + this[1] * y + this[2] * z + this[3]
 }

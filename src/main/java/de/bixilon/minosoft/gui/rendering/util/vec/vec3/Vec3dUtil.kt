@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.util.vec.vec3
 
+import glm_.vec3.Vec3
 import glm_.vec3.Vec3d
 
 object Vec3dUtil {
@@ -29,4 +30,9 @@ object Vec3dUtil {
     val Vec3d.Companion.MAX: Vec3d
         get() = Vec3d(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE)
 
+
+    fun Vec3d.toVec3(): Vec3 {
+        val array = array
+        return Vec3(floatArrayOf(array[0].toFloat(), array[1].toFloat(), array[2].toFloat()))
+    }
 }
