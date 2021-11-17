@@ -25,9 +25,11 @@ abstract class Mesh(
     private val struct: MeshStruct,
     private val primitiveType: PrimitiveTypes = renderWindow.renderSystem.preferredPrimitiveType,
     initialCacheSize: Int = 10000,
+    val clearOnLoad: Boolean = true,
+    data: DirectArrayFloatList? = null,
 ) {
     val order = renderWindow.renderSystem.primitiveMeshOrder
-    private var _data: DirectArrayFloatList? = DirectArrayFloatList(initialCacheSize)
+    private var _data: DirectArrayFloatList? = data ?: DirectArrayFloatList(initialCacheSize)
     var data: DirectArrayFloatList
         get() = _data!!
         set(value) {
@@ -46,8 +48,10 @@ abstract class Mesh(
     fun load() {
         buffer = renderWindow.renderSystem.createVertexBuffer(struct, data.buffer, primitiveType)
         buffer.init()
-        data.unload()
-        _data = null
+        if (clearOnLoad) {
+            data.unload()
+            _data = null
+        }
         vertices = buffer.vertices
     }
 

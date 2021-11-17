@@ -49,6 +49,7 @@ import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.KUtil.toSynchronizedMap
 import de.bixilon.minosoft.util.KUtil.unsafeCast
+import de.bixilon.minosoft.util.collections.DirectArrayFloatList
 import glm_.glm
 import glm_.mat4x4.Mat4
 import glm_.vec2.Vec2
@@ -153,11 +154,15 @@ class HUDRenderer(
     }
 
     override fun drawOther() {
-        if (this::mesh.isInitialized) {
+        val data = if (this::mesh.isInitialized) {
             mesh.unload()
+            mesh.data.buffer.clear()
+            mesh.data
+        } else {
+            DirectArrayFloatList()
         }
 
-        mesh = GUIMesh(renderWindow, matrix)
+        mesh = GUIMesh(renderWindow, matrix, data)
         val hudElements = hudElements.toSynchronizedMap().values
 
         val time = System.currentTimeMillis()

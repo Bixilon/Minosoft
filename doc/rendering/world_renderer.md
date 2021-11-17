@@ -48,4 +48,3 @@
   - Reduce memory usage
   - Unload on minimize
   - Biomes: Check if chunk is single biome
-  - Texture rotation in hopper
