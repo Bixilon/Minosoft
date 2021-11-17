@@ -37,13 +37,14 @@ import de.bixilon.minosoft.modding.event.events.ChunkDataChangeEvent
 import de.bixilon.minosoft.modding.event.events.ChunkUnloadEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
+import de.bixilon.minosoft.util.KUtil.lockMapOf
 import de.bixilon.minosoft.util.KUtil.toSynchronizedMap
 import de.bixilon.minosoft.util.MMath
+import de.bixilon.minosoft.util.ReadWriteLock
 import de.bixilon.minosoft.util.chunk.ChunkUtil.canBuildBiomeCache
 import de.bixilon.minosoft.util.chunk.ChunkUtil.getChunkNeighbourPositions
 import de.bixilon.minosoft.util.chunk.ChunkUtil.received
-import de.bixilon.minosoft.util.collections.SynchronizedMap
+import de.bixilon.minosoft.util.collections.LockMap
 import glm_.func.common.clamp
 import glm_.vec2.Vec2i
 import glm_.vec3.Vec3
@@ -59,8 +60,9 @@ import kotlin.random.Random
 class World(
     val connection: PlayConnection,
 ) : BiomeAccessor {
+    val lock = ReadWriteLock()
     var cacheBiomeAccessor: NoiseBiomeAccessor? = null
-    val chunks: SynchronizedMap<Vec2i, Chunk> = synchronizedMapOf()
+    val chunks: LockMap<Vec2i, Chunk> = lockMapOf()
     val entities = WorldEntities()
     var hardcore = false
     var dimension: DimensionProperties? = null

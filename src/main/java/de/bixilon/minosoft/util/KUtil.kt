@@ -85,6 +85,10 @@ object KUtil {
         }
     }
 
+    fun <K, V> lockMapOf(vararg pairs: Pair<K, V>): LockMap<K, V> {
+        return LockMap(mutableMapOf(*pairs))
+    }
+
     fun <K, V> synchronizedMapOf(vararg pairs: Pair<K, V>): SynchronizedMap<K, V> {
         return SynchronizedMap(mutableMapOf(*pairs))
     }

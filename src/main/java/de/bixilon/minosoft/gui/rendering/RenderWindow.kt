@@ -83,8 +83,8 @@ class RenderWindow(
     private var lastFrame = 0.0
     private val latch = CountUpAndDownLatch(1)
 
-    private var renderingState = RenderingStates.RUNNING
-        set(value) {
+    var renderingState = RenderingStates.RUNNING
+        private set(value) {
             if (field == value) {
                 return
             }

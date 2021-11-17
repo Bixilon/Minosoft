@@ -13,6 +13,9 @@
 
 package de.bixilon.minosoft.gui.rendering.block
 
+import de.bixilon.minosoft.config.key.KeyAction
+import de.bixilon.minosoft.config.key.KeyBinding
+import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.assets.AssetsUtil
 import de.bixilon.minosoft.data.assets.Resources
 import de.bixilon.minosoft.data.direction.Directions
@@ -23,11 +26,13 @@ import de.bixilon.minosoft.data.world.World
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.Renderer
 import de.bixilon.minosoft.gui.rendering.RendererBuilder
+import de.bixilon.minosoft.gui.rendering.RenderingStates
 import de.bixilon.minosoft.gui.rendering.block.mesh.ChunkSectionMesh
 import de.bixilon.minosoft.gui.rendering.block.mesh.ChunkSectionMeshes
 import de.bixilon.minosoft.gui.rendering.block.preparer.AbstractSectionPreparer
 import de.bixilon.minosoft.gui.rendering.block.preparer.CullSectionPreparer
 import de.bixilon.minosoft.gui.rendering.modding.events.FrustumChangeEvent
+import de.bixilon.minosoft.gui.rendering.modding.events.RenderingStateChangeEvent
 import de.bixilon.minosoft.gui.rendering.models.ModelLoader
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
 import de.bixilon.minosoft.gui.rendering.system.base.phases.OpaqueDrawable
@@ -222,6 +227,31 @@ class WorldRenderer(
 
         connection.registerEvent(CallbackEventInvoker.of<ChunkUnloadEvent> { unloadChunk(it.chunkPosition) })
         connection.registerEvent(CallbackEventInvoker.of<PlayConnectionStateChangeEvent> { if (it.state == PlayConnectionStates.DISCONNECTED) unloadWorld() })
+        connection.registerEvent(CallbackEventInvoker.of<RenderingStateChangeEvent> {
+            if (it.state == RenderingStates.PAUSED) {
+                unloadWorld()
+            } else if (it.previousState == RenderingStates.PAUSED) {
+                prepareWorld()
+            }
+        })
+
+        renderWindow.inputHandler.registerKeyCallback("minosoft:clear_chunk_cache".toResourceLocation(), KeyBinding(
+            mutableMapOf(
+                KeyAction.MODIFIER to mutableSetOf(KeyCodes.KEY_F3),
+                KeyAction.PRESS to mutableSetOf(KeyCodes.KEY_A),
+            ),
+        )) {
+            unloadWorld()
+            prepareWorld()
+        }
+    }
+
+    private fun prepareWorld() {
+        world.lock.acquire()
+        for ((chunkPosition, chunk) in world.chunks) {
+            queueChunk(chunkPosition, chunk)
+        }
+        world.lock.release()
     }
 
     private fun unloadWorld() {
@@ -402,7 +432,7 @@ class WorldRenderer(
     }
 
     private fun queueSection(chunkPosition: Vec2i, sectionHeight: Int, chunk: Chunk? = world.chunks[chunkPosition], section: ChunkSection? = chunk?.get(sectionHeight), ignoreFrustum: Boolean = false) {
-        if (chunk == null || section == null) {
+        if (chunk == null || section == null || renderWindow.renderingState == RenderingStates.PAUSED) {
             return
         }
         val queued = internalQueueSection(chunkPosition, sectionHeight, chunk, section, ignoreFrustum)
@@ -414,7 +444,7 @@ class WorldRenderer(
     }
 
     private fun queueChunk(chunkPosition: Vec2i, chunk: Chunk = world.chunks[chunkPosition]!!) {
-        if (!chunk.isFullyLoaded) {
+        if (!chunk.isFullyLoaded || renderWindow.renderingState == RenderingStates.PAUSED) {
             return
         }
 

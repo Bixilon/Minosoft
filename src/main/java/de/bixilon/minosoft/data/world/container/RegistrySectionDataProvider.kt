@@ -23,7 +23,7 @@ class RegistrySectionDataProvider<T>(
 ) : SectionDataProvider<T>(data, checkSize = checkSize) {
 
     @Suppress("UNCHECKED_CAST")
-    fun setIdData(ids: Array<Int>) {
+    fun setIdData(ids: IntArray) {
         val data: Array<Any?> = arrayOfNulls(ProtocolDefinition.BLOCKS_PER_SECTION)
 
         for ((index, id) in ids.withIndex()) {

@@ -99,10 +99,13 @@ data class UnbakedBlockStateModel(
                 }
 
                 var direction = face.direction
+                var cullFace = face.cullFace
                 rotation?.let {
                     val rad = it.rad
 
                     direction = Directions.byDirection(Vec3(face.direction.vectorf).apply { rotateAssign(rad) })
+                    cullFace = face.cullFace?.vectorf?.let { cullFace -> Directions.byDirection(Vec3(cullFace).apply { rotateAssign(rad) }) }
+
                     for ((index, position) in positions.withIndex()) {
                         positions[index] = Vec3(position).apply { rotateAssign(rad, true) }
                     }
@@ -147,7 +150,7 @@ data class UnbakedBlockStateModel(
                     uv = texturePositions,
                     shade = shade,
                     tintIndex = face.tintIndex,
-                    cullFace = face.cullFace,
+                    cullFace = cullFace,
                     texture = texture,
                     touching = touching,
                 )
