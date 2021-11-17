@@ -10,19 +10,16 @@
 *
 * This software is not affiliated with Mojang AB, the original developer of Minecraft.
 */
-package de.bixilon.minosoft.util.collections
+package de.bixilon.minosoft.util.collections.floats
 
-class ArrayFloatList(
+class HeapArrayFloatList(
     initialSize: Int = DEFAULT_INITIAL_SIZE,
-) {
+) : AbstractFloatList() {
     private var data: FloatArray = FloatArray(initialSize)
-    var finalized: Boolean = false
-        private set
-    val limit: Int
+    override val limit: Int
         get() = data.size
-    var size = 0
-        private set
-    val isEmpty: Boolean
+    override var size = 0
+    override val isEmpty: Boolean
         get() = size == 0
 
     private val nextGrowStep = when {
@@ -35,19 +32,19 @@ class ArrayFloatList(
     private var outputUpToDate = false
 
     private fun checkFinalized() {
-        if (finalized) {
+        if (finished) {
             throw IllegalStateException("ArrayFloatList is already finalized!")
         }
     }
 
-    fun clear() {
+    override fun clear() {
         checkFinalized()
         size = 0
         outputUpToDate = false
         output = FloatArray(0)
     }
 
-    private fun ensureSize(needed: Int) {
+    override fun ensureSize(needed: Int) {
         checkFinalized()
         if (limit - size >= needed) {
             return
@@ -61,25 +58,29 @@ class ArrayFloatList(
         System.arraycopy(oldData, 0, data, 0, oldData.size)
     }
 
-    fun add(float: Float) {
+    override fun add(value: Float) {
         ensureSize(1)
-        data[size++] = float
+        data[size++] = value
         outputUpToDate = false
     }
 
-    fun addAll(floats: FloatArray) {
+    override fun addAll(floats: FloatArray) {
         ensureSize(floats.size)
         System.arraycopy(floats, 0, data, size, floats.size)
         size += floats.size
         outputUpToDate = false
     }
 
-    fun addAll(floatList: ArrayFloatList) {
+    override fun addAll(floatList: AbstractFloatList) {
         ensureSize(floatList.size)
-        val source = if (floatList.finalized) {
-            floatList.output
+        val source: FloatArray = if (floatList is HeapArrayFloatList) {
+            if (floatList.finished) {
+                floatList.output
+            } else {
+                floatList.data
+            }
         } else {
-            floatList.data
+            floatList.toArray()
         }
         System.arraycopy(source, 0, data, size, floatList.size)
         size += floatList.size
@@ -94,13 +95,13 @@ class ArrayFloatList(
         outputUpToDate = true
     }
 
-    fun toArray(): FloatArray {
+    override fun toArray(): FloatArray {
         checkOutputArray()
         return output
     }
 
-    fun finish() {
-        finalized = true
+    override fun finish() {
+        finished = true
         checkOutputArray()
         data = FloatArray(0)
     }

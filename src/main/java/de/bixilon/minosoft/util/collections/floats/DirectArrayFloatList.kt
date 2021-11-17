@@ -11,25 +11,24 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.util.collections
+package de.bixilon.minosoft.util.collections.floats
 
 import de.bixilon.minosoft.util.KUtil
 import org.lwjgl.system.MemoryUtil.memAllocFloat
 import org.lwjgl.system.MemoryUtil.memFree
+import java.nio.BufferOverflowException
 import java.nio.FloatBuffer
 
 class DirectArrayFloatList(
     initialSize: Int = DEFAULT_INITIAL_SIZE,
-) {
-    var buffer: FloatBuffer = memAllocFloat(initialSize) // ToDo: Clear when disconnected
+) : AbstractFloatList() {
+    var buffer: FloatBuffer = memAllocFloat(initialSize)
         private set
-    var finalized: Boolean = false
-        private set
-    val capacity: Int
+    override val limit: Int
         get() = buffer.capacity()
-    val size: Int
+    override val size: Int
         get() = buffer.position()
-    val isEmpty: Boolean
+    override val isEmpty: Boolean
         get() = size == 0
     private var unloaded = false
 
@@ -43,17 +42,17 @@ class DirectArrayFloatList(
     private var outputUpToDate = false
 
     private fun checkFinalized() {
-        if (finalized) {
+        if (finished) {
             throw IllegalStateException("ArrayFloatList is already finalized!")
         }
     }
 
-    private fun ensureSize(needed: Int) {
+    override fun ensureSize(needed: Int) {
         checkFinalized()
-        if (capacity - size >= needed) {
+        if (limit - size >= needed) {
             return
         }
-        var newSize = capacity
+        var newSize = limit
         while (newSize - size < needed) {
             newSize += nextGrowStep
         }
@@ -70,33 +69,38 @@ class DirectArrayFloatList(
         memFree(oldBuffer)
     }
 
-    fun add(float: Float) {
+    override fun add(value: Float) {
         ensureSize(1)
-        buffer.put(float)
+        buffer.put(value)
         outputUpToDate = false
     }
 
-    fun addAll(floats: FloatArray) {
+    override fun addAll(floats: FloatArray) {
         ensureSize(floats.size)
-        buffer.put(floats)
+        try {
+            buffer.put(floats)
+        } catch (exception: BufferOverflowException) {
+            ensureSize(floats.size)
+
+            exception.printStackTrace()
+        }
         outputUpToDate = false
     }
 
-    fun addAll(floatList: DirectArrayFloatList) {
-        ensureSize(floatList.size)
-        if (FLOAT_PUT_METHOD == null) { // Java < 16
-            for (i in 0 until floatList.buffer.position()) {
-                buffer.put(floatList.buffer.get(i))
+    override fun addAll(floatList: AbstractFloatList) {
+        if (floatList is DirectArrayFloatList) {
+            ensureSize(floatList.size)
+            if (FLOAT_PUT_METHOD == null) { // Java < 16
+                for (i in 0 until floatList.buffer.position()) {
+                    buffer.put(floatList.buffer.get(i))
+                }
+            } else {
+                FLOAT_PUT_METHOD.invoke(buffer, buffer.position(), floatList.buffer, 0, floatList.buffer.position())
+                buffer.position(buffer.position() + floatList.buffer.position())
             }
         } else {
-            FLOAT_PUT_METHOD.invoke(buffer, buffer.position(), floatList.buffer, 0, floatList.buffer.position())
-            buffer.position(buffer.position() + floatList.buffer.position())
+            addAll(floatList.toArray())
         }
-    }
-
-    fun addAll(floatList: ArrayFloatList) {
-        ensureSize(floatList.size)
-        buffer.put(floatList.toArray())
     }
 
     private fun checkOutputArray() {
@@ -111,7 +115,7 @@ class DirectArrayFloatList(
         outputUpToDate = true
     }
 
-    fun toArray(): FloatArray {
+    override fun toArray(): FloatArray {
         checkOutputArray()
         return output
     }
@@ -119,12 +123,20 @@ class DirectArrayFloatList(
     fun unload() {
         check(!unloaded) { "Already unloaded!" }
         unloaded = true
-        finalized = true // Is unloaded
+        finished = true // Is unloaded
         memFree(buffer)
     }
 
-    fun finish() {
-        finalized = true
+    override fun clear() {
+        buffer.clear()
+        if (output.isNotEmpty()) {
+            output = FloatArray(0)
+        }
+        outputUpToDate = false
+    }
+
+    override fun finish() {
+        finished = true
         val oldBuffer = buffer
         buffer = memAllocFloat(oldBuffer.position())
         if (FLOAT_PUT_METHOD == null) { // Java < 16

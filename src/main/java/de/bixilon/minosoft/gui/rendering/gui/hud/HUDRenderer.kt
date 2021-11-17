@@ -37,7 +37,6 @@ import de.bixilon.minosoft.gui.rendering.gui.hud.elements.other.WorldInfoHUDElem
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.scoreboard.ScoreboardHUDElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.tab.TabListHUDElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.title.TitleHUDElement
-import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMesh
 import de.bixilon.minosoft.gui.rendering.modding.events.ResizeWindowEvent
 import de.bixilon.minosoft.gui.rendering.system.base.IntegratedBufferTypes
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
@@ -49,7 +48,6 @@ import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.KUtil.toSynchronizedMap
 import de.bixilon.minosoft.util.KUtil.unsafeCast
-import de.bixilon.minosoft.util.collections.DirectArrayFloatList
 import glm_.glm
 import glm_.mat4x4.Mat4
 import glm_.vec2.Vec2
@@ -61,7 +59,6 @@ class HUDRenderer(
 ) : Renderer, OtherDrawable {
     override val renderSystem: RenderSystem = renderWindow.renderSystem
     val shader = renderWindow.renderSystem.createShader("minosoft:hud".toResourceLocation())
-    private lateinit var mesh: GUIMesh
     var scaledSize: Vec2i = renderWindow.window.size
     var matrix: Mat4 = Mat4()
     private var enabled = true
@@ -144,6 +141,9 @@ class HUDRenderer(
 
         for (element in this.hudElements.toSynchronizedMap().values) {
             element.postInit()
+            if (element is LayoutedHUDElement<*>) {
+                element.initMesh()
+            }
         }
     }
 
@@ -154,15 +154,6 @@ class HUDRenderer(
     }
 
     override fun drawOther() {
-        val data = if (this::mesh.isInitialized) {
-            mesh.unload()
-            mesh.data.buffer.clear()
-            mesh.data
-        } else {
-            DirectArrayFloatList()
-        }
-
-        mesh = GUIMesh(renderWindow, matrix, data)
         val hudElements = hudElements.toSynchronizedMap().values
 
         val time = System.currentTimeMillis()
@@ -192,13 +183,18 @@ class HUDRenderer(
                 element.draw()
             }
             if (element is LayoutedHUDElement<*>) {
-                z += element.layout.render(element.layoutOffset, z, mesh, null)
+                z += element.prepare(z)
             }
         }
 
         setup()
-        mesh.load()
-        mesh.draw()
+
+        for (element in hudElements) {
+            if (element !is LayoutedHUDElement<*> || !element.enabled || element.mesh.data.isEmpty) {
+                continue
+            }
+            element.mesh.draw()
+        }
 
         if (matrixChange) {
             matrixChange = false

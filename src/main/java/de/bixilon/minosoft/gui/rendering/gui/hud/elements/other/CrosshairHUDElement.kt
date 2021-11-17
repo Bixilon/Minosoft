@@ -25,7 +25,7 @@ import de.bixilon.minosoft.gui.rendering.input.camera.hit.BlockRaycastHit
 import de.bixilon.minosoft.gui.rendering.input.camera.hit.EntityRaycastHit
 import de.bixilon.minosoft.gui.rendering.system.base.BlendingFunctions
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
-import de.bixilon.minosoft.util.collections.DirectArrayFloatList
+import de.bixilon.minosoft.util.collections.floats.DirectArrayFloatList
 
 class CrosshairHUDElement(hudRenderer: HUDRenderer) : CustomHUDElement(hudRenderer) {
     private lateinit var crosshairAtlasElement: HUDAtlasElement

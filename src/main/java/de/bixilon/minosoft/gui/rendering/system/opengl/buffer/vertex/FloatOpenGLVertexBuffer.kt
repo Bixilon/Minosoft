@@ -27,9 +27,13 @@ class FloatOpenGLVertexBuffer(override val structure: MeshStruct, data: FloatBuf
         glBindVertexArray(vao)
 
         bind()
+        val previousLimit = buffer.limit()
+        val previousPosition = buffer.position()
         buffer.limit(buffer.position())
         buffer.flip()
         glBufferData(type.gl, buffer, drawTypes.gl)
+        buffer.limit(previousLimit)
+        buffer.position(previousPosition)
         state = RenderBufferStates.UPLOADED
 
         _data = null
