@@ -35,7 +35,9 @@ import glm_.vec2.Vec2i
 import org.lwjgl.glfw.Callbacks.glfwFreeCallbacks
 import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.glfw.GLFWErrorCallback
+import org.lwjgl.glfw.GLFWImage
 import org.lwjgl.system.MemoryUtil
+import java.nio.ByteBuffer
 
 
 class GLFWWindow(
@@ -278,6 +280,14 @@ class GLFWWindow(
         }
 
         eventMaster.fireEvent(MouseScrollEvent(offset = Vec2d(xOffset, yOffset)))
+    }
+
+    override fun setIcon(size: Vec2i, buffer: ByteBuffer) {
+        val images = GLFWImage.malloc(1)
+        val image = GLFWImage.malloc()
+        image.set(size.x, size.y, buffer)
+        images.put(0, image)
+        glfwSetWindowIcon(window, images)
     }
 
     companion object {

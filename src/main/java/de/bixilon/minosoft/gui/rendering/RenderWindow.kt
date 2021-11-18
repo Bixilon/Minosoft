@@ -150,6 +150,7 @@ class RenderWindow(
         val stopwatch = Stopwatch()
 
         window.init()
+        window.setDefaultIcon(connection.assetsManager)
 
         inputHandler.camera.init(this)
 
