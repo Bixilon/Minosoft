@@ -18,6 +18,8 @@ import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.gui.rendering.block.mesh.ChunkSectionMeshes
 import de.bixilon.minosoft.gui.rendering.models.FaceProperties
 import de.bixilon.minosoft.gui.rendering.models.baked.block.BakedBlockModel
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
+import de.bixilon.minosoft.gui.rendering.util.VecUtil
 import glm_.vec3.Vec3i
 import java.util.*
 import kotlin.math.abs
@@ -55,8 +57,13 @@ class WeightedBakedModel(
         throw IllegalStateException("Could not find a model: This should never happen!")
     }
 
-    override fun singleRender(position: Vec3i, mesh: ChunkSectionMeshes, random: Random, blockState: BlockState, neighbours: Array<BlockState?>, light: Int, ambientLight: FloatArray, tints: IntArray?): Boolean {
+    override fun singleRender(position: Vec3i, mesh: ChunkSectionMeshes, random: Random, blockState: BlockState, neighbours: Array<BlockState?>, light: ByteArray, ambientLight: FloatArray, tints: IntArray?): Boolean {
         return getModel(random).singleRender(position, mesh, random, blockState, neighbours, light, ambientLight, tints)
+    }
+
+    override fun getParticleTexture(random: Random, blockPosition: Vec3i): AbstractTexture? {
+        random.setSeed(VecUtil.generatePositionHash(blockPosition.x, blockPosition.y, blockPosition.z))
+        return getModel(random).getParticleTexture(random, blockPosition)
     }
 
 }

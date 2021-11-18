@@ -19,6 +19,7 @@ import de.bixilon.minosoft.gui.rendering.block.mesh.ChunkSectionMesh
 import de.bixilon.minosoft.gui.rendering.block.mesh.ChunkSectionMeshes
 import de.bixilon.minosoft.gui.rendering.models.CullUtil.canCull
 import de.bixilon.minosoft.gui.rendering.models.FaceProperties
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.util.VecUtil
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.getWorldOffset
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.toVec3
@@ -28,6 +29,7 @@ import java.util.*
 class BakedBlockStateModel(
     private val faces: Array<Array<BakedFace>>,
     private val touchingFaceProperties: Array<Array<FaceProperties>>,
+    val particleTexture: AbstractTexture?,
 ) : BakedBlockModel, GreedyBakedBlockModel { // ToDo: Greedy meshable
     override val canGreedyMesh: Boolean = true
     override val greedyMeshableFaces: BooleanArray = booleanArrayOf(true, false, true, true, true, true)
@@ -36,7 +38,7 @@ class BakedBlockStateModel(
         return touchingFaceProperties[direction.ordinal]
     }
 
-    override fun singleRender(position: Vec3i, mesh: ChunkSectionMeshes, random: Random, blockState: BlockState, neighbours: Array<BlockState?>, light: Int, ambientLight: FloatArray, tints: IntArray?): Boolean {
+    override fun singleRender(position: Vec3i, mesh: ChunkSectionMeshes, random: Random, blockState: BlockState, neighbours: Array<BlockState?>, light: ByteArray, ambientLight: FloatArray, tints: IntArray?): Boolean {
         val floatPosition = position.toVec3()
         blockState.block.randomOffsetType?.let {
             floatPosition += position.getWorldOffset(blockState.block)
@@ -44,6 +46,7 @@ class BakedBlockStateModel(
         val positionArray = floatPosition.array
         var rendered = false
         var tint: Int
+        var currentLight: Int
         for ((index, faces) in faces.withIndex()) {
             val direction = Directions.VALUES[index]
             val neighbour = neighbours[index]
@@ -58,7 +61,8 @@ class BakedBlockStateModel(
                     continue
                 }
                 tint = tints?.getOrNull(face.tintIndex) ?: -1
-                face.singleRender(positionArray, mesh, light, ambientLight, tint)
+                currentLight = (face.cullFace?.let { light[it.ordinal] } ?: light[6]).toInt()
+                face.singleRender(positionArray, mesh, currentLight, ambientLight, tint)
                 if (!rendered) {
                     rendered = true
                 }
@@ -73,5 +77,9 @@ class BakedBlockStateModel(
         for (face in faces[side.ordinal]) {
             face.greedyRender(floatStart, floatEnd, side, mesh, light)
         }
+    }
+
+    override fun getParticleTexture(random: Random, blockPosition: Vec3i): AbstractTexture? {
+        return particleTexture
     }
 }

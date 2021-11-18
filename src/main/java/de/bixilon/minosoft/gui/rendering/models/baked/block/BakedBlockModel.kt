@@ -18,6 +18,7 @@ import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.gui.rendering.block.mesh.ChunkSectionMeshes
 import de.bixilon.minosoft.gui.rendering.models.FaceProperties
 import de.bixilon.minosoft.gui.rendering.models.baked.BakedModel
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import glm_.vec3.Vec3i
 import java.util.*
 
@@ -25,5 +26,7 @@ interface BakedBlockModel : BakedModel {
 
     fun getTouchingFaceProperties(random: Random, direction: Directions): Array<FaceProperties>
 
-    fun singleRender(position: Vec3i, mesh: ChunkSectionMeshes, random: Random, blockState: BlockState, neighbours: Array<BlockState?>, light: Int, ambientLight: FloatArray, tints: IntArray?): Boolean
+    fun singleRender(position: Vec3i, mesh: ChunkSectionMeshes, random: Random, blockState: BlockState, neighbours: Array<BlockState?>, light: ByteArray, ambientLight: FloatArray, tints: IntArray?): Boolean
+
+    fun getParticleTexture(random: Random, blockPosition: Vec3i): AbstractTexture?
 }

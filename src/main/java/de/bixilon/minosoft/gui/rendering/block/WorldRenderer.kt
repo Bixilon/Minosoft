@@ -519,6 +519,7 @@ class WorldRenderer(
     }
 
     override fun prepareDraw() {
+        lightMap.update()
         if (clearVisibleNextFrame) {
             visibleOpaque.clear()
             visibleTranslucent.clear()

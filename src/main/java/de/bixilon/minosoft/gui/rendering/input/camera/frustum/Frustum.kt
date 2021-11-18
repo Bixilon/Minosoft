@@ -109,13 +109,13 @@ class Frustum(private val camera: Camera) {
         for (i in 0 until Planes.SIZE) {
             val plane = planes[i].array
             if (plane.dot(minArray[0], minArray[1], minArray[2]) < 0.0f
+                && plane.dot(maxArray[0], maxArray[1], maxArray[2]) < 0.0f // check max as 2nd, likely to be false
                 && plane.dot(maxArray[0], minArray[1], minArray[2]) < 0.0f
                 && plane.dot(minArray[0], maxArray[1], minArray[2]) < 0.0f
                 && plane.dot(maxArray[0], maxArray[1], minArray[2]) < 0.0f
                 && plane.dot(minArray[0], minArray[1], maxArray[2]) < 0.0f
                 && plane.dot(maxArray[0], minArray[1], maxArray[2]) < 0.0f
                 && plane.dot(minArray[0], maxArray[1], maxArray[2]) < 0.0f
-                && plane.dot(maxArray[0], maxArray[1], maxArray[2]) < 0.0f
             ) {
                 return false
             }

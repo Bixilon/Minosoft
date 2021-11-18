@@ -1,11 +1,18 @@
 package de.bixilon.minosoft.gui.rendering.block.preparer
 
 import de.bixilon.minosoft.data.direction.Directions
+import de.bixilon.minosoft.data.direction.Directions.Companion.O_DOWN
+import de.bixilon.minosoft.data.direction.Directions.Companion.O_EAST
+import de.bixilon.minosoft.data.direction.Directions.Companion.O_NORTH
+import de.bixilon.minosoft.data.direction.Directions.Companion.O_SOUTH
+import de.bixilon.minosoft.data.direction.Directions.Companion.O_UP
+import de.bixilon.minosoft.data.direction.Directions.Companion.O_WEST
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.world.Chunk
 import de.bixilon.minosoft.data.world.ChunkSection
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.block.mesh.ChunkSectionMeshes
+import de.bixilon.minosoft.gui.rendering.models.baked.block.BakedBlockModel
 import de.bixilon.minosoft.gui.rendering.util.VecUtil
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.chunk.ChunkUtil.acquire
@@ -24,12 +31,17 @@ class CullSectionPreparer(
         val mesh = ChunkSectionMeshes(renderWindow, chunkPosition, sectionHeight)
         val random = Random(0L)
 
+        val isLowestSection = sectionHeight == chunk.lowestSection
+        val isHighestSection = sectionHeight == chunk.highestSection
         val blocks = section.blocks
+        val sectionLight = section.light
         section.acquire()
         neighbours.acquire()
-        var blockState: BlockState?
+        var model: BakedBlockModel
+        var blockState: BlockState
         var position: Vec3i
         val neighbourBlocks: Array<BlockState?> = arrayOfNulls(Directions.SIZE)
+        val light = ByteArray(Directions.SIZE + 1) // last index (6) for the current block
 
         val offsetX = chunkPosition.x * ProtocolDefinition.SECTION_WIDTH_X
         val offsetY = sectionHeight * ProtocolDefinition.SECTION_HEIGHT_Y
@@ -38,47 +50,68 @@ class CullSectionPreparer(
         for (x in 0 until ProtocolDefinition.SECTION_WIDTH_X) {
             for (y in 0 until ProtocolDefinition.SECTION_HEIGHT_Y) {
                 for (z in 0 until ProtocolDefinition.SECTION_WIDTH_Z) {
-                    blockState = blocks.unsafeGet(x, y, z)
-                    val model = blockState?.model ?: continue
+                    blockState = blocks.unsafeGet(x, y, z) ?: continue
+                    model = blockState.model ?: continue
+                    light[6] = sectionLight[y shl 8 or (z shl 4) or x]
 
-                    // ToDo: Chunk borders
-                    neighbourBlocks[Directions.DOWN.ordinal] = if (y == 0) {
-                        neighbours[Directions.DOWN.ordinal]?.blocks?.unsafeGet(x, ProtocolDefinition.SECTION_MAX_Y, z)
+                    if (y == 0) {
+                        neighbourBlocks[O_DOWN] = neighbours[O_DOWN]?.blocks?.unsafeGet(x, ProtocolDefinition.SECTION_MAX_Y, z)
+                        light[O_DOWN] = if (isLowestSection) {
+                            chunk.bottomLight
+                        } else {
+                            neighbours[O_DOWN]?.light
+                        }?.get(ProtocolDefinition.SECTION_MAX_Y shl 8 or (z shl 4) or x) ?: 0x00
+
                     } else {
-                        blocks.unsafeGet(x, y - 1, z)
+                        neighbourBlocks[O_DOWN] = blocks.unsafeGet(x, y - 1, z)
+                        light[O_DOWN] = sectionLight[(y - 1) shl 8 or (z shl 4) or x]
                     }
-                    neighbourBlocks[Directions.UP.ordinal] = if (y == ProtocolDefinition.SECTION_MAX_Y) {
-                        neighbours[Directions.UP.ordinal]?.blocks?.unsafeGet(x, 0, z)
+                    if (y == ProtocolDefinition.SECTION_MAX_Y) {
+                        neighbourBlocks[O_UP] = neighbours[O_UP]?.blocks?.unsafeGet(x, 0, z)
+                        light[O_UP] = if (isHighestSection) {
+                            chunk.topLight
+                        } else {
+                            neighbours[O_UP]?.light
+                        }?.get((z shl 4) or x) ?: 0x00
                     } else {
-                        blocks.unsafeGet(x, y + 1, z)
+                        neighbourBlocks[O_UP] = blocks.unsafeGet(x, y + 1, z)
+                        light[O_UP] = sectionLight[(y + 1) shl 8 or (z shl 4) or x]
                     }
 
-                    neighbourBlocks[Directions.NORTH.ordinal] = if (z == 0) {
-                        neighbours[Directions.NORTH.ordinal]?.blocks?.unsafeGet(x, y, ProtocolDefinition.SECTION_MAX_Z)
+                    if (z == 0) {
+                        neighbourBlocks[O_NORTH] = neighbours[O_NORTH]?.blocks?.unsafeGet(x, y, ProtocolDefinition.SECTION_MAX_Z)
+                        light[O_NORTH] = neighbours[O_NORTH]?.light?.get(y shl 8 or (ProtocolDefinition.SECTION_MAX_Z shl 4) or x) ?: 0x00
                     } else {
-                        blocks.unsafeGet(x, y, z - 1)
+                        neighbourBlocks[O_NORTH] = blocks.unsafeGet(x, y, z - 1)
+                        light[O_NORTH] = sectionLight[y shl 8 or ((z - 1) shl 4) or x]
                     }
-                    neighbourBlocks[Directions.SOUTH.ordinal] = if (z == ProtocolDefinition.SECTION_MAX_Z) {
-                        neighbours[Directions.SOUTH.ordinal]?.blocks?.unsafeGet(x, y, 0)
+                    if (z == ProtocolDefinition.SECTION_MAX_Z) {
+                        neighbourBlocks[O_SOUTH] = neighbours[O_SOUTH]?.blocks?.unsafeGet(x, y, 0)
+                        light[O_SOUTH] = neighbours[O_SOUTH]?.light?.get(y shl 8 or x) ?: 0x00
                     } else {
-                        blocks.unsafeGet(x, y, z + 1)
+                        neighbourBlocks[O_SOUTH] = blocks.unsafeGet(x, y, z + 1)
+                        light[O_SOUTH] = sectionLight[y shl 8 or ((z + 1) shl 4) or x]
                     }
 
-                    neighbourBlocks[Directions.WEST.ordinal] = if (x == 0) {
-                        neighbours[Directions.WEST.ordinal]?.blocks?.unsafeGet(ProtocolDefinition.SECTION_MAX_X, y, z)
+                    if (x == 0) {
+                        neighbourBlocks[O_WEST] = neighbours[O_WEST]?.blocks?.unsafeGet(ProtocolDefinition.SECTION_MAX_X, y, z)
+                        light[O_WEST] = neighbours[O_WEST]?.light?.get(y shl 8 or (z shl 4) or ProtocolDefinition.SECTION_MAX_X) ?: 0x00
                     } else {
-                        blocks.unsafeGet(x - 1, y, z)
+                        neighbourBlocks[O_WEST] = blocks.unsafeGet(x - 1, y, z)
+                        light[O_WEST] = sectionLight[y shl 8 or (z shl 4) or (x - 1)]
                     }
-                    neighbourBlocks[Directions.EAST.ordinal] = if (x == ProtocolDefinition.SECTION_MAX_X) {
-                        neighbours[Directions.EAST.ordinal]?.blocks?.unsafeGet(0, y, z)
+                    if (x == ProtocolDefinition.SECTION_MAX_X) {
+                        neighbourBlocks[O_EAST] = neighbours[O_EAST]?.blocks?.unsafeGet(0, y, z)
+                        light[O_EAST] = neighbours[O_EAST]?.light?.get(y shl 8 or (z shl 4)) ?: 0x00
                     } else {
-                        blocks.unsafeGet(x + 1, y, z)
+                        neighbourBlocks[O_EAST] = blocks.unsafeGet(x + 1, y, z)
+                        light[O_EAST] = sectionLight[y shl 8 or (z shl 4) or (x + 1)]
                     }
 
                     position = Vec3i(offsetX + x, offsetY + y, offsetZ + z)
                     random.setSeed(VecUtil.generatePositionHash(position.x, position.y, position.z))
                     val tints: IntArray? = tintColorCalculator.getAverageTint(chunk, neighbourChunks, blockState, x, y, z)
-                    val rendered = model.singleRender(position, mesh, random, blockState, neighbourBlocks, 0xFF, ambientLight, tints)
+                    val rendered = model.singleRender(position, mesh, random, blockState, neighbourBlocks, light, ambientLight, tints)
                     if (rendered) {
                         mesh.addBlock(x, y, z)
                     }

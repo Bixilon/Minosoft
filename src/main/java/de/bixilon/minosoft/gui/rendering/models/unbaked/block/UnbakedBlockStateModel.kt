@@ -82,6 +82,8 @@ data class UnbakedBlockStateModel(
             resolveTexture(key, value)
         }
 
+        val particleTexture = resolvedTextures["particle"]
+
 
         val faces: Array<MutableList<BakedFace>> = Array(Directions.SIZE) { mutableListOf() }
         val touchingFaceProperties: Array<MutableList<FaceProperties>> = Array(Directions.SIZE) { mutableListOf() }
@@ -172,7 +174,7 @@ data class UnbakedBlockStateModel(
             finalTouchingProperties[index] = sizeArray.toTypedArray()
         }
 
-        val baked = BakedBlockStateModel(finalFaces.unsafeCast(), finalTouchingProperties.unsafeCast())
+        val baked = BakedBlockStateModel(finalFaces.unsafeCast(), finalTouchingProperties.unsafeCast(), particleTexture)
         this.baked = baked
         return baked
     }

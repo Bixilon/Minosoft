@@ -230,7 +230,7 @@ class World(
     }
 
     fun getLight(blockPosition: Vec3i): Int {
-        return get(blockPosition.chunkPosition)?.getLight(blockPosition.inChunkPosition) ?: 0xFF
+        return get(blockPosition.chunkPosition)?.getLight(blockPosition.inChunkPosition) ?: 0x00
     }
 
     val skyAngle: Double

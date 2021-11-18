@@ -56,11 +56,18 @@ class TintManager(private val connection: PlayConnection) {
         return tints
     }
 
-    fun getTint(blockState: BlockState, biome: Biome?, x: Int, y: Int, z: Int): Int? {
-        TODO()
+    fun getTint(blockState: BlockState, biome: Biome?, x: Int, y: Int, z: Int): IntArray? {
+        val tintProvider = blockState.block.tintProvider ?: return null
+        connection.world.getBiome(x, y, z)
+        val tints = IntArray(if (tintProvider is MultiTintProvider) tintProvider.tints else 1)
+
+        for (tintIndex in tints.indices) {
+            tints[tintIndex] = tintProvider.getColor(blockState, biome, x, y, z, tintIndex)
+        }
+        return tints
     }
 
-    fun getTint(blockState: BlockState, biome: Biome? = null, blockPosition: Vec3i): Int? {
+    fun getTint(blockState: BlockState, biome: Biome? = null, blockPosition: Vec3i): IntArray? {
         return getTint(blockState, biome, blockPosition.x, blockPosition.y, blockPosition.z)
     }
 

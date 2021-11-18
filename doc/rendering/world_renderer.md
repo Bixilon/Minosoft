@@ -45,5 +45,4 @@
 - ToDo:
   - Build biome cache only in render distance
   - Update neighbour chunks if needed
-  - Unload on minimize
   - Biomes: Check if chunk is single biome

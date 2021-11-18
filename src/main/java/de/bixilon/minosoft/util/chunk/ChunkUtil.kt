@@ -197,7 +197,7 @@ object ChunkUtil {
                 if (containsSkyLight) {
                     skyLight = buffer.readByteArray(ProtocolDefinition.BLOCKS_PER_SECTION / 2)
                 }
-                light[sectionHeight - dimension.lowestSection] = LightUtil.mergeLight(blockLight, skyLight)
+                light[sectionHeight - dimension.lowestSection] = LightUtil.mergeLight(blockLight, skyLight ?: LightUtil.EMPTY_LIGHT_ARRAY)
                 lightReceived++
             }
             sectionBlocks[sectionHeight - dimension.lowestSection] = RegistrySectionDataProvider(buffer.connection.registries.blockStateRegistry.unsafeCast(), blocks.unsafeCast(), true)

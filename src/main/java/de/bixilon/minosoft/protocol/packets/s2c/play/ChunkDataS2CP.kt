@@ -130,7 +130,7 @@ class ChunkDataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
             return
         }
         val chunk = connection.world.getOrCreateChunk(chunkPosition)
-        chunk.setData(chunkData, isFullChunk)
+        chunk.setData(chunkData)
         connection.fireEvent(ChunkDataChangeEvent(connection, this))
     }
 

@@ -98,8 +98,8 @@ class Chunk(
 
 
     @Synchronized
-    fun setData(data: ChunkData, merge: Boolean = true) {
-        if (sections == null || !merge) {
+    fun setData(data: ChunkData) {
+        if (sections == null) {
             initialize()
         }
         data.blocks?.let {
@@ -118,7 +118,7 @@ class Chunk(
         data.light?.let {
             for ((index, light) in it.withIndex()) {
                 light ?: continue
-                val section = getOrPut(index - lowestSection)
+                val section = getOrPut(index + lowestSection)
                 section.light = light
             }
             lightInitialized = true
@@ -174,12 +174,12 @@ class Chunk(
         val sectionHeight = position.sectionHeight
         val index = position.inChunkSectionPosition.index
         if (sectionHeight == lowestSection - 1) {
-            return bottomLight?.get(index)?.toInt() ?: 0xFF
+            return bottomLight?.get(index)?.toInt() ?: 0x00
         }
         if (sectionHeight == highestSection + 1) {
-            return topLight?.get(index)?.toInt() ?: 0xFF
+            return topLight?.get(index)?.toInt() ?: 0x00
         }
-        return get(position.sectionHeight)?.light?.get(index)?.toInt() ?: 0xFF
+        return this[position.sectionHeight]?.light?.get(index)?.toInt() ?: 0x00
     }
 
     fun buildBiomeCache() {

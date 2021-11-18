@@ -27,22 +27,22 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import glm_.vec2.Vec2
 import glm_.vec3.Vec3d
+import java.util.*
 
 class BlockDustParticle(connection: PlayConnection, position: Vec3d, velocity: Vec3d, data: BlockParticleData) : AdvancedTextureParticle(connection, position, velocity, data) {
 
     init {
         val blockPosition = position.blockPosition
         check(data.blockState != null)
-        // ToDo: Texture
+        val textureRandom = Random(0L)
+        texture = data.blockState.model?.getParticleTexture(textureRandom, blockPosition)
 
         gravityStrength = 1.0f
         color = 0.6f.asGray()
 
-        if (data.blockState.block.resourceLocation != MinecraftBlocks.GRASS_BLOCK) {
-            val tintColor = connection.rendering!!.renderWindow.tintManager.getTint(data.blockState, null, blockPosition)?.asRGBColor()
-
-            tintColor?.let {
-                color = RGBColor(color.floatRed * tintColor.floatRed, color.floatGreen * tintColor.floatGreen, color.floatBlue * tintColor.floatBlue)
+        if (data.blockState.block.resourceLocation != MinecraftBlocks.GRASS_BLOCK) { // Just the overlay is tinted
+            connection.rendering!!.renderWindow.tintManager.getTint(data.blockState, null, blockPosition)?.getOrNull(0)?.asRGBColor()?.let {
+                color = RGBColor(color.floatRed * it.floatRed, color.floatGreen * it.floatGreen, color.floatBlue * it.floatBlue)
             }
         }
         scale /= 2.0f
@@ -56,6 +56,7 @@ class BlockDustParticle(connection: PlayConnection, position: Vec3d, velocity: V
 
 
     companion object : ParticleFactory<BlockDustParticle> {
+        private const val GRAY = 153 shl 16 or (153 shl 8) or 153
         override val RESOURCE_LOCATION: ResourceLocation = "minecraft:block".toResourceLocation()
 
         override fun build(connection: PlayConnection, position: Vec3d, velocity: Vec3d, data: ParticleData): BlockDustParticle? {
