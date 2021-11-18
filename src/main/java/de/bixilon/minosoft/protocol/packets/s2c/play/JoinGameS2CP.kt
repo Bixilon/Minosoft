@@ -43,8 +43,6 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.asCompound
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.compoundCast
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.listCast
-import de.bixilon.minosoft.util.task.time.TimeWorker
-import de.bixilon.minosoft.util.task.time.TimeWorkerTask
 
 class JoinGameS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     val entityId: Int
@@ -165,14 +163,14 @@ class JoinGameS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         if (connection.version.versionId >= ProtocolVersions.V_19W36A && !Minosoft.config.config.game.graphics.fastBiomeNoise) {
             connection.world.cacheBiomeAccessor = NoiseBiomeAccessor(connection.world)
         }
-        TimeWorker.addTask(TimeWorkerTask(150, true) { // ToDo: Temp workaround
-            connection.sendPacket(ClientSettingsC2SP(viewDistance = Minosoft.config.config.game.camera.viewDistance))
 
-            val brandName = DefaultRegistries.DEFAULT_PLUGIN_CHANNELS_REGISTRY.forVersion(connection.version)[DefaultPluginChannels.BRAND]!!.resourceLocation
-            val buffer = PlayOutByteBuffer(connection)
-            buffer.writeString("vanilla") // ToDo: Remove prefix
-            connection.sendPacket(PluginMessageC2SP(brandName, buffer.toByteArray()))
-        })
+        connection.sendPacket(ClientSettingsC2SP(viewDistance = Minosoft.config.config.game.camera.viewDistance))
+
+        val brandName = DefaultRegistries.DEFAULT_PLUGIN_CHANNELS_REGISTRY.forVersion(connection.version)[DefaultPluginChannels.BRAND]!!.resourceLocation
+        val buffer = PlayOutByteBuffer(connection)
+        buffer.writeString("vanilla") // ToDo: Remove prefix
+        connection.sendPacket(PluginMessageC2SP(brandName, buffer.toByteArray()))
+
         connection.state = PlayConnectionStates.SPAWNING
     }
 

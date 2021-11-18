@@ -257,7 +257,7 @@ abstract class Entity(
     open val pose: Poses?
         get() {
             return when {
-                isFlyingWithElytra -> Poses.FLYING
+                isFlyingWithElytra -> Poses.ELYTRA_FLYING
                 isSwimming -> Poses.SWIMMING
                 isSneaking -> Poses.SNEAKING
                 else -> entityMetaData.sets.getPose(EntityMetaDataFields.ENTITY_POSE)

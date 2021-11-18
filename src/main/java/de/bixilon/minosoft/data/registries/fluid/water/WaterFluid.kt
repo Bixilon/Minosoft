@@ -31,6 +31,7 @@ import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.wa
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3d
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.util.KUtil.chance
 import de.bixilon.minosoft.util.KUtil.decide
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import glm_.vec3.Vec3d
@@ -117,8 +118,10 @@ class WaterFluid(
     override fun randomTick(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, random: Random) {
         super.randomTick(connection, blockState, blockPosition, random)
 
-        // ToDo
-        connection.world += UnderwaterParticle(connection, blockPosition.toVec3d + { random.nextDouble() })
+        // ToDo: if not sill and not falling
+        if (random.chance(10)) {
+            connection.world += UnderwaterParticle(connection, blockPosition.toVec3d + { random.nextDouble() })
+        }
     }
 
     companion object : FluidFactory<WaterFluid>, MultiClassFactory<WaterFluid> {

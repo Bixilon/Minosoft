@@ -93,7 +93,7 @@ abstract class PlayerEntity(
         private val DIMENSIONS: Map<Poses, Vec2> = mapOf(
             Poses.STANDING to Vec2(0.6f, 1.8f),
             Poses.SLEEPING to Vec2(0.2f, 0.2f),
-            Poses.FLYING to Vec2(0.6f, 0.6f),
+            Poses.ELYTRA_FLYING to Vec2(0.6f, 0.6f),
             Poses.SWIMMING to Vec2(0.6f, 0.6f),
             Poses.SPIN_ATTACK to Vec2(0.6f, 0.6f),
             Poses.SNEAKING to Vec2(0.6f, 1.5f), // ToDo: This changed at some time
