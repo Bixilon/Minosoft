@@ -24,7 +24,6 @@ import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
 import glm_.vec2.Vec2i
-import org.lwjgl.system.MemoryUtil.memAllocFloat
 import java.nio.ByteBuffer
 import java.nio.FloatBuffer
 
@@ -88,9 +87,9 @@ interface RenderSystem {
 
     fun createShader(resourceLocation: ResourceLocation): Shader
 
-    fun createVertexBuffer(structure: MeshStruct, data: FloatBuffer, primitiveType: PrimitiveTypes = PrimitiveTypes.TRIANGLE): FloatVertexBuffer
+    fun createVertexBuffer(structure: MeshStruct, data: FloatBuffer, primitiveType: PrimitiveTypes = preferredPrimitiveType): FloatVertexBuffer
     fun createIntUniformBuffer(bindingIndex: Int = 0, data: IntArray = IntArray(0)): IntUniformBuffer
-    fun createFloatUniformBuffer(bindingIndex: Int = 0, data: FloatBuffer = memAllocFloat(0)): FloatUniformBuffer
+    fun createFloatUniformBuffer(bindingIndex: Int = 0, data: FloatBuffer): FloatUniformBuffer
 
     fun createTextureManager(): TextureManager
 
