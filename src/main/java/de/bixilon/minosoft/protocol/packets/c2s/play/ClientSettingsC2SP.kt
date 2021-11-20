@@ -30,6 +30,7 @@ class ClientSettingsC2SP(
     val skinParts: Set<SkinParts> = setOf(*SkinParts.VALUES),
     val mainHand: Hands = Hands.MAIN,
     val disableTextFiltering: Boolean = true,
+    val allowListing: Boolean = true,
 ) : PlayC2SPacket {
 
     override fun write(buffer: PlayOutByteBuffer) {
@@ -53,10 +54,13 @@ class ClientSettingsC2SP(
         if (buffer.versionId >= ProtocolVersions.V_21W07A) {
             buffer.writeBoolean(disableTextFiltering)
         }
+        if (buffer.versionId >= ProtocolVersions.V_21W44A) {
+            buffer.writeBoolean(allowListing)
+        }
     }
 
     override fun log() {
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Client settings (locale=$locale, renderDistance=$viewDistance)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Client settings (locale=$locale, viewDistance=$viewDistance)" }
     }
 
     enum class SkinParts {

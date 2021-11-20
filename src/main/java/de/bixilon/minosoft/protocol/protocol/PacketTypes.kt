@@ -275,6 +275,7 @@ class PacketTypes {
         PLAY_ADVANCEMENT_PROGRESS({ TODO() }),
         PLAY_VIBRATION_SIGNAL({ VibrationSignalS2CP(it) }),
         PLAY_PING({ PingS2CP(it) }),
+        PLAY_SIMULATION_DISTANCE({ SimulationDistanceSetS2CP(it) }),
         ;
 
         init {

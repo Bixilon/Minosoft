@@ -232,6 +232,7 @@ class AudioPlayer(
         Log.log(LogMessageType.AUDIO_LOADING, LogLevels.INFO) { "Unloaded OpenAL!" }
     }
 
+    @Deprecated("Refactoring needed")
     private fun loadSounds() {
         Log.log(LogMessageType.AUDIO_LOADING, LogLevels.VERBOSE) { "Loading sounds.json" }
         val data = connection.assetsManager.readJsonAsset(SOUNDS_INDEX_FILE)

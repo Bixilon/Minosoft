@@ -130,7 +130,7 @@ class ChunkDataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
                         val xz = buffer.readUnsignedByte()
                         val y = buffer.readShort()
                         val type = buffer.connection.registries.blockEntityTypeRegistry[buffer.readVarInt()]
-                        val nbt = buffer.readNBT().asCompound()
+                        val nbt = buffer.readNBT()?.asCompound() ?: continue
                         val entity = type.build(buffer.connection)
                         entity.updateNBT(nbt)
                         blockEntities[Vec3i(xz shr 4, y, xz and 0x0F)] = entity
