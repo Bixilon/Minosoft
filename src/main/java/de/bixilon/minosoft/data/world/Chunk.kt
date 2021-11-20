@@ -105,7 +105,7 @@ class Chunk(
         data.blocks?.let {
             for ((index, blocks) in it.withIndex()) {
                 blocks ?: continue
-                val section = getOrPut(index - lowestSection)
+                val section = getOrPut(index + lowestSection)
                 section.blocks = blocks
             }
             blocksInitialized = true
@@ -148,7 +148,7 @@ class Chunk(
 
         var section = sections[sectionIndex]
         if (section == null) {
-            section = ChunkSection(connection.registries)
+            section = ChunkSection()
             val neighbours: Array<Chunk> = world.getChunkNeighbours(chunkPosition).unsafeCast()
             val cacheBiomeAccessor = world.cacheBiomeAccessor
             if (cacheBiomeAccessor != null && biomesInitialized && neighboursLoaded) {

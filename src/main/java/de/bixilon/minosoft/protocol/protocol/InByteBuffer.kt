@@ -163,6 +163,12 @@ open class InByteBuffer {
         return array
     }
 
+    fun readLongArray(target: LongArray, size: Int = readVarInt()) {
+        for (i in 0 until size) {
+            target[i] = readLong()
+        }
+    }
+
 
     fun readVarLong(): Long {
         var byteCount = 0

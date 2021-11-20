@@ -11,34 +11,22 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.world.container
+package de.bixilon.minosoft.data.world.container.palette.palettes
 
 import de.bixilon.minosoft.data.registries.registries.registry.AbstractRegistry
-import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 
-class RegistrySectionDataProvider<T>(
-    val registry: AbstractRegistry<T>,
-    data: Array<Any?>? = null,
-    checkSize: Boolean = false,
-) : SectionDataProvider<T>(data, checkSize = checkSize) {
+class SingularPalette<T>(private val registry: AbstractRegistry<T>) : Palette<T> {
+    override val bits: Int = 0
+    var item: T? = null
+        private set
 
-    @Suppress("UNCHECKED_CAST")
-    fun setIdData(ids: IntArray) {
-        val data: Array<Any?> = arrayOfNulls(ProtocolDefinition.BLOCKS_PER_SECTION)
-
-        for ((index, id) in ids.withIndex()) {
-            data[index] = registry[id]
-        }
-
-        setData(data as Array<T>)
+    override fun read(buffer: PlayInByteBuffer) {
+        item = registry[buffer.readVarInt()]
     }
 
-
-    override fun copy(): RegistrySectionDataProvider<T> {
-        acquire()
-        val clone = RegistrySectionDataProvider(registry, data?.clone())
-        release()
-
-        return clone
+    @Suppress("UNCHECKED_CAST")
+    override fun get(index: Int): T {
+        return item as T
     }
 }

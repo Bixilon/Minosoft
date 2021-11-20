@@ -10,17 +10,14 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.data.world.container.palette.palettes
 
-package de.bixilon.minosoft.data.registries.registries.registry
+import de.bixilon.minosoft.data.registries.registries.registry.AbstractRegistry
 
-import de.bixilon.minosoft.util.collections.Clearable
+interface PaletteFactory {
+    val edgeBits: Int
+    val containerSize: Int
+        get() = 1 shl (edgeBits * 3)
 
-interface AbstractRegistry<T> : Iterable<T>, Clearable, Parentable<AbstractRegistry<T>> {
-    val size: Int
-
-    operator fun get(any: Any?): T?
-
-    operator fun get(id: Int): T?
-
-    fun getId(value: T): Int
+    fun <T> createPalette(registry: AbstractRegistry<T>, bits: Int): Palette<T>
 }

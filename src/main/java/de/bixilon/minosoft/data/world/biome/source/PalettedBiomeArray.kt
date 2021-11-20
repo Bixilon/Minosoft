@@ -11,16 +11,19 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.registries.registry
+package de.bixilon.minosoft.data.world.biome.source
 
-import de.bixilon.minosoft.util.collections.Clearable
+import de.bixilon.minosoft.data.registries.biomes.Biome
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.sectionHeight
 
-interface AbstractRegistry<T> : Iterable<T>, Clearable, Parentable<AbstractRegistry<T>> {
-    val size: Int
+class PalettedBiomeArray(
+    private val containers: Array<Array<Biome>?>,
+    private val lowestSection: Int,
+    val edgeBits: Int,
+) : BiomeSource {
+    private val mask = (1 shl edgeBits) - 1
 
-    operator fun get(any: Any?): T?
-
-    operator fun get(id: Int): T?
-
-    fun getId(value: T): Int
+    override fun getBiome(x: Int, y: Int, z: Int): Biome? {
+        return containers.getOrNull(y.sectionHeight - lowestSection)?.get(((((y.sectionHeight and mask) shl edgeBits) or (z and mask)) shl edgeBits) or (x and mask))
+    }
 }

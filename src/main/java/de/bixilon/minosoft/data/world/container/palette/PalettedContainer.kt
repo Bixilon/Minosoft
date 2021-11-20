@@ -11,16 +11,26 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.registries.registry
+package de.bixilon.minosoft.data.world.container.palette
 
-import de.bixilon.minosoft.util.collections.Clearable
+import de.bixilon.minosoft.data.world.container.palette.data.PaletteData
+import de.bixilon.minosoft.data.world.container.palette.palettes.Palette
 
-interface AbstractRegistry<T> : Iterable<T>, Clearable, Parentable<AbstractRegistry<T>> {
-    val size: Int
+class PalettedContainer<T>(
+    private val edgeBits: Int,
+    val palette: Palette<T>,
+    val data: PaletteData,
+) {
 
-    operator fun get(any: Any?): T?
+    fun get(x: Int, y: Int, z: Int): T {
+        return palette.get(data.get((((y shl edgeBits) or z) shl edgeBits) or x))
+    }
 
-    operator fun get(id: Int): T?
-
-    fun getId(value: T): Int
+    inline fun <reified V : T> unpack(): Array<V> {
+        val array: Array<V?> = arrayOfNulls(data.size)
+        for (i in array.indices) {
+            array[i] = palette.get(data.get(i)) as V
+        }
+        return array as Array<V>
+    }
 }

@@ -11,16 +11,20 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.registries.registry
+package de.bixilon.minosoft.data.world.container.palette.data
 
-import de.bixilon.minosoft.util.collections.Clearable
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 
-interface AbstractRegistry<T> : Iterable<T>, Clearable, Parentable<AbstractRegistry<T>> {
-    val size: Int
+class EmptyPaletteData(override val size: Int) : PaletteData {
 
-    operator fun get(any: Any?): T?
+    override fun get(index: Int): Int {
+        if (index in 0 until size) {
+            return 0
+        }
+        throw IndexOutOfBoundsException("Index $index > $size")
+    }
 
-    operator fun get(id: Int): T?
-
-    fun getId(value: T): Int
+    override fun read(buffer: PlayInByteBuffer) {
+        check(buffer.readVarInt() == 0) { "No data expected!" }
+    }
 }
