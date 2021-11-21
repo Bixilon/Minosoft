@@ -84,9 +84,8 @@ class TintManager(private val connection: PlayConnection) {
             },
             setOf(MinecraftBlocks.SPRUCE_LEAVES) to StaticTintProvider(0x619961),
             setOf(MinecraftBlocks.BIRCH_LEAVES) to StaticTintProvider(0x80A755),
-            setOf(MinecraftBlocks.OAK_LEAVES, MinecraftBlocks.JUNGLE_LEAVES, MinecraftBlocks.ACACIA_LEAVES, MinecraftBlocks.DARK_OAK_LEAVES, MinecraftBlocks.VINE) to foliageTintCalculator,
-            // ToDo: Water
-            setOf(MinecraftBlocks.REDSTONE_WIRE) to RedstoneWireTintCalculator,
+            setOf(MinecraftBlocks.OAK_LEAVES, MinecraftBlocks.JUNGLE_LEAVES, MinecraftBlocks.ACACIA_LEAVES, MinecraftBlocks.DARK_OAK_LEAVES, MinecraftBlocks.VINE) to foliageTintCalculator, setOf(MinecraftBlocks.REDSTONE_WIRE) to RedstoneWireTintCalculator,
+            setOf(MinecraftBlocks.WATER_CAULDRON, MinecraftBlocks.CAULDRON, MinecraftBlocks.WATER) to WaterTintProvider,
             setOf(MinecraftBlocks.SUGAR_CANE) to TintProvider { blockState: BlockState?, biome: Biome?, x: Int, y: Int, z: Int, tintIndex: Int ->
                 if (blockState == null || biome == null) {
                     return@TintProvider -1

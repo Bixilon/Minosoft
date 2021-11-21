@@ -29,7 +29,7 @@ import java.util.*
 class BakedBlockStateModel(
     private val faces: Array<Array<BakedFace>>,
     private val touchingFaceProperties: Array<Array<FaceProperties>>,
-    val particleTexture: AbstractTexture?,
+    private val particleTexture: AbstractTexture?,
 ) : BakedBlockModel, GreedyBakedBlockModel { // ToDo: Greedy meshable
     override val canGreedyMesh: Boolean = true
     override val greedyMeshableFaces: BooleanArray = booleanArrayOf(true, false, true, true, true, true)
