@@ -123,7 +123,7 @@ class ModelLoader(
             val block = registry.blockRegistry[name] ?: continue
 
             for (state in block.states) {
-                state.model = model.getModelForState(state).bake(renderWindow).unsafeCast()
+                state.blockModel = model.getModelForState(state).bake(renderWindow).unsafeCast()
             }
         }
     }

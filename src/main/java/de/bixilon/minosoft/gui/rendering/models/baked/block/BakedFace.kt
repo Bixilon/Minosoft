@@ -16,13 +16,13 @@ package de.bixilon.minosoft.gui.rendering.models.baked.block
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.text.RGBColor
-import de.bixilon.minosoft.gui.rendering.block.mesh.ChunkSectionMesh
-import de.bixilon.minosoft.gui.rendering.block.mesh.ChunkSectionMeshes
 import de.bixilon.minosoft.gui.rendering.models.FaceProperties
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.get
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.rgb
+import de.bixilon.minosoft.gui.rendering.world.mesh.ChunkSectionMesh
+import de.bixilon.minosoft.gui.rendering.world.mesh.ChunkSectionMeshes
 import glm_.vec2.Vec2
 import glm_.vec3.Vec3
 

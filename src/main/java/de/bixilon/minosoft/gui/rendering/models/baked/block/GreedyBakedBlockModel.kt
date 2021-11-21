@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.models.baked.block
 
 import de.bixilon.minosoft.data.direction.Directions
-import de.bixilon.minosoft.gui.rendering.block.mesh.ChunkSectionMesh
+import de.bixilon.minosoft.gui.rendering.world.mesh.ChunkSectionMesh
 import glm_.vec3.Vec3i
 
 interface GreedyBakedBlockModel {

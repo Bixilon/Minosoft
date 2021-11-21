@@ -1,8 +1,8 @@
-package de.bixilon.minosoft.gui.rendering.block.preparer
+package de.bixilon.minosoft.gui.rendering.world.preparer
 
 import de.bixilon.minosoft.data.world.Chunk
 import de.bixilon.minosoft.data.world.ChunkSection
-import de.bixilon.minosoft.gui.rendering.block.mesh.ChunkSectionMeshes
+import de.bixilon.minosoft.gui.rendering.world.mesh.ChunkSectionMeshes
 import glm_.vec2.Vec2i
 
 interface AbstractSectionPreparer {

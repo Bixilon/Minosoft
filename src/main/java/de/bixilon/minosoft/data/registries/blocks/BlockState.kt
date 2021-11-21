@@ -43,7 +43,7 @@ data class BlockState(
     val soundEventVolume: Float = 1.0f,
     val soundEventPitch: Float = 1.0f,
 ) {
-    var model: BakedBlockModel? = null
+    var blockModel: BakedBlockModel? = null
 
     override fun hashCode(): Int {
         return Objects.hash(block, properties)

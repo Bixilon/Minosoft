@@ -11,7 +11,7 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.block.outline
+package de.bixilon.minosoft.gui.rendering.world.outline
 
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.abilities.Gamemodes

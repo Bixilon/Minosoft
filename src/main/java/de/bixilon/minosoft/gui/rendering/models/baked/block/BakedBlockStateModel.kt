@@ -15,14 +15,14 @@ package de.bixilon.minosoft.gui.rendering.models.baked.block
 
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.BlockState
-import de.bixilon.minosoft.gui.rendering.block.mesh.ChunkSectionMesh
-import de.bixilon.minosoft.gui.rendering.block.mesh.ChunkSectionMeshes
 import de.bixilon.minosoft.gui.rendering.models.CullUtil.canCull
 import de.bixilon.minosoft.gui.rendering.models.FaceProperties
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.util.VecUtil
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.getWorldOffset
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.toVec3
+import de.bixilon.minosoft.gui.rendering.world.mesh.ChunkSectionMesh
+import de.bixilon.minosoft.gui.rendering.world.mesh.ChunkSectionMeshes
 import glm_.vec3.Vec3i
 import java.util.*
 
@@ -30,9 +30,7 @@ class BakedBlockStateModel(
     private val faces: Array<Array<BakedFace>>,
     private val touchingFaceProperties: Array<Array<FaceProperties>>,
     private val particleTexture: AbstractTexture?,
-) : BakedBlockModel, GreedyBakedBlockModel { // ToDo: Greedy meshable
-    override val canGreedyMesh: Boolean = true
-    override val greedyMeshableFaces: BooleanArray = booleanArrayOf(true, false, true, true, true, true)
+) : BakedBlockModel {
 
     override fun getTouchingFaceProperties(random: Random, direction: Directions): Array<FaceProperties> {
         return touchingFaceProperties[direction.ordinal]
@@ -50,7 +48,7 @@ class BakedBlockStateModel(
         for ((index, faces) in faces.withIndex()) {
             val direction = Directions.VALUES[index]
             val neighbour = neighbours[index]
-            val neighboursModel = neighbour?.model
+            val neighboursModel = neighbour?.blockModel
             var neighbourProperties: Array<FaceProperties>? = null
             if (neighboursModel != null) {
                 random.setSeed(VecUtil.generatePositionHash(position.x + direction.vector.x, position.y + direction.vector.y, position.z + direction.vector.z))
@@ -71,7 +69,8 @@ class BakedBlockStateModel(
         return rendered
     }
 
-    override fun greedyRender(start: Vec3i, end: Vec3i, side: Directions, mesh: ChunkSectionMesh, light: Int) {
+    fun greedyRender(start: Vec3i, end: Vec3i, side: Directions, mesh: ChunkSectionMesh, light: Int) {
+        TODO()
         val floatStart = start.toVec3()
         val floatEnd = end.toVec3()
         for (face in faces[side.ordinal]) {

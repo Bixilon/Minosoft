@@ -11,16 +11,16 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.block.preparer
+package de.bixilon.minosoft.gui.rendering.world.preparer
 
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.world.Chunk
 import de.bixilon.minosoft.data.world.ChunkSection
 import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.block.mesh.ChunkSectionMesh
-import de.bixilon.minosoft.gui.rendering.block.mesh.ChunkSectionMeshes
 import de.bixilon.minosoft.gui.rendering.models.baked.block.GreedyBakedBlockModel
+import de.bixilon.minosoft.gui.rendering.world.mesh.ChunkSectionMesh
+import de.bixilon.minosoft.gui.rendering.world.mesh.ChunkSectionMeshes
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition.SECTION_SIZE
 import de.bixilon.minosoft.util.KUtil.decide
 import glm_.vec2.Vec2i
@@ -98,7 +98,7 @@ class GreedySectionPreparer(
                         } else {
                             currentBlock
                         }
-                        val model = primaryBlock?.model
+                        val model = primaryBlock?.blockModel
 
                         val meshable = model is GreedyBakedBlockModel
                                 && model.canGreedyMesh
@@ -195,7 +195,7 @@ class GreedySectionPreparer(
 
                                 end = Vec3i(endOffset)
 
-                                val model = currentBlock.model
+                                val model = currentBlock.blockModel
                                 model as GreedyBakedBlockModel
 
 

@@ -21,9 +21,6 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.gui.rendering.block.WorldRenderer
-import de.bixilon.minosoft.gui.rendering.block.chunk.ChunkBorderRenderer
-import de.bixilon.minosoft.gui.rendering.block.outline.BlockOutlineRenderer
 import de.bixilon.minosoft.gui.rendering.entity.EntityHitBoxRenderer
 import de.bixilon.minosoft.gui.rendering.font.Font
 import de.bixilon.minosoft.gui.rendering.font.FontLoader
@@ -45,6 +42,9 @@ import de.bixilon.minosoft.gui.rendering.system.window.BaseWindow
 import de.bixilon.minosoft.gui.rendering.system.window.GLFWWindow
 import de.bixilon.minosoft.gui.rendering.tint.TintManager
 import de.bixilon.minosoft.gui.rendering.util.ScreenshotTaker
+import de.bixilon.minosoft.gui.rendering.world.WorldRenderer
+import de.bixilon.minosoft.gui.rendering.world.chunk.ChunkBorderRenderer
+import de.bixilon.minosoft.gui.rendering.world.outline.BlockOutlineRenderer
 import de.bixilon.minosoft.modding.event.events.InternalMessageReceiveEvent
 import de.bixilon.minosoft.modding.event.events.PacketReceiveEvent
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker

@@ -24,7 +24,6 @@ import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.world.Chunk
-import de.bixilon.minosoft.gui.rendering.block.WorldRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.layout.RowLayout
@@ -39,6 +38,7 @@ import de.bixilon.minosoft.gui.rendering.gui.hud.elements.LayoutedHUDElement
 import de.bixilon.minosoft.gui.rendering.modding.events.ResizeWindowEvent
 import de.bixilon.minosoft.gui.rendering.particle.ParticleRenderer
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
+import de.bixilon.minosoft.gui.rendering.world.WorldRenderer
 import de.bixilon.minosoft.modding.event.events.DifficultyChangeEvent
 import de.bixilon.minosoft.modding.event.events.TimeChangeEvent
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
