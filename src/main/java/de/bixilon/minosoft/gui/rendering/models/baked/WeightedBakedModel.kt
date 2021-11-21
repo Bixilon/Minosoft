@@ -19,7 +19,7 @@ import de.bixilon.minosoft.gui.rendering.models.FaceProperties
 import de.bixilon.minosoft.gui.rendering.models.baked.block.BakedBlockModel
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.util.VecUtil
-import de.bixilon.minosoft.gui.rendering.world.mesh.ChunkSectionMeshes
+import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
 import glm_.vec3.Vec3i
 import java.util.*
 import kotlin.math.abs
@@ -57,7 +57,7 @@ class WeightedBakedModel(
         throw IllegalStateException("Could not find a model: This should never happen!")
     }
 
-    override fun singleRender(position: Vec3i, mesh: ChunkSectionMeshes, random: Random, blockState: BlockState, neighbours: Array<BlockState?>, light: ByteArray, ambientLight: FloatArray, tints: IntArray?): Boolean {
+    override fun singleRender(position: Vec3i, mesh: WorldMesh, random: Random, blockState: BlockState, neighbours: Array<BlockState?>, light: ByteArray, ambientLight: FloatArray, tints: IntArray?): Boolean {
         return getModel(random).singleRender(position, mesh, random, blockState, neighbours, light, ambientLight, tints)
     }
 

@@ -31,6 +31,7 @@ import de.bixilon.minosoft.gui.rendering.modding.events.FrustumChangeEvent
 import de.bixilon.minosoft.gui.rendering.modding.events.RenderingStateChangeEvent
 import de.bixilon.minosoft.gui.rendering.models.ModelLoader
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
+import de.bixilon.minosoft.gui.rendering.system.base.RenderingCapabilities
 import de.bixilon.minosoft.gui.rendering.system.base.phases.OpaqueDrawable
 import de.bixilon.minosoft.gui.rendering.system.base.phases.TranslucentDrawable
 import de.bixilon.minosoft.gui.rendering.system.base.phases.TransparentDrawable
@@ -45,8 +46,9 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.toVec3
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.toVec3
-import de.bixilon.minosoft.gui.rendering.world.mesh.ChunkSectionMesh
-import de.bixilon.minosoft.gui.rendering.world.mesh.ChunkSectionMeshes
+import de.bixilon.minosoft.gui.rendering.world.mesh.SectionMesh
+import de.bixilon.minosoft.gui.rendering.world.mesh.VisibleMeshes
+import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
 import de.bixilon.minosoft.gui.rendering.world.preparer.AbstractSectionPreparer
 import de.bixilon.minosoft.gui.rendering.world.preparer.CullSectionPreparer
 import de.bixilon.minosoft.modding.event.events.*
@@ -85,7 +87,7 @@ class WorldRenderer(
     private val sectionPreparer: AbstractSectionPreparer = CullSectionPreparer(renderWindow)
     private val lightMap = LightMap(connection)
 
-    private val loadedMeshes: MutableMap<Vec2i, MutableMap<Int, ChunkSectionMeshes>> = mutableMapOf() // all prepared (and up to date) meshes
+    private val loadedMeshes: MutableMap<Vec2i, MutableMap<Int, SectionMesh>> = mutableMapOf() // all prepared (and up to date) meshes
     private val loadedMeshesLock = ReadWriteLock()
 
     val maxPreparingTasks = maxOf(DefaultThreadPool.threadCount - 1, 1)
@@ -99,25 +101,22 @@ class WorldRenderer(
     val maxMeshesToLoad = 100 // ToDo: Should depend on the system memory and other factors.
     private val meshesToLoad: MutableList<WorldQueueItem> = synchronizedListOf() // prepared meshes, that can be loaded in the (next) frame
     private val meshesToLoadLock = ReadWriteLock()
-    private val meshesToUnload: MutableList<ChunkSectionMeshes> = synchronizedListOf() // prepared meshes, that can be loaded in the (next) frame
+    private val meshesToUnload: MutableList<WorldMesh> = synchronizedListOf() // prepared meshes, that can be loaded in the (next) frame
     private val meshesToUnloadLock = ReadWriteLock()
 
     // all meshes that will be rendered in the next frame (might be changed, when the frustum changes or a chunk gets loaded, ...)
     private var clearVisibleNextFrame = false
-    private var visibleOpaque: MutableList<ChunkSectionMesh> = mutableListOf()
-    private var visibleTranslucent: MutableList<ChunkSectionMesh> = mutableListOf()
-    private var visibleTransparent: MutableList<ChunkSectionMesh> = mutableListOf()
+    private var visibleSolid = VisibleMeshes()
+    private var visibleFluid = VisibleMeshes()
 
 
     private var cameraPosition = Vec3.EMPTY
     private var cameraChunkPosition = Vec2i.EMPTY
 
-    val visibleOpaqueSize: Int
-        get() = visibleOpaque.size
-    val visibleTranslucentSize: Int
-        get() = visibleTranslucent.size
-    val visibleTransparentSize: Int
-        get() = visibleTransparent.size
+    val visibleSolidSize: String
+        get() = visibleSolid.sizeString
+    val visibleFluidSize: String
+        get() = visibleFluid.sizeString
     val loadedMeshesSize: Int by loadedMeshes::size
     val culledQueuedSize: Int by culledQueue::size
     val meshesToLoadSize: Int by meshesToLoad::size
@@ -262,7 +261,10 @@ class WorldRenderer(
 
         meshesToUnloadLock.lock()
         for (sections in loadedMeshes.values) {
-            meshesToUnload += sections.values
+            for (mesh in sections.values) {
+                mesh.solidMesh?.let { meshesToUnload += it }
+                mesh.fluidMesh?.let { meshesToUnload += it }
+            }
         }
         meshesToUnloadLock.unlock()
 
@@ -303,7 +305,10 @@ class WorldRenderer(
             }
         }
         if (meshes != null) {
-            meshesToUnload += meshes.values
+            for (mesh in meshes.values) {
+                mesh.solidMesh?.let { meshesToUnload += it }
+                mesh.fluidMesh?.let { meshesToUnload += it }
+            }
         }
 
         loadedMeshesLock.unlock()
@@ -311,34 +316,6 @@ class WorldRenderer(
         culledQueueLock.unlock()
         meshesToLoadLock.unlock()
         meshesToUnloadLock.unlock()
-    }
-
-    private fun addMesh(mesh: ChunkSectionMeshes, visibleOpaque: MutableList<ChunkSectionMesh> = this.visibleOpaque, visibleTranslucent: MutableList<ChunkSectionMesh> = this.visibleTranslucent, visibleTransparent: MutableList<ChunkSectionMesh> = this.visibleTransparent) {
-        val distance = (cameraPosition - mesh.center).length2()
-        mesh.opaqueMesh?.let {
-            it.distance = distance
-            visibleOpaque += it
-        }
-        mesh.translucentMesh?.let {
-            it.distance = distance
-            visibleTranslucent += it
-        }
-        mesh.transparentMesh?.let {
-            it.distance = distance
-            visibleTransparent += it
-        }
-    }
-
-    private fun sortVisible(visibleOpaque: MutableList<ChunkSectionMesh> = this.visibleOpaque, visibleTranslucent: MutableList<ChunkSectionMesh> = this.visibleTranslucent, visibleTransparent: MutableList<ChunkSectionMesh> = this.visibleTransparent) {
-        visibleOpaque.sortBy { it.distance }
-        visibleTranslucent.sortBy { -it.distance }
-        visibleTransparent.sortBy { it.distance }
-    }
-
-    private fun removeMesh(mesh: ChunkSectionMeshes) {
-        mesh.opaqueMesh?.let { visibleOpaque -= it }
-        mesh.translucentMesh?.let { visibleTranslucent -= it }
-        mesh.transparentMesh?.let { visibleTransparent -= it }
     }
 
     private fun sortQueue() {
@@ -377,7 +354,10 @@ class WorldRenderer(
                     val section = chunk[item.sectionHeight] ?: return@Runnable end()
                     val neighbourChunks: Array<Chunk> = world.getChunkNeighbours(item.chunkPosition).unsafeCast()
                     val neighbours = item.neighbours ?: ChunkUtil.getSectionNeighbours(neighbourChunks, chunk, item.sectionHeight)
-                    item.mesh = sectionPreparer.prepare(item.chunkPosition, item.sectionHeight, chunk, section, neighbours, neighbourChunks)
+                    item.solidMesh = sectionPreparer.prepareSolid(item.chunkPosition, item.sectionHeight, chunk, section, neighbours, neighbourChunks)
+                    if (section.blocks.fluidCount > 0) {
+                        item.fluidMesh = sectionPreparer.prepareFluid(item.chunkPosition, item.sectionHeight, chunk, section, neighbours, neighbourChunks)
+                    }
                     meshesToLoadLock.lock()
                     locked = true
                     meshesToLoad.removeAll { it == item } // Remove duplicates
@@ -476,19 +456,39 @@ class WorldRenderer(
 
         while ((System.currentTimeMillis() - time < maxTime) && meshesToLoad.isNotEmpty()) {
             val item = meshesToLoad.removeAt(0)
-            val mesh = item.mesh ?: throw IllegalStateException("Mesh of queued item is null!")
-            mesh.load()
-            val visible = isSectionVisible(item.chunkPosition, item.sectionHeight, mesh.minPosition, mesh.maxPosition, true)
-            if (visible) {
-                addMesh(mesh)
-                addedMeshes++
+            if (item.solidMesh == null && item.fluidMesh == null) {
+                continue
             }
 
+            fun load(mesh: WorldMesh): Boolean {
+                mesh.load()
+                val visible = isSectionVisible(item.chunkPosition, item.sectionHeight, mesh.minPosition, mesh.maxPosition, true)
+                if (visible) {
+                    addedMeshes++
+                }
+                return visible
+            }
+
+            item.solidMesh?.let {
+                if (load(it)) {
+                    visibleSolid.addMesh(it)
+                }
+            }
+            item.fluidMesh?.let {
+                if (load(it)) {
+                    visibleFluid.addMesh(it)
+                }
+            }
             loadedMeshesLock.lock()
             val meshes = loadedMeshes.getOrPut(item.chunkPosition) { mutableMapOf() }
 
-            meshes.put(item.sectionHeight, mesh)?.let {
-                removeMesh(it)
+            meshes.put(item.sectionHeight, SectionMesh(item))?.let {
+                if (it.solidMesh != null) {
+                    visibleSolid.removeMesh(it.solidMesh)
+                }
+                if (it.fluidMesh != null) {
+                    visibleFluid.removeMesh(it.fluidMesh)
+                }
                 it.unload()
             }
             loadedMeshesLock.unlock()
@@ -496,7 +496,8 @@ class WorldRenderer(
         meshesToLoadLock.release()
 
         if (addedMeshes > 0) {
-            sortVisible()
+            visibleSolid.sort()
+            visibleFluid.sort()
         }
     }
 
@@ -512,7 +513,8 @@ class WorldRenderer(
 
         while ((System.currentTimeMillis() - time < maxTime) && meshesToUnload.isNotEmpty()) {
             val mesh = meshesToUnload.removeAt(0)
-            removeMesh(mesh)
+            visibleSolid.removeMesh(mesh)
+            visibleFluid.removeMesh(mesh)
             mesh.unload()
         }
         meshesToUnloadLock.release()
@@ -521,9 +523,8 @@ class WorldRenderer(
     override fun prepareDraw() {
         lightMap.update()
         if (clearVisibleNextFrame) {
-            visibleOpaque.clear()
-            visibleTranslucent.clear()
-            visibleTransparent.clear()
+            visibleSolid.clear()
+            visibleFluid.clear()
             clearVisibleNextFrame = false
         }
         unloadMeshes()
@@ -536,7 +537,11 @@ class WorldRenderer(
     }
 
     override fun drawOpaque() {
-        for (mesh in visibleOpaque) {
+        for (mesh in visibleSolid.opaque) {
+            mesh.draw()
+        }
+        renderSystem.disable(RenderingCapabilities.FACE_CULLING)
+        for (mesh in visibleFluid.opaque) {
             mesh.draw()
         }
     }
@@ -547,7 +552,11 @@ class WorldRenderer(
     }
 
     override fun drawTranslucent() {
-        for (mesh in visibleTranslucent) {
+        for (mesh in visibleSolid.translucent) {
+            mesh.draw()
+        }
+        renderSystem.disable(RenderingCapabilities.FACE_CULLING)
+        for (mesh in visibleFluid.translucent) {
             mesh.draw()
         }
     }
@@ -558,7 +567,11 @@ class WorldRenderer(
     }
 
     override fun drawTransparent() {
-        for (mesh in visibleTransparent) {
+        for (mesh in visibleSolid.transparent) {
+            mesh.draw()
+        }
+        renderSystem.disable(RenderingCapabilities.FACE_CULLING)
+        for (mesh in visibleFluid.transparent) {
             mesh.draw()
         }
     }
@@ -584,9 +597,8 @@ class WorldRenderer(
             sortQueue = true
         }
 
-        val visibleOpaque: MutableList<ChunkSectionMesh> = mutableListOf()
-        val visibleTranslucent: MutableList<ChunkSectionMesh> = mutableListOf()
-        val visibleTransparent: MutableList<ChunkSectionMesh> = mutableListOf()
+        val visibleSolid = VisibleMeshes(cameraPosition)
+        val visibleFluid = VisibleMeshes(cameraPosition)
 
         loadedMeshesLock.acquire()
         for ((chunkPosition, meshes) in this.loadedMeshes) {
@@ -594,10 +606,12 @@ class WorldRenderer(
                 continue
             }
             for ((sectionHeight, mesh) in meshes) {
-                if (!isSectionVisible(chunkPosition, sectionHeight, mesh.minPosition, mesh.maxPosition, false)) {
-                    continue
+                if (mesh.solidMesh != null && isSectionVisible(chunkPosition, sectionHeight, mesh.solidMesh.minPosition, mesh.solidMesh.maxPosition, false)) {
+                    visibleSolid.addMesh(mesh.solidMesh)
                 }
-                addMesh(mesh, visibleOpaque, visibleTranslucent, visibleTransparent)
+                if (mesh.fluidMesh != null && isSectionVisible(chunkPosition, sectionHeight, mesh.fluidMesh.minPosition, mesh.fluidMesh.maxPosition, false)) {
+                    visibleFluid.addMesh(mesh.fluidMesh)
+                }
             }
         }
         loadedMeshesLock.release()
@@ -643,12 +657,12 @@ class WorldRenderer(
         }
         culledQueueLock.release()
 
+        visibleSolid.sort()
+        visibleFluid.sort()
 
-        sortVisible(visibleOpaque, visibleTranslucent, visibleTransparent)
+        this.visibleSolid = visibleSolid
+        this.visibleFluid = visibleFluid
 
-        this.visibleOpaque = visibleOpaque
-        this.visibleTranslucent = visibleTranslucent
-        this.visibleTransparent = visibleTransparent
 
         if (sortQueue) {
             sortQueue()

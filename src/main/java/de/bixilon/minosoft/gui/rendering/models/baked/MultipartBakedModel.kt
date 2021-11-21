@@ -18,7 +18,7 @@ import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.gui.rendering.models.FaceProperties
 import de.bixilon.minosoft.gui.rendering.models.baked.block.BakedBlockModel
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
-import de.bixilon.minosoft.gui.rendering.world.mesh.ChunkSectionMeshes
+import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
 import glm_.vec3.Vec3i
 import java.util.*
 
@@ -32,7 +32,7 @@ class MultipartBakedModel(
         return sizes[direction.ordinal]
     }
 
-    override fun singleRender(position: Vec3i, mesh: ChunkSectionMeshes, random: Random, blockState: BlockState, neighbours: Array<BlockState?>, light: ByteArray, ambientLight: FloatArray, tints: IntArray?): Boolean {
+    override fun singleRender(position: Vec3i, mesh: WorldMesh, random: Random, blockState: BlockState, neighbours: Array<BlockState?>, light: ByteArray, ambientLight: FloatArray, tints: IntArray?): Boolean {
         var rendered = false
         for (model in models) {
             if (model.singleRender(position, mesh, random, blockState, neighbours, light, ambientLight, tints) && !rendered) {

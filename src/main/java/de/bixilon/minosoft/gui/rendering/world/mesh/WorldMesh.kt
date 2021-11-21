@@ -19,18 +19,16 @@ import glm_.vec2.Vec2i
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3i
 
-class ChunkSectionMeshes(
+class WorldMesh(
     renderWindow: RenderWindow,
     val chunkPosition: Vec2i,
     val sectionHeight: Int,
+    smallMesh: Boolean = false,
 ) {
     val center: Vec3 = Vec3(Vec3i.of(chunkPosition, sectionHeight, Vec3i(8, 8, 8)))
-    var opaqueMesh: ChunkSectionMesh? = ChunkSectionMesh(renderWindow, 100000)
-        private set
-    var translucentMesh: ChunkSectionMesh? = ChunkSectionMesh(renderWindow, 10000)
-        private set
-    var transparentMesh: ChunkSectionMesh? = ChunkSectionMesh(renderWindow, 20000)
-        private set
+    var opaqueMesh: SingleWorldMesh? = SingleWorldMesh(renderWindow, if (smallMesh) 1000 else 100000)
+    var translucentMesh: SingleWorldMesh? = SingleWorldMesh(renderWindow, if (smallMesh) 1000 else 10000)
+    var transparentMesh: SingleWorldMesh? = SingleWorldMesh(renderWindow, if (smallMesh) 1000 else 20000)
 
     // used for frustum culling
     val minPosition = Vec3i(16)
@@ -38,27 +36,39 @@ class ChunkSectionMeshes(
 
     @Synchronized
     fun load() {
-        var mesh = this.opaqueMesh!!
-        if (mesh.data.isEmpty) {
-            this.opaqueMesh = null
-        } else {
-            mesh.load()
-        }
+        this.opaqueMesh?.load()
+        this.translucentMesh?.load()
+        this.transparentMesh?.load()
+    }
 
-
-        mesh = this.translucentMesh!!
-        if (mesh.data.isEmpty) {
-            this.translucentMesh = null
-        } else {
-            mesh.load()
+    @Synchronized
+    fun clearEmpty(): Int {
+        var meshes = 0
+        opaqueMesh?.let {
+            if (it.data.isEmpty) {
+                it.data.unload()
+                opaqueMesh = null
+            } else {
+                meshes++
+            }
         }
-
-        mesh = this.transparentMesh!!
-        if (mesh.data.isEmpty) {
-            this.transparentMesh = null
-        } else {
-            mesh.load()
+        translucentMesh?.let {
+            if (it.data.isEmpty) {
+                it.data.unload()
+                translucentMesh = null
+            } else {
+                meshes++
+            }
         }
+        transparentMesh?.let {
+            if (it.data.isEmpty) {
+                it.data.unload()
+                transparentMesh = null
+            } else {
+                meshes++
+            }
+        }
+        return meshes
     }
 
     @Synchronized

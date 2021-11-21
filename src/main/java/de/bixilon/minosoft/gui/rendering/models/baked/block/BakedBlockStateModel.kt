@@ -21,8 +21,8 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTex
 import de.bixilon.minosoft.gui.rendering.util.VecUtil
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.getWorldOffset
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.toVec3
-import de.bixilon.minosoft.gui.rendering.world.mesh.ChunkSectionMesh
-import de.bixilon.minosoft.gui.rendering.world.mesh.ChunkSectionMeshes
+import de.bixilon.minosoft.gui.rendering.world.mesh.SingleWorldMesh
+import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
 import glm_.vec3.Vec3i
 import java.util.*
 
@@ -36,7 +36,7 @@ class BakedBlockStateModel(
         return touchingFaceProperties[direction.ordinal]
     }
 
-    override fun singleRender(position: Vec3i, mesh: ChunkSectionMeshes, random: Random, blockState: BlockState, neighbours: Array<BlockState?>, light: ByteArray, ambientLight: FloatArray, tints: IntArray?): Boolean {
+    override fun singleRender(position: Vec3i, mesh: WorldMesh, random: Random, blockState: BlockState, neighbours: Array<BlockState?>, light: ByteArray, ambientLight: FloatArray, tints: IntArray?): Boolean {
         val floatPosition = position.toVec3()
         blockState.block.randomOffsetType?.let {
             floatPosition += position.getWorldOffset(blockState.block)
@@ -69,7 +69,7 @@ class BakedBlockStateModel(
         return rendered
     }
 
-    fun greedyRender(start: Vec3i, end: Vec3i, side: Directions, mesh: ChunkSectionMesh, light: Int) {
+    fun greedyRender(start: Vec3i, end: Vec3i, side: Directions, mesh: SingleWorldMesh, light: Int) {
         TODO()
         val floatStart = start.toVec3()
         val floatEnd = end.toVec3()

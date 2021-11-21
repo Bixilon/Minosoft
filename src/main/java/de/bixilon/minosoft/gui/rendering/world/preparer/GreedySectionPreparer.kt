@@ -19,8 +19,8 @@ import de.bixilon.minosoft.data.world.Chunk
 import de.bixilon.minosoft.data.world.ChunkSection
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.models.baked.block.GreedyBakedBlockModel
-import de.bixilon.minosoft.gui.rendering.world.mesh.ChunkSectionMesh
-import de.bixilon.minosoft.gui.rendering.world.mesh.ChunkSectionMeshes
+import de.bixilon.minosoft.gui.rendering.world.mesh.SingleWorldMesh
+import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition.SECTION_SIZE
 import de.bixilon.minosoft.util.KUtil.decide
 import glm_.vec2.Vec2i
@@ -33,15 +33,15 @@ class GreedySectionPreparer(
     val renderWindow: RenderWindow,
 ) : AbstractSectionPreparer {
 
-    private fun renderNormal(block: BlockState, directions: Directions?, position: Vec3i, section: ChunkSection, mesh: ChunkSectionMesh, random: Random) {
+    private fun renderNormal(block: BlockState, directions: Directions?, position: Vec3i, section: ChunkSection, mesh: SingleWorldMesh, random: Random) {
         val neighbour = section.blocks[ChunkSection.getIndex(position.x, position.y, position.z)]
     }
 
 
     // base taken from https://0fps.net/2012/06/30/meshing-in-a-minecraft-game/
     @Deprecated("TODO")
-    override fun prepare(chunkPosition: Vec2i, sectionHeight: Int, chunk: Chunk, section: ChunkSection, neighbours: Array<ChunkSection?>, neighbourChunks: Array<Chunk>): ChunkSectionMeshes {
-        val mesh = ChunkSectionMesh(renderWindow, 20000)
+    override fun prepareSolid(chunkPosition: Vec2i, sectionHeight: Int, chunk: Chunk, section: ChunkSection, neighbours: Array<ChunkSection?>, neighbourChunks: Array<Chunk>): WorldMesh {
+        val mesh = SingleWorldMesh(renderWindow, 20000)
 
         val random = Random(0L)
 
@@ -234,5 +234,9 @@ class GreedySectionPreparer(
         }
 
         TODO()
+    }
+
+    override fun prepareFluid(chunkPosition: Vec2i, sectionHeight: Int, chunk: Chunk, section: ChunkSection, neighbours: Array<ChunkSection?>, neighbourChunks: Array<Chunk>): WorldMesh? {
+        TODO("Not yet implemented")
     }
 }

@@ -21,8 +21,8 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparenci
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.get
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.rgb
-import de.bixilon.minosoft.gui.rendering.world.mesh.ChunkSectionMesh
-import de.bixilon.minosoft.gui.rendering.world.mesh.ChunkSectionMeshes
+import de.bixilon.minosoft.gui.rendering.world.mesh.SingleWorldMesh
+import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
 import glm_.vec2.Vec2
 import glm_.vec3.Vec3
 
@@ -40,7 +40,7 @@ class BakedFace(
     override val transparency: TextureTransparencies
         get() = texture.transparency // ToDo
 
-    fun singleRender(position: FloatArray, mesh: ChunkSectionMeshes, light: Int, ambientLight: FloatArray, tint: Int) {
+    fun singleRender(position: FloatArray, mesh: WorldMesh, light: Int, ambientLight: FloatArray, tint: Int) {
         val meshToUse = when (texture.transparency) {
             TextureTransparencies.OPAQUE -> mesh.opaqueMesh
             TextureTransparencies.TRANSLUCENT -> mesh.translucentMesh
@@ -59,7 +59,7 @@ class BakedFace(
         }
     }
 
-    fun greedyRender(start: Vec3, end: Vec3, side: Directions, mesh: ChunkSectionMesh, light: Int) {
+    fun greedyRender(start: Vec3, end: Vec3, side: Directions, mesh: SingleWorldMesh, light: Int) {
         val multiplier = end - start
         val positions = arrayOf(
             (positions[0] * multiplier) + start,

@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.models.baked.block
 
 import de.bixilon.minosoft.data.direction.Directions
-import de.bixilon.minosoft.gui.rendering.world.mesh.ChunkSectionMesh
+import de.bixilon.minosoft.gui.rendering.world.mesh.SingleWorldMesh
 import glm_.vec3.Vec3i
 
 interface GreedyBakedBlockModel {
@@ -22,5 +22,5 @@ interface GreedyBakedBlockModel {
     val greedyMeshableFaces: BooleanArray
 
     // ToDo: Tint
-    fun greedyRender(start: Vec3i, end: Vec3i, side: Directions, mesh: ChunkSectionMesh, light: Int)
+    fun greedyRender(start: Vec3i, end: Vec3i, side: Directions, mesh: SingleWorldMesh, light: Int)
 }
