@@ -17,8 +17,8 @@ import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.toSynchronizedMap
 
-class BlockStateRegistry(var flattened: Boolean) : AbstractRegistry<BlockState> {
-    override var parent: AbstractRegistry<BlockState>? = null
+class BlockStateRegistry(var flattened: Boolean) : AbstractRegistry<BlockState?> {
+    override var parent: AbstractRegistry<BlockState?>? = null
     private val idMap: MutableMap<Int, BlockState> = mutableMapOf()
 
     override val size: Int
@@ -66,7 +66,7 @@ class BlockStateRegistry(var flattened: Boolean) : AbstractRegistry<BlockState> 
         return forceGet(id)
     }
 
-    override fun getId(value: BlockState): Int {
+    override fun getId(value: BlockState?): Int {
         TODO("Not yet implemented")
     }
 }

@@ -29,7 +29,7 @@ import java.util.*
 
 data class StatusEffect(
     override val resourceLocation: ResourceLocation,
-    val category: StatusEffectCategories,
+    val category: StatusEffectCategories?,
     override val translationKey: ResourceLocation?,
     val color: RGBColor,
     val attributes: Map<ResourceLocation, EntityAttributeModifier>,
@@ -55,7 +55,7 @@ data class StatusEffect(
 
             return StatusEffect(
                 resourceLocation = resourceLocation,
-                category = StatusEffectCategories[data["category"].unsafeCast<String>()],
+                category = data["category"]?.unsafeCast<String>()?.let { return@let StatusEffectCategories[it] },
                 translationKey = data["translation_key"]?.toResourceLocation(),
                 color = data["color"].unsafeCast<Int>().asRGBColor(),
                 attributes = attributes.toMap(),

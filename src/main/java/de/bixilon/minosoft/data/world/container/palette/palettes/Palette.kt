@@ -11,16 +11,14 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.registries.registry
+package de.bixilon.minosoft.data.world.container.palette.palettes
 
-import de.bixilon.minosoft.util.collections.Clearable
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 
-interface AbstractRegistry<T> : Iterable<T>, Clearable, Parentable<AbstractRegistry<T>> {
-    val size: Int
+interface Palette<T> {
+    val bits: Int
 
-    operator fun get(any: Any?): T?
+    fun read(buffer: PlayInByteBuffer)
 
-    operator fun get(id: Int): T?
-
-    fun getId(value: T): Int
+    fun get(index: Int): T
 }

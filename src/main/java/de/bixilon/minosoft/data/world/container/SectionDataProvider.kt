@@ -15,14 +15,15 @@ package de.bixilon.minosoft.data.world.container
 
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.util.KUtil.unsafeCast
 import de.bixilon.minosoft.util.ReadWriteLock
 import glm_.vec3.Vec3i
 
-open class SectionDataProvider<T>(
-    data: Array<Any?>? = null,
+class SectionDataProvider<T>(
+    data: Array<T>? = null,
     val checkSize: Boolean = false,
 ) : Iterable<T> {
-    protected var data = data
+    protected var data: Array<Any?>? = data?.unsafeCast()
         private set
     protected val lock = ReadWriteLock() // lock while reading (blocks writing)
     var count: Int = 0
@@ -191,9 +192,9 @@ open class SectionDataProvider<T>(
         unlock()
     }
 
-    open fun copy(): SectionDataProvider<T> {
+    fun copy(): SectionDataProvider<T> {
         acquire()
-        val clone = SectionDataProvider<T>(data?.clone())
+        val clone = SectionDataProvider<T>(data?.clone()?.unsafeCast())
         release()
 
         return clone

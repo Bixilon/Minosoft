@@ -15,9 +15,12 @@ package de.bixilon.minosoft.util
 
 import de.bixilon.minosoft.util.KUtil.decide
 import glm_.vec2.Vec2i
+import kotlin.math.ceil
 import kotlin.math.floor
+import kotlin.math.ln
 
 object MMath {
+    private const val LN_2 = 0.69314718056 // ln(2.0)
 
     fun clamp(value: Vec2i, min: Vec2i, max: Vec2i): Vec2i {
         value.x = clamp(value.x, min.x, max.x)
@@ -118,4 +121,8 @@ object MMath {
             val int = this.toInt()
             return (this > int).decide(int + 1, int)
         }
+
+    fun ceilLog2(value: Int): Int {
+        return ceil(ln(value.toDouble()) / LN_2).toInt()
+    }
 }

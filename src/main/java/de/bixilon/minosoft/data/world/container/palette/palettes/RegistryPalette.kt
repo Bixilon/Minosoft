@@ -11,16 +11,19 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.registries.registry
+package de.bixilon.minosoft.data.world.container.palette.palettes
 
-import de.bixilon.minosoft.util.collections.Clearable
+import de.bixilon.minosoft.data.registries.registries.registry.AbstractRegistry
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
+import de.bixilon.minosoft.util.MMath
 
-interface AbstractRegistry<T> : Iterable<T>, Clearable, Parentable<AbstractRegistry<T>> {
-    val size: Int
+class RegistryPalette<T>(private val registry: AbstractRegistry<T>) : Palette<T> {
+    override val bits = MMath.ceilLog2(registry.size)
 
-    operator fun get(any: Any?): T?
+    override fun read(buffer: PlayInByteBuffer) {}
 
-    operator fun get(id: Int): T?
-
-    fun getId(value: T): Int
+    @Suppress("UNCHECKED_CAST")
+    override fun get(index: Int): T {
+        return registry[index] as T
+    }
 }

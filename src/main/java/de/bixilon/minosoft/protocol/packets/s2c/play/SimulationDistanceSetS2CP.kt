@@ -1,6 +1,6 @@
 /*
  * Minosoft
- * Copyright (C) 2021 Moritz Zwerger
+ * Copyright (C) 2020 Moritz Zwerger
  *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
  *
@@ -10,17 +10,18 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
+package de.bixilon.minosoft.protocol.packets.s2c.play
 
-package de.bixilon.minosoft.data.registries.registries.registry
+import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
+import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
 
-import de.bixilon.minosoft.util.collections.Clearable
+class SimulationDistanceSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
+    val simulationDistance: Int = buffer.readVarInt()
 
-interface AbstractRegistry<T> : Iterable<T>, Clearable, Parentable<AbstractRegistry<T>> {
-    val size: Int
-
-    operator fun get(any: Any?): T?
-
-    operator fun get(id: Int): T?
-
-    fun getId(value: T): Int
+    override fun log() {
+        Log.log(LogMessageType.NETWORK_PACKETS_IN, level = LogLevels.VERBOSE) { "Simulation distance set (viewDistance=$simulationDistance)" }
+    }
 }

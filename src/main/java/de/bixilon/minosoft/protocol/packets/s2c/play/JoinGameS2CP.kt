@@ -70,6 +70,8 @@ class JoinGameS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         private set
     var world: ResourceLocation? = null
         private set
+    var simulationDistance: Int = -1
+        private set
 
     init {
         entityId = buffer.readInt()
@@ -130,6 +132,9 @@ class JoinGameS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
             }
             if (buffer.versionId >= ProtocolVersions.V_19W13A) {
                 viewDistance = buffer.readVarInt()
+            }
+            if (buffer.versionId >= ProtocolVersions.V_21W40A) {
+                simulationDistance = buffer.readVarInt()
             }
             if (buffer.versionId >= ProtocolVersions.V_20W20A) {
                 buffer.readBoolean() // isDebug

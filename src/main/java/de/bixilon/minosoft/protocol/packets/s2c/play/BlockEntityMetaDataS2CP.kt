@@ -18,6 +18,7 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
+import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_21W37A
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -30,7 +31,11 @@ class BlockEntityMetaDataS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     } else {
         buffer.readBlockPosition()
     }
-    val type = buffer.connection.registries.blockEntityMetaDataTypeRegistry[buffer.readUnsignedByte()].resourceLocation
+    val type = if (buffer.versionId >= V_21W37A) {
+        buffer.connection.registries.blockEntityTypeRegistry[buffer.readVarInt()].resourceLocation
+    } else {
+        buffer.connection.registries.blockEntityMetaDataTypeRegistry[buffer.readUnsignedByte()].resourceLocation
+    }
     val nbt = buffer.readNBT().asCompound()
 
     override fun handle(connection: PlayConnection) {

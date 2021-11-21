@@ -20,14 +20,18 @@ import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
 import de.bixilon.minosoft.data.world.Chunk
 import de.bixilon.minosoft.data.world.ChunkData
 import de.bixilon.minosoft.data.world.ChunkSection
+import de.bixilon.minosoft.data.world.biome.source.PalettedBiomeArray
 import de.bixilon.minosoft.data.world.biome.source.XZBiomeArray
-import de.bixilon.minosoft.data.world.container.RegistrySectionDataProvider
-import de.bixilon.minosoft.data.world.palette.Palette.Companion.choosePalette
+import de.bixilon.minosoft.data.world.container.SectionDataProvider
+import de.bixilon.minosoft.data.world.container.palette.PalettedContainer
+import de.bixilon.minosoft.data.world.container.palette.PalettedContainerReader
+import de.bixilon.minosoft.data.world.container.palette.palettes.BiomePaletteFactory
+import de.bixilon.minosoft.data.world.container.palette.palettes.BlockStatePaletteFactory
+import de.bixilon.minosoft.data.world.container.palette.palettes.SingularPalette
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.abs
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.*
-import de.bixilon.minosoft.util.KUtil.unsafeCast
 import glm_.vec2.Vec2i
 import java.util.*
 
@@ -63,13 +67,13 @@ object ChunkUtil {
 
         // parse data
         var arrayPosition = 0
-        val sectionBlocks: Array<RegistrySectionDataProvider<BlockState?>?> = arrayOfNulls(dimension.sections)
+        val sectionBlocks: Array<SectionDataProvider<BlockState?>?> = arrayOfNulls(dimension.sections)
         for ((sectionIndex, sectionHeight) in (dimension.lowestSection until dimension.highestSection).withIndex()) {
             if (!sectionBitMask[sectionIndex]) {
                 continue
             }
 
-            val blocks = arrayOfNulls<BlockState>(ProtocolDefinition.BLOCKS_PER_SECTION)
+            val blocks: Array<BlockState?> = arrayOfNulls(ProtocolDefinition.BLOCKS_PER_SECTION)
 
             for (blockNumber in 0 until ProtocolDefinition.BLOCKS_PER_SECTION) {
                 var blockId = (blockData[arrayPosition].toInt() and 0xFF) shl 4
@@ -95,7 +99,7 @@ object ChunkUtil {
 
                 blocks[blockNumber] = buffer.connection.registries.blockStateRegistry[blockId] ?: continue
             }
-            sectionBlocks[sectionHeight] = RegistrySectionDataProvider(buffer.connection.registries.blockStateRegistry.unsafeCast(), blocks.unsafeCast(), true)
+            sectionBlocks[sectionHeight] = SectionDataProvider(blocks, true)
         }
         chunkData.blocks = sectionBlocks
         return chunkData
@@ -129,7 +133,7 @@ object ChunkUtil {
         }
 
         var arrayPos = 0
-        val sectionBlocks: Array<RegistrySectionDataProvider<BlockState?>?> = arrayOfNulls(dimension.sections)
+        val sectionBlocks: Array<SectionDataProvider<BlockState?>?> = arrayOfNulls(dimension.sections)
         for ((sectionIndex, sectionHeight) in (dimension.lowestSection until dimension.highestSection).withIndex()) { // max sections per chunks in chunk column
             if (!sectionBitMask[sectionIndex]) {
                 continue
@@ -140,56 +144,38 @@ object ChunkUtil {
                 val block = buffer.connection.registries.blockStateRegistry[blockId] ?: continue
                 blocks[blockNumber] = block
             }
-            sectionBlocks[sectionHeight] = RegistrySectionDataProvider(buffer.connection.registries.blockStateRegistry.unsafeCast(), blocks.unsafeCast(), true)
+            sectionBlocks[sectionHeight] = SectionDataProvider(blocks, true)
         }
         chunkData.blocks = sectionBlocks
         return chunkData
     }
 
-    fun readPaletteChunk(buffer: PlayInByteBuffer, dimension: DimensionProperties, sectionBitMask: BitSet, isFullChunk: Boolean, containsSkyLight: Boolean = false): ChunkData {
+    fun readPaletteChunk(buffer: PlayInByteBuffer, dimension: DimensionProperties, sectionBitMask: BitSet?, isFullChunk: Boolean, containsSkyLight: Boolean = false): ChunkData {
         val chunkData = ChunkData()
-        val sectionBlocks: Array<RegistrySectionDataProvider<BlockState?>?> = arrayOfNulls(dimension.sections)
+        val sectionBlocks: Array<SectionDataProvider<BlockState?>?> = arrayOfNulls(dimension.sections)
         val light: Array<ByteArray?> = arrayOfNulls(dimension.sections)
         var lightReceived = 0
+        val biomes: Array<Array<Biome>?> = arrayOfNulls(dimension.sections)
 
-        for ((sectionIndex, sectionHeight) in (dimension.lowestSection until sectionBitMask.length()).withIndex()) { // max sections per chunks in chunk column
-            if (!sectionBitMask[sectionIndex]) {
+        for ((sectionIndex, sectionHeight) in (dimension.lowestSection until (sectionBitMask?.length() ?: dimension.highestSection)).withIndex()) { // max sections per chunks in chunk column
+            if (sectionBitMask?.get(sectionIndex) == false) {
                 continue
             }
             if (buffer.versionId >= V_18W43A) {
-                buffer.readShort() // block count
+                buffer.readShort() // non-air block count
             }
 
-            val palette = choosePalette(buffer.readUnsignedByte(), buffer)
 
-            val individualValueMask = (1 shl palette.bitsPerBlock) - 1
+            val blockContainer: PalettedContainer<BlockState?> = PalettedContainerReader.read(buffer, buffer.connection.registries.blockStateRegistry, paletteFactory = BlockStatePaletteFactory)
 
-            val data = buffer.readLongArray()
-
-            val blocks = arrayOfNulls<BlockState>(ProtocolDefinition.BLOCKS_PER_SECTION)
-            for (blockNumber in 0 until ProtocolDefinition.BLOCKS_PER_SECTION) {
-                var blockId: Long = if (buffer.versionId < V_1_16) { // ToDo: When did this changed? is just a guess
-                    val startLong = blockNumber * palette.bitsPerBlock / Long.SIZE_BITS
-                    val startOffset = blockNumber * palette.bitsPerBlock % Long.SIZE_BITS
-                    val endLong = ((blockNumber + 1) * palette.bitsPerBlock - 1) / Long.SIZE_BITS
-
-                    if (startLong == endLong) {
-                        data[startLong] ushr startOffset
-                    } else {
-                        val endOffset = Long.SIZE_BITS - startOffset
-                        data[startLong] ushr startOffset or (data[endLong] shl endOffset)
-                    }
-                } else {
-                    val startLong = blockNumber / (Long.SIZE_BITS / palette.bitsPerBlock)
-                    val startOffset = blockNumber % (Long.SIZE_BITS / palette.bitsPerBlock) * palette.bitsPerBlock
-                    data[startLong] ushr startOffset
-                }
-
-                blockId = blockId and individualValueMask.toLong()
-
-                val block = palette.blockById(blockId.toInt()) ?: continue
-                blocks[blockNumber] = block
+            if (blockContainer.palette !is SingularPalette<*> || blockContainer.palette.item != null) {
+                sectionBlocks[sectionHeight - dimension.lowestSection] = SectionDataProvider(blockContainer.unpack(), checkSize = true)
             }
+            if (buffer.versionId >= V_21W37A) {
+                val biomeContainer: PalettedContainer<Biome> = PalettedContainerReader.read(buffer, buffer.connection.registries.biomeRegistry, paletteFactory = BiomePaletteFactory)
+                biomes[sectionHeight - dimension.lowestSection] = biomeContainer.unpack()
+            }
+
 
             if (buffer.versionId < V_18W43A) {
                 val blockLight = buffer.readByteArray(ProtocolDefinition.BLOCKS_PER_SECTION / 2)
@@ -200,14 +186,15 @@ object ChunkUtil {
                 light[sectionHeight - dimension.lowestSection] = LightUtil.mergeLight(blockLight, skyLight ?: LightUtil.EMPTY_LIGHT_ARRAY)
                 lightReceived++
             }
-            sectionBlocks[sectionHeight - dimension.lowestSection] = RegistrySectionDataProvider(buffer.connection.registries.blockStateRegistry.unsafeCast(), blocks.unsafeCast(), true)
         }
 
         chunkData.blocks = sectionBlocks
         if (lightReceived > 0) {
             chunkData.light = light
         }
-        if (buffer.versionId < V_19W36A && isFullChunk) {
+        if (buffer.versionId >= V_21W37A) {
+            chunkData.biomeSource = PalettedBiomeArray(biomes, dimension.lowestSection, BiomePaletteFactory.edgeBits)
+        } else if (buffer.versionId < V_19W36A && isFullChunk) {
             chunkData.biomeSource = readLegacyBiomeArray(buffer)
         }
 
