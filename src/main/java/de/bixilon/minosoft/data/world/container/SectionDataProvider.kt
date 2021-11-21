@@ -19,7 +19,7 @@ import de.bixilon.minosoft.util.KUtil.unsafeCast
 import de.bixilon.minosoft.util.ReadWriteLock
 import glm_.vec3.Vec3i
 
-class SectionDataProvider<T>(
+open class SectionDataProvider<T>(
     data: Array<T>? = null,
     val checkSize: Boolean = false,
 ) : Iterable<T> {
@@ -63,7 +63,7 @@ class SectionDataProvider<T>(
     }
 
 
-    private fun recalculate() {
+    protected open fun recalculate() {
         val data = data
         if (data == null) {
             count = 0
@@ -129,20 +129,20 @@ class SectionDataProvider<T>(
         set(y shl 8 or (z shl 4) or x, value)
     }
 
-    operator fun set(index: Int, value: T) {
+    open operator fun set(index: Int, value: T): T? {
         lock()
         var data = data
         val previous = data?.get(index)
         if (value == null) {
             if (previous == null) {
                 unlock()
-                return
+                return null
             }
             count--
             if (count == 0) {
                 this.data = null
                 unlock()
-                return
+                return previous as T?
             }
         } else if (previous == null) {
             count++
@@ -163,6 +163,7 @@ class SectionDataProvider<T>(
             }
         }
         unlock()
+        return previous as T?
     }
 
     fun acquire() {

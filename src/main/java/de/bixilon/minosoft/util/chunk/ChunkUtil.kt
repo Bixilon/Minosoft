@@ -22,7 +22,7 @@ import de.bixilon.minosoft.data.world.ChunkData
 import de.bixilon.minosoft.data.world.ChunkSection
 import de.bixilon.minosoft.data.world.biome.source.PalettedBiomeArray
 import de.bixilon.minosoft.data.world.biome.source.XZBiomeArray
-import de.bixilon.minosoft.data.world.container.SectionDataProvider
+import de.bixilon.minosoft.data.world.container.BlockSectionDataProvider
 import de.bixilon.minosoft.data.world.container.palette.PalettedContainer
 import de.bixilon.minosoft.data.world.container.palette.PalettedContainerReader
 import de.bixilon.minosoft.data.world.container.palette.palettes.BiomePaletteFactory
@@ -67,7 +67,7 @@ object ChunkUtil {
 
         // parse data
         var arrayPosition = 0
-        val sectionBlocks: Array<SectionDataProvider<BlockState?>?> = arrayOfNulls(dimension.sections)
+        val sectionBlocks: Array<BlockSectionDataProvider?> = arrayOfNulls(dimension.sections)
         for ((sectionIndex, sectionHeight) in (dimension.lowestSection until dimension.highestSection).withIndex()) {
             if (!sectionBitMask[sectionIndex]) {
                 continue
@@ -99,7 +99,7 @@ object ChunkUtil {
 
                 blocks[blockNumber] = buffer.connection.registries.blockStateRegistry[blockId] ?: continue
             }
-            sectionBlocks[sectionHeight] = SectionDataProvider(blocks, true)
+            sectionBlocks[sectionHeight] = BlockSectionDataProvider(blocks)
         }
         chunkData.blocks = sectionBlocks
         return chunkData
@@ -133,7 +133,7 @@ object ChunkUtil {
         }
 
         var arrayPos = 0
-        val sectionBlocks: Array<SectionDataProvider<BlockState?>?> = arrayOfNulls(dimension.sections)
+        val sectionBlocks: Array<BlockSectionDataProvider?> = arrayOfNulls(dimension.sections)
         for ((sectionIndex, sectionHeight) in (dimension.lowestSection until dimension.highestSection).withIndex()) { // max sections per chunks in chunk column
             if (!sectionBitMask[sectionIndex]) {
                 continue
@@ -144,7 +144,7 @@ object ChunkUtil {
                 val block = buffer.connection.registries.blockStateRegistry[blockId] ?: continue
                 blocks[blockNumber] = block
             }
-            sectionBlocks[sectionHeight] = SectionDataProvider(blocks, true)
+            sectionBlocks[sectionHeight] = BlockSectionDataProvider(blocks)
         }
         chunkData.blocks = sectionBlocks
         return chunkData
@@ -152,7 +152,7 @@ object ChunkUtil {
 
     fun readPaletteChunk(buffer: PlayInByteBuffer, dimension: DimensionProperties, sectionBitMask: BitSet?, isFullChunk: Boolean, containsSkyLight: Boolean = false): ChunkData {
         val chunkData = ChunkData()
-        val sectionBlocks: Array<SectionDataProvider<BlockState?>?> = arrayOfNulls(dimension.sections)
+        val sectionBlocks: Array<BlockSectionDataProvider?> = arrayOfNulls(dimension.sections)
         val light: Array<ByteArray?> = arrayOfNulls(dimension.sections)
         var lightReceived = 0
         val biomes: Array<Array<Biome>?> = arrayOfNulls(dimension.sections)
@@ -169,7 +169,7 @@ object ChunkUtil {
             val blockContainer: PalettedContainer<BlockState?> = PalettedContainerReader.read(buffer, buffer.connection.registries.blockStateRegistry, paletteFactory = BlockStatePaletteFactory)
 
             if (blockContainer.palette !is SingularPalette<*> || blockContainer.palette.item != null) {
-                sectionBlocks[sectionHeight - dimension.lowestSection] = SectionDataProvider(blockContainer.unpack(), checkSize = true)
+                sectionBlocks[sectionHeight - dimension.lowestSection] = BlockSectionDataProvider(blockContainer.unpack())
             }
             if (buffer.versionId >= V_21W37A) {
                 val biomeContainer: PalettedContainer<Biome> = PalettedContainerReader.read(buffer, buffer.connection.registries.biomeRegistry, paletteFactory = BiomePaletteFactory)

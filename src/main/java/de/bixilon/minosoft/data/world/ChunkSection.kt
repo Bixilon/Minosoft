@@ -14,8 +14,8 @@ package de.bixilon.minosoft.data.world
 
 import de.bixilon.minosoft.data.entities.block.BlockEntity
 import de.bixilon.minosoft.data.registries.biomes.Biome
-import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.world.biome.accessor.NoiseBiomeAccessor
+import de.bixilon.minosoft.data.world.container.BlockSectionDataProvider
 import de.bixilon.minosoft.data.world.container.SectionDataProvider
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.of
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -28,7 +28,7 @@ import glm_.vec3.Vec3i
  * Collection of 16x16x16 blocks
  */
 class ChunkSection(
-    var blocks: SectionDataProvider<BlockState?> = SectionDataProvider(checkSize = true),
+    var blocks: BlockSectionDataProvider = BlockSectionDataProvider(),
     var biomes: SectionDataProvider<Biome> = SectionDataProvider(checkSize = false),
     var blockEntities: SectionDataProvider<BlockEntity?> = SectionDataProvider(checkSize = false),
     var light: ByteArray = ByteArray(ProtocolDefinition.BLOCKS_PER_SECTION), // packed (skyLight: 0xF0, blockLight: 0x0F)
