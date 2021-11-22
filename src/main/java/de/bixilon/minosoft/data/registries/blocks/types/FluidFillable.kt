@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.data.registries.blocks.types
 
-import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.fluid.Fluid
 
 interface FluidFillable {
-    val fluid: ResourceLocation
+    val fluid: Fluid
 }

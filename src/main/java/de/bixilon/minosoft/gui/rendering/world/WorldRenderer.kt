@@ -49,8 +49,10 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.toVec3
 import de.bixilon.minosoft.gui.rendering.world.mesh.SectionMesh
 import de.bixilon.minosoft.gui.rendering.world.mesh.VisibleMeshes
 import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
-import de.bixilon.minosoft.gui.rendering.world.preparer.AbstractSectionPreparer
-import de.bixilon.minosoft.gui.rendering.world.preparer.CullSectionPreparer
+import de.bixilon.minosoft.gui.rendering.world.preparer.FluidSectionPreparer
+import de.bixilon.minosoft.gui.rendering.world.preparer.SolidSectionPreparer
+import de.bixilon.minosoft.gui.rendering.world.preparer.cull.FluidCullSectionPreparer
+import de.bixilon.minosoft.gui.rendering.world.preparer.cull.SolidCullSectionPreparer
 import de.bixilon.minosoft.modding.event.events.*
 import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionStateChangeEvent
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
@@ -84,7 +86,8 @@ class WorldRenderer(
     private val shader = renderSystem.createShader("minosoft:world".toResourceLocation())
     private val transparentShader = renderSystem.createShader("minosoft:world".toResourceLocation())
     private val world: World = connection.world
-    private val sectionPreparer: AbstractSectionPreparer = CullSectionPreparer(renderWindow)
+    private val solidSectionPreparer: SolidSectionPreparer = SolidCullSectionPreparer(renderWindow)
+    private val fluidSectionPreparer: FluidSectionPreparer = FluidCullSectionPreparer(renderWindow)
     private val lightMap = LightMap(connection)
 
     private val loadedMeshes: MutableMap<Vec2i, MutableMap<Int, SectionMesh>> = mutableMapOf() // all prepared (and up to date) meshes
@@ -106,8 +109,8 @@ class WorldRenderer(
 
     // all meshes that will be rendered in the next frame (might be changed, when the frustum changes or a chunk gets loaded, ...)
     private var clearVisibleNextFrame = false
-    private var visibleSolid = VisibleMeshes()
-    private var visibleFluid = VisibleMeshes()
+    private var visibleSolid = VisibleMeshes() // This name might be confusing. Those faces are from blocks.
+    private var visibleFluid = VisibleMeshes() // Fluids disable FACE_CULLING. Blocks that have waterlogged=true also twice
 
 
     private var cameraPosition = Vec3.EMPTY
@@ -354,9 +357,9 @@ class WorldRenderer(
                     val section = chunk[item.sectionHeight] ?: return@Runnable end()
                     val neighbourChunks: Array<Chunk> = world.getChunkNeighbours(item.chunkPosition).unsafeCast()
                     val neighbours = item.neighbours ?: ChunkUtil.getSectionNeighbours(neighbourChunks, chunk, item.sectionHeight)
-                    item.solidMesh = sectionPreparer.prepareSolid(item.chunkPosition, item.sectionHeight, chunk, section, neighbours, neighbourChunks)
+                    item.solidMesh = solidSectionPreparer.prepareSolid(item.chunkPosition, item.sectionHeight, chunk, section, neighbours, neighbourChunks)
                     if (section.blocks.fluidCount > 0) {
-                        item.fluidMesh = sectionPreparer.prepareFluid(item.chunkPosition, item.sectionHeight, chunk, section, neighbours, neighbourChunks)
+                        item.fluidMesh = fluidSectionPreparer.prepareFluid(item.chunkPosition, item.sectionHeight, chunk, section, neighbours, neighbourChunks)
                     }
                     meshesToLoadLock.lock()
                     locked = true

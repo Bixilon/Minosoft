@@ -31,7 +31,7 @@ import java.util.*
 @Deprecated("TODO")
 class GreedySectionPreparer(
     val renderWindow: RenderWindow,
-) : AbstractSectionPreparer {
+) : SolidSectionPreparer {
 
     private fun renderNormal(block: BlockState, directions: Directions?, position: Vec3i, section: ChunkSection, mesh: SingleWorldMesh, random: Random) {
         val neighbour = section.blocks[ChunkSection.getIndex(position.x, position.y, position.z)]
@@ -234,9 +234,5 @@ class GreedySectionPreparer(
         }
 
         TODO()
-    }
-
-    override fun prepareFluid(chunkPosition: Vec2i, sectionHeight: Int, chunk: Chunk, section: ChunkSection, neighbours: Array<ChunkSection?>, neighbourChunks: Array<Chunk>): WorldMesh? {
-        TODO("Not yet implemented")
     }
 }
