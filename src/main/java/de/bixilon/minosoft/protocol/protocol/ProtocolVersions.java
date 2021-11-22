@@ -16,6 +16,7 @@ package de.bixilon.minosoft.protocol.protocol;
 @SuppressWarnings("unused")
 public class ProtocolVersions {
     public static final int
+            V_1_18_PRE6 = 808,
             V_1_18_PRE5 = 807,
             V_1_18_PRE4 = 806,
             V_1_18_PRE3 = 805,

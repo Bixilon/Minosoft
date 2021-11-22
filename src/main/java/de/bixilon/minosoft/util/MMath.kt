@@ -20,7 +20,7 @@ import kotlin.math.floor
 import kotlin.math.ln
 
 object MMath {
-    private const val LN_2 = 0.69314718056 // ln(2.0)
+    private const val LN_2 = 0.6931471805599453 // ln(2.0)
 
     fun clamp(value: Vec2i, min: Vec2i, max: Vec2i): Vec2i {
         value.x = clamp(value.x, min.x, max.x)
