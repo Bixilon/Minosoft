@@ -15,7 +15,6 @@ package de.bixilon.minosoft.gui.rendering.util
 
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.Axes
-import de.bixilon.minosoft.data.direction.AbstractDirection
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.AABB
 import de.bixilon.minosoft.data.registries.blocks.RandomOffsetTypes
@@ -208,7 +207,7 @@ object VecUtil {
         return Vec3i((x + vec2.x), y, (z + vec2.y))
     }
 
-    infix operator fun Vec3i.plus(direction: AbstractDirection?): Vec3i {
+    infix operator fun Vec3i.plus(direction: Directions?): Vec3i {
         return this + direction?.vector
     }
 
@@ -220,7 +219,7 @@ object VecUtil {
         return Vec2i(x + vec3.x, y + vec3.z)
     }
 
-    infix operator fun Vec2i.plus(direction: AbstractDirection): Vec2i {
+    infix operator fun Vec2i.plus(direction: Directions): Vec2i {
         return this + direction.vector
     }
 
@@ -409,7 +408,7 @@ object VecUtil {
         }
     }
 
-    operator fun AbstractDirection.plus(direction: AbstractDirection): Vec3i {
+    operator fun Directions.plus(direction: Directions): Vec3i {
         return this.vector + direction.vector
     }
 

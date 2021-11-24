@@ -20,6 +20,7 @@ import de.bixilon.minosoft.data.assets.AssetsUtil
 import de.bixilon.minosoft.data.assets.Resources
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.fluid.FlowableFluid
 import de.bixilon.minosoft.data.world.Chunk
 import de.bixilon.minosoft.data.world.ChunkSection
 import de.bixilon.minosoft.data.world.World
@@ -35,6 +36,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.RenderingCapabilities
 import de.bixilon.minosoft.gui.rendering.system.base.phases.OpaqueDrawable
 import de.bixilon.minosoft.gui.rendering.system.base.phases.TranslucentDrawable
 import de.bixilon.minosoft.gui.rendering.system.base.phases.TransparentDrawable
+import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.texture
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.empty
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.inChunkSectionPosition
@@ -131,6 +133,13 @@ class WorldRenderer(
         val zip = ZipInputStream(GZIPInputStream(FileInputStream(AssetsUtil.getAssetDiskPath(asset.clientJarHash!!, true))))
         val modelLoader = ModelLoader(zip, renderWindow)
         modelLoader.load()
+
+        connection.registries.fluidRegistry.forEachItem {
+            if (it is FlowableFluid) {
+                it.flowingTexture = renderWindow.textureManager.staticTextures.createTexture(it.flowingTextureName.texture())
+            }
+            it.stillTexture = it.stillTextureName?.let { texture -> renderWindow.textureManager.staticTextures.createTexture(texture.texture()) }
+        }
     }
 
     override fun postInit() {

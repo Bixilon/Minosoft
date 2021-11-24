@@ -20,6 +20,7 @@ import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.properties.Halves
+import de.bixilon.minosoft.data.registries.fluid.Fluid
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.data.text.RGBColor.Companion.asRGBColor
 import de.bixilon.minosoft.data.world.Chunk
@@ -43,8 +44,7 @@ class TintManager(private val connection: PlayConnection) {
         }
     }
 
-    fun getAverageTint(chunk: Chunk, neighbours: Array<Chunk>, blockState: BlockState, x: Int, y: Int, z: Int): IntArray? {
-        val tintProvider = blockState.block.tintProvider ?: return null
+    private fun getAverageTint(chunk: Chunk, neighbours: Array<Chunk>, blockState: BlockState, tintProvider: TintProvider, x: Int, y: Int, z: Int): IntArray? {
         val inChunkX = x and 0x0F
         val inChunkZ = z and 0x0F
         val biome = chunk.getBiome(inChunkX, y, inChunkZ)
@@ -54,6 +54,14 @@ class TintManager(private val connection: PlayConnection) {
             tints[tintIndex] = tintProvider.getColor(blockState, biome, x, y, z, tintIndex)
         }
         return tints
+    }
+
+    fun getAverageTint(chunk: Chunk, neighbours: Array<Chunk>, blockState: BlockState, x: Int, y: Int, z: Int): IntArray? {
+        return getAverageTint(chunk, neighbours, blockState, blockState.block.tintProvider ?: return null, x, y, z)
+    }
+
+    fun getAverageTint(chunk: Chunk, neighbours: Array<Chunk>, blockState: BlockState, fluid: Fluid, x: Int, y: Int, z: Int): IntArray? {
+        return getAverageTint(chunk, neighbours, blockState, fluid.tintProvider ?: return null, x, y, z)
     }
 
     fun getTint(blockState: BlockState, biome: Biome?, x: Int, y: Int, z: Int): IntArray? {

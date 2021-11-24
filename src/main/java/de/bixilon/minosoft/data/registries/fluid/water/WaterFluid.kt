@@ -28,6 +28,8 @@ import de.bixilon.minosoft.data.registries.fluid.Fluid
 import de.bixilon.minosoft.data.registries.fluid.FluidFactory
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.water.UnderwaterParticle
+import de.bixilon.minosoft.gui.rendering.tint.TintProvider
+import de.bixilon.minosoft.gui.rendering.tint.WaterTintProvider
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3d
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -46,8 +48,9 @@ class WaterFluid(
 ) : FlowableFluid(resourceLocation, registries, data) {
     private val depthStriderEnchantment: Enchantment? = null
     private val dolphinsGraceStatusEffect: StatusEffect? = null
-    override val stillTexture: ResourceLocation = "minecraft:block/water_still".toResourceLocation()
-    override val flowingTexture: ResourceLocation = "minecraft:block/water_flow".toResourceLocation()
+    override val stillTextureName: ResourceLocation = "minecraft:block/water_still".toResourceLocation()
+    override val flowingTextureName: ResourceLocation = "minecraft:block/water_flow".toResourceLocation()
+    override val tintProvider: TintProvider = WaterTintProvider
 
 
     init {

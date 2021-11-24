@@ -27,8 +27,8 @@ import kotlin.math.abs
 
 enum class Directions(
     val horizontalId: Int,
-    override val vector: Vec3i,
-) : AbstractDirection {
+    val vector: Vec3i,
+) {
     DOWN(-1, Vec3i(0, -1, 0)),
     UP(-1, Vec3i(0, 1, 0)),
     NORTH(2, Vec3i(0, 0, -1)),
@@ -38,8 +38,8 @@ enum class Directions(
 
     val negative = ordinal % 2 == 0
 
-    override val vectorf = Vec3(vector)
-    override val vectord = Vec3d(vector)
+    val vectorf = Vec3(vector)
+    val vectord = Vec3d(vector)
 
     val axis: Axes get() = Axes[this] // ToDo
     val debugColor = ChatColors[ordinal]

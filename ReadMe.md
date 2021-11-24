@@ -134,7 +134,7 @@ Not compatible (yet)
 1. Install Maven and java 11+ (On Ubuntu based distributions: `sudo apt install maven openjdk-11-jdk`). For Windows users, download and install java from oracle or openjdk. Also download maven and follow along
 2. Clone this repository (`git clone https://gitlab.bixilon.de/bixilon/minosoft.git`)
 3. Change directory (`cd minosoft`)
-4. Optional: Checkout the branch of the feature you want to test (`git checkout <branch>`)
+4. Optional: Checkout a current feature branch (Warning: might be unstable; might not even build) (`git checkout <branch>`)
 5. Build and run Minosoft with `mvn clean verify exec:java`. If any errors occur, feel free to open an issue. In this early stage it might be helpful to delete the config file
 6. (Optional) Build a fat jar with `mvn package`. You'll find the jar with all dependencies in `target/`. Then you don't need to recompile everytime
 

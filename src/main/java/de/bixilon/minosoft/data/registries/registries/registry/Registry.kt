@@ -171,6 +171,7 @@ open class Registry<T : RegistryItem>(
         this.valueIdMap.putAll(valueIdMap)
     }
 
+    @Deprecated("Too slow, should be used with a ToDo: RegistryIterator")
     fun forEachItem(lambda: (T) -> Unit) {
         for (item in resourceLocationMap.values) {
             lambda(item)

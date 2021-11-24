@@ -19,6 +19,7 @@ import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.models.FaceProperties
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
+import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.getMesh
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.get
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.rgb
 import de.bixilon.minosoft.gui.rendering.world.mesh.SingleWorldMesh
@@ -41,11 +42,7 @@ class BakedFace(
         get() = texture.transparency // ToDo
 
     fun singleRender(position: FloatArray, mesh: WorldMesh, light: Int, ambientLight: FloatArray, tint: Int) {
-        val meshToUse = when (texture.transparency) {
-            TextureTransparencies.OPAQUE -> mesh.opaqueMesh
-            TextureTransparencies.TRANSLUCENT -> mesh.translucentMesh
-            TextureTransparencies.TRANSPARENT -> mesh.transparentMesh
-        }!!
+        val meshToUse = transparency.getMesh(mesh)
         // ToDo: Ambient light
         val color = Vec3(shade)
         if (tint >= 0) {

@@ -42,7 +42,7 @@ object Vec3Util {
     val Vec3.rgb: Int
         get() = ((r * RGBColor.COLOR_FLOAT_DIVIDER).toInt() shl 16) or ((g * RGBColor.COLOR_FLOAT_DIVIDER).toInt() shl 8) or (b * RGBColor.COLOR_FLOAT_DIVIDER).toInt()
 
-    fun rotateAssign(x: Float, y: Float, sin: Float, cos: Float, rescale: Boolean): Vec2 {
+    fun rotate(x: Float, y: Float, sin: Float, cos: Float, rescale: Boolean): Vec2 {
         val result = Vec2(x * cos - y * sin, x * sin + y * cos)
         if (rescale) {
             return result / cos
@@ -56,9 +56,9 @@ object Vec3Util {
             return
         }
         when (axis) {
-            Axes.X -> this.yz = rotateAssign(this.y, this.z, angle.sin, angle.cos, rescale)
-            Axes.Y -> this.xz = rotateAssign(this.x, this.z, angle.sin, angle.cos, rescale)
-            Axes.Z -> this.xy = rotateAssign(this.x, this.y, angle.sin, angle.cos, rescale)
+            Axes.X -> this.yz = rotate(this.y, this.z, angle.sin, angle.cos, rescale)
+            Axes.Y -> this.xz = rotate(this.x, this.z, angle.sin, angle.cos, rescale)
+            Axes.Z -> this.xy = rotate(this.x, this.y, angle.sin, angle.cos, rescale)
         }
     }
 
