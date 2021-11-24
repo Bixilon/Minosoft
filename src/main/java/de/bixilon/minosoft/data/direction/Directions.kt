@@ -118,6 +118,8 @@ enum class Directions(
         const val O_EAST = 5 // Directions.EAST.ordinal
 
         const val SIZE = 6
+        const val SIZE_SIDES = 4
+        const val SIDE_OFFSET = 2
         override val VALUES = values()
         override val NAME_MAP: Map<String, Directions> = KUtil.getEnumValues(VALUES)
         val SIDES = arrayOf(NORTH, SOUTH, WEST, EAST)

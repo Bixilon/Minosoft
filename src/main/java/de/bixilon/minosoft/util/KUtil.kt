@@ -515,4 +515,14 @@ object KUtil {
         this.get(array)
         return array
     }
+
+    val BooleanArray.isTrue: Boolean
+        get() {
+            for (boolean in this) {
+                if (!boolean) {
+                    return false
+                }
+            }
+            return true
+        }
 }

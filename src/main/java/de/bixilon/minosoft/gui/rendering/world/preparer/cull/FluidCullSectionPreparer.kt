@@ -21,10 +21,10 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.rotate
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.toVec3
 import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
 import de.bixilon.minosoft.gui.rendering.world.preparer.FluidSectionPreparer
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.util.KUtil.isTrue
 import de.bixilon.minosoft.util.chunk.ChunkUtil.acquire
 import de.bixilon.minosoft.util.chunk.ChunkUtil.release
 import glm_.func.cos
@@ -77,29 +77,31 @@ class FluidCullSectionPreparer(
                     }
                     val stillTexture = fluid.stillTexture ?: continue
                     val flowingTexture = fluid.flowingTexture ?: continue
+
                     position = Vec3i(offsetX + x, offsetY + y, offsetZ + z)
                     tints = tintManager.getAverageTint(chunk, neighbourChunks, blockState, fluid, position.x, position.y, position.z)
 
-                    val skipTop = fluid.matches(chunk.get(x, offsetY + y + 1, z))
-                    // ToDo
-                    val skipBottom = !shouldRenderSide(position, Directions.DOWN, fluid, flowingTexture) /* ToDo */
-                    val skipNorth = !shouldRenderSide(position, Directions.NORTH, fluid, flowingTexture)
-                    val skipSouth = !shouldRenderSide(position, Directions.SOUTH, fluid, flowingTexture)
-                    val skipWest = !shouldRenderSide(position, Directions.WEST, fluid, flowingTexture)
-                    val skipEast = !shouldRenderSide(position, Directions.EAST, fluid, flowingTexture)
+                    val skip = booleanArrayOf(
+                        isSideCovered(position, Directions.DOWN, fluid), /* ToDo */
+                        fluid.matches(chunk.get(x, offsetY + y + 1, z)),
+                        isSideCovered(position, Directions.NORTH, fluid),
+                        isSideCovered(position, Directions.SOUTH, fluid),
+                        isSideCovered(position, Directions.WEST, fluid),
+                        isSideCovered(position, Directions.EAST, fluid),
+                    )
 
-                    if (skipTop && skipBottom && skipNorth && skipSouth && skipWest && skipEast) {
+                    if (skip.isTrue) {
                         continue
                     }
+
                     val cornerHeights = floatArrayOf(
                         getCornerHeight(position, fluid),
                         getCornerHeight(position + Directions.EAST, fluid),
                         getCornerHeight(position + Directions.EAST + Directions.SOUTH, fluid),
                         getCornerHeight(position + Directions.SOUTH, fluid),
                     )
-                    val floatPosition = position.toVec3()
-                    floatPosition.y += cornerHeights[0]
-                    if (!skipTop) {
+
+                    if (!skip[Directions.O_UP]) {
                         val velocity = if (fluid is FlowableFluid) fluid.getVelocity(renderWindow.connection, blockState, position) else null
                         val still = velocity == null || velocity.x == 0.0 && velocity.z == 0.0
                         val texture: AbstractTexture
@@ -116,9 +118,9 @@ class FluidCullSectionPreparer(
 
 
                         if (still) {
-                            texture = fluid.stillTexture!!
+                            texture = stillTexture
                         } else {
-                            texture = (fluid as FlowableFluid).flowingTexture!!
+                            texture = flowingTexture
                             maxUV.x = 0.5f
 
                             val atan = atan2(velocity!!.x, velocity.z).toFloat()
@@ -145,11 +147,14 @@ class FluidCullSectionPreparer(
                         }
                         rendered = true
                     }
-                    // ToDo: Sides: Minecraft uses (for water) a overlay texture (with cullface) that is used, when the face fits to a non opaque block
+                    // ToDo: Sides: Minecraft uses (for water) an overlay texture (with cullface) that is used, when the face fits to a non opaque block
                     // ToDo: Sides that are connecting with non full cubes (e.g. air) also have cullface disabled
 
 
-                    for (direction in 0 until 4) {
+                    for (direction in 0 until Directions.SIZE_SIDES) {
+                        if (skip[Directions.SIDE_OFFSET + direction]) {
+                            continue
+                        }
                         var faceX = 0.0f
                         var faceXEnd = 0.0f
                         var faceZ = 0.0f
@@ -159,18 +164,11 @@ class FluidCullSectionPreparer(
 
                         when (direction) {
                             0 -> {
-                                if (skipNorth) {
-                                    continue
-                                }
-
                                 faceXEnd = 1.0f
                                 v1 = cornerHeights[0]
                                 v2 = cornerHeights[1]
                             }
                             1 -> {
-                                if (skipSouth) {
-                                    continue
-                                }
                                 faceX = 1.0f
                                 faceZ = 1.0f
                                 faceZEnd = 1.0f
@@ -178,18 +176,11 @@ class FluidCullSectionPreparer(
                                 v2 = cornerHeights[3]
                             }
                             2 -> {
-                                if (skipWest) {
-                                    continue
-                                }
                                 faceZ = 1.0f
                                 v1 = cornerHeights[3]
                                 v2 = cornerHeights[0]
                             }
                             3 -> {
-                                if (skipEast) {
-                                    continue
-                                }
-
                                 faceX = 1.0f
                                 faceXEnd = 1.0f
                                 faceZEnd = 1.0f
@@ -236,25 +227,22 @@ class FluidCullSectionPreparer(
         return mesh
     }
 
-    private fun isSideCovered(position: Vec3i, direction: Directions, texture: AbstractTexture, height: Float): Boolean {
+    private fun isSideCovered(position: Vec3i, direction: Directions, fluid: Fluid, height: Float = 1.0f): Boolean {
+        val neighbourPosition = position + direction
+        val neighbour = world[neighbourPosition] ?: return false
+        if (fluid.matches(neighbour)) {
+            return true
+        }
+
         val faceProperties = FaceProperties(
             Vec2.EMPTY,
             Vec2(1.0f, height),
             TextureTransparencies.OPAQUE,
         )
-        val neighbourPosition = position + direction
-        val neighbour = world[neighbourPosition] ?: return false
         val model = neighbour.blockModel ?: return false
         val random = Random(VecUtil.generatePositionHash(neighbourPosition.x, neighbourPosition.y, neighbourPosition.z))
         val size = model.getTouchingFaceProperties(random, direction.inverted)
         return size.canCull(faceProperties, false)
-    }
-
-    private fun shouldRenderSide(position: Vec3i, direction: Directions, fluid: Fluid, texture: AbstractTexture, height: Float = 1.0f): Boolean {
-        if (fluid.matches(world[position + direction])) {
-            return false
-        }
-        return !isSideCovered(position, direction, texture, height)
     }
 
     private fun getCornerHeight(position: Vec3i, fluid: Fluid): Float {
