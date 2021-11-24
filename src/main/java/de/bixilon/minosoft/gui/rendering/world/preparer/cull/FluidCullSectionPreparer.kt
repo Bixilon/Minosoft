@@ -81,13 +81,70 @@ class FluidCullSectionPreparer(
                     position = Vec3i(offsetX + x, offsetY + y, offsetZ + z)
                     tints = tintManager.getAverageTint(chunk, neighbourChunks, blockState, fluid, position.x, position.y, position.z)
 
+
+                    fun isSideCovered(direction: Directions): Boolean {
+                        val neighbourPosition = position + direction
+                        val neighbour = when (direction) {
+                            Directions.DOWN -> {
+                                if (y == 0) {
+                                    neighbours[Directions.O_DOWN]?.blocks?.unsafeGet(x, ProtocolDefinition.SECTION_MAX_Y, z)
+                                } else {
+                                    section.blocks.unsafeGet(x, y - 1, z)
+                                }
+                            }
+                            Directions.UP -> {
+                                if (y == ProtocolDefinition.SECTION_MAX_Y) {
+                                    neighbours[Directions.O_UP]?.blocks?.unsafeGet(x, 0, z)
+                                } else {
+                                    section.blocks.unsafeGet(x, y + 1, z)
+                                }
+                            }
+                            Directions.NORTH -> {
+                                if (z == 0) {
+                                    neighbours[Directions.O_NORTH]?.blocks?.unsafeGet(x, y, ProtocolDefinition.SECTION_MAX_Z)
+                                } else {
+                                    section.blocks.unsafeGet(x, y, z - 1)
+                                }
+                            }
+                            Directions.SOUTH -> {
+                                if (z == ProtocolDefinition.SECTION_MAX_Z) {
+                                    neighbours[Directions.O_SOUTH]?.blocks?.unsafeGet(x, y, 0)
+                                } else {
+                                    section.blocks.unsafeGet(x, y, z + 1)
+                                }
+                            }
+                            Directions.WEST -> {
+                                if (x == 0) {
+                                    neighbours[Directions.O_WEST]?.blocks?.unsafeGet(ProtocolDefinition.SECTION_MAX_X, y, z)
+                                } else {
+                                    section.blocks.unsafeGet(x - 1, y, z)
+                                }
+                            }
+                            Directions.EAST -> {
+                                if (x == ProtocolDefinition.SECTION_MAX_X) {
+                                    neighbours[Directions.O_EAST]?.blocks?.unsafeGet(0, y, z)
+                                } else {
+                                    section.blocks.unsafeGet(x + 1, y, z)
+                                }
+                            }
+                        } ?: return false
+
+                        if (fluid.matches(neighbour)) {
+                            return true
+                        }
+                        val model = neighbour.blockModel ?: return false
+                        val random = Random(VecUtil.generatePositionHash(neighbourPosition.x, neighbourPosition.y, neighbourPosition.z))
+                        val size = model.getTouchingFaceProperties(random, direction.inverted)
+                        return size.canCull(FLUID_FACE_PROPERTY, false)
+                    }
+
                     val skip = booleanArrayOf(
-                        isSideCovered(position, Directions.DOWN, fluid), /* ToDo */
+                        isSideCovered(Directions.DOWN), /* ToDo */
                         fluid.matches(chunk.get(x, offsetY + y + 1, z)),
-                        isSideCovered(position, Directions.NORTH, fluid),
-                        isSideCovered(position, Directions.SOUTH, fluid),
-                        isSideCovered(position, Directions.WEST, fluid),
-                        isSideCovered(position, Directions.EAST, fluid),
+                        isSideCovered(Directions.NORTH),
+                        isSideCovered(Directions.SOUTH),
+                        isSideCovered(Directions.WEST),
+                        isSideCovered(Directions.EAST),
                     )
 
                     if (skip.isTrue) {
@@ -227,24 +284,6 @@ class FluidCullSectionPreparer(
         return mesh
     }
 
-    private fun isSideCovered(position: Vec3i, direction: Directions, fluid: Fluid, height: Float = 1.0f): Boolean {
-        val neighbourPosition = position + direction
-        val neighbour = world[neighbourPosition] ?: return false
-        if (fluid.matches(neighbour)) {
-            return true
-        }
-
-        val faceProperties = FaceProperties(
-            Vec2.EMPTY,
-            Vec2(1.0f, height),
-            TextureTransparencies.OPAQUE,
-        )
-        val model = neighbour.blockModel ?: return false
-        val random = Random(VecUtil.generatePositionHash(neighbourPosition.x, neighbourPosition.y, neighbourPosition.z))
-        val size = model.getTouchingFaceProperties(random, direction.inverted)
-        return size.canCull(faceProperties, false)
-    }
-
     private fun getCornerHeight(position: Vec3i, fluid: Fluid): Float {
         // ToDo: Optimize
         var totalHeight = 0.0f
@@ -282,6 +321,11 @@ class FluidCullSectionPreparer(
 
     private companion object {
         private const val TEXTURE_CENTER = 1.0f / 2.0f
+        private val FLUID_FACE_PROPERTY = FaceProperties(
+            Vec2.EMPTY,
+            Vec2(1.0f, 1.0f),
+            TextureTransparencies.OPAQUE,
+        )
     }
 
 }

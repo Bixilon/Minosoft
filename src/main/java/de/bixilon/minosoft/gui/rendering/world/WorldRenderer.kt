@@ -365,7 +365,7 @@ class WorldRenderer(
                     val chunk = item.chunk ?: world[item.chunkPosition] ?: return@Runnable end()
                     val section = chunk[item.sectionHeight] ?: return@Runnable end()
                     val neighbourChunks: Array<Chunk> = world.getChunkNeighbours(item.chunkPosition).unsafeCast()
-                    val neighbours = item.neighbours ?: ChunkUtil.getSectionNeighbours(neighbourChunks, chunk, item.sectionHeight)
+                    val neighbours = item.neighbours ?: ChunkUtil.getDirectNeighbours(neighbourChunks, chunk, item.sectionHeight)
                     item.solidMesh = solidSectionPreparer.prepareSolid(item.chunkPosition, item.sectionHeight, chunk, section, neighbours, neighbourChunks)
                     if (section.blocks.fluidCount > 0) {
                         item.fluidMesh = fluidSectionPreparer.prepareFluid(item.chunkPosition, item.sectionHeight, chunk, section, neighbours, neighbourChunks)
