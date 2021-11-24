@@ -16,6 +16,8 @@ import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.registries.Registries
+import de.bixilon.minosoft.data.world.ChunkSection
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.inSectionHeight
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -30,7 +32,7 @@ abstract class FlowableFluid(
 
     abstract fun getVelocityMultiplier(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i): Double
 
-    open fun getVelocity(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i): Vec3d {
+    open fun getVelocity(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, section: ChunkSection? = null, neighbours: Array<ChunkSection?>? = null): Vec3d {
         if (!this.matches(blockState)) {
             return Vec3d.EMPTY
         }
@@ -39,7 +41,11 @@ abstract class FlowableFluid(
         val velocity = Vec3d.EMPTY
 
         for (direction in Directions.SIDES) {
-            val neighbourBlockState = connection.world[blockPosition + direction] ?: continue
+            val neighbourBlockState = if (section != null && neighbours != null) {
+                direction.getBlock(blockPosition.x and 0x0F, blockPosition.y.inSectionHeight, blockPosition.z and 0x0F, section, neighbours)
+            } else {
+                connection.world[blockPosition + direction]
+            } ?: continue
             if (!this.matches(neighbourBlockState)) {
                 continue
             }

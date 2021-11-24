@@ -84,50 +84,7 @@ class FluidCullSectionPreparer(
 
                     fun isSideCovered(direction: Directions): Boolean {
                         val neighbourPosition = position + direction
-                        val neighbour = when (direction) {
-                            Directions.DOWN -> {
-                                if (y == 0) {
-                                    neighbours[Directions.O_DOWN]?.blocks?.unsafeGet(x, ProtocolDefinition.SECTION_MAX_Y, z)
-                                } else {
-                                    section.blocks.unsafeGet(x, y - 1, z)
-                                }
-                            }
-                            Directions.UP -> {
-                                if (y == ProtocolDefinition.SECTION_MAX_Y) {
-                                    neighbours[Directions.O_UP]?.blocks?.unsafeGet(x, 0, z)
-                                } else {
-                                    section.blocks.unsafeGet(x, y + 1, z)
-                                }
-                            }
-                            Directions.NORTH -> {
-                                if (z == 0) {
-                                    neighbours[Directions.O_NORTH]?.blocks?.unsafeGet(x, y, ProtocolDefinition.SECTION_MAX_Z)
-                                } else {
-                                    section.blocks.unsafeGet(x, y, z - 1)
-                                }
-                            }
-                            Directions.SOUTH -> {
-                                if (z == ProtocolDefinition.SECTION_MAX_Z) {
-                                    neighbours[Directions.O_SOUTH]?.blocks?.unsafeGet(x, y, 0)
-                                } else {
-                                    section.blocks.unsafeGet(x, y, z + 1)
-                                }
-                            }
-                            Directions.WEST -> {
-                                if (x == 0) {
-                                    neighbours[Directions.O_WEST]?.blocks?.unsafeGet(ProtocolDefinition.SECTION_MAX_X, y, z)
-                                } else {
-                                    section.blocks.unsafeGet(x - 1, y, z)
-                                }
-                            }
-                            Directions.EAST -> {
-                                if (x == ProtocolDefinition.SECTION_MAX_X) {
-                                    neighbours[Directions.O_EAST]?.blocks?.unsafeGet(0, y, z)
-                                } else {
-                                    section.blocks.unsafeGet(x + 1, y, z)
-                                }
-                            }
-                        } ?: return false
+                        val neighbour = direction.getBlock(x, y, z, section, neighbours) ?: return false
 
                         if (fluid.matches(neighbour)) {
                             return true
@@ -138,9 +95,15 @@ class FluidCullSectionPreparer(
                         return size.canCull(FLUID_FACE_PROPERTY, false)
                     }
 
+                    val topBlock = if (y == ProtocolDefinition.SECTION_MAX_Y) {
+                        neighbours[Directions.O_UP]?.blocks?.unsafeGet(x, 0, z)
+                    } else {
+                        section.blocks.unsafeGet(x, y + 1, z)
+                    }
+
                     val skip = booleanArrayOf(
                         isSideCovered(Directions.DOWN), /* ToDo */
-                        fluid.matches(chunk.get(x, offsetY + y + 1, z)),
+                        fluid.matches(topBlock),
                         isSideCovered(Directions.NORTH),
                         isSideCovered(Directions.SOUTH),
                         isSideCovered(Directions.WEST),
@@ -159,7 +122,7 @@ class FluidCullSectionPreparer(
                     )
 
                     if (!skip[Directions.O_UP]) {
-                        val velocity = if (fluid is FlowableFluid) fluid.getVelocity(renderWindow.connection, blockState, position) else null
+                        val velocity = if (fluid is FlowableFluid) fluid.getVelocity(renderWindow.connection, blockState, position, section, neighbours) else null
                         val still = velocity == null || velocity.x == 0.0 && velocity.z == 0.0
                         val texture: AbstractTexture
                         val minUV = Vec2.EMPTY

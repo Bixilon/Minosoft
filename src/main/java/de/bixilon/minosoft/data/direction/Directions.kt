@@ -13,9 +13,12 @@
 package de.bixilon.minosoft.data.direction
 
 import de.bixilon.minosoft.data.Axes
+import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.properties.serializer.BlockPropertiesSerializer
 import de.bixilon.minosoft.data.text.ChatColors
+import de.bixilon.minosoft.data.world.ChunkSection
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.get
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.enum.ValuesEnum
 import glm_.vec2.Vec2
@@ -105,6 +108,53 @@ enum class Directions(
             SOUTH -> from.yx - to.yx
             EAST -> from.zy - to.zy
             WEST -> from.yz - to.yz
+        }
+    }
+
+    fun getBlock(x: Int, y: Int, z: Int, section: ChunkSection, neighbours: Array<ChunkSection?>): BlockState? {
+        return when (this) {
+            Directions.DOWN -> {
+                if (y == 0) {
+                    neighbours[Directions.O_DOWN]?.blocks?.unsafeGet(x, ProtocolDefinition.SECTION_MAX_Y, z)
+                } else {
+                    section.blocks.unsafeGet(x, y - 1, z)
+                }
+            }
+            Directions.UP -> {
+                if (y == ProtocolDefinition.SECTION_MAX_Y) {
+                    neighbours[Directions.O_UP]?.blocks?.unsafeGet(x, 0, z)
+                } else {
+                    section.blocks.unsafeGet(x, y + 1, z)
+                }
+            }
+            Directions.NORTH -> {
+                if (z == 0) {
+                    neighbours[Directions.O_NORTH]?.blocks?.unsafeGet(x, y, ProtocolDefinition.SECTION_MAX_Z)
+                } else {
+                    section.blocks.unsafeGet(x, y, z - 1)
+                }
+            }
+            Directions.SOUTH -> {
+                if (z == ProtocolDefinition.SECTION_MAX_Z) {
+                    neighbours[Directions.O_SOUTH]?.blocks?.unsafeGet(x, y, 0)
+                } else {
+                    section.blocks.unsafeGet(x, y, z + 1)
+                }
+            }
+            Directions.WEST -> {
+                if (x == 0) {
+                    neighbours[Directions.O_WEST]?.blocks?.unsafeGet(ProtocolDefinition.SECTION_MAX_X, y, z)
+                } else {
+                    section.blocks.unsafeGet(x - 1, y, z)
+                }
+            }
+            Directions.EAST -> {
+                if (x == ProtocolDefinition.SECTION_MAX_X) {
+                    neighbours[Directions.O_EAST]?.blocks?.unsafeGet(0, y, z)
+                } else {
+                    section.blocks.unsafeGet(x + 1, y, z)
+                }
+            }
         }
     }
 

@@ -57,6 +57,10 @@ class Chunk(
 
     operator fun get(sectionHeight: Int): ChunkSection? = sections?.getOrNull(sectionHeight - lowestSection)
 
+    fun unsafeGet(x: Int, y: Int, z: Int): BlockState? {
+        return this[y.sectionHeight]?.blocks?.unsafeGet(x, y.inSectionHeight, z)
+    }
+
     fun get(x: Int, y: Int, z: Int): BlockState? {
         return this[y.sectionHeight]?.blocks?.get(x, y.inSectionHeight, z)
     }
