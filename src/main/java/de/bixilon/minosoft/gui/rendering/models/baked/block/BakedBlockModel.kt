@@ -15,8 +15,8 @@ package de.bixilon.minosoft.gui.rendering.models.baked.block
 
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.BlockState
-import de.bixilon.minosoft.gui.rendering.models.FaceProperties
 import de.bixilon.minosoft.gui.rendering.models.baked.BakedModel
+import de.bixilon.minosoft.gui.rendering.models.properties.AbstractFaceProperties
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
 import glm_.vec3.Vec3i
@@ -24,7 +24,7 @@ import java.util.*
 
 interface BakedBlockModel : BakedModel {
 
-    fun getTouchingFaceProperties(random: Random, direction: Directions): Array<FaceProperties>
+    fun getTouchingFaceProperties(random: Random, direction: Directions): Array<AbstractFaceProperties>
 
     fun singleRender(position: Vec3i, mesh: WorldMesh, random: Random, blockState: BlockState, neighbours: Array<BlockState?>, light: ByteArray, ambientLight: FloatArray, tints: IntArray?): Boolean
 

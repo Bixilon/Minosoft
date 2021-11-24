@@ -136,7 +136,7 @@ class WorldRenderer(
 
         connection.registries.fluidRegistry.forEachItem {
             if (it is FlowableFluid) {
-                it.flowingTexture = renderWindow.textureManager.staticTextures.createTexture(it.flowingTextureName.texture())
+                it.flowingTexture = renderWindow.textureManager.staticTextures.createTexture(it.flowingTextureName!!.texture())
             }
             it.stillTexture = it.stillTextureName?.let { texture -> renderWindow.textureManager.staticTextures.createTexture(texture.texture()) }
         }

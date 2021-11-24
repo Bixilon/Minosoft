@@ -40,7 +40,9 @@ open class Fluid(
 ) : RegistryItem() {
     open val tintProvider: TintProvider? = null
     open val stillTextureName: ResourceLocation? = null
+    open val flowingTextureName: ResourceLocation? = null
     var stillTexture: AbstractTexture? = null
+    var flowingTexture: AbstractTexture? = null
     val dripParticle: ParticleType? = null
     val bucketItem: Item? = null
 

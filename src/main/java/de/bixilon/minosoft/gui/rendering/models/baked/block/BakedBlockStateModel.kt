@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.models.baked.block
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.gui.rendering.models.CullUtil.canCull
-import de.bixilon.minosoft.gui.rendering.models.FaceProperties
+import de.bixilon.minosoft.gui.rendering.models.properties.AbstractFaceProperties
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.util.VecUtil
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.getWorldOffset
@@ -28,11 +28,11 @@ import java.util.*
 
 class BakedBlockStateModel(
     private val faces: Array<Array<BakedFace>>,
-    private val touchingFaceProperties: Array<Array<FaceProperties>>,
+    private val touchingFaceProperties: Array<Array<AbstractFaceProperties>>,
     private val particleTexture: AbstractTexture?,
 ) : BakedBlockModel {
 
-    override fun getTouchingFaceProperties(random: Random, direction: Directions): Array<FaceProperties> {
+    override fun getTouchingFaceProperties(random: Random, direction: Directions): Array<AbstractFaceProperties> {
         return touchingFaceProperties[direction.ordinal]
     }
 
@@ -49,7 +49,7 @@ class BakedBlockStateModel(
             val direction = Directions.VALUES[index]
             val neighbour = neighbours[index]
             val neighboursModel = neighbour?.blockModel
-            var neighbourProperties: Array<FaceProperties>? = null
+            var neighbourProperties: Array<AbstractFaceProperties>? = null
             if (neighboursModel != null) {
                 random.setSeed(VecUtil.generatePositionHash(position.x + direction.vector.x, position.y + direction.vector.y, position.z + direction.vector.z))
                 neighbourProperties = neighboursModel.getTouchingFaceProperties(random, direction.inverted)

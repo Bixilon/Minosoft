@@ -15,8 +15,8 @@ package de.bixilon.minosoft.gui.rendering.models.baked
 
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.BlockState
-import de.bixilon.minosoft.gui.rendering.models.FaceProperties
 import de.bixilon.minosoft.gui.rendering.models.baked.block.BakedBlockModel
+import de.bixilon.minosoft.gui.rendering.models.properties.AbstractFaceProperties
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.util.VecUtil
 import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
@@ -38,7 +38,7 @@ class WeightedBakedModel(
         this.totalWeight = totalWeight
     }
 
-    override fun getTouchingFaceProperties(random: Random, direction: Directions): Array<FaceProperties> {
+    override fun getTouchingFaceProperties(random: Random, direction: Directions): Array<AbstractFaceProperties> {
         return getModel(random).getTouchingFaceProperties(random, direction)
     }
 

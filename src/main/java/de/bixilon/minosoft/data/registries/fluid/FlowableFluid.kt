@@ -16,7 +16,6 @@ import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.registries.Registries
-import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -28,9 +27,6 @@ abstract class FlowableFluid(
     registries: Registries,
     data: Map<String, Any>,
 ) : Fluid(resourceLocation, registries, data) {
-    abstract val flowingTextureName: ResourceLocation
-    var flowingTexture: AbstractTexture? = null
-
 
     abstract fun getVelocityMultiplier(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i): Double
 

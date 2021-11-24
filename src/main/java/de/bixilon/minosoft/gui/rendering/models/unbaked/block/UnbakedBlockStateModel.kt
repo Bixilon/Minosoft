@@ -17,10 +17,10 @@ import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderWindow
-import de.bixilon.minosoft.gui.rendering.models.FaceProperties
 import de.bixilon.minosoft.gui.rendering.models.baked.block.BakedBlockModel
 import de.bixilon.minosoft.gui.rendering.models.baked.block.BakedBlockStateModel
 import de.bixilon.minosoft.gui.rendering.models.baked.block.BakedFace
+import de.bixilon.minosoft.gui.rendering.models.properties.AbstractFaceProperties
 import de.bixilon.minosoft.gui.rendering.models.unbaked.GenericUnbakedModel
 import de.bixilon.minosoft.gui.rendering.models.unbaked.UnbakedBlockModel
 import de.bixilon.minosoft.gui.rendering.models.unbaked.UnbakedModel
@@ -86,7 +86,7 @@ data class UnbakedBlockStateModel(
 
 
         val faces: Array<MutableList<BakedFace>> = Array(Directions.SIZE) { mutableListOf() }
-        val touchingFaceProperties: Array<MutableList<FaceProperties>> = Array(Directions.SIZE) { mutableListOf() }
+        val touchingFaceProperties: Array<MutableList<AbstractFaceProperties>> = Array(Directions.SIZE) { mutableListOf() }
 
         for (element in model.elements) {
             for (face in element.faces) {
@@ -169,7 +169,7 @@ data class UnbakedBlockStateModel(
             finalFaces[index] = faceArray.toTypedArray()
         }
 
-        val finalTouchingProperties: Array<Array<FaceProperties>?> = arrayOfNulls(faces.size)
+        val finalTouchingProperties: Array<Array<AbstractFaceProperties>?> = arrayOfNulls(faces.size)
         for ((index, sizeArray) in touchingFaceProperties.withIndex()) {
             finalTouchingProperties[index] = sizeArray.toTypedArray()
         }

@@ -15,8 +15,8 @@ package de.bixilon.minosoft.gui.rendering.models.baked
 
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.blocks.BlockState
-import de.bixilon.minosoft.gui.rendering.models.FaceProperties
 import de.bixilon.minosoft.gui.rendering.models.baked.block.BakedBlockModel
+import de.bixilon.minosoft.gui.rendering.models.properties.AbstractFaceProperties
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
 import glm_.vec3.Vec3i
@@ -24,11 +24,11 @@ import java.util.*
 
 class MultipartBakedModel(
     val models: Array<BakedBlockModel>,
-    val sizes: Array<Array<FaceProperties>>,
+    val sizes: Array<Array<AbstractFaceProperties>>,
     val particleTexture: AbstractTexture?,
 ) : BakedBlockModel {
 
-    override fun getTouchingFaceProperties(random: Random, direction: Directions): Array<FaceProperties> {
+    override fun getTouchingFaceProperties(random: Random, direction: Directions): Array<AbstractFaceProperties> {
         return sizes[direction.ordinal]
     }
 

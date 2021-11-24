@@ -11,12 +11,12 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.models
+package de.bixilon.minosoft.gui.rendering.models.properties
 
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
 import glm_.vec2.Vec2
 
-interface FaceProperties {
+interface AbstractFaceProperties {
     val sizeStart: Vec2
     val sizeEnd: Vec2
     val transparency: TextureTransparencies

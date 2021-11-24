@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.models.baked.block
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.text.RGBColor
-import de.bixilon.minosoft.gui.rendering.models.FaceProperties
+import de.bixilon.minosoft.gui.rendering.models.properties.AbstractFaceProperties
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.textures.TextureUtil.getMesh
@@ -37,7 +37,7 @@ class BakedFace(
     val cullFace: Directions?,
     val texture: AbstractTexture,
     val touching: Boolean,
-) : FaceProperties {
+) : AbstractFaceProperties {
     override val transparency: TextureTransparencies
         get() = texture.transparency // ToDo
 

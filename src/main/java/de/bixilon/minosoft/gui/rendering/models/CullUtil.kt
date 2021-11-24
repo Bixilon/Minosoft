@@ -1,10 +1,11 @@
 package de.bixilon.minosoft.gui.rendering.models
 
+import de.bixilon.minosoft.gui.rendering.models.properties.AbstractFaceProperties
 import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
 
 object CullUtil {
 
-    fun Array<FaceProperties>.canCull(properties: FaceProperties, blockCull: Boolean): Boolean {
+    fun Array<AbstractFaceProperties>.canCull(properties: AbstractFaceProperties, blockCull: Boolean): Boolean {
         // ToDo: Sometimes faces get drawn between stairs (we need to swap xy with yx in special cases)
         val sizeStartX = properties.sizeStart.x
         val sizeStartY = properties.sizeStart.y
