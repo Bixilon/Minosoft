@@ -1,5 +1,6 @@
 package de.bixilon.minosoft.gui.rendering.world.preparer.cull
 
+import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.direction.Directions.Companion.O_DOWN
 import de.bixilon.minosoft.data.direction.Directions.Companion.O_EAST
@@ -8,6 +9,7 @@ import de.bixilon.minosoft.data.direction.Directions.Companion.O_SOUTH
 import de.bixilon.minosoft.data.direction.Directions.Companion.O_UP
 import de.bixilon.minosoft.data.direction.Directions.Companion.O_WEST
 import de.bixilon.minosoft.data.registries.blocks.BlockState
+import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
 import de.bixilon.minosoft.data.registries.blocks.types.FluidBlock
 import de.bixilon.minosoft.data.world.Chunk
 import de.bixilon.minosoft.data.world.ChunkSection
@@ -26,6 +28,8 @@ import java.util.*
 class SolidCullSectionPreparer(
     val renderWindow: RenderWindow,
 ) : SolidSectionPreparer {
+    private val bedrock = renderWindow.connection.registries.blockRegistry[MinecraftBlocks.BEDROCK]?.defaultState
+    private val someFullBlock = renderWindow.connection.registries.blockRegistry[MinecraftBlocks.COMMAND_BLOCK]?.defaultState
     private val tintColorCalculator = renderWindow.tintManager
     private val ambientLight = floatArrayOf(1.0f, 1.0f, 1.0f, 1.0f)
 
@@ -42,7 +46,7 @@ class SolidCullSectionPreparer(
         var model: BakedBlockModel
         var blockState: BlockState
         var position: Vec3i
-        var rendered = false
+        var rendered: Boolean
         var tints: IntArray?
         val neighbourBlocks: Array<BlockState?> = arrayOfNulls(Directions.SIZE)
         val light = ByteArray(Directions.SIZE + 1) // last index (6) for the current block
@@ -51,8 +55,9 @@ class SolidCullSectionPreparer(
         val offsetY = sectionHeight * ProtocolDefinition.SECTION_HEIGHT_Y
         val offsetZ = chunkPosition.y * ProtocolDefinition.SECTION_WIDTH_Z
 
-        for (x in 0 until ProtocolDefinition.SECTION_WIDTH_X) {
-            for (y in 0 until ProtocolDefinition.SECTION_HEIGHT_Y) {
+        for (y in 0 until ProtocolDefinition.SECTION_HEIGHT_Y) {
+            val efficientBedrock = y == 0 && isLowestSection && Minosoft.config.config.game.graphics.efficientBedrock
+            for (x in 0 until ProtocolDefinition.SECTION_WIDTH_X) {
                 for (z in 0 until ProtocolDefinition.SECTION_WIDTH_Z) {
                     blockState = blocks.unsafeGet(x, y, z) ?: continue
                     if (blockState.block is FluidBlock) {
@@ -63,13 +68,16 @@ class SolidCullSectionPreparer(
                     light[6] = sectionLight[y shl 8 or (z shl 4) or x]
 
                     if (y == 0) {
-                        neighbourBlocks[O_DOWN] = neighbours[O_DOWN]?.blocks?.unsafeGet(x, ProtocolDefinition.SECTION_MAX_Y, z)
-                        light[O_DOWN] = if (isLowestSection) {
-                            chunk.bottomLight
+                        if (efficientBedrock) {
+                            neighbourBlocks[O_DOWN] = someFullBlock
                         } else {
-                            neighbours[O_DOWN]?.light
-                        }?.get(ProtocolDefinition.SECTION_MAX_Y shl 8 or (z shl 4) or x) ?: 0x00
-
+                            neighbourBlocks[O_DOWN] = neighbours[O_DOWN]?.blocks?.unsafeGet(x, ProtocolDefinition.SECTION_MAX_Y, z)
+                            light[O_DOWN] = if (isLowestSection) {
+                                chunk.bottomLight
+                            } else {
+                                neighbours[O_DOWN]?.light
+                            }?.get(ProtocolDefinition.SECTION_MAX_Y shl 8 or (z shl 4) or x) ?: 0x00
+                        }
                     } else {
                         neighbourBlocks[O_DOWN] = blocks.unsafeGet(x, y - 1, z)
                         light[O_DOWN] = sectionLight[(y - 1) shl 8 or (z shl 4) or x]

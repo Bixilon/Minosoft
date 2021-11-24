@@ -23,4 +23,5 @@ data class GraphicsGameConfig(
     @Json(name = "fast_biome_noise") var fastBiomeNoise: Boolean = false,
     @Json(name = "fog_enabled") var fogEnabled: Boolean = true,
     @Json(name = "prefer_quads") var preferQuads: Boolean = false,
+    @Json(name = "efficient_bedrock") var efficientBedrock: Boolean = false,
 )

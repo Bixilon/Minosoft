@@ -290,5 +290,4 @@ class FluidCullSectionPreparer(
             TextureTransparencies.OPAQUE,
         )
     }
-
 }
