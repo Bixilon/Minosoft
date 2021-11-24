@@ -206,10 +206,10 @@ class FluidCullSectionPreparer(
                             Vec3(position.x + faceXEnd, position.y + v2, position.z + faceZEnd),
                         )
                         val texturePositions = arrayOf(
-                            Vec2(0.5f, v2 / 2),
-                            Vec2(0.5f, 0.0f),
-                            Vec2(0.0f, 0.0f),
-                            Vec2(0.0f, v1 / 2),
+                            Vec2(0.0f, 0.5f),
+                            Vec2(0.0f, (1 - v1) / 2),
+                            Vec2(0.5f, (1 - v2) / 2),
+                            Vec2(0.5f, 0.5f),
                         )
 
                         val meshToUse = flowingTexture.transparency.getMesh(mesh)
