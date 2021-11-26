@@ -45,8 +45,7 @@ class FluidCullSectionPreparer(
 
 
     // ToDo: Should this be combined with the solid renderer (but we'd need to render faces twice, because of cullface)
-    override fun prepareFluid(chunkPosition: Vec2i, sectionHeight: Int, chunk: Chunk, section: ChunkSection, neighbours: Array<ChunkSection?>, neighbourChunks: Array<Chunk>): WorldMesh? {
-        val mesh = WorldMesh(renderWindow, chunkPosition, sectionHeight, smallMesh = true)
+    override fun prepareFluid(chunkPosition: Vec2i, sectionHeight: Int, chunk: Chunk, section: ChunkSection, neighbours: Array<ChunkSection?>, neighbourChunks: Array<Chunk>, mesh: WorldMesh) {
 
         val isLowestSection = sectionHeight == chunk.lowestSection
         val isHighestSection = sectionHeight == chunk.highestSection
@@ -55,6 +54,7 @@ class FluidCullSectionPreparer(
         section.acquire()
         neighbours.acquire()
 
+        val random = Random(0L)
         var blockState: BlockState
         var position: Vec3i
         var rendered = false
@@ -90,7 +90,7 @@ class FluidCullSectionPreparer(
                             return true
                         }
                         val model = neighbour.blockModel ?: return false
-                        val random = Random(VecUtil.generatePositionHash(neighbourPosition.x, neighbourPosition.y, neighbourPosition.z))
+                        random.setSeed(VecUtil.generatePositionHash(neighbourPosition.x, neighbourPosition.y, neighbourPosition.z))
                         val size = model.getTouchingFaceProperties(random, direction.inverted)
                         return size.canCull(FLUID_FACE_PROPERTY, false)
                     }
@@ -165,10 +165,13 @@ class FluidCullSectionPreparer(
                         for ((positionIndex, textureIndex) in meshToUse.order) {
                             meshToUse.addVertex(positions[positionIndex].array, texturePositions[textureIndex], texture, tints?.get(0) ?: 0xFFFFFF, chunk.getLight(position))
                         }
+                        // ToDo: Sides that are connecting with non full cubes (e.g. air) also have cullface disabled
+                        for ((positionIndex, textureIndex) in meshToUse.reversedOrder) {
+                            meshToUse.addVertex(positions[positionIndex].array, texturePositions[textureIndex], texture, tints?.get(0) ?: 0xFFFFFF, chunk.getLight(position))
+                        }
                         rendered = true
                     }
                     // ToDo: Sides: Minecraft uses (for water) an overlay texture (with cullface) that is used, when the face fits to a non opaque block
-                    // ToDo: Sides that are connecting with non full cubes (e.g. air) also have cullface disabled
 
 
                     for (direction in 0 until Directions.SIZE_SIDES) {
@@ -224,8 +227,13 @@ class FluidCullSectionPreparer(
                         )
 
                         val meshToUse = flowingTexture.transparency.getMesh(mesh)
+                        val fluidTint = tints?.get(0) ?: 0xFFFFFF
+                        val fluidLight = chunk.getLight(x, offsetY + y, z)
                         for ((positionIndex, textureIndex) in meshToUse.order) {
-                            meshToUse.addVertex(positions[positionIndex].array, texturePositions[textureIndex], flowingTexture, tints?.get(0) ?: 0xFFFFFF, chunk.getLight(position))
+                            meshToUse.addVertex(positions[positionIndex].array, texturePositions[textureIndex], flowingTexture, fluidTint, fluidLight)
+                        }
+                        for ((positionIndex, textureIndex) in meshToUse.reversedOrder) {
+                            meshToUse.addVertex(positions[positionIndex].array, texturePositions[textureIndex], flowingTexture, fluidTint, fluidLight)
                         }
                         rendered = true
                     }
@@ -239,12 +247,6 @@ class FluidCullSectionPreparer(
         }
         section.release()
         neighbours.release()
-
-        if (mesh.clearEmpty() == 0) {
-            return null
-        }
-
-        return mesh
     }
 
     private fun getCornerHeight(position: Vec3i, fluid: Fluid): Float {

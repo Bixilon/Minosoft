@@ -15,8 +15,7 @@ class WorldQueueItem(
     val center: Vec3,
     val neighbours: Array<ChunkSection?>?,
 ) {
-    var solidMesh: WorldMesh? = null
-    var fluidMesh: WorldMesh? = null
+    var mesh: WorldMesh? = null
 
     override fun equals(other: Any?): Boolean {
         if (other !is WorldQueueItem) {

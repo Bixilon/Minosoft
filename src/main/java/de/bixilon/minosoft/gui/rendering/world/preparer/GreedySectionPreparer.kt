@@ -31,7 +31,7 @@ import java.util.*
 @Deprecated("TODO")
 class GreedySectionPreparer(
     val renderWindow: RenderWindow,
-) : SolidSectionPreparer {
+) /*: SolidSectionPreparer*/ {
 
     private fun renderNormal(block: BlockState, directions: Directions?, position: Vec3i, section: ChunkSection, mesh: SingleWorldMesh, random: Random) {
         val neighbour = section.blocks[ChunkSection.getIndex(position.x, position.y, position.z)]
@@ -40,7 +40,7 @@ class GreedySectionPreparer(
 
     // base taken from https://0fps.net/2012/06/30/meshing-in-a-minecraft-game/
     @Deprecated("TODO")
-    override fun prepareSolid(chunkPosition: Vec2i, sectionHeight: Int, chunk: Chunk, section: ChunkSection, neighbours: Array<ChunkSection?>, neighbourChunks: Array<Chunk>): WorldMesh {
+    fun prepareSolid(chunkPosition: Vec2i, sectionHeight: Int, chunk: Chunk, section: ChunkSection, neighbours: Array<ChunkSection?>, neighbourChunks: Array<Chunk>): WorldMesh {
         val mesh = SingleWorldMesh(renderWindow, 20000)
 
         val random = Random(0L)

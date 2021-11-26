@@ -186,6 +186,19 @@ class Chunk(
         return this[position.sectionHeight]?.light?.get(index)?.toInt() ?: 0x00
     }
 
+    fun getLight(x: Int, y: Int, z: Int): Int {
+        val sectionHeight = y.sectionHeight
+        val inSectionHeight = y.inSectionHeight
+        val index = inSectionHeight shl 8 or (z shl 4) or x
+        if (sectionHeight == lowestSection - 1) {
+            return bottomLight?.get(index)?.toInt() ?: 0x00
+        }
+        if (sectionHeight == highestSection + 1) {
+            return topLight?.get(index)?.toInt() ?: 0x00
+        }
+        return this[sectionHeight]?.light?.get(index)?.toInt() ?: 0x00
+    }
+
     fun buildBiomeCache() {
         val cacheBiomeAccessor = connection.world.cacheBiomeAccessor ?: return
         check(!biomesInitialized) { "Biome cache already initialized!" }

@@ -33,8 +33,7 @@ class SolidCullSectionPreparer(
     private val tintColorCalculator = renderWindow.tintManager
     private val ambientLight = floatArrayOf(1.0f, 1.0f, 1.0f, 1.0f)
 
-    override fun prepareSolid(chunkPosition: Vec2i, sectionHeight: Int, chunk: Chunk, section: ChunkSection, neighbours: Array<ChunkSection?>, neighbourChunks: Array<Chunk>): WorldMesh? {
-        val mesh = WorldMesh(renderWindow, chunkPosition, sectionHeight)
+    override fun prepareSolid(chunkPosition: Vec2i, sectionHeight: Int, chunk: Chunk, section: ChunkSection, neighbours: Array<ChunkSection?>, neighbourChunks: Array<Chunk>, mesh: WorldMesh) {
         val random = Random(0L)
 
         val isLowestSection = sectionHeight == chunk.lowestSection
@@ -68,7 +67,7 @@ class SolidCullSectionPreparer(
                     light[6] = sectionLight[y shl 8 or (z shl 4) or x]
 
                     if (y == 0) {
-                        if (efficientBedrock) {
+                        if (efficientBedrock && blockState === bedrock) {
                             neighbourBlocks[O_DOWN] = someFullBlock
                         } else {
                             neighbourBlocks[O_DOWN] = neighbours[O_DOWN]?.blocks?.unsafeGet(x, ProtocolDefinition.SECTION_MAX_Y, z)
@@ -137,11 +136,5 @@ class SolidCullSectionPreparer(
         }
         section.release()
         neighbours.release()
-
-        if (mesh.clearEmpty() == 0) {
-            return null
-        }
-
-        return mesh
     }
 }
