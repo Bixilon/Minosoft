@@ -15,7 +15,7 @@
 
 layout (location = 0) in vec3 vinPosition;
 layout (location = 1) in vec2 vinUV;
-layout (location = 2) in uint vinTextureLayer;
+layout (location = 2) in uint vinIndexLayerAnimation;
 layout (location = 3) in uint vinTintColor;
 
 flat out uint finTextureIndex;
@@ -26,7 +26,10 @@ out vec4 finTintColor;
 
 void main() {
     gl_Position = vec4(vinPosition.xyz, 1.0f);
-    finTextureCoordinates = vec3(vinUV, vinTextureLayer & 0xFFFFFFu);
-    finTextureIndex = vinTextureLayer >> 24u;
+
+    // ToDo: Texture animations
+
+    finTextureIndex = vinIndexLayerAnimation >> 28u;
+    finTextureCoordinates = vec3(vinUV, ((vinIndexLayerAnimation >> 12) & 0xFFFFu));
     finTintColor = getRGBAColor(vinTintColor);
 }

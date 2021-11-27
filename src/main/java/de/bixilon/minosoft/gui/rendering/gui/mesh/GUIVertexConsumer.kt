@@ -16,18 +16,18 @@ package de.bixilon.minosoft.gui.rendering.gui.mesh
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.gui.hud.atlas.TextureLike
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
-import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import glm_.vec2.Vec2
 import glm_.vec2.Vec2t
 
 interface GUIVertexConsumer {
+    val order: Array<Pair<Int, Int>>
 
     fun addVertex(position: Vec2t<*>, z: Int, texture: AbstractTexture, uv: Vec2, tint: RGBColor, options: GUIVertexOptions?)
 
     fun addQuad(start: Vec2t<*>, end: Vec2t<*>, z: Int, texture: AbstractTexture, uvStart: Vec2, uvEnd: Vec2, tint: RGBColor, options: GUIVertexOptions?) {
         val positions = arrayOf(
-            Vec2(start.x.toFloat(), start.y),
-            Vec2(end.x.toFloat(), start.y),
+            start,
+            Vec2(end.x, start.y),
             end,
             Vec2(start.x, end.y),
         )
@@ -38,7 +38,7 @@ interface GUIVertexConsumer {
             uvEnd,
         )
 
-        for ((vertexIndex, textureIndex) in Mesh.QUAD_DRAW_ODER) {
+        for ((vertexIndex, textureIndex) in order) {
             addVertex(positions[vertexIndex], z, texture, texturePositions[textureIndex], tint, options)
         }
     }

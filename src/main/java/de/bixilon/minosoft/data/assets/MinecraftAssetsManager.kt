@@ -164,7 +164,7 @@ class MinecraftAssetsManager(
     }
 
     private fun parseAssetsIndex(hash: String): Map<ResourceLocation, String> {
-        return parseAssetsIndex(Util.readJsonFromStream(readAssetAsStream(hash)))
+        return parseAssetsIndex(Util.readJsonFromStream(readAssetAsStream(hash), true))
     }
 
     private fun parseAssetsIndex(json: JsonObject): Map<ResourceLocation, String> {

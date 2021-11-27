@@ -16,7 +16,7 @@ package de.bixilon.minosoft.gui.rendering.system.base.texture.texture
 import glm_.vec2.Vec2
 
 interface TextureRenderData {
-    val layer: Int
+    val shaderTextureId: Int
     val animationData: Int
 
     fun transformUV(end: Vec2): Vec2

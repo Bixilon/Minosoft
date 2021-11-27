@@ -15,7 +15,6 @@ package de.bixilon.minosoft.data.registries.items
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.registries.Registries
-import de.bixilon.minosoft.data.registries.sounds.SoundEvent
 import de.bixilon.minosoft.util.KUtil.nullCast
 
 open class MusicDiscItem(
@@ -24,9 +23,5 @@ open class MusicDiscItem(
     data: Map<String, Any>,
 ) : Item(resourceLocation, registries, data) {
     val analogOutput = data["analog_output"].nullCast<Item>() ?: 0
-    val sound: SoundEvent? = null
-
-    init {
-        this::sound.inject(data["sound"])
-    }
+    val sound: ResourceLocation? = registries.soundEventRegistry[data["sound"]]
 }

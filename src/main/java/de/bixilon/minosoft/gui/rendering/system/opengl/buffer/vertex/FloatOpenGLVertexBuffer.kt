@@ -11,8 +11,9 @@ import org.lwjgl.opengl.GL11.*
 import org.lwjgl.opengl.GL15.glBufferData
 import org.lwjgl.opengl.GL20.glEnableVertexAttribArray
 import org.lwjgl.opengl.GL20.glVertexAttribPointer
+import java.nio.FloatBuffer
 
-class FloatOpenGLVertexBuffer(override val structure: MeshStruct, data: FloatArray, override val primitiveType: PrimitiveTypes = PrimitiveTypes.TRIANGLE) : FloatOpenGLBuffer(data), FloatVertexBuffer {
+class FloatOpenGLVertexBuffer(override val structure: MeshStruct, data: FloatBuffer, override val primitiveType: PrimitiveTypes) : FloatOpenGLBuffer(data), FloatVertexBuffer {
     override var vertices = -1
         private set
     private var vao = -1
@@ -20,13 +21,19 @@ class FloatOpenGLVertexBuffer(override val structure: MeshStruct, data: FloatArr
     override fun init() {
         val floatsPerVertex = structure.BYTES_PER_VERTEX / Float.SIZE_BYTES
 
-        vertices = data.size / floatsPerVertex
+        vertices = buffer.position() / floatsPerVertex
         vao = glGenVertexArrays()
         super.init()
         glBindVertexArray(vao)
 
         bind()
-        glBufferData(type.gl, data, drawTypes.gl)
+        val previousLimit = buffer.limit()
+        val previousPosition = buffer.position()
+        buffer.limit(buffer.position())
+        buffer.flip()
+        glBufferData(type.gl, buffer, drawTypes.gl)
+        buffer.limit(previousLimit)
+        buffer.position(previousPosition)
         state = RenderBufferStates.UPLOADED
 
         _data = null

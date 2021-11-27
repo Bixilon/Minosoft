@@ -13,22 +13,25 @@
 package de.bixilon.minosoft.data.direction
 
 import de.bixilon.minosoft.data.Axes
+import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.properties.serializer.BlockPropertiesSerializer
-import de.bixilon.minosoft.gui.rendering.block.models.BlockModelElement
-import de.bixilon.minosoft.gui.rendering.block.models.FaceSize
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.get
+import de.bixilon.minosoft.data.text.ChatColors
+import de.bixilon.minosoft.data.world.ChunkSection
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.get
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.enum.ValuesEnum
-import glm_.vec2.Vec2i
+import glm_.vec2.Vec2
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3d
 import glm_.vec3.Vec3i
+import glm_.vec3.swizzle.*
 import kotlin.math.abs
 
 enum class Directions(
     val horizontalId: Int,
-    override val vector: Vec3i,
-) : AbstractDirection {
+    val vector: Vec3i,
+) {
     DOWN(-1, Vec3i(0, -1, 0)),
     UP(-1, Vec3i(0, 1, 0)),
     NORTH(2, Vec3i(0, 0, -1)),
@@ -36,10 +39,13 @@ enum class Directions(
     WEST(1, Vec3i(-1, 0, 0)),
     EAST(3, Vec3i(1, 0, 0));
 
-    override val vectorf = Vec3(vector)
-    override val vectord = Vec3d(vector)
+    val negative = ordinal % 2 == 0
 
-    val axis: Axes get() = Axes.get(this)
+    val vectorf = Vec3(vector)
+    val vectord = Vec3d(vector)
+
+    val axis: Axes get() = Axes[this] // ToDo
+    val debugColor = ChatColors[ordinal]
 
     lateinit var inverted: Directions
         private set
@@ -51,48 +57,6 @@ enum class Directions(
         } else {
             byId(ordinal - 1)
         }
-    }
-
-    fun sidesNextTo(direction: Directions): Set<Directions> {
-        return when (direction) {
-            NORTH, SOUTH -> setOf(EAST, WEST)
-            EAST, WEST -> setOf(NORTH, SOUTH)
-            else -> emptySet()
-        }
-    }
-
-    /**
-     * @return the size of the face in this direction. null if the face is not touching the border (determinated by the block resolution)
-     */
-    fun getFaceBorderSizes(start: Vec3, end: Vec3): FaceSize? {
-        // check if face is touching the border of a block
-
-        if (!isBlockResolutionBorder(start, end)) {
-            return null
-        }
-        return getFaceSize(start, end)
-    }
-
-    fun getFaceSize(start: Vec3, end: Vec3): FaceSize {
-        return when (this) {
-            DOWN, UP -> FaceSize(Vec2i(start.x, start.z), Vec2i(end.x, end.z))
-            NORTH, SOUTH -> FaceSize(Vec2i(start.x, start.y), Vec2i(end.x, end.y))
-            EAST, WEST -> FaceSize(Vec2i(start.y, start.z), Vec2i(end.y, end.z))
-        }
-    }
-
-    private fun isBlockResolutionBorder(start: Vec3, end: Vec3): Boolean {
-        return isCoordinateBorder(vector.x, start.x, end.x) || isCoordinateBorder(vector.y, start.y, end.y) || isCoordinateBorder(vector.z, start.z, end.z)
-    }
-
-    private fun isCoordinateBorder(directionValue: Int, start: Float, end: Float): Boolean {
-        if (directionValue == 1) {
-            return start == BlockModelElement.BLOCK_RESOLUTION_FLOAT || end == BlockModelElement.BLOCK_RESOLUTION_FLOAT
-        }
-        if (directionValue == -1) {
-            return start == 0.0f || end == 0.0f
-        }
-        return false
     }
 
     operator fun get(axis: Axes): Int {
@@ -109,8 +73,103 @@ enum class Directions(
         }
     }
 
+    fun getPositions(from: Vec3, to: Vec3): Array<Vec3> {
+        return when (this) {
+            DOWN -> arrayOf(Vec3(from.x, from.y, to.z), Vec3(to.x, from.y, to.z), Vec3(to.x, from.y, from.z), from)
+            UP -> arrayOf(Vec3(from.x, to.y, from.z), Vec3(to.x, to.y, from.z), to, Vec3(from.x, to.y, to.z))
+            NORTH -> arrayOf(Vec3(to.x, to.y, from.z), Vec3(from.x, to.y, from.z), from, Vec3(to.x, from.y, from.z))
+            SOUTH -> arrayOf(Vec3(from.x, to.y, to.z), to, Vec3(to.x, from.y, to.z), Vec3(from.x, from.y, to.z))
+            WEST -> arrayOf(Vec3(from.x, to.y, from.z), Vec3(from.x, to.y, to.z), Vec3(from.x, from.y, to.z), from)
+            EAST -> arrayOf(to, Vec3(to.x, to.y, from.z), Vec3(to.x, from.y, from.z), Vec3(to.x, from.y, to.z))
+        }
+    }
+
+    fun getSize(from: Vec3, to: Vec3): Pair<Vec2, Vec2> {
+        return when (this) {
+            DOWN, UP -> Pair(from.xz, to.xz)
+            NORTH, SOUTH -> Pair(from.xy, to.xy)
+            WEST, EAST -> Pair(from.yz, to.yz)
+        }
+    }
+
+    fun getFallbackUV(from: Vec3, to: Vec3): Pair<Vec2, Vec2> {
+        return when (this) {
+            DOWN, UP -> Pair(from.xz, to.xz)
+            SOUTH, NORTH -> Pair(Vec2(1) - to.xy, Vec2(1) - from.xy)
+            WEST, EAST -> Pair(Vec2(1) - to.zy, Vec2(1) - from.zy)
+        }
+    }
+
+    fun getUVMultiplier(from: Vec3, to: Vec3): Vec2 {
+        return when (this) {
+            DOWN -> from.zx - to.zx
+            UP -> from.xz - to.xz
+            NORTH -> from.xy - to.xy
+            SOUTH -> from.yx - to.yx
+            EAST -> from.zy - to.zy
+            WEST -> from.yz - to.yz
+        }
+    }
+
+    fun getBlock(x: Int, y: Int, z: Int, section: ChunkSection, neighbours: Array<ChunkSection?>): BlockState? {
+        return when (this) {
+            Directions.DOWN -> {
+                if (y == 0) {
+                    neighbours[Directions.O_DOWN]?.blocks?.unsafeGet(x, ProtocolDefinition.SECTION_MAX_Y, z)
+                } else {
+                    section.blocks.unsafeGet(x, y - 1, z)
+                }
+            }
+            Directions.UP -> {
+                if (y == ProtocolDefinition.SECTION_MAX_Y) {
+                    neighbours[Directions.O_UP]?.blocks?.unsafeGet(x, 0, z)
+                } else {
+                    section.blocks.unsafeGet(x, y + 1, z)
+                }
+            }
+            Directions.NORTH -> {
+                if (z == 0) {
+                    neighbours[Directions.O_NORTH]?.blocks?.unsafeGet(x, y, ProtocolDefinition.SECTION_MAX_Z)
+                } else {
+                    section.blocks.unsafeGet(x, y, z - 1)
+                }
+            }
+            Directions.SOUTH -> {
+                if (z == ProtocolDefinition.SECTION_MAX_Z) {
+                    neighbours[Directions.O_SOUTH]?.blocks?.unsafeGet(x, y, 0)
+                } else {
+                    section.blocks.unsafeGet(x, y, z + 1)
+                }
+            }
+            Directions.WEST -> {
+                if (x == 0) {
+                    neighbours[Directions.O_WEST]?.blocks?.unsafeGet(ProtocolDefinition.SECTION_MAX_X, y, z)
+                } else {
+                    section.blocks.unsafeGet(x - 1, y, z)
+                }
+            }
+            Directions.EAST -> {
+                if (x == ProtocolDefinition.SECTION_MAX_X) {
+                    neighbours[Directions.O_EAST]?.blocks?.unsafeGet(0, y, z)
+                } else {
+                    section.blocks.unsafeGet(x + 1, y, z)
+                }
+            }
+        }
+    }
+
 
     companion object : BlockPropertiesSerializer, ValuesEnum<Directions> {
+        const val O_DOWN = 0 // Directions.DOWN.ordinal
+        const val O_UP = 1 // Directions.UP.ordinal
+        const val O_NORTH = 2 // Directions.NORTH.ordinal
+        const val O_SOUTH = 3 // Directions.SOUTH.ordinal
+        const val O_WEST = 4 // Directions.WEST.ordinal
+        const val O_EAST = 5 // Directions.EAST.ordinal
+
+        const val SIZE = 6
+        const val SIZE_SIDES = 4
+        const val SIDE_OFFSET = 2
         override val VALUES = values()
         override val NAME_MAP: Map<String, Directions> = KUtil.getEnumValues(VALUES)
         val SIDES = arrayOf(NORTH, SOUTH, WEST, EAST)
@@ -119,6 +178,13 @@ enum class Directions(
 
         override fun deserialize(value: Any): Directions {
             return NAME_MAP[value] ?: throw IllegalArgumentException("No such property: $value")
+        }
+
+        override fun get(name: String): Directions {
+            if (name.lowercase() == "bottom") {
+                return DOWN
+            }
+            return super.get(name)
         }
 
         @JvmStatic

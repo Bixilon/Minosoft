@@ -20,13 +20,10 @@ import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.FluidBlock
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
-import de.bixilon.minosoft.data.registries.sounds.SoundEvent
 import de.bixilon.minosoft.data.world.biome.accessor.BiomeAccessor
 import de.bixilon.minosoft.data.world.biome.accessor.NoiseBiomeAccessor
-import de.bixilon.minosoft.data.world.biome.accessor.WorldBiomeAccessor
 import de.bixilon.minosoft.gui.rendering.particle.ParticleRenderer
 import de.bixilon.minosoft.gui.rendering.particle.types.Particle
-import de.bixilon.minosoft.gui.rendering.sound.AudioPlayer
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.blockPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.inChunkPosition
@@ -38,12 +35,14 @@ import de.bixilon.minosoft.modding.event.events.ChunkDataChangeEvent
 import de.bixilon.minosoft.modding.event.events.ChunkUnloadEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
+import de.bixilon.minosoft.util.KUtil.lockMapOf
 import de.bixilon.minosoft.util.KUtil.toSynchronizedMap
 import de.bixilon.minosoft.util.MMath
-import de.bixilon.minosoft.util.chunk.ChunkUtil
-import de.bixilon.minosoft.util.chunk.ChunkUtil.loaded
-import de.bixilon.minosoft.util.collections.SynchronizedMap
+import de.bixilon.minosoft.util.ReadWriteLock
+import de.bixilon.minosoft.util.chunk.ChunkUtil.canBuildBiomeCache
+import de.bixilon.minosoft.util.chunk.ChunkUtil.getChunkNeighbourPositions
+import de.bixilon.minosoft.util.chunk.ChunkUtil.received
+import de.bixilon.minosoft.util.collections.LockMap
 import glm_.func.common.clamp
 import glm_.vec2.Vec2i
 import glm_.vec3.Vec3
@@ -58,16 +57,16 @@ import kotlin.random.Random
  */
 class World(
     val connection: PlayConnection,
-) : BiomeAccessor {
+) : BiomeAccessor, AbstractAudioPlayer {
+    val lock = ReadWriteLock()
     var cacheBiomeAccessor: NoiseBiomeAccessor? = null
-    val chunks: SynchronizedMap<Vec2i, Chunk> = synchronizedMapOf()
+    val chunks: LockMap<Vec2i, Chunk> = lockMapOf()
     val entities = WorldEntities()
     var hardcore = false
     var dimension: DimensionProperties? = null
     var difficulty: Difficulties? = null
     var difficultyLocked = false
     var hashedSeed = 0L
-    val biomeAccessor: BiomeAccessor = WorldBiomeAccessor(this)
     var time = 0L
     var age = 0L
     var raining = false
@@ -75,7 +74,7 @@ class World(
     var thunderGradient = 0.0f
     private val random = Random
 
-    var audioPlayer: AudioPlayer? = null
+    var audioPlayer: AbstractAudioPlayer? = null
     var particleRenderer: ParticleRenderer? = null
 
     operator fun get(blockPosition: Vec3i): BlockState? {
@@ -125,14 +124,14 @@ class World(
     }
 
     fun unloadChunk(chunkPosition: Vec2i) {
-        chunks.remove(chunkPosition) ?: return
-        val neighbourPositions = ChunkUtil.getChunkNeighbourPositions(chunkPosition)
+        val chunk = chunks.remove(chunkPosition) ?: return
+        val neighbourPositions = getChunkNeighbourPositions(chunkPosition)
         for (neighbourPosition in neighbourPositions) {
             val neighbour = this[neighbourPosition] ?: continue
             neighbour.neighboursLoaded = false
             connection.fireEvent(ChunkDataChangeEvent(connection, EventInitiators.UNKNOWN, neighbourPosition, neighbour))
         }
-        connection.fireEvent(ChunkUnloadEvent(connection, EventInitiators.UNKNOWN, chunkPosition))
+        connection.fireEvent(ChunkUnloadEvent(connection, EventInitiators.UNKNOWN, chunkPosition, chunk))
     }
 
     fun getBlockEntity(blockPosition: Vec3i): BlockEntity? {
@@ -151,11 +150,11 @@ class World(
     }
 
     override fun getBiome(blockPosition: Vec3i): Biome? {
-        return biomeAccessor.getBiome(blockPosition)
+        return this[blockPosition.chunkPosition]?.getBiome(blockPosition.inChunkPosition)
     }
 
     override fun getBiome(x: Int, y: Int, z: Int): Biome? {
-        return biomeAccessor.getBiome(x, y, z)
+        return this[Vec2i(x shr 4, z shr 4)]?.getBiome(x and 0x0F, y, z and 0x0F)
     }
 
     fun tick() {
@@ -187,20 +186,13 @@ class World(
         return ret.toMap()
     }
 
-    fun playSoundEvent(resourceLocation: ResourceLocation, position: Vec3i? = null, volume: Float = 1.0f, pitch: Float = 1.0f) {
-        audioPlayer?.playSoundEvent(resourceLocation, position, volume, pitch)
+
+    override fun playSoundEvent(sound: ResourceLocation, position: Vec3?, volume: Float, pitch: Float) {
+        audioPlayer?.playSoundEvent(sound, position, volume, pitch)
     }
 
-    fun playSoundEvent(resourceLocation: ResourceLocation, position: Vec3? = null, volume: Float = 1.0f, pitch: Float = 1.0f) {
-        audioPlayer?.playSoundEvent(resourceLocation, position, volume, pitch)
-    }
-
-    fun playSoundEvent(soundEvent: SoundEvent, position: Vec3i? = null, volume: Float = 1.0f, pitch: Float = 1.0f) {
-        audioPlayer?.playSoundEvent(soundEvent, position, volume, pitch)
-    }
-
-    fun playSoundEvent(soundEvent: SoundEvent, position: Vec3? = null, volume: Float = 1.0f, pitch: Float = 1.0f) {
-        audioPlayer?.playSoundEvent(soundEvent, position, volume, pitch)
+    override fun stopSound(sound: ResourceLocation) {
+        audioPlayer?.stopSound(sound)
     }
 
     fun addParticle(particle: Particle) {
@@ -229,7 +221,7 @@ class World(
     }
 
     fun getLight(blockPosition: Vec3i): Int {
-        return get(blockPosition.chunkPosition)?.getLight(blockPosition.inChunkPosition) ?: 0xFF
+        return get(blockPosition.chunkPosition)?.getLight(blockPosition.inChunkPosition) ?: 0x00
     }
 
     val skyAngle: Double
@@ -263,51 +255,37 @@ class World(
     }
 
     fun getChunkNeighbours(chunkPosition: Vec2i): Array<Chunk?> {
-        return getChunkNeighbours(ChunkUtil.getChunkNeighbourPositions(chunkPosition))
+        return getChunkNeighbours(getChunkNeighbourPositions(chunkPosition))
     }
 
-
-    fun onChunkUpdate(chunkPosition: Vec2i, chunk: Chunk = this[chunkPosition]!!) {
-        if (chunk.neighboursLoaded) {
-            // return  ToDo: Causes some chunks not have neighboursLoaded=true, but they should
+    fun onChunkUpdate(chunkPosition: Vec2i, chunk: Chunk, checkNeighbours: Boolean = true) {
+        if (chunk.isFullyLoaded) {
+            return
         }
-        val neighbourPositions = ChunkUtil.getChunkNeighbourPositions(chunkPosition)
-        val neighbours = getChunkNeighbours(neighbourPositions)
-        if (neighbours.loaded) {
+
+
+        val neighboursPositions = getChunkNeighbourPositions(chunkPosition)
+        val neighbours = getChunkNeighbours(neighboursPositions)
+
+        if (neighbours.received) {
             chunk.neighboursLoaded = true
-            if (cacheBiomeAccessor != null) {
+
+            if (!chunk.biomesInitialized && cacheBiomeAccessor != null && chunk.biomeSource != null && neighbours.canBuildBiomeCache) {
                 chunk.buildBiomeCache()
             }
+            connection.fireEvent(ChunkDataChangeEvent(connection, EventInitiators.UNKNOWN, chunkPosition, chunk))
         }
+
+
+        if (!checkNeighbours) {
+            return
+        }
+
         for (index in 0 until 8) {
-            val neighbourPosition = neighbourPositions[index]
-            if (neighbourPosition == chunkPosition) {
-                continue
-            }
-            val neighbourChunk = neighbours[index] ?: continue
-
-            if (neighbourChunk.neighboursLoaded) {
-                continue
-            }
-            var neighbourLoaded = true
-            for (neighbourNeighbourChunk in getChunkNeighbours(neighbourPosition)) {
-                if ((neighbourNeighbourChunk?.biomeSource == null && neighbourNeighbourChunk?.biomesInitialized != true) || !neighbourNeighbourChunk.blocksInitialized || !neighbourNeighbourChunk.lightInitialized) {
-                    neighbourLoaded = false
-                    break
-                }
-            }
-            if (!neighbourLoaded) {
-                continue
-            }
-            neighbourChunk.neighboursLoaded = true
-
-            if (cacheBiomeAccessor != null) {
-                neighbourChunk.buildBiomeCache()
-            }
-            connection.fireEvent(ChunkDataChangeEvent(connection, EventInitiators.UNKNOWN, neighbourPosition, neighbourChunk))
+            val neighbour = neighbours[index] ?: continue
+            onChunkUpdate(neighboursPositions[index], neighbour, false)
         }
     }
-
 
     companion object {
         const val MAX_SIZE = 29999999

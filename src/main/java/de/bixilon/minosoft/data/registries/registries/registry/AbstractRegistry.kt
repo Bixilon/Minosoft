@@ -16,7 +16,6 @@ package de.bixilon.minosoft.data.registries.registries.registry
 import de.bixilon.minosoft.util.collections.Clearable
 
 interface AbstractRegistry<T> : Iterable<T>, Clearable, Parentable<AbstractRegistry<T>> {
-
     val size: Int
 
     operator fun get(any: Any?): T?

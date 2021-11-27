@@ -25,7 +25,7 @@ import de.bixilon.minosoft.data.inventory.InventorySlots
 import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.physics.PhysicsConstants
 import de.bixilon.minosoft.data.registries.AABB
-import de.bixilon.minosoft.data.registries.blocks.DefaultBlocks
+import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.effects.DefaultStatusEffects
 import de.bixilon.minosoft.data.registries.effects.attributes.DefaultStatusEffectAttributeNames
@@ -40,11 +40,12 @@ import de.bixilon.minosoft.data.tags.DefaultBlockTags
 import de.bixilon.minosoft.data.tags.Tag
 import de.bixilon.minosoft.gui.rendering.input.camera.MovementInput
 import de.bixilon.minosoft.gui.rendering.util.VecUtil
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.clearZero
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.get
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.get
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.c2s.play.*
 import de.bixilon.minosoft.protocol.packets.s2c.play.TagsS2CP
@@ -121,6 +122,9 @@ class LocalPlayerEntity(
     private val slowMovement: Boolean
         get() = isSneaking // ToDo: Or should leave swimming pose
 
+    override val hasCollisions: Boolean
+        get() = gamemode != Gamemodes.SPECTATOR
+
     var isUsingItem = false
     override var activeHand: Hands? = null
 
@@ -181,7 +185,7 @@ class LocalPlayerEntity(
 
             val blockStateBelow = connection.world[positionInfo.blockPosition] ?: return 1.0
 
-            if (blockStateBelow.block.resourceLocation == DefaultBlocks.WATER || blockStateBelow.block.resourceLocation == DefaultBlocks.BUBBLE_COLUMN) {
+            if (blockStateBelow.block.resourceLocation == MinecraftBlocks.WATER || blockStateBelow.block.resourceLocation == MinecraftBlocks.BUBBLE_COLUMN) {
                 if (blockStateBelow.block.velocityMultiplier == 1.0) {
                     return connection.world[positionInfo.blockPosition]?.block?.velocityMultiplier ?: 1.0
                 }
@@ -304,7 +308,7 @@ class LocalPlayerEntity(
             y = max(velocity.y, -CLIMBING_CLAMP_VALUE),
             z = MMath.clamp(velocity.z, -CLIMBING_CLAMP_VALUE, CLIMBING_CLAMP_VALUE)
         )
-        if (returnVelocity.y < 0.0 && connection.world[positionInfo.blockPosition]?.block?.resourceLocation != DefaultBlocks.SCAFFOLDING && isSneaking) {
+        if (returnVelocity.y < 0.0 && connection.world[positionInfo.blockPosition]?.block?.resourceLocation != MinecraftBlocks.SCAFFOLDING && isSneaking) {
             returnVelocity.y = 0.0
         }
         return returnVelocity
@@ -330,7 +334,7 @@ class LocalPlayerEntity(
     }
 
     private fun adjustVelocityForClimbing(velocity: Vec3d): Vec3d {
-        if ((this.horizontalCollision || isJumping) && (isClimbing || connection.world[positionInfo.blockPosition]?.block == DefaultBlocks.POWDER_SNOW && equipment[InventorySlots.EquipmentSlots.FEET]?.item?.resourceLocation == DefaultItems.LEATHER_BOOTS)) {
+        if ((this.horizontalCollision || isJumping) && (isClimbing || connection.world[positionInfo.blockPosition]?.block == MinecraftBlocks.POWDER_SNOW && equipment[InventorySlots.EquipmentSlots.FEET]?.item?.resourceLocation == DefaultItems.LEATHER_BOOTS)) {
             return Vec3d(velocity.x, 0.2, velocity.z)
         }
         return velocity
@@ -524,7 +528,7 @@ class LocalPlayerEntity(
         var minimumDistance = Float.MAX_VALUE
 
         for (direction in Directions.PRIORITY_SIDES) {
-            val nearestAxisValue = direction.axis.choose(Vec3(decimal.x, 0.0, decimal.y))
+            val nearestAxisValue = Vec3(decimal.x, 0.0, decimal.y)[direction.axis]
             val movement = (direction.vector[direction.axis] > 0.0).decide(1.0f - nearestAxisValue, nearestAxisValue)
             if (movement < minimumDistance && !collidesAt(blockPosition + direction)) {
                 minimumDistance = movement

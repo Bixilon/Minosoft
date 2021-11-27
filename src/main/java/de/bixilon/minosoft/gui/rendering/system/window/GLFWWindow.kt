@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.system.window
 
+import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.gui.rendering.modding.events.ResizeWindowEvent
 import de.bixilon.minosoft.gui.rendering.modding.events.WindowCloseEvent
@@ -34,7 +35,9 @@ import glm_.vec2.Vec2i
 import org.lwjgl.glfw.Callbacks.glfwFreeCallbacks
 import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.glfw.GLFWErrorCallback
+import org.lwjgl.glfw.GLFWImage
 import org.lwjgl.system.MemoryUtil
+import java.nio.ByteBuffer
 
 
 class GLFWWindow(
@@ -128,9 +131,11 @@ class GLFWWindow(
         check(glfwInit()) { "Unable to initialize GLFW" }
 
         glfwDefaultWindowHints()
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3)
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3)
-        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE)
+        if (Minosoft.config.config.game.graphics.preferQuads) {
+            setOpenGLVersion(3, 0, false)
+        } else {
+            setOpenGLVersion(3, 3, true)
+        }
         glfwWindowHint(GLFW_VISIBLE, false.glfw)
 
 
@@ -188,6 +193,12 @@ class GLFWWindow(
 
     override fun pollEvents() {
         glfwPollEvents()
+    }
+
+    override fun setOpenGLVersion(major: Int, minor: Int, coreProfile: Boolean) {
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, major)
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, minor)
+        glfwWindowHint(GLFW_OPENGL_PROFILE, if (coreProfile) GLFW_OPENGL_CORE_PROFILE else GLFW_OPENGL_ANY_PROFILE)
     }
 
     private fun onFocusChange(window: Long, focused: Boolean) {
@@ -269,6 +280,14 @@ class GLFWWindow(
         }
 
         eventMaster.fireEvent(MouseScrollEvent(offset = Vec2d(xOffset, yOffset)))
+    }
+
+    override fun setIcon(size: Vec2i, buffer: ByteBuffer) {
+        val images = GLFWImage.malloc(1)
+        val image = GLFWImage.malloc()
+        image.set(size.x, size.y, buffer)
+        images.put(0, image)
+        glfwSetWindowIcon(window, images)
     }
 
     companion object {

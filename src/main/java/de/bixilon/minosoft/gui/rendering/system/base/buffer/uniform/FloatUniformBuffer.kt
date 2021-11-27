@@ -13,6 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform
 
-import de.bixilon.minosoft.gui.rendering.system.base.buffer.FloatBuffer
+import de.bixilon.minosoft.gui.rendering.system.base.buffer.RenderFloatBuffer
 
-interface FloatUniformBuffer : UniformBuffer, FloatBuffer
+interface FloatUniformBuffer : UniformBuffer, RenderFloatBuffer

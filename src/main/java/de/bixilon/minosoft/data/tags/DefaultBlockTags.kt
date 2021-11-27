@@ -13,8 +13,8 @@
 
 package de.bixilon.minosoft.data.tags
 
-import de.bixilon.minosoft.data.registries.blocks.DefaultBlocks
+import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
 
 object DefaultBlockTags {
-    val CLIMBABLE = setOf(DefaultBlocks.LADDER, DefaultBlocks.VINE, DefaultBlocks.SCAFFOLDING, DefaultBlocks.WEEPING_VINES, DefaultBlocks.WEEPING_VINES_PLANT, DefaultBlocks.TWISTING_VINES, DefaultBlocks.WEEPING_VINES_PLANT, DefaultBlocks.CAVE_VINES, DefaultBlocks.CAVE_VINES_PLANT)
+    val CLIMBABLE = setOf(MinecraftBlocks.LADDER, MinecraftBlocks.VINE, MinecraftBlocks.SCAFFOLDING, MinecraftBlocks.WEEPING_VINES, MinecraftBlocks.WEEPING_VINES_PLANT, MinecraftBlocks.TWISTING_VINES, MinecraftBlocks.WEEPING_VINES_PLANT, MinecraftBlocks.CAVE_VINES, MinecraftBlocks.CAVE_VINES_PLANT)
 }

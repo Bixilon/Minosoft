@@ -17,15 +17,13 @@ import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.key.KeyAction
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
-import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.other.game.event.handlers.gamemode.GamemodeChangeGameEventHandler
+import de.bixilon.minosoft.data.registries.other.game.event.handlers.gamemode.GamemodeChangeEvent
 import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.world.Chunk
-import de.bixilon.minosoft.gui.rendering.block.WorldRenderer
 import de.bixilon.minosoft.gui.rendering.gui.elements.Element
 import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments
 import de.bixilon.minosoft.gui.rendering.gui.elements.layout.RowLayout
@@ -39,9 +37,9 @@ import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.LayoutedHUDElement
 import de.bixilon.minosoft.gui.rendering.modding.events.ResizeWindowEvent
 import de.bixilon.minosoft.gui.rendering.particle.ParticleRenderer
-import de.bixilon.minosoft.gui.rendering.util.vec.Vec2Util.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
+import de.bixilon.minosoft.gui.rendering.world.WorldRenderer
 import de.bixilon.minosoft.modding.event.events.DifficultyChangeEvent
-import de.bixilon.minosoft.modding.event.events.GameEventChangeEvent
 import de.bixilon.minosoft.modding.event.events.TimeChangeEvent
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.modding.loading.ModLoader
@@ -87,7 +85,7 @@ class DebugHUDElement(hudRenderer: HUDRenderer) : LayoutedHUDElement<GridLayout>
         layout += TextElement(hudRenderer, TextComponent(RunConfiguration.VERSION_STRING, ChatColors.RED))
         layout += AutoTextElement(hudRenderer, 1) { "FPS ${renderWindow.renderStats.smoothAvgFPS.round10}" }
         renderWindow[WorldRenderer]?.apply {
-            layout += AutoTextElement(hudRenderer, 1) { "C v=${visibleChunks.size}, p=${allChunkSections.size}, q=${queuedChunks.size}, t=${connection.world.chunks.size}" }
+            layout += AutoTextElement(hudRenderer, 1) { "C v=$visibleSize, m=$loadedMeshesSize, cQ=$culledQueuedSize, q=$queueSize, pT=$preparingTasksSize/$maxPreparingTasks, l=$meshesToLoadSize/$maxMeshesToLoad, w=${connection.world.chunks.size}" }
         }
         layout += AutoTextElement(hudRenderer, 1) { "E t=${connection.world.entities.size}" }
 
@@ -152,12 +150,8 @@ class DebugHUDElement(hudRenderer: HUDRenderer) : LayoutedHUDElement<GridLayout>
         layout += LineSpacerElement(hudRenderer)
 
         layout += TextElement(hudRenderer, BaseComponent("Gamemode ", connection.player.gamemode)).apply {
-            connection.registerEvent(CallbackEventInvoker.of<GameEventChangeEvent> {
-                if (it.event.resourceLocation != GamemodeChangeGameEventHandler.RESOURCE_LOCATION) {
-                    return@of
-                }
-                // ToDo: Improve game mode change event
-                text = BaseComponent("Gamemode ", Gamemodes[it.data.toInt()])
+            connection.registerEvent(CallbackEventInvoker.of<GamemodeChangeEvent> {
+                text = BaseComponent("Gamemode ", it.gamemode)
             })
         }
 
@@ -270,7 +264,7 @@ class DebugHUDElement(hudRenderer: HUDRenderer) : LayoutedHUDElement<GridLayout>
 
                 this@DebugWorldInfo += AutoTextElement(hudRenderer, 1) { BaseComponent("Sky properties ", connection.world.dimension?.skyProperties) }
                 this@DebugWorldInfo += AutoTextElement(hudRenderer, 1) { BaseComponent("Biome ", connection.world.getBiome(blockPosition)) }
-                this@DebugWorldInfo += AutoTextElement(hudRenderer, 1) { with(connection.world.getLight(blockPosition)) { BaseComponent("Light block=", (this and 0x0F), ", sky=", (this ushr 4)) } }
+                this@DebugWorldInfo += AutoTextElement(hudRenderer, 1) { with(connection.world.getLight(blockPosition)) { BaseComponent("Light block=", (this and 0x0F), ", sky=", ((this and 0xF0) shr 4)) } }
                 this@DebugWorldInfo += AutoTextElement(hudRenderer, 1) { BaseComponent("Fully loaded: ", world[entity.positionInfo.chunkPosition]?.isFullyLoaded) }
 
                 lastChunk = chunk

@@ -14,6 +14,7 @@ package de.bixilon.minosoft.protocol.packets.s2c.play
 
 import de.bixilon.minosoft.data.SoundCategories
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions
@@ -21,7 +22,6 @@ import de.bixilon.minosoft.util.BitByte.isBitMask
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
-import java.util.*
 
 class StopSoundS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     val category: SoundCategories?
@@ -31,7 +31,7 @@ class StopSoundS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         var category: SoundCategories? = null
         var sound: ResourceLocation? = null
         if (buffer.versionId < ProtocolVersions.V_17W45A) { // ToDo: these 2 values need to be switched in before 1.12.2
-            category = SoundCategories.valueOf(buffer.readString().uppercase(Locale.getDefault()))
+            category = SoundCategories.valueOf(buffer.readString().uppercase())
             sound = buffer.readResourceLocation()
         } else {
             val flags = buffer.readByte()
@@ -44,6 +44,11 @@ class StopSoundS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         }
         this.category = category
         this.sound = sound
+    }
+
+    override fun handle(connection: PlayConnection) {
+        sound?.let { connection.world.stopSound(it) }
+        // ToDo: Category
     }
 
     override fun log() {

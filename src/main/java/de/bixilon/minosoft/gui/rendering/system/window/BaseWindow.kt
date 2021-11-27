@@ -15,8 +15,13 @@ package de.bixilon.minosoft.gui.rendering.system.window
 
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.StaticConfiguration
+import de.bixilon.minosoft.data.assets.AssetsManager
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import de.matthiasmann.twl.utils.PNGDecoder
 import glm_.vec2.Vec2
 import glm_.vec2.Vec2i
+import org.lwjgl.BufferUtils
+import java.nio.ByteBuffer
 
 interface BaseWindow {
     var size: Vec2i
@@ -58,6 +63,20 @@ interface BaseWindow {
     fun swapBuffers()
 
     fun pollEvents()
+
+    fun setOpenGLVersion(major: Int, minor: Int, coreProfile: Boolean)
+
+
+    fun setIcon(size: Vec2i, buffer: ByteBuffer)
+
+
+    fun setDefaultIcon(assetsManager: AssetsManager) {
+        val decoder = PNGDecoder(assetsManager.readAssetAsStream("minosoft:textures/icons/window_icon.png".toResourceLocation()))
+        val data = BufferUtils.createByteBuffer(decoder.width * decoder.height * PNGDecoder.Format.RGBA.numComponents)
+        decoder.decode(data, decoder.width * PNGDecoder.Format.RGBA.numComponents, PNGDecoder.Format.RGBA)
+        data.flip()
+        setIcon(Vec2i(decoder.width, decoder.height), data)
+    }
 
     companion object {
         val DEFAULT_WINDOW_SIZE: Vec2i

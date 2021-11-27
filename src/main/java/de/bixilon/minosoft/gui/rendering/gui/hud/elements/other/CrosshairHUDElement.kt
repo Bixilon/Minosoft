@@ -25,6 +25,7 @@ import de.bixilon.minosoft.gui.rendering.input.camera.hit.BlockRaycastHit
 import de.bixilon.minosoft.gui.rendering.input.camera.hit.EntityRaycastHit
 import de.bixilon.minosoft.gui.rendering.system.base.BlendingFunctions
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
+import de.bixilon.minosoft.util.collections.floats.DirectArrayFloatList
 
 class CrosshairHUDElement(hudRenderer: HUDRenderer) : CustomHUDElement(hudRenderer) {
     private lateinit var crosshairAtlasElement: HUDAtlasElement
@@ -46,7 +47,7 @@ class CrosshairHUDElement(hudRenderer: HUDRenderer) : CustomHUDElement(hudRender
         val mesh = mesh ?: return
 
         if (Minosoft.config.config.game.hud.crosshair.complementaryColor) {
-            renderWindow.renderSystem.reset(sourceAlpha = BlendingFunctions.ONE_MINUS_DESTINATION_COLOR, destinationAlpha = BlendingFunctions.ONE_MINUS_SOURCE_COLOR)
+            renderWindow.renderSystem.reset(blending = true, sourceAlpha = BlendingFunctions.ONE_MINUS_DESTINATION_COLOR, destinationAlpha = BlendingFunctions.ONE_MINUS_SOURCE_COLOR)
         } else {
             renderWindow.renderSystem.reset()
         }
@@ -62,7 +63,7 @@ class CrosshairHUDElement(hudRenderer: HUDRenderer) : CustomHUDElement(hudRender
         val config = Minosoft.config.config.game.hud.crosshair
 
 
-        val mesh = GUIMesh(renderWindow, hudRenderer.matrix)
+        val mesh = GUIMesh(renderWindow, hudRenderer.matrix, DirectArrayFloatList(42))
 
         // Custom draw to make the crosshair inverted
         if (renderWindow.connection.player.gamemode == Gamemodes.SPECTATOR) {

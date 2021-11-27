@@ -14,18 +14,17 @@
 package de.bixilon.minosoft.data.world
 
 import de.bixilon.minosoft.data.entities.block.BlockEntity
-import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.world.biome.source.BiomeSource
-import de.bixilon.minosoft.data.world.container.RegistrySectionDataProvider
+import de.bixilon.minosoft.data.world.container.BlockSectionDataProvider
 import glm_.vec3.Vec3i
 
 class ChunkData(
-    var blocks: Array<RegistrySectionDataProvider<BlockState?>?>? = null,
+    var blocks: Array<BlockSectionDataProvider?>? = null,
     var blockEntities: Map<Vec3i, BlockEntity>? = null,
     var biomeSource: BiomeSource? = null,
-    var light: Array<IntArray?>? = null,
-    var bottomLight: IntArray? = null,
-    var topLight: IntArray? = null,
+    var light: Array<ByteArray?>? = null,
+    var bottomLight: ByteArray? = null,
+    var topLight: ByteArray? = null,
 ) {
 
     @Synchronized

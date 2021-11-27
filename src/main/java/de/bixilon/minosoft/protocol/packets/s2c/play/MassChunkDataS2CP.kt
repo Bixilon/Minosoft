@@ -15,7 +15,7 @@ package de.bixilon.minosoft.protocol.packets.s2c.play
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.world.ChunkData
 import de.bixilon.minosoft.modding.event.EventInitiators
-import de.bixilon.minosoft.modding.event.events.ChunkUnloadEvent
+import de.bixilon.minosoft.modding.event.events.ChunkDataChangeEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
 import de.bixilon.minosoft.protocol.protocol.PlayInByteBuffer
@@ -68,15 +68,13 @@ class MassChunkDataS2CP() : PlayS2CPacket() {
     }
 
     override fun handle(connection: PlayConnection) {
-        // transform data
         for ((chunkPosition, data) in data) {
-            data?.let {
-                val chunk = connection.world.getOrCreateChunk(chunkPosition)
-                chunk.setData(data)
-            } ?: let {
+            if (data == null) {
                 // unload chunk
                 connection.world.unloadChunk(chunkPosition)
-                connection.fireEvent(ChunkUnloadEvent(connection, EventInitiators.SERVER, chunkPosition))
+            } else {
+                val chunk = connection.world.getOrCreateChunk(chunkPosition)
+                chunk.setData(data)
             }
         }
     }

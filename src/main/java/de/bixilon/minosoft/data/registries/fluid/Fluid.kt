@@ -23,6 +23,8 @@ import de.bixilon.minosoft.data.registries.particle.ParticleType
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
 import de.bixilon.minosoft.data.registries.registries.registry.ResourceLocationDeserializer
+import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
+import de.bixilon.minosoft.gui.rendering.tint.TintProvider
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.nullCast
 import de.bixilon.minosoft.util.KUtil.unsafeCast
@@ -36,7 +38,11 @@ open class Fluid(
     registries: Registries,
     data: Map<String, Any>,
 ) : RegistryItem() {
-    open val stillTexture: ResourceLocation? = null
+    open val tintProvider: TintProvider? = null
+    open val stillTextureName: ResourceLocation? = null
+    open val flowingTextureName: ResourceLocation? = null
+    var stillTexture: AbstractTexture? = null
+    var flowingTexture: AbstractTexture? = null
     val dripParticle: ParticleType? = null
     val bucketItem: Item? = null
 

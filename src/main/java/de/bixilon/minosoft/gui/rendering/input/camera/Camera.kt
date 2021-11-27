@@ -25,6 +25,7 @@ import de.bixilon.minosoft.data.registries.fluid.DefaultFluids
 import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.input.camera.frustum.Frustum
 import de.bixilon.minosoft.gui.rendering.input.camera.hit.BlockRaycastHit
 import de.bixilon.minosoft.gui.rendering.input.camera.hit.EntityRaycastHit
 import de.bixilon.minosoft.gui.rendering.input.camera.hit.FluidRaycastHit
@@ -59,12 +60,9 @@ class Camera(
     val renderWindow: RenderWindow,
 ) {
     var fogColor = Previous(ChatColors.GREEN)
-    var fogStart = 100.0f
+    var fogStart = Minosoft.config.config.game.camera.viewDistance * ProtocolDefinition.SECTION_WIDTH_X.toFloat() // ToDo
     private var mouseSensitivity = Minosoft.config.config.game.controls.moseSensitivity
 
-    @Deprecated("", ReplaceWith("connection.player"))
-    val entity: LocalPlayerEntity
-        get() = connection.player
     private var lastMousePosition: Vec2d = Vec2d(0.0, 0.0)
     private var zoom = 0.0f
 
@@ -137,8 +135,7 @@ class Camera(
         fogStart = if (connection.player.submergedFluid?.resourceLocation == DefaultFluids.WATER) {
             10.0f
         } else {
-            val renderDistance = 10 // ToDo: Calculate correct, get real render distance
-            (renderDistance * ProtocolDefinition.SECTION_WIDTH_X).toFloat()
+            Minosoft.config.config.game.camera.viewDistance * ProtocolDefinition.SECTION_WIDTH_X.toFloat() // ToDO
         }
     }
 
@@ -289,7 +286,7 @@ class Camera(
     }
 
     private fun setSkyColor() {
-        renderWindow[SkyRenderer.Companion]?.let { skyRenderer ->
+        renderWindow[SkyRenderer]?.let { skyRenderer ->
             skyRenderer.baseColor = connection.world.getBiome(connection.player.positionInfo.blockPosition)?.skyColor ?: RenderConstants.DEFAULT_SKY_COLOR
 
 
@@ -304,7 +301,7 @@ class Camera(
     }
 
     private fun calculateProjectionMatrix(screenDimensions: Vec2): Mat4d {
-        return glm.perspective(fov.rad, screenDimensions.x.toDouble() / screenDimensions.y, 0.1, 1000.0)
+        return glm.perspective(fov.rad, screenDimensions.x.toDouble() / screenDimensions.y, 0.01, 10000.0)
     }
 
     private fun calculateViewMatrix(): Mat4d {

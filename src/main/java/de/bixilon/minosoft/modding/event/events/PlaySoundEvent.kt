@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.modding.event.events
 
 import de.bixilon.minosoft.data.SoundCategories
-import de.bixilon.minosoft.data.registries.sounds.SoundEvent
+import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
@@ -27,7 +27,7 @@ class PlaySoundEvent(
     initiator: EventInitiators,
     val category: SoundCategories?,
     position: Vec3,
-    val soundEvent: SoundEvent,
+    val soundEvent: ResourceLocation,
     val volume: Float,
     val pitch: Float,
 ) : PlayConnectionEvent(connection, initiator), CancelableEvent {

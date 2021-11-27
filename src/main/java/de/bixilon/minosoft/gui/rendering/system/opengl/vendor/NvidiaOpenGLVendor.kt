@@ -18,6 +18,7 @@ import org.lwjgl.opengl.NVXGPUMemoryInfo.GL_GPU_MEMORY_INFO_CURRENT_AVAILABLE_VI
 import org.lwjgl.opengl.NVXGPUMemoryInfo.GL_GPU_MEMORY_INFO_DEDICATED_VIDMEM_NVX
 
 object NvidiaOpenGLVendor : OpenGLVendor {
+    override val strictSpecification: Boolean = false
     override val shaderDefine: String = "__NVIDIA"
 
     override val availableVRAM: Long

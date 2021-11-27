@@ -23,8 +23,8 @@ import de.bixilon.minosoft.data.player.PlayerProperty
 import de.bixilon.minosoft.data.player.tab.TabListItem
 import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.world.World
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.clamp
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import glm_.vec2.Vec2
 import glm_.vec3.Vec3d
@@ -93,7 +93,7 @@ abstract class PlayerEntity(
         private val DIMENSIONS: Map<Poses, Vec2> = mapOf(
             Poses.STANDING to Vec2(0.6f, 1.8f),
             Poses.SLEEPING to Vec2(0.2f, 0.2f),
-            Poses.FLYING to Vec2(0.6f, 0.6f),
+            Poses.ELYTRA_FLYING to Vec2(0.6f, 0.6f),
             Poses.SWIMMING to Vec2(0.6f, 0.6f),
             Poses.SPIN_ATTACK to Vec2(0.6f, 0.6f),
             Poses.SNEAKING to Vec2(0.6f, 1.5f), // ToDo: This changed at some time

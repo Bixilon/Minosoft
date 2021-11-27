@@ -17,6 +17,8 @@ enum class PrimitiveTypes(val vertices: Int) {
     POINT(1),
     LINE(2),
     TRIANGLE(4),
+
+    @Deprecated("Removed in OpenGL 3.1+")
     QUAD(4),
     ;
 }

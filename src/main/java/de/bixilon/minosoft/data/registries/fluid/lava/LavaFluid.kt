@@ -42,8 +42,8 @@ class LavaFluid(
     data: Map<String, Any>,
 ) : FlowableFluid(resourceLocation, registries, data) {
     private val lavaParticleType: ParticleType? = null
-    override val stillTexture: ResourceLocation = "minecraft:block/lava_still".toResourceLocation()
-    override val flowingTexture: ResourceLocation = "minecraft:block/lava_flow".toResourceLocation()
+    override val stillTextureName: ResourceLocation = "minecraft:block/lava_still".toResourceLocation()
+    override val flowingTextureName: ResourceLocation = "minecraft:block/lava_flow".toResourceLocation()
 
     init {
         this::lavaParticleType.inject(LavaParticle)

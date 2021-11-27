@@ -19,6 +19,7 @@ import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
+import de.bixilon.minosoft.util.collections.floats.DirectArrayFloatList
 import glm_.mat4x4.Mat4
 import glm_.vec2.Vec2
 import glm_.vec2.Vec2t
@@ -28,7 +29,8 @@ import glm_.vec4.Vec4
 class GUIMesh(
     renderWindow: RenderWindow,
     val matrix: Mat4,
-) : Mesh(renderWindow, GUIMeshStruct, initialCacheSize = 40000), GUIVertexConsumer {
+    data: DirectArrayFloatList,
+) : Mesh(renderWindow, GUIMeshStruct, initialCacheSize = 40000, clearOnLoad = false, data = data), GUIVertexConsumer {
 
     override fun addVertex(position: Vec2t<*>, z: Int, texture: AbstractTexture, uv: Vec2, tint: RGBColor, options: GUIVertexOptions?) {
         data.addAll(createVertex(matrix, position, z, texture, uv, tint, options))
@@ -41,7 +43,7 @@ class GUIMesh(
     data class GUIMeshStruct(
         val position: Vec3,
         val uv: Vec2,
-        val textureLayer: Int,
+        val indexLayerAnimation: Int,
         val tintColor: RGBColor,
     ) {
         companion object : MeshStruct(GUIMeshStruct::class)
@@ -68,7 +70,7 @@ class GUIMesh(
                 BASE_Z + Z_MULTIPLIER * z,
                 uv.x,
                 uv.y,
-                Float.fromBits(texture.renderData?.layer ?: RenderConstants.DEBUG_TEXTURE_ID),
+                Float.fromBits(texture.renderData?.shaderTextureId ?: RenderConstants.DEBUG_TEXTURE_ID),
                 Float.fromBits(color.rgba),
             )
         }

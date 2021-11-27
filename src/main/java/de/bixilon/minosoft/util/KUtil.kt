@@ -25,7 +25,7 @@ import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.data.text.TextFormattable
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import de.bixilon.minosoft.util.collections.SemaphoreMap
+import de.bixilon.minosoft.util.collections.LockMap
 import de.bixilon.minosoft.util.collections.SynchronizedMap
 import de.bixilon.minosoft.util.enum.AliasableEnum
 import de.bixilon.minosoft.util.json.JSONSerializer
@@ -37,6 +37,7 @@ import sun.misc.Unsafe
 import java.io.PrintWriter
 import java.io.StringWriter
 import java.lang.reflect.Field
+import java.nio.ByteBuffer
 import java.util.*
 import kotlin.Pair
 import kotlin.random.Random
@@ -84,6 +85,10 @@ object KUtil {
         }
     }
 
+    fun <K, V> lockMapOf(vararg pairs: Pair<K, V>): LockMap<K, V> {
+        return LockMap(mutableMapOf(*pairs))
+    }
+
     fun <K, V> synchronizedMapOf(vararg pairs: Pair<K, V>): SynchronizedMap<K, V> {
         return SynchronizedMap(mutableMapOf(*pairs))
     }
@@ -105,19 +110,21 @@ object KUtil {
     }
 
     fun <K, V> Map<K, V>.toSynchronizedMap(): SynchronizedMap<K, V> {
-        return if (this is SemaphoreMap<*, *>) {
-            lock.acquire()
-            val map: SynchronizedMap<K, V> = SynchronizedMap(this.toMutableMap()).unsafeCast()
-            lock.release()
-            map
-        } else if (this is SynchronizedMap<*, *>) {
-            val map: SynchronizedMap<K, V>
-            synchronized(this.lock) {
-                map = SynchronizedMap(this.toMutableMap()).unsafeCast()
+        return when (this) {
+            is LockMap<*, *> -> {
+                lock.acquire()
+                val map: SynchronizedMap<K, V> = SynchronizedMap(this.toMutableMap()).unsafeCast()
+                lock.release()
+                map
             }
-            map
-        } else {
-            synchronizedCopy { SynchronizedMap(this.toMutableMap()) }
+            is SynchronizedMap<*, *> -> {
+                val map: SynchronizedMap<K, V>
+                synchronized(this.lock) {
+                    map = SynchronizedMap(this.toMutableMap()).unsafeCast()
+                }
+                map
+            }
+            else -> synchronizedCopy { SynchronizedMap(this.toMutableMap()) }
         }
     }
 
@@ -253,6 +260,10 @@ object KUtil {
     }
 
     operator fun <T> List<T>.get(enum: Enum<*>): T {
+        return this[enum.ordinal]
+    }
+
+    operator fun <T> Array<T>.get(enum: Enum<*>): T {
         return this[enum.ordinal]
     }
 
@@ -474,4 +485,44 @@ object KUtil {
         }
         return null
     }
+
+    fun Any?.autoType(): Any? {
+        if (this == null) {
+            return this
+        }
+        if (this is Number) {
+            return this
+        }
+        val string = this.toString()
+
+        if (string == "true") {
+            return true
+        }
+        if (string == "false") {
+            return false
+        }
+
+        // ToDo: Optimize
+        if (string.matches("\\d+".toRegex())) {
+            return string.toInt()
+        }
+
+        return string
+    }
+
+    fun ByteBuffer.toByteArray(): ByteArray {
+        val array = ByteArray(this.remaining())
+        this.get(array)
+        return array
+    }
+
+    val BooleanArray.isTrue: Boolean
+        get() {
+            for (boolean in this) {
+                if (!boolean) {
+                    return false
+                }
+            }
+            return true
+        }
 }

@@ -13,16 +13,11 @@
 
 package de.bixilon.minosoft.data.registries.blocks.properties.serializer
 
+import de.bixilon.minosoft.util.KUtil.toBoolean
+
 object BooleanBlockPropertiesSerializer : BlockPropertiesSerializer {
 
     override fun deserialize(value: Any): Boolean {
-        if (value is Boolean) {
-            return value
-        }
-        return when (value) {
-            "true" -> true
-            "false" -> false
-            else -> throw IllegalArgumentException("Not a boolean: $value")
-        }
+        return value.toBoolean()
     }
 }

@@ -15,27 +15,40 @@ package de.bixilon.minosoft.gui.rendering.gui.mesh
 
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
-import de.bixilon.minosoft.gui.rendering.util.vec.Vec2Util.EMPTY
-import de.bixilon.minosoft.util.collections.ArrayFloatList
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
+import de.bixilon.minosoft.util.collections.floats.AbstractFloatList
+import de.bixilon.minosoft.util.collections.floats.HeapArrayFloatList
 import glm_.mat4x4.Mat4
 import glm_.vec2.Vec2
 import glm_.vec2.Vec2i
 import glm_.vec2.Vec2t
 
 class GUIMeshCache(
-    val matrix: Mat4,
+    var matrix: Mat4,
+    override val order: Array<Pair<Int, Int>>,
     initialCacheSize: Int = 1000,
+    var data: AbstractFloatList = HeapArrayFloatList(initialCacheSize),
 ) : GUIVertexConsumer {
-    val data: ArrayFloatList = ArrayFloatList(initialCacheSize)
+    var revision: Long = 0
     var offset: Vec2i = Vec2i.EMPTY
     var z: Int = 0
     var maxZ: Int = 0
 
+    fun clear() {
+        if (data.finished) {
+            data = HeapArrayFloatList(initialSize = data.size)
+        } else {
+            data.clear()
+        }
+    }
+
     override fun addVertex(position: Vec2t<*>, z: Int, texture: AbstractTexture, uv: Vec2, tint: RGBColor, options: GUIVertexOptions?) {
         data.addAll(GUIMesh.createVertex(matrix, position, z, texture, uv, tint, options))
+        revision++
     }
 
     override fun addCache(cache: GUIMeshCache) {
         data.addAll(cache.data)
+        revision++
     }
 }

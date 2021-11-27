@@ -25,6 +25,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureManager
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
 import glm_.vec2.Vec2i
 import java.nio.ByteBuffer
+import java.nio.FloatBuffer
 
 interface RenderSystem {
     val shaders: MutableSet<Shader>
@@ -78,14 +79,17 @@ interface RenderSystem {
 
     var clearColor: RGBColor
 
+    var preferredPrimitiveType: PrimitiveTypes
+    var primitiveMeshOrder: Array<Pair<Int, Int>>
+
     fun readPixels(start: Vec2i, end: Vec2i, type: PixelTypes): ByteBuffer
 
 
     fun createShader(resourceLocation: ResourceLocation): Shader
 
-    fun createVertexBuffer(structure: MeshStruct, data: FloatArray, primitiveType: PrimitiveTypes = PrimitiveTypes.TRIANGLE): FloatVertexBuffer
+    fun createVertexBuffer(structure: MeshStruct, data: FloatBuffer, primitiveType: PrimitiveTypes = preferredPrimitiveType): FloatVertexBuffer
     fun createIntUniformBuffer(bindingIndex: Int = 0, data: IntArray = IntArray(0)): IntUniformBuffer
-    fun createFloatUniformBuffer(bindingIndex: Int = 0, data: FloatArray = FloatArray(0)): FloatUniformBuffer
+    fun createFloatUniformBuffer(bindingIndex: Int = 0, data: FloatBuffer): FloatUniformBuffer
 
     fun createTextureManager(): TextureManager
 

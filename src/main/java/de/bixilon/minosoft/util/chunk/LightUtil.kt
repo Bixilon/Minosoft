@@ -22,8 +22,10 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_1_16
 import java.util.*
 
 object LightUtil {
+    val EMPTY_LIGHT_ARRAY = ByteArray(ProtocolDefinition.BLOCKS_PER_SECTION / 2)
 
     fun readLightPacket(buffer: PlayInByteBuffer, skyLightMask: BitSet, blockLightMask: BitSet, dimension: DimensionProperties): ChunkData {
+        // ToDo
         val skyLight = if (dimension.hasSkyLight || buffer.versionId > V_1_16) { // ToDo: find out version
             readLightArray(buffer, skyLightMask, dimension)
         } else {
@@ -32,21 +34,24 @@ object LightUtil {
         val blockLight = readLightArray(buffer, blockLightMask, dimension)
 
         val chunkData = ChunkData()
-        val light: Array<IntArray?> = arrayOfNulls(dimension.sections)
+        val light: Array<ByteArray?> = arrayOfNulls(dimension.sections)
 
         for (i in light.indices) {
-            var sectionBlockLight = blockLight.first.getOrNull(i)
+            val sectionBlockLight = blockLight.first.getOrNull(i)
             val sectionSkyLight = skyLight?.first?.getOrNull(i)
             if (sectionBlockLight == null && sectionSkyLight == null) {
                 continue
             }
-            sectionBlockLight = ByteArray(ProtocolDefinition.BLOCKS_PER_SECTION / 2)
-            light[i] = mergeLight(sectionBlockLight, sectionSkyLight)
+            light[i] = mergeLight(sectionBlockLight ?: EMPTY_LIGHT_ARRAY, sectionSkyLight ?: EMPTY_LIGHT_ARRAY)
         }
         chunkData.light = light
 
-        blockLight.second?.let { chunkData.bottomLight = mergeLight(it, blockLight.second) }
-        blockLight.third?.let { chunkData.topLight = mergeLight(it, blockLight.third) }
+        if (blockLight.second != null || skyLight?.second != null) {
+            chunkData.bottomLight = mergeLight(blockLight.second ?: EMPTY_LIGHT_ARRAY, skyLight?.second ?: EMPTY_LIGHT_ARRAY)
+        }
+        if (blockLight.third != null || skyLight?.third != null) {
+            chunkData.bottomLight = mergeLight(blockLight.third ?: EMPTY_LIGHT_ARRAY, skyLight?.third ?: EMPTY_LIGHT_ARRAY)
+        }
         return chunkData
     }
 
@@ -84,18 +89,18 @@ object LightUtil {
         return Triple(light, bottomLight, topLight)
     }
 
-    fun mergeLight(blockLightArray: ByteArray, skyLightArray: ByteArray?): IntArray {
-        check(skyLightArray == null || blockLightArray.size == skyLightArray.size)
-        val light = IntArray(blockLightArray.size * 2)
+    fun mergeLight(blockLightArray: ByteArray, skyLightArray: ByteArray): ByteArray {
+        check(blockLightArray.size == skyLightArray.size)
+        val light = ByteArray(blockLightArray.size * 2)
 
         var skyLight: Int
         var blockLight: Int
 
         for (index in blockLightArray.indices) {
             blockLight = blockLightArray[index].toInt()
-            skyLight = skyLightArray?.get(index)?.toInt() ?: 0x00
-            light[index * 2] = (blockLight and 0x0F) or ((skyLight and 0x0F) shl 4)
-            light[index * 2 + 1] = ((blockLight and 0xF0) ushr 4) or (skyLight and 0xF0)
+            skyLight = skyLightArray[index].toInt()
+            light[index * 2] = ((blockLight and 0x0F) or ((skyLight and 0x0F) shl 4)).toByte()
+            light[index * 2 + 1] = (((blockLight and 0xF0) shr 4) or (skyLight and 0xF0)).toByte()
         }
 
         return light

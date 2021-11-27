@@ -68,8 +68,8 @@ class OpenGLSpriteAnimator : SpriteAnimator {
 
             val arrayOffset = textureAnimation.texture.renderData!!.animationData * INTS_PER_ANIMATED_TEXTURE
 
-            uniformBuffer.data[arrayOffset] = currentFrame.texture.renderData!!.layer
-            uniformBuffer.data[arrayOffset + 1] = nextFrame.texture.renderData!!.layer
+            uniformBuffer.data[arrayOffset] = currentFrame.texture.renderData!!.shaderTextureId
+            uniformBuffer.data[arrayOffset + 1] = nextFrame.texture.renderData!!.shaderTextureId
             uniformBuffer.data[arrayOffset + 2] = interpolation.toInt()
         }
 

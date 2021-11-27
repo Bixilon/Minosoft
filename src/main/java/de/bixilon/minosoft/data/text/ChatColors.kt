@@ -14,21 +14,52 @@
 package de.bixilon.minosoft.data.text
 
 object ChatColors {
+    @JvmField
     val BLACK = RGBColor(0, 0, 0)
+
+    @JvmField
     val DARK_BLUE = RGBColor(0, 0, 170)
+
+    @JvmField
     val DARK_GREEN = RGBColor(0, 170, 0)
+
+    @JvmField
     val DARK_AQUA = RGBColor(0, 170, 170)
+
+    @JvmField
     val DARK_RED = RGBColor(170, 0, 0)
+
+    @JvmField
     val DARK_PURPLE = RGBColor(170, 0, 170)
+
+    @JvmField
     val GOLD = RGBColor(255, 170, 0)
+
+    @JvmField
     val GRAY = RGBColor(170, 170, 170)
+
+    @JvmField
     val DARK_GRAY = RGBColor(85, 85, 85)
+
+    @JvmField
     val BLUE = RGBColor(85, 85, 255)
+
+    @JvmField
     val GREEN = RGBColor(85, 255, 85)
+
+    @JvmField
     val AQUA = RGBColor(85, 255, 255)
+
+    @JvmField
     val RED = RGBColor(255, 85, 85)
+
+    @JvmField
     val LIGHT_PURPLE = RGBColor(255, 85, 255)
+
+    @JvmField
     val YELLOW = RGBColor(255, 255, 85)
+
+    @JvmField
     val WHITE = RGBColor(255, 255, 255)
 
 

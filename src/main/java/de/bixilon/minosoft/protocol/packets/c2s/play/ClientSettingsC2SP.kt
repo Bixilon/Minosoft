@@ -25,16 +25,17 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 
 class ClientSettingsC2SP(
     val locale: String = "en_us",
-    val renderDistance: Int = 10,
+    val viewDistance: Int = 10,
     val chatMode: ChatModes = ChatModes.EVERYTHING,
     val skinParts: Set<SkinParts> = setOf(*SkinParts.VALUES),
     val mainHand: Hands = Hands.MAIN,
     val disableTextFiltering: Boolean = true,
+    val allowListing: Boolean = true,
 ) : PlayC2SPacket {
 
     override fun write(buffer: PlayOutByteBuffer) {
         buffer.writeString(locale) // locale
-        buffer.writeByte(renderDistance) // render Distance
+        buffer.writeByte(viewDistance) // render Distance
         buffer.writeByte(chatMode.ordinal) // chat settings
         buffer.writeBoolean(true) // chat colors
         if (buffer.versionId < ProtocolVersions.V_14W03B) {
@@ -53,10 +54,13 @@ class ClientSettingsC2SP(
         if (buffer.versionId >= ProtocolVersions.V_21W07A) {
             buffer.writeBoolean(disableTextFiltering)
         }
+        if (buffer.versionId >= ProtocolVersions.V_21W44A) {
+            buffer.writeBoolean(allowListing)
+        }
     }
 
     override fun log() {
-        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Client settings (locale=$locale, renderDistance=$renderDistance)" }
+        Log.log(LogMessageType.NETWORK_PACKETS_OUT, LogLevels.VERBOSE) { "Client settings (locale=$locale, viewDistance=$viewDistance)" }
     }
 
     enum class SkinParts {

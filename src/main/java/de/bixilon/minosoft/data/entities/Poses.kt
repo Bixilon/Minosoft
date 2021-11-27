@@ -17,11 +17,12 @@ import de.bixilon.minosoft.util.enum.ValuesEnum
 
 enum class Poses {
     STANDING,
-    FLYING,
+    ELYTRA_FLYING,
     SLEEPING,
     SWIMMING,
     SPIN_ATTACK,
     SNEAKING,
+    LONG_JUMPING, // ToDo: This was added at some time, no clue when
     DYING,
     ;
 

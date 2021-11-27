@@ -49,9 +49,6 @@ object Minosoft {
     val LANGUAGE_MANAGER = MultiLanguageManager()
     val START_UP_LATCH = CountUpAndDownLatch(1)
 
-    @Deprecated("Use singleton interface!", ReplaceWith("GlobalEventMaster", "de.bixilon.minosoft.modding.event.master.GlobalEventMaster"))
-    val GLOBAL_EVENT_MASTER = GlobalEventMaster
-
     @Deprecated("Will be singleton interface")
     lateinit var config: Configuration
 
@@ -121,7 +118,7 @@ object Minosoft {
 
             // ToDo: Show start up progress window
 
-            Eros // Init class
+            Util.forceClassInit(Eros::class.java)
         }
 
 

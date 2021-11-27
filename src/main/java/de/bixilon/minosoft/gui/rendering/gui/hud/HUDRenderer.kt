@@ -37,7 +37,6 @@ import de.bixilon.minosoft.gui.rendering.gui.hud.elements.other.WorldInfoHUDElem
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.scoreboard.ScoreboardHUDElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.tab.TabListHUDElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.title.TitleHUDElement
-import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMesh
 import de.bixilon.minosoft.gui.rendering.modding.events.ResizeWindowEvent
 import de.bixilon.minosoft.gui.rendering.system.base.IntegratedBufferTypes
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
@@ -60,7 +59,6 @@ class HUDRenderer(
 ) : Renderer, OtherDrawable {
     override val renderSystem: RenderSystem = renderWindow.renderSystem
     val shader = renderWindow.renderSystem.createShader("minosoft:hud".toResourceLocation())
-    private lateinit var mesh: GUIMesh
     var scaledSize: Vec2i = renderWindow.window.size
     var matrix: Mat4 = Mat4()
     private var enabled = true
@@ -143,6 +141,9 @@ class HUDRenderer(
 
         for (element in this.hudElements.toSynchronizedMap().values) {
             element.postInit()
+            if (element is LayoutedHUDElement<*>) {
+                element.initMesh()
+            }
         }
     }
 
@@ -153,11 +154,6 @@ class HUDRenderer(
     }
 
     override fun drawOther() {
-        if (this::mesh.isInitialized) {
-            mesh.unload()
-        }
-
-        mesh = GUIMesh(renderWindow, matrix)
         val hudElements = hudElements.toSynchronizedMap().values
 
         val time = System.currentTimeMillis()
@@ -187,13 +183,18 @@ class HUDRenderer(
                 element.draw()
             }
             if (element is LayoutedHUDElement<*>) {
-                z += element.layout.render(element.layoutOffset, z, mesh, null)
+                z += element.prepare(z)
             }
         }
 
         setup()
-        mesh.load()
-        mesh.draw()
+
+        for (element in hudElements) {
+            if (element !is LayoutedHUDElement<*> || !element.enabled || element.mesh.data.isEmpty) {
+                continue
+            }
+            element.mesh.draw()
+        }
 
         if (matrixChange) {
             matrixChange = false

@@ -19,10 +19,10 @@ import java.util.*
 enum class MultipartDirectionParser(
     vararg val aliases: Any,
 ) {
-    NONE(false),
+    NONE(false, "false"),
     LOW,
     UP,
-    SIDE(true),
+    SIDE(true, "true"),
     TALL,
     ;
 

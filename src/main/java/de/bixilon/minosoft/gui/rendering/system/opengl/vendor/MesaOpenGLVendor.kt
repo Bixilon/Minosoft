@@ -14,5 +14,6 @@
 package de.bixilon.minosoft.gui.rendering.system.opengl.vendor
 
 object MesaOpenGLVendor : OpenGLVendor {
+    override val strictSpecification: Boolean = true
     override val shaderDefine: String = "__MESA"
 }

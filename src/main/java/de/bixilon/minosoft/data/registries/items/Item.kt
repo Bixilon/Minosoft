@@ -154,7 +154,7 @@ open class Item(
                 "SkullItem" -> SkullItem(resourceLocation, registries, data)
                 "NetherStarItem" -> NetherStarItem(resourceLocation, registries, data)
                 "FireworkItem" -> FireworkItem(resourceLocation, registries, data)
-                "FireworkChargeItem" -> FireworkChargeItem(resourceLocation, registries, data)
+                "FireworkChargeItem", "FireworkRocketItem" -> FireworkChargeItem(resourceLocation, registries, data)
                 "EnchantedBookItem" -> EnchantedBookItem(resourceLocation, registries, data)
                 "ArmorStandItem" -> ArmorStandItem(resourceLocation, registries, data)
                 "DyeableHorseArmorItem" -> DyeableHorseArmorItem(resourceLocation, registries, data)

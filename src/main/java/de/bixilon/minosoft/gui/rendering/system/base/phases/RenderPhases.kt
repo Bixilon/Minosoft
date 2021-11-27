@@ -44,6 +44,6 @@ class RenderPhases<T : Renderer>(
         val TRANSLUCENT = RenderPhases(TranslucentDrawable::class, { it.skipTranslucent }, { it.setupTranslucent() }, { it.drawTranslucent() })
 
 
-        val VALUES = arrayOf(OTHER, CUSTOM, OPAQUE, TRANSPARENT, TRANSLUCENT)
+        val VALUES = arrayOf(TRANSPARENT, OTHER, CUSTOM, OPAQUE, TRANSLUCENT)
     }
 }

@@ -14,15 +14,12 @@
 package de.bixilon.minosoft.gui.rendering.particle.types.render.texture.advanced.block
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.blocks.DefaultBlocks
+import de.bixilon.minosoft.data.registries.blocks.MinecraftBlocks
 import de.bixilon.minosoft.data.registries.particle.data.BlockParticleData
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.data.text.RGBColor.Companion.asGray
-import de.bixilon.minosoft.gui.rendering.block.renderable.WorldEntryRenderer
-import de.bixilon.minosoft.gui.rendering.block.renderable.block.BlockRenderer
-import de.bixilon.minosoft.gui.rendering.block.renderable.block.MultipartRenderer
-import de.bixilon.minosoft.gui.rendering.block.renderable.fluid.FluidRenderer
+import de.bixilon.minosoft.data.text.RGBColor.Companion.asRGBColor
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.advanced.AdvancedTextureParticle
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.blockPosition
@@ -30,31 +27,22 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import glm_.vec2.Vec2
 import glm_.vec3.Vec3d
+import java.util.*
 
 class BlockDustParticle(connection: PlayConnection, position: Vec3d, velocity: Vec3d, data: BlockParticleData) : AdvancedTextureParticle(connection, position, velocity, data) {
 
     init {
         val blockPosition = position.blockPosition
-        var renderer: WorldEntryRenderer? = data.blockState!!.getBlockRenderer(blockPosition)
-
-        if (renderer is MultipartRenderer) {
-            renderer = renderer.models.getOrNull(0)
-        }
-
-        texture = when (renderer) {
-            is BlockRenderer -> renderer.textureMapping.iterator().next().value // ToDo: If this is empty the rendering crashes
-            is FluidRenderer -> renderer.stillTexture // ToDo
-            else -> TODO()
-        }
+        check(data.blockState != null)
+        val textureRandom = Random(0L)
+        texture = data.blockState.blockModel?.getParticleTexture(textureRandom, blockPosition)
 
         gravityStrength = 1.0f
         color = 0.6f.asGray()
 
-        if (data.blockState.block.resourceLocation != DefaultBlocks.GRASS_BLOCK) {
-            val tintColor = connection.rendering!!.renderWindow.tintColorCalculator.getTint(connection.world.getBiome(blockPosition), data.blockState, blockPosition)
-
-            tintColor?.let {
-                color = RGBColor(color.floatRed * tintColor.floatRed, color.floatGreen * tintColor.floatGreen, color.floatBlue * tintColor.floatBlue)
+        if (data.blockState.block.resourceLocation != MinecraftBlocks.GRASS_BLOCK) { // Just the overlay is tinted
+            connection.rendering!!.renderWindow.tintManager.getTint(data.blockState, null, blockPosition)?.getOrNull(0)?.asRGBColor()?.let {
+                color = RGBColor(color.floatRed * it.floatRed, color.floatGreen * it.floatGreen, color.floatBlue * it.floatBlue)
             }
         }
         scale /= 2.0f
@@ -68,11 +56,12 @@ class BlockDustParticle(connection: PlayConnection, position: Vec3d, velocity: V
 
 
     companion object : ParticleFactory<BlockDustParticle> {
+        private const val GRAY = 153 shl 16 or (153 shl 8) or 153
         override val RESOURCE_LOCATION: ResourceLocation = "minecraft:block".toResourceLocation()
 
         override fun build(connection: PlayConnection, position: Vec3d, velocity: Vec3d, data: ParticleData): BlockDustParticle? {
             check(data is BlockParticleData)
-            if (data.blockState == null || data.blockState.block.resourceLocation == DefaultBlocks.MOVING_PISTON) {
+            if (data.blockState == null || data.blockState.block.resourceLocation == MinecraftBlocks.MOVING_PISTON) {
                 return null
             }
             return BlockDustParticle(connection, position, velocity, data)

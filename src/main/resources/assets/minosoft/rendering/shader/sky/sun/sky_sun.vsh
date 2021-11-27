@@ -15,7 +15,7 @@
 
 layout (location = 0) in vec3 vinPosition;
 layout (location = 1) in vec2 vinUV;
-layout (location = 2) in uint vinTextureLayer;
+layout (location = 2) in uint vinIndexLayerAnimation;
 layout (location = 3) in uint vinTintColor;
 
 out vec4 finTintColor;
@@ -29,7 +29,8 @@ uniform mat4 uSkyViewProjectionMatrix;
 void main() {
     gl_Position = (uSkyViewProjectionMatrix * vec4(vinPosition, 1.0f)).xyww - vec4(0.0f, 0.0f, 0.000001f, 0.0f);// prevent face fighting
 
-    finTextureCoordinates = vec3(vinUV, vinTextureLayer & 0xFFFFFFu);
-    finTextureIndex = vinTextureLayer >> 24u;
+    finTextureIndex = vinIndexLayerAnimation >> 28u;
+    finTextureCoordinates = vec3(vinUV, ((vinIndexLayerAnimation >> 12) & 0xFFFFu));
+
     finTintColor = getRGBAColor(vinTintColor);
 }

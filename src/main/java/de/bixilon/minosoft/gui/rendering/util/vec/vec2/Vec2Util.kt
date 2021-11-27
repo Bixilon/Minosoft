@@ -1,0 +1,43 @@
+/*
+ * Minosoft
+ * Copyright (C) 2021 Moritz Zwerger
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *
+ * This software is not affiliated with Mojang AB, the original developer of Minecraft.
+ */
+
+package de.bixilon.minosoft.gui.rendering.util.vec.vec2
+
+import de.bixilon.minosoft.util.KUtil.toFloat
+import glm_.vec2.Vec2
+
+object Vec2Util {
+
+    val Vec2.Companion.MIN: Vec2
+        get() = Vec2(Float.MIN_VALUE, Float.MIN_VALUE)
+
+    val Vec2.Companion.EMPTY: Vec2
+        get() = Vec2(0.0f, 0.0f)
+
+    val Vec2.Companion.MAX: Vec2
+        get() = Vec2(Float.MAX_VALUE, Float.MAX_VALUE)
+
+
+    fun Any?.toVec2(default: Vec2? = null): Vec2 {
+        return toVec2N() ?: default ?: throw IllegalArgumentException("Not a Vec2: $this")
+    }
+
+    fun Any?.toVec2N(): Vec2? {
+        return when (this) {
+            is List<*> -> Vec2(this[0].toFloat(), this[1].toFloat())
+            is Map<*, *> -> Vec2(this["x"]?.toFloat() ?: 0.0f, this["y"]?.toFloat() ?: 0.0f)
+            is Number -> Vec2(this.toFloat())
+            else -> null
+        }
+    }
+}

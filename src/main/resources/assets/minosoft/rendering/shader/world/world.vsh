@@ -15,11 +15,8 @@
 
 layout (location = 0) in vec3 vinPosition;
 layout (location = 1) in vec2 vinUV;
-layout (location = 2) in uint vinTextureLayer;
-
-layout (location = 3) in int vinAnimationIndex;
-layout (location = 4) in uint vinTintColor;
-layout (location = 5) in uint vinLight;
+layout (location = 2) in uint vinIndexLayerAnimation;// texture index (0xF0000000), texture layer (0x0FFFF000), animation index (0x00000FFF)
+layout (location = 3) in uint vinTintColorAndLight;// Light (0xFF000000); 3 bytes color (0x00FFFFFF)
 
 flat out uint finTextureIndex1;
 out vec3 finTextureCoordinates1;
@@ -39,28 +36,27 @@ uniform mat4 uViewProjectionMatrix;
 
 void work() {
     gl_Position = uViewProjectionMatrix * vec4(vinPosition, 1.0f);
-    finTintColor = getRGBColor(vinTintColor) * getLight(vinLight);
+    finTintColor = getRGBColor(vinTintColorAndLight & 0xFFFFFFu) * getLight(vinTintColorAndLight >> 24u);
 
 
-    if (vinAnimationIndex == -1) {
-        finTextureIndex1 = vinTextureLayer >> 24u;
-
-        finTextureCoordinates1 = vec3(vinUV, (vinTextureLayer & 0xFFFFFFu));
-
+    uint animationIndex = vinIndexLayerAnimation & 0xFFFu;
+    if (animationIndex == 0u) {
+        finTextureIndex1 = vinIndexLayerAnimation >> 28u;
+        finTextureCoordinates1 = vec3(vinUV, ((vinIndexLayerAnimation >> 12) & 0xFFFFu));
         finInterpolation = 0.0f;
         return;
     }
 
-    uvec4 data = uAnimationData[vinAnimationIndex];
-    uint firstTexture = data.x;
-    uint secondTexture = data.y;
+    uvec4 data = uAnimationData[animationIndex - 1u];
+    uint texture1 = data.x;
+    uint texture2 = data.y;
     uint interpolation = data.z;
 
-    finTextureIndex1 = firstTexture >> 24u;
-    finTextureCoordinates1 = vec3(vinUV, firstTexture & 0xFFFFFFu);
+    finTextureIndex1 = texture1 >> 28u;
+    finTextureCoordinates1 = vec3(vinUV, ((texture1 >> 12) & 0xFFFFu));
 
-    finTextureIndex2 = secondTexture >> 24u;
-    finTextureCoordinates2 = vec3(vinUV, secondTexture & 0xFFFFFFu);
+    finTextureIndex2 = texture2 >> 28u;
+    finTextureCoordinates2 = vec3(vinUV, ((texture2 >> 12) & 0xFFFFu));
 
     finInterpolation = interpolation / 100.0f;
 }

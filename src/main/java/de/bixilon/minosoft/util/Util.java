@@ -339,10 +339,13 @@ public final class Util {
     }
 
     @NotNull
-    public static JsonObject readJsonFromStream(@NotNull InputStream stream) throws IOException {
+    @Deprecated
+    public static JsonObject readJsonFromStream(@NotNull InputStream stream, boolean close) throws IOException {
         InputStreamReader reader = new InputStreamReader(stream);
         JsonObject json = JsonParser.parseReader(reader).getAsJsonObject();
-        reader.close();
+        if (close) {
+            reader.close();
+        }
         return json;
     }
 }

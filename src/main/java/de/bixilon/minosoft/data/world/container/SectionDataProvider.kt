@@ -13,17 +13,19 @@
 
 package de.bixilon.minosoft.data.world.container
 
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3iUtil.EMPTY
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import de.bixilon.minosoft.util.SemaphoreLock
+import de.bixilon.minosoft.util.KUtil.unsafeCast
+import de.bixilon.minosoft.util.ReadWriteLock
 import glm_.vec3.Vec3i
 
 open class SectionDataProvider<T>(
-    data: Array<Any?> = arrayOfNulls(ProtocolDefinition.BLOCKS_PER_SECTION),
+    data: Array<T>? = null,
     val checkSize: Boolean = false,
 ) : Iterable<T> {
-    protected var data = data
+    protected var data: Array<Any?>? = data?.unsafeCast()
         private set
-    protected val lock = SemaphoreLock() // lock while reading (blocks writing)
+    protected val lock = ReadWriteLock() // lock while reading (blocks writing)
     var count: Int = 0
         private set
     val isEmpty: Boolean
@@ -34,30 +36,40 @@ open class SectionDataProvider<T>(
         private set
 
     init {
-        recalculate()
+        if (data != null) {
+            recalculate()
+        } else {
+            minPosition = Vec3i.EMPTY
+            maxPosition = Vec3i.EMPTY
+        }
     }
 
     @Suppress("UNCHECKED_CAST")
     operator fun get(index: Int): T {
         lock.acquire()
-        val value = data[index] as T
+        val value = data?.get(index) as T
         lock.release()
         return value
     }
 
     @Suppress("UNCHECKED_CAST")
     fun unsafeGet(index: Int): T {
-        return data[index] as T
+        return data?.get(index) as T
     }
 
     @Suppress("UNCHECKED_CAST")
     fun unsafeGet(x: Int, y: Int, z: Int): T {
-        return data[y shl 8 or (z shl 4) or x] as T
+        return data?.get(y shl 8 or (z shl 4) or x) as T
     }
 
-    private fun recalculate() {
+
+    protected open fun recalculate() {
+        val data = data
+        if (data == null) {
+            count = 0
+            return
+        }
         var count = 0
-        var value: Any?
 
         var minX = 16
         var minY = 16
@@ -90,7 +102,7 @@ open class SectionDataProvider<T>(
                 minZ = z
             }
 
-            if (x < maxX) {
+            if (x > maxX) {
                 maxX = x
             }
             if (y > maxY) {
@@ -104,6 +116,9 @@ open class SectionDataProvider<T>(
         this.minPosition = Vec3i(minX, minY, minZ)
         this.maxPosition = Vec3i(maxX, maxY, maxZ)
         this.count = count
+        if (count == 0) {
+            this.data = null
+        }
     }
 
     operator fun get(x: Int, y: Int, z: Int): T {
@@ -114,17 +129,27 @@ open class SectionDataProvider<T>(
         set(y shl 8 or (z shl 4) or x, value)
     }
 
-    operator fun set(index: Int, value: T) {
+    open operator fun set(index: Int, value: T): T? {
         lock()
-        val previous = data[index]
+        var data = data
+        val previous = data?.get(index)
         if (value == null) {
             if (previous == null) {
                 unlock()
-                return
+                return null
             }
             count--
+            if (count == 0) {
+                this.data = null
+                unlock()
+                return previous as T?
+            }
         } else if (previous == null) {
             count++
+        }
+        if (data == null) {
+            data = arrayOfNulls(ProtocolDefinition.BLOCKS_PER_SECTION)
+            this.data = data
         }
         data[index] = value
 
@@ -138,6 +163,7 @@ open class SectionDataProvider<T>(
             }
         }
         unlock()
+        return previous as T?
     }
 
     fun acquire() {
@@ -167,9 +193,9 @@ open class SectionDataProvider<T>(
         unlock()
     }
 
-    open fun copy(): SectionDataProvider<T> {
+    fun copy(): SectionDataProvider<T> {
         acquire()
-        val clone = SectionDataProvider<T>(data.clone())
+        val clone = SectionDataProvider<T>(data?.clone()?.unsafeCast())
         release()
 
         return clone
@@ -177,6 +203,11 @@ open class SectionDataProvider<T>(
 
     @Suppress("UNCHECKED_CAST")
     override fun iterator(): Iterator<T> {
-        return data.iterator() as Iterator<T>
+        return (data?.iterator() ?: EMPTY_ITERATOR) as Iterator<T>
+    }
+
+
+    companion object {
+        private val EMPTY_ITERATOR = listOf<Any>().iterator()
     }
 }

@@ -16,20 +16,12 @@ package de.bixilon.minosoft.gui.rendering
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.data.text.RGBColor.Companion.asColor
-import de.bixilon.minosoft.data.text.RGBColor.Companion.asRGBColor
-import glm_.vec2.Vec2
 
 object RenderConstants {
     val DEFAULT_SKY_COLOR = "#ecff89".asColor()
-    val WHITE_COLOR = "#ffffff".asColor()
     val BLACK_COLOR = "#000000".asColor()
 
     val GRASS_FAILOVER_COLOR = "#48B518".asColor()
-
-    val GRASS_OUT_OF_BOUNDS_COLOR = (-65281).asRGBColor()
-
-    val LILY_PAD_INVENTORY_COLOR = "#71C35C".asColor()
-    val LILY_PAD_BLOCK_COLOR = "#208030".asColor()
 
 
     val EXPERIENCE_BAR_LEVEL_COLOR = "#80ff20".asColor()
@@ -46,7 +38,7 @@ object RenderConstants {
     const val FRUSTUM_CULLING_ENABLED = true
     const val SHOW_FPS_IN_WINDOW_TITLE = true
 
-    const val MAXIMUM_QUEUE_TIME_PER_FRAME = 100L
+    const val MAXIMUM_QUEUE_TIME_PER_FRAME = 20L
 
     const val DISABLE_LIGHTING = false
 
@@ -58,10 +50,6 @@ object RenderConstants {
     val DEBUG_TEXTURE_RESOURCE_LOCATION = ResourceLocation("minosoft:textures/debug.png")
     const val DEBUG_TEXTURE_ID = 0 // always add the debug texture to the texture array first to ensure the id is 0
 
-    const val FORCE_DEBUG_TEXTURE = false
-
-
-    val PIXEL_UV_PIXEL_ADD = Vec2(0, 0.1f)
 
     const val CAMPFIRE_ITEMS = 4
 

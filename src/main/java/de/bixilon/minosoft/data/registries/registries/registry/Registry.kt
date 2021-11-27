@@ -94,7 +94,7 @@ open class Registry<T : RegistryItem>(
     }
 
     open operator fun get(resourceLocation: String): T? {
-        return get(ResourceLocation.getPathResourceLocation(resourceLocation))
+        return get(resourceLocation.toResourceLocation())
     }
 
     open operator fun get(resourceLocation: ResourceLocationAble): T? {
@@ -171,6 +171,7 @@ open class Registry<T : RegistryItem>(
         this.valueIdMap.putAll(valueIdMap)
     }
 
+    @Deprecated("Too slow, should be used with a ToDo: RegistryIterator")
     fun forEachItem(lambda: (T) -> Unit) {
         for (item in resourceLocationMap.values) {
             lambda(item)
@@ -194,6 +195,7 @@ open class Registry<T : RegistryItem>(
         BITS_16,
     }
 
+    @Deprecated("TODO")
     override fun iterator(): Iterator<T> {
         return resourceLocationMap.values.iterator()
     }

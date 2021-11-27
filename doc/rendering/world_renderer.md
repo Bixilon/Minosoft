@@ -1,0 +1,48 @@
+# World Renderer
+
+- Frustum culling
+  - 2 algorithms
+    - Fast one (old one): Only tell if it could be in the frustum
+    - -> If yes (or no; depends on algo) use complex one to check
+  - extreme chunk section values (most east[…] block; highest block; lowest block)
+  - "Cave algorithm" (Occlusion culling)
+- 3 Meshes per section (opaque; transparent; translucent)
+- Preparing in nearer to further away order
+  - unload meshes if block changed and not in frustum
+  - only prepare if chunk is in frustum
+  - don't prepare empty chunks
+- Light
+  - Client side light engine
+  - Lightmap
+- Transparency
+  - Sort faces
+  - 2 render modes: Fast/Default
+    - No block translucency
+- water logged & FluidFillable properties
+- Force interrupt preparing if needed (e.g. new block change; light change; more important task in thread pool)
+- "Resolving" of block models
+- Chunk cache clearing (default F3 + A)
+  - Respawn
+- texture animations
+- require neighbour chunks loaded
+  - Also don't load if block changes in chunk (e.g. when movement is disabled and walking to chunk border and destroying block)
+- View distance
+  - Server side
+  - Client side
+- Rewrite renderers
+- Check neighbour positions
+- Cache biomes
+- "Fast biome" in 19w36a+
+- Improved biome blending
+- Performance optimizations
+  - Don't render bedrock on y == dimension::minHeight
+- Meshing
+  - Greedy meshing
+- Model deciding (for pre flattening versions)
+- Assets manager: Create file from jar with all models inside and load models from there (make them moddable)
+
+
+- ToDo:
+  - Update neighbour chunks if needed
+  - Biomes: Check if chunk is single biome
+  - 

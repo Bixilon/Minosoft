@@ -14,6 +14,9 @@
 package de.bixilon.minosoft.gui.rendering.textures
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.gui.rendering.system.base.texture.TextureTransparencies
+import de.bixilon.minosoft.gui.rendering.world.mesh.SingleWorldMesh
+import de.bixilon.minosoft.gui.rendering.world.mesh.WorldMesh
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 object TextureUtil {
@@ -31,5 +34,13 @@ object TextureUtil {
         }
 
         return "$namespace:$path".toResourceLocation()
+    }
+
+    fun TextureTransparencies.getMesh(mesh: WorldMesh): SingleWorldMesh {
+        return when (this) {
+            TextureTransparencies.OPAQUE -> mesh.opaqueMesh
+            TextureTransparencies.TRANSLUCENT -> mesh.translucentMesh
+            TextureTransparencies.TRANSPARENT -> mesh.transparentMesh
+        }!!
     }
 }

@@ -13,24 +13,18 @@
 
 package de.bixilon.minosoft.gui.rendering.util
 
-import com.google.gson.JsonArray
-import com.google.gson.JsonObject
-import com.google.gson.JsonPrimitive
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.Axes
-import de.bixilon.minosoft.data.direction.AbstractDirection
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.AABB
 import de.bixilon.minosoft.data.registries.blocks.RandomOffsetTypes
 import de.bixilon.minosoft.data.registries.blocks.types.Block
-import de.bixilon.minosoft.gui.rendering.block.models.BlockModelElement
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.get
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
-import de.bixilon.minosoft.util.KUtil.unsafeCast
 import glm_.func.common.ceil
 import glm_.func.common.clamp
 import glm_.func.common.floor
-import glm_.func.cos
-import glm_.func.sin
 import glm_.glm
 import glm_.vec2.Vec2
 import glm_.vec2.Vec2i
@@ -43,33 +37,6 @@ import kotlin.random.Random
 
 @Deprecated(message = "Use VecXUtil instead")
 object VecUtil {
-    val Vec3.Companion.EMPTY: Vec3
-        get() = Vec3(0.0f, 0.0f, 0.0f)
-
-    val Vec3d.Companion.EMPTY: Vec3d
-        get() = Vec3d(0.0, 0.0, 0.0)
-
-    val Vec3i.Companion.EMPTY: Vec3i
-        get() = Vec3i(0.0f, 0.0f, 0.0f)
-
-    val Vec3.Companion.ONE: Vec3
-        get() = Vec3(1.0f, 1.0f, 1.0f)
-
-    val Vec3d.Companion.ONE: Vec3d
-        get() = Vec3d(1.0, 1.0, 1.0)
-
-    fun Any.toVec3(default: Vec3? = null): Vec3 {
-        return when (this) {
-            is List<*> -> Vec3(this[0] as Double, this[1] as Double, this[2] as Double)
-            is JsonArray -> Vec3(this[0].asFloat, this[1].asFloat, this[2].asFloat)
-            is JsonObject -> Vec3(this["x"]?.asFloat ?: 0, this["y"]?.asFloat ?: 0, this["z"]?.asFloat ?: 0)
-            is Map<*, *> -> Vec3(this["x"]?.unsafeCast<Double>() ?: 0, this["y"]?.unsafeCast<Double>() ?: 0, this["z"]?.unsafeCast<Double>() ?: 0)
-            is JsonPrimitive -> Vec3(this.asFloat)
-            is Float -> Vec3(this)
-            is Double -> Vec3(this)
-            else -> default ?: throw IllegalArgumentException("Not a Vec3!")
-        }
-    }
 
     fun Vec3.clear() {
         x = 0.0f
@@ -168,77 +135,29 @@ object VecUtil {
     val Vec3d.millis: Vec3d
         get() = this * ProtocolDefinition.TICKS_PER_SECOND
 
-    fun getRotatedValues(x: Float, y: Float, sin: Float, cos: Float, rescale: Boolean): Vec2 {
-        val result = Vec2(x * cos - y * sin, x * sin + y * cos)
-        if (rescale) {
-            return result / cos
-        }
-        return result
-    }
-
-    fun Vec3.rotate(angle: Float, axis: Axes): Vec3 {
-        return this.rotate(angle, axis, false)
-    }
-
-    fun Vec3.rotate(angle: Float, axis: Axes, rescale: Boolean): Vec3 {
-        if (angle == 0.0f) {
-            return this
-        }
-        return when (axis) {
-            Axes.X -> {
-                val rotatedValues = getRotatedValues(this.y, this.z, angle.sin, angle.cos, rescale)
-                Vec3(this.x, rotatedValues)
-            }
-            Axes.Y -> {
-                val rotatedValues = getRotatedValues(this.x, this.z, angle.sin, angle.cos, rescale)
-                Vec3(rotatedValues.x, this.y, rotatedValues.y)
-            }
-            Axes.Z -> {
-                val rotatedValues = getRotatedValues(this.x, this.y, angle.sin, angle.cos, rescale)
-                Vec3(rotatedValues.x, rotatedValues.y, this.z)
-            }
-        }
-    }
 
     fun Vec3.rotate(axis: Vec3, sin: Float, cos: Float): Vec3 {
         return this * cos + (axis cross this) * sin + axis * (axis dot this) * (1 - cos)
     }
 
-    fun List<Float>.readUV(): Pair<Vec2, Vec2> {
-        return Pair(Vec2(this[0], BlockModelElement.BLOCK_RESOLUTION - this[1]), Vec2(this[2], BlockModelElement.BLOCK_RESOLUTION - this[3]))
-    }
-
-    fun Int.chunkPosition(multiplier: Int): Int {
-        return if (this >= 0) {
-            this / multiplier
-        } else {
-            ((this + 1) / multiplier) - 1
-        }
-    }
-
     val Vec3i.chunkPosition: Vec2i
-        get() = Vec2i(this.x.chunkPosition(ProtocolDefinition.SECTION_WIDTH_X), this.z.chunkPosition(ProtocolDefinition.SECTION_WIDTH_Z))
+        get() = Vec2i(x shr 4, z shr 4)
 
     val Vec3i.inChunkPosition: Vec3i
         get() = Vec3i(x and 0x0F, y, this.z and 0x0F)
 
     val Vec3i.inChunkSectionPosition: Vec3i
-        get() {
-            val inVec2i = inChunkPosition
-            val y = if (y < 0) {
-                ((ProtocolDefinition.SECTION_HEIGHT_Y + (y % ProtocolDefinition.SECTION_HEIGHT_Y))) % ProtocolDefinition.SECTION_HEIGHT_Y
-            } else {
-                y % ProtocolDefinition.SECTION_HEIGHT_Y
-            }
-            return Vec3i(inVec2i.x, y, inVec2i.z)
+        get() = Vec3i(x and 0x0F, y.inSectionHeight, z and 0x0F)
+
+    val Int.inSectionHeight: Int
+        get() = if (this < 0) {
+            ((ProtocolDefinition.SECTION_HEIGHT_Y + (this % ProtocolDefinition.SECTION_HEIGHT_Y))) % ProtocolDefinition.SECTION_HEIGHT_Y
+        } else {
+            this % ProtocolDefinition.SECTION_HEIGHT_Y
         }
 
     val Int.sectionHeight: Int
-        get() = if (this < 0) {
-            (this + 1) / ProtocolDefinition.SECTION_HEIGHT_Y - 1
-        } else {
-            this / ProtocolDefinition.SECTION_HEIGHT_Y
-        }
+        get() = this shr 4
 
     val Vec3i.sectionHeight: Int
         get() = y.sectionHeight
@@ -288,7 +207,7 @@ object VecUtil {
         return Vec3i((x + vec2.x), y, (z + vec2.y))
     }
 
-    infix operator fun Vec3i.plus(direction: AbstractDirection?): Vec3i {
+    infix operator fun Vec3i.plus(direction: Directions?): Vec3i {
         return this + direction?.vector
     }
 
@@ -300,7 +219,7 @@ object VecUtil {
         return Vec2i(x + vec3.x, y + vec3.z)
     }
 
-    infix operator fun Vec2i.plus(direction: AbstractDirection): Vec2i {
+    infix operator fun Vec2i.plus(direction: Directions): Vec2i {
         return this + direction.vector
     }
 
@@ -348,7 +267,7 @@ object VecUtil {
     val Vec3d.empty: Boolean
         get() = this.length() < 0.001
 
-    private fun generatePositionHash(x: Int, y: Int, z: Int): Long {
+    fun generatePositionHash(x: Int, y: Int, z: Int): Long {
         var hash = (x * 3129871L) xor z.toLong() * 116129781L xor y.toLong()
         hash = hash * hash * 42317861L + hash * 11L
         return hash shr 16
@@ -415,13 +334,6 @@ object VecUtil {
     val <T : Number> Vec3t<T>.toVec3d: Vec3d
         get() = Vec3d(this)
 
-    operator fun <T : Number> Vec3t<T>.get(axis: Axes): T {
-        return when (axis) {
-            Axes.X -> this.x
-            Axes.Y -> this.y
-            Axes.Z -> this.z
-        }
-    }
 
     fun Vec3d.Companion.horizontal(xz: () -> Double, y: Double): Vec3d {
         return Vec3d(xz(), y, xz())
@@ -496,7 +408,7 @@ object VecUtil {
         }
     }
 
-    operator fun AbstractDirection.plus(direction: AbstractDirection): Vec3i {
+    operator fun Directions.plus(direction: Directions): Vec3i {
         return this.vector + direction.vector
     }
 

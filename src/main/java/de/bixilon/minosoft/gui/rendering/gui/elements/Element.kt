@@ -15,16 +15,18 @@ package de.bixilon.minosoft.gui.rendering.gui.elements
 
 import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
+import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMesh
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIMeshCache
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.gui.rendering.util.vec.Vec2Util.EMPTY
-import de.bixilon.minosoft.gui.rendering.util.vec.Vec2Util.isGreater
-import de.bixilon.minosoft.gui.rendering.util.vec.Vec2Util.isSmaller
-import de.bixilon.minosoft.gui.rendering.util.vec.Vec2Util.max
-import de.bixilon.minosoft.gui.rendering.util.vec.Vec2Util.min
-import de.bixilon.minosoft.gui.rendering.util.vec.Vec4Util.EMPTY
-import de.bixilon.minosoft.gui.rendering.util.vec.Vec4Util.spaceSize
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.isGreater
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.isSmaller
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.max
+import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.min
+import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4iUtil.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4iUtil.spaceSize
+import de.bixilon.minosoft.util.collections.floats.DirectArrayFloatList
 import glm_.vec2.Vec2i
 import glm_.vec4.Vec4i
 
@@ -40,7 +42,9 @@ abstract class Element(val hudRenderer: HUDRenderer) {
             _parent = value
             silentApply()
         }
-    protected var cache = GUIMeshCache(hudRenderer.matrix, 0)
+
+    @Deprecated("Warning: Should not be directly accessed!")
+    val cache = GUIMeshCache(hudRenderer.matrix, renderWindow.renderSystem.primitiveMeshOrder, 1000)
     open var cacheEnabled: Boolean = true
     open var initialCacheSize: Int = 100
     open var cacheUpToDate: Boolean = false
@@ -122,21 +126,36 @@ abstract class Element(val hudRenderer: HUDRenderer) {
      */
     fun render(offset: Vec2i, z: Int, consumer: GUIVertexConsumer, options: GUIVertexOptions?): Int {
         val offset = Vec2i(offset)
+        var directRendering = false
+        if (consumer is GUIMesh && consumer.data == cache.data) {
+            directRendering = true
+        }
         if (RenderConstants.DISABLE_GUI_CACHE || !cacheEnabled) {
-            return forceRender(offset, z, consumer, options)
+            if (directRendering) {
+                cache.clear()
+            }
+            val maxZ = forceRender(offset, z, consumer, options)
+            if (directRendering) {
+                cache.revision++
+            }
+            return maxZ
         }
         if (!cacheUpToDate || cache.offset != offset || hudRenderer.matrixChange || cache.matrix !== hudRenderer.matrix || z != cache.z) {
-            val cache = GUIMeshCache(hudRenderer.matrix)
+            this.cache.clear()
+            cache.matrix = hudRenderer.matrix
             cache.offset = Vec2i(offset)
             cache.z = z
             val maxZ = forceRender(offset, z, cache, options)
             cache.maxZ = maxZ
-            cache.data.finalize()
-            this.cache = cache
+            if (cache.data !is DirectArrayFloatList) {
+                // raw mesh data
+                cache.data.finish()
+            }
             cacheUpToDate = true
         }
-
-        consumer.addCache(cache)
+        if (!directRendering) {
+            consumer.addCache(cache)
+        }
         return cache.maxZ
     }
 

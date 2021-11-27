@@ -24,9 +24,11 @@ data class DimensionProperties(
     val minY: Int = 0,
     val hasCeiling: Boolean = false,
     val ultraWarm: Boolean = false,
-    val height: Int = 256,
+    @Deprecated("Height does not differ from logical height in 1.18")
+    val dataHeight: Int = 256,
     val supports3DBiomes: Boolean = true,
 ) {
+    val height = logicalHeight + minY
     val lowestSection = if (minY < 0) {
         (minY + 1) / ProtocolDefinition.SECTION_HEIGHT_Y - 1
     } else {
@@ -37,9 +39,9 @@ data class DimensionProperties(
     } else {
         height / ProtocolDefinition.SECTION_HEIGHT_Y
     }
-    val sections = highestSection - lowestSection
 
     val lightLevels = FloatArray(16)
+    val sections = highestSection - lowestSection
 
     init {
         val ambientLight = 0.0f // ToDo: 0.1 in nether
@@ -69,7 +71,7 @@ data class DimensionProperties(
                 minY = data["min_y"]?.toInt() ?: 0,
                 hasCeiling = data["has_ceiling"]?.toBoolean() ?: false,
                 ultraWarm = data["ultrawarm"]?.toBoolean() ?: false,
-                height = data["height"]?.toInt() ?: 256,
+                dataHeight = data["height"]?.toInt() ?: 256,
                 supports3DBiomes = data["supports_3d_biomes"]?.toBoolean() ?: true,
             )
         }

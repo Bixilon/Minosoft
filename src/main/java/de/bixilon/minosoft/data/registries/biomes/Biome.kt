@@ -17,10 +17,9 @@ import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
 import de.bixilon.minosoft.data.registries.registries.registry.ResourceLocationDeserializer
 import de.bixilon.minosoft.data.text.RGBColor
-import de.bixilon.minosoft.data.text.RGBColor.Companion.asColor
 import de.bixilon.minosoft.data.text.RGBColor.Companion.asRGBColor
 import de.bixilon.minosoft.gui.rendering.RenderConstants
-import de.bixilon.minosoft.gui.rendering.TintColorCalculator
+import de.bixilon.minosoft.gui.rendering.tint.TintManager
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.nullCast
 import de.bixilon.minosoft.util.KUtil.toInt
@@ -39,17 +38,12 @@ data class Biome(
     val category: BiomeCategory,
     val precipitation: BiomePrecipitation,
     val skyColor: RGBColor,
-    val foliageColorOverride: RGBColor?,
-    val grassColorOverride: RGBColor?,
     val descriptionId: String?,
     val grassColorModifier: GrassColorModifiers = GrassColorModifiers.NONE,
 ) : RegistryItem() {
     val temperatureColorMapCoordinate = getColorMapCoordinate(temperature)
     val downfallColorMapCoordinate = getColorMapCoordinate(downfall * temperature)
 
-    private fun getColorMapCoordinate(value: Float): Int {
-        return ((1.0 - MMath.clamp(value, 0.0f, 1.0f)) * RenderConstants.COLORMAP_SIZE).toInt()
-    }
 
     fun getClampedTemperature(height: Int): Int {
         return getColorMapCoordinate(MMath.clamp(temperature + (MMath.clamp(height - ProtocolDefinition.SEA_LEVEL_HEIGHT, 1, Int.MAX_VALUE) * ProtocolDefinition.HEIGHT_SEA_LEVEL_MODIFIER), 0.0f, 1.0f))
@@ -60,7 +54,11 @@ data class Biome(
     }
 
     companion object : ResourceLocationDeserializer<Biome> {
-        private val TODO_SWAMP_COLOR = "#6A7039".asColor()
+
+        private fun getColorMapCoordinate(value: Float): Int {
+            return ((1.0 - MMath.clamp(value, 0.0f, 1.0f)) * RenderConstants.COLORMAP_SIZE).toInt()
+        }
+
         override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): Biome {
             check(registries != null) { "Registries is null!" }
             return Biome(
@@ -69,13 +67,11 @@ data class Biome(
                 scale = data["scale"]?.unsafeCast<Float>() ?: 0.0f,
                 temperature = data["temperature"]?.unsafeCast<Float>() ?: 0.0f,
                 downfall = data["downfall"]?.unsafeCast<Float>() ?: 0.0f,
-                waterColor = TintColorCalculator.getJsonColor(data["water_color"]?.toInt() ?: 0),
-                waterFogColor = TintColorCalculator.getJsonColor(data["water_fog_color"]?.toInt() ?: 0),
+                waterColor = TintManager.getJsonColor(data["water_color"]?.toInt() ?: 0),
+                waterFogColor = TintManager.getJsonColor(data["water_fog_color"]?.toInt() ?: 0),
                 category = registries.biomeCategoryRegistry[data["category"]?.toInt() ?: -1] ?: DEFAULT_CATEGORY,
                 precipitation = registries.biomePrecipitationRegistry[data["precipitation"]?.toInt() ?: -1] ?: DEFAULT_PRECIPITATION,
                 skyColor = data["sky_color"]?.toInt()?.asRGBColor() ?: RenderConstants.GRASS_FAILOVER_COLOR,
-                foliageColorOverride = TintColorCalculator.getJsonColor(data["foliage_color_override"]?.toInt() ?: 0),
-                grassColorOverride = TintColorCalculator.getJsonColor(data["grass_color_override"]?.toInt() ?: 0),
                 descriptionId = data["water_fog_color"].nullCast(),
                 grassColorModifier = data["grass_color_modifier"].nullCast<String>()?.uppercase(Locale.getDefault())?.let { GrassColorModifiers.valueOf(it) } ?: when (resourceLocation) {
                     ResourceLocation("minecraft:swamp"), ResourceLocation("minecraft:swamp_hills") -> GrassColorModifiers.SWAMP
@@ -90,12 +86,10 @@ data class Biome(
 
     }
 
-    enum class GrassColorModifiers(val modifier: (color: RGBColor) -> RGBColor) {
-        NONE({ color: RGBColor -> color }),
-        DARK_FOREST({ color: RGBColor -> color }), // ToDo: This rgb 2634762 should be added to this?
-        SWAMP({
-            // ToDo: Minecraft uses PerlinSimplexNoise here
-            TODO_SWAMP_COLOR
-        }),
+    enum class GrassColorModifiers {
+        NONE,
+        DARK_FOREST,
+        SWAMP,
+        ;
     }
 }

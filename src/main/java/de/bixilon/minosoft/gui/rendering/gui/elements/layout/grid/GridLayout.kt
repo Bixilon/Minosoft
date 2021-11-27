@@ -18,8 +18,8 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.HorizontalAlignments.Compa
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.gui.rendering.util.vec.Vec4Util.horizontal
-import de.bixilon.minosoft.gui.rendering.util.vec.Vec4Util.offset
+import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4iUtil.horizontal
+import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4iUtil.offset
 import glm_.vec2.Vec2i
 import java.lang.Integer.min
 import kotlin.math.max
@@ -28,7 +28,7 @@ class GridLayout(hudRenderer: HUDRenderer, val grid: Vec2i) : Element(hudRendere
     val columnConstraints: Array<GridColumnConstraint> = Array(grid.x) { GridColumnConstraint() }
     val rowConstraints: Array<GridRowConstraint> = Array(grid.y) { GridRowConstraint() }
 
-    private val children: Array<Array<GridCell?>> = Array(grid.x) { Array(grid.y) { null } }
+    private val children: Array<Array<GridCell?>> = Array(grid.x) { arrayOfNulls(grid.y) }
     private var columnStart = IntArray(grid.x)
     private var rowStart = IntArray(grid.y)
 

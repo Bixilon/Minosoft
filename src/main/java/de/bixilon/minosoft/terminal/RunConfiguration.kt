@@ -15,6 +15,7 @@ package de.bixilon.minosoft.terminal
 
 import com.google.common.base.StandardSystemProperty
 import de.bixilon.minosoft.config.StaticConfiguration
+import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.util.OSUtil
 import java.io.File
 
@@ -54,4 +55,6 @@ object RunConfiguration {
     val TEMPORARY_FOLDER = System.getProperty("java.io.tmpdir", "$HOME_DIRECTORY/tmp/") + "/"
 
     var VERSION_STRING = "Minosoft ${StaticConfiguration.VERSION}"
+
+    var SKIP_RENDERERS: List<ResourceLocation> = listOf()
 }

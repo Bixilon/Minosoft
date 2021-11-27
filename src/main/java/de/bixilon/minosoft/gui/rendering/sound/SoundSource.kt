@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.sound
 
 import de.bixilon.minosoft.gui.rendering.sound.sounds.Sound
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import glm_.vec3.Vec3
 import org.lwjgl.openal.AL10.*
 
@@ -61,11 +61,15 @@ class SoundSource {
     var sound: Sound? = null
         set(value) {
             stop()
-            if (value?.loaded != true || value.loadFailed) {
+            val buffer = value?.buffer
+            if (buffer == null) {
                 field = null
                 return
             }
-            alSourcei(source, AL_BUFFER, value.buffer)
+            if (buffer.unloaded) {
+                throw IllegalArgumentException("OpenAL buffer is not loaded: ${value.soundEvent}")
+            }
+            alSourcei(source, AL_BUFFER, buffer.buffer)
             field = value
         }
 
@@ -73,7 +77,7 @@ class SoundSource {
         get() = alGetSourcei(source, AL_SOURCE_STATE) == AL_PLAYING
 
     val available: Boolean
-        get() = !isPlaying || System.currentTimeMillis() - playTime > (sound?.length ?: 0L)    // ToDo: Allow pause
+        get() = !isPlaying || System.currentTimeMillis() - playTime > (sound?.data?.length ?: 0L)    // ToDo: Allow pause
 
     fun play() {
         playTime = System.currentTimeMillis()

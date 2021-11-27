@@ -19,12 +19,15 @@ import glm_.vec2.Vec2
 class OpenGLTextureData(
     val array: Int,
     val index: Int,
-    val uvEnd: Vec2,
+    val uvEnd: Vec2?,
     override val animationData: Int = -1,
 ) : TextureRenderData {
-    override val layer: Int = (array shl 24) or (index)
+    override val shaderTextureId: Int = (array shl 28) or (index shl 12) or (animationData + 1)
 
     override fun transformUV(end: Vec2): Vec2 {
+        if (uvEnd == null) {
+            return end
+        }
         return end * uvEnd
     }
 }

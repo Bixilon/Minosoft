@@ -27,12 +27,6 @@ import glm_.vec3.Vec3d
 class ParticleMesh(renderWindow: RenderWindow, initialCacheSize: Int) : Mesh(renderWindow, ParticleMeshStruct, PrimitiveTypes.POINT, initialCacheSize) {
 
     fun addVertex(position: Vec3d, scale: Float, texture: AbstractTexture, tintColor: RGBColor, uvMin: Vec2 = Vec2(0.0f, 0.0f), uvMax: Vec2 = Vec2(1.0f, 1.0f)) {
-        val textureLayer = if (RenderConstants.FORCE_DEBUG_TEXTURE) {
-            RenderConstants.DEBUG_TEXTURE_ID
-        } else {
-            texture.renderData?.layer ?: RenderConstants.DEBUG_TEXTURE_ID
-        }
-
         val minTransformedUV = texture.renderData?.transformUV(uvMin) ?: uvMin
         val maxTransformedUV = texture.renderData?.transformUV(uvMax) ?: uvMax
         data.addAll(
@@ -44,8 +38,7 @@ class ParticleMesh(renderWindow: RenderWindow, initialCacheSize: Int) : Mesh(ren
                 minTransformedUV.y,
                 maxTransformedUV.x,
                 maxTransformedUV.y,
-                Float.fromBits(textureLayer),
-                Float.fromBits(texture.renderData?.animationData ?: -1),
+                Float.fromBits(texture.renderData?.shaderTextureId ?: RenderConstants.DEBUG_TEXTURE_ID),
                 scale,
                 Float.fromBits(tintColor.rgba),
             ))
@@ -56,8 +49,7 @@ class ParticleMesh(renderWindow: RenderWindow, initialCacheSize: Int) : Mesh(ren
         val position: Vec3,
         val minUVCoordinates: Vec2,
         val maxUVCoordinates: Vec2,
-        val textureLayer: Int,
-        val animationId: Int,
+        val indexLayerAnimation: Int,
         val scale: Float,
         val tintColor: RGBColor,
     ) {

@@ -22,7 +22,7 @@ interface ValuesEnum<T : Enum<*>> {
     }
 
     operator fun get(name: String): T {
-        return NAME_MAP[name]!!
+        return NAME_MAP[name] ?: throw IllegalArgumentException("Can not find enum value: $name")
     }
 
     fun next(current: T): T {

@@ -54,6 +54,7 @@ public final class ProtocolDefinition {
     public static final Pattern RESOURCE_LOCATION_PATTERN = Pattern.compile("([a-z_0-9]+:)?[a-zA-Z_0-9.]+");
     public static final Pattern SCOREBOARD_OBJECTIVE_PATTERN = Pattern.compile("[a-zA-z-.+]{1,16}");
 
+    public static final int SECTION_SIZE = 16;
     public static final int SECTION_WIDTH_X = 16;
     public static final int SECTION_MAX_X = SECTION_WIDTH_X - 1;
     public static final int SECTION_WIDTH_Z = 16;
@@ -101,7 +102,7 @@ public final class ProtocolDefinition {
 
     public static final ResourceLocation AIR_RESOURCE_LOCATION = new ResourceLocation("air");
 
-    public static final RGBColor DEFAULT_COLOR = ChatColors.INSTANCE.getWHITE();
+    public static final RGBColor DEFAULT_COLOR = ChatColors.WHITE;
 
     public static final char[] LINE_BREAK_CHARS = {'\n', '\r'};
 

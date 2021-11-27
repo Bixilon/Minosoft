@@ -16,10 +16,11 @@ package de.bixilon.minosoft.data.registries
 import com.google.gson.JsonObject
 import de.bixilon.minosoft.data.Axes
 import de.bixilon.minosoft.data.direction.Directions
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.ONE
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.get
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.ONE
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.get
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.toVec3
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.ONE
 import de.bixilon.minosoft.util.MMath.ceil
 import de.bixilon.minosoft.util.MMath.floor
 import glm_.Java.Companion.glm
@@ -85,11 +86,11 @@ class AABB {
         }
 
     private fun min(axis: Axes): Double {
-        return axis.choose(min)
+        return min[axis]
     }
 
     private fun max(axis: Axes): Double {
-        return axis.choose(max)
+        return max[axis]
     }
 
 

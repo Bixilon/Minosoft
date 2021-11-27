@@ -113,6 +113,10 @@ enum class BlockProperties {
     ROTATION("rotation", IntBlockPropertiesSerializer),
     ORIENTATION("orientation", Orientations),
 
+
+    // ToDo: used in models
+    MAP("map", BooleanBlockPropertiesSerializer),
+
     ;
 
     val group: String
@@ -130,11 +134,11 @@ enum class BlockProperties {
 
 
     companion object {
-        private val PROPERTIES: Map<String, List<BlockProperties>> = run {
+        val PROPERTIES: Map<String, List<BlockProperties>> = run {
             val map: MutableMap<String, MutableList<BlockProperties>> = mutableMapOf()
 
             for (value in values()) {
-                val list = map.getOrPut(value.group, { mutableListOf() })
+                val list = map.getOrPut(value.group) { mutableListOf() }
                 list.add(value)
             }
 

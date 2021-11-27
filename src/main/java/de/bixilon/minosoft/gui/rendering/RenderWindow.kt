@@ -21,9 +21,6 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.BaseComponent
 import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.ChatComponent
-import de.bixilon.minosoft.gui.rendering.block.WorldRenderer
-import de.bixilon.minosoft.gui.rendering.block.chunk.ChunkBorderRenderer
-import de.bixilon.minosoft.gui.rendering.block.outline.BlockOutlineRenderer
 import de.bixilon.minosoft.gui.rendering.entity.EntityHitBoxRenderer
 import de.bixilon.minosoft.gui.rendering.font.Font
 import de.bixilon.minosoft.gui.rendering.font.FontLoader
@@ -43,13 +40,18 @@ import de.bixilon.minosoft.gui.rendering.system.base.phases.SkipAll
 import de.bixilon.minosoft.gui.rendering.system.opengl.OpenGLRenderSystem
 import de.bixilon.minosoft.gui.rendering.system.window.BaseWindow
 import de.bixilon.minosoft.gui.rendering.system.window.GLFWWindow
+import de.bixilon.minosoft.gui.rendering.tint.TintManager
 import de.bixilon.minosoft.gui.rendering.util.ScreenshotTaker
+import de.bixilon.minosoft.gui.rendering.world.WorldRenderer
+import de.bixilon.minosoft.gui.rendering.world.chunk.ChunkBorderRenderer
+import de.bixilon.minosoft.gui.rendering.world.outline.BlockOutlineRenderer
 import de.bixilon.minosoft.modding.event.events.InternalMessageReceiveEvent
 import de.bixilon.minosoft.modding.event.events.PacketReceiveEvent
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.play.PositionAndRotationS2CP
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.CountUpAndDownLatch
 import de.bixilon.minosoft.util.KUtil.decide
 import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
@@ -81,8 +83,8 @@ class RenderWindow(
     private var lastFrame = 0.0
     private val latch = CountUpAndDownLatch(1)
 
-    private var renderingState = RenderingStates.RUNNING
-        set(value) {
+    var renderingState = RenderingStates.RUNNING
+        private set(value) {
             if (field == value) {
                 return
             }
@@ -96,7 +98,7 @@ class RenderWindow(
 
 
     private val screenshotTaker = ScreenshotTaker(this)
-    val tintColorCalculator = TintColorCalculator(connection.world)
+    val tintManager = TintManager(connection)
     val textureManager = renderSystem.createTextureManager()
     lateinit var font: Font
 
@@ -148,10 +150,11 @@ class RenderWindow(
         val stopwatch = Stopwatch()
 
         window.init()
+        window.setDefaultIcon(connection.assetsManager)
 
         inputHandler.camera.init(this)
 
-        tintColorCalculator.init(connection.assetsManager)
+        tintManager.init(connection.assetsManager)
 
 
         Log.log(LogMessageType.RENDERING_LOADING) { "Creating context (${stopwatch.labTime()})..." }
@@ -360,8 +363,12 @@ class RenderWindow(
     }
 
     fun registerRenderer(rendererBuilder: RendererBuilder<*>) {
+        val resourceLocation = rendererBuilder.RESOURCE_LOCATION
+        if (resourceLocation in RunConfiguration.SKIP_RENDERERS) {
+            return
+        }
         val renderer = rendererBuilder.build(connection, this)
-        rendererMap[rendererBuilder.RESOURCE_LOCATION] = renderer
+        rendererMap[resourceLocation] = renderer
     }
 
     fun sendDebugMessage(message: Any) {

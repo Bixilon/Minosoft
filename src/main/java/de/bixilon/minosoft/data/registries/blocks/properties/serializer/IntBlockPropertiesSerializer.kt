@@ -13,9 +13,11 @@
 
 package de.bixilon.minosoft.data.registries.blocks.properties.serializer
 
+import de.bixilon.minosoft.util.KUtil.toInt
+
 object IntBlockPropertiesSerializer : BlockPropertiesSerializer {
 
     override fun deserialize(value: Any): Int {
-        return value as Int
+        return value.toInt()
     }
 }

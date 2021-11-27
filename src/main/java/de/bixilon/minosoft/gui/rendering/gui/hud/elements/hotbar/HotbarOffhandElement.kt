@@ -21,7 +21,7 @@ import de.bixilon.minosoft.gui.rendering.gui.elements.primitive.ImageElement
 import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
-import de.bixilon.minosoft.gui.rendering.util.vec.Vec4Util.marginOf
+import de.bixilon.minosoft.gui.rendering.util.vec.vec4.Vec4iUtil.marginOf
 import glm_.vec2.Vec2i
 import java.lang.Integer.max
 

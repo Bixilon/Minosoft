@@ -16,18 +16,22 @@ package de.bixilon.minosoft.gui.rendering.util.mesh
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.FloatVertexBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
-import de.bixilon.minosoft.util.collections.ArrayFloatList
+import de.bixilon.minosoft.util.collections.floats.DirectArrayFloatList
 import glm_.vec2.Vec2
 import glm_.vec3.Vec3
 
 abstract class Mesh(
     val renderWindow: RenderWindow,
     private val struct: MeshStruct,
-    private val primitiveType: PrimitiveTypes = PrimitiveTypes.TRIANGLE,
+    private val primitiveType: PrimitiveTypes = renderWindow.renderSystem.preferredPrimitiveType,
     initialCacheSize: Int = 10000,
+    val clearOnLoad: Boolean = true,
+    data: DirectArrayFloatList? = null,
 ) {
-    private var _data: ArrayFloatList? = ArrayFloatList(initialCacheSize)
-    var data: ArrayFloatList
+    val order = renderWindow.renderSystem.primitiveMeshOrder
+    val reversedOrder = order.reversedArray()
+    private var _data: DirectArrayFloatList? = data ?: DirectArrayFloatList(initialCacheSize)
+    var data: DirectArrayFloatList
         get() = _data!!
         set(value) {
             _data = value
@@ -43,10 +47,14 @@ abstract class Mesh(
 
 
     fun load() {
-        buffer = renderWindow.renderSystem.createVertexBuffer(struct, data.toArray(), primitiveType)
-        _data = null
+        buffer = renderWindow.renderSystem.createVertexBuffer(struct, data.buffer, primitiveType)
         buffer.init()
+        if (clearOnLoad) {
+            data.unload()
+            _data = null
+        }
         vertices = buffer.vertices
+        state = MeshStates.LOADED
     }
 
     fun draw() {
@@ -62,6 +70,26 @@ abstract class Mesh(
         }
     }
 
+
+    fun addQuad(start: Vec3, end: Vec3, uvStart: Vec2 = Vec2(0.0f, 0.0f), uvEnd: Vec2 = Vec2(1.0f, 1.0f), vertexConsumer: (position: Vec3, uv: Vec2) -> Unit) {
+        val positions = arrayOf(
+            start,
+            Vec3(start.x, start.y, end.z),
+            end,
+            Vec3(end.x, end.y, start.z),
+        )
+        val texturePositions = arrayOf(
+            Vec2(uvEnd.x, uvStart.y),
+            uvStart,
+            Vec2(uvStart.x, uvEnd.y),
+            uvEnd,
+        )
+
+        for ((vertexIndex, textureIndex) in order) {
+            vertexConsumer.invoke(positions[vertexIndex], texturePositions[textureIndex])
+        }
+    }
+
     enum class MeshStates {
         PREPARING,
         LOADED,
@@ -69,7 +97,7 @@ abstract class Mesh(
     }
 
     companion object {
-        val QUAD_DRAW_ODER = arrayOf(
+        val TRIANGLE_TO_QUAD_ORDER = arrayOf(
             0 to 1,
             3 to 2,
             2 to 3,
@@ -77,25 +105,11 @@ abstract class Mesh(
             1 to 0,
             0 to 1,
         )
-
-
-        fun addQuad(start: Vec3, end: Vec3, uvStart: Vec2 = Vec2(0.0f, 0.0f), uvEnd: Vec2 = Vec2(1.0f, 1.0f), vertexConsumer: (position: Vec3, uv: Vec2) -> Unit) {
-            val positions = arrayOf(
-                start,
-                Vec3(start.x, start.y, end.z),
-                end,
-                Vec3(end.x, end.y, start.z),
-            )
-            val texturePositions = arrayOf(
-                Vec2(uvEnd.x, uvStart.y),
-                uvStart,
-                Vec2(uvStart.x, uvEnd.y),
-                uvEnd,
-            )
-
-            for ((vertexIndex, textureIndex) in QUAD_DRAW_ODER) {
-                vertexConsumer.invoke(positions[vertexIndex], texturePositions[textureIndex])
-            }
-        }
+        val QUAD_TO_QUAD_ORDER = arrayOf(
+            0 to 1,
+            3 to 2,
+            2 to 3,
+            1 to 0,
+        )
     }
 }

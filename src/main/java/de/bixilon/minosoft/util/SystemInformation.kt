@@ -25,7 +25,7 @@ object SystemInformation {
     val SYSTEM_MEMORY = HARDWARE_SYSTEM_INFO.memory.total
     val OS_TEXT: String = "${System.getProperty("os.name")}: ${SYSTEM_INFO.operatingSystem.family} ${SYSTEM_INFO.operatingSystem.bitness}bit"
 
-    val PROCESSOR_TEXT = " ${RUNTIME.availableProcessors()}x ${HARDWARE_SYSTEM_INFO.processor.processorIdentifier.name.replace("\\s{2,}".toRegex(), "")}"
+    val PROCESSOR_TEXT = "${RUNTIME.availableProcessors()}x ${HARDWARE_SYSTEM_INFO.processor.processorIdentifier.name.replace("\\s{2,}".toRegex(), "")}"
 
     val MAX_MEMORY_TEXT: String = getFormattedMaxMemory()
     val PROCESSOR_SPEED = HARDWARE_SYSTEM_INFO.processor.maxFreq

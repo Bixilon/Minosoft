@@ -15,10 +15,11 @@ package de.bixilon.minosoft.data.registries.fluid
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
-import de.bixilon.minosoft.data.registries.blocks.types.FluidBlock
 import de.bixilon.minosoft.data.registries.registries.Registries
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.EMPTY
+import de.bixilon.minosoft.data.world.ChunkSection
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.inSectionHeight
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import glm_.vec3.Vec3d
 import glm_.vec3.Vec3i
@@ -28,30 +29,27 @@ abstract class FlowableFluid(
     registries: Registries,
     data: Map<String, Any>,
 ) : Fluid(resourceLocation, registries, data) {
-    open val flowingTexture: ResourceLocation? = null
-
 
     abstract fun getVelocityMultiplier(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i): Double
 
-    open fun getVelocity(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i): Vec3d {
-        if (blockState.block !is FluidBlock || !blockState.block.fluid.matches(this)) {
+    open fun getVelocity(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, section: ChunkSection? = null, neighbours: Array<ChunkSection?>? = null): Vec3d {
+        if (!this.matches(blockState)) {
             return Vec3d.EMPTY
         }
         val fluidHeight = getHeight(blockState)
 
         val velocity = Vec3d.EMPTY
 
-
         for (direction in Directions.SIDES) {
-            val neighbourBlockState = connection.world[blockPosition + direction] ?: continue
-            if (neighbourBlockState.block !is FluidBlock) {
+            val neighbourBlockState = if (section != null && neighbours != null) {
+                direction.getBlock(blockPosition.x and 0x0F, blockPosition.y.inSectionHeight, blockPosition.z and 0x0F, section, neighbours)
+            } else {
+                connection.world[blockPosition + direction]
+            } ?: continue
+            if (!this.matches(neighbourBlockState)) {
                 continue
             }
-            val fluid = neighbourBlockState.block.fluid
-            if (!matches(fluid)) {
-                continue
-            }
-            val height = neighbourBlockState.block.fluid.getHeight(neighbourBlockState)
+            val height = getHeight(neighbourBlockState)
 
             var heightDifference = 0.0f
 
@@ -64,10 +62,13 @@ abstract class FlowableFluid(
             if (heightDifference != 0.0f) {
                 velocity += (direction.vectord * heightDifference)
             }
-
         }
 
         // ToDo: Falling fluid
+
+        if (velocity.x == 0.0 && velocity.y == 0.0 && velocity.z == 0.0) {
+            return velocity
+        }
 
         return velocity.normalize()
     }

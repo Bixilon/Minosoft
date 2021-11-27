@@ -14,7 +14,7 @@ package de.bixilon.minosoft.protocol.packets.s2c.play
 
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.SoundCategories
-import de.bixilon.minosoft.data.registries.sounds.SoundEvent
+import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.modding.event.events.PlaySoundEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
@@ -30,7 +30,7 @@ class SoundEventS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     var category: SoundCategories? = null
         private set
     val position: Vec3i
-    val soundEvent: SoundEvent
+    val soundEvent: ResourceLocation
     val volume: Float
     val pitch: Float
 
@@ -39,7 +39,7 @@ class SoundEventS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
             // category was moved to the top
             this.category = SoundCategories[buffer.readVarInt()]
         }
-        soundEvent = buffer.connection.registries.soundEventRegistry[buffer.readVarInt()]
+        soundEvent = buffer.connection.registries.soundEventRegistry[buffer.readVarInt()]!!
         if (buffer.versionId >= ProtocolVersions.V_17W15A && buffer.versionId < ProtocolVersions.V_17W18A) {
             buffer.readString() // parrot entity type
         }
