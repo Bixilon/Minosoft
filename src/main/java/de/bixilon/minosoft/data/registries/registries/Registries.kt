@@ -40,7 +40,6 @@ import de.bixilon.minosoft.data.registries.other.containers.ContainerType
 import de.bixilon.minosoft.data.registries.other.game.event.GameEvent
 import de.bixilon.minosoft.data.registries.particle.ParticleType
 import de.bixilon.minosoft.data.registries.registries.registry.*
-import de.bixilon.minosoft.data.registries.sounds.SoundEvent
 import de.bixilon.minosoft.data.registries.statistics.Statistic
 import de.bixilon.minosoft.data.registries.versions.Version
 import de.bixilon.minosoft.protocol.packets.c2s.play.EntityActionC2SP
@@ -69,7 +68,7 @@ class Registries {
     val dimensionRegistry: Registry<Dimension> = Registry()
     val materialRegistry: Registry<Material> = Registry()
     val fluidRegistry: Registry<Fluid> = Registry()
-    val soundEventRegistry: Registry<SoundEvent> = Registry()
+    val soundEventRegistry: ResourceLocationRegistry = ResourceLocationRegistry()
 
     val villagerProfessionRegistry: Registry<VillagerProfession> = Registry()
 
@@ -159,7 +158,7 @@ class Registries {
         entityTypeRegistry.rawInitialize(pixlyzerData["entities"]?.compoundCast(), this, EntityType)
 
         motiveRegistry.rawInitialize(pixlyzerData["motives"]?.compoundCast(), this, Motive, version.isFlattened())
-        soundEventRegistry.rawInitialize(pixlyzerData["sound_events"]?.compoundCast(), this, SoundEvent)
+        soundEventRegistry.rawInitialize(pixlyzerData["sound_events"]?.compoundCast())
         particleTypeRegistry.rawInitialize(pixlyzerData["particles"]?.compoundCast(), this, ParticleType)
         materialRegistry.rawInitialize(pixlyzerData["materials"]?.compoundCast(), this, Material)
         enchantmentRegistry.rawInitialize(pixlyzerData["enchantments"]?.compoundCast(), this, Enchantment)

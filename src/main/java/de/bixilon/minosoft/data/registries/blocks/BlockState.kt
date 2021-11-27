@@ -18,7 +18,6 @@ import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.materials.Material
 import de.bixilon.minosoft.data.registries.registries.Registries
-import de.bixilon.minosoft.data.registries.sounds.SoundEvent
 import de.bixilon.minosoft.gui.rendering.models.baked.block.BakedBlockModel
 import de.bixilon.minosoft.util.KUtil.toBoolean
 import de.bixilon.minosoft.util.KUtil.toInt
@@ -35,11 +34,11 @@ data class BlockState(
     val outlineShape: VoxelShape,
     val hardness: Float,
     val requiresTool: Boolean,
-    val breakSoundEvent: SoundEvent?,
-    val stepSoundEvent: SoundEvent?,
-    val placeSoundEvent: SoundEvent?,
-    val hitSoundEvent: SoundEvent?,
-    val fallSoundEvent: SoundEvent?,
+    val breakSoundEvent: ResourceLocation?,
+    val stepSoundEvent: ResourceLocation?,
+    val placeSoundEvent: ResourceLocation?,
+    val hitSoundEvent: ResourceLocation?,
+    val fallSoundEvent: ResourceLocation?,
     val soundEventVolume: Float = 1.0f,
     val soundEventPitch: Float = 1.0f,
 ) {

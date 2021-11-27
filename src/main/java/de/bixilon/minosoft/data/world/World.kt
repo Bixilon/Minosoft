@@ -20,12 +20,10 @@ import de.bixilon.minosoft.data.registries.biomes.Biome
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.FluidBlock
 import de.bixilon.minosoft.data.registries.dimension.DimensionProperties
-import de.bixilon.minosoft.data.registries.sounds.SoundEvent
 import de.bixilon.minosoft.data.world.biome.accessor.BiomeAccessor
 import de.bixilon.minosoft.data.world.biome.accessor.NoiseBiomeAccessor
 import de.bixilon.minosoft.gui.rendering.particle.ParticleRenderer
 import de.bixilon.minosoft.gui.rendering.particle.types.Particle
-import de.bixilon.minosoft.gui.rendering.sound.AudioPlayer
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.blockPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.chunkPosition
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.inChunkPosition
@@ -59,7 +57,7 @@ import kotlin.random.Random
  */
 class World(
     val connection: PlayConnection,
-) : BiomeAccessor {
+) : BiomeAccessor, AbstractAudioPlayer {
     val lock = ReadWriteLock()
     var cacheBiomeAccessor: NoiseBiomeAccessor? = null
     val chunks: LockMap<Vec2i, Chunk> = lockMapOf()
@@ -76,7 +74,7 @@ class World(
     var thunderGradient = 0.0f
     private val random = Random
 
-    var audioPlayer: AudioPlayer? = null
+    var audioPlayer: AbstractAudioPlayer? = null
     var particleRenderer: ParticleRenderer? = null
 
     operator fun get(blockPosition: Vec3i): BlockState? {
@@ -188,20 +186,13 @@ class World(
         return ret.toMap()
     }
 
-    fun playSoundEvent(resourceLocation: ResourceLocation, position: Vec3i? = null, volume: Float = 1.0f, pitch: Float = 1.0f) {
-        audioPlayer?.playSoundEvent(resourceLocation, position, volume, pitch)
+
+    override fun playSoundEvent(sound: ResourceLocation, position: Vec3?, volume: Float, pitch: Float) {
+        audioPlayer?.playSoundEvent(sound, position, volume, pitch)
     }
 
-    fun playSoundEvent(resourceLocation: ResourceLocation, position: Vec3? = null, volume: Float = 1.0f, pitch: Float = 1.0f) {
-        audioPlayer?.playSoundEvent(resourceLocation, position, volume, pitch)
-    }
-
-    fun playSoundEvent(soundEvent: SoundEvent, position: Vec3i? = null, volume: Float = 1.0f, pitch: Float = 1.0f) {
-        audioPlayer?.playSoundEvent(soundEvent, position, volume, pitch)
-    }
-
-    fun playSoundEvent(soundEvent: SoundEvent, position: Vec3? = null, volume: Float = 1.0f, pitch: Float = 1.0f) {
-        audioPlayer?.playSoundEvent(soundEvent, position, volume, pitch)
+    override fun stopSound(sound: ResourceLocation) {
+        audioPlayer?.stopSound(sound)
     }
 
     fun addParticle(particle: Particle) {

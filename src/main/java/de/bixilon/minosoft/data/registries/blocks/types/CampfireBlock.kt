@@ -40,7 +40,6 @@ import kotlin.random.Random
 open class CampfireBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : Block(resourceLocation, registries, data) {
     val lavaParticles = data["lava_particles"]?.toBoolean() ?: true
 
-    private val campfireCrackleSoundEvent = registries.soundEventRegistry[CAMPFIRE_CRACKLE_SOUND_RESOURCE_LOCATION]!!
     private val cosySmokeParticle = registries.particleTypeRegistry[CampfireSmokeParticle.CosyFactory]!!
     private val signalSmokeParticle = registries.particleTypeRegistry[CampfireSmokeParticle.SignalFactory]!!
     private val lavaParticle = registries.particleTypeRegistry[LavaParticle]!!
@@ -82,7 +81,7 @@ open class CampfireBlock(resourceLocation: ResourceLocation, registries: Registr
             return
         }
         if (random.chance(10)) {
-            connection.world.playSoundEvent(campfireCrackleSoundEvent, blockPosition + Vec3(0.5f), 0.5f + random.nextFloat(), 0.6f + random.nextFloat() * 0.7f)
+            connection.world.playSoundEvent(CAMPFIRE_CRACKLE_SOUND, blockPosition + Vec3(0.5f), 0.5f + random.nextFloat(), 0.6f + random.nextFloat() * 0.7f)
         }
 
         if (lavaParticles && random.chance(20)) {
@@ -104,7 +103,7 @@ open class CampfireBlock(resourceLocation: ResourceLocation, registries: Registr
     }
 
     companion object : BlockFactory<CampfireBlock> {
-        private val CAMPFIRE_CRACKLE_SOUND_RESOURCE_LOCATION = "minecraft:block.campfire.crackle".toResourceLocation()
+        private val CAMPFIRE_CRACKLE_SOUND = "minecraft:block.campfire.crackle".toResourceLocation()
 
         override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): CampfireBlock {
             return CampfireBlock(resourceLocation, registries, data)

@@ -195,6 +195,7 @@ open class Registry<T : RegistryItem>(
         BITS_16,
     }
 
+    @Deprecated("TODO")
     override fun iterator(): Iterator<T> {
         return resourceLocationMap.values.iterator()
     }

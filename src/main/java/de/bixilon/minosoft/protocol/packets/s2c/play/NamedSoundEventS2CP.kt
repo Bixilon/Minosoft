@@ -14,7 +14,7 @@ package de.bixilon.minosoft.protocol.packets.s2c.play
 
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.SoundCategories
-import de.bixilon.minosoft.data.registries.sounds.SoundEvent
+import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.modding.event.events.PlaySoundEvent
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.s2c.PlayS2CPacket
@@ -27,7 +27,7 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 import glm_.vec3.Vec3
 
 class NamedSoundEventS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
-    val soundEvent: SoundEvent?
+    val soundEvent: ResourceLocation?
     val volume: Float
     val pitch: Float
     lateinit var position: Vec3

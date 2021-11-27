@@ -15,102 +15,80 @@ package de.bixilon.minosoft.gui.rendering.sound.sounds
 
 import de.bixilon.minosoft.data.assets.AssetsManager
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.gui.rendering.sound.SoundUtil.sound
+import de.bixilon.minosoft.util.KUtil.toBoolean
+import de.bixilon.minosoft.util.KUtil.toFloat
+import de.bixilon.minosoft.util.KUtil.toInt
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
-import org.lwjgl.BufferUtils
-import org.lwjgl.openal.AL10.*
-import org.lwjgl.stb.STBVorbis.*
-import org.lwjgl.stb.STBVorbisInfo
-import org.lwjgl.system.MemoryUtil
 import java.io.FileNotFoundException
-import java.nio.ByteBuffer
 
 data class Sound(
+    val soundEvent: ResourceLocation,
     val path: ResourceLocation,
     val volume: Float = 1.0f,
     val pitch: Float = 1.0f,
     val weight: Int = 1,
-    val stream: Boolean = false, // ToDo
-    val attenuationDistance: Int = 16,
+    val stream: Boolean = false, // ToDo: Implement
+    val attenuationDistance: Int = 16, // ToDo: Implement
     val preload: Boolean = false,
-    // ToDo: type
 ) {
-    var length: Long = -1L
+    var data: SoundData? = null
         private set
-    var loaded: Boolean = false
+    var buffer: OpenALBuffer? = null
         private set
-    var loadFailed: Boolean = false
-        private set
-    var channels: Int = -1
-        private set
-    var sampleRate: Int = -1
-        private set
-    var samplesLength: Int = -1
-        private set
-    var sampleSeconds: Float = -1.0f
-        private set
-    var buffer = -1
-        private set
-
-    private var vorbisBuffer: ByteBuffer? = null
 
     @Synchronized
     fun load(assetsManager: AssetsManager) {
-        if (loaded || loadFailed) {
+        if (data != null) {
             return
         }
         Log.log(LogMessageType.AUDIO_LOADING, LogLevels.VERBOSE) { "Loading audio file: $path" }
         try {
-            val vorbisBuffer = assetsManager.readByteAsset(path)
-            this.vorbisBuffer = vorbisBuffer
-
-            val error = BufferUtils.createIntBuffer(1)
-            val vorbis = stb_vorbis_open_memory(vorbisBuffer, error, null)
-            if (vorbis == MemoryUtil.NULL) {
-                throw IllegalStateException("Can not load vorbis: ${path}: ${error[0]}")
-            }
-            val info = stb_vorbis_get_info(vorbis, STBVorbisInfo.malloc())
-            channels = info.channels()
-            val format = when (channels) {
-                1 -> AL_FORMAT_MONO16
-                2 -> AL_FORMAT_STEREO16
-                else -> error("Don't know vorbis channels: $channels")
-            }
-            sampleRate = info.sample_rate()
-
-            samplesLength = stb_vorbis_stream_length_in_samples(vorbis)
-            sampleSeconds = stb_vorbis_stream_length_in_seconds(vorbis)
-            length = (sampleSeconds * 1000).toLong()
-
-
-            val pcm = BufferUtils.createShortBuffer(samplesLength)
-
-            pcm.limit(stb_vorbis_get_samples_short_interleaved(vorbis, channels, pcm) * channels)
-            //ToDo: Somehow crashed?: MemoryUtil.memFree(vorbisBuffer)
-
-            this.buffer = alGenBuffers()
-
-            alBufferData(buffer, format, pcm, sampleRate)
-            loaded = true
+            val data = SoundData(assetsManager, this)
+            this.data = data
+            this.buffer = OpenALBuffer(data)
         } catch (exception: FileNotFoundException) {
-            loadFailed = true
             Log.log(LogMessageType.AUDIO_LOADING, LogLevels.WARN) { "Can not load sound: $path: $exception" }
         }
     }
 
     @Synchronized
     fun unload() {
-        if (!loaded) {
-            return
+        data?.unload()
+        buffer?.unload()
+    }
+
+    protected fun finalize() {
+        unload()
+    }
+
+    companion object {
+
+        operator fun invoke(soundEvent: ResourceLocation, data: Any): Sound {
+            if (data is String) {
+                return Sound(
+                    soundEvent = soundEvent,
+                    path = data.toResourceLocation().sound(),
+                )
+            }
+
+            check(data is Map<*, *>)
+
+            // ToDo: "type" attribute: event
+
+            return Sound(
+                soundEvent = soundEvent,
+                path = data["name"].toResourceLocation(),
+                volume = data["volume"]?.toFloat() ?: 1.0f,
+                pitch = data["pitch"]?.toFloat() ?: 1.0f,
+                weight = data["weight"]?.toInt() ?: 1,
+                stream = data["stream"]?.toBoolean() ?: false,
+                attenuationDistance = data["attenuation_distance"]?.toInt() ?: 16,
+                preload = data["preload"]?.toBoolean() ?: false,
+            )
         }
-        alDeleteBuffers(buffer)
-        vorbisBuffer?.let { MemoryUtil.memFree(it) }
-        buffer = -1
-        channels = -1
-        sampleRate = -1
-        samplesLength = -1
-        sampleSeconds = -1.0f
-        loaded = false
     }
 }

@@ -10,26 +10,26 @@
  *
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
-package de.bixilon.minosoft.data.registries.sounds
+
+package de.bixilon.minosoft.gui.rendering.sound
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
-import de.bixilon.minosoft.data.registries.registries.Registries
-import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
-import de.bixilon.minosoft.data.registries.registries.registry.ResourceLocationDeserializer
+import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
-data class SoundEvent(
-    override val resourceLocation: ResourceLocation,
-) : RegistryItem() {
+object SoundUtil {
+    fun ResourceLocation.sound(): ResourceLocation {
+        var path = ""
 
-    override fun toString(): String {
-        return resourceLocation.toString()
-    }
-
-    companion object : ResourceLocationDeserializer<SoundEvent> {
-        override fun deserialize(registries: Registries?, resourceLocation: ResourceLocation, data: Map<String, Any>): SoundEvent {
-            return SoundEvent(
-                resourceLocation = resourceLocation,
-            )
+        if (!this.path.startsWith("sounds/")) {
+            path += "sounds/"
         }
+        path += this.path
+
+        if (!path.contains(".")) {
+            // ending
+            path += ".ogg"
+        }
+
+        return "$namespace:$path".toResourceLocation()
     }
 }

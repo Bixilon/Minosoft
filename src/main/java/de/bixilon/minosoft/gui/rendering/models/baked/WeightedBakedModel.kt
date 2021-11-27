@@ -43,9 +43,7 @@ class WeightedBakedModel(
     }
 
     private fun getModel(random: Random): BakedBlockModel {
-        val totalWeight = abs(random.nextLong() % totalWeight)
-
-        var weightLeft = totalWeight
+        var weightLeft = abs(random.nextLong() % totalWeight)
 
         for ((model, weight) in models) {
             weightLeft -= weight
