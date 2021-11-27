@@ -34,5 +34,4 @@ class OpenALBuffer(
     protected fun finalize() {
         unload()
     }
-
 }

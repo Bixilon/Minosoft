@@ -35,7 +35,7 @@ class GrassTintCalculator : TintProvider {
         return when (biome.grassColorModifier) {
             Biome.GrassColorModifiers.NONE -> color
             Biome.GrassColorModifiers.SWAMP -> 0x6A7039 // ToDo: Biome noise is applied here
-            Biome.GrassColorModifiers.DARK_FOREST -> (color and 0xFFFFFF) + 0x28340A shr 1
+            Biome.GrassColorModifiers.DARK_FOREST -> (color and 0xFEFEFE) + 0x28340A shr 1
         }
     }
 }
