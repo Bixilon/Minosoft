@@ -11,21 +11,25 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.data.registries.blocks.types
+package de.bixilon.minosoft.data.registries.blocks.types.water
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockFactory
+import de.bixilon.minosoft.data.registries.blocks.types.Block
+import de.bixilon.minosoft.data.registries.blocks.types.FluidFillable
+import de.bixilon.minosoft.data.registries.factory.clazz.MultiClassFactory
 import de.bixilon.minosoft.data.registries.fluid.DefaultFluids
 import de.bixilon.minosoft.data.registries.fluid.Fluid
 import de.bixilon.minosoft.data.registries.registries.Registries
 
-open class KelpBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : Block(resourceLocation, registries, data), FluidFillable {
+open class SeagrassBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : Block(resourceLocation, registries, data), FluidFillable {
     override val fluid: Fluid = registries.fluidRegistry[DefaultFluids.WATER]!!
 
-    companion object : BlockFactory<KelpBlock> {
+    companion object : BlockFactory<SeagrassBlock>, MultiClassFactory<SeagrassBlock> {
+        override val ALIASES: Set<String> = setOf("TallSeagrassBlock")
 
-        override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): KelpBlock {
-            return KelpBlock(resourceLocation, registries, data)
+        override fun build(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>): SeagrassBlock {
+            return SeagrassBlock(resourceLocation, registries, data)
         }
     }
 }

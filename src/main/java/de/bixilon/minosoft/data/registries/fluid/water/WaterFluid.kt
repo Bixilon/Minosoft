@@ -17,7 +17,6 @@ import de.bixilon.minosoft.data.player.LocalPlayerEntity
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
-import de.bixilon.minosoft.data.registries.blocks.types.FluidFillable
 import de.bixilon.minosoft.data.registries.effects.DefaultStatusEffects
 import de.bixilon.minosoft.data.registries.effects.StatusEffect
 import de.bixilon.minosoft.data.registries.enchantment.DefaultEnchantments
@@ -71,10 +70,6 @@ class WaterFluid(
         if (other.properties[BlockProperties.WATERLOGGED] == true) {
             return true
         }
-        if (other.block is FluidFillable && resourceLocation == other.block.fluid) {
-            return true
-        }
-
         return super.matches(other)
     }
 

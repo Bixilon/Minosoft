@@ -21,6 +21,8 @@ import de.bixilon.minosoft.data.registries.blocks.types.portal.NetherPortalBlock
 import de.bixilon.minosoft.data.registries.blocks.types.redstone.ComparatorBlock
 import de.bixilon.minosoft.data.registries.blocks.types.redstone.RepeaterBlock
 import de.bixilon.minosoft.data.registries.blocks.types.wall.LeverBlock
+import de.bixilon.minosoft.data.registries.blocks.types.water.KelpBlock
+import de.bixilon.minosoft.data.registries.blocks.types.water.SeagrassBlock
 import de.bixilon.minosoft.data.registries.factory.clazz.DefaultClassFactory
 
 object DefaultBlockFactories : DefaultClassFactory<BlockFactory<*>>(
@@ -40,6 +42,7 @@ object DefaultBlockFactories : DefaultClassFactory<BlockFactory<*>>(
     RedstoneTorchBlock,
     HoneyBlock,
     KelpBlock,
+    SeagrassBlock,
     StoneButtonBlock,
     WoodenButtonBlock,
     LeavesBlock,

@@ -18,6 +18,7 @@ import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.blocks.types.FluidBlock
+import de.bixilon.minosoft.data.registries.blocks.types.FluidFillable
 import de.bixilon.minosoft.data.registries.items.Item
 import de.bixilon.minosoft.data.registries.particle.ParticleType
 import de.bixilon.minosoft.data.registries.registries.Registries
@@ -61,9 +62,14 @@ open class Fluid(
 
     open fun matches(other: BlockState?): Boolean {
         other ?: return false
+        if (other.block is FluidFillable && this === other.block.fluid) {
+            return true
+        }
         if (other.block !is FluidBlock) {
             return false
         }
+
+
 
         return matches(other.block.fluid)
     }
@@ -71,7 +77,7 @@ open class Fluid(
     fun getHeight(blockState: BlockState): Float {
         val level = blockState.properties[BlockProperties.FLUID_LEVEL]?.unsafeCast<Int>() ?: 8
         if (level < 0 || level >= 8) {
-            return 1.0f
+            return 0.9f
         }
         return (8 - level) / 9.0f
     }
