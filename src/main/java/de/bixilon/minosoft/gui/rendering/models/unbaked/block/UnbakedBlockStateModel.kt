@@ -124,13 +124,14 @@ data class UnbakedBlockStateModel(
                 }
 
                 if (this.uvLock && this.rotation != null) {
+                    // ToDo: Not working correct: Take a look at the (top) texture of vines
                     val axis = when (face.direction) {
                         Directions.UP, Directions.DOWN -> Axes.Y
                         else -> Axes.X
                     }
                     val rad = this.rotation[axis].rad
                     for ((index, position) in texturePositions.withIndex()) {
-                        texturePositions[index] = (Vec3(position.x - 0.5f, 0.0f, position.y - 0.5f).apply { rotateAssign(rad, axis) }).xz + 0.5f
+                        texturePositions[index] = (Vec3(position.x - 0.5f, 0.0f, position.y - 0.5f).apply { rotateAssign(rad, Axes.Y) }).xz + 0.5f
                     }
                 }
 
