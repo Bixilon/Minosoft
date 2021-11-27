@@ -101,6 +101,7 @@ class WorldRenderer(
     private val culledQueue: MutableMap<Vec2i, MutableSet<Int>> = mutableMapOf() // Chunk sections that can be prepared or have changed, but are not required to get rendered yet (i.e. culled chunks)
     private val culledQueueLock = ReadWriteLock()
 
+    // ToDo: Sometimes if you clear the chunk cache a ton of times, the workers are maxed out and nothing happens anymore
     val maxMeshesToLoad = 100 // ToDo: Should depend on the system memory and other factors.
     private val meshesToLoad: MutableList<WorldQueueItem> = synchronizedListOf() // prepared meshes, that can be loaded in the (next) frame
     private val meshesToLoadLock = ReadWriteLock()
@@ -370,6 +371,7 @@ class WorldRenderer(
                     if (mesh.clearEmpty() == 0) {
                         return@Runnable end()
                     }
+                    item.mesh = mesh
                     meshesToLoadLock.lock()
                     locked = true
                     meshesToLoad.removeAll { it == item } // Remove duplicates
