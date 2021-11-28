@@ -143,16 +143,13 @@ class ParticleRenderer(
         particlesLock.unlock()
     }
 
-    operator fun plusAssign(particle: Particle) {
-        add(particle)
-    }
+    operator fun plusAssign(particle: Particle) = add(particle)
 
     override fun prepareDraw() {
         transparentMesh.unload()
         translucentMesh.unload()
 
         val toRemove: MutableSet<Particle> = mutableSetOf()
-
 
         transparentMesh.data.clear()
         translucentMesh.data.clear()
@@ -171,6 +168,7 @@ class ParticleRenderer(
             particle.addVertex(transparentMesh, translucentMesh, time)
         }
         particlesLock.release()
+
         if (toRemove.isNotEmpty()) {
             particlesLock.lock()
             particles -= toRemove

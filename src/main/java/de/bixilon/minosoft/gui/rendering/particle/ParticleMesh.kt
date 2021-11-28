@@ -30,19 +30,16 @@ class ParticleMesh(renderWindow: RenderWindow, data: DirectArrayFloatList) : Mes
     fun addVertex(position: Vec3d, scale: Float, texture: AbstractTexture, tintColor: RGBColor, uvMin: Vec2 = Vec2(0.0f, 0.0f), uvMax: Vec2 = Vec2(1.0f, 1.0f)) {
         val minTransformedUV = texture.renderData?.transformUV(uvMin) ?: uvMin
         val maxTransformedUV = texture.renderData?.transformUV(uvMax) ?: uvMax
-        data.addAll(
-            floatArrayOf(
-                position.x.toFloat(), // ToDo: Use doubles
-                position.y.toFloat(),
-                position.z.toFloat(),
-                minTransformedUV.x,
-                minTransformedUV.y,
-                maxTransformedUV.x,
-                maxTransformedUV.y,
-                Float.fromBits(texture.renderData?.shaderTextureId ?: RenderConstants.DEBUG_TEXTURE_ID),
-                scale,
-                Float.fromBits(tintColor.rgba),
-            ))
+        data.add(position.x.toFloat())
+        data.add(position.y.toFloat())
+        data.add(position.z.toFloat())
+        data.add(minTransformedUV.x)
+        data.add(minTransformedUV.y)
+        data.add(maxTransformedUV.x)
+        data.add(maxTransformedUV.y)
+        data.add(Float.fromBits(texture.renderData?.shaderTextureId ?: RenderConstants.DEBUG_TEXTURE_ID))
+        data.add(scale)
+        data.add(Float.fromBits(tintColor.rgba))
     }
 
 

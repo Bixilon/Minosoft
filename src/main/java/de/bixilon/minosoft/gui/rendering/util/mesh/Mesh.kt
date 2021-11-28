@@ -32,7 +32,7 @@ abstract class Mesh(
     val reversedOrder = order.reversedArray()
     private var _data: DirectArrayFloatList? = data ?: DirectArrayFloatList(initialCacheSize)
     var data: DirectArrayFloatList
-        get() = _data!!
+        get() = _data as DirectArrayFloatList
         set(value) {
             _data = value
         }

@@ -369,10 +369,12 @@ object VecUtil {
             delta <= 0.0 -> return start
             delta >= 1.0 -> return end
         }
+        val startArray = start.array
+        val endArray = end.array
         return Vec3d(
-            lerp(delta, start.x, end.x),
-            lerp(delta, start.y, end.y),
-            lerp(delta, start.z, end.z),
+            lerp(delta, startArray[0], endArray[0]),
+            lerp(delta, startArray[1], endArray[1]),
+            lerp(delta, startArray[2], endArray[2]),
         )
     }
 

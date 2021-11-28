@@ -24,8 +24,8 @@ class DirectArrayFloatList(
 ) : AbstractFloatList() {
     var buffer: FloatBuffer = memAllocFloat(initialSize)
         private set
-    override val limit: Int
-        get() = buffer.capacity()
+    override var limit: Int = buffer.limit()
+        private set
     override val size: Int
         get() = buffer.position()
     override val isEmpty: Boolean
@@ -58,6 +58,7 @@ class DirectArrayFloatList(
         }
         val oldBuffer = buffer
         buffer = memAllocFloat(newSize)
+        limit = newSize
         if (FLOAT_PUT_METHOD == null) { // Java < 16
             for (i in 0 until oldBuffer.position()) {
                 buffer.put(oldBuffer.get(i))
@@ -139,6 +140,7 @@ class DirectArrayFloatList(
         finished = true
         val oldBuffer = buffer
         buffer = memAllocFloat(oldBuffer.position())
+        limit = buffer.limit()
         if (FLOAT_PUT_METHOD == null) { // Java < 16
             for (i in 0 until oldBuffer.position()) {
                 buffer.put(oldBuffer.get(i))

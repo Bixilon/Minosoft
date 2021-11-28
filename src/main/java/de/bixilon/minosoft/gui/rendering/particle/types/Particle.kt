@@ -76,7 +76,6 @@ abstract class Particle(
             }
             field = value
 
-
             val x = ((aabb.min.x + aabb.max.x) - spacing.x) / 2.0
             val z = ((aabb.min.z + aabb.max.z) - spacing.z) / 2.0
 

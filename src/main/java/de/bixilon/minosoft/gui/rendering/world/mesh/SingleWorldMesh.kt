@@ -26,15 +26,13 @@ class SingleWorldMesh(renderWindow: RenderWindow, initialCacheSize: Int) : Mesh(
 
     fun addVertex(position: FloatArray, uv: Vec2, texture: AbstractTexture, tintColor: Int, light: Int) {
         val transformedUV = texture.renderData?.transformUV(uv) ?: uv
-        data.addAll(floatArrayOf(
-            position[0],
-            position[1],
-            position[2],
-            transformedUV.x,
-            transformedUV.y,
-            Float.fromBits(texture.renderData?.shaderTextureId ?: RenderConstants.DEBUG_TEXTURE_ID),
-            Float.fromBits(tintColor or (light shl 24)),
-        ))
+        data.add(position[0])
+        data.add(position[1])
+        data.add(position[2])
+        data.add(transformedUV.x)
+        data.add(transformedUV.y)
+        data.add(Float.fromBits(texture.renderData?.shaderTextureId ?: RenderConstants.DEBUG_TEXTURE_ID))
+        data.add(Float.fromBits(tintColor or (light shl 24)))
     }
 
 
