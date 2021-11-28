@@ -30,6 +30,7 @@ import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates.Companion.disconnected
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.util.ReadWriteLock
 import de.bixilon.minosoft.util.collections.floats.DirectArrayFloatList
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -52,14 +53,14 @@ class ParticleRenderer(
     private var transparentMesh = ParticleMesh(renderWindow, DirectArrayFloatList(RenderConstants.MAXIMUM_PARTICLE_AMOUNT * ParticleMesh.ParticleMeshStruct.FLOATS_PER_VERTEX))
     private var translucentMesh = ParticleMesh(renderWindow, DirectArrayFloatList(RenderConstants.MAXIMUM_PARTICLE_AMOUNT * ParticleMesh.ParticleMeshStruct.FLOATS_PER_VERTEX))
 
+    private val particlesLock = ReadWriteLock()
     private var particles: MutableSet<Particle> = mutableSetOf()
-    private var particleQueue: MutableSet<Particle> = mutableSetOf()
 
 
     private lateinit var particleTask: TimeWorkerTask
 
     val size: Int
-        get() = particles.size + particleQueue.size
+        get() = particles.size
 
     override fun init() {
         connection.registerEvent(CallbackEventInvoker.of<CameraMatrixChangeEvent> {
@@ -104,14 +105,15 @@ class ParticleRenderer(
 
         particleTask = TimeWorker.addTask(TimeWorkerTask(ProtocolDefinition.TICK_TIME, maxDelayTime = ProtocolDefinition.TICK_TIME / 2) {
             val cameraLength = connection.player.position.length()
-            synchronized(particles) {
-                for (particle in particles) {
-                    if (particle.position.length() - cameraLength >= Minosoft.config.config.game.camera.viewDistance * ProtocolDefinition.SECTION_WIDTH_X) {
-                        particle.dead = true
-                    }
-                    particle.tryTick()
+            particlesLock.acquire()
+            val time = System.currentTimeMillis()
+            for (particle in particles) {
+                if (particle.position.length() - cameraLength >= Minosoft.config.config.game.camera.viewDistance * ProtocolDefinition.SECTION_WIDTH_X) {
+                    particle.dead = true
                 }
+                particle.tryTick(time)
             }
+            particlesLock.release()
         })
 
         connection.registerEvent(CallbackEventInvoker.of<PlayConnectionStateChangeEvent> {
@@ -123,7 +125,7 @@ class ParticleRenderer(
     }
 
     fun add(particle: Particle) {
-        val particleCount = particles.size + particleQueue.size
+        val particleCount = particles.size
         if (particleCount >= RenderConstants.MAXIMUM_PARTICLE_AMOUNT) {
             Log.log(LogMessageType.RENDERING_GENERAL, LogLevels.WARN) { "Can not add particle: Limit reached (${particleCount} > ${RenderConstants.MAXIMUM_PARTICLE_AMOUNT}" }
             return
@@ -135,9 +137,9 @@ class ParticleRenderer(
             return
         }
 
-        synchronized(particleQueue) {
-            particleQueue += particle
-        }
+        particlesLock.lock()
+        particles += particle
+        particlesLock.unlock()
     }
 
     operator fun plusAssign(particle: Particle) {
@@ -157,21 +159,21 @@ class ParticleRenderer(
         translucentMesh = ParticleMesh(renderWindow, translucentMesh.data)
 
 
-        synchronized(particles) {
-            synchronized(particleQueue) {
-                particles += particleQueue
-                particleQueue.clear()
-            }
+        particlesLock.acquire()
 
-            val time = System.currentTimeMillis()
-            for (particle in particles) {
-                if (particle.dead) {
-                    toRemove += particle
-                    continue
-                }
-                particle.addVertex(transparentMesh, translucentMesh, time)
+        val time = System.currentTimeMillis()
+        for (particle in particles) {
+            if (particle.dead) {
+                toRemove += particle
+                continue
             }
+            particle.addVertex(transparentMesh, translucentMesh, time)
+        }
+        particlesLock.release()
+        if (toRemove.isNotEmpty()) {
+            particlesLock.lock()
             particles -= toRemove
+            particlesLock.unlock()
         }
 
         transparentMesh.load()

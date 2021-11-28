@@ -134,18 +134,16 @@ abstract class Particle(
         forceMove(velocity)
     }
 
-    fun tryTick() {
+    fun tryTick(time: Long) {
         if (dead) {
             return
         }
 
-        val currentTime = System.currentTimeMillis()
-
         if (lastTickTime == -1L) {
-            lastTickTime = System.currentTimeMillis()
+            lastTickTime = time
             return
         }
-        if (currentTime - lastTickTime < ProtocolDefinition.TICK_TIME) {
+        if (time - lastTickTime < ProtocolDefinition.TICK_TIME) {
             return
         }
         tick()
@@ -156,7 +154,7 @@ abstract class Particle(
 
         move()
         postTick()
-        lastTickTime = currentTime
+        lastTickTime = time
     }
 
     protected fun age() {
