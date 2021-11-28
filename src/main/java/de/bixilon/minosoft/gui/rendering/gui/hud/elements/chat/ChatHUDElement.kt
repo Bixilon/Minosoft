@@ -21,6 +21,7 @@ import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.HUDBuilder
 import de.bixilon.minosoft.gui.rendering.gui.hud.elements.LayoutedHUDElement
 import de.bixilon.minosoft.modding.event.events.ChatMessageReceiveEvent
+import de.bixilon.minosoft.modding.event.events.InternalMessageReceiveEvent
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import glm_.vec2.Vec2i
@@ -42,6 +43,12 @@ class ChatHUDElement(hudRenderer: HUDRenderer) : LayoutedHUDElement<TextFlowElem
     override fun init() {
         connection.registerEvent(CallbackEventInvoker.of<ChatMessageReceiveEvent> {
             if (it.position == ChatTextPositions.ABOVE_HOTBAR) {
+                return@of
+            }
+            layout += it.message
+        })
+        connection.registerEvent(CallbackEventInvoker.of<InternalMessageReceiveEvent> {
+            if (Minosoft.config.config.game.hud.internalMessages.enabled) {
                 return@of
             }
             layout += it.message

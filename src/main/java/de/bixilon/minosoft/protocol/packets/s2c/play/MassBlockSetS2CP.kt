@@ -57,9 +57,9 @@ class MassBlockSetS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
                 val count = buffer.readVarInt()
                 for (i in 0 until count) {
                     val position = buffer.readByte().toInt()
-                    val y = buffer.readByte()
+                    val y = buffer.readUnsignedByte()
                     val blockId = buffer.readVarInt()
-                    blocks[Vec3i(position and 0xF0 ushr 4 and 0xF, y.toInt(), position and 0xF)] = buffer.connection.registries.blockStateRegistry[blockId]
+                    blocks[Vec3i(position and 0xF0 ushr 4 and 0xF, y, position and 0x0F)] = buffer.connection.registries.blockStateRegistry[blockId]
                 }
             }
             else -> {
