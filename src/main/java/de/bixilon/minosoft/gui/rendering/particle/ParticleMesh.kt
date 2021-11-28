@@ -20,11 +20,12 @@ import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveType
 import de.bixilon.minosoft.gui.rendering.system.base.texture.texture.AbstractTexture
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
+import de.bixilon.minosoft.util.collections.floats.DirectArrayFloatList
 import glm_.vec2.Vec2
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3d
 
-class ParticleMesh(renderWindow: RenderWindow, initialCacheSize: Int) : Mesh(renderWindow, ParticleMeshStruct, PrimitiveTypes.POINT, initialCacheSize) {
+class ParticleMesh(renderWindow: RenderWindow, data: DirectArrayFloatList) : Mesh(renderWindow, ParticleMeshStruct, PrimitiveTypes.POINT, -1, clearOnLoad = false, data = data) {
 
     fun addVertex(position: Vec3d, scale: Float, texture: AbstractTexture, tintColor: RGBColor, uvMin: Vec2 = Vec2(0.0f, 0.0f), uvMax: Vec2 = Vec2(1.0f, 1.0f)) {
         val minTransformedUV = texture.renderData?.transformUV(uvMin) ?: uvMin

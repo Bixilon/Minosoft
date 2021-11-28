@@ -30,6 +30,7 @@ import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates.Companion.disconnected
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.util.collections.floats.DirectArrayFloatList
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -48,8 +49,8 @@ class ParticleRenderer(
     private val translucentShader: Shader = renderSystem.createShader(ResourceLocation(ProtocolDefinition.MINOSOFT_NAMESPACE, "particle"))
 
     // There is no opaque mesh because it is simply not needed (every particle has transparency)
-    private var transparentMesh = ParticleMesh(renderWindow, 0)
-    private var translucentMesh = ParticleMesh(renderWindow, 0)
+    private var transparentMesh = ParticleMesh(renderWindow, DirectArrayFloatList(RenderConstants.MAXIMUM_PARTICLE_AMOUNT * ParticleMesh.ParticleMeshStruct.FLOATS_PER_VERTEX))
+    private var translucentMesh = ParticleMesh(renderWindow, DirectArrayFloatList(RenderConstants.MAXIMUM_PARTICLE_AMOUNT * ParticleMesh.ParticleMeshStruct.FLOATS_PER_VERTEX))
 
     private var particles: MutableSet<Particle> = mutableSetOf()
     private var particleQueue: MutableSet<Particle> = mutableSetOf()
@@ -150,8 +151,10 @@ class ParticleRenderer(
         val toRemove: MutableSet<Particle> = mutableSetOf()
 
 
-        transparentMesh = ParticleMesh(renderWindow, particles.size + particleQueue.size * ParticleMesh.ParticleMeshStruct.FLOATS_PER_VERTEX)
-        translucentMesh = ParticleMesh(renderWindow, particles.size + particleQueue.size * ParticleMesh.ParticleMeshStruct.FLOATS_PER_VERTEX)
+        transparentMesh.data.clear()
+        translucentMesh.data.clear()
+        transparentMesh = ParticleMesh(renderWindow, transparentMesh.data)
+        translucentMesh = ParticleMesh(renderWindow, translucentMesh.data)
 
 
         synchronized(particles) {
