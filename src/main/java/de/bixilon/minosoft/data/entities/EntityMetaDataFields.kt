@@ -18,6 +18,7 @@ import de.bixilon.minosoft.data.entities.entities.npc.villager.data.VillagerData
 import de.bixilon.minosoft.data.entities.entities.npc.villager.data.VillagerLevels
 import de.bixilon.minosoft.data.entities.entities.npc.villager.data.VillagerTypes
 import de.bixilon.minosoft.data.entities.entities.vehicle.Boat
+import de.bixilon.minosoft.data.entities.meta.ArmorStandArmRotation
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.particle.ParticleType
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
@@ -105,12 +106,12 @@ enum class EntityMetaDataFields(val defaultValue: Any? = null) {
     PLAYER_RIGHT_SHOULDER_DATA,
 
     ARMOR_STAND_FLAGS(0.toByte()),
-    ARMOR_STAND_HEAD_ROTATION(EntityRotation(0.0f, 0.0f, 0.0f)),
-    ARMOR_STAND_BODY_ROTATION(EntityRotation(0.0f, 0.0f, 0.0f)),
-    ARMOR_STAND_LEFT_ARM_ROTATION(EntityRotation(-10.0f, 0.0f, -10.0f)),
-    ARMOR_STAND_RIGHT_ARM_ROTATION(EntityRotation(-15.0f, 0.0f, 10.0f)),
-    ARMOR_STAND_LEFT_LAG_ROTATION(EntityRotation(-1.0f, 0.0f, -1.0f)),
-    ARMOR_STAND_RIGHT_LAG_ROTATION(EntityRotation(1.0f, 0.0f, 1.0f)),
+    ARMOR_STAND_HEAD_ROTATION(ArmorStandArmRotation(0.0f, 0.0f, 0.0f)),
+    ARMOR_STAND_BODY_ROTATION(ArmorStandArmRotation(0.0f, 0.0f, 0.0f)),
+    ARMOR_STAND_LEFT_ARM_ROTATION(ArmorStandArmRotation(-10.0f, 0.0f, -10.0f)),
+    ARMOR_STAND_RIGHT_ARM_ROTATION(ArmorStandArmRotation(-15.0f, 0.0f, 10.0f)),
+    ARMOR_STAND_LEFT_LAG_ROTATION(ArmorStandArmRotation(-1.0f, 0.0f, -1.0f)),
+    ARMOR_STAND_RIGHT_LAG_ROTATION(ArmorStandArmRotation(1.0f, 0.0f, 1.0f)),
 
     BAT_FLAGS(0.toByte()),
 

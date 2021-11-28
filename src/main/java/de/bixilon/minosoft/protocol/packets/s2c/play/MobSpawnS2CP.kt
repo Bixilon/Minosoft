@@ -47,7 +47,8 @@ class MobSpawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         } else {
             buffer.readVec3d()
         }
-        val rotation = EntityRotation(buffer.readAngle().toFloat(), buffer.readAngle().toFloat(), buffer.readAngle().toFloat())
+        val rotation = EntityRotation(buffer.readAngle().toDouble(), buffer.readAngle().toDouble())
+        val headYaw = buffer.readAngle()
         val velocity = buffer.readVelocity()
 
         val metaData: EntityMetaData? = if (buffer.versionId < ProtocolVersions.V_19W34A) {
@@ -57,11 +58,12 @@ class MobSpawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         }
         val entityType = buffer.connection.registries.entityTypeRegistry[typeId]
         entity = entityType.build(buffer.connection, position, rotation, metaData, buffer.versionId)!!
+        entity.setHeadRotation(headYaw)
         entity.velocity = velocity
         metaData?.let {
             entity.entityMetaData.sets.putAll(it.sets)
             if (RunConfiguration.VERBOSE_ENTITY_META_DATA_LOGGING) {
-                Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Entity meta data(entityId=$entityId): ${entity.entityMetaDataAsString}" }
+                Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Entity meta data (entityId=$entityId): ${entity.entityMetaDataAsString}" }
             }
         }
     }

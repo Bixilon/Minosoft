@@ -192,15 +192,11 @@ abstract class Entity(
     }
 
     fun setRotation(yaw: Int, pitch: Int) {
-        rotation = EntityRotation(yaw.toDouble(), pitch.toDouble(), rotation.headYaw)
-    }
-
-    fun setRotation(yaw: Int, pitch: Int, headYaw: Int) {
-        rotation = EntityRotation(yaw.toFloat(), pitch.toFloat(), headYaw.toFloat())
+        rotation = EntityRotation(yaw.toDouble(), pitch.toDouble())
     }
 
     fun setHeadRotation(headYaw: Int) {
-        rotation = EntityRotation(rotation.bodyYaw, rotation.pitch, headYaw.toDouble())
+        // ToDo
     }
 
     private fun getEntityFlag(bitMask: Int): Boolean {

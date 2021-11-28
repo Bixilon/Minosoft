@@ -30,7 +30,7 @@ class Painting(
     position: Vec3i,
     @get:EntityMetaDataFunction(name = "Direction") val direction: Directions,
     @get:EntityMetaDataFunction(name = "Motive") val motive: Motive,
-) : Entity(connection, entityType, position.entityPosition, EntityRotation(0.0f, 0.0f, 0.0f)) {
+) : Entity(connection, entityType, position.entityPosition, EntityRotation(0.0f, 0.0f)) {
 
     companion object : EntityFactory<Painting> {
         override val RESOURCE_LOCATION: ResourceLocation = ResourceLocation("painting")

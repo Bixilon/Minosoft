@@ -15,7 +15,6 @@ package de.bixilon.minosoft.data.entities.meta
 
 import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.entities.EntityMetaDataFields
-import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.Poses
 import de.bixilon.minosoft.data.entities.entities.npc.villager.data.VillagerData
 import de.bixilon.minosoft.data.entities.entities.npc.villager.data.VillagerLevels
@@ -56,7 +55,8 @@ class EntityMetaData(
             EntityMetaDataDataTypes.BOOLEAN -> buffer.readBoolean()
             EntityMetaDataDataTypes.VEC3I -> Vec3i(buffer.readInt(), buffer.readInt(), buffer.readInt())
             EntityMetaDataDataTypes.ITEM_STACK -> buffer.readItemStack()
-            EntityMetaDataDataTypes.ROTATION -> EntityRotation(buffer.readFloat(), buffer.readFloat(), buffer.readFloat())
+            EntityMetaDataDataTypes.ITEM_STACK -> buffer.readItemStack()
+            EntityMetaDataDataTypes.ROTATION -> ArmorStandArmRotation(buffer.readFloat(), buffer.readFloat(), buffer.readFloat())
             EntityMetaDataDataTypes.BLOCK_POSITION -> buffer.readBlockPosition()
             EntityMetaDataDataTypes.OPT_CHAT -> buffer.readOptional { buffer.readChatComponent() }
             EntityMetaDataDataTypes.OPT_BLOCK_POSITION -> buffer.readOptional { buffer.readBlockPosition() }
@@ -158,7 +158,7 @@ class EntityMetaData(
             return get(field)
         }
 
-        fun getRotation(field: EntityMetaDataFields): EntityRotation {
+        fun getRotation(field: EntityMetaDataFields): ArmorStandArmRotation {
             return get(field)
         }
 

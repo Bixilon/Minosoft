@@ -48,7 +48,7 @@ class EntityObjectSpawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         } else {
             buffer.readVec3d()
         }
-        val rotation = EntityRotation(buffer.readAngle().toFloat(), buffer.readAngle().toFloat(), 0.0f)
+        val rotation = EntityRotation(buffer.readAngle().toDouble(), buffer.readAngle().toDouble())
         val data = buffer.readInt()
 
         if (buffer.versionId >= ProtocolVersions.V_15W31A || data != 0) {

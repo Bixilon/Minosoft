@@ -114,7 +114,7 @@ class Camera(
         val delta = position - lastMousePosition
         lastMousePosition = position
         delta *= mouseSensitivity
-        var yaw = delta.x + connection.player.rotation.headYaw
+        var yaw = delta.x + connection.player.rotation.yaw
         if (yaw > 180) {
             yaw -= 360
         } else if (yaw < -180) {
@@ -272,7 +272,7 @@ class Camera(
     }
 
     private fun onPositionChange() {
-        setRotation(connection.player.rotation.headYaw, connection.player.rotation.pitch)
+        setRotation(connection.player.rotation.yaw, connection.player.rotation.pitch)
         recalculateViewProjectionMatrix()
         frustum.recalculate()
         connection.fireEvent(FrustumChangeEvent(renderWindow, frustum))

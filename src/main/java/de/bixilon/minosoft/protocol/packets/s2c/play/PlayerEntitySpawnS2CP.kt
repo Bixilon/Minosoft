@@ -71,7 +71,7 @@ class PlayerEntitySpawnS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
             connection = buffer.connection,
             entityType = buffer.connection.registries.entityTypeRegistry[RemotePlayerEntity.RESOURCE_LOCATION]!!,
             position = position,
-            rotation = EntityRotation(yaw.toFloat(), pitch.toFloat(), 0.0f),
+            rotation = EntityRotation(yaw.toDouble(), pitch.toDouble()),
             name = name,
             properties = properties,
         )

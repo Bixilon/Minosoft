@@ -39,7 +39,7 @@ class NamedSoundEventS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
         if (buffer.versionId >= ProtocolVersions.V_17W15A && buffer.versionId < ProtocolVersions.V_17W18A) {
             this.category = SoundCategories[buffer.readVarInt()]
         }
-        soundEvent = buffer.connection.registries.soundEventRegistry[buffer.readResourceLocation()]
+        soundEvent = buffer.readResourceLocation()
         if (buffer.versionId >= ProtocolVersions.V_17W15A && buffer.versionId < ProtocolVersions.V_17W18A) {
             buffer.readString() // parrot entity type
         }

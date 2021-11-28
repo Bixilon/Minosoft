@@ -16,6 +16,7 @@ import de.bixilon.minosoft.data.entities.EntityMetaDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.EntityMetaDataFunction
 import de.bixilon.minosoft.data.entities.entities.LivingEntity
+import de.bixilon.minosoft.data.entities.meta.ArmorStandArmRotation
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.entities.EntityFactory
 import de.bixilon.minosoft.data.registries.entities.EntityType
@@ -47,27 +48,27 @@ class ArmorStand(connection: PlayConnection, entityType: EntityType, position: V
         get() = getArmorStandFlag(0x10)
 
     @get:EntityMetaDataFunction(name = "Head rotation")
-    val headRotation: EntityRotation
+    val headRotation: ArmorStandArmRotation
         get() = entityMetaData.sets.getRotation(EntityMetaDataFields.ARMOR_STAND_HEAD_ROTATION)
 
     @get:EntityMetaDataFunction(name = "Body rotation")
-    val bodyRotation: EntityRotation
+    val bodyRotation: ArmorStandArmRotation
         get() = entityMetaData.sets.getRotation(EntityMetaDataFields.ARMOR_STAND_BODY_ROTATION)
 
     @get:EntityMetaDataFunction(name = "Left arm rotation")
-    val leftArmRotation: EntityRotation
+    val leftArmRotation: ArmorStandArmRotation
         get() = entityMetaData.sets.getRotation(EntityMetaDataFields.ARMOR_STAND_LEFT_ARM_ROTATION)
 
     @get:EntityMetaDataFunction(name = "Right arm rotation")
-    val rightArmRotation: EntityRotation
+    val rightArmRotation: ArmorStandArmRotation
         get() = entityMetaData.sets.getRotation(EntityMetaDataFields.ARMOR_STAND_RIGHT_ARM_ROTATION)
 
     @get:EntityMetaDataFunction(name = "Left leg rotation")
-    val leftLegRotation: EntityRotation
+    val leftLegRotation: ArmorStandArmRotation
         get() = entityMetaData.sets.getRotation(EntityMetaDataFields.ARMOR_STAND_LEFT_LAG_ROTATION)
 
     @get:EntityMetaDataFunction(name = "Right leg rotation")
-    val rightLegRotation: EntityRotation
+    val rightLegRotation: ArmorStandArmRotation
         get() = entityMetaData.sets.getRotation(EntityMetaDataFields.ARMOR_STAND_RIGHT_LAG_ROTATION)
 
 

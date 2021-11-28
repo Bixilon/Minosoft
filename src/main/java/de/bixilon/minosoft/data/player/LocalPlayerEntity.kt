@@ -237,7 +237,7 @@ class LocalPlayerEntity(
         val positionChanged = positionDiff.length() > 0.01f || (currentTime - lastPositionPacketSent >= 1000)
 
         val rotation = rotation.copy()
-        val yawDiff = rotation.headYaw - lastRotation.headYaw
+        val yawDiff = rotation.yaw - lastRotation.yaw
         val pitchDiff = rotation.pitch - lastRotation.pitch
         val rotationChanged = yawDiff != 0.0 && pitchDiff != 0.0
 
@@ -316,7 +316,7 @@ class LocalPlayerEntity(
 
 
     private fun calculateVelocity(sidewaysSpeed: Float, forwardSpeed: Float, speed: Double) {
-        velocity = velocity + calculateVelocity(sidewaysSpeed, forwardSpeed, speed, rotation.headYaw)
+        velocity = velocity + calculateVelocity(sidewaysSpeed, forwardSpeed, speed, rotation.yaw)
     }
 
     fun accelerate(sidewaysSpeed: Float, forwardSpeed: Float, speed: Double) {
@@ -511,7 +511,7 @@ class LocalPlayerEntity(
         this.velocity.y = velocity
 
         if (isSprinting) {
-            val yawRad = rotation.headYaw.rad
+            val yawRad = rotation.yaw.rad
             this.velocity = this.velocity + Vec3(-(yawRad.sin * 0.2f), 0.0f, yawRad.cos * 0.2f)
         }
     }

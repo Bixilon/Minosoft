@@ -37,7 +37,7 @@ class PositionAndRotationS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
 
     init {
         position = buffer.readVec3d()
-        rotation = EntityRotation(buffer.readFloat(), buffer.readFloat(), 0.0f)
+        rotation = EntityRotation(buffer.readFloat(), buffer.readFloat())
         if (buffer.versionId < ProtocolVersions.V_14W03B) {
             isOnGround = buffer.readBoolean()
         } else {
@@ -55,6 +55,7 @@ class PositionAndRotationS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
     override fun handle(connection: PlayConnection) {
         val entity = connection.player
         // correct position with flags (relative position possible)
+        val position = Vec3d(this.position)
         if (BitByte.isBitMask(flags, 0x01)) {
             position.x += entity.position.x
         }
@@ -65,18 +66,20 @@ class PositionAndRotationS2CP(buffer: PlayInByteBuffer) : PlayS2CPacket() {
             position.z += entity.position.z
         }
 
+        var yaw = rotation.yaw
         if (BitByte.isBitMask(flags, 0x08)) {
-            rotation.headYaw += entity.rotation.headYaw
+            yaw += entity.rotation.yaw
         }
-        rotation.bodyYaw = rotation.headYaw
 
+        var pitch = rotation.pitch
         if (BitByte.isBitMask(flags, 0x10)) {
-            rotation.pitch += entity.rotation.pitch
+            pitch += entity.rotation.pitch
         }
 
 
         entity.position = position
         entity.previousPosition = position // Prevent interpolating between 2 positions
+        val rotation = EntityRotation(yaw, pitch)
         entity.rotation = rotation
 
         if (connection.version.versionId >= ProtocolVersions.V_15W42A) {

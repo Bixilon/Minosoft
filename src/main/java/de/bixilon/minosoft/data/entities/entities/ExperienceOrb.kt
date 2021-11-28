@@ -28,7 +28,7 @@ class ExperienceOrb : Entity {
         count = 0
     }
 
-    constructor(connection: PlayConnection, entityType: EntityType, position: Vec3d, count: Int) : super(connection, entityType, position, EntityRotation(0.0f, 0.0f, 0.0f)) {
+    constructor(connection: PlayConnection, entityType: EntityType, position: Vec3d, count: Int) : super(connection, entityType, position, EntityRotation(0.0f, 0.0f)) {
         this.count = count
     }
 

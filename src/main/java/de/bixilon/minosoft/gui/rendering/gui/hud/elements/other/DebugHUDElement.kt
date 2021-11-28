@@ -132,7 +132,7 @@ class DebugHUDElement(hudRenderer: HUDRenderer) : LayoutedHUDElement<GridLayout>
                 }
 
                 hudRenderer.renderWindow.connection.player.rotation.apply {
-                    text += " yaw=${headYaw.round10}, pitch=${pitch.round10}"
+                    text += " yaw=${yaw.round10}, pitch=${pitch.round10}"
                 }
 
                 text
