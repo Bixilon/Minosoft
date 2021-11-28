@@ -332,8 +332,7 @@ abstract class Entity(
                     if (chestPlate != null && chestPlate.item is DyeableArmorItem) {
                         chestPlate.dyedColor?.let { return it }
                     }
-                    val team = connection.scoreboardManager.getTeam(this.name)
-                    val formattingCode = team?.formattingCode
+                    val formattingCode = tabListItem.team?.formattingCode
                     if (formattingCode is RGBColor) {
                         return formattingCode
                     }
