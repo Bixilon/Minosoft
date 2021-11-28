@@ -21,6 +21,7 @@ import de.bixilon.minosoft.data.text.TextComponent
 import de.bixilon.minosoft.modding.event.events.InternalMessageReceiveEvent
 import de.bixilon.minosoft.terminal.CLI
 import de.bixilon.minosoft.terminal.RunConfiguration
+import de.bixilon.minosoft.util.KUtil
 import java.io.PrintStream
 import java.io.PrintWriter
 import java.io.StringWriter
@@ -29,7 +30,7 @@ import java.util.concurrent.LinkedBlockingQueue
 
 
 object Log {
-    private val MINOSOFT_START_TIME = System.currentTimeMillis()
+    private val MINOSOFT_START_TIME = KUtil.time
     private val TIME_FORMAT = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS")
     private val LOG_QUEUE = LinkedBlockingQueue<MessageToSend>()
     private val SYSTEM_ERR_STREAM = System.err
@@ -52,7 +53,7 @@ object Log {
                     val message = BaseComponent()
                     val messageColor = messageToSend.logMessageType.colorMap[messageToSend.level] ?: messageToSend.logMessageType.defaultColor
                     message += if (RunConfiguration.LOG_RELATIVE_TIME) {
-                        TextComponent("[${System.currentTimeMillis() - MINOSOFT_START_TIME}] ")
+                        TextComponent("[${KUtil.time - MINOSOFT_START_TIME}] ")
                     } else {
                         TextComponent("[${TIME_FORMAT.format(messageToSend.time)}] ")
                     }
@@ -132,7 +133,7 @@ object Log {
         LOG_QUEUE.add(
             MessageToSend(
                 message = formattedMessage,
-                time = System.currentTimeMillis(),
+                time = KUtil.time,
                 logMessageType = logMessageType,
                 level = level,
                 thread = Thread.currentThread(),

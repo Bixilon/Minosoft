@@ -50,6 +50,7 @@ import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.c2s.play.*
 import de.bixilon.minosoft.protocol.packets.s2c.play.TagsS2CP
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.KUtil.decide
 import de.bixilon.minosoft.util.KUtil.nullCast
 import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
@@ -218,7 +219,7 @@ class LocalPlayerEntity(
         if (Minosoft.config.config.game.camera.disableMovementSending) {
             return
         }
-        val currentTime = System.currentTimeMillis()
+        val currentTime = KUtil.time
         val isSprinting = isSprinting
         if (isSprinting != lastSprinting) {
             connection.sendPacket(EntityActionC2SP(this, connection, isSprinting.decide(EntityActionC2SP.EntityActions.START_SPRINTING, EntityActionC2SP.EntityActions.STOP_SPRINTING)))

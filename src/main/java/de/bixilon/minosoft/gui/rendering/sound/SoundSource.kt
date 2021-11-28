@@ -15,6 +15,7 @@ package de.bixilon.minosoft.gui.rendering.sound
 
 import de.bixilon.minosoft.gui.rendering.sound.sounds.Sound
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
+import de.bixilon.minosoft.util.KUtil
 import glm_.vec3.Vec3
 import org.lwjgl.openal.AL10.*
 
@@ -77,10 +78,10 @@ class SoundSource {
         get() = alGetSourcei(source, AL_SOURCE_STATE) == AL_PLAYING
 
     val available: Boolean
-        get() = !isPlaying || System.currentTimeMillis() - playTime > (sound?.data?.length ?: 0L)    // ToDo: Allow pause
+        get() = !isPlaying || KUtil.time - playTime > (sound?.data?.length ?: 0L)    // ToDo: Allow pause
 
     fun play() {
-        playTime = System.currentTimeMillis()
+        playTime = KUtil.time
         alSourcePlay(source)
     }
 

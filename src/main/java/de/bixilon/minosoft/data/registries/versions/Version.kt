@@ -25,6 +25,7 @@ import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.protocol.protocol.ProtocolStates
 import de.bixilon.minosoft.protocol.protocol.ProtocolVersions.V_15W31A
 import de.bixilon.minosoft.util.CountUpAndDownLatch
+import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.KUtil.decide
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -91,7 +92,7 @@ data class Version(
         latch.inc()
         Log.log(LogMessageType.VERSION_LOADING, level = LogLevels.INFO) { "Loading registries for $this..." }
         initializeAssetManger(latch)
-        val startTime = System.currentTimeMillis()
+        val startTime = KUtil.time
 
 
         if (versionId == ProtocolDefinition.PRE_FLATTENING_VERSION_ID) {
@@ -116,7 +117,7 @@ data class Version(
         registries.load(this, pixlyzerData)
         latch.dec()
         if (pixlyzerData.isNotEmpty()) {
-            Log.log(LogMessageType.VERSION_LOADING, level = LogLevels.INFO) { "Loaded registries for $name in ${System.currentTimeMillis() - startTime}ms" }
+            Log.log(LogMessageType.VERSION_LOADING, level = LogLevels.INFO) { "Loaded registries for $name in ${KUtil.time - startTime}ms" }
         } else {
             Log.log(LogMessageType.VERSION_LOADING, level = LogLevels.WARN) { "Could not load registries for ${name}. Some features might not work." }
         }

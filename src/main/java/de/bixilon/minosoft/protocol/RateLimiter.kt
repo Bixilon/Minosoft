@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.protocol
 
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.KUtil.synchronizedListOf
 import de.bixilon.minosoft.util.KUtil.synchronizedSetOf
 import de.bixilon.minosoft.util.KUtil.toSynchronizedList
@@ -82,7 +83,7 @@ class RateLimiter(
         }
         toDo = null
         action.invoke()
-        val time = System.currentTimeMillis()
+        val time = KUtil.time
         executions += time
     }
 
@@ -108,7 +109,7 @@ class RateLimiter(
             this.lock.lock()
         }
         val executions = executions.toSynchronizedList()
-        val time = System.currentTimeMillis()
+        val time = KUtil.time
 
         for (execution in executions) {
             val addDelta = time - execution

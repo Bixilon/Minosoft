@@ -25,6 +25,7 @@ import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.util.KUtil
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3d
 import kotlin.math.abs
@@ -54,7 +55,7 @@ abstract class Particle(
 
     // moving
     val cameraPosition: Vec3d
-        get() = getCameraPosition(System.currentTimeMillis())
+        get() = getCameraPosition(KUtil.time)
 
     final override val velocity: Vec3d = Vec3d(velocity)
     var previousPosition = position

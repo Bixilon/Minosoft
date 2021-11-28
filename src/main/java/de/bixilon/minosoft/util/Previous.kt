@@ -17,13 +17,13 @@ import de.bixilon.minosoft.util.KUtil.synchronizedSetOf
 
 class Previous<T>(value: T, private val interpolator: ((previous: Previous<T>, delta: Long) -> T)? = null) {
     private val changeListeners: MutableSet<(value: T, previous: T) -> Unit> = synchronizedSetOf()
-    private var lastChangeTime = System.currentTimeMillis()
+    private var lastChangeTime = KUtil.time
     var value: T = value
         @Synchronized
         set(value) {
             previous = field
             field = value
-            lastChangeTime = System.currentTimeMillis()
+            lastChangeTime = KUtil.time
             for (listener in changeListeners) {
                 listener(value, previous)
             }
@@ -47,7 +47,7 @@ class Previous<T>(value: T, private val interpolator: ((previous: Previous<T>, d
     }
 
     fun interpolate(): T {
-        return interpolator!!(this, (System.currentTimeMillis() - lastChangeTime))
+        return interpolator!!(this, (KUtil.time - lastChangeTime))
     }
 
 }

@@ -22,6 +22,7 @@ import de.bixilon.minosoft.gui.rendering.gui.hud.HUDRenderer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexConsumer
 import de.bixilon.minosoft.gui.rendering.gui.mesh.GUIVertexOptions
 import de.bixilon.minosoft.gui.rendering.util.vec.vec2.Vec2iUtil.EMPTY
+import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.KUtil.decide
 import glm_.vec2.Vec2i
 
@@ -43,7 +44,7 @@ class FadingTextElement(
             if (hidden || !super.cacheEnabled) {
                 return false
             }
-            val time = System.currentTimeMillis()
+            val time = KUtil.time
             return (time >= fadeInEndTime) && (time < fadeOutStartTime)
         }
         set(value) {
@@ -77,7 +78,7 @@ class FadingTextElement(
     }
 
     fun show() {
-        val time = System.currentTimeMillis()
+        val time = KUtil.time
         if (time in (fadeInEndTime + 1) until fadeOutStartTime) {
             fadeOutStartTime = time + stayTime
         } else {
@@ -94,7 +95,7 @@ class FadingTextElement(
             return
         }
         // ToDo: Eventually fade out when fading in
-        val time = System.currentTimeMillis()
+        val time = KUtil.time
         fadeInStartTime = -1L
         fadeInEndTime = -1L
         fadeOutStartTime = time
@@ -109,7 +110,7 @@ class FadingTextElement(
         if (hidden) {
             return false
         }
-        val hidden = System.currentTimeMillis() > fadeOutEndTime
+        val hidden = KUtil.time > fadeOutEndTime
         if (this.hidden != hidden) {
             this.hidden = hidden
             return true
@@ -121,7 +122,7 @@ class FadingTextElement(
         if (hidden) {
             return 0
         }
-        val time = System.currentTimeMillis()
+        val time = KUtil.time
         if (time > fadeOutEndTime) {
             return 0
         }

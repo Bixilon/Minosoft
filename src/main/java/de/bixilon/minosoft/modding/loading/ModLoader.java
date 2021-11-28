@@ -16,6 +16,7 @@ package de.bixilon.minosoft.modding.loading;
 import de.bixilon.minosoft.modding.MinosoftMod;
 import de.bixilon.minosoft.terminal.RunConfiguration;
 import de.bixilon.minosoft.util.CountUpAndDownLatch;
+import de.bixilon.minosoft.util.KUtil;
 import de.bixilon.minosoft.util.Util;
 import de.bixilon.minosoft.util.logging.Log;
 import de.bixilon.minosoft.util.logging.LogLevels;
@@ -39,7 +40,7 @@ public class ModLoader {
     public static final ConcurrentHashMap<UUID, MinosoftMod> MOD_MAP = new ConcurrentHashMap<>();
 
     public static void loadMods(CountUpAndDownLatch progress) throws Exception {
-        final long startTime = System.currentTimeMillis();
+        final long startTime = KUtil.INSTANCE.getTime();
         Log.log(LogMessageType.MOD_LOADING, LogLevels.INFO, () -> "Start loading mods...");
 
         // load all jars, parse the mod.json
@@ -156,7 +157,7 @@ public class ModLoader {
                 MOD_MAP.remove(entry.getKey());
             }
         }
-        Log.log(LogMessageType.MOD_LOADING, LogLevels.INFO, () -> "Initialized " + sortedModMap.size() + " in " + (System.currentTimeMillis() - startTime) + "!");
+        Log.log(LogMessageType.MOD_LOADING, LogLevels.INFO, () -> "Initialized " + sortedModMap.size() + " in " + (KUtil.INSTANCE.getTime() - startTime) + "!");
     }
 
     public static MinosoftMod loadMod(CountUpAndDownLatch progress, File file) {

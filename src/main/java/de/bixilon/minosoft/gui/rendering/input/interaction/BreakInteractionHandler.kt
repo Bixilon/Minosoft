@@ -30,6 +30,7 @@ import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.packets.c2s.play.ArmSwingC2SP
 import de.bixilon.minosoft.protocol.packets.c2s.play.PlayerActionC2SP
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import glm_.pow
@@ -79,7 +80,7 @@ class BreakInteractionHandler(
     }
 
     private fun swingArm() {
-        val currentTime = System.currentTimeMillis()
+        val currentTime = KUtil.time
         if (currentTime - lastSwing <= ProtocolDefinition.TICK_TIME) {
             return
         }
@@ -88,7 +89,7 @@ class BreakInteractionHandler(
     }
 
     private fun checkBreaking(isKeyDown: Boolean, deltaTime: Double): Boolean {
-        val currentTime = System.currentTimeMillis()
+        val currentTime = KUtil.time
 
         if (!isKeyDown) {
             creativeLastHoldBreakTime = 0L

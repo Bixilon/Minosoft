@@ -59,6 +59,7 @@ import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.KUtil.synchronizedListOf
 import de.bixilon.minosoft.util.KUtil.synchronizedSetOf
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
@@ -465,10 +466,10 @@ class WorldRenderer(
         }
 
         var addedMeshes = 0
-        val time = System.currentTimeMillis()
+        val time = KUtil.time
         val maxTime = if (connection.player.velocity.empty) 50L else 20L // If the player is still, then we can load more chunks (to not cause lags)
 
-        while ((System.currentTimeMillis() - time < maxTime) && meshesToLoad.isNotEmpty()) {
+        while ((KUtil.time - time < maxTime) && meshesToLoad.isNotEmpty()) {
             val item = meshesToLoad.removeAt(0)
             val mesh = item.mesh ?: continue
 
@@ -502,10 +503,10 @@ class WorldRenderer(
             return
         }
 
-        val time = System.currentTimeMillis()
+        val time = KUtil.time
         val maxTime = if (connection.player.velocity.empty) 50L else 20L // If the player is still, then we can load more chunks (to not cause lags)
 
-        while ((System.currentTimeMillis() - time < maxTime) && meshesToUnload.isNotEmpty()) {
+        while ((KUtil.time - time < maxTime) && meshesToUnload.isNotEmpty()) {
             val mesh = meshesToUnload.removeAt(0)
             visible.removeMesh(mesh)
             mesh.unload()

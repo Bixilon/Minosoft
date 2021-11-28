@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.stats
 
+import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.KUtil.nextFloat
 import de.bixilon.minosoft.util.avg.Average
 import de.bixilon.minosoft.util.avg.LongAverage
@@ -30,7 +31,7 @@ class ExperimentalRenderStats : AbstractRenderStats {
     private var lastSmoothFPSCalculationTime = 0L
     override var smoothAvgFPS: Double = 0.0
         get() {
-            val time = System.currentTimeMillis()
+            val time = KUtil.time
             if (time - lastSmoothFPSCalculationTime > 100) {
                 field = avgFPS
                 lastSmoothFPSCalculationTime = time

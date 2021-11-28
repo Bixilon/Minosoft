@@ -53,6 +53,7 @@ import de.bixilon.minosoft.protocol.packets.s2c.play.PositionAndRotationS2CP
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.CountUpAndDownLatch
+import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.KUtil.decide
 import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
@@ -112,7 +113,7 @@ class RenderWindow(
 
 
     var tickCount = 0L
-    var lastTickTimer = System.currentTimeMillis()
+    var lastTickTimer = KUtil.time
 
     private var initialPositionReceived = false
 
@@ -294,7 +295,7 @@ class RenderWindow(
             renderSystem.clear(IntegratedBufferTypes.COLOR_BUFFER, IntegratedBufferTypes.DEPTH_BUFFER)
 
 
-            val currentTickTime = System.currentTimeMillis()
+            val currentTickTime = KUtil.time
             if (currentTickTime - this.lastTickTimer > ProtocolDefinition.TICK_TIME) {
                 tickCount++
                 // inputHandler.currentKeyConsumer?.tick(tickCount)

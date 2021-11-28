@@ -42,6 +42,7 @@ import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.packets.c2s.play.PlayerActionC2SP
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.KUtil.decide
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.Previous
@@ -216,7 +217,7 @@ class Camera(
         connection.registerEvent(CallbackEventInvoker.of<ResizeWindowEvent> { recalculateViewProjectionMatrix() })
 
         fun dropItem(stack: Boolean) {
-            val time = System.currentTimeMillis()
+            val time = KUtil.time
             if (time - lastDropPacketSent < ProtocolDefinition.TICK_TIME) {
                 return
             }

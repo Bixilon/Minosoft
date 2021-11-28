@@ -1,5 +1,6 @@
 package de.bixilon.minosoft.util.task.time
 
+import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.KUtil.synchronizedSetOf
 import de.bixilon.minosoft.util.KUtil.toSynchronizedSet
 import de.bixilon.minosoft.util.task.pool.DefaultThreadPool
@@ -11,7 +12,7 @@ object TimeWorker {
     init {
         Thread({
             while (true) {
-                val currentTime = System.currentTimeMillis()
+                val currentTime = KUtil.time
                 for (task in TASKS.toSynchronizedSet()) {
                     if (task.getsExecuted) {
                         continue
@@ -27,7 +28,7 @@ object TimeWorker {
                             task.lock.unlock()
                             return@execute
                         }
-                        if (System.currentTimeMillis() - currentTime >= task.maxDelayTime) {
+                        if (KUtil.time - currentTime >= task.maxDelayTime) {
                             task.lock.unlock()
                             return@execute
                         }
@@ -52,7 +53,7 @@ object TimeWorker {
             runnable = runnable,
             runOnce = true,
         )
-        task.lastExecution = System.currentTimeMillis()
+        task.lastExecution = KUtil.time
         TASKS += task
     }
 

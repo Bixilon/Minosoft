@@ -42,10 +42,10 @@ class Queue {
 
     fun timeWork(time: Long) {
         check(time > 0L) { "Can not have <= 0 time to do jobs!" }
-        val start = System.currentTimeMillis()
+        val start = KUtil.time
         for (runnable in queue.toSynchronizedList()) {
             this.queue.remove(runnable)
-            if (System.currentTimeMillis() - start >= time) {
+            if (KUtil.time - start >= time) {
                 break
             }
             runnable.run()

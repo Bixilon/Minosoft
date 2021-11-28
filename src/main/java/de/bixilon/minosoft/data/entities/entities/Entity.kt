@@ -53,6 +53,7 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.toVec3d
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
 import de.bixilon.minosoft.util.KUtil.synchronizedSetOf
 import de.bixilon.minosoft.util.KUtil.toSynchronizedMap
@@ -345,7 +346,7 @@ abstract class Entity(
 
     @Synchronized
     fun tick() {
-        val currentTime = System.currentTimeMillis()
+        val currentTime = KUtil.time
         if (lastFakeTickTime == -1L) {
             lastFakeTickTime = currentTime
             return

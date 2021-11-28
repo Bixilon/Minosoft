@@ -20,6 +20,7 @@ import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.CountUpAndDownLatch
+import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.Util
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -77,7 +78,7 @@ class MinecraftAssetsManager(
     }
 
     fun generateJarAssets(): String {
-        val startTime = System.currentTimeMillis()
+        val startTime = KUtil.time
         this.assetVersion.jarAssetsHash?.let {
             if (verifyAssetHash(it)) {
                 // ToDo: Verify all jar assets
@@ -116,7 +117,7 @@ class MinecraftAssetsManager(
         }
         val json = Util.GSON.toJson(clientJarAssetsMapping)
         val assetHash: String = FileAssetsManager.saveAsset(json.toByteArray())
-        Log.log(LogMessageType.ASSETS, LogLevels.INFO) { "Generated client.jar assets for ${assetVersion.version} in ${System.currentTimeMillis() - startTime}ms (elements=${clientJarAssetsHashMap.size}, hash=$assetHash" }
+        Log.log(LogMessageType.ASSETS, LogLevels.INFO) { "Generated client.jar assets for ${assetVersion.version} in ${KUtil.time - startTime}ms (elements=${clientJarAssetsHashMap.size}, hash=$assetHash" }
         return assetHash
     }
 

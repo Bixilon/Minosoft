@@ -29,6 +29,7 @@ import de.bixilon.minosoft.gui.rendering.system.window.CursorModes
 import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.KUtil.decide
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
@@ -87,7 +88,7 @@ class RenderWindowInputHandler(
                 return
             }
         }
-        val currentTime = System.currentTimeMillis()
+        val currentTime = KUtil.time
 
         if (keyDown) {
             keysDown += keyCode
@@ -191,7 +192,7 @@ class RenderWindowInputHandler(
             }
 
             // Log.debug("Changing $resourceLocation because of $keyCode -> $thisKeyBindingDown")
-            pair.lastChange = System.currentTimeMillis()
+            pair.lastChange = KUtil.time
             for (callback in pair.callback) {
                 callback(thisKeyBindingDown)
             }

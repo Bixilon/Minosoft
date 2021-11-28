@@ -18,6 +18,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
 import de.bixilon.minosoft.gui.rendering.system.base.texture.SpriteAnimator
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.uniform.IntOpenGLUniformBuffer
 import de.bixilon.minosoft.gui.rendering.textures.TextureAnimation
+import de.bixilon.minosoft.util.KUtil
 
 class OpenGLSpriteAnimator : SpriteAnimator {
     val animations: MutableList<TextureAnimation> = mutableListOf()
@@ -44,7 +45,7 @@ class OpenGLSpriteAnimator : SpriteAnimator {
             return
         }
 
-        val currentTime = System.currentTimeMillis()
+        val currentTime = KUtil.time
         val deltaLastDraw = currentTime - lastRun
         lastRun = currentTime
 

@@ -30,6 +30,7 @@ import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates.Companion.disconnected
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
+import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.ReadWriteLock
 import de.bixilon.minosoft.util.collections.floats.DirectArrayFloatList
 import de.bixilon.minosoft.util.logging.Log
@@ -106,7 +107,7 @@ class ParticleRenderer(
         particleTask = TimeWorker.addTask(TimeWorkerTask(ProtocolDefinition.TICK_TIME, maxDelayTime = ProtocolDefinition.TICK_TIME / 2) {
             val cameraLength = connection.player.position.length()
             particlesLock.acquire()
-            val time = System.currentTimeMillis()
+            val time = KUtil.time
             for (particle in particles) {
                 if (particle.position.length() - cameraLength >= Minosoft.config.config.game.camera.viewDistance * ProtocolDefinition.SECTION_WIDTH_X) {
                     particle.dead = true
@@ -161,7 +162,7 @@ class ParticleRenderer(
 
         particlesLock.acquire()
 
-        val time = System.currentTimeMillis()
+        val time = KUtil.time
         for (particle in particles) {
             if (particle.dead) {
                 toRemove += particle

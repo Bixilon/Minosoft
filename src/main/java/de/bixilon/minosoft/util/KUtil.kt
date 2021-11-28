@@ -38,6 +38,7 @@ import java.io.PrintWriter
 import java.io.StringWriter
 import java.lang.reflect.Field
 import java.nio.ByteBuffer
+import java.time.Instant
 import java.util.*
 import kotlin.Pair
 import kotlin.random.Random
@@ -525,4 +526,7 @@ object KUtil {
             }
             return true
         }
+
+    val time: Long
+        get() = Instant.now().toEpochMilli()
 }

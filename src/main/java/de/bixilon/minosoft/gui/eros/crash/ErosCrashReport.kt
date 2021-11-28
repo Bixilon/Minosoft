@@ -137,7 +137,7 @@ class ErosCrashReport : JavaFXWindowController() {
                 val crashReportFolder = File(RunConfiguration.HOME_DIRECTORY + "crash-reports")
                 crashReportFolder.mkdirs()
 
-                crashReportPath = "${crashReportFolder.absolutePath}/crash-${SimpleDateFormat("yyyy-MM-dd-HH.mm.ss").format(System.currentTimeMillis())}.txt"
+                crashReportPath = "${crashReportFolder.absolutePath}/crash-${SimpleDateFormat("yyyy-MM-dd-HH.mm.ss").format(KUtil.time)}.txt"
 
                 val stream = FileOutputStream(crashReportPath)
 
@@ -191,7 +191,7 @@ class ErosCrashReport : JavaFXWindowController() {
 ----- Minosoft Crash Report -----
 // ${CRASH_REPORT_COMMENTS.random()}
 
-Time: ${SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(System.currentTimeMillis())} (${System.currentTimeMillis() / 1000L})
+Time: ${SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(KUtil.time)} (${KUtil.time / 1000L})
 Crash thread: ${Thread.currentThread().name}
 
 ${exception?.toStackTrace() ?: ""}
