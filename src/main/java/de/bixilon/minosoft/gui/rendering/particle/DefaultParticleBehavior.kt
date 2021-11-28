@@ -15,7 +15,7 @@ package de.bixilon.minosoft.gui.rendering.particle
 
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.gui.rendering.particle.types.norender.ExplosionEmitterParticle
-import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.ExplosionParticle
+import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.explosion.ExplosionParticle
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.times
 import de.bixilon.minosoft.modding.event.EventInitiators
 import de.bixilon.minosoft.modding.event.events.ExplosionEvent

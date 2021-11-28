@@ -17,7 +17,6 @@ import de.bixilon.minosoft.data.registries.factory.DefaultFactory
 import de.bixilon.minosoft.gui.rendering.particle.types.Particle
 import de.bixilon.minosoft.gui.rendering.particle.types.norender.ExplosionEmitterParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.advanced.block.BlockDustParticle
-import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.ExplosionParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.NoteParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.PortalParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.animated.EndRodParticle
@@ -32,6 +31,8 @@ import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.em
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.emotion.HeartParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.enchant.EnchantParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.enchant.NautilusParticle
+import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.explosion.ExplosionParticle
+import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.explosion.PoofParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.fire.SmokeParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.lava.LavaParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.slowing.FlameParticle
@@ -84,4 +85,5 @@ object DefaultParticleFactory : DefaultFactory<ParticleFactory<out Particle>>(
     EndRodParticle,
     BubbleParticle,
     UnderwaterParticle,
+    PoofParticle,
 )

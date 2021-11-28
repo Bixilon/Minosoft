@@ -150,8 +150,8 @@ class ParticleRenderer(
         val toRemove: MutableSet<Particle> = mutableSetOf()
 
 
-        transparentMesh = ParticleMesh(renderWindow, 500)
-        translucentMesh = ParticleMesh(renderWindow, particles.size + particleQueue.size)
+        transparentMesh = ParticleMesh(renderWindow, particles.size + particleQueue.size * ParticleMesh.ParticleMeshStruct.FLOATS_PER_VERTEX)
+        translucentMesh = ParticleMesh(renderWindow, particles.size + particleQueue.size * ParticleMesh.ParticleMeshStruct.FLOATS_PER_VERTEX)
 
 
         synchronized(particles) {

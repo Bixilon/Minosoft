@@ -11,32 +11,33 @@
  * This software is not affiliated with Mojang AB, the original developer of Minecraft.
  */
 
-package de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple
+package de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.explosion
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.registries.particle.data.ParticleData
 import de.bixilon.minosoft.data.text.RGBColor.Companion.asGray
 import de.bixilon.minosoft.gui.rendering.particle.ParticleFactory
-import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
+import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.SimpleTextureParticle
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import glm_.vec3.Vec3d
 
-class ExplosionParticle(connection: PlayConnection, position: Vec3d, data: ParticleData? = null, power: Float = 1.0f) : SimpleTextureParticle(connection, position, Vec3d.EMPTY, data) {
+class PoofParticle(connection: PlayConnection, position: Vec3d, data: ParticleData? = null, velocity: Vec3d) : SimpleTextureParticle(connection, position, velocity + { (Math.random() * 2.0 - 1.0) * 0.05 }, data) {
 
     init {
-        movement = false
-        maxAge = 6 + random.nextInt(4)
-        val gray = random.nextFloat() * 0.6f + 0.4f
-        color = gray.asGray()
-        scale = 2.0f * (power - gray * 0.5f)
+        this.gravityStrength = -0.1f
+        this.friction = 0.9f
+        this.color = ((random.nextFloat() * 0.3f) + 0.7f).asGray()
+        this.scale = 0.1f * (random.nextFloat() * random.nextFloat() * 0.6f + 1.0f)
+        maxAge = (16.0f / random.nextFloat() * 0.8f + 0.2f).toInt() + 2
     }
 
-    companion object : ParticleFactory<ExplosionParticle> {
-        override val RESOURCE_LOCATION: ResourceLocation = "minecraft:explosion".toResourceLocation()
+    companion object : ParticleFactory<PoofParticle> {
+        override val RESOURCE_LOCATION: ResourceLocation = "minecraft:poof".toResourceLocation()
 
-        override fun build(connection: PlayConnection, position: Vec3d, velocity: Vec3d, data: ParticleData): ExplosionParticle {
-            return ExplosionParticle(connection, position, data, velocity.x.toFloat())
+        override fun build(connection: PlayConnection, position: Vec3d, velocity: Vec3d, data: ParticleData): PoofParticle {
+            return PoofParticle(connection, position, data, velocity)
         }
     }
 }
