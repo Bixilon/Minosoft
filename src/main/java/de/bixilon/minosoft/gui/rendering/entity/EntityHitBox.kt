@@ -14,13 +14,22 @@
 package de.bixilon.minosoft.gui.rendering.entity
 
 import de.bixilon.minosoft.Minosoft
+import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.entities.Entity
 import de.bixilon.minosoft.data.registries.AABB
 import de.bixilon.minosoft.data.text.ChatColors
+import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.input.camera.frustum.Frustum
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.empty
 import de.bixilon.minosoft.gui.rendering.util.mesh.LineMesh
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
+import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
+import glm_.func.cos
+import glm_.func.rad
+import glm_.func.sin
+import glm_.vec3.Vec3
+import glm_.vec3.Vec3d
 
 class EntityHitBox(
     val renderWindow: RenderWindow,
@@ -31,18 +40,25 @@ class EntityHitBox(
     private var visible = false
     private var aabb = AABB.EMPTY
     private var hitBoxColor = ChatColors.WHITE
+    private var velocity = Vec3d.EMPTY
+    private var rotation = EntityRotation.EMPTY
     private var checkVisibility = false
 
 
     private fun update() {
         val aabb = entity.cameraAABB
         val hitBoxColor = entity.hitBoxColor
-        val equals = aabb == this.aabb && hitBoxColor == this.hitBoxColor
+        val velocity = entity.velocity
+        val rotation = entity.rotation
+        val equals = aabb == this.aabb && hitBoxColor == this.hitBoxColor && this.velocity == velocity && this.rotation == rotation
         if (equals && !checkVisibility) {
             return
         }
         this.aabb = aabb
         this.hitBoxColor = hitBoxColor
+        this.velocity = velocity
+        this.rotation = rotation
+
         this.checkVisibility = false
 
         val visible = ((entity.isInvisible && Minosoft.config.config.game.entities.hitBox.invisibleEntities) || !entity.isInvisible) && frustum.containsAABB(aabb)
@@ -57,6 +73,27 @@ class EntityHitBox(
         if (visible) {
             val mesh = LineMesh(renderWindow)
             mesh.drawAABB(aabb = aabb, color = hitBoxColor)
+            val center = Vec3(aabb.center)
+
+            if (!velocity.empty) {
+                mesh.drawLine(center, center + Vec3(velocity) * 3, color = ChatColors.YELLOW)
+            }
+
+
+            val eyeHeight = aabb.min.y + entity.eyeHeight
+            val eyeAABB = AABB(Vec3(aabb.min.x, eyeHeight, aabb.min.z), Vec3(aabb.max.x, eyeHeight, aabb.max.z)).hShrink(RenderConstants.DEFAULT_LINE_WIDTH)
+            mesh.drawAABB(eyeAABB, RenderConstants.DEFAULT_LINE_WIDTH, ChatColors.DARK_RED)
+
+
+            val front = Vec3d(
+                (rotation.yaw + 90).rad.cos * (-rotation.pitch).rad.cos,
+                (-rotation.pitch).rad.sin,
+                (rotation.yaw + 90).rad.sin * (-rotation.pitch).rad.cos
+            ).normalize()
+
+            val eyeStart = Vec3(center.x, eyeHeight, center.z)
+
+            mesh.drawLine(eyeStart, eyeStart + Vec3(front) * 5, color = ChatColors.BLUE)
             mesh.load()
             this.mesh = mesh
         }

@@ -26,7 +26,7 @@ import glm_.vec3.Vec3d
 
 open class LineMesh(renderWindow: RenderWindow) : GenericColorMesh(renderWindow) {
 
-    fun drawLine(start: Vec3, end: Vec3, lineWidth: Float, color: RGBColor) {
+    fun drawLine(start: Vec3, end: Vec3, lineWidth: Float = RenderConstants.DEFAULT_LINE_WIDTH, color: RGBColor) {
         val direction = (end - start).normalize()
         val normal1 = Vec3(direction.z, direction.z, direction.x - direction.y)
         if (normal1 == Vec3.EMPTY) {

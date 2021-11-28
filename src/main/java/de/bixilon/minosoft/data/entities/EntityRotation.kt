@@ -22,4 +22,8 @@ data class EntityRotation(
     override fun toString(): String {
         return "(yaw=$yaw, pitch=$pitch)"
     }
+
+    companion object {
+        val EMPTY = EntityRotation(0.0, 0.0)
+    }
 }
