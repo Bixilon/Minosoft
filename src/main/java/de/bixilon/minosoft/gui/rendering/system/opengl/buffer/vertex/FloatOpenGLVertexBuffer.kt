@@ -5,8 +5,7 @@ import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.FloatVertexBu
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.FloatOpenGLBuffer
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
-import org.lwjgl.opengl.ARBVertexArrayObject.glBindVertexArray
-import org.lwjgl.opengl.ARBVertexArrayObject.glGenVertexArrays
+import org.lwjgl.opengl.ARBVertexArrayObject.*
 import org.lwjgl.opengl.GL11.*
 import org.lwjgl.opengl.GL15.glBufferData
 import org.lwjgl.opengl.GL20.glEnableVertexAttribArray
@@ -48,8 +47,17 @@ class FloatOpenGLVertexBuffer(override val structure: MeshStruct, data: FloatBuf
     }
 
     override fun draw() {
+        check(state == RenderBufferStates.UPLOADED) { "Can not draw $state vertex buffer!" }
         glBindVertexArray(vao)
         glDrawArrays(primitiveType.gl, 0, vertices)
+    }
+
+    override fun unload() {
+        if (state == RenderBufferStates.UPLOADED) {
+            glDeleteVertexArrays(vao)
+            vao
+        }
+        super.unload()
     }
 
 

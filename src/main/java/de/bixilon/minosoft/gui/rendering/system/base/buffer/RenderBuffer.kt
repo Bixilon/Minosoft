@@ -22,5 +22,5 @@ interface RenderBuffer {
     fun bind()
     fun unbind()
 
-    fun unload(ignoreUnloaded: Boolean)
+    fun unload()
 }

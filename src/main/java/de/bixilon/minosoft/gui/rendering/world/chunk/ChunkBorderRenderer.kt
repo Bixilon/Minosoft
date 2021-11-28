@@ -41,7 +41,7 @@ class ChunkBorderRenderer(
         if (chunkPosition == lastChunkPosition && lastMesh != null) {
             return
         }
-        lastMesh?.unload(true)
+        lastMesh?.unload()
         val mesh = LineMesh(renderWindow)
 
         val dimension = renderWindow.connection.world.dimension ?: return
@@ -118,8 +118,7 @@ class ChunkBorderRenderer(
     }
 
     override fun drawOpaque() {
-        val mesh = lastMesh ?: return
-        mesh.draw()
+        lastMesh?.draw()
     }
 
 

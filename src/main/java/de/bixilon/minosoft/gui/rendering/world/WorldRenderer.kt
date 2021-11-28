@@ -483,7 +483,7 @@ class WorldRenderer(
             val meshes = loadedMeshes.getOrPut(item.chunkPosition) { mutableMapOf() }
 
             meshes.put(item.sectionHeight, mesh)?.let {
-                this.visible.removeMesh(mesh)
+                this.visible.removeMesh(it)
                 it.unload()
             }
             loadedMeshesLock.unlock()

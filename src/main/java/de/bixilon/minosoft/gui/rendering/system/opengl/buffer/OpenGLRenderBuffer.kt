@@ -26,14 +26,11 @@ abstract class OpenGLRenderBuffer(override val type: RenderBufferTypes) : Render
         glBindBuffer(type.gl, 0)
     }
 
-    override fun unload(ignoreUnloaded: Boolean) {
-        if (state != RenderBufferStates.UPLOADED && !ignoreUnloaded) {
-            error("")
-        }
-        if (state != RenderBufferStates.UPLOADED) {
-            state = RenderBufferStates.UNLOADED
-            glDeleteBuffers(id)
-        }
+    override fun unload() {
+        check(state == RenderBufferStates.UPLOADED) { "Can not unload $state buffer!" }
+        glDeleteBuffers(id)
+        id = -1
+        state = RenderBufferStates.UNLOADED
     }
 
 

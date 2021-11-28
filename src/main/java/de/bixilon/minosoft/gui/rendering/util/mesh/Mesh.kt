@@ -58,16 +58,14 @@ abstract class Mesh(
     }
 
     fun draw() {
+        check(state == MeshStates.LOADED) { "Can not draw $state mesh!" }
         buffer.draw()
     }
 
-    fun unload(ignoreUnloaded: Boolean = false) {
-        if (!this::buffer.isInitialized && !ignoreUnloaded) {
-            error("")
-        }
-        if (this::buffer.isInitialized) {
-            buffer.unload(ignoreUnloaded)
-        }
+    fun unload() {
+        check(state == MeshStates.LOADED) { "Can not unload $state mesh!" }
+        buffer.unload()
+        state = MeshStates.UNLOADED
     }
 
 
