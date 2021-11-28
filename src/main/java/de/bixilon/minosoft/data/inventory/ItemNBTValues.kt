@@ -18,6 +18,7 @@ object ItemNBTValues {
     const val DISPLAY_TAG = "display"
     const val DISPLAY_MAME_TAG = "Name"
     const val DISPLAY_LORE_TAG = "Lore"
+    const val DISPLAY_COLOR_TAG = "color"
     const val UNBREAKABLE_TAG = "unbreakable"
     const val HIDE_FLAGS_TAG = "HideFlags"
 

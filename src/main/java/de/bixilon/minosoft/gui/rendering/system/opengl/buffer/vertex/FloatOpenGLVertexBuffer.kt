@@ -55,7 +55,7 @@ class FloatOpenGLVertexBuffer(override val structure: MeshStruct, data: FloatBuf
     override fun unload() {
         if (state == RenderBufferStates.UPLOADED) {
             glDeleteVertexArrays(vao)
-            vao
+            vao = -1
         }
         super.unload()
     }

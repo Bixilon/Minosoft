@@ -13,6 +13,7 @@
 package de.bixilon.minosoft.data.inventory
 
 import de.bixilon.minosoft.data.Rarities
+import de.bixilon.minosoft.data.inventory.ItemNBTValues.DISPLAY_COLOR_TAG
 import de.bixilon.minosoft.data.inventory.ItemNBTValues.DISPLAY_LORE_TAG
 import de.bixilon.minosoft.data.inventory.ItemNBTValues.DISPLAY_MAME_TAG
 import de.bixilon.minosoft.data.inventory.ItemNBTValues.DISPLAY_TAG
@@ -29,6 +30,8 @@ import de.bixilon.minosoft.data.registries.enchantment.Enchantment
 import de.bixilon.minosoft.data.registries.items.Item
 import de.bixilon.minosoft.data.registries.other.containers.Container
 import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.data.text.RGBColor
+import de.bixilon.minosoft.data.text.RGBColor.Companion.asRGBColor
 import de.bixilon.minosoft.data.text.TextFormattable
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.BitByte.isBit
@@ -57,6 +60,7 @@ class ItemStack(
     val nbt: MutableMap<String, Any> = synchronizedMapOf(),
     container: Container? = null,
     hideFlags: Int = 0,
+    var dyedColor: RGBColor? = null,
 ) : TextFormattable {
     var count = count
         set(value) {
@@ -137,6 +141,7 @@ class ItemStack(
         nbt: MutableMap<String, Any> = this.nbt.synchronizedDeepCopy()!!,
         container: Container? = this.container,
         hideFlags: Int = this.hideFlags,
+        dyedColor: RGBColor? = this.dyedColor,
     ): ItemStack {
         return ItemStack(
             item = item,
@@ -151,6 +156,7 @@ class ItemStack(
             nbt = nbt,
             container = container,
             hideFlags = hideFlags,
+            dyedColor = dyedColor,
         )
     }
 
@@ -186,6 +192,7 @@ class ItemStack(
                     this.lore.add(ChatComponent.of(lore, translator = connection?.version?.language))
                 }
             }
+            it.getAndRemove(DISPLAY_COLOR_TAG)?.toInt()?.asRGBColor().let { color -> this.dyedColor = color }
         }
 
         nbt.getAndRemove(UNBREAKABLE_TAG).nullCast<Number>()?.let { unbreakable = it.toInt() == 0x01 }
@@ -224,6 +231,9 @@ class ItemStack(
 
                     if (loreTag.isNotEmpty()) {
                         it[DISPLAY_LORE_TAG] = loreTag
+                    }
+                    dyedColor?.let { color ->
+                        it[DISPLAY_COLOR_TAG] = color.rgb
                     }
                 }
 
@@ -358,6 +368,7 @@ class ItemStack(
                 && repairCost == other.repairCost
                 && unbreakable == other.unbreakable
                 && hideFlags == other.hideFlags
+                && dyedColor == other.dyedColor
     }
 
     companion object {

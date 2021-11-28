@@ -236,7 +236,7 @@ class AABB {
     }
 
     override fun toString(): String {
-        return "AABB[$min;$max]"
+        return "AABB[$min -> $max]"
     }
 
     companion object {

@@ -15,7 +15,6 @@ package de.bixilon.minosoft.gui.rendering.entity
 
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.data.entities.entities.Entity
-import de.bixilon.minosoft.data.registries.AABB
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.Renderer
@@ -24,89 +23,52 @@ import de.bixilon.minosoft.gui.rendering.modding.events.FrustumChangeEvent
 import de.bixilon.minosoft.gui.rendering.system.base.DepthFunctions
 import de.bixilon.minosoft.gui.rendering.system.base.RenderSystem
 import de.bixilon.minosoft.gui.rendering.system.base.phases.OpaqueDrawable
-import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.modding.event.events.EntityDestroyEvent
 import de.bixilon.minosoft.modding.event.events.EntitySpawnEvent
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
-import de.bixilon.minosoft.util.KUtil.toSynchronizedMap
-import de.bixilon.minosoft.util.collections.SynchronizedMap
+import de.bixilon.minosoft.util.KUtil.lockMapOf
+import de.bixilon.minosoft.util.KUtil.synchronizedSetOf
+import de.bixilon.minosoft.util.KUtil.toSynchronizedSet
+import de.bixilon.minosoft.util.collections.LockMap
 
 class EntityHitBoxRenderer(
     val connection: PlayConnection,
     override val renderWindow: RenderWindow,
 ) : Renderer, OpaqueDrawable {
     override val renderSystem: RenderSystem = renderWindow.renderSystem
-    private val meshes: SynchronizedMap<Entity, EntityHitBoxMesh> = synchronizedMapOf()
+    private val frustum = renderWindow.inputHandler.camera.frustum
+    private val meshes: LockMap<Entity, EntityHitBox> = lockMapOf()
+    private val toUnload: MutableSet<EntityHitBox> = synchronizedSetOf()
 
-
-    private fun updateMesh(entity: Entity, mesh: EntityHitBoxMesh? = meshes[entity]): EntityHitBoxMesh? {
-        entity.tick() // ToDo: Remove
-        val aabb = entity.cameraAABB
-
-        val visible = renderWindow.inputHandler.camera.frustum.containsAABB(aabb)
-        if (!visible) {
-            return mesh
-        }
-
-        var nextMesh = mesh
-
-        if (aabb != mesh?.aabb) {
-            this.meshes.remove(entity)
-            if (mesh?.state == Mesh.MeshStates.LOADED) {
-                mesh.unload()
-            }
-            nextMesh = createMesh(entity, aabb, visible)
-        }
-        return nextMesh
-    }
-
-    private fun createMesh(entity: Entity, aabb: AABB = entity.cameraAABB, visible: Boolean = renderWindow.inputHandler.camera.frustum.containsAABB(aabb)): EntityHitBoxMesh? {
-        if (entity.isInvisible && !Minosoft.config.config.game.entities.hitBox.renderInvisibleEntities) {
-            return null
-        }
-        val mesh = EntityHitBoxMesh(renderWindow, entity, aabb)
-
-        if (visible) {
-            mesh.load()
-        }
-        mesh.needsUpdate = !visible
-
-        mesh.visible = visible
-
-        this.meshes[entity] = mesh
-
-        return mesh
-    }
 
     override fun init() {
         connection.registerEvent(CallbackEventInvoker.of<EntitySpawnEvent> {
-            renderWindow.queue += {
-                createMesh(it.entity)
-            }
+            meshes.getOrPut(it.entity) { EntityHitBox(renderWindow, it.entity, frustum) }
         })
-        connection.registerEvent(CallbackEventInvoker.of<EntityDestroyEvent> {
-            val mesh = this.meshes.remove(it.entity) ?: return@of
-
-            renderWindow.queue += {
-                mesh.unload()
-            }
-        })
-
+        connection.registerEvent(CallbackEventInvoker.of<EntityDestroyEvent> { toUnload += meshes.remove(it.entity) ?: return@of })
         connection.registerEvent(CallbackEventInvoker.of<FrustumChangeEvent> {
-            for ((_, mesh) in this.meshes.toSynchronizedMap()) {
-                mesh.visible = renderWindow.inputHandler.camera.frustum.containsAABB(mesh.aabb)
+            meshes.lock.acquire()
+            for (mesh in meshes.values) {
+                mesh.updateVisibility()
             }
+            meshes.lock.release()
         })
 
         if (Minosoft.config.config.game.entities.hitBox.ownHitBox) {
-            createMesh(connection.player)
+            meshes[connection.player] = EntityHitBox(renderWindow, connection.player, frustum)
+        }
+    }
+
+    override fun prepareDraw() {
+        for (hitBox in toUnload.toSynchronizedSet()) {
+            hitBox.unload()
+            toUnload -= hitBox
         }
     }
 
     override fun setupOpaque() {
-        renderWindow.renderSystem.reset(faceCulling = false) // ToDo?
+        renderWindow.renderSystem.reset(faceCulling = false)
         if (Minosoft.config.config.game.entities.hitBox.disableZBuffer) {
             renderWindow.renderSystem.depth = DepthFunctions.ALWAYS
         }
@@ -114,22 +76,11 @@ class EntityHitBoxRenderer(
     }
 
     override fun drawOpaque() {
-        fun draw(mesh: EntityHitBoxMesh?) {
-            mesh ?: return
-
-            if (!mesh.visible) {
-                return
-            }
-            if (mesh.needsUpdate) {
-                mesh.load()
-                mesh.needsUpdate = false
-            }
-            mesh.draw()
+        meshes.lock.acquire()
+        for (hitBox in meshes.values) {
+            hitBox.draw()
         }
-
-        for ((entity, mesh) in meshes.toSynchronizedMap()) {
-            draw(updateMesh(entity, mesh))
-        }
+        meshes.lock.release()
     }
 
 

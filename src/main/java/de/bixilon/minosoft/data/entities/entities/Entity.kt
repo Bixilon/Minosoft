@@ -16,6 +16,7 @@ import de.bixilon.minosoft.data.entities.EntityMetaDataFields
 import de.bixilon.minosoft.data.entities.EntityRotation
 import de.bixilon.minosoft.data.entities.Poses
 import de.bixilon.minosoft.data.entities.StatusEffectInstance
+import de.bixilon.minosoft.data.entities.entities.player.PlayerEntity
 import de.bixilon.minosoft.data.entities.entities.vehicle.Boat
 import de.bixilon.minosoft.data.entities.meta.EntityMetaData
 import de.bixilon.minosoft.data.inventory.InventorySlots.EquipmentSlots
@@ -34,8 +35,11 @@ import de.bixilon.minosoft.data.registries.entities.EntityType
 import de.bixilon.minosoft.data.registries.fluid.FlowableFluid
 import de.bixilon.minosoft.data.registries.fluid.Fluid
 import de.bixilon.minosoft.data.registries.items.armor.ArmorItem
+import de.bixilon.minosoft.data.registries.items.armor.DyeableArmorItem
 import de.bixilon.minosoft.data.registries.particle.data.BlockParticleData
+import de.bixilon.minosoft.data.text.ChatColors
 import de.bixilon.minosoft.data.text.ChatComponent
+import de.bixilon.minosoft.data.text.RGBColor
 import de.bixilon.minosoft.gui.rendering.input.camera.EntityPositionInfo
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.advanced.block.BlockDustParticle
 import de.bixilon.minosoft.gui.rendering.util.VecUtil
@@ -318,6 +322,26 @@ abstract class Entity(
 
     val cameraAABB: AABB
         get() = defaultAABB + cameraPosition
+
+    val hitBoxColor: RGBColor
+        get() {
+            return when {
+                isInvisible -> ChatColors.GREEN
+                this is PlayerEntity -> {
+                    val chestPlate = equipment[EquipmentSlots.CHEST]
+                    if (chestPlate != null && chestPlate.item is DyeableArmorItem) {
+                        chestPlate.dyedColor?.let { return it }
+                    }
+                    val team = connection.scoreboardManager.getTeam(this.name)
+                    val formattingCode = team?.formattingCode
+                    if (formattingCode is RGBColor) {
+                        return formattingCode
+                    }
+                    return ChatColors.RED
+                }
+                else -> ChatColors.WHITE
+            }
+        }
 
 
     @Synchronized

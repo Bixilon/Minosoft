@@ -14,15 +14,10 @@
 package de.bixilon.minosoft.config.config.game.entities
 
 import com.squareup.moshi.Json
-import de.bixilon.minosoft.data.text.ChatColors
-import de.bixilon.minosoft.data.text.RGBColor
 
 data class EntityHitBoxConfig(
     @Json(name = "enabled") val enabled: Boolean = true,
     @Json(name = "own_hit_box") val ownHitBox: Boolean = false,
     @Json(name = "disable_z_buffer") val disableZBuffer: Boolean = false,
-    @Json(name = "hit_box_color") val hitBoxColor: RGBColor = ChatColors.WHITE,
-    @Json(name = "eye_height_color") val eyeHeightColor: RGBColor = ChatColors.DARK_RED,
-    @Json(name = "render_invisible_entities") val renderInvisibleEntities: Boolean = false,
-    @Json(name = "invisible_entities_color") val invisibleEntitiesColor: RGBColor = ChatColors.GREEN,
+    @Json(name = "invisible_entities") val invisibleEntities: Boolean = false,
 )

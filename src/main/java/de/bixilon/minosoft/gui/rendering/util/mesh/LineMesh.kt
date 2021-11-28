@@ -16,6 +16,7 @@ package de.bixilon.minosoft.gui.rendering.util.mesh
 import de.bixilon.minosoft.data.registries.AABB
 import de.bixilon.minosoft.data.registries.VoxelShape
 import de.bixilon.minosoft.data.text.RGBColor
+import de.bixilon.minosoft.gui.rendering.RenderConstants
 import de.bixilon.minosoft.gui.rendering.RenderWindow
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3Util.EMPTY
 import de.bixilon.minosoft.util.BitByte.isBit
@@ -58,7 +59,7 @@ open class LineMesh(renderWindow: RenderWindow) : GenericColorMesh(renderWindow)
         drawAABB(aabb + position, lineWidth, color, margin)
     }
 
-    fun drawAABB(aabb: AABB, lineWidth: Float, color: RGBColor, margin: Float = 0.0f) {
+    fun drawAABB(aabb: AABB, lineWidth: Float = RenderConstants.DEFAULT_LINE_WIDTH, color: RGBColor, margin: Float = 0.0f) {
         val min = aabb.min - margin
         val max = aabb.max + margin
 
