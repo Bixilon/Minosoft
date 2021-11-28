@@ -26,17 +26,17 @@ class ResourceLocationRegistry(
         valueIdMap.clear()
     }
 
-    override fun get(any: Any?): ResourceLocation? {
+    override operator fun get(any: Any?): ResourceLocation? {
         check(any is Int) { "Don't know how to get $any" }
-        return idValueMap[any]
+        return this[any]
     }
 
-    override fun get(id: Int): ResourceLocation? {
-        return idValueMap[id]
+    override operator fun get(id: Int): ResourceLocation? {
+        return idValueMap[id] ?: parent?.get(id)
     }
 
     override fun getId(value: ResourceLocation): Int {
-        return valueIdMap[value] ?: -1
+        return valueIdMap[value] ?: parent?.getId(value) ?: -1
     }
 
     fun initialize(data: Map<ResourceLocation, Any>?, alternative: ResourceLocationRegistry? = null): ResourceLocationRegistry {
