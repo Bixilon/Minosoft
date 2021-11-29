@@ -24,7 +24,6 @@ import de.bixilon.minosoft.data.registries.particle.data.DustParticleData
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.text.Colors
 import de.bixilon.minosoft.gui.rendering.input.camera.hit.BlockRaycastHit
-import de.bixilon.minosoft.gui.rendering.input.camera.hit.RaycastHit
 import de.bixilon.minosoft.gui.rendering.input.interaction.InteractionResults
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.dust.DustParticle
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
@@ -56,7 +55,7 @@ open class LeverBlock(resourceLocation: ResourceLocation, registries: Registries
         }
     }
 
-    override fun getPlacementState(connection: PlayConnection, raycastHit: RaycastHit): BlockState? {
+    override fun getPlacementState(connection: PlayConnection, hit: BlockRaycastHit): BlockState? {
         TODO()
     }
 

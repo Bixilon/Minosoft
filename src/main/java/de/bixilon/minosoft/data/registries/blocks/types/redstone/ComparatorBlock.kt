@@ -21,13 +21,12 @@ import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.gui.rendering.input.camera.hit.BlockRaycastHit
-import de.bixilon.minosoft.gui.rendering.input.camera.hit.RaycastHit
 import de.bixilon.minosoft.gui.rendering.input.interaction.InteractionResults
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 open class ComparatorBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : RedstoneGateBlock(resourceLocation, registries, data) {
 
-    override fun getPlacementState(connection: PlayConnection, raycastHit: RaycastHit): BlockState? {
+    override fun getPlacementState(connection: PlayConnection, hit: BlockRaycastHit): BlockState? {
         TODO()
     }
 

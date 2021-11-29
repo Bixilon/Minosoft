@@ -81,7 +81,7 @@ data class Sound(
 
             return Sound(
                 soundEvent = soundEvent,
-                path = data["name"].toResourceLocation(),
+                path = data["name"].toResourceLocation().sound(),
                 volume = data["volume"]?.toFloat() ?: 1.0f,
                 pitch = data["pitch"]?.toFloat() ?: 1.0f,
                 weight = data["weight"]?.toInt() ?: 1,

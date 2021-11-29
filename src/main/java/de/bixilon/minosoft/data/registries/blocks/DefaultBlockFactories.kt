@@ -17,11 +17,14 @@ import de.bixilon.minosoft.data.registries.blocks.types.*
 import de.bixilon.minosoft.data.registries.blocks.types.button.StoneButtonBlock
 import de.bixilon.minosoft.data.registries.blocks.types.button.WoodenButtonBlock
 import de.bixilon.minosoft.data.registries.blocks.types.leaves.LeavesBlock
+import de.bixilon.minosoft.data.registries.blocks.types.plant.CropBlock
+import de.bixilon.minosoft.data.registries.blocks.types.plant.PlantBlock
 import de.bixilon.minosoft.data.registries.blocks.types.portal.NetherPortalBlock
 import de.bixilon.minosoft.data.registries.blocks.types.redstone.ComparatorBlock
 import de.bixilon.minosoft.data.registries.blocks.types.redstone.RepeaterBlock
 import de.bixilon.minosoft.data.registries.blocks.types.wall.LeverBlock
 import de.bixilon.minosoft.data.registries.blocks.types.water.KelpBlock
+import de.bixilon.minosoft.data.registries.blocks.types.water.KelpPlantBlock
 import de.bixilon.minosoft.data.registries.blocks.types.water.SeagrassBlock
 import de.bixilon.minosoft.data.registries.factory.clazz.DefaultClassFactory
 
@@ -42,8 +45,11 @@ object DefaultBlockFactories : DefaultClassFactory<BlockFactory<*>>(
     RedstoneTorchBlock,
     HoneyBlock,
     KelpBlock,
+    KelpPlantBlock,
     SeagrassBlock,
     StoneButtonBlock,
     WoodenButtonBlock,
     LeavesBlock,
+    PlantBlock,
+    CropBlock,
 )

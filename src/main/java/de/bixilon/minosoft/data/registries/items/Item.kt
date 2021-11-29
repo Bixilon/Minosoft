@@ -95,6 +95,7 @@ open class Item(
             }
             return when (val `class` = data["class"].unsafeCast<String>()) {
                 "BlockItem" -> BlockItem(resourceLocation, registries, data)
+                "AliasedBlockItem" -> AliasedBlockItem(resourceLocation, registries, data)
                 "Item", "AirBlockItem" -> Item(resourceLocation, registries, data)
                 "ArmorItem" -> ArmorItem(resourceLocation, registries, data)
                 "SwordItem" -> SwordItem(resourceLocation, registries, data)
@@ -114,7 +115,6 @@ open class Item(
                 "LilyPadItem" -> LilyPadItem(resourceLocation, registries, data)
                 "CommandBlockItem" -> CommandBlockItem(resourceLocation, registries, data)
                 "ScaffoldingItem" -> ScaffoldingItem(resourceLocation, registries, data)
-                "AliasedBlockItem" -> AliasedBlockItem(resourceLocation, registries, data)
                 "SaddleItem" -> SaddleItem(resourceLocation, registries, data)
                 "MinecartItem" -> MinecartItem(resourceLocation, registries, data)
                 "OnAStickItem" -> OnAStickItem(resourceLocation, registries, data)
