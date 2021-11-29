@@ -32,6 +32,8 @@ object RunConfiguration {
     var DISABLE_EROS = false // if true, the whole javafx eros part is disabled
     var DISABLE_RENDERING = false // if true, rendering is disabled
 
+    var AUTO_CONNECT_TO: String? = null
+
     var HOME_DIRECTORY: String = let {
         // Sets Config.homeDir to the correct folder per OS
         var homeDir: String = System.getProperty(StandardSystemProperty.USER_HOME.key())

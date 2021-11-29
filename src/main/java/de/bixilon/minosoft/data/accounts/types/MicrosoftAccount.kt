@@ -56,6 +56,10 @@ class MicrosoftAccount(
         )
     }
 
+    override fun toString(): String {
+        return "MicrosoftAccount{$username}"
+    }
+
     companion object : AccountType(MicrosoftAccount::class) {
         override val RESOURCE_LOCATION: ResourceLocation = "minosoft:microsoft_account".toResourceLocation()
     }

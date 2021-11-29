@@ -95,6 +95,10 @@ class MojangAccount(
         Log.log(LogMessageType.AUTHENTICATION, LogLevels.VERBOSE) { "Mojang account refresh successful (username=$username)" }
     }
 
+    override fun toString(): String {
+        return "MojangAccount{$username}"
+    }
+
     companion object : AccountType(MojangAccount::class) {
         private const val MOJANG_URL_LOGIN = "https://authserver.mojang.com/authenticate"
         private const val MOJANG_URL_REFRESH = "https://authserver.mojang.com/refresh"

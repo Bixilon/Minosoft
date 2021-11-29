@@ -14,27 +14,31 @@
 package de.bixilon.minosoft
 
 import de.bixilon.minosoft.config.Configuration
+import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.data.assets.JarAssetsManager
 import de.bixilon.minosoft.data.assets.Resources
 import de.bixilon.minosoft.data.language.LanguageManager.Companion.load
 import de.bixilon.minosoft.data.language.MultiLanguageManager
 import de.bixilon.minosoft.data.registries.DefaultRegistries
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.versions.Version
 import de.bixilon.minosoft.data.registries.versions.Versions
 import de.bixilon.minosoft.gui.eros.Eros
 import de.bixilon.minosoft.gui.eros.crash.ErosCrashReport.Companion.crash
 import de.bixilon.minosoft.gui.eros.util.JavaFXInitializer
 import de.bixilon.minosoft.modding.event.events.FinishInitializingEvent
+import de.bixilon.minosoft.modding.event.events.connection.status.ServerStatusReceiveEvent
+import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
 import de.bixilon.minosoft.modding.loading.ModLoader
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.connection.status.StatusConnection
 import de.bixilon.minosoft.protocol.protocol.LANServerListener
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.terminal.CLI
 import de.bixilon.minosoft.terminal.CommandLineArguments
 import de.bixilon.minosoft.terminal.RunConfiguration
-import de.bixilon.minosoft.util.CountUpAndDownLatch
-import de.bixilon.minosoft.util.GitInfo
-import de.bixilon.minosoft.util.Util
+import de.bixilon.minosoft.util.*
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -130,5 +134,37 @@ object Minosoft {
         Log.log(LogMessageType.OTHER, LogLevels.INFO) { "All startup tasks executed!" }
 
         GlobalEventMaster.fireEvent(FinishInitializingEvent())
+
+        RunConfiguration.AUTO_CONNECT_TO?.let { autoConnect(it) }
+    }
+
+    private fun autoConnect(address: ServerAddress, version: Version, account: Account) {
+        val connection = PlayConnection(
+            address = address,
+            account = account,
+            version = version,
+        )
+        Log.log(LogMessageType.AUTO_CONNECT, LogLevels.INFO) { "Connecting to $address, with version $version using account $account..." }
+        connection.connect()
+    }
+
+    private fun autoConnect(connectString: String) {
+        // ToDo: Show those connections in eros
+        val split = connectString.split(',')
+        val address = split[0]
+        val version = Versions.getVersionByName(split.getOrNull(1) ?: "automatic") ?: throw IllegalArgumentException("Auto connect: Version not found!")
+        val account = Minosoft.config.config.account.entries[split.getOrNull(2)] ?: Minosoft.config.config.account.selected ?: throw RuntimeException("Auto connect: Account not found!")
+
+        if (version == Versions.AUTOMATIC_VERSION) {
+            Log.log(LogMessageType.AUTO_CONNECT, LogLevels.INFO) { "Pinging server to get version..." }
+            val ping = StatusConnection(address)
+            ping.ping()
+            ping.registerEvent(CallbackEventInvoker.of<ServerStatusReceiveEvent> {
+                autoConnect(ping.realAddress!!, ping.serverVersion ?: throw IllegalArgumentException("Could not determinate server's version!"), account)
+            })
+            return
+        }
+
+        autoConnect(DNSUtil.getServerAddress(address), version, account)
     }
 }

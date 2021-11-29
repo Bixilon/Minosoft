@@ -42,6 +42,9 @@ public class Versions {
     }
 
     public static Version getVersionByName(String name) {
+        if ("automatic".equals(name)) {
+            return AUTOMATIC_VERSION;
+        }
         return VERSION_NAME_MAP.get(name);
     }
 

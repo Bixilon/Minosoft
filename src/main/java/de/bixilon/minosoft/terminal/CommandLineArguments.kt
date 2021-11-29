@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.terminal
 
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import net.sourceforge.argparse4j.ArgumentParsers
 import net.sourceforge.argparse4j.impl.Arguments
@@ -57,6 +58,11 @@ object CommandLineArguments {
                 .setDefault(null)
                 .action(Arguments.store())
                 .help("Skips specific renderers")
+
+            addArgument("--connect")
+                .setDefault(null)
+                .action(Arguments.store())
+                .help("Automatically connects to a specific server. Full format: hostname.whatever<:port><,version><,account>\nPort is by default ${ProtocolDefinition.DEFAULT_PORT}, version is automatic and account is the current selected one")
         }
 
     fun parse(args: Array<String>) {
@@ -92,5 +98,7 @@ object CommandLineArguments {
 
             RunConfiguration.SKIP_RENDERERS = skip.toList()
         }
+
+        RunConfiguration.AUTO_CONNECT_TO = namespace.getString("connect")
     }
 }

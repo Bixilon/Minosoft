@@ -23,6 +23,7 @@ enum class LogMessageType(
     val defaultLevel: LogLevels = LogLevels.INFO,
     val error: Boolean = false,
 ) {
+    AUTO_CONNECT(ChatColors.WHITE),
     GENERAL(ChatColors.WHITE),
     MOD_LOADING(ChatColors.GOLD),
     JAVAFX(ChatColors.DARK_GRAY),

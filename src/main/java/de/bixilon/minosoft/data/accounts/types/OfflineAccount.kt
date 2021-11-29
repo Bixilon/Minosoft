@@ -35,6 +35,10 @@ class OfflineAccount(username: String) : Account(username) {
         )
     }
 
+    override fun toString(): String {
+        return "OfflineAccount{$username}"
+    }
+
     companion object : AccountType(OfflineAccount::class) {
         override val RESOURCE_LOCATION: ResourceLocation = "minosoft:offline_account".toResourceLocation()
     }
