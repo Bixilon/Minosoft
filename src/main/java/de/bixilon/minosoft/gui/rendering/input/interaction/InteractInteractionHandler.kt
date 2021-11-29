@@ -85,7 +85,13 @@ class InteractInteractionHandler(
             hand = hand,
             insideBlock = false, // ToDo: insideBlock
         ))
+
         if (connection.player.gamemode == Gamemodes.SPECTATOR) {
+            return InteractionResults.SUCCESS
+        }
+
+        val result = hit.blockState.block.onUse(connection, hit, hand, item)
+        if (result == InteractionResults.SUCCESS) {
             return InteractionResults.SUCCESS
         }
 

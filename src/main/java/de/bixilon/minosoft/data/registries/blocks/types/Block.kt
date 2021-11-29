@@ -28,6 +28,7 @@ import de.bixilon.minosoft.data.registries.items.Item
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.data.registries.registries.registry.RegistryItem
 import de.bixilon.minosoft.data.registries.registries.registry.ResourceLocationDeserializer
+import de.bixilon.minosoft.gui.rendering.input.camera.hit.BlockRaycastHit
 import de.bixilon.minosoft.gui.rendering.input.camera.hit.RaycastHit
 import de.bixilon.minosoft.gui.rendering.input.interaction.InteractionResults
 import de.bixilon.minosoft.gui.rendering.tint.TintProvider
@@ -83,7 +84,7 @@ open class Block(
 
     open fun canPlaceAt(connection: PlayConnection, blockPosition: Vec3i, blockState: BlockState): Boolean = true
 
-    open fun onUse(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, raycastHit: RaycastHit, hand: Hands, itemStack: ItemStack?): InteractionResults {
+    open fun onUse(connection: PlayConnection, hit: BlockRaycastHit, hand: Hands, itemStack: ItemStack?): InteractionResults {
         if (blockEntityType == null) {
             return InteractionResults.PASS
         }

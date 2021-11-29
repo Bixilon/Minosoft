@@ -17,6 +17,7 @@ import de.bixilon.minosoft.data.abilities.Gamemodes
 import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.player.Hands
 import de.bixilon.minosoft.data.registries.ResourceLocation
+import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.types.Block
 import de.bixilon.minosoft.data.registries.items.Item
 import de.bixilon.minosoft.data.registries.registries.Registries
@@ -56,7 +57,12 @@ open class BlockItem(
         }
 
 
-        val placeBlockState = block!!.getPlacementState(connection, raycastHit) ?: return InteractionResults.PASS
+        var placeBlockState: BlockState = block!!.defaultState
+        try {
+            placeBlockState = block.getPlacementState(connection, raycastHit) ?: return InteractionResults.PASS
+        } catch (exception: Exception) {
+            exception.printStackTrace()
+        }
 
         val collisionShape = placeBlockState.collisionShape + placePosition
         for (entity in connection.world.entities) {

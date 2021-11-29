@@ -20,10 +20,10 @@ import de.bixilon.minosoft.data.registries.blocks.BlockFactory
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.blocks.properties.BlockProperties
 import de.bixilon.minosoft.data.registries.registries.Registries
+import de.bixilon.minosoft.gui.rendering.input.camera.hit.BlockRaycastHit
 import de.bixilon.minosoft.gui.rendering.input.camera.hit.RaycastHit
 import de.bixilon.minosoft.gui.rendering.input.interaction.InteractionResults
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
-import glm_.vec3.Vec3i
 
 open class RepeaterBlock(resourceLocation: ResourceLocation, registries: Registries, data: Map<String, Any>) : RedstoneGateBlock(resourceLocation, registries, data) {
 
@@ -31,8 +31,8 @@ open class RepeaterBlock(resourceLocation: ResourceLocation, registries: Registr
         TODO()
     }
 
-    override fun onUse(connection: PlayConnection, blockState: BlockState, blockPosition: Vec3i, raycastHit: RaycastHit, hand: Hands, itemStack: ItemStack?): InteractionResults {
-        connection.world[blockPosition] = blockState.cycle(BlockProperties.REPEATER_DELAY)
+    override fun onUse(connection: PlayConnection, hit: BlockRaycastHit, hand: Hands, itemStack: ItemStack?): InteractionResults {
+        connection.world[hit.blockPosition] = hit.blockState.cycle(BlockProperties.REPEATER_DELAY)
 
         return InteractionResults.SUCCESS
     }
