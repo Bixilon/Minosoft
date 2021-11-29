@@ -56,6 +56,8 @@ class ParticleRenderer(
 
     private val particlesLock = ReadWriteLock()
     private var particles: MutableSet<Particle> = mutableSetOf()
+    private var particleQueueLock = ReadWriteLock()
+    private var particleQueue: MutableSet<Particle> = mutableSetOf()
 
 
     private lateinit var particleTask: TimeWorkerTask
@@ -107,14 +109,17 @@ class ParticleRenderer(
         particleTask = TimeWorker.addTask(TimeWorkerTask(ProtocolDefinition.TICK_TIME, maxDelayTime = ProtocolDefinition.TICK_TIME / 2) {
             val cameraLength = connection.player.position.length()
             particlesLock.acquire()
-            val time = KUtil.time
-            for (particle in particles) {
-                if (particle.position.length() - cameraLength >= Minosoft.config.config.game.camera.viewDistance * ProtocolDefinition.SECTION_WIDTH_X) {
-                    particle.dead = true
+            try {
+                val time = KUtil.time
+                for (particle in particles) {
+                    if (particle.position.length() - cameraLength >= Minosoft.config.config.game.camera.viewDistance * ProtocolDefinition.SECTION_WIDTH_X) {
+                        particle.dead = true
+                    }
+                    particle.tryTick(time)
                 }
-                particle.tryTick(time)
+            } finally {
+                particlesLock.release()
             }
-            particlesLock.release()
         })
 
         connection.registerEvent(CallbackEventInvoker.of<PlayConnectionStateChangeEvent> {
@@ -138,9 +143,9 @@ class ParticleRenderer(
             return
         }
 
-        particlesLock.lock()
-        particles += particle
-        particlesLock.unlock()
+        particleQueueLock.lock()
+        particleQueue += particle
+        particleQueueLock.unlock()
     }
 
     operator fun plusAssign(particle: Particle) = add(particle)
@@ -158,6 +163,9 @@ class ParticleRenderer(
 
 
         particlesLock.acquire()
+        particleQueueLock.acquire()
+        particles += particleQueue
+        particleQueueLock.release()
 
         val time = KUtil.time
         for (particle in particles) {
@@ -167,6 +175,7 @@ class ParticleRenderer(
             }
             particle.addVertex(transparentMesh, translucentMesh, time)
         }
+
         particlesLock.release()
 
         if (toRemove.isNotEmpty()) {
