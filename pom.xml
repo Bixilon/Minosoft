@@ -137,7 +137,6 @@
         </plugins>
     </build>
 
-
     <profiles>
         <profile>
             <id>lwjgl-natives-linux-amd64</id>
@@ -169,6 +168,18 @@
                 <os>
                     <family>mac</family>
                     <arch>amd64</arch>
+                </os>
+            </activation>
+            <properties>
+                <lwjgl.natives>natives-macos</lwjgl.natives>
+            </properties>
+        </profile>
+        <profile>
+            <id>lwjgl-natives-macos-x86_64</id>
+            <activation>
+                <os>
+                    <family>mac</family>
+                    <arch>x86_64</arch>
                 </os>
             </activation>
             <properties>
@@ -234,7 +245,7 @@
         <maven.compiler.target>${maven.compiler.source}</maven.compiler.target>
         <javafx.version>18-ea+7</javafx.version>
         <kotlin.version>1.6.0</kotlin.version>
-        <lwjgl.version>3.3.0-SNAPSHOT</lwjgl.version>
+        <lwjgl.version>3.3.0</lwjgl.version>
     </properties>
 
 
@@ -243,7 +254,6 @@
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
         </repository>
-
         <repository>
             <id>sonatype-snapshots</id>
             <url>https://oss.sonatype.org/content/repositories/snapshots</url>
