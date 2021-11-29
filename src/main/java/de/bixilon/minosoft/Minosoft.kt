@@ -27,11 +27,13 @@ import de.bixilon.minosoft.gui.eros.Eros
 import de.bixilon.minosoft.gui.eros.crash.ErosCrashReport.Companion.crash
 import de.bixilon.minosoft.gui.eros.util.JavaFXInitializer
 import de.bixilon.minosoft.modding.event.events.FinishInitializingEvent
+import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionStateChangeEvent
 import de.bixilon.minosoft.modding.event.events.connection.status.ServerStatusReceiveEvent
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
 import de.bixilon.minosoft.modding.loading.ModLoader
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.protocol.network.connection.play.PlayConnectionStates.Companion.disconnected
 import de.bixilon.minosoft.protocol.network.connection.status.StatusConnection
 import de.bixilon.minosoft.protocol.protocol.LANServerListener
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
@@ -46,6 +48,7 @@ import de.bixilon.minosoft.util.task.pool.ThreadPool
 import de.bixilon.minosoft.util.task.worker.StartupTasks
 import de.bixilon.minosoft.util.task.worker.TaskWorker
 import de.bixilon.minosoft.util.task.worker.tasks.Task
+import kotlin.system.exitProcess
 
 
 object Minosoft {
@@ -144,6 +147,12 @@ object Minosoft {
             account = account,
             version = version,
         )
+        connection.registerEvent(CallbackEventInvoker.of<PlayConnectionStateChangeEvent> {
+            if (it.state.disconnected && RunConfiguration.DISABLE_EROS) {
+                Log.log(LogMessageType.AUTO_CONNECT, LogLevels.INFO) { "Disconnected from server, exiting..." }
+                exitProcess(0)
+            }
+        })
         Log.log(LogMessageType.AUTO_CONNECT, LogLevels.INFO) { "Connecting to $address, with version $version using account $account..." }
         connection.connect()
     }
