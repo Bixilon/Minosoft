@@ -28,7 +28,7 @@ class SpriteTexture(private val original: AbstractTexture) : AbstractTexture {
     override var textureArrayUV: Vec2 by original::textureArrayUV
     override var singlePixelSize: Vec2 by original::singlePixelSize
     override var properties: ImageProperties by original::properties
-    override var renderData: TextureRenderData? by original::renderData
+    override var renderData: TextureRenderData by original::renderData
     override val transparency: TextureTransparencies by original::transparency
 
     override var state: TextureStates = TextureStates.DECLARED

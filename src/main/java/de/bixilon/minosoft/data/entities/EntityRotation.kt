@@ -12,10 +12,21 @@
  */
 package de.bixilon.minosoft.data.entities
 
+import glm_.func.cos
+import glm_.func.rad
+import glm_.func.sin
+import glm_.vec3.Vec3d
+
 data class EntityRotation(
     val yaw: Double,
     val pitch: Double,
 ) {
+    val front: Vec3d
+        get() = Vec3d(
+            (yaw + 90).rad.cos * (-pitch).rad.cos,
+            (-pitch).rad.sin,
+            (yaw + 90).rad.sin * (-pitch).rad.cos
+        ).normalize()
 
     constructor(bodyYaw: Float, pitch: Float) : this(bodyYaw.toDouble(), pitch.toDouble())
 

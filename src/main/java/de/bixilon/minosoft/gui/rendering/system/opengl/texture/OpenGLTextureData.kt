@@ -22,12 +22,31 @@ class OpenGLTextureData(
     val uvEnd: Vec2?,
     override val animationData: Int = -1,
 ) : TextureRenderData {
+    private val uvEndArray = uvEnd?.array
     override val shaderTextureId: Int = (array shl 28) or (index shl 12) or (animationData + 1)
 
-    override fun transformUV(end: Vec2): Vec2 {
-        if (uvEnd == null) {
+    override fun transformUV(end: Vec2?): Vec2 {
+        if (end == null) {
+            return uvEnd ?: VEC2_ONE
+        }
+        if (uvEndArray == null) {
             return end
         }
-        return end * uvEnd
+        return Vec2(end.x * uvEndArray[0], end.y * uvEndArray[1])
+    }
+
+    override fun transformUV(end: FloatArray?): FloatArray {
+        if (end == null) {
+            return uvEndArray ?: ONE_ARRAY
+        }
+        if (uvEndArray == null) {
+            return end
+        }
+        return floatArrayOf(end[0] * uvEndArray[0], end[1] * uvEndArray[1])
+    }
+
+    companion object {
+        private val VEC2_ONE = Vec2(1.0f, 1.0f)
+        private val ONE_ARRAY = VEC2_ONE.array
     }
 }

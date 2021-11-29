@@ -47,6 +47,7 @@ class DirectArrayFloatList(
         }
     }
 
+    @Synchronized
     override fun ensureSize(needed: Int) {
         checkFinalized()
         if (limit - size >= needed) {

@@ -19,5 +19,6 @@ interface TextureRenderData {
     val shaderTextureId: Int
     val animationData: Int
 
-    fun transformUV(end: Vec2): Vec2
+    fun transformUV(end: Vec2?): Vec2
+    fun transformUV(end: FloatArray?): FloatArray
 }

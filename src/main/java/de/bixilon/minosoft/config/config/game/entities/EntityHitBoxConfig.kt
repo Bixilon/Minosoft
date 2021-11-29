@@ -20,4 +20,5 @@ data class EntityHitBoxConfig(
     @Json(name = "own_hit_box") val ownHitBox: Boolean = false,
     @Json(name = "disable_z_buffer") val disableZBuffer: Boolean = false,
     @Json(name = "invisible_entities") val invisibleEntities: Boolean = false,
+    @Json(name = "lazy_hit_boxes") val lazyHitBoxes: Boolean = false,
 )

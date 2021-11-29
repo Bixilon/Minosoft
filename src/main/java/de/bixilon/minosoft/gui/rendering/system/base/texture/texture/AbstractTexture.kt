@@ -35,7 +35,7 @@ interface AbstractTexture {
     val transparency: TextureTransparencies
     var properties: ImageProperties
 
-    var renderData: TextureRenderData?
+    var renderData: TextureRenderData
 
     var data: ByteBuffer?
 

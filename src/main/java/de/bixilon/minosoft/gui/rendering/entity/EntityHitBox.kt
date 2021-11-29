@@ -25,9 +25,6 @@ import de.bixilon.minosoft.gui.rendering.util.VecUtil.empty
 import de.bixilon.minosoft.gui.rendering.util.mesh.LineMesh
 import de.bixilon.minosoft.gui.rendering.util.mesh.Mesh
 import de.bixilon.minosoft.gui.rendering.util.vec.vec3.Vec3dUtil.EMPTY
-import glm_.func.cos
-import glm_.func.rad
-import glm_.func.sin
 import glm_.vec3.Vec3
 import glm_.vec3.Vec3d
 
@@ -72,7 +69,11 @@ class EntityHitBox(
         }
         if (visible) {
             val mesh = LineMesh(renderWindow)
-            mesh.drawAABB(aabb = aabb, color = hitBoxColor)
+            if (Minosoft.config.config.game.entities.hitBox.lazyHitBoxes) {
+                mesh.drawLazyAABB(aabb, color = hitBoxColor)
+            } else {
+                mesh.drawAABB(aabb = aabb, color = hitBoxColor, margin = 0.1f)
+            }
             val center = Vec3(aabb.center)
 
             if (!velocity.empty) {
@@ -85,15 +86,9 @@ class EntityHitBox(
             mesh.drawAABB(eyeAABB, RenderConstants.DEFAULT_LINE_WIDTH, ChatColors.DARK_RED)
 
 
-            val front = Vec3d(
-                (rotation.yaw + 90).rad.cos * (-rotation.pitch).rad.cos,
-                (-rotation.pitch).rad.sin,
-                (rotation.yaw + 90).rad.sin * (-rotation.pitch).rad.cos
-            ).normalize()
-
             val eyeStart = Vec3(center.x, eyeHeight, center.z)
 
-            mesh.drawLine(eyeStart, eyeStart + Vec3(front) * 5, color = ChatColors.BLUE)
+            mesh.drawLine(eyeStart, eyeStart + Vec3(rotation.front) * 5, color = ChatColors.BLUE)
             mesh.load()
             this.mesh = mesh
         }

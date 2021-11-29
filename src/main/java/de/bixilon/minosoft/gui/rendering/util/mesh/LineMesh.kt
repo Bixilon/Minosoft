@@ -13,6 +13,7 @@
 
 package de.bixilon.minosoft.gui.rendering.util.mesh
 
+import de.bixilon.minosoft.data.direction.Directions
 import de.bixilon.minosoft.data.registries.AABB
 import de.bixilon.minosoft.data.registries.VoxelShape
 import de.bixilon.minosoft.data.text.RGBColor
@@ -57,6 +58,15 @@ open class LineMesh(renderWindow: RenderWindow) : GenericColorMesh(renderWindow)
 
     fun drawAABB(aabb: AABB, position: Vec3d, lineWidth: Float, color: RGBColor, margin: Float = 0.0f) {
         drawAABB(aabb + position, lineWidth, color, margin)
+    }
+
+    fun drawLazyAABB(aabb: AABB, color: RGBColor) {
+        for (direction in Directions.VALUES) {
+            val positions = direction.getPositions(Vec3(aabb.min), Vec3(aabb.max))
+            for ((positionIndex, _) in order) {
+                addVertex(positions[positionIndex], color)
+            }
+        }
     }
 
     fun drawAABB(aabb: AABB, lineWidth: Float = RenderConstants.DEFAULT_LINE_WIDTH, color: RGBColor, margin: Float = 0.0f) {

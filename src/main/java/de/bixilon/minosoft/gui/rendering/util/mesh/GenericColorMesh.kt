@@ -22,14 +22,10 @@ import glm_.vec3.Vec3
 open class GenericColorMesh(renderWindow: RenderWindow, primitiveType: PrimitiveTypes = renderWindow.renderSystem.preferredPrimitiveType) : Mesh(renderWindow, GenericColorMeshStruct, primitiveType) {
 
     fun addVertex(position: Vec3, color: RGBColor?) {
-        data.addAll(
-            floatArrayOf(
-                position.x,
-                position.y,
-                position.z,
-                Float.fromBits((color ?: ChatColors.WHITE).rgba)
-            )
-        )
+        data.add(position.x)
+        data.add(position.y)
+        data.add(position.z)
+        data.add(Float.fromBits((color ?: ChatColors.WHITE).rgba))
     }
 
     data class GenericColorMeshStruct(

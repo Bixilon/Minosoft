@@ -46,9 +46,7 @@ import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.KUtil.decide
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.Previous
-import glm_.func.cos
 import glm_.func.rad
-import glm_.func.sin
 import glm_.glm
 import glm_.mat4x4.Mat4
 import glm_.mat4x4.Mat4d
@@ -123,8 +121,9 @@ class Camera(
         }
         yaw %= 180
         val pitch = glm.clamp(delta.y + connection.player.rotation.pitch, -89.9, 89.9)
-        connection.player.rotation = EntityRotation(yaw, pitch)
-        setRotation(yaw, pitch)
+        val rotation = EntityRotation(yaw, pitch)
+        connection.player.rotation = rotation
+        setRotation(rotation)
     }
 
     private fun calculateFogDistance() {
@@ -273,7 +272,7 @@ class Camera(
     }
 
     private fun onPositionChange() {
-        setRotation(connection.player.rotation.yaw, connection.player.rotation.pitch)
+        setRotation(connection.player.rotation)
         recalculateViewProjectionMatrix()
         frustum.recalculate()
         connection.fireEvent(FrustumChangeEvent(renderWindow, frustum))
@@ -310,12 +309,8 @@ class Camera(
         return glm.lookAt(eyePosition, eyePosition + cameraFront, CAMERA_UP_VEC3)
     }
 
-    private fun setRotation(yaw: Double, pitch: Double) {
-        cameraFront = Vec3d(
-            (yaw + 90).rad.cos * (-pitch).rad.cos,
-            (-pitch).rad.sin,
-            (yaw + 90).rad.sin * (-pitch).rad.cos
-        ).normalize()
+    private fun setRotation(rotation: EntityRotation) {
+        cameraFront = rotation.front
 
         cameraRight = (cameraFront cross CAMERA_UP_VEC3).normalize()
         cameraUp = (cameraRight cross cameraFront).normalize()

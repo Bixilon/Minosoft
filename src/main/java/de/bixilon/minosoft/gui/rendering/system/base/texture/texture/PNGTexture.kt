@@ -26,7 +26,7 @@ import java.nio.ByteBuffer
 
 
 class PNGTexture(override val resourceLocation: ResourceLocation) : AbstractTexture {
-    override var renderData: TextureRenderData? = null
+    override lateinit var renderData: TextureRenderData
 
     override lateinit var textureArrayUV: Vec2
     override lateinit var singlePixelSize: Vec2
