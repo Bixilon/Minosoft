@@ -152,6 +152,18 @@
             </properties>
         </profile>
         <profile>
+            <id>lwjgl-natives-linux-aarch64</id>
+            <activation>
+                <os>
+                    <family>unix</family>
+                    <arch>aarch64</arch>
+                </os>
+            </activation>
+            <properties>
+                <lwjgl.natives>natives-linux-arm64</lwjgl.natives>
+            </properties>
+        </profile>
+        <profile>
             <id>lwjgl-natives-macos-amd64</id>
             <activation>
                 <os>
@@ -161,6 +173,18 @@
             </activation>
             <properties>
                 <lwjgl.natives>natives-macos</lwjgl.natives>
+            </properties>
+        </profile>
+        <profile>
+            <id>lwjgl-natives-macos-aarch64</id>
+            <activation>
+                <os>
+                    <family>mac</family>
+                    <arch>aarch64</arch>
+                </os>
+            </activation>
+            <properties>
+                <lwjgl.natives>natives-macos-arm64</lwjgl.natives>
             </properties>
         </profile>
         <profile>
@@ -176,15 +200,15 @@
             </properties>
         </profile>
         <profile>
-            <id>lwjgl-natives-linux-aarch64</id>
+            <id>lwjgl-natives-windows-x86</id>
             <activation>
                 <os>
-                    <family>unix</family>
-                    <arch>aarch64</arch>
+                    <family>windows</family>
+                    <arch>x86</arch>
                 </os>
             </activation>
             <properties>
-                <lwjgl.natives>natives-linux-arm64</lwjgl.natives>
+                <lwjgl.natives>natives-windows-x86</lwjgl.natives>
             </properties>
         </profile>
     </profiles>
