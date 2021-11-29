@@ -23,4 +23,5 @@ data class GeneralConfig(
     @Json(name = "log") var log: MutableMap<LogMessageType, LogLevels> = LogMessageType.DEFAULT_LOG_MAP.toMutableMap(),
     @Json(name = "reduce_protocol_log") var reduceProtocolLog: Boolean = true,
     var language: String = "en_US",
+    @Json(name = "ignore_x_start_on_first_thread_warning") var ignoreXStartOnFirstThreadWarning: Boolean = false,
 )

@@ -22,5 +22,6 @@ enum class StartupTasks {
     LOAD_MODS,
     INITIALIZE_CLI,
     INITIALIZE_JAVAFX,
+    X_START_ON_FIRST_THREAD_WARNING,
     ;
 }

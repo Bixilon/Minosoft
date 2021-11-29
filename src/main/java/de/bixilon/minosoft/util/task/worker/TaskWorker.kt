@@ -18,6 +18,9 @@ import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
 import de.bixilon.minosoft.util.KUtil.synchronizedSetOf
 import de.bixilon.minosoft.util.KUtil.toSynchronizedList
 import de.bixilon.minosoft.util.KUtil.toSynchronizedMap
+import de.bixilon.minosoft.util.logging.Log
+import de.bixilon.minosoft.util.logging.LogLevels
+import de.bixilon.minosoft.util.logging.LogMessageType
 import de.bixilon.minosoft.util.task.pool.DefaultThreadPool
 import de.bixilon.minosoft.util.task.pool.ThreadPoolRunnable
 import de.bixilon.minosoft.util.task.worker.tasks.Task
@@ -32,7 +35,13 @@ class TaskWorker(
 
     operator fun plusAssign(task: Task) {
         check(state == TaskWorkerStates.PREPARING) { "Task worker is already working!" }
-        todo[task.identifier] = task
+        if (task.dependencies.contains(task.identifier)) {
+            throw IllegalArgumentException("Task can not depend on itself!")
+        }
+        val previous = todo.put(task.identifier, task)
+        if (previous != null) {
+            Log.log(LogMessageType.OTHER, LogLevels.WARN) { "Task ${task.identifier} replaced existing task!" }
+        }
     }
 
 

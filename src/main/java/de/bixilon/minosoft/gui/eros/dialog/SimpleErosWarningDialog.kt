@@ -27,20 +27,17 @@ import javafx.scene.input.KeyEvent
 import javafx.scene.text.TextFlow
 import javafx.stage.Modality
 
-class SimpleErosConfirmationDialog(
+class SimpleErosWarningDialog(
     val title: Any = DEFAULT_TITLE_TEXT,
     val header: Any = DEFAULT_TITLE_TEXT,
     val description: Any? = null,
-    val cancelButtonText: Any = DEFAULT_CANCEL_TEXT,
-    val confirmButtonText: Any = DEFAULT_CONFIRM_TEXT,
-    val onCancel: () -> Unit = {},
-    val onConfirm: () -> Unit,
+    val ignoreButtonText: Any = DEFAULT_IGNORE_TEXT,
+    val onIgnore: () -> Unit = {},
     val modality: Modality = Modality.WINDOW_MODAL,
 ) : DialogController() {
     @FXML private lateinit var headerFX: TextFlow
     @FXML private lateinit var descriptionFX: TextFlow
-    @FXML private lateinit var cancelButtonFX: Button
-    @FXML private lateinit var confirmButtonFX: Button
+    @FXML private lateinit var ignoreButtonFX: Button
 
     fun show() {
         JavaFXUtil.runLater {
@@ -52,41 +49,31 @@ class SimpleErosConfirmationDialog(
     override fun init() {
         headerFX.text = Minosoft.LANGUAGE_MANAGER.translate(header)
         descriptionFX.text = description?.let { Minosoft.LANGUAGE_MANAGER.translate(it) } ?: ChatComponent.EMPTY
-        cancelButtonFX.text = Minosoft.LANGUAGE_MANAGER.translate(cancelButtonText).message
-        confirmButtonFX.text = Minosoft.LANGUAGE_MANAGER.translate(confirmButtonText).message
+        ignoreButtonFX.text = Minosoft.LANGUAGE_MANAGER.translate(ignoreButtonText).message
     }
 
     override fun postInit() {
-        super.postInit()
-
         stage.setOnCloseRequest {
-            DefaultThreadPool += onCancel
+            DefaultThreadPool += onIgnore
         }
 
         stage.scene.root.addEventFilter(KeyEvent.KEY_PRESSED) {
-            if (it.code == KeyCode.ENTER) {
-                confirm()
+            if (it.code == KeyCode.ESCAPE) {
+                ignore()
             }
         }
     }
 
     @FXML
-    fun confirm() {
-        DefaultThreadPool += onConfirm
-        stage.close()
-    }
-
-    @FXML
-    fun cancel() {
-        DefaultThreadPool += onCancel
+    fun ignore() {
+        DefaultThreadPool += onIgnore
         stage.close()
     }
 
 
     companion object {
-        private val LAYOUT = "minosoft:eros/dialog/simple_confirmation.fxml".toResourceLocation()
-        private val DEFAULT_TITLE_TEXT = "minosoft:general.dialog.are_you_sure".toResourceLocation()
-        private val DEFAULT_CANCEL_TEXT = "minosoft:general.cancel".toResourceLocation()
-        private val DEFAULT_CONFIRM_TEXT = "minosoft:general.confirm".toResourceLocation()
+        private val LAYOUT = "minosoft:eros/dialog/simple_warning.fxml".toResourceLocation()
+        private val DEFAULT_TITLE_TEXT = "minosoft:general.dialog.warning".toResourceLocation()
+        private val DEFAULT_IGNORE_TEXT = "minosoft:general.ignore".toResourceLocation()
     }
 }

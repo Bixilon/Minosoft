@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.eros.dialog
 
 import de.bixilon.minosoft.Minosoft
+import de.bixilon.minosoft.data.text.TranslatableComponents.GENERAL_IGNORE
 import de.bixilon.minosoft.gui.eros.controller.DialogController
 import de.bixilon.minosoft.gui.eros.crash.ErosCrashReport.Companion.crash
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
@@ -58,7 +59,7 @@ class ErosErrorReport : DialogController() {
         headerFX.text = HEADER
         descriptionFX.text = DESCRIPTION
 
-        ignoreFX.ctext = IGNORE
+        ignoreFX.ctext = GENERAL_IGNORE
         fatalCrashFX.ctext = FATAL_CRASH
     }
 
@@ -68,7 +69,6 @@ class ErosErrorReport : DialogController() {
         private val TITLE = { exception: Throwable? -> Minosoft.LANGUAGE_MANAGER.translate("minosoft:error.title".toResourceLocation(), null, exception?.let { it::class.java.realName }) }
         private val HEADER = "minosoft:error.header".toResourceLocation()
         private val DESCRIPTION = "minosoft:error.description".toResourceLocation()
-        private val IGNORE = "minosoft:error.ignore".toResourceLocation()
         private val FATAL_CRASH = "minosoft:error.fatal_crash".toResourceLocation()
 
         fun Throwable?.report() {

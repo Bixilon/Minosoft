@@ -18,6 +18,7 @@ import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.util.OSUtil
 import java.io.File
+import java.lang.management.ManagementFactory
 
 object RunConfiguration {
     var CONFIG_FILENAME = "minosoft.json" // Filename of minosoft's base configuration (located in AppData/Minosoft/config)
@@ -55,6 +56,8 @@ object RunConfiguration {
     }
 
     val TEMPORARY_FOLDER = System.getProperty("java.io.tmpdir", "$HOME_DIRECTORY/tmp/") + "/"
+
+    val X_START_ON_FIRST_THREAD_SET = ManagementFactory.getRuntimeMXBean().inputArguments.contains("-XstartOnFirstThread")
 
     var VERSION_STRING = "Minosoft ${StaticConfiguration.VERSION}"
 

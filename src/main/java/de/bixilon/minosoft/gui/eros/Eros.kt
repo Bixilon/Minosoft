@@ -26,13 +26,22 @@ object Eros {
 
     lateinit var mainErosController: MainErosController
 
+    var skipErosStartup = false
+
 
     init {
         GlobalEventMaster.registerEvent(CallbackEventInvoker.of<FinishInitializingEvent> {
-            JavaFXUtil.runLater {
-                mainErosController = JavaFXUtil.openModal(TITLE, LAYOUT)
-                mainErosController.stage.show()
+            if (skipErosStartup) {
+                return@of
             }
+            start()
         })
+    }
+
+    fun start() {
+        JavaFXUtil.runLater {
+            mainErosController = JavaFXUtil.openModal(TITLE, LAYOUT)
+            mainErosController.stage.show()
+        }
     }
 }
