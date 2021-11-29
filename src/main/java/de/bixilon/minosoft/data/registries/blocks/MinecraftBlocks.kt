@@ -15,6 +15,7 @@ package de.bixilon.minosoft.data.registries.blocks
 
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
+@Suppress("UNUSED")
 object MinecraftBlocks {
     // taken from 1.17.1
     val STONE = "minecraft:stone".toResourceLocation()
