@@ -72,6 +72,9 @@ class InteractInteractionHandler(
     }
 
     fun interactBlock(hit: BlockRaycastHit, item: ItemStack?, hand: Hands): InteractionResults {
+        if (hit.distance >= connection.player.reachDistance) {
+            return InteractionResults.PASS
+        }
         // if out of world (border): return CONSUME
 
         connection.sendPacket(BlockInteractC2SP(

@@ -23,7 +23,7 @@ object XStartOnFirstThreadWarning {
 
     @Synchronized
     fun show() {
-        if (OSUtil.OS != OSUtil.OSs.MAC || RunConfiguration.DISABLE_RENDERING) { // ToDo
+        if (OSUtil.OS != OSUtil.OSs.MAC || RunConfiguration.DISABLE_RENDERING) {
             return
         }
         if (Minosoft.config.config.general.ignoreXStartOnFirstThreadWarning) {
