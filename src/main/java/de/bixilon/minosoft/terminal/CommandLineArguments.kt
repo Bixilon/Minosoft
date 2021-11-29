@@ -63,6 +63,10 @@ object CommandLineArguments {
                 .setDefault(null)
                 .action(Arguments.store())
                 .help("Automatically connects to a specific server. Full format: hostname.whatever<:port><,version><,account>\nPort is by default ${ProtocolDefinition.DEFAULT_PORT}, version is automatic and account is the current selected one")
+
+            addArgument("--opengl_on_first_thread")
+                .action(Arguments.storeTrue())
+                .help("Forces OpenGL to use the main thread. Can not be disabled on MacOS. Defaults to false")
         }
 
     fun parse(args: Array<String>) {
@@ -100,5 +104,7 @@ object CommandLineArguments {
         }
 
         RunConfiguration.AUTO_CONNECT_TO = namespace.getString("connect")
+
+        RunConfiguration.OPEN_Gl_ON_FIRST_THREAD = RunConfiguration.OPEN_Gl_ON_FIRST_THREAD || namespace.getBoolean("opengl_on_first_thread")
     }
 }

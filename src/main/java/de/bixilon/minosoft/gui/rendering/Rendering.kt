@@ -17,6 +17,7 @@ import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.gui.rendering.modding.events.WindowCloseEvent
 import de.bixilon.minosoft.gui.rendering.sound.AudioPlayer
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
+import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.CountUpAndDownLatch
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
@@ -24,14 +25,30 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 import org.lwjgl.Version
 
 class Rendering(private val connection: PlayConnection) {
+    private var latch: CountUpAndDownLatch? = null
     val renderWindow: RenderWindow = RenderWindow(connection, this)
     val audioPlayer: AudioPlayer = AudioPlayer(connection, this)
 
     fun init(latch: CountUpAndDownLatch) {
         Log.log(LogMessageType.RENDERING_GENERAL, LogLevels.INFO) { "Hello LWJGL ${Version.getVersion()}!" }
         latch.inc()
-        startRenderThread(latch)
+        this.latch = latch
+        if (RunConfiguration.OPEN_Gl_ON_FIRST_THREAD) {
+            Minosoft.rendering = this
+            Minosoft.RENDERING_LATCH.dec()
+            return
+        }
+        start()
+    }
+
+    fun start() {
+        val latch = this.latch ?: throw IllegalStateException("Rendering not initialized yet!")
         startAudioPlayerThread(latch)
+        if (RunConfiguration.OPEN_Gl_ON_FIRST_THREAD) {
+            startRenderWindow(latch)
+        } else {
+            startRenderWindowThread(latch)
+        }
     }
 
     private fun startAudioPlayerThread(latch: CountUpAndDownLatch) {
@@ -55,27 +72,29 @@ class Rendering(private val connection: PlayConnection) {
         }, "Audio#${connection.connectionId}").start()
     }
 
-    private fun startRenderThread(latch: CountUpAndDownLatch) {
-        Thread({
+    private fun startRenderWindowThread(latch: CountUpAndDownLatch) {
+        Thread({ startRenderWindow(latch) }, "Rendering#${connection.connectionId}").start()
+    }
+
+    private fun startRenderWindow(latch: CountUpAndDownLatch) {
+        try {
+            CONTEXT_MAP[Thread.currentThread()] = renderWindow
+            renderWindow.init(latch)
+            renderWindow.startLoop()
+        } catch (exception: Throwable) {
+            CONTEXT_MAP.remove(Thread.currentThread())
+            exception.printStackTrace()
             try {
-                CONTEXT_MAP[Thread.currentThread()] = renderWindow
-                renderWindow.init(latch)
-                renderWindow.startLoop()
-            } catch (exception: Throwable) {
-                CONTEXT_MAP.remove(Thread.currentThread())
-                exception.printStackTrace()
-                try {
-                    renderWindow.window.destroy()
-                    connection.fireEvent(WindowCloseEvent(window = renderWindow.window))
-                } catch (ignored: Throwable) {
-                }
-                if (connection.protocolState.connected) {
-                    connection.disconnect()
-                }
-                connection.disconnect()
-                connection.error = exception
+                renderWindow.window.destroy()
+                connection.fireEvent(WindowCloseEvent(window = renderWindow.window))
+            } catch (ignored: Throwable) {
             }
-        }, "Rendering#${connection.connectionId}").start()
+            if (connection.protocolState.connected) {
+                connection.disconnect()
+            }
+            connection.disconnect()
+            connection.error = exception
+        }
     }
 
     companion object {

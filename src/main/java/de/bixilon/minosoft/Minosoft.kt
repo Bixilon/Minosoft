@@ -26,6 +26,7 @@ import de.bixilon.minosoft.data.registries.versions.Versions
 import de.bixilon.minosoft.gui.eros.Eros
 import de.bixilon.minosoft.gui.eros.crash.ErosCrashReport.Companion.crash
 import de.bixilon.minosoft.gui.eros.util.JavaFXInitializer
+import de.bixilon.minosoft.gui.rendering.Rendering
 import de.bixilon.minosoft.modding.event.events.FinishInitializingEvent
 import de.bixilon.minosoft.modding.event.events.connection.play.PlayConnectionStateChangeEvent
 import de.bixilon.minosoft.modding.event.events.connection.status.ServerStatusReceiveEvent
@@ -56,6 +57,9 @@ object Minosoft {
     val LANGUAGE_MANAGER = MultiLanguageManager()
     val START_UP_LATCH = CountUpAndDownLatch(1)
 
+    val RENDERING_LATCH = CountUpAndDownLatch(Int.MAX_VALUE shr 1)
+    var rendering: Rendering? = null
+
     @Deprecated("Will be singleton interface")
     lateinit var config: Configuration
 
@@ -63,6 +67,7 @@ object Minosoft {
         private set
     var configInitialized = false
         private set
+
 
 
     @JvmStatic
@@ -139,6 +144,11 @@ object Minosoft {
         GlobalEventMaster.fireEvent(FinishInitializingEvent())
 
         RunConfiguration.AUTO_CONNECT_TO?.let { autoConnect(it) }
+
+        while (true) {
+            RENDERING_LATCH.waitForChange()
+            rendering?.start() ?: continue
+        }
     }
 
     private fun autoConnect(address: ServerAddress, version: Version, account: Account) {
