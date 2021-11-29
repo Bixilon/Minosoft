@@ -14,7 +14,7 @@ object TimeWorker {
             while (true) {
                 val currentTime = KUtil.time
                 for (task in TASKS.toSynchronizedSet()) {
-                    if (task.getsExecuted) {
+                    if (task.executing) {
                         continue
                     }
                     if (currentTime - task.lastExecution <= task.interval) {
@@ -24,7 +24,7 @@ object TimeWorker {
                         if (!task.lock.tryLock(100L, TimeUnit.MILLISECONDS)) {
                             return@execute
                         }
-                        if (task.getsExecuted) {
+                        if (task.executing) {
                             task.lock.unlock()
                             return@execute
                         }
@@ -32,10 +32,14 @@ object TimeWorker {
                             task.lock.unlock()
                             return@execute
                         }
-                        task.getsExecuted = true
-                        task.runnable.run()
+                        task.executing = true
+                        try {
+                            task.runnable.run()
+                        } catch (exception: Exception) {
+                            exception.printStackTrace()
+                        }
                         task.lastExecution = currentTime
-                        task.getsExecuted = false
+                        task.executing = false
                         task.lock.unlock()
                     }
                     if (task.runOnce) {

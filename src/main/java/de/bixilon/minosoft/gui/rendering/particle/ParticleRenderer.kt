@@ -162,10 +162,13 @@ class ParticleRenderer(
         translucentMesh = ParticleMesh(renderWindow, translucentMesh.data)
 
 
-        particlesLock.acquire()
+        particlesLock.lock()
         particleQueueLock.acquire()
         particles += particleQueue
         particleQueueLock.release()
+        particlesLock.unlock()
+
+        particlesLock.acquire()
 
         val time = KUtil.time
         for (particle in particles) {

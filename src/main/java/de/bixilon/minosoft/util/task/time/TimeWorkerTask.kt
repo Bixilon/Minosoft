@@ -22,6 +22,6 @@ data class TimeWorkerTask(
     val runnable: Runnable,
 ) {
     val lock = ReentrantLock()
-    var getsExecuted: Boolean = false
+    var executing: Boolean = false
     var lastExecution: Long = 0L
 }
