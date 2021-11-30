@@ -18,7 +18,9 @@ import de.bixilon.minosoft.gui.rendering.system.base.buffer.RenderBufferTypes
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.uniform.UniformBuffer
 import de.bixilon.minosoft.gui.rendering.system.base.shader.Shader
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.OpenGLRenderBuffer
-import org.lwjgl.opengl.ARBUniformBufferObject.*
+import org.lwjgl.opengl.GL30.glBindBufferBase
+import org.lwjgl.opengl.GL30.glBindBufferRange
+import org.lwjgl.opengl.GL31.GL_UNIFORM_BUFFER
 
 abstract class OpenGLUniformBuffer(override val bindingIndex: Int) : OpenGLRenderBuffer(RenderBufferTypes.UNIFORM_BUFFER), UniformBuffer {
     override val drawTypes: RenderBufferDrawTypes = RenderBufferDrawTypes.DYNAMIC

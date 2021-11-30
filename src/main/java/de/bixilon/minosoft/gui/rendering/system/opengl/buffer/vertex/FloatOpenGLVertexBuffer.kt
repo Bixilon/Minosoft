@@ -5,11 +5,10 @@ import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.FloatVertexBu
 import de.bixilon.minosoft.gui.rendering.system.base.buffer.vertex.PrimitiveTypes
 import de.bixilon.minosoft.gui.rendering.system.opengl.buffer.FloatOpenGLBuffer
 import de.bixilon.minosoft.gui.rendering.util.mesh.MeshStruct
-import org.lwjgl.opengl.ARBVertexArrayObject.*
-import org.lwjgl.opengl.GL11.*
 import org.lwjgl.opengl.GL15.glBufferData
 import org.lwjgl.opengl.GL20.glEnableVertexAttribArray
 import org.lwjgl.opengl.GL20.glVertexAttribPointer
+import org.lwjgl.opengl.GL30.*
 import java.nio.FloatBuffer
 
 class FloatOpenGLVertexBuffer(override val structure: MeshStruct, data: FloatBuffer, override val primitiveType: PrimitiveTypes) : FloatOpenGLBuffer(data), FloatVertexBuffer {
