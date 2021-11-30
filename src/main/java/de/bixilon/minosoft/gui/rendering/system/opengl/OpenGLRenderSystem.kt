@@ -92,11 +92,11 @@ class OpenGLRenderSystem(
         vendor = when {
             vendorString.contains("nvidia") -> NvidiaOpenGLVendor
             vendorString.contains("intel") -> MesaOpenGLVendor
-            vendorString.contains("amd") || vendorString.contains("ati") -> ATIOpenGLVendor // ToDo: Find out exact value, I don't have any AMD gpu
+            vendorString.contains("amd") || vendorString.contains("ati") -> ATIOpenGLVendor
             else -> OtherOpenGLVendor
         }
         if (Minosoft.config.config.game.graphics.preferQuads && vendor.strictSpecification) {
-            throw IllegalStateException("Your GPU driver strictly follows the open gl specification. The setting `preferQuads` is not working!")
+            throw IllegalStateException("Your GPU driver strictly follows the open gl specification. The setting `prefer_quads` is not working!")
         }
 
         this.version = glGetString(GL_VERSION) ?: "UNKNOWN"

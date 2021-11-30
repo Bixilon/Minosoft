@@ -47,6 +47,7 @@ class MinecraftAssetsManager(
         if (this.assetsMapping.isNotEmpty()) {
             return
         }
+        Log.log(LogMessageType.ASSETS, LogLevels.INFO) { "Verifying (and downloading missing) assets...This might take a while" }
         // download minecraft assets
         if (!verifyAssetHash(assetVersion.indexHash!!)) {
             downloadAssetsIndex()

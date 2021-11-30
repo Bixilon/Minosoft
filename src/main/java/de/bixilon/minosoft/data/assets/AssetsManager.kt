@@ -28,6 +28,7 @@ import java.net.URL
 import java.nio.ByteBuffer
 import java.nio.channels.Channels
 
+@Deprecated("Will be refactored soon!")
 interface AssetsManager {
 
     val namespaces: Set<String>
