@@ -127,7 +127,7 @@ TBA
 
 ### MacOS
 
-Not compatible (yet)
+Works, but need a couple of workarounds. See issue [#29](https://gitlab.bixilon.de/bixilon/minosoft/-/issues/29) for details
 
 ## Building
 

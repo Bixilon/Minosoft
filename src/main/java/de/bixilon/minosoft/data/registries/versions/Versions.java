@@ -20,6 +20,7 @@ import de.bixilon.minosoft.data.registries.registries.Registries;
 import de.bixilon.minosoft.protocol.protocol.PacketTypes;
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition;
 import de.bixilon.minosoft.protocol.protocol.ProtocolStates;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,9 +28,9 @@ import java.util.Map;
 @Deprecated
 public class Versions {
     public static final Version AUTOMATIC_VERSION = new Version("Automatic", -1, -1, new HashMap<>(), new HashMap<>());
-    public static final HashBiMap<Integer, Version> VERSION_ID_MAP = HashBiMap.create(500);
-    private static final HashBiMap<Integer, Version> VERSION_PROTOCOL_ID_MAP = HashBiMap.create(500);
-    private static final HashBiMap<String, Version> VERSION_NAME_MAP = HashBiMap.create(500);
+    public static final HashBiMap<Integer, @NonNull Version> VERSION_ID_MAP = HashBiMap.create(500);
+    private static final HashBiMap<Integer, @NonNull Version> VERSION_PROTOCOL_ID_MAP = HashBiMap.create(500);
+    private static final HashBiMap<String, @NonNull Version> VERSION_NAME_MAP = HashBiMap.create(500);
     public static Registries PRE_FLATTENING_MAPPING;
     public static Version PRE_FLATTENING_VERSION;
 
