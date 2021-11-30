@@ -57,6 +57,7 @@ object RunConfiguration {
 
     val TEMPORARY_FOLDER = System.getProperty("java.io.tmpdir", "$HOME_DIRECTORY/tmp/") + "/"
 
+    @Deprecated("Check is not working. ToDo")
     val X_START_ON_FIRST_THREAD_SET = ManagementFactory.getRuntimeMXBean().inputArguments.contains("-XstartOnFirstThread")
 
     var VERSION_STRING = "Minosoft ${StaticConfiguration.VERSION}"

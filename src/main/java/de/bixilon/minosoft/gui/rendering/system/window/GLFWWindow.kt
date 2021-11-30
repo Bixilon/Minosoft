@@ -27,6 +27,7 @@ import de.bixilon.minosoft.gui.rendering.system.window.BaseWindow.Companion.DEFA
 import de.bixilon.minosoft.gui.rendering.system.window.BaseWindow.Companion.DEFAULT_MINIMUM_WINDOW_SIZE
 import de.bixilon.minosoft.gui.rendering.system.window.BaseWindow.Companion.DEFAULT_WINDOW_SIZE
 import de.bixilon.minosoft.modding.event.master.AbstractEventMaster
+import de.bixilon.minosoft.util.OSUtil
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
@@ -150,7 +151,7 @@ class GLFWWindow(
         super.init()
 
         val primaryMonitor = glfwGetPrimaryMonitor()
-        if (primaryMonitor != 0L) {
+        if (primaryMonitor != MemoryUtil.NULL) {
             glfwGetVideoMode(primaryMonitor)?.let {
                 glfwSetWindowPos(window, (it.width() - size.x) / 2, (it.height() - size.y) / 2)
             }
@@ -198,6 +199,9 @@ class GLFWWindow(
     override fun setOpenGLVersion(major: Int, minor: Int, coreProfile: Boolean) {
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, major)
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, minor)
+        if (OSUtil.OS == OSUtil.OSs.MAC) {
+            glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, true.glfw)
+        }
         glfwWindowHint(GLFW_OPENGL_PROFILE, if (coreProfile) GLFW_OPENGL_CORE_PROFILE else GLFW_OPENGL_ANY_PROFILE)
     }
 
@@ -283,6 +287,10 @@ class GLFWWindow(
     }
 
     override fun setIcon(size: Vec2i, buffer: ByteBuffer) {
+        if (OSUtil.OS == OSUtil.OSs.MAC) {
+            Log.log(LogMessageType.RENDERING_GENERAL, LogLevels.WARN) { "Can not set window icon on mac os!" } // ToDo
+            return
+        }
         val images = GLFWImage.malloc(1)
         val image = GLFWImage.malloc()
         image.set(size.x, size.y, buffer)
