@@ -101,6 +101,10 @@ public class CLI {
                         } catch (UserInterruptException e) {
                             ShutdownManager.INSTANCE.shutdown(e.getMessage(), ShutdownReasons.REQUESTED_BY_USER);
                             return;
+                        } catch (Exception other) {
+                            other.printStackTrace();
+                            Log.log(LogMessageType.GENERAL, LogLevels.INFO, () -> "Failed to read line. Stopping CLI!");
+                            return;
                         }
                         terminal.flush();
                         if (StringUtils.isBlank(line)) {

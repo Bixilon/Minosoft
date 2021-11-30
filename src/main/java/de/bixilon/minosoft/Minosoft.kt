@@ -77,7 +77,7 @@ object Minosoft {
 
         Log.log(LogMessageType.OTHER, LogLevels.INFO) { "Starting minosoft" }
         if (OSUtil.OS == OSUtil.OSs.MAC && !RunConfiguration.X_START_ON_FIRST_THREAD_SET && !RunConfiguration.DISABLE_RENDERING) {
-            Log.log(LogMessageType.GENERAL, LogLevels.WARN) { "You are using MacOS, but have not enabled -XstartOnFirstThread. Rendering will not work!" }
+            Log.log(LogMessageType.GENERAL, LogLevels.WARN) { "You are using MacOS. To use rendering you have to add the vm argument §9-XstartOnFirstThread§r. Please ensure it is set!" }
         }
         GitInfo.load()
 

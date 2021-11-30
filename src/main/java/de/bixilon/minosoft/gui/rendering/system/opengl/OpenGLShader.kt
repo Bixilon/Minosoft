@@ -25,10 +25,6 @@ import glm_.vec2.Vec2
 import glm_.vec3.Vec3
 import glm_.vec4.Vec4
 import org.lwjgl.BufferUtils
-import org.lwjgl.opengl.ARBFragmentShader.GL_FRAGMENT_SHADER_ARB
-import org.lwjgl.opengl.ARBGeometryShader4.GL_GEOMETRY_SHADER_ARB
-import org.lwjgl.opengl.ARBShaderObjects.*
-import org.lwjgl.opengl.ARBVertexShader.GL_VERTEX_SHADER_ARB
 import org.lwjgl.opengl.GL11.GL_FALSE
 import org.lwjgl.opengl.GL43.*
 import org.lwjgl.system.MemoryUtil
@@ -50,19 +46,19 @@ class OpenGLShader(
 
         code.defines += defines
 
-        val program = glCreateShaderObjectARB(shaderType)
+        val program = glCreateShader(shaderType)
         if (program.toLong() == MemoryUtil.NULL) {
             throw ShaderLoadingException()
         }
 
 
-        glShaderSourceARB(program, code.code)
+        glShaderSource(program, code.code)
 
         this.uniforms += code.uniforms
 
-        glCompileShaderARB(program)
+        glCompileShader(program)
 
-        if (glGetObjectParameteriARB(program, GL_OBJECT_COMPILE_STATUS_ARB) == GL_FALSE) {
+        if (glGetShaderi(program, GL_COMPILE_STATUS) == GL_FALSE) {
             throw ShaderLoadingException(getInfoLog(program))
         }
 
@@ -76,7 +72,7 @@ class OpenGLShader(
                 "_"
             )
         }"
-        shader = glCreateProgramObjectARB()
+        shader = glCreateProgram()
 
         if (shader.toLong() == MemoryUtil.NULL) {
             throw ShaderLoadingException()
@@ -85,26 +81,22 @@ class OpenGLShader(
         val programs: MutableList<Int> = mutableListOf()
 
 
-        programs += load(ResourceLocation("$pathPrefix.vsh"), GL_VERTEX_SHADER_ARB)
+        programs += load(ResourceLocation("$pathPrefix.vsh"), GL_VERTEX_SHADER)
         try {
-            programs += load(ResourceLocation("$pathPrefix.gsh"), GL_GEOMETRY_SHADER_ARB)
+            programs += load(ResourceLocation("$pathPrefix.gsh"), GL_GEOMETRY_SHADER)
         } catch (exception: FileNotFoundException) {
         }
-        programs += load(ResourceLocation("$pathPrefix.fsh"), GL_FRAGMENT_SHADER_ARB)
+        programs += load(ResourceLocation("$pathPrefix.fsh"), GL_FRAGMENT_SHADER)
 
         for (program in programs) {
-            glAttachObjectARB(shader, program)
+            glAttachShader(shader, program)
         }
 
-        glLinkProgramARB(shader)
+        glLinkProgram(shader)
 
-        if (glGetObjectParameteriARB(shader, GL_OBJECT_LINK_STATUS_ARB) == GL_FALSE) {
-            throw ShaderLoadingException(getInfoLog(shader))
-        }
+        glValidateProgram(shader)
 
-        glValidateProgramARB(shader)
-
-        if (glGetObjectParameteriARB(shader, GL_OBJECT_VALIDATE_STATUS_ARB) == GL_FALSE) {
+        if (glGetProgrami(shader, GL_LINK_STATUS) == GL_FALSE) {
             throw ShaderLoadingException(getInfoLog(shader))
         }
         for (program in programs) {
@@ -171,7 +163,7 @@ class OpenGLShader(
     private companion object {
 
         fun getInfoLog(program: Int): String {
-            return glGetInfoLogARB(program, glGetObjectParameteriARB(program, GL_OBJECT_INFO_LOG_LENGTH_ARB))
+            return glGetShaderInfoLog(program, glGetShaderi(program, GL_INFO_LOG_LENGTH))
         }
     }
 }
