@@ -63,6 +63,7 @@ object GlobalProfileManager {
                 val jsonString = Jackson.MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(data)
 
                 KUtil.safeSaveToFile(File(RunConfiguration.HOME_DIRECTORY + "config/selected_profiles.json"), jsonString)
+                selectedProfilesChanges = false
             } catch (exception: Exception) {
                 exception.crash()
             } finally {

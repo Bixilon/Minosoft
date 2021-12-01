@@ -69,6 +69,7 @@ interface ProfileManager<T : Profile> {
 
                 val profileFile = File(getPath(getName(profile)))
                 KUtil.safeSaveToFile(profileFile, jsonString)
+                profile.saved = true
             } catch (exception: Exception) {
                 exception.crash()
             } finally {
