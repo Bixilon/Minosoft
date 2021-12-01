@@ -21,6 +21,7 @@ import java.io.File
 import java.lang.management.ManagementFactory
 
 object RunConfiguration {
+    @Deprecated("Use profile manager")
     var CONFIG_FILENAME = "minosoft.json" // Filename of minosoft's base configuration (located in AppData/Minosoft/config)
 
     var LOG_COLOR_MESSAGE = true // The message (after all prefixes) should be colored with ANSI color codes

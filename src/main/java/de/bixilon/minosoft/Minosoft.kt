@@ -14,6 +14,7 @@
 package de.bixilon.minosoft
 
 import de.bixilon.minosoft.config.Configuration
+import de.bixilon.minosoft.config.config2.GlobalProfileManager
 import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.data.assets.JarAssetsManager
 import de.bixilon.minosoft.data.assets.Resources
@@ -97,6 +98,12 @@ object Minosoft {
             config = Configuration()
             configInitialized = true
             Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Config file loaded!" }
+        })
+
+        taskWorker += Task(identifier = StartupTasks.LOAD_CONFIG2, priority = ThreadPool.HIGH, dependencies = arrayOf(StartupTasks.LOAD_VERSIONS), executor = {
+            Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Loading config2 file..." }
+            GlobalProfileManager.load()
+            Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Config2 file loaded!" }
         })
 
         taskWorker += Task(identifier = StartupTasks.LOAD_LANGUAGE_FILES, dependencies = arrayOf(StartupTasks.LOAD_CONFIG), executor = {

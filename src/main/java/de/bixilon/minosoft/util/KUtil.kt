@@ -137,7 +137,7 @@ object KUtil {
         return synchronizedCopy { Collections.synchronizedSet(this.toMutableSet()) }
     }
 
-    fun <T> T.synchronizedDeepCopy(): T? {
+    fun <T> T.synchronizedDeepCopy(): T {
         return when (this) {
             is Map<*, *> -> {
                 val map: MutableMap<Any?, Any?> = synchronizedMapOf()
@@ -170,7 +170,7 @@ object KUtil {
             is String -> this
             is Number -> this
             is Boolean -> this
-            null -> null
+            null -> null.unsafeCast()
             else -> TODO("Don't know how to copy ${(this as T)!!::class.java.name}")
         }
     }

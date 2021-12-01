@@ -20,6 +20,7 @@ import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import de.bixilon.minosoft.config.config.Config
 import de.bixilon.minosoft.gui.rendering.textures.properties.ImageProperties
 
+@Deprecated("Moshi is deprecated, use klaxon or mbf instead")
 object JSONSerializer {
     val MOSHI = Moshi.Builder()
         .add(RGBColorSerializer)
