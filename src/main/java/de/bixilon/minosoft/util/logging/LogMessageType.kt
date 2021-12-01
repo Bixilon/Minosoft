@@ -56,6 +56,8 @@ enum class LogMessageType(
         LogLevels.WARN to ChatColors.RED,
         LogLevels.VERBOSE to ChatColors.YELLOW,
     )),
+
+    LOAD_PROFILES(ChatColors.AQUA),
     ;
 
     companion object : ValuesEnum<LogMessageType> {

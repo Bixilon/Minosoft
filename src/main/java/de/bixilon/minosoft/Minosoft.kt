@@ -62,8 +62,7 @@ object Minosoft {
     val RENDERING_LATCH = CountUpAndDownLatch(Int.MAX_VALUE shr 1)
     var rendering: Rendering? = null
 
-    @Deprecated("Will be singleton interface")
-    lateinit var config: Configuration
+    @Deprecated("Will be singleton interface") lateinit var config: Configuration
 
     var initialized: Boolean = false
         private set
@@ -100,10 +99,10 @@ object Minosoft {
             Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Config file loaded!" }
         })
 
-        taskWorker += Task(identifier = StartupTasks.LOAD_CONFIG2, priority = ThreadPool.HIGH, dependencies = arrayOf(StartupTasks.LOAD_VERSIONS), executor = {
-            Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Loading config2 file..." }
+        taskWorker += Task(identifier = StartupTasks.LOAD_PROFILES, priority = ThreadPool.HIGH, dependencies = arrayOf(StartupTasks.LOAD_VERSIONS), executor = {
+            Log.log(LogMessageType.LOAD_PROFILES, LogLevels.VERBOSE) { "Loading profiles..." }
             GlobalProfileManager.load()
-            Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Config2 file loaded!" }
+            Log.log(LogMessageType.LOAD_PROFILES, LogLevels.INFO) { "Profiles loaded!" }
         })
 
         taskWorker += Task(identifier = StartupTasks.LOAD_LANGUAGE_FILES, dependencies = arrayOf(StartupTasks.LOAD_CONFIG), executor = {

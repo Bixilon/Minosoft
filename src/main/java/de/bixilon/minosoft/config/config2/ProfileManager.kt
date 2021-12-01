@@ -16,7 +16,6 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 import de.bixilon.minosoft.util.task.pool.DefaultThreadPool
 import java.io.File
 import java.io.FileNotFoundException
-import java.io.FileWriter
 import java.io.IOException
 import java.util.concurrent.locks.ReentrantLock
 
@@ -59,37 +58,17 @@ interface ProfileManager<T : Profile> {
     fun serialize(profile: T): Map<String, Any?>
 
     fun save(profile: T) {
-        saveLock.lock()
+        if (saveLock.isLocked) {
+            return
+        }
         DefaultThreadPool += {
+            saveLock.lock()
             try {
                 val data = serialize(profile)
                 val jsonString = Jackson.MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(data)
 
                 val profileFile = File(getPath(getName(profile)))
-                val parent = profileFile.parentFile
-                if (!parent.exists()) {
-                    parent.mkdirs()
-                    if (!parent.isDirectory) {
-                        throw IOException("Could not create profile folder: ${parent.path}")
-                    }
-                }
-
-                val tempFile = File("${profileFile.path}.tmp")
-                if (tempFile.exists()) {
-                    if (!tempFile.delete()) {
-                        throw IOException("Could not delete $tempFile!")
-                    }
-                }
-                FileWriter(tempFile).apply {
-                    write(jsonString)
-                    close()
-                }
-                if (profileFile.exists() && !profileFile.delete()) {
-                    throw IOException("Could not delete $profileFile!")
-                }
-                if (!tempFile.renameTo(profileFile)) {
-                    throw IOException("Could not move $tempFile to $profileFile!")
-                }
+                KUtil.safeSaveToFile(profileFile, jsonString)
             } catch (exception: Exception) {
                 exception.crash()
             } finally {
@@ -130,7 +109,7 @@ interface ProfileManager<T : Profile> {
                     for (toMigrate in version until latestVersion) {
                         migrate(toMigrate, json)
                     }
-                    Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Migrated profile ($path) from $version to $latestVersion" }
+                    Log.log(LogMessageType.LOAD_PROFILES, LogLevels.INFO) { "Migrated profile ($path) from $version to $latestVersion" }
                     json["version"] = latestVersion
                     migrated = true
                 }
@@ -148,7 +127,7 @@ interface ProfileManager<T : Profile> {
             profiles[selected]?.let { this.selected = it } ?: selectDefault()
         }
 
-        Log.log(LogMessageType.OTHER, LogLevels.INFO) { "Loaded ${profiles.size} $namespace profiles!" }
+        Log.log(LogMessageType.LOAD_PROFILES, LogLevels.VERBOSE) { "Loaded ${profiles.size} $namespace profiles!" }
     }
 
     companion object {

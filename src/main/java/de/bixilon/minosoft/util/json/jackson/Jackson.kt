@@ -10,7 +10,7 @@ object Jackson {
         .registerModule(KotlinModule())
 
 
-    val JSON_MAP_TYPE: MapType = MAPPER.typeFactory.constructMapType(HashMap::class.java, String::class.java, Any::class.java)
+    val JSON_MAP_TYPE: MapType = MAPPER.typeFactory.constructMapType(HashMap::class.java, Any::class.java, Any::class.java)
 
     init {
         MAPPER.propertyNamingStrategy = PropertyNamingStrategies.SNAKE_CASE

@@ -1,6 +1,7 @@
 package de.bixilon.minosoft.config.config2.config.eros
 
 import com.google.common.collect.HashBiMap
+import de.bixilon.minosoft.config.config2.GlobalProfileManager
 import de.bixilon.minosoft.config.config2.ProfileManager
 import de.bixilon.minosoft.config.config2.util.ConfigDelegate
 import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
@@ -21,6 +22,7 @@ object ErosProfileManager : ProfileManager<ErosProfile> {
     override var selected: ErosProfile = null.unsafeCast()
         set(value) {
             field = value
+            GlobalProfileManager.selectProfile(this, value)
             GlobalEventMaster.fireEvent(ErosProfileSelectEvent(value))
         }
 

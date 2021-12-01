@@ -16,7 +16,7 @@ package de.bixilon.minosoft.util.task.worker
 enum class StartupTasks {
     @Deprecated("Will be replaced with LOAD_CONFIG2")
     LOAD_CONFIG,
-    LOAD_CONFIG2,
+    LOAD_PROFILES,
     LOAD_LANGUAGE_FILES,
     LOAD_VERSIONS,
     LOAD_DEFAULT_REGISTRIES,

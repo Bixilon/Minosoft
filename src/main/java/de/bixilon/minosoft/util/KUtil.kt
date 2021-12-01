@@ -34,8 +34,7 @@ import glm_.vec3.Vec3t
 import glm_.vec4.Vec4t
 import okio.Buffer
 import sun.misc.Unsafe
-import java.io.PrintWriter
-import java.io.StringWriter
+import java.io.*
 import java.lang.reflect.Field
 import java.nio.ByteBuffer
 import java.time.Instant
@@ -529,4 +528,31 @@ object KUtil {
 
     val time: Long
         get() = Instant.now().toEpochMilli()
+
+    fun safeSaveToFile(destination: File, content: String) {
+        val parent = destination.parentFile
+        if (!parent.exists()) {
+            parent.mkdirs()
+            if (!parent.isDirectory) {
+                throw IOException("Could not create folder: ${parent.path}")
+            }
+        }
+
+        val tempFile = File("${destination.path}.tmp")
+        if (tempFile.exists()) {
+            if (!tempFile.delete()) {
+                throw IOException("Could not delete $tempFile!")
+            }
+        }
+        FileWriter(tempFile).apply {
+            write(content)
+            close()
+        }
+        if (destination.exists() && !destination.delete()) {
+            throw IOException("Could not delete $destination!")
+        }
+        if (!tempFile.renameTo(destination)) {
+            throw IOException("Could not move $tempFile to $destination!")
+        }
+    }
 }
