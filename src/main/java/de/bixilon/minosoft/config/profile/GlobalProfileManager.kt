@@ -22,6 +22,15 @@ object GlobalProfileManager {
         ErosProfileManager,
     )
     private val SELECTED_PROFILES_TYPE: MapType = Jackson.MAPPER.typeFactory.constructMapType(HashMap::class.java, ResourceLocation::class.java, String::class.java)
+    val CLASS_MAPPING: Map<Class<out Profile>, ProfileManager<*>>
+
+    init {
+        val classMapping: MutableMap<Class<out Profile>, ProfileManager<*>> = mutableMapOf()
+        for (manager in DEFAULT_MANAGERS) {
+            classMapping[manager.profileClass] = manager
+        }
+        CLASS_MAPPING = classMapping.toMap()
+    }
 
     private var initialized = false
     private var loading = true

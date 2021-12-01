@@ -4,6 +4,7 @@ import de.bixilon.minosoft.config.profile.profiles.Profile
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager.delegate
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager.latestVersion
 import de.bixilon.minosoft.config.profile.profiles.eros.general.GeneralC
+import de.bixilon.minosoft.config.profile.profiles.eros.server.ServerC
 
 class ErosProfile(
     description: String? = null,
@@ -16,6 +17,7 @@ class ErosProfile(
     override var saved: Boolean = true
 
     val general: GeneralC = GeneralC()
+    val server: ServerC = ServerC()
 
     override fun toString(): String {
         return ErosProfileManager.getName(this)

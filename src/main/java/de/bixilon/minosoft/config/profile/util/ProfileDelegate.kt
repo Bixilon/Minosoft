@@ -1,11 +1,14 @@
 package de.bixilon.minosoft.config.profile.util
 
 import de.bixilon.minosoft.config.profile.ProfileManager
+import de.bixilon.minosoft.config.profile.change.ProfilesChangeManager
+import de.bixilon.minosoft.config.profile.profiles.Profile
 import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
+import kotlin.reflect.jvm.javaField
 
 open class ProfileDelegate<V>(
     private var value: V,
@@ -13,7 +16,7 @@ open class ProfileDelegate<V>(
     private val profileManager: ProfileManager<*>,
     private val profileName: String,
 ) : ReadWriteProperty<Any, V> {
-
+    private lateinit var profile: Profile
 
     override fun getValue(thisRef: Any, property: KProperty<*>): V {
         return value
@@ -23,16 +26,24 @@ open class ProfileDelegate<V>(
         if (checkEquals && this.value == value) {
             return
         }
-        val profile = profileManager.profiles[profileName]
-        if (profile == null || profile.initializing) {
+        if (!this::profile.isInitialized) {
+            val profile = profileManager.profiles[profileName]
+            if (profile == null) {
+                this.value = value
+                return
+            }
+            this.profile = profile
+        }
+        if (profile.initializing) {
             this.value = value
             return
         }
 
-        Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Changed option $property in $thisRef in profile ${profileName::class.java} from ${this.value} to $value" }
+        Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Changed option $property in profile $profileName from ${this.value} to $value" }
         profileManager.profiles[profileName]?.saved = false
-
-        // ToDo: Fire event
+        val previous = this.value
         this.value = value
+
+        ProfilesChangeManager.onChange(profile, property.javaField ?: return, previous, value)
     }
 }

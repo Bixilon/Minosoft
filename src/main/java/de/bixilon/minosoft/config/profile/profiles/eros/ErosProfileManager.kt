@@ -14,6 +14,7 @@ object ErosProfileManager : ProfileManager<ErosProfile> {
     override val namespace = "minosoft:eros".toResourceLocation()
     override val latestVersion = 1
     override val saveLock = ReentrantLock()
+    override val profileClass = ErosProfile::class.java
 
 
     private var currentLoadingPath: String? = null

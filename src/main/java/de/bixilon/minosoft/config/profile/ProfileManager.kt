@@ -24,6 +24,7 @@ interface ProfileManager<T : Profile> {
     val namespace: ResourceLocation
     val latestVersion: Int
     val saveLock: ReentrantLock
+    val profileClass: Class<T>
 
     val profiles: HashBiMap<String, T>
     var selected: T
@@ -93,7 +94,7 @@ interface ProfileManager<T : Profile> {
         if (selected == null || profileNames.isEmpty()) {
             initDefaultProfile()
         }
-        var migrated = false
+        var saveFile = false
         for (profileName in profileNames) {
             val path = getPath(profileName, baseDirectory)
             val json: MutableMap<String, Any?>?
@@ -110,14 +111,15 @@ interface ProfileManager<T : Profile> {
                     }
                     Log.log(LogMessageType.LOAD_PROFILES, LogLevels.INFO) { "Migrated profile ($path) from version $version to $latestVersion" }
                     json["version"] = latestVersion
-                    migrated = true
+                    saveFile = true
                 }
             } else {
                 json = null
+                saveFile = true
             }
 
             val profile = load(profileName, json)
-            if (migrated) {
+            if (saveFile) {
                 profile.saved = false
                 save(profile)
             }

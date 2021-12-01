@@ -17,7 +17,6 @@ import de.bixilon.minosoft.config.config.account.AccountConfig
 import de.bixilon.minosoft.config.config.chat.ChatConfig
 import de.bixilon.minosoft.config.config.debug.DebugConfig
 import de.bixilon.minosoft.config.config.download.DownloadConfig
-import de.bixilon.minosoft.config.config.eros.ErosConfig
 import de.bixilon.minosoft.config.config.game.GameConfig
 import de.bixilon.minosoft.config.config.general.GeneralConfig
 import de.bixilon.minosoft.config.config.network.NetworkConfig
@@ -32,5 +31,4 @@ data class Config(
     val server: ServerConfig = ServerConfig(),
     val download: DownloadConfig = DownloadConfig(),
     val debug: DebugConfig = DebugConfig(),
-    val eros: ErosConfig = ErosConfig(),
 )

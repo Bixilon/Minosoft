@@ -14,6 +14,9 @@
 package de.bixilon.minosoft.gui.eros.dialog
 
 import de.bixilon.minosoft.Minosoft
+import de.bixilon.minosoft.config.profile.change.listener.SimpleProfileChangeListener.Companion.listenFX
+import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
+import de.bixilon.minosoft.config.profile.profiles.eros.server.modify.ModifyC
 import de.bixilon.minosoft.config.server.Server
 import de.bixilon.minosoft.data.registries.versions.Version
 import de.bixilon.minosoft.data.registries.versions.VersionTypes
@@ -106,22 +109,24 @@ class UpdateServerDialog(
 
         cancelButtonFX.ctext = TranslatableComponents.GENERAL_CANCEL
 
+        val modifyConfig = ErosProfileManager.selected.server.modify
+
+        ModifyC::showReleases.listenFX(this) { showReleasesFX.isSelected = it }
+        ModifyC::showSnapshots.listenFX(this) { showSnapshotsFX.isSelected = it }
 
         showReleasesFX.apply {
-            isSelected = Minosoft.config.config.eros.showReleases
+            isSelected = modifyConfig.showReleases
             ctext = SHOW_RELEASES
             setOnAction {
-                Minosoft.config.config.eros.showReleases = isSelected
-                Minosoft.config.saveToFile()
+                modifyConfig.showReleases = isSelected
                 refreshVersions()
             }
         }
         showSnapshotsFX.apply {
-            isSelected = Minosoft.config.config.eros.showSnapshots
+            isSelected = modifyConfig.showSnapshots
             ctext = SHOW_SNAPSHOTS
             setOnAction {
-                Minosoft.config.config.eros.showSnapshots = isSelected
-                Minosoft.config.saveToFile()
+                modifyConfig.showSnapshots = isSelected
                 refreshVersions()
             }
         }
