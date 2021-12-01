@@ -46,8 +46,11 @@ interface ProfileManager<T : Profile> {
 
     fun <V> delegate(value: V, checkEquals: Boolean = true): ProfileDelegate<V>
 
-    fun selectDefault()
-    fun createDefaultProfile(): T
+    fun selectDefault() {
+        selected = profiles[DEFAULT_PROFILE_NAME] ?: createDefaultProfile()
+    }
+
+    fun createDefaultProfile(name: String = DEFAULT_PROFILE_NAME): T
 
     fun initDefaultProfile() {
         val profile = createDefaultProfile()
@@ -55,7 +58,10 @@ interface ProfileManager<T : Profile> {
         save(profile)
     }
 
-    fun serialize(profile: T): Map<String, Any?>
+
+    fun serialize(profile: T): Map<String, Any?> {
+        return Jackson.MAPPER.convertValue(profile, Jackson.JSON_MAP_TYPE)
+    }
 
     fun save(profile: T) {
         if (saveLock.isLocked) {

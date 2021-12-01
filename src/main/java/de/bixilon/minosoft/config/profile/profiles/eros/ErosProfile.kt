@@ -11,10 +11,10 @@ class ErosProfile(
 ) : Profile {
     override var initializing: Boolean = true
         private set
+    override var saved: Boolean = true
     override val version: Int = latestVersion
     override val description by delegate(description ?: "")
 
-    override var saved: Boolean = true
 
     val general: GeneralC = GeneralC()
     val server: ServerC = ServerC()

@@ -16,7 +16,6 @@ package de.bixilon.minosoft.gui.eros.dialog
 import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.profile.change.listener.SimpleProfileChangeListener.Companion.listenFX
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
-import de.bixilon.minosoft.config.profile.profiles.eros.server.modify.ModifyC
 import de.bixilon.minosoft.config.server.Server
 import de.bixilon.minosoft.data.registries.versions.Version
 import de.bixilon.minosoft.data.registries.versions.VersionTypes
@@ -111,8 +110,8 @@ class UpdateServerDialog(
 
         val modifyConfig = ErosProfileManager.selected.server.modify
 
-        ModifyC::showReleases.listenFX(this) { showReleasesFX.isSelected = it }
-        ModifyC::showSnapshots.listenFX(this) { showSnapshotsFX.isSelected = it }
+        modifyConfig::showReleases.listenFX(this) { showReleasesFX.isSelected = it }
+        modifyConfig::showSnapshots.listenFX(this) { showSnapshotsFX.isSelected = it }
 
         showReleasesFX.apply {
             isSelected = modifyConfig.showReleases

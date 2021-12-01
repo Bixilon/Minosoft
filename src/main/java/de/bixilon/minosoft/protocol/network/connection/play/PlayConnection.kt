@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.protocol.network.connection.play
 
 import de.bixilon.minosoft.Minosoft
+import de.bixilon.minosoft.config.profile.ProfileCollection
 import de.bixilon.minosoft.data.ChatTextPositions
 import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.data.assets.MultiAssetsManager
@@ -66,6 +67,7 @@ class PlayConnection(
     val address: ServerAddress,
     val account: Account,
     val version: Version,
+    val profiles: ProfileCollection = ProfileCollection(),
 ) : Connection() {
     val registries = Registries()
     val recipes = Recipes()
