@@ -28,7 +28,7 @@ object ProfilesChangeManager {
                 if (reference.get() == null) {
                     toRemove += pair
                 }
-                listener.invoke(previous.unsafeCast(), value.unsafeCast())
+                listener.invoke(previous, value)
             }
             if (toRemove.isNotEmpty()) {
                 if (queue.size == toRemove.size) {

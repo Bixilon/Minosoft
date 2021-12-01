@@ -10,5 +10,5 @@ interface ProfileChangeListener<T> {
     val profile: Profile?
 
 
-    fun invoke(previous: T, value: T)
+    fun invoke(previous: Any?, value: Any?)
 }

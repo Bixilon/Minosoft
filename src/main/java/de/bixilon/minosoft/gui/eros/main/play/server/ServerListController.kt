@@ -14,6 +14,8 @@
 package de.bixilon.minosoft.gui.eros.main.play.server
 
 import de.bixilon.minosoft.Minosoft
+import de.bixilon.minosoft.config.profile.change.listener.SimpleProfileChangeListener.Companion.listenFX
+import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
 import de.bixilon.minosoft.config.server.Server
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.data.text.ChatComponent
@@ -52,9 +54,7 @@ import javafx.scene.layout.*
 
 class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
     @FXML private lateinit var hideOfflineFX: CheckBox
-
     @FXML private lateinit var hideFullFX: CheckBox
-
     @FXML private lateinit var hideEmptyFX: CheckBox
 
 
@@ -75,6 +75,16 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
         }
 
     override fun init() {
+        val serverConfig = ErosProfileManager.selected.server.list
+        serverConfig::hideOffline.listenFX(this, true) { hideOfflineFX.isSelected = it }
+        serverConfig::hideFull.listenFX(this, true) { hideFullFX.isSelected = it }
+        serverConfig::hideEmpty.listenFX(this, true) { hideEmptyFX.isSelected = it }
+
+        hideOfflineFX.setOnAction { ErosProfileManager.selected.server.list.hideOffline = hideOfflineFX.isSelected }
+        hideFullFX.setOnAction { ErosProfileManager.selected.server.list.hideFull = hideFullFX.isSelected }
+        hideEmptyFX.setOnAction { ErosProfileManager.selected.server.list.hideEmpty = hideEmptyFX.isSelected }
+
+
         serverListViewFX.setCellFactory {
             val controller = ServerCardController.build()
 
@@ -94,7 +104,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
 
         refreshList()
 
-        serverListViewFX.selectionModel.selectedItemProperty().addListener { _, old, new ->
+        serverListViewFX.selectionModel.selectedItemProperty().addListener { _, _, new ->
             setServerInfo(new)
         }
     }
@@ -239,15 +249,11 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
             if (!readOnly) {
                 it.add(Button("Delete").apply {
                     setOnAction {
-                        SimpleErosConfirmationDialog(
-                            confirmButtonText = "minosoft:general.delete".toResourceLocation(),
-                            description = TranslatableComponents.EROS_DELETE_SERVER_CONFIRM_DESCRIPTION(serverCard.server.name, serverCard.server.address),
-                            onConfirm = {
-                                Minosoft.config.config.server.entries.remove(serverCard.server.id)
-                                Minosoft.config.saveToFile()
-                                JavaFXUtil.runLater { refreshList() }
-                            }
-                        ).show()
+                        SimpleErosConfirmationDialog(confirmButtonText = "minosoft:general.delete".toResourceLocation(), description = TranslatableComponents.EROS_DELETE_SERVER_CONFIRM_DESCRIPTION(serverCard.server.name, serverCard.server.address), onConfirm = {
+                            Minosoft.config.config.server.entries.remove(serverCard.server.id)
+                            Minosoft.config.saveToFile()
+                            JavaFXUtil.runLater { refreshList() }
+                        }).show()
                     }
                 }, 1, 0)
                 it.add(Button("Edit").apply {

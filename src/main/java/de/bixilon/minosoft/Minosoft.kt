@@ -100,9 +100,9 @@ object Minosoft {
         })
 
         taskWorker += Task(identifier = StartupTasks.LOAD_PROFILES, priority = ThreadPool.HIGH, dependencies = arrayOf(StartupTasks.LOAD_VERSIONS), executor = {
-            Log.log(LogMessageType.LOAD_PROFILES, LogLevels.VERBOSE) { "Loading profiles..." }
+            Log.log(LogMessageType.PROFILES, LogLevels.VERBOSE) { "Loading profiles..." }
             GlobalProfileManager.initialize()
-            Log.log(LogMessageType.LOAD_PROFILES, LogLevels.INFO) { "Profiles loaded!" }
+            Log.log(LogMessageType.PROFILES, LogLevels.INFO) { "Profiles loaded!" }
         })
 
         taskWorker += Task(identifier = StartupTasks.LOAD_LANGUAGE_FILES, dependencies = arrayOf(StartupTasks.LOAD_CONFIG), executor = {

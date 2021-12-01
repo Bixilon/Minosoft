@@ -109,7 +109,7 @@ interface ProfileManager<T : Profile> {
                     for (toMigrate in version until latestVersion) {
                         migrate(toMigrate, json)
                     }
-                    Log.log(LogMessageType.LOAD_PROFILES, LogLevels.INFO) { "Migrated profile ($path) from version $version to $latestVersion" }
+                    Log.log(LogMessageType.PROFILES, LogLevels.INFO) { "Migrated profile ($path) from version $version to $latestVersion" }
                     json["version"] = latestVersion
                     saveFile = true
                 }
@@ -129,7 +129,7 @@ interface ProfileManager<T : Profile> {
             profiles[selected]?.let { this.selected = it } ?: selectDefault()
         }
 
-        Log.log(LogMessageType.LOAD_PROFILES, LogLevels.VERBOSE) { "Loaded ${profiles.size} $namespace profiles!" }
+        Log.log(LogMessageType.PROFILES, LogLevels.VERBOSE) { "Loaded ${profiles.size} $namespace profiles!" }
     }
 
     companion object {

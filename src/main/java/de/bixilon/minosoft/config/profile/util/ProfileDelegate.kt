@@ -39,7 +39,7 @@ open class ProfileDelegate<V>(
             return
         }
 
-        Log.log(LogMessageType.OTHER, LogLevels.VERBOSE) { "Changed option $property in profile $profileName from ${this.value} to $value" }
+        Log.log(LogMessageType.PROFILES, LogLevels.VERBOSE) { "Changed option $property in profile $profileName from ${this.value} to $value" }
         profileManager.profiles[profileName]?.saved = false
         val previous = this.value
         this.value = value
