@@ -1,9 +1,9 @@
-package de.bixilon.minosoft.config.config2.config.eros.general
+package de.bixilon.minosoft.config.profile.profiles.eros.general
 
-import de.bixilon.minosoft.config.config2.config.eros.ErosProfileManager.delegate
+import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager.delegate
 import java.util.*
 
-class GeneralC2 {
+class GeneralC {
     /**
      * Language to use for eros (and the fallback for the connection)
      */

@@ -1,9 +1,9 @@
-package de.bixilon.minosoft.config.config2.config.eros
+package de.bixilon.minosoft.config.profile.profiles.eros
 
 import com.google.common.collect.HashBiMap
-import de.bixilon.minosoft.config.config2.GlobalProfileManager
-import de.bixilon.minosoft.config.config2.ProfileManager
-import de.bixilon.minosoft.config.config2.util.ConfigDelegate
+import de.bixilon.minosoft.config.profile.GlobalProfileManager
+import de.bixilon.minosoft.config.profile.ProfileManager
+import de.bixilon.minosoft.config.profile.util.ProfileDelegate
 import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.KUtil.unsafeCast
@@ -46,6 +46,7 @@ object ErosProfileManager : ProfileManager<ErosProfile> {
         } else {
             Jackson.MAPPER.convertValue(data, ErosProfile::class.java)
         }
+        profile.saved = true
         profiles[name] = profile
         currentLoadingPath = null
         return profile
@@ -55,7 +56,7 @@ object ErosProfileManager : ProfileManager<ErosProfile> {
         return Jackson.MAPPER.convertValue(profile, Jackson.JSON_MAP_TYPE)
     }
 
-    override fun <V> delegate(value: V, checkEquals: Boolean): ConfigDelegate<V> {
-        return ConfigDelegate(value, checkEquals, this, currentLoadingPath ?: throw IllegalAccessException("Delegate can only be created while loading or creating profiles!"))
+    override fun <V> delegate(value: V, checkEquals: Boolean): ProfileDelegate<V> {
+        return ProfileDelegate(value, checkEquals, this, currentLoadingPath ?: throw IllegalAccessException("Delegate can only be created while loading or creating profiles!"))
     }
 }

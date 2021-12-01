@@ -14,7 +14,7 @@
 package de.bixilon.minosoft
 
 import de.bixilon.minosoft.config.Configuration
-import de.bixilon.minosoft.config.config2.GlobalProfileManager
+import de.bixilon.minosoft.config.profile.GlobalProfileManager
 import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.data.assets.JarAssetsManager
 import de.bixilon.minosoft.data.assets.Resources
@@ -101,7 +101,7 @@ object Minosoft {
 
         taskWorker += Task(identifier = StartupTasks.LOAD_PROFILES, priority = ThreadPool.HIGH, dependencies = arrayOf(StartupTasks.LOAD_VERSIONS), executor = {
             Log.log(LogMessageType.LOAD_PROFILES, LogLevels.VERBOSE) { "Loading profiles..." }
-            GlobalProfileManager.load()
+            GlobalProfileManager.initialize()
             Log.log(LogMessageType.LOAD_PROFILES, LogLevels.INFO) { "Profiles loaded!" }
         })
 

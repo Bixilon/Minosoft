@@ -1,8 +1,8 @@
-package de.bixilon.minosoft.config.config2
+package de.bixilon.minosoft.config.profile
 
 import com.google.common.collect.HashBiMap
-import de.bixilon.minosoft.config.config2.config.Profile
-import de.bixilon.minosoft.config.config2.util.ConfigDelegate
+import de.bixilon.minosoft.config.profile.profiles.Profile
+import de.bixilon.minosoft.config.profile.util.ProfileDelegate
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.eros.crash.ErosCrashReport.Companion.crash
 import de.bixilon.minosoft.terminal.RunConfiguration
@@ -35,7 +35,6 @@ interface ProfileManager<T : Profile> {
         return baseDirectory.path + "/" + profileName + "/" + namespace.path + ".json"
     }
 
-
     /**
      * Migrates the config from 1 version to the next
      * Does not convert to the latest version, just 1 version number higher
@@ -44,7 +43,7 @@ interface ProfileManager<T : Profile> {
     fun load(name: String, data: MutableMap<String, Any?>?): T
 
 
-    fun <V> delegate(value: V, checkEquals: Boolean = true): ConfigDelegate<V>
+    fun <V> delegate(value: V, checkEquals: Boolean = true): ProfileDelegate<V>
 
     fun selectDefault()
     fun createDefaultProfile(): T
@@ -109,7 +108,7 @@ interface ProfileManager<T : Profile> {
                     for (toMigrate in version until latestVersion) {
                         migrate(toMigrate, json)
                     }
-                    Log.log(LogMessageType.LOAD_PROFILES, LogLevels.INFO) { "Migrated profile ($path) from $version to $latestVersion" }
+                    Log.log(LogMessageType.LOAD_PROFILES, LogLevels.INFO) { "Migrated profile ($path) from version $version to $latestVersion" }
                     json["version"] = latestVersion
                     migrated = true
                 }
@@ -119,6 +118,7 @@ interface ProfileManager<T : Profile> {
 
             val profile = load(profileName, json)
             if (migrated) {
+                profile.saved = false
                 save(profile)
             }
         }

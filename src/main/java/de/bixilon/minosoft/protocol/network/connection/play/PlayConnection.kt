@@ -151,19 +151,22 @@ class PlayConnection(
                     if (CLI.getCurrentConnection() == null) {
                         CLI.setCurrentConnection(this)
                     }
-                    entityTickTask = TimeWorker.addTask(TimeWorkerTask(ProtocolDefinition.TICK_TIME / 5) {
+                    entityTickTask = TimeWorkerTask(ProtocolDefinition.TICK_TIME / 5) {
                         for (entity in world.entities) {
                             entity.tick()
                         }
-                    })
+                    }
+                    TimeWorker += entityTickTask
 
-                    worldTickTask = TimeWorker.addTask(TimeWorkerTask(ProtocolDefinition.TICK_TIME, maxDelayTime = ProtocolDefinition.TICK_TIME / 2) {
+                    worldTickTask = TimeWorkerTask(ProtocolDefinition.TICK_TIME, maxDelayTime = ProtocolDefinition.TICK_TIME / 2) {
                         world.tick()
-                    })
+                    }
+                    TimeWorker += worldTickTask
 
-                    randomTickTask = TimeWorker.addTask(TimeWorkerTask(ProtocolDefinition.TICK_TIME, maxDelayTime = ProtocolDefinition.TICK_TIME / 2) {
+                    randomTickTask = TimeWorkerTask(ProtocolDefinition.TICK_TIME, maxDelayTime = ProtocolDefinition.TICK_TIME / 2) {
                         world.randomTick()
-                    })
+                    }
+                    TimeWorker += randomTickTask
 
                     registerEvent(CallbackEventInvoker.of<ChatMessageReceiveEvent> {
                         val additionalPrefix = when (it.position) {

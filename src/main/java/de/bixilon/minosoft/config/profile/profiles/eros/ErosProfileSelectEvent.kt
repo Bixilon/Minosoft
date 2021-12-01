@@ -1,4 +1,4 @@
-package de.bixilon.minosoft.config.config2.config.eros
+package de.bixilon.minosoft.config.profile.profiles.eros
 
 import de.bixilon.minosoft.modding.event.events.Event
 

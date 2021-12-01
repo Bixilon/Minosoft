@@ -1,22 +1,29 @@
-package de.bixilon.minosoft.config.config2
+package de.bixilon.minosoft.config.profile
 
-import de.bixilon.minosoft.config.config2.config.Profile
-import de.bixilon.minosoft.config.config2.config.eros.ErosProfileManager
+import com.fasterxml.jackson.databind.type.MapType
+import de.bixilon.minosoft.config.profile.profiles.Profile
+import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.eros.crash.ErosCrashReport.Companion.crash
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.KUtil.lockMapOf
+import de.bixilon.minosoft.util.KUtil.unsafeCast
 import de.bixilon.minosoft.util.Util
 import de.bixilon.minosoft.util.collections.LockMap
 import de.bixilon.minosoft.util.json.jackson.Jackson
 import de.bixilon.minosoft.util.task.pool.DefaultThreadPool
+import de.bixilon.minosoft.util.task.time.TimeWorker
+import de.bixilon.minosoft.util.task.time.TimeWorkerTask
 import java.io.File
 
 object GlobalProfileManager {
-    val DEFAULT_MANAGERS: List<ProfileManager<*>> = listOf(
+    val DEFAULT_MANAGERS: List<ProfileManager<out Profile>> = listOf(
         ErosProfileManager,
     )
+    private val SELECTED_PROFILES_TYPE: MapType = Jackson.MAPPER.typeFactory.constructMapType(HashMap::class.java, ResourceLocation::class.java, String::class.java)
+
+    private var initialized = false
     private var loading = true
     private var selectedProfilesChanges = false
     private val selectedProfiles: LockMap<ResourceLocation, String> = lockMapOf()
@@ -28,8 +35,9 @@ object GlobalProfileManager {
             if (!file.exists()) {
                 return
             }
+
             this.selectedProfiles.original.clear()
-            this.selectedProfiles.original.putAll(Jackson.MAPPER.convertValue(Util.readFile(file.path), Jackson.JSON_MAP_TYPE))
+            this.selectedProfiles.original.putAll(Jackson.MAPPER.readValue(Util.readFile(file.path), SELECTED_PROFILES_TYPE))
         } finally {
             selectedProfiles.lock.unlock()
         }
@@ -42,7 +50,7 @@ object GlobalProfileManager {
         selectedProfiles.lock.lock()
         DefaultThreadPool += {
             try {
-                val data: Map<String, String> = Jackson.MAPPER.convertValue(selectedProfiles.original, Jackson.JSON_MAP_TYPE)
+                val data: Map<String, String> = Jackson.MAPPER.convertValue(selectedProfiles.original, SELECTED_PROFILES_TYPE)
                 val jsonString = Jackson.MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(data)
 
                 KUtil.safeSaveToFile(File(RunConfiguration.HOME_DIRECTORY + "config/selected_profiles.json"), jsonString)
@@ -54,7 +62,11 @@ object GlobalProfileManager {
         }
     }
 
-    fun load() {
+    @Synchronized
+    fun initialize() {
+        if (initialized) {
+            throw IllegalStateException("Already initialized!")
+        }
         loadSelectedProfiles()
         for (manager in DEFAULT_MANAGERS) {
             manager.load(selectedProfiles[manager.namespace])
@@ -63,6 +75,19 @@ object GlobalProfileManager {
         if (selectedProfilesChanges) {
             saveSelectedProfiles()
         }
+        TimeWorker += TimeWorkerTask(1000) {
+            for (manager in DEFAULT_MANAGERS) {
+                for (profile in manager.profiles.values) {
+                    if (profile.saved) {
+                        continue
+                    }
+                    val castedManager = manager.unsafeCast<ProfileManager<Profile>>()
+                    castedManager.save(profile)
+                }
+
+            }
+        }
+        initialized = true
     }
 
     fun <T : Profile> selectProfile(profileManager: ProfileManager<T>, profile: T?) {

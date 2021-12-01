@@ -23,7 +23,7 @@ import java.util.function.Function
 class LockMap<K, V>(
     @Deprecated("Not synchronized") val original: MutableMap<K, V>,
 ) : MutableMap<K, V> {
-    val lock = ReadWriteLock()
+    @Transient val lock = ReadWriteLock()
     override val size: Int
         get() {
             lock.acquire()

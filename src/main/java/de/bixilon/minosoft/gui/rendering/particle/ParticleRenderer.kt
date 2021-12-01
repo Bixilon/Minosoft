@@ -103,7 +103,7 @@ class ParticleRenderer(
 
         connection.world.particleRenderer = this
 
-        particleTask = TimeWorker.addTask(TimeWorkerTask(ProtocolDefinition.TICK_TIME, maxDelayTime = ProtocolDefinition.TICK_TIME / 2) {
+        particleTask = TimeWorkerTask(ProtocolDefinition.TICK_TIME, maxDelayTime = ProtocolDefinition.TICK_TIME / 2) {
             if (renderWindow.renderingState == RenderingStates.PAUSED || renderWindow.renderingState == RenderingStates.STOPPED) {
                 return@TimeWorkerTask
             }
@@ -136,7 +136,8 @@ class ParticleRenderer(
             particleQueueLock.unlock()
 
             particlesLock.unlock()
-        })
+        }
+        TimeWorker += particleTask
 
         connection.registerEvent(CallbackEventInvoker.of<PlayConnectionStateChangeEvent> {
             if (!it.state.disconnected) {

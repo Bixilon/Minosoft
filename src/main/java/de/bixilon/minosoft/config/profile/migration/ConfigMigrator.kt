@@ -1,4 +1,4 @@
-package de.bixilon.minosoft.config.config2.migration
+package de.bixilon.minosoft.config.profile.migration
 
 interface ConfigMigrator {
 
