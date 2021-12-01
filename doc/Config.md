@@ -14,7 +14,7 @@ There is a config file located in:
   - In eros
   - Per key combination
 - Migration
-- Automatic saving (periodic, per event. maybe use delegates?)
+- Automatic saving (periodic, per event, maybe use delegates?)
 - Config editor
 - Config value checker
 - Change event, batch those, apply event

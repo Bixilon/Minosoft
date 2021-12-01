@@ -15,6 +15,7 @@ open class ProfileDelegate<V>(
     private val checkEquals: Boolean,
     private val profileManager: ProfileManager<*>,
     private val profileName: String,
+    private val verify: ((V) -> Unit)?,
 ) : ReadWriteProperty<Any, V> {
     private lateinit var profile: Profile
 
@@ -26,6 +27,7 @@ open class ProfileDelegate<V>(
         if (checkEquals && this.value == value) {
             return
         }
+        verify?.invoke(value)
         if (!this::profile.isInitialized) {
             val profile = profileManager.profiles[profileName]
             if (profile == null) {

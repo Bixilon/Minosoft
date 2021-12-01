@@ -44,7 +44,7 @@ interface ProfileManager<T : Profile> {
     fun load(name: String, data: MutableMap<String, Any?>?): T
 
 
-    fun <V> delegate(value: V, checkEquals: Boolean = true): ProfileDelegate<V>
+    fun <V> delegate(value: V, checkEquals: Boolean = true, verify: ((V) -> Unit)? = null): ProfileDelegate<V>
 
     fun selectDefault() {
         selected = profiles[DEFAULT_PROFILE_NAME] ?: createDefaultProfile()

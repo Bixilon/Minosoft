@@ -49,7 +49,7 @@ object ErosProfileManager : ProfileManager<ErosProfile> {
         return profile
     }
 
-    override fun <V> delegate(value: V, checkEquals: Boolean): ProfileDelegate<V> {
-        return ProfileDelegate(value, checkEquals, this, currentLoadingPath ?: throw IllegalAccessException("Delegate can only be created while loading or creating profiles!"))
+    override fun <V> delegate(value: V, checkEquals: Boolean, verify: ((V) -> Unit)?): ProfileDelegate<V> {
+        return ProfileDelegate(value, checkEquals, this, currentLoadingPath ?: throw IllegalAccessException("Delegate can only be created while loading or creating profiles!"), verify)
     }
 }

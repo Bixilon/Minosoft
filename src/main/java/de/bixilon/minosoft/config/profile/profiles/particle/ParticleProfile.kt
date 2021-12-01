@@ -16,8 +16,7 @@ class ParticleProfile(
 
 
     var enabled by delegate(true)
-
-    var maxAmount by delegate(RenderConstants.MAXIMUM_PARTICLE_AMOUNT)
+    var maxAmount by delegate(RenderConstants.MAXIMUM_PARTICLE_AMOUNT) { check(it in 0..RenderConstants.MAXIMUM_PARTICLE_AMOUNT) { "Particle amount must be non-negative and may not exceed ${RenderConstants.MAXIMUM_PARTICLE_AMOUNT}" } }
 
 
     override fun toString(): String {
