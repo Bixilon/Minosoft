@@ -6,6 +6,9 @@ import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager.lates
 import de.bixilon.minosoft.config.profile.profiles.eros.general.GeneralC
 import de.bixilon.minosoft.config.profile.profiles.eros.server.ServerC
 
+/**
+ * Profile for Eros
+ */
 class ErosProfile(
     description: String? = null,
 ) : Profile {

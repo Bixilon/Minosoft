@@ -5,7 +5,7 @@ import java.util.*
 
 class GeneralC {
     /**
-     * Language to use for eros (and the fallback for the connection)
+     * Language to use for eros. This is also the fallback language for other profiles
      */
     var language: Locale by delegate(Locale.getDefault())
 }
