@@ -24,6 +24,8 @@ interface HUDBuilder<T : HUDElement> : CompanionResourceLocation {
         get() = null
     val ENABLE_KEY_BINDING: KeyBinding?
         get() = null
+    val DEFAULT_ENABLED: Boolean
+        get() = true
 
     fun build(hudRenderer: HUDRenderer): T
 }

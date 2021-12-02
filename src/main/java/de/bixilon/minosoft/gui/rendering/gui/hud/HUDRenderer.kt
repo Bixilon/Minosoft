@@ -82,9 +82,7 @@ class HUDRenderer(
         val toggleKeyBinding = hudBuilder.ENABLE_KEY_BINDING ?: return
         val toggleKeyBindingName = hudBuilder.ENABLE_KEY_BINDING_NAME ?: return
 
-        // ToDo: Default disabled elements like the debug screen?
-
-        renderWindow.inputHandler.registerKeyCallback(toggleKeyBindingName, toggleKeyBinding) { hudElement.enabled = it }
+        renderWindow.inputHandler.registerKeyCallback(toggleKeyBindingName, toggleKeyBinding, defaultPressed = hudBuilder.DEFAULT_ENABLED) { hudElement.enabled = it }
     }
 
     private fun registerDefaultElements() {

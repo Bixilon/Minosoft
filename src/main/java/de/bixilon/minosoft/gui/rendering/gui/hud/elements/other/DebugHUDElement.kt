@@ -71,6 +71,7 @@ class DebugHUDElement(hudRenderer: HUDRenderer) : LayoutedHUDElement<GridLayout>
 
 
     override fun init() {
+        enabled = false
         layout[Vec2i(0, 0)] = initLeft()
         layout[Vec2i(2, 0)] = initRight()
 
@@ -284,6 +285,7 @@ class DebugHUDElement(hudRenderer: HUDRenderer) : LayoutedHUDElement<GridLayout>
     companion object : HUDBuilder<DebugHUDElement> {
         override val RESOURCE_LOCATION: ResourceLocation = "minosoft:debug_hud".toResourceLocation()
         override val ENABLE_KEY_BINDING_NAME: ResourceLocation = "minosoft:enable_debug_hud".toResourceLocation()
+        override val DEFAULT_ENABLED: Boolean = false
         override val ENABLE_KEY_BINDING: KeyBinding = KeyBinding(
             mutableMapOf(
                 KeyAction.STICKY to mutableSetOf(KeyCodes.KEY_F3),
