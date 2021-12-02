@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.input.key
 
 import de.bixilon.minosoft.Minosoft
+import de.bixilon.minosoft.config.StaticConfiguration
 import de.bixilon.minosoft.config.key.KeyAction
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
@@ -30,7 +31,7 @@ import de.bixilon.minosoft.gui.rendering.system.window.KeyChangeTypes
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil
-import de.bixilon.minosoft.util.KUtil.decide
+import de.bixilon.minosoft.util.KUtil.format
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 
 class RenderWindowInputHandler(
@@ -53,11 +54,17 @@ class RenderWindowInputHandler(
             KeyBinding(
                 mutableMapOf(
                     KeyAction.MODIFIER to mutableSetOf(KeyCodes.KEY_F4),
-                    KeyAction.STICKY to mutableSetOf(KeyCodes.KEY_M),
+                    KeyAction.PRESS to mutableSetOf(KeyCodes.KEY_M),
                 ),
-            )) {
-            renderWindow.window.cursorMode = it.decide(CursorModes.DISABLED, CursorModes.NORMAL)
-            renderWindow.sendDebugMessage("Toggled mouse catch!")
+                ignoreConsumer = true,
+            ), defaultPressed = StaticConfiguration.DEBUG_MODE) {
+            val nextMode = when (renderWindow.window.cursorMode) {
+                CursorModes.DISABLED -> CursorModes.NORMAL
+                CursorModes.NORMAL -> CursorModes.DISABLED
+                CursorModes.HIDDEN -> CursorModes.NORMAL
+            }
+            renderWindow.window.cursorMode = nextMode
+            renderWindow.sendDebugMessage("Mouse catch: ${nextMode.format()}")
         }
     }
 

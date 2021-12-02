@@ -55,6 +55,7 @@ import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.CountUpAndDownLatch
 import de.bixilon.minosoft.util.KUtil
 import de.bixilon.minosoft.util.KUtil.decide
+import de.bixilon.minosoft.util.KUtil.format
 import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.KUtil.unsafeCast
@@ -254,7 +255,7 @@ class RenderWindow(
                 ),
                 ignoreConsumer = true,
             )) {
-            sendDebugMessage("Pausing incoming packets: $it")
+            sendDebugMessage("Pausing incoming packets: ${it.format()}")
             connection.network.pauseReceiving(it)
         }
 
@@ -266,7 +267,7 @@ class RenderWindow(
                 ),
                 ignoreConsumer = true,
             )) {
-            sendDebugMessage("Pausing outgoing packets: $it")
+            sendDebugMessage("Pausing outgoing packets: ${it.format()}")
             connection.network.pauseSending(it)
         }
     }
