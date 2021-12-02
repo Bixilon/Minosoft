@@ -92,11 +92,14 @@ class DebugHUDElement(hudRenderer: HUDRenderer) : LayoutedHUDElement<GridLayout>
             layout += AutoTextElement(hudRenderer, 1) { "P t=$size" }
         }
 
-        if (connection.profiles.particle.skipLoading) {
-            layout += AutoTextElement(hudRenderer, 1) {
-                BaseComponent().apply {
-                    this += "S "
+        val audioProfile = connection.profiles.audio
 
+        layout += AutoTextElement(hudRenderer, 1) {
+            BaseComponent().apply {
+                this += "S "
+                if (connection.profiles.audio.skipLoading || !audioProfile.enabled) {
+                    this += "$§cdisabled"
+                } else {
                     val audioPlayer = renderWindow.rendering.audioPlayer
 
                     this += audioPlayer.availableSources

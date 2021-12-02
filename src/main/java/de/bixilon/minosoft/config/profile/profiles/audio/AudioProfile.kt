@@ -22,7 +22,7 @@ class AudioProfile(
      * Skips the loading od the AudioPlayer
      * Requires reloading of the whole audio subsystem to be applied
      */
-    var skipLoading by delegate(true)
+    var skipLoading by delegate(false)
 
     /**
      * Enabled or disables all audio playing
