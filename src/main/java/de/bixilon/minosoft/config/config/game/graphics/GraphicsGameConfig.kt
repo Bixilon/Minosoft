@@ -14,11 +14,9 @@
 package de.bixilon.minosoft.config.config.game.graphics
 
 import com.squareup.moshi.Json
-import de.bixilon.minosoft.config.config.game.particles.ParticleConfig
 
 data class GraphicsGameConfig(
     var animations: AnimationsGameConfig = AnimationsGameConfig(),
-    var particles: ParticleConfig = ParticleConfig(),
     @Json(name = "biome_blend_radius") var biomeBlendRadius: Int = 3,
     @Json(name = "fast_biome_noise") var fastBiomeNoise: Boolean = false,
     @Json(name = "fog_enabled") var fogEnabled: Boolean = true,

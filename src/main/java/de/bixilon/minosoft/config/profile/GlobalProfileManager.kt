@@ -2,6 +2,7 @@ package de.bixilon.minosoft.config.profile
 
 import com.fasterxml.jackson.databind.type.MapType
 import de.bixilon.minosoft.config.profile.profiles.Profile
+import de.bixilon.minosoft.config.profile.profiles.audio.AudioProfileManager
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
 import de.bixilon.minosoft.config.profile.profiles.particle.ParticleProfileManager
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -22,6 +23,7 @@ object GlobalProfileManager {
     val DEFAULT_MANAGERS: List<ProfileManager<out Profile>> = listOf(
         ErosProfileManager,
         ParticleProfileManager,
+        AudioProfileManager,
     )
     private val SELECTED_PROFILES_TYPE: MapType = Jackson.MAPPER.typeFactory.constructMapType(HashMap::class.java, ResourceLocation::class.java, String::class.java)
     val CLASS_MAPPING: Map<Class<out Profile>, ProfileManager<*>>

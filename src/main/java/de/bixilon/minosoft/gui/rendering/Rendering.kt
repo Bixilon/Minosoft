@@ -52,7 +52,7 @@ class Rendering(private val connection: PlayConnection) {
     }
 
     private fun startAudioPlayerThread(latch: CountUpAndDownLatch) {
-        if (!Minosoft.config.config.game.sound.enabled) {
+        if (connection.profiles.audio.skipLoading) {
             return
         }
         val audioLatch = CountUpAndDownLatch(1, latch)

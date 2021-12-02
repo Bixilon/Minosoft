@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.gui.hud.elements.other
 
-import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.config.key.KeyAction
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
@@ -93,7 +92,7 @@ class DebugHUDElement(hudRenderer: HUDRenderer) : LayoutedHUDElement<GridLayout>
             layout += AutoTextElement(hudRenderer, 1) { "P t=$size" }
         }
 
-        if (Minosoft.config.config.game.sound.enabled) {
+        if (connection.profiles.particle.skipLoading) {
             layout += AutoTextElement(hudRenderer, 1) {
                 BaseComponent().apply {
                     this += "S "

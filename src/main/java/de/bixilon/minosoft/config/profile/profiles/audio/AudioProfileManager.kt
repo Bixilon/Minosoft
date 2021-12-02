@@ -1,4 +1,4 @@
-package de.bixilon.minosoft.config.profile.profiles.eros
+package de.bixilon.minosoft.config.profile.profiles.audio
 
 import com.google.common.collect.HashBiMap
 import de.bixilon.minosoft.config.profile.GlobalProfileManager
@@ -9,26 +9,26 @@ import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.KUtil.unsafeCast
 import java.util.concurrent.locks.ReentrantLock
 
-object ErosProfileManager : ProfileManager<ErosProfile> {
-    override val namespace = "minosoft:eros".toResourceLocation()
+object AudioProfileManager : ProfileManager<AudioProfile> {
+    override val namespace = "minosoft:audio".toResourceLocation()
     override val latestVersion = 1
     override val saveLock = ReentrantLock()
-    override val profileClass = ErosProfile::class.java
+    override val profileClass = AudioProfile::class.java
 
 
     override var currentLoadingPath: String? = null
-    override val profiles: HashBiMap<String, ErosProfile> = HashBiMap.create()
+    override val profiles: HashBiMap<String, AudioProfile> = HashBiMap.create()
 
-    override var selected: ErosProfile = null.unsafeCast()
+    override var selected: AudioProfile = null.unsafeCast()
         set(value) {
             field = value
             GlobalProfileManager.selectProfile(this, value)
-            GlobalEventMaster.fireEvent(ErosProfileSelectEvent(value))
+            GlobalEventMaster.fireEvent(AudioProfileSelectEvent(value))
         }
 
-    override fun createDefaultProfile(name: String): ErosProfile {
+    override fun createDefaultProfile(name: String): AudioProfile {
         currentLoadingPath = name
-        val profile = ErosProfile("Default eros profile")
+        val profile = AudioProfile("Default audio profile")
         currentLoadingPath = null
         profiles[name] = profile
 

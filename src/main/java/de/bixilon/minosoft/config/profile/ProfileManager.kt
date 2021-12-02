@@ -29,6 +29,9 @@ interface ProfileManager<T : Profile> {
     val profiles: HashBiMap<String, T>
     var selected: T
 
+    @Deprecated("Should not be accessed")
+    var currentLoadingPath: String?
+
     val baseDirectory: File
         get() = File(RunConfiguration.HOME_DIRECTORY + "config/" + namespace.namespace + "/")
 
@@ -41,7 +44,20 @@ interface ProfileManager<T : Profile> {
      * Does not convert to the latest version, just 1 version number higher
      */
     fun migrate(from: Int, data: MutableMap<String, Any?>) = Unit
-    fun load(name: String, data: MutableMap<String, Any?>?): T
+
+
+    fun load(name: String, data: MutableMap<String, Any?>?): T {
+        currentLoadingPath = name
+        val profile = if (data == null) {
+            return createDefaultProfile(name)
+        } else {
+            Jackson.MAPPER.convertValue(data, profileClass)
+        }
+        profile.saved = true
+        profiles[name] = profile
+        currentLoadingPath = null
+        return profile
+    }
 
 
     fun <V> delegate(value: V, checkEquals: Boolean = true, verify: ((V) -> Unit)? = null): ProfileDelegate<V>
@@ -62,6 +78,7 @@ interface ProfileManager<T : Profile> {
     fun serialize(profile: T): Map<String, Any?> {
         return Jackson.MAPPER.convertValue(profile, Jackson.JSON_MAP_TYPE)
     }
+
 
     fun save(profile: T) {
         if (saveLock.isLocked) {

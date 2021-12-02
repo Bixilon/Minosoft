@@ -13,7 +13,6 @@
 
 package de.bixilon.minosoft.gui.rendering.particle
 
-import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.gui.rendering.particle.types.norender.ExplosionEmitterParticle
 import de.bixilon.minosoft.gui.rendering.particle.types.render.texture.simple.explosion.ExplosionParticle
 import de.bixilon.minosoft.gui.rendering.util.VecUtil.times
@@ -33,9 +32,10 @@ object DefaultParticleBehavior {
         val random = java.util.Random()
         val explosionParticleType = connection.registries.particleTypeRegistry[ExplosionParticle]!!
         val explosionEmitterParticleType = connection.registries.particleTypeRegistry[ExplosionEmitterParticle]!!
+        val typesConfig = connection.profiles.particle.types
         val invokers = listOf(
             CallbackEventInvoker.of<ExplosionEvent> {
-                if (!Minosoft.config.config.game.graphics.particles.explosions) {
+                if (typesConfig.explosions) {
                     return@of
                 }
                 if (it.power >= 2.0f) {
@@ -45,7 +45,7 @@ object DefaultParticleBehavior {
                 }
             },
             CallbackEventInvoker.of<ParticleSpawnEvent> {
-                if (it.initiator == EventInitiators.SERVER && !Minosoft.config.config.game.graphics.particles.byPacket) {
+                if (it.initiator == EventInitiators.SERVER && typesConfig.packet) {
                     return@of
                 }
                 fun spawn(position: Vec3d, velocity: Vec3d) {

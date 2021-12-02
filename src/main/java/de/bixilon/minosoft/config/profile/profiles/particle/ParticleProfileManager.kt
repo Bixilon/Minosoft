@@ -7,7 +7,6 @@ import de.bixilon.minosoft.config.profile.util.ProfileDelegate
 import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.KUtil.unsafeCast
-import de.bixilon.minosoft.util.json.jackson.Jackson
 import java.util.concurrent.locks.ReentrantLock
 
 object ParticleProfileManager : ProfileManager<ParticleProfile> {
@@ -17,7 +16,7 @@ object ParticleProfileManager : ProfileManager<ParticleProfile> {
     override val profileClass = ParticleProfile::class.java
 
 
-    private var currentLoadingPath: String? = null
+    override var currentLoadingPath: String? = null
     override val profiles: HashBiMap<String, ParticleProfile> = HashBiMap.create()
 
     override var selected: ParticleProfile = null.unsafeCast()
@@ -33,19 +32,6 @@ object ParticleProfileManager : ProfileManager<ParticleProfile> {
         currentLoadingPath = null
         profiles[name] = profile
 
-        return profile
-    }
-
-    override fun load(name: String, data: MutableMap<String, Any?>?): ParticleProfile {
-        currentLoadingPath = name
-        val profile: ParticleProfile = if (data == null) {
-            return createDefaultProfile(name)
-        } else {
-            Jackson.MAPPER.convertValue(data, profileClass)
-        }
-        profile.saved = true
-        profiles[name] = profile
-        currentLoadingPath = null
         return profile
     }
 

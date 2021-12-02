@@ -133,7 +133,7 @@ class RenderWindow(
         registerRenderer(SkyRenderer)
         registerRenderer(WorldRenderer)
         registerRenderer(BlockOutlineRenderer)
-        if (Minosoft.config.config.game.graphics.particles.enabled) {
+        if (!connection.profiles.particle.skipLoading) {
             registerRenderer(ParticleRenderer)
         }
         if (Minosoft.config.config.game.entities.hitBox.enabled) {
