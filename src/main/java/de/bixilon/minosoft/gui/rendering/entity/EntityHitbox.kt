@@ -41,7 +41,7 @@ class EntityHitbox(
 
 
     private fun update() {
-        val aabb = entity.cameraAABB
+        val aabb = entity.cameraAABB.shrink(0.01f)
         val hitBoxColor = entity.hitBoxColor
         val velocity = entity.velocity
         val rotation = entity.rotation
