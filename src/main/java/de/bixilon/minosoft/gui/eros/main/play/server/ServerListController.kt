@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.eros.main.play.server
 
 import de.bixilon.minosoft.Minosoft
-import de.bixilon.minosoft.config.profile.change.listener.SimpleProfileChangeListener.Companion.listenFX
+import de.bixilon.minosoft.config.profile.change.listener.SimpleChangeListener.Companion.listenFX
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
 import de.bixilon.minosoft.config.server.Server
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -75,7 +75,8 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
         }
 
     override fun init() {
-        val serverConfig = ErosProfileManager.selected.server.list
+        val erosProfile = ErosProfileManager.selected
+        val serverConfig = erosProfile.server.list
         serverConfig::hideOffline.listenFX(this, true) { hideOfflineFX.isSelected = it }
         serverConfig::hideFull.listenFX(this, true) { hideFullFX.isSelected = it }
         serverConfig::hideEmpty.listenFX(this, true) { hideEmptyFX.isSelected = it }
@@ -85,6 +86,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
         hideEmptyFX.setOnAction { ErosProfileManager.selected.server.list.hideEmpty = hideEmptyFX.isSelected }
 
 
+        val accountProfile = erosProfile.general.accountProfile
         serverListViewFX.setCellFactory {
             val controller = ServerCardController.build()
 
@@ -93,7 +95,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
                     return@setOnMouseClicked
                 }
                 val server = controller.lastServerCard?.server ?: return@setOnMouseClicked
-                if (!server.canConnect) {
+                if (!server.canConnect(accountProfile.selected ?: return@setOnMouseClicked)) {
                     return@setOnMouseClicked
                 }
 
@@ -214,6 +216,7 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
             serverInfoFX.children.clear()
             return
         }
+        val profile = ErosProfileManager.selected.general.accountProfile
 
         val ping = serverCard.server.ping
 
@@ -293,7 +296,8 @@ class ServerListController : EmbeddedJavaFXController<Pane>(), Refreshable {
                     isDisable = true
                     connect(serverCard.server, ping)
                 }
-                isDisable = !serverCard.server.canConnect
+                val selected = profile.selected
+                isDisable = selected == null || !serverCard.server.canConnect(selected)
                 // ToDo: Also disable, if currently connecting
             }, 4, 0)
 

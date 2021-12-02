@@ -14,6 +14,7 @@
 package de.bixilon.minosoft.gui.eros.main.account
 
 import de.bixilon.minosoft.Minosoft
+import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
 import de.bixilon.minosoft.gui.eros.card.AbstractCard
 import de.bixilon.minosoft.gui.eros.card.CardFactory
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.text
@@ -41,7 +42,8 @@ class AccountTypeCardController : AbstractCard<ErosAccountType<*>>() {
 
 
         var count = 0
-        for (account in Minosoft.config.config.account.entries.values) {
+        val profile = ErosProfileManager.selected.general.accountProfile
+        for (account in profile.entries.values) {
             if (account.type != type.resourceLocation) {
                 continue
             }

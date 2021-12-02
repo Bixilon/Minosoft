@@ -13,11 +13,23 @@
 
 package de.bixilon.minosoft.data.accounts
 
+import com.fasterxml.jackson.annotation.JsonIgnore
+import com.fasterxml.jackson.annotation.JsonSubTypes
+import com.fasterxml.jackson.annotation.JsonTypeInfo
 import de.bixilon.minosoft.config.server.Server
+import de.bixilon.minosoft.data.accounts.types.MicrosoftAccount
+import de.bixilon.minosoft.data.accounts.types.MojangAccount
+import de.bixilon.minosoft.data.accounts.types.OfflineAccount
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 import de.bixilon.minosoft.util.KUtil.synchronizedMapOf
 
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type") // or PROPERTY_NAME_PRESENCE
+@JsonSubTypes(
+    JsonSubTypes.Type(value = MojangAccount::class, name = "minosoft:mojang_account"),
+    JsonSubTypes.Type(value = OfflineAccount::class, name = "minosoft:offline_account"),
+    JsonSubTypes.Type(value = MicrosoftAccount::class, name = "minosoft:microsoft_account"),
+)
 abstract class Account(
     val username: String,
 ) {
@@ -25,14 +37,11 @@ abstract class Account(
     abstract val type: ResourceLocation
 
     @Transient
+    @JsonIgnore
     val connections: MutableMap<Server, PlayConnection> = synchronizedMapOf()
 
     abstract fun join(serverId: String)
 
-    abstract fun logout()
-    abstract fun verify()
-
-
-    @Deprecated("Somehow the moshi type adapter is not working")
-    abstract fun serialize(): Map<String, Any>
+    abstract fun logout(clientToken: String)
+    abstract fun verify(clientToken: String)
 }

@@ -24,16 +24,9 @@ class OfflineAccount(username: String) : Account(username) {
 
     override fun join(serverId: String) = Unit
 
-    override fun logout() = Unit
+    override fun logout(clientToken: String) = Unit
 
-    override fun verify() = Unit
-
-    override fun serialize(): Map<String, Any> {
-        return mapOf(
-            "username" to username,
-            "type" to type,
-        )
-    }
+    override fun verify(clientToken: String) = Unit
 
     override fun toString(): String {
         return "OfflineAccount{$username}"

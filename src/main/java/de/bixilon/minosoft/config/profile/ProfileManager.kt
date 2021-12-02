@@ -2,7 +2,9 @@ package de.bixilon.minosoft.config.profile
 
 import com.google.common.collect.HashBiMap
 import de.bixilon.minosoft.config.profile.profiles.Profile
-import de.bixilon.minosoft.config.profile.util.ProfileDelegate
+import de.bixilon.minosoft.config.profile.util.delegate.BackingDelegate
+import de.bixilon.minosoft.config.profile.util.delegate.MapDelegate
+import de.bixilon.minosoft.config.profile.util.delegate.ProfileDelegate
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.eros.crash.ErosCrashReport.Companion.crash
 import de.bixilon.minosoft.terminal.RunConfiguration
@@ -14,6 +16,7 @@ import de.bixilon.minosoft.util.logging.Log
 import de.bixilon.minosoft.util.logging.LogLevels
 import de.bixilon.minosoft.util.logging.LogMessageType
 import de.bixilon.minosoft.util.task.pool.DefaultThreadPool
+import javafx.collections.MapChangeListener
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.IOException
@@ -63,6 +66,18 @@ interface ProfileManager<T : Profile> {
         return ProfileDelegate(value, checkEquals, this, currentLoadingPath ?: throw IllegalAccessException("Delegate can only be created while loading or creating profiles!"), verify)
     }
 
+    fun <V> backingDelegate(checkEquals: Boolean = true, verify: ((V) -> Unit)? = null, getter: () -> V, setter: (V) -> Unit): BackingDelegate<V> {
+        return object : BackingDelegate<V>(checkEquals, this, currentLoadingPath ?: throw IllegalAccessException("Delegate can only be created while loading or creating profiles!"), verify) {
+            override fun get(): V = getter()
+
+            override fun set(value: V) = setter(value)
+        }
+    }
+
+    fun <K, V> mapDelegate(checkEquals: Boolean = true, verify: ((MapChangeListener.Change<out K, out V>) -> Unit)? = null): MapDelegate<K, V> {
+        return MapDelegate(profileManager = this, profileName = currentLoadingPath ?: throw IllegalAccessException("Delegate can only be created while loading or creating profiles!"), verify = verify)
+    }
+
     fun selectDefault() {
         selected = profiles[DEFAULT_PROFILE_NAME] ?: createDefaultProfile()
     }
@@ -95,6 +110,7 @@ interface ProfileManager<T : Profile> {
                 KUtil.safeSaveToFile(profileFile, jsonString)
                 profile.saved = true
             } catch (exception: Exception) {
+                exception.printStackTrace()
                 exception.crash()
             } finally {
                 saveLock.unlock()

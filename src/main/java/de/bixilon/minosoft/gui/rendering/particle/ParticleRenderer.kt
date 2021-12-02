@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.rendering.particle
 
 import de.bixilon.minosoft.Minosoft
-import de.bixilon.minosoft.config.profile.change.listener.SimpleProfileChangeListener.Companion.listen
+import de.bixilon.minosoft.config.profile.change.listener.SimpleChangeListener.Companion.listen
 import de.bixilon.minosoft.data.registries.ResourceLocation
 import de.bixilon.minosoft.gui.rendering.*
 import de.bixilon.minosoft.gui.rendering.modding.events.CameraMatrixChangeEvent

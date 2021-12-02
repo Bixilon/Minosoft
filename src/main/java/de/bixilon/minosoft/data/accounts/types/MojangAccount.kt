@@ -13,8 +13,7 @@
 
 package de.bixilon.minosoft.data.accounts.types
 
-import com.squareup.moshi.Json
-import de.bixilon.minosoft.Minosoft
+import com.fasterxml.jackson.annotation.JsonProperty
 import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.data.accounts.AccountType
 import de.bixilon.minosoft.data.registries.ResourceLocation
@@ -31,13 +30,15 @@ import de.bixilon.minosoft.util.logging.LogMessageType
 import de.bixilon.minosoft.util.nbt.tag.NBTUtil.asCompound
 import java.util.*
 
+@Deprecated("Mojang authentication is legacy. Will be removed in the future!")
 class MojangAccount(
     override val id: String,
     username: String,
     val uuid: UUID,
     val email: String,
-    @Json(name = "access_token") private var accessToken: String,
+    @field:JsonProperty private var accessToken: String,
 ) : Account(username) {
+    @Transient
     private var refreshed: Boolean = false
     override val type: ResourceLocation = RESOURCE_LOCATION
 
@@ -45,10 +46,10 @@ class MojangAccount(
         AccountUtil.joinMojangServer(username, accessToken, uuid, serverId)
     }
 
-    override fun logout() {
+    override fun logout(clientToken: String) {
         val response = mutableMapOf(
             "accessToken" to accessToken,
-            "clientToken" to Minosoft.config.config.account.clientToken,
+            "clientToken" to clientToken,
         ).postJson(MOJANG_URL_INVALIDATE)
 
 
@@ -59,28 +60,17 @@ class MojangAccount(
         Log.log(LogMessageType.AUTHENTICATION, LogLevels.VERBOSE) { "Mojang account login successful (username=$username)" }
     }
 
-    override fun verify() {
+    override fun verify(clientToken: String) {
         if (refreshed) {
             return
         }
-        refresh()
+        refresh(clientToken)
     }
 
-    override fun serialize(): Map<String, Any> {
-        return mapOf(
-            "id" to id,
-            "username" to username,
-            "uuid" to uuid,
-            "email" to email,
-            "access_token" to accessToken,
-            "type" to type,
-        )
-    }
-
-    fun refresh() {
+    fun refresh(clientToken: String) {
         val response = mutableMapOf(
             "accessToken" to accessToken,
-            "clientToken" to Minosoft.config.config.account.clientToken,
+            "clientToken" to clientToken,
         ).postJson(MOJANG_URL_REFRESH)
 
         response.body!!
@@ -105,7 +95,7 @@ class MojangAccount(
         private const val MOJANG_URL_INVALIDATE = "https://authserver.mojang.com/invalidate"
         override val RESOURCE_LOCATION: ResourceLocation = "minosoft:mojang_account".toResourceLocation()
 
-        fun login(clientToken: String = Minosoft.config.config.account.clientToken, email: String, password: String): MojangAccount {
+        fun login(clientToken: String, email: String, password: String): MojangAccount {
             val response = mutableMapOf(
                 "agent" to mutableMapOf(
                     "name" to "Minecraft",

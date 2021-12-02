@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.data.assets
 
-import de.bixilon.minosoft.Minosoft
+import de.bixilon.minosoft.config.profile.profiles.resources.ResourcesProfileManager
 import de.bixilon.minosoft.protocol.protocol.ProtocolDefinition
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.Util
@@ -42,7 +42,7 @@ interface FileAssetsManager : AssetsManager {
             // file does not exist
             return false
         }
-        if (!Minosoft.config.config.debug.verifyAssets) {
+        if (!ResourcesProfileManager.selected.verify) {
             // file exists AND we should not check the hash of our file
             return true
         }

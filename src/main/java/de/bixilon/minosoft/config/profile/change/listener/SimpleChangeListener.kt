@@ -9,7 +9,7 @@ import kotlin.reflect.KProperty
 import kotlin.reflect.KProperty0
 import kotlin.reflect.jvm.javaField
 
-class SimpleProfileChangeListener<T>(
+class SimpleChangeListener<T>(
     override val property: KProperty<T>,
     override val field: Field,
     override val profile: Profile?,
@@ -34,12 +34,12 @@ class SimpleProfileChangeListener<T>(
 
         @JvmOverloads
         fun <T> KProperty<T>.listen(reference: Any, instant: Boolean = false, profile: Profile? = null, callback: ((T) -> Unit)) {
-            ProfilesChangeManager.register(reference, SimpleProfileChangeListener(this, javaField!!, profile, instant, callback))
+            ProfilesChangeManager.register(reference, SimpleChangeListener(this, javaField!!, profile, instant, callback))
         }
 
         @JvmOverloads
         fun <T> KProperty<T>.listenFX(reference: Any, instant: Boolean = false, profile: Profile? = null, callback: ((T) -> Unit)) {
-            ProfilesChangeManager.register(reference, SimpleProfileChangeListener(this, javaField!!, profile, instant) { JavaFXUtil.runLater { callback(it) } })
+            ProfilesChangeManager.register(reference, SimpleChangeListener(this, javaField!!, profile, instant) { JavaFXUtil.runLater { callback(it) } })
         }
     }
 }

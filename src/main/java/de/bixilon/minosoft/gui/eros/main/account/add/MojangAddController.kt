@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.eros.main.account.add
 
-import de.bixilon.minosoft.Minosoft
+import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
 import de.bixilon.minosoft.data.accounts.types.MojangAccount
 import de.bixilon.minosoft.gui.eros.controller.JavaFXWindowController
 import de.bixilon.minosoft.gui.eros.main.account.AccountController
@@ -106,6 +106,7 @@ class MojangAddController(
 
     @FXML
     fun login() {
+        val profile = ErosProfileManager.selected.general.accountProfile
         if (loginButtonFX.isDisable) {
             return
         }
@@ -113,9 +114,9 @@ class MojangAddController(
         errorFX.isVisible = false
         DefaultThreadPool += {
             try {
-                val account = MojangAccount.login(email = emailFX.text, password = passwordFX.text)
-                Minosoft.config.config.account.entries[account.id] = account
-                Minosoft.config.saveToFile()
+                val account = MojangAccount.login(email = emailFX.text, password = passwordFX.text, clientToken = profile.clientToken)
+                profile.entries[account.id] = account
+                profile.selected = account
                 JavaFXUtil.runLater {
                     accountController.refreshList()
                     stage.hide()

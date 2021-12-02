@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.config.server
 
 import com.squareup.moshi.Json
-import de.bixilon.minosoft.Minosoft
+import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.data.assets.AssetsUtil
 import de.bixilon.minosoft.data.assets.FileAssetsManager
 import de.bixilon.minosoft.data.registries.versions.Version
@@ -61,10 +61,11 @@ data class Server(
     @Transient
     var card: ServerCard? = null
 
-    val canConnect: Boolean
-        get() = ping?.state === StatusConnectionStates.PING_DONE
-                && ((forcedVersion ?: ping?.serverVersion) != null)
-                && Minosoft.config.config.account.selected?.connections?.containsKey(this) == false
+    fun canConnect(selectedAccount: Account): Boolean {
+        return (ping?.state === StatusConnectionStates.PING_DONE
+                && ((forcedVersion ?: ping?.serverVersion) != null))
+                && this !in selectedAccount.connections
+    }
 
     init {
         if (id > nextServerId) {

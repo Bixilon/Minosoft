@@ -14,7 +14,7 @@
 package de.bixilon.minosoft.gui.eros.dialog
 
 import de.bixilon.minosoft.Minosoft
-import de.bixilon.minosoft.config.profile.change.listener.SimpleProfileChangeListener.Companion.listenFX
+import de.bixilon.minosoft.config.profile.change.listener.SimpleChangeListener.Companion.listenFX
 import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
 import de.bixilon.minosoft.config.server.Server
 import de.bixilon.minosoft.data.registries.versions.Version

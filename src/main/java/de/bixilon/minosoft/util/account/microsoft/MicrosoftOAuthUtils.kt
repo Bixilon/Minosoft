@@ -50,7 +50,7 @@ object MicrosoftOAuthUtils {
         )
 
         account.accessToken = accessToken
-        account.verify()
+        account.verify("")
 
         Log.log(LogMessageType.AUTHENTICATION, LogLevels.INFO) { "Microsoft account login successful (uuid=${account.uuid})" }
 

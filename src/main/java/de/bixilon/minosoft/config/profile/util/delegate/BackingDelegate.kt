@@ -1,4 +1,4 @@
-package de.bixilon.minosoft.config.profile.util
+package de.bixilon.minosoft.config.profile.util.delegate
 
 import de.bixilon.minosoft.config.profile.ProfileManager
 import de.bixilon.minosoft.config.profile.change.ProfilesChangeManager
@@ -10,41 +10,35 @@ import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 import kotlin.reflect.jvm.javaField
 
-open class ProfileDelegate<V>(
-    private var value: V,
+abstract class BackingDelegate<V>(
     private val checkEquals: Boolean,
     private val profileManager: ProfileManager<*>,
     private val profileName: String,
     private val verify: ((V) -> Unit)?,
-) : ReadWriteProperty<Any, V> {
+) : ReadWriteProperty<Any, V>, DelegateSetter<V> {
     private lateinit var profile: Profile
 
     override fun getValue(thisRef: Any, property: KProperty<*>): V {
-        return value
+        return get()
     }
 
     override fun setValue(thisRef: Any, property: KProperty<*>, value: V) {
-        if (checkEquals && this.value == value) {
+        val previous = get()
+        if (checkEquals && previous == value) {
             return
         }
         verify?.invoke(value)
         if (!this::profile.isInitialized) {
-            val profile = profileManager.profiles[profileName]
-            if (profile == null) {
-                this.value = value
-                return
-            }
+            val profile = profileManager.profiles[profileName] ?: return set(value)
             this.profile = profile
         }
         if (profile.initializing) {
-            this.value = value
-            return
+            return set(value)
         }
 
-        Log.log(LogMessageType.PROFILES, LogLevels.VERBOSE) { "Changed option $property in profile $profileName from ${this.value} to $value" }
+        Log.log(LogMessageType.PROFILES, LogLevels.VERBOSE) { "Changed option $property in profile $profileName from ${get()} to $value" }
         profileManager.profiles[profileName]?.saved = false
-        val previous = this.value
-        this.value = value
+        set(value)
 
         ProfilesChangeManager.onChange(profile, property.javaField ?: return, previous, value)
     }

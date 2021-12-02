@@ -25,7 +25,6 @@ object JSONSerializer {
     val MOSHI = Moshi.Builder()
         .add(RGBColorSerializer)
         .add(Vec2Serializer)
-        .add(AccountSerializer)
         .add(ChatComponentSerializer)
         .add(ServerAddressSerializer)
         .add(ResourceLocationSerializer)

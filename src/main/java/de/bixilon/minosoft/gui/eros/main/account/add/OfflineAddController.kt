@@ -13,7 +13,7 @@
 
 package de.bixilon.minosoft.gui.eros.main.account.add
 
-import de.bixilon.minosoft.Minosoft
+import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
 import de.bixilon.minosoft.data.accounts.types.OfflineAccount
 import de.bixilon.minosoft.gui.eros.controller.JavaFXWindowController
 import de.bixilon.minosoft.gui.eros.main.account.AccountController
@@ -34,6 +34,7 @@ import javafx.stage.Modality
 class OfflineAddController(
     private val accountController: AccountController,
 ) : JavaFXWindowController() {
+    private val accountProfile = ErosProfileManager.selected.general.accountProfile
     @FXML private lateinit var headerFX: TextFlow
     @FXML private lateinit var descriptionFX: TextFlow
 
@@ -63,7 +64,7 @@ class OfflineAddController(
         cancelButtonFX.ctext = CANCEL_BUTTON
 
         usernameFX.textProperty().addListener { _, _, new ->
-            addButtonFX.isDisable = !ProtocolDefinition.MINECRAFT_NAME_VALIDATOR.matcher(new).matches()
+            addButtonFX.isDisable = !ProtocolDefinition.MINECRAFT_NAME_VALIDATOR.matcher(new).matches() || accountProfile.entries.containsKey(new)
         }
     }
 
@@ -83,8 +84,8 @@ class OfflineAddController(
             return
         }
         val account = OfflineAccount(usernameFX.text)
-        Minosoft.config.config.account.entries[account.id] = account
-        Minosoft.config.saveToFile()
+        accountProfile.entries[account.id] = account
+        accountProfile.selected = account
 
         accountController.refreshList()
         stage.hide()

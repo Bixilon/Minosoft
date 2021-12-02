@@ -13,18 +13,16 @@
 
 package de.bixilon.minosoft.gui.eros.main
 
-import de.bixilon.minosoft.Minosoft
 import de.bixilon.minosoft.ShutdownReasons
+import de.bixilon.minosoft.config.profile.change.listener.SimpleChangeListener.Companion.listenFX
+import de.bixilon.minosoft.config.profile.profiles.eros.ErosProfileManager
 import de.bixilon.minosoft.data.accounts.Account
 import de.bixilon.minosoft.gui.eros.controller.EmbeddedJavaFXController
 import de.bixilon.minosoft.gui.eros.controller.JavaFXWindowController
-import de.bixilon.minosoft.gui.eros.modding.invoker.JavaFXEventInvoker
 import de.bixilon.minosoft.gui.eros.util.JavaFXAccountUtil.avatar
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.clickable
 import de.bixilon.minosoft.gui.eros.util.JavaFXUtil.ctext
-import de.bixilon.minosoft.modding.event.events.account.AccountSelectEvent
-import de.bixilon.minosoft.modding.event.master.GlobalEventMaster
 import de.bixilon.minosoft.terminal.RunConfiguration
 import de.bixilon.minosoft.util.KUtil.toResourceLocation
 import de.bixilon.minosoft.util.ShutdownManager
@@ -114,10 +112,11 @@ class MainErosController : JavaFXWindowController() {
             }
         }
 
-        GlobalEventMaster.registerEvent(JavaFXEventInvoker.of<AccountSelectEvent> {
-            accountImageFX.image = it.account?.avatar
-            accountNameFX.ctext = it.account?.username ?: NO_ACCOUNT_SELECTED
-        })
+        val profile = ErosProfileManager.selected.general.accountProfile
+        profile::selected.listenFX(this, true, profile) {
+            accountImageFX.image = it?.avatar
+            accountNameFX.ctext = it?.username ?: NO_ACCOUNT_SELECTED
+        }
         accountImageFX.clickable()
         accountNameFX.clickable()
 
@@ -130,7 +129,9 @@ class MainErosController : JavaFXWindowController() {
         }
     }
 
-    fun verifyAccount(account: Account? = Minosoft.config.config.account.selected, onSuccess: (Account) -> Unit) {
+    fun verifyAccount(account: Account? = null, onSuccess: (Account) -> Unit) {
+        val profile = ErosProfileManager.selected.general.accountProfile
+        val account = account ?: profile.selected
         if (account == null) {
             activity = ErosMainActivities.ACCOUNT
             return
@@ -138,7 +139,7 @@ class MainErosController : JavaFXWindowController() {
 
         DefaultThreadPool += {
             try {
-                account.verify()
+                account.verify(profile.clientToken)
             } catch (exception: Throwable) {
                 Platform.runLater { activity = ErosMainActivities.ACCOUNT }
                 // ToDo: Show account window and do account error handling

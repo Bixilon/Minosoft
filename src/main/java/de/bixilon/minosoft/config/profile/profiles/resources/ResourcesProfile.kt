@@ -19,6 +19,13 @@ class ResourcesProfile(
 
     val source = SourceC()
 
+    /**
+     * If set, all downloaded assets will be checked on load.
+     * Checks their size and sha1 hash.
+     * Deletes and re-downloads/regenerates the asset on mismatch
+     */
+    var verify by delegate(true)
+
     override fun toString(): String {
         return ResourcesProfileManager.getName(this)
     }
