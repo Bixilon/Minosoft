@@ -23,7 +23,7 @@ import de.bixilon.minosoft.data.registries.items.Item
 import de.bixilon.minosoft.data.registries.registries.Registries
 import de.bixilon.minosoft.gui.rendering.input.camera.hit.BlockRaycastHit
 import de.bixilon.minosoft.gui.rendering.input.interaction.InteractionResults
-import de.bixilon.minosoft.gui.rendering.util.VecUtil.plus
+import de.bixilon.minosoft.gui.rendering.util.VecUtil.plusAssign
 import de.bixilon.minosoft.protocol.network.connection.play.PlayConnection
 
 open class BlockItem(
@@ -42,16 +42,19 @@ open class BlockItem(
             return InteractionResults.PASS
         }
 
-        val placePosition = raycastHit.blockPosition + raycastHit.hitDirection
+        val placePosition = raycastHit.blockPosition
+        if (!raycastHit.blockState.material.replaceable) {
+            placePosition += raycastHit.hitDirection
+
+            if (connection.world[placePosition]?.material?.replaceable == false) {
+                return InteractionResults.PASS
+            }
+        }
+
         if (!connection.world.isPositionChangeable(placePosition)) {
             return InteractionResults.PASS
         }
 
-        connection.world[placePosition]?.let {
-            if (!it.material.replaceable) {
-                return InteractionResults.PASS
-            }
-        }
         if (connection.world.getBlockEntity(placePosition) != null && !connection.player.isSneaking) {
             return InteractionResults.PASS
         }

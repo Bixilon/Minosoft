@@ -17,7 +17,6 @@ import de.bixilon.minosoft.config.key.KeyAction
 import de.bixilon.minosoft.config.key.KeyBinding
 import de.bixilon.minosoft.config.key.KeyCodes
 import de.bixilon.minosoft.data.abilities.Gamemodes
-import de.bixilon.minosoft.data.inventory.ItemStack
 import de.bixilon.minosoft.data.player.Hands
 import de.bixilon.minosoft.data.registries.blocks.BlockState
 import de.bixilon.minosoft.data.registries.effects.DefaultStatusEffects
@@ -49,7 +48,6 @@ class BreakInteractionHandler(
         get() = breakPosition != null
 
     private var breakSelectedSlot: Int = -1
-    private var breakItemInHand: ItemStack? = null
 
     private var breakSent = 0L
     private var lastSwing = 0L
@@ -69,7 +67,6 @@ class BreakInteractionHandler(
         breakProgress = Double.NEGATIVE_INFINITY
 
         breakSelectedSlot = -1
-        breakItemInHand = null
     }
 
     private fun cancelDigging() {
@@ -114,7 +111,7 @@ class BreakInteractionHandler(
         }
 
         // check if we look at another block or our inventory changed
-        if (breakPosition != raycastHit.blockPosition || breakBlockState != raycastHit.blockState || breakSelectedSlot != connection.player.selectedHotbarSlot || breakItemInHand !== connection.player.inventory.getHotbarSlot()) {
+        if (breakPosition != raycastHit.blockPosition || breakBlockState != raycastHit.blockState || breakSelectedSlot != connection.player.selectedHotbarSlot) {
             cancelDigging()
         }
 
@@ -130,7 +127,6 @@ class BreakInteractionHandler(
             breakProgress = 0.0
 
             breakSelectedSlot = connection.player.selectedHotbarSlot
-            breakItemInHand = connection.player.inventory.getHotbarSlot()
         }
 
         fun finishDigging() {
@@ -176,7 +172,7 @@ class BreakInteractionHandler(
 
         // thanks to https://minecraft.fandom.com/wiki/Breaking#Calculation
 
-        val breakItemInHand = breakItemInHand
+        val breakItemInHand = connection.player.inventory.getHotbarSlot()
 
         val isToolEffective = breakItemInHand?.item?.let {
             return@let if (it is MiningToolItem) {

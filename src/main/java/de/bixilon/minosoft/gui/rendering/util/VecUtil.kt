@@ -211,6 +211,10 @@ object VecUtil {
         return this + direction?.vector
     }
 
+    infix operator fun Vec3i.plusAssign(direction: Directions?) {
+        this += direction?.vector ?: return
+    }
+
     infix operator fun Vec3i.plus(input: Vec3): Vec3 {
         return Vec3(input.x + x, input.y + y, input.z + z)
     }
