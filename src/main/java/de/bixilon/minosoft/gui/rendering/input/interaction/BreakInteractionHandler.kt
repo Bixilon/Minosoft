@@ -24,6 +24,7 @@ import de.bixilon.minosoft.data.registries.enchantment.DefaultEnchantments
 import de.bixilon.minosoft.data.registries.fluid.DefaultFluids
 import de.bixilon.minosoft.data.registries.items.tools.MiningToolItem
 import de.bixilon.minosoft.gui.rendering.RenderWindow
+import de.bixilon.minosoft.gui.rendering.input.camera.hit.BlockRaycastHit
 import de.bixilon.minosoft.modding.event.events.BlockBreakAckEvent
 import de.bixilon.minosoft.modding.event.invoker.CallbackEventInvoker
 import de.bixilon.minosoft.protocol.packets.c2s.play.ArmSwingC2SP
@@ -70,10 +71,9 @@ class BreakInteractionHandler(
     }
 
     private fun cancelDigging() {
-        breakPosition?.let {
-            connection.sendPacket(PlayerActionC2SP(PlayerActionC2SP.Actions.CANCELLED_DIGGING, it))
-            clearDigging()
-        }
+        val breakPosition = breakPosition ?: return
+        connection.sendPacket(PlayerActionC2SP(PlayerActionC2SP.Actions.CANCELLED_DIGGING, breakPosition))
+        clearDigging()
     }
 
     private fun swingArm() {
@@ -98,9 +98,9 @@ class BreakInteractionHandler(
             cancelDigging()
             return false
         }
-        val raycastHit = renderWindow.inputHandler.camera.blockTarget
+        val raycastHit = renderWindow.inputHandler.camera.nonFluidTarget
 
-        if (raycastHit == null) {
+        if (raycastHit !is BlockRaycastHit) {
             cancelDigging()
             return false
         }
