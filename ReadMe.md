@@ -113,9 +113,7 @@ Because we have no releases or tags yet, we don't build any versions ourselves. 
 
 ### Linux
 
-#### Ubuntu / Debian
-
-TBA
+The latest x64 build gets uploaded to github actions. See [https://github.com/Bixilon/Minosoft/actions]()
 
 #### Arch
 
